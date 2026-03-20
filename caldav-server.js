@@ -8,6 +8,7 @@ const { Buffer } = require('node:buffer');
 
 // const getUuid = require('@forwardemail/uuid-by-string');
 const API = require('@ladjs/api');
+const ms = require('ms');
 const basicAuth = require('basic-auth');
 const Boom = require('@hapi/boom');
 const ICAL = require('ical.js');
@@ -18,6 +19,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const uuid = require('uuid');
 const { rrulestr } = require('rrule');
+const pTimeout = require('p-timeout');
 const sanitizeHtml = require('sanitize-html');
 
 const _ = require('#helpers/lodash');
@@ -312,6 +314,14 @@ const I18N_SET_DEFAULT_CALENDAR_NAME = new Set([
   ...I18N_SET_DEFAULT
 ]);
 
+//
+// Redis key prefix and TTL for caching that default calendars have
+// already been ensured for a given alias.  Mirrors the pattern used
+// by `ensureDefaultMailboxes` in helpers/ensure-default-mailboxes.js.
+//
+const ENSURE_CALENDAR_CACHE_PREFIX = 'caldav_cal_ensured:';
+const ENSURE_CALENDAR_CACHE_TTL = ms('1h');
+
 async function ensureDefaultCalendars(ctx) {
   //
   // this only gets run if there are *zero* calendars on Android/Windows/etc
@@ -344,8 +354,33 @@ async function ensureDefaultCalendars(ctx) {
     synctoken: `${config.urls.web}/ns/sync-token/1`
   };
 
+  //
+  // Performance: check Redis to see if we already ensured default
+  // calendars for this alias recently.  This avoids hitting SQLite
+  // with countDocuments + findOne queries on every single request.
+  //
+  if (this.client) {
+    try {
+      const cacheKey = `${ENSURE_CALENDAR_CACHE_PREFIX}${ctx.state.session.user.alias_id}`;
+      const cached = await this.client.get(cacheKey);
+      if (cached) {
+        ctx.logger.debug('ensureDefaultCalendars: skipped (cached)');
+        return;
+      }
+    } catch (err) {
+      // Redis failure is non-fatal; fall through to the normal path
+      ctx.logger.warn('ensureDefaultCalendars: Redis cache check failed', {
+        err
+      });
+    }
+  }
+
   const count = await Calendars.countDocuments(this, ctx.state.session, {});
-  if (count > 0) return;
+  if (count > 0) {
+    // Calendars exist — cache this fact so we skip the check next time
+    await _setEnsureCalendarCache.call(this, ctx);
+    return;
+  }
 
   if (!ctx.state.isApple) {
     await Calendars.create({
@@ -362,7 +397,7 @@ async function ensureDefaultCalendars(ctx) {
       has_vtodo: true
     });
 
-    // return early since Apple check is up next
+    await _setEnsureCalendarCache.call(this, ctx);
     return;
   }
 
@@ -425,6 +460,24 @@ async function ensureDefaultCalendars(ctx) {
 
   ctx.logger.debug('defaultCalendar', { defaultCalendar });
   ctx.logger.debug('defaultTaskCalendar', { defaultTaskCalendar });
+
+  await _setEnsureCalendarCache.call(this, ctx);
+}
+
+//
+// Helper: set the Redis cache key that records we have already
+// ensured default calendars for this alias.
+//
+async function _setEnsureCalendarCache(ctx) {
+  if (!this.client) return;
+  try {
+    const cacheKey = `${ENSURE_CALENDAR_CACHE_PREFIX}${ctx.state.session.user.alias_id}`;
+    await this.client.set(cacheKey, '1', 'PX', ENSURE_CALENDAR_CACHE_TTL);
+  } catch (err) {
+    ctx.logger.warn('ensureDefaultCalendars: Redis cache set failed', {
+      err
+    });
+  }
 }
 
 //
@@ -1160,11 +1213,18 @@ class CalDAV extends API {
     ctx.state.user.principalName = ctx.state.user.username; // .toUpperCase()
 
     //
-    // TODO: we may want to run this in background
-    //       or alternatively only run it once every X amount of time
+    // Ensure default calendar(s) exist.
+    // This is now cached via Redis so it short-circuits on subsequent
+    // requests within the cache TTL (see ensureDefaultCalendars above).
     //
-    // ensure default calendar(s) exist
-    await ensureDefaultCalendars.call(this, ctx);
+    try {
+      await ensureDefaultCalendars.call(this, ctx);
+    } catch (err) {
+      // Don't fail authentication if calendar setup fails —
+      // the user can still use existing calendars.
+      err.isCodeBug = isCodeBug(err);
+      ctx.logger.error(err, 'Error ensuring default calendars');
+    }
 
     //
     // Process any pending calendar invite responses from the MongoDB queue
@@ -1172,7 +1232,15 @@ class CalDAV extends API {
     // (responses are queued by the web routes when attendees click response links)
     //
     try {
-      const inviteResults = await processCalendarInvites(this, ctx);
+      //
+      // Wrap invite processing in a 5 s timeout so a slow MongoDB or
+      // a large invite backlog cannot stall the entire CalDAV request
+      // past the global 30 s koa-better-timeout.
+      //
+      const inviteResults = await pTimeout(
+        processCalendarInvites(this, ctx),
+        5000
+      );
       if (inviteResults.processed > 0 || inviteResults.failed > 0) {
         ctx.logger.info('Calendar invite processing results', inviteResults);
       }
@@ -1758,9 +1826,14 @@ class CalDAV extends API {
 
     let events;
     try {
-      events = await CalendarEvents.find(this, ctx.state.session, {
-        calendar: calendar._id
-      });
+      //
+      // Performance: filter out soft-deleted events at the SQL level
+      // instead of fetching all rows and filtering in JS.
+      // The composite index { calendar, deleted_at } makes this efficient.
+      //
+      const filter = { calendar: calendar._id };
+      if (!showDeleted) filter.deleted_at = { $exists: false };
+      events = await CalendarEvents.find(this, ctx.state.session, filter);
     } catch (err) {
       err.isCodeBug = true;
       err.calendarId = calendarId;
@@ -1770,8 +1843,11 @@ class CalDAV extends API {
       throw err;
     }
 
-    // TODO: improve this with search directly on sql
-    if (!showDeleted) events = events.filter((e) => !_.isDate(e.deleted_at));
+    // Safety net: also filter in JS in case the SQL filter missed edge cases
+    if (!showDeleted)
+      events = events.filter(
+        (e) => e.deleted_at === null || e.deleted_at === undefined
+      );
 
     ctx.logger.debug('events', { events });
 
@@ -1804,8 +1880,12 @@ class CalDAV extends API {
 
     // TODO: incorporate database date query instead of this in-memory filtering
     // TODO: we could do partial query for not recurring and b/w and then has recurring and after
+    //
+    // Performance: exclude soft-deleted events at the SQL level
+    //
     const events = await CalendarEvents.find(this, ctx.state.session, {
-      calendar: calendar._id
+      calendar: calendar._id,
+      deleted_at: { $exists: false }
     });
 
     const filtered = [];
