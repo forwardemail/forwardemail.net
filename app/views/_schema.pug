@@ -212,27 +212,3 @@ if ctx.pathWithoutLocale && ctx.pathWithoutLocale.includes('alternative')
         "worstRating": "1"
       }
     }
-
-//- Organization Schema for about page
-if ctx.pathWithoutLocale === '/about'
-  script(type="application/ld+json").
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Forward Email LLC",
-      "legalName": "Forward Email LLC",
-      "url": "https://forwardemail.net",
-      "logo": "https://forwardemail.net/img/logo-square.svg",
-      "foundingDate": "2017",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "US"
-      },
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "customer support",
-        "url": "https://forwardemail.net/help",
-        "availableLanguage": ["English", "Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Japanese", "Korean", "Chinese"]
-      },
-      "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism"]
-    }
