@@ -8,6 +8,7 @@ const ms = require('ms');
 const paginate = require('koa-ctx-paginate');
 const _ = require('#helpers/lodash');
 
+const config = require('#config');
 const env = require('#config/env');
 const getMongoQuery = require('#helpers/get-mongo-query');
 const { Logs } = require('#models');
@@ -19,64 +20,65 @@ const MAX_COUNT_LIMIT = 10_000;
 const MAX_TIME_MS = ms('60s');
 
 //
-// In-memory cache for unique hosts and job names.
-// These are only used for the "Quick filter" UI buttons and change infrequently.
-// Caching avoids running expensive global aggregation/distinct queries on every page load.
+// Static list of unique hostnames built from env vars at module load time.
+// This is the same approach used in app/controllers/web/ips.js (lines 14-50).
+// The hostnames that appear in `meta.app.hostname` are the server hostnames
+// from the env config, so there is no need to query the database for them.
 //
-let cachedUniqueHosts = null;
+const HOSTNAMES = _.uniq(
+  config.env === 'production'
+    ? [
+        env.API_HOST,
+        env.BREE_HOST,
+        env.CALDAV_HOST,
+        env.CARDDAV_HOST,
+        env.IMAP_HOST,
+        env.POP3_HOST,
+        env.SMTP_HOST,
+        env.WEB_HOST,
+        env.MX1_HOST,
+        env.MX2_HOST,
+        // env.MAIL_HOST,
+        env.REDIS_HOST,
+        env.SQLITE_HOST,
+        env.MONGO_HOST,
+        env.LOGS_HOST
+      ]
+    : [
+        'api.forwardemail.net',
+        'bree.forwardemail.net',
+        'caldav.forwardemail.net',
+        'carddav.forwardemail.net',
+        'imap.forwardemail.net',
+        'pop3.forwardemail.net',
+        'smtp.forwardemail.net',
+        'forwardemail.net',
+        'mx1.forwardemail.net',
+        'mx2.forwardemail.net',
+        // 'mail.forwardemail.net',
+        'redis.forwardemail.net',
+        'sqlite.forwardemail.net',
+        'mongo.forwardemail.net',
+        'logs.forwardemail.net'
+      ]
+)
+  .filter(Boolean)
+  .sort();
+
+//
+// In-memory cache for unique job names.
+// Job names are only used for the "Quick filter by job name" UI buttons.
+// Caching avoids running an expensive aggregation on every page load.
+//
 let cachedJobNames = null;
-let hostsCacheExpiry = 0;
 let jobNamesCacheExpiry = 0;
 const CACHE_TTL = ms('5m');
 
 //
-// Fetch unique hostnames from recent logs (last 1 hour).
-//
-// NOTE: LOG_RETENTION defaults to 7d, meaning all ~9M documents in the
-// collection are within the last 7 days. A 7-day scope therefore matches
-// the entire collection and provides zero narrowing benefit.
-//
-// Hostnames are low-cardinality (typically < 20 unique values), so all
-// active values appear within any 1-hour window (~60K docs at ~900/min).
-// Results are cached in-memory for 5 minutes.
-//
-async function getUniqueHosts() {
-  const now = Date.now();
-  if (cachedUniqueHosts !== null && now < hostsCacheExpiry) {
-    return cachedUniqueHosts;
-  }
-
-  try {
-    const results = await Logs.aggregate(
-      [
-        {
-          $match: {
-            created_at: { $gte: new Date(now - ms('1h')) },
-            'meta.app.hostname': { $exists: true }
-          }
-        },
-        { $group: { _id: '$meta.app.hostname' } }
-      ],
-      { maxTimeMS: MAX_TIME_MS }
-    );
-
-    cachedUniqueHosts = results.map((doc) => doc._id).filter(Boolean);
-    hostsCacheExpiry = now + CACHE_TTL;
-  } catch {
-    // On timeout or error, return stale cache or empty array so the page still renders
-    if (!cachedUniqueHosts) {
-      cachedUniqueHosts = [];
-    }
-  }
-
-  return cachedUniqueHosts;
-}
-
-//
 // Fetch unique job names from recent logs (last 1 hour).
 //
-// Same rationale as getUniqueHosts — scope to last 1 hour instead of 7 days.
-// Job names are also low-cardinality and all active jobs will appear within 1 hour.
+// Job names are low-cardinality and all active jobs will appear within 1 hour.
+// Results are cached in-memory for 5 minutes.
 //
 async function getJobNames() {
   const now = Date.now();
@@ -197,22 +199,20 @@ async function list(ctx) {
       ).then((result) => result[0]?.total || 0);
 
   //
-  // IMPORTANT: Do NOT await getUniqueHosts() and getJobNames() in Promise.all
-  // with the main find query. On cold start (cache miss), these aggregations
-  // can take 10-60s because they scan a large portion of the collection.
-  // The main find query (with hint) should return in <100ms.
+  // IMPORTANT: Do NOT await getJobNames() in Promise.all with the main find query.
+  // On cold start (cache miss), the aggregation can be slow because it scans a
+  // portion of the collection. The main find query (with hint) returns in <100ms.
   //
   // Instead, fire the cache refresh in the background and use whatever is
-  // currently cached (or empty arrays on first load). The filter buttons
+  // currently cached (or empty array on first load). The filter buttons
   // will populate on the next page load or refresh.
   //
   // This ensures the page ALWAYS loads fast — the user sees their logs
   // immediately, and the filter dropdowns populate within 5 minutes.
   //
-  if (cachedUniqueHosts === null || Date.now() >= hostsCacheExpiry) {
-    getUniqueHosts().catch(() => {});
-  }
-
+  // NOTE: Hostnames use a static HOSTNAMES constant (same as ips.js) so they
+  // are always available immediately with no database query needed.
+  //
   if (cachedJobNames === null || Date.now() >= jobNamesCacheExpiry) {
     getJobNames().catch(() => {});
   }
@@ -220,10 +220,9 @@ async function list(ctx) {
   const [logs, itemCount] = await Promise.all([findQuery.exec(), countQuery]);
 
   //
-  // Use whatever is currently cached (may be null on very first load).
-  // The background refresh will populate these for subsequent requests.
+  // Use whatever is currently cached (may be empty on very first load).
+  // The background refresh will populate job names for subsequent requests.
   //
-  const uniqueHosts = cachedUniqueHosts || [];
   const jobNames = cachedJobNames || [];
 
   //
@@ -240,7 +239,7 @@ async function list(ctx) {
       logs,
       pageCount,
       itemCount: cappedItemCount,
-      uniqueHosts,
+      uniqueHosts: HOSTNAMES,
       jobNames,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
