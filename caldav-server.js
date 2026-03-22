@@ -1833,7 +1833,30 @@ class CalDAV extends API {
       //
       const filter = { calendar: calendar._id };
       if (!showDeleted) filter.deleted_at = { $exists: false };
-      events = await CalendarEvents.find(this, ctx.state.session, filter);
+
+      //
+      // Performance: when the client does not request calendar-data
+      // (fullData === false), skip loading the large `ical` column.
+      // For calendars with hundreds/thousands of events this avoids
+      // transferring megabytes of ICS text from SQLite/WSP.
+      //
+      const projection = fullData
+        ? {}
+        : {
+            eventId: true,
+            href: true,
+            deleted_at: true,
+            componentType: true,
+            updated_at: true,
+            calendar: true,
+            scheduleTag: true
+          };
+      events = await CalendarEvents.find(
+        this,
+        ctx.state.session,
+        filter,
+        projection
+      );
     } catch (err) {
       err.isCodeBug = true;
       err.calendarId = calendarId;
