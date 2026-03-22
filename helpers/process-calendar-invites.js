@@ -823,6 +823,22 @@ async function getDefaultCalendar(instance, ctx) {
  */
 function eventHasUid(icalStr, uidVariants) {
   try {
+    // Fast pre-filter: skip expensive ICAL.parse if the UID doesn't even
+    // appear as a substring in the raw ICS text.  For calendars with
+    // thousands of events this turns an O(n * parse_cost) scan into
+    // O(n * indexOf_cost) for non-matching events (~1000x faster).
+    const icalLower = icalStr.toLowerCase();
+    let maybeMatch = false;
+    for (const variant of uidVariants) {
+      if (icalLower.includes(variant.toLowerCase())) {
+        maybeMatch = true;
+        break;
+      }
+    }
+
+    if (!maybeMatch) return false;
+
+    // Substring matched — do the full parse to confirm it's the UID field
     const comp = new ICAL.Component(ICAL.parse(icalStr));
     const vevent =
       comp.getFirstSubcomponent('vevent') || comp.getFirstSubcomponent('vtodo');
