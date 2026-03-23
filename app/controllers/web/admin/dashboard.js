@@ -550,17 +550,14 @@ async function getNetRevenueRetention() {
 }
 
 async function getGrowthChart() {
+  const now = dayjs();
   const docs = await Users.aggregate([
     {
       $match: {
         plan: { $in: ['enhanced_protection', 'team'] },
         created_at: {
-          $gte: dayjs()
-            .subtract(1, 'day')
-            .startOf('day')
-            .subtract(1, 'year')
-            .toDate(),
-          $lte: dayjs().subtract(1, 'day').endOf('day').toDate()
+          $gte: now.subtract(11, 'month').startOf('month').toDate(),
+          $lte: now.toDate()
         }
       }
     },
@@ -676,7 +673,7 @@ async function getMRRChart() {
 
   // Get MRR for each of the past 12 months
   for (let i = 11; i >= 0; i--) {
-    const monthEnd = now.subtract(i, 'month').endOf('month');
+    const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
     const dateString = monthEnd.format('YYYY-MM');
 
     // Count active users at end of month
@@ -761,7 +758,7 @@ async function getChurnChart() {
 
   for (let i = 11; i >= 0; i--) {
     const monthStart = now.subtract(i, 'month').startOf('month');
-    const monthEnd = now.subtract(i, 'month').endOf('month');
+    const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
     const dateString = monthStart.format('YYYY-MM');
 
     // Churned users in this month with their plans
@@ -897,7 +894,7 @@ async function getQuickRatioChart() {
 
   for (let i = 11; i >= 0; i--) {
     const monthStart = now.subtract(i, 'month').startOf('month');
-    const monthEnd = now.subtract(i, 'month').endOf('month');
+    const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
     const dateString = monthStart.format('YYYY-MM');
 
     const breakdown = await getMRRBreakdown(
@@ -965,7 +962,7 @@ async function getLTVChart() {
 
   // Calculate LTV trend over past 12 months
   for (let i = 11; i >= 0; i--) {
-    const monthEnd = now.subtract(i, 'month').endOf('month');
+    const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
     const dateString = monthEnd.format('YYYY-MM');
 
     // Get total revenue up to this point
@@ -1034,7 +1031,7 @@ async function getARPUChart() {
   const data = [];
 
   for (let i = 11; i >= 0; i--) {
-    const monthEnd = now.subtract(i, 'month').endOf('month');
+    const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
     const dateString = monthEnd.format('YYYY-MM');
 
     // Get active users at end of month
@@ -1109,7 +1106,7 @@ async function getNRRChart() {
 
   for (let i = 11; i >= 0; i--) {
     const monthStart = now.subtract(i, 'month').startOf('month');
-    const monthEnd = now.subtract(i, 'month').endOf('month');
+    const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
     const dateString = monthStart.format('YYYY-MM');
 
     // Simplified NRR calculation
