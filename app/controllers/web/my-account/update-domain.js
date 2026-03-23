@@ -373,7 +373,7 @@ async function updateDomain(ctx, next) {
 
   ctx.state.domain = await ctx.state.domain.save();
 
-  if (ctx.request.body.max_quota_per_alias)
+  if (typeof ctx.request.body.max_quota_per_alias !== 'undefined')
     clearAliasQuotaCache(ctx.client, ctx.state.domain._id)
       .then()
       .catch((err) => ctx.logger.fatal(err));

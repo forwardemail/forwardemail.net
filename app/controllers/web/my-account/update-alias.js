@@ -9,6 +9,7 @@ const Boom = require('@hapi/boom');
 const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
+const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 
 async function updateAlias(ctx, next) {
   ctx.state.alias = await Aliases.findById(ctx.state.alias._id);
@@ -19,6 +20,12 @@ async function updateAlias(ctx, next) {
     ctx.state.alias.locale = ctx.locale;
     ctx.state.alias.is_update = true;
     ctx.state.alias = await ctx.state.alias.save();
+
+    // clear alias quota cache when max_quota is updated
+    if (typeof ctx.request.body.max_quota !== 'undefined' && ctx.client)
+      clearAliasQuotaCache(ctx.client, ctx.state.domain._id)
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
 
     // if the body had `has_pgp` or `public_key` and if the values changed
     // then refresh all IMAP sessions with the new updated public key and boolean

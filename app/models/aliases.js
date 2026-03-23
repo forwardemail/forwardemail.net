@@ -1242,26 +1242,23 @@ Aliases.statics.isOverQuota = async function (
   client,
   reset = false
 ) {
-  let storageUsed;
   let maxQuotaPerAlias;
-  let domainStorageUsed;
   let domainMaxQuota;
 
-  // check cache
+  // check cache for quota config values only
+  // NOTE: storage usage values (storageUsed, domainStorageUsed) are NOT cached
+  //       because they change frequently (every append/delete) and caching them
+  //       leads to stale reads; quota config values change rarely (admin updates)
   if (client && !reset) {
     try {
       const cache = await client.get(`alias_quota_v2:${alias.id}`);
       if (cache) {
         const json = JSON.parse(cache);
-        if (json.storageUsed && json.maxQuotaPerAlias) {
-          storageUsed = json.storageUsed;
+        if (typeof json.maxQuotaPerAlias === 'number')
           maxQuotaPerAlias = json.maxQuotaPerAlias;
-        }
 
-        if (json.domainStorageUsed && json.domainMaxQuota) {
-          domainStorageUsed = json.domainStorageUsed;
+        if (typeof json.domainMaxQuota === 'number')
           domainMaxQuota = json.domainMaxQuota;
-        }
       }
     } catch (err) {
       logger.fatal(err);
@@ -1270,35 +1267,34 @@ Aliases.statics.isOverQuota = async function (
 
   const domainId = alias?.domain?._id || alias.domain;
 
-  // Fetch any uncached values in parallel
-  const [_storageUsed, _maxQuotaPerAlias, _domainStorageUsed, _domainMaxQuota] =
+  // Fetch storage usage (always fresh) and any uncached quota config in parallel
+  const [storageUsed, _maxQuotaPerAlias, domainStorageUsed, _domainMaxQuota] =
     await Promise.all([
-      // Alias-specific storage_used (not pooled across domains)
-      storageUsed === undefined
-        ? conn.models.Aliases.findOne({ id: alias.id })
-            .select('storage_used')
-            .lean()
-            .exec()
-            .then((doc) =>
-              doc && typeof doc.storage_used === 'number' ? doc.storage_used : 0
-            )
-        : storageUsed,
-      // Alias-specific quota cap (getMaxQuota with alias id for per-alias limit)
-      maxQuotaPerAlias || conn.models.Domains.getMaxQuota(domainId, alias.id),
-      // Total storage used by all aliases on this domain
-      domainStorageUsed ||
-        conn.models.Domains.getStorageUsed(
-          domainId,
-          alias.locale || i18n.config.defaultLocale,
-          true // aliasesOnly = true (this domain's aliases only, not pooled across admin's domains)
+      // Alias-specific storage_used (always fetched fresh, not cached)
+      conn.models.Aliases.findOne({ id: alias.id })
+        .select('storage_used')
+        .lean()
+        .exec()
+        .then((doc) =>
+          doc && typeof doc.storage_used === 'number' ? doc.storage_used : 0
         ),
+      // Alias-specific quota cap (getMaxQuota with alias id for per-alias limit)
+      maxQuotaPerAlias === undefined
+        ? conn.models.Domains.getMaxQuota(domainId, alias.id)
+        : maxQuotaPerAlias,
+      // Total storage used by all aliases on this domain (always fetched fresh)
+      conn.models.Domains.getStorageUsed(
+        domainId,
+        alias.locale || i18n.config.defaultLocale,
+        true // aliasesOnly = true (this domain's aliases only, not pooled across admin's domains)
+      ),
       // Domain-level quota (without alias-specific cap applied)
-      domainMaxQuota || conn.models.Domains.getMaxQuota(domainId)
+      domainMaxQuota === undefined
+        ? conn.models.Domains.getMaxQuota(domainId)
+        : domainMaxQuota
     ]);
 
-  storageUsed = _storageUsed;
   maxQuotaPerAlias = _maxQuotaPerAlias;
-  domainStorageUsed = _domainStorageUsed;
   domainMaxQuota = _domainMaxQuota;
 
   //
@@ -1331,15 +1327,13 @@ Aliases.statics.isOverQuota = async function (
       );
   }
 
-  // cache the values for 1d (only when size === 0 to avoid stale data during writes)
+  // cache quota config values for 1d (only when size === 0 to avoid stale data during writes)
   if (size === 0)
     client
       .set(
         `alias_quota_v2:${alias.id}`,
         JSON.stringify({
-          storageUsed,
           maxQuotaPerAlias,
-          domainStorageUsed,
           domainMaxQuota
         }),
         'PX',

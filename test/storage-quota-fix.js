@@ -434,66 +434,56 @@ test('display: aliases _table.pug should use storage_used_by_aliases for availab
 // Test 7: Cache interaction
 // ─────────────────────────────────────────────────────────────────────────────
 
-test('cache: should use cached alias-level values when available', (t) => {
+test('cache: should use cached quota config values when available', (t) => {
   const cached = {
-    storageUsed: 3 * 1024 * 1024 * 1024,
-    maxQuotaPerAlias: 10 * 1024 * 1024 * 1024
-  };
-
-  let storageUsed;
-  let maxQuotaPerAlias;
-
-  // Simulate cache hit
-  if (cached.storageUsed && cached.maxQuotaPerAlias) {
-    storageUsed = cached.storageUsed;
-    maxQuotaPerAlias = cached.maxQuotaPerAlias;
-  }
-
-  t.is(storageUsed, 3 * 1024 * 1024 * 1024);
-  t.is(maxQuotaPerAlias, 10 * 1024 * 1024 * 1024);
-});
-
-test('cache: should use cached domain-level values when available', (t) => {
-  const cached = {
-    storageUsed: 3 * 1024 * 1024 * 1024,
     maxQuotaPerAlias: 10 * 1024 * 1024 * 1024,
-    domainStorageUsed: 8 * 1024 * 1024 * 1024,
     domainMaxQuota: 10 * 1024 * 1024 * 1024
   };
 
-  let domainStorageUsed;
+  let maxQuotaPerAlias;
   let domainMaxQuota;
 
-  if (cached.domainStorageUsed && cached.domainMaxQuota) {
-    domainStorageUsed = cached.domainStorageUsed;
+  // Simulate cache hit (only quota config values are cached)
+  if (typeof cached.maxQuotaPerAlias === 'number')
+    maxQuotaPerAlias = cached.maxQuotaPerAlias;
+  if (typeof cached.domainMaxQuota === 'number')
     domainMaxQuota = cached.domainMaxQuota;
-  }
 
-  t.is(domainStorageUsed, 8 * 1024 * 1024 * 1024);
+  t.is(maxQuotaPerAlias, 10 * 1024 * 1024 * 1024);
   t.is(domainMaxQuota, 10 * 1024 * 1024 * 1024);
 });
 
+test('cache: storage usage values are NOT cached (always fetched fresh)', (t) => {
+  // The cache payload should only contain quota config values
+  const cachePayload = {
+    maxQuotaPerAlias: 10 * 1024 * 1024 * 1024,
+    domainMaxQuota: 10 * 1024 * 1024 * 1024
+  };
+
+  // storageUsed and domainStorageUsed should NOT be in cache
+  t.is(cachePayload.storageUsed, undefined);
+  t.is(cachePayload.domainStorageUsed, undefined);
+
+  // Only quota config values should be present
+  t.is(cachePayload.maxQuotaPerAlias, 10 * 1024 * 1024 * 1024);
+  t.is(cachePayload.domainMaxQuota, 10 * 1024 * 1024 * 1024);
+});
+
 test('cache: should fall through to DB lookup when cache misses', (t) => {
-  let storageUsed;
   let maxQuotaPerAlias;
-  let domainStorageUsed;
   let domainMaxQuota;
 
   // Simulate cache miss (no values set)
-  t.is(storageUsed, undefined);
   t.is(maxQuotaPerAlias, undefined);
-  t.is(domainStorageUsed, undefined);
   t.is(domainMaxQuota, undefined);
 
-  // The !value check would trigger DB lookup
-  t.true(!storageUsed);
-  t.true(!domainStorageUsed);
+  // The === undefined check would trigger DB lookup
+  t.true(maxQuotaPerAlias === undefined);
+  t.true(domainMaxQuota === undefined);
 });
 
-test('cache: should cache all four values for 1 day', (t) => {
-  const storageUsed = 5 * 1024 * 1024 * 1024;
+test('cache: should cache only quota config values for 1 day', (t) => {
   const maxQuotaPerAlias = 10 * 1024 * 1024 * 1024;
-  const domainStorageUsed = 8 * 1024 * 1024 * 1024;
   const domainMaxQuota = 10 * 1024 * 1024 * 1024;
   const size = 0;
 
@@ -501,17 +491,17 @@ test('cache: should cache all four values for 1 day', (t) => {
   const shouldCache = size === 0;
   t.true(shouldCache);
 
+  // Only quota config values are cached (not storageUsed or domainStorageUsed)
   const cachePayload = JSON.stringify({
-    storageUsed,
     maxQuotaPerAlias,
-    domainStorageUsed,
     domainMaxQuota
   });
   const parsed = JSON.parse(cachePayload);
-  t.is(parsed.storageUsed, storageUsed);
   t.is(parsed.maxQuotaPerAlias, maxQuotaPerAlias);
-  t.is(parsed.domainStorageUsed, domainStorageUsed);
   t.is(parsed.domainMaxQuota, domainMaxQuota);
+  // Storage usage values should NOT be in cache
+  t.is(parsed.storageUsed, undefined);
+  t.is(parsed.domainStorageUsed, undefined);
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -852,4 +842,101 @@ test('admin filter: team domain should only count valid paying admins for max qu
     ...validAdmins.map((m) => m.user.max_quota_per_alias)
   );
   t.is(maxQuota, 10 * 1024 * 1024 * 1024);
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Test 7b: Cache fix - only quota config values cached, storage always fresh
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Helper: simulate the FIXED cache deserialization logic from isOverQuota
+// Only quota config values (maxQuotaPerAlias, domainMaxQuota) are cached;
+// storage usage values are always fetched fresh from DB.
+function loadQuotaConfigFromCache(json) {
+  let maxQuotaPerAlias;
+  let domainMaxQuota;
+
+  if (typeof json.maxQuotaPerAlias === 'number')
+    maxQuotaPerAlias = json.maxQuotaPerAlias;
+
+  if (typeof json.domainMaxQuota === 'number')
+    domainMaxQuota = json.domainMaxQuota;
+
+  return { maxQuotaPerAlias, domainMaxQuota };
+}
+
+// Helper: simulate the OLD buggy cache deserialization logic
+function loadFromCacheOld(json) {
+  let storageUsed;
+  let maxQuotaPerAlias;
+
+  if (json.storageUsed && json.maxQuotaPerAlias) {
+    storageUsed = json.storageUsed;
+    maxQuotaPerAlias = json.maxQuotaPerAlias;
+  }
+
+  return { storageUsed, maxQuotaPerAlias };
+}
+
+test('cache fix: should load cached quota config values via typeof check', (t) => {
+  const cached = {
+    maxQuotaPerAlias: 10 * 1024 * 1024 * 1024,
+    domainMaxQuota: 10 * 1024 * 1024 * 1024
+  };
+  const result = loadQuotaConfigFromCache(cached);
+  t.is(result.maxQuotaPerAlias, 10 * 1024 * 1024 * 1024);
+  t.is(result.domainMaxQuota, 10 * 1024 * 1024 * 1024);
+});
+
+test('cache fix: OLD BUG - storageUsed=0 caused maxQuotaPerAlias to be ignored', (t) => {
+  // Old code coupled storageUsed and maxQuotaPerAlias in a single truthiness check
+  const cached = {
+    storageUsed: 0,
+    maxQuotaPerAlias: 10 * 1024 * 1024 * 1024
+  };
+  const result = loadFromCacheOld(cached);
+  // Bug: 0 is falsy, so maxQuotaPerAlias is also discarded
+  t.is(result.storageUsed, undefined);
+  t.is(result.maxQuotaPerAlias, undefined);
+});
+
+test('cache fix: storage usage is never cached, always fetched fresh', (t) => {
+  // The cache payload should only contain quota config values
+  const cachePayload = {
+    maxQuotaPerAlias: 10 * 1024 * 1024 * 1024,
+    domainMaxQuota: 10 * 1024 * 1024 * 1024
+  };
+  // storageUsed and domainStorageUsed are intentionally absent
+  t.is(cachePayload.storageUsed, undefined);
+  t.is(cachePayload.domainStorageUsed, undefined);
+  t.is(cachePayload.maxQuotaPerAlias, 10 * 1024 * 1024 * 1024);
+  t.is(cachePayload.domainMaxQuota, 10 * 1024 * 1024 * 1024);
+});
+
+test('cache fix: should not load maxQuotaPerAlias when missing from cache', (t) => {
+  const cached = {};
+  const result = loadQuotaConfigFromCache(cached);
+  t.is(result.maxQuotaPerAlias, undefined);
+  t.is(result.domainMaxQuota, undefined);
+});
+
+test('cache fix: fallback should use undefined check not truthiness for maxQuotaPerAlias', (t) => {
+  // Simulate: maxQuotaPerAlias was loaded from cache as a valid number
+  // The fallback should NOT call getMaxQuota since the value is defined
+  const maxQuotaPerAlias = 1073741824; // 1 GB from cache
+  // Old code: maxQuotaPerAlias || getMaxQuota() -> truthy, skip fetch (correct for non-zero)
+  // New code: maxQuotaPerAlias === undefined ? getMaxQuota() : maxQuotaPerAlias -> defined, skip fetch
+  const resultOld = maxQuotaPerAlias || 'FETCHED';
+  const resultNew =
+    maxQuotaPerAlias === undefined ? 'FETCHED' : maxQuotaPerAlias;
+  t.is(resultOld, 1073741824);
+  t.is(resultNew, 1073741824);
+
+  // Now simulate: maxQuotaPerAlias is 0 (edge case, should not happen but tests robustness)
+  const zeroQuota = 0;
+  const resultOldZero = zeroQuota || 'FETCHED';
+  const resultNewZero = zeroQuota === undefined ? 'FETCHED' : zeroQuota;
+  // Old code would incorrectly fetch because 0 is falsy
+  t.is(resultOldZero, 'FETCHED');
+  // New code correctly uses the cached value
+  t.is(resultNewZero, 0);
 });
