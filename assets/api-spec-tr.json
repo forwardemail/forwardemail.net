@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Yeni alan adı oluşturun",
-        "description": "Belirli bir alan adı için yeni bir takma ad oluşturun.",
+        "description": "Belirli bir alan adı için yeni bir takma ad oluşturun. Not: Bu uç nokta, `password` veya `new_password` alanlarını kabul etmez. Takma ad kimlik bilgilerini ayarlamak veya değiştirmek için “POST /v1/domains/:domain_id/aliases/:alias_id/generate-password” uç noktasını kullanın.",
         "tags": [
           "Takma adlar"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Alan adı takma adını güncelle",
-        "description": "Belirli bir alan adı için belirli bir takma adı güncelleyin.",
+        "description": "Belirli bir alan adı için belirli bir takma adı güncelleyin. Not: Bu uç nokta, `password` veya `new_password` alanlarını kabul etmez. Takma ad kimlik bilgilerini ayarlamak veya değiştirmek için “POST /v1/domains/:domain_id/aliases/:alias_id/generate-password” uç noktasını kullanın.",
         "tags": [
           "Takma adlar"
         ],

@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Buat alias domain baru",
-        "description": "Buat alias baru untuk domain tertentu.",
+        "description": "Buat alias baru untuk domain tertentu. Catatan: endpoint ini tidak menerima bidang `password` atau `new_password`. Untuk mengatur atau mengubah kredensial alias, gunakan endpoint \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "Alias"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Perbarui alias domain",
-        "description": "Perbarui alias spesifik untuk domain.",
+        "description": "Perbarui alias spesifik untuk domain. Catatan: endpoint ini tidak menerima bidang `password` atau `new_password`. Untuk mengatur atau mengubah kredensial alias, gunakan endpoint \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "Alias"
         ],

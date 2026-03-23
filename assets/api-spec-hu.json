@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Új domain alias létrehozása",
-        "description": "Hozzon létre egy új aliast egy adott domainhez.",
+        "description": "Hozzon létre egy új aliast egy adott domainhez. Megjegyzés: ez a végpont nem fogadja el `password` vagy `new_password` mezőket. Az alias hitelesítő adatainak beállításához vagy módosításához használja a \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\" végpont.",
         "tags": [
           "Álnevek"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Domainalias frissítése",
-        "description": "Egy adott domain aliasának frissítése.",
+        "description": "Egy adott domain aliasának frissítése. Megjegyzés: ez a végpont nem fogadja el `password` vagy `new_password` mezőket. Az alias hitelesítő adatainak beállításához vagy módosításához használja a \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\" végpont.",
         "tags": [
           "Álnevek"
         ],

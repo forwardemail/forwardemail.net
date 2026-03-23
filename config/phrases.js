@@ -238,6 +238,8 @@ module.exports = {
     'You must enter the current password for the alias or check the checkbox to override and delete the mailbox.',
   ALIAS_NO_GENERATED_PASSWORD:
     'Alias does not yet have a generated password yet.',
+  ALIAS_PASSWORD_FIELD_NOT_ALLOWED:
+    'Password cannot be set via this endpoint. Use the "POST /v1/domains/:domain_id/aliases/:alias_id/generate-password" endpoint to set or change your alias password.',
   ALIAS_RATE_LIMITED:
     'You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us.',
   ALIAS_BACKUP_LINK:

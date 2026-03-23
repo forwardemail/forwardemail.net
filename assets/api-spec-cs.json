@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Vytvořit nový alias domény",
-        "description": "Vytvořte nový alias pro konkrétní doménu.",
+        "description": "Vytvořte nový alias pro konkrétní doménu. Poznámka: tento koncový bod nepřijímá pole `password` ani `new_password`. Chcete-li nastavit nebo změnit přihlašovací údaje aliasu, použijte koncový bod „POST /v1/domains/:domain_id/aliases/:alias_id/generate-password“.",
         "tags": [
           "Aliasy"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Aktualizovat alias domény",
-        "description": "Aktualizujte konkrétní alias pro doménu.",
+        "description": "Aktualizujte konkrétní alias pro doménu. Poznámka: tento koncový bod nepřijímá pole `password` ani `new_password`. Chcete-li nastavit nebo změnit přihlašovací údaje aliasu, použijte koncový bod „POST /v1/domains/:domain_id/aliases/:alias_id/generate-password“.",
         "tags": [
           "Aliasy"
         ],

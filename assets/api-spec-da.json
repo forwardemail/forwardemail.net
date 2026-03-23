@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Opret nyt domænealias",
-        "description": "Opret et nyt alias for et specifikt domæne.",
+        "description": "Opret et nyt alias for et specifikt domæne. Bemærk: dette slutpunkt accepterer ikke felterne `password` eller `new_password`. For at indstille eller ændre alias legitimationsoplysninger, skal du bruge \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\" slutpunktet.",
         "tags": [
           "Aliaser"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Opdater domænealias",
-        "description": "Opdater et specifikt alias for et domæne.",
+        "description": "Opdater et specifikt alias for et domæne. Bemærk: dette slutpunkt accepterer ikke felterne `password` eller `new_password`. For at indstille eller ændre alias legitimationsoplysninger, skal du bruge \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\" slutpunktet.",
         "tags": [
           "Aliaser"
         ],

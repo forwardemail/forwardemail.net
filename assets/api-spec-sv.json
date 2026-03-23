@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Skapa nytt domänalias",
-        "description": "Skapa ett nytt alias för en specifik domän.",
+        "description": "Skapa ett nytt alias för en specifik domän. Obs! Denna slutpunkt accepterar inte fälten `password` eller `new_password`. För att ange eller ändra inloggningsuppgifter för ett alias använder du slutpunkten ”POST /v1/domains/:domain_id/aliases/:alias_id/generate-password”.",
         "tags": [
           "Alias"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Uppdatera domänalias",
-        "description": "Uppdatera ett specifikt alias för en domän.",
+        "description": "Uppdatera ett specifikt alias för en domän. Obs! Denna slutpunkt accepterar inte fälten `password` eller `new_password`. För att ange eller ändra inloggningsuppgifter för ett alias använder du slutpunkten ”POST /v1/domains/:domain_id/aliases/:alias_id/generate-password”.",
         "tags": [
           "Alias"
         ],

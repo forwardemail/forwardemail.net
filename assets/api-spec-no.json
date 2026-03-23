@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Opprett nytt domenealias",
-        "description": "Opprett et nytt alias for et bestemt domene.",
+        "description": "Opprett et nytt alias for et bestemt domene. Merk: Dette endepunktet godtar ikke feltene `password` eller `new_password`. For å angi eller endre påloggingsopplysninger for alias, bruk endepunktet «POST /v1/domains/:domain_id/aliases/:alias_id/generate-password».",
         "tags": [
           "Aliaser"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Oppdater domenealias",
-        "description": "Oppdater et spesifikt alias for et domene.",
+        "description": "Oppdater et spesifikt alias for et domene. Merk: Dette endepunktet godtar ikke feltene `password` eller `new_password`. For å angi eller endre påloggingsopplysninger for alias, bruk endepunktet «POST /v1/domains/:domain_id/aliases/:alias_id/generate-password».",
         "tags": [
           "Aliaser"
         ],

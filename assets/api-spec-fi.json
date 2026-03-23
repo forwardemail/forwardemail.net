@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Luo uusi verkkotunnusalias",
-        "description": "Luo uusi alias tietylle verkkotunnukselle.",
+        "description": "Luo uusi alias tietylle verkkotunnukselle. Huomautus: tämä päätepiste ei hyväksy `password`- tai `new_password`-kenttiä. Jos haluat asettaa tai muuttaa aliaksen valtuustietoja, käytä \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\" -päätepistettä.",
         "tags": [
           "Aliakset"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Päivitä verkkotunnuksen alias",
-        "description": "Päivitä tietty verkkotunnuksen alias.",
+        "description": "Päivitä tietty verkkotunnuksen alias. Huomautus: tämä päätepiste ei hyväksy `password`- tai `new_password`-kenttiä. Jos haluat asettaa tai muuttaa aliaksen valtuustietoja, käytä \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\" -päätepistettä.",
         "tags": [
           "Aliakset"
         ],

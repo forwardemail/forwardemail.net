@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Neuen Domänenalias erstellen",
-        "description": "Erstellen Sie einen neuen Alias für eine bestimmte Domäne.",
+        "description": "Erstellen Sie einen neuen Alias für eine bestimmte Domäne. Hinweis: Dieser Endpunkt akzeptiert keine `password` oder `new_password` Felder. Um Alias-Anmeldeinformationen festzulegen oder zu ändern, verwenden Sie den Endpunkt \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "Aliase"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Domänenalias aktualisieren",
-        "description": "Einen spezifischen Alias für eine Domäne aktualisieren.",
+        "description": "Einen spezifischen Alias für eine Domäne aktualisieren. Hinweis: Dieser Endpunkt akzeptiert keine `password` oder `new_password` Felder. Um Alias-Anmeldeinformationen festzulegen oder zu ändern, verwenden Sie den Endpunkt \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "Aliase"
         ],

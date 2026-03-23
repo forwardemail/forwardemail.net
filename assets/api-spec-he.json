@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "צור כינוי דומיין חדש",
-        "description": "צור כינוי חדש עבור דומיין ספציפי.",
+        "description": "צור כינוי חדש עבור דומיין ספציפי. הערה: נקודת קצה זו אינה מקבלת שדות `password` או `new_password`. כדי להגדיר או לשנות אישורי כינוי, השתמש בנקודת הקצה \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "כינויים"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "עדכון כינוי דומיין",
-        "description": "עדכון כינוי ספציפי עבור דומיין.",
+        "description": "עדכון כינוי ספציפי עבור דומיין. הערה: נקודת קצה זו אינה מקבלת שדות `password` או `new_password`. כדי להגדיר או לשנות אישורי כינוי, השתמש בנקודת הקצה \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "כינויים"
         ],

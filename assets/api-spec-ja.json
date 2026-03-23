@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "新しいドメインエイリアスを作成する",
-        "description": "特定のドメインの新しいエイリアスを作成します。",
+        "description": "特定のドメインの新しいエイリアスを作成します。 注：このエンドポイントは `password` または `new_password` フィールドを受け入れません。エイリアス資格情報を設定または変更するには、「POST /v1/domains/:domain_id/aliases/:alias_id/generate-password」エンドポイントを使用します。",
         "tags": [
           "エイリアス"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "ドメインエイリアスの更新",
-        "description": "ドメインの特定のエイリアスを更新します。",
+        "description": "ドメインの特定のエイリアスを更新します。 注：このエンドポイントは `password` または `new_password` フィールドを受け入れません。エイリアス資格情報を設定または変更するには、「POST /v1/domains/:domain_id/aliases/:alias_id/generate-password」エンドポイントを使用します。",
         "tags": [
           "エイリアス"
         ],

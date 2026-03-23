@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Tạo bí danh tên miền mới",
-        "description": "Tạo bí danh mới cho một tên miền cụ thể.",
+        "description": "Tạo bí danh mới cho một tên miền cụ thể. Lưu ý: điểm cuối này không chấp nhận các trường `password` hoặc `new_password`. Để thiết lập hoặc thay đổi thông tin đăng nhập của bí danh, hãy sử dụng điểm cuối \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "Bí danh"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Cập nhật bí danh tên miền",
-        "description": "Cập nhật bí danh cụ thể cho một miền.",
+        "description": "Cập nhật bí danh cụ thể cho một miền. Lưu ý: điểm cuối này không chấp nhận các trường `password` hoặc `new_password`. Để thiết lập hoặc thay đổi thông tin đăng nhập của bí danh, hãy sử dụng điểm cuối \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "Bí danh"
         ],

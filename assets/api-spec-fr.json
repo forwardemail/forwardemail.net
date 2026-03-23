@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Créer un nouvel alias de domaine",
-        "description": "Créez un nouvel alias pour un domaine spécifique.",
+        "description": "Créez un nouvel alias pour un domaine spécifique. Note : ce point de terminaison n’accepte pas les champs `password` ou `new_password`. Pour définir ou modifier les identifiants d’alias, utilisez le point de terminaison \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "Alias"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Mettre à jour l'alias du domaine",
-        "description": "Mettre à jour un alias spécifique pour un domaine.",
+        "description": "Mettre à jour un alias spécifique pour un domaine. Note : ce point de terminaison n’accepte pas les champs `password` ou `new_password`. Pour définir ou modifier les identifiants d’alias, utilisez le point de terminaison \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "Alias"
         ],

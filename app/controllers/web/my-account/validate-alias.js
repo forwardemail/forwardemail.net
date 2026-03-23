@@ -45,6 +45,18 @@ function validateAlias(ctx, next) {
   ]);
 
   //
+  // reject requests that include `password` or `new_password` fields
+  // (credentials must be managed via the generate-password endpoint)
+  //
+  if (
+    isSANB(ctx.request.body.password) ||
+    isSANB(ctx.request.body.new_password)
+  )
+    throw Boom.badRequest(
+      ctx.translateError('ALIAS_PASSWORD_FIELD_NOT_ALLOWED')
+    );
+
+  //
   // NOTE: if body includes `max_quota` and user was not an admin of the domain
   //       then throw a permission/forbidden error (either through API or web form manipulation)
   //

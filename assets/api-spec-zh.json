@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "创建新的域名别名",
-        "description": "为特定域名创建新别名。",
+        "description": "为特定域名创建新别名。 注意：此端点不接受`password`或`new_password`字段。要设置或更改别名凭据，请使用“POST /v1/domains/:domain_id/aliases/:alias_id/generate-password”端点。",
         "tags": [
           "别名"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "更新域名别名",
-        "description": "更新域名的特定别名。",
+        "description": "更新域名的特定别名。 注意：此端点不接受`password`或`new_password`字段。要设置或更改别名凭据，请使用“POST /v1/domains/:domain_id/aliases/:alias_id/generate-password”端点。",
         "tags": [
           "别名"
         ],

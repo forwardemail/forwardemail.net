@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "Criar novo alias de domínio",
-        "description": "Crie um novo alias para um domínio específico.",
+        "description": "Crie um novo alias para um domínio específico. Nota: este endpoint não aceita os campos `password` ou `new_password`. Para definir ou alterar as credenciais do alias, use o endpoint \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "Aliases"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "Atualizar alias de domínio",
-        "description": "Atualizar um alias específico para um domínio.",
+        "description": "Atualizar um alias específico para um domínio. Nota: este endpoint não aceita os campos `password` ou `new_password`. Para definir ou alterar as credenciais do alias, use o endpoint \"POST /v1/domains/:domain_id/aliases/:alias_id/generate-password\".",
         "tags": [
           "Aliases"
         ],

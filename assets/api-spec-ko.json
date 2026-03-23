@@ -6197,7 +6197,7 @@
       },
       "post": {
         "summary": "새 도메인 별칭 만들기",
-        "description": "특정 도메인에 대한 새로운 별칭을 만듭니다.",
+        "description": "특정 도메인에 대한 새로운 별칭을 만듭니다. 참고: 이 엔드포인트는 `password` 또는 `new_password` 필드를 허용하지 않습니다. 별칭 자격 증명을 설정하거나 변경하려면 “POST /v1/domains/:domain_id/aliases/:alias_id/generate-password” 엔드포인트를 사용하십시오.",
         "tags": [
           "별칭"
         ],
@@ -6288,7 +6288,7 @@
       },
       "put": {
         "summary": "도메인 별칭 업데이트",
-        "description": "도메인의 특정 별칭을 업데이트합니다.",
+        "description": "도메인의 특정 별칭을 업데이트합니다. 참고: 이 엔드포인트는 `password` 또는 `new_password` 필드를 허용하지 않습니다. 별칭 자격 증명을 설정하거나 변경하려면 “POST /v1/domains/:domain_id/aliases/:alias_id/generate-password” 엔드포인트를 사용하십시오.",
         "tags": [
           "별칭"
         ],
