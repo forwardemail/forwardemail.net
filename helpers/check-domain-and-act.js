@@ -59,7 +59,7 @@ const BANNABLE_CATEGORIES = new Set([
 // Categories that are reported in the digest but do NOT trigger a ban.
 // Admins can review these manually.
 //
-const REVIEW_CATEGORIES = new Set(['tiktok_tool', 'streaming']);
+const REVIEW_CATEGORIES = new Set(['tiktok_tool', 'streaming', 'dns_error']);
 
 /**
  * Determine why a user should be excluded from banning.

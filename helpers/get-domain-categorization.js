@@ -6,7 +6,7 @@
 //
 // Reusable helper that categorises a domain by:
 //
-//   1. Resolving it through Cloudflare Family DNS (1.1.1.3 / 1.1.0.3)
+//   1. Resolving it through Cloudflare Family DNS (1.1.1.3 / 1.0.0.3)
 //      to detect adult-content or malware blocks (returns 0.0.0.0).
 //   2. Fetching the domain over HTTPS (falling back to HTTP) with undici
 //      and analysing the HTML content for category-specific keywords.
@@ -442,12 +442,14 @@ const DOMAIN_NAME_PATTERNS = {
 async function checkCloudflareFamilyDNS(name, familyResolver) {
   try {
     const answer = await familyResolver.resolve(name);
-    if (
-      answer &&
-      Array.isArray(answer) &&
-      answer.length === 1 &&
-      answer[0] === '0.0.0.0'
-    ) {
+
+    //
+    // Cloudflare Family DNS returns 0.0.0.0 for blocked domains.
+    // Use `answer.some()` instead of strict length === 1 check so
+    // that blocks are detected even when multiple records are
+    // returned (e.g. 0.0.0.0 alongside an IPv6 or CNAME result).
+    //
+    if (answer && Array.isArray(answer) && answer.includes('0.0.0.0')) {
       return { dnsCategory: 'blocked_by_cloudflare_family', aRecords: answer };
     }
 
@@ -463,8 +465,16 @@ async function checkCloudflareFamilyDNS(name, familyResolver) {
     }
 
     return { dnsCategory: false, aRecords: [] };
-  } catch {
-    return { dnsCategory: false, aRecords: [] };
+  } catch (err) {
+    //
+    // Track DNS errors separately so they appear in the digest
+    // instead of silently treating unreachable domains as clean.
+    //
+    return {
+      dnsCategory: 'dns_error',
+      aRecords: [],
+      dnsError: err.code || err.message || 'UNKNOWN_DNS_ERROR'
+    };
   }
 }
 
@@ -726,6 +736,11 @@ async function getDomainCategorization(domain, opts = {}) {
   if (dnsResult.dnsCategory) {
     result.blocked = dnsResult.dnsCategory === 'blocked_by_cloudflare_family';
     result.categories.push(dnsResult.dnsCategory);
+  }
+
+  // Propagate DNS error details so the digest can report them
+  if (dnsResult.dnsError) {
+    result.dnsError = dnsResult.dnsError;
   }
 
   // Reuse hasLegitimateHosting from check-domain-reputation.js

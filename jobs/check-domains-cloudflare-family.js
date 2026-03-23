@@ -9,7 +9,7 @@
 // comprehensive categorisation on each domain via the reusable
 // `get-domain-categorization` helper:
 //
-//   1. Cloudflare Family DNS (1.1.1.3 / 1.1.0.3) – detects adult
+//   1. Cloudflare Family DNS (1.1.1.3 / 1.0.0.3) – detects adult
 //      content and malware (resolver returns 0.0.0.0).
 //   2. Domain-name pattern matching – URL shortener naming, phishing
 //      look-alikes, disposable-email patterns, etc.
@@ -37,9 +37,9 @@
 //
 //   Usage:  DRY_RUN=true node jobs/check-domains-cloudflare-family.js
 //
-// At the end of the run an HTML digest email is sent to
-// security@forwardemail.net summarising all actions taken (or that
-// would have been taken in dry-run mode).
+// At the end of the run a summary HTML digest email is sent to
+// security@forwardemail.net with full results attached as a
+// gzip-compressed CSV file (one row per flagged domain).
 //
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -48,6 +48,8 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
+const zlib = require('node:zlib');
+const { Buffer } = require('node:buffer');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -91,8 +93,11 @@ graceful.listen();
 // content or malware.  Uses `createTangerine` (the standard codebase
 // helper) with a custom `servers` option.
 //
+// NOTE: The correct Cloudflare Family DNS IPs are 1.1.1.3 and 1.0.0.3
+// (not 1.1.0.3 which is undocumented and may not apply family filtering).
+//
 const familyResolver = createTangerine(client, logger, {
-  servers: new Set(['1.1.1.3', '1.1.0.3'])
+  servers: new Set(['1.1.1.3', '1.0.0.3'])
 });
 
 // store boolean if the job is cancelled
@@ -132,17 +137,148 @@ async function processDomain(domainDoc, ctx) {
 }
 
 /**
- * Build an HTML digest email summarising all banned users / domains,
- * skipped (protected) users, and domains flagged for manual review.
+ * Escape a value for safe inclusion in a CSV cell.
+ * Wraps in double-quotes and escapes internal double-quotes.
+ *
+ * @param   {*}       val
+ * @returns {string}
+ */
+function csvEscape(val) {
+  if (val === null || val === undefined) return '';
+  const str = String(val);
+  // Always quote to handle commas, newlines, and quotes in values
+  return `"${str.replace(/"/g, '""')}"`;
+}
+
+/**
+ * Build a CSV string containing ALL flagged domains (banned, skipped,
+ * and review) with one row per entry.  This replaces the giant inline
+ * HTML tables that could exceed email size limits.
  *
  * @param   {object}  opts
- * @param   {Array}   opts.bannedResults   Domains that triggered bans
- * @param   {Array}   opts.skippedResults  Protected users that were skipped
- * @param   {Array}   opts.reviewResults   Domains flagged for review
- * @param   {number}  opts.totalChecked    Total domains checked
- * @param   {number}  opts.durationMs      Job duration in ms
- * @param   {boolean} opts.dryRun          Whether this is a dry run
- * @returns {string} HTML string
+ * @param   {Array}   opts.bannedResults
+ * @param   {Array}   opts.skippedResults
+ * @param   {Array}   opts.reviewResults
+ * @param   {boolean} opts.dryRun
+ * @returns {string}  CSV content
+ */
+function buildDigestCsv(opts) {
+  const { bannedResults, skippedResults, reviewResults, dryRun } = opts;
+
+  const headers = [
+    'Section',
+    'Domain',
+    'All Categories',
+    'Actionable Categories',
+    'Title',
+    'HTTP Status',
+    'Content Length (bytes)',
+    'Is Parked',
+    'Legit Hosting',
+    'User Email',
+    'User Group',
+    'KYC Passed',
+    'Account Age (days)',
+    'Exclusion Reasons',
+    'Alias Count',
+    'Dry Run'
+  ];
+
+  const rows = [headers.join(',')];
+
+  const dryRunVal = dryRun ? 'Yes' : 'No';
+
+  // Banned domains – one row per banned user
+  for (const row of bannedResults) {
+    for (const user of row.users) {
+      rows.push(
+        [
+          csvEscape('Banned'),
+          csvEscape(row.domain),
+          csvEscape(row.categories.join('; ')),
+          csvEscape(row.bannableCategories.join('; ')),
+          csvEscape(row.title || ''),
+          csvEscape(row.statusCode === null ? '' : row.statusCode),
+          csvEscape(row.contentLength),
+          csvEscape(row.isParked ? 'Yes' : 'No'),
+          csvEscape(row.hasLegitimateHosting ? 'Yes' : 'No'),
+          csvEscape(user.email),
+          csvEscape(''),
+          csvEscape(''),
+          csvEscape(''),
+          csvEscape(''),
+          csvEscape(row.aliasCount),
+          csvEscape(dryRunVal)
+        ].join(',')
+      );
+    }
+  }
+
+  // Skipped / protected users – one row per skipped user
+  for (const row of skippedResults) {
+    rows.push(
+      [
+        csvEscape('Skipped (Protected)'),
+        csvEscape(row.domain),
+        csvEscape(row.categories.join('; ')),
+        csvEscape(row.bannableCategories.join('; ')),
+        csvEscape(row.title || ''),
+        csvEscape(''),
+        csvEscape(''),
+        csvEscape(''),
+        csvEscape(''),
+        csvEscape(row.user.email),
+        csvEscape(row.user.group),
+        csvEscape(row.user.hasPassedKyc ? 'Yes' : 'No'),
+        csvEscape(
+          row.user.accountAgeDays === null ? '' : row.user.accountAgeDays
+        ),
+        csvEscape(row.exclusionReasons.join('; ')),
+        csvEscape(row.aliasCount),
+        csvEscape(dryRunVal)
+      ].join(',')
+    );
+  }
+
+  // Review domains – one row per domain
+  for (const row of reviewResults) {
+    rows.push(
+      [
+        csvEscape('Review'),
+        csvEscape(row.domain),
+        csvEscape(row.categories.join('; ')),
+        csvEscape(row.reviewCategories.join('; ')),
+        csvEscape(row.title || ''),
+        csvEscape(row.statusCode === null ? '' : row.statusCode),
+        csvEscape(row.contentLength),
+        csvEscape(row.isParked ? 'Yes' : 'No'),
+        csvEscape(row.hasLegitimateHosting ? 'Yes' : 'No'),
+        csvEscape(''),
+        csvEscape(''),
+        csvEscape(''),
+        csvEscape(''),
+        csvEscape(''),
+        csvEscape(row.aliasCount),
+        csvEscape(dryRunVal)
+      ].join(',')
+    );
+  }
+
+  return rows.join('\n');
+}
+
+/**
+ * Build a concise HTML summary for the email body.
+ * Detailed per-domain data is in the attached CSV.
+ *
+ * @param   {object}  opts
+ * @param   {Array}   opts.bannedResults
+ * @param   {Array}   opts.skippedResults
+ * @param   {Array}   opts.reviewResults
+ * @param   {number}  opts.totalChecked
+ * @param   {number}  opts.durationMs
+ * @param   {boolean} opts.dryRun
+ * @returns {string}  HTML string
  */
 function buildDigestHtml(opts) {
   const {
@@ -272,184 +408,15 @@ function buildDigestHtml(opts) {
   }
 
   //
-  // Banned domains table
+  // Note about CSV attachment (replaces the giant inline tables)
   //
-  if (bannedResults.length > 0) {
-    html += `
-      <h3>${dryRun ? 'Domains That Would Be Banned' : 'Banned Domains'}</h3>
-      <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
-        <tr style="background: #f0f0f0;">
-          <th style="padding: 10px; text-align: left;">Domain</th>
-          <th style="padding: 10px; text-align: left;">Categories</th>
-          <th style="padding: 10px; text-align: left;">${
-            dryRun ? 'Would Ban' : 'Banned'
-          } Categories</th>
-          <th style="padding: 10px; text-align: left;">Title</th>
-          <th style="padding: 10px; text-align: left;">HTTP</th>
-          <th style="padding: 10px; text-align: left;">Parked</th>
-          <th style="padding: 10px; text-align: left;">Legit Hosting</th>
-          <th style="padding: 10px; text-align: left;">${
-            dryRun ? 'Users That Would Be Banned' : 'Banned Users'
-          }</th>
-          <th style="padding: 10px; text-align: left;">Aliases</th>
-        </tr>
-    `;
-
-    for (const row of bannedResults) {
-      const userLinks = row.users
-        .map((u) => {
-          const adminUrl = `${
-            config.urls.web
-          }/admin/users?q=${encodeURIComponent(u.email)}`;
-          return `<a href="${adminUrl}">${u.email}</a>`;
-        })
-        .join(', ');
-
-      html += `
-        <tr>
-          <td style="padding: 10px;"><strong>${row.domain}</strong></td>
-          <td style="padding: 10px;">${row.categories.join(', ')}</td>
-          <td style="padding: 10px; color: red;">${row.bannableCategories.join(
-            ', '
-          )}</td>
-          <td style="padding: 10px;">${row.title || '<em>N/A</em>'}</td>
-          <td style="padding: 10px;">${
-            row.statusCode === null ? 'N/A' : row.statusCode
-          } (${
-        row.contentLength === null
-          ? 'N/A'
-          : `${(row.contentLength / 1024).toFixed(1)}KB`
-      })</td>
-          <td style="padding: 10px;">${row.isParked ? 'Yes' : 'No'}</td>
-          <td style="padding: 10px;">${
-            row.hasLegitimateHosting ? 'Yes' : 'No'
-          }</td>
-          <td style="padding: 10px;">${userLinks}</td>
-          <td style="padding: 10px;">${row.aliasCount}</td>
-        </tr>
-      `;
-    }
-
-    html += '</table>';
-  }
-
-  //
-  // Skipped / protected users table
-  //
-  if (skippedResults.length > 0) {
-    html += `
-      <h3>Skipped / Protected Users</h3>
-      <p style="color: #e65100;">
-        These users are associated with domains that matched bannable
-        categories but were <strong>not banned</strong> because they meet
-        one or more exclusion criteria.
-      </p>
-      <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
-        <tr style="background: #f0f0f0;">
-          <th style="padding: 10px; text-align: left;">Domain</th>
-          <th style="padding: 10px; text-align: left;">Categories</th>
-          <th style="padding: 10px; text-align: left;">User</th>
-          <th style="padding: 10px; text-align: left;">Group</th>
-          <th style="padding: 10px; text-align: left;">KYC</th>
-          <th style="padding: 10px; text-align: left;">Account Age</th>
-          <th style="padding: 10px; text-align: left;">Exclusion Reasons</th>
-          <th style="padding: 10px; text-align: left;">Aliases</th>
-        </tr>
-    `;
-
-    for (const row of skippedResults) {
-      const userAdminUrl = `${
-        config.urls.web
-      }/admin/users?q=${encodeURIComponent(row.user.email)}`;
-      const domainAdminUrl = `${
-        config.urls.web
-      }/admin/domains?name=${encodeURIComponent(row.domain)}`;
-      const accountAgeDays =
-        row.user.accountAgeDays === null
-          ? 'N/A'
-          : `${row.user.accountAgeDays}d`;
-
-      html += `
-        <tr style="background: #fff8e1;">
-          <td style="padding: 10px;"><a href="${domainAdminUrl}">${
-        row.domain
-      }</a></td>
-          <td style="padding: 10px;">${row.categories.join(', ')}</td>
-          <td style="padding: 10px;"><a href="${userAdminUrl}">${
-        row.user.email
-      }</a></td>
-          <td style="padding: 10px;">${row.user.group}</td>
-          <td style="padding: 10px;">${
-            row.user.hasPassedKyc ? 'Yes' : 'No'
-          }</td>
-          <td style="padding: 10px;">${accountAgeDays}</td>
-          <td style="padding: 10px;">${row.exclusionReasons.join('; ')}</td>
-          <td style="padding: 10px;">${row.aliasCount}</td>
-        </tr>
-      `;
-    }
-
-    html += '</table>';
-  }
-
-  //
-  // Review domains table
-  //
-  if (reviewResults.length > 0) {
-    html += `
-      <h3>Domains for Manual Review</h3>
-      <p>
-        These domains matched non-bannable categories and require manual
-        review by an admin.
-      </p>
-      <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
-        <tr style="background: #f0f0f0;">
-          <th style="padding: 10px; text-align: left;">Domain</th>
-          <th style="padding: 10px; text-align: left;">Categories</th>
-          <th style="padding: 10px; text-align: left;">Review Categories</th>
-          <th style="padding: 10px; text-align: left;">Title</th>
-          <th style="padding: 10px; text-align: left;">HTTP</th>
-          <th style="padding: 10px; text-align: left;">Parked</th>
-          <th style="padding: 10px; text-align: left;">Legit Hosting</th>
-          <th style="padding: 10px; text-align: left;">Members</th>
-          <th style="padding: 10px; text-align: left;">Aliases</th>
-        </tr>
-    `;
-
-    for (const row of reviewResults) {
-      const domainAdminUrl = `${
-        config.urls.web
-      }/admin/domains?name=${encodeURIComponent(row.domain)}`;
-
-      html += `
-        <tr>
-          <td style="padding: 10px;"><a href="${domainAdminUrl}">${
-        row.domain
-      }</a></td>
-          <td style="padding: 10px;">${row.categories.join(', ')}</td>
-          <td style="padding: 10px; color: #e65100;">${row.reviewCategories.join(
-            ', '
-          )}</td>
-          <td style="padding: 10px;">${row.title || '<em>N/A</em>'}</td>
-          <td style="padding: 10px;">${
-            row.statusCode === null ? 'N/A' : row.statusCode
-          } (${
-        row.contentLength === null
-          ? 'N/A'
-          : `${(row.contentLength / 1024).toFixed(1)}KB`
-      })</td>
-          <td style="padding: 10px;">${row.isParked ? 'Yes' : 'No'}</td>
-          <td style="padding: 10px;">${
-            row.hasLegitimateHosting ? 'Yes' : 'No'
-          }</td>
-          <td style="padding: 10px;">${row.memberCount}</td>
-          <td style="padding: 10px;">${row.aliasCount}</td>
-        </tr>
-      `;
-    }
-
-    html += '</table>';
-  }
+  html += `
+    <p style="margin-top: 20px;">
+      <strong>Full details are attached as a gzip-compressed CSV file.</strong>
+      The CSV contains one row per flagged domain/user with all categories,
+      HTTP metadata, user details, and exclusion reasons.
+    </p>
+  `;
 
   //
   // Footer
@@ -512,11 +479,13 @@ function buildDigestHtml(opts) {
     }
 
     //
-    // Process domains in parallel with concurrency control.
-    // Concurrency can be tuned via the CONCURRENCY env var;
-    // defaults to 100 (same as check-bad-domains.js).
+    // Process ALL domains in parallel batches.  Concurrency controls
+    // how many domains are checked simultaneously; defaults to 100.
+    // Every domain in the cursor is checked – this only controls how
+    // many run at the same time to avoid overwhelming DNS/HTTP.
+    // Override with the CONCURRENCY env var if needed.
     //
-    const CONCURRENCY = Number.parseInt(process.env.CONCURRENCY, 10) || 1000;
+    const CONCURRENCY = Number.parseInt(process.env.CONCURRENCY, 10) || 100;
 
     const ctx = {
       bannedResults: [],
@@ -584,12 +553,27 @@ function buildDigestHtml(opts) {
       ctx.skippedResults.length > 0 ||
       ctx.reviewResults.length > 0
     ) {
+      //
+      // Build a concise HTML summary for the email body
+      //
       const digestHtml = buildDigestHtml({
         bannedResults: ctx.bannedResults,
         skippedResults: ctx.skippedResults,
         reviewResults: ctx.reviewResults,
         totalChecked: ids.length,
         durationMs: totalDuration,
+        dryRun
+      });
+
+      //
+      // Build a comprehensive CSV with ALL flagged domains and
+      // attach it as a gzip-compressed file (same pattern as
+      // bounce-report.js) to avoid email size limit issues.
+      //
+      const csv = buildDigestCsv({
+        bannedResults: ctx.bannedResults,
+        skippedResults: ctx.skippedResults,
+        reviewResults: ctx.reviewResults,
         dryRun
       });
 
@@ -600,12 +584,21 @@ function buildDigestHtml(opts) {
 
       const subjectPrefix = dryRun ? '[DRY RUN] ' : '';
       const bannedVerb = dryRun ? 'would be banned' : 'banned';
+      const timestamp = dayjs().format('YYYY-MM-DD-HHmmss');
 
       await emailHelper({
         template: 'alert',
         message: {
           to: config.securityEmail,
-          subject: `${subjectPrefix}Cloudflare Family DNS & Content Check: ${ctx.bannedResults.length} domains ${bannedVerb} (${totalBannedUsers} users), ${ctx.skippedResults.length} protected users skipped, ${ctx.reviewResults.length} for review`
+          subject: `${subjectPrefix}Cloudflare Family DNS & Content Check: ${ctx.bannedResults.length} domains ${bannedVerb} (${totalBannedUsers} users), ${ctx.skippedResults.length} protected users skipped, ${ctx.reviewResults.length} for review`,
+          attachments: [
+            {
+              filename: `cloudflare-family-digest-${timestamp}.csv.gz`,
+              content: zlib.gzipSync(Buffer.from(csv, 'utf8'), {
+                level: 9
+              })
+            }
+          ]
         },
         locals: {
           message: digestHtml
@@ -619,14 +612,15 @@ function buildDigestHtml(opts) {
   } catch (err) {
     await logger.error(err);
 
-    const subjectPrefix = dryRun ? '[DRY RUN] ' : '';
-
-    // Send error notification to admins
+    // Send error notification to admins via alertsEmail (fallback)
+    // so errors are delivered even if securityEmail is misconfigured.
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.securityEmail,
-        subject: `${subjectPrefix}Cloudflare Family DNS & Content Check Job Error`
+        to: config.alertsEmail,
+        subject: `${
+          dryRun ? '[DRY RUN] ' : ''
+        }Cloudflare Family DNS & Content Check Job Error`
       },
       locals: {
         message: `<pre><code>${encode(
