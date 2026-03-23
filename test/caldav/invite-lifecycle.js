@@ -472,6 +472,18 @@ async function fetchEventIcs(t, uid) {
 // ─── Helper: run processCalendarInvites against real CalDAV+SQLite ───────────
 
 async function runProcessInvites(t) {
+  //
+  // Flush the processCalendarInvites negative-cache so the
+  // authenticate() path actually runs the invite processor
+  // instead of short-circuiting on the cached "no invites" state.
+  //
+  if (t.context.client) {
+    const { alias } = t.context;
+    if (alias) {
+      await t.context.client.del(`caldav_inv_empty:${alias.id}`);
+    }
+  }
+
   // fetchCalendars triggers authentication which runs processCalendarInvites
   t.context.calendars = await fetchCalendars({
     account: t.context.account,

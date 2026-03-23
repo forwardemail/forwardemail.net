@@ -322,6 +322,16 @@ const I18N_SET_DEFAULT_CALENDAR_NAME = new Set([
 const ENSURE_CALENDAR_CACHE_PREFIX = 'caldav_cal_ensured:';
 const ENSURE_CALENDAR_CACHE_TTL = ms('1h');
 
+//
+// Redis negative-cache for processCalendarInvites.
+// When the MongoDB query returns zero pending invites we cache that
+// fact so subsequent CalDAV requests from the same alias skip the
+// round-trip to MongoDB entirely.  The TTL is intentionally short
+// (30 s) so newly queued invites are picked up promptly.
+//
+const PROCESS_INVITES_CACHE_PREFIX = 'caldav_inv_empty:';
+const PROCESS_INVITES_CACHE_TTL = ms('30s');
+
 async function ensureDefaultCalendars(ctx) {
   //
   // this only gets run if there are *zero* calendars on Android/Windows/etc
@@ -1227,22 +1237,68 @@ class CalDAV extends API {
     }
 
     //
-    // Process any pending calendar invite responses from the MongoDB queue
+    // Process any pending calendar invite responses from the MongoDB queue.
     // This merges Accept/Decline/Tentative responses into the user's calendar
-    // (responses are queued by the web routes when attendees click response links)
+    // (responses are queued by the web routes when attendees click response links).
+    //
+    // Performance: a Redis negative-cache avoids hitting MongoDB on every
+    // CalDAV request when there are no pending invites (the common case).
     //
     try {
-      //
-      // Wrap invite processing in a 5 s timeout so a slow MongoDB or
-      // a large invite backlog cannot stall the entire CalDAV request
-      // past the global 30 s koa-better-timeout.
-      //
-      const inviteResults = await pTimeout(
-        processCalendarInvites(this, ctx),
-        5000
-      );
-      if (inviteResults.processed > 0 || inviteResults.failed > 0) {
-        ctx.logger.info('Calendar invite processing results', inviteResults);
+      const invCacheKey = `${PROCESS_INVITES_CACHE_PREFIX}${ctx.state.session.user.alias_id}`;
+      let skipInvites = false;
+      if (this.client) {
+        try {
+          const cached = await this.client.get(invCacheKey);
+          if (cached) {
+            ctx.logger.debug(
+              'processCalendarInvites: skipped (negative-cached)'
+            );
+            skipInvites = true;
+          }
+        } catch (err) {
+          ctx.logger.warn('processCalendarInvites: Redis cache check failed', {
+            err
+          });
+        }
+      }
+
+      if (!skipInvites) {
+        //
+        // Wrap invite processing in a 5 s timeout so a slow MongoDB or
+        // a large invite backlog cannot stall the entire CalDAV request
+        // past the global 30 s koa-better-timeout.
+        //
+        const inviteResults = await pTimeout(
+          processCalendarInvites(this, ctx),
+          5000
+        );
+        if (inviteResults.processed > 0 || inviteResults.failed > 0) {
+          ctx.logger.info('Calendar invite processing results', inviteResults);
+        }
+
+        //
+        // If nothing was processed and nothing failed, cache the "empty"
+        // state so the next request skips the MongoDB round-trip.
+        //
+        if (
+          inviteResults.processed === 0 &&
+          inviteResults.failed === 0 &&
+          this.client
+        ) {
+          try {
+            await this.client.set(
+              invCacheKey,
+              '1',
+              'PX',
+              PROCESS_INVITES_CACHE_TTL
+            );
+          } catch (err) {
+            ctx.logger.warn('processCalendarInvites: Redis cache set failed', {
+              err
+            });
+          }
+        }
       }
     } catch (err) {
       // Don't fail authentication if invite processing fails
