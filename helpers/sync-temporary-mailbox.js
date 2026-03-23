@@ -128,7 +128,10 @@ async function syncTemporaryMailbox(session) {
                 remoteAddress: message.remoteAddress,
 
                 // don't append duplicate messages
-                checkForExisting: true
+                checkForExisting: true,
+
+                // auto-create missing Sieve-filtered mailboxes (RFC 5490)
+                createFolder: true
               }
             );
 

@@ -705,17 +705,29 @@ async function findEventByUid(instance, ctx, eventUid) {
 
   // Slow path: scan all events and parse ICS to match UID
   // (handles legacy data where eventId doesn't match UID)
+  //
+  // Performance: use { _id, ical } projection to avoid pulling
+  // large rows into memory.  When a match is found, reload the
+  // full document so callers get all fields.
+  //
   for (const cal of calendars) {
-    let events = await CalendarEvents.find(instance, ctx.state.session, {
-      calendar: cal._id
-    });
+    const events = await CalendarEvents.find(
+      instance,
+      ctx.state.session,
+      { calendar: cal._id },
+      { _id: true, ical: true, deleted_at: true }
+    );
 
     // Filter out deleted events
-    events = events.filter((e) => !e.deleted_at);
+    const active = events.filter((e) => !e.deleted_at);
 
-    for (const event of events) {
+    for (const event of active) {
       if (event.ical && eventHasUid(event.ical, uidVariants)) {
-        return { calendarEvent: event, calendar: cal };
+        // Reload full document now that we have a match
+        const full = await CalendarEvents.findOne(instance, ctx.state.session, {
+          _id: event._id
+        });
+        return { calendarEvent: full || event, calendar: cal };
       }
     }
   }

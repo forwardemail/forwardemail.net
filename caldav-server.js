@@ -468,8 +468,8 @@ async function ensureDefaultCalendars(ctx) {
     defaultTaskCalendar = defaultCalendar; // Use the same calendar for tasks
   }
 
-  ctx.logger.debug('defaultCalendar', { defaultCalendar });
-  ctx.logger.debug('defaultTaskCalendar', { defaultTaskCalendar });
+  ctx.logger.debug('defaultCalendar', { id: defaultCalendar?._id });
+  ctx.logger.debug('defaultTaskCalendar', { id: defaultTaskCalendar?._id });
 
   await _setEnsureCalendarCache.call(this, ctx);
 }
@@ -1214,7 +1214,7 @@ class CalDAV extends API {
   }
 
   async authenticate(ctx, { username, password, principalId }) {
-    ctx.logger.debug('authenticate', { username, password, principalId });
+    ctx.logger.debug('authenticate', { username, principalId });
 
     await setupAuthSession.call(this, ctx, username, password);
 
@@ -1527,7 +1527,7 @@ class CalDAV extends API {
         });
     }
 
-    ctx.logger.debug('getCalendar result', { calendar });
+    ctx.logger.debug('getCalendar result', { calendarId: calendar?._id });
 
     return calendar;
   }
@@ -1661,7 +1661,7 @@ class CalDAV extends API {
       if (!comp) throw new TypeError('Component not parsed');
 
       const vevents = comp.getAllSubcomponents('vevent');
-      ctx.logger.debug('vevents', { vevents });
+      ctx.logger.debug('vevents found', { count: vevents.length });
 
       // update the calendar metadata based off VCALENDAR
       const x = [];
@@ -1824,7 +1824,7 @@ class CalDAV extends API {
             )
           );
           ctx.logger.debug('created events', {
-            calendarEvents,
+            count: calendarEvents.length,
             principalId,
             calendarId,
             user
@@ -1928,7 +1928,7 @@ class CalDAV extends API {
         (e) => e.deleted_at === null || e.deleted_at === undefined
       );
 
-    ctx.logger.debug('events', { events });
+    ctx.logger.debug('events found', { count: events.length });
 
     return events;
   }
@@ -1982,7 +1982,10 @@ class CalDAV extends API {
 
       if (vevents.length === 0 && vtodos.length === 0) {
         const err = new TypeError('Event missing VEVENT or VTODO component');
-        ctx.logger.error(err, { event, calendar });
+        ctx.logger.error(err, {
+          eventId: event?.eventId,
+          calendarId: calendar?._id
+        });
         continue;
       }
 
@@ -1996,7 +1999,10 @@ class CalDAV extends API {
         let dtstart = vevent.getFirstPropertyValue('dtstart');
         if (!dtstart || !(dtstart instanceof ICAL.Time)) {
           const err = new TypeError('DTSTART missing on event');
-          ctx.logger.error(err, { event, calendar });
+          ctx.logger.error(err, {
+            eventId: event?.eventId,
+            calendarId: calendar?._id
+          });
           continue;
         }
 
@@ -2406,7 +2412,9 @@ class CalDAV extends API {
     //       <https://github.com/nextcloud/server/pull/41370>
     //
 
-    ctx.logger.debug('create calendar event', { calendarEvent });
+    ctx.logger.debug('create calendar event', {
+      eventId: calendarEvent.eventId
+    });
 
     const eventCreated = await CalendarEvents.create(calendarEvent);
 
