@@ -203,23 +203,27 @@ Authentication is **optional** for WebSocket connections. The authentication met
 
 ### Authentication Methods
 
-Authentication **must** be provided via the `Authorization` header using HTTP Basic Authentication. There are two supported authentication methods:
+Authentication is provided via HTTP Basic Authentication. The server supports the `Authorization` header as the preferred method, and also accepts query parameters (`?username=`, `?password=`, `?token=`) as a fallback for browser WebSocket clients that cannot set custom headers on the upgrade request. There are two supported authentication methods:
 
 #### Option 1: Alias Password Authentication (Recommended)
 
 Use your alias email address and generated password for authentication.
 
-**Browser Example:**
+**Browser Example (query parameters):**
+
+Browser `WebSocket` does not support custom headers. Use query parameters:
 
 ```javascript
-const ws = new WebSocket("wss://api.forwardemail.net/v1/ws", {
-  headers: {
-    Authorization: `Basic ${btoa("user@domain.com:alias-password")}`
-  }
-});
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws?username=user@domain.com&password=alias-password");
 ```
 
-**Node.js Example:**
+Alternatively, embed credentials in the URL userinfo (the browser translates this into an `Authorization` header):
+
+```javascript
+const ws = new WebSocket("wss://user%40domain.com:alias-password@api.forwardemail.net/v1/ws");
+```
+
+**Node.js Example (Authorization header):**
 
 ```javascript
 const WebSocket = require("ws");
@@ -242,17 +246,15 @@ const ws = new WebSocket("wss://api.forwardemail.net/v1/ws", {
 
 Use your API token for authentication. This method **requires** the `alias_id` query parameter to specify which alias to subscribe to.
 
-**Browser Example:**
+**Browser Example (query parameters):**
+
+Browser `WebSocket` does not support custom headers. Use the `?token=` query parameter:
 
 ```javascript
-const ws = new WebSocket("wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID", {
-  headers: {
-    Authorization: `Basic ${btoa("YOUR_API_TOKEN:")}`  // Note: password is empty
-  }
-});
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws?token=YOUR_API_TOKEN&alias_id=YOUR_ALIAS_ID");
 ```
 
-**Node.js Example:**
+**Node.js Example (Authorization header):**
 
 ```javascript
 const WebSocket = require("ws");
@@ -317,9 +319,8 @@ This confirms you are connected but will only receive global broadcast events (e
 
 ### Important Notes
 
-* **Query parameters for authentication are NOT supported**: Do not use `?token=`, `?username=`, or `?password=` query parameters for authentication. These will result in authentication failures.
-* **Authorization header is required**: All authentication must be done via the `Authorization` header using HTTP Basic Authentication.
-* **Failed authentication**: If authentication fails (invalid credentials, missing `alias_id` for token auth, etc.), you will receive a `401 Unauthorized` error or fall back to an unauthenticated connection with `broadcastOnly: true`.
+* **Query parameter authentication is supported**: The server accepts `?username=` + `?password=` and `?token=` (with `?alias_id=`) as a fallback for browser WebSocket clients that cannot set custom headers. The `Authorization` header is preferred when available (e.g. Node.js clients).
+* **Failed authentication**: If credentials are provided but invalid, the server responds with a `401 Unauthorized` error. It does NOT fall back to broadcast-only mode — only connections with no credentials at all are treated as unauthenticated.
 * **msgpackr encoding**: Add `?msgpackr=true` to the connection URL to receive binary msgpackr-encoded frames instead of JSON text frames for reduced bandwidth.
 
 
@@ -327,14 +328,12 @@ This confirms you are connected but will only receive global broadcast events (e
 
 ### Browser (JSON)
 
-**Authenticated (Alias Password):**
+**Authenticated (Alias Password — query parameters):**
 
 ```javascript
-const ws = new WebSocket("wss://api.forwardemail.net/v1/ws", {
-  headers: {
-    Authorization: `Basic ${btoa("user@domain.com:alias-password")}`
-  }
-});
+// Browser WebSocket does not support custom headers.
+// Use query parameters for authentication:
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws?username=user@domain.com&password=alias-password");
 
 ws.onopen = () => {
   console.log("WebSocket connection established");
@@ -466,29 +465,27 @@ ws.on("message", (data, isBinary) => {
 2. **Missing `alias_id` parameter**: When using API token authentication, you must include `?alias_id=<your-alias-id>`
 3. **Domain not enabled**: The domain must have `has_smtp: true` enabled
 4. **Alias not configured**: The alias must exist and have tokens configured
-5. **Using query parameters for auth**: Query parameters like `?token=`, `?username=`, `?password=` are not supported
 
 **Solution:**
 
 * Verify your credentials are correct
 * For API token auth, ensure you include `?alias_id=<your-alias-id>` in the URL
-* Use the `Authorization` header for authentication, not query parameters
+* Use either the `Authorization` header or query parameters (`?username=`, `?password=`, `?token=`) for authentication
 * Check that your domain and alias are properly configured
 
 ### Issue: 401 Unauthorized error
 
 **Possible causes:**
 
-1. **Attempting to use query parameters for authentication**: `?token=`, `?username=`, `?password=` are not supported
-2. **Invalid API token**: Your API token is incorrect or expired
-3. **Invalid alias credentials**: Your alias email or password is incorrect
-4. **Missing `alias_id` for token auth**: API token authentication requires `?alias_id=<your-alias-id>`
+1. **Invalid API token**: Your API token is incorrect or expired
+2. **Invalid alias credentials**: Your alias email or password is incorrect
+3. **Missing `alias_id` for token auth**: API token authentication requires `?alias_id=<your-alias-id>`
 
 **Solution:**
 
-* Use the `Authorization` header with Basic Authentication
 * Verify your credentials are correct
 * For API token auth, include `?alias_id=<your-alias-id>` in the URL
+* Use either the `Authorization` header or query parameters for authentication
 
 ### Issue: Not receiving per-alias events
 
