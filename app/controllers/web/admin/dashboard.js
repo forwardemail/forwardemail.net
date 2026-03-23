@@ -368,7 +368,7 @@ async function getForecastedMRR(months = 12) {
   let projectedMRR = currentMRR;
 
   for (let i = 1; i <= months; i++) {
-    const date = dayjs().add(i, 'month').format('YYYY-MM');
+    const date = dayjs().add(i, 'month').format('YYYY/MM');
     projectedMRR *= 1 + netGrowthRate;
     forecast.push([date, Math.round(projectedMRR)]);
   }
@@ -565,7 +565,7 @@ async function getGrowthChart() {
       $group: {
         _id: {
           $dateToString: {
-            format: '%Y-%m',
+            format: '%Y/%m',
             date: '$created_at',
             timezone
           }
@@ -600,7 +600,7 @@ async function getGrowthChart() {
     },
     tooltip: {
       x: {
-        format: 'yyyy-MM'
+        format: 'y/M'
       }
     }
   };
@@ -634,7 +634,11 @@ async function getDeliverabilityChart(ctx) {
         );
         const data = [];
         for (const [i, date] of dates.entries()) {
-          data.push([date, results[i] ? Number.parseInt(results[i], 10) : 0]);
+          // Use slash format so browser parses as local time, not UTC
+          data.push([
+            date.replace(/-/g, '/'),
+            results[i] ? Number.parseInt(results[i], 10) : 0
+          ]);
         }
 
         series.push({
@@ -658,7 +662,7 @@ async function getDeliverabilityChart(ctx) {
     },
     tooltip: {
       x: {
-        format: 'yyyy-MM-dd'
+        format: 'y/M/d'
       }
     }
   };
@@ -674,7 +678,7 @@ async function getMRRChart() {
   // Get MRR for each of the past 12 months
   for (let i = 11; i >= 0; i--) {
     const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
-    const dateString = monthEnd.format('YYYY-MM');
+    const dateString = monthEnd.format('YYYY/MM');
 
     // Count active users at end of month
     const [enhancedCount, teamCount] = await Promise.all([
@@ -720,7 +724,7 @@ async function getMRRChart() {
     },
     tooltip: {
       x: {
-        format: 'yyyy-MM'
+        format: 'y/M'
       },
       y: {
         formatter: (value) => `$${numeral(value).format('0,0')}`
@@ -759,7 +763,7 @@ async function getChurnChart() {
   for (let i = 11; i >= 0; i--) {
     const monthStart = now.subtract(i, 'month').startOf('month');
     const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
-    const dateString = monthStart.format('YYYY-MM');
+    const dateString = monthStart.format('YYYY/MM');
 
     // Churned users in this month with their plans
     const churnedUsers = await Users.find({
@@ -828,7 +832,7 @@ async function getChurnChart() {
     },
     tooltip: {
       x: {
-        format: 'yyyy-MM'
+        format: 'y/M'
       },
       y: {
         formatter: (value) => `${value}%`
@@ -875,7 +879,7 @@ async function getForecastChart() {
     },
     tooltip: {
       x: {
-        format: 'yyyy-MM'
+        format: 'y/M'
       },
       y: {
         formatter: (value) => `$${numeral(value).format('0,0')}`
@@ -895,7 +899,7 @@ async function getQuickRatioChart() {
   for (let i = 11; i >= 0; i--) {
     const monthStart = now.subtract(i, 'month').startOf('month');
     const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
-    const dateString = monthStart.format('YYYY-MM');
+    const dateString = monthStart.format('YYYY/MM');
 
     const breakdown = await getMRRBreakdown(
       monthStart.toDate(),
@@ -931,7 +935,7 @@ async function getQuickRatioChart() {
     },
     tooltip: {
       x: {
-        format: 'yyyy-MM'
+        format: 'y/M'
       }
     },
     colors: ['#9B59B6'],
@@ -963,7 +967,7 @@ async function getLTVChart() {
   // Calculate LTV trend over past 12 months
   for (let i = 11; i >= 0; i--) {
     const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
-    const dateString = monthEnd.format('YYYY-MM');
+    const dateString = monthEnd.format('YYYY/MM');
 
     // Get total revenue up to this point
     const totalRevenue = await Payments.aggregate([
@@ -1013,7 +1017,7 @@ async function getLTVChart() {
     },
     tooltip: {
       x: {
-        format: 'yyyy-MM'
+        format: 'y/M'
       },
       y: {
         formatter: (value) => `$${numeral(value).format('0,0')}`
@@ -1032,7 +1036,7 @@ async function getARPUChart() {
 
   for (let i = 11; i >= 0; i--) {
     const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
-    const dateString = monthEnd.format('YYYY-MM');
+    const dateString = monthEnd.format('YYYY/MM');
 
     // Get active users at end of month
     const activeUsers = await Users.countDocuments({
@@ -1087,7 +1091,7 @@ async function getARPUChart() {
     },
     tooltip: {
       x: {
-        format: 'yyyy-MM'
+        format: 'y/M'
       },
       y: {
         formatter: (value) => `$${value}`
@@ -1107,7 +1111,7 @@ async function getNRRChart() {
   for (let i = 11; i >= 0; i--) {
     const monthStart = now.subtract(i, 'month').startOf('month');
     const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
-    const dateString = monthStart.format('YYYY-MM');
+    const dateString = monthStart.format('YYYY/MM');
 
     // Simplified NRR calculation
     const breakdown = await getMRRBreakdown(
@@ -1168,7 +1172,7 @@ async function getNRRChart() {
     },
     tooltip: {
       x: {
-        format: 'yyyy-MM'
+        format: 'y/M'
       },
       y: {
         formatter: (value) => `${value}%`
