@@ -332,7 +332,10 @@ function buildInviteHtml(ctx, event, links) {
  */
 function buildICS(ctx, events, calendar, method = false) {
   const startTime = Date.now();
-  ctx.logger.debug('buildICS', { events, calendar });
+  ctx.logger.debug('buildICS', {
+    eventCount: Array.isArray(events) ? events.length : events ? 1 : 0,
+    calendarId: calendar.calendarId || calendar._id
+  });
 
   // Always normalize events to an array to ensure consistent VCALENDAR output
   const eventArray = events ? (Array.isArray(events) ? events : [events]) : [];

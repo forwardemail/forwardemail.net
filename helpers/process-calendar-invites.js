@@ -126,6 +126,14 @@ async function processCalendarInvites(instance, ctx) {
     `Processing ${pendingInvites.length} pending calendar invites`
   );
 
+  //
+  // Performance: pre-fetch the user's calendars once and reuse across
+  // all invite processors.  Previously every findEventByUid() call
+  // independently fetched the full calendar list, causing O(invites)
+  // redundant WSP round-trips.
+  //
+  const calendars = await Calendars.find(instance, ctx.state.session, {});
+
   // Process each invite based on its method
   for (const invite of pendingInvites) {
     try {
@@ -133,27 +141,27 @@ async function processCalendarInvites(instance, ctx) {
 
       switch (method) {
         case 'REPLY': {
-          await processReply(instance, ctx, invite);
+          await processReply(instance, ctx, invite, calendars);
           break;
         }
 
         case 'REQUEST': {
-          await processRequest(instance, ctx, invite);
+          await processRequest(instance, ctx, invite, calendars);
           break;
         }
 
         case 'CANCEL': {
-          await processCancel(instance, ctx, invite);
+          await processCancel(instance, ctx, invite, calendars);
           break;
         }
 
         case 'ADD': {
-          await processAdd(instance, ctx, invite);
+          await processAdd(instance, ctx, invite, calendars);
           break;
         }
 
         case 'REFRESH': {
-          await processRefresh(instance, ctx, invite);
+          await processRefresh(instance, ctx, invite, calendars);
           break;
         }
 
@@ -248,7 +256,7 @@ async function markProcessed(inviteId, error) {
  * "Organizer" of the event. The "REPLY" method is used to respond
  * to an event "REQUEST".
  */
-async function processReply(instance, ctx, invite) {
+async function processReply(instance, ctx, invite, calendars) {
   ctx.logger.debug('Processing REPLY invite', {
     inviteId: invite._id,
     eventUid: invite.eventUid,
@@ -260,7 +268,8 @@ async function processReply(instance, ctx, invite) {
   const { calendarEvent, calendar: replyCal } = await findEventByUid(
     instance,
     ctx,
-    invite.eventUid
+    invite.eventUid,
+    calendars
   );
 
   if (!calendarEvent) {
@@ -322,7 +331,7 @@ async function processReply(instance, ctx, invite) {
  * or more "Attendees". If the event already exists in the attendee's
  * calendar, it is updated; otherwise, a new event is created.
  */
-async function processRequest(instance, ctx, invite) {
+async function processRequest(instance, ctx, invite, calendars) {
   ctx.logger.debug('Processing REQUEST invite', {
     inviteId: invite._id,
     eventUid: invite.eventUid
@@ -337,7 +346,8 @@ async function processRequest(instance, ctx, invite) {
   const { calendarEvent, calendar } = await findEventByUid(
     instance,
     ctx,
-    invite.eventUid
+    invite.eventUid,
+    calendars
   );
 
   if (calendarEvent) {
@@ -382,7 +392,7 @@ async function processRequest(instance, ctx, invite) {
   } else {
     // Event doesn't exist - create it in the default calendar
     const targetCalendar =
-      calendar || (await getDefaultCalendar(instance, ctx));
+      calendar || (await getDefaultCalendar(instance, ctx, calendars));
 
     if (!targetCalendar) {
       await markProcessed(invite._id, 'No calendar found to create event');
@@ -430,16 +440,17 @@ async function processRequest(instance, ctx, invite) {
  * The "CANCEL" method is sent by the "Organizer" to inform
  * "Attendees" that a calendar component has been cancelled.
  */
-async function processCancel(instance, ctx, invite) {
+async function processCancel(instance, ctx, invite, calendars) {
   ctx.logger.debug('Processing CANCEL invite', {
     inviteId: invite._id,
     eventUid: invite.eventUid
   });
 
-  const { calendarEvent } = await findEventByUid(
+  const { calendarEvent, calendar: cancelCal } = await findEventByUid(
     instance,
     ctx,
-    invite.eventUid
+    invite.eventUid,
+    calendars
   );
 
   if (!calendarEvent) {
@@ -488,11 +499,7 @@ async function processCancel(instance, ctx, invite) {
   }
 
   // Bump calendar synctoken so CalDAV clients see the change
-  const { calendar: cancelCal } = await findEventByUid(
-    instance,
-    ctx,
-    invite.eventUid
-  );
+  // (reuse the calendar from the first findEventByUid call above)
   if (cancelCal) {
     await bumpSyncToken(instance, ctx, cancelCal._id);
   }
@@ -514,7 +521,7 @@ async function processCancel(instance, ctx, invite) {
  * The "ADD" method allows the "Organizer" to add one or more new
  * instances to an existing "VEVENT".
  */
-async function processAdd(instance, ctx, invite) {
+async function processAdd(instance, ctx, invite, calendars) {
   ctx.logger.debug('Processing ADD invite', {
     inviteId: invite._id,
     eventUid: invite.eventUid
@@ -525,19 +532,25 @@ async function processAdd(instance, ctx, invite) {
     return;
   }
 
-  const { calendarEvent } = await findEventByUid(
+  const { calendarEvent, calendar: addCal } = await findEventByUid(
     instance,
     ctx,
-    invite.eventUid
+    invite.eventUid,
+    calendars
   );
 
   if (!calendarEvent) {
     // No existing event to add instances to
     // Treat as a REQUEST instead (create the event)
-    await processRequest(instance, ctx, {
-      ...invite,
-      method: 'REQUEST'
-    });
+    await processRequest(
+      instance,
+      ctx,
+      {
+        ...invite,
+        method: 'REQUEST'
+      },
+      calendars
+    );
     return;
   }
 
@@ -554,11 +567,7 @@ async function processAdd(instance, ctx, invite) {
   }
 
   // Bump calendar synctoken so CalDAV clients see the change
-  const { calendar: addCal } = await findEventByUid(
-    instance,
-    ctx,
-    invite.eventUid
-  );
+  // (reuse the calendar from the first findEventByUid call above)
   if (addCal) {
     await bumpSyncToken(instance, ctx, addCal._id);
   }
@@ -579,7 +588,7 @@ async function processAdd(instance, ctx, invite) {
  * The "REFRESH" method is sent by an "Attendee" to request the
  * latest version of a calendar component from the "Organizer".
  */
-async function processRefresh(instance, ctx, invite) {
+async function processRefresh(instance, ctx, invite, calendars) {
   ctx.logger.debug('Processing REFRESH invite', {
     inviteId: invite._id,
     eventUid: invite.eventUid,
@@ -589,7 +598,8 @@ async function processRefresh(instance, ctx, invite) {
   const { calendarEvent } = await findEventByUid(
     instance,
     ctx,
-    invite.eventUid
+    invite.eventUid,
+    calendars
   );
 
   if (!calendarEvent) {
@@ -672,16 +682,20 @@ async function processDeclineCounter(instance, ctx, invite) {
 /**
  * Find a calendar event by UID across all user's calendars
  *
- * Uses a fast path (query by eventId) first, then falls back to
+ * Uses a fast path (batch $in query by eventId) first, then falls back to
  * scanning all events if the fast path fails (for legacy data).
  *
  * @param {Object} instance - CalDAV server instance
  * @param {Object} ctx - Koa context
  * @param {string} eventUid - Event UID to find
+ * @param {Array} [calendars] - Pre-fetched calendars list (avoids redundant WSP call)
  * @returns {Promise<{calendarEvent: Object|null, calendar: Object|null}>}
  */
-async function findEventByUid(instance, ctx, eventUid) {
-  const calendars = await Calendars.find(instance, ctx.state.session, {});
+async function findEventByUid(instance, ctx, eventUid, calendars) {
+  if (!calendars) {
+    calendars = await Calendars.find(instance, ctx.state.session, {});
+  }
+
   const uidVariants = getUidVariants(eventUid);
 
   ctx.logger.debug('Searching for event with UID variants', {
@@ -689,17 +703,20 @@ async function findEventByUid(instance, ctx, eventUid) {
     calendarsCount: calendars.length
   });
 
-  // Fast path: query by eventId directly (indexed field)
+  //
+  // Fast path: batch query by eventId using $in across ALL calendars at once.
+  // Previously this was O(calendars × variants) sequential WSP calls;
+  // now it is a single WSP call per calendar.
+  //
   for (const cal of calendars) {
-    for (const variant of uidVariants) {
-      const event = await CalendarEvents.findOne(instance, ctx.state.session, {
-        eventId: variant,
-        calendar: cal._id
-      });
+    const event = await CalendarEvents.findOne(instance, ctx.state.session, {
+      eventId: { $in: uidVariants },
+      calendar: cal._id,
+      deleted_at: { $exists: false }
+    });
 
-      if (event && !event.deleted_at) {
-        return { calendarEvent: event, calendar: cal };
-      }
+    if (event) {
+      return { calendarEvent: event, calendar: cal };
     }
   }
 
@@ -805,8 +822,10 @@ function incrementSynctoken(synctoken) {
  * Matches the calendar created by ensureDefaultCalendars() in caldav-server.js
  * which uses name: 'DEFAULT_CALENDAR_NAME' (a localized i18n key).
  */
-async function getDefaultCalendar(instance, ctx) {
-  const calendars = await Calendars.find(instance, ctx.state.session, {});
+async function getDefaultCalendar(instance, ctx, calendars) {
+  if (!calendars) {
+    calendars = await Calendars.find(instance, ctx.state.session, {});
+  }
 
   // Prefer the default VEVENT calendar (created by ensureDefaultCalendars)
   for (const cal of calendars) {
