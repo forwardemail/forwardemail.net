@@ -82,7 +82,10 @@ router
       ctx.passport.authenticate
         ? ctx.passport.authenticate(
             ctx.params.provider,
-            config.passport[ctx.params.provider]
+            config.passport[ctx.params.provider] ||
+              (ctx.params.provider === 'google'
+                ? { accessType: 'offline' }
+                : undefined)
           )(ctx, next)
         : next()
   )
