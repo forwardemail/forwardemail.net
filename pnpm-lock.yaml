@@ -287,8 +287,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0(axe@13.0.0)
       caldav-adapter:
-        specifier: 9.3.2
-        version: 9.3.2
+        specifier: 9.3.3
+        version: 9.3.3
       capitalize:
         specifier: 2.0.4
         version: 2.0.4
@@ -3127,7 +3127,6 @@ packages:
   '@lancedb/lancedb@0.22.3':
     resolution: {integrity: sha512-nRC0fkg+d7dzCtudKHT+VH7znk6KUXRZyuS6HJYNnIrbvXBxaT6wAPjEbf70KTuqvP2znj48Zg+kiwRqkRnAJw==}
     engines: {node: '>= 18'}
-    cpu: [x64, arm64]
     os: [darwin, linux, win32]
     peerDependencies:
       apache-arrow: '>=15.0.0 <=18.1.0'
@@ -6566,8 +6565,8 @@ packages:
     resolution: {integrity: sha512-kpqOvwXnjjN44D89K5ccQC+RUrsy7jB/XLlRrx0D7/2HNcTPqzsb6XgYoErwko6QsV184CA2YgS1fxDiiDZMWA==}
     engines: {node: '>=8'}
 
-  caldav-adapter@9.3.2:
-    resolution: {integrity: sha512-eM/ADfAMppV8Pu+lUx9IqbIs5aLRAdcCxPeOafwIFdkmm+2/93YwSYH1ImJdRSyj8Ab+XsY6is6hhIR8Lcsmsw==}
+  caldav-adapter@9.3.3:
+    resolution: {integrity: sha512-ygfaF9fGZ4bUsUZhiHZvQ0z2gj93Vf7O7gV3FNK1oWxVhZP7PMLBYCAe1rpFM95VmESr6Sq5Ms4y7wqFVNSIQQ==}
     engines: {node: '>=18'}
 
   call-bind-apply-helpers@1.0.2:
@@ -26272,7 +26271,7 @@ snapshots:
       package-hash: 4.0.0
       write-file-atomic: 3.0.3
 
-  caldav-adapter@9.3.2:
+  caldav-adapter@9.3.3:
     dependencies:
       '@xmldom/xmldom': 0.8.11
       basic-auth: 2.0.1

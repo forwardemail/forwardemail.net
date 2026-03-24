@@ -503,8 +503,8 @@ async function create(ctx) {
     ical: quoteICSFilenames(body.ical),
 
     // Construct href for CalDAV sync-collection responses
-    // This matches the CalDAV URL format: /cal/{principalId}/{calendarId}/{eventId}.ics
-    href: `/cal/${ctx.state.session.user.username}/${calendar.calendarId}/${eventId}.ics`
+    // This matches the CalDAV URL format: /dav/{principalId}/{calendarId}/{eventId}.ics
+    href: `/dav/${ctx.state.session.user.username}/${calendar.calendarId}/${eventId}.ics`
   });
 
   ctx.body = json(calendarEvent, calendar);
