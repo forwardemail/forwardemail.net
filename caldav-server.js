@@ -1339,7 +1339,8 @@ class CalDAV extends API {
       name,
       description,
       timezone,
-      params: ctx.state.params
+      principalId: ctx.state.params?.principalId,
+      calendarId: ctx.state.params?.calendarId
     });
 
     // if calendar already exists with calendarId value then return 405
@@ -1505,13 +1506,26 @@ class CalDAV extends API {
   }
 
   // https://caldav.forwardemail.net/dav/support@forwardemail.net/default
-  async getCalendar(ctx, { calendarId, principalId, user }) {
-    ctx.logger.debug('getCalendar', {
-      calendarId,
-      principalId,
-      user,
-      request: ctx.request
-    });
+  async getCalendar(ctx, { calendarId, principalId, _user }) {
+    ctx.logger.debug('getCalendar', { calendarId, principalId });
+
+    //
+    // Performance: the caldav-adapter routing layer already fetches the
+    // calendar and stores it on ctx.state.calendar.  Re-use it when the
+    // requested calendarId matches, avoiding a redundant SQLite round-trip.
+    //
+    if (ctx.state.calendar && calendarId) {
+      const cached = ctx.state.calendar;
+      if (
+        (cached.calendarId && cached.calendarId === calendarId) ||
+        (cached._id && cached._id.toString() === calendarId)
+      ) {
+        ctx.logger.debug('getCalendar result (cached)', {
+          calendarId: cached._id
+        });
+        return cached;
+      }
+    }
 
     let calendar;
 
@@ -1538,12 +1552,7 @@ class CalDAV extends API {
   // <https://github.com/sedenardi/node-caldav-adapter/blob/bdfbe17931bf14a1803da77dbb70509db9332695/example/data.js#L111-L120>
   //
   async updateCalendar(ctx, { principalId, calendarId, user, updates }) {
-    ctx.logger.debug('updateCalendar', {
-      principalId,
-      calendarId,
-      user,
-      updates
-    });
+    ctx.logger.debug('updateCalendar', { principalId, calendarId });
 
     //
     // if `updates` is specified then this is a PROPPATCH request with XML
@@ -1844,8 +1853,8 @@ class CalDAV extends API {
   // https://caldav.forwardemail.net/dav/support@forwardemail.net <--- both of these would do the same
   // https://caldav.forwardemail.net/dav/calendars <--- both of these would do the same
   // NOTE: in the future we could do readonly and sharing here with auth permissioning system
-  async getCalendarsForPrincipal(ctx, { principalId, user }) {
-    ctx.logger.debug('getCalendarsForPrincipal', { principalId, user });
+  async getCalendarsForPrincipal(ctx, { principalId, _user }) {
+    ctx.logger.debug('getCalendarsForPrincipal', { principalId });
     return Calendars.find(this, ctx.state.session, {});
   }
 
@@ -1856,7 +1865,6 @@ class CalDAV extends API {
     ctx.logger.debug('getEventsForCalendar', {
       calendarId,
       principalId,
-      user,
       fullData
     });
 
@@ -1942,7 +1950,6 @@ class CalDAV extends API {
       start,
       end,
       principalId,
-      user,
       fullData
     });
 
@@ -2242,7 +2249,6 @@ class CalDAV extends API {
       eventId,
       principalId,
       calendarId,
-      user,
       fullData
     });
 
@@ -2289,8 +2295,7 @@ class CalDAV extends API {
     ctx.logger.debug('createEvent', {
       eventId,
       principalId,
-      calendarId,
-      user
+      calendarId
     });
 
     const calendar = await this.getCalendar(ctx, {
@@ -2469,8 +2474,7 @@ class CalDAV extends API {
     ctx.logger.debug('updateEvent', {
       eventId,
       principalId,
-      calendarId,
-      user
+      calendarId
     });
 
     const calendar = await this.getCalendar(ctx, {
@@ -2680,7 +2684,7 @@ class CalDAV extends API {
 
   async deleteCalendar(ctx, { principalId, calendarId, user }) {
     // , calendar
-    ctx.logger.debug('deleteCalendar', { principalId, calendarId, user });
+    ctx.logger.debug('deleteCalendar', { principalId, calendarId });
 
     const calendar = await this.getCalendar(ctx, {
       calendarId,
@@ -2770,7 +2774,7 @@ class CalDAV extends API {
 
   async deleteEvent(ctx, { eventId, principalId, calendarId, user }) {
     // , calendar
-    ctx.logger.debug('deleteEvent', { eventId, principalId, calendarId, user });
+    ctx.logger.debug('deleteEvent', { eventId, principalId, calendarId });
 
     const calendar = await this.getCalendar(ctx, {
       calendarId,
