@@ -54,7 +54,7 @@
     "@ladjs/koa-simple-ratelimit": "4.1.1",
     "@ladjs/mongoose": "7.0.0",
     "@ladjs/mongoose-error-messages": "1.0.0",
-    "@ladjs/passport": "5.1.4",
+    "@ladjs/passport": "5.1.5",
     "@ladjs/pick-original": "2.0.0",
     "@ladjs/policies": "12.2.1",
     "@ladjs/proxy": "5.0.4",

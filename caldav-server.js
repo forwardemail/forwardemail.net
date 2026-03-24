@@ -1882,12 +1882,13 @@ class CalDAV extends API {
 
   async getEventsForCalendar(
     ctx,
-    { calendarId, principalId, user, fullData, showDeleted }
+    { calendarId, principalId, user, fullData, showDeleted, syncToken }
   ) {
     ctx.logger.debug('getEventsForCalendar', {
       calendarId,
       principalId,
-      fullData
+      fullData,
+      syncToken
     });
 
     let calendar;
@@ -1909,6 +1910,25 @@ class CalDAV extends API {
       throw Boom.methodNotAllowed(
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
+
+    //
+    // RFC 6578 incremental sync: if the client supplies a sync-token
+    // that matches the calendar's current token, nothing has changed
+    // since the last sync — return an empty array immediately.
+    //
+    // This is the critical fast-path for iOS/macOS Calendar (dataaccessd)
+    // which issues sync-collection on every calendar during each sync
+    // cycle.  Without this, every request loads all events from the DB,
+    // easily exceeding the 30 s request timeout for users with many
+    // calendars.
+    //
+    // When the token does NOT match (or is null/empty for initial sync),
+    // we fall through to the full query below per RFC 6578 Section 3.8.
+    //
+    if (syncToken && calendar.synctoken && syncToken === calendar.synctoken) {
+      ctx.logger.debug('sync-token matches, returning empty (no changes)');
+      return [];
+    }
 
     let events;
     try {
