@@ -10,6 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 
 const _ = require('#helpers/lodash');
+const checkAndAutoApproveSMTP = require('#helpers/check-and-auto-approve-smtp');
 const isEmail = require('#helpers/is-email');
 const parseTLSRequiredHeader = require('#helpers/parse-tls-required-header');
 const Aliases = require('#models/aliases');
@@ -134,26 +135,72 @@ async function onDataSMTP(session, date, headers, body) {
     );
 
   if (!domain.has_smtp) {
-    if (_.isDate(domain.smtp_verified_at))
+    //
+    // Attempt auto-approval: if DNS records are verified and the user
+    // meets auto-approval criteria (e.g. passed KYC), approve on the fly.
+    // This mirrors the logic from the "Verify SMTP" button flow.
+    //
+    try {
+      // Determine the sending user's ID for auto-approval lookup.
+      // If the user authenticated via alias, use the populated alias.user.id.
+      // If via domain catch-all, use session.user.alias_user_id (set by on-auth).
+      // As a last resort, find the first admin member of the domain.
+      let sendingUserId;
+      if (alias) {
+        sendingUserId = alias.user?.id || alias.user?._id?.toString();
+      } else if (session.user.alias_user_id) {
+        sendingUserId = session.user.alias_user_id;
+      } else {
+        // Catch-all without alias_user_id: find an admin member
+        const adminMember = domain.members.find(
+          (m) => _.isObject(m.user) && m.group === 'admin'
+        );
+        if (adminMember) sendingUserId = adminMember.user.id;
+      }
+
+      if (sendingUserId) {
+        const { isAutoApproved } = await checkAndAutoApproveSMTP({
+          domain,
+          resolver: this.resolver,
+          userId: sendingUserId
+        });
+
+        if (isAutoApproved) {
+          // Domain was approved – continue with sending
+          logger.info('SMTP auto-approved domain', {
+            domain: domain.name,
+            userId: sendingUserId
+          });
+        }
+      }
+    } catch (err) {
+      // Log but do not throw – fall through to the existing error messages
+      logger.error(err, { domain: domain.name });
+    }
+
+    // Re-check after auto-approval attempt
+    if (!domain.has_smtp) {
+      if (_.isDate(domain.smtp_verified_at))
+        throw new SMTPError(
+          `Domain is pending admin approval for outbound SMTP access. Approval typically takes less than 24 hours; please check your inbox soon as we may be requesting additional information`,
+          {
+            responseCode: 535,
+            ignoreHook: true
+          }
+        );
+
       throw new SMTPError(
-        `Domain is pending admin approval for outbound SMTP access. Approval typically takes less than 24 hours; please check your inbox soon as we may be requesting additional information`,
+        `Domain is not configured for outbound SMTP, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/verify-smtp and click "Verify"`,
         {
           responseCode: 535,
           ignoreHook: true
         }
       );
-
-    throw new SMTPError(
-      `Domain is not configured for outbound SMTP, go to ${
-        config.urls.web
-      }/my-account/domains/${punycode.toASCII(
-        domain.name
-      )}/verify-smtp and click "Verify"`,
-      {
-        responseCode: 535,
-        ignoreHook: true
-      }
-    );
+    }
   }
 
   // TODO: document storage of outbound SMTP email in FAQ/Privacy

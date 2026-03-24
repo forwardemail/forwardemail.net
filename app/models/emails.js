@@ -45,8 +45,10 @@ const isEmail = require('#helpers/is-email');
 
 const MessageSplitter = require('#helpers/message-splitter');
 const SMTPError = require('#helpers/smtp-error');
+const checkAndAutoApproveSMTP = require('#helpers/check-and-auto-approve-smtp');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
@@ -105,6 +107,9 @@ const rateLimiter = new RateLimiter({
   duration: config.smtpLimitDuration,
   namespace: config.smtpLimitNamespace
 });
+
+// Lazily-initialized resolver for auto-approval DNS checks in Emails.queue()
+let _emailsResolver;
 
 const Emails = new mongoose.Schema(
   {
@@ -1542,10 +1547,43 @@ Emails.statics.queue = async function (
   //   throw Boom.forbidden(i18n.translateError('DOMAIN_SUSPENDED', locale));
 
   // domain must be enabled
-  if (!domain.has_smtp)
-    throw Boom.forbidden(
-      i18n.translateError('EMAIL_SMTP_ACCESS_REQUIRED', locale)
-    );
+  if (!domain.has_smtp) {
+    //
+    // Attempt auto-approval: if DNS records are verified and the user
+    // meets auto-approval criteria (e.g. passed KYC), approve on the fly.
+    // This mirrors the logic from the "Verify SMTP" button flow.
+    //
+    try {
+      if (userId) {
+        // Create a resolver using the existing redis client in this module
+        if (!_emailsResolver) {
+          _emailsResolver = createTangerine(redis, logger);
+        }
+
+        const { isAutoApproved } = await checkAndAutoApproveSMTP({
+          domain,
+          resolver: _emailsResolver,
+          userId
+        });
+
+        if (isAutoApproved) {
+          logger.info('API auto-approved domain for SMTP', {
+            domain: domain.name,
+            userId
+          });
+        }
+      }
+    } catch (err) {
+      // Log but do not throw – fall through to the existing error message
+      logger.error(err, { domain: domain.name });
+    }
+
+    // Re-check after auto-approval attempt
+    if (!domain.has_smtp)
+      throw Boom.forbidden(
+        i18n.translateError('EMAIL_SMTP_ACCESS_REQUIRED', locale)
+      );
+  }
 
   //
   // validate that at least one paying, non-banned admin on >= same plan without expiration
