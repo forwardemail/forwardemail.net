@@ -15,6 +15,7 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const bytes = require('@forwardemail/bytes');
 const humanize = require('humanize-string');
 const titleize = require('titleize');
 const mongoose = require('mongoose');
@@ -62,6 +63,9 @@ async function mapper(domain) {
   // Build set of redacted field names for quick lookup
   const redactedFieldNames = new Set(config.domainUpdateRedactedFields);
 
+  // Build set of byte-valued field names for human-readable formatting
+  const byteFieldNames = new Set(config.domainUpdateByteFields);
+
   // Merge and map to actionable email format with localized field names
   // Include audit metadata (who made the change, IP, user-agent, timestamp)
   // Handle isAdmin and isSystem flags for privacy protection
@@ -79,14 +83,24 @@ async function mapper(domain) {
       isAdmin,
       isSystem
     } = update;
+    const isByteField = byteFieldNames.has(fieldName);
     return {
       name: fieldName,
       text: i18n.api.t({
         phrase: titleize(humanize(fieldName)),
         locale
       }),
-      current: redacted ? '[REDACTED]' : current,
-      previous: redacted ? '[REDACTED]' : previous,
+      // Format byte-valued fields with human-readable strings (e.g. "10 GB")
+      current: redacted
+        ? '[REDACTED]'
+        : isByteField && typeof current === 'number'
+        ? bytes(current)
+        : current,
+      previous: redacted
+        ? '[REDACTED]'
+        : isByteField && typeof previous === 'number'
+        ? bytes(previous)
+        : previous,
       redacted: redacted || redactedFieldNames.has(fieldName),
       changedAt,
       changedBy,

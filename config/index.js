@@ -1061,6 +1061,9 @@ const config = {
     'userFields.pendingRecovery'
   ],
 
+  // user fields whose values are byte counts and should be formatted with bytes()
+  accountUpdateByteFields: ['userFields.maxQuotaPerAlias'],
+
   // domain fields whose updates create an action (e.g. email to domain admins)
   domainUpdateFields: [
     // Webhook and logging settings
@@ -1119,6 +1122,9 @@ const config = {
     's3_region',
     's3_bucket'
   ],
+
+  // domain fields whose values are byte counts and should be formatted with bytes()
+  domainUpdateByteFields: ['max_quota_per_alias'],
 
   // domain fields that should be redacted in domain update emails (security-sensitive)
   domainUpdateRedactedFields: [

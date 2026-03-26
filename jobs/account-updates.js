@@ -15,6 +15,7 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const bytes = require('@forwardemail/bytes');
 const humanize = require('humanize-string');
 const titleize = require('titleize');
 const mongoose = require('mongoose');
@@ -52,11 +53,17 @@ async function mapper(user) {
     config.accountUpdateRedactedFields.map((field) => _.get(config, field))
   );
 
+  // Build set of byte-valued field names for human-readable formatting
+  const byteFieldNames = new Set(
+    config.accountUpdateByteFields.map((field) => _.get(config, field))
+  );
+
   // merge and map to actionable email
   const accountUpdates = user[config.userFields.accountUpdates].map(
     (update) => {
       const { fieldName, current, previous } = update;
       const isRedacted = redactedFieldNames.has(fieldName);
+      const isByteField = byteFieldNames.has(fieldName);
       return {
         name: fieldName,
         text: i18n.api.t({
@@ -64,8 +71,17 @@ async function mapper(user) {
           locale: user[config.lastLocaleField]
         }),
         // Redact sensitive field values for security
-        current: isRedacted ? '[REDACTED]' : current,
-        previous: isRedacted ? '[REDACTED]' : previous,
+        // Format byte-valued fields with human-readable strings (e.g. "10 GB")
+        current: isRedacted
+          ? '[REDACTED]'
+          : isByteField && typeof current === 'number'
+          ? bytes(current)
+          : current,
+        previous: isRedacted
+          ? '[REDACTED]'
+          : isByteField && typeof previous === 'number'
+          ? bytes(previous)
+          : previous,
         redacted: isRedacted
       };
     }
