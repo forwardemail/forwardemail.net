@@ -13,6 +13,7 @@ const config = require('#config');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
+const onClose = require('#helpers/on-close');
 const onConnect = require('#helpers/on-connect');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const { validate: validateSieve } = require('#helpers/sieve');
@@ -205,8 +206,19 @@ class ManageSieveServer {
       remoteAddress: socket.remoteAddress,
       localAddress: socket.localAddress,
       localPort: socket.localPort,
-      isClosing: false
+      isClosing: false,
+      // Gate for onConnect check completion
+      // Commands that require authentication (and thus a valid session)
+      // should not race with the async onConnect rate-limit / denylist check.
+      connectCheckReady: null
     };
+
+    // Create a promise that resolves when onConnect finishes successfully
+    // and rejects if the connection should be refused.
+    session.connectCheckReady = new Promise((resolve, reject) => {
+      session._resolveConnectCheck = resolve;
+      session._rejectConnectCheck = reject;
+    });
 
     this.connections.add(session);
 
@@ -237,6 +249,7 @@ class ManageSieveServer {
           component: 'ManageSieve',
           sessionId: session.id
         });
+        session._resolveConnectCheck();
       })
       .catch((err) => {
         // Handle connection rejection - close the connection
@@ -247,6 +260,7 @@ class ManageSieveServer {
           remoteAddress: socket.remoteAddress,
           error: error.message
         });
+        session._rejectConnectCheck(error);
         this.send(session, `${RESPONSE.BYE} "${error.message}"`);
         socket.end();
       });
@@ -257,9 +271,25 @@ class ManageSieveServer {
       this.processBuffer(session);
     });
 
-    // Handle close
+    // Handle close - decrement concurrent connection counter
     socket.on('close', () => {
       this.connections.delete(session);
+      // Decrement the Redis concurrent connection counter
+      // (mirrors what IMAP/POP3 do via helpers/on-close.js)
+      onClose
+        .call(
+          {
+            client: this.client,
+            constructor: { name: 'ManageSieveServer' }
+          },
+          session
+        )
+        .catch((err) => {
+          this.logger.error(err, {
+            component: 'ManageSieve',
+            sessionId: session.id
+          });
+        });
       this.logger.info('ManageSieve connection closed', {
         component: 'ManageSieve',
         sessionId: session.id
@@ -286,6 +316,19 @@ class ManageSieveServer {
   // Process incoming data buffer
   //
   async processBuffer(session) {
+    // Wait for onConnect check to complete before processing any commands.
+    // CAPABILITY and STARTTLS are safe pre-auth commands, but the buffer
+    // processing is simpler if we gate everything here; the greeting was
+    // already sent synchronously so the client can read capabilities while
+    // we wait.  If onConnect rejects, the socket will be closed by the
+    // catch handler in handleConnection, so we just bail out here.
+    try {
+      await session.connectCheckReady;
+    } catch {
+      // Connection was rejected by onConnect; socket is being closed.
+      return;
+    }
+
     // If we're waiting for SASL authentication continuation, handle it first
     if (session.pendingAuthMechanism) {
       const crlfIndex = session.buffer.indexOf('\r\n');
@@ -947,14 +990,10 @@ class ManageSieveServer {
       return;
     }
 
-    // Deactivate all other scripts and activate this one
-    await SieveScripts.updateMany(
-      { alias: session.alias._id },
-      { is_active: false }
-    );
-
-    script.is_active = true;
-    await script.save();
+    // Use the atomic activateScript static method (deactivates all, then
+    // activates the target in two DB ops without an in-memory round-trip
+    // through Mongoose save hooks that could be interrupted).
+    await SieveScripts.activateScript(session.alias._id, scriptName);
 
     this.send(session, `${RESPONSE.OK} "SETACTIVE completed"`);
   }
