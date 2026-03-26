@@ -151,6 +151,14 @@ function isArbitrary(session, headers) {
     throw error;
   }
 
+  // CNN News Health display name spam
+  if (from && from.toLowerCase().includes('cnn news health')) {
+    throw new SMTPError(
+      'Blocked CNN News Health display name spam, please forward this to ' +
+        config.abuseEmail
+    );
+  }
+
   //
   // check for paypal scam (very strict until PayPal resolves phishing on their side)
   // (seems to only come from "outlook.com" and "paypal.com" hosts)
