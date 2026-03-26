@@ -93,6 +93,13 @@ async function getLogsCsv(
     // NOTE: No maxTimeMS timeout - this runs in the background and emails results
     // The noCursorTimeout flag ensures the cursor stays open for large datasets
     //
+    //
+    // Track fingerprints to deduplicate IMAP vs SMTP/webhook delivery logs.
+    // When both IMAP storage and forwarding are configured, two "delivered"
+    // logs are created per email. Keep only the first encountered per fingerprint.
+    //
+    const csvDeliveredFingerprints = new Set();
+
     // eslint-disable-next-line unicorn/no-array-callback-reference
     for await (const log of Logs.find(query)
       .hint(CREATED_AT_INDEX_HINT)
@@ -100,6 +107,15 @@ async function getLogsCsv(
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
       if (!log?.meta?.session?.id) continue;
+
+      // deduplicate IMAP vs SMTP/webhook delivery logs by fingerprint
+      if (log.message === 'delivered') {
+        const fp = log?.meta?.session?.fingerprint;
+        if (fp) {
+          if (csvDeliveredFingerprints.has(fp)) continue;
+          csvDeliveredFingerprints.add(fp);
+        }
+      }
 
       //
       // Filter RCPT TO to only show recipients relevant to the user
