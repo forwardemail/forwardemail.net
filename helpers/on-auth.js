@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
 const punycode = require('node:punycode');
 
 const POP3Server = require('@zone-eu/wildduck/lib/pop3/server');
@@ -34,8 +35,54 @@ const i18n = require('#helpers/i18n');
 const isValidPassword = require('#helpers/is-valid-password');
 const onConnect = require('#helpers/on-connect');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const logger = require('#helpers/logger');
 
 const onConnectPromise = pify(onConnect);
+
+//
+// Redis-backed auth cache shared by ALL protocols and ALL processes
+// (IMAP, POP3, SMTP, CalDAV, CardDAV, API, ManageSieve).
+//
+// The cache avoids re-running the expensive onAuth pipeline
+// (DNS TXT lookup + MongoDB aggregation + argon2 password validation)
+// on every request.  This is critical for CalDAV/CardDAV where HTTP
+// Basic Auth sends credentials on every single request, but it also
+// helps IMAP/POP3/SMTP on rapid reconnects.
+//
+// Redis key:  `auth_cache:<normalized_username>:<sha256_16chars>`
+// Redis value: JSON-serialized user object
+// TTL: 60 seconds (native Redis expiry via PX)
+//
+// Invalidation:
+//   - TTL-based: entries expire after AUTH_CACHE_TTL (60 s)
+//   - Explicit: `clearAuthCache(client, aliasId)` deletes all keys
+//     matching the alias via a companion index key
+//     `auth_cache_alias:<alias_id>` that stores associated cache keys
+//   - Cross-process: Redis is shared, so invalidation in any process
+//     (IMAP, POP3, etc.) is immediately visible to all others
+//
+const AUTH_CACHE_PREFIX = 'auth_cache:';
+const AUTH_CACHE_ALIAS_PREFIX = 'auth_cache_alias:';
+const AUTH_CACHE_TTL = ms('1m');
+
+//
+// Clear all cached auth entries for a given alias ID.
+// Called from sqlite_auth_reset handlers in IMAP/POP3.
+// Because Redis is shared, this invalidates across all processes.
+//
+async function clearAuthCache(client, aliasId) {
+  if (!client || typeof aliasId !== 'string' || !aliasId) return;
+  try {
+    const indexKey = `${AUTH_CACHE_ALIAS_PREFIX}${aliasId}`;
+    const cachedKeys = await client.smembers(indexKey);
+    await (cachedKeys.length > 0
+      ? client.del([indexKey, ...cachedKeys])
+      : client.del(indexKey));
+  } catch (err) {
+    // Cache invalidation is best-effort; TTL is the safety net
+    logger.debug('clearAuthCache error', { err });
+  }
+}
 
 async function onAuth(auth, session, fn) {
   this.logger.debug('AUTH', { auth, session });
@@ -183,6 +230,146 @@ async function onAuth(auth, session, fn) {
             imapResponse: 'CONTACTADMIN'
           }
         );
+      }
+    }
+
+    //
+    // Auth cache: check if we have a valid cached result for this
+    // username + password combination.  On hit we skip DNS, MongoDB,
+    // and argon2 entirely.
+    //
+    const pwHash = crypto
+      .createHash('sha256')
+      .update(auth.password)
+      .digest('hex')
+      .slice(0, 16);
+    const authCacheKey = `${AUTH_CACHE_PREFIX}${auth.username
+      .trim()
+      .toLowerCase()}:${pwHash}`;
+    {
+      let cachedJson;
+      try {
+        cachedJson = await this.client.get(authCacheKey);
+      } catch (err) {
+        this.logger.debug('auth cache read error', { err });
+      }
+
+      if (cachedJson) {
+        let user;
+        try {
+          user = JSON.parse(cachedJson);
+        } catch (err) {
+          this.logger.debug('auth cache parse error', { err });
+        }
+
+        if (
+          user &&
+          typeof user === 'object' &&
+          user.id &&
+          user.domain_id &&
+          user.domain_name
+        ) {
+          // Re-encrypt the current request's password (same password since
+          // the cache key includes the password hash) so the session has
+          // the encrypted password available without storing it in Redis.
+          user.password = encrypt(auth.password);
+          fn(null, { user });
+
+          //
+          // Still run side effects (analytics, sync) on cache hit
+          // so that deduplication and background sync continue to work.
+          //
+          // NOTE: we intentionally skip the email alerts (CalDAV SMTP check,
+          // IMAP-not-enabled check) on cache hit because those are weekly
+          // courtesy checks that already have their own Redis-based dedup.
+          //
+
+          // Track successful authentication for analytics (with deduplication)
+          {
+            let service = 'smtp';
+            if (isIMAP) service = 'imap';
+            else if (isPOP3) service = 'pop3';
+            else if (isCalDAV) service = 'caldav';
+            else if (isCardDAV) service = 'carddav';
+            else if (isAPI) service = 'api';
+
+            let ua = '';
+            if (isIMAP && session.clientId) {
+              ua = analytics.parseIMAPClientId(session.clientId);
+            } else if ((isCalDAV || isCardDAV || isAPI) && session.request) {
+              ua = session.request.get?.('user-agent') || '';
+            } else if (session.hostNameAppearsAs) {
+              ua = session.hostNameAppearsAs;
+            } else if (session.clientHostname) {
+              ua = session.clientHostname;
+            }
+
+            const sessionHash = analytics.generateSessionHash(
+              session.remoteAddress,
+              ua
+            );
+            const dedupKey = `analytics_auth_dedup:${sessionHash}:${service}`;
+
+            this.client
+              .get(dedupKey)
+              .then(async (exists) => {
+                if (!exists) {
+                  await this.client.set(dedupKey, '1', 'PX', ms('1h'));
+                  analytics.trackAuth({
+                    service,
+                    ip: session.remoteAddress,
+                    ua,
+                    user_id: user.id,
+                    domain_id: user.domain_id,
+                    success: true
+                  });
+                }
+              })
+              .catch((err) => {
+                this.logger.debug('Analytics dedup check error', { err });
+              });
+          }
+
+          // Sync messages if applicable (IMAP, POP3, CalDAV, API)
+          if (
+            user.alias_id &&
+            user.alias_has_imap &&
+            (isIMAPorPOP3 || isCalDAV || isAPI) &&
+            this.wsp
+          ) {
+            this.wsp
+              .request(
+                {
+                  action: 'sync',
+                  session: { user }
+                },
+                0
+              )
+              .then((sync) => {
+                this.logger.debug('tmp db sync complete', { sync, session });
+              })
+              .catch((err) =>
+                this.logger.fatal(err, { session, resolver: this.resolver })
+              );
+
+            // daily backup (run in background)
+            this.wsp
+              .request(
+                {
+                  action: 'backup',
+                  backup_at: new Date().toISOString(),
+                  session: { user }
+                },
+                0
+              )
+              .then((backup) => {
+                this.logger.debug('backup complete', { backup, session });
+              })
+              .catch((err) => this.logger.debug(err, { session }));
+          }
+
+          return;
+        }
       }
     }
 
@@ -782,6 +969,7 @@ async function onAuth(auth, session, fn) {
         ? {
             alias_id: alias.id,
             alias_name: alias.name,
+            alias_has_imap: alias.has_imap,
             storage_location: alias.storage_location,
             alias_user_id: alias.user.id
           }
@@ -822,6 +1010,31 @@ async function onAuth(auth, session, fn) {
       // NOTE: this gets updated every time user logs in a browser and loads a page
       timezone: timeZone
     };
+
+    //
+    // Store in Redis auth cache for subsequent requests.
+    // Use a pipeline to atomically set the cache entry and update
+    // the alias index (for efficient invalidation on password change).
+    //
+    try {
+      // Strip the encrypted password before storing in Redis —
+      // we re-encrypt from the request on cache hit instead.
+      const { password: _pw, ...userWithoutPassword } = user;
+      const cacheValue = safeStringify(userWithoutPassword);
+      const pipeline = this.client.pipeline();
+      pipeline.set(authCacheKey, cacheValue, 'PX', AUTH_CACHE_TTL);
+      if (user.alias_id) {
+        const indexKey = `${AUTH_CACHE_ALIAS_PREFIX}${user.alias_id}`;
+        pipeline.sadd(indexKey, authCacheKey);
+        pipeline.pexpire(indexKey, AUTH_CACHE_TTL + ms('10s'));
+      }
+
+      pipeline.exec().catch((err) => {
+        this.logger.debug('auth cache write error', { err });
+      });
+    } catch (err) {
+      this.logger.debug('auth cache serialize error', { err });
+    }
 
     // this response object sets `session.user` to have `domain` and `alias`
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L235>
@@ -891,9 +1104,14 @@ async function onAuth(auth, session, fn) {
     }
 
     //
-    // if we're on IMAP, POP3, or CalDAV server then sync messages with user
+    // if we're on IMAP, POP3, CalDAV, or API server then sync messages with user
     //
-    if (alias && alias.has_imap && (isIMAPorPOP3 || isCalDAV) && this.wsp) {
+    if (
+      alias &&
+      alias.has_imap &&
+      (isIMAPorPOP3 || isCalDAV || isAPI) &&
+      this.wsp
+    ) {
       // sync with tmp db
       this.wsp
         .request(
@@ -948,3 +1166,4 @@ async function onAuth(auth, session, fn) {
 }
 
 module.exports = onAuth;
+module.exports.clearAuthCache = clearAuthCache;

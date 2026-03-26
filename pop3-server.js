@@ -149,6 +149,31 @@ class POP3 {
     this.refreshSession = refreshSession.bind(this);
     this.listen = this.listen.bind(this);
     this.close = this.close.bind(this);
+
+    //
+    // Subscribe to `sqlite_auth_reset` so that when a user changes
+    // their alias password the shared Redis auth cache is immediately
+    // evicted and active POP3 sessions are disconnected.
+    //
+    if (this.subscriber) {
+      this.subscriber.subscribe('sqlite_auth_reset');
+      this.subscriber.on('message', (channel, aliasId) => {
+        if (channel !== 'sqlite_auth_reset') return;
+        // Evict cached auth across all processes via Redis
+        onAuth.clearAuthCache(this.client, aliasId).catch((err) => {
+          logger.debug('clearAuthCache error', { err });
+        });
+
+        // Disconnect active POP3 sessions for this alias
+        if (this.server?.connections) {
+          for (const connection of this.server.connections) {
+            if (connection?.session?.user?.alias_id !== aliasId) continue;
+            connection.send('-ERR Password was changed');
+            setImmediate(() => connection.close());
+          }
+        }
+      });
+    }
   }
 
   async listen(port = env.POP3_PORT, host = '::', ...args) {

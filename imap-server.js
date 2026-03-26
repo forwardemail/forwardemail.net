@@ -287,6 +287,12 @@ class IMAP {
           throw new TypeError('Alias ID missing');
 
         if (channel === 'sqlite_auth_reset') {
+          // Evict cached auth for this alias so the old password
+          // cannot be used on subsequent requests (across all processes).
+          onAuth.clearAuthCache(this.client, id).catch((err) => {
+            this.logger.debug('clearAuthCache error', { err });
+          });
+
           for (const connection of this.server.connections) {
             if (connection?.session?.user?.alias_id !== id) continue;
             connection.clearNotificationListener();
