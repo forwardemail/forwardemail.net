@@ -423,7 +423,13 @@ function buildICS(ctx, events, calendar, method = false) {
     });
   }
 
-  return comp.toString();
+  //
+  // Normalize to CRLF per RFC 5545 Section 3.1.
+  // ical.js preserves whatever line endings the input events had,
+  // so if any stored ICS used bare LF the output would too.
+  //
+  const ics = comp.toString();
+  return ics.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
 }
 
 /**

@@ -9,6 +9,7 @@ const falso = require('@ngneat/falso');
 const isSANB = require('is-string-and-not-blank');
 
 const Aliases = require('#models/aliases');
+const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -283,6 +284,16 @@ async function remove(ctx) {
   if (!calendar) {
     throw Boom.notFound(ctx.translateError('CALENDAR_DOES_NOT_EXIST'));
   }
+
+  //
+  // Delete all events for this calendar BEFORE deleting the calendar itself.
+  // CalendarEvents.calendar has a FOREIGN KEY referencing Calendars._id,
+  // and PRAGMA foreign_keys=ON is set, so deleting the calendar first
+  // would violate the FK constraint and throw a 500 error.
+  //
+  await CalendarEvents.deleteMany(ctx.instance, ctx.state.session, {
+    calendar: calendar._id
+  });
 
   await Calendars.deleteOne(ctx.instance, ctx.state.session, {
     _id: calendar._id

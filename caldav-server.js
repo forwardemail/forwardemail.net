@@ -542,6 +542,24 @@ function bumpSyncToken(synctoken) {
   return `${base}/${num + 1}`;
 }
 
+//
+// Normalize ICS line endings to CRLF per RFC 5545 Section 3.1.
+// Some clients (e.g. Thunderbird, older CalDAV libraries) send ICS
+// with bare LF (\n) instead of CRLF (\r\n).  ical.js preserves
+// whatever line endings the input has, so if we store bare-LF ICS,
+// buildICS() will output bare-LF ICS, which strict clients like
+// iOS Calendar (dataaccessd) may fail to parse.
+//
+// This function:
+//   1. Replaces any existing \r\n with \n (normalize to LF first)
+//   2. Replaces all \n with \r\n (convert to CRLF)
+// This two-step approach avoids doubling existing \r\n to \r\r\n.
+//
+function normalizeICS(icsData) {
+  if (typeof icsData !== 'string') return icsData;
+  return icsData.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
+}
+
 // Helper function to detect component type from ICS data
 function getComponentType(icsData) {
   try {
@@ -1953,7 +1971,7 @@ class CalDAV extends API {
           }
 
           if (existingEvent) {
-            existingEvent.ical = vc.toString();
+            existingEvent.ical = normalizeICS(vc.toString());
 
             await existingEvent.save();
             continue;
@@ -1964,7 +1982,7 @@ class CalDAV extends API {
           eventIdToEvents[eventId].push({
             eventId,
             calendar: calendar._id,
-            ical: vc.toString()
+            ical: normalizeICS(vc.toString())
           });
         }
 
@@ -2651,7 +2669,7 @@ class CalDAV extends API {
       // event obj
       eventId,
       calendar: calendar._id,
-      ical: ctx.request.body,
+      ical: normalizeICS(ctx.request.body),
       // Store the original request URL for sync-collection responses
       href: ctx.url
     };
@@ -2720,7 +2738,46 @@ class CalDAV extends API {
       eventId: calendarEvent.eventId
     });
 
-    const eventCreated = await CalendarEvents.create(calendarEvent);
+    let eventCreated;
+    try {
+      eventCreated = await CalendarEvents.create(calendarEvent);
+    } catch (err) {
+      //
+      // Handle unique constraint violation from the (eventId, calendar)
+      // unique index.  This happens when concurrent PUT requests race
+      // past the findOne check above and both try to insert.
+      // In this case, fall back to updating the existing event.
+      //
+      if (
+        err.message &&
+        (err.message.includes('UNIQUE constraint failed') ||
+          err.message.includes('duplicate key'))
+      ) {
+        ctx.logger.warn(
+          'createEvent: duplicate detected, falling back to update',
+          {
+            eventId,
+            calendarId
+          }
+        );
+        const existing = await CalendarEvents.findOne(this, ctx.state.session, {
+          eventId,
+          calendar: calendar._id
+        });
+        if (existing) {
+          existing.ical = calendarEvent.ical;
+          existing.href = calendarEvent.href;
+          existing.instance = this;
+          existing.session = ctx.state.session;
+          existing.isNew = false;
+          eventCreated = await existing.save();
+        } else {
+          throw err;
+        }
+      } else {
+        throw err;
+      }
+    }
 
     // Fire and forget - don't block the response waiting for email to be sent
     // Use setImmediate to completely detach from the current execution context
@@ -2872,7 +2929,7 @@ class CalDAV extends API {
       e.href = ctx.url;
     }
 
-    e.ical = ctx.request.body;
+    e.ical = normalizeICS(ctx.request.body);
 
     // save event
     e = await e.save();
@@ -2938,7 +2995,7 @@ class CalDAV extends API {
 
         if (resetCount > 0) {
           // Save the updated iCal with reset PARTSTATs
-          e.ical = updatedIcal;
+          e.ical = normalizeICS(updatedIcal);
           e.instance = this;
           e.session = ctx.state.session;
           e.isNew = false;
@@ -3523,9 +3580,8 @@ class CalDAV extends API {
     event.instance = this;
     event.session = ctx.state.session;
     event.isNew = false;
-    event.ical = updatedIcal;
+    event.ical = normalizeICS(updatedIcal);
     event = await event.save();
-
     // Bump the calendar sync token
     await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
       $set: {

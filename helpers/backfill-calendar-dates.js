@@ -152,6 +152,205 @@ async function backfillCalendarDates(instance, session) {
     logger.fatal(err, { session });
   }
 
+  //
+  // Phase 2: Normalize ICS line endings to CRLF (RFC 5545 Section 3.1).
+  // Some events were stored with bare LF which causes parsing failures
+  // in strict CalDAV clients like iOS Calendar.
+  //
+  try {
+    const lfSql = builder.build({
+      type: 'select',
+      table: 'CalendarEvents',
+      condition: { ical: { $ne: null } },
+      fields: ['_id', 'ical']
+    });
+
+    let lfRows;
+    if (session.db.wsp) {
+      lfRows = await instance.wsp.request({
+        action: 'stmt',
+        session: { user: session.user },
+        stmt: [
+          ['prepare', lfSql.query],
+          ['all', lfSql.values]
+        ]
+      });
+      if (!Array.isArray(lfRows)) lfRows = [];
+    } else {
+      lfRows = session.db.prepare(lfSql.query).all(lfSql.values);
+    }
+
+    for (const row of lfRows) {
+      try {
+        if (!row.ical || typeof row.ical !== 'string') continue;
+        // Check if the ICS contains bare LF (not preceded by CR)
+        if (!/(?<!\r)\n/.test(row.ical)) continue;
+        // Normalize: first collapse any existing CRLF to LF, then convert all LF to CRLF
+        const normalized = row.ical
+          .replace(/\r\n/g, '\n')
+          .replace(/\n/g, '\r\n');
+        if (normalized === row.ical) continue;
+        const updateSql = builder.build({
+          type: 'update',
+          table: 'CalendarEvents',
+          condition: { _id: row._id },
+          modifier: { ical: normalized }
+        });
+
+        if (session.db.wsp) {
+          await instance.wsp.request({
+            action: 'stmt',
+            session: { user: session.user },
+            stmt: [
+              ['prepare', updateSql.query],
+              ['run', updateSql.values]
+            ]
+          });
+        } else {
+          session.db.prepare(updateSql.query).run(updateSql.values);
+        }
+
+        stats.updated++;
+      } catch (err) {
+        stats.errors++;
+        logger.warn(err, { eventId: row._id, phase: 'ics-crlf-normalize' });
+      }
+    }
+  } catch (err) {
+    err.isCodeBug = true;
+    logger.fatal(err, { session, phase: 'ics-crlf-normalize' });
+  }
+
+  //
+  // Phase 3: Remove duplicate events (same eventId + calendar).
+  // Duplicates can occur when concurrent PUT requests race past the
+  // findOne check in createEvent.  Keep the most recently updated row.
+  //
+  try {
+    const dupSql = `
+      SELECT "eventId", "calendar", COUNT(*) as cnt
+      FROM "CalendarEvents"
+      GROUP BY "eventId", "calendar"
+      HAVING COUNT(*) > 1
+    `;
+
+    let dupRows;
+    if (session.db.wsp) {
+      dupRows = await instance.wsp.request({
+        action: 'stmt',
+        session: { user: session.user },
+        stmt: [
+          ['prepare', dupSql],
+          ['all', []]
+        ]
+      });
+      if (!Array.isArray(dupRows)) dupRows = [];
+    } else {
+      dupRows = session.db.prepare(dupSql).all();
+    }
+
+    for (const dup of dupRows) {
+      try {
+        // Find all rows for this eventId + calendar, ordered by updated_at DESC
+        const findSql = builder.build({
+          type: 'select',
+          table: 'CalendarEvents',
+          condition: {
+            eventId: dup.eventId,
+            calendar: dup.calendar
+          },
+          sort: { updated_at: -1 }
+        });
+
+        let allDups;
+        if (session.db.wsp) {
+          allDups = await instance.wsp.request({
+            action: 'stmt',
+            session: { user: session.user },
+            stmt: [
+              ['prepare', findSql.query],
+              ['all', findSql.values]
+            ]
+          });
+          if (!Array.isArray(allDups)) allDups = [];
+        } else {
+          allDups = session.db.prepare(findSql.query).all(findSql.values);
+        }
+
+        // Keep the first (most recently updated), delete the rest
+        if (allDups.length <= 1) continue;
+        const idsToDelete = allDups.slice(1).map((r) => r._id);
+        for (const id of idsToDelete) {
+          const delSql = builder.build({
+            type: 'remove',
+            table: 'CalendarEvents',
+            condition: { _id: id }
+          });
+
+          if (session.db.wsp) {
+            await instance.wsp.request({
+              action: 'stmt',
+              session: { user: session.user },
+              stmt: [
+                ['prepare', delSql.query],
+                ['run', delSql.values]
+              ]
+            });
+          } else {
+            session.db.prepare(delSql.query).run(delSql.values);
+          }
+        }
+
+        stats.updated += idsToDelete.length;
+        logger.info('Removed duplicate calendar events', {
+          eventId: dup.eventId,
+          calendar: dup.calendar,
+          removed: idsToDelete.length
+        });
+      } catch (err) {
+        stats.errors++;
+        logger.warn(err, {
+          eventId: dup.eventId,
+          calendar: dup.calendar,
+          phase: 'dedup'
+        });
+      }
+    }
+  } catch (err) {
+    err.isCodeBug = true;
+    logger.fatal(err, { session, phase: 'dedup' });
+  }
+
+  //
+  // Phase 4: Create a unique index on (eventId, calendar) to prevent
+  // future duplicates at the database level.  This must run AFTER
+  // deduplication (Phase 3) or it will fail if duplicates still exist.
+  //
+  try {
+    const createIdxSql =
+      'CREATE UNIQUE INDEX IF NOT EXISTS "CalendarEvents_eventId_calendar" ' +
+      'ON "CalendarEvents" ("eventId", "calendar")';
+
+    if (session.db.wsp) {
+      await instance.wsp.request({
+        action: 'stmt',
+        session: { user: session.user },
+        stmt: [
+          ['prepare', createIdxSql],
+          ['run', []]
+        ]
+      });
+    } else {
+      session.db.prepare(createIdxSql).run();
+    }
+  } catch (err) {
+    // Index may already exist — that's fine
+    if (!err.message.includes('already exists')) {
+      err.isCodeBug = true;
+      logger.fatal(err, { session, phase: 'unique-index' });
+    }
+  }
+
   return stats;
 }
 
