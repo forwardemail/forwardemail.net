@@ -20,10 +20,10 @@ const MessageHandler = require('@zone-eu/wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
 const bytes = require('@forwardemail/bytes');
 const mongoose = require('mongoose');
-const pRetry = require('p-retry');
+const pRetry = require('tiny-pretry');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const { IMAPServer } = require('@zone-eu/wildduck/imap-core');
 
 const Aliases = require('#models/aliases');

@@ -6,7 +6,7 @@
 const fs = require('node:fs');
 
 const bytes = require('@forwardemail/bytes');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const pify = require('pify');
 const { SMTPServer } = require('smtp-server');
 

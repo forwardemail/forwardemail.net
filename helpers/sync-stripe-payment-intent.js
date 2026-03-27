@@ -6,7 +6,7 @@
 const dayjs = require('dayjs-with-plugins');
 const dedent = require('dedent');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');

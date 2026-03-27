@@ -5,7 +5,7 @@
 
 const timers = require('node:timers/promises');
 const undici = require('undici');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const TimeoutError = require('./timeout-error');
 const isRetryableError = require('./is-retryable-error');

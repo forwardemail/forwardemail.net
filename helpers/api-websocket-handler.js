@@ -8,7 +8,7 @@ const url = require('node:url');
 
 const WebSocket = require('ws');
 const basicAuth = require('basic-auth');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const safeStringify = require('fast-safe-stringify');
 
 const Aliases = require('#models/aliases');

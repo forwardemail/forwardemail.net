@@ -17,7 +17,7 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const ip = require('ip');
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const sharedConfig = require('@ladjs/shared-config');
 
 const MX = require('./mx-server');

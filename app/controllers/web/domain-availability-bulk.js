@@ -5,7 +5,7 @@
 
 const Boom = require('@hapi/boom');
 const isFQDN = require('is-fqdn');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const pTimeout = require('p-timeout');
 
 // dynamically import @forwardemail/whois-rdap (ESM package)

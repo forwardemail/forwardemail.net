@@ -11,7 +11,7 @@ const path = require('node:path');
 const process = require('node:process');
 
 const Redis = require('@ladjs/redis');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const revHash = require('rev-hash');
 const sharedConfig = require('@ladjs/shared-config');
 const { Translate } = require('@google-cloud/translate').v2;

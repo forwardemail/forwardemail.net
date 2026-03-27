@@ -23,7 +23,7 @@ const {
 const bytes = require('@forwardemail/bytes');
 // const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const osu = require('node-os-utils');
 
 const checkDiskSpace = require('#helpers/check-disk-space');

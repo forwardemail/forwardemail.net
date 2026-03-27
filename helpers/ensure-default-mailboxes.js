@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const Mailboxes = require('#models/mailboxes');
 const logger = require('#helpers/logger');

@@ -4,7 +4,7 @@
  */
 
 const dayjs = require('dayjs-with-plugins');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const config = require('#config');
 const { Payments } = require('#models');

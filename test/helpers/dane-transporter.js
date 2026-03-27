@@ -13,7 +13,7 @@ const tls = require('node:tls');
 const tlsModule = require('node:tls');
 
 const ip = require('ip');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const nodemailer = require('nodemailer');
 const pWaitFor = require('p-wait-for');
 const test = require('ava');

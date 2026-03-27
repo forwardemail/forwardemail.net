@@ -18,7 +18,7 @@ const Graceful = require('@ladjs/graceful');
 const RE2 = require('re2');
 const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const regexParser = require('regex-parser');
 const sharedConfig = require('@ladjs/shared-config');
 

@@ -5,7 +5,7 @@
 
 const Boom = require('@hapi/boom');
 const dayjs = require('dayjs-with-plugins');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const Aliases = require('#models/aliases');
 const Emails = require('#models/emails');

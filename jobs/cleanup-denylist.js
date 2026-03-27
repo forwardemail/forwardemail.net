@@ -15,7 +15,7 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const pEvent = require('p-event');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');

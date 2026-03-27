@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const pRetry = require('p-retry');
+const pRetry = require('tiny-pretry');
 const mongoose = require('mongoose');
 
 const isRetryableError = require('./is-retryable-error');

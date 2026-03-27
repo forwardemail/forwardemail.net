@@ -7,7 +7,7 @@ const Boom = require('@hapi/boom');
 const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const { boolean } = require('boolean');
 const { isIP } = require('@forwardemail/validator');
 

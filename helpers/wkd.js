@@ -9,7 +9,7 @@ const { isIP } = require('node:net');
 const Boom = require('@hapi/boom');
 const WKDClient = require('@openpgp/wkd-client');
 const isHTML = require('is-html');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const undici = require('undici');
 
 const REGEX_LOCALHOST = require('./regex-localhost');

@@ -15,7 +15,7 @@ require('#config/env');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const pMapSeries = require('p-map-series');
 
 const mongoose = require('mongoose');

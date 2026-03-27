@@ -20,7 +20,7 @@
 const { ImapFlow } = require('imapflow');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
-const ms = require('ms');
+const ms = require('ms-tiny');
 // const mxConnect = require('@forwardemail/mx-connect');
 const nodemailer = require('nodemailer');
 const pWaitFor = require('p-wait-for');

@@ -5,7 +5,7 @@
 
 const Boom = require('@hapi/boom');
 const bytes = require('@forwardemail/bytes');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');

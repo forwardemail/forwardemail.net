@@ -6,7 +6,7 @@
 const test = require('ava');
 const Redis = require('ioredis-mock');
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 const utils = require('./utils');
 
 const Domains = require('#models/domains');

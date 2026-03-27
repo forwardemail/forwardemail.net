@@ -6,7 +6,7 @@
 const path = require('node:path');
 
 const knex = require('knex');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const { SchemaInspector } = require('knex-schema-inspector');
 const _ = require('#helpers/lodash');
 

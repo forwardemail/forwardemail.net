@@ -6,7 +6,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 const undici = require('undici');
 
 const env = require('#config/env');

@@ -18,7 +18,7 @@ const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const env = require('#config/env');
 const logger = require('#helpers/logger');

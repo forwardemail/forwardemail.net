@@ -8,7 +8,7 @@ const punycode = require('node:punycode');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const striptags = require('striptags');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const _ = require('#helpers/lodash');
 
 const Domains = require('#models/domains');

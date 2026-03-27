@@ -16,8 +16,8 @@
 const { Buffer } = require('node:buffer');
 
 const intoStream = require('into-stream');
-const ms = require('ms');
-const pRetry = require('p-retry');
+const ms = require('ms-tiny');
+const pRetry = require('tiny-pretry');
 const pify = require('pify');
 const revHash = require('rev-hash');
 const { Builder } = require('json-sql-enhanced');

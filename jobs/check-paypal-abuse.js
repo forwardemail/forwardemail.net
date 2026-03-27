@@ -17,7 +17,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');

@@ -22,7 +22,7 @@ const { Buffer } = require('node:buffer');
 const { isMainThread } = require('node:worker_threads');
 
 const X509 = require('@peculiar/x509');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const pEvent = require('p-event');
 const pWaitFor = require('p-wait-for');
 const plist = require('plist');

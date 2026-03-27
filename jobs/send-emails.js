@@ -37,12 +37,12 @@ const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 const sharedConfig = require('@ladjs/shared-config');
-const { default: PQueue } = require('p-queue');
+const PQueue = require('tiny-pqueue');
 
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');

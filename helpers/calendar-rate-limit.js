@@ -15,7 +15,7 @@
  * - Per-IP: 50 responses per hour
  */
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 // Rate limit constants
 const RESPONSE_COOLDOWN_MS = ms('5s');

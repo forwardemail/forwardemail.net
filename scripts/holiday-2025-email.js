@@ -14,7 +14,7 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const mongoose = require('mongoose');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 
 const Users = require('#models/users');
 const config = require('#config');

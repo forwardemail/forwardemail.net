@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 
 const getAllStripeCustomers = require('./get-all-stripe-customers');
 

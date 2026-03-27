@@ -17,7 +17,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');

@@ -4,7 +4,7 @@
  */
 
 const { setTimeout } = require('node:timers/promises');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const logger = require('./logger');
 const { paypalAgent } = require('./paypal');

@@ -14,7 +14,7 @@ const util = require('node:util');
 
 const Redis = require('ioredis-mock');
 const ip = require('ip');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const mxConnect = require('@forwardemail/mx-connect');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');

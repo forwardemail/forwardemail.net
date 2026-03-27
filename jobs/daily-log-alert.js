@@ -38,8 +38,8 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const ms = require('ms');
-const pMap = require('p-map');
+const ms = require('ms-tiny');
+const pMap = require('tiny-pmap');
 
 const Domains = require('#models/domains');
 const Logs = require('#models/logs');

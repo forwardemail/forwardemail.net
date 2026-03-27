@@ -8,8 +8,8 @@ const crypto = require('node:crypto');
 const { setTimeout } = require('node:timers/promises');
 const apn = require('@parse/node-apn');
 const dayjs = require('dayjs-with-plugins');
-const ms = require('ms');
-const pMap = require('p-map');
+const ms = require('ms-tiny');
+const pMap = require('tiny-pmap');
 const revHash = require('rev-hash');
 
 const Aliases = require('#models/aliases');

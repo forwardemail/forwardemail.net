@@ -23,7 +23,7 @@ const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const pm2 = require('pm2');
 const prettyMilliseconds = require('pretty-ms');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 

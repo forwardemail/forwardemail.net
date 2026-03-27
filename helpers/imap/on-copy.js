@@ -14,7 +14,7 @@
  */
 
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const tools = require('@zone-eu/wildduck/lib/tools');
 const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');

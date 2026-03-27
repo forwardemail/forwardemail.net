@@ -7,7 +7,7 @@ const { promisify } = require('node:util');
 
 const paypal = require('paypal-rest-sdk');
 const superagent = require('superagent');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const config = require('#config');
 const { paypalRestSdkConfig } = require('#config/payments');

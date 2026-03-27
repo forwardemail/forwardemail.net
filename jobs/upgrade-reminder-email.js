@@ -17,7 +17,7 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const sharedConfig = require('@ladjs/shared-config');
 const { boolean } = require('boolean');
 const mongoose = require('mongoose');

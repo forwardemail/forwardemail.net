@@ -7,7 +7,7 @@ const fs = require('node:fs');
 
 const MarkdownIt = require('markdown-it');
 const markdownItGitHubAlerts = require('markdown-it-github-alerts');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const sanitizeHtml = require('sanitize-html');
 
 // Redis cache key for FAQ structured data

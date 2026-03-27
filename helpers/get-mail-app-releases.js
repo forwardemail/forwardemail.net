@@ -8,7 +8,7 @@ require('#helpers/polyfill-towellformed');
 
 const crypto = require('node:crypto');
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 const undici = require('undici');
 
 const env = require('#config/env');

@@ -13,7 +13,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const revHash = require('rev-hash');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 

@@ -30,7 +30,7 @@ const process = require('node:process');
 const Bree = require('bree');
 const Graceful = require('@ladjs/graceful');
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const env = require('#config/env');
 const logger = require('#helpers/logger');

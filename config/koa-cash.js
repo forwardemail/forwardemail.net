@@ -5,7 +5,7 @@
 
 const { Buffer } = require('node:buffer');
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 const nodeGzip = require('node-gzip');
 const pTimeout = require('p-timeout');
 const safeStringify = require('fast-safe-stringify');
