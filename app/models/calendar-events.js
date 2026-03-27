@@ -256,8 +256,53 @@ const CalendarEvents = new mongoose.Schema(
           this.componentType = 'VEVENT';
         }
 
+        //
+        // Performance: extract date fields and recurrence flag from the
+        // ICS so that getEventsByDate can filter at the SQL level instead
+        // of loading every event and parsing ICS in memory.
+        //
+        const primary = vevent || vtodo;
+        if (primary) {
+          const dtstart = primary.getFirstPropertyValue('dtstart');
+          if (dtstart && dtstart instanceof ICAL.Time) {
+            this.dtstart = dtstart.toJSDate();
+          }
+
+          // VEVENT uses DTEND, VTODO uses DUE
+          const dtend =
+            primary.getFirstPropertyValue('dtend') ||
+            primary.getFirstPropertyValue('due');
+          if (dtend && dtend instanceof ICAL.Time) {
+            this.dtend = dtend.toJSDate();
+          }
+
+          // Check for recurrence rules
+          const hasRrule = primary.getFirstProperty('rrule');
+          const hasRdate = primary.getFirstProperty('rdate');
+          this.is_recurring = Boolean(hasRrule || hasRdate);
+        }
+
         return true;
       }
+    },
+
+    //
+    // Performance: denormalized date fields extracted from ICS on
+    // create/update so getEventsByDate can filter at the SQL level.
+    // For non-recurring events this eliminates ICS parsing entirely.
+    //
+    dtstart: {
+      type: Date,
+      index: true
+    },
+    dtend: {
+      type: Date,
+      index: true
+    },
+    is_recurring: {
+      type: Boolean,
+      default: false,
+      index: true
     }
 
     // TODO: output the data types below and enforce them stricter
@@ -290,6 +335,13 @@ const CalendarEvents = new mongoose.Schema(
 
 // Composite index for efficient querying of non-deleted events per calendar
 CalendarEvents.index({ calendar: 1, deleted_at: 1 });
+
+// Composite index for date-range queries (getEventsByDate)
+// Covers: WHERE calendar = ? AND deleted_at IS NULL AND dtstart <= ? AND dtend >= ?
+CalendarEvents.index({ calendar: 1, deleted_at: 1, dtstart: 1, dtend: 1 });
+
+// Composite index for component type filtering
+CalendarEvents.index({ calendar: 1, deleted_at: 1, componentType: 1 });
 
 CalendarEvents.plugin(sqliteVirtualDB);
 CalendarEvents.plugin(validationErrorTransform);

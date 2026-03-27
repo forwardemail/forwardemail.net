@@ -46,6 +46,7 @@ const setupPragma = require('#helpers/setup-pragma');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const backfillCalendarDates = require('#helpers/backfill-calendar-dates');
 const { fixCalDAVHref } = require('#helpers/fix-caldav-href');
 
 const builder = new Builder({ bufferAsNative: true });
@@ -515,6 +516,7 @@ async function getDatabase(
     let highestmodseqCheck = !instance.server;
     let storageFormatCheck = !instance.server;
     let caldavHrefCheck = !instance.server;
+    let calendarDateCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
@@ -527,7 +529,8 @@ async function getDatabase(
           `calendar_duplicate_check:${session.user.alias_id}`,
           `highestmodseq_check:${session.user.alias_id}`,
           `storage_format_check:${session.user.alias_id}`,
-          `caldav_href_check:${session.user.alias_id}`
+          `caldav_href_check:${session.user.alias_id}`,
+          `calendar_date_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
@@ -538,6 +541,7 @@ async function getDatabase(
         highestmodseqCheck = boolean(results[6]);
         storageFormatCheck = boolean(results[7]);
         caldavHrefCheck = boolean(results[8]);
+        calendarDateCheck = boolean(results[9]);
 
         // If Redis cache miss, check the MongoDB field as fallback
         if (!storageFormatCheck && alias.has_storage_format_migration) {
@@ -1031,6 +1035,35 @@ async function getDatabase(
       }
     }
 
+    //
+    // Backfill dtstart, dtend, and is_recurring columns for CalendarEvents
+    // that were created before these columns were added to the schema.
+    // This enables SQL-level date filtering in getEventsByDate instead of
+    // loading every event and parsing ICS in memory.
+    // (only do this once every 30 days per alias)
+    //
+    if (!calendarDateCheck) {
+      try {
+        await instance.client.set(
+          `calendar_date_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('30d')
+        );
+
+        const stats = await backfillCalendarDates(instance, session);
+
+        if (stats.updated > 0 || stats.errors > 0) {
+          logger.info('CalendarEvents date backfill completed', {
+            session,
+            stats
+          });
+        }
+      } catch (err) {
+        logger.fatal(err, { session, resolver: instance.resolver });
+      }
+    }
+
     if (
       !migrateCheck ||
       !folderCheck ||
@@ -1040,7 +1073,8 @@ async function getDatabase(
       !calendarDuplicateCheck ||
       !highestmodseqCheck ||
       !storageFormatCheck ||
-      !caldavHrefCheck
+      !caldavHrefCheck ||
+      !calendarDateCheck
     ) {
       try {
         //

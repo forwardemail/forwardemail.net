@@ -1109,28 +1109,59 @@ class CalDAV extends API {
         try {
           await this.handleManagedAttachment(ctx);
         } catch (err) {
-          err.isCodeBug = isCodeBug(err);
-          ctx.logger.error('Managed attachment error', {
-            err,
-            method: ctx.method,
-            url: ctx.url
-          });
-          const errStatus = err.isBoom
-            ? err.output.statusCode
-            : err.status || 500;
-          ctx.status = errStatus;
-          ctx.set('Content-Type', 'application/xml; charset="utf-8"');
-          ctx.body = [
-            '<?xml version="1.0" encoding="utf-8"?>',
-            '<D:error xmlns:D="DAV:">',
-            `  <D:status>HTTP/1.1 ${errStatus} ${sanitizeHtml(
-              err.isCodeBug
+          try {
+            err.isCodeBug = isCodeBug(err);
+            const errStatus = err.isBoom
+              ? err.output.statusCode
+              : err.status || 500;
+            const safeMessage =
+              err.isCodeBug || errStatus >= 500
                 ? 'Internal Server Error'
-                : err.message || 'Internal Server Error',
-              { allowedTags: [], allowedAttributes: {} }
-            )}</D:status>`,
-            '</D:error>'
-          ].join('\n');
+                : sanitizeHtml(err.message || 'Internal Server Error', {
+                    allowedTags: [],
+                    allowedAttributes: {}
+                  });
+            ctx.logger.error('Managed attachment error', {
+              err,
+              method: ctx.method,
+              url: ctx.url,
+              status: errStatus,
+              alias_id: ctx.state?.session?.user?.alias_id,
+              alias_name: ctx.state?.session?.user?.alias_name,
+              domain_name: ctx.state?.session?.user?.domain_name,
+              user_agent: ctx.get('User-Agent'),
+              content_type: ctx.get('Content-Type')
+            });
+            ctx.status = errStatus;
+            ctx.set('Content-Type', 'application/xml; charset="utf-8"');
+            if (errStatus === 401) {
+              ctx.set(
+                'WWW-Authenticate',
+                'Basic realm="CalDAV", charset="UTF-8"'
+              );
+            }
+
+            ctx.body = [
+              '<?xml version="1.0" encoding="utf-8"?>',
+              '<D:error xmlns:D="DAV:">',
+              `  <D:status>HTTP/1.1 ${errStatus} ${safeMessage}</D:status>`,
+              '</D:error>'
+            ].join('\n');
+          } catch (innerErr) {
+            try {
+              ctx.logger.fatal('POST error handler failed', {
+                innerErr,
+                originalErr: err
+              });
+            } catch {
+              // Ignore logging failures
+            }
+
+            ctx.status = 500;
+            ctx.set('Content-Type', 'application/xml; charset="utf-8"');
+            ctx.body =
+              '<?xml version="1.0" encoding="utf-8"?>\n<D:error xmlns:D="DAV:">\n  <D:status>HTTP/1.1 500 Internal Server Error</D:status>\n</D:error>';
+          }
         }
 
         return;
@@ -1150,15 +1181,49 @@ class CalDAV extends API {
         try {
           await this.handleAttachmentGet(ctx);
         } catch (err) {
-          err.isCodeBug = isCodeBug(err);
-          ctx.logger.error('Attachment GET error', { err, url: ctx.url });
-          const errStatus = err.isBoom
-            ? err.output.statusCode
-            : err.status || 500;
-          ctx.status = errStatus;
-          ctx.body = err.isCodeBug
-            ? 'Internal Server Error'
-            : err.message || 'Internal Server Error';
+          try {
+            err.isCodeBug = isCodeBug(err);
+            const errStatus = err.isBoom
+              ? err.output.statusCode
+              : err.status || 500;
+            const safeMessage =
+              err.isCodeBug || errStatus >= 500
+                ? 'Internal Server Error'
+                : sanitizeHtml(err.message || 'Internal Server Error', {
+                    allowedTags: [],
+                    allowedAttributes: {}
+                  });
+            ctx.logger.error('Attachment GET error', {
+              err,
+              url: ctx.url,
+              status: errStatus,
+              alias_id: ctx.state?.session?.user?.alias_id,
+              alias_name: ctx.state?.session?.user?.alias_name,
+              domain_name: ctx.state?.session?.user?.domain_name,
+              user_agent: ctx.get('User-Agent')
+            });
+            ctx.status = errStatus;
+            if (errStatus === 401) {
+              ctx.set(
+                'WWW-Authenticate',
+                'Basic realm="CalDAV", charset="UTF-8"'
+              );
+            }
+
+            ctx.body = safeMessage;
+          } catch (innerErr) {
+            try {
+              ctx.logger.fatal('GET attachment error handler failed', {
+                innerErr,
+                originalErr: err
+              });
+            } catch {
+              // Ignore logging failures
+            }
+
+            ctx.status = 500;
+            ctx.body = 'Internal Server Error';
+          }
         }
 
         return;
@@ -1167,37 +1232,119 @@ class CalDAV extends API {
       try {
         await caldavMiddleware(ctx, next);
       } catch (err) {
-        err.isCodeBug = isCodeBug(err);
-        ctx.logger.error('CalDAV request error', {
-          err,
-          method: ctx.method,
-          url: ctx.url,
-          status: err.status || err.output?.statusCode
-        });
+        //
+        // Bulletproof error handler: wrap the entire catch block in its
+        // own try/catch so that NO error can escape to koa-better-error-handler.
+        // koa-better-error-handler converts ReferenceError/TypeError/etc. to
+        // generic 500 "An internal server error occurred" in production, which
+        // hides the real status code (e.g. 401) from CalDAV clients.
+        //
+        try {
+          err.isCodeBug = isCodeBug(err);
 
-        // Determine the appropriate HTTP status code
-        const status = err.isBoom ? err.output.statusCode : err.status || 500;
+          // Determine the appropriate HTTP status code
+          const status = err.isBoom ? err.output.statusCode : err.status || 500;
 
-        // Return a proper WebDAV XML error response
-        // so CalDAV clients see the real status code
-        ctx.status = status;
-        ctx.set('Content-Type', 'application/xml; charset="utf-8"');
-        ctx.body = [
-          '<?xml version="1.0" encoding="utf-8"?>',
-          '<D:error xmlns:D="DAV:">',
-          `  <D:status>HTTP/1.1 ${status} ${
-            err.isCodeBug
+          // Build a safe error message for the response
+          const safeMessage =
+            err.isCodeBug || status >= 500
               ? 'Internal Server Error'
-              : err.message || 'Internal Server Error'
-          }</D:status>`,
-          `  <D:description>${sanitizeHtml(
-            err.isCodeBug
-              ? 'Internal Server Error'
-              : err.message || 'Internal Server Error',
-            { allowedTags: [], allowedAttributes: {} }
-          )}</D:description>`,
-          '</D:error>'
-        ].join('\n');
+              : sanitizeHtml(err.message || 'Internal Server Error', {
+                  allowedTags: [],
+                  allowedAttributes: {}
+                });
+
+          //
+          // Enhanced error logging with full request context.
+          // CalDAV 500 errors are difficult to debug without knowing
+          // which calendar/event was being accessed, what the client
+          // sent, and which data method failed.  This captures all
+          // relevant context in a single structured log entry.
+          //
+          const errorContext = {
+            err,
+            method: ctx.method,
+            url: ctx.url,
+            status,
+            // Calendar and event identifiers from URL params
+            calendar_id: ctx.state?.params?.calendarId,
+            event_id: ctx.state?.params?.eventId,
+            principal_id: ctx.state?.params?.principalId,
+            // User context (alias info for cross-referencing)
+            alias_id: ctx.state?.session?.user?.alias_id,
+            alias_name: ctx.state?.session?.user?.alias_name,
+            domain_name: ctx.state?.session?.user?.domain_name,
+            // Request headers that help identify the client and request type
+            user_agent: ctx.get('User-Agent'),
+            depth: ctx.get('Depth'),
+            content_type: ctx.get('Content-Type'),
+            // Request body for write operations (PUT, PROPPATCH, MKCALENDAR)
+            // Truncate to 2KB to avoid bloating logs with large ICS payloads
+            request_body:
+              ctx.method !== 'GET' &&
+              ctx.method !== 'PROPFIND' &&
+              ctx.method !== 'DELETE'
+                ? typeof ctx.request?.body === 'string'
+                  ? ctx.request.body.slice(0, 2048)
+                  : typeof ctx.request?.body === 'object'
+                  ? JSON.stringify(ctx.request.body).slice(0, 2048)
+                  : undefined
+                : undefined
+          };
+
+          // Use fatal for 500 (server bugs), error for client errors
+          if (!status || status >= 500) {
+            ctx.logger.fatal(err, errorContext);
+          } else {
+            ctx.logger.error(err, errorContext);
+          }
+
+          // Set the response
+          ctx.status = status;
+          ctx.set('Content-Type', 'application/xml; charset="utf-8"');
+
+          //
+          // RFC 4918 Section 11: 401 responses MUST include a
+          // WWW-Authenticate header so CalDAV clients can re-prompt
+          // for credentials instead of showing a generic error.
+          //
+          if (status === 401) {
+            ctx.set(
+              'WWW-Authenticate',
+              'Basic realm="CalDAV", charset="UTF-8"'
+            );
+          }
+
+          ctx.body = [
+            '<?xml version="1.0" encoding="utf-8"?>',
+            '<D:error xmlns:D="DAV:">',
+            `  <D:status>HTTP/1.1 ${status} ${safeMessage}</D:status>`,
+            `  <D:description>${safeMessage}</D:description>`,
+            '</D:error>'
+          ].join('\n');
+        } catch (innerErr) {
+          // Last resort: if even the error handler fails, log it and
+          // return a minimal 500 response.  This prevents the error
+          // from reaching koa-better-error-handler entirely.
+          try {
+            ctx.logger.fatal('CalDAV error handler failed', {
+              innerErr,
+              originalErr: err
+            });
+          } catch {
+            // Ignore logging failures
+          }
+
+          ctx.status = 500;
+          ctx.set('Content-Type', 'application/xml; charset="utf-8"');
+          ctx.body = [
+            '<?xml version="1.0" encoding="utf-8"?>',
+            '<D:error xmlns:D="DAV:">',
+            '  <D:status>HTTP/1.1 500 Internal Server Error</D:status>',
+            '  <D:description>Internal Server Error</D:description>',
+            '</D:error>'
+          ].join('\n');
+        }
       }
     });
   }
@@ -1882,13 +2029,22 @@ class CalDAV extends API {
 
   async getEventsForCalendar(
     ctx,
-    { calendarId, principalId, user, fullData, showDeleted, syncToken }
+    {
+      calendarId,
+      principalId,
+      user,
+      fullData,
+      showDeleted,
+      syncToken,
+      componentType
+    }
   ) {
     ctx.logger.debug('getEventsForCalendar', {
       calendarId,
       principalId,
       fullData,
-      syncToken
+      syncToken,
+      componentType
     });
 
     let calendar;
@@ -1941,6 +2097,14 @@ class CalDAV extends API {
       if (!showDeleted) filter.deleted_at = { $exists: false };
 
       //
+      // Performance: when the client specifies a component type filter
+      // (e.g. VEVENT or VTODO from calendar-query comp-filter), restrict
+      // the SQL query to only matching rows.  This avoids loading VTODO
+      // rows when the client only wants VEVENTs and vice versa.
+      //
+      if (componentType) filter.componentType = componentType;
+
+      //
       // Performance: when the client does not request calendar-data
       // (fullData === false), skip loading the large `ical` column.
       // For calendars with hundreds/thousands of events this avoids
@@ -1985,14 +2149,15 @@ class CalDAV extends API {
 
   async getEventsByDate(
     ctx,
-    { calendarId, start, end, principalId, user, fullData }
+    { calendarId, start, end, principalId, user, fullData, componentType }
   ) {
     ctx.logger.debug('getEventsByDate', {
       calendarId,
       start,
       end,
       principalId,
-      fullData
+      fullData,
+      componentType
     });
 
     const calendar = await this.getCalendar(ctx, {
@@ -2006,25 +2171,116 @@ class CalDAV extends API {
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    // TODO: incorporate database date query instead of this in-memory filtering
-    // TODO: we could do partial query for not recurring and b/w and then has recurring and after
     //
-    // Performance: exclude soft-deleted events at the SQL level
+    // Performance optimization: split into two queries to avoid loading
+    // and parsing ICS blobs for events that can be filtered at SQL level.
     //
-    const events = await CalendarEvents.find(this, ctx.state.session, {
+    // 1. Non-recurring events: filter by dtstart/dtend at SQL level
+    //    (no ICS parsing needed — dates were extracted on create/update)
+    // 2. Recurring events: must load ICS and expand rrule to check
+    //    if any occurrence falls in the requested date range
+    //
+    // For calendars with 200+ events where only ~20 fall in the date
+    // range, this avoids parsing ~180 ICS blobs per query.
+    //
+    const baseFilter = {
       calendar: calendar._id,
       deleted_at: { $exists: false }
+    };
+    if (componentType) baseFilter.componentType = componentType;
+
+    //
+    // Query 1: Non-recurring events with SQL-level date filtering.
+    // An event overlaps the range [start, end] when:
+    //   event.dtstart <= end AND event.dtend >= start
+    //
+    // Events without dtstart/dtend (legacy rows before schema migration)
+    // are handled in Query 2 as a fallback.
+    //
+    //
+    // Non-recurring filter: require dtstart to exist (non-null) to
+    // exclude legacy pre-migration rows.  Legacy rows are handled
+    // separately in Query 3 below to avoid duplicates.
+    //
+    const nonRecurringFilter = {
+      ...baseFilter,
+      is_recurring: false,
+      dtstart: { $exists: true }
+    };
+
+    // Only add date constraints when the client provides them.
+    // Note: dtstart already has $exists:true above; we merge the
+    // $lte constraint into the same object when `end` is provided.
+    if (start) nonRecurringFilter.dtend = { $gte: start };
+    if (end)
+      nonRecurringFilter.dtstart = { ...nonRecurringFilter.dtstart, $lte: end };
+
+    const nonRecurringEvents = await CalendarEvents.find(
+      this,
+      ctx.state.session,
+      nonRecurringFilter
+    );
+
+    ctx.logger.debug('non-recurring events matched at SQL level', {
+      count: nonRecurringEvents.length
     });
 
-    const filtered = [];
+    //
+    // Query 2: Recurring events — must parse ICS and expand rrule.
+    // Also catches legacy events that have is_recurring=false but
+    // dtstart/dtend are null (pre-migration rows).
+    //
+    const recurringFilter = {
+      ...baseFilter,
+      is_recurring: true
+    };
 
+    const recurringEvents = await CalendarEvents.find(
+      this,
+      ctx.state.session,
+      recurringFilter
+    );
+
+    ctx.logger.debug('recurring events to expand', {
+      count: recurringEvents.length
+    });
+
+    //
+    // Also query for legacy events that don't have dtstart populated
+    // (created before the schema migration).  These need ICS parsing.
+    //
+    // NOTE: we use $exists: false to find rows where dtstart IS NULL,
+    // which indicates a pre-migration event that needs ICS parsing.
+    //
+    const legacyFilter = {
+      ...baseFilter,
+      is_recurring: false,
+      dtstart: { $exists: false }
+    };
+
+    const legacyEvents = await CalendarEvents.find(
+      this,
+      ctx.state.session,
+      legacyFilter
+    );
+
+    if (legacyEvents.length > 0) {
+      ctx.logger.debug('legacy events without dtstart (need ICS parsing)', {
+        count: legacyEvents.length
+      });
+    }
+
+    // Start with all non-recurring events that matched at SQL level
+    const filtered = [...nonRecurringEvents];
+
+    //
+    // Now parse ICS only for recurring events + legacy events
     //
     // NOTE: an event can have multiple RRULE, RDATE, EXDATE values
     // NOTE: if you update this, also update the logic in /v1/calendar-events for list querying
-    // NOTE: if you update this, also update the logic in /v1/calendar-events for list querying
-    // NOTE: if you update this, also update the logic in /v1/calendar-events for list querying
     //
-    for (const event of events) {
+    const eventsNeedingParsing = [...recurringEvents, ...legacyEvents];
+    for (const event of eventsNeedingParsing) {
       const comp = new ICAL.Component(ICAL.parse(event.ical));
       const vevents = comp.getAllSubcomponents('vevent');
       const vtodos = comp.getAllSubcomponents('vtodo');
@@ -2068,6 +2324,7 @@ class CalDAV extends API {
         }
 
         if (lines.length === 0) {
+          // Non-recurring legacy event without dtstart/dtend in DB
           if (
             (!start || (dtend && start <= dtend)) &&
             (!end || (dtstart && end >= dtstart))

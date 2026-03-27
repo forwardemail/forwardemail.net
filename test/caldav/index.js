@@ -1349,7 +1349,21 @@ test('calendarMultiGet should be able to get multiple VTODO objects', async (t) 
 
   const calendarObjects = await fetchCalendarObjects({
     calendar: taskCalendar,
-    headers: t.context.authHeaders
+    headers: t.context.authHeaders,
+    filters: [
+      {
+        'comp-filter': {
+          _attributes: {
+            name: 'VCALENDAR'
+          },
+          'comp-filter': {
+            _attributes: {
+              name: 'VTODO'
+            }
+          }
+        }
+      }
+    ]
   });
 
   t.is(calendarObjects.length, 2);
@@ -1423,16 +1437,38 @@ test('unified calendar should accept both VEVENT and VTODO', async (t) => {
   });
   t.true(taskResponse.ok);
 
-  // Verify both exist
-  const objects = await fetchCalendarObjects({
+  // Verify both exist — fetch VEVENTs and VTODOs separately since
+  // calendar-query comp-filter restricts by component type
+  const eventObjects = await fetchCalendarObjects({
     calendar: unifiedCal,
     headers: t.context.authHeaders
   });
-  t.true(objects.length >= 2);
+  const taskObjects = await fetchCalendarObjects({
+    calendar: unifiedCal,
+    headers: t.context.authHeaders,
+    filters: [
+      {
+        'comp-filter': {
+          _attributes: {
+            name: 'VCALENDAR'
+          },
+          'comp-filter': {
+            _attributes: {
+              name: 'VTODO'
+            }
+          }
+        }
+      }
+    ]
+  });
+  t.true(eventObjects.length > 0);
+  t.true(taskObjects.length > 0);
 
   // Verify we can retrieve both types
-  const hasEvent = objects.some((obj) => obj.data.includes('BEGIN:VEVENT'));
-  const hasTask = objects.some((obj) => obj.data.includes('BEGIN:VTODO'));
+  const hasEvent = eventObjects.some((obj) =>
+    obj.data.includes('BEGIN:VEVENT')
+  );
+  const hasTask = taskObjects.some((obj) => obj.data.includes('BEGIN:VTODO'));
   t.true(hasEvent);
   t.true(hasTask);
 
@@ -1692,7 +1728,21 @@ test('VTODO with subtasks (RELATED-TO)', async (t) => {
   // Fetch all tasks (should include parent and subtasks)
   const objects = await fetchCalendarObjects({
     calendar: taskCalendar,
-    headers: t.context.authHeaders
+    headers: t.context.authHeaders,
+    filters: [
+      {
+        'comp-filter': {
+          _attributes: {
+            name: 'VCALENDAR'
+          },
+          'comp-filter': {
+            _attributes: {
+              name: 'VTODO'
+            }
+          }
+        }
+      }
+    ]
   });
 
   // Should have at least 4 tasks (parent + 3 subtasks)
@@ -1757,13 +1807,30 @@ test('fetchCalendarObjects with timeRange for VTODO', async (t) => {
   });
 
   // Query tasks due within a specific time range
+  // Use custom VTODO filter with time-range since tsdav defaults to VEVENT
   const objects = await fetchCalendarObjects({
     calendar: taskCalendar,
     headers: t.context.authHeaders,
-    timeRange: {
-      start: '2021-04-01T00:00:00.000Z',
-      end: '2021-04-06T23:59:59.999Z'
-    }
+    filters: [
+      {
+        'comp-filter': {
+          _attributes: {
+            name: 'VCALENDAR'
+          },
+          'comp-filter': {
+            _attributes: {
+              name: 'VTODO'
+            },
+            'time-range': {
+              _attributes: {
+                start: '20210401T000000Z',
+                end: '20210406T235959Z'
+              }
+            }
+          }
+        }
+      }
+    ]
   });
 
   // Should return task with due date in April 2021
