@@ -393,9 +393,32 @@ function buildICS(ctx, events, calendar, method = false) {
     }
   }
 
-  // add all VEVENTS and VTODOS
+  //
+  // Track which VTIMEZONE TZIDs have already been added to avoid
+  // duplicates when multiple events reference the same timezone.
+  //
+  const addedTimezones = new Set();
+
+  // add all VTIMEZONES, VEVENTS, and VTODOS
   for (const event of eventArray) {
     const eventComp = new ICAL.Component(ICAL.parse(event.ical));
+
+    //
+    // RFC 5545 Section 3.6.5: VTIMEZONE components MUST be present
+    // when any DATE-TIME property value includes a TZID parameter.
+    // Without these, clients like Apple Calendar (dataaccessd) may
+    // treat timezone-qualified times as floating, displaying e.g.
+    // an Eastern Time event at its face-value hour in Mountain Time.
+    //
+    const vtimezones = eventComp.getAllSubcomponents('vtimezone');
+    for (const vtz of vtimezones) {
+      const tzid = vtz.getFirstPropertyValue('tzid');
+      if (tzid && !addedTimezones.has(tzid)) {
+        addedTimezones.add(tzid);
+        comp.addSubcomponent(vtz);
+      }
+    }
+
     const vevents = eventComp.getAllSubcomponents('vevent');
     const vtodos = eventComp.getAllSubcomponents('vtodo');
 
@@ -645,6 +668,11 @@ async function sendCalendarEmail(
 
           // Build a REPLY ICS containing only the attendee's VEVENT
           const vc = new ICAL.Component(['vcalendar', [], []]);
+          // Preserve VTIMEZONE components (RFC 5545 Section 3.6.5)
+          for (const vtz of comp.getAllSubcomponents('vtimezone')) {
+            vc.addSubcomponent(vtz);
+          }
+
           vc.addSubcomponent(vevent);
           const ics = buildICS(
             ctx,
@@ -769,6 +797,11 @@ async function sendCalendarEmail(
 
           try {
             const vc = new ICAL.Component(['vcalendar', [], []]);
+            // Preserve VTIMEZONE components (RFC 5545 Section 3.6.5)
+            for (const vtz of comp.getAllSubcomponents('vtimezone')) {
+              vc.addSubcomponent(vtz);
+            }
+
             vc.addSubcomponent(oldV);
 
             const ics = buildICS(
@@ -916,6 +949,11 @@ async function sendCalendarEmail(
         // the complete recurring event with the override they were added to.
         //
         const vc = new ICAL.Component(['vcalendar', [], []]);
+        // Preserve VTIMEZONE components (RFC 5545 Section 3.6.5)
+        for (const vtz of comp.getAllSubcomponents('vtimezone')) {
+          vc.addSubcomponent(vtz);
+        }
+
         for (const v of vevents) {
           vc.addSubcomponent(v);
         }

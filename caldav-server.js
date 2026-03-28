@@ -1936,12 +1936,24 @@ class CalDAV extends API {
         // we group together events by UID and build a new ICS for each
         const eventIdToEvents = {};
 
+        //
+        // Collect VTIMEZONE components from the source VCALENDAR so
+        // they can be preserved when re-wrapping individual VEVENTs.
+        // RFC 5545 Section 3.6.5 requires VTIMEZONE to be present
+        // whenever a TZID parameter is referenced.
+        //
+        const vtimezones = comp.getAllSubcomponents('vtimezone');
+
         // a bit of a hack but it will get us the ical string and then rebuild it together with other occurences
         for (const vevent of vevents) {
           const eventId = vevent.getFirstPropertyValue('uid');
           if (!isSANB(eventId)) continue;
 
           const vc = new ICAL.Component(['vcalendar', [], []]);
+          for (const vtz of vtimezones) {
+            vc.addSubcomponent(vtz);
+          }
+
           vc.addSubcomponent(vevent);
 
           // Check if the event already exists, and if so, then simply update it.
