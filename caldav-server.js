@@ -2599,7 +2599,8 @@ class CalDAV extends API {
     for (const variant of eventIdVariants) {
       event = await CalendarEvents.findOne(this, ctx.state.session, {
         eventId: variant,
-        calendar: calendar._id
+        calendar: calendar._id,
+        deleted_at: { $exists: false }
       });
       if (event) break;
     }
@@ -2608,7 +2609,8 @@ class CalDAV extends API {
     if (!event && isEmail(eventIdVariants[0])) {
       event = await CalendarEvents.findOne(this, ctx.state.session, {
         eventId: eventIdVariants[0].replace('@', '_'),
-        calendar: calendar._id
+        calendar: calendar._id,
+        deleted_at: { $exists: false }
       });
     }
 
