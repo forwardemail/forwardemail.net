@@ -152,12 +152,8 @@ function isArbitrary(session, headers) {
   }
 
   // CNN News Health display name spam
-  if (from && from.toLowerCase().includes('cnn news health')) {
-    throw new SMTPError(
-      'Blocked CNN News Health display name spam, please forward this to ' +
-        config.abuseEmail
-    );
-  }
+  if (from && from.toLowerCase().includes('cnn health news'))
+    throw new SMTPError('Spam', { responseCode: 421 });
 
   //
   // check for paypal scam (very strict until PayPal resolves phishing on their side)

@@ -287,8 +287,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0(axe@13.0.0)
       caldav-adapter:
-        specifier: 9.3.5
-        version: 9.3.5
+        specifier: 9.3.6
+        version: 9.3.6
       capitalize:
         specifier: 2.0.4
         version: 2.0.4
@@ -3127,7 +3127,6 @@ packages:
   '@lancedb/lancedb@0.22.3':
     resolution: {integrity: sha512-nRC0fkg+d7dzCtudKHT+VH7znk6KUXRZyuS6HJYNnIrbvXBxaT6wAPjEbf70KTuqvP2znj48Zg+kiwRqkRnAJw==}
     engines: {node: '>= 18'}
-    cpu: [x64, arm64]
     os: [darwin, linux, win32]
     peerDependencies:
       apache-arrow: '>=15.0.0 <=18.1.0'
@@ -6569,8 +6568,8 @@ packages:
     resolution: {integrity: sha512-kpqOvwXnjjN44D89K5ccQC+RUrsy7jB/XLlRrx0D7/2HNcTPqzsb6XgYoErwko6QsV184CA2YgS1fxDiiDZMWA==}
     engines: {node: '>=8'}
 
-  caldav-adapter@9.3.5:
-    resolution: {integrity: sha512-SI+dR1lpoUxAZ/pd4eH50kde0TLfHKN253F+3hKTFu3HKGaV6E30Wb7EQHZhDvlCoGWQo7MFBELiOruHIfo3UQ==}
+  caldav-adapter@9.3.6:
+    resolution: {integrity: sha512-/+OUTSPRMkLYyYVAwsbWpsy3xbwWtZvoqyktCMGsO7EhacAd2f48ip2SCeCJLk263l5UVvZUirPfnj53KmBeIw==}
     engines: {node: '>=18'}
 
   call-bind-apply-helpers@1.0.2:
@@ -26278,7 +26277,7 @@ snapshots:
       package-hash: 4.0.0
       write-file-atomic: 3.0.3
 
-  caldav-adapter@9.3.5:
+  caldav-adapter@9.3.6:
     dependencies:
       '@xmldom/xmldom': 0.8.11
       basic-auth: 2.0.1
@@ -28529,7 +28528,7 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
       '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
       eslint: 7.32.0
@@ -41689,7 +41688,7 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
       eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.105.4)
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)
