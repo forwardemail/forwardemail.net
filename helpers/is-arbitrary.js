@@ -152,8 +152,13 @@ function isArbitrary(session, headers) {
   }
 
   // CNN News Health display name spam
-  if (from && from.toLowerCase().includes('cnn health news'))
+  if (
+    from &&
+    (from.toLowerCase().includes('cnn health news') ||
+      from.toLowerCase().includes('cnn news health'))
+  ) {
     throw new SMTPError('Spam', { responseCode: 421 });
+  }
 
   //
   // check for paypal scam (very strict until PayPal resolves phishing on their side)
