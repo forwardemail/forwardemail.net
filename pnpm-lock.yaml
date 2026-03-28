@@ -287,8 +287,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0(axe@13.0.0)
       caldav-adapter:
-        specifier: 9.3.6
-        version: 9.3.6
+        specifier: 9.3.7
+        version: 9.3.7
       capitalize:
         specifier: 2.0.4
         version: 2.0.4
@@ -6568,8 +6568,8 @@ packages:
     resolution: {integrity: sha512-kpqOvwXnjjN44D89K5ccQC+RUrsy7jB/XLlRrx0D7/2HNcTPqzsb6XgYoErwko6QsV184CA2YgS1fxDiiDZMWA==}
     engines: {node: '>=8'}
 
-  caldav-adapter@9.3.6:
-    resolution: {integrity: sha512-/+OUTSPRMkLYyYVAwsbWpsy3xbwWtZvoqyktCMGsO7EhacAd2f48ip2SCeCJLk263l5UVvZUirPfnj53KmBeIw==}
+  caldav-adapter@9.3.7:
+    resolution: {integrity: sha512-1kBbM0VGojdI5O8Waq4nY9/5I+zUHkzTzMicUKAK2nDXfStqzO/B8+8ZtWGcVQXFo/gsKFqMZcp+334C0Bmslw==}
     engines: {node: '>=18'}
 
   call-bind-apply-helpers@1.0.2:
@@ -26277,7 +26277,7 @@ snapshots:
       package-hash: 4.0.0
       write-file-atomic: 3.0.3
 
-  caldav-adapter@9.3.6:
+  caldav-adapter@9.3.7:
     dependencies:
       '@xmldom/xmldom': 0.8.11
       basic-auth: 2.0.1
