@@ -1272,7 +1272,7 @@ test('fetchCalendarObjects should be able to filter VTODO by status', async (t) 
             _attributes: { name: 'STATUS' },
             'text-match': {
               _attributes: {},
-              _value: 'NEEDS-ACTION'
+              _text: 'NEEDS-ACTION'
             }
           }
         }
