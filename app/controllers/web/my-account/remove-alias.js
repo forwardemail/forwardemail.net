@@ -35,8 +35,9 @@ async function removeAlias(ctx, next) {
 
   //
   // abuse prevention (need to wait at least 5 days if any payments made)
+  // pass alias so deletion is permitted if alias has < 20 recipients
   //
-  await abusePreventionByUserId(ctx);
+  await abusePreventionByUserId(ctx, ctx.state.alias);
 
   // NOTE: currently commented out until we're certain this works well
   // Clean up R2 backup files for this alias before deletion

@@ -11,7 +11,6 @@ const Aliases = require('#models/aliases');
 const Emails = require('#models/emails');
 const Payments = require('#models/payments');
 const Users = require('#models/users');
-const _ = require('#helpers/lodash');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 
@@ -22,7 +21,10 @@ const emailHelper = require('#helpers/email');
 // to use dkim replay attacks to forward mail to unwanted recipients
 // and then they quickly delete their accounts and evidence afterwards
 //
-async function abusePreventionByUserId(ctx) {
+// optional `alias` parameter is used when deleting a specific alias
+// to allow deletion if the alias has < 20 recipients (not abusive)
+//
+async function abusePreventionByUserId(ctx, alias) {
   // safeguard
   if (!ctx.isAuthenticated()) throw new TypeError('User is not logged in');
 
@@ -38,20 +40,38 @@ async function abusePreventionByUserId(ctx) {
 
   // if user never had a payment then return early
   // (this prevents users from changing to free plan and then deleting their account)
-  const exists = await Payments.exists({ user: user._id });
-  if (!exists) return;
-
-  // if plan set at is not a date (safeguard)
-  if (!_.isDate(user[config.userFields.planSetAt])) return;
-
-  // add 5 days to their plan started date and if in past already then return early
-  const fiveDaysFromStartDate = dayjs(
-    new Date(user[config.userFields.planSetAt])
+  const firstPayment = await Payments.findOne(
+    { user: user._id },
+    { invoice_at: 1 },
+    { sort: { invoice_at: 1 } }
   )
+    .lean()
+    .exec();
+  if (!firstPayment) return;
+
+  //
+  // use the first payment's invoice_at date instead of plan_set_at
+  // because plan_set_at represents the current plan period start date
+  // and gets reset on plan changes, upgrades, downgrades, etc.
+  // which can falsely block long-time users from deleting their account
+  //
+  const firstPaymentDate = new Date(firstPayment.invoice_at);
+
+  // add 5 days to their first payment date and if in past already then return early
+  const fiveDaysFromFirstPayment = dayjs(firstPaymentDate)
     .startOf('day')
     .add(5, 'days')
     .toDate();
-  if (fiveDaysFromStartDate.getTime() <= Date.now()) return;
+  if (fiveDaysFromFirstPayment.getTime() <= Date.now()) return;
+
+  //
+  // if an alias is passed (alias deletion) then permit deletion
+  // if the alias has fewer than 20 recipients configured
+  // (this allows legitimate users to delete catch-all/wildcard aliases
+  //  during initial setup without waiting 5 days)
+  //
+  if (alias && Array.isArray(alias.recipients) && alias.recipients.length < 20)
+    return;
 
   // check against alias count (e.g. vanity domains + other custom domains)
   // check against outbound SMTP email count
@@ -83,7 +103,7 @@ async function abusePreventionByUserId(ctx) {
             user.email
           }</a> attempted to <code>${ctx.method} ${
             ctx.pathWithoutLocale
-          }</code> but cannot until ${dayjs(fiveDaysFromStartDate).format(
+          }</code> but cannot until ${dayjs(fiveDaysFromFirstPayment).format(
             'M/D/YY'
           )}.`
         }
