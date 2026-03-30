@@ -489,6 +489,11 @@ async function runProcessInvites(t) {
     account: t.context.account,
     headers: t.context.authHeaders
   });
+
+  // Wait for background processCalendarInvites to finish
+  await new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
