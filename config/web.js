@@ -282,7 +282,8 @@ module.exports = (redis) => ({
                 'https://dash.cloudflare.com',
                 'https://dcc.godaddy.com',
                 'https://api.domainconnect.ionos.com',
-                'https://dns.glauca.digital'
+                'https://dns.glauca.digital',
+                'https://domains.squarespace.com'
               ]
             }
           }

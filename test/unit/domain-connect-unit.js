@@ -262,7 +262,9 @@ test('nsProviders includes all Domain Connect providers with applyUrl', (t) => {
   const expectedProviders = [
     { slug: 'cloudflare', applyUrlContains: 'cloudflare' },
     { slug: 'godaddy', applyUrlContains: 'godaddy' },
-    { slug: 'ionos', applyUrlContains: 'ionos' }
+    { slug: 'ionos', applyUrlContains: 'ionos' },
+    { slug: 'squarespace', applyUrlContains: 'squarespace' },
+    { slug: 'google-domains', applyUrlContains: 'squarespace' }
   ];
 
   for (const expected of expectedProviders) {
@@ -330,5 +332,38 @@ test('nsProviders ionos has correct applyUrl', (t) => {
   t.truthy(ionos && ionos.domainConnect);
   if (ionos && ionos.domainConnect) {
     t.is(ionos.domainConnect.applyUrl, 'https://api.domainconnect.ionos.com');
+  }
+});
+
+test('nsProviders squarespace has correct Domain Connect config', (t) => {
+  const { nsProviders } = require('../../config/utilities');
+  const squarespace = nsProviders.find((p) => p.slug === 'squarespace');
+  t.truthy(squarespace, 'Should have squarespace provider');
+  t.truthy(squarespace && squarespace.domainConnect);
+  if (squarespace && squarespace.domainConnect) {
+    t.is(squarespace.domainConnect.applyUrl, 'https://domains.squarespace.com');
+    t.is(
+      squarespace.domainConnect.urlSyncUX,
+      'https://domains.squarespace.com'
+    );
+  }
+});
+
+test('nsProviders google-domains has correct Domain Connect config', (t) => {
+  const { nsProviders } = require('../../config/utilities');
+  const googleDomains = nsProviders.find((p) => p.slug === 'google-domains');
+  t.truthy(googleDomains, 'Should have google-domains provider');
+  t.truthy(googleDomains && googleDomains.domainConnect);
+  if (googleDomains && googleDomains.domainConnect) {
+    t.is(
+      googleDomains.domainConnect.applyUrl,
+      'https://domains.squarespace.com',
+      'google-domains should use Squarespace Domain Connect (post-acquisition)'
+    );
+    t.is(
+      googleDomains.domainConnect.urlSyncUX,
+      'https://domains.squarespace.com',
+      'google-domains urlSyncUX should point to Squarespace'
+    );
   }
 });

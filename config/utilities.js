@@ -545,6 +545,19 @@ const DOMAIN_CONNECT_PROVIDERS = {
   },
   'glauca-digital': {
     applyUrl: 'https://dns.glauca.digital/connect/sync'
+  },
+  squarespace: {
+    // Squarespace Domains (including migrated Google Domains)
+    // urlSyncUX and urlAPI both returned as https://domains.squarespace.com
+    // from their settings endpoint: GET https://domains.squarespace.com/v2/{domain}/settings
+    urlSyncUX: 'https://domains.squarespace.com',
+    applyUrl: 'https://domains.squarespace.com'
+  },
+  'google-domains': {
+    // Google Domains was acquired by Squarespace; domains now use
+    // Squarespace's Domain Connect infrastructure
+    urlSyncUX: 'https://domains.squarespace.com',
+    applyUrl: 'https://domains.squarespace.com'
   }
 };
 
