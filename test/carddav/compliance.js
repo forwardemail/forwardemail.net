@@ -319,7 +319,7 @@ test.serial(
     // Mock the XML response for principal
     sinon.stub(xmlHelpers, 'getMultistatusXML')
       .returns(`<?xml version="1.0" encoding="UTF-8"?>
-<d:multistatus xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav" xmlns:cs="http://calendarserver.org/ns/">
+<d:multistatus xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav" xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/">
   <d:response>
     <d:href>/dav/${t.context.username}</d:href>
     <d:propstat>
@@ -328,6 +328,7 @@ test.serial(
         <d:resourcetype><d:collection/><d:principal/></d:resourcetype>
         <d:current-user-principal><d:href>/dav/${t.context.username}</d:href></d:current-user-principal>
         <card:addressbook-home-set><d:href>/dav/${t.context.username}/addressbooks</d:href></card:addressbook-home-set>
+        <cal:calendar-home-set><d:href>http://localhost:5000/dav/${t.context.username}/</d:href></cal:calendar-home-set>
       </d:prop>
       <d:status>HTTP/1.1 200 OK</d:status>
     </d:propstat>
@@ -362,6 +363,7 @@ test.serial(
     t.true(response.data.includes('<d:resourcetype>'));
     t.true(response.data.includes('<d:principal/>'));
     t.true(response.data.includes('<card:addressbook-home-set>'));
+    t.true(response.data.includes('<cal:calendar-home-set>'));
     t.true(response.data.includes(`/dav/${t.context.username}/addressbooks`));
 
     // Restore the stub

@@ -254,6 +254,7 @@ function getMultistatusXML(responses) {
 
   xml.att('xmlns:d', 'DAV:');
   xml.att('xmlns:card', 'urn:ietf:params:xml:ns:carddav');
+  xml.att('xmlns:cal', 'urn:ietf:params:xml:ns:caldav');
   xml.att('xmlns:cs', 'http://calendarserver.org/ns/');
 
   for (const response of responses) {
@@ -479,7 +480,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
         propElements.push({
           name: 'card:supported-address-data',
           value:
-            '<card:address-data-type content-type="text/vcard" version="3.0"/>'
+            '<card:address-data-type content-type="text/vcard" version="3.0"/><card:address-data-type content-type="text/vcard" version="4.0"/>'
         });
         break;
       }

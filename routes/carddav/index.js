@@ -12,6 +12,7 @@ const AddressBooks = require('#models/address-books');
 const CardDAVFilterParser = require('#helpers/carddav-filter-parser');
 const Contacts = require('#models/contacts');
 const config = require('#config');
+const env = require('#config/env');
 const ensureDefaultAddressBook = require('#helpers/ensure-default-address-book');
 const sendApnContacts = require('#helpers/send-apn-contacts');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
@@ -67,12 +68,44 @@ router.all('(.*)', async (ctx, next) => {
     if (ctx.url.toLowerCase() === '/.well-known/carddav')
       return ctx.redirect(`/dav/${ctx.state.session.user.username}/`);
 
+    // Handle .well-known/caldav redirect (RFC 6764)
+    // When DAVx5 connects to the CardDAV server, it also tries to discover
+    // CalDAV via /.well-known/caldav. Redirect to the CalDAV server so
+    // DAVx5 can discover both services from a single account setup.
+    if (ctx.url.toLowerCase() === '/.well-known/caldav') {
+      const caldavHost = env.CALDAV_HOST;
+      const caldavProtocol = env.CALDAV_PROTOCOL || 'https';
+      const caldavPort = env.CALDAV_PORT;
+      // In production, use https://caldav.forwardemail.net without port
+      // In development/test, include the port
+      const portSuffix =
+        caldavHost === 'localhost' || caldavHost === '127.0.0.1'
+          ? `:${caldavPort}`
+          : '';
+      return ctx.redirect(
+        `${caldavProtocol}://${caldavHost}${portSuffix}/dav/${ctx.state.session.user.username}/`
+      );
+    }
+
     return next();
   }
 
   // Handle .well-known/carddav redirect (RFC 6764)
   if (ctx.url.toLowerCase() === '/.well-known/carddav')
     return ctx.redirect('/dav/');
+
+  // Handle .well-known/caldav redirect (RFC 6764)
+  // Unauthenticated: redirect to CalDAV server root
+  if (ctx.url.toLowerCase() === '/.well-known/caldav') {
+    const caldavHost = env.CALDAV_HOST;
+    const caldavProtocol = env.CALDAV_PROTOCOL || 'https';
+    const caldavPort = env.CALDAV_PORT;
+    const portSuffix =
+      caldavHost === 'localhost' || caldavHost === '127.0.0.1'
+        ? `:${caldavPort}`
+        : '';
+    return ctx.redirect(`${caldavProtocol}://${caldavHost}${portSuffix}/`);
+  }
 
   ctx.response.set('WWW-Authenticate', 'Basic realm="forwardemail/carddav"');
   throw Boom.unauthorized();
@@ -547,7 +580,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
                 {
                   name: 'card:supported-address-data',
                   value:
-                    '<card:address-data-type content-type="text/vcard" version="3.0"/>'
+                    '<card:address-data-type content-type="text/vcard" version="3.0"/><card:address-data-type content-type="text/vcard" version="4.0"/>'
                 },
                 {
                   name: 'd:current-user-privilege-set',
@@ -944,7 +977,7 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
                 {
                   name: 'card:supported-address-data',
                   value:
-                    '<card:address-data-type content-type="text/vcard" version="3.0"/>'
+                    '<card:address-data-type content-type="text/vcard" version="3.0"/><card:address-data-type content-type="text/vcard" version="4.0"/>'
                 },
                 {
                   name: 'd:current-user-privilege-set',
@@ -1309,6 +1342,28 @@ async function propFindPrincipal(ctx) {
     //   : null;
     // const props = xmlHelpers.extractRequestedProps(xmlBody);
 
+    //
+    // RFC 4791 Section 6.2.1 - calendar-home-set
+    // DAVx5 and other clients use this property on the principal
+    // to discover the CalDAV service.  Without it, clients that
+    // connect via the CardDAV server (carddav.forwardemail.net)
+    // will never discover calendars on the CalDAV server.
+    //
+    // In production the CalDAV server runs on a separate host
+    // (caldav.forwardemail.net), so we build an absolute URL.
+    // In test/dev (localhost) we include the port.
+    //
+    const caldavHost = env.CALDAV_HOST;
+    const caldavProtocol = env.CALDAV_PROTOCOL || 'https';
+    const caldavPort = env.CALDAV_PORT;
+    const portSuffix =
+      caldavHost === 'localhost' || caldavHost === '127.0.0.1'
+        ? `:${caldavPort}`
+        : '';
+    const caldavBaseUrl = `${caldavProtocol}://${caldavHost}${portSuffix}`;
+
+    const username = encodeXMLEntities(ctx.state.session.user.username);
+
     // Create response
     const responses = [
       {
@@ -1318,7 +1373,7 @@ async function propFindPrincipal(ctx) {
             props: [
               {
                 name: 'd:displayname',
-                value: encodeXMLEntities(ctx.state.session.user.username)
+                value: username
               },
               {
                 name: 'd:resourcetype',
@@ -1326,21 +1381,19 @@ async function propFindPrincipal(ctx) {
               },
               {
                 name: 'd:current-user-principal',
-                value: `<d:href>/dav/${encodeXMLEntities(
-                  ctx.state.session.user.username
-                )}/</d:href>`
+                value: `<d:href>/dav/${username}/</d:href>`
               },
               {
                 name: 'card:addressbook-home-set',
-                value: `<d:href>/dav/${encodeXMLEntities(
-                  ctx.state.session.user.username
-                )}/addressbooks/</d:href>`
+                value: `<d:href>/dav/${username}/addressbooks/</d:href>`
+              },
+              {
+                name: 'cal:calendar-home-set',
+                value: `<d:href>${caldavBaseUrl}/dav/${username}/</d:href>`
               },
               {
                 name: 'd:principal-URL',
-                value: `<d:href>/dav/${encodeXMLEntities(
-                  ctx.state.session.user.username
-                )}/</d:href>`
+                value: `<d:href>/dav/${username}/</d:href>`
               },
               {
                 name: 'd:principal-collection-set',
