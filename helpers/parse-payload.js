@@ -52,7 +52,6 @@ const getPathToDatabase = require('#helpers/get-path-to-database');
 const getTemporaryDatabase = require('#helpers/get-temporary-database');
 const i18n = require('#helpers/i18n');
 const isAllowlisted = require('#helpers/is-allowlisted');
-const checkSRS = require('#helpers/check-srs');
 const createSession = require('#helpers/create-session');
 const isCodeBug = require('#helpers/is-code-bug');
 const isRetryableError = require('#helpers/is-retryable-error');
@@ -1091,15 +1090,15 @@ async function parsePayload(data, ws) {
                         'text/plain; charset=utf-8'
                       );
                       //
-                      // RFC 3464 compliance: The DSN MUST be addressed (in both the message
-                      // header and the transport envelope) to the return address from the
-                      // transport envelope which accompanied the original message.
-                      // <https://tools.ietf.org/html/rfc3464>
+                      // Vacation auto-replies (RFC 5230) should be addressed to the human
+                      // sender (From header), not the envelope return-path (MAIL FROM).
+                      // sieveResult.vacation.to is resolved from the From header by the
+                      // sieve filter handler, so prefer it over payload.sender which is
+                      // the envelope MAIL FROM (may be a bounce-processing address).
                       //
-                      // Use checkSRS to unwrap any SRS-rewritten addresses so the To header
-                      // matches the transport envelope recipient address.
-                      //
-                      rootNode.setHeader('To', checkSRS(payload.sender));
+                      const vacationTo =
+                        sieveResult.vacation.to || payload.sender;
+                      rootNode.setHeader('To', vacationTo);
                       rootNode.setHeader('From', session.user.username);
 
                       // Gmail sets Precedence to "bulk" and X-Autoreply to "yes"
@@ -1153,7 +1152,7 @@ async function parsePayload(data, ws) {
                           message: rootNode.createReadStream(),
                           envelope: {
                             from: punycode.toASCII(session.user.username),
-                            to: [checkSRS(payload.sender)]
+                            to: [vacationTo]
                           }
                         },
                         user: { id: session.user.alias_user_id },

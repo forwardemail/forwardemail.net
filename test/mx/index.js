@@ -2947,27 +2947,28 @@ This is a test email using header :contains matching.
 
 //
 // =============================================================================
-// RFC 3464 DSN Compliance Tests
+// Vacation Responder Tests (RFC 5230)
 // =============================================================================
 //
-// These tests verify that all DSN-related emails (vacation responders, bounce
-// notifications, etc.) comply with RFC 3464 Section 2.2:
-//
-//   "The DSN MUST be addressed (in both the message header and the transport
-//    envelope) to the return address from the transport envelope which
-//    accompanied the original message for which the DSN was generated."
+// These tests verify that vacation auto-replies comply with RFC 5230 and
+// RFC 3834 (auto-reply best practices):
 //
 // Specifically, they assert:
-//   1. MAIL FROM is <> (empty/null sender) for all DSN messages
-//   2. RCPT TO (transport envelope) matches the original MAIL FROM address
-//   3. The To: header in the DSN message matches the original MAIL FROM address
-//   4. The message contains proper DSN headers (Auto-Submitted, Precedence)
+//   1. MAIL FROM is <> (empty/null sender) per RFC 3834 to prevent loops
+//   2. RCPT TO (transport envelope) matches the original From header address
+//   3. The To: header matches the original From header address
+//   4. The message contains proper auto-reply headers (Auto-Submitted, Precedence)
 //
-// Reference: https://tools.ietf.org/html/rfc3464
+// Note: Vacation responders are NOT DSNs (RFC 3464). They should be addressed
+// to the human sender (From header), not the envelope return-path (MAIL FROM),
+// because the envelope MAIL FROM may be a bounce-processing address
+// (e.g. AWS SES uses amazonses.com return-paths).
+//
+// Reference: https://tools.ietf.org/html/rfc5230
+// Reference: https://tools.ietf.org/html/rfc3834
 // =============================================================================
-//
 
-test('RFC 3464 compliance - vacation responder DSN addresses To header and envelope to original MAIL FROM', async (t) => {
+test('RFC 5230 - vacation responder addresses To header and envelope to original From header sender', async (t) => {
   const smtp = new MX({
     client: t.context.client,
     wsp: t.context.wsp
@@ -3151,8 +3152,8 @@ test('RFC 3464 compliance - vacation responder DSN addresses To header and envel
   await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
 
   // Send a message to the alias with vacation responder enabled
-  // The envelope MAIL FROM is 'sender@sender.example.com' — this is the address
-  // that the vacation responder DSN must be addressed to per RFC 3464
+  // The From header is 'Sender User <sender@sender.example.com>' — the vacation
+  // responder should be addressed to this human sender per RFC 5230
   const mx = await asyncMxConnect({
     target: IP_ADDRESS,
     port: smtp.server.address().port,
@@ -3216,22 +3217,22 @@ Hello, this is a test message.`.trim()
   );
 
   //
-  // RFC 3464 compliance assertion #1:
-  // The transport envelope 'to' must be the original MAIL FROM address
+  // RFC 5230 assertion #1:
+  // The transport envelope 'to' must be the original From header address
   //
   const envelopeTo = Array.isArray(vacationEmail.envelope.to)
     ? vacationEmail.envelope.to
     : [vacationEmail.envelope.to];
   t.true(
     envelopeTo.includes('sender@sender.example.com'),
-    `Envelope 'to' must be the original MAIL FROM address (sender@sender.example.com), got: ${JSON.stringify(
+    `Envelope 'to' must be the original From header address (sender@sender.example.com), got: ${JSON.stringify(
       envelopeTo
     )}`
   );
 
   //
-  // RFC 3464 compliance assertion #2:
-  // The To: header in the DSN message must match the original MAIL FROM address
+  // RFC 5230 assertion #2:
+  // The To: header must match the original From header address
   //
   const rawMessage = await Emails.getMessage(vacationEmail.message, true);
   t.true(
@@ -3244,12 +3245,12 @@ Hello, this is a test message.`.trim()
   t.truthy(toHeaderMatch, 'Vacation responder message must have a To: header');
   t.true(
     toHeaderMatch[1].includes('sender@sender.example.com'),
-    `To: header must contain the original MAIL FROM address (sender@sender.example.com), got: ${toHeaderMatch[1]}`
+    `To: header must contain the original From header address (sender@sender.example.com), got: ${toHeaderMatch[1]}`
   );
 
   //
-  // RFC 3464 compliance assertion #3:
-  // Verify DSN-specific headers are present
+  // RFC 5230/3834 assertion #3:
+  // Verify auto-reply headers are present
   //
   t.true(
     rawMessage.includes('Auto-Submitted: auto-replied'),
@@ -3265,9 +3266,9 @@ Hello, this is a test message.`.trim()
   );
 
   //
-  // RFC 3464 compliance assertion #4:
+  // RFC 3834 assertion #4:
   // Process the email through a dummy SMTP server and verify MAIL FROM is <>
-  // and RCPT TO is the original sender
+  // (to prevent loops) and RCPT TO is the original From header sender
   //
   const dummyPort = await getPort();
   const capturedSessions = [];
@@ -3275,20 +3276,20 @@ Hello, this is a test message.`.trim()
   const dummyServer = new SMTPServer({
     disabledCommands: ['AUTH'],
     onMailFrom(address, session, fn) {
-      // RFC 3464: DSN must be sent with MAIL FROM:<> (null sender)
+      // RFC 3834: auto-replies must be sent with MAIL FROM:<> (null sender) to prevent loops
       t.is(
         address.address,
         '',
-        'MAIL FROM must be empty (<>) for DSN messages per RFC 3464'
+        'MAIL FROM must be empty (<>) for auto-reply messages per RFC 3834'
       );
       fn();
     },
     onRcptTo(address, session, fn) {
-      // RFC 3464: RCPT TO must be the original MAIL FROM address
+      // RFC 5230: RCPT TO must be the original From header address
       t.is(
         address.address,
         'sender@sender.example.com',
-        'RCPT TO must be the original MAIL FROM address per RFC 3464'
+        'RCPT TO must be the original From header address per RFC 5230'
       );
       capturedSessions.push({
         mailFrom: session.envelope.mailFrom,
@@ -3334,7 +3335,7 @@ Hello, this is a test message.`.trim()
   t.deepEqual(
     updatedEmail.accepted,
     ['sender@sender.example.com'],
-    'Accepted recipient must be the original MAIL FROM address'
+    'Accepted recipient must be the original From header address'
   );
 
   // Verify the captured message has correct To: header
@@ -3344,7 +3345,7 @@ Hello, this is a test message.`.trim()
   t.truthy(sentToMatch, 'Sent message must have a To: header');
   t.true(
     sentToMatch[1].includes('sender@sender.example.com'),
-    `Sent message To: header must be the original MAIL FROM address, got: ${sentToMatch[1]}`
+    `Sent message To: header must be the original From header address, got: ${sentToMatch[1]}`
   );
 
   // Verify the In-Reply-To header references the original message
@@ -3359,7 +3360,7 @@ Hello, this is a test message.`.trim()
   await smtp.close();
 });
 
-test('RFC 3464 compliance - vacation responder with SRS-rewritten MAIL FROM addresses To header to unwrapped address', async (t) => {
+test('RFC 5230 - vacation responder with SRS-rewritten MAIL FROM addresses To header to original From header sender', async (t) => {
   const smtp = new MX({
     client: t.context.client,
     wsp: t.context.wsp
@@ -3607,8 +3608,8 @@ Hello, this is a test message with SRS-rewritten MAIL FROM.`.trim()
   t.truthy(vacationEmail, 'Vacation responder email should be created');
 
   //
-  // RFC 3464 compliance: When MAIL FROM is SRS-rewritten, the DSN must be
-  // addressed to the unwrapped original address (not the SRS address).
+  // RFC 5230: When MAIL FROM is SRS-rewritten, the vacation reply should be
+  // addressed to the original From header sender (not the SRS address).
   // Both the To: header and envelope 'to' must match.
   //
   const envelopeTo = Array.isArray(vacationEmail.envelope.to)
@@ -3616,7 +3617,7 @@ Hello, this is a test message with SRS-rewritten MAIL FROM.`.trim()
     : [vacationEmail.envelope.to];
   t.true(
     envelopeTo.includes(originalSender),
-    `Envelope 'to' must be the SRS-unwrapped original address (${originalSender}), got: ${JSON.stringify(
+    `Envelope 'to' must be the original From header address (${originalSender}), got: ${JSON.stringify(
       envelopeTo
     )}`
   );
@@ -3626,7 +3627,7 @@ Hello, this is a test message with SRS-rewritten MAIL FROM.`.trim()
   t.truthy(toHeaderMatch, 'Vacation responder message must have a To: header');
   t.true(
     toHeaderMatch[1].includes(originalSender),
-    `To: header must contain the SRS-unwrapped original address (${originalSender}), got: ${toHeaderMatch[1]}`
+    `To: header must contain the original From header address (${originalSender}), got: ${toHeaderMatch[1]}`
   );
 
   //
@@ -3635,6 +3636,323 @@ Hello, this is a test message with SRS-rewritten MAIL FROM.`.trim()
   t.true(
     toHeaderMatch[1].includes(envelopeTo[0]),
     'To: header and envelope to must be consistent (both the same address)'
+  );
+
+  await smtp.close();
+});
+
+test('RFC 5230 - vacation responder addresses To header to From header sender when envelope MAIL FROM differs (AWS SES scenario)', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'sestest',
+      has_imap: true,
+      user: user._id,
+      domain: domain._id,
+      recipients: [],
+      vacation_responder: {
+        is_enabled: true,
+        start_date: new Date(),
+        subject: 'Out of Office',
+        message: 'I am currently out of the office.'
+      }
+    })
+    .create();
+
+  //
+  // AWS SES scenario: the envelope MAIL FROM is a bounce-processing address
+  // (e.g. 0100019cc3340777...@us-east-1.amazonses.com) that differs from
+  // the human sender in the From header (sender@sender.example.com).
+  //
+  // The vacation responder MUST be addressed to the From header sender,
+  // NOT the envelope MAIL FROM bounce handler.
+  //
+  const sesBouncePath = 'bounce-handler@us-east-1.amazonses.com';
+  const humanSender = 'sender@sender.example.com';
+
+  // spoof dns records
+  const map = new Map();
+
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // spoof sender MX records
+  map.set(
+    'mx:sender.example.com',
+    resolver.spoofPacket(
+      'sender.example.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof SES bounce domain MX records
+  map.set(
+    'mx:us-east-1.amazonses.com',
+    resolver.spoofPacket(
+      'us-east-1.amazonses.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof sender SPF so the message passes SPF check
+  map.set(
+    'txt:us-east-1.amazonses.com',
+    resolver.spoofPacket(
+      'us-east-1.amazonses.com',
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // spoof sender DMARC with p=none so the message is not rejected
+  map.set(
+    'txt:_dmarc.sender.example.com',
+    resolver.spoofPacket(
+      '_dmarc.sender.example.com',
+      'TXT',
+      ['v=DMARC1; p=none;'],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Send a message where envelope MAIL FROM differs from From header
+  // This simulates AWS SES which uses a bounce-processing return-path
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        // AWS SES bounce-processing return-path (NOT the human sender)
+        from: sesBouncePath,
+        to: [`sestest@${domain.name}`]
+      },
+      raw: `
+To: sestest@${domain.name}
+From: Sender User <${humanSender}>
+Subject: Hello from AWS SES
+Message-ID: <ses-vacation-test@sender.example.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hello, this is a test message sent via AWS SES.`.trim()
+    })
+  );
+
+  // Wait for the vacation responder email to be queued
+  await pWaitFor(
+    async () => {
+      const exists = await Emails.exists({
+        user: user._id,
+        is_bounce: true
+      });
+      return Boolean(exists?._id);
+    },
+    { timeout: ms('15s') }
+  );
+
+  // Retrieve the vacation responder email
+  const vacationEmail = await Emails.findOne({
+    user: user._id,
+    is_bounce: true
+  });
+
+  t.truthy(vacationEmail, 'Vacation responder email should be created');
+  t.true(
+    vacationEmail.is_bounce,
+    'Vacation responder should be marked as bounce'
+  );
+
+  //
+  // KEY ASSERTION: The vacation reply must be addressed to the human sender
+  // from the From header, NOT the AWS SES bounce-processing return-path.
+  //
+  const envelopeTo = Array.isArray(vacationEmail.envelope.to)
+    ? vacationEmail.envelope.to
+    : [vacationEmail.envelope.to];
+  t.true(
+    envelopeTo.includes(humanSender),
+    `Envelope 'to' must be the From header address (${humanSender}), NOT the envelope MAIL FROM (${sesBouncePath}), got: ${JSON.stringify(
+      envelopeTo
+    )}`
+  );
+  t.false(
+    envelopeTo.includes(sesBouncePath),
+    `Envelope 'to' must NOT be the SES bounce handler (${sesBouncePath})`
+  );
+
+  // Verify the To: header in the raw message
+  const rawMessage = await Emails.getMessage(vacationEmail.message, true);
+  t.true(
+    typeof rawMessage === 'string' && rawMessage.length > 0,
+    'Vacation responder message should have content'
+  );
+
+  const toHeaderMatch = rawMessage.match(/^to:\s*(.+)$/im);
+  t.truthy(toHeaderMatch, 'Vacation responder message must have a To: header');
+  t.true(
+    toHeaderMatch[1].includes(humanSender),
+    `To: header must contain the From header address (${humanSender}), got: ${toHeaderMatch[1]}`
+  );
+  t.false(
+    toHeaderMatch[1].includes(sesBouncePath),
+    `To: header must NOT contain the SES bounce handler (${sesBouncePath})`
+  );
+
+  // Verify auto-reply headers
+  t.true(
+    rawMessage.includes('Auto-Submitted: auto-replied'),
+    'Vacation responder must have Auto-Submitted: auto-replied header'
+  );
+  t.true(
+    rawMessage.includes('Precedence: bulk'),
+    'Vacation responder must have Precedence: bulk header'
   );
 
   await smtp.close();

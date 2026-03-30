@@ -556,17 +556,18 @@ class SieveFilterHandler {
    */
   async handleVacation(action, message, context) {
     //
-    // RFC 3464 compliance: The DSN MUST be addressed (in both the message
-    // header and the transport envelope) to the return address from the
-    // transport envelope which accompanied the original message.
-    // <https://tools.ietf.org/html/rfc3464>
+    // Vacation auto-replies (RFC 5230) should be addressed to the human
+    // sender (From header), not the envelope return-path (MAIL FROM).
+    // The envelope MAIL FROM may be a bounce-processing address
+    // (e.g. AWS SES uses amazonses.com return-paths), which would cause
+    // the vacation reply to be misrouted to a bounce handler instead of
+    // the actual sender, resulting in MAILER-DAEMON bounces.
     //
-    // Prefer envelope.from (the MAIL FROM / return path) over headers.from
-    // because auto-replies sent with MAIL FROM:<> (is_bounce) are treated
-    // as DSNs by receiving servers and must comply with RFC 3464.
+    // Note: RFC 3464 DSN addressing requirements do not apply here
+    // because vacation responses are auto-replies, not DSNs.
     //
     const from =
-      message.envelope?.from || message.headers?.from || message.from;
+      message.headers?.from || message.envelope?.from || message.from;
 
     if (!from) {
       return null;

@@ -328,7 +328,7 @@ async function sendVacationResponder(vacationResponder, headers, session) {
       message,
       envelope: {
         from: punycode.toASCII(vacationResponder.from),
-        to: [checkSRS(session.envelope.mailFrom.address)]
+        to: [session.originalFromAddress]
       }
     },
     user: { id: vacationResponder.user },
@@ -348,18 +348,17 @@ function createVacationResponder(vacationResponder, headers, session) {
   // NOTE: "Date" and "Message-ID" header will be automatically set
   const rootNode = new MimeNode('text/plain; charset=utf-8');
   //
-  // RFC 3464 compliance: The DSN MUST be addressed (in both the message
-  // header and the transport envelope) to the return address from the
-  // transport envelope which accompanied the original message.
-  // <https://tools.ietf.org/html/rfc3464>
+  // Vacation auto-replies (RFC 5230) should be addressed to the human
+  // sender (From header), not the envelope return-path (MAIL FROM).
+  // The envelope MAIL FROM may be a bounce-processing address
+  // (e.g. AWS SES uses amazonses.com return-paths), which would cause
+  // the vacation reply to be misrouted to a bounce handler instead of
+  // the actual sender, resulting in MAILER-DAEMON bounces.
   //
-  // We use the envelope MAIL FROM (session.envelope.mailFrom.address)
-  // instead of the From header (session.originalFromAddress) because
-  // the receiving server validates that the To header matches the
-  // transport envelope recipient, and both must be the envelope return
-  // address of the original message.
+  // Note: RFC 3464 DSN addressing requirements do not apply here
+  // because vacation responses are auto-replies, not DSNs.
   //
-  rootNode.setHeader('To', checkSRS(session.envelope.mailFrom.address));
+  rootNode.setHeader('To', session.originalFromAddress);
   rootNode.setHeader('From', vacationResponder.from);
   //
   // Gmail sets Precedence to "bulk" and X-Autoreply to "yes"
