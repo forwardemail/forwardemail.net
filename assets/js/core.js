@@ -356,9 +356,9 @@ window.addEventListener(
       $('.remove-on-table-ajax-form-reloaded').remove();
       // scroll to top of first ajax table form found
       // <https://github.com/forwardemail/forwardemail.net/issues/479>
-      const $form = $('form.table-ajax-form:first');
-      if ($form.length > 0 && $form.data('table') && $($form.data('table')))
-        jumpTo($form.data('table'));
+      // const $form = $('form.table-ajax-form:first');
+      // if ($form.length > 0 && $form.data('table') && $($form.data('table')))
+      //   jumpTo($form.data('table'));
     });
 
     // handle popstate

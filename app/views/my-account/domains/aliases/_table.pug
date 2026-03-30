@@ -366,7 +366,7 @@ p.text-center.d-lg-none
                       .modal-header.text-center.d-block
                         h4.d-inline-block.ml-4(
                           id=`modal-generate-password-${alias.id}-title`
-                        )= t("Generate Password")
+                        )= Array.isArray(alias.tokens) && alias.tokens.length > 0 ? t("Manage Password") : t("Generate Password")
                         button.close(
                           type="button",
                           data-dismiss="modal",
@@ -665,14 +665,15 @@ p.text-center.d-lg-none
                   //- generate password for alias, setup instructions, download backup
                   if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
                     li.list-inline-item
-                      button.btn.btn-sm.btn-link.text-success.btn-block(
+                      button.btn.btn-sm.btn-link.btn-block(
+                        class=Array.isArray(alias.tokens) && alias.tokens.length > 0 ? "text-primary" : "text-success",
                         type="button",
                         data-toggle="modal",
                         data-target=`#modal-generate-password-${alias.id}`
                       )
                         i.fa.fa-key
                         = " "
-                        = t("Generate Password")
+                        = Array.isArray(alias.tokens) && alias.tokens.length > 0 ? t("Manage Password") : t("Generate Password")
                     li.list-inline-item
                       button.btn.btn-sm.btn-link.text-themed.btn-block(
                         type="button",
@@ -882,7 +883,9 @@ p.text-center.d-lg-none
                   li.list-inline-item
                     form.ajax-form.confirm-prompt.d-block(
                       action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`),
-                      method="POST"
+                      method="POST",
+                      data-confirm-prompt-title=t("Delete alias?"),
+                      data-confirm-prompt-html=t("Please confirm if you wish to delete the alias <strong>%s</strong>.", alias.name)
                     )
                       input(type="hidden", name="_method", value="DELETE")
                       button.btn.btn-sm.btn-link.text-danger.btn-block(
@@ -907,14 +910,15 @@ p.text-center.d-lg-none
                 //- generate password for alias, setup instructions, download backup
                 if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
                   li.list-inline-item
-                    button.btn.btn-sm.btn-link.text-success.btn-block(
+                    button.btn.btn-sm.btn-link.btn-block(
+                      class=Array.isArray(alias.tokens) && alias.tokens.length > 0 ? "text-primary" : "text-success",
                       type="button",
                       data-toggle="modal",
                       data-target=`#modal-generate-password-${alias.id}`
                     )
                       i.fa.fa-key
                       = " "
-                      = t("Generate Password")
+                      = Array.isArray(alias.tokens) && alias.tokens.length > 0 ? t("Manage Password") : t("Generate Password")
                   li.list-inline-item
                     button.btn.btn-sm.btn-link.text-themed.btn-block(
                       type="button",
