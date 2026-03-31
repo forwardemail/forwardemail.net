@@ -1176,6 +1176,7 @@ const config = {
     launchEmailSentAt: 'launch_email_sent_at',
     isRemoved: 'is_removed',
     isBanned: 'is_banned',
+    banReason: 'ban_reason',
     twoFactorReminderSentAt: 'two_factor_reminder_sent_at',
     featureReminderSentAt: 'feature_reminder_sent_at',
     pastDueReliefSentAt: 'past_due_relief_sent_at',

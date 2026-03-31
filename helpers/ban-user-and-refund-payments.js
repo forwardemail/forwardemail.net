@@ -48,6 +48,7 @@ async function banUserAndRefundPayments(user, reason = 'Fraud detected') {
       logger.info(`User ${user.email} already banned, processing refunds`);
     } else {
       user[config.userFields.isBanned] = true;
+      user[config.userFields.banReason] = reason;
       await user.save();
       logger.info(`User ${user.email} banned: ${reason}`);
     }

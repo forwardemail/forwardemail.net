@@ -19,6 +19,7 @@ const Redis = require('@ladjs/redis');
 
 const mongoose = require('mongoose');
 const config = require('#config');
+const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, UpgradeReminders } = require('#models');
@@ -65,21 +66,26 @@ graceful.listen();
 
       const user = await Users.findOne({ email });
       let shouldBan = true;
+      let banReason;
       if (user) {
         if (user.plan === 'free') {
+          banReason = `Automated ban: ${emails[email]} upgrade reminders across ${domains.length} domains on free plan`;
           user.is_banned = true;
-
+          user[config.userFields.banReason] = banReason;
           await user.save();
         } else if (
           new Date(user[config.userFields.planExpiresAt]) < Date.now()
         ) {
+          banReason = `Automated ban: ${emails[email]} upgrade reminders across ${domains.length} domains with expired plan`;
           user.is_banned = true;
-
+          user[config.userFields.banReason] = banReason;
           await user.save();
         } else {
           // don't ban
           shouldBan = false;
         }
+      } else {
+        banReason = `Automated ban: ${emails[email]} upgrade reminders across ${domains.length} domains (no user account found)`;
       }
 
       if (shouldBan) {
@@ -89,6 +95,21 @@ graceful.listen();
           logger.info('banning domain', domain);
           pipeline.set(`denylist:${domain}`, 'true');
         }
+
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.alertsEmail,
+            subject: `Banned for Upgrade Reminder Abuse: ${email}`
+          },
+          locals: {
+            message: `<p><strong>Email:</strong> ${email}</p><p><strong>Ban reason:</strong> ${banReason}</p><p><strong>Domains (${
+              domains.length
+            }):</strong> ${domains.join(', ')}</p>`
+          }
+        })
+          .then()
+          .catch((err) => logger.fatal(err));
       }
     }
 

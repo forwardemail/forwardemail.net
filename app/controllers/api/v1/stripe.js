@@ -104,6 +104,9 @@ async function processEvent(ctx, event) {
       if (count === 0) {
         if (!user.is_banned) {
           user.is_banned = true;
+          user[
+            config.userFields.banReason
+          ] = `Automated ban: ${filtered.length} declined charges in 30 days with 0 verified domains (Stripe customer: ${event.data.object.customer})`;
           await user.save();
         }
 
@@ -467,7 +470,9 @@ async function processEvent(ctx, event) {
 
       // ban the user for opening a dispute
       if (!user[config.userFields.isBanned]) {
+        const banReason = `Automated ban: opened Stripe dispute ${dispute.id}`;
         user[config.userFields.isBanned] = true;
+        user[config.userFields.banReason] = banReason;
         await user.save();
         // clear banned cache
         ctx.client
@@ -482,7 +487,7 @@ async function processEvent(ctx, event) {
             subject: `Customer banned for opening Stripe dispute: ${user.email}`
           },
           locals: {
-            message: `Customer with email ${user.email} was banned for opening dispute ID ${dispute.id}.`
+            message: `Customer with email ${user.email} was banned for opening dispute ID ${dispute.id}.<br><br><strong>Ban reason:</strong> ${banReason}`
           }
         });
       }
@@ -538,16 +543,18 @@ async function processEvent(ctx, event) {
 
         if (count === 0) {
           if (!user.is_banned) {
+            const banReason = `Automated ban: ${filtered.length} active subscriptions with 0 verified domains (Stripe customer: ${event.data.object.customer})`;
             user.is_banned = true;
+            user[config.userFields.banReason] = banReason;
             await user.save();
             emailHelper({
               template: 'alert',
               message: {
                 to: config.alertsEmail,
-                subject: 'Banned User for Fraud Alert'
+                subject: `Banned User for Fraud Alert: ${user.email}`
               },
               locals: {
-                message: `<p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+                message: `<p><strong>Ban reason:</strong> ${banReason}</p><p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
               }
             })
               .then()

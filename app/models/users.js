@@ -83,6 +83,7 @@ const omitExtraFields = [
   config.userFields.otpRecoveryKeys,
   config.userFields.pendingRecovery,
   config.userFields.isBanned,
+  config.userFields.banReason,
   config.userFields.accountUpdates,
   config.userFields.twoFactorReminderSentAt,
   config.userFields.featureReminderSentAt,
@@ -416,6 +417,11 @@ object[config.userFields.isBanned] = {
   type: Boolean,
   default: false,
   index: true
+};
+
+object[config.userFields.banReason] = {
+  type: String,
+  trim: true
 };
 
 object[config.userFields.fullEmail] = {
