@@ -50,15 +50,33 @@ async function sitemap(ctx) {
   // add all the alternatives (since it would be massive translation file addition otherwise)
   for (const alternative of alternatives) {
     keys.push(`/blog/best-${alternative.slug}-alternative`);
-    /*
-    // NOTE: with this the keys length is 6600+
-    for (const a of alternatives) {
-      if (a.name === alternative.name) continue;
-      keys.push(
-        `/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`
-      );
+    // Add vs comparison pages for top competitors only (avoids 6000+ thin pages)
+    const topCompetitors = new Set([
+      'forward-email',
+      'proton-mail',
+      'gmail',
+      'tutanota',
+      'fastmail',
+      'zoho-mail',
+      'outlook-com',
+      'yahoo',
+      'hey',
+      'mailbox-org',
+      'posteo',
+      'startmail',
+      'runbox',
+      'mailfence',
+      'skiff'
+    ]);
+    if (topCompetitors.has(alternative.slug)) {
+      for (const a of alternatives) {
+        if (a.name === alternative.name) continue;
+        if (!topCompetitors.has(a.slug)) continue;
+        keys.push(
+          `/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`
+        );
+      }
     }
-    */
   }
 
   // if this is the root sitemap.xml, serve a sitemap index

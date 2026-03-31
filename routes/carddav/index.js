@@ -1182,21 +1182,53 @@ async function handleAddressbookMultiget(ctx, xmlBody, addressBook) {
       return filename.replace(/\.vcf$/i, '');
     });
 
-    // Build query for specific contacts using actual model structure
-    const query = {
-      address_book: addressBook._id, // Use ObjectId reference
-      contact_id: { $in: contactIds } // Use contact_id field from model
-    };
+    //
+    // Fetch contacts for the address book and filter by contact_id in memory.
+    // This approach is more reliable than using $in queries because:
+    // 1. It avoids potential issues with $in operator across WSP serialization
+    // 2. It handles case-insensitive matching for contact_ids
+    // 3. It works regardless of whether contact_ids are stored with or without .vcf
+    //
+    // DAVx5 sends ~10 hrefs per multiget request (70 parallel requests for 696 contacts).
+    // Fetching all contacts for the address book and filtering in memory is efficient
+    // because the address book query is simple and the results are cached by SQLite.
+    //
+    const allContacts = await Contacts.find(ctx.instance, ctx.state.session, {
+      address_book: addressBook._id
+    });
 
-    // Execute the query
-    const allContacts = await Contacts.find(
-      ctx.instance,
-      ctx.state.session,
-      query
+    // Build a Set of requested contact IDs for fast lookup (case-insensitive)
+    const requestedIds = new Set(contactIds.map((id) => id.toLowerCase()));
+
+    // Also add versions with .vcf extension in case contacts are stored that way
+    for (const id of contactIds) {
+      requestedIds.add((id + '.vcf').toLowerCase());
+    }
+
+    // Filter to only requested contacts, excluding soft-deleted ones
+    const contacts = allContacts.filter(
+      (c) =>
+        !c.deleted_at &&
+        (requestedIds.has(c.contact_id.toLowerCase()) ||
+          requestedIds.has(c.contact_id.replace(/\.vcf$/i, '').toLowerCase()))
     );
 
-    // Filter out soft-deleted contacts
-    const contacts = allContacts.filter((c) => !c.deleted_at);
+    // Debug logging to help diagnose production issues
+    if (contacts.length === 0 && contactIds.length > 0) {
+      ctx.logger.warn('addressbook-multiget returned 0 contacts', {
+        requestedCount: contactIds.length,
+        totalInAddressBook: allContacts.length,
+        sampleRequestedIds: contactIds.slice(0, 3),
+        sampleStoredIds: allContacts.slice(0, 3).map((c) => c.contact_id),
+        addressBookId: addressBook._id.toString()
+      });
+    } else if (contacts.length < contactIds.length) {
+      ctx.logger.debug('addressbook-multiget partial match', {
+        requestedCount: contactIds.length,
+        foundCount: contacts.length,
+        totalInAddressBook: allContacts.length
+      });
+    }
 
     // Format contacts for response
     const formattedContacts = contacts.map((contact) => ({

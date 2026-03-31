@@ -46,4 +46,31 @@ Disallow:
 User-agent: Omgilibot
 Disallow:
 
+User-agent: Google-CloudVertexBot
+Disallow:
+
+User-agent: GoogleOther
+Disallow:
+
+User-agent: Applebot
+Disallow:
+
+User-agent: Applebot-Extended
+Disallow:
+
+User-agent: Meta-ExternalAgent
+Disallow:
+
+User-agent: Meta-ExternalFetcher
+Disallow:
+
+User-agent: DeepSeekBot
+Disallow:
+
+User-agent: YouBot
+Disallow:
+
+User-agent: AI2Bot
+Disallow:
+
 Sitemap: https://forwardemail.net/sitemap.xml

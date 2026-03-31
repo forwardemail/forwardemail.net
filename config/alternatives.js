@@ -1945,7 +1945,7 @@ const obj = {
     // description
     'Secure, green and ad-free. Email to feel good about',
     // website
-    'https://tutanota.com/',
+    'https://tuta.com/',
     // oss
     '<a target="_blank" rel="noopener noreferrer" href="https://old.reddit.com/r/tutanota/comments/10hghin/tutanota_opens_backend_server_side/">Tutanota claims to be open-source, but their back-end is actually closed-source</a>',
     // sandboxed
@@ -1977,7 +1977,7 @@ const obj = {
     // wkd
     false,
     // hardenize (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/tuta.com/1705453437">Fail</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/tuta.com">Fail</a>',
     // internetnl_site (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/tuta.com/2560241/">100/100</a>',
     // internetnl_mail (on root domain)

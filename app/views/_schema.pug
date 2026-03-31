@@ -8,7 +8,7 @@ if ctx.pathWithoutLocale === '/'
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Forward Email",
-      "applicationCategory": "BusinessApplication",
+      "applicationCategory": "CommunicationApplication",
       "operatingSystem": "Web, iOS, Android, Windows, macOS, Linux",
       "offers": {
         "@type": "Offer",
@@ -184,6 +184,74 @@ if ctx.pathWithoutLocale === '/faq'
           }
         ]
       }
+
+//- FAQPage Schema for homepage (targets high-value search queries)
+if ctx.pathWithoutLocale === '/'
+  script(type="application/ld+json").
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the best email service?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Forward Email is the best email service for privacy-conscious users and developers. It is the only 100% open-source email service with quantum-resistant encryption, free email forwarding for unlimited custom domains, and full IMAP/POP3/SMTP hosting. Trusted by Netflix Games, Disney, and The Linux Foundation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the best free email service for custom domains?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Forward Email offers free email forwarding for unlimited custom domains and aliases with no credit card required. Paid plans start at $3/month for full IMAP/POP3/SMTP hosting with 10GB encrypted storage per alias."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Forward Email better than Proton Mail or Tuta Mail?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Forward Email is the only email service that is 100% open-source (both front-end and back-end). Unlike Proton Mail and Tuta Mail, Forward Email supports standard IMAP/POP3/SMTP protocols, works with any email client, offers unlimited custom domains on all plans, and provides a free tier with unlimited email forwarding."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the most secure email provider?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Forward Email uses quantum-resistant ChaCha20-Poly1305 encryption, zero-knowledge architecture, and supports all modern email security standards including SPF, DKIM, DMARC, BIMI, MTA-STS, DANE, and TLS 1.3. The entire codebase is open-source and auditable on GitHub."
+          }
+        }
+      ]
+    }
+
+//- FAQPage Schema for comparison pages (targets alternative search queries)
+if ctx.pathWithoutLocale && (ctx.pathWithoutLocale.includes('best-email') || ctx.pathWithoutLocale.includes('best-private') || ctx.pathWithoutLocale.includes('best-open-source'))
+  script(type="application/ld+json").
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which email service is best for privacy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Forward Email is the best email service for privacy. It is 100% open-source, uses quantum-resistant encryption, has a zero-knowledge architecture, and is GDPR and SOC 2 Type II compliant. Unlike competitors, both the front-end and back-end code are fully auditable on GitHub."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the best alternative to Gmail?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Forward Email is the best Gmail alternative for users who want privacy and custom domain support. It works with Gmail via Send Mail As, supports unlimited aliases, and offers free email forwarding. Unlike Gmail, Forward Email never reads, stores, or sells your data."
+          }
+        }
+      ]
+    }
 
 //- Product Schema for pricing/comparison pages
 if ctx.pathWithoutLocale && ctx.pathWithoutLocale.includes('alternative')
