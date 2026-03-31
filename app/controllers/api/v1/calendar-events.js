@@ -23,7 +23,9 @@ const {
   sendCalendarEmail
 } = require('#helpers/send-calendar-email');
 const _ = require('#helpers/lodash');
+const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
 const { quoteICSFilenames } = require('#helpers/ical-filename');
+const { normalizeIcs } = require('#helpers/normalize-ics');
 
 const exdateRegex =
   /^EXDATE(?:;TZID=[\w/+=-]+|;VALUE=DATE)?:\d{8}(?:T\d{6}(?:\.\d{1,3})?Z?)?$/;
@@ -433,12 +435,13 @@ async function list(ctx) {
     }
   }
 
-  ctx.body = Array.isArray(calendarEvents)
-    ? calendarEvents.map((calendarEvent) => {
-        const cal = calendarMap.get(calendarEvent.calendar.toString());
-        return json(calendarEvent, cal);
-      })
-    : [];
+  // Deduplicate by eventId, keeping the most recently updated copy
+  const dedupedEvents = deduplicateCalendarEvents(calendarEvents);
+
+  ctx.body = dedupedEvents.map((calendarEvent) => {
+    const cal = calendarMap.get(calendarEvent.calendar.toString());
+    return json(calendarEvent, cal);
+  });
 }
 
 async function create(ctx) {
@@ -464,16 +467,16 @@ async function create(ctx) {
 
   const eventId = body.event_id || new ObjectID().toString();
 
-  // Check if calendar event already exists
-  const existingEvent = await CalendarEvents.findOne(
+  //
+  // Find-before-write dedup: search for ALL existing events with this eventId
+  // in this calendar (including soft-deleted) to prevent duplicates.
+  // If found, update the latest one (resurrection) instead of creating a duplicate.
+  //
+  const existingAll = await CalendarEvents.find(
     ctx.instance,
     ctx.state.session,
-    { eventId }
+    { eventId, calendar: calendar._id }
   );
-
-  if (existingEvent) {
-    throw Boom.conflict(ctx.translateError('CALENDAR_EVENT_ALREADY_EXISTS'));
-  }
 
   // Check if over quota
   const { isOverQuota } = await Aliases.isOverQuota(
@@ -488,24 +491,55 @@ async function create(ctx) {
   if (isOverQuota)
     throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
 
-  const calendarEvent = await CalendarEvents.create({
-    // db virtual helper
-    instance: ctx.instance,
-    session: ctx.state.session,
+  const normalizedIcal = quoteICSFilenames(normalizeIcs(body.ical));
+  const href = `/dav/${ctx.state.session.user.username}/${calendar.calendarId}/${eventId}.ics`;
 
-    // eventId
-    eventId,
+  let calendarEvent;
 
-    // calendar reference
-    calendar: calendar._id,
+  if (existingAll.length > 0) {
+    // Deduplicate: keep the latest by updated_at, soft-delete extras
+    const deduped = deduplicateCalendarEvents(existingAll);
+    const keeper = deduped[0];
 
-    // iCal data (sanitize FILENAME params for RFC 5545 compliance)
-    ical: quoteICSFilenames(body.ical),
+    // Soft-delete extra duplicates
+    for (const dup of existingAll) {
+      if (dup._id.toString() !== keeper._id.toString()) {
+        dup.deleted_at = new Date();
+        dup.instance = ctx.instance;
+        dup.session = ctx.state.session;
+        dup.isNew = false;
+        await dup.save();
+      }
+    }
 
-    // Construct href for CalDAV sync-collection responses
-    // This matches the CalDAV URL format: /dav/{principalId}/{calendarId}/{eventId}.ics
-    href: `/dav/${ctx.state.session.user.username}/${calendar.calendarId}/${eventId}.ics`
-  });
+    // Update the keeper with new ICS data and resurrect if soft-deleted
+    keeper.ical = normalizedIcal;
+    keeper.href = href;
+    keeper.deleted_at = null; // Resurrect if soft-deleted
+    keeper.instance = ctx.instance;
+    keeper.session = ctx.state.session;
+    keeper.isNew = false;
+    calendarEvent = await keeper.save();
+  } else {
+    // Truly new event - create it
+    calendarEvent = await CalendarEvents.create({
+      // db virtual helper
+      instance: ctx.instance,
+      session: ctx.state.session,
+
+      // eventId
+      eventId,
+
+      // calendar reference
+      calendar: calendar._id,
+
+      // iCal data (normalize M365 recurring events + sanitize FILENAME params)
+      ical: normalizedIcal,
+
+      // Construct href for CalDAV sync-collection responses
+      href
+    });
+  }
 
   ctx.body = json(calendarEvent, calendar);
 
@@ -535,7 +569,11 @@ async function retrieve(ctx) {
   if (!isSANB(ctx.params.id))
     throw Boom.badRequest(ctx.translateError('CALENDAR_EVENT_INVALID_ID'));
 
-  const calendarEvent = await CalendarEvents.findOne(
+  //
+  // Find ALL matching events (including duplicates) and return the latest.
+  // Soft-delete any extra duplicates encountered.
+  //
+  const allMatches = await CalendarEvents.find(
     ctx.instance,
     ctx.state.session,
     {
@@ -543,6 +581,24 @@ async function retrieve(ctx) {
       deleted_at: { $exists: false }
     }
   );
+
+  let calendarEvent = null;
+  if (allMatches.length > 1) {
+    const deduped = deduplicateCalendarEvents(allMatches);
+    calendarEvent = deduped[0];
+    // Soft-delete extra duplicates
+    for (const dup of allMatches) {
+      if (dup._id.toString() !== calendarEvent._id.toString()) {
+        dup.deleted_at = new Date();
+        dup.instance = ctx.instance;
+        dup.session = ctx.state.session;
+        dup.isNew = false;
+        await dup.save();
+      }
+    }
+  } else if (allMatches.length === 1) {
+    calendarEvent = allMatches[0];
+  }
 
   if (!calendarEvent)
     throw Boom.notFound(ctx.translateError('CALENDAR_EVENT_DOES_NOT_EXIST'));
@@ -564,17 +620,46 @@ async function update(ctx) {
   if (!isSANB(ctx.params.id))
     throw Boom.badRequest(ctx.translateError('CALENDAR_EVENT_INVALID_ID'));
 
-  const calendarEvent = await CalendarEvents.findOne(
+  //
+  // Find ALL matching events (including duplicates and soft-deleted).
+  // Keep the latest by updated_at, soft-delete extras, and resurrect if needed.
+  //
+  const allMatches = await CalendarEvents.find(
     ctx.instance,
     ctx.state.session,
     {
-      eventId: ctx.params.id,
-      deleted_at: { $exists: false }
+      eventId: ctx.params.id
     }
   );
 
+  let calendarEvent = null;
+  if (allMatches.length > 1) {
+    const deduped = deduplicateCalendarEvents(allMatches);
+    calendarEvent = deduped[0];
+    // Soft-delete extra duplicates
+    for (const dup of allMatches) {
+      if (dup._id.toString() !== calendarEvent._id.toString()) {
+        dup.deleted_at = new Date();
+        dup.instance = ctx.instance;
+        dup.session = ctx.state.session;
+        dup.isNew = false;
+        await dup.save();
+      }
+    }
+  } else if (allMatches.length === 1) {
+    calendarEvent = allMatches[0];
+  }
+
   if (!calendarEvent) {
     throw Boom.notFound(ctx.translateError('CALENDAR_EVENT_DOES_NOT_EXIST'));
+  }
+
+  // Resurrect soft-deleted event if it was previously deleted
+  if (
+    calendarEvent.deleted_at !== null &&
+    calendarEvent.deleted_at !== undefined
+  ) {
+    calendarEvent.deleted_at = null;
   }
 
   // Check if over quota
@@ -606,9 +691,9 @@ async function update(ctx) {
   // Save old ICS for detecting removed attendees
   const oldIcal = calendarEvent.ical;
 
-  // Update iCal data if specified (sanitize FILENAME params for RFC 5545 compliance)
+  // Update iCal data if specified (normalize M365 recurring events + sanitize FILENAME params)
   if (body.ical !== undefined) {
-    calendarEvent.ical = quoteICSFilenames(body.ical);
+    calendarEvent.ical = quoteICSFilenames(normalizeIcs(body.ical));
   }
 
   // Set db virtual helpers
@@ -735,7 +820,11 @@ async function remove(ctx) {
   if (!isSANB(ctx.params.id))
     throw Boom.badRequest(ctx.translateError('CALENDAR_EVENT_INVALID_ID'));
 
-  const calendarEvent = await CalendarEvents.findOne(
+  //
+  // Find ALL matching events (including duplicates) and soft-delete them all.
+  // Use the first one for notification purposes.
+  //
+  const allMatches = await CalendarEvents.find(
     ctx.instance,
     ctx.state.session,
     {
@@ -744,19 +833,20 @@ async function remove(ctx) {
     }
   );
 
+  const calendarEvent = allMatches[0];
+
   if (!calendarEvent) {
     throw Boom.notFound(ctx.translateError('CALENDAR_EVENT_DOES_NOT_EXIST'));
   }
 
-  // Soft delete by setting deleted_at timestamp
-  calendarEvent.deleted_at = new Date();
-
-  // Set db virtual helpers
-  calendarEvent.instance = ctx.instance;
-  calendarEvent.session = ctx.state.session;
-  calendarEvent.isNew = false;
-
-  await calendarEvent.save();
+  // Soft delete ALL matching events (including duplicates)
+  for (const ev of allMatches) {
+    ev.deleted_at = new Date();
+    ev.instance = ctx.instance;
+    ev.session = ctx.state.session;
+    ev.isNew = false;
+    await ev.save();
+  }
 
   const calendar = await Calendars.findOne(ctx.instance, ctx.state.session, {
     _id: calendarEvent.calendar

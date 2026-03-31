@@ -39,6 +39,7 @@
 
 const ICAL = require('ical.js');
 const isEmail = require('#helpers/is-email');
+const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
 
 const CalendarInvites = require('#models/calendar-invites');
 const CalendarEvents = require('#models/calendar-events');
@@ -281,6 +282,21 @@ async function processReply(instance, ctx, invite, calendars) {
     return;
   }
 
+  // Skip soft-deleted events — REPLY should not update a deleted event.
+  // (findEventByUid now returns soft-deleted events for write paths that
+  // need resurrection, but REPLY is a read-modify-write on existing data.)
+  if (
+    calendarEvent.deleted_at !== null &&
+    calendarEvent.deleted_at !== undefined
+  ) {
+    await markProcessed(invite._id, 'Event is deleted');
+    ctx.logger.debug('Skipping REPLY for soft-deleted event', {
+      inviteId: invite._id,
+      eventUid: invite.eventUid
+    });
+    return;
+  }
+
   // Update the attendee's PARTSTAT in the iCal data
   const updatedIcal = updateAttendeePartstat(
     calendarEvent.ical,
@@ -372,11 +388,27 @@ async function processRequest(instance, ctx, invite, calendars) {
     // Strip METHOD from the stored ICS (it's only for transport)
     const storedIcs = stripMethodFromIcs(invite.rawIcs);
 
+    //
+    // Resurrect soft-deleted events: if the event was previously deleted
+    // and a new REQUEST arrives (e.g. re-sent invite), clear deleted_at
+    // so it becomes active again.
+    //
+    const updateFields = { ical: storedIcs };
+    if (
+      calendarEvent.deleted_at !== null &&
+      calendarEvent.deleted_at !== undefined
+    ) {
+      updateFields.deleted_at = null;
+      ctx.logger.debug('processRequest: resurrecting soft-deleted event', {
+        eventUid: invite.eventUid
+      });
+    }
+
     await CalendarEvents.findOneAndUpdate(
       instance,
       ctx.state.session,
       { _id: calendarEvent._id },
-      { $set: { ical: storedIcs } }
+      { $set: updateFields }
     );
 
     // Bump calendar synctoken so CalDAV clients see the change
@@ -407,23 +439,63 @@ async function processRequest(instance, ctx, invite, calendars) {
     const username = ctx.state.user?.username || '';
     const href = `/dav/${username}/${targetCalendar._id}/${eventId}`;
 
-    // NOTE: CalendarEvents.create() uses mongoose's default create(doc)
-    // signature (not the restricted statics pattern). The instance and
-    // session must be properties of the document object.
-    await CalendarEvents.create({
-      instance,
-      session: ctx.state.session,
+    //
+    // Find-before-write dedup: check if an event with this eventId already
+    // exists (including soft-deleted) in the target calendar.  If so,
+    // update + resurrect it instead of creating a duplicate.
+    // This replaces the old UNIQUE-constraint-catch approach.
+    //
+    const existingAll = await CalendarEvents.find(instance, ctx.state.session, {
       eventId,
-      calendar: targetCalendar._id,
-      ical: storedIcs,
-      href
+      calendar: targetCalendar._id
     });
+
+    if (existingAll.length > 0) {
+      // Deduplicate: keep the latest by updated_at
+      const deduped = deduplicateCalendarEvents(existingAll);
+      const keeper = deduped[0];
+
+      ctx.logger.debug(
+        'processRequest: found existing event by eventId, updating instead of creating',
+        { eventId, calendarId: targetCalendar._id, count: existingAll.length }
+      );
+
+      // Update the keeper with new ICS data and resurrect if soft-deleted
+      await CalendarEvents.findOneAndUpdate(
+        instance,
+        ctx.state.session,
+        { _id: keeper._id },
+        { $set: { ical: storedIcs, href, deleted_at: null } }
+      );
+
+      // Soft-delete any extra duplicates
+      for (const dup of existingAll) {
+        if (dup._id.toString() !== keeper._id.toString()) {
+          await CalendarEvents.findOneAndUpdate(
+            instance,
+            ctx.state.session,
+            { _id: dup._id },
+            { $set: { deleted_at: new Date() } }
+          );
+        }
+      }
+    } else {
+      // Truly new event - create it
+      await CalendarEvents.create({
+        instance,
+        session: ctx.state.session,
+        eventId,
+        calendar: targetCalendar._id,
+        ical: storedIcs,
+        href
+      });
+    }
 
     // Bump calendar synctoken so CalDAV clients see the change
     await bumpSyncToken(instance, ctx, targetCalendar._id);
 
     await markProcessed(invite._id);
-    ctx.logger.info('REQUEST processed - event created', {
+    ctx.logger.info('REQUEST processed - event created/updated', {
       inviteId: invite._id,
       eventUid: invite.eventUid,
       calendarId: targetCalendar._id
@@ -705,18 +777,19 @@ async function findEventByUid(instance, ctx, eventUid, calendars) {
 
   //
   // Fast path: batch query by eventId using $in across ALL calendars at once.
-  // Previously this was O(calendars × variants) sequential WSP calls;
-  // now it is a single WSP call per calendar.
+  // Uses find() instead of findOne() to handle duplicates.
+  // Searches ALL events (including soft-deleted) so write paths can resurrect.
   //
   for (const cal of calendars) {
-    const event = await CalendarEvents.findOne(instance, ctx.state.session, {
+    const allMatches = await CalendarEvents.find(instance, ctx.state.session, {
       eventId: { $in: uidVariants },
-      calendar: cal._id,
-      deleted_at: { $exists: false }
+      calendar: cal._id
     });
 
-    if (event) {
-      return { calendarEvent: event, calendar: cal };
+    if (allMatches.length > 0) {
+      // Deduplicate: keep the latest by updated_at
+      const deduped = deduplicateCalendarEvents(allMatches);
+      return { calendarEvent: deduped[0], calendar: cal };
     }
   }
 

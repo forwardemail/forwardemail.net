@@ -530,7 +530,7 @@ async function getDatabase(
           `highestmodseq_check:${session.user.alias_id}`,
           `storage_format_check:${session.user.alias_id}`,
           `caldav_href_check:${session.user.alias_id}`,
-          `calendar_date_check:${session.user.alias_id}`
+          `calendar_date_check_v2:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
@@ -1045,7 +1045,7 @@ async function getDatabase(
     if (!calendarDateCheck) {
       try {
         await instance.client.set(
-          `calendar_date_check:${session.user.alias_id}`,
+          `calendar_date_check_v2:${session.user.alias_id}`,
           true,
           'PX',
           ms('30d')

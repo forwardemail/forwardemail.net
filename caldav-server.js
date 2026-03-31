@@ -22,6 +22,7 @@ const { rrulestr } = require('rrule');
 const sanitizeHtml = require('sanitize-html');
 
 const _ = require('#helpers/lodash');
+const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
 const Aliases = require('#models/aliases');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
@@ -557,6 +558,86 @@ function bumpSyncToken(synctoken) {
 //
 function normalizeICS(icsData) {
   if (typeof icsData !== 'string') return icsData;
+
+  //
+  // Phase 1: Add missing EXDATEs for detached recurring instances.
+  //
+  // Microsoft Exchange / M365 generates recurring series with
+  // RECURRENCE-ID overrides (moved instances) but omits the
+  // corresponding EXDATE on the master VEVENT.  Per RFC 5545
+  // Section 3.8.5.1, the original occurrence date should appear
+  // as an EXDATE so clients don't render both the original and
+  // the moved instance.
+  //
+  if (icsData.includes('RECURRENCE-ID')) {
+    try {
+      const parsed = ICAL.parse(icsData);
+      const comp = new ICAL.Component(parsed);
+      const vevents = comp.getAllSubcomponents('vevent');
+
+      if (vevents.length >= 2) {
+        const masters = [];
+        const overrides = [];
+
+        for (const vevent of vevents) {
+          if (vevent.getFirstPropertyValue('recurrence-id')) {
+            overrides.push(vevent);
+          } else if (
+            vevent.getFirstProperty('rrule') ||
+            vevent.getFirstProperty('rdate')
+          ) {
+            masters.push(vevent);
+          }
+        }
+
+        let modified = false;
+
+        for (const master of masters) {
+          const masterUid = master.getFirstPropertyValue('uid');
+          if (!masterUid) continue;
+
+          // Collect existing EXDATE values
+          const existingExdates = new Set();
+          for (const prop of master.getAllProperties('exdate')) {
+            const val = prop.getFirstValue();
+            if (val) existingExdates.add(val.toICALString());
+          }
+
+          for (const override of overrides) {
+            const overrideUid = override.getFirstPropertyValue('uid');
+            if (overrideUid !== masterUid) continue;
+
+            const recurrenceId = override.getFirstProperty('recurrence-id');
+            if (!recurrenceId) continue;
+
+            const recIdValue = recurrenceId.getFirstValue();
+            if (!recIdValue) continue;
+
+            const recIdIcs = recIdValue.toICALString();
+            if (!existingExdates.has(recIdIcs)) {
+              const exdateProp = new ICAL.Property('exdate');
+              const tzid = recurrenceId.getParameter('tzid');
+              if (tzid) exdateProp.setParameter('tzid', tzid);
+              const valueType = recurrenceId.getParameter('value');
+              if (valueType) exdateProp.setParameter('value', valueType);
+              exdateProp.setValue(recIdValue.clone());
+              master.addProperty(exdateProp);
+              existingExdates.add(recIdIcs);
+              modified = true;
+            }
+          }
+        }
+
+        if (modified) {
+          icsData = comp.toString();
+        }
+      }
+    } catch {
+      // If parsing fails, continue with the original data
+    }
+  }
+
+  // Phase 2: Normalize line endings to CRLF (RFC 5545 Section 3.1)
   return icsData.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
 }
 
@@ -1984,6 +2065,13 @@ class CalDAV extends API {
 
           if (existingEvent) {
             existingEvent.ical = normalizeICS(vc.toString());
+            // Resurrect soft-deleted events during import
+            if (
+              existingEvent.deleted_at !== null &&
+              existingEvent.deleted_at !== undefined
+            ) {
+              existingEvent.deleted_at = null;
+            }
 
             await existingEvent.save();
             continue;
@@ -2171,6 +2259,9 @@ class CalDAV extends API {
       events = events.filter(
         (e) => e.deleted_at === null || e.deleted_at === undefined
       );
+
+    // Deduplicate by eventId, keeping the most recently updated copy
+    events = deduplicateCalendarEvents(events);
 
     ctx.logger.debug('events found', { count: events.length });
 
@@ -2570,7 +2661,8 @@ class CalDAV extends API {
       if (match) filtered.push(event);
     }
 
-    return filtered;
+    // Deduplicate by eventId, keeping the most recently updated copy
+    return deduplicateCalendarEvents(filtered);
   }
 
   async getEvent(ctx, { eventId, principalId, calendarId, user, fullData }) {
@@ -2592,29 +2684,50 @@ class CalDAV extends API {
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    // Search for both eventId variants (with and without .ics) for backwards compatibility
+    //
+    // Search for ALL matching events (including duplicates) by eventId variants.
+    // If duplicates exist, return the latest by updated_at and soft-delete the rest.
+    //
     const eventIdVariants = getEventIdVariants(eventId);
-    let event = null;
+    let allMatches = [];
 
     for (const variant of eventIdVariants) {
-      event = await CalendarEvents.findOne(this, ctx.state.session, {
+      allMatches = await CalendarEvents.find(this, ctx.state.session, {
         eventId: variant,
         calendar: calendar._id,
         deleted_at: { $exists: false }
       });
-      if (event) break;
+      if (allMatches.length > 0) break;
     }
 
     // Also check for email-based eventId with @ replaced by _
-    if (!event && isEmail(eventIdVariants[0])) {
-      event = await CalendarEvents.findOne(this, ctx.state.session, {
+    if (allMatches.length === 0 && isEmail(eventIdVariants[0])) {
+      allMatches = await CalendarEvents.find(this, ctx.state.session, {
         eventId: eventIdVariants[0].replace('@', '_'),
         calendar: calendar._id,
         deleted_at: { $exists: false }
       });
     }
 
-    return event;
+    // Deduplicate: keep the latest by updated_at, soft-delete extras
+    if (allMatches.length > 1) {
+      const deduped = deduplicateCalendarEvents(allMatches);
+      const keeper = deduped[0];
+      for (const dup of allMatches) {
+        if (dup._id.toString() !== keeper._id.toString()) {
+          await CalendarEvents.findByIdAndUpdate(
+            this,
+            ctx.state.session,
+            dup._id,
+            { $set: { deleted_at: new Date() } }
+          );
+        }
+      }
+
+      return keeper;
+    }
+
+    return allMatches[0] || null;
   }
 
   // eventId: ctx.state.params.eventId,
@@ -2652,21 +2765,100 @@ class CalDAV extends API {
       );
     }
 
-    // Check if there is an event with same calendar ID already.
-    // Search for both eventId variants (with and without .ics) for backwards compatibility.
+    //
+    // Search for ALL existing events with the same eventId (including soft-deleted).
+    // If found, update the latest one instead of creating a duplicate.
+    // This handles: race conditions, re-sent invites, and resurrection of deleted events.
+    //
     const eventIdVariants = getEventIdVariants(eventId);
-    let exists = null;
+    let existingAll = [];
 
     for (const variant of eventIdVariants) {
-      exists = await CalendarEvents.findOne(this, ctx.state.session, {
+      existingAll = await CalendarEvents.find(this, ctx.state.session, {
         eventId: variant,
         calendar: calendar._id
       });
-      if (exists) break;
+      if (existingAll.length > 0) break;
     }
 
-    if (exists)
-      throw Boom.badRequest(ctx.translateError('EVENT_ALREADY_EXISTS'));
+    // Pick the latest by updated_at if duplicates exist
+    let exists = null;
+    if (existingAll.length > 0) {
+      const deduped = deduplicateCalendarEvents(existingAll);
+      exists = deduped[0];
+      // Soft-delete all extra duplicates
+      for (const dup of existingAll) {
+        if (dup._id.toString() !== exists._id.toString()) {
+          await CalendarEvents.findByIdAndUpdate(
+            this,
+            ctx.state.session,
+            dup._id,
+            { $set: { deleted_at: new Date() } }
+          );
+        }
+      }
+    }
+
+    if (exists) {
+      //
+      // If the existing event is soft-deleted, resurrect it with the new ICS data.
+      // If it's active, update it with the new ICS data (upsert behavior).
+      //
+      ctx.logger.debug(
+        'createEvent: existing event found, updating instead of creating',
+        {
+          eventId,
+          calendarId,
+          wasSoftDeleted:
+            exists.deleted_at !== null && exists.deleted_at !== undefined
+        }
+      );
+
+      await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
+        $set: {
+          synctoken: bumpSyncToken(calendar.synctoken)
+        }
+      });
+
+      exists.ical = normalizeICS(ctx.request.body);
+      exists.href = ctx.url;
+      exists.deleted_at = null;
+      exists.instance = this;
+      exists.session = ctx.state.session;
+      exists.isNew = false;
+      const eventUpdated = await exists.save();
+
+      // Fire-and-forget: send invite emails for the updated event
+      setImmediate(() => {
+        this.sendEmailWithICS(ctx, calendar, eventUpdated, 'REQUEST').catch(
+          (err) => {
+            ctx.logger.error('sendEmailWithICS error', { err });
+          }
+        );
+      });
+
+      sendApnCalendar(this.client, ctx.state.user.alias_id)
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+
+      sendWebSocketNotification(
+        this.client,
+        ctx.state.user.alias_id,
+        'calendarEventCreated',
+        {
+          calendarEvent: {
+            id: eventUpdated._id.toString(),
+            eventId: eventUpdated.eventId,
+            calendarId,
+            ical: eventUpdated.ical || ctx.request.body,
+            href: eventUpdated.href || ctx.url,
+            object: 'calendar_event'
+          }
+        }
+      );
+
+      return eventUpdated;
+    }
 
     // TODO: this should probably only happen if the create was successful
     await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
@@ -2752,46 +2944,7 @@ class CalDAV extends API {
       eventId: calendarEvent.eventId
     });
 
-    let eventCreated;
-    try {
-      eventCreated = await CalendarEvents.create(calendarEvent);
-    } catch (err) {
-      //
-      // Handle unique constraint violation from the (eventId, calendar)
-      // unique index.  This happens when concurrent PUT requests race
-      // past the findOne check above and both try to insert.
-      // In this case, fall back to updating the existing event.
-      //
-      if (
-        err.message &&
-        (err.message.includes('UNIQUE constraint failed') ||
-          err.message.includes('duplicate key'))
-      ) {
-        ctx.logger.warn(
-          'createEvent: duplicate detected, falling back to update',
-          {
-            eventId,
-            calendarId
-          }
-        );
-        const existing = await CalendarEvents.findOne(this, ctx.state.session, {
-          eventId,
-          calendar: calendar._id
-        });
-        if (existing) {
-          existing.ical = calendarEvent.ical;
-          existing.href = calendarEvent.href;
-          existing.instance = this;
-          existing.session = ctx.state.session;
-          existing.isNew = false;
-          eventCreated = await existing.save();
-        } else {
-          throw err;
-        }
-      } else {
-        throw err;
-      }
-    }
+    const eventCreated = await CalendarEvents.create(calendarEvent);
 
     // Fire and forget - don't block the response waiting for email to be sent
     // Use setImmediate to completely detach from the current execution context
@@ -2870,24 +3023,47 @@ class CalDAV extends API {
       );
     }
 
-    // Search for both eventId variants (with and without .ics) for backwards compatibility
+    //
+    // Search for ALL matching events (including duplicates) by eventId variants.
+    // If duplicates exist, keep the latest by updated_at and soft-delete the rest.
+    //
     const eventIdVariants = getEventIdVariants(eventId);
-    let e = null;
+    let allMatches = [];
 
     for (const variant of eventIdVariants) {
-      e = await CalendarEvents.findOne(this, ctx.state.session, {
+      allMatches = await CalendarEvents.find(this, ctx.state.session, {
         eventId: variant,
         calendar: calendar._id
       });
-      if (e) break;
+      if (allMatches.length > 0) break;
     }
 
     // Also check for email-based eventId with @ replaced by _
-    if (!e && isEmail(eventIdVariants[0])) {
-      e = await CalendarEvents.findOne(this, ctx.state.session, {
+    if (allMatches.length === 0 && isEmail(eventIdVariants[0])) {
+      allMatches = await CalendarEvents.find(this, ctx.state.session, {
         eventId: eventIdVariants[0].replace('@', '_'),
         calendar: calendar._id
       });
+    }
+
+    // Deduplicate: keep the latest by updated_at, soft-delete extras
+    let e = null;
+    if (allMatches.length > 1) {
+      const deduped = deduplicateCalendarEvents(allMatches);
+      e = deduped[0];
+      // Soft-delete all extra duplicates
+      for (const dup of allMatches) {
+        if (dup._id.toString() !== e._id.toString()) {
+          await CalendarEvents.findByIdAndUpdate(
+            this,
+            ctx.state.session,
+            dup._id,
+            { $set: { deleted_at: new Date() } }
+          );
+        }
+      }
+    } else if (allMatches.length === 1) {
+      e = allMatches[0];
     }
 
     //
@@ -2932,8 +3108,18 @@ class CalDAV extends API {
 
     const oldCalStr = String(e.ical);
 
-    // TODO: is this not updating?
-    // console.log('UPDATING BODY', ctx.request.body);
+    //
+    // Resurrect soft-deleted events: if the event was previously deleted
+    // and a client sends a PUT update (e.g. re-sent invite, iOS acceptance),
+    // clear deleted_at so it becomes active again.
+    //
+    if (e.deleted_at !== null && e.deleted_at !== undefined) {
+      ctx.logger.debug('updateEvent: resurrecting soft-deleted event', {
+        eventId,
+        calendarId
+      });
+      e.deleted_at = null;
+    }
 
     //
     // Set href if not already set (for events created before href field was added).
@@ -3157,25 +3343,34 @@ class CalDAV extends API {
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    // Search for both eventId variants (with and without .ics) for backwards compatibility
+    //
+    // Search for ALL matching events (including duplicates) and soft-delete them all.
+    // Use find() instead of findOne() to handle duplicate rows.
+    //
     const eventIdVariants = getEventIdVariants(eventId);
-    let event = null;
+    let events = [];
 
     for (const variant of eventIdVariants) {
-      event = await CalendarEvents.findOne(this, ctx.state.session, {
+      const found = await CalendarEvents.find(this, ctx.state.session, {
         eventId: variant,
         calendar: calendar._id
       });
-      if (event) break;
+      if (found.length > 0) {
+        events = found;
+        break;
+      }
     }
 
     // Also check for email-based eventId with @ replaced by _
-    if (!event && isEmail(eventIdVariants[0])) {
-      event = await CalendarEvents.findOne(this, ctx.state.session, {
+    if (events.length === 0 && isEmail(eventIdVariants[0])) {
+      events = await CalendarEvents.find(this, ctx.state.session, {
         eventId: eventIdVariants[0].replace('@', '_'),
         calendar: calendar._id
       });
     }
+
+    // Use the first (most complete) event for notification purposes
+    const event = events[0];
 
     if (event) {
       // TODO: this should probably only happen if the delete was successful
@@ -3205,30 +3400,28 @@ class CalDAV extends API {
       //       contain one DAV:status with a value set to '404 Not Found' and
       //       MUST NOT contain any DAV:propstat element.
       //
-      // await CalendarEvents.deleteOne(this, ctx.state.session, {
-      //   _id: event._id
-      // });
 
       //
-      // Set href if not already set before marking as deleted.
-      // This ensures sync-collection responses return the correct URL for
-      // deleted events, matching what the client used to delete it.
+      // Soft-delete ALL duplicate events with this eventId.
+      // This ensures no orphaned duplicates remain active.
       //
-      const updateFields = {
-        deleted_at: new Date()
-      };
-      if (!event.href) {
-        updateFields.href = ctx.url;
-      }
-
-      await CalendarEvents.findByIdAndUpdate(
-        this,
-        ctx.state.session,
-        event._id,
-        {
-          $set: updateFields
+      for (const ev of events) {
+        const updateFields = {
+          deleted_at: new Date()
+        };
+        if (!ev.href) {
+          updateFields.href = ctx.url;
         }
-      );
+
+        await CalendarEvents.findByIdAndUpdate(
+          this,
+          ctx.state.session,
+          ev._id,
+          {
+            $set: updateFields
+          }
+        );
+      }
 
       //
       // Determine if the user is the organizer or an attendee

@@ -259,6 +259,7 @@ test('REPLY - updates attendee PARTSTAT in organizer event', async (t) => {
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'test-event-uid-123',
       calendar: t.context.defaultCalendar._id,
       ical: ORGANIZER_EVENT_ICS,
       deleted_at: null
@@ -318,6 +319,7 @@ test('REPLY - returns null when attendee not found in event', async (t) => {
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'test-event-uid-123',
       calendar: t.context.defaultCalendar._id,
       ical: ORGANIZER_EVENT_ICS,
       deleted_at: null
@@ -346,6 +348,7 @@ test('REPLY - updates only the specified attendee in multi-attendee event', asyn
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'test-event-uid-123',
       calendar: t.context.defaultCalendar._id,
       ical: ORGANIZER_EVENT_ICS,
       deleted_at: null
@@ -438,6 +441,7 @@ test('REQUEST - updates existing event when found', async (t) => {
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'request-event-uid',
       calendar: t.context.defaultCalendar._id,
       ical: existingEventIcs,
       deleted_at: null
@@ -483,6 +487,7 @@ test('REQUEST - skips stale update (lower sequence)', async (t) => {
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'request-event-uid',
       calendar: t.context.defaultCalendar._id,
       ical: existingEventIcs,
       deleted_at: null
@@ -526,6 +531,7 @@ test('CANCEL - sets STATUS:CANCELLED on existing event', async (t) => {
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'cancel-event-uid',
       calendar: t.context.defaultCalendar._id,
       ical: existingIcs,
       deleted_at: null
@@ -580,6 +586,7 @@ test('CANCEL with RECURRENCE-ID - cancels single instance', async (t) => {
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'recurring-event-uid',
       calendar: t.context.defaultCalendar._id,
       ical: RECURRING_ICS,
       deleted_at: null
@@ -613,6 +620,7 @@ test('ADD - merges recurrence override into existing event', async (t) => {
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'recurring-event-uid',
       calendar: t.context.defaultCalendar._id,
       ical: RECURRING_ICS,
       deleted_at: null
@@ -669,6 +677,7 @@ test('REFRESH - marks as processed when event found', async (t) => {
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'test-event-uid-123',
       calendar: t.context.defaultCalendar._id,
       ical: ORGANIZER_EVENT_ICS,
       deleted_at: null
@@ -870,6 +879,7 @@ test('REPLY - matches event UID with .ics suffix variant', async (t) => {
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'test-event-uid-123.ics',
       calendar: t.context.defaultCalendar._id,
       ical: ORGANIZER_EVENT_ICS, // UID is test-event-uid-123 (no .ics)
       deleted_at: null
@@ -939,6 +949,7 @@ test('REPLY - skips deleted events (deleted_at set)', async (t) => {
   t.context.calendarEventsFind.resolves([
     {
       _id: new mongoose.Types.ObjectId(),
+      eventId: 'test-event-uid-123',
       calendar: t.context.defaultCalendar._id,
       ical: ORGANIZER_EVENT_ICS,
       deleted_at: new Date() // Deleted!
@@ -1001,6 +1012,7 @@ test('REPLY - sequential RSVPs preserve previous attendee updates', async (t) =>
   t.context.sandbox.stub(CalendarEvents, 'find').callsFake(async () => [
     {
       _id: eventId,
+      eventId: 'sequential-rsvp-test@example.com',
       calendar: t.context.defaultCalendar._id,
       ical: currentIcs,
       deleted_at: null
@@ -1100,4 +1112,210 @@ test('REPLY - sequential RSVPs preserve previous attendee updates', async (t) =>
   // Cleanup
   await CalendarInvites.deleteOne({ _id: aliceInvite._id });
   await CalendarInvites.deleteOne({ _id: bobInvite._id });
+});
+
+// ─── REQUEST Find-Before-Write Dedup ──────────────────────────────────────
+
+test('REQUEST - resurrects soft-deleted event instead of creating duplicate', async (t) => {
+  const softDeletedEventId = new mongoose.Types.ObjectId();
+
+  const invite = await seedInvite({
+    eventUid: 'request-event-uid',
+    organizerEmail: 'attendee@example.com',
+    method: 'REQUEST',
+    response: 'NEEDS-ACTION',
+    rawIcs: REQUEST_ICS,
+    sequence: 2
+  });
+
+  // findEventByUid fast path uses { eventId: { $in: variants }, calendar }
+  // processRequest find-before-write uses { eventId: 'request-event-uid.ics', calendar }
+  // We differentiate by checking if the query uses $in (findEventByUid) vs exact match
+  t.context.calendarEventsFind.restore();
+  t.context.calendarEventsFind = t.context.sandbox
+    .stub(CalendarEvents, 'find')
+    .callsFake(async (_instance, _session, query) => {
+      // findEventByUid uses $in on eventId
+      if (query && query.eventId && query.eventId.$in) {
+        return []; // Fast path: no match
+      }
+
+      // processRequest find-before-write uses exact eventId match
+      if (query && query.eventId && typeof query.eventId === 'string') {
+        return [
+          {
+            _id: softDeletedEventId,
+            eventId: 'request-event-uid.ics',
+            calendar: t.context.defaultCalendar._id,
+            ical: 'old-ics-data',
+            updated_at: new Date('2025-01-28T10:00:00Z'),
+            deleted_at: new Date('2025-01-29T00:00:00Z')
+          }
+        ];
+      }
+
+      // Slow path fallback
+      return [];
+    });
+
+  const ctx = createMockCtx('attendee@example.com');
+  const results = await processCalendarInvites(mockInstance, ctx);
+
+  t.is(results.processed, 1);
+  // Should have updated (resurrected) the existing event, NOT created a new one
+  t.is(t.context.createdEvents.length, 0, 'Should not create a new event');
+  t.is(
+    t.context.updatedEvents.length,
+    1,
+    'Should update (resurrect) the existing event'
+  );
+
+  // Verify the update includes deleted_at: null (resurrection)
+  const updatePayload = t.context.updatedEvents[0].update.$set;
+  t.is(updatePayload.deleted_at, null, 'Should clear deleted_at to resurrect');
+  t.truthy(updatePayload.ical, 'Should update ical');
+  t.false(
+    updatePayload.ical.includes('METHOD'),
+    'Should strip METHOD from stored ICS'
+  );
+
+  const processedInvite = await CalendarInvites.findById(invite._id);
+  t.true(processedInvite.processed);
+
+  await CalendarInvites.deleteOne({ _id: invite._id });
+});
+
+test('REQUEST - deduplicates multiple existing events and updates keeper', async (t) => {
+  const keeperId = new mongoose.Types.ObjectId();
+  const dupId = new mongoose.Types.ObjectId();
+
+  const invite = await seedInvite({
+    eventUid: 'request-event-uid',
+    organizerEmail: 'attendee@example.com',
+    method: 'REQUEST',
+    response: 'NEEDS-ACTION',
+    rawIcs: REQUEST_ICS,
+    sequence: 2
+  });
+
+  // Use callsFake to differentiate between findEventByUid and processRequest calls
+  t.context.calendarEventsFind.restore();
+  t.context.calendarEventsFind = t.context.sandbox
+    .stub(CalendarEvents, 'find')
+    .callsFake(async (_instance, _session, query) => {
+      // findEventByUid uses $in on eventId
+      if (query && query.eventId && query.eventId.$in) {
+        return []; // Fast path: no match
+      }
+
+      // processRequest find-before-write uses exact eventId match
+      if (query && query.eventId && typeof query.eventId === 'string') {
+        return [
+          {
+            _id: dupId,
+            eventId: 'request-event-uid.ics',
+            calendar: t.context.defaultCalendar._id,
+            ical: 'older-ics',
+            updated_at: new Date('2025-01-28T10:00:00Z'),
+            deleted_at: null
+          },
+          {
+            _id: keeperId,
+            eventId: 'request-event-uid.ics',
+            calendar: t.context.defaultCalendar._id,
+            ical: 'newer-ics',
+            updated_at: new Date('2025-01-30T10:00:00Z'),
+            deleted_at: null
+          }
+        ];
+      }
+
+      // Slow path fallback
+      return [];
+    });
+
+  const ctx = createMockCtx('attendee@example.com');
+  const results = await processCalendarInvites(mockInstance, ctx);
+
+  t.is(results.processed, 1);
+  t.is(t.context.createdEvents.length, 0, 'Should not create a new event');
+  // Should have 2 updates: one for the keeper (update ical) and one for the dup (soft-delete)
+  t.is(
+    t.context.updatedEvents.length,
+    2,
+    'Should update keeper and soft-delete duplicate'
+  );
+
+  // One update should be the keeper (with new ical + deleted_at: null)
+  const keeperUpdate = t.context.updatedEvents.find(
+    (u) => u.filter._id.toString() === keeperId.toString()
+  );
+  t.truthy(keeperUpdate, 'Should update the keeper');
+  t.is(
+    keeperUpdate.update.$set.deleted_at,
+    null,
+    'Keeper should be resurrected'
+  );
+
+  // One update should be the duplicate (soft-deleted)
+  const dupUpdate = t.context.updatedEvents.find(
+    (u) => u.filter._id.toString() === dupId.toString()
+  );
+  t.truthy(dupUpdate, 'Should soft-delete the duplicate');
+  t.truthy(
+    dupUpdate.update.$set.deleted_at,
+    'Duplicate should have deleted_at set'
+  );
+
+  await CalendarInvites.deleteOne({ _id: invite._id });
+});
+
+test('REQUEST - updates existing event and resurrects if soft-deleted', async (t) => {
+  const existingId = new mongoose.Types.ObjectId();
+
+  const existingEventIcs = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'BEGIN:VEVENT',
+    'UID:request-event-uid',
+    'DTSTAMP:20250101T100000Z',
+    'DTSTART:20250101T100000Z',
+    'SUMMARY:Old Event',
+    'SEQUENCE:1',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const invite = await seedInvite({
+    eventUid: 'request-event-uid',
+    organizerEmail: 'attendee@example.com',
+    method: 'REQUEST',
+    response: 'NEEDS-ACTION',
+    rawIcs: REQUEST_ICS,
+    sequence: 2
+  });
+
+  // findEventByUid returns the soft-deleted event (fast path now includes soft-deleted)
+  t.context.calendarEventsFind.resolves([
+    {
+      _id: existingId,
+      eventId: 'request-event-uid',
+      calendar: t.context.defaultCalendar._id,
+      ical: existingEventIcs,
+      deleted_at: new Date('2025-01-30T00:00:00Z')
+    }
+  ]);
+
+  const ctx = createMockCtx('attendee@example.com');
+  const results = await processCalendarInvites(mockInstance, ctx);
+
+  t.is(results.processed, 1);
+  t.is(t.context.updatedEvents.length, 1);
+
+  // Verify resurrection: deleted_at should be cleared
+  const updatePayload = t.context.updatedEvents[0].update.$set;
+  t.is(updatePayload.deleted_at, null, 'Should clear deleted_at to resurrect');
+  t.truthy(updatePayload.ical, 'Should update ical');
+
+  await CalendarInvites.deleteOne({ _id: invite._id });
 });
