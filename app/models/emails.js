@@ -60,6 +60,7 @@ const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseUsername = require('#helpers/parse-username');
+const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
 
 const IP_ADDRESS = ip.address();
 const NO_REPLY_USERNAMES = new Set(noReplyList);
@@ -1600,7 +1601,9 @@ Emails.statics.queue = async function (
         (new Date(m.user[config.userFields.planExpiresAt]).getTime() >=
           Date.now() ||
           isSANB(m.user[config.userFields.stripeSubscriptionID]) ||
-          isSANB(m.user[config.userFields.paypalSubscriptionID])) &&
+          isSANB(m.user[config.userFields.paypalSubscriptionID]) ||
+          // Allow access during 15-day grace period for paid users
+          isWithinGracePeriod(m.user)) &&
         m.group === 'admin'
     )
   )

@@ -49,6 +49,7 @@ const updateHeaders = require('./update-headers');
 const { encoder } = require('./encoder-decoder');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
 const shouldSendDSN = require('./should-send-dsn');
+const { isWithinGracePeriod } = require('./is-within-grace-period');
 
 const config = require('#config');
 const env = require('#config/env');
@@ -221,7 +222,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
           (new Date(m.user[config.userFields.planExpiresAt]).getTime() >=
             Date.now() ||
             isSANB(m.user[config.userFields.stripeSubscriptionID]) ||
-            isSANB(m.user[config.userFields.paypalSubscriptionID])) &&
+            isSANB(m.user[config.userFields.paypalSubscriptionID]) ||
+            // Allow access during 15-day grace period for paid users
+            isWithinGracePeriod(m.user)) &&
           m.group === 'admin'
       )
     )

@@ -13,7 +13,7 @@ const parser = require('mongodb-query-parser');
 const _ = require('#helpers/lodash');
 const config = require('#config');
 const refundHelper = require('#helpers/refund');
-const { Payments, Users } = require('#models');
+const { Domains, Payments, Users } = require('#models');
 
 const { PAYMENT_DURATIONS } = config.payments;
 
@@ -240,14 +240,52 @@ async function freeCredit(ctx) {
     throw Boom.notFound('User does not exist');
   }
 
+  //
+  // enforce that the granted plan matches the user's domains:
+  // if the user is an admin on any domain whose plan is higher
+  // than the selected plan, reject and tell the admin which plan
+  // is required (e.g. "team" domains need a "team" credit)
+  //
+  // plan hierarchy: team (2) > enhanced_protection (1) > free (0)
+  //
+  const PLAN_TIER = { free: 0, enhanced_protection: 1, team: 2 };
+
+  // build a list of plans that are strictly above the selected plan
+  const higherPlans = Object.keys(PLAN_TIER).filter(
+    (p) => PLAN_TIER[p] > (PLAN_TIER[plan] || 0)
+  );
+
+  if (higherPlans.length > 0) {
+    const higherDomain = await Domains.findOne({
+      'members.user': user._id,
+      'members.group': 'admin',
+      plan: { $in: higherPlans }
+    })
+      .select('plan name')
+      .lean()
+      .exec();
+
+    if (higherDomain) {
+      throw Boom.badRequest(
+        `User is an admin on the domain "${higherDomain.name}" which requires the "${higherDomain.plan}" plan. ` +
+          `Free credit must be granted for the "${higherDomain.plan}" plan instead of "${plan}".`
+      );
+    }
+  }
+
+  //
+  // only reset plan_set_at if the user is changing plans
+  // (do not reset when granting additional credit for the same plan)
+  //
   if (user.plan === 'free' || user.plan !== plan) {
     user.plan_set_at = dayjs().startOf('day').toDate();
   }
 
   user.plan = plan;
-  await user.save();
 
-  // Create a payment record for tracking
+  // Create the payment record BEFORE saving the user so that the
+  // pre-save hook (which recalculates plan_expires_at from payments)
+  // sees the new payment and computes the correct expiry date.
   await Payments.create({
     user: user._id,
     plan,
@@ -258,7 +296,7 @@ async function freeCredit(ctx) {
     kind: 'one-time'
   });
 
-  // Save the user so their plan expires at gets updated
+  // Save the user (the pre-save hook recalculates plan_expires_at from payments)
   await user.save();
 
   // Send free credit email to the user
