@@ -23,7 +23,7 @@ const shortID = require('mongodb-short-id');
 const splitLines = require('split-lines');
 const titleize = require('titleize');
 const wrap = require('word-wrap');
-const { Octokit } = require('@octokit/core');
+const undici = require('undici');
 const { gzip } = require('node-gzip');
 
 const admin = require('./admin');
@@ -60,7 +60,6 @@ const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
-const env = require('#config/env');
 // const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
@@ -71,37 +70,38 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const meta = new Meta(config.meta, logger);
 
-// only initialize octokit if we have a valid token
-const octokit = isSANB(env.GITHUB_OCTOKIT_TOKEN)
-  ? new Octokit({
-      auth: env.GITHUB_OCTOKIT_TOKEN
-    })
-  : null;
-
 // every 6 hours update github star count
 let STARS = 1000;
 async function checkGitHubStars() {
-  // skip if no octokit client (no token configured)
-  if (!octokit) {
-    logger.debug(
-      'Skipping GitHub star count check - GITHUB_OCTOKIT_TOKEN not configured'
-    );
-    return;
-  }
-
   try {
-    const response = await octokit.request('GET /repos/{owner}/{repo}', {
-      owner: 'forwardemail',
-      repo: 'forwardemail.net',
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
+    const { statusCode, headers, body } = await undici.request(
+      'https://api.github.com/repos/forwardemail/forwardemail.net',
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/vnd.github.v3+json',
+          'User-Agent': 'forwardemail.net',
+          'X-GitHub-Api-Version': '2022-11-28'
+        },
+        bodyTimeout: 10_000,
+        headersTimeout: 10_000
       }
-    });
+    );
 
-    if (Number.isFinite(response?.data?.stargazers_count)) {
-      STARS = response.data.stargazers_count;
+    const data = await body.json();
+
+    if (statusCode !== 200) {
+      throw new Error(
+        `GitHub API responded with ${statusCode}: ${
+          data?.message || 'Unknown error'
+        }`
+      );
+    }
+
+    if (Number.isFinite(data?.stargazers_count)) {
+      STARS = data.stargazers_count;
       logger.info(
-        `GitHub star count updated: ${STARS} (rate limit: ${response.headers['x-ratelimit-remaining']}/${response.headers['x-ratelimit-limit']})`
+        `GitHub star count updated: ${STARS} (rate limit: ${headers['x-ratelimit-remaining']}/${headers['x-ratelimit-limit']})`
       );
     }
 
@@ -110,15 +110,12 @@ async function checkGitHubStars() {
   } catch (err) {
     // log rate limit errors more explicitly
     if (
-      err.status === 403 &&
-      err.response?.headers['x-ratelimit-remaining'] === '0'
+      err.status === 403 ||
+      (err.message && err.message.includes('rate limit'))
     ) {
       logger.error(
         new Error(
-          `GitHub API rate limit exceeded. Limit resets at ${new Date(
-            Number.parseInt(err.response.headers['x-ratelimit-reset'], 10) *
-              1000
-          ).toISOString()}. Using cached star count: ${STARS}`
+          `GitHub API rate limit exceeded. Using cached star count: ${STARS}`
         )
       );
     } else {
