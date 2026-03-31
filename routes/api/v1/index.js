@@ -602,7 +602,7 @@ router
 // contacts (CardDAV)
 router
   .use('/contacts', api.v1.aliasAuth)
-  .get('/contacts', paginate.middleware(25, 100), api.v1.contacts.list)
+  .get('/contacts', paginate.middleware(100, 10000), api.v1.contacts.list)
   .post('/contacts', api.v1.contacts.create)
   .get('/contacts/:id', api.v1.contacts.retrieve)
   .put('/contacts/:id', api.v1.contacts.update)

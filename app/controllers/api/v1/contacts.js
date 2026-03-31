@@ -87,39 +87,48 @@ async function list(ctx) {
     address_book: addressBook._id
   };
 
-  // Get contacts with pagination
-  const { results: contacts, count: itemCount } = await Contacts.findAndCount(
+  //
+  // Fetch all contacts for the address book and filter soft-deleted ones
+  // in memory BEFORE applying pagination. This ensures:
+  // 1. Accurate total count (not skewed by deleted contacts on other pages)
+  // 2. Consistent page sizes (no pages with fewer items due to post-filter removal)
+  // 3. All active contacts are discoverable regardless of pagination settings
+  //
+  // NOTE: we filter deleted_at in JS because SQLite does not support $or/$exists
+  //       and json-sql-enhanced generates `= null` instead of `IS NULL`
+  //
+  const allContacts = await Contacts.find(
     ctx.instance,
     ctx.state.session,
     query,
     {},
     {
-      limit: ctx.query.limit,
-      offset: ctx.paginate.skip,
       sort: { created_at: -1 }
     }
   );
 
-  // Filter out soft-deleted contacts (deleted via CardDAV sync)
-  // NOTE: we filter in JS because SQLite does not support $or/$exists
-  //       and json-sql-enhanced generates `= null` instead of `IS NULL`
-  const activeContacts = Array.isArray(contacts)
-    ? contacts.filter((contact) => !contact.deleted_at)
+  // Filter out soft-deleted contacts
+  const activeContacts = Array.isArray(allContacts)
+    ? allContacts.filter((contact) => !contact.deleted_at)
     : [];
 
-  const activeCount = itemCount - (contacts.length - activeContacts.length);
-  const pageCount = Math.ceil(activeCount / ctx.query.limit);
+  // Apply pagination in memory after filtering
+  const itemCount = activeContacts.length;
+  const { limit } = ctx.query;
+  const offset = ctx.paginate.skip;
+  const paginatedContacts = activeContacts.slice(offset, offset + limit);
+  const pageCount = Math.ceil(itemCount / limit);
 
   // Set pagination headers
   setPaginationHeaders(
     ctx,
     pageCount,
     ctx.query.page,
-    activeContacts.length,
-    activeCount
+    paginatedContacts.length,
+    itemCount
   );
 
-  ctx.body = activeContacts.map((contact) => json(contact));
+  ctx.body = paginatedContacts.map((contact) => json(contact));
 }
 
 async function create(ctx) {
