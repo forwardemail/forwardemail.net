@@ -197,6 +197,7 @@ const purgeCssOptions = {
       'fa',
       'fas',
       'fa-brain',
+      'fa-cloud-download-alt',
       'fa-plug',
       'fa-angle-right',
       'fa-check',
