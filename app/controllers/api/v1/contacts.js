@@ -13,8 +13,11 @@ const AddressBooks = require('#models/address-books');
 const Aliases = require('#models/aliases');
 const Contacts = require('#models/contacts');
 const _ = require('#helpers/lodash');
+const config = require('#config');
 const ensureDefaultAddressBook = require('#helpers/ensure-default-address-book');
 const i18n = require('#helpers/i18n');
+const sendApnContacts = require('#helpers/send-apn-contacts');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const xmlHelpers = require('#helpers/carddav-xml');
@@ -358,6 +361,34 @@ FN:${body.full_name || ''}`;
     phoneNumbers: body.phone_numbers || []
   });
 
+  // Update address book sync token so CardDAV clients detect the change
+  addressBook.instance = ctx.instance;
+  addressBook.session = ctx.state.session;
+  addressBook.isNew = false;
+  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
+  await addressBook.save();
+
+  // Send push notifications for CardDAV clients
+  sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  sendWebSocketNotification(
+    ctx.instance.client,
+    ctx.state.user.alias_id,
+    'contactCreated',
+    {
+      contact: {
+        contactId,
+        addressBookId: addressBook._id.toString(),
+        fullName: body.full_name || '',
+        content: vCardContent,
+        etag,
+        object: 'contact'
+      }
+    }
+  );
+
   // Set ETag header
   ctx.set('ETag', etag);
 
@@ -664,6 +695,35 @@ FN:${contact.fullName || ''}`;
 
   await contact.save();
 
+  // Update address book sync token so CardDAV clients detect the change
+  addressBook.instance = ctx.instance;
+  addressBook.session = ctx.state.session;
+  addressBook.isNew = false;
+  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
+  await addressBook.save();
+
+  // Send push notifications for CardDAV clients
+  sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  sendWebSocketNotification(
+    ctx.instance.client,
+    ctx.state.user.alias_id,
+    'contactUpdated',
+    {
+      contact: {
+        id: contact._id.toString(),
+        contactId: contact.contact_id,
+        addressBookId: addressBook._id.toString(),
+        fullName: contact.fullName || '',
+        content: contact.content,
+        etag: contact.etag,
+        object: 'contact'
+      }
+    }
+  );
+
   // Set ETag header
   if (contact.etag) {
     ctx.set('ETag', contact.etag);
@@ -718,9 +778,49 @@ async function remove(ctx) {
     throw Boom.preconditionFailed(ctx.translateError('ETAG_DOES_NOT_MATCH'));
   }
 
-  await Contacts.deleteOne(ctx.instance, ctx.state.session, {
-    _id: contact._id
-  });
+  // Soft delete contact for sync-collection (RFC 6578)
+  // Instead of hard delete, set deleted_at so sync-collection
+  // can report the deletion to CardDAV clients with 404 status
+  const now = new Date();
+  await Contacts.findByIdAndUpdate(
+    ctx.instance,
+    ctx.state.session,
+    contact._id,
+    {
+      $set: {
+        deleted_at: now,
+        updated_at: now
+      }
+    }
+  );
+
+  // Update address book sync token so CardDAV clients detect the change
+  addressBook.instance = ctx.instance;
+  addressBook.session = ctx.state.session;
+  addressBook.isNew = false;
+  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
+  await addressBook.save();
+
+  // Send push notifications for CardDAV clients
+  sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  sendWebSocketNotification(
+    ctx.instance.client,
+    ctx.state.user.alias_id,
+    'contactDeleted',
+    {
+      contact: {
+        id: contact._id.toString(),
+        contactId: contact.contact_id,
+        addressBookId: addressBook._id.toString(),
+        fullName: contact.fullName || '',
+        content: contact.content || '',
+        object: 'contact'
+      }
+    }
+  );
 
   ctx.body = json(contact);
 

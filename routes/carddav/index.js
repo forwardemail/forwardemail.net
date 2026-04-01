@@ -446,7 +446,8 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         }
       );
 
-      if (!contactObj)
+      // Return 404 for non-existent or already soft-deleted contacts
+      if (!contactObj || contactObj.deleted_at)
         throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
 
       // Check If-Match header if present

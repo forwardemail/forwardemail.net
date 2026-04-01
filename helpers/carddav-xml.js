@@ -673,14 +673,19 @@ function validateVCard(vCardString) {
     throw Boom.badRequest('vCard must contain END:VCARD');
 
   // Validate VERSION property exists (required by RFC 6350)
-  if (!/^VERSION:[34]\.\d/m.test(vCardString))
+  // Handle grouped properties (e.g. item1.VERSION:3.0) used by some clients
+  if (!/^(?:item\d+\.)?VERSION:[34]\.\d/m.test(vCardString))
     throw Boom.badRequest(
       'vCard must contain valid VERSION property (3.0 or 4.0)'
     );
 
   // Validate FN or N property exists (RFC 6350 requires FN,
   // but many clients export only N; we accept either for compatibility)
-  if (!/^FN:/m.test(vCardString) && !/^N:/m.test(vCardString))
+  // Handle grouped properties (e.g. item1.FN:John) and parameters (e.g. FN;CHARSET=UTF-8:John)
+  if (
+    !/^(?:item\d+\.)?FN[;:]/m.test(vCardString) &&
+    !/^(?:item\d+\.)?N[;:]/m.test(vCardString)
+  )
     throw Boom.badRequest(
       'vCard must contain FN (Formatted Name) or N (Name) property'
     );
