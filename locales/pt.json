@@ -2813,7 +2813,6 @@
   "Hey": "Hey",
   "cURL": "cURL",
   "<span class=\"notranslate\">%s</span> vs <span class=\"notranslate\">%s</span> Comparison (<span class=\"notranslate\">%s</span>)": "Comparação <span class=\"notranslate\">%s</span> vs <span class=\"notranslate\">%s</span> (<span class=\"notranslate\">%s</span>)",
-  "What are the differences between <span class=\"notranslate\">%s</span> and <span class=\"notranslate\">%s</span>?": "Quais são as diferenças entre <span class=\"notranslate\">%s</span> e <span class=\"notranslate\">%s</span>?",
   "Written by": "Escrito por",
   "Team": "Equipe",
   "Time to read": "Hora de ler",
@@ -3668,7 +3667,6 @@
   "Top": "Principal",
   "<span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> Alternatives in <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> Alternativas em <span class=\"notranslate\">%s</span>",
   "top": "principal",
-  "Reviews, comparison, screenshots and more for the <span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> alternatives to <span class=\"notranslate\">%s</span> email service.": "Avaliações, comparações, capturas de tela e muito mais para as alternativas <span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> ao serviço de e-mail <span class=\"notranslate\">%s</span>.",
   "Email Service": "Serviço de e-mail",
   "Unlock your email identity": "Desbloqueie sua identidade de e-mail",
   "Stop more advanced phishing attacks": "Pare ataques de phishing mais avançados",
@@ -3891,7 +3889,6 @@
   "We provide mass email service for staff and more. Sign up today for free and setup email hosting and forwarding in seconds.": "Oferecemos serviço de e-mail em massa para funcionários e muito mais. Cadastre-se gratuitamente hoje mesmo e configure hospedagem e encaminhamento de e-mail em segundos.",
   "Free Email Provider for Universities": "Provedor de e-mail gratuito para universidades",
   "We provide an email platform for universities and more. Sign up today for free and setup email hosting and forwarding in seconds.": "Oferecemos uma plataforma de e-mail para universidades e muito mais. Cadastre-se hoje mesmo gratuitamente e configure hospedagem e encaminhamento de e-mail em segundos.",
-  "Reviews, comparison, screenshots and more for the <span class=\"notranslate\">%d</span> best alternatives to <span class=\"notranslate\">%s</span> email service.": "Avaliações, comparações, capturas de tela e muito mais sobre as <span class=\"notranslate\">%d</span> melhores alternativas ao serviço de e-mail <span class=\"notranslate\">%s</span>.",
   "Free Email Service for Enterprise": "Serviço de e-mail gratuito para empresas",
   "We provide email service for enterprise and more. Sign up today for free and setup email hosting and forwarding in seconds.": "Oferecemos serviço de e-mail para empresas e muito mais. Cadastre-se gratuitamente hoje mesmo e configure hospedagem e encaminhamento de e-mail em segundos.",
   "Free Bulk Email Service for Book Clubs": "Serviço gratuito de e-mail em massa para clubes do livro",
@@ -19606,5 +19603,8 @@
   "EU and GDPR Compliant Email": "Email Compatível com UE e GDPR",
   "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Tente usar uma porta diferente (587 com STARTTLS)",
   ", port 465, SSL/TLS (recommended)": ", porta 587, TLS",
-  "used": "usado"
+  "used": "usado",
+  "Compare <span class=\"notranslate\">%s</span> vs <span class=\"notranslate\">%s</span> email services. In-depth analysis of features, pricing, security, privacy, and storage to find the best email provider for your needs.": "Compare <span class=\"notranslate\">%s</span> vs <span class=\"notranslate\">%s</span> email services. In-depth analysis of features, pricing, security, privacy, and storage to find the best email provider for your needs.",
+  "Explore the <span class=\"notranslate\">%d</span> best alternatives to <span class=\"notranslate\">%s</span> email service. Side-by-side feature comparison, pricing analysis, privacy review, and screenshots to find your ideal email provider.": "Explore the <span class=\"notranslate\">%d</span> best alternatives to <span class=\"notranslate\">%s</span> email service. Side-by-side feature comparison, pricing analysis, privacy review, and screenshots to find your ideal email provider.",
+  "Explore the <span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> alternatives to <span class=\"notranslate\">%s</span> email service. Side-by-side feature comparison, pricing analysis, privacy review, and screenshots to find your ideal email provider.": "Explore the <span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> alternatives to <span class=\"notranslate\">%s</span> email service. Side-by-side feature comparison, pricing analysis, privacy review, and screenshots to find your ideal email provider."
 }

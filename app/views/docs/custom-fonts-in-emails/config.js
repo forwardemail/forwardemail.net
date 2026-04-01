@@ -6,7 +6,7 @@
 module.exports = {
   title: 'Custom Fonts in Emails',
   description:
-    'How to use custom fonts in emails without having to use art software.',
+    'Learn how to use custom fonts in HTML emails without design software. Complete guide with web font fallbacks, CSS techniques, and email client compatibility tips.',
   icon: 'fas fa-fw fa-font',
   published: true,
   ogBtnText: 'Custom Fonts'

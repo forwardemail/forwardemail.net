@@ -971,7 +971,7 @@ for (let x = 0; x < config.alternatives.length; x++) {
     );
 
     ctx.state.meta.description = ctx.state.t(
-      'Reviews, comparison, screenshots and more for the <span class="notranslate">%d</span> <span class="notranslate">%s</span> alternatives to <span class="notranslate">%s</span> email service.',
+      'Explore the <span class="notranslate">%d</span> <span class="notranslate">%s</span> alternatives to <span class="notranslate">%s</span> email service. Side-by-side feature comparison, pricing analysis, privacy review, and screenshots to find your ideal email provider.',
       config.alternatives.length - 1,
       ctx.state.t(sample.toLowerCase()),
       alternative.name
@@ -994,7 +994,7 @@ for (let x = 0; x < config.alternatives.length; x++) {
         );
 
         ctx.state.meta.description = ctx.state.t(
-          `What are the differences between <span class="notranslate">%s</span> and <span class="notranslate">%s</span>?`,
+          `Compare <span class="notranslate">%s</span> vs <span class="notranslate">%s</span> email services. In-depth analysis of features, pricing, security, privacy, and storage to find the best email provider for your needs.`,
           alternative.name,
           a.name
         );

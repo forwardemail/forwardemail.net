@@ -2813,7 +2813,6 @@
   "Hey": "嘿",
   "cURL": "cURL",
   "<span class=\"notranslate\">%s</span> vs <span class=\"notranslate\">%s</span> Comparison (<span class=\"notranslate\">%s</span>)": "<span class=\"notranslate\">%s</span> 与 <span class=\"notranslate\">%s</span> 比较 (<span class=\"notranslate\">%s</span>)",
-  "What are the differences between <span class=\"notranslate\">%s</span> and <span class=\"notranslate\">%s</span>?": "<span class=\"notranslate\">%s</span> 和 <span class=\"notranslate\">%s</span> 之间有什么区别？",
   "Written by": "作者",
   "Team": "团队",
   "Time to read": "阅读时间",
@@ -3668,7 +3667,6 @@
   "Top": "顶部",
   "<span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> Alternatives in <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> 中的替代方案",
   "top": "顶部",
-  "Reviews, comparison, screenshots and more for the <span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> alternatives to <span class=\"notranslate\">%s</span> email service.": "Reviews, comparison, screenshots and more for the <span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> alternatives to <span class=\"notranslate\">%s</span> email service.",
   "Email Service": "电子邮件服务",
   "Unlock your email identity": "解锁您的电子邮件身份",
   "Stop more advanced phishing attacks": "阻止更高级的网络钓鱼攻击",
@@ -3891,7 +3889,6 @@
   "We provide mass email service for staff and more. Sign up today for free and setup email hosting and forwarding in seconds.": "我们为员工及其他人员提供群发邮件服务。立即免费注册，几秒钟即可设置邮件托管和转发。",
   "Free Email Provider for Universities": "大学免费电子邮件提供商",
   "We provide an email platform for universities and more. Sign up today for free and setup email hosting and forwarding in seconds.": "我们为大学等机构提供电子邮件平台。立即免费注册，几秒钟内即可设置电子邮件托管和转发。",
-  "Reviews, comparison, screenshots and more for the <span class=\"notranslate\">%d</span> best alternatives to <span class=\"notranslate\">%s</span> email service.": "有关 <span class=\"notranslate\">%d</span> 个 <span class=\"notranslate\">%s</span> 电子邮件服务的最佳替代方案的评论、比较、屏幕截图等。",
   "Free Email Service for Enterprise": "企业免费电子邮件服务",
   "We provide email service for enterprise and more. Sign up today for free and setup email hosting and forwarding in seconds.": "我们为企业及其他客户提供电子邮件服务。立即免费注册，几秒钟即可设置电子邮件托管和转发。",
   "Free Bulk Email Service for Book Clubs": "为读书俱乐部提供免费的群发电子邮件服务",
@@ -19606,5 +19603,8 @@
   "EU and GDPR Compliant Email": "符合欧盟和 GDPR 的电子邮件",
   "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "尝试使用其他端口（使用 STARTTLS 的 587）",
   ", port 465, SSL/TLS (recommended)": "、端口 587、TLS",
-  "used": "已使用"
+  "used": "已使用",
+  "Compare <span class=\"notranslate\">%s</span> vs <span class=\"notranslate\">%s</span> email services. In-depth analysis of features, pricing, security, privacy, and storage to find the best email provider for your needs.": "Compare <span class=\"notranslate\">%s</span> vs <span class=\"notranslate\">%s</span> email services. In-depth analysis of features, pricing, security, privacy, and storage to find the best email provider for your needs.",
+  "Explore the <span class=\"notranslate\">%d</span> best alternatives to <span class=\"notranslate\">%s</span> email service. Side-by-side feature comparison, pricing analysis, privacy review, and screenshots to find your ideal email provider.": "Explore the <span class=\"notranslate\">%d</span> best alternatives to <span class=\"notranslate\">%s</span> email service. Side-by-side feature comparison, pricing analysis, privacy review, and screenshots to find your ideal email provider.",
+  "Explore the <span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> alternatives to <span class=\"notranslate\">%s</span> email service. Side-by-side feature comparison, pricing analysis, privacy review, and screenshots to find your ideal email provider.": "Explore the <span class=\"notranslate\">%d</span> <span class=\"notranslate\">%s</span> alternatives to <span class=\"notranslate\">%s</span> email service. Side-by-side feature comparison, pricing analysis, privacy review, and screenshots to find your ideal email provider."
 }

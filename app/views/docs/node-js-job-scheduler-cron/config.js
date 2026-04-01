@@ -6,7 +6,7 @@
 module.exports = {
   title: 'Node.js Job Scheduler',
   description:
-    'How to schedule jobs for Node.js and JavaScript with cron syntax and more.',
+    'Learn how to schedule jobs in Node.js and JavaScript using cron syntax. Complete guide with examples for task automation, recurring jobs, and production deployment.',
   icon: 'fab fa-fw fa-node-js',
   published: true,
   ogBtnText: 'Job Scheduler'
