@@ -11,6 +11,7 @@ const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
 const { rrulestr } = require('rrule');
 
+const config = require('#config');
 const Aliases = require('#models/aliases');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
@@ -26,12 +27,39 @@ const _ = require('#helpers/lodash');
 const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
 const { quoteICSFilenames } = require('#helpers/ical-filename');
 const { normalizeIcs } = require('#helpers/normalize-ics');
+const sendApnCalendar = require('#helpers/send-apn-calendar');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 
 const exdateRegex =
   /^EXDATE(?:;TZID=[\w/+=-]+|;VALUE=DATE)?:\d{8}(?:T\d{6}(?:\.\d{1,3})?Z?)?$/;
 
 function isValidExdate(str) {
   return exdateRegex.test(str);
+}
+
+//
+// Increment the URL-based synctoken so CalDAV clients see changes
+// made via the REST API on their next sync-collection request.
+// Mirrors the pure-function pattern in caldav-server.js bumpSyncToken().
+//
+function incrementSynctoken(synctoken) {
+  const DEFAULT_SYNC_BASE = `${config.urls.web}/ns/sync-token`;
+  if (typeof synctoken !== 'string' || synctoken.trim() === '') {
+    return `${DEFAULT_SYNC_BASE}/1`;
+  }
+
+  const parts = synctoken.split('/');
+  const num = Number.parseInt(parts[parts.length - 1], 10);
+  if (Number.isNaN(num)) {
+    return `${DEFAULT_SYNC_BASE}/1`;
+  }
+
+  const base = parts.slice(0, -1).join('/');
+  if (!base || !base.startsWith('http')) {
+    return `${DEFAULT_SYNC_BASE}/${num + 1}`;
+  }
+
+  return `${base}/${num + 1}`;
 }
 
 function json(calendarEvent, calendar) {
@@ -543,6 +571,35 @@ async function create(ctx) {
 
   ctx.body = json(calendarEvent, calendar);
 
+  // Bump synctoken so CalDAV clients see this change on next sync
+  Calendars.findByIdAndUpdate(ctx.instance, ctx.state.session, calendar._id, {
+    $set: { synctoken: incrementSynctoken(calendar.synctoken) }
+  }).catch((err) =>
+    ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session })
+  );
+
+  // Send apple push notification for calendar sync
+  sendApnCalendar(ctx.client, ctx.state.session.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  // Send websocket push notification
+  sendWebSocketNotification(
+    ctx.client,
+    ctx.state.session.user.alias_id,
+    'calendarEventCreated',
+    {
+      calendarEvent: {
+        id: calendarEvent._id.toString(),
+        eventId: calendarEvent.eventId,
+        calendarId: calendar.calendarId,
+        ical: calendarEvent.ical || '',
+        href: calendarEvent.href || '',
+        object: 'calendar_event'
+      }
+    }
+  );
+
   // Send invite emails to attendees (non-blocking, mirrors CalDAV server behavior)
   // Pass ctx.instance for RFC 6638 §7.3 SCHEDULE-STATUS write-back
   sendCalendarEmail(
@@ -712,6 +769,35 @@ async function update(ctx) {
 
   ctx.body = json(calendarEvent, calendar);
 
+  // Bump synctoken so CalDAV clients see this change on next sync
+  Calendars.findByIdAndUpdate(ctx.instance, ctx.state.session, calendar._id, {
+    $set: { synctoken: incrementSynctoken(calendar.synctoken) }
+  }).catch((err) =>
+    ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session })
+  );
+
+  // Send apple push notification for calendar sync
+  sendApnCalendar(ctx.client, ctx.state.session.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  // Send websocket push notification
+  sendWebSocketNotification(
+    ctx.client,
+    ctx.state.session.user.alias_id,
+    'calendarEventUpdated',
+    {
+      calendarEvent: {
+        id: calendarEvent._id.toString(),
+        eventId: calendarEvent.eventId,
+        calendarId: calendar.calendarId,
+        ical: calendarEvent.ical || '',
+        href: calendarEvent.href || '',
+        object: 'calendar_event'
+      }
+    }
+  );
+
   //
   // Determine if this is an organizer update or an attendee PARTSTAT change.
   // Mirrors CalDAV server behavior using the same shared helpers.
@@ -856,6 +942,34 @@ async function remove(ctx) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_DOES_NOT_EXIST'));
 
   ctx.body = json(calendarEvent, calendar);
+
+  // Bump synctoken so CalDAV clients see this deletion on next sync
+  Calendars.findByIdAndUpdate(ctx.instance, ctx.state.session, calendar._id, {
+    $set: { synctoken: incrementSynctoken(calendar.synctoken) }
+  }).catch((err) =>
+    ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session })
+  );
+
+  // Send apple push notification for calendar sync
+  sendApnCalendar(ctx.client, ctx.state.session.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  // Send websocket push notification
+  sendWebSocketNotification(
+    ctx.client,
+    ctx.state.session.user.alias_id,
+    'calendarEventDeleted',
+    {
+      calendarEvent: {
+        id: calendarEvent._id.toString(),
+        eventId: calendarEvent.eventId,
+        calendarId: calendar.calendarId,
+        ical: calendarEvent.ical || '',
+        object: 'calendar_event'
+      }
+    }
+  );
 
   //
   // Determine if the user is the organizer or an attendee.

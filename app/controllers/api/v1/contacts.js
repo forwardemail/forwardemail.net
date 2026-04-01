@@ -13,8 +13,11 @@ const AddressBooks = require('#models/address-books');
 const Aliases = require('#models/aliases');
 const Contacts = require('#models/contacts');
 const _ = require('#helpers/lodash');
+const config = require('#config');
 const ensureDefaultAddressBook = require('#helpers/ensure-default-address-book');
 const i18n = require('#helpers/i18n');
+const sendApnContacts = require('#helpers/send-apn-contacts');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const xmlHelpers = require('#helpers/carddav-xml');
@@ -341,27 +344,98 @@ FN:${body.full_name || ''}`;
   // Generate ETag
   const etag = xmlHelpers.generateETag(vCardContent);
 
-  const contact = await Contacts.create({
-    // db virtual helper
-    instance: ctx.instance,
-    session: ctx.state.session,
+  // Find-before-write: check if a contact with this contact_id already exists
+  // (including soft-deleted). The UNIQUE compound index on (address_book, contact_id)
+  // means a create would fail if a soft-deleted row exists. Resurrect instead.
+  const existingContact = await Contacts.findOne(
+    ctx.instance,
+    ctx.state.session,
+    {
+      address_book: addressBook._id,
+      contact_id: contactId
+    }
+  );
 
-    // contact data
-    address_book: addressBook._id,
-    contact_id: contactId,
-    uid,
-    content: vCardContent,
-    etag,
-    fullName: body.full_name || '',
-    isGroup: boolean(body.is_group),
-    emails: body.emails || [],
-    phoneNumbers: body.phone_numbers || []
-  });
+  let contact;
+  let wsEvent;
+
+  if (existingContact) {
+    if (!existingContact.deleted_at) {
+      // Active contact with same contact_id already exists
+      throw Boom.conflict(ctx.translateError('CONTACT_ALREADY_EXISTS'));
+    }
+
+    // Resurrect soft-deleted contact
+    existingContact.deleted_at = null;
+    existingContact.uid = uid;
+    existingContact.content = vCardContent;
+    existingContact.etag = etag;
+    existingContact.fullName = body.full_name || '';
+    existingContact.isGroup = boolean(body.is_group);
+    existingContact.emails = body.emails || [];
+    existingContact.phoneNumbers = body.phone_numbers || [];
+
+    // db virtual helper
+    existingContact.instance = ctx.instance;
+    existingContact.session = ctx.state.session;
+    existingContact.isNew = false;
+
+    await existingContact.save();
+    contact = existingContact;
+    wsEvent = 'contactUpdated';
+  } else {
+    contact = await Contacts.create({
+      // db virtual helper
+      instance: ctx.instance,
+      session: ctx.state.session,
+
+      // contact data
+      address_book: addressBook._id,
+      contact_id: contactId,
+      uid,
+      content: vCardContent,
+      etag,
+      fullName: body.full_name || '',
+      isGroup: boolean(body.is_group),
+      emails: body.emails || [],
+      phoneNumbers: body.phone_numbers || []
+    });
+    wsEvent = 'contactCreated';
+  }
+
+  // Update address book sync token so CardDAV clients detect the change
+  addressBook.instance = ctx.instance;
+  addressBook.session = ctx.state.session;
+  addressBook.isNew = false;
+  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
+  await addressBook.save();
 
   // Set ETag header
   ctx.set('ETag', etag);
 
   ctx.body = json(contact);
+
+  // Send apple push notification for contacts sync
+  sendApnContacts(ctx.client, ctx.state.session.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  // Send websocket push notification
+  sendWebSocketNotification(
+    ctx.client,
+    ctx.state.session.user.alias_id,
+    wsEvent,
+    {
+      contact: {
+        contactId,
+        addressBookId: addressBook._id.toString(),
+        fullName: body.full_name || '',
+        content: vCardContent,
+        etag,
+        object: 'contact'
+      }
+    }
+  );
 
   // Update storage in background (contacts contribute to storage usage)
   updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
@@ -664,12 +738,42 @@ FN:${contact.fullName || ''}`;
 
   await contact.save();
 
+  // Update address book sync token so CardDAV clients detect the change
+  addressBook.instance = ctx.instance;
+  addressBook.session = ctx.state.session;
+  addressBook.isNew = false;
+  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
+  await addressBook.save();
+
   // Set ETag header
   if (contact.etag) {
     ctx.set('ETag', contact.etag);
   }
 
   ctx.body = json(contact);
+
+  // Send apple push notification for contacts sync
+  sendApnContacts(ctx.client, ctx.state.session.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  // Send websocket push notification
+  sendWebSocketNotification(
+    ctx.client,
+    ctx.state.session.user.alias_id,
+    'contactUpdated',
+    {
+      contact: {
+        id: contact._id.toString(),
+        contactId: contact.contact_id,
+        addressBookId: addressBook._id.toString(),
+        fullName: contact.fullName || '',
+        content: contact.content,
+        etag: contact.etag,
+        object: 'contact'
+      }
+    }
+  );
 
   // Update storage in background (contact size may have changed)
   updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
@@ -718,11 +822,52 @@ async function remove(ctx) {
     throw Boom.preconditionFailed(ctx.translateError('ETAG_DOES_NOT_MATCH'));
   }
 
-  await Contacts.deleteOne(ctx.instance, ctx.state.session, {
-    _id: contact._id
-  });
+  // Soft delete contact for sync-collection (RFC 6578)
+  // Instead of hard delete, set deleted_at so sync-collection
+  // can report the deletion to CardDAV clients with 404 status
+  const now = new Date();
+  await Contacts.findByIdAndUpdate(
+    ctx.instance,
+    ctx.state.session,
+    contact._id,
+    {
+      $set: {
+        deleted_at: now,
+        updated_at: now
+      }
+    }
+  );
+
+  // Update address book sync token so CardDAV clients detect the change
+  addressBook.instance = ctx.instance;
+  addressBook.session = ctx.state.session;
+  addressBook.isNew = false;
+  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
+  await addressBook.save();
 
   ctx.body = json(contact);
+
+  // Send apple push notification for contacts sync
+  sendApnContacts(ctx.client, ctx.state.session.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  // Send websocket push notification
+  sendWebSocketNotification(
+    ctx.client,
+    ctx.state.session.user.alias_id,
+    'contactDeleted',
+    {
+      contact: {
+        id: contact._id.toString(),
+        contactId: contact.contact_id,
+        addressBookId: addressBook._id.toString(),
+        fullName: contact.fullName || '',
+        content: contact.content || '',
+        object: 'contact'
+      }
+    }
+  );
 
   // Update storage in background (contact was deleted, reducing storage usage)
   updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)

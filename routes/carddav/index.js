@@ -231,8 +231,14 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
       // When If-None-Match: * is present, the client explicitly wants to
       // create a new resource and expects a 412 if it already exists at
       // this URL. We only check by contact_id (URL) in this case.
+      // However, if the existing contact is soft-deleted, treat it as
+      // non-existent — the client can safely "create" over it (resurrection).
       const ifNoneMatch = ctx.request.headers['if-none-match'];
-      if (ifNoneMatch === '*' && existingContact) {
+      if (
+        ifNoneMatch === '*' &&
+        existingContact &&
+        !existingContact.deleted_at
+      ) {
         throw Boom.preconditionFailed(
           ctx.translateError('CONTACT_ALREADY_EXISTS')
         );
@@ -291,6 +297,13 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         const oldContactId = existingContact.contact_id;
         if (oldContactId !== contact) {
           existingContact.contact_id = contact;
+        }
+
+        // Resurrect soft-deleted contact (clear deleted_at)
+        // This handles the case where a client PUTs to a URL that was
+        // previously deleted — the contact should come back to life.
+        if (existingContact.deleted_at) {
+          existingContact.deleted_at = null;
         }
 
         // Update existing contact
@@ -446,7 +459,8 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         }
       );
 
-      if (!contactObj)
+      // Return 404 for non-existent or already soft-deleted contacts
+      if (!contactObj || contactObj.deleted_at)
         throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
 
       // Check If-Match header if present

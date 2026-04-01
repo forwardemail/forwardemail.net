@@ -45,6 +45,8 @@ const CalendarInvites = require('#models/calendar-invites');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
 const config = require('#config');
+const sendApnCalendar = require('#helpers/send-apn-calendar');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 
 // Maximum invites to process per CalDAV interaction
 const MAX_INVITES_PER_BATCH = 10;
@@ -325,6 +327,27 @@ async function processReply(instance, ctx, invite, calendars) {
   // Bump calendar synctoken so CalDAV clients see the change
   if (replyCal) {
     await bumpSyncToken(instance, ctx, replyCal._id);
+
+    // Send apple push notification for calendar sync
+    sendApnCalendar(instance.client, ctx.state.user.alias_id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+    // Send websocket push notification
+    sendWebSocketNotification(
+      instance.client,
+      ctx.state.user.alias_id,
+      'calendarEventUpdated',
+      {
+        calendarEvent: {
+          id: calendarEvent._id.toString(),
+          eventId: calendarEvent.eventId,
+          calendarId: replyCal.calendarId,
+          ical: updatedIcal || calendarEvent.ical || '',
+          object: 'calendar_event'
+        }
+      }
+    );
   }
 
   await markProcessed(invite._id);
@@ -414,6 +437,27 @@ async function processRequest(instance, ctx, invite, calendars) {
     // Bump calendar synctoken so CalDAV clients see the change
     if (calendar) {
       await bumpSyncToken(instance, ctx, calendar._id);
+
+      // Send apple push notification for calendar sync
+      sendApnCalendar(instance.client, ctx.state.user.alias_id)
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+
+      // Send websocket push notification
+      sendWebSocketNotification(
+        instance.client,
+        ctx.state.user.alias_id,
+        'calendarEventUpdated',
+        {
+          calendarEvent: {
+            id: calendarEvent._id.toString(),
+            eventId: calendarEvent.eventId,
+            calendarId: calendar.calendarId,
+            ical: storedIcs || calendarEvent.ical || '',
+            object: 'calendar_event'
+          }
+        }
+      );
     }
 
     await markProcessed(invite._id);
@@ -450,6 +494,7 @@ async function processRequest(instance, ctx, invite, calendars) {
       calendar: targetCalendar._id
     });
 
+    let createdEvent;
     if (existingAll.length > 0) {
       // Deduplicate: keep the latest by updated_at
       const deduped = deduplicateCalendarEvents(existingAll);
@@ -481,7 +526,7 @@ async function processRequest(instance, ctx, invite, calendars) {
       }
     } else {
       // Truly new event - create it
-      await CalendarEvents.create({
+      createdEvent = await CalendarEvents.create({
         instance,
         session: ctx.state.session,
         eventId,
@@ -493,6 +538,32 @@ async function processRequest(instance, ctx, invite, calendars) {
 
     // Bump calendar synctoken so CalDAV clients see the change
     await bumpSyncToken(instance, ctx, targetCalendar._id);
+
+    // Send apple push notification for calendar sync
+    sendApnCalendar(instance.client, ctx.state.user.alias_id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+    // Send websocket push notification
+    // Use the created event's _id for new events, or the keeper's _id for updates
+    const wsEventId = createdEvent
+      ? createdEvent._id.toString()
+      : (existingAll[0] && existingAll[0]._id.toString()) || '';
+    sendWebSocketNotification(
+      instance.client,
+      ctx.state.user.alias_id,
+      createdEvent ? 'calendarEventCreated' : 'calendarEventUpdated',
+      {
+        calendarEvent: {
+          id: wsEventId,
+          eventId,
+          calendarId: targetCalendar.calendarId,
+          ical: storedIcs || '',
+          href,
+          object: 'calendar_event'
+        }
+      }
+    );
 
     await markProcessed(invite._id);
     ctx.logger.info('REQUEST processed - event created/updated', {
@@ -574,6 +645,27 @@ async function processCancel(instance, ctx, invite, calendars) {
   // (reuse the calendar from the first findEventByUid call above)
   if (cancelCal) {
     await bumpSyncToken(instance, ctx, cancelCal._id);
+
+    // Send apple push notification for calendar sync
+    sendApnCalendar(instance.client, ctx.state.user.alias_id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+    // Send websocket push notification
+    sendWebSocketNotification(
+      instance.client,
+      ctx.state.user.alias_id,
+      'calendarEventUpdated',
+      {
+        calendarEvent: {
+          id: calendarEvent._id.toString(),
+          eventId: calendarEvent.eventId,
+          calendarId: cancelCal.calendarId,
+          ical: calendarEvent.ical || '',
+          object: 'calendar_event'
+        }
+      }
+    );
   }
 
   await markProcessed(invite._id);
@@ -642,6 +734,27 @@ async function processAdd(instance, ctx, invite, calendars) {
   // (reuse the calendar from the first findEventByUid call above)
   if (addCal) {
     await bumpSyncToken(instance, ctx, addCal._id);
+
+    // Send apple push notification for calendar sync
+    sendApnCalendar(instance.client, ctx.state.user.alias_id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+    // Send websocket push notification
+    sendWebSocketNotification(
+      instance.client,
+      ctx.state.user.alias_id,
+      'calendarEventUpdated',
+      {
+        calendarEvent: {
+          id: calendarEvent._id.toString(),
+          eventId: calendarEvent.eventId,
+          calendarId: addCal.calendarId,
+          ical: calendarEvent.ical || '',
+          object: 'calendar_event'
+        }
+      }
+    );
   }
 
   await markProcessed(invite._id);
