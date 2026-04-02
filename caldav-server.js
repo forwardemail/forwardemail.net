@@ -2332,9 +2332,12 @@ class CalDAV extends API {
     // Only add date constraints when the client provides them.
     // Note: dtstart already has $exists:true above; we merge the
     // $lte constraint into the same object when `end` is provided.
-    if (start) nonRecurringFilter.dtend = { $gte: start };
+    if (start) nonRecurringFilter.dtend = { $gte: start.toISOString() };
     if (end)
-      nonRecurringFilter.dtstart = { ...nonRecurringFilter.dtstart, $lte: end };
+      nonRecurringFilter.dtstart = {
+        ...nonRecurringFilter.dtstart,
+        $lte: end.toISOString()
+      };
 
     const nonRecurringEvents = await CalendarEvents.find(
       this,

@@ -1318,7 +1318,7 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
       ctx.state.session,
       {
         address_book: addressBook._id,
-        updated_at: { $gt: syncTimestamp }
+        updated_at: { $gt: syncTimestamp.toISOString() }
       }
     );
 
