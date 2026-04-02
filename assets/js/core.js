@@ -1146,6 +1146,18 @@ window.addEventListener(
           const chartData = $chartData.data('json');
           if (chartData && chartData.length > 0) {
             const chartOptions = createTTIChartOptions(chartData);
+
+            // Destroy previous chart instance to prevent memory leak
+            if (ttiChart) {
+              try {
+                ttiChart.destroy();
+              } catch (err) {
+                logger.error('Error destroying previous TTI chart:', err);
+              }
+
+              ttiChart = null;
+            }
+
             ttiChart = new Apex($chartElement.get(0), chartOptions);
             $chartElement.empty();
             ttiChart.render();
@@ -1156,70 +1168,82 @@ window.addEventListener(
       }
     }
 
-    async function tti() {
-      const $tti = $('#tti');
-      if ($tti.length === 0) return;
-      try {
-        const res = await superagent
-          .get(`/${window.LOCALE}/tti`)
-          .set({
-            Accept: 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-          })
-          .timeout(1000 * 30)
-          .retry(3)
-          .send();
+    // Only start TTI polling and chart handling on pages that have the #tti element
+    if ($('#tti').length > 0) {
+      let ttiIntervalId;
 
-        // Update the TTI HTML content
-        $tti.html($(res.text).html());
-        renderDayjs();
+      const tti = async () => {
+        const $tti = $('#tti');
+        if ($tti.length === 0) return;
+        try {
+          const res = await superagent
+            .get(`/${window.LOCALE}/tti`)
+            .set({
+              Accept: 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            })
+            .timeout(1000 * 30)
+            .retry(3)
+            .send();
 
-        // Initialize chart after HTML update (in case the chart container was updated)
-        initializeTTIChart();
+          // Update the TTI HTML content
+          $tti.html($(res.text).html());
+          renderDayjs();
 
-        setTimeout(async function () {
-          await tti();
-        }, 60000);
-      } catch (err) {
-        logger.error(err);
-      }
-    }
-
-    setTimeout(() => {
-      tti();
-    }, 500);
-
-    // Initialize TTI chart on page load
-    $(document).ready(function () {
-      initializeTTIChart();
-    });
-
-    // Handle theme changes for TTI chart
-    function changeTTIChartTheme() {
-      if (ttiChart) {
-        // set theme to light or dark
-        if (
-          window.matchMedia &&
-          window.matchMedia('(prefers-color-scheme: dark)').matches
-        ) {
-          ttiChart.updateOptions({
-            theme: { mode: 'dark' }
-          });
-        } else {
-          ttiChart.updateOptions({
-            theme: { mode: 'light' }
-          });
+          // Initialize chart after HTML update (in case the chart container was updated)
+          initializeTTIChart();
+        } catch (err) {
+          logger.error(err);
         }
-      }
+      };
+
+      // Initialize TTI chart on page load
+      initializeTTIChart();
+
+      // Start polling with setInterval (replaces recursive setTimeout to avoid
+      // accumulating closures and to allow cleanup via clearInterval)
+      ttiIntervalId = setInterval(tti, 60000);
+
+      // Pause polling when the tab is hidden to avoid unnecessary work
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          if (ttiIntervalId) {
+            clearInterval(ttiIntervalId);
+            ttiIntervalId = null;
+          }
+        } else if (!ttiIntervalId) {
+          tti();
+          ttiIntervalId = setInterval(tti, 60000);
+        }
+      });
+
+      // Handle theme changes for TTI chart
+      const changeTTIChartTheme = () => {
+        if (ttiChart) {
+          // set theme to light or dark
+          if (
+            window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches
+          ) {
+            ttiChart.updateOptions({
+              theme: { mode: 'dark' }
+            });
+          } else {
+            ttiChart.updateOptions({
+              theme: { mode: 'light' }
+            });
+          }
+        }
+      };
+
+      window
+        .matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', changeTTIChartTheme);
+
+      window
+        .matchMedia('(prefers-color-scheme: light)')
+        .addEventListener('change', changeTTIChartTheme);
     }
-
-    window
-      .matchMedia('(prefers-color-scheme: dark)')
-      .addEventListener('change', changeTTIChartTheme);
-
-    window
-      .matchMedia('(prefers-color-scheme: light)')
-      .addEventListener('change', changeTTIChartTheme);
 
     // Avoid CSP issues with inline styling for widths on progress bars
     $('[data-width]').each(function () {
