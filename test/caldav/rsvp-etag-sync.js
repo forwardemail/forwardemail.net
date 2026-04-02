@@ -427,10 +427,18 @@ async function runProcessInvites(t) {
     headers: t.context.authHeaders
   });
 
-  // Wait for background processCalendarInvites to finish
-  await new Promise((resolve) => {
-    setTimeout(resolve, 2000);
-  });
+  // Poll MongoDB until all pending invites are processed (or max 15s).
+  // This replaces the previous fixed 2s setTimeout which was racy when
+  // processCalendarInvites had to handle multiple sequential REPLY invites.
+  await pWaitFor(
+    async () => {
+      const pending = await CalendarInvites.countDocuments({
+        processed: false
+      });
+      return pending === 0;
+    },
+    { interval: 200, timeout: 15_000 }
+  );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
