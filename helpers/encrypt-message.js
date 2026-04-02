@@ -20,43 +20,13 @@ const openpgp = require('openpgp');
 const tools = require('@zone-eu/wildduck/lib/tools');
 
 const config = require('#config');
-const {
-  parseHeaderLines,
-  buildProtectedHeaders,
-  buildLegacyDisplayText
-} = require('#helpers/header-protection');
 
 openpgp.config.commentString = 'Plaintext message encrypted by Forward Email';
 openpgp.config.versionString = `Forward Email v${config.pkg.version}`;
 
 // <https://github.com/nodemailer/wildduck/blob/a15878c7d709473c5b0d4eec2062e9425c9b5e31/lib/message-handler.js#L1688>
 
-/**
- * Encrypt a message using PGP/MIME with optional Header Protection (RFC 9788).
- *
- * When `headerProtection` is enabled (the default), this function:
- * 1. Copies Non-Structural headers into the inner Cryptographic Payload
- * 2. Adds `hp="cipher"` parameter to the inner Content-Type
- * 3. Generates HP-Outer headers to document outer header exposure
- * 4. Adds a Legacy Display Element for backward compatibility
- * 5. Obscures confidential headers (e.g. Subject) in the outer envelope
- *
- * @param {string|object} pubKeyArmored - Armored public key or openpgp key object
- * @param {Buffer} raw - Raw email message
- * @param {boolean} [isArmored=true] - Whether the key is armored
- * @param {object} [options]
- * @param {boolean} [options.headerProtection=true] - Enable RFC 9788 header protection
- * @returns {Buffer} PGP/MIME encrypted message
- * @see https://www.rfc-editor.org/rfc/rfc9788.html
- */
-async function encryptMessage(
-  pubKeyArmored,
-  raw,
-  isArmored = true,
-  options = {}
-) {
-  const { headerProtection = true } = options;
-
+async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
   if (!pubKeyArmored) throw new TypeError('Public key missing');
 
   if (typeof raw === 'string') raw = Buffer.from(raw);
@@ -148,82 +118,6 @@ async function encryptMessage(
     }
   }
 
-  //
-  // RFC 9788 Header Protection
-  //
-  let contentToEncrypt;
-
-  if (headerProtection) {
-    //
-    // Parse all non-structural headers for HP treatment
-    //
-    const allHeadersRaw = headers.map((h) => h.join('\r\n')).join('\r\n');
-    const parsedHeaders = parseHeaderLines(allHeadersRaw);
-
-    //
-    // Build protected inner headers with HP-Outer entries
-    //
-    const { innerHeaders, outerHeaders, hpValue } = buildProtectedHeaders(
-      parsedHeaders,
-      { isEncrypted: true }
-    );
-
-    //
-    // Build the inner Content-Type with hp parameter
-    //
-    const bodyHeadersStr = bodyHeaders
-      .map((line) => line.join('\r\n'))
-      .join('\r\n');
-
-    let innerContentType = bodyHeadersStr;
-    if (/^content-type:/im.test(innerContentType)) {
-      innerContentType = innerContentType.replace(
-        /^(content-type:\s*[^\r\n]+)/im,
-        `$1; hp="${hpValue}"`
-      );
-    } else {
-      innerContentType = `Content-Type: text/plain; hp="${hpValue}"\r\n${innerContentType}`;
-    }
-
-    //
-    // Build Legacy Display Element
-    //
-    const legacyDisplay = buildLegacyDisplayText(parsedHeaders);
-    let innerBody = body;
-    if (legacyDisplay.length > 0) {
-      innerBody = Buffer.concat([Buffer.from(legacyDisplay + '\r\n'), body]);
-    }
-
-    //
-    // Assemble the inner payload
-    //
-    contentToEncrypt = Buffer.concat([
-      Buffer.from(innerHeaders + '\r\n'),
-      Buffer.from(innerContentType + '\r\n\r\n'),
-      innerBody
-    ]);
-
-    //
-    // Rebuild outer headers with confidential headers obscured
-    //
-    headers = [];
-    for (const oh of outerHeaders) {
-      headers.push([oh.raw]);
-    }
-  } else {
-    //
-    // No header protection - original behavior
-    //
-    bodyHeaders = Buffer.from(
-      bodyHeaders.map((line) => line.join('\r\n')).join('\r\n'),
-      'binary'
-    );
-    contentToEncrypt = Buffer.concat([
-      Buffer.from(bodyHeaders + '\r\n\r\n'),
-      body
-    ]);
-  }
-
   headers.push(
     [
       'Content-Type: multipart/encrypted; protocol="application/pgp-encrypted";'
@@ -237,13 +131,10 @@ async function encryptMessage(
     headers.map((line) => line.join('\r\n')).join('\r\n'),
     'binary'
   );
-
-  if (headerProtection) {
-    // bodyHeaders not needed for outer - already in contentToEncrypt
-    bodyHeaders = Buffer.alloc(0);
-  }
-
-  // When !headerProtection, bodyHeaders was already converted to Buffer above
+  bodyHeaders = Buffer.from(
+    bodyHeaders.map((line) => line.join('\r\n')).join('\r\n'),
+    'binary'
+  );
 
   const pubKey = isArmored
     ? await openpgp.readKey({
@@ -256,9 +147,7 @@ async function encryptMessage(
 
   const ciphertext = await openpgp.encrypt({
     message: await openpgp.createMessage({
-      binary: headerProtection
-        ? contentToEncrypt
-        : Buffer.concat([Buffer.from(bodyHeaders + '\r\n\r\n'), body])
+      binary: Buffer.concat([Buffer.from(bodyHeaders + '\r\n\r\n'), body])
     }),
     encryptionKeys: pubKey,
     format: 'armored',
