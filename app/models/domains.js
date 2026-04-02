@@ -1618,9 +1618,9 @@ Domains.pre('save', function (next) {
 //
 // Post-save hook: when a new domain is created, run Cloudflare Family
 // DNS + content categorisation in the background.  If the domain is
-// flagged as bannable, eligible users are banned and an admin alert
-// email is sent.  Protected users (admins, KYC-verified, accounts
-// older than 3 months) are excluded from banning but still reported.
+// flagged, an email is sent to support@ for manual review instead of
+// automatically banning users.  Protected users (admins, KYC-verified,
+// accounts older than 3 months) are still reported separately.
 //
 // This mirrors the logic in `jobs/check-domains-cloudflare-family.js`
 // via the shared `helpers/check-domain-and-act.js` helper.
@@ -1673,14 +1673,14 @@ Domains.post('save', (doc, next) => {
       if (totalFlagged > 0) {
         const parts = [];
         if (ctx.bannedResults.length > 0)
-          parts.push(`${ctx.bannedResults.length} banned`);
+          parts.push(`${ctx.bannedResults.length} flagged for review`);
         if (ctx.skippedResults.length > 0)
           parts.push(`${ctx.skippedResults.length} protected (skipped)`);
         if (ctx.reviewResults.length > 0)
           parts.push(`${ctx.reviewResults.length} for review`);
 
         const summary = parts.join(', ');
-        const subject = `New domain created: ${doc.name} – ${summary}`;
+        const subject = `[Review Required] New domain created: ${doc.name} – ${summary}`;
 
         //
         // Build a simple HTML summary for the alert email
@@ -1691,10 +1691,10 @@ Domains.post('save', (doc, next) => {
 
         for (const r of ctx.bannedResults) {
           lines.push(
-            `<p><strong>Banned</strong> – categories: ${r.categories.join(
+            `<p><strong>Flagged for Review</strong> – categories: ${r.categories.join(
               ', '
             )}` +
-              ` | users banned: ${r.bannedEmails.join(', ') || 'none'}` +
+              ` | users to review: ${r.bannedEmails.join(', ') || 'none'}` +
               ` | aliases: ${r.aliasCount}</p>`
           );
         }

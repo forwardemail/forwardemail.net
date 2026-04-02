@@ -7,13 +7,14 @@
 // Reusable helper that categorises a single domain via the
 // `get-domain-categorization` helper and then takes action:
 //
-//   - If the domain matches one or more *bannable* categories, eligible
-//     member users are banned and their emails + the domain are added
-//     to the Redis denylist (30-day TTL).
+//   - If the domain matches one or more *flagged* categories, an email
+//     is sent to support@ for manual review instead of automatically
+//     banning users or adding to the denylist.  This avoids false
+//     positives from the Cloudflare Radar / Family DNS checks.
 //   - Protected users (admins, KYC-verified, accounts older than 3
-//     months) are excluded from banning but still reported.
+//     months) are still reported separately in the digest.
 //   - If the domain only matches *review* categories, it is reported
-//     for manual review.
+//     for manual review (same as before).
 //
 // This module is consumed by:
 //   - `jobs/check-domains-cloudflare-family.js`  (batch scan)
@@ -28,6 +29,7 @@ const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
 
 const config = require('#config');
+const emailHelper = require('#helpers/email');
 const getDomainCategorization = require('#helpers/get-domain-categorization');
 const logger = require('#helpers/logger');
 
@@ -38,9 +40,10 @@ const DENYLIST_TTL_MS = ms('30d');
 const ACCOUNT_AGE_THRESHOLD_MONTHS = 3;
 
 //
-// Categories that trigger an automatic ban + denylist.
-// Other categories (e.g. 'minimal_content', 'parking_ip') are
-// reported but do NOT trigger a ban.
+// Categories that were previously auto-ban + denylist triggers.
+// These now send an email to support@ for manual review instead
+// of automatically banning users and denylisting, because the
+// Cloudflare Radar check is too strict and causes false positives.
 //
 const BANNABLE_CATEGORIES = new Set([
   'blocked_by_cloudflare_family',
@@ -96,11 +99,16 @@ function getExclusionReasons(user) {
 }
 
 /**
- * Categorise a single domain and take action (ban / denylist / report).
+ * Categorise a single domain and take action (email support for review / report).
+ *
+ * Instead of automatically banning users and adding to the denylist,
+ * this now emails support@ for manual review when bannable categories
+ * are detected.  This prevents false positives from the Cloudflare
+ * Radar / Family DNS checks from incorrectly banning legitimate users.
  *
  * @param   {object}  domainDoc  Lean Mongoose domain document (needs `_id`, `name`, `members`)
  * @param   {object}  ctx        Shared context that accumulates results
- * @param   {Array}   ctx.bannedResults    Domains that triggered bans
+ * @param   {Array}   ctx.bannedResults    Domains that were flagged for review (kept for API compat)
  * @param   {Array}   ctx.reviewResults    Domains flagged for review
  * @param   {Array}   ctx.skippedResults   Protected users that were skipped
  * @param   {boolean} ctx.dryRun           Whether this is a dry run
@@ -114,7 +122,7 @@ function getExclusionReasons(user) {
  * @returns {Promise<object|null>}  The categorisation result, or null if clean
  */
 async function checkDomainAndAct(domainDoc, ctx, opts) {
-  const { client, familyResolver, Users, Aliases } = opts;
+  const { familyResolver, Users, Aliases } = opts;
   const log = opts.logger || logger;
   const timeout = opts.timeout || 10_000;
   const { name } = domainDoc;
@@ -154,7 +162,8 @@ async function checkDomainAndAct(domainDoc, ctx, opts) {
   });
 
   //
-  // If there are bannable hits, evaluate each user for banning
+  // If there are bannable hits, evaluate each user and email support@
+  // for review instead of automatically banning and denylisting.
   //
   if (bannableHits.length > 0) {
     //
@@ -174,9 +183,9 @@ async function checkDomainAndAct(domainDoc, ctx, opts) {
     if (users.length === 0) return cat;
 
     //
-    // Separate users into bannable vs. protected (skipped)
+    // Separate users into flagged vs. protected (skipped)
     //
-    const bannableUsers = [];
+    const flaggedUsers = [];
     const protectedUsers = [];
 
     for (const user of users) {
@@ -184,64 +193,113 @@ async function checkDomainAndAct(domainDoc, ctx, opts) {
       if (exclusionReasons.length > 0) {
         protectedUsers.push({ user, exclusionReasons });
       } else {
-        bannableUsers.push(user);
+        flaggedUsers.push(user);
       }
     }
 
     //
-    // Ban eligible users (skipped in dry-run mode)
+    // Email support@ for review instead of auto-banning (skipped in dry-run mode)
     //
-    if (bannableUsers.length > 0) {
-      const bannedEmails = [];
+    if (flaggedUsers.length > 0) {
+      const flaggedEmails = [];
 
       if (ctx.dryRun) {
         //
         // DRY RUN – log what would happen but take no action
         //
-        for (const user of bannableUsers) {
-          bannedEmails.push(user.email);
+        for (const user of flaggedUsers) {
+          flaggedEmails.push(user.email);
           log.info(
-            `[DRY RUN] Would ban user ${user._id} (${
+            `[DRY RUN] Would flag user ${user._id} (${
               user.email
-            }) – domain ${name} categorised as [${bannableHits.join(', ')}]`
+            }) for review – domain ${name} categorised as [${bannableHits.join(
+              ', '
+            )}]`
           );
         }
 
         log.info(
-          `[DRY RUN] Would denylist domain ${name} and ${bannedEmails.length} email(s)`
+          `[DRY RUN] Would email support@ for review: domain ${name} and ${flaggedEmails.length} user(s)`
         );
       } else {
         //
-        // LIVE – perform ban + denylist
+        // LIVE – email support@ for manual review instead of auto-banning
         //
-        const pipeline = client.pipeline();
-
-        for (const user of bannableUsers) {
-          // Ban the user
-          await Users.findByIdAndUpdate(user._id, {
-            $set: {
-              [config.userFields.isBanned]: true
-            }
-          });
-
-          // Denylist the user's email address
-          pipeline.set(`denylist:${user.email}`, 'true', 'PX', DENYLIST_TTL_MS);
-          bannedEmails.push(user.email);
+        for (const user of flaggedUsers) {
+          flaggedEmails.push(user.email);
 
           log.info(
-            `Banned user ${user._id} (${
+            `Flagged user ${user._id} (${
               user.email
-            }) – domain ${name} categorised as [${bannableHits.join(', ')}]`
+            }) for review – domain ${name} categorised as [${bannableHits.join(
+              ', '
+            )}]`
           );
         }
 
-        // Denylist the domain name itself
-        pipeline.set(`denylist:${name}`, 'true', 'PX', DENYLIST_TTL_MS);
+        //
+        // Send a single review email to support@ with all flagged users
+        // for this domain so an admin can manually decide whether to ban.
+        //
+        const userListHtml = flaggedUsers
+          .map(
+            (u) =>
+              `<li><a href="${
+                config.urls.web
+              }/admin/users?q=${encodeURIComponent(u.email)}">${
+                u.email
+              }</a> (ID: ${u._id})</li>`
+          )
+          .join('\n');
 
-        await pipeline.exec();
-
-        // Clear the banned_user_ids cache
-        await client.del('banned_user_ids');
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.supportEmail,
+            subject: `[Review Required] Domain flagged by Cloudflare check: ${name} – ${bannableHits.join(
+              ', '
+            )}`
+          },
+          locals: {
+            message: `
+              <h3>Domain Flagged for Review</h3>
+              <p>The following domain was flagged by the Cloudflare Family DNS &amp; content categorisation check and requires manual review before any ban action is taken.</p>
+              <table border="1" cellpadding="5" cellspacing="0">
+                <tr><th>Field</th><th>Value</th></tr>
+                <tr><td><strong>Domain</strong></td><td>${name}</td></tr>
+                <tr><td><strong>Categories</strong></td><td>${cat.categories.join(
+                  ', '
+                )}</td></tr>
+                <tr><td><strong>Actionable Categories</strong></td><td>${bannableHits.join(
+                  ', '
+                )}</td></tr>
+                <tr><td><strong>Page Title</strong></td><td>${
+                  cat.title || '(none)'
+                }</td></tr>
+                <tr><td><strong>HTTP Status</strong></td><td>${
+                  cat.statusCode === null ? 'N/A' : cat.statusCode
+                }</td></tr>
+                <tr><td><strong>Content Length</strong></td><td>${
+                  cat.contentLength
+                } bytes</td></tr>
+                <tr><td><strong>Is Parked</strong></td><td>${
+                  cat.isParked ? 'Yes' : 'No'
+                }</td></tr>
+                <tr><td><strong>Legitimate Hosting</strong></td><td>${
+                  cat.hasLegitimateHosting ? 'Yes' : 'No'
+                }</td></tr>
+                <tr><td><strong>Alias Count</strong></td><td>${aliasCount}</td></tr>
+              </table>
+              <h4>Users Requiring Review (${flaggedUsers.length})</h4>
+              <ul>${userListHtml}</ul>
+              <p>To ban these users and denylist this domain, visit the <a href="${
+                config.urls.web
+              }/admin/users">admin panel</a>.</p>
+            `
+          }
+        })
+          .then()
+          .catch((err) => log.fatal(err));
       }
 
       ctx.bannedResults.push({
@@ -253,12 +311,12 @@ async function checkDomainAndAct(domainDoc, ctx, opts) {
         contentLength: cat.contentLength,
         isParked: cat.isParked,
         hasLegitimateHosting: cat.hasLegitimateHosting,
-        users: bannableUsers.map((u) => ({
+        users: flaggedUsers.map((u) => ({
           id: u._id.toString(),
           email: u.email
         })),
         aliasCount,
-        bannedEmails
+        bannedEmails: flaggedEmails
       });
     }
 
