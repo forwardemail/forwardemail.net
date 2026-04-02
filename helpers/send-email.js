@@ -110,6 +110,21 @@ async function getPGPResults({
           publicKey = await readKey({
             binaryKey
           });
+
+          //
+          // validate that the key has encryption-capable subkeys
+          // (some domains like kernel.org publish sign-only keys via WKD
+          //  for git commit/tag verification, not for email encryption)
+          //
+          try {
+            await publicKey.getEncryptionKey();
+          } catch {
+            logger.debug(
+              'WKD key is sign-only (no encryption-capable subkey)',
+              { email: envelope.to }
+            );
+            publicKey = undefined;
+          }
         }
 
         if (publicKey) {

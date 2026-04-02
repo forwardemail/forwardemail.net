@@ -209,6 +209,13 @@ async function onAppend(path, flags, date, raw, session, fn) {
             binaryKey
           });
 
+          //
+          // validate that the key has encryption-capable subkeys
+          // (some domains like kernel.org publish sign-only keys via WKD
+          //  for git commit/tag verification, not for email encryption)
+          //
+          await publicKey.getEncryptionKey();
+
           isArmored = false;
         } catch (err) {
           if (

@@ -1820,7 +1820,8 @@ config.views.locals.manifest = manifestRev({
 
 config.alternatives = alternatives;
 
-config.views.locals.pkgVersion = pkg.version;
+config.views.locals.pkgVersion =
+  env.NODE_ENV === 'test' ? '0.0.1' : pkg.version;
 
 // add selective `config` object to be used by views
 config.views.locals.config = _.pick(config, [
