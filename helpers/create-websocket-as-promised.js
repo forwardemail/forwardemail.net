@@ -117,7 +117,9 @@ function handleError(event) {
     this._listeners.error.forEach((listener) =>
       this._callEventListener(event, listener)
     );
-    this._connect();
+    if (this._shouldReconnect) {
+      this._connect();
+    }
   } catch (err) {
     logger.fatal(err, { event });
   }
@@ -136,9 +138,14 @@ function disconnect(code, reason) {
     }
 
     this._removeListeners();
-    if (this._ws.readyState !== ReconnectingWebSocket.CONNECTING) {
+    // Attach a no-op error handler to prevent uncaught exceptions
+    // from in-flight connection attempts after listeners are removed
+    this._ws.addEventListener('error', () => {});
+    // Close the underlying WebSocket in any state (including CONNECTING)
+    // to ensure in-flight connection attempts are aborted
+    try {
       this._ws.close(code, reason);
-    }
+    } catch {}
 
     this._handleClose(new CloseEvent(code, reason, this));
   } catch (err) {
@@ -260,7 +267,7 @@ function createWebSocketAsPromised(options = {}) {
   // <https://github.com/partykit/partykit/issues/536>
   //
   const protocol =
-    options.protocol || config.env === 'production' ? 'wss' : 'ws';
+    options.protocol || (config.env === 'production' ? 'wss' : 'ws');
 
   const auth = `${encrypt(
     Array.isArray(env.API_SECRETS) ? env.API_SECRETS[0] : env.API_SECRETS
