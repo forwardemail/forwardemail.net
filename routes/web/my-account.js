@@ -724,6 +724,21 @@ router
     // save new passkey to user
     let user = await Users.findById(ctx.state.user._id);
     if (!user) throw new TypeError('User does not exist');
+
+    //
+    // W3C WebAuthn §7.1.26: Verify that the credential ID is not yet
+    // registered for any user.  If registration is requested for a
+    // credential that is already registered, the server MUST reject.
+    // <https://www.w3.org/TR/webauthn-3/#sctn-registering-a-new-credential>
+    //
+    const existingUser = await Users.findOne({
+      'passkeys.credentialId': credentialId
+    });
+    if (existingUser)
+      throw Boom.badRequest(
+        ctx.translateError('PASSKEY_CREDENTIAL_ID_ALREADY_REGISTERED')
+      );
+
     user.passkeys.push({
       credentialId,
       publicKey,

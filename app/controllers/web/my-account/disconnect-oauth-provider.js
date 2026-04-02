@@ -8,6 +8,7 @@ const Boom = require('@hapi/boom');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
+const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 
 const VALID_PROVIDERS = new Set(['github', 'google']);
 
@@ -58,6 +59,16 @@ async function disconnectOAuthProvider(ctx) {
 
   // Save the user
   ctx.state.user = await ctx.state.user.save();
+
+  //
+  // Invalidate all other sessions when an OAuth provider is disconnected.
+  // This ensures that any sessions originally established via the
+  // now-disconnected OAuth provider are terminated, preventing
+  // continued access after revocation.
+  //
+  invalidateOtherSessions(ctx)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
 
   // Send notification email about the disconnection
   const providerName = provider.charAt(0).toUpperCase() + provider.slice(1);

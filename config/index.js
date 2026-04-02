@@ -1274,8 +1274,14 @@ const config = {
     lastLoginField: 'last_login_at',
     usernameLowerCase: true,
     // NOTE: we rate limit the /login endpoint
-    // limitAttempts: true,
-    // maxAttempts: env.NODE_ENV === 'development' ? Number.POSITIVE_INFINITY : 10,
+    // In addition to IP-based rate limiting, enable per-account lockout
+    // to prevent brute-force attacks that bypass IP rate limits.
+    // This ensures that even successful login attempts are blocked
+    // after too many failed attempts until the lockout window expires.
+    limitAttempts: true,
+    maxAttempts: env.NODE_ENV === 'development' ? Number.POSITIVE_INFINITY : 10,
+    interval: 100, // initial lockout interval in ms
+    maxInterval: 300000, // max lockout interval: 5 minutes
     digestAlgorithm: 'sha256',
     encoding: 'hex',
     saltlen: 32,
@@ -1311,7 +1317,7 @@ const config = {
     errorMessages: {
       MissingPasswordError: phrases.PASSPORT_MISSING_PASSWORD_ERROR,
       AttemptTooSoonError: phrases.PASSPORT_ATTEMPT_TOO_SOON_ERROR,
-      TooManyAttemptsError: phrases.PASSPORT_TOO_MANY_ATTEMPTS_ERROR_,
+      TooManyAttemptsError: phrases.PASSPORT_TOO_MANY_ATTEMPTS_ERROR,
       NoSaltValueStoredError: phrases.PASSPORT_NO_SALT_VALUE_STORED_ERROR,
       IncorrectPasswordError: phrases.PASSPORT_INCORRECT_PASSWORD_ERROR,
       IncorrectUsernameError: phrases.PASSPORT_INCORRECT_USERNAME_ERROR,

@@ -398,6 +398,8 @@ module.exports = {
   INVALID_NICKNAME: 'Nickname was missing or blank.',
   INVALID_ATTESTATION_FORMAT:
     'Unsupported attestation format <span class="notranslate">%s</span>',
+  PASSKEY_CREDENTIAL_ID_ALREADY_REGISTERED:
+    'This passkey credential is already registered.  Please use a different passkey.',
   SUCCESSFULLY_ADDED_PASSKEY: 'Successfully added new passkey.',
   SUCCESSFULLY_REMOVED_PASSKEY: 'Successfully removed existing passkey.',
   SUCCESSFULLY_UPDATED_PASSKEY_NICKNAME:
