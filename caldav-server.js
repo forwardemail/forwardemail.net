@@ -1602,11 +1602,21 @@ class CalDAV extends API {
   //       (but note they don't do any normalization)
   //
 
-  async createCalendar(ctx, { name, description, timezone, color, order }) {
+  async createCalendar(
+    ctx,
+    { name, description, timezone, color, order, supportedComponents }
+  ) {
+    // Default name to calendarId or a generated UUID when not provided
+    // (e.g. Thunderbird MKCALENDAR with no XML body or no displayname)
+    if (!name) {
+      name = ctx.state.params?.calendarId || randomUUID();
+    }
+
     ctx.logger.debug('createCalendar', {
       name,
       description,
       timezone,
+      supportedComponents,
       principalId: ctx.state.params?.principalId,
       calendarId: ctx.state.params?.calendarId
     });
@@ -1745,8 +1755,16 @@ class CalDAV extends API {
       url: config.urls.web,
       readonly: false,
       synctoken: `${config.urls.web}/ns/sync-token/1`,
-      has_vevent: true, // Support both events and tasks
-      has_vtodo: true
+      // Use supportedComponents from MKCALENDAR XML body if provided;
+      // default to supporting both events and tasks when not specified
+      has_vevent:
+        !supportedComponents ||
+        supportedComponents.length === 0 ||
+        supportedComponents.includes('VEVENT'),
+      has_vtodo:
+        !supportedComponents ||
+        supportedComponents.length === 0 ||
+        supportedComponents.includes('VTODO')
     });
 
     // send websocket push notification
@@ -2744,17 +2762,27 @@ class CalDAV extends API {
       principalId,
       calendarId
     });
-
-    const calendar = await this.getCalendar(ctx, {
+    let calendar = await this.getCalendar(ctx, {
       calendarId,
       principalId,
       user
     });
 
-    if (!calendar)
-      throw Boom.methodNotAllowed(
-        ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+    // Auto-create calendar if it doesn't exist (e.g. Thunderbird "Publish Calendar"
+    // sends PUT directly without a preceding MKCALENDAR)
+    if (!calendar) {
+      ctx.logger.info(
+        'Auto-creating calendar for PUT on non-existent calendarId',
+        { calendarId }
       );
+      calendar = await this.createCalendar(ctx, {
+        name: calendarId || randomUUID(),
+        description: '',
+        timezone: ctx.state.session?.user?.timezone,
+        color: undefined,
+        order: 0
+      });
+    }
 
     // Check if calendar supports the component type being created
     const componentType = getComponentType(ctx.request.body);
@@ -2807,15 +2835,19 @@ class CalDAV extends API {
       // If the existing event is soft-deleted, resurrect it with the new ICS data.
       // If it's active, update it with the new ICS data (upsert behavior).
       //
+      const wasSoftDeleted =
+        exists.deleted_at !== null && exists.deleted_at !== undefined;
+
       ctx.logger.debug(
         'createEvent: existing event found, updating instead of creating',
         {
           eventId,
           calendarId,
-          wasSoftDeleted:
-            exists.deleted_at !== null && exists.deleted_at !== undefined
+          wasSoftDeleted
         }
       );
+
+      const oldIcal = String(exists.ical);
 
       await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
         $set: {
@@ -2831,34 +2863,55 @@ class CalDAV extends API {
       exists.isNew = false;
       const eventUpdated = await exists.save();
 
-      // Fire-and-forget: send invite emails for the updated event
-      setImmediate(() => {
-        this.sendEmailWithICS(ctx, calendar, eventUpdated, 'REQUEST').catch(
-          (err) => {
-            ctx.logger.error('sendEmailWithICS error', { err });
+      //
+      // Only send notifications when the ICS actually changed or the event
+      // was resurrected from soft-delete.  Identical re-PUTs during sync
+      // should not produce user-visible notifications.
+      //
+      const icalChanged =
+        oldIcal !== String(eventUpdated.ical) || wasSoftDeleted;
+
+      if (icalChanged) {
+        // Fire-and-forget: send invite emails for the updated event
+        setImmediate(() => {
+          this.sendEmailWithICS(ctx, calendar, eventUpdated, 'REQUEST').catch(
+            (err) => {
+              ctx.logger.error('sendEmailWithICS error', { err });
+            }
+          );
+        });
+
+        sendApnCalendar(this.client, ctx.state.user.alias_id)
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+
+        sendWebSocketNotification(
+          this.client,
+          ctx.state.user.alias_id,
+          'calendarEventCreated',
+          {
+            calendarEvent: {
+              id: eventUpdated._id.toString(),
+              eventId: eventUpdated.eventId,
+              calendarId,
+              ical: eventUpdated.ical || ctx.request.body,
+              href: eventUpdated.href || ctx.url,
+              componentType:
+                getComponentType(eventUpdated.ical || ctx.request.body) ||
+                'VEVENT',
+              object: 'calendar_event'
+            }
           }
         );
-      });
-
-      sendApnCalendar(this.client, ctx.state.user.alias_id)
-        .then()
-        .catch((err) => ctx.logger.fatal(err));
-
-      sendWebSocketNotification(
-        this.client,
-        ctx.state.user.alias_id,
-        'calendarEventCreated',
-        {
-          calendarEvent: {
-            id: eventUpdated._id.toString(),
-            eventId: eventUpdated.eventId,
-            calendarId,
-            ical: eventUpdated.ical || ctx.request.body,
-            href: eventUpdated.href || ctx.url,
-            object: 'calendar_event'
+      } else {
+        ctx.logger.debug(
+          'createEvent: ICS unchanged on upsert, skipping notification',
+          {
+            eventId,
+            calendarId
           }
-        }
-      );
+        );
+      }
 
       return eventUpdated;
     }
@@ -2977,11 +3030,12 @@ class CalDAV extends API {
           calendarId,
           ical: eventCreated.ical || ctx.request.body,
           href: eventCreated.href || ctx.url,
+          componentType:
+            getComponentType(eventCreated.ical || ctx.request.body) || 'VEVENT',
           object: 'calendar_event'
         }
       }
     );
-
     return eventCreated;
   }
 
@@ -3216,27 +3270,45 @@ class CalDAV extends API {
       });
     }
 
-    // send apple push notification for calendar sync
-    sendApnCalendar(this.client, ctx.state.user.alias_id)
-      .then()
-      .catch((err) => ctx.logger.fatal(err));
+    //
+    // Skip notifications when the ICS data has not actually changed.
+    // CalDAV clients (e.g. Thunderbird, Apple Calendar) may re-PUT identical
+    // data during sync without any meaningful edits — sending a notification
+    // for these no-op updates is confusing to the user.
+    //
+    const newCalStr = String(e.ical);
+    const icalChanged = oldCalStr !== newCalStr;
 
-    // send websocket push notification
-    sendWebSocketNotification(
-      this.client,
-      ctx.state.user.alias_id,
-      'calendarEventUpdated',
-      {
-        calendarEvent: {
-          id: e._id.toString(),
-          eventId,
-          calendarId,
-          ical: e.ical || ctx.request.body,
-          href: e.href || ctx.url,
-          object: 'calendar_event'
+    if (icalChanged) {
+      // send apple push notification for calendar sync
+      sendApnCalendar(this.client, ctx.state.user.alias_id)
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+
+      // send websocket push notification
+      sendWebSocketNotification(
+        this.client,
+        ctx.state.user.alias_id,
+        'calendarEventUpdated',
+        {
+          calendarEvent: {
+            id: e._id.toString(),
+            eventId,
+            calendarId,
+            ical: e.ical || ctx.request.body,
+            href: e.href || ctx.url,
+            componentType:
+              getComponentType(e.ical || ctx.request.body) || 'VEVENT',
+            object: 'calendar_event'
+          }
         }
-      }
-    );
+      );
+    } else {
+      ctx.logger.debug('updateEvent: ICS unchanged, skipping notification', {
+        eventId,
+        calendarId
+      });
+    }
 
     return e;
   }
@@ -3244,13 +3316,11 @@ class CalDAV extends API {
   async deleteCalendar(ctx, { principalId, calendarId, user }) {
     // , calendar
     ctx.logger.debug('deleteCalendar', { principalId, calendarId });
-
     const calendar = await this.getCalendar(ctx, {
       calendarId,
       principalId,
       user
     });
-
     if (!calendar)
       throw Boom.methodNotAllowed(
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
@@ -3528,6 +3598,7 @@ class CalDAV extends API {
             eventId: event.eventId,
             calendarId,
             ical: event.ical || '',
+            componentType: getComponentType(event.ical || '') || 'VEVENT',
             object: 'calendar_event'
           }
         }

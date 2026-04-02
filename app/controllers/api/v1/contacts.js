@@ -665,6 +665,9 @@ async function update(ctx) {
     throw Boom.preconditionFailed(ctx.translateError('ETAG_DOES_NOT_MATCH'));
   }
 
+  // Capture old content for no-op detection
+  const oldContent = contact.content;
+
   // Update contact fields
   let vCardContent = contact.content;
   let needsETagUpdate = false;
@@ -752,28 +755,33 @@ FN:${contact.fullName || ''}`;
 
   ctx.body = json(contact);
 
-  // Send apple push notification for contacts sync
-  sendApnContacts(ctx.client, ctx.state.session.user.alias_id)
-    .then()
-    .catch((err) => ctx.logger.fatal(err));
+  // Suppress notifications when content has not actually changed (no-op update)
+  const contentChanged =
+    String(oldContent || '') !== String(contact.content || '');
+  if (contentChanged) {
+    // Send apple push notification for contacts sync
+    sendApnContacts(ctx.client, ctx.state.session.user.alias_id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
 
-  // Send websocket push notification
-  sendWebSocketNotification(
-    ctx.client,
-    ctx.state.session.user.alias_id,
-    'contactUpdated',
-    {
-      contact: {
-        id: contact._id.toString(),
-        contactId: contact.contact_id,
-        addressBookId: addressBook._id.toString(),
-        fullName: contact.fullName || '',
-        content: contact.content,
-        etag: contact.etag,
-        object: 'contact'
+    // Send websocket push notification
+    sendWebSocketNotification(
+      ctx.client,
+      ctx.state.session.user.alias_id,
+      'contactUpdated',
+      {
+        contact: {
+          id: contact._id.toString(),
+          contactId: contact.contact_id,
+          addressBookId: addressBook._id.toString(),
+          fullName: contact.fullName || '',
+          content: contact.content,
+          etag: contact.etag,
+          object: 'contact'
+        }
       }
-    }
-  );
+    );
+  }
 
   // Update storage in background (contact size may have changed)
   updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)

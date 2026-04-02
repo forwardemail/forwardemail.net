@@ -30,6 +30,28 @@ const { normalizeIcs } = require('#helpers/normalize-ics');
 const sendApnCalendar = require('#helpers/send-apn-calendar');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 
+// Helper function to detect component type from ICS data
+// (mirrors caldav-server.js getComponentType)
+function getComponentType(icsData) {
+  try {
+    const parsed = ICAL.parse(icsData);
+    if (!parsed || parsed.length === 0) return null;
+
+    const comp = new ICAL.Component(parsed);
+    if (!comp) return null;
+
+    const vevent = comp.getFirstSubcomponent('vevent');
+    const vtodo = comp.getFirstSubcomponent('vtodo');
+
+    if (vevent && !vtodo) return 'VEVENT';
+    if (vtodo && !vevent) return 'VTODO';
+    if (vevent && vtodo) return 'VEVENT'; // Prioritize VEVENT for mixed content
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 const exdateRegex =
   /^EXDATE(?:;TZID=[\w/+=-]+|;VALUE=DATE)?:\d{8}(?:T\d{6}(?:\.\d{1,3})?Z?)?$/;
 
@@ -595,6 +617,7 @@ async function create(ctx) {
         calendarId: calendar.calendarId,
         ical: calendarEvent.ical || '',
         href: calendarEvent.href || '',
+        componentType: getComponentType(calendarEvent.ical || '') || 'VEVENT',
         object: 'calendar_event'
       }
     }
@@ -776,27 +799,33 @@ async function update(ctx) {
     ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session })
   );
 
-  // Send apple push notification for calendar sync
-  sendApnCalendar(ctx.client, ctx.state.session.user.alias_id)
-    .then()
-    .catch((err) => ctx.logger.fatal(err));
+  // Suppress notifications when ICS data has not actually changed (no-op update)
+  const icsChanged = String(oldIcal || '') !== String(calendarEvent.ical || '');
 
-  // Send websocket push notification
-  sendWebSocketNotification(
-    ctx.client,
-    ctx.state.session.user.alias_id,
-    'calendarEventUpdated',
-    {
-      calendarEvent: {
-        id: calendarEvent._id.toString(),
-        eventId: calendarEvent.eventId,
-        calendarId: calendar.calendarId,
-        ical: calendarEvent.ical || '',
-        href: calendarEvent.href || '',
-        object: 'calendar_event'
+  if (icsChanged) {
+    // Send apple push notification for calendar sync
+    sendApnCalendar(ctx.client, ctx.state.session.user.alias_id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
+    // Send websocket push notification
+    sendWebSocketNotification(
+      ctx.client,
+      ctx.state.session.user.alias_id,
+      'calendarEventUpdated',
+      {
+        calendarEvent: {
+          id: calendarEvent._id.toString(),
+          eventId: calendarEvent.eventId,
+          calendarId: calendar.calendarId,
+          ical: calendarEvent.ical || '',
+          href: calendarEvent.href || '',
+          componentType: getComponentType(calendarEvent.ical || '') || 'VEVENT',
+          object: 'calendar_event'
+        }
       }
-    }
-  );
+    );
+  }
 
   //
   // Determine if this is an organizer update or an attendee PARTSTAT change.
@@ -966,6 +995,7 @@ async function remove(ctx) {
         eventId: calendarEvent.eventId,
         calendarId: calendar.calendarId,
         ical: calendarEvent.ical || '',
+        componentType: getComponentType(calendarEvent.ical || '') || 'VEVENT',
         object: 'calendar_event'
       }
     }

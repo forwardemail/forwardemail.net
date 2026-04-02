@@ -299,6 +299,10 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
           existingContact.contact_id = contact;
         }
 
+        // Capture old content for no-op detection
+        const oldContent = existingContact.content;
+        const wasDeleted = Boolean(existingContact.deleted_at);
+
         // Resurrect soft-deleted contact (clear deleted_at)
         // This handles the case where a client PUTs to a URL that was
         // previously deleted — the contact should come back to life.
@@ -340,28 +344,34 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
 
         await addressBook.save();
 
-        // send apple push notification for contacts sync
-        sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
-          .then()
-          .catch((err) => ctx.logger.fatal(err));
+        // Suppress notifications when vCard content has not actually changed
+        // (no-op PUT during sync), but always notify on resurrection
+        const contentChanged =
+          String(oldContent || '') !== String(vCardContent || '');
+        if (contentChanged || wasDeleted) {
+          // send apple push notification for contacts sync
+          sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
 
-        // send websocket push notification
-        sendWebSocketNotification(
-          ctx.instance.client,
-          ctx.state.user.alias_id,
-          'contactUpdated',
-          {
-            contact: {
-              id: existingContact._id.toString(),
-              contactId: contact,
-              addressBookId: addressBook._id.toString(),
-              fullName: existingContact.fullName || '',
-              content: vCardContent,
-              etag: newEtag,
-              object: 'contact'
+          // send websocket push notification
+          sendWebSocketNotification(
+            ctx.instance.client,
+            ctx.state.user.alias_id,
+            'contactUpdated',
+            {
+              contact: {
+                id: existingContact._id.toString(),
+                contactId: contact,
+                addressBookId: addressBook._id.toString(),
+                fullName: existingContact.fullName || '',
+                content: vCardContent,
+                etag: newEtag,
+                object: 'contact'
+              }
             }
-          }
-        );
+          );
+        }
 
         ctx.set('ETag', newEtag);
         // Return the canonical URL of the updated resource so the client
