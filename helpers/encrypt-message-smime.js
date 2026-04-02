@@ -11,6 +11,11 @@ const asn1js = require('asn1js');
 const { Crypto } = require('@peculiar/webcrypto');
 
 const config = require('#config');
+const {
+  parseHeaderLines,
+  buildProtectedHeaders,
+  buildLegacyDisplayText
+} = require('#helpers/header-protection');
 
 // Set up WebCrypto provider
 const webcrypto = new Crypto();
@@ -25,12 +30,25 @@ pkijs.setEngine(
 );
 
 /**
- * Encrypt a message using S/MIME (RFC 8551)
+ * Encrypt a message using S/MIME (RFC 8551) with Header Protection (RFC 9788).
+ *
+ * When `headerProtection` is enabled (the default), this function:
+ * 1. Copies Non-Structural headers into the inner Cryptographic Payload
+ * 2. Adds `hp="cipher"` parameter to the inner Content-Type
+ * 3. Generates HP-Outer headers to document outer header exposure
+ * 4. Adds a Legacy Display Element for backward compatibility
+ * 5. Obscures confidential headers (e.g. Subject) in the outer envelope
+ *
  * @param {string} certPem - PEM-encoded X.509 certificate
  * @param {Buffer} raw - Raw email message
+ * @param {object} [options]
+ * @param {boolean} [options.headerProtection=true] - Enable RFC 9788 header protection
  * @returns {Buffer} S/MIME encrypted message
+ * @see https://www.rfc-editor.org/rfc/rfc9788.html
  */
-async function encryptMessageSMIME(certPem, raw) {
+async function encryptMessageSMIME(certPem, raw, options = {}) {
+  const { headerProtection = true } = options;
+
   if (!certPem) throw new TypeError('S/MIME certificate missing');
 
   if (typeof raw === 'string') raw = Buffer.from(raw);
@@ -132,14 +150,96 @@ async function encryptMessageSMIME(certPem, raw) {
     }
   }
 
-  // Build the content to encrypt
-  const bodyHeadersStr = bodyHeaders
-    .map((line) => line.join('\r\n'))
-    .join('\r\n');
-  const contentToEncrypt = Buffer.concat([
-    Buffer.from(bodyHeadersStr + '\r\n\r\n'),
-    body
-  ]);
+  //
+  // RFC 9788 Header Protection
+  //
+  let contentToEncrypt;
+
+  if (headerProtection) {
+    //
+    // Parse all non-structural headers for HP treatment
+    //
+    const allHeadersRaw = headers.map((h) => h.join('\r\n')).join('\r\n');
+    const parsedHeaders = parseHeaderLines(allHeadersRaw);
+
+    //
+    // Build protected inner headers with HP-Outer entries
+    //
+    const { innerHeaders, outerHeaders, hpValue } = buildProtectedHeaders(
+      parsedHeaders,
+      { isEncrypted: true }
+    );
+
+    //
+    // Build the inner Content-Type with hp parameter
+    //
+    const bodyHeadersStr = bodyHeaders
+      .map((line) => line.join('\r\n'))
+      .join('\r\n');
+
+    //
+    // Inject hp parameter into the inner Content-Type
+    //
+    let innerContentType = bodyHeadersStr;
+    if (/^content-type:/im.test(innerContentType)) {
+      // Append hp parameter to the Content-Type
+      innerContentType = innerContentType.replace(
+        /^(content-type:\s*[^\r\n]+)/im,
+        `$1; hp="${hpValue}"`
+      );
+    } else {
+      // No Content-Type found, add a default with hp
+      innerContentType = `Content-Type: text/plain; hp="${hpValue}"\r\n${innerContentType}`;
+    }
+
+    //
+    // Build Legacy Display Element for backward compatibility
+    // per RFC 9788 Section 5.2.2
+    //
+    const legacyDisplay = buildLegacyDisplayText(parsedHeaders);
+    let innerBody = body;
+    if (legacyDisplay.length > 0) {
+      //
+      // Prepend legacy display to body with hp-legacy-display marker
+      // The legacy display is separated from the body by a blank line
+      //
+      innerBody = Buffer.concat([Buffer.from(legacyDisplay + '\r\n'), body]);
+    }
+
+    //
+    // Assemble the inner payload:
+    // [inner non-structural headers]\r\n[inner content-type + hp]\r\n\r\n[body]
+    //
+    contentToEncrypt = Buffer.concat([
+      Buffer.from(innerHeaders + '\r\n'),
+      Buffer.from(innerContentType + '\r\n\r\n'),
+      innerBody
+    ]);
+
+    //
+    // Rebuild outer headers with confidential headers obscured
+    //
+    headers.length = 0;
+    for (const oh of outerHeaders) {
+      headers.push([oh.raw]);
+    }
+
+    //
+    // Add structural headers back to outer (they were in bodyHeaders)
+    // but we don't add them since they'll be replaced by S/MIME Content-Type
+    //
+  } else {
+    //
+    // No header protection - original behavior
+    //
+    const bodyHeadersStr = bodyHeaders
+      .map((line) => line.join('\r\n'))
+      .join('\r\n');
+    contentToEncrypt = Buffer.concat([
+      Buffer.from(bodyHeadersStr + '\r\n\r\n'),
+      body
+    ]);
+  }
 
   // Create EnvelopedData structure
   const cmsEnveloped = new pkijs.EnvelopedData();
