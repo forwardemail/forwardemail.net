@@ -6,7 +6,9 @@ mixin renderProgressBar(domain, alias, isMobile = false)
     - alias.storage_used = typeof alias.storage_used === "number" ? alias.storage_used : 0;0
     - const storageUsedBySpecificAlias = Math.round((alias.storage_used / domain.storage_quota) * 100);
     - const storageUsedByOtherAliases = Math.round(((domain.storage_used_by_aliases - alias.storage_used) / domain.storage_quota) * 100);
-    - const availableStorage = Math.round(((domain.storage_quota - domain.storage_used_by_aliases) / domain.storage_quota) * 100);
+    - const otherDomainsUsage = Math.max(domain.storage_used - domain.storage_used_by_aliases, 0);
+    - const otherDomainsPercent = Math.round((otherDomainsUsage / domain.storage_quota) * 100);
+    - const availableStorage = Math.max(Math.round(((domain.storage_quota - domain.storage_used_by_aliases) / domain.storage_quota) * 100) - otherDomainsPercent, 0);
 
     //- if alias had a specific limit then render that as its own progress bar
     if Number.isFinite(alias.max_quota) && alias.max_quota < domain.storage_quota
@@ -118,6 +120,19 @@ mixin renderProgressBar(domain, alias, isMobile = false)
             role="button"
           )= `${storageUsedByOtherAliases}%`
 
+        //- Render Storage Used By Other Domains
+        if otherDomainsPercent > 0
+          .progress-bar.bg-secondary.min-width-25(
+            data-width=`${otherDomainsPercent}%`,
+            aria-valuenow=otherDomainsPercent,
+            aria-valuemin=0,
+            aria-valuemax=100,
+            data-toggle="tooltip",
+            data-title=t("Storage used by other domains"),
+            data-placement="bottom",
+            role="button"
+          )= `${otherDomainsPercent}%`
+
         //- Render Available Storage
         if availableStorage > 0
           .progress-bar.bg-success.min-width-25(
@@ -141,9 +156,14 @@ mixin renderProgressBar(domain, alias, isMobile = false)
           = bytes(domain.storage_used_by_aliases - alias.storage_used)
           = " "
           = t("other aliases")
+      if otherDomainsPercent > 0
+        li.text-secondary
+          = bytes(otherDomainsUsage)
+          = " "
+          = t("other domains")
       if availableStorage > 0
         li.text-success
-          = bytes(domain.storage_quota - domain.storage_used_by_aliases)
+          = bytes(Math.max(domain.storage_quota - domain.storage_used_by_aliases - otherDomainsUsage, 0))
           = " "
           = t("available")
   else

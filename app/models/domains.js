@@ -3004,7 +3004,12 @@ Domains.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
 // NOTE: in order to save db lookups, you can pass an alias object with `max_quota` property
 //       instead of a string for `aliasId` value, so it will re-use an existing alias object
 //
-async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
+async function getMaxQuota(
+  _id,
+  aliasId,
+  locale = i18n.config.defaultLocale,
+  { pooled = false } = {}
+) {
   if (typeof conn?.models?.Aliases?.findOne !== 'function')
     throw new TypeError('Aliases model is not ready');
 
@@ -3120,16 +3125,22 @@ async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
     )
   );
 
-  // if domain had a max value set, and it was less than `max`, then set new max
-  if (
-    Number.isFinite(domain.max_quota_per_alias) &&
-    domain.max_quota_per_alias < max
-  )
-    max = domain.max_quota_per_alias;
+  // if `pooled` is true, return the admin user's raw maxQuotaPerAlias
+  // (the global storage pool size) without applying domain/alias caps.
+  // This is needed to compute the effective available space per domain
+  // when the global pool is shared across multiple domains.
+  if (!pooled) {
+    // if domain had a max value set, and it was less than `max`, then set new max
+    if (
+      Number.isFinite(domain.max_quota_per_alias) &&
+      domain.max_quota_per_alias < max
+    )
+      max = domain.max_quota_per_alias;
 
-  // if alias passed, and had a max value set, and it was less than `max`, then set new max
-  if (alias && Number.isFinite(alias.max_quota) && alias.max_quota < max)
-    max = alias.max_quota;
+    // if alias passed, and had a max value set, and it was less than `max`, then set new max
+    if (alias && Number.isFinite(alias.max_quota) && alias.max_quota < max)
+      max = alias.max_quota;
+  }
 
   //
   // NOTE: hard-coded max of 100 GB (safeguard)
