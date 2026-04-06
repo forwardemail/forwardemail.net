@@ -2916,13 +2916,6 @@ class CalDAV extends API {
       return eventUpdated;
     }
 
-    // TODO: this should probably only happen if the create was successful
-    await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
-      $set: {
-        synctoken: bumpSyncToken(calendar.synctoken)
-      }
-    });
-
     const calendarEvent = {
       // db virtual helper
       instance: this,
@@ -3001,6 +2994,15 @@ class CalDAV extends API {
     });
 
     const eventCreated = await CalendarEvents.create(calendarEvent);
+
+    // Bump the calendar sync token AFTER the event is successfully created.
+    // This ensures CalDAV clients (e.g. iPhone Reminders) see the new token
+    // only when the event actually exists in the database.
+    await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
+      $set: {
+        synctoken: bumpSyncToken(calendar.synctoken)
+      }
+    });
 
     // Fire and forget - don't block the response waiting for email to be sent
     // Use setImmediate to completely detach from the current execution context
@@ -3149,13 +3151,6 @@ class CalDAV extends API {
 
     if (!e) throw Boom.badRequest(ctx.translateError('EVENT_DOES_NOT_EXIST'));
 
-    // TODO: this should probably only happen if the save was successful
-    await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
-      $set: {
-        synctoken: bumpSyncToken(calendar.synctoken)
-      }
-    });
-
     // db virtual helper
     e.instance = this;
     e.session = ctx.state.session;
@@ -3191,13 +3186,26 @@ class CalDAV extends API {
     // save event
     e = await e.save();
 
+    // Bump the calendar sync token AFTER the event save succeeds.
+    // Previously this was done before the save, which meant the token
+    // could be bumped even if the save failed — creating a gap where
+    // CalDAV clients (e.g. iPhone Reminders) would think they are
+    // up-to-date when they are not.
+    await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
+      $set: {
+        synctoken: bumpSyncToken(calendar.synctoken)
+      }
+    });
+
     //
     // Determine if this is an organizer update or an attendee PARTSTAT change
     // RFC 5546: If the authenticated user is an attendee (not organizer),
     // and their PARTSTAT changed, send a REPLY to the organizer instead of REQUEST
     //
     const newComp = new ICAL.Component(ICAL.parse(e.ical));
-    const newVevent = newComp.getFirstSubcomponent('vevent');
+    const newVevent =
+      newComp.getFirstSubcomponent('vevent') ||
+      newComp.getFirstSubcomponent('vtodo');
     const organizerProp = newVevent
       ? newVevent.getFirstProperty('organizer')
       : null;
@@ -3446,13 +3454,6 @@ class CalDAV extends API {
     const event = events[0];
 
     if (event) {
-      // TODO: this should probably only happen if the delete was successful
-      await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
-        $set: {
-          synctoken: bumpSyncToken(calendar.synctoken)
-        }
-      });
-
       //
       // NOTE: we can't simply delete the calendar, we need to also store changes made
       //       <https://github.com/sabre-io/dav/blob/58be83aae10a244372f113b63624c48034378094/lib/CalDAV/Backend/PDO.php#L944-L958>
@@ -3496,6 +3497,15 @@ class CalDAV extends API {
         );
       }
 
+      // Bump the calendar sync token AFTER the soft-delete succeeds.
+      // This ensures CalDAV clients (e.g. iPhone Reminders) see the new
+      // token only when the deletion has actually been persisted.
+      await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
+        $set: {
+          synctoken: bumpSyncToken(calendar.synctoken)
+        }
+      });
+
       //
       // Determine if the user is the organizer or an attendee
       // If organizer: send CANCEL to all attendees
@@ -3503,7 +3513,9 @@ class CalDAV extends API {
       //
       {
         const delComp = new ICAL.Component(ICAL.parse(event.ical));
-        const delVevent = delComp.getFirstSubcomponent('vevent');
+        const delVevent =
+          delComp.getFirstSubcomponent('vevent') ||
+          delComp.getFirstSubcomponent('vtodo');
         const delOrgProp = delVevent
           ? delVevent.getFirstProperty('organizer')
           : null;

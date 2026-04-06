@@ -106,6 +106,7 @@ function json(calendarEvent, calendar) {
       const parsed = ICAL.parse(calendarEvent.ical);
       const comp = new ICAL.Component(parsed);
       const vevent = comp.getFirstSubcomponent('vevent');
+      const vtodo = comp.getFirstSubcomponent('vtodo');
 
       if (vevent) {
         const event = new ICAL.Event(vevent);
@@ -117,6 +118,32 @@ function json(calendarEvent, calendar) {
         object.uid = event.uid;
         object.status = vevent.getFirstPropertyValue('status');
         object.organizer = vevent.getFirstPropertyValue('organizer');
+      } else if (vtodo) {
+        // Extract VTODO properties for task/reminder responses
+        object.summary = vtodo.getFirstPropertyValue('summary');
+        object.description = vtodo.getFirstPropertyValue('description');
+        object.location = vtodo.getFirstPropertyValue('location');
+        object.uid = vtodo.getFirstPropertyValue('uid');
+        object.status = vtodo.getFirstPropertyValue('status');
+        object.organizer = vtodo.getFirstPropertyValue('organizer');
+        object.component_type = 'VTODO';
+
+        // VTODO uses DUE instead of DTEND
+        const dtstart = vtodo.getFirstPropertyValue('dtstart');
+        const due = vtodo.getFirstPropertyValue('due');
+        object.start_date =
+          dtstart && dtstart.toJSDate ? dtstart.toJSDate() : null;
+        object.end_date = due && due.toJSDate ? due.toJSDate() : null;
+
+        // VTODO-specific fields
+        const completed = vtodo.getFirstPropertyValue('completed');
+        object.completed =
+          completed && completed.toJSDate ? completed.toJSDate() : null;
+        const percentComplete = vtodo.getFirstPropertyValue('percent-complete');
+        object.percent_complete =
+          percentComplete !== null && percentComplete !== undefined
+            ? Number(percentComplete)
+            : null;
       }
     } catch {
       // If parsing fails, just return the basic object
@@ -593,12 +620,23 @@ async function create(ctx) {
 
   ctx.body = json(calendarEvent, calendar);
 
-  // Bump synctoken so CalDAV clients see this change on next sync
-  Calendars.findByIdAndUpdate(ctx.instance, ctx.state.session, calendar._id, {
-    $set: { synctoken: incrementSynctoken(calendar.synctoken) }
-  }).catch((err) =>
-    ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session })
-  );
+  // Bump synctoken so CalDAV clients see this change on next sync.
+  // This MUST be awaited so the token is persisted before the response
+  // is sent — otherwise a CalDAV client (e.g. iPhone Reminders) that
+  // syncs immediately after the API call may still see the old token
+  // and skip fetching the new VTODO/VEVENT.
+  try {
+    await Calendars.findByIdAndUpdate(
+      ctx.instance,
+      ctx.state.session,
+      calendar._id,
+      {
+        $set: { synctoken: incrementSynctoken(calendar.synctoken) }
+      }
+    );
+  } catch (err) {
+    ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session });
+  }
 
   // Send apple push notification for calendar sync
   sendApnCalendar(ctx.client, ctx.state.session.user.alias_id)
@@ -792,12 +830,23 @@ async function update(ctx) {
 
   ctx.body = json(calendarEvent, calendar);
 
-  // Bump synctoken so CalDAV clients see this change on next sync
-  Calendars.findByIdAndUpdate(ctx.instance, ctx.state.session, calendar._id, {
-    $set: { synctoken: incrementSynctoken(calendar.synctoken) }
-  }).catch((err) =>
-    ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session })
-  );
+  // Bump synctoken so CalDAV clients see this change on next sync.
+  // This MUST be awaited so the token is persisted before the response
+  // is sent — otherwise a CalDAV client (e.g. iPhone Reminders) that
+  // syncs immediately after the API call may still see the old token
+  // and skip fetching the updated VTODO/VEVENT.
+  try {
+    await Calendars.findByIdAndUpdate(
+      ctx.instance,
+      ctx.state.session,
+      calendar._id,
+      {
+        $set: { synctoken: incrementSynctoken(calendar.synctoken) }
+      }
+    );
+  } catch (err) {
+    ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session });
+  }
 
   // Suppress notifications when ICS data has not actually changed (no-op update)
   const icsChanged = String(oldIcal || '') !== String(calendarEvent.ical || '');
@@ -836,7 +885,9 @@ async function update(ctx) {
   try {
     if (oldIcal && calendarEvent.ical) {
       const comp = new ICAL.Component(ICAL.parse(calendarEvent.ical));
-      const vevent = comp.getFirstSubcomponent('vevent');
+      const vevent =
+        comp.getFirstSubcomponent('vevent') ||
+        comp.getFirstSubcomponent('vtodo');
       const orgProp = vevent ? vevent.getFirstProperty('organizer') : null;
       const orgVal = orgProp ? orgProp.getFirstValue() : null;
       const organizerEmail = orgVal
@@ -972,12 +1023,23 @@ async function remove(ctx) {
 
   ctx.body = json(calendarEvent, calendar);
 
-  // Bump synctoken so CalDAV clients see this deletion on next sync
-  Calendars.findByIdAndUpdate(ctx.instance, ctx.state.session, calendar._id, {
-    $set: { synctoken: incrementSynctoken(calendar.synctoken) }
-  }).catch((err) =>
-    ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session })
-  );
+  // Bump synctoken so CalDAV clients see this deletion on next sync.
+  // This MUST be awaited so the token is persisted before the response
+  // is sent — otherwise a CalDAV client (e.g. iPhone Reminders) that
+  // syncs immediately after the API call may still see the old token
+  // and skip fetching the deletion.
+  try {
+    await Calendars.findByIdAndUpdate(
+      ctx.instance,
+      ctx.state.session,
+      calendar._id,
+      {
+        $set: { synctoken: incrementSynctoken(calendar.synctoken) }
+      }
+    );
+  } catch (err) {
+    ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session });
+  }
 
   // Send apple push notification for calendar sync
   sendApnCalendar(ctx.client, ctx.state.session.user.alias_id)
@@ -1010,7 +1072,9 @@ async function remove(ctx) {
   try {
     if (calendarEvent.ical) {
       const comp = new ICAL.Component(ICAL.parse(calendarEvent.ical));
-      const vevent = comp.getFirstSubcomponent('vevent');
+      const vevent =
+        comp.getFirstSubcomponent('vevent') ||
+        comp.getFirstSubcomponent('vtodo');
       const orgProp = vevent ? vevent.getFirstProperty('organizer') : null;
       const orgVal = orgProp ? orgProp.getFirstValue() : null;
       const organizerEmail = orgVal
