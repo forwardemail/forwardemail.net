@@ -259,13 +259,19 @@ test.afterEach.always(async (t) => {
     await closeServerWithTimeout(t.context.calDAV.server);
   }
 
-  if (t.context.sqlite) {
-    await closeServerWithTimeout(t.context.sqlite.server);
-  }
-
   if (t.context.wsp) {
     try {
       await t.context.wsp.close();
+    } catch {
+      // Ignore errors during cleanup
+    }
+  }
+
+  // Use sqlite.close() to clean up Piscina worker pool,
+  // WebSocket server, wsInterval, and IMAP notifier timers
+  if (t.context.sqlite) {
+    try {
+      await t.context.sqlite.close();
     } catch {
       // Ignore errors during cleanup
     }

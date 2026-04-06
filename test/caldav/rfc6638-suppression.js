@@ -301,10 +301,19 @@ test.after.always(async (t) => {
       });
     });
   if (t.context.calDAV) await closeWithTimeout(t.context.calDAV.server);
-  if (t.context.sqlite) await closeWithTimeout(t.context.sqlite.server);
   if (t.context.wsp) {
     try {
       await t.context.wsp.close();
+    } catch {
+      // ignore
+    }
+  }
+
+  // Use sqlite.close() to clean up Piscina worker pool,
+  // WebSocket server, wsInterval, and IMAP notifier timers
+  if (t.context.sqlite) {
+    try {
+      await t.context.sqlite.close();
     } catch {
       // ignore
     }
