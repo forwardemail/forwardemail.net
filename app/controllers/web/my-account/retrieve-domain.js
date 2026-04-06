@@ -451,11 +451,16 @@ async function retrieveDomain(ctx, next) {
           ]);
           ctx.state.domain.storage_used = storageUsed;
           ctx.state.domain.storage_used_by_aliases = storageUsedByAliases;
-          const otherDomainsUsage = storageUsed - storageUsedByAliases;
+          const otherDomainsUsage = Math.max(
+            storageUsed - storageUsedByAliases,
+            0
+          );
           ctx.state.domain.storage_quota = Math.max(
             Math.min(maxQuotaPerAlias, pooledMaxQuota - otherDomainsUsage),
             0
           );
+          ctx.state.domain.storage_pooled_max_quota = pooledMaxQuota;
+          ctx.state.domain.storage_other_domains_usage = otherDomainsUsage;
         } catch (err) {
           ctx.logger.fatal(err);
         }
@@ -553,11 +558,16 @@ async function retrieveDomain(ctx, next) {
         ]);
         ctx.state.domain.storage_used = storageUsed;
         ctx.state.domain.storage_used_by_aliases = storageUsedByAliases;
-        const otherDomainsUsage = storageUsed - storageUsedByAliases;
+        const otherDomainsUsage = Math.max(
+          storageUsed - storageUsedByAliases,
+          0
+        );
         ctx.state.domain.storage_quota = Math.max(
           Math.min(maxQuotaPerAlias, pooledMaxQuota - otherDomainsUsage),
           0
         );
+        ctx.state.domain.storage_pooled_max_quota = pooledMaxQuota;
+        ctx.state.domain.storage_other_domains_usage = otherDomainsUsage;
       } catch (err) {
         ctx.logger.fatal(err);
       }

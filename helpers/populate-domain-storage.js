@@ -38,11 +38,24 @@ async function populateDomainStorage(d, locale) {
     //   - the global pool's remaining capacity + this domain's own usage
     //     (i.e. pooledMaxQuota - otherDomainsUsage)
     //
-    const otherDomainsUsage = storageUsed - storageUsedByAliases;
+    const otherDomainsUsage = Math.max(storageUsed - storageUsedByAliases, 0);
     d.storage_quota = Math.max(
       Math.min(maxQuotaPerAlias, pooledMaxQuota - otherDomainsUsage),
       0
     );
+
+    //
+    // Expose the global pool size and other-domains usage so templates can
+    // render progress-bar segments with correct percentages.
+    //
+    // Without these, the template would have to re-derive otherDomainsUsage
+    // from `storage_used - storage_used_by_aliases` and divide by
+    // `storage_quota` — but `storage_quota` has already been reduced by
+    // otherDomainsUsage, causing the "other domains" percentage to exceed
+    // 100% and the total bar to overflow (see #456).
+    //
+    d.storage_pooled_max_quota = pooledMaxQuota;
+    d.storage_other_domains_usage = otherDomainsUsage;
   } catch (err) {
     logger.fatal(err);
   }

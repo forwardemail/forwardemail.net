@@ -6,10 +6,16 @@ mixin renderProgressBar(domain, isMobile = false)
     //- render nothing
     = t("Not Available")
   else if (typeof domain.storage_used === 'number' && typeof domain.storage_used_by_aliases === 'number' && typeof domain.storage_quota === 'number')
-    - const storageUsedByAliases = Math.round((domain.storage_used_by_aliases / domain.storage_quota) * 100);
-    - const otherDomainsUsage = Math.max(domain.storage_used - domain.storage_used_by_aliases, 0);
-    - const otherDomainsPercent = Math.round((otherDomainsUsage / domain.storage_quota) * 100);
-    - const availableStorage = Math.max(Math.round(((domain.storage_quota - domain.storage_used_by_aliases) / domain.storage_quota) * 100) - otherDomainsPercent, 0);
+    //- Use the global pool size as the denominator so all three segments
+    //- (this domain, other domains, available) add up to 100%.
+    //- `storage_quota` is the *effective* quota already reduced by other
+    //- domains' usage, so dividing other-domains by it caused > 100% (#456).
+    - const pooledQuota = typeof domain.storage_pooled_max_quota === "number" ? domain.storage_pooled_max_quota : domain.storage_quota;
+    - const otherDomainsUsage = typeof domain.storage_other_domains_usage === "number" ? domain.storage_other_domains_usage : 0;
+    - const effectiveFree = Math.max(domain.storage_quota - domain.storage_used_by_aliases, 0);
+    - const storageUsedByAliases = Math.round((domain.storage_used_by_aliases / pooledQuota) * 100);
+    - const otherDomainsPercent = Math.round((otherDomainsUsage / pooledQuota) * 100);
+    - const availableStorage = Math.max(100 - storageUsedByAliases - otherDomainsPercent, 0);
     - let percentage = Math.round((domain.storage_used_by_aliases / domain.storage_quota) * 100);
     if domain.storage_used_by_aliases >= domain.storage_quota
       - percentage = 100;
@@ -31,7 +37,7 @@ mixin renderProgressBar(domain, isMobile = false)
             aria-valuemax=100
           )= t("No storage remaining")
         else
-      if percentage === 0
+      if percentage === 0 && otherDomainsPercent === 0
         .progress-bar.bg-success.w-100(
           aria-valuenow=100,
           aria-valuemin=0,
@@ -99,7 +105,7 @@ mixin renderProgressBar(domain, isMobile = false)
           = t("other domains")
       if availableStorage > 0
         li.text-success
-          = bytes(Math.max(domain.storage_quota - domain.storage_used_by_aliases - otherDomainsUsage, 0))
+          = bytes(effectiveFree)
           = " "
           = t("available")
   else
