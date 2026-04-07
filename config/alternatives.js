@@ -33,6 +33,50 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 // TODO: calendar/contacts/newsletter columns
 
 const obj = {
+  'anon.li Alias': [
+    // description
+    'Privacy-first anonymous email aliases and end-to-end encrypted file sharing',
+    // website
+    'https://anon.li',
+    // oss
+    true,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    '$1.99/mo',
+    // storage
+    false,
+    // attachment_limit
+    '25 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    false,
+    // imap
+    false,
+    // pop3
+    false,
+    // api
+    true,
+    // e2ee
+    '<a target="_blank" rel="noopener noreferrer" href="https://anon.li/security">Opt-in PGP for aliases; AES-256-GCM for Drop</a>',
+    // openpgp
+    true,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/anon.li/">Pass</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/anon.li/1814647/">64%</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/anon.li/1814647/">68%</a>',
+    // ssl_labs
+    'A+'
+  ],
   AOL: [
     // description
     'AOL Mail is a free web-based email service provided by AOL, a division of Yahoo! Inc.',
