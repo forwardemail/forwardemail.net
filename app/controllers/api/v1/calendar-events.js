@@ -27,6 +27,8 @@ const _ = require('#helpers/lodash');
 const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
 const { quoteICSFilenames } = require('#helpers/ical-filename');
 const { normalizeIcs } = require('#helpers/normalize-ics');
+const { ensureVTimezones } = require('#helpers/generate-vtimezone');
+const { stampICS } = require('#helpers/stamp-ics');
 const sendApnCalendar = require('#helpers/send-apn-calendar');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 
@@ -568,7 +570,9 @@ async function create(ctx) {
   if (isOverQuota)
     throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
 
-  const normalizedIcal = quoteICSFilenames(normalizeIcs(body.ical));
+  const normalizedIcal = stampICS(
+    ensureVTimezones(quoteICSFilenames(normalizeIcs(body.ical)))
+  );
   const href = `/dav/${ctx.state.session.user.username}/${calendar.calendarId}/${eventId}.ics`;
 
   let calendarEvent;
@@ -811,7 +815,9 @@ async function update(ctx) {
 
   // Update iCal data if specified (normalize M365 recurring events + sanitize FILENAME params)
   if (body.ical !== undefined) {
-    calendarEvent.ical = quoteICSFilenames(normalizeIcs(body.ical));
+    calendarEvent.ical = stampICS(
+      ensureVTimezones(quoteICSFilenames(normalizeIcs(body.ical)))
+    );
   }
 
   // Set db virtual helpers

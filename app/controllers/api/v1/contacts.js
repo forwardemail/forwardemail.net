@@ -407,7 +407,10 @@ FN:${body.full_name || ''}`;
   addressBook.instance = ctx.instance;
   addressBook.session = ctx.state.session;
   addressBook.isNew = false;
-  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
+  // Add 1ms to ensure the token timestamp is strictly after the
+  // contact's updated_at so that the next sync-collection with
+  // $gte does not re-report this contact as a change.
+  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now() + 1}`;
   await addressBook.save();
 
   // Set ETag header
@@ -745,7 +748,10 @@ FN:${contact.fullName || ''}`;
   addressBook.instance = ctx.instance;
   addressBook.session = ctx.state.session;
   addressBook.isNew = false;
-  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
+  // Add 1ms to ensure the token timestamp is strictly after the
+  // contact's updated_at so that the next sync-collection with
+  // $gte does not re-report this contact as a change.
+  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now() + 1}`;
   await addressBook.save();
 
   // Set ETag header
@@ -850,7 +856,10 @@ async function remove(ctx) {
   addressBook.instance = ctx.instance;
   addressBook.session = ctx.state.session;
   addressBook.isNew = false;
-  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
+  // Add 1ms to ensure the token timestamp is strictly after the
+  // contact's updated_at so that the next sync-collection with
+  // $gte does not re-report this contact as a change.
+  addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now() + 1}`;
   await addressBook.save();
 
   ctx.body = json(contact);

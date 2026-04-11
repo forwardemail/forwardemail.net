@@ -120,7 +120,9 @@ function detectAttendeePartstatChange(newIcal, oldIcal, userEmail) {
 
   // Read SCHEDULE-AGENT from the master VEVENT (first one without RECURRENCE-ID)
   if (result.changed) {
-    const masterVevent = newComp.getFirstSubcomponent('vevent');
+    const masterVevent =
+      newComp.getFirstSubcomponent('vevent') ||
+      newComp.getFirstSubcomponent('vtodo');
     if (masterVevent) {
       for (const att of masterVevent.getAllProperties('attendee')) {
         if (getAttendeeEmail(att) === email) {

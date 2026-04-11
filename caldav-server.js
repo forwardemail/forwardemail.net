@@ -37,6 +37,7 @@ const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const sendApnCalendar = require('#helpers/send-apn-calendar');
+const { ensureVTimezones } = require('#helpers/generate-vtimezone');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const setupAuthSession = require('#helpers/setup-auth-session');
 const { processCalendarInvites } = require('#helpers/process-calendar-invites');
@@ -573,7 +574,10 @@ function normalizeICS(icsData) {
     try {
       const parsed = ICAL.parse(icsData);
       const comp = new ICAL.Component(parsed);
-      const vevents = comp.getAllSubcomponents('vevent');
+      const vevents = [
+        ...comp.getAllSubcomponents('vevent'),
+        ...comp.getAllSubcomponents('vtodo')
+      ];
 
       if (vevents.length >= 2) {
         const masters = [];
@@ -637,7 +641,13 @@ function normalizeICS(icsData) {
     }
   }
 
-  // Phase 2: Normalize line endings to CRLF (RFC 5545 Section 3.1)
+  // Phase 2: Inject missing VTIMEZONE components for referenced TZIDs.
+  // RFC 5545 Section 3.6.5 requires a VTIMEZONE definition for every TZID
+  // parameter referenced in the calendar object.  API-created events and
+  // some third-party clients omit these definitions.
+  icsData = ensureVTimezones(icsData);
+
+  // Phase 3: Normalize line endings to CRLF (RFC 5545 Section 3.1)
   return icsData.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
 }
 
@@ -1955,7 +1965,10 @@ class CalDAV extends API {
       const comp = new ICAL.Component(ICAL.parse(ctx.request.body));
       if (!comp) throw new TypeError('Component not parsed');
 
-      const vevents = comp.getAllSubcomponents('vevent');
+      const vevents = [
+        ...comp.getAllSubcomponents('vevent'),
+        ...comp.getAllSubcomponents('vtodo')
+      ];
       ctx.logger.debug('vevents found', { count: vevents.length });
 
       // update the calendar metadata based off VCALENDAR
@@ -2028,7 +2041,7 @@ class CalDAV extends API {
         );
       }
 
-      // create new VEVENTS
+      // create new VEVENTS/VTODOs
       if (vevents.length > 0) {
         const events = [];
 
@@ -2037,7 +2050,7 @@ class CalDAV extends API {
 
         //
         // Collect VTIMEZONE components from the source VCALENDAR so
-        // they can be preserved when re-wrapping individual VEVENTs.
+        // they can be preserved when re-wrapping individual VEVENTs/VTODOs.
         // RFC 5545 Section 3.6.5 requires VTIMEZONE to be present
         // whenever a TZID parameter is referenced.
         //
@@ -2849,12 +2862,6 @@ class CalDAV extends API {
 
       const oldIcal = String(exists.ical);
 
-      await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
-        $set: {
-          synctoken: bumpSyncToken(calendar.synctoken)
-        }
-      });
-
       exists.ical = normalizeICS(ctx.request.body);
       exists.href = ctx.url;
       exists.deleted_at = null;
@@ -2862,6 +2869,14 @@ class CalDAV extends API {
       exists.session = ctx.state.session;
       exists.isNew = false;
       const eventUpdated = await exists.save();
+
+      // Bump sync token AFTER the event is saved so the token
+      // timestamp is always >= the event's updated_at.
+      await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
+        $set: {
+          synctoken: bumpSyncToken(calendar.synctoken)
+        }
+      });
 
       //
       // Only send notifications when the ICS actually changed or the event

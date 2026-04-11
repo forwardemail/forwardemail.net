@@ -1184,7 +1184,9 @@ function setCancelledStatusForInstance(icalStr, recurrenceId) {
     if (!found) {
       // Add an EXDATE for this recurrence instance
       // This is the standard way to exclude a single instance
-      const mainVevent = comp.getFirstSubcomponent('vevent');
+      const mainVevent =
+        comp.getFirstSubcomponent('vevent') ||
+        comp.getFirstSubcomponent('vtodo');
       if (mainVevent) {
         const exdate = new ICAL.Property('exdate');
         // Convert iCal format (20250108T100000Z) to ISO format for ical.js v2
@@ -1311,7 +1313,8 @@ function getSequenceFromIcal(icalStr) {
 function getRecurrenceIdFromIcs(icalStr) {
   try {
     const comp = new ICAL.Component(ICAL.parse(icalStr));
-    const vevent = comp.getFirstSubcomponent('vevent');
+    const vevent =
+      comp.getFirstSubcomponent('vevent') || comp.getFirstSubcomponent('vtodo');
     if (!vevent) return null;
     const rid = vevent.getFirstPropertyValue('recurrence-id');
     return rid ? rid.toString() : null;

@@ -319,6 +319,8 @@ function getTaskCalendar(t) {
   return t.context.calendars.find(
     (c) =>
       c.displayName === 'Tasks' ||
+      c.displayName?.includes('Tasks') ||
+      c.displayName?.includes('Reminders') ||
       (c.components && c.components.includes('VTODO'))
   );
 }

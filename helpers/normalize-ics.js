@@ -20,6 +20,7 @@
  */
 
 const ICAL = require('ical.js');
+const { ensureVTimezones } = require('#helpers/generate-vtimezone');
 
 /**
  * Normalize ICS data by adding missing EXDATEs for detached instances.
@@ -38,11 +39,14 @@ function normalizeIcs(icsData) {
   try {
     const parsed = ICAL.parse(icsData);
     const comp = new ICAL.Component(parsed);
-    const vevents = comp.getAllSubcomponents('vevent');
+    const vevents = [
+      ...comp.getAllSubcomponents('vevent'),
+      ...comp.getAllSubcomponents('vtodo')
+    ];
 
     if (vevents.length < 2) return icsData;
 
-    // Separate master events (no RECURRENCE-ID) from overrides
+    // Separate master events/tasks (no RECURRENCE-ID) from overrides
     const masters = [];
     const overrides = [];
 
@@ -116,6 +120,9 @@ function normalizeIcs(icsData) {
 
     // Serialize back to ICS
     let result = comp.toString();
+
+    // Inject missing VTIMEZONE components (RFC 5545 Section 3.6.5)
+    result = ensureVTimezones(result);
 
     // Ensure CRLF line endings (RFC 5545 Section 3.1)
     result = result.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');

@@ -146,15 +146,29 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
 
   switch (ctx.method) {
     case 'PROPFIND': {
-      // Find contact
-      const contactObj = await Contacts.findOne(
-        ctx.instance,
-        ctx.state.session,
-        {
-          address_book: addressBook._id,
-          contact_id: contact
+      // Find contact by contact_id (URL-based lookup)
+      let contactObj = await Contacts.findOne(ctx.instance, ctx.state.session, {
+        address_book: addressBook._id,
+        contact_id: contact
+      });
+
+      // macOS Contacts may request a contact using a URL that differs
+      // from the stored contact_id. Fall back to UID-based lookup.
+      if (!contactObj || contactObj.deleted_at) {
+        const possibleUid = contact.replace(/\.vcf$/i, '');
+        const uidContact = await Contacts.findOne(
+          ctx.instance,
+          ctx.state.session,
+          {
+            address_book: addressBook._id,
+            uid: possibleUid
+          }
+        );
+
+        if (uidContact && !uidContact.deleted_at) {
+          contactObj = uidContact;
         }
-      );
+      }
 
       // Return 404 for non-existent or soft-deleted contacts
       if (!contactObj || contactObj.deleted_at)
@@ -185,15 +199,29 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
     }
 
     case 'GET': {
-      // Find contact
-      const contactObj = await Contacts.findOne(
-        ctx.instance,
-        ctx.state.session,
-        {
-          address_book: addressBook._id,
-          contact_id: contact
+      // Find contact by contact_id (URL-based lookup)
+      let contactObj = await Contacts.findOne(ctx.instance, ctx.state.session, {
+        address_book: addressBook._id,
+        contact_id: contact
+      });
+
+      // macOS Contacts may request a contact using a URL that differs
+      // from the stored contact_id. Fall back to UID-based lookup.
+      if (!contactObj || contactObj.deleted_at) {
+        const possibleUid = contact.replace(/\.vcf$/i, '');
+        const uidContact = await Contacts.findOne(
+          ctx.instance,
+          ctx.state.session,
+          {
+            address_book: addressBook._id,
+            uid: possibleUid
+          }
+        );
+
+        if (uidContact && !uidContact.deleted_at) {
+          contactObj = uidContact;
         }
-      );
+      }
 
       // Return 404 for non-existent or soft-deleted contacts
       if (!contactObj || contactObj.deleted_at)
@@ -338,9 +366,12 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         await existingContact.save();
 
         // Update address book sync token
-        addressBook.synctoken = `${
-          config.urls.web
-        }/ns/sync-token/${Date.now()}`;
+        // Add 1ms to ensure the token timestamp is strictly after the
+        // contact's updated_at so that the next sync-collection with
+        // $gte does not re-report this contact as a change.
+        addressBook.synctoken = `${config.urls.web}/ns/sync-token/${
+          Date.now() + 1
+        }`;
 
         await addressBook.save();
 
@@ -413,9 +444,12 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         });
 
         // Update address book sync token
-        addressBook.synctoken = `${
-          config.urls.web
-        }/ns/sync-token/${Date.now()}`;
+        // Add 1ms to ensure the token timestamp is strictly after the
+        // contact's updated_at so that the next sync-collection with
+        // $gte does not re-report this contact as a change.
+        addressBook.synctoken = `${config.urls.web}/ns/sync-token/${
+          Date.now() + 1
+        }`;
         await addressBook.save();
 
         // send apple push notification for contacts sync
@@ -459,15 +493,33 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
       if (addressBook.readonly)
         throw Boom.forbidden(ctx.translateError('ADDRESS_BOOK_READONLY'));
 
-      // Find contact
-      const contactObj = await Contacts.findOne(
-        ctx.instance,
-        ctx.state.session,
-        {
-          address_book: addressBook._id,
-          contact_id: contact
+      // Find contact by contact_id (URL-based lookup)
+      let contactObj = await Contacts.findOne(ctx.instance, ctx.state.session, {
+        address_book: addressBook._id,
+        contact_id: contact
+      });
+
+      // macOS Contacts may send a DELETE to a URL that differs from the
+      // stored contact_id (e.g. old contacts created with a different URL
+      // format). Fall back to UID-based lookup by parsing the vCard UID
+      // from the contact_id portion of the URL, similar to the PUT handler.
+      if (!contactObj || contactObj.deleted_at) {
+        // Try to find by UID — the contact_id in the URL often matches
+        // or contains the vCard UID (with or without .vcf extension)
+        const possibleUid = contact.replace(/\.vcf$/i, '');
+        const uidContact = await Contacts.findOne(
+          ctx.instance,
+          ctx.state.session,
+          {
+            address_book: addressBook._id,
+            uid: possibleUid
+          }
+        );
+
+        if (uidContact && !uidContact.deleted_at) {
+          contactObj = uidContact;
         }
-      );
+      }
 
       // Return 404 for non-existent or already soft-deleted contacts
       if (!contactObj || contactObj.deleted_at)
@@ -513,7 +565,12 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
       );
 
       // Update address book sync token
-      addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
+      // Add 1ms to ensure the token timestamp is strictly after the
+      // contact's updated_at so that the next sync-collection with
+      // $gte does not re-report this contact as a change.
+      addressBook.synctoken = `${config.urls.web}/ns/sync-token/${
+        Date.now() + 1
+      }`;
       await addressBook.save();
 
       // send apple push notification for contacts sync
@@ -884,9 +941,12 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
         await addressBook.save();
 
         // Update sync token
-        addressBook.synctoken = `${
-          config.urls.web
-        }/ns/sync-token/${Date.now()}`;
+        // Add 1ms to ensure the token timestamp is strictly after any
+        // concurrent contact updated_at so that the next sync-collection
+        // with $gte does not re-report contacts as changes.
+        addressBook.synctoken = `${config.urls.web}/ns/sync-token/${
+          Date.now() + 1
+        }`;
         await addressBook.save();
       }
 
@@ -1229,12 +1289,16 @@ async function handleAddressbookMultiget(ctx, xmlBody, addressBook) {
       requestedIds.add((id + '.vcf').toLowerCase());
     }
 
-    // Filter to only requested contacts, excluding soft-deleted ones
+    // Filter to only requested contacts, excluding soft-deleted ones.
+    // Also match by UID as a fallback — macOS Contacts may request
+    // contacts using a URL whose filename matches the vCard UID rather
+    // than the stored contact_id.
     const contacts = allContacts.filter(
       (c) =>
         !c.deleted_at &&
         (requestedIds.has(c.contact_id.toLowerCase()) ||
-          requestedIds.has(c.contact_id.replace(/\.vcf$/i, '').toLowerCase()))
+          requestedIds.has(c.contact_id.replace(/\.vcf$/i, '').toLowerCase()) ||
+          requestedIds.has(c.uid.toLowerCase()))
     );
 
     // Debug logging to help diagnose production issues
@@ -1328,7 +1392,7 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
       ctx.state.session,
       {
         address_book: addressBook._id,
-        updated_at: { $gt: syncTimestamp.toISOString() }
+        updated_at: { $gte: syncTimestamp.toISOString() }
       }
     );
 

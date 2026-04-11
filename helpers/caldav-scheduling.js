@@ -559,7 +559,8 @@ function updateAttendeePartstat(icalData, attendeeEmail, partstat) {
   try {
     const jcal = ICAL.parse(icalData);
     const comp = new ICAL.Component(jcal);
-    const vevent = comp.getFirstSubcomponent('vevent');
+    const vevent =
+      comp.getFirstSubcomponent('vevent') || comp.getFirstSubcomponent('vtodo');
 
     if (!vevent) {
       return null;
@@ -603,7 +604,8 @@ function eventHasUid(icalData, uid) {
   try {
     const jcal = ICAL.parse(icalData);
     const comp = new ICAL.Component(jcal);
-    const vevent = comp.getFirstSubcomponent('vevent');
+    const vevent =
+      comp.getFirstSubcomponent('vevent') || comp.getFirstSubcomponent('vtodo');
 
     if (!vevent) {
       return false;
