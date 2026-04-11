@@ -1,4 +1,4 @@
-FROM node:20-slim AS builder
+FROM node:25-slim AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ RUN pnpm run build
 ## build everything in the first stage and then
 ## leverage .dockerignore and 2nd stage to remove files
 ## from the built image that we don't want included
-FROM node:20-slim
+FROM node:25-slim
 
 WORKDIR /app
 
