@@ -3,7 +3,13 @@ name: CI
 on:
   - push
   - pull_request
+
+# Default to no permissions; each job declares only what it needs
+permissions: {}
+
 jobs:
   build:
+    permissions:
+      contents: read
     uses: ./.github/workflows/build.yml
     secrets: inherit

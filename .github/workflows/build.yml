@@ -79,8 +79,13 @@ on:
         required: false
       PAYPAL_SECRET_LEGACY:
         required: false
+# Default to no permissions
+permissions: {}
+
 jobs:
   build:
+    permissions:
+      contents: read
     runs-on: ${{ matrix.os }}
     continue-on-error: false
     timeout-minutes: 60
@@ -141,19 +146,21 @@ jobs:
       PAYPAL_CLIENT_ID_LEGACY: ${{ secrets.PAYPAL_CLIENT_ID_LEGACY }}
       PAYPAL_SECRET_LEGACY: ${{ secrets.PAYPAL_SECRET_LEGACY }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4 # v4.2.2
+        with:
+          persist-credentials: false
       - name: setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4 # v4.4.0
         with:
           node-version: ${{ matrix.node_version }}
       - name: start redis
-        uses: supercharge/redis-github-action@1.8.1
+        uses: supercharge/redis-github-action@1.8.1 # 1.8.1
         with:
-          redis-version: latest
+          redis-version: 7
       - name: Install pnpm v9.15.9
         run: npm i -g pnpm@9.15.9
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
       - name: Increase swap space
         run: |
           sudo swapoff -a

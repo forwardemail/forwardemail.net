@@ -94,6 +94,9 @@ on:
   # Status (commit status)
   # status:
 
+# Restrict permissions to minimum needed
+permissions: {}
+
 jobs:
   notify-matrix:
     runs-on: ubuntu-latest

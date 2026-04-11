@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
 
   mongodb:
-    image: mongo:latest
+    image: mongo:8
     container_name: mongodb
     ports:
       - "27017:27017"
@@ -13,7 +11,7 @@ services:
       - .env
 
   redis:
-    image: redis:latest
+    image: redis:7-alpine
     container_name: redis
     ports:
       - "6379:6379"
