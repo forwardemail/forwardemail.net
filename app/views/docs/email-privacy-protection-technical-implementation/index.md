@@ -189,7 +189,7 @@ We don't impose artificial limits on domains, aliases, or email addresses like m
 
 ### 6. Trusted by Major Organizations
 
-Our service is used by over 500,000 domains, including notable organizations like [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales, and many others.
+Our service is used by over 1.6+ million domains, including notable organizations like [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales, and many others.
 
 
 ## Common Use Cases for Email Forwarding
@@ -251,7 +251,7 @@ As the only 100% open-source provider with quantum-resistant encryption and a fo
 
 Whether you're looking to create professional email addresses for your business, protect your privacy with disposable addresses, or simplify the management of multiple email accounts, Forward Email provides the perfect solution.
 
-Ready to transform your email experience? [Sign up for free](https://forwardemail.net) today and join over 500,000 domains already benefiting from our service.
+Ready to transform your email experience? [Sign up for free](https://forwardemail.net) today and join over 1.6+ million domains already benefiting from our service.
 
 ---
 

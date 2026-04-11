@@ -198,7 +198,7 @@ Puedes compararnos con más de 56 otros proveedores de servicios de correo en [n
 
 ### Quién usa Forward Email {#who-uses-forward-email}
 
-Proveemos servicios de alojamiento y reenvío de correo a más de 500,000 dominios y estos usuarios destacados:
+Proveemos servicios de alojamiento y reenvío de correo a más de 1.6+ million dominios y estos usuarios destacados:
 
 | Cliente                                 | Estudio de Caso                                                                                          |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |

@@ -1,6 +1,6 @@
 # Forward Email — Complete Documentation for AI Models
 
-> Forward Email is a free, open-source, privacy-focused email forwarding and hosting service for custom domains. Founded in 2017 and trusted by over 500,000 users worldwide.
+> Forward Email is a free, open-source, privacy-focused email forwarding and hosting service for custom domains. Founded in 2017 and trusted by over 1.6+ million domains worldwide.
 
 ## Overview
 

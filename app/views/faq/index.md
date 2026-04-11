@@ -200,7 +200,7 @@ You can compare us to 56+ other email service providers on [our Email Comparison
 
 ### Who uses Forward Email
 
-We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
+We provide email hosting and email forwarding service to 1.6+ million domains and these notable users:
 
 | Customer                                 | Case Study                                                                                               |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |

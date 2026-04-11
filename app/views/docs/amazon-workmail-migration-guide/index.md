@@ -88,7 +88,7 @@ AWS recommends migrating to third-party solutions. [Forward Email](https://forwa
 | Pricing                             | $4.00/user/month              | Starting at $3.00/month for unlimited domains                       |
 | Vendor lock-in                      | AWS ecosystem                 | None — standard IMAP/SMTP, export anytime                           |
 
-Forward Email is trusted by over 500,000 domains including the U.S. Naval Academy, Canonical (Ubuntu), Netflix Games, The Linux Foundation, and many universities and government organizations. You can read more on our [about page](https://forwardemail.net/en/about).
+Forward Email is trusted by over 1.6+ million domains including the U.S. Naval Academy, Canonical (Ubuntu), Netflix Games, The Linux Foundation, and many universities and government organizations. You can read more on our [about page](https://forwardemail.net/en/about).
 
 
 ## Before You Begin

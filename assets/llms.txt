@@ -1,6 +1,6 @@
 # Forward Email
 
-> Free email forwarding and hosting for custom domains. Open-source, privacy-focused, and trusted by 500,000+ users.
+> Free email forwarding and hosting for custom domains. Open-source, privacy-focused, and trusted by 1.6+ million domains.
 
 Forward Email provides email forwarding, IMAP/POP3 hosting, SMTP sending, newsletters, and a developer API for custom domains. Free forwarding with unlimited aliases. Paid plans from $3/mo for full hosting with 10GB encrypted storage. 100% open-source on GitHub. Founded in 2017.
 

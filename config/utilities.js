@@ -2809,7 +2809,7 @@ const descTemplates = [
   (desc, noun) =>
     `We provide ${desc} for ${noun.toLowerCase()} with IMAP, POP3, SMTP, and unlimited aliases. Open-source email with quantum-resistant encryption. Setup in minutes.`,
   (desc, noun) =>
-    `${noun} can use our ${desc} with custom domain support, encrypted storage, and a developer API. Trusted by 500,000+ users worldwide. Free to start.`,
+    `${noun} can use our ${desc} with custom domain support, encrypted storage, and a developer API. Trusted by 1.6+ million domains worldwide. Free to start.`,
   (desc, noun) =>
     `Get ${desc} built for ${noun.toLowerCase()}. Includes IMAP/POP3 mailbox access, SMTP sending, and zero-knowledge encryption. 100% open source.`,
   (desc, noun) =>

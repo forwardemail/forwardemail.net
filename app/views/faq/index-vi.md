@@ -198,7 +198,7 @@ Bạn có thể so sánh chúng tôi với hơn 56 nhà cung cấp dịch vụ e
 
 ### Ai sử dụng Forward Email {#who-uses-forward-email}
 
-Chúng tôi cung cấp dịch vụ lưu trữ email và chuyển tiếp email cho hơn 500,000 tên miền và các khách hàng nổi bật sau:
+Chúng tôi cung cấp dịch vụ lưu trữ email và chuyển tiếp email cho hơn 1.6+ million tên miền và các khách hàng nổi bật sau:
 
 | Khách Hàng                              | Nghiên Cứu Trường Hợp                                                                                   |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |

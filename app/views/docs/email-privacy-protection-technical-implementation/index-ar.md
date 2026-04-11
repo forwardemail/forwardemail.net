@@ -186,7 +186,7 @@
 
 ### 6. موثوق به من قبل منظمات كبرى {#6-trusted-by-major-organizations}
 
-تُستخدم خدمتنا من قبل أكثر من 500,000 نطاق، بما في ذلك منظمات بارزة مثل [الأكاديمية البحرية الأمريكية](/blog/docs/federal-government-email-service-section-889-compliant)، Netflix، [مؤسسة لينكس](/blog/docs/linux-foundation-email-enterprise-case-study)، [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study)، Disney Ad Sales، والعديد غيرها.
+تُستخدم خدمتنا من قبل أكثر من 1.6+ million نطاق، بما في ذلك منظمات بارزة مثل [الأكاديمية البحرية الأمريكية](/blog/docs/federal-government-email-service-section-889-compliant)، Netflix، [مؤسسة لينكس](/blog/docs/linux-foundation-email-enterprise-case-study)، [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study)، Disney Ad Sales، والعديد غيرها.
 
 
 ## حالات الاستخدام الشائعة لإعادة توجيه البريد الإلكتروني {#common-use-cases-for-email-forwarding}
@@ -247,7 +247,7 @@
 
 سواء كنت تبحث عن إنشاء عناوين بريد إلكتروني احترافية لعملك، أو حماية خصوصيتك باستخدام عناوين مؤقتة، أو تبسيط إدارة حسابات بريد إلكتروني متعددة، يوفر Forward Email الحل المثالي.
 
-هل أنت مستعد لتحويل تجربة بريدك الإلكتروني؟ [سجل مجانًا](https://forwardemail.net) اليوم وانضم إلى أكثر من 500,000 نطاق يستفيدون بالفعل من خدمتنا.
+هل أنت مستعد لتحويل تجربة بريدك الإلكتروني؟ [سجل مجانًا](https://forwardemail.net) اليوم وانضم إلى أكثر من 1.6+ million نطاق يستفيدون بالفعل من خدمتنا.
 
 ---
 
