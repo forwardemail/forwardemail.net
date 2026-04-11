@@ -472,6 +472,7 @@
       "iconv",
       "node-libcurl",
       "node-sass",
+      "node-snowball",
       "puppeteer",
       "re2",
       "sharp",
