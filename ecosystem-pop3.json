@@ -82,7 +82,7 @@
       "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",
       "pre-deploy": "git reset --hard",
-      "post-deploy": "PNPM_VERSION=$(node -p \"require('./package.json').packageManager.match(/^pnpm@(.*)$/)[1]\") && npm install -g \"pnpm@$PNPM_VERSION\" && hash -r && pnpm install --frozen-lockfile && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-pop3.json --env production --update-env"
+      "post-deploy": "bash ./scripts/pm2-post-deploy.sh ecosystem-pop3.json production"
     }
   }
 }
