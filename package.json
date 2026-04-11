@@ -471,6 +471,7 @@
       "diskusage",
       "iconv",
       "node-libcurl",
+      "node-sass",
       "puppeteer",
       "re2",
       "sharp",
