@@ -17,6 +17,8 @@ const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
+const config = require('#config');
+
 const HOSTNAME = os.hostname();
 
 //
@@ -25,6 +27,14 @@ const HOSTNAME = os.hostname();
 //       we check the root domain to prevent bypasses like mymalicious.noreply.com
 //
 const NOREPLY_ROOT_DOMAIN_REGEX = /^no[-_]?reply\.[a-z]+$/i;
+
+//
+// NOTE: set of RFC 2606 and other reserved/non-routable TLDs (from config.testDomains)
+//       Reply-To addresses using these TLDs (e.g. devnull@localhost.invalid) are
+//       harmless placeholders and must be filtered before parseHostFromDomainOrAddress
+//       is called, since that function throws for non-FQDN domains
+//
+const RESERVED_TLDS = new Set(config.testDomains);
 
 //
 // NOTE: the `isAligned` option can be set to `true` if we want to
@@ -54,12 +64,32 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
   ];
 
   //
-  // NOTE: filter out noreply domains from Reply-To to prevent false positive denylist hits
+  // NOTE: filter out Reply-To addresses with reserved/non-routable TLDs
+  //       (e.g. devnull@localhost.invalid from Gentoo bug tracker)
+  //       This MUST happen before parseHostFromDomainOrAddress which throws for non-FQDN domains.
+  //       We extract the domain from the raw address string to avoid the FQDN check.
+  //
+  // NOTE: also filter out noreply domains from Reply-To to prevent false positive denylist hits
   //       (e.g. noreply.com, noreply.net, no-reply.org are commonly used placeholder domains)
   //       we check the root domain to prevent bypasses like mymalicious.noreply.com
   //
   const filteredReplyToAddresses = replyToAddresses.filter((addr) => {
-    const domain = parseHostFromDomainOrAddress(checkSRS(addr));
+    const resolved = checkSRS(addr);
+    // extract domain from raw address (before calling parseHostFromDomainOrAddress)
+    const atPos = resolved.lastIndexOf('@');
+    const rawDomain =
+      atPos === -1
+        ? resolved.toLowerCase().trim()
+        : resolved
+            .slice(atPos + 1)
+            .toLowerCase()
+            .trim();
+    const dotPos = rawDomain.lastIndexOf('.');
+    const tld = dotPos === -1 ? rawDomain : rawDomain.slice(dotPos + 1);
+    // filter reserved TLDs (e.g. .invalid, .localhost, .test, .example)
+    if (RESERVED_TLDS.has(tld)) return false;
+    // filter noreply domains
+    const domain = parseHostFromDomainOrAddress(resolved);
     const rootDomain = parseRootDomain(domain);
     return !NOREPLY_ROOT_DOMAIN_REGEX.test(rootDomain);
   });

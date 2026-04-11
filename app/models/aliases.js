@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const bytes = require('@forwardemail/bytes');
@@ -872,6 +874,16 @@ Aliases.pre('save', async function (next) {
     if (match)
       throw Boom.badRequest(
         i18n.translateError('ALIAS_ALREADY_EXISTS', alias.locale)
+      );
+
+    // alias name must not contain @ symbol
+    // (users sometimes enter their full email address instead of just the local part)
+    if (
+      this.name.endsWith(`@${domain.name}`) ||
+      this.name.endsWith(`@${punycode.toASCII(domain.name)}`)
+    )
+      return next(
+        Boom.badRequest(i18n.translateError('ALIAS_NAME_AT_SIGN', this.locale))
       );
 
     //

@@ -142,6 +142,8 @@ module.exports = {
     'Invalid regex pattern detected for alias on <span class="notranslate">%s</span>',
   INVALID_REGEX_ALIAS_MESSAGE:
     'An alias with an invalid regex pattern was detected on your domain <span class="notranslate">%s</span>. The alias <span class="notranslate">%s</span> has the pattern <span class="notranslate">%s</span> which caused the error: <span class="notranslate">%s</span>. Please note that Perl-style operators like negative lookahead and lookbehind are not supported by our regex engine (RE2). Please update or remove this alias to prevent email delivery issues.',
+  ALIAS_NAME_AT_SIGN:
+    'Alias name must not contain an "@" symbol. Please enter only the part before the "@" (e.g. "you" instead of "you@yourdomain.com").',
   ALIAS_NAME_INVISIBLE_UNICODE:
     'Alias name cannot contain invisible Unicode characters',
   RECIPIENT_INVISIBLE_UNICODE:
