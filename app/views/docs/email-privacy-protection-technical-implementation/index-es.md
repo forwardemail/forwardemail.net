@@ -186,7 +186,7 @@ No imponemos límites artificiales en dominios, alias o direcciones de email com
 
 ### 6. Confiado por Grandes Organizaciones {#6-trusted-by-major-organizations}
 
-Nuestro servicio es usado por más de 1.6+ million dominios, incluyendo organizaciones notables como [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales, y muchos otros.
+Nuestro servicio es usado por más de 1,6 millones de dominios, incluyendo organizaciones notables como [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales, y muchos otros.
 
 
 ## Casos Comunes de Uso para el Reenvío de Email {#common-use-cases-for-email-forwarding}
@@ -247,7 +247,7 @@ Como el único proveedor 100% de código abierto con cifrado resistente a la com
 
 Ya sea que busques crear direcciones de correo profesionales para tu negocio, proteger tu privacidad con direcciones desechables o simplificar la gestión de múltiples cuentas de correo, Forward Email ofrece la solución perfecta.
 
-¿Listo para transformar tu experiencia de correo electrónico? [Regístrate gratis](https://forwardemail.net) hoy y únete a más de 1.6+ million dominios que ya se benefician de nuestro servicio.
+¿Listo para transformar tu experiencia de correo electrónico? [Regístrate gratis](https://forwardemail.net) hoy y únete a más de 1,6 millones de dominios que ya se benefician de nuestro servicio.
 
 ---
 

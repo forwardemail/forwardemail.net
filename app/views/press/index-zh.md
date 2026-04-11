@@ -19,7 +19,7 @@
 
 Forward Email 是唯一专注于安全和隐私的 100% 开源电子邮件托管服务。了解更多我们的历史，请访问[关于页面](/about)。
 
-我们的服务成立于 2017 年，目前为超过 1.6+ million 个域名提供电子邮件服务——包括知名用户如[美国海军学院](/blog/docs/federal-government-email-service-section-889-compliant)、[Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study)、Netflix Games、[Linux 基金会](/blog/docs/linux-foundation-email-enterprise-case-study)、[多所大学](/blog/docs/alumni-email-forwarding-university-case-study)及政府机构等。
+我们的服务成立于 2017 年，目前为超过 160 万个域名提供电子邮件服务——包括知名用户如[美国海军学院](/blog/docs/federal-government-email-service-section-889-compliant)、[Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study)、Netflix Games、[Linux 基金会](/blog/docs/linux-foundation-email-enterprise-case-study)、[多所大学](/blog/docs/alumni-email-forwarding-university-case-study)及政府机构等。
 
 我们的目标是成为企业级电子邮件和安全基础设施平台——并且我们遵循[多项原则](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)。
 
@@ -31,7 +31,7 @@ Forward Email 是唯一专注于安全和隐私的 100% 开源电子邮件托管
 | 指标                     | 数值                                                                                             |
 | :----------------------- | :----------------------------------------------------------------------------------------------- |
 | **成立时间**             | 2017                                                                                             |
-| **支持域名数量**         | 1.6+ million                                                                                        |
+| **支持域名数量**         | 160 万                                                                                        |
 | **开源情况**             | 100%（GitHub: [forwardemail/forwardemail.net](https://github.com/forwardemail/forwardemail.net)） |
 | **支持语言**             | 25+                                                                                            |
 | **加密技术**             | 量子安全 ChaCha20-Poly1305、OpenPGP、WKD、S/MIME                                               |

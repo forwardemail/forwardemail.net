@@ -150,7 +150,7 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 
 ## สถานะปัจจุบัน {#current-status}
 
-ณ เดือนมีนาคม 2026 Forward Email ให้บริการโดเมนมากกว่า 1.6+ million โดเมนทั่วโลก รวมถึงองค์กรและผู้นำในอุตสาหกรรมที่โดดเด่น เช่น:
+ณ เดือนมีนาคม 2026 Forward Email ให้บริการโดเมนมากกว่า 1.6 ล้านโดเมนทั่วโลก รวมถึงองค์กรและผู้นำในอุตสาหกรรมที่โดดเด่น เช่น:
 
 * **บริษัทเทคโนโลยี**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **องค์กรสื่อ**: Fox News Radio, Disney Ad Sales

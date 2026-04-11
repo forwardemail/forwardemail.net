@@ -150,7 +150,7 @@ Desde sus inicios, Forward Email ha mantenido un compromiso firme con los princi
 
 ## Estado Actual {#current-status}
 
-A marzo de 2026, Forward Email atiende a más de 1.6+ million dominios en todo el mundo, incluyendo organizaciones notables y líderes de la industria como:
+A marzo de 2026, Forward Email atiende a más de 1,6 millones de dominios en todo el mundo, incluyendo organizaciones notables y líderes de la industria como:
 
 * **Empresas Tecnológicas**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **Organizaciones de Medios**: Fox News Radio, Disney Ad Sales

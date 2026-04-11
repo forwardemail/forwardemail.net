@@ -31,7 +31,7 @@ Jeśli jesteś członkiem prasy, dziennikarzem lub przedstawicielem mediów i ch
 | Metric                  | Value                                                                                            |
 | :---------------------- | :----------------------------------------------------------------------------------------------- |
 | **Founded**             | 2017                                                                                             |
-| **Domains Powered**     | 1.6+ million                                                                                         |
+| **Domains Powered**     | 1,6 mln                                                                                         |
 | **Open Source**         | 100% (GitHub: [forwardemail/forwardemail.net](https://github.com/forwardemail/forwardemail.net)) |
 | **Languages Supported** | 25+                                                                                              |
 | **Encryption**          | Quantum-safe ChaCha20-Poly1305, OpenPGP, WKD, S/MIME                                             |

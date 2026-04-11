@@ -150,7 +150,7 @@ Forward Email נוסדה על ידי **ניקולאס באו** בשנת 2017. ל
 
 ## המצב הנוכחי {#current-status}
 
-נכון למרץ 2026, Forward Email משרתת מעל 1.6+ million דומיינים ברחבי העולם, כולל ארגונים מובילים בתעשייה כגון:
+נכון למרץ 2026, Forward Email משרתת מעל 1.6 מיליון דומיינים ברחבי העולם, כולל ארגונים מובילים בתעשייה כגון:
 
 * **חברות טכנולוגיה**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **ארגוני מדיה**: Fox News Radio, Disney Ad Sales

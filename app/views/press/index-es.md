@@ -19,7 +19,7 @@
 
 Forward Email es el único servicio de alojamiento de correo electrónico 100% de código abierto enfocado en la seguridad y privacidad. Aprende más sobre nuestra historia en [nuestra página Acerca de](/about).
 
-Nuestro servicio fue fundado en 2017 y provee correo electrónico para más de 1.6+ million dominios – incluyendo usuarios notables como [La Academia Naval de EE.UU.](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [La Fundación Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [varias universidades](/blog/docs/alumni-email-forwarding-university-case-study) y gobiernos, entre otros.
+Nuestro servicio fue fundado en 2017 y provee correo electrónico para más de 1,6 millones de dominios – incluyendo usuarios notables como [La Academia Naval de EE.UU.](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [La Fundación Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [varias universidades](/blog/docs/alumni-email-forwarding-university-case-study) y gobiernos, entre otros.
 
 Nuestro objetivo es ser la plataforma de infraestructura de correo electrónico y seguridad de nivel empresarial – y nos adherimos a [varios principios](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
@@ -31,7 +31,7 @@ Si eres miembro de la prensa, periodista o representante de medios y deseas habl
 | Métrica                 | Valor                                                                                           |
 | :---------------------- | :---------------------------------------------------------------------------------------------- |
 | **Fundado**             | 2017                                                                                           |
-| **Dominios Gestionados**| 1.6+ million                                                                                       |
+| **Dominios Gestionados**| 1,6 millones                                                                                       |
 | **Código Abierto**      | 100% (GitHub: [forwardemail/forwardemail.net](https://github.com/forwardemail/forwardemail.net))|
 | **Idiomas Soportados**  | 25+                                                                                            |
 | **Encriptación**        | ChaCha20-Poly1305 seguro contra computación cuántica, OpenPGP, WKD, S/MIME                     |

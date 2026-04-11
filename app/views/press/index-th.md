@@ -19,7 +19,7 @@
 
 Forward Email คือบริการโฮสต์อีเมลแบบโอเพนซอร์ส 100% ที่เน้นความปลอดภัยและความเป็นส่วนตัว เรียนรู้เพิ่มเติมเกี่ยวกับประวัติของเราได้ที่ [หน้าข้อมูลของเรา](/about)
 
-บริการของเราก่อตั้งขึ้นในปี 2017 และให้บริการอีเมลสำหรับโดเมนมากกว่า 1.6+ million โดเมน – รวมถึงผู้ใช้ที่โดดเด่นเช่น [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [หลายมหาวิทยาลัย](/blog/docs/alumni-email-forwarding-university-case-study) และรัฐบาลต่างๆ และอื่นๆ
+บริการของเราก่อตั้งขึ้นในปี 2017 และให้บริการอีเมลสำหรับโดเมนมากกว่า 1.6 ล้านโดเมน – รวมถึงผู้ใช้ที่โดดเด่นเช่น [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [หลายมหาวิทยาลัย](/blog/docs/alumni-email-forwarding-university-case-study) และรัฐบาลต่างๆ และอื่นๆ
 
 เป้าหมายของเราคือการเป็นแพลตฟอร์มโครงสร้างพื้นฐานอีเมลและความปลอดภัยระดับองค์กร – และเราปฏิบัติตาม [หลักการหลายประการ](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)
 
@@ -31,7 +31,7 @@ Forward Email คือบริการโฮสต์อีเมลแบบ
 | ตัวชี้วัด                | ค่า                                                                                              |
 | :---------------------- | :----------------------------------------------------------------------------------------------- |
 | **ก่อตั้ง**             | 2017                                                                                             |
-| **โดเมนที่ให้บริการ**   | มากกว่า 1.6+ million                                                                                  |
+| **โดเมนที่ให้บริการ**   | มากกว่า 1.6 ล้าน                                                                                  |
 | **โอเพนซอร์ส**         | 100% (GitHub: [forwardemail/forwardemail.net](https://github.com/forwardemail/forwardemail.net)) |
 | **ภาษาที่รองรับ**       | มากกว่า 25 ภาษา                                                                                  |
 | **การเข้ารหัส**         | Quantum-safe ChaCha20-Poly1305, OpenPGP, WKD, S/MIME                                             |

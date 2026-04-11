@@ -150,7 +150,7 @@
 
 ## الحالة الحالية {#current-status}
 
-حتى مارس 2026، تخدم Forward Email أكثر من 1.6+ million نطاق حول العالم، بما في ذلك منظمات بارزة وقادة صناعيين مثل:
+حتى مارس 2026، تخدم Forward Email أكثر من 1.6 مليون نطاق حول العالم، بما في ذلك منظمات بارزة وقادة صناعيين مثل:
 
 * **شركات التكنولوجيا**: Canonical (Ubuntu)، Netflix Games، مؤسسة Linux، مؤسسة PHP، jQuery، LineageOS
 * **المنظمات الإعلامية**: Fox News Radio، Disney Ad Sales
