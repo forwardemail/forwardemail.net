@@ -179,17 +179,15 @@
         hour: '*/6'
         minute: '0'
         job: '/home/deploy/n/bin/node /home/deploy/n/bin/pm2 reload all > /dev/null 2>&1'
-    - name: Check if pnpm exists
-      stat:
-        path: /home/deploy/n/bin/pnpm
-      register: pnpm_result
-    - name: Install pnpm
+    - name: Install or upgrade pnpm
       become: true
       become_user: deploy
-      shell: source /home/deploy/.bashrc && npm install -g pnpm@9.15.9
+      shell: >
+        source /home/deploy/.bashrc &&
+        PNPM_VERSION=$(node -p "const pkg = require('/var/www/production/current/package.json'); const match = pkg.packageManager && pkg.packageManager.match(/^pnpm@(.*)$/); if (!match) throw new Error('Missing packageManager'); match[1]" 2>/dev/null || printf '9.15.9') &&
+        npm install -g "pnpm@$PNPM_VERSION"
       args:
         executable: /bin/bash
-      when: not pnpm_result.stat.exists
     # install fonts
     - name: Accept fonts license
       shell:

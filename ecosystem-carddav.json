@@ -47,7 +47,7 @@
       "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",
       "pre-deploy": "git reset --hard",
-      "post-deploy": "pnpm install --frozen-lockfile && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-carddav.json --env production --update-env"
+      "post-deploy": "PNPM_VERSION=$(node -p \"require('./package.json').packageManager.match(/^pnpm@(.*)$/)[1]\") && npm install -g \"pnpm@$PNPM_VERSION\" && hash -r && pnpm install --frozen-lockfile && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-carddav.json --env production --update-env"
     }
   }
 }
