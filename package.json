@@ -465,6 +465,18 @@
   },
   "packageManager": "pnpm@9.15.9",
   "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3-multiple-ciphers",
+      "bufferutil",
+      "diskusage",
+      "iconv",
+      "node-libcurl",
+      "puppeteer",
+      "re2",
+      "sharp",
+      "snappy",
+      "utf-8-validate"
+    ],
     "overrides": {
       "undici": "7.12.0"
     }
