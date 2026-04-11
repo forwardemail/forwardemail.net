@@ -110,9 +110,19 @@ async function list(ctx) {
     }
   );
 
-  // Filter out soft-deleted contacts
+  // Filter out soft-deleted contacts and deduplicate by UID.
+  // Duplicates (same UID, different contact_id) can exist from
+  // historical sync issues; only show the earliest-created one.
+  const seenUids = new Set();
   const activeContacts = Array.isArray(allContacts)
-    ? allContacts.filter((contact) => !contact.deleted_at)
+    ? allContacts
+        .filter((contact) => !contact.deleted_at)
+        .filter((contact) => {
+          if (!contact.uid) return true;
+          if (seenUids.has(contact.uid)) return false;
+          seenUids.add(contact.uid);
+          return true;
+        })
     : [];
 
   // Apply pagination in memory after filtering

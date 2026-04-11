@@ -294,6 +294,35 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         }
       }
 
+      // Clean up duplicate contacts with the same UID in this address book.
+      // Duplicates can arise when a client PUTs to a new URL (creating a
+      // second row) before the UID-fallback logic was in place, or from
+      // sync races between multiple clients.  We keep the canonical contact
+      // (existingContact) and soft-delete any others sharing the same UID.
+      if (existingContact && vCard.UID) {
+        const allWithUid = await Contacts.find(
+          ctx.instance,
+          ctx.state.session,
+          {
+            address_book: addressBook._id,
+            uid: vCard.UID
+          }
+        );
+
+        for (const dup of allWithUid) {
+          if (
+            dup._id.toString() !== existingContact._id.toString() &&
+            !dup.deleted_at
+          ) {
+            dup.deleted_at = new Date().toISOString();
+            dup.instance = ctx.instance;
+            dup.session = ctx.state.session;
+            dup.isNew = false;
+            await dup.save();
+          }
+        }
+      }
+
       // Generate ETag
       const newEtag = xmlHelpers.generateETag(vCardContent);
 
@@ -320,12 +349,15 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
           }
         }
 
-        // If the contact was found by UID but has a different contact_id,
-        // update the contact_id to match the new URL the client is using.
+        // NOTE: we intentionally do NOT rewrite contact_id when the
+        // contact was found via UID fallback. Changing the canonical
+        // contact_id would alter the href reported in sync-collection,
+        // causing other clients (phone, macOS) that cached the OLD href
+        // to interpret the contact as a brand-new resource and create
+        // duplicates. Instead we keep the original contact_id stable
+        // and return a Content-Location header pointing to the real URL
+        // so the requesting client can update its cache.
         const oldContactId = existingContact.contact_id;
-        if (oldContactId !== contact) {
-          existingContact.contact_id = contact;
-        }
 
         // Capture old content for no-op detection
         const oldContent = existingContact.content;
@@ -405,13 +437,15 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         }
 
         ctx.set('ETag', newEtag);
-        // Return the canonical URL of the updated resource so the client
-        // knows where the contact lives after a potential contact_id change.
+        // Return the canonical URL using the ORIGINAL (stable) contact_id
+        // so the client learns the correct href for future requests.
+        // This is important when the client PUTs to a URL that differs
+        // from the stored contact_id (e.g. macOS using UID as filename).
         ctx.set(
           'Content-Location',
-          `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact}${vcf(
-            contact
-          )}`
+          `/dav/${
+            ctx.params.user
+          }/addressbooks/${addressbook}/${oldContactId}${vcf(oldContactId)}`
         );
         ctx.status = 204;
       } else {
@@ -699,8 +733,19 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
           }
         );
 
-        // Filter out soft-deleted contacts
-        const contacts = allContacts.filter((c) => !c.deleted_at);
+        // Filter out soft-deleted contacts and deduplicate by UID.
+        // Duplicates (same UID, different contact_id) can exist from
+        // historical sync issues; only report the earliest-created one
+        // so clients don't see phantom contacts.
+        const seenUids = new Set();
+        const contacts = allContacts
+          .filter((c) => !c.deleted_at)
+          .filter((c) => {
+            if (!c.uid) return true;
+            if (seenUids.has(c.uid)) return false;
+            seenUids.add(c.uid);
+            return true;
+          });
 
         for (const contact of contacts) {
           responses.push({
@@ -1396,8 +1441,17 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
       }
     );
 
-    // Separate non-deleted and deleted contacts
+    // Separate non-deleted and deleted contacts, deduplicating by UID.
+    // When duplicates exist (same UID, different contact_id), report only
+    // the canonical (first) one to prevent clients from seeing phantoms.
+    const seenUids = new Set();
     for (const contact of allModifiedContacts) {
+      // Skip UID-duplicates (keep first occurrence)
+      if (contact.uid) {
+        if (seenUids.has(contact.uid)) continue;
+        seenUids.add(contact.uid);
+      }
+
       if (contact.deleted_at) {
         // Deleted contact - report with 404 status per RFC 6578 Section 3.5.2
         changes.push({
@@ -1426,9 +1480,15 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
       address_book: addressBook._id
     });
 
-    // Filter out deleted contacts for initial sync
+    // Filter out deleted contacts and deduplicate by UID for initial sync
+    const seenUidsInit = new Set();
     for (const contact of contacts) {
       if (!contact.deleted_at) {
+        if (contact.uid) {
+          if (seenUidsInit.has(contact.uid)) continue;
+          seenUidsInit.add(contact.uid);
+        }
+
         changes.push({
           href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
             contact.contact_id
