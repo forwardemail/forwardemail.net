@@ -1,0 +1,107 @@
+= t("Observatory Alert")
+= "\n"
+= "="
+= "\n\n"
+
+= t("Subject")
+= ": "
+= subject.value
+= " ("
+= subject.type
+= ")\n"
+
+= t("Alert")
+= ": "
+= alertLabel
+= "\n"
+
+= t("Severity")
+= ": "
+= severity
+= "\n\n"
+
+= t("Details")
+= "\n"
+= "-".repeat(40)
+= "\n"
+= alertMessage
+= "\n\n"
+
+if subject.reputation_score !== undefined && subject.reputation_score !== null
+  = t("Reputation Score")
+  = ": "
+  = subject.reputation_score
+  = "/100 ("
+  = subject.reputation_grade || "N/A"
+  = ")\n\n"
+
+if alertType === 'blacklist_listed' && details.lists
+  = t("Listed On")
+  = ":\n"
+  each list in details.lists
+    = "  - "
+    = list
+    = "\n"
+  = "\n"
+
+if alertType === 'blacklist_delisted' && details.lists
+  = t("Removed From")
+  = ":\n"
+  each list in details.lists
+    = "  - "
+    = list
+    = "\n"
+  = "\n"
+
+if alertType === 'dns_mx_changed' && details.previous && details.current
+  = t("Previous MX Records")
+  = ":\n"
+  each mx in details.previous
+    = "  - "
+    = mx.exchange || mx
+    = "\n"
+  = "\n"
+  = t("Current MX Records")
+  = ":\n"
+  each mx in details.current
+    = "  - "
+    = mx.exchange || mx
+    = "\n"
+  = "\n"
+
+if alertType === 'dns_spf_misconfigured' && details.lookup_count
+  = t("SPF Lookup Count")
+  = ": "
+  = details.lookup_count
+  = " ("
+  = t("RFC 7208 limit is 10")
+  = ")\n\n"
+
+if alertType === 'dns_dmarc_downgraded' && details.previous_policy && details.current_policy
+  = t("Previous Policy")
+  = ": "
+  = details.previous_policy
+  = "\n"
+  = t("Current Policy")
+  = ": "
+  = details.current_policy
+  = "\n\n"
+
+= t("Quick Actions")
+= "\n"
+= "-".repeat(40)
+= "\n"
+= t("View in Observatory")
+= ": "
+= config.urls.web
+= "/"
+= locale
+= "/observatory/report/"
+= encodeURIComponent(subject.value)
+= "\n"
+= t("Manage Monitors")
+= ": "
+= config.urls.web
+= "/"
+= locale
+= "/my-account/observatory\n"

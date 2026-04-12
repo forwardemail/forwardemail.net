@@ -329,6 +329,36 @@ let jobs = [
     name: 'aggregate-analytics',
     interval: '1h',
     timeout: 0
+  },
+  // observatory: check monitored domains/IPs against DNSBL lists
+  {
+    name: 'observatory-check-blacklists',
+    interval: '30m',
+    timeout: '15m'
+  },
+  // observatory: download full IP lists from bulk-export blacklists
+  {
+    name: 'observatory-bulk-download',
+    interval: '6h',
+    timeout: '30m'
+  },
+  // observatory: monitor DNS records for changes (MX, SPF, DMARC, NS)
+  {
+    name: 'observatory-dns-monitor',
+    interval: '1h',
+    timeout: '30m'
+  },
+  // observatory: monitor certificate transparency logs for monitored domains
+  {
+    name: 'observatory-ct-monitor',
+    interval: '6h',
+    timeout: '30m'
+  },
+  // observatory: compute reputation scores for all subjects
+  {
+    name: 'observatory-compute-scores',
+    interval: '2h',
+    timeout: '30m'
   }
 ];
 
@@ -412,6 +442,31 @@ if (boolean(process.env.SELF_HOSTED)) {
       name: 'update-umbrella',
       interval: '1d',
       timeout: '10m'
+    },
+    {
+      name: 'observatory-check-blacklists',
+      interval: '30m',
+      timeout: '15m'
+    },
+    {
+      name: 'observatory-bulk-download',
+      interval: '6h',
+      timeout: '30m'
+    },
+    {
+      name: 'observatory-dns-monitor',
+      interval: '1h',
+      timeout: '30m'
+    },
+    {
+      name: 'observatory-ct-monitor',
+      interval: '6h',
+      timeout: '30m'
+    },
+    {
+      name: 'observatory-compute-scores',
+      interval: '2h',
+      timeout: '30m'
     }
   ];
 }

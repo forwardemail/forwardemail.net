@@ -712,4 +712,55 @@ router
   .delete('/sieve-scripts/:script_id', api.v1.sieve.remove)
   .post('/sieve-scripts/:script_id/activate', api.v1.sieve.activate);
 
+//
+// Observatory (email deliverability reputation)
+//
+// Public endpoints (rate-limited, no auth required)
+router
+  .get(
+    '/observatory/lookup',
+    rateLimit(100, 'observatory lookup'),
+    api.v1.observatory.lookup
+  )
+  .get(
+    '/observatory/lookup/:value/blacklists',
+    rateLimit(100, 'observatory blacklists'),
+    api.v1.observatory.listBlacklists
+  )
+  .get(
+    '/observatory/lookup/:value/dns-history',
+    rateLimit(100, 'observatory dns history'),
+    api.v1.observatory.listDnsHistory
+  );
+
+// Authenticated endpoints
+router
+  .get(
+    '/observatory/lookup/:value/dmarc-summary',
+    policies.ensureApiToken,
+    policies.checkVerifiedEmail,
+    api.v1.observatory.dmarcSummary
+  )
+  .post(
+    '/observatory/monitor',
+    policies.ensureApiToken,
+    policies.checkVerifiedEmail,
+    web.myAccount.ensureNotBanned,
+    api.v1.enforcePaidPlan,
+    web.myAccount.ensurePaidToDate,
+    api.v1.observatory.addMonitor
+  )
+  .delete(
+    '/observatory/monitor/:value',
+    policies.ensureApiToken,
+    policies.checkVerifiedEmail,
+    api.v1.observatory.removeMonitor
+  )
+  .get(
+    '/observatory/monitors',
+    policies.ensureApiToken,
+    policies.checkVerifiedEmail,
+    api.v1.observatory.listMonitors
+  );
+
 module.exports = router;

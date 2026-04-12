@@ -347,6 +347,18 @@ localeRouter
     ctx.body = html;
   })
 
+  // observatory (email deliverability reputation - public)
+  .get(
+    '/observatory',
+    rateLimit(100, 'observatory'),
+    web.observatory.observatoryLookup
+  )
+  .get(
+    '/observatory/report/:value',
+    rateLimit(50, 'observatory report'),
+    web.observatory.observatoryReport
+  )
+
   // denylist removal (only 5 requests per 24 hours and removal is instant for paid users)
   .get(
     '/denylist',

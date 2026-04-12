@@ -1,0 +1,214 @@
+extends ../layout
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      //- Header with back link
+      .mb-3
+        a(href=state.l("/observatory"))
+          = "← "
+          = t("Back to Observatory")
+
+      //- Subject header
+      .d-flex.justify-content-between.align-items-center.mb-4
+        h1.h3.mb-0
+          code= subject.value
+          = " "
+          span.badge.badge-secondary= subject.type
+        if subject.reputation_grade
+          - const gradeColor = subject.reputation_score >= 85 ? "success" : subject.reputation_score >= 55 ? "warning" : "danger";
+          .text-center
+            span.display-4(class=`text-${gradeColor}`, style="font-weight: bold")= subject.reputation_score
+            br
+            span.badge.badge-lg(class=`badge-${gradeColor}`)= subject.reputation_grade
+
+      //- Score breakdown cards
+      .row.mb-4
+        .col-md-3
+          .card.text-center
+            .card-body.py-2
+              .small.text-muted= t("Blacklists")
+              if subject.blacklist_summary
+                - const blColor = subject.blacklist_summary.listed_count === 0 ? "success" : "danger";
+                strong(class=`text-${blColor}`)
+                  = subject.blacklist_summary.listed_count
+                  = "/"
+                  = subject.blacklist_summary.total_checked
+              else
+                span.text-muted= t("Pending")
+        .col-md-3
+          .card.text-center
+            .card-body.py-2
+              .small.text-muted= t("DMARC Policy")
+              if subject.dmarc_policy
+                - const dmColor = subject.dmarc_policy === "reject" ? "success" : subject.dmarc_policy === "quarantine" ? "warning" : "danger";
+                strong(class=`text-${dmColor}`)= subject.dmarc_policy
+              else
+                span.text-muted= t("None")
+        .col-md-3
+          .card.text-center
+            .card-body.py-2
+              .small.text-muted= t("SPF Lookups")
+              if subject.spf_lookup_count !== undefined
+                - const spfColor = subject.spf_lookup_count <= 10 ? "success" : "danger";
+                strong(class=`text-${spfColor}`)= subject.spf_lookup_count
+              else
+                span.text-muted= t("N/A")
+        .col-md-3
+          .card.text-center
+            .card-body.py-2
+              .small.text-muted= t("ASN")
+              if subject.asn
+                strong
+                  code= `AS${subject.asn}`
+              else
+                span.text-muted= t("N/A")
+
+      //- Blacklist Events
+      .card.mb-4
+        .card-header
+          h2.h5.mb-0= t("Blacklist History")
+        .card-body
+          if blacklistEvents && blacklistEvents.length > 0
+            .table-responsive
+              table.table.table-sm.table-hover.mb-0
+                thead.thead-light
+                  tr
+                    th= t("List")
+                    th= t("Event")
+                    th= t("Detected")
+                    th= t("Response")
+                tbody
+                  each event in blacklistEvents
+                    tr
+                      td
+                        code= event.list_name
+                      td
+                        if event.event_type === 'listed'
+                          span.badge.badge-danger= t("Listed")
+                        else
+                          span.badge.badge-success= t("Delisted")
+                      td= new Date(event.detected_at).toLocaleString()
+                      td
+                        if event.raw_response
+                          code.small= event.raw_response
+                        else
+                          span.text-muted -
+          else
+            p.text-muted.text-center.mb-0= t("No blacklist events recorded yet.")
+
+      //- DNS Change History
+      .card.mb-4
+        .card-header
+          h2.h5.mb-0= t("DNS Change History")
+        .card-body
+          if dnsChanges && dnsChanges.length > 0
+            .table-responsive
+              table.table.table-sm.table-hover.mb-0
+                thead.thead-light
+                  tr
+                    th= t("Record Type")
+                    th= t("Change")
+                    th= t("Previous")
+                    th= t("Current")
+                    th= t("Detected")
+                tbody
+                  each change in dnsChanges
+                    tr
+                      td
+                        code= change.record_type
+                      td
+                        if change.change_type === 'initial'
+                          span.badge.badge-info= t("Initial")
+                        else if change.change_type === 'modified'
+                          span.badge.badge-warning= t("Modified")
+                        else if change.change_type === 'removed'
+                          span.badge.badge-danger= t("Removed")
+                        else if change.change_type === 'added'
+                          span.badge.badge-success= t("Added")
+                      td
+                        if change.previous_data
+                          code.small= JSON.stringify(change.previous_data).slice(0, 80)
+                        else
+                          span.text-muted -
+                      td
+                        if change.record_data
+                          code.small= JSON.stringify(change.record_data).slice(0, 80)
+                        else
+                          span.text-muted -
+                      td= new Date(change.detected_at).toLocaleString()
+          else
+            p.text-muted.text-center.mb-0= t("No DNS changes recorded yet.")
+
+      //- Certificate Transparency Events (domains only)
+      if subject.type === 'domain'
+        .card.mb-4
+          .card-header
+            h2.h5.mb-0= t("Certificate Transparency")
+          .card-body
+            if ctEvents && ctEvents.length > 0
+              .table-responsive
+                table.table.table-sm.table-hover.mb-0
+                  thead.thead-light
+                    tr
+                      th= t("Issuer")
+                      th= t("Valid From")
+                      th= t("Valid To")
+                      th= t("SANs")
+                      th= t("Status")
+                      th= t("Detected")
+                  tbody
+                    each cert in ctEvents
+                      tr(class=cert.is_suspicious ? "table-danger" : "")
+                        td= cert.issuer ? cert.issuer.split(",")[0] : "Unknown"
+                        td= cert.not_before ? new Date(cert.not_before).toLocaleDateString() : "-"
+                        td= cert.not_after ? new Date(cert.not_after).toLocaleDateString() : "-"
+                        td= cert.san_list ? cert.san_list.length : 0
+                        td
+                          if cert.is_suspicious
+                            span.badge.badge-danger= t("Suspicious")
+                          else
+                            span.badge.badge-success= t("OK")
+                        td= new Date(cert.detected_at).toLocaleDateString()
+            else
+              p.text-muted.text-center.mb-0= t("No certificate transparency events recorded yet.")
+
+      //- Current DNS Snapshot
+      if subject.dns_snapshot
+        .card.mb-4
+          .card-header
+            h2.h5.mb-0= t("Current DNS Records")
+          .card-body
+            .row
+              if subject.dns_snapshot.MX && subject.dns_snapshot.MX.length > 0
+                .col-md-6.mb-3
+                  h3.h6= t("MX Records")
+                  ul.list-unstyled.mb-0
+                    each mx in subject.dns_snapshot.MX
+                      li
+                        code= `${mx.priority || ""} ${mx.exchange || mx}`.trim()
+              if subject.dns_snapshot.NS && subject.dns_snapshot.NS.length > 0
+                .col-md-6.mb-3
+                  h3.h6= t("NS Records")
+                  ul.list-unstyled.mb-0
+                    each ns in subject.dns_snapshot.NS
+                      li
+                        code= ns
+              if subject.dns_snapshot.A && subject.dns_snapshot.A.length > 0
+                .col-md-6.mb-3
+                  h3.h6= t("A Records")
+                  ul.list-unstyled.mb-0
+                    each a in subject.dns_snapshot.A
+                      li
+                        code= a
+              if subject.dns_snapshot.AAAA && subject.dns_snapshot.AAAA.length > 0
+                .col-md-6.mb-3
+                  h3.h6= t("AAAA Records")
+                  ul.list-unstyled.mb-0
+                    each aaaa in subject.dns_snapshot.AAAA
+                      li
+                        code= aaaa
+            if subject.spf_record
+              h3.h6= t("SPF Record")
+              p
+                code.small= subject.spf_record

@@ -1,0 +1,185 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center
+            if severity === 'high'
+              = "🚨 "
+            else if severity === 'medium'
+              = "⚠️ "
+            else
+              = "ℹ️ "
+            = t("Observatory Alert")
+          .card-body.p-0
+            //- Alert banner with severity color
+            - const bannerColor = severity === "high" ? "#dc3545" : severity === "medium" ? "#ffc107" : "#17a2b8";
+            - const bannerTextColor = severity === "medium" ? "#212529" : "#fff";
+            .p-3.text-center(
+              style=`background-color: ${bannerColor}; color: ${bannerTextColor}`
+            )
+              h2.h5.mb-1= alertLabel
+              p.mb-0
+                strong= subject.value
+                = " "
+                span.badge(
+                  style="background-color: rgba(255, 255, 255, 0.2); color: inherit"
+                )= subject.type
+
+            //- Alert message
+            .p-3
+              p.card-text= alertMessage
+
+            //- Reputation score if available
+            if subject.reputation_score !== undefined && subject.reputation_score !== null
+              .p-3.bg-light.text-center
+                p.mb-1
+                  strong= t("Current Reputation Score")
+                - const scoreColor = subject.reputation_score >= 85 ? "#28a745" : subject.reputation_score >= 55 ? "#ffc107" : "#dc3545";
+                p.h3.mb-0(style=`color: ${scoreColor}`)
+                  = subject.reputation_score
+                  = "/100"
+                  if subject.reputation_grade
+                    = " "
+                    span.badge(
+                      style=`background-color: ${scoreColor}; color: #fff`
+                    )= subject.reputation_grade
+
+            //- Blacklist details
+            if alertType === 'blacklist_listed' && details.lists && details.lists.length > 0
+              .p-3
+                h3.h5
+                  = "🔴 "
+                  = t("Listed On")
+                table.table.table-sm.table-bordered.mb-0
+                  tbody
+                    each list in details.lists
+                      tr
+                        td
+                          code= list
+
+            if alertType === 'blacklist_delisted' && details.lists && details.lists.length > 0
+              .p-3
+                h3.h5
+                  = "🟢 "
+                  = t("Removed From")
+                table.table.table-sm.table-bordered.mb-0
+                  tbody
+                    each list in details.lists
+                      tr
+                        td
+                          code= list
+
+            //- DNS change details
+            if alertType === 'dns_mx_changed'
+              .p-3
+                h3.h5= t("MX Record Changes")
+                if details.previous && details.previous.length > 0
+                  p.mb-1
+                    strong= t("Previous")
+                    = ":"
+                  ul.mb-2
+                    each mx in details.previous
+                      li
+                        code= mx.exchange || mx
+                if details.current && details.current.length > 0
+                  p.mb-1
+                    strong= t("Current")
+                    = ":"
+                  ul.mb-0
+                    each mx in details.current
+                      li
+                        code= mx.exchange || mx
+
+            if alertType === 'dns_ns_changed'
+              .p-3
+                h3.h5
+                  = "🚨 "
+                  = t("NS Record Changes")
+                p.text-danger= t("NS record changes may indicate domain hijacking. Please verify immediately.")
+                if details.previous && details.previous.length > 0
+                  p.mb-1
+                    strong= t("Previous")
+                    = ":"
+                  ul.mb-2
+                    each ns in details.previous
+                      li
+                        code= ns
+                if details.current && details.current.length > 0
+                  p.mb-1
+                    strong= t("Current")
+                    = ":"
+                  ul.mb-0
+                    each ns in details.current
+                      li
+                        code= ns
+
+            if alertType === 'dns_dmarc_downgraded'
+              .p-3
+                h3.h5= t("DMARC Policy Change")
+                if details.previous_policy && details.current_policy
+                  table.table.table-sm.table-bordered.mb-0
+                    tbody
+                      tr
+                        td
+                          strong= t("Previous Policy")
+                        td
+                          code= details.previous_policy
+                      tr
+                        td
+                          strong= t("Current Policy")
+                        td
+                          span.text-danger
+                            code= details.current_policy
+
+            if alertType === 'dns_spf_misconfigured'
+              .p-3
+                h3.h5= t("SPF Misconfiguration")
+                if details.lookup_count
+                  p.card-text
+                    = t("Your SPF record requires")
+                    = " "
+                    strong.text-danger= details.lookup_count
+                    = " "
+                    = t("DNS lookups. RFC 7208 limits this to 10.")
+                if details.spf_record
+                  p.mb-1
+                    strong= t("SPF Record")
+                    = ":"
+                  p.mb-0
+                    code.small= details.spf_record
+
+            if alertType === 'ct_suspicious_cert'
+              .p-3
+                h3.h5= t("Suspicious Certificate")
+                if details.issuer
+                  p.card-text
+                    = t("An unexpected certificate was issued for your domain by")
+                    = " "
+                    strong= details.issuer
+                if details.san_list && details.san_list.length > 0
+                  p.mb-1
+                    strong= t("Subject Alternative Names")
+                    = ":"
+                  ul.mb-0
+                    each san in details.san_list.slice(0, 10)
+                      li
+                        code= san
+
+            //- Quick actions
+            .p-3.bg-light
+              h3.h5.text-center= t("Quick Actions")
+              ul.list-inline.text-center.mb-0
+                li.list-inline-item.mb-2
+                  a.btn.btn-dark(
+                    href=`${config.urls.web}/${locale}/observatory/report/${encodeURIComponent(subject.value)}`
+                  )= t("View Full Report")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/my-account/observatory`
+                  )= t("Manage Monitors")
+
+          .card-footer.text-center.small.text-muted
+            = t("Privacy. Transparency. Security. Open Source.")

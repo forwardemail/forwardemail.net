@@ -27,6 +27,7 @@ const sieve = require('./sieve');
 const sieveAliasAuth = require('./sieve-alias-auth');
 const stripe = require('./stripe');
 const test = require('./test');
+const observatory = require('./observatory');
 const upgrade = require('./upgrade');
 const users = require('./users');
 
@@ -48,6 +49,7 @@ module.exports = {
   lookup,
   maxForwardedAddresses,
   messages,
+  observatory,
   paypal,
   port,
   restricted,

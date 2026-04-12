@@ -1,0 +1,6 @@
+if severity === 'high'
+  = `🚨 ${t("Observatory Alert")}: ${alertLabel} — ${subject.value}`
+else if severity === 'medium'
+  = `⚠️ ${t("Observatory Alert")}: ${alertLabel} — ${subject.value}`
+else
+  = `ℹ️ ${t("Observatory Alert")}: ${alertLabel} — ${subject.value}`

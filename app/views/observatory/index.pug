@@ -1,0 +1,198 @@
+extends ../layout
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .text-center
+        h1.my-3.py-3= t("Email Deliverability Observatory")
+        p.lead.text-muted.mb-4= t("Check the reputation of any domain or IP address. Monitor blacklists, DNS configuration, DMARC compliance, and certificate transparency.")
+
+      //- Search form
+      .row
+        .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+          form.mb-4(method="GET", action=state.l("/observatory"))
+            .input-group.input-group-lg
+              input.form-control(
+                type="text",
+                name="q",
+                value=q,
+                placeholder=t("Enter a domain or IP address"),
+                required,
+                autofocus=!result
+              )
+              .input-group-append
+                button.btn.btn-dark(type="submit")= t("Lookup")
+
+      //- Results
+      if result
+        .row
+          .col-12
+            .card.border-dark.mb-4
+              .card-header.d-flex.justify-content-between.align-items-center
+                h2.h5.mb-0
+                  code= result.value
+                  = " "
+                  span.badge.badge-secondary= result.type
+                if result.reputation_grade
+                  - const gradeColor = result.reputation_score >= 85 ? "success" : result.reputation_score >= 55 ? "warning" : "danger";
+                  span.badge(class=`badge-${gradeColor}`)
+                    = result.reputation_grade
+                    = " ("
+                    = result.reputation_score
+                    = "/100)"
+              .card-body
+                if result.status === 'pending'
+                  .alert.alert-info.text-center
+                    = t("This subject is new. Reputation data is being collected and will be available shortly.")
+                else if result.status === 'scoring'
+                  .alert.alert-info.text-center
+                    = t("Reputation score is being calculated. Please check back in a few minutes.")
+
+                //- Score gauge
+                if result.reputation_score !== null && result.reputation_score !== undefined
+                  .row.text-center.mb-4
+                    .col-md-4
+                      h3.h6.text-muted= t("Reputation Score")
+                      - const scoreColor = result.reputation_score >= 85 ? "#28a745" : result.reputation_score >= 55 ? "#ffc107" : "#dc3545";
+                      p.display-4.mb-0(
+                        style=`color: ${scoreColor}; font-weight: bold`
+                      )= result.reputation_score
+                      p.text-muted= t("out of 100")
+                    .col-md-4
+                      h3.h6.text-muted= t("Grade")
+                      p.display-4.mb-0(
+                        style=`color: ${scoreColor}; font-weight: bold`
+                      )= result.reputation_grade || "N/A"
+                    .col-md-4
+                      h3.h6.text-muted= t("Last Scored")
+                      if result.last_scored_at
+                        p.mb-0= new Date(result.last_scored_at).toLocaleDateString()
+                      else
+                        p.mb-0.text-muted= t("Pending")
+
+                //- Blacklist summary
+                if result.blacklist_summary
+                  .card.mb-3
+                    .card-header
+                      h3.h6.mb-0= t("Blacklist Status")
+                    .card-body
+                      if result.blacklist_summary.listed_count === 0
+                        p.text-success.mb-0
+                          = "✅ "
+                          = t("Not listed on any monitored blacklists")
+                          = " ("
+                          = result.blacklist_summary.total_checked
+                          = " "
+                          = t("checked")
+                          = ")"
+                      else
+                        p.text-danger.mb-2
+                          = "🔴 "
+                          = t("Listed on")
+                          = " "
+                          strong= result.blacklist_summary.listed_count
+                          = " "
+                          = t("of")
+                          = " "
+                          = result.blacklist_summary.total_checked
+                          = " "
+                          = t("blacklists")
+                        if result.blacklist_summary.lists && result.blacklist_summary.lists.length > 0
+                          ul.mb-0
+                            each list in result.blacklist_summary.lists
+                              li
+                                code= list
+
+                //- DNS Configuration
+                if result.dns_snapshot && result.type === 'domain'
+                  .card.mb-3
+                    .card-header
+                      h3.h6.mb-0= t("DNS Configuration")
+                    .card-body
+                      table.table.table-sm.mb-0
+                        tbody
+                          tr
+                            td
+                              strong= t("MX Records")
+                            td
+                              if result.dns_snapshot.MX && result.dns_snapshot.MX.length > 0
+                                span.text-success= "✅ "
+                                each mx in result.dns_snapshot.MX
+                                  code.mr-2= mx.exchange || mx
+                              else
+                                span.text-danger
+                                  = "❌ "
+                                  = t("Not configured")
+                          tr
+                            td
+                              strong= t("SPF Record")
+                            td
+                              if result.spf_record
+                                span.text-success= "✅ "
+                                if result.spf_lookup_count > 10
+                                  span.text-danger= `⚠️ ${result.spf_lookup_count} lookups (limit: 10)`
+                                else
+                                  span.text-muted= `(${result.spf_lookup_count} lookups)`
+                              else
+                                span.text-danger
+                                  = "❌ "
+                                  = t("Not configured")
+                          tr
+                            td
+                              strong= t("DMARC Policy")
+                            td
+                              if result.dmarc_policy
+                                - const dmarcColor = result.dmarc_policy === "reject" ? "success" : result.dmarc_policy === "quarantine" ? "warning" : "danger";
+                                span(class=`text-${dmarcColor}`)
+                                  = result.dmarc_policy === "reject" ? "✅" : result.dmarc_policy === "quarantine" ? "⚠️" : "❌"
+                                  = " "
+                                  = result.dmarc_policy
+                              else
+                                span.text-danger
+                                  = "❌ "
+                                  = t("Not configured")
+                          tr
+                            td
+                              strong= t("NS Records")
+                            td
+                              if result.dns_snapshot.NS && result.dns_snapshot.NS.length > 0
+                                span.text-success= "✅ "
+                                each ns in result.dns_snapshot.NS
+                                  code.mr-2= ns
+                              else
+                                span.text-muted= t("N/A")
+
+                //- ASN Info
+                if result.asn
+                  .card.mb-3
+                    .card-header
+                      h3.h6.mb-0= t("Network Information")
+                    .card-body
+                      table.table.table-sm.mb-0
+                        tbody
+                          tr
+                            td
+                              strong= t("ASN")
+                            td
+                              code= `AS${result.asn}`
+                          if result.asn_org
+                            tr
+                              td
+                                strong= t("Organization")
+                              td= result.asn_org
+                          if result.country_code
+                            tr
+                              td
+                                strong= t("Country")
+                              td= result.country_code
+
+                //- Deep dive link
+                .text-center.mt-3
+                  a.btn.btn-dark(
+                    href=state.l(`/observatory/report/${encodeURIComponent(result.value)}`)
+                  )= t("View Full Report")
+                  = " "
+                  if user && user.plan !== 'free'
+                    a.btn.btn-outline-dark(
+                      href=state.l("/my-account/observatory")
+                    )= t("Monitor This")

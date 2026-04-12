@@ -50,6 +50,7 @@ const mobileConfig = require('./mobile-config');
 const feed = require('./feed');
 const calendar = require('./calendar');
 const eventFeed = require('./event-feed');
+const observatory = require('./observatory');
 const unsubscribe = require('./unsubscribe');
 const calendarResponse = require('./calendar-response');
 const _ = require('#helpers/lodash');
@@ -722,6 +723,7 @@ module.exports = {
   ips,
   mobileConfig,
   feed,
+  observatory,
   unsubscribe,
   calendarResponse
 };

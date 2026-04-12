@@ -28,6 +28,10 @@ const AddressBooks = require('./address-books');
 const Contacts = require('./contacts');
 const TTI = require('./tti');
 const SieveScripts = require('./sieve-scripts');
+const ObservatorySubjects = require('./observatory-subjects');
+const ObservatoryBlacklistEvents = require('./observatory-blacklist-events');
+const ObservatoryDnsSnapshots = require('./observatory-dns-snapshots');
+const ObservatoryCtEvents = require('./observatory-ct-events');
 
 module.exports = {
   AnalyticsEvents,
@@ -54,5 +58,9 @@ module.exports = {
   AddressBooks,
   Contacts,
   TTI,
-  SieveScripts
+  SieveScripts,
+  ObservatorySubjects,
+  ObservatoryBlacklistEvents,
+  ObservatoryDnsSnapshots,
+  ObservatoryCtEvents
 };

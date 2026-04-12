@@ -77,6 +77,10 @@ router
     paginate.middleware(25, 100),
     web.myAccount.listDmarcReports
   )
+  // observatory monitoring dashboard
+  .get('/observatory', web.observatory.listMonitors)
+  .post('/observatory/monitor', web.observatory.addMonitor)
+  .post('/observatory/monitor/:id/remove', web.observatory.removeMonitor)
   .get(
     '/billing',
     web.myAccount.retrieveBilling,

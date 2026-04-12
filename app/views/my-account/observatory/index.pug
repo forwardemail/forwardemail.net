@@ -1,0 +1,91 @@
+extends ../../layout
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      h1.h3.mb-4= t("Observatory Monitors")
+      p.text-muted.mb-4= t("Monitor domains and IPs for blacklist changes, DNS modifications, and certificate events. You will receive alerts when significant changes are detected.")
+
+      //- Add monitor form
+      .card.mb-4
+        .card-header
+          h2.h6.mb-0= t("Add a Monitor")
+        .card-body
+          form(
+            method="POST",
+            action=state.l("/my-account/observatory/monitor")
+          )
+            input(type="hidden", name="_csrf", value=ctx.state._csrf || "")
+            .form-row.align-items-end
+              .col-md-5
+                label.form-label(for="monitor-value")= t("Domain or IP Address")
+                input#monitor-value.form-control(
+                  type="text",
+                  name="value",
+                  placeholder=t("example.com or 1.2.3.4"),
+                  required
+                )
+              .col-md-3
+                label.form-label(for="monitor-type")= t("Type")
+                select#monitor-type.form-control(name="type")
+                  option(value="domain")= t("Domain")
+                  option(value="ip")= t("IP Address")
+              .col-md-4
+                button.btn.btn-dark.btn-block(type="submit")= t("Add Monitor")
+
+      //- Monitored subjects
+      if subjects && subjects.length > 0
+        .row
+          each subject in subjects
+            .col-md-6.col-lg-4.mb-3
+              .card.h-100
+                .card-header.d-flex.justify-content-between.align-items-center
+                  .text-truncate
+                    code.mr-1= subject.value
+                    span.badge.badge-secondary.badge-sm= subject.type
+                  if subject.reputation_grade
+                    - const gradeColor = subject.reputation_score >= 85 ? "success" : subject.reputation_score >= 55 ? "warning" : "danger";
+                    span.badge(class=`badge-${gradeColor}`)= subject.reputation_grade
+                .card-body.py-2
+                  .row.text-center
+                    .col-4
+                      .small.text-muted= t("Score")
+                      if subject.reputation_score !== null && subject.reputation_score !== undefined
+                        strong= subject.reputation_score
+                      else
+                        span.text-muted= "—"
+                    .col-4
+                      .small.text-muted= t("Blacklists")
+                      if subject.blacklist_summary
+                        - const blColor = subject.blacklist_summary.listed_count === 0 ? "success" : "danger";
+                        strong(class=`text-${blColor}`)= subject.blacklist_summary.listed_count
+                      else
+                        span.text-muted= "—"
+                    .col-4
+                      .small.text-muted= t("DMARC")
+                      if subject.dmarc_policy
+                        - const pColor = subject.dmarc_policy === "reject" ? "success" : subject.dmarc_policy === "quarantine" ? "warning" : "danger";
+                        strong(class=`text-${pColor}`)= subject.dmarc_policy
+                      else
+                        span.text-muted= "—"
+                .card-footer.d-flex.justify-content-between
+                  a.btn.btn-sm.btn-outline-dark(
+                    href=state.l(`/observatory/report/${encodeURIComponent(subject.value)}`)
+                  )= t("View Report")
+                  form.d-inline(
+                    method="POST",
+                    action=state.l(`/my-account/observatory/monitor/${subject._id}/remove`)
+                  )
+                    input(
+                      type="hidden",
+                      name="_csrf",
+                      value=ctx.state._csrf || ""
+                    )
+                    button.btn.btn-sm.btn-outline-danger(type="submit")= t("Remove")
+      else
+        .text-center.text-muted.py-5
+          p.mb-2= t("You are not monitoring any domains or IPs yet.")
+          p
+            a(href=state.l("/observatory"))= t("Search the Observatory")
+            = " "
+            = t("to find domains to monitor.")
