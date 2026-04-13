@@ -75,7 +75,7 @@ jobs:
 
       - name: Upload binary to release (Linux/macOS)
         if: runner.os != 'Windows'
-        uses: softprops/action-gh-release@v2 # v2.6.1
+        uses: softprops/action-gh-release@v3 # v2.6.1
         with:
           files: tools/convert-sqlite-to-eml/dist/${{ matrix.artifact }}
         env:
@@ -83,7 +83,7 @@ jobs:
 
       - name: Upload binary to release (Windows)
         if: runner.os == 'Windows'
-        uses: softprops/action-gh-release@v2 # v2.6.1
+        uses: softprops/action-gh-release@v3 # v2.6.1
         with:
           files: tools/convert-sqlite-to-eml/dist/${{ matrix.artifact }}.exe
         env:
