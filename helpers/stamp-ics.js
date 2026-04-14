@@ -34,7 +34,7 @@ const ICAL = require('ical.js');
 
 /**
  * Update DTSTAMP and LAST-MODIFIED in all VEVENT and VTODO components
- * to the current UTC time.
+ * to the current UTC time.  Used on the **write path** (API create/update).
  *
  * @param {string} icsData - Raw ICS calendar data
  * @param {Date}   [now]   - Optional timestamp (defaults to current time)
@@ -72,4 +72,77 @@ function stampICS(icsData, now) {
   }
 }
 
-module.exports = { stampICS };
+/**
+ * Ensure DTSTAMP and LAST-MODIFIED are consistent with the record's
+ * `updated_at` timestamp.  Used on the **read path** (CalDAV GET/REPORT,
+ * API retrieve) to heal existing records that were stored with stale
+ * or missing ICS-level timestamps.
+ *
+ * Unlike `stampICS()` (which always sets "now"), this function uses
+ * the authoritative `updated_at` from the database record so that:
+ *   - Existing stale records get corrected timestamps on read
+ *   - Timestamps are deterministic (same updated_at → same output)
+ *   - CalDAV clients see LAST-MODIFIED that matches the actual
+ *     modification time, not the time the response was generated
+ *
+ * @param {string} icsData   - Raw ICS calendar data
+ * @param {Date}   updatedAt - The record's updated_at timestamp
+ * @returns {string} ICS data with corrected timestamps
+ */
+function ensureICSTimestamps(icsData, updatedAt) {
+  if (!icsData || typeof icsData !== 'string') return icsData;
+  if (!updatedAt) return icsData;
+
+  try {
+    const parsed = ICAL.parse(icsData);
+    const comp = new ICAL.Component(parsed);
+
+    const stamp = ICAL.Time.fromJSDate(
+      updatedAt instanceof Date ? updatedAt : new Date(updatedAt),
+      true // UTC
+    );
+
+    const components = [
+      ...comp.getAllSubcomponents('vevent'),
+      ...comp.getAllSubcomponents('vtodo')
+    ];
+
+    if (components.length === 0) return icsData;
+
+    let modified = false;
+
+    for (const sub of components) {
+      const existingDtstamp = sub.getFirstPropertyValue('dtstamp');
+      const existingLastMod = sub.getFirstPropertyValue('last-modified');
+
+      // Only update if the existing value is older than updated_at.
+      // This avoids overwriting correctly-stamped records from CalDAV PUT.
+      const stampMs = stamp.toJSDate().getTime();
+
+      const dtstampMs = existingDtstamp
+        ? existingDtstamp.toJSDate().getTime()
+        : 0;
+      const lastModMs = existingLastMod
+        ? existingLastMod.toJSDate().getTime()
+        : 0;
+
+      if (dtstampMs < stampMs) {
+        sub.updatePropertyWithValue('dtstamp', stamp);
+        modified = true;
+      }
+
+      if (lastModMs < stampMs) {
+        sub.updatePropertyWithValue('last-modified', stamp);
+        modified = true;
+      }
+    }
+
+    if (!modified) return icsData;
+
+    return comp.toString();
+  } catch {
+    return icsData;
+  }
+}
+
+module.exports = { stampICS, ensureICSTimestamps };

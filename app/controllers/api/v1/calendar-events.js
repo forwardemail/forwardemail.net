@@ -25,10 +25,8 @@ const {
 } = require('#helpers/send-calendar-email');
 const _ = require('#helpers/lodash');
 const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
-const { quoteICSFilenames } = require('#helpers/ical-filename');
-const { normalizeIcs } = require('#helpers/normalize-ics');
-const { ensureVTimezones } = require('#helpers/generate-vtimezone');
-const { stampICS } = require('#helpers/stamp-ics');
+const { ensureICSTimestamps } = require('#helpers/stamp-ics');
+const { prepareICSForStorage } = require('#helpers/prepare-ics');
 const sendApnCalendar = require('#helpers/send-apn-calendar');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 
@@ -88,6 +86,18 @@ function incrementSynctoken(synctoken) {
 
 function json(calendarEvent, calendar) {
   // Transform calendar event data for API response
+  //
+  // Heal stale DTSTAMP / LAST-MODIFIED on read.
+  // Records created via the API before the stampICS write-path fix
+  // may still carry outdated ICS-level timestamps.  Using the
+  // authoritative `updated_at` from the database ensures API consumers
+  // see a LAST-MODIFIED that reflects the real modification time.
+  //
+  const healedIcal = ensureICSTimestamps(
+    calendarEvent.ical,
+    calendarEvent.updated_at
+  );
+
   const object = {
     //
     // NOTE: we use `eventId` vs `_id` since
@@ -95,7 +105,7 @@ function json(calendarEvent, calendar) {
     //
     id: calendarEvent.eventId,
     calendar_id: calendar.calendarId,
-    ical: calendarEvent.ical,
+    ical: healedIcal,
     deleted_at: calendarEvent.deleted_at,
     created_at: calendarEvent.created_at,
     updated_at: calendarEvent.updated_at,
@@ -570,9 +580,10 @@ async function create(ctx) {
   if (isOverQuota)
     throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
 
-  const normalizedIcal = stampICS(
-    ensureVTimezones(quoteICSFilenames(normalizeIcs(body.ical)))
-  );
+  const normalizedIcal = prepareICSForStorage(body.ical, {
+    stamp: true,
+    normalizeAlarms: true
+  });
   const href = `/dav/${ctx.state.session.user.username}/${calendar.calendarId}/${eventId}.ics`;
 
   let calendarEvent;
@@ -815,9 +826,10 @@ async function update(ctx) {
 
   // Update iCal data if specified (normalize M365 recurring events + sanitize FILENAME params)
   if (body.ical !== undefined) {
-    calendarEvent.ical = stampICS(
-      ensureVTimezones(quoteICSFilenames(normalizeIcs(body.ical)))
-    );
+    calendarEvent.ical = prepareICSForStorage(body.ical, {
+      stamp: true,
+      normalizeAlarms: true
+    });
   }
 
   // Set db virtual helpers

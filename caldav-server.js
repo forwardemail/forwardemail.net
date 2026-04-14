@@ -37,8 +37,8 @@ const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const sendApnCalendar = require('#helpers/send-apn-calendar');
-const { ensureVTimezones } = require('#helpers/generate-vtimezone');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
+const { prepareICSForStorage } = require('#helpers/prepare-ics');
 const setupAuthSession = require('#helpers/setup-auth-session');
 const { processCalendarInvites } = require('#helpers/process-calendar-invites');
 const {
@@ -47,10 +47,7 @@ const {
   resetPartstatsOnSignificantChange,
   sendCalendarEmail
 } = require('#helpers/send-calendar-email');
-const {
-  parseContentDispositionFilename,
-  quoteICSFilenames
-} = require('#helpers/ical-filename');
+const { parseContentDispositionFilename } = require('#helpers/ical-filename');
 
 const exdateRegex =
   /^EXDATE(?:;TZID=[\w/+=-]+|;VALUE=DATE)?:\d{8}(?:T\d{6}(?:\.\d{1,3})?Z?)?$/;
@@ -542,113 +539,6 @@ function bumpSyncToken(synctoken) {
   }
 
   return `${base}/${num + 1}`;
-}
-
-//
-// Normalize ICS line endings to CRLF per RFC 5545 Section 3.1.
-// Some clients (e.g. Thunderbird, older CalDAV libraries) send ICS
-// with bare LF (\n) instead of CRLF (\r\n).  ical.js preserves
-// whatever line endings the input has, so if we store bare-LF ICS,
-// buildICS() will output bare-LF ICS, which strict clients like
-// iOS Calendar (dataaccessd) may fail to parse.
-//
-// This function:
-//   1. Replaces any existing \r\n with \n (normalize to LF first)
-//   2. Replaces all \n with \r\n (convert to CRLF)
-// This two-step approach avoids doubling existing \r\n to \r\r\n.
-//
-function normalizeICS(icsData) {
-  if (typeof icsData !== 'string') return icsData;
-
-  //
-  // Phase 1: Add missing EXDATEs for detached recurring instances.
-  //
-  // Microsoft Exchange / M365 generates recurring series with
-  // RECURRENCE-ID overrides (moved instances) but omits the
-  // corresponding EXDATE on the master VEVENT.  Per RFC 5545
-  // Section 3.8.5.1, the original occurrence date should appear
-  // as an EXDATE so clients don't render both the original and
-  // the moved instance.
-  //
-  if (icsData.includes('RECURRENCE-ID')) {
-    try {
-      const parsed = ICAL.parse(icsData);
-      const comp = new ICAL.Component(parsed);
-      const vevents = [
-        ...comp.getAllSubcomponents('vevent'),
-        ...comp.getAllSubcomponents('vtodo')
-      ];
-
-      if (vevents.length >= 2) {
-        const masters = [];
-        const overrides = [];
-
-        for (const vevent of vevents) {
-          if (vevent.getFirstPropertyValue('recurrence-id')) {
-            overrides.push(vevent);
-          } else if (
-            vevent.getFirstProperty('rrule') ||
-            vevent.getFirstProperty('rdate')
-          ) {
-            masters.push(vevent);
-          }
-        }
-
-        let modified = false;
-
-        for (const master of masters) {
-          const masterUid = master.getFirstPropertyValue('uid');
-          if (!masterUid) continue;
-
-          // Collect existing EXDATE values
-          const existingExdates = new Set();
-          for (const prop of master.getAllProperties('exdate')) {
-            const val = prop.getFirstValue();
-            if (val) existingExdates.add(val.toICALString());
-          }
-
-          for (const override of overrides) {
-            const overrideUid = override.getFirstPropertyValue('uid');
-            if (overrideUid !== masterUid) continue;
-
-            const recurrenceId = override.getFirstProperty('recurrence-id');
-            if (!recurrenceId) continue;
-
-            const recIdValue = recurrenceId.getFirstValue();
-            if (!recIdValue) continue;
-
-            const recIdIcs = recIdValue.toICALString();
-            if (!existingExdates.has(recIdIcs)) {
-              const exdateProp = new ICAL.Property('exdate');
-              const tzid = recurrenceId.getParameter('tzid');
-              if (tzid) exdateProp.setParameter('tzid', tzid);
-              const valueType = recurrenceId.getParameter('value');
-              if (valueType) exdateProp.setParameter('value', valueType);
-              exdateProp.setValue(recIdValue.clone());
-              master.addProperty(exdateProp);
-              existingExdates.add(recIdIcs);
-              modified = true;
-            }
-          }
-        }
-
-        if (modified) {
-          icsData = comp.toString();
-        }
-      }
-    } catch {
-      // If parsing fails, continue with the original data
-    }
-  }
-
-  // Phase 2: Inject missing VTIMEZONE components for referenced TZIDs.
-  // RFC 5545 Section 3.6.5 requires a VTIMEZONE definition for every TZID
-  // parameter referenced in the calendar object.  API-created events and
-  // some third-party clients omit these definitions.
-  icsData = ensureVTimezones(icsData);
-
-  // Phase 3: Normalize line endings to CRLF (RFC 5545 Section 3.1)
-  return icsData.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
 }
 
 // Helper function to detect component type from ICS data
@@ -2095,7 +1985,7 @@ class CalDAV extends API {
           }
 
           if (existingEvent) {
-            existingEvent.ical = normalizeICS(vc.toString());
+            existingEvent.ical = prepareICSForStorage(vc.toString());
             // Resurrect soft-deleted events during import
             if (
               existingEvent.deleted_at !== null &&
@@ -2113,7 +2003,7 @@ class CalDAV extends API {
           eventIdToEvents[eventId].push({
             eventId,
             calendar: calendar._id,
-            ical: normalizeICS(vc.toString())
+            ical: prepareICSForStorage(vc.toString())
           });
         }
 
@@ -2862,7 +2752,7 @@ class CalDAV extends API {
 
       const oldIcal = String(exists.ical);
 
-      exists.ical = normalizeICS(ctx.request.body);
+      exists.ical = prepareICSForStorage(ctx.request.body);
       exists.href = ctx.url;
       exists.deleted_at = null;
       exists.instance = this;
@@ -2939,7 +2829,7 @@ class CalDAV extends API {
       // event obj
       eventId,
       calendar: calendar._id,
-      ical: normalizeICS(ctx.request.body),
+      ical: prepareICSForStorage(ctx.request.body),
       // Store the original request URL for sync-collection responses
       href: ctx.url
     };
@@ -3196,7 +3086,7 @@ class CalDAV extends API {
       e.href = ctx.url;
     }
 
-    e.ical = normalizeICS(ctx.request.body);
+    e.ical = prepareICSForStorage(ctx.request.body);
 
     // save event
     e = await e.save();
@@ -3275,7 +3165,7 @@ class CalDAV extends API {
 
         if (resetCount > 0) {
           // Save the updated iCal with reset PARTSTATs
-          e.ical = normalizeICS(updatedIcal);
+          e.ical = prepareICSForStorage(updatedIcal);
           e.instance = this;
           e.session = ctx.state.session;
           e.isNew = false;
@@ -3884,11 +3774,10 @@ class CalDAV extends API {
     //
     // Post-process to quote FILENAME values containing spaces
     // (ical.js does not auto-quote parameter values per RFC 5545 Section 3.2)
-    const updatedIcal = quoteICSFilenames(comp.toString());
     event.instance = this;
     event.session = ctx.state.session;
     event.isNew = false;
-    event.ical = normalizeICS(updatedIcal);
+    event.ical = prepareICSForStorage(comp.toString());
     event = await event.save();
     // Bump the calendar sync token
     await Calendars.findByIdAndUpdate(this, ctx.state.session, calendar._id, {
@@ -3907,7 +3796,7 @@ class CalDAV extends API {
         ctx.status = 200;
         ctx.set('Content-Type', 'text/calendar; charset=utf-8');
         ctx.set('ETag', etag(event.updated_at.toISOString()));
-        ctx.body = updatedIcal;
+        ctx.body = event.ical;
       } else {
         ctx.status = 204;
         ctx.body = '';
@@ -3922,7 +3811,7 @@ class CalDAV extends API {
       const prefer = ctx.get('Prefer') || '';
       if (prefer.includes('return=representation')) {
         ctx.set('Content-Type', 'text/calendar; charset=utf-8');
-        ctx.body = updatedIcal;
+        ctx.body = event.ical;
       } else {
         ctx.body = '';
       }

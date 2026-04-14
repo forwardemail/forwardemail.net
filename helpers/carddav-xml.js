@@ -503,7 +503,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
 
       case 'getctag': {
         propElements.push({
-          name: 'd:getctag',
+          name: 'cs:getctag',
           value: addressBook.synctoken
         });
         break;

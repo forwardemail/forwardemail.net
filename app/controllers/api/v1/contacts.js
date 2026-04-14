@@ -329,10 +329,25 @@ async function create(ctx) {
   }
 
   if (!vCardContent) {
+    // Build a minimal but RFC 2426-compliant vCard 3.0.
+    // N (structured name) is REQUIRED in vCard 3.0; without it
+    // strict clients such as macOS Contacts may silently reject
+    // the contact or fail to display it during sync.
+    const fn = body.full_name || '';
+    const nameParts = fn.trim().split(/\s+/);
+    const lastName = nameParts.length > 1 ? nameParts.pop() : '';
+    const firstName = nameParts.join(' ');
+    const rev = new Date()
+      .toISOString()
+      .replace(/[-:]/g, '')
+      .replace(/\.\d{3}/, '');
     vCardContent = `BEGIN:VCARD
 VERSION:3.0
+PRODID:-//Forward Email//EN
 UID:${uid}
-FN:${body.full_name || ''}`;
+FN:${fn}
+N:${lastName};${firstName};;;
+REV:${rev}`;
 
     if (body.emails && Array.isArray(body.emails)) {
       for (const email of body.emails) {
@@ -720,10 +735,22 @@ async function update(ctx) {
         body.emails !== undefined ||
         body.phone_numbers !== undefined)
     ) {
+      // Build a minimal but RFC 2426-compliant vCard 3.0.
+      const fnUpd = contact.fullName || '';
+      const namePartsUpd = fnUpd.trim().split(/\s+/);
+      const lastNameUpd = namePartsUpd.length > 1 ? namePartsUpd.pop() : '';
+      const firstNameUpd = namePartsUpd.join(' ');
+      const revUpd = new Date()
+        .toISOString()
+        .replace(/[-:]/g, '')
+        .replace(/\.\d{3}/, '');
       vCardContent = `BEGIN:VCARD
 VERSION:3.0
+PRODID:-//Forward Email//EN
 UID:${contact.uid}
-FN:${contact.fullName || ''}`;
+FN:${fnUpd}
+N:${lastNameUpd};${firstNameUpd};;;
+REV:${revUpd}`;
 
       if (contact.emails && Array.isArray(contact.emails)) {
         for (const email of contact.emails) {
