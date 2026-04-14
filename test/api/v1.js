@@ -1202,25 +1202,14 @@ test('smtp outbound spam block detection', async (t) => {
     .create();
 
   //
-  // create email
+  // create emails
   //
-  const res = await t.context.api
-    .post('/v1/emails')
-    .auth(user[config.userFields.apiToken])
-    .set('Content-Type', 'application/json')
-    .set('Accept', 'application/json')
-    .send({
-      from: `${alias.name}@${domain.name}`,
-      to: `test@${[...config.truthSources][0]}`,
-      subject: 'spam',
-      text: 'yo'
-    });
-
-  t.is(res.status, 200);
-
-  // validate envelope
-  t.is(res.body.envelope.from, `${alias.name}@${domain.name}`);
-  t.deepEqual(res.body.envelope.to, [`test@${[...config.truthSources][0]}`]);
+  const truthSource = [...config.truthSources][0];
+  const recipients = [
+    `test-1@${truthSource}`,
+    `test-2@${truthSource}`,
+    `test-3@${truthSource}`
+  ];
 
   // spoof dns records
   const map = new Map();
@@ -1289,20 +1278,20 @@ test('smtp outbound spam block detection', async (t) => {
   //
   // spoof envelope RCPT TO mx records
   //
-  for (const to of res.body.envelope.to) {
-    const [, domain] = to.split('@');
+  for (const to of recipients) {
+    const [, recipientDomain] = to.split('@');
     // A
     map.set(
-      `a:${domain}`,
-      resolver.spoofPacket(domain, 'A', [IP_ADDRESS], true)
+      `a:${recipientDomain}`,
+      resolver.spoofPacket(recipientDomain, 'A', [IP_ADDRESS], true)
     );
     // MX
     map.set(
-      `mx:${domain}`,
+      `mx:${recipientDomain}`,
       resolver.spoofPacket(
-        `mx:${domain}`,
+        `mx:${recipientDomain}`,
         'MX',
-        [{ exchange: domain, priority: 0 }],
+        [{ exchange: recipientDomain, priority: 0 }],
         true,
         ms('5m')
       )
@@ -1312,7 +1301,7 @@ test('smtp outbound spam block detection', async (t) => {
   // store spoofed dns cache
   await resolver.options.cache.mset(map);
 
-  // spin up a test smtp server that simply responds with OK
+  // spin up a test smtp server that simply responds with spam rejection
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   const server = new SMTPServer({
@@ -1333,7 +1322,6 @@ test('smtp outbound spam block detection', async (t) => {
       });
       stream.pipe(writer);
       stream.on('end', () => {
-        // const buffer = Buffer.concat(chunks);
         fn();
       });
     },
@@ -1344,48 +1332,90 @@ test('smtp outbound spam block detection', async (t) => {
   // start test smtp server
   await pify(server.listen.bind(server))(port);
 
-  //
-  // process the email
-  //
-  {
-    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
-    t.is(email.id, res.body.id);
-    t.is(email.status, 'queued');
+  const createAndProcess = async (to) => {
+    const response = await t.context.api
+      .post('/v1/emails')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        from: `${alias.name}@${domain.name}`,
+        to,
+        subject: 'spam',
+        text: 'yo'
+      });
+
+    t.is(response.status, 200);
+
+    // validate envelope
+    t.is(response.body.envelope.from, `${alias.name}@${domain.name}`);
+    t.deepEqual(response.body.envelope.to, [to]);
+
+    //
+    // process the email
+    //
+    const queuedEmail = await Emails.findOne({ id: response.body.id })
+      .lean()
+      .exec();
+    t.is(queuedEmail.id, response.body.id);
+    t.is(queuedEmail.status, 'queued');
 
     await processEmail({
-      email,
+      email: queuedEmail,
       port,
       resolver,
       client
     });
-  }
 
-  //
-  // ensure email rejected
-  //
-  {
-    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
-    delete email.message; // suppress buffer output from console log
-    t.is(email.id, res.body.id);
-    t.is(email.status, 'rejected');
-    t.deepEqual(email.accepted, []);
-    t.true(email.rejectedErrors.length === 1);
-    t.is(email.rejectedErrors[0].responseCode, 550);
-    t.is(email.rejectedErrors[0].recipient, res.body.envelope.to[0]);
+    //
+    // ensure email rejected
+    //
+    const rejectedEmail = await Emails.findOne({ id: response.body.id })
+      .lean()
+      .exec();
+    delete rejectedEmail.message;
+    t.is(rejectedEmail.id, response.body.id);
+    t.is(rejectedEmail.status, 'rejected');
+    t.deepEqual(rejectedEmail.accepted, []);
+    t.true(rejectedEmail.rejectedErrors.length === 1);
+    t.is(rejectedEmail.rejectedErrors[0].responseCode, 550);
+    t.is(rejectedEmail.rejectedErrors[0].recipient, to);
 
     // check original preserved error
-    t.is(email.rejectedErrors[0].error.code, 'EENVELOPE');
+    t.is(rejectedEmail.rejectedErrors[0].error.code, 'EENVELOPE');
     t.is(
-      email.rejectedErrors[0].error.response,
+      rejectedEmail.rejectedErrors[0].error.response,
       '550 Message detected as spam'
     );
-    t.is(email.rejectedErrors[0].error.responseCode, 550);
-    t.is(email.rejectedErrors[0].error.bounceInfo.category, 'spam');
-    t.is(email.rejectedErrors[0].error.command, 'RCPT TO');
-  }
+    t.is(rejectedEmail.rejectedErrors[0].error.responseCode, 550);
+    t.is(rejectedEmail.rejectedErrors[0].error.bounceInfo.category, 'spam');
+    t.is(rejectedEmail.rejectedErrors[0].error.command, 'RCPT TO');
 
-  // ensure domain is suspended
-  const isSuspended = await Domains.exists({
+    return {
+      response,
+      email: rejectedEmail
+    };
+  };
+
+  // first trusted-source detection should reject the message but not suspend
+  await createAndProcess(recipients[0]);
+  let isSuspended = await Domains.exists({
+    _id: domain._id,
+    is_smtp_suspended: true
+  });
+  t.false(Boolean(isSuspended));
+
+  // second trusted-source detection should still not suspend
+  await createAndProcess(recipients[1]);
+  isSuspended = await Domains.exists({
+    _id: domain._id,
+    is_smtp_suspended: true
+  });
+  t.false(Boolean(isSuspended));
+
+  // third trusted-source detection across distinct recipients should suspend
+  const thirdAttempt = await createAndProcess(recipients[2]);
+  isSuspended = await Domains.exists({
     _id: domain._id,
     is_smtp_suspended: true
   });
@@ -1397,9 +1427,9 @@ test('smtp outbound spam block detection', async (t) => {
 
   // ensure future attempts to deliver emails throw suspension error
   {
-    let email = await Emails.findOne({ id: res.body.id }).lean().exec();
+    let email = await Emails.findById(thirdAttempt.email._id).lean().exec();
     delete email.message;
-    t.is(email.id, res.body.id);
+    t.is(email.id, thirdAttempt.response.body.id);
     t.is(email.status, 'rejected');
     await Emails.findByIdAndUpdate(email._id, {
       $set: { is_locked: false, status: 'queued' },
@@ -1422,14 +1452,19 @@ test('smtp outbound spam block detection', async (t) => {
 
   // latest error should not have been attempted (should have returned early)
   {
-    const email = await Emails.findOne({ id: res.body.id }).lean().exec();
+    const email = await Emails.findOne({ id: thirdAttempt.response.body.id })
+      .lean()
+      .exec();
     delete email.message;
-    t.is(email.id, res.body.id);
+    t.is(email.id, thirdAttempt.response.body.id);
     t.is(email.status, 'rejected');
     t.deepEqual(email.accepted, []);
     t.true(email.rejectedErrors.length === 1);
     t.is(email.rejectedErrors[0].responseCode, 550);
-    t.is(email.rejectedErrors[0].recipient, res.body.envelope.to[0]);
+    t.is(
+      email.rejectedErrors[0].recipient,
+      thirdAttempt.response.body.envelope.to[0]
+    );
     t.true(email.rejectedErrors[0].error === undefined);
   }
 

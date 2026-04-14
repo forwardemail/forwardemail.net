@@ -19611,5 +19611,10 @@
   "Complete step-by-step guide to migrate from Amazon WorkMail to Forward Email before the March 2027 shutdown. Export emails, configure DNS, and set up IMAP.": "Complete step-by-step guide to migrate from Amazon WorkMail to Forward Email before the March 2027 shutdown. Export emails, configure DNS, and set up IMAP.",
   "Delete alias?": "Delete alias?",
   "Please confirm if you wish to delete the alias <strong>%s</strong>.": "Please confirm if you wish to delete the alias <strong>%s</strong>.",
-  "Manage Password": "Manage Password"
+  "Manage Password": "Manage Password",
+  "Outbound SMTP for <strong class=\"notranslate\">%s</strong> was suspended after multiple recent outbound messages were detected as virus or spam by trusted sources within a short rolling window.": "Outbound SMTP for <strong class=\"notranslate\">%s</strong> was suspended after multiple recent outbound messages were detected as virus or spam by trusted sources within a short rolling window.",
+  "Recent detections": "Recent detections",
+  "Unique recipients": "Unique recipients",
+  "Unique trusted sources": "Unique trusted sources",
+  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded."
 }

@@ -803,6 +803,20 @@ const config = {
       : []
   ),
 
+  smtpSpamSuspensionWindow: ms(env.SMTP_SPAM_SUSPENSION_WINDOW || '1h'),
+  smtpSpamSuspensionSpamThreshold: Math.max(
+    1,
+    Number(env.SMTP_SPAM_SUSPENSION_SPAM_THRESHOLD) || 3
+  ),
+  smtpSpamSuspensionVirusThreshold: Math.max(
+    1,
+    Number(env.SMTP_SPAM_SUSPENSION_VIRUS_THRESHOLD) || 2
+  ),
+  smtpSpamSuspensionMinUniqueRecipients: Math.max(
+    1,
+    Number(env.SMTP_SPAM_SUSPENSION_MIN_UNIQUE_RECIPIENTS) || 2
+  ),
+
   greylistTimeout: ms('5m'),
   greylistTtlMs: ms('5d'),
 

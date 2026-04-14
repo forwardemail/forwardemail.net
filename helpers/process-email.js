@@ -67,6 +67,72 @@ const RETURN_PATH =
 
 const srs = new SRS(config.srs);
 
+function getTruthSourceSuspensionThreshold(category) {
+  return category === 'virus'
+    ? config.smtpSpamSuspensionVirusThreshold
+    : config.smtpSpamSuspensionSpamThreshold;
+}
+
+async function getTruthSourceSuspensionState({
+  client,
+  domain,
+  email,
+  recipient,
+  truthSource,
+  category
+}) {
+  const ttlMs = config.smtpSpamSuspensionWindow;
+  const prefix = `${config.fingerprintPrefix}:smtp_abuse:${domain.id}:${category}`;
+  const emailId =
+    isSANB(email.id) && email.id !== 'undefined'
+      ? email.id
+      : typeof email?._id?.toString === 'function'
+      ? email._id.toString()
+      : String(email._id);
+  const normalizedRecipient = recipient.toLowerCase().trim();
+  const normalizedTruthSource = truthSource.toLowerCase().trim();
+  const dedupeKey = `${prefix}:event:${emailId}:${normalizedRecipient}:${normalizedTruthSource}`;
+  const countKey = `${prefix}:count`;
+  const recipientsKey = `${prefix}:recipients`;
+  const truthSourcesKey = `${prefix}:truth_sources`;
+
+  const wasAdded = await client.set(dedupeKey, 'true', 'PX', ttlMs, 'NX');
+
+  if (wasAdded === 'OK') {
+    await Promise.all([
+      client.incr(countKey),
+      client.sadd(recipientsKey, normalizedRecipient),
+      client.sadd(truthSourcesKey, normalizedTruthSource),
+      client.pexpire(dedupeKey, ttlMs),
+      client.pexpire(countKey, ttlMs),
+      client.pexpire(recipientsKey, ttlMs),
+      client.pexpire(truthSourcesKey, ttlMs)
+    ]);
+  }
+
+  const [count, uniqueRecipients, uniqueTruthSources] = await Promise.all([
+    client.get(countKey),
+    client.scard(recipientsKey),
+    client.scard(truthSourcesKey)
+  ]);
+
+  const threshold = getTruthSourceSuspensionThreshold(category);
+  const parsedCount = Number(count) || 0;
+  const parsedUniqueRecipients = Number(uniqueRecipients) || 0;
+  const parsedUniqueTruthSources = Number(uniqueTruthSources) || 0;
+
+  return {
+    count: parsedCount,
+    threshold,
+    uniqueRecipients: parsedUniqueRecipients,
+    uniqueTruthSources: parsedUniqueTruthSources,
+    shouldSuspend:
+      parsedCount >= threshold &&
+      (parsedUniqueRecipients >= config.smtpSpamSuspensionMinUniqueRecipients ||
+        parsedUniqueTruthSources >= 2)
+  };
+}
+
 // `email` is an Email object from mongoose
 // `resolver` is a Tangerine instance
 
@@ -1050,33 +1116,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
               typeof err.bounceInfo.category === 'string' &&
               ['virus', 'spam'].includes(err.bounceInfo.category)
             ) {
-              // send an email to all admins of the domain
-              const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
-              try {
-                await emailHelper({
-                  // TODO: smtp-spam-detected
-                  template: 'smtp-suspended',
-                  message: { to: obj.to, bcc: config.email.message.from },
-                  locals: {
-                    domain:
-                      typeof domain.toObject === 'function'
-                        ? domain.toObject()
-                        : domain,
-                    locale: obj.locale,
-                    category: err.bounceInfo.category,
-                    responseCode: err.responseCode,
-                    response: err.response,
-                    truthSource: err.truthSource,
-                    email:
-                      typeof email.toObject === 'function'
-                        ? email.toObject()
-                        : email
-                  }
-                });
-              } catch (err) {
-                logger.fatal(err, meta);
-              }
-
               // if any of the domain admins are admins then don't ban
               const adminExists = await Users.exists({
                 _id: {
@@ -1092,29 +1131,108 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 group: 'admin'
               });
 
-              if (!adminExists) {
-                // store when we sent this email and mark user as suspended
-                await Domains.findByIdAndUpdate(domain._id, {
-                  $set: {
-                    smtp_suspended_sent_at: new Date(),
-                    is_smtp_suspended: true
+              const abuseState = await getTruthSourceSuspensionState({
+                client,
+                domain,
+                email,
+                recipient: to,
+                truthSource: err.truthSource,
+                category: err.bounceInfo.category
+              });
+
+              if (!adminExists && abuseState.shouldSuspend) {
+                const suspendedDomain = await Domains.findOneAndUpdate(
+                  {
+                    _id: domain._id,
+                    is_smtp_suspended: { $ne: true }
+                  },
+                  {
+                    $set: {
+                      smtp_suspended_sent_at: new Date(),
+                      is_smtp_suspended: true
+                    }
+                  },
+                  {
+                    new: false
                   }
-                });
+                )
+                  .lean()
+                  .exec();
 
-                // send sms/email alert to admins
-                const _err = new TypeError(
-                  `${domain.name} (ID ${domain.id}) was suspended from SMTP access per email ID ${email.id}`
+                // store when we sent this email and mark user as suspended
+                if (suspendedDomain) {
+                  // send an email to all admins of the domain
+                  const obj = await Domains.getToAndMajorityLocaleByDomain(
+                    domain
+                  );
+                  try {
+                    await emailHelper({
+                      // TODO: smtp-spam-detected
+                      template: 'smtp-suspended',
+                      message: { to: obj.to, bcc: config.email.message.from },
+                      locals: {
+                        domain:
+                          typeof domain.toObject === 'function'
+                            ? domain.toObject()
+                            : domain,
+                        locale: obj.locale,
+                        category: err.bounceInfo.category,
+                        detectionCount: abuseState.count,
+                        threshold: abuseState.threshold,
+                        uniqueRecipients: abuseState.uniqueRecipients,
+                        uniqueTruthSources: abuseState.uniqueTruthSources,
+                        responseCode: err.responseCode,
+                        response: err.response,
+                        truthSource: err.truthSource,
+                        email:
+                          typeof email.toObject === 'function'
+                            ? email.toObject()
+                            : email
+                      }
+                    });
+                  } catch (_err) {
+                    logger.fatal(_err, meta);
+                  }
+
+                  // send sms/email alert to admins
+                  const suspensionError = new TypeError(
+                    `${domain.name} (ID ${
+                      domain.id
+                    }) was suspended from SMTP access after ${
+                      abuseState.count
+                    } trusted-source ${
+                      err.bounceInfo.category
+                    } detections within ${prettyMilliseconds(
+                      config.smtpSpamSuspensionWindow,
+                      { verbose: true, secondsDecimalDigits: 0 }
+                    )}`
+                  );
+                  suspensionError.err = err;
+                  suspensionError.smtpSpamSuspension = abuseState;
+                  logger.error(suspensionError, meta);
+
+                  // delete all existing tokens for the alias
+                  // (this way further retries will fail with incorrect password)
+                  // await Aliases.findByIdAndUpdate(alias._id, {
+                  //   $set: {
+                  //     tokens: []
+                  //   }
+                  // });
+                }
+              } else {
+                const warning = new TypeError(
+                  adminExists
+                    ? `${domain.name} (ID ${domain.id}) exceeded the trusted-source suspension threshold but was not auto-suspended because an internal admin owns the domain`
+                    : `${domain.name} (ID ${domain.id}) received a trusted-source ${err.bounceInfo.category} detection but did not reach the auto-suspension threshold`
                 );
-                _err.err = err; // reference original error
-                logger.error(_err, meta);
-
-                // delete all existing tokens for the alias
-                // (this way further retries will fail with incorrect password)
-                // await Aliases.findByIdAndUpdate(alias._id, {
-                //   $set: {
-                //     tokens: []
-                //   }
-                // });
+                warning.err = err;
+                warning.smtpSpamSuspension = abuseState;
+                logger.warn(warning, {
+                  ...meta,
+                  recipient: to,
+                  truthSource: err.truthSource,
+                  category: err.bounceInfo.category
+                });
               }
 
               //

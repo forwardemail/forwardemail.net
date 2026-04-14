@@ -14,7 +14,7 @@ block content
             .p-3.text-center
               h2.h5= t("Why did I receive this email?")
               p.small.card-text
-                != t('An email was processed in your outbound SMTP queue for <strong class="notranslate">%s</strong> that was detected to be a virus or spam by a trusted source.', domain.name)
+                != t('Outbound SMTP for <strong class="notranslate">%s</strong> was suspended after multiple recent outbound messages were detected as virus or spam by trusted sources within a short rolling window.', domain.name)
             .p-3.text-center
               h1.h3.text-danger= t("What was the outbound email?")
               table.table.table-striped
@@ -46,6 +46,15 @@ block content
                     th= t("Category")
                     td= t(category)
                   tr
+                    th= t("Recent detections")
+                    td= `${detectionCount} / ${threshold}`
+                  tr
+                    th= t("Unique recipients")
+                    td= uniqueRecipients
+                  tr
+                    th= t("Unique trusted sources")
+                    td= uniqueTruthSources
+                  tr
                     th= t("Status Code")
                     td: span.badge.badge-pill.badge-danger= responseCode
                   tr
@@ -54,7 +63,7 @@ block content
             .p-3.text-center
               h2.h5= t("What will happen if I don't resolve this?")
               p.small.card-text
-                = t("Outbound SMTP is currently paused and suspended.")
+                = t("Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.")
                 = " "
                 = t("This means that all of your outbound emails are not being processed.")
                 = " "
