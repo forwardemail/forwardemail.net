@@ -657,7 +657,18 @@ async function changeEmail(ctx) {
   user[config.userFields.changeEmailToken] = undefined;
   user[config.userFields.changeEmailTokenExpiresAt] = undefined;
   user[config.userFields.changeEmailNewAddress] = undefined;
+
+  // invalidate any outstanding password reset tokens
+  // (they were issued for the old email address)
+  user[config.userFields.resetToken] = undefined;
+  user[config.userFields.resetTokenExpiresAt] = undefined;
+
   await user.save();
+
+  // invalidate all other sessions since the account email changed
+  invalidateOtherSessions(ctx)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
 
   const message = ctx.translate('CHANGE_EMAIL');
   const redirectTo = ctx.state.l();

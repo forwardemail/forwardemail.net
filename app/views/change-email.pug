@@ -1,5 +1,9 @@
 extends layout
 
+block append meta
+  //- Prevent change email token from leaking via Referer header
+  meta(name="referrer", content="no-referrer")
+
 block body
   .min-vh-80.d-flex.flex-column
     .container.py-3

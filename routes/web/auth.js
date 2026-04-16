@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
 const { promisify } = require('node:util');
 
 const Boom = require('@hapi/boom');
@@ -14,9 +15,11 @@ const {
 } = require('@forwardemail/passport-fido2-webauthn');
 
 const config = require('#config');
+const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
+const { Users } = require('#models');
 
 const store = new SessionChallengeStore();
 
@@ -53,6 +56,44 @@ async function callbackRedirect(ctx, next) {
   ) {
     ctx.session.otp = 'passkey';
     await ctx.saveSession();
+  }
+
+  //
+  // OAuth pre-account takeover protection:
+  // If an attacker pre-registers with the victim's email (unverified),
+  // then the victim logs in via OAuth, @ladjs/passport links the OAuth
+  // profile to the attacker's existing account.  To mitigate this, when
+  // an OAuth login occurs on an account that has never verified its email,
+  // we mark the email as verified (the OAuth provider verified it),
+  // clear any password the attacker may have set, invalidate all other
+  // sessions, and clear any outstanding reset tokens.
+  //
+  const oauthProviders = new Set(['apple', 'google', 'github', 'ubuntu']);
+  if (
+    ctx.isAuthenticated() &&
+    oauthProviders.has(ctx.params.provider) &&
+    !ctx.state.user[config.userFields.hasVerifiedEmail]
+  ) {
+    const user = await Users.findById(ctx.state.user._id);
+    if (user) {
+      user[config.userFields.hasVerifiedEmail] = true;
+      user[config.userFields.resetToken] = undefined;
+      user[config.userFields.resetTokenExpiresAt] = undefined;
+      // Clear the attacker's password so they can no longer log in
+      if (user[config.userFields.hasSetPassword]) {
+        user[config.userFields.hasSetPassword] = false;
+        // setPassword with a random value to invalidate the old hash
+        await user.setPassword(crypto.randomBytes(32).toString('hex'));
+      }
+
+      await user.save();
+      // Refresh ctx.state.user with updated fields
+      ctx.state.user = user.toObject();
+      // Invalidate all other sessions (kicks out the attacker)
+      invalidateOtherSessions(ctx)
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+    }
   }
 
   const redirectTo = await parseLoginSuccessRedirect(ctx);
