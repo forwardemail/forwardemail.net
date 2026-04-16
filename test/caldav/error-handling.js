@@ -75,7 +75,7 @@ test.beforeEach(async (t) => {
     {
       ...calDAVConfig,
       port,
-      timeout: '30s'
+      timeout: { ms: 120_000 }
     },
     Users
   );
