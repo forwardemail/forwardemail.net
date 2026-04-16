@@ -6,7 +6,7 @@
 module.exports = {
   title: 'Node.js DNS over HTTPS',
   description:
-    'How to send a DNS over HTTPS request using Node.js and JavaScript packages.',
+    'How to send a DNS over HTTPS request using Node.js and JavaScript packages. Complete code examples, configuration tutorial, and production best practices for secure DNS resolution.',
   icon: 'fab fa-fw fa-node-js',
   published: true,
   ogBtnText: 'DNS over HTTPS'

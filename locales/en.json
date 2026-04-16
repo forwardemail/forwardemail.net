@@ -19616,5 +19616,6 @@
   "Recent detections": "Recent detections",
   "Unique recipients": "Unique recipients",
   "Unique trusted sources": "Unique trusted sources",
-  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded."
+  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.",
+  "How to send a DNS over HTTPS request using Node.js and JavaScript packages. Complete code examples, configuration tutorial, and production best practices for secure DNS resolution.": "How to send a DNS over HTTPS request using Node.js and JavaScript packages. Complete code examples, configuration tutorial, and production best practices for secure DNS resolution."
 }
