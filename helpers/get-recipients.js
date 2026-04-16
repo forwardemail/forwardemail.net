@@ -7,7 +7,6 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
 const safeStringify = require('fast-safe-stringify');
-const { getPublicSuffix } = require('tldts');
 const { isPort, isURL, isIP, isFQDN } = require('@forwardemail/validator');
 
 const checkSRS = require('#helpers/check-srs');
@@ -27,6 +26,21 @@ const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or
 const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+
+//
+// Check if a domain matches any wildcard TLD entry in the list
+// e.g. *.uk should match example.uk, example.co.uk, example.org.uk
+// This uses endsWith so that *.uk matches any domain ending in .uk
+//
+function matchesWildcardTLD(domain, list) {
+  for (const entry of list) {
+    if (entry.startsWith('*.') && domain.endsWith(entry.slice(1))) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 async function getRecipients(session, scan) {
   const bounces = [];
@@ -231,10 +245,14 @@ async function getRecipients(session, scan) {
               session.resolvedRootClientHostname === env.WEB_HOST
             ) {
               pass = true;
-            } else {
-              // Check wildcard TLD
-              const tld = getPublicSuffix(session.resolvedRootClientHostname);
-              if (tld && customAllowlist.includes(`*.${tld}`)) pass = true;
+              // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
+            } else if (
+              matchesWildcardTLD(
+                session.resolvedRootClientHostname,
+                customAllowlist
+              )
+            ) {
+              pass = true;
             }
           }
 
@@ -251,11 +269,9 @@ async function getRecipients(session, scan) {
             const fromRoot = parseRootDomain(fromDomain);
             if (customAllowlist.includes(fromDomain)) pass = true;
             else if (customAllowlist.includes(fromRoot)) pass = true;
-            else {
-              // Check wildcard TLD
-              const tld = getPublicSuffix(fromDomain);
-              if (tld && customAllowlist.includes(`*.${tld}`)) pass = true;
-            }
+            // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
+            else if (matchesWildcardTLD(fromDomain, customAllowlist))
+              pass = true;
           }
 
           // Check MAIL FROM / envelope sender (email)
@@ -271,11 +287,9 @@ async function getRecipients(session, scan) {
               const envelopeRoot = parseRootDomain(envelopeDomain);
               if (customAllowlist.includes(envelopeDomain)) pass = true;
               else if (customAllowlist.includes(envelopeRoot)) pass = true;
-              else {
-                // Check wildcard TLD
-                const tld = getPublicSuffix(envelopeDomain);
-                if (tld && customAllowlist.includes(`*.${tld}`)) pass = true;
-              }
+              // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
+              else if (matchesWildcardTLD(envelopeDomain, customAllowlist))
+                pass = true;
             }
           }
 
@@ -304,10 +318,14 @@ async function getRecipients(session, scan) {
           if (pass && session.resolvedRootClientHostname) {
             if (customDenylist.includes(session.resolvedRootClientHostname)) {
               pass = false;
-            } else {
-              // Check wildcard TLD
-              const tld = getPublicSuffix(session.resolvedRootClientHostname);
-              if (tld && customDenylist.includes(`*.${tld}`)) pass = false;
+              // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
+            } else if (
+              matchesWildcardTLD(
+                session.resolvedRootClientHostname,
+                customDenylist
+              )
+            ) {
+              pass = false;
             }
           }
 
@@ -325,11 +343,9 @@ async function getRecipients(session, scan) {
             const fromRoot = parseRootDomain(fromDomain);
             if (customDenylist.includes(fromDomain)) pass = false;
             else if (customDenylist.includes(fromRoot)) pass = false;
-            else {
-              // Check wildcard TLD
-              const tld = getPublicSuffix(fromDomain);
-              if (tld && customDenylist.includes(`*.${tld}`)) pass = false;
-            }
+            // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
+            else if (matchesWildcardTLD(fromDomain, customDenylist))
+              pass = false;
           }
 
           // Check MAIL FROM / envelope sender (email)
@@ -346,11 +362,9 @@ async function getRecipients(session, scan) {
               const envelopeRoot = parseRootDomain(envelopeDomain);
               if (customDenylist.includes(envelopeDomain)) pass = false;
               else if (customDenylist.includes(envelopeRoot)) pass = false;
-              else {
-                // Check wildcard TLD
-                const tld = getPublicSuffix(envelopeDomain);
-                if (tld && customDenylist.includes(`*.${tld}`)) pass = false;
-              }
+              // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
+              else if (matchesWildcardTLD(envelopeDomain, customDenylist))
+                pass = false;
             }
           }
 
