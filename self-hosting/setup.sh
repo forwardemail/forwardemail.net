@@ -473,9 +473,9 @@ update_env_file() {
 update_default_env() {
   update_env_file NODE_ENV production
   update_env_file HTTP_PROTOCOL https
-  update_env_file SQLITE_HOST sqlite.{{DOMAIN}}
+  update_env_file WEB_URL https://{{DOMAIN}}
   update_env_file WEB_HOST {{DOMAIN}}
-  update_env_file WEB_PORT 443
+  update_env_file SQLITE_HOST sqlite.{{DOMAIN}}
   update_env_file CALDAV_HOST caldav.{{DOMAIN}}
   update_env_file CARDDAV_HOST carddav.{{DOMAIN}}
   update_env_file API_HOST api.{{DOMAIN}}
