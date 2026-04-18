@@ -59,7 +59,7 @@ const isDryRun = process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
 // scenarios. For existing users making subsequent payments, new payments
 // always have invoice_at after planSetAt.
 //
-// Three guards prevent false positives:
+// Five guards prevent false positives:
 //
 // 1. Method filter: excludes free_beta_program and plan_conversion payments
 //    because these represent intentional plan resets/grants where planSetAt
@@ -79,6 +79,19 @@ const isDryRun = process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
 //    payments in the database. The race condition only produces drifts of
 //    milliseconds to days (user closes browser after checkout, returns
 //    later). Drifts of months/years are never race conditions.
+//
+// 4. Intentional reset detection: if a free_beta_program, plan_conversion,
+//    or different-plan payment exists between the earliest real payment and
+//    the current planSetAt, then planSetAt was deliberately reset by a
+//    grant or plan change — not by a race condition. Examples:
+//    - User bought EP, upgraded to Team, downgraded back to EP
+//    - User paid, then received a free beta grant that reset planSetAt
+//
+// 5. Duplicate payment detection: if more than one real payment exists in
+//    the drift window (between earliest payment and planSetAt), this
+//    indicates the user made duplicate payments (e.g. retried checkout
+//    multiple times), not a race condition. The race condition only
+//    affects a single payment.
 //
 
 // Maximum allowed difference (1 week in milliseconds)
@@ -117,7 +130,46 @@ async function mapper(id) {
     // 1-week threshold (race condition window). Larger differences
     // indicate intentional plan resets via free beta credits, not
     // race conditions.
-    if (driftMs > 0 && driftMs <= MAX_DRIFT_MS) {
+    if (driftMs <= 0 || driftMs > MAX_DRIFT_MS) return;
+
+    // Guard 4: skip if planSetAt was intentionally reset between the
+    // earliest real payment and the current planSetAt (plan change,
+    // free beta grant, or plan conversion in that window)
+    const intentionalReset = await Payments.findOne({
+      user: user._id,
+      invoice_at: {
+        $gt: new Date(earliestPayment.invoice_at),
+        $lte: new Date(user[config.userFields.planSetAt])
+      },
+      $or: [
+        { method: { $in: ['free_beta_program', 'plan_conversion'] } },
+        { plan: { $ne: user.plan } }
+      ]
+    });
+
+    if (intentionalReset) return;
+
+    // Guard 5: skip if multiple real payments exist in the drift window
+    // (indicates duplicate payments from repeated checkout attempts,
+    // not a single race condition event)
+    const paymentsInDriftWindow = await Payments.countDocuments({
+      user: user._id,
+      plan: user.plan,
+      method: { $nin: ['free_beta_program', 'plan_conversion'] },
+      $or: [
+        { amount_refunded: { $exists: false } },
+        { amount_refunded: 0 },
+        { is_refund_credit_allowed: true }
+      ],
+      invoice_at: {
+        $gte: new Date(earliestPayment.invoice_at),
+        $lt: new Date(user[config.userFields.planSetAt])
+      }
+    });
+
+    if (paymentsInDriftWindow > 1) return;
+
+    {
       const driftMinutes = dayjs(user[config.userFields.planSetAt]).diff(
         new Date(earliestPayment.invoice_at),
         'minutes'
@@ -271,7 +323,7 @@ async function mapper(id) {
           logger.error(err, { user: user.email });
         }
       }
-    }
+    } // end block
   } catch (err) {
     logger.error(err, { user: id });
   }
