@@ -63,7 +63,9 @@ on:
   #delete:
 
   # Deployment
-  deployment:
+  # NOTE: deployment is commented out to avoid duplicate notifications.
+  # The deployment_status event already covers deployments and includes the final state.
+  #deployment:
   deployment_status:
 
   # Pages
@@ -99,6 +101,9 @@ permissions: {}
 
 jobs:
   notify-matrix:
+    # Skip deployment_status events unless the state is 'success' to avoid
+    # duplicate notifications (pending, in_progress, success all fire separately).
+    if: github.event_name != 'deployment_status' || github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Determine activity type and format message
