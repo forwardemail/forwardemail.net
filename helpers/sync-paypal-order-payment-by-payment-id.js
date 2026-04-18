@@ -9,7 +9,9 @@ const ms = require('ms');
 const logger = require('./logger');
 const { paypalAgent } = require('./paypal');
 const _ = require('#helpers/lodash');
+const config = require('#config');
 const Payments = require('#models/payments');
+const Users = require('#models/users');
 
 const FIVE_SECONDS = ms('5s');
 
@@ -134,6 +136,35 @@ async function syncPayPalOrderPaymentByPaymentId(id) {
       payment.amount_refunded = amountRefunded;
       if (invoiceAt) payment.invoice_at = invoiceAt;
       await payment.save();
+
+      //
+      // RACE CONDITION FIX: After syncing the payment's invoice_at to the
+      // correct PayPal timestamp, check if the user's planSetAt needs
+      // correction. If invoice_at was moved to an earlier time and is now
+      // before planSetAt, the payment would be excluded from the
+      // planExpiresAt calculation.
+      //
+      // Safety: invoice_at < planSetAt only triggers for first-time plan
+      // setup scenarios. For existing users, new payments always have
+      // invoice_at after planSetAt.
+      //
+      if (invoiceAt) {
+        const user = await Users.findById(payment.user);
+        if (
+          user &&
+          _.isDate(user[config.userFields.planSetAt]) &&
+          new Date(invoiceAt).getTime() <
+            new Date(user[config.userFields.planSetAt]).getTime()
+        ) {
+          logger.info('sync-paypal-order planSetAt race condition fix', {
+            user_email: user.email,
+            old_plan_set_at: user[config.userFields.planSetAt],
+            new_plan_set_at: new Date(invoiceAt)
+          });
+          user[config.userFields.planSetAt] = new Date(invoiceAt);
+          await user.save();
+        }
+      }
     }
 
     //

@@ -795,6 +795,40 @@ async function retrieveDomainBilling(ctx) {
             // log the payment just for sanity
             ctx.logger.info('stripe payment created', { payment });
           }
+
+          //
+          // RACE CONDITION FIX (Stripe): After finding or creating the payment,
+          // sync planSetAt to the payment's invoice_at for first-time plan changes.
+          //
+          // Why: The redirect handler and Stripe webhook can race. If the webhook
+          // runs first, it creates the payment and sets planSetAt. Then the redirect
+          // runs with a stale in-memory user and overwrites planSetAt with a
+          // potentially different timestamp (e.g. `new Date()` vs PayPal/Stripe's
+          // `created` timestamp). If planSetAt ends up even 1ms after invoice_at,
+          // the payment is excluded from the planExpiresAt calculation in the
+          // User model pre-save hook (which filters payments where
+          // invoice_at >= planSetAt), making the plan appear expired.
+          //
+          // Safety: This ONLY runs for first-time plan changes (!isMakePayment &&
+          // !isEnableAutoRenew). For subsequent payments (make-payment,
+          // enable-auto-renew), planSetAt is never touched — those payments
+          // always have invoice_at after planSetAt by definition.
+          //
+          if (payment && !isMakePayment && !isEnableAutoRenew) {
+            const paymentInvoiceAt = new Date(payment.invoice_at);
+            const currentPlanSetAt =
+              ctx.state.user[config.userFields.planSetAt];
+            if (
+              _.isDate(currentPlanSetAt) &&
+              paymentInvoiceAt.getTime() < new Date(currentPlanSetAt).getTime()
+            ) {
+              ctx.logger.info('stripe planSetAt race condition fix', {
+                old_plan_set_at: currentPlanSetAt,
+                new_plan_set_at: paymentInvoiceAt
+              });
+              ctx.state.user[config.userFields.planSetAt] = paymentInvoiceAt;
+            }
+          }
         } catch (err) {
           ctx.logger.fatal(err);
           // email admins here
@@ -1074,6 +1108,28 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
           // log the payment just for sanity
           ctx.logger.info('paypal payment created', { payment });
         }
+
+        //
+        // RACE CONDITION FIX (PayPal one-time): After finding or creating the
+        // payment, sync planSetAt to the payment's invoice_at for first-time
+        // plan changes. See the Stripe section above for the full explanation.
+        //
+        // Safety: Guarded by !isMakePayment && !isEnableAutoRenew.
+        //
+        if (payment && !isMakePayment && !isEnableAutoRenew) {
+          const paymentInvoiceAt = new Date(payment.invoice_at);
+          const currentPlanSetAt = ctx.state.user[config.userFields.planSetAt];
+          if (
+            _.isDate(currentPlanSetAt) &&
+            paymentInvoiceAt.getTime() < new Date(currentPlanSetAt).getTime()
+          ) {
+            ctx.logger.info('paypal one-time planSetAt race condition fix', {
+              old_plan_set_at: currentPlanSetAt,
+              new_plan_set_at: paymentInvoiceAt
+            });
+            ctx.state.user[config.userFields.planSetAt] = paymentInvoiceAt;
+          }
+        }
       } catch (err) {
         ctx.logger.fatal(err);
         // email admins here
@@ -1299,6 +1355,33 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
             });
             // log the payment just for sanity
             ctx.logger.info('paypal payment created', { payment });
+          }
+
+          //
+          // RACE CONDITION FIX (PayPal subscription): After finding or creating
+          // the payment, sync planSetAt to the payment's invoice_at for
+          // first-time plan changes. See the Stripe section above for the full
+          // explanation.
+          //
+          // Safety: Guarded by !isMakePayment && !isEnableAutoRenew.
+          //
+          if (payment && !isMakePayment && !isEnableAutoRenew) {
+            const paymentInvoiceAt = new Date(payment.invoice_at);
+            const currentPlanSetAt =
+              ctx.state.user[config.userFields.planSetAt];
+            if (
+              _.isDate(currentPlanSetAt) &&
+              paymentInvoiceAt.getTime() < new Date(currentPlanSetAt).getTime()
+            ) {
+              ctx.logger.info(
+                'paypal subscription planSetAt race condition fix',
+                {
+                  old_plan_set_at: currentPlanSetAt,
+                  new_plan_set_at: paymentInvoiceAt
+                }
+              );
+              ctx.state.user[config.userFields.planSetAt] = paymentInvoiceAt;
+            }
           }
         } catch (err) {
           ctx.logger.fatal(err);

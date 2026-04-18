@@ -17,6 +17,7 @@ const { paypalAgent } = require('./paypal');
 const ThresholdError = require('./threshold-error');
 const getAllPayPalSubscriptionTransactions = require('./get-all-paypal-subscription-transactions');
 const getAllPayPalSubscriptions = require('./get-all-paypal-subscriptions');
+const _ = require('#helpers/lodash');
 const config = require('#config');
 const Users = require('#models/users');
 const Payments = require('#models/payments');
@@ -297,6 +298,32 @@ async function syncPayPalSubscriptionPaymentsByUser(
             // so that their plan_expires_at gets updated
             const user = await Users.findById(customer._id);
             if (!user) throw new Error('User does not exist');
+
+            //
+            // RACE CONDITION FIX: After syncing payment invoice_at, check if
+            // planSetAt needs correction. If the synced invoice_at is before
+            // planSetAt, the payment would be excluded from planExpiresAt.
+            //
+            // Safety: invoice_at < planSetAt only triggers for first-time
+            // plan setup. For existing users, payments always have invoice_at
+            // after planSetAt.
+            //
+            if (
+              _.isDate(user[config.userFields.planSetAt]) &&
+              new Date(transaction.time).getTime() <
+                new Date(user[config.userFields.planSetAt]).getTime()
+            ) {
+              logger.info(
+                'sync-paypal-subscription planSetAt race condition fix',
+                {
+                  user_email: user.email,
+                  old_plan_set_at: user[config.userFields.planSetAt],
+                  new_plan_set_at: new Date(transaction.time)
+                }
+              );
+              user[config.userFields.planSetAt] = new Date(transaction.time);
+            }
+
             await user.save();
           } catch (err) {
             err.transaction = transaction;

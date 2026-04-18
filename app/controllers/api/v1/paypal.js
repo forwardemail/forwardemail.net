@@ -353,7 +353,35 @@ async function processEvent(ctx) {
 
         if (!selectedPlan) throw new Error('Plan did not exist');
 
-        if (user.plan !== selectedPlan) {
+        if (user.plan === selectedPlan) {
+          //
+          // RACE CONDITION FIX: Plan already matches (redirect handler already
+          // set it), but planSetAt may be after the earliest payment's
+          // invoice_at due to the redirect/webhook race.
+          //
+          // Safety: invoice_at < planSetAt is a safe proxy — for existing
+          // users making subsequent payments, new payments always have
+          // invoice_at after planSetAt.
+          //
+          const earliestPayment = await Payments.findOne(
+            {
+              user: user._id,
+              [config.userFields.paypalSubscriptionID]: res.body.id
+            },
+            null,
+            { sort: { invoice_at: 1 } }
+          );
+          if (
+            earliestPayment &&
+            _.isDate(user[config.userFields.planSetAt]) &&
+            new Date(earliestPayment.invoice_at).getTime() <
+              new Date(user[config.userFields.planSetAt]).getTime()
+          ) {
+            user[config.userFields.planSetAt] = new Date(
+              earliestPayment.invoice_at
+            );
+          }
+        } else {
           user.plan = selectedPlan;
           // get the first payment for the subscription and use the invoice_at
           const payment = await Payments.findOne(
@@ -579,7 +607,32 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
 
       let payment = await Payments.findOne({ $or });
 
-      if (!payment) {
+      if (payment) {
+        //
+        // RACE CONDITION FIX: Payment already exists (redirect handler created
+        // it first). Check if planSetAt needs correction — the redirect may
+        // have set planSetAt to a timestamp after the payment's invoice_at.
+        //
+        // Safety: invoice_at < planSetAt is a safe proxy that only triggers
+        // for first-time plan setup. For existing users making subsequent
+        // payments, invoice_at is always after planSetAt.
+        //
+        if (
+          _.isDate(user[config.userFields.planSetAt]) &&
+          new Date(payment.invoice_at).getTime() <
+            new Date(user[config.userFields.planSetAt]).getTime()
+        ) {
+          ctx.logger.info(
+            'paypal webhook planSetAt race fix (payment existed)',
+            {
+              old_plan_set_at: user[config.userFields.planSetAt],
+              new_plan_set_at: new Date(payment.invoice_at)
+            }
+          );
+          user[config.userFields.planSetAt] = new Date(payment.invoice_at);
+          await user.save();
+        }
+      } else {
         // we will take the amount and divide it by the cost per the custom_id
         // in order to determine the duration the customer purchased/added
         const amount = Number(
