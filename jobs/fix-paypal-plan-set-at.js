@@ -47,14 +47,24 @@ graceful.listen();
 // scenarios. For existing users making subsequent payments, new payments
 // always have invoice_at after planSetAt.
 //
-// The query excludes free_beta_program and plan_conversion payments
-// because these represent intentional plan resets/grants where planSetAt
-// is deliberately set to the grant date — not checkout race conditions.
-// Without this filter, the job would incorrectly "correct" planSetAt
-// back to an older payment's invoice_at (e.g. a user who paid via Stripe
-// then later received free credits and a plan conversion would have
-// planSetAt wrongly reset to the original Stripe payment date).
+// Two guards prevent false positives:
 //
+// 1. Method filter: excludes free_beta_program and plan_conversion payments
+//    because these represent intentional plan resets/grants where planSetAt
+//    is deliberately set to the grant date (e.g. a user who paid via Stripe
+//    then later received a plan conversion would have planSetAt wrongly
+//    reset to the original Stripe payment date without this filter).
+//
+// 2. Time threshold (MAX_DRIFT_MS = 1 week): even after filtering methods,
+//    users who originally paid years ago and later received free beta credits
+//    that reset their planSetAt still have old real payments in the database.
+//    The race condition only produces drifts of milliseconds to days (user
+//    closes browser after checkout, returns later). Drifts of months/years
+//    are never race conditions.
+//
+
+// Maximum allowed difference (1 week in milliseconds)
+const MAX_DRIFT_MS = 7 * 24 * 60 * 60 * 1000;
 
 async function mapper(id) {
   try {
@@ -75,11 +85,14 @@ async function mapper(id) {
     );
 
     if (!earliestPayment) return;
-
-    if (
-      new Date(user[config.userFields.planSetAt]).getTime() >
-      new Date(earliestPayment.invoice_at).getTime()
-    ) {
+    const planSetAtMs = new Date(user[config.userFields.planSetAt]).getTime();
+    const invoiceAtMs = new Date(earliestPayment.invoice_at).getTime();
+    const driftMs = planSetAtMs - invoiceAtMs;
+    // Only correct if planSetAt is after invoice_at AND within the
+    // 1-week threshold (race condition window). Larger differences
+    // indicate intentional plan resets via free beta credits, not
+    // race conditions.
+    if (driftMs > 0 && driftMs <= MAX_DRIFT_MS) {
       logger.info(
         'user plan set at needs corrected',
         user.email,
