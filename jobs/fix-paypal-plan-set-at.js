@@ -45,66 +45,76 @@ graceful.listen();
 //
 
 async function subscriptionMapper(id) {
-  const user = await Users.findById(id);
-  if (!user) throw new Error('User does not exist');
-  // if the user plan set at is AFTER their subscription start date
-  // then correct the user's plan set at to be equal to the subscription start date
-  const agent = await paypalAgent();
-  const { body } = await agent.get(
-    `/v1/billing/subscriptions/${user[config.userFields.paypalSubscriptionID]}`
-  );
-  if (!body.create_time) throw new Error('create time missing');
-  if (
-    new Date(user[config.userFields.planSetAt]).getTime() >
-    new Date(body.create_time).getTime()
-  ) {
-    logger.info(
-      'user plan set at needs corrected (subscription)',
-      user.email,
-      'it was off by',
-      dayjs(user[config.userFields.planSetAt]).diff(
-        new Date(body.create_time),
-        'minutes'
-      ),
-      'minutes'
+  try {
+    const user = await Users.findById(id);
+    if (!user) throw new Error('User does not exist');
+    // if the user plan set at is AFTER their subscription start date
+    // then correct the user's plan set at to be equal to the subscription start date
+    const agent = await paypalAgent();
+    const { body } = await agent.get(
+      `/v1/billing/subscriptions/${
+        user[config.userFields.paypalSubscriptionID]
+      }`
     );
-    user[config.userFields.planSetAt] = new Date(body.create_time);
-    await user.save();
+    if (!body.create_time) throw new Error('create time missing');
+    if (
+      new Date(user[config.userFields.planSetAt]).getTime() >
+      new Date(body.create_time).getTime()
+    ) {
+      logger.info(
+        'user plan set at needs corrected (subscription)',
+        user.email,
+        'it was off by',
+        dayjs(user[config.userFields.planSetAt]).diff(
+          new Date(body.create_time),
+          'minutes'
+        ),
+        'minutes'
+      );
+      user[config.userFields.planSetAt] = new Date(body.create_time);
+      await user.save();
+    }
+  } catch (err) {
+    logger.error(err, { user: id });
   }
 }
 
 async function oneTimeMapper(id) {
-  const user = await Users.findById(id);
-  if (!user) throw new Error('User does not exist');
+  try {
+    const user = await Users.findById(id);
+    if (!user) throw new Error('User does not exist');
 
-  // find the earliest payment for this user's current plan
-  const earliestPayment = await Payments.findOne(
-    {
-      user: user._id,
-      plan: user.plan
-    },
-    null,
-    { sort: { invoice_at: 1 } }
-  );
-
-  if (!earliestPayment) return;
-
-  if (
-    new Date(user[config.userFields.planSetAt]).getTime() >
-    new Date(earliestPayment.invoice_at).getTime()
-  ) {
-    logger.info(
-      'user plan set at needs corrected (one-time)',
-      user.email,
-      'it was off by',
-      dayjs(user[config.userFields.planSetAt]).diff(
-        new Date(earliestPayment.invoice_at),
-        'minutes'
-      ),
-      'minutes'
+    // find the earliest payment for this user's current plan
+    const earliestPayment = await Payments.findOne(
+      {
+        user: user._id,
+        plan: user.plan
+      },
+      null,
+      { sort: { invoice_at: 1 } }
     );
-    user[config.userFields.planSetAt] = new Date(earliestPayment.invoice_at);
-    await user.save();
+
+    if (!earliestPayment) return;
+
+    if (
+      new Date(user[config.userFields.planSetAt]).getTime() >
+      new Date(earliestPayment.invoice_at).getTime()
+    ) {
+      logger.info(
+        'user plan set at needs corrected (one-time)',
+        user.email,
+        'it was off by',
+        dayjs(user[config.userFields.planSetAt]).diff(
+          new Date(earliestPayment.invoice_at),
+          'minutes'
+        ),
+        'minutes'
+      );
+      user[config.userFields.planSetAt] = new Date(earliestPayment.invoice_at);
+      await user.save();
+    }
+  } catch (err) {
+    logger.error(err, { user: id });
   }
 }
 

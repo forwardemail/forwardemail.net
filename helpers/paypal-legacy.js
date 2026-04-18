@@ -5,10 +5,13 @@
 
 const { promisify } = require('node:util');
 
+const pRetry = require('p-retry');
 const paypal = require('paypal-rest-sdk');
 const superagent = require('superagent');
 const ms = require('ms');
 
+const isRetryableError = require('#helpers/is-retryable-error');
+const logger = require('#helpers/logger');
 const config = require('#config');
 const { paypalRestSdkConfigLegacy } = require('#config/payments');
 
@@ -22,7 +25,18 @@ async function paypalAgentLegacy() {
   const paypalLegacy = Object.create(paypal);
   paypalLegacy.configure(paypalRestSdkConfigLegacy);
 
-  const token = await promisify(paypalLegacy.generateToken)();
+  const token = await pRetry(() => promisify(paypalLegacy.generateToken)(), {
+    retries: 2,
+    minTimeout: ms('5s'),
+    async onFailedAttempt(error) {
+      if (isRetryableError(error)) {
+        logger.fatal(error);
+        return;
+      }
+
+      throw error;
+    }
+  });
   return superagent
     .agent()
     .use((req) => {
