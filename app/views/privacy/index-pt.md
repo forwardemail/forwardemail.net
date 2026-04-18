@@ -33,11 +33,11 @@ Por favor, consulte nossos [Termos](/terms) conforme aplicável em todo o site.
 
 ## Informações Não Coletadas {#information-not-collected}
 
-**Com exceção dos [logs de erro](#error-logs), [emails SMTP de saída](#outbound-smtp-emails), e/ou quando atividade de spam ou maliciosa é detectada (ex.: para limitação de taxa):**
+**Com exceção das informações expressamente descritas nesta política — incluindo [logs de erro](#error-logs), [e-mails SMTP de saída](#outbound-smtp-emails), [informações da conta](#account-information), [processamento temporário de dados](#temporary-data-processing), [logs de auditoria](#audit-logs) e [cookies e sessões](#cookies-and-sessions):**
 
-* Não armazenamos nenhum email encaminhado em armazenamento de disco nem em bancos de dados.
-* Não armazenamos nenhum metadado sobre emails encaminhados em armazenamento de disco nem em bancos de dados.
-* Não armazenamos nenhum log ou endereço IP em armazenamento de disco nem em bancos de dados.
+* Não armazenamos nenhum e-mail encaminhado em armazenamento em disco nem em bancos de dados.
+* Não armazenamos nenhum metadado sobre e-mails encaminhados em armazenamento em disco nem em bancos de dados.
+* Exceto conforme expressamente descrito nesta política, não armazenamos logs ou endereços IP em armazenamento em disco nem em bancos de dados.
 * Não usamos nenhum serviço de análise ou telemetria de terceiros.
 
 
@@ -49,9 +49,11 @@ Para transparência, a qualquer momento você pode <a href="https://github.com/f
 
 ### Informações da Conta {#account-information}
 
-* Armazenamos seu endereço de email que você nos fornece.
-* Armazenamos seus nomes de domínio, aliases e configurações que você nos fornece.
-* Qualquer informação adicional que você nos forneça voluntariamente, como comentários ou perguntas enviadas por email ou em nossa página de <a href="/help">ajuda</a>.
+* Armazenamos o endereço de e-mail que você nos fornece.
+* Armazenamos os seus nomes de domínio, aliases e configurações que você nos fornece.
+* Armazenamos metadados limitados de segurança da conta necessários para proteger sua conta e gerenciar o acesso, incluindo identificadores de sessão de site ativos, contadores de tentativas de login falhas e o carimbo de data/hora da última tentativa de login.
+* Quaisquer informações adicionais que você nos forneça voluntariamente, como comentários ou perguntas enviadas a nós por e-mail ou em nossa página de <a href="/help">ajuda</a>.
+
 
 **Atribuição de cadastro** (armazenada permanentemente em sua conta):
 
@@ -103,9 +105,10 @@ Os seguintes dados são processados temporariamente na memória ou Redis e **nã
 
 ### Tentativas de Autenticação {#authentication-attempts}
 
-* Tentativas de autenticação falhadas são rastreadas por endereço IP no Redis.
-* Esses dados expiram automaticamente (normalmente dentro de 24 horas).
-* Usado para prevenir ataques de força bruta em contas de usuário.
+* Tentativas de autenticação falhas são rastreadas por endereço IP no Redis.
+* Também armazenamos metadados limitados de autenticação no nível da conta, incluindo contadores de tentativas de login falhas e o carimbo de data/hora da última tentativa de login.
+* Os dados de tentativa de autenticação baseados no Redis expiram automaticamente (geralmente em 24 horas).
+* Usado para evitar ataques de força bruta em contas de usuário.
 
 
 ## Logs de Auditoria {#audit-logs}
@@ -149,14 +152,17 @@ Para domínios com múltiplos administradores, fornecemos registro detalhado de 
 
 ## Cookies e Sessões {#cookies-and-sessions}
 
-* Armazenamos um cookie em uma sessão para o tráfego do seu site.
-* Cookies são HTTP-only, assinados e usam proteção SameSite.
-* Cookies de sessão expiram após 30 dias de inatividade.
+* Armazenamos cookies assinados, HTTP-only, e dados de sessão no lado do servidor para o tráfego do seu site.
+* Os cookies usam a proteção SameSite.
+* Armazenamos identificadores de sessão de site ativos em sua conta para dar suporte a recursos como "log out other devices" e invalidação de sessão relacionada à segurança.
+* Os cookies de sessão expiram após 30 dias de inatividade.
 * Não criamos sessões para bots ou rastreadores.
-* Usamos cookies para:
+* Usamos cookies e sessões para:
   * Autenticação e estado de login
   * Funcionalidade "lembrar de mim" da autenticação de dois fatores
   * Mensagens flash e notificações
+
+
 ## Analytics {#analytics}
 
 Usamos nosso próprio sistema de análise focado em privacidade para entender como nossos serviços são utilizados. Este sistema foi projetado com a privacidade como princípio central:

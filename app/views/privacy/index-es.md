@@ -33,12 +33,12 @@ Por favor, consulte nuestros [Términos](/terms) ya que se aplican en todo el si
 
 ## Información No Recopilada {#information-not-collected}
 
-**Con la excepción de los [registros de errores](#error-logs), [correos SMTP salientes](#outbound-smtp-emails), y/o cuando se detecta actividad de spam o maliciosa (por ejemplo, para limitación de tasa):**
+**Con la excepción de la información descrita expresamente en esta política — incluyendo [registros de errores](#error-logs), [correos electrónicos SMTP salientes](#outbound-smtp-emails), [información de la cuenta](#account-information), [procesamiento temporal de datos](#temporary-data-processing), [registros de auditoría](#audit-logs), y [cookies y sesiones](#cookies-and-sessions):**
 
-* No almacenamos ningún correo reenviado en almacenamiento en disco ni en bases de datos.
-* No almacenamos ningún metadato sobre correos reenviados en almacenamiento en disco ni en bases de datos.
-* No almacenamos ningún registro ni direcciones IP en almacenamiento en disco ni en bases de datos.
-* No usamos ningún servicio de análisis o telemetría de terceros.
+* No almacenamos ningún correo electrónico reenviado en almacenamiento en disco ni en bases de datos.
+* No almacenamos ningún metadato sobre correos electrónicos reenviados en almacenamiento en disco ni en bases de datos.
+* Excepto como se describe expresamente en esta política, no almacenamos registros ni direcciones IP en almacenamiento en disco ni en bases de datos.
+* No utilizamos ningún servicio de análisis o telemetría de terceros.
 
 
 ## Información Recopilada {#information-collected}
@@ -49,9 +49,11 @@ Para mayor transparencia, en cualquier momento puedes <a href="https://github.co
 
 ### Información de la Cuenta {#account-information}
 
-* Almacenamos la dirección de correo electrónico que nos proporcionas.
-* Almacenamos tus nombres de dominio, alias y configuraciones que nos proporcionas.
-* Cualquier información adicional que nos proporciones voluntariamente, como comentarios o preguntas enviadas por correo electrónico o en nuestra página de <a href="/help">ayuda</a>.
+* Almacenamos la dirección de correo electrónico que nos proporciona.
+* Almacenamos los nombres de dominio, alias y configuraciones que nos proporciona.
+* Almacenamos metadatos limitados de seguridad de la cuenta necesarios para proteger su cuenta y administrar el acceso, incluyendo identificadores de sesión de sitios web activos, contadores de intentos de inicio de sesión fallidos y la marca de tiempo del último intento de inicio de sesión.
+* Cualquier información adicional que nos proporcione voluntariamente, como comentarios o preguntas que nos envíe por correo electrónico o en nuestra página de <a href="/help">ayuda</a>.
+
 
 **Atribución de registro** (almacenada permanentemente en tu cuenta):
 
@@ -103,9 +105,10 @@ Los siguientes datos se procesan temporalmente en memoria o Redis y **no** se al
 
 ### Intentos de Autenticación {#authentication-attempts}
 
-* Se rastrean los intentos fallidos de autenticación por dirección IP en Redis.
-* Estos datos expiran automáticamente (típicamente dentro de 24 horas).
-* Se usa para prevenir ataques de fuerza bruta en cuentas de usuario.
+* Los intentos de autenticación fallidos se rastrean por dirección IP en Redis.
+* También almacenamos metadatos de autenticación limitados a nivel de cuenta, incluyendo contadores de intentos de inicio de sesión fallidos y la marca de tiempo del último intento de inicio de sesión.
+* Los datos de intentos de autenticación basados en Redis caducan automáticamente (normalmente en 24 horas).
+* Se utiliza para prevenir ataques de fuerza bruta en las cuentas de los usuarios.
 
 
 ## Registros de Auditoría {#audit-logs}
@@ -149,14 +152,17 @@ Para dominios con múltiples administradores, proporcionamos un registro detalla
 
 ## Cookies y Sesiones {#cookies-and-sessions}
 
-* Almacenamos una cookie en una sesión para el tráfico de su sitio web.
-* Las cookies son HTTP-only, firmadas y usan protección SameSite.
-* Las cookies de sesión expiran después de 30 días de inactividad.
+* Almacenamos cookies firmadas solo para HTTP y datos de sesión del lado del servidor para el tráfico de su sitio web.
+* Las cookies utilizan la protección SameSite.
+* Almacenamos identificadores de sesión de sitios web activos en su cuenta para admitir funciones como "cerrar sesión en otros dispositivos" y la invalidación de sesiones relacionada con la seguridad.
+* Las cookies de sesión caducan después de 30 días de inactividad.
 * No creamos sesiones para bots o rastreadores.
-* Usamos cookies para:
+* Utilizamos cookies y sesiones para:
   * Autenticación y estado de inicio de sesión
-  * Funcionalidad de "recordarme" en autenticación de dos factores
+  * Funcionalidad de "recordarme" de la autenticación de dos factores
   * Mensajes flash y notificaciones
+
+
 ## Analytics {#analytics}
 
 Usamos nuestro propio sistema de análisis enfocado en la privacidad para entender cómo se utilizan nuestros servicios. Este sistema está diseñado con la privacidad como principio fundamental:

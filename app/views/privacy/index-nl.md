@@ -33,12 +33,12 @@ Raadpleeg onze [Voorwaarden](/terms) aangezien deze sitebreed van toepassing zij
 
 ## Informatie Niet Verzameld {#information-not-collected}
 
-**Met uitzondering van [foutlogboeken](#error-logs), [uitgaande SMTP-e-mails](#outbound-smtp-emails), en/of wanneer spam of kwaadaardige activiteiten worden gedetecteerd (bijv. voor rate limiting):**
+**Met uitzondering van de informatie die uitdrukkelijk in dit beleid wordt beschreven — waaronder [foutenlogboeken](#error-logs), [uitgaande SMTP-e-mails](#outbound-smtp-emails), [accountinformatie](#account-information), [tijdelijke gegevensverwerking](#temporary-data-processing), [auditlogboeken](#audit-logs) en [cookies en sessies](#cookies-and-sessions):**
 
-* Wij slaan geen doorgestuurde e-mails op schijfopslag of in databases op.
-* Wij slaan geen metadata over doorgestuurde e-mails op schijfopslag of in databases op.
-* Wij slaan geen logboeken of IP-adressen op schijfopslag of in databases op.
-* Wij gebruiken geen externe analysetools of telemetriediensten.
+* Wij slaan geen doorgestuurde e-mails op op schijfopslag of in databases.
+* Wij slaan geen metagegevens over doorgestuurde e-mails op op schijfopslag of in databases.
+* Behalve zoals uitdrukkelijk beschreven in dit beleid, slaan wij geen logboeken of IP-adressen op op schijfopslag of in databases.
+* Wij gebruiken geen analyse- of telemetriediensten van derden.
 
 
 ## Informatie Verzameld {#information-collected}
@@ -49,9 +49,11 @@ Voor transparantie kunt u te allen tijde <a href="https://github.com/forwardemai
 
 ### Accountinformatie {#account-information}
 
-* Wij slaan het e-mailadres op dat u aan ons verstrekt.
+* Wij slaan uw e-mailadres op dat u aan ons verstrekt.
 * Wij slaan uw domeinnamen, aliassen en configuraties op die u aan ons verstrekt.
-* Alle aanvullende informatie die u vrijwillig aan ons verstrekt, zoals opmerkingen of vragen die u per e-mail of op onze <a href="/help">help</a>-pagina indient.
+* Wij slaan beperkte metagegevens voor accountbeveiliging op die nodig zijn om uw account te beschermen en de toegang te beheren, waaronder actieve website-sessie-identificatoren, tellers van mislukte inlogpogingen en de tijdstempel van de laatste inlogpoging.
+* Alle aanvullende informatie die u vrijwillig aan ons verstrekt, zoals opmerkingen of vragen die per e-mail of op onze <a href="/help">help</a>-pagina aan ons zijn voorgelegd.
+
 
 **Aanmeldingsattributie** (permanent opgeslagen op uw account):
 
@@ -104,8 +106,9 @@ De volgende gegevens worden tijdelijk in het geheugen of Redis verwerkt en worde
 ### Authenticatiepogingen {#authentication-attempts}
 
 * Mislukte authenticatiepogingen worden per IP-adres bijgehouden in Redis.
-* Deze gegevens verlopen automatisch (meestal binnen 24 uur).
-* Wordt gebruikt om brute-force aanvallen op gebruikersaccounts te voorkomen.
+* Wij slaan ook beperkte authenticatie-metagegevens op accountniveau op, waaronder tellers van mislukte inlogpogingen en de tijdstempel van de laatste inlogpoging.
+* Op Redis gebaseerde gegevens van authenticatiepogingen verlopen automatisch (doorgaans binnen 24 uur).
+* Wordt gebruikt om brute-force-aanvallen op gebruikersaccounts te voorkomen.
 
 
 ## Auditlogs {#audit-logs}
@@ -149,14 +152,17 @@ Voor domeinen met meerdere beheerders bieden we gedetailleerde auditlogging om t
 
 ## Cookies en sessies {#cookies-and-sessions}
 
-* We slaan een cookie op in een sessie voor uw websiteverkeer.
-* Cookies zijn HTTP-only, ondertekend en gebruiken SameSite-bescherming.
+* Wij slaan HTTP-only, ondertekende cookies en server-side sessiegegevens op voor uw websiteverkeer.
+* Cookies gebruiken SameSite-bescherming.
+* Wij slaan actieve website-sessie-identificatoren op uw account op om functies te ondersteunen zoals "log out other devices" en beveiligingsgerelateerde sessie-invalidatie.
 * Sessiecookies verlopen na 30 dagen inactiviteit.
-* We maken geen sessies aan voor bots of crawlers.
-* We gebruiken cookies voor:
+* Wij maken geen sessies aan voor bots of crawlers.
+* Wij gebruiken cookies en sessies voor:
   * Authenticatie en inlogstatus
-  * Tweefactorauthenticatie "onthoud mij" functionaliteit
-  * Flashberichten en notificaties
+  * Tweefactorauthenticatie "remember me"-functionaliteit
+  * Flash-berichten en meldingen
+
+
 ## Analytics {#analytics}
 
 We gebruiken ons eigen privacygerichte analysetool om te begrijpen hoe onze diensten worden gebruikt. Dit systeem is ontworpen met privacy als kernprincipe:

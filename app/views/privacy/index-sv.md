@@ -33,12 +33,12 @@ Vänligen hänvisa till våra [Villkor](/terms) eftersom de gäller för hela we
 
 ## Information som inte samlas in {#information-not-collected}
 
-**Med undantag för [felloggar](#error-logs), [utgående SMTP-e-post](#outbound-smtp-emails) och/eller när skräppost eller skadlig aktivitet upptäcks (t.ex. för hastighetsbegränsning):**
+**Med undantag för den information som uttryckligen beskrivs i denna policy — inklusive [felloggar](#error-logs), [utgående SMTP-e-postmeddelanden](#outbound-smtp-emails), [kontoinformation](#account-information), [tillfällig databehandling](#temporary-data-processing), [granskningsloggar](#audit-logs) och [cookies och sessioner](#cookies-and-sessions):**
 
-* Vi lagrar inga vidarebefordrade e-postmeddelanden på disk eller i databaser.
-* Vi lagrar inga metadata om vidarebefordrade e-postmeddelanden på disk eller i databaser.
-* Vi lagrar inga loggar eller IP-adresser på disk eller i databaser.
-* Vi använder inga tredjepartsanalys- eller telemetritjänster.
+* Vi lagrar inte några vidarebefordrade e-postmeddelanden på disk eller i databaser.
+* Vi lagrar inte någon metadata om vidarebefordrade e-postmeddelanden på disk eller i databaser.
+* Förutom vad som uttryckligen beskrivs i denna policy, lagrar vi inte loggar eller IP-adresser på disk eller i databaser.
+* Vi använder inga tredjepartstjänster för analys eller telemetri.
 
 
 ## Information som samlas in {#information-collected}
@@ -49,9 +49,11 @@ För transparens kan du när som helst <a href="https://github.com/forwardemail"
 
 ### Kontoinformation {#account-information}
 
-* Vi lagrar din e-postadress som du tillhandahåller oss.
-* Vi lagrar dina domännamn, alias och konfigurationer som du tillhandahåller oss.
-* All ytterligare information som du frivilligt ger oss, såsom kommentarer eller frågor som skickas till oss via e-post eller på vår <a href="/help">hjälpsida</a>.
+* Vi lagrar din e-postadress som du förser oss med.
+* Vi lagrar dina domännamn, alias och konfigurationer som du förser oss med.
+* Vi lagrar begränsad säkerhetsmetadata för kontot som behövs för att skydda ditt konto och hantera åtkomst, inklusive aktiva sessionsidentifierare för webbplatsen, räknare för misslyckade inloggningsförsök och tidsstämpeln för det senaste inloggningsförsöket.
+* All ytterligare information som du frivilligt tillhandahåller oss, såsom kommentarer eller frågor som skickas till oss via e-post eller på vår <a href="/help">hjälp</a>-sida.
+
 
 **Registreringsattribution** (lagras permanent på ditt konto):
 
@@ -104,7 +106,8 @@ Följande data behandlas tillfälligt i minnet eller Redis och lagras **inte** p
 ### Autentiseringsförsök {#authentication-attempts}
 
 * Misslyckade autentiseringsförsök spåras per IP-adress i Redis.
-* Denna data förfaller automatiskt (vanligtvis inom 24 timmar).
+* Vi lagrar också begränsad autentiseringsmetadata på kontonivå, inklusive räknare för misslyckade inloggningsförsök och tidsstämpeln för det senaste inloggningsförsöket.
+* Redis-baserad data om autentiseringsförsök löper ut automatiskt (vanligtvis inom 24 timmar).
 * Används för att förhindra brute-force-attacker på användarkonton.
 
 
@@ -149,14 +152,17 @@ För domäner med flera administratörer tillhandahåller vi detaljerad revision
 
 ## Cookies och sessioner {#cookies-and-sessions}
 
-* Vi lagrar en cookie i en session för din webbplatstrafik.
-* Cookies är HTTP-only, signerade och använder SameSite-skydd.
-* Sessionscookies förfaller efter 30 dagars inaktivitet.
-* Vi skapar inte sessioner för bots eller crawlers.
-* Vi använder cookies för:
-  * Autentisering och inloggningsstatus
-  * Tvåfaktorsautentiseringens "kom ihåg mig"-funktionalitet
-  * Flash-meddelanden och notifikationer
+* Vi lagrar HTTP-only, signerade cookies och sessionsdata på serversidan för din webbplatstrafik.
+* Cookies använder SameSite-skydd.
+* Vi lagrar aktiva sessionsidentifierare för webbplatsen på ditt konto för att stödja funktioner som "logga ut från andra enheter" och säkerhetsrelaterad ogiltigförklaring av sessioner.
+* Sessionscookies löper ut efter 30 dagars inaktivitet.
+* Vi skapar inte sessioner för botar eller sökrobotar.
+* Vi använder cookies och sessioner för:
+  * Autentisering och inloggningstillstånd
+  * "Kom ihåg mig"-funktion för tvåfaktorsautentisering
+  * Flash-meddelanden och aviseringar
+
+
 ## Analytics {#analytics}
 
 Vi använder vårt eget integritetsfokuserade analyssystem för att förstå hur våra tjänster används. Detta system är utformat med integritet som en kärnprincip:

@@ -33,12 +33,12 @@ Prosím, řiďte se našimi [Podmínkami](/terms), které platí pro celý web.
 
 ## Informace, které nejsou shromažďovány {#information-not-collected}
 
-**S výjimkou [chybových záznamů](#error-logs), [odchozích SMTP e-mailů](#outbound-smtp-emails) a/nebo při zjištění spamu či škodlivé aktivity (např. pro omezení rychlosti):**
+**S výjimkou informací výslovně popsaných v těchto zásadách — včetně [chybových protokolů](#error-logs), [odchozích e-mailů SMTP](#outbound-smtp-emails), [informací o účtu](#account-information), [dočasného zpracování dat](#temporary-data-processing), [protokolů auditu](#audit-logs) a [souborů cookie a relací](#cookies-and-sessions):**
 
-* Neukládáme žádné přeposlané e-maily na diskové úložiště ani do databází.
-* Neukládáme žádná metadata o přeposlaných e-mailech na diskové úložiště ani do databází.
-* Neukládáme žádné záznamy ani IP adresy na diskové úložiště ani do databází.
-* Nepoužíváme žádné analytické nebo telemetrické služby třetích stran.
+* Neukládáme žádné přeposílané e-maily na disková úložiště ani do databází.
+* Neukládáme žádná metadata o přeposílaných e-mailech na disková úložiště ani do databází.
+* S výjimkou případů výslovně popsaných v těchto zásadách neukládáme protokoly ani IP adresy na disková úložiště ani do databází.
+* Nepoužíváme žádné analytické ani telemetrické služby třetích stran.
 
 
 ## Shromažďované informace {#information-collected}
@@ -51,7 +51,9 @@ Pro transparentnost můžete kdykoli <a href="https://github.com/forwardemail" t
 
 * Ukládáme vaši e-mailovou adresu, kterou nám poskytnete.
 * Ukládáme vaše doménová jména, aliasy a konfigurace, které nám poskytnete.
-* Jakékoli další informace, které nám dobrovolně poskytnete, například komentáře nebo dotazy zaslané e-mailem nebo na naší <a href="/help">nápovědě</a>.
+* Ukládáme omezená bezpečnostní metadata účtu potřebná k ochraně vašeho účtu a správě přístupu, včetně identifikátorů aktivních relací na webových stránkách, počítadel neúspěšných pokusů o přihlášení a časového razítka posledního pokusu o přihlášení.
+* Jakékoli další informace, které nám dobrovolně poskytnete, jako jsou komentáře nebo dotazy zaslané e-mailem nebo na naší stránce <a href="/help">nápovědy</a>.
+
 
 **Přiřazení registrace** (trvale uložené na vašem účtu):
 
@@ -104,7 +106,8 @@ Následující data jsou zpracovávána dočasně v paměti nebo v Redis a **nej
 ### Pokusy o ověření {#authentication-attempts}
 
 * Neúspěšné pokusy o ověření jsou sledovány podle IP adresy v Redis.
-* Tato data automaticky vyprší (obvykle do 24 hodin).
+* Ukládáme také omezená metadata o ověřování na úrovni účtu, včetně počítadel neúspěšných pokusů o přihlášení a časového razítka posledního pokusu o přihlášení.
+* Data o pokusech o ověření založená na Redis automaticky vyprší (obvykle do 24 hodin).
 * Používá se k prevenci útoků hrubou silou na uživatelské účty.
 
 
@@ -149,14 +152,17 @@ Pro domény s více správci poskytujeme podrobné auditní záznamy, které pom
 
 ## Cookies a relace {#cookies-and-sessions}
 
-* Ukládáme cookie v relaci pro provoz vašeho webu.
-* Cookies jsou HTTP-only, podepsané a používají ochranu SameSite.
-* Relace cookies vyprší po 30 dnech nečinnosti.
-* Nevytváříme relace pro boty nebo prohledávače.
-* Používáme cookies pro:
-  * Ověření a stav přihlášení
-  * Funkci „zapamatovat si mě“ pro dvoufaktorové ověření
-  * Flash zprávy a notifikace
+* Ukládáme podepsané soubory cookie pouze pro HTTP a data relací na straně serveru pro váš provoz na webových stránkách.
+* Soubory cookie používají ochranu SameSite.
+* Ukládáme identifikátory aktivních relací na webových stránkách ve vašem účtu pro podporu funkcí, jako je "odhlásit ostatní zařízení" a zneplatnění relací z bezpečnostních důvodů.
+* Soubory cookie relace vyprší po 30 dnech nečinnosti.
+* Nevytváříme relace pro boty nebo crawlery.
+* Soubory cookie a relace používáme pro:
+  * Ověřování a stav přihlášení
+  * Funkci "pamatovat si mě" pro dvoufaktorové ověřování
+  * Flash zprávy a upozornění
+
+
 ## Analytics {#analytics}
 
 Používáme vlastní analytický systém zaměřený na ochranu soukromí, abychom pochopili, jak jsou naše služby používány. Tento systém je navržen s ochranou soukromí jako základním principem:

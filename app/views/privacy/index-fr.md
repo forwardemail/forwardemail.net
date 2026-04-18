@@ -33,12 +33,12 @@ Veuillez vous référer à nos [Conditions](/terms) qui s'appliquent à l'ensemb
 
 ## Informations non collectées {#information-not-collected}
 
-**À l'exception des [journaux d'erreurs](#error-logs), des [emails SMTP sortants](#outbound-smtp-emails), et/ou lorsqu'une activité de spam ou malveillante est détectée (par exemple pour la limitation du débit) :**
+**À l'exception des informations expressément décrites dans cette politique — y compris les [journaux d'erreurs](#error-logs), les [e-mails SMTP sortants](#outbound-smtp-emails), les [informations de compte](#account-information), le [traitement temporaire des données](#temporary-data-processing), les [journaux d'audit](#audit-logs), et les [cookies et sessions](#cookies-and-sessions) :**
 
-* Nous ne stockons aucun email transféré sur un stockage disque ni dans des bases de données.
-* Nous ne stockons aucune métadonnée concernant les emails transférés sur un stockage disque ni dans des bases de données.
-* Nous ne stockons aucun journal ni adresse IP sur un stockage disque ni dans des bases de données.
-* Nous n'utilisons aucun service tiers d'analyse ou de télémétrie.
+* Nous ne stockons aucun e-mail transféré sur un stockage disque ni dans des bases de données.
+* Nous ne stockons aucune métadonnée concernant les e-mails transférés sur un stockage disque ni dans des bases de données.
+* Sauf indication expresse dans cette politique, nous ne stockons pas de journaux ni d'adresses IP sur un stockage disque ni dans des bases de données.
+* Nous n'utilisons aucun service d'analyse ou de télémétrie tiers.
 
 
 ## Informations collectées {#information-collected}
@@ -49,9 +49,11 @@ Pour plus de transparence, vous pouvez à tout moment <a href="https://github.co
 
 ### Informations sur le compte {#account-information}
 
-* Nous stockons votre adresse email que vous nous fournissez.
+* Nous stockons l'adresse e-mail que vous nous fournissez.
 * Nous stockons vos noms de domaine, alias et configurations que vous nous fournissez.
-* Toute information supplémentaire que vous nous fournissez volontairement, comme des commentaires ou questions envoyés par email ou sur notre page <a href="/help">aide</a>.
+* Nous stockons des métadonnées de sécurité de compte limitées nécessaires pour protéger votre compte et gérer l'accès, y compris les identifiants de session de site web actifs, les compteurs de tentatives de connexion échouées et l'horodatage de la dernière tentative de connexion.
+* Toute information supplémentaire que vous nous fournissez volontairement, telle que des commentaires ou des questions qui nous sont soumis par e-mail ou sur notre page d'<a href="/help">aide</a>.
+
 
 **Attribution d'inscription** (stockée de manière permanente sur votre compte) :
 
@@ -104,7 +106,8 @@ Les données suivantes sont traitées temporairement en mémoire ou dans Redis e
 ### Tentatives d'authentification {#authentication-attempts}
 
 * Les tentatives d'authentification échouées sont suivies par adresse IP dans Redis.
-* Ces données expirent automatiquement (généralement sous 24 heures).
+* Nous stockons également des métadonnées d'authentification limitées au niveau du compte, y compris les compteurs de tentatives de connexion échouées et l'horodatage de la dernière tentative de connexion.
+* Les données de tentative d'authentification basées sur Redis expirent automatiquement (généralement dans les 24 heures).
 * Utilisé pour prévenir les attaques par force brute sur les comptes utilisateurs.
 
 
@@ -149,14 +152,17 @@ Pour les domaines avec plusieurs administrateurs, nous fournissons une journalis
 
 ## Cookies et sessions {#cookies-and-sessions}
 
-* Nous stockons un cookie dans une session pour le trafic de votre site web.
-* Les cookies sont HTTP-only, signés, et utilisent la protection SameSite.
+* Nous stockons des cookies signés, uniquement HTTP, et des données de session côté serveur pour le trafic de votre site web.
+* Les cookies utilisent la protection SameSite.
+* Nous stockons les identifiants de session de site web actifs sur votre compte pour prendre en charge des fonctionnalités telles que "déconnecter les autres appareils" et l'invalidation de session liée à la sécurité.
 * Les cookies de session expirent après 30 jours d'inactivité.
-* Nous ne créons pas de sessions pour les bots ou les crawlers.
-* Nous utilisons les cookies pour :
+* Nous ne créons pas de sessions pour les robots ou les robots d'exploration.
+* Nous utilisons des cookies et des sessions pour :
   * L'authentification et l'état de connexion
-  * La fonctionnalité "se souvenir de moi" pour l'authentification à deux facteurs
-  * Les messages flash et notifications
+  * La fonctionnalité "se souvenir de moi" de l'authentification à deux facteurs
+  * Les messages flash et les notifications
+
+
 ## Analyse {#analytics}
 
 Nous utilisons notre propre système d’analyse axé sur la confidentialité pour comprendre comment nos services sont utilisés. Ce système est conçu avec la confidentialité comme principe fondamental :

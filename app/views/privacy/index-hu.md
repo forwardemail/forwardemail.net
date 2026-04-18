@@ -33,12 +33,12 @@ Kérjük, tekintse meg a [Felhasználási feltételeinket](/terms), mivel azok a
 
 ## Nem gyűjtött információk {#information-not-collected}
 
-**Kivéve a [hibanaplókat](#error-logs), [kimenő SMTP e-maileket](#outbound-smtp-emails), és/vagy amikor spam vagy rosszindulatú tevékenységet észlelünk (pl. korlátozás miatt):**
+**A jelen szabályzatban kifejezetten leírt információk kivételével — beleértve a [hibanaplókat](#error-logs), a [kimenő SMTP e-maileket](#outbound-smtp-emails), a [fiókinformációkat](#account-information), az [ideiglenes adatfeldolgozást](#temporary-data-processing), az [ellenőrzési naplókat](#audit-logs), valamint a [sütiket és munkameneteket](#cookies-and-sessions):**
 
-* Nem tárolunk továbbított e-maileket sem lemezen, sem adatbázisban.
-* Nem tárolunk továbbított e-mailekhez kapcsolódó metaadatokat sem lemezen, sem adatbázisban.
-* Nem tárolunk naplókat vagy IP-címeket sem lemezen, sem adatbázisban.
-* Nem használunk harmadik féltől származó elemző vagy telemetria szolgáltatásokat.
+* Nem tárolunk semmilyen továbbított e-mailt sem lemezes tárolókon, sem adatbázisokban.
+* Nem tárolunk semmilyen metaadatot a továbbított e-mailekről sem lemezes tárolókon, sem adatbázisokban.
+* A jelen szabályzatban kifejezetten leírtak kivételével nem tárolunk naplókat vagy IP-címeket sem lemezes tárolókon, sem adatbázisokban.
+* Nem használunk harmadik féltől származó analitikai vagy telemetriai szolgáltatásokat.
 
 
 ## Gyűjtött információk {#information-collected}
@@ -51,7 +51,9 @@ Kérjük, tekintse meg a [Felhasználási feltételeinket](/terms), mivel azok a
 
 * Tároljuk az Ön által megadott e-mail címet.
 * Tároljuk az Ön által megadott domain neveket, aliasokat és konfigurációkat.
-* Bármilyen további információt, amelyet önkéntesen megad, például e-mailben vagy <a href="/help">segítség</a> oldalunkon beküldött megjegyzéseket vagy kérdéseket.
+* Korlátozott fiókbiztonsági metaadatokat tárolunk, amelyek a fiókja védelméhez és a hozzáférés kezeléséhez szükségesek, beleértve az aktív weboldal-munkamenet azonosítókat, a sikertelen bejelentkezési kísérletek számlálóit és az utolsó bejelentkezési kísérlet időbélyegét.
+* Minden további információt, amelyet önkéntesen ad meg nekünk, például az e-mailben vagy a <a href="/help">súgó</a> oldalunkon beküldött megjegyzéseket vagy kérdéseket.
+
 
 **Regisztrációs attribúció** (állandóan tárolva a fiókjában):
 
@@ -103,9 +105,10 @@ Az alábbi adatokat ideiglenesen memóriában vagy Redis-ben dolgozzuk fel, és 
 
 ### Hitelesítési Kísérletek {#authentication-attempts}
 
-* Sikertelen hitelesítési kísérleteket IP-címenként követünk nyomon Redis-ben.
-* Ezek az adatok automatikusan lejárnak (általában 24 órán belül).
-* Ezt a felhasználói fiókok elleni brute-force támadások megelőzésére használjuk.
+* A sikertelen hitelesítési kísérleteket IP-címenként követjük nyomon a Redisben.
+* Korlátozott, fiókszintű hitelesítési metaadatokat is tárolunk, beleértve a sikertelen bejelentkezési kísérletek számlálóit és az utolsó bejelentkezési kísérlet időbélyegét.
+* A Redis-alapú hitelesítési kísérletek adatai automatikusan lejárnak (általában 24 órán belül).
+* A felhasználói fiókok elleni brute-force támadások megelőzésére szolgál.
 
 
 ## Audit Naplók {#audit-logs}
@@ -149,14 +152,17 @@ Több adminisztrátorral rendelkező domainek esetén részletes audit naplózá
 
 ## Süti és Munkamenetek {#cookies-and-sessions}
 
-* Süti tárolódik a munkamenetben a webhelyed forgalmához.
-* A sütik HTTP-only, aláírtak és SameSite védelemmel rendelkeznek.
+* Csak HTTP-n keresztül elérhető, aláírt sütiket és szerveroldali munkamenet-adatokat tárolunk a weboldal forgalmához.
+* A sütik SameSite védelmet használnak.
+* Aktív weboldal-munkamenet azonosítókat tárolunk a fiókjában az olyan funkciók támogatására, mint a "log out other devices" és a biztonsággal kapcsolatos munkamenet-érvénytelenítés.
 * A munkamenet sütik 30 nap inaktivitás után lejárnak.
-* Nem hozunk létre munkameneteket botok vagy keresőrobotok számára.
-* A sütiket a következőkre használjuk:
+* Nem hozunk létre munkameneteket botok vagy lánctalpasok számára.
+* A sütiket és munkameneteket a következőkre használjuk:
   * Hitelesítés és bejelentkezési állapot
-  * Kétfaktoros hitelesítés "emlékezz rám" funkció
+  * Kétfaktoros hitelesítés "remember me" funkciója
   * Flash üzenetek és értesítések
+
+
 ## Analytics {#analytics}
 
 Saját, adatvédelmet előtérbe helyező elemző rendszerünket használjuk annak megértésére, hogyan használják szolgáltatásainkat. Ez a rendszer az adatvédelem alapelvével készült:

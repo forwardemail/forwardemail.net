@@ -33,12 +33,12 @@ Silakan merujuk pada [Ketentuan](/terms) kami karena berlaku di seluruh situs.
 
 ## Informasi yang Tidak Dikumpulkan {#information-not-collected}
 
-**Dengan pengecualian [log kesalahan](#error-logs), [email SMTP keluar](#outbound-smtp-emails), dan/atau ketika aktivitas spam atau berbahaya terdeteksi (misalnya untuk pembatasan laju):**
+**Kecuali untuk informasi yang secara tegas dijelaskan dalam kebijakan ini — termasuk [log kesalahan](#error-logs), [email SMTP keluar](#outbound-smtp-emails), [informasi akun](#account-information), [pemrosesan data sementara](#temporary-data-processing), [log audit](#audit-logs), dan [kuki dan sesi](#cookies-and-sessions):**
 
 * Kami tidak menyimpan email yang diteruskan ke penyimpanan disk maupun basis data.
 * Kami tidak menyimpan metadata apa pun tentang email yang diteruskan ke penyimpanan disk maupun basis data.
-* Kami tidak menyimpan log atau alamat IP ke penyimpanan disk maupun basis data.
-* Kami tidak menggunakan layanan analitik atau telemetri pihak ketiga.
+* Kecuali sebagaimana dijelaskan secara tegas dalam kebijakan ini, kami tidak menyimpan log atau alamat IP ke penyimpanan disk maupun basis data.
+* Kami tidak menggunakan layanan analitik atau telemetri pihak ketiga mana pun.
 
 
 ## Informasi yang Dikumpulkan {#information-collected}
@@ -51,7 +51,9 @@ Untuk transparansi, kapan saja Anda dapat <a href="https://github.com/forwardema
 
 * Kami menyimpan alamat email yang Anda berikan kepada kami.
 * Kami menyimpan nama domain, alias, dan konfigurasi yang Anda berikan kepada kami.
-* Informasi tambahan apa pun yang Anda berikan secara sukarela, seperti komentar atau pertanyaan yang dikirimkan kepada kami melalui email atau di halaman <a href="/help">bantuan</a> kami.
+* Kami menyimpan metadata keamanan akun terbatas yang diperlukan untuk melindungi akun Anda dan mengelola akses, termasuk pengidentifikasi sesi situs web aktif, penghitung upaya masuk yang gagal, dan stempel waktu dari upaya masuk terakhir.
+* Informasi tambahan apa pun yang Anda berikan secara sukarela kepada kami, seperti komentar atau pertanyaan yang dikirimkan kepada kami melalui email atau di halaman <a href="/help">bantuan</a> kami.
+
 
 **Atribusi pendaftaran** (disimpan secara permanen pada akun Anda):
 
@@ -103,8 +105,9 @@ Data berikut diproses sementara di memori atau Redis dan **tidak** disimpan seca
 
 ### Upaya Otentikasi {#authentication-attempts}
 
-* Upaya otentikasi yang gagal dilacak per alamat IP di Redis.
-* Data ini kedaluwarsa secara otomatis (biasanya dalam 24 jam).
+* Upaya autentikasi yang gagal dilacak per alamat IP di Redis.
+* Kami juga menyimpan metadata autentikasi tingkat akun yang terbatas, termasuk penghitung upaya masuk yang gagal dan stempel waktu dari upaya masuk terakhir.
+* Data upaya autentikasi berbasis Redis kedaluwarsa secara otomatis (biasanya dalam 24 jam).
 * Digunakan untuk mencegah serangan brute-force pada akun pengguna.
 
 
@@ -149,14 +152,17 @@ Untuk domain dengan beberapa administrator, kami menyediakan pencatatan audit te
 
 ## Cookie dan Sesi {#cookies-and-sessions}
 
-* Kami menyimpan cookie dalam sesi untuk lalu lintas situs web Anda.
-* Cookie bersifat HTTP-only, ditandatangani, dan menggunakan perlindungan SameSite.
-* Cookie sesi kedaluwarsa setelah 30 hari tidak aktif.
+* Kami menyimpan kuki yang ditandatangani dan hanya HTTP serta data sesi sisi server untuk lalu lintas situs web Anda.
+* Kuki menggunakan perlindungan SameSite.
+* Kami menyimpan pengidentifikasi sesi situs web aktif di akun Anda untuk mendukung fitur seperti "keluar dari perangkat lain" dan pembatalan sesi terkait keamanan.
+* Kuki sesi kedaluwarsa setelah 30 hari tidak ada aktivitas.
 * Kami tidak membuat sesi untuk bot atau perayap.
-* Kami menggunakan cookie untuk:
-  * Otentikasi dan status login
-  * Fungsi "ingat saya" pada otentikasi dua faktor
-  * Pesan kilat dan notifikasi
+* Kami menggunakan kuki dan sesi untuk:
+  * Autentikasi dan status masuk
+  * Fungsionalitas "ingat saya" pada autentikasi dua faktor
+  * Pesan kilat dan pemberitahuan
+
+
 ## Analytics {#analytics}
 
 Kami menggunakan sistem analitik yang berfokus pada privasi untuk memahami bagaimana layanan kami digunakan. Sistem ini dirancang dengan privasi sebagai prinsip inti:

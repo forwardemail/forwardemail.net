@@ -33,11 +33,11 @@ Please defer to our [Terms](/terms) as it applies sitewide.
 
 ## Information Not Collected
 
-**With the exception of [error logs](#error-logs), [outbound SMTP emails](#outbound-smtp-emails), and/or when spam or malicious activity is detected (e.g. for rate limiting):**
+**With the exception of the information expressly described in this policy — including [error logs](#error-logs), [outbound SMTP emails](#outbound-smtp-emails), [account information](#account-information), [temporary data processing](#temporary-data-processing), [audit logs](#audit-logs), and [cookies and sessions](#cookies-and-sessions):**
 
 * We do not store any forwarded emails to disk storage nor databases.
 * We do not store any metadata about forwarded emails to disk storage nor databases.
-* We do not store any logs or IP addresses to disk storage nor databases.
+* Except as expressly described in this policy, we do not store logs or IP addresses to disk storage nor databases.
 * We do not use any third-party analytics or telemetry services.
 
 
@@ -51,6 +51,7 @@ For transparency, at any time you can <a href="https://github.com/forwardemail" 
 
 * We store your email address that you provide us with.
 * We store your domain names, aliases, and configurations that you provide us with.
+* We store limited account security metadata needed to protect your account and manage access, including active website session identifiers, failed login attempt counters, and the timestamp of the last login attempt.
 * Any additional information you voluntarily provide us, such as comments or questions submitted to us by email or on our <a href="/help">help</a> page.
 
 **Signup attribution** (stored permanently on your account):
@@ -105,7 +106,8 @@ The following data is processed temporarily in-memory or Redis and is **not** pe
 ### Authentication Attempts
 
 * Failed authentication attempts are tracked per IP address in Redis.
-* This data expires automatically (typically within 24 hours).
+* We also store limited account-level authentication metadata, including failed login attempt counters and the timestamp of the last login attempt.
+* Redis-based authentication attempt data expires automatically (typically within 24 hours).
 * Used to prevent brute-force attacks on user accounts.
 
 
@@ -150,11 +152,12 @@ For domains with multiple administrators, we provide detailed audit logging to h
 
 ## Cookies and Sessions
 
-* We store a cookie in a session for your website traffic.
-* Cookies are HTTP-only, signed, and use SameSite protection.
+* We store HTTP-only, signed cookies and server-side session data for your website traffic.
+* Cookies use SameSite protection.
+* We store active website session identifiers on your account to support features such as "log out other devices" and security-related session invalidation.
 * Session cookies expire after 30 days of inactivity.
 * We do not create sessions for bots or crawlers.
-* We use cookies for:
+* We use cookies and sessions for:
   * Authentication and login state
   * Two-factor authentication "remember me" functionality
   * Flash messages and notifications

@@ -33,11 +33,11 @@ Bitte beachten Sie unsere [Nutzungsbedingungen](/terms), da diese für die gesam
 
 ## Nicht gesammelte Informationen {#information-not-collected}
 
-**Mit Ausnahme von [Fehlerprotokollen](#error-logs), [ausgehenden SMTP-E-Mails](#outbound-smtp-emails) und/oder wenn Spam oder bösartige Aktivitäten erkannt werden (z. B. für Ratenbegrenzung):**
+**Mit Ausnahme der in dieser Richtlinie ausdrücklich beschriebenen Informationen – einschließlich [Fehlerprotokolle](#error-logs), [ausgehende SMTP-E-Mails](#outbound-smtp-emails), [Kontoinformationen](#account-information), [temporäre Datenverarbeitung](#temporary-data-processing), [Audit-Protokolle](#audit-logs) und [Cookies und Sitzungen](#cookies-and-sessions):**
 
 * Wir speichern keine weitergeleiteten E-Mails auf Festplatten oder in Datenbanken.
 * Wir speichern keine Metadaten über weitergeleitete E-Mails auf Festplatten oder in Datenbanken.
-* Wir speichern keine Protokolle oder IP-Adressen auf Festplatten oder in Datenbanken.
+* Außer wie in dieser Richtlinie ausdrücklich beschrieben, speichern wir keine Protokolle oder IP-Adressen auf Festplatten oder in Datenbanken.
 * Wir verwenden keine Analyse- oder Telemetriedienste von Drittanbietern.
 
 
@@ -49,9 +49,11 @@ Zur Transparenz können Sie jederzeit <a href="https://github.com/forwardemail" 
 
 ### Kontoinformationen {#account-information}
 
-* Wir speichern die E-Mail-Adresse, die Sie uns mitteilen.
-* Wir speichern Ihre Domainnamen, Aliase und Konfigurationen, die Sie uns mitteilen.
-* Alle zusätzlichen Informationen, die Sie uns freiwillig mitteilen, wie Kommentare oder Fragen, die Sie uns per E-Mail oder auf unserer <a href="/help">Hilfeseite</a> senden.
+* Wir speichern Ihre E-Mail-Adresse, die Sie uns zur Verfügung stellen.
+* Wir speichern Ihre Domainnamen, Aliase und Konfigurationen, die Sie uns zur Verfügung stellen.
+* Wir speichern begrenzte Konto-Sicherheitsmetadaten, die zum Schutz Ihres Kontos und zur Zugriffsverwaltung erforderlich sind, einschließlich aktiver Website-Sitzungskennungen, Zähler für fehlgeschlagene Anmeldeversuche und des Zeitstempels des letzten Anmeldeversuchs.
+* Alle zusätzlichen Informationen, die Sie uns freiwillig zur Verfügung stellen, wie z. B. Kommentare oder Fragen, die Sie uns per E-Mail oder auf unserer <a href="/help">Hilfe</a>-Seite übermitteln.
+
 
 **Registrierungszuordnung** (wird dauerhaft in Ihrem Konto gespeichert):
 
@@ -104,7 +106,8 @@ Die folgenden Daten werden temporär im Arbeitsspeicher oder Redis verarbeitet u
 ### Authentifizierungsversuche {#authentication-attempts}
 
 * Fehlgeschlagene Authentifizierungsversuche werden pro IP-Adresse in Redis verfolgt.
-* Diese Daten verfallen automatisch (typischerweise innerhalb von 24 Stunden).
+* Wir speichern auch begrenzte Authentifizierungsmetadaten auf Kontoebene, einschließlich Zähler für fehlgeschlagene Anmeldeversuche und des Zeitstempels des letzten Anmeldeversuchs.
+* Redis-basierte Daten zu Authentifizierungsversuchen laufen automatisch ab (normalerweise innerhalb von 24 Stunden).
 * Wird verwendet, um Brute-Force-Angriffe auf Benutzerkonten zu verhindern.
 
 
@@ -149,14 +152,17 @@ Für Domains mit mehreren Administratoren bieten wir detaillierte Prüfprotokoll
 
 ## Cookies und Sitzungen {#cookies-and-sessions}
 
-* Wir speichern ein Cookie in einer Sitzung für Ihren Website-Traffic.
-* Cookies sind HTTP-only, signiert und verwenden SameSite-Schutz.
-* Sitzungscookies verfallen nach 30 Tagen Inaktivität.
+* Wir speichern HTTP-only, signierte Cookies und serverseitige Sitzungsdaten für Ihren Website-Verkehr.
+* Cookies verwenden SameSite-Schutz.
+* Wir speichern aktive Website-Sitzungskennungen in Ihrem Konto, um Funktionen wie "andere Geräte abmelden" und sicherheitsrelevante Sitzungsungültigmachung zu unterstützen.
+* Sitzungs-Cookies laufen nach 30 Tagen Inaktivität ab.
 * Wir erstellen keine Sitzungen für Bots oder Crawler.
-* Wir verwenden Cookies für:
-  * Authentifizierung und Login-Status
-  * Zwei-Faktor-Authentifizierungs-"Remember me"-Funktionalität
+* Wir verwenden Cookies und Sitzungen für:
+  * Authentifizierung und Anmeldestatus
+  * Zwei-Faktor-Authentifizierung "Angemeldet bleiben"-Funktion
   * Flash-Nachrichten und Benachrichtigungen
+
+
 ## Analytics {#analytics}
 
 Wir verwenden unser eigenes datenschutzorientiertes Analysesystem, um zu verstehen, wie unsere Dienste genutzt werden. Dieses System ist mit Datenschutz als Kernprinzip konzipiert:

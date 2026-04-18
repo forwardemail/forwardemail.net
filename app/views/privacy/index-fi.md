@@ -33,12 +33,12 @@ Ole hyvä ja tutustu [käyttöehtoihimme](/terms), sillä ne koskevat koko sivus
 
 ## Tietoja, joita ei kerätä {#information-not-collected}
 
-**Lukuun ottamatta [virhelokeja](#error-logs), [lähteviä SMTP-sähköposteja](#outbound-smtp-emails) ja/tai kun roskaposti tai haitallinen toiminta havaitaan (esim. nopeusrajoitusta varten):**
+**Lukuun ottamatta tässä käytännössä nimenomaisesti kuvattuja tietoja — mukaan lukien [virhelokit](#error-logs), [lähtevät SMTP-sähköpostit](#outbound-smtp-emails), [tilitiedot](#account-information), [väliaikainen tietojenkäsittely](#temporary-data-processing), [tarkastuslokit](#audit-logs) sekä [evästeet ja istunnot](#cookies-and-sessions):**
 
-* Emme tallenna välitettyjä sähköposteja levylle tai tietokantoihin.
-* Emme tallenna mitään välitettyjen sähköpostien metatietoja levylle tai tietokantoihin.
-* Emme tallenna lokitietoja tai IP-osoitteita levylle tai tietokantoihin.
-* Emme käytä kolmannen osapuolen analytiikka- tai telemetriapalveluita.
+* Emme tallenna mitään edelleenlähetettyjä sähköposteja levytilaan tai tietokantoihin.
+* Emme tallenna mitään metatietoja edelleenlähetetyistä sähköposteista levytilaan tai tietokantoihin.
+* Lukuun ottamatta sitä, mitä tässä käytännössä on nimenomaisesti kuvattu, emme tallenna lokeja tai IP-osoitteita levytilaan tai tietokantoihin.
+* Emme käytä mitään kolmannen osapuolen analytiikka- tai telemetriapalveluja.
 
 
 ## Kerätyt tiedot {#information-collected}
@@ -50,8 +50,10 @@ Läpinäkyvyyden vuoksi voit milloin tahansa <a href="https://github.com/forward
 ### Tilitiedot {#account-information}
 
 * Tallennamme sähköpostiosoitteesi, jonka annat meille.
-* Tallennamme verkkotunnuksesi, aliakset ja määritykset, jotka annat meille.
-* Kaikki lisätiedot, jotka vapaaehtoisesti annat, kuten sähköpostitse tai <a href="/help">ohjesivullamme</a> lähettämäsi kommentit tai kysymykset.
+* Tallennamme verkkotunnuksesi, aliaksesi ja asetuksesi, jotka annat meille.
+* Tallennamme rajoitetusti tilin turvallisuuteen liittyviä metatietoja, joita tarvitaan tilisi suojaamiseen ja pääsyn hallintaan, mukaan lukien aktiiviset verkkosivuston istuntotunnisteet, epäonnistuneiden kirjautumisyritysten laskurit ja viimeisimmän kirjautumisyrityksen aikaleiman.
+* Kaikki lisätiedot, jotka annat meille vapaaehtoisesti, kuten kommentit tai kysymykset, jotka lähetät meille sähköpostitse tai <a href="/help">help</a>-sivullamme.
+
 
 **Rekisteröitymisen lähdetieto** (tallennetaan pysyvästi tilillesi):
 
@@ -103,9 +105,10 @@ Seuraavia tietoja käsitellään väliaikaisesti muistissa tai Redisissä, eikä
 
 ### Todennusyritykset {#authentication-attempts}
 
-* Epäonnistuneita todennusyrityksiä seurataan IP-osoitteittain Redisissä.
-* Tämä tieto vanhenee automaattisesti (yleensä 24 tunnin sisällä).
-* Käytetään estämään käyttäjätilien brute-force-hyökkäyksiä.
+* Epäonnistuneita todennusyrityksiä seurataan IP-osoitekohtaisesti Rediksessä.
+* Tallennamme myös rajoitetusti tilitason todennusmetatietoja, mukaan lukien epäonnistuneiden kirjautumisyritysten laskurit ja viimeisimmän kirjautumisyrityksen aikaleiman.
+* Redis-pohjaiset todennusyritysten tiedot vanhenevat automaattisesti (yleensä 24 tunnin kuluessa).
+* Käytetään estämään käyttäjätileihin kohdistuvia väsytyshyökkäyksiä.
 
 
 ## Tarkastuslokit {#audit-logs}
@@ -149,14 +152,17 @@ Monen ylläpitäjän verkkotunnuksille tarjoamme yksityiskohtaisen tarkastusloki
 
 ## Evästeet ja istunnot {#cookies-and-sessions}
 
-* Tallennamme evästeen istuntoon verkkosivustosi liikennettä varten.
-* Evästeet ovat HTTP-only, allekirjoitettuja ja käyttävät SameSite-suojausta.
-* Istuntokohtaiset evästeet vanhenevat 30 päivän käyttämättömyyden jälkeen.
+* Tallennamme HttpOnly-muotoisia, allekirjoitettuja evästeitä ja palvelinpuolen istuntotietoja verkkosivustosi liikennettä varten.
+* Evästeet käyttävät SameSite-suojausta.
+* Tallennamme aktiiviset verkkosivuston istuntotunnisteet tilillesi tukeaksemme ominaisuuksia kuten "log out other devices" ja turvallisuuteen liittyvää istunnon mitätöintiä.
+* Istuntoevästeet vanhenevat 30 päivän toimettomuuden jälkeen.
 * Emme luo istuntoja boteille tai indeksoijille.
-* Käytämme evästeitä:
-  * Todennukseen ja kirjautumistilaan
-  * Kaksivaiheisen todennuksen "muista minut" -toimintoon
-  * Flash-viesteihin ja ilmoituksiin
+* Käytämme evästeitä ja istuntoja seuraaviin tarkoituksiin:
+  * Todennus ja kirjautumistila
+  * Kaksivaiheisen todennuksen "remember me" -toiminnallisuus
+  * Flash-viestit ja ilmoitukset
+
+
 ## Analytiikka {#analytics}
 
 Käytämme omaa yksityisyyteen keskittyvää analytiikkajärjestelmää ymmärtääksemme, miten palvelujamme käytetään. Tämä järjestelmä on suunniteltu yksityisyyden periaatteen mukaisesti:

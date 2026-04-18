@@ -33,12 +33,12 @@ Vennligst se våre [Vilkår](/terms) da disse gjelder for hele nettstedet.
 
 ## Informasjon som ikke samles inn {#information-not-collected}
 
-**Med unntak av [feillogger](#error-logs), [utgående SMTP-e-poster](#outbound-smtp-emails), og/eller når spam eller ondsinnet aktivitet oppdages (f.eks. for hastighetsbegrensning):**
+**Med unntak av informasjonen som uttrykkelig er beskrevet i denne personvernerklæringen — inkludert [feillogger](#error-logs), [utgående SMTP-e-poster](#outbound-smtp-emails), [kontoinformasjon](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisjonslogger](#audit-logs), og [informasjonskapsler og økter](#cookies-and-sessions):**
 
-* Vi lagrer ikke videresendte e-poster på disk eller i databaser.
-* Vi lagrer ikke metadata om videresendte e-poster på disk eller i databaser.
-* Vi lagrer ikke logger eller IP-adresser på disk eller i databaser.
-* Vi bruker ikke tredjeparts analyse- eller telemetritjenester.
+* Vi lagrer ingen videresendte e-poster på disk eller i databaser.
+* Vi lagrer ingen metadata om videresendte e-poster på disk eller i databaser.
+* Med unntak av det som uttrykkelig er beskrevet i denne personvernerklæringen, lagrer vi ikke logger eller IP-adresser på disk eller i databaser.
+* Vi bruker ingen tredjeparts analyse- eller telemetritjenester.
 
 
 ## Informasjon som samles inn {#information-collected}
@@ -51,7 +51,9 @@ For å være transparente kan du når som helst <a href="https://github.com/forw
 
 * Vi lagrer e-postadressen du oppgir til oss.
 * Vi lagrer domenenavn, aliaser og konfigurasjoner du oppgir til oss.
-* Eventuell tilleggsinformasjon du frivillig gir oss, som kommentarer eller spørsmål sendt via e-post eller på vår <a href="/help">hjelpeside</a>.
+* Vi lagrer begrensede sikkerhetsmetadata for kontoen som er nødvendige for å beskytte kontoen din og administrere tilgang, inkludert aktive nettstedsøktidentifikatorer, tellere for mislykkede påloggingsforsøk og tidsstempelet for det siste påloggingsforsøket.
+* All tilleggsinformasjon du frivillig gir oss, for eksempel kommentarer eller spørsmål sendt til oss via e-post eller på vår <a href="/help">hjelp</a>-side.
+
 
 **Registreringsattribusjon** (lagres permanent på kontoen din):
 
@@ -104,7 +106,8 @@ Følgende data behandles midlertidig i minnet eller Redis og lagres **ikke** per
 ### Autentiseringsforsøk {#authentication-attempts}
 
 * Mislykkede autentiseringsforsøk spores per IP-adresse i Redis.
-* Disse dataene utløper automatisk (vanligvis innen 24 timer).
+* Vi lagrer også begrensede autentiseringsmetadata på kontonivå, inkludert tellere for mislykkede påloggingsforsøk og tidsstempelet for det siste påloggingsforsøket.
+* Redis-baserte data om autentiseringsforsøk utløper automatisk (vanligvis innen 24 timer).
 * Brukes for å forhindre brute-force-angrep på brukerkontoer.
 
 
@@ -149,14 +152,17 @@ For domener med flere administratorer tilbyr vi detaljert revisjonslogging for �
 
 ## Informasjonskapsler og økter {#cookies-and-sessions}
 
-* Vi lagrer en informasjonskapsel i en økt for trafikken på nettstedet ditt.
-* Informasjonskapsler er HTTP-only, signerte og bruker SameSite-beskyttelse.
-* Økt-informasjonskapsler utløper etter 30 dager uten aktivitet.
-* Vi oppretter ikke økter for roboter eller indekseringsprogrammer.
-* Vi bruker informasjonskapsler til:
-  * Autentisering og innloggingsstatus
-  * Tofaktorautentisering "huske meg"-funksjonalitet
+* Vi lagrer HTTP-only, signerte informasjonskapsler og øktdata på serversiden for din nettstedstrafikk.
+* Informasjonskapsler bruker SameSite-beskyttelse.
+* Vi lagrer aktive nettstedsøktidentifikatorer på kontoen din for å støtte funksjoner som `"log out other devices"` og sikkerhetsrelatert ugyldiggjøring av økter.
+* Økt-informasjonskapsler utløper etter 30 dagers inaktivitet.
+* Vi oppretter ikke økter for roboter eller gjennomsøkere.
+* Vi bruker informasjonskapsler og økter for:
+  * Autentisering og påloggingsstatus
+  * Tofaktorautentisering "husk meg"-funksjonalitet
   * Flash-meldinger og varsler
+
+
 ## Analytics {#analytics}
 
 Vi bruker vårt eget personvernfokuserte analyssystem for å forstå hvordan tjenestene våre brukes. Dette systemet er designet med personvern som et kjerneprinsipp:

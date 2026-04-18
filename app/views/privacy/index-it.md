@@ -33,11 +33,11 @@ Si prega di fare riferimento ai nostri [Termini](/terms) come applicabili a tutt
 
 ## Informazioni Non Raccoglite {#information-not-collected}
 
-**Ad eccezione dei [log degli errori](#error-logs), delle [email SMTP in uscita](#outbound-smtp-emails) e/o quando viene rilevata attività di spam o dannosa (ad esempio per la limitazione della velocità):**
+**Ad eccezione delle informazioni espressamente descritte in questa policy — inclusi [log degli errori](#error-logs), [email SMTP in uscita](#outbound-smtp-emails), [informazioni sull'account](#account-information), [elaborazione temporanea dei dati](#temporary-data-processing), [log di audit](#audit-logs), e [cookie e sessioni](#cookies-and-sessions):**
 
 * Non memorizziamo alcuna email inoltrata su disco o database.
 * Non memorizziamo alcun metadato relativo alle email inoltrate su disco o database.
-* Non memorizziamo alcun log o indirizzo IP su disco o database.
+* Ad eccezione di quanto espressamente descritto in questa policy, non memorizziamo log o indirizzi IP su disco o database.
 * Non utilizziamo servizi di analisi o telemetria di terze parti.
 
 
@@ -49,9 +49,11 @@ Per trasparenza, in qualsiasi momento puoi <a href="https://github.com/forwardem
 
 ### Informazioni sull'Account {#account-information}
 
-* Conserviamo il tuo indirizzo email che ci fornisci.
-* Conserviamo i tuoi nomi di dominio, alias e configurazioni che ci fornisci.
-* Qualsiasi informazione aggiuntiva che ci fornisci volontariamente, come commenti o domande inviateci via email o sulla nostra pagina <a href="/help">help</a>.
+* Memorizziamo l'indirizzo email che ci fornisci.
+* Memorizziamo i nomi di dominio, gli alias e le configurazioni che ci fornisci.
+* Memorizziamo metadati di sicurezza dell'account limitati, necessari per proteggere il tuo account e gestire gli accessi, inclusi gli identificatori delle sessioni attive sul sito web, i contatori dei tentativi di accesso falliti e la marca temporale dell'ultimo tentativo di accesso.
+* Qualsiasi informazione aggiuntiva che ci fornisci volontariamente, come commenti o domande inviati via email o sulla nostra pagina di <a href="/help">aiuto</a>.
+
 
 **Attribuzione della registrazione** (conservata permanentemente sul tuo account):
 
@@ -103,9 +105,10 @@ I seguenti dati vengono elaborati temporaneamente in memoria o in Redis e **non*
 
 ### Tentativi di autenticazione {#authentication-attempts}
 
-* I tentativi di autenticazione falliti sono tracciati per indirizzo IP in Redis.
-* Questi dati scadono automaticamente (tipicamente entro 24 ore).
-* Utilizzato per prevenire attacchi brute-force sugli account utente.
+* I tentativi di autenticazione falliti vengono tracciati per indirizzo IP in Redis.
+* Memorizziamo inoltre metadati di autenticazione a livello di account limitati, inclusi i contatori dei tentativi di accesso falliti e la marca temporale dell'ultimo tentativo di accesso.
+* I dati sui tentativi di autenticazione basati su Redis scadono automaticamente (in genere entro 24 ore).
+* Utilizzati per prevenire attacchi brute-force agli account degli utenti.
 
 
 ## Log di audit {#audit-logs}
@@ -149,14 +152,17 @@ Per i domini con più amministratori, forniamo un logging dettagliato per aiutar
 
 ## Cookie e sessioni {#cookies-and-sessions}
 
-* Conserviamo un cookie di sessione per il traffico del tuo sito web.
-* I cookie sono HTTP-only, firmati e utilizzano la protezione SameSite.
+* Memorizziamo cookie firmati e solo HTTP, e dati di sessione lato server per il traffico del tuo sito web.
+* I cookie utilizzano la protezione SameSite.
+* Memorizziamo gli identificatori delle sessioni attive sul sito web nel tuo account per supportare funzionalità come "log out other devices" e l'invalidazione delle sessioni per motivi di sicurezza.
 * I cookie di sessione scadono dopo 30 giorni di inattività.
 * Non creiamo sessioni per bot o crawler.
-* Utilizziamo i cookie per:
-  * Autenticazione e stato di login
+* Utilizziamo cookie e sessioni per:
+  * Autenticazione e stato di accesso
   * Funzionalità "ricordami" per l'autenticazione a due fattori
   * Messaggi flash e notifiche
+
+
 ## Analytics {#analytics}
 
 Utilizziamo un sistema di analisi incentrato sulla privacy per capire come vengono utilizzati i nostri servizi. Questo sistema è progettato con la privacy come principio fondamentale:

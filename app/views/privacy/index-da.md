@@ -33,12 +33,12 @@ Se venligst vores [Vilkår](/terms), da de gælder på hele siden.
 
 ## Information Ikke Indsamlet {#information-not-collected}
 
-**Med undtagelse af [fejllogs](#error-logs), [udgående SMTP e-mails](#outbound-smtp-emails), og/eller når spam eller ondsindet aktivitet opdages (f.eks. til ratebegrænsning):**
+**Med undtagelse af de oplysninger, der udtrykkeligt er beskrevet i denne politik — herunder [fejllogs](#error-logs), [udgående SMTP-e-mails](#outbound-smtp-emails), [kontoinformation](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisionslogs](#audit-logs) og [cookies og sessioner](#cookies-og-sessions):**
 
-* Vi gemmer ikke nogen videresendte e-mails på disk eller i databaser.
-* Vi gemmer ikke nogen metadata om videresendte e-mails på disk eller i databaser.
-* Vi gemmer ikke nogen logs eller IP-adresser på disk eller i databaser.
-* Vi bruger ikke nogen tredjeparts analyse- eller telemetritjenester.
+* Vi gemmer ikke videresendte e-mails på disk eller i databaser.
+* Vi gemmer ikke metadata om videresendte e-mails på disk eller i databaser.
+* Med undtagelse af hvad der udtrykkeligt er beskrevet i denne politik, gemmer vi ikke logs eller IP-adresser på disk eller i databaser.
+* Vi bruger ikke tredjepartsanalyse- eller telemetritjenester.
 
 
 ## Information Indsamlet {#information-collected}
@@ -51,7 +51,9 @@ For gennemsigtighed kan du til enhver tid <a href="https://github.com/forwardema
 
 * Vi gemmer din e-mailadresse, som du giver os.
 * Vi gemmer dine domænenavne, aliaser og konfigurationer, som du giver os.
-* Enhver yderligere information, du frivilligt giver os, såsom kommentarer eller spørgsmål sendt til os via e-mail eller på vores <a href="/help">hjælpeside</a>.
+* Vi gemmer begrænsede kontosikkerhedsmetadata, der er nødvendige for at beskytte din konto og administrere adgang, herunder aktive websteds-session-id'er, tællere for mislykkede loginforsøg og tidsstemplet for det sidste loginforsøg.
+* Enhver yderligere information, du frivilligt giver os, såsom kommentarer eller spørgsmål, der sendes til os via e-mail eller på vores <a href="/help">hjælpeside</a>.
+
 
 **Tilmeldingsattribution** (gemt permanent på din konto):
 
@@ -103,8 +105,9 @@ Følgende data behandles midlertidigt i hukommelsen eller Redis og gemmes **ikke
 
 ### Autentificeringsforsøg {#authentication-attempts}
 
-* Mislykkede autentificeringsforsøg spores pr. IP-adresse i Redis.
-* Disse data udløber automatisk (typisk inden for 24 timer).
+* Mislykkede godkendelsesforsøg spores pr. IP-adresse i Redis.
+* Vi gemmer også begrænset konto-niveau godkendelsesmetadata, herunder tællere for mislykkede loginforsøg og tidsstemplet for det sidste loginforsøg.
+* Redis-baserede data om godkendelsesforsøg udløber automatisk (typisk inden for 24 timer).
 * Bruges til at forhindre brute-force angreb på brugerkonti.
 
 
@@ -149,14 +152,17 @@ For domæner med flere administratorer tilbyder vi detaljeret revisionslogning f
 
 ## Cookies og Sessioner {#cookies-and-sessions}
 
-* Vi gemmer en cookie i en session for dit websteds trafik.
-* Cookies er HTTP-only, signeret og bruger SameSite-beskyttelse.
+* Vi gemmer HTTP-only, signerede cookies og serverside sessionsdata for din webtrafik.
+* Cookies bruger SameSite-beskyttelse.
+* Vi gemmer aktive websessions-id'er på din konto for at understøtte funktioner som "log ud af andre enheder" og sikkerhedsrelateret sessionsinvalidering.
 * Sessionscookies udløber efter 30 dages inaktivitet.
 * Vi opretter ikke sessioner for bots eller crawlere.
-* Vi bruger cookies til:
-  * Autentificering og login-status
-  * Tofaktorautentificerings "husk mig"-funktionalitet
+* Vi bruger cookies og sessioner til:
+  * Autentificering og loginstatus
+  * To-faktor-autentificerings "huske mig"-funktionalitet
   * Flash-beskeder og notifikationer
+
+
 ## Analytics {#analytics}
 
 Vi bruger vores eget privatlivsfokuserede analyssystem til at forstå, hvordan vores tjenester bruges. Dette system er designet med privatliv som et kerneprincip:
