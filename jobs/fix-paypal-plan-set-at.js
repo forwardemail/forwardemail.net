@@ -22,7 +22,6 @@ const mongoose = require('mongoose');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Payments } = require('#models');
-const { paypalAgent } = require('#helpers/paypal');
 const config = require('#config');
 
 const graceful = new Graceful({
@@ -34,57 +33,27 @@ graceful.listen();
 
 //
 // RACE CONDITION FIX (batch job): This job corrects planSetAt for users
-// whose planSetAt is after their earliest payment's invoice_at.
+// whose planSetAt is after their earliest payment's invoice_at for their
+// CURRENT plan.
 //
-// It handles BOTH subscription users (original behavior, using PayPal API)
-// AND one-time payment users (new behavior, using database only).
+// It uses the database (Payments collection) as the source of truth
+// instead of the PayPal API, because:
+// - The PayPal subscription create_time may be for an OLD plan if the
+//   user changed plans (e.g. Enhanced Protection -> Team)
+// - The Payments collection has a `plan` field that lets us filter
+//   for only payments matching the user's current plan
 //
 // Safety: invoice_at < planSetAt only triggers for first-time plan setup
 // scenarios. For existing users making subsequent payments, new payments
 // always have invoice_at after planSetAt.
 //
 
-async function subscriptionMapper(id) {
-  try {
-    const user = await Users.findById(id);
-    if (!user) throw new Error('User does not exist');
-    // if the user plan set at is AFTER their subscription start date
-    // then correct the user's plan set at to be equal to the subscription start date
-    const agent = await paypalAgent();
-    const { body } = await agent.get(
-      `/v1/billing/subscriptions/${
-        user[config.userFields.paypalSubscriptionID]
-      }`
-    );
-    if (!body.create_time) throw new Error('create time missing');
-    if (
-      new Date(user[config.userFields.planSetAt]).getTime() >
-      new Date(body.create_time).getTime()
-    ) {
-      logger.info(
-        'user plan set at needs corrected (subscription)',
-        user.email,
-        'it was off by',
-        dayjs(user[config.userFields.planSetAt]).diff(
-          new Date(body.create_time),
-          'minutes'
-        ),
-        'minutes'
-      );
-      user[config.userFields.planSetAt] = new Date(body.create_time);
-      await user.save();
-    }
-  } catch (err) {
-    logger.error(err, { user: id });
-  }
-}
-
-async function oneTimeMapper(id) {
+async function mapper(id) {
   try {
     const user = await Users.findById(id);
     if (!user) throw new Error('User does not exist');
 
-    // find the earliest payment for this user's current plan
+    // find the earliest payment for this user's CURRENT plan
     const earliestPayment = await Payments.findOne(
       {
         user: user._id,
@@ -101,8 +70,9 @@ async function oneTimeMapper(id) {
       new Date(earliestPayment.invoice_at).getTime()
     ) {
       logger.info(
-        'user plan set at needs corrected (one-time)',
+        'user plan set at needs corrected',
         user.email,
+        `plan=${user.plan}`,
         'it was off by',
         dayjs(user[config.userFields.planSetAt]).diff(
           new Date(earliestPayment.invoice_at),
@@ -121,31 +91,13 @@ async function oneTimeMapper(id) {
 (async () => {
   await setupMongoose(logger);
   try {
-    // Phase 1: Fix subscription users (original behavior)
-    const subscriptionIds = await Users.distinct('_id', {
-      [config.userFields.paypalSubscriptionID]: {
-        $exists: true
-      }
-    });
-
-    logger.info(`Processing ${subscriptionIds.length} subscription users`);
-    // run serially to prevent API rate limiting
-    await pMapSeries(subscriptionIds, subscriptionMapper);
-
-    // Phase 2: Fix one-time payment users (no subscription, but have payments)
-    const oneTimeIds = await Users.distinct('_id', {
+    const ids = await Users.distinct('_id', {
       plan: { $ne: 'free' },
-      [config.userFields.planSetAt]: { $exists: true },
-      [config.userFields.paypalSubscriptionID]: {
-        $exists: false
-      },
-      [config.userFields.stripeSubscriptionID]: {
-        $exists: false
-      }
+      [config.userFields.planSetAt]: { $exists: true }
     });
 
-    logger.info(`Processing ${oneTimeIds.length} one-time payment users`);
-    await pMapSeries(oneTimeIds, oneTimeMapper);
+    logger.info(`Processing ${ids.length} paid users`);
+    await pMapSeries(ids, mapper);
   } catch (err) {
     await logger.error(err);
   }

@@ -125,9 +125,15 @@
               qname-minimisation: yes
               aggressive-nsec: yes
 
-              # Prevent DNS amplification attacks
-              ratelimit: 1000
-              ip-ratelimit: 100
+              # NOTE: ratelimit and ip-ratelimit are disabled because Unbound
+              # only listens on localhost (127.0.0.1/::1). All queries originate
+              # from the local machine, so per-IP rate limiting throttles the
+              # server against itself — causing EAI_AGAIN failures under load
+              # (e.g. batch jobs, background workers, MongoDB/Redis connections).
+              # Amplification attacks are not a concern since Unbound is not
+              # exposed to the network.
+              ratelimit: 0
+              ip-ratelimit: 0
         owner: root
         group: root
         mode: '0644'
