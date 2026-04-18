@@ -435,6 +435,10 @@ p.text-center.d-lg-none
                             = emoji("point_up")
                             = " "
                             = t("Leave blank to use our strong and random 24-character password generator.")
+                          p.alert.alert-warning.small
+                            i.fa.fa-exclamation-triangle
+                            = " "
+                            = t("Custom mailbox passwords must be 128 characters or fewer, cannot start or end with whitespace, and cannot contain quotes or apostrophes.")
                           if Array.isArray(alias.tokens) && alias.tokens.length > 0
                             p.font-weight-bold.lead= t("Enter current password to keep existing mailbox and messages:")
                             .form-group.floating-label

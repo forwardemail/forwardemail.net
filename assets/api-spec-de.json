@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Ihr neues, individuell festgelegtes Passwort für den Alias"
+            "description": "Ihr neues, individuell festgelegtes Passwort für den Alias. Benutzerdefinierte Postfach-Passwörter müssen 128 Zeichen oder weniger enthalten, dürfen nicht mit einem Leerzeichen beginnen oder enden und dürfen keine Anführungszeichen oder Apostrophe enthalten."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Erstellen Sie ein domänenweites Catch-All-Passwort",
-        "description": "Erstellt ein domänenweites Standardpasswort. Wird kein Passwort angegeben, wird ein sicheres Zufallspasswort generiert.",
+        "description": "Erstellt ein domänenweites Standardpasswort. Wird kein Passwort angegeben, wird ein sicheres Zufallspasswort generiert. Catch-all-Passwörter sind nur für den SMTP-Versand vorgesehen. Für IMAP, POP3, CalDAV, CardDAV und Postfachzugriff generieren Sie bitte stattdessen ein Passwort für den jeweiligen Alias.",
         "tags": [
           "Domänen"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Ihr neues, individuell festgelegtes Passwort, das als allgemeines Domänenpasswort verwendet werden soll. Lassen Sie dieses Feld leer, um ein sicheres Passwort zu generieren."
+                    "description": "Ihr neues, individuell festgelegtes Passwort, das als allgemeines Domänenpasswort verwendet werden soll. Lassen Sie dieses Feld leer, um ein sicheres Passwort zu generieren. Benutzerdefinierte Postfach-Passwörter müssen 128 Zeichen oder weniger enthalten, dürfen nicht mit einem Leerzeichen beginnen oder enden und dürfen keine Anführungszeichen oder Apostrophe enthalten. Catch-all-Passwörter sind nur für den SMTP-Versand vorgesehen. Für IMAP, POP3, CalDAV, CardDAV und Postfachzugriff generieren Sie bitte stattdessen ein Passwort für den jeweiligen Alias."
                   },
                   "description": {
                     "type": "string",

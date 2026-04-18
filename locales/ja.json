@@ -19616,5 +19616,7 @@
   "Recent detections": "Recent detections",
   "Unique recipients": "Unique recipients",
   "Unique trusted sources": "Unique trusted sources",
-  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded."
+  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.",
+  "Custom mailbox passwords must be 128 characters or fewer, cannot start or end with whitespace, and cannot contain quotes or apostrophes.": "カスタムメールボックスのパスワードは128文字以内である必要があり、空白で始まったり終わったりしてはならず、引用符やアポストロフィを含めることはできません。",
+  "Catch-all passwords are for SMTP sending only. For IMAP, POP3, CalDAV, CardDAV, and mailbox access, generate a password for the specific alias instead.": "キャッチオールパスワードはSMTP送信専用です。IMAP、POP3、CalDAV、CardDAV、およびメールボックスアクセスには、特定のエイリアスのパスワードを生成してください。"
 }

@@ -19616,5 +19616,7 @@
   "Recent detections": "Recent detections",
   "Unique recipients": "Unique recipients",
   "Unique trusted sources": "Unique trusted sources",
-  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded."
+  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.",
+  "Custom mailbox passwords must be 128 characters or fewer, cannot start or end with whitespace, and cannot contain quotes or apostrophes.": "As senhas personalizadas para caixas de correio devem ter até 128 caracteres, não podem começar ou terminar com espaço em branco e não podem conter aspas ou apóstrofos.",
+  "Catch-all passwords are for SMTP sending only. For IMAP, POP3, CalDAV, CardDAV, and mailbox access, generate a password for the specific alias instead.": "Senhas catch-all são apenas para envio SMTP. Para IMAP, POP3, CalDAV, CardDAV e acesso à caixa de correio, gere uma senha para o alias específico."
 }

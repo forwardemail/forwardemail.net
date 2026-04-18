@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Su nueva contraseña personalizada para usar como alias"
+            "description": "Su nueva contraseña personalizada para usar como alias. Las contraseñas personalizadas para el buzón deben tener 128 caracteres o menos, no pueden comenzar ni terminar con espacios en blanco y no pueden contener comillas ni apóstrofes."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Crear una contraseña general para todo el dominio",
-        "description": "Crea una contraseña general para todo el dominio. Si no se proporciona ninguna contraseña, se generará una aleatoria y segura.",
+        "description": "Crea una contraseña general para todo el dominio. Si no se proporciona ninguna contraseña, se generará una aleatoria y segura. Las contraseñas catch-all son solo para envío SMTP. Para IMAP, POP3, CalDAV, CardDAV y acceso al buzón, genera una contraseña para el alias específico en su lugar.",
         "tags": [
           "Dominios"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Su nueva contraseña personalizada para usar como contraseña general del dominio. Déjela en blanco para generar una contraseña segura."
+                    "description": "Su nueva contraseña personalizada para usar como contraseña general del dominio. Déjela en blanco para generar una contraseña segura. Las contraseñas personalizadas para el buzón deben tener 128 caracteres o menos, no pueden comenzar ni terminar con espacios en blanco y no pueden contener comillas ni apóstrofes. Las contraseñas catch-all son solo para envío SMTP. Para IMAP, POP3, CalDAV, CardDAV y acceso al buzón, genera una contraseña para el alias específico en su lugar."
                   },
                   "description": {
                     "type": "string",

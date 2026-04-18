@@ -445,7 +445,10 @@ module.exports = {
   INVALID_PASSWORD_CONFIRM: 'Password confirmation did not match new password.',
   INVALID_PASSWORD_STRENGTH: 'Password strength was not strong enough.',
   INVALID_PASSWORD_CHARACTERS:
-    'Quotes and apostrophes cannot be used as password characters.',
+    'Mailbox passwords cannot contain quotes or apostrophes.',
+  INVALID_PASSWORD_LENGTH: 'Mailbox passwords must be 128 characters or fewer.',
+  INVALID_PASSWORD_WHITESPACE:
+    'Mailbox passwords cannot start or end with whitespace.',
   INVALID_PORT: 'Invalid port number.',
   INVALID_PROVIDER: 'We do not support this authentication provider.',
   PROVIDER_NOT_CONNECTED:

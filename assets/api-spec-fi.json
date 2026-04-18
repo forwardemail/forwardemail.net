@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Uusi mukautettu salasanasi aliakselle"
+            "description": "Uusi mukautettu salasanasi aliakselle. Mukautettujen postilaatikon salasanojen on oltava enintään 128 merkkiä pitkiä, ne eivät saa alkaa tai päättyä välilyöntiin, eikä niiden saa sisältää lainaus- tai heittomerkkejä."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Luo koko verkkotunnuksen kattava salasana",
-        "description": "Luo koko verkkotunnuksen kattavan yleissalasanan. Jos salasanaa ei anneta, luodaan turvallinen satunnainen salasana.",
+        "description": "Luo koko verkkotunnuksen kattavan yleissalasanan. Jos salasanaa ei anneta, luodaan turvallinen satunnainen salasana. Catch-all-salasanat ovat tarkoitettu vain SMTP-lähetykseen. IMAP-, POP3-, CalDAV-, CardDAV- ja postilaatikon käyttöä varten luo salasana tietylle aliasille.",
         "tags": [
           "Verkkotunnukset"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Uusi mukautettu salasanasi, jota käytetään koko verkkotunnuksen kattavana keräilysalasanana. Jätä tyhjäksi luodaksesi vahvan salasanan."
+                    "description": "Uusi mukautettu salasanasi, jota käytetään koko verkkotunnuksen kattavana keräilysalasanana. Jätä tyhjäksi luodaksesi vahvan salasanan. Mukautettujen postilaatikon salasanojen on oltava enintään 128 merkkiä pitkiä, ne eivät saa alkaa tai päättyä välilyöntiin, eikä niiden saa sisältää lainaus- tai heittomerkkejä. Catch-all-salasanat ovat tarkoitettu vain SMTP-lähetykseen. IMAP-, POP3-, CalDAV-, CardDAV- ja postilaatikon käyttöä varten luo salasana tietylle aliasille."
                   },
                   "description": {
                     "type": "string",

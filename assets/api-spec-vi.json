@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Mật khẩu mới tùy chỉnh của bạn để sử dụng cho bí danh"
+            "description": "Mật khẩu mới tùy chỉnh của bạn để sử dụng cho bí danh. Mật khẩu hộp thư tùy chỉnh phải tối đa 128 ký tự, không được bắt đầu hoặc kết thúc bằng khoảng trắng và không được chứa dấu ngoặc kép hoặc dấu nháy đơn."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Tạo mật khẩu chung cho toàn miền",
-        "description": "Tạo mật khẩu chung cho toàn miền. Nếu không cung cấp mật khẩu, một mật khẩu ngẫu nhiên an toàn sẽ được tạo.",
+        "description": "Tạo mật khẩu chung cho toàn miền. Nếu không cung cấp mật khẩu, một mật khẩu ngẫu nhiên an toàn sẽ được tạo. Mật khẩu catch-all chỉ dành cho gửi SMTP. Đối với IMAP, POP3, CalDAV, CardDAV và truy cập hộp thư, hãy tạo mật khẩu cho bí danh cụ thể.",
         "tags": [
           "Tên miền"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Mật khẩu mới tùy chỉnh của bạn để sử dụng cho mật khẩu chung cho toàn miền. Để trống để tạo mật khẩu mạnh."
+                    "description": "Mật khẩu mới tùy chỉnh của bạn để sử dụng cho mật khẩu chung cho toàn miền. Để trống để tạo mật khẩu mạnh. Mật khẩu hộp thư tùy chỉnh phải tối đa 128 ký tự, không được bắt đầu hoặc kết thúc bằng khoảng trắng và không được chứa dấu ngoặc kép hoặc dấu nháy đơn. Mật khẩu catch-all chỉ dành cho gửi SMTP. Đối với IMAP, POP3, CalDAV, CardDAV và truy cập hộp thư, hãy tạo mật khẩu cho bí danh cụ thể."
                   },
                   "description": {
                     "type": "string",

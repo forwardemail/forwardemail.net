@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Az aliashoz használandó új egyéni jelszavad"
+            "description": "Az aliashoz használandó új egyéni jelszavad. Az egyedi postafiók jelszavak legfeljebb 128 karakter hosszúak lehetnek, nem kezdődhetnek vagy végződhetnek szóközzel, és nem tartalmazhatnak idézőjeleket vagy aposztrófokat."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Hozzon létre egy domain szintű, mindent lefedő jelszót",
-        "description": "Létrehoz egy domain szintű, gyűjtőjelszót. Ha nem ad meg jelszót, akkor egy biztonságos, véletlenszerű jelszó generálódik.",
+        "description": "Létrehoz egy domain szintű, gyűjtőjelszót. Ha nem ad meg jelszót, akkor egy biztonságos, véletlenszerű jelszó generálódik. A catch-all jelszavak csak SMTP küldésre használhatók. IMAP, POP3, CalDAV, CardDAV és postafiók hozzáféréshez inkább generálj jelszót az adott aliasnak.",
         "tags": [
           "Domainek"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Az Ön egyéni új jelszava, amelyet domain szintű gyűjtőjelszóként kell használni. Hagyja üresen, ha erős jelszót szeretne létrehozni."
+                    "description": "Az Ön egyéni új jelszava, amelyet domain szintű gyűjtőjelszóként kell használni. Hagyja üresen, ha erős jelszót szeretne létrehozni. Az egyedi postafiók jelszavak legfeljebb 128 karakter hosszúak lehetnek, nem kezdődhetnek vagy végződhetnek szóközzel, és nem tartalmazhatnak idézőjeleket vagy aposztrófokat. A catch-all jelszavak csak SMTP küldésre használhatók. IMAP, POP3, CalDAV, CardDAV és postafiók hozzáféréshez inkább generálj jelszót az adott aliasnak."
                   },
                   "description": {
                     "type": "string",

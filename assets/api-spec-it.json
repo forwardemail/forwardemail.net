@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "La tua nuova password personalizzata da utilizzare per l'alias"
+            "description": "La tua nuova password personalizzata da utilizzare per l'alias. Le password personalizzate per la casella di posta devono contenere al massimo 128 caratteri, non possono iniziare o terminare con uno spazio e non possono contenere virgolette o apostrofi."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Crea una password catch-all per l'intero dominio",
-        "description": "Crea una password generica valida per l'intero dominio. Se non viene specificata alcuna password, ne verrà generata una casuale sicura.",
+        "description": "Crea una password generica valida per l'intero dominio. Se non viene specificata alcuna password, ne verrà generata una casuale sicura. Le password catch-all sono valide solo per l'invio SMTP. Per IMAP, POP3, CalDAV, CardDAV e l'accesso alla casella, genera una password per l'alias specifico.",
         "tags": [
           "Domini"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "La tua nuova password personalizzata da utilizzare come password generale per l'intero dominio. Lascia vuoto per generare una password complessa."
+                    "description": "La tua nuova password personalizzata da utilizzare come password generale per l'intero dominio. Lascia vuoto per generare una password complessa. Le password personalizzate per la casella di posta devono contenere al massimo 128 caratteri, non possono iniziare o terminare con uno spazio e non possono contenere virgolette o apostrofi. Le password catch-all sono valide solo per l'invio SMTP. Per IMAP, POP3, CalDAV, CardDAV e l'accesso alla casella, genera una password per l'alias specifico."
                   },
                   "description": {
                     "type": "string",

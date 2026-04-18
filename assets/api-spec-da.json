@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Din brugerdefinerede nye adgangskode til brug for aliaset"
+            "description": "Din brugerdefinerede nye adgangskode til brug for aliaset. Brugertilpassede mailbokskoder må være højst 128 tegn, må ikke starte eller slutte med mellemrum og må ikke indeholde anførselstegn eller apostroffer."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Opret en domæneomfattende adgangskode",
-        "description": "Opretter en domæneomfattende, fælles adgangskode. Hvis der ikke angives nogen adgangskode, genereres en sikker, tilfældig adgangskode.",
+        "description": "Opretter en domæneomfattende, fælles adgangskode. Hvis der ikke angives nogen adgangskode, genereres en sikker, tilfældig adgangskode. Catch-all adgangskoder er kun til SMTP-afsendelse. For IMAP, POP3, CalDAV, CardDAV og postkasseadgang, generer en adgangskode til den specifikke alias i stedet.",
         "tags": [
           "Domæner"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Din brugerdefinerede nye adgangskode, der skal bruges som den domæneomfattende, fælles adgangskode. Lad feltet stå tomt for at generere en stærk adgangskode."
+                    "description": "Din brugerdefinerede nye adgangskode, der skal bruges som den domæneomfattende, fælles adgangskode. Lad feltet stå tomt for at generere en stærk adgangskode. Brugertilpassede mailbokskoder må være højst 128 tegn, må ikke starte eller slutte med mellemrum og må ikke indeholde anførselstegn eller apostroffer. Catch-all adgangskoder er kun til SMTP-afsendelse. For IMAP, POP3, CalDAV, CardDAV og postkasseadgang, generer en adgangskode til den specifikke alias i stedet."
                   },
                   "description": {
                     "type": "string",

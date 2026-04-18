@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Uw nieuwe aangepaste wachtwoord voor de alias"
+            "description": "Uw nieuwe aangepaste wachtwoord voor de alias. Aangepaste mailboxwachtwoorden mogen maximaal 128 tekens bevatten, mogen niet beginnen of eindigen met een spatie en mogen geen aanhalingstekens of apostrofs bevatten."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Maak een domeinbreed catch-all-wachtwoord aan",
-        "description": "Creëert een domeinbreed verzamelwachtwoord. Als er geen wachtwoord wordt opgegeven, wordt er een veilig willekeurig wachtwoord gegenereerd.",
+        "description": "Creëert een domeinbreed verzamelwachtwoord. Als er geen wachtwoord wordt opgegeven, wordt er een veilig willekeurig wachtwoord gegenereerd. Catch-all wachtwoorden zijn alleen voor SMTP-verzending. Voor IMAP, POP3, CalDAV, CardDAV en mailboxtoegang genereer je een wachtwoord voor het specifieke alias.",
         "tags": [
           "Domeinen"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Uw nieuwe, aangepaste wachtwoord voor het domeinbrede verzamelwachtwoord. Laat dit leeg om een sterk wachtwoord te genereren."
+                    "description": "Uw nieuwe, aangepaste wachtwoord voor het domeinbrede verzamelwachtwoord. Laat dit leeg om een sterk wachtwoord te genereren. Aangepaste mailboxwachtwoorden mogen maximaal 128 tekens bevatten, mogen niet beginnen of eindigen met een spatie en mogen geen aanhalingstekens of apostrofs bevatten. Catch-all wachtwoorden zijn alleen voor SMTP-verzending. Voor IMAP, POP3, CalDAV, CardDAV en mailboxtoegang genereer je een wachtwoord voor het specifieke alias."
                   },
                   "description": {
                     "type": "string",

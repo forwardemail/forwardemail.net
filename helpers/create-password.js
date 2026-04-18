@@ -16,12 +16,30 @@ const phrases = require('#config/phrases');
 
 let zxcvbn;
 
+const MAX_PASSWORD_LENGTH = 128;
 const randomBytes = promisify(crypto.randomBytes);
 
 async function createPassword(existingPassword, userInputs = []) {
   if (typeof existingPassword === 'string') {
     if (!isSANB(existingPassword)) {
       const err = Boom.badRequest(phrases.INVALID_PASSWORD_STRENGTH);
+      err.no_translate = true;
+      throw err;
+    }
+
+    //
+    // mailbox auth trims passwords in-memory during authentication,
+    // so reject leading or trailing whitespace up front
+    //
+    if (existingPassword !== existingPassword.trim()) {
+      const err = Boom.badRequest(phrases.INVALID_PASSWORD_WHITESPACE);
+      err.no_translate = true;
+      throw err;
+    }
+
+    // keep creation aligned with mailbox auth validation
+    if (existingPassword.length > MAX_PASSWORD_LENGTH) {
+      const err = Boom.badRequest(phrases.INVALID_PASSWORD_LENGTH);
       err.no_translate = true;
       throw err;
     }

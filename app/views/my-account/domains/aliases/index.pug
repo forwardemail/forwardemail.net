@@ -20,6 +20,10 @@ block body
             span(aria-hidden="true") &times;
         .modal-body.text-center
           p!= t('You can easily use catch-all passwords to send email with <i class="font-weight-bold">any</i> alias at your domain.')
+          p.alert.alert-warning.small
+            i.fa.fa-info-circle
+            = " "
+            = t("Catch-all passwords are for SMTP sending only. For IMAP, POP3, CalDAV, CardDAV, and mailbox access, generate a password for the specific alias instead.")
           a.btn.btn-lg.btn-primary(
             href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings#catch-all-passwords`),
             target="_blank"

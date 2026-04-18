@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Vaše nové vlastní heslo, které se použije pro alias"
+            "description": "Vaše nové vlastní heslo, které se použije pro alias. Vlastní hesla k mailboxu musí mít maximálně 128 znaků, nesmí začínat ani končit mezerou a nesmí obsahovat uvozovky ani apostrofy."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Vytvořte heslo pro celou doménu",
-        "description": "Vytvoří heslo pro celou doménu. Pokud heslo není zadáno, bude vygenerováno bezpečné náhodné heslo.",
+        "description": "Vytvoří heslo pro celou doménu. Pokud heslo není zadáno, bude vygenerováno bezpečné náhodné heslo. Catch-all hesla jsou určena pouze pro odesílání přes SMTP. Pro přístup přes IMAP, POP3, CalDAV, CardDAV a mailbox si vygenerujte heslo pro konkrétní alias.",
         "tags": [
           "Domény"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Vaše vlastní nové heslo, které se použije jako univerzální heslo pro celou doménu. Pro vygenerování silného hesla ponechte pole prázdné."
+                    "description": "Vaše vlastní nové heslo, které se použije jako univerzální heslo pro celou doménu. Pro vygenerování silného hesla ponechte pole prázdné. Vlastní hesla k mailboxu musí mít maximálně 128 znaků, nesmí začínat ani končit mezerou a nesmí obsahovat uvozovky ani apostrofy. Catch-all hesla jsou určena pouze pro odesílání přes SMTP. Pro přístup přes IMAP, POP3, CalDAV, CardDAV a mailbox si vygenerujte heslo pro konkrétní alias."
                   },
                   "description": {
                     "type": "string",

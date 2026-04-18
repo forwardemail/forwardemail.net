@@ -19616,5 +19616,7 @@
   "Recent detections": "Recent detections",
   "Unique recipients": "Unique recipients",
   "Unique trusted sources": "Unique trusted sources",
-  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded."
+  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.",
+  "Custom mailbox passwords must be 128 characters or fewer, cannot start or end with whitespace, and cannot contain quotes or apostrophes.": "Kata sandi kotak surat khusus harus berjumlah 128 karakter atau kurang, tidak boleh diawali atau diakhiri dengan spasi, dan tidak boleh mengandung tanda kutip atau apostrof.",
+  "Catch-all passwords are for SMTP sending only. For IMAP, POP3, CalDAV, CardDAV, and mailbox access, generate a password for the specific alias instead.": "Kata sandi catch-all hanya untuk pengiriman SMTP. Untuk akses IMAP, POP3, CalDAV, CardDAV, dan kotak surat, buat kata sandi untuk alias spesifik."
 }

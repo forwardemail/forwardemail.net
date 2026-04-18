@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Sua nova senha personalizada para usar como alias."
+            "description": "Sua nova senha personalizada para usar como alias. As senhas personalizadas para caixas de correio devem ter até 128 caracteres, não podem começar ou terminar com espaço em branco e não podem conter aspas ou apóstrofos."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Crie uma senha genérica para todo o domínio.",
-        "description": "Cria uma senha genérica para todo o domínio. Se nenhuma senha for fornecida, uma senha aleatória e segura será gerada.",
+        "description": "Cria uma senha genérica para todo o domínio. Se nenhuma senha for fornecida, uma senha aleatória e segura será gerada. Senhas catch-all são apenas para envio SMTP. Para IMAP, POP3, CalDAV, CardDAV e acesso à caixa de correio, gere uma senha para o alias específico.",
         "tags": [
           "Domínios"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Sua nova senha personalizada para usar como senha genérica em todo o domínio. Deixe em branco para gerar uma senha forte."
+                    "description": "Sua nova senha personalizada para usar como senha genérica em todo o domínio. Deixe em branco para gerar uma senha forte. As senhas personalizadas para caixas de correio devem ter até 128 caracteres, não podem começar ou terminar com espaço em branco e não podem conter aspas ou apóstrofos. Senhas catch-all são apenas para envio SMTP. Para IMAP, POP3, CalDAV, CardDAV e acesso à caixa de correio, gere uma senha para o alias específico."
                   },
                   "description": {
                     "type": "string",

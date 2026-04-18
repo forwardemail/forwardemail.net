@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Twoje nowe hasło niestandardowe do użycia dla aliasu"
+            "description": "Twoje nowe hasło niestandardowe do użycia dla aliasu. Niestandardowe hasła do skrzynek pocztowych muszą mieć maksymalnie 128 znaków, nie mogą zaczynać się ani kończyć na spację oraz nie mogą zawierać cudzysłowów ani apostrofów."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Utwórz hasło uniwersalne dla całej domeny",
-        "description": "Tworzy hasło uniwersalne dla całej domeny. Jeśli nie zostanie podane hasło, zostanie wygenerowane bezpieczne, losowe hasło.",
+        "description": "Tworzy hasło uniwersalne dla całej domeny. Jeśli nie zostanie podane hasło, zostanie wygenerowane bezpieczne, losowe hasło. Hasła catch-all służą wyłącznie do wysyłania przez SMTP. Do dostępu przez IMAP, POP3, CalDAV, CardDAV oraz do skrzynki pocztowej generuj hasło dla konkretnego aliasu.",
         "tags": [
           "Domeny"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Twoje nowe, niestandardowe hasło, które będzie używane jako hasło uniwersalne dla całej domeny. Pozostaw puste, aby wygenerować silne hasło."
+                    "description": "Twoje nowe, niestandardowe hasło, które będzie używane jako hasło uniwersalne dla całej domeny. Pozostaw puste, aby wygenerować silne hasło. Niestandardowe hasła do skrzynek pocztowych muszą mieć maksymalnie 128 znaków, nie mogą zaczynać się ani kończyć na spację oraz nie mogą zawierać cudzysłowów ani apostrofów. Hasła catch-all służą wyłącznie do wysyłania przez SMTP. Do dostępu przez IMAP, POP3, CalDAV, CardDAV oraz do skrzynki pocztowej generuj hasło dla konkretnego aliasu."
                   },
                   "description": {
                     "type": "string",

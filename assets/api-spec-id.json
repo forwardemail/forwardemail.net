@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Kata sandi baru khusus Anda untuk digunakan untuk alias"
+            "description": "Kata sandi baru khusus Anda untuk digunakan untuk alias. Kata sandi kotak surat khusus harus berjumlah 128 karakter atau kurang, tidak boleh diawali atau diakhiri dengan spasi, dan tidak boleh mengandung tanda kutip atau apostrof."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Buat kata sandi penampung semua domain",
-        "description": "Membuat kata sandi yang dapat digunakan di seluruh domain. Jika tidak ada kata sandi yang diberikan, kata sandi acak yang aman akan dibuat.",
+        "description": "Membuat kata sandi yang dapat digunakan di seluruh domain. Jika tidak ada kata sandi yang diberikan, kata sandi acak yang aman akan dibuat. Kata sandi catch-all hanya untuk pengiriman SMTP. Untuk akses IMAP, POP3, CalDAV, CardDAV, dan kotak surat, buat kata sandi untuk alias spesifik.",
         "tags": [
           "Domain"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Kata sandi baru khusus Anda untuk digunakan sebagai kata sandi catch-all di seluruh domain. Kosongkan untuk membuat kata sandi yang kuat."
+                    "description": "Kata sandi baru khusus Anda untuk digunakan sebagai kata sandi catch-all di seluruh domain. Kosongkan untuk membuat kata sandi yang kuat. Kata sandi kotak surat khusus harus berjumlah 128 karakter atau kurang, tidak boleh diawali atau diakhiri dengan spasi, dan tidak boleh mengandung tanda kutip atau apostrof. Kata sandi catch-all hanya untuk pengiriman SMTP. Untuk akses IMAP, POP3, CalDAV, CardDAV, dan kotak surat, buat kata sandi untuk alias spesifik."
                   },
                   "description": {
                     "type": "string",

@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Your custom new password to use for the alias"
+            "description": "Your custom new password to use for the alias. Custom mailbox passwords must be 128 characters or fewer, cannot start or end with whitespace, and cannot contain quotes or apostrophes."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Create domain-wide catch-all password",
-        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated. Catch-all passwords are for SMTP sending only. For IMAP, POP3, CalDAV, CardDAV, and mailbox access, generate a password for the specific alias instead.",
         "tags": [
           "Domains"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password. Custom mailbox passwords must be 128 characters or fewer, cannot start or end with whitespace, and cannot contain quotes or apostrophes. Catch-all passwords are for SMTP sending only. For IMAP, POP3, CalDAV, CardDAV, and mailbox access, generate a password for the specific alias instead."
                   },
                   "description": {
                     "type": "string",

@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Votre nouveau mot de passe personnalisé à utiliser pour l'alias"
+            "description": "Votre nouveau mot de passe personnalisé à utiliser pour l'alias. Les mots de passe personnalisés des boîtes mail doivent comporter au maximum 128 caractères, ne doivent pas commencer ou se terminer par un espace, et ne doivent contenir ni guillemets ni apostrophes."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Créer un mot de passe générique pour l'ensemble du domaine",
-        "description": "Crée un mot de passe générique pour l'ensemble du domaine. Si aucun mot de passe n'est fourni, un mot de passe aléatoire et sécurisé sera généré.",
+        "description": "Crée un mot de passe générique pour l'ensemble du domaine. Si aucun mot de passe n'est fourni, un mot de passe aléatoire et sécurisé sera généré. Les mots de passe catch-all sont uniquement pour l’envoi SMTP. Pour IMAP, POP3, CalDAV, CardDAV et l’accès à la boîte mail, générez plutôt un mot de passe pour l'alias spécifique.",
         "tags": [
           "Domaines"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Votre nouveau mot de passe personnalisé à utiliser comme mot de passe générique pour l'ensemble du domaine. Laissez ce champ vide pour générer un mot de passe fort."
+                    "description": "Votre nouveau mot de passe personnalisé à utiliser comme mot de passe générique pour l'ensemble du domaine. Laissez ce champ vide pour générer un mot de passe fort. Les mots de passe personnalisés des boîtes mail doivent comporter au maximum 128 caractères, ne doivent pas commencer ou se terminer par un espace, et ne doivent contenir ni guillemets ni apostrophes. Les mots de passe catch-all sont uniquement pour l’envoi SMTP. Pour IMAP, POP3, CalDAV, CardDAV et l’accès à la boîte mail, générez plutôt un mot de passe pour l'alias spécifique."
                   },
                   "description": {
                     "type": "string",

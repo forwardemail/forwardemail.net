@@ -19617,5 +19617,7 @@
   "Unique recipients": "Unique recipients",
   "Unique trusted sources": "Unique trusted sources",
   "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.",
-  "How to send a DNS over HTTPS request using Node.js and JavaScript packages. Complete code examples, configuration tutorial, and production best practices for secure DNS resolution.": "如何使用 Node.js 和 JavaScript 包通过 HTTPS 发送 DNS 请求。包含完整的代码示例、配置教程和生产环境安全 DNS 解析的最佳实践。"
+  "How to send a DNS over HTTPS request using Node.js and JavaScript packages. Complete code examples, configuration tutorial, and production best practices for secure DNS resolution.": "如何使用 Node.js 和 JavaScript 包通过 HTTPS 发送 DNS 请求。包含完整的代码示例、配置教程和生产环境安全 DNS 解析的最佳实践。",
+  "Custom mailbox passwords must be 128 characters or fewer, cannot start or end with whitespace, and cannot contain quotes or apostrophes.": "自定义邮箱密码必须为128个字符或更少，不能以空格开头或结尾，并且不能包含引号或撇号。",
+  "Catch-all passwords are for SMTP sending only. For IMAP, POP3, CalDAV, CardDAV, and mailbox access, generate a password for the specific alias instead.": "Catch-all密码仅用于SMTP发送。对于IMAP、POP3、CalDAV、CardDAV及邮箱访问，请为特定别名生成密码。"
 }

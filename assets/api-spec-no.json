@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Ditt nye, tilpassede passord som skal brukes til aliaset"
+            "description": "Ditt nye, tilpassede passord som skal brukes til aliaset. Egendefinerte passord for postbokser må være 128 tegn eller færre, kan ikke begynne eller slutte med mellomrom, og kan ikke inneholde anførselstegn eller apostrofer."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Opprett et felles passord for hele domenet",
-        "description": "Oppretter et domeneomfattende, felles passord. Hvis det ikke oppgis noe passord, genereres et sikkert, tilfeldig passord.",
+        "description": "Oppretter et domeneomfattende, felles passord. Hvis det ikke oppgis noe passord, genereres et sikkert, tilfeldig passord. Catch-all passord er kun for SMTP sending. For IMAP, POP3, CalDAV, CardDAV og postboks-tilgang, opprett et passord for den spesifikke aliasen isteden.",
         "tags": [
           "Domener"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Ditt egendefinerte nye passord som skal brukes som det domeneomfattende samlepassordet. La stå tomt for å generere et sterkt passord."
+                    "description": "Ditt egendefinerte nye passord som skal brukes som det domeneomfattende samlepassordet. La stå tomt for å generere et sterkt passord. Egendefinerte passord for postbokser må være 128 tegn eller færre, kan ikke begynne eller slutte med mellomrom, og kan ikke inneholde anførselstegn eller apostrofer. Catch-all passord er kun for SMTP sending. For IMAP, POP3, CalDAV, CardDAV og postboks-tilgang, opprett et passord for den spesifikke aliasen isteden."
                   },
                   "description": {
                     "type": "string",

@@ -82,6 +82,14 @@ block body
                   = emoji("point_up")
                   = " "
                   = t("Leave blank to use our strong and random 24-character password generator.")
+                p.alert.alert-warning.small.mb-3
+                  i.fa.fa-exclamation-triangle
+                  = " "
+                  = t("Custom mailbox passwords must be 128 characters or fewer, cannot start or end with whitespace, and cannot contain quotes or apostrophes.")
+                p.alert.alert-warning.small
+                  i.fa.fa-info-circle
+                  = " "
+                  = t("Catch-all passwords are for SMTP sending only. For IMAP, POP3, CalDAV, CardDAV, and mailbox access, generate a password for the specific alias instead.")
                 .form-group
                   label(for="textarea-token-description")
                     = t("Description")
@@ -362,6 +370,10 @@ block body
                 != t('You can easily use catch-all passwords to send email with <i class="font-weight-bold">any</i> alias at your domain.')
                 br
                 != t('If you authenticate with our SMTP server, then your username is <code class="notranslate">*@%s</code>.', domain.name)
+                .alert.alert-warning.small.mt-3.mb-0
+                  i.fa.fa-info-circle
+                  = " "
+                  = t("Catch-all passwords are for SMTP sending only. For IMAP, POP3, CalDAV, CardDAV, and mailbox access, generate a password for the specific alias instead.")
               .card-footer.text-right
                 ul.list-inline.mb-0
                   li.list-inline-item

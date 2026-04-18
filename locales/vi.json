@@ -19616,5 +19616,7 @@
   "Recent detections": "Recent detections",
   "Unique recipients": "Unique recipients",
   "Unique trusted sources": "Unique trusted sources",
-  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded."
+  "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.": "Outbound SMTP is currently paused and suspended because the recent abuse-detection threshold was exceeded.",
+  "Custom mailbox passwords must be 128 characters or fewer, cannot start or end with whitespace, and cannot contain quotes or apostrophes.": "Mật khẩu hộp thư tùy chỉnh phải tối đa 128 ký tự, không được bắt đầu hoặc kết thúc bằng khoảng trắng và không được chứa dấu ngoặc kép hoặc dấu nháy đơn.",
+  "Catch-all passwords are for SMTP sending only. For IMAP, POP3, CalDAV, CardDAV, and mailbox access, generate a password for the specific alias instead.": "Mật khẩu catch-all chỉ dành cho gửi SMTP. Đối với IMAP, POP3, CalDAV, CardDAV và truy cập hộp thư, hãy tạo mật khẩu cho bí danh cụ thể."
 }

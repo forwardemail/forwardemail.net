@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Takma ad için kullanacağınız özel yeni parolanız"
+            "description": "Takma ad için kullanacağınız özel yeni parolanız. Özel posta kutusu şifreleri 128 karakter veya daha az olmalı, boşlukla başlayıp bitmemeli ve tırnak işareti veya apostrof içermemelidir."
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Alan adı genelinde kapsayıcı parola oluşturun",
-        "description": "Alan adı genelinde geçerli bir parola oluşturur. Parola girilmezse, güvenli ve rastgele bir parola oluşturulur.",
+        "description": "Alan adı genelinde geçerli bir parola oluşturur. Parola girilmezse, güvenli ve rastgele bir parola oluşturulur. Catch-all şifreleri yalnızca SMTP gönderimi içindir. IMAP, POP3, CalDAV, CardDAV ve posta kutusu erişimi için belirli takma ad için şifre oluşturun.",
         "tags": [
           "Alan Adları"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Alan adı genelinde geçerli parola için kullanacağınız özel yeni parolanız. Güçlü bir parola oluşturmak için boş bırakın."
+                    "description": "Alan adı genelinde geçerli parola için kullanacağınız özel yeni parolanız. Güçlü bir parola oluşturmak için boş bırakın. Özel posta kutusu şifreleri 128 karakter veya daha az olmalı, boşlukla başlayıp bitmemeli ve tırnak işareti veya apostrof içermemelidir. Catch-all şifreleri yalnızca SMTP gönderimi içindir. IMAP, POP3, CalDAV, CardDAV ve posta kutusu erişimi için belirli takma ad için şifre oluşturun."
                   },
                   "description": {
                     "type": "string",

@@ -2556,7 +2556,7 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "您为别名设置的新自定义密码"
+            "description": "您为别名设置的新自定义密码. 自定义邮箱密码必须为128个字符或更少，不能以空格开头或结尾，并且不能包含引号或撇号。"
           },
           "password": {
             "type": "string",
@@ -5552,7 +5552,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "创建域范围的通配符密码",
-        "description": "创建一个域范围内的通用密码。如果未提供密码，则会生成一个安全的随机密码。",
+        "description": "创建一个域范围内的通用密码。如果未提供密码，则会生成一个安全的随机密码。. Catch-all密码仅用于SMTP发送。对于IMAP、POP3、CalDAV、CardDAV及邮箱访问，请为特定别名生成密码。",
         "tags": [
           "域名"
         ],
@@ -5576,7 +5576,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "您自定义的新密码，将用作域范围内的通用密码。留空则生成强密码。"
+                    "description": "您自定义的新密码，将用作域范围内的通用密码。留空则生成强密码。. 自定义邮箱密码必须为128个字符或更少，不能以空格开头或结尾，并且不能包含引号或撇号。. Catch-all密码仅用于SMTP发送。对于IMAP、POP3、CalDAV、CardDAV及邮箱访问，请为特定别名生成密码。"
                   },
                   "description": {
                     "type": "string",

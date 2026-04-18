@@ -479,6 +479,52 @@ test('domain-wide catch-all passwords', async (t) => {
   }
 });
 
+test('rejects invalid custom catch-all passwords', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  for (const [newPassword, message] of [
+    ['StrongMailbox"Password2026!', phrases.INVALID_PASSWORD_CHARACTERS],
+    [' StrongMailboxPassword2026!', phrases.INVALID_PASSWORD_WHITESPACE],
+    ['a'.repeat(129), phrases.INVALID_PASSWORD_LENGTH]
+  ]) {
+    const res = await t.context.api
+      .post(`/v1/domains/${domain.name}/catch-all-passwords`)
+      .auth(user[config.userFields.apiToken])
+      .send({ new_password: newPassword });
+
+    t.is(res.status, 400);
+    t.is(res.body.message, message);
+  }
+});
+
 test('creates alias and generates password', async (t) => {
   const user = await t.context.userFactory
     .withState({
@@ -529,6 +575,62 @@ test('creates alias and generates password', async (t) => {
   t.is(res2.status, 200);
   t.is(res2.body.username, `test@${domain.name}`);
   t.true(typeof res2.body.password === 'string');
+});
+
+test('rejects invalid custom alias passwords', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const aliasRes = await t.context.api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      name: 'test'
+    });
+  t.is(aliasRes.status, 200);
+
+  for (const [newPassword, message] of [
+    ["StrongMailbox'Password2026!", phrases.INVALID_PASSWORD_CHARACTERS],
+    ['StrongMailboxPassword2026! ', phrases.INVALID_PASSWORD_WHITESPACE],
+    ['b'.repeat(129), phrases.INVALID_PASSWORD_LENGTH]
+  ]) {
+    const res = await t.context.api
+      .post(
+        `/v1/domains/${domain.name}/aliases/${aliasRes.body.id}/generate-password`
+      )
+      .auth(user[config.userFields.apiToken])
+      .send({ new_password: newPassword });
+
+    t.is(res.status, 400);
+    t.is(res.body.message, message);
+  }
 });
 
 test('creates alias with multiple recipients', async (t) => {
