@@ -1,0 +1,161 @@
+extends ../../layout
+
+block append scripts
+  script(
+    defer,
+    src=manifest("js/admin-spam.js"),
+    integrity=manifest("js/admin-spam.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+        //- Summary cards
+        .row.mb-3
+          .col-md-4
+            .card.text-center
+              .card-body
+                .h5.card-title= t("Last 24 Hours")
+                p.display-4.mb-0= count24h.toLocaleString()
+          .col-md-4
+            .card.text-center
+              .card-body
+                .h5.card-title= t("Last 7 Days")
+                p.display-4.mb-0= count7d.toLocaleString()
+          .col-md-4
+            .card.text-center
+              .card-body
+                .h5.card-title= t("Last 30 Days")
+                p.display-4.mb-0= count30d.toLocaleString()
+
+        //- Filter form
+        form.ajax-form.table-ajax-form.card.mb-3(
+          action=ctx.path,
+          method="GET",
+          data-table="#table-spam",
+          data-search-params="mongodb_query,ip,hostname,start_date,end_date"
+        )
+          .card-body
+            .h5.card-title= t("Filter Spam Logs")
+            .form-row
+              .form-group.col-md-3
+                label(for="input-ip")= t("IP Address")
+                input#input-ip.form-control(
+                  type="text",
+                  value=filterIP,
+                  name="ip",
+                  placeholder="e.g. 1.2.3.4"
+                )
+              .form-group.col-md-3
+                label(for="input-hostname")= t("Hostname")
+                input#input-hostname.form-control(
+                  type="text",
+                  value=filterHostname,
+                  name="hostname",
+                  placeholder="e.g. mx1.example.com"
+                )
+              .form-group.col-md-3
+                label(for="input-start-date")= t("Start Date")
+                input#input-start-date.form-control(
+                  type="date",
+                  value=startDate,
+                  name="start_date"
+                )
+              .form-group.col-md-3
+                label(for="input-end-date")= t("End Date")
+                input#input-end-date.form-control(
+                  type="date",
+                  value=endDate,
+                  name="end_date"
+                )
+            .form-group
+              label(for="textarea-mongodb-query") MongoDB query
+              textarea#textarea-mongodb-query.form-control(
+                name="mongodb_query",
+                rows=2,
+                placeholder="MongoDB query"
+              )= ctx.query.mongodb_query || ""
+              small.form-text.text-muted!= t('See <a class="notranslate" href="https://github.com/mongodb-js/query-parser" target="_blank" rel="noopener noreferrer">mongodb-query-parser</a> for more insight.')
+            button.btn.btn-success(type="submit")= t("Search")
+
+        //- Spam over time chart
+        .card.mb-3
+          .card-body
+            h5.card-title= t("Spam Over Time")
+            #spam-timeline-chart(data-chart=JSON.stringify(timeline))
+              .text-center.py-5
+                i.fa.fa-spin.fa-spinner.fa-2x.text-muted
+
+        //- Top IPs and Top Hostnames
+        .row.mb-3
+          .col-md-6
+            .card.h-100
+              .card-body
+                .h5.card-title= t("Top Offending IPs")
+                if topIPs.length === 0
+                  p.text-muted= t("No data available.")
+                else
+                  table.table.table-sm.table-bordered.mb-0
+                    thead.thead-dark
+                      tr
+                        th= t("IP Address")
+                        th.text-right= t("Count")
+                        th.text-center= t("Filter")
+                    tbody
+                      each item in topIPs
+                        tr
+                          td: code= item._id || "N/A"
+                          td.text-right= item.count.toLocaleString()
+                          td.text-center
+                            if item._id
+                              a.btn.btn-dark.btn-sm(
+                                href=`${ctx.path}?ip=${encodeURIComponent(item._id)}`
+                              ): i.fa.fa-filter
+          .col-md-6
+            .card.h-100
+              .card-body
+                .h5.card-title= t("Top Hostnames")
+                if topHostnames.length === 0
+                  p.text-muted= t("No data available.")
+                else
+                  table.table.table-sm.table-bordered.mb-0
+                    thead.thead-dark
+                      tr
+                        th= t("Hostname")
+                        th.text-right= t("Count")
+                        th.text-center= t("Filter")
+                    tbody
+                      each item in topHostnames
+                        tr
+                          td: code= item._id || "N/A"
+                          td.text-right= item.count.toLocaleString()
+                          td.text-center
+                            if item._id
+                              a.btn.btn-dark.btn-sm(
+                                href=`${ctx.path}?hostname=${encodeURIComponent(item._id)}`
+                              ): i.fa.fa-filter
+
+        //- Top Error Messages
+        .card.mb-3
+          .card-body
+            .h5.card-title= t("Top Error Messages")
+            if topErrors.length === 0
+              p.text-muted= t("No data available.")
+            else
+              table.table.table-sm.table-bordered.mb-0
+                thead.thead-dark
+                  tr
+                    th= t("Error Message")
+                    th.text-right= t("Count")
+                tbody
+                  each item in topErrors
+                    tr
+                      td.small: code= item._id || "N/A"
+                      td.text-right= item.count.toLocaleString()
+
+        //- Spam logs table
+        #table-spam
+          include ./_table
