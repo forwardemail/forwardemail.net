@@ -59,7 +59,7 @@ const isDryRun = process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
 // scenarios. For existing users making subsequent payments, new payments
 // always have invoice_at after planSetAt.
 //
-// Two guards prevent false positives:
+// Three guards prevent false positives:
 //
 // 1. Method filter: excludes free_beta_program and plan_conversion payments
 //    because these represent intentional plan resets/grants where planSetAt
@@ -67,12 +67,18 @@ const isDryRun = process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
 //    then later received a plan conversion would have planSetAt wrongly
 //    reset to the original Stripe payment date without this filter).
 //
-// 2. Time threshold (MAX_DRIFT_MS = 1 week): even after filtering methods,
-//    users who originally paid years ago and later received free beta credits
-//    that reset their planSetAt still have old real payments in the database.
-//    The race condition only produces drifts of milliseconds to days (user
-//    closes browser after checkout, returns later). Drifts of months/years
-//    are never race conditions.
+// 2. Refund exclusion: excludes fully refunded payments (amount_refunded > 0
+//    and is_refund_credit_allowed is not true). This mirrors the User model
+//    pre-save hook logic — refunded payments do not contribute to
+//    planExpiresAt, so they must not be used to determine the earliest
+//    payment date either.
+//
+// 3. Time threshold (MAX_DRIFT_MS = 1 week): even after filtering methods
+//    and refunds, users who originally paid years ago and later received
+//    free beta credits that reset their planSetAt still have old real
+//    payments in the database. The race condition only produces drifts of
+//    milliseconds to days (user closes browser after checkout, returns
+//    later). Drifts of months/years are never race conditions.
 //
 
 // Maximum allowed difference (1 week in milliseconds)
@@ -85,12 +91,19 @@ async function mapper(id) {
 
     // find the earliest REAL payment for this user's CURRENT plan
     // (exclude free_beta_program and plan_conversion since those are
-    // intentional plan resets, not checkout payments that race with webhooks)
+    // intentional plan resets, not checkout payments that race with webhooks;
+    // also exclude fully refunded payments since the User model pre-save
+    // hook skips them when computing planExpiresAt)
     const earliestPayment = await Payments.findOne(
       {
         user: user._id,
         plan: user.plan,
-        method: { $nin: ['free_beta_program', 'plan_conversion'] }
+        method: { $nin: ['free_beta_program', 'plan_conversion'] },
+        $or: [
+          { amount_refunded: { $exists: false } },
+          { amount_refunded: 0 },
+          { is_refund_credit_allowed: true }
+        ]
       },
       null,
       { sort: { invoice_at: 1 } }
