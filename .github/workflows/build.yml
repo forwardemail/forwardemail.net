@@ -150,7 +150,7 @@ jobs:
         with:
           persist-credentials: false
       - name: setup node
-        uses: actions/setup-node@v4 # v4.4.0
+        uses: actions/setup-node@v6 # v4.4.0
         with:
           node-version: ${{ matrix.node_version }}
       - name: start redis
