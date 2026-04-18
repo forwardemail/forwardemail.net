@@ -47,6 +47,17 @@ graceful.listen();
 // scenarios. For existing users making subsequent payments, new payments
 // always have invoice_at after planSetAt.
 //
+// A 1-week (MAX_DRIFT_MS) threshold guards against false positives:
+// - Race conditions produce differences of milliseconds to days
+//   (e.g. user closes browser before redirect, webhook fires, user
+//   returns days later and redirect handler overwrites planSetAt)
+// - Differences of months/years indicate intentional plan resets
+//   (e.g. free_beta_program grants, plan conversions) where planSetAt
+//   was deliberately set to the latest grant date
+//
+
+// Maximum allowed difference (1 week in milliseconds)
+const MAX_DRIFT_MS = 7 * 24 * 60 * 60 * 1000;
 
 async function mapper(id) {
   try {
@@ -65,10 +76,14 @@ async function mapper(id) {
 
     if (!earliestPayment) return;
 
-    if (
-      new Date(user[config.userFields.planSetAt]).getTime() >
-      new Date(earliestPayment.invoice_at).getTime()
-    ) {
+    const planSetAtMs = new Date(user[config.userFields.planSetAt]).getTime();
+    const invoiceAtMs = new Date(earliestPayment.invoice_at).getTime();
+    const driftMs = planSetAtMs - invoiceAtMs;
+
+    // Only correct if planSetAt is after invoice_at AND within the
+    // 1-week threshold (race condition window). Larger differences
+    // indicate intentional plan resets, not race conditions.
+    if (driftMs > 0 && driftMs <= MAX_DRIFT_MS) {
       logger.info(
         'user plan set at needs corrected',
         user.email,
