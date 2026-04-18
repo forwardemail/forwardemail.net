@@ -335,7 +335,7 @@
     "browserify": "17.0.0",
     "bundle-collapser": "1.4.0",
     "cssnano": "6.1.2",
-    "del": "6.1.1",
+    "del": "8.0.1",
     "eslint": "8.39.0",
     "eslint-config-xo-lass": "2.0.1",
     "eslint-formatter-pretty": "5.0.0",
