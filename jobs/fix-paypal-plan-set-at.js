@@ -47,28 +47,28 @@ graceful.listen();
 // scenarios. For existing users making subsequent payments, new payments
 // always have invoice_at after planSetAt.
 //
-// A 1-week (MAX_DRIFT_MS) threshold guards against false positives:
-// - Race conditions produce differences of milliseconds to days
-//   (e.g. user closes browser before redirect, webhook fires, user
-//   returns days later and redirect handler overwrites planSetAt)
-// - Differences of months/years indicate intentional plan resets
-//   (e.g. free_beta_program grants, plan conversions) where planSetAt
-//   was deliberately set to the latest grant date
+// The query excludes free_beta_program and plan_conversion payments
+// because these represent intentional plan resets/grants where planSetAt
+// is deliberately set to the grant date — not checkout race conditions.
+// Without this filter, the job would incorrectly "correct" planSetAt
+// back to an older payment's invoice_at (e.g. a user who paid via Stripe
+// then later received free credits and a plan conversion would have
+// planSetAt wrongly reset to the original Stripe payment date).
 //
-
-// Maximum allowed difference (1 week in milliseconds)
-const MAX_DRIFT_MS = 7 * 24 * 60 * 60 * 1000;
 
 async function mapper(id) {
   try {
     const user = await Users.findById(id);
     if (!user) throw new Error('User does not exist');
 
-    // find the earliest payment for this user's CURRENT plan
+    // find the earliest REAL payment for this user's CURRENT plan
+    // (exclude free_beta_program and plan_conversion since those are
+    // intentional plan resets, not checkout payments that race with webhooks)
     const earliestPayment = await Payments.findOne(
       {
         user: user._id,
-        plan: user.plan
+        plan: user.plan,
+        method: { $nin: ['free_beta_program', 'plan_conversion'] }
       },
       null,
       { sort: { invoice_at: 1 } }
@@ -76,14 +76,10 @@ async function mapper(id) {
 
     if (!earliestPayment) return;
 
-    const planSetAtMs = new Date(user[config.userFields.planSetAt]).getTime();
-    const invoiceAtMs = new Date(earliestPayment.invoice_at).getTime();
-    const driftMs = planSetAtMs - invoiceAtMs;
-
-    // Only correct if planSetAt is after invoice_at AND within the
-    // 1-week threshold (race condition window). Larger differences
-    // indicate intentional plan resets, not race conditions.
-    if (driftMs > 0 && driftMs <= MAX_DRIFT_MS) {
+    if (
+      new Date(user[config.userFields.planSetAt]).getTime() >
+      new Date(earliestPayment.invoice_at).getTime()
+    ) {
       logger.info(
         'user plan set at needs corrected',
         user.email,
