@@ -59,7 +59,7 @@ const isDryRun = process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
 // scenarios. For existing users making subsequent payments, new payments
 // always have invoice_at after planSetAt.
 //
-// Five guards prevent false positives:
+// Six guards prevent false positives:
 //
 // 1. Method filter: excludes free_beta_program and plan_conversion payments
 //    because these represent intentional plan resets/grants where planSetAt
@@ -92,6 +92,13 @@ const isDryRun = process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
 //    indicates the user made duplicate payments (e.g. retried checkout
 //    multiple times), not a race condition. The race condition only
 //    affects a single payment.
+//
+// 6. Duplicate duration already counted: if a payment with the same
+//    duration as the excluded earliest payment already exists at or after
+//    planSetAt (and is being counted toward planExpiresAt), then the
+//    excluded payment is a duplicate — either the user retried checkout
+//    and a second payment succeeded, or a free credit was issued to
+//    compensate. Moving planSetAt would double-count the duration.
 //
 
 // Maximum allowed difference (1 week in milliseconds)
@@ -168,6 +175,25 @@ async function mapper(id) {
     });
 
     if (paymentsInDriftWindow > 1) return;
+
+    // Guard 6: skip if a payment with the same duration as the excluded
+    // earliest payment already exists at or after planSetAt (meaning
+    // the excluded payment is a duplicate whose duration is already
+    // being counted toward planExpiresAt)
+    const duplicateDurationCounted = await Payments.findOne({
+      user: user._id,
+      plan: user.plan,
+      duration: earliestPayment.duration,
+      invoice_at: { $gte: new Date(user[config.userFields.planSetAt]) },
+      $or: [
+        { amount_refunded: { $exists: false } },
+        { amount_refunded: 0 },
+        { is_refund_credit_allowed: true },
+        { method: { $in: ['free_beta_program', 'plan_conversion'] } }
+      ]
+    });
+
+    if (duplicateDurationCounted) return;
 
     {
       const driftMinutes = dayjs(user[config.userFields.planSetAt]).diff(
