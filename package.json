@@ -142,7 +142,7 @@
     "email-regex-safe": "4.0.0",
     "email-templates": "13.0.1",
     "error-stack-parser": "2.1.4",
-    "escape-string-regexp": "4.0.0",
+    "escape-string-regexp": "5.0.0",
     "etag": "1.8.1",
     "fast-csv": "5.0.2",
     "fast-dir-size": "1.3.0",
