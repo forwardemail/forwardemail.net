@@ -5,6 +5,7 @@
 
 const { randomUUID } = require('node:crypto');
 const { Buffer } = require('node:buffer');
+const { Readable } = require('node:stream');
 
 // const getUuid = require('@forwardemail/uuid-by-string');
 const API = require('@ladjs/api');
@@ -1092,10 +1093,91 @@ class CalDAV extends API {
         ctx.set('DAV', DAV_HEADER_VALUE);
         ctx.set(
           'Allow',
-          'OPTIONS, GET, HEAD, POST, PUT, DELETE, PROPFIND, PROPPATCH, REPORT, MKCALENDAR'
+          'OPTIONS, GET, HEAD, POST, PUT, DELETE, PROPFIND, PROPPATCH, REPORT, MKCALENDAR, MKCOL'
         );
         ctx.body = '';
         return;
+      }
+
+      //
+      // RFC 5689: Handle Extended MKCOL requests for calendar collection creation.
+      // tasks.org (via dav4jvm) sends MKCOL instead of MKCALENDAR to create
+      // new task lists.  The caldav-adapter only handles MKCALENDAR, so MKCOL
+      // requests would get a 404.  We rewrite MKCOL → MKCALENDAR by
+      // transforming the XML body and HTTP method before the adapter sees it.
+      //
+      // RFC 5689 Extended MKCOL body:
+      //   <D:mkcol><D:set><D:prop>...</D:prop></D:set></D:mkcol>
+      // RFC 4791 MKCALENDAR body:
+      //   <CAL:mkcalendar><D:set><D:prop>...</D:prop></D:set></CAL:mkcalendar>
+      //
+      if (ctx.method === 'MKCOL') {
+        // Read the raw body before the adapter consumes the stream
+        const raw = require('raw-body');
+        let body = '';
+        try {
+          body = await raw(ctx.req, { encoding: 'utf8', limit: '10mb' });
+        } catch (err) {
+          ctx.logger.warn('MKCOL body read error', { err });
+        }
+
+        // Transform Extended MKCOL XML to MKCALENDAR XML
+        // Replace <mkcol> / </mkcol> tags (with any namespace prefix) with
+        // <C:mkcalendar> / </C:mkcalendar> and ensure the CalDAV namespace
+        // is declared so the adapter's XPath /CAL:mkcalendar/D:set/D:prop works.
+        if (body) {
+          // Check if the CalDAV namespace is already bound to a prefix
+          // to avoid duplicate xmlns:C declarations
+          const hasCalDAVNs =
+            /xmlns:(\w+)=["']urn:ietf:params:xml:ns:caldav["']/.test(body);
+          const nsDecl = hasCalDAVNs
+            ? ''
+            : ' xmlns:C="urn:ietf:params:xml:ns:caldav"';
+
+          // If the body already has a CalDAV prefix (e.g. xmlns:C or xmlns:CAL),
+          // find what prefix it uses so we can use the same one
+          let calPrefix = 'C';
+          const calNsMatch = body.match(
+            /xmlns:(\w+)=["']urn:ietf:params:xml:ns:caldav["']/
+          );
+          if (calNsMatch) calPrefix = calNsMatch[1];
+
+          // Replace opening tag: <mkcol or <D:mkcol or <ns0:mkcol etc.
+          body = body.replace(
+            /<([\w-]*:)?mkcol([\s>])/i,
+            `<${calPrefix}:mkcalendar${nsDecl}$2`
+          );
+          // Replace closing tag: </mkcol> or </D:mkcol> etc.
+          body = body.replace(
+            /<\/([\w-]*:)?mkcol\s*>/i,
+            `</${calPrefix}:mkcalendar>`
+          );
+        }
+
+        // Rewrite the HTTP method so the adapter routes to MKCALENDAR handler
+        ctx.method = 'MKCALENDAR';
+        ctx.req.method = 'MKCALENDAR';
+
+        // Replace the request stream with the transformed body
+        // so the adapter's parseBody reads the MKCALENDAR XML
+        const newReq = new Readable({
+          read() {
+            this.push(body || null);
+            this.push(null);
+          }
+        });
+        // Copy essential properties from the original request
+        newReq.headers = ctx.req.headers;
+        newReq.method = 'MKCALENDAR';
+        newReq.url = ctx.req.url;
+        newReq.httpVersion = ctx.req.httpVersion;
+        ctx.req = newReq;
+
+        ctx.logger.info('MKCOL rewritten to MKCALENDAR', {
+          url: ctx.url,
+          bodyLength: body.length
+        });
+        // Fall through to caldavMiddleware below
       }
 
       //
@@ -1883,10 +1965,45 @@ class CalDAV extends API {
         user
       });
 
-      if (!calendar)
-        throw Boom.methodNotAllowed(
-          ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+      //
+      // Auto-create the calendar when it doesn't exist.
+      // Thunderbird's "Publish" feature sends a PUT with a full VCALENDAR
+      // body to a calendar-level URL (no eventId).  If the calendar doesn't
+      // exist yet we create it on-the-fly using metadata from the ICS body
+      // (X-WR-CALNAME for the display name, VTODO presence for component type).
+      //
+      if (!calendar) {
+        const calName =
+          comp.getFirstPropertyValue('x-wr-calname') ||
+          calendarId ||
+          randomUUID();
+
+        // Detect supported component types from the ICS body
+        const hasVtodo = comp.getAllSubcomponents('vtodo').length > 0;
+        const hasVevent = comp.getAllSubcomponents('vevent').length > 0;
+        const supportedComponents = [];
+        if (hasVevent) supportedComponents.push('VEVENT');
+        if (hasVtodo) supportedComponents.push('VTODO');
+        // Default to VEVENT if nothing detected
+        if (supportedComponents.length === 0)
+          supportedComponents.push('VEVENT');
+
+        ctx.logger.info(
+          'Auto-creating calendar for PUT to non-existent calendar',
+          {
+            calendarId,
+            calName,
+            supportedComponents
+          }
         );
+
+        calendar = await this.createCalendar(ctx, {
+          name: calName,
+          description: comp.getFirstPropertyValue('description') || '',
+          timezone: comp.getFirstPropertyValue('x-wr-timezone') || '',
+          supportedComponents
+        });
+      }
 
       const update = {
         name: comp.getFirstPropertyValue('name'),
