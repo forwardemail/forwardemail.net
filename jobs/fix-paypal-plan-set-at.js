@@ -365,7 +365,9 @@ async function mapper(id) {
 
     const ids = await Users.distinct('_id', {
       plan: { $ne: 'free' },
-      [config.userFields.planSetAt]: { $exists: true }
+      [config.userFields.planSetAt]: { $exists: true },
+      [config.userFields.isBanned]: { $ne: true },
+      [config.userFields.isRemoved]: { $ne: true }
     });
 
     logger.info(`Processing ${ids.length} paid users`);
