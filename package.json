@@ -260,7 +260,7 @@
     "postcss-discard-comments": "6.0.2",
     "postcss-discard-font-face": "3.0.0",
     "postcss-discard-unused": "6.0.5",
-    "postcss-nested": "6.2.0",
+    "postcss-nested": "7.0.2",
     "postcss-prune-var": "1.1.2",
     "postcss-strip-font-face": "1.0.0",
     "postcss-viewport-height-correction": "1.1.1",
