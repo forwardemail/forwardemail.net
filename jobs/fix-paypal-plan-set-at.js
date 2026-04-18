@@ -19,6 +19,7 @@ const dayjs = require('dayjs-with-plugins');
 const pMapSeries = require('p-map-series');
 const mongoose = require('mongoose');
 
+const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Payments } = require('#models');
@@ -30,6 +31,17 @@ const graceful = new Graceful({
 });
 
 graceful.listen();
+
+//
+// DRY_RUN mode:
+//   Set `DRY_RUN=true` (or `DRY_RUN=1`) to run the full scan without
+//   calling user.save() or sending emails. The job will output to console
+//   what it would have done, including the rendered email body.
+//
+//   Usage:  DRY_RUN=true NODE_ENV=production node jobs/fix-paypal-plan-set-at.js
+//
+
+const isDryRun = process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
 
 //
 // RACE CONDITION FIX (batch job): This job corrects planSetAt for users
@@ -93,19 +105,159 @@ async function mapper(id) {
     // indicate intentional plan resets via free beta credits, not
     // race conditions.
     if (driftMs > 0 && driftMs <= MAX_DRIFT_MS) {
+      const driftMinutes = dayjs(user[config.userFields.planSetAt]).diff(
+        new Date(earliestPayment.invoice_at),
+        'minutes'
+      );
+
+      const oldPlanSetAt = new Date(user[config.userFields.planSetAt]);
+      const newPlanSetAt = new Date(earliestPayment.invoice_at);
+
+      // Compute the old planExpiresAt (before correction) by simulating
+      // the same logic as the User model pre-save hook
+      const paymentsForPlan = await Payments.find({
+        user: user._id,
+        invoice_at: { $gte: oldPlanSetAt },
+        plan: user.plan
+      })
+        .sort('invoice_at')
+        .lean()
+        .exec();
+
+      let oldExpiresAt = new Date(oldPlanSetAt);
+      for (const payment of paymentsForPlan) {
+        if (
+          !payment.is_refund_credit_allowed &&
+          payment.amount_refunded > 0 &&
+          !['free_beta_program', 'plan_conversion'].includes(payment.method)
+        ) {
+          continue;
+        }
+
+        if (config.durationMapping[payment.duration.toString()]) {
+          oldExpiresAt = dayjs(oldExpiresAt)
+            .add(...config.durationMapping[payment.duration.toString()])
+            .toDate();
+        }
+      }
+
+      // Compute the new planExpiresAt (after correction)
+      const paymentsAfterCorrection = await Payments.find({
+        user: user._id,
+        invoice_at: { $gte: newPlanSetAt },
+        plan: user.plan
+      })
+        .sort('invoice_at')
+        .lean()
+        .exec();
+
+      let newExpiresAt = new Date(newPlanSetAt);
+      for (const payment of paymentsAfterCorrection) {
+        if (
+          !payment.is_refund_credit_allowed &&
+          payment.amount_refunded > 0 &&
+          !['free_beta_program', 'plan_conversion'].includes(payment.method)
+        ) {
+          continue;
+        }
+
+        if (config.durationMapping[payment.duration.toString()]) {
+          newExpiresAt = dayjs(newExpiresAt)
+            .add(...config.durationMapping[payment.duration.toString()])
+            .toDate();
+        }
+      }
+
+      // Calculate the time credit added
+      const creditMs =
+        new Date(newExpiresAt).getTime() - new Date(oldExpiresAt).getTime();
+      const creditDays = Math.round(creditMs / (1000 * 60 * 60 * 24));
+
+      // Format the plan name for display
+      const planName = user.plan
+        .split('_')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+
+      const locale = user[config.lastLocaleField] || 'en';
+
       logger.info(
+        isDryRun ? '[DRY RUN]' : '',
         'user plan set at needs corrected',
         user.email,
         `plan=${user.plan}`,
         'it was off by',
-        dayjs(user[config.userFields.planSetAt]).diff(
-          new Date(earliestPayment.invoice_at),
-          'minutes'
-        ),
-        'minutes'
+        driftMinutes,
+        'minutes',
+        `(+${creditDays} days credit)`
       );
-      user[config.userFields.planSetAt] = new Date(earliestPayment.invoice_at);
-      await user.save();
+
+      // Build the email HTML body
+      const emailBody = [
+        '<p>We recently identified and fixed a billing synchronization issue that affected your account.</p>',
+        '<p><strong>What happened:</strong> During the initial setup of your plan, a brief timing issue between our payment processor and our servers caused your plan start date to be recorded slightly later than your actual payment date. As a result, your account may not have reflected the full duration of service you paid for.</p>',
+        `<p><strong>What we fixed:</strong> We corrected your <strong>${planName}</strong> plan start date from <strong>${dayjs(
+          oldPlanSetAt
+        ).format('MMM D, YYYY h:mm A')}</strong> to <strong>${dayjs(
+          newPlanSetAt
+        ).format(
+          'MMM D, YYYY h:mm A'
+        )}</strong>, which adds approximately <strong>${creditDays} day${
+          creditDays === 1 ? '' : 's'
+        }</strong> to your account.</p>`,
+        '<p><strong>Technical details:</strong> When you completed your payment, both our redirect handler and webhook processor attempted to record the transaction simultaneously. This race condition caused your plan start date to be set to the redirect time rather than the actual payment time. We have deployed a permanent fix to prevent this from happening to any accounts going forward.</p>',
+        `<p>Your updated plan expiration date is now <strong>${dayjs(
+          newExpiresAt
+        ).format('MMM D, YYYY')}</strong>.</p>`,
+        "<p>We sincerely apologize for the inconvenience. If you have any questions or concerns, please don't hesitate to reply to this email.</p>",
+        `<p class="text-center mb-0"><a href="${config.urls.web}/${locale}/my-account/billing" class="btn btn-md btn-dark">Manage Billing</a></p>`
+      ].join('\n');
+
+      if (isDryRun) {
+        logger.info('[DRY RUN] Would send email to:', user.email);
+        logger.info('[DRY RUN] Email body:', emailBody);
+        logger.info(
+          '[DRY RUN] Would set planSetAt from',
+          oldPlanSetAt,
+          'to',
+          newPlanSetAt
+        );
+        logger.info(
+          '[DRY RUN] planExpiresAt would change from',
+          oldExpiresAt,
+          'to',
+          newExpiresAt,
+          `(+${creditDays} days)`
+        );
+      } else {
+        // Correct planSetAt and save
+        user[config.userFields.planSetAt] = newPlanSetAt;
+        await user.save();
+
+        // Send notification email to user, BCC support
+        try {
+          await emailHelper({
+            template: 'alert',
+            message: {
+              to: user[config.userFields.receiptEmail] || user.email,
+              ...(user[config.userFields.receiptEmail]
+                ? { cc: user.email }
+                : {}),
+              bcc: config.supportEmail,
+              subject: `Your ${planName} plan has been credited with ${creditDays} additional day${
+                creditDays === 1 ? '' : 's'
+              }`
+            },
+            locals: {
+              message: emailBody,
+              locale
+            }
+          });
+          logger.info(`Sent billing correction email to ${user.email}`);
+        } catch (err) {
+          logger.error(err, { user: user.email });
+        }
+      }
     }
   } catch (err) {
     logger.error(err, { user: id });
@@ -115,6 +267,11 @@ async function mapper(id) {
 (async () => {
   await setupMongoose(logger);
   try {
+    if (isDryRun)
+      logger.info(
+        '[DRY RUN] Mode enabled — no changes will be saved and no emails will be sent'
+      );
+
     const ids = await Users.distinct('_id', {
       plan: { $ne: 'free' },
       [config.userFields.planSetAt]: { $exists: true }
