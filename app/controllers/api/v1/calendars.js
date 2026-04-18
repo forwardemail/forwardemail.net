@@ -11,8 +11,11 @@ const isSANB = require('is-string-and-not-blank');
 const Aliases = require('#models/aliases');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
+const Domains = require('#models/domains');
+const Emails = require('#models/emails');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
+const { buildICS } = require('#helpers/send-calendar-email');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
@@ -269,6 +272,87 @@ async function update(ctx) {
     );
 }
 
+async function sendCalendarDeletedBackup(ctx, calendar, calendarEvents) {
+  if (!Array.isArray(calendarEvents) || calendarEvents.length === 0) return;
+
+  const sessionUser = ctx.state.session?.user;
+  if (
+    !sessionUser?.username ||
+    !sessionUser?.alias_id ||
+    !sessionUser?.domain_id
+  ) {
+    ctx.logger.debug(
+      'Calendar delete backup skipped due to missing user context',
+      {
+        calendar,
+        session: ctx.state.session
+      }
+    );
+    return;
+  }
+
+  try {
+    const ics = await buildICS(ctx, calendarEvents, calendar);
+
+    let alias;
+    let domain;
+    try {
+      [alias, domain] = await Promise.all([
+        Aliases.findOne({ id: sessionUser.alias_id })
+          .populate('user')
+          .lean()
+          .exec(),
+        Domains.findOne({ id: sessionUser.domain_id })
+          .populate(
+            'members.user',
+            `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+          )
+          .lean()
+          .exec()
+      ]);
+    } catch (err) {
+      ctx.logger.debug(
+        err,
+        'Could not fetch alias/domain for calendar delete backup email, skipping send'
+      );
+      return;
+    }
+
+    if (!alias || !domain) {
+      ctx.logger.debug(
+        'Alias or domain not found for calendar delete backup email, skipping send'
+      );
+      return;
+    }
+
+    await Emails.queue({
+      message: {
+        from: sessionUser.username,
+        to: sessionUser.username,
+        subject: i18n.translate(
+          'CALENDAR_DELETED_BACKUP',
+          ctx.locale,
+          calendar.name,
+          calendarEvents.length
+        ),
+        icalEvent: {
+          filename: 'calendar.ics',
+          content: ics
+        }
+      },
+      alias,
+      domain,
+      user: alias ? alias.user : undefined,
+      date: new Date()
+    });
+  } catch (err) {
+    ctx.logger.fatal(err, {
+      calendar,
+      session: ctx.state.session
+    });
+  }
+}
+
 async function remove(ctx) {
   // Validate calendar ID
   if (!isSANB(ctx.params.id))
@@ -284,6 +368,20 @@ async function remove(ctx) {
   if (!calendar) {
     throw Boom.notFound(ctx.translateError('CALENDAR_DOES_NOT_EXIST'));
   }
+
+  //
+  // email the user a backup of the calendar and its events
+  // (e.g. in case user accidentally deleted it)
+  //
+  const calendarEvents = await CalendarEvents.find(
+    ctx.instance,
+    ctx.state.session,
+    {
+      calendar: calendar._id
+    }
+  );
+
+  await sendCalendarDeletedBackup(ctx, calendar, calendarEvents);
 
   //
   // Delete all events for this calendar BEFORE deleting the calendar itself.
