@@ -128,7 +128,7 @@
     "cose-to-jwk": "1.1.0",
     "countries-and-timezones": "3.8.0",
     "country-list": "2.2.0",
-    "crypto-hash": "1.3.0",
+    "crypto-hash": "4.0.1",
     "crypto-random-string": "3.3.1",
     "cuid": "2.1.8",
     "custom-fonts-in-emails": "5.0.3",
