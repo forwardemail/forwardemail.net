@@ -39,7 +39,7 @@ mixin renderProgressBar(domain, alias, isMobile = false)
           data-title=t("Storage used by this alias"),
           data-placement="bottom",
           role="button"
-        )= `${aliasPercentage === 0 ? "<1%" : aliasPercentage}%`
+        )= aliasPercentage === 0 ? "<1%" : `${aliasPercentage}%`
         //- render remaining portion
         if aliasPercentage !== 100
           .progress-bar.bg-success.min-width-25(
