@@ -273,6 +273,16 @@ function getBounceInfo(err) {
   } else if (err.truthSource === 'orange.fr' && response.includes('[506]')) {
     // <https://github.com/sisimai/p5-Sisimai/issues/243>
     bounceInfo.category = 'spam';
+  } else if (
+    lc.includes('abusix') &&
+    (lc.includes('ip blocked by abusix') ||
+      lc.includes('adresse ip source bloquee par abusix') ||
+      lc.includes('blocked by abusix') ||
+      lc.includes('lookup.abusix.com/search?q=') ||
+      (lc.includes('ofr006_100') && lc.includes('orange.fr')) ||
+      (lc.includes('ofr006_102') && lc.includes('orange.fr')))
+  ) {
+    bounceInfo.category = 'blocklist';
   } else if (err.truthSource && response.includes('Too many emails')) {
     bounceInfo.category = 'greylist';
   } else if (
