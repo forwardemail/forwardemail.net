@@ -3130,16 +3130,20 @@ async function getMaxQuota(
   // This is needed to compute the effective available space per domain
   // when the global pool is shared across multiple domains.
   if (!pooled) {
-    // if domain had a max value set, and it was less than `max`, then set new max
-    if (
+    //
+    // If the alias has a per-alias override, use it directly
+    // (admins can set individual aliases higher than the domain default).
+    // Otherwise fall back to the domain-level default cap.
+    // Either way the value is still clamped to the plan-level max above.
+    //
+    if (alias && Number.isFinite(alias.max_quota)) {
+      max = Math.min(alias.max_quota, max);
+    } else if (
       Number.isFinite(domain.max_quota_per_alias) &&
       domain.max_quota_per_alias < max
-    )
+    ) {
       max = domain.max_quota_per_alias;
-
-    // if alias passed, and had a max value set, and it was less than `max`, then set new max
-    if (alias && Number.isFinite(alias.max_quota) && alias.max_quota < max)
-      max = alias.max_quota;
+    }
   }
 
   //

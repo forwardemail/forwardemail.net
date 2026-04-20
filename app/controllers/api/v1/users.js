@@ -42,7 +42,9 @@ function serializeAliasSettings(alias) {
 function serializeAliasResponse(alias, ctx) {
   const storageUsed = alias.has_imap ? alias.storage_used || 0 : 0;
   const maxQuotaPerAlias = alias.has_imap
-    ? alias.domain.max_quota_per_alias || config.maxQuotaPerAlias
+    ? alias.max_quota ||
+      alias.domain.max_quota_per_alias ||
+      config.maxQuotaPerAlias
     : 0;
 
   return {

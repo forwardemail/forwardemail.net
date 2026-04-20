@@ -940,3 +940,191 @@ test('cache fix: fallback should use undefined check not truthiness for maxQuota
   // New code correctly uses the cached value
   t.is(resultNewZero, 0);
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Test: Per-alias quota override (alias.max_quota > domain.max_quota_per_alias)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Simulate the NEW getMaxQuota logic where alias.max_quota overrides
+// domain.max_quota_per_alias (but is still capped by the plan-level max).
+function simulateGetMaxQuota({ planMax, domainMaxPerAlias, aliasMaxQuota }) {
+  let max = planMax;
+
+  if (aliasMaxQuota !== undefined && Number.isFinite(aliasMaxQuota)) {
+    max = Math.min(aliasMaxQuota, max);
+  } else if (Number.isFinite(domainMaxPerAlias) && domainMaxPerAlias < max) {
+    max = domainMaxPerAlias;
+  }
+
+  return max;
+}
+
+test('per-alias override: alias.max_quota higher than domain default is honored', (t) => {
+  // Admin sets domain default to 512 MB but alias to 4 GB
+  const result = simulateGetMaxQuota({
+    planMax: 10 * 1024 * 1024 * 1024, // 10 GB plan
+    domainMaxPerAlias: 512 * 1024 * 1024, // 512 MB domain default
+    aliasMaxQuota: 4 * 1024 * 1024 * 1024 // 4 GB alias override
+  });
+  t.is(result, 4 * 1024 * 1024 * 1024, 'alias override of 4 GB should be used');
+});
+
+test('per-alias override: alias.max_quota is still capped by plan max', (t) => {
+  // Alias set to 20 GB but plan only allows 10 GB
+  const result = simulateGetMaxQuota({
+    planMax: 10 * 1024 * 1024 * 1024, // 10 GB plan
+    domainMaxPerAlias: 512 * 1024 * 1024, // 512 MB domain default
+    aliasMaxQuota: 20 * 1024 * 1024 * 1024 // 20 GB alias override
+  });
+  t.is(
+    result,
+    10 * 1024 * 1024 * 1024,
+    'should be capped at plan max of 10 GB'
+  );
+});
+
+test('per-alias override: no alias override falls back to domain default', (t) => {
+  const result = simulateGetMaxQuota({
+    planMax: 10 * 1024 * 1024 * 1024,
+    domainMaxPerAlias: 512 * 1024 * 1024,
+    aliasMaxQuota: undefined
+  });
+  t.is(
+    result,
+    512 * 1024 * 1024,
+    'should fall back to domain default of 512 MB'
+  );
+});
+
+test('per-alias override: no domain default and no alias override uses plan max', (t) => {
+  const result = simulateGetMaxQuota({
+    planMax: 10 * 1024 * 1024 * 1024,
+    domainMaxPerAlias: undefined,
+    aliasMaxQuota: undefined
+  });
+  t.is(result, 10 * 1024 * 1024 * 1024, 'should use plan max of 10 GB');
+});
+
+test('per-alias override: alias.max_quota lower than domain default is honored', (t) => {
+  // Alias set to 256 MB, domain default is 512 MB
+  const result = simulateGetMaxQuota({
+    planMax: 10 * 1024 * 1024 * 1024,
+    domainMaxPerAlias: 512 * 1024 * 1024,
+    aliasMaxQuota: 256 * 1024 * 1024
+  });
+  t.is(result, 256 * 1024 * 1024, 'alias override of 256 MB should be used');
+});
+
+// Simulate the NEW alias pre-save validation logic
+function simulateAliasQuotaValidation({
+  aliasMaxQuota,
+  adminMaxQuotaPerAlias,
+  configMaxQuotaPerAlias
+}) {
+  if (!Number.isFinite(aliasMaxQuota)) return { allowed: true };
+
+  const planMax =
+    typeof adminMaxQuotaPerAlias === 'number'
+      ? adminMaxQuotaPerAlias
+      : configMaxQuotaPerAlias;
+  const hardMax = Math.min(Math.max(planMax, 0), 100 * 1024 * 1024 * 1024);
+
+  if (aliasMaxQuota > hardMax) {
+    return { allowed: false, hardMax };
+  }
+
+  return { allowed: true };
+}
+
+test('alias validation: allows alias quota higher than domain default but within plan max', (t) => {
+  const result = simulateAliasQuotaValidation({
+    aliasMaxQuota: 4 * 1024 * 1024 * 1024, // 4 GB
+    adminMaxQuotaPerAlias: 10 * 1024 * 1024 * 1024, // 10 GB plan
+    configMaxQuotaPerAlias: 10 * 1024 * 1024 * 1024
+  });
+  t.true(result.allowed, 'should allow 4 GB alias when plan max is 10 GB');
+});
+
+test('alias validation: rejects alias quota exceeding plan max', (t) => {
+  const result = simulateAliasQuotaValidation({
+    aliasMaxQuota: 15 * 1024 * 1024 * 1024, // 15 GB
+    adminMaxQuotaPerAlias: 10 * 1024 * 1024 * 1024, // 10 GB plan
+    configMaxQuotaPerAlias: 10 * 1024 * 1024 * 1024
+  });
+  t.false(result.allowed, 'should reject 15 GB alias when plan max is 10 GB');
+  t.is(result.hardMax, 10 * 1024 * 1024 * 1024);
+});
+
+test('alias validation: uses config default when no admin max set', (t) => {
+  const result = simulateAliasQuotaValidation({
+    aliasMaxQuota: 4 * 1024 * 1024 * 1024,
+    adminMaxQuotaPerAlias: undefined,
+    configMaxQuotaPerAlias: 10 * 1024 * 1024 * 1024
+  });
+  t.true(
+    result.allowed,
+    'should allow 4 GB alias with config default of 10 GB'
+  );
+});
+
+test('alias validation: skips validation when alias max_quota is not set', (t) => {
+  const result = simulateAliasQuotaValidation({
+    aliasMaxQuota: undefined,
+    adminMaxQuotaPerAlias: 10 * 1024 * 1024 * 1024,
+    configMaxQuotaPerAlias: 10 * 1024 * 1024 * 1024
+  });
+  t.true(
+    result.allowed,
+    'should skip validation when alias max_quota is not set'
+  );
+});
+
+// Simulate the NEW serializeAliasResponse logic
+function simulateSerializeQuota({
+  aliasMaxQuota,
+  domainMaxPerAlias,
+  configMax,
+  hasImap
+}) {
+  return hasImap ? aliasMaxQuota || domainMaxPerAlias || configMax : 0;
+}
+
+test('API serialization: uses alias.max_quota when set', (t) => {
+  const result = simulateSerializeQuota({
+    aliasMaxQuota: 4 * 1024 * 1024 * 1024,
+    domainMaxPerAlias: 512 * 1024 * 1024,
+    configMax: 10 * 1024 * 1024 * 1024,
+    hasImap: true
+  });
+  t.is(result, 4 * 1024 * 1024 * 1024, 'should use alias-specific quota');
+});
+
+test('API serialization: falls back to domain max when alias has no override', (t) => {
+  const result = simulateSerializeQuota({
+    aliasMaxQuota: undefined,
+    domainMaxPerAlias: 512 * 1024 * 1024,
+    configMax: 10 * 1024 * 1024 * 1024,
+    hasImap: true
+  });
+  t.is(result, 512 * 1024 * 1024, 'should use domain default');
+});
+
+test('API serialization: falls back to config max when neither alias nor domain set', (t) => {
+  const result = simulateSerializeQuota({
+    aliasMaxQuota: undefined,
+    domainMaxPerAlias: undefined,
+    configMax: 10 * 1024 * 1024 * 1024,
+    hasImap: true
+  });
+  t.is(result, 10 * 1024 * 1024 * 1024, 'should use config default');
+});
+
+test('API serialization: returns 0 when IMAP is disabled', (t) => {
+  const result = simulateSerializeQuota({
+    aliasMaxQuota: 4 * 1024 * 1024 * 1024,
+    domainMaxPerAlias: 512 * 1024 * 1024,
+    configMax: 10 * 1024 * 1024 * 1024,
+    hasImap: false
+  });
+  t.is(result, 0, 'should return 0 when IMAP is disabled');
+});

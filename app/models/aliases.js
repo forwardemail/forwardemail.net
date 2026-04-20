@@ -833,7 +833,10 @@ Aliases.pre('save', async function (next) {
           }
         ]
       })
-        .populate('members.user', `id ${config.userFields.isBanned}`)
+        .populate(
+          'members.user',
+          `id plan ${config.userFields.isBanned} ${config.userFields.maxQuotaPerAlias} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+        )
         .lean()
         .exec(),
       conn.models.Users.findOne({
@@ -922,22 +925,39 @@ Aliases.pre('save', async function (next) {
       throw Boom.badRequest(i18n.translateError('INVALID_EMAIL', alias.locale));
 
     //
-    // NOTE: we ensure that `alias.max_quota` cannot exceed `domain.max_quota_per_alias`
+    // NOTE: we ensure that `alias.max_quota` cannot exceed the plan-level max
+    //       (the domain's `max_quota_per_alias` is a default, not a hard cap;
+    //        admins can set individual aliases higher up to the plan limit)
     //
-    if (
-      Number.isFinite(domain.max_quota_per_alias) &&
-      Number.isFinite(alias.max_quota) &&
-      alias.max_quota > domain.max_quota_per_alias
-    )
-      throw Boom.badRequest(
-        i18n.translateError(
-          'ALIAS_QUOTA_EXCEEDS_DOMAIN',
-          alias.locale,
-          `${alias.name}@${domain.name}`,
-          bytes(alias.max_quota),
-          bytes(domain.max_quota_per_alias)
-        )
+    if (Number.isFinite(alias.max_quota)) {
+      const adminMembers = domain.members.filter(
+        (m) =>
+          _.isObject(m.user) &&
+          !m.user[config.userFields.isBanned] &&
+          m.group === 'admin'
       );
+      const planMax =
+        adminMembers.length === 0
+          ? config.maxQuotaPerAlias
+          : _.max(
+              adminMembers.map((m) =>
+                typeof m.user[config.userFields.maxQuotaPerAlias] === 'number'
+                  ? m.user[config.userFields.maxQuotaPerAlias]
+                  : config.maxQuotaPerAlias
+              )
+            );
+      const hardMax = _.clamp(planMax, 0, bytes('100GB'));
+      if (alias.max_quota > hardMax)
+        throw Boom.badRequest(
+          i18n.translateError(
+            'ALIAS_QUOTA_EXCEEDS_DOMAIN',
+            alias.locale,
+            `${alias.name}@${domain.name}`,
+            bytes(alias.max_quota),
+            bytes(hardMax)
+          )
+        );
+    }
 
     // determine the domain membership for the user
     let member = domain.members.find((member) =>
