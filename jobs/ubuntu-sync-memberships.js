@@ -15,24 +15,24 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const pMapSeries = require('p-map-series');
 const pRetry = require('p-retry');
-const sharedConfig = require('@ladjs/shared-config');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 
 const Users = require('#models/users');
 const config = require('#config');
-const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
+const retryLaunchpadRequest = require('#helpers/retry-launchpad-request');
 const setupMongoose = require('#helpers/setup-mongoose');
 const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
+
+const { LAUNCHPAD_ADDRESS_FAMILY } = retryLaunchpadRequest;
 
 const JOB_RETRIES = 2;
 
@@ -43,19 +43,20 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-// TODO: re-use existing connection from web
-const breeSharedConfig = sharedConfig('BREE');
-const client = new Redis(breeSharedConfig.redis, logger);
-client.setMaxListeners(0);
-
-const resolver = createTangerine(client, logger);
-
 function shouldRetry(err) {
   return err?.message === 'Mapping outdated' || isRetryableError(err);
 }
 
 async function syncMemberships() {
-  const map = await getUbuntuMembersMap(resolver);
+  const map = await getUbuntuMembersMap();
+
+  await logger.info('Ubuntu membership map fetched', {
+    teams: [...map.entries()].map(([name, set]) => ({
+      name,
+      members: set.size
+    })),
+    launchpadAddressFamily: LAUNCHPAD_ADDRESS_FAMILY
+  });
 
   const ids = await Users.distinct('_id', {
     [config.passport.fields.ubuntuProfileID]: {
@@ -64,6 +65,11 @@ async function syncMemberships() {
     [config.passport.fields.ubuntuUsername]: {
       $exists: true
     }
+  });
+
+  await logger.info('Ubuntu membership sync user scan starting', {
+    totalUsers: ids.length,
+    launchpadAddressFamily: LAUNCHPAD_ADDRESS_FAMILY
   });
 
   //

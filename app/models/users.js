@@ -159,7 +159,7 @@ if (config.env === 'production') {
   // cache the ubuntu members map immediately
   (async () => {
     try {
-      map = await getUbuntuMembersMap(resolver);
+      map = await getUbuntuMembersMap();
     } catch (err) {
       logger.fatal(err);
     }
@@ -168,7 +168,7 @@ if (config.env === 'production') {
   // every 5 minutes update the ubuntu members map
   setInterval(async () => {
     try {
-      map = await getUbuntuMembersMap(resolver);
+      map = await getUbuntuMembersMap();
     } catch (err) {
       logger.fatal(err);
     }
@@ -1220,7 +1220,7 @@ Users.pre('save', async function (next) {
     return next();
 
   try {
-    if (!(map instanceof Map)) map = await getUbuntuMembersMap(resolver);
+    if (!(map instanceof Map)) map = await getUbuntuMembersMap();
     await syncUbuntuUser(this, map);
     this.last_ubuntu_sync = new Date();
   } catch (err) {
