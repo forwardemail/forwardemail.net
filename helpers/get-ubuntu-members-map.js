@@ -5,12 +5,16 @@
 
 const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
+const pRetry = require('p-retry');
 const { isURL } = require('@forwardemail/validator');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
+const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const retryRequest = require('#helpers/retry-request');
+
+const PAGE_RETRIES = 2;
 
 // const BOOLEAN_KEYS = ['is_valid', 'is_ubuntu_coc_signer'];
 
@@ -50,6 +54,22 @@ function addToSet(entries, set) {
   }
 }
 
+async function fetchPage(url, resolver, name, pageCount) {
+  return pRetry(() => retryRequest(url, { resolver }), {
+    retries: PAGE_RETRIES,
+    async onFailedAttempt(err) {
+      if (!isRetryableError(err)) throw err;
+
+      await logger.warn(`${name} page ${pageCount} fetch failed, retrying`, {
+        err,
+        url,
+        attemptNumber: err.attemptNumber,
+        retriesLeft: err.retriesLeft
+      });
+    }
+  });
+}
+
 async function getUbuntuMembersMap(resolver) {
   const map = new Map();
 
@@ -72,7 +92,7 @@ async function getUbuntuMembersMap(resolver) {
         `${name} fetching page ${pageCount}, processed ${totalProcessed} entries`
       );
 
-      const response = await retryRequest(url, { resolver });
+      const response = await fetchPage(url, resolver, name, pageCount);
 
       const json = await response.body.json();
 
