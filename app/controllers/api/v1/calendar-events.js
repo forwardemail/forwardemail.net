@@ -60,6 +60,46 @@ function isValidExdate(str) {
 }
 
 //
+// Return a DTSTART line that rrulestr can use as a recurrence anchor.
+//
+// Two normalisation steps are applied:
+//
+//   1. VALUE=DATE (all-day) → UTC datetime string.
+//      rrulestr@2.8.1 silently ignores DTSTART;VALUE=DATE and falls back
+//      to new Date() as the anchor, which collapses INTERVAL phase across
+//      all all-day recurring events in the same request. Converting to a
+//      UTC datetime preserves the correct calendar date while giving
+//      rrulestr an anchor it will actually honour.
+//
+//   2. DUE property used as VTODO anchor → relabelled as DTSTART.
+//      RFC 5545 §3.8.5.3 requires DTSTART as the RRULE anchor, but a
+//      VTODO is allowed to carry only DUE (§3.6.2). When DTSTART is
+//      absent we fall back to DUE; rrulestr needs it labelled DTSTART.
+//
+function toRruleDtstartLine(prop, propName) {
+  const raw = prop.toICALString();
+  // Normalise VALUE=DATE to UTC datetime (rrulestr ignores VALUE=DATE)
+  if (/value=date(?!-time)/i.test(raw)) {
+    const jsDate = prop.getFirstValue().toJSDate();
+    const pad = (n) => String(n).padStart(2, '0');
+    const utc =
+      jsDate.getUTCFullYear() +
+      pad(jsDate.getUTCMonth() + 1) +
+      pad(jsDate.getUTCDate()) +
+      'T' +
+      pad(jsDate.getUTCHours()) +
+      pad(jsDate.getUTCMinutes()) +
+      pad(jsDate.getUTCSeconds()) +
+      'Z';
+    return 'DTSTART:' + utc;
+  }
+
+  // Relabel DUE → DTSTART when used as VTODO anchor
+  if (propName === 'due') return raw.replace(/^DUE/, 'DTSTART');
+  return raw;
+}
+
+//
 // Increment the URL-based synctoken so CalDAV clients see changes
 // made via the REST API on their next sync-collection request.
 // Mirrors the pure-function pattern in caldav-server.js bumpSyncToken().
@@ -287,22 +327,23 @@ async function list(ctx) {
           // expand to the same dates regardless of its true DTSTART.
           // See test/api/v1-alias-endpoints.js "lists recurring events
           // anchored to their own DTSTART, not parse-time".
+          //
+          // Additionally, rrulestr@2.8.1 silently ignores DTSTART;VALUE=DATE
+          // (all-day events) and falls back to new Date(), so we normalise
+          // those to a UTC datetime string before passing to rrulestr.
           const dtstartProp = vevent.getFirstProperty('dtstart');
-          const ruleLines = [];
-          if (dtstartProp) ruleLines.push(dtstartProp.toICALString());
+          if (dtstartProp)
+            lines.push(toRruleDtstartLine(dtstartProp, 'dtstart'));
+          const recurrenceStartCount = lines.length;
 
           for (const key of ['rrule', 'exrule', 'exdate', 'rdate']) {
             const properties = vevent.getAllProperties(key);
             for (const prop of properties) {
-              ruleLines.push(prop.toICALString());
+              lines.push(prop.toICALString());
             }
           }
 
-          // After this point, treat `lines` as the rule-set text for rrule.
-          // Track the original recurrence-only count to preserve the
-          // existing "non-recurring fast path" check.
-          const recurrenceLineCount = ruleLines.length - (dtstartProp ? 1 : 0);
-          lines = ruleLines;
+          const recurrenceLineCount = lines.length - recurrenceStartCount;
 
           if (recurrenceLineCount === 0) {
             // Non-recurring event - check if event overlaps with query range
@@ -397,20 +438,13 @@ async function list(ctx) {
             // Anchor the rule with DTSTART (or DUE if DTSTART is absent —
             // VTODO recurrence is allowed to be relative to either). See
             // the matching VEVENT branch above for the full explanation.
+            // toRruleDtstartLine() also normalises VALUE=DATE anchors to a
+            // UTC datetime string, since rrulestr@2.8.1 ignores VALUE=DATE.
             const dtstartProp = vtodo.getFirstProperty('dtstart');
             const dueProp = vtodo.getFirstProperty('due');
             const anchorProp = dtstartProp || dueProp;
-            if (anchorProp) {
-              // ical.js stores DUE separately; rrule expects a DTSTART
-              // line, so we relabel a DUE anchor as DTSTART for the rule
-              // text. The original VTODO is unchanged.
-              const anchorLine = anchorProp.toICALString();
-              lines.push(
-                anchorProp.name === 'due'
-                  ? anchorLine.replace(/^DUE/, 'DTSTART')
-                  : anchorLine
-              );
-            }
+            if (anchorProp)
+              lines.push(toRruleDtstartLine(anchorProp, anchorProp.name));
 
             const recurrenceStartCount = lines.length;
 

@@ -1032,3 +1032,196 @@ test('bumpSyncToken correctly increments URL-based synctoken', (t) => {
   t.is(bumpSyncToken(null), 'https://forwardemail.net/ns/sync-token/1');
   t.is(bumpSyncToken('not-a-url'), 'https://forwardemail.net/ns/sync-token/1');
 });
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// UNIT TEST 9: toRruleDtstartLine — normalises VALUE=DATE and DUE anchors
+// These tests verify the core fix for rrulestr@2.8.1 silently ignoring
+// DTSTART;VALUE=DATE and DUE;VALUE=DATE, which caused the recurrence anchor
+// to default to parse-time and collapse INTERVAL phases across all all-day
+// recurring events in the same request.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Replicate toRruleDtstartLine() from caldav-server.js for unit testing
+function toRruleDtstartLine(prop, propName) {
+  const raw = prop.toICALString();
+  if (/value=date(?!-time)/i.test(raw)) {
+    const jsDate = prop.getFirstValue().toJSDate();
+    const pad = (n) => String(n).padStart(2, '0');
+    const utc =
+      jsDate.getUTCFullYear() +
+      pad(jsDate.getUTCMonth() + 1) +
+      pad(jsDate.getUTCDate()) +
+      'T' +
+      pad(jsDate.getUTCHours()) +
+      pad(jsDate.getUTCMinutes()) +
+      pad(jsDate.getUTCSeconds()) +
+      'Z';
+    return 'DTSTART:' + utc;
+  }
+
+  if (propName === 'due') return raw.replace(/^DUE/, 'DTSTART');
+  return raw;
+}
+
+test('toRruleDtstartLine: DTSTART;VALUE=DATE is converted to UTC datetime', (t) => {
+  const ical = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'BEGIN:VEVENT',
+    'UID:allday-test@test',
+    'DTSTART;VALUE=DATE:20210503',
+    'DTEND;VALUE=DATE:20210504',
+    'RRULE:FREQ=WEEKLY',
+    'SUMMARY:All-day event',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const parsed = ICAL.parse(ical);
+  const comp = new ICAL.Component(parsed);
+  const vevent = comp.getFirstSubcomponent('vevent');
+  const dtstartProp = vevent.getFirstProperty('dtstart');
+
+  const result = toRruleDtstartLine(dtstartProp, 'dtstart');
+
+  // Must be a plain DTSTART UTC datetime — no VALUE=DATE parameter
+  t.regex(
+    result,
+    /^DTSTART:\d{8}T\d{6}Z$/,
+    'Should produce a UTC datetime string'
+  );
+  t.false(result.includes('VALUE=DATE'), 'Must not contain VALUE=DATE');
+  // Must preserve the correct calendar date (2021-05-03)
+  t.true(
+    result.includes('20210503T'),
+    'Must preserve the calendar date 20210503'
+  );
+});
+
+test('toRruleDtstartLine: DTSTART;VALUE=DATE-TIME is passed through unchanged', (t) => {
+  const ical = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'BEGIN:VEVENT',
+    'UID:datetime-test@test',
+    'DTSTART:20210503T090000Z',
+    'DTEND:20210503T100000Z',
+    'RRULE:FREQ=WEEKLY',
+    'SUMMARY:Timed event',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const parsed = ICAL.parse(ical);
+  const comp = new ICAL.Component(parsed);
+  const vevent = comp.getFirstSubcomponent('vevent');
+  const dtstartProp = vevent.getFirstProperty('dtstart');
+
+  const result = toRruleDtstartLine(dtstartProp, 'dtstart');
+
+  t.true(result.startsWith('DTSTART:'), 'Should start with DTSTART:');
+  t.true(
+    result.includes('20210503T090000Z'),
+    'Should preserve the original datetime'
+  );
+});
+
+test('toRruleDtstartLine: DUE;VALUE=DATE is relabelled to DTSTART and converted to UTC datetime', (t) => {
+  const ical = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'BEGIN:VTODO',
+    'UID:due-allday-test@test',
+    'DUE;VALUE=DATE:20210503',
+    'RRULE:FREQ=WEEKLY',
+    'SUMMARY:All-day task DUE-only',
+    'END:VTODO',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const parsed = ICAL.parse(ical);
+  const comp = new ICAL.Component(parsed);
+  const vtodo = comp.getFirstSubcomponent('vtodo');
+  const dueProp = vtodo.getFirstProperty('due');
+
+  const result = toRruleDtstartLine(dueProp, 'due');
+
+  t.regex(
+    result,
+    /^DTSTART:\d{8}T\d{6}Z$/,
+    'Should produce a UTC datetime DTSTART'
+  );
+  t.false(result.includes('VALUE=DATE'), 'Must not contain VALUE=DATE');
+  t.false(result.startsWith('DUE'), 'Must not start with DUE');
+  t.true(
+    result.includes('20210503T'),
+    'Must preserve the calendar date 20210503'
+  );
+});
+
+test('toRruleDtstartLine: DUE (datetime) is relabelled to DTSTART', (t) => {
+  const ical = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'BEGIN:VTODO',
+    'UID:due-datetime-test@test',
+    'DUE:20210503T170000Z',
+    'RRULE:FREQ=WEEKLY',
+    'SUMMARY:Timed task DUE-only',
+    'END:VTODO',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const parsed = ICAL.parse(ical);
+  const comp = new ICAL.Component(parsed);
+  const vtodo = comp.getFirstSubcomponent('vtodo');
+  const dueProp = vtodo.getFirstProperty('due');
+
+  const result = toRruleDtstartLine(dueProp, 'due');
+
+  t.true(result.startsWith('DTSTART:'), 'Should be relabelled to DTSTART');
+  t.true(
+    result.includes('20210503T170000Z'),
+    'Should preserve the original time'
+  );
+  t.false(result.startsWith('DUE'), 'Must not start with DUE');
+});
+
+test('toRruleDtstartLine: two all-day events with different VALUE=DATE produce different DTSTART anchors', (t) => {
+  // This is the key regression test: if VALUE=DATE is not normalised,
+  // rrulestr falls back to new Date() for both, making them share the same
+  // anchor and collapsing their INTERVAL phases together.
+  const makeIcal = (uid, dtstart) =>
+    [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTART;VALUE=DATE:${dtstart}`,
+      `DTEND;VALUE=DATE:${dtstart}`,
+      'RRULE:FREQ=WEEKLY',
+      'SUMMARY:All-day event',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+  const getProp = (icalStr) => {
+    const parsed = ICAL.parse(icalStr);
+    const comp = new ICAL.Component(parsed);
+    return comp.getFirstSubcomponent('vevent').getFirstProperty('dtstart');
+  };
+
+  const propA = getProp(makeIcal('event-a@test', '20210503'));
+  const propB = getProp(makeIcal('event-b@test', '20210607'));
+
+  const lineA = toRruleDtstartLine(propA, 'dtstart');
+  const lineB = toRruleDtstartLine(propB, 'dtstart');
+
+  t.not(
+    lineA,
+    lineB,
+    'Two events with different VALUE=DATE must produce different DTSTART anchors'
+  );
+  t.true(lineA.includes('20210503T'), 'Event A anchor must be 2021-05-03');
+  t.true(lineB.includes('20210607T'), 'Event B anchor must be 2021-06-07');
+});

@@ -953,6 +953,322 @@ test('recurring event with EXDATE filters only the excluded occurrence', async (
   t.is(janRes.body.length, 1, 'January 29 (non-excluded) should still match');
 });
 
+// All-day recurring VEVENT regression.
+// rrulestr@2.8.1 silently ignores DTSTART;VALUE=DATE and falls back to
+// new Date() as the anchor, reproducing the same INTERVAL-phase collapse
+// that the DTSTART fix addressed for datetime events. The fix in
+// toRruleDtstartLine() normalises VALUE=DATE to a UTC datetime string so
+// that rrulestr honours the correct anchor.
+test('all-day recurring events are anchored to their own DTSTART, not parse-time', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', auth)
+    .send({ name: 'All-Day Recurrence Test' });
+  t.is(calendarRes.status, 200);
+  const calendarId = calendarRes.body.id;
+  // Same RRULE shape; phase distinguishes the two series.
+  //   DTSTART;VALUE=DATE:20250731 -> Jul 31 / Oct 30 / Jan 29 2026 / Apr 30 2026 / ...
+  //   DTSTART;VALUE=DATE:20250828 -> Aug 28 / Nov 27 / Feb 26 2026 / May 28 2026 / ...
+  const series = [
+    { uid: 'allday-jul-anchored', dtstart: '20250731' },
+    { uid: 'allday-aug-anchored', dtstart: '20250828' }
+  ];
+  for (const s of series) {
+    const ical =
+      'BEGIN:VCALENDAR\r\n' +
+      'VERSION:2.0\r\n' +
+      'PRODID:-//Forward Email//Test//EN\r\n' +
+      'BEGIN:VEVENT\r\n' +
+      `UID:${s.uid}@example.com\r\n` +
+      `DTSTART;VALUE=DATE:${s.dtstart}\r\n` +
+      `DTEND;VALUE=DATE:${s.dtstart}\r\n` +
+      `SUMMARY:All-day quarterly ${s.uid}\r\n` +
+      'RRULE:FREQ=MONTHLY;INTERVAL=3;BYDAY=-1TH\r\n' +
+      'END:VEVENT\r\n' +
+      'END:VCALENDAR\r\n';
+    const createRes = await api
+      .post('/v1/calendar-events')
+      .set('Authorization', auth)
+      .send({ calendar_id: calendarId, ical });
+    t.is(createRes.status, 200, `created ${s.uid}`);
+  }
+
+  // April 30, 2026 -- only the July-anchored all-day series fires here.
+  const aprRes = await api
+    .get(
+      '/v1/calendar-events' +
+        `?calendar_id=${calendarId}` +
+        '&start_date=2026-04-30T00:00:00Z' +
+        '&end_date=2026-04-30T23:59:59Z'
+    )
+    .set('Authorization', auth);
+  t.is(aprRes.status, 200);
+  t.deepEqual(
+    aprRes.body.map((e) => e.uid).sort(),
+    ['allday-jul-anchored@example.com'],
+    'April 30 should only match the July-anchored all-day series'
+  );
+
+  // May 28, 2026 -- only the August-anchored all-day series fires here.
+  const mayRes = await api
+    .get(
+      '/v1/calendar-events' +
+        `?calendar_id=${calendarId}` +
+        '&start_date=2026-05-28T00:00:00Z' +
+        '&end_date=2026-05-28T23:59:59Z'
+    )
+    .set('Authorization', auth);
+  t.is(mayRes.status, 200);
+  t.deepEqual(
+    mayRes.body.map((e) => e.uid).sort(),
+    ['allday-aug-anchored@example.com'],
+    'May 28 should only match the August-anchored all-day series'
+  );
+});
+
+// All-day recurring VTODO regression -- mirrors the VEVENT test above but
+// for task components. VALUE=DATE on DTSTART must also be normalised.
+test('all-day recurring tasks are anchored to their own DTSTART, not parse-time', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', auth)
+    .send({ name: 'All-Day Task Recurrence Test' });
+  t.is(calendarRes.status, 200);
+  const calendarId = calendarRes.body.id;
+  const series = [
+    { uid: 'allday-task-jul', dtstart: '20250731' },
+    { uid: 'allday-task-aug', dtstart: '20250828' }
+  ];
+  for (const s of series) {
+    const ical =
+      'BEGIN:VCALENDAR\r\n' +
+      'VERSION:2.0\r\n' +
+      'PRODID:-//Forward Email//Test//EN\r\n' +
+      'BEGIN:VTODO\r\n' +
+      `UID:${s.uid}@example.com\r\n` +
+      `DTSTART;VALUE=DATE:${s.dtstart}\r\n` +
+      `DUE;VALUE=DATE:${s.dtstart}\r\n` +
+      `SUMMARY:All-day quarterly task ${s.uid}\r\n` +
+      'STATUS:NEEDS-ACTION\r\n' +
+      'RRULE:FREQ=MONTHLY;INTERVAL=3;BYDAY=-1TH\r\n' +
+      'END:VTODO\r\n' +
+      'END:VCALENDAR\r\n';
+    const createRes = await api
+      .post('/v1/calendar-events')
+      .set('Authorization', auth)
+      .send({ calendar_id: calendarId, ical });
+    t.is(createRes.status, 200, `created ${s.uid}`);
+  }
+
+  const aprRes = await api
+    .get(
+      '/v1/calendar-events' +
+        `?calendar_id=${calendarId}` +
+        '&start_date=2026-04-30T00:00:00Z' +
+        '&end_date=2026-04-30T23:59:59Z'
+    )
+    .set('Authorization', auth);
+  t.is(aprRes.status, 200);
+  t.deepEqual(
+    aprRes.body.map((e) => e.uid).sort(),
+    ['allday-task-jul@example.com'],
+    'April 30 should only match the July-anchored all-day task'
+  );
+
+  const mayRes = await api
+    .get(
+      '/v1/calendar-events' +
+        `?calendar_id=${calendarId}` +
+        '&start_date=2026-05-28T00:00:00Z' +
+        '&end_date=2026-05-28T23:59:59Z'
+    )
+    .set('Authorization', auth);
+  t.is(mayRes.status, 200);
+  t.deepEqual(
+    mayRes.body.map((e) => e.uid).sort(),
+    ['allday-task-aug@example.com'],
+    'May 28 should only match the August-anchored all-day task'
+  );
+});
+
+// All-day VTODO with only DUE;VALUE=DATE (no DTSTART) -- the DUE-anchor
+// fallback must also normalise VALUE=DATE to a UTC datetime string.
+test('all-day recurring task with only DUE;VALUE=DATE anchors to DUE, not parse-time', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', auth)
+    .send({ name: 'All-Day Due-Only Tasks' });
+  t.is(calendarRes.status, 200);
+  const calendarId = calendarRes.body.id;
+  // Anchored only by DUE;VALUE=DATE:20250828. Quarterly last-Thursday cadence.
+  // Expected occurrences: Aug 28 / Nov 27 / Feb 26 2026 / May 28 2026 / ...
+  const ical =
+    'BEGIN:VCALENDAR\r\n' +
+    'VERSION:2.0\r\n' +
+    'PRODID:-//Forward Email//Test//EN\r\n' +
+    'BEGIN:VTODO\r\n' +
+    'UID:allday-due-only@example.com\r\n' +
+    'DUE;VALUE=DATE:20250828\r\n' +
+    'SUMMARY:All-day due-only quarterly task\r\n' +
+    'STATUS:NEEDS-ACTION\r\n' +
+    'RRULE:FREQ=MONTHLY;INTERVAL=3;BYDAY=-1TH\r\n' +
+    'END:VTODO\r\n' +
+    'END:VCALENDAR\r\n';
+  const createRes = await api
+    .post('/v1/calendar-events')
+    .set('Authorization', auth)
+    .send({ calendar_id: calendarId, ical });
+  t.is(createRes.status, 200, 'created all-day due-only task');
+
+  // May 28, 2026 -- next occurrence after the Aug 2025 anchor.
+  const hitRes = await api
+    .get(
+      '/v1/calendar-events' +
+        `?calendar_id=${calendarId}` +
+        '&start_date=2026-05-28T00:00:00Z' +
+        '&end_date=2026-05-28T23:59:59Z'
+    )
+    .set('Authorization', auth);
+  t.is(hitRes.status, 200);
+  t.is(
+    hitRes.body.length,
+    1,
+    'May 28 should match the August-anchored all-day due-only task'
+  );
+
+  // April 30, 2026 -- July-anchored phase; must not match.
+  const missRes = await api
+    .get(
+      '/v1/calendar-events' +
+        `?calendar_id=${calendarId}` +
+        '&start_date=2026-04-30T00:00:00Z' +
+        '&end_date=2026-04-30T23:59:59Z'
+    )
+    .set('Authorization', auth);
+  t.is(missRes.status, 200);
+  t.is(
+    missRes.body.length,
+    0,
+    'April 30 must not match an August-anchored all-day due-only task'
+  );
+});
+
+// toRruleDtstartLine unit-level checks -- verify the helper function
+// produces the correct output for all anchor variants without
+// requiring a live API server.
+test('toRruleDtstartLine normalises VALUE=DATE and relabels DUE correctly', (t) => {
+  const ICAL = require('ical.js');
+
+  // Inline copy of the helper so the test is self-contained.
+  function toRruleDtstartLine(prop, propName) {
+    const raw = prop.toICALString();
+    if (/value=date(?!-time)/i.test(raw)) {
+      const jsDate = prop.getFirstValue().toJSDate();
+      const pad = (n) => String(n).padStart(2, '0');
+      const utc =
+        jsDate.getUTCFullYear() +
+        pad(jsDate.getUTCMonth() + 1) +
+        pad(jsDate.getUTCDate()) +
+        'T' +
+        pad(jsDate.getUTCHours()) +
+        pad(jsDate.getUTCMinutes()) +
+        pad(jsDate.getUTCSeconds()) +
+        'Z';
+      return 'DTSTART:' + utc;
+    }
+
+    if (propName === 'due') return raw.replace(/^DUE/, 'DTSTART');
+    return raw;
+  }
+
+  function parseProp(icsComponent, propName) {
+    const comp = new ICAL.Component(
+      ICAL.parse(
+        'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//T//EN\r\n' +
+          icsComponent +
+          'END:VCALENDAR\r\n'
+      )
+    );
+    const sub =
+      comp.getFirstSubcomponent('vevent') || comp.getFirstSubcomponent('vtodo');
+    return sub.getFirstProperty(propName);
+  }
+
+  // 1. UTC datetime DTSTART -- returned unchanged
+  const p1 = parseProp(
+    'BEGIN:VEVENT\r\nUID:a@b\r\nDTSTART:20250731T100000Z\r\nEND:VEVENT\r\n',
+    'dtstart'
+  );
+  t.is(
+    toRruleDtstartLine(p1, 'dtstart'),
+    'DTSTART:20250731T100000Z',
+    'UTC datetime DTSTART is returned as-is'
+  );
+
+  // 2. VALUE=DATE DTSTART -- must be converted to UTC datetime
+  const p2 = parseProp(
+    'BEGIN:VEVENT\r\nUID:a@b\r\nDTSTART;VALUE=DATE:20250731\r\nEND:VEVENT\r\n',
+    'dtstart'
+  );
+  const line2 = toRruleDtstartLine(p2, 'dtstart');
+  t.regex(
+    line2,
+    /^DTSTART:\d{8}T\d{6}Z$/,
+    'VALUE=DATE DTSTART is converted to UTC datetime'
+  );
+  t.true(
+    line2.startsWith('DTSTART:20250731'),
+    'Converted line preserves the calendar date'
+  );
+
+  // 3. UTC datetime DUE -- relabelled as DTSTART
+  const p3 = parseProp(
+    'BEGIN:VTODO\r\nUID:a@b\r\nDUE:20250828T100000Z\r\nEND:VTODO\r\n',
+    'due'
+  );
+  t.is(
+    toRruleDtstartLine(p3, 'due'),
+    'DTSTART:20250828T100000Z',
+    'UTC datetime DUE is relabelled as DTSTART'
+  );
+
+  // 4. VALUE=DATE DUE -- must be converted to UTC datetime AND relabelled
+  const p4 = parseProp(
+    'BEGIN:VTODO\r\nUID:a@b\r\nDUE;VALUE=DATE:20250828\r\nEND:VTODO\r\n',
+    'due'
+  );
+  const line4 = toRruleDtstartLine(p4, 'due');
+  t.regex(
+    line4,
+    /^DTSTART:\d{8}T\d{6}Z$/,
+    'VALUE=DATE DUE is converted to UTC datetime and relabelled as DTSTART'
+  );
+  t.true(
+    line4.startsWith('DTSTART:20250828'),
+    'Converted DUE line preserves the calendar date'
+  );
+
+  // 5. TZID datetime DTSTART -- returned unchanged (rrulestr handles TZID)
+  const p5 = parseProp(
+    'BEGIN:VEVENT\r\nUID:a@b\r\nDTSTART;TZID=America/New_York:20250731T100000\r\nEND:VEVENT\r\n',
+    'dtstart'
+  );
+  t.is(
+    toRruleDtstartLine(p5, 'dtstart'),
+    'DTSTART;TZID=America/New_York:20250731T100000',
+    'TZID datetime DTSTART is returned as-is'
+  );
+});
+
 test('calendar events create validates required fields', async (t) => {
   const { api } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);

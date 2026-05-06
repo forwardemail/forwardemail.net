@@ -2328,3 +2328,241 @@ END:VCALENDAR`;
     `Event deletion should complete quickly (took ${duration}ms), not wait for email sending`
   );
 });
+
+//
+// All-day recurring event / task tests
+// These tests verify the fix for rrulestr@2.8.1 silently ignoring
+// DTSTART;VALUE=DATE and DUE;VALUE=DATE, which caused the recurrence
+// anchor to default to parse-time and collapse INTERVAL phases across
+// all all-day recurring events in the same request.
+//
+
+test('all-day recurring VEVENT: timeRange query returns correct occurrence', async (t) => {
+  const iCalString = await fsp.readFile(
+    path.join(__dirname, 'data', 'vevent-allday-recurring.ics'),
+    'utf8'
+  );
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const objectUrl = new URL('vevent-allday-recurring.ics', calendars[0].url)
+    .href;
+  const response = await createObject({
+    url: objectUrl,
+    data: iCalString,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+  t.true(response.ok);
+
+  // The event starts 2021-05-03 (weekly). An occurrence falls on 2021-05-10.
+  // Query a window that covers only the 2021-05-10 occurrence.
+  const objects = await fetchCalendarObjects({
+    calendar: calendars[0],
+    headers: t.context.authHeaders,
+    timeRange: {
+      start: '2021-05-09T00:00:00.000Z',
+      end: '2021-05-11T00:00:00.000Z'
+    }
+  });
+  t.true(
+    objects.length > 0,
+    'Should find the all-day recurring event in the queried window'
+  );
+  const found = objects.some((obj) =>
+    obj.data.includes('vevent-allday-recurring-weekly@test')
+  );
+  t.true(found, 'The all-day recurring VEVENT should be returned');
+
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+test('all-day recurring VEVENT: two events with different DTSTART;VALUE=DATE do not collapse INTERVAL', async (t) => {
+  const iCalStringA = await fsp.readFile(
+    path.join(__dirname, 'data', 'vevent-allday-recurring.ics'),
+    'utf8'
+  );
+  const iCalStringB = await fsp.readFile(
+    path.join(__dirname, 'data', 'vevent-allday-recurring-b.ics'),
+    'utf8'
+  );
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const objectUrlA = new URL('vevent-allday-recurring-a2.ics', calendars[0].url)
+    .href;
+  const objectUrlB = new URL('vevent-allday-recurring-b2.ics', calendars[0].url)
+    .href;
+  const [responseA, responseB] = await Promise.all([
+    createObject({
+      url: objectUrlA,
+      data: iCalStringA,
+      headers: {
+        'content-type': 'text/calendar; charset=utf-8',
+        ...t.context.authHeaders
+      }
+    }),
+    createObject({
+      url: objectUrlB,
+      data: iCalStringB,
+      headers: {
+        'content-type': 'text/calendar; charset=utf-8',
+        ...t.context.authHeaders
+      }
+    })
+  ]);
+  t.true(responseA.ok);
+  t.true(responseB.ok);
+
+  // Event A starts 2021-05-03 (weekly). Occurrences: 05-03, 05-10, 05-17 ...
+  // Event B starts 2021-06-07 (weekly). Occurrences: 06-07, 06-14, 06-21 ...
+  // Query a window that only event A has an occurrence in (2021-05-09 to 05-11).
+  // If INTERVAL collapses, event B would be incorrectly returned too.
+  const objectsA = await fetchCalendarObjects({
+    calendar: calendars[0],
+    headers: t.context.authHeaders,
+    timeRange: {
+      start: '2021-05-09T00:00:00.000Z',
+      end: '2021-05-11T00:00:00.000Z'
+    }
+  });
+  const foundA = objectsA.some((obj) =>
+    obj.data.includes('vevent-allday-recurring-weekly@test')
+  );
+  const foundB = objectsA.some((obj) =>
+    obj.data.includes('vevent-allday-recurring-weekly-b@test')
+  );
+  t.true(foundA, 'Event A should be returned for its occurrence window');
+  t.false(
+    foundB,
+    'Event B must NOT be returned — its first occurrence is in June, not May'
+  );
+
+  await Promise.all([
+    deleteObject({ url: objectUrlA, headers: t.context.authHeaders }),
+    deleteObject({ url: objectUrlB, headers: t.context.authHeaders })
+  ]);
+});
+
+test('all-day recurring VTODO with DTSTART;VALUE=DATE: timeRange query returns correct occurrence', async (t) => {
+  const iCalString = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-allday-recurring.ics'),
+    'utf8'
+  );
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+  const objectUrl = new URL('vtodo-allday-recurring.ics', taskCalendar.url)
+    .href;
+  const response = await createObject({
+    url: objectUrl,
+    data: iCalString,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+  t.true(response.ok);
+
+  // Task starts 2021-05-03 (weekly). An occurrence falls on 2021-05-10.
+  const objects = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    headers: t.context.authHeaders,
+    filters: [
+      {
+        'comp-filter': {
+          _attributes: { name: 'VCALENDAR' },
+          'comp-filter': {
+            _attributes: { name: 'VTODO' },
+            'time-range': {
+              _attributes: {
+                start: '20210509T000000Z',
+                end: '20210511T000000Z'
+              }
+            }
+          }
+        }
+      }
+    ]
+  });
+  t.true(
+    objects.length > 0,
+    'Should find the all-day recurring VTODO in the queried window'
+  );
+  const found = objects.some((obj) =>
+    obj.data.includes('vtodo-allday-recurring-weekly@test')
+  );
+  t.true(found, 'The all-day recurring VTODO should be returned');
+
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+test('all-day recurring VTODO with DUE;VALUE=DATE only (no DTSTART): timeRange query returns correct occurrence', async (t) => {
+  const iCalString = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-allday-due-only.ics'),
+    'utf8'
+  );
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+  const objectUrl = new URL('vtodo-allday-due-only.ics', taskCalendar.url).href;
+  const response = await createObject({
+    url: objectUrl,
+    data: iCalString,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+  t.true(response.ok);
+
+  // Task DUE 2021-05-03 (weekly, no DTSTART). An occurrence falls on 2021-05-10.
+  const objects = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    headers: t.context.authHeaders,
+    filters: [
+      {
+        'comp-filter': {
+          _attributes: { name: 'VCALENDAR' },
+          'comp-filter': {
+            _attributes: { name: 'VTODO' },
+            'time-range': {
+              _attributes: {
+                start: '20210509T000000Z',
+                end: '20210511T000000Z'
+              }
+            }
+          }
+        }
+      }
+    ]
+  });
+  t.true(
+    objects.length > 0,
+    'Should find the DUE-only all-day recurring VTODO in the queried window'
+  );
+  const found = objects.some((obj) =>
+    obj.data.includes('vtodo-allday-due-only-weekly@test')
+  );
+  t.true(found, 'The DUE-only all-day recurring VTODO should be returned');
+
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
