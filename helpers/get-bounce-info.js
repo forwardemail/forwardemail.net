@@ -274,6 +274,16 @@ function getBounceInfo(err) {
     // <https://github.com/sisimai/p5-Sisimai/issues/243>
     bounceInfo.category = 'spam';
   } else if (
+    //
+    // Orange/Wanadoo OFR006_103 is an IP block (service refused), not spam
+    // e.g. "550 opmta1mti18aub smtp.orange.fr ... Service refuse. OFR006_103"
+    // <https://postmaster.orange.fr/>
+    //
+    err.truthSource === 'orange.fr' &&
+    lc.includes('ofr006_103')
+  ) {
+    bounceInfo.category = 'blocklist';
+  } else if (
     lc.includes('abusix') &&
     (lc.includes('ip blocked by abusix') ||
       lc.includes('adresse ip source bloquee par abusix') ||
