@@ -300,8 +300,8 @@ importers:
         specifier: 2.0.11
         version: 2.0.11
       codemirror:
-        specifier: 5.65.19
-        version: 5.65.19
+        specifier: 6.0.2
+        version: 6.0.2
       confusables:
         specifier: 1.1.1
         version: 1.1.1
@@ -6974,9 +6974,6 @@ packages:
   code-point-at@1.1.0:
     resolution: {integrity: sha512-RpAVKQA5T63xEj6/giIbUEtZwJ4UFIc3ZtvEkiaUERylqe8xb5IvqcgOurZLahv93CLKfxcw5YI+DZcUBRyLXA==}
     engines: {node: '>=0.10.0'}
-
-  codemirror@5.65.19:
-    resolution: {integrity: sha512-+aFkvqhaAVr1gferNMuN8vkTSrWIFvzlMV9I2KBLCWS2WpZ2+UAkZjlMZmEuT+gcXTi6RrGQCkWq1/bDtGqhIA==}
 
   codemirror@6.0.2:
     resolution: {integrity: sha512-VhydHotNW5w1UGK0Qj96BwSk/Zqbp9WbnyK2W/eVMv4QyF41INRGpjUhFJY7/uDNuudSc33a/PKr4iDqRduvHw==}
@@ -26878,8 +26875,6 @@ snapshots:
       convert-to-spaces: 2.0.1
 
   code-point-at@1.1.0: {}
-
-  codemirror@5.65.19: {}
 
   codemirror@6.0.2:
     dependencies:
