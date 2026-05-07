@@ -20,7 +20,10 @@
     "./helpers/is-tls-error": false,
     "./helpers/is-ssl-error": false,
     "./helpers/is-socket-error": false,
-    "signal-exit": false
+    "signal-exit": false,
+    "signal-exit/dist/mjs/browser.js": false,
+    "signal-exit/dist/mjs/index.js": false,
+    "signal-exit/dist/mjs/signals.js": false
   },
   "bugs": {
     "url": "https://github.com/forwardemail/forwardemail.net/issues"
@@ -462,7 +465,8 @@
   "overrides": {
     "pug-lint": "@ladjs/pug-lint",
     "better-sqlite3": "better-sqlite3-multiple-ciphers",
-    "undici": "7.12.0"
+    "undici": "7.12.0",
+    "signal-exit": "3.0.7"
   },
   "packageManager": "pnpm@9.15.9",
   "pnpm": {
@@ -481,7 +485,8 @@
       "utf-8-validate"
     ],
     "overrides": {
-      "undici": "7.12.0"
+      "undici": "7.12.0",
+      "signal-exit": "3.0.7"
     }
   },
   "private": true,
