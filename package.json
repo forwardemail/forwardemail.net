@@ -465,8 +465,7 @@
   "overrides": {
     "pug-lint": "@ladjs/pug-lint",
     "better-sqlite3": "better-sqlite3-multiple-ciphers",
-    "undici": "7.12.0",
-    "signal-exit": "3.0.7"
+    "undici": "7.12.0"
   },
   "packageManager": "pnpm@9.15.9",
   "pnpm": {
@@ -485,8 +484,7 @@
       "utf-8-validate"
     ],
     "overrides": {
-      "undici": "7.12.0",
-      "signal-exit": "3.0.7"
+      "undici": "7.12.0"
     }
   },
   "private": true,
