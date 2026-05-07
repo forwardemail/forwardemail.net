@@ -416,11 +416,15 @@ module.exports = (redis) => ({
         }
       }
     });
-    // Denylist middleware: checks referer, IP, user email, and resolved hostname
-    // Also handles IPv6 to IPv4 conversion and PTR lookup for allowlist
-    app.use(denylistMiddleware(RATELIMIT_ALLOWLIST));
   },
   hookBeforeRoutes(app) {
+    // Denylist middleware: checks referer, IP, user email, and resolved hostname.
+    // Placed here (after i18n.middleware) so that when a denylisted request
+    // triggers the error handler, ctx.pathWithoutLocale, ctx.locale and t()
+    // are already set and the 500 error page renders correctly instead of
+    // falling back to a generic "Internal Server Error" response.
+    app.use(denylistMiddleware(RATELIMIT_ALLOWLIST));
+
     // Redirect www to non-www
     app.use((ctx, next) => {
       if (ctx.hostname === `www.${config.webHost}`) {
