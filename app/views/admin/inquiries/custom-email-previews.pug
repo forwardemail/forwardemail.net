@@ -46,17 +46,16 @@ html
     table
       if base64
         tr
-          td(colspan=2, style="text-align: right"): button(
-            type="button",
-            onclick="downloadRawEmail()"
+          td(colspan=2, style="text-align: right"): button#download-raw-email(
+            type="button"
           ) Download Original
-        script.
-          function downloadRawEmail() {
+        script(nonce=nonce).
+          document.getElementById("download-raw-email").addEventListener("click", function () {
             var link = document.createElement("a");
             link.href = "data:message/rfc822;base64,#{base64}";
             link.download = "#{messageId ? messageId.replace('<', '').replace('>', '').split('@')[0] : Date.now()}.eml";
             link.click();
-          }
+          });
       each headerLine, i in headerLines
         - const index = headerLine.line.indexOf(": ");
         - const value = headerLine.line.slice(index + 2);

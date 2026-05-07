@@ -3,6 +3,7 @@ extends ../../layout
 block append scripts
   if domain.has_mx_record && domain.has_txt_record
     script(
+      nonce=nonce,
       defer,
       src=manifest("js/confetti.js"),
       integrity=manifest("js/confetti.js", "integrity"),

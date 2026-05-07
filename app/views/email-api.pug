@@ -90,6 +90,7 @@ html.h-100.no-js(
     if !isBot(ctx.get('User-Agent'))
       //- build
       script(
+        nonce=nonce,
         defer,
         src=manifest("js/build.js"),
         integrity=manifest("js/build.js", "integrity"),
@@ -103,17 +104,18 @@ html.h-100.no-js(
           window.TURNSTILE_RENDER_ERROR = "#{ t('Turnstile render error, please try again or contact us.') }";
           window.TURNSTILE_SITE_KEY = "#{ config.turnstileSiteKey }";
         script(
+          nonce=nonce,
           defer,
           src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback"
         )
 
     //- scalar API reference
-    script(src="/js/scalar.js", crossorigin="anonymous")
+    script(nonce=nonce, src="/js/scalar.js", crossorigin="anonymous")
     if user
-      script.
+      script(nonce=nonce).
         window.API_TOKEN = "#{user[config.userFields.apiToken]}";
     - const API_SPEC = `${config.urls.web}/api-spec${locale === "en" ? "" : "-" + locale}.json`;
-    script.
+    script(nonce=nonce).
       window.API_URL = "#{config.urls.api}";
       window.WEB_URL = "#{config.urls.web}";
       window.OG_IMAGE = "#{ogImage}";

@@ -84,18 +84,21 @@ block append scripts
   if !isBot(ctx.get('User-Agent'))
     if config.env === 'test'
       script(
+        nonce=nonce,
         defer,
         src=`${config.urls.web}/js/domain-search.js`,
         crossorigin="anonymous"
       )
     else
       script(
+        nonce=nonce,
         defer,
         src=manifest("js/domain-search.js"),
         integrity=manifest("js/domain-search.js", "integrity"),
         crossorigin="anonymous"
       )
   script(
+    nonce=nonce,
     defer,
     src=manifest("js/ekko-lightbox.js"),
     integrity=manifest("js/ekko-lightbox.js", "integrity"),
@@ -103,12 +106,14 @@ block append scripts
   )
   if !isBot(ctx.get("User-Agent")) && comparison
     script(
+      nonce=nonce,
       defer,
       src=manifest("js/bootstrap-table.js"),
       integrity=manifest("js/bootstrap-table.js", "integrity"),
       crossorigin="anonymous"
     )
     script(
+      nonce=nonce,
       defer,
       src=manifest("js/bootstrap-table-sticky-header.js"),
       integrity=manifest("js/bootstrap-table-sticky-header.js", "integrity"),
@@ -117,6 +122,7 @@ block append scripts
     //-.
       //- there seems to be a bug where multiple-sort is not considering custom sort functions already existing and defined
       script(
+        nonce=nonce,
         src="https://unpkg.com/bootstrap-table@1.22.2/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"
       )
       //- there seems to be a bug where modal isn't hiding

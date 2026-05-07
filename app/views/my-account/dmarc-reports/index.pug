@@ -2,6 +2,7 @@ extends ../../layout
 
 block append scripts
   script(
+    nonce=nonce,
     defer,
     src=manifest("js/dmarc-reports.js"),
     integrity=manifest("js/dmarc-reports.js", "integrity"),

@@ -68,7 +68,6 @@ html.h-100.no-js(
     data-spy=hasSidebar ? "scroll" : false,
     data-target=hasSidebar ? "#sidebar-scrollspy" : false,
     data-offset=hasSidebar ? "80" : false,
-    onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : false,
     data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false,
     class=(domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ["/ubuntu", "/kubuntu", "/lubuntu", "/edubuntu", "/ubuntu-studio"].includes(ctx.pathWithoutLocale) ? "ubuntu-font" : ""
   )
@@ -167,12 +166,14 @@ html.h-100.no-js(
         //- lazyload only support for bots
         if config.env === 'test'
           script(
+            nonce=nonce,
             defer,
             src=`${config.urls.web}/js/lazyload.js`,
             crossorigin="anonymous"
           )
         else
           script(
+            nonce=nonce,
             defer,
             src=manifest("js/lazyload.js"),
             integrity=manifest("js/lazyload.js", "integrity"),
@@ -182,6 +183,7 @@ html.h-100.no-js(
         //- build
         if config.env === 'test'
           script(
+            nonce=nonce,
             defer,
             src=`${config.urls.web}/js/build.js`,
             crossorigin="anonymous",
@@ -189,6 +191,7 @@ html.h-100.no-js(
           )
         else
           script(
+            nonce=nonce,
             defer,
             src=manifest("js/build.js"),
             integrity=manifest("js/build.js", "integrity"),
@@ -201,4 +204,4 @@ html.h-100.no-js(
           script(defer, nonce=nonce).
             window.TURNSTILE_RENDER_ERROR = "#{ t('Turnstile render error, please try again or contact us.') }";
             window.TURNSTILE_SITE_KEY = "#{ config.turnstileSiteKey }";
-          script(defer, src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback')
+          script(nonce=nonce, defer, src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback')

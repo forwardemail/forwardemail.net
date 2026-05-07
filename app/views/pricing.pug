@@ -8,12 +8,14 @@ block append scripts
   if !isBot(ctx.get('User-Agent'))
     if config.env === 'test'
       script(
+        nonce=nonce,
         defer,
         src=`${config.urls.web}/js/domain-search.js`,
         crossorigin="anonymous"
       )
     else
       script(
+        nonce=nonce,
         defer,
         src=manifest("js/domain-search.js"),
         integrity=manifest("js/domain-search.js", "integrity"),

@@ -23,6 +23,7 @@ block append scripts
     window.IS_CUSTOM_VERIFICATION_DISABLED = !{domain.plan === 'free' || !domain.has_custom_verification};
   |
   script(
+    nonce=nonce,
     defer,
     src=manifest("js/advanced-settings.js"),
     integrity=manifest("js/advanced-settings.js", "integrity"),

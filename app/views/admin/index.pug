@@ -2,6 +2,7 @@ extends ../layout
 
 block append scripts
   script(
+    nonce=nonce,
     defer,
     src=manifest("js/open-startup.js"),
     integrity=manifest("js/open-startup.js", "integrity"),

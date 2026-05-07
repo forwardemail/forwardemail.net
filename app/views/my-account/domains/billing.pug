@@ -17,6 +17,7 @@ block append scripts
     window.PAYPAL_NOT_LOADED = "#{ t('Please wait for PayPal to load and try again.') }";
 
   script(
+    nonce=nonce,
     defer,
     src=manifest("js/billing.js"),
     integrity=manifest("js/billing.js", "integrity"),
@@ -24,6 +25,7 @@ block append scripts
   )
   //- PayPal
   script(
+    nonce=nonce,
     defer,
     src=`https://www.paypal.com/sdk/js?client-id=${config.paypal.clientID}&vault=true${config.env === 'production' ? '' : '&debug=true'}`
   )
