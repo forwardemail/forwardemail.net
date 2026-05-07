@@ -300,6 +300,8 @@ module.exports = {
   ALL_RECIPIENTS_BLOCKED: 'All recipients are blocked from sending mail to.',
   DENYLIST_HARD_CODED:
     'The value <span class="notranslate">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.',
+  DENYLIST_BLOCKED_REQUEST:
+    'Your request has been blocked because <span class="notranslate">%s</span> is on our denylist. If you believe this is an error, please contact us at <span class="notranslate">%s</span>.',
   RECIPIENT_BLOCKED: 'Recipient is blocked from sending mail to.',
   SMTP_ERROR_SUBJECT:
     'Outbound SMTP Configuration Issue Detected for <span class="notranslate">%s</span>',
@@ -796,6 +798,8 @@ module.exports = {
     'Domain has a restricted extension and all users associated with the domain must have email addresses associated with government, public, or state extensions (no personal email addresses are permitted).',
   RESTRICTED_PLAN_UPGRADE_REQUIRED:
     'Domain name <span class="notranslate">%s</span> has a restricted extension and requires at least one admin to be on a paid plan. Please <a class="font-weight-bold" href="%s">upgrade your domain</a> to this plan to continue.',
+  DOMAIN_ADMIN_PAYMENT_REQUIRED:
+    'Domain name <span class="notranslate">%s</span> has at least one admin on the correct plan, but their payment has expired and the grace period has ended. Please <a class="font-weight-bold" href="%s">renew your subscription or make a payment</a> to restore access.',
   DOMAIN_PLAN_UPGRADE_REQUIRED:
     'Domain name <span class="notranslate">%s</span> must have at least one admin that is signed up for the <span class="notranslate">%s</span> plan. Please <a class="font-weight-bold" href="%s">upgrade your domain</a> to this plan to continue.',
   DOMAIN_PLAN_DOWNGRADE_REQUIRED:

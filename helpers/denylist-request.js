@@ -9,6 +9,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 
 const config = require('#config');
+const i18n = require('#helpers/i18n');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
@@ -30,19 +31,20 @@ function extractRefererHostname(referer) {
 }
 
 /**
- * Create a Boom forbidden error with consistent message format for denylist
- * @param {string} type - Type of value (referer, IP, hostname, email, domain)
- * @param {string} value - The denylisted value
+ * Create a Boom forbidden error with a translated, descriptive message for denylist blocks.
+ * The message includes the blocked value and the support email address so users know
+ * what was blocked and how to request removal.
+ * @param {string} value - The denylisted value (IP, hostname, email, domain, referer)
+ * @param {string} [locale] - BCP 47 locale string for translation (defaults to i18n default)
  * @returns {Boom.Boom}
  */
-function createDenylistError(type, value) {
-  const message = `The ${type} ${value} is denylisted by ${
-    config.urls.web
-  }. To request removal, please visit ${
-    config.urls.web
-  }/denylist?q=${encodeURIComponent(value)} or contact us at ${
+function createDenylistError(value, locale) {
+  const message = i18n.translateError(
+    'DENYLIST_BLOCKED_REQUEST',
+    locale || i18n.config.defaultLocale,
+    value,
     config.supportEmail
-  }.`;
+  );
   const err = Boom.forbidden(message);
   // Store the denylisted value for logging/debugging
   err.denylistValue = value.toLowerCase();
@@ -70,9 +72,11 @@ function checkReferer(ctx) {
   const refererHostname = extractRefererHostname(referer);
   if (!refererHostname) return;
 
+  const locale = ctx.locale || i18n.config.defaultLocale;
+
   // Check referer hostname against denylist
   if (isInDenylist(refererHostname)) {
-    throw createDenylistError('referer', refererHostname);
+    throw createDenylistError(refererHostname, locale);
   }
 
   // Check referer root domain against denylist
@@ -81,7 +85,7 @@ function checkReferer(ctx) {
     refererRootDomain !== refererHostname &&
     isInDenylist(refererRootDomain)
   ) {
-    throw createDenylistError('referer', refererRootDomain);
+    throw createDenylistError(refererRootDomain, locale);
   }
 }
 
@@ -92,7 +96,8 @@ function checkReferer(ctx) {
  */
 function checkIP(ctx) {
   if (isInDenylist(ctx.request.ip)) {
-    throw createDenylistError('IP', ctx.request.ip);
+    const locale = ctx.locale || i18n.config.defaultLocale;
+    throw createDenylistError(ctx.request.ip, locale);
   }
 }
 
@@ -105,22 +110,23 @@ function checkUserEmail(ctx) {
   if (!ctx.state?.user?.email) return;
 
   const userEmail = ctx.state.user.email.toLowerCase().trim();
+  const locale = ctx.locale || i18n.config.defaultLocale;
 
   // Check email address
   if (isInDenylist(userEmail)) {
-    throw createDenylistError('email', userEmail);
+    throw createDenylistError(userEmail, locale);
   }
 
   // Check email domain and root domain
   try {
     const emailDomain = parseHostFromDomainOrAddress(userEmail);
     if (isInDenylist(emailDomain)) {
-      throw createDenylistError('domain', emailDomain);
+      throw createDenylistError(emailDomain, locale);
     }
 
     const emailRootDomain = parseRootDomain(emailDomain);
     if (emailRootDomain !== emailDomain && isInDenylist(emailRootDomain)) {
-      throw createDenylistError('domain', emailRootDomain);
+      throw createDenylistError(emailRootDomain, locale);
     }
   } catch (err) {
     // Only rethrow if it's a Boom error (our denylist error)
@@ -132,15 +138,18 @@ function checkUserEmail(ctx) {
 /**
  * Check resolved client hostname against denylist
  * @param {string} clientHostname - Resolved client hostname from PTR lookup
+ * @param {string} [locale] - BCP 47 locale string for translation
  * @throws {Boom.Boom} if hostname is denylisted
  * @returns {string|null} - Root client hostname if valid FQDN
  */
-function checkClientHostname(clientHostname) {
+function checkClientHostname(clientHostname, locale) {
   if (!isFQDN(clientHostname)) return null;
+
+  const resolvedLocale = locale || i18n.config.defaultLocale;
 
   // Check resolved client hostname against denylist
   if (isInDenylist(clientHostname)) {
-    throw createDenylistError('hostname', clientHostname);
+    throw createDenylistError(clientHostname, resolvedLocale);
   }
 
   // Check resolved root client hostname against denylist
@@ -149,7 +158,7 @@ function checkClientHostname(clientHostname) {
     rootClientHostname !== clientHostname &&
     isInDenylist(rootClientHostname)
   ) {
-    throw createDenylistError('hostname', rootClientHostname);
+    throw createDenylistError(rootClientHostname, resolvedLocale);
   }
 
   return rootClientHostname;
@@ -204,7 +213,10 @@ function denylistMiddleware(ratelimitAllowlist = []) {
         if (isFQDN(clientHostname)) {
           // Store resolved hostnames on context for downstream use
           ctx.resolvedClientHostname = clientHostname;
-          const rootClientHostname = checkClientHostname(clientHostname);
+          const rootClientHostname = checkClientHostname(
+            clientHostname,
+            ctx.locale
+          );
           ctx.resolvedRootClientHostname = rootClientHostname;
 
           // Check allowlist for rate limiting

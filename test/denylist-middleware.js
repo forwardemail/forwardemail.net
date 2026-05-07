@@ -86,13 +86,12 @@ test('isInDenylist returns false for non-denylisted domain', (t) => {
 // createDenylistError helper tests
 //
 test('createDenylistError creates Boom forbidden error with correct message format', (t) => {
-  const error = createDenylistError('referer', 'example.com');
+  const error = createDenylistError('example.com');
   t.true(error.isBoom);
   t.is(error.output.statusCode, 403);
   t.is(error.denylistValue, 'example.com');
   t.true(error.message.includes('example.com'));
-  t.true(error.message.includes('denylisted'));
-  t.true(error.message.includes('/denylist?q='));
+  t.true(error.message.includes('denylist'));
   t.true(error.message.includes(config.supportEmail));
 });
 
@@ -261,7 +260,7 @@ test('web server blocks request with denylisted referer', async (t) => {
 
     // Should return 403 Forbidden
     t.is(res.status, 403);
-    t.true(res.text.includes('denylisted'));
+    t.true(res.text.includes('denylist'));
     t.true(res.text.includes(DENYLISTED_DOMAIN));
     t.true(res.text.includes(config.supportEmail));
   } finally {
@@ -278,7 +277,7 @@ test('web server allows request without denylisted referer', async (t) => {
   t.not(res.status, 403);
 });
 
-test('denylist error message includes removal instructions and support email', async (t) => {
+test('denylist error message includes blocked value and support email', async (t) => {
   const { web } = t.context;
 
   // Add test domain to denylist for this test
@@ -288,12 +287,10 @@ test('denylist error message includes removal instructions and support email', a
     const res = await web.get('/en').set('Referer', DENYLISTED_REFERER);
 
     t.is(res.status, 403);
-    // Check error message contains key information
-    t.true(res.text.includes('denylisted'));
+    // Check error message contains the blocked value and support contact
+    t.true(res.text.includes('denylist'));
     t.true(res.text.includes(DENYLISTED_DOMAIN));
-    t.true(res.text.includes('/denylist?q='));
     t.true(res.text.includes(config.supportEmail));
-    t.true(res.text.includes('request removal'));
   } finally {
     config.denylist.delete(DENYLISTED_DOMAIN);
   }
@@ -312,7 +309,7 @@ test('blocks subdomain referer when root domain is denylisted', async (t) => {
       .set('Referer', `https://subdomain.another.${DENYLISTED_DOMAIN}/page`);
 
     t.is(res.status, 403);
-    t.true(res.text.includes('denylisted'));
+    t.true(res.text.includes('denylist'));
     t.true(res.text.includes(DENYLISTED_DOMAIN));
   } finally {
     config.denylist.delete(DENYLISTED_DOMAIN);

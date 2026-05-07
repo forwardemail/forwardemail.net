@@ -2938,6 +2938,9 @@ async function ensureUserHasValidPlan(user, locale) {
     const validPlans =
       domain.plan === 'team' ? ['team'] : ['enhanced_protection', 'team'];
     let isValid = false;
+    // Track whether an admin on the right plan exists but has expired payment,
+    // so we can surface a more descriptive error than "upgrade required".
+    let hasExpiredPaymentAdmin = false;
 
     for (const member of domain.members) {
       // Return early if the member is not an admin (irrelevant)
@@ -2956,24 +2959,57 @@ async function ensureUserHasValidPlan(user, locale) {
       const memberPlan =
         member.user.id === user.id ? user.plan : member.user.plan;
 
-      if (validPlans.includes(memberPlan)) {
+      if (!validPlans.includes(memberPlan)) {
+        continue;
+      }
+
+      // Resolve the effective planExpiresAt / subscription IDs for the
+      // member being validated.  When the member is the user whose plan
+      // is being changed, use the in-memory `user` object so we reflect
+      // the new state before it is persisted.
+      const memberUser =
+        member.user.id === user.id ? { ...member.user, ...user } : member.user;
+
+      const hasActivePayment =
+        new Date(memberUser[config.userFields.planExpiresAt]).getTime() >=
+          Date.now() ||
+        isSANB(memberUser[config.userFields.stripeSubscriptionID]) ||
+        isSANB(memberUser[config.userFields.paypalSubscriptionID]) ||
+        isWithinGracePeriod(memberUser);
+
+      if (hasActivePayment) {
         isValid = true;
         break;
       }
+
+      // The admin is on the right plan but their payment has lapsed.
+      hasExpiredPaymentAdmin = true;
     }
 
     if (!isValid) {
-      errors.push(
-        i18n.translateError(
-          'DOMAIN_PLAN_UPGRADE_REQUIRED',
-          locale,
-          domain.name,
-          i18n.translate(domain.plan.toUpperCase(), locale),
-          `/${locale}/my-account/domains/${punycode.toASCII(
-            domain.name
-          )}/billing?plan=${domain.plan}`
-        )
-      );
+      if (hasExpiredPaymentAdmin) {
+        // Surface a payment-specific error with a direct billing link.
+        errors.push(
+          i18n.translateError(
+            'DOMAIN_ADMIN_PAYMENT_REQUIRED',
+            locale,
+            domain.name,
+            `${config.urls.web}/${locale}/my-account/billing`
+          )
+        );
+      } else {
+        errors.push(
+          i18n.translateError(
+            'DOMAIN_PLAN_UPGRADE_REQUIRED',
+            locale,
+            domain.name,
+            i18n.translate(domain.plan.toUpperCase(), locale),
+            `/${locale}/my-account/domains/${punycode.toASCII(
+              domain.name
+            )}/billing?plan=${domain.plan}`
+          )
+        );
+      }
     }
   }
 
@@ -3104,6 +3140,36 @@ async function getMaxQuota(
   );
 
   if (adminMembers.length === 0) {
+    //
+    // Determine whether the domain has admins on the correct plan whose
+    // payment has simply lapsed (past due / grace period expired), or
+    // whether there genuinely is no qualifying admin at all.  This lets
+    // us surface a descriptive billing error instead of the misleading
+    // "Domain does not exist" message.
+    //
+    const hasAdminWithExpiredPayment = domain.members.some(
+      (member) =>
+        _.isObject(member.user) &&
+        mongoose.isObjectIdOrHexString(member.user._id) &&
+        !member.user[config.userFields.isBanned] &&
+        member.user[config.userFields.hasVerifiedEmail] &&
+        member.group === 'admin' &&
+        validPlans.includes(member.user.plan)
+      // NOTE: intentionally omits the payment/grace-period check so we
+      // can detect admins whose plan is correct but payment has expired.
+    );
+
+    if (hasAdminWithExpiredPayment) {
+      throw Boom.paymentRequired(
+        i18n.translateError(
+          'DOMAIN_ADMIN_PAYMENT_REQUIRED',
+          locale,
+          domain.name,
+          `${config.urls.web}/${locale}/my-account/billing`
+        )
+      );
+    }
+
     throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
@@ -3229,6 +3295,36 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
   );
 
   if (adminMembers.length === 0) {
+    //
+    // Determine whether the domain has admins on the correct plan whose
+    // payment has simply lapsed (past due / grace period expired), or
+    // whether there genuinely is no qualifying admin at all.  This lets
+    // us surface a descriptive billing error instead of the misleading
+    // "Domain does not exist" message.
+    //
+    const hasAdminWithExpiredPayment = domain.members.some(
+      (member) =>
+        _.isObject(member.user) &&
+        mongoose.isObjectIdOrHexString(member.user._id) &&
+        !member.user[config.userFields.isBanned] &&
+        member.user[config.userFields.hasVerifiedEmail] &&
+        member.group === 'admin' &&
+        validPlans.includes(member.user.plan)
+      // NOTE: intentionally omits the payment/grace-period check so we
+      // can detect admins whose plan is correct but payment has expired.
+    );
+
+    if (hasAdminWithExpiredPayment) {
+      throw Boom.paymentRequired(
+        i18n.translateError(
+          'DOMAIN_ADMIN_PAYMENT_REQUIRED',
+          locale,
+          domain.name,
+          `${config.urls.web}/${locale}/my-account/billing`
+        )
+      );
+    }
+
     throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
