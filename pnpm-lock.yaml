@@ -8,6 +8,7 @@ overrides:
   eslint-plugin-import: 2.26.0
   validator: npm:@forwardemail/validator@14.0.0
   undici: 7.12.0
+  signal-exit: ^3.0.3
 
 importers:
 
@@ -159,7 +160,7 @@ importers:
         version: 0.8.0(bootstrap@4.6.2(jquery@3.5.1)(popper.js@1.16.1))
       '@zainundin/mongoose-factory':
         specifier: 1.1.1
-        version: 1.1.1(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)
+        version: 1.1.1(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)
       '@zone-eu/wildduck':
         specifier: 1.48.0
         version: 1.48.0
@@ -564,13 +565,13 @@ importers:
         version: 2.4.0
       mongodb-memory-server:
         specifier: 9.5.0
-        version: 9.5.0(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))
+        version: 9.5.0(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))
       mongodb-query-parser:
         specifier: 4.3.2
         version: 4.3.2(bson@7.2.0)
       mongodb-short-id:
         specifier: 0.3.3
-        version: 0.3.3(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)
+        version: 0.3.3(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)
       mongoose:
         specifier: 6.13.8
         version: 6.13.8
@@ -889,7 +890,7 @@ importers:
         version: 7.28.0(@babel/core@7.28.0)
       '@commitlint/cli':
         specifier: 19.8.1
-        version: 19.8.1(@types/node@25.6.0)(typescript@3.9.10)
+        version: 19.8.1(@types/node@25.6.2)(typescript@3.9.10)
       '@commitlint/config-conventional':
         specifier: 19.8.1
         version: 19.8.1
@@ -1154,8 +1155,8 @@ packages:
   '@aws-crypto/util@5.2.0':
     resolution: {integrity: sha512-4RkU9EsI6ZpBve5fseQlGNUWKMa1RLPQ1dnjnQoe07ldfIzcsGb5hC5W0Dm7u423KWzawlrpbjXBrXCEv9zazQ==}
 
-  '@aws-sdk/client-cognito-identity@3.1044.0':
-    resolution: {integrity: sha512-zwjCKDWInJvQgxMRBgCabzRZ0vQrqjPsakkbZdBIWKPOr2MVQLJmfmGI99iwDTskeSwCsh5lRjAdiQJgqN7VRQ==}
+  '@aws-sdk/client-cognito-identity@3.1045.0':
+    resolution: {integrity: sha512-3OEn8zvtfJoN0jFfjVJ9jF2GVRDL3IjDfk6CAgVTAqjfCVjajiUD0iFAGQ4cOzdcv1LGsZ0b/snJDWalY3OePQ==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/client-s3@3.844.0':
@@ -1238,8 +1239,8 @@ packages:
     resolution: {integrity: sha512-lYHFF30DGI20jZcYX8cm6Ns0V7f1dDN6g/MBDLTyD/5iw+bXs3yBr2iAiHDkx4RFU5JgsnZvCHYKiRVPRdmOgw==}
     engines: {node: '>=20.0.0'}
 
-  '@aws-sdk/credential-providers@3.1044.0':
-    resolution: {integrity: sha512-iD3cFhifkB6Z3RfaS296PPfKemS/cghofhL/3ae1VLPTKYqUgMMRsSN0Xz9pm3kxa+0QkNEfM+ItCf2n2TKP+Q==}
+  '@aws-sdk/credential-providers@3.1045.0':
+    resolution: {integrity: sha512-J+it58HUGyMIAquB6pWtvmO4m0E/gQ/Tz9Xcoogk3Rety13likU5U8HioeIgE+aN1DDOAB//MARoIdLZS1Mpfw==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/lib-storage@3.844.0':
@@ -2023,8 +2024,8 @@ packages:
   '@codemirror/state@6.6.0':
     resolution: {integrity: sha512-4nbvra5R5EtiCzr9BTHiTLc+MLXK2QGiAVYMyi8PkQd3SR+6ixar/Q/01Fa21TBIDOZXgeWV4WppsQolSreAPQ==}
 
-  '@codemirror/view@6.42.0':
-    resolution: {integrity: sha512-+PJEyndSCrsS2oLH3DfWoLBcF3xfeyGXtLnpXqHY01kL3TogyCLD12hNvSu73ww2KFftrx3Rd0nGOigbSkU3Hw==}
+  '@codemirror/view@6.42.1':
+    resolution: {integrity: sha512-ToN3oFc0nsxNUYVF5P0ztLgbC4UPPjPtA9aKYhkOKQaZASpOUo6ISXyQLP66ctVwlDc+j6Jv0uK5IFALkiXztg==}
 
   '@colors/colors@1.6.0':
     resolution: {integrity: sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA==}
@@ -2493,8 +2494,8 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  '@grpc/proto-loader@0.8.0':
-    resolution: {integrity: sha512-rc1hOQtjIWGxcxpb9aHAfLpIctjEnsDehj0DAiVfBlmT84uvR0uUtN2hEi/ecvWVjXUGf5qPF4qEgiLOx1YIMQ==}
+  '@grpc/proto-loader@0.8.1':
+    resolution: {integrity: sha512-wtF6h+DY6M3YaDBPAmvuuA6jV8Sif9MjtOI5euKFWRgCDl5PeDpPsHR9u2l6St5ceY8AZgoNDww5+HvEsXFsGg==}
     engines: {node: '>=6'}
     hasBin: true
 
@@ -3145,6 +3146,7 @@ packages:
   '@lancedb/lancedb@0.22.3':
     resolution: {integrity: sha512-nRC0fkg+d7dzCtudKHT+VH7znk6KUXRZyuS6HJYNnIrbvXBxaT6wAPjEbf70KTuqvP2znj48Zg+kiwRqkRnAJw==}
     engines: {node: '>= 18'}
+    cpu: [x64, arm64]
     os: [darwin, linux, win32]
     peerDependencies:
       apache-arrow: '>=15.0.0 <=18.1.0'
@@ -5103,14 +5105,14 @@ packages:
   '@types/node@18.19.130':
     resolution: {integrity: sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg==}
 
-  '@types/node@20.19.39':
-    resolution: {integrity: sha512-orrrD74MBUyK8jOAD/r0+lfa1I2MO6I+vAkmAWzMYbCcgrN4lCrmK52gRFQq/JRxfYPfonkr4b0jcY7Olqdqbw==}
+  '@types/node@20.19.40':
+    resolution: {integrity: sha512-xxx6M2IpSTnnKcR0cMvIiohkiCx20/oRPtWGbenFygKCGl3zqUzdNjQ/1V4solq1LU+dgv0nQzeGOuqkqZGg0Q==}
 
-  '@types/node@22.19.17':
-    resolution: {integrity: sha512-wGdMcf+vPYM6jikpS/qhg6WiqSV/OhG+jeeHT/KlVqxYfD40iYJf9/AE1uQxVWFvU7MipKRkRv8NSHiCGgPr8Q==}
+  '@types/node@22.19.18':
+    resolution: {integrity: sha512-9v00a+dn2yWVsYDEunWC4g/TcRKVq3r8N5FuZp7u0SGrPvdN9c2yXI9bBuf5Fl0hNCb+QTIePTn5pJs2pwBOQQ==}
 
-  '@types/node@25.6.0':
-    resolution: {integrity: sha512-+qIYRKdNYJwY3vRCZMdJbPLJAtGjQBudzZzdzwQYkEPQd+PJGixUL5QfvCLDaULoLv+RhT3LDkwEfKaAkgSmNQ==}
+  '@types/node@25.6.2':
+    resolution: {integrity: sha512-sokuT28dxf9JT5Kady1fsXOvI4HVpjZa95NKT5y9PNTIrs2AsobR4GFAA90ZG8M+nxVRLysCXsVj6eGC7Vbrlw==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -8375,8 +8377,8 @@ packages:
     resolution: {integrity: sha512-kxpoMgrdtkXZ5h0SeraBS1iRntpTpQ3R8ussdb38+UAFnMGX5DDyJXePm+OCHOcoXvHDw7mc2erbJBpDnl7TPw==}
     engines: {node: '>=0.6'}
 
-  enhanced-resolve@5.21.0:
-    resolution: {integrity: sha512-otxSQPw4lkOZWkHpB3zaEQs6gWYEsmX4xQF68ElXC/TWvGxGMSGOvoNbaLXm6/cS/fSfHtsEdw90y20PCd+sCA==}
+  enhanced-resolve@5.21.1:
+    resolution: {integrity: sha512-8p7DUVq6XJnZEz9W4oSwiwycxBIjHjRzYb3Je3zVN+geKTRQKzAkR/K4PBExlS0090d9nshak6phMUxr3PDjmQ==}
     engines: {node: '>=10.13.0'}
 
   enquirer@2.3.6:
@@ -16411,10 +16413,6 @@ packages:
   signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
 
-  signal-exit@4.1.0:
-    resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
-    engines: {node: '>=14'}
-
   signale@1.4.0:
     resolution: {integrity: sha512-iuh+gPf28RkltuJC7W5MRi6XAjTDCAPC/prJUpQoG4vIP3MJZ+GTydVnodXA7pwvTKb2cA0m9OFZW/cdWy/I/w==}
     engines: {node: '>=6'}
@@ -17008,8 +17006,8 @@ packages:
   strnum@1.1.2:
     resolution: {integrity: sha512-vrN+B7DBIoTTZjnPNewwhx6cBA/H+IS7rfW68n7XxC1y7uoiGQBxaKzqucGUgavX15dJgiGztLJ8vxuEzwqBdA==}
 
-  strnum@2.2.3:
-    resolution: {integrity: sha512-oKx6RUCuHfT3oyVjtnrmn19H1SiCqgJSg+54XqURKp5aCMbrXrhLjRN9TjuwMjiYstZ0MzDrHqkGZ5dFTKd+zg==}
+  strnum@2.3.0:
+    resolution: {integrity: sha512-ums3KNd42PGyx5xaoVTO1mjU1bH3NpY4vsrVlnv9PNGqQj8wd7rJ6nEypLrJ7z5vxK5RP0yMLo6J/Gsm62DI5Q==}
 
   strtok3@6.3.0:
     resolution: {integrity: sha512-fZtbhtvI9I48xDSywd/somNqgUHl2L2cstmXCCif0itOf96jeW18MBSyrLuNicYQVkvpOxkZtkzujiTJ9LW5Jw==}
@@ -17202,8 +17200,8 @@ packages:
   syntax-error@1.4.0:
     resolution: {integrity: sha512-YPPlu67mdnHGTup2A8ff7BC2Pjq0e0Yp/IyTFN03zWO0RcK07uLcbi7C2KpGR2FvWbaB0+bfE27a+sBKebSo7w==}
 
-  systeminformation@5.31.5:
-    resolution: {integrity: sha512-5SyLdip4/3alxD4Kh+63bUQTJmu7YMfYQTC+koZy7X73HgNqZSD2P4wOZQWtUncvPvcEmnfIjCoygN4MRoEejQ==}
+  systeminformation@5.31.6:
+    resolution: {integrity: sha512-Uv2b2uGGM6ns+26czgW2cYRabYdnswM0ddSOOlryHOaelzsmDSet1iM/NT7VOYxW8x/BW+HkY+b1Ve2pLTSGSA==}
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
@@ -17271,8 +17269,8 @@ packages:
     engines: {node: '>=10'}
     deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
-  tar@7.5.14:
-    resolution: {integrity: sha512-/7sHKgQO3JLP9ESlwTYUUftHUadOURUqq23xs1vjcnp8Vss6k0wCfzulyEtk5g91pjvnuriimGlyG7k6msrzRw==}
+  tar@7.5.15:
+    resolution: {integrity: sha512-dzGK0boVlC4W5QFuQN1EFSl3bIDYsk7Tj40U6eIBnK2k/8ml7TZ5agbI5j5+qnoVcAA+rNtBml8SEiLxZpNqRQ==}
     engines: {node: '>=18'}
 
   tarn@3.0.2:
@@ -17329,8 +17327,8 @@ packages:
       uglify-js:
         optional: true
 
-  terser@5.47.0:
-    resolution: {integrity: sha512-TV+JFkQFtljk12ffyYAA4+zVF4Hs+qaROsT+Qo9o2/z39x+IUn+pvsmomiCPlp5YigfR1OdbGHOvc0L+Ca1X7g==}
+  terser@5.47.1:
+    resolution: {integrity: sha512-tPbLXTI6ohPASb/1YViL428oEHu6/qv1OxqYnfaonVCFHqx4+wCd95pHrQWsL5X4pl90CTyW9piSAsS2L0VoMw==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -18949,7 +18947,7 @@ snapshots:
       '@smithy/util-utf8': 2.3.0
       tslib: 2.8.1
 
-  '@aws-sdk/client-cognito-identity@3.1044.0':
+  '@aws-sdk/client-cognito-identity@3.1045.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
@@ -19348,9 +19346,9 @@ snapshots:
       - aws-crt
     optional: true
 
-  '@aws-sdk/credential-providers@3.1044.0':
+  '@aws-sdk/credential-providers@3.1045.0':
     dependencies:
-      '@aws-sdk/client-cognito-identity': 3.1044.0
+      '@aws-sdk/client-cognito-identity': 3.1045.0
       '@aws-sdk/core': 3.974.8
       '@aws-sdk/credential-provider-cognito-identity': 3.972.31
       '@aws-sdk/credential-provider-env': 3.972.34
@@ -20522,14 +20520,14 @@ snapshots:
     dependencies:
       '@codemirror/language': 6.12.3
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
       '@lezer/common': 1.5.2
 
   '@codemirror/commands@6.10.3':
     dependencies:
       '@codemirror/language': 6.12.3
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
       '@lezer/common': 1.5.2
 
   '@codemirror/lang-css@6.3.1':
@@ -20547,7 +20545,7 @@ snapshots:
       '@codemirror/lang-javascript': 6.2.5
       '@codemirror/language': 6.12.3
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
       '@lezer/common': 1.5.2
       '@lezer/css': 1.3.3
       '@lezer/html': 1.3.13
@@ -20558,7 +20556,7 @@ snapshots:
       '@codemirror/language': 6.12.3
       '@codemirror/lint': 6.9.6
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
       '@lezer/common': 1.5.2
       '@lezer/javascript': 1.5.4
 
@@ -20572,7 +20570,7 @@ snapshots:
       '@codemirror/autocomplete': 6.20.2
       '@codemirror/language': 6.12.3
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
       '@lezer/common': 1.5.2
       '@lezer/xml': 1.0.6
 
@@ -20589,7 +20587,7 @@ snapshots:
   '@codemirror/language@6.12.3':
     dependencies:
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
       '@lezer/common': 1.5.2
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
@@ -20598,20 +20596,20 @@ snapshots:
   '@codemirror/lint@6.9.6':
     dependencies:
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
       crelt: 1.0.6
 
   '@codemirror/search@6.7.0':
     dependencies:
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
       crelt: 1.0.6
 
   '@codemirror/state@6.6.0':
     dependencies:
       '@marijn/find-cluster-break': 1.0.2
 
-  '@codemirror/view@6.42.0':
+  '@codemirror/view@6.42.1':
     dependencies:
       '@codemirror/state': 6.6.0
       crelt: 1.0.6
@@ -20620,11 +20618,11 @@ snapshots:
 
   '@colors/colors@1.6.0': {}
 
-  '@commitlint/cli@19.8.1(@types/node@25.6.0)(typescript@3.9.10)':
+  '@commitlint/cli@19.8.1(@types/node@25.6.2)(typescript@3.9.10)':
     dependencies:
       '@commitlint/format': 19.8.1
       '@commitlint/lint': 19.8.1
-      '@commitlint/load': 19.8.1(@types/node@25.6.0)(typescript@3.9.10)
+      '@commitlint/load': 19.8.1(@types/node@25.6.2)(typescript@3.9.10)
       '@commitlint/read': 19.8.1
       '@commitlint/types': 19.8.1
       tinyexec: 1.1.2
@@ -20671,7 +20669,7 @@ snapshots:
       '@commitlint/rules': 19.8.1
       '@commitlint/types': 19.8.1
 
-  '@commitlint/load@19.8.1(@types/node@25.6.0)(typescript@3.9.10)':
+  '@commitlint/load@19.8.1(@types/node@25.6.2)(typescript@3.9.10)':
     dependencies:
       '@commitlint/config-validator': 19.8.1
       '@commitlint/execute-rule': 19.8.1
@@ -20679,7 +20677,7 @@ snapshots:
       '@commitlint/types': 19.8.1
       chalk: 5.6.2
       cosmiconfig: 9.0.1(typescript@3.9.10)
-      cosmiconfig-typescript-loader: 6.3.0(@types/node@25.6.0)(cosmiconfig@9.0.1(typescript@3.9.10))(typescript@3.9.10)
+      cosmiconfig-typescript-loader: 6.3.0(@types/node@25.6.2)(cosmiconfig@9.0.1(typescript@3.9.10))(typescript@3.9.10)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -21195,13 +21193,13 @@ snapshots:
 
   '@grpc/grpc-js@1.14.3':
     dependencies:
-      '@grpc/proto-loader': 0.8.0
+      '@grpc/proto-loader': 0.8.1
       '@js-sdsl/ordered-map': 4.4.2
 
   '@grpc/grpc-js@1.8.22':
     dependencies:
       '@grpc/proto-loader': 0.7.15
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@grpc/proto-loader@0.7.15':
     dependencies:
@@ -21210,7 +21208,7 @@ snapshots:
       protobufjs: 7.5.6
       yargs: 17.7.2
 
-  '@grpc/proto-loader@0.8.0':
+  '@grpc/proto-loader@0.8.1':
     dependencies:
       lodash.camelcase: 4.3.0
       long: 5.3.2
@@ -22736,35 +22734,35 @@ snapshots:
 
   '@peculiar/asn1-x509-logotype@2.3.13':
     dependencies:
-      '@peculiar/asn1-schema': 2.7.0
-      '@peculiar/asn1-x509': 2.7.0
+      '@peculiar/asn1-schema': 2.3.13
+      '@peculiar/asn1-x509': 2.3.13
       asn1js: 3.0.5
       tslib: 2.8.1
 
   '@peculiar/asn1-x509-logotype@2.3.15':
     dependencies:
-      '@peculiar/asn1-schema': 2.7.0
-      '@peculiar/asn1-x509': 2.7.0
+      '@peculiar/asn1-schema': 2.3.15
+      '@peculiar/asn1-x509': 2.3.15
       asn1js: 3.0.5
       tslib: 2.8.1
 
   '@peculiar/asn1-x509-logotype@2.6.0':
     dependencies:
-      '@peculiar/asn1-schema': 2.7.0
-      '@peculiar/asn1-x509': 2.7.0
+      '@peculiar/asn1-schema': 2.6.0
+      '@peculiar/asn1-x509': 2.6.0
       asn1js: 3.0.10
       tslib: 2.8.1
 
   '@peculiar/asn1-x509-logotype@2.6.1':
     dependencies:
-      '@peculiar/asn1-schema': 2.7.0
-      '@peculiar/asn1-x509': 2.7.0
+      '@peculiar/asn1-schema': 2.6.0
+      '@peculiar/asn1-x509': 2.6.1
       asn1js: 3.0.10
       tslib: 2.8.1
 
   '@peculiar/asn1-x509@2.3.13':
     dependencies:
-      '@peculiar/asn1-schema': 2.7.0
+      '@peculiar/asn1-schema': 2.3.13
       asn1js: 3.0.5
       ipaddr.js: 2.2.0
       pvtsutils: 1.3.6
@@ -22772,21 +22770,21 @@ snapshots:
 
   '@peculiar/asn1-x509@2.3.15':
     dependencies:
-      '@peculiar/asn1-schema': 2.7.0
+      '@peculiar/asn1-schema': 2.3.15
       asn1js: 3.0.5
       pvtsutils: 1.3.6
       tslib: 2.8.1
 
   '@peculiar/asn1-x509@2.6.0':
     dependencies:
-      '@peculiar/asn1-schema': 2.7.0
+      '@peculiar/asn1-schema': 2.6.0
       asn1js: 3.0.10
       pvtsutils: 1.3.6
       tslib: 2.8.1
 
   '@peculiar/asn1-x509@2.6.1':
     dependencies:
-      '@peculiar/asn1-schema': 2.7.0
+      '@peculiar/asn1-schema': 2.6.0
       asn1js: 3.0.10
       pvtsutils: 1.3.6
       tslib: 2.8.1
@@ -22983,11 +22981,11 @@ snapshots:
       - react-native-b4a
       - supports-color
 
-  '@replit/codemirror-css-color-picker@6.3.0(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/view@6.42.0)':
+  '@replit/codemirror-css-color-picker@6.3.0(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/view@6.42.1)':
     dependencies:
       '@codemirror/language': 6.12.3
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
 
   '@ronilaukkarinen/gulp-stylelint@14.1.2(stylelint@15.11.0(typescript@3.9.10))':
     dependencies:
@@ -23186,7 +23184,7 @@ snapshots:
   '@scalar/icons@0.4.6(typescript@3.9.10)':
     dependencies:
       '@phosphor-icons/core': 2.1.1
-      '@types/node': 22.19.17
+      '@types/node': 22.19.18
       chalk: 5.6.2
       vue: 3.5.34(typescript@3.9.10)
     transitivePeerDependencies:
@@ -23278,10 +23276,10 @@ snapshots:
       '@codemirror/language': 6.12.3
       '@codemirror/lint': 6.9.6
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
       '@lezer/common': 1.5.2
       '@lezer/highlight': 1.2.3
-      '@replit/codemirror-css-color-picker': 6.3.0(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/view@6.42.0)
+      '@replit/codemirror-css-color-picker': 6.3.0(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/view@6.42.1)
       '@scalar/components': 0.14.17(typescript@3.9.10)
       codemirror: 6.0.2
       vue: 3.5.34(typescript@3.9.10)
@@ -24315,13 +24313,13 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/cacheable-request@6.0.3':
     dependencies:
       '@types/http-cache-semantics': 4.2.0
       '@types/keyv': 3.1.4
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
       '@types/responselike': 1.0.3
 
   '@types/command-line-args@5.2.3': {}
@@ -24334,11 +24332,11 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/conventional-commits-parser@5.0.2':
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/d3-scale-chromatic@3.1.0': {}
 
@@ -24378,13 +24376,13 @@ snapshots:
 
   '@types/etag@1.8.4':
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/expect@1.20.4': {}
 
   '@types/express-serve-static-core@4.19.8':
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
       '@types/qs': 6.15.1
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -24399,7 +24397,7 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 6.0.0
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/glob@9.0.0':
     dependencies:
@@ -24431,11 +24429,11 @@ snapshots:
 
   '@types/jsonwebtoken@8.5.9':
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/linkify-it@5.0.0': {}
 
@@ -24474,15 +24472,15 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@20.19.39':
+  '@types/node@20.19.40':
     dependencies:
       undici-types: 6.21.0
 
-  '@types/node@22.19.17':
+  '@types/node@22.19.18':
     dependencies:
       undici-types: 6.21.0
 
-  '@types/node@25.6.0':
+  '@types/node@25.6.2':
     dependencies:
       undici-types: 7.19.2
 
@@ -24498,14 +24496,14 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/retry@0.12.0': {}
 
   '@types/rimraf@3.0.2':
     dependencies:
       '@types/glob': 9.0.0
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/root__asn1@1.0.5': {}
 
@@ -24516,16 +24514,16 @@ snapshots:
   '@types/send@0.17.6':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/serve-static@1.15.10':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
       '@types/send': 0.17.6
 
   '@types/supports-color@8.1.3': {}
@@ -24543,7 +24541,7 @@ snapshots:
   '@types/vinyl@2.0.12':
     dependencies:
       '@types/expect': 1.20.4
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
 
   '@types/web-bluetooth@0.0.20': {}
 
@@ -24559,12 +24557,12 @@ snapshots:
 
   '@types/whatwg-url@8.2.2':
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
       '@types/webidl-conversions': 7.0.3
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
     optional: true
 
   '@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)':
@@ -24845,9 +24843,9 @@ snapshots:
 
   '@yr/monotone-cubic-spline@1.0.3': {}
 
-  '@zainundin/mongoose-factory@1.1.1(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)':
+  '@zainundin/mongoose-factory@1.1.1(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)':
     dependencies:
-      mongoose: 8.23.1(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)
+      mongoose: 8.23.1(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
@@ -25280,7 +25278,7 @@ snapshots:
       '@swc/helpers': 0.5.21
       '@types/command-line-args': 5.2.3
       '@types/command-line-usage': 5.0.4
-      '@types/node': 20.19.39
+      '@types/node': 20.19.40
       command-line-args: 5.2.1
       command-line-usage: 7.0.4
       flatbuffers: 24.12.23
@@ -26383,7 +26381,7 @@ snapshots:
       minipass-pipeline: 1.2.4
       p-map: 7.0.4
       ssri: 12.0.0
-      tar: 7.5.14
+      tar: 7.5.15
       unique-filename: 4.0.0
 
   cache-base@1.0.1:
@@ -26891,7 +26889,7 @@ snapshots:
       '@codemirror/lint': 6.9.6
       '@codemirror/search': 6.7.0
       '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.42.0
+      '@codemirror/view': 6.42.1
 
   collapse-white-space@1.0.6: {}
 
@@ -27227,9 +27225,9 @@ snapshots:
     dependencies:
       cbor: 4.3.0
 
-  cosmiconfig-typescript-loader@6.3.0(@types/node@25.6.0)(cosmiconfig@9.0.1(typescript@3.9.10))(typescript@3.9.10):
+  cosmiconfig-typescript-loader@6.3.0(@types/node@25.6.2)(cosmiconfig@9.0.1(typescript@3.9.10))(typescript@3.9.10):
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
       cosmiconfig: 9.0.1(typescript@3.9.10)
       jiti: 2.6.1
       typescript: 3.9.10
@@ -28480,7 +28478,7 @@ snapshots:
       memory-fs: 0.2.0
       tapable: 0.1.10
 
-  enhanced-resolve@5.21.0:
+  enhanced-resolve@5.21.1:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.3
@@ -28703,7 +28701,7 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
       '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
       eslint: 7.32.0
@@ -29370,7 +29368,7 @@ snapshots:
       merge-stream: 2.0.0
       npm-run-path: 5.3.0
       onetime: 6.0.0
-      signal-exit: 4.1.0
+      signal-exit: 3.0.7
       strip-final-newline: 3.0.0
 
   executable@4.1.1:
@@ -29578,23 +29576,23 @@ snapshots:
 
   fast-xml-parser@5.2.5:
     dependencies:
-      strnum: 2.2.3
+      strnum: 2.3.0
 
   fast-xml-parser@5.3.4:
     dependencies:
-      strnum: 2.2.3
+      strnum: 2.3.0
 
   fast-xml-parser@5.4.2:
     dependencies:
       fast-xml-builder: 1.1.9
-      strnum: 2.2.3
+      strnum: 2.3.0
 
   fast-xml-parser@5.7.2:
     dependencies:
       '@nodable/entities': 2.1.0
       fast-xml-builder: 1.1.9
       path-expression-matcher: 1.5.0
-      strnum: 2.2.3
+      strnum: 2.3.0
     optional: true
 
   fastest-levenshtein@1.0.16: {}
@@ -29934,7 +29932,7 @@ snapshots:
   foreground-child@3.3.1:
     dependencies:
       cross-spawn: 7.0.6
-      signal-exit: 4.1.0
+      signal-exit: 3.0.7
 
   forever-agent@0.6.1: {}
 
@@ -30095,7 +30093,7 @@ snapshots:
       color-support: 1.1.3
       console-control-strings: 1.1.0
       has-unicode: 2.0.1
-      signal-exit: 4.1.0
+      signal-exit: 3.0.7
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wide-align: 1.1.5
@@ -30357,7 +30355,7 @@ snapshots:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.1.5
+      minimatch: 3.0.8
       once: 1.4.0
       path-is-absolute: 1.0.1
 
@@ -30545,7 +30543,7 @@ snapshots:
   google-gax@5.0.6:
     dependencies:
       '@grpc/grpc-js': 1.14.3
-      '@grpc/proto-loader': 0.8.0
+      '@grpc/proto-loader': 0.8.1
       duplexify: 4.1.3
       google-auth-library: 10.6.2
       google-logging-utils: 1.1.3
@@ -30799,7 +30797,7 @@ snapshots:
 
   gulp-replace@1.1.4:
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
       '@types/vinyl': 2.0.12
       istextorbinary: 3.3.0
       replacestream: 4.0.3
@@ -30859,7 +30857,7 @@ snapshots:
   gulp-terser@2.1.0:
     dependencies:
       plugin-error: 1.0.1
-      terser: 5.47.0
+      terser: 5.47.1
       through2: 4.0.2
       vinyl-sourcemaps-apply: 0.2.1
 
@@ -32342,7 +32340,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -34682,7 +34680,7 @@ snapshots:
       moment: 2.30.1
       raf: 3.4.1
 
-  mongodb-memory-server-core@9.5.0(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)):
+  mongodb-memory-server-core@9.5.0(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)):
     dependencies:
       async-mutex: 0.4.1
       camelcase: 6.3.0
@@ -34690,7 +34688,7 @@ snapshots:
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3)
       https-proxy-agent: 7.0.6
-      mongodb: 5.9.2(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))
+      mongodb: 5.9.2(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))
       new-find-package-json: 2.0.0
       semver: 7.7.4
       tar-stream: 3.2.0
@@ -34707,9 +34705,9 @@ snapshots:
       - snappy
       - supports-color
 
-  mongodb-memory-server@9.5.0(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)):
+  mongodb-memory-server@9.5.0(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)):
     dependencies:
-      mongodb-memory-server-core: 9.5.0(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))
+      mongodb-memory-server-core: 9.5.0(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
@@ -34732,9 +34730,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  mongodb-short-id@0.3.3(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8):
+  mongodb-short-id@0.3.3(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8):
     dependencies:
-      mongodb: 7.2.0(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)
+      mongodb: 7.2.0(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
@@ -34750,38 +34748,38 @@ snapshots:
       mongodb-connection-string-url: 2.6.0
       socks: 2.8.8
     optionalDependencies:
-      '@aws-sdk/credential-providers': 3.1044.0
+      '@aws-sdk/credential-providers': 3.1045.0
       '@mongodb-js/saslprep': 1.4.11
     transitivePeerDependencies:
       - aws-crt
 
-  mongodb@5.9.2(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)):
+  mongodb@5.9.2(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)):
     dependencies:
       bson: 5.5.1
       mongodb-connection-string-url: 2.6.0
       socks: 2.8.8
     optionalDependencies:
-      '@aws-sdk/credential-providers': 3.1044.0
+      '@aws-sdk/credential-providers': 3.1045.0
       '@mongodb-js/saslprep': 1.4.11
       snappy: 7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
 
-  mongodb@6.20.0(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8):
+  mongodb@6.20.0(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8):
     dependencies:
       '@mongodb-js/saslprep': 1.4.11
       bson: 6.10.4
       mongodb-connection-string-url: 3.0.2
     optionalDependencies:
-      '@aws-sdk/credential-providers': 3.1044.0
+      '@aws-sdk/credential-providers': 3.1045.0
       snappy: 7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       socks: 2.8.8
 
-  mongodb@7.2.0(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8):
+  mongodb@7.2.0(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8):
     dependencies:
       '@mongodb-js/saslprep': 1.4.11
       bson: 7.2.0
       mongodb-connection-string-url: 7.0.1
     optionalDependencies:
-      '@aws-sdk/credential-providers': 3.1044.0
+      '@aws-sdk/credential-providers': 3.1045.0
       snappy: 7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       socks: 2.8.8
 
@@ -34831,11 +34829,11 @@ snapshots:
       - aws-crt
       - supports-color
 
-  mongoose@8.23.1(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8):
+  mongoose@8.23.1(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8):
     dependencies:
       bson: 6.10.4
       kareem: 2.6.3
-      mongodb: 6.20.0(@aws-sdk/credential-providers@3.1044.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)
+      mongodb: 6.20.0(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(socks@2.8.8)
       mpath: 0.9.0
       mquery: 5.0.0
       ms: 2.1.3
@@ -35162,7 +35160,7 @@ snapshots:
       nopt: 8.1.0
       proc-log: 5.0.0
       semver: 7.7.4
-      tar: 7.5.14
+      tar: 7.5.15
       tinyglobby: 0.2.16
       which: 5.0.0
     transitivePeerDependencies:
@@ -36491,7 +36489,7 @@ snapshots:
       async: 3.2.6
       debug: 4.4.3(supports-color@5.5.0)
       pidusage: 2.0.21
-      systeminformation: 5.31.5
+      systeminformation: 5.31.6
       tx2: 1.0.5
     transitivePeerDependencies:
       - supports-color
@@ -37204,7 +37202,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.1
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
       long: 5.3.2
 
   protobufjs@7.5.6:
@@ -37219,7 +37217,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.1
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
       long: 5.3.2
 
   proxy-agent@6.3.1:
@@ -38636,7 +38634,7 @@ snapshots:
   restore-cursor@5.1.0:
     dependencies:
       onetime: 7.0.0
-      signal-exit: 4.1.0
+      signal-exit: 3.0.7
 
   ret@0.1.15: {}
 
@@ -39112,8 +39110,6 @@ snapshots:
   sift@17.1.3: {}
 
   signal-exit@3.0.7: {}
-
-  signal-exit@4.1.0: {}
 
   signale@1.4.0:
     dependencies:
@@ -39869,14 +39865,14 @@ snapshots:
 
   stripe@10.17.0:
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 25.6.2
       qs: 6.14.1
 
   striptags@3.2.0: {}
 
   strnum@1.1.2: {}
 
-  strnum@2.2.3: {}
+  strnum@2.3.0: {}
 
   strtok3@6.3.0:
     dependencies:
@@ -40159,7 +40155,7 @@ snapshots:
     dependencies:
       acorn-node: 1.8.2
 
-  systeminformation@5.31.5:
+  systeminformation@5.31.6:
     optional: true
 
   tabbable@6.4.0: {}
@@ -40277,7 +40273,7 @@ snapshots:
       mkdirp: 1.0.4
       yallist: 4.0.0
 
-  tar@7.5.14:
+  tar@7.5.15:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
@@ -40345,10 +40341,10 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
-      terser: 5.47.0
+      terser: 5.47.1
       webpack: 5.106.2
 
-  terser@5.47.0:
+  terser@5.47.1:
     dependencies:
       '@jridgewell/source-map': 0.3.11
       acorn: 8.16.0
@@ -41643,7 +41639,7 @@ snapshots:
       acorn-import-phases: 1.0.4(acorn@8.16.0)
       browserslist: 4.28.2
       chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.21.0
+      enhanced-resolve: 5.21.1
       es-module-lexer: 2.1.0
       eslint-scope: 5.1.1
       events: 3.3.0
@@ -41873,7 +41869,7 @@ snapshots:
   write-file-atomic@5.0.1:
     dependencies:
       imurmurhash: 0.1.4
-      signal-exit: 4.1.0
+      signal-exit: 3.0.7
 
   write@1.0.3:
     dependencies:
@@ -41947,7 +41943,7 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
       eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.106.2)
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)
