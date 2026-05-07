@@ -1441,6 +1441,10 @@ This should be blocked by denylist
     'Email from denylisted address should not be received'
   );
 
+  // Clear the PTR spoof so it does not bleed into subsequent tests via the
+  // shared Tangerine Redis cache (prefixed 'tangerine:').
+  await t.context.client.del(`tangerine:ptr:${IP_ADDRESS}`);
+
   await server.close();
   await smtp.close();
 });

@@ -19,7 +19,8 @@
     "./helpers/is-code-bug": false,
     "./helpers/is-tls-error": false,
     "./helpers/is-ssl-error": false,
-    "./helpers/is-socket-error": false
+    "./helpers/is-socket-error": false,
+    "signal-exit": false
   },
   "bugs": {
     "url": "https://github.com/forwardemail/forwardemail.net/issues"
