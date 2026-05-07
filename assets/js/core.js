@@ -280,6 +280,36 @@ window.addEventListener(
     // Handle clipboard copy event
     clipboard();
 
+    // Toggle generated password visibility (show/hide)
+    $body.on(
+      'click.revealPassword',
+      '[data-toggle="reveal-password"]',
+      function () {
+        const $btn = $(this);
+        const $container = $btn.closest('div');
+        const $mask = $container.find('.generated-password-mask');
+        const $text = $container.find('.generated-password-text');
+        const isHidden = $text.hasClass('d-none');
+        if (isHidden) {
+          $text.removeClass('d-none');
+          $mask.addClass('d-none');
+          $btn
+            .attr('title', 'Hide password')
+            .find('i')
+            .removeClass('fa-eye')
+            .addClass('fa-eye-slash');
+        } else {
+          $text.addClass('d-none');
+          $mask.removeClass('d-none');
+          $btn
+            .attr('title', 'Show password')
+            .find('i')
+            .removeClass('fa-eye-slash')
+            .addClass('fa-eye');
+        }
+      }
+    );
+
     // Bind confirm prompt event for clicks and form submissions
     $body.on(
       'submit.confirmPrompt',

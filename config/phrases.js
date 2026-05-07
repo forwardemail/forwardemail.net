@@ -43,8 +43,12 @@ const ALIAS_GENERATED_PASSWORD = `
 
   <div class="mb-4">
     <strong>Password:</strong>
-    <code class="notranslate">%s</code>
-    <button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark">
+    <code class="notranslate d-none generated-password-text">%s</code>
+    <code class="notranslate generated-password-mask">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</code>
+    <button type="button" data-toggle="reveal-password" class="notranslate ml-2 btn btn-sm btn-outline-secondary" title="Show password">
+      <i class="fa fa-eye"></i>
+    </button>
+    <button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-2 btn btn-dark">
       <i class="fa fa-clipboard"></i> Copy
     </button>
   </div>
@@ -314,7 +318,7 @@ module.exports = {
     '<p><span class="notranslate text-monospace font-weight-bold">%s</span> has sent you a password to use for <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p><a href="%s" rel="noopener noreferrer" class="font-weight-bold text-decoration-underline" target="_blank">Click this link</a> and immediately follow the instructions.</p>',
   ALIAS_GENERATED_PASSWORD,
   ALIAS_GENERATED_PASSWORD_NO_MOBILE_CONFIG:
-    '<br /><div class="mt-3 alert alert-danger small font-weight-bold d-inline-block">You must copy and store the password below somewhere before closing this pop-up &ndash; we do not store it; it cannot be recovered it lost.</div><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>',
+    '<br /><div class="mt-3 alert alert-danger small font-weight-bold d-inline-block">You must copy and store the password below somewhere before closing this pop-up &ndash; we do not store it; it cannot be recovered it lost.</div><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong>Password:</strong> <code class="notranslate d-none generated-password-text">%s</code><code class="notranslate generated-password-mask">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</code><button type="button" data-toggle="reveal-password" class="notranslate ml-2 btn btn-sm btn-outline-secondary" title="Show password"><i class="fa fa-eye"></i></button><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-2 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>',
   FASTEST_EMAIL: 'The Fastest Email Service',
   CLOSE_POPUP: 'Close Pop-up',
   PAST_DUE_OR_INVALID_ADMIN:
