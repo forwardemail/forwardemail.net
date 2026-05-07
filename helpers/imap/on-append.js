@@ -26,6 +26,7 @@ const {
 // const { convert } = require('html-to-text');
 const { readKey } = require('openpgp');
 
+const ms = require('ms');
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -234,6 +235,50 @@ async function onAppend(path, flags, date, raw, session, fn) {
         try {
           // NOTE: encryptMessage won't encrypt message if it already is
           raw = await encryptMessage(publicKey, raw, isArmored);
+
+          // Notify user once (30d Redis cache) if their RSA key is < 2048 bits during grace period
+          if (encryptMessage.isGracePeriod()) {
+            try {
+              const keyObj = isArmored
+                ? await readKey({
+                    armoredKey: publicKey,
+                    config: { ignoreMalformedPackets: true }
+                  })
+                : publicKey;
+              const algo = keyObj.getAlgorithmInfo();
+              if (algo.algorithm === 'rsaEncryptSign' && algo.bits < 2048) {
+                const cacheKey = `pgp_weak_key_notified:${session.user.alias_id}`;
+                const cached = await this.client.get(cacheKey);
+                if (!cached) {
+                  await this.client.set(cacheKey, 'true', 'PX', ms('30d'));
+                  email({
+                    template: 'alert',
+                    message: {
+                      to: session.user.owner_full_email,
+                      subject: i18n.translate(
+                        'PGP_WEAK_KEY_WARNING',
+                        session.user.locale
+                      )
+                    },
+                    locals: {
+                      message: i18n.translate(
+                        'PGP_WEAK_KEY_MESSAGE',
+                        session.user.locale,
+                        session.user.username,
+                        encryptMessage.MIN_RSA_BITS_ENFORCEMENT_DATE.format(
+                          'MMMM D, YYYY'
+                        )
+                      ),
+                      locale: session.user.locale
+                    }
+                  }).catch((err) => this.logger.fatal(err));
+                }
+              }
+            } catch (err) {
+              this.logger.debug(err);
+            }
+          }
+
           // unset pgp_error_sent_at if it was a date and more than 1h ago
           Aliases.findOneAndUpdate(
             {

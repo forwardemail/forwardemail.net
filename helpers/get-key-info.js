@@ -19,6 +19,8 @@ const tools = require('@zone-eu/wildduck/lib/tools');
 
 const i18n = require('#helpers/i18n');
 
+const { getMinRSABits } = require('#helpers/encrypt-message');
+
 // <https://github.com/nodemailer/wildduck/blob/a15878c7d709473c5b0d4eec2062e9425c9b5e31/lib/api/users.js#L2480>
 async function getKeyInfo(pubKeyArmored, locale = i18n.config.defaultLocale) {
   if (!pubKeyArmored) {
@@ -40,16 +42,21 @@ async function getKeyInfo(pubKeyArmored, locale = i18n.config.defaultLocale) {
     message: await openpgp.createMessage({ text: 'Hello, World!' }),
     encryptionKeys: publicKey, // for encryption
     format: 'armored',
-    config: { minRSABits: 1024 }
+    config: { minRSABits: getMinRSABits() }
   });
 
   if (ciphertext.startsWith('-----BEGIN PGP MESSAGE')) {
+    // Check if key uses weak RSA (< 2048 bits)
+    const algo = publicKey.getAlgorithmInfo();
+    const isWeakKey = algo.algorithm === 'rsaEncryptSign' && algo.bits < 2048;
+
     // everything checks out
     return {
       name,
       address,
       fingerprint,
-      publicKey
+      publicKey,
+      isWeakKey
     };
   }
 

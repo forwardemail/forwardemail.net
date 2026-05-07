@@ -11,6 +11,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const undici = require('undici');
 const config = require('#config');
+const isPrivateHost = require('#helpers/is-private-host');
 const Domains = require('#models/domains');
 const { nsProviders } = require('#config/utilities');
 
@@ -61,6 +62,15 @@ async function discoverDomainConnectUrl(domain) {
     // The record is the hostname of the Domain Connect API
     // Per spec it should be a hostname (no protocol), but some providers include the full URL
     const apiBase = record.startsWith('http') ? record : `https://${record}`;
+
+    // Block requests to private/internal hosts (SSRF prevention)
+    try {
+      const parsedUrl = new URL(apiBase);
+      if (isPrivateHost(parsedUrl.hostname)) return null;
+    } catch {
+      return null;
+    }
+
     return apiBase;
   } catch {
     return null;
@@ -72,6 +82,10 @@ async function discoverDomainConnectUrl(domain) {
 // Returns JSON with urlSyncUX (UX URL for apply redirect) and urlAPI (API URL for template checks)
 async function fetchProviderSettings(apiBase, domain) {
   try {
+    // Block requests to private/internal hosts (SSRF prevention)
+    const parsedBase = new URL(apiBase);
+    if (isPrivateHost(parsedBase.hostname)) return null;
+
     const url = `${apiBase}/v2/${encodeURIComponent(domain)}/settings`;
     const { body, statusCode } = await undici.request(url, {
       method: 'GET',
@@ -94,6 +108,10 @@ async function fetchProviderSettings(apiBase, domain) {
 //   'error'      — network error or non-200/404 status (inconclusive)
 async function checkTemplateSupport(apiBase) {
   try {
+    // Block requests to private/internal hosts (SSRF prevention)
+    const parsedBase = new URL(apiBase);
+    if (isPrivateHost(parsedBase.hostname)) return 'error';
+
     const url = `${apiBase}/v2/domainTemplates/providers/${PROVIDER_ID}/services/${SERVICE_ID}`;
     const { statusCode } = await undici.request(url, {
       method: 'GET',

@@ -79,6 +79,12 @@ const Journals = new mongoose.Schema(
     },
     junk: {
       type: Boolean
+    },
+    flags: {
+      type: [String]
+    },
+    unseenChange: {
+      type: Boolean
     }
   },
   {

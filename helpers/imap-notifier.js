@@ -365,7 +365,7 @@ class IMAPNotifier extends EventEmitter {
 
   // <https://github.com/nodemailer/wildduck/blob/c9188b3766b547b091d140a33308b5c3ec3aa1d4/imap-core/lib/imap-connection.js#L616-L619>
   getUpdates(mailbox, modifyIndex, fn) {
-    modifyIndex = Number(modifyIndex) || 0;
+    modifyIndex = Number(modifyIndex) || 1;
 
     if (!conn)
       conn = mongoose.connections.find(

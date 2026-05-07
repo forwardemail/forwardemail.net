@@ -253,7 +253,7 @@ module.exports = (redis) => ({
               ],
               'script-src': [
                 ..._.without(defaultSrc, 'data:'),
-                "'unsafe-inline'",
+                "'strict-dynamic'",
                 'https://challenges.cloudflare.com',
                 'https://www.paypal.com',
                 ...(env.NODE_ENV === 'production'

@@ -215,6 +215,9 @@ module.exports = {
   PRECONDITION_FAILED_EVENT_EXISTS:
     'Precondition failed: event already exists.',
   PGP_ENCRYPTION_ERROR: 'An error occurred with OpenPGP encryption',
+  PGP_WEAK_KEY_WARNING: 'Action Required: Your PGP key needs to be upgraded',
+  PGP_WEAK_KEY_MESSAGE:
+    'Your PGP key for <span class="notranslate">%s</span> uses a 1024-bit RSA key which will no longer be accepted after <span class="notranslate">%s</span>. Please generate and upload a new PGP key with at least 2048-bit RSA (4096-bit recommended) before this date to avoid disruption to your encrypted email delivery.',
   FAILED_TO_PROCESS_PUBLIC_KEY: 'Failed to process public key.',
   FAILED_TO_VERIFY_PUBLIC_KEY: 'Failed to verify public key.',
   INVALID_SMIME_CERTIFICATE: 'Invalid S/MIME certificate format.',

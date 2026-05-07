@@ -136,7 +136,8 @@ async function onUpdate(update, session, fn) {
               uid: message.uid,
               flags: [...message.flags, '\\Seen'],
               message: new mongoose.Types.ObjectId(message.id),
-              modseq: updatedMailbox.modifyIndex
+              modseq: updatedMailbox.modifyIndex,
+              unseenChange: true
             }))
         )
         .then(() => this.server.notifier.fire(session.user.alias_id))

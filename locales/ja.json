@@ -19624,5 +19624,7 @@
   "Plan expired on <span class=\"notranslate\">%s</span>.": "Plan expired on <span class=\"notranslate\">%s</span>.",
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.": "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.",
   "Your request has been blocked because <span class=\"notranslate\">%s</span> is on our denylist. If you believe this is an error, please contact us at <span class=\"notranslate\">%s</span>.": "リクエストがブロックされました。<span class=\"notranslate\">%s</span> が当サービスの拒否リストに登録されています。誤りだと思われる場合は、<span class=\"notranslate\">%s</span> までお問い合わせください。",
-  "Domain name <span class=\"notranslate\">%s</span> has at least one admin on the correct plan, but their payment has expired and the grace period has ended. Please <a class=\"font-weight-bold\" href=\"%s\">renew your subscription or make a payment</a> to restore access.": "ドメイン名 <span class=\"notranslate\">%s</span> には正しいプランの管理者が少なくとも1人いますが、支払いが期限切れになり、猶予期間が終了しました。アクセスを回復するには、<a class=\"font-weight-bold\" href=\"%s\">サブスクリプションを更新するか、お支払いください</a>。"
+  "Domain name <span class=\"notranslate\">%s</span> has at least one admin on the correct plan, but their payment has expired and the grace period has ended. Please <a class=\"font-weight-bold\" href=\"%s\">renew your subscription or make a payment</a> to restore access.": "ドメイン名 <span class=\"notranslate\">%s</span> には正しいプランの管理者が少なくとも1人いますが、支払いが期限切れになり、猶予期間が終了しました。アクセスを回復するには、<a class=\"font-weight-bold\" href=\"%s\">サブスクリプションを更新するか、お支払いください</a>。",
+  "other domains": "other domains",
+  "other aliases": "other aliases"
 }

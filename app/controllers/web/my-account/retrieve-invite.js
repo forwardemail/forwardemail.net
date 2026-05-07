@@ -31,7 +31,7 @@ async function retrieveInvite(ctx) {
     // validate it looks like a valid ObjectId
     if (mongoose.isValidObjectId(ctx.params.domain_id)) {
       domainId = ctx.params.domain_id;
-      // for legacy links, we'll find any invite in the domain
+      // for legacy links, we restrict to the authenticated user's email only
       invitedEmail = null;
     } else {
       throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
@@ -92,18 +92,10 @@ async function retrieveInvite(ctx) {
     return;
   }
 
-  // find the invite - either by specific email (new format) or any invite (legacy)
-  let invite;
-  if (invitedEmail) {
-    // new secure link - find invite matching the encrypted email
-    invite = domain.invites.find((inv) => inv.email === invitedEmail);
-  } else {
-    // legacy link - first try to match user's email, otherwise take first invite
-    invite = domain.invites.find((inv) => inv.email === ctx.state.user.email);
-    if (!invite && domain.invites.length > 0) {
-      invite = domain.invites[0];
-    }
-  }
+  // find the invite - either by specific email (new format) or user's email (legacy)
+  const invite = invitedEmail
+    ? domain.invites.find((inv) => inv.email === invitedEmail)
+    : domain.invites.find((inv) => inv.email === ctx.state.user.email);
 
   // if no invite exists, the link is invalid or already used
   if (!invite) throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));

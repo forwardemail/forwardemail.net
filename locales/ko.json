@@ -19624,5 +19624,7 @@
   "Plan expired on <span class=\"notranslate\">%s</span>.": "Plan expired on <span class=\"notranslate\">%s</span>.",
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.": "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.",
   "Your request has been blocked because <span class=\"notranslate\">%s</span> is on our denylist. If you believe this is an error, please contact us at <span class=\"notranslate\">%s</span>.": "요청이 차단되었습니다. <span class=\"notranslate\">%s</span>이(가) 차단 목록에 있습니다. 오류라고 생각되시면 <span class=\"notranslate\">%s</span>으로 문의해 주세요.",
-  "Domain name <span class=\"notranslate\">%s</span> has at least one admin on the correct plan, but their payment has expired and the grace period has ended. Please <a class=\"font-weight-bold\" href=\"%s\">renew your subscription or make a payment</a> to restore access.": "도메인 이름 <span class=\"notranslate\">%s</span>에는 올바른 플랜의 관리자가 최소 한 명 있지만, 결제가 만료되고 유예 기간이 종료되었습니다. 액세스를 복원하려면 <a class=\"font-weight-bold\" href=\"%s\">구독을 갱신하거나 결제를 진행하세요</a>."
+  "Domain name <span class=\"notranslate\">%s</span> has at least one admin on the correct plan, but their payment has expired and the grace period has ended. Please <a class=\"font-weight-bold\" href=\"%s\">renew your subscription or make a payment</a> to restore access.": "도메인 이름 <span class=\"notranslate\">%s</span>에는 올바른 플랜의 관리자가 최소 한 명 있지만, 결제가 만료되고 유예 기간이 종료되었습니다. 액세스를 복원하려면 <a class=\"font-weight-bold\" href=\"%s\">구독을 갱신하거나 결제를 진행하세요</a>.",
+  "other domains": "other domains",
+  "other aliases": "other aliases"
 }

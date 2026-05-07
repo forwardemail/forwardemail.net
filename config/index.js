@@ -1397,6 +1397,9 @@ const config = {
     'onion',
     'internal',
     'alt',
+    // Cloud metadata bare hostnames (AWS/GCP instance metadata endpoints)
+    'metadata',
+    'instance-data',
     punycode.toASCII('испытание'),
     punycode.toASCII('テスト'),
     punycode.toASCII('δοκιμή'),

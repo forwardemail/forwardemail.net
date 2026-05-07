@@ -778,6 +778,30 @@ Domains.pre('validate', async function (next) {
       );
     }
 
+    // Block private/internal IP ranges in s3_endpoint to prevent SSRF
+    if (isSANB(this.s3_endpoint)) {
+      let endpointHost;
+      try {
+        endpointHost = new URL(this.s3_endpoint).hostname;
+      } catch {
+        throw Boom.badRequest(
+          i18n.translateError('INVALID_LOCALHOST_URL', this.locale)
+        );
+      }
+
+      const host = endpointHost.replace(/^\[|]$/g, '');
+
+      // Use shared REGEX_LOCALHOST (all private/reserved IP ranges)
+      // and config.testDomains (reserved TLDs + cloud metadata hostnames)
+      const parts = host.toLowerCase().split('.');
+      const tld = parts[parts.length - 1];
+      if (REGEX_LOCALHOST.test(host) || config.testDomains.includes(tld)) {
+        throw Boom.badRequest(
+          i18n.translateError('INVALID_LOCALHOST_URL', this.locale)
+        );
+      }
+    }
+
     //
     // Track whether credentials were modified so we know
     // whether to run the HeadBucket validation after encryption

@@ -461,7 +461,7 @@ async function list(ctx) {
   // Search in subject
   if (isSANB(ctx.query.subject)) {
     searchConditions.push({
-      subject: { $regex: ctx.query.subject, $options: 'i' }
+      subject: { $regex: _.escapeRegExp(ctx.query.subject), $options: 'i' }
     });
   }
 
@@ -469,7 +469,7 @@ async function list(ctx) {
   if (isSANB(ctx.query.body) || isSANB(ctx.query.text)) {
     const searchText = isSANB(ctx.query.body) ? ctx.query.body : ctx.query.text;
     searchConditions.push({
-      text: { $regex: searchText, $options: 'i' }
+      text: { $regex: _.escapeRegExp(searchText), $options: 'i' }
     });
   }
 
@@ -569,7 +569,7 @@ async function list(ctx) {
   // Search in message ID
   if (isSANB(ctx.query.message_id)) {
     searchConditions.push({
-      msgid: { $regex: ctx.query.message_id, $options: 'i' }
+      msgid: { $regex: _.escapeRegExp(ctx.query.message_id), $options: 'i' }
     });
   }
 
@@ -602,7 +602,7 @@ async function list(ctx) {
           }
         },
         {
-          text: { $regex: searchTerm, $options: 'i' }
+          text: { $regex: _.escapeRegExp(searchTerm), $options: 'i' }
         }
       ]
     });

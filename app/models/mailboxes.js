@@ -47,7 +47,7 @@ const Mailboxes = new mongoose.Schema(
     modifyIndex: {
       type: Number,
       required: true,
-      default: 0
+      default: 1
     },
     subscribed: {
       type: Boolean,

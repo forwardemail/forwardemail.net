@@ -13,6 +13,7 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { isURL } = require('@forwardemail/validator');
 
+const isPrivateHost = require('#helpers/is-private-host');
 const config = require('#config');
 const { Domains } = require('#models');
 const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
@@ -29,10 +30,11 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
  * Steps:
  * 1. Resolve credentials from request body or database
  * 2. Validate endpoint URL format (must include protocol)
- * 3. Perform a HeadBucket call to verify bucket access
- * 4. Perform a PutObject + DeleteObject to verify write permissions
- * 5. Check that the bucket is not publicly accessible
- * 6. Return success/failure via JSON (AJAX) or flash (web)
+ * 3. Block private/internal endpoints
+ * 4. Perform a HeadBucket call to verify bucket access
+ * 5. Perform a PutObject + DeleteObject to verify write permissions
+ * 6. Check that the bucket is not publicly accessible
+ * 7. Return success/failure via JSON (AJAX) or flash (web)
  *
  * @param {Object} ctx - Koa context
  */
@@ -110,6 +112,20 @@ async function testS3Connection(ctx) {
   if (!isURL(endpoint, config.isURLOptions))
     throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
 
+  //
+  // Block private/internal network endpoints to prevent SSRF attacks.
+  //
+  let parsedEndpoint;
+  try {
+    parsedEndpoint = new URL(endpoint);
+  } catch {
+    throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
+  }
+
+  if (isPrivateHost(parsedEndpoint.hostname)) {
+    throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
+  }
+
   const testClient = new S3Client({
     region,
     endpoint,
@@ -153,14 +169,58 @@ async function testS3Connection(ctx) {
     }
   } catch (err) {
     if (err.isBoom) throw err;
-    const errMsg = err.message || err.Code || err.name || 'Unknown error';
+
+    // Map SDK error codes to generic user-facing messages
+    // to avoid leaking internal infrastructure details (FWD-01-005).
+    let userMessage;
+    const code = err.Code || err.name || '';
+    switch (code) {
+      case 'NoSuchBucket':
+      case 'NotFound': {
+        userMessage = 'Bucket not found';
+
+        break;
+      }
+
+      case 'InvalidAccessKeyId':
+      case 'SignatureDoesNotMatch': {
+        userMessage = 'Invalid credentials';
+
+        break;
+      }
+
+      case 'AccessDenied':
+      case 'Forbidden':
+      case 'AllAccessDisabled': {
+        userMessage = 'Access denied';
+
+        break;
+      }
+
+      default: {
+        if (err.message && err.message.includes('getaddrinfo')) {
+          userMessage = 'Endpoint hostname could not be resolved';
+        } else if (
+          err.code === 'ECONNREFUSED' ||
+          err.code === 'ETIMEDOUT' ||
+          err.code === 'ENOTFOUND'
+        ) {
+          userMessage = 'Could not connect to endpoint';
+        } else {
+          userMessage = 'Connection test failed';
+        }
+      }
+    }
+
+    ctx.logger.error(err);
+
     if (ctx.api) {
       throw Boom.badRequest(
-        ctx.translateError('CUSTOM_S3_TEST_FAILED', errMsg)
+        ctx.translateError('CUSTOM_S3_TEST_FAILED', userMessage)
       );
     }
 
-    ctx.flash('error', ctx.translate('CUSTOM_S3_TEST_FAILED', errMsg));
+    ctx.flash('error', ctx.translate('CUSTOM_S3_TEST_FAILED', userMessage));
     if (ctx.accepts('html')) return ctx.redirect('back');
     ctx.body = { reloadPage: true };
     return;

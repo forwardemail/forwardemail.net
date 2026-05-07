@@ -19625,5 +19625,7 @@
   "Plan expired on <span class=\"notranslate\">%s</span>.": "Plan expired on <span class=\"notranslate\">%s</span>.",
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.": "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.",
   "Your request has been blocked because <span class=\"notranslate\">%s</span> is on our denylist. If you believe this is an error, please contact us at <span class=\"notranslate\">%s</span>.": "您的请求已被屏蔽，因为 <span class=\"notranslate\">%s</span> 在我们的拒绝列表中。如果您认为这是一个错误，请通过 <span class=\"notranslate\">%s</span> 联系我们。",
-  "Domain name <span class=\"notranslate\">%s</span> has at least one admin on the correct plan, but their payment has expired and the grace period has ended. Please <a class=\"font-weight-bold\" href=\"%s\">renew your subscription or make a payment</a> to restore access.": "域名 <span class=\"notranslate\">%s</span> 至少有一位管理员使用了正确的套餐，但他们的付款已过期且宽限期已结束。请<a class=\"font-weight-bold\" href=\"%s\">续订或进行付款</a>以恢复访问权限。"
+  "Domain name <span class=\"notranslate\">%s</span> has at least one admin on the correct plan, but their payment has expired and the grace period has ended. Please <a class=\"font-weight-bold\" href=\"%s\">renew your subscription or make a payment</a> to restore access.": "域名 <span class=\"notranslate\">%s</span> 至少有一位管理员使用了正确的套餐，但他们的付款已过期且宽限期已结束。请<a class=\"font-weight-bold\" href=\"%s\">续订或进行付款</a>以恢复访问权限。",
+  "other domains": "other domains",
+  "other aliases": "other aliases"
 }

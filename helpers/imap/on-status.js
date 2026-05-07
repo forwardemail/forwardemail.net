@@ -52,7 +52,7 @@ async function onStatus(path, session, fn) {
       uidNext: mailbox.uidNext,
       uidValidity: mailbox.uidValidity,
       unseen,
-      highestModseq: mailbox.modifyIndex || 0
+      highestModseq: mailbox.modifyIndex || 1
     });
   } catch (err) {
     const error = refineAndLogError(err, session, true, this);

@@ -131,6 +131,15 @@ class SieveEngine {
     this.logger = options.logger || console;
     this.extensions = new Map();
 
+    // Runtime enforcement of protected headers (prevents variable substitution bypass)
+    this.protectedHeaders = [...(options.protectedHeaders || [])].map((h) =>
+      h.toLowerCase()
+    );
+
+    // Runtime enforcement of redirect domain restrictions
+    this.allowedRedirectDomains = options.allowedRedirectDomains || [];
+    this.redirectDomainBlacklist = options.redirectDomainBlacklist || [];
+
     // Register built-in extensions
     this.registerBuiltinExtensions();
   }
@@ -324,9 +333,37 @@ class SieveEngine {
       }
 
       case 'Redirect': {
+        const resolvedAddress = this.interpolateVariables(
+          command.address,
+          state
+        );
+
+        // Runtime enforcement of redirect domain restrictions
+        // (prevents bypass via variable substitution)
+        const addrDomain = resolvedAddress.match(/@([^@>]+)>?$/);
+        if (addrDomain) {
+          const domain = addrDomain[1].toLowerCase();
+          if (
+            this.allowedRedirectDomains.length > 0 &&
+            !this.allowedRedirectDomains.includes(domain)
+          ) {
+            this.logger.warn(
+              `Blocked redirect to non-whitelisted domain: ${domain}`
+            );
+            break;
+          }
+
+          if (this.redirectDomainBlacklist.includes(domain)) {
+            this.logger.warn(
+              `Blocked redirect to blacklisted domain: ${domain}`
+            );
+            break;
+          }
+        }
+
         state.actions.push({
           type: 'redirect',
-          address: this.interpolateVariables(command.address, state),
+          address: resolvedAddress,
           copy: command.copy || false
         });
         if (!command.copy) {
@@ -386,9 +423,20 @@ class SieveEngine {
       }
 
       case 'Addheader': {
+        const addHeaderName = this.interpolateVariables(command.name, state);
+
+        // Runtime enforcement of protected headers
+        // (prevents bypass via variable substitution)
+        if (this.protectedHeaders.includes(addHeaderName.toLowerCase())) {
+          this.logger.warn(
+            `Blocked addheader for protected header: ${addHeaderName}`
+          );
+          break;
+        }
+
         state.actions.push({
           type: 'addheader',
-          name: this.interpolateVariables(command.name, state),
+          name: addHeaderName,
           value: this.interpolateVariables(command.value, state),
           last: command.last || false
         });
@@ -396,9 +444,20 @@ class SieveEngine {
       }
 
       case 'Deleteheader': {
+        const delHeaderName = this.interpolateVariables(command.name, state);
+
+        // Runtime enforcement of protected headers
+        // (prevents bypass via variable substitution)
+        if (this.protectedHeaders.includes(delHeaderName.toLowerCase())) {
+          this.logger.warn(
+            `Blocked deleteheader for protected header: ${delHeaderName}`
+          );
+          break;
+        }
+
         state.actions.push({
           type: 'deleteheader',
-          name: this.interpolateVariables(command.name, state),
+          name: delHeaderName,
           index: command.index,
           matchType: command.matchType,
           comparator: command.comparator,

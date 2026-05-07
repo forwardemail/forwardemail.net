@@ -52,8 +52,16 @@ function safeAnsiHTML(str) {
 // <https://github.com/ztmd/highlight-pug/issues/1>
 hljs.registerLanguage('pug', highlightPug);
 
-const json = (string, replacer = null, space = 2) =>
-  JSON.stringify(string, replacer, space);
+const json = (string, replacer = null, space = 2) => {
+  const str = JSON.stringify(string, replacer, space);
+  if (typeof str !== 'string') return str;
+  // Escape sequences that could break out of a <script> context
+  // when rendered via pug's unescaped !{} interpolation
+  return str
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/\//g, '\\u002f');
+};
 
 const emoji = (string) => toEmoji[string] || '';
 

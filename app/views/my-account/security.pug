@@ -1,14 +1,14 @@
 extends ../layout
 
 block body
-  if !isBot(ctx.get('User-Agent')) && isSANB(ctx.query.passkey)
+  if !isBot(ctx.get('User-Agent')) && isSANB(ctx.query.passkey) && /^[a-f\d]{24}$/i.test(ctx.query.passkey)
     script(defer, nonce=nonce).
       window.addEventListener(
         "load",
         function load() {
           if (!window.jQuery) return setTimeout(load, 50);
           $(function () {
-            $(`#modal-nickname-#{ctx.query.passkey}`).modal("show");
+            $("#modal-nickname-#{ctx.query.passkey}").modal("show");
           });
         },
         false

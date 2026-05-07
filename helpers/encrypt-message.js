@@ -16,6 +16,7 @@
 const crypto = require('node:crypto');
 const { Buffer } = require('node:buffer');
 
+const dayjs = require('dayjs-with-plugins');
 const openpgp = require('openpgp');
 const tools = require('@zone-eu/wildduck/lib/tools');
 
@@ -23,6 +24,17 @@ const config = require('#config');
 
 openpgp.config.commentString = 'Plaintext message encrypted by Forward Email';
 openpgp.config.versionString = `Forward Email v${config.pkg.version}`;
+
+// Grace period: enforce 2048-bit minimum after July 30, 2026 (90 days from May 1, 2026)
+const MIN_RSA_BITS_ENFORCEMENT_DATE = dayjs('2026-07-30', 'YYYY-MM-DD');
+
+function getMinRSABits() {
+  return dayjs().isAfter(MIN_RSA_BITS_ENFORCEMENT_DATE) ? 2048 : 1024;
+}
+
+function isGracePeriod() {
+  return !dayjs().isAfter(MIN_RSA_BITS_ENFORCEMENT_DATE);
+}
 
 // <https://github.com/nodemailer/wildduck/blob/a15878c7d709473c5b0d4eec2062e9425c9b5e31/lib/message-handler.js#L1688>
 
@@ -151,7 +163,7 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
     }),
     encryptionKeys: pubKey,
     format: 'armored',
-    config: { minRSABits: 1024 }
+    config: { minRSABits: getMinRSABits() }
   });
 
   const text =
@@ -180,3 +192,6 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
 }
 
 module.exports = encryptMessage;
+module.exports.getMinRSABits = getMinRSABits;
+module.exports.isGracePeriod = isGracePeriod;
+module.exports.MIN_RSA_BITS_ENFORCEMENT_DATE = MIN_RSA_BITS_ENFORCEMENT_DATE;

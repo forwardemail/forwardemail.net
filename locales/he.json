@@ -19624,5 +19624,7 @@
   "Plan expired on <span class=\"notranslate\">%s</span>.": "Plan expired on <span class=\"notranslate\">%s</span>.",
   "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.": "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.",
   "Your request has been blocked because <span class=\"notranslate\">%s</span> is on our denylist. If you believe this is an error, please contact us at <span class=\"notranslate\">%s</span>.": "הבקשה שלך נחסמה מכיוון ש-<span class=\"notranslate\">%s</span> נמצא ברשימת החסימה שלנו. אם אתה סבור שמדובר בשגיאה, אנא צור איתנו קשר בכתובת <span class=\"notranslate\">%s</span>.",
-  "Domain name <span class=\"notranslate\">%s</span> has at least one admin on the correct plan, but their payment has expired and the grace period has ended. Please <a class=\"font-weight-bold\" href=\"%s\">renew your subscription or make a payment</a> to restore access.": "שם הדומיין <span class=\"notranslate\">%s</span> כולל לפחות מנהל אחד בתוכנית הנכונה, אך התשלום שלהם פג ותקופת החסד הסתיימה. אנא <a class=\"font-weight-bold\" href=\"%s\">חדש את המנוי שלך או בצע תשלום</a> כדי לשחזר את הגישה."
+  "Domain name <span class=\"notranslate\">%s</span> has at least one admin on the correct plan, but their payment has expired and the grace period has ended. Please <a class=\"font-weight-bold\" href=\"%s\">renew your subscription or make a payment</a> to restore access.": "שם הדומיין <span class=\"notranslate\">%s</span> כולל לפחות מנהל אחד בתוכנית הנכונה, אך התשלום שלהם פג ותקופת החסד הסתיימה. אנא <a class=\"font-weight-bold\" href=\"%s\">חדש את המנוי שלך או בצע תשלום</a> כדי לשחזר את הגישה.",
+  "other domains": "other domains",
+  "other aliases": "other aliases"
 }

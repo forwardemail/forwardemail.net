@@ -227,7 +227,7 @@ async function onSearch(mailboxId, options, session, fn) {
               ) {
                 // not 1:*
                 parent.push({
-                  uid: tools.checkRangeQuery(term.value, ne)
+                  uid: tools.checkRangeQuery(term.value, ne, term.isContiguous)
                 });
               } else if (ne) {
                 parent.push({

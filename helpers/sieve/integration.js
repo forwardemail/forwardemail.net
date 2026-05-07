@@ -150,7 +150,26 @@ class SieveIntegration {
 
     // Initialize engine with enabled extensions
     this.engine = new SieveEngine({
-      extensions: this.config.enabledExtensions
+      extensions: this.config.enabledExtensions,
+      protectedHeaders: this.config.protectedHeaders || [
+        'from',
+        'sender',
+        'return-path',
+        'dkim-signature',
+        'arc-seal',
+        'arc-message-signature',
+        'arc-authentication-results',
+        'authentication-results',
+        'received',
+        'received-spf',
+        'message-id',
+        'date',
+        'mime-version',
+        'content-type',
+        'content-transfer-encoding'
+      ],
+      allowedRedirectDomains: this.config.allowedRedirectDomains || [],
+      redirectDomainBlacklist: this.config.redirectDomainBlacklist || []
     });
   }
 
