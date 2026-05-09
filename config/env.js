@@ -24,7 +24,9 @@ const env = require('@ladjs/env')({
 Error.stackTraceLimit = Number.POSITIVE_INFINITY;
 
 // https://github.com/zone-eu/wildduck/issues/768
-if (errors)
+// (errors is shimmed to {} in browser bundles via the package.json `browser`
+// field, so guard against the missing setGelf method to avoid TypeError)
+if (errors && typeof errors.setGelf === 'function')
   errors.setGelf({
     // emit(...args) {
     emit() {
