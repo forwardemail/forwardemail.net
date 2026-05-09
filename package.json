@@ -23,10 +23,10 @@
     "./helpers/is-tls-error": false,
     "./helpers/is-ssl-error": false,
     "./helpers/is-socket-error": false,
-    "signal-exit": false,
-    "signal-exit/dist/mjs/browser.js": false,
-    "signal-exit/dist/mjs/index.js": false,
-    "signal-exit/dist/mjs/signals.js": false
+    "signal-exit": "./helpers/browser-shims/signal-exit.js",
+    "signal-exit/dist/mjs/browser.js": "./helpers/browser-shims/signal-exit.js",
+    "signal-exit/dist/mjs/index.js": "./helpers/browser-shims/signal-exit.js",
+    "signal-exit/dist/mjs/signals.js": "./helpers/browser-shims/signal-exit.js"
   },
   "bugs": {
     "url": "https://github.com/forwardemail/forwardemail.net/issues"
