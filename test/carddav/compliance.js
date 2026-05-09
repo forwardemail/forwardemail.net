@@ -279,6 +279,19 @@ test('should respond to OPTIONS request with correct headers', async (t) => {
     t.true(allowedMethods.includes('PROPPATCH'));
     t.true(allowedMethods.includes('REPORT'));
     t.true(allowedMethods.includes('MKCOL'));
+    //
+    // Apple Push Notification subscription endpoint at /apns is reached
+    // via POST (initial registration) and GET (periodic refresh per
+    // <CS:refresh-interval>).  iOS Contacts.app probes with an OPTIONS
+    // preflight first; if POST is missing from Allow, dataaccessd skips
+    // registration entirely and the user never receives push updates.
+    // Mirrors Apple's `APNSubscriptionResource` and Cyrus IMAP's
+    // `http_applepush.c` (`ALLOW_READ|ALLOW_POST`).
+    //
+    t.true(
+      allowedMethods.includes('POST'),
+      'POST must be advertised so iOS Apple Push (/apns) registration works'
+    );
   } catch (err) {
     t.fail(`OPTIONS request failed: ${err.message}`);
   }

@@ -1147,6 +1147,24 @@ class CalDAV extends API {
       pushSubscriptionURL: env.CALDAV_HOST
         ? `https://${env.CALDAV_HOST}/apns`
         : '/apns',
+      //
+      // Apple's ccs-calendarserver default is 2 days (172800 seconds, see
+      // twistedcaldav/stdconfig.py APNS `SubscriptionRefreshIntervalSeconds`).
+      // The caldav-adapter default of 3600s causes iOS dataaccessd to
+      // re-POST every registration ~48x per day per device per calendar,
+      // which is a meaningful database write multiplier with no functional
+      // benefit -- pushes are still delivered the moment the underlying
+      // collection changes; the refresh is purely a liveness ping.
+      //
+      pushRefreshInterval: '172800',
+      //
+      // <CS:env> is the APNs environment of the certificate.  Forward
+      // Email's get-apn-certs always fetches production XServer certs
+      // (apn.Provider is constructed with `production: true`), so we
+      // advertise PRODUCTION here to match.  iOS silently drops pushes
+      // when the advertised env disagrees with the cert's env.
+      //
+      pushEnv: 'PRODUCTION',
       data: {
         createCalendar: this.createCalendar,
         updateCalendar: this.updateCalendar,
@@ -1277,14 +1295,22 @@ class CalDAV extends API {
       }
 
       //
-      // Apple CalDAV push-discovery: POST /apns is the iOS Calendar
+      // Apple CalDAV push-discovery: GET/POST /apns is the iOS Calendar
       // subscription endpoint advertised in our PROPFIND <CS:push-transports>
       // <CS:subscription-url>.  Handle it BEFORE handleManagedAttachment
       // (which only knows /dav/<user>/<cal>/<event> URL shapes and would
       // otherwise reject /apns with 400).
       //
+      // Both GET and POST are accepted to match Apple's reference
+      // `APNSubscriptionResource` (which aliases `http_GET = http_POST`) and
+      // Cyrus IMAP's `http_applepush.c` (which advertises both via
+      // `ALLOW_READ|ALLOW_POST`).  iOS uses POST for the initial
+      // registration but periodically re-registers via GET with query
+      // parameters (per <CS:refresh-interval>); rejecting GET means tokens
+      // silently drift past expiry until the user toggles the account.
+      //
       if (
-        ctx.method === 'POST' &&
+        (ctx.method === 'POST' || ctx.method === 'GET') &&
         (ctx.path === '/apns' || ctx.path === '/dav/apns')
       ) {
         try {
@@ -1308,6 +1334,10 @@ class CalDAV extends API {
           // Without this, parseRequest({}) returns null fields and the
           // handler 400s on every iOS subscription POST.
           //
+          // GET requests carry their fields in the query string and have no
+          // body to read; attempting `rawBody` on a GET would block forever
+          // waiting for bytes that never arrive.
+          //
           const existing = ctx.request.body;
           const isEmptyBody =
             existing === null ||
@@ -1316,7 +1346,7 @@ class CalDAV extends API {
             (typeof existing === 'object' &&
               !Buffer.isBuffer(existing) &&
               Object.keys(existing).length === 0);
-          if (isEmptyBody) {
+          if (ctx.method === 'POST' && isEmptyBody) {
             try {
               ctx.request.body = await rawBody(ctx.req, {
                 length: ctx.req.headers['content-length'],

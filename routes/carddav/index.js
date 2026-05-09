@@ -40,9 +40,19 @@ router.get('/', (ctx) => {
 // OPTIONS route for CORS and DAV discovery
 router.options('(.*)', (ctx) => {
   ctx.set('DAV', '1, 3, addressbook');
+  //
+  // POST is required for the Apple Push Notification subscription endpoint
+  // (`/apns` and `/dav/apns`, see caldav-pubsubdiscovery.txt) which iOS
+  // Contacts.app probes with an OPTIONS preflight before sending the
+  // form-encoded `token=...&key=...` registration body.  Without POST in
+  // the Allow header iOS dataaccessd rejects the endpoint and silently
+  // never registers the device for push.  HEAD is included so generic
+  // CardDAV clients (e.g. macOS AddressBook) can probe addressbook URLs
+  // cheaply without falling back to GET.
+  //
   ctx.set(
     'Allow',
-    'OPTIONS, GET, PUT, DELETE, PROPFIND, PROPPATCH, REPORT, MKCOL'
+    'OPTIONS, HEAD, GET, POST, PUT, DELETE, PROPFIND, PROPPATCH, REPORT, MKCOL'
   );
   ctx.status = 200;
 });
@@ -1090,8 +1100,25 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
             subscriptionURL
           )}</d:href></cs:subscription-url>` +
           `<cs:apsbundleid>${encodeXMLEntities(topic)}</cs:apsbundleid>` +
+          //
+          // <CS:env> mirrors the APNs environment of the certificate.  Apple's
+          // ccs-calendarserver default and Cyrus's reference impl both gate this
+          // on cert provenance.  Forward Email uses production XServer certs in
+          // every environment except local CI test (where no certs are loaded
+          // and this branch isn't reached anyway).
+          //
           '<cs:env>PRODUCTION</cs:env>' +
-          '<cs:refresh-interval>3600</cs:refresh-interval>' +
+          //
+          // <CS:refresh-interval> tells iOS how often to re-POST its token to
+          // the subscription URL.  Apple's ccs-calendarserver default is 2 days
+          // (172800 seconds, see twistedcaldav/stdconfig.py APNS
+          // `SubscriptionRefreshIntervalSeconds`).  Cyrus uses 14 days via
+          // `aps_expiry`.  A short value (e.g. the previous 1-hour figure)
+          // multiplies registration writes by ~48x with no functional benefit
+          // because iOS only delivers a push when the underlying collection
+          // changes -- the refresh is purely a liveness ping.
+          //
+          '<cs:refresh-interval>172800</cs:refresh-interval>' +
           '</cs:transport>';
       }
     } catch (err) {
@@ -1685,13 +1712,26 @@ davRouter.all('/', propFindPrincipal);
 // whether the subscription-url advertised in PROPFIND is interpreted as
 // absolute or relative-to-server-root.
 //
+// Both GET and POST are accepted, matching Apple's reference
+// `APNSubscriptionResource` (which aliases `http_GET = http_POST`) and
+// Cyrus IMAP's `http_applepush.c` (which advertises
+// `ALLOW_READ|ALLOW_POST`).  The Cyrus implementation explicitly notes
+// "POST has been seen with URL params, so for now we just call the GET
+// handler", reflecting that real iOS devices send both methods --
+// notably the periodic re-registration that follows
+// <CS:refresh-interval> uses GET with query parameters.  Without the GET
+// route forwardemail's CardDAV server silently 404s those refreshes and
+// device tokens drift out of date until the user toggles the account.
+//
 async function apnsHandler(ctx) {
   ctx.state.davSubtopic = 'com.apple.mobileaddressbook';
   await davApnsSubscribe(ctx);
 }
 
 router.post('/apns', apnsHandler);
+router.get('/apns', apnsHandler);
 davRouter.post('/apns', apnsHandler);
+davRouter.get('/apns', apnsHandler);
 
 router.use(davRouter.routes());
 router.all('(.*)', propFindPrincipal);

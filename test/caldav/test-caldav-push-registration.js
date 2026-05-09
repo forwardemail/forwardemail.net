@@ -720,6 +720,82 @@ test('send-apn: sendApnForService throws on unknown service', async (t) => {
 });
 
 // ---------------------------------------------------------------------------
+// Test 27: GET-style (query-only) subscription persists end-to-end.
+//
+// Apple's reference `APNSubscriptionResource.http_GET = http_POST` and
+// Cyrus IMAP's `meth_get_applepush` both accept GET; iOS uses GET for the
+// periodic re-registration that follows <CS:refresh-interval>.  Forward
+// Email's CalDAV/CardDAV servers route GET /apns through `apnsHandler` ->
+// `davApnsSubscribe`, which must read `token` and `key` from `ctx.query`
+// when there is no body.  This regression test guards against any future
+// removal of the query-string fallback in `parseRequest`.
+// ---------------------------------------------------------------------------
+
+test('dav-apns-subscribe: GET-style request (query only, no body) persists', async (t) => {
+  const Aliases = require('#models/aliases');
+  const davApnsSubscribe = require('#helpers/dav-apns-subscribe');
+
+  const fake = makeFakeAlias();
+  const stub = stubFindOne(Aliases, fake);
+  try {
+    // Simulates `GET /apns?token=tokG&key=cal-uuid-G` with no request body,
+    // exactly as iOS dataaccessd issues the periodic refresh.
+    const ctx = makeCtx({
+      query: { token: 'tokG', key: 'cal-uuid-G' },
+      aliasId: 'alias-G'
+    });
+    await davApnsSubscribe(ctx, { subtopic: 'com.apple.mobilecal' });
+    t.is(ctx.status, 200, 'GET-style subscription must return 200 OK');
+    t.is(fake.aps.length, 1, 'subscription must be persisted exactly once');
+    t.is(fake.aps[0].device_token, 'tokG');
+    t.is(fake.aps[0].key, 'cal-uuid-G');
+    t.is(fake.aps[0].subtopic, 'com.apple.mobilecal');
+    // iOS does NOT send account-id at registration time -- the field must
+    // remain unset, matching ccs-calendarserver behaviour.
+    t.is(fake.aps[0].account_id, undefined);
+  } finally {
+    stub.restore();
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Test 28: GET-style refresh of an existing subscription is idempotent.
+//
+// iOS re-issues the same (token, key) tuple every <CS:refresh-interval>
+// seconds.  The handler MUST update in place rather than appending a new
+// row, otherwise alias.aps[] grows unboundedly across the lifetime of any
+// long-lived device.
+// ---------------------------------------------------------------------------
+
+test('dav-apns-subscribe: GET-style refresh is idempotent', async (t) => {
+  const Aliases = require('#models/aliases');
+  const davApnsSubscribe = require('#helpers/dav-apns-subscribe');
+
+  const fake = makeFakeAlias();
+  const stub = stubFindOne(Aliases, fake);
+  try {
+    const ctxA = makeCtx({
+      query: { token: 'tokR', key: 'cal-uuid-R' },
+      aliasId: 'alias-R'
+    });
+    await davApnsSubscribe(ctxA, { subtopic: 'com.apple.mobilecal' });
+    t.is(ctxA.status, 200);
+    t.is(fake.aps.length, 1);
+
+    // Second GET with the same (token, key) pair (refresh tick).
+    const ctxB = makeCtx({
+      query: { token: 'tokR', key: 'cal-uuid-R' },
+      aliasId: 'alias-R'
+    });
+    await davApnsSubscribe(ctxB, { subtopic: 'com.apple.mobilecal' });
+    t.is(ctxB.status, 200);
+    t.is(fake.aps.length, 1, 'refresh MUST NOT append a duplicate entry');
+  } finally {
+    stub.restore();
+  }
+});
+
+// ---------------------------------------------------------------------------
 // Test 27: send-apn (Mail variant) skips alias with empty aps[]
 // (mirrors the Calendar/Contacts coverage to lock in the unified path)
 // ---------------------------------------------------------------------------
