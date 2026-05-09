@@ -253,6 +253,7 @@ module.exports = (redis) => ({
               ],
               'script-src': [
                 ..._.without(defaultSrc, 'data:'),
+                "'unsafe-inline'",
                 //
                 // 'strict-dynamic' makes the host allowlist below a
                 // no-op for <script> elements: only scripts carrying the
@@ -264,7 +265,7 @@ module.exports = (redis) => ({
                 // The host allowlist is retained as a fallback for
                 // browsers that don't yet implement strict-dynamic.
                 //
-                "'strict-dynamic'",
+                // "'strict-dynamic'",
                 'https://challenges.cloudflare.com',
                 'https://www.paypal.com',
                 ...(env.NODE_ENV === 'production'
