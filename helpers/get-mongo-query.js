@@ -5,9 +5,9 @@
 
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
-const parser = require('mongodb-query-parser');
 const { boolean } = require('boolean');
 
+const assertAllowedMongoQuery = require('./assert-no-blocked-mongo-operators');
 const splitSpaces = require('./split-spaces');
 const _ = require('#helpers/lodash');
 
@@ -29,6 +29,12 @@ function getMongoQuery(ctx) {
       const [key, value] = q.split('=');
 
       if (!isSANB(key) || !isSANB(value)) {
+        hasError = true;
+        break;
+      }
+
+      // Reject any attempt to use a MongoDB operator as a field name
+      if (key.startsWith('$')) {
         hasError = true;
         break;
       }
@@ -72,9 +78,15 @@ function getMongoQuery(ctx) {
 
   if (isSANB(ctx.query.mongodb_query)) {
     try {
-      query = parser.parseFilter(ctx.query.mongodb_query);
-      if (!query || Object.keys(query).length === 0)
-        throw new Error('Query was not parsed propery');
+      query = JSON.parse(ctx.query.mongodb_query);
+      if (
+        !query ||
+        typeof query !== 'object' ||
+        Array.isArray(query) ||
+        Object.keys(query).length === 0
+      )
+        throw new Error('Query was not parsed properly');
+      assertAllowedMongoQuery(query);
     } catch (err) {
       ctx.logger.warn(err);
       throw Boom.badRequest(err.message);

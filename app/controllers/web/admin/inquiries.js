@@ -9,12 +9,12 @@ const getStream = require('get-stream');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
-const parser = require('mongodb-query-parser');
 const previewEmail = require('preview-email');
 const nodemailer = require('nodemailer');
 const Axe = require('axe');
 const _ = require('#helpers/lodash');
 
+const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
 const { Emails, Inquiries, Users } = require('#models');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -57,10 +57,17 @@ async function list(ctx) {
 
   if (isSANB(ctx.query.mongodb_query)) {
     try {
-      query = parser.parseFilter(ctx.query.mongodb_query);
-      if (!query || Object.keys(query).length === 0) {
-        throw new Error('Query was not parsed propery');
+      query = JSON.parse(ctx.query.mongodb_query);
+      if (
+        !query ||
+        typeof query !== 'object' ||
+        Array.isArray(query) ||
+        Object.keys(query).length === 0
+      ) {
+        throw new Error('Query was not parsed properly');
       }
+
+      assertAllowedMongoQuery(query);
     } catch (err) {
       ctx.logger.warn(err);
       throw Boom.badRequest(err.message);

@@ -34,7 +34,7 @@ include ../../_pagination
                 )
             td.align-middle
               a(
-                href=l(`/admin/users?mongodb_query={ email: "${inquiry.email}" }`),
+                href=l(`/admin/users?mongodb_query=${encodeURIComponent(JSON.stringify({ email: inquiry.email }))}`),
                 target="_blank",
                 rel="noopener noreferrer"
               )= inquiry.email

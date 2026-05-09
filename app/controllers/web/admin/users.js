@@ -8,10 +8,10 @@ const RE2 = require('re2');
 const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
-const parser = require('mongodb-query-parser');
 const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 
+const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
 const { Domains, Users } = require('#models');
 // Const { removeUserAliasBackups } = require('#helpers/remove-alias-backup');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
@@ -46,10 +46,17 @@ async function list(ctx) {
 
   if (isSANB(ctx.query.mongodb_query)) {
     try {
-      query = parser.parseFilter(ctx.query.mongodb_query);
-      if (!query || Object.keys(query).length === 0) {
-        throw new Error('Query was not parsed propery');
+      query = JSON.parse(ctx.query.mongodb_query);
+      if (
+        !query ||
+        typeof query !== 'object' ||
+        Array.isArray(query) ||
+        Object.keys(query).length === 0
+      ) {
+        throw new Error('Query was not parsed properly');
       }
+
+      assertAllowedMongoQuery(query);
     } catch (err) {
       ctx.logger.warn(err);
       throw Boom.badRequest(err.message);

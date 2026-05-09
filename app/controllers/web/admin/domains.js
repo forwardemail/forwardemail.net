@@ -8,7 +8,6 @@ const punycode = require('node:punycode');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
-const parser = require('mongodb-query-parser');
 const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
@@ -16,6 +15,7 @@ const isEmail = require('#helpers/is-email');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
+const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
 const { Users, Domains } = require('#models');
 
 async function list(ctx) {
@@ -49,10 +49,17 @@ async function list(ctx) {
 
   if (isSANB(ctx.query.mongodb_query)) {
     try {
-      query = parser.parseFilter(ctx.query.mongodb_query);
-      if (!query || Object.keys(query).length === 0) {
-        throw new Error('Query was not parsed propery');
+      query = JSON.parse(ctx.query.mongodb_query);
+      if (
+        !query ||
+        typeof query !== 'object' ||
+        Array.isArray(query) ||
+        Object.keys(query).length === 0
+      ) {
+        throw new Error('Query was not parsed properly');
       }
+
+      assertAllowedMongoQuery(query);
     } catch (err) {
       ctx.logger.warn(err);
       throw Boom.badRequest(err.message);

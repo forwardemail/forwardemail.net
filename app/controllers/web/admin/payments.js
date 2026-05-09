@@ -8,11 +8,11 @@ const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const paginate = require('koa-ctx-paginate');
-const parser = require('mongodb-query-parser');
 
 const _ = require('#helpers/lodash');
 const config = require('#config');
 const refundHelper = require('#helpers/refund');
+const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
 const { Domains, Payments, Users } = require('#models');
 
 const { PAYMENT_DURATIONS } = config.payments;
@@ -77,10 +77,17 @@ async function list(ctx) {
 
   if (isSANB(ctx.query.mongodb_query)) {
     try {
-      const mongoQuery = parser.parseFilter(ctx.query.mongodb_query);
-      if (!mongoQuery || Object.keys(mongoQuery).length === 0) {
+      const mongoQuery = JSON.parse(ctx.query.mongodb_query);
+      if (
+        !mongoQuery ||
+        typeof mongoQuery !== 'object' ||
+        Array.isArray(mongoQuery) ||
+        Object.keys(mongoQuery).length === 0
+      ) {
         throw new Error('Query was not parsed properly');
       }
+
+      assertAllowedMongoQuery(mongoQuery);
 
       query =
         ctx.query.q && Object.keys(query).length > 0

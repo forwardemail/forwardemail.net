@@ -53,7 +53,7 @@ include ../../_pagination
                   each member in domain.members.filter(member => member && member.user && member.user.id && member.user.email)
                     li.list-inline-item
                       a.small.text-monospace(
-                        href=l(`/admin/users?mongodb_query={ email: "${member.user.email}" }`),
+                        href=l(`/admin/users?mongodb_query=${encodeURIComponent(JSON.stringify({ email: member.user.email }))}`),
                         class=member.group === "admin" ? false : "text-muted"
                       )= member.user.email
                       = " "
