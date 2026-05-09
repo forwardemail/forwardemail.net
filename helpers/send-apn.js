@@ -4,72 +4,179 @@
  */
 
 const crypto = require('node:crypto');
-
 const { setTimeout } = require('node:timers/promises');
+
 const apn = require('@parse/node-apn');
 const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
 const pMap = require('p-map');
 const revHash = require('rev-hash');
+const splitLines = require('split-lines');
 
 const Aliases = require('#models/aliases');
 const config = require('#config');
 const getApnCerts = require('#helpers/get-apn-certs');
 const logger = require('#helpers/logger');
 
-let certs;
-let provider;
+//
+// Unified Apple Push Notification helper for all three DAV-style services
+// the project supports (Mail, Calendar, Contacts).  Historically this was
+// three near-identical files (helpers/send-apn.js plus the now-removed
+// helpers/send-apn-calendar.js and helpers/send-apn-contacts.js) which
+// duplicated the provider lifecycle, the 410 unsubscribe path, the
+// per-(account_id, device_token) rate-limit cache, and the topic-extraction
+// logic.  All three now share this single file.
+//
+// Per-service differences captured in SERVICES:
+//
+//   * cert      -- key inside the `certs` bundle returned by getApnCerts
+//   * subtopic  -- the alias.aps[].subtopic value to filter on
+//   * cachePrefix -- Redis key prefix for the 1-minute send-coalescing lock
+//   * errorLabel  -- label used in the "APS X failed" fatal error
+//
+// Exports:
+//   * default    = sendApn (Mail variant with mailboxPath, used by IMAP)
+//   * sendApnCalendar  -- CalDAV push entry-point
+//   * sendApnContacts  -- CardDAV push entry-point
+//   * sendApnForService -- low-level dispatcher used by the three above
+//
+// Call sites import the named exports directly via
+// `const { sendApnCalendar } = require('#helpers/send-apn');` -- the old
+// thin wrapper modules were intentionally deleted in v15 to avoid having
+// two equivalent require paths for the same function.
+//
 
-function createNote(obj, mailboxPath) {
+const SERVICES = {
+  Mail: {
+    cert: 'Mail',
+    subtopic: 'com.apple.mobilemail',
+    cachePrefix: 'aps_check',
+    errorLabel: 'APS failed'
+  },
+  Calendar: {
+    cert: 'Calendar',
+    subtopic: 'com.apple.mobilecal',
+    cachePrefix: 'aps_calendar_check',
+    errorLabel: 'APS Calendar failed'
+  },
+  Contact: {
+    cert: 'Contact',
+    subtopic: 'com.apple.mobileaddressbook',
+    cachePrefix: 'aps_contacts_check',
+    errorLabel: 'APS Contacts failed'
+  }
+};
+
+let certs;
+const providers = Object.create(null);
+
+function ensureTopic(certBundle, certKey) {
+  if (certBundle[certKey].topic) return certBundle[certKey].topic;
+  const cert = new crypto.X509Certificate(certBundle[certKey].certificate);
+  // Mirrors the get-apn-certs helper (which already uses the same
+  // splitLines(...)[0].split('UID=')[1].trim() pattern for Mail).
+  certBundle[certKey].topic = splitLines(cert.subject)[0]
+    .split('UID=')[1]
+    .trim();
+  return certBundle[certKey].topic;
+}
+
+function isProviderAlive(provider) {
+  return Boolean(
+    provider &&
+      provider.client &&
+      provider.client.session &&
+      !provider.client.session.closed &&
+      !provider.client.session.destroyed
+  );
+}
+
+function createNote(certBundle, service, obj, options) {
   // <https://github.com/argon/push_notify/blob/05b3d8025b217694e45eab8202f3d460f9237652/lib/controller.js#L48>
-  // https://github.com/argon/push_notify/pull/6#issue-179062203
+  // <https://github.com/argon/push_notify/pull/6#issue-179062203>
   const note = new apn.Notification();
 
-  // NOTE: without this fix, the notificatin is sent and not displayed (?)
+  // Without urlArgs the notification is delivered but never displayed.
   // <https://github.com/node-apn/node-apn/issues/638>
   note.urlArgs = [];
 
   note.pushType = 'alert';
-  note.topic = certs.Mail.topic;
+  //
+  // NOTE: it's not as simple as setting topic to `com.apple.mobilemail`
+  // <https://lists.andrew.cmu.edu/pipermail/info-cyrus/2017-August/039743.html#:~:text=aps_topic%3A%20com.apple.mail.XServer.xxxxxxxxxxxxxxx%0A%0Aaps_topic%20is%20the%20common%20name%20take%20from%20the%20certificate.%20It%E2%80%99s%20sent%20to%20the%20mobile%20device%20so%20that%20it%20will%20match%20the%20source%20of%20the%20push%20notification%20when%20it%20arrives.>
+  // note.topic = 'com.apple.mobilemail';
+  //
+  // instead, the topic is extracted from the common name of the certificate:
+  //
+  // note.topic = 'com.apple.mail.XServer.xxxxxxxxxxxxxxx';
+  //
+  // to extract the <UUID> portion we need to follow similar process to this
+  // (but in a more automated way)
+  // <https://github.com/jcvernaleo/macports-ports/blob/72f6ba4623151b6171ed2262af0bcaba88d3dd93/mail/dovecot/Portfile#L216-L247>
+  //
+  note.topic = certBundle[service.cert].topic;
   note.expiry = Math.floor(dayjs().add(24, 'hour').toDate().getTime() / 1000);
 
   note.aps = {
-    'account-id': obj.account_id,
-    // <https://github.com/freswa/dovecot-xaps-daemon/issues/39#issuecomment-2262987315>
-    m: crypto.createHash('md5').update(mailboxPath).digest('hex')
+    'account-id': obj.account_id
   };
+
+  // Mail-only: the `m` field carries the md5 of the mailbox path so the
+  // device knows which mailbox to refresh.
+  // <https://github.com/freswa/dovecot-xaps-daemon/issues/39#issuecomment-2262987315>
+  if (service.cert === 'Mail') {
+    note.aps.m = crypto
+      .createHash('md5')
+      .update(options.mailboxPath || 'INBOX')
+      .digest('hex');
+  }
 
   return note;
 }
 
-// <https://github.com/nodemailer/wildduck/issues/711>
-async function sendApn(client, id, mailboxPath = 'INBOX') {
-  const alias = await Aliases.findOne({
-    id
-  })
-    .lean()
-    .select('+aps')
-    .exec();
+async function sendApnForService(serviceName, client, id, options = {}) {
+  const service = SERVICES[serviceName];
+  if (!service) throw new TypeError(`Unsupported APN service: ${serviceName}`);
+
+  const alias = await Aliases.findOne({ id }).lean().select('+aps').exec();
 
   if (!alias || !Array.isArray(alias.aps) || alias.aps.length === 0) return;
 
   //
-  // long-lived cached provider
+  // Filter to the registrations that belong to this service.
   //
-  // NOTE: we do not call `provider.shutdown(fn)` because we keep it alive
+  // alias.aps[] may contain a mix of Mail (com.apple.mobilemail), Calendar
+  // (com.apple.mobilecal) and Contacts (com.apple.mobileaddressbook)
+  // entries.  Sending a Calendar push (topic = certs.Calendar.topic,
+  // aps.account-id = <Mail account UUID>) to a Mail device token is
+  // silently dropped by iOS dataaccessd because the topic + account-id
+  // pair does not match any account on the device.  Without this filter
+  // the pushes appear to be sent but never reach the user.
   //
-  if (
-    !provider ||
-    !provider?.client?.session ||
-    provider?.client?.session?.closed ||
-    provider?.client?.session?.destroyed
-  ) {
-    // const caName = await client.get('aps_ca');
+  // For Mail we accept either an explicit subtopic match OR no subtopic
+  // (legacy registrations from before subtopic enforcement -- those were
+  // all Mail registrations, since Calendar/Contacts push registration
+  // post-dates the subtopic field).
+  //
+  const registrations = alias.aps.filter((a) =>
+    service.cert === 'Mail'
+      ? !a.subtopic || a.subtopic === service.subtopic
+      : a.subtopic === service.subtopic
+  );
+
+  if (registrations.length === 0) return;
+
+  //
+  // Long-lived cached provider (one per service).  We never call
+  // `provider.shutdown(fn)` because we keep the HTTP/2 connection alive.
+  //
+  if (!isProviderAlive(providers[serviceName])) {
     certs = await getApnCerts(client);
-    provider = new apn.Provider({
+    ensureTopic(certs, service.cert);
+    providers[serviceName] = new apn.Provider({
       logger,
-      cert: certs.Mail.certificate,
-      key: certs.Mail.privateKey,
+      cert: certs[service.cert].certificate,
+      key: certs[service.cert].privateKey,
       // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L26>
       // ca: GEO_TRUST_CA,
       // rejectUnauthorized: false, // only needed if GEO_TRUST_CA passed
@@ -78,58 +185,46 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
     });
   }
 
-  await pMap(alias.aps, async (obj) => {
+  const provider = providers[serviceName];
+
+  await pMap(registrations, async (obj) => {
     try {
-      //
-      // NOTE: we only attempt to send to the account ID + device token pair once every minute
-      //
-      const key = `aps_check:${revHash(obj.account_id)}:${revHash(
+      // Coalesce sends to the same (account_id, device_token) pair to one
+      // per minute -- avoids piling up requests during a sync storm.
+      const key = `${service.cachePrefix}:${revHash(obj.account_id)}:${revHash(
         obj.device_token
       )}`;
       const cache = await client.get(key);
       if (cache) return;
       await client.set(key, true, 'PX', ms('1m'));
 
-      // artificial 10s delay
+      // Artificial 10s delay so multiple back-to-back mutations coalesce
+      // into a single push (matches the pre-unification behaviour).
       await setTimeout(ms('10s'));
 
-      const note = createNote(obj, mailboxPath);
+      const note = createNote(certs, service, obj, options);
 
       // <https://github.com/parse-community/node-apn/issues/114>
       const result = await provider.send(note, obj.device_token);
-
-      //
-      // NOTE: it's not as simple as setting topic to `com.apple.mobilemail`
-      // <https://lists.andrew.cmu.edu/pipermail/info-cyrus/2017-August/039743.html#:~:text=aps_topic%3A%20com.apple.mail.XServer.xxxxxxxxxxxxxxx%0A%0Aaps_topic%20is%20the%20common%20name%20take%20from%20the%20certificate.%20It%E2%80%99s%20sent%20to%20the%20mobile%20device%20so%20that%20it%20will%20match%20the%20source%20of%20the%20push%20notification%20when%20it%20arrives.>
-      // note.topic = 'com.apple.mobilemail';
-      //
-      // instead, the topic is extracted from the common name of the certificate:
-      //
-      // note.topic = 'com.apple.mail.XServer.xxxxxxxxxxxxxxx';
-      //
-      // to extract the <UUID> portion we need to follow similar process to this
-      // (but in a more automated way)
-      // <https://github.com/jcvernaleo/macports-ports/blob/72f6ba4623151b6171ed2262af0bcaba88d3dd93/mail/dovecot/Portfile#L216-L247>
-      //
 
       // note they have commented out code at this below link for setting priority in note
       // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L162-L163>
 
       // NOTE: if device returns 410 then unsubscribe on our side too
+      // If the device returns 410 we unsubscribe on our side too.
       if (Array.isArray(result.failed) && result.failed.length > 0) {
         const unregisteredDeviceTokens = result.failed
           .filter((r) => Number.parseInt(r.status, 10) === 410)
           .map((r) => r.device);
 
         if (unregisteredDeviceTokens.length === 0) {
-          const err = new TypeError('APS failed');
+          const err = new TypeError(service.errorLabel);
           err.isCodeBug = true;
           err.result = result;
           logger.fatal(err);
           return;
         }
 
-        // since there's only one device token
         if (
           unregisteredDeviceTokens.length !== 1 ||
           unregisteredDeviceTokens[0] !== obj.device_token
@@ -141,8 +236,8 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
           );
 
         const aliases = await Aliases.find({
-          // unsure of likelihood of apple having two of the same device tokens
-          // however we have a safeguard below to filter out for pair matches
+          // We are unsure of the likelihood of Apple issuing two identical
+          // device tokens; the pair-match filter below is the safeguard.
           'aps.device_token': obj.device_token
         })
           .select('+aps')
@@ -156,7 +251,7 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
               $set: {
                 aps: alias.aps.filter(
                   (a) =>
-                    // filter for pair safeguard
+                    // pair safeguard
                     a.account_id !== obj.account_id &&
                     a.device_token !== obj.device_token
                 )
@@ -166,10 +261,9 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
           { concurrency: config.concurrency }
         );
       } else {
-        // trigger sending the note again in another 20s
-        // (just to be sure the device refreshes)
+        // Re-send the note 20s later as a belt-and-braces refresh.
         await setTimeout(ms('20s'));
-        const note = createNote(obj, mailboxPath);
+        const note = createNote(certs, service, obj, options);
         provider
           .send(note, obj.device_token)
           .then()
@@ -180,5 +274,26 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
     }
   });
 }
+
+// Backward-compatible default export: Mail push with optional mailboxPath.
+async function sendApn(client, id, mailboxPath = 'INBOX') {
+  return sendApnForService('Mail', client, id, { mailboxPath });
+}
+
+async function sendApnCalendar(client, id) {
+  return sendApnForService('Calendar', client, id);
+}
+
+async function sendApnContacts(client, id) {
+  return sendApnForService('Contact', client, id);
+}
+
+// Default export remains `sendApn` (Mail) for full backward compatibility
+// with `require('#helpers/send-apn')` call sites.  Named helpers are
+// attached to the function for code that wants to switch on service.
+sendApn.sendApn = sendApn;
+sendApn.sendApnCalendar = sendApnCalendar;
+sendApn.sendApnContacts = sendApnContacts;
+sendApn.sendApnForService = sendApnForService;
 
 module.exports = sendApn;

@@ -18,6 +18,7 @@ const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendApn = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 // const updateStorageUsed = require('#helpers/update-storage-used');
 
@@ -131,6 +132,18 @@ async function onRename(path, newPath, session, fn) {
         mailbox: mailbox._id.toString()
       }
     );
+
+    // send apple push notification (folder list changed; signal both old + new path)
+    sendApn(this.client, session.user.alias_id, path)
+      .then()
+      .catch((err) =>
+        this.logger.fatal(err, { session, resolver: this.resolver })
+      );
+    sendApn(this.client, session.user.alias_id, newPath)
+      .then()
+      .catch((err) =>
+        this.logger.fatal(err, { session, resolver: this.resolver })
+      );
 
     // Ensure default mailboxes exist after rename
     ensureDefaultMailboxes(this, session, true) // 3rd arg is to purge cache

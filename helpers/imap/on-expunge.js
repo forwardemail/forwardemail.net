@@ -25,6 +25,7 @@ const Mailboxes = require('#models/mailboxes');
 const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendApn = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
@@ -262,6 +263,13 @@ async function onExpunge(mailboxId, update, session, fn) {
           uids: messages.map((m) => m.uid)
         }
       );
+
+      // send apple push notification (deletion changes folder counts)
+      sendApn(this.client, session.user.alias_id, mailbox.path)
+        .then()
+        .catch((err) =>
+          this.logger.fatal(err, { session, resolver: this.resolver })
+        );
     }
 
     try {

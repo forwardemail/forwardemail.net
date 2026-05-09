@@ -1748,7 +1748,7 @@ async function parsePayload(data, ws) {
 
                 // send user push notification
                 if (!err)
-                  sendApn(this.client, alias.id)
+                  sendApn(this.client, alias.id, targetFolder || 'INBOX')
                     .then()
                     .catch((err) =>
                       logger.fatal(err, { session, resolver: this.resolver })
@@ -1811,6 +1811,27 @@ async function parsePayload(data, ws) {
                 );
 
                 if (imipResult && imipResult.processed) {
+                  //
+                  // Invalidate the CalDAV negative-cache so the next
+                  // CalDAV sync request processes this invite immediately
+                  // rather than waiting for the 30 s TTL to expire.
+                  //
+                  // RFC 6638 §3.2: the server MUST deliver scheduling
+                  // messages to the attendee's scheduling inbox promptly.
+                  // A stale negative-cache entry would suppress delivery
+                  // for up to 30 s after the message arrives.
+                  //
+                  if (this.client && session.user && session.user.alias_id) {
+                    this.client
+                      .del(`caldav_inv_empty:${session.user.alias_id}`)
+                      .catch((delErr) => {
+                        logger.warn(
+                          'Failed to invalidate CalDAV invite cache after iMIP store',
+                          { error: delErr.message }
+                        );
+                      });
+                  }
+
                   logger.info('Processed iMIP message from incoming email', {
                     session,
                     user: { id: session.user.alias_user_id },

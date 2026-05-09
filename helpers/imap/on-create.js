@@ -19,6 +19,7 @@ const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendApn = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
@@ -142,6 +143,13 @@ async function onCreate(path, session, fn) {
         mailbox: mailbox._id.toString()
       }
     );
+
+    // send apple push notification (folder list changed)
+    sendApn(this.client, session.user.alias_id, path)
+      .then()
+      .catch((err) =>
+        this.logger.fatal(err, { session, resolver: this.resolver })
+      );
 
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)

@@ -24,6 +24,7 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendApn = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
@@ -197,6 +198,13 @@ async function onDelete(path, session, fn) {
         mailbox: mailbox._id.toString()
       }
     );
+
+    // send apple push notification (folder list changed)
+    sendApn(this.client, session.user.alias_id, path)
+      .then()
+      .catch((err) =>
+        this.logger.fatal(err, { session, resolver: this.resolver })
+      );
 
     // Ensure default mailboxes exist after deletion
     ensureDefaultMailboxes(this, session, true) // 3rd arg is to purge cache

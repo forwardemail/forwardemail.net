@@ -158,7 +158,7 @@ test('CalendarInvites source enum is correct', (t) => {
   const { schema } = CalendarInvites;
   const field = schema.path('source');
 
-  t.deepEqual(field.enumValues, ['web', 'imip']);
+  t.deepEqual(field.enumValues, ['web', 'imip', 'caldav-local']);
 });
 
 test('CalendarInvites sourceMessageId field exists', (t) => {

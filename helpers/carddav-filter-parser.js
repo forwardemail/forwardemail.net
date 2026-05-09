@@ -316,6 +316,31 @@ class CardDAVFilterParser {
     }
 
     const collation = textMatch._attr?.collation || 'i;unicode-casemap';
+
+    //
+    // RFC 6352 §10.4.1: if the client requests a collation the server does
+    // not support, the server MUST respond with a 422 Unprocessable Entity
+    // status containing the card:supported-collation precondition violation.
+    //
+    const SUPPORTED_COLLATIONS = new Set([
+      'i;ascii-casemap',
+      'i;unicode-casemap',
+      'i;octet',
+      // bare forms used by some clients (RFC 4790 §4 aliases)
+      'ascii-casemap',
+      'unicode-casemap',
+      'octet'
+    ]);
+    if (!SUPPORTED_COLLATIONS.has(collation)) {
+      const err = new Error(
+        `Unsupported collation: ${collation}. ` +
+          'Supported collations: i;ascii-casemap, i;unicode-casemap, i;octet'
+      );
+      err.status = 422;
+      err.isSupportedCollationError = true;
+      throw err;
+    }
+
     const matchType = textMatch._attr?.['match-type'] || 'contains';
     const negateCondition = textMatch._attr?.['negate-condition'] === 'yes';
 
@@ -540,7 +565,16 @@ class CardDAVFilterParser {
   buildTextQuery(field, value, matchType, collation) {
     const isCaseInsensitive = collation.includes('i;');
     const flags = isCaseInsensitive ? 'i' : '';
-    return { [field]: this.buildRegexPattern(value, matchType, flags) };
+    //
+    // RFC 5051 (i;unicode-casemap): comparisons MUST be performed on
+    // Unicode NFC-normalized strings so that canonically equivalent
+    // sequences compare equal (e.g. é vs e + combining acute).
+    //
+    const normalizedValue =
+      collation === 'i;unicode-casemap' ? value.normalize('NFC') : value;
+    return {
+      [field]: this.buildRegexPattern(normalizedValue, matchType, flags)
+    };
   }
 
   /**
@@ -554,7 +588,10 @@ class CardDAVFilterParser {
   buildArrayTextQuery(field, value, matchType, collation) {
     const isCaseInsensitive = collation.includes('i;');
     const flags = isCaseInsensitive ? 'i' : '';
-    const regex = this.buildRegexPattern(value, matchType, flags);
+    // RFC 5051: NFC-normalize for i;unicode-casemap
+    const normalizedValue =
+      collation === 'i;unicode-casemap' ? value.normalize('NFC') : value;
+    const regex = this.buildRegexPattern(normalizedValue, matchType, flags);
 
     return {
       [field]: {
@@ -576,7 +613,10 @@ class CardDAVFilterParser {
   buildContentTextQuery(propertyName, value, matchType, collation) {
     const isCaseInsensitive = collation.includes('i;');
     const flags = isCaseInsensitive ? 'im' : 'm';
-    const escapedValue = _.escapeRegExp(value); // this.escapeRegex(value);
+    // RFC 5051: NFC-normalize for i;unicode-casemap
+    const normalizedValue =
+      collation === 'i;unicode-casemap' ? value.normalize('NFC') : value;
+    const escapedValue = _.escapeRegExp(normalizedValue); // this.escapeRegex(value);
 
     // Build regex to match property value in vCard content
     let pattern;

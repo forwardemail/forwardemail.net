@@ -387,6 +387,7 @@ function parseImipMessage(icalData) {
     let organizerEmail = null;
     let organizerCn = null;
     let organizerSentBy = null;
+    let organizerScheduleAgent = null;
     const organizer = component.getFirstProperty('organizer');
     if (organizer) {
       const organizerValue = organizer.getFirstValue();
@@ -404,6 +405,7 @@ function parseImipMessage(icalData) {
 
       organizerCn = organizer.getParameter('cn') || null;
       organizerSentBy = organizer.getParameter('sent-by') || null;
+      organizerScheduleAgent = organizer.getParameter('schedule-agent') || null;
       if (organizerSentBy) {
         organizerSentBy = organizerSentBy
           .replace(/^["']?mailto:/i, '')
@@ -470,6 +472,7 @@ function parseImipMessage(icalData) {
       organizerEmail,
       organizerCn,
       organizerSentBy,
+      organizerScheduleAgent,
       attendees,
       summary,
       sequence,
@@ -756,18 +759,86 @@ async function checkAndProcessImipMessage(parsedEmail, options = {}) {
     return null;
   }
 
-  // Check SCHEDULE-AGENT=CLIENT - if set, the client handles scheduling
-  if (imipData.attendees) {
-    const allClientScheduled = imipData.attendees.every(
-      (a) => a.scheduleAgent && a.scheduleAgent.toUpperCase() === 'CLIENT'
+  //
+  // Check SCHEDULE-AGENT=CLIENT — RFC 6638 §7.1 specifies this is a per-property
+  // parameter. We must only skip processing when the *recipient's own* attendee
+  // entry carries SCHEDULE-AGENT=CLIENT, not when any/all attendees have it.
+  //
+  // Google Calendar sets SCHEDULE-AGENT=CLIENT on the ORGANIZER's own ATTENDEE
+  // line to tell the receiving server not to send scheduling messages back to
+  // the organizer. The recipient's attendee line does NOT carry this parameter,
+  // so the old every()-based check incorrectly dropped the entire invite.
+  //
+  // Per RFC 6638 §7.1: "If the value of the SCHEDULE-AGENT property parameter
+  // is CLIENT, the calendar user agent is responsible for sending scheduling
+  // messages to the calendar users specified in the iCalendar object."
+  // This applies only to the calendar user agent of that specific attendee.
+  //
+  if (imipData.attendees && options.toEmail) {
+    const recipientEmail = options.toEmail.toLowerCase();
+    const recipientAttendee = imipData.attendees.find(
+      (a) => a.email === recipientEmail
     );
-    if (allClientScheduled && imipData.attendees.length > 0) {
-      logger.debug('iMIP message skipped - SCHEDULE-AGENT=CLIENT', {
-        uid: imipData.uid,
-        method: imipData.method
-      });
+    if (
+      recipientAttendee &&
+      recipientAttendee.scheduleAgent &&
+      recipientAttendee.scheduleAgent.toUpperCase() === 'CLIENT'
+    ) {
+      logger.debug(
+        'iMIP message skipped - recipient attendee has SCHEDULE-AGENT=CLIENT',
+        {
+          uid: imipData.uid,
+          method: imipData.method,
+          recipientEmail
+        }
+      );
       return null;
     }
+  }
+
+  //
+  // Also skip when the SENDER's own ATTENDEE entry carries SCHEDULE-AGENT=CLIENT.
+  // RFC 6638 §7.1: when an attendee's CUA is handling scheduling, the server
+  // must not auto-process iMIP messages sent by that attendee.
+  //
+  if (imipData.attendees && options.fromEmail) {
+    const senderEmail = options.fromEmail.toLowerCase();
+    const senderAttendee = imipData.attendees.find(
+      (a) => a.email === senderEmail
+    );
+    if (
+      senderAttendee &&
+      senderAttendee.scheduleAgent &&
+      senderAttendee.scheduleAgent.toUpperCase() === 'CLIENT'
+    ) {
+      logger.debug(
+        'iMIP message skipped - sender attendee has SCHEDULE-AGENT=CLIENT',
+        {
+          uid: imipData.uid,
+          method: imipData.method,
+          senderEmail
+        }
+      );
+      return null;
+    }
+  }
+
+  //
+  // Also skip if the ORGANIZER itself carries SCHEDULE-AGENT=CLIENT.
+  // This means the organizer's own CUA is handling all scheduling; the
+  // receiving server should not auto-process the message.
+  // (RFC 6638 §7.1, applied to the ORGANIZER property)
+  //
+  if (
+    imipData.organizerScheduleAgent &&
+    imipData.organizerScheduleAgent.toUpperCase() === 'CLIENT' &&
+    ['REQUEST', 'CANCEL', 'ADD'].includes(imipData.method)
+  ) {
+    logger.debug('iMIP message skipped - organizer has SCHEDULE-AGENT=CLIENT', {
+      uid: imipData.uid,
+      method: imipData.method
+    });
+    return null;
   }
 
   // If organizer email not in the message, use the recipient email

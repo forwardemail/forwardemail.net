@@ -9,13 +9,15 @@ const uuid = require('uuid');
 const { boolean } = require('boolean');
 
 const Aliases = require('#models/aliases');
+const { sendApnCalendar } = require('#helpers/send-apn');
 const CalendarEvents = require('#models/calendar-events');
+const CalendarInvites = require('#models/calendar-invites');
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
-const { generateResponseLinks } = require('#helpers/calendar-response');
+const calendarResponse = require('#helpers/calendar-response');
 
 //
 // Helper to extract the RECURRENCE-ID from a VEVENT as a string (or null).
@@ -926,15 +928,139 @@ async function sendCalendarEmail(
           }
 
           seenEmails.add(email);
+
+          //
+          // RFC 6638 §4 — Local Delivery Bypass
+          // If the attendee is a local user on this server, we can deliver the
+          // scheduling message directly to their CalendarInvites collection
+          // instead of sending an email.
+          //
+          let isLocalDelivery = false;
+          try {
+            const [localPart, domainPart] = email.split('@');
+            // RFC 6638: only REQUEST and CANCEL go through the local delivery
+            // bypass.  REPLY messages flow back to the organizer through the
+            // normal email path so existing iMIP processing remains intact.
+            if (localPart && domainPart && method !== 'REPLY') {
+              const domainDoc = await Domains.findOne({
+                name: domainPart,
+                plan: { $in: ['enhanced_protection', 'team'] },
+                has_smtp: true
+              })
+                .lean()
+                .exec();
+              if (
+                domainDoc &&
+                !domainDoc.is_global &&
+                !domainDoc.smtp_suspended_sent_at
+              ) {
+                const aliasDoc = await Aliases.findOne({
+                  name: localPart,
+                  domain: domainDoc._id,
+                  is_enabled: true,
+                  has_imap: true
+                })
+                  .lean()
+                  .exec();
+
+                if (
+                  aliasDoc &&
+                  !aliasDoc.is_banned &&
+                  aliasDoc.name !== '*' &&
+                  !aliasDoc.name.startsWith('/')
+                ) {
+                  isLocalDelivery = true;
+
+                  // Build a single-attendee ICS for the local delivery
+                  const vc = new ICAL.Component(['vcalendar', [], []]);
+                  for (const vtz of comp.getAllSubcomponents('vtimezone')) {
+                    vc.addSubcomponent(vtz);
+                  }
+
+                  vc.addSubcomponent(new ICAL.Component(v.toJSON()));
+                  const localIcs = buildICS(
+                    ctx,
+                    [
+                      {
+                        eventId: calendarEvent.eventId,
+                        calendar: calendar._id,
+                        ical: vc.toString()
+                      }
+                    ],
+                    calendar,
+                    method
+                  );
+
+                  // Create the CalendarInvites record directly
+                  await CalendarInvites.create({
+                    eventUid,
+                    organizerEmail: email,
+                    attendeeEmail: email,
+                    response:
+                      method === 'CANCEL' ? 'CANCELLED' : 'NEEDS-ACTION',
+                    method,
+                    source: 'caldav-local',
+                    rawIcs: localIcs,
+                    processed: false,
+                    processAttempts: 0,
+                    sequence: v.getFirstPropertyValue('sequence') || 0
+                  });
+
+                  //
+                  // RFC 6638 §3.2 — wake the attendee's iPhone immediately
+                  // so it processes the queued CalendarInvites record on its
+                  // next CalDAV request instead of waiting for the polling
+                  // interval (up to 15-60 min without push).
+                  //
+                  // ctx.client may be undefined in test environments.
+                  //
+                  if (ctx.client && aliasDoc.id) {
+                    sendApnCalendar(ctx.client, aliasDoc.id)
+                      .then()
+                      .catch((apnErr) =>
+                        ctx.logger.warn(
+                          apnErr,
+                          'RFC 6638 local delivery APN push failed',
+                          { attendeeEmail: email }
+                        )
+                      );
+                  }
+
+                  // Set SCHEDULE-STATUS to 1.2 (Delivered) for local delivery
+                  attendee.setParameter('schedule-status', '1.2');
+
+                  ctx.logger.debug('RFC 6638 local delivery successful', {
+                    eventId: calendarEvent.eventId,
+                    attendeeEmail: email,
+                    method
+                  });
+                }
+              }
+            }
+          } catch (localDeliveryErr) {
+            ctx.logger.error(
+              localDeliveryErr,
+              'RFC 6638 local delivery failed, falling back to email',
+              {
+                eventId: calendarEvent.eventId,
+                attendeeEmail: email
+              }
+            );
+            isLocalDelivery = false;
+          }
+
           const commonName = attendee.getParameter('cn');
-          if (commonName) {
-            to.push(`"${commonName}" <${email}>`);
-          } else {
-            to.push(email);
+          if (!isLocalDelivery) {
+            if (commonName) {
+              to.push(`"${commonName}" <${email}>`);
+            } else {
+              to.push(email);
+            }
           }
 
           // Store attendee info for response links (only for REQUEST method)
-          if (method === 'REQUEST' && eventUid) {
+          // Local delivery attendees do not get email response links
+          if (!isLocalDelivery && method === 'REQUEST' && eventUid) {
             attendeeInfo.push({
               email,
               commonName,
@@ -943,6 +1069,10 @@ async function sendCalendarEmail(
           }
         }
       }
+
+      // Write SCHEDULE-STATUS changes back to calendarEvent.ical so callers
+      // (e.g. caldav-server.js) and tests can observe the updated attendee state.
+      calendarEvent.ical = comp.toString();
 
       if (to.length > 0) {
         //
@@ -1007,7 +1137,7 @@ async function sendCalendarEmail(
               // Generate response links for this attendee (REQUEST method only)
               let html;
               if (method === 'REQUEST' && eventUid && attendee) {
-                const links = generateResponseLinks({
+                const links = calendarResponse.generateResponseLinks({
                   eventUid,
                   organizerEmail,
                   attendeeEmail: attendee.email
@@ -1044,7 +1174,7 @@ async function sendCalendarEmail(
           // Send individual emails with personalized Accept/Decline/Tentative links
           for (const attendee of attendeeInfo) {
             try {
-              const links = generateResponseLinks({
+              const links = calendarResponse.generateResponseLinks({
                 eventUid,
                 organizerEmail,
                 attendeeEmail: attendee.email
@@ -1122,6 +1252,15 @@ async function sendCalendarEmail(
                   const sa = att.getParameter('schedule-agent');
                   if (sa && ['CLIENT', 'NONE'].includes(sa.toUpperCase()))
                     continue;
+
+                  // Do not overwrite if it was already set to 1.2 (local delivery)
+                  const currentStatus = att.getParameter('schedule-status');
+                  if (
+                    currentStatus &&
+                    (currentStatus.startsWith('2.') || currentStatus === '1.2')
+                  )
+                    continue;
+
                   // 1.1 = "The scheduling message has been sent" (pending delivery)
                   att.setParameter('schedule-status', '1.1');
                   statusWritten = true;

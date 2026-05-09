@@ -16,6 +16,7 @@ const ICAL = require('ical.js');
 const caldavAdapter = require('caldav-adapter');
 const etag = require('etag');
 const falso = require('@ngneat/falso');
+
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const uuid = require('uuid');
@@ -30,14 +31,15 @@ const Calendars = require('#models/calendars');
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
 const config = require('#config');
+const env = require('#config/env');
 const isCodeBug = require('#helpers/is-code-bug');
 const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
-const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
-const sendApnCalendar = require('#helpers/send-apn-calendar');
+const getApnTopic = require('#helpers/get-apn-topic');
+const { sendApnCalendar } = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const { prepareICSForStorage } = require('#helpers/prepare-ics');
 const setupAuthSession = require('#helpers/setup-auth-session');
@@ -1090,6 +1092,15 @@ class CalDAV extends API {
       disableWellKnown: false,
       logEnabled: !env.AXE_SILENT,
       logLevel: env.NODE_ENV === 'production' ? 'warn' : 'debug',
+      // Apple CalDAV push-discovery (caldav-pubsubdiscovery.txt).
+      // When `pushTopicProvider` returns a topic string the adapter
+      // advertises <CS:push-transports> + <CS:pushkey> on PROPFIND so
+      // iOS Calendar can register a push subscription against /apns.
+      pushTopicProvider: ({ ctx }) =>
+        getApnTopic(ctx?.client || this.client, 'Calendar'),
+      pushSubscriptionURL: env.CALDAV_HOST
+        ? `https://${env.CALDAV_HOST}/apns`
+        : '/apns',
       data: {
         createCalendar: this.createCalendar,
         updateCalendar: this.updateCalendar,
@@ -1218,6 +1229,73 @@ class CalDAV extends API {
           bodyLength: body.length
         });
         // Fall through to caldavMiddleware below
+      }
+
+      //
+      // Apple CalDAV push-discovery: POST /apns is the iOS Calendar
+      // subscription endpoint advertised in our PROPFIND <CS:push-transports>
+      // <CS:subscription-url>.  Handle it BEFORE handleManagedAttachment
+      // (which only knows /dav/<user>/<cal>/<event> URL shapes and would
+      // otherwise reject /apns with 400).
+      //
+      if (
+        ctx.method === 'POST' &&
+        (ctx.path === '/apns' || ctx.path === '/dav/apns')
+      ) {
+        try {
+          // Authenticate using the same Basic Auth flow as the rest of
+          // the CalDAV stack so ctx.state.session.user.alias_id is set.
+          const credentials = basicAuth(ctx.req);
+          if (!credentials) throw Boom.unauthorized('Authentication required');
+          await setupAuthSession.call(
+            this,
+            ctx,
+            credentials.name,
+            credentials.pass
+          );
+          // bodyParser is disabled for the CalDAV server, so consume the
+          // raw request body manually for /apns POST (form-encoded by iOS).
+          if (
+            typeof ctx.request.body !== 'string' &&
+            typeof ctx.request.body !== 'object'
+          ) {
+            const raw = require('raw-body');
+            try {
+              ctx.request.body = await raw(ctx.req, {
+                length: ctx.req.headers['content-length'],
+                limit: '64kb',
+                encoding: 'utf8'
+              });
+            } catch {
+              ctx.request.body = '';
+            }
+          }
+
+          ctx.state.davSubtopic = 'com.apple.mobilecal';
+
+          const davApnsSubscribe = require('#helpers/dav-apns-subscribe');
+          await davApnsSubscribe(ctx);
+        } catch (err) {
+          const errStatus = err.isBoom
+            ? err.output.statusCode
+            : err.status || 500;
+          ctx.status = errStatus;
+          if (errStatus === 401) {
+            ctx.set(
+              'WWW-Authenticate',
+              'Basic realm="CalDAV", charset="UTF-8"'
+            );
+          }
+
+          ctx.body = '';
+          ctx.logger.warn('CalDAV /apns subscribe error', {
+            err,
+            url: ctx.url,
+            user_agent: ctx.get('User-Agent')
+          });
+        }
+
+        return;
       }
 
       //
@@ -1810,6 +1888,12 @@ class CalDAV extends API {
       }
     );
 
+    // send apple push notification so iOS Calendar refreshes its
+    // calendar-home listing and discovers the new collection.
+    sendApnCalendar(this.client, ctx.state.user.alias_id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
     return created;
   }
 
@@ -1960,6 +2044,12 @@ class CalDAV extends API {
           }
         }
       );
+
+      // send apple push notification so iOS Calendar picks up the
+      // PROPPATCH (display-name, color, description, timezone, order).
+      sendApnCalendar(this.client, ctx.state.user.alias_id)
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
 
       // return early
       return calendar;
@@ -3499,6 +3589,12 @@ class CalDAV extends API {
         }
       }
     );
+
+    // send apple push notification so iOS Calendar removes the deleted
+    // collection from its calendar-home listing on the next refresh.
+    sendApnCalendar(this.client, ctx.state.user.alias_id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
   }
 
   async deleteEvent(ctx, { eventId, principalId, calendarId, user }) {

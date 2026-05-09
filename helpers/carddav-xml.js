@@ -612,6 +612,8 @@ function getSyncCollectionXML(addressBook, changes, props) {
 
   xml.att('xmlns:d', 'DAV:');
   xml.att('xmlns:card', 'urn:ietf:params:xml:ns:carddav');
+  xml.att('xmlns:cal', 'urn:ietf:params:xml:ns:caldav');
+  xml.att('xmlns:cs', 'http://calendarserver.org/ns/');
 
   for (const response of responses) {
     const responseEl = xml.ele('d:response');

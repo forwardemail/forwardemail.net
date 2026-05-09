@@ -40,12 +40,13 @@
 const ICAL = require('ical.js');
 const isEmail = require('#helpers/is-email');
 const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
+const { sendCalendarEmail } = require('#helpers/send-calendar-email');
 
 const CalendarInvites = require('#models/calendar-invites');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
 const config = require('#config');
-const sendApnCalendar = require('#helpers/send-apn-calendar');
+const { sendApnCalendar } = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 
 // Maximum invites to process per CalDAV interaction
@@ -348,6 +349,63 @@ async function processReply(instance, ctx, invite, calendars) {
         }
       }
     );
+  }
+
+  //
+  // RFC 5546 §3.2.3: When an attendee sets PARTSTAT=DELEGATED and includes a
+  // DELEGATED-TO parameter, the server MUST forward a new REQUEST to the
+  // delegatee so they receive the invite.
+  //
+  if (invite.response && invite.response.toUpperCase() === 'DELEGATED') {
+    try {
+      const comp = new ICAL.Component(ICAL.parse(updatedIcal));
+      const vevent =
+        comp.getFirstSubcomponent('vevent') ||
+        comp.getFirstSubcomponent('vtodo');
+      if (vevent) {
+        const attendees = vevent.getAllProperties('attendee');
+        for (const attendee of attendees) {
+          const value = attendee.getFirstValue();
+          const email = value?.replace(/^mailto:/i, '').toLowerCase();
+          if (email === invite.attendeeEmail.toLowerCase()) {
+            const delegatedTo = attendee.getParameter('delegated-to');
+            const delegateeEmail = delegatedTo
+              ? delegatedTo.replace(/^"?mailto:/i, '').replace(/"?$/, '')
+              : null;
+            if (delegateeEmail && isEmail(delegateeEmail)) {
+              ctx.logger.debug(
+                'processReply: forwarding REQUEST to delegatee',
+                {
+                  inviteId: invite._id,
+                  delegateeEmail
+                }
+              );
+              const delegateCalEvent = {
+                ical: updatedIcal,
+                eventId: calendarEvent.eventId
+              };
+              sendCalendarEmail(
+                ctx,
+                replyCal,
+                delegateCalEvent,
+                'REQUEST',
+                calendarEvent.ical,
+                instance
+              ).catch((err) =>
+                ctx.logger.error(
+                  'processReply: failed to forward REQUEST to delegatee',
+                  { err, delegateeEmail }
+                )
+              );
+            }
+
+            break;
+          }
+        }
+      }
+    } catch (err) {
+      ctx.logger.error('processReply: error checking DELEGATED-TO', { err });
+    }
   }
 
   await markProcessed(invite._id);

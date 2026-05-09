@@ -27,6 +27,7 @@ const i18n = require('#helpers/i18n');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendApn = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const { prepareQuery } = require('#helpers/mongoose-to-sqlite');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
@@ -574,6 +575,13 @@ async function onStore(mailboxId, update, session, fn) {
           uids: modified || []
         }
       );
+
+      // send apple push notification (badge counts / unread sync)
+      sendApn(this.client, session.user.alias_id, mailbox.path)
+        .then()
+        .catch((err) =>
+          this.logger.fatal(err, { session, resolver: this.resolver })
+        );
     }
 
     // update storage in background

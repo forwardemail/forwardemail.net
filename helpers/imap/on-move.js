@@ -26,6 +26,7 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendApn = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { prepareQuery } = require('#helpers/mongoose-to-sqlite');
@@ -414,6 +415,19 @@ async function onMove(mailboxId, update, session, fn) {
           destinationUid
         }
       );
+
+      // send apple push notification
+      // both source and destination views must refresh on iOS Mail
+      sendApn(this.client, session.user.alias_id, mailbox.path)
+        .then()
+        .catch((err) =>
+          this.logger.fatal(err, { session, resolver: this.resolver })
+        );
+      sendApn(this.client, session.user.alias_id, update.destination)
+        .then()
+        .catch((err) =>
+          this.logger.fatal(err, { session, resolver: this.resolver })
+        );
     }
 
     try {

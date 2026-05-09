@@ -27,7 +27,7 @@ const _ = require('#helpers/lodash');
 const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
 const { ensureICSTimestamps } = require('#helpers/stamp-ics');
 const { prepareICSForStorage } = require('#helpers/prepare-ics');
-const sendApnCalendar = require('#helpers/send-apn-calendar');
+const { sendApnCalendar } = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 
 // Helper function to detect component type from ICS data

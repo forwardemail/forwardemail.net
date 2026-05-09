@@ -86,6 +86,21 @@ Token.plugin(mongooseCommonPlugin, {
   locale: false
 });
 
+//
+// Apple Push Notification Service registration entry.
+//
+// Populated by:
+//   - IMAP XAPPLEPUSHSERVICE command (Mail) — see `helpers/imap/on-xapplepushservice.js`
+//   - CalDAV / CardDAV `POST /apns` subscription endpoint (Calendar, Contacts)
+//     per Apple `caldav-pubsubdiscovery.txt` extension — see
+//     `helpers/dav-apns-subscribe.js`
+//
+// Filtered by `subtopic` when pushes are sent so a Mail-only registration
+// does NOT receive Calendar/Contact pushes (and vice versa) — pushes sent
+// with the wrong topic+account-id pair are silently dropped by iOS
+// dataaccessd, so without this filter pushes appear to fire but never
+// reach the user.
+//
 const APS = new mongoose.Schema({
   account_id: {
     type: String,
@@ -97,9 +112,23 @@ const APS = new mongoose.Schema({
   },
   subtopic: {
     type: String,
-    enum: ['com.apple.mobilemail']
+    enum: [
+      'com.apple.mobilemail',
+      'com.apple.mobilecal',
+      'com.apple.mobileaddressbook'
+    ]
   },
-  mailboxes: [String]
+  // Mail-only: list of mailbox paths the device is subscribed to.
+  mailboxes: [String],
+  // CalDAV/CardDAV-only: opaque push key advertised to the client via
+  // <CS:pushkey>; iOS sends it back in the registration POST so the server
+  // knows which collection (calendar / addressbook) to associate the
+  // device token with.  Forward Email derives this from the alias_id +
+  // a stable per-collection token; treated as opaque here.
+  key: {
+    type: String,
+    index: true
+  }
 });
 
 APS.plugin(mongooseCommonPlugin, {

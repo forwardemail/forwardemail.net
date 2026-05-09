@@ -204,7 +204,7 @@ const CalendarInvites = new mongoose.Schema(
     // Source of the message (web = response link click, imip = incoming email)
     source: {
       type: String,
-      enum: ['web', 'imip'],
+      enum: ['web', 'imip', 'caldav-local'],
       default: 'web',
       index: true
     },

@@ -13,8 +13,10 @@ const CardDAVFilterParser = require('#helpers/carddav-filter-parser');
 const Contacts = require('#models/contacts');
 const config = require('#config');
 const env = require('#config/env');
+const davApnsSubscribe = require('#helpers/dav-apns-subscribe');
 const ensureDefaultAddressBook = require('#helpers/ensure-default-address-book');
-const sendApnContacts = require('#helpers/send-apn-contacts');
+const getApnTopic = require('#helpers/get-apn-topic');
+const { sendApnContacts } = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const setupAuthSession = require('#helpers/setup-auth-session');
 const xmlHelpers = require('#helpers/carddav-xml');
@@ -847,6 +849,12 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
         }
       );
 
+      // send apple push notification so iOS Contacts refreshes its
+      // addressbook-home listing and discovers the new collection.
+      sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+
       ctx.status = 201;
       break;
     }
@@ -878,6 +886,12 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
           }
         }
       );
+
+      // send apple push notification so iOS Contacts removes the
+      // deleted collection from its addressbook-home listing.
+      sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
 
       ctx.status = 204;
       break;
@@ -993,6 +1007,12 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
           Date.now() + 1
         }`;
         await addressBook.save();
+
+        // send apple push notification so iOS Contacts picks up the
+        // PROPPATCH (display-name, description, color).
+        sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
       }
 
       // Build response
@@ -1045,29 +1065,69 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
     //   : null;
     // const props = xmlHelpers.extractRequestedProps(xmlBody);
 
+    //
+    // Apple CalDAV/CardDAV push-discovery (caldav-pubsubdiscovery.txt):
+    // advertise push-transports on the addressbook-home so iOS Contacts
+    // can register a push subscription via POST /apns and receive real-
+    // time notifications when an addressbook changes.  The topic comes
+    // from Forward Email's reverse-engineered Apple Server Contact
+    // certificate; if the cert bundle is not yet primed (cold start)
+    // we omit the property and iOS falls back to its default poll.
+    //
+    let pushTransportsXML = '';
+    try {
+      const topic = await getApnTopic(
+        ctx.client || ctx.instance.client,
+        'Contact'
+      );
+      if (topic) {
+        const subscriptionURL = env.CARDDAV_HOST
+          ? `https://${env.CARDDAV_HOST}/apns`
+          : '/apns';
+        pushTransportsXML =
+          '<cs:transport type="APSD">' +
+          `<cs:subscription-url><d:href>${encodeXMLEntities(
+            subscriptionURL
+          )}</d:href></cs:subscription-url>` +
+          `<cs:apsbundleid>${encodeXMLEntities(topic)}</cs:apsbundleid>` +
+          '<cs:env>PRODUCTION</cs:env>' +
+          '<cs:refresh-interval>3600</cs:refresh-interval>' +
+          '</cs:transport>';
+      }
+    } catch (err) {
+      ctx.logger.warn('CardDAV push-transports advertise failed', { err });
+    }
+
+    const homeProps = [
+      { name: 'd:displayname', value: 'Address Books' },
+      { name: 'd:resourcetype', value: '<d:collection/>' },
+      // macOS Contacts expects d:owner on the addressbook-home-set
+      // collection to determine ownership and write permissions.
+      {
+        name: 'd:owner',
+        value: `<d:href>/dav/${encodeXMLEntities(ctx.params.user)}/</d:href>`
+      },
+      {
+        name: 'd:current-user-privilege-set',
+        value:
+          '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
+      }
+    ];
+
+    if (pushTransportsXML) {
+      homeProps.push({
+        name: 'cs:push-transports',
+        value: pushTransportsXML
+      });
+    }
+
     // Create response
     const responses = [
       {
         href: `/dav/${ctx.params.user}/addressbooks/`,
         propstat: [
           {
-            props: [
-              { name: 'd:displayname', value: 'Address Books' },
-              { name: 'd:resourcetype', value: '<d:collection/>' },
-              // macOS Contacts expects d:owner on the addressbook-home-set
-              // collection to determine ownership and write permissions.
-              {
-                name: 'd:owner',
-                value: `<d:href>/dav/${encodeXMLEntities(
-                  ctx.params.user
-                )}/</d:href>`
-              },
-              {
-                name: 'd:current-user-privilege-set',
-                value:
-                  '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
-              }
-            ],
+            props: homeProps,
             status: '200 OK'
           }
         ]
@@ -1099,6 +1159,15 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
                 { name: 'd:sync-token', value: addressBook.synctoken },
                 // getctag is used by macOS/iOS to detect changes
                 { name: 'cs:getctag', value: addressBook.synctoken },
+                //
+                // Apple push-discovery: pushkey identifies this addressbook
+                // in subsequent /apns subscription POSTs from iOS Contacts.
+                // We use the addressbook_id which is stable across renames.
+                //
+                {
+                  name: 'cs:pushkey',
+                  value: encodeXMLEntities(addressBook.address_book_id)
+                },
                 {
                   name: 'card:addressbook-description',
                   value: encodeXMLEntities(addressBook.description || '')
@@ -1604,6 +1673,25 @@ async function propFindPrincipal(ctx) {
 
 davRouter.all('/:user', propFindPrincipal);
 davRouter.all('/', propFindPrincipal);
+
+//
+// CardDAV side of Apple's CalDAV/CardDAV push subscription protocol
+// (`caldav-pubsubdiscovery.txt`).  iOS Contacts POSTs token + key here
+// after reading <CS:push-transports> from a PROPFIND on the addressbook
+// home.  The handler persists into `alias.aps[]` with subtopic
+// `com.apple.mobileaddressbook` so `sendApnContacts` will push to it.
+//
+// Mounted on /apns AND /dav/apns to match what iOS may send depending on
+// whether the subscription-url advertised in PROPFIND is interpreted as
+// absolute or relative-to-server-root.
+//
+async function apnsHandler(ctx) {
+  ctx.state.davSubtopic = 'com.apple.mobileaddressbook';
+  await davApnsSubscribe(ctx);
+}
+
+router.post('/apns', apnsHandler);
+davRouter.post('/apns', apnsHandler);
 
 router.use(davRouter.routes());
 router.all('(.*)', propFindPrincipal);
