@@ -3,7 +3,7 @@
 
 //- SoftwareApplication Schema (for homepage and main pages)
 if ctx.pathWithoutLocale === '/'
-  script(type="application/ld+json").
+  script(type="application/ld+json", nonce=nonce).
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
@@ -38,7 +38,7 @@ if ctx.pathWithoutLocale === '/'
 
 //- Speakable Schema (homepage)
 if ctx.pathWithoutLocale === '/'
-  script(type="application/ld+json").
+  script(type="application/ld+json", nonce=nonce).
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
@@ -52,7 +52,7 @@ if ctx.pathWithoutLocale === '/'
 
 //- WebAPI Schema for API page
 if ctx.pathWithoutLocale === '/email-api'
-  script(type="application/ld+json").
+  script(type="application/ld+json", nonce=nonce).
     {
       "@context": "https://schema.org",
       "@type": "WebAPI",
@@ -68,7 +68,7 @@ if ctx.pathWithoutLocale === '/email-api'
 
 //- WebSite Schema with SearchAction
 if ctx.pathWithoutLocale === '/'
-  script(type="application/ld+json").
+  script(type="application/ld+json", nonce=nonce).
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -87,7 +87,7 @@ if ctx.pathWithoutLocale === '/'
 //- BreadcrumbList Schema for non-homepage pages
 if ctx.pathWithoutLocale && ctx.pathWithoutLocale !== '/'
   - var breadcrumbName = meta && meta.title ? meta.title.split(" - ")[0] : "Page";
-  script(type="application/ld+json").
+  script(type="application/ld+json", nonce=nonce).
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -110,10 +110,10 @@ if ctx.pathWithoutLocale && ctx.pathWithoutLocale !== '/'
 //- FAQPage Schema for FAQ page (dynamically generated from FAQ markdown with Redis caching)
 if ctx.pathWithoutLocale === '/faq'
   if faqSchemaData && faqSchemaData.mainEntity && faqSchemaData.mainEntity.length
-    script(type="application/ld+json")!= JSON.stringify(faqSchemaData)
+    script(type="application/ld+json", nonce=nonce)!= JSON.stringify(faqSchemaData)
   else
     //- Fallback to a minimal hardcoded FAQ schema if dynamic data is unavailable
-    script(type="application/ld+json").
+    script(type="application/ld+json", nonce=nonce).
       {
         "@context": "https://schema.org",
         "@type": "FAQPage",
@@ -187,7 +187,7 @@ if ctx.pathWithoutLocale === '/faq'
 
 //- FAQPage Schema for homepage (targets high-value search queries)
 if ctx.pathWithoutLocale === '/'
-  script(type="application/ld+json").
+  script(type="application/ld+json", nonce=nonce).
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -229,7 +229,7 @@ if ctx.pathWithoutLocale === '/'
 
 //- FAQPage Schema for comparison pages (targets alternative search queries)
 if ctx.pathWithoutLocale && (ctx.pathWithoutLocale.includes('best-email') || ctx.pathWithoutLocale.includes('best-private') || ctx.pathWithoutLocale.includes('best-open-source'))
-  script(type="application/ld+json").
+  script(type="application/ld+json", nonce=nonce).
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -255,7 +255,7 @@ if ctx.pathWithoutLocale && (ctx.pathWithoutLocale.includes('best-email') || ctx
 
 //- Product Schema for pricing/comparison pages
 if ctx.pathWithoutLocale && ctx.pathWithoutLocale.includes('alternative')
-  script(type="application/ld+json").
+  script(type="application/ld+json", nonce=nonce).
     {
       "@context": "https://schema.org",
       "@type": "Product",

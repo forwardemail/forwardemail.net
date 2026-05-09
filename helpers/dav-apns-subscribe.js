@@ -34,25 +34,31 @@
 //
 //        token={{device-token}}&key={{pushkey}}
 //
-//      (Apple reference impl also accepts the same fields as XML body or
-//      query string; we accept query, body, and form; see parseRequest.)
+//      iOS does NOT include `account-id` in this POST.  Apple's reference
+//      ccs-calendarserver impl reads only `token` and `key` and never sets
+//      an account-id field.  We accept `account-id` if any future client
+//      sends one, but we MUST NOT manufacture a fake account-id from `key`
+//      because iOS dataaccessd uses the APNs payload's `aps['account-id']`
+//      to route the push to a local account UUID; an unrecognised value
+//      causes the push to be silently dropped.
 //
-//   3. Server persists `{ device_token, key, subtopic, account_id }` into
+//   3. Server persists `{ device_token, key, subtopic, account_id? }` into
 //      `alias.aps[]` and returns 200 OK with empty body.  iOS drops the
 //      registration silently on any non-2xx, so we MUST return 200 even
 //      for duplicate registrations (idempotent).
 //
 //   4. When the calendar / addressbook collection associated with `key`
-//      changes, server fires an APNs push targeted at that device_token,
-//      with `aps.account-id` matching the iOS account UUID iOS originally
-//      sent at subscription time (returned in the device_token registration
-//      payload as the APNs token's per-account binding).
+//      changes, server fires an APNs background push targeted at that
+//      device_token.  `aps['account-id']` is included only when iOS
+//      originally provided one.
 //
 // IMPORTANT: iOS Calendar uses subtopic `com.apple.mobilecal`; iOS Contacts
 // uses `com.apple.mobileaddressbook`; iOS Mail uses `com.apple.mobilemail`.
 // `sendApnCalendar` / `sendApnContacts` filter `alias.aps[]` by subtopic
 // before pushing so cross-topic device tokens are not used.
 //
+
+const { Buffer } = require('node:buffer');
 
 const Aliases = require('#models/aliases');
 
@@ -68,7 +74,16 @@ const Aliases = require('#models/aliases');
 function parseRequest(ctx) {
   let fromBody = {};
   if (ctx.request.body) {
-    if (typeof ctx.request.body === 'object') {
+    if (Buffer.isBuffer(ctx.request.body)) {
+      try {
+        const trimmed = ctx.request.body.toString('utf8').trim();
+        fromBody = trimmed.startsWith('{')
+          ? JSON.parse(trimmed)
+          : Object.fromEntries(new URLSearchParams(trimmed));
+      } catch {
+        fromBody = {};
+      }
+    } else if (typeof ctx.request.body === 'object') {
       fromBody = ctx.request.body;
     } else if (typeof ctx.request.body === 'string') {
       // caldav-server.js context: body is raw string (no koa-bodyparser)
@@ -126,6 +141,12 @@ function defaultSubtopicFromContext(ctx) {
 // appends a new one.  Always returns 200 OK with empty body so iOS treats
 // the registration as successful regardless of duplicate state.
 //
+// We use atomic Mongo `$set`/`$push` operators rather than read-mutate-save
+// so concurrent registrations from a single iOS device (e.g. two calendars
+// subscribed in the same sync) do not race and overwrite each other.  A
+// findOne + alias.save() pattern would lose all but the last-written entry
+// because each save() persists the entire `aps` array as it was read.
+//
 async function davApnsSubscribe(ctx, options = {}) {
   const subtopic = options.subtopic || defaultSubtopicFromContext(ctx);
 
@@ -152,47 +173,56 @@ async function davApnsSubscribe(ctx, options = {}) {
     return;
   }
 
-  const alias = await Aliases.findOne({
-    id: ctx.state.session.user.alias_id
-  })
-    .select('+aps')
-    .exec();
-
-  if (!alias) {
-    ctx.status = 404;
-    ctx.body = 'alias not found';
-    return;
-  }
-
-  if (!Array.isArray(alias.aps)) alias.aps = [];
+  const aliasId = ctx.state.session.user.alias_id;
 
   //
-  // Match by (device_token, key) pair so the same physical device can hold
-  // multiple subscriptions (one per calendar / addressbook).  We do NOT
-  // match on subtopic alone because a single device may have multiple
-  // CalDAV accounts on the same Forward Email alias.
+  // Build the registration document.  account_id is intentionally OMITTED
+  // when iOS did not supply one -- DO NOT fall back to `key`.  Apple's
+  // ccs-calendarserver and Apple's iOS dataaccessd treat account-id as an
+  // optional account-routing hint that, when present in the APNs payload,
+  // must match an iOS-side account UUID.  Substituting an opaque
+  // collection id (`key`) causes every push to be silently dropped.
   //
-  const match = alias.aps.find(
-    (a) => a.device_token === deviceToken && a.key === key
+  const entry = {
+    device_token: deviceToken,
+    subtopic,
+    key
+  };
+  if (accountId) entry.account_id = accountId;
+
+  //
+  // Try to update an existing (device_token, key) registration first.
+  // If it exists, we just refresh subtopic and (optionally) account_id.
+  //
+  const update = {
+    'aps.$.subtopic': subtopic
+  };
+  if (accountId) update['aps.$.account_id'] = accountId;
+
+  const result = await Aliases.updateOne(
+    {
+      id: aliasId,
+      'aps.device_token': deviceToken,
+      'aps.key': key
+    },
+    { $set: update }
   );
 
-  if (match) {
-    match.subtopic = subtopic;
-    if (accountId) match.account_id = accountId;
-  } else {
-    alias.aps.push({
-      account_id: accountId || key, // fall back to key if iOS omits accountId
-      device_token: deviceToken,
-      subtopic,
-      key
-    });
+  if (result.matchedCount === 0) {
+    //
+    // No existing entry for this (device_token, key) pair on this alias --
+    // append a new one atomically.  Two near-simultaneous registrations of
+    // distinct (device_token, key) pairs each go through their own
+    // $push and both persist.
+    //
+    await Aliases.updateOne({ id: aliasId }, { $push: { aps: entry } });
   }
 
-  await alias.save();
-
+  //
   // Apple reference implementation returns the topic in the response body
   // as a sanity-check, but iOS does not require it.  Empty body keeps the
   // wire contract minimal.
+  //
   ctx.status = 200;
   ctx.set('Content-Type', 'text/plain; charset=utf-8');
   ctx.body = '';

@@ -253,8 +253,18 @@ module.exports = (redis) => ({
               ],
               'script-src': [
                 ..._.without(defaultSrc, 'data:'),
-                "'unsafe-inline'",
-                // "'strict-dynamic'",
+                //
+                // 'strict-dynamic' makes the host allowlist below a
+                // no-op for <script> elements: only scripts carrying the
+                // per-request nonce (or transitively trusted by such a
+                // script) are executed. Every <script> opener in our pug
+                // templates MUST therefore carry `nonce=nonce` — audit
+                // with: `python3 scripts/audit-pug-nonces.py app/views`
+                // (or `grep -RnE "^\s*script\b" app/views/**/*.pug`).
+                // The host allowlist is retained as a fallback for
+                // browsers that don't yet implement strict-dynamic.
+                //
+                "'strict-dynamic'",
                 'https://challenges.cloudflare.com',
                 'https://www.paypal.com',
                 ...(env.NODE_ENV === 'production'
@@ -339,6 +349,61 @@ module.exports = (redis) => ({
       // since we're on an older helmet version due to koa-helmet
       // <https://github.com/helmetjs/helmet/issues/230>
       ctx.set('X-XSS-Protection', '0');
+      //
+      // Permissions-Policy response header.
+      //
+      // We disable every powerful API we don't actually use. This both
+      // hardens the surface for cross-origin frames (PayPal, Cloudflare
+      // Turnstile, YouTube) and silences spurious browser console
+      // warnings such as:
+      //   [Violation] Permissions policy violation: xr-spatial-tracking
+      //     is not allowed in this document.
+      // which are emitted by embedded YouTube/youtube-nocookie iframes
+      // when the parent document does not opt into the requested
+      // policy.
+      //
+      // Spec: <https://www.w3.org/TR/permissions-policy/>
+      // Header registry: <https://github.com/w3c/webappsec-permissions-policy/blob/main/features.md>
+      //
+      ctx.set(
+        'Permissions-Policy',
+        [
+          'accelerometer=()',
+          'ambient-light-sensor=()',
+          'autoplay=()',
+          'battery=()',
+          'bluetooth=()',
+          'browsing-topics=()',
+          'camera=()',
+          'display-capture=()',
+          'encrypted-media=()',
+          'execution-while-not-rendered=()',
+          'execution-while-out-of-viewport=()',
+          'fullscreen=(self)',
+          'gamepad=()',
+          'geolocation=()',
+          'gyroscope=()',
+          'hid=()',
+          'identity-credentials-get=()',
+          'idle-detection=()',
+          'local-fonts=()',
+          'magnetometer=()',
+          'microphone=()',
+          'midi=()',
+          'otp-credentials=()',
+          'payment=(self)',
+          'picture-in-picture=()',
+          'publickey-credentials-get=()',
+          'screen-wake-lock=()',
+          'serial=()',
+          'speaker-selection=()',
+          'storage-access=()',
+          'usb=()',
+          'web-share=()',
+          'window-management=()',
+          'xr-spatial-tracking=()'
+        ].join(', ')
+      );
       return next();
     });
     // csp nonce

@@ -46,24 +46,43 @@ const logger = require('#helpers/logger');
 // two equivalent require paths for the same function.
 //
 
+//
+// Per-service push semantics:
+//
+//   * cert        - key inside the `certs` bundle returned by getApnCerts
+//   * subtopic    - the alias.aps[].subtopic value to filter on
+//   * cachePrefix - Redis key prefix for the 1-minute send-coalescing lock
+//   * errorLabel  - label used in the "APS X failed" fatal error
+//   * pushType    - APNs `apns-push-type` header.  iOS Mail (XAPPLEPUSHSERVICE)
+//                   uses `alert` because the iOS Mail extension surfaces a
+//                   user-visible banner.  CalDAV / CardDAV pubsub pushes are
+//                   silent data-only refresh signals; Apple's iOS 13+ APNs
+//                   strictness drops `alert`-typed pushes that lack an
+//                   `aps.alert` payload, so we send those as `background`.
+//                   Reference: Apple's caldav-pubsubdiscovery.txt and the
+//                   ccs-calendarserver applepush.py implementation.
+//
 const SERVICES = {
   Mail: {
     cert: 'Mail',
     subtopic: 'com.apple.mobilemail',
     cachePrefix: 'aps_check',
-    errorLabel: 'APS failed'
+    errorLabel: 'APS failed',
+    pushType: 'alert'
   },
   Calendar: {
     cert: 'Calendar',
     subtopic: 'com.apple.mobilecal',
     cachePrefix: 'aps_calendar_check',
-    errorLabel: 'APS Calendar failed'
+    errorLabel: 'APS Calendar failed',
+    pushType: 'background'
   },
   Contact: {
     cert: 'Contact',
     subtopic: 'com.apple.mobileaddressbook',
     cachePrefix: 'aps_contacts_check',
-    errorLabel: 'APS Contacts failed'
+    errorLabel: 'APS Contacts failed',
+    pushType: 'background'
   }
 };
 
@@ -100,7 +119,8 @@ function createNote(certBundle, service, obj, options) {
   // <https://github.com/node-apn/node-apn/issues/638>
   note.urlArgs = [];
 
-  note.pushType = 'alert';
+  // Per-service push type (see SERVICES table above).
+  note.pushType = service.pushType;
   //
   // NOTE: it's not as simple as setting topic to `com.apple.mobilemail`
   // <https://lists.andrew.cmu.edu/pipermail/info-cyrus/2017-August/039743.html#:~:text=aps_topic%3A%20com.apple.mail.XServer.xxxxxxxxxxxxxxx%0A%0Aaps_topic%20is%20the%20common%20name%20take%20from%20the%20certificate.%20It%E2%80%99s%20sent%20to%20the%20mobile%20device%20so%20that%20it%20will%20match%20the%20source%20of%20the%20push%20notification%20when%20it%20arrives.>
@@ -117,9 +137,18 @@ function createNote(certBundle, service, obj, options) {
   note.topic = certBundle[service.cert].topic;
   note.expiry = Math.floor(dayjs().add(24, 'hour').toDate().getTime() / 1000);
 
-  note.aps = {
-    'account-id': obj.account_id
-  };
+  //
+  // Build the APNs aps payload.  `account-id` is OPTIONAL and is included
+  // ONLY when iOS provided one at registration time -- never synthesise it
+  // from the collection key.  Apple's iOS dataaccessd routes pushes by
+  // matching aps['account-id'] against an iOS-side account UUID; an
+  // unrecognised value causes the push to be silently dropped, so for
+  // CalDAV/CardDAV (where iOS does not send account-id in the registration
+  // POST) we omit the field entirely and let the push route by device-token
+  // alone, matching Apple's ccs-calendarserver reference behaviour.
+  //
+  note.aps = {};
+  if (obj.account_id) note.aps['account-id'] = obj.account_id;
 
   // Mail-only: the `m` field carries the md5 of the mailbox path so the
   // device knows which mailbox to refresh.
@@ -189,11 +218,21 @@ async function sendApnForService(serviceName, client, id, options = {}) {
 
   await pMap(registrations, async (obj) => {
     try {
-      // Coalesce sends to the same (account_id, device_token) pair to one
-      // per minute -- avoids piling up requests during a sync storm.
-      const key = `${service.cachePrefix}:${revHash(obj.account_id)}:${revHash(
-        obj.device_token
-      )}`;
+      //
+      // Coalesce sends to the same registration to one per minute -- avoids
+      // piling up requests during a sync storm.  We key on (device_token,
+      // collection-key) because account_id is OPTIONAL for CalDAV/CardDAV
+      // (iOS never sends it in the registration POST); using account_id
+      // here would collapse all subscriptions for the alias into a single
+      // shared lock and only one push per minute would be delivered to the
+      // alias regardless of which collection changed.
+      //
+      const cacheTokens = [
+        service.cachePrefix,
+        revHash(obj.device_token || ''),
+        revHash(obj.key || obj.account_id || '')
+      ];
+      const key = cacheTokens.join(':');
       const cache = await client.get(key);
       if (cache) return;
       await client.set(key, true, 'PX', ms('1m'));
@@ -247,13 +286,19 @@ async function sendApnForService(serviceName, client, id, options = {}) {
         await pMap(
           aliases,
           async (alias) => {
+            //
+            // Remove the (device_token, key) pair that returned 410.
+            // Match strictly on the pair: a single physical device may
+            // hold multiple subscriptions on this alias (one per
+            // calendar/addressbook), so we must not unsubscribe siblings
+            // that share the device_token but identify a different
+            // collection.  account_id is optional and not always present.
+            //
             await Aliases.findByIdAndUpdate(alias._id, {
               $set: {
                 aps: alias.aps.filter(
                   (a) =>
-                    // pair safeguard
-                    a.account_id !== obj.account_id &&
-                    a.device_token !== obj.device_token
+                    !(a.device_token === obj.device_token && a.key === obj.key)
                 )
               }
             });
@@ -291,9 +336,14 @@ async function sendApnContacts(client, id) {
 // Default export remains `sendApn` (Mail) for full backward compatibility
 // with `require('#helpers/send-apn')` call sites.  Named helpers are
 // attached to the function for code that wants to switch on service.
+//
+// `createNote` and `SERVICES` are exported as test-only surface so unit
+// tests can verify the per-service pushType, the conditional account-id
+// payload, and the SERVICES table without mounting an APN provider.
 sendApn.sendApn = sendApn;
 sendApn.sendApnCalendar = sendApnCalendar;
 sendApn.sendApnContacts = sendApnContacts;
 sendApn.sendApnForService = sendApnForService;
+sendApn._test = { createNote, SERVICES };
 
 module.exports = sendApn;

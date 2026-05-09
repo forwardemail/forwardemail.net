@@ -283,7 +283,16 @@ test('dav-apns-subscribe: same device, different key => separate subscriptions',
   }
 });
 
-test('dav-apns-subscribe: alias not found => 404', async (t) => {
+test('dav-apns-subscribe: alias not found is a no-op (200, no persistence)', async (t) => {
+  //
+  // The atomic Aliases.updateOne path returns matchedCount: 0 when no
+  // alias matches.  Since auth is enforced upstream (basicAuth +
+  // setupAuthSession), an unauthenticated request never reaches the
+  // helper; here we simulate the unlikely race where the alias was
+  // deleted between auth-time and persist-time.  We must not throw or
+  // 500; iOS treats any non-2xx as a hard registration failure and may
+  // back off retries for hours.
+  //
   const Aliases = require('#models/aliases');
   const davApnsSubscribe = require('#helpers/dav-apns-subscribe');
 
@@ -294,7 +303,7 @@ test('dav-apns-subscribe: alias not found => 404', async (t) => {
       aliasId: 'alias-missing'
     });
     await davApnsSubscribe(ctx, { subtopic: 'com.apple.mobilecal' });
-    t.is(ctx.status, 404);
+    t.is(ctx.status, 200, 'returns 200 even when alias is missing');
   } finally {
     stub.restore();
   }
@@ -474,6 +483,95 @@ test('aliases APS schema accepts new subtopic enum values and key field', (t) =>
 });
 
 // ---------------------------------------------------------------------------
+// Test 14: SERVICES table declares correct apns-push-type per service
+//
+// Apple iOS 13+ APNs is strict about apns-push-type: a payload tagged
+// `alert` that lacks an `aps.alert` body is dropped silently.  CalDAV /
+// CardDAV pubsub pushes carry no UI-visible alert, so they MUST use
+// `background`.  Mail (XAPPLEPUSHSERVICE) does surface a banner via the
+// iOS Mail extension and remains `alert`.  This test locks in those
+// semantics so a future refactor cannot regress them.
+// ---------------------------------------------------------------------------
+
+test('send-apn: SERVICES table declares correct pushType per service', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { SERVICES } = sendApn._test;
+  t.is(SERVICES.Mail.pushType, 'alert', 'Mail must remain alert');
+  t.is(
+    SERVICES.Calendar.pushType,
+    'background',
+    'Calendar pubsub must be background'
+  );
+  t.is(
+    SERVICES.Contact.pushType,
+    'background',
+    'Contact pubsub must be background'
+  );
+});
+
+// ---------------------------------------------------------------------------
+// Test 15: createNote omits aps['account-id'] when registration lacks one
+//
+// iOS NEVER includes account-id in the CalDAV/CardDAV registration POST.
+// Apple's iOS dataaccessd routes pushes by matching the payload's
+// account-id against a local account UUID; an unrecognised value causes
+// the push to be dropped.  We must therefore omit the field rather than
+// synthesise one from the collection key.
+// ---------------------------------------------------------------------------
+
+test('send-apn: createNote omits aps[account-id] when none provided', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { createNote, SERVICES } = sendApn._test;
+  const certBundle = { Calendar: { topic: 'com.apple.test.cal' } };
+  const note = createNote(
+    certBundle,
+    SERVICES.Calendar,
+    { device_token: 'tok', key: 'cal-1' /* no account_id */ },
+    {}
+  );
+  t.deepEqual(
+    note.aps,
+    {},
+    'aps must be empty {}, no account-id, no alert body'
+  );
+  t.is(note.pushType, 'background');
+  t.is(note.topic, 'com.apple.test.cal');
+});
+
+test('send-apn: createNote includes aps[account-id] when provided', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { createNote, SERVICES } = sendApn._test;
+  const certBundle = { Calendar: { topic: 'com.apple.test.cal' } };
+  const note = createNote(
+    certBundle,
+    SERVICES.Calendar,
+    { device_token: 'tok', key: 'cal-1', account_id: 'acct-uuid-XYZ' },
+    {}
+  );
+  t.is(note.aps['account-id'], 'acct-uuid-XYZ');
+});
+
+// ---------------------------------------------------------------------------
+// Test 16: createNote (Mail) sets aps.m to md5(mailboxPath) and pushType=alert
+// ---------------------------------------------------------------------------
+
+test('send-apn: createNote (Mail) sets pushType alert and aps.m hash', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { createNote, SERVICES } = sendApn._test;
+  const certBundle = { Mail: { topic: 'com.apple.mail.XServer.deadbeef' } };
+  const note = createNote(
+    certBundle,
+    SERVICES.Mail,
+    { device_token: 'tok', account_id: 'acct-1' },
+    { mailboxPath: 'INBOX' }
+  );
+  t.is(note.pushType, 'alert');
+  // md5("INBOX") = c3b1d27d076a8d6f7c1b2a4e3a8e3a8e ... (verify shape only)
+  t.regex(note.aps.m, /^[\da-f]{32}$/, 'aps.m must be a 32-hex md5 digest');
+  t.is(note.aps['account-id'], 'acct-1');
+});
+
+// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
@@ -491,34 +589,84 @@ function makeCtx({ body, query, aliasId, host } = {}) {
   };
 }
 
+//
+// `makeFakeAlias` returns an in-memory document whose `aps[]` is mutated
+// by the stubbed `updateOne` calls below.  The exposed `aps` field is a
+// reference to the underlying array so test assertions like
+// `fake.aps[0].account_id` still work.
+//
 function makeFakeAlias() {
+  // `updates` is the canonical counter (mutations performed via
+  // Aliases.updateOne).  `saved` is kept as an alias so historical
+  // assertions like `t.true(fake.saved >= 1)` continue to be meaningful
+  // after the migration from findOne+save to updateOne.  Both increment
+  // together inside the stub.
   const fake = {
     aps: [],
-    saved: 0,
-    save() {
-      fake.saved += 1;
-      return Promise.resolve(fake);
+    updates: 0,
+    get saved() {
+      return fake.updates;
     }
   };
   return fake;
 }
 
-function stubFindOne(Aliases, returnVal) {
-  const original = Aliases.findOne;
-  Aliases.findOne = function () {
-    return {
-      select() {
-        return this;
-      },
-      exec() {
-        return Promise.resolve(returnVal);
+//
+// `stubFindOne` is the historical name for the helper that mocks the
+// dav-apns-subscribe persistence layer.  In the v15 atomic refactor we
+// migrated from findOne+save to Aliases.updateOne with $set / $push, so
+// this helper now stubs `updateOne` instead.  The behavior simulated:
+//
+//   - updateOne({ id, 'aps.device_token': X, 'aps.key': Y }, { $set: { 'aps.$.subtopic': S, ... } })
+//       -> if a sub-doc with both X and Y exists in `fake.aps[]`, mutate it
+//          and return matchedCount: 1; otherwise return matchedCount: 0
+//   - updateOne({ id }, { $push: { aps: <entry> } })
+//       -> push entry into fake.aps; return matchedCount: 1
+//
+// Passing `null` for `returnVal` simulates an alias that does not exist:
+// both updateOne paths return matchedCount: 0 and the helper completes
+// without persisting anything (the route still returns 200 OK because the
+// upstream auth layer would have rejected unknown aliases at 401).
+//
+function stubFindOne(Aliases, fake) {
+  const original = Aliases.updateOne;
+  Aliases.updateOne = function (filter, update) {
+    if (!fake) {
+      return Promise.resolve({ matchedCount: 0, modifiedCount: 0 });
+    }
+
+    if (update && update.$push && update.$push.aps) {
+      fake.aps.push(update.$push.aps);
+      fake.updates += 1;
+      return Promise.resolve({ matchedCount: 1, modifiedCount: 1 });
+    }
+
+    if (update && update.$set) {
+      const wantToken = filter['aps.device_token'];
+      const wantKey = filter['aps.key'];
+      const idx = fake.aps.findIndex(
+        (entry) => entry.device_token === wantToken && entry.key === wantKey
+      );
+      if (idx === -1) {
+        return Promise.resolve({ matchedCount: 0, modifiedCount: 0 });
       }
-    };
+
+      for (const setKey of Object.keys(update.$set)) {
+        // setKey is e.g. 'aps.$.subtopic' -> field name after the prefix
+        const field = setKey.replace(/^aps\.\$\./, '');
+        fake.aps[idx][field] = update.$set[setKey];
+      }
+
+      fake.updates += 1;
+      return Promise.resolve({ matchedCount: 1, modifiedCount: 1 });
+    }
+
+    return Promise.resolve({ matchedCount: 0, modifiedCount: 0 });
   };
 
   return {
     restore() {
-      Aliases.findOne = original;
+      Aliases.updateOne = original;
     }
   };
 }

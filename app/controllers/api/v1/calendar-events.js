@@ -60,6 +60,39 @@ function isValidExdate(str) {
 }
 
 //
+// Property names that rrulestr() accepts at the top level of its input.
+// See caldav-server.js sanitizeRruleLines() for the full rationale and
+// the list of pathological producers we've observed in production. The
+// helper is duplicated here (rather than imported) to keep the v1 REST
+// controller free of a require() into the CalDAV server module.
+//
+const RRULE_INPUT_ALLOWED_PROPS = new Set([
+  'DTSTART',
+  'RRULE',
+  'EXRULE',
+  'EXDATE',
+  'RDATE'
+]);
+
+function sanitizeRruleLines(lines) {
+  const out = [];
+  for (const original of lines) {
+    if (typeof original !== 'string') continue;
+    for (const piece of original.split(/\r?\n/)) {
+      const line = piece.trim();
+      if (!line) continue;
+      const sep = line.search(/[;:]/);
+      const name = (sep === -1 ? line : line.slice(0, sep)).toUpperCase();
+      if (!RRULE_INPUT_ALLOWED_PROPS.has(name)) break;
+      out.push(line);
+      break;
+    }
+  }
+
+  return out;
+}
+
+//
 // Return a DTSTART line that rrulestr can use as a recurrence anchor.
 //
 // Two normalisation steps are applied:
@@ -360,6 +393,11 @@ async function list(ctx) {
           }
 
           // Handle recurring events
+          // Defence in depth: drop any line that isn't a recognised
+          // recurrence-input property (BEGIN:STANDARD/DAYLIGHT bleed,
+          // TZNAME, mis-folded continuations … see sanitizeRruleLines).
+          lines = sanitizeRruleLines(lines);
+          if (lines.length === 0) continue;
           let rruleSet;
           try {
             rruleSet = rrulestr(lines.join('\n'));
@@ -377,10 +415,29 @@ async function list(ctx) {
                 );
                 rruleSet = rrulestr(lines.join('\n'));
               } catch (err) {
-                err.isCodeBug = true;
-                ctx.logger.fatal(err);
-                throw err;
+                ctx.logger.warn('Skipping event with invalid RRULE', {
+                  err,
+                  event: event._id,
+                  calendar: calendar._id
+                });
+                continue;
               }
+            } else if (
+              err.message.includes('Invalid UNTIL value') ||
+              err.message.includes('Invalid RRULE') ||
+              err.message.includes('Invalid DTSTART') ||
+              err.message.includes('Unknown RRULE property') ||
+              err.message.includes('unsupported property:')
+            ) {
+              // Skip events with invalid recurrence rules. See the
+              // matching block in caldav-server.js for the full list
+              // of recoverable producer-side bugs.
+              ctx.logger.warn('Skipping event with invalid RRULE', {
+                err,
+                event: event._id,
+                calendar: calendar._id
+              });
+              continue;
             } else {
               err.isCodeBug = true;
               ctx.logger.fatal(err);
@@ -480,6 +537,10 @@ async function list(ctx) {
             }
 
             // Handle recurring tasks (similar to events)
+            // Defence in depth: drop any line that isn't a recognised
+            // recurrence-input property (see sanitizeRruleLines header).
+            lines = sanitizeRruleLines(lines);
+            if (lines.length === 0) continue;
             let rruleSet;
             try {
               rruleSet = rrulestr(lines.join('\n'));
@@ -499,10 +560,27 @@ async function list(ctx) {
                   );
                   rruleSet = rrulestr(lines.join('\n'));
                 } catch (err) {
-                  err.isCodeBug = true;
-                  ctx.logger.fatal(err);
-                  throw err;
+                  ctx.logger.warn('Skipping task with invalid RRULE', {
+                    err,
+                    event: event._id,
+                    calendar: calendar._id
+                  });
+                  continue;
                 }
+              } else if (
+                err.message.includes('Invalid UNTIL value') ||
+                err.message.includes('Invalid RRULE') ||
+                err.message.includes('Invalid DTSTART') ||
+                err.message.includes('Unknown RRULE property') ||
+                err.message.includes('unsupported property:')
+              ) {
+                // Skip tasks with invalid recurrence rules.
+                ctx.logger.warn('Skipping task with invalid RRULE', {
+                  err,
+                  event: event._id,
+                  calendar: calendar._id
+                });
+                continue;
               } else {
                 err.isCodeBug = true;
                 ctx.logger.fatal(err);

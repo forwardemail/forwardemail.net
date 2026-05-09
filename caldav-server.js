@@ -10,6 +10,7 @@ const { Readable } = require('node:stream');
 // const getUuid = require('@forwardemail/uuid-by-string');
 const API = require('@ladjs/api');
 const ms = require('ms');
+const rawBody = require('raw-body');
 const basicAuth = require('basic-auth');
 const Boom = require('@hapi/boom');
 const ICAL = require('ical.js');
@@ -38,6 +39,7 @@ const createTangerine = require('#helpers/create-tangerine');
 require('#helpers/polyfill-towellformed');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
+const davApnsSubscribe = require('#helpers/dav-apns-subscribe');
 const getApnTopic = require('#helpers/get-apn-topic');
 const { sendApnCalendar } = require('#helpers/send-apn');
 const sendWebSocketNotification = require('#helpers/send-websocket-notification');
@@ -57,6 +59,50 @@ const exdateRegex =
 
 function isValidExdate(str) {
   return exdateRegex.test(str);
+}
+
+//
+// Property names that rrulestr() accepts at the top level of its input.
+// Anything else (BEGIN/END child markers, TZNAME bleed, the literal
+// "Standard"/"Daylight" line that leaks out of mis-folded VTIMEZONE
+// children produced by some Outlook/iOS exporters, etc.) MUST be filtered
+// out before joining, otherwise rrulestr@2.8.1 throws with messages like:
+//   Unknown RRULE property 'Standard'
+//   unsupported property: BEGIN
+// and the entire CalDAV REPORT request fails. See test coverage in
+// test/caldav/test-caldav-rrule-sanitize.js.
+//
+const RRULE_INPUT_ALLOWED_PROPS = new Set([
+  'DTSTART',
+  'RRULE',
+  'EXRULE',
+  'EXDATE',
+  'RDATE'
+]);
+
+function sanitizeRruleLines(lines) {
+  const out = [];
+  for (const original of lines) {
+    if (typeof original !== 'string') continue;
+    // RFC 5545 §3.1: a content line is a single logical line. If a
+    // producer (or our own toICALString round-trip on malformed input)
+    // returns multi-line content, keep only the first non-empty
+    // fragment so we never feed a stray "Standard" / "BEGIN:STANDARD"
+    // continuation into rrulestr.
+    for (const piece of original.split(/\r?\n/)) {
+      const line = piece.trim();
+      if (!line) continue;
+      // Property name is everything before the first ';' (parameters)
+      // or ':' (value). Compare case-insensitively per RFC 5545 §3.1.
+      const sep = line.search(/[;:]/);
+      const name = (sep === -1 ? line : line.slice(0, sep)).toUpperCase();
+      if (!RRULE_INPUT_ALLOWED_PROPS.has(name)) break;
+      out.push(line);
+      break;
+    }
+  }
+
+  return out;
 }
 
 //
@@ -1164,10 +1210,9 @@ class CalDAV extends API {
       //
       if (ctx.method === 'MKCOL') {
         // Read the raw body before the adapter consumes the stream
-        const raw = require('raw-body');
         let body = '';
         try {
-          body = await raw(ctx.req, { encoding: 'utf8', limit: '10mb' });
+          body = await rawBody(ctx.req, { encoding: 'utf8', limit: '10mb' });
         } catch (err) {
           ctx.logger.warn('MKCOL body read error', { err });
         }
@@ -1253,15 +1298,27 @@ class CalDAV extends API {
             credentials.name,
             credentials.pass
           );
+          //
           // bodyParser is disabled for the CalDAV server, so consume the
           // raw request body manually for /apns POST (form-encoded by iOS).
-          if (
-            typeof ctx.request.body !== 'string' &&
-            typeof ctx.request.body !== 'object'
-          ) {
-            const raw = require('raw-body');
+          //
+          // We must read the raw body when ctx.request.body is unset OR is
+          // an empty placeholder ({}/''), since some upstream middleware
+          // assigns an empty object even though no body was actually parsed.
+          // Without this, parseRequest({}) returns null fields and the
+          // handler 400s on every iOS subscription POST.
+          //
+          const existing = ctx.request.body;
+          const isEmptyBody =
+            existing === null ||
+            existing === undefined ||
+            (typeof existing === 'string' && existing.length === 0) ||
+            (typeof existing === 'object' &&
+              !Buffer.isBuffer(existing) &&
+              Object.keys(existing).length === 0);
+          if (isEmptyBody) {
             try {
-              ctx.request.body = await raw(ctx.req, {
+              ctx.request.body = await rawBody(ctx.req, {
                 length: ctx.req.headers['content-length'],
                 limit: '64kb',
                 encoding: 'utf8'
@@ -1273,7 +1330,6 @@ class CalDAV extends API {
 
           ctx.state.davSubtopic = 'com.apple.mobilecal';
 
-          const davApnsSubscribe = require('#helpers/dav-apns-subscribe');
           await davApnsSubscribe(ctx);
         } catch (err) {
           const errStatus = err.isBoom
@@ -2641,6 +2697,12 @@ class CalDAV extends API {
           continue;
         }
 
+        // Defence in depth: drop any line that isn't a recognised
+        // recurrence-input property (BEGIN:STANDARD/DAYLIGHT bleed,
+        // TZNAME, mis-folded continuations … see sanitizeRruleLines
+        // header for the full list of producers we've observed).
+        lines = sanitizeRruleLines(lines);
+        if (lines.length === 0) continue;
         let rruleSet;
         try {
           rruleSet = rrulestr(lines.join('\n'));
@@ -2669,9 +2731,17 @@ class CalDAV extends API {
           } else if (
             err.message.includes('Invalid UNTIL value') ||
             err.message.includes('Invalid RRULE') ||
-            err.message.includes('Invalid DTSTART')
+            err.message.includes('Invalid DTSTART') ||
+            err.message.includes('Unknown RRULE property') ||
+            err.message.includes('unsupported property:')
           ) {
-            // Skip events with invalid recurrence rules (e.g., malformed UNTIL values like "--T::")
+            // Skip events with invalid recurrence rules. Includes:
+            //   - Malformed UNTIL values like "--T::"
+            //   - Mis-folded VTIMEZONE child content bleeding into the
+            //     line set (e.g. "Unknown RRULE property 'Standard'"
+            //     when an Outlook/iOS exporter wraps RRULE without RFC
+            //     5545 §3.1 leading-whitespace continuation)
+            //   - Stray BEGIN/END markers ("unsupported property: BEGIN")
             ctx.logger.warn('Skipping event with invalid RRULE', {
               err,
               event: event._id,
@@ -2784,6 +2854,10 @@ class CalDAV extends API {
           }
 
           // Handle recurring tasks (same logic as events)
+          // Defence in depth: drop any line that isn't a recognised
+          // recurrence-input property (see sanitizeRruleLines header).
+          lines = sanitizeRruleLines(lines);
+          if (lines.length === 0) continue;
           let rruleSet;
           try {
             rruleSet = rrulestr(lines.join('\n'));
@@ -2812,7 +2886,9 @@ class CalDAV extends API {
             } else if (
               err.message.includes('Invalid UNTIL value') ||
               err.message.includes('Invalid RRULE') ||
-              err.message.includes('Invalid DTSTART')
+              err.message.includes('Invalid DTSTART') ||
+              err.message.includes('Unknown RRULE property') ||
+              err.message.includes('unsupported property:')
             ) {
               // Skip tasks with invalid recurrence rules (e.g., malformed UNTIL values like "--T::")
               ctx.logger.warn('Skipping task with invalid RRULE', {
