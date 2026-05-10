@@ -227,6 +227,35 @@ function createNote(certBundle, service, obj, options) {
   return note;
 }
 
+//
+// Pre-filter alias.aps[] entries to one row per (device, target) pair so
+// duplicate or near-duplicate rows do not produce duplicate APNs sends.
+// Exposed via `sendApn._test.dedupeRegistrations` for unit testing.  See
+// the call site for the full motivation; the dedupe key is:
+//
+//   * Mail               -> lowercase(device_token) + '|' + mailboxPath
+//   * Calendar / Contact -> lowercase(device_token) + '|' + (key || '')
+//
+// The first row encountered for each dedupe key wins so the original
+// device_token casing is preserved for the 410-Gone unsubscribe path.
+//
+function dedupeRegistrations(matched, service, options = {}) {
+  const mailboxPathForKey =
+    service.cert === 'Mail' ? options.mailboxPath || 'INBOX' : null;
+  const seen = new Map();
+  for (const row of matched) {
+    if (!row || !row.device_token) continue;
+    const tokenLc = row.device_token.toLowerCase();
+    const dedupeKey =
+      service.cert === 'Mail'
+        ? `${tokenLc}|${mailboxPathForKey}`
+        : `${tokenLc}|${row.key || ''}`;
+    if (!seen.has(dedupeKey)) seen.set(dedupeKey, row);
+  }
+
+  return [...seen.values()];
+}
+
 async function sendApnForService(serviceName, client, id, options = {}) {
   const service = SERVICES[serviceName];
   if (!service) throw new TypeError(`Unsupported APN service: ${serviceName}`);
@@ -251,13 +280,63 @@ async function sendApnForService(serviceName, client, id, options = {}) {
   // all Mail registrations, since Calendar/Contacts push registration
   // post-dates the subtopic field).
   //
-  const registrations = alias.aps.filter((a) =>
+  const matched = alias.aps.filter((a) =>
     service.cert === 'Mail'
       ? !a.subtopic || a.subtopic === service.subtopic
       : a.subtopic === service.subtopic
   );
 
-  if (registrations.length === 0) return;
+  if (matched.length === 0) return;
+
+  //
+  // In-memory uniqueness pre-filter.
+  //
+  // alias.aps[] can accumulate duplicate or near-duplicate rows over time.
+  // The two real-world causes we have observed in production:
+  //
+  //  1. iOS Mail rotates `account_id` on backup-and-restore, account
+  //     remove/re-add, or OS-upgrade migration -- but `device_token` is
+  //     stable.  The on-xapplepushservice upsert key is
+  //     (device_token, account_id), so each rotation appends a new row
+  //     instead of replacing the old one.  We have observed 15+ stale
+  //     rows for a single physical device on one alias.
+  //
+  //  2. APNs treats device_token as case-insensitive hex, but iOS
+  //     XAPPLEPUSHSERVICE registrations historically use UPPERCASE while
+  //     CalDAV / CardDAV /apns POSTs use lowercase.  Two rows differing
+  //     only in token case still address the SAME physical device.
+  //
+  // Without dedupe each duplicate row would produce a separate APNs send
+  // with an identical wire body, wasting writes (and risking APNs
+  // throttling) without delivering any additional information to iOS
+  // (the device only refreshes the affected mailbox / collection once
+  // regardless of how many duplicate pushes it receives).
+  //
+  // Dedupe key per service:
+  //   * Mail               -- lowercase(device_token) + '|' + mailboxPath
+  //                           (one push per (device, mailbox); identical
+  //                            (token, mailbox) regardless of account_id
+  //                            produces an identical Mail push payload
+  //                            because aps.m = md5(mailboxPath))
+  //   * Calendar / Contact -- lowercase(device_token) + '|' + (key || '')
+  //                           (one push per (device, collection); the wire
+  //                            body's `key` is opaque and identifies the
+  //                            collection that changed)
+  //
+  // We keep the FIRST row for each dedupe key so the original
+  // device_token casing is preserved for the 410-Gone unsubscribe path,
+  // which strict-equals on (device_token, key) when removing rows.
+  //
+  const registrations = dedupeRegistrations(matched, service, options);
+
+  if (matched.length !== registrations.length) {
+    logger.debug('sendApnForService deduped registrations', {
+      service: serviceName,
+      alias_id: id,
+      before: matched.length,
+      after: registrations.length
+    });
+  }
 
   //
   // Long-lived cached provider (one per service).  We never call
@@ -425,6 +504,6 @@ sendApn.sendApn = sendApn;
 sendApn.sendApnCalendar = sendApnCalendar;
 sendApn.sendApnContacts = sendApnContacts;
 sendApn.sendApnForService = sendApnForService;
-sendApn._test = { createNote, SERVICES };
+sendApn._test = { createNote, dedupeRegistrations, SERVICES };
 
 module.exports = sendApn;

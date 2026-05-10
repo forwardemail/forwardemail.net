@@ -1023,6 +1023,194 @@ test('send-apn (Contacts via unified): filters non-addressbook aps[]', async (t)
 // (pre-existing Mail registrations from before subtopic enforcement)
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// dedupeRegistrations: in-memory uniqueness pre-filter for alias.aps[]
+//
+// Real-world causes for duplicate / near-duplicate rows in production:
+//
+//   1. iOS Mail rotates account_id on backup-and-restore, account
+//      remove/re-add, or OS-upgrade migration; device_token stays stable.
+//      Stale Mail rows can accumulate without bound for a single
+//      physical device on a single alias.  All produce IDENTICAL push
+//      payloads (aps.m =
+//      md5(mailboxPath)) so they MUST collapse to a single APNs send.
+//
+//   2. APNs treats device_token as case-insensitive hex.  iOS
+//      XAPPLEPUSHSERVICE registrations historically used UPPERCASE while
+//      CalDAV/CardDAV /apns POSTs use lowercase.  Two rows differing
+//      only in token case still address the SAME physical device and
+//      MUST collapse.
+//
+//   3. Multiple distinct (device_token, key) pairs MUST be preserved --
+//      one calendar collection changing should not suppress a sibling
+//      collection's push to the same device.
+//
+// The first row encountered wins so the original device_token casing
+// is preserved for the 410-Gone unsubscribe path.
+// ---------------------------------------------------------------------------
+
+test('send-apn: dedupeRegistrations collapses Mail rows differing only in account_id (stale-account_id rotation)', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { dedupeRegistrations, SERVICES } = sendApn._test;
+  const rows = [
+    {
+      device_token:
+        'AAAAAAAA1111BBBB2222CCCC3333DDDD4444EEEE5555FFFF6666AAAA7777BBBB',
+      subtopic: 'com.apple.mobilemail',
+      account_id: 'acct-old-1'
+    },
+    {
+      device_token:
+        'AAAAAAAA1111BBBB2222CCCC3333DDDD4444EEEE5555FFFF6666AAAA7777BBBB',
+      subtopic: 'com.apple.mobilemail',
+      account_id: 'acct-old-2'
+    },
+    {
+      device_token:
+        'AAAAAAAA1111BBBB2222CCCC3333DDDD4444EEEE5555FFFF6666AAAA7777BBBB',
+      subtopic: 'com.apple.mobilemail',
+      account_id: 'acct-current'
+    }
+  ];
+  const out = dedupeRegistrations(rows, SERVICES.Mail, {
+    mailboxPath: 'INBOX'
+  });
+  t.is(
+    out.length,
+    1,
+    'three identical (token, mailbox) rows must collapse to one'
+  );
+  t.is(out[0].account_id, 'acct-old-1', 'first row wins');
+});
+
+test('send-apn: dedupeRegistrations collapses case-mismatched Mail device tokens', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { dedupeRegistrations, SERVICES } = sendApn._test;
+  const rows = [
+    {
+      device_token:
+        'AAAAAAAA1111BBBB2222CCCC3333DDDD4444EEEE5555FFFF6666AAAA7777BBBB',
+      subtopic: 'com.apple.mobilemail',
+      account_id: 'a1'
+    },
+    {
+      device_token:
+        'aaaaaaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb',
+      subtopic: 'com.apple.mobilemail',
+      account_id: 'a2'
+    }
+  ];
+  const out = dedupeRegistrations(rows, SERVICES.Mail, {
+    mailboxPath: 'INBOX'
+  });
+  t.is(out.length, 1, 'case-mismatched tokens identify the same device');
+  t.is(
+    out[0].device_token,
+    'AAAAAAAA1111BBBB2222CCCC3333DDDD4444EEEE5555FFFF6666AAAA7777BBBB',
+    'first row wins so original casing is preserved for the 410-Gone unsubscribe path'
+  );
+});
+
+test('send-apn: dedupeRegistrations preserves distinct mailboxes for the same device', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { dedupeRegistrations, SERVICES } = sendApn._test;
+  const rows = [
+    { device_token: 'tokA', subtopic: 'com.apple.mobilemail', account_id: 'a1' }
+  ];
+  const inbox = dedupeRegistrations(rows, SERVICES.Mail, {
+    mailboxPath: 'INBOX'
+  });
+  const sent = dedupeRegistrations(rows, SERVICES.Mail, {
+    mailboxPath: 'Sent'
+  });
+  t.is(inbox.length, 1);
+  t.is(sent.length, 1);
+  t.is(inbox[0], sent[0], 'same row, different dispatches');
+});
+
+test('send-apn: dedupeRegistrations preserves distinct Calendar collection keys', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { dedupeRegistrations, SERVICES } = sendApn._test;
+  const rows = [
+    {
+      device_token: 'devTok',
+      subtopic: 'com.apple.mobilecal',
+      key: 'principal-home@example.com'
+    },
+    {
+      device_token: 'devTok',
+      subtopic: 'com.apple.mobilecal',
+      key: '00000000-0000-4000-8000-000000000001'
+    },
+    {
+      device_token: 'devTok',
+      subtopic: 'com.apple.mobilecal',
+      key: '00000000-0000-4000-8000-000000000002'
+    }
+  ];
+  const out = dedupeRegistrations(rows, SERVICES.Calendar);
+  t.is(out.length, 3, 'distinct collection keys must NOT be deduped');
+});
+
+test('send-apn: dedupeRegistrations collapses duplicate Calendar (token, key) pairs', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { dedupeRegistrations, SERVICES } = sendApn._test;
+  const rows = [
+    {
+      device_token: 'DEVTOK',
+      subtopic: 'com.apple.mobilecal',
+      key: 'cal-uuid-1'
+    },
+    {
+      device_token: 'devtok',
+      subtopic: 'com.apple.mobilecal',
+      key: 'cal-uuid-1'
+    }
+  ];
+  const out = dedupeRegistrations(rows, SERVICES.Calendar);
+  t.is(out.length, 1);
+  t.is(out[0].device_token, 'DEVTOK', 'first row wins');
+});
+
+test('send-apn: dedupeRegistrations collapses CardDAV literal default key duplicates', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { dedupeRegistrations, SERVICES } = sendApn._test;
+  // The addressbook pushkey is the literal 'default' string (per the
+  // TODO in helpers/ensure-default-address-book.js); two stale rows for
+  // the same (device, key) pair MUST collapse to a single send.
+  const rows = [
+    {
+      device_token:
+        'aaaaaaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb',
+      subtopic: 'com.apple.mobileaddressbook',
+      key: 'default',
+      account_id: 'default'
+    },
+    {
+      device_token:
+        'aaaaaaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa7777bbbb',
+      subtopic: 'com.apple.mobileaddressbook',
+      key: 'default',
+      account_id: 'default'
+    }
+  ];
+  const out = dedupeRegistrations(rows, SERVICES.Contact);
+  t.is(out.length, 1);
+});
+
+test('send-apn: dedupeRegistrations skips rows missing device_token', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { dedupeRegistrations, SERVICES } = sendApn._test;
+  const rows = [
+    { subtopic: 'com.apple.mobilecal', key: 'k' },
+    { device_token: '', subtopic: 'com.apple.mobilecal', key: 'k' },
+    { device_token: 'tok', subtopic: 'com.apple.mobilecal', key: 'k' }
+  ];
+  const out = dedupeRegistrations(rows, SERVICES.Calendar);
+  t.is(out.length, 1);
+  t.is(out[0].device_token, 'tok');
+});
+
 test('send-apn (Mail): legacy aps entries without subtopic are still considered', async (t) => {
   // We can't actually exercise the APN provider here (no certs in test
   // env), so we verify the filter path by inspecting that the helper
