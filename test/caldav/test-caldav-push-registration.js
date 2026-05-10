@@ -930,3 +930,105 @@ test('send-apn (Mail): legacy aps entries without subtopic are still considered'
     'getApnCerts should have been called, proving the legacy (no-subtopic) entry passed the Mail filter'
   );
 });
+
+// ---------------------------------------------------------------------------
+// Regression tests for caldav-adapter >= 9.3.10
+//
+// iOS Calendar issues PROPFIND on the calendar-home (`/dav/<user>/`) with
+// <CS:push-transports/> in the prop list.  caldav-adapter internally names
+// that resource `calCollection` (not `calendar`).  Versions <= 9.3.9 only
+// emitted push-transports / pushkey for `principal` and `calendar`, so iOS
+// never saw the advertisement on the home and never POSTed /apns to
+// register for push notifications.  9.3.10 adds `calCollection` to the
+// allowed resources -- these tests guard against future regressions both
+// in the upstream package and in the way Forward Email consumes it.
+//
+// Apple spec:
+//   https://github.com/apple/ccs-calendarserver/blob/master/doc/Extensions/caldav-pubsubdiscovery.txt
+//
+// Upstream fix:
+//   https://github.com/forwardemail/caldav-adapter (v9.3.10, common/tags.js)
+// ---------------------------------------------------------------------------
+
+test('caldav-adapter tags: push-transports advertised on calendar-home (calCollection)', async (t) => {
+  const tagsFactory = require('caldav-adapter/common/tags');
+
+  const calls = [];
+  const tags = tagsFactory({
+    pushTopicProvider({ resource }) {
+      calls.push(resource);
+      return 'com.apple.calendar.XServer.deadbeef-1234-5678-9abc-def012345678';
+    },
+    pushSubscriptionURL: 'https://caldav.example.com/apns',
+    pushEnv: 'PRODUCTION',
+    pushRefreshInterval: '172800'
+  });
+
+  const cs = 'http://calendarserver.org/ns/';
+  const tagAction = tags.tags[cs]['push-transports'];
+  t.truthy(tagAction, 'push-transports tag must exist');
+
+  const result = await tagAction.resp({
+    resource: 'calCollection',
+    calendar: undefined,
+    ctx: { state: { params: { principalId: 'alice@example.com' } } }
+  });
+
+  t.truthy(
+    result,
+    'push-transports MUST be returned for resource = calCollection (caldav-adapter >= 9.3.10)'
+  );
+  t.deepEqual(calls, ['calCollection']);
+
+  // caldav-adapter's buildTag() serializes namespace URIs as short prefixes
+  // (D for DAV:, CS for http://calendarserver.org/ns/) -- not Clark notation.
+  const transport = result['CS:push-transports']['CS:transport'];
+  t.is(transport['@type'], 'APSD', 'transport@type must be APSD');
+  t.is(
+    transport['CS:subscription-url']['D:href'],
+    'https://caldav.example.com/apns'
+  );
+  t.is(
+    transport['CS:apsbundleid'],
+    'com.apple.calendar.XServer.deadbeef-1234-5678-9abc-def012345678'
+  );
+  t.is(transport['CS:env'], 'PRODUCTION');
+  t.is(transport['CS:refresh-interval'], '172800');
+});
+
+test('caldav-adapter tags: pushkey emitted on calendar-home using principalId', async (t) => {
+  const tagsFactory = require('caldav-adapter/common/tags');
+  const tags = tagsFactory({ pushTopicProvider: () => 'topic-uid' });
+  const cs = 'http://calendarserver.org/ns/';
+  const result = await tags.tags[cs].pushkey.resp({
+    resource: 'calCollection',
+    calendar: undefined,
+    ctx: { state: { params: { principalId: 'alice@example.com' } } }
+  });
+  t.truthy(result, 'pushkey MUST be emitted on calendar-home');
+  t.is(result['CS:pushkey'], 'alice@example.com');
+});
+
+test('caldav-adapter tags: pushkey emitted per-calendar uses calendarId', async (t) => {
+  const tagsFactory = require('caldav-adapter/common/tags');
+  const tags = tagsFactory({ pushTopicProvider: () => 'topic-uid' });
+  const cs = 'http://calendarserver.org/ns/';
+  const result = await tags.tags[cs].pushkey.resp({
+    resource: 'calendar',
+    calendar: { calendarId: 'work-calendar-uuid' },
+    ctx: {}
+  });
+  t.is(result['CS:pushkey'], 'work-calendar-uuid');
+});
+
+test('caldav-adapter tags: pushkey omitted when pushTopicProvider absent', async (t) => {
+  const tagsFactory = require('caldav-adapter/common/tags');
+  const tags = tagsFactory({});
+  const cs = 'http://calendarserver.org/ns/';
+  const result = await tags.tags[cs].pushkey.resp({
+    resource: 'calCollection',
+    calendar: undefined,
+    ctx: { state: { params: { principalId: 'a' } } }
+  });
+  t.is(result, undefined);
+});
