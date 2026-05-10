@@ -304,3 +304,146 @@ test.serial(
     }
   }
 );
+
+//
+// Regression test: simulate the iOS sync-collection sequence that follows
+// an APNs push.  iOS receives a Calendar background push (apns-push-type:
+// background, content-available: 1, key=<calendar-uuid>) after webmail/
+// API event creation, then immediately issues:
+//
+//   REPORT /dav/<user>/<calendarId>/  (Depth: 1)
+//   <D:sync-collection xmlns:D="DAV:">
+//     <D:sync-token>https://forwardemail.net/ns/sync-token/N</D:sync-token>
+//     <D:sync-level>1</D:sync-level>
+//     <D:prop><D:getetag/></D:prop>
+//   </D:sync-collection>
+//
+// The server MUST return a 207 multistatus that:
+//   1. Includes the API-created event's <D:href> in the response set
+//   2. Carries a NEW <D:sync-token> strictly greater than the client's
+//      previous token (so iOS knows further state was committed)
+//
+// Without (1) iOS would never fetch the new VEVENT.  Without (2) iOS
+// would not advance its local sync cursor and the event would be
+// re-discovered on every sync forever.  Both invariants are required
+// for "create event in webmail -> appears on iOS Calendar" to work.
+//
+test.serial(
+  'event created via v1 API surfaces in iOS sync-collection REPORT with bumped sync-token',
+  async (t) => {
+    const { api, calDAVURL, username, pass } = t.context;
+    const auth = createAliasAuth(username, pass);
+    const headers = getBasicAuthHeaders({ username, password: pass });
+
+    // 1) Create a fresh calendar via the API
+    const calendarRes = await api
+      .post('/v1/calendars')
+      .set('Authorization', auth)
+      .send({ name: 'Sync Cal', description: 'sync-collection test' });
+    t.is(calendarRes.status, 200);
+    const calendarId = calendarRes.body.id;
+
+    // 2) Discover the calendar via CalDAV PROPFIND and capture the
+    //    initial sync-token (the "previous" token iOS would have cached)
+    const account = await createAccount({
+      account: { serverUrl: calDAVURL, accountType: 'caldav' },
+      headers
+    });
+    const calendars = await fetchCalendars({ account, headers });
+    const cal = calendars.find(
+      (c) =>
+        c.url.includes(calendarId) ||
+        c.displayName === 'Sync Cal' ||
+        c.components?.includes('VEVENT')
+    );
+    t.truthy(cal, 'CalDAV must list the API-created calendar');
+    const initialSyncToken = cal.syncToken || cal.ctag || '';
+    t.true(
+      typeof initialSyncToken === 'string' && initialSyncToken.length > 0,
+      'CalDAV PROPFIND must expose an initial sync-token'
+    );
+
+    // 3) Create an event via the API (the webmail write path)
+    const uid = `ios-sync-${Date.now()}@example.com`;
+    const ical = buildIcs({
+      uid,
+      summary: 'iOS Sync Push Regression',
+      organizer: username
+    });
+    const createRes = await api
+      .post('/v1/calendar-events')
+      .set('Authorization', auth)
+      .send({ calendar_id: calendarId, event_id: uid, ical });
+    t.is(createRes.status, 200);
+
+    // 4) Issue the same sync-collection REPORT that iOS would issue
+    //    on push receipt, carrying the previously-cached sync-token.
+    const calendarUrl = cal.url; // e.g. /dav/<user>/<calendarId>/
+    const syncReportBody = [
+      '<?xml version="1.0" encoding="utf-8" ?>',
+      '<D:sync-collection xmlns:D="DAV:">',
+      `  <D:sync-token>${initialSyncToken}</D:sync-token>`,
+      '  <D:sync-level>1</D:sync-level>',
+      '  <D:prop><D:getetag/></D:prop>',
+      '</D:sync-collection>'
+    ].join('\n');
+
+    const reportRes = await new Promise((resolve, reject) => {
+      const url = new URL(calendarUrl, calDAVURL);
+      const http = require('node:http');
+      const req = http.request(
+        {
+          hostname: url.hostname,
+          port: url.port,
+          path: url.pathname,
+          method: 'REPORT',
+          headers: {
+            ...headers,
+            'Content-Type': 'application/xml; charset=utf-8',
+            Depth: '1',
+            'Content-Length': Buffer.byteLength(syncReportBody)
+          }
+        },
+        (res) => {
+          const chunks = [];
+          res.on('data', (c) => chunks.push(c));
+          res.on('end', () =>
+            resolve({
+              status: res.statusCode,
+              body: Buffer.concat(chunks).toString('utf8')
+            })
+          );
+        }
+      );
+      req.on('error', reject);
+      req.write(syncReportBody);
+      req.end();
+    });
+
+    t.is(
+      reportRes.status,
+      207,
+      'sync-collection REPORT must return 207 Multi-Status'
+    );
+
+    // Invariant 1: the API-created event MUST appear in the response set
+    t.true(
+      reportRes.body.includes(uid + '.ics') ||
+        reportRes.body.includes(encodeURIComponent(uid)),
+      'sync-collection multistatus must include the API-created event href'
+    );
+
+    // Invariant 2: the response MUST carry a sync-token strictly greater
+    //              than the client's previous token (so iOS advances)
+    const tokenMatch = reportRes.body.match(
+      /<(?:d:)?sync-token>([^<]+)<\/(?:d:)?sync-token>/i
+    );
+    t.truthy(tokenMatch, 'response must include <D:sync-token>');
+    const newSyncToken = tokenMatch[1].trim();
+    t.not(
+      newSyncToken,
+      initialSyncToken,
+      'sync-collection must return a new sync-token after API write'
+    );
+  }
+);

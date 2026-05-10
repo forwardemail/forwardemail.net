@@ -339,6 +339,59 @@ test('iOS REPORT', async (t) => {
 // on every collection node via dynamic_property_provider.
 //
 test.serial(
+  'should advertise <cs:push-transports> AND <cs:pushkey> on addressbook-home PROPFIND',
+  async (t) => {
+    //
+    // Apple Push discovery, account-wide flip:
+    //
+    // iOS Contacts will only promote a CardDAV account from "Fetch" to
+    // "Push" in Settings -> Contacts -> Accounts -> Advanced when BOTH
+    // <CS:push-transports> AND <CS:pushkey> are advertised on the
+    // addressbook-home collection (`/dav/<user>/addressbooks/`).  This
+    // mirrors the behavior of Apple's ccs-calendarserver and Cyrus,
+    // which carry pushkey on every collection that supports push --
+    // including the home itself, since the home pushkey is the
+    // "any-addressbook-changed" subscription.
+    //
+    // Without pushkey on the home, iOS may complete its /apns POST and
+    // we'll persist the registration in alias.aps[], yet Settings will
+    // continue to show "Fetch" because iOS never establishes the
+    // account-wide push subscription.
+    //
+    const response = await axios({
+      method: 'PROPFIND',
+      url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/`,
+      headers: {
+        'Content-Type': 'application/xml',
+        Depth: '0',
+        ...t.context.authHeaders
+      },
+      data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:" xmlns:cs="http://calendarserver.org/ns/">
+  <d:prop>
+    <d:displayname/>
+    <d:resourcetype/>
+    <cs:push-transports/>
+    <cs:pushkey/>
+  </d:prop>
+</d:propfind>`
+    });
+
+    t.is(response.status, 207);
+    // push-transports is conditionally emitted (omitted when the Apple
+    // Server Contact cert hasn't been primed); the home pushkey is
+    // emitted in lock-step with push-transports because it has no
+    // meaning without a transport to register against.
+    if (response.data.includes('<cs:push-transports>')) {
+      t.true(
+        response.data.includes('<cs:pushkey>'),
+        'addressbook-home PROPFIND must include <cs:pushkey> alongside <cs:push-transports> so iOS Contacts can subscribe at the account level (Fetch -> Push)'
+      );
+    }
+  }
+);
+
+test.serial(
   'should advertise <cs:push-transports> and <cs:pushkey> on per-addressbook PROPFIND',
   async (t) => {
     const response = await axios({

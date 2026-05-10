@@ -16,6 +16,8 @@ const Emails = require('#models/emails');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 const { buildICS } = require('#helpers/send-calendar-email');
+const { sendApnCalendar } = require('#helpers/send-apn');
+const sendPushNotification = require('#helpers/send-websocket-notification');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
@@ -138,6 +140,42 @@ async function create(ctx) {
 
   ctx.body = json(calendar);
 
+  //
+  // Send Apple Push Notification so iOS Calendar refreshes its
+  // calendar-home-set listing and discovers the new collection.
+  // Mirrors caldav-server.js MKCALENDAR behavior (sendApnCalendar at
+  // line 1986 of caldav-server.js).  Without this, iOS would not see
+  // API-created calendars until the next manual refresh.
+  //
+  sendApnCalendar(ctx.client, ctx.state.session.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  //
+  // Send websocket push notification so the webmail UI refreshes its
+  // calendar list in real time.  Mirrors caldav-server.js MKCALENDAR
+  // behavior (sendWebSocketNotification at line 1964 of caldav-server.js).
+  //
+  sendPushNotification(
+    ctx.client,
+    ctx.state.session.user.alias_id,
+    'calendarCreated',
+    {
+      calendar: {
+        id: calendar._id.toString(),
+        calendarId: calendar.calendarId,
+        name: calendar.name,
+        description: calendar.description || '',
+        color: calendar.color || '',
+        order: calendar.order || 0,
+        timezone: calendar.timezone || '',
+        readonly: Boolean(calendar.readonly),
+        synctoken: calendar.synctoken || '',
+        object: 'calendar'
+      }
+    }
+  );
+
   // Update storage in background (calendars contribute to storage usage)
   updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
     .then()
@@ -236,6 +274,31 @@ async function update(ctx) {
   calendar.isNew = false;
 
   //
+  // Bump the calendar synctoken so CalDAV/iOS sync-collection clients
+  // detect this metadata change (PROPPATCH-equivalent).  Mirrors
+  // caldav-server.js updateCalendar (which goes through
+  // Calendars.findByIdAndUpdate that auto-bumps via the model hook).
+  // Use the same `${base}/${Date.now()+1}` scheme used elsewhere in
+  // this controller for consistency with calendar-events.js bumps
+  // (incrementSynctoken there produces a counter; we use a timestamp
+  // here only because counter requires a deterministic prior read --
+  // either format is opaque to clients per RFC 6578).
+  //
+  const DEFAULT_SYNC_BASE = `${config.urls.web}/ns/sync-token`;
+  const priorTokenParts =
+    typeof calendar.synctoken === 'string' &&
+    calendar.synctoken.startsWith('http')
+      ? calendar.synctoken.split('/')
+      : [];
+  const priorTokenNum = Number.parseInt(
+    priorTokenParts[priorTokenParts.length - 1],
+    10
+  );
+  calendar.synctoken = Number.isNaN(priorTokenNum)
+    ? `${DEFAULT_SYNC_BASE}/${Date.now() + 1}`
+    : `${DEFAULT_SYNC_BASE}/${priorTokenNum + 1}`;
+
+  //
   // Fix corrupted synctokens before saving.
   // Production calendars may have corrupted synctokens (e.g. "/7" instead
   // of "https://forwardemail.net/ns/sync-token/7") from a prior bug in
@@ -263,6 +326,42 @@ async function update(ctx) {
   await calendar.save();
 
   ctx.body = json(calendar);
+
+  //
+  // Send Apple Push Notification so iOS Calendar picks up metadata
+  // changes (display name, color, timezone, order, description).
+  // Mirrors caldav-server.js PROPPATCH behavior (sendApnCalendar at
+  // line 2143 of caldav-server.js).  Without this, iOS would not see
+  // calendar metadata changes until the next manual refresh.
+  //
+  sendApnCalendar(ctx.client, ctx.state.session.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  //
+  // Send websocket push notification so the webmail UI updates in
+  // real time.  Mirrors caldav-server.js PROPPATCH behavior
+  // (sendWebSocketNotification at line 2121 of caldav-server.js).
+  //
+  sendPushNotification(
+    ctx.client,
+    ctx.state.session.user.alias_id,
+    'calendarUpdated',
+    {
+      calendar: {
+        id: calendar._id.toString(),
+        calendarId: calendar.calendarId,
+        name: calendar.name,
+        description: calendar.description || '',
+        color: calendar.color || '',
+        order: calendar.order || 0,
+        timezone: calendar.timezone || '',
+        readonly: Boolean(calendar.readonly),
+        synctoken: calendar.synctoken || '',
+        object: 'calendar'
+      }
+    }
+  );
 
   // Update storage in background (calendar size may have changed)
   updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
@@ -398,6 +497,37 @@ async function remove(ctx) {
   });
 
   ctx.body = json(calendar);
+
+  //
+  // Send Apple Push Notification so iOS Calendar removes the deleted
+  // collection (and its cached events) from its calendar-home-set
+  // listing.  Mirrors caldav-server.js DELETE behavior
+  // (sendApnCalendar at line 3708 of caldav-server.js).  Without this,
+  // iOS would continue to display the deleted calendar and its events
+  // until the next manual refresh.
+  //
+  sendApnCalendar(ctx.client, ctx.state.session.user.alias_id)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  //
+  // Send websocket push notification so the webmail UI removes the
+  // deleted calendar in real time.  Mirrors caldav-server.js DELETE
+  // behavior (sendWebSocketNotification at line 3692 of caldav-server.js).
+  //
+  sendPushNotification(
+    ctx.client,
+    ctx.state.session.user.alias_id,
+    'calendarDeleted',
+    {
+      calendar: {
+        id: calendar._id.toString(),
+        calendarId: calendar.calendarId,
+        name: calendar.name || '',
+        object: 'calendar'
+      }
+    }
+  );
 
   // Update storage in background (calendar was deleted, reducing storage usage)
   updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)

@@ -1193,10 +1193,32 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
     ];
 
     if (pushTransportsXML) {
-      homeProps.push({
-        name: 'cs:push-transports',
-        value: pushTransportsXML
-      });
+      //
+      // Apple push-discovery: iOS Contacts will not promote a CardDAV
+      // account from "Fetch" to "Push" in Settings unless BOTH
+      // <CS:push-transports> AND <CS:pushkey> are advertised on the
+      // addressbook-home collection (not just on the individual
+      // addressbooks).  This mirrors Apple's ccs-calendarserver and
+      // Cyrus reference behavior, where every collection that supports
+      // notifications carries pushkey alongside push-transports.
+      //
+      // The home pushkey is the per-user account-wide subscription
+      // identifier that iOS uses to refresh the entire addressbook-home
+      // (i.e. "any addressbook in this account changed") on push
+      // receipt.  We use the principal username so it is stable across
+      // addressbook adds/removes and distinct from the per-addressbook
+      // pushkeys advertised below.
+      //
+      homeProps.push(
+        {
+          name: 'cs:push-transports',
+          value: pushTransportsXML
+        },
+        {
+          name: 'cs:pushkey',
+          value: encodeXMLEntities(ctx.params.user)
+        }
+      );
     }
 
     // Create response
