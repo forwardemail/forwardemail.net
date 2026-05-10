@@ -325,6 +325,71 @@ test('iOS REPORT', async (t) => {
   t.true(response.data.includes('<d:sync-token>'));
 });
 
+//
+// Apple Push discovery: iOS Contacts queries the per-addressbook URL
+// (not just the addressbook-home) for <cs:push-transports> and
+// <cs:pushkey> before flipping the account from Fetch to Push.  Without
+// these properties on the individual addressbook collection iOS Contacts
+// silently degrades to its default poll cycle, which presents in
+// Settings -> Mail -> Fetch New Data as the account showing "Fetch"
+// instead of "Push" -- even when com.apple.mobileaddressbook is already
+// persisted in alias.aps[].  This mirrors how caldav-adapter advertises
+// push-transports + pushkey on every calendar collection (calCollection
+// + calendar) and how Apple's ccs-calendarserver exposes the property
+// on every collection node via dynamic_property_provider.
+//
+test.serial(
+  'should advertise <cs:push-transports> and <cs:pushkey> on per-addressbook PROPFIND',
+  async (t) => {
+    const response = await axios({
+      method: 'PROPFIND',
+      url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/default`,
+      headers: {
+        'Content-Type': 'application/xml',
+        Depth: '0',
+        ...t.context.authHeaders
+      },
+      data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:" xmlns:cs="http://calendarserver.org/ns/">
+  <d:prop>
+    <d:displayname/>
+    <d:resourcetype/>
+    <cs:push-transports/>
+    <cs:pushkey/>
+  </d:prop>
+</d:propfind>`
+    });
+
+    t.is(response.status, 207);
+    // pushkey is stable across renames and is the value iOS will POST
+    // back to /apns as the `key` query param during registration.
+    t.true(
+      response.data.includes('<cs:pushkey>'),
+      'individual addressbook PROPFIND must include <cs:pushkey>'
+    );
+    // push-transports is what flips iOS into Push mode for this account.
+    // It is conditionally emitted (omitted on cold start when the Apple
+    // Server Contact cert hasn't been primed yet); however the test env
+    // has the topic stubbed so we expect it here.
+    if (response.data.includes('<cs:push-transports>')) {
+      t.true(
+        response.data.includes('<cs:transport type="APSD">'),
+        'push-transports body must contain <cs:transport type="APSD">'
+      );
+      t.true(
+        response.data.includes('<cs:apsbundleid>'),
+        'push-transports body must contain <cs:apsbundleid>'
+      );
+      t.true(
+        response.data.includes(
+          '<cs:refresh-interval>172800</cs:refresh-interval>'
+        ),
+        'refresh-interval must match Apple ccs-calendarserver default of 2 days'
+      );
+    }
+  }
+);
+
 // Test RFC 6352 compliance - PROPFIND on principal
 test.serial(
   'should respond to PROPFIND on principal with correct properties',

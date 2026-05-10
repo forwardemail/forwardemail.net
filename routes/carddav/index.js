@@ -30,6 +30,66 @@ function vcf(id) {
   return '.vcf';
 }
 
+//
+// Apple CalDAV/CardDAV push-discovery
+// (https://github.com/apple/ccs-calendarserver/blob/master/doc/Extensions/caldav-pubsubdiscovery.txt)
+//
+// Builds the <cs:transport type="APSD"> body advertised in the
+// <cs:push-transports> property.  iOS Contacts looks for this property on
+// BOTH the addressbook-home (`/dav/<user>/addressbooks/`) AND on each
+// individual addressbook collection (`/dav/<user>/addressbooks/<id>/`)
+// before flipping the account from Fetch to Push in Settings -> Mail ->
+// Fetch New Data.  Apple's reference ccs-calendarserver emits the same
+// property on every collection that supports notifications via its
+// `dynamic_property_provider` mechanism, and Cyrus IMAP exposes it on
+// every DAV collection too (see imap/http_applepush.c).  Forward Email's
+// CalDAV path goes through caldav-adapter which already advertises
+// push-transports on both calendar-home and per-calendar; CardDAV is
+// hand-rolled here so we mirror that behavior explicitly.
+//
+// Returns an empty string when the Apple Server Contact certificate is
+// not yet primed (cold start / local CI), so callers should treat the
+// property as optional and simply omit it.
+//
+async function buildCardDAVPushTransportsXML(ctx) {
+  try {
+    const topic = await getApnTopic(
+      ctx.client || ctx.instance.client,
+      'Contact'
+    );
+    if (!topic) return '';
+
+    const subscriptionURL = env.CARDDAV_HOST
+      ? `https://${env.CARDDAV_HOST}/apns`
+      : '/apns';
+
+    return (
+      '<cs:transport type="APSD">' +
+      `<cs:subscription-url><d:href>${encodeXMLEntities(
+        subscriptionURL
+      )}</d:href></cs:subscription-url>` +
+      `<cs:apsbundleid>${encodeXMLEntities(topic)}</cs:apsbundleid>` +
+      // <CS:env> mirrors the APNs environment of the certificate.  Forward
+      // Email uses production XServer certs everywhere except local CI test
+      // (where no certs are loaded and this branch isn't reached anyway).
+      '<cs:env>PRODUCTION</cs:env>' +
+      // <CS:refresh-interval> tells iOS how often to re-POST its token to
+      // the subscription URL.  Apple's ccs-calendarserver default is 2 days
+      // (172800s, see twistedcaldav/stdconfig.py SubscriptionRefreshIntervalSeconds);
+      // Cyrus uses 14 days via aps_expiry.  A short value (e.g. 1 hour)
+      // would multiply registration writes by ~48x without delivering any
+      // additional pushes (the refresh is a liveness ping, not a delivery
+      // trigger).
+      '<cs:refresh-interval>172800</cs:refresh-interval>' +
+      '</cs:transport>'
+    );
+  } catch (err) {
+    if (ctx.logger)
+      ctx.logger.warn('CardDAV push-transports build failed', { err });
+    return '';
+  }
+}
+
 const router = new Router();
 
 // status page crawlers often send `HEAD /` requests
@@ -681,54 +741,84 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       //   : null;
       // const props = xmlHelpers.extractRequestedProps(xmlBody);
 
+      //
+      // Apple push-discovery: iOS Contacts inspects each individual
+      // addressbook (not just the addressbook-home) for <cs:push-transports>
+      // and <cs:pushkey> before flipping the account from Fetch to Push.
+      // This mirrors the behavior of the calendar branch (caldav-adapter
+      // emits both properties on calCollection and on each calendar) and of
+      // Apple's own ccs-calendarserver, which exposes push-transports on
+      // every collection that supports notifications.
+      //
+      const addressBookPushTransportsXML = await buildCardDAVPushTransportsXML(
+        ctx
+      );
+
+      const addressBookProps = [
+        {
+          name: 'd:displayname',
+          value: encodeXMLEntities(addressBook.name)
+        },
+        {
+          name: 'd:resourcetype',
+          value: '<d:collection/><card:addressbook/>'
+        },
+        { name: 'd:sync-token', value: addressBook.synctoken },
+        // getctag is used by some clients (iOS, macOS) to detect changes
+        // It should match the sync-token for consistency
+        { name: 'cs:getctag', value: addressBook.synctoken },
+        //
+        // Apple push-discovery: pushkey identifies this addressbook in the
+        // subscription POST iOS Contacts will send to /apns.  We use the
+        // stable address_book_id (not name) so renames don't invalidate
+        // existing subscriptions.
+        //
+        {
+          name: 'cs:pushkey',
+          value: encodeXMLEntities(addressBook.address_book_id)
+        },
+        {
+          name: 'card:addressbook-description',
+          value: encodeXMLEntities(addressBook.description || '')
+        },
+        {
+          name: 'card:supported-address-data',
+          value:
+            '<card:address-data-type content-type="text/vcard" version="3.0"/><card:address-data-type content-type="text/vcard" version="4.0"/>'
+        },
+        {
+          name: 'd:current-user-privilege-set',
+          value:
+            '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:write-content/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
+        },
+        // macOS Contacts uses d:owner to determine which principal owns
+        // the address book; without it, Mac may not allow setting the
+        // CardDAV account as the default account for new contacts.
+        {
+          name: 'd:owner',
+          value: `<d:href>/dav/${encodeXMLEntities(ctx.params.user)}/</d:href>`
+        },
+        {
+          name: 'd:supported-report-set',
+          value:
+            '<d:supported-report><d:report><card:addressbook-multiget/></d:report></d:supported-report><d:supported-report><d:report><card:addressbook-query/></d:report></d:supported-report><d:supported-report><d:report><d:sync-collection/></d:report></d:supported-report>'
+        }
+      ];
+
+      if (addressBookPushTransportsXML) {
+        addressBookProps.push({
+          name: 'cs:push-transports',
+          value: addressBookPushTransportsXML
+        });
+      }
+
       // Create response for address book
       const responses = [
         {
           href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/`,
           propstat: [
             {
-              props: [
-                {
-                  name: 'd:displayname',
-                  value: encodeXMLEntities(addressBook.name)
-                },
-                {
-                  name: 'd:resourcetype',
-                  value: '<d:collection/><card:addressbook/>'
-                },
-                { name: 'd:sync-token', value: addressBook.synctoken },
-                // getctag is used by some clients (iOS, macOS) to detect changes
-                // It should match the sync-token for consistency
-                { name: 'cs:getctag', value: addressBook.synctoken },
-                {
-                  name: 'card:addressbook-description',
-                  value: encodeXMLEntities(addressBook.description || '')
-                },
-                {
-                  name: 'card:supported-address-data',
-                  value:
-                    '<card:address-data-type content-type="text/vcard" version="3.0"/><card:address-data-type content-type="text/vcard" version="4.0"/>'
-                },
-                {
-                  name: 'd:current-user-privilege-set',
-                  value:
-                    '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:write-content/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
-                },
-                // macOS Contacts uses d:owner to determine which principal owns
-                // the address book; without it, Mac may not allow setting the
-                // CardDAV account as the default account for new contacts.
-                {
-                  name: 'd:owner',
-                  value: `<d:href>/dav/${encodeXMLEntities(
-                    ctx.params.user
-                  )}/</d:href>`
-                },
-                {
-                  name: 'd:supported-report-set',
-                  value:
-                    '<d:supported-report><d:report><card:addressbook-multiget/></d:report></d:supported-report><d:supported-report><d:report><card:addressbook-query/></d:report></d:supported-report><d:supported-report><d:report><d:sync-collection/></d:report></d:supported-report>'
-                }
-              ],
+              props: addressBookProps,
               status: '200 OK'
             }
           ]
@@ -1079,51 +1169,12 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
     // Apple CalDAV/CardDAV push-discovery (caldav-pubsubdiscovery.txt):
     // advertise push-transports on the addressbook-home so iOS Contacts
     // can register a push subscription via POST /apns and receive real-
-    // time notifications when an addressbook changes.  The topic comes
-    // from Forward Email's reverse-engineered Apple Server Contact
-    // certificate; if the cert bundle is not yet primed (cold start)
-    // we omit the property and iOS falls back to its default poll.
+    // time notifications when an addressbook changes.  Build the XML
+    // once and reuse it for every addressbook child entry below (in the
+    // Depth=1 listing).  See buildCardDAVPushTransportsXML at the top of
+    // this file for the full spec rationale.
     //
-    let pushTransportsXML = '';
-    try {
-      const topic = await getApnTopic(
-        ctx.client || ctx.instance.client,
-        'Contact'
-      );
-      if (topic) {
-        const subscriptionURL = env.CARDDAV_HOST
-          ? `https://${env.CARDDAV_HOST}/apns`
-          : '/apns';
-        pushTransportsXML =
-          '<cs:transport type="APSD">' +
-          `<cs:subscription-url><d:href>${encodeXMLEntities(
-            subscriptionURL
-          )}</d:href></cs:subscription-url>` +
-          `<cs:apsbundleid>${encodeXMLEntities(topic)}</cs:apsbundleid>` +
-          //
-          // <CS:env> mirrors the APNs environment of the certificate.  Apple's
-          // ccs-calendarserver default and Cyrus's reference impl both gate this
-          // on cert provenance.  Forward Email uses production XServer certs in
-          // every environment except local CI test (where no certs are loaded
-          // and this branch isn't reached anyway).
-          //
-          '<cs:env>PRODUCTION</cs:env>' +
-          //
-          // <CS:refresh-interval> tells iOS how often to re-POST its token to
-          // the subscription URL.  Apple's ccs-calendarserver default is 2 days
-          // (172800 seconds, see twistedcaldav/stdconfig.py APNS
-          // `SubscriptionRefreshIntervalSeconds`).  Cyrus uses 14 days via
-          // `aps_expiry`.  A short value (e.g. the previous 1-hour figure)
-          // multiplies registration writes by ~48x with no functional benefit
-          // because iOS only delivers a push when the underlying collection
-          // changes -- the refresh is purely a liveness ping.
-          //
-          '<cs:refresh-interval>172800</cs:refresh-interval>' +
-          '</cs:transport>';
-      }
-    } catch (err) {
-      ctx.logger.warn('CardDAV push-transports advertise failed', { err });
-    }
+    const pushTransportsXML = await buildCardDAVPushTransportsXML(ctx);
 
     const homeProps = [
       { name: 'd:displayname', value: 'Address Books' },
@@ -1170,59 +1221,76 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
       );
 
       for (const addressBook of addressBooks) {
+        const childProps = [
+          {
+            name: 'd:displayname',
+            value: encodeXMLEntities(addressBook.name)
+          },
+          {
+            name: 'd:resourcetype',
+            value: '<d:collection/><card:addressbook/>'
+          },
+          { name: 'd:sync-token', value: addressBook.synctoken },
+          // getctag is used by macOS/iOS to detect changes
+          { name: 'cs:getctag', value: addressBook.synctoken },
+          //
+          // Apple push-discovery: pushkey identifies this addressbook
+          // in subsequent /apns subscription POSTs from iOS Contacts.
+          // We use the addressbook_id which is stable across renames.
+          //
+          {
+            name: 'cs:pushkey',
+            value: encodeXMLEntities(addressBook.address_book_id)
+          },
+          {
+            name: 'card:addressbook-description',
+            value: encodeXMLEntities(addressBook.description || '')
+          },
+          {
+            name: 'card:supported-address-data',
+            value:
+              '<card:address-data-type content-type="text/vcard" version="3.0"/><card:address-data-type content-type="text/vcard" version="4.0"/>'
+          },
+          {
+            name: 'd:current-user-privilege-set',
+            value:
+              '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:write-content/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
+          },
+          // macOS Contacts uses d:owner to determine which principal
+          // owns the address book for write permission decisions.
+          {
+            name: 'd:owner',
+            value: `<d:href>/dav/${encodeXMLEntities(
+              ctx.params.user
+            )}/</d:href>`
+          },
+          {
+            name: 'd:supported-report-set',
+            value:
+              '<d:supported-report><d:report><card:addressbook-multiget/></d:report></d:supported-report><d:supported-report><d:report><card:addressbook-query/></d:report></d:supported-report><d:supported-report><d:report><d:sync-collection/></d:report></d:supported-report>'
+          }
+        ];
+
+        //
+        // Mirror push-transports onto every addressbook child entry too.
+        // iOS sometimes inspects the Depth=1 listing of the addressbook-home
+        // rather than issuing a follow-up PROPFIND on each addressbook URL,
+        // and ccs-calendarserver returns push-transports for every collection
+        // node in either case.  Forward Email's calendar branch (via caldav-
+        // adapter) does the same.
+        //
+        if (pushTransportsXML) {
+          childProps.push({
+            name: 'cs:push-transports',
+            value: pushTransportsXML
+          });
+        }
+
         responses.push({
           href: `/dav/${ctx.params.user}/addressbooks/${addressBook.address_book_id}/`,
           propstat: [
             {
-              props: [
-                {
-                  name: 'd:displayname',
-                  value: encodeXMLEntities(addressBook.name)
-                },
-                {
-                  name: 'd:resourcetype',
-                  value: '<d:collection/><card:addressbook/>'
-                },
-                { name: 'd:sync-token', value: addressBook.synctoken },
-                // getctag is used by macOS/iOS to detect changes
-                { name: 'cs:getctag', value: addressBook.synctoken },
-                //
-                // Apple push-discovery: pushkey identifies this addressbook
-                // in subsequent /apns subscription POSTs from iOS Contacts.
-                // We use the addressbook_id which is stable across renames.
-                //
-                {
-                  name: 'cs:pushkey',
-                  value: encodeXMLEntities(addressBook.address_book_id)
-                },
-                {
-                  name: 'card:addressbook-description',
-                  value: encodeXMLEntities(addressBook.description || '')
-                },
-                {
-                  name: 'card:supported-address-data',
-                  value:
-                    '<card:address-data-type content-type="text/vcard" version="3.0"/><card:address-data-type content-type="text/vcard" version="4.0"/>'
-                },
-                {
-                  name: 'd:current-user-privilege-set',
-                  value:
-                    '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:write-content/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
-                },
-                // macOS Contacts uses d:owner to determine which principal
-                // owns the address book for write permission decisions.
-                {
-                  name: 'd:owner',
-                  value: `<d:href>/dav/${encodeXMLEntities(
-                    ctx.params.user
-                  )}/</d:href>`
-                },
-                {
-                  name: 'd:supported-report-set',
-                  value:
-                    '<d:supported-report><d:report><card:addressbook-multiget/></d:report></d:supported-report><d:supported-report><d:report><card:addressbook-query/></d:report></d:supported-report><d:supported-report><d:report><d:sync-collection/></d:report></d:supported-report>'
-                }
-              ],
+              props: childProps,
               status: '200 OK'
             }
           ]
@@ -1725,7 +1793,13 @@ davRouter.all('/', propFindPrincipal);
 //
 async function apnsHandler(ctx) {
   ctx.state.davSubtopic = 'com.apple.mobileaddressbook';
-  await davApnsSubscribe(ctx);
+  //
+  // Always pass an explicit subtopic.  The fallback host-based heuristic
+  // in dav-apns-subscribe.js ("carddav.*" -> mobileaddressbook else
+  // mobilecal) is brittle if this server is reached via a shared host or
+  // a proxy that rewrites Host.
+  //
+  await davApnsSubscribe(ctx, { subtopic: 'com.apple.mobileaddressbook' });
 }
 
 router.post('/apns', apnsHandler);
@@ -1735,5 +1809,4 @@ davRouter.get('/apns', apnsHandler);
 
 router.use(davRouter.routes());
 router.all('(.*)', propFindPrincipal);
-
 module.exports = router;

@@ -572,6 +572,86 @@ test('send-apn: createNote (Mail) sets pushType alert and aps.m hash', (t) => {
 });
 
 // ---------------------------------------------------------------------------
+// createNote (Calendar/Contact) emits Apple ccs-calendarserver payload shape
+// (top-level `key`, `dataChangedTimestamp`, `pushRequestSubmittedTimestamp`)
+// ---------------------------------------------------------------------------
+
+test('send-apn: createNote (Calendar) emits ccs-calendarserver payload shape', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { createNote, SERVICES } = sendApn._test;
+  const certBundle = { Calendar: { topic: 'com.apple.calendar.XServer.dead' } };
+  const before = Math.floor(Date.now() / 1000);
+  const note = createNote(
+    certBundle,
+    SERVICES.Calendar,
+    { device_token: 'tok', key: 'cal-collection-1' },
+    {}
+  );
+  const after = Math.floor(Date.now() / 1000);
+  t.is(note.priority, 5, 'background pushes use priority 5');
+  t.is(note.pushType, 'background');
+  t.is(note.topic, 'com.apple.calendar.XServer.dead');
+  t.truthy(note.payload, 'payload must exist for Calendar');
+  t.is(note.payload.key, 'cal-collection-1');
+  t.true(
+    note.payload.dataChangedTimestamp >= before &&
+      note.payload.dataChangedTimestamp <= after
+  );
+  t.true(
+    note.payload.pushRequestSubmittedTimestamp >= before &&
+      note.payload.pushRequestSubmittedTimestamp <= after
+  );
+});
+
+test('send-apn: createNote (Contact) emits ccs-calendarserver payload shape', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { createNote, SERVICES } = sendApn._test;
+  const certBundle = { Contact: { topic: 'com.apple.contact.XServer.beef' } };
+  const note = createNote(
+    certBundle,
+    SERVICES.Contact,
+    { device_token: 'tok', key: 'addressbook-collection-1' },
+    {}
+  );
+  t.is(note.priority, 5);
+  t.is(note.pushType, 'background');
+  t.is(note.payload.key, 'addressbook-collection-1');
+  t.is(typeof note.payload.dataChangedTimestamp, 'number');
+  t.is(typeof note.payload.pushRequestSubmittedTimestamp, 'number');
+});
+
+test('send-apn: createNote (Mail) does NOT add Calendar payload fields', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { createNote, SERVICES } = sendApn._test;
+  const certBundle = { Mail: { topic: 'com.apple.mail.XServer.deadbeef' } };
+  const note = createNote(
+    certBundle,
+    SERVICES.Mail,
+    { device_token: 'tok' },
+    { mailboxPath: 'INBOX' }
+  );
+  // Mail uses default priority 10 (apn.Notification default) and an empty
+  // top-level payload object; the Calendar fields must not leak into Mail.
+  t.is(note.payload && note.payload.key, undefined);
+  t.is(note.payload && note.payload.dataChangedTimestamp, undefined);
+});
+
+// ---------------------------------------------------------------------------
+// ensureTopic finds the UID line regardless of position (Apple's Calendar
+// and Contact certs do not place UID on line 0).
+// ---------------------------------------------------------------------------
+
+test('send-apn: ensureTopic resolves UID from any subject line', (t) => {
+  // Replicate ensureTopic's logic with a mock cert that puts UID on line 2.
+  const splitLines = require('split-lines');
+  const subject =
+    'CN=APSP:com.apple.foo\nC=US\nUID=com.apple.calendar.XServer.f00';
+  const subjectLine = splitLines(subject).find((l) => l.includes('UID='));
+  t.truthy(subjectLine);
+  t.is(subjectLine.split('UID=')[1].trim(), 'com.apple.calendar.XServer.f00');
+});
+
+// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 

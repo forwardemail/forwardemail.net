@@ -1360,7 +1360,14 @@ class CalDAV extends API {
 
           ctx.state.davSubtopic = 'com.apple.mobilecal';
 
-          await davApnsSubscribe(ctx);
+          //
+          // Always pass an explicit subtopic.  The fallback
+          // host-based heuristic in dav-apns-subscribe.js infers from
+          // ctx.host ("carddav.*" -> mobileaddressbook else mobilecal)
+          // which is brittle if the CalDAV/CardDAV server is reached
+          // via a shared hostname or behind a proxy that rewrites Host.
+          //
+          await davApnsSubscribe(ctx, { subtopic: 'com.apple.mobilecal' });
         } catch (err) {
           const errStatus = err.isBoom
             ? err.output.statusCode

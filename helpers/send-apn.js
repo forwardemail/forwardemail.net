@@ -92,11 +92,23 @@ const providers = Object.create(null);
 function ensureTopic(certBundle, certKey) {
   if (certBundle[certKey].topic) return certBundle[certKey].topic;
   const cert = new crypto.X509Certificate(certBundle[certKey].certificate);
-  // Mirrors the get-apn-certs helper (which already uses the same
-  // splitLines(...)[0].split('UID=')[1].trim() pattern for Mail).
-  certBundle[certKey].topic = splitLines(cert.subject)[0]
-    .split('UID=')[1]
-    .trim();
+  //
+  // The cert.subject is multi-line (one DN component per line).  The Mail
+  // cert happens to have UID= on line 0, but the Calendar and Contact
+  // certs do NOT -- the UID line position varies.  Use the same
+  // .find((l) => l.includes('UID=')) lookup as helpers/get-apn-topic.js
+  // so the topic advertised in <CS:apsbundleid> matches the topic the
+  // APNs Provider actually uses on the wire.  A mismatch causes APNs to
+  // reply 400 BadTopic and the push is silently dropped.
+  //
+  const subjectLine = splitLines(cert.subject).find((l) => l.includes('UID='));
+  if (!subjectLine) {
+    throw new TypeError(
+      `APNs cert ${certKey} has no UID component in subject: ${cert.subject}`
+    );
+  }
+
+  certBundle[certKey].topic = subjectLine.split('UID=')[1].trim();
   return certBundle[certKey].topic;
 }
 
@@ -158,6 +170,36 @@ function createNote(certBundle, service, obj, options) {
       .createHash('md5')
       .update(options.mailboxPath || 'INBOX')
       .digest('hex');
+  }
+
+  //
+  // CalDAV / CardDAV ONLY: top-level `key`, `dataChangedTimestamp`, and
+  // `pushRequestSubmittedTimestamp` fields per Apple's reference
+  // ccs-calendarserver/calendarserver/push/applepush.py:
+  //
+  //   payload = json.dumps({
+  //     "key": key,
+  //     "dataChangedTimestamp": dataChangedTimestamp,
+  //     "pushRequestSubmittedTimestamp": int(time.time()),
+  //   })
+  //
+  // node-apn merges `note.payload` at the top of the JSON object alongside
+  // `aps`, so setting these on `note.payload` produces the on-the-wire
+  // shape iOS dataaccessd expects.  Without `key`, iOS receives the push
+  // but cannot determine which collection changed, so the refresh is a
+  // best-effort no-op (and on iOS 17+ the push is sometimes ignored
+  // entirely as malformed background data).  `priority: 5` matches Apple's
+  // "conserves device power" priority for background data refreshes; iOS
+  // can throttle or coalesce priority 10 background pushes.
+  //
+  if (service.cert === 'Calendar' || service.cert === 'Contact') {
+    const now = Math.floor(Date.now() / 1000);
+    note.payload = {
+      key: obj.key || '',
+      dataChangedTimestamp: now,
+      pushRequestSubmittedTimestamp: now
+    };
+    note.priority = 5;
   }
 
   return note;
@@ -243,8 +285,25 @@ async function sendApnForService(serviceName, client, id, options = {}) {
 
       const note = createNote(certs, service, obj, options);
 
+      logger.debug('sendApnForService dispatching', {
+        service: serviceName,
+        topic: note.topic,
+        device_token: obj.device_token,
+        key: obj.key,
+        subtopic: obj.subtopic,
+        priority: note.priority,
+        push_type: note.pushType
+      });
+
       // <https://github.com/parse-community/node-apn/issues/114>
       const result = await provider.send(note, obj.device_token);
+
+      logger.debug('sendApnForService result', {
+        service: serviceName,
+        sent: Array.isArray(result.sent) ? result.sent.length : 0,
+        failed: Array.isArray(result.failed) ? result.failed.length : 0,
+        result
+      });
 
       // note they have commented out code at this below link for setting priority in note
       // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L162-L163>
