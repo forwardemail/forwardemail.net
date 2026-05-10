@@ -173,6 +173,28 @@ function createNote(certBundle, service, obj, options) {
   }
 
   //
+  // CalDAV / CardDAV background pushes: APNs HTTP/2 v3 REQUIRES an `aps`
+  // dictionary in the wire JSON.  node-apn's Notification.toJSON() builds
+  // `{ ...this.payload, aps: this.apsPayload() }` and apsPayload() returns
+  // `undefined` when every key in `this.aps` is undefined -- so an empty
+  // `aps` causes the wire body to be `{...payload}` (no aps key) and APNs
+  // rejects with HTTP 400 PayloadEmpty (reason: "PayloadEmpty"), silently
+  // dropping the push.  Apple's docs for `apns-push-type: background`
+  // explicitly require `content-available: 1` in the aps dictionary:
+  // <https://developer.apple.com/documentation/usernotifications/pushing_background_updates_to_your_app>
+  // Setting it both forces the wire body to include `aps` (fixing the
+  // PayloadEmpty rejection) AND tells iOS this is a content-available
+  // background push so the OS wakes the appropriate sync extension.
+  //
+  if (service.cert === 'Calendar' || service.cert === 'Contact') {
+    // node-apn provides an idiomatic setter that writes
+    // `this.aps['content-available'] = 1` under the hood.  Using the setter
+    // keeps us forward-compatible if @parse/node-apn ever changes its
+    // internal aps storage representation.
+    note.contentAvailable = 1;
+  }
+
+  //
   // CalDAV / CardDAV ONLY: top-level `key`, `dataChangedTimestamp`, and
   // `pushRequestSubmittedTimestamp` fields per Apple's reference
   // ccs-calendarserver/calendarserver/push/applepush.py:

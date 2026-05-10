@@ -529,13 +529,63 @@ test('send-apn: createNote omits aps[account-id] when none provided', (t) => {
     { device_token: 'tok', key: 'cal-1' /* no account_id */ },
     {}
   );
+  // CalDAV / CardDAV background pushes MUST include `content-available: 1`
+  // in the aps dictionary.  Without it node-apn's apsPayload() returns
+  // undefined and the wire JSON omits the `aps` key entirely, causing APNs
+  // to reject the push with HTTP 400 PayloadEmpty.
   t.deepEqual(
     note.aps,
-    {},
-    'aps must be empty {}, no account-id, no alert body'
+    { 'content-available': 1 },
+    'aps must contain content-available:1 (no account-id, no alert body)'
   );
   t.is(note.pushType, 'background');
   t.is(note.topic, 'com.apple.test.cal');
+});
+
+// ---------------------------------------------------------------------------
+// Regression: HTTP/2 v3 wire JSON MUST include an `aps` dictionary, otherwise
+// APNs rejects the request with `400 PayloadEmpty`.  node-apn's
+// Notification.toJSON() builds `{ ...this.payload, aps: this.apsPayload() }`
+// and apsPayload() returns `undefined` when every aps key is undefined;
+// JSON.stringify then drops the `aps` key entirely.  The Calendar/Contact
+// path MUST set at least one defined aps key (`content-available: 1`) so the
+// wire body always carries `aps`.
+// ---------------------------------------------------------------------------
+
+test('send-apn: wire JSON for Calendar push contains aps.content-available', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { createNote, SERVICES } = sendApn._test;
+  const certBundle = { Calendar: { topic: 'com.apple.test.cal' } };
+  const note = createNote(
+    certBundle,
+    SERVICES.Calendar,
+    { device_token: 'tok', key: 'cal-collection-1' },
+    {}
+  );
+  const wire = JSON.parse(note.compile());
+  t.truthy(wire.aps, 'wire JSON MUST contain aps dictionary');
+  t.is(
+    wire.aps['content-available'],
+    1,
+    'aps.content-available must be 1 for background CalDAV push'
+  );
+  t.is(wire.key, 'cal-collection-1', 'top-level key must round-trip');
+});
+
+test('send-apn: wire JSON for Contact push contains aps.content-available', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { createNote, SERVICES } = sendApn._test;
+  const certBundle = { Contact: { topic: 'com.apple.test.contact' } };
+  const note = createNote(
+    certBundle,
+    SERVICES.Contact,
+    { device_token: 'tok', key: 'addressbook-collection-1' },
+    {}
+  );
+  const wire = JSON.parse(note.compile());
+  t.truthy(wire.aps, 'wire JSON MUST contain aps dictionary');
+  t.is(wire.aps['content-available'], 1);
+  t.is(wire.key, 'addressbook-collection-1');
 });
 
 test('send-apn: createNote includes aps[account-id] when provided', (t) => {
@@ -549,6 +599,11 @@ test('send-apn: createNote includes aps[account-id] when provided', (t) => {
     {}
   );
   t.is(note.aps['account-id'], 'acct-uuid-XYZ');
+  t.is(
+    note.aps['content-available'],
+    1,
+    'content-available must still be set when account-id is also present'
+  );
 });
 
 // ---------------------------------------------------------------------------
