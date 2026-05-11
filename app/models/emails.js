@@ -37,6 +37,8 @@ const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { decode } = require('html-entities');
 
+const safeStringify = require('fast-safe-stringify');
+
 const Aliases = require('./aliases');
 const Domains = require('./domains');
 const Users = require('./users');
@@ -1082,6 +1084,120 @@ Emails.post('save', async function (email) {
       err.email = email;
       logger.error(err);
     }
+  }
+});
+
+//
+// Guard against BSON overflow (ERR_OUT_OF_RANGE) on oversized Email documents.
+// The rejectedErrors and deliveries arrays can grow unbounded across retries,
+// and each entry carries full stack traces, MX/TLS metadata, and bounceInfo.
+// bson@4.7.2 crashes with a RangeError when a document exceeds its 17 MiB
+// internal scratch buffer instead of returning a clean validation error.
+//
+// Strategy:
+// 1. Truncate stack traces on every rejectedError (stacks are diagnostic
+//    but not operationally critical; cap at 1024 chars).
+// 2. If the document is still over 14 MB, trim rejectedErrors to the most
+//    recent entry per recipient (already done in pre-validate) and drop
+//    the `response` field (often contains full SMTP transcripts).
+// 3. If still over 14 MB, keep only the 50 most recent rejectedErrors.
+// 4. Final fallback: strip rejectedErrors down to essential fields only.
+//
+const EMAILS_MAX_DOC_BYTES = 14 * 1024 * 1024; // 14 MB (safely under 16 MiB BSON limit)
+const MAX_STACK_LENGTH = 1024;
+const MAX_RESPONSE_LENGTH = 512;
+
+function getEmailDocBytes(doc) {
+  try {
+    const obj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
+    return Buffer.byteLength(safeStringify(obj), 'utf8');
+  } catch {
+    return EMAILS_MAX_DOC_BYTES + 1;
+  }
+}
+
+Emails.pre('save', function (next) {
+  try {
+    //
+    // Step 1: Always truncate stacks and long response strings on rejectedErrors
+    //
+    if (Array.isArray(this.rejectedErrors)) {
+      for (const err of this.rejectedErrors) {
+        if (
+          typeof err.stack === 'string' &&
+          err.stack.length > MAX_STACK_LENGTH
+        )
+          err.stack = err.stack.slice(0, MAX_STACK_LENGTH) + '...[truncated]';
+        if (
+          typeof err.response === 'string' &&
+          err.response.length > MAX_RESPONSE_LENGTH
+        )
+          err.response =
+            err.response.slice(0, MAX_RESPONSE_LENGTH) + '...[truncated]';
+      }
+    }
+
+    //
+    // Step 2: Check byte size; if under limit we're done
+    //
+    let docBytes = getEmailDocBytes(this);
+    if (docBytes <= EMAILS_MAX_DOC_BYTES) return next();
+
+    //
+    // Step 3: Drop non-essential nested fields from rejectedErrors
+    //
+    if (Array.isArray(this.rejectedErrors)) {
+      for (const err of this.rejectedErrors) {
+        // Remove full response transcripts
+        delete err.response;
+        // Remove verbose nested error objects
+        delete err.error;
+      }
+    }
+
+    docBytes = getEmailDocBytes(this);
+    if (docBytes <= EMAILS_MAX_DOC_BYTES) return next();
+
+    //
+    // Step 4: Keep only the 50 most recent rejectedErrors
+    //
+    if (Array.isArray(this.rejectedErrors) && this.rejectedErrors.length > 50) {
+      this.rejectedErrors = this.rejectedErrors.slice(-50);
+    }
+
+    docBytes = getEmailDocBytes(this);
+    if (docBytes <= EMAILS_MAX_DOC_BYTES) return next();
+
+    //
+    // Step 5: Aggressive fallback — strip rejectedErrors to essential fields
+    //
+    if (Array.isArray(this.rejectedErrors)) {
+      this.rejectedErrors = this.rejectedErrors.map((err) => ({
+        recipient: err.recipient,
+        responseCode: err.responseCode,
+        isCodeBug: err.isCodeBug,
+        date: err.date,
+        message:
+          typeof err.message === 'string'
+            ? err.message.slice(0, 256)
+            : err.message,
+        name: err.name,
+        code: err.code,
+        bounceInfo: err.bounceInfo
+      }));
+    }
+
+    //
+    // Step 6: If still over limit after all trimming, keep only 10 errors
+    //
+    docBytes = getEmailDocBytes(this);
+    if (docBytes > EMAILS_MAX_DOC_BYTES && Array.isArray(this.rejectedErrors)) {
+      this.rejectedErrors = this.rejectedErrors.slice(-10);
+    }
+
+    next();
+  } catch (err) {
+    next(err);
   }
 });
 
