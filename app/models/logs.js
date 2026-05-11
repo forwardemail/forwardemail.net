@@ -5,7 +5,6 @@
 
 const dns = require('node:dns');
 const os = require('node:os');
-const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
 const ansiHTML = require('ansi-html-community');
@@ -47,6 +46,11 @@ const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
+const {
+  sanitizeLogPayload,
+  getDocByteSize,
+  MAX_DOC_BYTES
+} = require('#helpers/sanitize-log-payload');
 
 // headers that we store values for
 const KEYWORD_HEADERS = new Set([
@@ -641,7 +645,7 @@ Logs.pre('save', function (next) {
 
 Logs.pre('validate', function (next) {
   //
-  // ensure the document is not more than 20 KB
+  // ensure the document is not more than MAX_BYTES
   // (prevents someone from sending huge client-side payloads)
   //
   try {
@@ -655,8 +659,27 @@ Logs.pre('validate', function (next) {
     )
       delete this.meta.request.body;
 
-    const bytes = Buffer.byteLength(safeStringify(this.toObject()), 'utf8');
-    if (bytes > MAX_BYTES) throw new Error('Log byte size exceeds maximum');
+    const docBytes = getDocByteSize(this);
+    if (docBytes > MAX_BYTES) {
+      //
+      // Attempt to sanitize the payload before rejecting.
+      // This gives oversized documents a chance to be trimmed
+      // rather than silently dropped.
+      //
+      const sanitized = sanitizeLogPayload({
+        err: this.err,
+        message: this.message,
+        meta: this.meta
+      });
+      this.err = sanitized.err;
+      this.message = sanitized.message;
+      this.meta = sanitized.meta;
+
+      // Re-check after sanitization
+      const newBytes = getDocByteSize(this);
+      if (newBytes > MAX_BYTES)
+        throw new Error('Log byte size exceeds maximum');
+    }
 
     next();
   } catch (err) {
@@ -1100,6 +1123,57 @@ Logs.pre('save', function (next) {
   }
 
   next();
+});
+
+//
+// Final size guard as pre('save') — runs AFTER parseLog/keywords pre-save hooks
+// have potentially mutated the document. Uses MAX_DOC_BYTES (12 MB) which is
+// comfortably below the 16 MiB BSON ceiling and under bson@4.7.2's 17 MiB
+// scratch buffer that triggers ERR_OUT_OF_RANGE when exceeded.
+//
+Logs.pre('save', function (next) {
+  try {
+    const docBytes = getDocByteSize(this);
+    if (docBytes > MAX_DOC_BYTES) {
+      //
+      // Attempt sanitization before rejecting
+      //
+      const sanitized = sanitizeLogPayload({
+        err: this.err,
+        message: this.message,
+        meta: this.meta
+      });
+      this.err = sanitized.err;
+      this.message = sanitized.message;
+      this.meta = sanitized.meta;
+
+      // Re-check after sanitization
+      const newBytes = getDocByteSize(this);
+      if (newBytes > MAX_DOC_BYTES) {
+        const err = new Error(
+          `Log document size (${newBytes} bytes) exceeds MAX_DOC_BYTES (${MAX_DOC_BYTES}) after sanitization`
+        );
+        err.is_duplicate_log = true;
+        return next(err);
+      }
+    }
+
+    next();
+  } catch (err) {
+    //
+    // Catch BSONObjectTooLarge / ERR_OUT_OF_RANGE errors that may occur
+    // during size measurement itself (e.g. from safeStringify on huge docs)
+    //
+    if (
+      err.code === 'ERR_OUT_OF_RANGE' ||
+      (err.message && err.message.includes('BSONObjectTooLarge')) ||
+      err.name === 'RangeError'
+    ) {
+      err.is_duplicate_log = true;
+    }
+
+    next(err);
+  }
 });
 
 //

@@ -25,6 +25,7 @@ const superagent = require('superagent');
 const mongoose = require('mongoose');
 
 const loggerConfig = require('../config/logger');
+const sanitizeLogPayload = require('./sanitize-log-payload');
 
 const _ = require('./lodash');
 const isCodeBug = require('./is-code-bug');
@@ -234,6 +235,15 @@ async function hook(err, message, meta) {
         return;
       }
 
+      //
+      // Sanitize the payload before constructing the Logs document
+      // to prevent oversized documents from reaching BSON serialization.
+      //
+      const sanitized = sanitizeLogPayload({ err, message, meta });
+      err = sanitized.err;
+      message = sanitized.message;
+      meta = sanitized.meta;
+
       const log = new conn.models.Logs({ err, message, meta });
       if (resolver) log.resolver = resolver;
 
@@ -289,36 +299,89 @@ async function hook(err, message, meta) {
       return log
         .save() // log.save() ensures pre-validate and pre-save hooks fire
         .then()
-        .catch((err) => {
+        .catch((saveErr) => {
+          //
+          // Recovery: if the save fails with a BSON overflow or RangeError,
+          // retry with a minimal sanitized log so we don't lose visibility
+          // and the buggy bson@4.7.2 validateOffset crash never bubbles up.
+          //
+          const isBsonOverflow =
+            (saveErr.name === 'RangeError' &&
+              saveErr.code === 'ERR_OUT_OF_RANGE') ||
+            saveErr.codeName === 'BSONObjectTooLarge' ||
+            (saveErr.message &&
+              saveErr.message.includes('BSONObjectTooLarge')) ||
+            (saveErr.message &&
+              saveErr.message.includes('object size') &&
+              saveErr.message.includes('bytes'));
+
+          if (isBsonOverflow) {
+            // Retry with a minimal log document
+            const minimalLog = new conn.models.Logs({
+              err: {
+                message:
+                  err && err.message
+                    ? String(err.message).slice(0, 1000)
+                    : 'Unknown error',
+                name: err && err.name ? String(err.name) : 'Error',
+                code: err && err.code,
+                responseCode: err && err.responseCode,
+                _bson_overflow_recovery: true
+              },
+              message:
+                typeof message === 'string' ? message.slice(0, 500) : message,
+              meta: {
+                level: meta && meta.level,
+                app:
+                  meta && meta.app
+                    ? { hostname: meta.app.hostname, name: meta.app.name }
+                    : undefined,
+                _sanitized: true,
+                _original_save_error: saveErr.message
+              }
+            });
+            if (resolver) minimalLog.resolver = resolver;
+            return minimalLog
+              .save()
+              .then()
+              .catch((retryErr) => {
+                console.error('BSON overflow recovery also failed:', retryErr);
+              });
+          }
+
           // return early if it was a duplicate log being created
-          if (err.is_duplicate_log) return;
+          if (saveErr.is_duplicate_log) return;
           //
           // when tests close the connection closes so logs don't write
           //
           if (
             // eslint-disable-next-line n/prefer-global/process
             process.env.NODE_ENV === 'test' &&
-            (isErrorConstructorName(err, 'MongoNotConnectedError') ||
-              isErrorConstructorName(err, 'MongooseError') ||
-              (isErrorConstructorName(err, 'ValidationError') &&
-                isMongoError(err)))
+            (isErrorConstructorName(saveErr, 'MongoNotConnectedError') ||
+              isErrorConstructorName(saveErr, 'MongooseError') ||
+              (isErrorConstructorName(saveErr, 'ValidationError') &&
+                isMongoError(saveErr)))
           ) {
             return;
           }
 
           // unique hash (already exists)
-          if (err.code === 11000 || err.message === 'Hash is not unique.')
+          if (
+            saveErr.code === 11000 ||
+            saveErr.message === 'Hash is not unique.'
+          )
             return;
           // duplicate denylist log
-          if (err.is_denylist_without_domains) return;
+          if (saveErr.is_denylist_without_domains) return;
           //
           // NOTE: this allows us to log mongodb timeout issues (e.g. due to slow queries)
           //
           // we should try to create and log the error that occurred
           // but we should indicate that we should ignore the next log hook
-          console.error(err);
-          if (meta.ignore_next_hook) logger.error(err, { ignore_hook: true });
-          else logger.error(err, { ignore_next_hook: true });
+          console.error(saveErr);
+          if (meta.ignore_next_hook)
+            logger.error(saveErr, { ignore_hook: true });
+          else logger.error(saveErr, { ignore_next_hook: true });
         });
     } catch (err) {
       logger.error(err, { ignore_hook: true });
