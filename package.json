@@ -26,7 +26,8 @@
     "signal-exit": "./helpers/browser-shims/signal-exit.js",
     "signal-exit/dist/mjs/browser.js": "./helpers/browser-shims/signal-exit.js",
     "signal-exit/dist/mjs/index.js": "./helpers/browser-shims/signal-exit.js",
-    "signal-exit/dist/mjs/signals.js": "./helpers/browser-shims/signal-exit.js"
+    "signal-exit/dist/mjs/signals.js": "./helpers/browser-shims/signal-exit.js",
+    "./helpers/sanitize-log-payload": false
   },
   "bugs": {
     "url": "https://github.com/forwardemail/forwardemail.net/issues"
@@ -253,7 +254,7 @@
     "parse-logs": "3.0.2",
     "passport-local-mongoose": "7.1.2",
     "paypal-rest-sdk": "1.8.1",
-    "peggy": "4",
+    "peggy": "^4.2.0",
     "pify": "5.0.0",
     "piscina": "4.9.2",
     "pkijs": "3.2.4",
@@ -488,7 +489,8 @@
     ],
     "overrides": {
       "undici": "7.12.0",
-      "signal-exit": "3.0.3"
+      "signal-exit": "3.0.3",
+      "write-file-atomic>signal-exit": "4.0.1"
     }
   },
   "private": true,

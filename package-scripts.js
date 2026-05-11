@@ -42,13 +42,15 @@ module.exports = {
     lintPug: 'prettier --write **/*.pug && pug-lint **/*.pug',
     lintJs: 'xo --fix',
     lintScss: 'stylelint --fix **/*.scss',
+    lintCsp: 'node scripts/audit-pug-nonces.js app/views',
 
     lint: concurrent.nps(
       'lint-js',
       'lint-md',
       'lint-pug',
       'lint-pkg',
-      'lint-scss'
+      'lint-scss',
+      'lint-csp'
     ),
 
     // <https://github.com/kentcdodds/nps-utils/issues/24>

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { randomUUID } = require('node:crypto');
+
 const Boom = require('@hapi/boom');
-const ObjectID = require('bson-objectid');
 const falso = require('@ngneat/falso');
 const isSANB = require('is-string-and-not-blank');
 
@@ -82,7 +83,7 @@ async function create(ctx) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_NAME_REQUIRED'));
   }
 
-  const calendarId = body.calendar_id || new ObjectID().toString();
+  const calendarId = body.calendar_id || randomUUID();
 
   // Check if calendar already exists
   let existingCalendar = await Calendars.findOne(

@@ -280,10 +280,7 @@ test.serial(
     const calendars = await fetchCalendars({ account, headers });
     // find the calendar we just created (by displayname or by calendarId path)
     const cal = calendars.find(
-      (c) =>
-        c.url.includes(calendarId) ||
-        c.displayName === 'Test Calendar' ||
-        c.components?.includes('VEVENT')
+      (c) => c.url.includes(calendarId) || c.displayName === 'Test Calendar'
     );
     t.truthy(cal, 'CalDAV must list the API-created calendar');
 
@@ -342,7 +339,6 @@ test.serial(
       .send({ name: 'Sync Cal', description: 'sync-collection test' });
     t.is(calendarRes.status, 200);
     const calendarId = calendarRes.body.id;
-
     // 2) Discover the calendar via CalDAV PROPFIND and capture the
     //    initial sync-token (the "previous" token iOS would have cached)
     const account = await createAccount({
@@ -351,10 +347,7 @@ test.serial(
     });
     const calendars = await fetchCalendars({ account, headers });
     const cal = calendars.find(
-      (c) =>
-        c.url.includes(calendarId) ||
-        c.displayName === 'Sync Cal' ||
-        c.components?.includes('VEVENT')
+      (c) => c.url.includes(calendarId) || c.displayName === 'Sync Cal'
     );
     t.truthy(cal, 'CalDAV must list the API-created calendar');
     const initialSyncToken = cal.syncToken || cal.ctag || '';

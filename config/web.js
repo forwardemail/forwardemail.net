@@ -149,23 +149,7 @@ const defaultSrc = isSANB(process.env.WEB_HOST)
       }`,
       ...(env.NODE_ENV === 'production'
         ? [`https://${env.WEB_HOST}:*`]
-        : [`http://${env.WEB_HOST}:*`]),
-      function (req, res) {
-        let nonce;
-        for (const s of Object.getOwnPropertySymbols(res)) {
-          const desc = s.toString().replace(/Symbol\((.*)\)$/, '$1');
-          if (
-            desc === 'kOutHeaders' &&
-            res[s]['x-csp-nonce'] &&
-            Array.isArray(res[s]['x-csp-nonce']) &&
-            res[s]['x-csp-nonce'].length === 2
-          )
-            nonce = res[s]['x-csp-nonce'][1];
-        }
-
-        if (!nonce) return;
-        return `'nonce-${nonce}'`;
-      }
+        : [`http://${env.WEB_HOST}:*`])
     ]
   : null;
 
@@ -253,19 +237,18 @@ module.exports = (redis) => ({
               ],
               'script-src': [
                 ..._.without(defaultSrc, 'data:'),
-                "'unsafe-inline'",
                 //
                 // 'strict-dynamic' makes the host allowlist below a
                 // no-op for <script> elements: only scripts carrying the
                 // per-request nonce (or transitively trusted by such a
                 // script) are executed. Every <script> opener in our pug
                 // templates MUST therefore carry `nonce=nonce` — audit
-                // with: `python3 scripts/audit-pug-nonces.py app/views`
+                // with: `node scripts/audit-pug-nonces.js`
                 // (or `grep -RnE "^\s*script\b" app/views/**/*.pug`).
                 // The host allowlist is retained as a fallback for
                 // browsers that don't yet implement strict-dynamic.
                 //
-                // "'strict-dynamic'",
+                "'strict-dynamic'",
                 'https://challenges.cloudflare.com',
                 'https://www.paypal.com',
                 ...(env.NODE_ENV === 'production'
@@ -407,21 +390,36 @@ module.exports = (redis) => ({
       );
       return next();
     });
-    // csp nonce
-    // <script nonce="whatever">
-    // <style nonce="whatever">
+    // CSP nonce — async middleware that wraps around helmet.
+    // 1. Generate a per-request nonce and expose it to pug via ctx.state.
+    // 2. After downstream (helmet) sets the CSP header, rewrite it to
+    //    inject 'nonce-<hex>' into script-src and style-src directives.
+    // This replaces the old Symbol(kOutHeaders) hack and works reliably
+    // across all Node.js versions.
     //
     // NOTE: CSP nonces are hidden from browser DOM
     //       <https://github.com/pugjs/pug/issues/2899>
     //       <https://github.com/whatwg/html/issues/2369>
-    app.use((ctx, next) => {
-      if (ctx.method === 'GET' && env.NODE_ENV !== 'test') {
-        const nonce = crypto.randomBytes(16).toString('hex');
-        ctx.set('X-CSP-Nonce', nonce);
-        ctx.state.nonce = nonce;
-      }
+    app.use(async (ctx, next) => {
+      if (ctx.method !== 'GET') return next();
 
-      return next();
+      const nonce =
+        config.env === 'test'
+          ? 'deadbeefcafeface0123456789abcdef'
+          : crypto.randomBytes(16).toString('hex');
+      ctx.state.nonce = nonce;
+
+      await next();
+
+      // Rewrite the CSP header that helmet set during downstream processing
+      const csp = ctx.response.get('Content-Security-Policy');
+      if (csp) {
+        const nonceToken = `'nonce-${nonce}'`;
+        const patched = csp
+          .replace(/(?<=script-src\s)([^;]*)/, `$1 ${nonceToken}`)
+          .replace(/(?<=style-src\s)([^;]*)/, `$1 ${nonceToken}`);
+        ctx.set('Content-Security-Policy', patched);
+      }
     });
     //
     // OpenPGP WKD lookup requires this header
@@ -556,11 +554,6 @@ module.exports = (redis) => ({
     // Analytics middleware for tracking page views (excludes bots)
     app.use(analyticsMiddleware({ service: 'web', trackPageViews: true }));
 
-    // remove nonce used in headers for helmet compatibility (old req/res approach)
-    app.use((ctx, next) => {
-      if (ctx.method === 'GET') ctx.remove('X-CSP-Nonce');
-      return next();
-    });
     // redirect return-path CNAME to main domain
     // (e.g. fe-bounces.forwardemail.net > forwardemail.net)
     app.use((ctx, next) => {
