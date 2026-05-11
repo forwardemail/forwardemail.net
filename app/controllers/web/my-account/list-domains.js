@@ -112,7 +112,8 @@ async function getCharts(ctx) {
         selector: '#metrics-total-logs',
         value: logs[0] ? numeral(logs[0].total).format('0,0') : '-'
       }
-    ]
+    ],
+    charts: []
   };
 }
 

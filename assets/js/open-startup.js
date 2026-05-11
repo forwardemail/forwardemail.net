@@ -46,12 +46,12 @@ async function loadCharts(reset = false) {
 
   if (body.hash) hash = body.hash;
 
-  for (const metric of body.metrics) {
+  for (const metric of body.metrics || []) {
     const $element = $(metric.selector);
     $element.text(metric.value);
   }
 
-  for (const chart of body.charts) {
+  for (const chart of body.charts || []) {
     if (charts[chart.selector]) {
       charts[chart.selector].updateOptions(omit(chart.options, 'series'));
       charts[chart.selector].updateSeries(chart.options.series);
