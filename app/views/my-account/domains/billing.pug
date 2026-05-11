@@ -26,6 +26,7 @@ block append scripts
   //- PayPal
   script(
     nonce=nonce,
+    data-csp-nonce=nonce,
     defer,
     src=`https://www.paypal.com/sdk/js?client-id=${config.paypal.clientID}&vault=true${config.env === 'production' ? '' : '&debug=true'}`
   )

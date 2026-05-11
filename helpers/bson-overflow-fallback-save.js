@@ -23,7 +23,10 @@ async function bsonOverflowFallbackSave(email, meta) {
     return email;
   } catch (saveErr) {
     if (isBsonOverflow(saveErr)) {
-      logger.fatal(saveErr, {
+      // BSON overflow is a data-size issue, not a programming error.
+      // Mark it so the Logs post-save hook does not send an alert email.
+      saveErr.isCodeBug = false;
+      logger.error(saveErr, {
         ...meta,
         bson_overflow_fallback: true
       });

@@ -536,7 +536,17 @@ window.addEventListener(
       const $modal = $(this);
       const $lazyframe = $modal.find('.lazyframe:first');
       if ($lazyframe.length === 0) return;
-      lazyframe('.lazyframe', { autoplay: true, initinview: false });
+      lazyframe('.lazyframe', {
+        autoplay: true,
+        initinview: false,
+        onAppend(iframe) {
+          if (iframe)
+            iframe.setAttribute(
+              'referrerpolicy',
+              'strict-origin-when-cross-origin'
+            );
+        }
+      });
       $lazyframe.click();
     });
     $body.on('hide.bs.modal', '.modal', function () {
@@ -555,7 +565,17 @@ window.addEventListener(
     // lazyload iframes
     // <https://github.com/vb/lazyframe>
     //
-    lazyframe('.lazyframe', { autoplay: true, initinview: false });
+    lazyframe('.lazyframe', {
+      autoplay: true,
+      initinview: false,
+      onAppend(iframe) {
+        if (iframe)
+          iframe.setAttribute(
+            'referrerpolicy',
+            'strict-origin-when-cross-origin'
+          );
+      }
+    });
 
     //
     // TODO: replace this with loading lazy attribute

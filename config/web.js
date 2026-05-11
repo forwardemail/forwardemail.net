@@ -231,10 +231,15 @@ module.exports = (redis) => ({
               ],
               'style-src': [
                 ...defaultSrc,
-                "'unsafe-inline'",
                 'https://www.paypal.com',
                 'https://challenges.cloudflare.com'
               ],
+              // Allow inline style="..." attributes (e.g. style="display:none")
+              // without 'unsafe-inline' in style-src.  CSP3 style-src-attr is
+              // supported by 95 %+ of browsers; older ones fall back to
+              // style-src (nonce-only) which may block style attributes —
+              // an acceptable degradation for legacy user-agents.
+              'style-src-attr': ["'unsafe-inline'"],
               'script-src': [
                 ..._.without(defaultSrc, 'data:'),
                 //
@@ -294,12 +299,13 @@ module.exports = (redis) => ({
     },
     // <https://helmetjs.github.io/docs/referrer-policy>
     // <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy>
-    // NOTE: changed from 'same-origin' to 'strict-origin-when-cross-origin'
-    // to fix YouTube embed Error 153 (YouTube requires a Referer header)
-    // 'strict-origin-when-cross-origin' is the browser default and only sends
-    // the origin (not full URL path) for cross-origin requests
+    // 'same-origin' sends no referrer for cross-origin requests, which is
+    // the strictest practical setting (internet.nl "Good" category).
+    // YouTube embeds need a Referer header to avoid Error 153, so every
+    // lazyframe iframe gets referrerpolicy="strict-origin-when-cross-origin"
+    // set via the onAppend callback in assets/js/core.js.
     referrerPolicy: {
-      policy: 'strict-origin-when-cross-origin'
+      policy: 'same-origin'
     },
     xssFilter: false
   },
@@ -393,15 +399,17 @@ module.exports = (redis) => ({
     // CSP nonce — async middleware that wraps around helmet.
     // 1. Generate a per-request nonce and expose it to pug via ctx.state.
     // 2. After downstream (helmet) sets the CSP header, rewrite it to
-    //    inject 'nonce-<hex>' into script-src only.
+    //    inject 'nonce-<hex>' into script-src and style-src.
     // This replaces the old Symbol(kOutHeaders) hack and works reliably
     // across all Node.js versions.
     //
-    // NOTE: We do NOT inject nonce into style-src because adding a nonce
-    //       causes the browser to ignore 'unsafe-inline' (per CSP3 spec),
-    //       which would break third-party injected styles (PayPal, Turnstile).
-    //       style-src keeps 'unsafe-inline' without a nonce so all inline
-    //       styles continue to work.
+    // NOTE: The nonce is injected into both script-src AND style-src.
+    //       PayPal SDK propagates the nonce to its injected <style> tags
+    //       via the data-csp-nonce attribute on the SDK <script> tag.
+    //       Turnstile does not inject <style> tags (only script/frame).
+    //       All our own <style> tags already carry nonce=nonce in pug.
+    //       Inline style="..." attributes are allowed separately via
+    //       the style-src-attr directive.
     //
     // NOTE: CSP nonces are hidden from browser DOM
     //       <https://github.com/pugjs/pug/issues/2899>
@@ -421,10 +429,9 @@ module.exports = (redis) => ({
       const csp = ctx.response.get('Content-Security-Policy');
       if (csp) {
         const nonceToken = `'nonce-${nonce}'`;
-        const patched = csp.replace(
-          /(?<=script-src\s)([^;]*)/,
-          `$1 ${nonceToken}`
-        );
+        const patched = csp
+          .replace(/(?<=script-src\s)([^;]*)/, `$1 ${nonceToken}`)
+          .replace(/(?<=style-src\s)([^;]*)/, `$1 ${nonceToken}`);
         ctx.set('Content-Security-Policy', patched);
       }
     });
