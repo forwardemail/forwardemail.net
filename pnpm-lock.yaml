@@ -316,8 +316,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       crypto-hash:
-        specifier: 1.3.0
-        version: 1.3.0
+        specifier: 4.0.1
+        version: 4.0.1
       crypto-random-string:
         specifier: 3.3.1
         version: 3.3.1
@@ -3147,6 +3147,7 @@ packages:
   '@lancedb/lancedb@0.22.3':
     resolution: {integrity: sha512-nRC0fkg+d7dzCtudKHT+VH7znk6KUXRZyuS6HJYNnIrbvXBxaT6wAPjEbf70KTuqvP2znj48Zg+kiwRqkRnAJw==}
     engines: {node: '>= 18'}
+    cpu: [x64, arm64]
     os: [darwin, linux, win32]
     peerDependencies:
       apache-arrow: '>=15.0.0 <=18.1.0'
@@ -7427,9 +7428,9 @@ packages:
     resolution: {integrity: sha512-r4ESw/IlusD17lgQi1O20Fa3qNnsckR126TdUuBgAu7GBYSIPvdNyONd3Zrxh0xCwA4+6w/TDArBPsMvhur+KQ==}
     engines: {node: '>= 0.10'}
 
-  crypto-hash@1.3.0:
-    resolution: {integrity: sha512-lyAZ0EMyjDkVvz8WOeVnuCPvKVBXcMv1l5SVqO1yC7PzTwrD/pPje/BIRbWhMoPe436U+Y2nD7f5bFx0kt+Sbg==}
-    engines: {node: '>=8'}
+  crypto-hash@4.0.1:
+    resolution: {integrity: sha512-4u4yl+8C+75Xedf1uMA0J/TTYAqJ54XdyBc1RV3UjCkU2wQjFMsB5ScjRDh3oo21zAwSprcVEDolaGDT8z5G6g==}
+    engines: {node: '>=20'}
 
   crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -27407,7 +27408,7 @@ snapshots:
       randombytes: 2.1.0
       randomfill: 1.0.4
 
-  crypto-hash@1.3.0: {}
+  crypto-hash@4.0.1: {}
 
   crypto-random-string@2.0.0: {}
 
@@ -28708,7 +28709,7 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
       '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
       eslint: 7.32.0
@@ -41950,7 +41951,7 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
       eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)
