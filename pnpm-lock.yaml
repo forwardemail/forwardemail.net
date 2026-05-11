@@ -944,8 +944,8 @@ importers:
         specifier: 5.0.0
         version: 5.0.0
       eslint-plugin-compat:
-        specifier: 4.2.0
-        version: 4.2.0(eslint@8.39.0)
+        specifier: 6.2.1
+        version: 6.2.1(eslint@8.39.0)
       eslint-plugin-no-smart-quotes:
         specifier: 1.3.0
         version: 1.3.0
@@ -3147,6 +3147,7 @@ packages:
   '@lancedb/lancedb@0.22.3':
     resolution: {integrity: sha512-nRC0fkg+d7dzCtudKHT+VH7znk6KUXRZyuS6HJYNnIrbvXBxaT6wAPjEbf70KTuqvP2znj48Zg+kiwRqkRnAJw==}
     engines: {node: '>= 18'}
+    cpu: [x64, arm64]
     os: [darwin, linux, win32]
     peerDependencies:
       apache-arrow: '>=15.0.0 <=18.1.0'
@@ -3194,6 +3195,9 @@ packages:
 
   '@mdn/browser-compat-data@5.7.6':
     resolution: {integrity: sha512-7xdrMX0Wk7grrTZQwAoy1GkvPMFoizStUoL+VmtUkAxegbCCec+3FKwOM6yc/uGU5+BEczQHXAlWiqvM8JeENg==}
+
+  '@mdn/browser-compat-data@6.1.5':
+    resolution: {integrity: sha512-PzdZZzRhcXvKB0begee28n5lvwAcinGKYuLZOVxHAZm+n7y01ddEGfdS1ZXRuVcV+ndG6mSEAE8vgudom5UjYg==}
 
   '@mermaid-js/mermaid-cli@10.9.1':
     resolution: {integrity: sha512-ajpGUKmB5YbRRzrFR+0dbykF9mTvce4FpHWGYPYTry8ZsOgP6h7SUnojyCJDGgbReCnArODCM8L212qIcxshIw==}
@@ -6208,8 +6212,8 @@ packages:
     resolution: {integrity: sha512-5T6P4xPgpp0YDFvSWwEZ4NoE3aM4QBQXDzmVbraCkFj8zHM+mba8SyqB5DbZWyR7mYHo6Y7BdQo3MoA4m0TeQg==}
     engines: {node: '>=0.10.0'}
 
-  baseline-browser-mapping@2.10.27:
-    resolution: {integrity: sha512-zEs/ufmZoUd7WftKpKyXaT6RFxpQ5Qm9xytKRHvJfxFV9DFJkZph9RvJ1LcOUi0Z1ZVijMte65JbILeV+8QQEA==}
+  baseline-browser-mapping@2.10.29:
+    resolution: {integrity: sha512-Asa2krT+XTPZINCS+2QcyS8WTkObE77RwkydwF7h6DmnKqbvlalz93m/dnphUyCa6SWSP51VgtEUf2FN+gelFQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -8291,6 +8295,9 @@ packages:
   electron-to-chromium@1.5.352:
     resolution: {integrity: sha512-9wHk8x6dyuimoe18EdiDPWKExNdxYqo4fn4FwOVVper6RxT3cmpBwBkWWfSOCYJjQdIco/nPhJhNLmn4Ufg1Yg==}
 
+  electron-to-chromium@1.5.353:
+    resolution: {integrity: sha512-kOrWphBi8TOZyiJZqsgqIle0lw+tzmnQK83pV9dZUd01Nm2POECSyFQMAuarzZdYqQW7FH9RaYOuaRo3h+bQ3w==}
+
   elkjs@0.9.3:
     resolution: {integrity: sha512-f/ZeWvW/BCXbhGEf1Ujp29EASo/lk1FDnETgNKwJrsVvGZhUWCZyg3xLJjAsxfOmt8KjswHmI5EwCQcPMpOYhQ==}
 
@@ -8642,11 +8649,11 @@ packages:
     peerDependencies:
       eslint: '>=7.22.0'
 
-  eslint-plugin-compat@4.2.0:
-    resolution: {integrity: sha512-RDKSYD0maWy5r7zb5cWQS+uSPc26mgOzdORJ8hxILmWM7S/Ncwky7BcAtXVY5iRbKjBdHsWU8Yg7hfoZjtkv7w==}
-    engines: {node: '>=14.x'}
+  eslint-plugin-compat@6.2.1:
+    resolution: {integrity: sha512-gLKqUH+lQcCL+HzsROUjBDvakc5Zaga51Y4ZAkPCXc41pzKBfyluqTr2j8zOx8QQQb7zyglu1LVoL5aSNWf2SQ==}
+    engines: {node: '>=18.x'}
     peerDependencies:
-      eslint: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
+      eslint: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
 
   eslint-plugin-es@3.0.1:
     resolution: {integrity: sha512-GUmAsJaN4Fc7Gbtl8uOBlayo2DqhwWvEzykMHSCZHU3XdJ+NSzzZcVhXh3VxX5icqQ+oQdIEawXX8xkR3mIFmQ==}
@@ -9839,6 +9846,10 @@ packages:
   globals@13.24.0:
     resolution: {integrity: sha512-AhO5QUcj8llrbG09iWhPU2B204J1xnPeL8kQmVorSsy+Sjj1sk8gIyh6cUocGmH4L0UuhAJy+hJMRA4mgA4mFQ==}
     engines: {node: '>=8'}
+
+  globals@15.15.0:
+    resolution: {integrity: sha512-7ACyT3wmyp3I61S4fG682L0VA2RGD9otkqGJIwNUMF1SWUombIIk+af1unuDYgMm082aHYwD+mzJvv9Iu8dsgg==}
+    engines: {node: '>=18'}
 
   globalthis@1.0.4:
     resolution: {integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==}
@@ -16288,6 +16299,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.8.0:
+    resolution: {integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   send@0.18.0:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
     engines: {node: '>= 0.8.0'}
@@ -20675,7 +20691,7 @@ snapshots:
   '@commitlint/is-ignored@19.8.1':
     dependencies:
       '@commitlint/types': 19.8.1
-      semver: 7.7.4
+      semver: 7.8.0
 
   '@commitlint/lint@19.8.1':
     dependencies:
@@ -22007,7 +22023,7 @@ snapshots:
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
-      semver: 7.7.4
+      semver: 7.8.0
       tar: 6.2.1
     transitivePeerDependencies:
       - encoding
@@ -22016,6 +22032,8 @@ snapshots:
   '@marijn/find-cluster-break@1.0.2': {}
 
   '@mdn/browser-compat-data@5.7.6': {}
+
+  '@mdn/browser-compat-data@6.1.5': {}
 
   '@mermaid-js/mermaid-cli@10.9.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@3.9.10)(utf-8-validate@6.0.6)':
     dependencies:
@@ -22361,26 +22379,26 @@ snapshots:
       nopt: 7.2.1
       proc-log: 3.0.0
       read-package-json-fast: 3.0.2
-      semver: 7.7.4
+      semver: 7.8.0
       walk-up-path: 3.0.1
 
   '@npmcli/fs@1.1.1':
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.7.4
+      semver: 7.8.0
 
   '@npmcli/fs@2.1.2':
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.7.4
+      semver: 7.8.0
 
   '@npmcli/fs@3.1.1':
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.0
 
   '@npmcli/fs@4.0.0':
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.0
 
   '@npmcli/map-workspaces@3.0.6':
     dependencies:
@@ -22981,7 +22999,7 @@ snapshots:
       extract-zip: 2.0.1
       progress: 2.0.3
       proxy-agent: 6.5.0
-      semver: 7.7.4
+      semver: 7.8.0
       tar-fs: 3.1.2
       unbzip2-stream: 1.4.3
       yargs: 17.7.2
@@ -24583,7 +24601,7 @@ snapshots:
       eslint: 8.39.0
       functional-red-black-tree: 1.0.1
       regexpp: 3.2.0
-      semver: 7.7.4
+      semver: 7.8.0
       tsutils: 3.21.0(typescript@3.9.10)
     optionalDependencies:
       typescript: 3.9.10
@@ -24625,7 +24643,7 @@ snapshots:
       glob: 7.2.3
       is-glob: 4.0.3
       lodash: 4.17.21
-      semver: 7.7.4
+      semver: 7.8.0
       tsutils: 3.21.0(typescript@3.9.10)
     optionalDependencies:
       typescript: 3.9.10
@@ -25846,7 +25864,7 @@ snapshots:
       mixin-deep: 1.3.2
       pascalcase: 0.1.1
 
-  baseline-browser-mapping@2.10.27: {}
+  baseline-browser-mapping@2.10.29: {}
 
   basic-auth@2.0.1:
     dependencies:
@@ -26183,9 +26201,9 @@ snapshots:
 
   browserslist@4.28.2:
     dependencies:
-      baseline-browser-mapping: 2.10.27
+      baseline-browser-mapping: 2.10.29
       caniuse-lite: 1.0.30001792
-      electron-to-chromium: 1.5.352
+      electron-to-chromium: 1.5.353
       node-releases: 2.0.38
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
 
@@ -26269,7 +26287,7 @@ snapshots:
 
   builtins@5.1.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.0
 
   bullmq@5.73.2:
     dependencies:
@@ -27086,7 +27104,7 @@ snapshots:
       js-string-escape: 1.0.1
       lodash: 4.17.21
       md5-hex: 3.0.1
-      semver: 7.7.4
+      semver: 7.8.0
       well-known-symbols: 2.0.0
 
   concurrently@3.6.1:
@@ -28339,13 +28357,15 @@ snapshots:
       '@one-ini/wasm': 0.1.1
       commander: 10.0.1
       minimatch: 9.0.9
-      semver: 7.7.4
+      semver: 7.8.0
 
   ee-first@1.1.1: {}
 
   ekko-lightbox@5.3.0: {}
 
   electron-to-chromium@1.5.352: {}
+
+  electron-to-chromium@1.5.353: {}
 
   elkjs@0.9.3: {}
 
@@ -28708,7 +28728,7 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
       '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
       eslint: 7.32.0
@@ -28844,16 +28864,16 @@ snapshots:
       pkg-dir: 5.0.0
       resolve-from: 5.0.0
 
-  eslint-plugin-compat@4.2.0(eslint@8.39.0):
+  eslint-plugin-compat@6.2.1(eslint@8.39.0):
     dependencies:
-      '@mdn/browser-compat-data': 5.7.6
+      '@mdn/browser-compat-data': 6.1.5
       ast-metadata-inferer: 0.8.1
-      browserslist: 4.25.1
-      caniuse-lite: 1.0.30001792
+      browserslist: 4.28.2
       eslint: 8.39.0
       find-up: 5.0.0
+      globals: 15.15.0
       lodash.memoize: 4.1.2
-      semver: 7.7.4
+      semver: 7.8.0
 
   eslint-plugin-es@3.0.1(eslint@7.32.0):
     dependencies:
@@ -28935,7 +28955,7 @@ snapshots:
       is-core-module: 2.16.2
       minimatch: 3.1.5
       resolve: 1.22.12
-      semver: 7.7.4
+      semver: 7.8.0
 
   eslint-plugin-no-smart-quotes@1.3.0:
     dependencies:
@@ -28992,7 +29012,7 @@ snapshots:
       regexp-tree: 0.1.27
       reserved-words: 0.1.2
       safe-regex: 2.1.1
-      semver: 7.7.4
+      semver: 7.8.0
     transitivePeerDependencies:
       - supports-color
 
@@ -29011,7 +29031,7 @@ snapshots:
       read-pkg-up: 7.0.1
       regexp-tree: 0.1.27
       safe-regex: 2.1.1
-      semver: 7.7.4
+      semver: 7.8.0
       strip-indent: 3.0.0
 
   eslint-rule-docs@1.1.235: {}
@@ -29134,7 +29154,7 @@ snapshots:
       optionator: 0.9.4
       progress: 2.0.3
       regexpp: 3.2.0
-      semver: 7.7.4
+      semver: 7.8.0
       strip-ansi: 6.0.1
       strip-json-comments: 3.1.1
       table: 6.9.0
@@ -30428,6 +30448,8 @@ snapshots:
   globals@13.24.0:
     dependencies:
       type-fest: 0.20.2
+
+  globals@15.15.0: {}
 
   globalthis@1.0.4:
     dependencies:
@@ -32576,7 +32598,7 @@ snapshots:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.7.4
+      semver: 7.8.0
 
   jsonwebtoken@9.0.3:
     dependencies:
@@ -32589,7 +32611,7 @@ snapshots:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.7.4
+      semver: 7.8.0
 
   jsprim@1.4.2:
     dependencies:
@@ -33428,7 +33450,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.0
 
   make-fetch-happen@10.2.1:
     dependencies:
@@ -34695,7 +34717,7 @@ snapshots:
       https-proxy-agent: 7.0.6
       mongodb: 5.9.2(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))
       new-find-package-json: 2.0.0
-      semver: 7.7.4
+      semver: 7.8.0
       tar-stream: 3.2.0
       tslib: 2.8.1
       yauzl: 3.3.0
@@ -35079,7 +35101,7 @@ snapshots:
 
   node-abi@3.92.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.0
 
   node-abort-controller@3.1.1: {}
 
@@ -35140,7 +35162,7 @@ snapshots:
       make-fetch-happen: 13.0.1
       nopt: 7.2.1
       proc-log: 4.2.0
-      semver: 7.7.4
+      semver: 7.8.0
       tar: 6.2.1
       which: 4.0.0
     transitivePeerDependencies:
@@ -35154,7 +35176,7 @@ snapshots:
       make-fetch-happen: 14.0.3
       nopt: 8.1.0
       proc-log: 5.0.0
-      semver: 7.7.4
+      semver: 7.8.0
       tar: 7.5.15
       tinyglobby: 0.2.16
       which: 5.0.0
@@ -35170,7 +35192,7 @@ snapshots:
       nopt: 5.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.7.4
+      semver: 7.8.0
       tar: 6.2.1
       which: 2.0.2
     transitivePeerDependencies:
@@ -35327,14 +35349,14 @@ snapshots:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.16.2
-      semver: 7.7.4
+      semver: 7.8.0
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@4.0.1:
     dependencies:
       hosted-git-info: 5.2.1
       is-core-module: 2.16.2
-      semver: 7.7.4
+      semver: 7.8.0
       validate-npm-package-license: 3.0.4
 
   normalize-path@2.1.1:
@@ -35966,7 +35988,7 @@ snapshots:
       last-commit-log: 3.4.0
       lodash: 4.17.21
       read-pkg-up: 7.0.1
-      semver: 7.7.4
+      semver: 7.8.0
 
   parse-asn1@5.1.9:
     dependencies:
@@ -37177,7 +37199,7 @@ snapshots:
       jsdoc: 4.0.5
       minimist: 1.2.8
       protobufjs: 7.2.4
-      semver: 7.7.4
+      semver: 7.8.0
       tmp: 0.2.5
       uglify-js: 3.19.3
 
@@ -38612,7 +38634,7 @@ snapshots:
       pino: 8.21.0
       qs: 6.14.1
       restify-errors: 8.1.0
-      semver: 7.7.4
+      semver: 7.8.0
       send: 0.18.0
       spdy: 4.0.2
       uuid: 9.0.1
@@ -38943,6 +38965,8 @@ snapshots:
 
   semver@7.7.4: {}
 
+  semver@7.8.0: {}
+
   send@0.18.0:
     dependencies:
       debug: 2.6.9
@@ -39018,7 +39042,7 @@ snapshots:
       detect-libc: 2.1.2
       node-addon-api: 6.1.0
       prebuild-install: 7.1.3
-      semver: 7.7.4
+      semver: 7.8.0
       simple-get: 4.0.1
       tar-fs: 3.1.2
       tunnel-agent: 0.6.0
@@ -39131,7 +39155,7 @@ snapshots:
 
   simple-update-notifier@2.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.0
 
   sinon@16.1.3:
     dependencies:
@@ -40012,7 +40036,7 @@ snapshots:
       mime: 2.6.0
       qs: 6.14.1
       readable-stream: 3.6.2
-      semver: 7.7.4
+      semver: 7.8.0
     transitivePeerDependencies:
       - supports-color
 
@@ -40027,7 +40051,7 @@ snapshots:
       methods: 1.1.2
       mime: 2.6.0
       qs: 6.14.1
-      semver: 7.7.4
+      semver: 7.8.0
     transitivePeerDependencies:
       - supports-color
 
@@ -41950,7 +41974,7 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
       eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)
@@ -41980,7 +42004,7 @@ snapshots:
       prettier: 2.0.4
       resolve-cwd: 3.0.0
       resolve-from: 5.0.0
-      semver: 7.7.4
+      semver: 7.8.0
       slash: 3.0.0
       to-absolute-glob: 2.0.2
       typescript: 3.9.10
