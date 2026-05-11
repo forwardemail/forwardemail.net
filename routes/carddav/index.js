@@ -1777,6 +1777,26 @@ async function propFindPrincipal(ctx) {
       }
     ];
 
+    //
+    // Apple push-discovery: iOS Contacts determines whether to show "Push"
+    // or "Fetch" in Settings -> Mail -> Fetch New Data by checking for
+    // <CS:push-transports> on the *principal* resource during account
+    // capability discovery.  The CalDAV adapter already does this (its
+    // tags.js handler accepts resource === 'principal'), which is why
+    // "X's Calendars" shows Push while "X's Contacts" shows Fetch.
+    //
+    // Without this, iOS still registers for push (it finds push-transports
+    // on the addressbook-home) but the Settings UI never flips to "Push"
+    // because the principal-level advertisement is missing.
+    //
+    const principalPushTransportsXML = await buildCardDAVPushTransportsXML(ctx);
+    if (principalPushTransportsXML) {
+      responses[0].propstat[0].props.push({
+        name: 'cs:push-transports',
+        value: principalPushTransportsXML
+      });
+    }
+
     const xml = xmlHelpers.getMultistatusXML(responses);
 
     ctx.type = 'application/xml';
