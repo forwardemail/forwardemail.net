@@ -1356,13 +1356,22 @@ Domains.pre('save', async function (next) {
   try {
     // TODO: we may want to prevent localhost bound reverse hostname
     //       (in which case we'd need `punycode.toASCII` on the domain)
-    if (
-      isIP(parseRootDomain(this.bounce_webhook)) &&
-      REGEX_LOCALHOST.test(parseRootDomain(this.bounce_webhook))
-    )
+    const hostname = parseRootDomain(this.bounce_webhook);
+
+    if (isIP(hostname) && REGEX_LOCALHOST.test(hostname))
       throw Boom.badRequest(
         i18n.translateError('INVALID_LOCALHOST_URL', this.locale)
       );
+
+    // Also validate against reserved TLDs (e.g. .local, .localhost, .internal)
+    const parts = hostname.toLowerCase().split('.');
+    const tld = parts[parts.length - 1];
+    if (config.testDomains.includes(tld)) {
+      throw Boom.badRequest(
+        i18n.translateError('INVALID_LOCALHOST_URL', this.locale)
+      );
+    }
+
     next();
   } catch (err) {
     next(err);

@@ -6,12 +6,12 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const process = require('node:process');
-const { exec } = require('node:child_process');
+const { execFile } = require('node:child_process');
 const { promisify } = require('node:util');
 
 const { Octokit } = require('@octokit/rest');
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -543,7 +543,7 @@ Summary:`;
       }
 
       // Use pdftotext (from poppler-utils) to extract text
-      const { stdout } = await execAsync(`pdftotext "${filePath}" -`);
+      const { stdout } = await execFileAsync('pdftotext', [filePath, '-']);
       const text = stdout.trim();
 
       if (!text || text.length < 100) {

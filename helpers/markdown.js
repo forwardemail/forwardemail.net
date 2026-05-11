@@ -36,7 +36,25 @@ markdown.use(markdownItFootnote);
 markdown.use(markdownItHighlightJS);
 markdown.use(markdownItTaskCheckbox);
 markdown.use(markdownItEmoji);
-markdown.use(markdownItAttrs);
+markdown.use(markdownItAttrs, {
+  // Restrict allowed attributes to a safe subset.
+  // By default markdown-it-attrs allows ANY attribute (including event
+  // handlers like onclick, onload, onerror) which enables XSS when
+  // rendering user-controlled or third-party Markdown content.
+  allowedAttributes: [
+    'id',
+    'class',
+    'name',
+    'target',
+    'rel',
+    'title',
+    'width',
+    'height',
+    'align',
+    'valign',
+    'style'
+  ]
+});
 markdown.use(markdownItAnchor, {
   slugify(s) {
     return s.toLowerCase().replace(re, '').replace(/\s/g, '-');

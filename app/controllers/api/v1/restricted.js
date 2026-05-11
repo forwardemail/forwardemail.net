@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
+const crypto = require('node:crypto');
 const Boom = require('@hapi/boom');
 const auth = require('basic-auth');
 
@@ -20,7 +22,22 @@ async function restricted(ctx, next) {
   )
     throw Boom.unauthorized(ctx.translateError('INVALID_API_CREDENTIALS'));
 
-  if (!env.API_SECRETS.includes(credentials.name))
+  // Perform timing-safe comparison against all API secrets
+  // to prevent timing-based token enumeration attacks
+  let isValid = false;
+  const providedBuf = Buffer.from(credentials.name);
+
+  for (const secret of env.API_SECRETS) {
+    const secretBuf = Buffer.from(secret);
+    if (
+      providedBuf.length === secretBuf.length &&
+      crypto.timingSafeEqual(providedBuf, secretBuf)
+    ) {
+      isValid = true;
+    }
+  }
+
+  if (!isValid)
     throw Boom.unauthorized(ctx.translateError('INVALID_API_TOKEN'));
 
   ctx[API_RESTRICTED_SYMBOL] = true;

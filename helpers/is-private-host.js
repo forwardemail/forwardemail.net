@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const dns = require('node:dns');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const config = require('#config');
 
@@ -35,4 +36,38 @@ function isPrivateHost(hostname) {
   return false;
 }
 
+/**
+ * Async version that also resolves the hostname via DNS and checks
+ * whether any resolved IP is private/internal.
+ * Use this for outbound HTTP requests to prevent DNS rebinding attacks.
+ * @param {string} hostname - The hostname to check
+ * @returns {Promise<boolean>} true if the hostname is private/internal
+ */
+async function isPrivateHostResolved(hostname) {
+  // First do the synchronous checks
+  if (isPrivateHost(hostname)) return true;
+
+  // If it's already an IP literal, no need to resolve
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) return false;
+  if (/^[\da-f:]+$/i.test(hostname)) return false;
+
+  // Resolve the hostname and check all returned IPs
+  try {
+    const resolver = new dns.promises.Resolver({ timeout: 5000, tries: 2 });
+    const addresses = await resolver.resolve4(hostname).catch(() => []);
+    const addresses6 = await resolver.resolve6(hostname).catch(() => []);
+    const allAddresses = [...addresses, ...addresses6];
+
+    for (const addr of allAddresses) {
+      if (REGEX_LOCALHOST.test(addr)) return true;
+    }
+  } catch {
+    // DNS resolution failed - block by default for safety
+    return true;
+  }
+
+  return false;
+}
+
 module.exports = isPrivateHost;
+module.exports.isPrivateHostResolved = isPrivateHostResolved;

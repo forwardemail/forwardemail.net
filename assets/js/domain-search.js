@@ -117,6 +117,21 @@ function openRegistration(url, domain) {
  * @param {Object} r - { domain, available, found, message }
  * @returns {string} HTML
  */
+/**
+ * Escape HTML special characters to prevent XSS when building innerHTML strings.
+ * @param {string} unsafe - The untrusted string to escape
+ * @returns {string} The escaped string safe for HTML insertion
+ */
+function escapeHtml(unsafe) {
+  if (typeof unsafe !== 'string') return '';
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 function renderResult(r) {
   const available = r.available === true;
   const borderClass = available ? 'border-success' : 'border-secondary';
@@ -125,14 +140,15 @@ function renderResult(r) {
     : 'fa-times-circle text-muted';
   const badgeClass = available ? 'badge-success' : 'badge-secondary';
   const badgeText = available ? 'Available' : 'Registered';
+  const safeDomain = escapeHtml(r.domain);
   const registerUrl =
     'https://domains.cloudflare.com/?domain=' + encodeURIComponent(r.domain);
   const setupBtn = available
     ? '<button type="button" class="btn btn-sm btn-success ml-auto flex-shrink-0 text-nowrap domain-register-btn" ' +
       'data-domain="' +
-      r.domain +
+      safeDomain +
       '" data-url="' +
-      registerUrl +
+      escapeHtml(registerUrl) +
       '">' +
       'Register <i class="fa fa-external-link"></i></button>'
     : '';
@@ -145,7 +161,7 @@ function renderResult(r) {
     ' fa-lg mr-2 flex-shrink-0"></i>' +
     '<div class="mr-2 text-truncate flex-grow-1" style="min-width: 0">' +
     '<span class="font-weight-bold notranslate small">' +
-    r.domain +
+    safeDomain +
     '</span>' +
     '</div>' +
     '<span class="badge ' +
