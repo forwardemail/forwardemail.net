@@ -11,6 +11,7 @@ const pify = require('pify');
 const { Aliases, SieveScripts } = require('#models');
 const config = require('#config');
 const env = require('#config/env');
+const getTLSOptions = require('#helpers/get-tls-options');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const onClose = require('#helpers/on-close');
@@ -111,6 +112,12 @@ class ManageSieveServer {
     // This is needed for both implicit TLS and STARTTLS modes
     if (env.WEB_SSL_KEY_PATH && env.WEB_SSL_CERT_PATH) {
       this.tlsOptions = {
+        //
+        // Hardened TLS configuration
+        // Enforces cipher suite order, only allows AEAD ciphers with
+        // forward secrecy, and excludes weak signature algorithms.
+        //
+        ...getTLSOptions(),
         key: fs.readFileSync(env.WEB_SSL_KEY_PATH),
         cert: fs.readFileSync(env.WEB_SSL_CERT_PATH),
         ...(env.WEB_SSL_CA_PATH

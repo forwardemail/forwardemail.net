@@ -28,6 +28,7 @@ const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
+const getTLSOptions = require('#helpers/get-tls-options');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const isRetryableError = require('#helpers/is-retryable-error');
@@ -64,10 +65,15 @@ class SQLite {
     const server =
       config.env === 'production'
         ? https.createServer({
+            //
+            // Hardened TLS configuration
+            // Enforces cipher suite order, only allows AEAD ciphers with
+            // forward secrecy, and excludes weak signature algorithms.
+            //
+            ...getTLSOptions(),
             key: fs.readFileSync(env.WEB_SSL_KEY_PATH),
             cert: fs.readFileSync(env.WEB_SSL_CERT_PATH),
-            ca: fs.readFileSync(env.WEB_SSL_CA_PATH),
-            ecdhCurve: 'auto'
+            ca: fs.readFileSync(env.WEB_SSL_CA_PATH)
           })
         : http.createServer();
 

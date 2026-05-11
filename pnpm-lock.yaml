@@ -107,8 +107,8 @@ importers:
         specifier: 1.1.1
         version: 1.1.1
       '@ladjs/shared-config':
-        specifier: 9.1.4
-        version: 9.1.4
+        specifier: 10.0.0
+        version: 10.0.0
       '@ladjs/web':
         specifier: 21.1.3
         version: 21.1.3(@babel/core@7.28.0)(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))(handlebars@4.7.7)(mustache@4.2.0)(pug@3.0.3)(underscore@1.13.8)
@@ -3071,6 +3071,10 @@ packages:
     resolution: {integrity: sha512-uarHVlyw6SkQgV5ePVIbosZQ1FTwol6tz+6Yfwgez504ygNzos9ui5BToS80ikMzmQO9pbwkeccK1taooU0Q6A==}
     engines: {node: '>=14'}
 
+  '@ladjs/shared-config@10.0.0':
+    resolution: {integrity: sha512-viii+YeTH7tFQwaB5M0qG2rSDokUnQQ4LzE9pbZ+EkelzbSUjKOIe1oWvvJmxmn9R+45L2X9PoTE+sMRS19t1w==}
+    engines: {node: '>=14'}
+
   '@ladjs/shared-config@8.0.0':
     resolution: {integrity: sha512-ivFZIM13PqArATHqVB+Ae8zFBN/3fCYWcclnX2S1J8GceYgLimeW4V8ir6SojnKpo312jxJPFsBeuEpR4iKyWQ==}
     engines: {node: '>=14'}
@@ -3145,7 +3149,6 @@ packages:
   '@lancedb/lancedb@0.22.3':
     resolution: {integrity: sha512-nRC0fkg+d7dzCtudKHT+VH7znk6KUXRZyuS6HJYNnIrbvXBxaT6wAPjEbf70KTuqvP2znj48Zg+kiwRqkRnAJw==}
     engines: {node: '>= 18'}
-    cpu: [x64, arm64]
     os: [darwin, linux, win32]
     peerDependencies:
       apache-arrow: '>=15.0.0 <=18.1.0'
@@ -21792,6 +21795,14 @@ snapshots:
       ioredis: 5.6.1
     transitivePeerDependencies:
       - supports-color
+
+  '@ladjs/shared-config@10.0.0':
+    dependencies:
+      boolean: 3.2.0
+      dayjs: 1.11.13
+      dayjs-with-plugins: 1.0.4(dayjs@1.11.13)
+      is-string-and-not-blank: 0.0.2
+      semver: 7.8.0
 
   '@ladjs/shared-config@8.0.0':
     dependencies:

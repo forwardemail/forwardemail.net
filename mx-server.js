@@ -17,6 +17,7 @@ const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
+const getTLSOptions = require('#helpers/get-tls-options');
 const isLockingError = require('#helpers/is-locking-error');
 const isMongoError = require('#helpers/is-mongo-error');
 const isRedisError = require('#helpers/is-redis-error');
@@ -89,7 +90,14 @@ class MX {
       //
       hideREQUIRETLS: false,
 
-      // keys
+      //
+      // Hardened TLS configuration
+      // Enforces cipher suite order, only allows AEAD ciphers with
+      // forward secrecy, and excludes weak signature algorithms.
+      //
+      ...getTLSOptions(),
+
+      // keys (production only)
       ...(config.env === 'production'
         ? {
             key: fs.readFileSync(env.WEB_SSL_KEY_PATH),

@@ -19,6 +19,7 @@ const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
+const getTLSOptions = require('#helpers/get-tls-options');
 const isLockingError = require('#helpers/is-locking-error');
 const isMongoError = require('#helpers/is-mongo-error');
 const isRedisError = require('#helpers/is-redis-error');
@@ -68,6 +69,16 @@ class SMTP {
     });
 
     this.logger = logger;
+
+    //
+    // Determine TLS profile:
+    // - Use 'compat' profile when TLS 1.0 is explicitly enabled
+    //   (backward-compatible legacy ports 2455/2555)
+    // - Use 'strict' profile for all other ports (passes internet.nl)
+    //
+    const isLegacyTLS =
+      env.SMTP_TLS_MIN_VERSION === 'TLSv1' ||
+      env.SMTP_TLS_MIN_VERSION === 'TLSv1.1';
 
     // setup our smtp server which listens for incoming email
     // TODO: <https://github.com/nodemailer/smtp-server/issues/177>
@@ -129,27 +140,29 @@ class SMTP {
       //
       hideREQUIRETLS: false,
 
-      // keys and TLS options together
+      //
+      // Hardened TLS configuration
+      // - 'strict' profile for public-facing ports (passes internet.nl)
+      // - 'compat' profile for legacy backward-compatible ports (TLS 1.0)
+      //
+      ...getTLSOptions({
+        profile: isLegacyTLS ? 'compat' : 'strict',
+        ...(env.SMTP_TLS_MIN_VERSION
+          ? { minVersion: env.SMTP_TLS_MIN_VERSION }
+          : {}),
+        ...(env.SMTP_TLS_MAX_VERSION
+          ? { maxVersion: env.SMTP_TLS_MAX_VERSION }
+          : {})
+      }),
+
+      // keys (production only)
       ...(config.env === 'production'
         ? {
             key: fs.readFileSync(env.WEB_SSL_KEY_PATH),
             cert: fs.readFileSync(env.WEB_SSL_CERT_PATH),
-            ca: fs.readFileSync(env.WEB_SSL_CA_PATH),
-            ...(env.SMTP_TLS_MIN_VERSION
-              ? { minVersion: env.SMTP_TLS_MIN_VERSION }
-              : {}),
-            ...(env.SMTP_TLS_MAX_VERSION
-              ? { maxVersion: env.SMTP_TLS_MAX_VERSION }
-              : {})
+            ca: fs.readFileSync(env.WEB_SSL_CA_PATH)
           }
-        : {
-            ...(env.SMTP_TLS_MIN_VERSION
-              ? { minVersion: env.SMTP_TLS_MIN_VERSION }
-              : {}),
-            ...(env.SMTP_TLS_MAX_VERSION
-              ? { maxVersion: env.SMTP_TLS_MAX_VERSION }
-              : {})
-          }),
+        : {}),
 
       // override with any options passed (useful for testing)
       ..._.omit(options, ['client'])
