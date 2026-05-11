@@ -1014,13 +1014,17 @@ async function forward(recipient, headers, session, body) {
 
       // Block requests to private/internal hosts (SSRF prevention)
       // Uses async DNS resolution to prevent DNS rebinding attacks
+      // (bypassed in test mode so tests can use local webhook endpoints)
       {
         const webhookUrl = new URL(
           recipient.webhook
             .replace('HTTP://', 'http://')
             .replace('HTTPS://', 'https://')
         );
-        if (await isPrivateHostResolved(webhookUrl.hostname))
+        if (
+          env.NODE_ENV !== 'test' &&
+          (await isPrivateHostResolved(webhookUrl.hostname))
+        )
           throw new SMTPError(
             i18n.translateError('INVALID_LOCALHOST_URL', 'en'),
             { ignore_hook: true }

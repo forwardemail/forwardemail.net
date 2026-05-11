@@ -1511,8 +1511,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
           .trim();
         // Block requests to private/internal hosts (SSRF prevention)
         // Uses async DNS resolution to prevent DNS rebinding attacks
+        // (bypassed in test mode so tests can use local webhook endpoints)
         const parsedWebhookUrl = new URL(url);
-        if (await isPrivateHostResolved(parsedWebhookUrl.hostname)) {
+        if (
+          env.NODE_ENV !== 'test' &&
+          (await isPrivateHostResolved(parsedWebhookUrl.hostname))
+        ) {
           logger.warn('bounce_webhook blocked: private host', {
             url,
             domain: domain.name

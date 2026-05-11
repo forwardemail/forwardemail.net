@@ -18,6 +18,7 @@ const logger = require('./logger');
 const { encoder, decoder } = require('./encoder-decoder');
 
 const config = require('#config');
+const env = require('#config/env');
 
 const DURATION = config.env === 'test' ? '5s' : '2s';
 
@@ -43,9 +44,13 @@ function WKD(resolver, client) {
   _wkd._fetch = async (url) => {
     // Block requests to private/internal hosts (SSRF prevention)
     // Uses async DNS resolution to prevent DNS rebinding attacks
+    // (bypassed in test mode so tests can use local WKD lookups)
     {
       const parsedUrl = new URL(url);
-      if (await isPrivateHostResolved(parsedUrl.hostname))
+      if (
+        env.NODE_ENV !== 'test' &&
+        (await isPrivateHostResolved(parsedUrl.hostname))
+      )
         throw Boom.badRequest(
           i18n.translateError('INVALID_LOCALHOST_URL', 'en')
         );
