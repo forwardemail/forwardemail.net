@@ -44,7 +44,7 @@ graceful.listen();
 
   try {
     const stream = client.scanStream({
-      match: `koa-cash:*`, // format is `koa-cash:${ctx.request.url}`
+      match: `koa-cash:*`, // format is `koa-cash:${ctx.request.path}`
       count: 10000,
       type: 'string'
     });

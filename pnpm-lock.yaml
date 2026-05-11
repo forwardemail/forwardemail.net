@@ -65,8 +65,8 @@ importers:
         specifier: 13.1.1
         version: 13.1.1
       '@ladjs/api':
-        specifier: 14.2.1
-        version: 14.2.1(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))
+        specifier: 14.2.2
+        version: 14.2.2(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))
       '@ladjs/assets':
         specifier: 2.1.29
         version: 2.1.29(spinkit@2.0.1)
@@ -110,8 +110,8 @@ importers:
         specifier: 9.1.4
         version: 9.1.4
       '@ladjs/web':
-        specifier: 21.1.2
-        version: 21.1.2(@babel/core@7.28.0)(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))(handlebars@4.7.7)(mustache@4.2.0)(pug@3.0.3)(underscore@1.13.8)
+        specifier: 21.1.3
+        version: 21.1.3(@babel/core@7.28.0)(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))(handlebars@4.7.7)(mustache@4.2.0)(pug@3.0.3)(underscore@1.13.8)
       '@lancedb/lancedb':
         specifier: 0.22.3
         version: 0.22.3(apache-arrow@18.1.0)
@@ -668,7 +668,7 @@ importers:
         specifier: 1.8.1
         version: 1.8.1
       peggy:
-        specifier: ^4.2.0
+        specifier: 4.2.0
         version: 4.2.0
       pify:
         specifier: 5.0.0
@@ -2795,8 +2795,8 @@ packages:
     engines: {node: '>= 18'}
     deprecated: Please upgrade to v15 or higher. All reported bugs in this version are fixed in newer releases, dependencies have been updated, and security has been improved.
 
-  '@ladjs/api@14.2.1':
-    resolution: {integrity: sha512-M4w4WiZwap0OYUCEdzSl1nZSUrQbq/nJEv9E/Xb7mAdvpZxB0lwz+u9uXEog27sxAiGl5XHaVS6EXjn2W1cV7w==}
+  '@ladjs/api@14.2.2':
+    resolution: {integrity: sha512-AowD45ZsRbW+pc2zBMv7svlzwOdMyOIrIeWbM0WJoP1RJydFT7JdD8akDa+M5tmroLoGc0wjz/tWNjnN3Q2B/A==}
     engines: {node: '>=18'}
     peerDependencies:
       axe: '>= 11'
@@ -3087,8 +3087,8 @@ packages:
     resolution: {integrity: sha512-6r9bjFD/eUy175jFXgvnA/WmReGCrV77l/Xq/QCS+FGM+u0Y4jpdtMv6U4eqrZIuA3EZMOUQpJp08ca1QP4wiA==}
     engines: {node: '>=8.3'}
 
-  '@ladjs/web@21.1.2':
-    resolution: {integrity: sha512-GoDNbrPjMq+brqlPT97VTfBSWzfSWiZzeHrT34lM5SR/LdHA378YlVSAAkqFNpm3OGsQnOuQjYiNNkmq18Ai3w==}
+  '@ladjs/web@21.1.3':
+    resolution: {integrity: sha512-O1UXC6Gh5n0hqVKUKP8HbK0V1wMmYJZmlltoVlXiZrT72w9KY8jgjl1mmY2wI8fvV1ORQgKLBW4k9HZEXfFsSQ==}
     engines: {node: '>=18'}
     peerDependencies:
       axe: '>= 11'
@@ -11686,8 +11686,8 @@ packages:
     resolution: {integrity: sha512-kBH3IYPMb+iAXnrxIhXnW+gXV8OTzCu8VPDqvcDHW9SQrbkHmqPQtiZwrltNmSq6/lpipHnT7k7PsjlVD7kK0w==}
     engines: {node: '>=8.0.0'}
 
-  koa-cash@5.0.1:
-    resolution: {integrity: sha512-r23z8rUu+s3c9o4hM1Lho+zWYSmOJzk1IGI+Ku5o6TpTa/4gAtYIbgLsg5R8exzVmylLSAr37jIxfF0tW/gm/g==}
+  koa-cash@5.0.2:
+    resolution: {integrity: sha512-ph/Ch/ESPuqd0T9cYVbO+wa57e2DFUBIyGX4quBWo19HtLt73V4+tSgDx7qcS0KHKiZ3dtRBgRlWZfY2Q+cXuQ==}
     engines: {node: '>=18'}
 
   koa-compose@4.1.0:
@@ -18830,8 +18830,8 @@ packages:
     engines: {node: '>= 14.6'}
     hasBin: true
 
-  yaml@2.8.4:
-    resolution: {integrity: sha512-ml/JPOj9fOQK8RNnWojA67GbZ0ApXAUlN2UQclwv2eVgTgn7O9gg9o7paZWKMp4g0H3nTLtS9LVzhkpOFIKzog==}
+  yaml@2.9.0:
+    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
     engines: {node: '>= 14.6'}
     hasBin: true
 
@@ -21517,7 +21517,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ladjs/api@14.2.1(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))':
+  '@ladjs/api@14.2.2(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))':
     dependencies:
       '@koa/etag': 5.0.2(koa@3.1.1)
       '@koa/router': 13.1.1
@@ -21819,7 +21819,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ladjs/web@21.1.2(@babel/core@7.28.0)(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))(handlebars@4.7.7)(mustache@4.2.0)(pug@3.0.3)(underscore@1.13.8)':
+  '@ladjs/web@21.1.3(@babel/core@7.28.0)(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))(handlebars@4.7.7)(mustache@4.2.0)(pug@3.0.3)(underscore@1.13.8)':
     dependencies:
       '@koa/etag': 5.0.2(koa@3.1.1)
       '@koa/router': 13.1.1
@@ -21848,7 +21848,7 @@ snapshots:
       koa-better-flash: 0.0.4
       koa-better-timeout: 0.0.6
       koa-bodyparser: 4.4.1
-      koa-cash: 5.0.1
+      koa-cash: 5.0.2
       koa-compress: 5.2.1
       koa-conditional-get: 3.0.0
       koa-connect: 2.1.1
@@ -32786,7 +32786,7 @@ snapshots:
       copy-to: 2.0.1
       type-is: 1.6.18
 
-  koa-cash@5.0.1:
+  koa-cash@5.0.2:
     dependencies:
       bytes: 3.1.2
       compressible: 2.0.18
@@ -41006,7 +41006,7 @@ snapshots:
       vfile-message: 3.1.4
       vfile-reporter: 7.0.5
       vfile-statistics: 2.0.1
-      yaml: 2.8.4
+      yaml: 2.9.0
     transitivePeerDependencies:
       - supports-color
 
@@ -42078,7 +42078,7 @@ snapshots:
 
   yaml@2.8.0: {}
 
-  yaml@2.8.4: {}
+  yaml@2.9.0: {}
 
   yargs-parser@15.0.3:
     dependencies:

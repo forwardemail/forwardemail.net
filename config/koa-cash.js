@@ -45,6 +45,36 @@ module.exports = (client) => ({
     // and fetch it as a buffer using `getBuffer` as well
     //
     try {
+      //
+      // handle cache clearing (koa-cash calls `set(key, false)`)
+      // use `client.del` to properly remove the key from Redis
+      //
+      if (value === false) {
+        await pTimeout(
+          Promise.all([client.del(`buffer-gzip:${key}`), client.del(key)]),
+          1000
+        );
+        return;
+      }
+
+      //
+      // safeguard against unexpected value types
+      //
+      if (typeof value !== 'object' || value === null) {
+        throw new TypeError(
+          `Expected cache value to be an object, got ${typeof value}`
+        );
+      }
+
+      //
+      // ensure maxAge is a valid positive finite integer for Redis EX
+      // (Redis rejects EX with 0, negative, NaN, Infinity, or non-integer values)
+      //
+      const effectiveMaxAge =
+        typeof maxAge === 'number' && Number.isFinite(maxAge) && maxAge >= 1
+          ? Math.floor(maxAge)
+          : MAX_AGE;
+
       if (Buffer.isBuffer(value.body)) {
         let { body, gzip, ...data } = value;
         if (!gzip) gzip = await nodeGzip.gzip(body);
@@ -55,16 +85,14 @@ module.exports = (client) => ({
             [key, safeStringify(data)]
           ])
         );
-        pipeline.expire(`buffer-gzip:${key}`, maxAge > 0 ? maxAge : MAX_AGE);
-        pipeline.expire(key, maxAge > 0 ? maxAge : MAX_AGE);
+        pipeline.expire(`buffer-gzip:${key}`, effectiveMaxAge);
+        pipeline.expire(key, effectiveMaxAge);
         await pTimeout(pipeline.exec(), 1000);
       } else {
-        if (maxAge <= 0)
-          await pTimeout(
-            client.set(key, safeStringify(value), 'EX', MAX_AGE),
-            1000
-          );
-        await client.set(key, safeStringify(value), 'EX', maxAge);
+        await pTimeout(
+          client.set(key, safeStringify(value), 'EX', effectiveMaxAge),
+          1000
+        );
       }
     } catch (err) {
       err.key = key;
