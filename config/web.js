@@ -234,12 +234,7 @@ module.exports = (redis) => ({
                 'https://www.paypal.com',
                 'https://challenges.cloudflare.com'
               ],
-              // Allow inline style="..." attributes (e.g. style="display:none")
-              // without 'unsafe-inline' in style-src.  CSP3 style-src-attr is
-              // supported by 95 %+ of browsers; older ones fall back to
-              // style-src (nonce-only) which may block style attributes —
-              // an acceptable degradation for legacy user-agents.
-              'style-src-attr': ["'unsafe-inline'"],
+
               'script-src': [
                 ..._.without(defaultSrc, 'data:'),
                 //
@@ -429,9 +424,14 @@ module.exports = (redis) => ({
       const csp = ctx.response.get('Content-Security-Policy');
       if (csp) {
         const nonceToken = `'nonce-${nonce}'`;
-        const patched = csp
-          .replace(/(?<=script-src\s)([^;]*)/, `$1 ${nonceToken}`)
-          .replace(/(?<=style-src\s)([^;]*)/, `$1 ${nonceToken}`);
+        // Append style-src-attr 'unsafe-inline' so inline style="..."
+        // attributes keep working.  helmet-csp@2 does not recognise this
+        // directive, so we inject it here instead of in the config object.
+        const patched =
+          csp
+            .replace(/(?<=script-src\s)([^;]*)/, `$1 ${nonceToken}`)
+            .replace(/(?<=style-src\s)([^;]*)/, `$1 ${nonceToken}`) +
+          "; style-src-attr 'unsafe-inline'";
         ctx.set('Content-Security-Policy', patched);
       }
     });
