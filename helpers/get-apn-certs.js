@@ -215,6 +215,13 @@ function getCertSerialNumber(certs, key) {
 }
 
 async function getApnCerts(client) {
+  // Short-circuit when Curl is unavailable (e.g. test environment or worker
+  // threads).  Previously this check happened deep inside the function AFTER
+  // the Redis lock was already acquired, which meant the lock was never
+  // released and every subsequent caller would block for the full 15 s
+  // pWaitFor timeout.
+  if (!Curl) return null;
+
   // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L59C1-L60C26>
   //
   // appleId = your-developer-apple-id@yourdomain.com
@@ -257,179 +264,180 @@ async function getApnCerts(client) {
   // if no lock then we can proceed to attempt to get new certs
   await client.set('aps_lock', true, 'PX', ms('1m'));
 
-  // get a random signing cert from VENDOR_CERTS
-  const vendorSigningCert = _.sample(VENDOR_CERTS);
+  try {
+    // get a random signing cert from VENDOR_CERTS
+    const vendorSigningCert = _.sample(VENDOR_CERTS);
 
-  let certs = {};
-  for (const key of KEYS) {
-    const alg = {
-      name: 'RSASSA-PKCS1-v1_5',
-      hash: 'SHA-1',
-      modulusLength: 2048,
-      publicExponent: new Uint8Array([1, 0, 1])
-    };
+    let certs = {};
+    for (const key of KEYS) {
+      const alg = {
+        name: 'RSASSA-PKCS1-v1_5',
+        hash: 'SHA-1',
+        modulusLength: 2048,
+        publicExponent: new Uint8Array([1, 0, 1])
+      };
 
-    const { publicKey, privateKey } = await crypto.subtle.generateKey(
-      alg,
-      true, // exportable
-      ['sign', 'verify']
-    );
+      const { publicKey, privateKey } = await crypto.subtle.generateKey(
+        alg,
+        true, // exportable
+        ['sign', 'verify']
+      );
 
-    //
-    // NOTE: we need to use this approach because `cert.sign` in `node-forge`
-    //       looks for a `.sign` property in the passed arg, e.g. `cert.sign(key)` looks for `key.sign`
-    //
-    // generate a keypair or use one you have already
-    // const keys = forge.pki.rsa.generateKeyPair(2048);
-    certs[key] = {
-      publicKey,
-      privateKey
-      // privateKeyPEM: forge.pki.privateKeyToPem(keys.privateKey),
-      // publicKeyPEM: forge.pki.publicKeyToPem(keys.publicKey)
-    };
-  }
-
-  const CertRequestList = [];
-  for (const [i, key] of KEYS.entries()) {
-    const serialNumber = getCertSerialNumber(certs, key);
-    CertRequestList.push({
-      CSR: await createCsrs(certs, key),
-      CertRequestNo: i,
-      ...(serialNumber
-        ? {
-            CertificateSerialNumber: serialNumber
-          }
-        : {}),
-      Description: `${
-        config.env === 'production' ? env.IMAP_HOST : 'imap.forwardemail.net'
-      } - apns:com.apple.${key.toLowerCase()}`,
-      ServiceType: `Service_${key}`
-    });
-  }
-
-  // generate plist XML
-  const json = {
-    Header: {
-      ClientApplicationCredential: '1',
-      ClientApplicationName: 'XServer',
-      ClientIPAddress: '1',
-      ClientOSName: 'MAC OSX',
-      ClientOSVersion: '2.1',
-      LanguagePreference: '1',
-      TransactionId: '1',
-      Version: '1'
-    },
-    Request: {
-      CertRequestList,
-      ProfileType: 'Production',
-      RequesterType: 'XServer',
-      User: {
-        AccountName: env.APPLE_ID,
-        PasswordHash: env.APPLE_ID_HASHED_PASSWORD
-      }
+      //
+      // NOTE: we need to use this approach because `cert.sign` in `node-forge`
+      //       looks for a `.sign` property in the passed arg, e.g. `cert.sign(key)` looks for `key.sign`
+      //
+      // generate a keypair or use one you have already
+      // const keys = forge.pki.rsa.generateKeyPair(2048);
+      certs[key] = {
+        publicKey,
+        privateKey
+        // privateKeyPEM: forge.pki.privateKeyToPem(keys.privateKey),
+        // publicKeyPEM: forge.pki.publicKeyToPem(keys.publicKey)
+      };
     }
-  };
 
-  const xml = plist.build(json, { pretty: true });
+    const CertRequestList = [];
+    for (const [i, key] of KEYS.entries()) {
+      const serialNumber = getCertSerialNumber(certs, key);
+      CertRequestList.push({
+        CSR: await createCsrs(certs, key),
+        CertRequestNo: i,
+        ...(serialNumber
+          ? {
+              CertificateSerialNumber: serialNumber
+            }
+          : {}),
+        Description: `${
+          config.env === 'production' ? env.IMAP_HOST : 'imap.forwardemail.net'
+        } - apns:com.apple.${key.toLowerCase()}`,
+        ServiceType: `Service_${key}`
+      });
+    }
 
-  // each of these is base64 so we get <key> and <data>
-  const bodyJson = {
-    PushCertCertificateChain: vendorSigningCert.chain,
-    PushCertRequestPlist: Buffer.from(xml),
-    PushCertSignature: getSignatureFromXML(xml, vendorSigningCert),
-    PushCertSignedRequest: true
-  };
-  const body = plist.build(bodyJson);
-
-  if (!Curl) throw new TypeError('Cannot curl in test environment');
-
-  //
-  // due to HPE_INVALID_HEADER_TOKEN we must use `insecureHTTPParser: true`
-  // <https://github.com/nodejs/undici/issues/2678>
-  // <https://stackoverflow.com/a/72612851>
-  //
-  // however `insecureHTTPParser: true` doesn't seem to work anymore (node v18+)
-  // so we rely on using cURL instead
-  //
-  const curl = new Curl();
-  // curl.setOpt('HTTP_VERSION', CurlHttpVersion['2']);
-
-  // NOTE: renew would be "https://identity.apple.com/pushcert/caservice/renew"
-  curl.setOpt('URL', 'https://identity.apple.com/pushcert/caservice/new');
-
-  // curl.setOpt('FOLLOWLOCATION', true);
-
-  if (config.env !== 'production') curl.setOpt(Curl.option.VERBOSE, true);
-
-  curl.setOpt(Curl.option.POST, true);
-
-  curl.setOpt(Curl.option.HTTPHEADER, [
-    'Content-Type: text/x-xml-plist',
-    'Accept: */*',
-    'Accept-Language: en-us'
-  ]);
-
-  curl.setOpt('USERAGENT', USER_AGENT);
-  curl.setOpt(Curl.option.POSTFIELDS, body);
-
-  let response;
-  curl.on('end', function (statusCode, data, headers) {
-    response = {
-      statusCode,
-      data,
-      headers
+    // generate plist XML
+    const json = {
+      Header: {
+        ClientApplicationCredential: '1',
+        ClientApplicationName: 'XServer',
+        ClientIPAddress: '1',
+        ClientOSName: 'MAC OSX',
+        ClientOSVersion: '2.1',
+        LanguagePreference: '1',
+        TransactionId: '1',
+        Version: '1'
+      },
+      Request: {
+        CertRequestList,
+        ProfileType: 'Production',
+        RequesterType: 'XServer',
+        User: {
+          AccountName: env.APPLE_ID,
+          PasswordHash: env.APPLE_ID_HASHED_PASSWORD
+        }
+      }
     };
-    this.close();
-  });
 
-  curl.on('error', curl.close.bind(curl));
+    const xml = plist.build(json, { pretty: true });
 
-  curl.perform();
+    // each of these is base64 so we get <key> and <data>
+    const bodyJson = {
+      PushCertCertificateChain: vendorSigningCert.chain,
+      PushCertRequestPlist: Buffer.from(xml),
+      PushCertSignature: getSignatureFromXML(xml, vendorSigningCert),
+      PushCertSignedRequest: true
+    };
+    const body = plist.build(bodyJson);
 
-  await pEvent(curl, 'end');
+    //
+    // due to HPE_INVALID_HEADER_TOKEN we must use `insecureHTTPParser: true`
+    // <https://github.com/nodejs/undici/issues/2678>
+    // <https://stackoverflow.com/a/72612851>
+    //
+    // however `insecureHTTPParser: true` doesn't seem to work anymore (node v18+)
+    // so we rely on using cURL instead
+    //
+    const curl = new Curl();
+    // curl.setOpt('HTTP_VERSION', CurlHttpVersion['2']);
 
-  // basic response validation
-  if (!response || response.statusCode !== 200 || !response.data) {
-    const err = new TypeError('Response was not valid');
-    err.response = response;
-    throw err;
+    // NOTE: renew would be "https://identity.apple.com/pushcert/caservice/renew"
+    curl.setOpt('URL', 'https://identity.apple.com/pushcert/caservice/new');
+
+    // curl.setOpt('FOLLOWLOCATION', true);
+
+    if (config.env !== 'production') curl.setOpt(Curl.option.VERBOSE, true);
+
+    curl.setOpt(Curl.option.POST, true);
+
+    curl.setOpt(Curl.option.HTTPHEADER, [
+      'Content-Type: text/x-xml-plist',
+      'Accept: */*',
+      'Accept-Language: en-us'
+    ]);
+
+    curl.setOpt('USERAGENT', USER_AGENT);
+    curl.setOpt(Curl.option.POSTFIELDS, body);
+
+    let response;
+    curl.on('end', function (statusCode, data, headers) {
+      response = {
+        statusCode,
+        data,
+        headers
+      };
+      this.close();
+    });
+
+    curl.on('error', curl.close.bind(curl));
+
+    curl.perform();
+
+    await pEvent(curl, 'end');
+
+    // basic response validation
+    if (!response || response.statusCode !== 200 || !response.data) {
+      const err = new TypeError('Response was not valid');
+      err.response = response;
+      throw err;
+    }
+
+    // NOTE: this doesn't work due to the below error
+    // <https://github.com/nodejs/undici/issues/2678#issuecomment-2263646999>
+    // NOTE: renew would be "https://identity.apple.com/pushcert/caservice/renew"
+    // const response = await retryRequest(
+    //   'https://identity.apple.com/pushcert/caservice/new',
+    //   {
+    //     retries: 0,
+    //     method: 'POST',
+    //     headers: {
+    //       'User-Agent': USER_AGENT,
+    //       'Content-Type': 'text/x-xml-plist',
+    //       Accept: '*/*',
+    //       'Accept-Language': 'en-us'
+    //     },
+    //     body,
+    //     resolver
+    //   }
+    // );
+    // const data = await response.body.text();
+    // console.log('data', data);
+
+    // store which vendor signing cert we used
+    await client.set('aps_ca', vendorSigningCert.name);
+
+    // parse response body
+    certs = await parseResponse(response.data, certs);
+
+    // TODO: properly renew cert and store it to disk (?)
+    // 5 days before renewal to expire
+    await client.set('aps_certs', JSON.stringify(certs), 'PX', ms('360d'));
+
+    return certs;
+  } finally {
+    // Always remove lock to prevent stale locks from blocking subsequent
+    // callers with a 15 s pWaitFor timeout.
+    await client.del('aps_lock');
   }
-
-  // NOTE: this doesn't work due to the below error
-  // <https://github.com/nodejs/undici/issues/2678#issuecomment-2263646999>
-  // NOTE: renew would be "https://identity.apple.com/pushcert/caservice/renew"
-  // const response = await retryRequest(
-  //   'https://identity.apple.com/pushcert/caservice/new',
-  //   {
-  //     retries: 0,
-  //     method: 'POST',
-  //     headers: {
-  //       'User-Agent': USER_AGENT,
-  //       'Content-Type': 'text/x-xml-plist',
-  //       Accept: '*/*',
-  //       'Accept-Language': 'en-us'
-  //     },
-  //     body,
-  //     resolver
-  //   }
-  // );
-  // const data = await response.body.text();
-  // console.log('data', data);
-
-  // store which vendor signing cert we used
-  await client.set('aps_ca', vendorSigningCert.name);
-
-  // parse response body
-  certs = await parseResponse(response.data, certs);
-
-  // TODO: properly renew cert and store it to disk (?)
-  // 5 days before renewal to expire
-  await client.set('aps_certs', JSON.stringify(certs), 'PX', ms('360d'));
-
-  // remove lock
-  await client.del('aps_lock');
-
-  return certs;
 }
 
 module.exports = getApnCerts;
