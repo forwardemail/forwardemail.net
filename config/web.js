@@ -237,7 +237,6 @@ module.exports = (redis) => ({
               ],
               'script-src': [
                 ..._.without(defaultSrc, 'data:'),
-                "'unsafe-inline'",
                 //
                 // 'strict-dynamic' makes the host allowlist below a
                 // no-op for <script> elements: only scripts carrying the
@@ -249,7 +248,7 @@ module.exports = (redis) => ({
                 // The host allowlist is retained as a fallback for
                 // browsers that don't yet implement strict-dynamic.
                 //
-                // "'strict-dynamic'",
+                "'strict-dynamic'",
                 'https://challenges.cloudflare.com',
                 'https://www.paypal.com',
                 ...(env.NODE_ENV === 'production'
@@ -394,9 +393,15 @@ module.exports = (redis) => ({
     // CSP nonce — async middleware that wraps around helmet.
     // 1. Generate a per-request nonce and expose it to pug via ctx.state.
     // 2. After downstream (helmet) sets the CSP header, rewrite it to
-    //    inject 'nonce-<hex>' into script-src and style-src directives.
+    //    inject 'nonce-<hex>' into script-src only.
     // This replaces the old Symbol(kOutHeaders) hack and works reliably
     // across all Node.js versions.
+    //
+    // NOTE: We do NOT inject nonce into style-src because adding a nonce
+    //       causes the browser to ignore 'unsafe-inline' (per CSP3 spec),
+    //       which would break third-party injected styles (PayPal, Turnstile).
+    //       style-src keeps 'unsafe-inline' without a nonce so all inline
+    //       styles continue to work.
     //
     // NOTE: CSP nonces are hidden from browser DOM
     //       <https://github.com/pugjs/pug/issues/2899>
@@ -416,9 +421,10 @@ module.exports = (redis) => ({
       const csp = ctx.response.get('Content-Security-Policy');
       if (csp) {
         const nonceToken = `'nonce-${nonce}'`;
-        const patched = csp
-          .replace(/(?<=script-src\s)([^;]*)/, `$1 ${nonceToken}`)
-          .replace(/(?<=style-src\s)([^;]*)/, `$1 ${nonceToken}`);
+        const patched = csp.replace(
+          /(?<=script-src\s)([^;]*)/,
+          `$1 ${nonceToken}`
+        );
         ctx.set('Content-Security-Policy', patched);
       }
     });

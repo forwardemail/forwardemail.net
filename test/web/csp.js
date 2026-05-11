@@ -35,13 +35,19 @@ test('CSP header contains a nonce in script-src', async (t) => {
   );
 });
 
-test('CSP header contains a nonce in style-src', async (t) => {
+test('CSP style-src does NOT contain a nonce (unsafe-inline only)', async (t) => {
   const res = await fetchPage(t);
   const csp = res.headers['content-security-policy'];
-  t.regex(
-    csp,
-    /style-src[^;]*'nonce-[a-f\d]+'/,
-    'style-src must contain a nonce'
+  const styleSrc = csp.match(/style-src([^;]*)/);
+  t.truthy(styleSrc, 'style-src directive must exist');
+  t.notRegex(
+    styleSrc[1],
+    /nonce-/,
+    'style-src must NOT contain a nonce (it would disable unsafe-inline)'
+  );
+  t.true(
+    styleSrc[1].includes("'unsafe-inline'"),
+    "style-src must keep 'unsafe-inline' for third-party styles"
   );
 });
 
@@ -68,8 +74,10 @@ test('CSP header has no double-spaces (no empty/undefined tokens)', async (t) =>
 test("CSP script-src contains 'strict-dynamic'", async (t) => {
   const res = await fetchPage(t);
   const csp = res.headers['content-security-policy'];
+  const scriptSrc = csp.match(/script-src([^;]*)/);
+  t.truthy(scriptSrc, 'script-src directive must exist');
   t.true(
-    csp.includes("'strict-dynamic'"),
+    scriptSrc[1].includes("'strict-dynamic'"),
     "script-src must include 'strict-dynamic'"
   );
 });
@@ -81,7 +89,7 @@ test("CSP script-src does NOT contain 'unsafe-inline'", async (t) => {
   t.truthy(scriptSrc);
   t.false(
     scriptSrc[1].includes("'unsafe-inline'"),
-    "script-src must NOT include 'unsafe-inline' (strict-dynamic makes it a no-op)"
+    "script-src must NOT include 'unsafe-inline' when 'strict-dynamic' is present"
   );
 });
 
