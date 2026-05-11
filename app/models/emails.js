@@ -1103,16 +1103,59 @@ Emails.post('save', async function (email) {
 // 3. If still over 14 MB, keep only the 50 most recent rejectedErrors.
 // 4. Final fallback: strip rejectedErrors down to essential fields only.
 //
-const EMAILS_MAX_DOC_BYTES = 14 * 1024 * 1024; // 14 MB (safely under 16 MiB BSON limit)
+//
+// MongoDB BSON document limit is 16 MiB (16,777,216 bytes).
+// bson@4.7.2 uses a 17 MiB scratch buffer and crashes with ERR_OUT_OF_RANGE
+// if the serialized document exceeds it.
+//
+// The `message` field (raw .eml Buffer, up to 15 MB inline) is hidden from
+// toObject() by mongoose-hidden, so a naive toObject() size check misses it.
+// We must account for it separately.
+//
+const BSON_DOC_LIMIT = 16 * 1024 * 1024; // 16 MiB hard BSON limit
+const BSON_SAFETY_MARGIN = 1 * 1024 * 1024; // 1 MiB safety margin
 const MAX_STACK_LENGTH = 1024;
 const MAX_RESPONSE_LENGTH = 512;
 
 function getEmailDocBytes(doc) {
   try {
-    const obj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
-    return Buffer.byteLength(safeStringify(obj), 'utf8');
+    // Use transform: false to bypass mongoose-hidden and include ALL fields
+    // (especially the `message` Buffer which is normally hidden from toObject)
+    const obj =
+      typeof doc.toObject === 'function'
+        ? doc.toObject({ transform: false, virtuals: false, depopulate: true })
+        : doc;
+
+    //
+    // For the `message` field: if it's a Buffer/Binary, measure its actual
+    // byte length rather than JSON-serializing it (which would be ~4x larger
+    // as a JSON array of integers). BSON stores Buffers as binary with only
+    // ~16 bytes overhead, so raw byte length is the correct BSON estimate.
+    //
+    let messageBytes = 0;
+    if (obj.message) {
+      if (Buffer.isBuffer(obj.message)) {
+        messageBytes = obj.message.length;
+      } else if (obj.message.buffer && Buffer.isBuffer(obj.message.buffer)) {
+        // mongoose Binary type
+        messageBytes = obj.message.buffer.length;
+      } else if (typeof obj.message === 'object' && obj.message._id) {
+        // GridFS reference object - small, ~200 bytes in BSON
+        messageBytes = 200;
+      }
+
+      // Remove message from the object before JSON-sizing the rest
+      delete obj.message;
+    }
+
+    // Measure the rest of the document via JSON (reasonable proxy for BSON
+    // on non-binary fields; BSON is typically slightly smaller than JSON)
+    const restBytes = Buffer.byteLength(safeStringify(obj), 'utf8');
+
+    return messageBytes + restBytes;
   } catch {
-    return EMAILS_MAX_DOC_BYTES + 1;
+    // If anything goes wrong, assume the worst to trigger trimming
+    return BSON_DOC_LIMIT;
   }
 }
 
@@ -1141,7 +1184,8 @@ Emails.pre('save', function (next) {
     // Step 2: Check byte size; if under limit we're done
     //
     let docBytes = getEmailDocBytes(this);
-    if (docBytes <= EMAILS_MAX_DOC_BYTES) return next();
+    const maxDocBytes = BSON_DOC_LIMIT - BSON_SAFETY_MARGIN;
+    if (docBytes <= maxDocBytes) return next();
 
     //
     // Step 3: Drop non-essential nested fields from rejectedErrors
@@ -1156,7 +1200,7 @@ Emails.pre('save', function (next) {
     }
 
     docBytes = getEmailDocBytes(this);
-    if (docBytes <= EMAILS_MAX_DOC_BYTES) return next();
+    if (docBytes <= maxDocBytes) return next();
 
     //
     // Step 4: Keep only the 50 most recent rejectedErrors
@@ -1166,7 +1210,7 @@ Emails.pre('save', function (next) {
     }
 
     docBytes = getEmailDocBytes(this);
-    if (docBytes <= EMAILS_MAX_DOC_BYTES) return next();
+    if (docBytes <= maxDocBytes) return next();
 
     //
     // Step 5: Aggressive fallback — strip rejectedErrors to essential fields
@@ -1191,8 +1235,32 @@ Emails.pre('save', function (next) {
     // Step 6: If still over limit after all trimming, keep only 10 errors
     //
     docBytes = getEmailDocBytes(this);
-    if (docBytes > EMAILS_MAX_DOC_BYTES && Array.isArray(this.rejectedErrors)) {
+    if (docBytes > maxDocBytes && Array.isArray(this.rejectedErrors)) {
       this.rejectedErrors = this.rejectedErrors.slice(-10);
+    }
+
+    //
+    // Step 7: Nuclear fallback — if STILL over limit (e.g. 15 MB inline message
+    // leaves almost no room for anything else), clear rejectedErrors entirely
+    // and keep only a single summary error.
+    //
+    docBytes = getEmailDocBytes(this);
+    if (docBytes > maxDocBytes) {
+      this.rejectedErrors = [
+        {
+          recipient: Array.isArray(this.envelope?.to)
+            ? this.envelope.to[0]
+            : 'unknown',
+          responseCode: 421,
+          isCodeBug: true,
+          date: new Date(),
+          message: `Document too large (${Math.round(
+            docBytes / 1024 / 1024
+          )} MB); rejectedErrors cleared to prevent BSON overflow`,
+          name: 'RangeError',
+          code: 'ERR_OUT_OF_RANGE'
+        }
+      ];
     }
 
     next();

@@ -30,6 +30,7 @@ const { isURL } = require('@forwardemail/validator');
 const pkg = require('../package.json');
 
 const _ = require('./lodash');
+const bsonOverflowFallbackSave = require('./bson-overflow-fallback-save');
 const combineErrors = require('./combine-errors');
 const createBounce = require('./create-bounce');
 const createMtaStsCache = require('./create-mta-sts-cache');
@@ -344,7 +345,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       );
 
       // NOTE: we leave it up to the pre-save hook to determine the "status"
-      email = await email.save();
+      email = await bsonOverflowFallbackSave(email, meta);
 
       const filteredErrors = email.rejectedErrors.filter(
         (error) =>
@@ -476,7 +477,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
             )
           );
 
-        email = await email.save();
+        email = await bsonOverflowFallbackSave(email, meta);
       }
     }
 
@@ -1429,7 +1430,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // now we have in-memory the most recent array of `accepted` and `rejectedErrors`
     // and can properly update the `status` of the email as such (by calling `save()`)
     //
-    email = await email.save();
+    email = await bsonOverflowFallbackSave(email, meta);
 
     //
     // send bounces if any
@@ -1737,7 +1738,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           })
         );
         // NOTE: we leave it up to the pre-save hook to determine the "status"
-        email = await email.save();
+        email = await bsonOverflowFallbackSave(email, meta);
         return;
       }
 
@@ -1754,7 +1755,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           })
         );
         // NOTE: we leave it up to the pre-save hook to determine the "status"
-        email = await email.save();
+        email = await bsonOverflowFallbackSave(email, meta);
         return;
       }
     }
@@ -1774,8 +1775,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
         return error;
       })
     );
+
     // NOTE: we leave it up to the pre-save hook to determine the "status"
-    email = await email.save();
+    email = await bsonOverflowFallbackSave(email, meta);
 
     throw err;
   }
