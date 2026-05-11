@@ -429,6 +429,20 @@ module.exports = (redis) => ({
       }
     });
     //
+    // Chrome DevTools automatic workspace discovery
+    // <https://developer.chrome.com/docs/devtools/automatic-workspaces>
+    // Chrome sends this request to localhost dev servers; return 204 to
+    // silence the 404 noise in production logs.
+    //
+    app.use(async (ctx, next) => {
+      if (ctx.path === '/.well-known/appspecific/com.chrome.devtools.json') {
+        ctx.status = 204;
+        return;
+      }
+
+      return next();
+    });
+    //
     // OpenPGP WKD lookup requires this header
     // > The Access-Control-Allow-Origin: * header is needed to allow OpenPGP clients to fetch the policy from a different domain, bypassing CORS restrictions.
     // https://www.webkeydirectory.com/?email=support@forwardemail.net
