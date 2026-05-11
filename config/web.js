@@ -231,6 +231,7 @@ module.exports = (redis) => ({
               ],
               'style-src': [
                 ...defaultSrc,
+                "'unsafe-inline'",
                 'https://www.paypal.com',
                 'https://challenges.cloudflare.com'
               ],
@@ -394,17 +395,15 @@ module.exports = (redis) => ({
     // CSP nonce — async middleware that wraps around helmet.
     // 1. Generate a per-request nonce and expose it to pug via ctx.state.
     // 2. After downstream (helmet) sets the CSP header, rewrite it to
-    //    inject 'nonce-<hex>' into script-src and style-src.
+    //    inject 'nonce-<hex>' into script-src only.
     // This replaces the old Symbol(kOutHeaders) hack and works reliably
     // across all Node.js versions.
     //
-    // NOTE: The nonce is injected into both script-src AND style-src.
-    //       PayPal SDK propagates the nonce to its injected <style> tags
-    //       via the data-csp-nonce attribute on the SDK <script> tag.
-    //       Turnstile does not inject <style> tags (only script/frame).
-    //       All our own <style> tags already carry nonce=nonce in pug.
-    //       Inline style="..." attributes are allowed separately via
-    //       the style-src-attr directive.
+    // NOTE: We do NOT inject nonce into style-src because adding a nonce
+    //       causes the browser to ignore 'unsafe-inline' (per CSP3 spec),
+    //       which would break third-party injected styles (Scalar API
+    //       reference, PayPal, Turnstile, etc.).  style-src keeps
+    //       'unsafe-inline' without a nonce so all inline styles work.
     //
     // NOTE: CSP nonces are hidden from browser DOM
     //       <https://github.com/pugjs/pug/issues/2899>
@@ -424,14 +423,10 @@ module.exports = (redis) => ({
       const csp = ctx.response.get('Content-Security-Policy');
       if (csp) {
         const nonceToken = `'nonce-${nonce}'`;
-        // Append style-src-attr 'unsafe-inline' so inline style="..."
-        // attributes keep working.  helmet-csp@2 does not recognise this
-        // directive, so we inject it here instead of in the config object.
-        const patched =
-          csp
-            .replace(/(?<=script-src\s)([^;]*)/, `$1 ${nonceToken}`)
-            .replace(/(?<=style-src\s)([^;]*)/, `$1 ${nonceToken}`) +
-          "; style-src-attr 'unsafe-inline'";
+        const patched = csp.replace(
+          /(?<=script-src\s)([^;]*)/,
+          `$1 ${nonceToken}`
+        );
         ctx.set('Content-Security-Policy', patched);
       }
     });
