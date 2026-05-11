@@ -90,6 +90,28 @@ async function buildCardDAVPushTransportsXML(ctx) {
   }
 }
 
+//
+// Mirror the CalDAV adapter's setMultistatusResponse() helper
+// (caldav-adapter/common/response.js) which sets the DAV header and
+// Content-Type on EVERY 207 Multi-Status response — not just OPTIONS.
+//
+// The CalDAV adapter calls setMultistatusResponse(ctx) before every
+// PROPFIND/REPORT handler, which means every 207 carries:
+//   DAV: 1, 3, calendar-access, ...
+//   Content-Type: application/xml; charset="utf-8"
+//
+// The CardDAV server previously only set the DAV header on OPTIONS
+// and used Koa's ctx.type (which produces charset=utf-8 without
+// quotes).  iOS dataaccessd appears to rely on the DAV header being
+// present on PROPFIND 207 responses to recognise push capability.
+//
+function setCardDAVMultistatusResponse(ctx) {
+  ctx.status = 207;
+  ctx.set('DAV', '1, 3, addressbook');
+
+  ctx.set('Content-Type', 'application/xml; charset="utf-8"');
+}
+
 const router = new Router();
 
 // status page crawlers often send `HEAD /` requests
@@ -264,8 +286,7 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         props
       );
 
-      ctx.type = 'application/xml';
-      ctx.status = 207;
+      setCardDAVMultistatusResponse(ctx);
       ctx.body = xml;
       break;
     }
@@ -735,24 +756,26 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
     case 'PROPFIND': {
       const depth = ctx.request.headers.depth || '0';
 
-      // Parse XML request body
-      // const xmlBody = ctx.request.body
-      //   ? await xmlHelpers.parseXML(ctx.request.body.toString())
-      //   : null;
-      // const props = xmlHelpers.extractRequestedProps(xmlBody);
+      //
+      // Parse the PROPFIND request body so we only return push-transports
+      // when the client explicitly asked for it (not for allprop).
+      //
+      const xmlBody = ctx.request.body
+        ? await xmlHelpers.parseXML(ctx.request.body.toString())
+        : null;
+      const requestedProps = xmlHelpers.extractRequestedProps(xmlBody);
+      const wantsPush = requestedProps.includes('push-transports');
+      const wantsPushkey = requestedProps.includes('pushkey');
 
       //
       // Apple push-discovery: iOS Contacts inspects each individual
       // addressbook (not just the addressbook-home) for <cs:push-transports>
       // and <cs:pushkey> before flipping the account from Fetch to Push.
-      // This mirrors the behavior of the calendar branch (caldav-adapter
-      // emits both properties on calCollection and on each calendar) and of
-      // Apple's own ccs-calendarserver, which exposes push-transports on
-      // every collection that supports notifications.
+      // Only build the XML when explicitly requested.
       //
-      const addressBookPushTransportsXML = await buildCardDAVPushTransportsXML(
-        ctx
-      );
+      const addressBookPushTransportsXML = wantsPush
+        ? await buildCardDAVPushTransportsXML(ctx)
+        : '';
 
       const addressBookProps = [
         {
@@ -767,16 +790,6 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
         // getctag is used by some clients (iOS, macOS) to detect changes
         // It should match the sync-token for consistency
         { name: 'cs:getctag', value: addressBook.synctoken },
-        //
-        // Apple push-discovery: pushkey identifies this addressbook in the
-        // subscription POST iOS Contacts will send to /apns.  We use the
-        // stable address_book_id (not name) so renames don't invalidate
-        // existing subscriptions.
-        //
-        {
-          name: 'cs:pushkey',
-          value: encodeXMLEntities(addressBook.address_book_id)
-        },
         {
           name: 'card:addressbook-description',
           value: encodeXMLEntities(addressBook.description || '')
@@ -805,10 +818,25 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
         }
       ];
 
+      //
+      // push-transports is only included when the XML was actually built
+      // (requires APS cert/topic).  pushkey is always returned when
+      // explicitly requested — it is a stable identifier the client
+      // needs regardless of whether the transport advertisement is
+      // available yet (mirrors CalDAV adapter: pushkey is a separate
+      // tag handler that always returns the resource key).
+      //
       if (addressBookPushTransportsXML) {
         addressBookProps.push({
           name: 'cs:push-transports',
           value: addressBookPushTransportsXML
+        });
+      }
+
+      if (wantsPushkey) {
+        addressBookProps.push({
+          name: 'cs:pushkey',
+          value: encodeXMLEntities(addressBook.address_book_id)
         });
       }
 
@@ -873,8 +901,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 
       const xml = xmlHelpers.getMultistatusXML(responses);
 
-      ctx.type = 'application/xml';
-      ctx.status = 207;
+      setCardDAVMultistatusResponse(ctx);
       ctx.body = xml;
       break;
     }
@@ -1141,8 +1168,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 
       const xml = xmlHelpers.getMultistatusXML(responses);
 
-      ctx.type = 'application/xml';
-      ctx.status = 207;
+      setCardDAVMultistatusResponse(ctx);
       ctx.body = xml;
       break;
     }
@@ -1159,22 +1185,28 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
   try {
     const depth = ctx.request.headers.depth || '0';
 
-    // Parse XML request body
-    // const xmlBody = ctx.request.body
-    //   ? await xmlHelpers.parseXML(ctx.request.body.toString())
-    //   : null;
-    // const props = xmlHelpers.extractRequestedProps(xmlBody);
+    //
+    // Parse the PROPFIND request body so we know whether the client
+    // explicitly asked for push-transports.  Per the CalDAV adapter
+    // pattern and caldav-pubsubdiscovery.txt §6, push-transports
+    // SHOULD NOT appear in allprop responses; iOS ignores it there.
+    //
+    const xmlBody = ctx.request.body
+      ? await xmlHelpers.parseXML(ctx.request.body.toString())
+      : null;
+    const requestedProps = xmlHelpers.extractRequestedProps(xmlBody);
+    const wantsPush = requestedProps.includes('push-transports');
+    const wantsPushkey = requestedProps.includes('pushkey');
 
     //
     // Apple CalDAV/CardDAV push-discovery (caldav-pubsubdiscovery.txt):
-    // advertise push-transports on the addressbook-home so iOS Contacts
-    // can register a push subscription via POST /apns and receive real-
-    // time notifications when an addressbook changes.  Build the XML
-    // once and reuse it for every addressbook child entry below (in the
-    // Depth=1 listing).  See buildCardDAVPushTransportsXML at the top of
-    // this file for the full spec rationale.
+    // Build the push-transports XML once and reuse it for every
+    // addressbook child entry below (in the Depth=1 listing), but
+    // only when the client explicitly requested it.
     //
-    const pushTransportsXML = await buildCardDAVPushTransportsXML(ctx);
+    const pushTransportsXML = wantsPush
+      ? await buildCardDAVPushTransportsXML(ctx)
+      : '';
 
     const homeProps = [
       { name: 'd:displayname', value: 'Address Books' },
@@ -1193,32 +1225,26 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
     ];
 
     if (pushTransportsXML) {
-      //
-      // Apple push-discovery: iOS Contacts will not promote a CardDAV
-      // account from "Fetch" to "Push" in Settings unless BOTH
-      // <CS:push-transports> AND <CS:pushkey> are advertised on the
-      // addressbook-home collection (not just on the individual
-      // addressbooks).  This mirrors Apple's ccs-calendarserver and
-      // Cyrus reference behavior, where every collection that supports
-      // notifications carries pushkey alongside push-transports.
-      //
-      // The home pushkey is the per-user account-wide subscription
-      // identifier that iOS uses to refresh the entire addressbook-home
-      // (i.e. "any addressbook in this account changed") on push
-      // receipt.  We use the principal username so it is stable across
-      // addressbook adds/removes and distinct from the per-addressbook
-      // pushkeys advertised below.
-      //
-      homeProps.push(
-        {
-          name: 'cs:push-transports',
-          value: pushTransportsXML
-        },
-        {
-          name: 'cs:pushkey',
-          value: encodeXMLEntities(ctx.params.user)
-        }
-      );
+      homeProps.push({
+        name: 'cs:push-transports',
+        value: pushTransportsXML
+      });
+    }
+
+    //
+    // pushkey is the per-user account-wide subscription identifier
+    // that iOS uses to refresh the entire addressbook-home (i.e.
+    // "any addressbook in this account changed") on push receipt.
+    // We use the principal username so it is stable across
+    // addressbook adds/removes.  Always returned when explicitly
+    // requested, even if push-transports XML could not be built
+    // (e.g. APS cert not yet loaded).
+    //
+    if (wantsPushkey) {
+      homeProps.push({
+        name: 'cs:pushkey',
+        value: encodeXMLEntities(ctx.params.user)
+      });
     }
 
     // Create response
@@ -1255,15 +1281,6 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
           { name: 'd:sync-token', value: addressBook.synctoken },
           // getctag is used by macOS/iOS to detect changes
           { name: 'cs:getctag', value: addressBook.synctoken },
-          //
-          // Apple push-discovery: pushkey identifies this addressbook
-          // in subsequent /apns subscription POSTs from iOS Contacts.
-          // We use the addressbook_id which is stable across renames.
-          //
-          {
-            name: 'cs:pushkey',
-            value: encodeXMLEntities(addressBook.address_book_id)
-          },
           {
             name: 'card:addressbook-description',
             value: encodeXMLEntities(addressBook.description || '')
@@ -1308,6 +1325,13 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
           });
         }
 
+        if (wantsPushkey) {
+          childProps.push({
+            name: 'cs:pushkey',
+            value: encodeXMLEntities(addressBook.address_book_id)
+          });
+        }
+
         responses.push({
           href: `/dav/${ctx.params.user}/addressbooks/${addressBook.address_book_id}/`,
           propstat: [
@@ -1321,9 +1345,7 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
     }
 
     const xml = xmlHelpers.getMultistatusXML(responses);
-
-    ctx.type = 'application/xml';
-    ctx.status = 207;
+    setCardDAVMultistatusResponse(ctx);
     ctx.body = xml;
   } catch (err) {
     ctx.logger.error(err);
@@ -1455,8 +1477,7 @@ async function handleAddressbookQuery(ctx, xmlBody, addressBook) {
     // Generate XML response
     const xml = xmlHelpers.getAddressbookQueryXML(formattedContacts, props);
 
-    ctx.type = 'application/xml';
-    ctx.status = 207;
+    setCardDAVMultistatusResponse(ctx);
     ctx.body = xml;
   } catch (err) {
     ctx.logger.error('Error in handleAddressbookQuery:', err);
@@ -1483,8 +1504,7 @@ async function handleAddressbookMultiget(ctx, xmlBody, addressBook) {
     const hrefs = xmlHelpers.extractHrefs(xmlBody);
 
     if (!hrefs || hrefs.length === 0) {
-      ctx.type = 'application/xml';
-      ctx.status = 207;
+      setCardDAVMultistatusResponse(ctx);
       ctx.body = xmlHelpers.getMultistatusXML([]);
       return;
     }
@@ -1563,8 +1583,7 @@ async function handleAddressbookMultiget(ctx, xmlBody, addressBook) {
     // Generate XML response
     const xml = xmlHelpers.getAddressbookQueryXML(formattedContacts, props);
 
-    ctx.type = 'application/xml';
-    ctx.status = 207;
+    setCardDAVMultistatusResponse(ctx);
     ctx.body = xml;
   } catch (err) {
     ctx.logger.error('Error in handleAddressbookMultiget:', err);
@@ -1690,8 +1709,7 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
   // Generate XML response with updated sync token
   const xml = xmlHelpers.getSyncCollectionXML(addressBook, changes, props);
 
-  ctx.type = 'application/xml';
-  ctx.status = 207;
+  setCardDAVMultistatusResponse(ctx);
   ctx.body = xml;
 }
 
@@ -1700,13 +1718,24 @@ async function propFindPrincipal(ctx) {
   if (ctx.method !== 'PROPFIND') throw Boom.methodNotAllowed();
 
   try {
-    // const depth = ctx.request.headers.depth || '0';
-
-    // Parse XML request body
-    // const xmlBody = ctx.request.body
-    //   ? await xmlHelpers.parseXML(ctx.request.body.toString())
-    //   : null;
-    // const props = xmlHelpers.extractRequestedProps(xmlBody);
+    //
+    // Parse the PROPFIND request body to determine which properties the
+    // client is asking for.  Per RFC 4918 §9.1, an empty body is treated
+    // as allprop.  The CalDAV adapter (caldav-adapter/routes/principal/
+    // propfind.js) does the same: it parses the body, extracts children,
+    // and only returns push-transports when explicitly requested.
+    //
+    // Apple's caldav-pubsubdiscovery.txt says push-transports SHOULD NOT
+    // be returned for allprop.  iOS dataaccessd appears to honour this:
+    // if push-transports appears in an allprop-style response it is
+    // silently ignored, but when it appears in response to an explicit
+    // request it is recognised and the account flips to Push.
+    //
+    const xmlBody = ctx.request.body
+      ? await xmlHelpers.parseXML(ctx.request.body.toString())
+      : null;
+    const requestedProps = xmlHelpers.extractRequestedProps(xmlBody);
+    const wantsPush = requestedProps.includes('push-transports');
 
     //
     // RFC 4791 Section 6.2.1 - calendar-home-set
@@ -1778,29 +1807,30 @@ async function propFindPrincipal(ctx) {
     ];
 
     //
-    // Apple push-discovery: iOS Contacts determines whether to show "Push"
-    // or "Fetch" in Settings -> Mail -> Fetch New Data by checking for
-    // <CS:push-transports> on the *principal* resource during account
-    // capability discovery.  The CalDAV adapter already does this (its
-    // tags.js handler accepts resource === 'principal'), which is why
-    // "X's Calendars" shows Push while "X's Contacts" shows Fetch.
+    // Apple push-discovery: only include <CS:push-transports> when the
+    // client explicitly requested it (i.e. NOT for allprop).  This
+    // mirrors the CalDAV adapter (caldav-adapter/common/tags.js) which
+    // only returns push-transports via its tag handler when the property
+    // appears in the parsed PROPFIND children list.
     //
-    // Without this, iOS still registers for push (it finds push-transports
-    // on the addressbook-home) but the Settings UI never flips to "Push"
-    // because the principal-level advertisement is missing.
+    // caldav-pubsubdiscovery.txt §6 says push-transports SHOULD NOT be
+    // returned by allprop; iOS dataaccessd honours this literally.
     //
-    const principalPushTransportsXML = await buildCardDAVPushTransportsXML(ctx);
-    if (principalPushTransportsXML) {
-      responses[0].propstat[0].props.push({
-        name: 'cs:push-transports',
-        value: principalPushTransportsXML
-      });
+    if (wantsPush) {
+      const principalPushTransportsXML = await buildCardDAVPushTransportsXML(
+        ctx
+      );
+      if (principalPushTransportsXML) {
+        responses[0].propstat[0].props.push({
+          name: 'cs:push-transports',
+          value: principalPushTransportsXML
+        });
+      }
     }
 
     const xml = xmlHelpers.getMultistatusXML(responses);
 
-    ctx.type = 'application/xml';
-    ctx.status = 207;
+    setCardDAVMultistatusResponse(ctx);
     ctx.body = xml;
   } catch (err) {
     ctx.logger.error(err);
