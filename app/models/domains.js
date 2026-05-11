@@ -38,7 +38,7 @@ const pkg = require('../../package.json');
 const _ = require('#helpers/lodash');
 
 const isEmail = require('#helpers/is-email');
-const REGEX_LOCALHOST = require('#helpers/regex-localhost');
+const { isPrivateHostResolved } = require('#helpers/is-private-host');
 const env = require('#config/env');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -779,6 +779,7 @@ Domains.pre('validate', async function (next) {
     }
 
     // Block private/internal IP ranges in s3_endpoint to prevent SSRF
+    // Uses async DNS resolution to prevent DNS rebinding attacks
     if (isSANB(this.s3_endpoint)) {
       let endpointHost;
       try {
@@ -789,13 +790,7 @@ Domains.pre('validate', async function (next) {
         );
       }
 
-      const host = endpointHost.replace(/^\[|]$/g, '');
-
-      // Use shared REGEX_LOCALHOST (all private/reserved IP ranges)
-      // and config.testDomains (reserved TLDs + cloud metadata hostnames)
-      const parts = host.toLowerCase().split('.');
-      const tld = parts[parts.length - 1];
-      if (REGEX_LOCALHOST.test(host) || config.testDomains.includes(tld)) {
+      if (await isPrivateHostResolved(endpointHost)) {
         throw Boom.badRequest(
           i18n.translateError('INVALID_LOCALHOST_URL', this.locale)
         );
@@ -1354,23 +1349,17 @@ Domains.pre('save', async function (next) {
   if (config.env === 'test' && this.bounce_webhook.endsWith('?test=true'))
     return next();
   try {
-    // TODO: we may want to prevent localhost bound reverse hostname
-    //       (in which case we'd need `punycode.toASCII` on the domain)
-    const hostname = parseRootDomain(this.bounce_webhook);
-
-    if (isIP(hostname) && REGEX_LOCALHOST.test(hostname))
+    // Block requests to private/internal hosts (SSRF prevention)
+    // Uses async DNS resolution to prevent DNS rebinding attacks
+    const parsedUrl = new URL(
+      this.bounce_webhook
+        .replace('HTTP://', 'http://')
+        .replace('HTTPS://', 'https://')
+    );
+    if (await isPrivateHostResolved(parsedUrl.hostname))
       throw Boom.badRequest(
         i18n.translateError('INVALID_LOCALHOST_URL', this.locale)
       );
-
-    // Also validate against reserved TLDs (e.g. .local, .localhost, .internal)
-    const parts = hostname.toLowerCase().split('.');
-    const tld = parts[parts.length - 1];
-    if (config.testDomains.includes(tld)) {
-      throw Boom.badRequest(
-        i18n.translateError('INVALID_LOCALHOST_URL', this.locale)
-      );
-    }
 
     next();
   } catch (err) {

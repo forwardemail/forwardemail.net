@@ -7,7 +7,6 @@ const crypto = require('node:crypto');
 const os = require('node:os');
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
-const { isIP } = require('node:net');
 
 // TODO: SMTP needs resolver option
 //       https://github.com/nodemailer/smtp-server/issues/177
@@ -50,7 +49,7 @@ const getReceivedHeader = require('#helpers/get-received-header');
 
 const Domains = require('#models/domains');
 const DenylistError = require('#helpers/denylist-error');
-const REGEX_LOCALHOST = require('#helpers/regex-localhost');
+const { isPrivateHostResolved } = require('#helpers/is-private-host');
 const SMTPError = require('#helpers/smtp-error');
 const checkSRS = require('#helpers/check-srs');
 const combineErrors = require('#helpers/combine-errors');
@@ -1013,16 +1012,20 @@ async function forward(recipient, headers, session, body) {
         }
       });
 
-      // TODO: we may want to prevent localhost bound reverse hostname
-      //       (in which case we'd need `punycode.toASCII` on the domain)
-      if (
-        isIP(parseRootDomain(recipient.webhook)) &&
-        REGEX_LOCALHOST.test(parseRootDomain(recipient.webhook))
-      )
-        throw new SMTPError(
-          i18n.translateError('INVALID_LOCALHOST_URL', 'en'),
-          { ignore_hook: true }
+      // Block requests to private/internal hosts (SSRF prevention)
+      // Uses async DNS resolution to prevent DNS rebinding attacks
+      {
+        const webhookUrl = new URL(
+          recipient.webhook
+            .replace('HTTP://', 'http://')
+            .replace('HTTPS://', 'https://')
         );
+        if (await isPrivateHostResolved(webhookUrl.hostname))
+          throw new SMTPError(
+            i18n.translateError('INVALID_LOCALHOST_URL', 'en'),
+            { ignore_hook: true }
+          );
+      }
 
       const response = await retryRequest(
         // dummyproofing

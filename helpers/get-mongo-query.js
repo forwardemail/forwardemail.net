@@ -61,11 +61,10 @@ function getMongoQuery(ctx) {
         );
       } else {
         // TODO: $exists here
+        // Always escape user input for $regex to prevent ReDoS attacks
+        const escapedValue = _.escapeRegExp(value);
         query.$and.push({
-          $or: [
-            { [key]: { $regex: value, $options: 'i' } },
-            { [key]: { $regex: _.escapeRegExp(value), $options: 'i' } }
-          ]
+          [key]: { $regex: escapedValue, $options: 'i' }
         });
       }
     }

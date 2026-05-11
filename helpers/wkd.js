@@ -4,7 +4,6 @@
  */
 
 const { Buffer } = require('node:buffer');
-const { isIP } = require('node:net');
 
 const Boom = require('@hapi/boom');
 const WKDClient = require('@openpgp/wkd-client');
@@ -12,11 +11,10 @@ const isHTML = require('is-html');
 const ms = require('ms');
 const undici = require('undici');
 
-const REGEX_LOCALHOST = require('./regex-localhost');
+const { isPrivateHostResolved } = require('./is-private-host');
 const TimeoutError = require('./timeout-error');
 const i18n = require('./i18n');
 const logger = require('./logger');
-const parseRootDomain = require('./parse-root-domain');
 const { encoder, decoder } = require('./encoder-decoder');
 
 const config = require('#config');
@@ -43,13 +41,16 @@ const DURATION = config.env === 'test' ? '5s' : '2s';
 function WKD(resolver, client) {
   const _wkd = new WKDClient();
   _wkd._fetch = async (url) => {
-    // TODO: we may want to prevent localhost bound reverse hostname
-    //       (in which case we'd need `punycode.toASCII` on the domain)
-    if (
-      isIP(parseRootDomain(url)) &&
-      REGEX_LOCALHOST.test(parseRootDomain(url))
-    )
-      throw Boom.badRequest(i18n.translateError('INVALID_LOCALHOST_URL', 'en'));
+    // Block requests to private/internal hosts (SSRF prevention)
+    // Uses async DNS resolution to prevent DNS rebinding attacks
+    {
+      const parsedUrl = new URL(url);
+      if (await isPrivateHostResolved(parsedUrl.hostname))
+        throw Boom.badRequest(
+          i18n.translateError('INVALID_LOCALHOST_URL', 'en')
+        );
+    }
+
     const abortController = new AbortController();
     const t = setTimeout(() => {
       if (!abortController?.signal?.aborted)

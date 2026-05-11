@@ -44,6 +44,7 @@ const isEmail = require('./is-email');
 const logger = require('./logger');
 const parseRootDomain = require('./parse-root-domain');
 const retryRequest = require('./retry-request');
+const { isPrivateHostResolved } = require('./is-private-host');
 const sendEmail = require('./send-email');
 const updateHeaders = require('./update-headers');
 const { encoder } = require('./encoder-decoder');
@@ -1507,6 +1508,17 @@ async function processEmail({ email, port = 25, resolver, client }) {
           .replace('HTTP://', 'http://')
           .replace('HTTPS://', 'https://')
           .trim();
+        // Block requests to private/internal hosts (SSRF prevention)
+        // Uses async DNS resolution to prevent DNS rebinding attacks
+        const parsedWebhookUrl = new URL(url);
+        if (await isPrivateHostResolved(parsedWebhookUrl.hostname)) {
+          logger.warn('bounce_webhook blocked: private host', {
+            url,
+            domain: domain.name
+          });
+          return;
+        }
+
         const response = await retryRequest(url, {
           method: 'POST',
           headers: {

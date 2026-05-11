@@ -11,7 +11,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const undici = require('undici');
 const config = require('#config');
-const isPrivateHost = require('#helpers/is-private-host');
+const { isPrivateHostResolved } = require('#helpers/is-private-host');
 const Domains = require('#models/domains');
 const { nsProviders } = require('#config/utilities');
 
@@ -64,9 +64,10 @@ async function discoverDomainConnectUrl(domain) {
     const apiBase = record.startsWith('http') ? record : `https://${record}`;
 
     // Block requests to private/internal hosts (SSRF prevention)
+    // Uses async DNS resolution to prevent DNS rebinding attacks
     try {
       const parsedUrl = new URL(apiBase);
-      if (isPrivateHost(parsedUrl.hostname)) return null;
+      if (await isPrivateHostResolved(parsedUrl.hostname)) return null;
     } catch {
       return null;
     }
@@ -83,8 +84,9 @@ async function discoverDomainConnectUrl(domain) {
 async function fetchProviderSettings(apiBase, domain) {
   try {
     // Block requests to private/internal hosts (SSRF prevention)
+    // Uses async DNS resolution to prevent DNS rebinding attacks
     const parsedBase = new URL(apiBase);
-    if (isPrivateHost(parsedBase.hostname)) return null;
+    if (await isPrivateHostResolved(parsedBase.hostname)) return null;
 
     const url = `${apiBase}/v2/${encodeURIComponent(domain)}/settings`;
     const { body, statusCode } = await undici.request(url, {
@@ -109,8 +111,9 @@ async function fetchProviderSettings(apiBase, domain) {
 async function checkTemplateSupport(apiBase) {
   try {
     // Block requests to private/internal hosts (SSRF prevention)
+    // Uses async DNS resolution to prevent DNS rebinding attacks
     const parsedBase = new URL(apiBase);
-    if (isPrivateHost(parsedBase.hostname)) return 'error';
+    if (await isPrivateHostResolved(parsedBase.hostname)) return 'error';
 
     const url = `${apiBase}/v2/domainTemplates/providers/${PROVIDER_ID}/services/${SERVICE_ID}`;
     const { statusCode } = await undici.request(url, {
