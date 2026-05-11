@@ -7,25 +7,31 @@
  * Shared TLS configuration for all Forward Email servers.
  *
  * This module provides a hardened TLS configuration that:
- * - Enforces server cipher suite order (honorCipherOrder)
- * - Only allows AEAD cipher suites with forward secrecy (ECDHE/DHE)
+ * - Enforces server cipher suite preference order (honorCipherOrder)
+ * - Restricts cipher suites to those with forward secrecy (ECDHE/DHE)
  * - Excludes RSA key exchange (no forward secrecy)
- * - Excludes CBC mode ciphers
  * - Excludes ARIA ciphers
  * - Excludes weak hash functions (SHA-1, SHA-224) from signature algorithms
  * - Uses secure ECDH curves
  *
  * Two profiles are available:
  * - 'strict' (default): Passes internet.nl tests. Only AEAD + forward secrecy.
+ *   Use for all public-facing ports tested by internet.nl (25, 443, 465, 587, 993, 995, 4190).
+ *
  * - 'compat': For backward-compatible legacy SMTP ports (TLS 1.0/1.1).
  *   Adds CBC ciphers with forward secrecy for older clients that cannot
  *   negotiate AEAD suites. Still excludes RSA key exchange.
+ *   Use for legacy ports (2455, 2555) where SMTP_TLS_MIN_VERSION=TLSv1.
  *
  * References:
  * - https://internet.nl (Dutch Internet Standards Platform)
  * - https://wiki.mozilla.org/Security/Server_Side_TLS
  * - https://ssl-config.mozilla.org/
  * - NCSC TLS Guidelines (NL): https://english.ncsc.nl/publications/publications/2021/january/19/it-security-guidelines-for-transport-layer-security-2.1
+ * - Stalwart mail server: ECDHE-only, AEAD-only, TLS 1.2+ (strict)
+ * - Dovecot: !kRSA, TLS 1.2+ (strict)
+ * - WildDuck/nodemailer/smtp-server: TLS 1.0+, Node.js defaults (permissive)
+ * - Haraka: TLS 1.0+, explicit cipher list with CBC + RSA KEX (permissive)
  */
 
 //
@@ -51,6 +57,7 @@
 //
 // Strict cipher list: Only AEAD + forward secrecy.
 // This is what internet.nl requires to pass.
+// Matches Stalwart, Dovecot, and Mozilla intermediate profile.
 //
 const CIPHERS = [
   // ECDHE + AES-GCM (Good - forward secrecy + AEAD)
@@ -73,34 +80,54 @@ const CIPHERS = [
 // backward compatibility with older SMTP servers/clients that
 // cannot negotiate AEAD cipher suites (e.g. TLS 1.0/1.1 only clients).
 //
-// These are still "sufficient" per NCSC guidelines because they
-// use forward secrecy (ECDHE/DHE), but they use CBC mode which
-// internet.nl marks as "phase out".
+// This list is modeled after WildDuck and Haraka cipher lists, but
+// with RSA key exchange removed (no forward secrecy).
+//
+// Cipher ordering:
+//   1. AEAD ciphers with ECDHE (best)
+//   2. AEAD ciphers with DHE (good)
+//   3. CBC ciphers with ECDHE + SHA-256/SHA-384 (TLS 1.2 CBC)
+//   4. CBC ciphers with DHE + SHA-256 (TLS 1.2 CBC)
+//   5. CBC ciphers with ECDHE + SHA-1 (TLS 1.0/1.1 compat)
+//   6. CBC ciphers with DHE + SHA-1 (TLS 1.0/1.1 compat)
 //
 // NOTE: RSA key exchange is still excluded (no forward secrecy).
+// NOTE: 3DES is excluded (too weak, CVE-2016-2183 Sweet32).
+// NOTE: ARIA is excluded (internet.nl marks as "phase out").
 //
 const COMPAT_CIPHERS = [
-  // All strict AEAD ciphers first (preferred)
+  // === AEAD ciphers with forward secrecy (preferred) ===
+  // ECDHE + AES-GCM
   'ECDHE-ECDSA-AES256-GCM-SHA384',
   'ECDHE-RSA-AES256-GCM-SHA384',
   'ECDHE-ECDSA-AES128-GCM-SHA256',
   'ECDHE-RSA-AES128-GCM-SHA256',
+  // ECDHE + CHACHA20-POLY1305
   'ECDHE-ECDSA-CHACHA20-POLY1305',
   'ECDHE-RSA-CHACHA20-POLY1305',
+  // DHE + AES-GCM
   'DHE-RSA-AES256-GCM-SHA384',
   'DHE-RSA-AES128-GCM-SHA256',
+  // DHE + CHACHA20-POLY1305
   'DHE-RSA-CHACHA20-POLY1305',
-  // CBC ciphers with forward secrecy (for TLS 1.0/1.1 compat)
+
+  // === CBC ciphers with forward secrecy + SHA-256/SHA-384 MACs ===
+  // (TLS 1.2 CBC - for clients that support TLS 1.2 but not AEAD)
   'ECDHE-ECDSA-AES256-SHA384',
   'ECDHE-RSA-AES256-SHA384',
   'ECDHE-ECDSA-AES128-SHA256',
   'ECDHE-RSA-AES128-SHA256',
+  'DHE-RSA-AES256-SHA256',
+  'DHE-RSA-AES128-SHA256',
+
+  // === CBC ciphers with forward secrecy + SHA-1 MACs ===
+  // (TLS 1.0/1.1 compat - for very old SMTP clients/servers)
+  // NOTE: SHA-1 in HMAC-SHA1 for record MAC is NOT the same as SHA-1
+  // in signatures; HMAC-SHA1 is still considered secure for MAC usage.
   'ECDHE-ECDSA-AES256-SHA',
   'ECDHE-RSA-AES256-SHA',
   'ECDHE-ECDSA-AES128-SHA',
   'ECDHE-RSA-AES128-SHA',
-  'DHE-RSA-AES256-SHA256',
-  'DHE-RSA-AES128-SHA256',
   'DHE-RSA-AES256-SHA',
   'DHE-RSA-AES128-SHA'
 ].join(':');
@@ -164,6 +191,7 @@ function getTLSOptions(overrides = {}) {
     // - RSA key exchange (no forward secrecy) - "insufficient" per internet.nl
     // - ARIA ciphers - "phase out" per internet.nl
     // - DSS authentication - deprecated
+    // - 3DES - weak (Sweet32 attack)
     //
     ciphers: isCompat ? COMPAT_CIPHERS : CIPHERS,
 

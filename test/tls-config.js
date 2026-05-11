@@ -238,22 +238,26 @@ test('compat: includes CBC ciphers for backward compatibility', (t) => {
 
 test('compat: AEAD ciphers come before CBC ciphers', (t) => {
   const ciphers = getTLSOptions.COMPAT_CIPHERS.split(':');
-  const lastAEAD = Math.max(
-    ...ciphers
-      .map((c, i) =>
-        c.includes('GCM') || c.includes('CHACHA20-POLY1305') ? i : -1
-      )
-      .filter((i) => i >= 0)
-  );
-  const firstCBC = ciphers.findIndex(
-    (c) =>
-      !c.includes('GCM') &&
-      !c.includes('CHACHA20-POLY1305') &&
-      (c.endsWith('-SHA') || c.endsWith('-SHA256') || c.endsWith('-SHA384'))
-  );
+  const isAEAD = (c) => c.includes('GCM') || c.includes('CHACHA20');
+  const lastAEAD = Math.max(...ciphers.map((c, i) => (isAEAD(c) ? i : -1)));
+  const firstCBC = ciphers.findIndex((c) => !isAEAD(c));
   t.true(
     lastAEAD < firstCBC,
     'All AEAD ciphers should come before CBC ciphers'
+  );
+});
+
+test('compat: CBC+SHA256/384 ciphers come before CBC+SHA1 ciphers', (t) => {
+  const ciphers = getTLSOptions.COMPAT_CIPHERS.split(':');
+  const isAEAD = (c) => c.includes('GCM') || c.includes('CHACHA20');
+  const isCBCSHA256 = (c) =>
+    !isAEAD(c) && (c.endsWith('-SHA256') || c.endsWith('-SHA384'));
+  const isCBCSHA1 = (c) => !isAEAD(c) && !isCBCSHA256(c) && c.endsWith('-SHA');
+  const firstCBCSHA256 = ciphers.findIndex((c) => isCBCSHA256(c));
+  const firstCBCSHA1 = ciphers.findIndex((c) => isCBCSHA1(c));
+  t.true(
+    firstCBCSHA256 < firstCBCSHA1,
+    'CBC+SHA256/384 ciphers should come before CBC+SHA1 ciphers'
   );
 });
 

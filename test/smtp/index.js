@@ -817,6 +817,7 @@ Test`.trim()
     })
   );
 
+  await server.close();
   await smtp.close();
 });
 
@@ -999,6 +1000,7 @@ test('automatic openpgp support', async (t) => {
   });
 
   t.true(info[0].pgp);
+  await server.close();
 });
 
 test('smtp outbound auth', async (t) => {
@@ -1375,8 +1377,10 @@ Test`.trim()
       })
     );
   }
-});
 
+  await server.close();
+  await smtp.close();
+});
 /*
 test(`10MB message size`, async (t) => {
   const user = await t.context.userFactory
@@ -2122,7 +2126,7 @@ Test`.trim()
   t.is(email.status, 'sent');
   t.deepEqual(email.accepted.sort(), email.envelope.to);
   t.deepEqual(email.rejectedErrors, []);
-
+  await server.close();
   await smtp.close();
 });
 
@@ -2523,6 +2527,8 @@ Test`.trim()
     err.message,
     `Message failed: 550 5.1.1 From header must end with @${domain.name}`
   );
+
+  await smtp.close();
 });
 
 test('requires newsletter approval', async (t) => {
@@ -2727,6 +2733,8 @@ Test`.trim()
     email.rejectedErrors[0].message,
     'Newsletter usage is not yet approved for your account, please wait for approval or contact us for support.'
   );
+
+  await smtp.close();
 });
 
 test('bounce webhook', async (t) => {
@@ -2936,7 +2944,9 @@ test('bounce webhook', async (t) => {
     client
   });
 
-  await pWaitFor(() => Object.keys(results).length === message.to.length - 1);
+  await pWaitFor(() => Object.keys(results).length === message.to.length - 1, {
+    timeout: ms('30s')
+  });
 
   t.is(Object.keys(results).length, 2);
   t.is(signatures, 2);
@@ -2961,6 +2971,9 @@ test('bounce webhook', async (t) => {
       ])
     );
   }
+
+  await server.close();
+  await api.close();
 });
 
 test('DSN failure bounce notifications with NOTIFY parameters', async (t) => {

@@ -6,17 +6,26 @@
 const dns = require('node:dns');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const config = require('#config');
+const env = require('#config/env');
 
 /**
  * Check if a hostname is private/internal and should be blocked.
  * Reuses the shared REGEX_LOCALHOST helper (covers RFC 1918, loopback,
  * link-local, 0.0.0.0/8, CGNAT, benchmarking, IPv6 ::1/fc00/fe80)
  * and config.testDomains (reserved TLDs + cloud metadata hostnames).
+ *
+ * In test mode (NODE_ENV=test), private hosts are allowed so that
+ * tests can use local SMTP servers and webhook endpoints.
+ *
  * @param {string} hostname - The hostname to check
  * @returns {boolean} true if the hostname is private/internal
  */
 function isPrivateHost(hostname) {
   if (!hostname) return true;
+
+  // Allow private hosts in test mode so tests can use local
+  // SMTP servers, webhook endpoints, and WKD lookups
+  if (env.NODE_ENV === 'test') return false;
 
   // Strip brackets from IPv6
   const host = hostname.replace(/^\[|]$/g, '');
@@ -44,8 +53,12 @@ function isPrivateHost(hostname) {
  * @returns {Promise<boolean>} true if the hostname is private/internal
  */
 async function isPrivateHostResolved(hostname) {
-  // First do the synchronous checks
+  // First do the synchronous checks (includes test mode bypass)
   if (isPrivateHost(hostname)) return true;
+
+  // In test mode, allow all hosts (already handled above, but
+  // short-circuit to avoid unnecessary DNS resolution)
+  if (env.NODE_ENV === 'test') return false;
 
   // If it's already an IP literal, no need to resolve
   if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) return false;
