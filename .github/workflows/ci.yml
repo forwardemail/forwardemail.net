@@ -7,6 +7,11 @@ on:
 # Default to no permissions; each job declares only what it needs
 permissions: {}
 
+# Cancel in-progress runs for the same branch/PR to save resources
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     permissions:

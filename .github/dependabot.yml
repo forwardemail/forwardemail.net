@@ -11,6 +11,9 @@ updates:
       - "forwardemail/core"
     labels:
       - "dependencies"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps(dev)"
     # Group minor/patch updates to reduce PR noise
     groups:
       production-deps:
@@ -33,6 +36,12 @@ updates:
     labels:
       - "ci"
       - "dependencies"
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns:
+          - "*"
 
   # Docker dependencies
   - package-ecosystem: "docker"
@@ -45,3 +54,5 @@ updates:
     labels:
       - "docker"
       - "dependencies"
+    commit-message:
+      prefix: "docker"
