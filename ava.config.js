@@ -31,9 +31,17 @@ function walkSync(dir, results) {
   return results;
 }
 
-// CI sharding support: set CI_SHARD=1 CI_TOTAL_SHARDS=3 to split test files
+// CI sharding support: set CI_SHARD=1 CI_TOTAL_SHARDS=4 to split test files
 // across parallel CI jobs. Each shard gets a deterministic subset of files.
+// NOTE: We only apply sharding when AVA_SHARD=1 is set (passed by the test
+// script) to avoid confusing the XO linter's ava/no-ignored-test-files rule,
+// which evaluates this config at lint time.
 function getFiles() {
+  // Only shard when explicitly opted in via AVA_SHARD env var
+  if (!process.env.AVA_SHARD) {
+    return allFilePatterns;
+  }
+
   const shard = Number.parseInt(process.env.CI_SHARD, 10);
   const totalShards = Number.parseInt(process.env.CI_TOTAL_SHARDS, 10);
 

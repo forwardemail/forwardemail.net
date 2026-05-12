@@ -59,8 +59,8 @@ module.exports = {
 
     test:
       process.env.CI_SHARD && process.env.CI_SHARD !== '1'
-        ? 'nyc ava'
-        : series('nyc ava', 'nps test-sieve'),
+        ? 'AVA_SHARD=1 nyc ava'
+        : series('AVA_SHARD=1 nyc ava', 'nps test-sieve'),
     testSieve:
       'node --test test/sieve/parser.js test/sieve/engine.js test/sieve/extensions.js test/sieve/store.js test/sieve/filter-handler.js test/sieve/security.js test/sieve/managesieve-server.js test/sieve/mx-integration.js test/sieve/runtime-enforcement.js',
     testUpdateSnapshots: series('nps pretest', 'ava --update-snapshots'),
