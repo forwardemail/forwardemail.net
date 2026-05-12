@@ -58,7 +58,28 @@ async function getApnTopic(client, service) {
     );
     if (!subjectLine) return null;
     const topic = subjectLine.split('UID=')[1].trim();
-    return topic || null;
+    if (!topic) return null;
+    //
+    // Persist the parsed topic back into the Redis cert cache so every
+    // subsequent getApnTopic call (including from other server processes
+    // sharing the same Redis) gets the topic immediately without
+    // re-parsing the X509 certificate.  This mirrors how
+    // get-apn-certs.parseResponse already caches the Mail topic.
+    //
+    // The write is best-effort: if it fails the topic is still returned
+    // for this call and will be re-derived on the next one.
+    //
+    try {
+      certs[service].topic = topic;
+      await client.set('aps_certs', JSON.stringify(certs), 'KEEPTTL');
+    } catch (cacheErr) {
+      logger.warn('getApnTopic: failed to persist topic to Redis', {
+        err: cacheErr,
+        service
+      });
+    }
+
+    return topic;
   } catch (err) {
     logger.warn('getApnTopic: failed to parse cert subject', { err, service });
     return null;

@@ -57,7 +57,14 @@ async function buildCardDAVPushTransportsXML(ctx) {
       ctx.client || ctx.instance.client,
       'Contact'
     );
-    if (!topic) return '';
+    if (!topic) {
+      if (ctx.logger)
+        ctx.logger.warn(
+          'CardDAV push-transports omitted: APN Contact topic unavailable (cert not yet primed)',
+          { user: ctx.params && ctx.params.user }
+        );
+      return '';
+    }
 
     const subscriptionURL = env.CARDDAV_HOST
       ? `https://${env.CARDDAV_HOST}/apns`
@@ -841,15 +848,23 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       }
 
       // Create response for address book
+      const abPropstats = [
+        {
+          props: addressBookProps,
+          status: '200 OK'
+        }
+      ];
+      if (wantsPush && !addressBookPushTransportsXML) {
+        abPropstats.push({
+          props: [{ name: 'cs:push-transports', value: '' }],
+          status: '404 Not Found'
+        });
+      }
+
       const responses = [
         {
           href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/`,
-          propstat: [
-            {
-              props: addressBookProps,
-              status: '200 OK'
-            }
-          ]
+          propstat: abPropstats
         }
       ];
 
@@ -1247,16 +1262,36 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
       });
     }
 
+    //
+    // If push-transports was requested but the cert is unavailable,
+    // return it in a 404 propstat so iOS knows the property was
+    // understood but not available (rather than silently omitted).
+    // RFC 4918 §9.1 requires properties that are requested but not
+    // present to appear in a separate propstat with 404 status.
+    //
+    const notFoundProps = [];
+    if (wantsPush && !pushTransportsXML) {
+      notFoundProps.push({ name: 'cs:push-transports', value: '' });
+    }
+
     // Create response
+    const homePropstats = [
+      {
+        props: homeProps,
+        status: '200 OK'
+      }
+    ];
+    if (notFoundProps.length > 0) {
+      homePropstats.push({
+        props: notFoundProps,
+        status: '404 Not Found'
+      });
+    }
+
     const responses = [
       {
         href: `/dav/${ctx.params.user}/addressbooks/`,
-        propstat: [
-          {
-            props: homeProps,
-            status: '200 OK'
-          }
-        ]
+        propstat: homePropstats
       }
     ];
 
@@ -1332,14 +1367,26 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
           });
         }
 
+        const childPropstats = [
+          {
+            props: childProps,
+            status: '200 OK'
+          }
+        ];
+        //
+        // Mirror the 404 propstat for push-transports on child entries
+        // when the cert is unavailable (same as the home entry above).
+        //
+        if (wantsPush && !pushTransportsXML) {
+          childPropstats.push({
+            props: [{ name: 'cs:push-transports', value: '' }],
+            status: '404 Not Found'
+          });
+        }
+
         responses.push({
           href: `/dav/${ctx.params.user}/addressbooks/${addressBook.address_book_id}/`,
-          propstat: [
-            {
-              props: childProps,
-              status: '200 OK'
-            }
-          ]
+          propstat: childPropstats
         });
       }
     }
@@ -1824,6 +1871,12 @@ async function propFindPrincipal(ctx) {
         responses[0].propstat[0].props.push({
           name: 'cs:push-transports',
           value: principalPushTransportsXML
+        });
+      } else {
+        // 404 propstat for push-transports when cert unavailable
+        responses[0].propstat.push({
+          props: [{ name: 'cs:push-transports', value: '' }],
+          status: '404 Not Found'
         });
       }
     }
