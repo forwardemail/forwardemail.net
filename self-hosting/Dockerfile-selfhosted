@@ -4,6 +4,13 @@ WORKDIR /app
 
 ENV SELF_HOSTED=true
 
+# Install build tools required by native Node.js modules that use node-gyp
+# (diskusage, iconv, node-snowball, re2, better-sqlite3-multiple-ciphers, etc.)
+# Also includes libcurl4-openssl-dev for node-libcurl's fallback-to-build
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 make g++ libcurl4-openssl-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 
 COPY package.json pnpm-lock.yaml ./
