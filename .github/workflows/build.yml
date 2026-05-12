@@ -164,6 +164,8 @@ jobs:
         uses: supercharge/redis-github-action@bc274cb7238cd63a45029db04ee48c07a72609fd # 1.8.1
         with:
           redis-version: 7
+      - name: Install native module build tools
+        run: sudo apt-get update && sudo apt-get install -y python3 make g++ libcurl4-openssl-dev
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Audit dependencies
