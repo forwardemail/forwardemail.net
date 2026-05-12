@@ -263,6 +263,12 @@ function getMultistatusXML(responses) {
 
     for (const propstat of response.propstat) {
       const propstatEl = responseEl.ele('d:propstat');
+      //
+      // IMPORTANT: emit <d:status> BEFORE <d:prop> to match the CalDAV
+      // adapter's output order (caldav-adapter/common/x-build.js).  iOS
+      // dataaccessd may rely on this ordering when parsing push-transports.
+      //
+      propstatEl.ele('d:status', {}, `HTTP/1.1 ${propstat.status}`);
       const propEl = propstatEl.ele('d:prop');
 
       for (const prop of propstat.props) {
@@ -278,8 +284,6 @@ function getMultistatusXML(responses) {
           propEl.ele(prop.name, {}, prop.value || '');
         }
       }
-
-      propstatEl.ele('d:status', {}, `HTTP/1.1 ${propstat.status}`);
     }
   }
 
