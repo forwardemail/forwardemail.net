@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const process = require('node:process');
 const { series, concurrent } = require('nps-utils');
 
 module.exports = {
@@ -56,7 +57,10 @@ module.exports = {
     // <https://github.com/kentcdodds/nps-utils/issues/24>
     pretest: concurrent.nps('lint', 'build-test'),
 
-    test: series('nyc ava', 'nps test-sieve'),
+    test:
+      process.env.CI_SHARD && process.env.CI_SHARD !== '1'
+        ? 'nyc ava'
+        : series('nyc ava', 'nps test-sieve'),
     testSieve:
       'node --test test/sieve/parser.js test/sieve/engine.js test/sieve/extensions.js test/sieve/store.js test/sieve/filter-handler.js test/sieve/security.js test/sieve/managesieve-server.js test/sieve/mx-integration.js test/sieve/runtime-enforcement.js',
     testUpdateSnapshots: series('nps pretest', 'ava --update-snapshots'),

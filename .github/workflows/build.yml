@@ -96,9 +96,11 @@ jobs:
           - ubuntu-22.04
         node_version:
           - "18.20.4"
-    name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
+        shard: [1, 2, 3, 4]
+    name: Node ${{ matrix.node_version }} on ${{ matrix.os }} (shard ${{ matrix.shard }}/4)
     env:
-      # ... TODO: AWS
+      CI_SHARD: ${{ matrix.shard }}
+      CI_TOTAL_SHARDS: 4
       AUTH_GITHUB_ENABLED: "false"
       AUTH_GOOGLE_ENABLED: "false"
       I18N_SYNC_FILES: "true"
