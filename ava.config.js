@@ -5,7 +5,6 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const crypto = require('node:crypto');
 const process = require('node:process');
 
 const allFilePatterns = [
@@ -31,8 +30,20 @@ function walkSync(dir, results) {
   return results;
 }
 
-// CI sharding support: set CI_SHARD=1 CI_TOTAL_SHARDS=4 to split test files
-// across parallel CI jobs. Each shard gets a deterministic subset of files.
+// Count test declarations in a file (approximate weight)
+function countTests(filePath) {
+  try {
+    const content = fs.readFileSync(filePath, 'utf8');
+    const matches = content.match(/^test(\.serial)?\s*\(/gm);
+    return matches ? matches.length : 1;
+  } catch {
+    return 1;
+  }
+}
+
+// CI sharding support: set CI_SHARD=1 CI_TOTAL_SHARDS=6 to split test files
+// across parallel CI jobs. Uses weighted round-robin to ensure heavy test files
+// (like IMAP with 91 tests) are distributed evenly.
 // NOTE: We only apply sharding when AVA_SHARD=1 is set (passed by the test
 // script) to avoid confusing the XO linter's ava/no-ignored-test-files rule,
 // which evaluates this config at lint time.
@@ -55,11 +66,30 @@ function getFiles() {
     .filter((f) => !f.startsWith('test/sieve/') && f !== 'test/utils.js')
     .sort();
 
-  // Assign files to shards based on hash for even distribution
-  const shardFiles = all.filter((file) => {
-    const hash = crypto.createHash('md5').update(file).digest();
-    return (hash.readUInt32BE(0) % totalShards) + 1 === shard;
-  });
+  // Weighted distribution: sort files by test count (heaviest first),
+  // then assign to shards using greedy load-balancing (each file goes
+  // to the shard with the lowest current total weight).
+  const weighted = all
+    .map((file) => ({ file, weight: countTests(file) }))
+    .sort((a, b) => b.weight - a.weight);
+
+  const shardWeights = Array.from({ length: totalShards }, () => 0);
+  const shardAssignments = Array.from({ length: totalShards }, () => []);
+
+  for (const { file, weight } of weighted) {
+    // Find the shard with the lowest total weight
+    let minIdx = 0;
+    for (let i = 1; i < totalShards; i++) {
+      if (shardWeights[i] < shardWeights[minIdx]) {
+        minIdx = i;
+      }
+    }
+
+    shardAssignments[minIdx].push(file);
+    shardWeights[minIdx] += weight;
+  }
+
+  const shardFiles = shardAssignments[shard - 1];
 
   // Return explicit file list for this shard
   return shardFiles.length > 0 ? shardFiles : ['!**/*'];
