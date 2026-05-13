@@ -229,6 +229,34 @@ test.afterEach(async (t) => {
 });
 
 test.afterEach.always(async (t) => {
+  // Close WebSocket connection (clears ping interval)
+  if (t.context.wsp) {
+    try {
+      await t.context.wsp.close();
+    } catch {
+      // Ignore errors during cleanup
+    }
+  }
+
+  // Close SQLite server (cleans up Piscina worker pool,
+  // WebSocket server, wsInterval, and IMAP notifier timers)
+  if (t.context.sqlite) {
+    try {
+      await t.context.sqlite.close();
+    } catch {
+      // Ignore errors during cleanup
+    }
+  }
+
+  // Close Redis clients
+  if (t.context.client) {
+    t.context.client.disconnect();
+  }
+
+  if (t.context.subscriber) {
+    t.context.subscriber.disconnect();
+  }
+
   await t.context.permit.release();
 });
 
