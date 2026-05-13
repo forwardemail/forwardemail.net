@@ -31,7 +31,7 @@ const DEFAULT = {
   minReconnectionDelay: 500, // 1000 + Math.random() * 4000,
   minUptime: 1000,
   reconnectionDelayGrowFactor: 1, // 1.3,
-  connectionTimeout: 1000,
+  connectionTimeout: 5000,
   maxRetries: Number.POSITIVE_INFINITY,
   maxEnqueuedMessages: Number.POSITIVE_INFINITY,
   startClosed: false,
