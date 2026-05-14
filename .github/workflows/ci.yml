@@ -18,3 +18,29 @@ jobs:
       contents: read
     uses: ./.github/workflows/build.yml
     secrets: inherit
+
+  # Pre-merge secret scan. Catches accidentally-committed tokens, signing
+  # keys, etc. before they hit main. Uses the gitleaks CLI directly (MIT-
+  # licensed, no license key needed) instead of gitleaks-action, which
+  # requires a paid GITLEAKS_LICENSE for organization-owned repositories.
+  secret-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install gitleaks
+        run: |
+          GITLEAKS_VERSION="8.24.3"
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin gitleaks
+          gitleaks version
+
+      - name: Run gitleaks
+        run: gitleaks detect --source . --verbose --log-opts="${{ github.event.before || github.event.pull_request.base.sha }}..HEAD"
