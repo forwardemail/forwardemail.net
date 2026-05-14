@@ -25,6 +25,22 @@ function isBsonOverflow(err) {
     return true;
   if (err.codeName === 'BSONObjectTooLarge') return true;
   if (err.message && err.message.includes('BSONObjectTooLarge')) return true;
+  // MongoDB server-side rejection when the resulting document would exceed
+  // the 16 MiB BSON limit (error code 10334, "BSONObj size ... is invalid").
+  if (err.code === 10334) return true;
+  if (
+    err.message &&
+    err.message.includes('BSONObj size') &&
+    err.message.includes('is invalid')
+  )
+    return true;
+  // Client-side bson serializer buffer overflow ("offset is out of bounds")
+  if (
+    err.name === 'RangeError' &&
+    err.message &&
+    err.message.includes('offset is out of bounds')
+  )
+    return true;
   return false;
 }
 

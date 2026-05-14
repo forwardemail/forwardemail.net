@@ -31,6 +31,7 @@ const pkg = require('../package.json');
 
 const _ = require('./lodash');
 const bsonOverflowFallbackSave = require('./bson-overflow-fallback-save');
+const isBsonOverflow = require('./is-bson-overflow');
 const combineErrors = require('./combine-errors');
 const createBounce = require('./create-bounce');
 const createMtaStsCache = require('./create-mta-sts-cache');
@@ -427,14 +428,28 @@ async function processEmail({ email, port = 25, resolver, client }) {
           { concurrency: config.concurrency }
         );
 
-        if (hardBounces.length > 0)
-          await Emails.findByIdAndUpdate(email._id, {
-            $addToSet: {
-              hard_bounces: {
-                $each: hardBounces
+        if (hardBounces.length > 0) {
+          try {
+            await Emails.findByIdAndUpdate(email._id, {
+              $addToSet: {
+                hard_bounces: {
+                  $each: hardBounces
+                }
               }
+            });
+          } catch (err) {
+            if (isBsonOverflow(err)) {
+              err.isCodeBug = false;
+              logger.error(err, { ...meta, bson_overflow_fallback: true });
+              await Emails.findByIdAndUpdate(email._id, {
+                $set: { status: 'bounced', is_locked: false },
+                $unset: { locked_by: 1, locked_at: 1 }
+              });
+            } else {
+              throw err;
             }
-          });
+          }
+        }
       }
 
       return;
@@ -1681,9 +1696,22 @@ async function processEmail({ email, port = 25, resolver, client }) {
           $addToSet.hard_bounces = {
             $each: hardBounces
           };
-        await Emails.findByIdAndUpdate(email._id, {
-          $addToSet
-        });
+        try {
+          await Emails.findByIdAndUpdate(email._id, {
+            $addToSet
+          });
+        } catch (err) {
+          if (isBsonOverflow(err)) {
+            err.isCodeBug = false;
+            logger.error(err, { ...meta, bson_overflow_fallback: true });
+            await Emails.findByIdAndUpdate(email._id, {
+              $set: { status: 'bounced', is_locked: false },
+              $unset: { locked_by: 1, locked_at: 1 }
+            });
+          } else {
+            throw err;
+          }
+        }
       }
     }
 
