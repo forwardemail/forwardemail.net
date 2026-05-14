@@ -485,18 +485,21 @@ test('aliases APS schema accepts new subtopic enum values and key field', (t) =>
 // ---------------------------------------------------------------------------
 // Test 14: SERVICES table declares correct apns-push-type per service
 //
-// Apple iOS 13+ APNs is strict about apns-push-type: a payload tagged
-// `alert` that lacks an `aps.alert` body is dropped silently.  CalDAV /
-// CardDAV pubsub pushes carry no UI-visible alert, so they MUST use
-// `background`.  Mail (XAPPLEPUSHSERVICE) does surface a banner via the
-// iOS Mail extension and remains `alert`.  This test locks in those
-// semantics so a future refactor cannot regress them.
+// All three services use `background` push type to match the
+// dovecot-xaps-daemon reference implementation.  These are silent
+// data-only signals that wake iOS system daemons; the daemon then
+// fetches new data via IMAP/CalDAV/CardDAV and iOS itself generates
+// any visible user-facing notification locally.
 // ---------------------------------------------------------------------------
 
 test('send-apn: SERVICES table declares correct pushType per service', (t) => {
   const sendApn = require('#helpers/send-apn');
   const { SERVICES } = sendApn._test;
-  t.is(SERVICES.Mail.pushType, 'alert', 'Mail must remain alert');
+  t.is(
+    SERVICES.Mail.pushType,
+    'background',
+    'Mail must be background (dovecot-xaps-daemon)'
+  );
   t.is(
     SERVICES.Calendar.pushType,
     'background',
@@ -519,7 +522,7 @@ test('send-apn: SERVICES table declares correct pushType per service', (t) => {
 // synthesise one from the collection key.
 // ---------------------------------------------------------------------------
 
-test('send-apn: createNote omits aps[account-id] when none provided', (t) => {
+test('send-apn: createNote (Calendar) has empty aps when no account_id', (t) => {
   const sendApn = require('#helpers/send-apn');
   const { createNote, SERVICES } = sendApn._test;
   const certBundle = { Calendar: { topic: 'com.apple.test.cal' } };
@@ -529,30 +532,32 @@ test('send-apn: createNote omits aps[account-id] when none provided', (t) => {
     { device_token: 'tok', key: 'cal-1' /* no account_id */ },
     {}
   );
-  // CalDAV / CardDAV background pushes MUST include `content-available: 1`
-  // in the aps dictionary.  Without it node-apn's apsPayload() returns
-  // undefined and the wire JSON omits the `aps` key entirely, causing APNs
-  // to reject the push with HTTP 400 PayloadEmpty.
+  // Calendar/Contact pushes match Apple's ccs-calendarserver reference:
+  // NO aps dictionary in the wire JSON.  node-apn's apsPayload() returns
+  // undefined when all aps keys are undefined, so JSON.stringify omits
+  // the aps key entirely.  The payload body is never empty because it
+  // contains key + timestamps.
   t.deepEqual(
     note.aps,
-    { 'content-available': 1 },
-    'aps must contain content-available:1 (no account-id, no alert body)'
+    {},
+    'Calendar aps must be empty (no content-available, no account-id)'
   );
   t.is(note.pushType, 'background');
+  t.is(note.priority, 5, 'background pushes must use priority 5');
   t.is(note.topic, 'com.apple.test.cal');
 });
 
 // ---------------------------------------------------------------------------
-// Regression: HTTP/2 v3 wire JSON MUST include an `aps` dictionary, otherwise
-// APNs rejects the request with `400 PayloadEmpty`.  node-apn's
-// Notification.toJSON() builds `{ ...this.payload, aps: this.apsPayload() }`
-// and apsPayload() returns `undefined` when every aps key is undefined;
-// JSON.stringify then drops the `aps` key entirely.  The Calendar/Contact
-// path MUST set at least one defined aps key (`content-available: 1`) so the
-// wire body always carries `aps`.
+// Wire JSON for Calendar/Contact push must match Apple's ccs-calendarserver
+// reference: top-level { key, dataChangedTimestamp, pushRequestSubmittedTimestamp }
+// with NO `aps` dictionary.  node-apn's apsPayload() returns `undefined` when
+// every aps key is undefined, and JSON.stringify omits undefined values, so
+// the wire body naturally excludes `aps`.  The payload body is never empty
+// because it contains key + timestamps, so APNs will not reject with
+// PayloadEmpty.
 // ---------------------------------------------------------------------------
 
-test('send-apn: wire JSON for Calendar push contains aps.content-available', (t) => {
+test('send-apn: wire JSON for Calendar push omits aps (matches Apple reference)', (t) => {
   const sendApn = require('#helpers/send-apn');
   const { createNote, SERVICES } = sendApn._test;
   const certBundle = { Calendar: { topic: 'com.apple.test.cal' } };
@@ -563,16 +568,17 @@ test('send-apn: wire JSON for Calendar push contains aps.content-available', (t)
     {}
   );
   const wire = JSON.parse(note.compile());
-  t.truthy(wire.aps, 'wire JSON MUST contain aps dictionary');
   t.is(
-    wire.aps['content-available'],
-    1,
-    'aps.content-available must be 1 for background CalDAV push'
+    wire.aps,
+    undefined,
+    'wire JSON must NOT contain aps dictionary (Apple ccs-calendarserver reference)'
   );
   t.is(wire.key, 'cal-collection-1', 'top-level key must round-trip');
+  t.is(typeof wire.dataChangedTimestamp, 'number');
+  t.is(typeof wire.pushRequestSubmittedTimestamp, 'number');
 });
 
-test('send-apn: wire JSON for Contact push contains aps.content-available', (t) => {
+test('send-apn: wire JSON for Contact push omits aps (matches Apple reference)', (t) => {
   const sendApn = require('#helpers/send-apn');
   const { createNote, SERVICES } = sendApn._test;
   const certBundle = { Contact: { topic: 'com.apple.test.contact' } };
@@ -583,12 +589,26 @@ test('send-apn: wire JSON for Contact push contains aps.content-available', (t) 
     {}
   );
   const wire = JSON.parse(note.compile());
-  t.truthy(wire.aps, 'wire JSON MUST contain aps dictionary');
-  t.is(wire.aps['content-available'], 1);
+  t.is(wire.aps, undefined, 'wire JSON must NOT contain aps dictionary');
   t.is(wire.key, 'addressbook-collection-1');
+  t.is(typeof wire.dataChangedTimestamp, 'number');
 });
 
-test('send-apn: createNote includes aps[account-id] when provided', (t) => {
+test('send-apn: createNote (Mail) includes aps[account-id] when provided', (t) => {
+  const sendApn = require('#helpers/send-apn');
+  const { createNote, SERVICES } = sendApn._test;
+  const certBundle = { Mail: { topic: 'com.apple.mail.XServer.deadbeef' } };
+  const note = createNote(
+    certBundle,
+    SERVICES.Mail,
+    { device_token: 'tok', account_id: 'acct-uuid-XYZ' },
+    { mailboxPath: 'INBOX' }
+  );
+  t.is(note.aps['account-id'], 'acct-uuid-XYZ');
+  t.regex(note.aps.m, /^[\da-f]{32}$/, 'aps.m must be a 32-hex md5 digest');
+});
+
+test('send-apn: createNote (Calendar) ignores account_id even if present on obj', (t) => {
   const sendApn = require('#helpers/send-apn');
   const { createNote, SERVICES } = sendApn._test;
   const certBundle = { Calendar: { topic: 'com.apple.test.cal' } };
@@ -598,19 +618,21 @@ test('send-apn: createNote includes aps[account-id] when provided', (t) => {
     { device_token: 'tok', key: 'cal-1', account_id: 'acct-uuid-XYZ' },
     {}
   );
-  t.is(note.aps['account-id'], 'acct-uuid-XYZ');
+  // Calendar pushes must NOT include account-id in aps -- Apple's
+  // ccs-calendarserver reference has no aps dictionary at all.
   t.is(
-    note.aps['content-available'],
-    1,
-    'content-available must still be set when account-id is also present'
+    note.aps['account-id'],
+    undefined,
+    'Calendar must not include account-id'
   );
+  t.deepEqual(note.aps, {}, 'Calendar aps must remain empty');
 });
 
 // ---------------------------------------------------------------------------
-// Test 16: createNote (Mail) sets aps.m to md5(mailboxPath) and pushType=alert
+// Test 16: createNote (Mail) sets aps.m to md5(mailboxPath) and pushType=background
 // ---------------------------------------------------------------------------
 
-test('send-apn: createNote (Mail) sets pushType alert and aps.m hash', (t) => {
+test('send-apn: createNote (Mail) sets pushType background and aps.m hash', (t) => {
   const sendApn = require('#helpers/send-apn');
   const { createNote, SERVICES } = sendApn._test;
   const certBundle = { Mail: { topic: 'com.apple.mail.XServer.deadbeef' } };
@@ -620,8 +642,13 @@ test('send-apn: createNote (Mail) sets pushType alert and aps.m hash', (t) => {
     { device_token: 'tok', account_id: 'acct-1' },
     { mailboxPath: 'INBOX' }
   );
-  t.is(note.pushType, 'alert');
-  // md5("INBOX") = c3b1d27d076a8d6f7c1b2a4e3a8e3a8e ... (verify shape only)
+  t.is(
+    note.pushType,
+    'background',
+    'Mail must use background (dovecot-xaps-daemon)'
+  );
+  t.is(note.priority, 5, 'background pushes must use priority 5');
+  // md5("INBOX") = ... (verify shape only)
   t.regex(note.aps.m, /^[\da-f]{32}$/, 'aps.m must be a 32-hex md5 digest');
   t.is(note.aps['account-id'], 'acct-1');
 });
@@ -685,8 +712,9 @@ test('send-apn: createNote (Mail) does NOT add Calendar payload fields', (t) => 
     { device_token: 'tok' },
     { mailboxPath: 'INBOX' }
   );
-  // Mail uses default priority 10 (apn.Notification default) and an empty
-  // top-level payload object; the Calendar fields must not leak into Mail.
+  // Mail uses priority 5 (background) and an empty top-level payload
+  // object; the Calendar fields must not leak into Mail.
+  t.is(note.priority, 5, 'Mail must use priority 5');
   t.is(note.payload && note.payload.key, undefined);
   t.is(note.payload && note.payload.dataChangedTimestamp, undefined);
 });

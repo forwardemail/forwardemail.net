@@ -53,14 +53,14 @@ const logger = require('#helpers/logger');
 //   * subtopic    - the alias.aps[].subtopic value to filter on
 //   * cachePrefix - Redis key prefix for the 1-minute send-coalescing lock
 //   * errorLabel  - label used in the "APS X failed" fatal error
-//   * pushType    - APNs `apns-push-type` header.  iOS Mail (XAPPLEPUSHSERVICE)
-//                   uses `alert` because the iOS Mail extension surfaces a
-//                   user-visible banner.  CalDAV / CardDAV pubsub pushes are
-//                   silent data-only refresh signals; Apple's iOS 13+ APNs
-//                   strictness drops `alert`-typed pushes that lack an
-//                   `aps.alert` payload, so we send those as `background`.
-//                   Reference: Apple's caldav-pubsubdiscovery.txt and the
-//                   ccs-calendarserver applepush.py implementation.
+//   * pushType    - APNs `apns-push-type` header.  All three services use
+//                   `background` to match the dovecot-xaps-daemon reference
+//                   implementation.  These pushes are silent data-only signals
+//                   that wake iOS system daemons (mobilemail, dataaccessd);
+//                   the daemon then connects via IMAP/CalDAV/CardDAV to fetch
+//                   new data and iOS itself generates any visible user-facing
+//                   notification locally.
+//                   <https://github.com/freswa/dovecot-xaps-daemon/blob/main/internal/apns.go>
 //
 const SERVICES = {
   Mail: {
@@ -68,7 +68,7 @@ const SERVICES = {
     subtopic: 'com.apple.mobilemail',
     cachePrefix: 'aps_check',
     errorLabel: 'APS failed',
-    pushType: 'alert'
+    pushType: 'background'
   },
   Calendar: {
     cert: 'Calendar',
@@ -127,10 +127,6 @@ function createNote(certBundle, service, obj, options) {
   // <https://github.com/argon/push_notify/pull/6#issue-179062203>
   const note = new apn.Notification();
 
-  // Without urlArgs the notification is delivered but never displayed.
-  // <https://github.com/node-apn/node-apn/issues/638>
-  note.urlArgs = [];
-
   // Per-service push type (see SERVICES table above).
   note.pushType = service.pushType;
   //
@@ -150,48 +146,48 @@ function createNote(certBundle, service, obj, options) {
   note.expiry = Math.floor(dayjs().add(24, 'hour').toDate().getTime() / 1000);
 
   //
-  // Build the APNs aps payload.  `account-id` is OPTIONAL and is included
-  // ONLY when iOS provided one at registration time -- never synthesise it
-  // from the collection key.  Apple's iOS dataaccessd routes pushes by
-  // matching aps['account-id'] against an iOS-side account UUID; an
-  // unrecognised value causes the push to be silently dropped, so for
-  // CalDAV/CardDAV (where iOS does not send account-id in the registration
-  // POST) we omit the field entirely and let the push route by device-token
-  // alone, matching Apple's ccs-calendarserver reference behaviour.
+  // APNs priority -- MUST be 5 for `background` push type.
   //
-  note.aps = {};
-  if (obj.account_id) note.aps['account-id'] = obj.account_id;
+  // Apple's docs: "If you set the push type to background, always use
+  // priority 5.  Using priority 10 is an error."
+  // <https://developer.apple.com/documentation/usernotifications/sending-notification-requests-to-apns>
+  //
+  // node-apn defaults priority to 10, so we MUST explicitly override it.
+  // dovecot-xaps-daemon's Go HTTP/2 client omits the header entirely
+  // (Apple defaults to 10), but node-apn always emits `apns-priority`
+  // when `Number.isInteger(this.priority)` is true, so we set 5.
+  //
+  note.priority = 5;
 
-  // Mail-only: the `m` field carries the md5 of the mailbox path so the
-  // device knows which mailbox to refresh.
-  // <https://github.com/freswa/dovecot-xaps-daemon/issues/39#issuecomment-2262987315>
+  //
+  // Build the APNs aps payload.  The aps dictionary contents differ by
+  // service to match each reference implementation:
+  //
+  // Mail (dovecot-xaps-daemon):
+  //   Wire body: { "aps": { "account-id": "UUID", "m": "<md5>" } }
+  //   `account-id` is OPTIONAL and is included ONLY when iOS provided one
+  //   at registration time.  `m` carries the md5 of the mailbox path so
+  //   iOS knows which mailbox to refresh.
+  //   <https://github.com/freswa/dovecot-xaps-daemon/blob/main/internal/apns.go>
+  //   <https://github.com/freswa/dovecot-xaps-daemon/issues/39#issuecomment-2262987315>
+  //
+  // Calendar / Contact (Apple ccs-calendarserver applepush.py):
+  //   Wire body: { "key": "...", "dataChangedTimestamp": N,
+  //                "pushRequestSubmittedTimestamp": N }
+  //   NO `aps` dictionary at all -- the spec (caldav-pubsubdiscovery.txt
+  //   Section 4.3) defines only the three top-level fields above.
+  //   node-apn's apsPayload() returns `undefined` when every key in
+  //   `this.aps` is undefined, which causes JSON.stringify to omit the
+  //   `aps` key entirely -- exactly matching Apple's reference.
+  //   The payload body is never empty (it contains key + timestamps),
+  //   so APNs will not reject with PayloadEmpty.
+  //
   if (service.cert === 'Mail') {
+    if (obj.account_id) note.aps['account-id'] = obj.account_id;
     note.aps.m = crypto
       .createHash('md5')
       .update(options.mailboxPath || 'INBOX')
       .digest('hex');
-  }
-
-  //
-  // CalDAV / CardDAV background pushes: APNs HTTP/2 v3 REQUIRES an `aps`
-  // dictionary in the wire JSON.  node-apn's Notification.toJSON() builds
-  // `{ ...this.payload, aps: this.apsPayload() }` and apsPayload() returns
-  // `undefined` when every key in `this.aps` is undefined -- so an empty
-  // `aps` causes the wire body to be `{...payload}` (no aps key) and APNs
-  // rejects with HTTP 400 PayloadEmpty (reason: "PayloadEmpty"), silently
-  // dropping the push.  Apple's docs for `apns-push-type: background`
-  // explicitly require `content-available: 1` in the aps dictionary:
-  // <https://developer.apple.com/documentation/usernotifications/pushing_background_updates_to_your_app>
-  // Setting it both forces the wire body to include `aps` (fixing the
-  // PayloadEmpty rejection) AND tells iOS this is a content-available
-  // background push so the OS wakes the appropriate sync extension.
-  //
-  if (service.cert === 'Calendar' || service.cert === 'Contact') {
-    // node-apn provides an idiomatic setter that writes
-    // `this.aps['content-available'] = 1` under the hood.  Using the setter
-    // keeps us forward-compatible if @parse/node-apn ever changes its
-    // internal aps storage representation.
-    note.contentAvailable = 1;
   }
 
   //
@@ -209,10 +205,7 @@ function createNote(certBundle, service, obj, options) {
   // `aps`, so setting these on `note.payload` produces the on-the-wire
   // shape iOS dataaccessd expects.  Without `key`, iOS receives the push
   // but cannot determine which collection changed, so the refresh is a
-  // best-effort no-op (and on iOS 17+ the push is sometimes ignored
-  // entirely as malformed background data).  `priority: 5` matches Apple's
-  // "conserves device power" priority for background data refreshes; iOS
-  // can throttle or coalesce priority 10 background pushes.
+  // best-effort no-op.
   //
   if (service.cert === 'Calendar' || service.cert === 'Contact') {
     const now = Math.floor(Date.now() / 1000);
@@ -221,7 +214,6 @@ function createNote(certBundle, service, obj, options) {
       dataChangedTimestamp: now,
       pushRequestSubmittedTimestamp: now
     };
-    note.priority = 5;
   }
 
   return note;
@@ -465,14 +457,6 @@ async function sendApnForService(serviceName, client, id, options = {}) {
           },
           { concurrency: config.concurrency }
         );
-      } else {
-        // Re-send the note 20s later as a belt-and-braces refresh.
-        await setTimeout(ms('20s'));
-        const note = createNote(certs, service, obj, options);
-        provider
-          .send(note, obj.device_token)
-          .then()
-          .catch((err) => logger.fatal(err));
       }
     } catch (err) {
       logger.fatal(err, { obj });
