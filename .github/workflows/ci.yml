@@ -43,4 +43,12 @@ jobs:
           gitleaks version
 
       - name: Run gitleaks
-        run: gitleaks detect --source . --verbose --log-opts="${{ github.event.before || github.event.pull_request.base.sha }}..HEAD"
+        run: |
+          BASE="${{ github.event.before || github.event.pull_request.base.sha }}"
+          NULL_SHA="0000000000000000000000000000000000000000"
+          if [ -z "$BASE" ] || [ "$BASE" = "$NULL_SHA" ]; then
+            # New branch, tag, or force-push — scan the full history
+            gitleaks detect --source . --verbose
+          else
+            gitleaks detect --source . --verbose --log-opts="${BASE}..HEAD"
+          fi
