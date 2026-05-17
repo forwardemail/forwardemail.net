@@ -379,7 +379,7 @@ module.exports = (redis) => ({
           'otp-credentials=()',
           'payment=(self)',
           'picture-in-picture=()',
-          'publickey-credentials-get=()',
+          'publickey-credentials-get=(self)',
           'screen-wake-lock=()',
           'serial=()',
           'speaker-selection=()',
