@@ -49,7 +49,25 @@ function getQueryResponse(query, message, options = {}, instance, session) {
       }
 
       case 'flags': {
-        value = message.flags;
+        // Merge custom labels into FLAGS as IMAP keywords (RFC 3501) so
+        // native IMAP clients (Apple Mail, Thunderbird) see them. STORE
+        // mirrors keywords into both fields, so dedupe defensively.
+        if (Array.isArray(message.labels) && message.labels.length > 0) {
+          const seen = new Set();
+          const merged = [];
+          for (const f of [...(message.flags || []), ...message.labels]) {
+            if (typeof f !== 'string') continue;
+            const key = f.trim().toLowerCase();
+            if (!key || seen.has(key)) continue;
+            seen.add(key);
+            merged.push(f);
+          }
+
+          value = merged;
+        } else {
+          value = message.flags;
+        }
+
         break;
       }
 

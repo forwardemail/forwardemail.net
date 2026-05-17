@@ -40,6 +40,36 @@ function getFlag(f) {
   return f.trim().toLowerCase();
 }
 
+// Custom keywords (anything not starting with "\\") are mirrored to the
+// message.labels field so the REST API and webmail UI can read them.
+// Matches the normalization performed by the Messages pre-validate hook.
+const MAX_LABELS_PER_MESSAGE = 10;
+function deriveLabelsFromFlags(flags) {
+  if (!Array.isArray(flags)) return [];
+  const out = [];
+  const seen = new Set();
+  for (const f of flags) {
+    if (typeof f !== 'string') continue;
+    const trimmed = f.trim();
+    if (!trimmed || trimmed.startsWith('\\')) continue;
+    const normalized = trimmed.toLowerCase();
+    if (seen.has(normalized)) continue;
+    seen.add(normalized);
+    out.push(normalized);
+    if (out.length >= MAX_LABELS_PER_MESSAGE) break;
+  }
+
+  return out;
+}
+
+function arraysEqualUnordered(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) return false;
+  if (a.length !== b.length) return false;
+  const set = new Set(a);
+  for (const v of b) if (!set.has(v)) return false;
+  return true;
+}
+
 async function onStore(mailboxId, update, session, fn) {
   this.logger.debug('STORE', { mailboxId, update, session });
 
@@ -100,6 +130,28 @@ async function onStore(mailboxId, update, session, fn) {
             uids: modified || []
           }
         );
+
+        // If the STORE touched any custom (non-system) keywords, also notify
+        // listeners that labels may have changed. Skip when the update only
+        // toggles system flags (e.g. \Seen on read) to avoid noisy refreshes.
+        const touchedCustomKeyword =
+          Array.isArray(update.value) &&
+          update.value.some(
+            (f) =>
+              typeof f === 'string' && f.trim() && !f.trim().startsWith('\\')
+          );
+        if (touchedCustomKeyword) {
+          sendWebSocketNotification(
+            this.client,
+            session.user.alias_id,
+            'labelsUpdated',
+            {
+              mailbox: mailboxId.toString(),
+              action: update.action,
+              uids: modified || []
+            }
+          );
+        }
       }
 
       fn(null, bool, modified);
@@ -167,9 +219,14 @@ async function onStore(mailboxId, update, session, fn) {
       _id: true,
       uid: true,
       flags: true,
+      labels: true,
       modseq: true,
       thread: true
     };
+
+    // Track whether any custom labels changed across the batch so we can
+    // emit a single `labelsUpdated` websocket notification at the end.
+    let labelsTouched = false;
 
     const fields = Object.keys(projection);
 
@@ -363,6 +420,20 @@ async function onStore(mailboxId, update, session, fn) {
 
                 default: {
                   throw new TypeError('Unknown action');
+                }
+              }
+
+              // Mirror custom keywords from message.flags into message.labels
+              // so the REST API and webmail see the same set. The Messages
+              // model normally enforces this via a pre-validate hook, but
+              // STORE writes directly to SQLite, so we apply the same
+              // normalization here.
+              if (updated) {
+                const nextLabels = deriveLabelsFromFlags(message.flags);
+                if (!arraysEqualUnordered(message.labels || [], nextLabels)) {
+                  message.labels = nextLabels;
+                  $set.labels = nextLabels;
+                  labelsTouched = true;
                 }
               }
 
@@ -582,6 +653,19 @@ async function onStore(mailboxId, update, session, fn) {
         .catch((err) =>
           this.logger.fatal(err, { session, resolver: this.resolver })
         );
+
+      if (labelsTouched) {
+        sendWebSocketNotification(
+          this.client,
+          session.user.alias_id,
+          'labelsUpdated',
+          {
+            mailbox: mailboxId.toString(),
+            action: update.action,
+            uids: modified || []
+          }
+        );
+      }
     }
 
     // update storage in background

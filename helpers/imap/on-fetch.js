@@ -123,7 +123,14 @@ async function onFetch(mailboxId, options, session, fn) {
       thread: true
     };
 
-    if (options.flagsExist) projection.flags = true;
+    if (options.flagsExist) {
+      projection.flags = true;
+      // Custom labels are exposed to IMAP clients as keywords alongside flags.
+      // Without this, FETCH responses never include user-defined labels and
+      // cross-device label visibility breaks for native IMAP clients.
+      projection.labels = true;
+    }
+
     if (options.idateExist) projection.idate = true;
     if (options.bodystructureExist) projection.bodystructure = true;
     if (options.rfc822sizeExist) projection.size = true;

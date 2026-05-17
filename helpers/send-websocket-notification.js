@@ -22,6 +22,7 @@ const LARGE_FIELDS = ['eml', 'content', 'ical'];
  *   - messagesMoved       Messages moved between mailboxes (MOVE)
  *   - messagesCopied      Messages copied between mailboxes (COPY)
  *   - flagsUpdated        Message flags changed (STORE / implicit \Seen via FETCH)
+ *   - labelsUpdated       Message custom labels/keywords changed (REST PUT / STORE)
  *   - messagesExpunged    Messages permanently removed (EXPUNGE)
  *   - mailboxCreated      New mailbox created (CREATE)
  *   - mailboxDeleted      Mailbox deleted (DELETE)
@@ -52,6 +53,7 @@ const VALID_EVENTS = new Set([
   'messagesMoved',
   'messagesCopied',
   'flagsUpdated',
+  'labelsUpdated',
   'messagesExpunged',
   'mailboxCreated',
   'mailboxDeleted',

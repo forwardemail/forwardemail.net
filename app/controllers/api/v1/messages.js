@@ -25,6 +25,7 @@ const env = require('#config/env');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
 const i18n = require('#helpers/i18n');
 const recursivelyParse = require('#helpers/recursively-parse');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
 
@@ -1078,6 +1079,9 @@ async function update(ctx) {
   message.session = ctx.state.session;
   message.isNew = false;
 
+  const flagsChanged = _.isArray(body.flags);
+  const labelsChanged = body.labels !== undefined;
+
   await message.save();
 
   //
@@ -1092,6 +1096,37 @@ async function update(ctx) {
 
   if (!message)
     throw Boom.notFound(ctx.translateError('MESSAGE_DOES_NOT_EXIST'));
+
+  // Notify other connected clients (other devices) that flags/labels changed
+  // so they can refresh their local cache. Mirrors the IMAP STORE emit in
+  // helpers/imap/on-store.js.
+  if (flagsChanged) {
+    sendWebSocketNotification(
+      ctx.client,
+      ctx.state.session.user.alias_id,
+      'flagsUpdated',
+      {
+        mailbox: message.mailbox.toString(),
+        action: 'set',
+        flags: message.flags,
+        uids: [message.uid]
+      }
+    );
+  }
+
+  if (labelsChanged) {
+    sendWebSocketNotification(
+      ctx.client,
+      ctx.state.session.user.alias_id,
+      'labelsUpdated',
+      {
+        mailbox: message.mailbox.toString(),
+        action: 'set',
+        labels: message.labels,
+        uids: [message.uid]
+      }
+    );
+  }
 
   if (boolean(ctx.query.eml)) {
     // similar to 'rfc822' case in `helpers/get-query-response.js`
