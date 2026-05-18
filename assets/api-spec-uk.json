@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Унікальний ID документа push-токена"
+          },
+          "alias": {
+            "type": "string",
+            "description": "ID alias, якому належить цей токен"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Платформа push-повідомлень"
+          },
+          "token": {
+            "type": "string",
+            "description": "Токен пристрою, реєстраційний токен або URL кінцевої точки push"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "Необов’язкова зрозуміла людиною назва пристрою"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Час останньої успішної доставки push"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "Лічильник послідовних невдач доставки (автоматично очищується при 3)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Термін дії токена (автоматично продовжується при успішній доставці)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Час реєстрації"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Час останнього оновлення"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "Ідентифікатор типу об’єкта"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Платформа push-повідомлень"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "Токен пристрою (APNs hex), реєстраційний токен (FCM), URL HTTPS кінцевої точки (UnifiedPush) або JSON PushSubscription (Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Необов’язкова зрозуміла людиною назва пристрою для керування"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "Обов’язково при використанні автентифікації API token. ID alias, для якого реєструється токен."
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "Кількість видалених токенів"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Список push-токенів",
+        "description": "Отримайте всі активні (не прострочені) push-токени для автентифікованого alias. Підтримується необов’язковий фільтр за platform через параметр запиту.",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "Фільтрувати токени за platform"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Обов’язково при використанні автентифікації API token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Push-токени успішно отримано",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Зареєструвати push-токен",
+        "description": "Зареєструйте новий push-токен або оновіть існуючий (upsert). Якщо токен з такою ж комбінацією (alias, platform, token) вже існує, термін його дії продовжується, а лічильник помилок скидається. Токени автоматично видаляються після 90 днів неактивності або 3 послідовних невдач доставки.",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Push-токен успішно зареєстровано",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Видалити всі push-токени",
+        "description": "Видалити всі push-токени для автентифікованого alias. Корисно для виходу з облікового запису або видалення акаунту.",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "Обов’язково при використанні автентифікації API token"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Всі push-токени видалено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Видалити push-токен",
+        "description": "Видалити конкретний push-токен за ID. Тільки власник (користувач/alias) може видаляти свої токени.",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID документа push-токена"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Push-токен успішно видалено"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "Вебсокети",
       "description": "Push-сповіщення в режимі реального часу через WebSocket. Підключення до кінцевої точки /v1/ws для отримання подій у реальному часі. Автентифікація необов'язкова: автентифіковані клієнти отримують події на основі псевдонімів (IMAP, CalDAV, CardDAV) та глобальні події широкомовного розсилання, тоді як неавтентифіковані клієнти отримують лише глобальні події широкомовного розсилання (наприклад, newRelease). Підтримує 20 різних типів подій, що охоплюють доставку повідомлень, переміщення, копії, зміни прапорців, видалення, CRUD поштової скриньки, CRUD календаря, CRUD подій календаря, CRUD контактів, CRUD адресної книги та широкомовні повідомлення про випуск програм з поштової програми Forward Email Mail (https://github.com/forwardemail/mail.forwardemail.net)."
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

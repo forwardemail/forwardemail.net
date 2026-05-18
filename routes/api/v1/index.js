@@ -662,6 +662,15 @@ router
   .put('/folders/:id', api.v1.folders.update)
   .delete('/folders/:id', api.v1.folders.remove);
 
+// push tokens (APNs, FCM, UnifiedPush, Web Push)
+// Supports both alias auth and API token auth via ensureApiTokenOrAliasAuth
+router
+  .use('/push-tokens', ensureApiTokenOrAliasAuth)
+  .get('/push-tokens', api.v1.pushTokens.list)
+  .post('/push-tokens', api.v1.pushTokens.create)
+  .delete('/push-tokens', api.v1.pushTokens.removeAll)
+  .delete('/push-tokens/:id', api.v1.pushTokens.remove);
+
 // Sieve scripts (email filtering)
 //
 // Two authentication methods are supported:

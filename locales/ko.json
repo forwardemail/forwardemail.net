@@ -19663,5 +19663,16 @@
   "Platform Metrics": "플랫폼 지표",
   "No error logs have been stored yet. Please check back later.": "아직 오류 로그가 저장되지 않았습니다. 나중에 다시 확인해 주세요.",
   "How to send a DNS over HTTPS request using Node.js and JavaScript packages. Complete code examples, configuration tutorial, and production best practices for secure DNS resolution.": "Node.js 및 JavaScript 패키지를 사용하여 DNS over HTTPS 요청을 보내는 방법입니다. 완전한 코드 예제, 구성 튜토리얼, 안전한 DNS 해석을 위한 프로덕션 모범 사례를 제공합니다.",
-  "Queries must be valid JSON (double-quoted keys and string values).": "쿼리는 유효한 JSON이어야 합니다(키와 문자열 값은 반드시 큰따옴표로 감싸야 함)."
+  "Queries must be valid JSON (double-quoted keys and string values).": "쿼리는 유효한 JSON이어야 합니다(키와 문자열 값은 반드시 큰따옴표로 감싸야 함).",
+  "platform is required and must be one of: %s.": "platform is required and must be one of: %s.",
+  "APNs token must be a lowercase or uppercase hex string (64-200 characters).": "APNs token must be a lowercase or uppercase hex string (64-200 characters).",
+  "FCM token must be at least %d characters.": "FCM token must be at least %d characters.",
+  "UnifiedPush token must be a valid HTTPS endpoint URL.": "UnifiedPush token must be a valid HTTPS endpoint URL.",
+  "Web Push token must be a valid JSON PushSubscription object.": "Web Push token must be a valid JSON PushSubscription object.",
+  "Token exceeds maximum length of %d characters.": "Token exceeds maximum length of %d characters.",
+  "alias_id is required when using API token authentication.": "alias_id is required when using API token authentication.",
+  "Push token not found.": "Push token not found.",
+  "Invalid push token ID.": "Invalid push token ID.",
+  "You do not have permission to delete this token.": "You do not have permission to delete this token.",
+  "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one."
 }

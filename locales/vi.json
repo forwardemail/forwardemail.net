@@ -19663,5 +19663,16 @@
   "Platform Metrics": "Chỉ số nền tảng",
   "No error logs have been stored yet. Please check back later.": "Chưa có nhật ký lỗi nào được lưu trữ. Vui lòng kiểm tra lại sau.",
   "How to send a DNS over HTTPS request using Node.js and JavaScript packages. Complete code examples, configuration tutorial, and production best practices for secure DNS resolution.": "Cách gửi yêu cầu DNS qua HTTPS sử dụng Node.js và các gói JavaScript. Ví dụ mã hoàn chỉnh, hướng dẫn cấu hình và các thực hành tốt nhất trong sản xuất để phân giải DNS an toàn.",
-  "Queries must be valid JSON (double-quoted keys and string values).": "Truy vấn phải là JSON hợp lệ (khóa và giá trị chuỗi được đặt trong dấu ngoặc kép)."
+  "Queries must be valid JSON (double-quoted keys and string values).": "Truy vấn phải là JSON hợp lệ (khóa và giá trị chuỗi được đặt trong dấu ngoặc kép).",
+  "platform is required and must be one of: %s.": "platform is required and must be one of: %s.",
+  "APNs token must be a lowercase or uppercase hex string (64-200 characters).": "APNs token must be a lowercase or uppercase hex string (64-200 characters).",
+  "FCM token must be at least %d characters.": "FCM token must be at least %d characters.",
+  "UnifiedPush token must be a valid HTTPS endpoint URL.": "UnifiedPush token must be a valid HTTPS endpoint URL.",
+  "Web Push token must be a valid JSON PushSubscription object.": "Web Push token must be a valid JSON PushSubscription object.",
+  "Token exceeds maximum length of %d characters.": "Token exceeds maximum length of %d characters.",
+  "alias_id is required when using API token authentication.": "alias_id is required when using API token authentication.",
+  "Push token not found.": "Push token not found.",
+  "Invalid push token ID.": "Invalid push token ID.",
+  "You do not have permission to delete this token.": "You do not have permission to delete this token.",
+  "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one."
 }

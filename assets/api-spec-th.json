@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID เอกสาร push token ที่ไม่ซ้ำกัน"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Alias ID ที่โทเค็นนี้เป็นของ"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "แพลตฟอร์ม push notification"
+          },
+          "token": {
+            "type": "string",
+            "description": "device token, registration token หรือ URL ของ push endpoint"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "ชื่ออุปกรณ์ที่อ่านง่าย (ไม่บังคับ)"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "เวลาที่ส่ง push สำเร็จครั้งล่าสุด"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "จำนวนครั้งที่ส่งล้มเหลวติดต่อกัน (ลบอัตโนมัติเมื่อถึง 3 ครั้ง)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "วันหมดอายุของโทเค็น (ขยายอัตโนมัติเมื่อส่งสำเร็จ)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "เวลาที่ลงทะเบียน"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "เวลาที่อัปเดตล่าสุด"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "ตัวระบุประเภทอ็อบเจ็กต์"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "แพลตฟอร์ม push notification"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "device token (APNs hex), registration token (FCM), URL endpoint HTTPS (UnifiedPush) หรือ JSON PushSubscription (Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "ชื่ออุปกรณ์ที่อ่านง่ายสำหรับการจัดการ (ไม่บังคับ)"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "จำเป็นเมื่อใช้การยืนยันตัวตนด้วย API token ระบุ alias ID ที่จะลงทะเบียนโทเค็นนี้"
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "จำนวนโทเค็นที่ถูกลบ"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "รายการ push tokens",
+        "description": "ดึง push tokens ที่ยังใช้งานอยู่ (ยังไม่หมดอายุ) ทั้งหมดสำหรับ alias ที่ผ่านการยืนยันตัวตน รองรับการกรอง platform ผ่านพารามิเตอร์ query แบบเลือกได้",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "กรองโทเค็นตาม platform"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "จำเป็นเมื่อใช้การยืนยันตัวตนด้วย API token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ดึง push tokens สำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "ลงทะเบียน push token",
+        "description": "ลงทะเบียน push token ใหม่หรือรีเฟรชโทเค็นที่มีอยู่ (upsert) หากมีโทเค็นที่มี (alias, platform, token) เดียวกันอยู่แล้ว จะขยายเวลาหมดอายุและรีเซ็ตจำนวนความล้มเหลว โทเค็นจะถูกลบอัตโนมัติหลังจากไม่มีการใช้งาน 90 วัน หรือมีความล้มเหลวในการส่งต่อเนื่อง 3 ครั้ง",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "ลงทะเบียน push token สำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "ลบ push tokens ทั้งหมด",
+        "description": "ลบ push tokens ทั้งหมดสำหรับ alias ที่ผ่านการยืนยันตัวตน เหมาะสำหรับกระบวนการ logout หรือการลบบัญชี",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "จำเป็นเมื่อใช้การยืนยันตัวตนด้วย API token"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ลบ push tokens ทั้งหมดเรียบร้อยแล้ว",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "ลบ push token",
+        "description": "ลบ push token เฉพาะโดยใช้ ID เฉพาะ ผู้ใช้/alias เจ้าของเท่านั้นที่สามารถลบโทเค็นของตนเองได้",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID เอกสาร push token"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "ลบ push token สำเร็จ"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "เว็บซ็อกเก็ต",
       "description": "การแจ้งเตือนแบบพุชแบบเรียลไทม์ผ่าน WebSocket เชื่อมต่อกับเอนด์พอยต์ /v1/ws เพื่อรับเหตุการณ์สด การตรวจสอบสิทธิ์เป็นทางเลือก: ไคลเอนต์ที่ตรวจสอบสิทธิ์แล้วจะได้รับเหตุการณ์ต่อนามแฝง (IMAP, CalDAV, CardDAV) และเหตุการณ์กระจายเสียงทั่วโลก ในขณะที่ไคลเอนต์ที่ไม่ได้ตรวจสอบสิทธิ์จะได้รับเฉพาะเหตุการณ์กระจายเสียงทั่วโลก (เช่น newRelease) รองรับเหตุการณ์ 20 ประเภทที่แตกต่างกัน ครอบคลุมการส่งข้อความ การย้าย การคัดลอก การเปลี่ยนแปลงสถานะ การลบ การดำเนินการ CRUD กล่องจดหมาย การดำเนินการ CRUD ปฏิทิน การดำเนินการ CRUD เหตุการณ์ในปฏิทิน การดำเนินการ CRUD รายชื่อติดต่อ การดำเนินการ CRUD สมุดที่อยู่ และการกระจายเสียงการเปิดตัวแอปจากแอป Forward Email Mail (https://github.com/forwardemail/mail.forwardemail.net)"
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

@@ -2065,7 +2065,7 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+            "description": "Number of days to retain outbound SMTP logs (0\u201330, default: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -2716,6 +2716,117 @@
                 "description": "URL to the release page on GitHub"
               }
             }
+          }
+        }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique push token document ID"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Alias ID this token belongs to"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Push notification platform"
+          },
+          "token": {
+            "type": "string",
+            "description": "Device token, registration token, or push endpoint URL"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "Optional human-readable device name"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last successful push delivery timestamp"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "Consecutive delivery failure count (auto-pruned at 3)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Token expiry (auto-extended on successful delivery)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Registration timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "Object type identifier"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Push notification platform"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "Device token (APNs hex), registration token (FCM), HTTPS endpoint URL (UnifiedPush), or JSON PushSubscription (Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Optional human-readable device name for management"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "Required when using API token authentication. The alias ID to register the token for."
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "Number of tokens deleted"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
           }
         }
       }
@@ -5002,7 +5113,7 @@
       },
       "post": {
         "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Scheduled Sending:** To schedule an email for future delivery, set the `date` field to a future timestamp (must be at least 1 minute ahead and no more than 30 days from now). The email will be held until the specified time. You can cancel it using the Delete email endpoint.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: \ud83e\udd13 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Scheduled Sending:** To schedule an email for future delivery, set the `date` field to a future timestamp (must be at least 1 minute ahead and no more than 30 days from now). The email will be held until the specified time. You can cancel it using the Delete email endpoint.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
         "tags": [
           "Emails"
         ],
@@ -5125,7 +5236,7 @@
       },
       "delete": {
         "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. This is useful for canceling emails scheduled via a future `date` before they are sent. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
+        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. This is useful for canceling emails scheduled via a future `date` before they are sent. We may purge emails automatically after 30 days after they were created and/or sent \u2013 therefore you should keep a copy of outbound SMTP emails in your client, database, or application.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
         "tags": [
           "Emails"
         ],
@@ -7128,7 +7239,7 @@
           "WebSockets"
         ],
         "summary": "WebSocket Notifications",
-        "description": "Connect to the WebSocket endpoint for real-time push notifications.\n\n**Connection URL:** `wss://api.forwardemail.net/v1/ws`\n\n**Authentication (Optional):**\n- **Authenticated Clients:** Provide credentials via `Authorization` header to receive both per-alias events (IMAP, CalDAV, CardDAV) and global broadcast events (`newRelease`).\n- **Unauthenticated Clients:** Connect without credentials to receive only global broadcast events (`newRelease`). This is useful for clients that only need to be notified of app updates.\n\n**Authentication Methods:**\n\nAuthentication **must** be provided via the `Authorization` header using HTTP Basic Authentication. Query parameters for authentication are **NOT supported**.\n\n**Option 1: Alias Password Authentication (Recommended)**\n\nUse your alias email address and generated password:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\", {\n  headers: {\n    Authorization: `Basic ${btoa(\"user@domain.com:alias-password\")}`\n  }\n});\n```\n\n**Option 2: API Token Authentication**\n\nUse your API token (requires `?alias_id=` query parameter):\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID\", {\n  headers: {\n    Authorization: `Basic ${btoa(\"YOUR_API_TOKEN:\")}` // Note: password is empty\n  }\n});\n```\n\n**Option 3: Unauthenticated (Broadcast-Only)**\n\nConnect without authentication to receive only global broadcast events:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\");\n```\n\n**Connection Responses:**\n\nUpon successful connection, the server sends a `connected` event:\n\n- **Authenticated:** `{\"event\":\"connected\",\"aliasId\":\"<your-alias-id>\"}`\n- **Unauthenticated:** `{\"event\":\"connected\",\"broadcastOnly\":true}`\n\nIf you receive `broadcastOnly: true`, your authentication failed or was not provided, and you will only receive global broadcast events.\n\n**msgpackr Encoding:** By default, messages are sent as JSON text frames. Pass `?msgpackr=true` to receive binary msgpackr-encoded frames for reduced bandwidth.\n\n**Behavior:**\n- Read-only channel: client messages are silently discarded\n- Server sends a `connected` event upon successful connection\n- Server sends periodic `ping` frames; client must respond with `pong`\n- Per-IP rate limit: 30 connections/minute\n- Per-alias connection limit (authenticated): 10 concurrent connections\n- Per-IP unauthenticated connection limit: 3 concurrent connections\n- Global connection limit: 10,000\n\n**Event Payloads:** Each event includes an `event` field indicating the type, plus a resource object (`message`, `contact`, `calendarEvent`, `calendar`, `addressBook`, or `release`) containing the full resource data mirroring the corresponding REST API response.\n\n**Per-Alias Events (Authenticated Only):**\n- **IMAP:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n- **CalDAV:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n- **CardDAV:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookDeleted`\n\n**Broadcast Events (All Clients):**\n- `newRelease` — Broadcast when a new version of the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net) is published on GitHub. The server polls GitHub every 15 minutes and uses a content-based fingerprint to detect changes. **Asset Gating**: When a new release is detected but has no assets yet, the broadcast is deferred until assets appear.\n\n**Important Notes:**\n- Query parameters `?token=`, `?username=`, `?password=` are **NOT supported** for authentication\n- Authentication **must** be via `Authorization` header using HTTP Basic Authentication\n- If authentication fails, you will receive `broadcastOnly: true` or a `401 Unauthorized` error\n- For API token authentication, the `?alias_id=` query parameter is **required**",
+        "description": "Connect to the WebSocket endpoint for real-time push notifications.\n\n**Connection URL:** `wss://api.forwardemail.net/v1/ws`\n\n**Authentication (Optional):**\n- **Authenticated Clients:** Provide credentials via `Authorization` header to receive both per-alias events (IMAP, CalDAV, CardDAV) and global broadcast events (`newRelease`).\n- **Unauthenticated Clients:** Connect without credentials to receive only global broadcast events (`newRelease`). This is useful for clients that only need to be notified of app updates.\n\n**Authentication Methods:**\n\nAuthentication **must** be provided via the `Authorization` header using HTTP Basic Authentication. Query parameters for authentication are **NOT supported**.\n\n**Option 1: Alias Password Authentication (Recommended)**\n\nUse your alias email address and generated password:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\", {\n  headers: {\n    Authorization: `Basic ${btoa(\"user@domain.com:alias-password\")}`\n  }\n});\n```\n\n**Option 2: API Token Authentication**\n\nUse your API token (requires `?alias_id=` query parameter):\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID\", {\n  headers: {\n    Authorization: `Basic ${btoa(\"YOUR_API_TOKEN:\")}` // Note: password is empty\n  }\n});\n```\n\n**Option 3: Unauthenticated (Broadcast-Only)**\n\nConnect without authentication to receive only global broadcast events:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\");\n```\n\n**Connection Responses:**\n\nUpon successful connection, the server sends a `connected` event:\n\n- **Authenticated:** `{\"event\":\"connected\",\"aliasId\":\"<your-alias-id>\"}`\n- **Unauthenticated:** `{\"event\":\"connected\",\"broadcastOnly\":true}`\n\nIf you receive `broadcastOnly: true`, your authentication failed or was not provided, and you will only receive global broadcast events.\n\n**msgpackr Encoding:** By default, messages are sent as JSON text frames. Pass `?msgpackr=true` to receive binary msgpackr-encoded frames for reduced bandwidth.\n\n**Behavior:**\n- Read-only channel: client messages are silently discarded\n- Server sends a `connected` event upon successful connection\n- Server sends periodic `ping` frames; client must respond with `pong`\n- Per-IP rate limit: 30 connections/minute\n- Per-alias connection limit (authenticated): 10 concurrent connections\n- Per-IP unauthenticated connection limit: 3 concurrent connections\n- Global connection limit: 10,000\n\n**Event Payloads:** Each event includes an `event` field indicating the type, plus a resource object (`message`, `contact`, `calendarEvent`, `calendar`, `addressBook`, or `release`) containing the full resource data mirroring the corresponding REST API response.\n\n**Per-Alias Events (Authenticated Only):**\n- **IMAP:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n- **CalDAV:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n- **CardDAV:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookDeleted`\n\n**Broadcast Events (All Clients):**\n- `newRelease` \u2014 Broadcast when a new version of the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net) is published on GitHub. The server polls GitHub every 15 minutes and uses a content-based fingerprint to detect changes. **Asset Gating**: When a new release is detected but has no assets yet, the broadcast is deferred until assets appear.\n\n**Important Notes:**\n- Query parameters `?token=`, `?username=`, `?password=` are **NOT supported** for authentication\n- Authentication **must** be via `Authorization` header using HTTP Basic Authentication\n- If authentication fails, you will receive `broadcastOnly: true` or a `401 Unauthorized` error\n- For API token authentication, the `?alias_id=` query parameter is **required**",
         "operationId": "websocketNotifications",
         "parameters": [
           {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "List push tokens",
+        "description": "Retrieve all active (non-expired) push tokens for the authenticated alias. Supports optional platform filtering via query parameter.",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "Filter tokens by platform"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required when using API token authentication"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Push tokens retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Register push token",
+        "description": "Register a new push token or refresh an existing one (upsert). If a token with the same (alias, platform, token) combination already exists, its expiry is extended and failure count is reset. Tokens are automatically pruned after 90 days of inactivity or 3 consecutive delivery failures.",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Push token registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Remove all push tokens",
+        "description": "Remove all push tokens for the authenticated alias. Useful for logout or account deletion flows.",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "Required when using API token authentication"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "All push tokens removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Remove push token",
+        "description": "Remove a specific push token by ID. Only the owning user/alias can delete their own tokens.",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Push token document ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Push token removed successfully"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "WebSockets",
       "description": "Real-time push notifications via WebSocket. Connect to the /v1/ws endpoint to receive live events. Authentication is optional: authenticated clients receive per-alias events (IMAP, CalDAV, CardDAV) and global broadcast events, while unauthenticated clients receive only global broadcast events (e.g. newRelease). Supports 20 distinct event types covering message delivery, moves, copies, flag changes, expunges, mailbox CRUD, calendar CRUD, calendar event CRUD, contact CRUD, address book CRUD, and app release broadcasts from the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net)."
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "고유 푸시 토큰 문서 ID"
+          },
+          "alias": {
+            "type": "string",
+            "description": "이 토큰이 속한 alias ID"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "푸시 알림 플랫폼"
+          },
+          "token": {
+            "type": "string",
+            "description": "디바이스 토큰, 등록 토큰 또는 푸시 엔드포인트 URL"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "선택적, 사람이 읽기 쉬운 디바이스 이름"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "마지막 성공적 푸시 전달 시각"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "연속 전달 실패 횟수 (3회 시 자동 삭제)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "토큰 만료 시각 (성공적 전달 시 자동 연장)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "등록 시각"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "마지막 업데이트 시각"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "객체 유형 식별자"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "푸시 알림 플랫폼"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "디바이스 토큰(APNs hex), 등록 토큰(FCM), HTTPS 엔드포인트 URL(UnifiedPush), 또는 JSON PushSubscription(Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "관리용 선택적 사람이 읽기 쉬운 디바이스 이름"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "API 토큰 인증 사용 시 필수. 토큰을 등록할 alias ID입니다."
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "삭제된 토큰 수"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "푸시 토큰 목록 조회",
+        "description": "인증된 alias에 대한 모든 활성(만료되지 않은) 푸시 토큰을 조회합니다. 쿼리 파라미터를 통해 플랫폼 필터링을 선택적으로 지원합니다.",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "플랫폼별 토큰 필터링"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "API 토큰 인증 사용 시 필수"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "푸시 토큰을 성공적으로 조회했습니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "푸시 토큰 등록",
+        "description": "새 푸시 토큰을 등록하거나 기존 토큰을 갱신(upsert)합니다. 동일한 (alias, platform, token) 조합의 토큰이 이미 존재하면 만료일이 연장되고 실패 횟수가 초기화됩니다. 토큰은 90일간 비활성 상태이거나 연속 3회 전달 실패 시 자동으로 삭제됩니다.",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "푸시 토큰이 성공적으로 등록되었습니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "모든 푸시 토큰 삭제",
+        "description": "인증된 alias에 대한 모든 푸시 토큰을 삭제합니다. 로그아웃 또는 계정 삭제 시 유용합니다.",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "API 토큰 인증 사용 시 필수"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "모든 푸시 토큰이 삭제되었습니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "푸시 토큰 삭제",
+        "description": "ID로 특정 푸시 토큰을 삭제합니다. 토큰 소유자(alias)만 자신의 토큰을 삭제할 수 있습니다.",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "푸시 토큰 문서 ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "푸시 토큰이 성공적으로 삭제되었습니다"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "웹소켓",
       "description": "WebSocket을 통한 실시간 푸시 알림 기능을 제공합니다. /v1/ws 엔드포인트에 연결하여 실시간 이벤트를 수신할 수 있습니다. 인증은 선택 사항입니다. 인증된 클라이언트는 별칭별 이벤트(IMAP, CalDAV, CardDAV)와 전체 브로드캐스트 이벤트를 수신하고, 인증되지 않은 클라이언트는 전체 브로드캐스트 이벤트(예: newRelease)만 수신합니다. 메시지 전달, 이동, 복사, 플래그 변경, 삭제, 사서함 CRUD, 캘린더 CRUD, 캘린더 이벤트 CRUD, 연락처 CRUD, 주소록 CRUD, 그리고 Forward Email Mail 앱(https://github.com/forwardemail/mail.forwardemail.net)의 앱 릴리스 브로드캐스트 등 20가지 이벤트 유형을 지원합니다."
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

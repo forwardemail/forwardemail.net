@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID tài liệu push token duy nhất"
+          },
+          "alias": {
+            "type": "string",
+            "description": "ID alias mà token này thuộc về"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Nền tảng thông báo đẩy"
+          },
+          "token": {
+            "type": "string",
+            "description": "Token thiết bị, token đăng ký, hoặc URL endpoint push"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "Tên thiết bị có thể đọc được (tùy chọn)"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Thời điểm gửi push thành công lần cuối"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "Số lần gửi thất bại liên tiếp (tự động xóa khi đạt 3)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Thời hạn token (tự động gia hạn khi gửi thành công)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Thời điểm đăng ký"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Thời điểm cập nhật lần cuối"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "Định danh loại đối tượng"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Nền tảng thông báo đẩy"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "Token thiết bị (APNs hex), token đăng ký (FCM), URL endpoint HTTPS (UnifiedPush), hoặc JSON PushSubscription (Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Tên thiết bị có thể đọc được để quản lý (tùy chọn)"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "Bắt buộc khi sử dụng xác thực API token. ID alias để đăng ký token."
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "Số lượng token đã bị xóa"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Liệt kê các push token",
+        "description": "Lấy tất cả các push token đang hoạt động (chưa hết hạn) cho alias đã xác thực. Hỗ trợ lọc theo platform qua tham số truy vấn tùy chọn.",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "Lọc token theo platform"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bắt buộc khi sử dụng xác thực API token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy push token thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Đăng ký push token",
+        "description": "Đăng ký một push token mới hoặc cập nhật token hiện có (upsert). Nếu token với tổ hợp (alias, platform, token) đã tồn tại, thời hạn của nó sẽ được gia hạn và số lần thất bại được đặt lại. Các token sẽ tự động bị xóa sau 90 ngày không hoạt động hoặc 3 lần gửi thất bại liên tiếp.",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Đăng ký push token thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Xóa tất cả push token",
+        "description": "Xóa tất cả push token cho alias đã xác thực. Hữu ích cho các luồng đăng xuất hoặc xóa tài khoản.",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "Bắt buộc khi sử dụng xác thực API token"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Đã xóa tất cả push token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Xóa push token",
+        "description": "Xóa một push token cụ thể theo ID. Chỉ người dùng/alias sở hữu mới có thể xóa token của mình.",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID tài liệu push token"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Xóa push token thành công"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "WebSockets",
       "description": "Thông báo đẩy theo thời gian thực qua WebSocket. Kết nối với điểm cuối /v1/ws để nhận các sự kiện trực tiếp. Xác thực là tùy chọn: các máy khách đã xác thực sẽ nhận được các sự kiện cho mỗi bí danh (IMAP, CalDAV, CardDAV) và các sự kiện phát sóng toàn cầu, trong khi các máy khách chưa xác thực chỉ nhận được các sự kiện phát sóng toàn cầu (ví dụ: newRelease). Hỗ trợ 20 loại sự kiện khác nhau bao gồm việc gửi tin nhắn, di chuyển, sao chép, thay đổi cờ, xóa, CRUD hộp thư, CRUD lịch, CRUD sự kiện lịch, CRUD liên hệ, CRUD sổ địa chỉ và phát sóng phát hành ứng dụng từ ứng dụng Forward Email Mail (https://github.com/forwardemail/mail.forwardemail.net)."
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

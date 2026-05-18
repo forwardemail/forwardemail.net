@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID dokumen token push yang unik"
+          },
+          "alias": {
+            "type": "string",
+            "description": "ID alias yang memiliki token ini"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Platform notifikasi push"
+          },
+          "token": {
+            "type": "string",
+            "description": "Token perangkat, token registrasi, atau URL endpoint push"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "Nama perangkat yang dapat dibaca manusia (opsional)"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp pengiriman push terakhir yang berhasil"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "Jumlah kegagalan pengiriman berturut-turut (otomatis dihapus pada 3)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Masa berlaku token (otomatis diperpanjang saat pengiriman berhasil)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp pendaftaran"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp pembaruan terakhir"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "Pengidentifikasi tipe objek"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Platform notifikasi push"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "Token perangkat (APNs hex), token registrasi (FCM), URL endpoint HTTPS (UnifiedPush), atau JSON PushSubscription (Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Nama perangkat yang dapat dibaca manusia untuk manajemen (opsional)"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "Diperlukan saat menggunakan autentikasi token API. ID alias untuk mendaftarkan token."
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "Jumlah token yang dihapus"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Daftar token push",
+        "description": "Ambil semua token push aktif (tidak kedaluwarsa) untuk alias yang terautentikasi. Mendukung penyaringan platform opsional melalui parameter query.",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "Saring token berdasarkan platform"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Diperlukan saat menggunakan autentikasi token API"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token push berhasil diambil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Daftarkan token push",
+        "description": "Daftarkan token push baru atau perbarui yang sudah ada (upsert). Jika token dengan kombinasi (alias, platform, token) yang sama sudah ada, masa berlakunya diperpanjang dan hitungan kegagalan direset. Token secara otomatis dihapus setelah 90 hari tidak aktif atau 3 kegagalan pengiriman berturut-turut.",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Token push berhasil didaftarkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Hapus semua token push",
+        "description": "Hapus semua token push untuk alias yang terautentikasi. Berguna untuk proses logout atau penghapusan akun.",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "Diperlukan saat menggunakan autentikasi token API"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Semua token push berhasil dihapus",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Hapus token push",
+        "description": "Hapus token push tertentu berdasarkan ID. Hanya pengguna/alias pemilik yang dapat menghapus token mereka sendiri.",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID dokumen token push"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Token push berhasil dihapus"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "WebSocket",
       "description": "Notifikasi push real-time melalui WebSocket. Hubungkan ke endpoint /v1/ws untuk menerima event langsung. Otentikasi bersifat opsional: klien yang terotentikasi menerima event per-alias (IMAP, CalDAV, CardDAV) dan event siaran global, sedangkan klien yang tidak terotentikasi hanya menerima event siaran global (misalnya newRelease). Mendukung 20 jenis event berbeda yang mencakup pengiriman pesan, pemindahan, penyalinan, perubahan flag, penghapusan, CRUD kotak surat, CRUD kalender, CRUD event kalender, CRUD kontak, CRUD buku alamat, dan siaran rilis aplikasi dari Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net)."
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

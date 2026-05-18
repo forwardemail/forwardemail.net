@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "معرف مستند رمز الدفع الفريد"
+          },
+          "alias": {
+            "type": "string",
+            "description": "معرف alias الذي ينتمي إليه هذا الرمز"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "منصة إشعارات الدفع"
+          },
+          "token": {
+            "type": "string",
+            "description": "رمز الجهاز، رمز التسجيل، أو عنوان URL لنقطة نهاية الدفع"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "اسم الجهاز القابل للقراءة من قبل الإنسان (اختياري)"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "الطابع الزمني لآخر تسليم دفع ناجح"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "عدد مرات الفشل المتتالية في التسليم (يتم الحذف التلقائي عند 3)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "انتهاء صلاحية الرمز (يتم تمديده تلقائيًا عند التسليم الناجح)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "الطابع الزمني للتسجيل"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "الطابع الزمني لآخر تحديث"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "معرف نوع الكائن"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "منصة إشعارات الدفع"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "رمز الجهاز (APNs hex)، رمز التسجيل (FCM)، عنوان URL لنقطة نهاية HTTPS (UnifiedPush)، أو JSON PushSubscription (Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "اسم الجهاز القابل للقراءة من قبل الإنسان لإدارة الرمز (اختياري)"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "مطلوب عند استخدام مصادقة API token. معرف alias لتسجيل الرمز له."
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "عدد الرموز التي تم حذفها"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "قائمة رموز الدفع",
+        "description": "استرجاع جميع رموز الدفع النشطة (غير منتهية الصلاحية) للـ alias المصادق عليه. يدعم التصفية الاختيارية حسب platform عبر معلمة الاستعلام.",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "تصفية الرموز حسب platform"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "مطلوب عند استخدام مصادقة API token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "تم استرجاع رموز الدفع بنجاح",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "تسجيل رمز دفع",
+        "description": "تسجيل رمز دفع جديد أو تحديث رمز موجود (upsert). إذا كان هناك رمز بنفس تركيبة (alias, platform, token) موجود بالفعل، يتم تمديد صلاحيته وإعادة تعيين عداد الفشل. يتم حذف الرموز تلقائيًا بعد 90 يومًا من عدم النشاط أو 3 فشلات متتالية في التسليم.",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "تم تسجيل رمز الدفع بنجاح",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "إزالة جميع رموز الدفع",
+        "description": "إزالة جميع رموز الدفع للـ alias المصادق عليه. مفيد لعمليات تسجيل الخروج أو حذف الحساب.",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "مطلوب عند استخدام مصادقة API token"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "تمت إزالة جميع رموز الدفع",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "إزالة رمز دفع",
+        "description": "إزالة رمز دفع محدد بواسطة ID. يمكن فقط للمستخدم/alias المالك حذف رموزه الخاصة.",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "معرف مستند رمز الدفع"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "تمت إزالة رمز الدفع بنجاح"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "WebSockets",
       "description": "إشعارات فورية عبر WebSocket. اتصل بنقطة النهاية /v1/ws لتلقي الأحداث مباشرةً. المصادقة اختيارية: يتلقى العملاء المصادق عليهم أحداثًا خاصة بكل اسم مستعار (IMAP، CalDAV، CardDAV) وأحداث بث عامة، بينما يتلقى العملاء غير المصادق عليهم أحداث البث العامة فقط (مثل newRelease). يدعم 20 نوعًا مختلفًا من الأحداث تشمل تسليم الرسائل، والنقل، والنسخ، وتغييرات العلامات، والحذف، وتحديثات وحذف وقراءة صناديق البريد، وتحديثات وحذف وقراءة التقويم، وتحديثات وحذف أحداث التقويم، وتحديثات وحذف جهات الاتصال، وتحديثات وحذف وقراءة دفتر العناوين، وبث إصدارات التطبيقات من تطبيق Forward Email Mail (https://github.com/forwardemail/mail.forwardemail.net)."
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

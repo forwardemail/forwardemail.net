@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "唯一推送令牌文档 ID"
+          },
+          "alias": {
+            "type": "string",
+            "description": "该令牌所属的 alias ID"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "推送通知平台"
+          },
+          "token": {
+            "type": "string",
+            "description": "设备令牌、注册令牌或推送端点 URL"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "可选的人类可读设备名称"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "上次成功推送投递时间戳"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "连续投递失败次数（达到 3 次自动清理）"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "令牌过期时间（成功投递时自动延长）"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "注册时间戳"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "最后更新时间戳"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "对象类型标识符"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "推送通知平台"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "设备令牌（APNs 十六进制）、注册令牌（FCM）、HTTPS 端点 URL（UnifiedPush）或 JSON PushSubscription（Web Push）"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "用于管理的可选人类可读设备名称"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "使用 API token 认证时必填。要注册令牌的 alias ID。"
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "已删除的令牌数量"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "列出推送令牌",
+        "description": "检索经过身份验证的 alias 的所有活动（未过期）推送令牌。支持通过查询参数按 platform 过滤。",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "按 platform 过滤令牌"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "使用 API token 认证时必填"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "推送令牌检索成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "注册推送令牌",
+        "description": "注册新的推送令牌或刷新已有令牌（upsert）。如果存在相同 (alias, platform, token) 组合的令牌，则延长其过期时间并重置失败计数。令牌在 90 天未使用或连续 3 次投递失败后自动清理。",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "推送令牌注册成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "移除所有推送令牌",
+        "description": "移除经过身份验证的 alias 的所有推送令牌。适用于注销或删除账户流程。",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "使用 API token 认证时必填"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "所有推送令牌已移除",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "移除推送令牌",
+        "description": "通过 ID 移除特定推送令牌。只有拥有该令牌的用户/alias 可删除自己的令牌。",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "推送令牌文档 ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "推送令牌移除成功"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "WebSocket",
       "description": "通过 WebSocket 进行实时推送通知。连接到 /v1/ws 端点即可接收实时事件。身份验证是可选的：已验证的客户端可以接收基于别名的事件（IMAP、CalDAV、CardDAV）和全局广播事件，而未验证的客户端只能接收全局广播事件（例如 newRelease）。支持 20 种不同的事件类型，涵盖邮件投递、移动、复制、标记更改、删除、邮箱 CRUD、日历 CRUD、日历事件 CRUD、联系人 CRUD、地址簿 CRUD 以及来自 Forward Email 邮件应用（https://github.com/forwardemail/mail.forwardemail.net）的应用发布广播。"
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

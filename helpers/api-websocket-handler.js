@@ -18,6 +18,7 @@ const config = require('#config');
 const isEmail = require('#helpers/is-email');
 const isValidPassword = require('#helpers/is-valid-password');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
+const sendPushNotification = require('#helpers/send-push-notification');
 const logger = require('#helpers/logger');
 const {
   checkForNewMailAppRelease,
@@ -640,7 +641,12 @@ class ApiWebSocketHandler {
       if (!aliasId) return;
 
       const aliasConnections = this.clients.get(aliasId);
-      if (!aliasConnections || aliasConnections.size === 0) return;
+      if (!aliasConnections || aliasConnections.size === 0) {
+        // No active WebSocket connections for this alias —
+        // fall back to push notification delivery (APNs/FCM/UnifiedPush)
+        sendPushNotification(this.client, aliasId, payload.event, payload);
+        return;
+      }
 
       for (const ws of aliasConnections) {
         this._send(ws, payload);

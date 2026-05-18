@@ -1080,5 +1080,43 @@ module.exports = {
   CALDAV_CARDDAV_AUTODISCOVERY: 'CalDAV & CardDAV Autodiscovery',
   CALDAV_CARDDAV_SRV_DESCRIPTION:
     'For calendar and contact autodiscovery, you can also add these optional SRV records:',
+  // Push token registration
+  PUSH_TOKEN_REQUIRED: 'Token is required and must be a non-empty string.',
+  PUSH_TOKEN_MAX_LENGTH: 'Token exceeds maximum length of %d characters.',
+  PUSH_TOKEN_APNS_INVALID:
+    'APNs token must be a lowercase or uppercase hex string (64-200 characters).',
+  PUSH_TOKEN_FCM_TOO_SHORT: 'FCM token must be at least %d characters.',
+  PUSH_TOKEN_FCM_INVALID: 'FCM token contains invalid characters.',
+  PUSH_TOKEN_UNIFIED_PUSH_INVALID:
+    'UnifiedPush token must be a valid HTTPS endpoint URL.',
+  PUSH_TOKEN_WEB_PUSH_JSON:
+    'Web Push token must be a valid JSON PushSubscription object.',
+  PUSH_TOKEN_WEB_PUSH_OBJECT: 'Web Push token must be a JSON object.',
+  PUSH_TOKEN_WEB_PUSH_ENDPOINT:
+    'Web Push subscription must include a string endpoint.',
+  PUSH_TOKEN_WEB_PUSH_KEYS: 'Web Push subscription must include keys object.',
+  PUSH_TOKEN_UNSUPPORTED_PLATFORM:
+    'Unsupported platform: %s. Must be one of: apns, fcm, unified-push, web-push.',
+  PUSH_TOKEN_PLATFORM_REQUIRED: 'platform is required and must be one of: %s.',
+  PUSH_TOKEN_DEVICE_NAME_INVALID: 'device_name must be a string.',
+  PUSH_TOKEN_DEVICE_NAME_MAX_LENGTH:
+    'device_name must not exceed %d characters.',
+  PUSH_TOKEN_AUTH_REQUIRED: 'Authentication required.',
+  PUSH_TOKEN_ALIAS_ID_REQUIRED:
+    'alias_id is required when using API token authentication.',
+  PUSH_TOKEN_ALIAS_ID_INVALID: 'alias_id must be a valid ObjectId.',
+  PUSH_TOKEN_ALIAS_NOT_FOUND:
+    'Alias not found or does not belong to the authenticated user.',
+  PUSH_TOKEN_LIMIT_EXCEEDED:
+    'Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.',
+  PUSH_TOKEN_INVALID_ID: 'Invalid push token ID.',
+  PUSH_TOKEN_NOT_FOUND: 'Push token not found.',
+  PUSH_TOKEN_FORBIDDEN: 'You do not have permission to delete this token.',
+  PUSH_TOKEN_INVALID_URL: 'Invalid URL format.',
+  PUSH_TOKEN_HTTPS_REQUIRED: 'Only HTTPS URLs are allowed.',
+  PUSH_TOKEN_PRIVATE_URL:
+    'URL must not point to private, reserved, or localhost addresses.',
+  PUSH_TOKEN_URL_CREDENTIALS: 'URL must not contain credentials.',
+  PUSH_TOKEN_URL_NONSTANDARD_PORT: 'URL must use standard HTTPS port (443).',
   ...STATUSES
 };

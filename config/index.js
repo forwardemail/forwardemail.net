@@ -703,6 +703,23 @@ const config = {
   passkeyLimit: 30,
   IMAP_REDIS_CHANNEL_NAME: 'imap_events',
   WS_REDIS_CHANNEL_NAME: 'websocket_notifications',
+
+  //
+  // Push notification configuration
+  // Used by helpers/send-push-notification.js for APNs/FCM delivery
+  //
+  pushNotifications: {
+    // APNs (Apple Push Notification service)
+    apnsBundleId: env.APNS_BUNDLE_ID || 'net.forwardemail.app',
+    apnsKeyId: env.APNS_KEY_ID || '',
+    apnsTeamId: env.APNS_TEAM_ID || '',
+    apnsKeyPath: env.APNS_KEY_PATH || '',
+    apnsProduction: env.APNS_PRODUCTION === 'true',
+    // FCM (Firebase Cloud Messaging)
+    fcmProjectId: env.FCM_PROJECT_ID || '',
+    fcmServiceAccountPath: env.FCM_SERVICE_ACCOUNT_PATH || ''
+  },
+
   WS_TRUST_PROXY: boolean(env.WS_TRUST_PROXY),
 
   srs: {

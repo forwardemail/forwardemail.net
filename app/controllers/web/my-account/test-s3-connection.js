@@ -13,7 +13,7 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { isURL } = require('@forwardemail/validator');
 
-const isPrivateHost = require('#helpers/is-private-host');
+const { isPrivateHostResolved } = require('#helpers/is-private-host');
 const config = require('#config');
 const { Domains } = require('#models');
 const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
@@ -122,7 +122,7 @@ async function testS3Connection(ctx) {
     throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
   }
 
-  if (isPrivateHost(parsedEndpoint.hostname)) {
+  if (await isPrivateHostResolved(parsedEndpoint.hostname)) {
     throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
   }
 

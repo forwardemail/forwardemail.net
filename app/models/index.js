@@ -27,6 +27,7 @@ const CalendarInvites = require('./calendar-invites');
 const AddressBooks = require('./address-books');
 const Contacts = require('./contacts');
 const TTI = require('./tti');
+const PushTokens = require('./push-tokens');
 const SieveScripts = require('./sieve-scripts');
 
 module.exports = {
@@ -54,5 +55,6 @@ module.exports = {
   AddressBooks,
   Contacts,
   TTI,
-  SieveScripts
+  SieveScripts,
+  PushTokens
 };

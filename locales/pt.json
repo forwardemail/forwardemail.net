@@ -19663,5 +19663,16 @@
   "Platform Metrics": "Métricas da Plataforma",
   "No error logs have been stored yet. Please check back later.": "Nenhum registro de erro foi armazenado ainda. Por favor, verifique novamente mais tarde.",
   "How to send a DNS over HTTPS request using Node.js and JavaScript packages. Complete code examples, configuration tutorial, and production best practices for secure DNS resolution.": "Como enviar uma solicitação DNS sobre HTTPS usando pacotes Node.js e JavaScript. Exemplos de código completos, tutorial de configuração e melhores práticas de produção para resolução segura de DNS.",
-  "Queries must be valid JSON (double-quoted keys and string values).": "As consultas devem ser JSON válido (chaves e valores de string entre aspas duplas)."
+  "Queries must be valid JSON (double-quoted keys and string values).": "As consultas devem ser JSON válido (chaves e valores de string entre aspas duplas).",
+  "platform is required and must be one of: %s.": "platform is required and must be one of: %s.",
+  "APNs token must be a lowercase or uppercase hex string (64-200 characters).": "APNs token must be a lowercase or uppercase hex string (64-200 characters).",
+  "FCM token must be at least %d characters.": "FCM token must be at least %d characters.",
+  "UnifiedPush token must be a valid HTTPS endpoint URL.": "UnifiedPush token must be a valid HTTPS endpoint URL.",
+  "Web Push token must be a valid JSON PushSubscription object.": "Web Push token must be a valid JSON PushSubscription object.",
+  "Token exceeds maximum length of %d characters.": "Token exceeds maximum length of %d characters.",
+  "alias_id is required when using API token authentication.": "alias_id is required when using API token authentication.",
+  "Push token not found.": "Push token not found.",
+  "Invalid push token ID.": "Invalid push token ID.",
+  "You do not have permission to delete this token.": "You do not have permission to delete this token.",
+  "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one."
 }

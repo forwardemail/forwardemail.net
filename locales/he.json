@@ -19663,5 +19663,16 @@
   "Platform Metrics": "מדדי פלטפורמה",
   "No error logs have been stored yet. Please check back later.": "עדיין לא נשמרו יומני שגיאות. אנא בדוק שוב מאוחר יותר.",
   "How to send a DNS over HTTPS request using Node.js and JavaScript packages. Complete code examples, configuration tutorial, and production best practices for secure DNS resolution.": "כיצד לשלוח בקשת DNS דרך HTTPS באמצעות Node.js וחבילות JavaScript. דוגמאות קוד מלאות, מדריך הגדרות, והנחיות מיטביות לייצור לפענוח DNS מאובטח.",
-  "Queries must be valid JSON (double-quoted keys and string values).": "השאילתות חייבות להיות JSON תקין (מפתחות ומחרוזות עם גרשיים כפולים)."
+  "Queries must be valid JSON (double-quoted keys and string values).": "השאילתות חייבות להיות JSON תקין (מפתחות ומחרוזות עם גרשיים כפולים).",
+  "platform is required and must be one of: %s.": "platform is required and must be one of: %s.",
+  "APNs token must be a lowercase or uppercase hex string (64-200 characters).": "APNs token must be a lowercase or uppercase hex string (64-200 characters).",
+  "FCM token must be at least %d characters.": "FCM token must be at least %d characters.",
+  "UnifiedPush token must be a valid HTTPS endpoint URL.": "UnifiedPush token must be a valid HTTPS endpoint URL.",
+  "Web Push token must be a valid JSON PushSubscription object.": "Web Push token must be a valid JSON PushSubscription object.",
+  "Token exceeds maximum length of %d characters.": "Token exceeds maximum length of %d characters.",
+  "alias_id is required when using API token authentication.": "alias_id is required when using API token authentication.",
+  "Push token not found.": "Push token not found.",
+  "Invalid push token ID.": "Invalid push token ID.",
+  "You do not have permission to delete this token.": "You do not have permission to delete this token.",
+  "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one."
 }

@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Benzersiz push token doküman ID'si"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Bu tokenın ait olduğu alias ID"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Push bildirim platformu"
+          },
+          "token": {
+            "type": "string",
+            "description": "Cihaz tokenı, kayıt tokenı veya push uç nokta URL'si"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "Opsiyonel, insan tarafından okunabilir cihaz adı"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Son başarılı push teslimat zaman damgası"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "Ardışık teslimat hata sayısı (3'te otomatik temizlenir)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Token süresi (başarılı teslimatta otomatik uzatılır)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Kayıt zaman damgası"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Son güncelleme zaman damgası"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "Nesne türü tanımlayıcısı"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Push bildirim platformu"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "Cihaz tokenı (APNs hex), kayıt tokenı (FCM), HTTPS uç nokta URL'si (UnifiedPush) veya JSON PushSubscription (Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Yönetim için opsiyonel insan tarafından okunabilir cihaz adı"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "API token kimlik doğrulaması kullanılırken gereklidir. Tokenın kaydedileceği alias ID."
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "Silinen token sayısı"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Push tokenlarını listele",
+        "description": "Kimlik doğrulaması yapılmış alias için tüm aktif (süresi dolmamış) push tokenlarını alın. Sorgu parametresi ile opsiyonel platform filtrelemesini destekler.",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "Tokenları platforma göre filtrele"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "API token kimlik doğrulaması kullanılırken gereklidir"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Push tokenları başarıyla alındı",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Push token kaydet",
+        "description": "Yeni bir push token kaydedin veya mevcut olanı güncelleyin (upsert). Aynı (alias, platform, token) kombinasyonuna sahip bir token zaten varsa, süresi uzatılır ve hata sayısı sıfırlanır. Tokenlar 90 gün etkinlik olmaması veya 3 ardışık teslimat hatası sonrası otomatik olarak temizlenir.",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Push token başarıyla kaydedildi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Tüm push tokenlarını kaldır",
+        "description": "Kimlik doğrulaması yapılmış alias için tüm push tokenlarını kaldırır. Çıkış yapma veya hesap silme işlemleri için kullanışlıdır.",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "API token kimlik doğrulaması kullanılırken gereklidir"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tüm push tokenları kaldırıldı",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Push tokenı kaldır",
+        "description": "Belirli bir push tokenını ID ile kaldırır. Sadece token sahibi kullanıcı/alias kendi tokenlarını silebilir.",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Push token doküman ID'si"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Push token başarıyla kaldırıldı"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "WebSocket'ler",
       "description": "WebSocket üzerinden gerçek zamanlı anlık bildirimler. Canlı olayları almak için /v1/ws uç noktasına bağlanın. Kimlik doğrulama isteğe bağlıdır: Kimliği doğrulanmış istemciler takma ad başına olayları (IMAP, CalDAV, CardDAV) ve genel yayın olaylarını alırken, kimliği doğrulanmamış istemciler yalnızca genel yayın olaylarını (örneğin newRelease) alır. Mesaj teslimi, taşıma, kopyalama, bayrak değişiklikleri, silme, posta kutusu CRUD, takvim CRUD, takvim olayı CRUD, kişi CRUD, adres defteri CRUD ve Forward Email Mail Uygulamasından (https://github.com/forwardemail/mail.forwardemail.net) uygulama sürüm yayınlarını kapsayan 20 farklı olay türünü destekler."
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

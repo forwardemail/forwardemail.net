@@ -1581,6 +1581,7 @@ test('VALID_EVENTS contains all expected event types', (t) => {
     'messagesMoved',
     'messagesCopied',
     'flagsUpdated',
+    'labelsUpdated',
     'messagesExpunged',
     'mailboxCreated',
     'mailboxDeleted',

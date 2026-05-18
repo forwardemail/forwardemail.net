@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Eindeutige Push-Token Dokumenten-ID"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Alias-ID, zu der dieses Token gehört"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Push-Benachrichtigungsplattform"
+          },
+          "token": {
+            "type": "string",
+            "description": "Gerätetoken, Registrierungstoken oder Push-Endpunkt-URL"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "Optionaler, menschenlesbarer Gerätename"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Zeitstempel der letzten erfolgreichen Push-Zustellung"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "Anzahl aufeinanderfolgender Zustellungsfehler (wird bei 3 automatisch entfernt)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Token-Ablaufdatum (wird bei erfolgreicher Zustellung automatisch verlängert)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Registrierungszeitstempel"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Zeitstempel der letzten Aktualisierung"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "Objekttyp-Bezeichner"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Push-Benachrichtigungsplattform"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "Gerätetoken (APNs hex), Registrierungstoken (FCM), HTTPS-Endpunkt-URL (UnifiedPush) oder JSON PushSubscription (Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Optionaler, menschenlesbarer Gerätename zur Verwaltung"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "Erforderlich bei Verwendung der API-Token-Authentifizierung. Die alias-ID, für die das Token registriert wird."
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "Anzahl der gelöschten Tokens"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Push-Tokens auflisten",
+        "description": "Alle aktiven (nicht abgelaufenen) Push-Tokens für den authentifizierten alias abrufen. Unterstützt optionales Filtern nach platform über Query-Parameter.",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "Tokens nach platform filtern"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Erforderlich bei Verwendung der API-Token-Authentifizierung"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Push-Tokens erfolgreich abgerufen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Push-Token registrieren",
+        "description": "Ein neues Push-Token registrieren oder ein bestehendes aktualisieren (upsert). Wenn ein Token mit derselben Kombination aus (alias, platform, token) bereits existiert, wird dessen Ablaufdatum verlängert und die Fehleranzahl zurückgesetzt. Tokens werden nach 90 Tagen Inaktivität oder 3 aufeinanderfolgenden Zustellungsfehlern automatisch entfernt.",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Push-Token erfolgreich registriert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Alle Push-Tokens entfernen",
+        "description": "Alle Push-Tokens für den authentifizierten alias entfernen. Nützlich für Logout- oder Konto-Löschvorgänge.",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "Erforderlich bei Verwendung der API-Token-Authentifizierung"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Alle Push-Tokens entfernt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Push-Token entfernen",
+        "description": "Ein bestimmtes Push-Token anhand der ID entfernen. Nur der zugehörige Benutzer/alias kann seine eigenen Tokens löschen.",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Push-Token Dokumenten-ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Push-Token erfolgreich entfernt"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "WebSockets",
       "description": "Push-Benachrichtigungen in Echtzeit via WebSocket. Stellen Sie eine Verbindung zum Endpunkt `/v1/ws` her, um Live-Ereignisse zu empfangen. Die Authentifizierung ist optional: Authentifizierte Clients erhalten aliasspezifische Ereignisse (IMAP, CalDAV, CardDAV) und globale Broadcast-Ereignisse, während nicht authentifizierte Clients nur globale Broadcast-Ereignisse (z. B. `newRelease`) empfangen. Unterstützt werden 20 verschiedene Ereignistypen für Nachrichtenzustellung, Verschiebungen, Kopien, Flag-Änderungen, Löschungen, CRUD-Operationen für Postfächer, Kalender, Kalenderereignisse, Kontakte und Adressbücher sowie App-Release-Benachrichtigungen der Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net)."
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Egyedi push token dokumentum azonosító"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Az alias ID, amelyhez a token tartozik"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Push értesítési platform"
+          },
+          "token": {
+            "type": "string",
+            "description": "Eszköz token, regisztrációs token vagy push végpont URL"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "Opcionális, ember által olvasható eszköznév"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Utolsó sikeres push kézbesítés időbélyege"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "Egymást követő kézbesítési hibák száma (automatikusan törlődik 3-nál)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Token lejárati ideje (sikeres kézbesítéskor automatikusan meghosszabbítva)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Regisztráció időbélyege"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Utolsó frissítés időbélyege"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "Objektum típus azonosító"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Push értesítési platform"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "Eszköz token (APNs hex), regisztrációs token (FCM), HTTPS végpont URL (UnifiedPush) vagy JSON PushSubscription (Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Opcionális, ember által olvasható eszköznév a kezeléshez"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "Szükséges API tokenes hitelesítés esetén. Az alias ID, amelyhez a token regisztrálva lesz."
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "Törölt tokenek száma"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Push tokenek listázása",
+        "description": "Lekéri az összes aktív (lejárat nélküli) push tokent a hitelesített alias számára. Támogatja az opcionális platform szerinti szűrést lekérdezési paraméterrel.",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "Tokenek szűrése platform szerint"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Szükséges API tokenes hitelesítés esetén"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Push tokenek sikeresen lekérve",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Push token regisztrálása",
+        "description": "Új push token regisztrálása vagy meglévő frissítése (upsert). Ha már létezik token ugyanazzal az (alias, platform, token) kombinációval, a lejárati idő meghosszabbodik és a sikertelen kézbesítések száma nullázódik. A tokenek automatikusan törlődnek 90 nap inaktivitás vagy 3 egymást követő kézbesítési hiba után.",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Push token sikeresen regisztrálva",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Minden push token eltávolítása",
+        "description": "Az összes push token eltávolítása a hitelesített alias számára. Hasznos kijelentkezés vagy fiók törlése esetén.",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "Szükséges API tokenes hitelesítés esetén"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Minden push token eltávolítva",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Push token eltávolítása",
+        "description": "Egy adott push token eltávolítása ID alapján. Csak a tulajdonos felhasználó/alias törölheti saját tokenjeit.",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Push token dokumentum azonosító"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Push token sikeresen eltávolítva"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "WebSockets",
       "description": "Valós idejű push értesítések WebSocketen keresztül. Csatlakozzon a /v1/ws végponthoz az élő események fogadásához. A hitelesítés opcionális: a hitelesített kliensek aliasonkénti eseményeket (IMAP, CalDAV, CardDAV) és globális közvetítési eseményeket kapnak, míg a nem hitelesített kliensek csak globális közvetítési eseményeket (pl. newRelease) kapnak. 20 különböző eseménytípust támogat, amelyek lefedik az üzenetek kézbesítését, áthelyezését, másolását, jelzőmódosítását, törlését, postaláda CRUD-ot, naptár CRUD-ot, naptáresemény CRUD-ot, kapcsolat CRUD-ot, címjegyzék CRUD-ot és az alkalmazáskiadási közvetítéseket a Forward Email Mail alkalmazásból (https://github.com/forwardemail/mail.forwardemail.net)."
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

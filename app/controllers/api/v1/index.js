@@ -19,6 +19,7 @@ const lookup = require('./lookup');
 const maxForwardedAddresses = require('./max-forwarded-addresses');
 const messages = require('./messages');
 const paypal = require('./paypal');
+const pushTokens = require('./push-tokens');
 const port = require('./port');
 const restricted = require('./restricted');
 const selfTest = require('./self-test');
@@ -49,6 +50,7 @@ module.exports = {
   maxForwardedAddresses,
   messages,
   paypal,
+  pushTokens,
   port,
   restricted,
   selfTest,

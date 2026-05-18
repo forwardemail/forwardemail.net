@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unikt push token dokument ID"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Alias ID som dette token tilhører"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Push-notifikationsplatform"
+          },
+          "token": {
+            "type": "string",
+            "description": "Enhedstoken, registreringstoken eller push-endpoint URL"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "Valgfrit menneskeligt læsbart enhedsnavn"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Sidste succesfulde push-leveringstidspunkt"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "Antal på hinanden følgende leveringsfejl (auto-fjernes ved 3)"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Token udløbstid (auto-forlænges ved succesfuld levering)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Registreringstidspunkt"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Sidste opdateringstidspunkt"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "Objekttype identifikator"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "Push-notifikationsplatform"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "Enhedstoken (APNs hex), registreringstoken (FCM), HTTPS endpoint URL (UnifiedPush) eller JSON PushSubscription (Web Push)"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Valgfrit menneskeligt læsbart enhedsnavn til administration"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "Påkrævet ved brug af API token-autentificering. Alias ID til registrering af token."
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "Antal slettede tokens"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "List push tokens",
+        "description": "Hent alle aktive (ikke-udløbne) push-tokens for den autentificerede alias. Understøtter valgfri platformfiltrering via query-parameter.",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "Filtrer tokens efter platform"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Påkrævet ved brug af API token-autentificering"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Push-tokens hentet succesfuldt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Register push token",
+        "description": "Registrer et nyt push-token eller opdater et eksisterende (upsert). Hvis et token med samme (alias, platform, token) kombination allerede findes, forlænges dets udløbstid, og fejloptællingen nulstilles. Tokens fjernes automatisk efter 90 dages inaktivitet eller 3 på hinanden følgende leveringsfejl.",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Push-token registreret succesfuldt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Remove all push tokens",
+        "description": "Fjern alle push-tokens for den autentificerede alias. Nyttigt ved logout eller sletning af konto.",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "Påkrævet ved brug af API token-autentificering"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Alle push-tokens fjernet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "Remove push token",
+        "description": "Fjern et specifikt push-token efter ID. Kun den ejer-tilknyttede bruger/alias kan slette egne tokens.",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Push token dokument ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Push-token fjernet succesfuldt"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "WebSockets",
       "description": "Push-notifikationer i realtid via WebSocket. Opret forbindelse til /v1/ws-slutpunktet for at modtage livebegivenheder. Godkendelse er valgfri: Godkendte klienter modtager per-alias-begivenheder (IMAP, CalDAV, CardDAV) og globale udsendelsesbegivenheder, mens ikke-godkendte klienter kun modtager globale udsendelsesbegivenheder (f.eks. newRelease). Understøtter 20 forskellige begivenhedstyper, der dækker levering af beskeder, flytninger, kopier, ændringer af flag, sletning, postkasse-CRUD, kalender-CRUD, kalenderbegivenheds-CRUD, kontakt-CRUD, adressebog-CRUD og udsendelser af app-udgivelser fra appen Forward Email Mail (https://github.com/forwardemail/mail.forwardemail.net)."
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }

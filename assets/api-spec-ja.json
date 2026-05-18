@@ -2718,6 +2718,117 @@
             }
           }
         }
+      },
+      "PushToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "一意のプッシュトークンドキュメントID"
+          },
+          "alias": {
+            "type": "string",
+            "description": "このトークンが属する alias ID"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "プッシュ通知プラットフォーム"
+          },
+          "token": {
+            "type": "string",
+            "description": "デバイストークン、登録トークン、またはプッシュエンドポイントのURL"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "任意の人間が読みやすいデバイス名"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "最後に成功したプッシュ配信のタイムスタンプ"
+          },
+          "failure_count": {
+            "type": "integer",
+            "description": "連続配信失敗回数（3回で自動削除）"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "トークンの有効期限（成功時に自動延長）"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "登録日時"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "最終更新日時"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token"
+            ],
+            "description": "オブジェクトタイプ識別子"
+          }
+        }
+      },
+      "PushTokenInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "token"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "apns",
+              "fcm",
+              "unified-push",
+              "web-push"
+            ],
+            "description": "プッシュ通知プラットフォーム"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "デバイストークン（APNsの16進数）、登録トークン（FCM）、HTTPSエンドポイントURL（UnifiedPush）、またはJSON PushSubscription（Web Push）"
+          },
+          "device_name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "管理用の任意の人間が読みやすいデバイス名"
+          },
+          "alias_id": {
+            "type": "string",
+            "description": "APIトークン認証を使用する場合に必須。トークンを登録する alias ID。"
+          }
+        }
+      },
+      "PushTokenDeletion": {
+        "type": "object",
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "description": "削除されたトークンの数"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "push_token_deletion"
+            ]
+          }
+        }
       }
     },
     "parameters": {
@@ -8756,6 +8867,229 @@
           }
         }
       }
+    },
+    "/v1/push-tokens": {
+      "get": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "プッシュトークンの一覧取得",
+        "description": "認証された alias に対するすべての有効（期限切れでない）プッシュトークンを取得します。クエリパラメータでプラットフォームによるフィルタリングが可能です。",
+        "operationId": "listPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "apns",
+                "fcm",
+                "unified-push",
+                "web-push"
+              ]
+            },
+            "description": "platform によるトークンのフィルタリング"
+          },
+          {
+            "name": "alias_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "APIトークン認証を使用する場合に必須"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "プッシュトークンの取得に成功しました",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PushToken"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "プッシュトークンの登録",
+        "description": "新しいプッシュトークンを登録するか、既存のトークンを更新（upsert）します。同じ (alias, platform, token) の組み合わせが既に存在する場合は、有効期限が延長され、失敗カウントがリセットされます。トークンは90日間の非アクティブ期間または連続3回の配信失敗後に自動的に削除されます。",
+        "operationId": "createPushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "プッシュトークンの登録に成功しました",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "すべてのプッシュトークンの削除",
+        "description": "認証された alias に紐づくすべてのプッシュトークンを削除します。ログアウトやアカウント削除時に便利です。",
+        "operationId": "removeAllPushTokens",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alias_id": {
+                    "type": "string",
+                    "description": "APIトークン認証を使用する場合に必須"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "すべてのプッシュトークンが削除されました",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenDeletion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/push-tokens/{id}": {
+      "delete": {
+        "tags": [
+          "Push Tokens"
+        ],
+        "summary": "プッシュトークンの削除",
+        "description": "IDで特定のプッシュトークンを削除します。自身のトークンのみ削除可能です。",
+        "operationId": "removePushToken",
+        "security": [
+          {
+            "AliasAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "プッシュトークンドキュメントのID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "プッシュトークンの削除に成功しました"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -8818,6 +9152,10 @@
     {
       "name": "WebSockets",
       "description": "WebSocket を介したリアルタイムのプッシュ通知。ライブイベントを受信するには、/v1/ws エンドポイントに接続します。認証はオプションです。認証済みのクライアントは、エイリアスごとのイベント (IMAP、CalDAV、CardDAV) とグローバルブロードキャストイベントを受信しますが、認証されていないクライアントはグローバルブロードキャストイベント (newRelease など) のみを受信します。Forward Email メールアプリ (https://github.com/forwardemail/mail.forwardemail.net) から、メッセージ配信、移動、コピー、フラグ変更、削除、メールボックスの CRUD、カレンダーの CRUD、カレンダーイベントの CRUD、連絡先の CRUD、アドレス帳の CRUD、アプリリリースブロードキャストなど、20 種類のイベントタイプをサポートしています。"
+    },
+    {
+      "name": "Push Tokens",
+      "description": "Register and manage push notification tokens for APNs, FCM, UnifiedPush, and Web Push. Tokens are scoped to an alias and used to deliver notifications when the app is backgrounded or closed."
     }
   ]
 }
