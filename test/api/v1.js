@@ -3205,3 +3205,323 @@ test('allowlist deduplicates and lowercases entries', async (t) => {
     t.is(res.body.allowlist[0], 'example.com');
   }
 });
+
+//
+// Alias Retention Tests
+//
+
+test('creates alias with retention=0 (default)', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const res = await t.context.api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      name: 'retention-zero',
+      retention: 0
+    });
+
+  t.is(res.status, 200);
+  t.is(res.body.name, 'retention-zero');
+  t.is(res.body.retention, 0);
+});
+
+test('creates alias without retention field (uses model default)', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const res = await t.context.api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      name: 'retention-default'
+    });
+
+  t.is(res.status, 200);
+  t.is(res.body.name, 'retention-default');
+  t.is(res.body.retention, 0);
+});
+
+test('creates alias with valid retention=30', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const res = await t.context.api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      name: 'retention-thirty',
+      retention: 30
+    });
+
+  t.is(res.status, 200);
+  t.is(res.body.name, 'retention-thirty');
+  t.is(res.body.retention, 30);
+});
+
+test('updates alias retention from 0 to 90', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  // Create alias first
+  const createRes = await t.context.api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      name: 'retention-update'
+    });
+
+  t.is(createRes.status, 200);
+  t.is(createRes.body.retention, 0);
+
+  // Update retention
+  const updateRes = await t.context.api
+    .put(`/v1/domains/${domain.name}/aliases/${createRes.body.id}`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      retention: 90
+    });
+
+  t.is(updateRes.status, 200);
+  t.is(updateRes.body.retention, 90);
+});
+
+test('rejects alias creation with retention > 365', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const res = await t.context.api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      name: 'retention-invalid',
+      retention: 400
+    });
+
+  t.is(res.status, 400);
+  t.is(res.body.message, phrases.ALIAS_RETENTION_INVALID);
+});
+
+test('rejects alias creation with negative retention', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const res = await t.context.api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      name: 'retention-negative',
+      retention: -5
+    });
+
+  t.is(res.status, 400);
+  t.is(res.body.message, phrases.ALIAS_RETENTION_INVALID);
+});
+
+test('creates alias with empty string retention (form default)', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  // Simulate HTML form submission where number input sends empty string
+  const res = await t.context.api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      name: 'retention-empty-string',
+      retention: ''
+    });
+
+  t.is(res.status, 200);
+  t.is(res.body.name, 'retention-empty-string');
+  t.is(res.body.retention, 0);
+});

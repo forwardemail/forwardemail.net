@@ -2293,6 +2293,12 @@
           },
           "has_imap": {
             "type": "boolean"
+          },
+          "retention": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 365,
+            "description": "Periodo di conservazione in giorni (0-365) per la pulizia di Cestino e Posta indesiderata. 0 significa ridimensionamento automatico basato sullo spazio di archiviazione."
           }
         },
         "required": [
@@ -2310,7 +2316,8 @@
           "created_at",
           "updated_at",
           "storage_location",
-          "has_imap"
+          "has_imap",
+          "retention"
         ],
         "example": {
           "user": {
@@ -2336,7 +2343,8 @@
           "created_at": "2022-08-15T12:36:26.593Z",
           "updated_at": "2022-08-15T12:36:26.593Z",
           "storage_location": "storage_loc",
-          "has_imap": false
+          "has_imap": false,
+          "retention": 0
         }
       },
       "AliasInput": {
@@ -2447,7 +2455,7 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 365,
-            "description": "Retention period in days (0-365) for Trash and Junk mailbox cleanup. Set to 0 to use automatic storage-based scaling."
+            "description": "Periodo di conservazione in giorni (0-365) per la pulizia automatica di Cestino e Posta indesiderata. Impostare a 0 per utilizzare il ridimensionamento automatico basato sullo spazio di archiviazione."
           }
         }
       },
@@ -2559,7 +2567,7 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 365,
-            "description": "Retention period in days (0-365) for Trash and Junk mailbox cleanup. Set to 0 to use automatic storage-based scaling."
+            "description": "Periodo di conservazione in giorni (0-365) per la pulizia automatica di Cestino e Posta indesiderata. Impostare a 0 per utilizzare il ridimensionamento automatico basato sullo spazio di archiviazione."
           }
         }
       },

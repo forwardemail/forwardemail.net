@@ -176,7 +176,7 @@ if domain && domain.group === 'admin'
     min=0,
     max=365,
     placeholder="0",
-    value=alias && Number.isFinite(alias.retention) ? alias.retention : ""
+    value=alias && Number.isFinite(alias.retention) ? alias.retention : 0
   )
   .alert.alert-secondary.small.mt-3
     = t("Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling.")
