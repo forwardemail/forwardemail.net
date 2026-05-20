@@ -1240,11 +1240,11 @@ if header :contains "X-Spam-Status" "Yes" {
 **Складне фільтрування з використанням змінних:**
 
 ```sieve
-require ["variables", "fileinto", "regex"];
+require ["variables", "fileinto", "mailbox"];
 
-if header :regex "From" "(.+)@example\\.com" {
-    set :lower "sender" "${1}";
-    fileinto "Contacts/${sender}";
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
 }
 ```
 

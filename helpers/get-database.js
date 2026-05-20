@@ -676,27 +676,37 @@ async function getDatabase(
         if (mailboxes.length === 0)
           throw new TypeError('Trash folder(s) do not exist');
 
-        // Use alias-specific storage (not pooled) for trash cleanup
-        // so each alias cleans trash based on its own usage vs its own cap
-        const [aliasDoc, maxQuotaPerAlias] = await Promise.all([
-          Aliases.findOne({ id: session.user.alias_id })
-            .select('storage_used')
-            .lean()
-            .exec(),
-          Domains.getMaxQuota(session.user.domain_id, session.user.alias_id)
-        ]);
+        // Use alias-specific retention if configured (skips dynamic scaling).
+        // Otherwise fall back to dynamic storage-based scaling.
+        const aliasRetention = session.user.alias_retention || 0;
+        let days;
+        if (aliasRetention > 0) {
+          // Convert ms back to days (alias_retention is stored in ms on session)
+          days = Math.round(aliasRetention / (24 * 60 * 60 * 1000));
+        } else {
+          // Use alias-specific storage (not pooled) for trash cleanup
+          // so each alias cleans trash based on its own usage vs its own cap
+          const [aliasDoc, maxQuotaPerAlias] = await Promise.all([
+            Aliases.findOne({ id: session.user.alias_id })
+              .select('storage_used')
+              .lean()
+              .exec(),
+            Domains.getMaxQuota(session.user.domain_id, session.user.alias_id)
+          ]);
 
-        const storageUsed =
-          aliasDoc && typeof aliasDoc.storage_used === 'number'
-            ? aliasDoc.storage_used
-            : 0;
+          const storageUsed =
+            aliasDoc && typeof aliasDoc.storage_used === 'number'
+              ? aliasDoc.storage_used
+              : 0;
 
-        const percentageUsed = Math.round(
-          (storageUsed / maxQuotaPerAlias) * 100
-        );
+          const percentageUsed = Math.round(
+            (storageUsed / maxQuotaPerAlias) * 100
+          );
 
-        // subtract the % from 30d and round up with min 0
-        const days = Math.max(Math.round(30 * (1 - percentageUsed / 100)), 0);
+          // subtract the % from 30d and round up with min 1 day
+          // (min 1 prevents deleting all Trash/Junk at 100% storage)
+          days = Math.max(Math.round(30 * (1 - percentageUsed / 100)), 1);
+        }
 
         {
           const sql = builder.build({

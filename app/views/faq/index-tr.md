@@ -2834,6 +2834,24 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
     reject "Mesaj spam içeriği nedeniyle reddedildi.";
 }
 ```
+**İstenmeyen mesajları sessizce at:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**Değişkenlerle karmaşık filtreleme:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
 
 #### Sieve Scriptlerini Yönetme {#managing-sieve-scripts}
 

@@ -19674,5 +19674,7 @@
   "Push token not found.": "Push token not found.",
   "Invalid push token ID.": "Invalid push token ID.",
   "You do not have permission to delete this token.": "You do not have permission to delete this token.",
-  "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one."
+  "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.",
+  "Retention": "Retention",
+  "Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling.": "Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling."
 }

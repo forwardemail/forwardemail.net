@@ -114,15 +114,15 @@ async function onCreate(path, session, fn) {
         }
       );
 
+    // Use alias retention from session for Trash/Junk mailboxes
+    const aliasRetention = session.user.alias_retention || 0;
+    const isRetentionPath =
+      path === 'Trash' || path === 'Junk' || path === 'Spam';
     mailbox = await Mailboxes.create({
       instance: this,
       session,
       path,
-      // NOTE: this is the same uncommented code as `helpers/refresh-session`
-      // TODO: support custom alias retention (would get stored on session)
-      // TODO: if user updates retention then we'd need to update in-memory IMAP connections
-      // retention: typeof alias.retention === 'number' ? alias.retention : 0
-      retention: 0
+      retention: isRetentionPath && aliasRetention > 0 ? aliasRetention : 0
     });
 
     const entry = {

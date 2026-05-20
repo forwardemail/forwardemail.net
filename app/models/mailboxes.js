@@ -136,7 +136,13 @@ Mailboxes.pre('validate', function (next) {
 });
 
 Mailboxes.pre('validate', function (next) {
-  if (['\\Trash', '\\Junk'].includes(this.specialUse))
+  // Only set default 30d retention for Trash/Junk if no explicit retention was provided.
+  // When alias-level retention is configured, the caller passes a non-zero value
+  // that should not be overwritten by this default.
+  if (
+    ['\\Trash', '\\Junk'].includes(this.specialUse) &&
+    (!this.retention || this.retention === 0)
+  )
     this.retention = ms('30d');
   next();
 });

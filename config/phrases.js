@@ -641,6 +641,8 @@ module.exports = {
     'An error occurred, please contact us directly by email at <a href="mailto:%s" target="_blank">%s</a>',
   INVALID_ERROR_CODE_IF_DISABLED:
     'Error code if disabled must be either <span class="notranslate">250</span>, <span class="notranslate">421</span>, or <span class="notranslate">550</span>.',
+  ALIAS_RETENTION_INVALID:
+    'Retention period must be a number between 0 and 365 days.',
   PASSPORT_MISSING_PASSWORD_ERROR: 'Please enter a password.',
   PASSPORT_ATTEMPT_TOO_SOON_ERROR:
     'Account is currently locked due to rate limiting.  Please try again later.',

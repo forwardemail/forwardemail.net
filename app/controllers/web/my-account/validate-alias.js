@@ -335,6 +335,14 @@ function validateAlias(ctx, next) {
       );
   }
 
+  // retention (days for Trash/Junk cleanup, 0-365)
+  if (typeof ctx.request.body.retention !== 'undefined') {
+    const retention = Number.parseInt(ctx.request.body.retention, 10);
+    if (!Number.isFinite(retention) || retention < 0 || retention > 365)
+      throw Boom.badRequest(ctx.translateError('ALIAS_RETENTION_INVALID'));
+    body.retention = retention;
+  }
+
   ctx.state.body = body;
 
   return next();

@@ -2834,6 +2834,24 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
     reject "Повідомлення відхилено через спам.";
 }
 ```
+**Тихе видалення небажаних повідомлень:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**Складна фільтрація зі змінними:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
 
 #### Керування скриптами Sieve {#managing-sieve-scripts}
 

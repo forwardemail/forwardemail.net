@@ -581,14 +581,34 @@ class SieveIntegration {
   async parseMessageForSieve(raw, envelope) {
     const parsed = await simpleParser(raw);
 
-    // Build headers object
+    // Build headers object from headerLines to preserve ALL original headers.
+    // IMPORTANT: mailparser's simpleParser collapses List-* headers
+    // (List-Unsubscribe, List-Help, List-Post, List-Archive, List-Id, etc.)
+    // into a single structured "list" object in the parsed.headers Map,
+    // making them invisible to Sieve header/exists tests.
+    // Using parsed.headerLines preserves every original header with its raw
+    // key and value, ensuring Sieve conditions like
+    //   header :contains "List-Unsubscribe" "example.com"
+    // work correctly.
     const headers = {};
-    if (parsed.headers) {
+    if (parsed.headerLines && parsed.headerLines.length > 0) {
+      for (const line of parsed.headerLines) {
+        const lowerKey = line.key.toLowerCase();
+        const headerValue = (line.line || '').slice(line.key.length + 1).trim();
+        if (headers[lowerKey]) {
+          if (Array.isArray(headers[lowerKey])) {
+            headers[lowerKey].push(headerValue);
+          } else {
+            headers[lowerKey] = [headers[lowerKey], headerValue];
+          }
+        } else {
+          headers[lowerKey] = headerValue;
+        }
+      }
+    } else if (parsed.headers) {
+      // Fallback: use parsed.headers Map if headerLines is unavailable
       for (const [key, value] of parsed.headers) {
         const lowerKey = key.toLowerCase();
-        // mailparser returns address headers (from, to, cc, bcc, reply-to, sender)
-        // as objects with { value: [...], text: "..." } structure.
-        // We need to extract the text representation for Sieve processing.
         let headerValue = value;
         if (
           value &&
@@ -596,7 +616,6 @@ class SieveIntegration {
           !Array.isArray(value) &&
           typeof value.text === 'string'
         ) {
-          // This is a mailparser address object, extract the text representation
           headerValue = value.text;
         } else if (
           value &&
@@ -605,7 +624,6 @@ class SieveIntegration {
           value.value &&
           Array.isArray(value.value)
         ) {
-          // Fallback: extract addresses from value array
           headerValue = value.value
             .map((v) =>
               v.name ? `"${v.name}" <${v.address}>` : v.address || ''

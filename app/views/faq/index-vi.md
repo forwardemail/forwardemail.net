@@ -2833,6 +2833,24 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
     reject "Tin nhắn bị từ chối do nội dung spam.";
 }
 ```
+**Âm thầm loại bỏ tin nhắn không mong muốn:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**Lọc phức tạp với biến:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
 
 #### Quản Lý Các Script Sieve {#managing-sieve-scripts}
 

@@ -84,17 +84,18 @@ async function ensureDefaultMailboxes(instance, session, purgeCache = false) {
 
           if (count > 0) return;
 
+          // Use alias retention from session for Trash/Junk mailboxes
+          const aliasRetention = session.user.alias_retention || 0;
+          const isRetentionPath =
+            path === 'Trash' || path === 'Junk' || path === 'Spam';
           const mailbox = await Mailboxes.create({
             // Virtual helper
             instance,
             session,
 
             path,
-            // NOTE: this is the same uncommented code as `helpers/imap/on-create`
-            // TODO: support custom alias retention (would get stored on session)
-            // TODO: if user updates retention then we'd need to update in-memory IMAP connections
-            // retention: typeof alias.retention === 'number' ? alias.retention : 0
-            retention: 0
+            retention:
+              isRetentionPath && aliasRetention > 0 ? aliasRetention : 0
           });
 
           instance.server.notifier

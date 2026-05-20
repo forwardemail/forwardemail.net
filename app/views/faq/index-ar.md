@@ -2834,6 +2834,24 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
     reject "تم رفض الرسالة بسبب محتوى مزعج.";
 }
 ```
+**تجاهل الرسائل غير المرغوب فيها بصمت:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**تصفية معقدة مع المتغيرات:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
 
 #### إدارة سكريبتات Sieve {#managing-sieve-scripts}
 

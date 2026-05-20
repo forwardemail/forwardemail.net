@@ -2871,6 +2871,25 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
 }
 ```
 
+**Silently discard unwanted messages:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**Complex filtering with variables:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
+
 #### Managing Sieve Scripts
 
 You can manage your Sieve scripts in several ways:

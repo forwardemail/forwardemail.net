@@ -2834,6 +2834,24 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
     reject "ההודעה נדחתה עקב תוכן ספאם.";
 }
 ```
+**השלכת הודעות לא רצויות בשקט:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**סינון מורכב עם משתנים:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
 
 #### ניהול סקריפטים של Sieve {#managing-sieve-scripts}
 

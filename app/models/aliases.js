@@ -400,10 +400,12 @@ const Aliases = new mongoose.Schema({
     lowercase: true,
     index: true
   },
+  // Retention period in days (0-365) for Trash and Junk mailbox cleanup. Set to 0 to use automatic storage-based scaling.
   retention: {
     type: Number,
     default: 0,
-    min: 0
+    min: 0,
+    max: 365
   },
   is_api: {
     type: Boolean,

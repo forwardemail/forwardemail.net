@@ -2833,6 +2833,24 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
     reject "Message rejected due to spam content.";
 }
 ```
+**ทิ้งข้อความที่ไม่ต้องการอย่างเงียบ ๆ:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**การกรองที่ซับซ้อนด้วยตัวแปร:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
 
 #### Managing Sieve Scripts {#managing-sieve-scripts}
 

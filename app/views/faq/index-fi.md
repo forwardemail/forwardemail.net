@@ -2833,6 +2833,24 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
     reject "Viesti hylätty roskapostisisällön vuoksi.";
 }
 ```
+**Hylkää ei-toivotut viestit hiljaisesti:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**Monimutkainen suodatus muuttujilla:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
 
 #### Sieve-skriptien hallinta {#managing-sieve-scripts}
 

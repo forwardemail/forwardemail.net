@@ -2831,6 +2831,24 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
     reject "Message rejected due to spam content.";
 }
 ```
+**静默丢弃不需要的消息:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**使用变量进行复杂过滤:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
 
 #### 管理 Sieve 脚本 {#managing-sieve-scripts}
 

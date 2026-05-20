@@ -2442,6 +2442,12 @@
           "vacation_responder_message": {
             "type": "string",
             "description": "رسالة نصية عادية للرد على المكالمات أثناء الإجازة"
+          },
+          "retention": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 365,
+            "description": "Retention period in days (0-365) for Trash and Junk mailbox cleanup. Set to 0 to use automatic storage-based scaling."
           }
         }
       },
@@ -2548,6 +2554,12 @@
           "vacation_responder_message": {
             "type": "string",
             "description": "رسالة نصية عادية من المجيب التلقائي"
+          },
+          "retention": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 365,
+            "description": "Retention period in days (0-365) for Trash and Junk mailbox cleanup. Set to 0 to use automatic storage-based scaling."
           }
         }
       },

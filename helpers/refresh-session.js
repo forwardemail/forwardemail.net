@@ -124,6 +124,12 @@ async function refreshSession(session, command) {
       alias.user[config.lastLocaleField] || i18n.config.defaultLocale;
     session.user.owner_full_email = alias.user.email;
 
+    // refresh alias retention setting (days → ms for mailbox cleanup)
+    session.user.alias_retention =
+      alias.retention && alias.retention > 0
+        ? alias.retention * 24 * 60 * 60 * 1000
+        : 0;
+
     // a long cache period avoids MongoDB connection issues interrupting IMAP
     await this.client.set(
       `refresh_check:${session.user.alias_id}`,

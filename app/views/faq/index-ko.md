@@ -2834,6 +2834,24 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
     reject "스팸 내용으로 인해 메시지가 거부되었습니다.";
 }
 ```
+**원치 않는 메시지를 조용히 폐기:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**변수를 사용한 복잡한 필터링:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
 
 #### Sieve 스크립트 관리 {#managing-sieve-scripts}
 

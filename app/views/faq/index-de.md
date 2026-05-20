@@ -2834,6 +2834,24 @@ if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
     reject "Nachricht aufgrund von Spam-Inhalt abgelehnt.";
 }
 ```
+**Unerwünschte Nachrichten stillschweigend verwerfen:**
+
+```sieve
+if header :contains "List-Unsubscribe" "marketing.example.com" {
+    discard;
+}
+```
+
+**Komplexe Filterung mit Variablen:**
+
+```sieve
+require ["variables", "fileinto", "mailbox"];
+
+if address :all :matches "From" "*@example.com" {
+    set :lower :upperfirst "sender" "${1}";
+    fileinto :create "Contacts/${sender}";
+}
+```
 
 #### Verwaltung von Sieve-Skripten {#managing-sieve-scripts}
 
