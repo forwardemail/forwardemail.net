@@ -1206,3 +1206,558 @@ if header :contains "from" "@gmail.com" {
     });
   });
 });
+
+// ============================================================================
+// MIME ENCODED-WORD DECODING AND HEADER UNFOLDING TESTS
+// ============================================================================
+
+describe('Sieve Integration - MIME Encoded Header Decoding', () => {
+  const { SieveIntegration } = require('../../helpers/sieve/integration');
+
+  describe('parseMessageForSieve MIME decoding', () => {
+    it('should decode RFC 2047 base64-encoded Subject for header matching', async () => {
+      const integration = new SieveIntegration({});
+      // "lemwarmup test" base64-encoded
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: =?UTF-8?B?bGVtd2FybXVwIHRlc3Q=?=\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.strictEqual(
+        message.headers.subject,
+        'lemwarmup test',
+        'Base64-encoded subject should be decoded'
+      );
+    });
+
+    it('should decode RFC 2047 quoted-printable-encoded Subject', async () => {
+      const integration = new SieveIntegration({});
+      // "lemwarmup test" quoted-printable encoded
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: =?UTF-8?Q?lemwarmup_test?=\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.strictEqual(
+        message.headers.subject,
+        'lemwarmup test',
+        'QP-encoded subject should be decoded'
+      );
+    });
+
+    it('should decode non-ASCII UTF-8 encoded Subject', async () => {
+      const integration = new SieveIntegration({});
+      // "Ünïcödé Sübject" base64-encoded
+      const encoded = Buffer.from('Ünïcödé Sübject').toString('base64');
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          `Subject: =?UTF-8?B?${encoded}?=\r\n` +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.strictEqual(
+        message.headers.subject,
+        'Ünïcödé Sübject',
+        'UTF-8 encoded subject should be decoded correctly'
+      );
+    });
+
+    it('should pass through plain (non-encoded) Subject unchanged', async () => {
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: lemwarmup plain text\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.strictEqual(
+        message.headers.subject,
+        'lemwarmup plain text',
+        'Plain subject should remain unchanged'
+      );
+    });
+
+    it('should unfold multi-line (folded) headers', async () => {
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: This is a long subject that has been\r\n' +
+          ' folded with lemwarmup keyword\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.ok(
+        message.headers.subject.includes('lemwarmup'),
+        'Unfolded subject should contain keyword'
+      );
+      assert.ok(
+        !message.headers.subject.includes('\r\n'),
+        'Unfolded subject should not contain CRLF'
+      );
+    });
+
+    it('should decode MIME-encoded From header for address matching', async () => {
+      const integration = new SieveIntegration({});
+      // "Ärzte Support" <support@example.com> with encoded display name
+      const raw = Buffer.from(
+        'From: =?UTF-8?B?w4RyenRlIFN1cHBvcnQ=?= <support@example.com>\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: Test\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = {
+        from: 'support@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.ok(
+        message.headers.from.includes('support@example.com'),
+        'From header should contain email address'
+      );
+      assert.ok(
+        message.headers.from.includes('Ärzte'),
+        'From header should have decoded display name'
+      );
+    });
+  });
+
+  describe('Sieve script execution with MIME-encoded headers', () => {
+    it('should match :contains on base64-encoded Subject (user reported case)', async () => {
+      // This is the exact scenario reported: user has a sieve filter
+      //   if header :contains "Subject" "lemwarmup" { discard; }
+      // but it fails when the Subject is MIME-encoded
+      const script = `if header :contains "Subject" "lemwarmup" {
+  discard;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: warmup@lemlist.com\r\n' +
+          'To: user@flyerwerk.de\r\n' +
+          'Subject: =?UTF-8?B?bGVtd2FybXVwIHRlc3Q=?=\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Warmup email body\r\n'
+      );
+      const envelope = { from: 'warmup@lemlist.com', to: 'user@flyerwerk.de' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      assert.ok(
+        result.actions.some((a) => a.type === 'discard'),
+        'Sieve :contains should match base64-encoded Subject after decoding'
+      );
+    });
+
+    it('should match :contains on QP-encoded Subject', async () => {
+      const script = `if header :contains "Subject" "lemwarmup" {
+  discard;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: warmup@lemlist.com\r\n' +
+          'To: user@example.com\r\n' +
+          'Subject: =?UTF-8?Q?lemwarmup_daily_message?=\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Warmup email body\r\n'
+      );
+      const envelope = { from: 'warmup@lemlist.com', to: 'user@example.com' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      assert.ok(
+        result.actions.some((a) => a.type === 'discard'),
+        'Sieve :contains should match QP-encoded Subject after decoding'
+      );
+    });
+
+    it('should match :contains on folded Subject line', async () => {
+      const script = `if header :contains "Subject" "lemwarmup" {
+  discard;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: warmup@lemlist.com\r\n' +
+          'To: user@example.com\r\n' +
+          'Subject: This is a very long subject line that contains\r\n' +
+          ' lemwarmup keyword in the folded portion\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Warmup email body\r\n'
+      );
+      const envelope = { from: 'warmup@lemlist.com', to: 'user@example.com' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      assert.ok(
+        result.actions.some((a) => a.type === 'discard'),
+        'Sieve :contains should match keyword in folded Subject'
+      );
+    });
+
+    it('should match :is on decoded Subject exactly', async () => {
+      const script = `if header :is "Subject" "Important Update" {
+  discard;
+}`;
+
+      const integration = new SieveIntegration({});
+      const encoded = Buffer.from('Important Update').toString('base64');
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          `Subject: =?UTF-8?B?${encoded}?=\r\n` +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      assert.ok(
+        result.actions.some((a) => a.type === 'discard'),
+        'Sieve :is should match exactly on decoded Subject'
+      );
+    });
+
+    it('should NOT match :contains when keyword is not in decoded Subject', async () => {
+      const script = `if header :contains "Subject" "lemwarmup" {
+  discard;
+}`;
+
+      const integration = new SieveIntegration({});
+      // "hello world" base64-encoded - does NOT contain "lemwarmup"
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: =?UTF-8?B?aGVsbG8gd29ybGQ=?=\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      assert.ok(
+        !result.actions.some((a) => a.type === 'discard'),
+        'Sieve :contains should NOT match when keyword is absent from decoded Subject'
+      );
+    });
+  });
+
+  describe('List-* header preservation with MIME decoding', () => {
+    it('should preserve List-Unsubscribe header for Sieve matching', async () => {
+      const script = `if header :contains "List-Unsubscribe" "example.com" {
+  discard;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: newsletter@example.com\r\n' +
+          'To: user@example.com\r\n' +
+          'Subject: Newsletter\r\n' +
+          'List-Unsubscribe: <https://example.com/unsubscribe?id=123>\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Newsletter content\r\n'
+      );
+      const envelope = {
+        from: 'newsletter@example.com',
+        to: 'user@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      assert.ok(
+        result.actions.some((a) => a.type === 'discard'),
+        'List-Unsubscribe header should be preserved and matchable'
+      );
+    });
+
+    it('should preserve List-Id header for Sieve matching', async () => {
+      const script = `if header :contains "List-Id" "newsletter.example.com" {
+  discard;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: newsletter@example.com\r\n' +
+          'To: user@example.com\r\n' +
+          'Subject: Newsletter\r\n' +
+          'List-Id: <newsletter.example.com>\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Newsletter content\r\n'
+      );
+      const envelope = {
+        from: 'newsletter@example.com',
+        to: 'user@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      assert.ok(
+        result.actions.some((a) => a.type === 'discard'),
+        'List-Id header should be preserved and matchable'
+      );
+    });
+
+    it('should decode MIME-encoded List-Unsubscribe header', async () => {
+      const script = `if header :contains "List-Unsubscribe" "example.com" {
+  discard;
+}`;
+
+      const integration = new SieveIntegration({});
+      // Some mailers encode List-Unsubscribe
+      const raw = Buffer.from(
+        'From: newsletter@example.com\r\n' +
+          'To: user@example.com\r\n' +
+          'Subject: Newsletter\r\n' +
+          'List-Unsubscribe: =?us-ascii?Q?<https://example.com/unsub>?=\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Newsletter content\r\n'
+      );
+      const envelope = {
+        from: 'newsletter@example.com',
+        to: 'user@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      assert.ok(
+        result.actions.some((a) => a.type === 'discard'),
+        'MIME-encoded List-Unsubscribe should be decoded and matchable'
+      );
+    });
+
+    it('should handle exists test for List-Id header', async () => {
+      const script = `if exists "List-Id" {
+  discard;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: newsletter@example.com\r\n' +
+          'To: user@example.com\r\n' +
+          'Subject: Newsletter\r\n' +
+          'List-Id: <newsletter.example.com>\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Newsletter content\r\n'
+      );
+      const envelope = {
+        from: 'newsletter@example.com',
+        to: 'user@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      assert.ok(
+        result.actions.some((a) => a.type === 'discard'),
+        'exists test should find List-Id header'
+      );
+    });
+  });
+
+  describe('Combined edge cases', () => {
+    it('should handle multiple encoded-word segments in one header', async () => {
+      const integration = new SieveIntegration({});
+      // "Hello World" split across two encoded-words
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: =?UTF-8?B?SGVsbG8=?= =?UTF-8?B?IFdvcmxk?=\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.ok(
+        message.headers.subject.includes('Hello'),
+        'Multi-segment encoded subject should contain "Hello"'
+      );
+      assert.ok(
+        message.headers.subject.includes('World'),
+        'Multi-segment encoded subject should contain "World"'
+      );
+    });
+
+    it('should handle mixed plain and encoded text in Subject', async () => {
+      const integration = new SieveIntegration({});
+      // "Re: " is plain, rest is encoded
+      const encoded = Buffer.from('Ünïcödé Tëst').toString('base64');
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          `Subject: Re: =?UTF-8?B?${encoded}?=\r\n` +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.ok(
+        message.headers.subject.includes('Re:'),
+        'Mixed subject should contain plain "Re:" prefix'
+      );
+      assert.ok(
+        message.headers.subject.includes('Ünïcödé'),
+        'Mixed subject should contain decoded Unicode text'
+      );
+    });
+
+    it('should handle ISO-8859-1 encoded Subject', async () => {
+      const integration = new SieveIntegration({});
+      // "Grüße" in ISO-8859-1 QP
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: =?ISO-8859-1?Q?Gr=FC=DFe?=\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.ok(
+        message.headers.subject.includes('Grüße'),
+        'ISO-8859-1 encoded subject should be decoded to UTF-8'
+      );
+    });
+
+    it('should handle duplicate headers (multiple Received)', async () => {
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'Received: from mx1.example.com\r\n' +
+          'Received: from mx2.example.com\r\n' +
+          'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: Test\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.ok(
+        Array.isArray(message.headers.received),
+        'Duplicate headers should be stored as array'
+      );
+      assert.strictEqual(
+        message.headers.received.length,
+        2,
+        'Should have both Received headers'
+      );
+    });
+  });
+});

@@ -197,6 +197,16 @@ async function processEmail({ email, port = 25, resolver, client }) {
       return;
     }
   } catch (err) {
+    if (isBsonOverflow(err)) {
+      err.isCodeBug = false;
+      logger.error(err, { ...meta, bson_overflow_fallback: true });
+      await Emails.findByIdAndUpdate(email._id, {
+        $set: { status: 'bounced', is_locked: false },
+        $unset: { locked_by: 1, locked_at: 1 }
+      });
+      return;
+    }
+
     logger.debug(err, meta);
     return;
   }

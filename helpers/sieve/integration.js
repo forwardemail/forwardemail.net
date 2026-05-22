@@ -19,6 +19,7 @@
 
 const { Buffer } = require('node:buffer');
 
+const libmime = require('libmime');
 const mongoose = require('mongoose');
 const { simpleParser } = require('mailparser');
 const SieveEngine = require('./engine');
@@ -594,7 +595,16 @@ class SieveIntegration {
     if (parsed.headerLines && parsed.headerLines.length > 0) {
       for (const line of parsed.headerLines) {
         const lowerKey = line.key.toLowerCase();
-        const headerValue = (line.line || '').slice(line.key.length + 1).trim();
+        // Extract raw value after the header name and colon.
+        // 1. Unfold (RFC 5322 §2.2.3): replace CRLF+WSP with single space
+        // 2. Decode RFC 2047 MIME encoded-words (e.g. =?UTF-8?B?...?=)
+        // Both are required by RFC 5228 §2.4.2.2 for Sieve header matching.
+        let headerValue = (line.line || '').slice(line.key.length + 1).trim();
+        headerValue = headerValue.replace(/\r?\n[ \t]+/g, ' ');
+        try {
+          headerValue = libmime.decodeWords(headerValue);
+        } catch {}
+
         if (headers[lowerKey]) {
           if (Array.isArray(headers[lowerKey])) {
             headers[lowerKey].push(headerValue);
