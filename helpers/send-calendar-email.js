@@ -416,14 +416,19 @@ function buildICS(ctx, events, calendar, method = false) {
   // add all VTIMEZONES, VEVENTS, and VTODOS
   for (const event of eventArray) {
     //
-    // Heal stale or missing DTSTAMP / LAST-MODIFIED on the read path.
-    // Records created via the REST API, process-calendar-invites, or
-    // CalDAV PUT from clients that omit LAST-MODIFIED may lack these
-    // RFC 5545 required properties.  iOS / Apple Calendar silently
-    // ignores VEVENT components missing LAST-MODIFIED, causing events
-    // to not appear after sync-collection / calendar-query responses.
+    // Heal stale or missing DTSTAMP / LAST-MODIFIED / CREATED / SEQUENCE
+    // on the read path.  Records created via the REST API,
+    // process-calendar-invites, or CalDAV PUT from clients that omit
+    // these properties may lack them.  iOS / Apple Calendar silently
+    // ignores VEVENT components missing LAST-MODIFIED or CREATED,
+    // causing events to not appear after sync-collection or
+    // calendar-query responses.
     //
-    const healedIcal = ensureICSTimestamps(event.ical, event.updated_at);
+    const healedIcal = ensureICSTimestamps(
+      event.ical,
+      event.updated_at,
+      event.created_at
+    );
     const eventComp = new ICAL.Component(ICAL.parse(healedIcal));
 
     //

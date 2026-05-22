@@ -26,8 +26,18 @@
  *   "This property specifies the date and time that the information
  *    associated with the calendar component was last revised."
  *
+ * RFC 5545 Section 3.8.7.1 (CREATED):
+ *   "This property specifies the date and time that the calendar
+ *    information was created by the calendar user agent in the
+ *    calendar store."
+ *
+ * RFC 5545 Section 3.8.7.4 (SEQUENCE):
+ *   "When a calendar component is created, its sequence number is 0."
+ *
+ * @see https://tools.ietf.org/html/rfc5545#section-3.8.7.1
  * @see https://tools.ietf.org/html/rfc5545#section-3.8.7.2
  * @see https://tools.ietf.org/html/rfc5545#section-3.8.7.3
+ * @see https://tools.ietf.org/html/rfc5545#section-3.8.7.4
  */
 
 const ICAL = require('ical.js');
@@ -73,10 +83,11 @@ function stampICS(icsData, now) {
 }
 
 /**
- * Ensure DTSTAMP and LAST-MODIFIED are consistent with the record's
- * `updated_at` timestamp.  Used on the **read path** (CalDAV GET/REPORT,
- * API retrieve) to heal existing records that were stored with stale
- * or missing ICS-level timestamps.
+ * Ensure DTSTAMP, LAST-MODIFIED, CREATED, and SEQUENCE are present and
+ * consistent with the record's `updated_at` / `created_at` timestamps.
+ * Used on the **read path** (CalDAV GET/REPORT, API retrieve) to heal
+ * existing records that were stored with stale or missing ICS-level
+ * timestamps.
  *
  * Unlike `stampICS()` (which always sets "now"), this function uses
  * the authoritative `updated_at` from the database record so that:
@@ -85,11 +96,16 @@ function stampICS(icsData, now) {
  *   - CalDAV clients see LAST-MODIFIED that matches the actual
  *     modification time, not the time the response was generated
  *
+ * Apple Calendar (iOS/macOS dataaccessd) silently ignores VEVENT
+ * components that are missing CREATED or LAST-MODIFIED, so this
+ * function ensures both are always present.
+ *
  * @param {string} icsData   - Raw ICS calendar data
  * @param {Date}   updatedAt - The record's updated_at timestamp
+ * @param {Date}   [createdAt] - The record's created_at timestamp (optional)
  * @returns {string} ICS data with corrected timestamps
  */
-function ensureICSTimestamps(icsData, updatedAt) {
+function ensureICSTimestamps(icsData, updatedAt, createdAt) {
   if (!icsData || typeof icsData !== 'string') return icsData;
   if (!updatedAt) return icsData;
 
@@ -114,6 +130,8 @@ function ensureICSTimestamps(icsData, updatedAt) {
     for (const sub of components) {
       const existingDtstamp = sub.getFirstPropertyValue('dtstamp');
       const existingLastMod = sub.getFirstPropertyValue('last-modified');
+      const existingCreated = sub.getFirstPropertyValue('created');
+      const existingSequence = sub.getFirstPropertyValue('sequence');
 
       // Only update if the existing value is older than updated_at.
       // This avoids overwriting correctly-stamped records from CalDAV PUT.
@@ -133,6 +151,40 @@ function ensureICSTimestamps(icsData, updatedAt) {
 
       if (lastModMs < stampMs) {
         sub.updatePropertyWithValue('last-modified', stamp);
+        modified = true;
+      }
+
+      //
+      // CREATED (RFC 5545 Section 3.8.7.1):
+      // Apple Calendar requires this property to display events.
+      // If missing, set it to createdAt (if provided) or fall back to
+      // the existing DTSTAMP value (which approximates creation time).
+      //
+      if (!existingCreated) {
+        let createdStamp;
+        if (createdAt) {
+          createdStamp = ICAL.Time.fromJSDate(
+            createdAt instanceof Date ? createdAt : new Date(createdAt),
+            true
+          );
+        } else if (existingDtstamp) {
+          // Use original DTSTAMP as best approximation of creation time
+          createdStamp = existingDtstamp;
+        } else {
+          createdStamp = stamp;
+        }
+
+        sub.updatePropertyWithValue('created', createdStamp);
+        modified = true;
+      }
+
+      //
+      // SEQUENCE (RFC 5545 Section 3.8.7.4):
+      // Apple Calendar requires this property.  Per RFC 5545, the
+      // default is 0 when absent, but Apple does not honor the default.
+      //
+      if (existingSequence === null || existingSequence === undefined) {
+        sub.updatePropertyWithValue('sequence', 0);
         modified = true;
       }
     }
