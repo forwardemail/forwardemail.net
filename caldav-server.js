@@ -685,11 +685,23 @@ function calendarSupportsComponent(calendar, componentType) {
 function getEventIdVariants(eventId) {
   if (typeof eventId !== 'string') return [eventId];
 
-  if (eventId.endsWith('.ics')) {
-    return [eventId, eventId.slice(0, -4)];
+  // Decode %40 to @ for lookup (calendar-multiget sends encoded hrefs)
+  const decoded = eventId.includes('%40')
+    ? decodeURIComponent(eventId)
+    : eventId;
+
+  const base = decoded.endsWith('.ics') ? decoded.slice(0, -4) : decoded;
+  const variants = [base, `${base}.ics`];
+
+  // Also try the encoded form in case it was stored that way
+  if (decoded !== eventId) {
+    const encodedBase = eventId.endsWith('.ics')
+      ? eventId.slice(0, -4)
+      : eventId;
+    variants.push(encodedBase, `${encodedBase}.ics`);
   }
 
-  return [eventId, `${eventId}.ics`];
+  return [...new Set(variants)];
 }
 
 // TODO: support SMS reminders for VALARM
@@ -2364,7 +2376,11 @@ class CalDAV extends API {
             ical,
             // Construct href for sync-collection responses
             // This matches the CalDAV URL format: /dav/{principalId}/{calendarId}/{eventId}.ics
-            href: `/dav/${principalId}/${calendarId}/${eventId}.ics`
+            // Encode @ as %40 in path segments for iOS CalDAV compatibility
+            href: `/dav/${principalId.replaceAll(
+              '@',
+              '%40'
+            )}/${calendarId}/${eventId.replaceAll('@', '%40')}.ics`
           });
         }
 
@@ -2523,6 +2539,29 @@ class CalDAV extends API {
 
     // Deduplicate by eventId, keeping the most recently updated copy
     events = deduplicateCalendarEvents(events);
+
+    //
+    // Normalize hrefs: ensure @ is encoded as %40 in path segments.
+    // iOS URL parser treats bare @ in path as a userinfo separator,
+    // which corrupts the URL and causes events to silently not appear.
+    // This handles events created before the write-path fix was deployed,
+    // and also constructs href for old events that have href=null.
+    //
+    const calId = this.getCalendarId(calendar);
+    for (const event of events) {
+      if (!event.href) {
+        // Construct href for events that don't have one stored
+        event.href = `/dav/${principalId.replaceAll(
+          '@',
+          '%40'
+        )}/${calId}/${event.eventId.replaceAll('@', '%40')}.ics`;
+      } else if (event.href.includes('@')) {
+        event.href = event.href
+          .split('/')
+          .map((segment) => segment.replaceAll('@', '%40'))
+          .join('/');
+      }
+    }
 
     ctx.logger.debug('events found', { count: events.length });
 
@@ -2976,7 +3015,25 @@ class CalDAV extends API {
     }
 
     // Deduplicate by eventId, keeping the most recently updated copy
-    return deduplicateCalendarEvents(filtered);
+    const results = deduplicateCalendarEvents(filtered);
+
+    // Normalize hrefs: ensure @ is encoded as %40 in path segments (iOS compat)
+    const calId = this.getCalendarId(calendar);
+    for (const event of results) {
+      if (!event.href) {
+        event.href = `/dav/${principalId.replaceAll(
+          '@',
+          '%40'
+        )}/${calId}/${event.eventId.replaceAll('@', '%40')}.ics`;
+      } else if (event.href.includes('@')) {
+        event.href = event.href
+          .split('/')
+          .map((segment) => segment.replaceAll('@', '%40'))
+          .join('/');
+      }
+    }
+
+    return results;
   }
 
   async getEvent(ctx, { eventId, principalId, calendarId, user, fullData }) {
@@ -3038,10 +3095,38 @@ class CalDAV extends API {
         }
       }
 
+      // Normalize href: ensure @ is encoded as %40 (iOS compat)
+      if (!keeper.href) {
+        keeper.href = `/dav/${principalId.replaceAll(
+          '@',
+          '%40'
+        )}/${calendarId}/${keeper.eventId.replaceAll('@', '%40')}.ics`;
+      } else if (keeper.href.includes('@')) {
+        keeper.href = keeper.href
+          .split('/')
+          .map((segment) => segment.replaceAll('@', '%40'))
+          .join('/');
+      }
+
       return keeper;
     }
 
-    return allMatches[0] || null;
+    const result = allMatches[0] || null;
+    if (result) {
+      if (!result.href) {
+        result.href = `/dav/${principalId.replaceAll(
+          '@',
+          '%40'
+        )}/${calendarId}/${result.eventId.replaceAll('@', '%40')}.ics`;
+      } else if (result.href.includes('@')) {
+        result.href = result.href
+          .split('/')
+          .map((segment) => segment.replaceAll('@', '%40'))
+          .join('/');
+      }
+    }
+
+    return result;
   }
 
   // eventId: ctx.state.params.eventId,

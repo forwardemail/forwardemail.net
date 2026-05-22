@@ -736,7 +736,13 @@ async function create(ctx) {
     stamp: true,
     normalizeAlarms: true
   });
-  const href = `/dav/${ctx.state.session.user.username}/${calendar.calendarId}/${eventId}.ics`;
+  // Encode @ as %40 in path segments for CalDAV href compatibility.
+  // iOS URL parser treats bare @ in path as a userinfo separator,
+  // which corrupts the URL and causes events to silently not appear.
+  const href = `/dav/${ctx.state.session.user.username.replaceAll(
+    '@',
+    '%40'
+  )}/${calendar.calendarId}/${eventId.replaceAll('@', '%40')}.ics`;
 
   let calendarEvent;
 
