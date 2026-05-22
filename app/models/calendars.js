@@ -39,7 +39,7 @@ const Calendars = new mongoose.Schema(
 
     prodId: {
       type: String,
-      default: '//forwardemail.net//caldav//EN'
+      default: '-//forwardemail.net//caldav//EN'
     },
     name: {
       type: String,

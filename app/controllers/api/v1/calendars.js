@@ -132,7 +132,7 @@ async function create(ctx) {
     description: body.description || config.urls.web,
     color: body.color || falso.randHex(),
     order: body.order || 0,
-    prodId: `//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
+    prodId: `-//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
     timezone: body.timezone || ctx.state.session.user.timezone || 'UTC',
     url: config.urls.web,
     readonly: false,

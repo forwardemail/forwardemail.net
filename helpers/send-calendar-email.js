@@ -7,6 +7,7 @@ const ICAL = require('ical.js');
 const sanitizeHtml = require('sanitize-html');
 const uuid = require('uuid');
 const { boolean } = require('boolean');
+const { ensureICSTimestamps } = require('#helpers/stamp-ics');
 
 const Aliases = require('#models/aliases');
 const { sendApnCalendar } = require('#helpers/send-apn');
@@ -375,7 +376,16 @@ function buildICS(ctx, events, calendar, method = false) {
   comp.updatePropertyWithValue('name', calendar.name);
 
   // prodid
-  if (calendar.prodId) comp.updatePropertyWithValue('prodid', calendar.prodId);
+  // RFC 5545 Section 3.7.3 requires PRODID to begin with "-//"
+  // (e.g. "-//forwardemail.net//caldav//EN").  Existing calendars may
+  // have been stored without the leading "-"; heal on read so that
+  // CalDAV clients (especially iOS) receive a conformant VCALENDAR.
+  if (calendar.prodId) {
+    const prodId = calendar.prodId.startsWith('-')
+      ? calendar.prodId
+      : `-${calendar.prodId}`;
+    comp.updatePropertyWithValue('prodid', prodId);
+  }
 
   // description
   if (calendar.description)
@@ -405,7 +415,16 @@ function buildICS(ctx, events, calendar, method = false) {
 
   // add all VTIMEZONES, VEVENTS, and VTODOS
   for (const event of eventArray) {
-    const eventComp = new ICAL.Component(ICAL.parse(event.ical));
+    //
+    // Heal stale or missing DTSTAMP / LAST-MODIFIED on the read path.
+    // Records created via the REST API, process-calendar-invites, or
+    // CalDAV PUT from clients that omit LAST-MODIFIED may lack these
+    // RFC 5545 required properties.  iOS / Apple Calendar silently
+    // ignores VEVENT components missing LAST-MODIFIED, causing events
+    // to not appear after sync-collection / calendar-query responses.
+    //
+    const healedIcal = ensureICSTimestamps(event.ical, event.updated_at);
+    const eventComp = new ICAL.Component(ICAL.parse(healedIcal));
 
     //
     // RFC 5545 Section 3.6.5: VTIMEZONE components MUST be present

@@ -442,7 +442,7 @@ async function ensureDefaultCalendars(ctx) {
     // calendar obj
     //
     description: config.urls.web,
-    prodId: `//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
+    prodId: `-//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
     //
     // NOTE: instead of using timezone from IP we use
     //       their last time zone set in a browser session
@@ -1943,7 +1943,7 @@ class CalDAV extends API {
       description,
       color: color || falso.randHex(),
       order,
-      prodId: `//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
+      prodId: `-//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
       timezone: timezone || ctx.state.session.user.timezone,
       url: config.urls.web,
       readonly: false,
