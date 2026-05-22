@@ -2547,7 +2547,7 @@ class CalDAV extends API {
     // This handles events created before the write-path fix was deployed,
     // and also constructs href for old events that have href=null.
     //
-    const calId = this.getCalendarId(calendar);
+    const calId = this.getCalendarId(ctx, calendar);
     for (const event of events) {
       if (!event.href) {
         // Construct href for events that don't have one stored
@@ -3018,7 +3018,7 @@ class CalDAV extends API {
     const results = deduplicateCalendarEvents(filtered);
 
     // Normalize hrefs: ensure @ is encoded as %40 in path segments (iOS compat)
-    const calId = this.getCalendarId(calendar);
+    const calId = this.getCalendarId(ctx, calendar);
     for (const event of results) {
       if (!event.href) {
         event.href = `/dav/${principalId.replaceAll(
