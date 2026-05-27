@@ -460,7 +460,7 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const obj1 = objects1.find((o) => o.url.includes(uid));
+    const obj1 = objects1.find((o) => decodeURIComponent(o.url).includes(uid));
     t.truthy(obj1, 'VTODO should exist after create');
     const etag1 = obj1.etag;
     t.truthy(etag1, 'ETag should exist after create');
@@ -501,7 +501,7 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const obj2 = objects2.find((o) => o.url.includes(uid));
+    const obj2 = objects2.find((o) => decodeURIComponent(o.url).includes(uid));
     t.truthy(obj2, 'VTODO should exist after completion update');
     const etag2 = obj2.etag;
     t.truthy(etag2, 'ETag should exist after completion update');
@@ -625,7 +625,7 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const obj1 = objects1.find((o) => o.url.includes(uid));
+    const obj1 = objects1.find((o) => decodeURIComponent(o.url).includes(uid));
     t.truthy(obj1, 'VTODO should exist after create');
     const etag1 = obj1.etag;
 
@@ -661,7 +661,7 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const obj2 = objects2.find((o) => o.url.includes(uid));
+    const obj2 = objects2.find((o) => decodeURIComponent(o.url).includes(uid));
     t.truthy(obj2, 'VTODO should exist after update');
     t.not(etag1, obj2.etag, 'ETag should change after VTODO summary update');
 
@@ -731,7 +731,7 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const obj1 = objects1.find((o) => o.url.includes(uid));
+    const obj1 = objects1.find((o) => decodeURIComponent(o.url).includes(uid));
     t.truthy(obj1, 'VTODO should exist');
     t.true(
       obj1.data.includes('STATUS:NEEDS-ACTION'),
@@ -777,7 +777,7 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const obj2 = objects2.find((o) => o.url.includes(uid));
+    const obj2 = objects2.find((o) => decodeURIComponent(o.url).includes(uid));
     t.truthy(obj2, 'VTODO should still exist after completion');
     t.true(
       obj2.data.includes('STATUS:COMPLETED'),

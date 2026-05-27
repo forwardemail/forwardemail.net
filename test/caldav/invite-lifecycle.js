@@ -38,6 +38,8 @@ const env = require('#config/env');
 const logger = require('#helpers/logger');
 
 const { checkAndProcessImipMessage } = require('#helpers/process-imip-reply');
+const { processCalendarInvites } = require('#helpers/process-calendar-invites');
+const { encrypt } = require('#helpers/encrypt-decrypt');
 const {
   generateToken,
   hashToken,
@@ -470,7 +472,9 @@ async function fetchEventIcs(t, uid) {
   });
 
   const match = objects.find(
-    (o) => o.url.includes(uid) || (o.data && o.data.includes(uid))
+    (o) =>
+      decodeURIComponent(o.url).includes(uid) ||
+      (o.data && o.data.includes(uid))
   );
   return match ? match.data : null;
 }
@@ -478,36 +482,63 @@ async function fetchEventIcs(t, uid) {
 // ─── Helper: run processCalendarInvites against real CalDAV+SQLite ───────────
 
 async function runProcessInvites(t) {
-  //
-  // Flush the processCalendarInvites negative-cache so the
-  // authenticate() path actually runs the invite processor
-  // instead of short-circuiting on the cached "no invites" state.
-  //
-  if (t.context.client) {
-    const { alias } = t.context;
-    if (alias) {
-      await t.context.client.del(`caldav_inv_empty:${alias.id}`);
-    }
+  const { alias } = t.context;
+
+  // Await any in-flight invite processing from a previous authenticate() call.
+  if (alias) {
+    await CalDAV.waitForInflightInvites(alias.id);
   }
 
-  // fetchCalendars triggers authentication which runs processCalendarInvites
+  // Call processCalendarInvites DIRECTLY (synchronously awaited) instead of
+  // relying on the fire-and-forget path through authenticate().
+  // This eliminates all race conditions with the inflight guard, negative
+  // cache, and fire-and-forget Redis SET operations.
+  const { calDAV } = t.context;
+  const ctx = {
+    logger,
+    state: {
+      user: {
+        username: t.context.username,
+        alias_id: alias.id,
+        alias_name: alias.name,
+        domain_name: t.context.domain.name,
+        domain_id: t.context.domain.id
+      },
+      session: {
+        user: {
+          alias_id: alias.id,
+          alias_name: alias.name,
+          domain_id: t.context.domain.id,
+          domain_name: t.context.domain.name,
+          storage_location: alias.storage_location,
+          password: encrypt(t.context.pass)
+        }
+      }
+    }
+  };
+
+  // getDatabase needs session.db; set it up via a lightweight CalDAV call
+  // that triggers authenticate() and populates the session properly.
+  // Instead, we construct the minimal session.db stub that signals WSP mode.
+  ctx.state.session.db = {
+    id: alias.id,
+    open: true,
+    inTransaction: false,
+    readonly: true,
+    memory: false,
+    wsp: true,
+    close() {
+      this.open = false;
+    }
+  };
+
+  await processCalendarInvites(calDAV, ctx);
+
+  // Refresh calendar list for subsequent fetchCalendarObjects calls
   t.context.calendars = await fetchCalendars({
     account: t.context.account,
     headers: t.context.authHeaders
   });
-
-  // Poll MongoDB until all pending invites are processed (or max 15s).
-  // This replaces the previous fixed 2s setTimeout which was racy when
-  // processCalendarInvites had to handle multiple sequential REPLY invites.
-  await pWaitFor(
-    async () => {
-      const pending = await CalendarInvites.countDocuments({
-        processed: false
-      });
-      return pending === 0;
-    },
-    { interval: 200, timeout: 15_000 }
-  );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -608,6 +639,12 @@ test.serial(
       'PARTSTAT should be NEEDS-ACTION before REPLY'
     );
 
+    // Ensure any in-flight processCalendarInvites triggered by
+    // createEventViaCalDAV or fetchEventIcs has fully completed.
+    if (t.context.alias) {
+      await CalDAV.waitForInflightInvites(t.context.alias.id);
+    }
+
     // ── Step 1: Attendee sends iMIP REPLY ──
     const replyIcs = makeReplyIcs({
       uid,
@@ -634,12 +671,10 @@ test.serial(
       fromEmail: attendee,
       toEmail: organizer
     });
-
     t.true(result.processed, 'REPLY should be processed');
 
     // ── Step 2: Organizer authenticates → processCalendarInvites runs ──
     await runProcessInvites(t);
-
     // Verify: PARTSTAT updated in real SQLite
     const afterIcs = await fetchEventIcs(t, uid);
     t.truthy(afterIcs, 'Event should still exist after REPLY');

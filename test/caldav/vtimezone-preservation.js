@@ -409,7 +409,9 @@ async function fetchEventIcs(t, uid) {
   });
 
   const match = objects.find(
-    (o) => o.url.includes(uid) || (o.data && o.data.includes(uid))
+    (o) =>
+      decodeURIComponent(o.url).includes(uid) ||
+      (o.data && o.data.includes(uid))
   );
   return match ? match.data : null;
 }

@@ -383,9 +383,10 @@ async function fetchEventIcs(t, uid) {
     calendar,
     headers: t.context.authHeaders
   });
-
   const match = objects.find(
-    (o) => o.url.includes(uid) || (o.data && o.data.includes(uid))
+    (o) =>
+      decodeURIComponent(o.url).includes(uid) ||
+      (o.data && o.data.includes(uid))
   );
   return match ? match.data : null;
 }
@@ -398,9 +399,10 @@ async function fetchEventETag(t, uid) {
     calendar,
     headers: t.context.authHeaders
   });
-
   const match = objects.find(
-    (o) => o.url.includes(uid) || (o.data && o.data.includes(uid))
+    (o) =>
+      decodeURIComponent(o.url).includes(uid) ||
+      (o.data && o.data.includes(uid))
   );
   return match ? match.etag : null;
 }
@@ -420,11 +422,18 @@ async function runProcessInvites(t) {
   // authenticate() path actually runs the invite processor
   // instead of short-circuiting on the cached "no invites" state.
   //
-  if (t.context.client) {
-    const { alias } = t.context;
-    if (alias) {
-      await t.context.client.del(`caldav_inv_empty:${alias.id}`);
-    }
+  const { alias } = t.context;
+  if (t.context.client && alias) {
+    await t.context.client.del(`caldav_inv_empty:${alias.id}`);
+  }
+
+  // Await any in-flight invite processing from a previous test/call.
+  // processCalendarInvites is fire-and-forget in authenticate(), so its
+  // .then()/.finally() may still be running when the next test starts.
+  // Without this, the _inviteProcessingInflight guard causes the new
+  // processCalendarInvites to be skipped entirely.
+  if (alias) {
+    await CalDAV.waitForInflightInvites(alias.id);
   }
 
   // fetchCalendars triggers authentication which runs processCalendarInvites
@@ -434,8 +443,6 @@ async function runProcessInvites(t) {
   });
 
   // Poll MongoDB until all pending invites are processed (or max 15s).
-  // This replaces the previous fixed 2s setTimeout which was racy when
-  // processCalendarInvites had to handle multiple sequential REPLY invites.
   await pWaitFor(
     async () => {
       const pending = await CalendarInvites.countDocuments({
@@ -445,6 +452,13 @@ async function runProcessInvites(t) {
     },
     { interval: 200, timeout: 15_000 }
   );
+
+  // Await the in-flight promise that was just started by authenticate().
+  // This ensures the full .then()/.finally() chain completes before the
+  // test continues, preventing races with subsequent runProcessInvites calls.
+  if (alias) {
+    await CalDAV.waitForInflightInvites(alias.id);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

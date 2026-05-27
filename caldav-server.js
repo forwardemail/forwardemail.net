@@ -4419,6 +4419,25 @@ class CalDAV extends API {
   getETag(ctx, event) {
     return etag(event.updated_at.toISOString());
   }
+
+  /**
+   * Wait for any in-flight processCalendarInvites to complete.
+   * Used by tests to avoid race conditions with the fire-and-forget
+   * invite processing triggered by authenticate().
+   *
+   * @param {string} aliasId - The alias ID to wait for
+   * @returns {Promise<void>}
+   */
+  static async waitForInflightInvites(aliasId) {
+    const promise = _inviteProcessingInflight.get(aliasId);
+    if (promise) {
+      try {
+        await promise;
+      } catch {
+        // Ignore errors - we just need to wait for completion
+      }
+    }
+  }
 }
 
 module.exports = CalDAV;

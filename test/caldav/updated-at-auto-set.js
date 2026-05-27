@@ -311,7 +311,7 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const obj1 = objects1.find((o) => o.url.includes(uid));
+    const obj1 = objects1.find((o) => decodeURIComponent(o.url).includes(uid));
     t.truthy(obj1, 'Event should exist after create');
     const etag1 = obj1.etag;
     t.truthy(etag1, 'ETag should exist after create');
@@ -342,7 +342,7 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const obj2 = objects2.find((o) => o.url.includes(uid));
+    const obj2 = objects2.find((o) => decodeURIComponent(o.url).includes(uid));
     t.truthy(obj2, 'Event should exist after update');
     const etag2 = obj2.etag;
     t.truthy(etag2, 'ETag should exist after update');
@@ -386,7 +386,9 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const etag1 = objects1.find((o) => o.url.includes(uid))?.etag;
+    const etag1 = objects1.find((o) =>
+      decodeURIComponent(o.url).includes(uid)
+    )?.etag;
 
     await new Promise((resolve) => {
       setTimeout(resolve, 50);
@@ -408,7 +410,9 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const etag2 = objects2.find((o) => o.url.includes(uid))?.etag;
+    const etag2 = objects2.find((o) =>
+      decodeURIComponent(o.url).includes(uid)
+    )?.etag;
 
     await new Promise((resolve) => {
       setTimeout(resolve, 50);
@@ -430,7 +434,9 @@ test.serial(
       calendar,
       headers: t.context.authHeaders
     });
-    const etag3 = objects3.find((o) => o.url.includes(uid))?.etag;
+    const etag3 = objects3.find((o) =>
+      decodeURIComponent(o.url).includes(uid)
+    )?.etag;
 
     // All three ETags should be different
     t.not(etag1, etag2, 'ETag should change after first update');

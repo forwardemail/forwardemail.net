@@ -65,6 +65,14 @@ function extractVEvent(str) {
   ).sort();
 }
 
+// Like extractVEvent but excludes DTSTAMP and LAST-MODIFIED which are
+// dynamically updated by ensureICSTimestamps on the read path.
+function extractVEventStable(str) {
+  return extractVEvent(str).filter(
+    (line) => !line.startsWith('DTSTAMP:') && !line.startsWith('LAST-MODIFIED:')
+  );
+}
+
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupFactories);
@@ -644,7 +652,7 @@ test('fetchCalendarObjects should be able to fetch target calendar objects when 
   });
 
   t.is(objects.length, 1);
-  t.is(objects[0].url, objectUrl3);
+  t.is(decodeURIComponent(objects[0].url), decodeURIComponent(objectUrl3));
 
   const deleteResult1 = await deleteObject({
     url: objectUrl1,
@@ -888,9 +896,11 @@ test('createObject should be able to create object', async (t) => {
   t.true(calendarObject.url.length > 0);
   t.true(calendarObject.etag.length > 0);
 
-  const list1 = extractVEvent(calendarObject.data);
-  const list2 = extractVEvent(iCalString);
+  const list1 = extractVEventStable(calendarObject.data);
+  const list2 = extractVEventStable(iCalString);
   t.deepEqual(list1, list2);
+  // Verify DTSTAMP is present (ensureICSTimestamps adds/updates it)
+  t.true(calendarObject.data.includes('DTSTAMP:'));
   // t.is(calendarObject.data.split('\r\n').join('\n'), iCalString);
 
   const deleteResult = await deleteObject({
@@ -947,9 +957,11 @@ test('updateObject should be able to update object', async (t) => {
   t.true(result.ok);
   const text = await result.text();
 
-  const list1 = extractVEvent(text);
-  const list2 = extractVEvent(updatedICalString);
+  const list1 = extractVEventStable(text);
+  const list2 = extractVEventStable(updatedICalString);
   t.deepEqual(list1, list2);
+  // Verify DTSTAMP is present (ensureICSTimestamps adds/updates it)
+  t.true(text.includes('DTSTAMP:'));
   // t.is(text.split('\r\n').join('\n'), updatedICalString);
 
   const deleteResult = await deleteObject({
@@ -1040,7 +1052,9 @@ test('fetchCalendarObjects should be able to fetch VTODO objects with custom fil
   });
 
   t.true(objects.length > 0);
-  const vtodoObject = objects.find((obj) => obj.url === objectUrl);
+  const vtodoObject = objects.find(
+    (obj) => decodeURIComponent(obj.url) === decodeURIComponent(objectUrl)
+  );
   t.truthy(vtodoObject);
   t.true(vtodoObject.data.includes('BEGIN:VTODO'));
   t.true(vtodoObject.data.includes('SUMMARY:Complete project documentation'));
