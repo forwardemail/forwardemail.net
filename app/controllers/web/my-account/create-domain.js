@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -94,6 +96,46 @@ async function createDomain(ctx, next) {
       if (ctx.accepts('html')) ctx.redirect(redirectTo);
       else ctx.body = { redirectTo };
 
+      return;
+    }
+  }
+
+  //
+  // If the domain being added is an Ubuntu team domain and the user
+  // is already authenticated via Ubuntu SSO, redirect them to the
+  // existing domain instead of throwing UBUNTU_LOGIN_REQUIRED.
+  // This prevents a redirect loop where the user is told to login
+  // via Ubuntu SSO but is already logged in.
+  //
+  if (
+    isSANB(ctx.request.body.domain) &&
+    Object.keys(config.ubuntuTeamMapping).includes(
+      ctx.request.body.domain.toLowerCase()
+    ) &&
+    isSANB(ctx.state.user[config.passport.fields.ubuntuProfileID]) &&
+    isSANB(ctx.state.user[config.passport.fields.ubuntuUsername])
+  ) {
+    const existingDomain = await Domains.findOne({
+      name: ctx.request.body.domain.toLowerCase(),
+      plan: 'team',
+      has_txt_record: true,
+      'members.user': ctx.state.user._id
+    })
+      .lean()
+      .exec();
+    if (existingDomain) {
+      // User is already a member of this domain, redirect to it
+      const redirectTo = ctx.state.l(
+        `/my-account/domains/${punycode.toASCII(existingDomain.name)}/aliases`
+      );
+      if (ctx.api) {
+        ctx.body = { redirectTo };
+        return;
+      }
+
+      ctx.flash('info', ctx.translate('DOMAIN_ALREADY_EXISTS'));
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
       return;
     }
   }

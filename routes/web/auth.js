@@ -4,6 +4,7 @@
  */
 
 const crypto = require('node:crypto');
+const querystring = require('node:querystring');
 const { promisify } = require('node:util');
 
 const Boom = require('@hapi/boom');
@@ -134,7 +135,28 @@ router
   .post('/ubuntu', (ctx, next) =>
     ctx.passport.authenticate('ubuntu')(ctx, next)
   )
-  .post('/:provider/ok', web.auth.catchError, callbackCheck, callbackRedirect)
+  .post(
+    '/:provider/ok',
+    web.auth.catchError,
+    // Fix for Ubuntu SSO: koa-bodyparser parses the OpenID POST body with
+    // qs.parse({ allowDots: true }), which converts flat dotted keys like
+    // "openid.sreg.fullname" into nested objects. The passport-ubuntu strategy
+    // expects flat keys. Re-parse using querystring (which preserves dots in keys)
+    // from the raw body string that koa-bodyparser provides.
+    (ctx, next) => {
+      if (
+        ctx.params.provider === 'ubuntu' &&
+        ctx.request.rawBody &&
+        typeof ctx.request.rawBody === 'string'
+      ) {
+        ctx.request.body = querystring.parse(ctx.request.rawBody);
+      }
+
+      return next();
+    },
+    callbackCheck,
+    callbackRedirect
+  )
   .get('/google/consent', web.auth.catchError, (ctx, next) =>
     ctx.passport && ctx.passport.authenticate
       ? ctx.passport.authenticate('google', {
