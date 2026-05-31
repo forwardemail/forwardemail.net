@@ -1095,13 +1095,15 @@ Emails.post('save', async function (email) {
 // internal scratch buffer instead of returning a clean validation error.
 //
 // Strategy:
-// 1. Truncate stack traces on every rejectedError (stacks are diagnostic
-//    but not operationally critical; cap at 1024 chars).
-// 2. If the document is still over 14 MB, trim rejectedErrors to the most
-//    recent entry per recipient (already done in pre-validate) and drop
-//    the `response` field (often contains full SMTP transcripts).
-// 3. If still over 14 MB, keep only the 50 most recent rejectedErrors.
-// 4. Final fallback: strip rejectedErrors down to essential fields only.
+// 1. Truncate stack traces on every rejectedError and long responses on
+//    deliveries (stacks/responses are diagnostic, not operationally critical).
+// 2. If the document is still over 15 MB, drop non-essential fields from
+//    rejectedErrors (response transcripts, nested error objects).
+// 3. If still over, keep only the 50 most recent rejectedErrors.
+// 4. Strip rejectedErrors to essential fields only.
+// 5. Keep only 10 rejectedErrors.
+// 6. Trim deliveries: strip to essential fields, cap at 50, then clear.
+// 7. Nuclear fallback: clear rejectedErrors entirely.
 //
 //
 // MongoDB BSON document limit is 16 MiB (16,777,216 bytes).
@@ -1116,6 +1118,8 @@ const BSON_DOC_LIMIT = 16 * 1024 * 1024; // 16 MiB hard BSON limit
 const BSON_SAFETY_MARGIN = 1 * 1024 * 1024; // 1 MiB safety margin
 const MAX_STACK_LENGTH = 1024;
 const MAX_RESPONSE_LENGTH = 512;
+const MAX_DELIVERY_RESPONSE_LENGTH = 256;
+const MAX_DELIVERIES = 50;
 
 function getEmailDocBytes(doc) {
   try {
@@ -1181,6 +1185,21 @@ Emails.pre('save', function (next) {
     }
 
     //
+    // Step 1b: Truncate long response strings on deliveries
+    //
+    if (Array.isArray(this.deliveries)) {
+      for (const d of this.deliveries) {
+        if (
+          typeof d.response === 'string' &&
+          d.response.length > MAX_DELIVERY_RESPONSE_LENGTH
+        )
+          d.response =
+            d.response.slice(0, MAX_DELIVERY_RESPONSE_LENGTH) +
+            '...[truncated]';
+      }
+    }
+
+    //
     // Step 2: Check byte size; if under limit we're done
     //
     let docBytes = getEmailDocBytes(this);
@@ -1240,7 +1259,41 @@ Emails.pre('save', function (next) {
     }
 
     //
-    // Step 7: Nuclear fallback — if STILL over limit (e.g. 15 MB inline message
+    // Step 7: Trim deliveries — strip to essential fields and cap count
+    //
+    docBytes = getEmailDocBytes(this);
+    if (docBytes > maxDocBytes && Array.isArray(this.deliveries)) {
+      // 7a: Strip deliveries to essential fields only
+      this.deliveries = this.deliveries.map((d) => ({
+        recipient: d.recipient,
+        date: d.date,
+        responseCode: d.responseCode,
+        mx: d.mx ? { host: d.mx.host } : undefined,
+        tls: d.tls ? { version: d.tls.version } : undefined
+      }));
+    }
+
+    docBytes = getEmailDocBytes(this);
+    if (
+      docBytes > maxDocBytes &&
+      Array.isArray(this.deliveries) && // 7b: Keep only the most recent MAX_DELIVERIES entries
+      this.deliveries.length > MAX_DELIVERIES
+    ) {
+      this.deliveries = this.deliveries.slice(-MAX_DELIVERIES);
+    }
+
+    docBytes = getEmailDocBytes(this);
+    if (
+      docBytes > maxDocBytes &&
+      Array.isArray(this.deliveries) &&
+      this.deliveries.length > 0
+    ) {
+      // 7c: Nuclear — clear deliveries entirely
+      this.deliveries = [];
+    }
+
+    //
+    // Step 8: Nuclear fallback — if STILL over limit (e.g. 15 MB inline message
     // leaves almost no room for anything else), clear rejectedErrors entirely
     // and keep only a single summary error.
     //
@@ -1256,7 +1309,7 @@ Emails.pre('save', function (next) {
           date: new Date(),
           message: `Document too large (${Math.round(
             docBytes / 1024 / 1024
-          )} MB); rejectedErrors cleared to prevent BSON overflow`,
+          )} MB); rejectedErrors and deliveries cleared to prevent BSON overflow`,
           name: 'RangeError',
           code: 'ERR_OUT_OF_RANGE'
         }
