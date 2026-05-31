@@ -15,6 +15,7 @@
 
 const fs = require('node:fs');
 const os = require('node:os');
+const tls = require('node:tls');
 
 const MessageHandler = require('@zone-eu/wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
@@ -37,6 +38,12 @@ require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
 const getTLSOptions = require('#helpers/get-tls-options');
 const imap = require('#helpers/imap');
+
+// Force enable TLS 1.0 (if node_args approach is not used, safety net)
+if (env.IMAP_TLS_MIN_VERSION === 'TLSv1') {
+  tls.DEFAULT_MIN_VERSION = 'TLSv1';
+}
+
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
@@ -75,7 +82,9 @@ const refreshSession = require('#helpers/refresh-session');
 class IMAP {
   constructor(
     options = {},
-    secure = env.IMAP_PORT === 993 || env.IMAP_PORT === 2993
+    secure = env.IMAP_PORT === 993 ||
+      env.IMAP_PORT === 2993 ||
+      env.IMAP_PORT === 2143
   ) {
     this.client = options.client;
     this.subscriber = options.subscriber;
@@ -95,6 +104,16 @@ class IMAP {
     });
 
     this.logger = logger;
+
+    //
+    // Determine TLS profile:
+    // - Use 'compat' profile when TLS 1.0 is explicitly enabled
+    //   (backward-compatible legacy port 2143)
+    // - Use 'strict' profile for all other ports (passes internet.nl)
+    //
+    const isLegacyTLS =
+      env.IMAP_TLS_MIN_VERSION === 'TLSv1' ||
+      env.IMAP_TLS_MIN_VERSION === 'TLSv1.1';
 
     const server = new IMAPServer({
       aps: {
@@ -134,10 +153,18 @@ class IMAP {
 
       //
       // Hardened TLS configuration
-      // Enforces cipher suite order, only allows AEAD ciphers with
-      // forward secrecy, and excludes weak signature algorithms.
+      // - 'strict' profile for public-facing ports (passes internet.nl)
+      // - 'compat' profile for legacy backward-compatible ports (TLS 1.0)
       //
-      ...getTLSOptions(),
+      ...getTLSOptions({
+        profile: isLegacyTLS ? 'compat' : 'strict',
+        ...(env.IMAP_TLS_MIN_VERSION
+          ? { minVersion: env.IMAP_TLS_MIN_VERSION }
+          : {}),
+        ...(env.IMAP_TLS_MAX_VERSION
+          ? { maxVersion: env.IMAP_TLS_MAX_VERSION }
+          : {})
+      }),
 
       // keys (production only)
       ...(config.env === 'production'

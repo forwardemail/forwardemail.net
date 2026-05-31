@@ -59,6 +59,11 @@
         rule: allow
         port: 2993
         proto: tcp
+    - name: Allow port 2143 (Legacy TLS 1.0 IMAP)
+      ufw:
+        rule: allow
+        port: 2143
+        proto: tcp
     - name: Allow port 4190 (ManageSieve implicit TLS)
       ufw:
         rule: allow

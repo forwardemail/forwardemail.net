@@ -19,6 +19,9 @@
  *
  * Pipeline stages (in order):
  *
+ *   0. deduplicateIcsProperties — remove duplicate single-instance
+ *                           properties (SUMMARY, DESCRIPTION, etc.)
+ *                           and redundant EXDATE values
  *   1. normalizeIcs       — add missing EXDATEs for detached recurrence
  *                           overrides (internally calls ensureVTimezones
  *                           when it modifies the ICS)
@@ -51,6 +54,9 @@ const { normalizeIcs } = require('#helpers/normalize-ics');
 const { ensureVTimezones } = require('#helpers/generate-vtimezone');
 const { normalizeVAlarm } = require('#helpers/normalize-valarm');
 const { stampICS } = require('#helpers/stamp-ics');
+const {
+  deduplicateIcsProperties
+} = require('#helpers/deduplicate-ics-properties');
 
 /**
  * Prepare ICS data for storage by running it through the normalization
@@ -68,12 +74,21 @@ function prepareICSForStorage(icsData, options = {}) {
   const { stamp = false, normalizeAlarms = false } = options;
 
   //
+  // Stage 0: Deduplicate single-instance iCal properties.
+  // RFC 5545 requires that properties like SUMMARY, DESCRIPTION,
+  // LOCATION, STATUS, etc. appear at most once per component.
+  // Also deduplicates redundant EXDATE values that confuse iOS/macOS.
+  // Runs first so downstream stages operate on clean, valid ICS.
+  //
+  let ics = deduplicateIcsProperties(icsData);
+
+  //
   // Stage 1: Add missing EXDATEs for detached recurrence overrides.
   // Microsoft Exchange / M365 omits EXDATE when creating RECURRENCE-ID
   // overrides, causing duplicate display of moved instances.
   // (normalizeIcs internally calls ensureVTimezones when it modifies.)
   //
-  let ics = normalizeIcs(icsData);
+  ics = normalizeIcs(ics);
 
   //
   // Stage 2: Inject missing VTIMEZONE components.

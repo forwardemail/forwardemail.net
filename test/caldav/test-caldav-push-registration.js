@@ -605,7 +605,13 @@ test('send-apn: createNote (Mail) includes aps[account-id] when provided', (t) =
     { mailboxPath: 'INBOX' }
   );
   t.is(note.aps['account-id'], 'acct-uuid-XYZ');
-  t.regex(note.aps.m, /^[\da-f]{32}$/, 'aps.m must be a 32-hex md5 digest');
+  t.true(Array.isArray(note.aps.m), 'aps.m must be an array');
+  t.is(note.aps.m.length, 1, 'aps.m must have exactly one element');
+  t.regex(
+    note.aps.m[0],
+    /^[\da-f]{32}$/,
+    'aps.m[0] must be a 32-hex md5 digest'
+  );
 });
 
 test('send-apn: createNote (Calendar) ignores account_id even if present on obj', (t) => {
@@ -649,7 +655,13 @@ test('send-apn: createNote (Mail) sets pushType background and aps.m hash', (t) 
   );
   t.is(note.priority, 5, 'background pushes must use priority 5');
   // md5("INBOX") = ... (verify shape only)
-  t.regex(note.aps.m, /^[\da-f]{32}$/, 'aps.m must be a 32-hex md5 digest');
+  t.true(Array.isArray(note.aps.m), 'aps.m must be an array');
+  t.is(note.aps.m.length, 1, 'aps.m must have exactly one element');
+  t.regex(
+    note.aps.m[0],
+    /^[\da-f]{32}$/,
+    'aps.m[0] must be a 32-hex md5 digest'
+  );
   t.is(note.aps['account-id'], 'acct-1');
 });
 

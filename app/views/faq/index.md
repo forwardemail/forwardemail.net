@@ -897,10 +897,11 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
   <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
 </div>
 
-| Type |         Hostname        |         Protocol        |                                            Ports                                           |
-| :--: | :---------------------: | :---------------------: | :----------------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` |  SSL/TLS **Preferred**  |                                      `993` and `2993`                                      |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
+| Type |         Hostname        |         Protocol        |                                                   Ports                                                  |
+| :--: | :---------------------: | :---------------------: | :------------------------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net` |  SSL/TLS **Preferred**  | `993` and `2993` (or `2143` for [legacy TLS 1.0](/faq#what-are-your-imap-server-configuration-settings)) |
+| POP3 | `pop3.forwardemail.net` |  SSL/TLS **Preferred**  | `995` and `2995` (or `2110` for [legacy TLS 1.0](/faq#what-are-your-pop3-server-configuration-settings)) |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** |        `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS        |
 
 ### Why are my emails landing in Spam and Junk and how can I check my domain reputation
 
@@ -3601,9 +3602,15 @@ Our server is `imap.forwardemail.net` and is also monitored on our <a href="http
 
 It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
 
-|         Protocol        | Hostname                |     Ports     |        IPv4        |        IPv6        |
-| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+**As of May 2026**, we now support **legacy TLS 1.0** connections on port `2143` (SSL/TLS) for older devices and legacy email clients that cannot support modern TLS versions. This mirrors our existing legacy SMTP support on ports `2455`/`2555`.
+
+> \[!CAUTION]
+> **Legacy TLS 1.0 Support (Port 2143)**: This port uses the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use this port if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible.
+
+|          Protocol         | Hostname                |     Ports     |        IPv4        |        IPv6        | Notes                                  |
+| :-----------------------: | ----------------------- | :-----------: | :----------------: | :----------------: | -------------------------------------- |
+|  `SSL/TLS` **Preferred**  | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended)          |
+| `SSL/TLS` **Legacy Only** | `imap.forwardemail.net` |     `2143`    | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
 
 | Login    | Example                    | Description                                                                                                                                                                               |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -3620,9 +3627,15 @@ Our server is `pop3.forwardemail.net` and is also monitored on our <a href="http
 
 It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
 
-|         Protocol        | Hostname                |     Ports     |        IPv4        |        IPv6        |
-| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+**As of May 2026**, we now support **legacy TLS 1.0** connections on port `2110` (SSL/TLS) for older devices and legacy email clients that cannot support modern TLS versions. This mirrors our existing legacy SMTP support on ports `2455`/`2555`.
+
+> \[!CAUTION]
+> **Legacy TLS 1.0 Support (Port 2110)**: This port uses the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use this port if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible.
+
+|          Protocol         | Hostname                |     Ports     |        IPv4        |        IPv6        | Notes                                  |
+| :-----------------------: | ----------------------- | :-----------: | :----------------: | :----------------: | -------------------------------------- |
+|  `SSL/TLS` **Preferred**  | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended)          |
+| `SSL/TLS` **Legacy Only** | `pop3.forwardemail.net` |     `2110`    | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
 
 | Login    | Example                    | Description                                                                                                                                                                               |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

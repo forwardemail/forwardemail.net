@@ -15,6 +15,7 @@
 
 const fs = require('node:fs');
 const os = require('node:os');
+const tls = require('node:tls');
 
 const MessageHandler = require('@zone-eu/wildduck/lib/message-handler');
 const POP3Server = require('@zone-eu/wildduck/lib/pop3/server');
@@ -31,6 +32,12 @@ require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
 const getTLSOptions = require('#helpers/get-tls-options');
 const pop3 = require('#helpers/pop3');
+
+// Force enable TLS 1.0 (if node_args approach is not used, safety net)
+if (env.POP3_TLS_MIN_VERSION === 'TLSv1') {
+  tls.DEFAULT_MIN_VERSION = 'TLSv1';
+}
+
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
@@ -41,7 +48,9 @@ const refreshSession = require('#helpers/refresh-session');
 class POP3 {
   constructor(
     options = {},
-    secure = env.POP3_PORT === 995 || env.POP3_PORT === 2995
+    secure = env.POP3_PORT === 995 ||
+      env.POP3_PORT === 2995 ||
+      env.POP3_PORT === 2110
   ) {
     this.client = options.client;
     this.subscriber = options.subscriber;
@@ -61,6 +70,16 @@ class POP3 {
     });
 
     this.logger = logger;
+
+    //
+    // Determine TLS profile:
+    // - Use 'compat' profile when TLS 1.0 is explicitly enabled
+    //   (backward-compatible legacy port 2110)
+    // - Use 'strict' profile for all other ports (passes internet.nl)
+    //
+    const isLegacyTLS =
+      env.POP3_TLS_MIN_VERSION === 'TLSv1' ||
+      env.POP3_TLS_MIN_VERSION === 'TLSv1.1';
 
     const server = new POP3Server({
       secure,
@@ -94,10 +113,18 @@ class POP3 {
 
       //
       // Hardened TLS configuration
-      // Enforces cipher suite order, only allows AEAD ciphers with
-      // forward secrecy, and excludes weak signature algorithms.
+      // - 'strict' profile for public-facing ports (passes internet.nl)
+      // - 'compat' profile for legacy backward-compatible ports (TLS 1.0)
       //
-      ...getTLSOptions(),
+      ...getTLSOptions({
+        profile: isLegacyTLS ? 'compat' : 'strict',
+        ...(env.POP3_TLS_MIN_VERSION
+          ? { minVersion: env.POP3_TLS_MIN_VERSION }
+          : {}),
+        ...(env.POP3_TLS_MAX_VERSION
+          ? { maxVersion: env.POP3_TLS_MAX_VERSION }
+          : {})
+      }),
 
       // keys (production only)
       ...(config.env === 'production'

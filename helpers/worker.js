@@ -628,7 +628,7 @@ async function backup(payload) {
 
     if (isCancelled) throw new ServerShutdownError();
 
-    if (config.env !== 'test') {
+    if (config.env !== 'test' && !customBucket) {
       let res;
       try {
         res = await s3.send(
@@ -940,7 +940,19 @@ async function backup(payload) {
       if (obj?.Metadata?.hash === hash)
         throw new TypeError('Hash already exists, returning early');
     } catch (err) {
-      if (err.name !== 'NotFound') throw err;
+      // For custom S3 providers, transient errors (timeouts, throttling)
+      // from HeadObject should not abort the backup — just proceed with upload.
+      // Only re-throw for default (system) S3 where NotFound is the only expected error.
+      if (customBucket) {
+        if (err.message === 'Hash already exists, returning early') throw err;
+        logger.warn('HeadObject failed on custom S3, proceeding with upload', {
+          bucket,
+          key,
+          error: err.message
+        });
+      } else if (err.name !== 'NotFound') {
+        throw err;
+      }
     }
 
     if (isCancelled) throw new ServerShutdownError();

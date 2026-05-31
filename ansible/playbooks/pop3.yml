@@ -60,6 +60,11 @@
         rule: allow
         port: 2995
         proto: tcp
+    - name: Allow port 2110 (Legacy TLS 1.0 POP3)
+      ufw:
+        rule: allow
+        port: 2110
+        proto: tcp
     - name: Allow http
       ufw:
         rule: allow

@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
+
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const isEmail = require('#helpers/is-email');
 
 const emailHelper = require('#helpers/email');
-const { encrypt } = require('#helpers/encrypt-decrypt');
 const { Users, Domains } = require('#models');
 
 async function createInvite(ctx, next) {
@@ -106,9 +107,19 @@ async function createInvite(ctx, next) {
     }
   }
 
+  // Generate a cryptographically random invite token (FWD-01-001)
+  // This replaces the encrypted {domain_id, email} approach which was
+  // vulnerable to padding oracle attacks via the legacy AES-CBC fallback.
+  const inviteToken = crypto.randomBytes(32).toString('base64url');
+
+  // Invite expires after 7 days — limits exposure window if token leaks
+  const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
   ctx.state.domain.invites.push({
     email: email.toLowerCase(),
-    group: ctx.request.body.group
+    group: ctx.request.body.group,
+    token: inviteToken,
+    expires_at: new Date(Date.now() + INVITE_TTL_MS)
   });
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain.skip_verification = true;
@@ -122,14 +133,6 @@ async function createInvite(ctx, next) {
 
   ctx.state.domain = await ctx.state.domain.save();
 
-  // generate encrypted invite token containing domain_id and email
-  const inviteToken = encrypt(
-    JSON.stringify({
-      d: ctx.state.domain.id,
-      e: email.toLowerCase()
-    })
-  );
-
   // send an email
   try {
     await emailHelper({
@@ -138,7 +141,7 @@ async function createInvite(ctx, next) {
         to: email.toLowerCase()
       },
       locals: {
-        domain: { name: ctx.state.domain.name },
+        domain: { name: ctx.state.domain.name, id: ctx.state.domain.id },
         inviteToken
       }
     });

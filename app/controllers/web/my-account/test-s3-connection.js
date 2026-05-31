@@ -3,12 +3,22 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const dns = require('node:dns');
+const http = require('node:http');
+const https = require('node:https');
+const net = require('node:net');
+
 const {
   S3Client,
   HeadBucketCommand,
   PutObjectCommand,
   DeleteObjectCommand
 } = require('@aws-sdk/client-s3');
+// Resolve NodeHttpHandler from the S3 client's dependency tree (not a direct dep)
+const { NodeHttpHandler } = require(require.resolve(
+  '@smithy/node-http-handler',
+  { paths: [require.resolve('@aws-sdk/client-s3')] }
+));
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { isURL } = require('@forwardemail/validator');
@@ -126,6 +136,53 @@ async function testS3Connection(ctx) {
     throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
   }
 
+  //
+  // FWD-01-002: DNS pinning to prevent TOCTOU DNS rebinding.
+  // Resolve the hostname NOW and force all subsequent HTTP requests
+  // to use the resolved IP via a custom request handler with overridden
+  // lookup(). This ensures the IP validated above is the same IP used
+  // for the actual S3 requests.
+  //
+  const resolver = new dns.promises.Resolver({ timeout: 5000, tries: 2 });
+  let pinnedIP;
+  try {
+    const isIPv6 = net.isIPv6(parsedEndpoint.hostname);
+    const isIPv4 = net.isIPv4(parsedEndpoint.hostname);
+    if (isIPv4 || isIPv6) {
+      pinnedIP = parsedEndpoint.hostname;
+    } else {
+      const addresses = await resolver.resolve4(parsedEndpoint.hostname);
+      if (!addresses || addresses.length === 0)
+        throw new Error('No DNS records');
+      pinnedIP = addresses[0];
+    }
+  } catch {
+    throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
+  }
+
+  // Double-check the resolved IP is not private (defense in depth)
+  if (await isPrivateHostResolved(pinnedIP)) {
+    throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
+  }
+
+  // Create a custom request handler that pins DNS to the resolved IP.
+  // Node 22+ calls lookup with {all:true} expecting [{address, family}] array.
+  const family = net.isIPv6(pinnedIP) ? 6 : 4;
+  const pinnedLookup = (_hostname, options, cb) => {
+    if (options.all) {
+      cb(null, [{ address: pinnedIP, family }]);
+    } else {
+      cb(null, pinnedIP, family);
+    }
+  };
+
+  const requestHandler = new NodeHttpHandler({
+    connectionTimeout: 5000,
+    socketTimeout: 10_000,
+    httpsAgent: new https.Agent({ lookup: pinnedLookup }),
+    httpAgent: new http.Agent({ lookup: pinnedLookup })
+  });
+
   const testClient = new S3Client({
     region,
     endpoint,
@@ -133,6 +190,7 @@ async function testS3Connection(ctx) {
       accessKeyId,
       secretAccessKey
     },
+    requestHandler,
     // Disable automatic checksum headers (x-amz-checksum-crc32)
     // for compatibility with S3-compatible providers like Backblaze B2
     requestChecksumCalculation: 'WHEN_REQUIRED',

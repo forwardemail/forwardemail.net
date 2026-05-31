@@ -85,8 +85,31 @@ function WKD(resolver, client) {
               lookup(hostname, options, fn) {
                 resolver
                   .lookup(hostname, options)
-                  .then((result) => {
-                    fn(null, result?.address, result?.family);
+                  .then(async (result) => {
+                    // FWD-01-006: Validate resolved IP at connection time
+                    // to prevent TOCTOU DNS rebinding attacks
+                    if (
+                      env.NODE_ENV !== 'test' &&
+                      result?.address &&
+                      (await isPrivateHostResolved(result.address))
+                    ) {
+                      fn(
+                        new Error(
+                          `Resolved IP ${result.address} is a private address`
+                        )
+                      );
+                      return;
+                    }
+
+                    // Handle both Node 18 (address, family) and Node 20+
+                    // (all:true expects [{address, family}] array) formats
+                    if (options.all) {
+                      fn(null, [
+                        { address: result?.address, family: result?.family }
+                      ]);
+                    } else {
+                      fn(null, result?.address, result?.family);
+                    }
                   })
                   .catch((err) => fn(err));
               }

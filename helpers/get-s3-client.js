@@ -74,6 +74,12 @@ function getS3Client(domain) {
         accessKeyId,
         secretAccessKey
       },
+      // Use path-style addressing for compatibility with S3-compatible
+      // providers (MinIO, Backblaze B2, Wasabi, etc.) that do not support
+      // virtual-hosted-style bucket addressing
+      forcePathStyle: true,
+      // Retry transient failures (timeouts, throttling, 5xx) up to 3 times
+      maxAttempts: 3,
       // Disable automatic checksum headers (x-amz-checksum-crc32)
       // for compatibility with S3-compatible providers like Backblaze B2
       requestChecksumCalculation: 'WHEN_REQUIRED',

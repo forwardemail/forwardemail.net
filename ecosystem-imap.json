@@ -40,6 +40,26 @@
       }
     },
     {
+      "name": "imap-2143",
+      "script": "imap.js",
+      "max_restarts": 999,
+      "max_memory_restart": "20G",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "pmx": false,
+      "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
+      "error_file": "/var/log/pm2/imap-2143-error.log",
+      "out_file": "/var/log/pm2/imap-2143-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
+      "env_production": {
+        "NODE_ENV": "production",
+        "IMAP_PORT": 2143,
+        "IMAP_TLS_MIN_VERSION": "TLSv1"
+      }
+    },
+    {
       "name": "managesieve-4190",
       "script": "managesieve.js",
       "max_restarts": 999,

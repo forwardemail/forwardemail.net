@@ -23,6 +23,20 @@
         "NODE_ENV": "production",
         "POP3_PORT": 2995
       }
+    },
+    {
+      "name": "pop3-2110",
+      "script": "pop3.js",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "pmx": false,
+      "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
+      "env_production": {
+        "NODE_ENV": "production",
+        "POP3_PORT": 2110,
+        "POP3_TLS_MIN_VERSION": "TLSv1"
+      }
     }
   ],
   "deploy": {

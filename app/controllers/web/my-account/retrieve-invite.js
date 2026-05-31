@@ -7,46 +7,51 @@ const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
-const mongoose = require('mongoose');
 
 const config = require('#config');
-const { decrypt } = require('#helpers/encrypt-decrypt');
 const { Domains, Users } = require('#models');
 
 async function retrieveInvite(ctx) {
   if (!isSANB(ctx.params.domain_id))
     throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
-  // try to decrypt the invite token (new secure format)
-  // if decryption fails, fall back to legacy behavior (plain domain_id)
-  let domainId;
-  let invitedEmail;
-
-  try {
-    const decrypted = JSON.parse(decrypt(ctx.params.domain_id));
-    domainId = decrypted.d;
-    invitedEmail = decrypted.e;
-  } catch {
-    // decryption failed - this is a legacy link with plain domain_id
-    // validate it looks like a valid ObjectId
-    if (mongoose.isValidObjectId(ctx.params.domain_id)) {
-      domainId = ctx.params.domain_id;
-      // for legacy links, we restrict to the authenticated user's email only
-      invitedEmail = null;
-    } else {
-      throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
-    }
-  }
-
-  if (!domainId)
+  if (!isSANB(ctx.params.token))
     throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
 
-  // look up the domain by _id
+  //
+  // FWD-01-001: Use opaque random token for invite lookup.
+  // Both domain_id and token are required — this prevents token
+  // enumeration across domains and adds defense-in-depth.
+  //
+  const { domain_id: domainId, token: inviteToken } = ctx.params;
+
+  // Find the domain by ID AND verify it contains the invite token
   const domain = await Domains.findOne({
-    _id: domainId
+    _id: domainId,
+    'invites.token': inviteToken
   });
 
-  if (!domain) throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+  if (!domain) throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
+
+  // Find the specific invite by token
+  const invite = domain.invites.find((inv) => inv.token === inviteToken);
+  if (!invite) throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
+
+  // Reject expired invites (default TTL: 7 days from creation)
+  if (invite.expires_at && new Date(invite.expires_at) < new Date()) {
+    // Remove the expired invite from the array
+    domain.invites = domain.invites.filter((inv) => inv.token !== inviteToken);
+    domain.skip_verification = true;
+    await domain.save();
+    throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
+  }
+
+  //
+  // Hard requirement: the authenticated user's email MUST match the invite email.
+  // This prevents any user from accepting an invite meant for someone else.
+  //
+  if (invite.email.toLowerCase() !== ctx.state.user.email.toLowerCase())
+    throw Boom.forbidden(ctx.translateError('INVITE_DOES_NOT_EXIST'));
 
   // if the user already has a domain with the same name
   // inform them to delete it first before accepting the invite
@@ -92,17 +97,6 @@ async function retrieveInvite(ctx) {
     return;
   }
 
-  // find the invite - either by specific email (new format) or user's email (legacy)
-  const invite = invitedEmail
-    ? domain.invites.find((inv) => inv.email === invitedEmail)
-    : domain.invites.find((inv) => inv.email === ctx.state.user.email);
-
-  // if no invite exists, the link is invalid or already used
-  if (!invite) throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
-
-  // check if the accepting user's email differs from the invited email
-  const emailMismatch = invite.email !== ctx.state.user.email;
-
   // convert invitee to a member with the same group as invite had
   const { group } = invite;
   domain.members.push({
@@ -111,7 +105,7 @@ async function retrieveInvite(ctx) {
   });
 
   // remove the invite from invites list
-  domain.invites = domain.invites.filter((inv) => inv.email !== invite.email);
+  domain.invites = domain.invites.filter((inv) => inv.token !== inviteToken);
 
   // save domain
   domain.locale = ctx.locale;
@@ -147,11 +141,6 @@ async function retrieveInvite(ctx) {
   }
 
   ctx.flash('success', message);
-
-  // notify if the accepting user's email differs from the invited email
-  if (emailMismatch) {
-    ctx.flash('warning', ctx.translate('INVITE_EMAIL_MISMATCH', invite.email));
-  }
 
   // redirect user to either alias page (if user) or admin page (if admin)
   const redirectTo =

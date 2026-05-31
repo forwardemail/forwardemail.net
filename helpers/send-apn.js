@@ -184,10 +184,12 @@ function createNote(certBundle, service, obj, options) {
   //
   if (service.cert === 'Mail') {
     if (obj.account_id) note.aps['account-id'] = obj.account_id;
-    note.aps.m = crypto
-      .createHash('md5')
-      .update(options.mailboxPath || 'INBOX')
-      .digest('hex');
+    note.aps.m = [
+      crypto
+        .createHash('md5')
+        .update(options.mailboxPath || 'INBOX')
+        .digest('hex')
+    ];
   }
 
   //
@@ -309,7 +311,7 @@ async function sendApnForService(serviceName, client, id, options = {}) {
   //                           (one push per (device, mailbox); identical
   //                            (token, mailbox) regardless of account_id
   //                            produces an identical Mail push payload
-  //                            because aps.m = md5(mailboxPath))
+  //                            because aps.m = [md5(mailboxPath)])
   //   * Calendar / Contact -- lowercase(device_token) + '|' + (key || '')
   //                           (one push per (device, collection); the wire
   //                            body's `key` is opaque and identifies the

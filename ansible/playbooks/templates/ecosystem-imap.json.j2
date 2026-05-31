@@ -25,6 +25,20 @@
       }
     },
     {
+      "name": "imap-2143",
+      "script": "imap.js",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "pmx": false,
+      "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
+      "env_production": {
+        "NODE_ENV": "production",
+        "IMAP_PORT": 2143,
+        "IMAP_TLS_MIN_VERSION": "TLSv1"
+      }
+    },
+    {
       "name": "managesieve-4190",
       "script": "managesieve.js",
       "exec_mode": "cluster",

@@ -7,7 +7,7 @@ block body
         include ../../_breadcrumbs
         form.ajax-form.table-ajax-form.card.mb-3(
           action=ctx.path,
-          method="GET",
+          method="POST",
           data-table="#table-users",
           data-search-params="mongodb_query,q"
         )

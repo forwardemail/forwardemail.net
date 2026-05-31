@@ -216,7 +216,7 @@ async function cmdPush(idOrEmail, serviceName, keyOverride) {
         // has aps.m defined so apsPayload() emits a non-empty aps and
         // there is no risk of the `400 PayloadEmpty` rejection that the
         // CalDAV/CardDAV path used to hit.
-        note.aps.m = crypto.createHash('md5').update('INBOX').digest('hex');
+        note.aps.m = [crypto.createHash('md5').update('INBOX').digest('hex')];
       }
 
       if (serviceName === 'Calendar' || serviceName === 'Contact') {

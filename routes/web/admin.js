@@ -49,6 +49,8 @@ router
   .delete('/denylist', web.admin.denylist.validate, web.admin.denylist.remove)
 
   // users
+  // FWD-01-010: Accept mongodb_query via POST to prevent cross-origin timing attacks
+  .post('/users', paginate.middleware(10, 50), web.admin.users.list)
   .get('/users', paginate.middleware(10, 50), web.admin.users.list)
   .get('/users/:id', web.admin.users.retrieve)
   .put('/users/:id', web.admin.users.update)
@@ -56,6 +58,8 @@ router
   .delete('/users/:id', web.admin.users.remove)
 
   // inquiries
+  // FWD-01-010: Accept mongodb_query via POST to prevent cross-origin timing attacks
+  .post('/inquiries', paginate.middleware(10, 50), web.admin.inquiries.list)
   .get('/inquiries', paginate.middleware(10, 50), web.admin.inquiries.list)
   .get('/inquiries/:id', web.admin.inquiries.retrieve)
   .post(
@@ -81,11 +85,15 @@ router
   .put('/inquiries/:id', web.admin.inquiries.resolve)
 
   // domains
+  // FWD-01-010: Accept mongodb_query via POST to prevent cross-origin timing attacks
+  .post('/domains', paginate.middleware(10, 50), web.admin.domains.list)
   .get('/domains', paginate.middleware(10, 50), web.admin.domains.list)
   .put('/domains/:id', web.admin.domains.update)
   .delete('/domains/:id', web.admin.domains.remove)
 
   // logs
+  // FWD-01-010: Accept mongodb_query via POST to prevent cross-origin timing attacks
+  .post('/logs', paginate.middleware(10, 50), web.admin.logs.list)
   .get('/logs', paginate.middleware(10, 50), web.admin.logs.list)
   .get('/logs/:id', web.admin.logs.retrieve)
 
@@ -95,12 +103,16 @@ router
   .get('/jobs/:id', web.admin.jobs.retrieve)
 
   // emails
+  // FWD-01-010: Accept mongodb_query via POST to prevent cross-origin timing attacks
+  .post('/emails', paginate.middleware(10, 50), web.admin.emails.list)
   .get('/emails', paginate.middleware(10, 50), web.admin.emails.list)
   .get('/emails/:id', web.admin.emails.retrieve)
   .put('/emails/:id', web.admin.emails.update)
   .delete('/emails/:id', web.admin.emails.remove)
 
   // payments
+  // FWD-01-010: Accept mongodb_query via POST to prevent cross-origin timing attacks
+  .post('/payments', paginate.middleware(10, 50), web.admin.payments.list)
   .get('/payments', paginate.middleware(10, 50), web.admin.payments.list)
   .get('/payments/:id', web.admin.payments.retrieve)
   .post('/payments/:id/refund', web.admin.payments.refund)

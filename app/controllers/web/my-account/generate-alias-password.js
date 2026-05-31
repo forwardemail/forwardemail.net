@@ -442,17 +442,34 @@ async function generateAliasPassword(ctx) {
       }
     );
 
+    //
+    // FWD-01-007: HTML-escape user-controlled values before interpolation
+    // into the HTML template. The password can be user-supplied via
+    // ctx.request.body.new_password and username contains the alias name.
+    // Without escaping, these could inject arbitrary HTML/JS into the
+    // SweetAlert2 popup which renders via the `html` property.
+    //
+    const escapeHtml = (str) =>
+      str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+    const safeUsername = escapeHtml(username);
+    const safePass = escapeHtml(pass);
+
     const html = emailedInstructions
       ? ctx.translate('ALIAS_PASSWORD_INSTRUCTIONS', emailedInstructions)
       : ctx.translate(
           'ALIAS_GENERATED_PASSWORD',
-          username,
-          username,
-          pass,
-          pass,
+          safeUsername,
+          safeUsername,
+          safePass,
+          safePass,
           appleImgSrc,
           appleLink,
-          `${username}.mobileconfig`,
+          `${safeUsername}.mobileconfig`,
           thunderbirdQRCode
           // k9Link,
           // `${username}.k9s`

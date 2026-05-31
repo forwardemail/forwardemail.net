@@ -262,6 +262,15 @@ const Invite = new mongoose.Schema({
     enum: ['admin', 'user'],
     lowercase: true,
     trim: true
+  },
+  token: {
+    type: String,
+    index: true
+  },
+  expires_at: {
+    type: Date,
+    required: true,
+    index: true
   }
 });
 

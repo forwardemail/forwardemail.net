@@ -6,7 +6,7 @@ block append scripts
       window.USER_PLAN = "#{user.plan}";
   else if isSANB(ctx.query.plan)
     script(defer, nonce=nonce).
-      window.USER_PLAN = "#{ctx.query.plan}";
+      window.USER_PLAN = !{json(ctx.query.plan)};
 
   //- this is equivalent to isEnableAutoRenew (but in pug you can't define variables twice and variables can't be shared between blocks)
   if ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew" && dayjs(user[config.userFields.planExpiresAt]).isAfter(dayjs())

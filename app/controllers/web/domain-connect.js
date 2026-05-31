@@ -12,6 +12,7 @@ const isSANB = require('is-string-and-not-blank');
 const undici = require('undici');
 const config = require('#config');
 const { isPrivateHostResolved } = require('#helpers/is-private-host');
+const safeFetch = require('#helpers/safe-fetch');
 const Domains = require('#models/domains');
 const { nsProviders } = require('#config/utilities');
 
@@ -81,15 +82,12 @@ async function discoverDomainConnectUrl(domain) {
 // Fetch the Domain Connect settings JSON from the provider's settings endpoint
 // Per spec §6: GET https://{_domainconnect}/v2/{domain}/settings
 // Returns JSON with urlSyncUX (UX URL for apply redirect) and urlAPI (API URL for template checks)
+//
+// FWD-01-006: Uses safeFetch with DNS pinning to prevent TOCTOU DNS rebinding.
 async function fetchProviderSettings(apiBase, domain) {
   try {
-    // Block requests to private/internal hosts (SSRF prevention)
-    // Uses async DNS resolution to prevent DNS rebinding attacks
-    const parsedBase = new URL(apiBase);
-    if (await isPrivateHostResolved(parsedBase.hostname)) return null;
-
     const url = `${apiBase}/v2/${encodeURIComponent(domain)}/settings`;
-    const { body, statusCode } = await undici.request(url, {
+    const { body, statusCode } = await safeFetch(url, {
       method: 'GET',
       headers: { Accept: 'application/json' },
       bodyTimeout: 5000,
@@ -108,15 +106,12 @@ async function fetchProviderSettings(apiBase, domain) {
 //   'supported'  — provider returned 200 (template exists)
 //   'not_found'  — provider returned 404 (template definitively not onboarded)
 //   'error'      — network error or non-200/404 status (inconclusive)
+//
+// FWD-01-006: Uses safeFetch with DNS pinning to prevent TOCTOU DNS rebinding.
 async function checkTemplateSupport(apiBase) {
   try {
-    // Block requests to private/internal hosts (SSRF prevention)
-    // Uses async DNS resolution to prevent DNS rebinding attacks
-    const parsedBase = new URL(apiBase);
-    if (await isPrivateHostResolved(parsedBase.hostname)) return 'error';
-
     const url = `${apiBase}/v2/domainTemplates/providers/${PROVIDER_ID}/services/${SERVICE_ID}`;
-    const { statusCode } = await undici.request(url, {
+    const { statusCode } = await safeFetch(url, {
       method: 'GET',
       headers: { Accept: 'application/json' },
       bodyTimeout: 5000,

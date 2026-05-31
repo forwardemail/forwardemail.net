@@ -76,11 +76,11 @@ html.h-100.no-js(
       if user
         script(defer, nonce=nonce).
           window.USER = {
-            id: "#{user.id}",
-            name: "#{user[config.passport.fields.displayName]}",
-            email: "#{user.email}",
+            id: !{json(user.id)},
+            name: !{json(user[config.passport.fields.displayName])},
+            email: !{json(user.email)},
           };
-          window.API_TOKEN = "#{user[config.userFields.apiToken]}";
+          window.API_TOKEN = !{json(user[config.userFields.apiToken])};
       else if ctx.sessionId
         script(defer, nonce=nonce).
           window.USER = {
@@ -113,7 +113,7 @@ html.h-100.no-js(
     script(nonce=nonce, src="/js/scalar.js", crossorigin="anonymous")
     if user
       script(nonce=nonce).
-        window.API_TOKEN = "#{user[config.userFields.apiToken]}";
+        window.API_TOKEN = !{json(user[config.userFields.apiToken])};
     - const API_SPEC = `${config.urls.web}/api-spec${locale === "en" ? "" : "-" + locale}.json`;
     script(nonce=nonce).
       window.API_URL = "#{config.urls.api}";

@@ -148,14 +148,16 @@ html.h-100.no-js(
       //- set the user and API key to be used by CabinJS
       if config.env !== 'test' && !isBot(ctx.get('User-Agent'))
         //- set the user and API key to be used by CabinJS
+        //- FWD-01-007: Use json() helper for safe JS interpolation to prevent
+        //- XSS via user-controlled displayName or email breaking out of string context
         if user
           script(defer, nonce=nonce).
             window.USER = {
-              id: "#{user.id}",
-              name: "#{user[config.passport.fields.displayName]}",
-              email: "#{user.email}",
+              id: !{json(user.id)},
+              name: !{json(user[config.passport.fields.displayName])},
+              email: !{json(user.email)},
             };
-            window.API_TOKEN = "#{user[config.userFields.apiToken]}";
+            window.API_TOKEN = !{json(user[config.userFields.apiToken])};
         else if ctx.sessionId
           script(defer, nonce=nonce).
             window.USER = {

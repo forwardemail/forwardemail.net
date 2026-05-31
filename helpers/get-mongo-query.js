@@ -75,9 +75,24 @@ function getMongoQuery(ctx) {
       );
   }
 
-  if (isSANB(ctx.query.mongodb_query)) {
+  //
+  // FWD-01-010: Accept mongodb_query from POST body to prevent cross-origin
+  // timing attacks. GET query args are observable cross-origin via resource
+  // timing or speculative execution side-channels. POST requires same-origin
+  // or CORS preflight, which blocks cross-origin exfiltration attempts.
+  //
+  // For backwards compatibility, also check ctx.query.mongodb_query (GET)
+  // but prefer ctx.request.body.mongodb_query (POST) when available.
+  //
+  const mongodbQueryRaw =
+    (ctx.request.body && isSANB(ctx.request.body.mongodb_query)
+      ? ctx.request.body.mongodb_query
+      : null) ||
+    (isSANB(ctx.query.mongodb_query) ? ctx.query.mongodb_query : null);
+
+  if (mongodbQueryRaw) {
     try {
-      query = JSON.parse(ctx.query.mongodb_query);
+      query = JSON.parse(mongodbQueryRaw);
       if (
         !query ||
         typeof query !== 'object' ||

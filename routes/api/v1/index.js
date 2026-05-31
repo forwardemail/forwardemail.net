@@ -441,7 +441,7 @@ router
   )
 
   // invites
-  .get('/domains/:domain_id/invites', web.myAccount.retrieveInvite)
+  .get('/domains/:domain_id/invites/:token', web.myAccount.retrieveInvite)
   .post(
     '/domains/:domain_id/invites',
     web.myAccount.retrieveDomain,
