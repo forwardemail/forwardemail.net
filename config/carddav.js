@@ -8,6 +8,7 @@
  */
 
 const Cabin = require('cabin');
+const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
 
 const routes = require('../routes');
@@ -65,6 +66,11 @@ module.exports = {
     },
     enableTypes: ['json', 'form', 'text', 'xml']
   },
+  // CardDAV operations involve auth (DNS + MongoDB + argon2) plus WSP
+  // round-trips to SQLite; 30s default is insufficient when WSP reconnects
+  timeout: {
+    ms: ms('120s')
+  },
   removeTrailingSlashes: false,
   auth: false,
   rateLimit,
@@ -85,10 +91,4 @@ module.exports = {
     // Also handles IPv6 to IPv4 conversion and PTR lookup for allowlist
     app.use(denylistMiddleware(RATELIMIT_ALLOWLIST));
   }
-  // TODO: do we need this (?)
-  // Timeout configuration
-  // timeout: {
-  //   socket: env.CARDDAV_TIMEOUT_SOCKET || 30000,
-  //   idle: env.CARDDAV_TIMEOUT_IDLE || 30000
-  // }
 };
