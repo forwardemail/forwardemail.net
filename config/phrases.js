@@ -180,6 +180,8 @@ module.exports = {
     'Invalid response from Launchpad API, please try again later.',
   UBUNTU_INVALID_GROUP:
     'You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.',
+  UBUNTU_NOT_A_MEMBER:
+    'Your account is not a recognized participant of the %s (%s) team on Launchpad. Please verify your membership at <a href="https://launchpad.net/%s" target="_blank" rel="noopener noreferrer">https://launchpad.net/%s</a> and try again.',
 
   START_DATE_INVALID: 'Start date must be a valid ISO-8601 date.',
   END_DATE_INVALID: 'End date must be an valid ISO-8601 date.',

@@ -10,8 +10,11 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const { boolean } = require('boolean');
 
-const { Domains, Aliases } = require('#models');
+const { Domains, Aliases, Users } = require('#models');
+const emailHelper = require('#helpers/email');
+const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
+const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -138,6 +141,93 @@ async function createDomain(ctx, next) {
       else ctx.body = { redirectTo };
       return;
     }
+
+    //
+    // User has Ubuntu SSO credentials but is not yet a domain member.
+    // This can happen if syncUbuntuUser failed silently during login
+    // (e.g. transient Launchpad API timeout). Trigger a sync now to
+    // avoid the UBUNTU_LOGIN_REQUIRED redirect loop.
+    //
+    try {
+      const map = await getUbuntuMembersMap();
+      const user = await Users.findById(ctx.state.user._id);
+      if (user) {
+        await syncUbuntuUser(user, map);
+        await Users.findByIdAndUpdate(user._id, {
+          $set: { last_ubuntu_sync: new Date() }
+        });
+      }
+    } catch (err) {
+      logger.fatal(err);
+      // Email admins with full error details so sync failures are visible
+      const ubuntuUsername =
+        ctx.state.user[config.passport.fields.ubuntuUsername] ||
+        ctx.state.user.email;
+      emailHelper({
+        template: 'alert',
+        message: {
+          to: config.alertsEmail,
+          subject: `Ubuntu sync failed during create-domain for ${ubuntuUsername}`
+        },
+        locals: {
+          message:
+            `<p>Ubuntu membership sync failed when user ` +
+            `<strong>${ctx.state.user.email}</strong> ` +
+            `(Launchpad username: <code>${ubuntuUsername}</code>) ` +
+            `attempted to add <code>${ctx.request.body.domain}</code>.</p>` +
+            `<p><strong>Error:</strong> ${err.message}</p>` +
+            `<pre><code>${err.stack}</code></pre>`
+        }
+      })
+        .then()
+        .catch((err) => logger.fatal(err));
+    }
+
+    // Re-check membership after sync attempt
+    const domainAfterSync = await Domains.findOne({
+      name: ctx.request.body.domain.toLowerCase(),
+      plan: 'team',
+      has_txt_record: true,
+      'members.user': ctx.state.user._id
+    })
+      .lean()
+      .exec();
+    if (domainAfterSync) {
+      const redirectTo = ctx.state.l(
+        `/my-account/domains/${punycode.toASCII(domainAfterSync.name)}/aliases`
+      );
+      if (ctx.api) {
+        ctx.body = { redirectTo };
+        return;
+      }
+
+      ctx.flash('success', ctx.translate('DOMAIN_ALREADY_EXISTS'));
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
+      return;
+    }
+
+    //
+    // If sync still didn't add them, they may not be a valid
+    // participant of this team on Launchpad. Show a clear error.
+    //
+    const domainName = ctx.request.body.domain.toLowerCase();
+    const teamSlug = config.ubuntuTeamMapping[domainName] || '~ubuntumembers';
+    const err = Boom.badRequest(
+      ctx.translateError(
+        'UBUNTU_NOT_A_MEMBER',
+        domainName,
+        teamSlug,
+        teamSlug,
+        teamSlug
+      )
+    );
+    if (ctx.api) throw err;
+    ctx.flash('error', err.message);
+    const redirectTo = ctx.state.l('/my-account/domains');
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return;
   }
 
   try {

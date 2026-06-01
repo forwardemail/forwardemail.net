@@ -1224,7 +1224,9 @@ Users.pre('save', async function (next) {
     await syncUbuntuUser(this, map);
     this.last_ubuntu_sync = new Date();
   } catch (err) {
-    this.last_ubuntu_sync = new Date();
+    // NOTE: do not stamp last_ubuntu_sync on failure — doing so would
+    // poison the staleness check and prevent future retries from working
+    // (the map createdAt would appear older than last_ubuntu_sync).
     logger.fatal(err);
   }
 

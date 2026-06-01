@@ -16,11 +16,15 @@ const {
 } = require('@forwardemail/passport-fido2-webauthn');
 
 const config = require('#config');
+const emailHelper = require('#helpers/email');
+const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
+const logger = require('#helpers/logger');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const rateLimit = require('#helpers/rate-limit');
+const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
 const web = require('#controllers/web');
-const { Users } = require('#models');
+const { Domains, Users } = require('#models');
 
 const store = new SessionChallengeStore();
 
@@ -94,6 +98,65 @@ async function callbackRedirect(ctx, next) {
       invalidateOtherSessions(ctx)
         .then()
         .catch((err) => ctx.logger.fatal(err));
+    }
+  }
+
+  //
+  // Ubuntu SSO post-login sync retry:
+  // The pre-save hook in users.js already attempts syncUbuntuUser during
+  // login, but it can fail silently (transient Launchpad API timeout,
+  // stale cached map, etc.). If the user has Ubuntu SSO credentials but
+  // is not yet a member of any Ubuntu team domain, retry with a fresh map.
+  // This prevents the redirect loop when they later try to add the domain.
+  //
+  if (
+    ctx.params.provider === 'ubuntu' &&
+    ctx.isAuthenticated() &&
+    isSANB(ctx.state.user[config.passport.fields.ubuntuProfileID]) &&
+    isSANB(ctx.state.user[config.passport.fields.ubuntuUsername])
+  ) {
+    try {
+      const ubuntuDomains = Object.keys(config.ubuntuTeamMapping);
+      const existingMembership = await Domains.findOne({
+        name: { $in: ubuntuDomains },
+        plan: 'team',
+        has_txt_record: true,
+        'members.user': ctx.state.user._id
+      })
+        .lean()
+        .exec();
+
+      if (!existingMembership) {
+        const map = await getUbuntuMembersMap();
+        const user = await Users.findById(ctx.state.user._id);
+        if (user) {
+          await syncUbuntuUser(user, map);
+          user.last_ubuntu_sync = new Date();
+          await user.save();
+        }
+      }
+    } catch (err) {
+      logger.fatal(err);
+      // Email admins with full error details so sync failures are visible
+      const ubuntuUsername =
+        ctx.state.user[config.passport.fields.ubuntuUsername];
+      emailHelper({
+        template: 'alert',
+        message: {
+          to: config.alertsEmail,
+          subject: `Ubuntu SSO post-login sync failed for ${ubuntuUsername}`
+        },
+        locals: {
+          message:
+            `<p>Ubuntu SSO post-login sync failed for user ` +
+            `<strong>${ctx.state.user.email}</strong> ` +
+            `(Launchpad username: <code>${ubuntuUsername}</code>).</p>` +
+            `<p><strong>Error:</strong> ${err.message}</p>` +
+            `<pre><code>${err.stack}</code></pre>`
+        }
+      })
+        .then()
+        .catch((err) => logger.fatal(err));
     }
   }
 
