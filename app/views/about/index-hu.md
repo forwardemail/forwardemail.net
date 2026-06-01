@@ -18,7 +18,7 @@
   * [2023 - Infrastruktúra és Funkcióbővítés](#2023---infrastructure-and-feature-expansion)
   * [2024 - Szolgáltatás Optimalizálás és Fejlett Funkciók](#2024---service-optimization-and-advanced-features)
   * [2025 - Adatvédelmi Fejlesztések és Protokoll Támogatás {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
-  * [2026 - RFC Megfelelés és Fejlett Szűrés {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
+  * [2026 - RFC Megfelelés és Fejlett Szűrés és független biztonsági audit {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
 * [Alapelvek](#core-principles)
 * [Jelenlegi Állapot](#current-status)
 
@@ -26,7 +26,7 @@
 ## Áttekintés {#overview}
 
 > \[!TIP]
-> Műszaki részletekért az architektúránkról, biztonsági megvalósításokról és ütemtervről lásd a [Műszaki Fehér Könyvet](https://forwardemail.net/technical-whitepaper.pdf).
+> Műszaki részletekért az architektúránkról, biztonsági megvalósításokról és ütemtervről lásd a [Műszaki Fehér Könyvet](https://forwardemail.net/technical-whitepaper.pdf) és a független [biztonsági auditunk](https://forwardemail.net/pentest-report_forward-email.pdf) a Cure53-tól.
 
 A Forward Email egy [ingyenes és nyílt forráskódú](https://en.wikipedia.org/wiki/Free_and_open-source "Ingyenes és nyílt forráskódú") [email továbbító](https://en.wikipedia.org/wiki/Email_forwarding "Email továbbító") szolgáltatás, amely a felhasználók [adatvédelmi jogára](https://en.wikipedia.org/wiki/Right_to_privacy "Adatvédelmi jog") fókuszál. Ami 2017-ben egy egyszerű email továbbító megoldásként indult, mára egy átfogó email platformmá fejlődött, amely korlátlan egyedi domain neveket, korlátlan email címeket és aliasokat, korlátlan egyszer használatos email címeket, spam és adathalászat elleni védelmet, titkosított postaláda tárolást és számos fejlett funkciót kínál.
 
@@ -124,7 +124,7 @@ A megoldás egyszerűsége és hatékonysága felkeltette neves fejlesztők figy
 **2025 november**: A platform biztonságát tovább növelték a jelszóhashelés PBKDF2-ről [Argon2id](https://en.wikipedia.org/wiki/Argon2) algoritmusra való áttéréssel, és az infrastruktúrát Redis-ről [Valkey](https://github.com/valkey-io/valkey) rendszerre migrálták.
 
 **2025 december**: Megjelent a 2.0 verzió, amely bevezette a [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) támogatást a kötelező TLS titkosításhoz az e-mail átvitel során, valamint frissítette az OpenPGP.js-t a 6-os verzióra.
-### 2026 - RFC megfelelés és fejlett szűrés {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - RFC megfelelés és fejlett szűrés és független biztonsági audit {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
 
 **2026 január**: A Forward Email kiadott egy átfogó [RFC protokoll megfelelőségi dokumentumot](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison), és hozzáadta a támogatást az [S/MIME titkosításhoz (RFC 8551)](/faq#do-you-support-smime-encryption) valamint az átfogó [Sieve e-mail szűréshez (RFC 5228)](/faq#do-you-support-sieve-email-filtering) a [ManageSieve protokollal (RFC 5804)](/faq#do-you-support-sieve-email-filtering). A REST API-t is kibővítették 39 végponttal.
 
@@ -132,12 +132,16 @@ A megoldás egyszerűsége és hatékonysága felkeltette neves fejlesztők figy
 
 **2026 március**: Támogatás került bevezetésre domainenként egyedi, S3-kompatibilis tárhelyhez, valamint egy parancssori eszköz a kezeléshez. Elkezdődött a többplatformos asztali és mobil alkalmazások fejlesztése macOS, Windows, Linux, iOS és Android rendszerekre ugyanazzal a nyílt forráskódú webmail kódbázissal, amelyet a [Tauri](https://tauri.app) segítségével építenek.
 
+**2026. május**: Jelentős megbízhatósági és kompatibilitási fejlesztések kerültek szállításra, beleértve az Apple Push Notification (APN) támogatást valós idejű iOS/macOS levelezéshez, átfogó CalDAV javításokat az iOS szinkronizációs kompatibilitáshoz (PRODID, LAST-MODIFIED, CREATED, SEQUENCE javítás és helyes href kódolás), alias-szintű e-mail megőrzési szabályzatokat, továbbfejlesztett Sieve szűrést MIME fejléc dekódolással és List-* fejléc megőrzéssel, IMAP kulcsszó szinkronizációt egyéni címkékkel és BSON túlcsordulás védelmet nagy volumenű küldők számára. Legacy TLS támogatás került hozzáadásra IMAP/POP3 kliensekhez, és a push értesítési API bővült token CRUD és kézbesítési pipeline végpontokkal.
+
+**2026. június**: A Forward Email közzétette első független, harmadik féltől származó biztonsági auditját, amelyet a [Cure53](https://cure53.de/) végzett, az iparág egyik legelismertebb biztonsági kutatócége. A teljes penetrációs teszt jelentés elérhető a [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf) címen. Az audit lefedete a teljes nyílt forráskódú architektúrát és szerver infrastruktúrát, minden megállapítást kezeltek és folyamatos újrateszteléssel ellenőriztek. További biztonsági megerősítést alkalmaztak, beleértve a DNS pinninget az SSRF megelőzéséhez, meghívó token hitelesítést és Domain Connect URL validációt.
+
 
 ## Alapelvek {#core-principles}
 
 A kezdetektől fogva a Forward Email szilárd elkötelezettséget mutatott a magánélet és biztonság elvei iránt:
 
-**100%-ban nyílt forráskódú filozófia**: Ellentétben azokkal a versenytársakkal, akik csak a frontendjeiket teszik nyílt forráskódúvá, miközben a backend zárt marad, a Forward Email teljes kódbázisát – frontend és backend egyaránt – nyilvánosan elérhetővé tette a [GitHubon](https://github.com/forwardemail).
+**100%-ban nyílt forráskódú filozófia**: Ellentétben azokkal a versenytársakkal, akik csak a frontendjeiket teszik nyílt forráskódúvá, miközben a backend zárt marad, a Forward Email teljes kódbázisát – frontend és backend egyaránt – nyilvánosan elérhetővé tette a [GitHubon](https://github.com/forwardemail)—immár [független biztonsági audittal](/pentest-report_forward-email.pdf) a Cure53-tól.
 
 **Adatvédelmi szemléletű tervezés**: Már az első naptól kezdve a Forward Email egyedi memóriában történő feldolgozási megközelítést alkalmaz, amely elkerüli az e-mailek lemezre írását, megkülönböztetve ezzel a hagyományos e-mail szolgáltatóktól, amelyek üzeneteket tárolnak adatbázisokban vagy fájlrendszerekben.
 
@@ -159,6 +163,6 @@ A kezdetektől fogva a Forward Email szilárd elkötelezettséget mutatott a mag
 * **Egyéb szervezetek**: RCD Hotels, Fly<span>.</span>io
 * **Jelentős fejlesztők**: Isaac Z. Schlueter (npm alkotója), David Heinemeier Hansson (Ruby on Rails alkotója)
 
-A platform folyamatosan fejlődik rendszeres funkciófrissítésekkel és infrastruktúra fejlesztésekkel, megőrizve pozícióját, mint az egyetlen 100%-ban nyílt forráskódú, titkosított, adatvédelmi fókuszú, átlátható és kvantumrezisztens e-mail szolgáltatás, amely ma elérhető.
+A platform folyamatosan fejlődik rendszeres funkciófrissítésekkel és infrastruktúra fejlesztésekkel, megőrizve pozícióját, mint az egyetlen 100%-ban nyílt forráskódú, titkosított, adatvédelmi fókuszú, átlátható és kvantumrezisztens e-mail szolgáltatás, amely ma elérhető—immár [független biztonsági audittal](/pentest-report_forward-email.pdf) a Cure53-tól.
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

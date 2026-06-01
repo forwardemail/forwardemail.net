@@ -18,7 +18,7 @@
   * [2023 - Infrastructure and Feature Expansion](#2023---infrastructure-and-feature-expansion)
   * [2024 - Service Optimization and Advanced Features](#2024---service-optimization-and-advanced-features)
   * [2025 - Privacy Enhancements and Protocol Support {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
-  * [2026 - RFC Compliance and Advanced Filtering {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
+  * [2026 - RFC Compliance, Advanced Filtering, and Independent Security Audit {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-advanced-filtering-and-independent-security-audit-2026---rfc-compliance-and-advanced-filtering)
 * [Core Principles](#core-principles)
 * [Current Status](#current-status)
 
@@ -26,7 +26,7 @@
 ## Overview
 
 > \[!TIP]
-> For technical details about our architecture, security implementations, and roadmap, see the [Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf).
+> For technical details about our architecture, security implementations, and roadmap, see the [Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and our independent [security audit](https://forwardemail.net/pentest-report_forward-email.pdf) by Cure53.
 
 Forward Email is a [free and open-source](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") [email forwarding](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") service focused on a user's [right to privacy](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy"). What began as a simple email forwarding solution in 2017 has evolved into a comprehensive email platform offering unlimited custom domain names, unlimited email addresses and aliases, unlimited disposable email addresses, spam and phishing protection, encrypted mailbox storage, and numerous advanced features.
 
@@ -128,7 +128,7 @@ The simplicity and effectiveness of this solution attracted attention from promi
 
 **December 2025**: Version 2.0 was released, introducing [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) support for enforced TLS encryption on email transport and upgrading to [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) v6.
 
-### 2026 - RFC Compliance and Advanced Filtering {#2026---rfc-compliance-and-advanced-filtering}
+### 2026 - RFC Compliance, Advanced Filtering, and Independent Security Audit {#2026---rfc-compliance-and-advanced-filtering}
 
 **January 2026**: Forward Email released a comprehensive [RFC protocol compliance document](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) and added support for [S/MIME encryption (RFC 8551)](/faq#do-you-support-smime-encryption) and comprehensive [Sieve email filtering (RFC 5228)](/faq#do-you-support-sieve-email-filtering) with [ManageSieve protocol (RFC 5804)](/faq#do-you-support-sieve-email-filtering) support. The REST API was also expanded to 39 endpoints.
 
@@ -136,12 +136,16 @@ The simplicity and effectiveness of this solution attracted attention from promi
 
 **March 2026**: Support for per-domain custom S3-compatible storage was added, along with a command-line tool for management. Work began on cross-platform desktop and mobile applications for macOS, Windows, Linux, iOS, and Android using the same open-source webmail codebase, built with [Tauri](https://tauri.app).
 
+**May 2026**: Significant reliability and compatibility improvements were shipped, including Apple Push Notification (APN) support for real-time iOS/macOS mail delivery, comprehensive CalDAV fixes for iOS sync compatibility (PRODID, LAST-MODIFIED, CREATED, SEQUENCE healing, and proper href encoding), per-alias email retention policies, enhanced Sieve filtering with MIME header decoding and List-\* header preservation, IMAP keyword synchronization with custom labels, and BSON overflow protection for high-volume senders. Legacy TLS support was added for IMAP/POP3 clients, and the push notification API was expanded with token CRUD and delivery pipeline endpoints.
+
+**June 2026**: Forward Email published its first independent third-party security audit, conducted by [Cure53](https://cure53.de/), one of the most respected security research firms in the industry. The full penetration test report is available at [pentest-report\_forward-email.pdf](/pentest-report_forward-email.pdf). The audit covered the entire open-source architecture and server infrastructure, with all findings addressed and verified through continuous retesting. Additional security hardening was applied including DNS pinning for SSRF prevention, invite token authentication, and Domain Connect URL validation.
+
 
 ## Core Principles
 
 Since its inception, Forward Email has maintained a steadfast commitment to privacy and security principles:
 
-**100% Open-Source Philosophy**: Unlike competitors who only open-source their frontends while keeping backends closed, Forward Email has made its entire codebase—both frontend and backend—available for public scrutiny on [GitHub](https://github.com/forwardemail).
+**100% Open-Source Philosophy**: Unlike competitors who only open-source their frontends while keeping backends closed, Forward Email has made its entire codebase—both frontend and backend—available for public scrutiny on [GitHub](https://github.com/forwardemail)—now backed by an [independent security audit](/pentest-report_forward-email.pdf) from Cure53.
 
 **Privacy-First Design**: From day one, Forward Email implemented a unique in-memory processing approach that avoids writing emails to disk, setting it apart from conventional email services that store messages in databases or file systems.
 
@@ -154,7 +158,7 @@ Since its inception, Forward Email has maintained a steadfast commitment to priv
 
 ## Current Status
 
-As of March 2026, Forward Email serves over 1.6+ million domains worldwide, including notable organizations and industry leaders such as:
+As of June 2026, Forward Email serves over 1.6+ million domains worldwide, including notable organizations and industry leaders such as:
 
 * **Technology Companies**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **Media Organizations**: Fox News Radio, Disney Ad Sales
@@ -163,6 +167,6 @@ As of March 2026, Forward Email serves over 1.6+ million domains worldwide, incl
 * **Other Organizations**: RCD Hotels, Fly<span>.</span>io
 * **Notable Developers**: Isaac Z. Schlueter (npm creator), David Heinemeier Hansson (Ruby on Rails creator)
 
-The platform continues to evolve with regular feature releases and infrastructure improvements, maintaining its position as the only 100% open-source, encrypted, privacy-focused, transparent, and quantum-resistant email service available today.
+The platform continues to evolve with regular feature releases and infrastructure improvements, maintaining its position as the only 100% open-source, encrypted, privacy-focused, transparent, and quantum-resistant email service available today—now backed by an [independent security audit](/pentest-report_forward-email.pdf) from Cure53.
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

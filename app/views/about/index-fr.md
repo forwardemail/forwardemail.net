@@ -18,7 +18,7 @@
   * [2023 - Expansion de l'infrastructure et des fonctionnalités](#2023---infrastructure-and-feature-expansion)
   * [2024 - Optimisation du service et fonctionnalités avancées](#2024---service-optimization-and-advanced-features)
   * [2025 - Améliorations de la confidentialité et support des protocoles {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
-  * [2026 - Conformité RFC et filtrage avancé {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
+  * [2026 - Conformité RFC et filtrage avancé et audit de sécurité indépendant {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
 * [Principes fondamentaux](#core-principles)
 * [Statut actuel](#current-status)
 
@@ -26,7 +26,7 @@
 ## Aperçu {#overview}
 
 > \[!TIP]
-> Pour des détails techniques sur notre architecture, nos implémentations de sécurité et notre feuille de route, consultez le [Livre blanc technique](https://forwardemail.net/technical-whitepaper.pdf).
+> Pour des détails techniques sur notre architecture, nos implémentations de sécurité et notre feuille de route, consultez le [Livre blanc technique](https://forwardemail.net/technical-whitepaper.pdf) et notre [audit de sécurité](https://forwardemail.net/pentest-report_forward-email.pdf) indépendant par Cure53.
 
 Forward Email est un service de [transfert d’e-mails](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") [gratuit et open-source](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") axé sur le [droit à la vie privée](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy") de l’utilisateur. Ce qui a commencé comme une simple solution de transfert d’e-mails en 2017 est devenu une plateforme complète offrant des noms de domaine personnalisés illimités, des adresses e-mail et alias illimités, des adresses e-mail jetables illimitées, une protection contre le spam et le phishing, un stockage chiffré des boîtes aux lettres, ainsi que de nombreuses fonctionnalités avancées.
 
@@ -124,7 +124,7 @@ La simplicité et l’efficacité de cette solution ont attiré l’attention de
 **Novembre 2025** : La sécurité de la plateforme a été renforcée avec une migration de PBKDF2 vers [Argon2id](https://en.wikipedia.org/wiki/Argon2) pour le hachage des mots de passe, et l'infrastructure a été migrée de Redis vers [Valkey](https://github.com/valkey-io/valkey).
 
 **Décembre 2025** : La version 2.0 a été publiée, introduisant la prise en charge de [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) pour un chiffrement TLS obligatoire lors du transport des emails et la mise à niveau vers [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) v6.
-### 2026 - Conformité RFC et filtrage avancé {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - Conformité RFC et filtrage avancé et audit de sécurité indépendant {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
 
 **Janvier 2026** : Forward Email a publié un [document complet sur la conformité aux protocoles RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) et ajouté la prise en charge du [chiffrement S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) ainsi qu’un filtrage complet des emails avec [Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) et le support du protocole [ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering). L’API REST a également été étendue à 39 points de terminaison.
 
@@ -132,12 +132,16 @@ La simplicité et l’efficacité de cette solution ont attiré l’attention de
 
 **Mars 2026** : La prise en charge du stockage personnalisé compatible S3 par domaine a été ajoutée, ainsi qu’un outil en ligne de commande pour la gestion. Les travaux ont commencé sur des applications de bureau et mobiles multiplateformes pour macOS, Windows, Linux, iOS et Android utilisant la même base de code open-source du webmail, développées avec [Tauri](https://tauri.app).
 
+**Mai 2026** : Des améliorations significatives de fiabilité et de compatibilité ont été livrées, notamment le support Apple Push Notification (APN) pour la livraison de courrier en temps réel sur iOS/macOS, des corrections complètes CalDAV pour la compatibilité de synchronisation iOS (réparation PRODID, LAST-MODIFIED, CREATED, SEQUENCE et encodage href correct), des politiques de rétention d'e-mails par alias, un filtrage Sieve amélioré avec décodage d'en-têtes MIME et préservation des en-têtes List-*, la synchronisation des mots-clés IMAP avec des labels personnalisés et la protection contre le dépassement BSON pour les expéditeurs à haut volume. Le support TLS legacy a été ajouté pour les clients IMAP/POP3, et l'API de notifications push a été étendue avec des endpoints CRUD de tokens et de pipeline de livraison.
+
+**Juin 2026** : Forward Email a publié son premier audit de sécurité indépendant tiers, réalisé par [Cure53](https://cure53.de/), l'une des sociétés de recherche en sécurité les plus respectées du secteur. Le rapport complet du test de pénétration est disponible sur [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). L'audit a couvert l'ensemble de l'architecture open-source et de l'infrastructure serveur, tous les résultats ayant été traités et vérifiés par des retests continus. Un renforcement de sécurité supplémentaire a été appliqué, incluant le DNS pinning pour la prévention SSRF, l'authentification par jeton d'invitation et la validation d'URL Domain Connect.
+
 
 ## Principes fondamentaux {#core-principles}
 
 Depuis sa création, Forward Email s’est engagé fermement envers les principes de confidentialité et de sécurité :
 
-**Philosophie 100 % open-source** : Contrairement aux concurrents qui ne rendent open-source que leurs interfaces tout en gardant leurs backends fermés, Forward Email a rendu l’intégralité de son code—frontend et backend—disponible pour examen public sur [GitHub](https://github.com/forwardemail).
+**Philosophie 100 % open-source** : Contrairement aux concurrents qui ne rendent open-source que leurs interfaces tout en gardant leurs backends fermés, Forward Email a rendu l’intégralité de son code—frontend et backend—disponible pour examen public sur [GitHub](https://github.com/forwardemail)—désormais soutenu par un [audit de sécurité indépendant](/pentest-report_forward-email.pdf) de Cure53.
 
 **Conception axée sur la confidentialité** : Dès le premier jour, Forward Email a mis en œuvre une approche unique de traitement en mémoire qui évite d’écrire les emails sur disque, ce qui le distingue des services de messagerie classiques qui stockent les messages dans des bases de données ou systèmes de fichiers.
 
@@ -159,6 +163,6 @@ En mars 2026, Forward Email dessert plus de 500 000 domaines dans le monde, incl
 * **Autres organisations** : RCD Hotels, Fly<span>.</span>io
 * **Développeurs notables** : Isaac Z. Schlueter (créateur de npm), David Heinemeier Hansson (créateur de Ruby on Rails)
 
-La plateforme continue d’évoluer avec des sorties régulières de fonctionnalités et des améliorations d’infrastructure, maintenant sa position comme le seul service de messagerie 100 % open-source, chiffré, axé sur la confidentialité, transparent et résistant au quantique disponible aujourd’hui.
+La plateforme continue d’évoluer avec des sorties régulières de fonctionnalités et des améliorations d’infrastructure, maintenant sa position comme le seul service de messagerie 100 % open-source, chiffré, axé sur la confidentialité, transparent et résistant au quantique disponible aujourd’hui—désormais soutenu par un [audit de sécurité indépendant](/pentest-report_forward-email.pdf) de Cure53.
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
