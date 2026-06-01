@@ -989,7 +989,19 @@ async function backup(payload) {
     }
   } catch (_err) {
     err = _err;
-    err.isCodeBug = true;
+    // For custom S3 buckets, client-side errors (4xx like AccessDenied,
+    // InvalidSignature) are user configuration issues, not code bugs.
+    // Preserve the original error message so the user gets actionable
+    // feedback (e.g. "Forbidden: Invalid signature") instead of the
+    // generic "An internal server error has occurred" from refineAndLogError.
+    // Guard with $metadata.httpStatusCode to ensure this is genuinely an
+    // AWS SDK service exception and not an unrelated error leaking internals.
+    err.isCodeBug = !(
+      customBucket &&
+      err.$fault === 'client' &&
+      typeof err.$metadata?.httpStatusCode === 'number'
+    );
+
     await logger.fatal(err, { payload });
   }
 
