@@ -8,12 +8,7 @@ const http = require('node:http');
 const https = require('node:https');
 const net = require('node:net');
 
-const {
-  S3Client,
-  HeadBucketCommand,
-  PutObjectCommand,
-  DeleteObjectCommand
-} = require('@aws-sdk/client-s3');
+const { S3Client, HeadBucketCommand } = require('@aws-sdk/client-s3');
 // Resolve NodeHttpHandler from the S3 client's dependency tree (not a direct dep)
 const { NodeHttpHandler } = require(require.resolve(
   '@smithy/node-http-handler',
@@ -40,11 +35,10 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
  * Steps:
  * 1. Resolve credentials from request body or database
  * 2. Validate endpoint URL format (must include protocol)
- * 3. Block private/internal endpoints
- * 4. Perform a HeadBucket call to verify bucket access
- * 5. Perform a PutObject + DeleteObject to verify write permissions
- * 6. Check that the bucket is not publicly accessible
- * 7. Return success/failure via JSON (AJAX) or flash (web)
+ * 3. Block private/internal endpoints (DNS pinning to prevent rebinding)
+ * 4. Perform a read-only HeadBucket call to verify bucket access
+ * 5. Check that the bucket is not publicly accessible
+ * 6. Return success/failure via JSON (AJAX) or flash (web)
  *
  * @param {Object} ctx - Koa context
  */
@@ -198,29 +192,16 @@ async function testS3Connection(ctx) {
   });
 
   try {
-    // Step 1: Verify bucket exists and credentials are valid
+    //
+    // FWD-01-002: Only perform a read-only HeadBucket probe.
+    // Previously this endpoint also performed PutObject + DeleteObject which
+    // allowed an authenticated user to make the server write/delete objects on
+    // an attacker-controlled S3-compatible endpoint. Restricting to HeadBucket
+    // verifies connectivity and credential validity without outbound writes.
+    //
     await testClient.send(new HeadBucketCommand({ Bucket: bucket }));
 
-    // Step 2: Verify write permissions with a test object
-    const testKey = `.forwardemail-connection-test-${Date.now()}`;
-    await testClient.send(
-      new PutObjectCommand({
-        Bucket: bucket,
-        Key: testKey,
-        Body: 'connection-test',
-        ContentType: 'text/plain'
-      })
-    );
-
-    // Step 3: Clean up the test object
-    await testClient.send(
-      new DeleteObjectCommand({
-        Bucket: bucket,
-        Key: testKey
-      })
-    );
-
-    // Step 4: Check that the bucket is not publicly accessible
+    // Check that the bucket is not publicly accessible
     const isPublic = await checkS3BucketAccess(endpoint, bucket);
     if (isPublic) {
       throw Boom.badRequest(ctx.translateError('CUSTOM_S3_PUBLIC_BUCKET'));

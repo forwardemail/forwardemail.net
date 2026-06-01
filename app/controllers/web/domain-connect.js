@@ -339,6 +339,33 @@ module.exports = async (ctx) => {
     return;
   }
 
+  //
+  // FWD-01-006: Validate urlSyncUX before using it as a redirect target.
+  // An attacker who controls the _domainconnect TXT record could point to a
+  // malicious server that returns a crafted urlSyncUX, turning this endpoint
+  // into an open-redirect / phishing gadget. Only allow HTTPS URLs on
+  // non-private hosts to prevent abuse.
+  //
+  try {
+    const syncUrl = new URL(urlSyncUX);
+    if (syncUrl.protocol !== 'https:') {
+      throw new Error('urlSyncUX must be HTTPS');
+    }
+
+    if (await isPrivateHostResolved(syncUrl.hostname)) {
+      throw new Error('urlSyncUX resolves to private address');
+    }
+  } catch {
+    const message = ctx.translate('DOMAIN_CONNECT_PROVIDER_NOT_FOUND', domain);
+    if (ctx.accepts('html')) {
+      ctx.flash('error', message);
+      return ctx.redirect(fallbackUrl);
+    }
+
+    ctx.body = { message };
+    return;
+  }
+
   // Build template variable params
   // Variables defined in our template: %domainId%, %fwdEmailVerification%,
   // %fwdEmailDkimSelector%, %fwdEmailDkimValue%

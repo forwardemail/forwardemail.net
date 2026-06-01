@@ -76,19 +76,18 @@ function getMongoQuery(ctx) {
   }
 
   //
-  // FWD-01-010: Accept mongodb_query from POST body to prevent cross-origin
+  // FWD-01-010: Only accept mongodb_query from POST body to prevent cross-origin
   // timing attacks. GET query args are observable cross-origin via resource
   // timing or speculative execution side-channels. POST requires same-origin
   // or CORS preflight, which blocks cross-origin exfiltration attempts.
   //
-  // For backwards compatibility, also check ctx.query.mongodb_query (GET)
-  // but prefer ctx.request.body.mongodb_query (POST) when available.
+  // The GET fallback has been removed entirely — mongodb_query via query string
+  // is no longer accepted. Admin filter forms must use POST.
   //
   const mongodbQueryRaw =
-    (ctx.request.body && isSANB(ctx.request.body.mongodb_query)
+    ctx.request.body && isSANB(ctx.request.body.mongodb_query)
       ? ctx.request.body.mongodb_query
-      : null) ||
-    (isSANB(ctx.query.mongodb_query) ? ctx.query.mongodb_query : null);
+      : null;
 
   if (mongodbQueryRaw) {
     try {
