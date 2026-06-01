@@ -417,17 +417,22 @@ module.exports = (redis) => ({
           : crypto.randomBytes(16).toString('hex');
       ctx.state.nonce = nonce;
 
-      await next();
-
-      // Rewrite the CSP header that helmet set during downstream processing
-      const csp = ctx.response.get('Content-Security-Policy');
-      if (csp) {
-        const nonceToken = `'nonce-${nonce}'`;
-        const patched = csp.replace(
-          /(?<=script-src\s)([^;]*)/,
-          `$1 ${nonceToken}`
-        );
-        ctx.set('Content-Security-Policy', patched);
+      try {
+        await next();
+      } finally {
+        // Rewrite the CSP header that helmet set during downstream processing.
+        // Wrapped in try/finally so the nonce is injected even when the error
+        // handler (koa-better-error-handler) renders 4xx/5xx pages — otherwise
+        // inline scripts on error pages are blocked by CSP.
+        const csp = ctx.response.get('Content-Security-Policy');
+        if (csp) {
+          const nonceToken = `'nonce-${nonce}'`;
+          const patched = csp.replace(
+            /(?<=script-src\s)([^;]*)/,
+            `$1 ${nonceToken}`
+          );
+          ctx.set('Content-Security-Policy', patched);
+        }
       }
     });
     //
