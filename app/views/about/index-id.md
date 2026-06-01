@@ -26,7 +26,7 @@
 ## Ikhtisar {#overview}
 
 > \[!TIP]
-> Untuk detail teknis tentang arsitektur kami, implementasi keamanan, dan roadmap, lihat [Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf).
+> Untuk detail teknis tentang arsitektur kami, implementasi keamanan, dan roadmap, lihat [Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) dan [audit keamanan](https://forwardemail.net/pentest-report_forward-email.pdf) independen kami oleh Cure53.
 
 Forward Email adalah layanan [penerusan email](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") [gratis dan sumber terbuka](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") yang berfokus pada [hak privasi](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy") pengguna. Apa yang dimulai sebagai solusi penerusan email sederhana pada tahun 2017 telah berkembang menjadi platform email komprehensif yang menawarkan nama domain khusus tanpa batas, alamat email dan alias tanpa batas, alamat email sekali pakai tanpa batas, perlindungan spam dan phishing, penyimpanan kotak surat terenkripsi, dan banyak fitur canggih lainnya.
 
@@ -124,13 +124,17 @@ Kesederhanaan dan efektivitas solusi ini menarik perhatian dari pengembang terke
 **November 2025**: Keamanan platform ditingkatkan dengan migrasi dari PBKDF2 ke [Argon2id](https://en.wikipedia.org/wiki/Argon2) untuk hashing kata sandi, dan infrastruktur dimigrasikan dari Redis ke [Valkey](https://github.com/valkey-io/valkey).
 
 **Desember 2025**: Versi 2.0 dirilis, memperkenalkan dukungan [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) untuk enkripsi TLS yang dipaksakan pada transport email dan peningkatan ke [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) v6.
-### 2026 - Kepatuhan RFC dan Penyaringan Lanjutan {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - Kepatuhan RFC dan Penyaringan Lanjutan dan Audit Keamanan Independen {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
 
 **Januari 2026**: Forward Email merilis [dokumen kepatuhan protokol RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) yang komprehensif dan menambahkan dukungan untuk [enkripsi S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) serta penyaringan email [Sieve yang lengkap (RFC 5228)](/faq#do-you-support-sieve-email-filtering) dengan dukungan protokol [ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering). REST API juga diperluas menjadi 39 endpoint.
 
 **Februari 2026**: Klien webmail resmi dan open-source diluncurkan di [mail.forwardemail.net](https://mail.forwardemail.net) ([kode sumber di GitHub](https://github.com/forwardemail/mail.forwardemail.net)). Platform ini juga menambahkan dukungan untuk [Ekstensi Penjadwalan CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities), dan [Domain Connect](https://domainconnect.org) untuk pengaturan DNS 1-klik. Notifikasi push real-time untuk IMAP, CalDAV, dan CardDAV diluncurkan menggunakan WebSockets.
 
 **Maret 2026**: Dukungan untuk penyimpanan khusus per-domain yang kompatibel dengan S3 ditambahkan, bersama dengan alat baris perintah untuk manajemen. Pengerjaan aplikasi desktop dan mobile lintas platform untuk macOS, Windows, Linux, iOS, dan Android dimulai menggunakan basis kode webmail open-source yang sama, dibangun dengan [Tauri](https://tauri.app).
+
+**Mei 2026**: Peningkatan keandalan dan kompatibilitas yang signifikan dikirimkan, termasuk dukungan Apple Push Notification (APN) untuk pengiriman email real-time di iOS/macOS, perbaikan CalDAV komprehensif untuk kompatibilitas sinkronisasi iOS (perbaikan PRODID, LAST-MODIFIED, CREATED, SEQUENCE dan encoding href yang benar), kebijakan retensi email per-alias, penyaringan Sieve yang ditingkatkan dengan dekoding header MIME dan pelestarian header List-*, sinkronisasi kata kunci IMAP dengan label kustom dan perlindungan overflow BSON untuk pengirim volume tinggi. Dukungan TLS legacy ditambahkan untuk klien IMAP/POP3, dan API notifikasi push diperluas dengan endpoint CRUD token dan pipeline pengiriman.
+
+**Juni 2026**: Forward Email menerbitkan audit keamanan pihak ketiga independen pertamanya, dilakukan oleh [Cure53](https://cure53.de/), salah satu firma riset keamanan paling dihormati di industri. Laporan lengkap uji penetrasi tersedia di [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Audit mencakup seluruh arsitektur open-source dan infrastruktur server, dengan semua temuan ditangani dan diverifikasi melalui pengujian ulang berkelanjutan. Penguatan keamanan tambahan diterapkan termasuk DNS pinning untuk pencegahan SSRF, autentikasi token undangan, dan validasi URL Domain Connect.
 
 
 ## Prinsip Inti {#core-principles}
@@ -159,6 +163,6 @@ Per Maret 2026, Forward Email melayani lebih dari 500.000 domain di seluruh duni
 * **Organisasi Lainnya**: RCD Hotels, Fly<span>.</span>io
 * **Pengembang Terkenal**: Isaac Z. Schlueter (pencipta npm), David Heinemeier Hansson (pencipta Ruby on Rails)
 
-Platform ini terus berkembang dengan rilis fitur dan peningkatan infrastruktur secara reguler, mempertahankan posisinya sebagai satu-satunya layanan email yang 100% open-source, terenkripsi, berfokus pada privasi, transparan, dan tahan kuantum yang tersedia saat ini.
+Platform ini terus berkembang dengan rilis fitur dan peningkatan infrastruktur secara reguler, mempertahankan posisinya sebagai satu-satunya layanan email yang 100% open-source, terenkripsi, berfokus pada privasi, transparan, dan tahan kuantum yang tersedia saat ini—kini didukung oleh [audit keamanan independen](/pentest-report_forward-email.pdf) dari Cure53.
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

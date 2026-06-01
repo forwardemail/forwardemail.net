@@ -26,7 +26,7 @@
 ## Oversigt {#overview}
 
 > \[!TIP]
-> For tekniske detaljer om vores arkitektur, sikkerhedsimplementeringer og køreplan, se [Teknisk Whitepaper](https://forwardemail.net/technical-whitepaper.pdf).
+> For tekniske detaljer om vores arkitektur, sikkerhedsimplementeringer og køreplan, se [Teknisk Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) og vores uafhængige [sikkerhedsaudit](https://forwardemail.net/pentest-report_forward-email.pdf) fra Cure53.
 
 Forward Email er en [gratis og open-source](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") [email forwarding](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") tjeneste med fokus på brugerens [ret til privatliv](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy"). Hvad der begyndte som en simpel email-videresendelsesløsning i 2017, er udviklet til en omfattende email-platform, der tilbyder ubegrænsede brugerdefinerede domænenavne, ubegrænsede emailadresser og aliaser, ubegrænsede engangsemailadresser, spam- og phishingbeskyttelse, krypteret postkasseopbevaring og adskillige avancerede funktioner.
 
@@ -124,13 +124,17 @@ Enkeltheden og effektiviteten af denne løsning tiltrak opmærksomhed fra fremtr
 **November 2025**: Platformens sikkerhed blev forbedret med en migration fra PBKDF2 til [Argon2id](https://en.wikipedia.org/wiki/Argon2) til password hashing, og infrastrukturen blev migreret fra Redis til [Valkey](https://github.com/valkey-io/valkey).
 
 **December 2025**: Version 2.0 blev udgivet, med introduktion af [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) support for håndhævet TLS-kryptering på e-mail transport og opgradering til [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) v6.
-### 2026 - RFC-overholdelse og avanceret filtrering {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - RFC-overholdelse og avanceret filtrering og uafhængig sikkerhedsaudit {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
 
 **Januar 2026**: Forward Email udgav et omfattende [RFC-protokoloverholdelsesdokument](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) og tilføjede support for [S/MIME-kryptering (RFC 8551)](/faq#do-you-support-smime-encryption) samt omfattende [Sieve e-mailfiltrering (RFC 5228)](/faq#do-you-support-sieve-email-filtering) med [ManageSieve-protokol (RFC 5804)](/faq#do-you-support-sieve-email-filtering) support. REST API’en blev også udvidet til 39 endpoints.
 
 **Februar 2026**: Den officielle, open-source webmail-klient blev lanceret på [mail.forwardemail.net](https://mail.forwardemail.net) ([kildekode på GitHub](https://github.com/forwardemail/mail.forwardemail.net)). Platformen tilføjede også support for [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) og [Domain Connect](https://domainconnect.org) til 1-klik DNS-opsætning. Realtids push-notifikationer for IMAP, CalDAV og CardDAV blev lanceret ved brug af WebSockets.
 
 **Marts 2026**: Support for per-domæne tilpasset S3-kompatibel lagring blev tilføjet, sammen med et kommandolinjeværktøj til administration. Arbejdet begyndte på tværplatforms desktop- og mobilapplikationer til macOS, Windows, Linux, iOS og Android ved brug af den samme open-source webmail-kodebase, bygget med [Tauri](https://tauri.app).
+
+**Maj 2026**: Betydelige forbedringer af pålidelighed og kompatibilitet blev leveret, herunder Apple Push Notification (APN) support til realtids iOS/macOS mail-levering, omfattende CalDAV-rettelser til iOS-synkroniseringskompatibilitet (PRODID, LAST-MODIFIED, CREATED, SEQUENCE-healing og korrekt href-kodning), per-alias e-mail-opbevaringspolitikker, forbedret Sieve-filtrering med MIME-header-dekodning og List-*-header-bevaring, IMAP-nøgleordsynkronisering med brugerdefinerede labels og BSON-overløbsbeskyttelse til afsendere med høj volumen. Legacy TLS-support blev tilføjet til IMAP/POP3-klienter, og push-notifikations-API'et blev udvidet med token CRUD og leveringspipeline-endpoints.
+
+**Juni 2026**: Forward Email offentliggjorde sin første uafhængige tredjeparts sikkerhedsaudit, udført af [Cure53](https://cure53.de/), et af de mest respekterede sikkerhedsforskningsfirmaer i branchen. Den fulde penetrationstestrapport er tilgængelig på [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Auditten dækkede hele den open-source arkitektur og serverinfrastruktur, med alle fund adresseret og verificeret gennem kontinuerlig gentest. Yderligere sikkerhedshærdning blev anvendt, herunder DNS-pinning til SSRF-forebyggelse, invite-token-autentificering og Domain Connect URL-validering.
 
 
 ## Kerneprincipper {#core-principles}
@@ -159,6 +163,6 @@ Pr. marts 2026 betjener Forward Email over 500.000 domæner verden over, inklusi
 * **Andre organisationer**: RCD Hotels, Fly<span>.</span>io
 * **Bemærkelsesværdige udviklere**: Isaac Z. Schlueter (npm-skaber), David Heinemeier Hansson (Ruby on Rails-skaber)
 
-Platformen fortsætter med at udvikle sig med regelmæssige funktionsudgivelser og infrastrukturforbedringer, og opretholder sin position som den eneste 100% open-source, krypterede, privatlivsfokuserede, gennemsigtige og kvante-resistente e-mailtjeneste, der findes i dag.
+Platformen fortsætter med at udvikle sig med regelmæssige funktionsudgivelser og infrastrukturforbedringer, og opretholder sin position som den eneste 100% open-source, krypterede, privatlivsfokuserede, gennemsigtige og kvante-resistente e-mailtjeneste, der findes i dag—nu understøttet af en [uafhængig sikkerhedsaudit](/pentest-report_forward-email.pdf) fra Cure53.
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
