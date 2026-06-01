@@ -19678,5 +19678,7 @@
   "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "Maximálně %d push tokenů na alias. Před registrací nového tokenu prosím odstraňte existující.",
   "Retention": "Uchovávání",
   "Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling.": "Doba uchovávání ve dnech (0–365) pro automatické čištění Koše a Nevyžádané pošty. Nastavte na 0 pro automatické škálování podle úložiště.",
-  "Retention period must be a number between 0 and 365 days.": "Doba uchovávání musí být číslo mezi 0 a 365 dny."
+  "Retention period must be a number between 0 and 365 days.": "Doba uchovávání musí být číslo mezi 0 a 365 dny.",
+  "Quantum Resistant Email Service - Guide 2026": "Quantum Resistant Email Service - Guide 2026",
+  "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms.": "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms."
 }

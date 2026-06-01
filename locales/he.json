@@ -19678,5 +19678,7 @@
   "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "מקסימום %d אסימוני Push לכל כינוי. אנא הסר אסימון קיים לפני רישום אסימון חדש.",
   "Retention": "שמירה",
   "Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling.": "תקופת שמירה בימים (0-365) לניקוי אוטומטי של תיקיות אשפה ודואר זבל. הגדר ל-0 לשימוש בהתאמה אוטומטית מבוססת אחסון.",
-  "Retention period must be a number between 0 and 365 days.": "תקופת השמירה חייבת להיות מספר בין 0 ל-365 ימים."
+  "Retention period must be a number between 0 and 365 days.": "תקופת השמירה חייבת להיות מספר בין 0 ל-365 ימים.",
+  "Quantum Resistant Email Service - Guide 2026": "Quantum Resistant Email Service - Guide 2026",
+  "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms.": "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms."
 }

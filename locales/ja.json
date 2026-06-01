@@ -19678,5 +19678,7 @@
   "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "エイリアスごとに最大 %d 個のプッシュトークンです。新しいトークンを登録する前に既存のトークンを削除してください。",
   "Retention": "保持期間",
   "Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling.": "保持期間（日数、0〜365）。ゴミ箱と迷惑メールフォルダの自動クリーンアップに使用されます。0に設定するとストレージベースの自動スケーリングが使用されます。",
-  "Retention period must be a number between 0 and 365 days.": "保持期間は0から365日の間の数値でなければなりません。"
+  "Retention period must be a number between 0 and 365 days.": "保持期間は0から365日の間の数値でなければなりません。",
+  "Quantum Resistant Email Service - Guide 2026": "Quantum Resistant Email Service - Guide 2026",
+  "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms.": "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms."
 }

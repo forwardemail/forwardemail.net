@@ -19678,5 +19678,7 @@
   "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "Tối đa %d mã thông báo push cho mỗi bí danh. Vui lòng xóa mã thông báo hiện có trước khi đăng ký mã mới.",
   "Retention": "Lưu giữ",
   "Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling.": "Thời gian lưu giữ tính bằng ngày (0-365) để tự động dọn dẹp Thùng rác và Thư rác. Đặt thành 0 để sử dụng tự động điều chỉnh dựa trên dung lượng lưu trữ.",
-  "Retention period must be a number between 0 and 365 days.": "Thời gian lưu giữ phải là một số từ 0 đến 365 ngày."
+  "Retention period must be a number between 0 and 365 days.": "Thời gian lưu giữ phải là một số từ 0 đến 365 ngày.",
+  "Quantum Resistant Email Service - Guide 2026": "Quantum Resistant Email Service - Guide 2026",
+  "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms.": "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms."
 }

@@ -19678,5 +19678,7 @@
   "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "Maximaal %d push-tokens per alias. Verwijder een bestaande token voordat je een nieuwe registreert.",
   "Retention": "Bewaarperiode",
   "Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling.": "Bewaarperiode in dagen (0-365) voor automatische opschoning van Prullenbak en Ongewenste e-mail. Stel in op 0 voor automatische opslaggebaseerde schaling.",
-  "Retention period must be a number between 0 and 365 days.": "De bewaarperiode moet een getal zijn tussen 0 en 365 dagen."
+  "Retention period must be a number between 0 and 365 days.": "De bewaarperiode moet een getal zijn tussen 0 en 365 dagen.",
+  "Quantum Resistant Email Service - Guide 2026": "Quantum Resistant Email Service - Guide 2026",
+  "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms.": "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms."
 }

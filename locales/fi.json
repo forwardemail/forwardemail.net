@@ -19678,5 +19678,7 @@
   "Maximum of %d push tokens per alias. Please remove an existing token before registering a new one.": "Enintään %d push-tunnusta per alias. Poista olemassa oleva tunnus ennen uuden rekisteröintiä.",
   "Retention": "Säilytys",
   "Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling.": "Säilytysaika päivinä (0–365) Roskakorin ja Roskapostin automaattiseen siivoukseen. Aseta arvoon 0 automaattiseen tallennustilaan perustuvaan skaalaukseen.",
-  "Retention period must be a number between 0 and 365 days.": "Säilytysajan on oltava luku välillä 0–365 päivää."
+  "Retention period must be a number between 0 and 365 days.": "Säilytysajan on oltava luku välillä 0–365 päivää.",
+  "Quantum Resistant Email Service - Guide 2026": "Quantum Resistant Email Service - Guide 2026",
+  "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms.": "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms."
 }
