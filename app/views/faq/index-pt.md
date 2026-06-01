@@ -194,7 +194,7 @@ Principais recursos do Forward Email:
 Você pode nos comparar com mais de 56 outros provedores de serviço de email em [nossa página de Comparação de Email](/blog/best-email-service).
 
 > \[!TIP]
-> Saiba mais sobre o Forward Email lendo nosso [Whitepaper Técnico](/technical-whitepaper.pdf) gratuito
+> Saiba mais sobre o Forward Email lendo nosso [Whitepaper Técnico](/technical-whitepaper.pdf) gratuito e revisando nossa [auditoria de segurança](/pentest-report_forward-email.pdf) pela Cure53.
 
 ### Quem usa o Forward Email {#who-uses-forward-email}
 

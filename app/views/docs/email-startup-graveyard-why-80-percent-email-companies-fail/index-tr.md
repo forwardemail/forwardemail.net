@@ -8,7 +8,7 @@
 > **Ana İçgörü**: Çoğu e-posta girişimi gerçek e-posta altyapısını sıfırdan inşa etmez. Birçoğu Amazon SES gibi mevcut çözümlerin veya Postfix gibi açık kaynak sistemlerin üzerine kurar. Temel protokoller iyi çalışır - asıl zorluk uygulamadadır.
 
 > \[!TIP]
-> **Teknik Derinlemesine İnceleme**: Yaklaşımımız, mimarimiz ve güvenlik uygulamalarımız hakkında kapsamlı detaylar için [Forward Email Teknik Beyaz Kitap](https://forwardemail.net/technical-whitepaper.pdf) ve 2017’den beri tam geliştirme zaman çizelgemizi belgeleyen [Hakkında sayfası](https://forwardemail.net/en/about) sayfalarımıza bakabilirsiniz.
+> **Teknik Derinlemesine İnceleme**: Yaklaşımımız, mimarimiz ve güvenlik uygulamalarımız hakkında kapsamlı detaylar için [Forward Email Teknik Beyaz Kitap](https://forwardemail.net/technical-whitepaper.pdf) ve 2017’den beri tam geliştirme zaman çizelgemizi belgeleyen [Hakkında sayfası](https://forwardemail.net/en/about) sayfalarımıza bakabilirsiniz. Ayrıca, kod tabanımız [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf) tarafından bağımsız olarak denetlenmiştir.
 
 
 ## İçindekiler {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Gizlilik Tasarımı**: [Gizlilik politikamız](https://forwardemail.net/en/privacy), iletilen e-postaları disk depolama veya veritabanlarında saklamadığımızı, e-postalarla ilgili meta verileri tutmadığımızı ve günlükler veya IP adresleri saklamadığımızı garanti eder - yalnızca e-posta iletimi hizmetleri için bellekte çalışır.
 
-**Teknik Dokümantasyon**: Yaklaşımımız, mimarimiz ve güvenlik uygulamalarımız hakkında kapsamlı detaylar için [teknik beyaz kitabımıza](https://forwardemail.net/technical-whitepaper.pdf) ve geniş teknik dokümantasyona bakınız.
+**Teknik Dokümantasyon**: Yaklaşımımız, mimarimiz ve güvenlik uygulamalarımız hakkında kapsamlı detaylar için [teknik beyaz kitabımıza](https://forwardemail.net/technical-whitepaper.pdf), Cure53 tarafından yapılan [güvenlik denetimimiz](https://forwardemail.net/pentest-report_forward-email.pdf), ve geniş teknik dokümantasyona bakınız.
 
 ### E-posta Hizmet Sağlayıcı Karşılaştırması: Kanıtlanmış Protokollerle Büyüme {#email-service-provider-comparison-growth-through-proven-protocols}
 

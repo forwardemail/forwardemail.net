@@ -1,5 +1,9 @@
 # Các Công Ty Kiểm Toán An Ninh Tốt Nhất {#best-security-audit-companies}
 
+
+> [!IMPORTANT]
+> Vào ngày 1 tháng 6 năm 2026, chúng tôi đã công bố kiểm toán bảo mật bên thứ ba được thực hiện bởi [Cure53](https://cure53.de/), được công nhận rộng rãi là một trong những công ty nghiên cứu bảo mật tốt nhất trong ngành. Báo cáo kiểm tra xâm nhập đầy đủ có sẵn tại [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email là dịch vụ email mã nguồn mở 100% duy nhất có kiểm toán bảo mật được xác minh độc lập.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="So sánh các công ty kiểm toán an ninh" class="rounded-lg" />
 
 
@@ -44,6 +48,7 @@ Công ty đã xây dựng được danh mục đánh giá an ninh ấn tượng 
 
 **Các ấn phẩm và báo cáo đáng chú ý**:
 
+* [Đánh giá Bảo mật Kiến trúc & Cơ sở hạ tầng Forward Email 2026](https://cure53.de/pentest-report_forward-email.pdf) - Kiểm tra xâm nhập toàn diện mã nguồn mở và cơ sở hạ tầng máy chủ của Forward Email
 * [Đánh giá An ninh Máy chủ Mullvad 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) - Đánh giá toàn diện hạ tầng bảo mật  
 * [Đánh giá An ninh Ứng dụng/API Mullvad 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) - Phân tích bảo mật ứng dụng và API  
 * [Đánh giá An ninh Máy chủ Mullvad 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) - Đánh giá hạ tầng tiếp theo

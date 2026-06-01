@@ -8,7 +8,7 @@
 > **Belangrijk Inzicht**: De meeste email startups bouwen geen echte emailinfrastructuur vanaf nul. Velen bouwen voort op bestaande oplossingen zoals Amazon SES of open-source systemen zoals Postfix. De kernprotocollen werken goed – de uitdaging zit in de implementatie.
 
 > \[!TIP]
-> **Technische Diepgang**: Voor uitgebreide details over onze aanpak, architectuur en beveiligingsimplementatie, zie onze [Forward Email Technische Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) en [Over pagina](https://forwardemail.net/en/about) die onze volledige ontwikkelingsgeschiedenis sinds 2017 documenteert.
+> **Technische Diepgang**: Voor uitgebreide details over onze aanpak, architectuur en beveiligingsimplementatie, zie onze [Forward Email Technische Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) en [Over pagina](https://forwardemail.net/en/about) die onze volledige ontwikkelingsgeschiedenis sinds 2017 documenteert. Daarnaast is onze codebase onafhankelijk geaudit door [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Inhoudsopgave {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Privacy by Design**: Ons [privacybeleid](https://forwardemail.net/en/privacy) zorgt ervoor dat we doorgestuurde e-mails niet opslaan op schijf of in databases, geen metadata over e-mails bewaren, en geen logs of IP-adressen opslaan - we werken alleen in het geheugen voor e-maildoorstuurservices.
 
-**Technische Documentatie**: Voor uitgebreide details over onze aanpak, architectuur en beveiligingsimplementatie, zie onze [technische whitepaper](https://forwardemail.net/technical-whitepaper.pdf) en uitgebreide technische documentatie.
+**Technische Documentatie**: Voor uitgebreide details over onze aanpak, architectuur en beveiligingsimplementatie, zie onze [technische whitepaper](https://forwardemail.net/technical-whitepaper.pdf), onze [beveiligingsaudit](https://forwardemail.net/pentest-report_forward-email.pdf) door Cure53, en uitgebreide technische documentatie.
 
 ### Vergelijking E-mail Service Providers: Groei Door Bewezen Protocollen {#email-service-provider-comparison-growth-through-proven-protocols}
 

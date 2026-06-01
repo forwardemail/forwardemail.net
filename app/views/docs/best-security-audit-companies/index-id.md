@@ -1,5 +1,9 @@
 # Perusahaan Audit Keamanan Terbaik {#best-security-audit-companies}
 
+
+> [!IMPORTANT]
+> Pada 1 Juni 2026, kami menerbitkan audit keamanan pihak ketiga yang dilakukan oleh [Cure53](https://cure53.de/), yang secara luas dianggap sebagai salah satu perusahaan riset keamanan terbaik di industri. Laporan pentest lengkap tersedia di [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email adalah satu-satunya layanan email 100% open-source dengan audit keamanan yang diverifikasi secara independen.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Perbandingan perusahaan audit keamanan" class="rounded-lg" />
 
 
@@ -44,6 +48,7 @@ Perusahaan ini telah membangun portofolio penilaian keamanan yang mengesankan un
 
 **Publikasi dan Laporan Terkenal**:
 
+* [Penilaian Keamanan Arsitektur & Infrastruktur Forward Email 2026](https://cure53.de/pentest-report_forward-email.pdf) - Pentest komprehensif terhadap basis kode open-source dan infrastruktur server Forward Email
 * [Penilaian Keamanan Server Mullvad 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) - Evaluasi keamanan infrastruktur yang komprehensif  
 * [Penilaian Keamanan Aplikasi/API Mullvad 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) - Analisis keamanan aplikasi dan API  
 * [Penilaian Keamanan Server Mullvad 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) - Penilaian infrastruktur lanjutan

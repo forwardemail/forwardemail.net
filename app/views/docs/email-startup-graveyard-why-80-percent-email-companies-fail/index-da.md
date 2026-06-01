@@ -8,7 +8,7 @@
 > **Nøgleindsigt**: De fleste email-startups bygger ikke egentlig email-infrastruktur fra bunden. Mange bygger ovenpå eksisterende løsninger som Amazon SES eller open source-systemer som Postfix. De grundlæggende protokoller fungerer godt – udfordringen ligger i implementeringen.
 
 > \[!TIP]
-> **Teknisk dybdegående**: For omfattende detaljer om vores tilgang, arkitektur og sikkerhedsimplementering, se vores [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) og [Om-siden](https://forwardemail.net/en/about), som dokumenterer vores komplette udvikling siden 2017.
+> **Teknisk dybdegående**: For omfattende detaljer om vores tilgang, arkitektur og sikkerhedsimplementering, se vores [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) og [Om-siden](https://forwardemail.net/en/about), som dokumenterer vores komplette udvikling siden 2017. Derudover er vores kodebase uafhængigt auditeret af [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Indholdsfortegnelse {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Privacy by Design**: Vores [privatlivspolitik](https://forwardemail.net/en/privacy) sikrer, at vi ikke gemmer videresendte e-mails på disk eller i databaser, ikke gemmer metadata om e-mails, og ikke gemmer logs eller IP-adresser – vi opererer kun i hukommelsen for e-mail-videresendelsestjenester.
 
-**Teknisk Dokumentation**: For omfattende detaljer om vores tilgang, arkitektur og sikkerhedsimplementering, se vores [tekniske whitepaper](https://forwardemail.net/technical-whitepaper.pdf) og omfattende tekniske dokumentation.
+**Teknisk Dokumentation**: For omfattende detaljer om vores tilgang, arkitektur og sikkerhedsimplementering, se vores [tekniske whitepaper](https://forwardemail.net/technical-whitepaper.pdf), vores [sikkerhedsaudit](https://forwardemail.net/pentest-report_forward-email.pdf) af Cure53, og omfattende tekniske dokumentation.
 
 ### Sammenligning af E-mail Serviceudbydere: Vækst Gennem Beviste Protokoller {#email-service-provider-comparison-growth-through-proven-protocols}
 

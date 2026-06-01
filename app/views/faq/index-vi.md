@@ -194,7 +194,7 @@ Các tính năng chính của Forward Email:
 Bạn có thể so sánh chúng tôi với hơn 56 nhà cung cấp dịch vụ email khác trên [trang So Sánh Email của chúng tôi](/blog/best-email-service).
 
 > \[!TIP]
-> Tìm hiểu thêm về Forward Email bằng cách đọc [Bản Báo Cáo Kỹ Thuật](/technical-whitepaper.pdf) miễn phí của chúng tôi
+> Tìm hiểu thêm về Forward Email bằng cách đọc [Bản Báo Cáo Kỹ Thuật](/technical-whitepaper.pdf) miễn phí của chúng tôi và xem xét [kiểm toán bảo mật](/pentest-report_forward-email.pdf) của chúng tôi bởi Cure53.
 
 ### Ai sử dụng Forward Email {#who-uses-forward-email}
 

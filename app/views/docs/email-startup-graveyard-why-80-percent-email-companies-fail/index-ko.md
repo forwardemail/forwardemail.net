@@ -8,7 +8,7 @@
 > **핵심 통찰**: 대부분의 이메일 스타트업은 실제 이메일 인프라를 처음부터 구축하지 않습니다. 많은 스타트업이 Amazon SES 같은 기존 솔루션이나 Postfix 같은 오픈소스 시스템 위에 구축합니다. 핵심 프로토콜은 잘 작동하지만, 구현에 어려움이 있습니다.
 
 > \[!TIP]
-> **기술 심층 분석**: 저희 접근법, 아키텍처, 보안 구현에 대한 자세한 내용은 [Forward Email 기술 백서](https://forwardemail.net/technical-whitepaper.pdf)와 2017년부터의 전체 개발 타임라인을 문서화한 [소개 페이지](https://forwardemail.net/en/about)를 참고하세요.
+> **기술 심층 분석**: 저희 접근법, 아키텍처, 보안 구현에 대한 자세한 내용은 [Forward Email 기술 백서](https://forwardemail.net/technical-whitepaper.pdf)와 2017년부터의 전체 개발 타임라인을 문서화한 [소개 페이지](https://forwardemail.net/en/about)를 참고하세요. 또한, 우리의 코드베이스는 [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf)에 의해 독립적으로 감사되었습니다.
 
 
 ## 목차 {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **설계 단계부터 개인정보 보호**: 우리의 [개인정보 보호정책](https://forwardemail.net/en/privacy)은 전달된 이메일을 디스크 저장소나 데이터베이스에 저장하지 않고, 이메일 메타데이터나 로그, IP 주소도 저장하지 않으며, 이메일 전달 서비스는 메모리 내에서만 작동함을 보장합니다.
 
-**기술 문서**: 우리의 접근법, 아키텍처, 보안 구현에 대한 자세한 내용은 [기술 백서](https://forwardemail.net/technical-whitepaper.pdf)와 광범위한 기술 문서를 참조하세요.
+**기술 문서**: 우리의 접근법, 아키텍처, 보안 구현에 대한 자세한 내용은 [기술 백서](https://forwardemail.net/technical-whitepaper.pdf), Cure53의 [보안 감사](https://forwardemail.net/pentest-report_forward-email.pdf),와 광범위한 기술 문서를 참조하세요.
 
 ### 이메일 서비스 제공업체 비교: 검증된 프로토콜을 통한 성장 {#email-service-provider-comparison-growth-through-proven-protocols}
 

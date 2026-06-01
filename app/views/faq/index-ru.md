@@ -194,7 +194,7 @@ Forward Email — это **полнофункциональный поставщ
 Вы можете сравнить нас с более чем 56 другими поставщиками почтовых услуг на [нашей странице сравнения почтовых сервисов](/blog/best-email-service).
 
 > \[!TIP]
-> Узнайте больше о Forward Email, прочитав наш бесплатный [Технический белый документ](/technical-whitepaper.pdf)
+> Узнайте больше о Forward Email, прочитав наш бесплатный [Технический белый документ](/technical-whitepaper.pdf) и ознакомившись с нашим [аудитом безопасности](/pentest-report_forward-email.pdf) от Cure53.
 
 ### Кто использует Forward Email {#who-uses-forward-email}
 

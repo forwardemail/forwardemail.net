@@ -1,5 +1,9 @@
 # Beste sikkerhetsrevisjonsselskaper {#best-security-audit-companies}
 
+
+> [!IMPORTANT]
+> Den 1. juni 2026 publiserte vi vår tredjeparts sikkerhetsrevisjon utført av [Cure53](https://cure53.de/), som er bredt anerkjent som et av de beste sikkerhetsforskningsfirmaene i bransjen. Den fullstendige penetrasjonstestrapport er tilgjengelig på [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email er den eneste 100% åpen kildekode e-posttjenesten med en uavhengig verifisert sikkerhetsrevisjon.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Sammenligning av sikkerhetsrevisjonsselskaper" class="rounded-lg" />
 
 
@@ -44,6 +48,7 @@ Selskapet har bygget en imponerende portefølje av sikkerhetsvurderinger for pro
 
 **Merkbare publikasjoner og rapporter**:
 
+* [Forward Email Arkitektur & Infrastruktur Sikkerhetsvurdering 2026](https://cure53.de/pentest-report_forward-email.pdf) - Omfattende penetrasjonstest av Forward Emails åpen kildekode-kodebase og serverinfrastruktur
 * [Mullvad Servers Security Assessment 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) - Omfattende infrastrukturvurdering  
 * [Mullvad Apps/API Security Assessment 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) - Applikasjons- og API-sikkerhetsanalyse  
 * [Mullvad Servers Security Assessment 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) - Oppfølgende infrastrukturevaluering

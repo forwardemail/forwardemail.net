@@ -194,7 +194,7 @@ Klíčové vlastnosti Forward Email:
 Můžete nás porovnat s více než 56 dalšími poskytovateli e-mailových služeb na [naší stránce srovnání e-mailů](/blog/best-email-service).
 
 > \[!TIP]
-> Více o Forward Email se dozvíte v našem bezplatném [Technickém whitepaperu](/technical-whitepaper.pdf)
+> Více o Forward Email se dozvíte v našem bezplatném [Technickém whitepaperu](/technical-whitepaper.pdf) a přečtením našeho [bezpečnostního auditu](/pentest-report_forward-email.pdf) od Cure53.
 
 ### Kdo používá Forward Email {#who-uses-forward-email}
 

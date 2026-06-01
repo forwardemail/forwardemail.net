@@ -196,7 +196,7 @@ Key features of Forward Email:
 You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf) and reviewing our [Security Audit](/pentest-report_forward-email.pdf) by Cure53.
 
 ### Who uses Forward Email
 
@@ -3759,7 +3759,7 @@ Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. 
 
 * **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
 
-Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Our infrastructure and codebase have been independently audited by [Cure53](https://cure53.de/), with the full report available at \</pentest-report\_forward-email.pdf>. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
 ### Do you use TLS encryption for email forwarding
 

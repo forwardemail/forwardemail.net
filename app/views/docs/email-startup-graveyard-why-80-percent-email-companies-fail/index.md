@@ -8,7 +8,7 @@
 > **Key Insight**: Most email startups don't build actual email infrastructure from scratch. Many build on top of existing solutions like Amazon SES or open-source systems like Postfix. The core protocols work well - the challenge is in the implementation.
 
 > \[!TIP]
-> **Technical Deep Dive**: For comprehensive details on our approach, architecture, and security implementation, see our [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and [About page](https://forwardemail.net/en/about) which documents our complete development timeline since 2017.
+> **Technical Deep Dive**: For comprehensive details on our approach, architecture, and security implementation, see our [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and [About page](https://forwardemail.net/en/about) which documents our complete development timeline since 2017. Additionally, our codebase has been independently audited by [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Table of Contents
@@ -668,7 +668,7 @@ graph TD
 > \[!NOTE]
 > **Privacy by Design**: Our [privacy policy](https://forwardemail.net/en/privacy) ensures we don't store forwarded emails to disk storage or databases, don't store metadata about emails, and don't store logs or IP addresses - operating in-memory only for email forwarding services.
 
-**Technical Documentation**: For comprehensive details on our approach, architecture, and security implementation, see our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and extensive technical documentation.
+**Technical Documentation**: For comprehensive details on our approach, architecture, and security implementation, see our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf), our [security audit](https://forwardemail.net/pentest-report_forward-email.pdf) by Cure53, and extensive technical documentation.
 
 ### Email Service Provider Comparison: Growth Through Proven Protocols
 

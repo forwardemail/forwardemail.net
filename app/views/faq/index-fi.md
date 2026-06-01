@@ -194,7 +194,7 @@ Forward Emailin keskeiset ominaisuudet:
 Voit verrata meitä yli 56 muuhun sähköpostipalveluntarjoajaan [sähköpostipalvelujen vertailusivullamme](/blog/best-email-service).
 
 > \[!TIP]
-> Opi lisää Forward Emailista lukemalla ilmainen [Tekninen valkoinen kirjamme](/technical-whitepaper.pdf)
+> Opi lisää Forward Emailista lukemalla ilmainen [Tekninen valkoinen kirjamme](/technical-whitepaper.pdf) ja tutustumalla [turvallisuusauditointiimme](/pentest-report_forward-email.pdf) Cure53:lta.
 
 ### Who uses Forward Email {#who-uses-forward-email}
 

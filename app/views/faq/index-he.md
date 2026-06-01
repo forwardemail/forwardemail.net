@@ -194,7 +194,7 @@ Forward Email הוא **ספק שירות דואר אלקטרוני מלא תכו
 אתה יכול להשוות אותנו ל-56+ ספקי שירות דואר אלקטרוני אחרים ב-[דף ההשוואה שלנו](/blog/best-email-service).
 
 > \[!TIP]
-> למד עוד על Forward Email על ידי קריאת [המסמך הטכני החינמי שלנו](/technical-whitepaper.pdf)
+> למד עוד על Forward Email על ידי קריאת [המסמך הטכני החינמי שלנו](/technical-whitepaper.pdf) ולעיין ב[ביקורת האבטחה](/pentest-report_forward-email.pdf) שלנו מ-Cure53.
 
 ### מי משתמש ב-Forward Email {#who-uses-forward-email}
 

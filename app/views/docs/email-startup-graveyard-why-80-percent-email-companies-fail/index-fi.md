@@ -8,7 +8,7 @@
 > **Keskeinen oivallus**: Useimmat sähköpostostartupit eivät rakenna varsinaista sähköpostoinfrastruktuuria alusta alkaen. Monet rakentavat olemassa olevien ratkaisujen, kuten Amazon SES:n tai avoimen lähdekoodin järjestelmien, kuten Postfixin, päälle. Perusprotokollat toimivat hyvin – haaste on toteutuksessa.
 
 > \[!TIP]
-> **Tekninen syväluotaus**: Yksityiskohtaiset tiedot lähestymistavastamme, arkkitehtuurista ja turvallisuuden toteutuksesta löydät [Forward Emailin teknisestä valkoisesta kirjasta](https://forwardemail.net/technical-whitepaper.pdf) ja [Tietoa-sivulta](https://forwardemail.net/en/about), joka dokumentoi koko kehitysaikataulumme vuodesta 2017 lähtien.
+> **Tekninen syväluotaus**: Yksityiskohtaiset tiedot lähestymistavastamme, arkkitehtuurista ja turvallisuuden toteutuksesta löydät [Forward Emailin teknisestä valkoisesta kirjasta](https://forwardemail.net/technical-whitepaper.pdf) ja [Tietoa-sivulta](https://forwardemail.net/en/about), joka dokumentoi koko kehitysaikataulumme vuodesta 2017 lähtien. Lisäksi koodikantamme on auditoitu itsenäisesti [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf):n toimesta.
 
 
 ## Sisällysluettelo {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Tietosuoja suunnittelusta lähtien**: Meidän [tietosuojakäytäntömme](https://forwardemail.net/en/privacy) varmistaa, että emme tallenna välitettyjä sähköposteja levylle tai tietokantoihin, emme tallenna sähköpostien metatietoja, emmekä tallenna lokeja tai IP-osoitteita – toimimme ainoastaan muistissa sähköpostin välityspalveluissa.
 
-**Tekninen dokumentaatio**: Yksityiskohtaiset tiedot lähestymistavastamme, arkkitehtuurista ja turvallisuuden toteutuksesta löytyvät [teknisestä whitepaperistamme](https://forwardemail.net/technical-whitepaper.pdf) ja laajasta teknisestä dokumentaatiosta.
+**Tekninen dokumentaatio**: Yksityiskohtaiset tiedot lähestymistavastamme, arkkitehtuurista ja turvallisuuden toteutuksesta löytyvät [teknisestä whitepaperistamme](https://forwardemail.net/technical-whitepaper.pdf), [turvallisuusauditointimme](https://forwardemail.net/pentest-report_forward-email.pdf) Cure53:lta, ja laajasta teknisestä dokumentaatiosta.
 
 ### Sähköpostipalveluntarjoajien vertailu: Kasvu todistettujen protokollien kautta {#email-service-provider-comparison-growth-through-proven-protocols}
 

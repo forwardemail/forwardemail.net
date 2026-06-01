@@ -194,7 +194,7 @@ Kluczowe cechy Forward Email:
 Możesz porównać nas z ponad 56 innymi dostawcami usług e-mail na [naszej stronie porównawczej usług e-mail](/blog/best-email-service).
 
 > \[!TIP]
-> Dowiedz się więcej o Forward Email, czytając nasz darmowy [Technical Whitepaper](/technical-whitepaper.pdf)
+> Dowiedz się więcej o Forward Email, czytając nasz darmowy [Technical Whitepaper](/technical-whitepaper.pdf) oraz zapoznając się z naszym [audytem bezpieczeństwa](/pentest-report_forward-email.pdf) przeprowadzonym przez Cure53.
 
 ### Kto korzysta z Forward Email {#who-uses-forward-email}
 

@@ -194,7 +194,7 @@ Fonctionnalités clés de Forward Email :
 Vous pouvez nous comparer à plus de 56 autres fournisseurs de service email sur [notre page de comparaison d’emails](/blog/best-email-service).
 
 > \[!TIP]
-> En savoir plus sur Forward Email en lisant notre [Livre blanc technique](/technical-whitepaper.pdf) gratuit
+> En savoir plus sur Forward Email en lisant notre [Livre blanc technique](/technical-whitepaper.pdf) gratuit et en consultant notre [audit de sécurité](/pentest-report_forward-email.pdf) par Cure53.
 
 ### Qui utilise Forward Email {#who-uses-forward-email}
 

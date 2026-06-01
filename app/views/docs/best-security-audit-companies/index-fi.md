@@ -1,5 +1,9 @@
 # Parhaat tietoturva-auditointiyritykset {#best-security-audit-companies}
 
+
+> [!IMPORTANT]
+> 1. kesäkuuta 2026 julkaisimme kolmannen osapuolen turvallisuusauditoinnin, jonka suoritti [Cure53](https://cure53.de/), jota pidetään laajalti yhtenä alan parhaista turvallisuustutkimusyrityksistä. Täydellinen tunkeutumistestiraportti on saatavilla osoitteessa [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email on ainoa 100% avoimen lähdekoodin sähköpostipalvelu, jolla on itsenäisesti varmennettu turvallisuusauditointi.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
 
 
@@ -44,6 +48,7 @@ Yrityksellä on vaikuttava portfolio tietoturva-arviointeja korkean profiilin as
 
 **Merkittäviä julkaisuja ja raportteja**:
 
+* [Forward Email Arkkitehtuuri & Infrastruktuuri Turvallisuusarviointi 2026](https://cure53.de/pentest-report_forward-email.pdf) - Kattava tunkeutumistesti Forward Emailin avoimen lähdekoodin koodikannasta ja palvelininfrastruktuurista
 * [Mullvad Servers Security Assessment 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) - Kattava infrastruktuurin tietoturva-arviointi  
 * [Mullvad Apps/API Security Assessment 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) - Sovellus- ja API-tietoturva-analyysi  
 * [Mullvad Servers Security Assessment 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) - Seurantaarvio infrastruktuurista

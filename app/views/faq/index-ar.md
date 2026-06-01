@@ -194,7 +194,7 @@ Forward Email هو **مزود خدمة بريد إلكتروني متكامل ا
 يمكنك مقارنتنا مع أكثر من 56 مزود خدمة بريد إلكتروني آخر على [صفحة مقارنة البريد الإلكتروني الخاصة بنا](/blog/best-email-service).
 
 > \[!TIP]
-> تعرّف أكثر على Forward Email بقراءة [الورقة التقنية المجانية](/technical-whitepaper.pdf)
+> تعرّف أكثر على Forward Email بقراءة [الورقة التقنية المجانية](/technical-whitepaper.pdf) ومراجعة [تدقيق الأمان](/pentest-report_forward-email.pdf) الخاص بنا من Cure53.
 
 ### من يستخدم Forward Email {#who-uses-forward-email}
 

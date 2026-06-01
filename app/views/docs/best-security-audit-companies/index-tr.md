@@ -1,5 +1,9 @@
 # En İyi Güvenlik Denetim Şirketleri {#best-security-audit-companies}
 
+
+> [!IMPORTANT]
+> 1 Haziran 2026'da, sektördeki en iyi güvenlik araştırma firmalarından biri olarak kabul edilen [Cure53](https://cure53.de/) tarafından gerçekleştirilen üçüncü taraf güvenlik denetimimizi yayınladık. Tam penetrasyon testi raporu [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf) adresinde mevcuttur. Forward Email, bağımsız olarak doğrulanmış bir güvenlik denetimine sahip tek %100 açık kaynaklı e-posta hizmetidir.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Güvenlik denetim şirketleri karşılaştırması" class="rounded-lg" />
 
 
@@ -44,6 +48,7 @@ Cure53, web uygulaması güvenliği testi ve penetrasyon testi konusunda titiz y
 
 **Önemli Yayınlar ve Raporlar**:
 
+* [Forward Email Mimari & Altyapı Güvenlik Değerlendirmesi 2026](https://cure53.de/pentest-report_forward-email.pdf) - Forward Email'in açık kaynak kod tabanı ve sunucu altyapısının kapsamlı penetrasyon testi
 * [Mullvad Sunucuları Güvenlik Değerlendirmesi 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) - Kapsamlı altyapı güvenliği değerlendirmesi  
 * [Mullvad Uygulamaları/API Güvenlik Değerlendirmesi 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) - Uygulama ve API güvenlik analizi  
 * [Mullvad Sunucuları Güvenlik Değerlendirmesi 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) - Takip altyapı değerlendirmesi

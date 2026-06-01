@@ -194,7 +194,7 @@ Fitur utama Forward Email:
 Anda dapat membandingkan kami dengan lebih dari 56 penyedia layanan email lainnya di [halaman Perbandingan Email kami](/blog/best-email-service).
 
 > \[!TIP]
-> Pelajari lebih lanjut tentang Forward Email dengan membaca [Whitepaper Teknis](/technical-whitepaper.pdf) gratis kami
+> Pelajari lebih lanjut tentang Forward Email dengan membaca [Whitepaper Teknis](/technical-whitepaper.pdf) gratis kami dan meninjau [audit keamanan](/pentest-report_forward-email.pdf) kami oleh Cure53.
 
 ### Siapa yang menggunakan Forward Email {#who-uses-forward-email}
 

@@ -194,7 +194,7 @@ A Forward Email főbb jellemzői:
 Összehasonlíthat minket több mint 56 másik e-mail szolgáltatóval a [Email összehasonlító oldalunkon](/blog/best-email-service).
 
 > \[!TIP]
-> Tudjon meg többet a Forward Emailről ingyenes [Műszaki fehér könyvünk](/technical-whitepaper.pdf) elolvasásával
+> Tudjon meg többet a Forward Emailről ingyenes [Műszaki fehér könyvünk](/technical-whitepaper.pdf) elolvasásával és áttekintve a [biztonsági auditunkat](/pentest-report_forward-email.pdf) a Cure53-tól.
 
 ### Kik használják a Forward Emailt {#who-uses-forward-email}
 

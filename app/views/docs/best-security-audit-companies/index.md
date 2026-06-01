@@ -1,5 +1,8 @@
 # Best Security Audit Companies
 
+> \[!IMPORTANT]
+> On June 1, 2026, we published our third-party security audit conducted by [Cure53](https://cure53.de/), widely regarded as one of the best security research firms in the industry. The full pentest report is available at [pentest-report\_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email is the only 100% open-source email service with an independently verified security audit.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
 
 
@@ -44,6 +47,7 @@ The company has built an impressive portfolio of security assessments for high-p
 
 **Notable Publications and Reports**:
 
+* [Forward Email Architecture & Infrastructure Security Assessment 2026](https://cure53.de/pentest-report_forward-email.pdf) - Comprehensive pentest of Forward Email's open-source codebase and server infrastructure
 * [Mullvad Servers Security Assessment 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) - Comprehensive infrastructure security evaluation
 * [Mullvad Apps/API Security Assessment 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) - Application and API security analysis
 * [Mullvad Servers Security Assessment 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) - Follow-up infrastructure assessment

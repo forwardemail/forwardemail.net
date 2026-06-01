@@ -194,7 +194,7 @@ Forward Email 的主要功能：
 您可以在[我们的邮件服务对比页面](/blog/best-email-service)上，将我们与 56+ 其他邮件服务提供商进行比较。
 
 > \[!TIP]
-> 通过阅读我们的免费[技术白皮书](/technical-whitepaper.pdf)了解更多关于 Forward Email 的信息
+> 通过阅读我们的免费[技术白皮书](/technical-whitepaper.pdf)了解更多关于 Forward Email 的信息 并查阅我们由Cure53进行的[安全审计](/pentest-report_forward-email.pdf)。
 
 ### 谁在使用 Forward Email {#who-uses-forward-email}
 

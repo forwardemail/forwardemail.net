@@ -194,7 +194,7 @@ Caratteristiche principali di Forward Email:
 Puoi confrontarci con oltre 56 altri provider di servizi email sulla [nostra pagina di confronto email](/blog/best-email-service).
 
 > \[!TIP]
-> Scopri di più su Forward Email leggendo il nostro [Whitepaper Tecnico gratuito](/technical-whitepaper.pdf)
+> Scopri di più su Forward Email leggendo il nostro [Whitepaper Tecnico gratuito](/technical-whitepaper.pdf) e consultando il nostro [audit di sicurezza](/pentest-report_forward-email.pdf) di Cure53.
 
 ### Chi usa Forward Email {#who-uses-forward-email}
 

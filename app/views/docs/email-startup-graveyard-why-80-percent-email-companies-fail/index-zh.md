@@ -8,7 +8,7 @@
 > **关键洞察**：大多数电子邮件创业公司并没有从零开始构建真正的电子邮件基础设施。许多是基于现有解决方案构建，比如 Amazon SES 或开源系统如 Postfix。核心协议运行良好——挑战在于实现层面。
 
 > \[!TIP]
-> **技术深度解析**：有关我们方法、架构和安全实现的详细信息，请参阅我们的[Forward Email 技术白皮书](https://forwardemail.net/technical-whitepaper.pdf)和记录自2017年以来完整开发时间线的[关于页面](https://forwardemail.net/en/about)。
+> **技术深度解析**：有关我们方法、架构和安全实现的详细信息，请参阅我们的[Forward Email 技术白皮书](https://forwardemail.net/technical-whitepaper.pdf)和记录自2017年以来完整开发时间线的[关于页面](https://forwardemail.net/en/about)。 此外，我们的代码库已由[Cure53](https://forwardemail.net/pentest-report_forward-email.pdf)进行了独立审计。
 
 
 ## 目录 {#table-of-contents}
@@ -657,7 +657,7 @@ graph TD
 > \[!NOTE]
 > **隐私设计**：我们的[隐私政策](https://forwardemail.net/en/privacy)确保不将转发邮件存储到磁盘或数据库，不存储邮件元数据，也不存储日志或 IP 地址——仅在内存中操作邮件转发服务。
 
-**技术文档**：有关我们方法、架构和安全实现的详细信息，请参阅我们的[技术白皮书](https://forwardemail.net/technical-whitepaper.pdf)和丰富的技术文档。
+**技术文档**：有关我们方法、架构和安全实现的详细信息，请参阅我们的[技术白皮书](https://forwardemail.net/technical-whitepaper.pdf)、Cure53的[安全审计](https://forwardemail.net/pentest-report_forward-email.pdf)、和丰富的技术文档。
 
 ### 邮件服务提供商比较：通过验证协议实现增长 {#email-service-provider-comparison-growth-through-proven-protocols}
 

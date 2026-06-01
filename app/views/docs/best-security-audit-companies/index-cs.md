@@ -1,5 +1,9 @@
 # Nejlepší společnosti pro bezpečnostní audity {#best-security-audit-companies}
 
+
+> [!IMPORTANT]
+> Dne 1. června 2026 jsme zveřejnili náš bezpečnostní audit třetí strany provedený společností [Cure53](https://cure53.de/), která je široce považována za jednu z nejlepších firem zabývajících se bezpečnostním výzkumem v oboru. Úplná zpráva z penetračního testu je k dispozici na [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email je jediná 100% open-source e-mailová služba s nezávisle ověřeným bezpečnostním auditem.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
 
 
@@ -44,6 +48,7 @@ Společnost si vybudovala působivé portfolio bezpečnostních hodnocení pro v
 
 **Významné publikace a zprávy**:
 
+* [Hodnocení bezpečnosti architektury a infrastruktury Forward Email 2026](https://cure53.de/pentest-report_forward-email.pdf) - Komplexní penetrační test open-source kódové základny a serverové infrastruktury Forward Email
 * [Mullvad Servers Security Assessment 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) – Komplexní hodnocení bezpečnosti infrastruktury  
 * [Mullvad Apps/API Security Assessment 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) – Analýza bezpečnosti aplikací a API  
 * [Mullvad Servers Security Assessment 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) – Následné hodnocení infrastruktury

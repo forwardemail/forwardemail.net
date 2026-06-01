@@ -8,7 +8,7 @@
 > **Nøkkelinnsikt**: De fleste e-postoppstarter bygger ikke faktisk e-postinfrastruktur fra bunnen av. Mange bygger på toppen av eksisterende løsninger som Amazon SES eller open source-systemer som Postfix. De grunnleggende protokollene fungerer godt – utfordringen ligger i implementeringen.
 
 > \[!TIP]
-> **Teknisk dybdeanalyse**: For omfattende detaljer om vår tilnærming, arkitektur og sikkerhetsimplementering, se vår [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) og [Om-siden](https://forwardemail.net/en/about) som dokumenterer vår komplette utvikling siden 2017.
+> **Teknisk dybdeanalyse**: For omfattende detaljer om vår tilnærming, arkitektur og sikkerhetsimplementering, se vår [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) og [Om-siden](https://forwardemail.net/en/about) som dokumenterer vår komplette utvikling siden 2017. I tillegg har kodebasen vår blitt uavhengig revidert av [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Innholdsfortegnelse {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Personvern som Standard**: Vår [personvernpolicy](https://forwardemail.net/en/privacy) sikrer at vi ikke lagrer videresendte e-poster på disk eller i databaser, ikke lagrer metadata om e-poster, og ikke lagrer logger eller IP-adresser – vi opererer kun i minnet for e-postvideresendingstjenester.
 
-**Teknisk Dokumentasjon**: For omfattende detaljer om vår tilnærming, arkitektur og sikkerhetsimplementering, se vår [tekniske whitepaper](https://forwardemail.net/technical-whitepaper.pdf) og omfattende teknisk dokumentasjon.
+**Teknisk Dokumentasjon**: For omfattende detaljer om vår tilnærming, arkitektur og sikkerhetsimplementering, se vår [tekniske whitepaper](https://forwardemail.net/technical-whitepaper.pdf), vår [sikkerhetsrevisjon](https://forwardemail.net/pentest-report_forward-email.pdf) fra Cure53, og omfattende teknisk dokumentasjon.
 
 ### Sammenligning av E-posttjenesteleverandører: Vekst Gjennom Beviste Protokoller {#email-service-provider-comparison-growth-through-proven-protocols}
 

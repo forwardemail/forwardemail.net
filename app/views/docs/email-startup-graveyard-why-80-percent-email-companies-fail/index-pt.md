@@ -8,7 +8,7 @@
 > **Insight Principal**: A maioria das startups de email não constrói infraestrutura real de email do zero. Muitas constroem sobre soluções existentes como Amazon SES ou sistemas open-source como Postfix. Os protocolos centrais funcionam bem - o desafio está na implementação.
 
 > \[!TIP]
-> **Mergulho Técnico**: Para detalhes abrangentes sobre nossa abordagem, arquitetura e implementação de segurança, veja nosso [Whitepaper Técnico da Forward Email](https://forwardemail.net/technical-whitepaper.pdf) e a [página Sobre](https://forwardemail.net/en/about) que documenta nossa linha do tempo completa de desenvolvimento desde 2017.
+> **Mergulho Técnico**: Para detalhes abrangentes sobre nossa abordagem, arquitetura e implementação de segurança, veja nosso [Whitepaper Técnico da Forward Email](https://forwardemail.net/technical-whitepaper.pdf) e a [página Sobre](https://forwardemail.net/en/about) que documenta nossa linha do tempo completa de desenvolvimento desde 2017. Além disso, nossa base de código foi auditada de forma independente pela [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Índice {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Privacidade por Design**: Nossa [política de privacidade](https://forwardemail.net/en/privacy) garante que não armazenamos emails encaminhados em disco ou bancos de dados, não armazenamos metadados sobre emails, e não armazenamos logs ou endereços IP - operando apenas em memória para serviços de encaminhamento de email.
 
-**Documentação Técnica**: Para detalhes completos sobre nossa abordagem, arquitetura e implementação de segurança, veja nosso [whitepaper técnico](https://forwardemail.net/technical-whitepaper.pdf) e extensa documentação técnica.
+**Documentação Técnica**: Para detalhes completos sobre nossa abordagem, arquitetura e implementação de segurança, veja nosso [whitepaper técnico](https://forwardemail.net/technical-whitepaper.pdf), nossa [auditoria de segurança](https://forwardemail.net/pentest-report_forward-email.pdf) pela Cure53, e extensa documentação técnica.
 
 ### Comparação de Provedores de Serviço de Email: Crescimento Através de Protocolos Comprovados {#email-service-provider-comparison-growth-through-proven-protocols}
 

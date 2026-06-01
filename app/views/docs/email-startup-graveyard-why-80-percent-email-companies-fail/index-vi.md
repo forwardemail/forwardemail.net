@@ -8,7 +8,7 @@
 > **Thông tin chính**: Hầu hết các công ty khởi nghiệp email không xây dựng hạ tầng email thực sự từ đầu. Nhiều công ty xây dựng dựa trên các giải pháp hiện có như Amazon SES hoặc các hệ thống mã nguồn mở như Postfix. Các giao thức cốt lõi hoạt động tốt - thách thức nằm ở việc triển khai.
 
 > \[!TIP]
-> **Phân tích kỹ thuật sâu**: Để biết chi tiết toàn diện về cách tiếp cận, kiến trúc và triển khai bảo mật của chúng tôi, xem [Bản Báo Cáo Kỹ Thuật Forward Email](https://forwardemail.net/technical-whitepaper.pdf) và [Trang Giới Thiệu](https://forwardemail.net/en/about) ghi lại toàn bộ tiến trình phát triển của chúng tôi từ năm 2017.
+> **Phân tích kỹ thuật sâu**: Để biết chi tiết toàn diện về cách tiếp cận, kiến trúc và triển khai bảo mật của chúng tôi, xem [Bản Báo Cáo Kỹ Thuật Forward Email](https://forwardemail.net/technical-whitepaper.pdf) và [Trang Giới Thiệu](https://forwardemail.net/en/about) ghi lại toàn bộ tiến trình phát triển của chúng tôi từ năm 2017. Ngoài ra, mã nguồn của chúng tôi đã được kiểm toán độc lập bởi [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Mục Lục {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Bảo mật theo thiết kế**: [Chính sách bảo mật](https://forwardemail.net/en/privacy) của chúng tôi đảm bảo không lưu trữ email được chuyển tiếp trên ổ đĩa hoặc cơ sở dữ liệu, không lưu trữ metadata về email, và không lưu trữ nhật ký hay địa chỉ IP - hoạt động chỉ trong bộ nhớ cho dịch vụ chuyển tiếp email.
 
-**Tài liệu kỹ thuật**: Để biết chi tiết toàn diện về phương pháp, kiến trúc và triển khai bảo mật của chúng tôi, xem [bản trắng kỹ thuật](https://forwardemail.net/technical-whitepaper.pdf) và tài liệu kỹ thuật mở rộng.
+**Tài liệu kỹ thuật**: Để biết chi tiết toàn diện về phương pháp, kiến trúc và triển khai bảo mật của chúng tôi, xem [bản trắng kỹ thuật](https://forwardemail.net/technical-whitepaper.pdf), [kiểm toán bảo mật](https://forwardemail.net/pentest-report_forward-email.pdf) của chúng tôi bởi Cure53, và tài liệu kỹ thuật mở rộng.
 
 ### So Sánh Nhà Cung Cấp Dịch Vụ Email: Tăng Trưởng Qua Các Giao Thức Đã Được Chứng Minh {#email-service-provider-comparison-growth-through-proven-protocols}
 

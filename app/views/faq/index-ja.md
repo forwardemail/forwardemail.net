@@ -194,7 +194,7 @@ Forward Email の主な特徴：
 [当社のメール比較ページ](/blog/best-email-service)で56以上の他のメールサービスプロバイダーと比較できます。
 
 > \[!TIP]
-> 無料の[技術ホワイトペーパー](/technical-whitepaper.pdf)を読んでForward Emailについてさらに学びましょう。
+> 無料の[技術ホワイトペーパー](/technical-whitepaper.pdf)を読んでForward Emailについてさらに学びましょう。 また、Cure53による[セキュリティ監査](/pentest-report_forward-email.pdf)もご覧ください。
 
 ### Forward Emailの利用者 {#who-uses-forward-email}
 

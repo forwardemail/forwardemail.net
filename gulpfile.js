@@ -753,6 +753,7 @@ async function sri() {
         '!build/browserconfig.xml',
         '!build/opensearch.xml',
         '!build/technical-whitepaper.pdf',
+        '!build/pentest-report_forward-email.pdf',
         '!build/api-spec.json'
       ],
       { base: config.buildBase }

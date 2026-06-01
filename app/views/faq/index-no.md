@@ -194,7 +194,7 @@ Nøkkelfunksjoner i Forward Email:
 Du kan sammenligne oss med 56+ andre e-posttjenesteleverandører på [vår e-postsammenligningsside](/blog/best-email-service).
 
 > \[!TIP]
-> Lær mer om Forward Email ved å lese vårt gratis [Tekniske Whitepaper](/technical-whitepaper.pdf)
+> Lær mer om Forward Email ved å lese vårt gratis [Tekniske Whitepaper](/technical-whitepaper.pdf) og gjennomgå vår [sikkerhetsrevisjon](/pentest-report_forward-email.pdf) fra Cure53.
 
 ### Hvem bruker Forward Email {#who-uses-forward-email}
 

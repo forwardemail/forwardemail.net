@@ -1,5 +1,9 @@
 # Beste Security Audit Bedrijven {#best-security-audit-companies}
 
+
+> [!IMPORTANT]
+> Op 1 juni 2026 hebben we onze beveiligingsaudit door derden gepubliceerd, uitgevoerd door [Cure53](https://cure53.de/), algemeen beschouwd als een van de beste beveiligingsonderzoeksbedrijven in de branche. Het volledige penetratietestrapport is beschikbaar op [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email is de enige 100% open-source e-mailservice met een onafhankelijk geverifieerde beveiligingsaudit.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
 
 
@@ -43,6 +47,7 @@ Cure53 is een Duits cybersecurity bedrijf dat bekend staat om hun nauwgezette aa
 Het bedrijf heeft een indrukwekkend portfolio opgebouwd van security assessments voor hoogprofielklanten en open-source projecten. Hun werk toont een diepgaand begrip van moderne webtechnologieën, cryptografische implementaties en infrastructuurbeveiliging. De rapporten van Cure53 zijn bijzonder opmerkelijk vanwege hun technische diepgang en bruikbare aanbevelingen.
 
 **Opmerkelijke Publicaties en Rapporten**:
+* [Forward Email Architectuur & Infrastructuur Beveiligingsbeoordeling 2026](https://cure53.de/pentest-report_forward-email.pdf) - Uitgebreide penetratietest van de open-source codebase en serverinfrastructuur van Forward Email
 
 * [Mullvad Servers Security Assessment 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Uitgebreide infrastructuurbeveiligingsevaluatie  
 * [Mullvad Apps/API Security Assessment 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Applicatie- en API-beveiligingsanalyse  

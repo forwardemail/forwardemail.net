@@ -8,7 +8,7 @@
 > **Insight clé** : La plupart des startups email ne construisent pas réellement une infrastructure email à partir de zéro. Beaucoup s'appuient sur des solutions existantes comme Amazon SES ou des systèmes open-source comme Postfix. Les protocoles de base fonctionnent bien – le défi réside dans la mise en œuvre.
 
 > \[!TIP]
-> **Approfondissement technique** : Pour des détails complets sur notre approche, architecture et mise en œuvre de la sécurité, consultez notre [Livre blanc technique Forward Email](https://forwardemail.net/technical-whitepaper.pdf) et la [page À propos](https://forwardemail.net/en/about) qui documente notre chronologie complète de développement depuis 2017.
+> **Approfondissement technique** : Pour des détails complets sur notre approche, architecture et mise en œuvre de la sécurité, consultez notre [Livre blanc technique Forward Email](https://forwardemail.net/technical-whitepaper.pdf) et la [page À propos](https://forwardemail.net/en/about) qui documente notre chronologie complète de développement depuis 2017. De plus, notre code a été audité de manière indépendante par [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Table des matières {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Confidentialité dès la conception** : Notre [politique de confidentialité](https://forwardemail.net/en/privacy) garantit que nous ne stockons pas les emails transférés sur disque ou bases de données, ne conservons pas de métadonnées sur les emails, et ne stockons pas de logs ni d’adresses IP - nous fonctionnons uniquement en mémoire pour les services de transfert d’email.
 
-**Documentation technique** : Pour des détails complets sur notre approche, architecture et mise en œuvre de la sécurité, consultez notre [livre blanc technique](https://forwardemail.net/technical-whitepaper.pdf) et notre documentation technique étendue.
+**Documentation technique** : Pour des détails complets sur notre approche, architecture et mise en œuvre de la sécurité, consultez notre [livre blanc technique](https://forwardemail.net/technical-whitepaper.pdf), notre [audit de sécurité](https://forwardemail.net/pentest-report_forward-email.pdf) par Cure53, et notre documentation technique étendue.
 
 ### Comparaison des fournisseurs de services email : croissance grâce à des protocoles éprouvés {#email-service-provider-comparison-growth-through-proven-protocols}
 

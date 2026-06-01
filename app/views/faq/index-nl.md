@@ -194,7 +194,7 @@ Belangrijke kenmerken van Forward Email:
 Je kunt ons vergelijken met 56+ andere e-mailserviceproviders op [onze pagina met e-mailvergelijkingen](/blog/best-email-service).
 
 > \[!TIP]
-> Leer meer over Forward Email door ons gratis [Technisch Whitepaper](/technical-whitepaper.pdf) te lezen
+> Leer meer over Forward Email door ons gratis [Technisch Whitepaper](/technical-whitepaper.pdf) te lezen en onze [beveiligingsaudit](/pentest-report_forward-email.pdf) door Cure53 te bekijken.
 
 ### Wie gebruikt Forward Email {#who-uses-forward-email}
 

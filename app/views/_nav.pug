@@ -635,6 +635,10 @@ nav.navbar(class=navbarClasses.join(" "))
                   target="_blank"
                 )= t("Technical Whitepaper")
                 a.dropdown-item(
+                  href="/pentest-report_forward-email.pdf",
+                  target="_blank"
+                )= t("Security Audit")
+                a.dropdown-item(
                   href=l("/ips"),
                   class=ctx.pathWithoutLocale === "/ips" ? "active" : ""
                 )= t("IP Addresses")

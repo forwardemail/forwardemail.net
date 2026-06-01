@@ -194,7 +194,7 @@ Forward Email'in temel özellikleri:
 Bizi 56+ diğer e-posta servis sağlayıcı ile [E-posta Karşılaştırma sayfamızda](/blog/best-email-service) karşılaştırabilirsiniz.
 
 > \[!TIP]
-> Forward Email hakkında daha fazla bilgi edinmek için ücretsiz [Teknik Beyaz Kitabımızı](/technical-whitepaper.pdf) okuyun
+> Forward Email hakkında daha fazla bilgi edinmek için ücretsiz [Teknik Beyaz Kitabımızı](/technical-whitepaper.pdf) okuyun ve Cure53 tarafından yapılan [güvenlik denetimimizi](/pentest-report_forward-email.pdf) inceleyerek.
 
 ### Forward Email'i Kimler Kullanıyor {#who-uses-forward-email}
 

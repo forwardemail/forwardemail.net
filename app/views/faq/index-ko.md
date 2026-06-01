@@ -194,7 +194,7 @@ Forward Email의 주요 기능:
 [우리의 이메일 비교 페이지](/blog/best-email-service)에서 56개 이상의 다른 이메일 서비스 제공자와 비교할 수 있습니다.
 
 > \[!TIP]
-> 무료 [기술 백서](/technical-whitepaper.pdf)를 읽어 Forward Email에 대해 더 알아보세요.
+> 무료 [기술 백서](/technical-whitepaper.pdf)를 읽어 Forward Email에 대해 더 알아보세요. 그리고 Cure53의 [보안 감사](/pentest-report_forward-email.pdf)를 검토하세요.
 
 ### Forward Email 사용자 {#who-uses-forward-email}
 

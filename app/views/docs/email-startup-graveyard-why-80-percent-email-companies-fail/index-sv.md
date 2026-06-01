@@ -8,7 +8,7 @@
 > **Viktig insikt**: De flesta e-poststartups bygger inte faktisk e-postinfrastruktur från grunden. Många bygger ovanpå befintliga lösningar som Amazon SES eller open-source-system som Postfix. De grundläggande protokollen fungerar bra – utmaningen ligger i implementeringen.
 
 > \[!TIP]
-> **Teknisk djupdykning**: För omfattande detaljer om vår metod, arkitektur och säkerhetsimplementering, se vår [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) och [Om-sidan](https://forwardemail.net/en/about) som dokumenterar vår kompletta utveckling sedan 2017.
+> **Teknisk djupdykning**: För omfattande detaljer om vår metod, arkitektur och säkerhetsimplementering, se vår [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) och [Om-sidan](https://forwardemail.net/en/about) som dokumenterar vår kompletta utveckling sedan 2017. Dessutom har vår kodbas oberoende granskats av [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Innehållsförteckning {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Integritet som Standard**: Vår [integritetspolicy](https://forwardemail.net/en/privacy) säkerställer att vi inte lagrar vidarebefordrade e-postmeddelanden på disk eller databaser, inte lagrar metadata om e-post, och inte lagrar loggar eller IP-adresser – vi arbetar endast i minnet för e-postvidarebefordringstjänster.
 
-**Teknisk Dokumentation**: För omfattande detaljer om vår metod, arkitektur och säkerhetsimplementering, se vår [tekniska vitbok](https://forwardemail.net/technical-whitepaper.pdf) och omfattande tekniska dokumentation.
+**Teknisk Dokumentation**: För omfattande detaljer om vår metod, arkitektur och säkerhetsimplementering, se vår [tekniska vitbok](https://forwardemail.net/technical-whitepaper.pdf), vår [säkerhetsrevision](https://forwardemail.net/pentest-report_forward-email.pdf) av Cure53, och omfattande tekniska dokumentation.
 
 ### Jämförelse av E-postleverantörer: Tillväxt Genom Beprövade Protokoll {#email-service-provider-comparison-growth-through-proven-protocols}
 

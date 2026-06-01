@@ -8,7 +8,7 @@
 > **Fő felismerés**: A legtöbb e-mail startup nem épít valódi e-mail infrastruktúrát a semmiből. Sokuk meglévő megoldásokra épít, mint az Amazon SES vagy nyílt forráskódú rendszerek, például a Postfix. Az alapvető protokollok jól működnek – a kihívás a megvalósításban rejlik.
 
 > \[!TIP]
-> **Műszaki mélymerülés**: Részletes információkért a megközelítésünkről, architektúránkról és biztonsági megvalósításunkról tekintse meg a [Forward Email műszaki fehér könyvünket](https://forwardemail.net/technical-whitepaper.pdf) és az [About oldalt](https://forwardemail.net/en/about), amely dokumentálja teljes fejlesztési idővonalunkat 2017 óta.
+> **Műszaki mélymerülés**: Részletes információkért a megközelítésünkről, architektúránkról és biztonsági megvalósításunkról tekintse meg a [Forward Email műszaki fehér könyvünket](https://forwardemail.net/technical-whitepaper.pdf) és az [About oldalt](https://forwardemail.net/en/about), amely dokumentálja teljes fejlesztési idővonalunkat 2017 óta. Emellett kódbázisunkat függetlenül auditálta a [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Tartalomjegyzék {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Adatvédelem tervezésből**: A mi [adatvédelmi szabályzatunk](https://forwardemail.net/en/privacy) biztosítja, hogy nem tárolunk továbbított emaileket lemezen vagy adatbázisban, nem tárolunk metaadatokat az emailekről, és nem tárolunk naplókat vagy IP-címeket – csak memóriában működünk az email továbbítási szolgáltatásokhoz.
 
-**Technikai Dokumentáció**: Részletes információkért megközelítésünkről, architektúránkról és biztonsági megvalósításunkról lásd a [technikai fehér könyvünket](https://forwardemail.net/technical-whitepaper.pdf) és a kiterjedt technikai dokumentációt.
+**Technikai Dokumentáció**: Részletes információkért megközelítésünkről, architektúránkról és biztonsági megvalósításunkról lásd a [technikai fehér könyvünket](https://forwardemail.net/technical-whitepaper.pdf), a [biztonsági auditunkat](https://forwardemail.net/pentest-report_forward-email.pdf) a Cure53-tól, és a kiterjedt technikai dokumentációt.
 
 ### Email Szolgáltató Összehasonlítás: Növekedés Bizonyított Protokollokon Keresztül {#email-service-provider-comparison-growth-through-proven-protocols}
 

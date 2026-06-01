@@ -8,7 +8,7 @@
 > **תובנה מרכזית**: רוב הסטארטאפים לא בונים תשתית אימייל אמיתית מאפס. רבים בונים על גבי פתרונות קיימים כמו Amazon SES או מערכות קוד פתוח כמו Postfix. הפרוטוקולים המרכזיים עובדים היטב - האתגר הוא ביישום.
 
 > \[!TIP]
-> **צלילה טכנית מעמיקה**: לפרטים מקיפים על הגישה שלנו, הארכיטקטורה ויישום האבטחה, ראו את [המסמך הטכני של Forward Email](https://forwardemail.net/technical-whitepaper.pdf) ואת [דף האודות](https://forwardemail.net/en/about) שמתעד את לוח הזמנים המלא של הפיתוח שלנו מאז 2017.
+> **צלילה טכנית מעמיקה**: לפרטים מקיפים על הגישה שלנו, הארכיטקטורה ויישום האבטחה, ראו את [המסמך הטכני של Forward Email](https://forwardemail.net/technical-whitepaper.pdf) ואת [דף האודות](https://forwardemail.net/en/about) שמתעד את לוח הזמנים המלא של הפיתוח שלנו מאז 2017. בנוסף, בסיס הקוד שלנו עבר ביקורת עצמאית על ידי [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## תוכן העניינים {#table-of-contents}
@@ -657,7 +657,7 @@ graph TD
 > \[!NOTE]
 > **פרטיות כברירת מחדל**: [מדיניות הפרטיות שלנו](https://forwardemail.net/en/privacy) מבטיחה שאיננו מאחסנים מיילים מועברים בדיסק או במסדי נתונים, לא מאחסנים מטא-נתונים על המיילים, ואיננו שומרים לוגים או כתובות IP - פועלים בזיכרון בלבד עבור שירותי העברת הדואר.
 
-**תיעוד טכני**: לפרטים מקיפים על הגישה, הארכיטקטורה ומימוש האבטחה שלנו, ראו את [הנייר הלבן הטכני](https://forwardemail.net/technical-whitepaper.pdf) והתיעוד הטכני המפורט.
+**תיעוד טכני**: לפרטים מקיפים על הגישה, הארכיטקטורה ומימוש האבטחה שלנו, ראו את [הנייר הלבן הטכני](https://forwardemail.net/technical-whitepaper.pdf), [ביקורת האבטחה](https://forwardemail.net/pentest-report_forward-email.pdf) שלנו מ-Cure53, והתיעוד הטכני המפורט.
 
 ### השוואת ספקי שירות דואר אלקטרוני: צמיחה דרך פרוטוקולים מוכחים {#email-service-provider-comparison-growth-through-proven-protocols}
 

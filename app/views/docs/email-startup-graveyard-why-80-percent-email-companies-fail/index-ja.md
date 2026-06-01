@@ -8,7 +8,7 @@
 > **重要な洞察**：ほとんどのメールスタートアップは実際のメールインフラをゼロから構築していません。多くはAmazon SESやPostfixのようなオープンソースシステムなど既存のソリューションの上に構築しています。コアプロトコルはうまく機能していますが、課題は実装にあります。
 
 > \[!TIP]
-> **技術的詳細**：私たちのアプローチ、アーキテクチャ、セキュリティ実装の詳細については、[Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf)および2017年からの完全な開発タイムラインを記録した[Aboutページ](https://forwardemail.net/en/about)をご覧ください。
+> **技術的詳細**：私たちのアプローチ、アーキテクチャ、セキュリティ実装の詳細については、[Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf)および2017年からの完全な開発タイムラインを記録した[Aboutページ](https://forwardemail.net/en/about)をご覧ください。 さらに、当社のコードベースは[Cure53](https://forwardemail.net/pentest-report_forward-email.pdf)により独立して監査されています。
 
 
 ## 目次 {#table-of-contents}
@@ -657,7 +657,7 @@ graph TD
 > \[!NOTE]
 > **プライバシー・バイ・デザイン**：私たちの[プライバシーポリシー](https://forwardemail.net/en/privacy)では、転送メールをディスクストレージやデータベースに保存せず、メールのメタデータも保存せず、ログやIPアドレスも保存しないことを保証しており、メール転送サービスはメモリ内のみで動作しています。
 
-**技術文書**：私たちのアプローチ、アーキテクチャ、セキュリティ実装の詳細については、[技術ホワイトペーパー](https://forwardemail.net/technical-whitepaper.pdf)および豊富な技術文書をご覧ください。
+**技術文書**：私たちのアプローチ、アーキテクチャ、セキュリティ実装の詳細については、[技術ホワイトペーパー](https://forwardemail.net/technical-whitepaper.pdf)、Cure53による[セキュリティ監査](https://forwardemail.net/pentest-report_forward-email.pdf)、および豊富な技術文書をご覧ください。
 
 ### メールサービスプロバイダー比較：実証済みプロトコルによる成長 {#email-service-provider-comparison-growth-through-proven-protocols}
 

@@ -1,5 +1,9 @@
 # Legjobb Biztonsági Audit Cégek {#best-security-audit-companies}
 
+
+> [!IMPORTANT]
+> 2026. június 1-jén közzétettük a [Cure53](https://cure53.de/) által végzett harmadik feles biztonsági auditunkat, amelyet széles körben az iparág egyik legjobb biztonsági kutatócégének tartanak. A teljes penetrációs teszt jelentés elérhető a [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf) címen. A Forward Email az egyetlen 100%-ban nyílt forráskódú e-mail szolgáltatás, amely független módon ellenőrzött biztonsági audittal rendelkezik.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
 
 
@@ -44,6 +48,7 @@ A cég lenyűgöző portfóliót épített ki magas szintű ügyfelek és nyílt
 
 **Figyelemre méltó kiadványok és jelentések**:
 
+* [Forward Email Architektúra és Infrastruktúra Biztonsági Értékelés 2026](https://cure53.de/pentest-report_forward-email.pdf) - A Forward Email nyílt forráskódú kódbázisának és szerver infrastruktúrájának átfogó penetrációs tesztje
 * [Mullvad szerverek biztonsági értékelése 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) – Átfogó infrastruktúra-biztonsági értékelés  
 * [Mullvad alkalmazások/API biztonsági értékelése 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) – Alkalmazás- és API-biztonsági elemzés  
 * [Mullvad szerverek biztonsági értékelése 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) – Utólagos infrastruktúra-értékelés  

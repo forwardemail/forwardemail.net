@@ -1,5 +1,9 @@
 # أفضل شركات تدقيق الأمان {#best-security-audit-companies}
 
+
+> [!IMPORTANT]
+> في 1 يونيو 2026، نشرنا تدقيق الأمان الخارجي الذي أجرته [Cure53](https://cure53.de/)، والتي تُعتبر على نطاق واسع واحدة من أفضل شركات أبحاث الأمان في الصناعة. التقرير الكامل لاختبار الاختراق متاح على [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email هي خدمة البريد الإلكتروني الوحيدة مفتوحة المصدر بنسبة 100% مع تدقيق أمني مستقل تم التحقق منه.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="مقارنة شركات تدقيق الأمان" class="rounded-lg" />
 
 
@@ -44,6 +48,7 @@
 
 **منشورات وتقارير بارزة**:
 
+* [تقييم أمان البنية التحتية والهندسة المعمارية لـ Forward Email 2026](https://cure53.de/pentest-report_forward-email.pdf) - اختبار اختراق شامل لقاعدة التعليمات البرمجية مفتوحة المصدر والبنية التحتية للخوادم لـ Forward Email
 * [تقييم أمان خوادم Mullvad 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) - تقييم شامل لأمان البنية التحتية  
 * [تقييم أمان تطبيقات Mullvad / API 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) - تحليل أمان التطبيقات وواجهات برمجة التطبيقات  
 * [تقييم أمان خوادم Mullvad 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) - تقييم متابعة للبنية التحتية  

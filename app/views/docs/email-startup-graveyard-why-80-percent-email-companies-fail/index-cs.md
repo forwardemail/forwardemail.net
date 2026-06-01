@@ -8,7 +8,7 @@
 > **Klíčový poznatek**: Většina emailových startupů nevytváří skutečnou emailovou infrastrukturu od základu. Mnoho z nich staví na existujících řešeních jako Amazon SES nebo open-source systémech jako Postfix. Základní protokoly fungují dobře – výzvou je implementace.
 
 > \[!TIP]
-> **Technický hluboký ponor**: Pro podrobné informace o našem přístupu, architektuře a implementaci bezpečnosti si přečtěte náš [Technický whitepaper Forward Email](https://forwardemail.net/technical-whitepaper.pdf) a [stránku O nás](https://forwardemail.net/en/about), která dokumentuje náš kompletní vývojový časový plán od roku 2017.
+> **Technický hluboký ponor**: Pro podrobné informace o našem přístupu, architektuře a implementaci bezpečnosti si přečtěte náš [Technický whitepaper Forward Email](https://forwardemail.net/technical-whitepaper.pdf) a [stránku O nás](https://forwardemail.net/en/about), která dokumentuje náš kompletní vývojový časový plán od roku 2017. Náš kód byl navíc nezávisle auditován společností [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Obsah {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Ochrana soukromí od základu**: Naše [zásady ochrany soukromí](https://forwardemail.net/en/privacy) zajišťují, že neukládáme přeposílané e-maily na diskové úložiště nebo do databází, neukládáme metadata o e-mailech a neukládáme logy ani IP adresy – vše probíhá pouze v paměti pro služby přeposílání e-mailů.
 
-**Technická dokumentace**: Pro podrobné informace o našem přístupu, architektuře a implementaci bezpečnosti si přečtěte náš [technický whitepaper](https://forwardemail.net/technical-whitepaper.pdf) a rozsáhlou technickou dokumentaci.
+**Technická dokumentace**: Pro podrobné informace o našem přístupu, architektuře a implementaci bezpečnosti si přečtěte náš [technický whitepaper](https://forwardemail.net/technical-whitepaper.pdf), náš [bezpečnostní audit](https://forwardemail.net/pentest-report_forward-email.pdf) od Cure53, a rozsáhlou technickou dokumentaci.
 
 ### Porovnání Poskytovatelů E-mailových Služeb: Růst Díky Ověřeným Protokolům {#email-service-provider-comparison-growth-through-proven-protocols}
 

@@ -8,7 +8,7 @@
 > **Wichtige Erkenntnis**: Die meisten E-Mail-Startups bauen keine echte E-Mail-Infrastruktur von Grund auf neu. Viele setzen auf bestehende Lösungen wie Amazon SES oder Open-Source-Systeme wie Postfix auf. Die Kernprotokolle funktionieren gut – die Herausforderung liegt in der Umsetzung.
 
 > \[!TIP]
-> **Technischer Deep Dive**: Für umfassende Details zu unserem Ansatz, unserer Architektur und der Sicherheitsimplementierung siehe unser [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) und die [Über uns-Seite](https://forwardemail.net/en/about), die unsere vollständige Entwicklung seit 2017 dokumentiert.
+> **Technischer Deep Dive**: Für umfassende Details zu unserem Ansatz, unserer Architektur und der Sicherheitsimplementierung siehe unser [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) und die [Über uns-Seite](https://forwardemail.net/en/about), die unsere vollständige Entwicklung seit 2017 dokumentiert. Darüber hinaus wurde unsere Codebasis unabhängig von [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf) auditiert.
 
 
 ## Inhaltsverzeichnis {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Privacy by Design**: Unsere [Datenschutzrichtlinie](https://forwardemail.net/en/privacy) stellt sicher, dass wir weitergeleitete E-Mails nicht auf Festplatten oder Datenbanken speichern, keine Metadaten über E-Mails speichern und keine Logs oder IP-Adressen speichern – wir arbeiten ausschließlich im Arbeitsspeicher für E-Mail-Weiterleitungsdienste.
 
-**Technische Dokumentation**: Für umfassende Details zu unserem Ansatz, Architektur und Sicherheitsimplementierung siehe unser [technisches Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) und umfangreiche technische Dokumentation.
+**Technische Dokumentation**: Für umfassende Details zu unserem Ansatz, Architektur und Sicherheitsimplementierung siehe unser [technisches Whitepaper](https://forwardemail.net/technical-whitepaper.pdf), unser [Sicherheitsaudit](https://forwardemail.net/pentest-report_forward-email.pdf) von Cure53, und umfangreiche technische Dokumentation.
 
 ### Vergleich von E-Mail-Dienstanbietern: Wachstum durch bewährte Protokolle {#email-service-provider-comparison-growth-through-proven-protocols}
 

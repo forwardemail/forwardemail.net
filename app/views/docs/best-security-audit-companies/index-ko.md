@@ -1,5 +1,9 @@
 # 최고의 보안 감사 회사 {#best-security-audit-companies}
 
+
+> [!IMPORTANT]
+> 2026년 6월 1일, 업계에서 가장 우수한 보안 연구 기업 중 하나로 널리 인정받는 [Cure53](https://cure53.de/)가 수행한 제3자 보안 감사를 발표했습니다. 전체 침투 테스트 보고서는 [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf)에서 확인할 수 있습니다. Forward Email은 독립적으로 검증된 보안 감사를 보유한 유일한 100% 오픈 소스 이메일 서비스입니다.
+
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
 
 
@@ -44,6 +48,7 @@ Cure53는 웹 애플리케이션 보안 테스트와 침투 테스트에 있어 
 
 **주요 출판물 및 보고서**:
 
+* [Forward Email 아키텍처 및 인프라 보안 평가 2026](https://cure53.de/pentest-report_forward-email.pdf) - Forward Email의 오픈 소스 코드베이스 및 서버 인프라에 대한 포괄적인 침투 테스트
 * [Mullvad 서버 보안 평가 2024](https://cure53.de/pentest-report_mullvad_2024_v1.pdf) - 종합 인프라 보안 평가
 * [Mullvad 앱/API 보안 평가 2020](https://cure53.de/pentest-report_mullvad_2020_v2.pdf) - 애플리케이션 및 API 보안 분석
 * [Mullvad 서버 보안 평가 2021](https://cure53.de/pentest-report_mullvad_2021_v1.pdf) - 후속 인프라 평가

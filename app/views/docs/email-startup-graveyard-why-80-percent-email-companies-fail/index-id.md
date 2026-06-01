@@ -8,7 +8,7 @@
 > **Wawasan Utama**: Sebagian besar startup email tidak membangun infrastruktur email sebenarnya dari nol. Banyak yang membangun di atas solusi yang sudah ada seperti Amazon SES atau sistem open-source seperti Postfix. Protokol inti bekerja dengan baik - tantangannya ada pada implementasinya.
 
 > \[!TIP]
-> **Pendalaman Teknis**: Untuk detail lengkap tentang pendekatan, arsitektur, dan implementasi keamanan kami, lihat [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) dan [halaman Tentang](https://forwardemail.net/en/about) yang mendokumentasikan timeline pengembangan kami sejak 2017.
+> **Pendalaman Teknis**: Untuk detail lengkap tentang pendekatan, arsitektur, dan implementasi keamanan kami, lihat [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) dan [halaman Tentang](https://forwardemail.net/en/about) yang mendokumentasikan timeline pengembangan kami sejak 2017. Selain itu, basis kode kami telah diaudit secara independen oleh [Cure53](https://forwardemail.net/pentest-report_forward-email.pdf).
 
 
 ## Daftar Isi {#table-of-contents}
@@ -658,7 +658,7 @@ graph TD
 > \[!NOTE]
 > **Privasi berdasarkan Desain**: [kebijakan privasi kami](https://forwardemail.net/en/privacy) memastikan kami tidak menyimpan email yang diteruskan ke penyimpanan disk atau basis data, tidak menyimpan metadata tentang email, dan tidak menyimpan log atau alamat IP - beroperasi hanya di memori untuk layanan penerusan email.
 
-**Dokumentasi Teknis**: Untuk detail lengkap tentang pendekatan, arsitektur, dan implementasi keamanan kami, lihat [whitepaper teknis](https://forwardemail.net/technical-whitepaper.pdf) dan dokumentasi teknis yang luas.
+**Dokumentasi Teknis**: Untuk detail lengkap tentang pendekatan, arsitektur, dan implementasi keamanan kami, lihat [whitepaper teknis](https://forwardemail.net/technical-whitepaper.pdf), [audit keamanan](https://forwardemail.net/pentest-report_forward-email.pdf) kami oleh Cure53, dan dokumentasi teknis yang luas.
 
 ### Perbandingan Penyedia Layanan Email: Pertumbuhan Melalui Protokol Terbukti {#email-service-provider-comparison-growth-through-proven-protocols}
 

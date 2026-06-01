@@ -194,7 +194,7 @@ Forward Email คือ **ผู้ให้บริการอีเมลท
 คุณสามารถเปรียบเทียบเรากับผู้ให้บริการอีเมลอื่นๆ กว่า 56 รายได้ที่ [หน้าเปรียบเทียบบริการอีเมลของเรา](/blog/best-email-service)
 
 > \[!TIP]
-> เรียนรู้เพิ่มเติมเกี่ยวกับ Forward Email โดยอ่าน [Technical Whitepaper](/technical-whitepaper.pdf) ฟรีของเรา
+> เรียนรู้เพิ่มเติมเกี่ยวกับ Forward Email โดยอ่าน [Technical Whitepaper](/technical-whitepaper.pdf) ฟรีของเรา และตรวจสอบ[การตรวจสอบความปลอดภัย](/pentest-report_forward-email.pdf)ของเราโดย Cure53
 
 ### Who uses Forward Email {#who-uses-forward-email}
 
