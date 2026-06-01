@@ -26,7 +26,7 @@
 ## نظرة عامة {#overview}
 
 > \[!TIP]
-> للتفاصيل التقنية حول هيكلنا، وتنفيذات الأمان، وخارطة الطريق، راجع [الورقة التقنية](https://forwardemail.net/technical-whitepaper.pdf) و[التدقيق الأمني](https://forwardemail.net/pentest-report_forward-email.pdf) المستقل من Cure53.
+> للتفاصيل التقنية حول هيكلنا، وتنفيذات الأمان، وخارطة الطريق، راجع [الورقة التقنية](https://forwardemail.net/technical-whitepaper.pdf).
 
 فورورد إيميل هي خدمة [مجانية ومفتوحة المصدر](https://en.wikipedia.org/wiki/Free_and_open-source "مجانية ومفتوحة المصدر") لإعادة توجيه البريد الإلكتروني [email forwarding](https://en.wikipedia.org/wiki/Email_forwarding "إعادة توجيه البريد الإلكتروني") تركز على [حق المستخدم في الخصوصية](https://en.wikipedia.org/wiki/Right_to_privacy "حق الخصوصية"). ما بدأ كحل بسيط لإعادة توجيه البريد الإلكتروني في 2017 تطور إلى منصة بريد إلكتروني شاملة تقدم أسماء نطاقات مخصصة غير محدودة، وعناوين بريد إلكتروني وأسماء مستعارة غير محدودة، وعناوين بريد إلكتروني مؤقتة غير محدودة، وحماية من الرسائل المزعجة والتصيد الاحتيالي، وتخزين مشفر لصناديق البريد، والعديد من الميزات المتقدمة.
 
@@ -124,17 +124,13 @@
 **نوفمبر 2025**: تم تعزيز أمان المنصة من خلال الترحيل من PBKDF2 إلى [Argon2id](https://en.wikipedia.org/wiki/Argon2) لتجزئة كلمات المرور، وتم ترحيل البنية التحتية من Redis إلى [Valkey](https://github.com/valkey-io/valkey).
 
 **ديسمبر 2025**: تم إصدار النسخة 2.0، مع تقديم دعم [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) لتشفير TLS الإجباري على نقل البريد الإلكتروني وترقية إلى [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) الإصدار 6.
-### 2026 - الامتثال لمواصفات RFC والتصفية المتقدمة، والتدقيق الأمني المستقل {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - الامتثال لمواصفات RFC والتصفية المتقدمة {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
 
 **يناير 2026**: أصدرت Forward Email وثيقة شاملة حول [الامتثال لبروتوكولات RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) وأضافت دعمًا لـ [تشفير S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) و [تصفية البريد الإلكتروني الشاملة باستخدام Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) مع دعم [بروتوكول ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering). كما تم توسيع واجهة برمجة التطبيقات REST لتشمل 39 نقطة نهاية.
 
 **فبراير 2026**: تم إطلاق عميل البريد الإلكتروني الرسمي مفتوح المصدر على الويب في [mail.forwardemail.net](https://mail.forwardemail.net) ([الكود المصدري على GitHub](https://github.com/forwardemail/mail.forwardemail.net)). كما أضافت المنصة دعمًا لـ [امتدادات جدولة CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638)، و [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities)، و [Domain Connect](https://domainconnect.org) لإعداد DNS بنقرة واحدة. تم إطلاق إشعارات الدفع في الوقت الحقيقي لـ IMAP و CalDAV و CardDAV باستخدام WebSockets.
 
 **مارس 2026**: تمت إضافة دعم لتخزين مخصص متوافق مع S3 لكل نطاق، إلى جانب أداة سطر أوامر للإدارة. بدأ العمل على تطبيقات سطح المكتب والهواتف المحمولة متعددة المنصات لأنظمة macOS و Windows و Linux و iOS و Android باستخدام نفس قاعدة كود البريد الإلكتروني مفتوح المصدر، والمبنية باستخدام [Tauri](https://tauri.app).
-
-**مايو 2026**: تم شحن تحسينات كبيرة في الموثوقية والتوافق، بما في ذلك دعم إشعارات Apple Push (APN) لتسليم البريد في الوقت الفعلي على iOS/macOS، وإصلاحات شاملة لـ CalDAV لتوافق مزامنة iOS (إصلاح PRODID وLAST-MODIFIED وCREATED وSEQUENCE وترميز href الصحيح)، وسياسات الاحتفاظ بالبريد الإلكتروني لكل اسم مستعار، وتصفية Sieve المحسنة مع فك تشفير رؤوس MIME والحفاظ على رؤوس List-*، ومزامنة كلمات IMAP المفتاحية مع التصنيفات المخصصة، وحماية تجاوز BSON للمرسلين ذوي الحجم الكبير. تمت إضافة دعم TLS القديم لعملاء IMAP/POP3، وتم توسيع واجهة برمجة تطبيقات الإشعارات مع نقاط نهاية CRUD للرموز وخط أنابيب التسليم.
-
-**يونيو 2026**: نشرت Forward Email أول تدقيق أمني مستقل من طرف ثالث، أجرته [Cure53](https://cure53.de/)، إحدى أكثر شركات أبحاث الأمان احتراماً في الصناعة. التقرير الكامل لاختبار الاختراق متاح على [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). غطى التدقيق البنية المعمارية مفتوحة المصدر بالكامل والبنية التحتية للخوادم، مع معالجة جميع النتائج والتحقق منها من خلال إعادة الاختبار المستمر. تم تطبيق تعزيزات أمنية إضافية بما في ذلك تثبيت DNS لمنع SSRF، ومصادقة رمز الدعوة، والتحقق من صحة عنوان URL لـ Domain Connect.
 
 
 ## المبادئ الأساسية {#core-principles}
@@ -154,7 +150,7 @@
 
 ## الحالة الحالية {#current-status}
 
-حتى يونيو 2026، تخدم Forward Email أكثر من 1.6 مليون نطاق حول العالم، بما في ذلك منظمات بارزة وقادة صناعيين مثل:
+حتى مارس 2026، تخدم Forward Email أكثر من 1.6 مليون نطاق حول العالم، بما في ذلك منظمات بارزة وقادة صناعيين مثل:
 
 * **شركات التكنولوجيا**: Canonical (Ubuntu)، Netflix Games، مؤسسة Linux، مؤسسة PHP، jQuery، LineageOS
 * **المنظمات الإعلامية**: Fox News Radio، Disney Ad Sales
@@ -163,6 +159,6 @@
 * **منظمات أخرى**: RCD Hotels، Fly<span>.</span>io
 * **مطورون بارزون**: Isaac Z. Schlueter (مُنشئ npm)، David Heinemeier Hansson (مُنشئ Ruby on Rails)
 
-تستمر المنصة في التطور مع إصدارات ميزات منتظمة وتحسينات في البنية التحتية، محافظة على مكانتها كخدمة البريد الإلكتروني الوحيدة 100% مفتوحة المصدر، مشفرة، تركز على الخصوصية، شفافة، ومقاومة للحوسبة الكمومية المتاحة اليوم—مدعومة الآن بـ[تدقيق أمني مستقل](/pentest-report_forward-email.pdf) من Cure53.
+تستمر المنصة في التطور مع إصدارات ميزات منتظمة وتحسينات في البنية التحتية، محافظة على مكانتها كخدمة البريد الإلكتروني الوحيدة 100% مفتوحة المصدر، مشفرة، تركز على الخصوصية، شفافة، ومقاومة للحوسبة الكمومية المتاحة اليوم.
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

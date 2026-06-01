@@ -26,7 +26,7 @@
 ## ภาพรวม {#overview}
 
 > \[!TIP]
-> สำหรับรายละเอียดทางเทคนิคเกี่ยวกับสถาปัตยกรรม การใช้งานด้านความปลอดภัย และแผนงาน โปรดดูที่ [Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) และ[การตรวจสอบความปลอดภัย](https://forwardemail.net/pentest-report_forward-email.pdf)อิสระของเราโดย Cure53
+> สำหรับรายละเอียดทางเทคนิคเกี่ยวกับสถาปัตยกรรม การใช้งานด้านความปลอดภัย และแผนงาน โปรดดูที่ [Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf)
 
 Forward Email คือบริการ [ฟรีและโอเพนซอร์ส](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") สำหรับ [การส่งต่ออีเมล](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") ที่เน้นสิทธิ์ของผู้ใช้ในเรื่อง [ความเป็นส่วนตัว](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy") สิ่งที่เริ่มต้นจากการเป็นโซลูชันส่งต่ออีเมลง่ายๆ ในปี 2017 ได้พัฒนาเป็นแพลตฟอร์มอีเมลครบวงจรที่ให้บริการชื่อโดเมนที่กำหนดเองได้ไม่จำกัด ที่อยู่อีเมลและนามแฝงไม่จำกัด ที่อยู่อีเมลใช้ครั้งเดียวไม่จำกัด การป้องกันสแปมและฟิชชิ่ง การจัดเก็บกล่องจดหมายแบบเข้ารหัส และฟีเจอร์ขั้นสูงอีกมากมาย
 
@@ -124,17 +124,13 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 **พฤศจิกายน 2025**: ความปลอดภัยของแพลตฟอร์มได้รับการปรับปรุงด้วยการย้ายจาก PBKDF2 ไปยัง [Argon2id](https://en.wikipedia.org/wiki/Argon2) สำหรับการแฮชรหัสผ่าน และโครงสร้างพื้นฐานถูกย้ายจาก Redis ไปยัง [Valkey](https://github.com/valkey-io/valkey)
 
 **ธันวาคม 2025**: เวอร์ชัน 2.0 ได้เปิดตัว โดยเพิ่มการรองรับ [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) สำหรับการบังคับใช้การเข้ารหัส TLS ในการส่งอีเมล และอัปเกรดเป็น [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) เวอร์ชัน 6
-### 2026 - การปฏิบัติตาม RFC และการกรองขั้นสูง และการตรวจสอบความปลอดภัยอิสระ {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - การปฏิบัติตาม RFC และการกรองขั้นสูง {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
 
 **มกราคม 2026**: Forward Email ได้เผยแพร่ [เอกสารการปฏิบัติตามโปรโตคอล RFC อย่างครบถ้วน](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) และเพิ่มการรองรับ [การเข้ารหัส S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) รวมถึงการกรองอีเมลแบบ [Sieve อย่างครบถ้วน (RFC 5228)](/faq#do-you-support-sieve-email-filtering) พร้อมการรองรับโปรโตคอล [ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) นอกจากนี้ REST API ยังขยายไปถึง 39 endpoints
 
 **กุมภาพันธ์ 2026**: เว็บเมลไคลเอนต์แบบโอเพนซอร์สอย่างเป็นทางการเปิดตัวที่ [mail.forwardemail.net](https://mail.forwardemail.net) ([ซอร์สโค้ดบน GitHub](https://github.com/forwardemail/mail.forwardemail.net)) แพลตฟอร์มยังเพิ่มการรองรับ [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) และ [Domain Connect](https://domainconnect.org) สำหรับการตั้งค่า DNS ด้วยคลิกเดียว การแจ้งเตือนแบบพุชเรียลไทม์สำหรับ IMAP, CalDAV และ CardDAV ถูกเปิดตัวโดยใช้ WebSockets
 
 **มีนาคม 2026**: เพิ่มการรองรับการจัดเก็บข้อมูลแบบ S3-compatible ที่กำหนดเองต่อโดเมน พร้อมเครื่องมือบรรทัดคำสั่งสำหรับการจัดการ เริ่มพัฒนาแอปพลิเคชันเดสก์ท็อปและมือถือข้ามแพลตฟอร์มสำหรับ macOS, Windows, Linux, iOS และ Android โดยใช้ฐานโค้ดเว็บเมลโอเพนซอร์สเดียวกัน สร้างด้วย [Tauri](https://tauri.app)
-
-**พฤษภาคม 2026**: มีการส่งมอบการปรับปรุงความน่าเชื่อถือและความเข้ากันได้อย่างมีนัยสำคัญ รวมถึงการรองรับ Apple Push Notification (APN) สำหรับการส่งอีเมลแบบเรียลไทม์บน iOS/macOS การแก้ไข CalDAV ที่ครอบคลุมสำหรับความเข้ากันได้ของการซิงค์ iOS (การซ่อม PRODID, LAST-MODIFIED, CREATED, SEQUENCE และการเข้ารหัส href ที่ถูกต้อง) นโยบายการเก็บรักษาอีเมลต่อ alias การกรอง Sieve ที่ปรับปรุงด้วยการถอดรหัสส่วนหัว MIME และการรักษาส่วนหัว List-* การซิงโครไนซ์คีย์เวิร์ด IMAP กับป้ายกำกับที่กำหนดเอง และการป้องกัน BSON overflow สำหรับผู้ส่งปริมาณสูง มีการเพิ่มการรองรับ TLS แบบเก่าสำหรับไคลเอนต์ IMAP/POP3 และ API การแจ้งเตือนแบบพุชได้รับการขยายด้วย endpoint CRUD โทเค็นและไปป์ไลน์การจัดส่ง
-
-**มิถุนายน 2026**: Forward Email เผยแพร่การตรวจสอบความปลอดภัยอิสระจากบุคคลที่สามครั้งแรก ดำเนินการโดย [Cure53](https://cure53.de/) หนึ่งในบริษัทวิจัยด้านความปลอดภัยที่ได้รับความเคารพมากที่สุดในอุตสาหกรรม รายงานการทดสอบการเจาะระบบฉบับเต็มมีให้ที่ [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf) การตรวจสอบครอบคลุมสถาปัตยกรรมโอเพ่นซอร์สทั้งหมดและโครงสร้างพื้นฐานเซิร์ฟเวอร์ โดยผลการค้นพบทั้งหมดได้รับการแก้ไขและตรวจสอบผ่านการทดสอบซ้ำอย่างต่อเนื่อง มีการใช้การเสริมความปลอดภัยเพิ่มเติม รวมถึง DNS pinning สำหรับการป้องกัน SSRF การยืนยันตัวตนด้วยโทเค็นคำเชิญ และการตรวจสอบ URL ของ Domain Connect
 
 
 ## หลักการสำคัญ {#core-principles}
@@ -154,7 +150,7 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 
 ## สถานะปัจจุบัน {#current-status}
 
-ณ เดือนมิถุนายน 2026 Forward Email ให้บริการโดเมนมากกว่า 1.6 ล้านโดเมนทั่วโลก รวมถึงองค์กรและผู้นำในอุตสาหกรรมที่โดดเด่น เช่น:
+ณ เดือนมีนาคม 2026 Forward Email ให้บริการโดเมนมากกว่า 1.6 ล้านโดเมนทั่วโลก รวมถึงองค์กรและผู้นำในอุตสาหกรรมที่โดดเด่น เช่น:
 
 * **บริษัทเทคโนโลยี**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **องค์กรสื่อ**: Fox News Radio, Disney Ad Sales
@@ -163,6 +159,6 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 * **องค์กรอื่นๆ**: RCD Hotels, Fly<span>.</span>io
 * **นักพัฒนาที่มีชื่อเสียง**: Isaac Z. Schlueter (ผู้สร้าง npm), David Heinemeier Hansson (ผู้สร้าง Ruby on Rails)
 
-แพลตฟอร์มยังคงพัฒนาอย่างต่อเนื่องด้วยการปล่อยฟีเจอร์และปรับปรุงโครงสร้างพื้นฐานอย่างสม่ำเสมอ รักษาตำแหน่งเป็นบริการอีเมลที่โอเพนซอร์ส 100%, เข้ารหัส, เน้นความเป็นส่วนตัว, โปร่งใส และต้านทานควอนตัมเพียงแห่งเดียวที่มีให้บริการในปัจจุบัน—ตอนนี้ได้รับการสนับสนุนจาก[การตรวจสอบความปลอดภัยอิสระ](/pentest-report_forward-email.pdf)จาก Cure53
+แพลตฟอร์มยังคงพัฒนาอย่างต่อเนื่องด้วยการปล่อยฟีเจอร์และปรับปรุงโครงสร้างพื้นฐานอย่างสม่ำเสมอ รักษาตำแหน่งเป็นบริการอีเมลที่โอเพนซอร์ส 100%, เข้ารหัส, เน้นความเป็นส่วนตัว, โปร่งใส และต้านทานควอนตัมเพียงแห่งเดียวที่มีให้บริการในปัจจุบัน
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

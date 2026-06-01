@@ -26,7 +26,7 @@
 ## Overzicht {#overview}
 
 > \[!TIP]
-> Voor technische details over onze architectuur, beveiligingsimplementaties en roadmap, zie het [Technisch Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) en onze onafhankelijke [beveiligingsaudit](https://forwardemail.net/pentest-report_forward-email.pdf) door Cure53.
+> Voor technische details over onze architectuur, beveiligingsimplementaties en roadmap, zie het [Technisch Whitepaper](https://forwardemail.net/technical-whitepaper.pdf).
 
 Forward Email is een [gratis en open-source](https://en.wikipedia.org/wiki/Free_and_open-source "Gratis en open-source") [email forwarding](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") dienst gericht op het [recht op privacy](https://en.wikipedia.org/wiki/Right_to_privacy "Recht op privacy") van de gebruiker. Wat begon als een eenvoudige e-mail doorstuuroplossing in 2017 is uitgegroeid tot een uitgebreid e-mailplatform dat onbeperkte aangepaste domeinnamen, onbeperkte e-mailadressen en aliassen, onbeperkte wegwerp-e-mailadressen, spam- en phishingbescherming, versleutelde mailboxopslag en tal van geavanceerde functies biedt.
 
@@ -124,17 +124,13 @@ De eenvoud en effectiviteit van deze oplossing trok de aandacht van vooraanstaan
 **November 2025**: De beveiliging van het platform werd verbeterd met een migratie van PBKDF2 naar [Argon2id](https://en.wikipedia.org/wiki/Argon2) voor wachtwoordhashing, en de infrastructuur werd gemigreerd van Redis naar [Valkey](https://github.com/valkey-io/valkey).
 
 **December 2025**: Versie 2.0 werd uitgebracht, met introductie van [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) ondersteuning voor afgedwongen TLS-versleuteling bij e-mailtransport en een upgrade naar [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) v6.
-### 2026 - RFC-naleving en geavanceerde filtering en onafhankelijke beveiligingsaudit {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - RFC-naleving en geavanceerde filtering {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
 
 **Januari 2026**: Forward Email bracht een uitgebreid [RFC-protocol nalevingsdocument](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) uit en voegde ondersteuning toe voor [S/MIME-encryptie (RFC 8551)](/faq#do-you-support-smime-encryption) en uitgebreide [Sieve e-mailfiltering (RFC 5228)](/faq#do-you-support-sieve-email-filtering) met ondersteuning voor het [ManageSieve-protocol (RFC 5804)](/faq#do-you-support-sieve-email-filtering). De REST API werd ook uitgebreid naar 39 eindpunten.
 
 **Februari 2026**: De officiële, open-source webmailclient werd gelanceerd op [mail.forwardemail.net](https://mail.forwardemail.net) ([broncode op GitHub](https://github.com/forwardemail/mail.forwardemail.net)). Het platform voegde ook ondersteuning toe voor [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) en [Domain Connect](https://domainconnect.org) voor 1-klik DNS-configuratie. Real-time pushmeldingen voor IMAP, CalDAV en CardDAV werden gelanceerd met behulp van WebSockets.
 
 **Maart 2026**: Ondersteuning voor per-domein aangepaste S3-compatibele opslag werd toegevoegd, samen met een commandoregeltool voor beheer. Er werd begonnen met het ontwikkelen van cross-platform desktop- en mobiele applicaties voor macOS, Windows, Linux, iOS en Android, gebruikmakend van dezelfde open-source webmailcodebasis, gebouwd met [Tauri](https://tauri.app).
-
-**Mei 2026**: Aanzienlijke verbeteringen in betrouwbaarheid en compatibiliteit werden geleverd, waaronder Apple Push Notification (APN) ondersteuning voor realtime iOS/macOS mail-bezorging, uitgebreide CalDAV-fixes voor iOS-synchronisatiecompatibiliteit (PRODID, LAST-MODIFIED, CREATED, SEQUENCE-herstel en correcte href-codering), e-mailretentiebeleid per alias, verbeterde Sieve-filtering met MIME-header-decodering en List-*-header-behoud, IMAP-trefwoord-synchronisatie met aangepaste labels en BSON-overflow-bescherming voor verzenders met hoog volume. Legacy TLS-ondersteuning werd toegevoegd voor IMAP/POP3-clients en de push-notificatie-API werd uitgebreid met token CRUD- en bezorgpipeline-endpoints.
-
-**Juni 2026**: Forward Email publiceerde zijn eerste onafhankelijke beveiligingsaudit door derden, uitgevoerd door [Cure53](https://cure53.de/), een van de meest gerespecteerde beveiligingsonderzoeksbedrijven in de branche. Het volledige penetratietestrapport is beschikbaar op [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). De audit dekte de volledige open-source architectuur en serverinfrastructuur, waarbij alle bevindingen werden aangepakt en geverifieerd door middel van continue hertesting. Aanvullende beveiligingsverharding werd toegepast, waaronder DNS-pinning voor SSRF-preventie, uitnodigingstoken-authenticatie en Domain Connect URL-validatie.
 
 
 ## Kernprincipes {#core-principles}
@@ -163,6 +159,6 @@ Vanaf maart 2026 bedient Forward Email meer dan 500.000 domeinen wereldwijd, waa
 * **Andere organisaties**: RCD Hotels, Fly<span>.</span>io
 * **Bekende ontwikkelaars**: Isaac Z. Schlueter (npm-maker), David Heinemeier Hansson (maker van Ruby on Rails)
 
-Het platform blijft zich ontwikkelen met regelmatige functiereleases en verbeteringen aan de infrastructuur, en behoudt daarmee zijn positie als de enige 100% open-source, versleutelde, privacygerichte, transparante en kwantumresistente e-mailservice die vandaag beschikbaar is—nu ondersteund door een [onafhankelijke beveiligingsaudit](/pentest-report_forward-email.pdf) van Cure53.
+Het platform blijft zich ontwikkelen met regelmatige functiereleases en verbeteringen aan de infrastructuur, en behoudt daarmee zijn positie als de enige 100% open-source, versleutelde, privacygerichte, transparante en kwantumresistente e-mailservice die vandaag beschikbaar is.
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

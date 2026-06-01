@@ -26,7 +26,7 @@
 ## Přehled {#overview}
 
 > \[!TIP]
-> Pro technické detaily o naší architektuře, implementacích bezpečnosti a plánu vývoje si přečtěte [Technický whitepaper](https://forwardemail.net/technical-whitepaper.pdf) a náš nezávislý [bezpečnostní audit](https://forwardemail.net/pentest-report_forward-email.pdf) od Cure53.
+> Pro technické detaily o naší architektuře, implementacích bezpečnosti a plánu vývoje si přečtěte [Technický whitepaper](https://forwardemail.net/technical-whitepaper.pdf).
 
 Forward Email je [bezplatná a open-source](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") služba pro [přeposílání e-mailů](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") zaměřená na uživatelovo [právo na soukromí](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy"). To, co začalo v roce 2017 jako jednoduché řešení pro přeposílání e-mailů, se vyvinulo v komplexní e-mailovou platformu nabízející neomezený počet vlastních domén, neomezený počet e-mailových adres a aliasů, neomezený počet jednorázových e-mailových adres, ochranu proti spamu a phishingu, šifrované úložiště schránek a řadu pokročilých funkcí.
 
@@ -124,17 +124,13 @@ Jednoduchost a efektivita tohoto řešení přitáhly pozornost významných vý
 **Listopad 2025**: Bezpečnost platformy byla vylepšena migrací z PBKDF2 na [Argon2id](https://en.wikipedia.org/wiki/Argon2) pro hashování hesel a infrastruktura byla migrována z Redis na [Valkey](https://github.com/valkey-io/valkey).
 
 **Prosinec 2025**: Byla vydána verze 2.0, která zavedla podporu [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) pro vynucené TLS šifrování při přenosu e-mailů a aktualizovala na [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) verzi 6.
-### 2026 - Soulad s RFC a pokročilé filtrování a nezávislý bezpečnostní audit {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - Soulad s RFC a pokročilé filtrování {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
 
 **Leden 2026**: Forward Email vydal komplexní [dokument o souladu s RFC protokoly](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) a přidal podporu pro [S/MIME šifrování (RFC 8551)](/faq#do-you-support-smime-encryption) a komplexní [Sieve filtrování e-mailů (RFC 5228)](/faq#do-you-support-sieve-email-filtering) s podporou [ManageSieve protokolu (RFC 5804)](/faq#do-you-support-sieve-email-filtering). REST API bylo také rozšířeno na 39 koncových bodů.
 
 **Únor 2026**: Oficiální open-source webmail klient byl spuštěn na [mail.forwardemail.net](https://mail.forwardemail.net) ([zdrojový kód na GitHubu](https://github.com/forwardemail/mail.forwardemail.net)). Platforma také přidala podporu pro [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) a [Domain Connect](https://domainconnect.org) pro jedním kliknutím nastavení DNS. Byly spuštěny push notifikace v reálném čase pro IMAP, CalDAV a CardDAV pomocí WebSockets.
 
 **Březen 2026**: Byla přidána podpora pro vlastní S3-kompatibilní úložiště na doménu, spolu s nástrojem příkazové řádky pro správu. Začala práce na multiplatformních desktopových a mobilních aplikacích pro macOS, Windows, Linux, iOS a Android využívajících stejný open-source webmail kód, postavených s [Tauri](https://tauri.app).
-
-**Květen 2026**: Byly dodány významné vylepšení spolehlivosti a kompatibility, včetně podpory Apple Push Notification (APN) pro doručování pošty v reálném čase na iOS/macOS, komplexních oprav CalDAV pro kompatibilitu synchronizace iOS (oprava PRODID, LAST-MODIFIED, CREATED, SEQUENCE a správné kódování href), zásad uchovávání e-mailů pro jednotlivé aliasy, vylepšeného filtrování Sieve s dekódováním hlaviček MIME a zachováním hlaviček List-*, synchronizace klíčových slov IMAP s vlastními štítky a ochrany před přetečením BSON pro odesílatele s vysokým objemem. Byla přidána podpora starších verzí TLS pro klienty IMAP/POP3 a API pro push notifikace bylo rozšířeno o koncové body CRUD tokenů a doručovací pipeline.
-
-**Červen 2026**: Forward Email zveřejnil svůj první nezávislý bezpečnostní audit třetí strany, provedený společností [Cure53](https://cure53.de/), jednou z nejuznávanějších firem v oblasti bezpečnostního výzkumu. Úplná zpráva o penetračním testu je k dispozici na [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Audit pokryl celou open-source architekturu a serverovou infrastrukturu, přičemž všechny nálezy byly řešeny a ověřeny prostřednictvím průběžného opakovaného testování. Bylo aplikováno další bezpečnostní zpevnění včetně DNS pinningu pro prevenci SSRF, autentizace tokenem pozvánky a validace URL Domain Connect.
 
 
 ## Základní principy {#core-principles}
@@ -163,6 +159,6 @@ K březnu 2026 Forward Email obsluhuje více než 500 000 domén po celém svět
 * **Další organizace**: RCD Hotels, Fly<span>.</span>io
 * **Významní vývojáři**: Isaac Z. Schlueter (tvůrce npm), David Heinemeier Hansson (tvůrce Ruby on Rails)
 
-Platforma se nadále vyvíjí pravidelnými vydáními nových funkcí a zlepšení infrastruktury, udržujíc si pozici jediné 100% open-source, šifrované, na soukromí zaměřené, transparentní a kvantově odolné e-mailové služby dostupné dnes—nyní podpořeno [nezávislým bezpečnostním auditem](/pentest-report_forward-email.pdf) od Cure53.
+Platforma se nadále vyvíjí pravidelnými vydáními nových funkcí a zlepšení infrastruktury, udržujíc si pozici jediné 100% open-source, šifrované, na soukromí zaměřené, transparentní a kvantově odolné e-mailové služby dostupné dnes.
 
 <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
