@@ -41,6 +41,7 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const isEmail = require('#helpers/is-email');
 const isRetryableError = require('#helpers/is-retryable-error');
+const isTimeoutError = require('#helpers/is-timeout-error');
 // const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
@@ -1191,6 +1192,13 @@ Logs.post('save', async (doc, next) => {
   const isRateLimiting = doc?.err?.output?.statusCode === 429;
   if (doc?.err?.isCodeBug !== true && !isRateLimiting) return next();
 
+  //
+  // NOTE: suppress alert emails for transient/timeout errors
+  //       these are expected under load and are not actionable code bugs
+  //       (e.g. TimeoutError, "took longer than 10s", ETIMEDOUT, AbortError, etc.)
+  //
+  if (isTimeoutError(doc?.err)) return next();
+
   /*
   // send an SMS to admins of the error
   if (twilioClient) {
@@ -1214,37 +1222,24 @@ Logs.post('save', async (doc, next) => {
   }
   */
 
-  try {
-    //
-    // TODO: `err.bounceInfo.category = blocklist'`
-    //       IFF `err.truthSource` has a value set
-    //       and ratelimit cache for once every 12 hours
-    //       by unique `err.response` message hash
-    //       (so we can get alerted if we're blocked by Outlook)
-    //
-
-    //
-    // TODO: put this in queue instead
-    //       otherwise it's too slow and can fail
-    //
-    // send an email to admins of the error
-    await emailHelper({
-      template: 'alert',
-      message: {
-        to: config.alertsEmail,
-        subject: `Code Bug: ${doc?.err?.name} - ${doc?.err?.message} (${doc.id})`
-      },
-      locals: {
-        message: `<pre><code>${encode(
-          safeStringify(doc, null, 2)
-        )}</code></pre>`
-      }
-    });
-    next();
-  } catch (err) {
-    await logger.fatal(err);
-    next();
-  }
+  //
+  // NOTE: fire-and-forget to prevent alert emails from blocking log saves
+  //       (the emailHelper transport has its own timeouts)
+  //
+  // send an email to admins of the error
+  emailHelper({
+    template: 'alert',
+    message: {
+      to: config.alertsEmail,
+      subject: `Code Bug: ${doc?.err?.name} - ${doc?.err?.message} (${doc.id})`
+    },
+    locals: {
+      message: `<pre><code>${encode(safeStringify(doc, null, 2))}</code></pre>`
+    }
+  })
+    .then(() => {})
+    .catch((err) => logger.fatal(err));
+  next();
 });
 
 const conn = mongoose.connections.find(

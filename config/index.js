@@ -738,7 +738,10 @@ const config = {
   defaultStoragePath: env.SQLITE_STORAGE_PATH,
   // 100 items (50 MB * 100 = 5000 MB = 5 GB)
   smtpMaxQueue: 100,
-  smtpQueueTimeout: ms('180s'),
+  // Reduced from 180s to 60s to prevent SMTP connections from holding
+  // PQueue slots too long. Most legitimate servers respond within 30s.
+  // Emails to very slow servers will retry on the next queue cycle.
+  smtpQueueTimeout: ms('60s'),
   smtpLimitMessages: env.NODE_ENV === 'test' ? 100 : 300,
   smtpLimitAuth: env.NODE_ENV === 'test' ? Number.MAX_VALUE : 10,
   smtpLimitAuthDuration: ms('1d'),

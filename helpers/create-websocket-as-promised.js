@@ -54,6 +54,15 @@ WebSocketAsPromised.prototype._handleClose = function (event) {
 
     this._cleanup(error);
   } catch (err) {
+    console.error(
+      '[ERROR:wsp-client] handleClose error',
+      JSON.stringify({
+        errName: err?.name,
+        errMessage: err?.message?.slice(0, 500),
+        eventCode: event?.code,
+        eventReason: event?.reason
+      })
+    );
     logger.fatal(err, { event });
   }
 };
@@ -121,6 +130,14 @@ function handleError(event) {
       this._connect();
     }
   } catch (err) {
+    console.error(
+      '[ERROR:wsp-client] handleError error',
+      JSON.stringify({
+        errName: err?.name,
+        errMessage: err?.message?.slice(0, 500),
+        eventMessage: event?.message
+      })
+    );
     logger.fatal(err, { event });
   }
 }
@@ -438,6 +455,19 @@ function createWebSocketAsPromised(options = {}) {
       }
 
       err.isCodeBug = true;
+      console.error(
+        '[ERROR:wsp-client] request error',
+        JSON.stringify({
+          errName: err?.name,
+          errMessage: err?.message?.slice(0, 500),
+          errCode: err?.code,
+          action: data?.action,
+          aliasId: data?.session?.user?.alias_id,
+          aliasName: data?.session?.user?.alias_name,
+          domainName: data?.session?.user?.domain_name,
+          storageLocation: data?.session?.user?.storage_location
+        })
+      );
       logger.fatal(err);
       throw refineAndLogError(err, data?.session);
       //

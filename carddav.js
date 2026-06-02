@@ -12,6 +12,7 @@ require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const ip = require('ip');
 const mongoose = require('mongoose');
@@ -63,7 +64,8 @@ const setupMongoose = require('#helpers/setup-mongoose');
     );
     await setupMongoose(logger);
   } catch (err) {
-    await logger.error(err);
+    // Use timeout to prevent hanging if MongoDB pool is exhausted
+    await Promise.race([logger.error(err), setTimeout(5000)]);
 
     process.exit(1);
   }

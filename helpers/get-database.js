@@ -217,6 +217,16 @@ async function getDatabase(
           error.alias = alias;
           error.session = session;
           error.dbFilePath = dbFilePath;
+          console.error(
+            '[ERROR:get-database] readonly anomaly after newlyCreated',
+            JSON.stringify({
+              aliasId: alias?.id,
+              aliasName: alias?.name,
+              domainName: session?.user?.domain_name,
+              storageLocation: session?.user?.storage_location,
+              dbFilePath
+            })
+          );
           logger.fatal(error, { alias, session, resolver: instance.resolver });
         }
 
@@ -1158,6 +1168,19 @@ function retryGetDatabase(...args) {
       const session = args[2];
 
       if (isRetryableError(error)) {
+        console.error(
+          '[ERROR:get-database] retryable error on getDatabase',
+          JSON.stringify({
+            errName: error?.name,
+            errMessage: error?.message?.slice(0, 500),
+            errCode: error?.code,
+            aliasId: session?.user?.alias_id,
+            aliasName: session?.user?.alias_name,
+            domainName: session?.user?.domain_name,
+            storageLocation: session?.user?.storage_location,
+            attemptNumber: error?.attemptNumber
+          })
+        );
         logger.fatal(error, { session, resolver: instance.resolver });
         return;
       }
@@ -1333,6 +1356,19 @@ function retryGetDatabase(...args) {
           logger.fatal(err, { session, resolver: instance.resolver });
         }
       } else {
+        console.error(
+          '[ERROR:get-database] non-retryable database error',
+          JSON.stringify({
+            errName: error?.name,
+            errMessage: error?.message?.slice(0, 500),
+            errCode: error?.code,
+            aliasId: session?.user?.alias_id,
+            aliasName: session?.user?.alias_name,
+            domainName: session?.user?.domain_name,
+            storageLocation: session?.user?.storage_location,
+            dbFilePath: error?.dbFilePath
+          })
+        );
         logger.fatal(error, { session, resolver: instance.resolver });
       }
 

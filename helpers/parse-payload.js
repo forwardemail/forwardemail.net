@@ -2526,6 +2526,20 @@ async function parsePayload(data, ws) {
     //   delete err.payload.session.user.password;
 
     // at least early on we should get errors in advance
+    console.error(
+      '[ERROR:parse-payload]',
+      JSON.stringify({
+        errName: err?.name,
+        errMessage: err?.message?.slice(0, 500),
+        errCode: err?.code,
+        action: payload?.action,
+        aliasId: payload?.session?.user?.alias_id,
+        aliasName: payload?.session?.user?.alias_name,
+        domainName: payload?.session?.user?.domain_name,
+        storageLocation: payload?.session?.user?.storage_location,
+        payloadId: payload?.id
+      })
+    );
     logger.fatal(err, { payload });
 
     if (db && !this?.databaseMap) await closeDatabase(db);

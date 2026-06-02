@@ -147,6 +147,23 @@ logger.info(
 // Store boolean if the job is cancelled
 let isCancelled = false;
 
+//
+// STALL DETECTION: Track when the queue last made progress (a task completed).
+// If the queue has been full with no completions for STALL_THRESHOLD_MS,
+// force-clear it to recover from leaked/hung promises that pTimeout cannot
+// cancel (e.g., MongoDB driver waitQueue hangs, DKIM crypto blocking).
+//
+const STALL_THRESHOLD_MS = 10 * 60 * 1000; // 10 minutes
+let lastQueueProgress = Date.now();
+
+queue.on('completed', () => {
+  lastQueueProgress = Date.now();
+});
+
+queue.on('error', () => {
+  lastQueueProgress = Date.now();
+});
+
 // Handle cancellation (this is a very simple example)
 if (parentPort)
   parentPort.once('message', (message) => {
@@ -172,10 +189,12 @@ graceful.listen();
 // Maximum time (ms) a single processEmail call is allowed to run before
 // being considered hung. This prevents a single stalled SMTP connection
 // or DNS lookup from permanently occupying a PQueue slot and leaving the
-// email locked. The SMTP socket timeout is 180s, so we allow 5 minutes
-// (300s) to account for DNS + connect + multiple recipients + save.
+// email locked. The SMTP socket timeout is 60s and DNS timeout is 10s
+// (4 retries), so 2 minutes (120s) is sufficient for the vast majority
+// of emails. Emails that genuinely need longer (huge attachments to slow
+// servers) will be retried on the next cycle after unlock.
 //
-const PROCESS_EMAIL_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+const PROCESS_EMAIL_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes
 
 //
 // Safety-net: if processEmail times out or throws after the lock was
@@ -217,8 +236,8 @@ async function safetyNetUnlock(emailId, reason, recipients = []) {
           }
         ];
 
-  const MAX_UNLOCK_RETRIES = 3;
-  const RETRY_DELAY_MS = 5000; // 5 seconds between retries
+  const MAX_UNLOCK_RETRIES = 2;
+  const RETRY_DELAY_MS = 2000; // 2 seconds between retries
 
   for (let attempt = 1; attempt <= MAX_UNLOCK_RETRIES; attempt++) {
     try {
@@ -594,19 +613,90 @@ async function sendEmails() {
   );
 
   if (currentQueueSize >= config.smtpMaxQueue) {
-    //
-    // STALL DETECTION: If the queue has been full for a long time,
-    // it likely means tasks are hung. Clear the queue and alert.
-    //
+    const stallDuration = Date.now() - lastQueueProgress;
     console.error(
       '[WARN:send-emails] queue is full, cannot fetch new emails',
       JSON.stringify({
         queueSize: queue.size,
         queuePending: queue.pending,
         total: currentQueueSize,
-        max: config.smtpMaxQueue
+        max: config.smtpMaxQueue,
+        stallMs: stallDuration
       })
     );
+
+    //
+    // STALL RECOVERY: If no task has completed in STALL_THRESHOLD_MS,
+    // the queue is irrecoverably stuck (leaked promises holding PQueue
+    // slots that will never resolve). Clear the queue's waiting tasks
+    // and log prominently. The pending (running) tasks cannot be cleared,
+    // but they will eventually be garbage-collected or hit socketTimeoutMS.
+    // After clearing, the next cycle will fetch fresh emails.
+    //
+    if (stallDuration >= STALL_THRESHOLD_MS) {
+      console.error(
+        '[CRITICAL:send-emails] queue stalled for too long - clearing waiting tasks and unlocking',
+        JSON.stringify({
+          stallMs: stallDuration,
+          thresholdMs: STALL_THRESHOLD_MS,
+          pendingTasks: queue.pending,
+          waitingTasks: queue.size
+        })
+      );
+      queue.clear(); // Removes waiting (not-yet-started) tasks
+      // Reset progress tracker so we don't immediately re-trigger
+      lastQueueProgress = Date.now();
+      // Bulk-unlock all emails locked by this server to recover
+      try {
+        const unlockResult = await Emails.updateMany(
+          {
+            is_locked: true,
+            locked_by: IP_ADDRESS,
+            status: 'queued'
+          },
+          {
+            $set: { is_locked: false },
+            $unset: { locked_by: 1, locked_at: 1 }
+          }
+        );
+        if (unlockResult?.modifiedCount > 0) {
+          console.error(
+            '[CRITICAL:send-emails] stall recovery: bulk-unlocked emails',
+            JSON.stringify({
+              ip: IP_ADDRESS,
+              modifiedCount: unlockResult.modifiedCount
+            })
+          );
+        }
+      } catch (unlockErr) {
+        console.error(
+          '[ERROR:send-emails] stall recovery: bulk-unlock failed',
+          JSON.stringify({
+            errName: unlockErr.name,
+            errMessage: unlockErr.message?.slice(0, 200)
+          })
+        );
+      }
+
+      // Send admin alert
+      emailHelper({
+        template: 'alert',
+        message: {
+          to: config.alertsEmail,
+          subject: `SMTP queue stall detected on ${IP_ADDRESS}`
+        },
+        locals: {
+          message: `<p>Queue was stalled for ${Math.round(
+            stallDuration / 1000
+          )}s with ${
+            queue.pending
+          } pending tasks. Cleared waiting queue and bulk-unlocked emails.</p>`
+        }
+      })
+        .then()
+        .catch(() => {});
+    }
+
     await setTimeout(5000);
     return;
   }

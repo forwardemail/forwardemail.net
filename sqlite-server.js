@@ -257,7 +257,18 @@ class SQLite {
       ws.isAlive = true;
       logger.debug('connection from %s', request.socket.remoteAddress);
 
-      ws.on('error', (err) => logger.error(err, { ws, request }));
+      ws.on('error', (err) => {
+        console.error(
+          '[ERROR:sqlite-server] ws error',
+          JSON.stringify({
+            remoteAddress: request?.socket?.remoteAddress,
+            errName: err?.name,
+            errMessage: err?.message?.slice(0, 500),
+            errCode: err?.code
+          })
+        );
+        logger.error(err, { ws, request });
+      });
 
       ws.on('ping', function () {
         // logger.debug('ping from %s', request.socket.remoteAddress);
@@ -293,6 +304,20 @@ class SQLite {
           .then()
           .catch((err) => {
             err.isCodeBug = isCodeBug(err);
+            console.error(
+              '[ERROR:sqlite-server] parsePayload error',
+              JSON.stringify({
+                remoteAddress: request?.socket?.remoteAddress,
+                errName: err?.name,
+                errMessage: err?.message?.slice(0, 500),
+                errCode: err?.code,
+                action: err?.payload?.action,
+                aliasId: err?.payload?.session?.user?.alias_id,
+                aliasName: err?.payload?.session?.user?.alias_name,
+                domainName: err?.payload?.session?.user?.domain_name,
+                storageLocation: err?.payload?.session?.user?.storage_location
+              })
+            );
             this.logger.fatal(err);
           });
       });

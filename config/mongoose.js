@@ -25,7 +25,16 @@ const m = new Mongoose({
       socketTimeoutMS: 60000, // 60s
       // Proactively close idle connections before they go stale
       // (e.g., load balancer idle timeout, NAT table expiry).
-      maxIdleTimeMS: 300000 // 5 minutes
+      maxIdleTimeMS: 300000, // 5 minutes
+      // CRITICAL: Prevent operations from waiting indefinitely for a
+      // connection from the pool. Without this, when all 500 connections
+      // are in use (e.g., 50 concurrent processEmail tasks each holding
+      // multiple connections for queries/saves), new MongoDB operations
+      // wait FOREVER - causing the entire queue to freeze because
+      // pTimeout cannot interrupt a driver-internal wait queue.
+      // 30s is generous enough for normal pool churn but short enough
+      // to fail fast during pool exhaustion cascades.
+      waitQueueTimeoutMS: 30000 // 30s
     }
   }
 });

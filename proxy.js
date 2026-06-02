@@ -10,6 +10,7 @@ require('#config/env');
 
 const process = require('node:process');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const ProxyServer = require('@ladjs/proxy');
 const ip = require('ip');
@@ -39,7 +40,8 @@ graceful.listen();
       { hide_meta: true }
     );
   } catch (err) {
-    await logger.error(err);
+    // Use timeout to prevent hanging if MongoDB pool is exhausted
+    await Promise.race([logger.error(err), setTimeout(5000)]);
 
     process.exit(1);
   }

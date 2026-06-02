@@ -131,7 +131,16 @@ async function rekey(payload) {
 
   await setupMongoose(logger);
 
-  await logger.debug('rekey worker', { payload });
+  console.log(
+    '[DEBUG:worker] rekey started',
+    JSON.stringify({
+      aliasId: payload?.session?.user?.alias_id,
+      aliasName: payload?.session?.user?.alias_name,
+      domainName: payload?.session?.user?.domain_name,
+      storageLocation: payload?.session?.user?.storage_location
+    })
+  );
+  logger.debug('rekey worker', { payload });
 
   let err;
   let tmp;
@@ -229,7 +238,7 @@ async function rekey(payload) {
     try {
       db.pragma('wal_checkpoint(FULL)');
     } catch (err) {
-      await logger.fatal(err, { payload });
+      logger.fatal(err, { payload });
     }
 
     // create backup
@@ -255,7 +264,7 @@ async function rekey(payload) {
     try {
       backupDb.pragma('wal_checkpoint(PASSIVE)');
     } catch (err) {
-      await logger.fatal(err, { payload });
+      logger.fatal(err, { payload });
     }
 
     // ensure journal mode changed to delete so we can rekey database
@@ -289,7 +298,7 @@ async function rekey(payload) {
     // rename backup file (overwrites existing destination file)
     await fs.promises.rename(tmp, storagePath);
     backup = false;
-    await logger.debug('renamed', { tmp, storagePath });
+    logger.debug('renamed', { tmp, storagePath });
 
     //
     // remove the old -whm and -shm files
@@ -332,14 +341,14 @@ async function rekey(payload) {
         recursive: true
       });
     } catch (err) {
-      await logger.fatal(err, { payload });
+      logger.fatal(err, { payload });
     }
   }
 
   try {
     await client.del(`reset_check:${payload.session.user.alias_id}`);
   } catch (err) {
-    await logger.fatal(err);
+    logger.fatal(err);
   }
 
   try {
@@ -356,10 +365,22 @@ async function rekey(payload) {
       }
     );
   } catch (err) {
-    await logger.fatal(err);
+    logger.fatal(err);
   }
 
   if (err) {
+    console.error(
+      '[ERROR:worker] rekey failed',
+      JSON.stringify({
+        errName: err?.name,
+        errMessage: err?.message?.slice(0, 500),
+        errCode: err?.code,
+        aliasId: payload?.session?.user?.alias_id,
+        aliasName: payload?.session?.user?.alias_name,
+        domainName: payload?.session?.user?.domain_name,
+        storageLocation: payload?.session?.user?.storage_location
+      })
+    );
     await email({
       template: 'alert',
       message: {
@@ -414,6 +435,15 @@ async function backup(payload) {
 
   await setupMongoose(logger);
 
+  console.log(
+    '[DEBUG:worker] backup started',
+    JSON.stringify({
+      aliasId: payload?.session?.user?.alias_id,
+      aliasName: payload?.session?.user?.alias_name,
+      domainName: payload?.session?.user?.domain_name,
+      storageLocation: payload?.session?.user?.storage_location
+    })
+  );
   logger.debug('backup worker', { payload });
 
   let tmp;
@@ -707,7 +737,7 @@ async function backup(payload) {
     try {
       db.pragma('wal_checkpoint(PASSIVE)');
     } catch (err) {
-      await logger.fatal(err, { payload });
+      logger.fatal(err, { payload });
     }
 
     // cleanup tmp if it already exists
@@ -723,7 +753,7 @@ async function backup(payload) {
         recursive: true
       });
     } catch (err) {
-      await logger.warn(err, { payload });
+      logger.warn(err, { payload });
     }
 
     switch (payload.format) {
@@ -755,7 +785,7 @@ async function backup(payload) {
         try {
           backupDb.pragma('wal_checkpoint(PASSIVE)');
         } catch (err) {
-          await logger.fatal(err, { payload });
+          logger.fatal(err, { payload });
         }
 
         await closeDatabase(backupDb);
@@ -1002,7 +1032,7 @@ async function backup(payload) {
       typeof err.$metadata?.httpStatusCode === 'number'
     );
 
-    await logger.fatal(err, { payload });
+    logger.fatal(err, { payload });
   }
 
   //
@@ -1066,7 +1096,7 @@ async function backup(payload) {
       }
     } catch (_err) {
       _err.isCodeBug = true;
-      await logger.fatal(_err, { payload });
+      logger.fatal(_err, { payload });
     }
   }
   */
@@ -1079,7 +1109,7 @@ async function backup(payload) {
         recursive: true
       });
     } catch (err) {
-      await logger.fatal(err, { payload });
+      logger.fatal(err, { payload });
     }
   }
 
@@ -1090,11 +1120,23 @@ async function backup(payload) {
   try {
     await client.del(`backup_check:${payload.session.user.alias_id}`);
   } catch (err) {
-    await logger.fatal(err);
+    logger.fatal(err);
   }
 
   // if an error occurred then allow cache to attempt again
   if (err) {
+    console.error(
+      '[ERROR:worker] backup failed',
+      JSON.stringify({
+        errName: err?.name,
+        errMessage: err?.message?.slice(0, 500),
+        errCode: err?.code,
+        aliasId: payload?.session?.user?.alias_id,
+        aliasName: payload?.session?.user?.alias_name,
+        domainName: payload?.session?.user?.domain_name,
+        storageLocation: payload?.session?.user?.storage_location
+      })
+    );
     //
     // email user a friendly error message
     //

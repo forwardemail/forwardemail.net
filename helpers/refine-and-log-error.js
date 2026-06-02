@@ -23,6 +23,19 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
   if (typeof err.isCodeBug !== 'boolean') {
     err.isCodeBug = isCodeBug(err);
     if (err.isCodeBug) {
+      console.error(
+        '[ERROR:refineAndLogError] code bug detected',
+        JSON.stringify({
+          errName: err?.name,
+          errMessage: (err?._message || err?.message || '')?.slice(0, 500),
+          errCode: err?.code,
+          errStack: err?.stack?.slice(0, 300),
+          aliasId: session?.user?.alias_id,
+          aliasName: session?.user?.alias_name,
+          domainName: session?.user?.domain_name,
+          storageLocation: session?.user?.storage_location
+        })
+      );
       logger.fatal(err, { session, resolver: instance?.resolver });
       err.responseCode = 421;
     }

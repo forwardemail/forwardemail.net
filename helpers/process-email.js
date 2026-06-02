@@ -688,7 +688,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
           obj.locale,
           domain.name
         );
-        await emailHelper({
+        // Fire-and-forget: alert emails must not block delivery.
+        // If our SMTP transport is rate-limited/overloaded, awaiting
+        // this would hang processEmail and freeze the queue.
+        emailHelper({
           template: 'alert',
           message: {
             to: obj.to,
@@ -699,7 +702,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
             message,
             locale: obj.locale
           }
-        });
+        })
+          .then()
+          .catch((err) => logger.fatal(err, { ignore_hook: true }));
         await Domains.findByIdAndUpdate(domain._id, {
           $set: {
             newsletter_sent_at: new Date()
@@ -801,7 +806,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
           }/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`
         );
         // TODO: if error occurs then unset cache
-        await emailHelper({
+        // Fire-and-forget: alert emails must not block delivery.
+        emailHelper({
           template: 'alert',
           message: {
             to: obj.to,
@@ -811,7 +817,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
             message,
             locale: obj.locale
           }
-        });
+        })
+          .then()
+          .catch((err) => logger.fatal(err, { ignore_hook: true }));
       }
 
       const err = Boom.badRequest(i18n.translateError('INVALID_RETURN_PATH'));
@@ -1208,35 +1216,35 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   const obj = await Domains.getToAndMajorityLocaleByDomain(
                     domain
                   );
-                  try {
-                    await emailHelper({
-                      // TODO: smtp-spam-detected
-                      template: 'smtp-suspended',
-                      message: { to: obj.to, bcc: config.email.message.from },
-                      locals: {
-                        domain:
-                          typeof domain.toObject === 'function'
-                            ? domain.toObject()
-                            : domain,
-                        locale: obj.locale,
-                        category: err.bounceInfo.category,
-                        detectionCount: abuseState.count,
-                        threshold: abuseState.threshold,
-                        uniqueRecipients: abuseState.uniqueRecipients,
-                        uniqueTruthSources: abuseState.uniqueTruthSources,
-                        responseCode: err.responseCode,
-                        response: err.response,
-                        truthSource: err.truthSource,
-                        email:
-                          typeof email.toObject === 'function'
-                            ? email.toObject()
-                            : email
-                      }
+                  // Fire-and-forget: suspension alerts must not block delivery.
+                  emailHelper({
+                    // TODO: smtp-spam-detected
+                    template: 'smtp-suspended',
+                    message: { to: obj.to, bcc: config.email.message.from },
+                    locals: {
+                      domain:
+                        typeof domain.toObject === 'function'
+                          ? domain.toObject()
+                          : domain,
+                      locale: obj.locale,
+                      category: err.bounceInfo.category,
+                      detectionCount: abuseState.count,
+                      threshold: abuseState.threshold,
+                      uniqueRecipients: abuseState.uniqueRecipients,
+                      uniqueTruthSources: abuseState.uniqueTruthSources,
+                      responseCode: err.responseCode,
+                      response: err.response,
+                      truthSource: err.truthSource,
+                      email:
+                        typeof email.toObject === 'function'
+                          ? email.toObject()
+                          : email
+                    }
+                  })
+                    .then()
+                    .catch((_err) => {
+                      logger.fatal(_err, { ...meta, ignore_hook: true });
                     });
-                  } catch (_err) {
-                    logger.fatal(_err, meta);
-                  }
-
                   // send sms/email alert to admins
                   const suspensionError = new TypeError(
                     `${domain.name} (ID ${
@@ -1623,7 +1631,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 `<pre><code>${encode(
                   safeStringify(_.omit(parseErr(err), 'stack'), null, 2)
                 )}</code></pre>`;
-              await emailHelper({
+              // Fire-and-forget: bounce webhook alerts must not block delivery.
+              emailHelper({
                 template: 'alert',
                 message: {
                   to: obj.to,
@@ -1634,12 +1643,17 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   message,
                   locale: obj.locale
                 }
-              });
-              await Domains.findByIdAndUpdate(domain._id, {
+              })
+                .then()
+                .catch((_err) => logger.fatal(_err, { ignore_hook: true }));
+              // Update sent_at without blocking
+              Domains.findByIdAndUpdate(domain._id, {
                 $set: {
                   bounce_webhook_sent_at: new Date()
                 }
-              });
+              })
+                .then()
+                .catch((_err) => logger.fatal(_err, { ignore_hook: true }));
             }
           } catch (err) {
             logger.fatal(err);

@@ -59,7 +59,7 @@ bree.on('worker created', async (name) => {
   jobStartTimes.set(name, startTime);
   const jobConfig = getJobConfig(name);
 
-  await logger.info('job:start', {
+  logger.info('job:start', {
     ignore_hook: false,
     job: {
       name,
@@ -83,7 +83,7 @@ bree.on('worker deleted', async (name) => {
   const hasError = worker && worker.exitCode && worker.exitCode !== 0;
 
   if (hasError) {
-    await logger.error('job:error', {
+    logger.error('job:error', {
       ignore_hook: false,
       job: {
         name,
@@ -102,7 +102,7 @@ bree.on('worker deleted', async (name) => {
       }
     });
   } else {
-    await logger.info('job:complete', {
+    logger.info('job:complete', {
       ignore_hook: false,
       job: {
         name,
@@ -133,7 +133,7 @@ graceful.listen();
     await bree.start();
     await setupMongoose(logger);
   } catch (err) {
-    await logger.fatal(err);
+    logger.fatal(err);
 
     process.exit(1);
   }

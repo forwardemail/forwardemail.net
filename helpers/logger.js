@@ -143,6 +143,17 @@ const IGNORED_CONTENT_TYPES = [
 // ]);
 
 // <https://github.com/cabinjs/axe/#send-logs-to-http-endpoint>
+//
+// Throttle log saves to prevent MongoDB connection pool exhaustion.
+// Under DDoS/spam conditions, hundreds of errors per second trigger
+// log.save() which runs parseLog() pre-save hook that does
+// Domains.findOne() on MONGO_URI - this exhausts the connection pool
+// and causes the SMTP queue to freeze.
+//
+const LOG_HOOK_MAX_CONCURRENT = 10; // max concurrent log saves
+const LOG_HOOK_MAX_PENDING = 50; // max queued log saves before dropping
+let logHookActive = 0;
+let logHookPending = 0;
 
 async function hook(err, message, meta) {
   //
@@ -296,10 +307,29 @@ async function hook(err, message, meta) {
       // this should never happen but it's a conditional safeguard
       if (_.isError(log.err)) log.err = JSON.parse(safeStringify(log.err));
 
+      //
+      // Throttle: drop logs if too many are pending to prevent
+      // MongoDB connection pool exhaustion during error storms.
+      //
+      if (logHookActive >= LOG_HOOK_MAX_CONCURRENT) {
+        if (logHookPending >= LOG_HOOK_MAX_PENDING) {
+          // Drop this log to protect the system
+          return;
+        }
+
+        logHookPending++;
+      }
+
+      logHookActive++;
       return log
         .save() // log.save() ensures pre-validate and pre-save hooks fire
-        .then()
+        .then(() => {
+          logHookActive--;
+          logHookPending = Math.max(0, logHookPending - 1);
+        })
         .catch((saveErr) => {
+          logHookActive--;
+          logHookPending = Math.max(0, logHookPending - 1);
           //
           // Recovery: if the save fails with a BSON overflow or RangeError,
           // retry with a minimal sanitized log so we don't lose visibility
@@ -579,9 +609,11 @@ logger.post('info', function (err, message, meta) {
     const err = new TypeError(
       `${meta.request.method} ${meta.request.url} took longer than 10s`
     );
-    err.isCodeBug = true;
+    // NOTE: do not set isCodeBug=true here as slow requests are transient
+    //       under load and should not trigger alert emails
+    err.isCodeBug = false;
     err.meta = meta;
-    logger.fatal(err);
+    logger.error(err);
   }
 });
 

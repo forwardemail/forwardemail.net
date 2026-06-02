@@ -75,7 +75,8 @@ graceful.listen();
     );
     await setupMongoose(logger);
   } catch (err) {
-    await logger.error(err);
+    // Use timeout to prevent hanging if MongoDB pool is exhausted
+    await Promise.race([logger.error(err), setTimeout(5000)]);
     process.exit(1);
   }
 })();

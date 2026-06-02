@@ -54,8 +54,20 @@ const email = new Email({
       user: env.SMTP_TRANSPORT_USER,
       pass: env.SMTP_TRANSPORT_PASS
     },
-    logger,
-    debug: boolean(env.TRANSPORT_DEBUG)
+    // NOTE: Do NOT use the app logger here. Nodemailer transport logging
+    // triggers the full logger pipeline (pre-hook serialization + post-hook
+    // MongoDB save) for every SMTP command. Under load this creates a
+    // vicious feedback loop: slow SMTP → nodemailer logs → MongoDB pressure
+    // → pool exhaustion → queue freeze → more SMTP backlog.
+    // logger,
+    debug: boolean(env.TRANSPORT_DEBUG),
+    // Prevent alert emails from hanging indefinitely when the SMTP
+    // transport host (our own service) is rate-limiting or overloaded.
+    // Without these, nodemailer defaults to 2min connect / 10min socket
+    // which can block processEmail for the entire duration.
+    connectionTimeout: 10000, // 10s to establish TCP connection
+    greetingTimeout: 15000, // 15s to receive SMTP greeting
+    socketTimeout: 30000 // 30s for any socket inactivity
   })
 });
 
