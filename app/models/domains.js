@@ -1074,7 +1074,11 @@ Domains.pre('validate', async function (next) {
     );
 
     const users = await conn.models.Users.find({
-      _id: { $in: domain.members.map((m) => m.user) }
+      _id: {
+        $in: domain.members.map((m) =>
+          typeof m?.user?._id === 'object' ? m.user._id : m.user
+        )
+      }
     })
       .lean()
       .select(`id plan email ${config.userFields.maxQuotaPerAlias}`)
