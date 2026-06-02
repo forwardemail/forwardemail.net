@@ -58,7 +58,7 @@ function isTimeoutError(err) {
     if (typeof err[key] !== 'string') continue;
     const str = err[key].toLowerCase();
     if (
-      str.includes('request took longer than') ||
+      str.includes('took longer than') ||
       str.includes('request aborted') ||
       str.includes('timeout') ||
       str.includes('request time-out') ||

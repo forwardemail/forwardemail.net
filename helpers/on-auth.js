@@ -353,17 +353,26 @@ async function onAuth(auth, session, fn) {
               );
 
             // daily backup (run in background)
-            this.wsp
-              .request(
-                {
-                  action: 'backup',
-                  backup_at: new Date().toISOString(),
-                  session: { user }
-                },
-                0
-              )
-              .then((backup) => {
-                this.logger.debug('backup complete', { backup, session });
+            // skip if piscina worker queue is full (Redis key set by sqlite-server)
+            this.client
+              .get(`piscina_busy:${config.env}`)
+              .then((busy) => {
+                if (busy) return;
+                return this.wsp
+                  .request(
+                    {
+                      action: 'backup',
+                      backup_at: new Date().toISOString(),
+                      session: { user }
+                    },
+                    0
+                  )
+                  .then((backup) => {
+                    this.logger.debug('backup complete', {
+                      backup,
+                      session
+                    });
+                  });
               })
               .catch((err) => this.logger.debug(err, { session }));
           }
@@ -1136,17 +1145,23 @@ async function onAuth(auth, session, fn) {
         );
 
       // daily backup (run in background)
-      this.wsp
-        .request(
-          {
-            action: 'backup',
-            backup_at: new Date().toISOString(),
-            session: { user }
-          },
-          0
-        )
-        .then((backup) => {
-          this.logger.debug('backup complete', { backup, session });
+      // skip if piscina worker queue is full (Redis key set by sqlite-server)
+      this.client
+        .get(`piscina_busy:${config.env}`)
+        .then((busy) => {
+          if (busy) return;
+          return this.wsp
+            .request(
+              {
+                action: 'backup',
+                backup_at: new Date().toISOString(),
+                session: { user }
+              },
+              0
+            )
+            .then((backup) => {
+              this.logger.debug('backup complete', { backup, session });
+            });
         })
         .catch((err) => this.logger.debug(err, { session }));
     }

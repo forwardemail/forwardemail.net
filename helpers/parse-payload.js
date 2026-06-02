@@ -2194,6 +2194,18 @@ async function parsePayload(data, ws) {
         if (!isSANB(payload.new_password))
           throw new TypeError('New password missing');
 
+        // reject immediately if piscina worker queue is full
+        if (this.piscina.needsDrain) {
+          const err = Boom.clientTimeout(
+            i18n.translateError(
+              'BACKUP_IN_PROGRESS',
+              payload.session.user.locale
+            )
+          );
+          err.ignoreHook = true;
+          throw err;
+        }
+
         // check how much space is remaining on storage location
         const storagePath = getPathToDatabase({
           id: payload.session.user.alias_id,
@@ -2411,12 +2423,20 @@ async function parsePayload(data, ws) {
       case 'backup': {
         if (!_.isDate(new Date(payload.backup_at)))
           throw new TypeError('Backup at invalid date');
-
         if (
           !isSANB(payload.format) ||
           !['eml', 'mbox', 'sqlite'].includes(payload.format)
         ) {
           payload.format = 'sqlite'; // default
+        }
+
+        // silently skip if piscina worker queue is full (backup is optional)
+        if (this.piscina.needsDrain) {
+          response = {
+            id: payload.id,
+            data: true
+          };
+          break;
         }
 
         const key = `backup_check:${payload.session.user.alias_id}`;
@@ -2525,22 +2545,25 @@ async function parsePayload(data, ws) {
     // if (err?.payload?.session?.user?.password)
     //   delete err.payload.session.user.password;
 
-    // at least early on we should get errors in advance
-    console.error(
-      '[ERROR:parse-payload]',
-      JSON.stringify({
-        errName: err?.name,
-        errMessage: err?.message?.slice(0, 500),
-        errCode: err?.code,
-        action: payload?.action,
-        aliasId: payload?.session?.user?.alias_id,
-        aliasName: payload?.session?.user?.alias_name,
-        domainName: payload?.session?.user?.domain_name,
-        storageLocation: payload?.session?.user?.storage_location,
-        payloadId: payload?.id
-      })
-    );
-    logger.fatal(err, { payload });
+    // skip logging for expected/transient errors (e.g. backup queue full)
+    if (!err.ignoreHook) {
+      // at least early on we should get errors in advance
+      console.error(
+        '[ERROR:parse-payload]',
+        JSON.stringify({
+          errName: err?.name,
+          errMessage: err?.message?.slice(0, 500),
+          errCode: err?.code,
+          action: payload?.action,
+          aliasId: payload?.session?.user?.alias_id,
+          aliasName: payload?.session?.user?.alias_name,
+          domainName: payload?.session?.user?.domain_name,
+          storageLocation: payload?.session?.user?.storage_location,
+          payloadId: payload?.id
+        })
+      );
+      logger.fatal(err, { payload });
+    }
 
     if (db && !this?.databaseMap) await closeDatabase(db);
 

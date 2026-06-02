@@ -34,6 +34,7 @@ const Emails = require('#models/emails');
 const config = require('#config');
 const env = require('#config/env');
 const isCodeBug = require('#helpers/is-code-bug');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
@@ -1597,7 +1598,10 @@ class CalDAV extends API {
           };
 
           // Use fatal for 500 (server bugs), error for client errors
-          if (!status || status >= 500) {
+          // Skip fatal logging entirely for timeout/transient errors
+          if (isTimeoutError(err)) {
+            ctx.logger.debug(err, errorContext);
+          } else if (!status || status >= 500) {
             ctx.logger.fatal(err, errorContext);
           } else {
             ctx.logger.error(err, errorContext);
@@ -2450,10 +2454,15 @@ class CalDAV extends API {
         user
       });
     } catch (err) {
-      err.isCodeBug = true;
       err.calendarId = calendarId;
       err.principalId = principalId;
-      ctx.logger.fatal(err);
+      if (isTimeoutError(err)) {
+        err.isCodeBug = false;
+      } else {
+        err.isCodeBug = true;
+        ctx.logger.fatal(err);
+      }
+
       throw err;
     }
 
@@ -2523,11 +2532,16 @@ class CalDAV extends API {
         projection
       );
     } catch (err) {
-      err.isCodeBug = true;
       err.calendarId = calendarId;
       err.principalId = principalId;
       err.calendar = calendar._id;
-      ctx.logger.fatal(err);
+      if (isTimeoutError(err)) {
+        err.isCodeBug = false;
+      } else {
+        err.isCodeBug = true;
+        ctx.logger.fatal(err);
+      }
+
       throw err;
     }
 
@@ -2825,8 +2839,13 @@ class CalDAV extends API {
             });
             continue;
           } else {
-            err.isCodeBug = true;
-            ctx.logger.fatal(err);
+            if (isTimeoutError(err)) {
+              err.isCodeBug = false;
+            } else {
+              err.isCodeBug = true;
+              ctx.logger.fatal(err);
+            }
+
             throw err;
           }
         }
@@ -2974,8 +2993,13 @@ class CalDAV extends API {
               });
               continue;
             } else {
-              err.isCodeBug = true;
-              ctx.logger.fatal(err);
+              if (isTimeoutError(err)) {
+                err.isCodeBug = false;
+              } else {
+                err.isCodeBug = true;
+                ctx.logger.fatal(err);
+              }
+
               throw err;
             }
           }

@@ -19,6 +19,7 @@ const { WebSocket } = require('ws');
 const config = require('#config');
 const env = require('#config/env');
 const isRetryableError = require('#helpers/is-retryable-error');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
 const recursivelyParse = require('#helpers/recursively-parse');
@@ -257,12 +258,7 @@ async function sendRequest(wsp, requestId, data) {
       data.timeout > 0
         ? data.timeout
         : config.env === 'production'
-        ? //
-          // TODO: we should revise this later in future
-          //       (no wsp.request methds should take longer than 1m)
-          //       (any long-running jobs should have emails sent once completed)
-          //
-          ms('10m') // <--- TODO: we should not have 10m in future (should be 30-60s max)
+        ? ms('1m')
         : config.env === 'test'
         ? ms('1m')
         : ms('10s'),
@@ -454,21 +450,27 @@ function createWebSocketAsPromised(options = {}) {
         return wsp.request(data, 0); // no retries
       }
 
-      err.isCodeBug = true;
-      console.error(
-        '[ERROR:wsp-client] request error',
-        JSON.stringify({
-          errName: err?.name,
-          errMessage: err?.message?.slice(0, 500),
-          errCode: err?.code,
-          action: data?.action,
-          aliasId: data?.session?.user?.alias_id,
-          aliasName: data?.session?.user?.alias_name,
-          domainName: data?.session?.user?.domain_name,
-          storageLocation: data?.session?.user?.storage_location
-        })
-      );
-      logger.fatal(err);
+      // don't mark timeout/transient errors or errors with ignoreHook as code bugs
+      if (err.ignoreHook || isTimeoutError(err)) {
+        err.isCodeBug = false;
+      } else {
+        err.isCodeBug = true;
+        console.error(
+          '[ERROR:wsp-client] request error',
+          JSON.stringify({
+            errName: err?.name,
+            errMessage: err?.message?.slice(0, 500),
+            errCode: err?.code,
+            action: data?.action,
+            aliasId: data?.session?.user?.alias_id,
+            aliasName: data?.session?.user?.alias_name,
+            domainName: data?.session?.user?.domain_name,
+            storageLocation: data?.session?.user?.storage_location
+          })
+        );
+        logger.fatal(err);
+      }
+
       throw refineAndLogError(err, data?.session);
       //
       // TODO: we need to pass client and resolver

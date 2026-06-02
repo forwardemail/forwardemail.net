@@ -31,6 +31,7 @@ const env = require('#config/env');
 const getTLSOptions = require('#helpers/get-tls-options');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const parsePayload = require('#helpers/parse-payload');
@@ -60,6 +61,22 @@ class SQLite {
     });
 
     this.piscina = piscina;
+
+    //
+    // Publish piscina queue status to Redis so IMAP/POP3 clients
+    // can skip backup/rekey WSP requests when the queue is full.
+    // The key auto-expires after 30s as a safety net in case
+    // the 'drain' event is missed (e.g. process crash).
+    //
+    const PISCINA_BUSY_KEY = `piscina_busy:${config.env}`;
+    piscina.on('needsDrain', () => {
+      this.client
+        .set(PISCINA_BUSY_KEY, '1', 'EX', 30)
+        .catch((err) => logger.debug(err));
+    });
+    piscina.on('drain', () => {
+      this.client.del(PISCINA_BUSY_KEY).catch((err) => logger.debug(err));
+    });
 
     // start server with either http or https
     const server =
@@ -303,6 +320,8 @@ class SQLite {
           .call(this, data, ws)
           .then()
           .catch((err) => {
+            // skip logging for timeout/transient errors (e.g. backup queue full)
+            if (err.ignoreHook || isTimeoutError(err)) return;
             err.isCodeBug = isCodeBug(err);
             console.error(
               '[ERROR:sqlite-server] parsePayload error',

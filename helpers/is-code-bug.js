@@ -38,6 +38,10 @@ function isCodeBug(err) {
   // exclude transient DNS reverse lookup failures (not a code bug)
   if (err.syscall === 'getHostByAddr') return false;
 
+  // if isCodeBug was explicitly set to false, respect that
+  // (e.g. logger.js sets this for "took longer than" timeout errors)
+  if (err.isCodeBug === false) return false;
+
   const bool = boolean(
     // it was already marked as a code bug
     err.isCodeBug === true ||
