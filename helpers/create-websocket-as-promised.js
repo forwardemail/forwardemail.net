@@ -228,7 +228,7 @@ async function sendRequest(wsp, requestId, data) {
         }
       },
       {
-        timeout: ms('10s')
+        timeout: ms('15s')
       }
     );
   }
@@ -240,7 +240,12 @@ async function sendRequest(wsp, requestId, data) {
       data.timeout > 0
         ? data.timeout
         : config.env === 'production'
-        ? ms('60s')
+        ? //
+          // TODO: we should revise this later in future
+          //       (no wsp.request methds should take longer than 1m)
+          //       (any long-running jobs should have emails sent once completed)
+          //
+          ms('10m') // <--- TODO: we should not have 10m in future (should be 30-60s max)
         : config.env === 'test'
         ? ms('1m')
         : ms('10s'),
