@@ -153,6 +153,14 @@ graceful.listen();
     }
 
     if (ids.sort().join(',') === newIds.sort().join(',')) {
+      // TODO: remove debug instrumentation once queue issue is resolved
+      console.error(
+        '[DEBUG:check-smtp-frozen-queue] queue is frozen',
+        JSON.stringify({
+          frozenCount: ids.length,
+          sampleIds: ids.slice(0, 10)
+        })
+      );
       const err = new Error('Queue is frozen');
       err.isCodeBug = true; // triggers sms
       throw err;

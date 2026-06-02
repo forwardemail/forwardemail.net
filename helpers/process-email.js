@@ -190,12 +190,28 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // - has a status other than 'queued' (already sent/failed)
     // - has a date in the future
     if (!email) {
+      // TODO: remove debug instrumentation once queue issue is resolved
+      console.log(
+        '[DEBUG:process-email] lock acquisition returned null',
+        JSON.stringify({ emailId: meta.email, ip: IP_ADDRESS })
+      );
       logger.debug(
         'Email not available for processing (already locked, sent, or not ready)',
         meta
       );
       return;
     }
+
+    // TODO: remove debug instrumentation once queue issue is resolved
+    console.log(
+      '[DEBUG:process-email] lock acquired',
+      JSON.stringify({
+        emailId: email._id,
+        lockedBy: email.locked_by,
+        status: email.status,
+        ip: IP_ADDRESS
+      })
+    );
   } catch (err) {
     if (isBsonOverflow(err)) {
       err.isCodeBug = false;
@@ -1745,6 +1761,19 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     return;
   } catch (err) {
+    // TODO: remove debug instrumentation once queue issue is resolved
+    console.error(
+      '[DEBUG:process-email] caught error in processEmail',
+      JSON.stringify({
+        emailId: email?._id,
+        errName: err.name,
+        errMessage: err.message?.slice(0, 200),
+        errCode: err.code,
+        isBoom: err.isBoom,
+        statusCode: err?.output?.statusCode,
+        ip: IP_ADDRESS
+      })
+    );
     //
     // these two properties are set to ensure consistency of `rejectedErrors`
     // (each err has `err.recipient` and `err.responseCode` per nodemailer)
@@ -1819,7 +1848,55 @@ async function processEmail({ email, port = 25, resolver, client }) {
     );
 
     // NOTE: we leave it up to the pre-save hook to determine the "status"
-    email = await bsonOverflowFallbackSave(email, meta);
+    try {
+      email = await bsonOverflowFallbackSave(email, meta);
+    } catch (saveErr) {
+      //
+      // Safety-net: if the save fails (e.g. VersionError, network timeout,
+      // MongoServerError), the email would remain locked in the database
+      // forever. Atomically unlock it so it can be retried on the next cycle.
+      //
+      console.error(
+        '[ERROR:process-email] bsonOverflowFallbackSave threw, unlocking email',
+        JSON.stringify({
+          emailId: email?._id,
+          saveErrName: saveErr.name,
+          saveErrMessage: saveErr.message?.slice(0, 200),
+          originalErrName: err.name,
+          originalErrMessage: err.message?.slice(0, 200),
+          ip: IP_ADDRESS
+        })
+      );
+      try {
+        await Emails.findByIdAndUpdate(email._id, {
+          $set: { is_locked: false },
+          $unset: { locked_by: 1, locked_at: 1 }
+        });
+      } catch (unlockErr) {
+        console.error(
+          '[ERROR:process-email] failed to unlock email after save failure',
+          JSON.stringify({
+            emailId: email?._id,
+            unlockErrName: unlockErr.name,
+            unlockErrMessage: unlockErr.message?.slice(0, 200)
+          })
+        );
+      }
+
+      throw saveErr;
+    }
+
+    // TODO: remove debug instrumentation once queue issue is resolved
+    console.error(
+      '[DEBUG:process-email] after fallback save (will throw)',
+      JSON.stringify({
+        emailId: email?._id,
+        status: email?.status,
+        is_locked: email?.is_locked,
+        locked_by: email?.locked_by,
+        ip: IP_ADDRESS
+      })
+    );
 
     throw err;
   }

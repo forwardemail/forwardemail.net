@@ -226,6 +226,7 @@ async function checkAndAutoApproveSMTP(options) {
   domain.smtp_verified_at = new Date();
   domain.missing_smtp_sent_at = undefined;
   domain.skip_verification = true;
+  domain.skip_payment_check = true;
 
   // Set audit metadata for system-initiated auto-approval
   domain.__audit_metadata = {

@@ -28,6 +28,7 @@ const path = require('node:path');
 const process = require('node:process');
 const { parentPort, workerData } = require('node:worker_threads');
 const { setTimeout } = require('node:timers/promises');
+const pTimeout = require('p-timeout');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
@@ -168,6 +169,96 @@ if (parentPort)
 graceful.listen();
 
 //
+// Maximum time (ms) a single processEmail call is allowed to run before
+// being considered hung. This prevents a single stalled SMTP connection
+// or DNS lookup from permanently occupying a PQueue slot and leaving the
+// email locked. The SMTP socket timeout is 180s, so we allow 5 minutes
+// (300s) to account for DNS + connect + multiple recipients + save.
+//
+const PROCESS_EMAIL_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+
+//
+// Safety-net: if processEmail times out or throws after the lock was
+// acquired, atomically unlock the email and record the timeout error
+// in rejectedErrors so there's a clear audit trail. Also sends an
+// admin alert email for visibility.
+//
+//
+// IMPORTANT: safetyNetUnlock MUST resolve quickly (within 30s) to ensure
+// the PQueue slot is freed. If the MongoDB operation itself hangs (e.g.,
+// connection pool exhausted), we use pTimeout to guarantee this function
+// returns, preventing cascading PQueue starvation.
+//
+const SAFETY_NET_TIMEOUT_MS = 30 * 1000; // 30 seconds
+
+async function safetyNetUnlock(emailId, reason) {
+  const timeoutErr = {
+    name: 'TimeoutError',
+    message: `processEmail timed out after ${PROCESS_EMAIL_TIMEOUT_MS}ms (reason: ${reason})`,
+    responseCode: 421,
+    isCodeBug: true,
+    date: new Date()
+  };
+
+  try {
+    // Atomically unlock AND push the timeout error to rejectedErrors
+    // so the email has a record of why it was interrupted.
+    // Wrapped in its own timeout to prevent this from hanging the PQueue slot.
+    await pTimeout(
+      Emails.findByIdAndUpdate(emailId, {
+        $set: { is_locked: false },
+        $unset: { locked_by: 1, locked_at: 1 },
+        $push: {
+          rejectedErrors: timeoutErr
+        }
+      }),
+      SAFETY_NET_TIMEOUT_MS
+    );
+    console.error(
+      '[WARN:send-emails] safety-net unlocked hung email',
+      JSON.stringify({ emailId, reason, timeoutMs: PROCESS_EMAIL_TIMEOUT_MS })
+    );
+  } catch (unlockErr) {
+    // Even if the unlock itself fails/times out, we MUST return so PQueue frees the slot.
+    // The unlock-emails job (5m threshold) will eventually clean up.
+    console.error(
+      '[ERROR:send-emails] safety-net unlock failed (PQueue slot will still be freed)',
+      JSON.stringify({
+        emailId,
+        reason,
+        unlockErrName: unlockErr.name,
+        unlockErrMessage: unlockErr.message?.slice(0, 200)
+      })
+    );
+  }
+
+  // Send admin alert so hung emails get immediate visibility
+  emailHelper({
+    template: 'alert',
+    message: {
+      to: config.supportEmail,
+      subject: `Hung email detected: ${emailId} (${reason})`
+    },
+    locals: {
+      message: `<pre><code>${encode(
+        safeStringify(
+          {
+            emailId,
+            reason,
+            timeoutMs: PROCESS_EMAIL_TIMEOUT_MS,
+            timeoutErr
+          },
+          null,
+          2
+        )
+      )}</code></pre>`
+    }
+  })
+    .then()
+    .catch((err) => logger.fatal(err));
+}
+
+//
 // Process a single email using Piscina or direct processing
 //
 // @param {Object} email - The email document to process
@@ -186,9 +277,25 @@ async function processEmailTask(email) {
       );
       // Fall back to direct processing when queue is full
       try {
-        await processEmail({ email, resolver, client });
+        await pTimeout(
+          processEmail({ email, resolver, client }),
+          PROCESS_EMAIL_TIMEOUT_MS
+        );
       } catch (err) {
-        logger.error(err, { email });
+        if (err instanceof pTimeout.TimeoutError) {
+          console.error(
+            '[ERROR:send-emails] processEmail timed out (piscina fallback)',
+            JSON.stringify({
+              emailId: email._id,
+              timeoutMs: PROCESS_EMAIL_TIMEOUT_MS
+            })
+          );
+          await safetyNetUnlock(email._id, 'timeout_piscina_fallback');
+        } else {
+          try {
+            logger.error(err, { email: email._id });
+          } catch {}
+        }
       }
 
       return;
@@ -196,34 +303,91 @@ async function processEmailTask(email) {
 
     // Use Piscina thread pool for parallel processing
     try {
-      const result = await piscina.run({ email });
+      const result = await pTimeout(
+        piscina.run({ email }),
+        PROCESS_EMAIL_TIMEOUT_MS
+      );
       if (!result.success) {
-        logger.error(new Error(result.error), { email });
+        try {
+          logger.error(new Error(result.error), { email: email._id });
+        } catch {}
       }
     } catch (err) {
       //
       // Handle Piscina-specific errors
       //
-      if (err.message && err.message.includes('queue is at limit')) {
+      if (err instanceof pTimeout.TimeoutError) {
+        console.error(
+          '[ERROR:send-emails] piscina.run timed out',
+          JSON.stringify({
+            emailId: email._id,
+            timeoutMs: PROCESS_EMAIL_TIMEOUT_MS
+          })
+        );
+        await safetyNetUnlock(email._id, 'timeout_piscina');
+      } else if (err.message && err.message.includes('queue is at limit')) {
         logger.warn('Piscina queue at limit, processing directly', {
           email: email._id
         });
         // Fall back to direct processing
         try {
-          await processEmail({ email, resolver, client });
+          await pTimeout(
+            processEmail({ email, resolver, client }),
+            PROCESS_EMAIL_TIMEOUT_MS
+          );
         } catch (processErr) {
-          logger.error(processErr, { email });
+          if (processErr instanceof pTimeout.TimeoutError) {
+            console.error(
+              '[ERROR:send-emails] processEmail timed out (queue-at-limit fallback)',
+              JSON.stringify({
+                emailId: email._id,
+                timeoutMs: PROCESS_EMAIL_TIMEOUT_MS
+              })
+            );
+            await safetyNetUnlock(email._id, 'timeout_queue_limit_fallback');
+          } else {
+            try {
+              logger.error(processErr, { email: email._id });
+            } catch {}
+          }
         }
       } else {
-        logger.error(err, { email });
+        try {
+          logger.error(err, { email: email._id });
+        } catch {}
       }
     }
   } else {
     // Fall back to direct processing (single-threaded)
     try {
-      await processEmail({ email, resolver, client });
+      await pTimeout(
+        processEmail({ email, resolver, client }),
+        PROCESS_EMAIL_TIMEOUT_MS
+      );
     } catch (err) {
-      logger.error(err, { email });
+      if (err instanceof pTimeout.TimeoutError) {
+        console.error(
+          '[ERROR:send-emails] processEmail timed out (direct)',
+          JSON.stringify({
+            emailId: email._id,
+            timeoutMs: PROCESS_EMAIL_TIMEOUT_MS
+          })
+        );
+        await safetyNetUnlock(email._id, 'timeout_direct');
+      } else {
+        // TODO: remove debug instrumentation once queue issue is resolved
+        console.error(
+          '[DEBUG:send-emails] processEmail threw (email may still be locked)',
+          JSON.stringify({
+            emailId: email._id,
+            errName: err.name,
+            errMessage: err.message?.slice(0, 200)
+          })
+        );
+        try {
+          logger.error(err, { email: email._id });
+        } catch {}
+      }
     }
   }
 }
@@ -236,9 +400,34 @@ async function sendEmails() {
   // Check queue capacity before fetching more emails
   //
   const currentQueueSize = queue.size + queue.pending;
+
+  // Log queue state every cycle for debugging stuck queue issues
+  // TODO: remove debug instrumentation once queue issue is resolved
+  console.log(
+    '[DEBUG:send-emails] cycle start',
+    JSON.stringify({
+      queueSize: queue.size,
+      queuePending: queue.pending,
+      total: currentQueueSize,
+      max: config.smtpMaxQueue,
+      isCancelled,
+      piscinaEnabled
+    })
+  );
+
   if (currentQueueSize >= config.smtpMaxQueue) {
-    logger.info(
-      `queue has ${currentQueueSize} tasks (max: ${config.smtpMaxQueue}), waiting...`
+    //
+    // STALL DETECTION: If the queue has been full for a long time,
+    // it likely means tasks are hung. Clear the queue and alert.
+    //
+    console.error(
+      '[WARN:send-emails] queue is full, cannot fetch new emails',
+      JSON.stringify({
+        queueSize: queue.size,
+        queuePending: queue.pending,
+        total: currentQueueSize,
+        max: config.smtpMaxQueue
+      })
     );
     await setTimeout(5000);
     return;
@@ -282,37 +471,58 @@ async function sendEmails() {
   const suspendedDomainIds = [];
   const recentlyBlockedIds = [];
 
-  await Promise.all([
-    (async () => {
-      for await (const domain of Domains.find({
-        is_smtp_suspended: true
-      })
-        .select('_id')
-        .lean()
-        .cursor()
-        .addCursorFlag('noCursorTimeout', true)) {
-        suspendedDomainIds.push(domain._id);
-      }
-    })(),
-    (async () => {
-      for await (const email of Emails.find({
-        updated_at: {
-          $gte: dayjs().subtract(1, 'hour').toDate(),
-          $lte: now
-        },
-        has_blocked_hashes: true,
-        blocked_hashes: {
-          $in: getBlockedHashes(IP_ADDRESS)
-        }
-      })
-        .select('_id')
-        .lean()
-        .cursor()
-        .addCursorFlag('noCursorTimeout', true)) {
-        recentlyBlockedIds.push(email._id);
-      }
-    })()
-  ]);
+  //
+  // Wrap the pre-fetch queries in a timeout to prevent sendEmails()
+  // from hanging indefinitely if a MongoDB cursor stalls.
+  //
+  const PRE_FETCH_TIMEOUT_MS = 60 * 1000; // 1 minute
+  try {
+    await pTimeout(
+      Promise.all([
+        (async () => {
+          for await (const domain of Domains.find({
+            is_smtp_suspended: true
+          })
+            .select('_id')
+            .lean()
+            .cursor()
+            .addCursorFlag('noCursorTimeout', true)) {
+            suspendedDomainIds.push(domain._id);
+          }
+        })(),
+        (async () => {
+          for await (const email of Emails.find({
+            updated_at: {
+              $gte: dayjs().subtract(1, 'hour').toDate(),
+              $lte: now
+            },
+            has_blocked_hashes: true,
+            blocked_hashes: {
+              $in: getBlockedHashes(IP_ADDRESS)
+            }
+          })
+            .select('_id')
+            .lean()
+            .cursor()
+            .addCursorFlag('noCursorTimeout', true)) {
+            recentlyBlockedIds.push(email._id);
+          }
+        })()
+      ]),
+      PRE_FETCH_TIMEOUT_MS
+    );
+  } catch (preFetchErr) {
+    if (preFetchErr instanceof pTimeout.TimeoutError) {
+      console.error(
+        '[ERROR:send-emails] pre-fetch queries timed out after',
+        PRE_FETCH_TIMEOUT_MS,
+        'ms — proceeding with empty exclusion lists'
+      );
+      // Proceed with empty exclusion lists rather than blocking the entire queue
+    } else {
+      throw preFetchErr;
+    }
+  }
 
   logger.info('%d suspended domain ids', suspendedDomainIds.length);
 
@@ -396,30 +606,94 @@ async function sendEmails() {
   }
   */
 
-  // eslint-disable-next-line unicorn/no-array-callback-reference
-  for await (const email of Emails.find(query)
-    .sort({ created_at: -1 }) // TODO: slows this query down by having sort
-    .lean()
-    .limit(limit)
-    .cursor()
-    .addCursorFlag('noCursorTimeout', true)) {
-    // Return early if the job was already cancelled
-    if (isCancelled) break;
+  //
+  // Wrap the main email cursor iteration in a timeout to prevent
+  // sendEmails() from hanging indefinitely if the cursor stalls.
+  //
+  const CURSOR_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes
+  let emailsFetched = 0;
+  try {
+    await pTimeout(
+      (async () => {
+        // eslint-disable-next-line unicorn/no-array-callback-reference
+        for await (const email of Emails.find(query)
+          .sort({ created_at: -1 }) // TODO: slows this query down by having sort
+          .lean()
+          .limit(limit)
+          .cursor()
+          .addCursorFlag('noCursorTimeout', true)) {
+          // Return early if the job was already cancelled
+          if (isCancelled) break;
 
-    //
-    // Check queue capacity before adding more tasks
-    // This provides additional backpressure
-    //
-    if (queue.size + queue.pending >= config.smtpMaxQueue) {
-      logger.info('queue full during iteration, breaking');
-      break;
+          //
+          // Check queue capacity before adding more tasks
+          // This provides additional backpressure
+          //
+          if (queue.size + queue.pending >= config.smtpMaxQueue) {
+            logger.info('queue full during iteration, breaking');
+            break;
+          }
+
+          emailsFetched++;
+          // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)
+          //
+          // CRITICAL: queue.add() returns a promise that MUST have a .catch()
+          // handler. Without it, if processEmailTask throws an error that
+          // escapes its internal try/catch (e.g. logger.error itself throws
+          // due to BSON overflow), the promise becomes an unhandled rejection.
+          // @ladjs/graceful's unhandledRejection handler re-throws it as an
+          // uncaughtException, which CRASHES THE ENTIRE PROCESS — orphaning
+          // all in-flight locked emails.
+          //
+          queue
+            .add(() => processEmailTask(email), {
+              // TODO: if the email was admin owned domain then priority higher (see email pre-save hook)
+              // priority: email.priority || 0
+            })
+            .catch((err) => {
+              console.error(
+                '[ERROR:send-emails] queue task unhandled rejection (process NOT crashing)',
+                JSON.stringify({
+                  emailId: email._id,
+                  errName: err?.name,
+                  errMessage: err?.message?.slice(0, 300)
+                })
+              );
+            });
+        }
+      })(),
+      CURSOR_TIMEOUT_MS
+    );
+  } catch (cursorErr) {
+    if (cursorErr instanceof pTimeout.TimeoutError) {
+      console.error(
+        '[ERROR:send-emails] email cursor timed out after',
+        CURSOR_TIMEOUT_MS,
+        'ms — fetched',
+        emailsFetched,
+        'emails before timeout'
+      );
+    } else {
+      throw cursorErr;
     }
+  }
 
-    // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)
-    queue.add(() => processEmailTask(email), {
-      // TODO: if the email was admin owned domain then priority higher (see email pre-save hook)
-      // priority: email.priority || 0
-    });
+  // TODO: remove debug instrumentation once queue issue is resolved
+  if (emailsFetched === 0) {
+    console.log(
+      '[DEBUG:send-emails] no emails fetched this cycle',
+      JSON.stringify({
+        suspendedDomainCount: suspendedDomainIds.length,
+        recentlyBlockedCount: recentlyBlockedIds.length,
+        limit
+      })
+    );
+  } else {
+    console.log(
+      '[DEBUG:send-emails] fetched and queued',
+      emailsFetched,
+      'emails'
+    );
   }
 
   await setTimeout(5000);
@@ -430,6 +704,39 @@ async function sendEmails() {
 
   (async function startRecursion() {
     if (isCancelled) {
+      //
+      // Graceful shutdown: unlock all emails locked by this server's IP
+      // so they can be immediately picked up by another server or the
+      // restarted process, instead of waiting for the unlock-emails job.
+      //
+      try {
+        const unlockResult = await Emails.updateMany(
+          {
+            is_locked: true,
+            locked_by: IP_ADDRESS,
+            status: { $in: ['queued', 'deferred'] }
+          },
+          {
+            $set: { is_locked: false, status: 'queued' },
+            $unset: { locked_by: 1, locked_at: 1 }
+          }
+        );
+        if (unlockResult?.modifiedCount > 0) {
+          console.log(
+            '[INFO:send-emails] graceful shutdown: unlocked emails locked by this server',
+            JSON.stringify({
+              ip: IP_ADDRESS,
+              modifiedCount: unlockResult.modifiedCount
+            })
+          );
+        }
+      } catch (err) {
+        console.error(
+          '[ERROR:send-emails] graceful shutdown unlock failed',
+          err.message
+        );
+      }
+
       // Clean up Piscina before exiting
       if (piscina) {
         try {

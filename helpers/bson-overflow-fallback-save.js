@@ -20,8 +20,28 @@ const { Emails } = require('#models');
 async function bsonOverflowFallbackSave(email, meta) {
   try {
     email = await email.save();
+    // TODO: remove debug instrumentation once queue issue is resolved
+    console.log(
+      '[DEBUG:bsonOverflowFallbackSave] save succeeded',
+      JSON.stringify({
+        emailId: email._id,
+        status: email.status,
+        is_locked: email.is_locked,
+        locked_by: email.locked_by
+      })
+    );
     return email;
   } catch (saveErr) {
+    // TODO: remove debug instrumentation once queue issue is resolved
+    console.error(
+      '[DEBUG:bsonOverflowFallbackSave] save failed',
+      JSON.stringify({
+        emailId: email?._id,
+        errName: saveErr.name,
+        errMessage: saveErr.message?.slice(0, 200),
+        isBsonOverflow: isBsonOverflow(saveErr)
+      })
+    );
     if (isBsonOverflow(saveErr)) {
       // BSON overflow is a data-size issue, not a programming error.
       // Mark it so the Logs post-save hook does not send an alert email.

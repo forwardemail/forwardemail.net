@@ -312,6 +312,7 @@ async function onDataSMTP(session, date, headers, body) {
         const token = domain.tokens.id(tokenUsed._id);
         token.user = admin.user._id;
         domain.skip_verification = true;
+        domain.skip_payment_check = true;
         // Set audit metadata for system-initiated token reassignment
         domain.__audit_metadata = {
           isSystem: true
@@ -350,6 +351,7 @@ async function onDataSMTP(session, date, headers, body) {
       } else {
         domain.tokens.id(tokenUsed._id).remove();
         domain.skip_verification = true;
+        domain.skip_payment_check = true;
         // Set audit metadata for system-initiated token removal
         domain.__audit_metadata = {
           isSystem: true

@@ -36,15 +36,19 @@ graceful.listen();
 
   try {
     //
-    // unlock queued jobs that are frozen for more than 10m+
+    // unlock queued jobs that are frozen for more than 5m+
     // and switch deferred emails back into queue
     //
-    await Emails.updateMany(
+    // NOTE: reduced from 10m to 5m because the per-task timeout in
+    // send-emails.js is 5 minutes. Any email locked longer than that
+    // is definitely orphaned (process crash, pm2 restart, etc.).
+    //
+    const unlockResult = await Emails.updateMany(
       {
         is_locked: true,
         locked_at: {
           $exists: true,
-          $lte: dayjs().subtract(10, 'minutes').toDate()
+          $lte: dayjs().subtract(5, 'minutes').toDate()
         },
         status: {
           $in: ['queued', 'deferred']
@@ -61,6 +65,17 @@ graceful.listen();
         }
       }
     );
+
+    // TODO: remove debug instrumentation once queue issue is resolved
+    if (unlockResult?.modifiedCount > 0) {
+      console.log(
+        '[DEBUG:unlock-emails] unlocked frozen emails',
+        JSON.stringify({
+          modifiedCount: unlockResult.modifiedCount,
+          matchedCount: unlockResult.matchedCount
+        })
+      );
+    }
   } catch (err) {
     await logger.error(err);
   }

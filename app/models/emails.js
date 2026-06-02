@@ -724,16 +724,21 @@ Emails.pre('save', function (next) {
 //
 // update `status` based off `accepted` and `rejectedErrors` array
 //
+// NOTE: the previous version of this hook had an IP_ADDRESS guard that would
+//       skip status transitions when `locked_by !== IP_ADDRESS`. This caused
+//       emails to get permanently stuck as `queued + is_locked: true` in
+//       multi-server or container-restart scenarios. The atomic lock acquisition
+//       in process-email.js (findOneAndUpdate with is_locked: false) already
+//       guarantees single-writer semantics, so the IP guard is no longer needed.
+//
 Emails.pre('save', function (next) {
   try {
     // if email is still in "pending" state then do not modify it
     if (this.status === 'pending' && this.rejectedErrors.length === 0)
       return next();
-
     // if already "sent", "partially_sent", "bounced", or "rejected" then leave as-is
     if (['sent', 'partially_sent', 'bounced', 'rejected'].includes(this.status))
       return next();
-
     // if all recipients were accepted, then status is "sent"
     if (
       _.uniq(this.accepted.map((s) => s.toLowerCase()))
@@ -751,43 +756,42 @@ Emails.pre('save', function (next) {
     }
 
     //
-    // NOTE: we only want to modify the status when it is in a "queued" state
-    //       or when it is in a queued state and locked by current server
+    // If status is not 'queued' and there are no rejectedErrors,
+    // there is nothing for this hook to do (e.g. 'deferred' without new errors).
     //
-    if (
-      (this.status !== 'queued' && this.rejectedErrors.length === 0) ||
-      (this.status === 'queued' &&
-        typeof this.locked_by === 'string' &&
-        isIP(this.locked_by) &&
-        this.locked_by !== IP_ADDRESS)
-    )
+    if (this.status !== 'queued' && this.rejectedErrors.length === 0)
       return next();
-
-    //
-    // NOTE: we do not unset lock status because the job
-    //       "unlock-emails" handles this for us
-    //
-    // this.locked_by = undefined;
-    // this.locked_at = undefined;
-
-    //
-    // in case of MongoServerError we want email to instantly retry
-    // (e.g. `rejectedErrors.name` is `MongoServerError`)
-    //
-
     // if all recipients were rejected (5xx), then status is "bounced"
     // if some recipients accepted and others were rejected (5xx) then status is "partially_sent"
     if (this.rejectedErrors.length > 0) {
+      //
+      // isCodeBug path: these are transient infrastructure errors
+      // (e.g. MongoServerError, RedisError) that should be retried.
+      // We unlock the email so it can be picked up again immediately.
+      // The existing maxRetryDuration (5 days) time-based bounce in
+      // process-email.js will eventually bounce the email if the
+      // infrastructure issue persists.
+      //
       if (
         this.status === 'queued' &&
         this.rejectedErrors.every((err) => err.isCodeBug === true)
-        // this.rejectedErrors.every(
-        //   (err) =>
-        //     err.name === 'MongoServerError' ||
-        //     err.name === 'MongoError' ||
-        //     err.name === 'RedisError'
-        // )
       ) {
+        const codeBugCount = this.rejectedErrors.filter(
+          (err) => err.isCodeBug === true
+        ).length;
+        // Log every isCodeBug occurrence for visibility
+        console.error(
+          '[WARN:emails-pre-save] isCodeBug=true for all rejectedErrors, unlocking for retry',
+          JSON.stringify({
+            emailId: this._id,
+            codeBugCount,
+            firstErrName: this.rejectedErrors[0]?.name,
+            firstErrMsg: this.rejectedErrors[0]?.message?.slice(0, 200),
+            locked_by: this.locked_by,
+            ip: IP_ADDRESS
+          })
+        );
+        // Unlock for retry (time-based maxRetryDuration will eventually bounce)
         this.is_locked = false;
         this.locked_by = undefined;
         this.locked_at = undefined;
@@ -809,11 +813,17 @@ Emails.pre('save', function (next) {
         )
           this.status = this.accepted.length > 0 ? 'partially_sent' : 'bounced';
         else this.status = 'rejected';
+        this.is_locked = false;
+        this.locked_by = undefined;
+        this.locked_at = undefined;
         return next();
       }
 
       // otherwise status is deferred (will be unlocked after 10m by automated job)
       this.status = 'deferred';
+      this.is_locked = false;
+      this.locked_by = undefined;
+      this.locked_at = undefined;
     }
 
     next();
