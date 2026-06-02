@@ -1809,7 +1809,39 @@ async function processEmail({ email, port = 25, resolver, client }) {
           })
         );
         // NOTE: we leave it up to the pre-save hook to determine the "status"
-        email = await bsonOverflowFallbackSave(email, meta);
+        try {
+          email = await bsonOverflowFallbackSave(email, meta);
+        } catch (saveErr) {
+          console.error(
+            '[ERROR:process-email] bsonOverflowFallbackSave threw (boom 400/402), unlocking email',
+            JSON.stringify({
+              emailId: email?._id,
+              saveErrName: saveErr.name,
+              saveErrMessage: saveErr.message?.slice(0, 200),
+              originalErrName: err.name,
+              originalErrMessage: err.message?.slice(0, 200),
+              ip: IP_ADDRESS
+            })
+          );
+          try {
+            await Emails.findByIdAndUpdate(email._id, {
+              $set: { is_locked: false },
+              $unset: { locked_by: 1, locked_at: 1 }
+            });
+          } catch (unlockErr) {
+            console.error(
+              '[ERROR:process-email] failed to unlock email after save failure (boom 400/402)',
+              JSON.stringify({
+                emailId: email?._id,
+                unlockErrName: unlockErr.name,
+                unlockErrMessage: unlockErr.message?.slice(0, 200)
+              })
+            );
+          }
+
+          throw saveErr;
+        }
+
         return;
       }
 
@@ -1826,7 +1858,39 @@ async function processEmail({ email, port = 25, resolver, client }) {
           })
         );
         // NOTE: we leave it up to the pre-save hook to determine the "status"
-        email = await bsonOverflowFallbackSave(email, meta);
+        try {
+          email = await bsonOverflowFallbackSave(email, meta);
+        } catch (saveErr) {
+          console.error(
+            '[ERROR:process-email] bsonOverflowFallbackSave threw (boom 403/404), unlocking email',
+            JSON.stringify({
+              emailId: email?._id,
+              saveErrName: saveErr.name,
+              saveErrMessage: saveErr.message?.slice(0, 200),
+              originalErrName: err.name,
+              originalErrMessage: err.message?.slice(0, 200),
+              ip: IP_ADDRESS
+            })
+          );
+          try {
+            await Emails.findByIdAndUpdate(email._id, {
+              $set: { is_locked: false },
+              $unset: { locked_by: 1, locked_at: 1 }
+            });
+          } catch (unlockErr) {
+            console.error(
+              '[ERROR:process-email] failed to unlock email after save failure (boom 403/404)',
+              JSON.stringify({
+                emailId: email?._id,
+                unlockErrName: unlockErr.name,
+                unlockErrMessage: unlockErr.message?.slice(0, 200)
+              })
+            );
+          }
+
+          throw saveErr;
+        }
+
         return;
       }
     }

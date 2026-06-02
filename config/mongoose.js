@@ -18,7 +18,14 @@ const m = new Mongoose({
     options: {
       compressors: ['snappy'],
       maxPoolSize: 500,
-      family: 4 // Force IPv4
+      family: 4, // Force IPv4
+      // Prevent infinite hangs on half-open TCP connections.
+      // Without this, cursor.next() on a dead connection waits forever
+      // because the default socketTimeoutMS is 0 (no timeout).
+      socketTimeoutMS: 60000, // 60s
+      // Proactively close idle connections before they go stale
+      // (e.g., load balancer idle timeout, NAT table expiry).
+      maxIdleTimeMS: 300000 // 5 minutes
     }
   }
 });
