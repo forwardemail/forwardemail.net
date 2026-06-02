@@ -21,6 +21,7 @@ const { WebSocketServer } = require('ws');
 const { mkdirp } = require('mkdirp');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
+const DatabaseLRUMap = require('#helpers/database-lru-map');
 const IMAPNotifier = require('#helpers/imap-notifier');
 const Indexer = require('#helpers/indexer');
 const config = require('#config');
@@ -95,7 +96,8 @@ class SQLite {
         : http.createServer();
 
     // in-memory database map for re-using open database connection instances
-    this.databaseMap = new Map();
+    // (uses LRU eviction to prevent unbounded memory growth)
+    this.databaseMap = new DatabaseLRUMap();
     this.temporaryDatabaseMap = new Map();
 
     //

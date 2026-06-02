@@ -17,6 +17,8 @@ async function closeDatabase(db) {
       });
     } catch (err) {
       err.message = `Shutdown could not cancel transaction: ${err.message}`;
+      // TODO: remove later
+      console.error(err);
       err.isCodeBug = true;
       logger.error(err, { db });
     }
@@ -27,6 +29,8 @@ async function closeDatabase(db) {
     db.pragma('optimize');
     db.close();
   } catch (err) {
+    // TODO: remove later
+    console.error(err);
     logger.error(err, { db });
   }
 }
