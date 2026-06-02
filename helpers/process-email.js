@@ -1316,13 +1316,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // go through the results and determine which were accepted, rejected, or deferred
     const accepted = new Set();
     const rejectedErrors = [];
+    const newDeliveries = [];
     for (const info of results) {
       if (Array.isArray(info.accepted) && info.accepted.length > 0) {
         for (const a of info.accepted) {
           accepted.add(a);
-
-          // store delivery information with transport metadata
-          if (!Array.isArray(email.deliveries)) email.deliveries = [];
 
           // extract delivery information from info and session
           const delivery = {
@@ -1361,7 +1359,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
             delivery.opportunisticTLS = info.session.opportunisticTLS;
           }
 
-          email.deliveries.push(delivery);
+          // Track only NEW deliveries from this call (not ones loaded from DB)
+          newDeliveries.push(delivery);
         }
       }
 
@@ -1376,22 +1375,33 @@ async function processEmail({ email, port = 25, resolver, client }) {
       //
     }
 
-    // preserve in-memory deliveries before re-fetching the document
-    const pendingDeliveries = Array.isArray(email.deliveries)
-      ? [...email.deliveries]
-      : [];
-
     // lookup the email by id to get most recent data and version key (`__v`)
+    // NOTE: newDeliveries (populated above in the results loop) contains ONLY
+    // deliveries added during THIS processEmail call — not ones loaded from DB.
     email = await Emails.findById(email._id);
     if (!email) throw new Error('Email does not exist');
 
-    // merge in-memory deliveries onto the freshly-fetched document
+    // merge ONLY new deliveries onto the freshly-fetched document
     // NOTE: we must use direct assignment (not push) to avoid a Mongoose 6
     // internal atomics tracking bug that surfaces when pushing onto an array
     // of a freshly-fetched document before calling save().
-    if (pendingDeliveries.length > 0) {
+    if (newDeliveries.length > 0) {
       const existing = Array.isArray(email.deliveries) ? email.deliveries : [];
-      email.set('deliveries', [...existing, ...pendingDeliveries]);
+      // Deduplicate by recipient+date to prevent growth on retries
+      const existingKeys = new Set(
+        existing.map(
+          (d) => `${d.recipient}|${d.date?.toISOString?.() || d.date}`
+        )
+      );
+      const unique = newDeliveries.filter(
+        (d) =>
+          !existingKeys.has(
+            `${d.recipient}|${d.date?.toISOString?.() || d.date}`
+          )
+      );
+      if (unique.length > 0) {
+        email.set('deliveries', [...existing, ...unique]);
+      }
     }
 
     //

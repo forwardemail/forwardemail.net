@@ -633,21 +633,23 @@ Emails.pre('validate', function (next) {
     this.accepted = _.uniq(this.accepted.map((a) => a.toLowerCase())).sort();
 
     // ensure that all `rejectedErrors` are Objects not Errors
-    this.rejectedErrors = this.rejectedErrors.map((err) => {
-      const e = err instanceof Error ? parseErr(err) : err;
-      //
-      // these two properties are set to ensure consistency of `rejectedErrors`
-      // (each err has `err.recipient` and `err.responseCode` per nodemailer)
-      //
-      e.isCodeBug = isCodeBug(err);
-      e.responseCode = getErrorCode(err);
-      if (typeof e.recipient !== 'string' || !isEmail(e.recipient))
-        throw Boom.badRequest('Recipient was missing from error');
-      // always set date if not set already
-      if (typeof e.date === 'undefined' || !(e.date instanceof Date))
-        e.date = new Date();
-      return e;
-    });
+    this.rejectedErrors = this.rejectedErrors
+      .map((err) => {
+        const e = err instanceof Error ? parseErr(err) : err;
+        //
+        // these two properties are set to ensure consistency of `rejectedErrors`
+        // (each err has `err.recipient` and `err.responseCode` per nodemailer)
+        //
+        e.isCodeBug = isCodeBug(err);
+        e.responseCode = getErrorCode(err);
+        // always set date if not set already
+        if (typeof e.date === 'undefined' || !(e.date instanceof Date))
+          e.date = new Date();
+        return e;
+      })
+      // Filter out entries without a valid recipient instead of throwing —
+      // legacy data or timeout errors may lack this field
+      .filter((e) => typeof e.recipient === 'string' && isEmail(e.recipient));
 
     // filter out any `accepted` from `rejectedErrors`
     this.rejectedErrors = this.rejectedErrors.filter(
@@ -1129,8 +1131,23 @@ Emails.pre('save', function (next) {
       }
     }
 
-    // Truncate long response strings on deliveries
-    if (Array.isArray(this.deliveries)) {
+    // Deduplicate and cap deliveries to prevent exponential growth on retries
+    if (Array.isArray(this.deliveries) && this.deliveries.length > 0) {
+      // Deduplicate by recipient+date key (keep first occurrence)
+      const seen = new Set();
+      this.deliveries = this.deliveries.filter((d) => {
+        const key = `${d.recipient}|${d.date?.toISOString?.() || d.date}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+      // Cap at a reasonable maximum (one email can have at most ~100 recipients)
+      if (this.deliveries.length > 128) {
+        this.deliveries = this.deliveries.slice(-128);
+      }
+
+      // Truncate long response strings
       for (const d of this.deliveries) {
         if (
           typeof d.response === 'string' &&

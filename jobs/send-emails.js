@@ -191,14 +191,31 @@ const PROCESS_EMAIL_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 //
 const SAFETY_NET_TIMEOUT_MS = 30 * 1000; // 30 seconds
 
-async function safetyNetUnlock(emailId, reason) {
-  const timeoutErr = {
-    name: 'TimeoutError',
-    message: `processEmail timed out after ${PROCESS_EMAIL_TIMEOUT_MS}ms (reason: ${reason})`,
-    responseCode: 421,
-    isCodeBug: true,
-    date: new Date()
-  };
+async function safetyNetUnlock(emailId, reason, recipients = []) {
+  const now = new Date();
+  // Push one timeout error per recipient (required by pre-validate hook)
+  // If recipients is empty, use a single entry with a placeholder to avoid
+  // the pre-validate hook throwing "Recipient was missing from error"
+  const timeoutErrors =
+    recipients.length > 0
+      ? recipients.map((recipient) => ({
+          name: 'TimeoutError',
+          message: `processEmail timed out after ${PROCESS_EMAIL_TIMEOUT_MS}ms (reason: ${reason})`,
+          responseCode: 421,
+          isCodeBug: true,
+          recipient,
+          date: now
+        }))
+      : [
+          {
+            name: 'TimeoutError',
+            message: `processEmail timed out after ${PROCESS_EMAIL_TIMEOUT_MS}ms (reason: ${reason})`,
+            responseCode: 421,
+            isCodeBug: true,
+            recipient: 'unknown@localhost',
+            date: now
+          }
+        ];
 
   const MAX_UNLOCK_RETRIES = 3;
   const RETRY_DELAY_MS = 5000; // 5 seconds between retries
@@ -213,7 +230,7 @@ async function safetyNetUnlock(emailId, reason) {
           $set: { is_locked: false },
           $unset: { locked_by: 1, locked_at: 1 },
           $push: {
-            rejectedErrors: timeoutErr
+            rejectedErrors: { $each: timeoutErrors }
           }
         }),
         SAFETY_NET_TIMEOUT_MS
@@ -268,7 +285,7 @@ async function safetyNetUnlock(emailId, reason) {
             emailId,
             reason,
             timeoutMs: PROCESS_EMAIL_TIMEOUT_MS,
-            timeoutErr
+            timeoutErrors
           },
           null,
           2
@@ -312,7 +329,11 @@ async function processEmailTask(email) {
               timeoutMs: PROCESS_EMAIL_TIMEOUT_MS
             })
           );
-          await safetyNetUnlock(email._id, 'timeout_piscina_fallback');
+          await safetyNetUnlock(
+            email._id,
+            'timeout_piscina_fallback',
+            email?.envelope?.to
+          );
         } else {
           console.error(
             '[ERROR:send-emails] processEmail threw (piscina fallback), attempting unlock',
@@ -364,7 +385,11 @@ async function processEmailTask(email) {
             timeoutMs: PROCESS_EMAIL_TIMEOUT_MS
           })
         );
-        await safetyNetUnlock(email._id, 'timeout_piscina');
+        await safetyNetUnlock(
+          email._id,
+          'timeout_piscina',
+          email?.envelope?.to
+        );
       } else if (err.message && err.message.includes('queue is at limit')) {
         logger.warn('Piscina queue at limit, processing directly', {
           email: email._id
@@ -384,7 +409,11 @@ async function processEmailTask(email) {
                 timeoutMs: PROCESS_EMAIL_TIMEOUT_MS
               })
             );
-            await safetyNetUnlock(email._id, 'timeout_queue_limit_fallback');
+            await safetyNetUnlock(
+              email._id,
+              'timeout_queue_limit_fallback',
+              email?.envelope?.to
+            );
           } else {
             console.error(
               '[ERROR:send-emails] processEmail threw (queue-at-limit fallback), attempting unlock',
@@ -449,7 +478,7 @@ async function processEmailTask(email) {
             timeoutMs: PROCESS_EMAIL_TIMEOUT_MS
           })
         );
-        await safetyNetUnlock(email._id, 'timeout_direct');
+        await safetyNetUnlock(email._id, 'timeout_direct', email?.envelope?.to);
       } else {
         // Non-timeout error: processEmail threw without saving/unlocking the email.
         // This can happen when bsonOverflowFallbackSave fails inside processEmail's
