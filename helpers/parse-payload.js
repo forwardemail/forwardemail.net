@@ -5,6 +5,7 @@
 
 const fs = require('node:fs');
 const os = require('node:os');
+const process = require('node:process');
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
@@ -152,6 +153,42 @@ const STATEMENT_OPERATIONS = new Set(['prepare', 'run', 'get', 'all', 'pluck']);
 
 const SIXTY_FOUR_MB_IN_BYTES = bytes('64MB');
 
+//
+// Concurrency + rate limiting diagnostics (Redis-backed, cluster-wide)
+//
+const CONCURRENCY_TTL_MS = 30_000; // safety-net TTL for INCR keys
+const MAX_CONCURRENT_PER_ALIAS = 5; // max in-flight requests per alias
+const MAX_CONCURRENT_PER_DOMAIN = 20; // max in-flight requests per domain
+const MAX_TMP_PER_ALIAS_PER_MIN = 50; // max tmp writes per alias per minute
+const MAX_TMP_PER_DOMAIN_PER_MIN = 200; // max tmp writes per domain per minute
+
+// Periodic stats logging (every 30s)
+let _totalInflight = 0;
+let _lastStatsLog = 0;
+function logStats() {
+  const now = Date.now();
+  if (now - _lastStatsLog > 30_000) {
+    _lastStatsLog = now;
+    if (_totalInflight > 0) {
+      console.log(`[DIAG:STATS] inflight=${_totalInflight} pid=${process.pid}`);
+    }
+  }
+}
+
+// Rate-limit offender log dedup (once per 10s per key)
+const _offenderLogTimes = new Map();
+function logOffender({ type, id, name, count, max }) {
+  const key = `${type}:${id}`;
+  const now = Date.now();
+  const last = _offenderLogTimes.get(key) || 0;
+  if (now - last > 10_000) {
+    _offenderLogTimes.set(key, now);
+    console.log(
+      `[CONCURRENCY:REJECT] type=${type} id=${id} name=${name} count=${count}/${max} total_inflight=${_totalInflight}`
+    );
+  }
+}
+
 // eslint-disable-next-line max-params
 async function increaseRateLimiting(client, date, sender, root, byteLength) {
   const sizeKey = `imap_limit_size_${config.env}:${date}:${sender}`;
@@ -174,10 +211,12 @@ async function increaseRateLimiting(client, date, sender, root, byteLength) {
 
 async function parsePayload(data, ws) {
   const now = Date.now();
-
   let db;
   let payload;
   let response;
+  let _concAliasKey;
+  let _concDomainKey;
+  let _didIncrement = false;
   try {
     if (!data) throw new TypeError('Data missing');
 
@@ -284,11 +323,167 @@ async function parsePayload(data, ws) {
       await this.client.del(`migrate_check:${payload.session.user.alias_id}`);
 
     //
+    // Redis-based concurrency guard (cluster-wide).
+    // Limits per-alias and per-domain concurrent requests.
+    // Also adds per-minute rate limiting for 'tmp' action specifically.
+    //
+    {
+      const _aliasId = payload?.session?.user?.alias_id;
+      const _domainId = payload?.session?.user?.domain_id;
+      const _aliasName = payload?.session?.user?.alias_name;
+      const _domainName = payload?.session?.user?.domain_name;
+
+      if (_aliasId && _domainId) {
+        _concAliasKey = `conc:a:${_aliasId}`;
+        _concDomainKey = `conc:d:${_domainId}`;
+
+        // INCR concurrency counters
+        const results = await this.client
+          .pipeline()
+          .incr(_concAliasKey)
+          .pexpire(_concAliasKey, CONCURRENCY_TTL_MS)
+          .incr(_concDomainKey)
+          .pexpire(_concDomainKey, CONCURRENCY_TTL_MS)
+          .exec();
+
+        const aliasConc = results[0][1];
+        const domainConc = results[2][1];
+        _didIncrement = true;
+        _totalInflight++;
+        logStats();
+
+        // Check per-alias concurrency
+        if (aliasConc > MAX_CONCURRENT_PER_ALIAS) {
+          logOffender({
+            type: 'alias_conc',
+            id: _aliasId,
+            name: `${_aliasName}@${_domainName}`,
+            count: aliasConc,
+            max: MAX_CONCURRENT_PER_ALIAS
+          });
+          const err = Boom.clientTimeout(
+            `Too many concurrent requests for alias ${_aliasName}@${_domainName} (${aliasConc})`
+          );
+          err.ignoreHook = true;
+          throw err;
+        }
+
+        // Check per-domain concurrency
+        if (domainConc > MAX_CONCURRENT_PER_DOMAIN) {
+          logOffender({
+            type: 'domain_conc',
+            id: _domainId,
+            name: _domainName,
+            count: domainConc,
+            max: MAX_CONCURRENT_PER_DOMAIN
+          });
+          const err = Boom.clientTimeout(
+            `Too many concurrent requests for domain ${_domainName} (${domainConc})`
+          );
+          err.ignoreHook = true;
+          throw err;
+        }
+
+        // For 'tmp' action: per-minute rate limit (burst protection)
+        if (payload.action === 'tmp') {
+          const tmpAliasKey = `tmp_rate:a:${_aliasId}`;
+          const tmpDomainKey = `tmp_rate:d:${_domainId}`;
+          const tmpResults = await this.client
+            .pipeline()
+            .incr(tmpAliasKey)
+            .pexpire(tmpAliasKey, 60_000)
+            .incr(tmpDomainKey)
+            .pexpire(tmpDomainKey, 60_000)
+            .exec();
+
+          const tmpAliasRate = tmpResults[0][1];
+          const tmpDomainRate = tmpResults[2][1];
+
+          if (tmpAliasRate > MAX_TMP_PER_ALIAS_PER_MIN) {
+            logOffender({
+              type: 'tmp_alias_rate',
+              id: _aliasId,
+              name: `${_aliasName}@${_domainName}`,
+              count: tmpAliasRate,
+              max: MAX_TMP_PER_ALIAS_PER_MIN
+            });
+            const err = Boom.clientTimeout(
+              `Too many inbound messages for alias ${_aliasName}@${_domainName} (${tmpAliasRate}/min)`
+            );
+            err.ignoreHook = true;
+            throw err;
+          }
+
+          if (tmpDomainRate > MAX_TMP_PER_DOMAIN_PER_MIN) {
+            logOffender({
+              type: 'tmp_domain_rate',
+              id: _domainId,
+              name: _domainName,
+              count: tmpDomainRate,
+              max: MAX_TMP_PER_DOMAIN_PER_MIN
+            });
+            const err = Boom.clientTimeout(
+              `Too many inbound messages for domain ${_domainName} (${tmpDomainRate}/min)`
+            );
+            err.ignoreHook = true;
+            throw err;
+          }
+        }
+      }
+
+      // For 'tmp' action without session (MX inbound): rate limit by remoteAddress
+      if (!_aliasId && payload.action === 'tmp' && payload.remoteAddress) {
+        const tmpIpKey = `tmp_rate:ip:${payload.remoteAddress}`;
+        const tmpIpResults = await this.client
+          .pipeline()
+          .incr(tmpIpKey)
+          .pexpire(tmpIpKey, 60_000)
+          .exec();
+        const tmpIpRate = tmpIpResults[0][1];
+        _totalInflight++;
+        _didIncrement = true;
+        // Use a generic key for decrement tracking
+        _concAliasKey = `conc:ip:${payload.remoteAddress}`;
+        _concDomainKey = null;
+        await this.client
+          .pipeline()
+          .incr(_concAliasKey)
+          .pexpire(_concAliasKey, CONCURRENCY_TTL_MS)
+          .exec();
+        logStats();
+
+        // Log all tmp requests with alias count for visibility
+        if (tmpIpRate === 1 || tmpIpRate % 50 === 0) {
+          console.log(
+            `[DIAG:TMP] ip=${
+              payload.remoteAddress
+            } rate=${tmpIpRate}/min aliases=${payload.aliases?.length || 0}`
+          );
+        }
+
+        // Hard cap: 500 tmp messages per IP per minute
+        if (tmpIpRate > 500) {
+          logOffender({
+            type: 'tmp_ip_rate',
+            id: payload.remoteAddress,
+            name: payload.remoteAddress,
+            count: tmpIpRate,
+            max: 500
+          });
+          const err = Boom.clientTimeout(
+            `Too many inbound messages from IP ${payload.remoteAddress} (${tmpIpRate}/min)`
+          );
+          err.ignoreHook = true;
+          throw err;
+        }
+      }
+    }
+
+    //
     // TODO: payload.storage_location should not be used as source of truth
     //       instead the latest from Aliases database should be used
     //       (e.g. `const alias = await Aliases.findOne(...)` and `alias.storage_location`
     //
-
     // handle action
     switch (payload.action) {
       // append
@@ -2460,11 +2655,17 @@ async function parsePayload(data, ws) {
 
     // NOTE: per-query checkpointing removed to prevent SQLITE_BUSY_SNAPSHOT.
     // SQLite auto-checkpoints at wal_autocheckpoint (default 1000 pages).
-
     if (db && !this?.databaseMap) await closeDatabase(db);
 
-    if (!ws) return response.data;
+    // Decrement Redis concurrency counters on success
+    if (_didIncrement) {
+      _totalInflight = Math.max(0, _totalInflight - 1);
+      const p = this.client.pipeline().decr(_concAliasKey);
+      if (_concDomainKey) p.decr(_concDomainKey);
+      p.exec().catch(() => {});
+    }
 
+    if (!ws) return response.data;
     ws.send(encoder.pack(response));
   } catch (_err) {
     // since we use multiArgs from pify
@@ -2501,6 +2702,14 @@ async function parsePayload(data, ws) {
     }
 
     if (db && !this?.databaseMap) await closeDatabase(db);
+
+    // Decrement Redis concurrency counters on error
+    if (_didIncrement) {
+      _totalInflight = Math.max(0, _totalInflight - 1);
+      const p = this.client.pipeline().decr(_concAliasKey);
+      if (_concDomainKey) p.decr(_concDomainKey);
+      p.exec().catch(() => {});
+    }
 
     if (!ws || typeof ws.send !== 'function') throw err;
 
