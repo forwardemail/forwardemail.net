@@ -6,13 +6,12 @@
 const fs = require('node:fs');
 const http = require('node:http');
 const https = require('node:https');
-const path = require('node:path');
 const { promisify } = require('node:util');
 const { randomUUID } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
 const MessageHandler = require('@zone-eu/wildduck/lib/message-handler');
-const Piscina = require('piscina');
+
 const auth = require('basic-auth');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -45,50 +44,10 @@ class SQLite {
     this.subscriber = options.subscriber;
     this.resolver = createTangerine(this.client, logger);
 
-    // worker pool threads
-    // <https://github.com/piscinajs/piscina?tab=readme-ov-file#constructor-new-piscinaoptions>
-    const piscina = new Piscina({
-      filename: path.resolve(__dirname, 'helpers', 'worker.js'),
-      maxQueue: 'auto', // maxThreads^2 = 4
-      idleTimeout: ms('10s'),
-      // if we left it unset, then `maxThreads` would be `48`
-      // for EACH process in Node.js in production sqlite
-      // > os.availableParallelism * 1.5
-      // 48
-      // (conditionally for when we detect we're in PM2)
-      // (otherwise the tests take super long to run, e.g. in CI)
-      maxThreads: 1 // config.env === 'test' ? 1 : 2
-    });
-
-    this.piscina = piscina;
-
     //
-    // Publish piscina queue status to Redis so IMAP/POP3 clients
-    // can skip backup/rekey WSP requests when the queue is full.
+    // NOTE: backup and rekey jobs are handled by the dedicated sqlite-worker
+    // process via Redis Pub/Sub. No piscina pool is needed in cluster workers.
     //
-    // Uses a shared counter instead of a single key so that one worker's
-    // drain event does not clear the busy signal for other workers.
-    // Each worker INCRs on needsDrain and DECRs on drain.
-    // The counter key has a 30s TTL as a safety net (process crash).
-    //
-    const PISCINA_BUSY_COUNTER = `piscina_busy_count:${config.env}`;
-    piscina.on('needsDrain', () => {
-      this.client
-        .multi()
-        .incr(PISCINA_BUSY_COUNTER)
-        .expire(PISCINA_BUSY_COUNTER, 30)
-        .exec()
-        .catch((err) => logger.debug(err));
-    });
-    piscina.on('drain', () => {
-      this.client
-        .decr(PISCINA_BUSY_COUNTER)
-        .then((val) => {
-          // Clean up if counter drops to zero or below
-          if (val <= 0) return this.client.del(PISCINA_BUSY_COUNTER);
-        })
-        .catch((err) => logger.debug(err));
-    });
 
     // start server with either http or https
     const server =
@@ -400,11 +359,6 @@ class SQLite {
   async close() {
     this.subscriber.unsubscribe('sqlite_auth_response');
     clearInterval(this.wsInterval);
-
-    // destroy worker pool
-    if (this.piscina) {
-      await this.piscina.destroy();
-    }
 
     // clear notifier timers
     if (this.server.notifier && this.server.notifier.publishTimers) {

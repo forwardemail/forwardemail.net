@@ -33,6 +33,23 @@
       "out_file": "/var/log/pm2/sqlite-bree-out.log",
       "combine_logs": true,
       "merge_logs": true
+    },
+    {
+      "name": "sqlite-worker",
+      "script": "sqlite-worker.js",
+      "max_restarts": 999,
+      "max_memory_restart": "16G",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "pmx": false,
+      "env_production": {
+        "NODE_ENV": "production"
+      },
+      "error_file": "/var/log/pm2/sqlite-worker-error.log",
+      "out_file": "/var/log/pm2/sqlite-worker-out.log",
+      "combine_logs": true,
+      "merge_logs": true
     }
   ],
   "deploy": {

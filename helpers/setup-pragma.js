@@ -103,9 +103,10 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   // Prevents unbounded WAL growth when checkpointing is deferred
   db.pragma('journal_size_limit=268435456');
 
-  // Memory-map the first 256 MB of the database file for faster reads
-  // Falls back to normal I/O for content beyond this threshold
-  db.pragma('mmap_size=268435456');
+  // NOTE: mmap disabled to prevent virtual memory accumulation
+  // when opening/closing hundreds of unique databases per minute.
+  // The kernel page cache handles read caching instead.
+  db.pragma('mmap_size=0');
 
   //
   // Auto-checkpoint every 1000 pages (default).

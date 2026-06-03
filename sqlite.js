@@ -42,9 +42,6 @@ const graceful = new Graceful({
   logger,
   timeoutMs: ms('1m'),
   customHandlers: [
-    // TODO: signal to all piscina workers we are shutting down
-    // <https://github.com/piscinajs/piscina/issues/615>
-    () => sqlite.piscina.close(),
     () => {
       sqlite.isClosing = true;
     },

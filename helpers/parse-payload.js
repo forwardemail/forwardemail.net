@@ -2174,18 +2174,6 @@ async function parsePayload(data, ws) {
         if (!isSANB(payload.new_password))
           throw new TypeError('New password missing');
 
-        // reject immediately if piscina worker queue is full
-        if (this.piscina.needsDrain) {
-          const err = Boom.clientTimeout(
-            i18n.translateError(
-              'BACKUP_IN_PROGRESS',
-              payload.session.user.locale
-            )
-          );
-          err.ignoreHook = true;
-          throw err;
-        }
-
         // check how much space is remaining on storage location
         const storagePath = getPathToDatabase({
           id: payload.session.user.alias_id,
@@ -2244,18 +2232,11 @@ async function parsePayload(data, ws) {
           ms('30s')
         );
 
-        //
-        // NOTE: if maxQueue exceeded then this will error and reject
-        //       <https://github.com/piscinajs/piscina/blob/5169c75a4d744c8503b64f6e5aaac358c4f72e6c/src/errors.ts#L5>
-        //       (note all of these error messages are in TimeoutError checking)
-        //
-        // run in worker pool to offset from main thread (because of VACUUM)
-        // and run this in the background
-        //
-        this.piscina
-          .run(payload, { name: 'rekey' })
-          .then()
-          .catch((err) => logger.fatal(err, { payload }));
+        // publish to dedicated sqlite-worker process via Redis Pub/Sub
+        this.client.publish(
+          `sqlite_backup_queue:${config.env}`,
+          safeStringify(payload)
+        );
 
         response = {
           id: payload.id,
@@ -2404,15 +2385,6 @@ async function parsePayload(data, ws) {
           payload.format = 'sqlite'; // default
         }
 
-        // silently skip if piscina worker queue is full (backup is optional)
-        if (this.piscina.needsDrain) {
-          response = {
-            id: payload.id,
-            data: true
-          };
-          break;
-        }
-
         const key = `backup_check:${payload.session.user.alias_id}`;
 
         // only allow one backup every 30m (even if err/restart/shutdown)
@@ -2451,12 +2423,6 @@ async function parsePayload(data, ws) {
           )
             runBackup = false;
 
-          //
-          // NOTE: if maxQueue exceeded then this will error and reject
-          //       <https://github.com/piscinajs/piscina/blob/5169c75a4d744c8503b64f6e5aaac358c4f72e6c/src/errors.ts#L5>
-          //       (note all of these error messages are in TimeoutError checking)
-          //
-          // run in worker pool to offset from main thread (because of VACUUM)
           if (!runBackup) {
             const err = Boom.clientTimeout(
               i18n.translateError(
@@ -2468,11 +2434,11 @@ async function parsePayload(data, ws) {
             throw err;
           }
 
-          // run this in the background
-          this.piscina
-            .run(payload, { name: 'backup' })
-            .then()
-            .catch((err) => logger.fatal(err, { payload }));
+          // publish to dedicated sqlite-worker process via Redis Pub/Sub
+          this.client.publish(
+            `sqlite_backup_queue:${config.env}`,
+            safeStringify(payload)
+          );
 
           response = {
             id: payload.id,

@@ -363,9 +363,9 @@ async function onAuth(auth, session, fn) {
               );
 
             // daily backup (run in background)
-            // skip if piscina worker queue is full (Redis counter set by sqlite-server)
+            // skip if sqlite-worker is busy (Redis counter set by sqlite-worker)
             this.client
-              .get(`piscina_busy_count:${config.env}`)
+              .get(`sqlite_worker_busy:${config.env}`)
               .then((count) => {
                 if (count && Number(count) > 0) return;
                 return this.wsp
@@ -1161,9 +1161,9 @@ async function onAuth(auth, session, fn) {
         );
 
       // daily backup (run in background)
-      // skip if piscina worker queue is full (Redis counter set by sqlite-server)
+      // skip if sqlite-worker is busy (Redis counter set by sqlite-worker)
       this.client
-        .get(`piscina_busy_count:${config.env}`)
+        .get(`sqlite_worker_busy:${config.env}`)
         .then((count) => {
           if (count && Number(count) > 0) return;
           return this.wsp
