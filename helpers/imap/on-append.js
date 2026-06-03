@@ -71,7 +71,11 @@ async function onAppend(path, flags, date, raw, session, fn) {
         session: {
           id: session.id,
           user: session.user,
-          remoteAddress: session.remoteAddress
+          remoteAddress: session.remoteAddress,
+          // Pass through Sieve fileinto :create flag (RFC 5490)
+          ...(session.createFolder ? { createFolder: true } : {}),
+          // Pass through dedup flag from syncTemporaryMailbox
+          ...(session.checkForExisting ? { checkForExisting: true } : {})
         },
         path,
         flags,

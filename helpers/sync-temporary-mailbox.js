@@ -9,6 +9,7 @@ const pify = require('pify');
 const { Builder } = require('json-sql-enhanced');
 
 const checkDiskSpace = require('./check-disk-space');
+const closeDatabase = require('./close-database');
 const getPathToDatabase = require('./get-path-to-database');
 const getTemporaryDatabase = require('./get-temporary-database');
 const logger = require('./logger');
@@ -42,12 +43,8 @@ async function syncTemporaryMailbox(session) {
 
     const tmpDb = await getTemporaryDatabase.call(this, session);
 
-    // sync entire db from WAL over to get all messages
-    try {
-      tmpDb.pragma('wal_checkpoint(FULL)');
-    } catch (err) {
-      logger.fatal(err, { session, resolver: this.resolver });
-    }
+    // NOTE: wal_checkpoint removed — SQLite auto-checkpoints at 1000 pages
+    // and explicit checkpointing caused SQLITE_BUSY_SNAPSHOT under concurrency
 
     const sql = builder.build({
       table: 'TemporaryMessages',
@@ -154,13 +151,6 @@ async function syncTemporaryMailbox(session) {
       }
     }
 
-    try {
-      // run a checkpoint to copy over wal to db
-      tmpDb.pragma('wal_checkpoint(PASSIVE)');
-    } catch (err) {
-      logger.fatal(err, { session, resolver: this.resolver });
-    }
-
     // update storage
     try {
       await updateStorageUsed(session.user.alias_id, this.client);
@@ -168,12 +158,12 @@ async function syncTemporaryMailbox(session) {
       logger.fatal(err, { session, resolver: this.resolver });
     }
 
-    // NOTE: we don't want to close DB because we re-use it
-    // try {
-    //   await closeDatabase(tmpDb);
-    // } catch (err) {
-    //   logger.fatal(err, { session, resolver: this.resolver });
-    // }
+    // Close the temporary database since we no longer keep a persistent map
+    try {
+      await closeDatabase(tmpDb);
+    } catch (err) {
+      logger.fatal(err, { session, resolver: this.resolver });
+    }
 
     if (err) throw err;
 

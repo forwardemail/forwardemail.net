@@ -21,7 +21,6 @@ const { WebSocketServer } = require('ws');
 const { mkdirp } = require('mkdirp');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
-const DatabaseLRUMap = require('#helpers/database-lru-map');
 const IMAPNotifier = require('#helpers/imap-notifier');
 const Indexer = require('#helpers/indexer');
 const config = require('#config');
@@ -66,17 +65,29 @@ class SQLite {
     //
     // Publish piscina queue status to Redis so IMAP/POP3 clients
     // can skip backup/rekey WSP requests when the queue is full.
-    // The key auto-expires after 30s as a safety net in case
-    // the 'drain' event is missed (e.g. process crash).
     //
-    const PISCINA_BUSY_KEY = `piscina_busy:${config.env}`;
+    // Uses a shared counter instead of a single key so that one worker's
+    // drain event does not clear the busy signal for other workers.
+    // Each worker INCRs on needsDrain and DECRs on drain.
+    // The counter key has a 30s TTL as a safety net (process crash).
+    //
+    const PISCINA_BUSY_COUNTER = `piscina_busy_count:${config.env}`;
     piscina.on('needsDrain', () => {
       this.client
-        .set(PISCINA_BUSY_KEY, '1', 'EX', 30)
+        .multi()
+        .incr(PISCINA_BUSY_COUNTER)
+        .expire(PISCINA_BUSY_COUNTER, 30)
+        .exec()
         .catch((err) => logger.debug(err));
     });
     piscina.on('drain', () => {
-      this.client.del(PISCINA_BUSY_KEY).catch((err) => logger.debug(err));
+      this.client
+        .decr(PISCINA_BUSY_COUNTER)
+        .then((val) => {
+          // Clean up if counter drops to zero or below
+          if (val <= 0) return this.client.del(PISCINA_BUSY_COUNTER);
+        })
+        .catch((err) => logger.debug(err));
     });
 
     // start server with either http or https
@@ -95,10 +106,15 @@ class SQLite {
           })
         : http.createServer();
 
-    // in-memory database map for re-using open database connection instances
-    // (uses LRU eviction to prevent unbounded memory growth)
-    this.databaseMap = new DatabaseLRUMap();
-    this.temporaryDatabaseMap = new Map();
+    //
+    // NOTE: we intentionally do NOT keep an in-memory database map.
+    // With 2000+ concurrent connections the map caused unbounded memory
+    // growth and "DB is not open" errors from LRU eviction races.
+    // Instead, each request opens its own database handle and calls
+    // closeDatabase() when the operation completes (see parse-payload.js).
+    //
+    this.databaseMap = null;
+    this.temporaryDatabaseMap = null;
 
     //
     // bind helpers so we can re-use IMAP helper commands

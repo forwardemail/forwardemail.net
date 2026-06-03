@@ -285,8 +285,7 @@ class IMAPNotifier extends EventEmitter {
               stmt: [
                 ['prepare', sql.query],
                 ['run', sql.values]
-              ],
-              checkpoint: 'PASSIVE'
+              ]
             });
           } else {
             if (!session?.db || !(session.db instanceof Database)) {

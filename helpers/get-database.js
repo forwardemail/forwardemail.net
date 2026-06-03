@@ -846,8 +846,6 @@ async function getDatabase(
           */
         }
 
-        db.pragma('wal_checkpoint(PASSIVE)');
-
         // Optimize query planner and potentially trigger vacuum
         db.pragma('analysis_limit=400');
         db.pragma('optimize');
@@ -1108,16 +1106,35 @@ async function getDatabase(
             await instance.client.get(`vacuum_check:${session.user.alias_id}`)
           );
           if (!vacuumCheck) {
-            // only once per week should we attempt this
-            await instance.client.set(
-              `vacuum_check:${session.user.alias_id}`,
-              true,
+            //
+            // Acquire a distributed lock to prevent concurrent VACUUM
+            // across multiple workers on the same alias database.
+            // Uses Redis SET NX with 5-minute expiry as a safety net.
+            //
+            const vacuumLockKey = `vacuum_lock:${session.user.alias_id}`;
+            const acquired = await instance.client.set(
+              vacuumLockKey,
+              '1',
               'PX',
-              ms('7d')
+              ms('5m'),
+              'NX'
             );
-
-            db.pragma('auto_vacuum=FULL');
-            db.prepare('VACUUM').run();
+            if (acquired) {
+              try {
+                // only once per week should we attempt this
+                await instance.client.set(
+                  `vacuum_check:${session.user.alias_id}`,
+                  true,
+                  'PX',
+                  ms('7d')
+                );
+                db.pragma('auto_vacuum=FULL');
+                db.prepare('VACUUM').run();
+              } finally {
+                // Release the lock after VACUUM completes
+                await instance.client.del(vacuumLockKey);
+              }
+            }
           }
         }
 

@@ -622,17 +622,6 @@ async function onStore(mailboxId, update, session, fn) {
     // send response
     fn(null, err, true, modified, payloads, entries);
 
-    try {
-      session.db.pragma('wal_checkpoint(PASSIVE)');
-    } catch (err) {
-      this.logger.fatal(err, {
-        mailboxId,
-        update,
-        session,
-        resolver: this.resolver
-      });
-    }
-
     // send websocket push notification
     if (entries.length > 0) {
       sendWebSocketNotification(

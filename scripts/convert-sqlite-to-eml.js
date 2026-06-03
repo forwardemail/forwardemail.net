@@ -131,8 +131,6 @@ const instance = {
   //
 
   // run a checkpoint to copy over wal to db (and block others from writing)
-  db.pragma('wal_checkpoint(PASSIVE)');
-
   // create a password protected zip file in-memory using streams
 
   // create archive and specify method of encryption and password

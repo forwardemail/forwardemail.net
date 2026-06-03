@@ -69,8 +69,32 @@
         mode: "0644"
       notify: Reload UFW
 
-    # SQLite-Specific Kernel Optimizations for WAL Mode
-    - name: Configure SQLite-specific sysctl parameters for WAL mode
+    #
+    # SQLite WAL Kernel Tuning (128 GB servers)
+    #
+    # Optimized for:
+    #   - High-concurrency WAL readers/writers
+    #   - Large mmap regions (PRAGMA mmap_size)
+    #   - Minimal swap pressure to avoid I/O stalls
+    #   - Tuned dirty-page writeback for WAL checkpointing
+    #
+
+    - name: Gather memory facts for dynamic tuning
+      ansible.builtin.setup:
+        filter: ansible_memtotal_mb
+
+    - name: Compute tuning values from total memory
+      ansible.builtin.set_fact:
+        # 5% of RAM as dirty_bytes ceiling (~6.4 GB on 128 GB)
+        dirty_bytes: "{{ (ansible_memtotal_mb * 1024 * 1024 * 0.05) | int }}"
+        # 2% of RAM as dirty_background_bytes (~2.5 GB on 128 GB)
+        dirty_background_bytes: "{{ (ansible_memtotal_mb * 1024 * 1024 * 0.02) | int }}"
+        # Reserve 256 MB for emergency allocations
+        min_free_kbytes: "262144"
+        # max_map_count: enough for many mmap'd databases (256 MB each)
+        max_map_count: "1048576"
+
+    - name: Configure SQLite WAL kernel parameters (overrides generic high-traffic defaults)
       ansible.builtin.sysctl:
         name: "{{ item.name }}"
         value: "{{ item.value }}"
@@ -78,8 +102,57 @@
         reload: true
         sysctl_file: /etc/sysctl.d/99-sqlite-wal.conf
       loop:
-        # SQLite WAL mode benefits from these I/O optimizations
-        - { name: 'vm.swappiness', value: '0' }  # Disable swapping for SQLite (override high-traffic default)
-        - { name: 'vm.max_map_count', value: '262144' }  # Required for mmap() in WAL mode
-        - { name: 'vm.vfs_cache_pressure', value: '50' }  # Prefer keeping inode/dentry cache for SQLite files
-        - { name: 'vm.min_free_kbytes', value: '65536' }  # Reserve 64MB for emergency allocations
+        #
+        # --- Virtual Memory (SQLite-specific overrides) ---
+        #
+        # These intentionally override the generic values from sysctl-high-traffic.yml
+        # because SQLite WAL mode has different writeback requirements.
+        #
+
+        # Disable swap entirely; SQLite WAL servers must not swap
+        # (overrides high-traffic swappiness=1)
+        - { name: 'vm.swappiness', value: '0' }
+
+        # Use absolute dirty bytes instead of ratios for predictable writeback.
+        # This prevents bursty WAL checkpoints from stalling all writers.
+        # (overrides high-traffic dirty_ratio=20 / dirty_background_ratio=10)
+        - { name: 'vm.dirty_bytes', value: '{{ dirty_bytes }}' }
+        - { name: 'vm.dirty_background_bytes', value: '{{ dirty_background_bytes }}' }
+        - { name: 'vm.dirty_ratio', value: '0' }
+        - { name: 'vm.dirty_background_ratio', value: '0' }
+
+        # Shorten writeback expiry to 3s (high-traffic uses 30s).
+        # Ensures WAL checkpoint writes are flushed promptly.
+        - { name: 'vm.dirty_expire_centisecs', value: '300' }
+        - { name: 'vm.dirty_writeback_centisecs', value: '100' }
+
+        # Enough vm areas for many mmap'd SQLite databases (PRAGMA mmap_size)
+        - { name: 'vm.max_map_count', value: '{{ max_map_count }}' }
+
+        # Prefer keeping inode/dentry cache (SQLite opens many small files)
+        - { name: 'vm.vfs_cache_pressure', value: '50' }
+
+        # Reserve memory for critical allocations under pressure
+        - { name: 'vm.min_free_kbytes', value: '{{ min_free_kbytes }}' }
+
+        # Disable zone reclaim; NUMA nodes should share freely
+        - { name: 'vm.zone_reclaim_mode', value: '0' }
+
+        #
+        # --- Filesystem (SQLite-specific additions) ---
+        # Note: fs.file-max and fs.nr_open are already set by sysctl-high-traffic.yml
+        #
+
+        # Increase inotify limits for file monitoring (PM2, etc.)
+        - { name: 'fs.inotify.max_user_watches', value: '524288' }
+        - { name: 'fs.inotify.max_user_instances', value: '1024' }
+
+    - name: Display computed tuning values
+      ansible.builtin.debug:
+        msg: |
+          SQLite WAL sysctl tuning applied:
+            Total RAM: {{ ansible_memtotal_mb }} MB
+            dirty_bytes: {{ dirty_bytes }} (5% of RAM)
+            dirty_background_bytes: {{ dirty_background_bytes }} (2% of RAM)
+            max_map_count: {{ max_map_count }}
+            min_free_kbytes: {{ min_free_kbytes }}

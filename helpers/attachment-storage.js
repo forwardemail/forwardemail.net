@@ -66,8 +66,7 @@ async function updateAttachments(attachmentIds, magic, session) {
       stmt: [
         ['prepare', sql.query],
         ['all', sql.values]
-      ],
-      checkpoint: 'PASSIVE'
+      ]
     });
   } else {
     attachments = session.db.prepare(sql.query).all(sql.values);
@@ -103,8 +102,7 @@ async function updateAttachments(attachmentIds, magic, session) {
         stmt: [
           ['prepare', sql.query],
           ['run', sql.values]
-        ],
-        checkpoint: 'PASSIVE'
+        ]
       });
     } else {
       session.db.prepare(sql.query).run(sql.values);
@@ -172,8 +170,7 @@ async function createAttachment(instance, session, node) {
       stmt: [
         ['prepare', sql.query],
         ['get', sql.values]
-      ],
-      checkpoint: 'PASSIVE'
+      ]
     });
   } else {
     result = session.db.prepare(sql.query).get(sql.values);

@@ -49,17 +49,18 @@ const graceful = new Graceful({
       sqlite.isClosing = true;
     },
     () => promisify(sqlite.wss.close).bind(sqlite.wss)(),
-    // normal databases
+    // normal databases (no-op when databaseMap is null / disabled)
     async () => {
       if (!sqlite.databaseMap || sqlite.databaseMap.size === 0) return;
       await Promise.all(
         [...sqlite.databaseMap.keys()].map(async (key) => {
-          await closeDatabase(sqlite.databaseMap.get(key));
+          const db = sqlite.databaseMap.get(key);
+          if (db) await closeDatabase(db);
           sqlite.databaseMap.delete(key);
         })
       );
     },
-    // temporary databases
+    // temporary databases (no-op when temporaryDatabaseMap is null / disabled)
     async () => {
       if (
         !sqlite.temporaryDatabaseMap ||
@@ -68,7 +69,8 @@ const graceful = new Graceful({
         return;
       await Promise.all(
         [...sqlite.temporaryDatabaseMap.keys()].map(async (key) => {
-          await closeDatabase(sqlite.temporaryDatabaseMap.get(key));
+          const db = sqlite.temporaryDatabaseMap.get(key);
+          if (db) await closeDatabase(db);
           sqlite.temporaryDatabaseMap.delete(key);
         })
       );

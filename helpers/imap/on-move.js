@@ -430,17 +430,6 @@ async function onMove(mailboxId, update, session, fn) {
         );
     }
 
-    try {
-      session.db.pragma('wal_checkpoint(PASSIVE)');
-    } catch (err) {
-      this.logger.fatal(err, {
-        mailboxId,
-        update,
-        session,
-        resolver: this.resolver
-      });
-    }
-
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)
       .then()

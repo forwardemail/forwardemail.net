@@ -114,15 +114,6 @@ async function migrateStorageFormat(instance, session, options = {}) {
         }
 
         attachmentOffset += batchSize;
-
-        // Checkpoint WAL periodically
-        if (attachmentOffset % (batchSize * 10) === 0) {
-          try {
-            db.pragma('wal_checkpoint(PASSIVE)');
-          } catch (err) {
-            logger.warn(err);
-          }
-        }
       }
     }
 
@@ -211,15 +202,6 @@ async function migrateStorageFormat(instance, session, options = {}) {
         }
 
         messageOffset += batchSize;
-
-        // Checkpoint WAL periodically
-        if (messageOffset % (batchSize * 10) === 0) {
-          try {
-            db.pragma('wal_checkpoint(PASSIVE)');
-          } catch (err) {
-            logger.warn(err);
-          }
-        }
       }
     }
 
@@ -268,11 +250,6 @@ async function migrateStorageFormat(instance, session, options = {}) {
     //
 
     // Final checkpoint
-    try {
-      db.pragma('wal_checkpoint(PASSIVE)');
-    } catch (err) {
-      logger.warn(err);
-    }
 
     logger.info('Storage format migration completed', {
       alias_id: session.user.alias_id,

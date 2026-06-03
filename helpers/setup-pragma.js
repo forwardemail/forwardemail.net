@@ -92,10 +92,27 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   // db.pragma('synchronous=EXTRA');
 
   //
-  // NOTE: only if we're using Litestream
-  // <https://litestream.io/tips/#disable-autocheckpoints-for-high-write-load-servers>
+  // Performance tuning PRAGMAs for high-concurrency WAL workloads
   //
-  // db.pragma('wal_autocheckpoint=0');
+
+  // Increase page cache to ~64 MB (negative = KiB)
+  // Default is ~2 MB which causes excessive I/O under concurrent readers
+  db.pragma('cache_size=-65536');
+
+  // Limit WAL file growth to 256 MB
+  // Prevents unbounded WAL growth when checkpointing is deferred
+  db.pragma('journal_size_limit=268435456');
+
+  // Memory-map the first 256 MB of the database file for faster reads
+  // Falls back to normal I/O for content beyond this threshold
+  db.pragma('mmap_size=268435456');
+
+  //
+  // Auto-checkpoint every 1000 pages (default).
+  // We rely on this instead of per-query PASSIVE checkpoints
+  // to avoid SQLITE_BUSY_SNAPSHOT under concurrent readers.
+  //
+  db.pragma('wal_autocheckpoint=1000');
 
   // db.pragma(`user_version="1"`);
 

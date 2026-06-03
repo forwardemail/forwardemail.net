@@ -331,33 +331,43 @@ async function onAuth(auth, session, fn) {
           }
 
           // Sync messages if applicable (IMAP, POP3, CalDAV, API)
+          // Rate-limited: only fire sync once per alias every 5 seconds
           if (
             user.alias_id &&
             user.alias_has_imap &&
             (isIMAPorPOP3 || isCalDAV || isAPI) &&
             this.wsp
           ) {
-            this.wsp
-              .request(
-                {
-                  action: 'sync',
-                  session: { user }
-                },
-                0
-              )
-              .then((sync) => {
-                this.logger.debug('tmp db sync complete', { sync, session });
+            const syncKey = `sync_dedup:${user.alias_id}`;
+            this.client
+              .set(syncKey, '1', 'PX', ms('5s'), 'NX')
+              .then((locked) => {
+                if (!locked) return;
+                return this.wsp
+                  .request(
+                    {
+                      action: 'sync',
+                      session: { user }
+                    },
+                    0
+                  )
+                  .then((sync) => {
+                    this.logger.debug('tmp db sync complete', {
+                      sync,
+                      session
+                    });
+                  });
               })
               .catch((err) =>
                 this.logger.fatal(err, { session, resolver: this.resolver })
               );
 
             // daily backup (run in background)
-            // skip if piscina worker queue is full (Redis key set by sqlite-server)
+            // skip if piscina worker queue is full (Redis counter set by sqlite-server)
             this.client
-              .get(`piscina_busy:${config.env}`)
-              .then((busy) => {
-                if (busy) return;
+              .get(`piscina_busy_count:${config.env}`)
+              .then((count) => {
+                if (count && Number(count) > 0) return;
                 return this.wsp
                   .request(
                     {
@@ -1121,6 +1131,7 @@ async function onAuth(auth, session, fn) {
 
     //
     // if we're on IMAP, POP3, CalDAV, or API server then sync messages with user
+    // Rate-limited: only fire sync once per alias every 5 minutes
     //
     if (
       alias &&
@@ -1128,28 +1139,33 @@ async function onAuth(auth, session, fn) {
       (isIMAPorPOP3 || isCalDAV || isAPI) &&
       this.wsp
     ) {
-      // sync with tmp db
-      this.wsp
-        .request(
-          {
-            action: 'sync',
-            session: { user }
-          },
-          0
-        )
-        .then((sync) => {
-          this.logger.debug('tmp db sync complete', { sync, session });
+      const syncKey = `sync_dedup:${user.alias_id}`;
+      this.client
+        .set(syncKey, '1', 'PX', ms('5s'), 'NX')
+        .then((locked) => {
+          if (!locked) return;
+          return this.wsp
+            .request(
+              {
+                action: 'sync',
+                session: { user }
+              },
+              0
+            )
+            .then((sync) => {
+              this.logger.debug('tmp db sync complete', { sync, session });
+            });
         })
         .catch((err) =>
           this.logger.fatal(err, { session, resolver: this.resolver })
         );
 
       // daily backup (run in background)
-      // skip if piscina worker queue is full (Redis key set by sqlite-server)
+      // skip if piscina worker queue is full (Redis counter set by sqlite-server)
       this.client
-        .get(`piscina_busy:${config.env}`)
-        .then((busy) => {
-          if (busy) return;
+        .get(`piscina_busy_count:${config.env}`)
+        .then((count) => {
+          if (count && Number(count) > 0) return;
           return this.wsp
             .request(
               {

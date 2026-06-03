@@ -273,7 +273,6 @@ async function onExpunge(mailboxId, update, session, fn) {
     }
 
     try {
-      session.db.pragma('wal_checkpoint(PASSIVE)');
       // Optimize query planner and potentially trigger vacuum
       session.db.pragma('analysis_limit=400');
       session.db.pragma('optimize');

@@ -392,18 +392,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       //   );
     }
 
-    try {
-      session.db.pragma('wal_checkpoint(PASSIVE)');
-    } catch (err) {
-      this.logger.fatal(err, {
-        connection,
-        mailboxId,
-        update,
-        session,
-        resolver: this.resolver
-      });
-    }
-
     const response = {
       uidValidity: targetMailbox.uidValidity,
       sourceUid,
