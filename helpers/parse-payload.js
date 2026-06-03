@@ -157,10 +157,11 @@ const SIXTY_FOUR_MB_IN_BYTES = bytes('64MB');
 // Concurrency + rate limiting diagnostics (Redis-backed, cluster-wide)
 //
 const CONCURRENCY_TTL_MS = 30_000; // safety-net TTL for INCR keys
-const MAX_CONCURRENT_PER_ALIAS = 5; // max in-flight requests per alias
-const MAX_CONCURRENT_PER_DOMAIN = 20; // max in-flight requests per domain
+const MAX_CONCURRENT_PER_ALIAS = 20; // max in-flight requests per alias
+const MAX_CONCURRENT_PER_DOMAIN = 100; // max in-flight requests per domain
 const MAX_TMP_PER_ALIAS_PER_MIN = 50; // max tmp writes per alias per minute
 const MAX_TMP_PER_DOMAIN_PER_MIN = 200; // max tmp writes per domain per minute
+const MAX_ERRORS_PER_ALIAS_PER_MIN = 50; // error-rate circuit breaker
 
 // Periodic stats logging (every 30s)
 let _totalInflight = 0;
@@ -336,6 +337,24 @@ async function parsePayload(data, ws) {
       if (_aliasId && _domainId) {
         _concAliasKey = `conc:a:${_aliasId}`;
         _concDomainKey = `conc:d:${_domainId}`;
+
+        // Error-rate circuit breaker: block aliases generating too many errors
+        const _errRateKey = `err_rate:a:${_aliasId}`;
+        const _errCount = await this.client.get(_errRateKey);
+        if (_errCount && Number(_errCount) > MAX_ERRORS_PER_ALIAS_PER_MIN) {
+          logOffender({
+            type: 'error_rate',
+            id: _aliasId,
+            name: `${_aliasName}@${_domainName}`,
+            count: Number(_errCount),
+            max: MAX_ERRORS_PER_ALIAS_PER_MIN
+          });
+          const err = Boom.clientTimeout(
+            `Alias ${_aliasName}@${_domainName} temporarily blocked (${_errCount} errors/min)`
+          );
+          err.ignoreHook = true;
+          throw err;
+        }
 
         // INCR concurrency counters
         const results = await this.client
@@ -2703,11 +2722,18 @@ async function parsePayload(data, ws) {
 
     if (db && !this?.databaseMap) await closeDatabase(db);
 
-    // Decrement Redis concurrency counters on error
+    // Decrement Redis concurrency counters on error + increment error-rate
     if (_didIncrement) {
       _totalInflight = Math.max(0, _totalInflight - 1);
       const p = this.client.pipeline().decr(_concAliasKey);
       if (_concDomainKey) p.decr(_concDomainKey);
+      // Increment error-rate counter (circuit breaker)
+      if (payload?.session?.user?.alias_id) {
+        const errKey = `err_rate:a:${payload.session.user.alias_id}`;
+        p.incr(errKey);
+        p.pexpire(errKey, 60_000);
+      }
+
       p.exec().catch(() => {});
     }
 
