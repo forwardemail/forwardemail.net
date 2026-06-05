@@ -68,6 +68,13 @@
         owner: root
         mode: "0644"
       notify: Reload UFW
+    - name: "Update ufw before6.rules for IPv6 ICMPv6/NDP/PMTUD"
+      template:
+        src: "{{ playbook_dir }}/templates/before6.rules.j2"
+        dest: /etc/ufw/before6.rules
+        owner: root
+        mode: "0644"
+      notify: Reload UFW
 
     #
     # SQLite WAL Kernel Tuning (128 GB servers)

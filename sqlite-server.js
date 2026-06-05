@@ -20,6 +20,7 @@ const { WebSocketServer } = require('ws');
 const { mkdirp } = require('mkdirp');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
+const DatabaseLRUMap = require('#helpers/database-lru-map');
 const IMAPNotifier = require('#helpers/imap-notifier');
 const Indexer = require('#helpers/indexer');
 const config = require('#config');
@@ -66,14 +67,11 @@ class SQLite {
         : http.createServer();
 
     //
-    // NOTE: we intentionally do NOT keep an in-memory database map.
-    // With 2000+ concurrent connections the map caused unbounded memory
-    // growth and "DB is not open" errors from LRU eviction races.
-    // Instead, each request opens its own database handle and calls
-    // closeDatabase() when the operation completes (see parse-payload.js).
+    // in-memory database map for re-using open database connection instances
+    // (uses LRU eviction to prevent unbounded memory growth)
     //
-    this.databaseMap = null;
-    this.temporaryDatabaseMap = null;
+    this.databaseMap = new DatabaseLRUMap();
+    this.temporaryDatabaseMap = new DatabaseLRUMap();
 
     //
     // bind helpers so we can re-use IMAP helper commands

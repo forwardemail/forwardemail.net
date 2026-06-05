@@ -1,0 +1,78 @@
+#
+# rules.before (IPv6)
+#
+# Rules that should be run before the ufw command line added rules. Custom
+# rules should be added to one of these chains:
+#   ufw6-before-input
+#   ufw6-before-output
+#   ufw6-before-forward
+#
+
+# Don't delete these required lines, otherwise there will be errors
+*filter
+:ufw6-before-input - [0:0]
+:ufw6-before-output - [0:0]
+:ufw6-before-forward - [0:0]
+# End required lines
+
+
+# allow all on loopback
+-A ufw6-before-input -i lo -j ACCEPT
+-A ufw6-before-output -o lo -j ACCEPT
+
+# quickly process packets for which we already have a connection
+-A ufw6-before-input -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A ufw6-before-output -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A ufw6-before-forward -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# drop INVALID packets (logs these in loglevel medium and higher)
+-A ufw6-before-input -m conntrack --ctstate INVALID -j ufw6-logging-deny
+-A ufw6-before-input -m conntrack --ctstate INVALID -j DROP
+
+# ICMPv6 - essential for IPv6 to function (PMTUD, NDP, diagnostics)
+# Type 1: Destination Unreachable
+-A ufw6-before-input -p icmpv6 --icmpv6-type destination-unreachable -j ACCEPT
+# Type 2: Packet Too Big (critical for Path MTU Discovery)
+-A ufw6-before-input -p icmpv6 --icmpv6-type packet-too-big -j ACCEPT
+# Type 3: Time Exceeded
+-A ufw6-before-input -p icmpv6 --icmpv6-type time-exceeded -j ACCEPT
+# Type 4: Parameter Problem
+-A ufw6-before-input -p icmpv6 --icmpv6-type parameter-problem -j ACCEPT
+# Type 128: Echo Request (ping6)
+-A ufw6-before-input -p icmpv6 --icmpv6-type echo-request -j ACCEPT
+# Type 129: Echo Reply
+-A ufw6-before-input -p icmpv6 --icmpv6-type echo-reply -j ACCEPT
+
+# NDP (Neighbor Discovery Protocol - required for IPv6 link-layer resolution)
+# Type 133: Router Solicitation
+-A ufw6-before-input -p icmpv6 --icmpv6-type router-solicitation -j ACCEPT
+# Type 134: Router Advertisement
+-A ufw6-before-input -p icmpv6 --icmpv6-type router-advertisement -j ACCEPT
+# Type 135: Neighbor Solicitation
+-A ufw6-before-input -p icmpv6 --icmpv6-type neighbour-solicitation -j ACCEPT
+# Type 136: Neighbor Advertisement
+-A ufw6-before-input -p icmpv6 --icmpv6-type neighbour-advertisement -j ACCEPT
+
+# ICMPv6 for FORWARD
+-A ufw6-before-forward -p icmpv6 --icmpv6-type destination-unreachable -j ACCEPT
+-A ufw6-before-forward -p icmpv6 --icmpv6-type packet-too-big -j ACCEPT
+-A ufw6-before-forward -p icmpv6 --icmpv6-type time-exceeded -j ACCEPT
+-A ufw6-before-forward -p icmpv6 --icmpv6-type parameter-problem -j ACCEPT
+-A ufw6-before-forward -p icmpv6 --icmpv6-type echo-request -j ACCEPT
+
+# allow DHCPv6 client to work
+-A ufw6-before-input -p udp --sport 547 --dport 546 -j ACCEPT
+
+# don't delete the 'COMMIT' line or these rules won't be processed
+COMMIT
+
+# MSS clamping to prevent PMTUD blackholes on paths with reduced MTU
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+-A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+-A OUTPUT -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+COMMIT
