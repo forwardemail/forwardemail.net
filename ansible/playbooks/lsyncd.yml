@@ -152,6 +152,17 @@
     # INSTALLATION
     # =========================================================================
 
+
+    # Tune inotify for high-churn SQLite workloads (272K+ files)
+    - name: Tune inotify limits for lsyncd
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+      loop:
+        - { name: 'fs.inotify.max_user_watches', value: '1048576' }
+        - { name: 'fs.inotify.max_queued_events', value: '1048576' }
+
     # Install lsyncd package
     - name: Install lsyncd
       apt:
@@ -199,24 +210,28 @@
               statusInterval = 10,
               insist     = true,
               nodaemon   = false,
+              maxDelays  = 10000,
           }
 
           sync {
               default.rsync,
               source    = "{{ lsyncd_source }}/",
               target    = "{{ lsyncd_target }}/",
-              delay     = 1,
+              delay     = 15,
+              init      = false,
+              exclude   = { "*-wal", "*-shm", "*-journal" },
               rsync     = {
                   binary     = "/usr/bin/rsync",
                   archive    = true,
                   compress   = false,
-                  whole_file = true,
+                  whole_file = false,
                   _extra     = {
                       "--delete",
                       "--delete-after",
                       "--inplace",
                       "--no-perms",
-                      "--omit-dir-times"
+                      "--omit-dir-times",
+                      "--bwlimit=100000"
                   }
               }
           }
@@ -245,6 +260,11 @@
           [Service]
           Restart=always
           RestartSec=10
+          IOSchedulingClass=idle
+          IOSchedulingPriority=7
+          IOWeight=10
+          CPUWeight=10
+          Nice=19
           Environment="MSMTP_RCPTS={{ msmtp_rcpts }}"
         owner: root
         group: root
