@@ -298,3 +298,176 @@ test('VTODO without DUE falls back to DTSTART as anchor', (t) => {
   // Without DUE, RELATED should NOT be END
   t.falsy(triggers[0].related);
 });
+
+// --- X-APPLE-PROXIMITY Tests (location-based alarms) -------------------------
+// Apple Reminders uses X-APPLE-PROXIMITY=ARRIVE|DEPART inside VALARM for
+// location-based triggers.  These use a sentinel trigger date
+// (1976-04-01T00:55:45Z -- Apple's founding date) that is NOT a real alarm
+// time.  normalizeVAlarm must skip these entirely to preserve the
+// location-based trigger semantics.
+
+const VTODO_PROXIMITY_ARRIVE_ICS = [
+  'BEGIN:VCALENDAR',
+  'VERSION:2.0',
+  'PRODID:-//Apple Inc.//iOS 17.0//EN',
+  'BEGIN:VTODO',
+  'DUE:20250601T170000Z',
+  'SUMMARY:Pick up dry cleaning',
+  'UID:vtodo-proximity-arrive@test',
+  'BEGIN:VALARM',
+  'ACTION:DISPLAY',
+  'DESCRIPTION:Reminder',
+  'TRIGGER;VALUE=DATE-TIME:19760401T005545Z',
+  'X-APPLE-PROXIMITY:ARRIVE',
+  'X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS=456 Oak Ave:geo:37.3230,-122.0322',
+  'END:VALARM',
+  'END:VTODO',
+  'END:VCALENDAR'
+].join('\r\n');
+
+const VTODO_PROXIMITY_DEPART_ICS = [
+  'BEGIN:VCALENDAR',
+  'VERSION:2.0',
+  'PRODID:-//Apple Inc.//iOS 17.0//EN',
+  'BEGIN:VTODO',
+  'DUE:20250601T170000Z',
+  'SUMMARY:Mail package',
+  'UID:vtodo-proximity-depart@test',
+  'BEGIN:VALARM',
+  'ACTION:DISPLAY',
+  'DESCRIPTION:Reminder',
+  'TRIGGER;VALUE=DATE-TIME:19760401T005545Z',
+  'X-APPLE-PROXIMITY:DEPART',
+  'X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS=789 Elm St:geo:37.3220,-122.0310',
+  'END:VALARM',
+  'END:VTODO',
+  'END:VCALENDAR'
+].join('\r\n');
+
+const VTODO_PROXIMITY_MIXED_ICS = [
+  'BEGIN:VCALENDAR',
+  'VERSION:2.0',
+  'PRODID:-//Apple Inc.//iOS 17.0//EN',
+  'BEGIN:VTODO',
+  'DUE:20250601T170000Z',
+  'SUMMARY:Task with mixed alarms',
+  'UID:vtodo-proximity-mixed@test',
+  'BEGIN:VALARM',
+  'ACTION:DISPLAY',
+  'DESCRIPTION:Location alarm',
+  'TRIGGER;VALUE=DATE-TIME:19760401T005545Z',
+  'X-APPLE-PROXIMITY:ARRIVE',
+  'X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS=Home:geo:37.0,-122.0',
+  'END:VALARM',
+  'BEGIN:VALARM',
+  'ACTION:DISPLAY',
+  'DESCRIPTION:Time alarm 1 hour before',
+  'TRIGGER;VALUE=DATE-TIME:20250601T160000Z',
+  'END:VALARM',
+  'END:VTODO',
+  'END:VCALENDAR'
+].join('\r\n');
+
+const VTODO_PROXIMITY_NO_DUE_ICS = [
+  'BEGIN:VCALENDAR',
+  'VERSION:2.0',
+  'PRODID:-//Apple Inc.//iOS 17.0//EN',
+  'BEGIN:VTODO',
+  'SUMMARY:Location-only reminder no dates',
+  'UID:vtodo-proximity-nodue@test',
+  'BEGIN:VALARM',
+  'ACTION:DISPLAY',
+  'DESCRIPTION:Reminder',
+  'TRIGGER;VALUE=DATE-TIME:19760401T005545Z',
+  'X-APPLE-PROXIMITY:ARRIVE',
+  'X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS=Office:geo:37.0,-122.0',
+  'END:VALARM',
+  'END:VTODO',
+  'END:VCALENDAR'
+].join('\r\n');
+
+test('preserves X-APPLE-PROXIMITY ARRIVE alarm (does not convert sentinel trigger)', (t) => {
+  const result = normalizeVAlarm(VTODO_PROXIMITY_ARRIVE_ICS);
+  // The sentinel trigger 1976-04-01T00:55:45Z must remain as-is
+  t.true(
+    result.includes('19760401T005545Z'),
+    'Sentinel trigger date must be preserved'
+  );
+  t.true(
+    result.includes('X-APPLE-PROXIMITY:ARRIVE'),
+    'X-APPLE-PROXIMITY property must be preserved'
+  );
+  t.true(
+    result.includes('X-APPLE-STRUCTURED-LOCATION'),
+    'Structured location must be preserved'
+  );
+  // The trigger should still be VALUE=DATE-TIME (not converted to duration)
+  const triggers = getTriggerInfo(result, 'vtodo');
+  t.is(triggers.length, 1);
+  t.is(triggers[0].type, 'date-time', 'Trigger type must remain date-time');
+});
+
+test('preserves X-APPLE-PROXIMITY DEPART alarm (does not convert sentinel trigger)', (t) => {
+  const result = normalizeVAlarm(VTODO_PROXIMITY_DEPART_ICS);
+  t.true(
+    result.includes('19760401T005545Z'),
+    'Sentinel trigger date must be preserved'
+  );
+  t.true(
+    result.includes('X-APPLE-PROXIMITY:DEPART'),
+    'X-APPLE-PROXIMITY DEPART must be preserved'
+  );
+  const triggers = getTriggerInfo(result, 'vtodo');
+  t.is(triggers.length, 1);
+  t.is(triggers[0].type, 'date-time', 'Trigger type must remain date-time');
+});
+
+test('mixed alarms: converts time-based absolute trigger but preserves proximity alarm', (t) => {
+  const result = normalizeVAlarm(VTODO_PROXIMITY_MIXED_ICS);
+  // Proximity alarm sentinel must be preserved
+  t.true(
+    result.includes('19760401T005545Z'),
+    'Sentinel trigger for proximity alarm must be preserved'
+  );
+  t.true(
+    result.includes('X-APPLE-PROXIMITY:ARRIVE'),
+    'Proximity property must be preserved'
+  );
+  // The time-based absolute trigger (20250601T160000Z) should be converted
+  // to a relative duration (-PT1H relative to DUE 17:00)
+  t.false(
+    result.includes('20250601T160000Z'),
+    'Time-based absolute trigger should be converted'
+  );
+  const triggers = getTriggerInfo(result, 'vtodo');
+  t.is(triggers.length, 2, 'Both alarms must be present');
+  // Find the proximity alarm (still date-time)
+  const proximityTrigger = triggers.find((tr) => tr.type === 'date-time');
+  t.truthy(proximityTrigger, 'Proximity alarm must retain date-time type');
+  // Find the converted time alarm (now duration)
+  const timeTrigger = triggers.find((tr) => tr.type === 'duration');
+  t.truthy(timeTrigger, 'Time-based alarm must be converted to duration');
+  t.true(timeTrigger.value.isNegative);
+  t.is(timeTrigger.value.hours, 1);
+});
+
+test('proximity alarm with no DUE/DTSTART is preserved unchanged', (t) => {
+  const result = normalizeVAlarm(VTODO_PROXIMITY_NO_DUE_ICS);
+  // No anchor means normalizeVAlarm cannot convert anything, but the
+  // proximity alarm must still be preserved regardless
+  t.true(
+    result.includes('19760401T005545Z'),
+    'Sentinel trigger must be preserved when no anchor date exists'
+  );
+  t.true(
+    result.includes('X-APPLE-PROXIMITY:ARRIVE'),
+    'Proximity property must be preserved'
+  );
+  t.true(
+    result.includes('X-APPLE-STRUCTURED-LOCATION'),
+    'Structured location must be preserved'
+  );
+  const triggers = getTriggerInfo(result, 'vtodo');
+  t.is(triggers.length, 1);
+  t.is(triggers[0].type, 'date-time');
+});

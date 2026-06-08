@@ -83,6 +83,16 @@ function normalizeVAlarm(icsData) {
         if (!triggerProp) continue;
 
         //
+        // Skip location-based alarms (Apple Reminders).
+        // These use X-APPLE-PROXIMITY=ARRIVE|DEPART and a sentinel
+        // trigger date (1976-04-01T00:55:45Z -- Apple's founding date)
+        // that is NOT a real alarm time.  Converting it to a relative
+        // duration would destroy the location-based trigger semantics
+        // and cause iOS to no longer recognize the alarm as proximity-based.
+        //
+        if (valarm.getFirstProperty('x-apple-proximity')) continue;
+
+        //
         // ical.js absorbs VALUE=DATE-TIME into the property type.
         // So `triggerProp.type` is 'date-time' for absolute triggers
         // and 'duration' for relative triggers.

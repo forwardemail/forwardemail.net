@@ -2927,9 +2927,13 @@ class CalDAV extends API {
             const taskStart = dtstart;
             const taskEnd = due || dtstart; // Use due date as end, or start if no due date
 
-            // If we have no dates at all, skip this task
+            // RFC 4791 Section 9.9: A VTODO component without DTSTART,
+            // DUE, COMPLETED, or CREATED properties MUST be reported in
+            // all time-range queries.  This handles location-based reminders
+            // (X-APPLE-PROXIMITY) that have no temporal anchor.
             if (!taskStart && !taskEnd) {
-              continue;
+              match = true;
+              break;
             }
 
             // Check if the task falls within the requested time range

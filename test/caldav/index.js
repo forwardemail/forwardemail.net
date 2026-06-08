@@ -2580,3 +2580,383 @@ test('all-day recurring VTODO with DUE;VALUE=DATE only (no DTSTART): timeRange q
 
   await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
 });
+
+// =============================================================================
+// RFC 4791 Section 9.9: Dateless VTODO time-range inclusion
+// A VTODO without DTSTART, DUE, COMPLETED, or CREATED MUST be reported
+// in ALL time-range queries.  This is critical for iOS Reminders
+// location-based tasks that have no temporal anchor.
+// =============================================================================
+
+test('dateless VTODO (no DTSTART/DUE) is included in time-range calendar-query REPORT', async (t) => {
+  const datelessIcs = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-dateless.ics'),
+    'utf8'
+  );
+  const futureIcs = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-future-due.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+  t.truthy(taskCalendar, 'Tasks calendar must exist');
+
+  const datelessUrl = new URL('vtodo-dateless.ics', taskCalendar.url).href;
+  const futureUrl = new URL('vtodo-future-due.ics', taskCalendar.url).href;
+
+  // Create both: a dateless VTODO and a future-dated VTODO
+  await createObject({
+    url: datelessUrl,
+    data: datelessIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+  await createObject({
+    url: futureUrl,
+    data: futureIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  // Query with a narrow time-range in 2021 (neither task has dates in 2021)
+  // Per RFC 4791 Section 9.9, the dateless VTODO MUST still be returned
+  const objects = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    headers: t.context.authHeaders,
+    filters: [
+      {
+        'comp-filter': {
+          _attributes: { name: 'VCALENDAR' },
+          'comp-filter': {
+            _attributes: { name: 'VTODO' },
+            'time-range': {
+              _attributes: {
+                start: '20210401T000000Z',
+                end: '20210430T235959Z'
+              }
+            }
+          }
+        }
+      }
+    ]
+  });
+
+  // The dateless VTODO must be included (matches all time-range queries)
+  const hasDateless = objects.some(
+    (obj) => obj.data && obj.data.includes('todo-dateless-rfc4791@test')
+  );
+  t.true(
+    hasDateless,
+    'Dateless VTODO MUST be included in time-range query per RFC 4791 Section 9.9'
+  );
+
+  // The future-dated VTODO (DUE:20250901) should NOT match a 2021 range
+  const hasFuture = objects.some(
+    (obj) => obj.data && obj.data.includes('todo-future-due-2025@test')
+  );
+  t.false(
+    hasFuture,
+    'VTODO with DUE outside the time-range must NOT be included'
+  );
+
+  // Clean up
+  await deleteObject({ url: datelessUrl, headers: t.context.authHeaders });
+  await deleteObject({ url: futureUrl, headers: t.context.authHeaders });
+});
+
+// =============================================================================
+// iOS Location-Based Reminder (X-APPLE-PROXIMITY) PUT->GET Roundtrip
+// Verifies that location-based reminders with X-APPLE-PROXIMITY VALARM
+// survive storage and retrieval with all Apple-specific properties intact.
+// =============================================================================
+
+test('location-based VTODO with X-APPLE-PROXIMITY survives PUT->GET roundtrip', async (t) => {
+  const locationIcs = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-location-reminder.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+  t.truthy(taskCalendar, 'Tasks calendar must exist');
+
+  const objectUrl = new URL('vtodo-location-reminder.ics', taskCalendar.url)
+    .href;
+
+  const response = await createObject({
+    url: objectUrl,
+    data: locationIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+  t.true(response.ok, 'PUT of location-based VTODO must succeed');
+
+  // Fetch it back
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+  t.truthy(calendarObject, 'GET must return the stored object');
+  t.truthy(calendarObject.data, 'Calendar object must have data');
+
+  const ics = calendarObject.data;
+
+  // Verify Apple-specific properties are preserved
+  t.true(
+    ics.includes('X-APPLE-PROXIMITY:ARRIVE'),
+    'X-APPLE-PROXIMITY:ARRIVE must be preserved through roundtrip'
+  );
+  t.true(
+    ics.includes('X-APPLE-STRUCTURED-LOCATION'),
+    'X-APPLE-STRUCTURED-LOCATION must be preserved through roundtrip'
+  );
+  // The sentinel trigger date must NOT be converted to a duration
+  t.true(
+    ics.includes('19760401T005545Z'),
+    'Sentinel trigger date (1976-04-01) must be preserved (not converted to duration)'
+  );
+  t.true(ics.includes('Pick up dry cleaning'), 'SUMMARY must be preserved');
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+// =============================================================================
+// Location-based VTODO (no DUE/DTSTART) included in time-range query
+// Combines both fixes: dateless VTODO + X-APPLE-PROXIMITY preservation
+// =============================================================================
+
+test('location-based VTODO without dates is included in time-range query AND preserves proximity alarm', async (t) => {
+  const locationIcs = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-location-reminder.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+  t.truthy(taskCalendar, 'Tasks calendar must exist');
+
+  const objectUrl = new URL(
+    'vtodo-location-reminder-timerange.ics',
+    taskCalendar.url
+  ).href;
+
+  await createObject({
+    url: objectUrl,
+    data: locationIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  // The location-based VTODO has no DUE/DTSTART, so per RFC 4791 Section 9.9
+  // it MUST be returned in any time-range query
+  const objects = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    headers: t.context.authHeaders,
+    filters: [
+      {
+        'comp-filter': {
+          _attributes: { name: 'VCALENDAR' },
+          'comp-filter': {
+            _attributes: { name: 'VTODO' },
+            'time-range': {
+              _attributes: {
+                start: '20260101T000000Z',
+                end: '20260131T235959Z'
+              }
+            }
+          }
+        }
+      }
+    ]
+  });
+
+  const found = objects.find(
+    (obj) => obj.data && obj.data.includes('todo-location-reminder-arrive@test')
+  );
+  t.truthy(
+    found,
+    'Location-based VTODO without dates MUST be included in time-range query'
+  );
+
+  // Verify the proximity alarm is intact in the returned data
+  t.true(
+    found.data.includes('X-APPLE-PROXIMITY:ARRIVE'),
+    'X-APPLE-PROXIMITY must survive time-range filtered retrieval'
+  );
+  t.true(
+    found.data.includes('19760401T005545Z'),
+    'Sentinel trigger must survive time-range filtered retrieval'
+  );
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+// =============================================================================
+// Mixed alarms: DEPART proximity + time-based alarm on same VTODO
+// Verifies that normalizeVAlarm correctly handles the mixed case during
+// the PUT->GET cycle: proximity alarm preserved, time alarm normalized.
+// =============================================================================
+
+test('VTODO with mixed proximity and time-based alarms preserves both through roundtrip', async (t) => {
+  const mixedIcs = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-location-depart.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+  t.truthy(taskCalendar, 'Tasks calendar must exist');
+
+  const objectUrl = new URL('vtodo-location-depart.ics', taskCalendar.url).href;
+
+  const response = await createObject({
+    url: objectUrl,
+    data: mixedIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+  t.true(response.ok, 'PUT of mixed-alarm VTODO must succeed');
+
+  // Fetch it back
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+  t.truthy(calendarObject, 'GET must return the stored object');
+
+  const ics = calendarObject.data;
+
+  // Proximity alarm must be preserved
+  t.true(
+    ics.includes('X-APPLE-PROXIMITY:DEPART'),
+    'X-APPLE-PROXIMITY:DEPART must be preserved'
+  );
+  t.true(
+    ics.includes('19760401T005545Z'),
+    'Sentinel trigger for proximity alarm must be preserved'
+  );
+  t.true(
+    ics.includes('X-APPLE-STRUCTURED-LOCATION'),
+    'Structured location must be preserved'
+  );
+
+  // The time-based relative alarm (-PT30M) must also be preserved
+  t.true(ics.includes('VALARM'), 'VALARM components must be present');
+  // Both alarms should exist (2 BEGIN:VALARM occurrences)
+  const valarmCount = (ics.match(/BEGIN:VALARM/g) || []).length;
+  t.is(valarmCount, 2, 'Both VALARM components must be preserved');
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+// =============================================================================
+// X-APPLE-STRUCTURED-LOCATION preservation through PUT->GET
+// =============================================================================
+
+test('X-APPLE-STRUCTURED-LOCATION on VTODO is preserved through PUT->GET roundtrip', async (t) => {
+  const locationIcs = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-with-location.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+  t.truthy(taskCalendar, 'Tasks calendar must exist');
+
+  const objectUrl = new URL('vtodo-structured-location.ics', taskCalendar.url)
+    .href;
+
+  await createObject({
+    url: objectUrl,
+    data: locationIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+  t.truthy(calendarObject, 'GET must return the stored object');
+
+  const ics = calendarObject.data;
+
+  // X-APPLE-STRUCTURED-LOCATION with all parameters must be preserved
+  t.true(
+    ics.includes('X-APPLE-STRUCTURED-LOCATION'),
+    'X-APPLE-STRUCTURED-LOCATION must be preserved'
+  );
+  t.true(
+    ics.includes('X-APPLE-RADIUS='),
+    'X-APPLE-RADIUS parameter must be preserved'
+  );
+  t.true(ics.includes('X-TITLE='), 'X-TITLE parameter must be preserved');
+  t.true(ics.includes('geo:'), 'geo: URI value must be preserved');
+  // Standard LOCATION property must also survive
+  t.true(
+    ics.includes('LOCATION:') || ics.includes('LOCATION;'),
+    'LOCATION property must be preserved'
+  );
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
