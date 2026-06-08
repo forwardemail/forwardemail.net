@@ -2490,6 +2490,15 @@ class CalDAV extends API {
       return [];
     }
 
+    //
+    // RFC 6578 Section 3.4: On initial synchronization (empty sync-token),
+    // the server MUST report only existing resources — tombstones (404)
+    // are meaningless to a client that has no prior state.  Only include
+    // deleted items when the client supplies a valid sync-token, indicating
+    // an incremental sync where deletions must be communicated.
+    //
+    const includeDeleted = showDeleted && Boolean(syncToken);
+
     let events;
     try {
       //
@@ -2498,7 +2507,7 @@ class CalDAV extends API {
       // The composite index { calendar, deleted_at } makes this efficient.
       //
       const filter = { calendar: calendar._id };
-      if (!showDeleted) filter.deleted_at = { $exists: false };
+      if (!includeDeleted) filter.deleted_at = { $exists: false };
 
       //
       // Performance: when the client specifies a component type filter
@@ -2546,7 +2555,7 @@ class CalDAV extends API {
     }
 
     // Safety net: also filter in JS in case the SQL filter missed edge cases
-    if (!showDeleted)
+    if (!includeDeleted)
       events = events.filter(
         (e) => e.deleted_at === null || e.deleted_at === undefined
       );
@@ -2563,17 +2572,31 @@ class CalDAV extends API {
     //
     const calId = this.getCalendarId(ctx, calendar);
     for (const event of events) {
-      if (!event.href) {
+      if (event.href) {
+        //
+        // Normalize legacy /cal/ prefix to canonical /dav/ prefix.
+        // Events created before the path migration may have hrefs stored
+        // with the old /cal/ prefix.  iOS uses the href from sync-collection
+        // responses to construct subsequent GET/PUT/DELETE URLs, so a stale
+        // /cal/ prefix causes 404s on the client side.
+        //
+        if (event.href.startsWith('/cal/'))
+          event.href = '/dav/' + event.href.slice(5);
+
+        // Encode bare @ in path segments — iOS URL parser treats bare @
+        // in path as a userinfo separator, corrupting the URL.
+        if (event.href.includes('@')) {
+          event.href = event.href
+            .split('/')
+            .map((segment) => segment.replaceAll('@', '%40'))
+            .join('/');
+        }
+      } else {
         // Construct href for events that don't have one stored
         event.href = `/dav/${principalId.replaceAll(
           '@',
           '%40'
         )}/${calId}/${event.eventId.replaceAll('@', '%40')}.ics`;
-      } else if (event.href.includes('@')) {
-        event.href = event.href
-          .split('/')
-          .map((segment) => segment.replaceAll('@', '%40'))
-          .join('/');
       }
     }
 
@@ -2708,6 +2731,41 @@ class CalDAV extends API {
       });
     }
 
+    //
+    // Query 4: Non-recurring events with dtstart but NO dtend (VTODOs
+    // without DUE).  These cannot be filtered at SQL level because
+    // Query 1 requires dtend >= start.  RFC 4791 Section 9.9 Row 2
+    // says: overlap when (start <= DTSTART) AND (end > DTSTART).
+    // We fetch them here and let the ICS-level filter handle them.
+    //
+    const noEndFilter = {
+      ...baseFilter,
+      is_recurring: false,
+      dtstart: { $exists: true },
+      dtend: { $exists: false }
+    };
+    // Pre-filter: dtstart must be <= end (if end is specified)
+    if (end)
+      noEndFilter.dtstart = {
+        ...noEndFilter.dtstart,
+        $lte: end.toISOString()
+      };
+
+    const noEndEvents = await CalendarEvents.find(
+      this,
+      ctx.state.session,
+      noEndFilter
+    );
+
+    if (noEndEvents.length > 0) {
+      ctx.logger.debug(
+        'non-recurring events without dtend (need ICS parsing)',
+        {
+          count: noEndEvents.length
+        }
+      );
+    }
+
     // Start with all non-recurring events that matched at SQL level
     const filtered = [...nonRecurringEvents];
 
@@ -2717,7 +2775,11 @@ class CalDAV extends API {
     // NOTE: an event can have multiple RRULE, RDATE, EXDATE values
     // NOTE: if you update this, also update the logic in /v1/calendar-events for list querying
     //
-    const eventsNeedingParsing = [...recurringEvents, ...legacyEvents];
+    const eventsNeedingParsing = [
+      ...recurringEvents,
+      ...legacyEvents,
+      ...noEndEvents
+    ];
     for (const event of eventsNeedingParsing) {
       const comp = new ICAL.Component(ICAL.parse(event.ical));
       const vevents = comp.getAllSubcomponents('vevent');
@@ -2921,30 +2983,102 @@ class CalDAV extends API {
           const recurrenceLineCount = lines.length - recurrenceStartCount;
 
           if (recurrenceLineCount === 0) {
-            // Non-recurring task - check date ranges
-            // For tasks, we need to be more flexible with date matching
-            // VTODO can have: DTSTART+DUE, just DUE, or just DTSTART
+            //
+            // RFC 4791 Section 9.9 — VTODO time-range overlap table.
+            // The overlap conditions depend on which combination of
+            // DTSTART, DUE, DURATION, COMPLETED, and CREATED are present.
+            //
+            // Extract COMPLETED and CREATED for the full RFC table.
+            //
+            let completed = vtodo.getFirstPropertyValue('completed');
+            let created = vtodo.getFirstPropertyValue('created');
+            completed =
+              completed && completed instanceof ICAL.Time
+                ? completed.toJSDate()
+                : null;
+            created =
+              created && created instanceof ICAL.Time
+                ? created.toJSDate()
+                : null;
+
             const taskStart = dtstart;
-            const taskEnd = due || dtstart; // Use due date as end, or start if no due date
+            const taskDue = due;
 
-            // RFC 4791 Section 9.9: A VTODO component without DTSTART,
-            // DUE, COMPLETED, or CREATED properties MUST be reported in
-            // all time-range queries.  This handles location-based reminders
-            // (X-APPLE-PROXIMITY) that have no temporal anchor.
-            if (!taskStart && !taskEnd) {
-              match = true;
-              break;
-            }
-
-            // Check if the task falls within the requested time range
-            // For VTODOs, we need to check both start and end dates flexibly
-            const matchesStart = !start || (taskEnd && start <= taskEnd);
-            const matchesEnd =
-              !end ||
-              (taskEnd && end >= taskEnd) ||
-              (taskStart && end >= taskStart);
-
-            if (matchesStart && matchesEnd) {
+            if (taskStart && taskDue) {
+              //
+              // Row 1: DTSTART and DUE defined
+              // Overlap: (start <= DUE) AND (end > DTSTART)
+              //
+              const overlaps =
+                (!start || start <= taskDue) && (!end || end > taskStart);
+              if (overlaps) {
+                match = true;
+                break;
+              }
+            } else if (taskStart && !taskDue) {
+              //
+              // Row 2: DTSTART and DURATION defined (or just DTSTART)
+              // Overlap: (start <= DTSTART+DURATION) AND (end > DTSTART)
+              // Since we don't parse DURATION separately, treat DTSTART as
+              // both start and end (duration=0) per the RFC:
+              // Overlap: (start <= DTSTART) AND (end > DTSTART)
+              //
+              const overlaps =
+                (!start || start <= taskStart) && (!end || end > taskStart);
+              if (overlaps) {
+                match = true;
+                break;
+              }
+            } else if (!taskStart && taskDue) {
+              //
+              // Row 3: DUE defined (no DTSTART)
+              // Overlap: (start < DUE) AND (end >= DUE)
+              //
+              const overlaps =
+                (!start || start < taskDue) && (!end || end >= taskDue);
+              if (overlaps) {
+                match = true;
+                break;
+              }
+            } else if (completed && created) {
+              //
+              // Row 4: COMPLETED and CREATED defined (no DTSTART/DUE)
+              // Overlap: (start <= COMPLETED) AND (end >= CREATED)
+              //
+              const overlaps =
+                (!start || start <= completed) && (!end || end >= created);
+              if (overlaps) {
+                match = true;
+                break;
+              }
+            } else if (completed) {
+              //
+              // Row 5: Only COMPLETED defined (no DTSTART/DUE/CREATED)
+              // Overlap: (start <= COMPLETED) AND (end >= COMPLETED)
+              //
+              const overlaps =
+                (!start || start <= completed) && (!end || end >= completed);
+              if (overlaps) {
+                match = true;
+                break;
+              }
+            } else if (created) {
+              //
+              // Row 6: Only CREATED defined (no DTSTART/DUE/COMPLETED)
+              // Overlap: (end > CREATED)
+              //
+              const overlaps = !end || end > created;
+              if (overlaps) {
+                match = true;
+                break;
+              }
+            } else {
+              //
+              // Row 7: No DTSTART, DUE, COMPLETED, or CREATED
+              // The VTODO MUST match all time-range queries.
+              // This handles location-based reminders (X-APPLE-PROXIMITY)
+              // that have no temporal anchor.
+              //
               match = true;
               break;
             }
@@ -3048,16 +3182,22 @@ class CalDAV extends API {
     // Normalize hrefs: ensure @ is encoded as %40 in path segments (iOS compat)
     const calId = this.getCalendarId(ctx, calendar);
     for (const event of results) {
-      if (!event.href) {
+      if (event.href) {
+        // Normalize legacy /cal/ prefix to canonical /dav/ prefix
+        if (event.href.startsWith('/cal/'))
+          event.href = '/dav/' + event.href.slice(5);
+
+        if (event.href.includes('@')) {
+          event.href = event.href
+            .split('/')
+            .map((segment) => segment.replaceAll('@', '%40'))
+            .join('/');
+        }
+      } else {
         event.href = `/dav/${principalId.replaceAll(
           '@',
           '%40'
         )}/${calId}/${event.eventId.replaceAll('@', '%40')}.ics`;
-      } else if (event.href.includes('@')) {
-        event.href = event.href
-          .split('/')
-          .map((segment) => segment.replaceAll('@', '%40'))
-          .join('/');
       }
     }
 
@@ -3124,16 +3264,20 @@ class CalDAV extends API {
       }
 
       // Normalize href: ensure @ is encoded as %40 (iOS compat)
-      if (!keeper.href) {
+      if (keeper.href) {
+        if (keeper.href.startsWith('/cal/'))
+          keeper.href = '/dav/' + keeper.href.slice(5);
+        if (keeper.href.includes('@')) {
+          keeper.href = keeper.href
+            .split('/')
+            .map((segment) => segment.replaceAll('@', '%40'))
+            .join('/');
+        }
+      } else {
         keeper.href = `/dav/${principalId.replaceAll(
           '@',
           '%40'
         )}/${calendarId}/${keeper.eventId.replaceAll('@', '%40')}.ics`;
-      } else if (keeper.href.includes('@')) {
-        keeper.href = keeper.href
-          .split('/')
-          .map((segment) => segment.replaceAll('@', '%40'))
-          .join('/');
       }
 
       return keeper;
@@ -3141,16 +3285,20 @@ class CalDAV extends API {
 
     const result = allMatches[0] || null;
     if (result) {
-      if (!result.href) {
+      if (result.href) {
+        if (result.href.startsWith('/cal/'))
+          result.href = '/dav/' + result.href.slice(5);
+        if (result.href.includes('@')) {
+          result.href = result.href
+            .split('/')
+            .map((segment) => segment.replaceAll('@', '%40'))
+            .join('/');
+        }
+      } else {
         result.href = `/dav/${principalId.replaceAll(
           '@',
           '%40'
         )}/${calendarId}/${result.eventId.replaceAll('@', '%40')}.ics`;
-      } else if (result.href.includes('@')) {
-        result.href = result.href
-          .split('/')
-          .map((segment) => segment.replaceAll('@', '%40'))
-          .join('/');
       }
     }
 
