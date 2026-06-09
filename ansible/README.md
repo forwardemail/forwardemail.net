@@ -50,7 +50,7 @@ ansible/
 │   ├── mx2.yml                 # MX2 mail exchanger
 │   ├── unbound.yml             # Unbound DNS resolver
 │   ├── sqlite.yml              # SQLite server
-│   ├── lsyncd.yml              # Real-time storage mirroring (lsyncd)
+│   ├── sqlite-mirror.yml        # Storage mirroring (cron rsync)
 │   ├── certificates.yml        # SSL/TLS certificates
 │   ├── dkim.yml                # DKIM key deployment
 │   ├── env.yml                 # Environment variables
@@ -390,42 +390,41 @@ Complete MongoDB operations manual:
 ---
 
 
-## 💾 Real-time Storage Mirroring
+## 💾 Storage Mirroring
 
-**[Lsyncd Storage Mirroring Guide](docs/LSYNCD_STORAGE_MIRRORING.md)**
+**[SQLite Storage Mirroring Guide](docs/SQLITE_STORAGE_MIRRORING.md)**
 
-Real-time file synchronization between primary and secondary encrypted storage volumes:
+Periodic rsync-based mirroring between primary and secondary encrypted storage volumes:
 
-* 🔄 **Real-time mirroring** - Sub-second sync using inotify + rsync
+* 🔄 **Cron rsync** - Mirrors every 2 minutes with near-zero memory usage
 * 🛡️ **Safety checks** - Prevents accidental data loss
 * 📧 **Email notifications** - Alerts for sync errors and failures
 * ⏱️ **Health monitoring** - Systemd timer checks every 5 minutes
 * 🔒 **LUKS support** - Works with encrypted volumes
 
-**Integrated into**: `sqlite.yml` (optional), or run standalone
-
 **Usage**:
 
 ```bash
-# Deploy lsyncd to SQLite servers
-ansible-playbook ansible/playbooks/lsyncd.yml -l sqlite
+# Deploy sqlite-mirror to SQLite servers
+ansible-playbook ansible/playbooks/sqlite-mirror.yml -l sqlite
 
 # With custom source/target
-LSYNCD_SOURCE=/mnt/primary LSYNCD_TARGET=/mnt/backup \
-  ansible-playbook ansible/playbooks/lsyncd.yml -l sqlite
+MIRROR_SOURCE=/mnt/primary MIRROR_TARGET=/mnt/backup \
+  ansible-playbook ansible/playbooks/sqlite-mirror.yml -l sqlite
 ```
 
 **Environment Variables**:
 
 | Variable             | Description                 | Default                     |
 | -------------------- | --------------------------- | --------------------------- |
-| `LSYNCD_SOURCE`      | Source directory to mirror  | `/mnt/storage_do_1`         |
-| `LSYNCD_TARGET`      | Target directory for mirror | `/mnt/storage_do_2`         |
+| `MIRROR_SOURCE`      | Source directory to mirror  | `/mnt/storage_do_1`         |
+| `MIRROR_TARGET`      | Target directory for mirror | `/mnt/storage_do_2`         |
+| `MIRROR_INTERVAL`    | Cron interval in minutes    | `2`                         |
 | `MSMTP_RCPTS`        | Email recipients for alerts | `security@forwardemail.net` |
-| `LSYNCD_SKIP_SAFETY` | Skip safety checks          | `false`                     |
+| `MIRROR_SKIP_SAFETY` | Skip safety checks          | `false`                     |
 
 > \[!WARNING]
-> The playbook will **fail** if the target directory contains existing data to prevent accidental deletion. Set `LSYNCD_SKIP_SAFETY=true` to bypass this check after verifying the target data is expendable.
+> The playbook will **fail** if the target directory contains existing data to prevent accidental deletion. Set `MIRROR_SKIP_SAFETY=true` to bypass this check after verifying the target data is expendable.
 
 > \[!TIP]
 > Run this playbook after setting up LUKS-encrypted storage volumes (see README.md "Bare Metal Advice" section).

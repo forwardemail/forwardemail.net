@@ -1,0 +1,484 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+# SQLite Storage Mirror Playbook (Cron Rsync)
+# ============================================================================
+# This playbook sets up periodic rsync-based mirroring between primary and
+# secondary encrypted storage volumes on SQLite servers.
+#
+# Replaces lsyncd (which consumed 78GB+ RAM due to inotify overhead on 272K+
+# SQLite databases) with a simple cron-based rsync that uses near-zero memory
+# between runs.
+#
+# Features:
+# - Periodic rsync mirroring (every 2 minutes by default)
+# - Excludes WAL/SHM/journal files (not needed for backup)
+# - Flock-based locking to prevent overlapping runs
+# - Email notifications for sync errors and failures
+# - Health monitoring with periodic status checks
+# - Safety checks to prevent accidental data loss
+# - IOnice/nice for low-priority I/O
+#
+# Usage:
+#   ansible-playbook ansible/playbooks/sqlite-mirror.yml -l sqlite
+#
+# Environment Variables:
+#   MIRROR_SOURCE      - Source directory (default: /mnt/storage_do_1)
+#   MIRROR_TARGET      - Target directory (default: /mnt/storage_do_2)
+#   MIRROR_INTERVAL    - Cron interval in minutes (default: 2)
+#   MSMTP_RCPTS        - Email recipients for alerts (default: security@forwardemail.net)
+#   MIRROR_SKIP_SAFETY - Set to "true" to skip safety checks (default: false)
+#
+# ============================================================================
+
+- hosts: sqlite
+  name: SQLite Storage Mirror (Cron Rsync)
+  become: true
+  become_user: root
+  vars:
+    mirror_source: "{{ lookup('env', 'MIRROR_SOURCE') | default('/mnt/storage_do_1', true) }}"
+    mirror_target: "{{ lookup('env', 'MIRROR_TARGET') | default('/mnt/storage_do_2', true) }}"
+    mirror_interval: "{{ lookup('env', 'MIRROR_INTERVAL') | default('2', true) }}"
+    msmtp_rcpts: "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
+    mirror_skip_safety: "{{ lookup('env', 'MIRROR_SKIP_SAFETY') | default('false', true) }}"
+  handlers:
+    - name: Restart sqlite-mirror monitor timer
+      systemd:
+        name: sqlite-mirror-monitor.timer
+        state: restarted
+        daemon_reload: yes
+
+  tasks:
+    # =========================================================================
+    # SAFETY CHECKS - Prevent accidental data loss
+    # =========================================================================
+
+    - name: Display configuration
+      debug:
+        msg: |
+          SQLite Mirror Configuration:
+            Source: {{ mirror_source }}
+            Target: {{ mirror_target }}
+            Interval: every {{ mirror_interval }} minutes
+            Skip Safety: {{ mirror_skip_safety }}
+
+    - name: Check if source directory exists
+      stat:
+        path: "{{ mirror_source }}"
+      register: source_stat
+
+    - name: Fail if source directory does not exist
+      fail:
+        msg: |
+          SOURCE DIRECTORY DOES NOT EXIST: {{ mirror_source }}
+          Please ensure the LUKS volume is mounted before running this playbook.
+      when: not source_stat.stat.exists
+
+    - name: Check if target directory exists
+      stat:
+        path: "{{ mirror_target }}"
+      register: target_stat
+
+    - name: Fail if target directory does not exist
+      fail:
+        msg: |
+          TARGET DIRECTORY DOES NOT EXIST: {{ mirror_target }}
+          Please ensure the LUKS volume is mounted before running this playbook.
+      when: not target_stat.stat.exists
+
+    - name: Check if source directory has data
+      shell: "find {{ mirror_source }} -mindepth 1 -maxdepth 1 | head -1"
+      register: source_contents
+      changed_when: false
+
+    - name: Warn if source directory is empty
+      debug:
+        msg: |
+          WARNING: Source directory {{ mirror_source }} appears to be empty.
+          Rsync will mirror an empty directory to the target.
+      when: source_contents.stdout == ""
+
+    - name: Count files in target directory
+      shell: "find {{ mirror_target }} -type f 2>/dev/null | wc -l"
+      register: target_file_count
+      changed_when: false
+
+    - name: SAFETY CHECK - Fail if target has existing files
+      fail:
+        msg: |
+          ============================================================================
+          SAFETY CHECK FAILED - TARGET DIRECTORY HAS EXISTING FILES
+          ============================================================================
+
+          Target directory: {{ mirror_target }}
+          Files found: {{ target_file_count.stdout }}
+
+          The --delete flag in rsync will DELETE any files in the target that
+          do not exist in the source. This could cause DATA LOSS.
+
+          Before proceeding, you must either:
+
+          1. VERIFY the target data is expendable:
+             ls -la {{ mirror_target }}/
+             du -sh {{ mirror_target }}/
+
+          2. BACKUP the target data if needed:
+             rsync -avP {{ mirror_target }}/ /path/to/backup/
+
+          3. CLEAR the target directory:
+             rm -rf {{ mirror_target }}/*
+
+          4. OR skip this safety check by setting:
+             export MIRROR_SKIP_SAFETY=true
+
+          Then re-run this playbook.
+          ============================================================================
+      when:
+        - target_file_count.stdout | int > 0
+        - mirror_skip_safety != "true"
+
+    - name: Safety check passed or skipped
+      debug:
+        msg: |
+          Safety check {{ 'SKIPPED (MIRROR_SKIP_SAFETY=true)' if mirror_skip_safety == 'true' else 'PASSED' }}
+          Proceeding with sqlite-mirror installation...
+
+    # =========================================================================
+    # CLEANUP - Remove lsyncd if present
+    # =========================================================================
+
+    - name: Stop lsyncd service if running
+      systemd:
+        name: lsyncd
+        state: stopped
+      ignore_errors: yes
+
+    - name: Disable lsyncd service
+      systemd:
+        name: lsyncd
+        enabled: no
+      ignore_errors: yes
+
+    - name: Stop lsyncd-monitor timer if running
+      systemd:
+        name: lsyncd-monitor.timer
+        state: stopped
+      ignore_errors: yes
+
+    - name: Disable lsyncd-monitor timer
+      systemd:
+        name: lsyncd-monitor.timer
+        enabled: no
+      ignore_errors: yes
+
+    - name: Remove lsyncd package
+      apt:
+        name: lsyncd
+        state: absent
+
+    - name: Remove lsyncd configuration and services
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/lsyncd
+        - /etc/systemd/system/lsyncd.service.d
+        - /etc/systemd/system/lsyncd-monitor.service
+        - /etc/systemd/system/lsyncd-monitor.timer
+        - /usr/local/bin/lsyncd-monitor.sh
+
+    - name: Remove inotify tuning for lsyncd
+      sysctl:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - fs.inotify.max_user_watches
+        - fs.inotify.max_queued_events
+      ignore_errors: yes
+
+    # =========================================================================
+    # INSTALLATION - Cron-based rsync mirror
+    # =========================================================================
+
+    - name: Create sqlite-mirror log directory
+      file:
+        path: /var/log/sqlite-mirror
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Deploy sqlite-mirror script
+      copy:
+        dest: /usr/local/bin/sqlite-mirror.sh
+        content: |
+          #!/bin/bash
+          # SQLite Storage Mirror - Cron Rsync
+          # Mirrors {{ mirror_source }} -> {{ mirror_target }}
+          # Runs every {{ mirror_interval }} minutes via cron
+
+          set -uo pipefail
+
+          SOURCE="{{ mirror_source }}"
+          TARGET="{{ mirror_target }}"
+          LOG="/var/log/sqlite-mirror/mirror.log"
+          LOCK="/tmp/sqlite-mirror.lock"
+
+          # Rotate log if > 100MB
+          if [ -f "$LOG" ]; then
+            LOG_SIZE=$(stat -c%s "$LOG" 2>/dev/null || echo 0)
+            if [ "$LOG_SIZE" -gt 104857600 ]; then
+              mv "$LOG" "$LOG.1"
+            fi
+          fi
+
+          # Acquire exclusive lock (non-blocking)
+          exec 9>"$LOCK"
+          if ! flock -n 9; then
+            echo "[$(date -Iseconds)] SKIP: Previous mirror still running" >> "$LOG"
+            exit 0
+          fi
+
+          echo "[$(date -Iseconds)] START: Mirroring $SOURCE -> $TARGET" >> "$LOG"
+
+          # Verify source and target exist
+          if [ ! -d "$SOURCE" ]; then
+            echo "[$(date -Iseconds)] ERROR: Source $SOURCE does not exist" >> "$LOG"
+            exit 1
+          fi
+
+          if [ ! -d "$TARGET" ]; then
+            echo "[$(date -Iseconds)] ERROR: Target $TARGET does not exist" >> "$LOG"
+            exit 1
+          fi
+
+          # Run rsync with low I/O priority
+          # --archive: preserve permissions, timestamps, symlinks
+          # --delete-after: remove orphaned files after transfer completes
+          # --no-perms --omit-dir-times: reduce unnecessary metadata updates
+          # --exclude: skip WAL/SHM/journal (transient SQLite files)
+          # --whole-file: skip delta algorithm (faster for local disk-to-disk)
+          # --info=stats2: summary stats only
+          ionice -c 3 nice -n 19 \
+            /usr/bin/rsync \
+              --archive \
+              --delete-after \
+              --no-perms \
+              --omit-dir-times \
+              --whole-file \
+              --exclude='*-wal' \
+              --exclude='*-shm' \
+              --exclude='*-journal' \
+              --info=stats2 \
+              "$SOURCE/" "$TARGET/" >> "$LOG" 2>&1
+
+          RC=$?
+
+          if [ $RC -eq 0 ]; then
+            echo "[$(date -Iseconds)] DONE: Mirror complete (exit 0)" >> "$LOG"
+          else
+            echo "[$(date -Iseconds)] ERROR: rsync exited with code $RC" >> "$LOG"
+          fi
+
+          # Release lock
+          flock -u 9
+
+          exit $RC
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Deploy sqlite-mirror cron job
+      copy:
+        dest: /etc/cron.d/sqlite-mirror
+        content: |
+          # SQLite storage mirror - rsync every {{ mirror_interval }} minutes
+          # Source: {{ mirror_source }} -> Target: {{ mirror_target }}
+          SHELL=/bin/bash
+          PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+          */{{ mirror_interval }} * * * * root /usr/local/bin/sqlite-mirror.sh
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy sqlite-mirror monitor script
+      copy:
+        dest: /usr/local/bin/sqlite-mirror-monitor.sh
+        content: |
+          #!/bin/bash
+          # SQLite Mirror health monitor script
+
+          set -uo pipefail
+
+          MSMTP_RCPTS="${MSMTP_RCPTS:-security@forwardemail.net}"
+          SOURCE_DIR="{{ mirror_source }}"
+          TARGET_DIR="{{ mirror_target }}"
+          LOG_FILE="/var/log/sqlite-mirror/mirror.log"
+
+          echo "[$(date -Iseconds)] Starting sqlite-mirror health check..."
+
+          ALERT_NEEDED=0
+          ALERT_MSG=""
+
+          # Check if source directory exists
+          if [ ! -d "$SOURCE_DIR" ]; then
+            ALERT_NEEDED=1
+            ALERT_MSG="${ALERT_MSG}CRITICAL: Source directory $SOURCE_DIR does not exist\n"
+          fi
+
+          # Check if target directory exists
+          if [ ! -d "$TARGET_DIR" ]; then
+            ALERT_NEEDED=1
+            ALERT_MSG="${ALERT_MSG}CRITICAL: Target directory $TARGET_DIR does not exist\n"
+          fi
+
+          # Check for recent errors in log file
+          if [ -f "$LOG_FILE" ]; then
+            RECENT_ERRORS=$(tail -50 "$LOG_FILE" | grep -i "ERROR" | tail -5 || true)
+            if [ -n "$RECENT_ERRORS" ]; then
+              ALERT_NEEDED=1
+              ALERT_MSG="${ALERT_MSG}WARNING: Recent errors in mirror log:\n${RECENT_ERRORS}\n"
+            fi
+
+            # Check if last successful mirror was more than 10 minutes ago
+            LAST_DONE=$(grep "DONE:" "$LOG_FILE" | tail -1 || true)
+            if [ -n "$LAST_DONE" ]; then
+              LAST_TS=$(echo "$LAST_DONE" | grep -oP '^\[\K[^]]+' || true)
+              if [ -n "$LAST_TS" ]; then
+                LAST_EPOCH=$(date -d "$LAST_TS" +%s 2>/dev/null || echo 0)
+                NOW_EPOCH=$(date +%s)
+                DIFF=$(( NOW_EPOCH - LAST_EPOCH ))
+                if [ "$DIFF" -gt 600 ]; then
+                  ALERT_NEEDED=1
+                  ALERT_MSG="${ALERT_MSG}WARNING: Last successful mirror was ${DIFF}s ago (>10min)\n"
+                fi
+              fi
+            fi
+          else
+            ALERT_NEEDED=1
+            ALERT_MSG="${ALERT_MSG}WARNING: No mirror log file found at $LOG_FILE\n"
+          fi
+
+          # Check disk space on target
+          TARGET_USAGE=$(df "$TARGET_DIR" 2>/dev/null | tail -1 | awk '{print $5}' | tr -d '%' || echo "0")
+          if [ "$TARGET_USAGE" -gt 90 ]; then
+            ALERT_NEEDED=1
+            ALERT_MSG="${ALERT_MSG}WARNING: Target disk usage is ${TARGET_USAGE}%\n"
+          fi
+
+          # Send alert if needed
+          if [ "$ALERT_NEEDED" -eq 1 ]; then
+            echo "[$(date -Iseconds)] ALERT: Issues detected"
+
+            FULL_ALERT="SQLite Mirror Health Check Alert - $(hostname)\n"
+            FULL_ALERT="${FULL_ALERT}Timestamp: $(date -Iseconds)\n\n"
+            FULL_ALERT="${FULL_ALERT}Issues Detected:\n${ALERT_MSG}\n"
+            FULL_ALERT="${FULL_ALERT}Source: $SOURCE_DIR\n"
+            FULL_ALERT="${FULL_ALERT}Target: $TARGET_DIR\n\n"
+            FULL_ALERT="${FULL_ALERT}Disk Usage:\n$(df -h $SOURCE_DIR $TARGET_DIR 2>&1)\n\n"
+            FULL_ALERT="${FULL_ALERT}Recent Log Entries:\n$(tail -20 $LOG_FILE 2>&1 || echo 'No log file')\n\n"
+            FULL_ALERT="${FULL_ALERT}To investigate:\n"
+            FULL_ALERT="${FULL_ALERT}  tail -f /var/log/sqlite-mirror/mirror.log\n"
+            FULL_ALERT="${FULL_ALERT}  cat /etc/cron.d/sqlite-mirror\n"
+
+            if [ -x "/usr/local/bin/send-rate-limited-email.sh" ]; then
+              /usr/local/bin/send-rate-limited-email.sh "sqlite-mirror-monitor" "[ALERT] SQLite Mirror Health Check Failed on $(hostname)" "$FULL_ALERT"
+            else
+              echo -e "$FULL_ALERT" | sendmail -t "$MSMTP_RCPTS" || \
+                echo "[$(date -Iseconds)] ERROR: Failed to send alert email"
+            fi
+
+            exit 1
+          fi
+
+          echo "[$(date -Iseconds)] SQLite mirror health check passed"
+          exit 0
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Deploy sqlite-mirror monitor service
+      copy:
+        dest: /etc/systemd/system/sqlite-mirror-monitor.service
+        content: |
+          [Unit]
+          Description=SQLite Mirror Health Monitor
+          OnFailure=failure-notification@%n.service
+
+          [Service]
+          Type=oneshot
+          Environment="MSMTP_RCPTS={{ msmtp_rcpts }}"
+          ExecStart=/usr/local/bin/sqlite-mirror-monitor.sh
+          StandardOutput=journal
+          StandardError=journal
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart sqlite-mirror monitor timer
+
+    - name: Deploy sqlite-mirror monitor timer
+      copy:
+        dest: /etc/systemd/system/sqlite-mirror-monitor.timer
+        content: |
+          [Unit]
+          Description=Run SQLite Mirror Health Monitor every 5 minutes
+
+          [Timer]
+          OnBootSec=2min
+          OnUnitActiveSec=5min
+          AccuracySec=1min
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart sqlite-mirror monitor timer
+
+    - name: Reload systemd daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start sqlite-mirror monitor timer
+      systemd:
+        name: sqlite-mirror-monitor.timer
+        enabled: yes
+        state: started
+
+    - name: Run initial mirror sync
+      command: /usr/local/bin/sqlite-mirror.sh
+      register: initial_sync
+      changed_when: initial_sync.rc == 0
+
+    - name: Display sqlite-mirror status
+      debug:
+        msg: |
+          ============================================================================
+          SQLite Mirror has been configured successfully!
+          ============================================================================
+
+          Configuration:
+            Source: {{ mirror_source }}
+            Target: {{ mirror_target }}
+            Interval: every {{ mirror_interval }} minutes
+            Email alerts: {{ msmtp_rcpts }}
+
+          Files deployed:
+            /usr/local/bin/sqlite-mirror.sh       - Mirror script
+            /etc/cron.d/sqlite-mirror             - Cron schedule
+            /usr/local/bin/sqlite-mirror-monitor.sh - Health monitor
+            /var/log/sqlite-mirror/mirror.log     - Mirror log
+
+          Useful commands:
+            tail -f /var/log/sqlite-mirror/mirror.log
+            /usr/local/bin/sqlite-mirror.sh       # Run manually
+            /usr/local/bin/sqlite-mirror-monitor.sh # Check health
+
+          Removed:
+            - lsyncd package and service
+            - lsyncd-monitor timer and service
+            - lsyncd configuration (/etc/lsyncd/)
+            - inotify tuning (no longer needed)
+          ============================================================================

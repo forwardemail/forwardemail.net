@@ -33,7 +33,7 @@
   * [Deployment](#deployment)
 * [Deployment Advice](#deployment-advice)
 * [Bare Metal Advice](#bare-metal-advice)
-* [Real-time Storage Mirroring](#real-time-storage-mirroring)
+* [Storage Mirroring](#storage-mirroring)
   * [Automated Setup via Ansible](#automated-setup-via-ansible)
   * [Environment Variables](#environment-variables)
   * [Manual Verification](#manual-verification)
@@ -858,44 +858,45 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
       sudo chown -R deploy:deploy /mnt/storage_do_1
       ```
 
-6. If you need to set up real-time storage mirroring to a secondary encrypted volume (e.g. `/mnt/storage_do_2`), see [Real-time Storage Mirroring](#real-time-storage-mirroring) below.
+6. If you need to set up storage mirroring to a secondary encrypted volume (e.g. `/mnt/storage_do_2`), see [Storage Mirroring](#storage-mirroring) below.
 
 
-## Real-time Storage Mirroring
+## Storage Mirroring
 
-For production SQLite servers with critical data, we recommend setting up real-time file synchronization between your primary and secondary encrypted storage volumes (e.g. `/mnt/storage_do_1` to `/mnt/storage_do_2`). This ensures you have an up-to-date mirror in case of disk failure.
+For production SQLite servers with critical data, we recommend setting up periodic rsync-based mirroring between your primary and secondary encrypted storage volumes (e.g. `/mnt/storage_do_1` to `/mnt/storage_do_2`). This ensures you have an up-to-date mirror in case of disk failure.
 
-We use `lsyncd` (Live Syncing Daemon) which watches for file system changes using inotify and mirrors them using rsync.
+We use a cron-based rsync that runs every 2 minutes with flock-based locking, low I/O priority, and near-zero memory usage between runs.
 
 ### Automated Setup via Ansible
 
-The recommended way to configure lsyncd is using our Ansible playbook, which includes health monitoring and email notifications:
+The recommended way to configure storage mirroring is using our Ansible playbook, which includes health monitoring and email notifications:
 
 ```sh
-ansible-playbook ansible/playbooks/lsyncd.yml -l sqlite
+ansible-playbook ansible/playbooks/sqlite-mirror.yml -l sqlite
 ```
 
-For detailed documentation, see [ansible/docs/LSYNCD\_STORAGE\_MIRRORING.md](ansible/docs/LSYNCD_STORAGE_MIRRORING.md).
+For detailed documentation, see [ansible/docs/SQLITE\_STORAGE\_MIRRORING.md](ansible/docs/SQLITE_STORAGE_MIRRORING.md).
 
 ### Environment Variables
 
 | Variable             | Description                           | Default                     |
 | -------------------- | ------------------------------------- | --------------------------- |
-| `LSYNCD_SOURCE`      | Source directory to mirror            | `/mnt/storage_do_1`         |
-| `LSYNCD_TARGET`      | Target directory for mirror           | `/mnt/storage_do_2`         |
+| `MIRROR_SOURCE`      | Source directory to mirror            | `/mnt/storage_do_1`         |
+| `MIRROR_TARGET`      | Target directory for mirror           | `/mnt/storage_do_2`         |
+| `MIRROR_INTERVAL`    | Cron interval in minutes              | `2`                         |
 | `MSMTP_RCPTS`        | Email recipients for alerts           | `security@forwardemail.net` |
-| `LSYNCD_SKIP_SAFETY` | Skip safety checks (use with caution) | `false`                     |
+| `MIRROR_SKIP_SAFETY` | Skip safety checks (use with caution) | `false`                     |
 
-> **Warning:** The playbook includes safety checks that will fail if the target directory contains existing data. This prevents accidental data loss from the `--delete` rsync flag. Set `LSYNCD_SKIP_SAFETY=true` to bypass after verifying target data is expendable.
+> **Warning:** The playbook includes safety checks that will fail if the target directory contains existing data. This prevents accidental data loss from the `--delete` rsync flag. Set `MIRROR_SKIP_SAFETY=true` to bypass after verifying target data is expendable.
 
 ### Manual Verification
 
 After running the playbook, verify synchronization is working:
 
 ```sh
-sudo systemctl status lsyncd
-tail -f /var/log/lsyncd/lsyncd.log
-cat /var/log/lsyncd/lsyncd.status
+tail -f /var/log/sqlite-mirror/mirror.log
+/usr/local/bin/sqlite-mirror.sh        # Run manually
+/usr/local/bin/sqlite-mirror-monitor.sh # Check health
 ```
 
 
