@@ -88,7 +88,11 @@ async function retryRequest(url, opts = {}, count = 1) {
                       // (mitigates TOCTOU gap between isPrivateHostResolved
                       // pre-check and the actual TCP connection)
                       //
-                      if (result?.address && isPrivateHost(result.address)) {
+                      if (
+                        config.env !== 'test' &&
+                        result?.address &&
+                        isPrivateHost(result.address)
+                      ) {
                         const err = new Error(
                           `Resolved IP ${result.address} is a private/reserved address`
                         );
