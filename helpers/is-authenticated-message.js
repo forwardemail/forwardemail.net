@@ -9,10 +9,12 @@ const { Buffer } = require('node:buffer');
 const isSANB = require('is-string-and-not-blank');
 const { spf } = require('mailauth/lib/spf');
 const { authenticate } = require('mailauth');
+const isEmail = require('#helpers/is-email');
 const _ = require('#helpers/lodash');
 
 const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');
+// const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 const HOSTNAME = os.hostname();
@@ -153,6 +155,87 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
   // only reject if ARC was not passing from a truth source
   // and DMARC fail with p=reject policy
   //
+  // Exempt legitimate DSN/bounce messages from DMARC and SPF hard-fail
+  // rejection. When MAIL FROM is <> (null reverse-path per RFC 5321
+  // Section 4.5.5), the message is a DSN. For these messages:
+  //
+  // - SPF evaluates postmaster@HELO-domain (RFC 7208 Section 2.4), which
+  //   typically does not align with the RFC5322.From domain in the DSN
+  // - Many legitimate servers do not DKIM-sign DSNs, so DKIM alignment
+  //   also fails
+  // - Rejecting DSNs prevents users from receiving bounce notifications
+  //   for their own outbound mail
+  //
+  // To prevent abuse (an attacker sending MAIL FROM:<> with a spoofed
+  // From header), we only exempt messages that are both null-sender AND
+  // exhibit at least one structural indicator of a legitimate DSN:
+  //   1. Content-Type: multipart/report (RFC 3464)
+  //   2. Auto-Submitted header present and not "no" (RFC 3834)
+  //   3. From header uses a mailer-daemon/postmaster-style address
+  //
+  // This matches Gmail and Microsoft behavior (RFC 9989 Section 5.5
+  // permits local policy override of DMARC enforcement).
+  //
+  const isNullSender =
+    !session.envelope.mailFrom.address ||
+    !isSANB(session.envelope.mailFrom.address) ||
+    !isEmail(session.envelope.mailFrom.address);
+
+  let isLegitDSN = false;
+  if (isNullSender) {
+    // Check for RFC 3464 DSN content type (multipart/report)
+    const contentType = headers.hasHeader('content-type')
+      ? headers.getFirst('content-type')
+      : '';
+    const isDSNContentType = /^multipart\/report\b/i.test(contentType);
+
+    // Check for Auto-Submitted header (RFC 3834) - indicates automated message
+    const hasAutoSubmitted =
+      headers.hasHeader('auto-submitted') &&
+      headers.getFirst('auto-submitted').toLowerCase().trim() !== 'no';
+
+    // Check if the From header uses a mailer-daemon/postmaster-style address
+    const fromUser = session.originalFromAddress
+      ? session.originalFromAddress.split('@')[0].toLowerCase()
+      : '';
+    const isMailerDaemonFrom = config.POSTMASTER_USERNAMES.has(fromUser);
+
+    // Check if the sending server is allowlisted (trusted sender)
+    const isSenderAllowlisted = Boolean(session.isAllowlisted);
+
+    isLegitDSN =
+      isDSNContentType ||
+      hasAutoSubmitted ||
+      isMailerDaemonFrom ||
+      isSenderAllowlisted;
+
+    //
+    // NOTE: monitoring mode - log what would be exempted so we can
+    // verify the detection logic before enabling enforcement bypass
+    //
+    if (isLegitDSN) {
+      console.log('null sender DSN exemption candidate', {
+        remoteAddress: session.remoteAddress,
+        resolvedClientHostname: session.resolvedClientHostname,
+        originalFromAddress: session.originalFromAddress,
+        isDSNContentType,
+        hasAutoSubmitted,
+        isMailerDaemonFrom,
+        isSenderAllowlisted,
+        allowlistValue: session.allowlistValue,
+        dmarcResult: session.dmarc?.status?.result,
+        dmarcPolicy: session.dmarc?.policy,
+        spfResult: session.spf?.status?.result
+      });
+    }
+  }
+
+  //
+  // TODO: once monitoring confirms the isLegitDSN detection is accurate,
+  // uncomment the `!isLegitDSN &&` lines below to enable the DSN exemption
+  //
+
+  //
   // trust ARC chain from truth source senders (RFC 8617 Section 7.2.1)
   // this allows DMARC local policy override when the ARC chain passes
   // and was sealed by a trusted intermediary (e.g., Google, Microsoft)
@@ -162,6 +245,9 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     session.dmarc.status &&
     session.dmarc.status.result === 'fail' &&
     session.dmarc.policy === 'reject' &&
+    // NOTE: isLegitDSN exemption disabled (monitoring mode)
+    // uncomment below to enable DSN bypass once logs confirm accuracy:
+    // !isLegitDSN &&
     !isTruthSource
   ) {
     throw new SMTPError(
@@ -180,6 +266,9 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     session.dmarc &&
     session.dmarc.status &&
     session.dmarc.status.result === 'none' &&
+    // NOTE: isLegitDSN exemption disabled (monitoring mode)
+    // uncomment below to enable DSN bypass once logs confirm accuracy:
+    // !isLegitDSN &&
     !session.hadAlignedAndPassingDKIM &&
     //
     // trust ARC chain from truth source senders (RFC 8617 Section 7.2.1)

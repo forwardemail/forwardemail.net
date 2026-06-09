@@ -6,6 +6,8 @@
  * Sieve Execution Engine - Executes parsed Sieve ASTs against email messages
  */
 
+const RE2 = require('re2');
+
 /**
  * Parse email address(es) from a header value
  * @param {string} value - Header value containing email addresses
@@ -1179,7 +1181,8 @@ class SieveEngine {
 
       case 'regex': {
         try {
-          const regex = new RegExp(pattern, 'i');
+          // use RE2 to prevent ReDoS from user-supplied patterns
+          const regex = new RE2(pattern, 'i');
           return regex.test(value);
         } catch {
           return false;
@@ -1297,7 +1300,8 @@ class SieveEngine {
     }
 
     try {
-      const regex = new RegExp(`^${regexPattern}$`);
+      // use RE2 to prevent ReDoS from user-supplied glob patterns
+      const regex = new RE2(`^${regexPattern}$`);
       return regex.test(value);
     } catch {
       return false;

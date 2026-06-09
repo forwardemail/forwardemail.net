@@ -10,6 +10,7 @@ const ms = require('ms');
 const TimeoutError = require('./timeout-error');
 const isRetryableError = require('./is-retryable-error');
 const logger = require('./logger');
+const isPrivateHost = require('#helpers/is-private-host');
 
 const config = require('#config');
 
@@ -81,6 +82,21 @@ async function retryRequest(url, opts = {}, count = 1) {
                   opts.resolver
                     .lookup(hostname, options)
                     .then((result) => {
+                      //
+                      // prevent DNS rebinding attacks by validating the
+                      // resolved IP at connect time against private ranges
+                      // (mitigates TOCTOU gap between isPrivateHostResolved
+                      // pre-check and the actual TCP connection)
+                      //
+                      if (result?.address && isPrivateHost(result.address)) {
+                        const err = new Error(
+                          `Resolved IP ${result.address} is a private/reserved address`
+                        );
+                        err.code = 'EPRIVATEADDR';
+                        fn(err);
+                        return;
+                      }
+
                       fn(null, result?.address, result?.family);
                     })
                     .catch((err) => fn(err));

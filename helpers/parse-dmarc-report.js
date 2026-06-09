@@ -206,16 +206,25 @@ function parseXmlReport(xmlContent) {
  * @param {Buffer} buffer - Gzip compressed buffer
  * @returns {Promise<string|null>} Decompressed XML string or null
  */
+// Maximum decompressed size for DMARC reports (25 MB)
+// A legitimate DMARC aggregate report XML should never exceed this.
+// This prevents decompression bombs (e.g. a small gzip that expands to GB).
+const MAX_DECOMPRESSED_SIZE = 25 * 1024 * 1024;
+
 async function extractGzip(buffer) {
   return new Promise((resolve) => {
-    zlib.gunzip(buffer, (err, result) => {
-      if (err) {
-        logger.debug('Failed to decompress gzip', { err });
-        resolve(null);
-      } else {
-        resolve(result.toString('utf8'));
+    zlib.gunzip(
+      buffer,
+      { maxOutputLength: MAX_DECOMPRESSED_SIZE },
+      (err, result) => {
+        if (err) {
+          logger.debug('Failed to decompress gzip', { err });
+          resolve(null);
+        } else {
+          resolve(result.toString('utf8'));
+        }
       }
-    });
+    );
   });
 }
 
@@ -232,12 +241,32 @@ function extractZip(buffer) {
     // Find the first XML file in the archive
     for (const entry of entries) {
       if (entry.entryName.toLowerCase().endsWith('.xml')) {
+        // Prevent decompression bombs: check uncompressed size before extracting
+        if (entry.header.size > MAX_DECOMPRESSED_SIZE) {
+          logger.debug('ZIP entry exceeds maximum decompressed size', {
+            entryName: entry.entryName,
+            size: entry.header.size,
+            maxSize: MAX_DECOMPRESSED_SIZE
+          });
+          return null;
+        }
+
         return entry.getData().toString('utf8');
       }
     }
 
     // If no XML found, try the first entry
     if (entries.length > 0) {
+      // Prevent decompression bombs: check uncompressed size before extracting
+      if (entries[0].header.size > MAX_DECOMPRESSED_SIZE) {
+        logger.debug('ZIP entry exceeds maximum decompressed size', {
+          entryName: entries[0].entryName,
+          size: entries[0].header.size,
+          maxSize: MAX_DECOMPRESSED_SIZE
+        });
+        return null;
+      }
+
       return entries[0].getData().toString('utf8');
     }
 

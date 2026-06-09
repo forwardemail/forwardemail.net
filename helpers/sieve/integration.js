@@ -21,6 +21,7 @@ const { Buffer } = require('node:buffer');
 
 const libmime = require('libmime');
 const mongoose = require('mongoose');
+const RE2 = require('re2');
 const { simpleParser } = require('mailparser');
 const SieveEngine = require('./engine');
 const { SieveFilterHandler } = require('./filter-handler');
@@ -832,17 +833,21 @@ class SieveIntegration {
                 }
 
                 if (change.matchType === 'matches') {
-                  // Simple glob matching
-                  const regex = new RegExp(
-                    '^' +
-                      v
-                        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-                        .replace(/\\\*/g, '.*')
-                        .replace(/\\\?/g, '.') +
-                      '$',
-                    'i'
-                  );
-                  return regex.test(headerValue);
+                  // use RE2 to prevent ReDoS from user-supplied glob patterns
+                  try {
+                    const regex = new RE2(
+                      '^' +
+                        v
+                          .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+                          .replace(/\\\*/g, '.*')
+                          .replace(/\\\?/g, '.') +
+                        '$',
+                      'i'
+                    );
+                    return regex.test(headerValue);
+                  } catch {
+                    return false;
+                  }
                 }
 
                 return false;
