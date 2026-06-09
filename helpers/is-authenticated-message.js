@@ -204,9 +204,7 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     const isSenderAllowlisted = Boolean(session.isAllowlisted);
 
     isLegitDSN =
-      isDSNContentType ||
-      hasAutoSubmitted ||
-      isMailerDaemonFrom ||
+      (isDSNContentType || hasAutoSubmitted || isMailerDaemonFrom) &&
       isSenderAllowlisted;
 
     //
