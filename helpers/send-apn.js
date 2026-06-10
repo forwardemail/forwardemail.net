@@ -406,6 +406,26 @@ async function sendApnForService(serviceName, client, id, options = {}) {
       // NOTE: if device returns 410 then unsubscribe on our side too
       // If the device returns 410 we unsubscribe on our side too.
       if (Array.isArray(result.failed) && result.failed.length > 0) {
+        //
+        // Handle 429 TooManyRequests -- APNs rate limit, not a bug.
+        // The device will receive the next successful push and sync then.
+        // Extend the coalescing lock to 5 minutes for this device to
+        // back off and avoid hitting the rate limit again immediately.
+        //
+        const rateLimited = result.failed.filter(
+          (r) => Number.parseInt(r.status, 10) === 429
+        );
+
+        if (rateLimited.length > 0) {
+          logger.warn('APNs rate limited (429 TooManyRequests)', {
+            service: serviceName,
+            device: obj.device_token,
+            count: rateLimited.length
+          });
+          await client.set(key, true, 'PX', ms('5m'));
+          return;
+        }
+
         const unregisteredDeviceTokens = result.failed
           .filter((r) => Number.parseInt(r.status, 10) === 410)
           .map((r) => r.device);

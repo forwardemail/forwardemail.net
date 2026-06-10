@@ -289,6 +289,15 @@
         group: root
         mode: '0755'
 
+    - name: Seed mirror log file (prevents monitor false alarm on first deploy)
+      copy:
+        dest: /var/log/sqlite-mirror/mirror.log
+        content: ""
+        force: no
+        owner: root
+        group: root
+        mode: '0644'
+
     - name: Deploy sqlite-mirror cron job
       copy:
         dest: /etc/cron.d/sqlite-mirror
@@ -336,29 +345,45 @@
 
           # Check for recent errors in log file
           if [ -f "$LOG_FILE" ]; then
-            RECENT_ERRORS=$(tail -50 "$LOG_FILE" | grep -i "ERROR" | tail -5 || true)
-            if [ -n "$RECENT_ERRORS" ]; then
-              ALERT_NEEDED=1
-              ALERT_MSG="${ALERT_MSG}WARNING: Recent errors in mirror log:\n${RECENT_ERRORS}\n"
-            fi
+            # If log file exists but is empty, check if it was just created
+            # (grace period: don't alert if the cron script exists but hasn't run yet)
+            if [ ! -s "$LOG_FILE" ]; then
+              if [ -f "/etc/cron.d/sqlite-mirror" ]; then
+                echo "[$(date -Iseconds)] INFO: Log file is empty, cron job exists - waiting for first run"
+              else
+                ALERT_NEEDED=1
+                ALERT_MSG="${ALERT_MSG}WARNING: Log file is empty and no cron job found\n"
+              fi
+            else
+              RECENT_ERRORS=$(tail -50 "$LOG_FILE" | grep -i "ERROR" | tail -5 || true)
+              if [ -n "$RECENT_ERRORS" ]; then
+                ALERT_NEEDED=1
+                ALERT_MSG="${ALERT_MSG}WARNING: Recent errors in mirror log:\n${RECENT_ERRORS}\n"
+              fi
 
-            # Check if last successful mirror was more than 10 minutes ago
-            LAST_DONE=$(grep "DONE:" "$LOG_FILE" | tail -1 || true)
-            if [ -n "$LAST_DONE" ]; then
-              LAST_TS=$(echo "$LAST_DONE" | grep -oP '^\[\K[^]]+' || true)
-              if [ -n "$LAST_TS" ]; then
-                LAST_EPOCH=$(date -d "$LAST_TS" +%s 2>/dev/null || echo 0)
-                NOW_EPOCH=$(date +%s)
-                DIFF=$(( NOW_EPOCH - LAST_EPOCH ))
-                if [ "$DIFF" -gt 600 ]; then
-                  ALERT_NEEDED=1
-                  ALERT_MSG="${ALERT_MSG}WARNING: Last successful mirror was ${DIFF}s ago (>10min)\n"
+              # Check if last successful mirror was more than 10 minutes ago
+              LAST_DONE=$(grep "DONE:" "$LOG_FILE" | tail -1 || true)
+              if [ -n "$LAST_DONE" ]; then
+                LAST_TS=$(echo "$LAST_DONE" | grep -oP '^\[\K[^]]+' || true)
+                if [ -n "$LAST_TS" ]; then
+                  LAST_EPOCH=$(date -d "$LAST_TS" +%s 2>/dev/null || echo 0)
+                  NOW_EPOCH=$(date +%s)
+                  DIFF=$(( NOW_EPOCH - LAST_EPOCH ))
+                  if [ "$DIFF" -gt 600 ]; then
+                    ALERT_NEEDED=1
+                    ALERT_MSG="${ALERT_MSG}WARNING: Last successful mirror was ${DIFF}s ago (>10min)\n"
+                  fi
                 fi
               fi
             fi
           else
-            ALERT_NEEDED=1
-            ALERT_MSG="${ALERT_MSG}WARNING: No mirror log file found at $LOG_FILE\n"
+            # Log file doesn't exist at all - check if cron job is deployed
+            if [ -f "/etc/cron.d/sqlite-mirror" ]; then
+              echo "[$(date -Iseconds)] INFO: Log file missing but cron job exists - waiting for first run"
+            else
+              ALERT_NEEDED=1
+              ALERT_MSG="${ALERT_MSG}WARNING: No mirror log file found at $LOG_FILE\n"
+            fi
           fi
 
           # Check disk space on target
@@ -447,10 +472,9 @@
         enabled: yes
         state: started
 
-    - name: Run initial mirror sync
-      command: /usr/local/bin/sqlite-mirror.sh
-      register: initial_sync
-      changed_when: initial_sync.rc == 0
+    # NOTE: Initial sync is NOT run here because it would block ansible for
+    # hours on multi-TB volumes. The cron job will start the first sync within
+    # {{ mirror_interval }} minutes. Monitor has a grace period for this.
 
     - name: Display sqlite-mirror status
       debug:
