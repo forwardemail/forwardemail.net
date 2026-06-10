@@ -275,8 +275,14 @@
 
           RC=$?
 
-          if [ $RC -eq 0 ]; then
-            echo "[$(date -Iseconds)] DONE: Mirror complete (exit 0)" >> "$LOG"
+          # rsync exit codes:
+          #   0  = success
+          #   24 = partial transfer due to vanished source files
+          #        (normal for live SQLite directory where WAL checkpoints,
+          #         temp files, and user deletions happen constantly)
+          if [ $RC -eq 0 ] || [ $RC -eq 24 ]; then
+            echo "[$(date -Iseconds)] DONE: Mirror complete (exit $RC)" >> "$LOG"
+            RC=0
           else
             echo "[$(date -Iseconds)] ERROR: rsync exited with code $RC" >> "$LOG"
           fi
