@@ -206,32 +206,7 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     isLegitDSN =
       (isDSNContentType || hasAutoSubmitted || isMailerDaemonFrom) &&
       isSenderAllowlisted;
-
-    //
-    // NOTE: monitoring mode - log what would be exempted so we can
-    // verify the detection logic before enabling enforcement bypass
-    //
-    if (isLegitDSN) {
-      console.log('null sender DSN exemption candidate', {
-        remoteAddress: session.remoteAddress,
-        resolvedClientHostname: session.resolvedClientHostname,
-        originalFromAddress: session.originalFromAddress,
-        isDSNContentType,
-        hasAutoSubmitted,
-        isMailerDaemonFrom,
-        isSenderAllowlisted,
-        allowlistValue: session.allowlistValue,
-        dmarcResult: session.dmarc?.status?.result,
-        dmarcPolicy: session.dmarc?.policy,
-        spfResult: session.spf?.status?.result
-      });
-    }
   }
-
-  //
-  // TODO: once monitoring confirms the isLegitDSN detection is accurate,
-  // uncomment the `!isLegitDSN &&` lines below to enable the DSN exemption
-  //
 
   //
   // trust ARC chain from truth source senders (RFC 8617 Section 7.2.1)
@@ -243,9 +218,7 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     session.dmarc.status &&
     session.dmarc.status.result === 'fail' &&
     session.dmarc.policy === 'reject' &&
-    // NOTE: isLegitDSN exemption disabled (monitoring mode)
-    // uncomment below to enable DSN bypass once logs confirm accuracy:
-    // !isLegitDSN &&
+    !isLegitDSN &&
     !isTruthSource
   ) {
     throw new SMTPError(
