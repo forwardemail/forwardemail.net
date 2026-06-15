@@ -283,6 +283,8 @@ const Payments = new mongoose.Schema({
       'bacs_debit',
       // Used for bank transfers
       'bancontact',
+      // Used for mobile payments in Spain
+      'bizum',
       // Used for bank transfers in the EU
       'blik',
       // Used for B2B buy now, pay later payments in Germany
@@ -345,6 +347,8 @@ const Payments = new mongoose.Schema({
       'paynow',
       // Used for prepaid card payments
       'paysafecard',
+      // Used for real-time bank payments in Australia
+      'payto',
       // Used for digital wallet payments in Japan
       'paypay',
       // Used for instant payments in Brazil
@@ -359,14 +363,20 @@ const Payments = new mongoose.Schema({
       'samsung_pay',
       // Used for mobile payments in Italy
       'satispay',
+      // Used for buy now, pay later payments in Italy and Europe
+      'scalapay',
       // Used for bank transfers in the EU
       'sepa_debit',
       // Used for bank transfers in Germany, Austria, Belgium, Italy, Netherlands, and Spain
       'sofort',
+      // Used for buy now, pay later payments in the US
+      'sunbit',
       // Used for mobile payments in Sweden
       'swish',
       // Swiss mobile payment method
       'twint',
+      // Used for UPI payments in India
+      'upi',
       // Used for bank transfers in the US
       'us_bank_account',
       // Used for digital wallet payments in China

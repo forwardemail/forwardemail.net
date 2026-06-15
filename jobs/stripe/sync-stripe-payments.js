@@ -4,7 +4,6 @@
  */
 
 const os = require('node:os');
-
 const { setTimeout } = require('node:timers/promises');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -13,7 +12,6 @@ const pReduce = require('p-reduce');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
-
 const getAllStripePaymentIntents = require('./get-all-stripe-payment-intents');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -30,10 +28,15 @@ const concurrency = os.cpus().length;
 async function syncStripePayments() {
   const errorEmails = [];
 
+  //
+  // Fetch all stripe customers from our database sorted by most recently created first.
+  // This ensures that the newest customers (most likely to have recent unsynced payments)
+  // are processed first, so even if the job times out before finishing all 33K+ customers,
+  // the most critical ones are already handled.
+  //
   const stripeCustomers = await Users.find({
     [config.userFields.stripeCustomerID]: { $exists: true, $ne: null }
   })
-    // sort by newest customers first
     .sort('-created_at')
     .lean()
     .exec();
@@ -43,14 +46,16 @@ async function syncStripePayments() {
   );
 
   async function mapper(user) {
-    // wait a second to prevent rate limitation error
-    await setTimeout(ms('1s'));
+    // wait 250ms to prevent rate limitation error
+    // (reduced from 1s since we have concurrency limiting already)
+    await setTimeout(ms('250ms'));
 
     logger.info(
       `Syncing payments for customer ${user.email} ${
         user[config.userFields.stripeCustomerID]
       }`
     );
+
     // stripe payment_intents are source of truth for stripe payments as one is created
     // for each time a customer is charged for both one-time and subscriptions
     // we go through each successful charge and ensure there is an existing payment and
@@ -78,9 +83,9 @@ async function syncStripePayments() {
         },
         err
       });
-
       if (errorEmails.length >= config.stripeErrorThreshold)
         throw new ThresholdError(errorEmails.map((e) => e.err));
+      return;
     }
 
     const otherErrorEmails = await pReduce(
@@ -120,11 +125,9 @@ async function syncStripePayments() {
             await stripe.subscriptions.del(
               user[config.userFields.stripeSubscriptionID]
             );
-
           // remove it from the user's account
           if (subscription.status !== 'trialing') {
             const existingUser = await Users.findById(user._id);
-
             if (!existingUser) throw new Error('User does not exist');
             existingUser[config.userFields.stripeSubscriptionID] = undefined;
             await existingUser.save();
@@ -189,7 +192,6 @@ async function syncStripePayments() {
         },
         err
       });
-
       if (errorEmails.length >= config.stripeErrorThreshold)
         throw new ThresholdError(errorEmails.map((e) => e.err));
     }
@@ -200,7 +202,7 @@ async function syncStripePayments() {
   if (errorEmails.length > 0)
     await Promise.all(errorEmails.map((email) => emailHelper(email)));
 
-  await logger.info('Stripe payments synced successfully');
+  logger.info('Stripe payments synced successfully');
 }
 
 module.exports = syncStripePayments;

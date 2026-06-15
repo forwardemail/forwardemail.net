@@ -15,7 +15,6 @@ const titleize = require('titleize');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 const _ = require('#helpers/lodash');
-
 const { Users, Domains } = require('#models');
 const config = require('#config');
 const env = require('#config/env');
@@ -42,19 +41,27 @@ async function processEvent(ctx, event) {
     // ban user and notify admins, and refund all other charges from them
     //
     case 'charge.failed': {
-      // exit early if it wasn't a charge failure
-      if (event?.data?.object?.object !== 'charge') break;
-      if (typeof event?.data?.object?.customer !== 'string')
-        throw new Error('Charge did not have customer');
+      // Exit early if it wasn't a charge failure
+      if (event?.data?.object?.object !== 'charge') {
+        break;
+      }
+
+      if (typeof event?.data?.object?.customer !== 'string') {
+        throw new TypeError('Charge did not have customer');
+      }
+
       const user = await Users.findOne({
         [config.userFields.stripeCustomerID]: event.data.object.customer
       });
-      if (!user) throw new Error('User did not exist for customer');
+      if (!user) {
+        throw new Error('User did not exist for customer');
+      }
+
       // <https://docs.stripe.com/api/charges/list>
       const charges = await stripe.charges.list({
         customer: event.data.object.customer,
         created: {
-          gte: dayjs().subtract(1, 'month').unix() // only search last 30 days to prevent false positives
+          gte: dayjs().subtract(1, 'month').unix() // Only search last 30 days to prevent false positives
         }
       });
 
@@ -62,8 +69,10 @@ async function processEvent(ctx, event) {
         (d) => d.status === 'failed' && d.failure_code === 'card_declined'
       );
 
-      // if not more than 5 then return early
-      if (filtered.length < 5) break;
+      // If not more than 5 then return early
+      if (filtered.length < 5) {
+        break;
+      }
 
       // TODO: we may want to use payment methods count here too instead of just failed charges
       //       (see `jobs/stripe/fraud-check.js` which uses this approach on a recurring basis)
@@ -119,8 +128,8 @@ async function processEvent(ctx, event) {
           })
         ]);
 
-        // refund all payments as fraudulent
-        if (charges?.data?.length > 0)
+        // Refund all payments as fraudulent
+        if (charges?.data?.length > 0) {
           await pMapSeries(charges.data, async (charge) => {
             try {
               await stripe.refunds.create({
@@ -131,43 +140,54 @@ async function processEvent(ctx, event) {
               logger.fatal(err, { charge });
             }
           });
+        }
 
-        // cancel all subscriptions
-        if (subscriptions?.data?.length > 0)
+        // Cancel all subscriptions
+        if (subscriptions?.data?.length > 0) {
           await pMapSeries(subscriptions.data, async (subscription) => {
-            if (subscription.status !== 'canceled') return;
+            if (subscription.status !== 'canceled') {
+              return;
+            }
+
             await stripe.subscriptions.cancel(subscription.id);
           });
+        }
       }
 
       break;
     }
 
-    // create or update existing payment
+    // Create or update existing payment
     // (we may also want to upgrade plan; e.g. in case redirect does not occur)
     // (also need to ensure no conflicts with redirect)
     case 'charge.captured':
     case 'charge.succeeded':
     case 'charge.refunded': {
-      if (event.data.object.object !== 'charge')
+      if (event.data.object.object !== 'charge') {
         throw new Error('Event object was not a charge');
+      }
 
       const charge = event.data.object;
-      // ensure it has customer
-      if (!isSANB(charge.customer))
+      // Ensure it has customer
+      if (!isSANB(charge.customer)) {
         throw new Error('Charge did not have customer');
+      }
 
-      // ensure it has payment_intent
-      if (!isSANB(charge.payment_intent))
+      // Ensure it has payment_intent
+      if (!isSANB(charge.payment_intent)) {
         throw new Error('Charge did not have payment_intent');
+      }
 
-      // lookup user in our system
+      // Lookup user in our system
       const user = await Users.findOne({
         [config.userFields.stripeCustomerID]: charge.customer
       });
 
       if (!user) {
-        if (event.type === 'charge.refunded') return;
+        if (event.type === 'charge.refunded') {
+          return;
+        }
+
         throw new Error('User did not exist for customer');
       }
 
@@ -176,10 +196,13 @@ async function processEvent(ctx, event) {
       //       in the job for `sync-stripe-payments` which syncs payments
       //
       const paymentIntent = await stripe.paymentIntents.retrieve(
-        charge.payment_intent
+        charge.payment_intent,
+        { expand: ['charges'] }
       );
-      if (!paymentIntent)
+      if (!paymentIntent) {
         throw new Error('Payment intent did not exist in Stripe');
+      }
+
       const errorEmails = await syncStripePaymentIntent(user)(
         [],
         paymentIntent
@@ -196,15 +219,20 @@ async function processEvent(ctx, event) {
     }
 
     case 'checkout.session.async_payment_failed': {
-      if (event.data.object.object !== 'checkout.session')
+      if (event.data.object.object !== 'checkout.session') {
         throw new Error('Event object was not a checkout.session');
+      }
+
       const session = event.data.object;
-      // lookup user by customer
+      // Lookup user by customer
       const user = await Users.findOne({
         [config.userFields.stripeCustomerID]: session.customer
       });
-      if (!user) throw new Error('User did not exist for customer');
-      // email the user and CC admins
+      if (!user) {
+        throw new Error('User did not exist for customer');
+      }
+
+      // Email the user and CC admins
       await emailHelper({
         template: 'alert',
         message: {
@@ -227,38 +255,47 @@ async function processEvent(ctx, event) {
       break;
     }
 
-    // then lookup the session if it existed for the payment intent
+    // Then lookup the session if it existed for the payment intent
     // and lookup the plan mapping, and if it doesn't match then adjust it
     case 'checkout.session.async_payment_succeeded':
     case 'checkout.session.completed': {
-      // most of this logic is mirrored from web/my-account/retrieve-domain-billing.js
-      if (event.data.object.object !== 'checkout.session')
+      // Most of this logic is mirrored from web/my-account/retrieve-domain-billing.js
+      if (event.data.object.object !== 'checkout.session') {
         throw new Error('Event object was not a checkout.session');
+      }
+
       const session = event.data.object;
-      if (session.payment_status !== 'paid') return;
-      // lookup user by customer
+      if (session.payment_status !== 'paid') {
+        return;
+      }
+
+      // Lookup user by customer
       const user = await Users.findOne({
         [config.userFields.stripeCustomerID]: session.customer
       });
-      if (!user) throw new Error('User did not exist for customer');
+      if (!user) {
+        throw new Error('User did not exist for customer');
+      }
 
-      // look at the line items
+      // Look at the line items
       const lineItems = await stripe.checkout.sessions.listLineItems(
         session.id
       );
 
-      if (!Array.isArray(lineItems.data) || lineItems.data.length !== 1)
+      if (!Array.isArray(lineItems.data) || lineItems.data.length !== 1) {
         throw ctx.translateError('UNKNOWN_ERROR');
+      }
 
-      // look up the product associated with the line item
+      // Look up the product associated with the line item
       // (it should match ctx.query.plan but this is a safeguard)
       const productToPlan = STRIPE_PRODUCTS[lineItems.data[0].price.product];
 
       if (
         !isSANB(productToPlan) ||
         !['team', 'enhanced_protection'].includes(productToPlan)
-      )
+      ) {
         throw new Error('Plan was not valid');
+      }
 
       //
       // NOTE: this re-uses the payment intent mapper that is also used
@@ -266,12 +303,14 @@ async function processEvent(ctx, event) {
       //
       if (session.payment_intent) {
         const paymentIntent = await stripe.paymentIntents.retrieve(
-          session.payment_intent
+          session.payment_intent,
+          { expand: ['charges'] }
         );
-        if (!paymentIntent)
+        if (!paymentIntent) {
           throw new Error('Payment intent did not exist in Stripe');
+        }
 
-        // sync the payment intent
+        // Sync the payment intent
         const errorEmails = await syncStripePaymentIntent(user)(
           [],
           paymentIntent
@@ -284,37 +323,42 @@ async function processEvent(ctx, event) {
           }
         }
 
-        // lookup the payment intent created date and if its after plan_set_at then adjust it
+        // Lookup the payment intent created date and if its after plan_set_at then adjust it
         const paymentCreatedAt = dayjs.unix(paymentIntent.created).toDate();
         if (
           !_.isDate(user[config.userFields.planSetAt]) ||
-          // if the user changed plans then adjust plan set at
+          // If the user changed plans then adjust plan set at
           user.plan !== productToPlan ||
           // Fix for race condition: if the payment's timestamp is before planSetAt,
           // update planSetAt to match. This can happen when the redirect handler
           // set planSetAt to server time, but the webhook has the correct timestamp.
           paymentCreatedAt.getTime() <
             new Date(user[config.userFields.planSetAt]).getTime()
-        )
+        ) {
           user[config.userFields.planSetAt] = paymentCreatedAt;
+        }
       } else if (session.subscription) {
         const subscription = await stripe.subscriptions.retrieve(
           session.subscription
         );
-        if (!subscription)
+        if (!subscription) {
           throw new Error('Subscription does not exist in Stripe');
-        // store the subscription id to the user
+        }
+
+        // Store the subscription id to the user
         user[config.userFields.stripeSubscriptionID] = subscription.id;
-        // if it was not a trial then lookup the payment intent
+        // If it was not a trial then lookup the payment intent
         if (subscription.status !== 'trialing') {
           const invoices = await stripe.invoices.list({
-            limit: 100, // it'd be impossible for a customer to hit this (at least right now)
+            limit: 100, // It'd be impossible for a customer to hit this (at least right now)
             customer: session.customer,
             subscription: subscription.id
           });
 
-          if (invoices.has_more)
+          if (invoices.has_more) {
             throw new Error('Invoices object should not have more');
+          }
+
           invoices.data = _.sortBy(invoices.data, 'created');
 
           if (
@@ -322,15 +366,20 @@ async function processEvent(ctx, event) {
             !invoices.data[0] ||
             !invoices.data[0].id ||
             !invoices.data[0].payment_intent
-          )
+          ) {
             throw new Error('Payment intent missing');
+          }
+
           const paymentIntent = await stripe.paymentIntents.retrieve(
-            invoices.data[0].payment_intent
+            invoices.data[0].payment_intent,
+            { expand: ['charges'] }
           );
 
-          if (!paymentIntent)
+          if (!paymentIntent) {
             throw new Error('Payment intent did not exist in Stripe');
-          // sync the payment intent
+          }
+
+          // Sync the payment intent
           const errorEmails = await syncStripePaymentIntent(user)(
             [],
             paymentIntent
@@ -344,32 +393,35 @@ async function processEvent(ctx, event) {
             }
           }
 
-          // lookup the payment intent created date and if its after plan_set_at then adjust it
+          // Lookup the payment intent created date and if its after plan_set_at then adjust it
           const subPaymentCreatedAt = dayjs
             .unix(paymentIntent.created)
             .toDate();
           if (
             !_.isDate(user[config.userFields.planSetAt]) ||
-            // if the user changed plans then adjust plan set at
+            // If the user changed plans then adjust plan set at
             user.plan !== productToPlan ||
             // Fix for race condition: if the payment's timestamp is before planSetAt,
             // update planSetAt to match. This can happen when the redirect handler
             // set planSetAt to server time, but the webhook has the correct timestamp.
             subPaymentCreatedAt.getTime() <
               new Date(user[config.userFields.planSetAt]).getTime()
-          )
+          ) {
             user[config.userFields.planSetAt] = subPaymentCreatedAt;
+          }
         }
       }
 
-      // if the plans don't match up them sync them
-      if (user.plan !== productToPlan) user.plan = productToPlan;
+      // If the plans don't match up them sync them
+      if (user.plan !== productToPlan) {
+        user.plan = productToPlan;
+      }
 
-      // finally save the user
+      // Finally save the user
       await user.save();
 
       if (event.type === 'checkout.session.async_payment_succeeded') {
-        // email the user that their async payment was successful
+        // Email the user that their async payment was successful
         // if and only if some of their domains don't match up
         const count = await Domains.countDocuments({
           plan: {
@@ -383,7 +435,7 @@ async function processEvent(ctx, event) {
           }
         });
 
-        if (count > 0)
+        if (count > 0) {
           await emailHelper({
             template: 'alert',
             message: {
@@ -404,39 +456,147 @@ async function processEvent(ctx, event) {
           `
             }
           });
+        }
       }
 
       break;
     }
 
-    // TODO: 'payment_intent.succeeded'
+    //
+    // Handle payment_intent.succeeded - this is critical for async payment methods
+    // (e.g. UPI, bank debits, SEPA) where the checkout session completes with
+    // payment_status='unpaid' and the payment succeeds later asynchronously.
+    // The charge.succeeded event may also fire, but this handler ensures we
+    // catch all async payment completions reliably.
+    //
+    case 'payment_intent.succeeded': {
+      if (event.data.object.object !== 'payment_intent') {
+        throw new Error('Event object was not a payment_intent');
+      }
 
-    // ban users that dispute charges
-    // and cancel their subscriptions (if not already)
-    case 'charge.dispute.created': {
-      // event.data.object is a dispute object
-      if (event.data.object.object !== 'dispute')
-        throw new Error('Event object was not a dispute');
-      const dispute = event.data.object;
-      // close the dispute (accepts as lost)
-      await stripe.disputes.close(dispute.id);
-      // ensure it has payment_intent
-      if (!isSANB(dispute.payment_intent))
-        throw new Error('Dispute did not have payment_intent');
-      // attempt to sync the payment (so user gets a refund email)
-      const paymentIntent = await stripe.paymentIntents.retrieve(
-        dispute.payment_intent
-      );
-      if (!paymentIntent)
-        throw new Error('Payment intent did not exist in Stripe');
-      // lookup the user from the payment intent customer field
-      if (!isSANB(paymentIntent.customer))
-        throw new Error('Payment intent missing customer field');
+      const paymentIntent = event.data.object;
+
+      // Ensure it has customer
+      if (!isSANB(paymentIntent.customer)) {
+        throw new Error('Payment intent did not have customer');
+      }
+
+      // Lookup user in our system
       const user = await Users.findOne({
         [config.userFields.stripeCustomerID]: paymentIntent.customer
       });
-      if (!user) throw new Error('User did not exist for customer');
-      // artificially wait 5s for refund to process
+
+      if (!user) {
+        throw new Error('User did not exist for customer');
+      }
+
+      //
+      // NOTE: the event object may not have charges expanded,
+      //       so we retrieve it with expansion to ensure syncStripePaymentIntent works
+      //
+      const expandedPaymentIntent = await stripe.paymentIntents.retrieve(
+        paymentIntent.id,
+        { expand: ['charges'] }
+      );
+      if (!expandedPaymentIntent) {
+        throw new Error('Payment intent did not exist in Stripe');
+      }
+
+      const errorEmails = await syncStripePaymentIntent(user)(
+        [],
+        expandedPaymentIntent
+      );
+      if (errorEmails.length > 0) {
+        try {
+          await Promise.all(errorEmails.map((email) => emailHelper(email)));
+        } catch (err) {
+          ctx.logger.error(err);
+        }
+      }
+
+      //
+      // if the user's plan doesn't match what they paid for, fix it
+      // (this handles the case where checkout redirect showed 'unpaid' for async payments)
+      //
+      const { data: checkoutSessions } = await stripe.checkout.sessions.list({
+        payment_intent: expandedPaymentIntent.id
+      });
+
+      if (checkoutSessions.length > 0) {
+        const [session] = checkoutSessions;
+        const lineItems = await stripe.checkout.sessions.listLineItems(
+          session.id
+        );
+
+        if (Array.isArray(lineItems.data) && lineItems.data.length === 1) {
+          const productToPlan =
+            STRIPE_PRODUCTS[lineItems.data[0].price.product];
+          if (
+            isSANB(productToPlan) &&
+            ['team', 'enhanced_protection'].includes(productToPlan)
+          ) {
+            if (user.plan !== productToPlan) {
+              user.plan = productToPlan;
+            }
+
+            const paymentCreatedAt = dayjs
+              .unix(expandedPaymentIntent.created)
+              .toDate();
+            if (
+              !_.isDate(user[config.userFields.planSetAt]) ||
+              user.plan !== productToPlan ||
+              paymentCreatedAt.getTime() <
+                new Date(user[config.userFields.planSetAt]).getTime()
+            ) {
+              user[config.userFields.planSetAt] = paymentCreatedAt;
+            }
+
+            await user.save();
+          }
+        }
+      }
+
+      break;
+    }
+
+    // Ban users that dispute charges
+    // and cancel their subscriptions (if not already)
+    case 'charge.dispute.created': {
+      // Event.data.object is a dispute object
+      if (event.data.object.object !== 'dispute') {
+        throw new Error('Event object was not a dispute');
+      }
+
+      const dispute = event.data.object;
+      // Close the dispute (accepts as lost)
+      await stripe.disputes.close(dispute.id);
+      // Ensure it has payment_intent
+      if (!isSANB(dispute.payment_intent)) {
+        throw new Error('Dispute did not have payment_intent');
+      }
+
+      // Attempt to sync the payment (so user gets a refund email)
+      const paymentIntent = await stripe.paymentIntents.retrieve(
+        dispute.payment_intent,
+        { expand: ['charges'] }
+      );
+      if (!paymentIntent) {
+        throw new Error('Payment intent did not exist in Stripe');
+      }
+
+      // Lookup the user from the payment intent customer field
+      if (!isSANB(paymentIntent.customer)) {
+        throw new Error('Payment intent missing customer field');
+      }
+
+      const user = await Users.findOne({
+        [config.userFields.stripeCustomerID]: paymentIntent.customer
+      });
+      if (!user) {
+        throw new Error('User did not exist for customer');
+      }
+
+      // Artificially wait 5s for refund to process
       await setTimeout(ms('15s'));
       //
       // NOTE: this re-uses the payment intent mapper that is also used
@@ -454,7 +614,7 @@ async function processEvent(ctx, event) {
         }
       }
 
-      // cancel the user's subscription
+      // Cancel the user's subscription
       if (isSANB(user[config.userFields.stripeSubscriptionID])) {
         try {
           await stripe.subscriptions.del(
@@ -468,18 +628,18 @@ async function processEvent(ctx, event) {
         await user.save();
       }
 
-      // ban the user for opening a dispute
+      // Ban the user for opening a dispute
       if (!user[config.userFields.isBanned]) {
         const banReason = `Automated ban: opened Stripe dispute ${dispute.id}`;
         user[config.userFields.isBanned] = true;
         user[config.userFields.banReason] = banReason;
         await user.save();
-        // clear banned cache
+        // Clear banned cache
         ctx.client
           .del('banned_user_ids')
           .then()
           .catch((err) => ctx.logger.fatal(err));
-        // email admins that the user was banned
+        // Email admins that the user was banned
         await emailHelper({
           template: 'alert',
           message: {
@@ -495,13 +655,15 @@ async function processEvent(ctx, event) {
       break;
     }
 
-    // set subscription for customer if not already set
+    // Set subscription for customer if not already set
     case 'customer.subscription.created':
     case 'customer.subscription.updated': {
-      // event.data.object is a subscription object
-      if (event.data.object.object !== 'subscription')
+      // Event.data.object is a subscription object
+      if (event.data.object.object !== 'subscription') {
         throw new Error('Event object was not a subscription');
-      if (['active', 'trialing'].includes(event.data.object.status))
+      }
+
+      if (['active', 'trialing'].includes(event.data.object.status)) {
         await Users.findOneAndUpdate(
           {
             [config.userFields.stripeCustomerID]: event.data.object.customer
@@ -512,7 +674,9 @@ async function processEvent(ctx, event) {
             }
           }
         );
-      // if user had more than one subscription then notify admins by email
+      }
+
+      // If user had more than one subscription then notify admins by email
       const subscriptions = await stripe.subscriptions.list({
         customer: event.data.object.customer
       });
@@ -520,15 +684,17 @@ async function processEvent(ctx, event) {
         (s) => s.status !== 'canceled'
       );
 
-      // lookup user in our system
+      // Lookup user in our system
       const user = await Users.findOne({
         [config.userFields.stripeCustomerID]: event.data.object.customer
       });
 
-      if (!user) throw new Error('User did not exist for customer');
+      if (!user) {
+        throw new Error('User did not exist for customer');
+      }
 
       if (filtered.length > 1) {
-        // if user had verified domains then alert admins
+        // If user had verified domains then alert admins
         // otherwise ban the user and refund all their payments
         const count = await Domains.countDocuments({
           members: {
@@ -570,8 +736,8 @@ async function processEvent(ctx, event) {
             })
           ]);
 
-          // refund all payments as fraudulent
-          if (charges?.data?.length > 0)
+          // Refund all payments as fraudulent
+          if (charges?.data?.length > 0) {
             await pMapSeries(charges.data, async (charge) => {
               try {
                 await stripe.refunds.create({
@@ -582,13 +748,18 @@ async function processEvent(ctx, event) {
                 logger.fatal(err, { charge });
               }
             });
+          }
 
-          // cancel all subscriptions
-          if (subscriptions?.data?.length > 0)
+          // Cancel all subscriptions
+          if (subscriptions?.data?.length > 0) {
             await pMapSeries(subscriptions.data, async (subscription) => {
-              if (subscription.status !== 'canceled') return;
+              if (subscription.status !== 'canceled') {
+                return;
+              }
+
               await stripe.subscriptions.cancel(subscription.id);
             });
+          }
         } else {
           emailHelper({
             template: 'alert',
@@ -608,12 +779,14 @@ async function processEvent(ctx, event) {
       break;
     }
 
-    // remove stripe subscription from user
+    // Remove stripe subscription from user
     // when cancelled (if not already)
     case 'customer.subscription.deleted': {
-      // event.data.object is a subscription object
-      if (event.data.object.object !== 'subscription')
+      // Event.data.object is a subscription object
+      if (event.data.object.object !== 'subscription') {
         throw new Error('Event object was not a subscription');
+      }
+
       const subscription = event.data.object;
       await Users.findOneAndUpdate(
         {
@@ -634,13 +807,16 @@ async function processEvent(ctx, event) {
     // We send a notification to the user about the failed payment
     //
     case 'invoice.payment_failed': {
-      if (event.data.object.object !== 'invoice')
+      if (event.data.object.object !== 'invoice') {
         throw new Error('Event object was not an invoice');
+      }
 
       const invoice = event.data.object;
 
       // Only process subscription invoices
-      if (!invoice.subscription) break;
+      if (!invoice.subscription) {
+        break;
+      }
 
       // Find the user with this subscription
       const user = await Users.findOne({
@@ -688,9 +864,10 @@ async function processEvent(ctx, event) {
 async function webhook(ctx) {
   const sig = ctx.request.get('stripe-signature');
 
-  // throw an error if something was wrong
-  if (!isSANB(sig))
+  // Throw an error if something was wrong
+  if (!isSANB(sig)) {
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
+  }
 
   const event = stripe.webhooks.constructEvent(
     ctx.request.rawBody,
@@ -698,21 +875,22 @@ async function webhook(ctx) {
     env.STRIPE_ENDPOINT_SECRET
   );
 
-  // throw an error if something was wrong
-  if (!event)
+  // Throw an error if something was wrong
+  if (!event) {
     throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
+  }
 
   ctx.logger.info('stripe webhook', { event });
 
-  // return a response to acknowledge receipt of the event
+  // Return a response to acknowledge receipt of the event
   ctx.body = { received: true };
 
-  // run in background
+  // Run in background
   processEvent(ctx, event)
     .then()
     .catch((err) => {
       ctx.logger.fatal(err, { event });
-      // email admin errors
+      // Email admin errors
       emailHelper({
         template: 'alert',
         message: {

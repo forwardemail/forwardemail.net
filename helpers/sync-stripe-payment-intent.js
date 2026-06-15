@@ -10,7 +10,6 @@ const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
-
 const logger = require('./logger');
 const ThresholdError = require('./threshold-error');
 const _ = require('#helpers/lodash');
@@ -21,7 +20,7 @@ const stripe = require('#helpers/stripe');
 
 const { STRIPE_MAPPING, STRIPE_PRODUCTS } = config.payments;
 
-// if for some reason data doesn't match between a saved
+// If for some reason data doesn't match between a saved
 // payment and the data we are getting from stripe, we do
 // not make any changes and send an alert for that payment
 function syncStripePaymentIntent(user) {
@@ -41,18 +40,21 @@ function syncStripePaymentIntent(user) {
       // (otherwise the user might get credit for something that wasn't successful)
       //
       if (paymentIntent.status !== 'succeeded') {
-        // remove the Payment on our side if any that corresponds to this intent
+        // Remove the Payment on our side if any that corresponds to this intent
         const payment = await Payments.findOne({
           ...q,
           stripe_payment_intent_id: paymentIntent.id
         });
         if (payment) {
-          // remove the payment from our side
+          // Remove the payment from our side
           await payment.remove();
-          // find and save the associated user
+          // Find and save the associated user
           // so that their plan_expires_at gets updated
           const existingUser = await Users.findById(user._id);
-          if (!existingUser) throw new Error('User does not exist');
+          if (!existingUser) {
+            throw new Error('User does not exist');
+          }
+
           await existingUser.save();
         }
 
@@ -64,18 +66,40 @@ function syncStripePaymentIntent(user) {
       // (unless we explicitly filter using "payment_intent" filter for all charges)
       // <https://stripe.com/docs/api/payment_intents/object?lang=node#payment_intent_object-charges>
       //
-      // TODO: note that we are on Stripe v10.x and v11+ has a breaking change
-      //       the `paymentIntent.charges` field no longer exists (?)
-      //       <https://github.com/stripe/stripe-node/blob/master/CHANGELOG.md#%EF%B8%8F-removed>
+      // NOTE: on Stripe API 2020-08-27 with SDK v10.x, charges is included on
+      //       individual retrieve calls but NOT on list calls unless expanded.
+      //       We handle both cases: if charges is already expanded we use it directly,
+      //       otherwise we fetch the latest charge via the charges API.
       //
-      //
-      [stripeCharge] = paymentIntent.charges.data;
+      if (
+        paymentIntent.charges &&
+        _.isArray(paymentIntent.charges.data) &&
+        !_.isEmpty(paymentIntent.charges.data)
+      ) {
+        [stripeCharge] = paymentIntent.charges.data;
+      } else if (isSANB(paymentIntent.latest_charge)) {
+        // Latest_charge is available on newer API versions as a string ID
+        stripeCharge = await stripe.charges.retrieve(
+          paymentIntent.latest_charge
+        );
+      } else {
+        // Fallback: list charges filtered by payment_intent
+        const charges = await stripe.charges.list({
+          payment_intent: paymentIntent.id,
+          limit: 1
+        });
+        if (charges.data.length > 0) {
+          [stripeCharge] = charges.data;
+        }
+      }
+
       if (
         !stripeCharge ||
         !stripeCharge.paid ||
         stripeCharge.status !== 'succeeded'
-      )
+      ) {
         throw new Error('No successful stripe charge on payment intent.');
+      }
 
       logger.info(`charge ${stripeCharge.id}`, { charge: stripeCharge });
 
@@ -96,20 +120,22 @@ function syncStripePaymentIntent(user) {
         if (
           !_.isArray(stripeCharge.refunds.data) ||
           _.isEmpty(stripeCharge.refunds.data)
-        )
+        ) {
           throw new Error(
             `Payment intent ID ${payment?.stripe_payment_intent_id} has currency of ${payment?.currency} without refunds object`
           );
+        }
 
         const [stripeChargeRefund] = stripeCharge.refunds.data;
 
         if (
           !isSANB(stripeChargeRefund.balance_transaction) &&
           stripeChargeRefund.balance_transaction !== null
-        )
+        ) {
           throw new Error(
             `Payment intent ID ${payment?.stripe_payment_intent_id} has currency of ${payment?.currency} without "balance_transaction" ID in charge refund object retrieved`
           );
+        }
 
         //
         // NOTE: balance transaction is usually null when `stripeChargeRefund.reason = "fraudulent"`
@@ -121,10 +147,11 @@ function syncStripePaymentIntent(user) {
             stripeChargeRefund.balance_transaction
           );
 
-          if (!balanceTransaction)
+          if (!balanceTransaction) {
             throw new Error(
               `Payment intent ID ${payment?.stripe_payment_intent_id} is missing balance transaction for refund`
             );
+          }
 
           currencyAmountRefunded = Math.abs(balanceTransaction.amount);
         }
@@ -132,26 +159,28 @@ function syncStripePaymentIntent(user) {
 
       const hasInvoice = isSANB(paymentIntent.invoice);
 
-      // one time payments have no invoice nor subscription
+      // One time payments have no invoice nor subscription
       const isOneTime = !hasInvoice;
 
-      // there should only ever be 1 checkout
+      // There should only ever be 1 checkout
       // session per successful payment intent
       const { data: checkoutSessions } = await stripe.checkout.sessions.list({
         payment_intent: paymentIntent.id
       });
 
-      if (checkoutSessions.length > 1)
+      if (checkoutSessions.length > 1) {
         throw new Error('Found an unexpected # of checkout sessions');
+      }
 
       const [checkoutSession] = checkoutSessions;
 
       logger.info(`checkoutSession ${checkoutSession?.id}`);
 
-      // invoices only on subscription payments
+      // Invoices only on subscription payments
       let invoice;
-      if (hasInvoice)
+      if (hasInvoice) {
         invoice = await stripe.invoices.retrieve(paymentIntent.invoice);
+      }
 
       let productId;
       let priceId;
@@ -160,7 +189,7 @@ function syncStripePaymentIntent(user) {
         productId = invoice.lines.data[0].price.product;
         priceId = invoice.lines.data[0].price.id;
       } else {
-        // for one-time payments we must retrieve the lines from the checkout session
+        // For one-time payments we must retrieve the lines from the checkout session
         const lines = await stripe.checkout.sessions.listLineItems(
           checkoutSession.id
         );
@@ -171,7 +200,7 @@ function syncStripePaymentIntent(user) {
       logger.info(`product ${productId}`);
       logger.info(`price ${priceId}`);
 
-      // this logic is the same in rerieve-domain-billing
+      // This logic is the same in rerieve-domain-billing
       const plan = STRIPE_PRODUCTS[productId];
       const kind = isOneTime ? 'one-time' : 'subscription';
       let durationMatch = _.keys(STRIPE_MAPPING[plan][kind]).find(
@@ -205,10 +234,11 @@ function syncStripePaymentIntent(user) {
         stripe_payment_intent_id: paymentIntent.id
       });
 
-      if (tooManyPayments.length > 0)
+      if (tooManyPayments.length > 0) {
         throw new Error(
           `There are too many payments in the system with stripe_payment_intent_id ${paymentIntent.id}. It is recommended to remove all the payments with this checkout session id and recreate with this script. Please review first to ensure this is the correct course of action.`
         );
+      }
 
       if (!payment && isSANB(checkoutSession?.id)) {
         const payments = await Payments.find({
@@ -216,10 +246,11 @@ function syncStripePaymentIntent(user) {
           stripe_session_id: checkoutSession.id
         });
 
-        if (payments.length > 1)
+        if (payments.length > 1) {
           throw new Error(
             `Unexpected amount of payments found when searched for checkout session id ${checkoutSession.id}. It is recommended to remove all the payments with this checkout session id and recreate with this script. Please review first to ensure this is the correct course of action.`
           );
+        }
 
         [payment] = payments;
       }
@@ -227,10 +258,11 @@ function syncStripePaymentIntent(user) {
       if (
         !isSANB(stripeCharge.balance_transaction) &&
         stripeCharge.balance_transaction !== null
-      )
+      ) {
         throw new Error(
-          `Payment intent ID ${payment.stripe_payment_intent_id} has currency of ${payment.currency} without "balance_transaction" ID in charge object retrieved`
+          `Payment intent ID ${payment?.stripe_payment_intent_id} has currency of ${payment?.currency} without "balance_transaction" ID in charge object retrieved`
         );
+      }
 
       //
       // NOTE: stripe adaptive pricing allows us to accept in foreign amount
@@ -248,25 +280,26 @@ function syncStripePaymentIntent(user) {
           stripeCharge.balance_transaction
         );
 
-        if (!balanceTransaction)
+        if (!balanceTransaction) {
           throw new Error(
-            `Payment intent ID ${payment.stripe_payment_intent_id} is missing balance transaction`
+            `Payment intent ID ${payment?.stripe_payment_intent_id} is missing balance transaction`
           );
+        }
 
-        // sync payment amount in USD
+        // Sync payment amount in USD
         amount = balanceTransaction.amount;
 
-        // sync fee
+        // Sync fee
         fee = balanceTransaction.fee;
 
-        // sync exchange rate
+        // Sync exchange rate
         exchangeRate = balanceTransaction.exchange_rate;
       }
 
-      // always sync currency
+      // Always sync currency
       const { currency } = stripeCharge;
 
-      // sync amount in currency
+      // Sync amount in currency
       const currencyAmount = stripeCharge.amount;
 
       if (payment) {
@@ -292,29 +325,32 @@ function syncStripePaymentIntent(user) {
         //
         // validate the required fields first - these must exists on the document
         //
-        if (plan !== payment.plan)
+        if (plan !== payment.plan) {
           throw new Error(
             'Saved payment.plan does not match plan from billing history sync.'.concat(
               errorDetails
             )
           );
+        }
 
-        if (kind !== payment.kind)
+        if (kind !== payment.kind) {
           throw new Error(
             'Saved payment.kind does not match kind from billing history sync'.concat(
               errorDetails
             )
           );
+        }
 
         if (
           isSANB(payment.stripe_session_id) &&
           (!checkoutSession || payment.stripe_session_id !== checkoutSession.id)
-        )
+        ) {
           throw new Error(
             'Saved payment.stripe_session_id does not match billing history sync'.concat(
               errorDetails
             )
           );
+        }
 
         // TODO: uncomment this in future once migration run
         // if (paymentIntent.amount !== payment.amount)
@@ -327,27 +363,29 @@ function syncStripePaymentIntent(user) {
         if (
           isSANB(payment.stripe_invoice_id) &&
           payment.stripe_invoice_id !== invoice.id
-        )
+        ) {
           throw new Error(
             `Saved payment.stripe_invoice_id (${payment.stripe_invoice_id}) does not match billing history sync`.concat(
               errorDetails
             )
           );
+        }
 
         if (
           isSANB(payment.stripe_payment_intent_id) &&
           payment.stripe_payment_intent_id !== paymentIntent.id
-        )
+        ) {
           throw new Error(
             `Saved payment.stripe_payment_intent_id (${payment.stripe_payment_intent_id}) does not match billing history sync`.concat(
               errorDetails
             )
           );
+        }
 
-        // always sync duration
+        // Always sync duration
         payment.duration = duration;
 
-        // always sync payment method
+        // Always sync payment method
         payment.is_apple_pay = false;
         payment.is_google_pay = false;
         if (stripeCharge.payment_method_details.type === 'card') {
@@ -360,13 +398,14 @@ function syncStripePaymentIntent(user) {
             if (
               stripeCharge.payment_method_details.card.wallet.type ===
               'apple_pay'
-            )
+            ) {
               payment.is_apple_pay = true;
-            else if (
+            } else if (
               stripeCharge.payment_method_details.card.wallet.type ===
               'google_pay'
-            )
+            ) {
               payment.is_google_pay = true;
+            }
           }
         } else {
           payment.method = stripeCharge.payment_method_details.type;
@@ -375,8 +414,9 @@ function syncStripePaymentIntent(user) {
           payment.last4 = undefined;
         }
 
-        if (isSANB(checkoutSession?.client_reference_id))
+        if (isSANB(checkoutSession?.client_reference_id)) {
           payment.reference = checkoutSession.client_reference_id;
+        }
 
         payment.stripe_session_id = checkoutSession?.id;
         payment.stripe_invoice_id = invoice?.id;
@@ -428,13 +468,14 @@ function syncStripePaymentIntent(user) {
             if (
               stripeCharge.payment_method_details.card.wallet.type ===
               'apple_pay'
-            )
+            ) {
               payment.is_apple_pay = true;
-            else if (
+            } else if (
               stripeCharge.payment_method_details.card.wallet.type ===
               'google_pay'
-            )
+            ) {
               payment.is_google_pay = true;
+            }
           }
         } else {
           payment.method = stripeCharge.payment_method_details.type;
@@ -443,8 +484,9 @@ function syncStripePaymentIntent(user) {
           payment.last4 = undefined;
         }
 
-        if (checkoutSession && isSANB(checkoutSession.client_reference_id))
+        if (checkoutSession && isSANB(checkoutSession.client_reference_id)) {
           payment.reference = checkoutSession.client_reference_id;
+        }
 
         await Payments.create(payment);
 
@@ -453,13 +495,16 @@ function syncStripePaymentIntent(user) {
         );
       }
 
-      // find and save the associated user
+      // Find and save the associated user
       // so that their plan_expires_at gets updated
       const existingUser = await Users.findById(user._id);
-      if (!existingUser) throw new Error('User does not exist');
+      if (!existingUser) {
+        throw new Error('User does not exist');
+      }
+
       await existingUser.save();
     } catch (err) {
-      // add more debug output to error log
+      // Add more debug output to error log
       err.paymentIntent = paymentIntent;
       err.q = q;
       err.user = user;
@@ -481,8 +526,9 @@ function syncStripePaymentIntent(user) {
         err
       });
 
-      if (errorEmails.length >= config.stripeErrorThreshold)
+      if (errorEmails.length >= config.stripeErrorThreshold) {
         throw new ThresholdError(errorEmails.map((e) => e.err));
+      }
     }
 
     return errorEmails;
