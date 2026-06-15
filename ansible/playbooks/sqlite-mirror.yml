@@ -13,7 +13,9 @@
 #
 # Features:
 # - Periodic rsync mirroring (every 2 minutes by default)
-# - Excludes WAL/SHM/journal files (not needed for backup)
+# - Delta-transfer only (--no-whole-file) to minimize I/O contention
+# - Copies all SQLite files including WAL/SHM for complete backups
+# - No --delete flag (prevents loss of WAL/SHM during transient removal)
 # - Flock-based locking to prevent overlapping runs
 # - Email notifications for sync errors and failures
 # - Health monitoring with periodic status checks
@@ -104,35 +106,22 @@
       register: target_file_count
       changed_when: false
 
-    - name: SAFETY CHECK - Fail if target has existing files
-      fail:
+    - name: SAFETY CHECK - Warn if target has existing files
+      debug:
         msg: |
           ============================================================================
-          SAFETY CHECK FAILED - TARGET DIRECTORY HAS EXISTING FILES
+          NOTE: TARGET DIRECTORY HAS EXISTING FILES
           ============================================================================
 
           Target directory: {{ mirror_target }}
           Files found: {{ target_file_count.stdout }}
 
-          The --delete flag in rsync will DELETE any files in the target that
-          do not exist in the source. This could cause DATA LOSS.
+          Rsync will update existing files in-place using delta transfer.
+          No --delete flag is used, so target files will NOT be removed.
 
-          Before proceeding, you must either:
+          If you need to clean up orphaned files on the target, run:
+            diff <(ls {{ mirror_source }}/) <(ls {{ mirror_target }}/)
 
-          1. VERIFY the target data is expendable:
-             ls -la {{ mirror_target }}/
-             du -sh {{ mirror_target }}/
-
-          2. BACKUP the target data if needed:
-             rsync -avP {{ mirror_target }}/ /path/to/backup/
-
-          3. CLEAR the target directory:
-             rm -rf {{ mirror_target }}/*
-
-          4. OR skip this safety check by setting:
-             export MIRROR_SKIP_SAFETY=true
-
-          Then re-run this playbook.
           ============================================================================
       when:
         - target_file_count.stdout | int > 0
@@ -255,21 +244,33 @@
 
           # Run rsync with low I/O priority
           # --archive: preserve permissions, timestamps, symlinks
-          # --delete-after: remove orphaned files after transfer completes
           # --no-perms --omit-dir-times: reduce unnecessary metadata updates
-          # --exclude: skip WAL/SHM/journal (transient SQLite files)
-          # --whole-file: skip delta algorithm (faster for local disk-to-disk)
+          # --no-whole-file: force delta-transfer algorithm (only changed
+          #   blocks are read/written, minimizing I/O contention window
+          #   during active SQLite checkpoints on multi-GB files)
+          # --inplace: update destination files in-place (avoids temp file +
+          #   rename for large files; with delta transfer only changed blocks
+          #   are rewritten)
+          # --partial: keep partially transferred files for resumption
           # --info=stats2: summary stats only
+          #
+          # NOTE: --delete was removed to prevent deletion of WAL/SHM files
+          # on the target when they transiently disappear from source during
+          # SQLite checkpoint operations. Without the WAL, the main .sqlite
+          # file may be unrecoverable. Run a separate cleanup job for
+          # orphaned databases instead.
+          #
+          # NOTE: WAL/SHM/journal files are NOT excluded. They must be
+          # mirrored to ensure the target has a complete, recoverable copy
+          # of each database.
           ionice -c 3 nice -n 19 \
             /usr/bin/rsync \
               --archive \
-              --delete-after \
               --no-perms \
               --omit-dir-times \
-              --whole-file \
-              --exclude='*-wal' \
-              --exclude='*-shm' \
-              --exclude='*-journal' \
+              --no-whole-file \
+              --inplace \
+              --partial \
               --info=stats2 \
               "$SOURCE/" "$TARGET/" >> "$LOG" 2>&1
 
