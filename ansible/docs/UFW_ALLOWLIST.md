@@ -57,14 +57,14 @@ Each service-specific playbook imports `ufw-allowlist.yml` with custom variables
 
 ## Variables
 
-| Variable               | Description                        | Example                                   |
-| ---------------------- | ---------------------------------- | ----------------------------------------- |
-| `target_hosts`         | Ansible host group to target       | `redis`, `mongo`, `sqlite`                |
-| `service_name`         | Display name for the service       | `Redis`, `MongoDB`, `SQLite`              |
-| `service_port_var`     | Environment variable name for port | `REDIS_PORT`, `MONGO_PORT`, `SQLITE_PORT` |
-| `service_port_default` | Default port if env var not set    | `6380`, `27017`, `3456`                   |
-| `service_identifier`   | Short identifier for files/scripts | `redis`, `mongo`, `sqlite`                |
-| `ufw_comment`          | Comment for UFW rules              | `Auto-whitelist Redis TLS`                |
+| Variable               | Description                        | Example                                         |
+| ---------------------- | ---------------------------------- | ----------------------------------------------- |
+| `target_hosts`         | Ansible host group to target       | `redis`, `mongo`, `sqlite`                      |
+| `service_name`         | Display name for the service       | `Redis`, `MongoDB`, `SQLite`                    |
+| `service_port_var`     | Environment variable name for port | `REDIS_PORT`, `MONGO_PORT`, `SQLITE_PORT_RANGE` |
+| `service_port_default` | Default port if env var not set    | `6380`, `27017`, `3456:3465`                    |
+| `service_identifier`   | Short identifier for files/scripts | `redis`, `mongo`, `sqlite`                      |
+| `ufw_comment`          | Comment for UFW rules              | `Auto-whitelist Redis TLS`                      |
 
 
 ## Generated Components
@@ -153,8 +153,8 @@ For each service, the playbook creates:
   vars:
     target_hosts: sqlite
     service_name: SQLite
-    service_port_var: SQLITE_PORT
-    service_port_default: "3456"
+    service_port_var: SQLITE_PORT_RANGE
+    service_port_default: "3456:3465"
     service_identifier: sqlite
     ufw_comment: "Auto-whitelist SQLite"
 ```
@@ -248,7 +248,7 @@ If migrating from the old inline UFW configuration:
 
 Ensure the following environment variables are set:
 
-* `REDIS_PORT` / `MONGO_PORT` / `LOGS_PORT` / `SQLITE_PORT` - Service port number
+* `REDIS_PORT` / `MONGO_PORT` / `LOGS_PORT` / `SQLITE_PORT_RANGE` - Service port (or port range, e.g. `3456:3465`)
 * `MSMTP_RCPTS` - Email recipients for notifications (defaults to `security@forwardemail.net`)
 
 

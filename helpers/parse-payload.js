@@ -284,6 +284,23 @@ async function parsePayload(data, ws) {
       await this.client.del(`migrate_check:${payload.session.user.alias_id}`);
 
     //
+    // Register this alias_id as an active session on this WebSocket.
+    // This enables session-aware idle TTL in the DatabaseLRUMap:
+    // databases with active sessions get a longer TTL before eviction.
+    //
+    if (
+      ws &&
+      ws.aliasIds &&
+      isSANB(payload?.session?.user?.alias_id) &&
+      !ws.aliasIds.has(payload.session.user.alias_id)
+    ) {
+      ws.aliasIds.add(payload.session.user.alias_id);
+      if (this.databaseMap) {
+        this.databaseMap.addActiveSession(payload.session.user.alias_id);
+      }
+    }
+
+    //
     // TODO: payload.storage_location should not be used as source of truth
     //       instead the latest from Aliases database should be used
     //       (e.g. `const alias = await Aliases.findOne(...)` and `alias.storage_location`

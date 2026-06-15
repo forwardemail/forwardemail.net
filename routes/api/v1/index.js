@@ -138,7 +138,7 @@ router.post(
       // support file uploads and binary content
       return fileUpload.fields([
         { name: 'attachment', maxCount: 1 },
-        { name: 'attachments' } // no maxCount
+        { name: 'attachments', maxCount: 50 }
       ])(ctx, next);
     }
 

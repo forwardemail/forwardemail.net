@@ -247,7 +247,22 @@ class SQLite {
 
     this.wss.on('connection', (ws, request) => {
       ws.isAlive = true;
+      // Track which alias_ids this WebSocket has accessed (for session-aware eviction)
+      ws.aliasIds = new Set();
       logger.debug('connection from %s', request.socket.remoteAddress);
+
+      ws.on('close', () => {
+        // Decrement active session refcounts for all alias_ids this socket served
+        if (ws.aliasIds && ws.aliasIds.size > 0) {
+          for (const aliasId of ws.aliasIds) {
+            if (this.databaseMap) {
+              this.databaseMap.removeActiveSession(aliasId);
+            }
+          }
+
+          ws.aliasIds.clear();
+        }
+      });
 
       ws.on('error', (err) => {
         console.error(

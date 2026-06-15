@@ -270,54 +270,40 @@ async function sendRequest(wsp, requestId, data) {
   return result;
 }
 
-function createWebSocketAsPromised(options = {}) {
-  //
-  // <https://github.com/websockets/ws/issues/2050>
-  // <https://github.com/vitalets/websocket-as-promised>
-  // <https://github.com/pladaria/reconnecting-websocket>
-  // <https://github.com/websockets/ws/issues/1818>
-  // <https://github.com/pladaria/reconnecting-websocket/issues/135#issuecomment-643144398>
-  // <https://github.com/partykit/partykit/issues/536>
-  //
-  const protocol =
-    options.protocol || (config.env === 'production' ? 'wss' : 'ws');
+//
+// Simple FNV-1a hash for consistent worker routing.
+// Returns a non-negative 32-bit integer.
+//
+function fnv1aHash(str) {
+  let hash = 2_166_136_261; // FNV offset basis
+  for (let i = 0; i < str.length; i++) {
+    // eslint-disable-next-line no-bitwise, unicorn/prefer-code-point
+    hash ^= str.charCodeAt(i);
+    hash = Math.imul(hash, 16_777_619); // FNV prime
+  }
 
-  const auth = `${encrypt(
-    Array.isArray(env.API_SECRETS) ? env.API_SECRETS[0] : env.API_SECRETS
-  )}:`;
-  const host = options.host || env.SQLITE_HOST;
-  const port = options.port || env.SQLITE_PORT;
-  const url = `${protocol}://${host}:${port}`;
+  // eslint-disable-next-line no-bitwise
+  return hash >>> 0; // ensure unsigned
+}
 
-  logger.info('initial url', { url });
-
-  // TODO: implement round robin URL provider
-  // <https://github.com/pladaria/reconnecting-websocket#update-url>
+//
+// Create a single WebSocketAsPromised instance connected to a specific URL.
+//
+function createSingleWsp(url, auth) {
   const wsp = new WebSocketAsPromised(url, {
-    // createWebSocket(url) {
     createWebSocket() {
       logger.info('creating url', { url });
-      // TODO: prevent duplicate RWS instances
-      // <https://github.com/vitalets/websocket-as-promised/issues/6#issuecomment-1089790824>
-      // return new partysocket.WebSocket(url, [], {
       const rws = new ReconnectingWebSocket(url, [], {
-        // <https://github.com/pladaria/reconnecting-websocket#available-options>
-        // <https://github.com/pladaria/reconnecting-websocket/issues/138#issuecomment-698206018>
         WebSocket: createWebSocketClass({
           maxPayload: 0, // disable max payload size
           auth,
-          rejectUnauthorized: config.env !== 'production',
-          // <https://github.com/nodejs/node/issues/8871>
+          rejectUnauthorized: config.env === 'production',
           perMessageDeflate: false
-          // headers: {
-          //   authorization: 'Basic ' + Buffer.from(auth).toString('base64')
-          // }
         }),
         ...DEFAULT
       });
 
       // bind overriden prototype functions until PR's merged
-      // (see above)
       rws._handleError = handleError.bind(rws);
       rws._disconnect = disconnect.bind(rws);
       rws._getNextDelay = _getNextDelay.bind(rws);
@@ -335,155 +321,16 @@ function createWebSocketAsPromised(options = {}) {
     extractRequestId(data) {
       return data && data.id;
     }
-    //
-    // NOTE: we don't need this because ReconnectingWebSocket returns `event.data`
-    //       but if we were to use ws directly then we would need to uncomment this
-    //       <https://github.com/vitalets/websocket-as-promised#usage-with-ws>
-    //
-    // <https://github.com/partykit/partykit/issues/538>
-    // extractMessageData: (event) => event
-    // extractMessageData: (event) => event.data
   });
 
-  //
   // bind event listeners
-  //
-  for (const event of [
-    // 'onOpen',
-    // 'onSend',
-    // 'onMessage',
-    // 'onUnpackedMessage',
-    // 'onResponse',
-    // 'onClose',
-    'onError'
-  ]) {
+  for (const event of ['onError']) {
     wsp[event].addListener((...args) => {
-      //
-      // NOTE: we can't use `args` without stripping `_req` and other props like `_ws`
-      //       to prevent leaking of sensitive data like headers with basic auth ,etc
-      //
-      // logger[event === 'onError' ? 'error' : 'debug'](event, { args });
       logger.debug(event, { args });
     });
   }
 
-  // <https://github.com/vitalets/websocket-as-promised/issues/46>
-  wsp.request = async function (data, retries = 3) {
-    try {
-      // TODO: we could probably remove this validation
-      if (typeof data?.action !== 'string') {
-        throw new TypeError('Action missing from payload');
-      }
-
-      // TODO: we could probably remove this validation
-      if (
-        data.action !== 'tmp' &&
-        data.action !== 'size' &&
-        (typeof data?.session?.user?.alias_id !== 'string' ||
-          !mongoose.isObjectIdOrHexString(data.session.user.alias_id))
-      ) {
-        throw new TypeError('Alias ID missing from session');
-      }
-
-      // helper for debugging
-      if (config.env !== 'production') {
-        data.stack = new Error('stack').stack;
-      }
-
-      const requestId = data?.session?.user?.alias_id
-        ? `${revHash(data.session.user.alias_id)}:${revHash(randomUUID())}`
-        : `${data.action}:${randomUUID()}`;
-
-      // attempt to send the request 3x
-      // (e.g. in case connection disconnected and no response was made)
-      const response =
-        retries === 0
-          ? await sendRequest(wsp, requestId, data)
-          : await pRetry(() => sendRequest(wsp, requestId, data), {
-              retries,
-              minTimeout: config.busyTimeout / 2,
-              maxTimeout: config.busyTimeout,
-              factor: 1,
-              onFailedAttempt(error) {
-                if (isRetryableError(error)) return;
-
-                throw error;
-              }
-            });
-
-      if (
-        !response.id ||
-        (!response.err && typeof response.data === 'undefined')
-      ) {
-        const error = new TypeError('Response was invalid');
-        error._response = response;
-        logger.fatal(error);
-        throw error;
-      }
-
-      if (response.err) {
-        throw parseError(response.err);
-      }
-
-      return recursivelyParse(response.data, true);
-    } catch (err) {
-      //
-      // NOTE: we permit up to one retry on table issues
-      //       (this is mainly for local development since we use /tmp storage and it might get cleared)
-      //
-      // - no such index
-      // - no such rowid
-      // - no such column
-      // - no such module
-      // - no such table
-      // + more by running this command:
-      //
-      // `rg '"no such ' -uuu node_modules/better-sqlite3`
-      //
-      if (
-        !data.migrate_check && // <-- this causes parse payload function to clear migrate_check cache on the alias
-        err.code === 'SQLITE_ERROR' &&
-        (err.message.includes('no such ') ||
-          err.message.includes('has no column named '))
-      ) {
-        data.migrate_check = true;
-        return wsp.request(data, 0); // no retries
-      }
-
-      // don't mark timeout/transient errors or errors with ignoreHook as code bugs
-      if (err.ignoreHook || isTimeoutError(err)) {
-        err.isCodeBug = false;
-      } else {
-        err.isCodeBug = true;
-        console.error(
-          '[ERROR:wsp-client] request error',
-          JSON.stringify({
-            errName: err?.name,
-            errMessage: err?.message?.slice(0, 500),
-            errCode: err?.code,
-            action: data?.action,
-            aliasId: data?.session?.user?.alias_id,
-            aliasName: data?.session?.user?.alias_name,
-            domainName: data?.session?.user?.domain_name,
-            storageLocation: data?.session?.user?.storage_location
-          })
-        );
-        logger.fatal(err);
-      }
-
-      throw refineAndLogError(err, data?.session);
-      //
-      // TODO: we need to pass client and resolver
-      //       (maybe we do a global.client and global.resolver or something down the road?)
-      //       (otherwise having to pass client and resolver throughout the codebase is a nightmare)
-      //       (and we could just opt for an approach more like mongoose with a global)
-      //
-      // throw refineAndLogError(err, data?.session, false, { client, resolver });
-    }
-  };
-
   wsp.onOpen.addListener(() => {
-    // <https://github.com/vitalets/websocket-as-promised/issues/2#issuecomment-618241047>
     if (!wsp._interval) {
       wsp._interval = setInterval(() => {
         try {
@@ -495,16 +342,239 @@ function createWebSocketAsPromised(options = {}) {
     }
   });
 
-  wsp.onClose.addListener(
-    () => {
-      if (wsp._interval) {
-        clearInterval(wsp._interval);
-      }
+  wsp.onClose.addListener(() => {
+    if (wsp._interval) {
+      clearInterval(wsp._interval);
+      wsp._interval = null;
     }
-    // }, { once: true }
-  );
+  });
 
   return wsp;
+}
+
+function createWebSocketAsPromised(options = {}) {
+  const protocol =
+    options.protocol || (config.env === 'production' ? 'wss' : 'ws');
+
+  const auth = `${encrypt(
+    Array.isArray(env.API_SECRETS) ? env.API_SECRETS[0] : env.API_SECRETS
+  )}:`;
+  const host = options.host || env.SQLITE_HOST;
+  const basePort = Number.parseInt(options.port || env.SQLITE_PORT, 10);
+  // When port is explicitly provided (e.g. tests), default to 1 worker
+  // unless workerCount is also explicitly provided.
+  const workerCount = Number.parseInt(
+    options.workerCount ||
+      (options.port ? '1' : env.SQLITE_WORKER_COUNT) ||
+      '1',
+    10
+  );
+
+  //
+  // Create a pool of WebSocket connections — one per SQLite worker.
+  // Each worker listens on basePort + instanceId (0, 1, 2, ...).
+  //
+  const pool = [];
+  for (let i = 0; i < workerCount; i++) {
+    const port = basePort + i;
+    const url = `${protocol}://${host}:${port}`;
+    logger.info('creating wsp pool member', { url, index: i, workerCount });
+    pool.push(createSingleWsp(url, auth));
+  }
+
+  //
+  // Select the target worker for a given alias_id using consistent hashing.
+  // If the target worker is disconnected, fall back to any connected worker.
+  //
+  function getWorkerForAlias(aliasId) {
+    if (pool.length === 1) return pool[0];
+
+    const targetIndex = fnv1aHash(aliasId) % pool.length;
+    const target = pool[targetIndex];
+
+    // If target is connected, use it
+    if (target.isOpened || target.isOpening) return target;
+
+    // Fallback: find any connected worker
+    for (const [i, wsp] of pool.entries()) {
+      if (i === targetIndex) continue;
+      if (wsp.isOpened || wsp.isOpening) {
+        logger.warn('worker affinity fallback', {
+          aliasId,
+          targetIndex,
+          fallbackIndex: i
+        });
+        return wsp;
+      }
+    }
+
+    // All disconnected — return the target anyway (sendRequest will wait for open)
+    return target;
+  }
+
+  //
+  // Create a proxy object that exposes the same interface as a single wsp
+  // but routes requests to the appropriate worker based on alias_id.
+  //
+  const wspPool = {
+    // Expose pool for graceful shutdown
+    _pool: pool,
+
+    // For compatibility with code that checks wsp.isOpened
+    get isOpened() {
+      return pool.some((w) => w.isOpened);
+    },
+
+    // For compatibility with onUnpackedMessage listener (used by IMAP server for push notifications)
+    onUnpackedMessage: {
+      addListener(fn) {
+        for (const w of pool) {
+          w.onUnpackedMessage.addListener(fn);
+        }
+      },
+      removeListener(fn) {
+        for (const w of pool) {
+          w.onUnpackedMessage.removeListener(fn);
+        }
+      }
+    },
+
+    // Open all pool connections
+    async open() {
+      await Promise.all(pool.map((w) => w.open()));
+    },
+
+    // Close all pool connections
+    close() {
+      for (const w of pool) {
+        try {
+          w.close();
+        } catch (err) {
+          logger.fatal(err);
+        }
+      }
+    },
+
+    // Send raw data to a specific worker (used for push notification ACKs)
+    send(data) {
+      // Send to all workers since we don't know which one sent the push
+      for (const w of pool) {
+        if (w.isOpened) {
+          try {
+            w.send(data);
+          } catch (err) {
+            logger.warn(err);
+          }
+        }
+      }
+    },
+
+    // The main request method with worker affinity routing
+    async request(data, retries = 3) {
+      try {
+        if (typeof data?.action !== 'string') {
+          throw new TypeError('Action missing from payload');
+        }
+
+        if (
+          data.action !== 'tmp' &&
+          data.action !== 'size' &&
+          (typeof data?.session?.user?.alias_id !== 'string' ||
+            !mongoose.isObjectIdOrHexString(data.session.user.alias_id))
+        ) {
+          throw new TypeError('Alias ID missing from session');
+        }
+
+        // helper for debugging
+        if (config.env !== 'production') {
+          data.stack = new Error('stack').stack;
+        }
+
+        const requestId = data?.session?.user?.alias_id
+          ? `${revHash(data.session.user.alias_id)}:${revHash(randomUUID())}`
+          : `${data.action}:${randomUUID()}`;
+
+        //
+        // Route to the correct worker based on alias_id.
+        // For actions without alias_id (tmp, size), use round-robin.
+        //
+        const targetWsp = data?.session?.user?.alias_id
+          ? getWorkerForAlias(data.session.user.alias_id)
+          : pool[Math.floor(Math.random() * pool.length)];
+
+        // attempt to send the request 3x
+        const response =
+          retries === 0
+            ? await sendRequest(targetWsp, requestId, data)
+            : await pRetry(() => sendRequest(targetWsp, requestId, data), {
+                retries,
+                minTimeout: config.busyTimeout / 2,
+                maxTimeout: config.busyTimeout,
+                factor: 1,
+                onFailedAttempt(error) {
+                  if (isRetryableError(error)) return;
+
+                  throw error;
+                }
+              });
+
+        if (
+          !response.id ||
+          (!response.err && typeof response.data === 'undefined')
+        ) {
+          const error = new TypeError('Response was invalid');
+          error._response = response;
+          logger.fatal(error);
+          throw error;
+        }
+
+        if (response.err) {
+          throw parseError(response.err);
+        }
+
+        return recursivelyParse(response.data, true);
+      } catch (err) {
+        //
+        // NOTE: we permit up to one retry on table issues
+        //       (this is mainly for local development since we use /tmp storage and it might get cleared)
+        //
+        if (
+          !data.migrate_check &&
+          err.code === 'SQLITE_ERROR' &&
+          (err.message.includes('no such ') ||
+            err.message.includes('has no column named '))
+        ) {
+          data.migrate_check = true;
+          return wspPool.request(data, 0); // no retries
+        }
+
+        // don't mark timeout/transient errors or errors with ignoreHook as code bugs
+        if (err.ignoreHook || isTimeoutError(err)) {
+          err.isCodeBug = false;
+        } else {
+          err.isCodeBug = true;
+          console.error(
+            '[ERROR:wsp-client] request error',
+            JSON.stringify({
+              errName: err?.name,
+              errMessage: err?.message?.slice(0, 500),
+              errCode: err?.code,
+              action: data?.action,
+              aliasId: data?.session?.user?.alias_id,
+              aliasName: data?.session?.user?.alias_name,
+              domainName: data?.session?.user?.domain_name,
+              storageLocation: data?.session?.user?.storage_location
+            })
+          );
+          logger.fatal(err);
+        }
+
+        throw refineAndLogError(err, data?.session);
+      }
+    }
+  };
+
+  return wspPool;
 }
 
 module.exports = createWebSocketAsPromised;
