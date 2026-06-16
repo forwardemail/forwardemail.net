@@ -13,17 +13,10 @@
   vars:
     target_hosts: sqlite
     service_name: SQLite
-    service_port_var: SQLITE_PORT_RANGE
-    service_port_default: "3456:3465"
+    service_port_var: SQLITE_PORT
+    service_port_default: "3456"
     service_identifier: sqlite
     ufw_comment: "Auto-whitelist SQLite"
-    # Also keep the single SQLITE_PORT (legacy single-port build) permanently
-    # allowlisted so a rollback to the non-range build needs no UFW redeploy.
-    # This rule uses a distinct comment so the orphaned-rule cleanup (which only
-    # matches `ufw_comment`) never removes it.
-    service_extra_port_var: SQLITE_PORT
-    service_extra_port_default: "3456"
-    ufw_extra_comment: "Auto-whitelist SQLite (legacy single-port)"
 
 - name: Import high-traffic sysctl tuning for SQLite
   import_playbook: sysctl-high-traffic.yml
