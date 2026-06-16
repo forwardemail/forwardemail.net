@@ -19,25 +19,6 @@
       "merge_logs": true
     },
     {
-      "name": "sqlite-legacy",
-      "script": "sqlite.js",
-      "max_restarts": 999,
-      "max_memory_restart": "80G",
-      "wait_ready": true,
-      "listen_timeout": 10000,
-      "exec_mode": "fork",
-      "instances": 1,
-      "pmx": false,
-      "env_production": {
-        "NODE_ENV": "production",
-        "SQLITE_LEGACY": "true"
-      },
-      "error_file": "/var/log/pm2/sqlite-legacy-error.log",
-      "out_file": "/var/log/pm2/sqlite-legacy-out.log",
-      "combine_logs": true,
-      "merge_logs": true
-    },
-    {
       "name": "sqlite-bree",
       "script": "sqlite-bree.js",
       "max_restarts": 999,
