@@ -6,9 +6,8 @@
       "max_restarts": 999,
       "max_memory_restart": "80G",
       "wait_ready": true,
-      "listen_timeout": 10000,
-      "exec_mode": "fork",
-      "instances": 10,
+      "exec_mode": "cluster",
+      "instances": "4",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production"
