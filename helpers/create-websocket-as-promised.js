@@ -22,7 +22,6 @@ const isRetryableError = require('#helpers/is-retryable-error');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
-const parseSqlitePortRange = require('#helpers/parse-sqlite-port-range');
 const recursivelyParse = require('#helpers/recursively-parse');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
@@ -114,24 +113,6 @@ WebSocketAsPromised.prototype._cleanupWS = function () {
 function handleError(event) {
   try {
     this._debug('error event', event.message);
-    //
-    // Transport-level error from the underlying (reconnecting) WebSocket.
-    // This is where low-level connect/TLS failures surface: ECONNREFUSED
-    // (nothing listening / firewall drop), ETIMEDOUT, UNABLE_TO_VERIFY_LEAF_SIGNATURE
-    // / ERR_TLS_CERT_ALTNAME_INVALID (cert/host mismatch), etc.
-    //
-    console.error(
-      '[ERROR:sqlite-client] ws transport error',
-      JSON.stringify({
-        url: this.url || this._url,
-        errName: event?.error?.name || event?.name,
-        errMessage: (event?.error?.message || event?.message || '')?.slice(
-          0,
-          500
-        ),
-        errCode: event?.error?.code || event?.code
-      })
-    );
     // this._disconnect(undefined, event.message === 'TIMEOUT' ? 'timeout' : undefined);
     this._disconnect(
       undefined,
@@ -254,42 +235,20 @@ async function sendRequest(wsp, requestId, data) {
   data.sent_at = Date.now();
 
   if (!wsp.isOpened) {
-    try {
-      await pWaitFor(
-        async () => {
-          try {
-            await wsp.open();
-            return true;
-          } catch (err) {
-            console.error(
-              '[ERROR:sqlite-client] wsp.open() failed (will retry)',
-              JSON.stringify({
-                errName: err?.name,
-                errMessage: (err?.message || String(err))?.slice(0, 500),
-                errCode: err?.code
-              })
-            );
-            logger.fatal(err);
-            return false;
-          }
-        },
-        {
-          timeout: ms('15s')
+    await pWaitFor(
+      async () => {
+        try {
+          await wsp.open();
+          return true;
+        } catch (err) {
+          logger.fatal(err);
+          return false;
         }
-      );
-    } catch (err) {
-      // pWaitFor timed out: the worker never opened within 15s. This is the
-      // classic symptom of an unreachable/blocked worker port or a rejected
-      // TLS handshake — log loudly before rethrowing.
-      console.error(
-        '[ERROR:sqlite-client] wsp.open() timed out after 15s',
-        JSON.stringify({
-          errName: err?.name,
-          errMessage: (err?.message || String(err))?.slice(0, 500)
-        })
-      );
-      throw err;
-    }
+      },
+      {
+        timeout: ms('15s')
+      }
+    );
   }
 
   const result = await wsp.sendRequest(data, {
@@ -330,9 +289,7 @@ function fnv1aHash(str) {
 //
 // Create a single WebSocketAsPromised instance connected to a specific URL.
 //
-function createSingleWsp(url, auth, workerIndex) {
-  // protocol is the scheme of the URL (ws: or wss:) for diagnostic logging
-  const protocol = url.startsWith('wss') ? 'wss' : 'ws';
+function createSingleWsp(url, auth) {
   const wsp = new WebSocketAsPromised(url, {
     createWebSocket() {
       logger.info('creating url', { url });
@@ -373,50 +330,6 @@ function createSingleWsp(url, auth, workerIndex) {
     });
   }
 
-  //
-  // Rich connection diagnostics for both ws and wss pool members. These make
-  // open/close/error states visible per worker (url + index + protocol) so a
-  // failing handshake (TLS cert/host mismatch, ECONNREFUSED, firewall drop,
-  // auth 401) can be diagnosed directly from the logs.
-  //
-  wsp.onError.addListener((err) => {
-    console.error(
-      '[ERROR:sqlite-client] wsp error',
-      JSON.stringify({
-        url,
-        workerIndex,
-        protocol,
-        errName: err?.name,
-        errMessage: (err?.message || String(err))?.slice(0, 500),
-        errCode: err?.code
-      })
-    );
-  });
-
-  wsp.onOpen.addListener(() => {
-    console.log(
-      '[INFO:sqlite-client] wsp open',
-      JSON.stringify({ url, workerIndex, protocol })
-    );
-  });
-
-  wsp.onClose.addListener((event) => {
-    console.error(
-      '[ERROR:sqlite-client] wsp close',
-      JSON.stringify({
-        url,
-        workerIndex,
-        protocol,
-        code: event?.code,
-        reason:
-          typeof event?.reason === 'string'
-            ? event.reason.slice(0, 200)
-            : undefined,
-        wasClean: event?.wasClean
-      })
-    );
-  });
-
   wsp.onOpen.addListener(() => {
     if (!wsp._interval) {
       wsp._interval = setInterval(() => {
@@ -447,27 +360,15 @@ function createWebSocketAsPromised(options = {}) {
     Array.isArray(env.API_SECRETS) ? env.API_SECRETS[0] : env.API_SECRETS
   )}:`;
   const host = options.host || env.SQLITE_HOST;
-
-  //
-  // Derive the base port and worker count from a SINGLE source of truth:
-  // SQLITE_PORT_RANGE (e.g. "3456:3465"), matching the SQLite server
-  // (sqlite.js) and the UFW allowlist. Using SQLITE_PORT here instead would
-  // silently diverge from the firewall/listeners when the two differ
-  // (e.g. legacy SQLITE_PORT=2483 vs SQLITE_PORT_RANGE=3456:3465).
-  //
-  // When an explicit port is provided (e.g. tests), honor it and default to a
-  // single worker unless workerCount is also explicitly provided.
-  //
-  let basePort;
-  let workerCount;
-  if (options.port) {
-    basePort = Number.parseInt(options.port, 10);
-    workerCount = Number.parseInt(options.workerCount || '1', 10);
-  } else {
-    const range = parseSqlitePortRange();
-    basePort = range.basePort;
-    workerCount = Number.parseInt(options.workerCount || range.workerCount, 10);
-  }
+  const basePort = Number.parseInt(options.port || env.SQLITE_PORT, 10);
+  // When port is explicitly provided (e.g. tests), default to 1 worker
+  // unless workerCount is also explicitly provided.
+  const workerCount = Number.parseInt(
+    options.workerCount ||
+      (options.port ? '1' : env.SQLITE_WORKER_COUNT) ||
+      '1',
+    10
+  );
 
   //
   // Create a pool of WebSocket connections — one per SQLite worker.
@@ -478,18 +379,7 @@ function createWebSocketAsPromised(options = {}) {
     const port = basePort + i;
     const url = `${protocol}://${host}:${port}`;
     logger.info('creating wsp pool member', { url, index: i, workerCount });
-    console.log(
-      '[INFO:sqlite-client] pool member created',
-      JSON.stringify({ url, host, port, workerIndex: i, workerCount, protocol })
-    );
-    const member = createSingleWsp(url, auth, i);
-    // stamp routing metadata so request-time logs can show the exact
-    // client->server target (host:port/index) for each connection
-    member._routeUrl = url;
-    member._routeHost = host;
-    member._routePort = port;
-    member._routeIndex = i;
-    pool.push(member);
+    pool.push(createSingleWsp(url, auth));
   }
 
   //
@@ -503,21 +393,7 @@ function createWebSocketAsPromised(options = {}) {
     const target = pool[targetIndex];
 
     // If target is connected, use it
-    if (target.isOpened || target.isOpening) {
-      console.log(
-        '[INFO:sqlite-client] routing alias to worker',
-        JSON.stringify({
-          aliasId,
-          workerIndex: targetIndex,
-          port: target._routePort,
-          url: target._routeUrl,
-          via: 'affinity',
-          isOpened: target.isOpened,
-          isOpening: target.isOpening
-        })
-      );
-      return target;
-    }
+    if (target.isOpened || target.isOpening) return target;
 
     // Fallback: find any connected worker
     for (const [i, wsp] of pool.entries()) {
@@ -528,32 +404,11 @@ function createWebSocketAsPromised(options = {}) {
           targetIndex,
           fallbackIndex: i
         });
-        console.error(
-          '[ERROR:sqlite-client] worker affinity fallback',
-          JSON.stringify({
-            aliasId,
-            targetIndex,
-            targetPort: target._routePort,
-            fallbackIndex: i,
-            fallbackPort: wsp._routePort,
-            fallbackUrl: wsp._routeUrl
-          })
-        );
         return wsp;
       }
     }
 
     // All disconnected — return the target anyway (sendRequest will wait for open)
-    console.error(
-      '[ERROR:sqlite-client] no connected worker, awaiting target',
-      JSON.stringify({
-        aliasId,
-        targetIndex,
-        port: target._routePort,
-        url: target._routeUrl,
-        poolSize: pool.length
-      })
-    );
     return target;
   }
 
@@ -646,25 +501,6 @@ function createWebSocketAsPromised(options = {}) {
         const targetWsp = data?.session?.user?.alias_id
           ? getWorkerForAlias(data.session.user.alias_id)
           : pool[Math.floor(Math.random() * pool.length)];
-
-        // Log the resolved client->server target for this request so the
-        // exact worker (host:port/index) handling each action is visible.
-        // Gated behind SQLITE_VERBOSE_ROUTING since it fires per-request.
-        if (env.SQLITE_VERBOSE_ROUTING) {
-          console.log(
-            '[INFO:sqlite-client] request routed',
-            JSON.stringify({
-              action: data.action,
-              aliasId: data?.session?.user?.alias_id,
-              requestId,
-              target: targetWsp?._routeUrl,
-              targetPort: targetWsp?._routePort,
-              targetIndex: targetWsp?._routeIndex,
-              via: data?.session?.user?.alias_id ? 'affinity' : 'round-robin',
-              isOpened: targetWsp?.isOpened
-            })
-          );
-        }
 
         // attempt to send the request 3x
         const response =
