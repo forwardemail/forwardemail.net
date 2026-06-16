@@ -13,8 +13,8 @@
   vars:
     target_hosts: sqlite
     service_name: SQLite
-    service_port_var: SQLITE_PORT_RANGE
-    service_port_default: "3456:3465"
+    service_port_var: SQLITE_PORT
+    service_port_default: "3456"
     service_identifier: sqlite
     ufw_comment: "Auto-whitelist SQLite"
 

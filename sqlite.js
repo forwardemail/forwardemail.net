@@ -23,6 +23,7 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const SQLite = require('./sqlite-server');
 
+const closeDatabase = require('#helpers/close-database');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
@@ -47,12 +48,29 @@ const graceful = new Graceful({
     () => promisify(sqlite.wss.close).bind(sqlite.wss)(),
     // normal databases (no-op when databaseMap is null / disabled)
     async () => {
-      if (sqlite.databaseMap) await sqlite.databaseMap.closeAll();
+      if (!sqlite.databaseMap || sqlite.databaseMap.size === 0) return;
+      await Promise.all(
+        [...sqlite.databaseMap.keys()].map(async (key) => {
+          const db = sqlite.databaseMap.get(key);
+          if (db) await closeDatabase(db);
+          sqlite.databaseMap.delete(key);
+        })
+      );
     },
     // temporary databases (no-op when temporaryDatabaseMap is null / disabled)
     async () => {
-      if (sqlite.temporaryDatabaseMap)
-        await sqlite.temporaryDatabaseMap.closeAll();
+      if (
+        !sqlite.temporaryDatabaseMap ||
+        sqlite.temporaryDatabaseMap.size === 0
+      )
+        return;
+      await Promise.all(
+        [...sqlite.temporaryDatabaseMap.keys()].map(async (key) => {
+          const db = sqlite.temporaryDatabaseMap.get(key);
+          if (db) await closeDatabase(db);
+          sqlite.temporaryDatabaseMap.delete(key);
+        })
+      );
     }
   ]
 });
@@ -60,15 +78,9 @@ graceful.listen();
 
 (async () => {
   try {
-    // In fork mode, each instance gets a unique port offset by NODE_APP_INSTANCE
-    const instanceId = Number.parseInt(
-      process.env.NODE_APP_INSTANCE || '0',
-      10
-    );
-    const port =
-      Number.parseInt(process.env.SQLITE_PORT || '3456', 10) + instanceId;
-    await sqlite.listen(port);
+    await sqlite.listen();
     if (process.send) process.send('ready');
+    const { port } = sqlite.server.address();
     logger.info(
       `SQLite WebSocket server listening on ${port} (LAN: ${ip.address()}:${port})`,
       { hide_meta: true }

@@ -4,9 +4,8 @@
       "name": "sqlite",
       "script": "sqlite.js",
       "wait_ready": true,
-      "listen_timeout": 10000,
-      "exec_mode": "fork",
-      "instances": 10,
+      "exec_mode": "cluster",
+      "instances": "max",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production"
