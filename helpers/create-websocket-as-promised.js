@@ -493,13 +493,69 @@ function createWebSocketAsPromised(options = {}) {
   }
 
   //
+  // Only the range workers participate in consistent-hashing affinity and
+  // round-robin. The optional legacy member (below) is appended AFTER this
+  // count so it never alters alias->worker affinity or receives primary load;
+  // it is used exclusively as a fallback connection (see getWorkerForAlias).
+  //
+  const routingCount = pool.length;
+
+  //
+  // Backward-compatibility for rolling deploys: when SQLITE_LEGACY_PORT_ENABLED
+  // is true and the legacy single SQLITE_PORT is OUTSIDE the range, add one
+  // extra pool member pointing at the legacy port (where worker instance 0 also
+  // listens). This lets clients still reach a live worker on the old endpoint
+  // while the fleet migrates, without disturbing steady-state routing.
+  //
+  const legacyPort = Number.parseInt(env.SQLITE_PORT, 10);
+  const legacyEnabled =
+    !options.port && Boolean(env.SQLITE_LEGACY_PORT_ENABLED);
+  const legacyInRange =
+    Number.isInteger(legacyPort) &&
+    legacyPort >= basePort &&
+    legacyPort <= basePort + workerCount - 1;
+  if (legacyEnabled && Number.isInteger(legacyPort) && !legacyInRange) {
+    const legacyUrl = `${protocol}://${host}:${legacyPort}`;
+    const legacyIndex = pool.length;
+    logger.info('creating wsp legacy pool member', {
+      url: legacyUrl,
+      index: legacyIndex
+    });
+    console.log(
+      '[INFO:sqlite-client] legacy pool member created',
+      JSON.stringify({
+        url: legacyUrl,
+        host,
+        port: legacyPort,
+        workerIndex: legacyIndex,
+        protocol,
+        legacy: true
+      })
+    );
+    const legacyMember = createSingleWsp(legacyUrl, auth, legacyIndex);
+    legacyMember._routeUrl = legacyUrl;
+    legacyMember._routeHost = host;
+    legacyMember._routePort = legacyPort;
+    legacyMember._routeIndex = legacyIndex;
+    legacyMember._isLegacy = true;
+    pool.push(legacyMember);
+  }
+
+  //
   // Select the target worker for a given alias_id using consistent hashing.
   // If the target worker is disconnected, fall back to any connected worker.
   //
   function getWorkerForAlias(aliasId) {
+    // Only short-circuit when there is genuinely a single connection (no legacy
+    // fallback member present); otherwise fall through so the legacy member can
+    // still be used as a fallback when the sole range worker is unreachable.
     if (pool.length === 1) return pool[0];
+    if (routingCount === 1 && (pool[0].isOpened || pool[0].isOpening))
+      return pool[0];
 
-    const targetIndex = fnv1aHash(aliasId) % pool.length;
+    // Hash only across the range workers (routingCount), never the optional
+    // trailing legacy member, so affinity is unaffected by its presence.
+    const targetIndex = fnv1aHash(aliasId) % routingCount;
     const target = pool[targetIndex];
 
     // If target is connected, use it
@@ -645,7 +701,7 @@ function createWebSocketAsPromised(options = {}) {
         //
         const targetWsp = data?.session?.user?.alias_id
           ? getWorkerForAlias(data.session.user.alias_id)
-          : pool[Math.floor(Math.random() * pool.length)];
+          : pool[Math.floor(Math.random() * routingCount)];
 
         // Log the resolved client->server target for this request so the
         // exact worker (host:port/index) handling each action is visible.
