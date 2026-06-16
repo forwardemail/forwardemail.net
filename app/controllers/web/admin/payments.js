@@ -75,9 +75,16 @@ async function list(ctx) {
     };
   }
 
-  if (isSANB(ctx.query.mongodb_query)) {
+  // FWD-01-010: mongodb_query is only accepted from the POST body to prevent
+  // cross-origin timing side-channel attacks observable via GET query strings.
+  const mongodbQueryRaw =
+    ctx.request.body && isSANB(ctx.request.body.mongodb_query)
+      ? ctx.request.body.mongodb_query
+      : null;
+
+  if (mongodbQueryRaw) {
     try {
-      const mongoQuery = JSON.parse(ctx.query.mongodb_query);
+      const mongoQuery = JSON.parse(mongodbQueryRaw);
       if (
         !mongoQuery ||
         typeof mongoQuery !== 'object' ||

@@ -47,9 +47,16 @@ async function list(ctx) {
     }
   }
 
-  if (isSANB(ctx.query.mongodb_query)) {
+  // FWD-01-010: mongodb_query is only accepted from the POST body to prevent
+  // cross-origin timing side-channel attacks observable via GET query strings.
+  const mongodbQueryRaw =
+    ctx.request.body && isSANB(ctx.request.body.mongodb_query)
+      ? ctx.request.body.mongodb_query
+      : null;
+
+  if (mongodbQueryRaw) {
     try {
-      query = JSON.parse(ctx.query.mongodb_query);
+      query = JSON.parse(mongodbQueryRaw);
       if (
         !query ||
         typeof query !== 'object' ||
