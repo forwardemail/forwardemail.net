@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const dns = require('node:dns');
 const timers = require('node:timers/promises');
 const undici = require('undici');
 const ms = require('ms');
@@ -107,6 +108,33 @@ async function retryRequest(url, opts = {}, count = 1) {
                 }
               }
             })
+      });
+    else if (!config.isSelfHosted)
+      // When no custom resolver is provided (e.g. plain HTTP webhooks),
+      // still validate the resolved IP at connection time to prevent
+      // DNS rebinding attacks (mirrors the WKD-style check in helpers/wkd.js:89-102)
+      opts.dispatcher = new undici.Agent({
+        connect: {
+          lookup(hostname, options, fn) {
+            dns.lookup(hostname, options, (err, address, family) => {
+              if (err) {
+                fn(err);
+                return;
+              }
+
+              if (config.env !== 'test' && address && isPrivateHost(address)) {
+                const privErr = new Error(
+                  `Resolved IP ${address} is a private/reserved address`
+                );
+                privErr.code = 'EPRIVATEADDR';
+                fn(privErr);
+                return;
+              }
+
+              fn(null, address, family);
+            });
+          }
+        }
       });
 
     const response = await undici.request(url, opts);
