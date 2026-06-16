@@ -380,6 +380,7 @@ function createSingleWsp(url, auth, workerIndex) {
   // auth 401) can be diagnosed directly from the logs.
   //
   wsp.onError.addListener((err) => {
+    wsp._healthy = false;
     console.error(
       '[ERROR:sqlite-client] wsp error',
       JSON.stringify({
@@ -393,7 +394,16 @@ function createSingleWsp(url, auth, workerIndex) {
     );
   });
 
+  // Health tracking for affinity routing. A member is considered "healthy"
+  // (eligible to be opened on demand for its owning aliases) unless its
+  // underlying transport has recently errored or closed uncleanly. We default
+  // to healthy so a lazily-opened member is never skipped merely because it
+  // has not been opened yet (sendRequest opens it on demand).
+  wsp._healthy = true;
+  wsp._lastFallbackLoggedAt = 0;
+
   wsp.onOpen.addListener(() => {
+    wsp._healthy = true;
     console.log(
       '[INFO:sqlite-client] wsp open',
       JSON.stringify({ url, workerIndex, protocol })
@@ -401,6 +411,11 @@ function createSingleWsp(url, auth, workerIndex) {
   });
 
   wsp.onClose.addListener((event) => {
+    // Mark unhealthy on an unclean close so affinity can temporarily fall back
+    // to a connected worker while this one reconnects. A clean close (code
+    // 1000) is treated as benign and does not flip health.
+    if (event && event.code !== 1000 && event.wasClean !== true)
+      wsp._healthy = false;
     console.error(
       '[ERROR:sqlite-client] wsp close',
       JSON.stringify({
@@ -546,70 +561,80 @@ function createWebSocketAsPromised(options = {}) {
   // If the target worker is disconnected, fall back to any connected worker.
   //
   function getWorkerForAlias(aliasId) {
-    // Only short-circuit when there is genuinely a single connection (no legacy
-    // fallback member present); otherwise fall through so the legacy member can
-    // still be used as a fallback when the sole range worker is unreachable.
+    // Single connection: nothing to route, always use it.
     if (pool.length === 1) return pool[0];
-    if (routingCount === 1 && (pool[0].isOpened || pool[0].isOpening))
-      return pool[0];
 
     // Hash only across the range workers (routingCount), never the optional
     // trailing legacy member, so affinity is unaffected by its presence.
     const targetIndex = fnv1aHash(aliasId) % routingCount;
     const target = pool[targetIndex];
 
-    // If target is connected, use it
-    if (target.isOpened || target.isOpening) {
-      console.log(
-        '[INFO:sqlite-client] routing alias to worker',
-        JSON.stringify({
-          aliasId,
-          workerIndex: targetIndex,
-          port: target._routePort,
-          url: target._routeUrl,
-          via: 'affinity',
-          isOpened: target.isOpened,
-          isOpening: target.isOpening
-        })
-      );
+    //
+    // STICKY AFFINITY (correctness): an alias's data lives on its owning worker,
+    // so we MUST keep routing to that worker. The pool is lazily connected —
+    // sendRequest() opens the chosen member on demand via pWaitFor(wsp.open()).
+    // Therefore a target that is merely not-yet-open (or transiently
+    // reconnecting) is NOT a reason to fall back; doing so misroutes the alias
+    // to a worker that does not own its database and, because the target never
+    // gets opened, it would never become "connected" — making the fallback
+    // permanent. We only fall back when the target is in a KNOWN-BAD transport
+    // state (recent error / unclean close, tracked via wsp._healthy).
+    //
+    if (target.isOpened || target.isOpening || target._healthy) {
+      if (env.SQLITE_VERBOSE_ROUTING) {
+        console.log(
+          '[INFO:sqlite-client] routing alias to worker',
+          JSON.stringify({
+            aliasId,
+            workerIndex: targetIndex,
+            port: target._routePort,
+            url: target._routeUrl,
+            via: 'affinity',
+            isOpened: target.isOpened,
+            isOpening: target.isOpening,
+            healthy: target._healthy
+          })
+        );
+      }
+
       return target;
     }
 
-    // Fallback: find any connected worker
+    // Target is genuinely unhealthy: fall back to any connected worker so the
+    // request can still be served while the target reconnects.
     for (const [i, wsp] of pool.entries()) {
       if (i === targetIndex) continue;
       if (wsp.isOpened || wsp.isOpening) {
-        logger.warn('worker affinity fallback', {
-          aliasId,
-          targetIndex,
-          fallbackIndex: i
-        });
-        console.error(
-          '[ERROR:sqlite-client] worker affinity fallback',
-          JSON.stringify({
+        // Throttle fallback logging per target worker to avoid log floods when
+        // a worker is briefly down (e.g. during a deploy/restart).
+        const now = Date.now();
+        if (now - target._lastFallbackLoggedAt > ms('30s')) {
+          target._lastFallbackLoggedAt = now;
+          logger.warn('worker affinity fallback', {
             aliasId,
             targetIndex,
-            targetPort: target._routePort,
-            fallbackIndex: i,
-            fallbackPort: wsp._routePort,
-            fallbackUrl: wsp._routeUrl
-          })
-        );
+            fallbackIndex: i
+          });
+          console.error(
+            '[ERROR:sqlite-client] worker affinity fallback',
+            JSON.stringify({
+              aliasId,
+              targetIndex,
+              targetPort: target._routePort,
+              fallbackIndex: i,
+              fallbackPort: wsp._routePort,
+              fallbackUrl: wsp._routeUrl
+            })
+          );
+        }
+
         return wsp;
       }
     }
 
-    // All disconnected — return the target anyway (sendRequest will wait for open)
-    console.error(
-      '[ERROR:sqlite-client] no connected worker, awaiting target',
-      JSON.stringify({
-        aliasId,
-        targetIndex,
-        port: target._routePort,
-        url: target._routeUrl,
-        poolSize: pool.length
-      })
-    );
+    // No connected worker available — return the target anyway and let
+    // sendRequest open it on demand (this also re-arms the target's health on
+    // a successful open).
     return target;
   }
 
