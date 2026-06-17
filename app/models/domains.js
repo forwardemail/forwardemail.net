@@ -1235,6 +1235,31 @@ Domains.pre('validate', async function (next) {
 
 Domains.pre('validate', function (next) {
   const domain = this;
+
+  // Backfill `expires_at` on any invite missing it.
+  //
+  // Invites created before `expires_at` became a required field have no
+  // value for it. Because saving a domain re-validates the ENTIRE `invites`
+  // array, a single legacy invite would otherwise throw "Expires at is
+  // required" and block adding OR removing any invite (see the create-invite
+  // and remove-invite controllers). We default to created_at + 7d to match
+  // the TTL used when invites are created (see create-invite controller).
+  if (Array.isArray(domain.invites)) {
+    for (const invite of domain.invites) {
+      if (invite && !invite.expires_at)
+        invite.expires_at = new Date(
+          (invite.created_at
+            ? new Date(invite.created_at).getTime()
+            : Date.now()) + ms('7d')
+        );
+    }
+  }
+
+  next();
+});
+
+Domains.pre('validate', function (next) {
+  const domain = this;
   // Domain must be on a paid plan in order to require verification
   if (domain.plan === 'free' && domain.has_recipient_verification) {
     return next(
