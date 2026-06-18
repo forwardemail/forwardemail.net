@@ -236,7 +236,12 @@ table.table.table-hover.table-bordered.table-sm
                     )
                       = t("View Email")
                 if log.err && log.err.name === 'DenylistError'
-                  - let href = log.err.message.split("you must visit ")[1];
+                  //- `log.err` is a Mixed field, so `log.err.message` may be
+                  //- missing or non-string (e.g. for sanitized/oversized logs).
+                  //- Guard before calling `.split()` to avoid throwing a
+                  //- TypeError during render, which would surface as an
+                  //- uncaptured "Internal Server Error" on the entire Logs page.
+                  - let href = typeof log.err.message === "string" ? log.err.message.split("you must visit ")[1] : undefined;
                   if href
                     - href = href.split(";")[0].trim();
                   if href && href.startsWith('https://forwardemail.net/denylist?q=')

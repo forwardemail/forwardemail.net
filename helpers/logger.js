@@ -201,7 +201,14 @@ async function hook(err, message, meta) {
   if (err && err.message === 'write EPIPE') return;
 
   // unique hash (already exists)
-  if (err.message === 'Hash is not unique.') return;
+  //
+  // NOTE: `err` may be undefined here (e.g. a plain `logger.error(message)`
+  // or an HTTP/analytics-level log with no error object). Every other check
+  // in this hook is null-safe via `err && ...`; this line was missing that
+  // guard, so a logless error would throw a TypeError INSIDE the hook and
+  // abort it before the log was ever persisted — silently dropping the log
+  // from Admin > Logs. Guard `err` the same way the surrounding checks do.
+  if (err && err.message === 'Hash is not unique.') return;
 
   // wrapper for non-browser condition
   if (mongoose && hasMixin) {

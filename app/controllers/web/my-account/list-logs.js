@@ -706,6 +706,15 @@ async function listLogs(ctx) {
         if (Array.isArray(log?.meta?.session?.envelope?.rcptTo)) {
           log.meta.session.envelope.rcptTo =
             log.meta.session.envelope.rcptTo.filter((rcpt) => {
+              //
+              // `rcptTo` entries come from an unstructured Mixed `meta` field,
+              // so an entry may be missing a string `address` (or be malformed).
+              // Without this guard, `rcpt.address.includes('+')` throws a
+              // TypeError that escapes into the render and surfaces as an
+              // uncaptured "Internal Server Error" on the entire Logs page.
+              //
+              if (!rcpt || typeof rcpt.address !== 'string') return false;
+
               // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
               const username = rcpt.address.includes('+')
                 ? rcpt.address.slice(0, rcpt.address.indexOf('+'))

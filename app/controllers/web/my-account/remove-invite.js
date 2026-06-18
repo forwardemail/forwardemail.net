@@ -15,25 +15,32 @@ async function removeInvite(ctx, next) {
   const email = ctx.request.body.email || ctx.query.email;
   if (!isSANB(email) || !isEmail(email))
     throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
-  ctx.state.domain = await Domains.findById(ctx.state.domain._id);
-  if (!ctx.state.domain)
-    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
-  // remove invite
-  ctx.state.domain.invites = ctx.state.domain.invites.filter(
-    (invite) => invite.email.toLowerCase() !== email.toLowerCase()
+
+  //
+  // NOTE: we intentionally remove the invite with an atomic `$pull`
+  //       update instead of mutating `ctx.state.domain.invites` and
+  //       calling `domain.save()`.
+  //
+  //       Calling `.save()` re-validates the ENTIRE `invites` array,
+  //       so a single legacy invite that predates the now-required
+  //       `expires_at` field would throw "Expires at is required" and
+  //       block the deletion (and the success path would never run).
+  //       A targeted `$pull` removes the matching invite without
+  //       triggering full-document subdocument validation.
+  //
+  const normalizedEmail = email.toLowerCase();
+
+  const result = await Domains.updateOne(
+    { _id: ctx.state.domain._id },
+    {
+      $pull: {
+        invites: { email: normalizedEmail }
+      }
+    }
   );
-  ctx.state.domain.skip_verification = true;
-  ctx.state.domain.locale = ctx.locale;
-  ctx.state.domain.resolver = ctx.resolver;
 
-  // Set audit metadata for domain update tracking
-  ctx.state.domain.__audit_metadata = {
-    user: ctx.state.user,
-    ip: ctx.ip,
-    userAgent: ctx.get('User-Agent')
-  };
-
-  ctx.state.domain = await ctx.state.domain.save();
+  if (result.matchedCount === 0)
+    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   if (ctx.api) return next();
 

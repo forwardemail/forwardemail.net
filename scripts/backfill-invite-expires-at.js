@@ -3,20 +3,28 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// Backfills `expires_at` on domain invites created before the field became
-// required. Without a value, saving the domain re-validates the whole
-// `invites` array and throws "Expires at is required", which blocks users
-// from adding or removing invites (stale pending invites get stuck).
 //
-// We set `expires_at` to created_at + 7d (matching the TTL used in the
-// create-invite controller), falling back to now + 7d when created_at is
-// absent. The update runs as an aggregation pipeline directly on the
-// collection so it is atomic and does not re-run full document validation.
+// One-time cleanup for legacy domain invites.
+//
+// Invites created before the current token-based system have no `token`
+// and/or no `expires_at`. Both fields are now required on the Invite
+// subdocument, so a single legacy invite makes the whole domain fail
+// validation on save with "Expires at is required", which blocks adding
+// OR removing any invite. These old invites also can no longer be accepted
+// (acceptance requires a `token`), so they are dead data.
+//
+// Rather than guessing values, we simply REMOVE any invite that is missing
+// `token` or `expires_at`. This is done with a single atomic `$pull` so it
+// never triggers full-document Mongoose validation and cannot affect any
+// other field on the domain.
 //
 // Usage:
 //   node scripts/backfill-invite-expires-at.js            # apply
 //   node scripts/backfill-invite-expires-at.js --dry-run  # report only
+//
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
@@ -27,7 +35,6 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const mongoose = require('mongoose');
-const ms = require('ms');
 
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -41,32 +48,51 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-const TTL_MS = ms('7d');
 const DRY_RUN = process.argv.includes('--dry-run');
 
-// matches any invite element that has no (or null) expires_at
-const MISSING_TYPES = ['missing', 'null'];
-const FILTER = {
-  invites: { $elemMatch: { expires_at: { $exists: false } } }
+//
+// A legacy invite is one missing `token` OR `expires_at`
+// (covers both absent fields and explicit null values).
+//
+const LEGACY_INVITE = {
+  $or: [
+    { token: { $in: [null] } },
+    { token: { $exists: false } },
+    { expires_at: { $in: [null] } },
+    { expires_at: { $exists: false } }
+  ]
 };
+
+// domains that contain at least one legacy invite
+const FILTER = { invites: { $elemMatch: LEGACY_INVITE } };
 
 (async () => {
   try {
     await setupMongoose(logger);
 
-    // report how many domains / invites are affected before changing anything
+    //
+    // Report how many domains / invites are affected before changing anything.
+    //
     const [stats] = await Domains.collection
       .aggregate([
         { $match: FILTER },
         {
           $project: {
-            missing: {
+            legacy: {
               $size: {
                 $filter: {
-                  input: '$invites',
+                  input: { $ifNull: ['$invites', []] },
                   as: 'inv',
                   cond: {
-                    $in: [{ $type: '$$inv.expires_at' }, MISSING_TYPES]
+                    $or: [
+                      { $in: [{ $type: '$$inv.token' }, ['missing', 'null']] },
+                      {
+                        $in: [
+                          { $type: '$$inv.expires_at' },
+                          ['missing', 'null']
+                        ]
+                      }
+                    ]
                   }
                 }
               }
@@ -77,7 +103,7 @@ const FILTER = {
           $group: {
             _id: null,
             domains: { $sum: 1 },
-            invites: { $sum: '$missing' }
+            invites: { $sum: '$legacy' }
           }
         }
       ])
@@ -87,58 +113,35 @@ const FILTER = {
     const invites = stats?.invites || 0;
 
     console.log(
-      `Found ${invites} invite(s) missing expires_at across ${domains} domain(s)`
+      `Found ${invites} legacy invite(s) missing token/expires_at across ${domains} domain(s)`
     );
 
     if (domains === 0) {
-      console.log('Nothing to backfill.');
-      return;
+      console.log('Nothing to clean up.');
+      process.exit(0);
     }
 
     if (DRY_RUN) {
       console.log('Dry run — no changes written.');
-      return;
+      process.exit(0);
     }
 
-    const result = await Domains.collection.updateMany(FILTER, [
-      {
-        $set: {
-          invites: {
-            $map: {
-              input: '$invites',
-              as: 'inv',
-              in: {
-                $cond: [
-                  { $in: [{ $type: '$$inv.expires_at' }, MISSING_TYPES] },
-                  {
-                    $mergeObjects: [
-                      '$$inv',
-                      {
-                        expires_at: {
-                          $add: [
-                            { $ifNull: ['$$inv.created_at', '$$NOW'] },
-                            TTL_MS
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  '$$inv'
-                ]
-              }
-            }
-          }
-        }
-      }
-    ]);
+    //
+    // Atomically remove the legacy invites. `$pull` does not re-run
+    // full-document validation, so it cannot fail on (or alter) any
+    // other invite or field.
+    //
+    const result = await Domains.collection.updateMany(FILTER, {
+      $pull: { invites: LEGACY_INVITE }
+    });
 
     console.log(
-      `Backfill complete — matched ${result.matchedCount}, modified ${result.modifiedCount} domain(s)`
+      `Cleanup complete — matched ${result.matchedCount}, modified ${result.modifiedCount} domain(s)`
     );
+
+    process.exit(0);
   } catch (err) {
-    console.error('Error during backfill:', err);
-    process.exitCode = 1;
-  } finally {
-    process.exit();
+    console.error('Error during invite cleanup:', err);
+    process.exit(1);
   }
 })();
