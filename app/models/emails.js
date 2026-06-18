@@ -208,7 +208,9 @@ const Emails = new mongoose.Schema(
     },
     // `locked_by` is the IP address of which smtp server locked it for sending
     locked_by: String,
-    // every 1m the job "unlock-emails" will unlock emails frozen for more than 5m
+    // the "unlock-emails" job (every 1m) unlocks orphaned emails still locked for 5m+;
+    // deferred emails are retried directly by the send-emails job (see its finder
+    // query and the lock-acquisition in helpers/process-email.js)
     locked_at: {
       type: Date,
       index: true
@@ -819,7 +821,9 @@ Emails.pre('save', function (next) {
         return next();
       }
 
-      // otherwise status is deferred (will be unlocked after 10m by automated job)
+      // otherwise status is deferred; the lock is released here and the email is
+      // retried by the send-emails job, which picks up `deferred` emails directly
+      // (with a 1m backoff enforced at lock acquisition in helpers/process-email.js)
       this.status = 'deferred';
       this.is_locked = false;
       this.locked_by = undefined;

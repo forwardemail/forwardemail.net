@@ -163,12 +163,27 @@ async function processEmail({ email, port = 25, resolver, client }) {
   //
   try {
     const now = new Date();
+    //
+    // A `deferred` email is one whose previous attempt soft-failed (4xx); it is
+    // a first-class retryable state, not a terminal one, so we claim it here the
+    // same way as `queued` and normalize it back to `queued` on lock. We require
+    // `updated_at` to be at least 1 minute old so an email that was just deferred
+    // is not retried in a tight loop (the send-emails job runs every 30s); the
+    // time-based `config.maxRetryDuration` bounce below still bounces messages
+    // that keep failing past the retry window.
+    //
     email = await Emails.findOneAndUpdate(
       {
         _id: email._id,
-        status: 'queued',
         is_locked: false,
-        date: { $lte: now }
+        date: { $lte: now },
+        $or: [
+          { status: 'queued' },
+          {
+            status: 'deferred',
+            updated_at: { $lte: dayjs(now).subtract(1, 'minute').toDate() }
+          }
+        ]
       },
       {
         $set: {
@@ -187,7 +202,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // If no document was returned, the email either:
     // - doesn't exist
     // - is already locked by another worker
-    // - has a status other than 'queued' (already sent/failed)
+    // - has a terminal status (already sent/bounced/rejected)
+    // - was deferred too recently (within the 1m retry backoff)
     // - has a date in the future
     if (!email) {
       // TODO: remove debug instrumentation once queue issue is resolved

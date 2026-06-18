@@ -94,6 +94,15 @@ graceful.listen();
     //
 
     // NOTE: if you change this then also update `jobs/send-emails` if necessary
+    //
+    // This monitor intentionally checks only `status: 'queued'` and NOT
+    // `deferred`. The send-emails finder includes `deferred` (they are retried),
+    // but a deferred email staying deferred across the 1-minute window below is
+    // expected, healthy behavior (e.g. a remote MX is temporarily unavailable);
+    // counting it here would raise false "queue is frozen" alarms. A genuinely
+    // frozen queue manifests as `queued` emails that are eligible to send right
+    // now but never leave the queue, which is what we detect here.
+    //
     const query = {
       _id: { $nin: recentlyBlockedIds },
       is_locked: false,

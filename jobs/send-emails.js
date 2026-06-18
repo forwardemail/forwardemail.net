@@ -802,10 +802,18 @@ async function sendEmails() {
 
   // NOTE: if you change this then also update `jobs/check-smtp-frozen-queue` if necessary
   // TODO: optimize this query
+  //
+  // NOTE: `deferred` emails are previous attempts that soft-failed (4xx); they
+  // are retryable, so we surface them here alongside `queued`. The per-email
+  // retry backoff is enforced atomically at lock acquisition in
+  // `helpers/process-email.js` (so a just-deferred email is skipped until it
+  // ages), which keeps this finder query on its existing `{ status, created_at }`
+  // index via an index-friendly `$in`.
+  //
   const query = {
     _id: { $nin: recentlyBlockedIds },
     is_locked: false,
-    status: 'queued',
+    status: { $in: ['queued', 'deferred'] },
     domain: {
       $nin: suspendedDomainIds
     },
