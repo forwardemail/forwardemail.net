@@ -62,10 +62,85 @@ async function getForwardingAddresses(
 
   const rootDomain = parseRootDomain(domain);
 
+  //
+  // compute the recipient subdomain label(s) below the registrable root domain
+  // (used for opt-in subdomain-aware regex substitution via %SUBDOMAIN%/%HOST%)
+  //
+  // e.g. for "a.b.testdomain.com" with root "testdomain.com" -> subdomain is "a.b"
+  // e.g. for the apex "testdomain.com" -> subdomain is "" (empty string)
+  //
+  // NOTE: this is purely additive and does not affect DNS resolution nor the
+  //       matching of any existing forward-email records (which match the
+  //       local-part/username exactly as before).  it applies equally to the
+  //       free/TXT plan and the paid plan, since paid-plan alias mappings flow
+  //       through this same substitution block via `body.mapping`.
+  //
+  let subdomain = '';
+  if (
+    !isIP(domain) &&
+    domain !== rootDomain &&
+    domain.endsWith(`.${rootDomain}`)
+  )
+    subdomain = domain.slice(
+      0,
+      Math.max(0, domain.length - rootDomain.length - 1)
+    );
+
   // if it is a truth source then don't bother fetching (e.g. gmail)
   // if domain/subdomain mismatch
   // if not an ip
   let records = [];
+
+  //
+  // whether the recipient host is a subdomain of its registrable root domain
+  // (used to opt-in to the wildcard root-domain TXT fallback below)
+  //
+  const isSubdomain =
+    !isIP(domain) &&
+    domain !== rootDomain &&
+    domain.endsWith(`.${rootDomain}`) &&
+    !config.truthSources.has(rootDomain);
+
+  //
+  // wildcard subdomain forwarding is OPT-IN and PAID-PLAN ONLY:
+  //
+  // it only applies when the registrable root domain exists in our system on a
+  // paid plan (enhanced_protection or team) AND has explicitly enabled the
+  // `allow_subdomain_forwarding` setting (Domain > Settings).  it never applies
+  // to the free plan (which has no Domain document to opt-in with).
+  //
+  // IMPORTANT (anti-hijack): the existence of a same-named Domain document does
+  // NOT by itself grant inheritance.  Multiple accounts can add the same
+  // `name` (e.g. "example.com"); ownership is only proven by the apex
+  // publishing `forward-email-site-verification=<verification_record>` in DNS.
+  // The flag below is therefore used ONLY to decide whether it is worth
+  // deferring a "not configured" error and reading the apex TXT records.  The
+  // actual inheritance is gated later by matching the apex's verification TXT
+  // value(s) against a paid, opt-in Domain's UNIQUE `verification_record`.
+  //
+  // we only perform this (indexed, lean) existence check when the recipient is
+  // actually a subdomain, so there is zero added cost for apex/free/truth-source
+  // mail.
+  //
+  let allowSubdomainForwarding = false;
+  if (isSubdomain) {
+    const optInExists = await Domains.exists({
+      name: rootDomain,
+      plan: { $in: ['enhanced_protection', 'team'] },
+      allow_subdomain_forwarding: true
+    });
+    if (optInExists) allowSubdomainForwarding = true;
+  }
+
+  //
+  // if the EXACT host lookup fails as "not configured" (ENODATA/ENOTFOUND or a
+  // non-retryable error) AND the recipient is on a subdomain, we defer the
+  // error here instead of throwing immediately, so the root-domain TXT
+  // fallback can run (a subdomain very commonly has NO TXT records of its own,
+  // which is precisely the wildcard case).  the deferred error is rethrown
+  // later if the root domain also yields nothing, preserving existing behavior.
+  //
+  let exactHostError = null;
   if (
     !isIP(domain) &&
     (domain !== rootDomain || !config.truthSources.has(rootDomain))
@@ -85,11 +160,20 @@ async function getForwardingAddresses(
       )
         err.notConfigured = true;
 
-      throw err;
+      if (isSubdomain && allowSubdomainForwarding && err.notConfigured) {
+        exactHostError = err;
+        records = [];
+      } else {
+        throw err;
+      }
     }
 
     try {
-      const mxRecords = await this.resolver.resolveMx(domain);
+      // skip the MX probe entirely if we already deferred a "not configured"
+      // error for a subdomain (records is empty and we will try the root next)
+      const mxRecords = exactHostError
+        ? []
+        : await this.resolver.resolveMx(domain);
 
       if (!mxRecords || mxRecords.length === 0) {
         records = [];
@@ -156,6 +240,126 @@ async function getForwardingAddresses(
       verifications.push(
         records[i].replace(`${config.recordPrefix}-site-verification=`, '')
       );
+  }
+
+  //
+  // wildcard subdomain fallback (opt-in by virtue of being a subdomain):
+  //
+  // if the recipient is on a subdomain (e.g. "anything.testdomain.com") and the
+  // EXACT host lookup produced NO `forward-email=` records and NO
+  // `forward-email-site-verification=` records, then fall back to the
+  // registrable root domain's TXT records (e.g. "testdomain.com").
+  //
+  // this lets an admin publish a SINGLE record at the apex that transparently
+  // covers every subdomain ("any wildcard subdomain"), e.g. the paid plan's
+  // apex `forward-email-site-verification=...` record, without requiring a DNS
+  // wildcard TXT entry (`*.testdomain.com`).
+  //
+  // it is intentionally narrow so existing setups are never altered:
+  //   - OPT-IN, PAID-PLAN ONLY (gated by `allowSubdomainForwarding` above);
+  //     it never applies to the free plan
+  //   - only fires for subdomains (`domain !== rootDomain`)
+  //   - only fires when the exact host had ZERO relevant records, so any
+  //     per-subdomain record continues to take precedence exactly as before
+  //   - ONLY the apex `forward-email-site-verification=` ownership/mapping is
+  //     inherited; plain `forward-email=` apex rules are intentionally NOT
+  //     applied to subdomains (conservative: an apex's regex/alias rules do
+  //     not silently spill onto every subdomain), and all other TXT records
+  //     are ignored
+  //   - inheritance is granted ONLY when a paid, opt-in Domain's unique
+  //     `verification_record` matches a `forward-email-site-verification=`
+  //     value published at the apex (verified ownership; anti-hijack)
+  //
+  if (
+    isSubdomain &&
+    allowSubdomainForwarding &&
+    validRecords.length === 0 &&
+    verifications.length === 0
+  ) {
+    let rootRecords = [];
+    try {
+      rootRecords = await this.resolver.resolveTxt(rootDomain);
+    } catch (err) {
+      // a missing root record is not fatal here; treat as "nothing to inherit"
+      logger.debug(err, { address });
+      if (
+        err.code !== 'ENOTFOUND' &&
+        err.code !== 'ENODATA' &&
+        isRetryableError(err)
+      ) {
+        err.responseCode = getErrorCode(err);
+        throw err;
+      }
+    }
+
+    //
+    // first pass: capture the apex's single `forward-email-site-verification=`
+    // value WITHOUT trusting it yet.
+    //
+    // a correctly configured domain publishes exactly ONE
+    // `forward-email-site-verification=` value at its apex (the value is unique
+    // per Domain document, and `get-forwarding-configuration` resolves the
+    // owning domain by that single value; multiple values are rejected with a
+    // 421 elsewhere).  We therefore capture the FIRST such value and treat it
+    // as the apex's verification record.
+    //
+    // NOTE (conservative): plain `forward-email=` apex rules are deliberately
+    // NOT collected/inherited here - only the hosted site-verification mapping
+    // flows down to subdomains.
+    //
+    let rootVerification;
+    for (let i = 0; i < rootRecords.length; i++) {
+      rootRecords[i] = rootRecords[i].join('').trim();
+
+      if (
+        !rootVerification &&
+        rootRecords[i].indexOf(`${config.recordPrefix}-site-verification=`) ===
+          0
+      )
+        rootVerification = rootRecords[i].replace(
+          `${config.recordPrefix}-site-verification=`,
+          ''
+        );
+    }
+
+    //
+    // anti-hijack ownership check:
+    //
+    // only inherit the apex configuration if a PAID, opt-in Domain in our system
+    // is actually VERIFIED for this root domain - i.e. its UNIQUE
+    // `verification_record` equals the single `forward-email-site-verification=`
+    // value currently published at the apex.  Because `verification_record`
+    // is unique per Domain document, this binds inheritance to the party that
+    // demonstrably controls the apex DNS, so a same-named squatter document can
+    // never be selected.  (The free plan has no verification_record and is
+    // therefore never eligible.)
+    //
+    const verifiedOwner = rootVerification
+      ? await Domains.findOne({
+          name: rootDomain,
+          plan: { $in: ['enhanced_protection', 'team'] },
+          allow_subdomain_forwarding: true,
+          verification_record: rootVerification
+        })
+          .select('id')
+          .lean()
+          .exec()
+      : null;
+
+    if (verifiedOwner) verifications.push(rootVerification);
+
+    //
+    // if the EXACT host lookup had thrown a deferred "not configured" error and
+    // the root domain also yielded nothing relevant (or no verified paid owner
+    // matched), rethrow the original error so behavior is identical to before
+    // for genuinely-unconfigured subdomains.
+    //
+    if (
+      exactHostError &&
+      validRecords.length === 0 &&
+      verifications.length === 0
+    )
+      throw exactHostError;
   }
 
   // check if we have a specific redirect and store global redirects (if any)
@@ -641,12 +845,31 @@ async function getForwardingAddresses(
       }
 
       if (username && regex && regex.test(username.toLowerCase())) {
-        const hasDollarInterpolation =
-          REGEX_INTERPOLATED_DOLLAR.test(elementWithoutRegex);
+        //
+        // opt-in subdomain-aware substitution:
+        // replace the literal tokens %SUBDOMAIN% and %HOST% in the target
+        // BEFORE the capture-group replace() runs, so they cannot collide
+        // with $1..$n / $& replacement semantics.
+        //
+        // %SUBDOMAIN% -> subdomain label(s) below the root (e.g. "a.b")
+        // %HOST%      -> the full recipient host (e.g. "a.b.testdomain.com")
+        //
+        // records that do not contain these tokens are completely unaffected,
+        // and this applies to both free/TXT and paid-plan alias mappings.
+        //
+        let target = elementWithoutRegex;
+        if (target.includes('%SUBDOMAIN%') || target.includes('%HOST%'))
+          target = target
+            .split('%SUBDOMAIN%')
+            .join(subdomain)
+            .split('%HOST%')
+            .join(domain);
+
+        const hasDollarInterpolation = REGEX_INTERPOLATED_DOLLAR.test(target);
 
         const substitutedAlias = hasDollarInterpolation
-          ? username.toLowerCase().replace(regex, elementWithoutRegex)
-          : elementWithoutRegex;
+          ? username.toLowerCase().replace(regex, target)
+          : target;
 
         if (
           wasIgnoredRegex === 'hard' ||

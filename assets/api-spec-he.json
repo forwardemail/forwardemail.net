@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "אפשר העברת תת-דומיינים כלליים (wildcard). כאשר האפשרות מופעלת במסלול בתשלום (Enhanced Protection או Team), כל תת-דומיין שאין לו רשומות DNS משלו יורש את תצורת ההעברה המפורסמת בשורש (apex) של דומיין זה. נדרשת בעלות מאומת: על השורש לפרסם רשומת forward-email-site-verification התואמת לדומיין זה. הגדרה זו אינה חלה על המסלול החינמי.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "התעלם מבדיקת רשומות MX עבור הגדרות ניתוב דואר מתקדמות"
           },
+          "allow_subdomain_forwarding": {
+            "description": "אפשר העברת תת-דומיינים כלליים (wildcard). כאשר האפשרות מופעלת במסלול בתשלום (Enhanced Protection או Team), כל תת-דומיין שאין לו רשומות DNS משלו יורש את תצורת ההעברה המפורסמת בשורש (apex) של דומיין זה. נדרשת בעלות מאומת: על השורש לפרסם רשומת forward-email-site-verification התואמת לדומיין זה. הגדרה זו אינה חלה על המסלול החינמי.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "הצטרף לאחסון כותרות ומטא-דאטה (לא כולל תוכן הודעה) עבור הודעות דוא\"ל שהועברו בהצלחה, נשלחו באמצעות webhook, יוצאות באמצעות SMTP ו-IMAP, כאשר יומני הרישום נשמרים למשך 7 ימים. תכונה זו עוזרת לך לנטר ולפתור בעיות בביצועי מסירת הודעות דוא\"ל עם תובנות מפורטות לגבי העברות מוצלחות."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "האם להתעלם מבדיקת רשומת ה-MX בדומיין לצורך אימות (בעיקר עבור הגדרות ניתוב MX מתקדמות)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "אפשר העברת תת-דומיינים כלליים (wildcard). כאשר האפשרות מופעלת במסלול בתשלום (Enhanced Protection או Team), כל תת-דומיין שאין לו רשומות DNS משלו יורש את תצורת ההעברה המפורסמת בשורש (apex) של דומיין זה. נדרשת בעלות מאומת: על השורש לפרסם רשומת forward-email-site-verification התואמת לדומיין זה. הגדרה זו אינה חלה על המסלול החינמי.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

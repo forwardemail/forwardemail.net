@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Autoriser le transfert des sous-domaines génériques (wildcard). Lorsqu’il est activé sur une formule payante (Enhanced Protection ou Team), tout sous-domaine ne possédant pas ses propres enregistrements DNS hérite de la configuration de transfert publiée à la racine (apex) de ce domaine. Une propriété vérifiée est requise : l’apex doit publier un enregistrement forward-email-site-verification correspondant à ce domaine. Ce paramètre ne s’applique pas à la formule gratuite.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "Ignorer la vérification de l'enregistrement MX pour les configurations de routage de courrier avancées"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Autoriser le transfert des sous-domaines génériques (wildcard). Lorsqu’il est activé sur une formule payante (Enhanced Protection ou Team), tout sous-domaine ne possédant pas ses propres enregistrements DNS hérite de la configuration de transfert publiée à la racine (apex) de ce domaine. Une propriété vérifiée est requise : l’apex doit publier un enregistrement forward-email-site-verification correspondant à ce domaine. Ce paramètre ne s’applique pas à la formule gratuite.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Activez l'option permettant de conserver les en-têtes et les métadonnées (à l'exclusion du contenu des messages) des e-mails transférés, envoyés via webhook, SMTP sortants et IMAP, avec une conservation des journaux pendant 7 jours. Cette fonctionnalité vous aide à surveiller et à résoudre les problèmes de performance de la distribution des e-mails grâce à des informations détaillées sur les transmissions réussies."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Faut-il ignorer la vérification de l'enregistrement MX sur le domaine à des fins de vérification (principalement pour les configurations de routage MX avancées) ?"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Autoriser le transfert des sous-domaines génériques (wildcard). Lorsqu’il est activé sur une formule payante (Enhanced Protection ou Team), tout sous-domaine ne possédant pas ses propres enregistrements DNS hérite de la configuration de transfert publiée à la racine (apex) de ce domaine. Une propriété vérifiée est requise : l’apex doit publier un enregistrement forward-email-site-verification correspondant à ce domaine. Ce paramètre ne s’applique pas à la formule gratuite.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

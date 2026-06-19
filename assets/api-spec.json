@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Allow wildcard subdomain forwarding. When enabled on a paid plan (Enhanced Protection or Team), any subdomain that has no DNS records of its own inherits the forwarding configuration published at this domain’s root (apex). Verified ownership is required: the apex must publish a forward-email-site-verification record matching this domain. This setting does not apply to the free plan.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "Ignore MX record check for advanced mail routing setups"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Allow wildcard subdomain forwarding. When enabled on a paid plan (Enhanced Protection or Team), any subdomain that has no DNS records of its own inherits the forwarding configuration published at this domain’s root (apex). Verified ownership is required: the apex must publish a forward-email-site-verification record matching this domain. This setting does not apply to the free plan.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Allow wildcard subdomain forwarding. When enabled on a paid plan (Enhanced Protection or Team), any subdomain that has no DNS records of its own inherits the forwarding configuration published at this domain’s root (apex). Verified ownership is required: the apex must publish a forward-email-site-verification record matching this domain. This setting does not apply to the free plan.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

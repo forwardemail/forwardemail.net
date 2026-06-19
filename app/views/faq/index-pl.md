@@ -76,6 +76,7 @@
   * [Czy wspieracie webhooki bounce](#do-you-support-bounce-webhooks)
   * [Czy wspieracie webhooki](#do-you-support-webhooks)
   * [Czy wspieracie wyrażenia regularne lub regex](#do-you-support-regular-expressions-or-regex)
+  * [Czy mogę przekazywać e-maile dla dowolnej subdomeny (subdomeny typu wildcard)?](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Jakie są wasze limity SMTP wychodzącego](#what-are-your-outbound-smtp-limits)
   * [Czy potrzebuję zgody, aby włączyć SMTP](#do-i-need-approval-to-enable-smtp)
   * [Jakie są ustawienia konfiguracji serwera SMTP](#what-are-your-smtp-server-configuration-settings)
@@ -3516,6 +3517,136 @@ Jeśli korzystasz z darmowego planu, po prostu dodaj nowy rekord DNS <strong cla
   <span>
   </span>
 </div>
+
+### Czy mogę przekazywać e-maile dla dowolnej subdomeny (subdomeny typu wildcard)? {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Tak, w naszych **płatnych planach**. Możesz skonfigurować pojedynczą domenę główną (np. `example.com`), tak aby jej konfiguracja przekazywania w sposób przezroczysty dotyczyła **każdej** subdomeny (np. `anything.example.com`, `mail.example.com`, `a.b.example.com`), bez tworzenia osobnej konfiguracji dla każdej subdomeny i bez używania wpisu DNS typu wildcard, takiego jak `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Tylko płatne plany (wymaga włączenia):</strong> Ta funkcja jest dostępna w naszych płatnych planach i jest domyślnie wyłączona. Musisz ją włączyć dla domeny w sekcji <strong>Moje konto &rarr; Domeny &rarr; Ustawienia</strong>, zaznaczając <strong>"Zezwalaj na przekazywanie subdomen typu wildcard"</strong>. <strong>Nie</strong> dotyczy to planu darmowego.
+</div>
+
+Po włączeniu, gdy nadejdzie e-mail dla odbiorcy w subdomenie, najpierw sprawdzamy rekordy <strong class="notranslate">TXT</strong> na tym dokładnym hoście subdomeny. Jeśli dokładna subdomena nie ma własnych rekordów `forward-email-site-verification`, automatycznie wracamy do rekordu weryfikacyjnego opublikowanego w domenie głównej (więc subdomena dziedziczy te same aliasy i weryfikację co domena główna).
+
+Jest to celowo zawężone, aby Twoja istniejąca konfiguracja nigdy nie uległa zmianie:
+
+* Musi być to jawnie włączone dla każdej domeny i dotyczy tylko naszych płatnych planów (nigdy nie jest używane w planie darmowym).
+* Dotyczy to tylko subdomen (sama domena główna/apex pozostaje nienaruszona).
+* Dotyczy to tylko sytuacji, gdy dokładna subdomena **nie ma** odpowiednich rekordów, więc wszelkie rekordy opublikowane w określonej subdomenie zawsze mają pierwszeństwo przed powrotem do domeny głównej.
+* Tylko rekordy `forward-email` i `forward-email-site-verification` są dziedziczone z domeny głównej.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Przykład subdomeny typu wildcard:</strong> Po włączeniu <strong>"Zezwalaj na przekazywanie subdomen typu wildcard"</strong> dla `example.com`, poczta wysłana do dowolnej subdomeny, która nie ma własnych rekordów (na przykład `hello@anything.example.com`), dziedziczy konfigurację domeny głównej, w tym jej rekord weryfikacyjny:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nazwa/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", lub puste</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Wymagane rekordy DNS dla subdomen typu wildcard {#required-dns-records-for-wildcard-subdomains}
+
+E-maile są kierowane przez rekordy <strong class="notranslate">MX</strong> każdego odbiorcy, więc aby poczta fizycznie dotarła do nas dla **dowolnej** subdomeny, musisz opublikować rekordy <strong class="notranslate">MX</strong>, które obejmują Twoje subdomeny. Najprostszym podejściem jest pojedynczy rekord **MX typu wildcard** (`*`) u Twojego dostawcy DNS, który dotyczy każdej subdomeny jednocześnie:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nazwa/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th class="text-center">Priorytet</th>
+      <th>Odpowiedź/Wartość</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Symbol wieloznaczny, taki jak `*.example.com`, pasuje do `mail.example.com`, `a.b.example.com` i tak dalej. Aby objąć tylko jedną konkretną subdomenę, użyj tej subdomeny jako Nazwy/Hosta (na przykład `mail` dla `mail.example.com`) z tymi samymi dwoma wartościami <strong class="notranslate">MX</strong> powyżej.
+
+Niektórzy dostawcy DNS obsługują również <strong class="notranslate">CNAME</strong> typu wildcard (na przykład `*.example.com CNAME example.com`), dzięki czemu subdomeny rozwiązują się do Twojej domeny głównej. Rekord <strong class="notranslate">MX</strong> typu wildcard jest preferowany do dostarczania poczty.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Ważne:</strong> Nie dodawaj rekordu <strong class="notranslate">CNAME</strong> w samej domenie głównej/apex (`@`), ponieważ koliduje to z Twoimi rekordami <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> i innymi. Zachowaj rekord <strong class="notranslate">TXT</strong> `forward-email-site-verification` opublikowany w Twojej domenie głównej &mdash; subdomeny dziedziczą go automatycznie.
+</div>
+
+#### Tokeny podstawiania subdomen {#subdomain-substitution-tokens}
+
+Kiedy używasz <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">wyrażeń regularnych</a> w odbiorcy (podstawienie), możesz dodatkowo odwołać się do subdomeny odbiorcy przychodzącego za pomocą dwóch tokenów. Zauważ, że aby te tokeny miały zastosowanie do **każdej** subdomeny z pojedynczego rekordu domeny głównej, opisany powyżej powrót do subdomeny typu wildcard musi być włączony (tylko płatne plany); w przeciwnym razie mają one zastosowanie tylko do rekordów opublikowanych na dokładnie dopasowanym hoście:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Opis</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>Etykieta(y) subdomeny poniżej domeny głównej odbiorcy przychodzącego. Na przykład dla `team@sales.example.com` (domena główna `example.com`) jest to `sales`, a dla `x@a.b.example.com` jest to `a.b`. Dla domeny głównej/apex jest to pusty ciąg znaków.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>Pełny host (domena) odbiorcy przychodzącego. Na przykład dla `team@sales.example.com` jest to `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Przykład podstawiania subdomeny:</strong> Jeśli chcesz, aby każdy adres w każdej subdomenie `example.com` był przekazywany do jednego dostawcy z zachowaniem subdomeny w miejscu docelowym (np. `anyone@sales.example.com` &rarr; `sales@example.net` i `anyone@support.example.com` &rarr; `support@example.net`), opublikuj pojedynczy rekord w domenie głównej:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nazwa/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th>Odpowiedź/Wartość</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", lub puste</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Jakie są Twoje limity wychodzącej poczty SMTP {#what-are-your-outbound-smtp-limits}
 

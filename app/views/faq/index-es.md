@@ -76,6 +76,7 @@
   * [Soportan webhooks de rebotes](#do-you-support-bounce-webhooks)
   * [Soportan webhooks](#do-you-support-webhooks)
   * [Soportan expresiones regulares o regex](#do-you-support-regular-expressions-or-regex)
+  * [¿Puedo reenviar correos electrónicos para cualquier subdominio (subdominios comodín)?](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Cuáles son sus límites SMTP de salida](#what-are-your-outbound-smtp-limits)
   * [Necesito aprobación para habilitar SMTP](#do-i-need-approval-to-enable-smtp)
   * [Cuáles son las configuraciones de servidor SMTP](#what-are-your-smtp-server-configuration-settings)
@@ -3518,6 +3519,136 @@ Si estás en el plan gratuito, simplemente añade un nuevo registro DNS <strong 
   <span>
   </span>
 </div>
+
+### ¿Puedo reenviar correos electrónicos para cualquier subdominio (subdominios comodín)? {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Sí, en nuestros **planes de pago**. Puedes configurar un único dominio raíz (por ejemplo, `example.com`) para que su configuración de reenvío se aplique de forma transparente a **cada** subdominio (por ejemplo, `anything.example.com`, `mail.example.com`, `a.b.example.com`), sin crear una configuración separada para cada subdominio y sin usar una entrada DNS comodín como `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Solo planes de pago (opcional):</strong> Esta función está disponible en nuestros planes de pago y está desactivada por defecto. Debes habilitarla para el dominio en <strong>Mi Cuenta &rarr; Dominios &rarr; Configuración</strong> marcando <strong>"Permitir el reenvío de subdominios comodín"</strong>. <strong>No</strong> se aplica al plan Gratuito.
+</div>
+
+Una vez habilitada, cuando llega un correo electrónico para un destinatario en un subdominio, primero buscamos los registros <strong class="notranslate">TXT</strong> en ese host de subdominio exacto. Si el subdominio exacto no tiene ningún registro `forward-email-site-verification` propio, entonces recurrimos automáticamente al registro de verificación publicado en el dominio raíz (por lo que el subdominio hereda los mismos alias y verificación que el dominio raíz).
+
+Esto es intencionalmente estricto para que tu configuración existente nunca cambie:
+
+* Debe habilitarse explícitamente por dominio, y solo se aplica a nuestros planes de pago (nunca se usa en el plan Gratuito).
+* Solo se aplica a subdominios (el dominio raíz/ápice en sí no se ve afectado).
+* Solo se aplica cuando el subdominio exacto **no** tiene registros relevantes, por lo que cualquier registro que publiques en un subdominio específico siempre tiene prioridad sobre el recurso alternativo del dominio raíz.
+* Solo los registros `forward-email` y `forward-email-site-verification` se heredan del dominio raíz.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Ejemplo de subdominio comodín:</strong> Después de habilitar <strong>"Permitir el reenvío de subdominios comodín"</strong> para `example.com`, el correo enviado a cualquier subdominio que no tenga registros propios (por ejemplo, `hello@anything.example.com`) hereda la configuración del dominio raíz, incluido su registro de verificación:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nombre/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipo</th>
+      <th>Respuesta/Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", o en blanco</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Registros DNS requeridos para subdominios comodín {#required-dns-records-for-wildcard-subdomains}
+
+El correo electrónico se enruta mediante los registros <strong class="notranslate">MX</strong> de cada destinatario, por lo que para que el correo nos llegue físicamente para **cualquier** subdominio, debes publicar registros <strong class="notranslate">MX</strong> que cubran tus subdominios. El enfoque más simple es un único registro **MX comodín** (`*`) en tu proveedor de DNS, que se aplica a todos los subdominios a la vez:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nombre/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipo</th>
+      <th class="text-center">Prioridad</th>
+      <th>Respuesta/Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Un comodín como `*.example.com` coincide con `mail.example.com`, `a.b.example.com`, y así sucesivamente. Para cubrir solo un subdominio específico en su lugar, usa ese subdominio como Nombre/Host (por ejemplo, `mail` para `mail.example.com`) con los mismos dos valores <strong class="notranslate">MX</strong> anteriores.
+
+Algunos proveedores de DNS también admiten un <strong class="notranslate">CNAME</strong> comodín (por ejemplo, `*.example.com CNAME example.com`) para que los subdominios se resuelvan en tu dominio raíz. Se prefiere un <strong class="notranslate">MX</strong> comodín para la entrega de correo.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Importante:</strong> No agregues un registro <strong class="notranslate">CNAME</strong> en el propio raíz/ápice (`@`), ya que entra en conflicto con tus registros <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> y otros. Mantén el registro <strong class="notranslate">TXT</strong> `forward-email-site-verification` publicado en tu dominio raíz &mdash; los subdominios lo heredan automáticamente.
+</div>
+
+#### Tokens de sustitución de subdominios {#subdomain-substitution-tokens}
+
+Cuando usas <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">expresiones regulares</a> en el destinatario (sustitución), puedes hacer referencia adicionalmente al subdominio del destinatario entrante usando dos tokens. Ten en cuenta que para que estos tokens se apliquen a **cada** subdominio desde un único registro de dominio raíz, el recurso alternativo de subdominio comodín descrito anteriormente debe estar habilitado (solo planes de pago); de lo contrario, solo se aplican a los registros publicados en el host exacto que coincide:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Descripción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>La(s) etiqueta(s) de subdominio debajo del dominio raíz del destinatario entrante. Por ejemplo, para `team@sales.example.com` (raíz `example.com`) esto es `sales`, y para `x@a.b.example.com` esto es `a.b`. Para el dominio raíz/ápice es una cadena vacía.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>El host completo (dominio) del destinatario entrante. Por ejemplo, para `team@sales.example.com` esto es `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Ejemplo de sustitución de subdominio:</strong> Si deseas que cada dirección en cada subdominio de `example.com` se reenvíe a un único proveedor mientras se conserva el subdominio en el destino (por ejemplo, `anyone@sales.example.com` &rarr; `sales@example.net` y `anyone@support.example.com` &rarr; `support@example.net`), publica un único registro en el dominio raíz:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nombre/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipo</th>
+      <th>Respuesta/Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", o en blanco</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### ¿Cuáles son sus límites de SMTP saliente? {#what-are-your-outbound-smtp-limits}
 

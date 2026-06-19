@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Povolit přesměrování pro zástupné subdomény (wildcard). Pokud je zapnuto u placeného tarifu (Enhanced Protection nebo Team), jakákoli subdoména, která nemá vlastní DNS záznamy, zdědí konfiguraci přesměrování zveřejněnou v kořeni (apex) této domény. Je vyžadováno ověřené vlastnictví: apex musí zveřejnit záznam forward-email-site-verification odpovídající této doméně. Toto nastavení se nevztahuje na bezplatný tarif.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "Ignorovat kontrolu záznamů MX pro pokročilá nastavení směrování pošty"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Povolit přesměrování pro zástupné subdomény (wildcard). Pokud je zapnuto u placeného tarifu (Enhanced Protection nebo Team), jakákoli subdoména, která nemá vlastní DNS záznamy, zdědí konfiguraci přesměrování zveřejněnou v kořeni (apex) této domény. Je vyžadováno ověřené vlastnictví: apex musí zveřejnit záznam forward-email-site-verification odpovídající této doméně. Toto nastavení se nevztahuje na bezplatný tarif.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Přihlaste se k ukládání záhlaví a metadat (kromě obsahu zpráv) pro úspěšně přeposlané, odeslané přes webhook, odchozí e-maily doručené přes SMTP a IMAP. Protokoly se uchovávají po dobu 7 dnů. Tato funkce vám pomáhá monitorovat a řešit problémy s doručováním e-mailů díky podrobným informacím o úspěšných přenosech."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Zda ignorovat kontrolu záznamů MX v doméně pro ověření (zejména pro pokročilá nastavení směrování MX)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Povolit přesměrování pro zástupné subdomény (wildcard). Pokud je zapnuto u placeného tarifu (Enhanced Protection nebo Team), jakákoli subdoména, která nemá vlastní DNS záznamy, zdědí konfiguraci přesměrování zveřejněnou v kořeni (apex) této domény. Je vyžadováno ověřené vlastnictví: apex musí zveřejnit záznam forward-email-site-verification odpovídající této doméně. Toto nastavení se nevztahuje na bezplatný tarif.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

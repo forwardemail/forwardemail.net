@@ -76,6 +76,7 @@
   * [Támogatjátok a visszapattanási webhookokat](#do-you-support-bounce-webhooks)
   * [Támogatjátok a webhookokat](#do-you-support-webhooks)
   * [Támogatjátok a reguláris kifejezéseket vagy regex-et](#do-you-support-regular-expressions-or-regex)
+  * [Továbbíthatok e-mailt bármely aldomainre (helyettesítő aldomainek)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Mik az SMTP kimenő korlátaitok](#what-are-your-outbound-smtp-limits)
   * [Szükséges engedély az SMTP engedélyezéséhez](#do-i-need-approval-to-enable-smtp)
   * [Mik az SMTP szerver beállításai](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ Ha az ingyenes csomagon van, egyszerűen adjon hozzá egy új DNS <strong class=
   <span>
   </span>
 </div>
+
+### Továbbíthatok e-mailt bármely aldomainre (helyettesítő aldomainek) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Igen, a **fizetős csomagjainkban**.  Beállíthat egyetlen gyökérdomaint (pl. `example.com`), így annak továbbítási beállításai transzparensen érvényesek lesznek **minden** aldomainre (pl. `anything.example.com`, `mail.example.com`, `a.b.example.com`), anélkül, hogy minden aldomainhez külön beállítást hozna létre, és anélkül, hogy olyan DNS helyettesítő bejegyzést használna, mint a `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Csak fizetős csomagokban (opcionális):</strong> Ez a funkció a fizetős csomagjainkban érhető el, és alapértelmezés szerint ki van kapcsolva.  Engedélyeznie kell a domainhez a <strong>Fiókom &rarr; Domainek &rarr; Beállítások</strong> menüpontban a <strong>"Helyettesítő aldomain továbbításának engedélyezése"</strong> bejelölésével.  Ez <strong>nem</strong> vonatkozik az ingyenes csomagra.
+</div>
+
+Miután engedélyezte, amikor egy e-mail érkezik egy aldomainen lévő címzetthez, először megkeressük a <strong class="notranslate">TXT</strong> rekordokat pontosan azon az aldomain gazdagépen.  Ha a pontos aldomain nem rendelkezik saját `forward-email-site-verification` rekordokkal, akkor automatikusan visszatérünk a gyökérdomainen közzétett ellenőrző rekordhoz (így az aldomain örökli ugyanazokat az aliasokat és ellenőrzést, mint a gyökérdomain).
+
+Ez szándékosan szűk körű, hogy a meglévő beállításai soha ne változzanak meg:
+
+* Kifejezetten engedélyezni kell domainenként, és csak a fizetős csomagjainkra vonatkozik (az ingyenes csomagban soha nem használatos).
+* Csak az aldomainekre vonatkozik (maga a gyökér/csúcs domain nem érintett).
+* Csak akkor érvényes, ha a pontos aldomain **nem** rendelkezik releváns rekordokkal, így a megadott aldomainen közzétett rekordok mindig elsőbbséget élveznek a gyökérdomain tartalékával szemben.
+* Csak a `forward-email` és a `forward-email-site-verification` rekordok öröklődnek a gyökérdomainről.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Helyettesítő aldomain példa:</strong> Miután engedélyezte a <strong>"Helyettesítő aldomain továbbításának engedélyezése"</strong> opciót az `example.com` számára, a saját rekordokkal nem rendelkező aldomainekre (például `hello@anything.example.com`) küldött levelek öröklik a gyökérdomain beállításait, beleértve annak ellenőrző rekordját is:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Név/Gazdagép/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." vagy üres</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Szükséges DNS-rekordok a helyettesítő aldomainekhez {#required-dns-records-for-wildcard-subdomains}
+
+Az e-maileket az egyes címzettek <strong class="notranslate">MX</strong> rekordjai irányítják, így ahhoz, hogy a levelek fizikailag eljussanak hozzánk **bármely** aldomain esetében, olyan <strong class="notranslate">MX</strong> rekordokat kell közzétennie, amelyek lefedik az aldomainjeit.  A legegyszerűbb megközelítés egyetlen **helyettesítő MX** rekord (`*`) a DNS-szolgáltatójánál, amely egyszerre minden aldomainre vonatkozik:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Név/Gazdagép/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Típus</th>
+      <th class="text-center">Prioritás</th>
+      <th>Válasz/Érték</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Egy olyan helyettesítő karakter, mint a `*.example.com`, illeszkedik a `mail.example.com`, `a.b.example.com` és hasonló aldomainekre.  Ha ehelyett csak egy adott aldomaint szeretne lefedni, használja azt az aldomaint Név/Gazdagépként (például `mail` a `mail.example.com` esetében) a fenti két <strong class="notranslate">MX</strong> értékkel.
+
+Egyes DNS-szolgáltatók támogatják a helyettesítő <strong class="notranslate">CNAME</strong> rekordot is (például `*.example.com CNAME example.com`), így az aldomainek a gyökérdomainre oldódnak fel.  A levélkézbesítéshez a helyettesítő <strong class="notranslate">MX</strong> az előnyösebb.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Fontos:</strong> Ne adjon hozzá <strong class="notranslate">CNAME</strong> rekordot magához a gyökér/csúcs (`@`) domainhez, mivel az ütközik az <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> és egyéb rekordjaival.  Tartsa a `forward-email-site-verification` <strong class="notranslate">TXT</strong> rekordot a gyökérdomainjén közzétéve &mdash; az aldomainek automatikusan öröklik azt.
+</div>
+
+#### Aldomain helyettesítő tokenek {#subdomain-substitution-tokens}
+
+Amikor <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">reguláris kifejezéseket</a> használ a címzettnél (helyettesítés), két token segítségével hivatkozhat a bejövő címzett aldomainjére is.  Vegye figyelembe, hogy ahhoz, hogy ezek a tokenek egyetlen gyökérdomain rekordból **minden** aldomainre érvényesek legyenek, a fent leírt helyettesítő aldomain tartalékot engedélyezni kell (csak fizetős csomagokban); ellenkező esetben csak a pontosan egyező gazdagépen közzétett rekordokra vonatkoznak:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Leírás</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>A bejövő címzett gyökérdomainje alatti aldomain címké(k).  Például a `team@sales.example.com` (gyökér `example.com`) esetében ez `sales`, az `x@a.b.example.com` esetében pedig `a.b`.  A gyökér/csúcs domain esetében ez egy üres karakterlánc.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>A bejövő címzett teljes gazdagépe (domainje).  Például a `team@sales.example.com` esetében ez `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Aldomain helyettesítési példa:</strong> Ha azt szeretné, hogy az `example.com` minden aldomainjének minden címe egyetlen szolgáltatóhoz legyen továbbítva, miközben megőrzi az aldomaint a célállomáson (pl. `anyone@sales.example.com` &rarr; `sales@example.net` és `anyone@support.example.com` &rarr; `support@example.net`), tegyen közzé egyetlen rekordot a gyökérdomainen:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Név/Gazdagép/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Típus</th>
+      <th>Válasz/Érték</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." vagy üres</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Mik az Önök kimenő SMTP korlátai {#what-are-your-outbound-smtp-limits}
 

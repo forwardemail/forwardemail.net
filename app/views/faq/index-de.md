@@ -76,6 +76,7 @@
   * [Unterstützen Sie Bounce-Webhooks](#do-you-support-bounce-webhooks)
   * [Unterstützen Sie Webhooks](#do-you-support-webhooks)
   * [Unterstützen Sie reguläre Ausdrücke oder Regex](#do-you-support-regular-expressions-or-regex)
+  * [Kann ich E-Mails für jede Subdomain weiterleiten (Wildcard-Subdomains)?](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Wie sind Ihre ausgehenden SMTP-Limits](#what-are-your-outbound-smtp-limits)
   * [Brauche ich eine Genehmigung, um SMTP zu aktivieren](#do-i-need-approval-to-enable-smtp)
   * [Wie lauten Ihre SMTP-Server-Konfigurationseinstellungen](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ Wenn Sie den kostenlosen Plan nutzen, fügen Sie einfach einen neuen DNS-<strong
   <span>
   </span>
 </div>
+
+### Kann ich E-Mails für jede Subdomain weiterleiten (Wildcard-Subdomains)? {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Ja, in unseren **kostenpflichtigen Tarifen**.  Sie können eine einzelne Stamm-Domain (z. B. `example.com`) so konfigurieren, dass ihre Weiterleitungskonfiguration transparent für **jede** Subdomain (z. B. `anything.example.com`, `mail.example.com`, `a.b.example.com`) gilt, ohne für jede Subdomain eine separate Konfiguration zu erstellen und ohne einen DNS-Wildcard-Eintrag wie `*.example.com` zu verwenden.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Nur für kostenpflichtige Tarife (Opt-in):</strong> Diese Funktion ist in unseren kostenpflichtigen Tarifen verfügbar und standardmäßig deaktiviert.  Sie müssen sie für die Domain unter <strong>Mein Konto &rarr; Domains &rarr; Einstellungen</strong> aktivieren, indem Sie <strong>"Wildcard-Subdomain-Weiterleitung zulassen"</strong> ankreuzen.  Sie gilt <strong>nicht</strong> für den kostenlosen Tarif.
+</div>
+
+Sobald dies aktiviert ist und eine E-Mail für einen Empfänger auf einer Subdomain eintrifft, suchen wir zunächst nach den <strong class="notranslate">TXT</strong>-Einträgen für genau diesen Subdomain-Host.  Wenn die genaue Subdomain keine eigenen `forward-email-site-verification`-Einträge hat, greifen wir automatisch auf den Verifizierungseintrag zurück, der auf der Stamm-Domain veröffentlicht wurde (sodass die Subdomain dieselben Aliase und Verifizierungen wie die Stamm-Domain erbt).
+
+Dies ist absichtlich eng gefasst, damit Ihre bestehende Konfiguration niemals geändert wird:
+
+* Es muss explizit pro Domain aktiviert werden und gilt nur für unsere kostenpflichtigen Tarife (es wird niemals im kostenlosen Tarif verwendet).
+* Es gilt nur für Subdomains (die Stamm-/Apex-Domain selbst ist davon nicht betroffen).
+* Es gilt nur, wenn die genaue Subdomain **keine** relevanten Einträge hat. Daher haben alle Einträge, die Sie auf einer bestimmten Subdomain veröffentlichen, immer Vorrang vor dem Fallback der Stamm-Domain.
+* Nur `forward-email`- und `forward-email-site-verification`-Einträge werden von der Stamm-Domain geerbt.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Beispiel für Wildcard-Subdomains:</strong> Nach der Aktivierung von <strong>"Wildcard-Subdomain-Weiterleitung zulassen"</strong> für `example.com` erbt jede E-Mail, die an eine Subdomain ohne eigene Einträge gesendet wird (zum Beispiel `hello@anything.example.com`), die Konfiguration der Stamm-Domain, einschließlich ihres Verifizierungseintrags:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th>Antwort/Wert</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." oder leer</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Erforderliche DNS-Einträge für Wildcard-Subdomains {#required-dns-records-for-wildcard-subdomains}
+
+E-Mails werden über die <strong class="notranslate">MX</strong>-Einträge jedes Empfängers weitergeleitet. Damit E-Mails für **jede** Subdomain physisch bei uns ankommen, müssen Sie <strong class="notranslate">MX</strong>-Einträge veröffentlichen, die Ihre Subdomains abdecken.  Der einfachste Ansatz ist ein einzelner **Wildcard-MX**-Eintrag (`*`) bei Ihrem DNS-Anbieter, der für jede Subdomain gleichzeitig gilt:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th class="text-center">Priorität</th>
+      <th>Antwort/Wert</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Ein Wildcard-Eintrag wie `*.example.com` entspricht `mail.example.com`, `a.b.example.com` und so weiter.  Um stattdessen nur eine bestimmte Subdomain abzudecken, verwenden Sie diese Subdomain als Name/Host (zum Beispiel `mail` für `mail.example.com`) mit denselben beiden <strong class="notranslate">MX</strong>-Werten wie oben.
+
+Einige DNS-Anbieter unterstützen auch einen Wildcard-<strong class="notranslate">CNAME</strong> (zum Beispiel `*.example.com CNAME example.com`), sodass Subdomains auf Ihre Stamm-Domain aufgelöst werden.  Ein Wildcard-<strong class="notranslate">MX</strong> wird für die E-Mail-Zustellung bevorzugt.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Wichtig:</strong> Fügen Sie keinen <strong class="notranslate">CNAME</strong>-Eintrag auf der Stamm-/Apex-Domain (`@`) selbst hinzu, da dies mit Ihren <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- und anderen Einträgen in Konflikt steht.  Belassen Sie den `forward-email-site-verification` <strong class="notranslate">TXT</strong>-Eintrag auf Ihrer Stamm-Domain veröffentlicht &mdash; Subdomains erben ihn automatisch.
+</div>
+
+#### Subdomain-Ersetzungs-Token {#subdomain-substitution-tokens}
+
+Wenn Sie <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">reguläre Ausdrücke</a> im Empfänger (Ersetzung) verwenden, können Sie zusätzlich die Subdomain des eingehenden Empfängers mithilfe von zwei Token referenzieren.  Beachten Sie, dass der oben beschriebene Wildcard-Subdomain-Fallback aktiviert sein muss (nur kostenpflichtige Tarife), damit diese Token für **jede** Subdomain aus einem einzigen Stamm-Domain-Eintrag gelten; andernfalls gelten sie nur für Einträge, die auf dem genauen Host veröffentlicht wurden, der übereinstimmt:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Beschreibung</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>Das/die Subdomain-Label unterhalb der Stamm-Domain des eingehenden Empfängers.  Zum Beispiel ist dies für `team@sales.example.com` (Stamm `example.com`) `sales` und für `x@a.b.example.com` ist es `a.b`.  Für die Stamm-/Apex-Domain ist es eine leere Zeichenfolge.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>Der vollständige Host (Domain) des eingehenden Empfängers.  Zum Beispiel ist dies für `team@sales.example.com` `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Beispiel für Subdomain-Ersetzung:</strong> Wenn Sie möchten, dass jede Adresse auf jeder Subdomain von `example.com` an einen einzigen Anbieter weitergeleitet wird, während die Subdomain im Ziel erhalten bleibt (z. B. `anyone@sales.example.com` &rarr; `sales@example.net` und `anyone@support.example.com` &rarr; `support@example.net`), veröffentlichen Sie einen einzigen Eintrag auf der Stamm-Domain:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th>Antwort/Wert</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." oder leer</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Was sind Ihre ausgehenden SMTP-Limits {#what-are-your-outbound-smtp-limits}
 

@@ -76,6 +76,7 @@
   * [Supportate webhook per bounce](#do-you-support-bounce-webhooks)
   * [Supportate webhook](#do-you-support-webhooks)
   * [Supportate espressioni regolari o regex](#do-you-support-regular-expressions-or-regex)
+  * [Posso inoltrare le email per qualsiasi sottodominio (sottodomini wildcard)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Quali sono i vostri limiti SMTP in uscita](#what-are-your-outbound-smtp-limits)
   * [Serve approvazione per abilitare SMTP](#do-i-need-approval-to-enable-smtp)
   * [Quali sono le impostazioni di configurazione del server SMTP](#what-are-your-smtp-server-configuration-settings)
@@ -3518,6 +3519,136 @@ Se sei sul piano gratuito, aggiungi semplicemente un nuovo record DNS <strong cl
   <span>
   </span>
 </div>
+
+### Posso inoltrare le email per qualsiasi sottodominio (sottodomini wildcard) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Sì, nei nostri **piani a pagamento**.  Puoi configurare un singolo dominio radice (es. `example.com`) in modo che la sua configurazione di inoltro si applichi in modo trasparente a **ogni** sottodominio (es. `anything.example.com`, `mail.example.com`, `a.b.example.com`), senza creare una configurazione separata per ciascun sottodominio e senza utilizzare una voce DNS wildcard come `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Solo piani a pagamento (opt-in):</strong> Questa funzione è disponibile nei nostri piani a pagamento ed è disattivata per impostazione predefinita.  Devi abilitarla per il dominio in <strong>Il mio account &rarr; Domini &rarr; Impostazioni</strong> selezionando <strong>"Consenti inoltro sottodominio wildcard"</strong>.  <strong>Non</strong> si applica al piano Gratuito.
+</div>
+
+Una volta abilitata, quando arriva un'email per un destinatario su un sottodominio, cerchiamo prima i record <strong class="notranslate">TXT</strong> su quell'esatto host del sottodominio.  Se il sottodominio esatto non ha alcun record `forward-email-site-verification` proprio, passiamo automaticamente al record di verifica pubblicato sul dominio radice (in modo che il sottodominio erediti gli stessi alias e la stessa verifica del dominio radice).
+
+Questo è intenzionalmente restrittivo in modo che la tua configurazione esistente non venga mai modificata:
+
+* Deve essere abilitato esplicitamente per dominio e si applica solo ai nostri piani a pagamento (non viene mai utilizzato nel piano Gratuito).
+* Si applica solo ai sottodomini (il dominio radice/apice stesso non è interessato).
+* Si applica solo quando il sottodominio esatto **non ha** record pertinenti, quindi qualsiasi record pubblicato su un sottodominio specifico ha sempre la precedenza sul fallback del dominio radice.
+* Solo i record `forward-email` e `forward-email-site-verification` vengono ereditati dal dominio radice.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Esempio di sottodominio wildcard:</strong> Dopo aver abilitato <strong>"Consenti inoltro sottodominio wildcard"</strong> per `example.com`, la posta inviata a qualsiasi sottodominio che non ha record propri (ad esempio `hello@anything.example.com`) eredita la configurazione del dominio radice, incluso il suo record di verifica:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nome/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipo</th>
+      <th>Risposta/Valore</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." o vuoto</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Record DNS richiesti per i sottodomini wildcard {#required-dns-records-for-wildcard-subdomains}
+
+Le email vengono instradate dai record <strong class="notranslate">MX</strong> di ciascun destinatario, quindi affinché la posta ci raggiunga fisicamente per **qualsiasi** sottodominio, devi pubblicare record <strong class="notranslate">MX</strong> che coprano i tuoi sottodomini.  L'approccio più semplice è un singolo record **MX wildcard** (`*`) presso il tuo provider DNS, che si applica a tutti i sottodomini contemporaneamente:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nome/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipo</th>
+      <th class="text-center">Priorità</th>
+      <th>Risposta/Valore</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Un wildcard come `*.example.com` corrisponde a `mail.example.com`, `a.b.example.com` e così via.  Per coprire invece solo un sottodominio specifico, usa quel sottodominio come Nome/Host (ad esempio `mail` per `mail.example.com`) con gli stessi due valori <strong class="notranslate">MX</strong> sopra indicati.
+
+Alcuni provider DNS supportano anche un <strong class="notranslate">CNAME</strong> wildcard (ad esempio `*.example.com CNAME example.com`) in modo che i sottodomini si risolvano nel tuo dominio radice.  Un <strong class="notranslate">MX</strong> wildcard è preferibile per il recapito della posta.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Importante:</strong> Non aggiungere un record <strong class="notranslate">CNAME</strong> sulla radice/apice (`@`) stessa, poiché è in conflitto con i tuoi record <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> e altri.  Mantieni il record <strong class="notranslate">TXT</strong> `forward-email-site-verification` pubblicato nel tuo dominio radice &mdash; i sottodomini lo ereditano automaticamente.
+</div>
+
+#### Token di sostituzione del sottodominio {#subdomain-substitution-tokens}
+
+Quando utilizzi le <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">espressioni regolari</a> nel destinatario (sostituzione), puoi inoltre fare riferimento al sottodominio del destinatario in arrivo utilizzando due token.  Tieni presente che affinché questi token si applichino a **ogni** sottodominio da un singolo record del dominio radice, il fallback del sottodominio wildcard descritto sopra deve essere abilitato (solo piani a pagamento); altrimenti si applicano solo ai record pubblicati sull'host esatto corrispondente:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Descrizione</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>Le etichette del sottodominio sotto il dominio radice del destinatario in arrivo.  Ad esempio, per `team@sales.example.com` (radice `example.com`) questo è `sales`, e per `x@a.b.example.com` questo è `a.b`.  Per il dominio radice/apice è una stringa vuota.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>L'host completo (dominio) del destinatario in arrivo.  Ad esempio, per `team@sales.example.com` questo è `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Esempio di sostituzione del sottodominio:</strong> Se desideri che ogni indirizzo in ogni sottodominio di `example.com` venga inoltrato a un singolo provider preservando il sottodominio nella destinazione (es. `anyone@sales.example.com` &rarr; `sales@example.net` e `anyone@support.example.com` &rarr; `support@example.net`), pubblica un singolo record sul dominio radice:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nome/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipo</th>
+      <th>Risposta/Valore</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." o vuoto</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Quali sono i tuoi limiti SMTP in uscita {#what-are-your-outbound-smtp-limits}
 

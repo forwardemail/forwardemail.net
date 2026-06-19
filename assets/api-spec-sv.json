@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Tillåt vidarebefordran för jokertecken-underdomäner (wildcard). När det är aktiverat på ett betalt abonnemang (Enhanced Protection eller Team) ärver alla underdomäner som saknar egna DNS-poster den vidarebefordringskonfiguration som publicerats på domänens rot (apex). Verifierat ägande krävs: apex måste publicera en forward-email-site-verification-post som matchar denna domän. Denna inställning gäller inte gratisabonnemanget.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "Ignorera MX-postkontroll för avancerade inställningar för e-postrouting"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Tillåt vidarebefordran för jokertecken-underdomäner (wildcard). När det är aktiverat på ett betalt abonnemang (Enhanced Protection eller Team) ärver alla underdomäner som saknar egna DNS-poster den vidarebefordringskonfiguration som publicerats på domänens rot (apex). Verifierat ägande krävs: apex måste publicera en forward-email-site-verification-post som matchar denna domän. Denna inställning gäller inte gratisabonnemanget.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Välj att lagra rubriker och metadata (exklusive meddelandeinnehåll) för framgångsrikt vidarebefordrade, webhook-skickade, utgående SMTP- och IMAP-levererade e-postmeddelanden, med loggar som sparas i 7 dagar. Den här funktionen hjälper dig att övervaka och felsöka e-postleveransprestanda med detaljerade insikter i lyckade överföringar."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Huruvida MX-postkontrollen på domänen ska ignoreras för verifiering (främst för avancerade MX-routinginställningar)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Tillåt vidarebefordran för jokertecken-underdomäner (wildcard). När det är aktiverat på ett betalt abonnemang (Enhanced Protection eller Team) ärver alla underdomäner som saknar egna DNS-poster den vidarebefordringskonfiguration som publicerats på domänens rot (apex). Verifierat ägande krävs: apex måste publicera en forward-email-site-verification-post som matchar denna domän. Denna inställning gäller inte gratisabonnemanget.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

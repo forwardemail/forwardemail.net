@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "와일드카드 서브도메인 전달을 허용합니다. 유료 요금제(Enhanced Protection 또는 Team)에서 활성화하면 자체 DNS 레코드가 없는 모든 서브도메인은 이 도메인의 루트(apex)에 게시된 전달 구성을 상속합니다. 검증된 소유권이 필요합니다: apex는 이 도메인과 일치하는 forward-email-site-verification 레코드를 게시해야 합니다. 이 설정은 무료 요금제에는 적용되지 않습니다.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "고급 메일 라우팅 설정에 대한 MX 레코드 확인 무시"
           },
+          "allow_subdomain_forwarding": {
+            "description": "와일드카드 서브도메인 전달을 허용합니다. 유료 요금제(Enhanced Protection 또는 Team)에서 활성화하면 자체 DNS 레코드가 없는 모든 서브도메인은 이 도메인의 루트(apex)에 게시된 전달 구성을 상속합니다. 검증된 소유권이 필요합니다: apex는 이 도메인과 일치하는 forward-email-site-verification 레코드를 게시해야 합니다. 이 설정은 무료 요금제에는 적용되지 않습니다.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "성공적으로 전달된 이메일, 웹훅으로 전송된 이메일, 아웃바운드 SMTP 및 IMAP으로 전송된 이메일의 헤더와 메타데이터(메시지 내용 제외)를 저장하도록 옵트인하세요. 로그는 7일 동안 보관됩니다. 이 기능을 사용하면 성공적인 전송에 대한 자세한 정보를 통해 이메일 전송 성능을 모니터링하고 문제를 해결할 수 있습니다."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "도메인의 MX 레코드 확인을 무시할지 여부(주로 고급 MX 라우팅 설정의 경우)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "와일드카드 서브도메인 전달을 허용합니다. 유료 요금제(Enhanced Protection 또는 Team)에서 활성화하면 자체 DNS 레코드가 없는 모든 서브도메인은 이 도메인의 루트(apex)에 게시된 전달 구성을 상속합니다. 검증된 소유권이 필요합니다: apex는 이 도메인과 일치하는 forward-email-site-verification 레코드를 게시해야 합니다. 이 설정은 무료 요금제에는 적용되지 않습니다.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

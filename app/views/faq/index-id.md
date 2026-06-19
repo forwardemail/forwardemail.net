@@ -76,6 +76,7 @@
   * [Apakah Anda mendukung webhook bounce](#do-you-support-bounce-webhooks)
   * [Apakah Anda mendukung webhook](#do-you-support-webhooks)
   * [Apakah Anda mendukung ekspresi reguler atau regex](#do-you-support-regular-expressions-or-regex)
+  * [Bisakah saya meneruskan email untuk subdomain apa pun (subdomain wildcard)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Apa batas SMTP keluar Anda](#what-are-your-outbound-smtp-limits)
   * [Apakah saya perlu persetujuan untuk mengaktifkan SMTP](#do-i-need-approval-to-enable-smtp)
   * [Apa pengaturan konfigurasi server SMTP Anda](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ Jika Anda menggunakan paket gratis, cukup tambahkan rekaman DNS <strong class="n
   <span>
   </span>
 </div>
+
+### Bisakah saya meneruskan email untuk subdomain apa pun (subdomain wildcard) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Ya, pada **paket berbayar** kami.  Anda dapat mengonfigurasi satu domain root (misalnya `example.com`) sehingga konfigurasi penerusannya secara transparan berlaku untuk **setiap** subdomain (misalnya `anything.example.com`, `mail.example.com`, `a.b.example.com`), tanpa membuat konfigurasi terpisah untuk setiap subdomain dan tanpa menggunakan entri wildcard DNS seperti `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Hanya paket berbayar (keikutsertaan):</strong> Fitur ini tersedia pada paket berbayar kami dan dimatikan secara default.  Anda harus mengaktifkannya untuk domain di bawah <strong>Akun Saya &rarr; Domain &rarr; Pengaturan</strong> dengan mencentang <strong>"Izinkan Penerusan Subdomain Wildcard"</strong>.  Ini <strong>tidak</strong> berlaku untuk paket Gratis.
+</div>
+
+Setelah diaktifkan, ketika email tiba untuk penerima di subdomain, kami pertama-tama mencari catatan <strong class="notranslate">TXT</strong> pada host subdomain yang tepat tersebut.  Jika subdomain yang tepat tidak memiliki catatan `forward-email-site-verification` miliknya sendiri, maka kami secara otomatis kembali ke catatan verifikasi yang dipublikasikan pada domain root (sehingga subdomain mewarisi alias dan verifikasi yang sama dengan domain root).
+
+Ini sengaja dibuat sempit sehingga konfigurasi Anda yang ada tidak pernah diubah:
+
+* Ini harus diaktifkan secara eksplisit per domain, dan hanya berlaku untuk paket berbayar kami (ini tidak pernah digunakan pada paket Gratis).
+* Ini hanya berlaku untuk subdomain (domain root/apex itu sendiri tidak terpengaruh).
+* Ini hanya berlaku ketika subdomain yang tepat **tidak** memiliki catatan yang relevan, sehingga setiap catatan yang Anda publikasikan pada subdomain tertentu selalu lebih diutamakan daripada fallback domain root.
+* Hanya catatan `forward-email` dan `forward-email-site-verification` yang diwarisi dari domain root.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Contoh Subdomain Wildcard:</strong> Setelah mengaktifkan <strong>"Izinkan Penerusan Subdomain Wildcard"</strong> untuk `example.com`, email yang dikirim ke subdomain mana pun yang tidak memiliki catatannya sendiri (misalnya `hello@anything.example.com`) mewarisi konfigurasi domain root, termasuk catatan verifikasinya:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nama/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipe</th>
+      <th>Jawaban/Nilai</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", atau kosong</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Catatan DNS yang diperlukan untuk subdomain wildcard {#required-dns-records-for-wildcard-subdomains}
+
+Email dirutekan oleh catatan <strong class="notranslate">MX</strong> masing-masing penerima, jadi agar email secara fisik mencapai kami untuk subdomain **apa pun**, Anda harus mempublikasikan catatan <strong class="notranslate">MX</strong> yang mencakup subdomain Anda.  Pendekatan paling sederhana adalah satu catatan **MX wildcard** (`*`) di penyedia DNS Anda, yang berlaku untuk setiap subdomain sekaligus:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nama/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipe</th>
+      <th class="text-center">Prioritas</th>
+      <th>Jawaban/Nilai</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Wildcard seperti `*.example.com` cocok dengan `mail.example.com`, `a.b.example.com`, dan seterusnya.  Untuk mencakup hanya satu subdomain tertentu sebagai gantinya, gunakan subdomain tersebut sebagai Nama/Host (misalnya `mail` untuk `mail.example.com`) dengan dua nilai <strong class="notranslate">MX</strong> yang sama di atas.
+
+Beberapa penyedia DNS juga mendukung <strong class="notranslate">CNAME</strong> wildcard (misalnya `*.example.com CNAME example.com`) sehingga subdomain diselesaikan ke domain root Anda.  <strong class="notranslate">MX</strong> wildcard lebih disukai untuk pengiriman email.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Penting:</strong> Jangan tambahkan catatan <strong class="notranslate">CNAME</strong> pada root/apex (`@`) itu sendiri, karena ini bertentangan dengan catatan <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong>, dan catatan Anda lainnya.  Simpan catatan <strong class="notranslate">TXT</strong> `forward-email-site-verification` yang dipublikasikan di domain root Anda &mdash; subdomain mewarisinya secara otomatis.
+</div>
+
+#### Token substitusi subdomain {#subdomain-substitution-tokens}
+
+Saat Anda menggunakan <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">ekspresi reguler</a> pada penerima (substitusi), Anda juga dapat mereferensikan subdomain dari penerima yang masuk menggunakan dua token.  Perhatikan bahwa agar token ini berlaku di **setiap** subdomain dari satu catatan domain root, fallback subdomain wildcard yang dijelaskan di atas harus diaktifkan (hanya paket berbayar); jika tidak, token tersebut hanya berlaku untuk catatan yang dipublikasikan pada host yang tepat yang dicocokkan:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Deskripsi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>Label subdomain di bawah domain root dari penerima yang masuk.  Misalnya, untuk `team@sales.example.com` (root `example.com`) ini adalah `sales`, dan untuk `x@a.b.example.com` ini adalah `a.b`.  Untuk domain root/apex ini adalah string kosong.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>Host (domain) lengkap dari penerima yang masuk.  Misalnya, untuk `team@sales.example.com` ini adalah `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Contoh Substitusi Subdomain:</strong> Jika Anda ingin setiap alamat di setiap subdomain dari `example.com` diteruskan ke satu penyedia sambil mempertahankan subdomain di tujuan (misalnya `anyone@sales.example.com` &rarr; `sales@example.net` dan `anyone@support.example.com` &rarr; `support@example.net`), publikasikan satu catatan pada domain root:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nama/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipe</th>
+      <th>Jawaban/Nilai</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", atau kosong</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Apa batasan SMTP keluar Anda {#what-are-your-outbound-smtp-limits}
 

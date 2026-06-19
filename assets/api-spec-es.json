@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Permitir el reenvío de subdominios comodín (wildcard). Cuando se activa en un plan de pago (Enhanced Protection o Team), cualquier subdominio que no tenga sus propios registros DNS hereda la configuración de reenvío publicada en la raíz (apex) de este dominio. Se requiere propiedad verificada: el apex debe publicar un registro forward-email-site-verification que coincida con este dominio. Esta opción no se aplica al plan gratuito.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "Ignorar la comprobación de registros MX para configuraciones avanzadas de enrutamiento de correo"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Permitir el reenvío de subdominios comodín (wildcard). Cuando se activa en un plan de pago (Enhanced Protection o Team), cualquier subdominio que no tenga sus propios registros DNS hereda la configuración de reenvío publicada en la raíz (apex) de este dominio. Se requiere propiedad verificada: el apex debe publicar un registro forward-email-site-verification que coincida con este dominio. Esta opción no se aplica al plan gratuito.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Opte por almacenar encabezados y metadatos (excluyendo el contenido del mensaje) de correos electrónicos reenviados, enviados mediante webhook, SMTP salientes y entregados mediante IMAP. Los registros se conservan durante 7 días. Esta función le ayuda a supervisar y solucionar problemas de rendimiento de la entrega de correo electrónico con información detallada sobre transmisiones exitosas."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Si se debe ignorar la comprobación del registro MX en el dominio para verificación (principalmente para configuraciones avanzadas de enrutamiento MX)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Permitir el reenvío de subdominios comodín (wildcard). Cuando se activa en un plan de pago (Enhanced Protection o Team), cualquier subdominio que no tenga sus propios registros DNS hereda la configuración de reenvío publicada en la raíz (apex) de este dominio. Se requiere propiedad verificada: el apex debe publicar un registro forward-email-site-verification que coincida con este dominio. Esta opción no se aplica al plan gratuito.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

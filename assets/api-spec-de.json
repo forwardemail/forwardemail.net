@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Wildcard-Subdomänen-Weiterleitung zulassen. Wenn dies in einem kostenpflichtigen Tarif (Enhanced Protection oder Team) aktiviert ist, erbt jede Subdomäne ohne eigene DNS-Einträge die Weiterleitungskonfiguration, die in der Root (Apex) dieser Domäne veröffentlicht ist. Ein verifizierter Besitz ist erforderlich: Die Apex muss einen forward-email-site-verification-Eintrag veröffentlichen, der zu dieser Domäne passt. Diese Einstellung gilt nicht für den kostenlosen Tarif.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "MX-Record-Prüfung bei erweiterten Mail-Routing-Konfigurationen ignorieren"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Wildcard-Subdomänen-Weiterleitung zulassen. Wenn dies in einem kostenpflichtigen Tarif (Enhanced Protection oder Team) aktiviert ist, erbt jede Subdomäne ohne eigene DNS-Einträge die Weiterleitungskonfiguration, die in der Root (Apex) dieser Domäne veröffentlicht ist. Ein verifizierter Besitz ist erforderlich: Die Apex muss einen forward-email-site-verification-Eintrag veröffentlichen, der zu dieser Domäne passt. Diese Einstellung gilt nicht für den kostenlosen Tarif.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Aktivieren Sie die Option, Header und Metadaten (ohne Nachrichteninhalt) für erfolgreich weitergeleitete, per Webhook gesendete, ausgehende SMTP- und IMAP-E-Mails zu speichern. Die Protokolle werden 7 Tage lang aufbewahrt. Diese Funktion unterstützt Sie bei der Überwachung und Fehlerbehebung der E-Mail-Zustellung durch detaillierte Einblicke in erfolgreiche Übertragungen."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Ob die MX-Record-Prüfung der Domain zur Verifizierung ignoriert werden soll (hauptsächlich bei fortgeschrittenen MX-Routing-Konfigurationen)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Wildcard-Subdomänen-Weiterleitung zulassen. Wenn dies in einem kostenpflichtigen Tarif (Enhanced Protection oder Team) aktiviert ist, erbt jede Subdomäne ohne eigene DNS-Einträge die Weiterleitungskonfiguration, die in der Root (Apex) dieser Domäne veröffentlicht ist. Ein verifizierter Besitz ist erforderlich: Die Apex muss einen forward-email-site-verification-Eintrag veröffentlichen, der zu dieser Domäne passt. Diese Einstellung gilt nicht für den kostenlosen Tarif.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Permitir o encaminhamento de subdomínios curinga (wildcard). Quando ativado em um plano pago (Enhanced Protection ou Team), qualquer subdomínio que não tenha registros DNS próprios herda a configuração de encaminhamento publicada na raiz (apex) deste domínio. É necessária a propriedade verificada: o apex deve publicar um registro forward-email-site-verification correspondente a este domínio. Esta configuração não se aplica ao plano gratuito.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "Ignorar verificação de registro MX para configurações avançadas de roteamento de e-mail."
           },
+          "allow_subdomain_forwarding": {
+            "description": "Permitir o encaminhamento de subdomínios curinga (wildcard). Quando ativado em um plano pago (Enhanced Protection ou Team), qualquer subdomínio que não tenha registros DNS próprios herda a configuração de encaminhamento publicada na raiz (apex) deste domínio. É necessária a propriedade verificada: o apex deve publicar um registro forward-email-site-verification correspondente a este domínio. Esta configuração não se aplica ao plano gratuito.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Ative a opção de armazenar cabeçalhos e metadados (excluindo o conteúdo da mensagem) para e-mails encaminhados com sucesso, enviados por webhook, SMTP de saída e entregues por IMAP, com registros retidos por 7 dias. Esse recurso ajuda você a monitorar e solucionar problemas de desempenho na entrega de e-mails, fornecendo informações detalhadas sobre as transmissões bem-sucedidas."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Ignorar ou não a verificação do registro MX no domínio para fins de verificação (principalmente em configurações avançadas de roteamento MX)."
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Permitir o encaminhamento de subdomínios curinga (wildcard). Quando ativado em um plano pago (Enhanced Protection ou Team), qualquer subdomínio que não tenha registros DNS próprios herda a configuração de encaminhamento publicada na raiz (apex) deste domínio. É necessária a propriedade verificada: o apex deve publicar um registro forward-email-site-verification correspondente a este domínio. Esta configuração não se aplica ao plano gratuito.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

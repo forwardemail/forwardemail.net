@@ -569,6 +569,79 @@ block body
                       disabled=isDisabled
                     )= t("Save")
 
+          //- Allow Subdomain Forwarding
+          if domain.group === 'admin'
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              input(
+                type="hidden",
+                name="_section",
+                value="allow_subdomain_forwarding"
+              )
+              h2.h6.card-header= t("Allow Wildcard Subdomain Forwarding")
+              .card-body
+                +planRequired(false)
+                .form-group.form-check.mb-0
+                  input#input-allow-subdomain-forwarding.form-check-input(
+                    type="checkbox",
+                    disabled=isDisabled,
+                    name="allow_subdomain_forwarding",
+                    value="true",
+                    checked=domain.allow_subdomain_forwarding
+                  )
+                  label.form-check-label(
+                    for="input-allow-subdomain-forwarding"
+                  )= t("Allow any subdomain to inherit this domain's forwarding configuration (wildcard subdomains)")
+                  p.form-text.small.text-black.text-themed-50.mb-0= t("If you check this, then mail sent to any subdomain that has no forwarding records of its own will fall back to the records published at this root domain. This is a paid plan feature and does not apply to the free plan.")
+                //- Wildcard subdomain DNS setup instructions
+                hr
+                h3.h6.mt-3= t("Required DNS records for wildcard subdomains")
+                p.form-text.small.text-black.text-themed-50
+                  != t("Email is routed by each recipient's MX records, so for mail to reach <strong>any</strong> subdomain you must publish MX records that cover your subdomains. The easiest way is a single <strong>wildcard MX</strong> record (<code>*</code>) at your DNS provider, which applies to every subdomain at once.")
+                .table-responsive.mb-2
+                  table.table.table-hover.table-sm.mb-0
+                    thead
+                      tr
+                        th.border-0.align-middle Name/Host/Alias
+                        th.border-0.align-middle Type
+                        th.border-0.align-middle Priority
+                        th.border-0.align-middle.text-left Answer/Value
+                    tbody
+                      tr
+                        td.align-middle: code.text-themed *
+                        td.align-middle: strong.px-2 MX
+                        td.align-middle: code.text-themed 0
+                        td.align-middle.text-left: code.text-themed.text-nowrap mx1.forwardemail.net
+                      tr
+                        td.align-middle: code.text-themed *
+                        td.align-middle: strong.px-2 MX
+                        td.align-middle: code.text-themed 0
+                        td.align-middle.text-left: code.text-themed.text-nowrap mx2.forwardemail.net
+                p.form-text.small.text-black.text-themed-50.mb-2
+                  != t("A wildcard such as <code>*.example.com</code> matches <code>mail.example.com</code>, <code>a.b.example.com</code>, and so on. To cover only one specific subdomain instead, use that subdomain as the Name/Host (for example <code>mail</code> for <code>mail.example.com</code>) with the same two MX values above.")
+                p.form-text.small.text-black.text-themed-50.mb-2
+                  != t("Keep the paid verification TXT record published at your <strong>root</strong> domain (Name/Host <code>@</code>) - subdomains inherit it automatically:")
+                p.mb-2
+                  code#copy-subdomain-verification.d-block.text-themed.text-nowrap= `${config.recordPrefix}-site-verification=${domain.verification_record}`
+                p.form-text.small.text-black.text-themed-50.mb-0
+                  != t("Some DNS providers also support a wildcard <code>CNAME</code> (for example <code>*.example.com CNAME example.com</code>) so subdomains resolve to your root. A wildcard MX is preferred for mail. Do not add a CNAME on the root (<code>@</code>) itself, as it conflicts with your MX and other records.")
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.confirm-prompt.btn.btn-lg.btn-secondary(
+                      type="reset",
+                      disabled=isDisabled
+                    )= t("Reset")
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(
+                      type="submit",
+                      disabled=isDisabled
+                    )= t("Save")
+
           //- Outbound SMTP Retention
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(

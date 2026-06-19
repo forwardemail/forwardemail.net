@@ -76,6 +76,7 @@
   * [Ondersteunt u bounce webhooks](#do-you-support-bounce-webhooks)
   * [Ondersteunt u webhooks](#do-you-support-webhooks)
   * [Ondersteunt u reguliere expressies of regex](#do-you-support-regular-expressions-or-regex)
+  * [Kan ik e-mail doorsturen voor elk subdomein (wildcard-subdomeinen)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Wat zijn uw uitgaande SMTP-limieten](#what-are-your-outbound-smtp-limits)
   * [Heb ik goedkeuring nodig om SMTP in te schakelen](#do-i-need-approval-to-enable-smtp)
   * [Wat zijn uw SMTP-serverconfiguratie-instellingen](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ Als u het gratis abonnement gebruikt, voeg dan eenvoudig een nieuw DNS <strong c
   <span>
   </span>
 </div>
+
+### Kan ik e-mail doorsturen voor elk subdomein (wildcard-subdomeinen) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Ja, op onze **betaalde abonnementen**. Je kunt een enkel hoofddomein (bijv. `example.com`) configureren zodat de doorstuurconfiguratie transparant van toepassing is op **elk** subdomein (bijv. `anything.example.com`, `mail.example.com`, `a.b.example.com`), zonder voor elk subdomein een aparte configuratie aan te maken en zonder een DNS-wildcardvermelding zoals `*.example.com` te gebruiken.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Alleen betaalde abonnementen (opt-in):</strong> Deze functie is beschikbaar op onze betaalde abonnementen en is standaard uitgeschakeld. Je moet deze voor het domein inschakelen onder <strong>Mijn account &rarr; Domeinen &rarr; Instellingen</strong> door <strong>"Allow Wildcard Subdomain Forwarding"</strong> aan te vinken. Het is <strong>niet</strong> van toepassing op het gratis abonnement.
+</div>
+
+Zodra ingeschakeld, zoeken we, wanneer er een e-mail aankomt voor een ontvanger op een subdomein, eerst de <strong class="notranslate">TXT</strong>-records op die exacte subdomeinhost op. Als het exacte subdomein geen eigen `forward-email-site-verification`-records heeft, vallen we automatisch terug op het verificatierecord dat op het hoofddomein is gepubliceerd (zodat het subdomein dezelfde aliassen en verificatie erft als het hoofddomein).
+
+Dit is opzettelijk beperkt, zodat je bestaande configuratie nooit wordt gewijzigd:
+
+* Het moet expliciet per domein worden ingeschakeld en is alleen van toepassing op onze betaalde abonnementen (het wordt nooit gebruikt op het gratis abonnement).
+* Het is alleen van toepassing op subdomeinen (het hoofd-/apexdomein zelf blijft onaangetast).
+* Het is alleen van toepassing wanneer het exacte subdomein **geen** relevante records heeft, dus alle records die je op een specifiek subdomein publiceert, hebben altijd voorrang op de terugval naar het hoofddomein.
+* Alleen `forward-email`- en `forward-email-site-verification`-records worden geërfd van het hoofddomein.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Voorbeeld van wildcard-subdomein:</strong> Na het inschakelen van <strong>"Allow Wildcard Subdomain Forwarding"</strong> voor `example.com`, erft e-mail die wordt verzonden naar een subdomein dat geen eigen records heeft (bijvoorbeeld `hello@anything.example.com`) de configuratie van het hoofddomein, inclusief het verificatierecord:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Naam/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Antwoord/Waarde</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", of leeg</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Vereiste DNS-records voor wildcard-subdomeinen {#required-dns-records-for-wildcard-subdomains}
+
+E-mail wordt gerouteerd door de <strong class="notranslate">MX</strong>-records van elke ontvanger, dus om e-mail fysiek bij ons te laten aankomen voor **elk** subdomein, moet je <strong class="notranslate">MX</strong>-records publiceren die je subdomeinen dekken. De eenvoudigste benadering is een enkel **wildcard MX**-record (`*`) bij je DNS-provider, dat in één keer op elk subdomein van toepassing is:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Naam/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th class="text-center">Prioriteit</th>
+      <th>Antwoord/Waarde</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Een wildcard zoals `*.example.com` komt overeen met `mail.example.com`, `a.b.example.com`, enzovoort. Om in plaats daarvan slechts één specifiek subdomein te dekken, gebruik je dat subdomein als de Naam/Host (bijvoorbeeld `mail` voor `mail.example.com`) met dezelfde twee <strong class="notranslate">MX</strong>-waarden hierboven.
+
+Sommige DNS-providers ondersteunen ook een wildcard <strong class="notranslate">CNAME</strong> (bijvoorbeeld `*.example.com CNAME example.com`) zodat subdomeinen worden omgezet naar je hoofddomein. Een wildcard <strong class="notranslate">MX</strong> heeft de voorkeur voor e-mailbezorging.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Belangrijk:</strong> Voeg geen <strong class="notranslate">CNAME</strong>-record toe op de root/apex (`@`) zelf, aangezien dit conflicteert met je <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- en andere records. Houd het `forward-email-site-verification` <strong class="notranslate">TXT</strong>-record gepubliceerd op je hoofddomein &mdash; subdomeinen erven het automatisch.
+</div>
+
+#### Subdomein-vervangingstokens {#subdomain-substitution-tokens}
+
+Wanneer je <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">reguliere expressies</a> gebruikt in de ontvanger (vervanging), kun je bovendien verwijzen naar het subdomein van de inkomende ontvanger met behulp van twee tokens. Houd er rekening mee dat, om deze tokens van toepassing te laten zijn op **elk** subdomein van een enkel hoofddomeinrecord, de hierboven beschreven wildcard-subdomeinterugval moet zijn ingeschakeld (alleen betaalde abonnementen); anders zijn ze alleen van toepassing op records die zijn gepubliceerd op de exacte host die wordt gematcht:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Beschrijving</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>De subdomeinlabel(s) onder het hoofddomein van de inkomende ontvanger. Bijvoorbeeld, voor `team@sales.example.com` (hoofd `example.com`) is dit `sales`, en voor `x@a.b.example.com` is dit `a.b`. Voor het hoofd-/apexdomein is het een lege tekenreeks.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>De volledige host (domein) van de inkomende ontvanger. Bijvoorbeeld, voor `team@sales.example.com` is dit `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Voorbeeld van subdomeinvervanging:</strong> Als je wilt dat elk adres op elk subdomein van `example.com` wordt doorgestuurd naar een enkele provider met behoud van het subdomein in de bestemming (bijv. `anyone@sales.example.com` &rarr; `sales@example.net` en `anyone@support.example.com` &rarr; `support@example.net`), publiceer dan een enkel record op het hoofddomein:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Naam/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Antwoord/Waarde</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", of leeg</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Wat zijn jullie limieten voor uitgaande SMTP {#what-are-your-outbound-smtp-limits}
 

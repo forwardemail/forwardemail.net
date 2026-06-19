@@ -76,6 +76,7 @@
   * [バウンスWebhookはサポートしていますか](#do-you-support-bounce-webhooks)
   * [Webhookはサポートしていますか](#do-you-support-webhooks)
   * [正規表現（regex）はサポートしていますか](#do-you-support-regular-expressions-or-regex)
+  * [任意のサブドメインのメールを転送できますか（ワイルドカードサブドメイン）](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [送信SMTPの制限はどのくらいですか](#what-are-your-outbound-smtp-limits)
   * [SMTPを有効にするには承認が必要ですか](#do-i-need-approval-to-enable-smtp)
   * [SMTPサーバーの設定はどのようになっていますか](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ Sieveスクリプトは以下の方法で管理できます：
   <span>
   </span>
 </div>
+
+### 任意のサブドメインのメールを転送できますか（ワイルドカードサブドメイン） {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+はい、**有料プラン**で可能です。単一のルートドメイン（例：`example.com`）を設定することで、各サブドメインごとに個別の設定を作成したり、`*.example.com`のようなDNSワイルドカードエントリを使用したりすることなく、その転送設定を**すべて**のサブドメイン（例：`anything.example.com`、`mail.example.com`、`a.b.example.com`）に透過的に適用できます。
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>有料プランのみ（オプトイン）：</strong> この機能は当社の有料プランで利用可能であり、デフォルトではオフになっています。<strong>マイアカウント &rarr; ドメイン &rarr; 設定</strong>で<strong>「ワイルドカードサブドメイン転送を許可する」</strong>にチェックを入れて、ドメインに対して有効にする必要があります。無料プランには適用され<strong>ません</strong>。
+</div>
+
+有効にすると、サブドメインの宛先にメールが届いた際、まずその正確なサブドメインホストの<strong class="notranslate">TXT</strong>レコードを検索します。その正確なサブドメイン自体に`forward-email-site-verification`レコードがない場合、ルートドメインで公開されている検証レコードに自動的にフォールバックします（これにより、サブドメインはルートドメインと同じエイリアスと検証を継承します）。
+
+これは、既存の設定が変更されないように意図的に限定されています：
+
+* ドメインごとに明示的に有効にする必要があり、当社の有料プランにのみ適用されます（無料プランでは使用されません）。
+* サブドメインにのみ適用されます（ルート/頂点ドメイン自体は影響を受けません）。
+* 正確なサブドメインに関連するレコードが**ない**場合にのみ適用されるため、特定のサブドメインで公開したレコードは常にルートドメインのフォールバックよりも優先されます。
+* `forward-email`および`forward-email-site-verification`レコードのみがルートドメインから継承されます。
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>ワイルドカードサブドメインの例：</strong> `example.com`で<strong>「ワイルドカードサブドメイン転送を許可する」</strong>を有効にした後、独自のレコードを持たないサブドメイン（例えば`hello@anything.example.com`）に送信されたメールは、検証レコードを含むルートドメインの設定を継承します：
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>名前/ホスト/エイリアス</th>
+      <th class="text-center">TTL</th>
+      <th>タイプ</th>
+      <th>応答/値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@"、"."、または空白</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### ワイルドカードサブドメインに必要なDNSレコード {#required-dns-records-for-wildcard-subdomains}
+
+メールは各宛先の<strong class="notranslate">MX</strong>レコードによってルーティングされるため、**任意**のサブドメインのメールが物理的に当社に届くようにするには、サブドメインをカバーする<strong class="notranslate">MX</strong>レコードを公開する必要があります。最も簡単なアプローチは、DNSプロバイダーで単一の**ワイルドカードMX**レコード（`*`）を設定することです。これにより、すべてのサブドメインに一度に適用されます：
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>名前/ホスト/エイリアス</th>
+      <th class="text-center">TTL</th>
+      <th>タイプ</th>
+      <th class="text-center">優先度</th>
+      <th>応答/値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+`*.example.com`のようなワイルドカードは、`mail.example.com`や`a.b.example.com`などに一致します。代わりに特定の1つのサブドメインのみをカバーするには、そのサブドメインを名前/ホストとして使用し（例えば`mail.example.com`の場合は`mail`）、上記の同じ2つの<strong class="notranslate">MX</strong>値を設定します。
+
+一部のDNSプロバイダーは、サブドメインがルートドメインに解決されるように、ワイルドカード<strong class="notranslate">CNAME</strong>（例えば`*.example.com CNAME example.com`）もサポートしています。メール配信にはワイルドカード<strong class="notranslate">MX</strong>が推奨されます。
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>重要：</strong> ルート/頂点（`@`）自体に<strong class="notranslate">CNAME</strong>レコードを追加しないでください。<strong class="notranslate">MX</strong>、<strong class="notranslate">TXT</strong>、およびその他のレコードと競合するためです。`forward-email-site-verification`の<strong class="notranslate">TXT</strong>レコードはルートドメインで公開したままにしてください &mdash; サブドメインはそれを自動的に継承します。
+</div>
+
+#### サブドメイン置換トークン {#subdomain-substitution-tokens}
+
+受信者（置換）で<a href="#do-you-support-regular-expressions-or-regex" class="alert-link">正規表現</a>を使用する場合、2つのトークンを使用して受信メールの宛先のサブドメインを追加で参照できます。これらのトークンが単一のルートドメインレコードから**すべて**のサブドメインに適用されるには、上記で説明したワイルドカードサブドメインのフォールバックが有効になっている必要があることに注意してください（有料プランのみ）。そうでない場合、それらは一致する正確なホストで公開されたレコードにのみ適用されます：
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>トークン</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>受信メールの宛先のルートドメインの下にあるサブドメインラベル。例えば、`team@sales.example.com`（ルートは`example.com`）の場合、これは`sales`になり、`x@a.b.example.com`の場合は`a.b`になります。ルート/頂点ドメインの場合は空の文字列になります。</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>受信メールの宛先の完全なホスト（ドメイン）。例えば、`team@sales.example.com`の場合、これは`sales.example.com`になります。</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>サブドメイン置換の例：</strong> `example.com`のすべてのサブドメインのすべてのアドレスを、宛先のサブドメインを保持したまま単一のプロバイダーに転送したい場合（例：`anyone@sales.example.com` &rarr; `sales@example.net` および `anyone@support.example.com` &rarr; `support@example.net`）、ルートドメインに単一のレコードを公開します：
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>名前/ホスト/エイリアス</th>
+      <th class="text-center">TTL</th>
+      <th>タイプ</th>
+      <th>応答/値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@"、"."、または空白</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### アウトバウンドSMTPの制限は何ですか {#what-are-your-outbound-smtp-limits}
 

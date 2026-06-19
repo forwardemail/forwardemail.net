@@ -76,6 +76,7 @@
   * [Stöder ni bounce-webhooks](#do-you-support-bounce-webhooks)
   * [Stöder ni webhooks](#do-you-support-webhooks)
   * [Stöder ni reguljära uttryck eller regex](#do-you-support-regular-expressions-or-regex)
+  * [Kan jag vidarebefordra e-post för vilken underdomän som helst (wildcard-underdomäner)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Vilka är era gränser för utgående SMTP](#what-are-your-outbound-smtp-limits)
   * [Behöver jag godkännande för att aktivera SMTP](#do-i-need-approval-to-enable-smtp)
   * [Vilka är era SMTP-serverkonfigurationsinställningar](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ Om du har gratisplanen, lägg då helt enkelt till en ny DNS <strong class="notr
   <span>
   </span>
 </div>
+
+### Kan jag vidarebefordra e-post för vilken underdomän som helst (wildcard-underdomäner) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Ja, på våra **betalplaner**.  Du kan konfigurera en enda rotdomän (t.ex. `example.com`) så att dess vidarebefordringskonfiguration transparent tillämpas på **varje** underdomän (t.ex. `anything.example.com`, `mail.example.com`, `a.b.example.com`), utan att skapa en separat konfiguration för varje underdomän och utan att använda en DNS-wildcard-post som `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Endast betalplaner (opt-in):</strong> Denna funktion är tillgänglig på våra betalplaner och är avstängd som standard.  Du måste aktivera den för domänen under <strong>Mitt konto &rarr; Domäner &rarr; Inställningar</strong> genom att markera <strong>"Tillåt vidarebefordran för wildcard-underdomäner"</strong>.  Den gäller <strong>inte</strong> för gratisplanen.
+</div>
+
+När det är aktiverat och ett e-postmeddelande anländer till en mottagare på en underdomän, slår vi först upp <strong class="notranslate">TXT</strong>-posterna på just den underdomänens värd.  Om den exakta underdomänen inte har några egna `forward-email-site-verification`-poster, faller vi automatiskt tillbaka på den verifieringspost som publicerats på rotdomänen (så underdomänen ärver samma alias och verifiering som rotdomänen).
+
+Detta är avsiktligt snävt så att din befintliga konfiguration aldrig ändras:
+
+* Det måste aktiveras uttryckligen per domän, och gäller endast våra betalplaner (det används aldrig på gratisplanen).
+* Det gäller endast underdomäner (själva rot-/apex-domänen påverkas inte).
+* Det gäller endast när den exakta underdomänen **inte** har några relevanta poster, så alla poster du publicerar på en specifik underdomän har alltid företräde framför rotdomänens fallback.
+* Endast `forward-email`- och `forward-email-site-verification`-poster ärvs från rotdomänen.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Exempel på wildcard-underdomän:</strong> Efter att ha aktiverat <strong>"Tillåt vidarebefordran för wildcard-underdomäner"</strong> för `example.com`, ärver e-post som skickas till en underdomän som inte har några egna poster (till exempel `hello@anything.example.com`) rotdomänens konfiguration, inklusive dess verifieringspost:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Namn/Värd/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th>Svar/Värde</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", eller tomt</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Nödvändiga DNS-poster för wildcard-underdomäner {#required-dns-records-for-wildcard-subdomains}
+
+E-post dirigeras av varje mottagares <strong class="notranslate">MX</strong>-poster, så för att e-post fysiskt ska nå oss för **vilken** underdomän som helst måste du publicera <strong class="notranslate">MX</strong>-poster som täcker dina underdomäner.  Det enklaste tillvägagångssättet är en enda **wildcard MX**-post (`*`) hos din DNS-leverantör, som gäller för varje underdomän på en gång:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Namn/Värd/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th class="text-center">Prioritet</th>
+      <th>Svar/Värde</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Ett wildcard som `*.example.com` matchar `mail.example.com`, `a.b.example.com` och så vidare.  För att istället bara täcka en specifik underdomän, använd den underdomänen som Namn/Värd (till exempel `mail` för `mail.example.com`) med samma två <strong class="notranslate">MX</strong>-värden ovan.
+
+Vissa DNS-leverantörer stöder också ett wildcard <strong class="notranslate">CNAME</strong> (till exempel `*.example.com CNAME example.com`) så att underdomäner pekar på din rotdomän.  Ett wildcard <strong class="notranslate">MX</strong> föredras för e-postleverans.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Viktigt:</strong> Lägg inte till en <strong class="notranslate">CNAME</strong>-post på själva rot-/apex-domänen (`@`), eftersom det krockar med dina <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- och andra poster.  Behåll `forward-email-site-verification` <strong class="notranslate">TXT</strong>-posten publicerad på din rotdomän &mdash; underdomäner ärver den automatiskt.
+</div>
+
+#### Ersättningstokens för underdomäner {#subdomain-substitution-tokens}
+
+När du använder <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">reguljära uttryck</a> i mottagaren (ersättning), kan du dessutom referera till den inkommande mottagarens underdomän med hjälp av två tokens.  Observera att för att dessa tokens ska gälla över **varje** underdomän från en enda rotdomänspost, måste fallback för wildcard-underdomäner som beskrivs ovan vara aktiverad (endast betalplaner); annars gäller de endast för poster som publicerats på den exakta värd som matchas:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Beskrivning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>Underdomänens etikett(er) under rotdomänen för den inkommande mottagaren.  Till exempel, för `team@sales.example.com` (rot `example.com`) är detta `sales`, och för `x@a.b.example.com` är detta `a.b`.  För rot-/apex-domänen är det en tom sträng.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>Den fullständiga värden (domänen) för den inkommande mottagaren.  Till exempel, för `team@sales.example.com` är detta `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Exempel på ersättning av underdomän:</strong> Om du vill att varje adress på varje underdomän till `example.com` ska vidarebefordras till en enda leverantör samtidigt som underdomänen bevaras i destinationen (t.ex. `anyone@sales.example.com` &rarr; `sales@example.net` och `anyone@support.example.com` &rarr; `support@example.net`), publicera en enda post på rotdomänen:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Namn/Värd/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th>Svar/Värde</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", eller tomt</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Vad är era gränser för utgående SMTP {#what-are-your-outbound-smtp-limits}
 

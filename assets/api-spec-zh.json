@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "允许通配符子域名转发。在付费套餐（Enhanced Protection 或 Team）上启用后，任何没有自己 DNS 记录的子域名都会继承发布在该域名根（apex）上的转发配置。需要经过验证的所有权：apex 必须发布与该域名匹配的 forward-email-site-verification 记录。此设置不适用于免费套餐。",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "对于高级邮件路由设置，忽略 MX 记录检查。"
           },
+          "allow_subdomain_forwarding": {
+            "description": "允许通配符子域名转发。在付费套餐（Enhanced Protection 或 Team）上启用后，任何没有自己 DNS 记录的子域名都会继承发布在该域名根（apex）上的转发配置。需要经过验证的所有权：apex 必须发布与该域名匹配的 forward-email-site-verification 记录。此设置不适用于免费套餐。",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "选择启用此功能，即可存储成功转发、通过 Webhook 发送、外发 SMTP 和 IMAP 发送的电子邮件的邮件头和元数据（不包括邮件内容），日志保留 7 天。此功能可帮助您监控和排查电子邮件发送性能问题，并提供成功发送的详细信息。"
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "是否忽略域上的 MX 记录检查以进行验证（主要用于高级 MX 路由设置）"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "允许通配符子域名转发。在付费套餐（Enhanced Protection 或 Team）上启用后，任何没有自己 DNS 记录的子域名都会继承发布在该域名根（apex）上的转发配置。需要经过验证的所有权：apex 必须发布与该域名匹配的 forward-email-site-verification 记录。此设置不适用于免费套餐。",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

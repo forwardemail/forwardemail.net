@@ -76,6 +76,7 @@
   * [هل تدعمون webhooks للارتداد](#do-you-support-bounce-webhooks)
   * [هل تدعمون webhooks](#do-you-support-webhooks)
   * [هل تدعمون التعبيرات النمطية أو regex](#do-you-support-regular-expressions-or-regex)
+  * [هل يمكنني إعادة توجيه البريد الإلكتروني لأي نطاق فرعي (النطاقات الفرعية الشاملة)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [ما هي حدود SMTP الصادرة لديكم](#what-are-your-outbound-smtp-limits)
   * [هل أحتاج إلى موافقة لتمكين SMTP](#do-i-need-approval-to-enable-smtp)
   * [ما هي إعدادات تكوين خادم SMTP لديكم](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ if address :all :matches "From" "*@example.com" {
   <span>
   </span>
 </div>
+
+### هل يمكنني إعادة توجيه البريد الإلكتروني لأي نطاق فرعي (النطاقات الفرعية الشاملة) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+نعم، في **خططنا المدفوعة**.  يمكنك تكوين نطاق جذر واحد (مثل `example.com`) بحيث ينطبق تكوين إعادة التوجيه الخاص به بشفافية على **كل** نطاق فرعي (مثل `anything.example.com`، `mail.example.com`، `a.b.example.com`)، دون إنشاء تكوين منفصل لكل نطاق فرعي ودون استخدام إدخال DNS شامل مثل `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>الخطط المدفوعة فقط (اختياري):</strong> هذه الميزة متاحة في خططنا المدفوعة ويتم إيقاف تشغيلها افتراضيًا.  يجب عليك تمكينها للنطاق ضمن <strong>حسابي &rarr; النطاقات &rarr; الإعدادات</strong> عن طريق تحديد <strong>"السماح بإعادة توجيه النطاق الفرعي الشامل"</strong>.  إنها <strong>لا</strong> تنطبق على الخطة المجانية.
+</div>
+
+بمجرد التمكين، عندما يصل بريد إلكتروني لمستلم على نطاق فرعي، نبحث أولاً عن سجلات <strong class="notranslate">TXT</strong> على مضيف النطاق الفرعي الدقيق هذا.  إذا لم يكن لدى النطاق الفرعي الدقيق أي سجلات `forward-email-site-verification` خاصة به، فإننا نعود تلقائيًا إلى سجل التحقق المنشور على النطاق الجذر (وبالتالي يرث النطاق الفرعي نفس الأسماء المستعارة والتحقق مثل النطاق الجذر).
+
+هذا ضيق عن قصد بحيث لا يتم تغيير تكوينك الحالي أبدًا:
+
+* يجب تمكينه صراحةً لكل نطاق، وينطبق فقط على خططنا المدفوعة (لا يتم استخدامه أبدًا في الخطة المجانية).
+* ينطبق فقط على النطاقات الفرعية (النطاق الجذر/القمة نفسه لا يتأثر).
+* ينطبق فقط عندما **لا** يحتوي النطاق الفرعي الدقيق على سجلات ذات صلة، لذلك فإن أي سجلات تنشرها على نطاق فرعي معين تكون لها الأولوية دائمًا على التراجع إلى النطاق الجذر.
+* يتم توريث سجلات `forward-email` و `forward-email-site-verification` فقط من النطاق الجذر.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>مثال على النطاق الفرعي الشامل:</strong> بعد تمكين <strong>"السماح بإعادة توجيه النطاق الفرعي الشامل"</strong> لـ `example.com`، فإن البريد المرسل إلى أي نطاق فرعي ليس له سجلات خاصة به (على سبيل المثال `hello@anything.example.com`) يرث تكوين النطاق الجذر، بما في ذلك سجل التحقق الخاص به:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>الاسم/المضيف/الاسم المستعار</th>
+      <th class="text-center">TTL</th>
+      <th>النوع</th>
+      <th>الإجابة/القيمة</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@"، "."، أو فارغ</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### سجلات DNS المطلوبة للنطاقات الفرعية الشاملة {#required-dns-records-for-wildcard-subdomains}
+
+يتم توجيه البريد الإلكتروني بواسطة سجلات <strong class="notranslate">MX</strong> الخاصة بكل مستلم، لذلك لكي يصل البريد إلينا فعليًا لأي نطاق فرعي، يجب عليك نشر سجلات <strong class="notranslate">MX</strong> تغطي نطاقاتك الفرعية.  النهج الأبسط هو سجل **MX شامل** واحد (`*`) لدى مزود DNS الخاص بك، والذي ينطبق على كل نطاق فرعي في وقت واحد:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>الاسم/المضيف/الاسم المستعار</th>
+      <th class="text-center">TTL</th>
+      <th>النوع</th>
+      <th class="text-center">الأولوية</th>
+      <th>الإجابة/القيمة</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+يتطابق حرف البدل مثل `*.example.com` مع `mail.example.com` و `a.b.example.com` وما إلى ذلك.  لتغطية نطاق فرعي واحد محدد فقط بدلاً من ذلك، استخدم هذا النطاق الفرعي كاسم/مضيف (على سبيل المثال `mail` لـ `mail.example.com`) مع نفس قيمتي <strong class="notranslate">MX</strong> أعلاه.
+
+يدعم بعض مزودي DNS أيضًا <strong class="notranslate">CNAME</strong> شامل (على سبيل المثال `*.example.com CNAME example.com`) بحيث يتم حل النطاقات الفرعية إلى نطاقك الجذر.  يُفضل استخدام <strong class="notranslate">MX</strong> شامل لتسليم البريد.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>هام:</strong> لا تضف سجل <strong class="notranslate">CNAME</strong> على الجذر/القمة (`@`) نفسه، لأنه يتعارض مع سجلات <strong class="notranslate">MX</strong> و <strong class="notranslate">TXT</strong> والسجلات الأخرى الخاصة بك.  احتفظ بسجل <strong class="notranslate">TXT</strong> لـ `forward-email-site-verification` منشورًا في نطاقك الجذر &mdash; ترثه النطاقات الفرعية تلقائيًا.
+</div>
+
+#### رموز استبدال النطاق الفرعي {#subdomain-substitution-tokens}
+
+عند استخدام <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">التعبيرات العادية</a> في المستلم (الاستبدال)، يمكنك بالإضافة إلى ذلك الإشارة إلى النطاق الفرعي للمستلم الوارد باستخدام رمزين.  لاحظ أنه لكي تنطبق هذه الرموز عبر **كل** نطاق فرعي من سجل نطاق جذر واحد، يجب تمكين التراجع عن النطاق الفرعي الشامل الموضح أعلاه (الخطط المدفوعة فقط)؛ وإلا فإنها تنطبق فقط على السجلات المنشورة على المضيف الدقيق الذي تتم مطابقته:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>الرمز</th>
+      <th>الوصف</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>تسمية (تسميات) النطاق الفرعي أسفل النطاق الجذر للمستلم الوارد.  على سبيل المثال، بالنسبة لـ `team@sales.example.com` (الجذر `example.com`) هذا هو `sales`، وبالنسبة لـ `x@a.b.example.com` هذا هو `a.b`.  بالنسبة للنطاق الجذر/القمة، فهي سلسلة فارغة.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>المضيف الكامل (النطاق) للمستلم الوارد.  على سبيل المثال، بالنسبة لـ `team@sales.example.com` هذا هو `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>مثال على استبدال النطاق الفرعي:</strong> إذا كنت تريد إعادة توجيه كل عنوان في كل نطاق فرعي لـ `example.com` إلى مزود واحد مع الحفاظ على النطاق الفرعي في الوجهة (مثل `anyone@sales.example.com` &rarr; `sales@example.net` و `anyone@support.example.com` &rarr; `support@example.net`)، فانشر سجلاً واحدًا على النطاق الجذر:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>الاسم/المضيف/الاسم المستعار</th>
+      <th class="text-center">TTL</th>
+      <th>النوع</th>
+      <th>الإجابة/القيمة</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@"، "."، أو فارغ</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### ما هي حدود SMTP الصادرة الخاصة بك {#what-are-your-outbound-smtp-limits}
 

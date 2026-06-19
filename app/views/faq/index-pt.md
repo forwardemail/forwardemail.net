@@ -76,6 +76,7 @@
   * [Vocês suportam webhooks de bounce](#do-you-support-bounce-webhooks)
   * [Vocês suportam webhooks](#do-you-support-webhooks)
   * [Vocês suportam expressões regulares ou regex](#do-you-support-regular-expressions-or-regex)
+  * [Posso encaminhar e-mails para qualquer subdomínio (subdomínios curinga)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Quais são seus limites de SMTP de saída](#what-are-your-outbound-smtp-limits)
   * [Preciso de aprovação para habilitar SMTP](#do-i-need-approval-to-enable-smtp)
   * [Quais são as configurações do servidor SMTP](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ Se você está no plano gratuito, basta adicionar um novo registro DNS <strong c
   <span>
   </span>
 </div>
+
+### Posso encaminhar e-mails para qualquer subdomínio (subdomínios curinga) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Sim, em nossos **planos pagos**.  Você pode configurar um único domínio raiz (por exemplo, `example.com`) para que sua configuração de encaminhamento se aplique de forma transparente a **todos** os subdomínios (por exemplo, `anything.example.com`, `mail.example.com`, `a.b.example.com`), sem criar uma configuração separada para cada subdomínio e sem usar uma entrada curinga de DNS como `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Apenas planos pagos (opt-in):</strong> Este recurso está disponível em nossos planos pagos e é desativado por padrão.  Você deve ativá-lo para o domínio em <strong>Minha Conta &rarr; Domínios &rarr; Configurações</strong> marcando <strong>"Permitir Encaminhamento de Subdomínio Curinga"</strong>.  Ele <strong>não</strong> se aplica ao plano Gratuito.
+</div>
+
+Uma vez ativado, quando um e-mail chega para um destinatário em um subdomínio, primeiro procuramos os registros <strong class="notranslate">TXT</strong> no host exato desse subdomínio.  Se o subdomínio exato não tiver nenhum registro `forward-email-site-verification` próprio, nós automaticamente recorremos ao registro de verificação publicado no domínio raiz (assim, o subdomínio herda os mesmos aliases e verificação do domínio raiz).
+
+Isso é intencionalmente restrito para que sua configuração existente nunca seja alterada:
+
+* Deve ser ativado explicitamente por domínio e se aplica apenas aos nossos planos pagos (nunca é usado no plano Gratuito).
+* Aplica-se apenas a subdomínios (o próprio domínio raiz/ápice não é afetado).
+* Aplica-se apenas quando o subdomínio exato **não** possui registros relevantes, portanto, quaisquer registros que você publique em um subdomínio específico sempre têm precedência sobre o fallback do domínio raiz.
+* Apenas os registros `forward-email` e `forward-email-site-verification` são herdados do domínio raiz.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Exemplo de Subdomínio Curinga:</strong> Após ativar <strong>"Permitir Encaminhamento de Subdomínio Curinga"</strong> para `example.com`, os e-mails enviados para qualquer subdomínio que não tenha registros próprios (por exemplo, `hello@anything.example.com`) herdam a configuração do domínio raiz, incluindo seu registro de verificação:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nome/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipo</th>
+      <th>Resposta/Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", ou em branco</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Registros DNS necessários para subdomínios curinga {#required-dns-records-for-wildcard-subdomains}
+
+O e-mail é roteado pelos registros <strong class="notranslate">MX</strong> de cada destinatário, portanto, para que o e-mail chegue fisicamente até nós para **qualquer** subdomínio, você deve publicar registros <strong class="notranslate">MX</strong> que cubram seus subdomínios.  A abordagem mais simples é um único registro **MX curinga** (`*`) em seu provedor de DNS, que se aplica a todos os subdomínios de uma só vez:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nome/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipo</th>
+      <th class="text-center">Prioridade</th>
+      <th>Resposta/Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Um curinga como `*.example.com` corresponde a `mail.example.com`, `a.b.example.com` e assim por diante.  Para cobrir apenas um subdomínio específico, use esse subdomínio como Nome/Host (por exemplo, `mail` para `mail.example.com`) com os mesmos dois valores <strong class="notranslate">MX</strong> acima.
+
+Alguns provedores de DNS também suportam um <strong class="notranslate">CNAME</strong> curinga (por exemplo, `*.example.com CNAME example.com`) para que os subdomínios sejam resolvidos para o seu domínio raiz.  Um <strong class="notranslate">MX</strong> curinga é preferível para a entrega de e-mails.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Importante:</strong> Não adicione um registro <strong class="notranslate">CNAME</strong> no próprio domínio raiz/ápice (`@`), pois ele entra em conflito com seus registros <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> e outros.  Mantenha o registro <strong class="notranslate">TXT</strong> `forward-email-site-verification` publicado em seu domínio raiz &mdash; os subdomínios o herdam automaticamente.
+</div>
+
+#### Tokens de substituição de subdomínio {#subdomain-substitution-tokens}
+
+Ao usar <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">expressões regulares</a> no destinatário (substituição), você pode referenciar adicionalmente o subdomínio do destinatário de entrada usando dois tokens.  Observe que, para que esses tokens se apliquem a **todos** os subdomínios a partir de um único registro de domínio raiz, o fallback de subdomínio curinga descrito acima deve estar ativado (apenas planos pagos); caso contrário, eles se aplicam apenas aos registros publicados no host exato correspondente:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Descrição</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>O(s) rótulo(s) de subdomínio abaixo do domínio raiz do destinatário de entrada.  Por exemplo, para `team@sales.example.com` (raiz `example.com`) isso é `sales`, e para `x@a.b.example.com` isso é `a.b`.  Para o domínio raiz/ápice, é uma string vazia.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>O host completo (domínio) do destinatário de entrada.  Por exemplo, para `team@sales.example.com` isso é `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Exemplo de Substituição de Subdomínio:</strong> Se você deseja que todos os endereços em todos os subdomínios de `example.com` sejam encaminhados para um único provedor, preservando o subdomínio no destino (por exemplo, `anyone@sales.example.com` &rarr; `sales@example.net` e `anyone@support.example.com` &rarr; `support@example.net`), publique um único registro no domínio raiz:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nome/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Tipo</th>
+      <th>Resposta/Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", ou em branco</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Quais são os seus limites de SMTP de saída {#what-are-your-outbound-smtp-limits}
 

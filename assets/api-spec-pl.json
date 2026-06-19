@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Zezwól na przekazywanie subdomen wieloznacznych (wildcard). Po włączeniu w planie płatnym (Enhanced Protection lub Team) każda subdomena, która nie ma własnych rekordów DNS, dziedziczy konfigurację przekazywania opublikowaną w korzeniu (apex) tej domeny. Wymagane jest zweryfikowane prawo własności: apex musi opublikować rekord forward-email-site-verification zgodny z tą domeną. To ustawienie nie dotyczy planu bezpłatnego.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "Zignoruj sprawdzanie rekordu MX w przypadku zaawansowanych ustawień routingu poczty"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Zezwól na przekazywanie subdomen wieloznacznych (wildcard). Po włączeniu w planie płatnym (Enhanced Protection lub Team) każda subdomena, która nie ma własnych rekordów DNS, dziedziczy konfigurację przekazywania opublikowaną w korzeniu (apex) tej domeny. Wymagane jest zweryfikowane prawo własności: apex musi opublikować rekord forward-email-site-verification zgodny z tą domeną. To ustawienie nie dotyczy planu bezpłatnego.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Wyraź zgodę na przechowywanie nagłówków i metadanych (z wyłączeniem treści wiadomości) dla pomyślnie przekazanych dalej, wysłanych za pomocą webhooków, wychodzących wiadomości SMTP i dostarczonych przez IMAP, a logi będą przechowywane przez 7 dni. Ta funkcja pomaga monitorować i rozwiązywać problemy z dostarczaniem wiadomości e-mail, zapewniając szczegółowe informacje na temat pomyślnych transmisji."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Czy zignorować sprawdzanie rekordu MX w domenie w celu weryfikacji (głównie w przypadku zaawansowanych konfiguracji routingu MX)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Zezwól na przekazywanie subdomen wieloznacznych (wildcard). Po włączeniu w planie płatnym (Enhanced Protection lub Team) każda subdomena, która nie ma własnych rekordów DNS, dziedziczy konfigurację przekazywania opublikowaną w korzeniu (apex) tej domeny. Wymagane jest zweryfikowane prawo własności: apex musi opublikować rekord forward-email-site-verification zgodny z tą domeną. To ustawienie nie dotyczy planu bezpłatnego.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

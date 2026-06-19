@@ -76,6 +76,7 @@
   * [Bạn có hỗ trợ bounce webhooks không](#do-you-support-bounce-webhooks)
   * [Bạn có hỗ trợ webhooks không](#do-you-support-webhooks)
   * [Bạn có hỗ trợ biểu thức chính quy hoặc regex không](#do-you-support-regular-expressions-or-regex)
+  * [Tôi có thể chuyển tiếp email cho bất kỳ tên miền phụ nào không (tên miền phụ ký tự đại diện)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Giới hạn SMTP gửi đi của bạn là gì](#what-are-your-outbound-smtp-limits)
   * [Tôi có cần phê duyệt để bật SMTP không](#do-i-need-approval-to-enable-smtp)
   * [Cài đặt cấu hình máy chủ SMTP của bạn là gì](#what-are-your-smtp-server-configuration-settings)
@@ -3516,6 +3517,136 @@ Nếu bạn đang sử dụng gói miễn phí, chỉ cần thêm một bản gh
   <span>
   </span>
 </div>
+
+### Tôi có thể chuyển tiếp email cho bất kỳ tên miền phụ nào không (tên miền phụ ký tự đại diện) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Có, trên các **gói trả phí** của chúng tôi. Bạn có thể cấu hình một tên miền gốc duy nhất (ví dụ: `example.com`) để cấu hình chuyển tiếp của nó áp dụng một cách minh bạch cho **mọi** tên miền phụ (ví dụ: `anything.example.com`, `mail.example.com`, `a.b.example.com`), mà không cần tạo cấu hình riêng cho từng tên miền phụ và không cần sử dụng mục nhập DNS ký tự đại diện như `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Chỉ dành cho gói trả phí (chọn tham gia):</strong> Tính năng này có sẵn trên các gói trả phí của chúng tôi và bị tắt theo mặc định. Bạn phải bật tính năng này cho tên miền trong <strong>Tài khoản của tôi &rarr; Tên miền &rarr; Cài đặt</strong> bằng cách chọn <strong>"Cho phép chuyển tiếp tên miền phụ ký tự đại diện"</strong>. Tính năng này <strong>không</strong> áp dụng cho gói Miễn phí.
+</div>
+
+Sau khi được bật, khi có email đến cho người nhận trên một tên miền phụ, trước tiên chúng tôi sẽ tra cứu các bản ghi <strong class="notranslate">TXT</strong> trên chính máy chủ tên miền phụ đó. Nếu tên miền phụ chính xác đó không có bất kỳ bản ghi `forward-email-site-verification` nào của riêng nó, thì chúng tôi sẽ tự động chuyển về bản ghi xác minh được xuất bản trên tên miền gốc (do đó tên miền phụ kế thừa các bí danh và xác minh giống như tên miền gốc).
+
+Điều này được giới hạn một cách có chủ ý để cấu hình hiện tại của bạn không bao giờ bị thay đổi:
+
+* Nó phải được bật rõ ràng cho từng tên miền và chỉ áp dụng cho các gói trả phí của chúng tôi (nó không bao giờ được sử dụng trên gói Miễn phí).
+* Nó chỉ áp dụng cho các tên miền phụ (bản thân tên miền gốc/đỉnh không bị ảnh hưởng).
+* Nó chỉ áp dụng khi tên miền phụ chính xác **không có** bản ghi liên quan nào, vì vậy bất kỳ bản ghi nào bạn xuất bản trên một tên miền phụ cụ thể luôn được ưu tiên hơn so với dự phòng của tên miền gốc.
+* Chỉ các bản ghi `forward-email` và `forward-email-site-verification` mới được kế thừa từ tên miền gốc.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Ví dụ về tên miền phụ ký tự đại diện:</strong> Sau khi bật <strong>"Cho phép chuyển tiếp tên miền phụ ký tự đại diện"</strong> cho `example.com`, thư được gửi đến bất kỳ tên miền phụ nào không có bản ghi riêng (ví dụ: `hello@anything.example.com`) sẽ kế thừa cấu hình của tên miền gốc, bao gồm cả bản ghi xác minh của nó:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Tên/Máy chủ/Bí danh</th>
+      <th class="text-center">TTL</th>
+      <th>Loại</th>
+      <th>Câu trả lời/Giá trị</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", hoặc để trống</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Các bản ghi DNS bắt buộc cho tên miền phụ ký tự đại diện {#required-dns-records-for-wildcard-subdomains}
+
+Email được định tuyến bởi các bản ghi <strong class="notranslate">MX</strong> của mỗi người nhận, vì vậy để thư thực sự đến được với chúng tôi cho **bất kỳ** tên miền phụ nào, bạn phải xuất bản các bản ghi <strong class="notranslate">MX</strong> bao phủ các tên miền phụ của bạn. Cách tiếp cận đơn giản nhất là một bản ghi **MX ký tự đại diện** duy nhất (`*`) tại nhà cung cấp DNS của bạn, áp dụng cho mọi tên miền phụ cùng một lúc:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Tên/Máy chủ/Bí danh</th>
+      <th class="text-center">TTL</th>
+      <th>Loại</th>
+      <th class="text-center">Mức độ ưu tiên</th>
+      <th>Câu trả lời/Giá trị</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Một ký tự đại diện như `*.example.com` khớp với `mail.example.com`, `a.b.example.com`, v.v. Thay vào đó, để chỉ bao phủ một tên miền phụ cụ thể, hãy sử dụng tên miền phụ đó làm Tên/Máy chủ (ví dụ: `mail` cho `mail.example.com`) với cùng hai giá trị <strong class="notranslate">MX</strong> ở trên.
+
+Một số nhà cung cấp DNS cũng hỗ trợ <strong class="notranslate">CNAME</strong> ký tự đại diện (ví dụ: `*.example.com CNAME example.com`) để các tên miền phụ phân giải thành tên miền gốc của bạn. <strong class="notranslate">MX</strong> ký tự đại diện được ưu tiên hơn cho việc gửi thư.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Quan trọng:</strong> Không thêm bản ghi <strong class="notranslate">CNAME</strong> trên chính gốc/đỉnh (`@`), vì nó xung đột với các bản ghi <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> và các bản ghi khác của bạn. Giữ bản ghi <strong class="notranslate">TXT</strong> `forward-email-site-verification` được xuất bản tại tên miền gốc của bạn &mdash; các tên miền phụ sẽ tự động kế thừa nó.
+</div>
+
+#### Các mã thông báo thay thế tên miền phụ {#subdomain-substitution-tokens}
+
+Khi bạn sử dụng <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">biểu thức chính quy</a> trong người nhận (thay thế), bạn có thể tham chiếu thêm tên miền phụ của người nhận đến bằng cách sử dụng hai mã thông báo. Lưu ý rằng để các mã thông báo này áp dụng trên **mọi** tên miền phụ từ một bản ghi tên miền gốc duy nhất, dự phòng tên miền phụ ký tự đại diện được mô tả ở trên phải được bật (chỉ dành cho gói trả phí); nếu không, chúng chỉ áp dụng cho các bản ghi được xuất bản trên máy chủ chính xác đang được khớp:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Mã thông báo</th>
+      <th>Mô tả</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>(Các) nhãn tên miền phụ bên dưới tên miền gốc của người nhận đến. Ví dụ: đối với `team@sales.example.com` (gốc `example.com`), đây là `sales` và đối với `x@a.b.example.com`, đây là `a.b`. Đối với tên miền gốc/đỉnh, nó là một chuỗi trống.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>Máy chủ (tên miền) đầy đủ của người nhận đến. Ví dụ: đối với `team@sales.example.com`, đây là `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Ví dụ về thay thế tên miền phụ:</strong> Nếu bạn muốn mọi địa chỉ tại mọi tên miền phụ của `example.com` chuyển tiếp đến một nhà cung cấp duy nhất trong khi vẫn giữ nguyên tên miền phụ ở đích (ví dụ: `anyone@sales.example.com` &rarr; `sales@example.net` và `anyone@support.example.com` &rarr; `support@example.net`), hãy xuất bản một bản ghi duy nhất trên tên miền gốc:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Tên/Máy chủ/Bí danh</th>
+      <th class="text-center">TTL</th>
+      <th>Loại</th>
+      <th>Câu trả lời/Giá trị</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", hoặc để trống</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Giới hạn SMTP gửi đi của bạn là gì {#what-are-your-outbound-smtp-limits}
 

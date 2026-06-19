@@ -130,7 +130,7 @@ const DNS_RETRY_CODES = new Set([
 ]);
 
 const EXCHANGES = config.exchanges
-  .map((exchange) => `<li><code>10 ${exchange}</code> (10 = Priority)</li>`)
+  .map((exchange) => `<li><code>0 ${exchange}</code> (0 = Priority)</li>`)
   .join('');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
@@ -321,6 +321,22 @@ const Domains = new mongoose.Schema({
   },
 
   ignore_mx_check: {
+    type: Boolean,
+    default: false
+  },
+
+  //
+  // opt-in wildcard subdomain forwarding (paid plans only)
+  //
+  // when enabled, an email sent to any subdomain of this domain that has NO
+  // forward-email / forward-email-site-verification TXT records of its own
+  // will fall back to the records published at the registrable root domain,
+  // letting a single apex configuration transparently cover every subdomain
+  // (this also makes paid-plan subdomain verification inherit the apex
+  // forward-email-site-verification record).  it is intentionally off by
+  // default and never applies to the free plan.
+  //
+  allow_subdomain_forwarding: {
     type: Boolean,
     default: false
   },

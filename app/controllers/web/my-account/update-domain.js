@@ -89,6 +89,7 @@ async function updateDomain(ctx, next) {
       'has_virus_protection',
       'has_recipient_verification',
       'ignore_mx_check',
+      'allow_subdomain_forwarding',
       'has_delivery_logs',
       'require_tls_inbound',
       'has_custom_s3'
@@ -219,6 +220,26 @@ async function updateDomain(ctx, next) {
           );
         ctx.state.domain.ignore_mx_check = boolean(
           ctx.request.body.ignore_mx_check
+        );
+
+        break;
+      }
+
+      case 'allow_subdomain_forwarding': {
+        // require paid plan
+        if (ctx.state.domain.plan === 'free')
+          throw Boom.paymentRequired(
+            ctx.translateError(
+              'PLAN_UPGRADE_REQUIRED',
+              ctx.state.l(
+                `/my-account/domains/${punycode.toASCII(
+                  ctx.state.domain.name
+                )}/billing?plan=enhanced_protection`
+              )
+            )
+          );
+        ctx.state.domain.allow_subdomain_forwarding = boolean(
+          ctx.request.body.allow_subdomain_forwarding
         );
 
         break;

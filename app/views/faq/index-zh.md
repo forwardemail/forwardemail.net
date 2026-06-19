@@ -76,6 +76,7 @@
   * [你们支持退信 Webhooks 吗](#do-you-support-bounce-webhooks)
   * [你们支持 Webhooks 吗](#do-you-support-webhooks)
   * [你们支持正则表达式或 regex 吗](#do-you-support-regular-expressions-or-regex)
+  * [我可以为任何子域名（通配符子域名）转发电子邮件吗？](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [你们的外发 SMTP 限制是多少](#what-are-your-outbound-smtp-limits)
   * [启用 SMTP 需要审批吗](#do-i-need-approval-to-enable-smtp)
   * [你们的 SMTP 服务器配置设置是什么](#what-are-your-smtp-server-configuration-settings)
@@ -3514,6 +3515,136 @@ if address :all :matches "From" "*@example.com" {
   <span>
   </span>
 </div>
+
+### 我可以为任何子域名（通配符子域名）转发电子邮件吗？ {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+是的，在我们的**付费计划**中可以。您可以配置一个单一的根域名（例如 `example.com`），使其转发配置透明地应用于**每个**子域名（例如 `anything.example.com`、`mail.example.com`、`a.b.example.com`），而无需为每个子域名创建单独的配置，也无需使用诸如 `*.example.com` 的 DNS 通配符条目。
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>仅限付费计划（选择性加入）：</strong> 此功能在我们的付费计划中可用，并且默认处于关闭状态。您必须在 <strong>我的账户 &rarr; 域名 &rarr; 设置</strong> 下通过勾选 <strong>“允许通配符子域名转发”</strong> 来为该域名启用它。它<strong>不</strong>适用于免费计划。
+</div>
+
+一旦启用，当发往子域名收件人的电子邮件到达时，我们首先查找该确切子域名主机上的 <strong class="notranslate">TXT</strong> 记录。如果该确切子域名没有自己的 `forward-email-site-verification` 记录，那么我们会自动回退到在根域名上发布的验证记录（因此子域名继承与根域名相同的别名和验证）。
+
+这是有意限制的，以便您现有的配置永远不会被更改：
+
+* 它必须按域名显式启用，并且仅适用于我们的付费计划（它永远不会在免费计划中使用）。
+* 它仅适用于子域名（根/顶级域名本身不受影响）。
+* 它仅在确切子域名**没有**相关记录时适用，因此您在特定子域名上发布的任何记录始终优先于根域名回退。
+* 只有 `forward-email` 和 `forward-email-site-verification` 记录从根域名继承。
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>通配符子域名示例：</strong> 在为 `example.com` 启用 <strong>“允许通配符子域名转发”</strong> 后，发送到任何没有自己记录的子域名（例如 `hello@anything.example.com`）的邮件将继承根域名的配置，包括其验证记录：
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>名称/主机/别名</th>
+      <th class="text-center">TTL</th>
+      <th>类型</th>
+      <th>答案/值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>“@”、“.”或留空</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### 通配符子域名所需的 DNS 记录 {#required-dns-records-for-wildcard-subdomains}
+
+电子邮件由每个收件人的 <strong class="notranslate">MX</strong> 记录路由，因此为了让邮件物理上到达我们的**任何**子域名，您必须发布涵盖您子域名的 <strong class="notranslate">MX</strong> 记录。最简单的方法是在您的 DNS 提供商处设置一个单一的**通配符 MX** 记录（`*`），它同时适用于每个子域名：
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>名称/主机/别名</th>
+      <th class="text-center">TTL</th>
+      <th>类型</th>
+      <th class="text-center">优先级</th>
+      <th>答案/值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+诸如 `*.example.com` 的通配符匹配 `mail.example.com`、`a.b.example.com` 等等。要仅涵盖一个特定的子域名，请使用该子域名作为名称/主机（例如 `mail.example.com` 的 `mail`），并使用上面相同的两个 <strong class="notranslate">MX</strong> 值。
+
+一些 DNS 提供商还支持通配符 <strong class="notranslate">CNAME</strong>（例如 `*.example.com CNAME example.com`），以便子域名解析到您的根域名。对于邮件投递，首选通配符 <strong class="notranslate">MX</strong>。
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>重要提示：</strong> 不要直接在根/顶级域名（`@`）上添加 <strong class="notranslate">CNAME</strong> 记录，因为它会与您的 <strong class="notranslate">MX</strong>、<strong class="notranslate">TXT</strong> 和其他记录冲突。将 `forward-email-site-verification` <strong class="notranslate">TXT</strong> 记录保留在您的根域名上发布 &mdash; 子域名会自动继承它。
+</div>
+
+#### 子域名替换令牌 {#subdomain-substitution-tokens}
+
+当您在收件人（替换）中使用<a href="#do-you-support-regular-expressions-or-regex" class="alert-link">正则表达式</a>时，您还可以使用两个令牌引用传入收件人的子域名。请注意，为了使这些令牌适用于来自单一根域名记录的**每个**子域名，必须启用上述通配符子域名回退（仅限付费计划）；否则它们仅适用于在匹配的确切主机上发布的记录：
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>令牌</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>传入收件人根域名下方的子域名标签。例如，对于 `team@sales.example.com`（根域名 `example.com`），这是 `sales`，对于 `x@a.b.example.com`，这是 `a.b`。对于根/顶级域名，它是一个空字符串。</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>传入收件人的完整主机（域名）。例如，对于 `team@sales.example.com`，这是 `sales.example.com`。</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>子域名替换示例：</strong> 如果您希望 `example.com` 每个子域名上的每个地址都转发到单一提供商，同时在目标中保留子域名（例如 `anyone@sales.example.com` &rarr; `sales@example.net` 和 `anyone@support.example.com` &rarr; `support@example.net`），请在根域名上发布一条单一记录：
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>名称/主机/别名</th>
+      <th class="text-center">TTL</th>
+      <th>类型</th>
+      <th>答案/值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>“@”、“.”或留空</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### 您的出站 SMTP 限制是多少 {#what-are-your-outbound-smtp-limits}
 

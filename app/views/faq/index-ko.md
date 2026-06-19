@@ -76,6 +76,7 @@
   * [바운스 웹훅을 지원하나요](#do-you-support-bounce-webhooks)
   * [웹훅을 지원하나요](#do-you-support-webhooks)
   * [정규 표현식 또는 regex를 지원하나요](#do-you-support-regular-expressions-or-regex)
+  * [모든 하위 도메인(와일드카드 하위 도메인)에 대해 이메일을 전달할 수 있나요?](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [발신 SMTP 제한은 어떻게 되나요](#what-are-your-outbound-smtp-limits)
   * [SMTP 활성화에 승인이 필요한가요](#do-i-need-approval-to-enable-smtp)
   * [SMTP 서버 구성 설정은 어떻게 되나요](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
   <span>
   </span>
 </div>
+
+### 모든 하위 도메인(와일드카드 하위 도메인)에 대해 이메일을 전달할 수 있나요? {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+네, **유료 플랜**에서 가능합니다. 단일 루트 도메인(예: `example.com`)을 구성하여 각 하위 도메인에 대한 별도의 구성을 만들거나 `*.example.com`과 같은 DNS 와일드카드 항목을 사용하지 않고도 포워딩 구성이 **모든** 하위 도메인(예: `anything.example.com`, `mail.example.com`, `a.b.example.com`)에 투명하게 적용되도록 할 수 있습니다.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>유료 플랜 전용(옵트인):</strong> 이 기능은 유료 플랜에서 사용할 수 있으며 기본적으로 꺼져 있습니다. <strong>내 계정 &rarr; 도메인 &rarr; 설정</strong>에서 <strong>"와일드카드 하위 도메인 포워딩 허용"</strong>을 선택하여 도메인에 대해 이 기능을 활성화해야 합니다. 무료 플랜에는 적용되지 <strong>않습니다</strong>.
+</div>
+
+활성화되면 하위 도메인의 수신자에게 이메일이 도착할 때 먼저 해당 정확한 하위 도메인 호스트에서 <strong class="notranslate">TXT</strong> 레코드를 조회합니다. 정확한 하위 도메인에 자체 `forward-email-site-verification` 레코드가 없는 경우 루트 도메인에 게시된 확인 레코드로 자동 폴백됩니다(따라서 하위 도메인은 루트 도메인과 동일한 별칭 및 확인을 상속합니다).
+
+기존 구성이 변경되지 않도록 의도적으로 좁게 설정되어 있습니다:
+
+* 도메인별로 명시적으로 활성화해야 하며 유료 플랜에만 적용됩니다(무료 플랜에서는 사용되지 않음).
+* 하위 도메인에만 적용됩니다(루트/에이펙스 도메인 자체는 영향을 받지 않음).
+* 정확한 하위 도메인에 관련 레코드가 **없는** 경우에만 적용되므로 특정 하위 도메인에 게시한 레코드가 항상 루트 도메인 폴백보다 우선합니다.
+* `forward-email` 및 `forward-email-site-verification` 레코드만 루트 도메인에서 상속됩니다.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>와일드카드 하위 도메인 예시:</strong> `example.com`에 대해 <strong>"와일드카드 하위 도메인 포워딩 허용"</strong>을 활성화한 후 자체 레코드가 없는 하위 도메인(예: `hello@anything.example.com`)으로 전송된 메일은 확인 레코드를 포함하여 루트 도메인의 구성을 상속합니다:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>이름/호스트/별칭</th>
+      <th class="text-center">TTL</th>
+      <th>유형</th>
+      <th>응답/값</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", 또는 공백</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### 와일드카드 하위 도메인에 필요한 DNS 레코드 {#required-dns-records-for-wildcard-subdomains}
+
+이메일은 각 수신자의 <strong class="notranslate">MX</strong> 레코드에 의해 라우팅되므로 메일이 **모든** 하위 도메인에 대해 물리적으로 당사에 도달하려면 하위 도메인을 포괄하는 <strong class="notranslate">MX</strong> 레코드를 게시해야 합니다. 가장 간단한 방법은 DNS 제공업체에 단일 **와일드카드 MX** 레코드(`*`)를 설정하여 모든 하위 도메인에 한 번에 적용하는 것입니다:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>이름/호스트/별칭</th>
+      <th class="text-center">TTL</th>
+      <th>유형</th>
+      <th class="text-center">우선순위</th>
+      <th>응답/값</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+`*.example.com`과 같은 와일드카드는 `mail.example.com`, `a.b.example.com` 등과 일치합니다. 대신 하나의 특정 하위 도메인만 포괄하려면 위의 동일한 두 <strong class="notranslate">MX</strong> 값과 함께 해당 하위 도메인을 이름/호스트(예: `mail.example.com`의 경우 `mail`)로 사용하세요.
+
+일부 DNS 제공업체는 하위 도메인이 루트 도메인으로 확인되도록 와일드카드 <strong class="notranslate">CNAME</strong>(예: `*.example.com CNAME example.com`)도 지원합니다. 메일 전송에는 와일드카드 <strong class="notranslate">MX</strong>가 선호됩니다.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>중요:</strong> 루트/에이펙스(`@`) 자체에 <strong class="notranslate">CNAME</strong> 레코드를 추가하지 마세요. <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> 및 기타 레코드와 충돌합니다. 루트 도메인에 게시된 `forward-email-site-verification` <strong class="notranslate">TXT</strong> 레코드를 유지하세요 &mdash; 하위 도메인이 이를 자동으로 상속합니다.
+</div>
+
+#### 하위 도메인 대체 토큰 {#subdomain-substitution-tokens}
+
+수신자(대체)에 <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">정규 표현식</a>을 사용할 때 두 개의 토큰을 사용하여 수신되는 수신자의 하위 도메인을 추가로 참조할 수 있습니다. 단일 루트 도메인 레코드의 **모든** 하위 도메인에 이러한 토큰이 적용되려면 위에서 설명한 와일드카드 하위 도메인 폴백이 활성화되어 있어야 합니다(유료 플랜 전용). 그렇지 않으면 일치하는 정확한 호스트에 게시된 레코드에만 적용됩니다:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>토큰</th>
+      <th>설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>수신되는 수신자의 루트 도메인 아래에 있는 하위 도메인 레이블입니다. 예를 들어 `team@sales.example.com`(루트 `example.com`)의 경우 `sales`이고 `x@a.b.example.com`의 경우 `a.b`입니다. 루트/에이펙스 도메인의 경우 빈 문자열입니다.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>수신되는 수신자의 전체 호스트(도메인)입니다. 예를 들어 `team@sales.example.com`의 경우 `sales.example.com`입니다.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>하위 도메인 대체 예시:</strong> 대상에서 하위 도메인을 유지하면서 `example.com`의 모든 하위 도메인에 있는 모든 주소를 단일 제공업체로 전달하려는 경우(예: `anyone@sales.example.com` &rarr; `sales@example.net` 및 `anyone@support.example.com` &rarr; `support@example.net`), 루트 도메인에 단일 레코드를 게시하세요:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>이름/호스트/별칭</th>
+      <th class="text-center">TTL</th>
+      <th>유형</th>
+      <th>응답/값</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", 또는 공백</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### 귀하의 아웃바운드 SMTP 제한은 무엇인가요 {#what-are-your-outbound-smtp-limits}
 

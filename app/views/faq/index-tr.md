@@ -76,6 +76,7 @@
   * [Bounce webhooks destekliyor musunuz](#do-you-support-bounce-webhooks)
   * [Webhooks destekliyor musunuz](#do-you-support-webhooks)
   * [Düzenli ifadeler veya regex destekliyor musunuz](#do-you-support-regular-expressions-or-regex)
+  * [Herhangi bir alt alan adı için e-posta yönlendirebilir miyim (joker alt alan adları)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Giden SMTP limitleriniz nelerdir](#what-are-your-outbound-smtp-limits)
   * [SMTP'yi etkinleştirmek için onay gerekiyor mu](#do-i-need-approval-to-enable-smtp)
   * [SMTP sunucu yapılandırma ayarlarınız nelerdir](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ Düzenli ifadeler <a href="/disposable-addresses" target="_blank">küresel sahte
   <span>
   </span>
 </div>
+
+### Herhangi bir alt alan adı için e-posta yönlendirebilir miyim (joker alt alan adları) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Evet, **ücretli planlarımızda**.  Tek bir kök alan adını (ör. `example.com`), yönlendirme yapılandırmasının **her** alt alan adına (ör. `anything.example.com`, `mail.example.com`, `a.b.example.com`) şeffaf bir şekilde uygulanacağı biçimde, her alt alan adı için ayrı bir yapılandırma oluşturmadan ve `*.example.com` gibi bir DNS joker kaydı kullanmadan yapılandırabilirsiniz.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Yalnızca ücretli planlar (isteğe bağlı):</strong> Bu özellik ücretli planlarımızda mevcuttur ve varsayılan olarak kapalıdır.  Bunu alan adı için <strong>Hesabım &rarr; Alan Adları &rarr; Ayarlar</strong> altında <strong>"Joker Alt Alan Adı Yönlendirmesine İzin Ver"</strong> seçeneğini işaretleyerek etkinleştirmelisiniz.  Ücretsiz plan için geçerli <strong>değildir</strong>.
+</div>
+
+Etkinleştirildiğinde, bir alt alan adındaki bir alıcıya e-posta geldiğinde, ilk olarak o tam alt alan adı sunucusundaki <strong class="notranslate">TXT</strong> kayıtlarına bakarız.  Eğer tam alt alan adının kendine ait herhangi bir `forward-email-site-verification` kaydı yoksa, otomatik olarak kök alan adında yayınlanan doğrulama kaydına geri döneriz (böylece alt alan adı, kök alan adıyla aynı takma adları ve doğrulamayı devralır).
+
+Bu, mevcut yapılandırmanızın asla değişmemesi için kasıtlı olarak dar tutulmuştur:
+
+* Her alan adı için açıkça etkinleştirilmelidir ve yalnızca ücretli planlarımız için geçerlidir (Ücretsiz planda asla kullanılmaz).
+* Yalnızca alt alan adları için geçerlidir (kök/tepe alan adının kendisi etkilenmez).
+* Yalnızca tam alt alan adının ilgili **hiçbir** kaydı olmadığında geçerlidir, bu nedenle belirli bir alt alan adında yayınladığınız herhangi bir kayıt her zaman kök alan adı geri dönüşünden önceliklidir.
+* Kök alan adından yalnızca `forward-email` ve `forward-email-site-verification` kayıtları devralınır.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Joker Alt Alan Adı Örneği:</strong> `example.com` için <strong>"Joker Alt Alan Adı Yönlendirmesine İzin Ver"</strong> seçeneğini etkinleştirdikten sonra, kendine ait kaydı olmayan herhangi bir alt alan adına (örneğin `hello@anything.example.com`) gönderilen postalar, doğrulama kaydı da dahil olmak üzere kök alan adının yapılandırmasını devralır:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Ad/Sunucu/Takma Ad</th>
+      <th class="text-center">TTL</th>
+      <th>Tür</th>
+      <th>Yanıt/Değer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." veya boş</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Joker alt alan adları için gerekli DNS kayıtları {#required-dns-records-for-wildcard-subdomains}
+
+E-posta, her alıcının <strong class="notranslate">MX</strong> kayıtları tarafından yönlendirilir, bu nedenle postanın **herhangi bir** alt alan adı için bize fiziksel olarak ulaşması adına alt alan adlarınızı kapsayan <strong class="notranslate">MX</strong> kayıtları yayınlamanız gerekir.  En basit yaklaşım, DNS sağlayıcınızda aynı anda her alt alan adı için geçerli olan tek bir **joker MX** kaydıdır (`*`):
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Ad/Sunucu/Takma Ad</th>
+      <th class="text-center">TTL</th>
+      <th>Tür</th>
+      <th class="text-center">Öncelik</th>
+      <th>Yanıt/Değer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+`*.example.com` gibi bir joker karakter `mail.example.com`, `a.b.example.com` ve benzerleriyle eşleşir.  Bunun yerine yalnızca belirli bir alt alan adını kapsamak için, yukarıdaki aynı iki <strong class="notranslate">MX</strong> değeriyle o alt alan adını Ad/Sunucu olarak kullanın (örneğin `mail.example.com` için `mail`).
+
+Bazı DNS sağlayıcıları, alt alan adlarının kök alan adınıza çözümlenmesi için bir joker <strong class="notranslate">CNAME</strong> (örneğin `*.example.com CNAME example.com`) de destekler.  Posta teslimi için bir joker <strong class="notranslate">MX</strong> tercih edilir.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Önemli:</strong> Kök/tepe (`@`) alan adının kendisine bir <strong class="notranslate">CNAME</strong> kaydı eklemeyin, çünkü bu <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> ve diğer kayıtlarınızla çakışır.  `forward-email-site-verification` <strong class="notranslate">TXT</strong> kaydını kök alan adınızda yayınlanmış olarak tutun &mdash; alt alan adları bunu otomatik olarak devralır.
+</div>
+
+#### Alt alan adı değiştirme belirteçleri {#subdomain-substitution-tokens}
+
+Alıcıda (değiştirme) <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">düzenli ifadeler</a> kullandığınızda, ek olarak iki belirteç kullanarak gelen alıcının alt alan adına başvurabilirsiniz.  Bu belirteçlerin tek bir kök alan adı kaydından **her** alt alan adında geçerli olması için, yukarıda açıklanan joker alt alan adı geri dönüşünün etkinleştirilmesi gerektiğini (yalnızca ücretli planlar) unutmayın; aksi takdirde yalnızca eşleşen tam sunucuda yayınlanan kayıtlara uygulanırlar:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Belirteç</th>
+      <th>Açıklama</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>Gelen alıcının kök alan adının altındaki alt alan adı etiketi (veya etiketleri).  Örneğin, `team@sales.example.com` (kök `example.com`) için bu `sales` ve `x@a.b.example.com` için bu `a.b` şeklindedir.  Kök/tepe alan adı için bu boş bir dizedir.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>Gelen alıcının tam sunucusu (alan adı).  Örneğin, `team@sales.example.com` için bu `sales.example.com` şeklindedir.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Alt Alan Adı Değiştirme Örneği:</strong> `example.com` altındaki her alt alan adındaki her adresin, hedefteki alt alan adını koruyarak tek bir sağlayıcıya yönlendirilmesini istiyorsanız (ör. `anyone@sales.example.com` &rarr; `sales@example.net` ve `anyone@support.example.com` &rarr; `support@example.net`), kök alan adında tek bir kayıt yayınlayın:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Ad/Sunucu/Takma Ad</th>
+      <th class="text-center">TTL</th>
+      <th>Tür</th>
+      <th>Yanıt/Değer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." veya boş</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Giden SMTP limitleriniz nelerdir {#what-are-your-outbound-smtp-limits}
 

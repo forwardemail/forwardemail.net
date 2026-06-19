@@ -76,6 +76,7 @@
   * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
   * [Do you support webhooks](#do-you-support-webhooks)
   * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
+  * [Can I forward email for any subdomain (wildcard subdomains) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}](#can-i-forward-email-for-any-subdomain-wildcard-subdomains-can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
   * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
   * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
@@ -3560,6 +3561,136 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
   <span>
   </span>
 </div>
+
+### Can I forward email for any subdomain (wildcard subdomains) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Yes, on our **paid plans**.  You can configure a single root domain (e.g. `example.com`) so that its forwarding configuration transparently applies to **every** subdomain (e.g. `anything.example.com`, `mail.example.com`, `a.b.example.com`), without creating a separate configuration for each subdomain and without using a DNS wildcard entry such as `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Paid plans only (opt-in):</strong> This feature is available on our paid plans and is turned off by default.  You must enable it for the domain under <strong>My Account &rarr; Domains &rarr; Settings</strong> by checking <strong>"Allow Wildcard Subdomain Forwarding"</strong>.  It does <strong>not</strong> apply to the Free plan.
+</div>
+
+Once enabled, when an email arrives for a recipient on a subdomain, we first look up the <strong class="notranslate">TXT</strong> records on that exact subdomain host.  If the exact subdomain does not have any `forward-email-site-verification` records of its own, then we automatically fall back to the verification record published on the root domain (so the subdomain inherits the same aliases and verification as the root domain).
+
+This is intentionally narrow so that your existing configuration is never changed:
+
+* It must be explicitly enabled per domain, and only applies to our paid plans (it is never used on the Free plan).
+* It only applies to subdomains (the root/apex domain itself is unaffected).
+* It only applies when the exact subdomain has **no** relevant records, so any records you publish on a specific subdomain always take precedence over the root-domain fallback.
+* Only `forward-email` and `forward-email-site-verification` records are inherited from the root domain.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Wildcard Subdomain Example:</strong> After enabling <strong>"Allow Wildcard Subdomain Forwarding"</strong> for `example.com`, mail sent to any subdomain that has no records of its own (for example `hello@anything.example.com`) inherits the root domain's configuration, including its verification record:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Required DNS records for wildcard subdomains {#required-dns-records-for-wildcard-subdomains}
+
+Email is routed by each recipient's <strong class="notranslate">MX</strong> records, so for mail to physically reach us for **any** subdomain you must publish <strong class="notranslate">MX</strong> records that cover your subdomains.  The simplest approach is a single **wildcard MX** record (`*`) at your DNS provider, which applies to every subdomain at once:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th class="text-center">Priority</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+A wildcard such as `*.example.com` matches `mail.example.com`, `a.b.example.com`, and so on.  To cover only one specific subdomain instead, use that subdomain as the Name/Host (for example `mail` for `mail.example.com`) with the same two <strong class="notranslate">MX</strong> values above.
+
+Some DNS providers also support a wildcard <strong class="notranslate">CNAME</strong> (for example `*.example.com CNAME example.com`) so that subdomains resolve to your root domain.  A wildcard <strong class="notranslate">MX</strong> is preferred for mail delivery.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Important:</strong> Do not add a <strong class="notranslate">CNAME</strong> record on the root/apex (`@`) itself, as it conflicts with your <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong>, and other records.  Keep the `forward-email-site-verification` <strong class="notranslate">TXT</strong> record published at your root domain &mdash; subdomains inherit it automatically.
+</div>
+
+#### Subdomain substitution tokens {#subdomain-substitution-tokens}
+
+When you use <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">regular expressions</a> in the recipient (substitution), you can additionally reference the subdomain of the incoming recipient using two tokens.  Note that for these tokens to apply across **every** subdomain from a single root domain record, the wildcard subdomain fallback described above must be enabled (paid plans only); otherwise they only apply to records published on the exact host being matched:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>The subdomain label(s) below the root domain of the incoming recipient.  For example, for `team@sales.example.com` (root `example.com`) this is `sales`, and for `x@a.b.example.com` this is `a.b`.  For the root/apex domain it is an empty string.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>The full host (domain) of the incoming recipient.  For example, for `team@sales.example.com` this is `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Subdomain Substitution Example:</strong> If you want every address at every subdomain of `example.com` to forward to a single provider while preserving the subdomain in the destination (e.g. `anyone@sales.example.com` &rarr; `sales@example.net` and `anyone@support.example.com` &rarr; `support@example.net`), publish a single record on the root domain:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### What are your outbound SMTP limits
 

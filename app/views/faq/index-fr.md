@@ -76,6 +76,7 @@
   * [Supportez-vous les webhooks de rebond](#do-you-support-bounce-webhooks)
   * [Supportez-vous les webhooks](#do-you-support-webhooks)
   * [Supportez-vous les expressions régulières ou regex](#do-you-support-regular-expressions-or-regex)
+  * [Puis-je transférer des e-mails pour n'importe quel sous-domaine (sous-domaines génériques)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Quelles sont vos limites SMTP sortantes](#what-are-your-outbound-smtp-limits)
   * [Ai-je besoin d'une approbation pour activer SMTP](#do-i-need-approval-to-enable-smtp)
   * [Quels sont les paramètres de configuration de votre serveur SMTP](#what-are-your-smtp-server-configuration-settings)
@@ -3518,6 +3519,136 @@ Si vous êtes sur le plan gratuit, ajoutez simplement un nouvel enregistrement D
   <span>
   </span>
 </div>
+
+### Puis-je transférer des e-mails pour n'importe quel sous-domaine (sous-domaines génériques) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Oui, sur nos **forfaits payants**.  Vous pouvez configurer un seul domaine racine (par ex. `example.com`) de sorte que sa configuration de transfert s'applique de manière transparente à **chaque** sous-domaine (par ex. `anything.example.com`, `mail.example.com`, `a.b.example.com`), sans créer de configuration distincte pour chaque sous-domaine et sans utiliser d'entrée DNS générique telle que `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Forfaits payants uniquement (opt-in) :</strong> Cette fonctionnalité est disponible sur nos forfaits payants et est désactivée par défaut.  Vous devez l'activer pour le domaine sous <strong>Mon compte &rarr; Domaines &rarr; Paramètres</strong> en cochant <strong>"Autoriser le transfert de sous-domaines génériques"</strong>.  Elle ne s'applique <strong>pas</strong> au forfait Gratuit.
+</div>
+
+Une fois activée, lorsqu'un e-mail arrive pour un destinataire sur un sous-domaine, nous recherchons d'abord les enregistrements <strong class="notranslate">TXT</strong> sur l'hôte exact de ce sous-domaine.  Si le sous-domaine exact n'a pas ses propres enregistrements `forward-email-site-verification`, nous nous rabattons automatiquement sur l'enregistrement de vérification publié sur le domaine racine (ainsi le sous-domaine hérite des mêmes alias et de la même vérification que le domaine racine).
+
+Ceci est intentionnellement restreint afin que votre configuration existante ne soit jamais modifiée :
+
+* Elle doit être explicitement activée par domaine, et ne s'applique qu'à nos forfaits payants (elle n'est jamais utilisée sur le forfait Gratuit).
+* Elle ne s'applique qu'aux sous-domaines (le domaine racine/apex lui-même n'est pas affecté).
+* Elle ne s'applique que lorsque le sous-domaine exact n'a **aucun** enregistrement pertinent, de sorte que tout enregistrement que vous publiez sur un sous-domaine spécifique a toujours priorité sur le repli du domaine racine.
+* Seuls les enregistrements `forward-email` et `forward-email-site-verification` sont hérités du domaine racine.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Exemple de sous-domaine générique :</strong> Après avoir activé <strong>"Autoriser le transfert de sous-domaines génériques"</strong> pour `example.com`, le courrier envoyé à tout sous-domaine qui n'a pas ses propres enregistrements (par exemple `hello@anything.example.com`) hérite de la configuration du domaine racine, y compris son enregistrement de vérification :
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nom/Hôte/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Réponse/Valeur</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." ou vide</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Enregistrements DNS requis pour les sous-domaines génériques {#required-dns-records-for-wildcard-subdomains}
+
+Les e-mails sont acheminés par les enregistrements <strong class="notranslate">MX</strong> de chaque destinataire, donc pour que le courrier nous parvienne physiquement pour **n'importe quel** sous-domaine, vous devez publier des enregistrements <strong class="notranslate">MX</strong> qui couvrent vos sous-domaines.  L'approche la plus simple est un seul enregistrement **MX générique** (`*`) chez votre fournisseur DNS, qui s'applique à tous les sous-domaines à la fois :
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nom/Hôte/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th class="text-center">Priorité</th>
+      <th>Réponse/Valeur</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Un caractère générique tel que `*.example.com` correspond à `mail.example.com`, `a.b.example.com`, et ainsi de suite.  Pour ne couvrir qu'un seul sous-domaine spécifique à la place, utilisez ce sous-domaine comme Nom/Hôte (par exemple `mail` pour `mail.example.com`) avec les deux mêmes valeurs <strong class="notranslate">MX</strong> ci-dessus.
+
+Certains fournisseurs DNS prennent également en charge un <strong class="notranslate">CNAME</strong> générique (par exemple `*.example.com CNAME example.com`) afin que les sous-domaines soient résolus vers votre domaine racine.  Un <strong class="notranslate">MX</strong> générique est préférable pour la distribution du courrier.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Important :</strong> N'ajoutez pas d'enregistrement <strong class="notranslate">CNAME</strong> sur la racine/l'apex (`@`) lui-même, car il entre en conflit avec vos enregistrements <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> et autres.  Conservez l'enregistrement <strong class="notranslate">TXT</strong> `forward-email-site-verification` publié sur votre domaine racine &mdash; les sous-domaines en héritent automatiquement.
+</div>
+
+#### Jetons de substitution de sous-domaine {#subdomain-substitution-tokens}
+
+Lorsque vous utilisez des <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">expressions régulières</a> dans le destinataire (substitution), vous pouvez en outre faire référence au sous-domaine du destinataire entrant à l'aide de deux jetons.  Notez que pour que ces jetons s'appliquent à **chaque** sous-domaine à partir d'un seul enregistrement de domaine racine, le repli de sous-domaine générique décrit ci-dessus doit être activé (forfaits payants uniquement) ; sinon, ils ne s'appliquent qu'aux enregistrements publiés sur l'hôte exact correspondant :
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Jeton</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>La ou les étiquettes de sous-domaine sous le domaine racine du destinataire entrant.  Par exemple, pour `team@sales.example.com` (racine `example.com`) c'est `sales`, et pour `x@a.b.example.com` c'est `a.b`.  Pour le domaine racine/apex, il s'agit d'une chaîne vide.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>L'hôte complet (domaine) du destinataire entrant.  Par exemple, pour `team@sales.example.com` c'est `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Exemple de substitution de sous-domaine :</strong> Si vous souhaitez que chaque adresse de chaque sous-domaine de `example.com` soit transférée vers un seul fournisseur tout en préservant le sous-domaine dans la destination (par ex. `anyone@sales.example.com` &rarr; `sales@example.net` et `anyone@support.example.com` &rarr; `support@example.net`), publiez un seul enregistrement sur le domaine racine :
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Nom/Hôte/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Réponse/Valeur</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." ou vide</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Quelles sont vos limites SMTP sortantes {#what-are-your-outbound-smtp-limits}
 

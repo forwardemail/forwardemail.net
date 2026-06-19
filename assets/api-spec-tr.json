@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Joker (wildcard) alt etki alanı yönlendirmesine izin ver. Ücretli bir planda (Enhanced Protection veya Team) etkinleştirildiğinde, kendi DNS kayıtları olmayan herhangi bir alt etki alanı, bu etki alanının kökünde (apex) yayınlanan yönlendirme yapılandırmasını devralır. Doğrulanmış sahiplik gereklidir: apex, bu etki alanıyla eşleşen bir forward-email-site-verification kaydı yayınlamalıdır. Bu ayar ücretsiz plan için geçerli değildir.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "Gelişmiş posta yönlendirme kurulumları için MX kayıt denetimini yoksay"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Joker (wildcard) alt etki alanı yönlendirmesine izin ver. Ücretli bir planda (Enhanced Protection veya Team) etkinleştirildiğinde, kendi DNS kayıtları olmayan herhangi bir alt etki alanı, bu etki alanının kökünde (apex) yayınlanan yönlendirme yapılandırmasını devralır. Doğrulanmış sahiplik gereklidir: apex, bu etki alanıyla eşleşen bir forward-email-site-verification kaydı yayınlamalıdır. Bu ayar ücretsiz plan için geçerli değildir.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Başarıyla iletilen, webhook ile gönderilen, giden SMTP ve IMAP ile iletilen e-postaların başlıklarını ve meta verilerini (ileti içeriği hariç) depolamayı ve günlüklerini 7 gün boyunca saklamayı seçin. Bu özellik, başarılı iletiler hakkında ayrıntılı bilgiler sunarak e-posta teslim performansını izlemenize ve sorun gidermenize yardımcı olur."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Alan adındaki MX kayıt denetiminin doğrulama için göz ardı edilip edilmeyeceği (çoğunlukla gelişmiş MX yönlendirme kurulumları için)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Joker (wildcard) alt etki alanı yönlendirmesine izin ver. Ücretli bir planda (Enhanced Protection veya Team) etkinleştirildiğinde, kendi DNS kayıtları olmayan herhangi bir alt etki alanı, bu etki alanının kökünde (apex) yayınlanan yönlendirme yapılandırmasını devralır. Doğrulanmış sahiplik gereklidir: apex, bu etki alanıyla eşleşen bir forward-email-site-verification kaydı yayınlamalıdır. Bu ayar ücretsiz plan için geçerli değildir.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

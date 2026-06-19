@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Salli yleiskorttisten aliverkkotunnusten edelleenlähetys. Kun tämä on käytössä maksullisessa tilauksessa (Enhanced Protection tai Team), mikä tahansa aliverkkotunnus, jolla ei ole omia DNS-tietueita, perii tämän verkkotunnuksen juuressa (apex) julkaistun edelleenlähetysmäärityksen. Vahvistettu omistajuus vaaditaan: apexin on julkaistava tätä verkkotunnusta vastaava forward-email-site-verification-tietue. Tämä asetus ei koske ilmaista tilausta.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "Ohita MX-tietueiden tarkistus sähköpostin reitityksen lisäasetuksissa"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Salli yleiskorttisten aliverkkotunnusten edelleenlähetys. Kun tämä on käytössä maksullisessa tilauksessa (Enhanced Protection tai Team), mikä tahansa aliverkkotunnus, jolla ei ole omia DNS-tietueita, perii tämän verkkotunnuksen juuressa (apex) julkaistun edelleenlähetysmäärityksen. Vahvistettu omistajuus vaaditaan: apexin on julkaistava tätä verkkotunnusta vastaava forward-email-site-verification-tietue. Tämä asetus ei koske ilmaista tilausta.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Valitse, että onnistuneesti edelleenlähetettyjen, webhook-lähetettyjen, lähtevien SMTP- ja IMAP-toimitettujen sähköpostien otsikot ja metatiedot (viestin sisältöä lukuun ottamatta) tallennetaan. Lokit säilytetään 7 päivää. Tämä ominaisuus auttaa sinua valvomaan ja vianmäärittämään sähköpostin toimituksen suorituskykyä tarjoamalla yksityiskohtaisia tietoja onnistuneista lähetyksistä."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Ohitetaanko verkkotunnuksen MX-tietueen tarkistus vahvistusta varten (pääasiassa edistyneissä MX-reititysasetuksissa)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Salli yleiskorttisten aliverkkotunnusten edelleenlähetys. Kun tämä on käytössä maksullisessa tilauksessa (Enhanced Protection tai Team), mikä tahansa aliverkkotunnus, jolla ei ole omia DNS-tietueita, perii tämän verkkotunnuksen juuressa (apex) julkaistun edelleenlähetysmäärityksen. Vahvistettu omistajuus vaaditaan: apexin on julkaistava tätä verkkotunnusta vastaava forward-email-site-verification-tietue. Tämä asetus ei koske ilmaista tilausta.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

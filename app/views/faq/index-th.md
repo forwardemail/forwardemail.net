@@ -76,6 +76,7 @@
   * [คุณรองรับ bounce webhooks ไหม](#do-you-support-bounce-webhooks)
   * [คุณรองรับ webhooks ไหม](#do-you-support-webhooks)
   * [คุณรองรับ regular expressions หรือ regex ไหม](#do-you-support-regular-expressions-or-regex)
+  * [ฉันสามารถส่งต่ออีเมลสำหรับโดเมนย่อยใดๆ ได้หรือไม่ (โดเมนย่อยแบบไวลด์การ์ด)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [ข้อจำกัด SMTP ขาออกของคุณคืออะไร](#what-are-your-outbound-smtp-limits)
   * [ฉันต้องได้รับอนุมัติเพื่อเปิดใช้งาน SMTP ไหม](#do-i-need-approval-to-enable-smtp)
   * [การตั้งค่าเซิร์ฟเวอร์ SMTP ของคุณคืออะไร](#what-are-your-smtp-server-configuration-settings)
@@ -3516,6 +3517,136 @@ regular expressions ไม่รองรับใน <a href="/disposable-addre
   <span>
   </span>
 </div>
+
+### ฉันสามารถส่งต่ออีเมลสำหรับโดเมนย่อยใดๆ ได้หรือไม่ (โดเมนย่อยแบบไวลด์การ์ด) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+ได้ ใน**แผนแบบชำระเงิน**ของเรา  คุณสามารถกำหนดค่าโดเมนราก (เช่น `example.com`) เพียงโดเมนเดียวเพื่อให้การกำหนดค่าการส่งต่อมีผลกับ**ทุก**โดเมนย่อยอย่างโปร่งใส (เช่น `anything.example.com`, `mail.example.com`, `a.b.example.com`) โดยไม่ต้องสร้างการกำหนดค่าแยกต่างหากสำหรับแต่ละโดเมนย่อยและไม่ต้องใช้รายการ DNS แบบไวลด์การ์ด เช่น `*.example.com`
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>เฉพาะแผนแบบชำระเงินเท่านั้น (ต้องเลือกเข้าร่วม):</strong> คุณสมบัตินี้มีให้ใช้งานในแผนแบบชำระเงินของเราและถูกปิดไว้โดยค่าเริ่มต้น  คุณต้องเปิดใช้งานสำหรับโดเมนภายใต้ <strong>บัญชีของฉัน &rarr; โดเมน &rarr; การตั้งค่า</strong> โดยทำเครื่องหมายที่ <strong>"อนุญาตการส่งต่อโดเมนย่อยแบบไวลด์การ์ด"</strong>  ซึ่งจะ<strong>ไม่</strong>มีผลกับแผนฟรี
+</div>
+
+เมื่อเปิดใช้งานแล้ว เมื่อมีอีเมลมาถึงผู้รับในโดเมนย่อย เราจะค้นหาเรกคอร์ด <strong class="notranslate">TXT</strong> บนโฮสต์โดเมนย่อยที่แน่นอนนั้นก่อน  หากโดเมนย่อยที่แน่นอนไม่มีเรกคอร์ด `forward-email-site-verification` เป็นของตัวเอง เราจะกลับไปใช้เรกคอร์ดการยืนยันที่เผยแพร่บนโดเมนรากโดยอัตโนมัติ (ดังนั้นโดเมนย่อยจะสืบทอดนามแฝงและการยืนยันเดียวกันกับโดเมนราก)
+
+สิ่งนี้ถูกจำกัดไว้อย่างจงใจเพื่อไม่ให้การกำหนดค่าที่มีอยู่ของคุณถูกเปลี่ยนแปลง:
+
+* ต้องเปิดใช้งานอย่างชัดเจนต่อโดเมน และใช้ได้กับแผนแบบชำระเงินของเราเท่านั้น (จะไม่ถูกใช้ในแผนฟรี)
+* มีผลกับโดเมนย่อยเท่านั้น (โดเมนราก/โดเมนหลักจะไม่ได้รับผลกระทบ)
+* มีผลเฉพาะเมื่อโดเมนย่อยที่แน่นอน**ไม่มี**เรกคอร์ดที่เกี่ยวข้อง ดังนั้นเรกคอร์ดใดๆ ที่คุณเผยแพร่บนโดเมนย่อยเฉพาะจะมีความสำคัญเหนือกว่าการกลับไปใช้โดเมนรากเสมอ
+* เฉพาะเรกคอร์ด `forward-email` และ `forward-email-site-verification` เท่านั้นที่สืบทอดมาจากโดเมนราก
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>ตัวอย่างโดเมนย่อยแบบไวลด์การ์ด:</strong> หลังจากเปิดใช้งาน <strong>"อนุญาตการส่งต่อโดเมนย่อยแบบไวลด์การ์ด"</strong> สำหรับ `example.com` เมลที่ส่งไปยังโดเมนย่อยใดๆ ที่ไม่มีเรกคอร์ดเป็นของตัวเอง (ตัวอย่างเช่น `hello@anything.example.com`) จะสืบทอดการกำหนดค่าของโดเมนราก รวมถึงเรกคอร์ดการยืนยันด้วย:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>ชื่อ/โฮสต์/นามแฝง</th>
+      <th class="text-center">TTL</th>
+      <th>ประเภท</th>
+      <th>คำตอบ/ค่า</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." หรือเว้นว่างไว้</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### เรกคอร์ด DNS ที่จำเป็นสำหรับโดเมนย่อยแบบไวลด์การ์ด {#required-dns-records-for-wildcard-subdomains}
+
+อีเมลจะถูกกำหนดเส้นทางโดยเรกคอร์ด <strong class="notranslate">MX</strong> ของผู้รับแต่ละราย ดังนั้นเพื่อให้เมลส่งมาถึงเราทางกายภาพสำหรับโดเมนย่อย**ใดๆ** คุณต้องเผยแพร่เรกคอร์ด <strong class="notranslate">MX</strong> ที่ครอบคลุมโดเมนย่อยของคุณ  วิธีที่ง่ายที่สุดคือเรกคอร์ด **MX แบบไวลด์การ์ด** (`*`) เพียงรายการเดียวที่ผู้ให้บริการ DNS ของคุณ ซึ่งมีผลกับทุกโดเมนย่อยพร้อมกัน:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>ชื่อ/โฮสต์/นามแฝง</th>
+      <th class="text-center">TTL</th>
+      <th>ประเภท</th>
+      <th class="text-center">ลำดับความสำคัญ</th>
+      <th>คำตอบ/ค่า</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+ไวลด์การ์ดเช่น `*.example.com` จะตรงกับ `mail.example.com`, `a.b.example.com` และอื่นๆ  หากต้องการครอบคลุมเฉพาะโดเมนย่อยเดียวแทน ให้ใช้โดเมนย่อยนั้นเป็นชื่อ/โฮสต์ (ตัวอย่างเช่น `mail` สำหรับ `mail.example.com`) ด้วยค่า <strong class="notranslate">MX</strong> สองค่าเดียวกันด้านบน
+
+ผู้ให้บริการ DNS บางรายยังรองรับ <strong class="notranslate">CNAME</strong> แบบไวลด์การ์ด (ตัวอย่างเช่น `*.example.com CNAME example.com`) เพื่อให้โดเมนย่อยแก้ไขไปยังโดเมนรากของคุณ  แนะนำให้ใช้ <strong class="notranslate">MX</strong> แบบไวลด์การ์ดสำหรับการส่งเมล
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>ข้อสำคัญ:</strong> อย่าเพิ่มเรกคอร์ด <strong class="notranslate">CNAME</strong> บนโดเมนราก/โดเมนหลัก (`@`) เอง เนื่องจากจะขัดแย้งกับเรกคอร์ด <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> และเรกคอร์ดอื่นๆ ของคุณ  ให้เก็บเรกคอร์ด <strong class="notranslate">TXT</strong> ของ `forward-email-site-verification` ที่เผยแพร่ไว้ที่โดเมนรากของคุณ &mdash; โดเมนย่อยจะสืบทอดโดยอัตโนมัติ
+</div>
+
+#### โทเค็นการแทนที่โดเมนย่อย {#subdomain-substitution-tokens}
+
+เมื่อคุณใช้ <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">นิพจน์ทั่วไป</a> ในผู้รับ (การแทนที่) คุณสามารถอ้างอิงโดเมนย่อยของผู้รับขาเข้าเพิ่มเติมได้โดยใช้โทเค็นสองตัว  โปรดทราบว่าเพื่อให้โทเค็นเหล่านี้มีผลกับ**ทุก**โดเมนย่อยจากเรกคอร์ดโดเมนรากเดียว ต้องเปิดใช้งานการกลับไปใช้โดเมนย่อยแบบไวลด์การ์ดที่อธิบายไว้ข้างต้น (เฉพาะแผนแบบชำระเงินเท่านั้น) มิฉะนั้นจะมีผลเฉพาะกับเรกคอร์ดที่เผยแพร่บนโฮสต์ที่ตรงกันเท่านั้น:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>โทเค็น</th>
+      <th>คำอธิบาย</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>ป้ายกำกับโดเมนย่อยภายใต้โดเมนรากของผู้รับขาเข้า  ตัวอย่างเช่น สำหรับ `team@sales.example.com` (ราก `example.com`) สิ่งนี้คือ `sales` และสำหรับ `x@a.b.example.com` สิ่งนี้คือ `a.b`  สำหรับโดเมนราก/โดเมนหลักจะเป็นสตริงว่าง</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>โฮสต์ (โดเมน) แบบเต็มของผู้รับขาเข้า  ตัวอย่างเช่น สำหรับ `team@sales.example.com` สิ่งนี้คือ `sales.example.com`</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>ตัวอย่างการแทนที่โดเมนย่อย:</strong> หากคุณต้องการให้ทุกที่อยู่ในทุกโดเมนย่อยของ `example.com` ส่งต่อไปยังผู้ให้บริการรายเดียวในขณะที่ยังคงรักษาโดเมนย่อยไว้ในปลายทาง (เช่น `anyone@sales.example.com` &rarr; `sales@example.net` และ `anyone@support.example.com` &rarr; `support@example.net`) ให้เผยแพร่เรกคอร์ดเดียวบนโดเมนราก:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>ชื่อ/โฮสต์/นามแฝง</th>
+      <th class="text-center">TTL</th>
+      <th>ประเภท</th>
+      <th>คำตอบ/ค่า</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." หรือเว้นว่างไว้</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### ข้อจำกัดการส่งอีเมล SMTP ขาออกของคุณคืออะไร {#what-are-your-outbound-smtp-limits}
 

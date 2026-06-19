@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Tillat videresending for jokertegn-underdomener (wildcard). Når det er aktivert på et betalt abonnement (Enhanced Protection eller Team), arver ethvert underdomene uten egne DNS-oppføringer videresendingskonfigurasjonen som er publisert på roten (apex) til dette domenet. Verifisert eierskap kreves: apex må publisere en forward-email-site-verification-oppføring som samsvarer med dette domenet. Denne innstillingen gjelder ikke for gratisabonnementet.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "Ignorer MX-postsjekk for avanserte oppsett for e-postruting"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Tillat videresending for jokertegn-underdomener (wildcard). Når det er aktivert på et betalt abonnement (Enhanced Protection eller Team), arver ethvert underdomene uten egne DNS-oppføringer videresendingskonfigurasjonen som er publisert på roten (apex) til dette domenet. Verifisert eierskap kreves: apex må publisere en forward-email-site-verification-oppføring som samsvarer med dette domenet. Denne innstillingen gjelder ikke for gratisabonnementet.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Velg å lagre overskrifter og metadata (unntatt meldingsinnhold) for vellykkede videresendte, webhook-sendte, utgående SMTP- og IMAP-leverte e-poster, med logger som oppbevares i 7 dager. Denne funksjonen hjelper deg med å overvåke og feilsøke e-postleveringsytelsen med detaljert innsikt i vellykkede overføringer."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Om MX-postsjekken på domenet skal ignoreres for verifisering (hovedsakelig for avanserte MX-rutingsoppsett)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Tillat videresending for jokertegn-underdomener (wildcard). Når det er aktivert på et betalt abonnement (Enhanced Protection eller Team), arver ethvert underdomene uten egne DNS-oppføringer videresendingskonfigurasjonen som er publisert på roten (apex) til dette domenet. Verifisert eierskap kreves: apex må publisere en forward-email-site-verification-oppføring som samsvarer med dette domenet. Denne innstillingen gjelder ikke for gratisabonnementet.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "السماح بإعادة توجيه النطاقات الفرعية العامة (wildcard). عند تفعيله ضمن خطة مدفوعة (Enhanced Protection أو Team)، فإن أي نطاق فرعي لا يمتلك سجلات DNS خاصة به يرث إعدادات إعادة التوجيه المنشورة على جذر هذا النطاق (apex). الملكية الموثّقة مطلوبة: يجب أن ينشر الجذر سجل forward-email-site-verification مطابقًا لهذا النطاق. لا ينطبق هذا الإعداد على الخطة المجانية.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "تجاهل فحص سجل MX لإعدادات توجيه البريد المتقدمة"
           },
+          "allow_subdomain_forwarding": {
+            "description": "السماح بإعادة توجيه النطاقات الفرعية العامة (wildcard). عند تفعيله ضمن خطة مدفوعة (Enhanced Protection أو Team)، فإن أي نطاق فرعي لا يمتلك سجلات DNS خاصة به يرث إعدادات إعادة التوجيه المنشورة على جذر هذا النطاق (apex). الملكية الموثّقة مطلوبة: يجب أن ينشر الجذر سجل forward-email-site-verification مطابقًا لهذا النطاق. لا ينطبق هذا الإعداد على الخطة المجانية.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "اختر حفظ عناوين الرسائل وبياناتها الوصفية (باستثناء محتوى الرسالة) للرسائل المُعاد توجيهها بنجاح، والمُرسلة عبر خطاف الويب، والصادرة عبر SMTP، والمُسلّمة عبر IMAP، مع الاحتفاظ بالسجلات لمدة 7 أيام. تساعدك هذه الميزة على مراقبة أداء تسليم البريد الإلكتروني واستكشاف أخطائه وإصلاحها، مع رؤى تفصيلية حول عمليات الإرسال الناجحة."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "ما إذا كان سيتم تجاهل فحص سجل MX على المجال للتحقق (خاصةً لإعدادات توجيه MX المتقدمة)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "السماح بإعادة توجيه النطاقات الفرعية العامة (wildcard). عند تفعيله ضمن خطة مدفوعة (Enhanced Protection أو Team)، فإن أي نطاق فرعي لا يمتلك سجلات DNS خاصة به يرث إعدادات إعادة التوجيه المنشورة على جذر هذا النطاق (apex). الملكية الموثّقة مطلوبة: يجب أن ينشر الجذر سجل forward-email-site-verification مطابقًا لهذا النطاق. لا ينطبق هذا الإعداد على الخطة المجانية.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

@@ -76,6 +76,7 @@
   * [Understøtter I bounce webhooks](#do-you-support-bounce-webhooks)
   * [Understøtter I webhooks](#do-you-support-webhooks)
   * [Understøtter I regulære udtryk eller regex](#do-you-support-regular-expressions-or-regex)
+  * [Kan jeg videresende e-mail for ethvert underdomæne (wildcard-underdomæner)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Hvad er jeres udgående SMTP-grænser](#what-are-your-outbound-smtp-limits)
   * [Skal jeg have godkendelse for at aktivere SMTP](#do-i-need-approval-to-enable-smtp)
   * [Hvad er jeres SMTP server konfigurationsindstillinger](#what-are-your-smtp-server-configuration-settings)
@@ -3518,6 +3519,136 @@ Hvis du er på gratisplanen, så tilføj blot en ny DNS <strong class="notransla
   <span>
   </span>
 </div>
+
+### Kan jeg videresende e-mail for ethvert underdomæne (wildcard-underdomæner) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Ja, på vores **betalte abonnementer**.  Du kan konfigurere et enkelt roddomæne (f.eks. `example.com`), så dets videresendelseskonfiguration transparent gælder for **hvert** underdomæne (f.eks. `anything.example.com`, `mail.example.com`, `a.b.example.com`), uden at oprette en separat konfiguration for hvert underdomæne og uden at bruge en DNS-wildcard-post som `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Kun betalte abonnementer (tilvalg):</strong> Denne funktion er tilgængelig på vores betalte abonnementer og er slået fra som standard.  Du skal aktivere den for domænet under <strong>Min konto &rarr; Domæner &rarr; Indstillinger</strong> ved at markere <strong>"Tillad videresendelse af wildcard-underdomæne"</strong>.  Den gælder <strong>ikke</strong> for det gratis abonnement.
+</div>
+
+Når den er aktiveret, og en e-mail ankommer til en modtager på et underdomæne, slår vi først <strong class="notranslate">TXT</strong>-posterne op på præcis den underdomænevært.  Hvis det præcise underdomæne ikke har sine egne `forward-email-site-verification`-poster, falder vi automatisk tilbage til den bekræftelsespost, der er udgivet på roddomænet (så underdomænet arver de samme aliaser og bekræftelse som roddomænet).
+
+Dette er bevidst snævert, så din eksisterende konfiguration aldrig ændres:
+
+* Det skal aktiveres eksplicit pr. domæne og gælder kun for vores betalte abonnementer (det bruges aldrig på det gratis abonnement).
+* Det gælder kun for underdomæner (selve rod-/apex-domænet påvirkes ikke).
+* Det gælder kun, når det præcise underdomæne **ingen** relevante poster har, så eventuelle poster, du udgiver på et specifikt underdomæne, har altid forrang over roddomænets tilbagefald.
+* Kun `forward-email`- og `forward-email-site-verification`-poster arves fra roddomænet.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Eksempel på wildcard-underdomæne:</strong> Efter aktivering af <strong>"Tillad videresendelse af wildcard-underdomæne"</strong> for `example.com`, arver post sendt til ethvert underdomæne, der ikke har sine egne poster (for eksempel `hello@anything.example.com`), roddomænets konfiguration, herunder dets bekræftelsespost:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Navn/Vært/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Svar/Værdi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." eller tom</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Krævede DNS-poster for wildcard-underdomæner {#required-dns-records-for-wildcard-subdomains}
+
+E-mail dirigeres af hver modtagers <strong class="notranslate">MX</strong>-poster, så for at post fysisk kan nå os for **ethvert** underdomæne, skal du udgive <strong class="notranslate">MX</strong>-poster, der dækker dine underdomæner.  Den enkleste tilgang er en enkelt **wildcard MX**-post (`*`) hos din DNS-udbyder, som gælder for hvert underdomæne på én gang:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Navn/Vært/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th class="text-center">Prioritet</th>
+      <th>Svar/Værdi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Et wildcard som `*.example.com` matcher `mail.example.com`, `a.b.example.com` og så videre.  For kun at dække ét specifikt underdomæne i stedet, skal du bruge det underdomæne som Navn/Vært (for eksempel `mail` for `mail.example.com`) med de samme to <strong class="notranslate">MX</strong>-værdier ovenfor.
+
+Nogle DNS-udbydere understøtter også et wildcard <strong class="notranslate">CNAME</strong> (for eksempel `*.example.com CNAME example.com`), så underdomæner løses til dit roddomæne.  Et wildcard <strong class="notranslate">MX</strong> foretrækkes til e-maillevering.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Vigtigt:</strong> Tilføj ikke en <strong class="notranslate">CNAME</strong>-post på selve rod/apex (`@`), da det er i konflikt med dine <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- og andre poster.  Behold `forward-email-site-verification` <strong class="notranslate">TXT</strong>-posten udgivet på dit roddomæne &mdash; underdomæner arver den automatisk.
+</div>
+
+#### Tokens til underdomæneudskiftning {#subdomain-substitution-tokens}
+
+Når du bruger <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">regulære udtryk</a> i modtageren (udskiftning), kan du desuden henvise til det indgående modtagerunderdomæne ved hjælp af to tokens.  Bemærk, at for at disse tokens skal gælde på tværs af **hvert** underdomæne fra en enkelt roddomænepost, skal wildcard-underdomænets tilbagefald beskrevet ovenfor være aktiveret (kun betalte abonnementer); ellers gælder de kun for poster udgivet på den præcise vært, der matches:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Beskrivelse</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>Underdomæneetiketten(-erne) under roddomænet for den indgående modtager.  For eksempel, for `team@sales.example.com` (rod `example.com`) er dette `sales`, og for `x@a.b.example.com` er dette `a.b`.  For rod-/apex-domænet er det en tom streng.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>Den fulde vært (domæne) for den indgående modtager.  For eksempel, for `team@sales.example.com` er dette `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Eksempel på underdomæneudskiftning:</strong> Hvis du vil have, at hver adresse på hvert underdomæne af `example.com` skal videresendes til en enkelt udbyder, mens underdomænet bevares i destinationen (f.eks. `anyone@sales.example.com` &rarr; `sales@example.net` og `anyone@support.example.com` &rarr; `support@example.net`), skal du udgive en enkelt post på roddomænet:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Navn/Vært/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Svar/Værdi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." eller tom</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Hvad er dine grænser for udgående SMTP {#what-are-your-outbound-smtp-limits}
 

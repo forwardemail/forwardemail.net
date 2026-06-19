@@ -65,6 +65,7 @@ const keys = _.sortBy([
   'domain_updates',
   'has_newsletter',
   'ignore_mx_check',
+  'allow_subdomain_forwarding',
   'has_delivery_logs',
   'retention_days',
   'has_regex',

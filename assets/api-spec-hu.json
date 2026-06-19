@@ -1766,6 +1766,10 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Helyettesítő (wildcard) altártomány-továbbítás engedélyezése. Ha fizetős csomagban (Enhanced Protection vagy Team) be van kapcsolva, minden olyan altártomány, amelynek nincs saját DNS-rekordja, örökli a tartomány gyökerén (apex) közzétett továbbítási konfigurációt. Ellenőrzött tulajdonjog szükséges: az apexnek közzé kell tennie egy, ehhez a tartományhoz tartozó forward-email-site-verification rekordot. Ez a beállítás nem vonatkozik az ingyenes csomagra.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean"
           },
@@ -1946,6 +1950,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "allow_subdomain_forwarding": false,
             "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
@@ -2057,6 +2062,10 @@
             "type": "boolean",
             "description": "MX rekordok ellenőrzésének figyelmen kívül hagyása a speciális levelezési útválasztási beállításoknál"
           },
+          "allow_subdomain_forwarding": {
+            "description": "Helyettesítő (wildcard) altártomány-továbbítás engedélyezése. Ha fizetős csomagban (Enhanced Protection vagy Team) be van kapcsolva, minden olyan altártomány, amelynek nincs saját DNS-rekordja, örökli a tartomány gyökerén (apex) közzétett továbbítási konfigurációt. Ellenőrzött tulajdonjog szükséges: az apexnek közzé kell tennie egy, ehhez a tartományhoz tartozó forward-email-site-verification rekordot. Ez a beállítás nem vonatkozik az ingyenes csomagra.",
+            "type": "boolean"
+          },
           "has_delivery_logs": {
             "type": "boolean",
             "description": "Iratkozzon fel a sikeresen továbbított, webhookon keresztül elküldött, kimenő SMTP és IMAP útján kézbesített e-mailek fejléceinek és metaadatainak (az üzenet tartalmának kivételével) tárolására, a naplókat 7 napig megőrzve. Ez a funkció segít az e-mail-kézbesítési teljesítmény monitorozásában és hibaelhárításában, részletes betekintést nyújtva a sikeres küldésekbe."
@@ -2126,6 +2135,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Hogy figyelmen kívül hagyja-e az MX rekordok ellenőrzését a domainen az ellenőrzés során (főleg speciális MX útválasztási beállítások esetén)"
+          },
+          "allow_subdomain_forwarding": {
+            "description": "Helyettesítő (wildcard) altártomány-továbbítás engedélyezése. Ha fizetős csomagban (Enhanced Protection vagy Team) be van kapcsolva, minden olyan altártomány, amelynek nincs saját DNS-rekordja, örökli a tartomány gyökerén (apex) közzétett továbbítási konfigurációt. Ellenőrzött tulajdonjog szükséges: az apexnek közzé kell tennie egy, ehhez a tartományhoz tartozó forward-email-site-verification rekordot. Ez a beállítás nem vonatkozik az ingyenes csomagra.",
+            "type": "boolean"
           },
           "has_delivery_logs": {
             "type": "boolean",

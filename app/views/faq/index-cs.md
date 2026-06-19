@@ -76,6 +76,7 @@
   * [Podporujete bounce webhooks](#do-you-support-bounce-webhooks)
   * [Podporujete webhooks](#do-you-support-webhooks)
   * [Podporujete regulární výrazy nebo regex](#do-you-support-regular-expressions-or-regex)
+  * [Mohu přeposílat e-maily pro jakoukoli subdoménu (zástupné subdomény)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Jaké jsou vaše limity pro odchozí SMTP](#what-are-your-outbound-smtp-limits)
   * [Potřebuji schválení pro povolení SMTP](#do-i-need-approval-to-enable-smtp)
   * [Jaká jsou nastavení konfigurace vašeho SMTP serveru](#what-are-your-smtp-server-configuration-settings)
@@ -3517,6 +3518,136 @@ Pokud jste na bezplatném tarifu, jednoduše přidejte nový DNS <strong class="
   <span>
   </span>
 </div>
+
+### Mohu přeposílat e-maily pro jakoukoli subdoménu (zástupné subdomény) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+
+Ano, v našich **placených plánech**. Můžete nakonfigurovat jednu kořenovou doménu (např. `example.com`) tak, aby se její konfigurace přeposílání transparentně vztahovala na **každou** subdoménu (např. `anything.example.com`, `mail.example.com`, `a.b.example.com`), aniž byste museli vytvářet samostatnou konfiguraci pro každou subdoménu a bez použití zástupného záznamu DNS, jako je `*.example.com`.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Pouze placené plány (volitelné):</strong> Tato funkce je k dispozici v našich placených plánech a ve výchozím nastavení je vypnutá. Musíte ji pro doménu povolit v části <strong>Můj účet &rarr; Domény &rarr; Nastavení</strong> zaškrtnutím políčka <strong>"Povolit přeposílání zástupných subdomén"</strong>. <strong>Nevztahuje</strong> se na bezplatný plán.
+</div>
+
+Jakmile je tato funkce povolena, když dorazí e-mail pro příjemce na subdoméně, nejprve vyhledáme záznamy <strong class="notranslate">TXT</strong> na tomto přesném hostiteli subdomény. Pokud přesná subdoména nemá žádné vlastní záznamy `forward-email-site-verification`, automaticky se vrátíme k ověřovacímu záznamu publikovanému na kořenové doméně (takže subdoména zdědí stejné aliasy a ověření jako kořenová doména).
+
+Toto je záměrně úzké, aby se vaše stávající konfigurace nikdy nezměnila:
+
+* Musí být explicitně povoleno pro každou doménu a vztahuje se pouze na naše placené plány (nikdy se nepoužívá v bezplatném plánu).
+* Vztahuje se pouze na subdomény (samotná kořenová/vrcholová doména není ovlivněna).
+* Vztahuje se pouze v případě, že přesná subdoména nemá **žádné** relevantní záznamy, takže jakékoli záznamy, které publikujete na konkrétní subdoméně, mají vždy přednost před záložním řešením kořenové domény.
+* Z kořenové domény se dědí pouze záznamy `forward-email` a `forward-email-site-verification`.
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Příklad zástupné subdomény:</strong> Po povolení <strong>"Povolit přeposílání zástupných subdomén"</strong> pro `example.com` pošta odeslaná na jakoukoli subdoménu, která nemá žádné vlastní záznamy (například `hello@anything.example.com`), zdědí konfiguraci kořenové domény, včetně jejího ověřovacího záznamu:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Název/Hostitel/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." nebo prázdné</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-site-verification=XXXXXXXXXX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Požadované záznamy DNS pro zástupné subdomény {#required-dns-records-for-wildcard-subdomains}
+
+E-mail je směrován záznamy <strong class="notranslate">MX</strong> každého příjemce, takže aby se k nám pošta fyzicky dostala pro **jakoukoli** subdoménu, musíte publikovat záznamy <strong class="notranslate">MX</strong>, které pokrývají vaše subdomény. Nejjednodušším přístupem je jeden **zástupný záznam MX** (`*`) u vašeho poskytovatele DNS, který se vztahuje na každou subdoménu najednou:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Název/Hostitel/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th class="text-center">Priorita</th>
+      <th>Odpověď/Hodnota</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">MX</td>
+      <td class="text-center">0</td>
+      <td><code class="notranslate">mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Zástupný znak, jako je `*.example.com`, odpovídá `mail.example.com`, `a.b.example.com` a tak dále. Chcete-li místo toho pokrýt pouze jednu konkrétní subdoménu, použijte tuto subdoménu jako Název/Hostitel (například `mail` pro `mail.example.com`) se stejnými dvěma hodnotami <strong class="notranslate">MX</strong> výše.
+
+Někteří poskytovatelé DNS také podporují zástupný znak <strong class="notranslate">CNAME</strong> (například `*.example.com CNAME example.com`), takže se subdomény překládají na vaši kořenovou doménu. Pro doručování pošty se upřednostňuje zástupný znak <strong class="notranslate">MX</strong>.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong>Důležité:</strong> Nepřidávejte záznam <strong class="notranslate">CNAME</strong> na samotný kořen/vrchol (`@`), protože je v konfliktu s vašimi záznamy <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> a dalšími záznamy. Ponechte záznam <strong class="notranslate">TXT</strong> `forward-email-site-verification` publikovaný na vaší kořenové doméně &mdash; subdomény jej zdědí automaticky.
+</div>
+
+#### Tokeny pro nahrazení subdomény {#subdomain-substitution-tokens}
+
+Když v příjemci (nahrazení) použijete <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">regulární výrazy</a>, můžete navíc odkazovat na subdoménu příchozího příjemce pomocí dvou tokenů. Upozorňujeme, že aby se tyto tokeny vztahovaly na **každou** subdoménu ze záznamu jedné kořenové domény, musí být povoleno výše popsané záložní řešení zástupné subdomény (pouze placené plány); jinak se vztahují pouze na záznamy publikované na přesném hostiteli, který se shoduje:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Token</th>
+      <th>Popis</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%SUBDOMAIN%</code></td>
+      <td>Štítek (štítky) subdomény pod kořenovou doménou příchozího příjemce. Například pro `team@sales.example.com` (kořen `example.com`) je to `sales` a pro `x@a.b.example.com` je to `a.b`. Pro kořenovou/vrcholovou doménu je to prázdný řetězec.</td>
+    </tr>
+    <tr>
+      <td><code>%HOST%</code></td>
+      <td>Úplný hostitel (doména) příchozího příjemce. Například pro `team@sales.example.com` je to `sales.example.com`.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Příklad nahrazení subdomény:</strong> Pokud chcete, aby se každá adresa na každé subdoméně `example.com` přeposílala jednomu poskytovateli a zároveň se zachovala subdoména v cíli (např. `anyone@sales.example.com` &rarr; `sales@example.net` a `anyone@support.example.com` &rarr; `support@example.net`), publikujte jeden záznam na kořenové doméně:
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Název/Hostitel/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Typ</th>
+      <th>Odpověď/Hodnota</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", "." nebo prázdné</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^.*$/:%SUBDOMAIN%@example.net</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ### Jaké jsou vaše limity pro odchozí SMTP {#what-are-your-outbound-smtp-limits}
 

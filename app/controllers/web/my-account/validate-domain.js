@@ -203,6 +203,7 @@ async function validateDomain(ctx, next) {
     'has_virus_protection',
     'has_recipient_verification',
     'ignore_mx_check',
+    'allow_subdomain_forwarding',
     'has_delivery_logs'
   ]) {
     if (_.isBoolean(ctx.request.body[bool]) || isSANB(ctx.request.body[bool]))
