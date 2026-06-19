@@ -3528,14 +3528,14 @@ Ja, in unseren **kostenpflichtigen Tarifen**.  Sie können eine einzelne Stamm-D
   <strong>Nur für kostenpflichtige Tarife (Opt-in):</strong> Diese Funktion ist in unseren kostenpflichtigen Tarifen verfügbar und standardmäßig deaktiviert.  Sie müssen sie für die Domain unter <strong>Mein Konto &rarr; Domains &rarr; Einstellungen</strong> aktivieren, indem Sie <strong>"Wildcard-Subdomain-Weiterleitung zulassen"</strong> ankreuzen.  Sie gilt <strong>nicht</strong> für den kostenlosen Tarif.
 </div>
 
-Sobald dies aktiviert ist und eine E-Mail für einen Empfänger auf einer Subdomain eintrifft, suchen wir zunächst nach den <strong class="notranslate">TXT</strong>-Einträgen für genau diesen Subdomain-Host.  Wenn die genaue Subdomain keine eigenen `forward-email-site-verification`-Einträge hat, greifen wir automatisch auf den Verifizierungseintrag zurück, der auf der Stamm-Domain veröffentlicht wurde (sodass die Subdomain dieselben Aliase und Verifizierungen wie die Stamm-Domain erbt).
+Sobald dies aktiviert ist und eine E-Mail für einen Empfänger auf einer Subdomain eintrifft, suchen wir zunächst nach den <strong class="notranslate">TXT</strong>-Einträgen für genau diesen Subdomain-Host.  Wenn die genaue Subdomain keine eigenen `forward-email-site-verification=`-Einträge hat, greifen wir automatisch auf den Verifizierungseintrag zurück, der auf der Stamm-Domain veröffentlicht wurde (sodass die Subdomain dieselben Aliase und Verifizierungen wie die Stamm-Domain erbt).
 
 Dies ist absichtlich eng gefasst, damit Ihre bestehende Konfiguration niemals geändert wird:
 
 * Es muss explizit pro Domain aktiviert werden und gilt nur für unsere kostenpflichtigen Tarife (es wird niemals im kostenlosen Tarif verwendet).
 * Es gilt nur für Subdomains (die Stamm-/Apex-Domain selbst ist davon nicht betroffen).
 * Es gilt nur, wenn die genaue Subdomain **keine** relevanten Einträge hat. Daher haben alle Einträge, die Sie auf einer bestimmten Subdomain veröffentlichen, immer Vorrang vor dem Fallback der Stamm-Domain.
-* Nur `forward-email`- und `forward-email-site-verification`-Einträge werden von der Stamm-Domain geerbt.
+* Nur `forward-email=`- und `forward-email-site-verification=`-Einträge werden von der Stamm-Domain geerbt.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ Einige DNS-Anbieter unterstützen auch einen Wildcard-<strong class="notranslate
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Wichtig:</strong> Fügen Sie keinen <strong class="notranslate">CNAME</strong>-Eintrag auf der Stamm-/Apex-Domain (`@`) selbst hinzu, da dies mit Ihren <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- und anderen Einträgen in Konflikt steht.  Belassen Sie den `forward-email-site-verification` <strong class="notranslate">TXT</strong>-Eintrag auf Ihrer Stamm-Domain veröffentlicht &mdash; Subdomains erben ihn automatisch.
+  <strong>Wichtig:</strong> Fügen Sie keinen <strong class="notranslate">CNAME</strong>-Eintrag auf der Stamm-/Apex-Domain (`@`) selbst hinzu, da dies mit Ihren <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- und anderen Einträgen in Konflikt steht.  Belassen Sie den `forward-email-site-verification=` <strong class="notranslate">TXT</strong>-Eintrag auf Ihrer Stamm-Domain veröffentlicht &mdash; Subdomains erben ihn automatisch.
 </div>
 
 #### Subdomain-Ersetzungs-Token {#subdomain-substitution-tokens}

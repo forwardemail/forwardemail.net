@@ -3529,14 +3529,14 @@ Sì, nei nostri **piani a pagamento**.  Puoi configurare un singolo dominio radi
   <strong>Solo piani a pagamento (opt-in):</strong> Questa funzione è disponibile nei nostri piani a pagamento ed è disattivata per impostazione predefinita.  Devi abilitarla per il dominio in <strong>Il mio account &rarr; Domini &rarr; Impostazioni</strong> selezionando <strong>"Consenti inoltro sottodominio wildcard"</strong>.  <strong>Non</strong> si applica al piano Gratuito.
 </div>
 
-Una volta abilitata, quando arriva un'email per un destinatario su un sottodominio, cerchiamo prima i record <strong class="notranslate">TXT</strong> su quell'esatto host del sottodominio.  Se il sottodominio esatto non ha alcun record `forward-email-site-verification` proprio, passiamo automaticamente al record di verifica pubblicato sul dominio radice (in modo che il sottodominio erediti gli stessi alias e la stessa verifica del dominio radice).
+Una volta abilitata, quando arriva un'email per un destinatario su un sottodominio, cerchiamo prima i record <strong class="notranslate">TXT</strong> su quell'esatto host del sottodominio.  Se il sottodominio esatto non ha alcun record `forward-email-site-verification=` proprio, passiamo automaticamente al record di verifica pubblicato sul dominio radice (in modo che il sottodominio erediti gli stessi alias e la stessa verifica del dominio radice).
 
 Questo è intenzionalmente restrittivo in modo che la tua configurazione esistente non venga mai modificata:
 
 * Deve essere abilitato esplicitamente per dominio e si applica solo ai nostri piani a pagamento (non viene mai utilizzato nel piano Gratuito).
 * Si applica solo ai sottodomini (il dominio radice/apice stesso non è interessato).
 * Si applica solo quando il sottodominio esatto **non ha** record pertinenti, quindi qualsiasi record pubblicato su un sottodominio specifico ha sempre la precedenza sul fallback del dominio radice.
-* Solo i record `forward-email` e `forward-email-site-verification` vengono ereditati dal dominio radice.
+* Solo i record `forward-email=` e `forward-email-site-verification=` vengono ereditati dal dominio radice.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3600,7 +3600,7 @@ Alcuni provider DNS supportano anche un <strong class="notranslate">CNAME</stron
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Importante:</strong> Non aggiungere un record <strong class="notranslate">CNAME</strong> sulla radice/apice (`@`) stessa, poiché è in conflitto con i tuoi record <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> e altri.  Mantieni il record <strong class="notranslate">TXT</strong> `forward-email-site-verification` pubblicato nel tuo dominio radice &mdash; i sottodomini lo ereditano automaticamente.
+  <strong>Importante:</strong> Non aggiungere un record <strong class="notranslate">CNAME</strong> sulla radice/apice (`@`) stessa, poiché è in conflitto con i tuoi record <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> e altri.  Mantieni il record <strong class="notranslate">TXT</strong> `forward-email-site-verification=` pubblicato nel tuo dominio radice &mdash; i sottodomini lo ereditano automaticamente.
 </div>
 
 #### Token di sostituzione del sottodominio {#subdomain-substitution-tokens}

@@ -3528,14 +3528,14 @@ Evet, **ücretli planlarımızda**.  Tek bir kök alan adını (ör. `example.co
   <strong>Yalnızca ücretli planlar (isteğe bağlı):</strong> Bu özellik ücretli planlarımızda mevcuttur ve varsayılan olarak kapalıdır.  Bunu alan adı için <strong>Hesabım &rarr; Alan Adları &rarr; Ayarlar</strong> altında <strong>"Joker Alt Alan Adı Yönlendirmesine İzin Ver"</strong> seçeneğini işaretleyerek etkinleştirmelisiniz.  Ücretsiz plan için geçerli <strong>değildir</strong>.
 </div>
 
-Etkinleştirildiğinde, bir alt alan adındaki bir alıcıya e-posta geldiğinde, ilk olarak o tam alt alan adı sunucusundaki <strong class="notranslate">TXT</strong> kayıtlarına bakarız.  Eğer tam alt alan adının kendine ait herhangi bir `forward-email-site-verification` kaydı yoksa, otomatik olarak kök alan adında yayınlanan doğrulama kaydına geri döneriz (böylece alt alan adı, kök alan adıyla aynı takma adları ve doğrulamayı devralır).
+Etkinleştirildiğinde, bir alt alan adındaki bir alıcıya e-posta geldiğinde, ilk olarak o tam alt alan adı sunucusundaki <strong class="notranslate">TXT</strong> kayıtlarına bakarız.  Eğer tam alt alan adının kendine ait herhangi bir `forward-email-site-verification=` kaydı yoksa, otomatik olarak kök alan adında yayınlanan doğrulama kaydına geri döneriz (böylece alt alan adı, kök alan adıyla aynı takma adları ve doğrulamayı devralır).
 
 Bu, mevcut yapılandırmanızın asla değişmemesi için kasıtlı olarak dar tutulmuştur:
 
 * Her alan adı için açıkça etkinleştirilmelidir ve yalnızca ücretli planlarımız için geçerlidir (Ücretsiz planda asla kullanılmaz).
 * Yalnızca alt alan adları için geçerlidir (kök/tepe alan adının kendisi etkilenmez).
 * Yalnızca tam alt alan adının ilgili **hiçbir** kaydı olmadığında geçerlidir, bu nedenle belirli bir alt alan adında yayınladığınız herhangi bir kayıt her zaman kök alan adı geri dönüşünden önceliklidir.
-* Kök alan adından yalnızca `forward-email` ve `forward-email-site-verification` kayıtları devralınır.
+* Kök alan adından yalnızca `forward-email=` ve `forward-email-site-verification=` kayıtları devralınır.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ Bazı DNS sağlayıcıları, alt alan adlarının kök alan adınıza çözümle
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Önemli:</strong> Kök/tepe (`@`) alan adının kendisine bir <strong class="notranslate">CNAME</strong> kaydı eklemeyin, çünkü bu <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> ve diğer kayıtlarınızla çakışır.  `forward-email-site-verification` <strong class="notranslate">TXT</strong> kaydını kök alan adınızda yayınlanmış olarak tutun &mdash; alt alan adları bunu otomatik olarak devralır.
+  <strong>Önemli:</strong> Kök/tepe (`@`) alan adının kendisine bir <strong class="notranslate">CNAME</strong> kaydı eklemeyin, çünkü bu <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> ve diğer kayıtlarınızla çakışır.  `forward-email-site-verification=` <strong class="notranslate">TXT</strong> kaydını kök alan adınızda yayınlanmış olarak tutun &mdash; alt alan adları bunu otomatik olarak devralır.
 </div>
 
 #### Alt alan adı değiştirme belirteçleri {#subdomain-substitution-tokens}

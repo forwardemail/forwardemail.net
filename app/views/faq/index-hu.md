@@ -3528,14 +3528,14 @@ Igen, a **fizetős csomagjainkban**.  Beállíthat egyetlen gyökérdomaint (pl.
   <strong>Csak fizetős csomagokban (opcionális):</strong> Ez a funkció a fizetős csomagjainkban érhető el, és alapértelmezés szerint ki van kapcsolva.  Engedélyeznie kell a domainhez a <strong>Fiókom &rarr; Domainek &rarr; Beállítások</strong> menüpontban a <strong>"Helyettesítő aldomain továbbításának engedélyezése"</strong> bejelölésével.  Ez <strong>nem</strong> vonatkozik az ingyenes csomagra.
 </div>
 
-Miután engedélyezte, amikor egy e-mail érkezik egy aldomainen lévő címzetthez, először megkeressük a <strong class="notranslate">TXT</strong> rekordokat pontosan azon az aldomain gazdagépen.  Ha a pontos aldomain nem rendelkezik saját `forward-email-site-verification` rekordokkal, akkor automatikusan visszatérünk a gyökérdomainen közzétett ellenőrző rekordhoz (így az aldomain örökli ugyanazokat az aliasokat és ellenőrzést, mint a gyökérdomain).
+Miután engedélyezte, amikor egy e-mail érkezik egy aldomainen lévő címzetthez, először megkeressük a <strong class="notranslate">TXT</strong> rekordokat pontosan azon az aldomain gazdagépen.  Ha a pontos aldomain nem rendelkezik saját `forward-email-site-verification=` rekordokkal, akkor automatikusan visszatérünk a gyökérdomainen közzétett ellenőrző rekordhoz (így az aldomain örökli ugyanazokat az aliasokat és ellenőrzést, mint a gyökérdomain).
 
 Ez szándékosan szűk körű, hogy a meglévő beállításai soha ne változzanak meg:
 
 * Kifejezetten engedélyezni kell domainenként, és csak a fizetős csomagjainkra vonatkozik (az ingyenes csomagban soha nem használatos).
 * Csak az aldomainekre vonatkozik (maga a gyökér/csúcs domain nem érintett).
 * Csak akkor érvényes, ha a pontos aldomain **nem** rendelkezik releváns rekordokkal, így a megadott aldomainen közzétett rekordok mindig elsőbbséget élveznek a gyökérdomain tartalékával szemben.
-* Csak a `forward-email` és a `forward-email-site-verification` rekordok öröklődnek a gyökérdomainről.
+* Csak a `forward-email=` és a `forward-email-site-verification=` rekordok öröklődnek a gyökérdomainről.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ Egyes DNS-szolgáltatók támogatják a helyettesítő <strong class="notranslat
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Fontos:</strong> Ne adjon hozzá <strong class="notranslate">CNAME</strong> rekordot magához a gyökér/csúcs (`@`) domainhez, mivel az ütközik az <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> és egyéb rekordjaival.  Tartsa a `forward-email-site-verification` <strong class="notranslate">TXT</strong> rekordot a gyökérdomainjén közzétéve &mdash; az aldomainek automatikusan öröklik azt.
+  <strong>Fontos:</strong> Ne adjon hozzá <strong class="notranslate">CNAME</strong> rekordot magához a gyökér/csúcs (`@`) domainhez, mivel az ütközik az <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> és egyéb rekordjaival.  Tartsa a `forward-email-site-verification=` <strong class="notranslate">TXT</strong> rekordot a gyökérdomainjén közzétéve &mdash; az aldomainek automatikusan öröklik azt.
 </div>
 
 #### Aldomain helyettesítő tokenek {#subdomain-substitution-tokens}

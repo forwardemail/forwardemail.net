@@ -3528,14 +3528,14 @@ Ano, v našich **placených plánech**. Můžete nakonfigurovat jednu kořenovou
   <strong>Pouze placené plány (volitelné):</strong> Tato funkce je k dispozici v našich placených plánech a ve výchozím nastavení je vypnutá. Musíte ji pro doménu povolit v části <strong>Můj účet &rarr; Domény &rarr; Nastavení</strong> zaškrtnutím políčka <strong>"Povolit přeposílání zástupných subdomén"</strong>. <strong>Nevztahuje</strong> se na bezplatný plán.
 </div>
 
-Jakmile je tato funkce povolena, když dorazí e-mail pro příjemce na subdoméně, nejprve vyhledáme záznamy <strong class="notranslate">TXT</strong> na tomto přesném hostiteli subdomény. Pokud přesná subdoména nemá žádné vlastní záznamy `forward-email-site-verification`, automaticky se vrátíme k ověřovacímu záznamu publikovanému na kořenové doméně (takže subdoména zdědí stejné aliasy a ověření jako kořenová doména).
+Jakmile je tato funkce povolena, když dorazí e-mail pro příjemce na subdoméně, nejprve vyhledáme záznamy <strong class="notranslate">TXT</strong> na tomto přesném hostiteli subdomény. Pokud přesná subdoména nemá žádné vlastní záznamy `forward-email-site-verification=`, automaticky se vrátíme k ověřovacímu záznamu publikovanému na kořenové doméně (takže subdoména zdědí stejné aliasy a ověření jako kořenová doména).
 
 Toto je záměrně úzké, aby se vaše stávající konfigurace nikdy nezměnila:
 
 * Musí být explicitně povoleno pro každou doménu a vztahuje se pouze na naše placené plány (nikdy se nepoužívá v bezplatném plánu).
 * Vztahuje se pouze na subdomény (samotná kořenová/vrcholová doména není ovlivněna).
 * Vztahuje se pouze v případě, že přesná subdoména nemá **žádné** relevantní záznamy, takže jakékoli záznamy, které publikujete na konkrétní subdoméně, mají vždy přednost před záložním řešením kořenové domény.
-* Z kořenové domény se dědí pouze záznamy `forward-email` a `forward-email-site-verification`.
+* Z kořenové domény se dědí pouze záznamy `forward-email=` a `forward-email-site-verification=`.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ Někteří poskytovatelé DNS také podporují zástupný znak <strong class="no
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Důležité:</strong> Nepřidávejte záznam <strong class="notranslate">CNAME</strong> na samotný kořen/vrchol (`@`), protože je v konfliktu s vašimi záznamy <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> a dalšími záznamy. Ponechte záznam <strong class="notranslate">TXT</strong> `forward-email-site-verification` publikovaný na vaší kořenové doméně &mdash; subdomény jej zdědí automaticky.
+  <strong>Důležité:</strong> Nepřidávejte záznam <strong class="notranslate">CNAME</strong> na samotný kořen/vrchol (`@`), protože je v konfliktu s vašimi záznamy <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> a dalšími záznamy. Ponechte záznam <strong class="notranslate">TXT</strong> `forward-email-site-verification=` publikovaný na vaší kořenové doméně &mdash; subdomény jej zdědí automaticky.
 </div>
 
 #### Tokeny pro nahrazení subdomény {#subdomain-substitution-tokens}

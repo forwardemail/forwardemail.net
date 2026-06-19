@@ -3528,14 +3528,14 @@ Sim, em nossos **planos pagos**.  Você pode configurar um único domínio raiz 
   <strong>Apenas planos pagos (opt-in):</strong> Este recurso está disponível em nossos planos pagos e é desativado por padrão.  Você deve ativá-lo para o domínio em <strong>Minha Conta &rarr; Domínios &rarr; Configurações</strong> marcando <strong>"Permitir Encaminhamento de Subdomínio Curinga"</strong>.  Ele <strong>não</strong> se aplica ao plano Gratuito.
 </div>
 
-Uma vez ativado, quando um e-mail chega para um destinatário em um subdomínio, primeiro procuramos os registros <strong class="notranslate">TXT</strong> no host exato desse subdomínio.  Se o subdomínio exato não tiver nenhum registro `forward-email-site-verification` próprio, nós automaticamente recorremos ao registro de verificação publicado no domínio raiz (assim, o subdomínio herda os mesmos aliases e verificação do domínio raiz).
+Uma vez ativado, quando um e-mail chega para um destinatário em um subdomínio, primeiro procuramos os registros <strong class="notranslate">TXT</strong> no host exato desse subdomínio.  Se o subdomínio exato não tiver nenhum registro `forward-email-site-verification=` próprio, nós automaticamente recorremos ao registro de verificação publicado no domínio raiz (assim, o subdomínio herda os mesmos aliases e verificação do domínio raiz).
 
 Isso é intencionalmente restrito para que sua configuração existente nunca seja alterada:
 
 * Deve ser ativado explicitamente por domínio e se aplica apenas aos nossos planos pagos (nunca é usado no plano Gratuito).
 * Aplica-se apenas a subdomínios (o próprio domínio raiz/ápice não é afetado).
 * Aplica-se apenas quando o subdomínio exato **não** possui registros relevantes, portanto, quaisquer registros que você publique em um subdomínio específico sempre têm precedência sobre o fallback do domínio raiz.
-* Apenas os registros `forward-email` e `forward-email-site-verification` são herdados do domínio raiz.
+* Apenas os registros `forward-email=` e `forward-email-site-verification=` são herdados do domínio raiz.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ Alguns provedores de DNS também suportam um <strong class="notranslate">CNAME</
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Importante:</strong> Não adicione um registro <strong class="notranslate">CNAME</strong> no próprio domínio raiz/ápice (`@`), pois ele entra em conflito com seus registros <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> e outros.  Mantenha o registro <strong class="notranslate">TXT</strong> `forward-email-site-verification` publicado em seu domínio raiz &mdash; os subdomínios o herdam automaticamente.
+  <strong>Importante:</strong> Não adicione um registro <strong class="notranslate">CNAME</strong> no próprio domínio raiz/ápice (`@`), pois ele entra em conflito com seus registros <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> e outros.  Mantenha o registro <strong class="notranslate">TXT</strong> `forward-email-site-verification=` publicado em seu domínio raiz &mdash; os subdomínios o herdam automaticamente.
 </div>
 
 #### Tokens de substituição de subdomínio {#subdomain-substitution-tokens}

@@ -3529,14 +3529,14 @@ Oui, sur nos **forfaits payants**.  Vous pouvez configurer un seul domaine racin
   <strong>Forfaits payants uniquement (opt-in) :</strong> Cette fonctionnalité est disponible sur nos forfaits payants et est désactivée par défaut.  Vous devez l'activer pour le domaine sous <strong>Mon compte &rarr; Domaines &rarr; Paramètres</strong> en cochant <strong>"Autoriser le transfert de sous-domaines génériques"</strong>.  Elle ne s'applique <strong>pas</strong> au forfait Gratuit.
 </div>
 
-Une fois activée, lorsqu'un e-mail arrive pour un destinataire sur un sous-domaine, nous recherchons d'abord les enregistrements <strong class="notranslate">TXT</strong> sur l'hôte exact de ce sous-domaine.  Si le sous-domaine exact n'a pas ses propres enregistrements `forward-email-site-verification`, nous nous rabattons automatiquement sur l'enregistrement de vérification publié sur le domaine racine (ainsi le sous-domaine hérite des mêmes alias et de la même vérification que le domaine racine).
+Une fois activée, lorsqu'un e-mail arrive pour un destinataire sur un sous-domaine, nous recherchons d'abord les enregistrements <strong class="notranslate">TXT</strong> sur l'hôte exact de ce sous-domaine.  Si le sous-domaine exact n'a pas ses propres enregistrements `forward-email-site-verification=`, nous nous rabattons automatiquement sur l'enregistrement de vérification publié sur le domaine racine (ainsi le sous-domaine hérite des mêmes alias et de la même vérification que le domaine racine).
 
 Ceci est intentionnellement restreint afin que votre configuration existante ne soit jamais modifiée :
 
 * Elle doit être explicitement activée par domaine, et ne s'applique qu'à nos forfaits payants (elle n'est jamais utilisée sur le forfait Gratuit).
 * Elle ne s'applique qu'aux sous-domaines (le domaine racine/apex lui-même n'est pas affecté).
 * Elle ne s'applique que lorsque le sous-domaine exact n'a **aucun** enregistrement pertinent, de sorte que tout enregistrement que vous publiez sur un sous-domaine spécifique a toujours priorité sur le repli du domaine racine.
-* Seuls les enregistrements `forward-email` et `forward-email-site-verification` sont hérités du domaine racine.
+* Seuls les enregistrements `forward-email=` et `forward-email-site-verification=` sont hérités du domaine racine.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3600,7 +3600,7 @@ Certains fournisseurs DNS prennent également en charge un <strong class="notran
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Important :</strong> N'ajoutez pas d'enregistrement <strong class="notranslate">CNAME</strong> sur la racine/l'apex (`@`) lui-même, car il entre en conflit avec vos enregistrements <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> et autres.  Conservez l'enregistrement <strong class="notranslate">TXT</strong> `forward-email-site-verification` publié sur votre domaine racine &mdash; les sous-domaines en héritent automatiquement.
+  <strong>Important :</strong> N'ajoutez pas d'enregistrement <strong class="notranslate">CNAME</strong> sur la racine/l'apex (`@`) lui-même, car il entre en conflit avec vos enregistrements <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> et autres.  Conservez l'enregistrement <strong class="notranslate">TXT</strong> `forward-email-site-verification=` publié sur votre domaine racine &mdash; les sous-domaines en héritent automatiquement.
 </div>
 
 #### Jetons de substitution de sous-domaine {#subdomain-substitution-tokens}

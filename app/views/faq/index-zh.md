@@ -3525,14 +3525,14 @@ if address :all :matches "From" "*@example.com" {
   <strong>仅限付费计划（选择性加入）：</strong> 此功能在我们的付费计划中可用，并且默认处于关闭状态。您必须在 <strong>我的账户 &rarr; 域名 &rarr; 设置</strong> 下通过勾选 <strong>“允许通配符子域名转发”</strong> 来为该域名启用它。它<strong>不</strong>适用于免费计划。
 </div>
 
-一旦启用，当发往子域名收件人的电子邮件到达时，我们首先查找该确切子域名主机上的 <strong class="notranslate">TXT</strong> 记录。如果该确切子域名没有自己的 `forward-email-site-verification` 记录，那么我们会自动回退到在根域名上发布的验证记录（因此子域名继承与根域名相同的别名和验证）。
+一旦启用，当发往子域名收件人的电子邮件到达时，我们首先查找该确切子域名主机上的 <strong class="notranslate">TXT</strong> 记录。如果该确切子域名没有自己的 `forward-email-site-verification=` 记录，那么我们会自动回退到在根域名上发布的验证记录（因此子域名继承与根域名相同的别名和验证）。
 
 这是有意限制的，以便您现有的配置永远不会被更改：
 
 * 它必须按域名显式启用，并且仅适用于我们的付费计划（它永远不会在免费计划中使用）。
 * 它仅适用于子域名（根/顶级域名本身不受影响）。
 * 它仅在确切子域名**没有**相关记录时适用，因此您在特定子域名上发布的任何记录始终优先于根域名回退。
-* 只有 `forward-email` 和 `forward-email-site-verification` 记录从根域名继承。
+* 只有 `forward-email=` 和 `forward-email-site-verification=` 记录从根域名继承。
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3596,7 +3596,7 @@ if address :all :matches "From" "*@example.com" {
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>重要提示：</strong> 不要直接在根/顶级域名（`@`）上添加 <strong class="notranslate">CNAME</strong> 记录，因为它会与您的 <strong class="notranslate">MX</strong>、<strong class="notranslate">TXT</strong> 和其他记录冲突。将 `forward-email-site-verification` <strong class="notranslate">TXT</strong> 记录保留在您的根域名上发布 &mdash; 子域名会自动继承它。
+  <strong>重要提示：</strong> 不要直接在根/顶级域名（`@`）上添加 <strong class="notranslate">CNAME</strong> 记录，因为它会与您的 <strong class="notranslate">MX</strong>、<strong class="notranslate">TXT</strong> 和其他记录冲突。将 `forward-email-site-verification=` <strong class="notranslate">TXT</strong> 记录保留在您的根域名上发布 &mdash; 子域名会自动继承它。
 </div>
 
 #### 子域名替换令牌 {#subdomain-substitution-tokens}

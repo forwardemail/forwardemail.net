@@ -3527,14 +3527,14 @@ Tak, w naszych **płatnych planach**. Możesz skonfigurować pojedynczą domenę
   <strong>Tylko płatne plany (wymaga włączenia):</strong> Ta funkcja jest dostępna w naszych płatnych planach i jest domyślnie wyłączona. Musisz ją włączyć dla domeny w sekcji <strong>Moje konto &rarr; Domeny &rarr; Ustawienia</strong>, zaznaczając <strong>"Zezwalaj na przekazywanie subdomen typu wildcard"</strong>. <strong>Nie</strong> dotyczy to planu darmowego.
 </div>
 
-Po włączeniu, gdy nadejdzie e-mail dla odbiorcy w subdomenie, najpierw sprawdzamy rekordy <strong class="notranslate">TXT</strong> na tym dokładnym hoście subdomeny. Jeśli dokładna subdomena nie ma własnych rekordów `forward-email-site-verification`, automatycznie wracamy do rekordu weryfikacyjnego opublikowanego w domenie głównej (więc subdomena dziedziczy te same aliasy i weryfikację co domena główna).
+Po włączeniu, gdy nadejdzie e-mail dla odbiorcy w subdomenie, najpierw sprawdzamy rekordy <strong class="notranslate">TXT</strong> na tym dokładnym hoście subdomeny. Jeśli dokładna subdomena nie ma własnych rekordów `forward-email-site-verification=`, automatycznie wracamy do rekordu weryfikacyjnego opublikowanego w domenie głównej (więc subdomena dziedziczy te same aliasy i weryfikację co domena główna).
 
 Jest to celowo zawężone, aby Twoja istniejąca konfiguracja nigdy nie uległa zmianie:
 
 * Musi być to jawnie włączone dla każdej domeny i dotyczy tylko naszych płatnych planów (nigdy nie jest używane w planie darmowym).
 * Dotyczy to tylko subdomen (sama domena główna/apex pozostaje nienaruszona).
 * Dotyczy to tylko sytuacji, gdy dokładna subdomena **nie ma** odpowiednich rekordów, więc wszelkie rekordy opublikowane w określonej subdomenie zawsze mają pierwszeństwo przed powrotem do domeny głównej.
-* Tylko rekordy `forward-email` i `forward-email-site-verification` są dziedziczone z domeny głównej.
+* Tylko rekordy `forward-email=` i `forward-email-site-verification=` są dziedziczone z domeny głównej.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3598,7 +3598,7 @@ Niektórzy dostawcy DNS obsługują również <strong class="notranslate">CNAME<
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Ważne:</strong> Nie dodawaj rekordu <strong class="notranslate">CNAME</strong> w samej domenie głównej/apex (`@`), ponieważ koliduje to z Twoimi rekordami <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> i innymi. Zachowaj rekord <strong class="notranslate">TXT</strong> `forward-email-site-verification` opublikowany w Twojej domenie głównej &mdash; subdomeny dziedziczą go automatycznie.
+  <strong>Ważne:</strong> Nie dodawaj rekordu <strong class="notranslate">CNAME</strong> w samej domenie głównej/apex (`@`), ponieważ koliduje to z Twoimi rekordami <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> i innymi. Zachowaj rekord <strong class="notranslate">TXT</strong> `forward-email-site-verification=` opublikowany w Twojej domenie głównej &mdash; subdomeny dziedziczą go automatycznie.
 </div>
 
 #### Tokeny podstawiania subdomen {#subdomain-substitution-tokens}

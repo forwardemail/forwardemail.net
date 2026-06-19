@@ -3528,14 +3528,14 @@ Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
   <strong>유료 플랜 전용(옵트인):</strong> 이 기능은 유료 플랜에서 사용할 수 있으며 기본적으로 꺼져 있습니다. <strong>내 계정 &rarr; 도메인 &rarr; 설정</strong>에서 <strong>"와일드카드 하위 도메인 포워딩 허용"</strong>을 선택하여 도메인에 대해 이 기능을 활성화해야 합니다. 무료 플랜에는 적용되지 <strong>않습니다</strong>.
 </div>
 
-활성화되면 하위 도메인의 수신자에게 이메일이 도착할 때 먼저 해당 정확한 하위 도메인 호스트에서 <strong class="notranslate">TXT</strong> 레코드를 조회합니다. 정확한 하위 도메인에 자체 `forward-email-site-verification` 레코드가 없는 경우 루트 도메인에 게시된 확인 레코드로 자동 폴백됩니다(따라서 하위 도메인은 루트 도메인과 동일한 별칭 및 확인을 상속합니다).
+활성화되면 하위 도메인의 수신자에게 이메일이 도착할 때 먼저 해당 정확한 하위 도메인 호스트에서 <strong class="notranslate">TXT</strong> 레코드를 조회합니다. 정확한 하위 도메인에 자체 `forward-email-site-verification=` 레코드가 없는 경우 루트 도메인에 게시된 확인 레코드로 자동 폴백됩니다(따라서 하위 도메인은 루트 도메인과 동일한 별칭 및 확인을 상속합니다).
 
 기존 구성이 변경되지 않도록 의도적으로 좁게 설정되어 있습니다:
 
 * 도메인별로 명시적으로 활성화해야 하며 유료 플랜에만 적용됩니다(무료 플랜에서는 사용되지 않음).
 * 하위 도메인에만 적용됩니다(루트/에이펙스 도메인 자체는 영향을 받지 않음).
 * 정확한 하위 도메인에 관련 레코드가 **없는** 경우에만 적용되므로 특정 하위 도메인에 게시한 레코드가 항상 루트 도메인 폴백보다 우선합니다.
-* `forward-email` 및 `forward-email-site-verification` 레코드만 루트 도메인에서 상속됩니다.
+* `forward-email=` 및 `forward-email-site-verification=` 레코드만 루트 도메인에서 상속됩니다.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>중요:</strong> 루트/에이펙스(`@`) 자체에 <strong class="notranslate">CNAME</strong> 레코드를 추가하지 마세요. <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> 및 기타 레코드와 충돌합니다. 루트 도메인에 게시된 `forward-email-site-verification` <strong class="notranslate">TXT</strong> 레코드를 유지하세요 &mdash; 하위 도메인이 이를 자동으로 상속합니다.
+  <strong>중요:</strong> 루트/에이펙스(`@`) 자체에 <strong class="notranslate">CNAME</strong> 레코드를 추가하지 마세요. <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> 및 기타 레코드와 충돌합니다. 루트 도메인에 게시된 `forward-email-site-verification=` <strong class="notranslate">TXT</strong> 레코드를 유지하세요 &mdash; 하위 도메인이 이를 자동으로 상속합니다.
 </div>
 
 #### 하위 도메인 대체 토큰 {#subdomain-substitution-tokens}

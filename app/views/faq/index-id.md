@@ -3528,14 +3528,14 @@ Ya, pada **paket berbayar** kami.  Anda dapat mengonfigurasi satu domain root (m
   <strong>Hanya paket berbayar (keikutsertaan):</strong> Fitur ini tersedia pada paket berbayar kami dan dimatikan secara default.  Anda harus mengaktifkannya untuk domain di bawah <strong>Akun Saya &rarr; Domain &rarr; Pengaturan</strong> dengan mencentang <strong>"Izinkan Penerusan Subdomain Wildcard"</strong>.  Ini <strong>tidak</strong> berlaku untuk paket Gratis.
 </div>
 
-Setelah diaktifkan, ketika email tiba untuk penerima di subdomain, kami pertama-tama mencari catatan <strong class="notranslate">TXT</strong> pada host subdomain yang tepat tersebut.  Jika subdomain yang tepat tidak memiliki catatan `forward-email-site-verification` miliknya sendiri, maka kami secara otomatis kembali ke catatan verifikasi yang dipublikasikan pada domain root (sehingga subdomain mewarisi alias dan verifikasi yang sama dengan domain root).
+Setelah diaktifkan, ketika email tiba untuk penerima di subdomain, kami pertama-tama mencari catatan <strong class="notranslate">TXT</strong> pada host subdomain yang tepat tersebut.  Jika subdomain yang tepat tidak memiliki catatan `forward-email-site-verification=` miliknya sendiri, maka kami secara otomatis kembali ke catatan verifikasi yang dipublikasikan pada domain root (sehingga subdomain mewarisi alias dan verifikasi yang sama dengan domain root).
 
 Ini sengaja dibuat sempit sehingga konfigurasi Anda yang ada tidak pernah diubah:
 
 * Ini harus diaktifkan secara eksplisit per domain, dan hanya berlaku untuk paket berbayar kami (ini tidak pernah digunakan pada paket Gratis).
 * Ini hanya berlaku untuk subdomain (domain root/apex itu sendiri tidak terpengaruh).
 * Ini hanya berlaku ketika subdomain yang tepat **tidak** memiliki catatan yang relevan, sehingga setiap catatan yang Anda publikasikan pada subdomain tertentu selalu lebih diutamakan daripada fallback domain root.
-* Hanya catatan `forward-email` dan `forward-email-site-verification` yang diwarisi dari domain root.
+* Hanya catatan `forward-email=` dan `forward-email-site-verification=` yang diwarisi dari domain root.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ Beberapa penyedia DNS juga mendukung <strong class="notranslate">CNAME</strong> 
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Penting:</strong> Jangan tambahkan catatan <strong class="notranslate">CNAME</strong> pada root/apex (`@`) itu sendiri, karena ini bertentangan dengan catatan <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong>, dan catatan Anda lainnya.  Simpan catatan <strong class="notranslate">TXT</strong> `forward-email-site-verification` yang dipublikasikan di domain root Anda &mdash; subdomain mewarisinya secara otomatis.
+  <strong>Penting:</strong> Jangan tambahkan catatan <strong class="notranslate">CNAME</strong> pada root/apex (`@`) itu sendiri, karena ini bertentangan dengan catatan <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong>, dan catatan Anda lainnya.  Simpan catatan <strong class="notranslate">TXT</strong> `forward-email-site-verification=` yang dipublikasikan di domain root Anda &mdash; subdomain mewarisinya secara otomatis.
 </div>
 
 #### Token substitusi subdomain {#subdomain-substitution-tokens}

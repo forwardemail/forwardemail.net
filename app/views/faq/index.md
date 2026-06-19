@@ -3571,14 +3571,14 @@ Yes, on our **paid plans**.  You can configure a single root domain (e.g. `examp
   <strong>Paid plans only (opt-in):</strong> This feature is available on our paid plans and is turned off by default.  You must enable it for the domain under <strong>My Account &rarr; Domains &rarr; Settings</strong> by checking <strong>"Allow Wildcard Subdomain Forwarding"</strong>.  It does <strong>not</strong> apply to the Free plan.
 </div>
 
-Once enabled, when an email arrives for a recipient on a subdomain, we first look up the <strong class="notranslate">TXT</strong> records on that exact subdomain host.  If the exact subdomain does not have any `forward-email-site-verification` records of its own, then we automatically fall back to the verification record published on the root domain (so the subdomain inherits the same aliases and verification as the root domain).
+Once enabled, when an email arrives for a recipient on a subdomain, we first look up the <strong class="notranslate">TXT</strong> records on that exact subdomain host.  If the exact subdomain does not have any `forward-email-site-verification=` records of its own, then we automatically fall back to the verification record published on the root domain (so the subdomain inherits the same aliases and verification as the root domain).
 
 This is intentionally narrow so that your existing configuration is never changed:
 
 * It must be explicitly enabled per domain, and only applies to our paid plans (it is never used on the Free plan).
 * It only applies to subdomains (the root/apex domain itself is unaffected).
 * It only applies when the exact subdomain has **no** relevant records, so any records you publish on a specific subdomain always take precedence over the root-domain fallback.
-* Only `forward-email` and `forward-email-site-verification` records are inherited from the root domain.
+* Only `forward-email=` and `forward-email-site-verification=` records are inherited from the root domain.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3642,7 +3642,7 @@ Some DNS providers also support a wildcard <strong class="notranslate">CNAME</st
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Important:</strong> Do not add a <strong class="notranslate">CNAME</strong> record on the root/apex (`@`) itself, as it conflicts with your <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong>, and other records.  Keep the `forward-email-site-verification` <strong class="notranslate">TXT</strong> record published at your root domain &mdash; subdomains inherit it automatically.
+  <strong>Important:</strong> Do not add a <strong class="notranslate">CNAME</strong> record on the root/apex (`@`) itself, as it conflicts with your <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong>, and other records.  Keep the `forward-email-site-verification=` <strong class="notranslate">TXT</strong> record published at your root domain &mdash; subdomains inherit it automatically.
 </div>
 
 #### Subdomain substitution tokens {#subdomain-substitution-tokens}

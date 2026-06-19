@@ -3528,14 +3528,14 @@ if address :all :matches "From" "*@example.com" {
   <strong>الخطط المدفوعة فقط (اختياري):</strong> هذه الميزة متاحة في خططنا المدفوعة ويتم إيقاف تشغيلها افتراضيًا.  يجب عليك تمكينها للنطاق ضمن <strong>حسابي &rarr; النطاقات &rarr; الإعدادات</strong> عن طريق تحديد <strong>"السماح بإعادة توجيه النطاق الفرعي الشامل"</strong>.  إنها <strong>لا</strong> تنطبق على الخطة المجانية.
 </div>
 
-بمجرد التمكين، عندما يصل بريد إلكتروني لمستلم على نطاق فرعي، نبحث أولاً عن سجلات <strong class="notranslate">TXT</strong> على مضيف النطاق الفرعي الدقيق هذا.  إذا لم يكن لدى النطاق الفرعي الدقيق أي سجلات `forward-email-site-verification` خاصة به، فإننا نعود تلقائيًا إلى سجل التحقق المنشور على النطاق الجذر (وبالتالي يرث النطاق الفرعي نفس الأسماء المستعارة والتحقق مثل النطاق الجذر).
+بمجرد التمكين، عندما يصل بريد إلكتروني لمستلم على نطاق فرعي، نبحث أولاً عن سجلات <strong class="notranslate">TXT</strong> على مضيف النطاق الفرعي الدقيق هذا.  إذا لم يكن لدى النطاق الفرعي الدقيق أي سجلات `forward-email-site-verification=` خاصة به، فإننا نعود تلقائيًا إلى سجل التحقق المنشور على النطاق الجذر (وبالتالي يرث النطاق الفرعي نفس الأسماء المستعارة والتحقق مثل النطاق الجذر).
 
 هذا ضيق عن قصد بحيث لا يتم تغيير تكوينك الحالي أبدًا:
 
 * يجب تمكينه صراحةً لكل نطاق، وينطبق فقط على خططنا المدفوعة (لا يتم استخدامه أبدًا في الخطة المجانية).
 * ينطبق فقط على النطاقات الفرعية (النطاق الجذر/القمة نفسه لا يتأثر).
 * ينطبق فقط عندما **لا** يحتوي النطاق الفرعي الدقيق على سجلات ذات صلة، لذلك فإن أي سجلات تنشرها على نطاق فرعي معين تكون لها الأولوية دائمًا على التراجع إلى النطاق الجذر.
-* يتم توريث سجلات `forward-email` و `forward-email-site-verification` فقط من النطاق الجذر.
+* يتم توريث سجلات `forward-email=` و `forward-email-site-verification=` فقط من النطاق الجذر.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ if address :all :matches "From" "*@example.com" {
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>هام:</strong> لا تضف سجل <strong class="notranslate">CNAME</strong> على الجذر/القمة (`@`) نفسه، لأنه يتعارض مع سجلات <strong class="notranslate">MX</strong> و <strong class="notranslate">TXT</strong> والسجلات الأخرى الخاصة بك.  احتفظ بسجل <strong class="notranslate">TXT</strong> لـ `forward-email-site-verification` منشورًا في نطاقك الجذر &mdash; ترثه النطاقات الفرعية تلقائيًا.
+  <strong>هام:</strong> لا تضف سجل <strong class="notranslate">CNAME</strong> على الجذر/القمة (`@`) نفسه، لأنه يتعارض مع سجلات <strong class="notranslate">MX</strong> و <strong class="notranslate">TXT</strong> والسجلات الأخرى الخاصة بك.  احتفظ بسجل <strong class="notranslate">TXT</strong> لـ `forward-email-site-verification=` منشورًا في نطاقك الجذر &mdash; ترثه النطاقات الفرعية تلقائيًا.
 </div>
 
 #### رموز استبدال النطاق الفرعي {#subdomain-substitution-tokens}

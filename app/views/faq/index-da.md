@@ -3529,14 +3529,14 @@ Ja, på vores **betalte abonnementer**.  Du kan konfigurere et enkelt roddomæne
   <strong>Kun betalte abonnementer (tilvalg):</strong> Denne funktion er tilgængelig på vores betalte abonnementer og er slået fra som standard.  Du skal aktivere den for domænet under <strong>Min konto &rarr; Domæner &rarr; Indstillinger</strong> ved at markere <strong>"Tillad videresendelse af wildcard-underdomæne"</strong>.  Den gælder <strong>ikke</strong> for det gratis abonnement.
 </div>
 
-Når den er aktiveret, og en e-mail ankommer til en modtager på et underdomæne, slår vi først <strong class="notranslate">TXT</strong>-posterne op på præcis den underdomænevært.  Hvis det præcise underdomæne ikke har sine egne `forward-email-site-verification`-poster, falder vi automatisk tilbage til den bekræftelsespost, der er udgivet på roddomænet (så underdomænet arver de samme aliaser og bekræftelse som roddomænet).
+Når den er aktiveret, og en e-mail ankommer til en modtager på et underdomæne, slår vi først <strong class="notranslate">TXT</strong>-posterne op på præcis den underdomænevært.  Hvis det præcise underdomæne ikke har sine egne `forward-email-site-verification=`-poster, falder vi automatisk tilbage til den bekræftelsespost, der er udgivet på roddomænet (så underdomænet arver de samme aliaser og bekræftelse som roddomænet).
 
 Dette er bevidst snævert, så din eksisterende konfiguration aldrig ændres:
 
 * Det skal aktiveres eksplicit pr. domæne og gælder kun for vores betalte abonnementer (det bruges aldrig på det gratis abonnement).
 * Det gælder kun for underdomæner (selve rod-/apex-domænet påvirkes ikke).
 * Det gælder kun, når det præcise underdomæne **ingen** relevante poster har, så eventuelle poster, du udgiver på et specifikt underdomæne, har altid forrang over roddomænets tilbagefald.
-* Kun `forward-email`- og `forward-email-site-verification`-poster arves fra roddomænet.
+* Kun `forward-email=`- og `forward-email-site-verification=`-poster arves fra roddomænet.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3600,7 +3600,7 @@ Nogle DNS-udbydere understøtter også et wildcard <strong class="notranslate">C
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Vigtigt:</strong> Tilføj ikke en <strong class="notranslate">CNAME</strong>-post på selve rod/apex (`@`), da det er i konflikt med dine <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- og andre poster.  Behold `forward-email-site-verification` <strong class="notranslate">TXT</strong>-posten udgivet på dit roddomæne &mdash; underdomæner arver den automatisk.
+  <strong>Vigtigt:</strong> Tilføj ikke en <strong class="notranslate">CNAME</strong>-post på selve rod/apex (`@`), da det er i konflikt med dine <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- og andre poster.  Behold `forward-email-site-verification=` <strong class="notranslate">TXT</strong>-posten udgivet på dit roddomæne &mdash; underdomæner arver den automatisk.
 </div>
 
 #### Tokens til underdomæneudskiftning {#subdomain-substitution-tokens}

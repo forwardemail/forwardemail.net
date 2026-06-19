@@ -3528,14 +3528,14 @@ Sieveスクリプトは以下の方法で管理できます：
   <strong>有料プランのみ（オプトイン）：</strong> この機能は当社の有料プランで利用可能であり、デフォルトではオフになっています。<strong>マイアカウント &rarr; ドメイン &rarr; 設定</strong>で<strong>「ワイルドカードサブドメイン転送を許可する」</strong>にチェックを入れて、ドメインに対して有効にする必要があります。無料プランには適用され<strong>ません</strong>。
 </div>
 
-有効にすると、サブドメインの宛先にメールが届いた際、まずその正確なサブドメインホストの<strong class="notranslate">TXT</strong>レコードを検索します。その正確なサブドメイン自体に`forward-email-site-verification`レコードがない場合、ルートドメインで公開されている検証レコードに自動的にフォールバックします（これにより、サブドメインはルートドメインと同じエイリアスと検証を継承します）。
+有効にすると、サブドメインの宛先にメールが届いた際、まずその正確なサブドメインホストの<strong class="notranslate">TXT</strong>レコードを検索します。その正確なサブドメイン自体に`forward-email-site-verification=`レコードがない場合、ルートドメインで公開されている検証レコードに自動的にフォールバックします（これにより、サブドメインはルートドメインと同じエイリアスと検証を継承します）。
 
 これは、既存の設定が変更されないように意図的に限定されています：
 
 * ドメインごとに明示的に有効にする必要があり、当社の有料プランにのみ適用されます（無料プランでは使用されません）。
 * サブドメインにのみ適用されます（ルート/頂点ドメイン自体は影響を受けません）。
 * 正確なサブドメインに関連するレコードが**ない**場合にのみ適用されるため、特定のサブドメインで公開したレコードは常にルートドメインのフォールバックよりも優先されます。
-* `forward-email`および`forward-email-site-verification`レコードのみがルートドメインから継承されます。
+* `forward-email=`および`forward-email-site-verification=`レコードのみがルートドメインから継承されます。
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ Sieveスクリプトは以下の方法で管理できます：
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>重要：</strong> ルート/頂点（`@`）自体に<strong class="notranslate">CNAME</strong>レコードを追加しないでください。<strong class="notranslate">MX</strong>、<strong class="notranslate">TXT</strong>、およびその他のレコードと競合するためです。`forward-email-site-verification`の<strong class="notranslate">TXT</strong>レコードはルートドメインで公開したままにしてください &mdash; サブドメインはそれを自動的に継承します。
+  <strong>重要：</strong> ルート/頂点（`@`）自体に<strong class="notranslate">CNAME</strong>レコードを追加しないでください。<strong class="notranslate">MX</strong>、<strong class="notranslate">TXT</strong>、およびその他のレコードと競合するためです。`forward-email-site-verification=`の<strong class="notranslate">TXT</strong>レコードはルートドメインで公開したままにしてください &mdash; サブドメインはそれを自動的に継承します。
 </div>
 
 #### サブドメイン置換トークン {#subdomain-substitution-tokens}

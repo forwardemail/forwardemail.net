@@ -3529,14 +3529,14 @@ Sí, en nuestros **planes de pago**. Puedes configurar un único dominio raíz (
   <strong>Solo planes de pago (opcional):</strong> Esta función está disponible en nuestros planes de pago y está desactivada por defecto. Debes habilitarla para el dominio en <strong>Mi Cuenta &rarr; Dominios &rarr; Configuración</strong> marcando <strong>"Permitir el reenvío de subdominios comodín"</strong>. <strong>No</strong> se aplica al plan Gratuito.
 </div>
 
-Una vez habilitada, cuando llega un correo electrónico para un destinatario en un subdominio, primero buscamos los registros <strong class="notranslate">TXT</strong> en ese host de subdominio exacto. Si el subdominio exacto no tiene ningún registro `forward-email-site-verification` propio, entonces recurrimos automáticamente al registro de verificación publicado en el dominio raíz (por lo que el subdominio hereda los mismos alias y verificación que el dominio raíz).
+Una vez habilitada, cuando llega un correo electrónico para un destinatario en un subdominio, primero buscamos los registros <strong class="notranslate">TXT</strong> en ese host de subdominio exacto. Si el subdominio exacto no tiene ningún registro `forward-email-site-verification=` propio, entonces recurrimos automáticamente al registro de verificación publicado en el dominio raíz (por lo que el subdominio hereda los mismos alias y verificación que el dominio raíz).
 
 Esto es intencionalmente estricto para que tu configuración existente nunca cambie:
 
 * Debe habilitarse explícitamente por dominio, y solo se aplica a nuestros planes de pago (nunca se usa en el plan Gratuito).
 * Solo se aplica a subdominios (el dominio raíz/ápice en sí no se ve afectado).
 * Solo se aplica cuando el subdominio exacto **no** tiene registros relevantes, por lo que cualquier registro que publiques en un subdominio específico siempre tiene prioridad sobre el recurso alternativo del dominio raíz.
-* Solo los registros `forward-email` y `forward-email-site-verification` se heredan del dominio raíz.
+* Solo los registros `forward-email=` y `forward-email-site-verification=` se heredan del dominio raíz.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3600,7 +3600,7 @@ Algunos proveedores de DNS también admiten un <strong class="notranslate">CNAME
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Importante:</strong> No agregues un registro <strong class="notranslate">CNAME</strong> en el propio raíz/ápice (`@`), ya que entra en conflicto con tus registros <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> y otros. Mantén el registro <strong class="notranslate">TXT</strong> `forward-email-site-verification` publicado en tu dominio raíz &mdash; los subdominios lo heredan automáticamente.
+  <strong>Importante:</strong> No agregues un registro <strong class="notranslate">CNAME</strong> en el propio raíz/ápice (`@`), ya que entra en conflicto con tus registros <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> y otros. Mantén el registro <strong class="notranslate">TXT</strong> `forward-email-site-verification=` publicado en tu dominio raíz &mdash; los subdominios lo heredan automáticamente.
 </div>
 
 #### Tokens de sustitución de subdominios {#subdomain-substitution-tokens}

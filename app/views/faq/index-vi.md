@@ -3527,14 +3527,14 @@ Có, trên các **gói trả phí** của chúng tôi. Bạn có thể cấu hì
   <strong>Chỉ dành cho gói trả phí (chọn tham gia):</strong> Tính năng này có sẵn trên các gói trả phí của chúng tôi và bị tắt theo mặc định. Bạn phải bật tính năng này cho tên miền trong <strong>Tài khoản của tôi &rarr; Tên miền &rarr; Cài đặt</strong> bằng cách chọn <strong>"Cho phép chuyển tiếp tên miền phụ ký tự đại diện"</strong>. Tính năng này <strong>không</strong> áp dụng cho gói Miễn phí.
 </div>
 
-Sau khi được bật, khi có email đến cho người nhận trên một tên miền phụ, trước tiên chúng tôi sẽ tra cứu các bản ghi <strong class="notranslate">TXT</strong> trên chính máy chủ tên miền phụ đó. Nếu tên miền phụ chính xác đó không có bất kỳ bản ghi `forward-email-site-verification` nào của riêng nó, thì chúng tôi sẽ tự động chuyển về bản ghi xác minh được xuất bản trên tên miền gốc (do đó tên miền phụ kế thừa các bí danh và xác minh giống như tên miền gốc).
+Sau khi được bật, khi có email đến cho người nhận trên một tên miền phụ, trước tiên chúng tôi sẽ tra cứu các bản ghi <strong class="notranslate">TXT</strong> trên chính máy chủ tên miền phụ đó. Nếu tên miền phụ chính xác đó không có bất kỳ bản ghi `forward-email-site-verification=` nào của riêng nó, thì chúng tôi sẽ tự động chuyển về bản ghi xác minh được xuất bản trên tên miền gốc (do đó tên miền phụ kế thừa các bí danh và xác minh giống như tên miền gốc).
 
 Điều này được giới hạn một cách có chủ ý để cấu hình hiện tại của bạn không bao giờ bị thay đổi:
 
 * Nó phải được bật rõ ràng cho từng tên miền và chỉ áp dụng cho các gói trả phí của chúng tôi (nó không bao giờ được sử dụng trên gói Miễn phí).
 * Nó chỉ áp dụng cho các tên miền phụ (bản thân tên miền gốc/đỉnh không bị ảnh hưởng).
 * Nó chỉ áp dụng khi tên miền phụ chính xác **không có** bản ghi liên quan nào, vì vậy bất kỳ bản ghi nào bạn xuất bản trên một tên miền phụ cụ thể luôn được ưu tiên hơn so với dự phòng của tên miền gốc.
-* Chỉ các bản ghi `forward-email` và `forward-email-site-verification` mới được kế thừa từ tên miền gốc.
+* Chỉ các bản ghi `forward-email=` và `forward-email-site-verification=` mới được kế thừa từ tên miền gốc.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3598,7 +3598,7 @@ Một số nhà cung cấp DNS cũng hỗ trợ <strong class="notranslate">CNAM
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Quan trọng:</strong> Không thêm bản ghi <strong class="notranslate">CNAME</strong> trên chính gốc/đỉnh (`@`), vì nó xung đột với các bản ghi <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> và các bản ghi khác của bạn. Giữ bản ghi <strong class="notranslate">TXT</strong> `forward-email-site-verification` được xuất bản tại tên miền gốc của bạn &mdash; các tên miền phụ sẽ tự động kế thừa nó.
+  <strong>Quan trọng:</strong> Không thêm bản ghi <strong class="notranslate">CNAME</strong> trên chính gốc/đỉnh (`@`), vì nó xung đột với các bản ghi <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> và các bản ghi khác của bạn. Giữ bản ghi <strong class="notranslate">TXT</strong> `forward-email-site-verification=` được xuất bản tại tên miền gốc của bạn &mdash; các tên miền phụ sẽ tự động kế thừa nó.
 </div>
 
 #### Các mã thông báo thay thế tên miền phụ {#subdomain-substitution-tokens}

@@ -3529,14 +3529,14 @@ Ja, på våre **betalte abonnementer**. Du kan konfigurere et enkelt rotdomene (
   <strong>Kun betalte abonnementer (valgfritt):</strong> Denne funksjonen er tilgjengelig på våre betalte abonnementer og er slått av som standard. Du må aktivere den for domenet under <strong>Min konto &rarr; Domener &rarr; Innstillinger</strong> ved å krysse av for <strong>"Tillat videresending av wildcard-underdomener"</strong>. Den gjelder <strong>ikke</strong> for gratisabonnementet.
 </div>
 
-Når den er aktivert, og en e-post ankommer for en mottaker på et underdomene, slår vi først opp <strong class="notranslate">TXT</strong>-oppføringene på akkurat den underdomene-verten. Hvis det eksakte underdomenet ikke har noen egne `forward-email-site-verification`-oppføringer, faller vi automatisk tilbake til bekreftelsesoppføringen som er publisert på rotdomenet (slik at underdomenet arver de samme aliasene og bekreftelsen som rotdomenet).
+Når den er aktivert, og en e-post ankommer for en mottaker på et underdomene, slår vi først opp <strong class="notranslate">TXT</strong>-oppføringene på akkurat den underdomene-verten. Hvis det eksakte underdomenet ikke har noen egne `forward-email-site-verification=`-oppføringer, faller vi automatisk tilbake til bekreftelsesoppføringen som er publisert på rotdomenet (slik at underdomenet arver de samme aliasene og bekreftelsen som rotdomenet).
 
 Dette er bevisst snevert slik at din eksisterende konfigurasjon aldri endres:
 
 * Det må aktiveres eksplisitt per domene, og gjelder kun for våre betalte abonnementer (det brukes aldri på gratisabonnementet).
 * Det gjelder kun for underdomener (selve rot-/apex-domenet påvirkes ikke).
 * Det gjelder kun når det eksakte underdomenet **ikke** har noen relevante oppføringer, så eventuelle oppføringer du publiserer på et spesifikt underdomene har alltid forrang over rotdomenets tilbakefall.
-* Kun `forward-email`- og `forward-email-site-verification`-oppføringer arves fra rotdomenet.
+* Kun `forward-email=`- og `forward-email-site-verification=`-oppføringer arves fra rotdomenet.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3600,7 +3600,7 @@ Noen DNS-leverandører støtter også et wildcard <strong class="notranslate">CN
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Viktig:</strong> Ikke legg til en <strong class="notranslate">CNAME</strong>-oppføring på selve rot-/apex-domenet (`@`), da det er i konflikt med dine <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- og andre oppføringer. Behold `forward-email-site-verification` <strong class="notranslate">TXT</strong>-oppføringen publisert på rotdomenet ditt &mdash; underdomener arver den automatisk.
+  <strong>Viktig:</strong> Ikke legg til en <strong class="notranslate">CNAME</strong>-oppføring på selve rot-/apex-domenet (`@`), da det er i konflikt med dine <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- og andre oppføringer. Behold `forward-email-site-verification=` <strong class="notranslate">TXT</strong>-oppføringen publisert på rotdomenet ditt &mdash; underdomener arver den automatisk.
 </div>
 
 #### Substitusjonstokener for underdomener {#subdomain-substitution-tokens}

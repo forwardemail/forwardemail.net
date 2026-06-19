@@ -3528,14 +3528,14 @@ Ja, op onze **betaalde abonnementen**. Je kunt een enkel hoofddomein (bijv. `exa
   <strong>Alleen betaalde abonnementen (opt-in):</strong> Deze functie is beschikbaar op onze betaalde abonnementen en is standaard uitgeschakeld. Je moet deze voor het domein inschakelen onder <strong>Mijn account &rarr; Domeinen &rarr; Instellingen</strong> door <strong>"Allow Wildcard Subdomain Forwarding"</strong> aan te vinken. Het is <strong>niet</strong> van toepassing op het gratis abonnement.
 </div>
 
-Zodra ingeschakeld, zoeken we, wanneer er een e-mail aankomt voor een ontvanger op een subdomein, eerst de <strong class="notranslate">TXT</strong>-records op die exacte subdomeinhost op. Als het exacte subdomein geen eigen `forward-email-site-verification`-records heeft, vallen we automatisch terug op het verificatierecord dat op het hoofddomein is gepubliceerd (zodat het subdomein dezelfde aliassen en verificatie erft als het hoofddomein).
+Zodra ingeschakeld, zoeken we, wanneer er een e-mail aankomt voor een ontvanger op een subdomein, eerst de <strong class="notranslate">TXT</strong>-records op die exacte subdomeinhost op. Als het exacte subdomein geen eigen `forward-email-site-verification=`-records heeft, vallen we automatisch terug op het verificatierecord dat op het hoofddomein is gepubliceerd (zodat het subdomein dezelfde aliassen en verificatie erft als het hoofddomein).
 
 Dit is opzettelijk beperkt, zodat je bestaande configuratie nooit wordt gewijzigd:
 
 * Het moet expliciet per domein worden ingeschakeld en is alleen van toepassing op onze betaalde abonnementen (het wordt nooit gebruikt op het gratis abonnement).
 * Het is alleen van toepassing op subdomeinen (het hoofd-/apexdomein zelf blijft onaangetast).
 * Het is alleen van toepassing wanneer het exacte subdomein **geen** relevante records heeft, dus alle records die je op een specifiek subdomein publiceert, hebben altijd voorrang op de terugval naar het hoofddomein.
-* Alleen `forward-email`- en `forward-email-site-verification`-records worden geërfd van het hoofddomein.
+* Alleen `forward-email=`- en `forward-email-site-verification=`-records worden geërfd van het hoofddomein.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ Sommige DNS-providers ondersteunen ook een wildcard <strong class="notranslate">
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Belangrijk:</strong> Voeg geen <strong class="notranslate">CNAME</strong>-record toe op de root/apex (`@`) zelf, aangezien dit conflicteert met je <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- en andere records. Houd het `forward-email-site-verification` <strong class="notranslate">TXT</strong>-record gepubliceerd op je hoofddomein &mdash; subdomeinen erven het automatisch.
+  <strong>Belangrijk:</strong> Voeg geen <strong class="notranslate">CNAME</strong>-record toe op de root/apex (`@`) zelf, aangezien dit conflicteert met je <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- en andere records. Houd het `forward-email-site-verification=` <strong class="notranslate">TXT</strong>-record gepubliceerd op je hoofddomein &mdash; subdomeinen erven het automatisch.
 </div>
 
 #### Subdomein-vervangingstokens {#subdomain-substitution-tokens}

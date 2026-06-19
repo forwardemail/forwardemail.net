@@ -3528,14 +3528,14 @@ Ja, på våra **betalplaner**.  Du kan konfigurera en enda rotdomän (t.ex. `exa
   <strong>Endast betalplaner (opt-in):</strong> Denna funktion är tillgänglig på våra betalplaner och är avstängd som standard.  Du måste aktivera den för domänen under <strong>Mitt konto &rarr; Domäner &rarr; Inställningar</strong> genom att markera <strong>"Tillåt vidarebefordran för wildcard-underdomäner"</strong>.  Den gäller <strong>inte</strong> för gratisplanen.
 </div>
 
-När det är aktiverat och ett e-postmeddelande anländer till en mottagare på en underdomän, slår vi först upp <strong class="notranslate">TXT</strong>-posterna på just den underdomänens värd.  Om den exakta underdomänen inte har några egna `forward-email-site-verification`-poster, faller vi automatiskt tillbaka på den verifieringspost som publicerats på rotdomänen (så underdomänen ärver samma alias och verifiering som rotdomänen).
+När det är aktiverat och ett e-postmeddelande anländer till en mottagare på en underdomän, slår vi först upp <strong class="notranslate">TXT</strong>-posterna på just den underdomänens värd.  Om den exakta underdomänen inte har några egna `forward-email-site-verification=`-poster, faller vi automatiskt tillbaka på den verifieringspost som publicerats på rotdomänen (så underdomänen ärver samma alias och verifiering som rotdomänen).
 
 Detta är avsiktligt snävt så att din befintliga konfiguration aldrig ändras:
 
 * Det måste aktiveras uttryckligen per domän, och gäller endast våra betalplaner (det används aldrig på gratisplanen).
 * Det gäller endast underdomäner (själva rot-/apex-domänen påverkas inte).
 * Det gäller endast när den exakta underdomänen **inte** har några relevanta poster, så alla poster du publicerar på en specifik underdomän har alltid företräde framför rotdomänens fallback.
-* Endast `forward-email`- och `forward-email-site-verification`-poster ärvs från rotdomänen.
+* Endast `forward-email=`- och `forward-email-site-verification=`-poster ärvs från rotdomänen.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3599,7 +3599,7 @@ Vissa DNS-leverantörer stöder också ett wildcard <strong class="notranslate">
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Viktigt:</strong> Lägg inte till en <strong class="notranslate">CNAME</strong>-post på själva rot-/apex-domänen (`@`), eftersom det krockar med dina <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- och andra poster.  Behåll `forward-email-site-verification` <strong class="notranslate">TXT</strong>-posten publicerad på din rotdomän &mdash; underdomäner ärver den automatiskt.
+  <strong>Viktigt:</strong> Lägg inte till en <strong class="notranslate">CNAME</strong>-post på själva rot-/apex-domänen (`@`), eftersom det krockar med dina <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- och andra poster.  Behåll `forward-email-site-verification=` <strong class="notranslate">TXT</strong>-posten publicerad på din rotdomän &mdash; underdomäner ärver den automatiskt.
 </div>
 
 #### Ersättningstokens för underdomäner {#subdomain-substitution-tokens}

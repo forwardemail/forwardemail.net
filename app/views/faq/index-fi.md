@@ -3527,14 +3527,14 @@ Kyllä, **maksullisissa tilauksissamme**.  Voit määrittää yhden juuriverkkot
   <strong>Vain maksullisissa tilauksissa (valinnainen):</strong> Tämä ominaisuus on saatavilla maksullisissa tilauksissamme ja se on oletuksena pois päältä.  Sinun on otettava se käyttöön verkkotunnukselle kohdassa <strong>Oma tili &rarr; Verkkotunnukset &rarr; Asetukset</strong> valitsemalla <strong>"Salli jokerimerkkialiverkkotunnusten edelleenlähetys"</strong>.  Se <strong>ei</strong> koske ilmaista tilausta.
 </div>
 
-Kun tämä on otettu käyttöön ja sähköposti saapuu aliverkkotunnuksen vastaanottajalle, etsimme ensin <strong class="notranslate">TXT</strong>-tietueita kyseiseltä tarkalta aliverkkotunnuksen isännältä.  Jos tarkalla aliverkkotunnuksella ei ole omia `forward-email-site-verification`-tietueita, siirrymme automaattisesti juuriverkkotunnuksessa julkaistuun vahvistustietueeseen (joten aliverkkotunnus perii samat aliakset ja vahvistuksen kuin juuriverkkotunnus).
+Kun tämä on otettu käyttöön ja sähköposti saapuu aliverkkotunnuksen vastaanottajalle, etsimme ensin <strong class="notranslate">TXT</strong>-tietueita kyseiseltä tarkalta aliverkkotunnuksen isännältä.  Jos tarkalla aliverkkotunnuksella ei ole omia `forward-email-site-verification=`-tietueita, siirrymme automaattisesti juuriverkkotunnuksessa julkaistuun vahvistustietueeseen (joten aliverkkotunnus perii samat aliakset ja vahvistuksen kuin juuriverkkotunnus).
 
 Tämä on tarkoituksella rajattu, jotta olemassa olevia määrityksiäsi ei koskaan muuteta:
 
 * Se on otettava erikseen käyttöön verkkotunnuskohtaisesti, ja se koskee vain maksullisia tilauksiamme (sitä ei koskaan käytetä ilmaisessa tilauksessa).
 * Se koskee vain aliverkkotunnuksia (itse juuriverkkotunnukseen se ei vaikuta).
 * Se pätee vain silloin, kun tarkalla aliverkkotunnuksella **ei** ole asiaankuuluvia tietueita, joten tietyllä aliverkkotunnuksella julkaisemasi tietueet ovat aina etusijalla juuriverkkotunnuksen varajärjestelyyn nähden.
-* Vain `forward-email`- ja `forward-email-site-verification`-tietueet peritään juuriverkkotunnukselta.
+* Vain `forward-email=`- ja `forward-email-site-verification=`-tietueet peritään juuriverkkotunnukselta.
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3598,7 +3598,7 @@ Jotkut DNS-palveluntarjoajat tukevat myös jokerimerkki-<strong class="notransla
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Tärkeää:</strong> Älä lisää <strong class="notranslate">CNAME</strong>-tietuetta itse juuriverkkotunnukseen (`@`), koska se on ristiriidassa <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- ja muiden tietueidesi kanssa.  Pidä `forward-email-site-verification` <strong class="notranslate">TXT</strong>-tietue julkaistuna juuriverkkotunnuksessasi &mdash; aliverkkotunnukset perivät sen automaattisesti.
+  <strong>Tärkeää:</strong> Älä lisää <strong class="notranslate">CNAME</strong>-tietuetta itse juuriverkkotunnukseen (`@`), koska se on ristiriidassa <strong class="notranslate">MX</strong>-, <strong class="notranslate">TXT</strong>- ja muiden tietueidesi kanssa.  Pidä `forward-email-site-verification=` <strong class="notranslate">TXT</strong>-tietue julkaistuna juuriverkkotunnuksessasi &mdash; aliverkkotunnukset perivät sen automaattisesti.
 </div>
 
 #### Aliverkkotunnusten korvaustunnisteet {#subdomain-substitution-tokens}
