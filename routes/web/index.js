@@ -405,6 +405,46 @@ localeRouter
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/private-business-email'));
   })
+  .get('/gmail-alternative', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/gmail-alternative-open-source'));
+  })
+  .get(['/proton-alternative', '/protonmail-alternative'], (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/protonmail-alternative-open-source'));
+  })
+  .get('/fastmail-alternative', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/fastmail-alternative-cheaper'));
+  })
+  .get(['/zoho-alternative', '/zoho-mail-alternative'], (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/zoho-mail-alternative-open-source'));
+  })
+  .get('/postmark-alternative', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/postmark-alternative-open-source'));
+  })
+  .get('/improvmx-alternative', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/improvmx-alternative-better-features'));
+  })
+  .get('/icloud-alternative', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/icloud-email-alternative'));
+  })
+  .get('/outlook-alternative', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/outlook-alternative-open-source'));
+  })
+  .get('/office365-alternative', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/office365-alternative-cheaper'));
+  })
+  .get('/yahoo-alternative', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/yahoo-mail-alternative-business'));
+  })
   .get(
     '/private-business-email',
     web.myAccount.retrieveDomains,

@@ -228,7 +228,7 @@ if ctx.pathWithoutLocale === '/'
     }
 
 //- FAQPage Schema for comparison pages (targets alternative search queries)
-if ctx.pathWithoutLocale && (ctx.pathWithoutLocale.includes('best-email') || ctx.pathWithoutLocale.includes('best-private') || ctx.pathWithoutLocale.includes('best-open-source'))
+if ctx.pathWithoutLocale && (ctx.pathWithoutLocale.includes('best-email') || ctx.pathWithoutLocale.includes('best-private') || ctx.pathWithoutLocale.includes('best-open-source') || ctx.pathWithoutLocale.includes('alternative'))
   script(type="application/ld+json", nonce=nonce).
     {
       "@context": "https://schema.org",
@@ -279,4 +279,54 @@ if ctx.pathWithoutLocale && ctx.pathWithoutLocale.includes('alternative')
         "bestRating": "5",
         "worstRating": "1"
       }
+    }
+
+//- BlogPosting Schema for blog posts and guides (improves rich results and AI/GEO citations)
+//- Excludes feed endpoints and the /blog and /blog/open-source index landing pages
+if ctx.pathWithoutLocale && (ctx.pathWithoutLocale.startsWith('/blog/') || ctx.pathWithoutLocale.startsWith('/guides/')) && !ctx.pathWithoutLocale.startsWith('/blog/feed') && ctx.pathWithoutLocale !== '/blog/open-source'
+  -
+    var blogPublishedISOString = config.env === "test" ? "2023-01-01T00:00:00.000Z" : (typeof publishedISOString !== "undefined" && publishedISOString ? publishedISOString : dayjs().startOf("month").toDate().toISOString());
+    var blogModifiedISOString = config.env === "test" ? "2023-01-01T00:00:00.000Z" : (typeof publishedISOString !== "undefined" && publishedISOString ? publishedISOString : dayjs().startOf("day").toDate().toISOString());
+    var blogPostingSchema = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `${config.urls.web}${ctx.path}`
+      },
+      "headline": striptags(convert(meta.title)),
+      "description": striptags(convert(meta.description)),
+      "image": ogImage,
+      "url": `${config.urls.web}${ctx.path}`,
+      "datePublished": blogPublishedISOString,
+      "dateModified": blogModifiedISOString,
+      "inLanguage": locale,
+      "author": {
+        "@type": "Organization",
+        "name": "Forward Email",
+        "url": config.urls.web
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Forward Email",
+        "url": config.urls.web,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${config.urls.web}/img/logo-square-180x180.png`
+        }
+      }
+    };
+  script(type="application/ld+json", nonce=nonce)!= JSON.stringify(blogPostingSchema)
+
+//- Organization Schema with sameAs (strengthens the brand entity graph for search and AI engines)
+if ctx.pathWithoutLocale === '/'
+  script(type="application/ld+json", nonce=nonce).
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Forward Email",
+      "legalName": "Forward Email LLC",
+      "url": "https://forwardemail.net",
+      "logo": "https://forwardemail.net/img/logo-square-180x180.png",
+      "sameAs": ["https://github.com/forwardemail", "https://x.com/fwdemail", "https://youtube.com/forwardemail"]
     }
