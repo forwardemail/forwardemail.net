@@ -7,13 +7,9 @@ block content
         .card.border-dark.d-block
           h1.h5.card-header.text-center= t("Your Help Request")
           .card-body.p-0
-            //- render message with escaped HTML and line breaks
+            //- replace line breaks with <br>
             .p-3
-              .card-text.text-monospace.small
-                each line, index in splitLines(inquiry.message)
-                  if index > 0
-                    br
-                  = line
+              .card-text.text-monospace.small!= splitLines(inquiry.message).join("<br />")
             if domains.length > 0
               hr
               include ../_account-summary

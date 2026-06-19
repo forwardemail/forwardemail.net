@@ -3753,22 +3753,11 @@ test('RFC 5230 - vacation responder addresses To header to From header sender wh
     )
   );
 
-  // spoof envelope MAIL FROM domain SPF so the message passes SPF check
+  // spoof sender SPF so the message passes SPF check
   map.set(
     'txt:us-east-1.amazonses.com',
     resolver.spoofPacket(
       'us-east-1.amazonses.com',
-      'TXT',
-      [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
-    )
-  );
-
-  // spoof From header domain SPF for DMARC alignment
-  map.set(
-    'txt:sender.example.com',
-    resolver.spoofPacket(
-      'sender.example.com',
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
       true
