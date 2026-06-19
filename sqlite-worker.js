@@ -37,8 +37,33 @@ subscriber.setMaxListeners(0);
 //
 const CHANNEL = `sqlite_backup_queue:${config.env}`;
 const BUSY_KEY = `sqlite_worker_busy:${config.env}`;
+const GB = 1024 * 1024 * 1024;
+
+//
+// Backups are bounded by disk space + I/O rather than heap (the `sqlite` format
+// uses on-disk `VACUUM INTO` and the S3 upload is streamed), so a single backup
+// never loads a large mailbox into RAM. The risk is two simultaneous backups of
+// large databases competing for free memory / page cache on the host. The gates
+// below are therefore memory-aware and adapt to live `os.freemem()`:
+//
+//   * MAX_CONCURRENCY        - absolute ceiling on concurrent backups.
+//   * HIGH_WATER_FREE_MEM    - at/above this much free memory we allow the full
+//                              MAX_CONCURRENCY; below it we throttle to 1 so a
+//                              second large backup cannot pile on while memory
+//                              is already tight.
+//   * MIN_FREE_MEM           - hard floor: below this no new backup starts.
+//
 const MAX_CONCURRENCY = 2;
-const MIN_FREE_MEM = 1024 * 1024 * 1024; // 1 GB
+const HIGH_WATER_FREE_MEM = 4 * GB;
+const MIN_FREE_MEM = 2 * GB;
+
+//
+// Effective concurrency limit given current free memory: full ceiling when
+// memory is comfortable, throttled to a single backup when it is tight.
+//
+function getEffectiveMaxConcurrency() {
+  return os.freemem() >= HIGH_WATER_FREE_MEM ? MAX_CONCURRENCY : 1;
+}
 
 //
 // State
@@ -112,8 +137,8 @@ function onMessage(channel, message) {
   }
 
   //
-  // Memory gate: skip backup (not rekey) if free memory is too low.
-  // Rekey is user-initiated and must not be silently dropped.
+  // Memory gate: skip backup (not rekey) if free memory is below the hard
+  // floor. Rekey is user-initiated and must not be silently dropped.
   //
   if (payload.action === 'backup' && os.freemem() < MIN_FREE_MEM) {
     logger.warn('sqlite-worker skipping backup due to low memory', {
@@ -125,15 +150,24 @@ function onMessage(channel, message) {
   }
 
   //
-  // Concurrency gate: skip backup if at capacity.
+  // Concurrency gate: skip backup if at the memory-aware effective capacity.
+  // The effective limit drops to 1 when free memory is below the high-water
+  // mark so a second large backup cannot pile on while memory is tight.
   // Rekey is always accepted (user-initiated, must not be dropped).
   //
-  if (payload.action === 'backup' && activeJobs >= MAX_CONCURRENCY) {
-    logger.debug('sqlite-worker skipping backup due to concurrency limit', {
-      activeJobs,
-      alias_id: payload?.session?.user?.alias_id
-    });
-    return;
+  if (payload.action === 'backup') {
+    const effectiveMax = getEffectiveMaxConcurrency();
+    if (activeJobs >= effectiveMax) {
+      logger.debug('sqlite-worker skipping backup due to concurrency limit', {
+        activeJobs,
+        effectiveMax,
+        maxConcurrency: MAX_CONCURRENCY,
+        freemem: os.freemem(),
+        highWater: HIGH_WATER_FREE_MEM,
+        alias_id: payload?.session?.user?.alias_id
+      });
+      return;
+    }
   }
 
   // Fire and forget — processJob handles its own errors

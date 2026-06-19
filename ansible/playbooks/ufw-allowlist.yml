@@ -70,6 +70,12 @@
           IP_LIST_URL="https://forwardemail.net/ips/v4.txt?comments=false"
           COMMENT="{{ ufw_comment }}"
           SERVICE_NAME="{{ service_name }}"
+          # Optional secondary/static port kept permanently allowlisted (e.g. the
+          # legacy single SQLITE_PORT) so a rollback needs no UFW redeploy. It uses
+          # its own distinct comment, so the orphaned-rule cleanup never touches it.
+          # Empty when the service does not define an extra port.
+          EXTRA_PORT="{{ (lookup('env', service_extra_port_var | default('', true)) | default(service_extra_port_default | default('', true), true)) if (service_extra_port_var is defined or service_extra_port_default is defined) else '' }}"
+          EXTRA_COMMENT="{{ ufw_extra_comment | default('', true) }}"
           MSMTP_RCPTS="${{ '{' }}MSMTP_RCPTS:-security@forwardemail.net{{ '}' }}"
 
           echo "[$(date -Iseconds)] Fetching IP whitelist..."
@@ -93,11 +99,15 @@
             exit 0  # Exit gracefully - don't break existing rules
           fi
 
-          # Get current IPs from UFW for the CORRECT port
-          CURRENT_IPS=$(ufw status | grep "${SERVICE_PORT}/tcp" | grep "$COMMENT" | awk '{print $3}' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
+          # Get current IPs from UFW for the CORRECT port.
+          # NOTE: comment is matched with a trailing-end anchor and port with a
+          # word boundary so the main rule is never confused with the legacy
+          # single-port rule (whose comment is a superstring of $COMMENT) nor the
+          # range token "3456:3465" with the single token "3456".
+          CURRENT_IPS=$(ufw status | grep -E "(^|[[:space:]])${SERVICE_PORT}/tcp([[:space:]]|$)" | grep -E "# ${COMMENT}\$" | awk '{print $3}' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
 
-          # Find orphaned rules with the comment but WRONG port (from old deploys)
-          ORPHANED_RULES=$(ufw status numbered | grep "$COMMENT" | grep -v "${SERVICE_PORT}/tcp" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
+          # Find orphaned rules with the EXACT comment but WRONG port (from old deploys)
+          ORPHANED_RULES=$(ufw status numbered | grep -E "# ${COMMENT}\$" | grep -vE "(^|[[:space:]])${SERVICE_PORT}/tcp([[:space:]]|$)" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
 
           # Remove orphaned rules first (delete from highest to lowest)
           ORPHANED_COUNT=0
@@ -131,7 +141,7 @@
             # Remove old IPs (delete from highest rule number to lowest)
             if [ -n "$TO_REMOVE" ]; then
               for ip in $TO_REMOVE; do
-                RULE_NUMS=$(ufw status numbered | grep "${SERVICE_PORT}/tcp" | grep "$ip" | grep "$COMMENT" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
+                RULE_NUMS=$(ufw status numbered | grep -E "(^|[[:space:]])${SERVICE_PORT}/tcp([[:space:]]|$)" | grep "$ip" | grep -E "# ${COMMENT}\$" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
                 for rule_num in $RULE_NUMS; do
                   echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
                   REMOVED_COUNT=$((REMOVED_COUNT + 1))
@@ -149,6 +159,39 @@
 
             # Note: No UFW reload needed - rules are applied immediately
             # Reloading would cause brief connection drops
+          fi
+
+          # ==========================================================================
+          # SECONDARY / LEGACY STATIC PORT (rollback safety net)
+          # ==========================================================================
+          # Keep an additional port (e.g. the single SQLITE_PORT) allowlisted for the
+          # SAME set of IPs, under its own comment. This lets the service roll back to
+          # a single-port build without re-running this UFW playbook. Because it uses
+          # EXTRA_COMMENT (not COMMENT), the orphaned-rule cleanup above never deletes
+          # it. It is skipped when the extra port is identical to the main port to
+          # avoid a duplicate rule. When SERVICE_PORT is a range (e.g. 3456:3465) the
+          # single EXTRA_PORT (e.g. 3456) is still added as its own rule.
+          if [ -n "$EXTRA_PORT" ] && [ -n "$EXTRA_COMMENT" ] && [ "$EXTRA_PORT" != "$SERVICE_PORT" ]; then
+            EXTRA_CURRENT_IPS=$(ufw status | grep -E "(^|[[:space:]])${EXTRA_PORT}/tcp([[:space:]]|$)" | grep -E "# ${EXTRA_COMMENT}\$" | awk '{print $3}' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
+            EXTRA_TO_ADD=$(comm -13 <(echo "$EXTRA_CURRENT_IPS") <(echo "$NEW_IPS"))
+            EXTRA_TO_REMOVE=$(comm -23 <(echo "$EXTRA_CURRENT_IPS") <(echo "$NEW_IPS"))
+
+            if [ -n "$EXTRA_TO_REMOVE" ]; then
+              for ip in $EXTRA_TO_REMOVE; do
+                RULE_NUMS=$(ufw status numbered | grep -E "(^|[[:space:]])${EXTRA_PORT}/tcp([[:space:]]|$)" | grep "$ip" | grep -E "# ${EXTRA_COMMENT}\$" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
+                for rule_num in $RULE_NUMS; do
+                  echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
+                done
+              done
+            fi
+
+            if [ -n "$EXTRA_TO_ADD" ]; then
+              for ip in $EXTRA_TO_ADD; do
+                ufw allow from "$ip" to any port "$EXTRA_PORT" proto tcp comment "$EXTRA_COMMENT" > /dev/null 2>&1
+              done
+            fi
+
+            echo "[$(date -Iseconds)] Synced legacy port $EXTRA_PORT/tcp under comment '$EXTRA_COMMENT'"
           fi
 
           # Build email report

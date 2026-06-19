@@ -47,11 +47,18 @@ async function list(ctx) {
     }
   }
 
-  // FWD-01-010: mongodb_query is only accepted from the POST body to prevent
-  // cross-origin timing side-channel attacks observable via GET query strings.
+  // FWD-01-010: mongodb_query is validated by assertAllowedMongoQuery() below,
+  // which whitelists operators and caps size/depth regardless of transport, so
+  // it is safe to accept from either the POST body (search form submit) or the
+  // GET query string. Query-string support is required for pagination links,
+  // sort headers, and cross-links (e.g. /admin/users?mongodb_query=...), which
+  // are GET requests; without it those links reload the page but drop the
+  // filter. The POST body takes precedence when both are present.
   const mongodbQueryRaw =
     ctx.request.body && isSANB(ctx.request.body.mongodb_query)
       ? ctx.request.body.mongodb_query
+      : isSANB(ctx.query.mongodb_query)
+      ? ctx.query.mongodb_query
       : null;
 
   if (mongodbQueryRaw) {

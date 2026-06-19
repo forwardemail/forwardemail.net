@@ -100,26 +100,47 @@ async function isAllowlisted(val, client, resolver, ignoreRedis = false) {
       // reverse lookup IP and if it was allowlisted then return early
       const [clientHostname] = await resolver.reverse(val);
       if (isFQDN(clientHostname)) {
-        // check domain
-        const hostnameResult = await isAllowlisted(
-          clientHostname,
-          client,
-          resolver,
-          ignoreRedis
-        );
-        if (hostnameResult)
-          return `reverse DNS (${clientHostname}) → ${hostnameResult}`;
-        // check root domain (if differed)
-        const root = parseRootDomain(clientHostname);
-        if (clientHostname !== root) {
-          const rootResult = await isAllowlisted(
-            root,
+        //
+        // FCrDNS (Forward-Confirmed Reverse DNS) validation:
+        // Verify that the PTR hostname resolves back to the original IP.
+        // Without this, anyone with custom rDNS (e.g. on a VPS) can set
+        // their PTR to "mail.google.com" and bypass allowlist/denylist checks.
+        //
+        let forwardConfirmed = false;
+        try {
+          const family = isIP(val); // 4 or 6
+          const addresses =
+            family === 4
+              ? await resolver.resolve4(clientHostname)
+              : await resolver.resolve6(clientHostname);
+          forwardConfirmed = addresses.includes(val);
+        } catch {
+          // Forward lookup failed — PTR is not confirmed
+          forwardConfirmed = false;
+        }
+
+        if (forwardConfirmed) {
+          // check domain
+          const hostnameResult = await isAllowlisted(
+            clientHostname,
             client,
             resolver,
             ignoreRedis
           );
-          if (rootResult)
-            return `reverse DNS (${clientHostname}) → root (${root}) → ${rootResult}`;
+          if (hostnameResult)
+            return `reverse DNS (${clientHostname}) → ${hostnameResult}`;
+          // check root domain (if differed)
+          const root = parseRootDomain(clientHostname);
+          if (clientHostname !== root) {
+            const rootResult = await isAllowlisted(
+              root,
+              client,
+              resolver,
+              ignoreRedis
+            );
+            if (rootResult)
+              return `reverse DNS (${clientHostname}) → root (${root}) → ${rootResult}`;
+          }
         }
       }
     } catch (err) {

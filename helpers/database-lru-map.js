@@ -10,29 +10,30 @@ const env = require('#config/env');
 const logger = require('#helpers/logger');
 
 //
-// LRU Map for SQLite database connections.
+// LRU Map for SQLite database connections with worker affinity.
 //
-// The databaseMap previously used a plain Map() with no eviction,
-// causing unbounded memory growth (1.8-3.8 GB per worker) as every
-// IMAP user's database was opened and never closed until process restart.
-//
-// This class provides:
-// - Max size limit (configurable, default 200 per worker)
-// - Idle TTL (close databases not accessed for 5 minutes)
-// - LRU eviction (when max size reached, close least recently used)
+// Features:
+// - Max size limit (configurable via DATABASE_MAP_MAX_SIZE, default 500)
+// - Batch LRU eviction (10% at capacity to avoid per-request eviction overhead)
+// - Dual idle TTL: shorter for databases without active WebSocket sessions,
+//   longer for databases with active sessions (IMAP IDLE, etc.)
+// - Active session refcounting: tracks which alias_ids have connected clients
 // - Safe async close with transaction awareness
 //
 class DatabaseLRUMap {
   constructor(options = {}) {
-    this.maxSize = options.maxSize || Number(env.DATABASE_MAP_MAX_SIZE) || 200;
-    this.idleTTL = options.idleTTL || ms('5m');
+    this.maxSize = options.maxSize || Number(env.DATABASE_MAP_MAX_SIZE) || 500;
+    this.activeIdleTTL = options.activeIdleTTL || ms('5m');
+    this.inactiveIdleTTL = options.inactiveIdleTTL || ms('2m');
+    this.batchEvictPercent = options.batchEvictPercent || 0.1; // evict 10% at capacity
     this._map = new Map(); // alias_id -> { db, lastAccess }
     this._closing = new Set(); // alias_ids currently being closed
+    this._activeSessions = new Map(); // alias_id -> refcount (number of connected WS clients)
 
     // Periodic sweep to close idle databases
     this._sweepInterval = setInterval(() => {
       this._sweepIdle();
-    }, ms('1m'));
+    }, ms('30s'));
     this._sweepInterval.unref();
   }
 
@@ -61,9 +62,9 @@ class DatabaseLRUMap {
       return this;
     }
 
-    // Evict LRU entries if at capacity
+    // Batch evict LRU entries if at capacity
     if (this._map.size >= this.maxSize) {
-      this._evictLRU();
+      this._batchEvictLRU();
     }
 
     this._map.set(key, {
@@ -98,46 +99,98 @@ class DatabaseLRUMap {
     return entry ? entry.db : undefined;
   }
 
-  // Evict the least recently used entry
-  _evictLRU() {
-    let oldestKey = null;
-    let oldestTime = Number.POSITIVE_INFINITY;
+  //
+  // Active session tracking.
+  // Called when a WebSocket client sends a request for an alias_id.
+  // Databases with active sessions get a longer idle TTL.
+  //
+  addActiveSession(aliasId) {
+    const current = this._activeSessions.get(aliasId) || 0;
+    this._activeSessions.set(aliasId, current + 1);
+  }
+
+  removeActiveSession(aliasId) {
+    const current = this._activeSessions.get(aliasId) || 0;
+    if (current <= 1) {
+      this._activeSessions.delete(aliasId);
+    } else {
+      this._activeSessions.set(aliasId, current - 1);
+    }
+  }
+
+  hasActiveSession(aliasId) {
+    return (this._activeSessions.get(aliasId) || 0) > 0;
+  }
+
+  //
+  // Batch evict 10% of the map (least recently used entries).
+  // This amortizes the cost of eviction vs evicting one at a time.
+  //
+  _batchEvictLRU() {
+    const evictCount = Math.max(
+      1,
+      Math.ceil(this._map.size * this.batchEvictPercent)
+    );
+
+    // Build a sorted list of eviction candidates (skip in-transaction and active sessions)
+    const candidates = [];
     for (const [key, entry] of this._map) {
-      // Skip entries currently being closed or in transaction
       if (this._closing.has(key)) continue;
       if (entry.db && entry.db.inTransaction) continue;
-      if (entry.lastAccess < oldestTime) {
-        oldestTime = entry.lastAccess;
-        oldestKey = key;
-      }
+      // Prefer evicting databases without active sessions
+      candidates.push({
+        key,
+        lastAccess: entry.lastAccess,
+        hasSession: this.hasActiveSession(key)
+      });
     }
 
-    if (oldestKey !== null) {
-      const entry = this._map.get(oldestKey);
-      this._map.delete(oldestKey);
+    // Sort: inactive first, then by oldest access time
+    candidates.sort((a, b) => {
+      if (a.hasSession !== b.hasSession) return a.hasSession ? 1 : -1;
+      return a.lastAccess - b.lastAccess;
+    });
+
+    const toEvict = candidates.slice(0, evictCount);
+    for (const { key } of toEvict) {
+      const entry = this._map.get(key);
+      this._map.delete(key);
       if (entry && entry.db && entry.db.open) {
-        this._closing.add(oldestKey);
+        this._closing.add(key);
         closeDatabase(entry.db)
           .catch((err) => {
             logger.error(err);
           })
           .finally(() => {
-            this._closing.delete(oldestKey);
+            this._closing.delete(key);
           });
       }
     }
+
+    if (toEvict.length > 0) {
+      logger.debug(
+        `DatabaseLRUMap: batch evicted ${toEvict.length} databases (map size: ${this._map.size}/${this.maxSize})`
+      );
+    }
   }
 
-  // Sweep idle databases that haven't been accessed within TTL
+  //
+  // Sweep idle databases based on dual TTL:
+  // - Databases with active WebSocket sessions: 5 min TTL
+  // - Databases without active sessions: 2 min TTL
+  //
   _sweepIdle() {
     const now = Date.now();
     const toEvict = [];
     for (const [key, entry] of this._map) {
-      if (now - entry.lastAccess > this.idleTTL) {
-        // Skip entries in transaction
-        if (entry.db && entry.db.inTransaction) continue;
-        // Skip entries currently being closed
-        if (this._closing.has(key)) continue;
+      // Skip entries in transaction or currently being closed
+      if (entry.db && entry.db.inTransaction) continue;
+      if (this._closing.has(key)) continue;
+
+      const ttl = this.hasActiveSession(key)
+        ? this.activeIdleTTL
+        : this.inactiveIdleTTL;
+      if (now - entry.lastAccess > ttl) {
         toEvict.push(key);
       }
     }
@@ -158,7 +211,9 @@ class DatabaseLRUMap {
     }
 
     if (toEvict.length > 0) {
-      logger.debug(`DatabaseLRUMap: swept ${toEvict.length} idle databases`);
+      logger.debug(
+        `DatabaseLRUMap: swept ${toEvict.length} idle databases (map size: ${this._map.size})`
+      );
     }
   }
 
@@ -173,6 +228,7 @@ class DatabaseLRUMap {
     }
 
     this._map.clear();
+    this._activeSessions.clear();
     await Promise.allSettled(promises);
   }
 
