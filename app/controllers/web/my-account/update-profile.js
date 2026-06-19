@@ -156,6 +156,14 @@ async function updateProfile(ctx) {
     if (!ctx.state.user[config.userFields.hasSetPassword])
       throw Boom.badRequest(ctx.translateError('PASSWORD_REQUIRED'));
 
+    // require the current account password to initiate an email change
+    // (the email is changed through a dedicated confirm-password modal); this
+    // prevents a forged or hijacked session from starting an email change and
+    // sending a confirmation link to an attacker controlled address
+    const auth = await ctx.state.user.authenticate(body.password);
+    if (!auth.user)
+      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+
     // validate it (so it doesn't have to use mongoose for this)
     if (!isEmail(body.email))
       throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
@@ -202,11 +210,15 @@ async function updateProfile(ctx) {
   // save the user
   ctx.state.user = await ctx.state.user.save();
 
-  // if user changed password then invalidate all other sessions
+  // if user changed password then invalidate all other sessions. awaited so
+  // that any other session is destroyed before the response is returned; a
+  // redis failure is logged but must not break the password change.
   if (changePassword) {
-    invalidateOtherSessions(ctx)
-      .then()
-      .catch((err) => ctx.logger.fatal(err));
+    try {
+      await invalidateOtherSessions(ctx);
+    } catch (err) {
+      ctx.logger.fatal(err);
+    }
   }
 
   // send the email

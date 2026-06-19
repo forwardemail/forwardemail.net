@@ -91,13 +91,22 @@ async function callbackRedirect(ctx, next) {
         await user.setPassword(crypto.randomBytes(32).toString('hex'));
       }
 
+      // Clear any API token the attacker may have obtained before the victim
+      // logged in via OAuth; the pre('validate') hook regenerates a fresh one
+      // on save, so the attacker's token can no longer be used
+      user[config.userFields.apiToken] = undefined;
+
       await user.save();
       // Refresh ctx.state.user with updated fields
       ctx.state.user = user.toObject();
-      // Invalidate all other sessions (kicks out the attacker)
-      invalidateOtherSessions(ctx)
-        .then()
-        .catch((err) => ctx.logger.fatal(err));
+      // Invalidate all other sessions (kicks out the attacker). awaited so the
+      // attacker's sessions are destroyed before the response is returned; a
+      // redis failure is logged but must not break the login.
+      try {
+        await invalidateOtherSessions(ctx);
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
     }
   }
 

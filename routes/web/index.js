@@ -634,6 +634,7 @@ localeRouter
     config.verifyRoute,
     policies.ensureLoggedIn,
     web.auth.parseReturnOrRedirectTo,
+    rateLimit(10, 'verify'),
     web.auth.verify
   )
   .post(

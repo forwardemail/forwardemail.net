@@ -66,9 +66,13 @@ async function disconnectOAuthProvider(ctx) {
   // now-disconnected OAuth provider are terminated, preventing
   // continued access after revocation.
   //
-  invalidateOtherSessions(ctx)
-    .then()
-    .catch((err) => ctx.logger.fatal(err));
+  // awaited so that any other session is destroyed before the response is
+  // returned; a redis failure is logged but must not break the disconnect.
+  try {
+    await invalidateOtherSessions(ctx);
+  } catch (err) {
+    ctx.logger.fatal(err);
+  }
 
   // Send notification email about the disconnection
   const providerName = provider.charAt(0).toUpperCase() + provider.slice(1);

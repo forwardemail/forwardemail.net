@@ -19680,5 +19680,11 @@
   "Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling.": "Retention period in days (0-365) for automatic Trash and Junk cleanup. Set to 0 for automatic storage-based scaling.",
   "Retention period must be a number between 0 and 365 days.": "Retention period must be a number between 0 and 365 days.",
   "Quantum Resistant Email Service - Guide 2026": "Quantum Resistant Email Service - Guide 2026",
-  "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms.": "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms."
+  "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms.": "Encrypted quantum-resistant mailboxes to protect your privacy. Secure email for business and custom domains with post-quantum cryptography and 100% open-source software. Future-proof your communications against quantum computing threats with NIST-approved encryption algorithms.",
+  "Change email": "Change email",
+  "New email address": "New email address",
+  "Confirm your password": "Confirm your password",
+  "Change your email": "Change your email",
+  "If you wish to change your email from <strong>%s</strong> to <strong>%s</strong>, then click the link below within %s.": "If you wish to change your email from <strong>%s</strong> to <strong>%s</strong>, then click the link below within %s.",
+  "Confirm now": "Confirm now"
 }

@@ -42,6 +42,39 @@ block body
               aria-label=t("Cancel")
             )= t("Cancel")
             button.btn.btn-primary(type="submit")= user[config.userFields.hasSetPassword] ? t("Change password") : t("Set an account password")
+  if user[config.userFields.hasSetPassword]
+    #modal-confirm-email-change.modal.fade(tabindex="-1", role="dialog")
+      .modal-dialog(role="document")
+        .modal-content
+          .modal-header.d-block.text-center
+            h5= t("Change email")
+          form.ajax-form.confirm-prompt.mt-3(action=ctx.path, method="POST")
+            input(type="hidden", name="_method", value="PUT")
+            .modal-body
+              .form-group.floating-label
+                input#input-new-email.form-control(
+                  type="email",
+                  name="email",
+                  required,
+                  placeholder="name@example.com",
+                  autocomplete=config.env === "test" ? "off" : randomstring()
+                )
+                label(for="input-new-email")= t("New email address")
+              .form-group.floating-label
+                input#input-email-change-password.form-control(
+                  type="password",
+                  name="password",
+                  required,
+                  autocomplete=config.env === "test" ? "off" : randomstring()
+                )
+                label(for="input-email-change-password")= t("Confirm your password")
+            .modal-footer.text-right
+              button.btn.btn-secondary(
+                type="button",
+                data-dismiss="modal",
+                aria-label=t("Cancel")
+              )= t("Cancel")
+              button.btn.btn-primary(type="submit")= t("Change email")
   .min-vh-80.d-flex.flex-column
     .container.py-3
       .row
@@ -134,7 +167,7 @@ block body
                     name="email",
                     value=user.email,
                     placeholder="name@example.com",
-                    readonly=!user[config.userFields.hasSetPassword]
+                    readonly
                   )
                   label(for="input-email")= t("Email address")
                 if !user[config.userFields.hasSetPassword]
@@ -145,6 +178,12 @@ block body
                   )= t("Set a password to change your email")
                 else if user[config.userFields.changeEmailNewAddress]
                   .alert.alert-warning.small!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', user[config.userFields.changeEmailNewAddress])
+                else
+                  button.btn.btn-secondary.btn-sm.mb-3(
+                    type="button",
+                    data-toggle="modal",
+                    data-target="#modal-confirm-email-change"
+                  )= t("Change email")
                 .form-group.floating-label
                   input#input-given-name.form-control(
                     type="text",

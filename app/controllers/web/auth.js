@@ -608,16 +608,23 @@ async function resetPassword(ctx) {
   )
     throw Boom.badRequest(ctx.translateError('RESET_TOKEN_EXPIRED'));
 
+  // clear the reset token before saving so the link is strictly single-use
+  // and cannot be replayed after the password has been changed
   user[config.userFields.resetToken] = undefined;
   user[config.userFields.resetTokenExpiresAt] = undefined;
 
   await user.setPassword(body.password);
   user = await user.save();
   await ctx.login(user);
-  // if user changed password then invalidate all other sessions
-  invalidateOtherSessions(ctx)
-    .then()
-    .catch((err) => ctx.logger.fatal(err));
+  // the password changed, so invalidate all other sessions. awaited so that any
+  // other session is destroyed before the response is returned; a redis failure
+  // is logged but must not break the password reset.
+  try {
+    await invalidateOtherSessions(ctx);
+  } catch (err) {
+    ctx.logger.fatal(err);
+  }
+
   const message = ctx.translate('RESET_PASSWORD');
   const redirectTo = ctx.state.l();
   if (ctx.accepts('html')) {
@@ -679,10 +686,14 @@ async function changeEmail(ctx) {
 
   await user.save();
 
-  // invalidate all other sessions since the account email changed
-  invalidateOtherSessions(ctx)
-    .then()
-    .catch((err) => ctx.logger.fatal(err));
+  // invalidate all other sessions since the account email changed. awaited so
+  // that any other session is destroyed before the response is returned; a
+  // redis failure is logged but must not break the email change.
+  try {
+    await invalidateOtherSessions(ctx);
+  } catch (err) {
+    ctx.logger.fatal(err);
+  }
 
   const message = ctx.translate('CHANGE_EMAIL');
   const redirectTo = ctx.state.l();
