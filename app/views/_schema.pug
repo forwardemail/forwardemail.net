@@ -317,16 +317,3 @@ if ctx.pathWithoutLocale && (ctx.pathWithoutLocale.startsWith('/blog/') || ctx.p
       }
     };
   script(type="application/ld+json", nonce=nonce)!= JSON.stringify(blogPostingSchema)
-
-//- Organization Schema with sameAs (strengthens the brand entity graph for search and AI engines)
-if ctx.pathWithoutLocale === '/'
-  script(type="application/ld+json", nonce=nonce).
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Forward Email",
-      "legalName": "Forward Email LLC",
-      "url": "https://forwardemail.net",
-      "logo": "https://forwardemail.net/img/logo-square-180x180.png",
-      "sameAs": ["https://github.com/forwardemail", "https://x.com/fwdemail", "https://youtube.com/forwardemail"]
-    }
