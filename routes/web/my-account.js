@@ -484,13 +484,27 @@ router
   .get(
     '/logs',
     paginate.middleware(25, 100),
-    rateLimit(100, 'list logs'),
+    //
+    // Logs are read-only and are the primary surface customers use to monitor
+    // their service, debug delivery, and configure alias rules (especially in
+    // the first weeks of onboarding). Paginating through many pages, retrying
+    // after a transient error, and exporting are all normal, legitimate usage,
+    // so the previous 100/day cap could lock an operator out for hours after a
+    // single debugging session. The caps below are raised accordingly; admins
+    // and rate-limit-whitelisted accounts still bypass these entirely (see
+    // config.rateLimit.id / userFields.isRateLimitWhitelisted).
+    //
+    rateLimit(1000, 'list logs'),
     web.myAccount.listLogs
   )
-  .get('/logs/download', rateLimit(10, 'download logs'), web.myAccount.listLogs)
+  .get(
+    '/logs/download',
+    rateLimit(100, 'download logs'),
+    web.myAccount.listLogs
+  )
   .get(
     '/logs/:id',
-    rateLimit(100, 'retrieve logs'),
+    rateLimit(1000, 'retrieve logs'),
     web.myAccount.retrieveLog,
     render('my-account/logs/retrieve')
   )
