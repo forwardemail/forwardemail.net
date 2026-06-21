@@ -30,6 +30,12 @@ html.h-100.no-js(
       )
   body(role="document")
     include _nav
+    //- Visually-hidden h1 for SEO and accessibility.
+    //- The visible "Email API" heading is rendered client-side by the
+    //- Scalar API reference widget into #app, so the server-rendered HTML
+    //- has no h1 for crawlers or assistive technology. This sr-only
+    //- heading provides one without affecting the visual layout.
+    h1.sr-only= t("Email API for Developers")
     .scalar-app-reset
       #app
     include _footer

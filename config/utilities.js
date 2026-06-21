@@ -1581,6 +1581,19 @@ const useCases = {
     'ProtonMail Alternative with More Features',
     'Feature-rich alternative to ProtonMail offering custom domains, enhanced functionality, lower costs, and a fully open-source, privacy-focused email service'
   ],
+  // Tuta (Tutanota) Alternatives (3 NEW pages)
+  '/tutanota-alternative-open-source': [
+    'Open Source Tuta (Tutanota) Alternative',
+    'Privacy-focused alternative to Tuta (formerly Tutanota) offering 100% open-source email with custom domains, no tracking, and full source code transparency'
+  ],
+  '/tutanota-alternative-privacy-focused': [
+    'Privacy-Focused Tuta (Tutanota) Alternative',
+    'Secure, privacy-first alternative to Tuta (Tutanota) offering encrypted email forwarding, custom domains, zero tracking, and complete control over your inbox'
+  ],
+  '/tutanota-alternative-custom-domain': [
+    'Tuta (Tutanota) Alternative with Custom Domains',
+    'Professional Tuta (Tutanota) alternative offering unlimited custom domain email, open-source transparency, and secure forwarding without subscription lock-in'
+  ],
 
   // Technical Infrastructure & Enterprise (25 pages)
   '/smtp-relay-service-configuration': [

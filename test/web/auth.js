@@ -325,3 +325,28 @@ test('fails resetting password if reset was already tried in the last 30 mins', 
     util.format(phrases.PASSWORD_RESET_LIMIT, 'in 30 minutes')
   );
 });
+
+test('allows a new reset request once the prior token has expired', async (t) => {
+  const { web } = t.context;
+
+  // simulate a user whose previous reset token has already expired
+  // (expiry in the past). previously the rate-limit guard compared the
+  // expiry against `now - timeout`, which kept blocking new requests for a
+  // full timeout window after the token had already expired. a new request
+  // should now be allowed immediately once the token is expired.
+  const user = await t.context.userFactory
+    .withState({
+      [config.userFields.resetToken]: 'expiredtoken',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() - 1000)
+    })
+    .create();
+  const { email } = user;
+
+  const res = await web
+    .post('/en/forgot-password')
+    .set({ Accept: 'text/html' })
+    .send({ email });
+
+  t.is(res.status, 302);
+  t.is(res.header.location, '/en');
+});

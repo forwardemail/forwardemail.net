@@ -500,13 +500,17 @@ async function forgotPassword(ctx) {
     return;
   }
 
-  // if we've already sent a reset password request in the past half hour
+  // if there is already an outstanding (non-expired) reset token then we do
+  // not issue another one. note that `resetTokenExpiresAt` stores the token's
+  // future expiry (issued time + timeout), so an unexpired token simply means
+  // its expiry is still in the future. comparing it against the issued time
+  // (which is why we previously subtracted the timeout) double-counted the
+  // window and left a dead zone where the token had already expired but a new
+  // one still could not be requested
   if (
-    user[config.userFields.resetTokenExpiresAt] &&
     user[config.userFields.resetToken] &&
-    dayjs(user[config.userFields.resetTokenExpiresAt]).isAfter(
-      dayjs().subtract(config.resetTokenTimeoutMs, 'milliseconds')
-    )
+    user[config.userFields.resetTokenExpiresAt] &&
+    dayjs(user[config.userFields.resetTokenExpiresAt]).isAfter(dayjs())
   )
     throw Boom.badRequest(
       ctx.translateError(

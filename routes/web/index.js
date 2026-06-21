@@ -445,6 +445,10 @@ localeRouter
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/yahoo-mail-alternative-business'));
   })
+  .get(['/tuta-alternative', '/tutanota-alternative'], (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/tutanota-alternative-open-source'));
+  })
   .get(
     '/private-business-email',
     web.myAccount.retrieveDomains,
