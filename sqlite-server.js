@@ -6,6 +6,7 @@
 const fs = require('node:fs');
 const http = require('node:http');
 const https = require('node:https');
+const process = require('node:process');
 const { promisify } = require('node:util');
 const { randomUUID } = require('node:crypto');
 
@@ -181,6 +182,55 @@ class SQLite {
     this.server = server;
     this.refreshSession = refreshSession.bind(this);
 
+    //
+    // Low-level server diagnostics: surface listen/bind failures and TLS
+    // handshake errors that otherwise silently kill cross-server connections
+    // (e.g. cert/hostname mismatch, untrusted CA, EADDRINUSE on a worker port).
+    //
+    server.on('error', (err) => {
+      console.error(
+        '[ERROR:sqlite-server] server error',
+        JSON.stringify({
+          errName: err?.name,
+          errMessage: err?.message?.slice(0, 500),
+          errCode: err?.code
+        })
+      );
+      logger.error(err);
+    });
+
+    // TLS handshake failures (wss). `err` typically carries a code like
+    // ERR_SSL_* / CERT_* and the failing peer socket.
+    server.on('tlsClientError', (err, tlsSocket) => {
+      console.error(
+        '[ERROR:sqlite-server] tlsClientError',
+        JSON.stringify({
+          remoteAddress: tlsSocket?.remoteAddress,
+          servername: tlsSocket?.servername,
+          errName: err?.name,
+          errMessage: err?.message?.slice(0, 500),
+          errCode: err?.code,
+          errLibrary: err?.library,
+          errReason: err?.reason
+        })
+      );
+      logger.error(err);
+    });
+
+    // Malformed HTTP/upgrade requests before the ws handshake completes.
+    server.on('clientError', (err, socket) => {
+      console.error(
+        '[ERROR:sqlite-server] clientError',
+        JSON.stringify({
+          remoteAddress: socket?.remoteAddress,
+          errName: err?.name,
+          errMessage: err?.message?.slice(0, 500),
+          errCode: err?.code
+        })
+      );
+      logger.error(err);
+    });
+
     function authenticate(request, socket, head, fn) {
       try {
         const credentials = auth(request);
@@ -226,6 +276,16 @@ class SQLite {
 
       authenticate(request, socket, head, (err) => {
         if (err) {
+          console.error(
+            '[ERROR:sqlite-server] upgrade auth failed',
+            JSON.stringify({
+              remoteAddress: request?.socket?.remoteAddress,
+              statusCode: err?.output?.statusCode || 401,
+              errName: err?.name,
+              errMessage: err?.message?.slice(0, 500),
+              errCode: err?.code
+            })
+          );
           socket.write(
             `HTTP/1.1 ${err?.output?.statusCode || 401} ${
               err?.output?.payload?.error || 'Unauthorized'
@@ -247,7 +307,31 @@ class SQLite {
 
     this.wss.on('connection', (ws, request) => {
       ws.isAlive = true;
+      // Track which alias_ids this WebSocket has accessed (for session-aware eviction)
+      ws.aliasIds = new Set();
       logger.debug('connection from %s', request.socket.remoteAddress);
+      console.log(
+        '[INFO:sqlite-server] ws connection established',
+        JSON.stringify({
+          remoteAddress: request?.socket?.remoteAddress,
+          localPort: request?.socket?.localPort,
+          encrypted: Boolean(request?.socket?.encrypted),
+          totalClients: this.wss?.clients?.size
+        })
+      );
+
+      ws.on('close', () => {
+        // Decrement active session refcounts for all alias_ids this socket served
+        if (ws.aliasIds && ws.aliasIds.size > 0) {
+          for (const aliasId of ws.aliasIds) {
+            if (this.databaseMap) {
+              this.databaseMap.removeActiveSession(aliasId);
+            }
+          }
+
+          ws.aliasIds.clear();
+        }
+      });
 
       ws.on('error', (err) => {
         console.error(
@@ -289,6 +373,22 @@ class SQLite {
           const uuid = data.toString();
           this.uuidsReceived.add(uuid);
           return;
+        }
+
+        // Log which local worker port received this payload so it can be
+        // correlated with the client-side '[INFO:sqlite-client] request routed'
+        // (targetPort) line for end-to-end client<->server visibility.
+        // Gated behind SQLITE_VERBOSE_ROUTING since it fires per-payload.
+        if (env.SQLITE_VERBOSE_ROUTING) {
+          console.log(
+            '[INFO:sqlite-server] payload received',
+            JSON.stringify({
+              localPort: request?.socket?.localPort,
+              remoteAddress: request?.socket?.remoteAddress,
+              nodeAppInstance: process.env.NODE_APP_INSTANCE || '0',
+              bytes: data?.length
+            })
+          );
         }
 
         parsePayload
@@ -352,6 +452,16 @@ class SQLite {
     }, ms('45s'));
 
     await promisify(this.server.listen).bind(this.server)(port, host, ...args);
+
+    console.log(
+      '[INFO:sqlite-server] listening',
+      JSON.stringify({
+        port,
+        host,
+        nodeAppInstance: process.env.NODE_APP_INSTANCE || '0',
+        tls: config.env === 'production'
+      })
+    );
   }
 
   async close() {
