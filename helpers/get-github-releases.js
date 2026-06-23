@@ -24,15 +24,19 @@ const CACHE_TTL_SECONDS = Math.ceil(CACHE_DURATION / 1000);
 // GitHub API base URL
 const GITHUB_API_BASE = 'https://api.github.com';
 
-// Default repository
-const DEFAULT_REPO = 'forwardemail/forwardemail.net';
+// Default repositories to fetch releases from
+const DEFAULT_REPOS = [
+  'forwardemail/forwardemail.net',
+  'forwardemail/mail.forwardemail.net'
+];
 
 /**
  * Parse a GitHub release into a standardized format
  * @param {Object} release - Release object from GitHub API
+ * @param {string} repo - Repository name (owner/repo)
  * @returns {Object} - Parsed release object
  */
-function parseRelease(release) {
+function parseRelease(release, repo) {
   if (!release || !release.id) {
     return null;
   }
@@ -49,6 +53,7 @@ function parseRelease(release) {
     prerelease: release.prerelease,
     createdAt: release.created_at,
     publishedAt: release.published_at,
+    repo,
     author: release.author
       ? {
           login: release.author.login,
@@ -68,22 +73,81 @@ function parseRelease(release) {
 }
 
 /**
- * Fetch releases from a GitHub repository
+ * Fetch releases from a single GitHub repository
+ * @param {string} repo - Repository in format 'owner/repo'
+ * @param {number} count - Number of releases to fetch (max 100)
+ * @returns {Promise<Array>} - Array of parsed release objects
+ */
+async function fetchReleasesFromRepo(repo, count) {
+  const url = `${GITHUB_API_BASE}/repos/${repo}/releases?per_page=${Math.min(
+    count,
+    100
+  )}`;
+
+  const response = await undici.fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/vnd.github+json',
+      'User-Agent': 'ForwardEmail/1.0',
+      'X-GitHub-Api-Version': '2022-11-28'
+    }
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    logger.error(
+      new Error(`GitHub API error: ${response.status} ${response.statusText}`),
+      { extra: { errorText, repo } }
+    );
+    return [];
+  }
+
+  const data = await response.json();
+
+  if (!Array.isArray(data)) {
+    logger.warn('GitHub API returned unexpected data format', {
+      extra: { data, repo }
+    });
+    return [];
+  }
+
+  // Parse releases, excluding drafts
+  const releases = [];
+  for (const release of data) {
+    if (release.draft) continue; // Skip drafts
+    const parsed = parseRelease(release, repo);
+    if (parsed) {
+      releases.push(parsed);
+    }
+  }
+
+  return releases;
+}
+
+/**
+ * Fetch releases from one or more GitHub repositories
  * Uses Redis for caching to share cache across all processes
  * @param {Object} options - Options for fetching releases
  * @param {Object} options.client - Redis client (required for caching)
- * @param {string} options.repo - Repository in format 'owner/repo' (default: forwardemail/forwardemail.net)
- * @param {number} options.count - Number of releases to fetch (max 100)
+ * @param {string|string[]} options.repos - Repository or repositories in format 'owner/repo'
+ * @param {string} options.repo - Single repository (deprecated, use repos)
+ * @param {number} options.count - Number of releases to return (max 100)
  * @param {boolean} options.forceRefresh - Force refresh cache
- * @returns {Promise<Array>} - Array of parsed release objects
+ * @returns {Promise<Array>} - Array of parsed release objects sorted by date
  */
 async function getGitHubReleases(options = {}) {
-  const {
-    client,
-    repo = DEFAULT_REPO,
-    count = 30,
-    forceRefresh = false
-  } = options;
+  const { client, repos, repo, count = 30, forceRefresh = false } = options;
+
+  // Determine which repos to fetch from
+  // Support both `repo` (single string) and `repos` (array) for backwards compat
+  let repoList;
+  if (repos) {
+    repoList = Array.isArray(repos) ? repos : [repos];
+  } else if (repo) {
+    repoList = [repo];
+  } else {
+    repoList = DEFAULT_REPOS;
+  }
 
   // Try to get from Redis cache first
   if (client && !forceRefresh) {
@@ -104,49 +168,19 @@ async function getGitHubReleases(options = {}) {
   }
 
   try {
-    const url = `${GITHUB_API_BASE}/repos/${repo}/releases?per_page=${Math.min(
-      count,
-      100
-    )}`;
+    // Fetch releases from all repos in parallel
+    const results = await Promise.all(
+      repoList.map((r) => fetchReleasesFromRepo(r, count))
+    );
 
-    const response = await undici.fetch(url, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/vnd.github+json',
-        'User-Agent': 'ForwardEmail/1.0',
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      logger.error(
-        new Error(
-          `GitHub API error: ${response.status} ${response.statusText}`
-        ),
-        { extra: { errorText, repo } }
+    // Merge and sort by published date (newest first)
+    const releases = results
+      .flat()
+      .sort(
+        (a, b) =>
+          new Date(b.publishedAt || b.createdAt) -
+          new Date(a.publishedAt || a.createdAt)
       );
-      return [];
-    }
-
-    const data = await response.json();
-
-    if (!Array.isArray(data)) {
-      logger.warn('GitHub API returned unexpected data format', {
-        extra: { data }
-      });
-      return [];
-    }
-
-    // Parse releases, excluding drafts
-    const releases = [];
-    for (const release of data) {
-      if (release.draft) continue; // Skip drafts
-      const parsed = parseRelease(release);
-      if (parsed) {
-        releases.push(parsed);
-      }
-    }
 
     // Store in Redis cache
     if (client && releases.length > 0) {
@@ -167,7 +201,9 @@ async function getGitHubReleases(options = {}) {
       }
     }
 
-    logger.info(`Fetched ${releases.length} GitHub releases from ${repo}`);
+    logger.info(
+      `Fetched ${releases.length} GitHub releases from ${repoList.join(', ')}`
+    );
 
     return releases.slice(0, count);
   } catch (err) {
@@ -197,7 +233,9 @@ async function clearCache(client) {
 
 module.exports = getGitHubReleases;
 module.exports.parseRelease = parseRelease;
+module.exports.fetchReleasesFromRepo = fetchReleasesFromRepo;
 module.exports.clearCache = clearCache;
 module.exports.CACHE_KEY = CACHE_KEY;
 module.exports.CACHE_DURATION = CACHE_DURATION;
 module.exports.CACHE_TTL_SECONDS = CACHE_TTL_SECONDS;
+module.exports.DEFAULT_REPOS = DEFAULT_REPOS;

@@ -8,7 +8,7 @@ const undici = require('undici');
 const retryRequest = require('./retry-request');
 
 const LAUNCHPAD_API_HOSTNAME = 'api.launchpad.net';
-const LAUNCHPAD_ADDRESS_FAMILY = 6;
+const LAUNCHPAD_ADDRESS_FAMILY = 4;
 
 const launchpadDispatcher = new undici.Agent({
   connect: {
@@ -25,9 +25,10 @@ function retryLaunchpadRequest(url, opts = {}) {
     );
 
   // Bypass Tangerine/custom resolver for Launchpad.
-  // On the affected production host, direct IPv4 TCP/443 to Launchpad times out,
-  // while IPv6 succeeds.  Forcing family 6 keeps these requests on the healthy
-  // network path instead of repeatedly retrying a broken IPv4 connect.
+  // On the affected production host, direct IPv6 TCP/443 to Launchpad times out
+  // (TLS handshake hangs), while IPv4 succeeds.  Forcing family 4 keeps these
+  // requests on the healthy network path instead of repeatedly retrying a broken
+  // IPv6 connect.
   const { resolver: _resolver, ...requestOpts } = opts;
 
   return retryRequest(url, {

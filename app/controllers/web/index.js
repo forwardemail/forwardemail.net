@@ -565,6 +565,7 @@ async function regenerateAliasPassword(ctx) {
           alias_public_key: alias.public_key,
           alias_has_smime: alias.has_smime,
           alias_smime_certificate: alias.smime_certificate,
+          alias_has_wkd_disabled: alias.has_wkd_disabled,
           locale: user[config.lastLocaleField] || i18n.config.defaultLocale,
           owner_full_email: user.email
         }

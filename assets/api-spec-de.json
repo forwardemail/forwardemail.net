@@ -259,6 +259,10 @@
             "type": "string",
             "description": "S/MIME X.509-Zertifikat im PEM-Format"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Ob die WKD (Web Key Directory) Schlüsselsuche für diesen Alias deaktiviert ist"
+          },
           "locale": {
             "type": "string",
             "description": "Standortpräferenz"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "S/MIME X.509-Zertifikat im PEM-Format"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Ob die WKD (Web Key Directory) Schlüsselsuche für diesen Alias deaktiviert ist"
+          },
           "max_quota": {
             "type": "string",
             "description": "Maximales Speicherkontingent (z. B. „1 GB“)"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "S/MIME X.509-Zertifikat im PEM-Format"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Ob die WKD (Web Key Directory) Schlüsselsuche für diesen Alias deaktiviert ist"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

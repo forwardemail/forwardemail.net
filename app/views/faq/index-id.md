@@ -2581,6 +2581,7 @@ Ya, kami mendukung [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#O
 * Pesan yang dikirim ke webhook saat ini tidak dienkripsi dengan PGP.
 * Jika Anda memiliki beberapa alias yang cocok untuk alamat penerusan tertentu (misalnya kombinasi regex/wildcard/tepat) dan jika lebih dari satu dari alias tersebut memiliki kunci PGP yang diunggah dan PGP dicentang → maka kami akan mengirimkan email peringatan kesalahan dan tidak akan mengenkripsi pesan dengan kunci PGP yang Anda unggah. Ini sangat jarang dan biasanya hanya berlaku untuk pengguna tingkat lanjut dengan aturan alias yang kompleks.
 * **Enkripsi PGP tidak akan diterapkan pada penerusan email melalui server MX kami jika pengirim memiliki kebijakan DMARC reject. Jika Anda memerlukan enkripsi PGP pada *semua* email maka kami sarankan menggunakan layanan IMAP kami dan mengonfigurasi kunci PGP Anda untuk alias Anda untuk email masuk.**
+* Pada paket berbayar kami (Perlindungan Ditingkatkan dan Tim), Anda dapat menonaktifkan pencarian WKD per alias. Navigasi ke pengaturan alias Anda dan centang opsi "Nonaktifkan Pencarian WKD". Saat dinonaktifkan, email masuk yang diteruskan ke alias tersebut tidak akan dienkripsi melalui WKD meskipun kunci publik telah dipublikasikan untuk penerima. Ini juga tersedia melalui API menggunakan field `has_wkd_disabled`.
 
 **Anda dapat memvalidasi pengaturan Web Key Directory Anda di <https://wkd.chimbosonic.com/> (open-source) atau <https://www.webkeydirectory.com/> (proprietary).**
 

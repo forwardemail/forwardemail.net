@@ -316,6 +316,7 @@ async function getForwardingConfiguration({
     has_imap: false,
     alias_public_key: false,
     alias_smime_certificate: false,
+    alias_has_wkd_disabled: false,
     vacation_responder: false,
     mapping: []
   };
@@ -410,6 +411,13 @@ async function getForwardingConfiguration({
       } else {
         body.alias_smime_certificate = alias.smime_certificate;
       }
+    }
+
+    //
+    // set WKD opt-out flag for body response
+    //
+    if (alias.is_enabled && alias.has_wkd_disabled) {
+      body.alias_has_wkd_disabled = true;
     }
 
     // recursively lookup all inboxes we need to deliver this to

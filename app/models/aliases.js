@@ -340,6 +340,12 @@ const Aliases = new mongoose.Schema({
     index: true
   },
 
+  // per-alias WKD opt-out (disables automatic WKD public key lookup)
+  has_wkd_disabled: {
+    type: Boolean,
+    default: false
+  },
+
   has_imap: {
     type: Boolean,
     default: false,

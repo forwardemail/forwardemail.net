@@ -259,6 +259,10 @@
             "type": "string",
             "description": "Сертифікат S/MIME X.509 у форматі PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Чи вимкнено пошук відкритого ключа WKD (Web Key Directory) для цього псевдоніма"
+          },
           "locale": {
             "type": "string",
             "description": "Налаштування мови"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "Сертифікат S/MIME X.509 у форматі PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Чи вимкнено пошук відкритого ключа WKD (Web Key Directory) для цього псевдоніма"
+          },
           "max_quota": {
             "type": "string",
             "description": "Максимальна квота сховища (наприклад, «1 ГБ»)"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "Сертифікат S/MIME X.509 у форматі PEM"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Чи вимкнено пошук відкритого ключа WKD (Web Key Directory) для цього псевдоніма"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

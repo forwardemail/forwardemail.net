@@ -382,6 +382,7 @@ async function getRecipients(session, scan) {
           hasIMAP,
           aliasPublicKey,
           aliasSmimeCertificate,
+          aliasHasWkdDisabled,
           vacationResponder,
           ignored,
           softRejected,
@@ -402,6 +403,7 @@ async function getRecipients(session, scan) {
             hasIMAP: false,
             aliasPublicKey: false,
             aliasSmimeCertificate: false,
+            aliasHasWkdDisabled: false,
             vacationResponder: false
           };
 
@@ -413,6 +415,7 @@ async function getRecipients(session, scan) {
             hasIMAP: false,
             aliasPublicKey: false,
             aliasSmimeCertificate: false,
+            aliasHasWkdDisabled: false,
             vacationResponder: false,
             softRejected: true
           };
@@ -425,6 +428,7 @@ async function getRecipients(session, scan) {
             hasIMAP: false,
             aliasPublicKey: false,
             aliasSmimeCertificate: false,
+            aliasHasWkdDisabled: false,
             vacationResponder: false,
             hardRejected: true
           };
@@ -436,6 +440,7 @@ async function getRecipients(session, scan) {
           hasIMAP,
           aliasPublicKey,
           aliasSmimeCertificate,
+          aliasHasWkdDisabled,
           vacationResponder,
           aliasIds,
           webhookKey
@@ -449,6 +454,7 @@ async function getRecipients(session, scan) {
             hasIMAP: false,
             aliasPublicKey: false,
             aliasSmimeCertificate: false,
+            aliasHasWkdDisabled: false,
             vacationResponder: false,
             // TODO: only do this if MX server of sender used our service
             srs: true
@@ -713,6 +719,7 @@ async function getRecipients(session, scan) {
           normalized.push({
             aliasPublicKey: recipient.aliasPublicKey,
             aliasSmimeCertificate: recipient.aliasSmimeCertificate,
+            aliasHasWkdDisabled: recipient.aliasHasWkdDisabled,
             vacationResponder: recipient.vacationResponder,
             webhookKey: recipient.webhookKey,
             webhook: address.to,
@@ -730,6 +737,7 @@ async function getRecipients(session, scan) {
       normalized.push({
         aliasPublicKey: recipient.aliasPublicKey,
         aliasSmimeCertificate: recipient.aliasSmimeCertificate,
+        aliasHasWkdDisabled: recipient.aliasHasWkdDisabled,
         vacationResponder: recipient.vacationResponder,
         host: address.host,
         port: recipient.port,

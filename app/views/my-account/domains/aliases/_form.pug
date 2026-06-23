@@ -302,6 +302,21 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
     = " "
     != t("You can obtain an S/MIME certificate from a Certificate Authority (CA) or generate a self-signed certificate for testing.")
 
+  //- WKD opt-out toggle
+  .form-group.form-check.mt-4
+    input#input-has-wkd-disabled.form-check-input(
+      type="checkbox",
+      name="has_wkd_disabled",
+      value="true",
+      checked=alias ? alias.has_wkd_disabled : false
+    )
+    label.form-check-label(for="input-has-wkd-disabled")
+      = t("Disable WKD Lookup")
+      = " "
+      span.text-muted= t("(optional)")
+    .small.text-muted.mt-1
+      != t("Check this to prevent automatic Web Key Directory (WKD) public key lookups for this alias. When checked, inbound emails will not be encrypted via WKD even if a public key is published.")
+
 //-
 //- vacation responder support
 //-

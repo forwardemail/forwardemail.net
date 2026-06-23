@@ -2582,6 +2582,7 @@ Sí, soportamos [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
 * Los mensajes enviados a webhooks actualmente no se cifran con PGP.
 * Si tiene múltiples alias que coinciden para una dirección de reenvío dada (por ejemplo, combinación regex/wildcard/exacta) y si más de uno contiene una clave PGP cargada y tiene PGP marcado → entonces le enviaremos un correo de alerta de error y no cifraremos el mensaje con su clave PGP cargada. Esto es muy raro y usualmente aplica solo a usuarios avanzados con reglas complejas de alias.
 * **El cifrado PGP no se aplicará al reenvío de correo a través de nuestros servidores MX si el remitente tiene una política DMARC de rechazo. Si requiere cifrado PGP en *todos* los correos, sugerimos usar nuestro servicio IMAP y configurar su clave PGP para su alias en el correo entrante.**
+* En nuestros planes de pago (Protección mejorada y Equipo), puede deshabilitar la búsqueda WKD por alias. Navegue a la configuración de su alias y marque la opción "Deshabilitar búsqueda WKD". Cuando está deshabilitado, los correos entrantes reenviados a ese alias no se cifrarán mediante WKD aunque se haya publicado una clave pública para el destinatario. Esto también está disponible a través de la API usando el campo `has_wkd_disabled`.
 
 **Puede validar su configuración de Web Key Directory en <https://wkd.chimbosonic.com/> (código abierto) o <https://www.webkeydirectory.com/> (propietario).**
 

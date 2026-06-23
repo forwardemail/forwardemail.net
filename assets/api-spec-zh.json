@@ -259,6 +259,10 @@
             "type": "string",
             "description": "PEM 格式的 S/MIME X.509 证书"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "此别名是否禁用了 WKD（Web Key Directory）公钥查找"
+          },
           "locale": {
             "type": "string",
             "description": "区域设置偏好"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "PEM 格式的 S/MIME X.509 证书"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "此别名是否禁用了 WKD（Web Key Directory）公钥查找"
+          },
           "max_quota": {
             "type": "string",
             "description": "存储最大配额（例如“1 GB”）"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "PEM 格式的 S/MIME X.509 证书"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "此别名是否禁用了 WKD（Web Key Directory）公钥查找"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

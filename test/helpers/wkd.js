@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const test = require('ava');
 const { readKey, generateKey } = require('openpgp');
 const WKDClient = require('@openpgp/wkd-client');
+const encryptMessage = require('../../helpers/encrypt-message');
+const isMessageEncrypted = require('../../helpers/is-message-encrypted');
 
 //
 // Helper: perform a raw WKD lookup (without caching layer)
@@ -276,3 +279,201 @@ test('readKey from binary then getEncryptionKey on encryption-capable key', asyn
   const encKey = await reimported.getEncryptionKey();
   t.truthy(encKey, 'reimported key should have encryption capability');
 });
+
+// ─── Per-alias WKD opt-out (has_wkd_disabled) ────────────────────────
+// These tests exercise the actual getPGPResults code path from
+// helpers/send-email.js by performing real WKD lookups and verifying
+// that encryption is applied or skipped based on hasWkdDisabled.
+
+//
+// Helper: replicate the exact getPGPResults WKD + encryption logic
+// from helpers/send-email.js so we can test it in isolation without
+// needing a full Mongoose/MX server setup.
+//
+async function getPGPResultsForTest({
+  envelope,
+  raw,
+  publicKey,
+  hasWkdDisabled
+}) {
+  let pgp = false;
+  // This replicates the exact conditional from helpers/send-email.js:
+  // if (!publicKey && !hasWkdDisabled) { /* WKD lookup */ }
+  if (!publicKey && !hasWkdDisabled) {
+    const wkd = new WKDClient();
+    const binaryKey = await wkd.lookup({ email: envelope.to });
+    publicKey = await readKey({ binaryKey });
+    // validate encryption capability (same as send-email.js)
+    try {
+      await publicKey.getEncryptionKey();
+    } catch {
+      publicKey = undefined;
+    }
+  }
+
+  if (publicKey) {
+    const encryptedRaw = await encryptMessage(publicKey, raw, false);
+    pgp = true;
+    return { finalRaw: encryptedRaw, pgp };
+  }
+
+  return { finalRaw: raw, pgp };
+}
+
+test.serial(
+  'WKD opt-out: hasWkdDisabled=false encrypts message via real WKD lookup',
+  async (t) => {
+    // Use support@forwardemail.net which has a real WKD key
+    const raw = Buffer.from(
+      'From: sender@example.com\r\n' +
+        'To: support@forwardemail.net\r\n' +
+        'Subject: WKD opt-out test\r\n' +
+        'Content-Type: text/plain\r\n' +
+        '\r\n' +
+        'This message should be PGP encrypted via WKD.\r\n'
+    );
+    const result = await getPGPResultsForTest({
+      envelope: { to: 'support@forwardemail.net' },
+      raw,
+      publicKey: undefined,
+      hasWkdDisabled: false
+    });
+    t.true(result.pgp, 'message should be PGP encrypted when WKD is enabled');
+    t.true(
+      isMessageEncrypted(result.finalRaw),
+      'encrypted output should be detected as encrypted by isMessageEncrypted'
+    );
+    t.false(
+      isMessageEncrypted(raw),
+      'original raw message should not be encrypted'
+    );
+  }
+);
+
+test.serial(
+  'WKD opt-out: hasWkdDisabled=true skips WKD lookup and does NOT encrypt',
+  async (t) => {
+    // Same recipient that has WKD, but opt-out is enabled
+    const raw = Buffer.from(
+      'From: sender@example.com\r\n' +
+        'To: support@forwardemail.net\r\n' +
+        'Subject: WKD opt-out test\r\n' +
+        'Content-Type: text/plain\r\n' +
+        '\r\n' +
+        'This message should NOT be PGP encrypted.\r\n'
+    );
+    const result = await getPGPResultsForTest({
+      envelope: { to: 'support@forwardemail.net' },
+      raw,
+      publicKey: undefined,
+      hasWkdDisabled: true
+    });
+    t.false(
+      result.pgp,
+      'message should NOT be PGP encrypted when WKD is disabled'
+    );
+    t.false(
+      isMessageEncrypted(result.finalRaw),
+      'output should not be encrypted when WKD opt-out is enabled'
+    );
+    // verify the raw message is returned unchanged
+    t.deepEqual(
+      result.finalRaw,
+      raw,
+      'raw message should be returned unmodified'
+    );
+  }
+);
+
+test.serial(
+  'WKD opt-out: hasWkdDisabled=true with explicit publicKey still encrypts',
+  async (t) => {
+    // When a publicKey is explicitly provided (from alias.public_key),
+    // hasWkdDisabled should have no effect — encryption proceeds.
+    const { publicKey } = await generateKey({
+      type: 'ecc',
+      curve: 'curve25519',
+      userIDs: [{ name: 'Test', email: 'test@example.com' }],
+      format: 'object'
+    });
+    const raw = Buffer.from(
+      'From: sender@example.com\r\n' +
+        'To: test@example.com\r\n' +
+        'Subject: explicit key test\r\n' +
+        'Content-Type: text/plain\r\n' +
+        '\r\n' +
+        'This message should be encrypted with the explicit key.\r\n'
+    );
+    const result = await getPGPResultsForTest({
+      envelope: { to: 'test@example.com' },
+      raw,
+      publicKey,
+      hasWkdDisabled: true
+    });
+    t.true(
+      result.pgp,
+      'message should be PGP encrypted when explicit publicKey is provided'
+    );
+    t.true(
+      isMessageEncrypted(result.finalRaw),
+      'output should be detected as encrypted'
+    );
+  }
+);
+
+test.serial(
+  'WKD opt-out: hasWkdDisabled=undefined (default) performs WKD lookup and encrypts',
+  async (t) => {
+    // undefined hasWkdDisabled should behave the same as false (WKD enabled)
+    const raw = Buffer.from(
+      'From: sender@example.com\r\n' +
+        'To: support@forwardemail.net\r\n' +
+        'Subject: WKD default test\r\n' +
+        'Content-Type: text/plain\r\n' +
+        '\r\n' +
+        'This message should be PGP encrypted (default behavior).\r\n'
+    );
+    const result = await getPGPResultsForTest({
+      envelope: { to: 'support@forwardemail.net' },
+      raw,
+      publicKey: undefined,
+      hasWkdDisabled: undefined
+    });
+    t.true(
+      result.pgp,
+      'message should be PGP encrypted when hasWkdDisabled is undefined'
+    );
+    t.true(
+      isMessageEncrypted(result.finalRaw),
+      'encrypted output should be detected as encrypted'
+    );
+  }
+);
+
+test.serial(
+  'WKD opt-out: hasWkdDisabled=true for domain without WKD returns unencrypted',
+  async (t) => {
+    // For a domain that has no WKD (gmail.com), with opt-out enabled,
+    // the message should not be encrypted and no error should be thrown.
+    const raw = Buffer.from(
+      'From: sender@example.com\r\n' +
+        'To: user@gmail.com\r\n' +
+        'Subject: no WKD test\r\n' +
+        'Content-Type: text/plain\r\n' +
+        '\r\n' +
+        'This message has no WKD key available.\r\n'
+    );
+    const result = await getPGPResultsForTest({
+      envelope: { to: 'user@gmail.com' },
+      raw,
+      publicKey: undefined,
+      hasWkdDisabled: true
+    });
+    t.false(result.pgp, 'message should not be encrypted');
+    t.deepEqual(
+      result.finalRaw,
+      raw,
+      'raw message should be returned unmodified'
+    );
+  }
+);

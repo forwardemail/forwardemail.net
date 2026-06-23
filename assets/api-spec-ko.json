@@ -259,6 +259,10 @@
             "type": "string",
             "description": "PEM 형식의 S/MIME X.509 인증서"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "이 별칭에 대해 WKD(Web Key Directory) 공개 키 조회가 비활성화되어 있는지 여부"
+          },
           "locale": {
             "type": "string",
             "description": "로케일 환경 설정"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "PEM 형식의 S/MIME X.509 인증서"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "이 별칭에 대해 WKD(Web Key Directory) 공개 키 조회가 비활성화되어 있는지 여부"
+          },
           "max_quota": {
             "type": "string",
             "description": "저장 용량 최대 할당량(예: '1GB')"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "PEM 형식의 S/MIME X.509 인증서"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "이 별칭에 대해 WKD(Web Key Directory) 공개 키 조회가 비활성화되어 있는지 여부"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

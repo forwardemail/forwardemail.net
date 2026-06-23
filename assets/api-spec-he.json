@@ -259,6 +259,10 @@
             "type": "string",
             "description": "תעודת S/MIME X.509 בפורמט PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "האם חיפוש מפתח ציבורי WKD (Web Key Directory) מושבת עבור כינוי זה"
+          },
           "locale": {
             "type": "string",
             "description": "העדפת מקום"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "תעודת S/MIME X.509 בפורמט PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "האם חיפוש מפתח ציבורי WKD (Web Key Directory) מושבת עבור כינוי זה"
+          },
           "max_quota": {
             "type": "string",
             "description": "מכסת אחסון מקסימלית (לדוגמה '1 ג'יגה-בייט')"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "תעודת S/MIME X.509 בפורמט PEM"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "האם חיפוש מפתח ציבורי WKD (Web Key Directory) מושבת עבור כינוי זה"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

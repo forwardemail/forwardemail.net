@@ -259,6 +259,10 @@
             "type": "string",
             "description": "S/MIME X.509 tanúsítvány PEM formátumban"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Hogy a WKD (Web Key Directory) nyilvános kulcs keresés le van-e tiltva ennél az aliasnál"
+          },
           "locale": {
             "type": "string",
             "description": "Helyi beállítás"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "S/MIME X.509 tanúsítvány PEM formátumban"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Hogy a WKD (Web Key Directory) nyilvános kulcs keresés le van-e tiltva ennél az aliasnál"
+          },
           "max_quota": {
             "type": "string",
             "description": "Maximális tárhelykvóta (pl. „1 GB”)"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "S/MIME X.509 tanúsítvány PEM formátumban"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Hogy a WKD (Web Key Directory) nyilvános kulcs keresés le van-e tiltva ennél az aliasnál"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

@@ -167,6 +167,9 @@ function validateAlias(ctx, next) {
   if (typeof ctx.request.body.has_smime !== 'undefined' || !ctx.api)
     body.has_smime = boolean(ctx.request.body.has_smime);
 
+  if (typeof ctx.request.body.has_wkd_disabled !== 'undefined' || !ctx.api)
+    body.has_wkd_disabled = boolean(ctx.request.body.has_wkd_disabled);
+
   //
   // NOTE: for API updates (PUT), if the caller did not include `recipients`
   //       in the request body at all we must leave the existing value intact

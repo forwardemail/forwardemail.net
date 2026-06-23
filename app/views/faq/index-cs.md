@@ -2581,6 +2581,7 @@ Ano, podporujeme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Ope
 * Zprávy odeslané na webhooky momentálně nejsou šifrovány pomocí PGP.
 * Pokud máte více aliasů, které odpovídají dané přeposílací adrese (např. kombinace regex/wildcard/přesná shoda) a pokud více z nich obsahuje nahraný PGP klíč a je zaškrtnuto PGP → zašleme vám chybové upozornění e-mailem a zprávu nezašifrujeme vaším nahraným PGP klíčem. Toto je velmi vzácné a obvykle se týká pokročilých uživatelů s komplexními pravidly aliasů.
 * **PGP šifrování nebude aplikováno na přeposílání e-mailů přes naše MX servery, pokud odesílatel měl DMARC politiku reject. Pokud potřebujete PGP šifrování na *všechny* zprávy, doporučujeme použít naši IMAP službu a nakonfigurovat svůj PGP klíč pro váš alias pro příchozí poštu.**
+* Na našich placených plánech (Rozšířená ochrana a Tým) můžete zakázat vyhledávání WKD na bázi jednotlivých aliasů. Přejděte do nastavení aliasu a zaškrtněte možnost "Zakázat vyhledávání WKD". Když je zakázáno, příchozí e-maily přeposílané na tento alias nebudou šifrovány přes WKD, i když je pro příjemce zveřejněn veřejný klíč. Toto je také dostupné přes API pomocí pole `has_wkd_disabled`.
 
 **Svou konfiguraci Web Key Directory můžete ověřit na <https://wkd.chimbosonic.com/> (open-source) nebo <https://www.webkeydirectory.com/> (proprietární).**
 

@@ -2614,6 +2614,7 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
 * Messages sent to webhooks are not currently encrypted with PGP.
 * If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
 * **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+* On our paid plans (Enhanced Protection and Team), you can disable WKD lookup on a per-alias basis.  Navigate to your alias settings and check the "Disable WKD Lookup" option.  When disabled, inbound emails forwarded to that alias will not be encrypted via WKD even if a public key is published for the recipient.  This is also available via the API using the `has_wkd_disabled` field.
 
 **You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
 

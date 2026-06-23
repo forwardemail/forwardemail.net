@@ -259,6 +259,10 @@
             "type": "string",
             "description": "S/MIME X.509-certifikat i PEM-format"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Om WKD (Web Key Directory) sökning av offentlig nyckel är inaktiverad för detta alias"
+          },
           "locale": {
             "type": "string",
             "description": "Språkinställning"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "S/MIME X.509-certifikat i PEM-format"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Om WKD (Web Key Directory) sökning av offentlig nyckel är inaktiverad för detta alias"
+          },
           "max_quota": {
             "type": "string",
             "description": "Maximal lagringskvot (t.ex. '1 GB')"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "S/MIME X.509-certifikat i PEM-format"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Om WKD (Web Key Directory) sökning av offentlig nyckel är inaktiverad för detta alias"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

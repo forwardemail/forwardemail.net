@@ -2580,6 +2580,7 @@ Tak, obsługujemy [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Op
 * Wiadomości wysyłane do webhooków nie są obecnie szyfrowane za pomocą PGP.
 * Jeśli masz wiele aliasów pasujących do danego adresu przekazywania (np. kombinacja regex/wildcard/dokładne dopasowanie) i jeśli więcej niż jeden z nich zawiera przesłany klucz PGP i ma zaznaczone PGP → wtedy wyślemy Ci e-mail z alertem o błędzie i nie zaszyfrujemy wiadomości Twoim przesłanym kluczem PGP. Jest to bardzo rzadkie i zwykle dotyczy zaawansowanych użytkowników z złożonymi regułami aliasów.
 * **Szyfrowanie PGP nie będzie stosowane do przekazywania e-maili przez nasze serwery MX, jeśli nadawca miał politykę DMARC ustawioną na reject. Jeśli potrzebujesz szyfrowania PGP na *wszystkie* wiadomości, sugerujemy korzystanie z naszej usługi IMAP i skonfigurowanie klucza PGP dla swojego aliasu dla poczty przychodzącej.**
+* W naszych płatnych planach (Wzmocniona ochrona i Zespół) możesz wyłączyć wyszukiwanie WKD dla poszczególnych aliasów. Przejdź do ustawień aliasu i zaznacz opcję "Wyłącz wyszukiwanie WKD". Po wyłączeniu przychodzące wiadomości e-mail przekazywane na ten alias nie będą szyfrowane przez WKD, nawet jeśli klucz publiczny jest opublikowany dla odbiorcy. Jest to również dostępne przez API za pomocą pola `has_wkd_disabled`.
 
 **Możesz zweryfikować swoją konfigurację Web Key Directory na <https://wkd.chimbosonic.com/> (open-source) lub <https://www.webkeydirectory.com/> (własnościowe).**
 

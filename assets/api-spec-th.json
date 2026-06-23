@@ -259,6 +259,10 @@
             "type": "string",
             "description": "ใบรับรอง S/MIME X.509 ในรูปแบบ PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "ว่าการค้นหาคีย์สาธารณะ WKD (Web Key Directory) ถูกปิดใช้งานสำหรับนามแฝงนี้หรือไม่"
+          },
           "locale": {
             "type": "string",
             "description": "การตั้งค่าตำแหน่งที่ตั้ง"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "ใบรับรอง S/MIME X.509 ในรูปแบบ PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "ว่าการค้นหาคีย์สาธารณะ WKD (Web Key Directory) ถูกปิดใช้งานสำหรับนามแฝงนี้หรือไม่"
+          },
           "max_quota": {
             "type": "string",
             "description": "โควตาพื้นที่เก็บข้อมูลสูงสุด (เช่น '1 GB')"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "ใบรับรอง S/MIME X.509 ในรูปแบบ PEM"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "ว่าการค้นหาคีย์สาธารณะ WKD (Web Key Directory) ถูกปิดใช้งานสำหรับนามแฝงนี้หรือไม่"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

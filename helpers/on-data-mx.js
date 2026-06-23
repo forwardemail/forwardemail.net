@@ -1417,7 +1417,8 @@ async function forward(recipient, headers, session, body) {
         resolver: this.resolver,
         client: this.client,
         publicKey: recipient.aliasPublicKey,
-        smimeCertificate: recipient.aliasSmimeCertificate
+        smimeCertificate: recipient.aliasSmimeCertificate,
+        hasWkdDisabled: recipient.aliasHasWkdDisabled
       });
     } catch (err) {
       //
@@ -1513,7 +1514,8 @@ async function forward(recipient, headers, session, body) {
             resolver: this.resolver,
             client: this.client,
             publicKey: recipient.aliasPublicKey,
-            smimeCertificate: recipient.aliasSmimeCertificate
+            smimeCertificate: recipient.aliasSmimeCertificate,
+            hasWkdDisabled: recipient.aliasHasWkdDisabled
           });
         } catch (err) {
           err.bounceInfo = getBounceInfo(err);

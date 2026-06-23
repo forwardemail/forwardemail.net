@@ -259,6 +259,10 @@
             "type": "string",
             "description": "شهادة S/MIME X.509 بصيغة PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "ما إذا كان البحث عن المفتاح العام عبر WKD (دليل مفاتيح الويب) معطلاً لهذا الاسم المستعار"
+          },
           "locale": {
             "type": "string",
             "description": "تفضيلات الموقع"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "شهادة S/MIME X.509 بصيغة PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "ما إذا كان البحث عن المفتاح العام عبر WKD (دليل مفاتيح الويب) معطلاً لهذا الاسم المستعار"
+          },
           "max_quota": {
             "type": "string",
             "description": "الحد الأقصى لحصة التخزين (على سبيل المثال \"1 جيجابايت\")"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "شهادة S/MIME X.509 بصيغة PEM"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "ما إذا كان البحث عن المفتاح العام عبر WKD (دليل مفاتيح الويب) معطلاً لهذا الاسم المستعار"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

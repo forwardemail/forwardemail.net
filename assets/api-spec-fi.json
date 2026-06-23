@@ -259,6 +259,10 @@
             "type": "string",
             "description": "S/MIME X.509 -sertifikaatti PEM-muodossa"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Onko WKD (Web Key Directory) julkisen avaimen haku poistettu käytöstä tälle aliakselle"
+          },
           "locale": {
             "type": "string",
             "description": "Kielikohtainen asetus"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "S/MIME X.509 -sertifikaatti PEM-muodossa"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Onko WKD (Web Key Directory) julkisen avaimen haku poistettu käytöstä tälle aliakselle"
+          },
           "max_quota": {
             "type": "string",
             "description": "Tallennustilan enimmäiskiintiö (esim. 1 Gt)"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "S/MIME X.509 -sertifikaatti PEM-muodossa"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Onko WKD (Web Key Directory) julkisen avaimen haku poistettu käytöstä tälle aliakselle"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

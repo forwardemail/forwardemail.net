@@ -461,3 +461,23 @@ a,
     display: none !important;
   }
 }
+
+// RTL support: mirror directional arrows for RTL languages (ar, he)
+// See https://github.com/forwardemail/forwardemail.net/issues/396
+[dir='rtl'] {
+  .fa-angle-right,
+  .fa-angle-double-right,
+  .fa-arrow-right,
+  .fa-chevron-right,
+  .fa-long-arrow-right {
+    transform: scaleX(-1);
+  }
+
+  .fa-angle-left,
+  .fa-angle-double-left,
+  .fa-arrow-left,
+  .fa-chevron-left,
+  .fa-long-arrow-left {
+    transform: scaleX(-1);
+  }
+}

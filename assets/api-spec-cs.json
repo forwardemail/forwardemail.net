@@ -259,6 +259,10 @@
             "type": "string",
             "description": "Certifikát S/MIME X.509 ve formátu PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Zda je vyhledávání veřejného klíče WKD (Web Key Directory) pro tento alias zakázáno"
+          },
           "locale": {
             "type": "string",
             "description": "Předvolba místního nastavení"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "Certifikát S/MIME X.509 ve formátu PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Zda je vyhledávání veřejného klíče WKD (Web Key Directory) pro tento alias zakázáno"
+          },
           "max_quota": {
             "type": "string",
             "description": "Maximální kvóta úložiště (např. „1 GB“)"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "Certifikát S/MIME X.509 ve formátu PEM"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Zda je vyhledávání veřejného klíče WKD (Web Key Directory) pro tento alias zakázáno"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

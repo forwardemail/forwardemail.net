@@ -2580,6 +2580,7 @@ Vâng, chúng tôi hỗ trợ [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Goo
 * Tin nhắn gửi đến webhook hiện tại không được mã hóa bằng PGP.
 * Nếu bạn có nhiều bí danh phù hợp với một địa chỉ chuyển tiếp nhất định (ví dụ: kết hợp regex/wildcard/chính xác) và nếu hơn một trong số đó chứa khóa PGP đã tải lên và có PGP được đánh dấu → thì chúng tôi sẽ gửi cho bạn email cảnh báo lỗi và sẽ không mã hóa tin nhắn bằng khóa PGP đã tải lên của bạn. Điều này rất hiếm và thường chỉ áp dụng cho người dùng nâng cao với các quy tắc bí danh phức tạp.
 * **Mã hóa PGP sẽ không được áp dụng cho việc chuyển tiếp email qua máy chủ MX của chúng tôi nếu người gửi có chính sách DMARC là từ chối. Nếu bạn cần mã hóa PGP cho *tất cả* thư thì chúng tôi đề xuất sử dụng dịch vụ IMAP của chúng tôi và cấu hình khóa PGP cho bí danh của bạn cho thư đến.**
+* Trên các gói trả phí của chúng tôi (Bảo vệ nâng cao và Nhóm), bạn có thể tắt tra cứu WKD theo từng bí danh. Điều hướng đến cài đặt bí danh của bạn và đánh dấu tùy chọn "Tắt tra cứu WKD". Khi tắt, các email đến được chuyển tiếp đến bí danh đó sẽ không được mã hóa qua WKD ngay cả khi khóa công khai đã được công bố cho người nhận. Điều này cũng có sẵn qua API bằng cách sử dụng trường `has_wkd_disabled`.
 
 **Bạn có thể xác thực thiết lập Thư mục Khóa Web của mình tại <https://wkd.chimbosonic.com/> (mã nguồn mở) hoặc <https://www.webkeydirectory.com/> (bản quyền).**
 

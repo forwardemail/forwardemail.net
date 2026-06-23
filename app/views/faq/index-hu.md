@@ -2581,6 +2581,7 @@ Igen, támogatjuk az [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy
 * A webhookokra küldött üzenetek jelenleg nem titkosítottak PGP-vel.
 * Ha egy adott továbbítási címhez több alias is illeszkedik (pl. regex/wildcard/pontos kombináció), és ezek közül több tartalmaz feltöltött PGP kulcsot és be van kapcsolva a PGP → akkor hibajelző e-mailt küldünk, és nem titkosítjuk az üzenetet a feltöltött PGP kulccsal. Ez nagyon ritka, és általában csak haladó felhasználók összetett alias szabályaira vonatkozik.
 * **A PGP titkosítás nem kerül alkalmazásra az MX szervereinken keresztüli e-mail továbbítás esetén, ha a feladó DMARC szabálya reject volt. Ha *minden* levélre PGP titkosítást igényel, javasoljuk az IMAP szolgáltatásunk használatát, és konfigurálja PGP kulcsát az aliasához a bejövő levelekhez.**
+* Fizetős csomagjainkban (Fokozott védelem és Csapat) aliasonként letilthatja a WKD-keresést. Navigáljon az alias beállításaihoz, és jelölje be a "WKD-keresés letiltása" opciót. Letiltás esetén az adott aliasra továbbított bejövő e-mailek nem lesznek WKD-n keresztül titkosítva, még akkor sem, ha a címzettnek van közzétett nyilvános kulcsa. Ez az API-n keresztül is elérhető a `has_wkd_disabled` mező használatával.
 
 **A Web Key Directory beállítását ellenőrizheti a <https://wkd.chimbosonic.com/> (nyílt forráskódú) vagy a <https://www.webkeydirectory.com/> (proprietáris) oldalakon.**
 

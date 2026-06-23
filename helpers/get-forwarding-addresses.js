@@ -56,6 +56,7 @@ async function getForwardingAddresses(
   let hasIMAP = false;
   let aliasPublicKey = false;
   let aliasSmimeCertificate = false;
+  let aliasHasWkdDisabled = false;
   let vacationResponder = false;
   let aliasIds;
   const domain = parseHostFromDomainOrAddress(address);
@@ -428,6 +429,11 @@ async function getForwardingAddresses(
     // S/MIME certificate handling
     if (isSANB(body.alias_smime_certificate)) {
       aliasSmimeCertificate = body.alias_smime_certificate;
+    }
+
+    // WKD opt-out
+    if (body.alias_has_wkd_disabled) {
+      aliasHasWkdDisabled = true;
     }
 
     if (_.isObject(body.vacation_responder))
@@ -1169,15 +1175,16 @@ async function getForwardingAddresses(
       hasIMAP,
       aliasPublicKey,
       aliasSmimeCertificate,
+      aliasHasWkdDisabled,
       vacationResponder,
       addresses: forwardingAddresses
     };
-
   return {
     aliasIds,
     hasIMAP,
     aliasPublicKey,
     aliasSmimeCertificate,
+    aliasHasWkdDisabled,
     vacationResponder,
     addresses: forwardingAddresses.map((forwardingAddress) => {
       if (

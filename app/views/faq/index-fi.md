@@ -2580,6 +2580,7 @@ Kyllä, tuemme [OpenPGP:tä](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#O
 * Webhookeille lähetetyt viestit eivät tällä hetkellä ole PGP-salattuja.
 * Jos sinulla on useita aliaksia, jotka vastaavat tiettyä välitysohjetta (esim. regex/wildcard/tarkka yhdistelmä) ja jos useampi näistä sisältää ladatun PGP-avaimen ja PGP on valittuna → lähetämme sinulle virheilmoituksen sähköpostitse emmekä salaa viestiä ladatulla PGP-avaimellasi. Tämä on hyvin harvinaista ja koskee yleensä vain edistyneitä käyttäjiä, joilla on monimutkaiset alias-säännöt.
 * **PGP-salausta ei sovelleta sähköpostin välitykseen MX-palvelimemme kautta, jos lähettäjällä on DMARC-käytäntö "reject". Jos tarvitset PGP-salauksen *kaikissa* viesteissä, suosittelemme käyttämään IMAP-palveluamme ja konfiguroimaan PGP-avaimesi aliaksellesi saapuvaa postia varten.**
+* Maksullisissa suunnitelmissamme (Parannettu suojaus ja Tiimi) voit poistaa WKD-haun käytöstä aliaskohtaisesti. Siirry alias-asetuksiisi ja valitse "Poista WKD-haku käytöstä" -vaihtoehto. Kun poistettu käytöstä, kyseiselle aliakselle välitettyjä saapuvia sähköposteja ei salata WKD:n kautta, vaikka vastaanottajalle olisi julkaistu julkinen avain. Tämä on saatavilla myös API:n kautta `has_wkd_disabled`-kentän avulla.
 
 **Voit tarkistaa Web Key Directory -asetuksesi osoitteessa <https://wkd.chimbosonic.com/> (avoin lähdekoodi) tai <https://www.webkeydirectory.com/> (proprietaarinen).**
 

@@ -2581,6 +2581,7 @@ Evet, [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [uç
 * Webhook'lara gönderilen mesajlar şu anda PGP ile şifrelenmemektedir.
 * Bir yönlendirme adresi için birden fazla eşleşen takma adınız varsa (örneğin regex/wildcard/tam kombinasyon) ve bunlardan birden fazlası yüklenmiş PGP anahtarı içerip PGP işaretliyse → size bir hata uyarı e-postası göndeririz ve mesajı yüklenmiş PGP anahtarınızla şifrelemeyiz. Bu çok nadirdir ve genellikle karmaşık takma ad kuralları olan ileri düzey kullanıcılar için geçerlidir.
 * **Gönderenin DMARC politikası reject ise, MX sunucularımız üzerinden e-posta yönlendirmede PGP şifrelemesi uygulanmaz. *Tüm* postalar için PGP şifrelemesi gerekiyorsa, IMAP servisimiz kullanmanızı ve takma adınız için gelen postalar için PGP anahtarınızı yapılandırmanızı öneririz.**
+* Ücretli planlarımızda (Gelişmiş Koruma ve Takım), WKD aramasını takma ad bazında devre dışı bırakabilirsiniz. Takma ad ayarlarınıza gidin ve "WKD Aramasını Devre Dışı Bırak" seçeneğini işaretleyin. Devre dışı bırakıldığında, bu takma ada yönlendirilen gelen e-postalar, alıcı için bir genel anahtar yayınlanmış olsa bile WKD aracılığıyla şifrelenmeyecektir. Bu, API üzerinden `has_wkd_disabled` alanı kullanılarak da mevcuttur.
 
 **Web Anahtar Dizini kurulumunuzu <https://wkd.chimbosonic.com/> (açık kaynak) veya <https://www.webkeydirectory.com/> (proprietary) adreslerinde doğrulayabilirsiniz.**
 

@@ -259,6 +259,10 @@
             "type": "string",
             "description": "PEM形式のS/MIME X.509証明書"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "このエイリアスでWKD（Web Key Directory）公開鍵の検索が無効になっているかどうか"
+          },
           "locale": {
             "type": "string",
             "description": "ロケール設定"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "PEM形式のS/MIME X.509証明書"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "このエイリアスでWKD（Web Key Directory）公開鍵の検索が無効になっているかどうか"
+          },
           "max_quota": {
             "type": "string",
             "description": "ストレージの最大割り当て量（例：1 GB）"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "PEM形式のS/MIME X.509証明書"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "このエイリアスでWKD（Web Key Directory）公開鍵の検索が無効になっているかどうか"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {

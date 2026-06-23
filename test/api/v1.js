@@ -261,6 +261,7 @@ test('creates alias with global catch-all', async (t) => {
       'has_pgp',
       'has_recipient_verification',
       'has_smime',
+      'has_wkd_disabled',
       'id',
       'is_enabled',
       'locale',
@@ -353,6 +354,7 @@ test('creates alias with global catch-all', async (t) => {
         'verified_recipients',
         'has_pgp',
         'has_smime',
+        'has_wkd_disabled',
         'has_imap',
         'storage_used',
         'storage_location',
@@ -2704,6 +2706,7 @@ test('error_code_if_disabled', async (t) => {
     });
   t.is(res.status, 200);
   t.deepEqual(res.body, {
+    alias_has_wkd_disabled: false,
     alias_ids: [],
     alias_public_key: false,
     alias_smime_certificate: false,

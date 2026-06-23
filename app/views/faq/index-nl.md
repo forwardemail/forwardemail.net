@@ -2581,6 +2581,7 @@ Ja, wij ondersteunen [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy
 * Berichten die naar webhooks worden gestuurd, zijn momenteel niet versleuteld met PGP.
 * Als u meerdere aliassen heeft die overeenkomen met een bepaald doorstuuradres (bijv. regex/wildcard/exacte combinatie) en als meer dan één hiervan een geüploade PGP-sleutel bevat en PGP is aangevinkt → dan sturen wij u een foutmelding per e-mail en versleutelen wij het bericht niet met uw geüploade PGP-sleutel. Dit is zeer zeldzaam en geldt meestal alleen voor gevorderde gebruikers met complexe aliasregels.
 * **PGP-encryptie wordt niet toegepast op e-maildoorsturing via onze MX-servers als de afzender een DMARC-beleid van reject had. Als u PGP-encryptie op *alle* mail wilt, raden wij aan onze IMAP-service te gebruiken en uw PGP-sleutel voor uw alias te configureren voor inkomende mail.**
+* Op onze betaalde plannen (Verbeterde bescherming en Team) kunt u WKD-opzoeking per alias uitschakelen. Navigeer naar uw alias-instellingen en vink de optie "WKD-opzoeking uitschakelen" aan. Wanneer uitgeschakeld, worden inkomende e-mails die naar dat alias worden doorgestuurd niet versleuteld via WKD, zelfs als er een openbare sleutel is gepubliceerd voor de ontvanger. Dit is ook beschikbaar via de API met het veld `has_wkd_disabled`.
 
 **U kunt uw Web Key Directory-configuratie valideren op <https://wkd.chimbosonic.com/> (open-source) of <https://www.webkeydirectory.com/> (proprietair).**
 

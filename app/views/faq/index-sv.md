@@ -2581,6 +2581,7 @@ Ja, vi stödjer [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
 * Meddelanden som skickas till webhooks är för närvarande inte krypterade med PGP.
 * Om du har flera alias som matchar en given vidarebefordringsadress (t.ex. regex/wildcard/exakt kombination) och om mer än ett av dessa innehåller en uppladdad PGP-nyckel och har PGP ikryssat → då skickar vi ett felmeddelande via e-post och krypterar inte meddelandet med din uppladdade PGP-nyckel. Detta är mycket ovanligt och gäller vanligtvis avancerade användare med komplexa aliasregler.
 * **PGP-kryptering kommer inte att tillämpas på e-post vidarebefordrad via våra MX-servrar om avsändaren har en DMARC-policy som avvisar. Om du behöver PGP-kryptering på *all* e-post rekommenderar vi att använda vår IMAP-tjänst och konfigurera din PGP-nyckel för ditt alias för inkommande e-post.**
+* På våra betalda planer (Förbättrat skydd och Team) kan du inaktivera WKD-sökning per alias. Navigera till dina alias-inställningar och markera alternativet "Inaktivera WKD-sökning". När inaktiverat kommer inkommande e-postmeddelanden som vidarebefordras till det aliaset inte att krypteras via WKD även om en offentlig nyckel är publicerad för mottagaren. Detta är också tillgängligt via API:et med fältet `has_wkd_disabled`.
 
 **Du kan validera din Web Key Directory-konfiguration på <https://wkd.chimbosonic.com/> (öppen källkod) eller <https://www.webkeydirectory.com/> (proprietär).**
 

@@ -41,6 +41,7 @@ async function getPGPResults({
   raw,
   publicKey,
   smimeCertificate,
+  hasWkdDisabled,
   resolver,
   client,
   email,
@@ -95,7 +96,7 @@ async function getPGPResults({
     // Fall back to PGP if S/MIME not used
     if (!smime) {
       try {
-        if (!publicKey) {
+        if (!publicKey && !hasWkdDisabled) {
           const wkd = new WKD(resolver, client);
 
           // TODO: pending PR in wkd-client package
@@ -238,7 +239,8 @@ async function sendEmail(
     resolver,
     client,
     publicKey,
-    smimeCertificate
+    smimeCertificate,
+    hasWkdDisabled
   },
   email,
   domain
@@ -299,6 +301,7 @@ async function sendEmail(
       raw,
       publicKey,
       smimeCertificate,
+      hasWkdDisabled,
       resolver,
       client,
       email,

@@ -259,6 +259,10 @@
             "type": "string",
             "description": "Sertifikat S/MIME X.509 dalam format PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Apakah pencarian kunci publik WKD (Web Key Directory) dinonaktifkan untuk alias ini"
+          },
           "locale": {
             "type": "string",
             "description": "Preferensi lokal"
@@ -331,6 +335,7 @@
           "public_key": "",
           "has_smime": false,
           "smime_certificate": "",
+          "has_wkd_disabled": false,
           "locale": "en",
           "settings": {
             "mail": {
@@ -2440,6 +2445,10 @@
             "type": "string",
             "description": "Sertifikat S/MIME X.509 dalam format PEM"
           },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Apakah pencarian kunci publik WKD (Web Key Directory) dinonaktifkan untuk alias ini"
+          },
           "max_quota": {
             "type": "string",
             "description": "Kuota penyimpanan maksimum (misalnya '1 GB')"
@@ -2551,6 +2560,10 @@
           "smime_certificate": {
             "type": "string",
             "description": "Sertifikat S/MIME X.509 dalam format PEM"
+          },
+          "has_wkd_disabled": {
+            "type": "boolean",
+            "description": "Apakah pencarian kunci publik WKD (Web Key Directory) dinonaktifkan untuk alias ini"
           },
           "max_quota": {
             "type": "string",
@@ -3182,6 +3195,7 @@
                       "public_key": "",
                       "has_smime": false,
                       "smime_certificate": "",
+                      "has_wkd_disabled": false,
                       "locale": "en",
                       "settings": {
                         "mail": {
