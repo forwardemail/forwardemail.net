@@ -194,18 +194,105 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
       headers.hasHeader('auto-submitted') &&
       headers.getFirst('auto-submitted').toLowerCase().trim() !== 'no';
 
-    // Check if the From header uses a mailer-daemon/postmaster-style address
+    // Check if the From header uses a true bounce-system address
+    // NOTE: only actual bounce/DSN usernames qualify here, NOT generic
+    // no-reply addresses (e.g. "noreply", "donotreply") which are commonly
+    // spoofed in phishing attacks. The full POSTMASTER_USERNAMES set is too
+    // broad because it includes the no-reply-list which contains "noreply",
+    // "no-reply", etc. that attackers abuse.
+    const DSN_USERNAMES = new Set([
+      'mailer-daemon',
+      'mailer.daemon',
+      'maildaemon',
+      'mailerdaemon',
+      'mail-daemon',
+      'mail.daemon',
+      'postmaster',
+      'hostmaster',
+      'bounce',
+      'bounces',
+      'bounce-notification',
+      'bounce-notifications'
+    ]);
     const fromUser = session.originalFromAddress
       ? session.originalFromAddress.split('@')[0].toLowerCase()
       : '';
-    const isMailerDaemonFrom = config.POSTMASTER_USERNAMES.has(fromUser);
+    const isMailerDaemonFrom = DSN_USERNAMES.has(fromUser);
 
     // Check if the sending server is allowlisted (trusted sender)
     const isSenderAllowlisted = Boolean(session.isAllowlisted);
 
-    isLegitDSN =
-      (isDSNContentType || hasAutoSubmitted || isMailerDaemonFrom) &&
-      isSenderAllowlisted;
+    //
+    // To qualify as a legitimate DSN, we require:
+    // - The sender must be allowlisted (trusted infrastructure), AND
+    // - At least TWO of the three structural indicators must be present:
+    //   1. multipart/report content type (RFC 3464)
+    //   2. Auto-Submitted header (RFC 3834)
+    //   3. From header uses a true mailer-daemon/postmaster address
+    //
+    // Previously a single indicator (e.g. just isMailerDaemonFrom) was
+    // sufficient, which allowed attackers to spoof From: noreply@victim.be
+    // from an allowlisted IP and bypass DMARC p=reject.
+    //
+    const dsnIndicatorCount =
+      (isDSNContentType ? 1 : 0) +
+      (hasAutoSubmitted ? 1 : 0) +
+      (isMailerDaemonFrom ? 1 : 0);
+
+    isLegitDSN = dsnIndicatorCount >= 2 && isSenderAllowlisted;
+
+    //
+    // Safeguard: the allowlisted sending infrastructure must match the
+    // From header domain. A legitimate DSN from Google would have
+    // From: mailer-daemon@google.com (or a subdomain), NOT
+    // From: mailer-daemon@victim.be sent through Google's servers.
+    // Without this check, any attacker using allowlisted shared hosting
+    // (AWS, GCP, etc.) could forge a DSN-like message with any From domain.
+    //
+    if (isLegitDSN) {
+      const fromDomain = session.originalFromAddress
+        ? session.originalFromAddress.split('@')[1]?.toLowerCase()
+        : '';
+      if (fromDomain) {
+        const fromRoot = parseRootDomain(fromDomain);
+        // The allowlistValue is the hostname/domain/IP that matched the
+        // global allowlist. The sending server's root hostname must match
+        // the From header's root domain for the DSN to be legitimate.
+        const senderRoot = session.resolvedRootClientHostname
+          ? session.resolvedRootClientHostname.toLowerCase()
+          : '';
+        const allowlistDomain = session.allowlistValue
+          ? parseRootDomain(session.allowlistValue.toLowerCase())
+          : '';
+        const senderMatchesFrom =
+          (senderRoot && senderRoot === fromRoot) ||
+          (allowlistDomain && allowlistDomain === fromRoot);
+        if (!senderMatchesFrom) isLegitDSN = false;
+      }
+    }
+
+    //
+    // Additional safeguard: never exempt a message where the From domain
+    // matches a recipient domain (self-spoofing). A legitimate DSN from
+    // an external server would never use the recipient's own domain in From.
+    //
+    if (
+      isLegitDSN &&
+      session.envelope.rcptTo &&
+      session.envelope.rcptTo.length > 0
+    ) {
+      const fromDomain = session.originalFromAddress
+        ? session.originalFromAddress.split('@')[1]?.toLowerCase()
+        : '';
+      if (fromDomain) {
+        const isSelfSpoof = session.envelope.rcptTo.some((rcpt) => {
+          if (!rcpt.address) return false;
+          const rcptDomain = rcpt.address.split('@')[1]?.toLowerCase();
+          return rcptDomain === fromDomain;
+        });
+        if (isSelfSpoof) isLegitDSN = false;
+      }
+    }
   }
 
   //

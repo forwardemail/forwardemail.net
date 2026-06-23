@@ -237,6 +237,11 @@ const Payments = new mongoose.Schema({
     type: Date,
     index: true
   },
+  // when the refund was actually processed (set by helpers/refund.js and sync helpers)
+  refunded_at: {
+    type: Date,
+    index: true
+  },
   amount_formatted: {
     type: String,
     required: true,
@@ -581,6 +586,10 @@ Payments.index({
 Payments.index({ reference: 1 }); // Exact reference lookup
 Payments.index({ stripe_payment_intent_id: 1 }); // Stripe lookup
 Payments.index({ paypal_transaction_id: 1 }); // PayPal lookup
+// Unique sparse indexes to prevent duplicate payments from concurrent creation
+// (webhook + redirect race condition). Sparse so that documents without
+// these fields are not constrained.
+Payments.index({ paypal_order_id: 1 }, { unique: true, sparse: true }); // Prevent duplicate PayPal order payments
 Payments.index({ currency: 1 }); // Currency filtering
 Payments.index({ method: 1 }); // Method filtering
 

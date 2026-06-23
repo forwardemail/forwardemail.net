@@ -346,7 +346,9 @@ async function calculateQuickRatio() {
   const denominator = breakdown.churnMRR + breakdown.contractionMRR;
 
   if (denominator === 0) {
-    return numerator > 0 ? 999 : 0;
+    // Cap at a reasonable maximum instead of an arbitrary large number;
+    // a ratio > 4 is already considered "healthy" per SaaS benchmarks.
+    return numerator > 0 ? 10 : 0;
   }
 
   return Math.round((numerator / denominator) * 100) / 100;
@@ -578,22 +580,81 @@ async function getUpgradesDowngrades(days = 30) {
   const now = dayjs();
   const startDate = now.subtract(days, 'day').toDate();
 
-  // This is a simplified version - in production you'd track plan changes
-  const teamPayments = await Payments.countDocuments({
-    invoice_at: { $gte: startDate },
-    plan: 'team',
-    method: { $nin: ['free_beta_program', 'plan_conversion'] }
-  });
+  // Upgrades: users who paid for 'team' in this period but previously
+  // had an 'enhanced_protection' payment (indicating plan upgrade)
+  const upgrades = await Payments.aggregate([
+    {
+      $match: {
+        invoice_at: { $gte: startDate, $lte: now.toDate() },
+        plan: 'team',
+        method: { $nin: ['free_beta_program', 'plan_conversion'] }
+      }
+    },
+    {
+      $lookup: {
+        from: 'payments',
+        let: { userId: '$user' },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ['$user', '$$userId'] },
+              invoice_at: { $lt: startDate },
+              plan: 'enhanced_protection'
+            }
+          },
+          { $limit: 1 }
+        ],
+        as: 'previousEnhanced'
+      }
+    },
+    {
+      $match: {
+        previousEnhanced: { $ne: [] }
+      }
+    },
+    { $group: { _id: '$user' } },
+    { $count: 'total' }
+  ]);
 
-  const enhancedPayments = await Payments.countDocuments({
-    invoice_at: { $gte: startDate },
-    plan: 'enhanced_protection',
-    method: { $nin: ['free_beta_program', 'plan_conversion'] }
-  });
+  // Downgrades: users who paid for 'enhanced_protection' in this period
+  // but previously had a 'team' payment (indicating plan downgrade)
+  const downgrades = await Payments.aggregate([
+    {
+      $match: {
+        invoice_at: { $gte: startDate, $lte: now.toDate() },
+        plan: 'enhanced_protection',
+        method: { $nin: ['free_beta_program', 'plan_conversion'] }
+      }
+    },
+    {
+      $lookup: {
+        from: 'payments',
+        let: { userId: '$user' },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ['$user', '$$userId'] },
+              invoice_at: { $lt: startDate },
+              plan: 'team'
+            }
+          },
+          { $limit: 1 }
+        ],
+        as: 'previousTeam'
+      }
+    },
+    {
+      $match: {
+        previousTeam: { $ne: [] }
+      }
+    },
+    { $group: { _id: '$user' } },
+    { $count: 'total' }
+  ]);
 
   return {
-    upgrades: Math.floor(teamPayments * 0.1), // Estimate 10% are upgrades
-    downgrades: Math.floor(enhancedPayments * 0.05) // Estimate 5% are downgrades
+    upgrades: upgrades[0]?.total || 0,
+    downgrades: downgrades[0]?.total || 0
   };
 }
 
@@ -607,9 +668,19 @@ async function getRefunds(days = 30) {
   const refunds = await Payments.aggregate([
     {
       $match: {
-        updated_at: { $gte: startDate },
         amount_refunded: { $gt: 0 },
-        method: { $nin: ['free_beta_program', 'plan_conversion'] }
+        method: { $nin: ['free_beta_program', 'plan_conversion'] },
+        // Use refunded_at (preferred) or refund_receipt_sent_at (legacy fallback)
+        // to determine when the refund actually occurred.
+        // NOTE: updated_at was previously used here but it gets bumped by sync
+        // jobs on every run, causing all historical refunds to be recounted.
+        $or: [
+          { refunded_at: { $gte: startDate } },
+          {
+            refunded_at: { $exists: false },
+            refund_receipt_sent_at: { $gte: startDate }
+          }
+        ]
       }
     },
     {
@@ -1008,7 +1079,7 @@ async function getQuickRatioChart() {
     const numerator = breakdown.newMRR + breakdown.expansionMRR;
     const denominator = breakdown.churnMRR + breakdown.contractionMRR;
     const quickRatio =
-      denominator > 0 ? numerator / denominator : numerator > 0 ? 4 : 0;
+      denominator > 0 ? numerator / denominator : numerator > 0 ? 10 : 0;
 
     data.push([dateString, Math.round(quickRatio * 100) / 100]);
   }

@@ -72,6 +72,7 @@ const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list
 const isBackscatterer = require('#helpers/is-backscatterer');
 const isCodeBug = require('#helpers/is-code-bug');
 const isDenylisted = require('#helpers/is-denylisted');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const isEmail = require('#helpers/is-email');
 const isGreylisted = require('#helpers/is-greylisted');
 const isSilentBanned = require('#helpers/is-silent-banned');
@@ -544,6 +545,17 @@ async function imap(alias, headers, session, body) {
     logger.fatal(_err, { session, resolver: this.resolver });
     const err = parseError(_err);
     err.target = env.IMAP_HOST;
+    //
+    // Sanitize internal infrastructure errors (WebSocket timeouts, worker
+    // routing failures, etc.) so raw details are never exposed to senders
+    // in SMTP responses or bounce notifications.
+    //
+    if (isTimeoutError(err) && !err._message) {
+      err._message = err.message;
+      err.message =
+        'Message delivery was temporarily interrupted, please try again later.';
+    }
+
     bounces.push({
       address: alias.address,
       err,

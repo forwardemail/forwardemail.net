@@ -23,6 +23,7 @@ async function refund(id) {
     });
     payment.amount_refunded = payment.amount;
     payment.currency_amount_refunded = payment.currency_amount;
+    payment.refunded_at = new Date();
     await payment.save();
     return payment.toObject();
   }
@@ -44,6 +45,7 @@ async function refund(id) {
       `/v2/payments/captures/${payment.paypal_transaction_id}/refund`
     );
     payment.amount_refunded = payment.amount;
+    payment.refunded_at = new Date();
     await payment.save();
     return payment.toObject();
   }

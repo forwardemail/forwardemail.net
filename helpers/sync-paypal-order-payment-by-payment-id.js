@@ -134,6 +134,11 @@ async function syncPayPalOrderPaymentByPaymentId(id) {
       }
 
       payment.amount_refunded = amountRefunded;
+      // Track when the refund was detected (for dashboard metrics)
+      if (amountRefunded > 0 && !payment.refunded_at) {
+        payment.refunded_at = new Date();
+      }
+
       if (invoiceAt) payment.invoice_at = invoiceAt;
       await payment.save();
 

@@ -642,25 +642,45 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
         if (!_.isFinite(months) || months < 1)
           throw new Error('Months was not finite');
 
-        payment = await Payments.create({
-          user: user._id,
-          reference: res.body.purchase_units[0].invoice_id,
-          amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
-          method: 'paypal',
-          duration:
-            months >= 12
-              ? ms(`${Math.round(months / 12)}y`)
-              : ms(`${Math.round(months * 30)}d`),
-          plan,
-          kind: 'one-time',
-          paypal_order_id: res.body.id,
-          paypal_transaction_id: transactionId,
-          invoice_at: now,
-          stack: new Error('stack').stack
-        });
+        try {
+          payment = await Payments.create({
+            user: user._id,
+            reference: res.body.purchase_units[0].invoice_id,
+            amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
+            method: 'paypal',
+            duration:
+              months >= 12
+                ? ms(`${Math.round(months / 12)}y`)
+                : ms(`${Math.round(months * 30)}d`),
+            plan,
+            kind: 'one-time',
+            paypal_order_id: res.body.id,
+            paypal_transaction_id: transactionId,
+            invoice_at: now,
+            stack: new Error('stack').stack
+          });
 
-        // log the payment just for sanity
-        ctx.logger.info('paypal payment created', { payment });
+          // log the payment just for sanity
+          ctx.logger.info('paypal payment created', { payment });
+        } catch (err) {
+          // Handle duplicate key error from unique index on paypal_order_id
+          // (race condition: redirect handler created the payment concurrently)
+          if (
+            err.code === 11000 ||
+            err.message?.includes('PAYMENT_ALREADY_EXISTS')
+          ) {
+            ctx.logger.warn(
+              'paypal duplicate payment detected in webhook, fetching existing',
+              {
+                paypal_order_id: res.body.id
+              }
+            );
+            payment = await Payments.findOne({ $or });
+            if (!payment) throw err; // re-throw if we truly can't find it
+          } else {
+            throw err;
+          }
+        }
 
         // Fix for race condition: if the payment's invoice_at is before planSetAt,
         // update planSetAt to match. This can happen when the redirect handler

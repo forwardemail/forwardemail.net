@@ -9,10 +9,26 @@ const striptags = require('striptags');
 
 const getErrorCode = require('./get-error-code');
 const isRetryableError = require('./is-retryable-error');
+const isTimeoutError = require('./is-timeout-error');
 const isLockingError = require('./is-locking-error');
 const isCodeBug = require('./is-code-bug');
 const logger = require('./logger');
 const _ = require('#helpers/lodash');
+
+//
+// Patterns that indicate internal infrastructure details which must never
+// be exposed to end users in SMTP responses or bounce notifications.
+//
+const INTERNAL_MESSAGE_PATTERNS = [
+  'WebSocket request was rejected by timeout',
+  'WebSocket closed with reason',
+  'wsp.open() timed out',
+  'wsp.open() failed',
+  'RequestId:',
+  'sqlite-client',
+  'SQLITE_PORT',
+  'worker affinity fallback'
+];
 
 // const env = require('#config/env');
 
@@ -76,6 +92,23 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
 
     // wildduck uses `responseMessage` in some instances
     err.responseMessage = err.message;
+  } else if (
+    !err._message &&
+    isTimeoutError(err) &&
+    typeof err.message === 'string' &&
+    INTERNAL_MESSAGE_PATTERNS.some((p) => err.message.includes(p))
+  ) {
+    //
+    // Sanitize internal infrastructure timeout/transient errors.
+    // These are NOT code bugs (isCodeBug=false) but their raw messages
+    // expose internal details (WebSocket ports, RequestIds, worker routing)
+    // that should never reach end users in SMTP responses or bounce emails.
+    //
+    err._message = err.message;
+    err.message =
+      'Message delivery was temporarily interrupted, please try again later.';
+    err.responseMessage = err.message;
+    logger.error(err, { session, resolver: instance?.resolver });
   } else if (
     isIMAP &&
     typeof err.imapResponse === 'string' &&

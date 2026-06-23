@@ -1089,24 +1089,44 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
         if (payment) {
           ctx.logger.info('paypal payment existed', { payment });
         } else {
-          payment = await Payments.create({
-            user: ctx.state.user._id,
-            reference: body.purchase_units[0].invoice_id,
-            amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
-            method: 'paypal',
-            duration:
-              months >= 12
-                ? ms(`${Math.round(months / 12)}y`)
-                : ms(`${Math.round(months * 30)}d`),
-            plan: ctx.query.plan,
-            kind: 'one-time',
-            paypal_order_id: body.id,
-            paypal_transaction_id: transactionId,
-            invoice_at: now,
-            stack: new Error('stack').stack
-          });
-          // log the payment just for sanity
-          ctx.logger.info('paypal payment created', { payment });
+          try {
+            payment = await Payments.create({
+              user: ctx.state.user._id,
+              reference: body.purchase_units[0].invoice_id,
+              amount: Number.parseInt(amount * 100, 10), // convert to cents for consistency with stripe
+              method: 'paypal',
+              duration:
+                months >= 12
+                  ? ms(`${Math.round(months / 12)}y`)
+                  : ms(`${Math.round(months * 30)}d`),
+              plan: ctx.query.plan,
+              kind: 'one-time',
+              paypal_order_id: body.id,
+              paypal_transaction_id: transactionId,
+              invoice_at: now,
+              stack: new Error('stack').stack
+            });
+            // log the payment just for sanity
+            ctx.logger.info('paypal payment created', { payment });
+          } catch (err) {
+            // Handle duplicate key error from unique index on paypal_order_id
+            // (race condition: webhook handler created the payment concurrently)
+            if (
+              err.code === 11000 ||
+              err.message?.includes('PAYMENT_ALREADY_EXISTS')
+            ) {
+              ctx.logger.warn(
+                'paypal duplicate payment detected in redirect, fetching existing',
+                {
+                  paypal_order_id: body.id
+                }
+              );
+              payment = await Payments.findOne({ $or });
+              if (!payment) throw err; // re-throw if we truly can't find it
+            } else {
+              throw err;
+            }
+          }
         }
 
         //

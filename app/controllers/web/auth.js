@@ -911,6 +911,26 @@ async function verify(ctx) {
   }
 }
 
+//
+// If the user is already authenticated when visiting a reset-password link,
+// transparently log them out so the reset flow can proceed.
+// This replaces the previous `ensureLoggedOut` which silently redirected
+// authenticated users away from the page — causing the "link doesn't work" bug.
+//
+async function logoutBeforeReset(ctx, next) {
+  if (ctx.isAuthenticated()) {
+    ctx.logout();
+    // Destroy the existing session so stale cookies don't interfere
+    try {
+      await ctx.regenerateSession();
+    } catch (err) {
+      ctx.logger.error(err);
+    }
+  }
+
+  return next();
+}
+
 module.exports = {
   logout,
   registerOrLogin,
@@ -924,5 +944,6 @@ module.exports = {
   changeEmail,
   catchError,
   verify,
-  parseReturnOrRedirectTo
+  parseReturnOrRedirectTo,
+  logoutBeforeReset
 };

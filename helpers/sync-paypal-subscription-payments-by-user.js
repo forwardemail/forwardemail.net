@@ -245,6 +245,11 @@ async function syncPayPalSubscriptionPaymentsByUser(
 
               if (payment.amount_refunded !== amountRefunded) {
                 payment.amount_refunded = amountRefunded;
+                // Track when the refund was detected (for dashboard metrics)
+                if (amountRefunded > 0 && !payment.refunded_at) {
+                  payment.refunded_at = new Date();
+                }
+
                 shouldSave = true;
               }
 
@@ -285,6 +290,7 @@ async function syncPayPalSubscriptionPaymentsByUser(
                 plan,
                 duration,
                 amount_refunded: amountRefunded,
+                ...(amountRefunded > 0 ? { refunded_at: new Date() } : {}),
                 [config.userFields.paypalSubscriptionID]: subscription.id,
                 paypal_transaction_id: transaction.id,
                 invoice_at: new Date(transaction.time),

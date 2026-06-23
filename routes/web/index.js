@@ -664,12 +664,12 @@ localeRouter
   )
   .get(
     '/reset-password/:token',
-    policies.ensureLoggedOut,
+    web.auth.logoutBeforeReset,
     render('reset-password')
   )
   .post(
     '/reset-password/:token',
-    policies.ensureLoggedOut,
+    web.auth.logoutBeforeReset,
     policies.ensureTurnstile,
     rateLimit(10, 'reset password'),
     web.auth.resetPassword
