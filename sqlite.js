@@ -23,10 +23,9 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const SQLite = require('./sqlite-server');
 
-const env = require('#config/env');
+const closeDatabase = require('#helpers/close-database');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
-const parseSqlitePortRange = require('#helpers/parse-sqlite-port-range');
 
 const imapSharedConfig = sharedConfig('IMAP');
 const client = new Redis(imapSharedConfig.redis, logger);
@@ -49,12 +48,29 @@ const graceful = new Graceful({
     () => promisify(sqlite.wss.close).bind(sqlite.wss)(),
     // normal databases (no-op when databaseMap is null / disabled)
     async () => {
-      if (sqlite.databaseMap) await sqlite.databaseMap.closeAll();
+      if (!sqlite.databaseMap || sqlite.databaseMap.size === 0) return;
+      await Promise.all(
+        [...sqlite.databaseMap.keys()].map(async (key) => {
+          const db = sqlite.databaseMap.get(key);
+          if (db) await closeDatabase(db);
+          sqlite.databaseMap.delete(key);
+        })
+      );
     },
     // temporary databases (no-op when temporaryDatabaseMap is null / disabled)
     async () => {
-      if (sqlite.temporaryDatabaseMap)
-        await sqlite.temporaryDatabaseMap.closeAll();
+      if (
+        !sqlite.temporaryDatabaseMap ||
+        sqlite.temporaryDatabaseMap.size === 0
+      )
+        return;
+      await Promise.all(
+        [...sqlite.temporaryDatabaseMap.keys()].map(async (key) => {
+          const db = sqlite.temporaryDatabaseMap.get(key);
+          if (db) await closeDatabase(db);
+          sqlite.temporaryDatabaseMap.delete(key);
+        })
+      );
     }
   ]
 });
@@ -62,79 +78,13 @@ graceful.listen();
 
 (async () => {
   try {
-    //
-    // This script runs in two modes, selected by the SQLITE_LEGACY env var that
-    // the PM2 app block sets (see ecosystem-sqlite.json):
-    //
-    //   * NORMAL  (default): a fork-mode worker in the `sqlite` app. Its port is
-    //     derived from SQLITE_PORT_RANGE + NODE_APP_INSTANCE, and a boot
-    //     assertion guarantees the instance id stays inside the range.
-    //
-    //   * LEGACY (SQLITE_LEGACY=true): the dedicated single-instance
-    //     `sqlite-legacy` app. It binds the legacy single SQLITE_PORT so that
-    //     clients (or in-flight connections) that still target the old
-    //     single-port endpoint keep reaching a live, fully-capable worker while
-    //     the fleet migrates to SQLITE_PORT_RANGE. Being a standalone instance
-    //     (not part of the range fork pool), it does NOT participate in the
-    //     range/instance assertion.
-    //
-    const isLegacy = Boolean(env.SQLITE_LEGACY);
-
-    let port;
-    if (isLegacy) {
-      port = Number.parseInt(env.SQLITE_PORT, 10);
-      if (!Number.isInteger(port) || port <= 0) {
-        throw new Error(
-          `SQLITE_LEGACY is enabled but SQLITE_PORT="${env.SQLITE_PORT}" is not ` +
-            'a valid port. Set SQLITE_PORT to the legacy single-port value.'
-        );
-      }
-    } else {
-      //
-      // Derive the base port and worker count from a SINGLE source of truth:
-      // SQLITE_PORT_RANGE (e.g. "3456:3465"). This MUST match what the client
-      // pool (helpers/create-websocket-as-promised.js) and the UFW allowlist
-      // use, otherwise the firewall, the listeners, and the client connections
-      // diverge.
-      //
-      const { basePort, workerCount } = parseSqlitePortRange();
-
-      // In fork mode, each instance gets a unique port offset by NODE_APP_INSTANCE
-      const instanceId = Number.parseInt(
-        process.env.NODE_APP_INSTANCE || '0',
-        10
-      );
-
-      // Fail loudly on a mis-configured topology instead of silently binding a
-      // port outside the firewalled range (which would break connectivity).
-      if (instanceId < 0 || instanceId >= workerCount) {
-        throw new Error(
-          `NODE_APP_INSTANCE=${instanceId} is out of range for SQLITE_PORT_RANGE ` +
-            `(${basePort}:${
-              basePort + workerCount - 1
-            }, workerCount=${workerCount}). ` +
-            `Ensure ecosystem-sqlite.json 'instances' equals the range width.`
-        );
-      }
-
-      port = basePort + instanceId;
-    }
-
-    await sqlite.listen(port);
+    await sqlite.listen();
     if (process.send) process.send('ready');
+    const { port } = sqlite.server.address();
     logger.info(
-      `SQLite WebSocket server listening on ${port}${
-        isLegacy ? ' (legacy)' : ''
-      } (LAN: ${ip.address()}:${port})`,
+      `SQLite WebSocket server listening on ${port} (LAN: ${ip.address()}:${port})`,
       { hide_meta: true }
     );
-    if (isLegacy) {
-      console.log(
-        '[INFO:sqlite-server] legacy compatibility listener started',
-        JSON.stringify({ port })
-      );
-    }
-
     await setupMongoose(logger);
   } catch (err) {
     // Use timeout to prevent hanging if MongoDB pool is exhausted

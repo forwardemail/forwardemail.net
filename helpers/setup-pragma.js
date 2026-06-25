@@ -11,7 +11,6 @@ const pWaitFor = require('p-wait-for');
 const { mkdirp } = require('mkdirp');
 
 const config = require('#config');
-const env = require('#config/env');
 const logger = require('#helpers/logger');
 const IMAPError = require('#helpers/imap-error');
 const { decrypt } = require('#helpers/encrypt-decrypt');
@@ -96,11 +95,9 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   // Performance tuning PRAGMAs for high-concurrency WAL workloads
   //
 
-  // Page cache size (negative = KiB). Default restored to ~64 MB to reduce
-  // cache pressure and checkpoint frequency (the aggressive 8 MB value forced
-  // far more WAL spill/checkpoint I/O). Overridable via SQLITE_CACHE_SIZE_KB
-  // (a negative integer in KiB, e.g. -65536 for 64 MB).
-  db.pragma(`cache_size=${Number(env.SQLITE_CACHE_SIZE_KB) || -65536}`);
+  // Increase page cache to ~64 MB (negative = KiB)
+  // Default is ~2 MB which causes excessive I/O under concurrent readers
+  db.pragma('cache_size=-65536');
 
   // Limit WAL file growth to 256 MB
   // Prevents unbounded WAL growth when checkpointing is deferred

@@ -4,25 +4,11 @@
       "name": "sqlite",
       "script": "sqlite.js",
       "wait_ready": true,
-      "listen_timeout": 10000,
-      "exec_mode": "fork",
-      "instances": 5,
+      "exec_mode": "cluster",
+      "instances": "max",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production"
-      }
-    },
-    {
-      "name": "sqlite-legacy",
-      "script": "sqlite.js",
-      "wait_ready": true,
-      "listen_timeout": 10000,
-      "exec_mode": "fork",
-      "instances": 1,
-      "pmx": false,
-      "env_production": {
-        "NODE_ENV": "production",
-        "SQLITE_LEGACY": "true"
       }
     },
     {
