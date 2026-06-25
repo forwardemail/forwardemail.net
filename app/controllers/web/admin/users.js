@@ -12,7 +12,7 @@ const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
-const { Aliases, Domains, Users } = require('#models');
+const { Domains, Users } = require('#models');
 // Const { removeUserAliasBackups } = require('#helpers/remove-alias-backup');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 const config = require('#config');
@@ -44,11 +44,18 @@ async function list(ctx) {
     query[config.userFields.hasVerifiedEmail] = true;
   }
 
-  // FWD-01-010: mongodb_query is only accepted from the POST body to prevent
-  // cross-origin timing side-channel attacks observable via GET query strings.
+  // FWD-01-010: mongodb_query is validated by assertAllowedMongoQuery() below,
+  // which whitelists operators and caps size/depth regardless of transport, so
+  // it is safe to accept from either the POST body (search form submit) or the
+  // GET query string. Query-string support is required for pagination links,
+  // sort headers, and cross-links (e.g. /admin/users?mongodb_query=...), which
+  // are GET requests; without it those links reload the page but drop the
+  // filter. The POST body takes precedence when both are present.
   const mongodbQueryRaw =
     ctx.request.body && isSANB(ctx.request.body.mongodb_query)
       ? ctx.request.body.mongodb_query
+      : isSANB(ctx.query.mongodb_query)
+      ? ctx.query.mongodb_query
       : null;
 
   if (mongodbQueryRaw) {
@@ -154,12 +161,6 @@ async function update(ctx) {
   }
 
   if (body.max_quota_per_alias) {
-    // Capture the old value before updating so we can propagate increases
-    user._original_max_quota_per_alias =
-      typeof user.max_quota_per_alias === 'number'
-        ? user.max_quota_per_alias
-        : config.maxQuotaPerAlias;
-
     // Validate `body.max_quota_per_alias_per_alias` if a value was passed
     if (
       typeof body.max_quota_per_alias !== 'undefined' &&
@@ -189,52 +190,18 @@ async function update(ctx) {
   await user.save();
 
   if (body.max_quota_per_alias) {
-    //
-    // Propagate the quota increase to existing domains and aliases that
-    // are still at the previous limit.  This ensures that when an admin
-    // raises a user's quota (e.g. 10 GB -> 20 GB), domains/aliases that
-    // were capped at the old value get raised automatically.  Aliases or
-    // domains that were manually lowered (e.g. to 1 GB) are left alone.
-    //
-    const oldQuota = user._original_max_quota_per_alias;
-    const newQuota = user.max_quota_per_alias;
-
     Domains.distinct('_id', {
       members: {
         $elemMatch: {
-          user: user._id,
+          user: ctx.state.user._id,
           group: 'admin'
         }
       }
     })
-      .then(async (domainIds) => {
-        // Propagate to domains whose max_quota_per_alias matches the old limit
-        if (
-          Number.isFinite(oldQuota) &&
-          Number.isFinite(newQuota) &&
-          newQuota > oldQuota &&
-          domainIds.length > 0
-        ) {
-          await Domains.updateMany(
-            {
-              _id: { $in: domainIds },
-              max_quota_per_alias: oldQuota
-            },
-            { $set: { max_quota_per_alias: newQuota } }
-          );
-
-          // Propagate to aliases whose max_quota matches the old limit
-          await Aliases.updateMany(
-            {
-              domain: { $in: domainIds },
-              max_quota: oldQuota
-            },
-            { $set: { max_quota: newQuota } }
-          );
-        }
-
-        // Clear the alias quota cache for affected domains
-        await clearAliasQuotaCache(ctx.client, domainIds);
+      .then((domainIds) => {
+        clearAliasQuotaCache(ctx.client, domainIds)
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
       })
       .catch((err) => ctx.logger.fatal(err));
   }

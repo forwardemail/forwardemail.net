@@ -13,6 +13,8 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const { Buffer } = require('node:buffer');
+
 const mongoose = require('mongoose');
 const tools = require('@zone-eu/wildduck/lib/tools');
 const { Builder } = require('json-sql-enhanced');
@@ -299,7 +301,15 @@ async function onMove(mailboxId, update, session, fn) {
       sourceUid.push(m.uid);
       destinationUid.push(uidNext);
 
-      const flags = decodeMetadata(m.flags, recursivelyParse);
+      const flags = new Set(
+        (decodeMetadata(m.flags, recursivelyParse) || []).map((f) =>
+          typeof f === 'string'
+            ? f
+            : Buffer.isBuffer(f)
+            ? f.toString()
+            : String(f)
+        )
+      );
 
       // update message
       const exp = typeof retention === 'number' ? retention !== 0 : false;
@@ -321,7 +331,7 @@ async function onMove(mailboxId, update, session, fn) {
             junk: specialUse === '\\Junk',
             remoteAddress: session.remoteAddress,
             transaction: 'MOVE',
-            searchable: !flags.includes('\\Deleted')
+            searchable: !flags.has('\\Deleted')
           })
         }
       });
@@ -348,7 +358,7 @@ async function onMove(mailboxId, update, session, fn) {
       existEntries.push({
         command: 'EXISTS',
         uid: uidNext,
-        unseen: !flags.includes('\\Seen'),
+        unseen: !flags.has('\\Seen'),
         // TODO: set `modseq` equal to modifyIndex + 1 of target mailbox (?)
         idate: new Date(m.idate),
         mailbox: _id,

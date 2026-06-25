@@ -82,17 +82,31 @@ function parseReturnOrRedirectTo(ctx, next) {
     ctx.session.returnTo = ctx.query.redirect_to;
   }
 
-  // prevents lad being used as a open redirect
-  if (
-    ctx.session &&
-    ctx.session.returnTo &&
-    ctx.session.returnTo.includes('://') &&
-    ctx.session.returnTo.indexOf(config.urls.web) !== 0
-  ) {
-    ctx.logger.warn(
-      `Prevented abuse with returnTo hijacking to ${ctx.session.returnTo}`
-    );
-    ctx.session.returnTo = null;
+  // prevents lad being used as an open redirect
+  if (ctx.session && ctx.session.returnTo) {
+    const { returnTo } = ctx.session;
+    //
+    // Block protocol-relative URLs (//evil.com) and any absolute URL
+    // whose origin does not exactly match config.urls.web.
+    // This prevents both //evil.com and https://forwardemail.net.evil.com
+    //
+    let blocked = false;
+    if (returnTo.startsWith('//')) {
+      blocked = true;
+    } else if (returnTo.includes('://')) {
+      try {
+        const parsed = new URL(returnTo);
+        const trusted = new URL(config.urls.web);
+        if (parsed.origin !== trusted.origin) blocked = true;
+      } catch {
+        blocked = true;
+      }
+    }
+
+    if (blocked) {
+      ctx.logger.warn(`Prevented abuse with returnTo hijacking to ${returnTo}`);
+      ctx.session.returnTo = null;
+    }
   }
 
   return next();
@@ -897,26 +911,6 @@ async function verify(ctx) {
   }
 }
 
-//
-// If the user is already authenticated when visiting a reset-password link,
-// transparently log them out so the reset flow can proceed.
-// This replaces the previous `ensureLoggedOut` which silently redirected
-// authenticated users away from the page — causing the "link doesn't work" bug.
-//
-async function logoutBeforeReset(ctx, next) {
-  if (ctx.isAuthenticated()) {
-    ctx.logout();
-    // Destroy the existing session so stale cookies don't interfere
-    try {
-      await ctx.regenerateSession();
-    } catch (err) {
-      ctx.logger.error(err);
-    }
-  }
-
-  return next();
-}
-
 module.exports = {
   logout,
   registerOrLogin,
@@ -930,6 +924,5 @@ module.exports = {
   changeEmail,
   catchError,
   verify,
-  parseReturnOrRedirectTo,
-  logoutBeforeReset
+  parseReturnOrRedirectTo
 };
