@@ -40,14 +40,6 @@ const DEFAULT = {
   debug: !env.AXE_SILENT
 };
 
-//
-// Per-worker health tracking threshold. A worker is considered "unhealthy"
-// after this many consecutive close events without a successful open.
-// With connectionTimeout=5s + reconnectionDelay=500ms, 3 failures means
-// ~16.5s of sustained unreachability — well beyond a transient blip.
-//
-const UNHEALTHY_THRESHOLD = 3;
-
 // <https://github.com/vitalets/websocket-as-promised/pull/49>
 WebSocketAsPromised.prototype._handleClose = function (event) {
   try {
@@ -402,17 +394,6 @@ function createSingleWsp(url, auth, workerIndex) {
   });
 
   wsp.onOpen.addListener(() => {
-    // Mark worker healthy on successful open — clears any prior failure state
-    if (wsp._consecutiveFailures > 0 || !wsp._healthy) {
-      logger.info('worker recovered', {
-        url,
-        workerIndex,
-        previousFailures: wsp._consecutiveFailures
-      });
-    }
-
-    wsp._consecutiveFailures = 0;
-    wsp._healthy = true;
     console.log(
       '[INFO:sqlite-client] wsp open',
       JSON.stringify({ url, workerIndex, protocol })
@@ -420,21 +401,6 @@ function createSingleWsp(url, auth, workerIndex) {
   });
 
   wsp.onClose.addListener((event) => {
-    // Track consecutive close events (each close during reconnection counts).
-    // The close reason 'timeout' means the 5s connectionTimeout fired, i.e.
-    // the server couldn't complete the TLS/WS handshake in time.
-    wsp._consecutiveFailures++;
-    wsp._lastFailureAt = Date.now();
-    if (wsp._consecutiveFailures >= UNHEALTHY_THRESHOLD && wsp._healthy) {
-      wsp._healthy = false;
-      logger.warn('worker marked unhealthy', {
-        url,
-        workerIndex,
-        consecutiveFailures: wsp._consecutiveFailures,
-        reason: event?.reason
-      });
-    }
-
     console.error(
       '[ERROR:sqlite-client] wsp close',
       JSON.stringify({
@@ -523,10 +489,6 @@ function createWebSocketAsPromised(options = {}) {
     member._routeHost = host;
     member._routePort = port;
     member._routeIndex = i;
-    // Health tracking state
-    member._consecutiveFailures = 0;
-    member._healthy = true;
-    member._lastFailureAt = 0;
     pool.push(member);
   }
 
@@ -576,30 +538,23 @@ function createWebSocketAsPromised(options = {}) {
     legacyMember._routePort = legacyPort;
     legacyMember._routeIndex = legacyIndex;
     legacyMember._isLegacy = true;
-    // Health tracking state (same as range members)
-    legacyMember._consecutiveFailures = 0;
-    legacyMember._healthy = true;
-    legacyMember._lastFailureAt = 0;
     pool.push(legacyMember);
   }
 
   //
   // Select the target worker for a given alias_id using consistent hashing.
   //
-  // Routing strategy:
-  // 1. If the affinity target is open OR healthy (< UNHEALTHY_THRESHOLD
-  //    consecutive failures), always use it. sendRequest() handles transient
-  //    reconnection via pWaitFor(() => wsp.open(), {timeout: 15s}).
-  // 2. If the target is unhealthy (sustained failures, e.g. blocked event loop
-  //    or unreachable port), fall back to a healthy open worker to avoid
-  //    blocking all requests for aliases that hash to the stuck worker.
-  // 3. If ALL workers are unhealthy/disconnected, return the affinity target
-  //    anyway (sendRequest will wait and eventually timeout).
+  // IMPORTANT: Always prefer the affinity target even when it is momentarily
+  // reconnecting. The underlying ReconnectingWebSocket reconnects with infinite
+  // retries (500ms–3000ms delay), so a closed readyState is transient.
+  // sendRequest() already calls pWaitFor(() => wsp.open(), {timeout: 15s}),
+  // which is the correct place to wait for reconnection. Falling back to a
+  // different worker breaks affinity and risks opening the same SQLite DB on
+  // two workers simultaneously (WAL contention / corruption).
   //
-  // Health state is tracked per-worker via onOpen/onClose listeners:
-  // - onOpen: reset _consecutiveFailures to 0, mark _healthy = true
-  // - onClose: increment _consecutiveFailures; if >= UNHEALTHY_THRESHOLD,
-  //   mark _healthy = false
+  // We only fall back when the target's ReconnectingWebSocket has permanently
+  // given up (_shouldReconnect === false), which should never happen with
+  // maxRetries: Infinity but is kept as a defensive measure.
   //
   function getWorkerForAlias(aliasId) {
     if (pool.length === 1) return pool[0];
@@ -609,8 +564,14 @@ function createWebSocketAsPromised(options = {}) {
     const targetIndex = fnv1aHash(aliasId) % routingCount;
     const target = pool[targetIndex];
 
-    // Fast path: target is currently open — use it immediately.
-    if (target.isOpened) {
+    // Determine if the target is still willing to reconnect. The inner _ws is
+    // the ReconnectingWebSocket instance; _shouldReconnect is false only after
+    // an explicit close() call (not during normal reconnection cycles).
+    const rws = target._ws?._ws; // WebSocketAsPromised._ws = RWS instance
+    const willReconnect = !rws || rws._shouldReconnect !== false;
+
+    // Fast path: target is open or will reconnect — always use it.
+    if (target.isOpened || target.isOpening || willReconnect) {
       if (env.SQLITE_VERBOSE_ROUTING) {
         console.log(
           '[INFO:sqlite-client] routing alias to worker',
@@ -618,7 +579,11 @@ function createWebSocketAsPromised(options = {}) {
             aliasId,
             workerIndex: targetIndex,
             port: target._routePort,
-            via: 'affinity-open'
+            url: target._routeUrl,
+            via: 'affinity',
+            isOpened: target.isOpened,
+            isOpening: target.isOpening,
+            willReconnect
           })
         );
       }
@@ -626,61 +591,29 @@ function createWebSocketAsPromised(options = {}) {
       return target;
     }
 
-    // Target is not open. If it's still healthy (few consecutive failures),
-    // trust that it will reconnect shortly — sendRequest will wait.
-    if (target._healthy) {
-      if (env.SQLITE_VERBOSE_ROUTING) {
-        console.log(
-          '[INFO:sqlite-client] routing alias to worker (reconnecting)',
-          JSON.stringify({
-            aliasId,
-            workerIndex: targetIndex,
-            port: target._routePort,
-            via: 'affinity-reconnecting',
-            consecutiveFailures: target._consecutiveFailures
-          })
-        );
-      }
-
-      return target;
-    }
-
-    // Target is unhealthy — fall back to a healthy open worker.
-    // Prefer open workers first, then healthy-but-reconnecting workers.
-    let fallback = null;
-    for (let i = 0; i < routingCount; i++) {
+    // Target permanently closed — fall back to any connected worker.
+    // This should be rare (only during graceful shutdown of a specific worker).
+    for (const [i, wsp] of pool.entries()) {
       if (i === targetIndex) continue;
-      const candidate = pool[i];
-      if (candidate.isOpened && candidate._healthy) {
-        fallback = candidate;
-        break;
-      }
-
-      // Remember first healthy-but-not-open candidate as secondary fallback
-      if (!fallback && candidate._healthy) {
-        fallback = candidate;
+      if (wsp.isOpened || wsp.isOpening) {
+        logger.warn('worker affinity fallback (target permanently closed)', {
+          aliasId,
+          targetIndex,
+          targetPort: target._routePort,
+          fallbackIndex: i,
+          fallbackPort: wsp._routePort,
+          fallbackUrl: wsp._routeUrl
+        });
+        return wsp;
       }
     }
 
-    if (fallback) {
-      logger.debug('worker affinity fallback (target unhealthy)', {
-        aliasId,
-        targetIndex,
-        targetPort: target._routePort,
-        targetFailures: target._consecutiveFailures,
-        fallbackIndex: fallback._routeIndex,
-        fallbackPort: fallback._routePort
-      });
-      return fallback;
-    }
-
-    // All workers unhealthy/disconnected — return affinity target anyway.
-    // sendRequest will wait up to 15s then timeout.
-    logger.warn('all workers unhealthy, using affinity target', {
+    // All disconnected — return the target anyway (sendRequest will wait)
+    logger.warn('no connected worker, awaiting target', {
       aliasId,
       targetIndex,
       port: target._routePort,
-      consecutiveFailures: target._consecutiveFailures,
+      url: target._routeUrl,
       poolSize: pool.length
     });
     return target;
