@@ -65,9 +65,7 @@ function getQueryResponse(query, message, options = {}, instance, session) {
 
           value = merged;
         } else {
-          value = Array.isArray(message.flags)
-            ? message.flags.filter((f) => typeof f === 'string')
-            : message.flags;
+          value = message.flags;
         }
 
         break;

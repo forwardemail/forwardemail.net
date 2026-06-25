@@ -13,8 +13,6 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const { Buffer } = require('node:buffer');
-
 const imapTools = require('@zone-eu/wildduck/imap-core/lib/imap-tools');
 const tools = require('@zone-eu/wildduck/lib/tools');
 const { Builder } = require('json-sql-enhanced');
@@ -39,7 +37,6 @@ const { formatResponse } = IMAPConnection.prototype;
 const builder = new Builder({ bufferAsNative: true });
 
 function getFlag(f) {
-  if (typeof f !== 'string') f = Buffer.isBuffer(f) ? f.toString() : String(f);
   return f.trim().toLowerCase();
 }
 
