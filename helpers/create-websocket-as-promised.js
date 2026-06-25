@@ -543,73 +543,79 @@ function createWebSocketAsPromised(options = {}) {
 
   //
   // Select the target worker for a given alias_id using consistent hashing.
-  // If the target worker is disconnected, fall back to any connected worker.
+  //
+  // IMPORTANT: Always prefer the affinity target even when it is momentarily
+  // reconnecting. The underlying ReconnectingWebSocket reconnects with infinite
+  // retries (500ms–3000ms delay), so a closed readyState is transient.
+  // sendRequest() already calls pWaitFor(() => wsp.open(), {timeout: 15s}),
+  // which is the correct place to wait for reconnection. Falling back to a
+  // different worker breaks affinity and risks opening the same SQLite DB on
+  // two workers simultaneously (WAL contention / corruption).
+  //
+  // We only fall back when the target's ReconnectingWebSocket has permanently
+  // given up (_shouldReconnect === false), which should never happen with
+  // maxRetries: Infinity but is kept as a defensive measure.
   //
   function getWorkerForAlias(aliasId) {
-    // Only short-circuit when there is genuinely a single connection (no legacy
-    // fallback member present); otherwise fall through so the legacy member can
-    // still be used as a fallback when the sole range worker is unreachable.
     if (pool.length === 1) return pool[0];
-    if (routingCount === 1 && (pool[0].isOpened || pool[0].isOpening))
-      return pool[0];
 
     // Hash only across the range workers (routingCount), never the optional
     // trailing legacy member, so affinity is unaffected by its presence.
     const targetIndex = fnv1aHash(aliasId) % routingCount;
     const target = pool[targetIndex];
 
-    // If target is connected, use it
-    if (target.isOpened || target.isOpening) {
-      console.log(
-        '[INFO:sqlite-client] routing alias to worker',
-        JSON.stringify({
-          aliasId,
-          workerIndex: targetIndex,
-          port: target._routePort,
-          url: target._routeUrl,
-          via: 'affinity',
-          isOpened: target.isOpened,
-          isOpening: target.isOpening
-        })
-      );
+    // Determine if the target is still willing to reconnect. The inner _ws is
+    // the ReconnectingWebSocket instance; _shouldReconnect is false only after
+    // an explicit close() call (not during normal reconnection cycles).
+    const rws = target._ws?._ws; // WebSocketAsPromised._ws = RWS instance
+    const willReconnect = !rws || rws._shouldReconnect !== false;
+
+    // Fast path: target is open or will reconnect — always use it.
+    if (target.isOpened || target.isOpening || willReconnect) {
+      if (env.SQLITE_VERBOSE_ROUTING) {
+        console.log(
+          '[INFO:sqlite-client] routing alias to worker',
+          JSON.stringify({
+            aliasId,
+            workerIndex: targetIndex,
+            port: target._routePort,
+            url: target._routeUrl,
+            via: 'affinity',
+            isOpened: target.isOpened,
+            isOpening: target.isOpening,
+            willReconnect
+          })
+        );
+      }
+
       return target;
     }
 
-    // Fallback: find any connected worker
+    // Target permanently closed — fall back to any connected worker.
+    // This should be rare (only during graceful shutdown of a specific worker).
     for (const [i, wsp] of pool.entries()) {
       if (i === targetIndex) continue;
       if (wsp.isOpened || wsp.isOpening) {
-        logger.warn('worker affinity fallback', {
+        logger.warn('worker affinity fallback (target permanently closed)', {
           aliasId,
           targetIndex,
-          fallbackIndex: i
+          targetPort: target._routePort,
+          fallbackIndex: i,
+          fallbackPort: wsp._routePort,
+          fallbackUrl: wsp._routeUrl
         });
-        console.error(
-          '[ERROR:sqlite-client] worker affinity fallback',
-          JSON.stringify({
-            aliasId,
-            targetIndex,
-            targetPort: target._routePort,
-            fallbackIndex: i,
-            fallbackPort: wsp._routePort,
-            fallbackUrl: wsp._routeUrl
-          })
-        );
         return wsp;
       }
     }
 
-    // All disconnected — return the target anyway (sendRequest will wait for open)
-    console.error(
-      '[ERROR:sqlite-client] no connected worker, awaiting target',
-      JSON.stringify({
-        aliasId,
-        targetIndex,
-        port: target._routePort,
-        url: target._routeUrl,
-        poolSize: pool.length
-      })
-    );
+    // All disconnected — return the target anyway (sendRequest will wait)
+    logger.warn('no connected worker, awaiting target', {
+      aliasId,
+      targetIndex,
+      port: target._routePort,
+      url: target._routeUrl,
+      poolSize: pool.length
+    });
     return target;
   }
 
