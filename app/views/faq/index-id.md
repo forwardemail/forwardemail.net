@@ -129,6 +129,7 @@
   * [Bagaimana Anda mencegah spammer dan memastikan reputasi penerusan email yang baik](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Bagaimana Anda melakukan pencarian DNS pada nama domain](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Akun dan Penagihan](#account-and-billing)
+  * [Bagaimana cara menghapus akun saya](#how-do-i-delete-my-account)
   * [Apakah Anda menawarkan jaminan uang kembali pada paket berbayar](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Jika saya mengganti paket, apakah Anda melakukan prorata dan mengembalikan selisihnya](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Bisakah saya hanya menggunakan layanan penerusan email ini sebagai server MX "fallback" atau "fallover"]( #can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5366,6 +5367,27 @@ Kami membuat proyek perangkat lunak sumber terbuka :tangerine: [Tangerine](https
 
 
 ## Akun dan Penagihan {#account-and-billing}
+
+### Bagaimana cara menghapus akun saya {#how-do-i-delete-my-account}
+
+Anda dapat menghapus akun Anda kapan saja dengan mengikuti langkah-langkah berikut:
+
+1. Masuk ke akun Anda di [forwardemail.net/login](https://forwardemail.net/login)
+2. Buka [Akun Saya → Keamanan](/my-account/security)
+3. Gulir ke bagian bawah halaman dan klik tombol **"Hapus Akun"**
+4. Konfirmasi penghapusan saat diminta
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Penting:
+  </strong>
+  <span>
+    Penghapusan akun bersifat permanen dan tidak dapat dibatalkan.  Semua domain, alias, kotak masuk, email, dan data terkait Anda akan dihapus secara permanen dari sistem kami.  Jika Anda menggunakan paket berbayar, langganan Anda akan segera dibatalkan.
+  </span>
+</div>
+
+Jika Anda tidak dapat masuk ke akun Anda, silakan hubungi kami di <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> dari alamat email yang terkait dengan akun Anda dan kami akan membantu Anda dengan penghapusan tersebut.
 
 ### Apakah Anda menawarkan jaminan uang kembali pada paket berbayar {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

@@ -36,6 +36,7 @@ const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
+const locales = require('#config/locales');
 const logger = require('#helpers/logger');
 const retryRequest = require('#helpers/retry-request');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -56,6 +57,76 @@ const graceful = new Graceful({
 });
 
 graceful.listen();
+
+//
+// Build a regex to strip locale prefixes from URL paths.
+// Sitemap URLs look like: https://forwardemail.net/en/faq
+// We need the path without the locale prefix for pattern matching.
+//
+const localeRegex = new RegExp(`^/(${locales.join('|')})/`);
+
+/**
+ * Strip the locale prefix from a URL path.
+ * e.g. "/en/faq" → "/faq", "/fr/about" → "/about"
+ * @param {string} urlPath - Path portion of the URL
+ * @returns {string} Path without locale prefix
+ */
+function stripLocale(urlPath) {
+  return urlPath.replace(localeRegex, '/');
+}
+
+//
+// Programmatic use-case page suffixes (these are thin/generated SEO pages).
+// Matches the regex used in routes/web/index.js for isStaticUseCase detection.
+//
+const PROGRAMMATIC_SUFFIXES_RE =
+  /-(email-forwarding|email-provider|email-hosting|email-service|email-newsletters|email-api|email-masking|email-marketing|bulk-email-service|mass-email-service|email-automation|email-security|email-management|email-platform|email-solutions)$/;
+
+/**
+ * Determine whether a URL path corresponds to a landing/SEO page
+ * that should be excluded from the internal search index.
+ *
+ * Excluded families:
+ * 1. Programmatic use-case pages (noun + title suffix combos)
+ * 2. Individual alternative pages (/blog/best-*-alternative)
+ * 3. Pairwise comparison pages (/blog/*-vs-*-email-service-comparison)
+ * 4. Comparison landing pages (/blog/best-email-service, etc.)
+ * 5. Open-source platform pages (/blog/open-source/*-email-server, *-email-clients)
+ *
+ * @param {string} urlPath - Full URL path (with locale prefix)
+ * @returns {boolean} true if the page should be excluded from search
+ */
+function isLandingPage(urlPath) {
+  const path = stripLocale(urlPath);
+
+  // 1. Programmatic use-case pages
+  if (PROGRAMMATIC_SUFFIXES_RE.test(path)) return true;
+
+  // 2. Individual alternative pages
+  if (/^\/blog\/best-.+-alternative$/.test(path)) return true;
+
+  // 3. Pairwise comparison pages
+  if (/^\/blog\/.+-vs-.+-email-service-comparison$/.test(path)) return true;
+
+  // 4. Comparison landing pages
+  if (
+    [
+      '/blog/best-email-service',
+      '/blog/best-private-email-service',
+      '/blog/best-open-source-email-service',
+      '/blog/best-transactional-email-service',
+      '/blog/best-email-api-developer-service',
+      '/blog/best-email-spam-filtering-service'
+    ].includes(path)
+  )
+    return true;
+
+  // 5. Open-source platform pages (individual server/client pages, not the index)
+  if (/^\/blog\/open-source\/.+-(email-server|email-clients)$/.test(path))
+    return true;
+
+  return false;
+}
 
 /**
  * Fetch and parse a sitemap XML file
@@ -330,12 +401,98 @@ async function processUrl(url) {
 
     logger.debug(`Total URLs to crawl: ${allUrls.length}`);
 
+    //
+    // Partition URLs into indexable and landing/SEO pages.
+    // Landing pages still get crawled for caching/OG images but are
+    // excluded from the internal search index.
+    //
+    const indexableUrls = [];
+    const landingUrls = [];
     for (const url of allUrls) {
+      const path = url.loc.replace(config.urls.web, '');
+      if (isLandingPage(path)) {
+        landingUrls.push(url);
+      } else {
+        indexableUrls.push(url);
+      }
+    }
+
+    logger.debug(
+      `Indexable: ${indexableUrls.length}, Landing (skip index): ${landingUrls.length}`
+    );
+
+    // Process indexable pages (crawl + index)
+    for (const url of indexableUrls) {
       try {
         await processUrl(url);
       } catch (err) {
         logger.error(err, { url: url.loc });
       }
+    }
+
+    // Crawl landing pages for caching/OG only (no search indexing)
+    for (const url of landingUrls) {
+      try {
+        const path = url.loc.replace(config.urls.web, '');
+        logger.debug(`crawling (cache only) ${path}`);
+
+        const { body } = await client.request({
+          method: 'GET',
+          path
+        });
+
+        await body.text();
+
+        // Also crawl .png for OG image caching
+        const pngPath = path + '.png';
+        logger.debug(`crawling ${pngPath}`);
+        const { body: pngBody } = await client.request({
+          method: 'GET',
+          path: pngPath
+        });
+
+        await pngBody.text();
+      } catch (err) {
+        logger.error(err, { url: url.loc });
+      }
+    }
+
+    //
+    // Clean up stale search index entries for landing pages.
+    // Use a regex that matches any landing page href pattern.
+    //
+    try {
+      const deleteResult = await SearchResults.deleteMany({
+        $or: [
+          { href: { $regex: PROGRAMMATIC_SUFFIXES_RE } },
+          { href: { $regex: /\/blog\/best-.+-alternative/ } },
+          { href: { $regex: /\/blog\/.+-vs-.+-email-service-comparison/ } },
+          {
+            href: {
+              $regex: /\/blog\/open-source\/.+-(email-server|email-clients)/
+            }
+          },
+          {
+            href: {
+              $in: [
+                '/blog/best-email-service',
+                '/blog/best-private-email-service',
+                '/blog/best-open-source-email-service',
+                '/blog/best-transactional-email-service',
+                '/blog/best-email-api-developer-service',
+                '/blog/best-email-spam-filtering-service'
+              ].flatMap((p) =>
+                locales.map((l) => `${config.urls.web}/${l}${p}`)
+              )
+            }
+          }
+        ]
+      });
+      logger.debug(
+        `Cleaned up ${deleteResult.deletedCount} stale landing page search entries`
+      );
+    } catch (err) {
+      logger.error(err);
     }
 
     const sitemap = `${config.urls.web}/sitemap.xml`;

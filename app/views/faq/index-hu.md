@@ -129,6 +129,7 @@
   * [Hogyan akadályozzátok meg a spammereket és biztosítjátok a jó email továbbítási hírnevet](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Hogyan végeztek DNS lekérdezéseket domain nevekre](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Fiók és Számlázás](#account-and-billing)
+  * [Hogyan törölhetem a fiókomat](#how-do-i-delete-my-account)
   * [Kínáltok pénzvisszafizetési garanciát a fizetős csomagokra](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Ha váltok csomagot, arányosan visszatérítitek a különbözetet](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Használhatom ezt az email továbbító szolgáltatást "tartalék" vagy "átváltó" MX szerverként](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5366,6 +5367,27 @@ Létrehoztunk egy nyílt forráskódú szoftverprojektet :tangerine: [Tangerine]
 
 
 ## Fiók és Számlázás {#account-and-billing}
+
+### Hogyan törölhetem a fiókomat {#how-do-i-delete-my-account}
+
+Bármikor törölheti fiókját az alábbi lépések követésével:
+
+1. Jelentkezzen be fiókjába a [forwardemail.net/login](https://forwardemail.net/login) oldalon
+2. Lépjen a [Fiókom → Biztonság](/my-account/security) menüpontra
+3. Görgessen az oldal aljára, és kattintson a **"Fiók törlése"** gombra
+4. Erősítse meg a törlést, amikor a rendszer kéri
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Fontos:
+  </strong>
+  <span>
+    A fiók törlése végleges és nem vonható vissza.  Minden domainje, aliasa, postafiókja, e-mailje és a hozzájuk kapcsolódó adatok véglegesen törlődnek a rendszereinkből.  Ha fizetős csomaggal rendelkezik, előfizetése azonnal megszűnik.
+  </span>
+</div>
+
+Ha nem tud bejelentkezni a fiókjába, kérjük, vegye fel velünk a kapcsolatot a <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> címen a fiókjához társított e-mail címről, és segítünk a törlésben.
 
 ### Van pénzvisszafizetési garancia a fizetős csomagokra? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

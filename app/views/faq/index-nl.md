@@ -129,6 +129,7 @@
   * [Hoe voorkomt u spammers en zorgt u voor een goede e-mail forwarding reputatie](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Hoe voert u DNS-zoekopdrachten uit op domeinnamen](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Account en facturering](#account-and-billing)
+  * [Hoe verwijder ik mijn account](#how-do-i-delete-my-account)
   * [Biedt u een geld-terug-garantie op betaalde abonnementen](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Als ik van abonnement wissel, past u dan pro rata aan en vergoedt u het verschil](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Kan ik deze e-mail forwarding dienst gewoon gebruiken als een "fallback" of "fallover" MX-server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5366,6 +5367,27 @@ We hebben een open-source softwareproject :tangerine: [Tangerine](https://github
 
 
 ## Account en facturatie {#account-and-billing}
+
+### Hoe verwijder ik mijn account {#how-do-i-delete-my-account}
+
+Je kunt je account op elk moment verwijderen door deze stappen te volgen:
+
+1. Log in op je account via [forwardemail.net/login](https://forwardemail.net/login)
+2. Ga naar [Mijn account → Beveiliging](/my-account/security)
+3. Scroll naar de onderkant van de pagina en klik op de knop **"Account verwijderen"**
+4. Bevestig de verwijdering wanneer daarom wordt gevraagd
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Belangrijk:
+  </strong>
+  <span>
+    Het verwijderen van een account is definitief en kan niet ongedaan worden gemaakt. Al je domeinen, aliassen, mailboxen, e-mails en bijbehorende gegevens worden permanent uit onze systemen verwijderd. Als je een betaald abonnement hebt, wordt je abonnement onmiddellijk geannuleerd.
+  </span>
+</div>
+
+Als je niet kunt inloggen op je account, neem dan contact met ons op via <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> vanaf het e-mailadres dat aan je account is gekoppeld en we zullen je helpen met de verwijdering.
 
 ### Bieden jullie een geld-terug-garantie op betaalde abonnementen {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

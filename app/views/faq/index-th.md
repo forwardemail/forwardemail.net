@@ -129,6 +129,7 @@
   * [คุณป้องกันสแปมเมอร์และรักษาชื่อเสียงการส่งต่ออีเมลอย่างไร](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [คุณทำการค้นหา DNS บนชื่อโดเมนอย่างไร](#how-do-you-perform-dns-lookups-on-domain-names)
 * [บัญชีและการชำระเงิน](#account-and-billing)
+  * [ฉันจะลบบัญชีของฉันได้อย่างไร](#how-do-i-delete-my-account)
   * [คุณมีการรับประกันคืนเงินสำหรับแผนที่ชำระเงินไหม](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [ถ้าฉันเปลี่ยนแผน คุณคิดอัตราส่วนและคืนเงินส่วนต่างไหม](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [ฉันสามารถใช้บริการส่งต่ออีเมลนี้เป็นเซิร์ฟเวอร์ MX "สำรอง" หรือ "สำรองล้มเหลว" ได้ไหม](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5365,6 +5366,27 @@ Bounces คืออีเมลที่บ่งชี้ว่าการส
 
 
 ## บัญชีและการชำระเงิน {#account-and-billing}
+
+### ฉันจะลบบัญชีของฉันได้อย่างไร {#how-do-i-delete-my-account}
+
+คุณสามารถลบบัญชีของคุณได้ตลอดเวลาโดยทำตามขั้นตอนเหล่านี้:
+
+1. เข้าสู่ระบบบัญชีของคุณที่ [forwardemail.net/login](https://forwardemail.net/login)
+2. ไปที่ [บัญชีของฉัน → ความปลอดภัย](/my-account/security)
+3. เลื่อนไปที่ด้านล่างของหน้าและคลิกปุ่ม **"ลบบัญชี"**
+4. ยืนยันการลบเมื่อได้รับข้อความแจ้ง
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    สำคัญ:
+  </strong>
+  <span>
+    การลบบัญชีเป็นการกระทำที่ถาวรและไม่สามารถยกเลิกได้ โดเมน นามแฝง กล่องจดหมาย อีเมล และข้อมูลที่เกี่ยวข้องทั้งหมดของคุณจะถูกลบออกจากระบบของเราอย่างถาวร หากคุณอยู่ในแผนแบบชำระเงิน การสมัครสมาชิกของคุณจะถูกยกเลิกทันที
+  </span>
+</div>
+
+หากคุณไม่สามารถเข้าสู่ระบบบัญชีของคุณได้ โปรดติดต่อเราที่ <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> จากที่อยู่อีเมลที่เชื่อมโยงกับบัญชีของคุณ และเราจะช่วยเหลือคุณในการลบ
 
 ### คุณมีการรับประกันคืนเงินสำหรับแผนที่ชำระเงินหรือไม่ {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

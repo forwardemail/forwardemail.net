@@ -129,6 +129,7 @@
   * [스패머를 방지하고 좋은 이메일 전달 평판을 유지하는 방법](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [도메인 이름에 대해 DNS 조회를 수행하는 방법](#how-do-you-perform-dns-lookups-on-domain-names)
 * [계정 및 결제](#account-and-billing)
+  * [계정을 어떻게 삭제하나요?](#how-do-i-delete-my-account)
   * [유료 플랜에 환불 보증이 있나요](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [플랜 변경 시 차액을 비례 환불하나요](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [이 이메일 전달 서비스를 "대체" 또는 "백업" MX 서버로만 사용할 수 있나요](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5366,6 +5367,27 @@ Backscatterer 목록에 오르는 일반적인 이유는 잘못된 반송 또는
 
 
 ## 계정 및 결제 {#account-and-billing}
+
+### 계정을 어떻게 삭제하나요? {#how-do-i-delete-my-account}
+
+다음 단계에 따라 언제든지 계정을 삭제할 수 있습니다:
+
+1. [forwardemail.net/login](https://forwardemail.net/login)에서 계정에 로그인합니다.
+2. [내 계정 → 보안](/my-account/security)으로 이동합니다.
+3. 페이지 하단으로 스크롤하여 **"계정 삭제"** 버튼을 클릭합니다.
+4. 메시지가 표시되면 삭제를 확인합니다.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    중요:
+  </strong>
+  <span>
+    계정 삭제는 영구적이며 취소할 수 없습니다. 모든 도메인, 별칭, 사서함, 이메일 및 관련 데이터가 시스템에서 영구적으로 제거됩니다. 유료 요금제를 사용 중인 경우 구독이 즉시 취소됩니다.
+  </span>
+</div>
+
+계정에 로그인할 수 없는 경우, 계정에 연결된 이메일 주소로 <a href="mailto:support@forwardemail.net">support@forwardemail.net</a>에 문의해 주시면 삭제를 도와드리겠습니다.
 
 ### 유료 플랜에 환불 보증이 있나요? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

@@ -129,6 +129,7 @@
   * [Como vocês previnem spammers e garantem boa reputação de encaminhamento de email](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Como vocês realizam consultas DNS em nomes de domínio](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Conta e Faturamento](#account-and-billing)
+  * [Como excluo minha conta](#how-do-i-delete-my-account)
   * [Vocês oferecem garantia de devolução do dinheiro em planos pagos](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Se eu mudar de plano, vocês fazem rateio e reembolsam a diferença](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Posso usar este serviço de encaminhamento de email apenas como servidor MX "fallback" ou "fallover"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5366,6 +5367,27 @@ Criamos um projeto de software open-source :tangerine: [Tangerine](https://githu
 
 
 ## Conta e Faturamento {#account-and-billing}
+
+### Como excluo minha conta {#how-do-i-delete-my-account}
+
+Você pode excluir sua conta a qualquer momento seguindo estas etapas:
+
+1. Faça login na sua conta em [forwardemail.net/login](https://forwardemail.net/login)
+2. Navegue até [Minha Conta → Segurança](/my-account/security)
+3. Role até a parte inferior da página e clique no botão **"Excluir Conta"**
+4. Confirme a exclusão quando solicitado
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Importante:
+  </strong>
+  <span>
+    A exclusão da conta é permanente e não pode ser desfeita.  Todos os seus domínios, aliases, caixas de correio, e-mails e dados associados serão removidos permanentemente de nossos sistemas.  Se você estiver em um plano pago, sua assinatura será cancelada imediatamente.
+  </span>
+</div>
+
+Se você não conseguir fazer login na sua conta, entre em contato conosco em <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> a partir do endereço de e-mail associado à sua conta e nós o ajudaremos com a exclusão.
 
 ### Vocês oferecem garantia de reembolso nos planos pagos {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

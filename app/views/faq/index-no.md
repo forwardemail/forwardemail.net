@@ -129,6 +129,7 @@
   * [Hvordan forhindrer dere spammere og sikrer godt omdømme for e-postvideresending](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Hvordan utfører dere DNS-oppslag på domenenavn](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto og fakturering](#account-and-billing)
+  * [Hvordan sletter jeg kontoen min](#how-do-i-delete-my-account)
   * [Tilbyr dere pengene tilbake-garanti på betalte planer](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Hvis jeg bytter plan, pro-rater dere og refunderer differansen](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Kan jeg bare bruke denne e-postvideresendingstjenesten som en "fallback" eller "fallover" MX-server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5367,6 +5368,27 @@ Vi har laget et åpen kildekode-programvareprosjekt :tangerine: [Tangerine](http
 
 
 ## Konto og fakturering {#account-and-billing}
+
+### Hvordan sletter jeg kontoen min {#how-do-i-delete-my-account}
+
+Du kan slette kontoen din når som helst ved å følge disse trinnene:
+
+1. Logg inn på kontoen din på [forwardemail.net/login](https://forwardemail.net/login)
+2. Gå til [Min konto → Sikkerhet](/my-account/security)
+3. Bla til bunnen av siden og klikk på **"Slett konto"**-knappen
+4. Bekreft slettingen når du blir bedt om det
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Viktig:
+  </strong>
+  <span>
+    Sletting av konto er permanent og kan ikke omgjøres.  Alle dine domener, aliaser, postbokser, e-poster og tilknyttede data vil bli permanent fjernet fra våre systemer.  Hvis du har et betalt abonnement, vil abonnementet ditt bli kansellert umiddelbart.
+  </span>
+</div>
+
+Hvis du ikke klarer å logge inn på kontoen din, vennligst kontakt oss på <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> fra e-postadressen som er knyttet til kontoen din, så vil vi hjelpe deg med slettingen.
 
 ### Tilbyr dere pengene tilbake-garanti på betalte planer {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

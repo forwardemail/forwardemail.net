@@ -129,6 +129,7 @@
   * [Hur förhindrar ni spammare och säkerställer gott rykte för e-postvidarebefordran](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Hur utför ni DNS-uppslag på domännamn](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto och fakturering](#account-and-billing)
+  * [Hur tar jag bort mitt konto](#how-do-i-delete-my-account)
   * [Erbjuder ni pengarna tillbaka-garanti på betalda planer](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Om jag byter plan, gör ni proportionell återbetalning av skillnaden](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Kan jag bara använda denna e-postvidarebefordran som en "fallback" eller "fallover" MX-server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5366,6 +5367,27 @@ Vi skapade ett open source-program :tangerine: [Tangerine](https://github.com/fo
 
 
 ## Konto och Fakturering {#account-and-billing}
+
+### Hur tar jag bort mitt konto {#how-do-i-delete-my-account}
+
+Du kan när som helst ta bort ditt konto genom att följa dessa steg:
+
+1. Logga in på ditt konto på [forwardemail.net/login](https://forwardemail.net/login)
+2. Navigera till [Mitt konto → Säkerhet](/my-account/security)
+3. Skrolla till botten av sidan och klicka på knappen **"Ta bort konto"**
+4. Bekräfta borttagningen när du uppmanas till det
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Viktigt:
+  </strong>
+  <span>
+    Borttagning av konto är permanent och kan inte ångras.  Alla dina domäner, alias, brevlådor, e-postmeddelanden och tillhörande data kommer att tas bort permanent från våra system.  Om du har en betald plan kommer din prenumeration att avslutas omedelbart.
+  </span>
+</div>
+
+Om du inte kan logga in på ditt konto, vänligen kontakta oss på <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> från den e-postadress som är kopplad till ditt konto så hjälper vi dig med borttagningen.
 
 ### Erbjuder ni pengarna tillbaka-garanti på betalda planer {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

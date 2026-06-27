@@ -129,6 +129,7 @@
   * [איך אתם מונעים ספאמרים ומבטיחים מוניטין טוב להעברת דואר](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [איך אתם מבצעים חיפושי DNS על שמות דומיין](#how-do-you-perform-dns-lookups-on-domain-names)
 * [חשבון וחשבוניות](#account-and-billing)
+  * [כיצד אוכל למחוק את החשבון שלי](#how-do-i-delete-my-account)
   * [האם אתם מציעים אחריות להחזר כספי בתכניות בתשלום](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [אם אני משנה תכנית, האם אתם מחשבים פרופורציה ומחזירים את ההפרש](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [האם אפשר להשתמש בשירות העברת הדואר הזה כשרת MX "גיבוי" או "מחליף"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5366,6 +5367,27 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
 
 
 ## חשבון וחשבוניות {#account-and-billing}
+
+### כיצד אוכל למחוק את החשבון שלי {#how-do-i-delete-my-account}
+
+באפשרותך למחוק את חשבונך בכל עת על ידי ביצוע השלבים הבאים:
+
+1. היכנס לחשבונך בכתובת [forwardemail.net/login](https://forwardemail.net/login)
+2. נווט אל [החשבון שלי → אבטחה](/my-account/security)
+3. גלול לתחתית העמוד ולחץ על הכפתור **"מחק חשבון"**
+4. אשר את המחיקה כאשר תתבקש
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    חשוב:
+  </strong>
+  <span>
+    מחיקת החשבון היא לצמיתות ולא ניתנת לביטול. כל הדומיינים, הכינויים, תיבות הדואר, הודעות הדוא"ל והנתונים הקשורים שלך יוסרו לצמיתות מהמערכות שלנו. אם אתה בתוכנית בתשלום, המנוי שלך יבוטל באופן מיידי.
+  </span>
+</div>
+
+אם אינך מצליח להיכנס לחשבונך, אנא צור איתנו קשר בכתובת <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> מכתובת הדוא"ל המשויכת לחשבונך ואנו נסייע לך במחיקה.
 
 ### האם אתם מציעים אחריות להחזר כספי בתוכניות בתשלום {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

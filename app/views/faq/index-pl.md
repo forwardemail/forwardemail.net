@@ -129,6 +129,7 @@
   * [Jak zapobiegacie spammerom i zapewniacie dobrą reputację przekazywania maili](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Jak wykonujecie zapytania DNS na nazwach domen](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto i rozliczenia](#account-and-billing)
+  * [Jak usunąć konto](#how-do-i-delete-my-account)
   * [Czy oferujecie gwarancję zwrotu pieniędzy na płatnych planach](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Jeśli zmienię plan, czy proporcjonalnie zwracacie różnicę](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Czy mogę używać tej usługi przekazywania maili jako serwera MX "fallback" lub "fallover"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5365,6 +5366,27 @@ Stworzyliśmy projekt oprogramowania open-source :tangerine: [Tangerine](https:/
 
 
 ## Konto i rozliczenia {#account-and-billing}
+
+### Jak usunąć konto {#how-do-i-delete-my-account}
+
+Możesz usunąć swoje konto w dowolnym momencie, wykonując następujące kroki:
+
+1. Zaloguj się na swoje konto na stronie [forwardemail.net/login](https://forwardemail.net/login)
+2. Przejdź do [Moje konto → Bezpieczeństwo](/my-account/security)
+3. Przewiń na dół strony i kliknij przycisk **"Usuń konto"**
+4. Potwierdź usunięcie, gdy zostaniesz o to poproszony
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Ważne:
+  </strong>
+  <span>
+    Usunięcie konta jest trwałe i nie można go cofnąć.  Wszystkie Twoje domeny, aliasy, skrzynki pocztowe, e-maile i powiązane dane zostaną trwale usunięte z naszych systemów.  Jeśli korzystasz z płatnego planu, Twoja subskrypcja zostanie natychmiast anulowana.
+  </span>
+</div>
+
+Jeśli nie możesz zalogować się na swoje konto, skontaktuj się z nami pod adresem <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> z adresu e-mail powiązanego z Twoim kontem, a my pomożemy Ci w jego usunięciu.
 
 ### Czy oferujecie gwarancję zwrotu pieniędzy na płatnych planach {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

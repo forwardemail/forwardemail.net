@@ -129,6 +129,7 @@
   * [Come prevenite spammer e garantite una buona reputazione di inoltro email](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Come effettuate ricerche DNS sui nomi di dominio](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Account e Fatturazione](#account-and-billing)
+  * [Come posso eliminare il mio account](#how-do-i-delete-my-account)
   * [Offrite garanzia di rimborso sui piani a pagamento](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Se cambio piano fate il pro-rata e rimborsate la differenza](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Posso usare questo servizio di inoltro email solo come server MX di "fallback" o "fallover"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5367,6 +5368,27 @@ Abbiamo creato un progetto software open-source :tangerine: [Tangerine](https://
 
 
 ## Account e Fatturazione {#account-and-billing}
+
+### Come posso eliminare il mio account {#how-do-i-delete-my-account}
+
+Puoi eliminare il tuo account in qualsiasi momento seguendo questi passaggi:
+
+1. Accedi al tuo account su [forwardemail.net/login](https://forwardemail.net/login)
+2. Vai su [Il mio account → Sicurezza](/my-account/security)
+3. Scorri fino in fondo alla pagina e fai clic sul pulsante **"Elimina account"**
+4. Conferma l'eliminazione quando richiesto
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Importante:
+  </strong>
+  <span>
+    L'eliminazione dell'account è permanente e non può essere annullata. Tutti i tuoi domini, alias, caselle di posta, email e dati associati verranno rimossi in modo permanente dai nostri sistemi. Se hai un piano a pagamento, il tuo abbonamento verrà annullato immediatamente.
+  </span>
+</div>
+
+Se non riesci ad accedere al tuo account, contattaci all'indirizzo <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> dall'indirizzo email associato al tuo account e ti assisteremo con l'eliminazione.
 
 ### Offrite una garanzia di rimborso sui piani a pagamento? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

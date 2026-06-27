@@ -129,6 +129,7 @@
   * [Jak zabraňujete spammerům a zajišťujete dobrou reputaci přeposílání emailů](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Jak provádíte DNS dotazy na doménová jména](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Účet a fakturace](#account-and-billing)
+  * [Jak mohu smazat svůj účet](#how-do-i-delete-my-account)
   * [Nabízíte záruku vrácení peněz u placených plánů](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Pokud přejdu na jiný plán, provádíte poměrné vrácení peněz](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Mohu používat tuto službu přeposílání emailů jako "fallback" nebo "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5366,6 +5367,27 @@ Vytvořili jsme open-source softwarový projekt :tangerine: [Tangerine](https://
 
 
 ## Účet a fakturace {#account-and-billing}
+
+### Jak mohu smazat svůj účet {#how-do-i-delete-my-account}
+
+Svůj účet můžete kdykoli smazat podle následujících kroků:
+
+1. Přihlaste se ke svému účtu na [forwardemail.net/login](https://forwardemail.net/login)
+2. Přejděte na [Můj účet → Zabezpečení](/my-account/security)
+3. Přejděte na konec stránky a klikněte na tlačítko **"Smazat účet"**
+4. Po vyzvání potvrďte smazání
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Důležité:
+  </strong>
+  <span>
+    Smazání účtu je trvalé a nelze jej vrátit zpět. Všechny vaše domény, aliasy, schránky, e-maily a související data budou trvale odstraněny z našich systémů. Pokud máte placený tarif, vaše předplatné bude okamžitě zrušeno.
+  </span>
+</div>
+
+Pokud se nemůžete přihlásit ke svému účtu, kontaktujte nás prosím na adrese <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> z e-mailové adresy spojené s vaším účtem a my vám se smazáním pomůžeme.
 
 ### Nabízíte záruku vrácení peněz u placených plánů {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

@@ -129,6 +129,7 @@
   * [Hvordan forhindrer I spammere og sikrer godt email videresendelsesomdømme](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Hvordan udfører I DNS opslag på domænenavne](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto og Fakturering](#account-and-billing)
+  * [Hvordan sletter jeg min konto](#how-do-i-delete-my-account)
   * [Tilbyder I pengene tilbage garanti på betalte planer](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Hvis jeg skifter planer, pro-rater og refunderer I forskellen](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Kan jeg bare bruge denne email videresendelsestjeneste som en "fallback" eller "fallover" MX-server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5367,6 +5368,27 @@ Vi har lavet et open source softwareprojekt :tangerine: [Tangerine](https://gith
 
 
 ## Konto og Fakturering {#account-and-billing}
+
+### Hvordan sletter jeg min konto {#how-do-i-delete-my-account}
+
+Du kan til enhver tid slette din konto ved at følge disse trin:
+
+1. Log ind på din konto på [forwardemail.net/login](https://forwardemail.net/login)
+2. Gå til [Min konto → Sikkerhed](/my-account/security)
+3. Rul ned til bunden af siden og klik på knappen **"Slet konto"**
+4. Bekræft sletningen, når du bliver bedt om det
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Vigtigt:
+  </strong>
+  <span>
+    Sletning af konto er permanent og kan ikke fortrydes.  Alle dine domæner, aliasser, postkasser, e-mails og tilknyttede data vil blive permanent fjernet fra vores systemer.  Hvis du har et betalt abonnement, vil dit abonnement blive annulleret med det samme.
+  </span>
+</div>
+
+Hvis du ikke kan logge ind på din konto, bedes du kontakte os på <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> fra den e-mailadresse, der er knyttet til din konto, og vi vil hjælpe dig med sletningen.
 
 ### Tilbyder I pengene tilbage garanti på betalte planer {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

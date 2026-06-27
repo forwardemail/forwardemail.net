@@ -129,6 +129,7 @@
   * [Kuinka estätte roskapostittajat ja varmistatte hyvän sähköpostin edelleenlähetyksen maineen](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Kuinka teette DNS-kyselyjä domain-nimille](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Tili ja laskutus](#account-and-billing)
+  * [Kuinka poistan tilini](#how-do-i-delete-my-account)
   * [Tarjoatteko rahat takaisin -takuun maksullisissa suunnitelmissa](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Jos vaihdan suunnitelmaa, hyvitättekö erotuksen](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Voinko käyttää tätä sähköpostin edelleenlähetyspalvelua "varapalvelimena" tai "varakatkaisupalvelimena" MX-palvelimena](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5365,6 +5366,27 @@ Loimme avoimen lähdekoodin ohjelmistoprojektin :tangerine: [Tangerine](https://
 
 
 ## Tili ja laskutus {#account-and-billing}
+
+### Kuinka poistan tilini {#how-do-i-delete-my-account}
+
+Voit poistaa tilisi milloin tahansa noudattamalla näitä ohjeita:
+
+1. Kirjaudu sisään tilillesi osoitteessa [forwardemail.net/login](https://forwardemail.net/login)
+2. Siirry kohtaan [Oma tili → Tietoturva](/my-account/security)
+3. Vieritä sivun alareunaan ja napsauta **"Poista tili"** -painiketta
+4. Vahvista poisto, kun sitä kysytään
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tärkeää:
+  </strong>
+  <span>
+    Tilin poistaminen on pysyvää, eikä sitä voi peruuttaa.  Kaikki verkkotunnuksesi, aliaksesi, postilaatikkosi, sähköpostisi ja niihin liittyvät tiedot poistetaan pysyvästi järjestelmistämme.  Jos sinulla on maksullinen tilaus, tilauksesi perutaan välittömästi.
+  </span>
+</div>
+
+Jos et pysty kirjautumaan tilillesi, ota meihin yhteyttä osoitteeseen <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> tilillesi yhdistetystä sähköpostiosoitteesta, niin autamme sinua tilin poistamisessa.
 
 ### Tarjoatteko rahat takaisin -takuun maksullisissa suunnitelmissa {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

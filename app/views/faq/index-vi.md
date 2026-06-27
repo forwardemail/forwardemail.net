@@ -129,6 +129,7 @@
   * [Bạn ngăn chặn spammer và đảm bảo uy tín chuyển tiếp email tốt như thế nào](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Bạn thực hiện tra cứu DNS trên tên miền như thế nào](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Tài Khoản và Thanh Toán](#account-and-billing)
+  * [Làm cách nào để xóa tài khoản của tôi](#how-do-i-delete-my-account)
   * [Bạn có đảm bảo hoàn tiền cho các gói trả phí không](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Nếu tôi đổi gói, bạn có tính tỷ lệ và hoàn tiền phần chênh lệch không](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Tôi có thể chỉ sử dụng dịch vụ chuyển tiếp email này như một máy chủ MX "dự phòng" hoặc "dự phòng chuyển đổi" không](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5365,6 +5366,27 @@ Chúng tôi đã tạo một dự án phần mềm mã nguồn mở :tangerine: 
 
 
 ## Tài khoản và Thanh toán {#account-and-billing}
+
+### Làm cách nào để xóa tài khoản của tôi {#how-do-i-delete-my-account}
+
+Bạn có thể xóa tài khoản của mình bất kỳ lúc nào bằng cách làm theo các bước sau:
+
+1. Đăng nhập vào tài khoản của bạn tại [forwardemail.net/login](https://forwardemail.net/login)
+2. Đi tới [Tài khoản của tôi → Bảo mật](/my-account/security)
+3. Cuộn xuống cuối trang và nhấp vào nút **"Xóa tài khoản"**
+4. Xác nhận việc xóa khi được nhắc
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Quan trọng:
+  </strong>
+  <span>
+    Việc xóa tài khoản là vĩnh viễn và không thể hoàn tác. Tất cả các miền, bí danh, hộp thư, email và dữ liệu liên quan của bạn sẽ bị xóa vĩnh viễn khỏi hệ thống của chúng tôi. Nếu bạn đang sử dụng gói trả phí, gói đăng ký của bạn sẽ bị hủy ngay lập tức.
+  </span>
+</div>
+
+Nếu bạn không thể đăng nhập vào tài khoản của mình, vui lòng liên hệ với chúng tôi tại <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> từ địa chỉ email được liên kết với tài khoản của bạn và chúng tôi sẽ hỗ trợ bạn việc xóa tài khoản.
 
 ### Bạn có cung cấp đảm bảo hoàn tiền cho các gói trả phí không {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

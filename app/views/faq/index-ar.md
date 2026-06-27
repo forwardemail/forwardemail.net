@@ -129,6 +129,7 @@
   * [كيف تمنعون المرسلين المزعجين وتضمنون سمعة جيدة لإعادة توجيه البريد الإلكتروني](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [كيف تقومون بعمليات بحث DNS على أسماء النطاقات](#how-do-you-perform-dns-lookups-on-domain-names)
 * [الحساب والفوترة](#account-and-billing)
+  * [كيف يمكنني حذف حسابي](#how-do-i-delete-my-account)
   * [هل تقدمون ضمان استرداد المال على الخطط المدفوعة](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [إذا قمت بتغيير الخطة هل تقومون بالتسعير النسبي ورد الفرق](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [هل يمكنني استخدام خدمة إعادة توجيه البريد هذه كخادم MX "احتياطي" أو "تبديل تلقائي"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5365,6 +5366,27 @@ Antrim, BT1 - 5EF
 
 
 ## الحساب والفوترة {#account-and-billing}
+
+### كيف يمكنني حذف حسابي {#how-do-i-delete-my-account}
+
+يمكنك حذف حسابك في أي وقت باتباع الخطوات التالية:
+
+1. قم بتسجيل الدخول إلى حسابك على [forwardemail.net/login](https://forwardemail.net/login)
+2. انتقل إلى [حسابي → الأمان](/my-account/security)
+3. قم بالتمرير إلى أسفل الصفحة وانقر على زر **"حذف الحساب"**
+4. قم بتأكيد الحذف عند المطالبة بذلك
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    هام:
+  </strong>
+  <span>
+    حذف الحساب نهائي ولا يمكن التراجع عنه. ستتم إزالة جميع نطاقاتك وأسمائك المستعارة وصناديق البريد ورسائل البريد الإلكتروني والبيانات المرتبطة بها نهائيًا من أنظمتنا. إذا كنت تستخدم خطة مدفوعة، فسيتم إلغاء اشتراكك على الفور.
+  </span>
+</div>
+
+إذا كنت غير قادر على تسجيل الدخول إلى حسابك، يرجى الاتصال بنا على <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> من عنوان البريد الإلكتروني المرتبط بحسابك وسنساعدك في عملية الحذف.
 
 ### هل تقدمون ضمان استرداد الأموال على الخطط المدفوعة {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

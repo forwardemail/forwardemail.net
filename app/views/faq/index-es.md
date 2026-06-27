@@ -129,6 +129,7 @@
   * [Cómo previenen spammers y aseguran buena reputación de reenvío de correo](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Cómo realizan consultas DNS en nombres de dominio](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Cuenta y Facturación](#account-and-billing)
+  * [¿Cómo elimino mi cuenta?](#how-do-i-delete-my-account)
   * [Ofrecen garantía de devolución de dinero en planes pagos](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Si cambio de plan, hacen prorrateo y reembolsan la diferencia](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Puedo usar este servicio de reenvío de correo solo como servidor MX "de respaldo" o "fallover"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5367,6 +5368,27 @@ Creamos un proyecto de software de código abierto :tangerine: [Tangerine](https
 
 
 ## Cuenta y Facturación {#account-and-billing}
+
+### ¿Cómo elimino mi cuenta? {#how-do-i-delete-my-account}
+
+Puedes eliminar tu cuenta en cualquier momento siguiendo estos pasos:
+
+1. Inicia sesión en tu cuenta en [forwardemail.net/login](https://forwardemail.net/login)
+2. Ve a [Mi cuenta → Seguridad](/my-account/security)
+3. Desplázate hasta la parte inferior de la página y haz clic en el botón **"Eliminar cuenta"**
+4. Confirma la eliminación cuando se te solicite
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Importante:
+  </strong>
+  <span>
+    La eliminación de la cuenta es permanente y no se puede deshacer. Todos tus dominios, alias, buzones, correos electrónicos y datos asociados se eliminarán permanentemente de nuestros sistemas. Si tienes un plan de pago, tu suscripción se cancelará de inmediato.
+  </span>
+</div>
+
+Si no puedes iniciar sesión en tu cuenta, contáctanos en <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> desde la dirección de correo electrónico asociada a tu cuenta y te ayudaremos con la eliminación.
 
 ### ¿Ofrecen garantía de devolución de dinero en planes pagos? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

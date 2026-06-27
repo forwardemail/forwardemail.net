@@ -129,6 +129,7 @@
   * [Comment empêchez-vous les spammeurs et assurez-vous une bonne réputation de transfert d'email](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Comment effectuez-vous les recherches DNS sur les noms de domaine](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Compte et Facturation](#account-and-billing)
+  * [Comment supprimer mon compte](#how-do-i-delete-my-account)
   * [Proposez-vous une garantie de remboursement sur les plans payants](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Si je change de plan, faites-vous un prorata et remboursez-vous la différence](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Puis-je utiliser ce service de transfert d'email comme serveur MX "de secours" ou "de basculement"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5367,6 +5368,27 @@ Nous avons créé un projet logiciel open-source :tangerine: [Tangerine](https:/
 
 
 ## Compte et facturation {#account-and-billing}
+
+### Comment supprimer mon compte {#how-do-i-delete-my-account}
+
+Vous pouvez supprimer votre compte à tout moment en suivant ces étapes :
+
+1. Connectez-vous à votre compte sur [forwardemail.net/login](https://forwardemail.net/login)
+2. Accédez à [Mon compte → Sécurité](/my-account/security)
+3. Faites défiler jusqu'au bas de la page et cliquez sur le bouton **"Supprimer le compte"**
+4. Confirmez la suppression lorsque vous y êtes invité
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important :
+  </strong>
+  <span>
+    La suppression du compte est définitive et ne peut être annulée.  Tous vos domaines, alias, boîtes aux lettres, e-mails et données associées seront définitivement supprimés de nos systèmes.  Si vous avez un forfait payant, votre abonnement sera annulé immédiatement.
+  </span>
+</div>
+
+Si vous ne parvenez pas à vous connecter à votre compte, veuillez nous contacter à l'adresse <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> à partir de l'adresse e-mail associée à votre compte et nous vous aiderons à le supprimer.
 
 ### Offrez-vous une garantie de remboursement sur les plans payants {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

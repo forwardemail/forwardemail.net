@@ -129,6 +129,7 @@
   * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Account and Billing](#account-and-billing)
+  * [How do I delete my account](#how-do-i-delete-my-account)
   * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5442,6 +5443,27 @@ We created an open-source software project :tangerine: [Tangerine](https://githu
 
 
 ## Account and Billing
+
+### How do I delete my account
+
+You can delete your account at any time by following these steps:
+
+1. Log in to your account at [forwardemail.net/login](https://forwardemail.net/login)
+2. Navigate to [My Account → Security](/my-account/security)
+3. Scroll to the bottom of the page and click the **"Delete Account"** button
+4. Confirm the deletion when prompted
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Account deletion is permanent and cannot be undone.  All of your domains, aliases, mailboxes, emails, and associated data will be permanently removed from our systems.  If you are on a paid plan, your subscription will be cancelled immediately.
+  </span>
+</div>
+
+If you are unable to log in to your account, please contact us at <a href="mailto:support@forwardemail.net"><support@forwardemail.net></a> from the email address associated with your account and we will assist you with the deletion.
 
 ### Do you offer a money back guarantee on paid plans
 

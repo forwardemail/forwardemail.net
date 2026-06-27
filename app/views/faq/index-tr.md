@@ -129,6 +129,7 @@
   * [Spam göndericileri nasıl engelliyor ve iyi bir e-posta yönlendirme itibarı sağlıyorsunuz](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Alan adlarında DNS sorgularını nasıl yapıyorsunuz](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Hesap ve Faturalandırma](#account-and-billing)
+  * [Hesabımı nasıl silerim](#how-do-i-delete-my-account)
   * [Ücretli planlarda para iade garantisi sunuyor musunuz](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Plan değiştirirsem farkı orantılı olarak iade ediyor musunuz](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Bu e-posta yönlendirme hizmetini sadece "yedek" veya "fallover" MX sunucusu olarak kullanabilir miyim](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5366,6 +5367,27 @@ Açık kaynaklı bir yazılım projesi olan :tangerine: [Tangerine](https://gith
 
 
 ## Hesap ve Faturalandırma {#account-and-billing}
+
+### Hesabımı nasıl silerim {#how-do-i-delete-my-account}
+
+Aşağıdaki adımları izleyerek hesabınızı istediğiniz zaman silebilirsiniz:
+
+1. [forwardemail.net/login](https://forwardemail.net/login) adresinden hesabınıza giriş yapın
+2. [Hesabım → Güvenlik](/my-account/security) bölümüne gidin
+3. Sayfanın en altına kaydırın ve **"Hesabı Sil"** düğmesine tıklayın
+4. İstendiğinde silme işlemini onaylayın
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Önemli:
+  </strong>
+  <span>
+    Hesap silme işlemi kalıcıdır ve geri alınamaz.  Tüm alan adlarınız, takma adlarınız, posta kutularınız, e-postalarınız ve ilişkili verileriniz sistemlerimizden kalıcı olarak kaldırılacaktır.  Ücretli bir plandaysanız, aboneliğiniz derhal iptal edilecektir.
+  </span>
+</div>
+
+Hesabınıza giriş yapamıyorsanız, lütfen hesabınızla ilişkili e-posta adresini kullanarak <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> adresinden bizimle iletişime geçin; silme işlemi için size yardımcı olacağız.
 
 ### Ücretli planlarda para iade garantisi sunuyor musunuz? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

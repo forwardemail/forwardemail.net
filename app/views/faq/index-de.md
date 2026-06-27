@@ -129,6 +129,7 @@
   * [Wie verhindern Sie Spammer und gewährleisten einen guten Ruf für die E-Mail-Weiterleitung](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Wie führen Sie DNS-Abfragen für Domainnamen durch](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto und Abrechnung](#account-and-billing)
+  * [Wie lösche ich mein Konto](#how-do-i-delete-my-account)
   * [Bieten Sie eine Geld-zurück-Garantie für kostenpflichtige Pläne](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Wenn ich den Plan wechsle, erfolgt eine anteilige Rückerstattung](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Kann ich diesen E-Mail-Weiterleitungsdienst nur als "Fallback" oder "Fallover" MX-Server verwenden](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5366,6 +5367,27 @@ Wir haben ein Open-Source-Softwareprojekt :tangerine: [Tangerine](https://github
 
 
 ## Konto und Abrechnung {#account-and-billing}
+
+### Wie lösche ich mein Konto {#how-do-i-delete-my-account}
+
+Sie können Ihr Konto jederzeit löschen, indem Sie die folgenden Schritte ausführen:
+
+1. Melden Sie sich bei Ihrem Konto unter [forwardemail.net/login](https://forwardemail.net/login) an
+2. Navigieren Sie zu [Mein Konto → Sicherheit](/my-account/security)
+3. Scrollen Sie zum Ende der Seite und klicken Sie auf die Schaltfläche **"Konto löschen"**
+4. Bestätigen Sie die Löschung, wenn Sie dazu aufgefordert werden
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Wichtig:
+  </strong>
+  <span>
+    Die Löschung des Kontos ist dauerhaft und kann nicht rückgängig gemacht werden.  Alle Ihre Domains, Aliase, Postfächer, E-Mails und zugehörigen Daten werden dauerhaft aus unseren Systemen entfernt.  Wenn Sie einen kostenpflichtigen Tarif nutzen, wird Ihr Abonnement sofort gekündigt.
+  </span>
+</div>
+
+Wenn Sie sich nicht bei Ihrem Konto anmelden können, kontaktieren Sie uns bitte unter <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> von der mit Ihrem Konto verknüpften E-Mail-Adresse, und wir helfen Ihnen bei der Löschung.
 
 ### Bieten Sie eine Geld-zurück-Garantie für kostenpflichtige Pläne an {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
