@@ -212,7 +212,7 @@ async function cmdPush(idOrEmail, serviceName, keyOverride) {
 
       if (serviceName === 'Mail') {
         // Mirror helpers/send-apn.js: aps.m carries md5(mailboxPath), and
-        // for diagnostics we default to INBOX.  Mail pushType=alert always
+        // for diagnostics we default to INBOX.  Mail pushType=background
         // has aps.m defined so apsPayload() emits a non-empty aps and
         // there is no risk of the `400 PayloadEmpty` rejection that the
         // CalDAV/CardDAV path used to hit.

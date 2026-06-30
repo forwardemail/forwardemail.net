@@ -146,18 +146,24 @@ function createNote(certBundle, service, obj, options) {
   note.expiry = Math.floor(dayjs().add(24, 'hour').toDate().getTime() / 1000);
 
   //
-  // APNs priority -- MUST be 5 for `background` push type.
+  // APNs priority handling:
   //
-  // Apple's docs: "If you set the push type to background, always use
-  // priority 5.  Using priority 10 is an error."
-  // <https://developer.apple.com/documentation/usernotifications/sending-notification-requests-to-apns>
+  // For MAIL: we intentionally leave priority at the node-apn default (10)
+  // so that the `apns-priority: 10` header is sent.  All known working
+  // XAPPLEPUSHSERVICE implementations (dovecot-xaps-daemon, courier-apns)
+  // use effective priority 10 for Mail pushes.  Despite Apple's docs stating
+  // "always use priority 5 for background", this rule does NOT apply to the
+  // special XAPPLEPUSHSERVICE Mail certificate (com.apple.mail.XServer.*).
+  // Setting priority 5 causes iOS to batch/delay delivery, which is why
+  // users reported only receiving notifications at fetch intervals.
+  // <https://github.com/freswa/dovecot-xaps-daemon/blob/main/internal/apns.go#L162-L163>
   //
-  // node-apn defaults priority to 10, so we MUST explicitly override it.
-  // dovecot-xaps-daemon's Go HTTP/2 client omits the header entirely
-  // (Apple defaults to 10), but node-apn always emits `apns-priority`
-  // when `Number.isInteger(this.priority)` is true, so we set 5.
+  // For CALENDAR/CONTACT: priority 5 is correct -- these are true background
+  // content pushes where batched delivery is acceptable.
   //
-  note.priority = 5;
+  if (service.cert !== 'Mail') {
+    note.priority = 5;
+  }
 
   //
   // Build the APNs aps payload.  The aps dictionary contents differ by
