@@ -7,7 +7,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     restart: unless-stopped
   web:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: web
     network_mode: host
     hostname: ${DOMAIN}
@@ -38,7 +38,7 @@ services:
         condition: service_healthy
 
   api:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: api
     network_mode: host
     hostname: api.${DOMAIN}
@@ -65,7 +65,7 @@ services:
         condition: service_healthy
 
   bree:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: bree
     network_mode: host
     command: ["node", "bree.js"]
@@ -84,8 +84,9 @@ services:
 
   # https://forwardemail.net/en/faq#what-are-your-imap-server-configuration-settings
   imap:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: imap
+    profiles: ["storage"]
     network_mode: host
     hostname: imap.${DOMAIN}
     command: ["node", "imap.js"]
@@ -113,8 +114,9 @@ services:
 
   # https://forwardemail.net/en/faq#do-you-support-pop3
   pop3:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: pop3
+    profiles: ["storage"]
     network_mode: host
     hostname: pop3.${DOMAIN}
     command: ["node", "pop3.js"]
@@ -141,7 +143,7 @@ services:
 
   # https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings
   smtp:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: smtp
     network_mode: host
     hostname: smtp.${DOMAIN}
@@ -166,7 +168,7 @@ services:
         condition: service_started
 
   smtp_bree:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: smtp_bree
     network_mode: host
     hostname: smtp.${DOMAIN}
@@ -208,8 +210,9 @@ services:
       - .env
 
   sqlite:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: sqlite
+    profiles: ["storage"]
     network_mode: host
     hostname: sqlite.${DOMAIN}
     command: ["node", "sqlite.js"]
@@ -236,14 +239,15 @@ services:
         condition: service_healthy
 
   sqlite_bree:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: sqlite_bree
+    profiles: ["storage"]
     network_mode: host
     hostname: sqlite.${DOMAIN}
     command: ["node", "sqlite-bree.js"]
     volumes:
       - ./ssl:/app/ssl/
-      - /mnt/${SQLITE_STORAGE_PATH}:/mnt/${SQLITE_STORAGE_PATH}
+      - ./sqlite-data:/mnt/${SQLITE_STORAGE_PATH}
       - ./.env:/app/.env
     restart: unless-stopped
     extra_hosts:
@@ -260,14 +264,14 @@ services:
         condition: service_healthy
 
   mx:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: mx
     network_mode: host
     command: ["node", "mx.js"]
     hostname: mx.${DOMAIN}
     volumes:
       - ./ssl:/app/ssl/
-      - /mnt/${SQLITE_STORAGE_PATH}:/mnt/${SQLITE_STORAGE_PATH}
+      - ./sqlite-data:/mnt/${SQLITE_STORAGE_PATH}
       - ./.env:/app/.env
     healthcheck:
       test: "nc -z 127.0.0.1 25"
@@ -282,17 +286,19 @@ services:
       - "imap.${DOMAIN}:127.0.0.1"
       - "smtp.${DOMAIN}:127.0.0.1"
       - "sqlite.${DOMAIN}:127.0.0.1"
+    # no hard dependency on the sqlite service: mx opens its websocket to
+    # sqlite lazily and only for recipients with IMAP storage, so pure
+    # forwarding works without the storage profile
     depends_on:
       mongodb:
         condition: service_started
       redis:
         condition: service_started
-      sqlite:
-        condition: service_healthy
 
   caldav:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: caldav
+    profiles: ["storage"]
     network_mode: host
     hostname: caldav.${DOMAIN}
     command: ["node", "caldav.js"]
@@ -319,8 +325,9 @@ services:
         condition: service_healthy
 
   carddav:
-    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${IMAGE_TAG:-latest}
     container_name: carddav
+    profiles: ["storage"]
     network_mode: host
     hostname: carddav.${DOMAIN}
     command: ["node", "carddav.js"]

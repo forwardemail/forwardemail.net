@@ -32,6 +32,7 @@ const admin = require('./admin');
 const auth = require('./auth');
 const myAccount = require('./my-account');
 const otp = require('./otp');
+const setup = require('./setup');
 
 const TTI = require('#models/tti');
 const _ = require('#helpers/lodash');
@@ -1064,7 +1065,11 @@ for (let x = 0; x < config.alternatives.length; x++) {
   }
 }
 
-localeRouter.use(myAccount.routes()).use(admin.routes()).use(otp.routes());
+localeRouter
+  .use(myAccount.routes())
+  .use(admin.routes())
+  .use(otp.routes())
+  .use(setup.routes());
 
 router.use(auth.routes()).use(localeRouter.routes());
 

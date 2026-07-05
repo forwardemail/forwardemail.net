@@ -22,6 +22,7 @@ const config = require('#config');
 const email = require('#helpers/email');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
+const { markSetupComplete } = require('#helpers/is-setup-complete');
 const sendVerificationEmail = require('#helpers/send-verification-email');
 const stripe = require('#helpers/stripe');
 const { Users } = require('#models');
@@ -436,15 +437,21 @@ async function register(ctx, next) {
     }
   }
 
+  let isFirstAdmin = false;
   if (config.env === 'development' || config.isSelfHosted) {
     const count = await Users.countDocuments({ group: 'admin' });
     if (count === 0) {
       query.group = 'admin';
       query.plan = 'team';
+      isFirstAdmin = true;
     }
   }
 
-  query[config.userFields.hasVerifiedEmail] = false;
+  // the first self-hosted admin owns the server and cannot receive the
+  // verification email anyway (outbound mail is not configured yet)
+  query[config.userFields.hasVerifiedEmail] = Boolean(
+    isFirstAdmin && config.isSelfHosted
+  );
   query[config.userFields.hasSetPassword] = true;
   query[config.lastLocaleField] = ctx.locale;
   let user;
@@ -460,6 +467,9 @@ async function register(ctx, next) {
 
     throw err;
   }
+
+  // flip the self-hosted first-run gate immediately in this process
+  if (isFirstAdmin) markSetupComplete();
 
   await ctx.login(user);
 

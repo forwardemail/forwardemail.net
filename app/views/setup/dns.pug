@@ -1,0 +1,62 @@
+extends ../layout
+
+include _progress
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.py-4
+      .text-center
+        h1.my-3= t("Verify your DNS records")
+        +setupProgress(3)
+        p.lead
+          = t("Create these records at your DNS provider for")
+          = " "
+          code.notranslate= domain.name
+          = t(", then click Verify.")
+      .table-responsive
+        table.table.table-hover.table-bordered
+          thead.thead-dark
+            tr
+              th(scope="col")
+              th(scope="col")= t("Name/Host")
+              th(scope="col")= t("Type")
+              th.text-left(scope="col")= t("Value")
+          tbody
+            each record in checklist
+              tr
+                td.align-middle.text-center(
+                  class=record.pass ? "bg-success" : record.required ? "bg-danger" : "bg-warning"
+                )
+                  if record.pass
+                    i.fa.fa-check.text-white
+                  else
+                    i.fa.fa-times.text-white
+                td.align-middle: code.text-themed= record.name
+                td.align-middle: strong.px-2= record.type
+                td.align-middle.text-left.py-3
+                  code.d-block.text-themed(id=`copy-${record.key}`)= record.expected
+                  if !record.pass && record.key !== 'ptr' && record.key !== 'a'
+                    button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                      type="button",
+                      data-toggle="clipboard",
+                      data-clipboard-target=`#copy-${record.key}`
+                    )
+                      i.fa.fa-clipboard
+                      = " "
+                      = t("Copy")
+      .text-center.mt-3
+        if setupCompleteAllPass
+          .alert.alert-success= t("All required records verified. Your email is ready.")
+          a.btn.btn-lg.btn-success(
+            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`)
+          )= t("Finish")
+        else
+          form.ajax-form.d-inline-block(
+            action=l(`/setup/dns/${punycode.toASCII(domain.name)}/verify-records`),
+            method="POST"
+          )
+            button.btn.btn-lg.btn-primary(type="submit")= t("Verify records")
+        p.small.text-muted.mt-3
+          = t("PTR (reverse DNS) is configured at your server provider, not in your DNS zone. It is strongly recommended for deliverability.")
+        p.small
+          a(href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`))= t("View detailed setup instructions")

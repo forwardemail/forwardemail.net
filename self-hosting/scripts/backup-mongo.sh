@@ -2,24 +2,34 @@
 
 set -e  # Exit script on any error
 
+# Derive paths from this script's location so the install dir can live anywhere
+SELF_HOST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ENV_FILE="$SELF_HOST_DIR/.env"
+
+# Bucket is configurable via BACKUP_BUCKET in .env (or the environment)
+if [[ -z "$BACKUP_BUCKET" && -f "$ENV_FILE" ]]; then
+  BACKUP_BUCKET="$(grep -E '^BACKUP_BUCKET=' "$ENV_FILE" | head -n 1 | cut -d'=' -f2-)"
+fi
 
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
 RETENTION_DAYS=7
 CONTAINER_BACKUP_DIR="/backups"
-BACKUP_DIR="$HOME/forwardemail.net/self-hosting/mongo-backups"
+BACKUP_DIR="$SELF_HOST_DIR/mongo-backups"
 BACKUP_NAME="mongo-backup-$TIMESTAMP"
 BACKUP_PATH="$BACKUP_DIR/$BACKUP_NAME"
 TAR_FILE="$BACKUP_DIR/$BACKUP_NAME.tgz"
 
-S3_BUCKET="forwardemail-selfhosted"
+S3_BUCKET="${BACKUP_BUCKET:-forwardemail-selfhosted}"
 S3_PATH="s3://$S3_BUCKET/mongo-backups/"
 
-# */5 * * * * $HOME/forwardemail.net/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1
+# 0 0 * * * <SELF_HOST_DIR>/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1
 
 # NOTE: restore
-# aws s3 cp s3://forwardemail-selfhosted/mongo-backups/mongo-backup-YYYY-MM-DD_HH-MM.tgz /tmp/mongo-backup.tgz
+# aws s3 cp s3://<bucket>/mongo-backups/mongo-backup-YYYY-MM-DD_HH-MM.tgz /tmp/mongo-backup.tgz
 # tar -xzf /tmp/mongo-backup.tgz -C /tmp
 # docker exec -i mongodb mongorestore --drop --dir "/tmp/mongo-backup-YYYY-MM-DD_HH-MM"
+
+mkdir -p "$BACKUP_DIR"
 
 echo "Starting MongoDB backup..."
 docker exec mongodb mongodump --out "$CONTAINER_BACKUP_DIR/$BACKUP_NAME"

@@ -1,0 +1,25 @@
+extends ../layout
+
+include _progress
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.py-4.text-center
+      h1.my-3= t("Add your domain")
+      +setupProgress(2)
+      .row
+        .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+          form.ajax-form(action=l("/setup/domain"), method="POST")
+            .form-group.floating-label
+              input#input-domain.form-control.form-control-lg(
+                required,
+                name="domain",
+                placeholder="example.com",
+                autocorrect="off",
+                spellcheck="false",
+                autocapitalize="off",
+                type="text"
+              )
+              label(for="input-domain")= t("Domain name")
+            p.small.text-muted= t("A catch-all alias forwarding to your email address is created automatically. You can add more aliases later.")
+            button.btn.btn-lg.btn-primary.btn-block(type="submit")= t("Continue")

@@ -730,6 +730,7 @@ module.exports = {
     'Your domain <span class="notranslate font-weight-bold">%s</span> has not yet completed setup. You must follow <a href="%s" class="font-weight-bold">steps 1 and 2</a> as soon as possible to complete setup.',
   SETUP_NOT_FINISHED: 'Follow steps 1 and 2 below to complete setup.',
   SETUP_REQUIRED_MULTIPLE: 'Please complete setup for multiple domains below.',
+  SETUP_DNS_A_EXPECTED: 'The public IP address of this server',
   MISSING_VERIFICATION_RECORD:
     'Domain is missing required DNS <span class="notranslate">TXT</span> record of: <span class="notranslate">%s</span>',
   INCORRECT_VERIFICATION_RECORD:

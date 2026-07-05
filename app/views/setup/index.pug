@@ -1,0 +1,13 @@
+extends ../layout
+
+include _progress
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.pt-4.text-center
+      h1.my-3= t("Welcome to your self-hosted email")
+      p.lead= t("Setup takes three quick steps.")
+      +setupProgress(1)
+      p.text-muted= t("Create the administrator account for this server. The first account registered becomes the admin.")
+    include ../_register-or-login
+    +registerOrLogin('sign up')

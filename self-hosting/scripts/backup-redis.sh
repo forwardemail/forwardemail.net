@@ -2,22 +2,32 @@
 
 set -e  # Exit script on error
 
-BACKUP_DIR="$HOME/forwardemail.net/self-hosting/redis-data"
+# Derive paths from this script's location so the install dir can live anywhere
+SELF_HOST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ENV_FILE="$SELF_HOST_DIR/.env"
+
+# Bucket is configurable via BACKUP_BUCKET in .env (or the environment)
+if [[ -z "$BACKUP_BUCKET" && -f "$ENV_FILE" ]]; then
+  BACKUP_BUCKET="$(grep -E '^BACKUP_BUCKET=' "$ENV_FILE" | head -n 1 | cut -d'=' -f2-)"
+fi
+
+BACKUP_DIR="$SELF_HOST_DIR/redis-backups"
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
 BACKUP_FILE="redis-$TIMESTAMP.rdb"
 LOCAL_REDIS_DUMP="/data/dump.rdb"
 RETENTION_DAYS=7
 
-S3_BUCKET="forwardemail-selfhosted"
+S3_BUCKET="${BACKUP_BUCKET:-forwardemail-selfhosted}"
 S3_PATH="s3://$S3_BUCKET/redis-backups/"
 
-# */5 * * * * $HOME/forwardemail.net/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1
+# 0 0 * * * <SELF_HOST_DIR>/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1
 
 # NOTE: restore
-# aws s3 cp s3://forwardemail-selfhosted/redis-backups/redis-YYYY-MM-DD_HH-MM.rdb /tmp/dump.rdb
-# mv /tmp/dump.rdb $HOME/forwardemail.net/redis-data/dump.rdb
+# aws s3 cp s3://<bucket>/redis-backups/redis-YYYY-MM-DD_HH-MM.rdb /tmp/dump.rdb
+# mv /tmp/dump.rdb <SELF_HOST_DIR>/redis-data/dump.rdb
 # restart services
 
+mkdir -p "$BACKUP_DIR"
 
 echo "Triggering Redis backup..."
 docker exec redis redis-cli bgsave

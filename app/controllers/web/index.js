@@ -36,6 +36,7 @@ const myAccount = require('./my-account');
 const onboard = require('./onboard');
 const otp = require('./otp');
 const report = require('./report');
+const setup = require('./setup');
 const denylist = require('./denylist');
 const guides = require('./guides');
 const sitemap = require('./sitemap');
@@ -712,6 +713,7 @@ module.exports = {
   onboard,
   otp,
   report,
+  setup,
   reservedEmailAddresses,
   recipientVerification,
   denylist,

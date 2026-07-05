@@ -1,0 +1,14 @@
+mixin setupProgress(step)
+  - const labels = [t("Create admin account"), t("Add your domain"), t("Verify DNS records")];
+  .row.text-center.my-4
+    each label, i in labels
+      - const n = i + 1;
+      .col-4
+        span.badge.badge-pill(
+          class=n === step ? "badge-primary" : n < step ? "badge-success" : "badge-light"
+        )
+          if n < step
+            i.fa.fa-check
+          else
+            = n
+        .small.mt-1(class=n === step ? "font-weight-bold" : "text-muted")= label

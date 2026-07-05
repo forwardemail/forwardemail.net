@@ -102,12 +102,12 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 This single command:
 
-1. Verifies system requirements
+1. Runs preflight checks (architecture, memory, disk, free ports, and whether your provider blocks outbound port 25)
 2. Guides you through configuration
-3. Sets up DNS records
-4. Configures TLS certificates
-5. Deploys the Docker containers
-6. Performs initial security hardening
+3. Configures TLS certificates with automatic renewal
+4. Generates all encryption keys and credentials
+5. Deploys the Docker containers and verifies they come up healthy
+6. Prints the exact DNS records to create, with your server's IPs and DKIM key filled in
 
 For those concerned about piping scripts to bash (as you should be!), we encourage reviewing the script before execution. It's fully open-source and available for inspection.
 
@@ -198,13 +198,14 @@ Ready to take control of your email infrastructure? Here's how to get started:
 
 ### System Requirements
 
-* Ubuntu 20.04 LTS or newer (recommended)
-* 1GB RAM minimum (2GB+ recommended)
+* Ubuntu 20.04/22.04/24.04 or Debian 11/12
+* amd64 or arm64 architecture (ARM VPSes and Raspberry Pi 4+ work)
+* 2GB RAM minimum (4GB+ recommended for the full stack)
 * 20GB storage recommended
 * A domain name you control
-* Public IP address with port 25 support
+* Public IP address with outbound port 25 support (many cloud providers block it by default; the installer checks this for you)
 * Ability to set [reverse PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
-* IPv4 and IPv6 support
+* IPv4 support (IPv6 recommended)
 
 > \[!TIP]
 > We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
@@ -218,15 +219,20 @@ Ready to take control of your email infrastructure? Here's how to get started:
 
 2. **Follow the Interactive Prompts**:
    * Enter your domain name
-   * Configure administrator credentials
-   * Set up DNS records as instructed
-   * Choose your preferred configuration options
+   * Choose full stack or a lighter forwarding-only deployment
+   * Pick a TLS certificate method (automatic HTTP validation is the recommended default; Cloudflare, DigitalOcean, and Route53 DNS wildcard options are also automated)
+   * Create the DNS records the script prints at the end (MX, A/AAAA, SPF, DKIM, DMARC, and a PTR reminder, with your server's detected IPs filled in)
 
-3. **Verify Installation**:
-   Once installation completes, you can verify everything is working by:
-   * Checking container status: `docker ps`
-   * Sending a test email
-   * Logging into the web interface
+3. **Finish Setup in Your Browser**:
+   Open `https://yourdomain.com` and log in with the one-time credentials the script generated (also saved to `self-hosting/CREDENTIALS.txt`). The built-in setup wizard walks you through:
+   * Creating your administrator account (the first account automatically becomes the admin)
+   * Adding your domain
+   * Verifying your DNS records with a live checklist
+
+4. **Verify Installation**:
+   * Check container status: `docker ps`
+   * Send and receive a test email
+   * Review the setup log at `/var/log/forwardemail-setup-*.log` if anything looks off
 
 
 ## The Future of Self-Hosted Email

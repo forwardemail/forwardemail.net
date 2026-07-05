@@ -40,6 +40,7 @@ const logger = require('#helpers/logger');
 const analyticsMiddleware = require('#helpers/analytics-middleware');
 const denylistMiddleware = require('#helpers/denylist-request');
 const noindexQueryStrings = require('#helpers/noindex-query-strings');
+const { setupGate, setupRedirect } = require('#helpers/setup-gate');
 const {
   getStatsForUser,
   buildBadgeTooltip
@@ -165,7 +166,9 @@ const cabin = new Cabin({ logger });
 module.exports = (redis) => ({
   ...sharedWebConfig,
   ...config,
-  auth,
+  // self-hosted: basic auth is enforced by setupGate (below) only until the
+  // first admin account exists, instead of unconditionally at boot
+  auth: config.isSelfHosted ? false : auth,
   rateLimit: {
     ...sharedWebConfig.rateLimit,
     ...config.rateLimit
@@ -326,6 +329,10 @@ module.exports = (redis) => ({
     // Koa v3 polyfill for ctx.redirect('back')
     // @see https://github.com/koajs/koa/releases/tag/v3.0.0
     app.use(koaRedirectBackPolyfill({ fallbackUrl: '/' }));
+
+    // self-hosted first-run basic auth gate (same position @ladjs/web would
+    // apply the global auth config, right after hookBeforeSetup)
+    app.use(setupGate(auth));
 
     app.context.resolver = createTangerine(
       app.context.client,
@@ -517,6 +524,10 @@ module.exports = (redis) => ({
     // are already set and the 500 error page renders correctly instead of
     // falling back to a generic "Internal Server Error" response.
     app.use(denylistMiddleware(RATELIMIT_ALLOWLIST));
+
+    // self-hosted: funnel browser traffic to /setup until an admin exists
+    // (placed after i18n so ctx.pathWithoutLocale and ctx.state.l are set)
+    app.use(setupRedirect);
 
     // Redirect www to non-www
     app.use((ctx, next) => {

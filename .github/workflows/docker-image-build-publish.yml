@@ -13,17 +13,22 @@ permissions:
   packages: write
 
 jobs:
-  build-and-publish:
-    runs-on: ${{ matrix.os }}
+  # Build each architecture natively (QEMU emulation is far too slow for the
+  # native module compiles: better-sqlite3-multiple-ciphers, re2, node-libcurl)
+  build:
+    runs-on: ${{ matrix.runner }}
     continue-on-error: false
-    timeout-minutes: 30
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-        node_version:
-          - "18.20.4"
+        include:
+          - platform: linux/amd64
+            arch: amd64
+            runner: ubuntu-latest
+          - platform: linux/arm64
+            arch: arm64
+            runner: ubuntu-24.04-arm
     env:
       AUTH_GITHUB_ENABLED: "false"
       AUTH_GOOGLE_ENABLED: "false"
@@ -72,17 +77,45 @@ jobs:
           -e '/^SRS_SECRET/d' \
           ".env.schema"
 
-      # Build / Publish the Docker image to GitHub Container Registry
-      - name: Build / Publish Docker image to GitHub Container Registry
+      # Build and push a per-architecture image tag; the merge job below
+      # combines them into one multi-arch manifest
+      - name: Build / Publish per-arch Docker image
         run: |
-          IMAGE_NAME=ghcr.io/${{ github.repository }}-selfhosted:${{ github.ref_name }}
-          docker build -f self-hosting/Dockerfile-selfhosted -t $IMAGE_NAME .
-
-          # Tag the image as 'latest' to update the latest tag
-          docker tag $IMAGE_NAME ghcr.io/${{ github.repository }}-selfhosted:latest
-
-          # Push both the versioned and latest tags to GitHub Container Registry
-          docker push $IMAGE_NAME
-          docker push ghcr.io/${{ github.repository }}-selfhosted:latest
+          IMAGE=ghcr.io/${{ github.repository }}-selfhosted
+          TAG=${{ github.ref_name }}
+          docker buildx build \
+            --platform ${{ matrix.platform }} \
+            -f self-hosting/Dockerfile-selfhosted \
+            -t "$IMAGE:$TAG-${{ matrix.arch }}" \
+            --cache-from "type=registry,ref=$IMAGE:buildcache-${{ matrix.arch }}" \
+            --cache-to "type=registry,ref=$IMAGE:buildcache-${{ matrix.arch }},mode=max" \
+            --push \
+            .
         env:
           DOCKER_CLI_EXPERIMENTAL: enabled
+
+  # Combine the per-arch images into multi-arch manifests for the release
+  # tag and latest
+  merge-manifests:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Log into GitHub Container Registry
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and push multi-arch manifests
+        run: |
+          IMAGE=ghcr.io/${{ github.repository }}-selfhosted
+          TAG=${{ github.ref_name }}
+          docker buildx imagetools create \
+            -t "$IMAGE:$TAG" \
+            "$IMAGE:$TAG-amd64" "$IMAGE:$TAG-arm64"
+          docker buildx imagetools create \
+            -t "$IMAGE:latest" \
+            "$IMAGE:$TAG-amd64" "$IMAGE:$TAG-arm64"
+          docker buildx imagetools inspect "$IMAGE:$TAG"

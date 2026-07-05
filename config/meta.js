@@ -148,6 +148,10 @@ module.exports = function (config, isSitemap = false) {
       `Self-Hosted Email Server - Complete Open Source Setup Guide`,
       `Deploy your own email server with Forward Email's open-source code. Docker, Kubernetes, and bare-metal installation guides. Full control over your email infrastructure.`
     ],
+    '/setup': [
+      `Setup - Self-Hosted Email Server`,
+      `First-run setup wizard for your self-hosted Forward Email server: create the admin account, add your domain, and verify DNS records.`
+    ],
     '/resources': [
       `Free Email Tools & Resources for Developers ${currentYear}`,
       `Curated collection of free email tools, APIs, libraries, and resources for developers and startups. DNS tools, SMTP testers, deliverability checkers, and more.`
