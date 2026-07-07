@@ -82,6 +82,12 @@ const IP_ADDRESS = ip.address();
 
 const imapClients = new Map();
 
+function getFailureLabel(timedOut, errored) {
+  if (timedOut) return 'Timeout (&gt;1m)';
+  if (errored) return 'Error';
+  return 'N/A';
+}
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   redisClients: [client],
@@ -165,6 +171,10 @@ async function checkTTI() {
       config.imapConfigurations.map(async (provider) => {
         let directMs = 0;
         let forwardingMs = 0;
+        let directTimeout = false;
+        let directError = false;
+        let forwardingTimeout = false;
+        let forwardingError = false;
         let imapClient;
         try {
           // https://github.com/postalsys/imapflow/blob/88e46d9bbcdc347d22df27bc591841431d8dc831/lib/imap-flow.js#L243-L247
@@ -337,7 +347,7 @@ Forward Email
                 // rewrite messageId since `raw` overrides this
                 info.messageId = messageId;
 
-                const { received, err } = await getMessage(
+                const { received, err, timedOut } = await getMessage(
                   imapClient,
                   info,
                   provider
@@ -361,18 +371,29 @@ Forward Email
                   await logger.fatal(err);
                 }
 
-                return _.isDate(received)
-                  ? received.getTime() - date.getTime()
-                  : 0;
+                return {
+                  ms: _.isDate(received)
+                    ? received.getTime() - date.getTime()
+                    : 0,
+                  timedOut: Boolean(timedOut),
+                  errored: Boolean(err) && !timedOut
+                };
               }
             )
           );
-          directMs = results[0];
-          forwardingMs = results[1];
+          directMs = results[0].ms;
+          directTimeout = results[0].timedOut;
+          directError = results[0].errored;
+          forwardingMs = results[1].ms;
+          forwardingTimeout = results[1].timedOut;
+          forwardingError = results[1].errored;
         } catch (err) {
           err.provider = provider;
           err.isCodeBug = true;
           logger.fatal(err);
+          // provider-level failure (e.g. IMAP connect) zeroes both legs
+          if (directMs === 0) directError = true;
+          if (forwardingMs === 0) forwardingError = true;
         }
 
         // delete all messages once done
@@ -390,7 +411,11 @@ Forward Email
         return {
           name: provider.name,
           directMs,
-          forwardingMs
+          forwardingMs,
+          directTimeout,
+          directError,
+          forwardingTimeout,
+          forwardingError
         };
       })
     );
@@ -428,10 +453,12 @@ Forward Email
               .map(
                 (p) =>
                   `<strong>${p.name}:</strong> Direct (${
-                    p.directMs === 0 ? 'N/A' : prettyMilliseconds(p.directMs)
+                    p.directMs === 0
+                      ? getFailureLabel(p.directTimeout, p.directError)
+                      : prettyMilliseconds(p.directMs)
                   }) &bull; Forwarding (${
                     p.forwardingMs === 0
-                      ? 'N/A'
+                      ? getFailureLabel(p.forwardingTimeout, p.forwardingError)
                       : prettyMilliseconds(p.forwardingMs)
                   })`
               )

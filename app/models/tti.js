@@ -35,6 +35,24 @@ const TTI = new mongoose.Schema({
         type: Number,
         required: true,
         default: 0
+      },
+      // when *Ms is 0 these distinguish "did not arrive within 1m"
+      // (timeout) from IMAP connection/fetch failures (error)
+      directTimeout: {
+        type: Boolean,
+        default: false
+      },
+      directError: {
+        type: Boolean,
+        default: false
+      },
+      forwardingTimeout: {
+        type: Boolean,
+        default: false
+      },
+      forwardingError: {
+        type: Boolean,
+        default: false
       }
     }
   ]
