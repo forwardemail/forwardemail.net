@@ -115,6 +115,12 @@ const CHECKPOINTS = ['PASSIVE', 'FULL', 'RESTART', 'TRUNCATE'];
 const HOSTNAME = os.hostname();
 const IP_ADDRESS = ip.address();
 
+// log a consolidated stage-timing breakdown for any 'tmp' payload
+// whose queue-wait + handler time exceeds this threshold
+const SLOW_TMP_PAYLOAD_MS = env.SLOW_TMP_PAYLOAD_MS
+  ? Number.parseInt(env.SLOW_TMP_PAYLOAD_MS, 10)
+  : ms('5s');
+
 const PAYLOAD_ACTIONS = new Set([
   'sync', // no db
   'tmp', // no db
@@ -630,12 +636,20 @@ async function parsePayload(data, ws) {
         // create the temporary message for each alias
         const errors = {};
 
+        // stage timings for the consolidated slow-payload log below
+        const handlerStartedAt = Date.now();
+        const queueWaitMs = payload.sent_at
+          ? Math.max(0, now - payload.sent_at)
+          : 0;
+        const aliasTimings = [];
+
         //
         // rate limit the payload.remoteAddress from
         // sending more than 1 GB per day or 1000 messages per day
         // but attempt to use the reverse PTR root domain of the remoteAddress
         //
         let sender = payload.remoteAddress;
+        const reverseDnsStartedAt = Date.now();
         try {
           const [clientHostname] = await this.resolver.reverse(
             payload.remoteAddress
@@ -647,11 +661,14 @@ async function parsePayload(data, ws) {
           logger.warn(err);
         }
 
+        const reverseDnsMs = Date.now() - reverseDnsStartedAt;
+
         const date = new Date().toISOString().split('T')[0];
 
         //
         // parse headers from message
         //
+        const parseStartedAt = Date.now();
         const splitter = new Splitter();
         const joiner = new Joiner();
         let headers;
@@ -670,11 +687,23 @@ async function parsePayload(data, ws) {
         // (arguments = `session`, `headers`, `body`, `useSender`)
         //
         const fingerprint = getFingerprint({}, headers, payload.raw);
+        const parseMs = Date.now() - parseStartedAt;
 
         await pMap(
           payload.aliases,
 
           async (obj) => {
+            // per-alias stage timer: mark() records elapsed time since the
+            // previous mark under the given stage name (see slow-payload log)
+            const aliasStartedAt = Date.now();
+            let stageStartedAt = aliasStartedAt;
+            const stages = {};
+            const mark = (name) => {
+              const ts = Date.now();
+              stages[name] = ts - stageStartedAt;
+              stageStartedAt = ts;
+            };
+
             try {
               const alias = await Aliases.findById(obj.id)
                 .populate('domain', 'id name')
@@ -687,6 +716,8 @@ async function parsePayload(data, ws) {
                 )
                 .lean()
                 .exec();
+
+              mark('aliasLookup');
 
               if (!alias) throw new TypeError('Alias does not exist');
 
@@ -744,6 +775,8 @@ async function parsePayload(data, ws) {
               // check quota
               const { isOverQuota, storageUsed, maxQuotaPerAlias } =
                 await Aliases.isOverQuota(alias, 0, this.client);
+
+              mark('quota');
 
               if (isOverQuota) {
                 const err = new Error(
@@ -896,6 +929,8 @@ async function parsePayload(data, ws) {
                 }
               }
 
+              mark('rateLimit');
+
               // check that we have available space
               const storagePath = getPathToDatabase({
                 id: alias.id,
@@ -909,6 +944,8 @@ async function parsePayload(data, ws) {
                     diskSpace.free
                   )} was available`
                 );
+
+              mark('diskSpace');
 
               // we should only use in-memory database is if was connected (IMAP session open)
               if (
@@ -1208,6 +1245,8 @@ async function parsePayload(data, ws) {
                 });
               }
 
+              mark('sieve');
+
               // Use Sieve-determined folder and flags
               const targetFolder = sieveResult.folder || 'INBOX';
               const targetFlags = sieveResult.flags || [];
@@ -1284,6 +1323,7 @@ async function parsePayload(data, ws) {
                 }
               }
 
+              mark('directAppend');
               //
               // sqlite_auth_request disabled — auth is handled directly
               //
@@ -1405,6 +1445,8 @@ async function parsePayload(data, ws) {
                 }
 
                 const tmpDb = await getTemporaryDatabase.call(this, session);
+
+                mark('tmpDbOpen');
 
                 let err;
 
@@ -1780,7 +1822,46 @@ async function parsePayload(data, ws) {
                   logger.fatal(err);
                 }
 
-                if (tmpDb) await closeDatabase(tmpDb);
+                mark('tmpStore');
+
+                if (tmpDb && !this.temporaryDatabaseMap)
+                  await closeDatabase(tmpDb);
+
+                mark('tmpDbClose');
+
+                // send user push notification
+                if (!err)
+                  sendApn(this.client, alias.id, targetFolder || 'INBOX')
+                    .then()
+                    .catch((err) =>
+                      logger.fatal(err, { session, resolver: this.resolver })
+                    );
+
+                // send websocket push notification (enriched payload with eml)
+                if (!err)
+                  sendWebSocketNotification(
+                    this.client,
+                    alias.id,
+                    'newMessage',
+                    {
+                      mailbox: targetFolder || 'INBOX',
+                      message: {
+                        folder_path: targetFolder || 'INBOX',
+                        flags: targetFlags || [],
+                        is_unread: !(targetFlags || []).includes('\\Seen'),
+                        is_flagged: (targetFlags || []).includes('\\Flagged'),
+                        is_deleted: (targetFlags || []).includes('\\Deleted'),
+                        is_draft: (targetFlags || []).includes('\\Draft'),
+                        is_encrypted: false,
+                        eml: Buffer.isBuffer(messageRaw)
+                          ? messageRaw.toString()
+                          : typeof messageRaw === 'string'
+                          ? messageRaw
+                          : '',
+                        object: 'message'
+                      }
+                    }
+                  );
 
                 if (err) throw err;
               }
@@ -1892,6 +1973,7 @@ async function parsePayload(data, ws) {
                     remoteAddress: payload.remoteAddress
                   });
                 }
+<<<<<<< HEAD
               } catch (imipErr) {
                 // Don't fail message delivery if iMIP processing fails
                 logger.warn('iMIP processing failed', {
@@ -1905,6 +1987,10 @@ async function parsePayload(data, ws) {
                   recipient: session.user.username
                 });
               }
+=======
+
+              mark('imip');
+>>>>>>> d57fe2e9e (chore: log stage-timing breakdown for slow tmp payloads)
             } catch (err) {
               err.payload = _.omit(payload, 'raw');
               err.isCodeBug = isCodeBug(err);
@@ -1912,10 +1998,41 @@ async function parsePayload(data, ws) {
               errors[`${obj.address}`] = JSON.parse(
                 safeStringify(parseErr(err))
               );
+            } finally {
+              aliasTimings.push({
+                alias: obj.address,
+                aliasId: obj.id,
+                totalMs: Date.now() - aliasStartedAt,
+                stages
+              });
             }
           },
           { concurrency }
         );
+
+        //
+        // one consolidated log line per slow tmp request so latency can be
+        // attributed to queue-wait vs a specific per-alias handler stage
+        //
+        const handlerMs = Date.now() - handlerStartedAt;
+        if (queueWaitMs + handlerMs >= SLOW_TMP_PAYLOAD_MS) {
+          logger.warn('slow tmp payload', {
+            // opt in to Mongo log persistence (warn-level logs are
+            // otherwise dropped by the hook in helpers/logger.js)
+            ignore_hook: false,
+            payloadId: payload.id,
+            queueWaitMs,
+            handlerMs,
+            endToEndMs: queueWaitMs + handlerMs,
+            reverseDnsMs,
+            parseMs,
+            byteLength,
+            aliasCount: payload.aliases.length,
+            aliasTimings,
+            remoteAddress: payload.remoteAddress,
+            hostname: HOSTNAME
+          });
+        }
 
         response = {
           id: payload.id,
