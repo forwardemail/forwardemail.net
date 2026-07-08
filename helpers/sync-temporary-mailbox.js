@@ -131,11 +131,14 @@ async function syncTemporaryMailbox(session) {
     logger.fatal(err, { session, resolver: this.resolver });
   }
 
-  // Close the temporary database since we no longer keep a persistent map
-  try {
-    await closeDatabase(tmpDb);
-  } catch (err) {
-    logger.fatal(err, { session, resolver: this.resolver });
+  // close the handle only when it isn't cached in temporaryDatabaseMap
+  // (the map owns cached handles and closes them on eviction/shutdown)
+  if (!this.temporaryDatabaseMap) {
+    try {
+      await closeDatabase(tmpDb);
+    } catch (err) {
+      logger.fatal(err, { session, resolver: this.resolver });
+    }
   }
 
   if (err) throw err;

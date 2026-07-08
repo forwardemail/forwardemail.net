@@ -6,6 +6,7 @@
 const path = require('node:path');
 
 const Database = require('better-sqlite3-multiple-ciphers');
+const { boolean } = require('boolean');
 
 const getPathToDatabase = require('./get-path-to-database');
 const logger = require('./logger');
@@ -21,6 +22,21 @@ const TemporaryMessages = require('#models/temporary-messages');
 async function getTemporaryDatabase(session) {
   // if server is shutting down then don't bother getting database
   if (this.isClosing) throw new ServerShutdownError();
+
+  //
+  // re-use a cached handle when available — opening an encrypted database
+  // pays full PBKDF2 key derivation (~50ms CPU) plus schema migration
+  // checks, which is far too expensive to do once per delivered message
+  //
+  const mapKey = `${session.user.alias_id}-tmp`;
+  if (this.temporaryDatabaseMap && this.temporaryDatabaseMap.has(mapKey)) {
+    const cached = this.temporaryDatabaseMap.get(mapKey);
+    if (cached && cached.open) return cached;
+    // stale entry (closed externally) — remove and re-open below
+    this.temporaryDatabaseMap.delete(mapKey);
+  }
+
+  const startedAt = Date.now();
 
   const storagePath = getPathToDatabase({
     id: session.user.alias_id,
@@ -88,6 +104,14 @@ async function getTemporaryDatabase(session) {
       }
     }
   }
+
+  if (this.temporaryDatabaseMap) this.temporaryDatabaseMap.set(mapKey, tmpDb);
+
+  if (boolean(env.SQLITE_DEBUG_TIMERS))
+    console.debug('getTemporaryDatabase cache miss', {
+      alias_id: session.user.alias_id,
+      duration_ms: Date.now() - startedAt
+    });
 
   return tmpDb;
 }

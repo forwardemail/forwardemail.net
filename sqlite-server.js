@@ -70,6 +70,13 @@ class SQLite {
     //
     this.databaseMap = new DatabaseLRUMap();
 
+    //
+    // same for temporary (-tmp.sqlite) databases; without this map every
+    // tmp-path delivery opens a fresh handle and pays full PBKDF2 key
+    // derivation (~50ms CPU) plus schema migration checks per message
+    //
+    this.temporaryDatabaseMap = new DatabaseLRUMap();
+
     // Unique worker ID for filtering self-published Redis broadcast messages
     // (prevents local clients from receiving the same broadcast twice)
     this.workerId = `${process.pid}:${Date.now()}`;
@@ -369,6 +376,10 @@ class SQLite {
     // Gracefully close all cached database connections
     if (this.databaseMap) {
       await this.databaseMap.closeAll();
+    }
+
+    if (this.temporaryDatabaseMap) {
+      await this.temporaryDatabaseMap.closeAll();
     }
 
     // close server
