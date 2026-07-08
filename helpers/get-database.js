@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
 
@@ -55,6 +56,30 @@ const { fixCalDAVHref } = require('#helpers/fix-caldav-href');
 const builder = new Builder({ bufferAsNative: true });
 
 const HOSTNAME = os.hostname();
+
+//
+// negative-cache key for databases that recently threw SQLITE_NOTADB;
+// includes a hash of the derived password so a mistyped password can
+// never lock out the correct password for the same alias
+//
+function getNotAdbCacheKey(alias, session) {
+  try {
+    let password;
+    try {
+      password = decrypt(session.user.password);
+    } catch {
+      password = session.user.password;
+    }
+
+    return `notadb:${alias.id}:${crypto
+      .createHash('sha256')
+      .update(password)
+      .digest('hex')
+      .slice(0, 16)}`;
+  } catch {
+    return null;
+  }
+}
 
 // always ensure `rclone.conf` is an empty file
 // function syncRcloneConfig() {
@@ -508,6 +533,27 @@ async function getDatabase(
         });
       }
     } else {
+      //
+      // fail fast if this alias + derived key recently threw SQLITE_NOTADB
+      // (prevents retry storms from paying PBKDF2 key derivation plus
+      //  backup/reset attempts on every open of an unreadable database;
+      //  clear manually after restoring a database via
+      //  `redis-cli DEL notadb:<alias_id>:<hash>`, or wait out the TTL)
+      //
+      if (instance.client) {
+        const notAdbCacheKey = getNotAdbCacheKey(alias, session);
+        if (notAdbCacheKey && (await instance.client.get(notAdbCacheKey))) {
+          const err = new TypeError(
+            'Database file is temporarily unavailable (it recently failed to open); if this persists please contact support'
+          );
+          err.code = 'SQLITE_NOTADB';
+          err.negativeCache = true;
+          // prevent log flooding (see catch block in parse-payload.js)
+          err.ignoreHook = true;
+          throw err;
+        }
+      }
+
       const t0 = boolean(env.SQLITE_DEBUG_TIMERS) ? Date.now() : 0;
       db = new Database(dbFilePath, {
         readonly,
@@ -1208,6 +1254,20 @@ async function getDatabase(
         '******************* PLEASE DISCONNECT FROM SQLiteStudio IF YOU ARE CONNECTED *************';
     }
 
+    //
+    // never keep an unreadable handle cached in the databaseMap
+    // (the handle is stored before setupPragma runs, so a wrong-key or
+    //  corrupt database would otherwise serve a broken handle to every
+    //  subsequent operation and fail at the statement level forever)
+    //
+    if (
+      err.code === 'SQLITE_NOTADB' &&
+      !err.negativeCache &&
+      instance.databaseMap &&
+      instance.databaseMap.has(alias.id)
+    )
+      instance.databaseMap.delete(alias.id);
+
     // <https://sqlite.org/c3ref/c_abort.html>
     // <https://www.sqlite.org/rescode.html>
     // SQLITE_FULL: database or disk full
@@ -1231,6 +1291,10 @@ function retryGetDatabase(...args) {
     async onFailedAttempt(error) {
       const instance = args[0];
       const session = args[2];
+
+      // abort retries immediately for negative-cached NOTADB failures
+      // (no point retrying — the cached verdict lasts until the TTL)
+      if (error.negativeCache) throw error;
 
       if (isRetryableError(error)) {
         console.error(
@@ -1439,6 +1503,25 @@ function retryGetDatabase(...args) {
 
       throw error;
     }
+  }).catch(async (err) => {
+    //
+    // all retries (and the backup/reset self-heal attempt) have failed —
+    // negative-cache genuine SQLITE_NOTADB failures so subsequent opens of
+    // the same alias + key fail fast for 15m instead of paying PBKDF2 key
+    // derivation and re-running the backup/reset machinery on every open
+    //
+    if (err && err.code === 'SQLITE_NOTADB' && !err.negativeCache) {
+      try {
+        const [instance, alias, session] = args;
+        const notAdbCacheKey = getNotAdbCacheKey(alias, session);
+        if (notAdbCacheKey && instance.client)
+          await instance.client.set(notAdbCacheKey, '1', 'PX', ms('15m'));
+      } catch (err_) {
+        logger.debug(err_);
+      }
+    }
+
+    throw err;
   });
 }
 
