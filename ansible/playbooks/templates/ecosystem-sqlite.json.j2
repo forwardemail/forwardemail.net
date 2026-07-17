@@ -7,7 +7,8 @@
       "exec_mode": "cluster",
       "instances": "max",
       "pmx": false,
-      "max_memory_restart": "8G",
+      "max_memory_restart": "16G",
+      "node_args": "--max-old-space-size=6144 --report-on-fatalerror --report-directory=/var/log/pm2",
       "kill_timeout": 30000,
       "env_production": {
         "NODE_ENV": "production"

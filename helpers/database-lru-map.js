@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const process = require('node:process');
+
 const { boolean } = require('boolean');
 const ms = require('ms');
 
@@ -204,18 +206,47 @@ class DatabaseLRUMap {
     }
   }
 
-  // Graceful shutdown — close all databases
-  async closeAll() {
+  // Graceful shutdown — close all databases within a time budget.
+  //
+  // The previous implementation fired every closeDatabase() at once; the
+  // synchronous wal_checkpoint(PASSIVE) calls serialize on the event loop
+  // anyway, and with 1000+ open DBs shutdown exceeded pm2's kill_timeout
+  // (30s) so pm2 SIGKILLed the worker mid-close — leaving un-checkpointed
+  // WAL files behind. Checkpoint while the budget lasts, then fast-close
+  // the rest (their WAL is replayed on next open, same as after SIGKILL,
+  // but the fds and process exit cleanly).
+  async closeAll(budgetMs = ms('15s')) {
     clearInterval(this._sweepInterval);
-    const promises = [];
-    for (const entry of this._map.values()) {
-      if (entry.db && entry.db.open) {
-        promises.push(closeDatabase(entry.db));
+    const t0 = Date.now();
+    const deadline = t0 + budgetMs;
+    const entries = [...this._map.values()];
+    this._map.clear();
+    let checkpointed = 0;
+    let fastClosed = 0;
+    for (const entry of entries) {
+      if (!entry.db || !entry.db.open) continue;
+      if (Date.now() < deadline) {
+        await closeDatabase(entry.db).catch((err) => logger.error(err));
+        checkpointed++;
+      } else {
+        try {
+          entry.db.close();
+        } catch (err) {
+          logger.error(err);
+        }
+
+        fastClosed++;
       }
     }
 
-    this._map.clear();
-    await Promise.allSettled(promises);
+    if (checkpointed > 0 || fastClosed > 0)
+      console.warn(
+        '[CLOSE_ALL] pid=%d checkpointed=%d fastClosed=%d duration=%dms',
+        process.pid,
+        checkpointed,
+        fastClosed,
+        Date.now() - t0
+      );
   }
 
   // Destroy the interval (for tests and graceful shutdown)

@@ -504,7 +504,7 @@ async function getDatabase(
         });
       }
     } else {
-      const t0 = boolean(env.SQLITE_DEBUG_TIMERS) ? Date.now() : 0;
+      const t0 = Date.now();
       db = new Database(dbFilePath, {
         readonly,
         fileMustExist: readonly,
@@ -539,6 +539,24 @@ async function getDatabase(
           alias_id: alias.id,
           readonly
         });
+      }
+
+      // Slow open warning (always on): a multi-GB WAL forces synchronous
+      // WAL recovery on first access — the primary cold-start TTI stall
+      const _openMs = Date.now() - t0;
+      if (_openMs > 500) {
+        let walBytes = 0;
+        try {
+          walBytes = fs.statSync(`${dbFilePath}-wal`).size;
+        } catch {}
+
+        console.warn(
+          '[SLOW_OPEN] pid=%d alias=%s duration=%dms wal_bytes=%d',
+          process.pid,
+          session?.user?.alias_name,
+          _openMs,
+          walBytes
+        );
       }
     }
 

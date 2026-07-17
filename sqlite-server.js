@@ -47,7 +47,12 @@ setInterval(() => {
   const lag = now - _lagPrev - 1000;
   _lagPrev = now;
   if (lag > 100) {
-    console.warn('[EVENT_LOOP_LAG] pid=%d lag=%dms', process.pid, lag);
+    console.warn(
+      '[EVENT_LOOP_LAG] pid=%d lag=%dms inflight=%d',
+      process.pid,
+      lag,
+      parsePayload.getInFlight()
+    );
   }
 }, 1000).unref();
 

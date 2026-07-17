@@ -111,6 +111,17 @@ const onUnsubscribePromise = pify(onUnsubscribe, { multiArgs: true });
 
 const concurrency = os.cpus().length;
 
+//
+// Load shedding for WSP requests (bounded in-flight work): when the event
+// loop stalls (sync SQLite ops, WAL recovery, cold-start PBKDF2), buffered
+// WebSocket messages flood in at once; without a bound each one starts work
+// and the heap balloons until V8 OOM ("Ineffective mark-compacts near heap
+// limit"), which restarts the worker cold and re-seeds the storm.
+//
+const MAX_IN_FLIGHT = Number(env.SQLITE_MAX_IN_FLIGHT) || 100;
+let inFlight = 0;
+let shedCount = 0;
+
 const CHECKPOINTS = ['PASSIVE', 'FULL', 'RESTART', 'TRUNCATE'];
 
 const HOSTNAME = os.hostname();
@@ -296,6 +307,7 @@ async function parsePayload(data, ws) {
   let db;
   let payload;
   let response;
+  let acquiredSlot = false;
   try {
     if (!data) throw new TypeError('Data missing');
 
@@ -337,6 +349,43 @@ async function parsePayload(data, ws) {
     // action
     if (!isSANB(payload.action) || !PAYLOAD_ACTIONS.has(payload.action))
       throw new TypeError('Payload action missing or invalid');
+
+    //
+    // Load shedding (ws-originated requests only):
+    // 1) stale: the payload sat in the socket buffer longer than the
+    //    client's request timeout (1m default in create-websocket-as-promised)
+    //    so the caller has already given up — doing the work now is waste
+    // 2) capacity: too many requests already in flight on this worker
+    //
+    if (ws) {
+      const clientTimeout =
+        typeof payload.timeout === 'number' &&
+        Number.isFinite(payload.timeout) &&
+        payload.timeout > 0
+          ? payload.timeout
+          : ms('1m');
+      const isStale =
+        typeof payload.sent_at === 'number' &&
+        now - payload.sent_at >= clientTimeout;
+      if (isStale || inFlight >= MAX_IN_FLIGHT) {
+        shedCount++;
+        if (shedCount === 1 || shedCount % 100 === 0)
+          console.warn(
+            '[SHED] pid=%d total=%d inflight=%d stale=%s action=%s',
+            process.pid,
+            shedCount,
+            inFlight,
+            isStale,
+            payload.action
+          );
+        const err = Boom.serverUnavailable('Storage server busy, retry later');
+        err.ignoreHook = true;
+        throw err;
+      }
+
+      inFlight++;
+      acquiredSlot = true;
+    }
 
     // if checkpoint was passed then ensure it's valid
     if (payload.checkpoint && typeof payload.checkpoint !== 'string')
@@ -2710,7 +2759,11 @@ async function parsePayload(data, ws) {
         })
       );
     }
+  } finally {
+    if (acquiredSlot) inFlight--;
   }
 }
 
 module.exports = parsePayload;
+// gauge for the event loop lag monitor in sqlite-server.js
+module.exports.getInFlight = () => inFlight;

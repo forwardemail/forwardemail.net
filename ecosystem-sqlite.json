@@ -5,6 +5,7 @@
       "script": "sqlite.js",
       "max_restarts": 999,
       "max_memory_restart": "16G",
+      "node_args": "--max-old-space-size=6144 --report-on-fatalerror --report-directory=/var/log/pm2",
       "kill_timeout": 30000,
       "wait_ready": true,
       "exec_mode": "cluster",
