@@ -2002,5 +2002,121 @@ describe('Core Sieve tests (RFC 5228 Section 5)', () => {
         assert.strictEqual(result.variables.depth, '3');
       });
     });
+
+    describe('header :mime structured access (RFC 5703 Section 4.1)', () => {
+      // These tests use `discard` (not `keep`) as the observable action
+      // inside the `if` block: Sieve applies an *implicit* keep whenever no
+      // other terminating action ran, so asserting on a 'keep' action would
+      // false-pass even if the condition never matched. `discard` only ever
+      // appears if the condition actually evaluated true.
+      it('should read :type from Content-Disposition when that header is requested, not Content-Type', async () => {
+        const script = `
+          require "mime";
+          foreverypart {
+            if header :mime :type :is "Content-Disposition" "inline" {
+              discard;
+            }
+          }
+        `;
+        const message = createMimeMessage([
+          {
+            contentType: 'image/png',
+            headers: {
+              'content-disposition': 'inline; filename="image.png"'
+            },
+            body: 'binarydata',
+            encoding: 'base64',
+            charset: false
+          }
+        ]);
+        const result = await executeScript(script, message);
+        assert.ok(!result.error);
+
+        // Content-Disposition is "inline", so per RFC 5703 4.1 :type on that
+        // header should evaluate to "inline" and this test should match.
+        // Currently getMimeStructuredValue() ignores the requested header
+        // name and always parses `part.contentType` ("image/png") instead,
+        // so :type evaluates to "image" and this never matches.
+        assert.ok(
+          result.actions.some((a) => a.type === 'discard'),
+          'expected :type on "Content-Disposition" to read the disposition ' +
+            '("inline"), but the engine always parses Content-Type regardless ' +
+            'of which header was requested'
+        );
+      });
+
+      it('should return blank (not Content-Type) for :type on a header that has no type/subtype concept', async () => {
+        const script = `
+          require "mime";
+          foreverypart {
+            if header :mime :type :is "Content-ID" "" {
+              discard;
+            }
+          }
+        `;
+        const message = createMimeMessage([
+          {
+            contentType: 'image/png',
+            headers: {
+              'content-id': '<abc123@example.com>'
+            },
+            body: 'binarydata',
+            encoding: 'base64',
+            charset: false
+          }
+        ]);
+        const result = await executeScript(script, message);
+        assert.ok(!result.error);
+
+        // Per RFC 5703 4.1: "for other MIME headers, uses a blank string for
+        // the test" - :type on Content-ID (which has no type/subtype) should
+        // be "". Currently it evaluates to "image" (from part.contentType)
+        // instead, so this never matches either.
+        assert.ok(
+          result.actions.some((a) => a.type === 'discard'),
+          'expected :type on "Content-ID" to be blank per RFC 5703 4.1, but ' +
+            'the engine returns the Content-Type major type instead'
+        );
+      });
+
+      it('should read :param from Content-Disposition when that header is requested, not Content-Type', async () => {
+        const script = `
+          require "mime";
+          foreverypart {
+            if header :mime :param "filename" :matches "Content-Disposition" "image*.png" {
+              discard;
+            }
+          }
+        `;
+        const message = createMimeMessage([
+          {
+            // Deliberately different filename in Content-Type's "name" vs.
+            // Content-Disposition's "filename" param, so the test can only
+            // pass if :param actually reads from Content-Disposition.
+            contentType: 'image/png; name="not-this-one.txt"',
+            headers: {
+              'content-type': 'image/png; name="not-this-one.txt"',
+              'content-disposition': 'inline; filename="image001.png"'
+            },
+            body: 'binarydata',
+            encoding: 'base64',
+            charset: false
+          }
+        ]);
+        const result = await executeScript(script, message);
+        assert.ok(!result.error);
+
+        // getMimeStructuredValue()'s 'param' branch unconditionally reads
+        // part.headers['content-type'], regardless of which header name was
+        // passed to :param. So this currently fails to find "filename" on
+        // Content-Disposition at all.
+        assert.ok(
+          result.actions.some((a) => a.type === 'discard'),
+          'expected :param "filename" to read from the requested header ' +
+            '(Content-Disposition), but the engine always reads Content-Type\'s ' +
+            'parameters instead'
+        );
+      });
+    });
   });
 });
