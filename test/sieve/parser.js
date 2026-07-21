@@ -567,6 +567,30 @@ describe('Sieve Parser - MIME Commands (RFC 5703)', () => {
     assert.ok(ifCmd.test.mime);
   });
 
+  it('should parse exists test with :mime tag (RFC 5703 Section 4.3)', () => {
+    const script =
+      'require "mime"; foreverypart { if exists :mime "Content-ID" { discard; } }';
+
+    // Currently throws:
+    //   Sieve syntax error at line 1, column X: Expected "#", ")", ",",
+    //   "/*", or [ \t\n\r] but "\"" found.
+    // The grammar's `exists` rule lacks a `:mime` branch, even though
+    // `header` (see 'should parse header test with :mime tag' above)
+    // supports it. Per RFC 5703 4.3:
+    //   Usage: exists [":mime"] [":anychild"] <header-names: string-list>
+    const ast = parse(script);
+    const fep = ast.commands.find((c) => c.type === 'Foreverypart');
+    assert.ok(fep);
+    const ifCmd = fep.block[0];
+    assert.strictEqual(ifCmd.type, 'If');
+    assert.strictEqual(ifCmd.test.type, 'ExistsTest');
+    assert.ok(
+      ifCmd.test.mime,
+      'expected exists test to accept :mime like header/address do'
+    );
+    assert.deepStrictEqual(ifCmd.test.headers, ['Content-ID']);
+  });
+
   it('should parse header test with :type tag', () => {
     const script =
       'require "mime"; foreverypart { if header :mime :type :is "content-type" "text" { discard; } }';
