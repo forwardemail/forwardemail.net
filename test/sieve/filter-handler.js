@@ -192,6 +192,44 @@ describe('Sieve Filter Handler', () => {
       assert.strictEqual(applied.headerChanges.length, 1);
       assert.strictEqual(applied.kept, true);
     });
+
+    it('should handle replace action (RFC 5703) - currently silently dropped', async () => {
+      const result = {
+        actions: [
+          {
+            type: 'replace',
+            partIndex: 0,
+            replacement: 'New content',
+            mime: false,
+            subject: null,
+            from: null
+          }
+        ]
+      };
+      const applied = await handler.applyActions(result, createMessage());
+
+      // applyActions() currently has no `case 'replace'` at all (compare to
+      // the 'addheader'/'deleteheader' cases just above it, which populate
+      // `applied.headerChanges`), so nothing on `applied` reflects that a
+      // replace action was even present. The `partReplacements` shape below
+      // mirrors the existing pattern for addheader/deleteheader - it
+      // documents the missing behavior rather than prescribing the exact
+      // contract. This should fail until 'replace' is handled.
+      assert.ok(
+        Array.isArray(applied.partReplacements) &&
+          applied.partReplacements.length === 1,
+        'expected applyActions() to record MIME part replacements from a ' +
+          "replace action, but the action type is not handled at all - it's " +
+          'silently dropped'
+      );
+      if (Array.isArray(applied.partReplacements)) {
+        assert.strictEqual(applied.partReplacements[0].partIndex, 0);
+        assert.strictEqual(
+          applied.partReplacements[0].replacement,
+          'New content'
+        );
+      }
+    });
   });
 
   describe('Vacation handling', () => {
