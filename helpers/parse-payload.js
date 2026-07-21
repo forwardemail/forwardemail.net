@@ -67,6 +67,12 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
+const {
+  isBackedUp,
+  waitForDrain,
+  sendBounded,
+  RESPONSE_MAX_BUFFERED
+} = require('#helpers/ws-backpressure');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const { createSieveIntegration } = require('#helpers/sieve');
 const { checkAndProcessImipMessage } = require('#helpers/process-imip-reply');
@@ -2810,7 +2816,27 @@ async function parsePayload(data, ws) {
     // (e.g. client disconnected during a long-running operation)
     if (ws.readyState !== 1) return;
 
-    ws.send(encoder.pack(response));
+    // Backpressure: if the peer isn't draining, wait (bounded) before queueing
+    // another (potentially large) response, and drop it if the socket stays
+    // saturated. Without this, outbound data piles up in Node's stream and
+    // OpenSSL TLS buffers until the process OOMs (observed ~12.5GB across a
+    // handful of stuck sockets). Returning here still closes the db in finally.
+    if (
+      isBackedUp(ws, RESPONSE_MAX_BUFFERED) &&
+      !(await waitForDrain(ws, RESPONSE_MAX_BUFFERED))
+    ) {
+      logger.warn(
+        `dropping ${payload?.action} response; ws not draining (bufferedAmount=${ws.bufferedAmount})`,
+        {
+          action: payload?.action,
+          alias_id: payload?.session?.user?.alias_id,
+          buffered_amount: ws.bufferedAmount
+        }
+      );
+      return;
+    }
+
+    await sendBounded(ws, encoder.pack(response));
   } catch (_err) {
     // since we use multiArgs from pify
     // if a promise that was wrapped with multiArgs: true

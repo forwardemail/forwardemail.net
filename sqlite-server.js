@@ -36,6 +36,7 @@ const parsePayload = require('#helpers/parse-payload');
 const refreshSession = require('#helpers/refresh-session');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const { encoder } = require('#helpers/encoder-decoder');
+const { BROADCAST_MAX_BUFFERED } = require('#helpers/ws-backpressure');
 
 //
 // Event loop lag monitor: detects when the event loop is blocked > 100ms
@@ -156,8 +157,18 @@ class SQLite {
       });
       // Send to all local WebSocket clients (fire-and-forget)
       let localSent = 0;
+      let localSkipped = 0;
       for (const client of this.wss.clients) {
         if (!client.isAlive || client.readyState !== 1) continue;
+        // Backpressure: skip clients whose outbound buffer is backed up.
+        // The notifier is fire-and-forget and the client resyncs on
+        // reconnect, so dropping here (instead of queueing unboundedly in
+        // the socket/TLS layer) prevents the OOM from a slow consumer.
+        if (client.bufferedAmount > BROADCAST_MAX_BUFFERED) {
+          localSkipped++;
+          continue;
+        }
+
         try {
           client.send(packed);
           localSent++;
@@ -181,6 +192,7 @@ class SQLite {
         console.log('broadcast', {
           duration_ms: Date.now() - t0,
           local_clients: localSent,
+          local_skipped: localSkipped,
           session_id: session.id,
           alias_id: session.user.alias_id
         });
