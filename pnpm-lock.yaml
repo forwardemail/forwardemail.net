@@ -371,8 +371,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       fast-xml-parser:
-        specifier: 4.5.3
-        version: 4.5.3
+        specifier: 4.5.4
+        version: 4.5.4
       fastest-levenshtein:
         specifier: 1.0.16
         version: 1.0.16
@@ -9100,8 +9100,8 @@ packages:
     resolution: {integrity: sha512-xmnYV9o0StIz/0ArdzmWTxn9oDy0lH8Z80/8X/TD2EUQKXY4DHxoT9mYBqgGIG17DgddCJtH1M6DriMbalNsAA==}
     hasBin: true
 
-  fast-xml-parser@4.5.3:
-    resolution: {integrity: sha512-RKihhV+SHsIUGXObeVy9AXiBbFwkVk7Syp8XgwN5U3JV416+Gwp/GO9i0JYKmikykgz/UHRrrV4ROuZEo/T0ig==}
+  fast-xml-parser@4.5.4:
+    resolution: {integrity: sha512-jE8ugADnYOBsu1uaoayVl1tVKAMNOXyjwvv2U6udEA2ORBhDooJDWoGxTkhd4Qn4yh59JVVt/pKXtjPwx9OguQ==}
     hasBin: true
 
   fast-xml-parser@5.2.5:
@@ -24568,12 +24568,12 @@ snapshots:
       '@types/node': 25.6.2
     optional: true
 
-  '@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)':
+  '@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)':
     dependencies:
       '@typescript-eslint/experimental-utils': 3.10.1(eslint@7.32.0)(typescript@3.9.10)
       '@typescript-eslint/parser': 3.10.1(eslint@7.32.0)(typescript@3.9.10)
       debug: 4.4.3(supports-color@5.5.0)
-      eslint: 8.39.0
+      eslint: 7.32.0
       functional-red-black-tree: 1.0.1
       regexpp: 3.2.0
       semver: 7.8.0
@@ -28703,9 +28703,9 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
+      '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint: 7.32.0
       typescript: 3.9.10
 
@@ -28759,7 +28759,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-webpack@0.12.2(eslint-plugin-import@2.26.0)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6)):
+  eslint-import-resolver-webpack@0.12.2(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6)):
     dependencies:
       array-find: 1.0.0
       debug: 2.6.9
@@ -28776,7 +28776,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-webpack@0.13.11(eslint-plugin-import@2.26.0)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6)):
+  eslint-import-resolver-webpack@0.13.11(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6)):
     dependencies:
       debug: 3.2.7
       enhanced-resolve: 0.9.1
@@ -28800,7 +28800,7 @@ snapshots:
       '@typescript-eslint/parser': 3.10.1(eslint@7.32.0)(typescript@3.9.10)
       eslint: 8.39.0
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-webpack: 0.13.11(eslint-plugin-import@2.26.0)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
+      eslint-import-resolver-webpack: 0.13.11(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
     transitivePeerDependencies:
       - supports-color
 
@@ -28811,7 +28811,7 @@ snapshots:
       '@typescript-eslint/parser': 3.10.1(eslint@7.32.0)(typescript@3.9.10)
       eslint: 7.32.0
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
+      eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
     transitivePeerDependencies:
       - supports-color
 
@@ -29571,7 +29571,7 @@ snapshots:
     dependencies:
       strnum: 1.1.2
 
-  fast-xml-parser@4.5.3:
+  fast-xml-parser@4.5.4:
     dependencies:
       strnum: 1.1.2
 
@@ -32175,12 +32175,12 @@ snapshots:
 
   is-svg@4.4.0:
     dependencies:
-      fast-xml-parser: 4.5.3
+      fast-xml-parser: 4.5.4
     optional: true
 
   is-svg@5.0.0:
     dependencies:
-      fast-xml-parser: 4.5.3
+      fast-xml-parser: 4.5.4
 
   is-symbol@1.1.1:
     dependencies:
@@ -41943,7 +41943,7 @@ snapshots:
 
   xo@0.32.1(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6)):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
+      '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       '@typescript-eslint/parser': 3.10.1(eslint@7.32.0)(typescript@3.9.10)
       arrify: 2.0.1
       cosmiconfig: 6.0.0
@@ -41951,9 +41951,9 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
-      eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
+      eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)
       eslint-plugin-eslint-comments: 3.2.0(eslint@7.32.0)
       eslint-plugin-import: 2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.12.2)(eslint@7.32.0)
@@ -42002,7 +42002,7 @@ snapshots:
       eslint-config-prettier: 8.10.2(eslint@8.39.0)
       eslint-config-xo: 0.43.1(eslint@8.39.0)
       eslint-formatter-pretty: 4.1.0
-      eslint-import-resolver-webpack: 0.13.11(eslint-plugin-import@2.26.0)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
+      eslint-import-resolver-webpack: 0.13.11(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
       eslint-plugin-ava: 13.2.0(eslint@8.39.0)
       eslint-plugin-eslint-comments: 3.2.0(eslint@8.39.0)
       eslint-plugin-import: 2.26.0(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.13.11)(eslint@8.39.0)
