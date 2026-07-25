@@ -1749,6 +1749,11 @@ async function forward(recipient, headers, session, body) {
         .catch((err) => logger.fatal(err));
     }
   } catch (err) {
+    // Release the fingerprint claim so the sender can retry delivery.
+    // Without this, a transient failure would permanently block
+    // re-delivery for the duration of fingerprintTTL.
+    this.client.del(key).catch((err) => logger.fatal(err));
+
     // here we do some magic so that we push an error message
     // that has the end-recipient's email masked with the
     // original to address that we were trying to send to
