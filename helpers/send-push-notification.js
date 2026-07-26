@@ -15,6 +15,7 @@ const webPush = require('web-push');
 
 const PushTokens = require('#models/push-tokens');
 const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
 const { isPrivateHostResolved } = require('#helpers/is-private-host');
 const logger = require('#helpers/logger');
 const safeFetch = require('#helpers/safe-fetch');
@@ -209,6 +210,13 @@ async function sendPushNotification(
 
   // Sanitize event name: only allow known safe characters
   if (typeof event !== 'string' || !/^[a-zA-Z]{1,64}$/.test(event)) return;
+
+  // Ensure a Tangerine resolver is available for safeFetch DNS pinning.
+  // Most callers (sendNotification) do not pass one, so we lazily create
+  // a resolver backed by the same Redis client used for idempotency.
+  if (!resolver) {
+    resolver = createTangerine(client, logger);
+  }
 
   try {
     // Claim this logical event atomically so a duplicate producer invocation
