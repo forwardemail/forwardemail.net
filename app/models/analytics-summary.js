@@ -9,6 +9,10 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const CURRENT_SCHEMA_VERSION = 3;
 const HOUR_MANIFEST_DIMENSION = 'hour';
 const HOUR_MANIFEST_VALUE = `v${CURRENT_SCHEMA_VERSION}`;
+const OBSOLETE_UNIQUE_INDEX_NAME =
+  'hour_1_service_1_browser_1_os_1_device_type_1_client_app_1_referrer_1_pathname_1';
+
+let compatibleIndexesPromise;
 
 /**
  * AnalyticsSummary Schema
@@ -130,6 +134,44 @@ AnalyticsSummary.plugin(mongooseCommonPlugin, {
 });
 
 /**
+ * Remove the unique index from the pre-dimension summary schema.
+ *
+ * Mongoose creates new indexes but does not drop obsolete indexes by default.
+ * The legacy compound index treats all current dimension rows as the same key,
+ * so it prevents manifests and business summaries from coexisting for an hour.
+ * Cache the migration per process because a backfill publishes hundreds of hours.
+ *
+ * @returns {Promise<boolean>} Whether this process removed the obsolete index.
+ */
+AnalyticsSummary.statics.ensureCompatibleIndexes = function () {
+  if (!compatibleIndexesPromise) {
+    compatibleIndexesPromise = (async () => {
+      try {
+        await this.collection.dropIndex(OBSOLETE_UNIQUE_INDEX_NAME);
+        return true;
+      } catch (err) {
+        // Another worker may have completed the same idempotent migration, or
+        // this may be the first write to a new collection.
+        if (
+          err?.code === 26 ||
+          err?.code === 27 ||
+          err?.codeName === 'NamespaceNotFound' ||
+          err?.codeName === 'IndexNotFound'
+        )
+          return false;
+
+        throw err;
+      }
+    })().catch((err) => {
+      compatibleIndexesPromise = null;
+      throw err;
+    });
+  }
+
+  return compatibleIndexesPromise;
+};
+
+/**
  * Publish a replacement generation of summaries for one hour.
  *
  * MongoDB standalone deployments do not support transactions, so the current
@@ -141,6 +183,8 @@ AnalyticsSummary.plugin(mongooseCommonPlugin, {
  * @param {Array<Object>} summaries - Complete summary set for the hour
  */
 AnalyticsSummary.statics.replaceHour = async function (hour, summaries) {
+  await this.ensureCompatibleIndexes();
+
   const aggregationId = new mongoose.Types.ObjectId().toString();
   const aggregationStartedAt = new Date();
   const staleLockCutoff = new Date(

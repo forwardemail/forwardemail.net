@@ -131,6 +131,57 @@ test.after.always(utils.teardownMongoose);
 test.beforeEach(cleanCollections);
 
 test.serial(
+  'repair removes the obsolete production summary index before publishing',
+  async (t) => {
+    const hour = dayjs().subtract(1, 'hour').startOf('hour').toDate();
+    const legacyIndexName =
+      'hour_1_service_1_browser_1_os_1_device_type_1_client_app_1_referrer_1_pathname_1';
+
+    await AnalyticsSummary.collection.createIndex(
+      {
+        hour: 1,
+        service: 1,
+        browser: 1,
+        os: 1,
+        device_type: 1,
+        client_app: 1,
+        referrer: 1,
+        pathname: 1
+      },
+      { name: legacyIndexName, sparse: true, unique: true }
+    );
+    await AnalyticsSummary.collection.insertOne({
+      hour,
+      utm_source: 'newsletter'
+    });
+
+    await t.notThrowsAsync(
+      AnalyticsSummary.replaceHour(hour, getSummaries(12))
+    );
+    await t.notThrowsAsync(
+      AnalyticsSummary.replaceHour(hour, getSummaries(12))
+    );
+
+    const indexes = await AnalyticsSummary.collection.indexes();
+    const indexNames = indexes.map((index) => index.name);
+    t.false(indexNames.includes(legacyIndexName));
+
+    const documents = await AnalyticsSummary.find({ hour }).lean();
+    t.truthy(
+      documents.find(
+        (document) =>
+          document.dimension === 'hour' && document.is_complete === true
+      )
+    );
+    t.is(
+      documents.find((document) => document.dimension === 'service')
+        .event_count,
+      12
+    );
+  }
+);
+
+test.serial(
   'hour replacement publishes one current manifest and remains idempotent',
   async (t) => {
     const hour = dayjs().subtract(1, 'hour').startOf('hour').toDate();
@@ -416,6 +467,14 @@ test.serial(
     t.true(documents.every((document) => document.is_complete === false));
     t.false(dashboard.hasData);
     t.is(dashboard.overview.total_events, 0);
+
+    await AnalyticsSummary.replaceHour(hour, getSummaries(20));
+    const recoveredDashboard = await AnalyticsSummary.getDashboardData(
+      startDate,
+      endDate
+    );
+    t.true(recoveredDashboard.hasData);
+    t.is(recoveredDashboard.overview.total_events, 20);
   }
 );
 

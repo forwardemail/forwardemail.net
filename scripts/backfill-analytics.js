@@ -123,6 +123,13 @@ async function main(options = {}) {
   graceful.listen();
   await setupMongoose(logger);
 
+  const removedObsoleteIndex = await AnalyticsSummary.ensureCompatibleIndexes();
+  if (removedObsoleteIndex) {
+    logger.warn('Removed obsolete analytics summary index', {
+      database: AnalyticsSummary.db.name
+    });
+  }
+
   const force = shouldForceRepair(options);
   const { start, end } = getRepairRange();
   const pendingHours = await getPendingHours(start, end, force);
