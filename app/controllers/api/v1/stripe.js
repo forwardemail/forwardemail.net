@@ -25,6 +25,28 @@ const stripe = require('#helpers/stripe');
 
 const { STRIPE_PRODUCTS } = config.payments;
 
+//
+// Acquire a Redis-based distributed lock for a payment intent ID.
+// Prevents concurrent webhook events (e.g. charge.succeeded + payment_intent.succeeded)
+// from creating duplicate payments for the same Stripe payment intent.
+// Returns true if lock was acquired, false if another handler is already processing it.
+//
+async function acquirePaymentIntentLock(ctx, paymentIntentId) {
+  if (!ctx.client || !isSANB(paymentIntentId)) return true; // fail-open
+  try {
+    const lockKey = `stripe_pi_lock:${paymentIntentId}`;
+    const result = await ctx.client.set(lockKey, '1', 'PX', ms('5m'), 'NX');
+    return result === 'OK';
+  } catch (err) {
+    // If Redis is unavailable, fail-open (allow processing)
+    ctx.logger.warn('Redis lock acquisition failed for payment intent', {
+      paymentIntentId,
+      err
+    });
+    return true;
+  }
+}
+
 async function processEvent(ctx, event) {
   //
   // handle the events
@@ -203,6 +225,15 @@ async function processEvent(ctx, event) {
         throw new Error('Payment intent did not exist in Stripe');
       }
 
+      // Acquire distributed lock to prevent duplicate payment creation
+      // from concurrent webhook events for the same payment intent
+      if (!(await acquirePaymentIntentLock(ctx, paymentIntent.id))) {
+        ctx.logger.info(
+          `Skipping duplicate processing for payment_intent ${paymentIntent.id} (lock held by another handler)`
+        );
+        break;
+      }
+
       const errorEmails = await syncStripePaymentIntent(user)(
         [],
         paymentIntent
@@ -310,6 +341,14 @@ async function processEvent(ctx, event) {
           throw new Error('Payment intent did not exist in Stripe');
         }
 
+        // Acquire distributed lock to prevent duplicate payment creation
+        if (!(await acquirePaymentIntentLock(ctx, paymentIntent.id))) {
+          ctx.logger.info(
+            `Skipping duplicate processing for payment_intent ${paymentIntent.id} (lock held by another handler)`
+          );
+          break;
+        }
+
         // Sync the payment intent
         const errorEmails = await syncStripePaymentIntent(user)(
           [],
@@ -377,6 +416,14 @@ async function processEvent(ctx, event) {
 
           if (!paymentIntent) {
             throw new Error('Payment intent did not exist in Stripe');
+          }
+
+          // Acquire distributed lock to prevent duplicate payment creation
+          if (!(await acquirePaymentIntentLock(ctx, paymentIntent.id))) {
+            ctx.logger.info(
+              `Skipping duplicate processing for payment_intent ${paymentIntent.id} (lock held by another handler)`
+            );
+            break;
           }
 
           // Sync the payment intent
@@ -502,6 +549,14 @@ async function processEvent(ctx, event) {
         throw new Error('Payment intent did not exist in Stripe');
       }
 
+      // Acquire distributed lock to prevent duplicate payment creation
+      if (!(await acquirePaymentIntentLock(ctx, expandedPaymentIntent.id))) {
+        ctx.logger.info(
+          `Skipping duplicate processing for payment_intent ${expandedPaymentIntent.id} (lock held by another handler)`
+        );
+        break;
+      }
+
       const errorEmails = await syncStripePaymentIntent(user)(
         [],
         expandedPaymentIntent
@@ -596,22 +651,33 @@ async function processEvent(ctx, event) {
         throw new Error('User did not exist for customer');
       }
 
-      // Artificially wait 5s for refund to process
+      // Artificially wait 15s for refund to process
       await setTimeout(ms('15s'));
       //
       // NOTE: this re-uses the payment intent mapper that is also used
       //       in the job for `sync-stripe-payments` which syncs payments
       //
-      const errorEmails = await syncStripePaymentIntent(user)(
-        [],
-        paymentIntent
-      );
-      if (errorEmails.length > 0) {
-        try {
-          await Promise.all(errorEmails.map((email) => emailHelper(email)));
-        } catch (err) {
-          ctx.logger.error(err);
+      // NOTE: we do NOT skip the entire dispute handler if lock fails
+      //       because the ban/subscription-cancel logic below must still run.
+      //       The lock here only prevents duplicate payment creation;
+      //       syncStripePaymentIntent will gracefully handle existing payments.
+      //
+      if (await acquirePaymentIntentLock(ctx, paymentIntent.id)) {
+        const errorEmails = await syncStripePaymentIntent(user)(
+          [],
+          paymentIntent
+        );
+        if (errorEmails.length > 0) {
+          try {
+            await Promise.all(errorEmails.map((email) => emailHelper(email)));
+          } catch (err) {
+            ctx.logger.error(err);
+          }
         }
+      } else {
+        ctx.logger.info(
+          `Skipping duplicate sync for payment_intent ${paymentIntent.id} in dispute handler (lock held)`
+        );
       }
 
       // Cancel the user's subscription

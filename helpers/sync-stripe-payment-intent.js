@@ -495,7 +495,15 @@ function syncStripePaymentIntent(user) {
           );
         } catch (err) {
           // Handle duplicate key error from concurrent webhook/sync race
-          if (err.code === 11000) {
+          // NOTE: err.code === 11000 is the raw MongoDB duplicate key error
+          //       from the unique sparse index on stripe_payment_intent_id.
+          //       The Boom PAYMENT_ALREADY_EXISTS error comes from the
+          //       pre('save') hook in the Payments model which does an
+          //       exists() check before insert (also a race-condition guard).
+          if (
+            err.code === 11000 ||
+            err.message?.includes('PAYMENT_ALREADY_EXISTS')
+          ) {
             logger.warn(
               `Duplicate payment prevented for stripe payment_intent ${paymentIntent.id} (concurrent creation race)`
             );
