@@ -300,6 +300,27 @@ async function fanOutToTokens(tokens, payload, resolver, dependencies = {}) {
 }
 
 /**
+ * Extract a human-readable sender display name from a "Name <addr>" string.
+ * Falls back to the email address if no display name is present.
+ * @param {string} from - The from field (e.g. "John Smith <john@example.com>")
+ * @returns {string} The display name or email address
+ */
+function extractSenderName(from) {
+  if (typeof from !== 'string' || from.length === 0) return '';
+  // Match "Display Name <email>" format
+  const match = from.match(/^\s*"?([^"<]+?)"?\s*</);
+  if (match && match[1] && match[1].trim().length > 0) {
+    return match[1].trim();
+  }
+
+  // Match bare "<email>" format
+  const emailMatch = from.match(/<([^>]+)>/);
+  if (emailMatch) return emailMatch[1];
+  // Bare email or name without angle brackets
+  return from.trim();
+}
+
+/**
  * Build a platform-agnostic notification payload from the WS event.
  * Sanitizes all string fields to prevent injection.
  */
@@ -328,18 +349,50 @@ function buildPayload(event, data) {
     newRelease: 'App Update Available'
   };
 
-  // Use only known titles; fallback to generic
-  const title = TITLES[event] || 'Forward Email';
-
-  // Sanitize body: truncate to prevent oversized payloads
+  const MAX_TITLE_LENGTH = 128;
   const MAX_BODY_LENGTH = 256;
-  const bodySource = [data.body, data.subject, data.name].find(
-    (value) => typeof value === 'string'
-  );
-  const body =
-    typeof bodySource === 'string'
-      ? bodySource.slice(0, MAX_BODY_LENGTH)
-      : `You have a new ${event} event`;
+
+  let title;
+  let body;
+
+  //
+  // Gmail-style rich notifications for new messages:
+  //   Title = sender name (e.g. "John Smith")
+  //   Body  = subject + snippet preview (e.g. "Meeting tomorrow\nHey, just wanted to confirm...")
+  //
+  // When expanded (BigTextStyle on Android), users see both subject and preview.
+  // When collapsed, they see the subject line.
+  //
+  if (event === 'newMessage' && data.message) {
+    const senderName = extractSenderName(data.message.from);
+    title = senderName
+      ? senderName.slice(0, MAX_TITLE_LENGTH)
+      : TITLES.newMessage;
+    const subject =
+      typeof data.message.subject === 'string' &&
+      data.message.subject.length > 0
+        ? data.message.subject
+        : 'No subject';
+    // Include snippet/preview after subject (Gmail shows subject + body preview)
+    const snippet =
+      typeof data.message.snippet === 'string' &&
+      data.message.snippet.length > 0
+        ? data.message.snippet.replace(/\s+/g, ' ').trim()
+        : '';
+    body = snippet
+      ? `${subject}\n${snippet}`.slice(0, MAX_BODY_LENGTH)
+      : subject.slice(0, MAX_BODY_LENGTH);
+  } else {
+    // Fallback: use static title with best-effort body
+    title = TITLES[event] || 'Forward Email';
+    const bodySource = [data.body, data.subject, data.name].find(
+      (value) => typeof value === 'string'
+    );
+    body =
+      typeof bodySource === 'string'
+        ? bodySource.slice(0, MAX_BODY_LENGTH)
+        : `You have a new ${event} event`;
+  }
 
   // Sanitize data fields: only include known safe identifiers
   const safeAliasId =
@@ -500,7 +553,12 @@ async function deliverFcm(
       ),
       android: {
         priority: 'high',
-        notification: { channel_id: 'new-mail' }
+        notification: {
+          channel_id: 'new-mail',
+          // Use the dedicated monochrome notification icon resource
+          // (defined in the Android app as res/drawable/ic_notification)
+          icon: 'ic_notification'
+        }
       }
     }
   };
@@ -680,6 +738,7 @@ module.exports._test = {
   PUSH_CONCURRENCY,
   fanOutToTokens,
   buildPayload,
+  extractSenderName,
   deliverToToken,
   deliverApns,
   deliverFcm,

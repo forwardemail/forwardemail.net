@@ -951,6 +951,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
         transaction: message.transaction,
         created_at: message.created_at,
         updated_at: message.updated_at,
+        // Plain-text snippet for push notification preview (Gmail-style)
+        snippet: typeof text === 'string' ? text.slice(0, 256) : '',
         // NOTE: eml omitted to prevent 50 MB Buffer→String copy per message;
         // clients fetch full message on demand via IMAP/API
         object: 'message'
