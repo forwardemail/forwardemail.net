@@ -4,8 +4,7 @@
  */
 
 const pMap = require('p-map');
-const UAParser = require('ua-parser-js');
-const { Emails } = require('ua-parser-js/extensions');
+const parseUserAgent = require('#helpers/parse-user-agent');
 
 /**
  * Parse a user-agent string into a human-readable short description.
@@ -20,65 +19,15 @@ const { Emails } = require('ua-parser-js/extensions');
  * @returns {{ browser: string, os: string, short: string }}
  */
 function parseUA(ua, meta = {}) {
-  if (!ua) return { browser: 'Unknown', os: 'Unknown', short: 'Unknown' };
-
-  const result = new UAParser(ua, { browser: Emails.browser }).getResult();
-
-  let browser = 'Unknown';
-  let os = 'Unknown';
-
-  if (result.browser.name && result.browser.version) {
-    browser = `${result.browser.name} ${result.browser.version}`;
-  } else if (result.browser.name) {
-    browser = result.browser.name;
-  }
-
-  if (result.os.name && result.os.version) {
-    os = `${result.os.name} ${result.os.version}`;
-  } else if (result.os.name) {
-    os = result.os.name;
-  }
-
-  // If the OS version is still frozen at 10.15.7, attempt to resolve it
-  // using Client Hints or the Safari Version/ token fallback.
-  // All major browsers (Chrome, Firefox, Safari) freeze macOS at 10.15.7
-  // in the UA string since Big Sur (2020).
-  if (result.os.name === 'macOS' && result.os.version === '10.15.7') {
-    // Strategy 1: Use Client Hints platform version (Chromium browsers).
-    // The Accept-CH header requests Sec-CH-UA-Platform-Version from the
-    // browser, which is stored in session metadata as ch_platform_version.
-    if (meta.ch_platform_version) {
-      // Client hints value is quoted, e.g. "15.5.0" — strip quotes
-      const version = meta.ch_platform_version.replace(/"/g, '');
-      if (version && version !== '10.15.7') {
-        // Chromium sends full semver (e.g. "15.5.0"); show major.minor
-        const parts = version.split('.');
-        const majorMinor =
-          parts.length >= 2 ? `${parts[0]}.${parts[1]}` : version;
-        os = `macOS ${majorMinor}`;
-      }
-    }
-
-    // Strategy 2: Safari Version/ token fallback (Safari on macOS).
-    // Safari includes a Version/X.Y.Z token that matches the macOS major
-    // version starting with macOS 11+.
-    if (os === 'macOS 10.15.7') {
-      const versionMatch = ua.match(/Version\/(\d+(?:\.\d+)+)/);
-      if (versionMatch) {
-        const safariMajor = Number.parseInt(versionMatch[1], 10);
-        // Safari major matches macOS major starting with macOS 11+
-        if (safariMajor > 10) {
-          os = `macOS ${versionMatch[1]}`;
-        }
-      }
-    }
-  }
-
-  const short =
-    browser === 'Unknown' && os === 'Unknown'
-      ? 'Unknown'
-      : `${browser} on ${os}`;
-  return { browser, os, short };
+  const parsed = parseUserAgent(ua, meta);
+  return {
+    browser:
+      parsed.browser_label === 'Unknown'
+        ? parsed.client_app_label
+        : parsed.browser_label,
+    os: parsed.os_label,
+    short: parsed.short
+  };
 }
 
 /**

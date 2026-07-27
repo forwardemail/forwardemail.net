@@ -6,6 +6,10 @@
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 
+const CURRENT_SCHEMA_VERSION = 3;
+const HOUR_MANIFEST_DIMENSION = 'hour';
+const HOUR_MANIFEST_VALUE = `v${CURRENT_SCHEMA_VERSION}`;
+
 /**
  * AnalyticsSummary Schema
  *
@@ -29,14 +33,19 @@ const AnalyticsSummary = new mongoose.Schema({
     type: String,
     required: true,
     enum: [
+      'hour',
       'service',
+      'service_device',
       'browser',
       'os',
       'device_type',
       'client_app',
       'referrer',
       'pathname',
-      'utm'
+      'utm',
+      'signup_referrer',
+      'signup_landing_page',
+      'signup_utm'
     ]
   },
 
@@ -71,12 +80,37 @@ const AnalyticsSummary = new mongoose.Schema({
   landing_page_entries: {
     type: Number,
     default: 0
+  },
+
+  // Schema-versioned rows let deployments ignore old summary contracts while
+  // an automatic backfill repairs history in the background.
+  schema_version: {
+    type: Number,
+    default: CURRENT_SCHEMA_VERSION
+  },
+
+  // A generation is only visible after every summary for the hour is written.
+  // This prevents failed/partial aggregation batches from reaching the dashboard.
+  aggregation_id: {
+    type: String
+  },
+  aggregation_started_at: {
+    type: Date
+  },
+  is_complete: {
+    type: Boolean,
+    default: false
   }
 });
 
 // Primary query index: hour range + dimension type
 // This supports all dashboard queries efficiently
-AnalyticsSummary.index({ hour: 1, dimension: 1 });
+AnalyticsSummary.index({
+  hour: 1,
+  dimension: 1,
+  schema_version: 1,
+  is_complete: 1
+});
 
 // Unique constraint to prevent duplicates
 // Each hour + dimension + value combination should be unique
@@ -96,44 +130,165 @@ AnalyticsSummary.plugin(mongooseCommonPlugin, {
 });
 
 /**
- * Upsert a summary document
- * @param {Object} options - Upsert options
- * @param {Date} options.hour - Hour bucket
- * @param {string} options.dimension - Dimension type (service, browser, etc.)
- * @param {string} options.value - Dimension value
- * @param {Object} options.metrics - Metrics to increment
- * @param {string} [options.value2] - Secondary value for compound dimensions
+ * Publish a replacement generation of summaries for one hour.
+ *
+ * MongoDB standalone deployments do not support transactions, so the current
+ * generation is first marked incomplete.  A failed bulk write therefore cannot
+ * be observed by dashboard queries.  Metrics are replaced (not incremented),
+ * which makes overlapping hourly runs and manual backfills idempotent.
+ *
+ * @param {Date} hour - Hour bucket
+ * @param {Array<Object>} summaries - Complete summary set for the hour
  */
-AnalyticsSummary.statics.upsertSummary = async function (options) {
-  const { hour, dimension, value, metrics, value2 = null } = options;
-  const query = {
-    hour,
-    dimension,
-    value
-  };
+AnalyticsSummary.statics.replaceHour = async function (hour, summaries) {
+  const aggregationId = new mongoose.Types.ObjectId().toString();
+  const aggregationStartedAt = new Date();
+  const staleLockCutoff = new Date(
+    aggregationStartedAt.getTime() - 60 * 60 * 1000
+  );
+  const manifestObjectId = new mongoose.Types.ObjectId();
 
-  query.value2 = value2 || null;
-
-  const update = {
-    $inc: {
-      event_count: metrics.event_count || 0,
-      unique_visitors: metrics.unique_visitors || 0,
-      successful_events: metrics.successful_events || 0,
-      failed_events: metrics.failed_events || 0,
-      landing_page_entries: metrics.landing_page_entries || 0
+  try {
+    await this.findOneAndUpdate(
+      {
+        hour,
+        dimension: HOUR_MANIFEST_DIMENSION,
+        value: HOUR_MANIFEST_VALUE,
+        value2: null,
+        $or: [
+          { aggregation_started_at: { $exists: false } },
+          { aggregation_started_at: null },
+          { aggregation_started_at: { $lt: staleLockCutoff } }
+        ]
+      },
+      {
+        $set: {
+          schema_version: CURRENT_SCHEMA_VERSION,
+          aggregation_id: aggregationId,
+          aggregation_started_at: aggregationStartedAt,
+          is_complete: false
+        },
+        $setOnInsert: {
+          id: manifestObjectId.toString(),
+          object: 'analytics_summary'
+        }
+      },
+      { upsert: true }
+    );
+  } catch (err) {
+    if (err?.code === 11000) {
+      throw new Error(
+        `Analytics aggregation already in progress for ${hour.toISOString()}`,
+        { cause: err }
+      );
     }
-  };
 
-  // Use findOneAndUpdate with upsert to ensure id field is set
-  // The mongoose-common-plugin sets id in pre('save'), but upserts bypass save hooks
-  // So we use $setOnInsert to set id and object on insert
-  const objectId = new mongoose.Types.ObjectId();
-  update.$setOnInsert = {
-    id: objectId.toString(),
-    object: 'analytics_summary'
-  };
+    throw err;
+  }
 
-  return this.updateOne(query, update, { upsert: true });
+  try {
+    const completeSummaries = [
+      {
+        dimension: HOUR_MANIFEST_DIMENSION,
+        value: HOUR_MANIFEST_VALUE,
+        metrics: {}
+      },
+      ...summaries
+    ];
+
+    await this.updateMany({ hour }, { $set: { is_complete: false } });
+
+    const operations = completeSummaries.map((summary) => {
+      const value2 = summary.value2 || null;
+      const objectId = new mongoose.Types.ObjectId();
+
+      return {
+        updateOne: {
+          filter: {
+            hour,
+            dimension: summary.dimension,
+            value: summary.value,
+            value2
+          },
+          update: {
+            $set: {
+              event_count: summary.metrics.event_count || 0,
+              unique_visitors: summary.metrics.unique_visitors || 0,
+              successful_events: summary.metrics.successful_events || 0,
+              failed_events: summary.metrics.failed_events || 0,
+              landing_page_entries: summary.metrics.landing_page_entries || 0,
+              schema_version: CURRENT_SCHEMA_VERSION,
+              aggregation_id: aggregationId,
+              is_complete: false
+            },
+            $setOnInsert: {
+              id: objectId.toString(),
+              object: 'analytics_summary'
+            }
+          },
+          upsert: true
+        }
+      };
+    });
+
+    await this.bulkWrite(operations, { ordered: true });
+
+    await this.deleteMany({
+      hour,
+      aggregation_id: { $ne: aggregationId }
+    });
+
+    const writtenSummaryCount = await this.countDocuments({
+      hour,
+      aggregation_id: aggregationId
+    });
+    if (writtenSummaryCount !== operations.length) {
+      throw new Error(
+        `Concurrent analytics aggregation detected for ${hour.toISOString()}`
+      );
+    }
+
+    await this.updateMany(
+      { hour, aggregation_id: aggregationId },
+      {
+        $set: { is_complete: true },
+        $unset: { aggregation_started_at: 1 }
+      }
+    );
+  } catch (err) {
+    await this.updateOne(
+      {
+        hour,
+        dimension: HOUR_MANIFEST_DIMENSION,
+        value: HOUR_MANIFEST_VALUE,
+        value2: null,
+        aggregation_id: aggregationId
+      },
+      { $unset: { aggregation_started_at: 1 } }
+    );
+    throw err;
+  }
+};
+
+/**
+ * Check whether this range contains at least one current, fully published
+ * hourly manifest. Legacy and in-progress rows are ignored instead of making
+ * the entire dashboard blank while automatic repair is still running.
+ *
+ * @param {Date} startDate - Start of range
+ * @param {Date} endDate - End of range
+ * @returns {Promise<boolean>} Whether current summary data is available
+ */
+AnalyticsSummary.statics.hasCompleteData = async function (startDate, endDate) {
+  return Boolean(
+    await this.exists({
+      hour: { $gte: startDate, $lte: endDate },
+      dimension: HOUR_MANIFEST_DIMENSION,
+      value: HOUR_MANIFEST_VALUE,
+      schema_version: CURRENT_SCHEMA_VERSION,
+      is_complete: true
+    })
+  );
 };
 
 /**
@@ -154,7 +309,9 @@ AnalyticsSummary.statics.getByDimension = async function (
     {
       $match: {
         hour: { $gte: startDate, $lte: endDate },
-        dimension
+        dimension,
+        schema_version: CURRENT_SCHEMA_VERSION,
+        is_complete: true
       }
     },
     {
@@ -193,7 +350,9 @@ AnalyticsSummary.statics.getOverview = async function (
 ) {
   const match = {
     hour: { $gte: startDate, $lte: endDate },
-    dimension: 'service'
+    dimension: 'service',
+    schema_version: CURRENT_SCHEMA_VERSION,
+    is_complete: true
   };
 
   if (serviceFilter && serviceFilter !== 'all') {
@@ -246,7 +405,9 @@ AnalyticsSummary.statics.getVisitorsOverTime = async function (
 ) {
   const match = {
     hour: { $gte: startDate, $lte: endDate },
-    dimension: 'service'
+    dimension: 'service',
+    schema_version: CURRENT_SCHEMA_VERSION,
+    is_complete: true
   };
 
   if (serviceFilter && serviceFilter !== 'all') {
@@ -259,7 +420,9 @@ AnalyticsSummary.statics.getVisitorsOverTime = async function (
       $group: {
         _id: { $dateToString: { format: '%Y-%m-%d', date: '$hour' } },
         events: { $sum: '$event_count' },
-        visitors: { $sum: '$unique_visitors' }
+        visitors: { $sum: '$unique_visitors' },
+        successful_events: { $sum: '$successful_events' },
+        failed_events: { $sum: '$failed_events' }
       }
     },
     { $sort: { _id: 1 } },
@@ -268,14 +431,297 @@ AnalyticsSummary.statics.getVisitorsOverTime = async function (
         date: '$_id',
         events: 1,
         visitors: 1,
+        successful_events: 1,
+        failed_events: 1,
+        success_rate: {
+          $cond: [
+            { $eq: ['$events', 0] },
+            0,
+            {
+              $multiply: [{ $divide: ['$successful_events', '$events'] }, 100]
+            }
+          ]
+        },
         _id: 0
       }
     }
   ]);
 };
 
+/**
+ * Load the complete dashboard payload in one indexed aggregation.
+ *
+ * @param {Date} startDate Start of the selected range.
+ * @param {Date} endDate End of the selected range.
+ * @param {Object} [filters] Dashboard filters.
+ * @returns {Promise<Object>} Faceted summary data.
+ */
+AnalyticsSummary.statics.getDashboardData = async function (
+  startDate,
+  endDate,
+  filters = {}
+) {
+  const serviceFilter =
+    filters.service && filters.service !== 'all' ? filters.service : null;
+  const deviceFilter =
+    filters.device_type && filters.device_type !== 'all'
+      ? filters.device_type
+      : null;
+  const serviceMatch = deviceFilter
+    ? { dimension: 'service_device', value2: deviceFilter }
+    : { dimension: 'service' };
+
+  if (serviceFilter) serviceMatch.value = serviceFilter;
+
+  const groupDimension = (dimension, limit, includeValue2 = false) => {
+    const pipeline = [
+      { $match: { dimension } },
+      {
+        $group: {
+          _id: includeValue2
+            ? { value: '$value', value2: '$value2' }
+            : '$value',
+          event_count: { $sum: '$event_count' },
+          unique_visitors: { $sum: '$unique_visitors' },
+          landing_page_entries: { $sum: '$landing_page_entries' }
+        }
+      },
+      { $sort: { unique_visitors: -1, event_count: -1 } }
+    ];
+    if (limit) pipeline.push({ $limit: limit });
+    return pipeline;
+  };
+
+  const [result = {}] = await this.aggregate([
+    {
+      $match: {
+        hour: { $gte: startDate, $lte: endDate },
+        schema_version: CURRENT_SCHEMA_VERSION,
+        is_complete: true
+      }
+    },
+    {
+      $facet: {
+        hasData: [
+          {
+            $match: {
+              dimension: HOUR_MANIFEST_DIMENSION,
+              value: HOUR_MANIFEST_VALUE
+            }
+          },
+          { $limit: 1 },
+          { $project: { _id: 1 } }
+        ],
+        overview: [
+          { $match: serviceMatch },
+          {
+            $group: {
+              _id: null,
+              total_events: { $sum: '$event_count' },
+              unique_visitors: { $sum: '$unique_visitors' },
+              successful_events: { $sum: '$successful_events' },
+              failed_events: { $sum: '$failed_events' }
+            }
+          },
+          {
+            $project: {
+              _id: 0,
+              total_events: 1,
+              unique_visitors: 1,
+              successful_events: 1,
+              failed_events: 1,
+              success_rate: {
+                $cond: [
+                  { $eq: ['$total_events', 0] },
+                  0,
+                  {
+                    $multiply: [
+                      { $divide: ['$successful_events', '$total_events'] },
+                      100
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        visitorsOverTime: [
+          { $match: serviceMatch },
+          {
+            $group: {
+              _id: { $dateToString: { format: '%Y-%m-%d', date: '$hour' } },
+              events: { $sum: '$event_count' },
+              visitors: { $sum: '$unique_visitors' },
+              successful_events: { $sum: '$successful_events' },
+              failed_events: { $sum: '$failed_events' }
+            }
+          },
+          { $sort: { _id: 1 } },
+          {
+            $project: {
+              _id: 0,
+              date: '$_id',
+              events: 1,
+              visitors: 1,
+              successful_events: 1,
+              failed_events: 1,
+              success_rate: {
+                $cond: [
+                  { $eq: ['$events', 0] },
+                  0,
+                  {
+                    $multiply: [
+                      { $divide: ['$successful_events', '$events'] },
+                      100
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        sessionsByService: [
+          {
+            $match: deviceFilter
+              ? { dimension: 'service_device', value2: deviceFilter }
+              : { dimension: 'service' }
+          },
+          {
+            $group: {
+              _id: '$value',
+              event_count: { $sum: '$event_count' },
+              unique_visitors: { $sum: '$unique_visitors' }
+            }
+          },
+          { $sort: { unique_visitors: -1, event_count: -1 } }
+        ],
+        topBrowsers: groupDimension('browser', 10),
+        topOS: groupDimension('os', 10),
+        topClientApps: groupDimension('client_app', 10),
+        topReferrers: groupDimension('referrer', 20, true),
+        topPages: groupDimension('pathname', 20),
+        topLandingPages: [
+          {
+            $match: { dimension: 'pathname', landing_page_entries: { $gt: 0 } }
+          },
+          {
+            $group: {
+              _id: '$value',
+              landing_page_entries: { $sum: '$landing_page_entries' },
+              unique_visitors: { $sum: '$unique_visitors' }
+            }
+          },
+          { $sort: { landing_page_entries: -1 } },
+          { $limit: 10 }
+        ],
+        deviceTypes: groupDimension('device_type'),
+        signupReferrers: [
+          { $match: { dimension: 'signup_referrer' } },
+          {
+            $group: {
+              _id: { referrer: '$value', source: '$value2' },
+              count: { $sum: '$event_count' }
+            }
+          },
+          { $sort: { count: -1 } },
+          { $limit: 10 },
+          {
+            $project: {
+              _id: 0,
+              referrer: '$_id.referrer',
+              source: '$_id.source',
+              count: 1
+            }
+          }
+        ],
+        signupLandingPages: [
+          { $match: { dimension: 'signup_landing_page' } },
+          {
+            $group: {
+              _id: '$value',
+              count: { $sum: '$event_count' }
+            }
+          },
+          { $sort: { count: -1 } },
+          { $limit: 10 },
+          { $project: { _id: 0, landing_page: '$_id', count: 1 } }
+        ],
+        signupUTMSources: [
+          { $match: { dimension: 'signup_utm' } },
+          {
+            $group: {
+              _id: { source: '$value', metadata: '$value2' },
+              count: { $sum: '$event_count' }
+            }
+          },
+          { $sort: { count: -1 } },
+          { $limit: 10 },
+          {
+            $project: {
+              _id: 0,
+              source: '$_id.source',
+              metadata: '$_id.metadata',
+              count: 1
+            }
+          }
+        ]
+      }
+    }
+  ]).allowDiskUse(true);
+
+  result.hasData = (result.hasData || []).length > 0;
+  const emptyOverview = {
+    total_events: 0,
+    unique_visitors: 0,
+    successful_events: 0,
+    failed_events: 0,
+    success_rate: 0
+  };
+
+  if (!result.hasData) {
+    return {
+      hasData: false,
+      overview: emptyOverview,
+      visitorsOverTime: [],
+      sessionsByService: [],
+      topBrowsers: [],
+      topOS: [],
+      topClientApps: [],
+      topReferrers: [],
+      topPages: [],
+      topLandingPages: [],
+      deviceTypes: [],
+      signupReferrers: [],
+      signupLandingPages: [],
+      signupUTMSources: []
+    };
+  }
+
+  result.overview = result.overview?.[0] || emptyOverview;
+  result.signupUTMSources = (result.signupUTMSources || []).map((entry) => {
+    let metadata = {};
+    try {
+      metadata = JSON.parse(entry.metadata || '{}');
+    } catch {}
+
+    return {
+      source: entry.source,
+      medium: metadata.medium || null,
+      campaign: metadata.campaign || null,
+      count: entry.count
+    };
+  });
+
+  return result;
+};
+
 const conn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'LOGS_URI'
 );
 if (!conn) throw new Error('Mongoose connection does not exist');
-module.exports = conn.model('AnalyticsSummary', AnalyticsSummary);
+const model = conn.model('AnalyticsSummary', AnalyticsSummary);
+model.CURRENT_SCHEMA_VERSION = CURRENT_SCHEMA_VERSION;
+model.HOUR_MANIFEST_DIMENSION = HOUR_MANIFEST_DIMENSION;
+model.HOUR_MANIFEST_VALUE = HOUR_MANIFEST_VALUE;
+
+module.exports = model;

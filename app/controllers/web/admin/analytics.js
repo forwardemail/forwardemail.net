@@ -9,25 +9,20 @@ const ms = require('ms');
 
 const AnalyticsEvents = require('#models/analytics-events');
 const AnalyticsSummary = require('#models/analytics-summary');
-const { Users } = require('#models');
 
 // Cache TTL in milliseconds (1h is fine since data is hourly-aggregated)
-const CACHE_TTL = ms('1h');
-const CACHE_PREFIX = 'analytics:';
-
-// Maximum time for MongoDB aggregation queries (prevents infinite hangs)
-const AGGREGATION_TIMEOUT_MS = 30_000;
+const CACHE_TTL = ms('10m');
+const REALTIME_CACHE_TTL = ms('15s');
+const CACHE_PREFIX = 'analytics:v3:';
 
 /**
  * Get cached data or execute query
  */
-async function getCachedOrQuery(ctx, cacheKey, queryFn) {
+async function getCachedOrQuery(ctx, cacheKey, queryFn, ttl = CACHE_TTL) {
   if (ctx.client && ctx.client.status === 'ready') {
     try {
       const cached = await ctx.client.get(cacheKey);
-      if (cached) {
-        return JSON.parse(cached);
-      }
+      if (cached) return JSON.parse(cached);
     } catch (err) {
       ctx.logger.warn('Cache read error', { err, cacheKey });
     }
@@ -35,9 +30,9 @@ async function getCachedOrQuery(ctx, cacheKey, queryFn) {
 
   const result = await queryFn();
 
-  if (ctx.client && ctx.client.status === 'ready') {
+  if (ctx.client && ctx.client.status === 'ready' && result?.noData !== true) {
     try {
-      await ctx.client.set(cacheKey, JSON.stringify(result), 'PX', CACHE_TTL);
+      await ctx.client.set(cacheKey, JSON.stringify(result), 'PX', ttl);
     } catch (err) {
       ctx.logger.warn('Cache write error', { err, cacheKey });
     }
@@ -90,39 +85,14 @@ function getDateRange(query) {
 }
 
 /**
- * Check if we have pre-aggregated summary data
+ * Build a stable cache suffix for a date range.
  */
-async function hasSummaryData(startDate, endDate) {
-  const count = await AnalyticsSummary.countDocuments({
-    hour: { $gte: startDate, $lte: endDate }
-  });
-  return count > 0;
-}
+function getRangeCacheKey(period, startDate, endDate) {
+  if (period !== 'custom') return period;
 
-/**
- * Get current visitors (last 5 minutes) from raw events
- * This is the only query that hits raw events on page load
- */
-async function getCurrentVisitors() {
-  const fiveMinutesAgo = dayjs().subtract(5, 'minutes').toDate();
-
-  // Use estimatedDocumentCount to check collection size
-  const totalDocs = await AnalyticsEvents.estimatedDocumentCount();
-
-  if (totalDocs > 1_000_000) {
-    // For large collections, estimate from recent event count
-    const recentCount = await AnalyticsEvents.countDocuments({
-      created_at: { $gte: fiveMinutesAgo }
-    });
-    // Estimate unique visitors as ~30% of events
-    return Math.round(recentCount * 0.3);
-  }
-
-  // For smaller collections, use distinct
-  const sessions = await AnalyticsEvents.distinct('session_hash', {
-    created_at: { $gte: fiveMinutesAgo }
-  });
-  return sessions.length;
+  return `${dayjs(startDate).format('YYYY-MM-DD')}:${dayjs(endDate).format(
+    'YYYY-MM-DD'
+  )}`;
 }
 
 /**
@@ -135,236 +105,67 @@ async function dashboard(ctx) {
     device_type: ctx.query.device_type
   };
 
-  const cacheKey = `${CACHE_PREFIX}dashboard:${period}:${
+  const rangeCacheKey = getRangeCacheKey(period, startDate, endDate);
+  const cacheKey = `${CACHE_PREFIX}dashboard:${rangeCacheKey}:${
     filters.service || 'all'
   }:${filters.device_type || 'all'}`;
 
   const dashboardData = await getCachedOrQuery(ctx, cacheKey, async () => {
-    // Check if we have pre-aggregated data
-    const hasData = await hasSummaryData(startDate, endDate);
-
-    if (!hasData) {
-      return {
-        overview: {
-          total_events: 0,
-          unique_visitors: 0,
-          successful_events: 0,
-          failed_events: 0,
-          success_rate: 0
-        },
-        visitorsOverTime: [],
-        sessionsByService: [],
-        topBrowsers: [],
-        topOS: [],
-        topClientApps: [],
-        topReferrers: [],
-        topPages: [],
-        topLandingPages: [],
-        deviceTypes: [],
-        currentVisitors: 0,
-        noData: true
-      };
-    }
-
-    // Query all data from AnalyticsSummary
-    const [
-      overview,
-      visitorsOverTime,
-      sessionsByService,
-      topBrowsers,
-      topOS,
-      topClientApps,
-      topReferrers,
-      topPages,
-      deviceTypes,
-      currentVisitors
-    ] = await Promise.all([
-      // Overview stats
-      AnalyticsSummary.getOverview(startDate, endDate, filters.service),
-
-      // Visitors over time
-      AnalyticsSummary.getVisitorsOverTime(startDate, endDate, filters.service),
-
-      // Sessions by service
-      AnalyticsSummary.getByDimension(startDate, endDate, 'service'),
-
-      // Top browsers
-      AnalyticsSummary.getByDimension(startDate, endDate, 'browser', {
-        limit: 10
-      }),
-
-      // Top OS
-      AnalyticsSummary.getByDimension(startDate, endDate, 'os', { limit: 10 }),
-
-      // Top client apps
-      AnalyticsSummary.getByDimension(startDate, endDate, 'client_app', {
-        limit: 10
-      }),
-
-      // Top referrers
-      AnalyticsSummary.getByDimension(startDate, endDate, 'referrer', {
-        limit: 20,
-        includeValue2: true
-      }),
-
-      // Top pages
-      AnalyticsSummary.getByDimension(startDate, endDate, 'pathname', {
-        limit: 20
-      }),
-
-      // Device types
-      AnalyticsSummary.getByDimension(startDate, endDate, 'device_type'),
-
-      // Current visitors (from raw events - small time window)
-      getCurrentVisitors()
-    ]);
+    const summary = await AnalyticsSummary.getDashboardData(
+      startDate,
+      endDate,
+      filters
+    );
 
     return {
-      overview,
-      visitorsOverTime,
-      sessionsByService: sessionsByService.map((s) => ({
-        service: s._id,
-        count: s.event_count,
-        visitors: s.unique_visitors
+      overview: summary.overview,
+      visitorsOverTime: summary.visitorsOverTime,
+      sessionsByService: summary.sessionsByService.map((entry) => ({
+        service: entry._id,
+        count: entry.event_count,
+        visitors: entry.unique_visitors
       })),
-      topBrowsers: topBrowsers.map((b) => ({
-        browser: b._id,
-        count: b.event_count,
-        visitors: b.unique_visitors
+      topBrowsers: summary.topBrowsers.map((entry) => ({
+        browser: entry._id,
+        count: entry.event_count,
+        visitors: entry.unique_visitors
       })),
-      topOS: topOS.map((o) => ({
-        os: o._id,
-        count: o.event_count,
-        visitors: o.unique_visitors
+      topOS: summary.topOS.map((entry) => ({
+        os: entry._id,
+        count: entry.event_count,
+        visitors: entry.unique_visitors
       })),
-      topClientApps: topClientApps.map((c) => ({
-        client_app: c._id,
-        count: c.event_count,
-        visitors: c.unique_visitors
+      topClientApps: summary.topClientApps.map((entry) => ({
+        client_app: entry._id,
+        count: entry.event_count,
+        visitors: entry.unique_visitors
       })),
-      topReferrers: topReferrers.map((r) => ({
-        referrer: r._id.value || r._id,
-        source: r._id.value2 || null,
-        count: r.event_count,
-        visitors: r.unique_visitors
+      topReferrers: summary.topReferrers.map((entry) => ({
+        referrer: entry._id.value,
+        source: entry._id.value2 || null,
+        count: entry.event_count,
+        visitors: entry.unique_visitors
       })),
-      topPages: topPages.map((p) => ({
-        pathname: p._id,
-        count: p.event_count,
-        visitors: p.unique_visitors
+      topPages: summary.topPages.map((entry) => ({
+        pathname: entry._id,
+        count: entry.event_count,
+        visitors: entry.unique_visitors
       })),
-      topLandingPages: topPages
-        .filter((p) => p.landing_page_entries > 0)
-        .sort((a, b) => b.landing_page_entries - a.landing_page_entries)
-        .slice(0, 10)
-        .map((p) => ({
-          pathname: p._id,
-          count: p.landing_page_entries,
-          visitors: p.unique_visitors
-        })),
-      deviceTypes: deviceTypes.map((d) => ({
-        device_type: d._id || 'unknown',
-        count: d.event_count,
-        visitors: d.unique_visitors
+      topLandingPages: summary.topLandingPages.map((entry) => ({
+        pathname: entry._id,
+        count: entry.landing_page_entries,
+        visitors: entry.unique_visitors
       })),
-      currentVisitors,
-      noData: false
+      deviceTypes: summary.deviceTypes.map((entry) => ({
+        device_type: entry._id || 'unknown',
+        count: entry.event_count,
+        visitors: entry.unique_visitors
+      })),
+      signupReferrers: summary.signupReferrers,
+      signupLandingPages: summary.signupLandingPages,
+      signupUTMSources: summary.signupUTMSources,
+      noData: !summary.hasData
     };
-  });
-
-  // Get signup attribution data (from Users model)
-  const signupCacheKey = `${CACHE_PREFIX}signup:${period}`;
-  const signupData = await getCachedOrQuery(ctx, signupCacheKey, async () => {
-    const [signupReferrers, signupLandingPages, signupUTMSources] =
-      await Promise.all([
-        Users.aggregate(
-          [
-            {
-              $match: {
-                created_at: { $gte: startDate, $lte: endDate },
-                signup_referrer: { $exists: true, $ne: null }
-              }
-            },
-            {
-              $group: {
-                _id: {
-                  referrer: '$signup_referrer',
-                  source: '$signup_referrer_source'
-                },
-                count: { $sum: 1 }
-              }
-            },
-            {
-              $project: {
-                referrer: '$_id.referrer',
-                source: '$_id.source',
-                count: 1
-              }
-            },
-            { $sort: { count: -1 } },
-            { $limit: 10 }
-          ],
-          { allowDiskUse: true, maxTimeMS: AGGREGATION_TIMEOUT_MS }
-        ),
-        Users.aggregate(
-          [
-            {
-              $match: {
-                created_at: { $gte: startDate, $lte: endDate },
-                signup_landing_page: { $exists: true, $ne: null }
-              }
-            },
-            {
-              $group: {
-                _id: '$signup_landing_page',
-                count: { $sum: 1 }
-              }
-            },
-            {
-              $project: {
-                landing_page: '$_id',
-                count: 1
-              }
-            },
-            { $sort: { count: -1 } },
-            { $limit: 10 }
-          ],
-          { allowDiskUse: true, maxTimeMS: AGGREGATION_TIMEOUT_MS }
-        ),
-        Users.aggregate(
-          [
-            {
-              $match: {
-                created_at: { $gte: startDate, $lte: endDate },
-                signup_utm_source: { $exists: true, $ne: null }
-              }
-            },
-            {
-              $group: {
-                _id: {
-                  source: '$signup_utm_source',
-                  medium: '$signup_utm_medium',
-                  campaign: '$signup_utm_campaign'
-                },
-                count: { $sum: 1 }
-              }
-            },
-            {
-              $project: {
-                source: '$_id.source',
-                medium: '$_id.medium',
-                campaign: '$_id.campaign',
-                count: 1
-              }
-            },
-            { $sort: { count: -1 } },
-            { $limit: 10 }
-          ],
-          { allowDiskUse: true, maxTimeMS: AGGREGATION_TIMEOUT_MS }
-        )
-      ]);
-
-    return { signupReferrers, signupLandingPages, signupUTMSources };
   });
 
   // Format chart data
@@ -377,6 +178,10 @@ async function dashboard(ctx) {
       x: d.date,
       y: d.events
     })),
+    successRate: dashboardData.visitorsOverTime.map((d) => ({
+      x: d.date,
+      rate: d.success_rate
+    })),
     services: dashboardData.sessionsByService,
     deviceTypes: dashboardData.deviceTypes.map((d) => ({
       type: d.device_type,
@@ -387,16 +192,17 @@ async function dashboard(ctx) {
 
   ctx.state.analytics = {
     overview: dashboardData.overview,
-    currentVisitors: dashboardData.currentVisitors,
+    // Realtime visitors are populated immediately after render by AJAX.
+    currentVisitors: 0,
     topBrowsers: dashboardData.topBrowsers,
     topOS: dashboardData.topOS,
     topClientApps: dashboardData.topClientApps,
     topReferrers: dashboardData.topReferrers,
     topPages: dashboardData.topPages,
     topLandingPages: dashboardData.topLandingPages,
-    signupReferrers: signupData.signupReferrers,
-    signupLandingPages: signupData.signupLandingPages,
-    signupUTMSources: signupData.signupUTMSources,
+    signupReferrers: dashboardData.signupReferrers,
+    signupLandingPages: dashboardData.signupLandingPages,
+    signupUTMSources: dashboardData.signupUTMSources,
     chartData,
     period,
     startDate,
@@ -415,58 +221,38 @@ async function dashboard(ctx) {
 async function realtime(ctx) {
   const cacheKey = `${CACHE_PREFIX}realtime`;
 
-  const data = await getCachedOrQuery(ctx, cacheKey, async () => {
-    const fiveMinutesAgo = dayjs().subtract(5, 'minutes').toDate();
-    const totalDocs = await AnalyticsEvents.estimatedDocumentCount();
-
-    let currentVisitors;
-    let recentEvents;
-
-    if (totalDocs > 1_000_000) {
-      const [recentCount, serviceBreakdown] = await Promise.all([
-        AnalyticsEvents.countDocuments({
-          created_at: { $gte: fiveMinutesAgo }
-        }),
-        AnalyticsEvents.aggregate(
-          [
-            { $match: { created_at: { $gte: fiveMinutesAgo } } },
-            { $group: { _id: '$service', count: { $sum: 1 } } },
-            { $sort: { count: -1 } }
-          ],
-          { allowDiskUse: true }
-        )
+  const data = await getCachedOrQuery(
+    ctx,
+    cacheKey,
+    async () => {
+      const fiveMinutesAgo = dayjs().subtract(5, 'minutes').toDate();
+      const [result = {}] = await AnalyticsEvents.aggregate([
+        { $match: { created_at: { $gte: fiveMinutesAgo } } },
+        {
+          $facet: {
+            visitors: [
+              { $group: { _id: '$session_hash' } },
+              { $count: 'count' }
+            ],
+            services: [
+              { $group: { _id: '$service', count: { $sum: 1 } } },
+              { $sort: { count: -1 } }
+            ]
+          }
+        }
       ]);
 
-      currentVisitors = Math.round(recentCount * 0.3);
-      recentEvents = serviceBreakdown;
-    } else {
-      const [sessions, serviceBreakdown] = await Promise.all([
-        AnalyticsEvents.distinct('session_hash', {
-          created_at: { $gte: fiveMinutesAgo }
-        }),
-        AnalyticsEvents.aggregate(
-          [
-            { $match: { created_at: { $gte: fiveMinutesAgo } } },
-            { $group: { _id: '$service', count: { $sum: 1 } } },
-            { $sort: { count: -1 } }
-          ],
-          { allowDiskUse: true }
-        )
-      ]);
-
-      currentVisitors = sessions.length;
-      recentEvents = serviceBreakdown;
-    }
-
-    return {
-      current_visitors: currentVisitors,
-      recent_events: recentEvents.map((e) => ({
-        service: e._id,
-        count: e.count
-      })),
-      timestamp: new Date().toISOString()
-    };
-  });
+      return {
+        current_visitors: result.visitors?.[0]?.count || 0,
+        recent_events: (result.services || []).map((entry) => ({
+          service: entry._id,
+          count: entry.count
+        })),
+        timestamp: new Date().toISOString()
+      };
+    },
+    REALTIME_CACHE_TTL
+  );
 
   ctx.body = data;
 }
@@ -482,52 +268,30 @@ async function byService(ctx) {
     throw Boom.badRequest('Invalid service type');
   }
 
-  const cacheKey = `${CACHE_PREFIX}service:${service}:${period}`;
+  const rangeCacheKey = getRangeCacheKey(period, startDate, endDate);
+  const cacheKey = `${CACHE_PREFIX}service:${service}:${rangeCacheKey}`;
 
   const serviceData = await getCachedOrQuery(ctx, cacheKey, async () => {
-    const hasData = await hasSummaryData(startDate, endDate);
-
-    if (!hasData) {
-      return {
-        overview: {
-          total_events: 0,
-          unique_visitors: 0,
-          successful_events: 0,
-          failed_events: 0,
-          success_rate: 0
-        },
-        overTime: [],
-        topBrowsers: [],
-        topClientApps: [],
-        noData: true
-      };
-    }
-
-    const [overview, overTime, topBrowsers, topClientApps] = await Promise.all([
-      AnalyticsSummary.getOverview(startDate, endDate, service),
-      AnalyticsSummary.getVisitorsOverTime(startDate, endDate, service),
-      AnalyticsSummary.getByDimension(startDate, endDate, 'browser', {
-        limit: 10
-      }),
-      AnalyticsSummary.getByDimension(startDate, endDate, 'client_app', {
-        limit: 10
-      })
-    ]);
+    const summary = await AnalyticsSummary.getDashboardData(
+      startDate,
+      endDate,
+      { service }
+    );
 
     return {
-      overview,
-      overTime,
-      topBrowsers: topBrowsers.map((b) => ({
-        browser: b._id,
-        count: b.event_count,
-        visitors: b.unique_visitors
+      overview: summary.overview,
+      overTime: summary.visitorsOverTime,
+      topBrowsers: summary.topBrowsers.map((entry) => ({
+        browser: entry._id,
+        count: entry.event_count,
+        visitors: entry.unique_visitors
       })),
-      topClientApps: topClientApps.map((c) => ({
-        client_app: c._id,
-        count: c.event_count,
-        visitors: c.unique_visitors
+      topClientApps: summary.topClientApps.map((entry) => ({
+        client_app: entry._id,
+        count: entry.event_count,
+        visitors: entry.unique_visitors
       })),
-      noData: false
+      noData: !summary.hasData
     };
   });
 
@@ -553,7 +317,10 @@ async function exportData(ctx) {
   const { startDate, endDate } = getDateRange(ctx.query);
 
   const data = await AnalyticsSummary.find({
-    hour: { $gte: startDate, $lte: endDate }
+    hour: { $gte: startDate, $lte: endDate },
+    dimension: { $ne: AnalyticsSummary.HOUR_MANIFEST_DIMENSION },
+    schema_version: AnalyticsSummary.CURRENT_SCHEMA_VERSION,
+    is_complete: true
   })
     .select('-_id -__v')
     .sort({ hour: -1 })

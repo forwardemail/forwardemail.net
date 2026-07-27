@@ -96,7 +96,7 @@ block body
                   tbody
                     each item in analytics.topBrowsers
                       tr
-                        td= item._id
+                        td= item.browser
                         td.text-right= item.count.toLocaleString()
             else
               p.text-muted.text-center.mb-0= t("No data available")
@@ -114,7 +114,7 @@ block body
                   tbody
                     each item in analytics.topClientApps
                       tr
-                        td= item._id
+                        td= item.client_app
                         td.text-right= item.count.toLocaleString()
             else
               p.text-muted.text-center.mb-0= t("No data available")

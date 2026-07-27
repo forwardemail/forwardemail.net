@@ -417,20 +417,35 @@ function updateCurrentVisitors() {
     });
 }
 
-// Initialize all charts
+function safelyInitializeChart(initializer) {
+  try {
+    initializer();
+  } catch (err) {
+    logger.error(err);
+  }
+}
+
+// Initialize all charts independently so one malformed widget cannot block the rest.
 function initCharts() {
-  initVisitorsOverTimeChart();
-  initSessionsByServiceChart();
-  initDeviceTypesChart();
-  initSuccessRateChart();
-  initServiceOverTimeChart();
+  const initializers = [
+    initVisitorsOverTimeChart,
+    initSessionsByServiceChart,
+    initDeviceTypesChart,
+    initSuccessRateChart,
+    initServiceOverTimeChart
+  ];
+
+  for (const initializer of initializers) {
+    safelyInitializeChart(initializer);
+  }
 }
 
 // Run on document ready
 $(document).ready(function () {
   initCharts();
 
-  // Update current visitors every 30 seconds
+  // Populate immediately, then refresh every 30 seconds.
+  updateCurrentVisitors();
   setInterval(updateCurrentVisitors, ms('30s'));
 });
 

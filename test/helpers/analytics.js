@@ -14,10 +14,7 @@ const {
   categorizeReferrer,
   extractReferrerDomain,
   generateSessionHash,
-  extractUTMParams,
-  EMAIL_CLIENT_PATTERNS,
-  BROWSER_PATTERNS,
-  OS_PATTERNS
+  extractUTMParams
 } = require('#helpers/analytics');
 
 // ============================================================================
@@ -160,7 +157,7 @@ test('parseBrowser detects Chrome', (t) => {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
   const result = parseBrowser(ua);
   t.is(result.browser, 'Chrome');
-  t.is(result.browser_version, '120');
+  t.is(result.browser_version, '120.0.0.0');
 });
 
 test('parseBrowser detects Firefox', (t) => {
@@ -168,7 +165,7 @@ test('parseBrowser detects Firefox', (t) => {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0';
   const result = parseBrowser(ua);
   t.is(result.browser, 'Firefox');
-  t.is(result.browser_version, '121');
+  t.is(result.browser_version, '121.0');
 });
 
 test('parseBrowser detects Safari', (t) => {
@@ -176,8 +173,8 @@ test('parseBrowser detects Safari', (t) => {
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15';
   const result = parseBrowser(ua);
   t.is(result.browser, 'Safari');
-  // Safari version is extracted from Safari/xxx, not Version/xxx
-  t.is(result.browser_version, '605');
+  // ua-parser-js uses Safari's actual Version token.
+  t.is(result.browser_version, '17.2');
 });
 
 test('parseBrowser detects Edge', (t) => {
@@ -200,8 +197,7 @@ test('parseOS detects Windows', (t) => {
   const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
   const result = parseOS(ua);
   t.is(result.os, 'Windows');
-  // Windows NT 10.0 maps to Windows 10/11
-  t.is(result.os_version, '10/11');
+  t.is(result.os_version, '10');
 });
 
 test('parseOS detects macOS', (t) => {
@@ -419,48 +415,4 @@ test('extractUTMParams truncates long values', (t) => {
   const query = { utm_source: longValue };
   const result = extractUTMParams(query);
   t.is(result.utm_source.length, 100);
-});
-
-// ============================================================================
-// Pattern Constants Tests - Verify patterns are properly defined
-// ============================================================================
-
-test('EMAIL_CLIENT_PATTERNS includes common email clients', (t) => {
-  const clientNames = new Set(EMAIL_CLIENT_PATTERNS.map((p) => p.name));
-  t.true(clientNames.has('Thunderbird'));
-  t.true(clientNames.has('Outlook'));
-  t.true(clientNames.has('Apple Mail'));
-  t.true(clientNames.has('K-9 Mail'));
-  t.true(clientNames.has('FairEmail'));
-});
-
-test('EMAIL_CLIENT_PATTERNS includes CalDAV/CardDAV clients', (t) => {
-  const clientNames = new Set(EMAIL_CLIENT_PATTERNS.map((p) => p.name));
-  t.true(clientNames.has('DAVx5'));
-  t.true(clientNames.has('CalDAV Client'));
-  t.true(clientNames.has('CardDAV Client'));
-});
-
-test('EMAIL_CLIENT_PATTERNS includes Apple platform clients', (t) => {
-  const clientNames = new Set(EMAIL_CLIENT_PATTERNS.map((p) => p.name));
-  t.true(clientNames.has('macOS'));
-  t.true(clientNames.has('iOS'));
-  t.true(clientNames.has('Calendar Agent'));
-});
-
-test('BROWSER_PATTERNS includes major browsers', (t) => {
-  const browserNames = new Set(BROWSER_PATTERNS.map((p) => p.name));
-  t.true(browserNames.has('Chrome'));
-  t.true(browserNames.has('Firefox'));
-  t.true(browserNames.has('Safari'));
-  t.true(browserNames.has('Edge'));
-});
-
-test('OS_PATTERNS includes major operating systems', (t) => {
-  const osNames = new Set(OS_PATTERNS.map((p) => p.name));
-  t.true(osNames.has('Windows'));
-  t.true(osNames.has('macOS'));
-  t.true(osNames.has('iOS'));
-  t.true(osNames.has('Android'));
-  t.true(osNames.has('Linux'));
 });

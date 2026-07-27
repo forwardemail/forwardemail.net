@@ -105,6 +105,10 @@ const AnalyticsEvents = new mongoose.Schema({
     maxlength: 100,
     index: true
   },
+  client_app_version: {
+    type: String,
+    maxlength: 20
+  },
 
   // Web-specific fields
   referrer: {
