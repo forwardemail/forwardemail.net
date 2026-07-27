@@ -2120,20 +2120,27 @@ describe('Core Sieve tests (RFC 5228 Section 5)', () => {
     });
 
     describe('capability enforcement at execution time', () => {
-      it('should reject foreverypart/replace used without being required', async () => {
-        // RFC 5703 Sections 3 and 5 require that "foreverypart" and "replace"
-        // be declared in a require statement before the commands are used.
-        // Capability enforcement here happens only in processRequires(), which
-        // walks the strings literally listed in require; the command dispatch
-        // for foreverypart and replace has no hasCapability() guard at all.
-        // So omitting the declaration - which is what a script must do today
-        // to avoid the "Unsupported capability" rejection, since those strings
-        // are registered nowhere - lets the commands run anyway.
+      it('should reject foreverypart/replace used with no require statement', async () => {
+        // Capability enforcement happens only in processRequires(), which walks
+        // the strings literally listed in require; the command dispatch for
+        // foreverypart and replace has no hasCapability() guard at all. A
+        // script with no require statement whatsoever therefore executes both
+        // commands regardless.
         //
-        // The two failures are inverses of each other: a spec-compliant script
-        // is rejected, while this spec-violating one is accepted.
+        // This deliberately uses NO require statement rather than
+        // `require "mime"`, to stay neutral on an open question: RFC 5703
+        // defines distinct capability strings per command (foreverypart is
+        // Section 3, replace is Section 5), but this codebase's own tests
+        // consistently drive foreverypart behind `require "mime"` alone, and
+        // the FAQ documents all five commands under a single mime entry. So
+        // whether `require "mime"` should be sufficient is a design decision
+        // for the maintainers. A script with no require at all is invalid
+        // under either reading, which is what this test pins down.
+        //
+        // Paired with the require-time test in test/sieve/filter-handler.js,
+        // the two failures are inverses: a script that declares these
+        // extensions is rejected, while this one that declares nothing runs.
         const script = `
-          require "mime";
           foreverypart {
             replace "[replaced]";
           }
@@ -2150,9 +2157,9 @@ describe('Core Sieve tests (RFC 5228 Section 5)', () => {
 
         await assert.rejects(
           () => executeScript(script, message),
-          'expected using foreverypart/replace without requiring them to be ' +
-            'an error per RFC 5703, but the engine only checks capabilities ' +
-            'at require-time and executes the commands unguarded'
+          'expected foreverypart/replace used with no require statement to be ' +
+            'an error, but the engine only checks capabilities at require-time ' +
+            'and executes the commands unguarded'
         );
       });
     });
