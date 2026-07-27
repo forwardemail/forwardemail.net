@@ -9,7 +9,10 @@ const dayjs = require('dayjs-with-plugins');
 const utils = require('../utils');
 
 const { aggregateHour } = require('../../jobs/aggregate-analytics');
-const { getPendingHours } = require('../../scripts/backfill-analytics');
+const {
+  getPendingHours,
+  shouldForceRepair
+} = require('../../scripts/backfill-analytics');
 const AnalyticsEvents = require('#models/analytics-events');
 const AnalyticsSummary = require('#models/analytics-summary');
 const Users = require('#models/users');
@@ -341,6 +344,15 @@ test.serial(
   }
 );
 
+test('manual repair rebuilds complete hours unless explicitly incremental', (t) => {
+  t.true(shouldForceRepair({}, { argv: [], isWorker: false }));
+  t.false(shouldForceRepair({}, { argv: [], isWorker: true }));
+  t.true(shouldForceRepair({}, { argv: ['--force'], isWorker: true }));
+  t.false(shouldForceRepair({}, { argv: ['--incremental'], isWorker: false }));
+  t.true(shouldForceRepair({ force: true }, { argv: [], isWorker: true }));
+  t.false(shouldForceRepair({ force: false }, { argv: [], isWorker: false }));
+});
+
 test.serial(
   'legacy and partial summaries do not satisfy current readiness',
   async (t) => {
@@ -506,7 +518,34 @@ test.serial('dashboard does not cache a not-yet-repaired range', async (t) => {
   t.is(writes.length, 0);
 });
 
-test.serial('custom date ranges use one distinct v3 cache entry', async (t) => {
+test.serial(
+  'manifest-only hours remain no-data and are never cached',
+  async (t) => {
+    const hour = dayjs().subtract(1, 'hour').startOf('hour').toDate();
+    await AnalyticsSummary.replaceHour(hour, []);
+
+    const writes = [];
+    const context = getContext();
+    context.client = {
+      status: 'ready',
+      async get() {
+        return null;
+      },
+      async set(...arguments_) {
+        writes.push(arguments_);
+      }
+    };
+
+    await analyticsController.dashboard(context);
+
+    t.true(context.state.analytics.noData);
+    t.is(context.state.analytics.overview.total_events, 0);
+    t.is(context.state.analytics.chartData.visitors.length, 0);
+    t.is(writes.length, 0);
+  }
+);
+
+test.serial('custom date ranges use one distinct v4 cache entry', async (t) => {
   const hour = dayjs('2026-07-10').startOf('hour').toDate();
   await AnalyticsSummary.replaceHour(hour, getSummaries(10));
 
@@ -527,7 +566,7 @@ test.serial('custom date ranges use one distinct v3 cache entry', async (t) => {
 
   await analyticsController.dashboard(context);
 
-  t.deepEqual(keys, ['analytics:v3:dashboard:2026-07-10:2026-07-10:all:all']);
+  t.deepEqual(keys, ['analytics:v4:dashboard:2026-07-10:2026-07-10:all:all']);
 });
 
 test.serial(

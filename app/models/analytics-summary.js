@@ -505,8 +505,8 @@ AnalyticsSummary.statics.getDashboardData = async function (
         hasData: [
           {
             $match: {
-              dimension: HOUR_MANIFEST_DIMENSION,
-              value: HOUR_MANIFEST_VALUE
+              dimension: { $ne: HOUR_MANIFEST_DIMENSION },
+              aggregation_id: { $type: 'string' }
             }
           },
           { $limit: 1 },

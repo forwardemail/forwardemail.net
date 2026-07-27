@@ -4,11 +4,12 @@
  */
 
 /**
- * Incremental analytics summary repair.
+ * Analytics summary repair.
  *
- * Bree runs this immediately and periodically, and operators can safely run:
+ * Bree runs incrementally. A direct operator invocation performs a full rebuild
+ * unless `--incremental` is explicitly requested:
  *   node scripts/backfill-analytics.js
- *   node scripts/backfill-analytics.js --force
+ *   node scripts/backfill-analytics.js --incremental
  */
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -81,6 +82,36 @@ async function getPendingHours(start, end, force) {
 }
 
 /**
+ * Resolve whether a repair must rebuild already-complete hours.
+ *
+ * Direct operator invocations default to a full rebuild because the command is
+ * also the recovery path for stale or empty manifests. Bree workers stay
+ * incremental so their six-hour schedule remains inexpensive.
+ *
+ * @param {Object} [options] Repair options.
+ * @param {boolean} [options.force] Explicitly select full or incremental mode.
+ * @param {Object} [runtime] Runtime inputs for deterministic testing.
+ * @param {Array<string>} [runtime.argv] Command-line arguments.
+ * @param {boolean} [runtime.isWorker] Whether this runs in a worker thread.
+ * @returns {boolean} Whether complete hours must be rebuilt.
+ */
+function shouldForceRepair(options = {}, runtime = {}) {
+  if (typeof options.force === 'boolean') return options.force;
+
+  const argv = Array.isArray(runtime.argv)
+    ? runtime.argv
+    : process.argv.slice(2);
+  if (argv.includes('--force')) return true;
+  if (argv.includes('--incremental')) return false;
+
+  const isWorker =
+    typeof runtime.isWorker === 'boolean'
+      ? runtime.isWorker
+      : Boolean(parentPort);
+  return !isWorker;
+}
+
+/**
  * Repair missing or outdated hourly generations in the dashboard range.
  *
  * @param {Object} [options] Repair options.
@@ -92,12 +123,12 @@ async function main(options = {}) {
   graceful.listen();
   await setupMongoose(logger);
 
-  const force =
-    options.force === true || process.argv.slice(2).includes('--force');
+  const force = shouldForceRepair(options);
   const { start, end } = getRepairRange();
   const pendingHours = await getPendingHours(start, end, force);
 
   logger.info('Starting analytics summary repair', {
+    database: AnalyticsSummary.db.name,
     from: start.toISOString(),
     to: end.toISOString(),
     pendingHours: pendingHours.length,
@@ -168,6 +199,20 @@ async function main(options = {}) {
     summaries: totalSummaries
   };
   logger.info('Analytics summary repair completed', totals);
+
+  if (
+    !isCancelled &&
+    pendingHours.length > 0 &&
+    totalEvents === 0 &&
+    totalSignups === 0
+  ) {
+    logger.warn('Analytics summary repair found no source data', {
+      database: AnalyticsSummary.db.name,
+      from: start.toISOString(),
+      to: end.toISOString()
+    });
+  }
+
   return totals;
 }
 
@@ -184,4 +229,9 @@ if (require.main === module) {
     });
 }
 
-module.exports = { getPendingHours, getRepairRange, main };
+module.exports = {
+  getPendingHours,
+  getRepairRange,
+  main,
+  shouldForceRepair
+};

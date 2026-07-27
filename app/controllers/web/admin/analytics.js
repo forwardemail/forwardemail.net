@@ -13,7 +13,7 @@ const AnalyticsSummary = require('#models/analytics-summary');
 // Cache TTL in milliseconds (1h is fine since data is hourly-aggregated)
 const CACHE_TTL = ms('10m');
 const REALTIME_CACHE_TTL = ms('15s');
-const CACHE_PREFIX = 'analytics:v3:';
+const CACHE_PREFIX = 'analytics:v4:';
 
 /**
  * Get cached data or execute query
