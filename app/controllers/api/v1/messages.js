@@ -231,6 +231,49 @@ function decodeRawMessage(message) {
   return message;
 }
 
+//
+// Address and threading headers surfaced on lightweight responses.
+//
+// Lightweight mode performs no MIME rebuild, so `nodemailer` and `raw` are
+// absent and clients cannot derive who a message is from or to. The parsed
+// `headers` array is already on the row (JSON text, decoded by
+// decodeRawMessage), so reading these costs no extra I/O and no MIME parsing.
+//
+const LIGHTWEIGHT_HEADER_FIELDS = [
+  ['from', 'from'],
+  ['to', 'to'],
+  ['cc', 'cc'],
+  ['bcc', 'bcc'],
+  ['reply-to', 'reply_to'],
+  ['sender', 'sender'],
+  ['in-reply-to', 'in_reply_to'],
+  ['references', 'references']
+];
+
+// Read a header out of the stored `headers` array of { key, value } pairs
+// (wildduck lowercases every key). Values stay as their raw header strings,
+// RFC 2047 encoded words included, since that is what the non-lightweight
+// `nodemailer` shape also exposes via headerLines and clients already decode
+// them. Repeated headers are joined the way an address list would be.
+function getStoredHeader(headers, key) {
+  if (!Array.isArray(headers)) return null;
+
+  const values = [];
+  for (const header of headers) {
+    if (!header || typeof header !== 'object') continue;
+    if (String(header.key || '').toLowerCase() !== key) continue;
+
+    // a repeated header can also arrive already grouped into an array
+    const entries = Array.isArray(header.value) ? header.value : [header.value];
+    for (const entry of entries) {
+      if (typeof entry === 'string' && entry.trim()) values.push(entry.trim());
+    }
+  }
+
+  if (values.length === 0) return null;
+  return values.join(', ');
+}
+
 async function json(ctx, message, { lightweight = false } = {}) {
   // In lightweight mode (used by list endpoint), skip the expensive
   // indexer.getContents + simpleParser call that rebuilds the full MIME tree
@@ -369,6 +412,17 @@ async function json(ctx, message, { lightweight = false } = {}) {
     // updated_at
     updated_at: message.updated_at
   };
+
+  // In lightweight mode, data is null (no MIME rebuild was performed), so the
+  // address and threading headers that clients read off `nodemailer` are not
+  // available. Surface them from the stored `headers` array instead. Without
+  // these a list response cannot render a sender, a recipient, or a thread.
+  if (lightweight) {
+    for (const [header, field] of LIGHTWEIGHT_HEADER_FIELDS) {
+      const value = getStoredHeader(message.headers, header);
+      if (value !== null) object[field] = value;
+    }
+  }
 
   // In lightweight mode, data is null (no MIME rebuild was performed)
   if (data) {

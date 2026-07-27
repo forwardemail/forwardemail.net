@@ -1620,23 +1620,24 @@ async function parsePayload(data, ws) {
                       .catch((err) =>
                         logger.fatal(err, { session, resolver: this.resolver })
                       );
-                    // send websocket push notification
-                    // NOTE: do not include full eml — see comment at line 2032
-                    sendNotification(this.client, alias.id, 'newMessage', {
-                      mailbox: targetFolder || 'INBOX',
-                      message: {
-                        from: payload.sender || '',
-                        subject: payload.subject || '',
-                        folder_path: targetFolder || 'INBOX',
-                        flags: targetFlags || [],
-                        is_unread: !(targetFlags || []).includes('\\Seen'),
-                        is_flagged: (targetFlags || []).includes('\\Flagged'),
-                        is_deleted: (targetFlags || []).includes('\\Deleted'),
-                        is_draft: (targetFlags || []).includes('\\Draft'),
-                        is_encrypted: false,
-                        object: 'message'
-                      }
-                    });
+
+                    //
+                    // NOTE: no `newMessage` websocket notification here.
+                    //
+                    // onAppend already emitted one for this exact append, and
+                    // its payload is the enriched shape that mirrors
+                    // GET /v1/messages/:id, carrying the message `id`, `uid`,
+                    // `header_message_id`, and a `from` built from the parsed
+                    // envelope (display name included).
+                    //
+                    // A second notification here could only be built from the
+                    // SMTP envelope: `from: payload.sender` is the MAIL FROM
+                    // address with no display name (and empty for a null sender,
+                    // e.g. bounces/DSNs), and there is no message id at all. So
+                    // clients received two events per delivery, one of which
+                    // rendered as "Unknown sender" and could not be reconciled
+                    // against the API because it had no id to match on.
+                    //
 
                     // Release per-alias raw buffer for GC
                     messageRaw = null;
@@ -2057,6 +2058,15 @@ async function parsePayload(data, ws) {
               // NOTE: do not include full eml here — it can be up to 50 MB,
               // which doubles memory (Buffer→String copy) and bloats Redis pub/sub.
               // Clients should fetch the message on demand via IMAP/API.
+              //
+              // This is the temporary-storage fallback path: no onAppend ran, so
+              // nothing else will announce this delivery and this notification is
+              // the only one. It is necessarily degraded compared to onAppend's
+              // enriched payload. The message has no id yet (it lives in the tmp
+              // database until it is synced into the alias DB), and `from` is the
+              // SMTP envelope sender rather than the parsed From header, so it
+              // carries no display name and is empty for a null sender. Clients
+              // must therefore tolerate an id-less newMessage event.
               sendNotification(this.client, alias.id, 'newMessage', {
                 mailbox: targetFolder || 'INBOX',
                 message: {
