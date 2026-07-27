@@ -2118,5 +2118,43 @@ describe('Core Sieve tests (RFC 5228 Section 5)', () => {
         );
       });
     });
+
+    describe('capability enforcement at execution time', () => {
+      it('should reject foreverypart/replace used without being required', async () => {
+        // RFC 5703 Sections 3 and 5 require that "foreverypart" and "replace"
+        // be declared in a require statement before the commands are used.
+        // Capability enforcement here happens only in processRequires(), which
+        // walks the strings literally listed in require; the command dispatch
+        // for foreverypart and replace has no hasCapability() guard at all.
+        // So omitting the declaration - which is what a script must do today
+        // to avoid the "Unsupported capability" rejection, since those strings
+        // are registered nowhere - lets the commands run anyway.
+        //
+        // The two failures are inverses of each other: a spec-compliant script
+        // is rejected, while this spec-violating one is accepted.
+        const script = `
+          require "mime";
+          foreverypart {
+            replace "[replaced]";
+          }
+        `;
+        const message = createMimeMessage([
+          {
+            contentType: 'image/png',
+            headers: { 'content-id': '<img1@example.com>' },
+            body: 'binarydata',
+            encoding: 'base64',
+            charset: false
+          }
+        ]);
+
+        await assert.rejects(
+          () => executeScript(script, message),
+          'expected using foreverypart/replace without requiring them to be ' +
+            'an error per RFC 5703, but the engine only checks capabilities ' +
+            'at require-time and executes the commands unguarded'
+        );
+      });
+    });
   });
 });
