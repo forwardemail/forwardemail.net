@@ -51,6 +51,7 @@ const env = require('#config/env');
 const closeDatabase = require('#helpers/close-database');
 const getDatabase = require('#helpers/get-database');
 const getFingerprint = require('#helpers/get-fingerprint');
+const getHeaders = require('#helpers/get-headers');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const getTemporaryDatabase = require('#helpers/get-temporary-database');
 const i18n = require('#helpers/i18n');
@@ -831,6 +832,19 @@ async function parsePayload(data, ws) {
         // (arguments = `session`, `headers`, `body`, `useSender`)
         //
         const fingerprint = getFingerprint({}, headers, payload.raw);
+
+        //
+        // Extract From and Subject from parsed headers for notifications.
+        // Uses getHeaders which MIME-decodes RFC 2047 encoded words so
+        // "=?UTF-8?Q?John?= <j@x.com>" becomes "John <j@x.com>".
+        // Falls back to the SMTP envelope sender if header extraction fails.
+        //
+        const headerFrom = headers
+          ? getHeaders(headers, 'from') || payload.sender || ''
+          : payload.sender || '';
+        const headerSubject = headers
+          ? getHeaders(headers, 'subject') || ''
+          : '';
 
         //
         // Batch alias pre-fetch: single MongoDB query instead of N
@@ -1625,8 +1639,8 @@ async function parsePayload(data, ws) {
                     sendNotification(this.client, alias.id, 'newMessage', {
                       mailbox: targetFolder || 'INBOX',
                       message: {
-                        from: payload.sender || '',
-                        subject: payload.subject || '',
+                        from: headerFrom,
+                        subject: headerSubject,
                         folder_path: targetFolder || 'INBOX',
                         flags: targetFlags || [],
                         is_unread: !(targetFlags || []).includes('\\Seen'),
@@ -2060,8 +2074,8 @@ async function parsePayload(data, ws) {
               sendNotification(this.client, alias.id, 'newMessage', {
                 mailbox: targetFolder || 'INBOX',
                 message: {
-                  from: payload.sender || '',
-                  subject: payload.subject || '',
+                  from: headerFrom,
+                  subject: headerSubject,
                   folder_path: targetFolder || 'INBOX',
                   flags: targetFlags || [],
                   is_unread: !(targetFlags || []).includes('\\Seen'),

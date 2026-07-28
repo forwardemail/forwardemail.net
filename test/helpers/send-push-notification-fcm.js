@@ -90,7 +90,7 @@ test('deliverFcm > sends through DNS-pinned HTTP v1 fetch', async (t) => {
             },
             android: {
               priority: 'high',
-              notification: { channel_id: 'new-mail' }
+              notification: { channel_id: 'new-mail', icon: 'ic_notification' }
             }
           }
         }),

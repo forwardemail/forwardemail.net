@@ -412,6 +412,20 @@ function buildPayload(event, data) {
       ? data.notificationId.slice(0, 64)
       : '';
 
+  // Include from/subject/snippet so all channels (FCM, APNs, UnifiedPush,
+  // WebSocket) deliver consistent notification content to the client.
+  const safeFrom =
+    data.message && typeof data.message.from === 'string'
+      ? data.message.from.slice(0, 255)
+      : '';
+  const safeSubject =
+    data.message && typeof data.message.subject === 'string'
+      ? data.message.subject.slice(0, 255)
+      : '';
+  const safeSnippet =
+    data.message && typeof data.message.snippet === 'string'
+      ? data.message.snippet.replace(/\s+/g, ' ').trim().slice(0, 255)
+      : '';
   return {
     title,
     body,
@@ -421,7 +435,10 @@ function buildPayload(event, data) {
       alias_id: safeAliasId,
       message_id: safeMessageId,
       mailbox: safeMailbox,
-      notificationId: safeNotificationId
+      notificationId: safeNotificationId,
+      from: safeFrom,
+      subject: safeSubject,
+      snippet: safeSnippet
     }
   };
 }
