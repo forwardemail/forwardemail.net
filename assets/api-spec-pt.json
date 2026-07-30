@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Período de retenção em dias (0-365) para limpeza da Lixeira e Spam. 0 significa dimensionamento automático baseado em armazenamento."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Limite diário de mensagens SMTP de saída por alias. Defina como 0 para usar o limite do domínio."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "Se este alias está atualmente suspenso do acesso SMTP de saída.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "A data e hora em que o alias foi suspenso do SMTP de saída.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Período de retenção em dias (0-365) para limpeza automática da Lixeira e Spam. Defina como 0 para usar o dimensionamento automático baseado em armazenamento."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Limite diário de mensagens SMTP de saída por alias. Defina como 0 para usar o limite do domínio."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Período de retenção em dias (0-365) para limpeza automática da Lixeira e Spam. Defina como 0 para usar o dimensionamento automático baseado em armazenamento."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Limite diário de mensagens SMTP de saída por alias. Defina como 0 para usar o limite do domínio."
           }
         }
       },

@@ -1278,13 +1278,94 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   suspensionError.smtpSpamSuspension = abuseState;
                   logger.error(suspensionError, meta);
 
-                  // delete all existing tokens for the alias
-                  // (this way further retries will fail with incorrect password)
-                  // await Aliases.findByIdAndUpdate(alias._id, {
-                  //   $set: {
-                  //     tokens: []
-                  //   }
-                  // });
+                  // Also suspend the specific alias that triggered the detection
+                  // NOTE: must set is_smtp_suspended explicitly because
+                  // findByIdAndUpdate does not trigger pre-validate hooks
+                  if (alias && alias._id) {
+                    await Aliases.findByIdAndUpdate(alias._id, {
+                      $set: {
+                        smtp_suspended_sent_at: new Date(),
+                        is_smtp_suspended: true
+                      }
+                    });
+
+                    // Notify domain admins that alias was suspended
+                    Domains.getToAndMajorityLocaleByDomain(domain)
+                      .then(({ to, locale }) =>
+                        emailHelper({
+                          template: 'alert',
+                          message: {
+                            to,
+                            bcc: config.email.message.from,
+                            locale,
+                            subject: `Alias suspended: ${alias.name}@${domain.name}`
+                          },
+                          locals: {
+                            locale,
+                            message: `The alias <strong>${alias.name}@${domain.name}</strong> has been suspended from outbound SMTP due to ${err.bounceInfo.category} detections exceeding the threshold.`
+                          }
+                        })
+                      )
+                      .catch((_err) =>
+                        logger.fatal(_err, { ...meta, ignore_hook: true })
+                      );
+
+                    //
+                    // Check if >= 25% of domain aliases are now suspended.
+                    // If so, suspend the domain too (defense in depth).
+                    //
+                    const [totalAliases, suspendedAliases] = await Promise.all([
+                      Aliases.countDocuments({ domain: domain._id }),
+                      Aliases.countDocuments({
+                        domain: domain._id,
+                        is_smtp_suspended: true
+                      })
+                    ]);
+
+                    if (
+                      totalAliases > 0 &&
+                      suspendedAliases / totalAliases >=
+                        config.smtpDomainSuspensionAliasThreshold &&
+                      !_.isDate(domain.smtp_suspended_sent_at)
+                    ) {
+                      await Domains.findByIdAndUpdate(domain._id, {
+                        $set: {
+                          smtp_suspended_sent_at: new Date(),
+                          is_smtp_suspended: true
+                        }
+                      });
+
+                      // Notify admins of domain suspension due to alias threshold
+                      Domains.getToAndMajorityLocaleByDomain(domain)
+                        .then(({ to, locale }) =>
+                          emailHelper({
+                            template: 'alert',
+                            message: {
+                              to,
+                              bcc: config.email.message.from,
+                              locale,
+                              subject: `Domain suspended: ${domain.name}`
+                            },
+                            locals: {
+                              locale,
+                              message: `The domain <strong>${
+                                domain.name
+                              }</strong> has been suspended from outbound SMTP because ${suspendedAliases} of ${totalAliases} aliases (${Math.round(
+                                (suspendedAliases / totalAliases) * 100
+                              )}%) are suspended, which exceeds the ${Math.round(
+                                config.smtpDomainSuspensionAliasThreshold * 100
+                              )}% threshold.`
+                            }
+                          })
+                        )
+                        .catch((_err) =>
+                          logger.fatal(_err, {
+                            ...meta,
+                            ignore_hook: true
+                          })
+                        );
+                    }
+                  }
                 }
               } else {
                 const warning = new TypeError(

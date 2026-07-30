@@ -3683,7 +3683,27 @@ Amikor <a href="#do-you-support-regular-expressions-or-regex" class="alert-link"
 
 ### Mik az Önök kimenő SMTP korlátai {#what-are-your-outbound-smtp-limits}
 
-Felhasználókat és domaineket napi 300 kimenő SMTP üzenetre korlátozunk. Ez havi átlagban több mint 9000 e-mailt jelent. Ha ennél többre van szüksége, vagy rendszeresen nagy méretű e-maileket küld, kérjük, [vegye fel velünk a kapcsolatot](https://forwardemail.net/help).
+Kimenő SMTP-korlátozásokat több szinten alkalmazunk a visszaélések megelőzése érdekében, miközben rugalmasak maradunk a jogosult használat számára. Minden szintet sorrendben ellenőrzünk — amelyik korlátot érik el először, az ideiglenesen elutasítja az üzenetet `421` hibával (vagyis „próbálja újra később”).
+
+**A korlátozási hierarchia:**
+
+| Level | Scope | Default Limit | Description |
+| :---- | :---- | :-----------: | :---------- |
+| Per-alias | Egyedi alias | Nincs (a domain korlátját használja) | Opcionális. Ha egy aliasra egyedi `smtp_limit` van beállítva, azt ellenőrizzük először. |
+| Per-domain | Egy domainről egy nap alatt kiküldött összes e-mail | 300/day | Számolja a domain minden aliasáról küldött összes kimenő e-mailt. |
+| Per-user | Egy felhasználói fiók által egy nap alatt küldött összes e-mail | 300/day | Megakadályozza a megkerülést aliasok vagy domainek törlésével és újbóli létrehozásával. |
+
+**Hogyan határozzuk meg a tényleges korlátot:**
+
+* **Team terv domainjai** — a tényleges napi korlát a domain összes admin tagja közül a legmagasabb `smtp_limit`. Például, ha az egyik admin korlátja 300 és a másiké 500, a domain tényleges korlátja 500.
+* **Enhanced Protection és egyéb tervek** — a tényleges napi korlát a küldő felhasználó saját `smtp_limit` értéke (amely alapértelmezés szerint 300 üzenet naponta).
+* **Aliasonkénti felülírás** — a domain adminisztrátorok opcionálisan beállíthatnak egyedi `smtp_limit`-et egyes aliasokra. Ha be van állítva, ezt ellenőrizzük először (mielőtt a domain és felhasználói korlátokat). Ez hasznos, ha egyes aliasokat alacsonyabb küldési mennyiségre szeretnénk korlátozni.
+
+**Rendszeradminisztrátorok** (Forward Email személyzete) mentesülnek minden korlátozás alól.
+
+Minden korlátozást az adatbázis számlálásaival (`Emails.countDocuments`) hajtunk végre az aktuális nap kezdete óta létrehozott e-mailekre (UTC éjfél). Ez azt jelenti, hogy a korlátod naponta UTC éjfélkor nullázódik.
+
+Ha magasabb korlátra van szükséged, kérjük, [lépj kapcsolatba velünk](https://forwardemail.net/help). A legtöbb kérelmet 1-2 órán belül teljesítjük.
 
 ### Szükséges engedély az SMTP engedélyezéséhez? {#do-i-need-approval-to-enable-smtp}
 

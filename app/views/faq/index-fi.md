@@ -3682,7 +3682,27 @@ Kun käytät <a href="#do-you-support-regular-expressions-or-regex" class="alert
 
 ### Mitkä ovat lähtevän SMTP:n rajasi {#what-are-your-outbound-smtp-limits}
 
-Rajoitamme käyttäjiä ja domaineja 300 lähtevään SMTP-viestiin päivässä. Tämä vastaa keskimäärin yli 9000 sähköpostia kalenterikuukaudessa. Jos sinun tarvitsee ylittää tämä määrä tai sinulla on jatkuvasti suuria sähköposteja, ota yhteyttä [meihin](https://forwardemail.net/help).
+Sovellamme lähtevän SMTP-liikenteen rajoituksia useilla tasoilla estääksemme väärinkäytön samalla kun säilytämme joustavuuden lailliseen käyttöön. Jokaista tasoa tarkistetaan järjestyksessä — mikä tahansa raja saavutetaan ensin, hylätään viesti tilapäisesti `421`-virheellä (tarkoittaa "yritä myöhemmin uudelleen").
+
+**Rajoitushierarkia:**
+
+| Taso | Alue | Oletusraja | Kuvaus |
+| :---- | :---- | :-----------: | :---------- |
+| Aliaskohtainen | Yksittäinen alias | None (uses domain limit) | Valinnainen. Jos aliasille on asetettu mukautettu `smtp_limit`, se tarkistetaan ensin. |
+| Verkkotunnuskohtainen | Kaikki yhdeltä verkkotunnukselta päivän aikana lähetetyt sähköpostit | 300/day | Laskee kaikki lähtevät sähköpostit kaikilta verkkotunnuksen aliaksilta. |
+| Käyttäjäkohtainen | Kaikki käyttäjätilin yhden päivän aikana lähettämät sähköpostit | 300/day | Estää kiertämisen poistamalla ja uudelleenluomalla aliaksia tai verkkotunnuksia. |
+
+**Kuinka käytännön raja määräytyy:**
+
+* **Team plan domains** — käytännön päivittäinen raja on korkein `smtp_limit` kaikkien verkkotunnuksen ylläpitäjäjäsenten keskuudessa. Esimerkiksi, jos yhdellä ylläpitäjällä on raja 300 ja toisella 500, verkkotunnuksen käytännön raja on 500.
+* **Enhanced Protection and other plans** — käytännön päivittäinen raja on lähettävän käyttäjän oma `smtp_limit` (oletusarvoisesti 300 viestiä päivässä).
+* **Aliaskohtainen yliajo** — verkkotunnuksen ylläpitäjät voivat valinnaisesti asettaa mukautetun `smtp_limit`-arvon yksittäisille aliaksille. Kun tämä on asetettu, se tarkistetaan ensin (ennen verkkotunnuksen ja käyttäjän rajoja). Tämä on hyödyllistä, kun halutaan rajoittaa tiettyjen aliaksien lähetysvolyymia pienemmäksi.
+
+**Järjestelmänvalvojat** (Forward Email staff) ovat vapautettuja kaikista rajoituksista.
+
+Kaikki rajoitukset toteutetaan käyttämällä tietokantalaskentaa (`Emails.countDocuments`) niistä sähköposteista, jotka on luotu kuluvan päivän alusta (keskiyö UTC). Tämä tarkoittaa, että rajasi nollaantuu päivittäin UTC-keskiyöllä.
+
+Jos tarvitset korkeamman rajan, ota [yhteyttä](https://forwardemail.net/help). Useimmat pyynnöt käsitellään 1–2 tunnin kuluessa.
 
 ### Tarvitsenko hyväksynnän SMTP:n käyttöönottoon {#do-i-need-approval-to-enable-smtp}
 

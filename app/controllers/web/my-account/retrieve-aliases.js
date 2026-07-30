@@ -14,6 +14,9 @@ const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
+const Emails = require('#models/emails');
+const Users = require('#models/users');
+const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
 const sendPaginationCheck = require('#helpers/send-pagination-check');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 
@@ -293,6 +296,53 @@ async function retrieveAliases(ctx, next) {
       ctx.state.domain.group === 'admin' || alias.user.id === ctx.state.user.id
         ? 'admin'
         : 'user';
+  }
+
+  //
+  // Enrich aliases with SMTP outbound count for today (for domain admins)
+  // and compute the domain's effective SMTP limit (highest among all admin members)
+  //
+  if (
+    ctx.state.domain.group === 'admin' &&
+    !ctx.state.domain.is_global &&
+    ctx.state.domain.aliases.length > 0
+  ) {
+    const startOfDay = dayjs().startOf('day').toDate();
+    const aliasIds = ctx.state.domain.aliases.map((a) => a._id);
+    // Find the catch-all alias to also count emails with alias=null
+    const catchAllAlias = ctx.state.domain.aliases.find((a) => a.name === '*');
+    const [counts, catchAllCount, domainSmtpLimit] = await Promise.all([
+      Emails.aggregate([
+        {
+          $match: {
+            alias: { $in: aliasIds },
+            created_at: { $gte: startOfDay }
+          }
+        },
+        { $group: { _id: '$alias', count: { $sum: 1 } } }
+      ]),
+      // Count emails sent via catch-all (alias field is null/undefined)
+      catchAllAlias
+        ? Emails.countDocuments({
+            domain: ctx.state.domain._id,
+            alias: { $in: [null, undefined] },
+            created_at: { $gte: startOfDay }
+          })
+        : Promise.resolve(0),
+      getDomainSmtpLimitAsync(ctx.state.domain, Users)
+    ]);
+    // Set the domain's effective SMTP limit for the pug template
+    ctx.state.domain.smtp_limit = domainSmtpLimit;
+    const countMap = new Map(counts.map((c) => [c._id.toString(), c.count]));
+    for (const alias of ctx.state.domain.aliases) {
+      if (alias.name === '*' && catchAllAlias) {
+        // Catch-all alias: include both alias-tagged and untagged emails
+        alias.smtp_count =
+          (countMap.get(alias._id.toString()) || 0) + catchAllCount;
+      } else {
+        alias.smtp_count = countMap.get(alias._id.toString()) || 0;
+      }
+    }
   }
 
   // if there aren't any aliases yet

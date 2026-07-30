@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "תקופת שמירה בימים (0-365) לניקוי תיקיות אשפה ודואר זבל. 0 פירושו התאמה אוטומטית מבוססת אחסון."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "מגבלת הודעות SMTP יומית יוצאת לכל כינוי. הגדר ל-0 כדי להשתמש במגבלת הדומיין."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "האם כינוי זה מושעה כרגע מגישה ל-SMTP יוצא.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "התאריך והשעה שבהם הכינוי הושעה מ-SMTP יוצא.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "תקופת שמירה בימים (0-365) לניקוי אוטומטי של תיקיות אשפה ודואר זבל. הגדר ל-0 לשימוש בהתאמה אוטומטית מבוססת אחסון."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "מגבלת הודעות SMTP יומית יוצאת לכל כינוי. הגדר ל-0 כדי להשתמש במגבלת הדומיין."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "תקופת שמירה בימים (0-365) לניקוי אוטומטי של תיקיות אשפה ודואר זבל. הגדר ל-0 לשימוש בהתאמה אוטומטית מבוססת אחסון."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "מגבלת הודעות SMTP יומית יוצאת לכל כינוי. הגדר ל-0 כדי להשתמש במגבלת הדומיין."
           }
         }
       },

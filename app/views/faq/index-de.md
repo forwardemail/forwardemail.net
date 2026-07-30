@@ -3683,7 +3683,27 @@ Wenn Sie <a href="#do-you-support-regular-expressions-or-regex" class="alert-lin
 
 ### Was sind Ihre ausgehenden SMTP-Limits {#what-are-your-outbound-smtp-limits}
 
-Wir begrenzen Benutzer und Domains auf 300 ausgehende SMTP-Nachrichten pro Tag. Das entspricht durchschnittlich über 9000 E-Mails in einem Kalendermonat. Wenn Sie diese Menge überschreiten müssen oder regelmäßig große E-Mails versenden, dann [kontaktieren Sie uns](https://forwardemail.net/help).
+Wir setzen ausgehende SMTP-Ratenbegrenzungen auf mehreren Ebenen durch, um Missbrauch zu verhindern und gleichzeitig legitime Nutzung flexibel zu ermöglichen. Jede Ebene wird der Reihe nach geprüft — welche Grenze zuerst erreicht wird, lehnt die Nachricht vorübergehend mit einem `421` Fehler ab (was "versuchen Sie es später erneut" bedeutet).
+
+**Hierarchie der Ratenbegrenzungen:**
+
+| Ebene | Geltungsbereich | Standardlimit | Beschreibung |
+| :---- | :---- | :-----------: | :---------- |
+| Pro-Alias | Einzelnes Alias | Keine (verwendet das Domain-Limit) | Optional. Wenn ein Alias ein benutzerdefiniertes `smtp_limit` hat, wird es zuerst geprüft. |
+| Pro-Domain | Alle E-Mails, die an einem Tag von einer Domain gesendet werden | 300/Tag | Zählt alle ausgehenden E-Mails über alle Aliase der Domain. |
+| Pro-Benutzer | Alle E-Mails, die von einem Benutzerkonto an einem Tag gesendet werden | 300/Tag | Verhindert Umgehungen durch Löschen und erneutes Erstellen von Aliassen oder Domains. |
+
+**Wie das effektive Limit bestimmt wird:**
+
+* **Domains mit Team-Plan** — das effektive Tageslimit ist das höchste `smtp_limit` unter allen Administratoren der Domain. Wenn ein Administrator zum Beispiel ein Limit von 300 und ein anderer eines von 500 hat, beträgt das effektive Domain-Limit 500.
+* **Enhanced Protection und andere Pläne** — das effektive Tageslimit ist das eigene `smtp_limit` des sendenden Benutzers (standardmäßig 300 Nachrichten pro Tag).
+* **Pro-Alias-Override** — Domain-Administratoren können optional ein benutzerdefiniertes `smtp_limit` für einzelne Aliase setzen. Wenn gesetzt, wird dieses zuerst geprüft (vor Domain- und Benutzerlimits). Dies ist nützlich, um bestimmte Aliase auf ein geringeres Sendevolumen zu beschränken.
+
+**Systemadministratoren** (Forward Email staff) sind von allen Ratenbegrenzungen ausgenommen.
+
+Alle Ratenbegrenzungen werden mithilfe von Datenbankzählungen (`Emails.countDocuments`) gegen E-Mails durchgesetzt, die seit Beginn des aktuellen Tages (Mitternacht UTC) erstellt wurden. Das bedeutet, dass Ihr Limit täglich um Mitternacht UTC zurückgesetzt wird.
+
+Wenn Sie ein höheres Limit benötigen, kontaktieren Sie bitte [uns](https://forwardemail.net/help). Die meisten Anfragen werden innerhalb von 1–2 Stunden bearbeitet.
 
 ### Benötige ich eine Genehmigung, um SMTP zu aktivieren {#do-i-need-approval-to-enable-smtp}
 

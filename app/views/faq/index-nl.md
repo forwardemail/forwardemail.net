@@ -3683,7 +3683,27 @@ Wanneer je <a href="#do-you-support-regular-expressions-or-regex" class="alert-l
 
 ### Wat zijn jullie limieten voor uitgaande SMTP {#what-are-your-outbound-smtp-limits}
 
-We beperken gebruikers en domeinen tot 300 uitgaande SMTP-berichten per 1 dag. Dit komt gemiddeld neer op meer dan 9000 e-mails in een kalendermaand. Als je deze hoeveelheid moet overschrijden of consequent grote e-mails hebt, neem dan contact met ons op via [contact](https://forwardemail.net/help).
+We handhaven uitgaande SMTP-snelheidslimieten op meerdere niveaus om misbruik te voorkomen en toch flexibiliteit voor legitiem gebruik te behouden. Elk niveau wordt achtereenvolgens gecontroleerd — welk limiet ook het eerst wordt bereikt zal het bericht tijdelijk afwijzen met een `421`-fout (wat "probeer het later opnieuw" betekent).
+
+**Hiërarchie van snelheidslimieten:**
+
+| Level | Scope | Default Limit | Description |
+| :---- | :---- | :-----------: | :---------- |
+| Per-alias | Individuele alias | None (uses domain limit) | Optioneel. Als een alias een aangepaste `smtp_limit` heeft, wordt deze eerst gecontroleerd. |
+| Per-domain | Alle e-mails die op een dag vanaf een domein worden verzonden | 300/day | Telt alle uitgaande e-mails over alle aliassen op het domein. |
+| Per-user | Alle e-mails die door een gebruikersaccount op een dag worden verzonden | 300/day | Voorkomt omzeiling door aliassen of domeinen te verwijderen en opnieuw aan te maken. |
+
+**Hoe de effectieve limiet wordt bepaald:**
+
+* **Domeinen van het Team-plan** — het effectieve dagelijkse limiet is de hoogste `smtp_limit` onder alle admin-leden van het domein. Bijvoorbeeld, als de ene admin een limiet van 300 heeft en een andere 500, is het effectieve domeinlimiet 500.
+* **Enhanced Protection en andere plannen** — het effectieve dagelijkse limiet is de `smtp_limit` van de verzendende gebruiker (wat standaard 300 berichten per dag is).
+* **Per-alias override** — domeinbeheerders kunnen optioneel een aangepaste `smtp_limit` instellen op individuele aliassen. Wanneer ingesteld, wordt deze eerst gecontroleerd (voorafgaand aan de domein- en gebruikerslimieten). Dit is nuttig om specifieke aliassen te beperken tot een lager verzendvolume.
+
+**Systeembeheerders** (Forward Email-medewerkers) zijn vrijgesteld van alle snelheidslimieten.
+
+Alle limieten worden afgedwongen met database-aantallen (`Emails.countDocuments`) voor e-mails die zijn gemaakt sinds het begin van de huidige dag (middernacht UTC). Dit betekent dat je limiet dagelijks om middernacht UTC wordt gereset.
+
+Als je een hogere limiet nodig hebt, neem dan [contact met ons op](https://forwardemail.net/help). De meeste verzoeken worden binnen 1-2 uur gehonoreerd.
 
 ### Heb ik goedkeuring nodig om SMTP in te schakelen {#do-i-need-approval-to-enable-smtp}
 

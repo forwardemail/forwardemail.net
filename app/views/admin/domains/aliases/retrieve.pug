@@ -1,0 +1,118 @@
+extends ../../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../../_breadcrumbs
+    .row
+      .col-lg-8
+        .card.border-themed
+          .card-header.bg-dark.text-white
+            h5.mb-0
+              = t("Edit Alias")
+              = ": "
+              code.notranslate= `${alias.name}@${domain.name}`
+          .card-body
+            form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
+              input(type="hidden", name="_method", value="PUT")
+              include ../../../my-account/domains/aliases/_form
+              button.btn.btn-success.btn-block.btn-lg(type="submit")
+                = t("Update Alias")
+          .card-footer
+            .d-flex.justify-content-between.align-items-center
+              a.btn.btn-outline-secondary(
+                href=l(`/admin/domains/${domain._id}/aliases`)
+              )
+                i.fa.fa-angle-double-left
+                = " "
+                = t("Back to Aliases")
+              button.btn.btn-secondary(type="reset")= t("Reset")
+      .col-lg-4
+        .card.border-themed.mb-3
+          .card-header.bg-dark.text-white
+            h6.mb-0= t("SMTP Status")
+          .card-body
+            dl.mb-0
+              dt= t("SMTP Suspended")
+              dd
+                if alias.is_smtp_suspended || _.isDate(alias.smtp_suspended_sent_at)
+                  span.badge.badge-danger= t("Yes")
+                  if _.isDate(alias.smtp_suspended_sent_at)
+                    = " "
+                    small.text-muted
+                      = t("since")
+                      = " "
+                      span.dayjs(
+                        data-time=new Date(alias.smtp_suspended_sent_at).getTime()
+                      )
+                        = dayjs(alias.smtp_suspended_sent_at).format("M/D/YY h:mm A")
+                else
+                  span.badge.badge-success= t("No")
+              dt= t("SMTP Limit")
+              dd
+                if alias.smtp_limit && alias.smtp_limit > 0
+                  = alias.smtp_limit
+                  = " "
+                  small.text-muted= t("messages/day")
+                else
+                  small.text-muted= t("Using domain limit")
+              dt= t("Today's SMTP Usage")
+              dd
+                strong= smtpCount
+                = " "
+                small.text-muted= t("messages sent today")
+        .card.border-themed.mb-3
+          .card-header.bg-dark.text-white
+            h6.mb-0= t("Quick Actions")
+          .card-body
+            form.ajax-form.confirm-prompt.mb-2(
+              action=l(`/admin/domains/${domain._id}/aliases/${alias._id}`),
+              method="POST"
+            )
+              input(type="hidden", name="_method", value="PUT")
+              if _.isDate(alias.smtp_suspended_sent_at)
+                input(
+                  type="hidden",
+                  name="smtp_suspended_sent_at",
+                  value="false"
+                )
+                button.btn.btn-warning.btn-block(type="submit")
+                  i.fa.fa-fw.fa-unlock
+                  = " "
+                  = t("Remove SMTP Suspension")
+              else
+                input(
+                  type="hidden",
+                  name="smtp_suspended_sent_at",
+                  value="true"
+                )
+                button.btn.btn-danger.btn-block(type="submit")
+                  i.fa.fa-fw.fa-ban
+                  = " "
+                  = t("Suspend SMTP Access")
+        .card.border-themed
+          .card-header.bg-dark.text-white
+            h6.mb-0= t("Alias Info")
+          .card-body
+            dl.mb-0
+              dt= t("ID")
+              dd: code.small= alias._id
+              dt= t("Owner")
+              dd
+                if alias.user && alias.user.email
+                  a(
+                    href=l(`/admin/users?mongodb_query=${encodeURIComponent(JSON.stringify({ email: alias.user.email }))}`)
+                  )= alias.user.email
+                else
+                  span.text-muted= t("Unknown")
+              dt= t("Created")
+              dd
+                span.dayjs(data-time=new Date(alias.created_at).getTime())
+                  = dayjs(alias.created_at).format("M/D/YY h:mm A")
+              dt= t("Enabled")
+              dd
+                if alias.is_enabled
+                  span.badge.badge-success= t("Yes")
+                else
+                  span.badge.badge-danger= t("No")

@@ -3683,7 +3683,27 @@ Saat Anda menggunakan <a href="#do-you-support-regular-expressions-or-regex" cla
 
 ### Apa batasan SMTP keluar Anda {#what-are-your-outbound-smtp-limits}
 
-Kami membatasi pengguna dan domain hingga 300 pesan SMTP keluar per 1 hari. Ini rata-rata lebih dari 9000 email dalam sebulan kalender. Jika Anda perlu melebihi jumlah ini atau memiliki email yang secara konsisten besar, silakan [hubungi kami](https://forwardemail.net/help).
+Kami menerapkan batas laju SMTP keluar pada beberapa tingkat untuk mencegah penyalahgunaan sambil tetap memberikan fleksibilitas bagi penggunaan yang sah. Setiap tingkat diperiksa berurutan — batas yang tercapai terlebih dahulu akan menolak pesan sementara dengan kesalahan `421` (yang berarti "coba lagi nanti").
+
+**Hierarki batas laju:**
+
+| Level | Scope | Default Limit | Description |
+| :---- | :---- | :-----------: | :---------- |
+| Per-alias | Individual alias | None (uses domain limit) | Opsional. Jika sebuah alias memiliki `smtp_limit` kustom yang disetel, itu diperiksa terlebih dahulu. |
+| Per-domain | All emails sent from a domain in a day | 300/day | Menghitung semua email keluar dari setiap alias di domain tersebut. |
+| Per-user | All emails sent by a user account in a day | 300/day | Mencegah pengelakan dengan menghapus dan membuat ulang alias atau domain. |
+
+**Bagaimana batas efektif ditentukan:**
+
+* **Team plan domains** — batas harian efektif adalah `smtp_limit` tertinggi di antara semua admin pada domain tersebut. Misalnya, jika satu admin memiliki batas 300 dan admin lain 500, maka batas efektif domain adalah 500.
+* **Enhanced Protection and other plans** — batas harian efektif adalah `smtp_limit` milik pengguna pengirim itu sendiri (yang secara default adalah 300 pesan per hari).
+* **Per-alias override** — administrator domain dapat secara opsional menetapkan `smtp_limit` kustom pada alias individual. Ketika disetel, ini diperiksa terlebih dahulu (sebelum batas domain dan pengguna). Ini berguna untuk membatasi alias tertentu ke volume pengiriman yang lebih rendah.
+
+**System administrators** (staf Forward Email) dibebaskan dari semua batas laju.
+
+Semua pembatasan laju ditegakkan menggunakan penghitungan basis data (`Emails.countDocuments`) terhadap email yang dibuat sejak awal hari saat ini (tengah malam UTC). Ini berarti batas Anda direset setiap hari pada tengah malam UTC.
+
+Jika Anda membutuhkan batas yang lebih tinggi, silakan [contact us](https://forwardemail.net/help). Sebagian besar permintaan dipenuhi dalam 1-2 jam.
 
 ### Apakah saya perlu persetujuan untuk mengaktifkan SMTP {#do-i-need-approval-to-enable-smtp}
 

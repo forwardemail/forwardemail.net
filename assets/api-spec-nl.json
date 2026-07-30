@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Bewaarperiode in dagen (0-365) voor opschoning van Prullenbak en Ongewenste e-mail. 0 betekent automatische opslaggebaseerde schaling."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Dagelijkse SMTP-uitgaande berichtlimiet per alias. Stel in op 0 om de domeinlimiet te gebruiken."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "Of dit alias momenteel is geschorst van uitgaande SMTP-toegang.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "De datum en tijd waarop het alias is geschorst van uitgaande SMTP.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Bewaarperiode in dagen (0-365) voor automatische opschoning van Prullenbak en Ongewenste e-mail. Stel in op 0 voor automatische opslaggebaseerde schaling."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Dagelijkse SMTP-uitgaande berichtlimiet per alias. Stel in op 0 om de domeinlimiet te gebruiken."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Bewaarperiode in dagen (0-365) voor automatische opschoning van Prullenbak en Ongewenste e-mail. Stel in op 0 voor automatische opslaggebaseerde schaling."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Dagelijkse SMTP-uitgaande berichtlimiet per alias. Stel in op 0 om de domeinlimiet te gebruiken."
           }
         }
       },

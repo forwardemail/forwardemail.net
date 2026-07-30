@@ -3682,7 +3682,27 @@ Khi bạn sử dụng <a href="#do-you-support-regular-expressions-or-regex" cla
 
 ### Giới hạn SMTP gửi đi của bạn là gì {#what-are-your-outbound-smtp-limits}
 
-Chúng tôi giới hạn người dùng và tên miền ở mức 300 tin nhắn SMTP gửi đi mỗi ngày. Điều này trung bình hơn 9000 email trong một tháng lịch. Nếu bạn cần vượt quá số lượng này hoặc có email lớn liên tục, vui lòng [liên hệ với chúng tôi](https://forwardemail.net/help).
+Chúng tôi thực thi giới hạn tốc độ SMTP đầu ra ở nhiều mức để ngăn lạm dụng đồng thời giữ tính linh hoạt cho việc sử dụng hợp pháp. Mỗi mức được kiểm tra theo thứ tự — mức nào bị chạm đến trước sẽ tạm thời từ chối tin nhắn với lỗi `421` (nghĩa là "thử lại sau").
+
+**Phân cấp giới hạn tốc độ:**
+
+| Level | Scope | Default Limit | Description |
+| :---- | :---- | :-----------: | :---------- |
+| Per-alias | Individual alias | None (uses domain limit) | Optional. If an alias has a custom `smtp_limit` set, it is checked first. |
+| Per-domain | All emails sent from a domain in a day | 300/day | Counts all outbound emails across every alias on the domain. |
+| Per-user | All emails sent by a user account in a day | 300/day | Prevents circumvention by deleting and re-creating aliases or domains. |
+
+**Cách xác định giới hạn hiệu quả:**
+
+* **Team plan domains** — giới hạn hàng ngày hiệu quả là `smtp_limit` cao nhất trong số tất cả thành viên quản trị của tên miền. Ví dụ, nếu một quản trị viên có giới hạn 300 và một quản trị viên khác có 500, thì giới hạn hiệu quả của tên miền là 500.
+* **Enhanced Protection and other plans** — giới hạn hàng ngày hiệu quả là `smtp_limit` của người dùng gửi (mặc định là 300 tin nhắn mỗi ngày).
+* **Per-alias override** — quản trị viên tên miền có thể tùy chọn đặt `smtp_limit` tùy chỉnh trên từng bí danh. Khi được đặt, giới hạn này được kiểm tra trước (trước giới hạn tên miền và người dùng). Điều này hữu ích để hạn chế một số bí danh cụ thể ở khối lượng gửi thấp hơn.
+
+**System administrators** (Forward Email staff) được miễn mọi giới hạn tốc độ.
+
+Tất cả việc giới hạn tốc độ được thi hành bằng cách sử dụng đếm trong cơ sở dữ liệu (`Emails.countDocuments`) đối với các email được tạo kể từ đầu ngày hiện tại (nửa đêm UTC). Điều này có nghĩa là giới hạn của bạn được đặt lại hàng ngày vào nửa đêm UTC.
+
+Nếu bạn cần giới hạn cao hơn, vui lòng [liên hệ với chúng tôi](https://forwardemail.net/help). Hầu hết yêu cầu được chấp thuận trong vòng 1-2 giờ.
 
 ### Tôi có cần phê duyệt để bật SMTP không {#do-i-need-approval-to-enable-smtp}
 

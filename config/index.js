@@ -840,6 +840,11 @@ const config = {
     1,
     Number(env.SMTP_SPAM_SUSPENSION_MIN_UNIQUE_RECIPIENTS) || 2
   ),
+  // Suspend domain when >= this fraction of its aliases are suspended
+  smtpDomainSuspensionAliasThreshold:
+    Number(env.SMTP_DOMAIN_SUSPENSION_ALIAS_THRESHOLD) || 0.25,
+  // TTL for rate-limit alert dedup key in Redis (one alert per domain per window)
+  smtpRateLimitAlertTTL: ms(env.SMTP_RATE_LIMIT_ALERT_TTL || '1d'),
 
   greylistTimeout: ms('5m'),
   greylistTtlMs: ms('5d'),
@@ -1879,6 +1884,8 @@ config.views.locals.config = _.pick(config, [
   'argon2',
   'smtpLimitMessages',
   'smtpLimitDuration',
+  'smtpDomainSuspensionAliasThreshold',
+  'smtpRateLimitAlertTTL',
   'supportEmail',
   'webHost',
   'appColor',

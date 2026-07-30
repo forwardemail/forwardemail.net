@@ -3683,7 +3683,27 @@ Když v příjemci (nahrazení) použijete <a href="#do-you-support-regular-expr
 
 ### Jaké jsou vaše limity pro odchozí SMTP {#what-are-your-outbound-smtp-limits}
 
-Omezujeme uživatele a domény na 300 odchozích SMTP zpráv za 1 den. To v průměru znamená více než 9000 e-mailů za kalendářní měsíc. Pokud potřebujete tento počet překročit nebo máte konzistentně velké e-maily, prosím [kontaktujte nás](https://forwardemail.net/help).
+Uplatňujeme limity odchozích SMTP rychlostí na několika úrovních, abychom zabránili zneužití a zároveň zachovali flexibilitu pro legitimní použití. Každá úroveň je kontrolována postupně — kterákoliv limit dosažený jako první dočasně odmítne zprávu s chybou `421` (což znamená „zkuste to později“).
+
+**Hierarchie omezení rychlosti:**
+
+| Úroveň | Rozsah | Výchozí limit | Popis |
+| :---- | :---- | :-----------: | :---------- |
+| Pro alias | Jednotlivý alias | Žádný (použije se limit domény) | Volitelné. Pokud má alias nastavený vlastní `smtp_limit`, kontroluje se jako první. |
+| Pro doménu | Všechny e-maily odeslané z domény za den | 300/day | Započítává všechny odchozí e-maily napříč všemi aliasy na doméně. |
+| Pro uživatele | Všechny e-maily odeslané uživatelským účtem za den | 300/day | Zabraňuje obejití odstraněním a znovuvytvořením aliasů nebo domén. |
+
+**Jak se určí efektivní limit:**
+
+* **Domény v plánu Team** — efektivní denní limit je nejvyšší `smtp_limit` mezi všemi administrátory domény. Například, pokud jeden administrátor má limit 300 a jiný 500, efektivní limit domény bude 500.
+* **Enhanced Protection a další plány** — efektivní denní limit je vlastní `smtp_limit` odesílajícího uživatele (ve výchozím nastavení 300 zpráv za den).
+* **Přepsání pro alias** — správci domény mohou volitelně nastavit vlastní `smtp_limit` na jednotlivých aliasech. Když je nastaven, kontroluje se jako první (před limity domény a uživatele). To je užitečné pro omezení konkrétních aliasů na nižší objem odeslaných zpráv.
+
+* **Systémoví administrátoři** (zaměstnanci Forward Email) jsou osvobozeni od všech omezení rychlosti.
+
+Veškeré omezování rychlosti se uplatňuje pomocí počtů v databázi (`Emails.countDocuments`) vůči e-mailům vytvořeným od začátku aktuálního dne (půlnoc UTC). To znamená, že váš limit se obnovuje každý den o půlnoci UTC.
+
+Pokud potřebujete vyšší limit, prosím [kontaktujte nás](https://forwardemail.net/help). Většina požadavků je uspokojena během 1–2 hodin.
 
 ### Potřebuji schválení pro povolení SMTP {#do-i-need-approval-to-enable-smtp}
 

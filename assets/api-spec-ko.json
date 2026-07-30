@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "휴지통 및 스팸 메일함 정리를 위한 보존 기간(일, 0-365). 0은 스토리지 기반 자동 조정을 의미합니다."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "별칭별 일일 SMTP 발신 메시지 제한. 도메인 제한을 사용하려면 0으로 설정하세요."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "이 별칭이 현재 발신 SMTP 액세스에서 일시 중지되었는지 여부.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "별칭이 발신 SMTP에서 일시 중지된 날짜 및 시간.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "휴지통 및 스팸 메일함 자동 정리를 위한 보존 기간(일, 0-365). 스토리지 기반 자동 조정을 사용하려면 0으로 설정하세요."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "별칭별 일일 SMTP 발신 메시지 제한. 도메인 제한을 사용하려면 0으로 설정하세요."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "휴지통 및 스팸 메일함 자동 정리를 위한 보존 기간(일, 0-365). 스토리지 기반 자동 조정을 사용하려면 0으로 설정하세요."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "별칭별 일일 SMTP 발신 메시지 제한. 도메인 제한을 사용하려면 0으로 설정하세요."
           }
         }
       },

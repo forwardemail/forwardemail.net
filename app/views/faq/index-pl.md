@@ -3682,7 +3682,27 @@ Kiedy używasz <a href="#do-you-support-regular-expressions-or-regex" class="ale
 
 ### Jakie są Twoje limity wychodzącej poczty SMTP {#what-are-your-outbound-smtp-limits}
 
-Ograniczamy użytkowników i domeny do 300 wychodzących wiadomości SMTP na 1 dzień. To średnio ponad 9000 e-maili w miesiącu kalendarzowym. Jeśli potrzebujesz przekroczyć tę ilość lub masz stale duże wiadomości, prosimy o [kontakt z nami](https://forwardemail.net/help).
+Stosujemy limity wysyłki SMTP wychodzącej na wielu poziomach, aby zapobiegać nadużyciom, jednocześnie zachowując elastyczność dla legalnego użycia. Każdy poziom jest sprawdzany kolejno — którykolwiek limit zostanie osiągnięty jako pierwszy, tymczasowo odrzuci wiadomość z błędem `421` (oznaczającym „spróbuj ponownie później”).
+
+**Rate limit hierarchy:**
+
+| Level | Scope | Default Limit | Description |
+| :---- | :---- | :-----------: | :---------- |
+| Na alias | Pojedynczy alias | Brak (używa limitu domeny) | Opcjonalne. Jeśli alias ma ustawiony niestandardowy `smtp_limit`, jest on sprawdzany jako pierwszy. |
+| Na domenę | Wszystkie e-maile wysłane z domeny w ciągu dnia | 300/day | Zlicza wszystkie e-maile wychodzące ze wszystkich aliasów na domenie. |
+| Na użytkownika | Wszystkie e-maile wysłane przez konto użytkownika w ciągu dnia | 300/day | Zapobiega obejściu ograniczeń poprzez usuwanie i ponowne tworzenie aliasów lub domen. |
+
+**Jak określany jest efektywny limit:**
+
+* **Team plan domains** — efektywny dzienny limit to najwyższy `smtp_limit` spośród wszystkich administratorów domeny. Na przykład, jeśli jeden administrator ma limit 300, a inny 500, efektywny limit domeny wynosi 500.
+* **Enhanced Protection and other plans** — efektywny dzienny limit to własny `smtp_limit` użytkownika wysyłającego (który domyślnie wynosi 300 wiadomości na dzień).
+* **Nadpisanie na aliasie** — administratorzy domeny mogą opcjonalnie ustawić niestandardowy `smtp_limit` dla pojedynczych aliasów. Gdy jest ustawiony, jest on sprawdzany jako pierwszy (przed limitami domeny i użytkownika). To przydatne do ograniczania konkretnych aliasów do niższej liczby wysyłek.
+
+**Administratorzy systemu** (pracownicy Forward Email) są zwolnieni ze wszystkich limitów.
+
+Wszystkie ograniczenia prędkości są egzekwowane za pomocą zliczeń w bazie danych (`Emails.countDocuments`) w odniesieniu do wiadomości utworzonych od początku bieżącego dnia (północ UTC). Oznacza to, że Twój limit resetuje się codziennie o północy UTC.
+
+Jeśli potrzebujesz wyższego limitu, prosimy o [kontakt z nami](https://forwardemail.net/help). Większość próśb jest honorowana w ciągu 1–2 godzin.
 
 ### Czy potrzebuję zgody, aby włączyć SMTP {#do-i-need-approval-to-enable-smtp}
 

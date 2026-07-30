@@ -3683,7 +3683,27 @@ Passkeys дозволяють безпечно входити без парол�
 
 ### Які у вас обмеження на вихідні SMTP {#what-are-your-outbound-smtp-limits}
 
-Ми обмежуємо користувачів і домени до 300 вихідних SMTP повідомлень на 1 день. Це в середньому понад 9000 листів на календарний місяць. Якщо вам потрібно перевищити цю кількість або у вас постійно великі листи, будь ласка, [зв’яжіться з нами](https://forwardemail.net/help).
+Ми застосовуємо обмеження швидкості вихідного SMTP на кількох рівнях, щоб запобігти зловживанням, водночас зберігаючи гнучкість для законного використання. Кожен рівень перевіряється послідовно — який би ліміт не було досягнуто першим, тимчасово відхилить повідомлення з помилкою `421` (що означає "спробуйте пізніше").
+
+**Rate limit hierarchy:**
+
+| Level | Scope | Default Limit | Description |
+| :---- | :---- | :-----------: | :---------- |
+| Per-alias | Individual alias | None (uses domain limit) | Optional. If an alias has a custom `smtp_limit` set, it is checked first. |
+| Per-domain | All emails sent from a domain in a day | 300/day | Counts all outbound emails across every alias on the domain. |
+| Per-user | All emails sent by a user account in a day | 300/day | Prevents circumvention by deleting and re-creating aliases or domains. |
+
+**How the effective limit is determined:**
+
+* **Team plan domains** — the effective daily limit is the highest `smtp_limit` among all admin members of the domain. For example, if one admin has a limit of 300 and another has 500, the domain's effective limit is 500.
+* **Enhanced Protection and other plans** — the effective daily limit is the sending user's own `smtp_limit` (which defaults to 300 messages per day).
+* **Per-alias override** — domain administrators can optionally set a custom `smtp_limit` on individual aliases. When set, this is checked first (before the domain and user limits). This is useful for restricting specific aliases to a lower sending volume.
+
+**System administrators** (Forward Email staff) are exempt from all rate limits.
+
+All rate limiting is enforced using database counts (`Emails.countDocuments`) against emails created since the start of the current day (midnight UTC). This means your limit resets daily at midnight UTC.
+
+If you need a higher limit, please [contact us](https://forwardemail.net/help). Most requests are honored within 1-2 hours.
 
 ### Чи потрібне схвалення для увімкнення SMTP {#do-i-need-approval-to-enable-smtp}
 

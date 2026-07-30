@@ -289,6 +289,24 @@ const Aliases = new mongoose.Schema({
     max: bytes('100GB')
   },
 
+  // per-alias SMTP outbound rate limit (0 = use domain limit)
+  smtp_limit: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+
+  // per-alias SMTP suspension (set when alias exceeds its smtp_limit)
+  is_smtp_suspended: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  smtp_suspended_sent_at: {
+    type: Date,
+    index: true
+  },
+
   //
   // vacation responder support
   // (uses SMTP credits and requires SMTP to be setup/approved)
@@ -591,6 +609,42 @@ Aliases.pre('save', async function (next) {
   } catch (err) {
     next(err);
   }
+});
+
+Aliases.pre('validate', function (next) {
+  // Boolean helper for fast querying against an indexed boolean
+  this.is_smtp_suspended = _.isDate(this.smtp_suspended_sent_at);
+  next();
+});
+
+//
+// Security hardening for smtp_limit:
+// - Ensure smtp_limit is always a non-negative integer
+// - Changing smtp_limit does NOT auto-clear smtp_suspended_sent_at
+//   (suspension must be explicitly cleared by an admin)
+// - The daily count is derived from actual Emails documents,
+//   not a resettable counter, so changing the limit alone
+//   cannot be used to circumvent rate limiting
+// - The domain-level cap (alias cannot exceed domain's SMTP limit)
+//   is enforced at the controller layer where domain context is available
+//
+Aliases.pre('validate', function (next) {
+  // Ensure smtp_limit is a valid non-negative integer
+  if (
+    typeof this.smtp_limit !== 'number' ||
+    !Number.isFinite(this.smtp_limit)
+  ) {
+    this.smtp_limit = 0;
+  }
+
+  if (this.smtp_limit < 0) {
+    this.smtp_limit = 0;
+  }
+
+  // Ensure smtp_limit is always an integer (no decimals)
+  this.smtp_limit = Math.floor(this.smtp_limit);
+
+  next();
 });
 
 Aliases.pre('validate', function (next) {

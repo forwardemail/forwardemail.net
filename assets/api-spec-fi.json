@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Säilytysaika päivinä (0–365) Roskakorin ja Roskapostin siivoukseen. 0 tarkoittaa automaattista tallennustilaan perustuvaa skaalausta."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Aliaskohtainen päivittäinen lähtevien SMTP-viestien raja. Aseta 0 käyttääksesi verkkotunnuksen rajaa."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "Onko tämä alias tällä hetkellä estetty lähtevästä SMTP-käytöstä.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Päivämäärä ja aika, jolloin alias estettiin lähtevästä SMTP:stä.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Säilytysaika päivinä (0–365) Roskakorin ja Roskapostin automaattiseen siivoukseen. Aseta arvoon 0 automaattiseen tallennustilaan perustuvaan skaalaukseen."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Aliaskohtainen päivittäinen lähtevien SMTP-viestien raja. Aseta 0 käyttääksesi verkkotunnuksen rajaa."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Säilytysaika päivinä (0–365) Roskakorin ja Roskapostin automaattiseen siivoukseen. Aseta arvoon 0 automaattiseen tallennustilaan perustuvaan skaalaukseen."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Aliaskohtainen päivittäinen lähtevien SMTP-viestien raja. Aseta 0 käyttääksesi verkkotunnuksen rajaa."
           }
         }
       },

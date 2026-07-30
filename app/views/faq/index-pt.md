@@ -3683,7 +3683,27 @@ Ao usar <a href="#do-you-support-regular-expressions-or-regex" class="alert-link
 
 ### Quais são os seus limites de SMTP de saída {#what-are-your-outbound-smtp-limits}
 
-Limitamos usuários e domínios a 300 mensagens SMTP de saída por 1 dia. Isso equivale a uma média de mais de 9000 e-mails em um mês calendário. Se você precisar exceder essa quantidade ou tiver e-mails consistentemente grandes, por favor [entre em contato conosco](https://forwardemail.net/help).
+Aplicamos limites de taxa SMTP de saída em vários níveis para prevenir abuso, mantendo flexibilidade para uso legítimo. Cada nível é verificado em ordem — o limite atingido primeiro rejeitará temporariamente a mensagem com um erro `421` (significando "tente novamente mais tarde").
+
+**Hierarquia de limites de taxa:**
+
+| Nível | Escopo | Limite Padrão | Descrição |
+| :---- | :---- | :-----------: | :---------- |
+| Per-alias | Alias individual | None (uses domain limit) | Opcional. Se um alias tiver um `smtp_limit` personalizado definido, ele será verificado primeiro. |
+| Per-domain | Todos os e-mails enviados de um domínio em um dia | 300/dia | Conta todos os e-mails de saída em todos os alias do domínio. |
+| Per-user | Todos os e-mails enviados por uma conta de usuário em um dia | 300/dia | Impede a evasão ao excluir e recriar aliases ou domínios. |
+
+**Como o limite efetivo é determinado:**
+
+* **Domínios no plano Team** — o limite diário efetivo é o maior `smtp_limit` entre todos os administradores do domínio. Por exemplo, se um administrador tem limite de 300 e outro de 500, o limite efetivo do domínio será 500.
+* **Enhanced Protection e outros planos** — o limite diário efetivo é o próprio `smtp_limit` do usuário remetente (que por padrão é 300 mensagens por dia).
+* **Per-alias override** — os administradores do domínio podem opcionalmente definir um `smtp_limit` personalizado em aliases individuais. Quando definido, isso é verificado primeiro (antes dos limites do domínio e do usuário). Isso é útil para restringir aliases específicos a um volume de envio menor.
+
+**Administradores do sistema** (equipe Forward Email) estão isentos de todos os limites de taxa.
+
+Todos os limites de taxa são aplicados usando contagens no banco de dados (`Emails.countDocuments`) para e-mails criados desde o início do dia atual (meia-noite UTC). Isso significa que seu limite é reiniciado diariamente à meia-noite UTC.
+
+Se você precisar de um limite maior, por favor [contact us](https://forwardemail.net/help). A maioria das solicitações é atendida dentro de 1-2 horas.
 
 ### Preciso de aprovação para ativar o SMTP {#do-i-need-approval-to-enable-smtp}
 

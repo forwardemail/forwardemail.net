@@ -9,6 +9,7 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
+const dayjs = require('dayjs-with-plugins');
 const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
@@ -16,7 +17,7 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
-const { Users, Domains } = require('#models');
+const { Users, Domains, Emails } = require('#models');
 
 async function list(ctx) {
   let query = {};
@@ -91,6 +92,17 @@ async function list(ctx) {
       .exec(),
     Domains.countDocuments(query)
   ]);
+
+  // Attach today's SMTP sent count to each domain for display
+  const startOfDay = dayjs().startOf('day').toDate();
+  await Promise.all(
+    domains.map(async (domain) => {
+      domain.smtp_count = await Emails.countDocuments({
+        domain: domain._id,
+        created_at: { $gte: startOfDay }
+      });
+    })
+  );
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 

@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Çöp Kutusu ve İstenmeyen Posta temizliği için gün cinsinden saklama süresi (0-365). 0, depolama tabanlı otomatik ölçeklendirme anlamına gelir."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Takma ad başına günlük SMTP giden mesaj sınırı. Alan adı sınırını kullanmak için 0 olarak ayarlayın."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "Bu takma adın şu anda giden SMTP erişiminden askıya alınıp alınmadığı.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Takma adın giden SMTP'den askıya alındığı tarih ve saat.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Çöp Kutusu ve İstenmeyen Posta otomatik temizliği için gün cinsinden saklama süresi (0-365). Depolama tabanlı otomatik ölçeklendirme kullanmak için 0 olarak ayarlayın."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Takma ad başına günlük SMTP giden mesaj sınırı. Alan adı sınırını kullanmak için 0 olarak ayarlayın."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Çöp Kutusu ve İstenmeyen Posta otomatik temizliği için gün cinsinden saklama süresi (0-365). Depolama tabanlı otomatik ölçeklendirme kullanmak için 0 olarak ayarlayın."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Takma ad başına günlük SMTP giden mesaj sınırı. Alan adı sınırını kullanmak için 0 olarak ayarlayın."
           }
         }
       },

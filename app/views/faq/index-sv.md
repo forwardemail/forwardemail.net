@@ -3683,7 +3683,27 @@ När du använder <a href="#do-you-support-regular-expressions-or-regex" class="
 
 ### Vad är era gränser för utgående SMTP {#what-are-your-outbound-smtp-limits}
 
-Vi begränsar användare och domäner till 300 utgående SMTP-meddelanden per 1 dag. Detta motsvarar i genomsnitt över 9000 e-postmeddelanden per kalendermånad. Om du behöver överskrida detta antal eller har konsekvent stora e-postmeddelanden, vänligen [kontakta oss](https://forwardemail.net/help).
+Vi upprätthåller utgående SMTP-hastighetsbegränsningar på flera nivåer för att förhindra missbruk samtidigt som vi behåller flexibilitet för legitim användning. Varje nivå kontrolleras i ordning — vilken begränsning som nås först kommer tillfälligt att avvisa meddelandet med ett `421`-fel (vilket betyder "försök igen senare").
+
+**Hierarki för hastighetsbegränsningar:**
+
+| Level | Scope | Default Limit | Description |
+| :---- | :---- | :-----------: | :---------- |
+| Per-alias | Enskilt alias | Ingen (använder domängränsen) | Valfritt. Om ett alias har en anpassad `smtp_limit` inställd kontrolleras den först. |
+| Per-domain | Alla e-postmeddelanden skickade från en domän under en dag | 300/dag | Räknar alla utgående e-postmeddelanden från varje alias på domänen. |
+| Per-user | Alla e-postmeddelanden skickade av ett användarkonto under en dag | 300/dag | Förhindrar kringgående genom att radera och återskapa alias eller domäner. |
+
+**Hur den effektiva gränsen bestäms:**
+
+* **Domäner på teamplan** — den effektiva dagliga gränsen är den högsta `smtp_limit` bland alla administratörer för domänen. Till exempel, om en administratör har en gräns på 300 och en annan 500, blir domänens effektiva gräns 500.
+* **Enhanced Protection och andra planer** — den effektiva dagliga gränsen är den skickande användarens egna `smtp_limit` (som standard är 300 meddelanden per dag).
+* **Per-alias-överskrivning** — domänadministratörer kan valfritt sätta en anpassad `smtp_limit` på enskilda alias. När den är satt kontrolleras den först (före domän- och användargränserna). Detta är användbart för att begränsa specifika alias till en lägre sändvolym.
+
+**Systemadministratörer** (Forward Email-personal) är undantagna från alla hastighetsbegränsningar.
+
+All begränsning av hastighet tillämpas genom databasräkningar (`Emails.countDocuments`) mot e-postmeddelanden skapade sedan början av den aktuella dagen (midnatt UTC). Det betyder att din gräns återställs dagligen vid midnatt UTC.
+
+Om du behöver en högre gräns, vänligen [kontakta oss](https://forwardemail.net/help). De flesta förfrågningar behandlas inom 1–2 timmar.
 
 ### Behöver jag godkännande för att aktivera SMTP {#do-i-need-approval-to-enable-smtp}
 

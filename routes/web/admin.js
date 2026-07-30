@@ -91,6 +91,20 @@ router
   .put('/domains/:id', web.admin.domains.update)
   .delete('/domains/:id', web.admin.domains.remove)
 
+  // domain aliases (admin)
+  .post(
+    '/domains/:id/aliases',
+    paginate.middleware(10, 50),
+    web.admin.aliases.list
+  )
+  .get(
+    '/domains/:id/aliases',
+    paginate.middleware(10, 50),
+    web.admin.aliases.list
+  )
+  .get('/domains/:id/aliases/:alias_id', web.admin.aliases.retrieve)
+  .put('/domains/:id/aliases/:alias_id', web.admin.aliases.update)
+
   // logs
   // FWD-01-010: Accept mongodb_query via POST to prevent cross-origin timing attacks
   .post('/logs', paginate.middleware(10, 50), web.admin.logs.list)

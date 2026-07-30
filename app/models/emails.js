@@ -10,7 +10,6 @@ const { isIP } = require('node:net');
 
 const Axe = require('axe');
 const Boom = require('@hapi/boom');
-const RateLimiter = require('async-ratelimiter');
 const Redis =
   process.env.NODE_ENV === 'test'
     ? require('ioredis-mock')
@@ -44,7 +43,6 @@ const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const MessageSplitter = require('#helpers/message-splitter');
-const SMTPError = require('#helpers/smtp-error');
 const checkAndAutoApproveSMTP = require('#helpers/check-and-auto-approve-smtp');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
@@ -60,6 +58,8 @@ const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseUsername = require('#helpers/parse-username');
+const SMTPError = require('#helpers/smtp-error');
+const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
 const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
 
 const IP_ADDRESS = ip.address();
@@ -101,13 +101,6 @@ const redis = new Redis(
   logger,
   webSharedConfig.redisMonitor
 );
-
-const rateLimiter = new RateLimiter({
-  db: redis,
-  max: config.smtpLimitMessages,
-  duration: config.smtpLimitDuration,
-  namespace: config.smtpLimitNamespace
-});
 
 // Lazily-initialized resolver for auto-approval DNS checks in Emails.queue()
 let _emailsResolver;
@@ -1174,74 +1167,44 @@ Emails.pre('save', async function (next) {
   next();
 });
 
-async function sendRateLimitEmail(user) {
-  // if the user received rate limit email in past 30d
-  if (
-    _.isDate(user.smtp_rate_limit_sent_at) &&
-    dayjs().isBefore(dayjs(user.smtp_rate_limit_sent_at).add(30, 'days'))
-  ) {
-    logger.info('user was already rate limited');
-    return;
-  }
-
-  await emailHelper({
-    template: 'alert',
-    message: {
-      to: user.email,
-      bcc: config.alertsEmail,
-      locale: user[config.lastLocaleField],
-      subject: i18n.translate(
-        'SMTP_RATE_LIMIT_EXCEEDED',
-        user[config.lastLocaleField]
-      )
-    },
-    locals: {
-      locale: user[config.lastLocaleField],
-      message: i18n.translate(
-        'SMTP_RATE_LIMIT_EXCEEDED',
-        user[config.lastLocaleField]
-      )
-    }
-  });
-
-  // otherwise send the user an email and update the user record
-  await Users.findByIdAndUpdate(user._id, {
-    $set: {
-      smtp_rate_limit_sent_at: new Date()
-    }
-  });
-}
-
+//
+// Rate limiting pre-save hook for the API path.
+// The SMTP path checks limits in helpers/on-data-smtp.js before queueing.
+// The API path (Emails.queue → this.create) triggers this hook.
+// Uses this.constructor.countDocuments() against the database directly.
+//
 Emails.pre('save', async function (next) {
-  // if it's not a new email then no need to check for credits
   if (!this._isNew) return next();
-
-  //
   // Skip rate limiting for bounce/DSN emails
-  // Bounce emails (e.g., from mailer-daemon) should not count against
-  // the user's outbound SMTP limit since they are system-generated
-  // responses, not user-initiated emails
-  //
   if (this.is_bounce === true) return next();
 
   try {
+    const EmailModel = this.constructor;
     const [user, domain] = await Promise.all([
-      // TODO: limit fields returned
-      Users.findById(this.user).lean().exec(),
-      // TODO: limit fields returned
-      Domains.findById(this.domain).lean().exec()
+      Users.findById(this.user)
+        .select(
+          `id email ${config.userFields.smtpLimit} ${config.userFields.isBanned} ${config.lastLocaleField}`
+        )
+        .lean()
+        .exec(),
+      Domains.findById(this.domain)
+        .populate('members.user', `id ${config.userFields.smtpLimit}`)
+        .select('id plan members name')
+        .lean()
+        .exec()
     ]);
+
     if (!user) throw new SMTPError('User does not exist', { ignoreHook: true });
     if (!domain)
       throw new SMTPError('Domain does not exist', { ignoreHook: true });
 
-    //
-    // TODO: it's not using the largest SMTP limit from the domain-wide admins here (?)
-    //       (this will change with a new credit system; so we will change this later)
-    //
-    const max = user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+    // Determine effective rate limit
+    const max =
+      domain.plan === 'team'
+        ? await getDomainSmtpLimitAsync(domain, Users)
+        : user[config.userFields.smtpLimit] || config.smtpLimitMessages;
 
-    // if any of the domain admins are admins then don't rate limit
+    // Skip if any domain admin is a system-level admin
     const adminExists = await Users.exists({
       _id: {
         $in: domain.members
@@ -1256,127 +1219,82 @@ Emails.pre('save', async function (next) {
     });
 
     if (!adminExists) {
-      // rate limit to X emails per day by domain id then denylist
-      {
-        const count = await redis.zcard(
-          `${config.smtpLimitNamespace}:${domain.id}`
-        );
-        // return 421 error code (temporary failure, try again later)
-        if (count >= max) {
-          // send one-time email alert to admin + user
-          sendRateLimitEmail(user)
-            .then()
-            .catch((err) => logger.fatal(err));
-          throw new SMTPError('Rate limit exceeded', {
-            responseCode: 421,
-            ignoreHook: true
-          });
-        }
-      }
+      const startOfDay = dayjs().startOf('day').toDate();
 
-      // rate limit to X emails per day by alias user id then denylist
-      {
-        const count = await redis.zcard(
-          `${config.smtpLimitNamespace}:${user.id}`
-        );
+      // Per-domain rate limit
+      const domainCount = await EmailModel.countDocuments({
+        domain: domain._id,
+        created_at: { $gte: startOfDay }
+      });
 
-        // return 421 error code (temporary failure, try again later)
-        if (count >= max) {
-          // send one-time email alert to admin + user
-          sendRateLimitEmail(user)
-            .then()
-            .catch((err) => logger.fatal(err));
-          throw new SMTPError('Rate limit exceeded', {
-            responseCode: 421,
-            ignoreHook: true
-          });
-        }
-      }
-    }
-
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
-
-Emails.post('save', async function (email, next) {
-  // if it's not a new email then no need to deduct credits
-  if (!email._isNew) return next();
-
-  //
-  // Skip rate limit deduction for bounce/DSN emails
-  // Bounce emails should not count against the user's outbound SMTP limit
-  //
-  if (email.is_bounce === true) return next();
-
-  try {
-    const [user, domain] = await Promise.all([
-      // TODO: limit fields returned
-      Users.findById(this.user).lean().exec(),
-      // TODO: limit fields returned
-      Domains.findById(this.domain).lean().exec()
-    ]);
-    if (!user) throw new SMTPError('User does not exist', { ignoreHook: true });
-    if (!domain)
-      throw new SMTPError('Domain does not exist', { ignoreHook: true });
-
-    //
-    // TODO: it's not using the largest SMTP limit from the domain-wide admins here (?)
-    //       (this will change with a new credit system; so we will change this later)
-    //
-    const max = user[config.userFields.smtpLimit] || config.smtpLimitMessages;
-
-    // if any of the domain admins are admins then don't rate limit
-    const adminExists = await Users.exists({
-      _id: {
-        $in: domain.members
-          .filter((m) => m.group === 'admin' && typeof m.user === 'object')
-          .map((m) =>
-            typeof m.user === 'object' && typeof m?.user?._id === 'object'
-              ? m.user._id
-              : m.user
-          )
-      },
-      group: 'admin'
-    });
-
-    if (!adminExists) {
-      try {
-        // rate limit to X emails per day by domain id then denylist
-        {
-          const limit = await rateLimiter.get({
-            id: domain.id,
-            max
-          });
-
-          // return 421 error code (temporary failure, try again later)
-          if (!limit.remaining)
-            throw new SMTPError('Rate limit exceeded', {
-              responseCode: 421,
-              ignoreHook: true
-            });
-        }
-
-        // rate limit to X emails per day by alias user id then denylist
-        const limit = await rateLimiter.get({
-          id: user.id,
-          max
-        });
-
-        // return 421 error code (temporary failure, try again later)
-        if (!limit.remaining)
-          throw new SMTPError('Rate limit exceeded', {
-            responseCode: 421,
-            ignoreHook: true
-          });
-      } catch (err) {
-        // remove the job from the queue
-        email.constructor
-          .findByIdAndRemove(email._id)
-          .then()
+      if (domainCount >= max) {
+        // Fire-and-forget rate limit alert (deduplicated via Redis)
+        const alertKey = `${config.smtpLimitNamespace}:rate_alert:${domain.id}`;
+        redis
+          .set(alertKey, '1', 'PX', config.smtpRateLimitAlertTTL, 'NX')
+          .then((wasSet) => {
+            if (wasSet !== 'OK') return;
+            return Domains.getToAndMajorityLocaleByDomain(domain).then(
+              ({ to, locale }) =>
+                emailHelper({
+                  template: 'alert',
+                  message: {
+                    to,
+                    bcc: config.alertsEmail,
+                    locale,
+                    subject: i18n.translate('SMTP_RATE_LIMIT_EXCEEDED', locale)
+                  },
+                  locals: {
+                    locale,
+                    message: i18n.translate('SMTP_RATE_LIMIT_EXCEEDED', locale)
+                  }
+                })
+            );
+          })
           .catch((err) => logger.fatal(err));
-        throw err;
+
+        throw new SMTPError('Rate limit exceeded', {
+          responseCode: 421,
+          ignoreHook: true
+        });
+      }
+
+      // Per-user rate limit
+      const userCount = await EmailModel.countDocuments({
+        user: user._id,
+        created_at: { $gte: startOfDay }
+      });
+
+      if (userCount >= max) {
+        // Fire-and-forget rate limit alert (deduplicated via Redis)
+        const alertKey = `${config.smtpLimitNamespace}:rate_alert:${domain.id}`;
+        redis
+          .set(alertKey, '1', 'PX', config.smtpRateLimitAlertTTL, 'NX')
+          .then((wasSet) => {
+            if (wasSet !== 'OK') return;
+            return Domains.getToAndMajorityLocaleByDomain(domain).then(
+              ({ to, locale }) =>
+                emailHelper({
+                  template: 'alert',
+                  message: {
+                    to,
+                    bcc: config.alertsEmail,
+                    locale,
+                    subject: i18n.translate('SMTP_RATE_LIMIT_EXCEEDED', locale)
+                  },
+                  locals: {
+                    locale,
+                    message: i18n.translate('SMTP_RATE_LIMIT_EXCEEDED', locale)
+                  }
+                })
+            );
+          })
+          .catch((err) => logger.fatal(err));
+
+        throw new SMTPError('Rate limit exceeded', {
+          responseCode: 421,
+          ignoreHook: true
+        });
       }
     }
 

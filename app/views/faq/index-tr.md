@@ -3683,7 +3683,27 @@ Alıcıda (değiştirme) <a href="#do-you-support-regular-expressions-or-regex" 
 
 ### Giden SMTP limitleriniz nelerdir {#what-are-your-outbound-smtp-limits}
 
-Kullanıcıları ve alan adlarını 1 gün içinde 300 giden SMTP mesajı ile sınırlandırıyoruz. Bu, takvim ayı başına ortalama 9000+ e-posta demektir. Bu miktarı aşmanız gerekiyorsa veya sürekli olarak büyük e-postalarınız varsa, lütfen [bize ulaşın](https://forwardemail.net/help).
+Kötüye kullanımı önlemek ve meşru kullanımlara esneklik sağlamak için çıkış SMTP oran sınırlamalarını birden fazla seviyede uyguluyoruz. Her seviye sırayla kontrol edilir — ilk ulaşan limit, mesajı geçici olarak `421` hatasıyla reddeder (anlamı: "daha sonra tekrar deneyin").
+
+**Oran sınırı hiyerarşisi:**
+
+| Seviye | Kapsam | Varsayılan Limit | Açıklama |
+| :---- | :---- | :-----------: | :---------- |
+| Takma ad başına | Bireysel takma ad | Yok (alan adı limitini kullanır) | İsteğe bağlı. Bir takma ada özel bir `smtp_limit` ayarlanmışsa, önce o kontrol edilir. |
+| Alan adı başına | Bir günde bir alan adından gönderilen tüm e-postalar | 300/day | Alan adı altındaki her takma ad için gönderilen tüm çıkış e-postalarını sayar. |
+| Kullanıcı başına | Bir günde bir kullanıcı hesabı tarafından gönderilen tüm e-postalar | 300/day | Takma adları veya alan adlarını silip yeniden oluşturarak atlatmayı önler. |
+
+**Etkili limitin nasıl belirlendiği:**
+
+* **Team plan domains** — etkili günlük limit, alan adı üzerindeki tüm yönetici üyeler arasındaki en yüksek `smtp_limit`'tir. Örneğin, bir yönetici 300 limiti, bir diğeri 500 ise, alan adının etkili limiti 500'dür.
+* **Enhanced Protection ve diğer planlar** — etkili günlük limit, gönderen kullanıcının kendi `smtp_limit`'idir (varsayılan olarak günde 300 mesaj).
+* **Takma ad bazlı geçersiz kılma** — alan adı yöneticileri isteğe bağlı olarak bireysel takma adlara özel bir `smtp_limit` belirleyebilir. Ayarlanmışsa, önce bu kontrol edilir (alan adı ve kullanıcı limitlerinden önce). Bu, belirli takma adları daha düşük bir gönderim hacmiyle sınırlamak için faydalıdır.
+
+**Sistem yöneticileri** (Forward Email personeli) tüm oran sınırlamalarından muaftır.
+
+Tüm oran sınırlamaları, mevcut günün başlangıcından (UTC gece yarısı) itibaren oluşturulan e-postalara karşı veritabanı sayımları (`Emails.countDocuments`) kullanılarak uygulanır. Bu, limitinizin her gün UTC gece yarısında sıfırlandığı anlamına gelir.
+
+Daha yüksek bir limite ihtiyacınız varsa lütfen [bize ulaşın](https://forwardemail.net/help). Çoğu talep 1-2 saat içinde karşılanır.
 
 ### SMTP'yi etkinleştirmek için onay gerekiyor mu {#do-i-need-approval-to-enable-smtp}
 

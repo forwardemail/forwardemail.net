@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Oppbevaringsperiode i dager (0-365) for opprydding av Papirkurv og Søppelpost. 0 betyr automatisk lagringsbasert skalering."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Daglig SMTP-utgående meldingsgrense per alias. Sett til 0 for å bruke domene-grensen."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "Om dette aliaset for øyeblikket er suspendert fra utgående SMTP-tilgang.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Dato og klokkeslett da aliaset ble suspendert fra utgående SMTP.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Oppbevaringsperiode i dager (0-365) for automatisk opprydding av Papirkurv og Søppelpost. Sett til 0 for automatisk lagringsbasert skalering."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Daglig SMTP-utgående meldingsgrense per alias. Sett til 0 for å bruke domene-grensen."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Oppbevaringsperiode i dager (0-365) for automatisk opprydding av Papirkurv og Søppelpost. Sett til 0 for automatisk lagringsbasert skalering."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Daglig SMTP-utgående meldingsgrense per alias. Sett til 0 for å bruke domene-grensen."
           }
         }
       },

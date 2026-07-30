@@ -9,6 +9,8 @@ const { Buffer } = require('node:buffer');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 
+const dayjs = require('dayjs-with-plugins');
+
 const _ = require('#helpers/lodash');
 const checkAndAutoApproveSMTP = require('#helpers/check-and-auto-approve-smtp');
 const isEmail = require('#helpers/is-email');
@@ -25,7 +27,9 @@ const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
+const i18n = require('#helpers/i18n');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
 
 async function onDataSMTP(session, date, headers, body) {
   //
@@ -133,6 +137,30 @@ async function onDataSMTP(session, date, headers, body) {
     throw new SMTPError(
       `Domain is suspended from outbound SMTP access, contact us at ${config.supportEmail}`
     );
+
+  //
+  // Per-alias SMTP suspension check
+  // Also check catch-all alias (name='*') when alias is null (domain-wide token auth)
+  //
+  if (alias && _.isDate(alias.smtp_suspended_sent_at))
+    throw new SMTPError(
+      `Alias is suspended from outbound SMTP access, contact us at ${config.supportEmail}`
+    );
+
+  if (!alias && domain) {
+    // Check if the catch-all alias is suspended
+    const catchAllAlias = await Aliases.findOne({
+      domain: domain._id,
+      name: '*'
+    })
+      .select('smtp_suspended_sent_at')
+      .lean()
+      .exec();
+    if (catchAllAlias && _.isDate(catchAllAlias.smtp_suspended_sent_at))
+      throw new SMTPError(
+        `Alias is suspended from outbound SMTP access, contact us at ${config.supportEmail}`
+      );
+  }
 
   if (!domain.has_smtp) {
     //
@@ -372,6 +400,217 @@ async function onDataSMTP(session, date, headers, body) {
 
   // if for any reason there isn't a user then throw an error
   if (!user) throw new TypeError('User does not exist');
+
+  //
+  // Per-alias SMTP rate limiting check
+  // If alias has a custom smtp_limit > 0, check daily count against it.
+  //
+  // NOTE: Alias sends also count toward the domain's overall SMTP limit.
+  // The domain-level rate limiting (in Emails model pre-save/post-save hooks)
+  // uses getDomainSmtpLimitAsync to find the HIGHEST smtp_limit among ALL
+  // admin members of the domain. Every email queued here will also be checked
+  // against and deducted from the domain's quota.
+  // The per-alias limit is an additional, more restrictive check.
+  //
+  // NOTE: For catch-all aliases (name='*'), the alias is loaded from the DB
+  //       via session.user.alias_id if the user authenticated with an alias-
+  //       specific password. If they used a domain-wide catch-all token,
+  //       alias will be null and we look up the '*' alias below.
+  //
+  let rateLimitAlias = alias;
+  if (!rateLimitAlias && domain) {
+    // Catch-all: look up the '*' alias for this domain to apply its smtp_limit
+    rateLimitAlias = await Aliases.findOne({
+      domain: domain._id,
+      name: '*'
+    })
+      .select('_id name smtp_limit smtp_suspended_sent_at user')
+      .lean()
+      .exec();
+  }
+
+  if (rateLimitAlias && rateLimitAlias.smtp_limit > 0) {
+    const startOfDay = dayjs().startOf('day').toDate();
+    // For catch-all aliases, emails may not have alias field set (catchall=true),
+    // so we count by both alias._id and by domain with no alias set
+    const aliasCountQuery =
+      rateLimitAlias.name === '*'
+        ? {
+            domain: domain._id,
+            $or: [
+              { alias: rateLimitAlias._id },
+              { alias: { $exists: false } },
+              { alias: null }
+            ],
+            created_at: { $gte: startOfDay }
+          }
+        : {
+            alias: rateLimitAlias._id,
+            created_at: { $gte: startOfDay }
+          };
+    const aliasEmailCount = await Emails.countDocuments(aliasCountQuery);
+    if (aliasEmailCount >= rateLimitAlias.smtp_limit) {
+      // Fire-and-forget rate limit alert (deduplicated via Redis)
+      if (this.client) {
+        const alertKey = `${config.smtpLimitNamespace}:rate_alert:alias:${rateLimitAlias._id}`;
+        this.client
+          .set(alertKey, '1', 'PX', config.smtpRateLimitAlertTTL, 'NX')
+          .then((wasSet) => {
+            if (wasSet !== 'OK') return;
+            return Domains.getToAndMajorityLocaleByDomain(domain).then(
+              ({ to, locale }) =>
+                emailHelper({
+                  template: 'alert',
+                  message: {
+                    to,
+                    bcc: config.alertsEmail,
+                    locale,
+                    subject: i18n.translate('SMTP_RATE_LIMIT_EXCEEDED', locale)
+                  },
+                  locals: {
+                    locale,
+                    message: i18n.translate('SMTP_RATE_LIMIT_EXCEEDED', locale)
+                  }
+                })
+            );
+          })
+          .catch((err) => logger.fatal(err));
+      }
+
+      // return 421 error code (temporary failure, try again later)
+      throw new SMTPError('Rate limit exceeded', {
+        responseCode: 421,
+        ignoreHook: true
+      });
+    }
+  }
+
+  //
+  // Domain-wide and per-user SMTP rate limiting checks
+  // Uses Emails.countDocuments() against the database directly.
+  // For team plan domains: max = highest smtp_limit among domain admin members
+  // For other plans: max = sending user's own smtp_limit (or config default)
+  // Whichever limit is hit first triggers a 421 rejection.
+  //
+  {
+    const startOfDay = dayjs().startOf('day').toDate();
+
+    // Determine the effective rate limit max
+    const max =
+      domain.plan === 'team'
+        ? await getDomainSmtpLimitAsync(domain, Users)
+        : user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+
+    // Skip rate limiting if any domain admin is a system-level admin
+    const adminExists = await Users.exists({
+      _id: {
+        $in: domain.members
+          .filter((m) => m.group === 'admin' && typeof m.user === 'object')
+          .map((m) =>
+            typeof m.user === 'object' && typeof m?.user?._id === 'object'
+              ? m.user._id
+              : m.user
+          )
+      },
+      group: 'admin'
+    });
+
+    if (!adminExists) {
+      // Per-user rate limit (prevents abuse via alias/domain deletion and re-creation)
+      {
+        const userEmailCount = await Emails.countDocuments({
+          user: user._id,
+          created_at: { $gte: startOfDay }
+        });
+        if (userEmailCount >= max) {
+          // Fire-and-forget rate limit alert (deduplicated via Redis)
+          if (this.client) {
+            const alertKey = `${config.smtpLimitNamespace}:rate_alert:${domain.id}`;
+            this.client
+              .set(alertKey, '1', 'PX', config.smtpRateLimitAlertTTL, 'NX')
+              .then((wasSet) => {
+                if (wasSet !== 'OK') return;
+                return Domains.getToAndMajorityLocaleByDomain(domain).then(
+                  ({ to, locale }) =>
+                    emailHelper({
+                      template: 'alert',
+                      message: {
+                        to,
+                        bcc: config.alertsEmail,
+                        locale,
+                        subject: i18n.translate(
+                          'SMTP_RATE_LIMIT_EXCEEDED',
+                          locale
+                        )
+                      },
+                      locals: {
+                        locale,
+                        message: i18n.translate(
+                          'SMTP_RATE_LIMIT_EXCEEDED',
+                          locale
+                        )
+                      }
+                    })
+                );
+              })
+              .catch((err) => logger.fatal(err));
+          }
+
+          throw new SMTPError('Rate limit exceeded', {
+            responseCode: 421,
+            ignoreHook: true
+          });
+        }
+      }
+
+      // Per-domain rate limit
+      {
+        const domainEmailCount = await Emails.countDocuments({
+          domain: domain._id,
+          created_at: { $gte: startOfDay }
+        });
+        if (domainEmailCount >= max) {
+          // Fire-and-forget rate limit alert (deduplicated via Redis)
+          if (this.client) {
+            const alertKey = `${config.smtpLimitNamespace}:rate_alert:${domain.id}`;
+            this.client
+              .set(alertKey, '1', 'PX', config.smtpRateLimitAlertTTL, 'NX')
+              .then((wasSet) => {
+                if (wasSet !== 'OK') return;
+                return Domains.getToAndMajorityLocaleByDomain(domain).then(
+                  ({ to, locale }) =>
+                    emailHelper({
+                      template: 'alert',
+                      message: {
+                        to,
+                        bcc: config.alertsEmail,
+                        locale,
+                        subject: i18n.translate(
+                          'SMTP_RATE_LIMIT_EXCEEDED',
+                          locale
+                        )
+                      },
+                      locals: {
+                        locale,
+                        message: i18n.translate(
+                          'SMTP_RATE_LIMIT_EXCEEDED',
+                          locale
+                        )
+                      }
+                    })
+                );
+              })
+              .catch((err) => logger.fatal(err));
+          }
+
+          throw new SMTPError('Rate limit exceeded', {
+            responseCode: 421,
+            ignoreHook: true
+          });
+        }
+      }
+    }
+  }
 
   // queue the email
   let email;

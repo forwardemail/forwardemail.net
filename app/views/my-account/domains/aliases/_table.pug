@@ -208,6 +208,8 @@ p.text-center.d-lg-none
               data-target="#modal-storage"
             )
               i.fa.fa-info-circle
+        if !domain.is_global && domain.group === 'admin'
+          th.align-middle.d-none.d-lg-table-cell.text-center(scope="col")= t("SMTP Usage")
         th.align-middle.d-none.d-lg-table-cell(scope="col")= t("Recipients")
         th.text-center.text-md-left.align-middle.d-none.d-lg-table-cell(
           scope="col"
@@ -788,6 +790,19 @@ p.text-center.d-lg-none
             if !isUbuntuRelatedAlias || domain.group === 'admin'
               td.align-middle.p-3.small.d-none.d-lg-table-cell.text-center
                 +renderProgressBar(domain, alias)
+            if !domain.is_global && domain.group === 'admin'
+              td.align-middle.d-none.d-lg-table-cell.text-center.small
+                if alias.smtp_count !== undefined
+                  - const aliasSmtpLimit = alias.smtp_limit > 0 ? alias.smtp_limit : domain.smtp_limit || 0;
+                  span.font-weight-bold= alias.smtp_count
+                  if aliasSmtpLimit > 0
+                    = " / "
+                    = aliasSmtpLimit
+                  if alias.is_smtp_suspended
+                    br
+                    span.badge.badge-danger= t("Suspended")
+                else
+                  span.text-muted= "—"
             td.align-middle.d-none.d-lg-table-cell
               ul.list-inline.mb-0
                 if alias.name !== '*' && !alias.name.startsWith('/') && (!isUbuntuRelatedAlias || domain.group === 'admin')

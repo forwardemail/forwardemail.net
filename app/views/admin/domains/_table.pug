@@ -31,6 +31,8 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('smtp_suspended_sent_at', 'SMTP Suspended', '#table-domains')
         th(scope="col")
+          +sortHeader('smtp_count', 'SMTP Sent Today', '#table-domains')
+        th(scope="col")
           +sortHeader('max_recipients_per_alias', 'Max Recipients', '#table-domains')
         th(scope="col")
           +sortHeader('created_at', 'Created', '#table-domains')
@@ -38,7 +40,7 @@ include ../../_pagination
       tbody
         if domains.length === 0
           tr
-            td.alert.alert-info(colspan="16")
+            td.alert.alert-info(colspan="17")
               = t("No domains exist for that search.")
         else
           each domain in domains
@@ -60,7 +62,8 @@ include ../../_pagination
                       = "("
                       code.text-muted= member.user.id
                       = ")"
-              td.align-middle.text-center= domain.alias_count
+              td.align-middle.text-center
+                a(href=l(`/admin/domains/${domain.id}/aliases`))= domain.alias_count
               td.align-middle.text-center
                 = t(titleize(humanize(domain.plan)))
               td.align-middle.text-center
@@ -203,6 +206,8 @@ include ../../_pagination
                     else
                       = t("Restrict access")
               td.align-middle.text-center
+                span.font-weight-bold= domain.smtp_count || 0
+              td.align-middle.text-center
                 form.ajax-form.confirm-prompt.d-inline-block(
                   action=l(`/admin/domains/${domain.id}`),
                   method="POST",
@@ -228,14 +233,22 @@ include ../../_pagination
                 data-time=new Date(domain.created_at).getTime()
               )
                 = dayjs(domain.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
-              td.align-middle
-                form.ajax-form.confirm-prompt(
+              td.align-middle.text-nowrap
+                a.btn.btn-sm.btn-primary.mr-1(
+                  href=l(`/admin/domains/${domain.id}/aliases`),
+                  data-toggle="tooltip",
+                  data-title=t("View Aliases")
+                )
+                  i.fa.fa-fw.fa-at
+                  = " "
+                  = t("Aliases")
+                form.ajax-form.confirm-prompt.d-inline-block(
                   action=l(`/admin/domains/${domain.id}`),
                   method="POST",
                   autocomplete=config.env === "test" ? "off" : randomstring()
                 )
                   input(type="hidden", name="_method", value="DELETE")
-                  button.btn.btn-danger(
+                  button.btn.btn-sm.btn-danger(
                     type="submit",
                     data-toggle="tooltip",
                     data-title=t("Remove")

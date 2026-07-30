@@ -3683,7 +3683,27 @@ Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
 
 ### 귀하의 아웃바운드 SMTP 제한은 무엇인가요 {#what-are-your-outbound-smtp-limits}
 
-저희는 사용자 및 도메인별로 1일당 300건의 아웃바운드 SMTP 메시지로 속도 제한을 둡니다. 이는 한 달 기준으로 평균 9000건 이상의 이메일에 해당합니다. 이 수치를 초과해야 하거나 지속적으로 대용량 이메일을 보내야 하는 경우, [문의해 주세요](https://forwardemail.net/help).
+우리는 악용을 방지하면서 정상적인 사용에는 유연성을 유지하기 위해 여러 수준에서 아웃바운드 SMTP 전송량 제한을 적용합니다. 각 수준은 순서대로 검사되며 — 먼저 도달한 제한이 메시지를 일시적으로 `421` 오류로 거부합니다(즉 "나중에 다시 시도하세요").
+
+**전송량 제한 계층:**
+
+| Level | Scope | Default Limit | Description |
+| :---- | :---- | :-----------: | :---------- |
+| Per-alias | Individual alias | None (uses domain limit) | Optional. If an alias has a custom `smtp_limit` set, it is checked first. |
+| Per-domain | All emails sent from a domain in a day | 300/day | Counts all outbound emails across every alias on the domain. |
+| Per-user | All emails sent by a user account in a day | 300/day | Prevents circumvention by deleting and re-creating aliases or domains. |
+
+**유효 제한이 결정되는 방법:**
+
+* **Team plan domains** — 해당 도메인의 모든 관리자 중 가장 높은 `smtp_limit`이 유효한 일일 제한이 됩니다. 예를 들어 한 관리자는 300의 제한을, 다른 관리자는 500의 제한을 가지고 있다면 도메인의 유효 제한은 500입니다.
+* **Enhanced Protection and other plans** — 유효한 일일 제한은 발송 사용자의 개인 `smtp_limit`입니다(기본값은 하루 300건).
+* **Per-alias override** — 도메인 관리자는 개별 별칭에 사용자 지정 `smtp_limit`을 선택적으로 설정할 수 있습니다. 설정된 경우 도메인 및 사용자 제한보다 먼저 검사됩니다. 이는 특정 별칭의 발송량을 더 낮게 제한하는 데 유용합니다.
+
+**시스템 관리자** (Forward Email staff)는 모든 전송 제한에서 면제됩니다.
+
+모든 전송 제한은 현재 날짜 시작(UTC 자정) 이후에 생성된 이메일을 대상으로 데이터베이스 카운트(`Emails.countDocuments`)를 사용하여 적용됩니다. 즉, 제한은 매일 UTC 자정에 리셋됩니다.
+
+If you need a higher limit, please [contact us](https://forwardemail.net/help). Most requests are honored within 1-2 hours.
 
 ### SMTP 활성화를 위해 승인이 필요한가요 {#do-i-need-approval-to-enable-smtp}
 

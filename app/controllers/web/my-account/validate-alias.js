@@ -16,6 +16,8 @@ const { boolean } = require('boolean');
 
 const ensureDomainAdmin = require('./ensure-domain-admin');
 const _ = require('#helpers/lodash');
+const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
+const { Users } = require('#models');
 const splitByComma = require('#helpers/split-by-comma');
 
 const config = require('#config');
@@ -34,14 +36,15 @@ const VACATION_FIELDS = [
   'vacation_responder_message'
 ];
 
-function validateAlias(ctx, next) {
+async function validateAlias(ctx, next) {
   const body = _.pick(ctx.request.body, [
     'name',
     'description',
     'labels',
     'recipients',
     'error_code_if_disabled',
-    'max_quota'
+    'max_quota',
+    'smtp_limit'
   ]);
 
   //
@@ -61,6 +64,59 @@ function validateAlias(ctx, next) {
   //       then throw a permission/forbidden error (either through API or web form manipulation)
   //
   if (typeof body.max_quota !== 'undefined') ensureDomainAdmin(ctx); // this will throw an error
+
+  //
+  // NOTE: if body includes `smtp_limit` and user was not an admin of the domain
+  //       then throw a permission/forbidden error (either through API or web form manipulation)
+  //
+  if (typeof body.smtp_limit !== 'undefined') ensureDomainAdmin(ctx); // this will throw an error
+
+  // validate `body.smtp_limit` if a value was passed
+  if (typeof body.smtp_limit !== 'undefined' && body.smtp_limit !== '') {
+    const smtpLimit = Number.parseInt(body.smtp_limit, 10);
+    if (!Number.isFinite(smtpLimit) || smtpLimit < 0)
+      throw Boom.badRequest(ctx.translateError('ALIAS_SMTP_LIMIT_INVALID'));
+
+    // Cap: alias smtp_limit cannot exceed the domain's effective SMTP limit.
+    // The domain's effective limit is the HIGHEST smtp_limit among ALL admin
+    // members of the domain (since the domain benefits from the highest-tier
+    // admin). Falls back to config.smtpLimitMessages if no admin has a custom limit.
+    if (smtpLimit > 0) {
+      const domain =
+        ctx.state.domain ||
+        ctx.state.domains?.find(
+          (d) => d.id === (body.domain || ctx.params.domain_id)
+        );
+      if (domain) {
+        // Use async version because domain.members.user may not be
+        // populated with smtpLimit field in this context
+        const domainSmtpLimit = await getDomainSmtpLimitAsync(domain, Users);
+        if (smtpLimit > domainSmtpLimit)
+          throw Boom.badRequest(
+            ctx.translateError(
+              'ALIAS_SMTP_LIMIT_EXCEEDS_DOMAIN',
+              domainSmtpLimit
+            )
+          );
+      }
+    }
+
+    body.smtp_limit = smtpLimit;
+  } else if (body.smtp_limit === '') {
+    // reset to 0 (use domain limit)
+    body.smtp_limit = 0;
+  }
+
+  //
+  // Security: changing smtp_limit does NOT reset the daily count.
+  // The daily count is derived from actual Emails documents
+  // (countDocuments with created_at >= startOfDay), not a resettable
+  // counter. This prevents abuse where a user could change their limit
+  // to circumvent rate limiting.
+  //
+  // Additionally, changing smtp_limit does NOT clear smtp_suspended_sent_at.
+  // Only system admins can clear suspension via the admin panel.
+  //
 
   // validate `body.max_quota` if a value was passed
   if (

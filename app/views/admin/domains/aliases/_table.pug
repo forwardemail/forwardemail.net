@@ -1,0 +1,106 @@
+include ../../../_sort-header
+include ../../../_pagination
+
+.table-responsive
+  table.table.table-hover.table-bordered.table-sm
+    thead.thead-dark
+      tr
+        th(scope="col")
+          +sortHeader('name', 'Name', '#table-aliases')
+        th.align-middle(scope="col")= t("Owner")
+        th(scope="col")
+          +sortHeader('smtp_limit', 'SMTP Limit', '#table-aliases')
+        th.align-middle.text-center(scope="col")= t("Sent Today")
+        th(scope="col")
+          +sortHeader('is_smtp_suspended', 'SMTP Suspended', '#table-aliases')
+        th(scope="col")
+          +sortHeader('is_enabled', 'Enabled', '#table-aliases')
+        th(scope="col")
+          +sortHeader('created_at', 'Created', '#table-aliases')
+        th.text-center.align-middle(scope="col")= t("Actions")
+    tbody
+      if aliases.length === 0
+        tr
+          td.alert.alert-info(colspan="8")
+            = t("No aliases exist for that search.")
+      else
+        each alias in aliases
+          tr
+            td.align-middle
+              .markdown-body.ml-0.mr-0: code= `${alias.name}@${domain.name}`
+            td.align-middle
+              if alias.user && alias.user.email
+                a.small.text-monospace(
+                  href=l(`/admin/users?mongodb_query=${encodeURIComponent(JSON.stringify({ email: alias.user.email }))}`)
+                )= alias.user.email
+            td.align-middle.text-center
+              form.ajax-form.confirm-prompt.d-inline-block(
+                action=l(`/admin/domains/${domain._id}/aliases/${alias._id}`),
+                method="POST"
+              )
+                input(type="hidden", name="_method", value="PUT")
+                .input-group
+                  input.form-control(
+                    type="number",
+                    min=0,
+                    step=10,
+                    name="smtp_limit",
+                    value=alias.smtp_limit || 0
+                  )
+                  .input-group-append
+                    button.btn.btn-sm.btn-dark(
+                      type="submit",
+                      data-toggle="tooltip",
+                      data-title=t("Update")
+                    ): i.fa.fa-fw.fa-save
+            td.align-middle.text-center
+              if alias.smtp_count !== undefined
+                span.font-weight-bold= alias.smtp_count
+                if alias.smtp_limit > 0
+                  = " / "
+                  = alias.smtp_limit
+              else
+                span.text-muted= "—"
+            td.align-middle.text-center
+              form.ajax-form.confirm-prompt.d-inline-block(
+                action=l(`/admin/domains/${domain._id}/aliases/${alias._id}`),
+                method="POST"
+              )
+                input(type="hidden", name="_method", value="PUT")
+                input(
+                  type="hidden",
+                  name="smtp_suspended_sent_at",
+                  value=_.isDate(alias.smtp_suspended_sent_at) ? "false" : "true"
+                )
+                if _.isDate(alias.smtp_suspended_sent_at)
+                  strong.text-danger= t("Suspended")
+                  = ": "
+                  span.dayjs(
+                    data-time=new Date(alias.smtp_suspended_sent_at).getTime()
+                  )
+                    = dayjs(alias.smtp_suspended_sent_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+                button.btn.btn-sm(
+                  type="submit",
+                  class=_.isDate(alias.smtp_suspended_sent_at) ? "btn-warning" : "btn-danger"
+                )
+                  if _.isDate(alias.smtp_suspended_sent_at)
+                    = t("Remove suspension")
+                  else
+                    = t("Restrict access")
+            td.align-middle.text-center
+              if alias.is_enabled
+                i.fa.fa-fw.fa-check.fa-2x.text-success
+              else
+                i.fa.fa-fw.fa-times.fa-2x.text-danger
+            td.align-middle.text-center.dayjs(
+              data-time=new Date(alias.created_at).getTime()
+            )
+              = dayjs(alias.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+            td.align-middle.text-center
+              a.btn.btn-sm.btn-primary(
+                href=l(`/admin/domains/${domain._id}/aliases/${alias._id}`)
+              )
+                i.fa.fa-fw.fa-pencil
+                = " "
+                = t("Edit")
++paginate('#table-aliases')

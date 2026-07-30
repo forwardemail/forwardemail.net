@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Opbevaringsperiode i dage (0-365) for oprydning af Papirkurv og Uønsket post. 0 betyder automatisk lagerbaseret skalering."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Daglig SMTP-udgående beskedgrænse pr. alias. Sæt til 0 for at bruge domænegrænsen."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "Om dette alias i øjeblikket er suspenderet fra udgående SMTP-adgang.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Dato og tidspunkt for hvornår aliaset blev suspenderet fra udgående SMTP.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Opbevaringsperiode i dage (0-365) for automatisk oprydning af Papirkurv og Uønsket post. Sæt til 0 for automatisk lagerbaseret skalering."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Daglig SMTP-udgående beskedgrænse pr. alias. Sæt til 0 for at bruge domænegrænsen."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Opbevaringsperiode i dage (0-365) for automatisk oprydning af Papirkurv og Uønsket post. Sæt til 0 for automatisk lagerbaseret skalering."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Daglig SMTP-udgående beskedgrænse pr. alias. Sæt til 0 for at bruge domænegrænsen."
           }
         }
       },

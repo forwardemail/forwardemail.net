@@ -3684,7 +3684,27 @@ Når du bruger <a href="#do-you-support-regular-expressions-or-regex" class="ale
 
 ### Hvad er dine grænser for udgående SMTP {#what-are-your-outbound-smtp-limits}
 
-Vi begrænser brugere og domæner til 300 udgående SMTP-beskeder pr. 1 dag. Dette svarer til i gennemsnit over 9000 e-mails på en kalender måned. Hvis du har brug for at overskride dette antal eller har konsekvent store e-mails, så [kontakt os](https://forwardemail.net/help).
+Vi håndhæver udgående SMTP-ratebegrænsninger på flere niveauer for at forhindre misbrug, samtidig med at vi bevarer fleksibilitet for legitim brug. Hvert niveau bliver kontrolleret i rækkefølge — den grænse, der nås først, vil midlertidigt afvise beskeden med en `421`-fejl (som betyder "prøv igen senere").
+
+**Ratebegrænsningshierarki:**
+
+| Niveau | Omfang | Standardgrænse | Beskrivelse |
+| :---- | :---- | :-----------: | :---------- |
+| Pr.-alias | Individuelt alias | Ingen (anvender domænets grænse) | Valgfri. Hvis et alias har en brugerdefineret `smtp_limit` sat, kontrolleres den først. |
+| Pr. domæne | Alle e-mails sendt fra et domæne på en dag | 300/day | Tæller alle udgående e-mails på tværs af alle aliaser på domænet. |
+| Pr. bruger | Alle e-mails sendt af en brugerkonto på en dag | 300/day | Forhindrer omgåelse ved at slette og genoprette aliaser eller domæner. |
+
+**Hvordan den effektive grænse bestemmes:**
+
+* **Domæner på Team-planen** — den effektive daglige grænse er den højeste `smtp_limit` blandt alle adminmedlemmer af domænet. For eksempel, hvis en admin har en grænse på 300 og en anden har 500, er domænets effektive grænse 500.
+* **Forbedret beskyttelse og andre planer** — den effektive daglige grænse er den afsendende brugers egen `smtp_limit` (som standard er 300 beskeder pr. dag).
+* **Per-alias override** — domæneadministratorer kan valgfrit sætte en brugerdefineret `smtp_limit` på individuelle aliaser. Når den er sat, kontrolleres den først (før domæne- og brugergrænserne). Dette er nyttigt for at begrænse bestemte aliaser til et lavere afsendelsesvolumen.
+
+**Systemadministratorer** (Forward Email-personale) er undtaget fra alle ratebegrænsninger.
+
+Al ratebegrænsning håndhæves ved hjælp af databaseoptællinger (`Emails.countDocuments`) mod e-mails oprettet siden begyndelsen af den aktuelle dag (midnat UTC). Det betyder, at din grænse nulstilles dagligt ved midnat UTC.
+
+Hvis du har brug for en højere grænse, så [kontakt os](https://forwardemail.net/help). De fleste forespørgsler imødekommes inden for 1–2 timer.
 
 ### Skal jeg have godkendelse for at aktivere SMTP {#do-i-need-approval-to-enable-smtp}
 

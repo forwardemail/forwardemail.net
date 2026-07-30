@@ -3726,7 +3726,27 @@ When you use <a href="#do-you-support-regular-expressions-or-regex" class="alert
 
 ### What are your outbound SMTP limits
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+We enforce outbound SMTP rate limits at multiple levels to prevent abuse while keeping things flexible for legitimate use. Each level is checked in order — whichever limit is reached first will temporarily reject the message with a `421` error (meaning "try again later").
+
+**Rate limit hierarchy:**
+
+| Level      | Scope                                      |       Default Limit      | Description                                                               |
+| :--------- | :----------------------------------------- | :----------------------: | :------------------------------------------------------------------------ |
+| Per-alias  | Individual alias                           | None (uses domain limit) | Optional. If an alias has a custom `smtp_limit` set, it is checked first. |
+| Per-domain | All emails sent from a domain in a day     |          300/day         | Counts all outbound emails across every alias on the domain.              |
+| Per-user   | All emails sent by a user account in a day |          300/day         | Prevents circumvention by deleting and re-creating aliases or domains.    |
+
+**How the effective limit is determined:**
+
+* **Team plan domains** — the effective daily limit is the highest `smtp_limit` among all admin members of the domain. For example, if one admin has a limit of 300 and another has 500, the domain's effective limit is 500.
+* **Enhanced Protection and other plans** — the effective daily limit is the sending user's own `smtp_limit` (which defaults to 300 messages per day).
+* **Per-alias override** — domain administrators can optionally set a custom `smtp_limit` on individual aliases. When set, this is checked first (before the domain and user limits). This is useful for restricting specific aliases to a lower sending volume.
+
+**System administrators** (Forward Email staff) are exempt from all rate limits.
+
+All rate limiting is enforced using database counts (`Emails.countDocuments`) against emails created since the start of the current day (midnight UTC). This means your limit resets daily at midnight UTC.
+
+If you need a higher limit, please [contact us](https://forwardemail.net/help). Most requests are honored within 1-2 hours.
 
 ### Do I need approval to enable SMTP
 

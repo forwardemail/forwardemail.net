@@ -6,6 +6,7 @@
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
+const dayjs = require('dayjs-with-plugins');
 const { boolean } = require('boolean');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -14,7 +15,8 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
-const { Domains, Emails, Aliases } = require('#models');
+const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
+const { Domains, Emails, Aliases, Users } = require('#models');
 
 // Cap count at 10,000 like list-logs to improve performance
 const MAX_COUNT_LIMIT = 10_000;
@@ -31,10 +33,15 @@ async function listEmails(ctx, next) {
         'user',
         `id email ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
       )
-      .populate(
-        'domain',
-        'id name plan max_quota_per_alias has_smtp has_dkim_record has_return_path_record has_dmarc_record is_global'
-      )
+      .populate({
+        path: 'domain',
+        select:
+          'id name plan max_quota_per_alias has_smtp has_dkim_record has_return_path_record has_dmarc_record is_global members',
+        populate: {
+          path: 'members.user',
+          select: `id ${config.userFields.smtpLimit}`
+        }
+      })
       .lean()
       .exec();
 
@@ -43,13 +50,42 @@ async function listEmails(ctx, next) {
       throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
     if (!alias.user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
-    // Rate limiting is per-user, not per-alias - use the user's ID
-    const userId = alias.user.id;
-    count = await ctx.client.zcard(`${config.smtpLimitNamespace}:${userId}`);
+    const startOfDay = dayjs().startOf('day').toDate();
 
-    ctx.state.dailySMTPLimit =
-      alias.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+    // Per-alias limit takes priority if set
+    if (alias.smtp_limit > 0) {
+      const aliasCountQuery =
+        alias.name === '*'
+          ? {
+              domain: alias.domain._id,
+              $or: [
+                { alias: alias._id },
+                { alias: { $exists: false } },
+                { alias: null }
+              ],
+              created_at: { $gte: startOfDay }
+            }
+          : {
+              alias: alias._id,
+              created_at: { $gte: startOfDay }
+            };
+      count = await Emails.countDocuments(aliasCountQuery);
+      ctx.state.dailySMTPLimit = alias.smtp_limit;
+    } else {
+      // Domain-wide limit (team plan: highest admin smtp_limit; otherwise: user's limit)
+      const max =
+        alias.domain.plan === 'team'
+          ? await getDomainSmtpLimitAsync(alias.domain, Users)
+          : alias.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+      count = await Emails.countDocuments({
+        user: alias.user._id,
+        created_at: { $gte: startOfDay }
+      });
+      ctx.state.dailySMTPLimit = max;
+    }
+
     ctx.state.dailySMTPMessages = count;
+    ctx.state.dailySMTPResetAt = dayjs().endOf('day').toDate();
     ctx.state.domains = [alias.domain];
     ctx.state.domain = alias.domain;
 
@@ -57,24 +93,47 @@ async function listEmails(ctx, next) {
     aliases = [alias._id];
   } else {
     // user must be domain admin or alias owner of the email
-    [domains, aliases, count] = await Promise.all([
-      Domains.distinct('_id', {
-        members: {
-          $elemMatch: {
-            user: ctx.state.user._id,
-            group: 'admin'
+    const startOfDay = dayjs().startOf('day').toDate();
+    const [userDomains, userAliases, userCount, teamDomain] = await Promise.all(
+      [
+        Domains.distinct('_id', {
+          members: {
+            $elemMatch: {
+              user: ctx.state.user._id,
+              group: 'admin'
+            }
           }
-        }
-      }),
-      Aliases.distinct('_id', {
-        user: ctx.state.user._id
-      }),
-      ctx.client.zcard(`${config.smtpLimitNamespace}:${ctx.state.user.id}`)
-    ]);
+        }),
+        Aliases.distinct('_id', {
+          user: ctx.state.user._id
+        }),
+        Emails.countDocuments({
+          user: ctx.state.user._id,
+          created_at: { $gte: startOfDay }
+        }),
+        Domains.findOne({
+          'members.user': ctx.state.user._id,
+          'members.group': 'admin',
+          plan: 'team'
+        })
+          .populate('members.user', `id ${config.userFields.smtpLimit}`)
+          .select('id plan members')
+          .lean()
+          .exec()
+      ]
+    );
 
-    ctx.state.dailySMTPLimit =
-      ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+    domains = userDomains;
+    aliases = userAliases;
+    count = userCount;
+
+    const max = teamDomain
+      ? await getDomainSmtpLimitAsync(teamDomain, Users)
+      : ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+
+    ctx.state.dailySMTPLimit = max;
     ctx.state.dailySMTPMessages = count;
+    ctx.state.dailySMTPResetAt = dayjs().endOf('day').toDate();
   }
 
   // TODO: status filter

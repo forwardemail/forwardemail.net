@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Retention period in days (0-365) for Trash and Junk mailbox cleanup. 0 means automatic storage-based scaling."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Per-alias daily SMTP outbound message limit. Set to 0 to use the domain-level limit."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this alias is currently suspended from outbound SMTP access.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time when the alias was suspended from outbound SMTP.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Retention period in days (0-365) for Trash and Junk mailbox cleanup. Set to 0 to use automatic storage-based scaling."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Per-alias daily SMTP outbound message limit. Set to 0 to use the domain-level limit."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Retention period in days (0-365) for Trash and Junk mailbox cleanup. Set to 0 to use automatic storage-based scaling."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Per-alias daily SMTP outbound message limit. Set to 0 to use the domain-level limit."
           }
         }
       },

@@ -165,6 +165,22 @@ if domain && domain.group === 'admin'
     .alert.alert-secondary.small.mt-3
       != t('Domain admins can update the storage quota for this alias.  Leave blank and hit save to reset it to the current domain\'s maximum storage quota of <span class="notranslate">%s</span>.  Enter a human-friendly string such as "1GB" &ndash; note that we use <a href="https://github.com/visionmedia/bytes.js" class="notranslate alert-link" target="_blank" rel="noopener noreferrer">bytes</a> to parse the value to a Number.  If you would like to update the max storage quota across all aliases for this domain, then go to the domain\'s Settings page.', bytes(Number.isFinite(domain.max_quota_per_alias) ? domain.max_quota_per_alias : config.maxQuotaPerAlias))
 
+if domain && domain.group === 'admin'
+  .form-group
+    label(for="input-smtp-limit")
+      = t("SMTP Outbound Limit")
+      = " "
+      span.text-muted= t("(optional)")
+    input#input-smtp-limit.form-control(
+      type="number",
+      name="smtp_limit",
+      min=0,
+      placeholder="0",
+      value=alias && Number.isFinite(alias.smtp_limit) ? alias.smtp_limit : 0
+    )
+    .alert.alert-secondary.small.mt-3
+      = t("Per-alias daily SMTP outbound message limit. Set to 0 to use the domain-level limit. Cannot exceed the domain's SMTP limit. This count deducts from the domain's overall SMTP limit.")
+
 .form-group
   label(for="input-retention")
     = t("Retention")

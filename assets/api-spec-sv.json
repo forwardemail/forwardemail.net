@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Lagringsperiod i dagar (0–365) för rensning av Papperskorgen och Skräppost. 0 innebär automatisk lagringsbaserad skalning."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Daglig SMTP-utgående meddelandegräns per alias. Ställ in på 0 för att använda domängränsen."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "Om detta alias för närvarande är avstängt från utgående SMTP-åtkomst.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Datum och tid då aliaset stängdes av från utgående SMTP.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Lagringsperiod i dagar (0–365) för automatisk rensning av Papperskorgen och Skräppost. Ställ in på 0 för automatisk lagringsbaserad skalning."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Daglig SMTP-utgående meddelandegräns per alias. Ställ in på 0 för att använda domängränsen."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Lagringsperiod i dagar (0–365) för automatisk rensning av Papperskorgen och Skräppost. Ställ in på 0 för automatisk lagringsbaserad skalning."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Daglig SMTP-utgående meddelandegräns per alias. Ställ in på 0 för att använda domängränsen."
           }
         }
       },

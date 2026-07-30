@@ -1141,5 +1141,12 @@ module.exports = {
     'URL must not point to private, reserved, or localhost addresses.',
   PUSH_TOKEN_URL_CREDENTIALS: 'URL must not contain credentials.',
   PUSH_TOKEN_URL_NONSTANDARD_PORT: 'URL must use standard HTTPS port (443).',
+  ALIAS_SUSPENSION_REMOVED:
+    '<p class="text-center">Your alias <span class="notranslate">%s</span> is no longer suspended from outbound SMTP access.</p>',
+  ALIAS_IS_ADMIN_SUSPENDED:
+    '<p class="text-center text-danger">Your alias <span class="notranslate">%s</span> has been suspended from outbound SMTP access by an admin.</p>',
+  ALIAS_SMTP_LIMIT_INVALID: 'SMTP limit must be a non-negative integer.',
+  ALIAS_SMTP_LIMIT_EXCEEDS_DOMAIN:
+    "SMTP limit cannot exceed the domain's limit of %d messages per day.",
   ...STATUSES
 };

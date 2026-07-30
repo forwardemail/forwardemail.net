@@ -3684,7 +3684,27 @@ Cuando usas <a href="#do-you-support-regular-expressions-or-regex" class="alert-
 
 ### ¿Cuáles son sus límites de SMTP saliente? {#what-are-your-outbound-smtp-limits}
 
-Limitamos a los usuarios y dominios a 300 mensajes SMTP salientes por 1 día. Esto promedia más de 9000 correos electrónicos en un mes calendario. Si necesita superar esta cantidad o tiene correos electrónicos consistentemente grandes, por favor [contáctenos](https://forwardemail.net/help).
+Aplicamos límites de tasa SMTP saliente en varios niveles para prevenir abusos y mantener la flexibilidad para usos legítimos. Cada nivel se verifica en orden — el límite que se alcance primero rechazará temporalmente el mensaje con un error `421` (que significa "inténtalo de nuevo más tarde").
+
+**Jerarquía de límites de tasa:**
+
+| Nivel | Alcance | Límite predeterminado | Descripción |
+| :---- | :---- | :-----------: | :---------- |
+| Por alias | Alias individual | Ninguno (usa el límite del dominio) | Opcional. Si un alias tiene un `smtp_limit` personalizado, se comprueba primero. |
+| Por dominio | Todos los correos enviados desde un dominio en un día | 300/día | Cuenta todos los correos salientes de todos los alias del dominio. |
+| Por usuario | Todos los correos enviados por una cuenta de usuario en un día | 300/día | Evita la elusión borrando y volviendo a crear alias o dominios. |
+
+**Cómo se determina el límite efectivo:**
+
+* **Dominios del plan Team** — el límite diario efectivo es el mayor `smtp_limit` entre todos los administradores del dominio. Por ejemplo, si un administrador tiene un límite de 300 y otro de 500, el límite efectivo del dominio es 500.
+* **Enhanced Protection y otros planes** — el límite diario efectivo es el propio `smtp_limit` del usuario que envía (que por defecto es de 300 mensajes por día).
+* **Anulación por alias** — los administradores de dominio pueden, opcionalmente, establecer un `smtp_limit` personalizado en alias individuales. Cuando está establecido, esto se comprueba primero (antes que los límites de dominio y usuario). Esto es útil para restringir alias específicos a un volumen de envío menor.
+
+**Los administradores del sistema** (personal de Forward Email) están exentos de todos los límites de tasa.
+
+Todos los límites se aplican usando recuentos de base de datos (`Emails.countDocuments`) sobre los correos creados desde el inicio del día actual (medianoche UTC). Esto significa que su límite se restablece diariamente a la medianoche UTC.
+
+Si necesita un límite más alto, por favor [contáctenos](https://forwardemail.net/help). La mayoría de las solicitudes se atienden en 1-2 horas.
 
 ### ¿Necesito aprobación para habilitar SMTP? {#do-i-need-approval-to-enable-smtp}
 

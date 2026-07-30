@@ -1,0 +1,43 @@
+extends ../../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../../_breadcrumbs
+        .d-flex.align-items-center.mb-3
+          h3.mb-0
+            = t("Aliases for")
+            = " "
+            code.notranslate= domain.name
+          a.btn.btn-sm.btn-outline-secondary.ml-3(href=l("/admin/domains"))
+            i.fa.fa-fw.fa-arrow-left
+            = " "
+            = t("Back to Domains")
+        form.ajax-form.table-ajax-form(
+          action=ctx.path,
+          method="POST",
+          data-table="#table-aliases",
+          data-search-params="name,suspended"
+        )
+          .card-body
+            .h5.card-title= t("Search for aliases")
+            .form-group
+              label(for="input-alias-name")= t("Alias name")
+              input#input-alias-name.form-control(
+                type="text",
+                value=ctx.query.name || "",
+                name="name",
+                placeholder=t("Search by alias name")
+              )
+            .form-check.mb-3
+              input#check-suspended.form-check-input(
+                type="checkbox",
+                name="suspended",
+                value="true",
+                checked=ctx.query.suspended === "true"
+              )
+              label.form-check-label(for="check-suspended")= t("Show only SMTP suspended aliases")
+            button.btn.btn-success(type="submit")= t("Search")
+        #table-aliases
+          include ./_table

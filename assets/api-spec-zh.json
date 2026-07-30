@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "保留期限（天数，0-365），用于清理垃圾箱和垃圾邮件文件夹。0 表示基于存储空间的自动缩放。"
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "每个别名的每日SMTP出站消息限制。设置为0以使用域级限制。"
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "此别名当前是否被暂停出站SMTP访问。",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "别名被暂停出站SMTP的日期和时间。",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "保留期限（天数，0-365），用于自动清理垃圾箱和垃圾邮件文件夹。设置为 0 以使用基于存储空间的自动缩放。"
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "每个别名的每日SMTP出站消息限制。设置为0以使用域级限制。"
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "保留期限（天数，0-365），用于自动清理垃圾箱和垃圾邮件文件夹。设置为 0 以使用基于存储空间的自动缩放。"
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "每个别名的每日SMTP出站消息限制。设置为0以使用域级限制。"
           }
         }
       },

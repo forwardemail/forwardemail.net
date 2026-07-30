@@ -2317,6 +2317,25 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Aufbewahrungszeitraum in Tagen (0–365) für die Bereinigung von Papierkorb und Spam. 0 bedeutet automatische speicherbasierte Skalierung."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Tägliches SMTP-Ausgangs-Nachrichtenlimit pro Alias. Auf 0 setzen, um das Domain-Limit zu verwenden."
+          },
+          "is_smtp_suspended": {
+            "type": "boolean",
+            "default": false,
+            "description": "Ob dieser Alias derzeit vom ausgehenden SMTP-Zugang gesperrt ist.",
+            "readOnly": true
+          },
+          "smtp_suspended_sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Datum und Uhrzeit der SMTP-Sperrung des Alias.",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
@@ -2478,6 +2497,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Aufbewahrungszeitraum in Tagen (0–365) für die automatische Bereinigung von Papierkorb und Spam. Auf 0 setzen für automatische speicherbasierte Skalierung."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Tägliches SMTP-Ausgangs-Nachrichtenlimit pro Alias. Auf 0 setzen, um das Domain-Limit zu verwenden."
           }
         }
       },
@@ -2594,6 +2619,12 @@
             "minimum": 0,
             "maximum": 365,
             "description": "Aufbewahrungszeitraum in Tagen (0–365) für die automatische Bereinigung von Papierkorb und Spam. Auf 0 setzen für automatische speicherbasierte Skalierung."
+          },
+          "smtp_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Tägliches SMTP-Ausgangs-Nachrichtenlimit pro Alias. Auf 0 setzen, um das Domain-Limit zu verwenden."
           }
         }
       },
