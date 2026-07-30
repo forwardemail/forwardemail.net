@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { Buffer } = require('node:buffer');
-
 const Boom = require('@hapi/boom');
 const MailComposer = require('nodemailer/lib/mail-composer');
 const ObjectID = require('bson-objectid');
@@ -233,50 +231,6 @@ function decodeRawMessage(message) {
   return message;
 }
 
-function getStoredHeaderValue(headers, key) {
-  if (!Array.isArray(headers)) return;
-
-  const normalizedKey = key.toLowerCase();
-  const values = headers
-    .filter(
-      (header) =>
-        header &&
-        typeof header.key === 'string' &&
-        header.key.toLowerCase() === normalizedKey &&
-        isSANB(header.value)
-    )
-    .map((header) => header.value.trim());
-
-  if (values.length > 0) return values.join(', ');
-}
-
-function getStoredEnvelopeAddress(envelope, index) {
-  if (!Array.isArray(envelope) || !Array.isArray(envelope[index])) return;
-
-  const values = envelope[index]
-    .map((address) => {
-      if (!Array.isArray(address)) return;
-
-      const name = Buffer.isBuffer(address[0])
-        ? address[0].toString()
-        : address[0];
-      const user = Buffer.isBuffer(address[2])
-        ? address[2].toString()
-        : address[2];
-      const domain = Buffer.isBuffer(address[3])
-        ? address[3].toString()
-        : address[3];
-
-      if (!isSANB(user) || !isSANB(domain)) return;
-
-      const email = `${user}@${domain}`;
-      return isSANB(name) ? `${name} <${email}>` : email;
-    })
-    .filter(Boolean);
-
-  if (values.length > 0) return values.join(', ');
-}
-
 async function json(ctx, message, { lightweight = false } = {}) {
   // In lightweight mode (used by list endpoint), skip the expensive
   // indexer.getContents + simpleParser call that rebuilds the full MIME tree
@@ -417,26 +371,16 @@ async function json(ctx, message, { lightweight = false } = {}) {
   };
 
   // Lightweight list responses still need the identity fields used to render
-  // mailbox rows. These values are already indexed on the stored message, so
-  // exposing them does not require rebuilding or parsing the full MIME message.
+  // mailbox rows. WildDuck already parsed these values while building mimeTree.
   if (lightweight) {
-    object.from =
-      getStoredEnvelopeAddress(message.envelope, 2) ||
-      getStoredHeaderValue(message.headers, 'from');
-    object.to =
-      getStoredEnvelopeAddress(message.envelope, 5) ||
-      getStoredHeaderValue(message.headers, 'to');
-    object.cc =
-      getStoredEnvelopeAddress(message.envelope, 6) ||
-      getStoredHeaderValue(message.headers, 'cc');
-    object.bcc =
-      getStoredEnvelopeAddress(message.envelope, 7) ||
-      getStoredHeaderValue(message.headers, 'bcc');
-
-    const replyTo = getStoredHeaderValue(message.headers, 'reply-to');
-    object.reply_to = replyTo
-      ? getStoredEnvelopeAddress(message.envelope, 4) || replyTo
-      : undefined;
+    const parsedHeader = message.mimeTree?.parsedHeader || {};
+    Object.assign(object, {
+      from: parsedHeader.from,
+      to: parsedHeader.to,
+      cc: parsedHeader.cc,
+      bcc: parsedHeader.bcc,
+      reply_to: parsedHeader['reply-to']
+    });
   }
 
   // In lightweight mode, data is null (no MIME rebuild was performed)

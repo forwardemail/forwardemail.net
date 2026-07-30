@@ -287,6 +287,58 @@ test('establishes WebSocket connection with API token auth', async (t) => {
   ws.close();
 });
 
+test('API message creation emits identity metadata in newMessage', async (t) => {
+  const { apiURL, api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
+  const authorization = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  const ws = await connectWebSocket(wsURL, {
+    Authorization: authorization
+  });
+  t.context._openWebSockets.push(ws);
+
+  const connected = await waitForMessage(ws);
+  t.is(connected.event, 'connected');
+
+  const from = 'API Sender <sender@example.com>';
+  const to = `${alias.name}@${domain.name}`;
+  const cc = 'cc@example.com';
+  const bcc = 'bcc@example.com';
+  const replyTo = 'replies@example.com';
+  const raw = [
+    `From: ${from}`,
+    `To: ${to}`,
+    `Cc: ${cc}`,
+    `Bcc: ${bcc}`,
+    `Reply-To: ${replyTo}`,
+    'Subject: Production WebSocket Contract',
+    '',
+    'Contract body'
+  ].join('\r\n');
+
+  const response = await api
+    .post('/v1/messages')
+    .set('Authorization', authorization)
+    .send({ raw, folder: 'INBOX' });
+  t.is(response.status, 200);
+
+  const frame = await waitForMessage(ws, 20_000);
+
+  t.is(frame.event, 'newMessage');
+  t.is(frame.mailbox, 'INBOX');
+  t.truthy(frame.message);
+  t.falsy(frame.data);
+  t.deepEqual(frame.message.from, [
+    { address: 'sender@example.com', name: 'API Sender' }
+  ]);
+  t.deepEqual(frame.message.to, [{ address: to, name: '' }]);
+  t.deepEqual(frame.message.cc, [{ address: cc, name: '' }]);
+  t.deepEqual(frame.message.bcc, [{ address: bcc, name: '' }]);
+  t.deepEqual(frame.message.reply_to, [{ address: replyTo, name: '' }]);
+  t.is(frame.message.subject, 'Production WebSocket Contract');
+});
+
 // ─── Channel Isolation & Security Tests ─────────────────────────────────────
 
 test('does not receive notifications for other aliases', async (t) => {

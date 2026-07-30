@@ -926,12 +926,11 @@ async function onAppend(path, flags, date, raw, session, fn) {
         modseq: message.modseq,
         flags: message.flags,
         labels: message.labels || [],
-        from:
-          envelope && envelope.from && envelope.from[0]
-            ? envelope.from[0].name
-              ? `${envelope.from[0].name} <${envelope.from[0].address}>`
-              : envelope.from[0].address || ''
-            : '',
+        from: parsedHeader.from,
+        to: parsedHeader.to,
+        cc: parsedHeader.cc,
+        bcc: parsedHeader.bcc,
+        reply_to: parsedHeader['reply-to'],
         subject: message.subject || '',
         size: message.size > 0 ? message.size : size,
         is_unread: !message.flags.includes('\\Seen'),

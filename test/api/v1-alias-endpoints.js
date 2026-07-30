@@ -1604,11 +1604,13 @@ test('lightweight message lists retain identity fields without raw MIME', async 
 
   t.is(listRes.status, 200);
   t.is(listRes.body.length, 1);
-  t.is(listRes.body[0].from, from);
-  t.is(listRes.body[0].to, to);
-  t.is(listRes.body[0].cc, cc);
-  t.is(listRes.body[0].bcc, bcc);
-  t.is(listRes.body[0].reply_to, replyTo);
+  t.deepEqual(listRes.body[0].from, [
+    { address: `${alias.name}@${domain.name}`, name: 'Sender Name' }
+  ]);
+  t.deepEqual(listRes.body[0].to, [{ address: to, name: '' }]);
+  t.deepEqual(listRes.body[0].cc, [{ address: cc, name: '' }]);
+  t.deepEqual(listRes.body[0].bcc, [{ address: bcc, name: '' }]);
+  t.deepEqual(listRes.body[0].reply_to, [{ address: replyTo, name: '' }]);
   t.is(listRes.body[0].subject, subject);
   t.falsy(listRes.body[0].raw);
   t.falsy(listRes.body[0].nodemailer);
