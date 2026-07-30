@@ -55,6 +55,26 @@ const safeFetch = require('#helpers/safe-fetch');
 const PUSH_COALESCE_MS = ms('30s');
 const PUSH_CONCURRENCY = 5;
 
+//
+// FCM rejects the entire message with 400 INVALID_ARGUMENT when the data
+// payload contains a reserved key: "from", "notification", "message_type",
+// or any key starting with "google" or "gcm".
+// <https://firebase.google.com/docs/cloud-messaging/concept-options#data_messages>
+//
+const FCM_RESERVED_DATA_KEYS = new Set([
+  'from',
+  'notification',
+  'message_type'
+]);
+
+function isFcmReservedDataKey(key) {
+  return (
+    FCM_RESERVED_DATA_KEYS.has(key) ||
+    key.startsWith('google') ||
+    key.startsWith('gcm')
+  );
+}
+
 /**
  * Validate a URL is safe for outbound fetch (not SSRF).
  * Uses isPrivateHostResolved which:
@@ -436,7 +456,10 @@ function buildPayload(event, data) {
       message_id: safeMessageId,
       mailbox: safeMailbox,
       notificationId: safeNotificationId,
-      from: safeFrom,
+      // NOTE: the key is "sender" and not "from" because "from" is a reserved
+      //       word in FCM data payloads and Google rejects the entire message
+      //       with 400 INVALID_ARGUMENT if it is present
+      sender: safeFrom,
       subject: safeSubject,
       snippet: safeSnippet
     }
@@ -563,10 +586,9 @@ async function deliverFcm(
         body: String(payload.body).slice(0, 256)
       },
       data: Object.fromEntries(
-        Object.entries(payload.data).map(([k, v]) => [
-          String(k).slice(0, 64),
-          String(v).slice(0, 255)
-        ])
+        Object.entries(payload.data)
+          .filter(([k]) => !isFcmReservedDataKey(String(k)))
+          .map(([k, v]) => [String(k).slice(0, 64), String(v).slice(0, 255)])
       ),
       android: {
         priority: 'high',

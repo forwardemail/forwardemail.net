@@ -56,7 +56,13 @@ test('deliverFcm > sends through DNS-pinned HTTP v1 fetch', async (t) => {
       data: {
         alias_id: 'alias-1',
         event: 'newMessage',
-        notificationId: '8e9da80e-5622-483f-bddf-d1e5e4a312d2'
+        notificationId: '8e9da80e-5622-483f-bddf-d1e5e4a312d2',
+        sender: 'John Smith <john@example.com>',
+        // reserved FCM data keys that must be stripped before sending
+        from: 'bounce@example.com',
+        message_type: 'evil',
+        'google.ttl': '60',
+        gcm_notification: 'nope'
       }
     },
     resolver,
@@ -86,7 +92,8 @@ test('deliverFcm > sends through DNS-pinned HTTP v1 fetch', async (t) => {
             data: {
               alias_id: 'alias-1',
               event: 'newMessage',
-              notificationId: '8e9da80e-5622-483f-bddf-d1e5e4a312d2'
+              notificationId: '8e9da80e-5622-483f-bddf-d1e5e4a312d2',
+              sender: 'John Smith <john@example.com>'
             },
             android: {
               priority: 'high',
