@@ -111,8 +111,14 @@ async function updateDomain(ctx, next) {
         's3_region',
         's3_bucket'
       ]) {
-        if (typeof ctx.request.body[field] === 'string')
+        // For credential fields, only overwrite if user provided a new value
+        // (the form leaves them blank to keep existing encrypted credentials)
+        if (field === 's3_access_key_id' || field === 's3_secret_access_key') {
+          if (isSANB(ctx.request.body[field]))
+            ctx.state.domain[field] = ctx.request.body[field];
+        } else if (typeof ctx.request.body[field] === 'string') {
           ctx.state.domain[field] = ctx.request.body[field];
+        }
       }
 
       // Validate that the bucket is not publicly accessible (API)
