@@ -1569,6 +1569,51 @@ test('creates, retrieves, and deletes message with alias auth', async (t) => {
   t.is(deletedConfirmationRes.status, 404);
 });
 
+test('lightweight message lists retain identity fields without raw MIME', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const from = `Sender Name <${alias.name}@${domain.name}>`;
+  const to = falso.randEmail();
+  const cc = falso.randEmail();
+  const bcc = falso.randEmail();
+  const replyTo = falso.randEmail();
+  const subject = 'Lightweight Identity Metadata';
+  const folder = 'INBOX';
+  const raw = [
+    `From: ${from}`,
+    `To: ${to}`,
+    `Cc: ${cc}`,
+    `Bcc: ${bcc}`,
+    `Reply-To: ${replyTo}`,
+    `Subject: ${subject}`,
+    '',
+    'Lightweight body'
+  ].join('\r\n');
+  const authorization = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  const createRes = await api
+    .post('/v1/messages')
+    .set('Authorization', authorization)
+    .send({ raw, folder });
+
+  t.is(createRes.status, 200);
+
+  const listRes = await api
+    .get(`/v1/messages?folder=${folder}&lightweight=true`)
+    .set('Authorization', authorization);
+
+  t.is(listRes.status, 200);
+  t.is(listRes.body.length, 1);
+  t.is(listRes.body[0].from, from);
+  t.is(listRes.body[0].to, to);
+  t.is(listRes.body[0].cc, cc);
+  t.is(listRes.body[0].bcc, bcc);
+  t.is(listRes.body[0].reply_to, replyTo);
+  t.is(listRes.body[0].subject, subject);
+  t.falsy(listRes.body[0].raw);
+  t.falsy(listRes.body[0].nodemailer);
+});
+
 //
 // Folders Tests
 //
