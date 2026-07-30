@@ -792,13 +792,28 @@ Domains.pre('validate', async function (next) {
       return next();
     }
 
-    // Validate that required fields are present when custom S3 is enabled
-    if (
-      !isSANB(this.s3_endpoint) ||
-      !isSANB(this.s3_access_key_id) ||
-      !isSANB(this.s3_secret_access_key) ||
-      !isSANB(this.s3_bucket)
-    ) {
+    // Validate that required fields are present when custom S3 is enabled.
+    // NOTE: s3_access_key_id and s3_secret_access_key have `select: false`
+    // in the schema, so they are `undefined` unless explicitly selected
+    // (e.g. `.select('+s3_access_key_id +s3_secret_access_key')`).
+    // Skip credential validation if they weren't loaded on this document
+    // to avoid false positives when saving unrelated domain fields.
+    const credentialsSelected =
+      this.s3_access_key_id !== undefined ||
+      this.s3_secret_access_key !== undefined;
+    if (credentialsSelected) {
+      if (
+        !isSANB(this.s3_endpoint) ||
+        !isSANB(this.s3_access_key_id) ||
+        !isSANB(this.s3_secret_access_key) ||
+        !isSANB(this.s3_bucket)
+      ) {
+        throw Boom.badRequest(
+          i18n.translateError('CUSTOM_S3_REQUIRED_FIELDS', this.locale)
+        );
+      }
+    } else if (!isSANB(this.s3_endpoint) || !isSANB(this.s3_bucket)) {
+      // Even without credentials loaded, validate the non-secret fields
       throw Boom.badRequest(
         i18n.translateError('CUSTOM_S3_REQUIRED_FIELDS', this.locale)
       );
