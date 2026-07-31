@@ -446,6 +446,10 @@ Emails.index({ user: 1, created_at: -1 });
 // For status filtering with sorting
 Emails.index({ status: 1, created_at: -1 });
 
+// For send-emails job: fair round-robin retry across all queued/deferred emails
+// Supports the query { is_locked, status, date } sorted by updated_at
+Emails.index({ is_locked: 1, status: 1, date: 1, updated_at: 1 });
+
 // Compound indexes for common filter combinations
 Emails.index({ domain: 1, status: 1, created_at: -1 });
 Emails.index({ alias: 1, status: 1, created_at: -1 });
