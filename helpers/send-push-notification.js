@@ -8,6 +8,7 @@ const process = require('node:process');
 
 const apn = require('@parse/node-apn');
 const { GoogleAuth } = require('google-auth-library');
+const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
 const revHash = require('rev-hash');
@@ -320,6 +321,25 @@ async function fanOutToTokens(tokens, payload, resolver, dependencies = {}) {
 }
 
 /**
+ * Normalize a parsed "from" header into a "Name <addr>" string.
+ * The MX delivery path sends the decoded header string while the IMAP
+ * append path sends WildDuck's parsedHeader.from (an array of
+ * { name, address } objects).
+ * @param {string|Array} from - The from field
+ * @returns {string} "Name <addr>" string or '' if nothing usable
+ */
+function formatSenderString(from) {
+  if (isSANB(from)) return from.trim();
+  if (!Array.isArray(from)) return '';
+
+  const addr = from.find((a) => a && (isSANB(a.name) || isSANB(a.address)));
+  if (!addr) return '';
+  if (isSANB(addr.name) && isSANB(addr.address))
+    return `${addr.name.trim()} <${addr.address.trim()}>`;
+  return isSANB(addr.name) ? addr.name.trim() : addr.address.trim();
+}
+
+/**
  * Extract a human-readable sender display name from a "Name <addr>" string.
  * Falls back to the email address if no display name is present.
  * @param {string} from - The from field (e.g. "John Smith <john@example.com>")
@@ -375,6 +395,11 @@ function buildPayload(event, data) {
   let title;
   let body;
 
+  // normalized once and reused for both the title and data payload below
+  const senderString = data.message
+    ? formatSenderString(data.message.from)
+    : '';
+
   //
   // Gmail-style rich notifications for new messages:
   //   Title = sender name (e.g. "John Smith")
@@ -384,7 +409,7 @@ function buildPayload(event, data) {
   // When collapsed, they see the subject line.
   //
   if (event === 'newMessage' && data.message) {
-    const senderName = extractSenderName(data.message.from);
+    const senderName = extractSenderName(senderString);
     title = senderName
       ? senderName.slice(0, MAX_TITLE_LENGTH)
       : TITLES.newMessage;
@@ -434,10 +459,7 @@ function buildPayload(event, data) {
 
   // Include from/subject/snippet so all channels (FCM, APNs, UnifiedPush,
   // WebSocket) deliver consistent notification content to the client.
-  const safeFrom =
-    data.message && typeof data.message.from === 'string'
-      ? data.message.from.slice(0, 255)
-      : '';
+  const safeFrom = senderString.slice(0, 255);
   const safeSubject =
     data.message && typeof data.message.subject === 'string'
       ? data.message.subject.slice(0, 255)
@@ -778,6 +800,7 @@ module.exports._test = {
   fanOutToTokens,
   buildPayload,
   extractSenderName,
+  formatSenderString,
   deliverToToken,
   deliverApns,
   deliverFcm,

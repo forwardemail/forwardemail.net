@@ -1519,6 +1519,10 @@ async function parsePayload(data, ws) {
                 ? Buffer.from(sieveResult.modifiedRaw)
                 : Buffer.from(payload.raw);
 
+              // NOTE: onAppend sends its own APN ping and newMessage
+              // notification, so only the tmp storage path below notifies
+              let appendedToMainDb = false;
+
               if (session.db) {
                 try {
                   // since we use onAppend it re-uses addEntries
@@ -1557,6 +1561,7 @@ async function parsePayload(data, ws) {
                       createFolder: sieveResult.create || false
                     }
                   );
+                  appendedToMainDb = true;
                 } catch (_err) {
                   // in order to ensure tmp write still occurs
                   delete session.db;
@@ -1628,29 +1633,7 @@ async function parsePayload(data, ws) {
                       }
                     );
                     // Successfully wrote to main DB, skip tmp fallback
-                    // send user push notification
-                    sendApn(this.client, alias.id, targetFolder || 'INBOX')
-                      .then()
-                      .catch((err) =>
-                        logger.fatal(err, { session, resolver: this.resolver })
-                      );
-                    // send websocket push notification
-                    // NOTE: do not include full eml — see comment at line 2032
-                    sendNotification(this.client, alias.id, 'newMessage', {
-                      mailbox: targetFolder || 'INBOX',
-                      message: {
-                        from: headerFrom,
-                        subject: headerSubject,
-                        folder_path: targetFolder || 'INBOX',
-                        flags: targetFlags || [],
-                        is_unread: !(targetFlags || []).includes('\\Seen'),
-                        is_flagged: (targetFlags || []).includes('\\Flagged'),
-                        is_deleted: (targetFlags || []).includes('\\Deleted'),
-                        is_draft: (targetFlags || []).includes('\\Draft'),
-                        is_encrypted: false,
-                        object: 'message'
-                      }
-                    });
+                    // (onAppend already sent APN + newMessage notification)
 
                     // Release per-alias raw buffer for GC
                     messageRaw = null;
@@ -2060,32 +2043,37 @@ async function parsePayload(data, ws) {
                 if (err) throw err;
               }
 
-              // send user push notification
-              sendApn(this.client, alias.id, targetFolder || 'INBOX')
-                .then()
-                .catch((err) =>
-                  logger.fatal(err, { session, resolver: this.resolver })
-                );
+              // only notify when the message went to tmp storage
+              // (onAppend already notified for main DB writes above)
+              if (!appendedToMainDb) {
+                // send user push notification
+                sendApn(this.client, alias.id, targetFolder || 'INBOX')
+                  .then()
+                  .catch((err) =>
+                    logger.fatal(err, { session, resolver: this.resolver })
+                  );
 
-              // send websocket push notification
-              // NOTE: do not include full eml here — it can be up to 50 MB,
-              // which doubles memory (Buffer→String copy) and bloats Redis pub/sub.
-              // Clients should fetch the message on demand via IMAP/API.
-              sendNotification(this.client, alias.id, 'newMessage', {
-                mailbox: targetFolder || 'INBOX',
-                message: {
-                  from: headerFrom,
-                  subject: headerSubject,
-                  folder_path: targetFolder || 'INBOX',
-                  flags: targetFlags || [],
-                  is_unread: !(targetFlags || []).includes('\\Seen'),
-                  is_flagged: (targetFlags || []).includes('\\Flagged'),
-                  is_deleted: (targetFlags || []).includes('\\Deleted'),
-                  is_draft: (targetFlags || []).includes('\\Draft'),
-                  is_encrypted: false,
-                  object: 'message'
-                }
-              });
+                // send websocket push notification
+                // NOTE: do not include full eml here — it can be up to 50 MB,
+                // which doubles memory (Buffer→String copy) and bloats Redis pub/sub.
+                // Clients should fetch the message on demand via IMAP/API.
+                sendNotification(this.client, alias.id, 'newMessage', {
+                  mailbox: targetFolder || 'INBOX',
+                  message: {
+                    from: headerFrom,
+                    subject: headerSubject,
+                    folder_path: targetFolder || 'INBOX',
+                    flags: targetFlags || [],
+                    is_unread: !(targetFlags || []).includes('\\Seen'),
+                    is_flagged: (targetFlags || []).includes('\\Flagged'),
+                    is_deleted: (targetFlags || []).includes('\\Deleted'),
+                    is_draft: (targetFlags || []).includes('\\Draft'),
+                    is_encrypted: false,
+                    object: 'message'
+                  }
+                });
+              }
+
               // Release per-alias raw buffer for GC (iMIP below uses payload.raw)
               messageRaw = null;
 

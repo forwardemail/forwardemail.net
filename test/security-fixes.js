@@ -96,14 +96,12 @@ test('MIN_RSA_BITS_ENFORCEMENT_DATE is July 30, 2026', (t) => {
   t.is(MIN_RSA_BITS_ENFORCEMENT_DATE.format('YYYY-MM-DD'), '2026-07-30');
 });
 
-test('getMinRSABits returns 1024 during grace period', (t) => {
-  // We are currently before July 30, 2026
-  t.is(getMinRSABits(), 1024);
+test('getMinRSABits returns 2048 now that the enforcement date has passed', (t) => {
+  t.is(getMinRSABits(), 2048);
 });
 
-test('isGracePeriod returns true before enforcement date', (t) => {
-  // We are currently before July 30, 2026
-  t.true(isGracePeriod());
+test('isGracePeriod returns false now that the enforcement date has passed', (t) => {
+  t.false(isGracePeriod());
 });
 
 //
