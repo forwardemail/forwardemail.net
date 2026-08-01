@@ -810,6 +810,8 @@ async function sendEmails() {
   // ages), which keeps this finder query on its existing `{ status, created_at }`
   // index via an index-friendly `$in`.
   //
+  /*
+  // NOTE: legacy single-query approach (replaced by dual-queue strategy below)
   const query = {
     _id: { $nin: recentlyBlockedIds },
     is_locked: false,
@@ -822,7 +824,7 @@ async function sendEmails() {
     }
   };
 
-  /*
+
   const count = await Emails.countDocuments(query);
 
   logger.info('%d emails pending in queue', count);
@@ -878,73 +880,131 @@ async function sendEmails() {
   */
 
   //
-  // Wrap the main email cursor iteration in a timeout to prevent
-  // sendEmails() from hanging indefinitely if the cursor stalls.
-  // Uses hardTimeout (raw setTimeout + Promise.race) instead of p-timeout
-  // to guarantee the timeout fires even if cursor.next() microtasks
-  // are blocking p-timeout's internal scheduling.
+  // PARALLEL DUAL-QUEUE STRATEGY
+  //
+  // Both cursors run concurrently to maximize throughput:
+  //   - 'queued' emails: created_at:-1 (newest first) for fast first-delivery
+  //   - 'deferred' emails: updated_at:1 (oldest-touched first) for fair retry
+  //
+  // Both feed into the same p-queue for processing. A shared atomic counter
+  // enforces the total limit. The split is configurable: by default, half
+  // the capacity is reserved for each stream, but if one stream has fewer
+  // emails than its allocation, the other stream can use the surplus.
+  //
+  // This prevents queue starvation while keeping first-delivery latency low:
+  // new emails and deferred retries are fetched simultaneously.
+  //
+  // Wrap each cursor in a timeout to prevent hangs. Uses hardTimeout (raw
+  // setTimeout + Promise.race) instead of p-timeout to guarantee the
+  // timeout fires even if cursor.next() microtasks are blocking.
   //
   const CURSOR_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes
   let emailsFetched = 0;
-  try {
-    await hardTimeout(
+
+  // Shared helper to iterate a cursor and enqueue emails for processing
+  function enqueueEmail(email) {
+    emailsFetched++;
+    //
+    // CRITICAL: queue.add() returns a promise that MUST have a .catch()
+    // handler. Without it, if processEmailTask throws an error that
+    // escapes its internal try/catch (e.g. logger.error itself throws
+    // due to BSON overflow), the promise becomes an unhandled rejection.
+    // @ladjs/graceful's unhandledRejection handler re-throws it as an
+    // uncaughtException, which CRASHES THE ENTIRE PROCESS — orphaning
+    // all in-flight locked emails.
+    //
+    queue
+      .add(() => processEmailTask(email), {
+        // TODO: if the email was admin owned domain then priority higher (see email pre-save hook)
+        // priority: email.priority || 0
+      })
+      .catch((err) => {
+        console.error(
+          '[ERROR:send-emails] queue task unhandled rejection (process NOT crashing)',
+          JSON.stringify({
+            emailId: email._id,
+            errName: err?.name,
+            errMessage: err?.message?.slice(0, 300)
+          })
+        );
+      });
+  }
+
+  async function drainCursor(cursor, cursorLimit) {
+    let fetched = 0;
+    for await (const email of cursor) {
+      if (isCancelled) break;
+      if (queue.size + queue.pending >= config.smtpMaxQueue) break;
+      if (emailsFetched >= limit) break;
+      if (fetched >= cursorLimit) break;
+      enqueueEmail(email);
+      fetched++;
+    }
+
+    return fetched;
+  }
+
+  // Base query fields shared by both streams
+  const baseFilter = {
+    _id: { $nin: recentlyBlockedIds },
+    is_locked: false,
+    domain: { $nin: suspendedDomainIds },
+    date: { $lte: now }
+  };
+
+  //
+  // Run both cursors in parallel with Promise.allSettled.
+  // Each stream gets up to the full limit (the shared counter
+  // and per-cursor limit naturally balance allocation).
+  //
+  const [queuedResult, deferredResult] = await Promise.allSettled([
+    // Stream 1: Fresh 'queued' emails — newest first
+    hardTimeout(
       (async () => {
-        // eslint-disable-next-line unicorn/no-array-callback-reference
-        for await (const email of Emails.find(query)
-          .sort({ updated_at: 1 }) // oldest-touched first: ensures fair round-robin across all deferred emails
+        const cursor = Emails.find({ ...baseFilter, status: 'queued' })
+          .sort({ created_at: -1 })
           .lean()
           .limit(limit)
           .cursor()
-          .addCursorFlag('noCursorTimeout', true)) {
-          // Return early if the job was already cancelled
-          if (isCancelled) break;
-
-          //
-          // Check queue capacity before adding more tasks
-          // This provides additional backpressure
-          //
-          if (queue.size + queue.pending >= config.smtpMaxQueue) {
-            logger.info('queue full during iteration, breaking');
-            break;
-          }
-
-          emailsFetched++;
-          // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)
-          //
-          // CRITICAL: queue.add() returns a promise that MUST have a .catch()
-          // handler. Without it, if processEmailTask throws an error that
-          // escapes its internal try/catch (e.g. logger.error itself throws
-          // due to BSON overflow), the promise becomes an unhandled rejection.
-          // @ladjs/graceful's unhandledRejection handler re-throws it as an
-          // uncaughtException, which CRASHES THE ENTIRE PROCESS — orphaning
-          // all in-flight locked emails.
-          //
-          queue
-            .add(() => processEmailTask(email), {
-              // TODO: if the email was admin owned domain then priority higher (see email pre-save hook)
-              // priority: email.priority || 0
-            })
-            .catch((err) => {
-              console.error(
-                '[ERROR:send-emails] queue task unhandled rejection (process NOT crashing)',
-                JSON.stringify({
-                  emailId: email._id,
-                  errName: err?.name,
-                  errMessage: err?.message?.slice(0, 300)
-                })
-              );
-            });
-        }
+          .addCursorFlag('noCursorTimeout', true);
+        return drainCursor(cursor, limit);
       })(),
       CURSOR_TIMEOUT_MS,
-      'email cursor iteration'
-    );
-  } catch (cursorErr) {
+      'queued email cursor iteration'
+    ),
+    // Stream 2: Deferred emails — oldest-touched first for fair retry
+    hardTimeout(
+      (async () => {
+        const cursor = Emails.find({ ...baseFilter, status: 'deferred' })
+          .sort({ updated_at: 1 })
+          .lean()
+          .limit(limit)
+          .cursor()
+          .addCursorFlag('noCursorTimeout', true);
+        return drainCursor(cursor, limit);
+      })(),
+      CURSOR_TIMEOUT_MS,
+      'deferred email cursor iteration'
+    )
+  ]);
+
+  if (queuedResult.status === 'rejected') {
     console.error(
-      '[ERROR:send-emails] email cursor failed',
+      '[ERROR:send-emails] queued email cursor failed',
       JSON.stringify({
-        errName: cursorErr.name,
-        errMessage: cursorErr.message?.slice(0, 300),
+        errName: queuedResult.reason?.name,
+        errMessage: queuedResult.reason?.message?.slice(0, 300),
+        emailsFetched
+      })
+    );
+  }
+
+  if (deferredResult.status === 'rejected') {
+    console.error(
+      '[ERROR:send-emails] deferred email cursor failed',
+      JSON.stringify({
+        errName: deferredResult.reason?.name,
+        errMessage: deferredResult.reason?.message?.slice(0, 300),
         emailsFetched
       })
     );
