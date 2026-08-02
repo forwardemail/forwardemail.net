@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-# mail mongo and redis don't need this
+# ============================================================
+# Play 1: Deploy certificates to app servers
+# ============================================================
 - hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
-  name: Certificates
+  name: Certificates (app servers)
   vars_prompt:
     - name: input_key
       prompt: 'Enter path to certificate private key file (e.g. /path/to/.ssl-key) [REQUIRED]'
@@ -152,3 +154,183 @@
         # https://chmodcommand.com/chmod-660/
         mode: '0660'
       when: (input_firebase_service_account is defined) and (input_firebase_service_account | length > 0)
+
+# ============================================================
+# Play 2: Deploy certificates to MongoDB servers
+# ============================================================
+- hosts: mongo
+  name: Certificates (MongoDB)
+  become: true
+  become_user: root
+  vars_prompt:
+    - name: input_key
+      prompt: 'Enter path to certificate private key file (e.g. /path/to/.ssl-key) [REQUIRED]'
+      private: false
+    - name: input_cert
+      prompt: 'Enter path to certificate full chain/certificate file (e.g. /path/to/.ssl-cert) [REQUIRED]'
+      private: false
+    - name: input_bundle
+      prompt: 'Enter path to certificate CA bundle file (e.g. /path/to/.ssl-ca) [REQUIRED]'
+      private: false
+
+  tasks:
+    - name: Create /etc/mongodb/ssl directory
+      file:
+        path: /etc/mongodb/ssl
+        state: directory
+        owner: mongodb
+        group: mongodb
+        mode: "0750"
+
+    - name: Copy SSL certificate to MongoDB directory
+      copy:
+        src: "{{ input_cert }}"
+        dest: /etc/mongodb/ssl/mongodb.crt
+        owner: mongodb
+        group: mongodb
+        mode: "0400"
+
+    - name: Copy SSL private key to MongoDB directory
+      copy:
+        src: "{{ input_key }}"
+        dest: /etc/mongodb/ssl/mongodb.key
+        owner: mongodb
+        group: mongodb
+        mode: "0400"
+
+    - name: Copy CA certificate to MongoDB directory
+      copy:
+        src: "{{ input_bundle }}"
+        dest: /etc/mongodb/ssl/ca.pem
+        owner: mongodb
+        group: mongodb
+        mode: "0400"
+
+    - name: Create MongoDB TLS/SSL certificate PEM file (cert + key)
+      shell: |
+        cat /etc/mongodb/ssl/mongodb.crt /etc/mongodb/ssl/mongodb.key > /etc/mongodb/ssl/mongodb.pem
+        chown mongodb:mongodb /etc/mongodb/ssl/mongodb.pem
+        chmod 0400 /etc/mongodb/ssl/mongodb.pem
+
+    - name: Restart MongoDB
+      systemd:
+        name: mongod
+        state: restarted
+
+# ============================================================
+# Play 3: Deploy certificates to Logs DB server
+# ============================================================
+- hosts: logs
+  name: Certificates (Logs DB)
+  become: true
+  become_user: root
+  vars_prompt:
+    - name: input_key
+      prompt: 'Enter path to certificate private key file (e.g. /path/to/.ssl-key) [REQUIRED]'
+      private: false
+    - name: input_cert
+      prompt: 'Enter path to certificate full chain/certificate file (e.g. /path/to/.ssl-cert) [REQUIRED]'
+      private: false
+    - name: input_bundle
+      prompt: 'Enter path to certificate CA bundle file (e.g. /path/to/.ssl-ca) [REQUIRED]'
+      private: false
+
+  tasks:
+    - name: Create /etc/mongodb/ssl directory
+      file:
+        path: /etc/mongodb/ssl
+        state: directory
+        owner: mongodb
+        group: mongodb
+        mode: "0750"
+
+    - name: Copy SSL certificate to MongoDB directory
+      copy:
+        src: "{{ input_cert }}"
+        dest: /etc/mongodb/ssl/mongodb.crt
+        owner: mongodb
+        group: mongodb
+        mode: "0400"
+
+    - name: Copy SSL private key to MongoDB directory
+      copy:
+        src: "{{ input_key }}"
+        dest: /etc/mongodb/ssl/mongodb.key
+        owner: mongodb
+        group: mongodb
+        mode: "0400"
+
+    - name: Copy CA certificate to MongoDB directory
+      copy:
+        src: "{{ input_bundle }}"
+        dest: /etc/mongodb/ssl/ca.pem
+        owner: mongodb
+        group: mongodb
+        mode: "0400"
+
+    - name: Create MongoDB TLS/SSL certificate PEM file (cert + key)
+      shell: |
+        cat /etc/mongodb/ssl/mongodb.crt /etc/mongodb/ssl/mongodb.key > /etc/mongodb/ssl/mongodb.pem
+        chown mongodb:mongodb /etc/mongodb/ssl/mongodb.pem
+        chmod 0400 /etc/mongodb/ssl/mongodb.pem
+
+    - name: Restart MongoDB
+      systemd:
+        name: mongod
+        state: restarted
+
+# ============================================================
+# Play 4: Deploy certificates to Redis (Valkey) server
+# ============================================================
+- hosts: redis
+  name: Certificates (Redis/Valkey)
+  become: true
+  become_user: root
+  vars_prompt:
+    - name: input_key
+      prompt: 'Enter path to certificate private key file (e.g. /path/to/.ssl-key) [REQUIRED]'
+      private: false
+    - name: input_cert
+      prompt: 'Enter path to certificate full chain/certificate file (e.g. /path/to/.ssl-cert) [REQUIRED]'
+      private: false
+    - name: input_bundle
+      prompt: 'Enter path to certificate CA bundle file (e.g. /path/to/.ssl-ca) [REQUIRED]'
+      private: false
+
+  tasks:
+    - name: Create /etc/valkey/ssl directory
+      file:
+        path: /etc/valkey/ssl
+        state: directory
+        owner: valkey
+        group: valkey
+        mode: "0750"
+
+    - name: Copy SSL certificate to Valkey directory
+      copy:
+        src: "{{ input_cert }}"
+        dest: /etc/valkey/ssl/valkey.crt
+        owner: valkey
+        group: valkey
+        mode: "0400"
+
+    - name: Copy SSL private key to Valkey directory
+      copy:
+        src: "{{ input_key }}"
+        dest: /etc/valkey/ssl/valkey.key
+        owner: valkey
+        group: valkey
+        mode: "0400"
+
+    - name: Copy CA certificate to Valkey directory
+      copy:
+        src: "{{ input_bundle }}"
+        dest: /etc/valkey/ssl/ca.pem
+        owner: valkey
+        group: valkey
+        mode: "0400"
+
+    - name: Restart Valkey
+      systemd:
+        name: valkey-server
+        state: restarted
