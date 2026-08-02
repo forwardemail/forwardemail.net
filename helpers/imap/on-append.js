@@ -635,11 +635,16 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // this is set only via "tmp" command in parse payload
     if (session.checkForExisting) {
-      // Check ALL mailboxes for this fingerprint (not just the target)
-      // to prevent duplicate delivery when a user moves/deletes a message
-      // from the original mailbox and a retry arrives
+      // Check all mailboxes except Sent.  A self-sent message can have the
+      // same fingerprint as its Sent copy, but it must still reach INBOX.
+      const sentMailboxIds = await Mailboxes.distinct(this, session, '_id', {
+        specialUse: '\\Sent'
+      });
       const existingMessage = await Messages.findOne(this, session, {
-        fingerprint
+        fingerprint,
+        ...(sentMailboxIds.length > 0
+          ? { mailbox: { $nin: sentMailboxIds } }
+          : {})
       });
 
       //
