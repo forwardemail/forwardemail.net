@@ -698,7 +698,7 @@
         name: mongod
         enabled: yes
 
-    # Add failure notification to mongod service
+    # Add restart policy and failure notification to mongod service
     - name: Create mongod service override directory
       file:
         path: /etc/systemd/system/mongod.service.d
@@ -707,7 +707,7 @@
         group: root
         mode: '0755'
 
-    - name: Add OnFailure notification to mongod service
+    - name: Configure mongod restart policy and OnFailure notification
       copy:
         dest: /etc/systemd/system/mongod.service.d/failure-notification.conf
         content: |
@@ -715,6 +715,10 @@
           # Manual changes will be overwritten on next deployment
           [Unit]
           OnFailure=failure-notification@%n.service
+
+          [Service]
+          Restart=on-failure
+          RestartSec=10s
         owner: root
         group: root
         mode: '0644'
@@ -760,15 +764,30 @@
     # WIREDTIGER CACHE CALCULATION
     # ========================================
 
-    - name: Calculate WiredTiger cache size (50% of RAM - 1GB, MongoDB default)
+    - name: Calculate conservative WiredTiger cache size
       set_fact:
-        wiredtiger_cache_gb: "{{ [(((total_mem_kb.stdout | int / 1024 / 1024) - 1) * 0.50) | round(1), 0.25] | max }}"
+        wiredtiger_cache_gb: >-
+          {{
+            (
+              lookup('env', 'LOGS_WIREDTIGER_CACHE_GB')
+              | default(
+                  [
+                    (((total_mem_kb.stdout | int / 1024 / 1024) - 1) * 0.25)
+                    | round(1),
+                    0.25
+                  ]
+                  | max,
+                  true
+                )
+            )
+            | float
+          }}
 
     - name: Display calculated WiredTiger cache size
       debug:
         msg: |
           System RAM: {{ (total_mem_kb.stdout | int / 1024 / 1024) | round(2) }}GB
-          WiredTiger Cache: {{ wiredtiger_cache_gb }}GB (50% of RAM - 1GB, MongoDB default)
+          WiredTiger Cache: {{ wiredtiger_cache_gb }}GB (LOGS_WIREDTIGER_CACHE_GB override, otherwise 25% of (RAM - 1GB))
 
     # ========================================
     # BASE CONFIGURATION (NO TLS, NO AUTH)
@@ -788,7 +807,7 @@
             engine: wiredTiger
             wiredTiger:
               engineConfig:
-                # Cache size: 50% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB (MongoDB default)
+                # Cache size: LOGS_WIREDTIGER_CACHE_GB override, otherwise 25% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB
                 cacheSizeGB: {{ wiredtiger_cache_gb }}
                 journalCompressor: snappy
                 directoryForIndexes: false
@@ -817,6 +836,7 @@
           net:
             port: {{ lookup('env', 'LOGS_PORT') | default('27017', true) }}
             bindIp: ::,0.0.0.0
+            # Prevent connection storms from exhausting host memory
             maxIncomingConnections: 65536
 
           # Process management
@@ -1021,7 +1041,7 @@
             engine: wiredTiger
             wiredTiger:
               engineConfig:
-                # Cache size: 50% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB (MongoDB default)
+                # Cache size: LOGS_WIREDTIGER_CACHE_GB override, otherwise 25% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB
                 cacheSizeGB: {{ wiredtiger_cache_gb }}
                 journalCompressor: snappy
                 directoryForIndexes: false
@@ -1050,6 +1070,7 @@
           net:
             port: {{ lookup('env', 'LOGS_PORT') | default('27017', true) }}
             bindIp: ::,0.0.0.0
+            # Prevent connection storms from exhausting host memory
             maxIncomingConnections: 65536
             tls:
               mode: requireTLS
