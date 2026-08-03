@@ -10,6 +10,32 @@ const logger = require('#helpers/logger');
 const env = require('#config/env');
 
 const connectionNameSymbol = Symbol.for('connection.name');
+
+//
+// MongoDB Connection Pool Sizing
+//
+// Each PM2 process opens its own connection pool. On SMTP servers there are
+// 9 processes (8 smtp.js listeners + 1 smtp-bree), so total connections per
+// server = 9 * maxPoolSize * 2 (MONGO_URI + LOGS_URI).
+//
+// With the old maxPoolSize:500 and 16 SMTP servers, the theoretical maximum
+// was 144,000 connections — far exceeding mongod's capacity and causing OOM.
+//
+// Sizing rationale for maxPoolSize:50:
+//   - smtp-bree (send-emails job): PQueue concurrency = 50, each task does
+//     ~2-3 serial MongoDB ops, so ~50 connections covers peak parallelism.
+//   - smtp.js listeners: handle inbound SMTP with rate-limit checks and
+//     email inserts; rarely exceed 20 concurrent ops per process.
+//   - Total per server: 9 * 50 * 2 = 900 connections (vs 9000 before).
+//   - Across 16 servers: 14,400 max (vs 144,000 before).
+//
+// Override via MONGO_MAX_POOL_SIZE env var for processes that need more
+// (e.g., the bree.js scheduler on the dedicated bree server).
+//
+const maxPoolSize = env.MONGO_MAX_POOL_SIZE
+  ? Number.parseInt(env.MONGO_MAX_POOL_SIZE, 10)
+  : 50;
+
 const m = new Mongoose({
   logger,
   hideMeta: true,
@@ -17,24 +43,13 @@ const m = new Mongoose({
   mongo: {
     options: {
       compressors: ['snappy'],
-      maxPoolSize: 500,
-      family: 4 // Force IPv4
-      // Prevent infinite hangs on half-open TCP connections.
-      // Without this, cursor.next() on a dead connection waits forever
-      // because the default socketTimeoutMS is 0 (no timeout).
-      // socketTimeoutMS: 60000, // 60s
-      // Proactively close idle connections before they go stale
-      // (e.g., load balancer idle timeout, NAT table expiry).
-      // maxIdleTimeMS: 300000, // 5 minutes
-      // CRITICAL: Prevent operations from waiting indefinitely for a
-      // connection from the pool. Without this, when all 500 connections
-      // are in use (e.g., 50 concurrent processEmail tasks each holding
-      // multiple connections for queries/saves), new MongoDB operations
-      // wait FOREVER - causing the entire queue to freeze because
-      // pTimeout cannot interrupt a driver-internal wait queue.
-      // 30s is generous enough for normal pool churn but short enough
-      // to fail fast during pool exhaustion cascades.
-      // waitQueueTimeoutMS: 30000 // 30s
+      maxPoolSize,
+      minPoolSize: Math.min(5, maxPoolSize),
+      family: 4, // Force IPv4
+      // Close idle connections after 5 minutes to release resources on
+      // both the client and mongod side. Prevents connection count from
+      // staying elevated after traffic spikes.
+      maxIdleTimeMS: 300000 // 5 minutes
     }
   }
 });

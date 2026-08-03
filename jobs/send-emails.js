@@ -245,13 +245,17 @@ async function safetyNetUnlock(emailId, reason, recipients = []) {
       // so the email has a record of why it was interrupted.
       // Wrapped in its own timeout to prevent this from hanging the PQueue slot.
       await pTimeout(
-        Emails.findByIdAndUpdate(emailId, {
-          $set: { is_locked: false },
-          $unset: { locked_by: 1, locked_at: 1 },
-          $push: {
-            rejectedErrors: { $each: timeoutErrors }
-          }
-        }),
+        Emails.findByIdAndUpdate(
+          emailId,
+          {
+            $set: { is_locked: false },
+            $unset: { locked_by: 1, locked_at: 1 },
+            $push: {
+              rejectedErrors: { $each: timeoutErrors }
+            }
+          },
+          { writeConcern: { w: 1 } }
+        ),
         SAFETY_NET_TIMEOUT_MS
       );
       console.error(
@@ -364,10 +368,14 @@ async function processEmailTask(email) {
           );
           try {
             await pTimeout(
-              Emails.findByIdAndUpdate(email._id, {
-                $set: { is_locked: false },
-                $unset: { locked_by: 1, locked_at: 1 }
-              }),
+              Emails.findByIdAndUpdate(
+                email._id,
+                {
+                  $set: { is_locked: false },
+                  $unset: { locked_by: 1, locked_at: 1 }
+                },
+                { writeConcern: { w: 1 } }
+              ),
               SAFETY_NET_TIMEOUT_MS
             );
           } catch {}
@@ -444,10 +452,14 @@ async function processEmailTask(email) {
             );
             try {
               await pTimeout(
-                Emails.findByIdAndUpdate(email._id, {
-                  $set: { is_locked: false },
-                  $unset: { locked_by: 1, locked_at: 1 }
-                }),
+                Emails.findByIdAndUpdate(
+                  email._id,
+                  {
+                    $set: { is_locked: false },
+                    $unset: { locked_by: 1, locked_at: 1 }
+                  },
+                  { writeConcern: { w: 1 } }
+                ),
                 SAFETY_NET_TIMEOUT_MS
               );
             } catch {}
@@ -468,10 +480,14 @@ async function processEmailTask(email) {
         );
         try {
           await pTimeout(
-            Emails.findByIdAndUpdate(email._id, {
-              $set: { is_locked: false },
-              $unset: { locked_by: 1, locked_at: 1 }
-            }),
+            Emails.findByIdAndUpdate(
+              email._id,
+              {
+                $set: { is_locked: false },
+                $unset: { locked_by: 1, locked_at: 1 }
+              },
+              { writeConcern: { w: 1 } }
+            ),
             SAFETY_NET_TIMEOUT_MS
           );
         } catch {}
@@ -513,10 +529,14 @@ async function processEmailTask(email) {
         );
         try {
           await pTimeout(
-            Emails.findByIdAndUpdate(email._id, {
-              $set: { is_locked: false },
-              $unset: { locked_by: 1, locked_at: 1 }
-            }),
+            Emails.findByIdAndUpdate(
+              email._id,
+              {
+                $set: { is_locked: false },
+                $unset: { locked_by: 1, locked_at: 1 }
+              },
+              { writeConcern: { w: 1 } }
+            ),
             SAFETY_NET_TIMEOUT_MS
           );
           console.error(
@@ -657,7 +677,8 @@ async function sendEmails() {
           {
             $set: { is_locked: false },
             $unset: { locked_by: 1, locked_at: 1 }
-          }
+          },
+          { writeConcern: { w: 1 } }
         );
         if (unlockResult?.modifiedCount > 0) {
           console.error(
@@ -1051,7 +1072,8 @@ async function sendEmails() {
           {
             $set: { is_locked: false, status: 'queued' },
             $unset: { locked_by: 1, locked_at: 1 }
-          }
+          },
+          { writeConcern: { w: 1 } }
         );
         if (unlockResult?.modifiedCount > 0) {
           console.log(

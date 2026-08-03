@@ -63,7 +63,8 @@ graceful.listen();
           locked_by: 1,
           locked_at: 1
         }
-      }
+      },
+      { writeConcern: { w: 1 } }
     );
 
     // TODO: remove debug instrumentation once queue issue is resolved
@@ -107,16 +108,20 @@ graceful.listen();
         // otherwise check if `smtp_suspended_sent_at` does not exist
         if (!_.isDate(domain.smtp_suspended_sent_at)) {
           // TODO: check if we're rate limited, if so then keep it pending
-          await Emails.findByIdAndUpdate(email._id, {
-            $set: {
-              is_locked: false,
-              status: 'queued'
+          await Emails.findByIdAndUpdate(
+            email._id,
+            {
+              $set: {
+                is_locked: false,
+                status: 'queued'
+              },
+              $unset: {
+                locked_by: 1,
+                locked_at: 1
+              }
             },
-            $unset: {
-              locked_by: 1,
-              locked_at: 1
-            }
-          });
+            { writeConcern: { w: 1 } }
+          );
         }
       } catch (emailErr) {
         // Log per-email errors but continue processing the rest

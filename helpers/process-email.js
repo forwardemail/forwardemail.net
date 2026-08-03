@@ -195,7 +195,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
       },
       {
         new: true,
-        returnDocument: 'after'
+        returnDocument: 'after',
+        // Lock acquisition is idempotent — if the write is lost due to
+        // a replica failover, the email stays unlocked and gets picked up
+        // on the next cycle. Using w:1 eliminates 500-700ms of replication
+        // wait that was the primary cause of slow queries in the logs.
+        writeConcern: { w: 1 }
       }
     );
 
@@ -472,13 +477,17 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
         if (hardBounces.length > 0) {
           try {
-            await Emails.findByIdAndUpdate(email._id, {
-              $addToSet: {
-                hard_bounces: {
-                  $each: hardBounces
+            await Emails.findByIdAndUpdate(
+              email._id,
+              {
+                $addToSet: {
+                  hard_bounces: {
+                    $each: hardBounces
+                  }
                 }
-              }
-            });
+              },
+              { writeConcern: { w: 1 } }
+            );
           } catch (err) {
             if (isBsonOverflow(err)) {
               err.isCodeBug = false;
@@ -1103,7 +1112,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
               //       (this gives postmasters like Outlook and Gmail a back-off period)
               //       (and gives opportunity for another server to try sending it)
               //
-              const isRecentlyBlocked = await Emails.exists({
+              const isRecentlyBlocked = await Emails.findOne({
                 updated_at: {
                   $gte: dayjs().subtract(1, 'hour').toDate(),
                   $lte: new Date()
@@ -1123,7 +1132,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
                     'mx.localAddress': IP_ADDRESS
                   }
                 }
-              });
+              })
+                .hint({ has_blocked_hashes: 1, updated_at: -1 })
+                .select('_id')
+                .lean()
+                .maxTimeMS(5000)
+                .exec();
 
               if (isRecentlyBlocked) {
                 const err = Boom.badRequest(
@@ -1844,9 +1858,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
             $each: hardBounces
           };
         try {
-          await Emails.findByIdAndUpdate(email._id, {
-            $addToSet
-          });
+          await Emails.findByIdAndUpdate(
+            email._id,
+            { $addToSet },
+            { writeConcern: { w: 1 } }
+          );
         } catch (err) {
           if (isBsonOverflow(err)) {
             err.isCodeBug = false;
@@ -1861,7 +1877,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
         }
       }
     }
-
     //
     // if the SMTP response indicated the email bounced
     // then prevent the domain sender from sending to this recipient again
@@ -1945,13 +1960,17 @@ async function processEmail({ email, port = 25, resolver, client }) {
             })
           );
           try {
-            await Emails.findByIdAndUpdate(email._id, {
-              $set: { is_locked: false },
-              $unset: { locked_by: 1, locked_at: 1 }
-            });
+            await Emails.findByIdAndUpdate(
+              email._id,
+              {
+                $set: { is_locked: false },
+                $unset: { locked_by: 1, locked_at: 1 }
+              },
+              { writeConcern: { w: 1 } }
+            );
           } catch (unlockErr) {
             console.error(
-              '[ERROR:process-email] failed to unlock email after save failure (boom 400/402)',
+              '[ERROR:process-email] failed to unlock email after save failure (boom 400/402),',
               JSON.stringify({
                 emailId: email?._id,
                 unlockErrName: unlockErr.name,
@@ -1994,10 +2013,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
             })
           );
           try {
-            await Emails.findByIdAndUpdate(email._id, {
-              $set: { is_locked: false },
-              $unset: { locked_by: 1, locked_at: 1 }
-            });
+            await Emails.findByIdAndUpdate(
+              email._id,
+              {
+                $set: { is_locked: false },
+                $unset: { locked_by: 1, locked_at: 1 }
+              },
+              { writeConcern: { w: 1 } }
+            );
           } catch (unlockErr) {
             console.error(
               '[ERROR:process-email] failed to unlock email after save failure (boom 403/404)',
@@ -2053,10 +2076,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
         })
       );
       try {
-        await Emails.findByIdAndUpdate(email._id, {
-          $set: { is_locked: false },
-          $unset: { locked_by: 1, locked_at: 1 }
-        });
+        await Emails.findByIdAndUpdate(
+          email._id,
+          {
+            $set: { is_locked: false },
+            $unset: { locked_by: 1, locked_at: 1 }
+          },
+          { writeConcern: { w: 1 } }
+        );
       } catch (unlockErr) {
         console.error(
           '[ERROR:process-email] failed to unlock email after save failure',

@@ -468,6 +468,24 @@ Emails.index({ 'envelope.to': 1, created_at: -1 });
 // Compound index for queries filtering by both envelope.from and status
 Emails.index({ 'envelope.from': 1, status: 1, created_at: -1 });
 
+// Compound index for the "recently blocked" prefetch query used by
+// send-emails, check-smtp-frozen-queue, and check-smtp-queue-count jobs.
+// Query shape: { has_blocked_hashes: true, updated_at: { $gte, $lte }, blocked_hashes: { $in } }
+// Equality on has_blocked_hashes first (high selectivity boolean), then range on updated_at.
+// blocked_hashes has its own multikey index and MongoDB will intersect if needed.
+Emails.index(
+  { has_blocked_hashes: 1, updated_at: -1 },
+  { partialFilterExpression: { has_blocked_hashes: true } }
+);
+
+// Compound index for unlock-emails job bulk orphan recovery.
+// Query shape: { is_locked: true, locked_at: { $exists: true, $lte }, status: { $in: ['queued','deferred'] } }
+// Partial filter keeps the index small (only locked emails with locked_at set).
+Emails.index(
+  { is_locked: 1, locked_at: 1, status: 1 },
+  { partialFilterExpression: { is_locked: true, locked_at: { $exists: true } } }
+);
+
 // DSN
 Emails.pre('validate', function (next) {
   if (this.dsn === undefined) return next();
