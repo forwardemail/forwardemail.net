@@ -323,11 +323,13 @@ async function mapper(id) {
     //
     // then run them through the lookup
     //
-    // Optimized: use distinct() instead of cursor-based iteration
-    // to collect IDs in a single server round-trip.
+    // Optimized to use cursor-based iteration instead of aggregation
+    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
     //
     const twoHoursAgo = dayjs().subtract(2, 'hour').toDate();
-    const ids = await Domains.distinct('_id', {
+    const ids = [];
+
+    for await (const domain of Domains.find({
       $and: [
         {
           plan: 'free',
@@ -366,7 +368,14 @@ async function mapper(id) {
           ]
         }
       ]
-    });
+    })
+      .sort({ has_mx_record: 1 })
+      .select('_id')
+      .lean()
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      ids.push(domain._id);
+    }
 
     logger.info('checking domains', { count: ids.length });
 

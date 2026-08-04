@@ -268,32 +268,52 @@ async function mapper(id) {
     //       and routine checking (e.g. 3 in a row fail)
     //       then we will need to modify this query
     //
-    // get all non-API created domains
-    // Optimized: use distinct() instead of aggregate pipeline
-    // since the pipeline only collected unique _ids.
-    //
-    const ids = await Domains.distinct('_id', {
-      plan: {
-        $in: ['enhanced_protection', 'team']
-      },
-      $or: [
-        {
-          smtp_last_checked_at: {
-            $exists: false
-          }
-        },
-        {
-          smtp_last_checked_at: {
-            $lte: dayjs().subtract(2, 'hour').toDate()
-          }
-        },
-        {
-          smtp_verified_at: {
-            $exists: false
-          }
+    // get all non-API created domains (sorted by last_checked_at)
+    const results = await Domains.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              plan: {
+                $in: ['enhanced_protection', 'team']
+              }
+            },
+            {
+              $or: [
+                {
+                  smtp_last_checked_at: {
+                    $exists: false
+                  }
+                },
+                {
+                  smtp_last_checked_at: {
+                    $lte: dayjs().subtract(2, 'hour').toDate()
+                  }
+                },
+                {
+                  smtp_verified_at: {
+                    $exists: false
+                  }
+                }
+              ]
+            }
+          ]
         }
-      ]
-    });
+      },
+      {
+        $sort: {
+          smtp_last_checked_at: 1
+        }
+      },
+      {
+        $group: {
+          _id: '$_id'
+        }
+      }
+    ]);
+
+    // flatten array
+    const ids = results.map((r) => r._id);
 
     logger.info('checking domains', { count: ids.length });
 
