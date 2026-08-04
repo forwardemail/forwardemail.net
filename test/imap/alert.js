@@ -43,10 +43,6 @@ const tls = { rejectUnauthorized: false };
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
-test.after.always((t) => {
-  if (t.context.client) t.context.client.disconnect();
-  if (t.context.subscriber) t.context.subscriber.disconnect();
-});
 
 /**
  * Helper: Create a full IMAP test environment with custom domain/alias/user state.

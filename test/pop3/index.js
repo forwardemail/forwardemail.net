@@ -46,11 +46,6 @@ const IP_ADDRESS = ip.address();
 test.before(utils.setupMongoose);
 test.before(utils.setupRedisClient);
 test.after.always(utils.teardownMongoose);
-test.after.always((t) => {
-  if (t.context.client) t.context.client.disconnect();
-  if (t.context.subscriber) t.context.subscriber.disconnect();
-});
-
 test.beforeEach(utils.setupFactories);
 test.beforeEach(async (t) => {
   const secure = false;

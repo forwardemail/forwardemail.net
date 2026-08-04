@@ -13,7 +13,6 @@ const _ = require('#helpers/lodash');
 
 const checkSRS = require('#helpers/check-srs');
 const getHeaders = require('#helpers/get-headers');
-const isPrivateHost = require('#helpers/is-private-host');
 const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
@@ -62,13 +61,9 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
 
   if (isSANB(session.hostNameAppearsAs) && isFQDN(session.hostNameAppearsAs)) {
     const heloDomain = session.hostNameAppearsAs.toLowerCase();
-    // Skip private/reserved hostnames (e.g. .local, .test, .localhost, link-local)
-    // to avoid false-positive denylist hits from local/internal MTAs
-    if (!isPrivateHost(heloDomain)) {
-      arr.push(heloDomain);
-      const heloRoot = parseRootDomain(heloDomain);
-      if (heloRoot !== heloDomain) arr.push(heloRoot);
-    }
+    arr.push(heloDomain);
+    const heloRoot = parseRootDomain(heloDomain);
+    if (heloRoot !== heloDomain) arr.push(heloRoot);
   }
 
   const from = [

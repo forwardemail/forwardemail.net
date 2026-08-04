@@ -9,11 +9,6 @@ overrides:
   validator: npm:@forwardemail/validator@14.0.0
   undici: 7.12.0
 
-patchedDependencies:
-  mailauth@4.12.0:
-    hash: nvmgvay33ent5tfxqzjz2up34i
-    path: patches/mailauth@4.12.0.patch
-
 importers:
 
   .:
@@ -512,7 +507,7 @@ importers:
         version: 4.17.21
       mailauth:
         specifier: 4.12.0
-        version: 4.12.0(patch_hash=nvmgvay33ent5tfxqzjz2up34i)
+        version: 4.12.0
       mailparser:
         specifier: 3.9.1
         version: 3.9.1
@@ -33323,7 +33318,7 @@ snapshots:
       undici: 7.12.0
       yargs: 17.7.2
 
-  mailauth@4.12.0(patch_hash=nvmgvay33ent5tfxqzjz2up34i):
+  mailauth@4.12.0:
     dependencies:
       '@postalsys/vmc': 1.1.2
       fast-xml-parser: 4.5.2

@@ -54,10 +54,6 @@ const srs = new SRS(config.srs);
 test.before(utils.setupMongoose);
 test.before(utils.setupRedisClient);
 test.after.always(utils.teardownMongoose);
-test.after.always((t) => {
-  if (t.context.client) t.context.client.disconnect();
-  if (t.context.subscriber) t.context.subscriber.disconnect();
-});
 test.beforeEach(utils.setupFactories);
 // setup API server so we can configure MX with it
 // (similar to `utils.setupApiServer`)
@@ -96,6 +92,7 @@ test.afterEach.always(async (t) => {
     }
   }
 });
+
 test('imap/forward/webhook', async (t) => {
   const smtp = new MX({
     client: t.context.client,

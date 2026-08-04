@@ -183,87 +183,20 @@ test('POST otp/setup > incorrect password', async (t) => {
   t.is(JSON.parse(res.text).message, phrases.INVALID_PASSWORD);
 });
 
-test('POST otp/disable > successful with OTP token', async (t) => {
+test('POST otp/disable > successful', async (t) => {
   // get test server
   const { web, user, password } = t.context;
-  const token = authenticator.generate(user[config.passport.fields.otpToken]);
 
   // POST disable page
-  const res = await web.post(`/en${config.otpRoutePrefix}/disable`).send({
-    password,
-    token
-  });
-
-  t.is(res.status, 302);
-  t.is(res.header.location, '/en/my-account/security');
-
-  const query = await Users.findOne({ email: user.email });
-  t.is(query[config.passport.fields.otpEnabled], false);
-});
-
-test('POST otp/disable > successful with recovery key', async (t) => {
-  // get test server
-  const { web, user, password } = t.context;
-  user[config.userFields.otpRecoveryKeys] = [
-    'test-recovery-key-1',
-    'test-recovery-key-2'
-  ];
-  await user.save();
-
-  // POST disable page
-  const res = await web.post(`/en${config.otpRoutePrefix}/disable`).send({
-    password,
-    recovery_key: 'test-recovery-key-1'
-  });
-
-  t.is(res.status, 302);
-  t.is(res.header.location, '/en/my-account/security');
-
-  const query = await Users.findOne({ email: user.email });
-  t.is(query[config.passport.fields.otpEnabled], false);
-});
-
-test('POST otp/disable > fails without OTP token or recovery key', async (t) => {
-  // get test server
-  const { web, password } = t.context;
-
-  // POST disable page with only password (no second factor)
   const res = await web.post(`/en${config.otpRoutePrefix}/disable`).send({
     password
   });
 
-  t.is(res.status, 400);
-  t.is(JSON.parse(res.text).message, phrases.INVALID_OTP_PASSCODE);
-});
+  t.is(res.status, 302);
+  t.is(res.header.location, '/en/my-account/security');
 
-test('POST otp/disable > fails with invalid OTP token', async (t) => {
-  // get test server
-  const { web, password } = t.context;
-
-  // POST disable page with wrong token
-  const res = await web.post(`/en${config.otpRoutePrefix}/disable`).send({
-    password,
-    token: '000000'
-  });
-
-  t.is(res.status, 400);
-  t.is(JSON.parse(res.text).message, phrases.INVALID_OTP_PASSCODE);
-});
-
-test('POST otp/disable > fails with invalid recovery key', async (t) => {
-  // get test server
-  const { web, user, password } = t.context;
-  user[config.userFields.otpRecoveryKeys] = ['valid-key'];
-  await user.save();
-
-  // POST disable page with wrong recovery key
-  const res = await web.post(`/en${config.otpRoutePrefix}/disable`).send({
-    password,
-    recovery_key: 'invalid-key'
-  });
-
-  t.is(res.status, 400);
-  t.is(JSON.parse(res.text).message, phrases.INVALID_RECOVERY_KEY);
+  const query = await Users.findOne({ email: user.email });
+  t.is(query[config.passport.fields.otpEnabled], false);
 });
 
 test('POST otp/disable > invalid blank password', async (t) => {

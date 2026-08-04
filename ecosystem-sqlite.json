@@ -3,7 +3,6 @@
     {
       "name": "sqlite",
       "script": "sqlite.js",
-      "node_args": "--disable-proto=delete",
       "max_restarts": 999,
       "max_memory_restart": "80G",
       "wait_ready": true,
@@ -22,7 +21,6 @@
     {
       "name": "sqlite-bree",
       "script": "sqlite-bree.js",
-      "node_args": "--disable-proto=delete",
       "max_restarts": 999,
       "max_memory_restart": "80G",
       "exec_mode": "fork",
@@ -41,7 +39,6 @@
     {
       "name": "sqlite-worker",
       "script": "sqlite-worker.js",
-      "node_args": "--disable-proto=delete",
       "max_restarts": 999,
       "max_memory_restart": "16G",
       "exec_mode": "fork",

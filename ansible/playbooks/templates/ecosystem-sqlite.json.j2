@@ -3,7 +3,6 @@
     {
       "name": "sqlite",
       "script": "sqlite.js",
-      "node_args": "--disable-proto=delete",
       "wait_ready": true,
       "kill_timeout": 65000,
       "exec_mode": "cluster",
@@ -16,7 +15,6 @@
     {
       "name": "sqlite-bree",
       "script": "sqlite-bree.js",
-      "node_args": "--disable-proto=delete",
       "exec_mode": "fork",
       "wait_ready": true,
       "kill_timeout": 65000,
@@ -29,7 +27,6 @@
     {
       "name": "sqlite-worker",
       "script": "sqlite-worker.js",
-      "node_args": "--disable-proto=delete",
       "exec_mode": "fork",
       "wait_ready": true,
       "kill_timeout": 65000,

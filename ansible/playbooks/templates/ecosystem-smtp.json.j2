@@ -3,7 +3,6 @@
     {
       "name": "smtp-tls-587",
       "script": "smtp.js",
-      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "2",
@@ -17,7 +16,6 @@
     {
       "name": "smtp-tls-2587",
       "script": "smtp.js",
-      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
@@ -31,7 +29,6 @@
     {
       "name": "smtp-tls-25",
       "script": "smtp.js",
-      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
@@ -45,7 +42,6 @@
     {
       "name": "smtp-tls-2525",
       "script": "smtp.js",
-      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
@@ -59,7 +55,6 @@
     {
       "name": "smtp-ssl-465",
       "script": "smtp.js",
-      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "2",
@@ -73,7 +68,6 @@
     {
       "name": "smtp-ssl-2465",
       "script": "smtp.js",
-      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
@@ -87,7 +81,6 @@
     {
       "name": "smtp-bree",
       "script": "smtp-bree.js",
-      "node_args": "--disable-proto=delete",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
