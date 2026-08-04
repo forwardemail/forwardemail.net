@@ -50,6 +50,15 @@ const builder = new Builder({ bufferAsNative: true });
 
 const HOSTNAME = os.hostname();
 
+// Unique lock owner identifier for Redis distributed locks (hostname + PID)
+// so that different PM2 workers on the same host don't collide.
+const LOCK_OWNER = `${HOSTNAME}:${process.pid}`;
+
+// Lua script to atomically release a Redis lock only if we still own it.
+// Prevents releasing a lock that expired and was re-acquired by another worker.
+const RELEASE_LOCK_SCRIPT =
+  "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+
 // Guard to prevent concurrent maintenance for the same alias.
 // Once maintenance begins, the alias_id is added here;
 // it is removed when maintenance completes (success or failure).
@@ -525,37 +534,80 @@ async function getDatabase(
     } else {
       const t0 = boolean(env.SQLITE_DEBUG_TIMERS) ? Date.now() : 0;
 
-      // Wrap the open+setupPragma in a tracked promise so concurrent
-      // callers for the same alias coalesce onto a single handle.
-      const openPromise = (async () => {
-        const handle = new Database(dbFilePath, {
-          readonly,
-          fileMustExist: readonly,
-          timeout: config.busyTimeout,
-          // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
-          verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
-        });
+      //
+      // Distributed lock: prevent multiple PM2 cluster workers from
+      // simultaneously initializing the same brand-new encrypted database.
+      // The per-process _dbOpenInflight guard above only prevents intra-process
+      // races; this Redis NX lock prevents inter-process races that cause
+      // SQLITE_CORRUPT on newly created databases.
+      //
+      if (instance.client) {
+        const openLockKey = `db_open_lock:${alias.id}`;
+        const lockAcquired = await instance.client.set(
+          openLockKey,
+          LOCK_OWNER,
+          'PX',
+          ms('30s'),
+          'NX'
+        );
 
-        try {
-          await setupPragma(handle, session); // takes about 30ms
-        } catch (pragmaErr) {
-          // Close the handle to prevent file descriptor leak
-          // (the handle is NOT in the cache since we set() after success)
-          try {
-            handle.close();
-          } catch {}
-
-          throw pragmaErr;
+        if (!lockAcquired) {
+          // Another worker is initializing this database right now.
+          // Throw a retryable error so pRetry waits 1s and tries again
+          // (by then the DB will be initialized and cached or on disk).
+          const err = new Error(
+            `Database open in progress by another worker for alias ${alias.id}`
+          );
+          err.code = 'SQLITE_BUSY';
+          throw err;
         }
+      }
 
-        return handle;
-      })();
-
-      _dbOpenInflight.set(alias.id, openPromise);
       try {
-        db = await openPromise;
+        // Wrap the open+setupPragma in a tracked promise so concurrent
+        // callers for the same alias coalesce onto a single handle.
+        const openPromise = (async () => {
+          const handle = new Database(dbFilePath, {
+            readonly,
+            fileMustExist: readonly,
+            timeout: config.busyTimeout,
+            // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
+            verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
+          });
+
+          try {
+            await setupPragma(handle, session); // takes about 30ms
+          } catch (pragmaErr) {
+            // Close the handle to prevent file descriptor leak
+            // (the handle is NOT in the cache since we set() after success)
+            try {
+              handle.close();
+            } catch {}
+
+            throw pragmaErr;
+          }
+
+          return handle;
+        })();
+
+        _dbOpenInflight.set(alias.id, openPromise);
+        try {
+          db = await openPromise;
+        } finally {
+          _dbOpenInflight.delete(alias.id);
+        }
       } finally {
-        _dbOpenInflight.delete(alias.id);
+        // Release the distributed lock (only if we still own it)
+        if (instance.client) {
+          await instance.client
+            .eval(
+              RELEASE_LOCK_SCRIPT,
+              1,
+              `db_open_lock:${alias.id}`,
+              LOCK_OWNER
+            )
+            .catch(() => {});
+        }
       }
 
       // Store in-memory open connection AFTER setupPragma succeeds.
@@ -1992,8 +2044,13 @@ function retryGetDatabase(...args) {
       //       and then run a reset of the database with the valid password
       //       (edge case in case "rekey" operation does not succeed)
       //
+      // SQLITE_CORRUPT: brand-new databases (~331KB) can get corrupted when
+      // multiple PM2 cluster workers simultaneously open+setupPragma the same
+      // file. The distributed lock (Fix 1) prevents future occurrences, but
+      // already-corrupted files need recovery via this path.
+      //
       if (
-        error.code === 'SQLITE_NOTADB' &&
+        (error.code === 'SQLITE_NOTADB' || error.code === 'SQLITE_CORRUPT') &&
         error.dbFilePath &&
         !error.readonly
       ) {
@@ -2079,44 +2136,60 @@ function retryGetDatabase(...args) {
             error.stats = stats;
 
             //
-            // Prevent deletion loop: if the file was created recently
-            // (within 7 days), it was likely just recreated by a previous
-            // NOTADB recovery. Deleting it again would create an infinite
-            // cycle of: corrupt -> delete -> recreate -> corrupt.
+            // Prevent deletion loop (SQLITE_NOTADB only):
+            // If the file was created recently (within 7 days), it was likely
+            // just recreated by a previous NOTADB recovery. Deleting it again
+            // would create an infinite cycle.
             //
-            const fileAgeMs = Date.now() - stats.birthtimeMs;
-            if (fileAgeMs < ms('7d')) {
-              error.message = `SQLITE_NOTADB loop detected for ${
-                session.user.username
-              } (${session.user.alias_id}) - db file was created ${Math.round(
-                fileAgeMs / ms('1h')
-              )}h ago, refusing to delete again\n\n${error.message}`;
-              throw error;
+            // For SQLITE_CORRUPT: skip the file age check because these are
+            // brand-new databases (minutes old) corrupted by the PM2 race
+            // condition — the age check would always block their recovery.
+            //
+            if (error.code === 'SQLITE_NOTADB') {
+              const fileAgeMs = Date.now() - stats.birthtimeMs;
+              if (fileAgeMs < ms('7d')) {
+                error.message = `SQLITE_NOTADB loop detected for ${
+                  session.user.username
+                } (${session.user.alias_id}) - db file was created ${Math.round(
+                  fileAgeMs / ms('1h')
+                )}h ago, refusing to delete again\n\n${error.message}`;
+                throw error;
+              }
             }
           } catch (err) {
-            if (err.code === 'SQLITE_NOTADB') throw err;
+            if (err.code === 'SQLITE_NOTADB' || err.code === 'SQLITE_CORRUPT') {
+              throw err;
+            }
+
             logger.debug(err);
             return;
           }
 
           //
-          // Cooldown: additional Redis-based guard in case filesystem
-          // birthtimeMs is unreliable (e.g. NFS, copy operations).
+          // Cooldown: additional Redis-based guard to prevent deletion loops.
+          // SQLITE_NOTADB: 7-day cooldown (filesystem birthtimeMs unreliable).
+          // SQLITE_CORRUPT: 1-hour cooldown (brand-new files, race condition;
+          //   shorter TTL allows recovery if corruption recurs after redeploy).
           //
-          const notadbCooldownKey = `notadb_reset:${session.user.alias_id}`;
+          const isCorrupt = error.code === 'SQLITE_CORRUPT';
+          const cooldownKey = isCorrupt
+            ? `corrupt_reset:${session.user.alias_id}`
+            : `notadb_reset:${session.user.alias_id}`;
+          const cooldownTTL = isCorrupt ? ms('1h') : ms('7d');
+
           if (instance.client) {
-            const alreadyReset = await instance.client.get(notadbCooldownKey);
+            const alreadyReset = await instance.client.get(cooldownKey);
             if (alreadyReset) {
-              error.message = `SQLITE_NOTADB loop detected (Redis) for ${session.user.username} (${session.user.alias_id}) - db was already reset on ${alreadyReset}, refusing to delete again\n\n${error.message}`;
+              error.message = `${error.code} loop detected (Redis) for ${session.user.username} (${session.user.alias_id}) - db was already reset on ${alreadyReset}, refusing to delete again\n\n${error.message}`;
               throw error;
             }
 
-            // Set cooldown for 7 days to break the loop
+            // Set cooldown to break the loop
             await instance.client.set(
-              notadbCooldownKey,
+              cooldownKey,
               new Date().toISOString(),
               'PX',
-              ms('7d')
+              cooldownTTL
             );
           }
 
@@ -2165,6 +2238,36 @@ function retryGetDatabase(...args) {
               err.isCodeBug = true;
               throw err;
             }
+          }
+
+          //
+          // Evict the corrupted handle from the in-memory LRU cache so the
+          // retry opens a fresh handle instead of reusing the broken one.
+          //
+          if (instance.databaseMap) {
+            instance.databaseMap.evict(session.user.alias_id);
+          }
+
+          //
+          // Clear all Redis-cached maintenance/migration flags for this alias.
+          // When the database is recreated on retry, migrateSchema must run
+          // again to create tables, indexes, default folders, etc.
+          //
+          if (instance.client) {
+            await instance.client
+              .del(
+                `migrate_check:${session.user.alias_id}`,
+                `folder_check:${session.user.alias_id}`,
+                `trash_check:${session.user.alias_id}`,
+                `thread_check:${session.user.alias_id}`,
+                `vacuum_check:${session.user.alias_id}`,
+                `calendar_duplicate_check:${session.user.alias_id}`,
+                `highestmodseq_check:${session.user.alias_id}`,
+                `storage_format_check:${session.user.alias_id}`,
+                `caldav_href_check:${session.user.alias_id}`,
+                `calendar_date_check_v2:${session.user.alias_id}`
+              )
+              .catch((err) => logger.fatal(err));
           }
 
           // email admins of the renaming

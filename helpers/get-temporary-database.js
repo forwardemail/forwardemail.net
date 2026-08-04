@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const os = require('node:os');
 const path = require('node:path');
+const process = require('node:process');
 
 const { boolean } = require('boolean');
 const Database = require('better-sqlite3-multiple-ciphers');
+const ms = require('ms');
 
 const getPathToDatabase = require('./get-path-to-database');
 const logger = require('./logger');
@@ -18,6 +21,15 @@ const env = require('#config/env');
 
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const TemporaryMessages = require('#models/temporary-messages');
+
+// Unique lock owner identifier for Redis distributed locks (hostname + PID)
+// so that different PM2 workers on the same host don't collide.
+const LOCK_OWNER = `${os.hostname()}:${process.pid}`;
+
+// Lua script to atomically release a Redis lock only if we still own it.
+// Prevents releasing a lock that expired and was re-acquired by another worker.
+const RELEASE_LOCK_SCRIPT =
+  "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
 // Guard to prevent concurrent database opens for the same alias.
 // When the first open is in-flight (setupPragma is async and yields the
@@ -50,6 +62,35 @@ async function getTemporaryDatabase(session) {
   //
   if (_tmpDbOpenInflight.has(cacheKey)) {
     return _tmpDbOpenInflight.get(cacheKey);
+  }
+
+  //
+  // Distributed lock: prevent multiple PM2 cluster workers from
+  // simultaneously initializing the same brand-new temp database.
+  // The per-process _tmpDbOpenInflight guard above only prevents intra-process
+  // races; this Redis NX lock prevents inter-process races that cause
+  // SQLITE_CORRUPT on newly created temp databases.
+  //
+  if (this.client) {
+    const openLockKey = `db_tmp_open_lock:${cacheKey}`;
+    const lockAcquired = await this.client.set(
+      openLockKey,
+      LOCK_OWNER,
+      'PX',
+      ms('30s'),
+      'NX'
+    );
+
+    if (!lockAcquired) {
+      // Another worker is initializing this temp database right now.
+      // Throw a retryable error so pRetry waits 1s and tries again
+      // (by then the DB will be initialized and cached or on disk).
+      const err = new Error(
+        `Temp database open in progress by another worker for alias ${cacheKey}`
+      );
+      err.code = 'SQLITE_BUSY';
+      throw err;
+    }
   }
 
   const openPromise = (async () => {
@@ -157,6 +198,17 @@ async function getTemporaryDatabase(session) {
     return await openPromise;
   } finally {
     _tmpDbOpenInflight.delete(cacheKey);
+    // Release the distributed lock (only if we still own it)
+    if (this.client) {
+      await this.client
+        .eval(
+          RELEASE_LOCK_SCRIPT,
+          1,
+          `db_tmp_open_lock:${cacheKey}`,
+          LOCK_OWNER
+        )
+        .catch(() => {});
+    }
   }
 }
 
