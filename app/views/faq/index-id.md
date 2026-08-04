@@ -3977,7 +3977,7 @@ Sumber:
 Tidak. Forward Email menerapkan perlindungan menyeluruh terhadap paparan data akibat kerusakan:
 
 * **Core Dumps Dinonaktifkan**: Mencegah paparan memori selama kerusakan
-* **Memori Swap Dinonaktifkan**: Sepenuhnya dinonaktifkan untuk mencegah ekstraksi data sensitif dari file swap
+* **Penggunaan Swap Terkendali**: Host aplikasi dan host non-basis data lainnya tetap bebas swap serta diukur dan dipantau sehingga beban kerja normal tetap berada di RAM. Host MongoDB dan Redis menggunakan file swap khusus root dengan `vm.swappiness=1` secara ketat sebagai jaring pengaman out-of-memory, bukan kapasitas normal. Menonaktifkan swap di mana saja dapat mengubah tekanan memori basis data sementara menjadi OOM kill langsung. Aktivitas swap basis data dipantau dan diselidiki.
 * **Arsitektur Dalam Memori**: Konten email hanya ada di memori volatil selama pemrosesan
 * **Perlindungan Kunci Enkripsi**: Kunci tidak pernah disimpan di disk dalam bentuk teks biasa
 * **Keamanan Fisik**: Disk terenkripsi LUKS v2 mencegah akses fisik ke data

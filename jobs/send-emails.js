@@ -984,6 +984,7 @@ async function sendEmails() {
       (async () => {
         const cursor = Emails.find({ ...baseFilter, status: 'queued' })
           .sort({ created_at: -1 })
+          .hint({ is_locked: 1, status: 1, created_at: -1, date: 1 })
           .lean()
           .limit(limit)
           .cursor();
@@ -997,6 +998,7 @@ async function sendEmails() {
       (async () => {
         const cursor = Emails.find({ ...baseFilter, status: 'deferred' })
           .sort({ updated_at: 1 })
+          .hint({ is_locked: 1, status: 1, updated_at: 1, date: 1 })
           .lean()
           .limit(limit)
           .cursor();

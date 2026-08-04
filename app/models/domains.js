@@ -677,7 +677,11 @@ const Domains = new mongoose.Schema({
       }
     }
   ],
-  domain_updates_sent_at: Date
+  domain_updates_sent_at: Date,
+  has_pending_domain_updates: {
+    type: Boolean,
+    default: false
+  }
 });
 
 // Domain compound index for auth query
@@ -686,7 +690,18 @@ Domains.index({ name: 1, verification_record: 1, plan: 1 });
 // Member user index
 Domains.index({ 'members.user': 1, 'members.group': 1 });
 
+Domains.index(
+  { has_pending_domain_updates: 1 },
+  {
+    partialFilterExpression: {
+      has_pending_domain_updates: true
+    }
+  }
+);
+
 Domains.index({ plan: 1, has_txt_record: 1, _id: 1 });
+Domains.index({ plan: 1, has_mx_record: 1, has_txt_record: 1, _id: 1 });
+Domains.index({ last_checked_at: 1, _id: 1 });
 
 Domains.index(
   { smtp_suspended_sent_at: 1 },
@@ -1691,6 +1706,7 @@ Domains.pre('save', function (next) {
       }
 
       this.domain_updates.push(updateEntry);
+      this.has_pending_domain_updates = true;
 
       // Update stored value to prevent duplicate detection
       this[`__${field}`] = Array.isArray(currentValue)

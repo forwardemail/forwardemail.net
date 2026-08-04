@@ -3977,7 +3977,7 @@ Források:
 Nem. A Forward Email átfogó védelmi intézkedéseket alkalmaz az összeomlás miatti adatkiszivárgás ellen:
 
 * **Core dumpok letiltva**: Megakadályozza a memória kiszivárgását összeomláskor
-* **Swap memória letiltva**: Teljesen letiltva, hogy megakadályozza az érzékeny adatok kinyerését a swap fájlokból
+* **Ellenőrzött swap használat**: Az alkalmazás- és egyéb nem adatbázis-kiszolgálók swap-mentesek maradnak, és úgy vannak méretezve és felügyelve, hogy a normál munkaterhelések a RAM-ban maradjanak. A MongoDB és Redis kiszolgálók egy csak root által elérhető swap fájlt használnak `vm.swappiness=1` beállítással, szigorúan out-of-memory biztonsági hálóként, nem pedig normál kapacitásként. A swap mindenhol történő letiltása az átmeneti adatbázis-memórianyomást azonnali OOM leállítássá változtathatja. Az adatbázis swap tevékenységét felügyeljük és kivizsgáljuk.
 * **Memóriában történő architektúra**: Az e-mail tartalom csak a feldolgozás ideje alatt létezik a volatilis memóriában
 * **Titkosítási kulcs védelem**: A kulcsok soha nem tárolódnak lemezen tiszta szövegként
 * **Fizikai biztonság**: LUKS v2 titkosított lemezek megakadályozzák az adatok fizikai elérését

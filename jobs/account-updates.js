@@ -45,6 +45,13 @@ async function mapper(user) {
     _.isEmpty(user[config.userFields.accountUpdates])
   ) {
     logger.warn('user had empty account updates', { user });
+    await Users.updateOne(
+      {
+        _id: user._id,
+        [`${config.userFields.accountUpdates}.0`]: { $exists: false }
+      },
+      { $set: { [config.userFields.hasPendingAccountUpdates]: false } }
+    );
     return;
   }
 
@@ -99,12 +106,26 @@ async function mapper(user) {
         user
       }
     });
-    // delete account updates
-    await Users.findByIdAndUpdate(user._id, {
-      $set: {
-        [config.userFields.accountUpdates]: []
+    // Clear only the exact snapshot that was sent.  A concurrent account
+    // change must remain queued instead of being erased by this worker.
+    const results = await Users.updateOne(
+      {
+        _id: user._id,
+        [config.userFields.accountUpdates]:
+          user[config.userFields.accountUpdates]
+      },
+      {
+        $set: {
+          [config.userFields.accountUpdates]: [],
+          [config.userFields.hasPendingAccountUpdates]: false
+        }
       }
-    });
+    );
+
+    if (results.modifiedCount === 0)
+      logger.warn('account updates changed while notification was sent', {
+        user: user._id
+      });
   } catch (err) {
     await logger.error(err);
   }
@@ -115,10 +136,7 @@ async function mapper(user) {
 
   try {
     for await (const user of Users.find({
-      [config.userFields.accountUpdates]: {
-        $exists: true,
-        $ne: []
-      },
+      [config.userFields.hasPendingAccountUpdates]: true,
       [config.userFields.hasVerifiedEmail]: true,
       [config.userFields.isBanned]: false
     })

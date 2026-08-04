@@ -3977,7 +3977,7 @@ Zdroje:
 Ne. Forward Email implementuje komplexní opatření proti vystavení dat při haváriích:
 
 * **Core dumps zakázány**: Zabraňuje vystavení paměti při haváriích
-* **Swap paměť zakázána**: Kompletně zakázána, aby se zabránilo získání citlivých dat ze swap souborů
+* **Kontrolované využití swapu**: Aplikační a další nedatabázoví hostitelé zůstávají bez swapu a jsou dimenzováni a monitorováni tak, aby běžná zátěž zůstala v RAM. Hostitelé MongoDB a Redis používají swapovací soubor pouze pro `root` s `vm.swappiness=1` striktně jako záchrannou síť při nedostatku paměti, nikoli jako běžnou kapacitu. Zakázání swapu všude může změnit přechodný tlak na databázovou paměť v okamžitý OOM kill. Aktivita databázového swapu je monitorována a vyšetřována.
 * **Architektura v paměti**: Obsah e-mailu existuje pouze v nestálé paměti během zpracování
 * **Ochrana šifrovacích klíčů**: Klíče nikdy nejsou uloženy na disku v prostém textu
 * **Fyzická bezpečnost**: Disky šifrované LUKS v2 zabraňují fyzickému přístupu k datům

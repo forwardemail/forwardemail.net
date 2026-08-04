@@ -239,7 +239,7 @@ async function addToDenylist(attr, headers, bounce, session) {
     plan: { $in: ['enhanced_protection', 'team'] },
     // has_mx_record: true,
     has_txt_record: true,
-    domain: host
+    name: host
   })
     .lean()
     .exec();
@@ -249,7 +249,7 @@ async function addToDenylist(attr, headers, bounce, session) {
       plan: { $in: ['enhanced_protection', 'team'] },
       // has_mx_record: true,
       has_txt_record: true,
-      domain: root
+      name: root
     })
       .lean()
       .exec();

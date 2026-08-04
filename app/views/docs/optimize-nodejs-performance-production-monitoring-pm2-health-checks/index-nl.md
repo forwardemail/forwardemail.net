@@ -343,13 +343,13 @@ We implementeren uitgebreide beveiliging voor onze Node.js productie-infrastruct
 
 Onze belangrijkste beveiligingsmaatregelen voor Node.js productieomgevingen:
 
-* **Swap uitgeschakeld** om te voorkomen dat gevoelige gegevens naar de schijf worden geschreven
+* **Gecontroleerd swapgebruik** houdt applicatie- en andere niet-databasehosts swapvrij en zo gedimensioneerd dat normale workloads in het RAM blijven, terwijl MongoDB- en Redis-hosts een root-only swapbestand met `vm.swappiness=1` gebruiken, strikt als een out-of-memory vangnet; database-swapactiviteit wordt gemonitord en onderzocht
 * **Core dumps uitgeschakeld** om geheugen dumps met gevoelige informatie te voorkomen
 * **USB-opslag geblokkeerd** om ongeautoriseerde gegevens toegang te voorkomen
 * **Kernel parameter tuning** voor zowel beveiliging als prestaties
 
-> \[!WARNING]
-> Bij het implementeren van best practices voor Node.js productie-implementatie kan het uitschakelen van swap leiden tot out-of-memory kills als uw applicatie de beschikbare RAM overschrijdt. We monitoren het geheugengebruik zorgvuldig en dimensioneren onze servers passend.
+> \[!NOTE]
+> Productieswap is een out-of-memory vangnet, geen normale capaciteit. Applicatiehosts blijven swapvrij en normale workloads worden geacht in het RAM te blijven.
 
 ### Applicatiebeveiliging voor Node.js Applicaties {#application-security-for-nodejs-applications}
 

@@ -27,6 +27,10 @@
   vars:
     copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
     copy_local_key_2: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa_2.pub') }}"
+    alert_email_sender: "{{ lookup('env', 'ALERT_EMAIL_FROM') | default('mailerdaemon@forwardemail.net', true) }}"
+    alert_email_recipients: "{{ lookup('env', 'ALERT_EMAIL_RECIPIENTS') | default(lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true), true) }}"
+    alert_public_ip: "{{ hostvars[inventory_hostname]['direct_alert_public_ip'] | default(ansible_host | default(ansible_default_ipv4.address), true) }}"
+    alert_helo_identity: "{{ hostvars[inventory_hostname]['direct_alert_helo_identity'] | default(ansible_fqdn, true) }}"
   handlers:
     - name: Restart SSH
       service:
@@ -39,6 +43,11 @@
     - name: Restart rsyslog
       service:
         name: rsyslog
+        state: restarted
+
+    - name: Restart Postfix
+      service:
+        name: postfix
         state: restarted
 
     - name: Restart monitoring services
@@ -250,6 +259,22 @@
         upgrade: safe
         update_cache: true
 
+    # Preseed Postfix as local-only during package installation.  Ansible
+    # installs the final send-only direct-MX configuration before restarting it.
+    - name: Preseed Postfix mailer type
+      debconf:
+        name: postfix
+        question: postfix/main_mailer_type
+        value: Local only
+        vtype: select
+
+    - name: Preseed Postfix system mail name
+      debconf:
+        name: postfix
+        question: postfix/mailname
+        value: "{{ ansible_fqdn }}"
+        vtype: string
+
     # install deps
     - name: Install deps
       apt:
@@ -268,8 +293,8 @@
           - nasm
           - ripgrep
           - redis-tools
-          - msmtp
-          - msmtp-mta
+          - postfix
+          - spf-tools-perl
           - tpm2-tools
           - libtss2-dev
         update_cache: true
@@ -313,46 +338,154 @@
         path: /tmp/portscan-protection.sh
         state: absent
 
-    # Configure msmtp for SMTP relay (lightweight sendmail replacement)
-    # This allows system services to send email alerts without running a mail server daemon
-    - name: Configure msmtp for SMTP relay
-      copy:
-        dest: /etc/msmtprc
-        content: |
-          # msmtp configuration for system email alerts
-          # Set default values for all accounts
-          defaults
-          auth           on
-          tls            on
-          tls_trust_file /etc/ssl/certs/ca-certificates.crt
-          logfile        /var/log/msmtp.log
-
-          # SMTP account configuration
-          account        default
-          host           {{ lookup('env', 'SMTP_HOST') | default('smtp.forwardemail.net') }}
-          port           {{ lookup('env', 'SMTP_PORT') | default('465') }}
-          from           {{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}
-          user           {{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}
-          password       {{ lookup('env', 'MSMTP_PASSWORD') }}
-          tls_starttls   off
-        mode: '0600'
+    # Infrastructure alerts must not depend on the production SMTP service,
+    # application queue, or MongoDB.  Postfix keeps a small local retry queue
+    # and delivers directly to each recipient domain's MX over outbound port 25.
+    - name: Configure send-only direct-to-MX Postfix
+      template:
+        src: "{{ playbook_dir }}/templates/postfix-alerts-main.cf.j2"
+        dest: /etc/postfix/main.cf
         owner: root
         group: root
-      no_log: true
+        mode: '0644'
+      notify: Restart Postfix
 
-    - name: Create msmtp log file
+    - name: Remove legacy production SMTP relay packages
+      apt:
+        name:
+          - msmtp
+          - msmtp-mta
+        state: absent
+        purge: true
+
+    - name: Remove legacy production SMTP relay credentials and logs
       file:
-        path: /var/log/msmtp.log
-        state: touch
-        mode: '0600'
-        owner: root
-        group: root
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/msmtprc
+        - /var/log/msmtp.log
 
-    - name: Set msmtp as default sendmail
+    - name: Set Postfix as the default sendmail implementation
       alternatives:
         name: mta
-        path: /usr/bin/msmtp
-      failed_when: false
+        path: /usr/sbin/sendmail.postfix
+
+    - name: Enable send-only Postfix
+      systemd:
+        name: postfix
+        enabled: true
+        state: started
+
+    - name: Apply direct-to-MX Postfix configuration before validation
+      meta: flush_handlers
+
+    - name: Validate Postfix configuration
+      command: postfix check
+      changed_when: false
+
+    - name: Verify hardened send-only Postfix runtime configuration
+      shell: |
+        set -eu
+
+        assert_postconf() {
+          parameter="$1"
+          expected="$2"
+          actual="$(postconf -h "$parameter")"
+          if [ "$actual" != "$expected" ]; then
+            printf '%s: expected <%s>, got <%s>\n' \
+              "$parameter" "$expected" "$actual" >&2
+            exit 1
+          fi
+        }
+
+        assert_postconf master_service_disable 'inet'
+        assert_postconf inet_interfaces 'loopback-only'
+        assert_postconf inet_protocols 'ipv4'
+        assert_postconf authorized_submit_users 'root'
+        assert_postconf relayhost ''
+        assert_postconf relay_domains ''
+        assert_postconf mynetworks ''
+        assert_postconf mydestination ''
+        assert_postconf default_transport 'smtp'
+        assert_postconf local_transport \
+          'error:local mailbox delivery is disabled'
+        assert_postconf virtual_transport \
+          'error:virtual mailbox delivery is disabled'
+        assert_postconf relay_transport \
+          'error:relay-domain delivery is disabled'
+        assert_postconf local_recipient_maps ''
+        assert_postconf alias_maps ''
+        assert_postconf alias_database ''
+        assert_postconf virtual_alias_maps ''
+        assert_postconf virtual_mailbox_maps ''
+        assert_postconf myhostname '{{ alert_helo_identity }}'
+        assert_postconf smtp_helo_name '$myhostname'
+        assert_postconf smtp_address_preference 'ipv4'
+        assert_postconf smtp_tls_security_level 'may'
+        assert_postconf smtp_tls_CAfile \
+          '/etc/ssl/certs/ca-certificates.crt'
+        assert_postconf smtpd_relay_restrictions \
+          'reject_unauth_destination'
+        assert_postconf smtpd_recipient_restrictions \
+          'reject_unauth_destination'
+        assert_postconf sender_canonical_maps \
+          'static:{{ alert_email_sender }}'
+        assert_postconf sender_canonical_classes \
+          'envelope_sender, header_sender'
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+    - name: Verify Postfix exposes no TCP listening sockets
+      shell: |
+        set -o pipefail
+        listeners="$(ss -H -ltnp)"
+        if printf '%s\n' "$listeners" | \
+          grep -Eq 'users:\(\("(master|smtpd|postscreen|smtp-sink)"'; then
+          printf '%s\n' "$listeners" >&2
+          exit 1
+        fi
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+    # Direct delivery only passes DMARC through SPF when the real egress IP is
+    # authorized for the aligned envelope sender.  The transport is hardened
+    # before these fail-closed DNS gates run, so a DNS error cannot leave the
+    # package's temporary installation-time listener behind.
+    - name: Verify direct-alert envelope sender SPF authorization for this host
+      command:
+        argv:
+          - /usr/bin/spfquery.mail-spf-perl
+          - --scope
+          - mfrom
+          - --identity
+          - "{{ alert_email_sender }}"
+          - --ip-address
+          - "{{ alert_public_ip }}"
+          - --helo-identity
+          - "{{ alert_helo_identity }}"
+      register: direct_alert_spf_check
+      changed_when: false
+      failed_when: direct_alert_spf_check.rc != 0
+
+    # Receivers evaluate HELO SPF when the envelope sender is empty (for
+    # example, delivery-status notifications), so the hostname needs its own
+    # passing policy in addition to the aligned envelope-sender policy.
+    - name: Verify direct-alert HELO SPF authorization for this host
+      command:
+        argv:
+          - /usr/bin/spfquery.mail-spf-perl
+          - --scope
+          - helo
+          - --identity
+          - "{{ alert_helo_identity }}"
+          - --ip-address
+          - "{{ alert_public_ip }}"
+      register: direct_alert_helo_spf_check
+      changed_when: false
+      failed_when: direct_alert_helo_spf_check.rc != 0
 
     # Configure systemd failure notifications
     # Deploy rate-limited email script
@@ -1460,9 +1593,9 @@
       fail2ban_dbpurgeage: 365d
       fail2ban_findtime: 365d
       # Email notifications for bans
-      fail2ban_destemail: "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
-      fail2ban_sendername: "{{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
-      fail2ban_sender: "{{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
+      fail2ban_destemail: "{{ alert_email_recipients }}"
+      fail2ban_sendername: "{{ alert_email_sender }}"
+      fail2ban_sender: "{{ alert_email_sender }}"
       fail2ban_action: "%(action_mwl)s"  # mail with logs
       fail2ban_mta: sendmail
 
@@ -1475,8 +1608,8 @@
     - role: hifis.toolkit.unattended_upgrades
       unattended_automatic_reboot_time: "02:00"
       # Email notifications for updates
-      unattended_mail: "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
-      unattended_mail_sender: "{{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
+      unattended_mail: "{{ alert_email_recipients }}"
+      unattended_mail_sender: "{{ alert_email_sender }}"
       unattended_mail_report: "on-change"  # Send email only when packages are upgraded or errors occur
       # Disable automatic reboots for critical database servers (mongo, redis)
       # These servers require manual intervention for kernel updates to ensure data integrity

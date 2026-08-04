@@ -447,10 +447,12 @@ Emails.index({ user: 1, created_at: -1 });
 Emails.index({ status: 1, created_at: -1 });
 
 // For send-emails job dual-queue strategy:
+// Equality fields precede the sort field; the scheduled-date range follows it
+// so MongoDB can preserve queue order without a blocking sort.
 // Phase 1 (queued): newest first for fast first-delivery
-Emails.index({ is_locked: 1, status: 1, date: 1, created_at: -1 });
+Emails.index({ is_locked: 1, status: 1, created_at: -1, date: 1 });
 // Phase 2 (deferred): oldest-touched first for fair round-robin retry
-Emails.index({ is_locked: 1, status: 1, date: 1, updated_at: 1 });
+Emails.index({ is_locked: 1, status: 1, updated_at: 1, date: 1 });
 
 // Compound indexes for common filter combinations
 Emails.index({ domain: 1, status: 1, created_at: -1 });

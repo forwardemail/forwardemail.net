@@ -22,6 +22,8 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const { Aliases, Users, Domains } = require('#models');
 const config = require('#config');
 
+const BACKFILL_BATCH_SIZE = 500;
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -29,9 +31,68 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+async function backfillPendingQueueFlag(Model, arrayField, flagField) {
+  let lastId;
+  let matchedCount = 0;
+  let modifiedCount = 0;
+
+  for (;;) {
+    const query = {
+      [flagField]: { $ne: true },
+      [`${arrayField}.0`]: { $exists: true }
+    };
+
+    if (lastId) query._id = { $gt: lastId };
+
+    const documents = await Model.find({ ...query })
+      .select('_id')
+      .sort({ _id: 1 })
+      .limit(BACKFILL_BATCH_SIZE)
+      .lean()
+      .exec();
+
+    if (documents.length === 0) break;
+
+    const ids = documents.map((document) => document._id);
+    const result = await Model.updateMany(
+      {
+        _id: { $in: ids },
+        [flagField]: { $ne: true },
+        [`${arrayField}.0`]: { $exists: true }
+      },
+      { $set: { [flagField]: true } }
+    );
+
+    matchedCount += documents.length;
+    modifiedCount += result.modifiedCount;
+    lastId = documents.at(-1)._id;
+  }
+
+  return { matchedCount, modifiedCount };
+}
+
 (async () => {
   await setupMongoose(logger);
   try {
+    // Backfill scalar queue markers in bounded keyset batches before the
+    // recurring workers switch from multikey array scans to partial indexes.
+    // Run the collections sequentially to avoid competing migration load.
+    const accountUpdateResults = await backfillPendingQueueFlag(
+      Users,
+      config.userFields.accountUpdates,
+      config.userFields.hasPendingAccountUpdates
+    );
+    const domainUpdateResults = await backfillPendingQueueFlag(
+      Domains,
+      'domain_updates',
+      'has_pending_domain_updates'
+    );
+
+    logger.info('backfilled pending update queue flags', {
+      accountUpdateResults,
+      domainUpdateResults
+    });
+
     // any domains that have txt and mx
     // and onboard_email_sent_at need verified_email_sent_at
     // to the same date as onboard_email_sent_at if it was not set

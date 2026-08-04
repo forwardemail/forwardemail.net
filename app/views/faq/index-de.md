@@ -3977,7 +3977,7 @@ Quellen:
 Nein. Forward Email implementiert umfassende Schutzmaßnahmen gegen eine Datenoffenlegung bei Abstürzen:
 
 * **Core Dumps deaktiviert**: Verhindert Speicheroffenlegung bei Abstürzen
-* **Swap-Speicher deaktiviert**: Vollständig deaktiviert, um die Extraktion sensibler Daten aus Swap-Dateien zu verhindern
+* **Kontrollierte Swap-Nutzung**: Anwendungs- und andere Nicht-Datenbank-Hosts bleiben Swap-frei und werden so dimensioniert und überwacht, dass normale Workloads im RAM bleiben. MongoDB- und Redis-Hosts verwenden eine Root-only-Swap-Datei mit `vm.swappiness=1` strikt als Out-of-Memory-Sicherheitsnetz, nicht als normale Kapazität. Das Deaktivieren von Swap überall kann vorübergehenden Datenbank-Speicherdruck in einen sofortigen OOM-Kill verwandeln. Datenbank-Swap-Aktivitäten werden überwacht und untersucht.
 * **In-Memory-Architektur**: E-Mail-Inhalte existieren nur im flüchtigen Speicher während der Verarbeitung
 * **Schutz der Verschlüsselungsschlüssel**: Schlüssel werden niemals im Klartext auf der Festplatte gespeichert
 * **Physische Sicherheit**: LUKS v2-verschlüsselte Festplatten verhindern physischen Datenzugriff

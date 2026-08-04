@@ -345,13 +345,13 @@ Ez a megközelítés segített azonosítani és megoldani a memória szivárgás
 
 Fő biztonsági intézkedéseink Node.js éles környezetekhez:
 
-* **Swap letiltva** annak érdekében, hogy érzékeny adatok ne kerüljenek lemezre
+* **Ellenőrzött swap használat** az alkalmazás- és egyéb nem adatbázis-kiszolgálókat swap-mentesen tartja, és úgy méretezi, hogy a normál munkaterhelések a RAM-ban maradjanak, míg a MongoDB és Redis kiszolgálók egy csak root által elérhető swap fájlt használnak `vm.swappiness=1` beállítással, szigorúan out-of-memory biztonsági hálóként; az adatbázis swap tevékenységét felügyeljük és kivizsgáljuk
 * **Core dumpok letiltva** hogy megakadályozzuk az érzékeny információkat tartalmazó memória dumpokat
 * **USB tároló blokkolva** az illetéktelen adat-hozzáférés megakadályozására
 * **Kernel paraméterek hangolása** mind biztonsági, mind teljesítménybeli okokból
 
-> \[!WARNING]
-> Node.js éles telepítési legjobb gyakorlatok bevezetésekor a swap letiltása okozhat memóriahiány miatti folyamatleállítást, ha az alkalmazás meghaladja a rendelkezésre álló RAM-ot. Gondosan figyeljük a memóriahasználatot és megfelelően méretezzük szervereinket.
+> \[!NOTE]
+> A termelési swap egy out-of-memory biztonsági háló, nem pedig normál kapacitás. Az alkalmazáskiszolgálók swap-mentesek maradnak, és a normál munkaterhelések várhatóan a RAM-ban maradnak.
 
 ### Alkalmazásbiztonság Node.js Alkalmazásokhoz {#application-security-for-nodejs-applications}
 

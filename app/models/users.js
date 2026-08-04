@@ -85,6 +85,7 @@ const omitExtraFields = [
   config.userFields.isBanned,
   config.userFields.banReason,
   config.userFields.accountUpdates,
+  config.userFields.hasPendingAccountUpdates,
   config.userFields.twoFactorReminderSentAt,
   config.userFields.featureReminderSentAt,
   config.userFields.pastDueReliefSentAt,
@@ -383,14 +384,8 @@ object[config.userFields.paymentReminderFinalNoticeSentAt] = Date;
 object[config.userFields.paymentReminderTerminationNoticeSentAt] = Date;
 
 // VISA trial subscription requirement notifications
-object[config.userFields.stripeTrialSentAt] = {
-  type: Date,
-  index: true
-};
-object[config.userFields.paypalTrialSentAt] = {
-  type: Date,
-  index: true
-};
+object[config.userFields.stripeTrialSentAt] = Date;
+object[config.userFields.paypalTrialSentAt] = Date;
 
 // When the user upgraded to a paid plan
 object[config.userFields.planSetAt] = {
@@ -557,8 +552,11 @@ object[config.userFields.pendingRecovery] = {
 
 // List of account updates that are batched every 1 min.
 object[config.userFields.accountUpdates] = {
-  type: Array,
-  index: true
+  type: Array
+};
+object[config.userFields.hasPendingAccountUpdates] = {
+  type: Boolean,
+  default: false
 };
 
 // Shared field names with @ladjs/passport for consistency
@@ -1210,6 +1208,14 @@ Users.post('init', (doc) => {
 });
 
 Users.pre('save', function (next) {
+  // Account removal anonymizes several audited fields at once.  Do not recreate
+  // pending work after the removal controller explicitly clears this queue.
+  if (this[config.userFields.isRemoved]) {
+    this[config.userFields.accountUpdates] = [];
+    this[config.userFields.hasPendingAccountUpdates] = false;
+    return next();
+  }
+
   // Filter by allowed field updates (otp enabled, profile updates, etc)
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);
@@ -1219,6 +1225,7 @@ Users.pre('save', function (next) {
         current: this[fieldName],
         previous: this[`__${fieldName}`]
       });
+      this[config.userFields.hasPendingAccountUpdates] = true;
       // Revert so we don't get into infinite loop
       this[`__${fieldName}`] = this[fieldName];
     }
@@ -1374,6 +1381,43 @@ Users.index(
   {
     partialFilterExpression: {
       [config.userFields.paymentReminderFollowUpSentAt]: { $exists: true }
+    }
+  }
+);
+
+Users.index(
+  {
+    [config.userFields.hasPendingAccountUpdates]: 1,
+    [config.userFields.hasVerifiedEmail]: 1,
+    [config.userFields.isBanned]: 1
+  },
+  {
+    partialFilterExpression: {
+      [config.userFields.hasPendingAccountUpdates]: true
+    }
+  }
+);
+
+Users.index(
+  {
+    [config.userFields.stripeTrialSentAt]: 1,
+    _id: 1
+  },
+  {
+    partialFilterExpression: {
+      [config.userFields.stripeSubscriptionID]: { $exists: true }
+    }
+  }
+);
+
+Users.index(
+  {
+    [config.userFields.paypalTrialSentAt]: 1,
+    _id: 1
+  },
+  {
+    partialFilterExpression: {
+      [config.userFields.paypalSubscriptionID]: { $exists: true }
     }
   }
 );

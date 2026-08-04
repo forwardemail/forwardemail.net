@@ -1,17 +1,28 @@
 ---
-# Remove Postfix from servers where it shouldn't be running
-# This fixes the issue where security.yml installed Postfix on all servers
+# Destructive cleanup for explicitly decommissioned, unmanaged hosts only.
+# Active hosts managed by security.yml require the send-only alert transport.
 
-- name: "Remove Postfix from Non-Mail Servers"
+- name: Remove Postfix from explicitly decommissioned hosts
   hosts: "{{ target_hosts }}"
   become: true
   become_user: root
+  pre_tasks:
+    - name: Require explicit Postfix removal acknowledgement
+      assert:
+        that:
+          - confirm_remove_postfix | default(false) | bool
+          - target_hosts | default('') | trim | length > 0
+          - target_hosts | trim != 'all'
+        fail_msg: >-
+          Refusing to remove the independent alert transport. Limit this
+          playbook to an explicit decommissioned host and set
+          confirm_remove_postfix=true.
   tasks:
     - name: Stop Postfix service
       systemd:
         name: postfix
         state: stopped
-        enabled: no
+        enabled: false
       failed_when: false
       register: postfix_stop
 
@@ -21,8 +32,8 @@
           - postfix
           - postfix-pcre
         state: absent
-        purge: yes
-        autoremove: yes
+        purge: true
+        autoremove: true
 
     - name: Remove Postfix configuration directory
       file:
@@ -42,19 +53,6 @@
 
     - name: Display removal status
       debug:
-        msg: |
-          ╔════════════════════════════════════════════════════════════════════════╗
-          ║                                                                        ║
-          ║                  📧 POSTFIX REMOVAL COMPLETE                          ║
-          ║                                                                        ║
-          ║  {% if postfix_stop.changed %}✅ Postfix service stopped and disabled                              ║{% else %}⚠️  Postfix service was not running                                  ║{% endif %}
-          ║  ✅ Postfix package removed                                           ║
-          ║  ✅ Postfix configuration removed (/etc/postfix)                      ║
-          ║  ✅ Postfix spool directory removed (/var/spool/postfix)              ║
-          ║                                                                        ║
-          ║  Server: {{ inventory_hostname }}
-          ║                                                                        ║
-          ║  Note: This server should NOT be running Postfix.                     ║
-          ║        Mail relay functionality has been removed.                     ║
-          ║                                                                        ║
-          ╚════════════════════════════════════════════════════════════════════════╝
+        msg: >-
+          Postfix was removed from decommissioned host {{ inventory_hostname }}.
+          The host no longer has the independent infrastructure alert transport.

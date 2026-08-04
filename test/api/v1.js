@@ -63,6 +63,7 @@ const { emoji } = config.views.locals;
 // domain keys from API responses
 const keys = _.sortBy([
   'domain_updates',
+  'has_pending_domain_updates',
   'has_newsletter',
   'ignore_mx_check',
   'allow_subdomain_forwarding',

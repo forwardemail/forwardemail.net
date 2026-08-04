@@ -345,13 +345,13 @@ Implementujeme komplexní zabezpečení naší produkční infrastruktury Node.j
 
 Naše klíčová bezpečnostní opatření pro produkční prostředí Node.js:
 
-* **Swap zakázán** aby se zabránilo zápisu citlivých dat na disk
+* **Kontrolované využití swapu** udržuje aplikační a další nedatabázové hostitele bez swapu a dimenzované tak, aby běžná zátěž zůstala v RAM, zatímco hostitelé MongoDB a Redis používají swapovací soubor pouze pro `root` s `vm.swappiness=1` striktně jako záchrannou síť při nedostatku paměti; aktivita databázového swapu je monitorována a vyšetřována
 * **Core dumpy zakázány** aby se zabránilo výpisům paměti obsahujícím citlivé informace
 * **USB úložiště zablokováno** aby se zabránil neoprávněný přístup k datům
 * **Ladění parametrů jádra** pro bezpečnost i výkon
 
-> \[!WARNING]
-> Při zavádění osvědčených postupů nasazení produkce Node.js může zakázání swapu způsobit ukončení procesu kvůli nedostatku paměti, pokud vaše aplikace překročí dostupnou RAM. Pečlivě sledujeme využití paměti a správně dimenzujeme naše servery.
+> \[!NOTE]
+> Produkční swap je záchranná síť při nedostatku paměti, nikoli běžná kapacita. Aplikační hostitelé zůstávají bez swapu a očekává se, že běžná zátěž zůstane v RAM.
 
 ### Bezpečnost aplikací pro Node.js {#application-security-for-nodejs-applications}
 

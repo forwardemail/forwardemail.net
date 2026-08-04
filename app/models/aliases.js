@@ -503,8 +503,7 @@ const Aliases = new mongoose.Schema({
   },
   has_recipient_verification: {
     type: Boolean,
-    default: false,
-    index: true
+    default: false
   },
   settings: AliasSettings,
   // recipients that are verified (ones that have clicked email link)
@@ -586,6 +585,14 @@ Aliases.index({ domain: 1, is_enabled: 1, user: 1, _id: 1 });
 Aliases.index({ user: 1, domain: 1 });
 Aliases.index({ _id: 1, domain: 1 });
 Aliases.index({ name: 1, domain: 1 });
+Aliases.index(
+  { is_rekey: 1, rekey_started_at: 1 },
+  { partialFilterExpression: { is_rekey: true } }
+);
+Aliases.index(
+  { has_recipient_verification: 1, domain: 1 },
+  { partialFilterExpression: { has_recipient_verification: true } }
+);
 
 // validate PGP key if any
 Aliases.pre('save', async function (next) {

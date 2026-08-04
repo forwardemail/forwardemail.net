@@ -345,13 +345,13 @@ Toteutamme kattavan turvallisuuden Node.js-tuotantoinfrastruktuurillemme Ansible
 
 Keskeiset turvallisuustoimenpiteemme Node.js-tuotantoympäristöissä:
 
-* **Swap pois käytöstä** estämään arkaluontoisten tietojen kirjoittaminen levylle
+* **Hallittu swapin käyttö** pitää sovellus- ja muut ei-tietokantapalvelimet ilman swapia ja mitoitettuna siten, että normaalit työkuormat pysyvät RAM-muistissa, kun taas MongoDB- ja Redis-palvelimet käyttävät vain root-käyttäjän swap-tiedostoa asetuksella `vm.swappiness=1` tiukasti out-of-memory-turvaverkkona; tietokantojen swap-toimintaa valvotaan ja tutkitaan
 * **Core dumpit pois käytöstä** estämään muistidumppien sisältämät arkaluontoiset tiedot
 * **USB-tallennustilan esto** estämään luvaton tiedonsaanti
 * **Kernel-parametrien säätö** sekä turvallisuuden että suorituskyvyn parantamiseksi
 
-> \[!WARNING]
-> Node.js-tuotantokäyttöönoton parhaiden käytäntöjen toteuttamisessa swapin poistaminen käytöstä voi aiheuttaa muistin loppumiseen liittyviä prosessien tappamisia, jos sovelluksesi ylittää käytettävissä olevan RAM-muistin. Seuraamme muistinkäyttöä tarkasti ja mitoittamme palvelimemme asianmukaisesti.
+> \[!NOTE]
+> Tuotannon swap on out-of-memory-turvaverkko, ei normaali kapasiteetti. Sovelluspalvelimet pidetään ilman swapia, ja normaalien työkuormien odotetaan pysyvän RAM-muistissa.
 
 ### Sovellusturvallisuus Node.js-sovelluksille {#application-security-for-nodejs-applications}
 

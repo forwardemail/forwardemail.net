@@ -1,0 +1,56 @@
+# WARNING: This file is managed by Ansible.
+# Send-only transport for infrastructure alerts.  Delivery is direct to each
+# recipient domain's MX and is independent of Forward Email's submission queue.
+
+compatibility_level = 3.6
+myhostname = {{ alert_helo_identity }}
+myorigin = $myhostname
+mydestination =
+relayhost =
+relay_domains =
+mynetworks =
+
+# Keep local sendmail(1) submission and outbound SMTP, but expose no inbound
+# SMTP listener.  Only root-owned automation may submit to the local queue.
+master_service_disable = inet
+inet_interfaces = loopback-only
+inet_protocols = ipv4
+authorized_submit_users = root
+
+# Deliver queued alerts only through the outbound SMTP client.  Disable all
+# local, virtual, and relay-domain delivery paths explicitly.
+default_transport = smtp
+local_transport = error:local mailbox delivery is disabled
+virtual_transport = error:virtual mailbox delivery is disabled
+relay_transport = error:relay-domain delivery is disabled
+local_recipient_maps =
+alias_maps =
+alias_database =
+virtual_alias_maps =
+virtual_mailbox_maps =
+
+# Use the hostname as HELO and opportunistic TLS for direct MX delivery.
+smtp_helo_name = $myhostname
+smtp_tls_security_level = may
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+smtp_tls_loglevel = 0
+smtp_address_preference = ipv4
+smtp_connection_cache_on_demand = yes
+
+# Normalize both envelope and visible senders for every local automation path,
+# including Fail2ban and unattended-upgrades.
+sender_canonical_maps = static:{{ alert_email_sender }}
+sender_canonical_classes = envelope_sender, header_sender
+
+# Keep retry state local and bounded so alert delivery remains independent of
+# MongoDB and the application mail queue without retaining stale alerts forever.
+queue_run_delay = 300s
+minimal_backoff_time = 300s
+maximal_backoff_time = 3600s
+maximal_queue_lifetime = 1d
+bounce_queue_lifetime = 1d
+
+# Reject accidental relay or local-recipient use if an inet service is ever
+# enabled manually in the future.
+smtpd_relay_restrictions = reject_unauth_destination
+smtpd_recipient_restrictions = reject_unauth_destination

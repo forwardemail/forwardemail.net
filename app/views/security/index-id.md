@@ -199,7 +199,7 @@ Semua kode menjalani:
 * **Penguatan Kernel**: Parameter kernel dan konfigurasi sysctl yang aman
 * **Pembatasan Sistem Berkas**: opsi mount noexec, nosuid, dan nodev jika sesuai
 * **Core Dumps Dinonaktifkan**: Sistem dikonfigurasi untuk mencegah core dumps demi keamanan
-* **Swap Dinonaktifkan**: Memori swap dinonaktifkan untuk mencegah kebocoran data
+* **Penggunaan Swap Terkendali**: Host aplikasi dan host non-basis data lainnya tetap bebas swap serta diukur dan dipantau sehingga beban kerja normal tetap berada di RAM. Host MongoDB dan Redis menggunakan file swap khusus root dengan `vm.swappiness=1` secara ketat sebagai jaring pengaman out-of-memory, bukan kapasitas normal. Aktivitas swap basis data dipantau dan diselidiki.
 * **Perlindungan Pemindaian Port**: Deteksi otomatis dan pemblokiran upaya pemindaian port
 * **Transparent Huge Pages Dinonaktifkan**: THP dinonaktifkan untuk peningkatan performa dan keamanan
 * **Penguatan Layanan Sistem**: Layanan tidak penting seperti Apport dinonaktifkan

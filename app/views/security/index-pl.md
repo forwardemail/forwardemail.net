@@ -199,7 +199,7 @@ Nasz [konfiguracja Ansible](https://github.com/forwardemail/forwardemail.net/tre
 * **Utwardzanie jądra**: Bezpieczne parametry jądra i konfiguracje sysctl
 * **Ograniczenia systemu plików**: opcje montowania noexec, nosuid i nodev tam, gdzie to stosowne
 * **Wyłączone zrzuty pamięci (core dumps)**: System skonfigurowany do zapobiegania zrzutom pamięci dla bezpieczeństwa
-* **Wyłączona pamięć wymiany (swap)**: Pamięć swap wyłączona, aby zapobiec wyciekom danych
+* **Kontrolowane użycie swap**: Hosty aplikacji i inne hosty niebazodanowe pozostają bez swap i są tak wymiarowane oraz monitorowane, aby normalne obciążenia mieściły się w pamięci RAM. Hosty MongoDB i Redis używają pliku swap tylko dla root z `vm.swappiness=1` wyłącznie jako zabezpieczenia przed brakiem pamięci, a nie jako standardowej pojemności. Aktywność swap baz danych jest monitorowana i badana.
 * **Ochrona przed skanowaniem portów**: Automatyczne wykrywanie i blokowanie prób skanowania portów
 * **Wyłączone Transparent Huge Pages**: THP wyłączone dla poprawy wydajności i bezpieczeństwa
 * **Utwardzanie usług systemowych**: Wyłączone usługi nieistotne, takie jak Apport

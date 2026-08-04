@@ -199,7 +199,7 @@ Tất cả mã nguồn trải qua:
 * **Tăng cường kernel**: Tham số kernel và cấu hình sysctl an toàn
 * **Hạn chế hệ thống tập tin**: các tùy chọn mount noexec, nosuid, và nodev khi thích hợp
 * **Tắt core dumps**: Hệ thống được cấu hình để ngăn chặn core dumps vì lý do bảo mật
-* **Tắt swap**: Bộ nhớ swap bị vô hiệu hóa để ngăn rò rỉ dữ liệu
+* **Sử dụng Swap có kiểm soát**: Các máy chủ ứng dụng và máy chủ không phải cơ sở dữ liệu khác vẫn không sử dụng swap và được định cỡ cũng như giám sát để các khối lượng công việc bình thường luôn nằm trong RAM. Các máy chủ MongoDB và Redis sử dụng một tệp swap chỉ dành cho `root` với `vm.swappiness=1` hoàn toàn như một biện pháp an toàn khi hết bộ nhớ, không phải là dung lượng bình thường. Hoạt động swap của cơ sở dữ liệu được giám sát và điều tra.
 * **Bảo vệ quét cổng**: Phát hiện và chặn tự động các cố gắng quét cổng
 * **Tắt Transparent Huge Pages**: THP bị vô hiệu hóa để cải thiện hiệu suất và bảo mật
 * **Tăng cường dịch vụ hệ thống**: Vô hiệu hóa các dịch vụ không cần thiết như Apport

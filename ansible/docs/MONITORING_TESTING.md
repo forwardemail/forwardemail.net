@@ -110,8 +110,10 @@ ssh devops@<server-hostname>
 Ensure these are set (usually configured via Ansible):
 
 ```bash
-echo $MSMTP_RCPTS  # Should show email recipient(s)
+printf '%s\n' "${ALERT_EMAIL_RECIPIENTS:-security@forwardemail.net}"
 ```
+
+`MSMTP_RCPTS` is accepted only as a deprecated migration fallback.
 
 ---
 
@@ -1347,49 +1349,49 @@ sudo systemctl status unbound.service
 ### Testing Email Delivery
 
 ```bash
-# 1. Check msmtp is configured
-# Check msmtp configuration
-cat /etc/msmtprc
-sudo tail /var/log/msmtp.log
+# 1. Validate configuration and root-only submission
+sudo postfix check
+sudo postconf -h master_service_disable   # Expected: inet
+sudo postconf -h authorized_submit_users  # Expected: root
+sudo postconf -h relayhost                # Expected: empty
 
-# Expected: Active: active (running)
+# 2. Prove that Postfix owns no TCP listening socket
+if sudo ss -H -ltnp | grep -Eq 'users:\(\("(master|smtpd|postscreen|smtp-sink)"'; then
+  echo "FAIL: Postfix has a TCP listener" >&2
+  exit 1
+fi
 
-# 2. Test email sending directly
-echo "Test email body" | mail -s "Test Subject" $MSMTP_RCPTS
+# 3. Test the same shared, rate-limited path used by monitoring
+sudo /usr/local/bin/send-rate-limited-email.sh \
+  monitoring-test \
+  "Monitoring test" \
+  "Test from $(hostname)"
 
-# 3. Check mail queue
-mailq
+# 4. Inspect the local retry queue and delivery log
+sudo postqueue -p
+sudo journalctl -u postfix -n 100 --no-pager
 
-# Expected: Mail queue is empty (if emails sent successfully)
+# 5. Inspect rate-limit state
+sudo ls -la /var/lib/email-rate-limits
 
-# 4. View mail logs
-sudo tail -f /var/log/mail.log
-
-# Expected: Shows email delivery attempts
-
-# 5. Test rate-limited email script
-/usr/local/bin/send-rate-limited-email.sh "test-service" "Test Subject" "Test Body"
-
-# 6. Check rate limit lockfiles
-ls -la /var/lock/*-monitor-*.lock
-
-# Expected: Shows lockfiles for rate limiting
-
-# 7. Test failure notification service directly
+# 6. Test the failure notification service directly
 sudo systemctl start failure-notification@test.service
-
-# 8. View failure notification logs
 sudo journalctl -u failure-notification@test.service -n 20
 ```
 
 ### Validation Checklist
 
-* [ ] msmtp is configured
-* [ ] Test emails are delivered
-* [ ] Mail logs show successful delivery
-* [ ] Rate limiting works (prevents spam)
-* [ ] `failure-notification@.service` template works
-* [ ] All monitoring services can send emails
+* [ ] `postfix check` succeeds
+* [ ] `master_service_disable` is `inet`
+* [ ] `authorized_submit_users` is `root`
+* [ ] `relayhost` is empty
+* [ ] Postfix owns no TCP listening socket
+* [ ] Envelope-sender and HELO SPF preflights return pass
+* [ ] Test alerts are delivered through the shared sender
+* [ ] Postfix logs show successful direct-MX delivery
+* [ ] Rate limiting works
+* [ ] `failure-notification@.service` works
+* [ ] All monitoring services can queue alerts
 
 ---
 
@@ -1433,29 +1435,29 @@ sudo bash -x /usr/local/bin/<script-name>.sh
 #### 3. No Email Alerts
 
 ```bash
-# Check msmtp configuration
-# Check msmtp configuration
-cat /etc/msmtprc
-sudo tail /var/log/msmtp.log
+# Validate the locked-down runtime
+sudo postfix check
+sudo postconf -h master_service_disable
+sudo postconf -h authorized_submit_users
+sudo postconf -h relayhost
+sudo ss -H -ltnp | grep -E 'master|smtpd|postscreen|smtp-sink'
 
-# Check mail queue
-mailq
+# Inspect queue and delivery logs
+sudo postqueue -p
+sudo journalctl -u postfix -n 100 --no-pager
 
-# View mail logs
-sudo tail -f /var/log/mail.log
+# Confirm recipients and rate-limit state
+printf '%s\n' "${ALERT_EMAIL_RECIPIENTS:-security@forwardemail.net}"
+sudo ls -la /var/lib/email-rate-limits
 
-# Check environment variables
-echo $MSMTP_RCPTS
-
-# Test email sending
-echo "Test" | mail -s "Test" $MSMTP_RCPTS
-
-# Check rate limiting lockfiles
-ls -la /var/lock/*-monitor-*.lock
-
-# Clear rate limiting (if needed)
-sudo rm /var/lock/*-monitor-*.lock
+# Test the production sender path
+sudo /usr/local/bin/send-rate-limited-email.sh \
+  monitoring-test \
+  "Monitoring test" \
+  "Test from $(hostname)"
 ```
+
+`master_service_disable` must be `inet`; `authorized_submit_users` must be `root`; `relayhost` and the `ss`/`grep` output must be empty. If delivery still fails, re-run both SPF commands from the [monitoring guide](./MONITORING.md#no-alerts-received).
 
 #### 4. Permission Errors
 
@@ -1530,9 +1532,15 @@ echo -e "\n=== UNBOUND MONITORING ==="
 sudo systemctl status unbound.service
 
 echo -e "\n=== EMAIL INFRASTRUCTURE ==="
-# Check msmtp configuration
-cat /etc/msmtprc
-sudo tail /var/log/msmtp.log.service
+sudo postfix check
+sudo postconf -h master_service_disable
+sudo postconf -h authorized_submit_users
+sudo postconf -h relayhost
+sudo postqueue -p
+sudo journalctl -u postfix -n 20 --no-pager
+if sudo ss -H -ltnp | grep -Eq 'users:\(\("(master|smtpd|postscreen|smtp-sink)"'; then
+  echo "FAIL: Postfix has a TCP listener" >&2
+fi
 
 echo -e "\n=== ALL TIMERS ==="
 sudo systemctl list-timers | grep -E "monitor|backup|update.*ufw"
@@ -1540,8 +1548,8 @@ sudo systemctl list-timers | grep -E "monitor|backup|update.*ufw"
 echo -e "\n=== RECENT LOGS ==="
 sudo ls -lh /var/log/*monitor*.log
 
-echo -e "\n=== RATE LIMIT LOCKFILES ==="
-sudo ls -la /var/lock/*-monitor-*.lock 2>/dev/null || echo "No lockfiles (no recent alerts)"
+echo -e "\n=== RATE LIMIT STATE ==="
+sudo ls -la /var/lib/email-rate-limits 2>/dev/null || echo "No rate-limit state"
 
 echo -e "\n=== HEALTH CHECK COMPLETE ==="
 ```

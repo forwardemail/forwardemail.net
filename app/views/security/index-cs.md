@@ -199,7 +199,7 @@ Naše [Ansible konfigurace](https://github.com/forwardemail/forwardemail.net/tre
 * **Zpevnění jádra**: Bezpečné parametry jádra a konfigurace sysctl
 * **Omezení souborového systému**: možnosti mount noexec, nosuid a nodev tam, kde je to vhodné
 * **Zakázány core dumpy**: Systém nakonfigurován tak, aby zabránil core dumpům z bezpečnostních důvodů
-* **Zakázán swap**: Swap paměť zakázána, aby se zabránilo úniku dat
+* **Kontrolované využití swapu**: Aplikační a další nedatabázoví hostitelé zůstávají bez swapu a jsou dimenzováni a monitorováni tak, aby běžná zátěž zůstala v RAM. Hostitelé MongoDB a Redis používají swapovací soubor pouze pro `root` s `vm.swappiness=1` striktně jako záchrannou síť při nedostatku paměti, nikoli jako běžnou kapacitu. Aktivita databázového swapu je monitorována a vyšetřována.
 * **Ochrana proti skenování portů**: Automatická detekce a blokování pokusů o skenování portů
 * **Zakázány Transparent Huge Pages**: THP zakázány pro lepší výkon a bezpečnost
 * **Zpevnění systémových služeb**: Nepotřebné služby jako Apport jsou zakázány

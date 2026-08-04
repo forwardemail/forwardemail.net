@@ -199,7 +199,7 @@ Unsere [Ansible-Konfiguration](https://github.com/forwardemail/forwardemail.net/
 * **Kernel-Härtung**: Sichere Kernel-Parameter und sysctl-Konfigurationen
 * **Dateisystem-Beschränkungen**: noexec, nosuid und nodev Mount-Optionen wo angebracht
 * **Core Dumps deaktiviert**: System so konfiguriert, dass Core Dumps aus Sicherheitsgründen verhindert werden
-* **Swap deaktiviert**: Swap-Speicher deaktiviert, um Datenlecks zu verhindern
+* **Kontrollierte Swap-Nutzung**: Anwendungs- und andere Nicht-Datenbank-Hosts bleiben Swap-frei und werden so dimensioniert und überwacht, dass normale Workloads im RAM bleiben. MongoDB- und Redis-Hosts verwenden eine Root-only-Swap-Datei mit `vm.swappiness=1` strikt als Out-of-Memory-Sicherheitsnetz, nicht als normale Kapazität. Datenbank-Swap-Aktivitäten werden überwacht und untersucht.
 * **Port-Scan-Schutz**: Automatische Erkennung und Blockierung von Port-Scan-Versuchen
 * **Transparent Huge Pages deaktiviert**: THP deaktiviert für bessere Leistung und Sicherheit
 * **Systemdienst-Härtung**: Nicht essentielle Dienste wie Apport deaktiviert

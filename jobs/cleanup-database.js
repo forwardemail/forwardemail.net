@@ -40,6 +40,32 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+const ORPHAN_BATCH_SIZE = 500;
+
+async function deleteOrphans(Model, pipeline, message) {
+  const ids = [];
+  let deletedCount = 0;
+  const cursor = Model.aggregate([
+    ...pipeline,
+    { $project: { _id: 1 } }
+  ]).cursor({ batchSize: ORPHAN_BATCH_SIZE });
+
+  async function flush() {
+    if (ids.length === 0) return;
+    const result = await Model.deleteMany({ _id: { $in: ids } });
+    deletedCount += result.deletedCount;
+    ids.length = 0;
+  }
+
+  for await (const document of cursor) {
+    ids.push(document._id);
+    if (ids.length >= ORPHAN_BATCH_SIZE) await flush();
+  }
+
+  await flush();
+  logger.info(message, { deletedCount });
+}
+
 (async () => {
   await setupMongoose(logger);
 
@@ -74,123 +100,63 @@ graceful.listen();
       });
     }
 
-    // lookup all global domains and then lookup all unique userIds created using them
-    const globalDomainIds = await Domains.distinct('_id', { is_global: true });
-
-    const [
-      globalDomainAliasUserIds,
-      partiallyVerifiedDomainUserIds,
-      domainsCreatedWithinPastWeekUserIds
-    ] = await Promise.all([
-      // exclude any user ids that have global aliases
-      Aliases.distinct('user', {
-        domain: { $in: globalDomainIds }
-      }),
-      // exclude any user ids that have domains that are partially verified or not free
-      Domains.distinct('members.user', {
-        $or: [
+    // Cleanup orphaned records without loading every user or domain ID into
+    // application memory or sending multi-megabyte `$nin` predicates.
+    const hasUsers = await Users.exists({});
+    if (hasUsers) {
+      await deleteOrphans(
+        Aliases,
+        [
           {
-            has_mx_record: true
+            $lookup: {
+              from: Users.collection.name,
+              localField: 'user',
+              foreignField: '_id',
+              pipeline: [{ $limit: 1 }, { $project: { _id: 1 } }],
+              as: 'existing_users'
+            }
           },
+          { $match: { existing_users: { $eq: [] } } }
+        ],
+        'deleted aliases for users that did not exist'
+      );
+
+      await deleteOrphans(
+        Domains,
+        [
           {
-            has_txt_record: true
+            $lookup: {
+              from: Users.collection.name,
+              localField: 'members.user',
+              foreignField: '_id',
+              pipeline: [{ $limit: 1 }, { $project: { _id: 1 } }],
+              as: 'existing_users'
+            }
           },
-          {
-            plan: {
-              $in: ['enhanced_protection', 'team']
-            }
-          }
-        ]
-      }),
-      // exclude any user ids that have domains created within past 7 days
-      Domains.distinct('members.user', {
-        created_at: {
-          $gte: dayjs().subtract(7, 'days').toDate()
-        }
-      })
-    ]);
-
-    logger.info('global domain alias user ids', {
-      count: globalDomainAliasUserIds.length
-    });
-    logger.info('partially verified domain user ids', {
-      count: partiallyVerifiedDomainUserIds.length
-    });
-    logger.info('domains created within past week user ids', {
-      count: domainsCreatedWithinPastWeekUserIds.length
-    });
-
-    const query = {
-      plan: 'free',
-      [config.userFields.isBanned]: {
-        $ne: true
-      },
-      created_at: {
-        $lte: dayjs().subtract(30, 'days').toDate()
-      },
-      _id: {
-        $nin: [
-          ...globalDomainAliasUserIds,
-          ...partiallyVerifiedDomainUserIds,
-          ...domainsCreatedWithinPastWeekUserIds
-        ]
-      }
-    };
-
-    // TODO: we should probably delete these users or put them into a drip campaign
-    const results = await Users.count(query);
-
-    logger.info(
-      'users on free plan created 30+ days ago without global aliases and no partially verified domains',
-      { results }
-    );
-
-    // cleanup aliases and domains for users that do not exist
-    {
-      const userIds = await Users.distinct('_id', {});
-      // safety net
-      if (userIds.length > 0) {
-        {
-          // delete aliases with user ids that do not exist
-          const results = await Aliases.deleteMany({
-            user: {
-              $nin: userIds
-            }
-          });
-          logger.info('deleted aliases for users that did not exist', {
-            results
-          });
-        }
-
-        {
-          // delete domains with user ids that do not exist
-          const results = await Domains.deleteMany({
-            'members.user': {
-              $nin: userIds
-            }
-          });
-          logger.info('deleted domains for users that did not exist', {
-            results
-          });
-        }
-      }
+          { $match: { existing_users: { $eq: [] } } }
+        ],
+        'deleted domains for users that did not exist'
+      );
     }
 
-    // cleanup aliases for domains that do not exist
-    {
-      const domainIds = await Domains.distinct('_id', {});
-      // safety net
-      if (domainIds.length > 0) {
-        // delete aliases with domains that do not exist
-        const results = await Aliases.deleteMany({
-          domain: {
-            $nin: domainIds
-          }
-        });
-        logger.info('deleted aliases for domains that did not exist', {
-          results
-        });
-      }
+    const hasDomains = await Domains.exists({});
+    if (hasDomains) {
+      await deleteOrphans(
+        Aliases,
+        [
+          {
+            $lookup: {
+              from: Domains.collection.name,
+              localField: 'domain',
+              foreignField: '_id',
+              pipeline: [{ $limit: 1 }, { $project: { _id: 1 } }],
+              as: 'existing_domains'
+            }
+          },
+          { $match: { existing_domains: { $eq: [] } } }
+        ],
+        'deleted aliases for domains that did not exist'
+      );
     }
 
     const bannedUserIdSet = await Users.getBannedUserIdSet(client);

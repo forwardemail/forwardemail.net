@@ -44,6 +44,7 @@ const graceful = new Graceful({
 });
 
 const THREE_SECONDS = ms('3s');
+const BATCH_SIZE = 100;
 
 graceful.listen();
 
@@ -53,8 +54,24 @@ async function mapper(id) {
   if (!user) return;
 
   try {
+    const [hasStripePayment, hasPayPalPayment] = await Promise.all([
+      isSANB(user[config.userFields.stripeSubscriptionID])
+        ? Payments.exists({
+            [config.userFields.stripeSubscriptionID]:
+              user[config.userFields.stripeSubscriptionID]
+          })
+        : false,
+      isSANB(user[config.userFields.paypalSubscriptionID])
+        ? Payments.exists({
+            [config.userFields.paypalSubscriptionID]:
+              user[config.userFields.paypalSubscriptionID]
+          })
+        : false
+    ]);
+
     // stripe support
     if (
+      !hasStripePayment &&
       isSANB(user[config.userFields.stripeSubscriptionID]) &&
       !_.isDate(user[config.userFields.stripeTrialSentAt])
     ) {
@@ -162,6 +179,7 @@ async function mapper(id) {
     // (they don't explicitly suggest to do this anywhere like Stripe does, but we're doing it for consistency)
     //
     if (
+      !hasPayPalPayment &&
       isSANB(user[config.userFields.paypalSubscriptionID]) &&
       !_.isDate(user[config.userFields.paypalTrialSentAt])
     ) {
@@ -296,68 +314,41 @@ async function mapper(id) {
   await setupMongoose(logger);
 
   try {
-    //
-    // we can filter out users with subscriptions
-    // that have already had payments (aka no trial period)
-    //
-    const [paidStripeSubscriptionIds, paidPayPalSubscriptionIds] =
-      await Promise.all([
-        Payments.distinct(config.userFields.stripeSubscriptionID, {
-          [config.userFields.stripeSubscriptionID]: { $exists: true }
-        }),
-        Payments.distinct(config.userFields.paypalSubscriptionID, {
-          [config.userFields.paypalSubscriptionID]: { $exists: true }
-        })
-      ]);
+    // Process short, closed batches so slow payment-provider API calls never
+    // hold a MongoDB cursor open or materialize the complete candidate set.
+    let lastId;
+    let hasMore = true;
+    while (hasMore) {
+      const filter = {
+        $or: [
+          {
+            [config.userFields.stripeSubscriptionID]: { $exists: true },
+            [config.userFields.stripeTrialSentAt]: { $exists: false }
+          },
+          {
+            [config.userFields.paypalSubscriptionID]: { $exists: true },
+            [config.userFields.paypalTrialSentAt]: { $exists: false }
+          }
+        ],
+        ...(lastId ? { _id: { $gt: lastId } } : {})
+      };
 
-    //
-    // collect user IDs first via cursor, then process serially
-    // to avoid MongoDB CursorNotFound errors caused by slow per-user
-    // API calls (e.g. PayPal rate-limit delay) keeping the cursor open
-    //
-    const ids = [];
-    for await (const user of Users.find({
-      $or: [
-        {
-          $and: [
-            { [config.userFields.stripeSubscriptionID]: { $exists: true } },
-            { [config.userFields.stripeTrialSentAt]: { $exists: false } },
-            ...(paidStripeSubscriptionIds.length > 0
-              ? [
-                  {
-                    [config.userFields.stripeSubscriptionID]: {
-                      $nin: paidStripeSubscriptionIds
-                    }
-                  }
-                ]
-              : [])
-          ]
-        },
-        {
-          $and: [
-            { [config.userFields.paypalSubscriptionID]: { $exists: true } },
-            { [config.userFields.paypalTrialSentAt]: { $exists: false } },
-            ...(paidPayPalSubscriptionIds.length > 0
-              ? [
-                  {
-                    [config.userFields.paypalSubscriptionID]: {
-                      $nin: paidPayPalSubscriptionIds
-                    }
-                  }
-                ]
-              : [])
-          ]
-        }
-      ]
-    })
-      .select('_id')
-      .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      ids.push(user._id);
+      const users = await Users.find({ ...filter })
+        .sort({ _id: 1 })
+        .limit(BATCH_SIZE)
+        .select('_id')
+        .lean()
+        .exec();
+
+      hasMore = users.length > 0;
+      if (!hasMore) continue;
+
+      lastId = users.at(-1)._id;
+      await pMapSeries(
+        users.map((user) => user._id),
+        mapper
+      );
     }
-
-    await pMapSeries(ids, mapper);
   } catch (err) {
     await logger.error(err);
     // send an email to admins of the error

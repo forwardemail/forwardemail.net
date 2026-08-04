@@ -253,13 +253,12 @@ send_sudo_alert() {
 </body>
 </html>"
 
-    # Send email using rate-limited email script
-    if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        /usr/local/bin/send-rate-limited-email.sh "root-sudo-${user}" "$subject" "$body"
-        log_message "Sudo alert sent for user: $user"
+    # All alerts use the shared, rate-limited direct-to-MX sender.
+    if /usr/local/bin/send-rate-limited-email.sh "root-sudo-${user}" "$subject" "$body"; then
+        log_message "Sudo alert queued for user: $user"
     else
-        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "${MSMTP_RCPTS:-security@forwardemail.net}"
-        log_message "Sudo alert sent via sendmail for user: $user"
+        log_message "ERROR: Failed to queue sudo alert for user: $user"
+        return 1
     fi
 }
 
@@ -344,13 +343,12 @@ send_su_alert() {
 </body>
 </html>"
 
-    # Send email using rate-limited email script
-    if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        /usr/local/bin/send-rate-limited-email.sh "root-su-${user}" "$subject" "$body"
-        log_message "Su to root alert sent for user: $user"
+    # All alerts use the shared, rate-limited direct-to-MX sender.
+    if /usr/local/bin/send-rate-limited-email.sh "root-su-${user}" "$subject" "$body"; then
+        log_message "Su to root alert queued for user: $user"
     else
-        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "${MSMTP_RCPTS:-security@forwardemail.net}"
-        log_message "Su to root alert sent via sendmail for user: $user"
+        log_message "ERROR: Failed to queue su-to-root alert for user: $user"
+        return 1
     fi
 }
 

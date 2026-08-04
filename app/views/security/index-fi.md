@@ -199,7 +199,7 @@ Meidän [Ansible-konfiguraatiomme](https://github.com/forwardemail/forwardemail.
 * **Ytimen koventaminen**: Turvalliset ydinparametrit ja sysctl-konfiguraatiot
 * **Tiedostojärjestelmän rajoitukset**: noexec, nosuid ja nodev liitosehdot soveltuvin osin
 * **Core dumpien poisto käytöstä**: Järjestelmä on konfiguroitu estämään core dumpit turvallisuuden vuoksi
-* **Swap-muistin poisto käytöstä**: Swap-muisti poistettu käytöstä tietovuotojen estämiseksi
+* **Hallittu swapin käyttö**: Sovellus- ja muut ei-tietokantapalvelimet pidetään ilman swapia, ja ne on mitoitettu ja valvottu siten, että normaalit työkuormat pysyvät RAM-muistissa. MongoDB- ja Redis-palvelimet käyttävät vain root-käyttäjän swap-tiedostoa asetuksella `vm.swappiness=1` tiukasti out-of-memory-turvaverkkona, ei normaalina kapasiteettina. Tietokantojen swap-toimintaa valvotaan ja tutkitaan.
 * **Porttiskannauksen suojaus**: Automaattinen porttiskannausyritysten tunnistus ja esto
 * **Läpinäkyvien suurten sivujen poisto käytöstä**: THP poistettu käytöstä suorituskyvyn ja turvallisuuden parantamiseksi
 * **Järjestelmäpalveluiden koventaminen**: Ei-välttämättömät palvelut kuten Apport poistettu käytöstä

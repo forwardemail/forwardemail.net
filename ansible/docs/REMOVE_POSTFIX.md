@@ -1,142 +1,61 @@
-# Remove Postfix Playbook
+# Legacy Postfix Removal
 
-This playbook removes Postfix from servers where it was unintentionally installed.
+The `security.yml` baseline requires a host-local, send-only Postfix queue on every managed host. It provides infrastructure alerts without depending on the Forward Email SMTP service, application mail queue, or MongoDB.
 
-
-## Problem
-
-The `security.yml` playbook installs and configures Postfix on **all hosts** for SMTP relay functionality. This caused Postfix to be installed on servers where it shouldn't be running (HTTP, Redis, Bree, MongoDB, etc.).
+Do not remove Postfix from any active host managed by `security.yml`. Removal disables independent monitoring alerts and deletes any queued notifications.
 
 
-## Solution
+## Scope
 
-The `remove-postfix.yml` playbook completely removes Postfix from affected servers.
+`remove-postfix.yml` is retained only for a decommissioned or permanently unmanaged system after all Forward Email monitoring services and timers have been removed. It is not a hardening step and must not be used on HTTP, API, Redis, MongoDB, Bree, SQLite, IMAP, POP3, SMTP, MX, calendar, webmail, or other active infrastructure hosts.
 
-
-## What It Does
-
-1. **Stops Postfix service** - Immediately stops the running Postfix daemon
-2. **Disables Postfix service** - Prevents Postfix from starting on boot
-3. **Removes Postfix packages** - Uninstalls postfix and postfix-pcre packages
-4. **Purges configuration** - Removes all Postfix configuration files
-5. **Cleans up directories** - Removes /etc/postfix and /var/spool/postfix
+The playbook requires the explicit acknowledgement variable `confirm_remove_postfix=true`. This guard is intentional.
 
 
-## Usage
+## What It Removes
 
-### Remove Postfix from specific servers
+The playbook stops and disables Postfix, purges its packages, removes `/etc/postfix`, and removes `/var/spool/postfix`. Removing the spool permanently deletes queued alerts.
+
+
+## Decommissioning Procedure
+
+First confirm that the target is no longer managed, that no monitoring service can call `sendmail`, and that the Postfix queue is empty:
 
 ```bash
-# Remove from HTTP servers
-ansible-playbook ansible/playbooks/remove-postfix.yml \
-  -i hosts.yml \
-  -e "target_hosts=http"
-
-# Remove from Redis servers
-ansible-playbook ansible/playbooks/remove-postfix.yml \
-  -i hosts.yml \
-  -e "target_hosts=redis"
-
-# Remove from Bree servers
-ansible-playbook ansible/playbooks/remove-postfix.yml \
-  -i hosts.yml \
-  -e "target_hosts=bree"
-
-# Remove from MongoDB servers
-ansible-playbook ansible/playbooks/remove-postfix.yml \
-  -i hosts.yml \
-  -e "target_hosts=mongo"
+ansible <retired-host> -i hosts.yml -b -m shell \
+  -a 'postqueue -p; systemctl list-timers --all | grep -E "monitor|health|certificate" || true'
 ```
 
-### Remove from multiple server groups
+Run the cleanup against one explicit retired host, never a broad active group:
 
 ```bash
-# Remove from all non-mail servers
 ansible-playbook ansible/playbooks/remove-postfix.yml \
   -i hosts.yml \
-  -e "target_hosts=http:redis:bree:mongo:sqlite"
+  -e 'target_hosts=<retired-host>' \
+  -e 'confirm_remove_postfix=true' \
+  --limit '<retired-host>'
 ```
-
-
-## Servers That SHOULD Have Postfix
-
-**Do NOT run this playbook on:**
-
-* MX servers (mx1, mx2)
-* SMTP servers
-* IMAP servers
-* POP3 servers
-* Mail relay servers
-
-These servers legitimately need Postfix for mail handling.
-
-
-## Servers That Should NOT Have Postfix
-
-**Run this playbook on:**
-
-* HTTP/API servers
-* Redis servers
-* MongoDB servers
-* Bree job scheduler servers
-* SQLite servers
-* Any other non-mail servers
 
 
 ## Verification
 
-After running the playbook, verify Postfix is removed:
-
 ```bash
-# Check if Postfix is running
-systemctl status postfix
-
-# Check if Postfix package is installed
-dpkg -l | grep postfix
-
-# Check if Postfix directories exist
-ls -la /etc/postfix
-ls -la /var/spool/postfix
+ansible <retired-host> -i hosts.yml -b -m shell -a '
+  ! systemctl is-active --quiet postfix &&
+  ! dpkg-query -W postfix >/dev/null 2>&1 &&
+  test ! -e /etc/postfix &&
+  test ! -e /var/spool/postfix
+'
 ```
 
-All of these should show that Postfix is not installed or running.
 
+## Restore a Host to Management
 
-## Impact
-
-**Removing Postfix will:**
-
-* ✅ Stop the Postfix service immediately
-* ✅ Free up system resources (memory, CPU)
-* ✅ Remove unnecessary mail relay functionality
-* ✅ Eliminate potential security concerns from unused services
-
-**Removing Postfix will NOT:**
-
-* ❌ Affect mail delivery on actual mail servers (if you don't run it there)
-* ❌ Break application functionality (apps should use SMTP directly, not local Postfix)
-* ❌ Cause data loss (Postfix on these servers shouldn't have any queued mail)
-
-
-## Why This Happened
-
-The `security.yml` playbook was designed to run on all servers and includes Postfix configuration for sending system alerts and notifications. However, this is not needed on servers that:
-
-1. Don't send system notifications
-2. Have applications that connect directly to SMTP servers
-3. Are not mail handling servers
-
-
-## Prevention
-
-To prevent Postfix from being reinstalled:
-
-1. **Don't run security.yml on non-mail servers** if it includes Postfix installation
-2. **Modify security.yml** to conditionally install Postfix only on mail servers
-3. **Use this removal playbook** after running security.yml on affected servers
+Before rerunning `security.yml`, complete the envelope-sender and HELO SPF requirements in the main [Ansible guide](../README.md#alert-transport-and-dns-prerequisites). The playbook then reinstalls the hardened transport, disables all Postfix `inet` services, limits local submissions to `root`, validates that no Postfix TCP socket is listening, and fails closed if either SPF identity does not pass.
 
 
 ## Related Documentation
 
-* [Security Playbook](../playbooks/security.yml) - Contains Postfix installation
-* [System Optimization](./SYSTEM_OPTIMIZATION.md) - System-wide optimizations
+* [Ansible alert transport and DNS prerequisites](../README.md#alert-transport-and-dns-prerequisites)
+* [Security playbook](../playbooks/security.yml)
+* [Monitoring guide](./MONITORING.md)

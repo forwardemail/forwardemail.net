@@ -47,13 +47,13 @@ The monitoring script performs the following checks every 10 minutes:
 
 ### Email Recipients
 
-Set the `MSMTP_RCPTS` environment variable to configure alert recipients:
+Set `ALERT_EMAIL_RECIPIENTS` before running `security.yml`:
 
 ```bash
-export MSMTP_RCPTS="devops@example.com,security@example.com"
+export ALERT_EMAIL_RECIPIENTS="devops@example.com,security@example.com"
 ```
 
-Default: `security@forwardemail.net`
+The default is `security@forwardemail.net`. `MSMTP_RCPTS` remains a deprecated migration fallback. PM2 alerts use the root-owned shared sender and host-local direct-MX Postfix queue; they do not use the application SMTP service or MongoDB. Complete the SPF prerequisites in the main [Ansible guide](../README.md#alert-transport-and-dns-prerequisites) first.
 
 ### Timer Interval
 
@@ -225,16 +225,21 @@ sudo journalctl -u pm2-health-check.timer -n 20
 
 ### No Alerts Received
 
-Verify mail is configured:
+Submit through the same shared path used by the health check:
 
 ```bash
-echo "Test email" | mail -s "Test" your@email.com
+sudo /usr/local/bin/send-rate-limited-email.sh \
+  pm2-manual-test \
+  "PM2 alert test" \
+  "Test from $(hostname)"
 ```
 
-Check script logs:
+Check the health-check and Postfix logs, then inspect the local retry queue:
 
 ```bash
 sudo journalctl -u pm2-health-check.service -n 50
+sudo journalctl -u postfix -n 100 --no-pager
+sudo postqueue -p
 ```
 
 ### False Positive: Process List Drift

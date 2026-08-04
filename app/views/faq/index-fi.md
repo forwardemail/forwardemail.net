@@ -3976,7 +3976,7 @@ Lähteet:
 Ei. Forward Email toteuttaa kattavat turvatoimet kaatumiseen liittyvän datan paljastumisen estämiseksi:
 
 * **Core dump -tiedostot pois käytöstä**: Estää muistin paljastumisen kaatumistilanteissa
-* **Swap-muisti pois käytöstä**: Täysin pois käytöstä estämään arkaluontoisen datan poimimisen swap-tiedostoista
+* **Hallittu swapin käyttö**: Sovellus- ja muut ei-tietokantapalvelimet pidetään ilman swapia, ja ne on mitoitettu ja valvottu siten, että normaalit työkuormat pysyvät RAM-muistissa. MongoDB- ja Redis-palvelimet käyttävät vain root-käyttäjän swap-tiedostoa asetuksella `vm.swappiness=1` tiukasti out-of-memory-turvaverkkona, ei normaalina kapasiteettina. Swapin poistaminen käytöstä kaikkialla voi muuttaa ohimenevän tietokannan muistipaineen välittömäksi OOM-tapoksi. Tietokantojen swap-toimintaa valvotaan ja tutkitaan.
 * **Muistipohjainen arkkitehtuuri**: Sähköpostisisältö on olemassa vain haihtuvassa muistissa käsittelyn aikana
 * **Salausavainten suojaus**: Avaimia ei koskaan tallenneta levylle selväkielisinä
 * **Fyysinen suojaus**: LUKS v2 -salatut levyt estävät fyysisen pääsyn dataan

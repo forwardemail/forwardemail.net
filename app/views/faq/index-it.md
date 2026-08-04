@@ -3978,7 +3978,7 @@ Fonti:
 No. Forward Email implementa salvaguardie complete contro l'esposizione di dati dovuta a crash:
 
 * **Core dump disabilitati**: Previene l'esposizione della memoria durante i crash
-* **Memoria swap disabilitata**: Completamente disabilitata per evitare l'estrazione di dati sensibili dai file di swap
+* **Uso controllato dello swap**: Gli host delle applicazioni e altri host non di database rimangono senza swap e sono dimensionati e monitorati in modo che i carichi di lavoro normali restino nella RAM. Gli host MongoDB e Redis utilizzano un file di swap solo per root con `vm.swappiness=1` strettamente come rete di sicurezza out-of-memory, non come capacità normale. Disabilitare lo swap ovunque può trasformare una pressione transitoria sulla memoria del database in un'uccisione OOM immediata. L'attività di swap del database viene monitorata e analizzata.
 * **Architettura in memoria**: Il contenuto delle email esiste solo in memoria volatile durante l'elaborazione
 * **Protezione delle chiavi di crittografia**: Le chiavi non sono mai memorizzate in chiaro su disco
 * **Sicurezza fisica**: Dischi criptati LUKS v2 impediscono l'accesso fisico ai dati

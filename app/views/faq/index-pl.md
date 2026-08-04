@@ -3976,7 +3976,7 @@ Forward Email wdraża kompleksową wielowarstwową ochronę:
 Nie. Forward Email wdraża kompleksowe zabezpieczenia przed ujawnieniem danych w wyniku awarii:
 
 * **Wyłączone core dumpy**: Zapobiega ujawnieniu pamięci podczas awarii
-* **Wyłączona pamięć swap**: Całkowicie wyłączona, aby zapobiec wydobyciu wrażliwych danych z plików swap
+* **Kontrolowane użycie swap**: Hosty aplikacji i inne hosty niebazodanowe pozostają bez swap i są tak wymiarowane oraz monitorowane, aby normalne obciążenia mieściły się w pamięci RAM. Hosty MongoDB i Redis używają pliku swap tylko dla root z `vm.swappiness=1` wyłącznie jako zabezpieczenia przed brakiem pamięci, a nie jako standardowej pojemności. Całkowite wyłączenie swap może zmienić chwilowe obciążenie pamięci bazy danych w natychmiastowe zabicie przez OOM. Aktywność swap baz danych jest monitorowana i badana.
 * **Architektura w pamięci**: Zawartość e-maili istnieje tylko w pamięci ulotnej podczas przetwarzania
 * **Ochrona kluczy szyfrowania**: Klucze nigdy nie są przechowywane na dysku w postaci jawnej
 * **Bezpieczeństwo fizyczne**: Dyski szyfrowane LUKS v2 zapobiegają fizycznemu dostępowi do danych

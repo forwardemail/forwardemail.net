@@ -199,7 +199,7 @@ Onze [Ansible-configuratie](https://github.com/forwardemail/forwardemail.net/tre
 * **Kernelverharding**: Veilige kernelparameters en sysctl-configuraties
 * **Bestandssysteembeperkingen**: noexec, nosuid en nodev mount-opties waar passend
 * **Core dumps uitgeschakeld**: Systeem geconfigureerd om core dumps te voorkomen voor beveiliging
-* **Swap uitgeschakeld**: Swapgeheugen uitgeschakeld om datalekken te voorkomen
+* **Gecontroleerd swapgebruik**: Applicatie- en andere niet-databasehosts blijven swapvrij en worden zo gedimensioneerd en gemonitord dat normale workloads in het RAM blijven. MongoDB- en Redis-hosts gebruiken een root-only swapbestand met `vm.swappiness=1` strikt als een out-of-memory vangnet, niet als normale capaciteit. Database-swapactiviteit wordt gemonitord en onderzocht.
 * **Bescherming tegen poortscans**: Geautomatiseerde detectie en blokkering van poortscanpogingen
 * **Transparent Huge Pages uitgeschakeld**: THP uitgeschakeld voor betere prestaties en beveiliging
 * **Verharding van systeemdiensten**: Niet-essentiële diensten zoals Apport uitgeschakeld

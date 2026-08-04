@@ -29,7 +29,7 @@
 #   MIRROR_SOURCE      - Source directory (default: /mnt/storage_do_1)
 #   MIRROR_TARGET      - Target directory (default: /mnt/storage_do_2)
 #   MIRROR_INTERVAL    - Cron interval in minutes (default: 2)
-#   MSMTP_RCPTS        - Email recipients for alerts (default: security@forwardemail.net)
+#   ALERT_EMAIL_RECIPIENTS - Email recipients for alerts (default: security@forwardemail.net)
 #   MIRROR_SKIP_SAFETY - Set to "true" to skip safety checks (default: false)
 #
 # ============================================================================
@@ -42,7 +42,7 @@
     mirror_source: "{{ lookup('env', 'MIRROR_SOURCE') | default('/mnt/storage_do_1', true) }}"
     mirror_target: "{{ lookup('env', 'MIRROR_TARGET') | default('/mnt/storage_do_2', true) }}"
     mirror_interval: "{{ lookup('env', 'MIRROR_INTERVAL') | default('2', true) }}"
-    msmtp_rcpts: "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
+    alert_email_recipients: "{{ lookup('env', 'ALERT_EMAIL_RECIPIENTS') | default(lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true), true) }}"
     mirror_skip_safety: "{{ lookup('env', 'MIRROR_SKIP_SAFETY') | default('false', true) }}"
   handlers:
     - name: Restart sqlite-mirror monitor timer
@@ -328,7 +328,6 @@
 
           set -uo pipefail
 
-          MSMTP_RCPTS="${MSMTP_RCPTS:-security@forwardemail.net}"
           SOURCE_DIR="{{ mirror_source }}"
           TARGET_DIR="{{ mirror_target }}"
           LOG_FILE="/var/log/sqlite-mirror/mirror.log"
@@ -415,11 +414,11 @@
             FULL_ALERT="${FULL_ALERT}  tail -f /var/log/sqlite-mirror/mirror.log\n"
             FULL_ALERT="${FULL_ALERT}  cat /etc/cron.d/sqlite-mirror\n"
 
-            if [ -x "/usr/local/bin/send-rate-limited-email.sh" ]; then
-              /usr/local/bin/send-rate-limited-email.sh "sqlite-mirror-monitor" "[ALERT] SQLite Mirror Health Check Failed on $(hostname)" "$FULL_ALERT"
-            else
-              echo -e "$FULL_ALERT" | sendmail -t "$MSMTP_RCPTS" || \
-                echo "[$(date -Iseconds)] ERROR: Failed to send alert email"
+            if ! /usr/local/bin/send-rate-limited-email.sh \
+              "sqlite-mirror-monitor" \
+              "[ALERT] SQLite Mirror Health Check Failed on $(hostname)" \
+              "$FULL_ALERT"; then
+              echo "[$(date -Iseconds)] ERROR: Failed to queue alert email"
             fi
 
             exit 1
@@ -441,7 +440,6 @@
 
           [Service]
           Type=oneshot
-          Environment="MSMTP_RCPTS={{ msmtp_rcpts }}"
           ExecStart=/usr/local/bin/sqlite-mirror-monitor.sh
           StandardOutput=journal
           StandardError=journal
@@ -494,7 +492,7 @@
             Source: {{ mirror_source }}
             Target: {{ mirror_target }}
             Interval: every {{ mirror_interval }} minutes
-            Email alerts: {{ msmtp_rcpts }}
+            Email alerts: {{ alert_email_recipients }}
 
           Files deployed:
             /usr/local/bin/sqlite-mirror.sh       - Mirror script

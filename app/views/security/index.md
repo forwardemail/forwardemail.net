@@ -201,7 +201,7 @@ Our [Ansible configuration](https://github.com/forwardemail/forwardemail.net/tre
 * **Kernel Hardening**: Secure kernel parameters and sysctl configurations
 * **File System Restrictions**: noexec, nosuid, and nodev mount options where appropriate
 * **Core Dumps Disabled**: System configured to prevent core dumps for security
-* **Swap Disabled**: Swap memory disabled to prevent data leakage
+* **Controlled Swap Usage**: Application and other non-database hosts remain swap-free and are sized and monitored so normal workloads stay in RAM. MongoDB and Redis hosts use a root-only swap file with `vm.swappiness=1` strictly as an out-of-memory safety net, not normal capacity. Database swap activity is monitored and investigated.
 * **Port Scanning Protection**: Automated detection and blocking of port scanning attempts
 * **Transparent Huge Pages Disabled**: THP disabled for improved performance and security
 * **System Service Hardening**: Non-essential services like Apport disabled

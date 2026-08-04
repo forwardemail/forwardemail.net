@@ -70,7 +70,6 @@
           IP_LIST_URL="https://forwardemail.net/ips/v4.txt?comments=false"
           COMMENT="{{ ufw_comment }}"
           SERVICE_NAME="{{ service_name }}"
-          MSMTP_RCPTS="${{ '{' }}MSMTP_RCPTS:-security@forwardemail.net{{ '}' }}"
 
           echo "[$(date -Iseconds)] Fetching IP whitelist..."
 
@@ -226,7 +225,6 @@
           [Service]
           Type=oneshot
           RemainAfterExit=no
-          Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           ExecStart=/usr/local/bin/update-{{ service_identifier }}-ufw-whitelist.sh
 
     - name: "Create UFW allowlist update systemd timer for {{ service_name }}"

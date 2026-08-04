@@ -490,16 +490,14 @@ async function onAuth(auth, session, fn) {
       {
         $lookup: {
           from: 'aliases',
+          localField: '_id',
+          foreignField: 'domain',
           let: { domainId: '$_id' },
           pipeline: [
             {
               $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$domain', '$$domainId'] },
-                    { $eq: ['$name', name] }
-                  ]
-                }
+                name,
+                $expr: { $eq: ['$domain', '$$domainId'] }
               }
             },
             {

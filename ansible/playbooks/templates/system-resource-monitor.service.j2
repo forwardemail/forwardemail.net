@@ -6,7 +6,6 @@ OnFailure=failure-notification@%n.service
 
 [Service]
 Type=oneshot
-Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
 ExecStart=/usr/local/bin/system-resource-monitor.sh
 StandardOutput=journal
 StandardError=journal

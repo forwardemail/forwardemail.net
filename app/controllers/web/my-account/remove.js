@@ -220,6 +220,7 @@ async function remove(ctx) {
   ctx.state.user[config.userFields.isBanned] = true;
   ctx.state.user[config.userFields.isRemoved] = true;
   ctx.state.user[config.userFields.accountUpdates] = [];
+  ctx.state.user[config.userFields.hasPendingAccountUpdates] = false;
   ctx.state.user[config.userFields.otpRecoveryKeys] = [];
   // we need to keep these so webhooks work properly for refunding transactions
   // ctx.state.user[config.userFields.paypalPayerID] = undefined;

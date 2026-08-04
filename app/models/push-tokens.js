@@ -122,6 +122,7 @@ PushTokens.index({ alias: 1, platform: 1, token: 1 }, { unique: true });
 // MongoDB's TTL monitor runs every 60 seconds.
 //
 PushTokens.index({ expires_at: 1 }, { expireAfterSeconds: 0 });
+PushTokens.index({ alias: 1, expires_at: 1, failure_count: 1 });
 
 PushTokens.plugin(mongooseCommonPlugin, {
   object: 'push_token',

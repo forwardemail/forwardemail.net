@@ -114,13 +114,12 @@ ansible-playbook -i hosts.yml playbooks/security.yml
 
 ### Email Notifications
 
-Email notifications use the msmtp (lightweight SMTP client) configuration. Ensure these environment variables are set:
+Monitoring alerts use `/usr/local/bin/send-rate-limited-email.sh`, which submits as `root` to the host-local, send-only Postfix queue for direct delivery to recipient MX servers. Configure:
 
-* `MSMTP_USERNAME` - SMTP username
-* `MSMTP_PASSWORD` - SMTP password
-* `MSMTP_RCPTS` - Alert recipients (comma-separated)
-* `SMTP_HOST` - SMTP server (default: smtp.forwardemail.net)
-* `SMTP_PORT` - SMTP port (default: 465)
+* `ALERT_EMAIL_FROM` - Fixed aligned sender (default: `mailerdaemon@forwardemail.net`)
+* `ALERT_EMAIL_RECIPIENTS` - Alert recipients (comma-separated; default: `security@forwardemail.net`)
+
+`MSMTP_RCPTS` is accepted only as a deprecated recipient fallback. No SMTP username, password, relay host, or application database is used. Complete the envelope-sender and HELO SPF prerequisites in the main [Ansible guide](../README.md#alert-transport-and-dns-prerequisites) before running `security.yml`; deployment fails closed when either identity does not return SPF pass.
 
 ### Whitelists
 
@@ -302,24 +301,30 @@ sudo tail -f /var/log/root-access-monitor.log
 
 ### Test Email Notifications
 
-1. Ensure msmtp is configured:
+1. Verify the locked-down Postfix runtime:
 
 ```bash
-# Check msmtp configuration
-cat /etc/msmtprc
-sudo tail /var/log/msmtp.log
+sudo postfix check
+sudo postconf -h master_service_disable  # Must print: inet
+sudo postconf -h authorized_submit_users # Must print: root
+sudo postconf -h relayhost               # Must print nothing
+sudo ss -H -ltnp | grep -E 'master|smtpd|postscreen|smtp-sink'  # Must print nothing
 ```
 
-2. Test email delivery:
+2. Submit a test through the shared rate-limited path:
 
 ```bash
-echo "Test email body" | mail -s "Test Subject" your-email@example.com
+sudo /usr/local/bin/send-rate-limited-email.sh \
+  monitoring-test \
+  "Monitoring alert test" \
+  "Test from $(hostname)"
 ```
 
-3. Check msmtp logs:
+3. Inspect the local retry queue and delivery log:
 
 ```bash
-sudo tail -f /var/log/mail.log
+sudo postqueue -p
+sudo journalctl -u postfix -f
 ```
 
 ### Test Monitoring Scripts
@@ -408,25 +413,43 @@ sudo systemctl status system-resource-monitor.service
 sudo journalctl -u system-resource-monitor.service -n 50
 ```
 
-4. Verify msmtp is configured:
+4. Verify Postfix remains send-only and has no TCP listener:
 
 ```bash
-# Check msmtp configuration
-cat /etc/msmtprc
-sudo tail /var/log/msmtp.log
+sudo postfix check
+sudo postconf -h master_service_disable
+sudo postconf -h relayhost
+sudo ss -H -ltnp | grep -E 'master|smtpd|postscreen|smtp-sink'
 ```
 
-5. Check msmtp logs:
+`master_service_disable` must print `inet`; `relayhost` and the `ss`/`grep` command must print nothing.
+
+5. Check queue and delivery logs:
 
 ```bash
-sudo tail -f /var/log/mail.log
+sudo postqueue -p
+sudo journalctl -u postfix -n 100 --no-pager
 ```
 
-6. Test email delivery manually:
+6. Re-run the same SPF evaluations used by deployment, then submit through the shared sender:
 
 ```bash
-echo "Test" | mail -s "Test" your-email@example.com
+PUBLIC_IP=<actual-egress-ipv4>
+HELO=$(sudo postconf -h myhostname)
+spfquery.mail-spf-perl --scope mfrom \
+  --identity mailerdaemon@forwardemail.net \
+  --ip-address "$PUBLIC_IP" \
+  --helo-identity "$HELO"
+spfquery.mail-spf-perl --scope helo \
+  --identity "$HELO" \
+  --ip-address "$PUBLIC_IP"
+sudo /usr/local/bin/send-rate-limited-email.sh \
+  monitoring-test \
+  "Monitoring alert test" \
+  "Test from $(hostname)"
 ```
+
+Both SPF commands must return `pass` and exit zero.
 
 ### Rate Limiting Issues
 
@@ -486,7 +509,7 @@ cat /etc/security-monitor/authorized-ips.conf
 
 1. **Script Permissions**: All scripts run as root but with minimal privileges via systemd security hardening
 2. **Log File Security**: Monitoring logs are readable only by root
-3. **Credential Protection**: Email credentials use environment variables, never hardcoded
+3. **Independent Alert Path**: Direct-MX delivery uses no SMTP credentials, application mail queue, or MongoDB
 4. **Rate Limiting**: Prevents DoS via alert flooding
 5. **Whitelist Management**: Secure storage with restricted modification
 

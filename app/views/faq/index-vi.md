@@ -3976,7 +3976,7 @@ Nguồn:
 Không. Forward Email triển khai các biện pháp bảo vệ toàn diện chống lộ dữ liệu do sự cố hệ thống:
 
 * **Tắt Core Dumps**: Ngăn lộ bộ nhớ khi sự cố xảy ra
-* **Tắt Bộ nhớ Swap**: Hoàn toàn tắt để ngăn trích xuất dữ liệu nhạy cảm từ file swap
+* **Sử dụng Swap có kiểm soát**: Các máy chủ ứng dụng và máy chủ không phải cơ sở dữ liệu khác vẫn không sử dụng swap và được định cỡ cũng như giám sát để các khối lượng công việc bình thường luôn nằm trong RAM. Các máy chủ MongoDB và Redis sử dụng một tệp swap chỉ dành cho `root` với `vm.swappiness=1` hoàn toàn như một biện pháp an toàn khi hết bộ nhớ, không phải là dung lượng bình thường. Việc vô hiệu hóa swap ở mọi nơi có thể biến áp lực bộ nhớ cơ sở dữ liệu thoáng qua thành một sự cố OOM kill ngay lập tức. Hoạt động swap của cơ sở dữ liệu được giám sát và điều tra.
 * **Kiến trúc Trong Bộ Nhớ**: Nội dung email chỉ tồn tại trong bộ nhớ tạm thời khi xử lý
 * **Bảo vệ Khóa Mã hóa**: Khóa không bao giờ được lưu trên đĩa dưới dạng văn bản thuần túy
 * **Bảo mật Vật lý**: Đĩa mã hóa LUKS v2 ngăn truy cập vật lý vào dữ liệu

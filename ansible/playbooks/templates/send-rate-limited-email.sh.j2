@@ -1,96 +1,110 @@
 #!/bin/bash
-# Rate-limited email sending wrapper
+# Rate-limited infrastructure alert sender.
 # Usage: send-rate-limited-email.sh <service-name> <subject> <body>
+#
+# Messages are submitted to the host-local, send-only Postfix queue.  Postfix
+# delivers directly to recipient MX servers and never uses the Forward Email
+# SMTP service, application queue, or MongoDB.
+
+set -uo pipefail
+
+if [ "$#" -ne 3 ]; then
+  echo "Usage: $0 <service-name> <subject> <body>" >&2
+  exit 64
+fi
 
 SERVICE_NAME="$1"
-SUBJECT="$2"
+SUBJECT=${2//$'\r'/}
+SUBJECT=${SUBJECT//$'\n'/ }
 BODY="$3"
-RECIPIENTS="{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
+RECIPIENTS="{{ alert_email_recipients }}"
+FROM_ADDRESS="{{ alert_email_sender }}"
 
-# Rate limiting configuration
 RATE_LIMIT_DIR="/var/lib/email-rate-limits"
-RATE_LIMIT_WINDOW=3600  # 1 hour in seconds
-MAX_EMAILS_PER_WINDOW=10  # Max 10 emails per hour per service
+RATE_LIMIT_WINDOW=3600
+MAX_EMAILS_PER_WINDOW=10
+RATE_LIMIT_KEY=$(printf '%s' "$SERVICE_NAME" | tr -c 'A-Za-z0-9_.-' '_')
+RATE_LIMIT_FILE="$RATE_LIMIT_DIR/${RATE_LIMIT_KEY}.json"
+RATE_LIMIT_LOCK="$RATE_LIMIT_DIR/${RATE_LIMIT_KEY}.lock"
 
-# Create rate limit directory if it doesn't exist
 mkdir -p "$RATE_LIMIT_DIR"
+exec 9>"$RATE_LIMIT_LOCK"
+flock -x 9
 
-# Rate limit file for this service
-RATE_LIMIT_FILE="$RATE_LIMIT_DIR/${SERVICE_NAME}.json"
+now=$(date +%s)
+count=0
+window_start=$now
+if [ -s "$RATE_LIMIT_FILE" ]; then
+  count=$(jq -r '.count // 0' "$RATE_LIMIT_FILE" 2>/dev/null || printf '0')
+  window_start=$(jq -r '.window_start // 0' "$RATE_LIMIT_FILE" 2>/dev/null || printf '0')
+fi
 
-# Function to check and update rate limit
-check_rate_limit() {
-  local now=$(date +%s)
-  local count=0
-  local window_start=$now
-  
-  # Read existing rate limit data
-  if [ -f "$RATE_LIMIT_FILE" ]; then
-    local data=$(cat "$RATE_LIMIT_FILE")
-    count=$(echo "$data" | jq -r '.count // 0')
-    window_start=$(echo "$data" | jq -r '.window_start // 0')
-  fi
-  
-  # Check if window has expired
-  local window_age=$((now - window_start))
-  if [ $window_age -gt $RATE_LIMIT_WINDOW ]; then
-    # Reset window
-    count=0
-    window_start=$now
-  fi
-  
-  # Check if rate limit exceeded
-  if [ $count -ge $MAX_EMAILS_PER_WINDOW ]; then
-    echo "Rate limit exceeded for $SERVICE_NAME ($count emails in last hour)"
-    return 1
-  fi
-  
-  # Increment count and save
-  count=$((count + 1))
-  echo "{\"count\": $count, \"window_start\": $window_start}" > "$RATE_LIMIT_FILE"
-  
-  return 0
-}
+if ! [[ "$count" =~ ^[0-9]+$ && "$window_start" =~ ^[0-9]+$ ]]; then
+  count=0
+  window_start=$now
+fi
 
-# Check rate limit
-if ! check_rate_limit; then
-  # Rate limit exceeded, log but don't send
-  logger -t rate-limited-email "Rate limit exceeded for $SERVICE_NAME, email not sent: $SUBJECT"
+if [ $((now - window_start)) -gt "$RATE_LIMIT_WINDOW" ]; then
+  count=0
+  window_start=$now
+fi
+
+if [ "$count" -ge "$MAX_EMAILS_PER_WINDOW" ]; then
+  flock -u 9
+  logger -t rate-limited-email \
+    "Rate limit exceeded for $SERVICE_NAME; suppressed alert: $SUBJECT"
   exit 0
 fi
 
-# Detect if body is HTML
+count=$((count + 1))
+rate_limit_tmp=$(mktemp "${RATE_LIMIT_FILE}.XXXXXX")
+printf '{"count": %d, "window_start": %d}\n' "$count" "$window_start" > "$rate_limit_tmp"
+chmod 0600 "$rate_limit_tmp"
+mv -f "$rate_limit_tmp" "$RATE_LIMIT_FILE"
+flock -u 9
+
 IS_HTML=false
-if echo "$BODY" | grep -q "<html\|<HTML\|<body\|<BODY\|<div\|<DIV\|<p>\|<P>"; then
+if printf '%s' "$BODY" | grep -Eiq '<(html|body|div|p)([[:space:]>])'; then
   IS_HTML=true
 fi
 
-# Send email to each recipient
+status=0
 IFS=',' read -ra ADDR <<< "$RECIPIENTS"
 for email in "${ADDR[@]}"; do
-  email=$(echo "$email" | xargs)  # trim whitespace
-  
+  email=$(printf '%s' "$email" | xargs)
+  if ! [[ "$email" =~ ^[^[:space:]@]+@[^[:space:]@]+$ ]]; then
+    logger -t rate-limited-email "Invalid alert recipient skipped: $email"
+    status=1
+    continue
+  fi
+
+  content_type='text/plain'
   if [ "$IS_HTML" = true ]; then
-    # Send HTML email with proper headers
-    (
-      echo "From: {{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
-      echo "To: $email"
-      echo "Subject: $SUBJECT"
-      echo "MIME-Version: 1.0"
-      echo "Content-Type: text/html; charset=UTF-8"
-      echo ""
-      echo "$BODY"
-    ) | sendmail -t
-  else
-    # Send plain text email with proper From header
-    (
-      echo "From: {{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
-      echo "To: $email"
-      echo "Subject: $SUBJECT"
-      echo ""
-      echo "$BODY"
-    ) | sendmail -t
+    content_type='text/html'
+  fi
+
+  message_id="<$(date +%s%N).$$.${RANDOM}@$(hostname -f)>"
+  if ! {
+    printf 'From: Forward Email Infrastructure Alerts <%s>\n' "$FROM_ADDRESS"
+    printf 'To: %s\n' "$email"
+    printf 'Subject: %s\n' "$SUBJECT"
+    printf 'Date: %s\n' "$(LC_ALL=C date -R)"
+    printf 'Message-ID: %s\n' "$message_id"
+    printf 'MIME-Version: 1.0\n'
+    printf 'Content-Type: %s; charset=UTF-8\n' "$content_type"
+    printf 'Content-Transfer-Encoding: 8bit\n'
+    printf 'Auto-Submitted: auto-generated\n'
+    printf 'X-Auto-Response-Suppress: All\n'
+    printf '\n%s\n' "$BODY"
+  } | /usr/sbin/sendmail -oi -f "$FROM_ADDRESS" -- "$email"; then
+    logger -t rate-limited-email "Failed to queue alert for $SERVICE_NAME to $email: $SUBJECT"
+    status=1
   fi
 done
 
-logger -t rate-limited-email "Email sent for $SERVICE_NAME: $SUBJECT"
+if [ "$status" -ne 0 ]; then
+  exit 75
+fi
+
+logger -t rate-limited-email \
+  "Alert queued for independent direct-MX delivery for $SERVICE_NAME: $SUBJECT"

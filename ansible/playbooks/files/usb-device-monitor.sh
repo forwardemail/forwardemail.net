@@ -228,13 +228,12 @@ send_unknown_device_alert() {
 </body>
 </html>"
 
-    # Send email using rate-limited email script
-    if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        /usr/local/bin/send-rate-limited-email.sh "usb-device-${vendor_id}-${product_id}" "$subject" "$body"
-        log_message "Unknown device alert sent: ${vendor_id}:${product_id}"
+    # All alerts use the shared, rate-limited direct-to-MX sender.
+    if /usr/local/bin/send-rate-limited-email.sh "usb-device-${vendor_id}-${product_id}" "$subject" "$body"; then
+        log_message "Unknown device alert queued: ${vendor_id}:${product_id}"
     else
-        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "${MSMTP_RCPTS:-security@forwardemail.net}"
-        log_message "Unknown device alert sent via sendmail: ${vendor_id}:${product_id}"
+        log_message "ERROR: Failed to queue unknown device alert: ${vendor_id}:${product_id}"
+        return 1
     fi
 }
 

@@ -1201,6 +1201,7 @@ const config = {
     receiptEmail: 'receipt_email',
     isRateLimitWhitelisted: 'is_rate_limit_whitelisted',
     accountUpdates: 'account_updates',
+    hasPendingAccountUpdates: 'has_pending_account_updates',
     fullEmail: 'full_email',
     apiToken: 'api_token',
     otpRecoveryKeys: 'otp_recovery_keys',

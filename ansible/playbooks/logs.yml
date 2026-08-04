@@ -172,9 +172,9 @@
         path: /swapfile
       register: swapfile_stat
 
-    - name: Check current swap size
-      shell: swapon --show=SIZE --noheadings --bytes | head -1
-      register: current_swap_bytes
+    - name: Check whether swap file is active
+      shell: swapon --show=NAME --noheadings | grep -Fx /swapfile
+      register: swapfile_active
       changed_when: false
       failed_when: false
 
@@ -185,12 +185,12 @@
 
     - name: Check if swap resize is needed
       set_fact:
-        swap_resize_needed: "{{ swapfile_stat.stat.exists and current_swap_bytes.stdout != '' and (current_swap_bytes.stdout | int != required_swap_bytes | int) }}"
+        swap_resize_needed: "{{ swapfile_stat.stat.exists and (swapfile_stat.stat.size | int != required_swap_bytes | int) }}"
 
     - name: Display swap resize warning
       debug:
         msg: |
-          WARNING: Swap file size ({{ current_swap_bytes.stdout | int / 1024 / 1024 }}MB) does not match required size ({{ required_swap_mb }}MB).
+          WARNING: Swap file size ({{ swapfile_stat.stat.size | int / 1024 / 1024 }}MB) does not match required size ({{ required_swap_mb }}MB).
           Swap resizing requires manual intervention to avoid system instability.
           To resize swap safely:
           1. Schedule maintenance window
@@ -228,7 +228,13 @@
 
     - name: Enable swap file
       command: swapon /swapfile
-      when: mkswap_result is changed
+      when: swapfile_active.rc != 0
+
+    - name: Verify swap file is active
+      command: swapon --show=NAME --noheadings
+      register: active_swapfiles
+      changed_when: false
+      failed_when: "'/swapfile' not in active_swapfiles.stdout_lines"
 
     - name: Add swap to /etc/fstab
       lineinfile:
@@ -714,6 +720,8 @@
           # WARNING: This file is managed by Ansible
           # Manual changes will be overwritten on next deployment
           [Unit]
+          # Never stop retrying after repeated OOM or startup failures.
+          StartLimitIntervalSec=0
           OnFailure=failure-notification@%n.service
 
           [Service]
@@ -726,6 +734,14 @@
     - name: Reload systemd daemon for mongod override
       systemd:
         daemon_reload: yes
+
+    - name: Verify effective mongod automatic recovery policy
+      command: systemctl show mongod --property=Restart --property=StartLimitIntervalUSec
+      register: mongod_recovery_policy
+      changed_when: false
+      failed_when: >-
+        'Restart=on-failure' not in mongod_recovery_policy.stdout or
+        'StartLimitIntervalUSec=0' not in mongod_recovery_policy.stdout
 
     # ========================================
     # STATE DETECTION - Check current MongoDB state
@@ -800,6 +816,11 @@
           # MongoDB configuration file
           # This file is managed by Ansible - manual changes may be overwritten
           # Last updated: {{ ansible_date_time.iso8601 }}
+
+          # Return unused tcmalloc pages to Linux more aggressively.
+          # This controls allocator retention; it does not shrink live allocations.
+          setParameter:
+            tcmallocReleaseRate: 5
 
           # Where and how to store data
           storage:
@@ -1034,6 +1055,11 @@
           # MongoDB configuration file
           # This file is managed by Ansible - manual changes may be overwritten
           # Last updated: {{ ansible_date_time.iso8601 }}
+
+          # Return unused tcmalloc pages to Linux more aggressively.
+          # This controls allocator retention; it does not shrink live allocations.
+          setParameter:
+            tcmallocReleaseRate: 5
 
           # Where and how to store data
           storage:
@@ -1538,7 +1564,6 @@
           Environment="AWS_DEFAULT_REGION={{ lookup('env', 'AWS_DEFAULT_REGION') or 'auto' }}"
           Environment="LOGS_BACKUP_BUCKET={{ lookup('env', 'LOGS_BACKUP_BUCKET') | default('forwardemail-backups', true) }}"
           Environment="BACKUP_SECRET={{ lookup('env', 'BACKUP_SECRET') }}"
-          Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           Environment="LOGS_PORT={{ lookup('env', 'LOGS_PORT') | default('27017', true) }}"
           Environment="LOGS_NAME={{ lookup('env', 'LOGS_NAME') }}"
           Environment="LOGS_USER={{ lookup('env', 'LOGS_USER') }}"

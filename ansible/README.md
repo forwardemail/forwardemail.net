@@ -28,7 +28,7 @@ ansible/
 │   ├── SERVICE_USER_AUDIT.md
 │   └── LSYNCD_STORAGE_MIRRORING.md  # Real-time storage mirroring guide
 ├── playbooks/                   # Ansible playbooks
-│   ├── security.yml            # Security baseline & monitoring (uses msmtp)
+│   ├── security.yml            # Security baseline, monitoring, and send-only alerts
 │   ├── node.yml                # Node.js & PM2 deployment
 │   ├── chrony-timesync.yml     # Reusable time synchronization (chrony)
 │   ├── system-optimization.yml # Reusable system-wide optimization (tmpfs, mount options)
@@ -112,23 +112,34 @@ pip install ansible
 >
 > This eliminates external role dependencies and gives us full control.
 
-### Environment Variables
+### Alert Transport and DNS Prerequisites
 
-Configure these environment variables before deployment:
+Infrastructure alerts use a host-local, send-only Postfix queue. Postfix delivers directly to each recipient domain's MX over outbound TCP port 25. It does not use credentials, the Forward Email SMTP service, the application mail queue, or MongoDB.
+
+Configure the alert identity and recipients before deployment:
 
 ```bash
-# Email notifications (used by msmtp - lightweight SMTP client)
-export MSMTP_USERNAME=mailerdaemon@forwardemail.net
-export MSMTP_PASSWORD=<secure_password>
-export MSMTP_RCPTS=security@forwardemail.net
-
-# SMTP configuration (optional, defaults provided)
-export SMTP_HOST=smtp.forwardemail.net
-export SMTP_PORT=465
+export ALERT_EMAIL_FROM=mailerdaemon@forwardemail.net
+export ALERT_EMAIL_RECIPIENTS=security@forwardemail.net
 ```
 
-> \[!NOTE]
-> **msmtp replaces Postfix**: We use msmtp (lightweight SMTP client) instead of Postfix for sending email notifications. msmtp doesn't run as a daemon, has no listening ports, and is more secure for send-only use cases.
+`MSMTP_RCPTS` remains a deprecated fallback for `ALERT_EMAIL_RECIPIENTS` during migration. `MSMTP_USERNAME`, `MSMTP_PASSWORD`, `SMTP_HOST`, and `SMTP_PORT` are not used by the alert transport.
+
+The `security.yml` playbook fails closed unless SPF passes for both the envelope sender and the host's HELO identity. Before rollout:
+
+1. Publish one logical TXT record at `_spf-alerts.forwardemail.net` with the approved IPv4 egress addresses:
+
+   ```text
+   v=spf1 ip4:121.127.44.61 ip4:121.127.44.68 ip4:121.127.44.70 ip4:121.127.44.71 ip4:121.127.44.72 ip4:121.127.44.75 ip4:121.127.44.86 ip4:121.127.44.92 ip4:121.127.44.99 ip4:121.127.44.103 -all
+   ```
+
+2. Add `include:_spf-alerts.forwardemail.net` to the existing `forwardemail.net` SPF record so `mailerdaemon@forwardemail.net` passes from those hosts. Keep exactly one SPF record for the domain.
+
+3. Publish `v=spf1 a -all` at each sending HELO hostname, including `mongo.forwardemail.net`, `redis.forwardemail.net`, `logs.forwardemail.net`, `bree.forwardemail.net`, `api.forwardemail.net`, `caldav.forwardemail.net`, `carddav.forwardemail.net`, `imap.forwardemail.net`, `pop3.forwardemail.net`, and `sqlite.forwardemail.net`.
+
+4. Confirm outbound TCP port 25 is allowed. In inventory, set `direct_alert_public_ip` when `ansible_host` is not the actual egress IPv4, and set `direct_alert_helo_identity` when `ansible_fqdn` is not the intended public HELO hostname.
+
+The transport is IPv4-only. Revalidate the address list before every DNS change; do not weaken or bypass the Ansible SPF gates. The Postfix configuration disables every `inet` master service, accepts no TCP connections even on loopback, permits local queue submission only from `root`, has no relayhost or trusted client network, and disables local, virtual, and relay-domain delivery.
 
 ### Quick Start
 
@@ -339,13 +350,13 @@ Comprehensive automated monitoring with email notifications for:
 **Features**:
 
 * ⏱️ **Systemd timers** - Reliable periodic execution
-* 📧 **Email alerts** - Detailed notifications via msmtp (lightweight SMTP client)
+* 📧 **Email alerts** - Detailed notifications through the shared, rate-limited direct-MX sender
 * 🔒 **Whitelisting** - Authorized IPs, users, devices, sudo users
 * 🚦 **Rate limiting** - Intelligent alert throttling to prevent flooding
 * 📝 **Comprehensive logs** - All events logged to `/var/log/*-monitor.log`
 
 > \[!NOTE]
-> All monitoring integrates with msmtp (lightweight SMTP client) for email notifications.
+> All monitoring submits through `/usr/local/bin/send-rate-limited-email.sh` to the root-only, send-only local Postfix queue.
 
 **Testing Guide**: See [MONITORING\_TESTING.md](docs/MONITORING_TESTING.md) for comprehensive testing procedures.
 
@@ -358,17 +369,17 @@ Automated PM2 process health monitoring for Node.js applications:
 * ✅ **Uptime checks** - Detects processes with < 90% uptime
 * 🔴 **Errored process detection** - Alerts on errored or stopped processes
 * ⏰ **Drift detection** - Identifies processes with excessive restarts
-* 📧 **Email notifications** - Detailed alerts with process status via msmtp
+* 📧 **Email notifications** - Detailed alerts with process status through the shared direct-MX sender
 * ⏱️ **Scheduled checks** - Runs every 20 minutes via cron
 
 **Integrated into**: `node.yml`
 
 **Environment Variables**:
 
-* `MSMTP_RCPTS` - Email recipients for alerts
+* `ALERT_EMAIL_RECIPIENTS` - Comma-separated email recipients for alerts
 
 > \[!TIP]
-> Configure `MSMTP_RCPTS` environment variable to receive alerts.
+> Configure `ALERT_EMAIL_RECIPIENTS` before running `security.yml`. `MSMTP_RCPTS` is accepted only as a deprecated migration fallback.
 
 ---
 
@@ -415,13 +426,13 @@ MIRROR_SOURCE=/mnt/primary MIRROR_TARGET=/mnt/backup \
 
 **Environment Variables**:
 
-| Variable             | Description                 | Default                     |
-| -------------------- | --------------------------- | --------------------------- |
-| `MIRROR_SOURCE`      | Source directory to mirror  | `/mnt/storage_do_1`         |
-| `MIRROR_TARGET`      | Target directory for mirror | `/mnt/storage_do_2`         |
-| `MIRROR_INTERVAL`    | Cron interval in minutes    | `2`                         |
-| `MSMTP_RCPTS`        | Email recipients for alerts | `security@forwardemail.net` |
-| `MIRROR_SKIP_SAFETY` | Skip safety checks          | `false`                     |
+| Variable                 | Description                 | Default                     |
+| ------------------------ | --------------------------- | --------------------------- |
+| `MIRROR_SOURCE`          | Source directory to mirror  | `/mnt/storage_do_1`         |
+| `MIRROR_TARGET`          | Target directory for mirror | `/mnt/storage_do_2`         |
+| `MIRROR_INTERVAL`        | Cron interval in minutes    | `2`                         |
+| `ALERT_EMAIL_RECIPIENTS` | Email recipients for alerts | `security@forwardemail.net` |
+| `MIRROR_SKIP_SAFETY`     | Skip safety checks          | `false`                     |
 
 > \[!WARNING]
 > The playbook will **fail** if the target directory contains existing data to prevent accidental deletion. Set `MIRROR_SKIP_SAFETY=true` to bypass this check after verifying the target data is expendable.
@@ -523,18 +534,23 @@ sudo tail -f /var/log/ssh-security-monitor.log
 sudo systemctl start system-resource-monitor.service
 ```
 
-### Mail Services
+### Infrastructure Alert Transport
 
 ```bash
-# Check msmtp configuration (no service - it's a command-line tool)
-cat /etc/msmtprc
-sudo tail /var/log/msmtp.log
+# Validate Postfix configuration and the no-listener control
+sudo postfix check
+sudo postconf -h master_service_disable  # Must print: inet
+sudo ss -H -ltnp | grep -E 'master|smtpd|postscreen|smtp-sink'  # Must print nothing
 
-# Test email delivery
-echo "Test email" | sendmail your-email@example.com
+# Submit a test as root through the shared rate-limited path
+sudo /usr/local/bin/send-rate-limited-email.sh \
+  manual-test \
+  "Direct-MX alert transport test" \
+  "Test from $(hostname)"
 
-# Check msmtp logs
-sudo tail -f /var/log/msmtp.log
+# Inspect queue and delivery logs
+sudo postqueue -p
+sudo journalctl -u postfix -f
 ```
 
 ### Database Services
@@ -571,27 +587,11 @@ cat /sys/kernel/mm/transparent_hugepage/enabled  # Should be [never]
 
 ## 🧹 Cleanup & Maintenance
 
-### Remove Postfix (if previously installed)
+### Legacy Postfix Removal
 
 **[Postfix Removal Guide](docs/REMOVE_POSTFIX.md)**
 
-If you previously ran playbooks that installed Postfix, use the removal playbook:
-
-```bash
-# Remove from all non-mail servers
-ansible-playbook ansible/playbooks/remove-postfix.yml \
-  -i hosts.yml \
-  -e "target_hosts=all" \
-  --limit '!mx1:!mx2:!smtp:!imap:!mail'
-
-# Or remove from specific server groups
-ansible-playbook ansible/playbooks/remove-postfix.yml \
-  -i hosts.yml \
-  -e "target_hosts=http:redis:bree:mongo:logs:sqlite"
-```
-
-> \[!WARNING]
-> Do NOT run on actual mail servers (MX, SMTP, IMAP) that legitimately need Postfix.
+The security baseline now requires its hardened, send-only Postfix transport on every managed host. Do not run `remove-postfix.yml` against a host managed by `security.yml`; doing so disables independent infrastructure alerts. The legacy cleanup playbook is retained only for decommissioned or unmanaged systems after their monitoring has been removed.
 
 ---
 

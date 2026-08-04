@@ -199,7 +199,7 @@ Tüm kodlar şunlardan geçer:
 * **Kernel Sertleştirme**: Güvenli kernel parametreleri ve sysctl yapılandırmaları
 * **Dosya Sistemi Kısıtlamaları**: Uygun yerlerde noexec, nosuid ve nodev bağlama seçenekleri
 * **Core Dump Devre Dışı**: Güvenlik için sistem core dump’ları engelleyecek şekilde yapılandırılmıştır
-* **Swap Devre Dışı**: Veri sızıntısını önlemek için swap belleği devre dışı bırakılmıştır
+* **Kontrollü Swap Kullanımı**: Uygulama ve diğer veritabanı dışı sunucular swap kullanmaz ve normal iş yüklerinin RAM'de kalmasını sağlayacak şekilde boyutlandırılıp izlenir. MongoDB ve Redis sunucuları, normal kapasite olarak değil, kesinlikle bir out-of-memory güvenlik ağı olarak `vm.swappiness=1` ayarına sahip yalnızca root erişimli bir swap dosyası kullanır. Veritabanı swap aktivitesi izlenir ve incelenir.
 * **Port Taraması Koruması**: Port tarama girişimlerinin otomatik tespiti ve engellenmesi
 * **Şeffaf Büyük Sayfalar Devre Dışı**: Performans ve güvenlik için THP devre dışı bırakılmıştır
 * **Sistem Servisi Sertleştirme**: Apport gibi gereksiz servisler devre dışı bırakılmıştır

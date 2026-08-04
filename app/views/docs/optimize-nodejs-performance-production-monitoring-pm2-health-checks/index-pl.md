@@ -345,13 +345,13 @@ Wdrażamy kompleksowe zabezpieczenia dla naszej infrastruktury produkcyjnej Node
 
 Nasze kluczowe środki bezpieczeństwa dla środowisk produkcyjnych Node.js:
 
-* **Wyłączona pamięć wymiany (swap)**, aby zapobiec zapisywaniu wrażliwych danych na dysku
+* **Kontrolowane użycie swap** utrzymuje hosty aplikacji i inne hosty niebazodanowe bez swap i wymiaruje je tak, aby normalne obciążenia mieściły się w pamięci RAM, podczas gdy hosty MongoDB i Redis używają pliku swap tylko dla root z `vm.swappiness=1` wyłącznie jako zabezpieczenia przed brakiem pamięci; aktywność swap baz danych jest monitorowana i badana
 * **Wyłączone zrzuty pamięci (core dumps)**, aby zapobiec wyciekom pamięci zawierającym wrażliwe informacje
 * **Zablokowane pamięci USB**, aby zapobiec nieautoryzowanemu dostępowi do danych
 * **Dostosowanie parametrów jądra** zarówno pod kątem bezpieczeństwa, jak i wydajności
 
-> \[!WARNING]
-> Podczas wdrażania najlepszych praktyk produkcyjnego wdrożenia Node.js wyłączenie pamięci wymiany może spowodować zabijanie procesów z powodu braku pamięci, jeśli aplikacja przekroczy dostępną pamięć RAM. Monitorujemy zużycie pamięci uważnie i odpowiednio dobieramy rozmiar naszych serwerów.
+> \[!NOTE]
+> Produkcyjny swap to zabezpieczenie przed brakiem pamięci, a nie standardowa pojemność. Hosty aplikacji pozostają bez swap, a normalne obciążenia powinny mieścić się w pamięci RAM.
 
 ### Bezpieczeństwo aplikacji dla aplikacji Node.js {#application-security-for-nodejs-applications}
 

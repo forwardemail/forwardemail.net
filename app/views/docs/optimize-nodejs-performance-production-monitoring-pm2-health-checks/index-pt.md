@@ -343,13 +343,13 @@ Implementamos segurança abrangente para nossa infraestrutura de produção Node
 
 Nossas principais medidas de segurança para ambientes de produção Node.js:
 
-* **Swap desabilitado** para evitar que dados sensíveis sejam gravados no disco
+* **Uso Controlado de Swap** mantém os hosts de aplicativos e outros que não são de banco de dados sem swap e dimensionados para que as cargas de trabalho normais permaneçam na RAM, enquanto os hosts MongoDB e Redis usam um arquivo de swap exclusivo do root com `vm.swappiness=1` estritamente como uma rede de segurança contra falta de memória; a atividade de swap do banco de dados é monitorada e investigada
 * **Core dumps desabilitados** para evitar despejos de memória contendo informações sensíveis
 * **Armazenamento USB bloqueado** para prevenir acesso não autorizado a dados
 * **Ajuste de parâmetros do kernel** para segurança e desempenho
 
-> \[!WARNING]
-> Ao implementar as melhores práticas de implantação para produção Node.js, desabilitar o swap pode causar encerramentos por falta de memória se sua aplicação exceder a RAM disponível. Monitoramos o uso de memória cuidadosamente e dimensionamos nossos servidores adequadamente.
+> \[!NOTE]
+> O swap de produção é uma rede de segurança contra falta de memória, não uma capacidade normal. Os hosts de aplicativos permanecem sem swap e espera-se que as cargas de trabalho normais permaneçam na RAM.
 
 ### Segurança da Aplicação para Aplicações Node.js {#application-security-for-nodejs-applications}
 

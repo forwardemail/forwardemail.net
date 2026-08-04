@@ -3978,7 +3978,7 @@ Kilder:
 Nei. Forward Email implementerer omfattende sikkerhetstiltak mot datalekkasjer ved krasj:
 
 * **Core dumps deaktivert**: Forhindrer minneeksponering ved krasj
-* **Swap-minne deaktivert**: Fullstendig deaktivert for å forhindre utvinning av sensitiv data fra swap-filer
+* **Kontrollert bruk av swap**: Applikasjons- og andre ikke-databaseverter forblir swap-frie og er dimensjonert og overvåket slik at normale arbeidsbelastninger forblir i RAM. MongoDB- og Redis-verter bruker en swap-fil kun for root med `vm.swappiness=1` strengt som et sikkerhetsnett for minnemangel, ikke som normal kapasitet. Å deaktivere swap overalt kan gjøre forbigående minnepress i databasen om til en umiddelbar OOM kill. Database-swap-aktivitet overvåkes og undersøkes.
 * **Minnebasert arkitektur**: E-postinnhold eksisterer kun i flyktig minne under behandling
 * **Beskyttelse av krypteringsnøkler**: Nøkler lagres aldri i klartekst på disk
 * **Fysisk sikkerhet**: LUKS v2-krypterte disker forhindrer fysisk tilgang til data

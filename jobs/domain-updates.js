@@ -44,6 +44,10 @@ async function mapper(domain) {
     domain.domain_updates.length === 0
   ) {
     logger.warn('domain had empty domain updates', { domain: domain.name });
+    await Domains.updateOne(
+      { _id: domain._id, 'domain_updates.0': { $exists: false } },
+      { $set: { has_pending_domain_updates: false } }
+    );
     return;
   }
 
@@ -135,13 +139,23 @@ async function mapper(domain) {
       }
     });
 
-    // Clear domain updates after sending
-    await Domains.findByIdAndUpdate(domain._id, {
-      $set: {
-        domain_updates: [],
-        domain_updates_sent_at: new Date()
+    // Clear only the exact snapshot that was sent.  A concurrent domain
+    // change must remain queued instead of being erased by this worker.
+    const results = await Domains.updateOne(
+      { _id: domain._id, domain_updates: domain.domain_updates },
+      {
+        $set: {
+          domain_updates: [],
+          domain_updates_sent_at: new Date(),
+          has_pending_domain_updates: false
+        }
       }
-    });
+    );
+
+    if (results.modifiedCount === 0)
+      logger.warn('domain updates changed while notification was sent', {
+        domain: domain.name
+      });
   } catch (err) {
     await logger.error(err, { domain: domain.name });
   }
@@ -152,10 +166,7 @@ async function mapper(domain) {
 
   try {
     for await (const domain of Domains.find({
-      domain_updates: {
-        $exists: true,
-        $ne: []
-      }
+      has_pending_domain_updates: true
     })
       .lean()
       .cursor()

@@ -199,7 +199,7 @@ A mi [Ansible konfigurációnk](https://github.com/forwardemail/forwardemail.net
 * **Kernel megerősítés**: Biztonságos kernel paraméterek és sysctl konfigurációk
 * **Fájlrendszer korlátozások**: noexec, nosuid és nodev csatolási opciók ahol szükséges
 * **Core dumpok letiltva**: A rendszer úgy van konfigurálva, hogy megakadályozza a core dumpokat biztonsági okokból
-* **Swap letiltva**: Swap memória letiltva az adat szivárgás megakadályozására
+* **Ellenőrzött swap használat**: Az alkalmazás- és egyéb nem adatbázis-kiszolgálók swap-mentesek maradnak, és úgy vannak méretezve és felügyelve, hogy a normál munkaterhelések a RAM-ban maradjanak. A MongoDB és Redis kiszolgálók egy csak root által elérhető swap fájlt használnak `vm.swappiness=1` beállítással, szigorúan out-of-memory biztonsági hálóként, nem pedig normál kapacitásként. Az adatbázis swap tevékenységét felügyeljük és kivizsgáljuk.
 * **Port szkennelés elleni védelem**: Automatikus port szkennelési kísérletek felismerése és blokkolása
 * **Átlátszó nagy oldalak letiltva**: THP letiltva a jobb teljesítmény és biztonság érdekében
 * **Rendszerszolgáltatások megerősítése**: Nem alapvető szolgáltatások, mint az Apport letiltva

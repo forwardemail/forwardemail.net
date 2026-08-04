@@ -199,7 +199,7 @@ Nossa [configuração Ansible](https://github.com/forwardemail/forwardemail.net/
 * **Endurecimento do Kernel**: Parâmetros seguros do kernel e configurações sysctl
 * **Restrições no Sistema de Arquivos**: opções de montagem noexec, nosuid e nodev onde apropriado
 * **Core Dumps Desabilitados**: Sistema configurado para prevenir core dumps por segurança
-* **Swap Desabilitado**: Memória swap desabilitada para prevenir vazamento de dados
+* **Uso Controlado de Swap**: Os hosts de aplicativos e outros que não são de banco de dados permanecem sem swap e são dimensionados e monitorados para que as cargas de trabalho normais permaneçam na RAM. Os hosts MongoDB e Redis usam um arquivo de swap exclusivo do root com `vm.swappiness=1` estritamente como uma rede de segurança contra falta de memória, não como capacidade normal. A atividade de swap do banco de dados é monitorada e investigada.
 * **Proteção contra Scan de Portas**: Detecção e bloqueio automatizado de tentativas de scan de portas
 * **Transparent Huge Pages Desabilitado**: THP desabilitado para melhor desempenho e segurança
 * **Endurecimento de Serviços do Sistema**: Serviços não essenciais como Apport desabilitados

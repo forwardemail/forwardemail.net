@@ -1046,7 +1046,6 @@
           Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default('6380', true) }}"
           Environment="REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}"
           Environment="REDIS_DATA_DIR={{ lookup('env', 'REDIS_DATA_DIR') or '/var/lib/valkey' }}"
-          Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           # Run backups at lowest I/O and CPU priority to avoid starving Redis
           IOSchedulingClass=idle
           IOSchedulingPriority=7
@@ -1184,7 +1183,6 @@
           Environment="REDIS_HOST={{ lookup('env', 'REDIS_HOST') }}"
           Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default('6380', true) }}"
           Environment="REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}"
-          Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           ExecStart=/usr/local/bin/monitor-redis-commands.sh
 
     # Create systemd timer for Redis command monitoring (every hour)

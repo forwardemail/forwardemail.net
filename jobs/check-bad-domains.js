@@ -32,6 +32,8 @@ const isTimeoutError = require('#helpers/is-timeout-error');
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const resolver = createTangerine(client, logger);
+const BATCH_SIZE = 100;
+const paginationKey = 'check_bad_domains:last_id';
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -306,80 +308,73 @@ async function mapper(id) {
     //       and routine checking (e.g. 3 in a row fail)
     //       then we will need to modify this query
     //
-    // get all non-API created domains (sorted by last_checked_at)
-    let names = await Domains.distinct('name', { plan: 'free' });
-
-    // filter out the names that are malicious
-    names = names.filter((name) => {
-      const { isGood, isDisposable, isRestricted } =
-        Domains.getNameRestrictions(name);
-      return isRestricted || !isGood || isDisposable;
-    });
-
-    if (names.length === 0) {
-      process.exit(0);
-    }
-
-    //
-    // then run them through the lookup
-    //
-    // Optimized to use cursor-based iteration instead of aggregation
-    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
-    //
+    // Name restrictions are application logic.  Scan one stable, bounded page
+    // per run and persist the last seen ID so good names cannot starve later bad
+    // names without materializing every free-domain name in memory.
     const twoHoursAgo = dayjs().subtract(2, 'hour').toDate();
-    const ids = [];
+    const value = await client.get(paginationKey);
+    const lastId = mongoose.isObjectIdOrHexString(value)
+      ? new mongoose.Types.ObjectId(value)
+      : null;
 
-    for await (const domain of Domains.find({
+    if (value && !lastId) await client.del(paginationKey);
+
+    const domains = await Domains.find({
+      ...(lastId ? { _id: { $gt: lastId } } : {}),
       $and: [
         {
           plan: 'free',
-          name: {
-            $in: names
-          },
           has_mx_record: true,
           has_txt_record: true
         },
         {
           $or: [
-            {
-              last_checked_at: {
-                $exists: false
-              }
-            },
-            {
-              last_checked_at: {
-                $lte: twoHoursAgo
-              }
-            }
+            { last_checked_at: { $exists: false } },
+            { last_checked_at: { $lte: twoHoursAgo } }
           ]
         },
         {
           $or: [
-            {
-              verified_email_sent_at: {
-                $exists: false
-              }
-            },
-            {
-              onboard_email_sent_at: {
-                $exists: false
-              }
-            }
+            { verified_email_sent_at: { $exists: false } },
+            { onboard_email_sent_at: { $exists: false } }
           ]
         }
       ]
     })
-      .sort({ has_mx_record: 1 })
-      .select('_id')
+      .sort({ _id: 1 })
+      .limit(BATCH_SIZE)
+      .select('_id name')
+      .hint({ plan: 1, has_mx_record: 1, has_txt_record: 1, _id: 1 })
       .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      ids.push(domain._id);
+      .exec();
+
+    if (domains.length === 0) {
+      if (lastId) await client.del(paginationKey);
+      logger.info('checked bad domains', {
+        count: 0,
+        scanned: 0,
+        cycleComplete: true
+      });
+    } else {
+      const ids = [];
+      for (const domain of domains) {
+        const { isGood, isDisposable, isRestricted } =
+          Domains.getNameRestrictions(domain.name);
+        if (isRestricted || !isGood || isDisposable) ids.push(domain._id);
+      }
+
+      await pMap(ids, mapper, { concurrency: 100 });
+
+      if (!isCancelled)
+        await client.set(paginationKey, domains.at(-1)._id.toString());
+
+      logger.info('checked bad domains', {
+        count: ids.length,
+        scanned: domains.length,
+        cycleComplete: false,
+        checkpointAdvanced: !isCancelled
+      });
     }
-
-    logger.info('checking domains', { count: ids.length });
-
-    await pMap(ids, mapper, { concurrency: 1000 });
   } catch (err) {
     await logger.error(err);
   }

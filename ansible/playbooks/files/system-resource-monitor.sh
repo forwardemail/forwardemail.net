@@ -306,14 +306,12 @@ send_alert() {
 </body>
 </html>"
 
-    # Send email using rate-limited email script
-    if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        /usr/local/bin/send-rate-limited-email.sh "resource-monitor-${resource}-${threshold}" "$subject" "$body"
-        log_message "Alert sent: ${resource} ${current_value}% (threshold: ${threshold}%)"
+    # All alerts use the shared, rate-limited direct-to-MX sender.
+    if /usr/local/bin/send-rate-limited-email.sh "resource-monitor-${resource}-${threshold}" "$subject" "$body"; then
+        log_message "Alert queued: ${resource} ${current_value}% (threshold: ${threshold}%)"
     else
-        # Fallback to sendmail
-        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "${MSMTP_RCPTS:-security@forwardemail.net}"
-        log_message "Alert sent via sendmail: ${resource} ${current_value}% (threshold: ${threshold}%)"
+        log_message "ERROR: Failed to queue alert: ${resource} ${current_value}% (threshold: ${threshold}%)"
+        return 1
     fi
 }
 

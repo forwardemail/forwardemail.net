@@ -437,7 +437,7 @@
 
           # Send alert email if needed
           if [ "$ALERT_NEEDED" -eq 1 ]; then
-            echo "[$(date -Iseconds)] Sending alert email to $MSMTP_RCPTS"
+            echo "[$(date -Iseconds)] Queueing independent alert email"
 
             EMAIL_BODY="PM2 Health Check Alert - $(hostname)\n"
             EMAIL_BODY="${EMAIL_BODY}Timestamp: $(date -Iseconds)\n"
@@ -445,11 +445,11 @@
             EMAIL_BODY="${EMAIL_BODY}Full PM2 Status:\n"
             EMAIL_BODY="${EMAIL_BODY}$(sudo -u deploy bash -c 'source /home/deploy/.bashrc && /home/deploy/n/bin/pm2 list' 2>/dev/null || echo 'Unable to get PM2 status')\n"
 
-            if [ -x "/usr/local/bin/send-rate-limited-email.sh" ]; then
-              /usr/local/bin/send-rate-limited-email.sh "pm2-health-check" "[ALERT] PM2 Health Check Failed on $(hostname)" "$EMAIL_BODY"
-            else
-              echo -e "$EMAIL_BODY" | sendmail -t "$MSMTP_RCPTS" || \
-                echo "[$(date -Iseconds)] ERROR: Failed to send alert email"
+            if ! /usr/local/bin/send-rate-limited-email.sh \
+              "pm2-health-check" \
+              "[ALERT] PM2 Health Check Failed on $(hostname)" \
+              "$EMAIL_BODY"; then
+              echo "[$(date -Iseconds)] ERROR: Failed to queue alert email"
             fi
 
             exit 1
@@ -471,7 +471,6 @@
 
           [Service]
           Type=oneshot
-          Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           ExecStart=/usr/local/bin/pm2-health-check.sh
           StandardOutput=journal
           StandardError=journal

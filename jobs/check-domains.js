@@ -41,6 +41,9 @@ const graceful = new Graceful({
 
 // <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
 // <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
+const BATCH_SIZE = 500;
+const MAX_DOMAINS_PER_RUN = 10_000;
+
 const DNS_RETRY_CODES = new Set([
   'EADDRGETNETWORKPARAMS',
   'EBADFAMILY',
@@ -312,7 +315,8 @@ async function mapper(id) {
     // to avoid MongoDB MaxTimeMSExpired errors on large datasets
     //
     const twoHoursAgo = dayjs().subtract(2, 'hour').toDate();
-    const ids = [];
+    const batch = [];
+    let count = 0;
 
     for await (const domain of Domains.find({
       $and: [
@@ -346,17 +350,31 @@ async function mapper(id) {
         }
       ]
     })
-      .sort({ last_checked_at: 1 })
+      .sort({ last_checked_at: 1, _id: 1 })
       .select('_id')
       .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
-      ids.push(domain._id);
+      if (isCancelled || count + batch.length >= MAX_DOMAINS_PER_RUN) break;
+
+      batch.push(domain._id);
+      if (batch.length < BATCH_SIZE) continue;
+
+      await pMap(batch, mapper, { concurrency: 100 });
+      count += batch.length;
+      batch.length = 0;
     }
 
-    logger.info('checking domains', { count: ids.length });
+    if (!isCancelled && batch.length > 0) {
+      await pMap(batch, mapper, { concurrency: 100 });
+      count += batch.length;
+    }
 
-    await pMap(ids, mapper, { concurrency: 100 });
+    logger.info('checked domains', {
+      count,
+      limit: MAX_DOMAINS_PER_RUN,
+      limitReached: count >= MAX_DOMAINS_PER_RUN
+    });
   } catch (err) {
     await logger.error(err);
   }

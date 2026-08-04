@@ -557,11 +557,11 @@ fi
 echo "Backup verification completed successfully"
 ```
 
-Run this script daily via cron:
+Run this script daily from root's crontab so the report uses the same rate-limited, direct-MX alert path as the monitoring services:
 
 ```bash
-# Add to crontab
-0 8 * * * /usr/local/bin/verify-backups.sh | mail -s "Backup Verification Report" admin@example.com
+# Add to root's crontab with: sudo crontab -e
+0 8 * * * /bin/bash -lc 'body="$(/usr/local/bin/verify-backups.sh 2>&1)"; status=$?; /usr/local/bin/send-rate-limited-email.sh backup-verification "Backup Verification Report on $(hostname)" "$body"; exit $status'
 ```
 
 ---

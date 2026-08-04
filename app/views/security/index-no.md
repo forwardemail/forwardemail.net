@@ -199,7 +199,7 @@ Vår [Ansible-konfigurasjon](https://github.com/forwardemail/forwardemail.net/tr
 * **Kjerneherding**: Sikre kjerneparametere og sysctl-konfigurasjoner
 * **Filssystembegrensninger**: noexec, nosuid og nodev monteringsalternativer der det er hensiktsmessig
 * **Kjerne-dumps deaktivert**: System konfigurert for å forhindre kjerne-dumps for sikkerhet
-* **Swap deaktivert**: Swap-minne deaktivert for å forhindre datalekkasjer
+* **Kontrollert bruk av swap**: Applikasjons- og andre ikke-databaseverter forblir swap-frie og er dimensjonert og overvåket slik at normale arbeidsbelastninger forblir i RAM. MongoDB- og Redis-verter bruker en swap-fil kun for root med `vm.swappiness=1` strengt som et sikkerhetsnett for minnemangel, ikke som normal kapasitet. Database-swap-aktivitet overvåkes og undersøkes.
 * **Beskyttelse mot portskanning**: Automatisk deteksjon og blokkering av portskanningsforsøk
 * **Transparent Huge Pages deaktivert**: THP deaktivert for bedre ytelse og sikkerhet
 * **Systemtjenesteherding**: Ikke-essensielle tjenester som Apport deaktivert

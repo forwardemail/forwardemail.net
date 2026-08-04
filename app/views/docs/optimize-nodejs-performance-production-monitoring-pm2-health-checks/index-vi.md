@@ -341,13 +341,13 @@ Chúng tôi triển khai bảo mật toàn diện cho hạ tầng sản xuất N
 
 Các biện pháp bảo mật chính của chúng tôi cho môi trường sản xuất Node.js:
 
-* **Tắt swap** để ngăn dữ liệu nhạy cảm bị ghi ra đĩa
+* **Sử dụng Swap có kiểm soát** giữ cho các máy chủ ứng dụng và máy chủ không phải cơ sở dữ liệu khác không sử dụng swap và được định cỡ để các khối lượng công việc bình thường luôn nằm trong RAM, trong khi các máy chủ MongoDB và Redis sử dụng một tệp swap chỉ dành cho `root` với `vm.swappiness=1` hoàn toàn như một biện pháp an toàn khi hết bộ nhớ; hoạt động swap của cơ sở dữ liệu được giám sát và điều tra
 * **Tắt core dumps** để ngăn các bản dump bộ nhớ chứa thông tin nhạy cảm
 * **Chặn lưu trữ USB** để ngăn truy cập dữ liệu trái phép
 * **Điều chỉnh tham số kernel** cho cả bảo mật và hiệu suất
 
-> \[!WARNING]
-> Khi triển khai các thực hành tốt nhất cho triển khai sản xuất Node.js, việc tắt swap có thể gây ra việc bị kill do hết bộ nhớ nếu ứng dụng của bạn vượt quá RAM khả dụng. Chúng tôi theo dõi sử dụng bộ nhớ cẩn thận và định kích thước máy chủ phù hợp.
+> \[!NOTE]
+> Swap trong môi trường sản xuất là một biện pháp an toàn khi hết bộ nhớ, không phải là dung lượng bình thường. Các máy chủ ứng dụng vẫn không sử dụng swap và các khối lượng công việc bình thường được kỳ vọng sẽ luôn nằm trong RAM.
 
 ### Bảo mật Ứng dụng cho các Ứng dụng Node.js {#application-security-for-nodejs-applications}
 

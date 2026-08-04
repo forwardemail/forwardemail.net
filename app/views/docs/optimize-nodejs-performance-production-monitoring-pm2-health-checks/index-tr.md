@@ -343,13 +343,13 @@ Node.js üretim altyapımız için kapsamlı güvenliği Ansible otomasyonu ile 
 
 Node.js üretim ortamları için temel güvenlik önlemlerimiz:
 
-* **Swap devre dışı bırakıldı** hassas verilerin diske yazılmasını önlemek için
+* **Kontrollü Swap Kullanımı** uygulama ve diğer veritabanı dışı sunucuları swap kullanmadan tutar ve normal iş yüklerinin RAM'de kalmasını sağlayacak şekilde boyutlandırır, MongoDB ve Redis sunucuları ise normal kapasite olarak değil, kesinlikle bir out-of-memory güvenlik ağı olarak `vm.swappiness=1` ayarına sahip yalnızca root erişimli bir swap dosyası kullanır; veritabanı swap aktivitesi izlenir ve incelenir
 * **Core dump devre dışı bırakıldı** hassas bilgileri içeren bellek dökümlerini önlemek için
 * **USB depolama engellendi** yetkisiz veri erişimini önlemek için
 * **Çekirdek parametre ayarları** hem güvenlik hem performans için
 
-> \[!WARNING]
-> Node.js üretim dağıtımı en iyi uygulamalarını uygularken, swap devre dışı bırakmak uygulamanız mevcut RAM'i aşarsa bellek yetersizliği nedeniyle süreçlerin sonlandırılmasına neden olabilir. Bellek kullanımını dikkatle izliyor ve sunucularımızı uygun şekilde boyutlandırıyoruz.
+> \[!NOTE]
+> Üretim ortamı swap alanı normal kapasite değil, bir out-of-memory güvenlik ağıdır. Uygulama sunucuları swap kullanmaz ve normal iş yüklerinin RAM'de kalması beklenir.
 
 ### Node.js Uygulamaları için Uygulama Güvenliği {#application-security-for-nodejs-applications}
 

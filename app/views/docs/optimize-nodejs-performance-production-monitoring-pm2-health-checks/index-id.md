@@ -345,13 +345,13 @@ Kami menerapkan keamanan menyeluruh untuk infrastruktur produksi Node.js kami me
 
 Langkah keamanan utama kami untuk lingkungan produksi Node.js:
 
-* **Swap dinonaktifkan** untuk mencegah data sensitif ditulis ke disk
+* **Penggunaan Swap Terkendali** menjaga host aplikasi dan host non-basis data lainnya tetap bebas swap dan diukur sehingga beban kerja normal tetap berada di RAM, sementara host MongoDB dan Redis menggunakan file swap khusus root dengan `vm.swappiness=1` secara ketat sebagai jaring pengaman out-of-memory; aktivitas swap basis data dipantau dan diselidiki
 * **Core dumps dinonaktifkan** untuk mencegah dump memori yang berisi informasi sensitif
 * **Penyimpanan USB diblokir** untuk mencegah akses data yang tidak sah
 * **Penyesuaian parameter kernel** untuk keamanan dan kinerja
 
-> \[!WARNING]
-> Saat menerapkan praktik terbaik deployment produksi Node.js, menonaktifkan swap dapat menyebabkan proses dibunuh karena kehabisan memori jika aplikasi Anda melebihi RAM yang tersedia. Kami memantau penggunaan memori dengan cermat dan menyesuaikan ukuran server kami secara tepat.
+> \[!NOTE]
+> Swap produksi adalah jaring pengaman out-of-memory, bukan kapasitas normal. Host aplikasi tetap bebas swap, dan beban kerja normal diharapkan tetap berada di RAM.
 
 ### Keamanan Aplikasi untuk Aplikasi Node.js {#application-security-for-nodejs-applications}
 

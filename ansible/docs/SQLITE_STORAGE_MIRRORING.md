@@ -68,13 +68,13 @@ The 2-minute RPO is acceptable because:
 
 ## Environment Variables
 
-| Variable             | Description                 | Default                     |
-| -------------------- | --------------------------- | --------------------------- |
-| `MIRROR_SOURCE`      | Source directory to mirror  | `/mnt/storage_do_1`         |
-| `MIRROR_TARGET`      | Target directory for mirror | `/mnt/storage_do_2`         |
-| `MIRROR_INTERVAL`    | Cron interval in minutes    | `2`                         |
-| `MSMTP_RCPTS`        | Email recipients for alerts | `security@forwardemail.net` |
-| `MIRROR_SKIP_SAFETY` | Skip safety checks          | `false`                     |
+| Variable                 | Description                 | Default                     |
+| ------------------------ | --------------------------- | --------------------------- |
+| `MIRROR_SOURCE`          | Source directory to mirror  | `/mnt/storage_do_1`         |
+| `MIRROR_TARGET`          | Target directory for mirror | `/mnt/storage_do_2`         |
+| `MIRROR_INTERVAL`        | Cron interval in minutes    | `2`                         |
+| `ALERT_EMAIL_RECIPIENTS` | Email recipients for alerts | `security@forwardemail.net` |
+| `MIRROR_SKIP_SAFETY`     | Skip safety checks          | `false`                     |
 
 
 ## Usage

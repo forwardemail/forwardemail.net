@@ -3977,7 +3977,7 @@ Kaynaklar:
 Hayır. Forward Email, çökme kaynaklı veri açığa çıkmasına karşı kapsamlı önlemler uygular:
 
 * **Çekirdek Dökümleri Devre Dışı**: Çökme sırasında bellek açığa çıkmasını önler
-* **Swap Belleği Devre Dışı**: Swap dosyalarından hassas veri çıkarılmasını tamamen engeller
+* **Kontrollü Swap Kullanımı**: Uygulama ve diğer veritabanı dışı sunucular swap kullanmaz ve normal iş yüklerinin RAM'de kalmasını sağlayacak şekilde boyutlandırılıp izlenir. MongoDB ve Redis sunucuları, normal kapasite olarak değil, kesinlikle bir out-of-memory güvenlik ağı olarak `vm.swappiness=1` ayarına sahip yalnızca root erişimli bir swap dosyası kullanır. Swap'ı her yerde devre dışı bırakmak, geçici veritabanı bellek baskısını anında bir OOM sonlandırmasına dönüştürebilir. Veritabanı swap aktivitesi izlenir ve incelenir.
 * **Bellek İçi Mimari**: E-posta içeriği işleme sırasında yalnızca geçici bellekte bulunur
 * **Şifreleme Anahtarı Koruması**: Anahtarlar asla düz metin olarak diskte saklanmaz
 * **Fiziksel Güvenlik**: LUKS v2 şifreli diskler fiziksel erişimi engeller
