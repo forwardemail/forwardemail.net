@@ -3,6 +3,7 @@
     {
       "name": "bree",
       "script": "bree.js",
+      "node_args": "--disable-proto=delete",
       "max_restarts": 999,
       "max_memory_restart": "28G",
       "kill_timeout": 30000,

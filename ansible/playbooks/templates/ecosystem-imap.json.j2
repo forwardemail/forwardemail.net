@@ -3,6 +3,7 @@
     {
       "name": "imap-993",
       "script": "imap.js",
+      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",
@@ -16,6 +17,7 @@
     {
       "name": "imap-2993",
       "script": "imap.js",
+      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
@@ -34,7 +36,7 @@
       "instances": "1",
       "pmx": false,
       "kill_timeout": 30000,
-      "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
+      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "env_production": {
         "NODE_ENV": "production",
         "IMAP_PORT": 2143,
@@ -44,6 +46,7 @@
     {
       "name": "managesieve-4190",
       "script": "managesieve.js",
+      "node_args": "--disable-proto=delete",
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",

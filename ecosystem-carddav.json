@@ -3,6 +3,7 @@
     {
       "name": "carddav",
       "script": "carddav.js",
+      "node_args": "--disable-proto=delete",
       "max_restarts": 999,
       "max_memory_restart": "8G",
       "kill_timeout": 30000,
@@ -23,6 +24,7 @@
     {
       "name": "proxy",
       "script": "proxy.js",
+      "node_args": "--disable-proto=delete",
       "max_restarts": 999,
       "kill_timeout": 30000,
       "exec_mode": "fork",

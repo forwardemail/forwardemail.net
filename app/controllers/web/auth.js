@@ -82,29 +82,46 @@ function parseReturnOrRedirectTo(ctx, next) {
     ctx.session.returnTo = ctx.query.redirect_to;
   }
 
-  // prevents lad being used as an open redirect
+  // prevents being used as an open redirect
   if (ctx.session && ctx.session.returnTo) {
     const { returnTo } = ctx.session;
     //
-    // Block protocol-relative URLs (//evil.com) and any absolute URL
-    // whose origin does not exactly match config.urls.web.
-    // This prevents both //evil.com and https://forwardemail.net.evil.com
+    // Allowlist approach: only permit relative paths that:
+    // 1. Start with exactly one forward slash
+    // 2. Do NOT have / or \ as the second character (blocks // and /\)
+    // 3. Contain no backslashes (browsers normalize \ to / in Location headers)
+    // 4. Contain no control characters (blocks tab/newline injection)
+    // 5. Do not use a dangerous URI scheme (javascript:, data:, vbscript:)
     //
-    let blocked = false;
-    if (returnTo.startsWith('//')) {
-      blocked = true;
+    // Absolute URLs to config.urls.web are also allowed.
+    //
+    let allowed = false;
+    if (
+      returnTo.startsWith('/') &&
+      returnTo[1] !== '/' &&
+      returnTo[1] !== '\\' &&
+      !returnTo.includes('\\') &&
+      // eslint-disable-next-line no-control-regex
+      !/[\u0000-\u001F\u007F]/.test(returnTo)
+    ) {
+      allowed = true;
     } else if (returnTo.includes('://')) {
       try {
         const parsed = new URL(returnTo);
         const trusted = new URL(config.urls.web);
-        if (parsed.origin !== trusted.origin) blocked = true;
+        if (
+          parsed.origin === trusted.origin &&
+          ['http:', 'https:'].includes(parsed.protocol)
+        ) {
+          allowed = true;
+        }
       } catch {
-        blocked = true;
+        // malformed URL → not allowed
       }
     }
 
-    if (blocked) {
-      ctx.logger.warn(`Prevented abuse with returnTo hijacking to ${returnTo}`);
+    if (!allowed) {
+      ctx.logger.warn(`Prevented open redirect via returnTo to ${returnTo}`);
       ctx.session.returnTo = null;
     }
   }
