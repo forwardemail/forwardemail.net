@@ -3945,7 +3945,8 @@ Forward Email implementuje komplexní vícevrstvou ochranu:
 * **Ochrana proti DDoS**: Vícevrstvá ochrana prostřednictvím systému Shield od DataPacket a Cloudflare
 * **Automatické škálování**: Dynamické přizpůsobení zdrojů podle poptávky
 * **Prevence zneužití**: Kontroly prevence zneužití specifické pro uživatele a blokování na základě hashů pro škodlivý obsah
-* **Autentizace e-mailů**: Protokoly SPF, DKIM, DMARC s pokročilou detekcí phishingu
+* **Vynucování autentizace e-mailů**: Zprávy od odesílatelů, kteří nejsou na seznamu povolených, musí projít alespoň jedním z SPF nebo DKIM (podobně jako požadavky Gmail, Outlook a Yahoo od roku 2024). Zprávy bez jakéhokoli úspěšného ověření jsou odmítnuty s chybovým kódem 550. Jsou vynucovány politiky DMARC `p=reject` a `p=quarantine`.
+* **Kontrola HELO/EHLO proti seznamu blokovaných**: Název hostitele prezentovaný během SMTP HELO/EHLO pozdravu je kontrolován oproti našemu seznamu blokovaných, což poskytuje ochranu i když odesílatelé IPv6 nemají reverzní DNS záznamy
 
 Zdroje:
 
@@ -4204,7 +4205,7 @@ E-mail využívá [SMTP protokol](https://en.wikipedia.org/wiki/Simple_Mail_Tran
 
 * Počáteční spojení (bez názvu příkazu, např. `telnet example.com 25`) – Toto je počáteční spojení. Kontrolujeme odesílatele, kteří nejsou na naší [povoleném seznamu](#do-you-have-an-allowlist), vůči našemu [zakázanému seznamu](#do-you-have-a-denylist). Nakonec, pokud odesílatel není na povoleném seznamu, zkontrolujeme, zda nebyl [zařazen do šedého seznamu](#do-you-have-a-greylist).
 
-* `HELO` – Tento příkaz slouží jako pozdrav k identifikaci FQDN odesílatele, IP adresy nebo názvu mailového handleru. Tato hodnota může být falšována, proto na ni nespoléháme a místo toho používáme reverzní vyhledávání hostname IP adresy spojení.
+* `HELO` – Tento příkaz slouží jako pozdrav k identifikaci FQDN odesílatele, IP adresy nebo názvu mailového handleru. Tato hodnota může být falšována, proto na ni nespoléháme a místo toho používáme reverzní vyhledávání hostname IP adresy spojení. Nyní však tuto hodnotu kontrolujeme oproti naší [seznamu blokovaných](#do-you-have-a-denylist) kromě reverzního vyhledávání hostname, což poskytuje další vrstvu ochrany zejména pro IPv6 spojení, kde nemusí být dostupné reverzní DNS záznamy.
 
 * `MAIL FROM` – Tento příkaz označuje adresu odesílatele v obálce e-mailu. Pokud je zadána hodnota, musí být platná e-mailová adresa podle RFC 5322. Prázdné hodnoty jsou povoleny. Zde [kontrolujeme zpětný odraz](#how-do-you-protect-against-backscatter) a také kontrolujeme MAIL FROM vůči našemu [zakázanému seznamu](#do-you-have-a-denylist). Nakonec kontrolujeme odesílatele, kteří nejsou na povoleném seznamu, kvůli omezení rychlosti (viz sekce o [omezení rychlosti](#do-you-have-rate-limiting) a [povoleném seznamu](#do-you-have-an-allowlist) pro více informací).
 

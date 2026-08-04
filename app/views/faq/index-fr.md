@@ -3946,7 +3946,8 @@ Forward Email met en œuvre une protection multi-couches complète :
 * **Protection DDoS** : Protection multi-couches via le système Shield de DataPacket et Cloudflare
 * **Mise à l'échelle automatique** : Ajustement dynamique des ressources en fonction de la demande
 * **Prévention des abus** : Contrôles spécifiques aux utilisateurs pour la prévention des abus et blocage basé sur des hachages pour le contenu malveillant
-* **Authentification des emails** : Protocoles SPF, DKIM, DMARC avec détection avancée de phishing
+* **Application de l'authentification des e-mails**: Les messages provenant d'expéditeurs non inscrits sur la liste autorisée doivent passer au moins SPF ou DKIM (similaire aux exigences de Gmail, Outlook et Yahoo depuis 2024). Les messages sans aucune authentification réussie sont rejetés avec le code d'erreur 550. Les politiques DMARC `p=reject` et `p=quarantine` sont appliquées.
+* **Vérification HELO/EHLO contre la liste de blocage**: Le nom d'hôte présenté lors de la salutation SMTP HELO/EHLO est vérifié contre notre liste de blocage, offrant une protection même lorsque les expéditeurs IPv6 n'ont pas d'enregistrements DNS inversés
 
 Sources :
 
@@ -4205,7 +4206,7 @@ L'email repose sur le [protocole SMTP](https://en.wikipedia.org/wiki/Simple_Mail
 
 * Connexion initiale (pas de nom de commande, ex. `telnet example.com 25`) - C'est la connexion initiale. Nous vérifions les expéditeurs qui ne sont pas dans notre [liste blanche](#do-you-have-an-allowlist) contre notre [liste noire](#do-you-have-a-denylist). Enfin, si un expéditeur n'est pas dans notre liste blanche, nous vérifions s'il a été [mise en liste grise](#do-you-have-a-greylist).
 
-* `HELO` - Cela indique une salutation pour identifier le FQDN, l'adresse IP ou le nom du gestionnaire de mail de l'expéditeur. Cette valeur peut être usurpée, donc nous ne nous fions pas à cette donnée et utilisons plutôt la recherche inverse du nom d'hôte de l'adresse IP de la connexion.
+* `HELO` - Cela indique une salutation pour identifier le FQDN, l'adresse IP ou le nom du gestionnaire de mail de l'expéditeur. Cette valeur peut être usurpée, donc nous ne nous fions pas à cette donnée et utilisons plutôt la recherche inverse du nom d'hôte de l'adresse IP de la connexion. Cependant, nous vérifions désormais cette valeur contre notre [liste de blocage](#do-you-have-a-denylist) en plus de la recherche inverse du nom d'hôte, ce qui fournit une couche de protection supplémentaire, particulièrement pour les connexions IPv6 où le DNS inversé peut ne pas être disponible.
 
 * `MAIL FROM` - Cela indique l'adresse d'enveloppe de l'expéditeur de l'email. Si une valeur est saisie, elle doit être une adresse email valide selon la RFC 5322. Les valeurs vides sont autorisées. Nous [vérifions la protection contre le backscatter](#how-do-you-protect-against-backscatter) ici, et nous vérifions également le MAIL FROM contre notre [liste noire](#do-you-have-a-denylist). Nous vérifions enfin les expéditeurs qui ne sont pas sur la liste blanche pour la limitation de débit (voir la section sur la [limitation de débit](#do-you-have-rate-limiting) et la [liste blanche](#do-you-have-an-allowlist) pour plus d'informations).
 

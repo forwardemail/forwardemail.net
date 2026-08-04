@@ -6,6 +6,7 @@
 const punycode = require('node:punycode');
 const os = require('node:os');
 
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const { spf } = require('mailauth/lib/spf');
 const _ = require('#helpers/lodash');
@@ -46,13 +47,24 @@ const RESERVED_TLDS = new Set(config.testDomains);
 async function getAttributes(headers, session, resolver, isAligned = false) {
   const replyToAddresses = parseAddresses(getHeaders(headers, 'reply-to'));
 
-  // NOTE: we don't check HELO command input because it's arbitrary and can be spoofed
-
+  //
+  // NOTE: we include hostNameAppearsAs (EHLO/HELO hostname) for denylist checking.
+  //       Although it can be spoofed, if a known-bad domain is used in HELO,
+  //       we should still block it. This also covers the IPv6 case where
+  //       resolvedClientHostname is unavailable (no rDNS for IPv6 addresses).
+  //
   const arr = [
     session.resolvedClientHostname,
     session.resolvedRootClientHostname,
     session.remoteAddress
   ];
+
+  if (isSANB(session.hostNameAppearsAs) && isFQDN(session.hostNameAppearsAs)) {
+    const heloDomain = session.hostNameAppearsAs.toLowerCase();
+    arr.push(heloDomain);
+    const heloRoot = parseRootDomain(heloDomain);
+    if (heloRoot !== heloDomain) arr.push(heloRoot);
+  }
 
   const from = [
     // check the From header

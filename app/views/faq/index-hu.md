@@ -3945,7 +3945,8 @@ A Forward Email átfogó, többrétegű védelmet valósít meg:
 * **DDoS védelem**: Többrétegű védelem a DataPacket Shield rendszerén és a Cloudflare-en keresztül
 * **Automatikus skálázás**: Dinamikus erőforrás-igazítás a kereslet alapján
 * **Visszaélés megelőzés**: Felhasználóspecifikus visszaélés-megelőző ellenőrzések és hash-alapú blokkolás rosszindulatú tartalom esetén
-* **E-mail hitelesítés**: SPF, DKIM, DMARC protokollok fejlett adathalászat-észleléssel
+* **E-mail hitelesítés érvényesítése**: A nem engedélyezett listán szereplő feladóktól érkező üzeneteknek legalább az SPF vagy DKIM egyikét teljesíteniük kell (hasonlóan a Gmail, Outlook és Yahoo 2024 óta érvényes követelményeihez). A semmilyen sikeres hitelesítéssel nem rendelkező üzenetek 550-es hibakóddal elutasításra kerülnek. A DMARC `p=reject` és `p=quarantine` házirendek érvényesítve vannak.
+* **HELO/EHLO tiltólista ellenőrzés**: Az SMTP HELO/EHLO üdvözlés során megadott hosztnevet ellenőrizzük a tiltólistánkkal szemben, ami védelmet nyújt még akkor is, ha az IPv6 feladóknak nincs fordított DNS bejegyzésük
 
 Források:
 
@@ -4204,7 +4205,7 @@ Az e-mail az [SMTP protokollra](https://en.wikipedia.org/wiki/Simple_Mail_Transf
 
 * Kezdeti kapcsolat (parancsnév nélkül, pl. `telnet example.com 25`) – Ez a kezdeti kapcsolat. Ellenőrizzük azokat a küldőket, akik nincsenek az [engedélyező listánkon](#do-you-have-an-allowlist) a [tiltó listánk](#do-you-have-a-denylist) alapján. Végül, ha a küldő nincs az engedélyező listán, akkor megnézzük, hogy [szürkelistán](#do-you-have-a-greylist) vannak-e.
 
-* `HELO` – Ez egy üdvözlés, amely a küldő FQDN-jét, IP-címét vagy levelező kezelő nevét azonosítja. Ez az érték hamisítható, ezért nem támaszkodunk erre az adatra, helyette a kapcsolat IP-címének fordított hosztnév lekérdezését használjuk.
+* `HELO` – Ez egy üdvözlés, amely a küldő FQDN-jét, IP-címét vagy levelező kezelő nevét azonosítja. Ez az érték hamisítható, ezért nem támaszkodunk erre az adatra, helyette a kapcsolat IP-címének fordított hosztnév lekérdezését használjuk. Azonban most már ellenőrizzük ezt az értéket a [tiltólistánkkal](#do-you-have-a-denylist) szemben is a fordított hosztnév lekérdezés mellett, ami további védelmi réteget biztosít, különösen IPv6 kapcsolatok esetén, ahol a fordított DNS nem feltétlenül érhető el.
 
 * `MAIL FROM` – Ez az e-mail boríték küldő címét jelzi. Ha érték van megadva, az érvényes RFC 5322 e-mail cím kell legyen. Üres értékek megengedettek. Itt [ellenőrizzük a visszapattanást](#how-do-you-protect-against-backscatter), és a MAIL FROM-ot összevetjük a [tiltó listánkkal](#do-you-have-a-denylist). Végül az engedélyező listán nem szereplő küldőket sebességkorlátozás alá vetjük (lásd a [Sebességkorlátozás](#do-you-have-rate-limiting) és az [engedélyező lista](#do-you-have-an-allowlist) szakaszokat további információkért).
 

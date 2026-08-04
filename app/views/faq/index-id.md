@@ -3945,7 +3945,8 @@ Forward Email menerapkan perlindungan multi-lapisan yang komprehensif:
 * **Perlindungan DDoS**: Perlindungan multi-lapisan melalui sistem Shield DataPacket dan Cloudflare
 * **Skalabilitas Otomatis**: Penyesuaian sumber daya dinamis berdasarkan permintaan
 * **Pencegahan Penyalahgunaan**: Pemeriksaan pencegahan penyalahgunaan spesifik pengguna dan pemblokiran berbasis hash untuk konten berbahaya
-* **Otentikasi Email**: Protokol SPF, DKIM, DMARC dengan deteksi phishing tingkat lanjut
+* **Penegakan Autentikasi Email**: Pesan dari pengirim yang tidak ada dalam daftar izin harus lulus setidaknya SPF atau DKIM (mirip dengan persyaratan Gmail, Outlook, dan Yahoo sejak 2024). Pesan tanpa autentikasi yang berhasil ditolak dengan kode error 550. Kebijakan DMARC `p=reject` dan `p=quarantine` ditegakkan.
+* **Pemeriksaan HELO/EHLO terhadap Daftar Blokir**: Nama host yang disajikan selama salam SMTP HELO/EHLO diperiksa terhadap daftar blokir kami, memberikan perlindungan bahkan ketika pengirim IPv6 tidak memiliki catatan DNS balik
 
 Sumber:
 
@@ -4204,7 +4205,7 @@ Email bergantung pada [protokol SMTP](https://en.wikipedia.org/wiki/Simple_Mail_
 
 * Koneksi Awal (tanpa nama perintah, misalnya `telnet example.com 25`) - Ini adalah koneksi awal. Kami memeriksa pengirim yang tidak ada dalam [daftar izinkan](#do-you-have-an-allowlist) kami terhadap [daftar tolak](#do-you-have-a-denylist) kami. Akhirnya, jika pengirim tidak ada dalam daftar izinkan, maka kami memeriksa apakah mereka telah [greylist](#do-you-have-a-greylist).
 
-* `HELO` - Ini menunjukkan salam untuk mengidentifikasi FQDN pengirim, alamat IP, atau nama penangan email. Nilai ini dapat dipalsukan, jadi kami tidak mengandalkan data ini dan sebaliknya menggunakan pencarian nama host balik dari alamat IP koneksi.
+* `HELO` - Ini menunjukkan salam untuk mengidentifikasi FQDN pengirim, alamat IP, atau nama penangan email. Nilai ini dapat dipalsukan, jadi kami tidak mengandalkan data ini dan sebaliknya menggunakan pencarian nama host balik dari alamat IP koneksi. Namun, kami sekarang juga memeriksa nilai ini terhadap [daftar blokir](#do-you-have-a-denylist) kami selain pencarian nama host balik, yang memberikan lapisan perlindungan tambahan, terutama untuk koneksi IPv6 di mana catatan DNS balik mungkin tidak tersedia.
 
 * `MAIL FROM` - Ini menunjukkan alamat surat amplop pengirim email. Jika nilai dimasukkan, harus berupa alamat email RFC 5322 yang valid. Nilai kosong diperbolehkan. Kami [memeriksa backscatter](#how-do-you-protect-against-backscatter) di sini, dan juga memeriksa MAIL FROM terhadap [daftar tolak](#do-you-have-a-denylist) kami. Kami akhirnya memeriksa pengirim yang tidak ada di daftar izinkan untuk pembatasan laju (lihat bagian tentang [Pembatasan Laju](#do-you-have-rate-limiting) dan [daftar izinkan](#do-you-have-an-allowlist) untuk informasi lebih lanjut).
 

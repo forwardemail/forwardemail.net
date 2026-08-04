@@ -3945,7 +3945,8 @@ Forward Email kapsamlı çok katmanlı koruma uygular:
 * **DDoS Koruması**: DataPacket'in Shield sistemi ve Cloudflare aracılığıyla çok katmanlı koruma
 * **Otomatik Ölçeklendirme**: Talebe göre dinamik kaynak ayarı
 * **Kötüye Kullanım Önleme**: Kullanıcıya özel kötüye kullanım önleme kontrolleri ve kötü amaçlı içerik için hash tabanlı engelleme
-* **E-posta Kimlik Doğrulama**: Gelişmiş oltalama tespiti ile SPF, DKIM, DMARC protokolleri
+* **E-posta Kimlik Doğrulama Uygulaması**: İzin listesinde olmayan göndericilerden gelen mesajlar en az SPF veya DKIM'den birini geçmelidir (2024'ten bu yana Gmail, Outlook ve Yahoo gereksinimleriyle benzer). Herhangi bir başarılı kimlik doğrulaması olmayan mesajlar 550 hata koduyla reddedilir. DMARC politikaları `p=reject` ve `p=quarantine` uygulanır.
+* **HELO/EHLO Engelleme Listesi Kontrolü**: SMTP HELO/EHLO selamlaması sırasında sunulan ana bilgisayar adı engelleme listemize karşı kontrol edilir, bu da IPv6 göndericilerin ters DNS kayıtları olmasa bile koruma sağlar
 
 Kaynaklar:
 
@@ -4204,7 +4205,7 @@ E-posta, [SMTP protokolüne](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_
 
 * İlk Bağlantı (komut adı yok, örn. `telnet example.com 25`) - Bu ilk bağlantıdır. [İzin listemizde](#do-you-have-an-allowlist) olmayan gönderenleri [yasak listemize](#do-you-have-a-denylist) karşı kontrol ederiz. Son olarak, bir gönderici izin listesinde değilse, [gri listeye](#do-you-have-a-greylist) alınıp alınmadığını kontrol ederiz.
 
-* `HELO` - Gönderenin FQDN'sini, IP adresini veya posta işleyici adını tanımlamak için bir selamlamadır. Bu değer sahte olabilir, bu yüzden bu veriye güvenmeyiz ve bunun yerine bağlantının IP adresinin ters ana bilgisayar adı sorgusunu kullanırız.
+* `HELO` - Gönderenin FQDN'sini, IP adresini veya posta işleyici adını tanımlamak için bir selamlamadır. Bu değer sahte olabilir, bu yüzden bu veriye güvenmeyiz ve bunun yerine bağlantının IP adresinin ters ana bilgisayar adı sorgusunu kullanırız. Ancak artık bu değeri ters ana bilgisayar adı sorgusuna ek olarak [engelleme listemize](#do-you-have-a-denylist) karşı da kontrol ediyoruz, bu da özellikle ters DNS'in mevcut olmayabileceği IPv6 bağlantıları için ek bir koruma katmanı sağlar.
 
 * `MAIL FROM` - E-postanın zarf üzerindeki gönderen adresini belirtir. Girilen değer geçerli bir RFC 5322 e-posta adresi olmalıdır. Boş değerler kabul edilir. Burada [geri yansıma kontrolü](#how-do-you-protect-against-backscatter) yaparız ve ayrıca MAIL FROM adresini [yasak listemize](#do-you-have-a-denylist) karşı kontrol ederiz. Son olarak, izin listesinde olmayan gönderenler için oran sınırlaması uygularız (daha fazla bilgi için [Oran Sınırlaması](#do-you-have-rate-limiting) ve [izin listesi](#do-you-have-an-allowlist) bölümlerine bakınız).
 

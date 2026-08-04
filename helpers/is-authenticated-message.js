@@ -378,6 +378,72 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     throw new SMTPError(
       "The email sent has failed SPF validation and is rejected due to the domain's SPF hard fail policy (ensure that your messages have a DKIM aligned signature with your From header)"
     );
+
+  //
+  // Sender authentication enforcement for non-allowlisted senders
+  // (similar to Gmail/Outlook/Yahoo 2024+ requirements)
+  //
+  // Reject messages from non-allowlisted senders that have NO authentication:
+  // - No passing DKIM (aligned or otherwise)
+  // - No passing SPF (envelope or From header)
+  // - DMARC not passing
+  //
+  // This prevents completely unauthenticated mail from being delivered,
+  // which is the primary vector for spam from throwaway VPS instances
+  // (e.g. IPv6 addresses with no rDNS, no SPF, no DKIM, DMARC p=none).
+  //
+  // Allowlisted senders (session.isAllowlisted) are exempt because they
+  // are trusted infrastructure (Gmail, Outlook, etc.) that may relay
+  // mail on behalf of misconfigured senders.
+  //
+  // Truth source ARC sealers are also exempt (already handled above).
+  //
+  if (
+    !session.isAllowlisted &&
+    !isTruthSource &&
+    !isLegitDSN &&
+    // no passing DKIM at all (aligned or unaligned)
+    !session.hadAlignedAndPassingDKIM &&
+    !hasSomePassingDKIM(session) &&
+    // SPF did not pass for envelope MAIL FROM
+    session.spf.status.result !== 'pass' &&
+    // SPF did not pass for From header either
+    session.spfFromHeader.status.result !== 'pass' &&
+    // DMARC did not pass
+    !(
+      session.dmarc &&
+      session.dmarc.status &&
+      session.dmarc.status.result === 'pass'
+    ) &&
+    // exception for Ubuntu custom postfix setup
+    (!session.resolvedRootClientHostname ||
+      !UBUNTU_DOMAINS.includes(session.resolvedRootClientHostname))
+  )
+    throw new SMTPError(
+      'The email sent has no passing authentication (SPF, DKIM, or DMARC). Messages must pass at least one of SPF or DKIM to be accepted. Please configure email authentication for your sending domain.',
+      {
+        responseCode:
+          session.spf.status.result === 'temperror' ||
+          session.spfFromHeader.status.result === 'temperror'
+            ? 421
+            : 550
+      }
+    );
+}
+
+//
+// helper: returns true if at least one DKIM signature passed (regardless of alignment)
+//
+function hasSomePassingDKIM(session) {
+  if (
+    !session.dkim ||
+    !_.isArray(session.dkim.results) ||
+    _.isEmpty(session.dkim.results)
+  )
+    return false;
+  return session.dkim.results.some(
+    (r) => _.isObject(r) && _.isObject(r.status) && r.status.result === 'pass'
+  );
 }
 
 module.exports = isAuthenticatedMessage;

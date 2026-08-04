@@ -3944,7 +3944,8 @@ Forward Email triển khai bảo vệ đa lớp toàn diện:
 * **Bảo vệ DDoS**: Bảo vệ đa lớp thông qua hệ thống Shield của DataPacket và Cloudflare
 * **Tự động Mở rộng**: Điều chỉnh tài nguyên động dựa trên nhu cầu
 * **Phòng chống Lạm dụng**: Kiểm tra phòng chống lạm dụng theo người dùng và chặn dựa trên băm cho nội dung độc hại
-* **Xác thực Email**: Các giao thức SPF, DKIM, DMARC với phát hiện phishing nâng cao
+* **Thực thi Xác thực Email**: Tin nhắn từ người gửi không nằm trong danh sách cho phép phải vượt qua ít nhất SPF hoặc DKIM (tương tự yêu cầu của Gmail, Outlook và Yahoo từ năm 2024). Tin nhắn không có bất kỳ xác thực thành công nào bị từ chối với mã lỗi 550. Các chính sách DMARC `p=reject` và `p=quarantine` được thực thi.
+* **Kiểm tra HELO/EHLO với Danh sách Từ chối**: Tên máy chủ được trình bày trong lời chào SMTP HELO/EHLO được kiểm tra với danh sách từ chối của chúng tôi, cung cấp bảo vệ ngay cả khi người gửi IPv6 không có bản ghi DNS ngược
 
 Nguồn:
 
@@ -4203,7 +4204,7 @@ Email dựa trên [giao thức SMTP](https://en.wikipedia.org/wiki/Simple_Mail_T
 
 * Kết nối ban đầu (không có tên lệnh, ví dụ `telnet example.com 25`) - Đây là kết nối ban đầu. Chúng tôi kiểm tra người gửi không có trong [danh sách cho phép](#do-you-have-an-allowlist) so với [danh sách cấm](#do-you-have-a-denylist). Cuối cùng, nếu người gửi không có trong danh sách cho phép, chúng tôi kiểm tra xem họ có bị [đưa vào danh sách xám](#do-you-have-a-greylist) hay không.
 
-* `HELO` - Đây là lời chào để xác định tên miền đầy đủ (FQDN), địa chỉ IP hoặc tên trình xử lý thư của người gửi. Giá trị này có thể bị giả mạo, vì vậy chúng tôi không dựa vào dữ liệu này mà thay vào đó sử dụng tra cứu tên máy chủ ngược của địa chỉ IP kết nối.
+* `HELO` - Đây là lời chào để xác định tên miền đầy đủ (FQDN), địa chỉ IP hoặc tên trình xử lý thư của người gửi. Giá trị này có thể bị giả mạo, vì vậy chúng tôi không dựa vào dữ liệu này mà thay vào đó sử dụng tra cứu tên máy chủ ngược của địa chỉ IP kết nối. Tuy nhiên, hiện tại chúng tôi cũng kiểm tra giá trị này với [danh sách từ chối](#do-you-have-a-denylist) ngoài tra cứu tên máy chủ ngược, cung cấp thêm một lớp bảo vệ, đặc biệt cho các kết nối IPv6 nơi bản ghi DNS ngược có thể không khả dụng.
 
 * `MAIL FROM` - Đây là địa chỉ gửi thư trong phong bì của email. Nếu có giá trị nhập vào, nó phải là địa chỉ email hợp lệ theo RFC 5322. Giá trị trống được phép. Chúng tôi [kiểm tra chống lại thư phản hồi ngược](#how-do-you-protect-against-backscatter) tại đây, và cũng kiểm tra MAIL FROM với [danh sách cấm](#do-you-have-a-denylist). Cuối cùng, chúng tôi kiểm tra người gửi không có trong danh sách cho phép để giới hạn tần suất (xem phần [Giới hạn tần suất](#do-you-have-rate-limiting) và [danh sách cho phép](#do-you-have-an-allowlist) để biết thêm thông tin).
 

@@ -3944,7 +3944,8 @@ Forward Email wdraża kompleksową wielowarstwową ochronę:
 * **Ochrona przed DDoS**: Wielowarstwowa ochrona dzięki systemowi Shield firmy DataPacket oraz Cloudflare
 * **Automatyczne skalowanie**: Dynamiczne dostosowanie zasobów w zależności od zapotrzebowania
 * **Zapobieganie nadużyciom**: Sprawdzanie nadużyć specyficzne dla użytkownika oraz blokowanie oparte na hashach dla złośliwych treści
-* **Uwierzytelnianie e-maili**: Protokoły SPF, DKIM, DMARC z zaawansowanym wykrywaniem phishingu
+* **Egzekwowanie uwierzytelniania e-maili**: Wiadomości od nadawców spoza listy dozwolonych muszą przejść co najmniej SPF lub DKIM (podobnie do wymagań Gmail, Outlook i Yahoo od 2024 roku). Wiadomości bez żadnego pomyślnego uwierzytelnienia są odrzucane z kodem błędu 550. Polityki DMARC `p=reject` i `p=quarantine` są egzekwowane.
+* **Sprawdzanie HELO/EHLO na liście blokowanych**: Nazwa hosta prezentowana podczas powitania SMTP HELO/EHLO jest sprawdzana na naszej liście blokowanych, zapewniając ochronę nawet gdy nadawcy IPv6 nie mają odwrotnych rekordów DNS
 
 Źródła:
 
@@ -4203,7 +4204,7 @@ Poczta elektroniczna opiera się na [protokole SMTP](https://en.wikipedia.org/wi
 
 * Połączenie początkowe (bez nazwy polecenia, np. `telnet example.com 25`) – To jest połączenie początkowe. Sprawdzamy nadawców, którzy nie znajdują się na naszej [liście dozwolonych](#do-you-have-an-allowlist) względem naszej [listy zablokowanych](#do-you-have-a-denylist). Na koniec, jeśli nadawca nie jest na liście dozwolonych, sprawdzamy, czy nie został [szarylistowany](#do-you-have-a-greylist).
 
-* `HELO` – To polecenie służy do powitania i identyfikacji FQDN nadawcy, adresu IP lub nazwy obsługi poczty. Ta wartość może być sfałszowana, więc nie polegamy na tych danych, zamiast tego używamy odwrotnego wyszukiwania nazwy hosta dla adresu IP połączenia.
+* `HELO` – To polecenie służy do powitania i identyfikacji FQDN nadawcy, adresu IP lub nazwy obsługi poczty. Ta wartość może być sfałszowana, więc nie polegamy na tych danych, zamiast tego używamy odwrotnego wyszukiwania nazwy hosta dla adresu IP połączenia. Jednak teraz sprawdzamy tę wartość również w naszej [liście blokowanych](#do-you-have-a-denylist) oprócz odwrotnego wyszukiwania nazwy hosta, co zapewnia dodatkową warstwę ochrony, szczególnie dla połączeń IPv6, gdzie odwrotne rekordy DNS mogą nie być dostępne.
 
 * `MAIL FROM` – To polecenie wskazuje adres nadawcy koperty e-maila. Jeśli podana jest wartość, musi to być poprawny adres e-mail zgodny z RFC 5322. Puste wartości są dozwolone. Tutaj [sprawdzamy backscatter](#how-do-you-protect-against-backscatter) oraz porównujemy MAIL FROM z naszą [listą zablokowanych](#do-you-have-a-denylist). Na koniec sprawdzamy nadawców spoza listy dozwolonych pod kątem limitów szybkości (zobacz sekcję o [limitowaniu szybkości](#do-you-have-rate-limiting) i [liście dozwolonych](#do-you-have-an-allowlist) dla więcej informacji).
 

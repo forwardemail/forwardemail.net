@@ -3946,7 +3946,8 @@ Forward Email implementerer omfattende flerlaget beskyttelse:
 * **DDoS-beskyttelse**: Flerlaget beskyttelse gennem DataPackets Shield-system og Cloudflare
 * **Automatisk skalering**: Dynamisk ressourcejustering baseret på efterspørgsel
 * **Misbrugsforebyggelse**: Bruger-specifikke misbrugsforebyggende kontroller og hash-baseret blokering af ondsindet indhold
-* **Email-autentificering**: SPF, DKIM, DMARC-protokoller med avanceret phishing-detektion
+* **Håndhævelse af e-mail-autentificering**: Beskeder fra afsendere, der ikke er på tilladelseslisten, skal bestå mindst én af SPF eller DKIM (svarende til Gmail, Outlook og Yahoo-krav siden 2024). Beskeder uden nogen bestået autentificering afvises med fejlkode 550. DMARC-politikker `p=reject` og `p=quarantine` håndhæves.
+* **HELO/EHLO Denylist-kontrol**: Værtsnavnet præsenteret under SMTP HELO/EHLO-hilsenen kontrolleres mod vores denylist, hvilket giver beskyttelse selv når IPv6-afsendere mangler reverse DNS-poster
 
 Kilder:
 
@@ -4205,7 +4206,7 @@ Email er baseret på [SMTP-protokollen](https://en.wikipedia.org/wiki/Simple_Mai
 
 * Indledende forbindelse (ingen kommando navn, f.eks. `telnet example.com 25`) - Dette er den indledende forbindelse. Vi tjekker afsendere, der ikke er på vores [allowlist](#do-you-have-an-allowlist), mod vores [denylist](#do-you-have-a-denylist). Endelig, hvis en afsender ikke er på vores allowlist, tjekker vi, om de er blevet [greylistet](#do-you-have-a-greylist).
 
-* `HELO` - Dette angiver en hilsen for at identificere afsenderens FQDN, IP-adresse eller mailhandler-navn. Denne værdi kan forfalskes, så vi stoler ikke på disse data, men bruger i stedet reverse hostname-opslag på forbindelsens IP-adresse.
+* `HELO` - Dette angiver en hilsen for at identificere afsenderens FQDN, IP-adresse eller mailhandler-navn. Denne værdi kan forfalskes, så vi stoler ikke på disse data, men bruger i stedet reverse hostname-opslag på forbindelsens IP-adresse. Vi kontrollerer dog nu denne værdi mod vores [denylist](#do-you-have-a-denylist) ud over reverse hostname-opslaget, hvilket giver et ekstra beskyttelseslag, især for IPv6-forbindelser, hvor reverse DNS muligvis ikke er tilgængelig.
 
 * `MAIL FROM` - Dette angiver konvolutmailens afsenderadresse. Hvis der indtastes en værdi, skal det være en gyldig RFC 5322 emailadresse. Tomme værdier er tilladt. Vi [tjekker for backscatter](#how-do-you-protect-against-backscatter) her, og vi tjekker også MAIL FROM mod vores [denylist](#do-you-have-a-denylist). Endelig tjekker vi afsendere, der ikke er på allowlisten, for ratebegrænsning (se afsnittet om [Rate Limiting](#do-you-have-rate-limiting) og [allowlist](#do-you-have-an-allowlist) for mere information).
 

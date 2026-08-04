@@ -3945,7 +3945,8 @@ Forward Email implementiert umfassenden mehrschichtigen Schutz:
 * **DDoS-Schutz**: Mehrschichtiger Schutz durch das Shield-System von DataPacket und Cloudflare
 * **Automatische Skalierung**: Dynamische Ressourcenanpassung basierend auf der Nachfrage
 * **Missbrauchsprävention**: Benutzerspezifische Missbrauchsprüfungen und hash-basierte Blockierung für bösartige Inhalte
-* **E-Mail-Authentifizierung**: SPF-, DKIM-, DMARC-Protokolle mit fortschrittlicher Phishing-Erkennung
+* **E-Mail-Authentifizierungs-Durchsetzung**: Nachrichten von nicht auf der Allowlist stehenden Absendern müssen mindestens SPF oder DKIM bestehen (ähnlich den Anforderungen von Gmail, Outlook und Yahoo seit 2024). Nachrichten ohne jegliche bestandene Authentifizierung werden mit Fehlercode 550 abgelehnt. DMARC-Richtlinien `p=reject` und `p=quarantine` werden durchgesetzt.
+* **HELO/EHLO-Denylist-Prüfung**: Der während der SMTP HELO/EHLO-Begrüßung präsentierte Hostname wird gegen unsere Denylist geprüft, was Schutz bietet, auch wenn IPv6-Absender keine Reverse-DNS-Einträge haben
 
 Quellen:
 
@@ -4204,7 +4205,7 @@ E-Mail basiert auf dem [SMTP-Protokoll](https://en.wikipedia.org/wiki/Simple_Mai
 
 * Initiale Verbindung (kein Befehlsname, z.B. `telnet example.com 25`) – Dies ist die anfängliche Verbindung. Wir prüfen Absender, die nicht auf unserer [Erlaubnisliste](#do-you-have-an-allowlist) stehen, anhand unserer [Sperrliste](#do-you-have-a-denylist). Schließlich prüfen wir, falls ein Absender nicht auf der Erlaubnisliste steht, ob er [gegrautelistet](#do-you-have-a-greylist) wurde.
 
-* `HELO` – Dies signalisiert eine Begrüßung zur Identifikation des FQDN, der IP-Adresse oder des Mail-Handler-Namens des Absenders. Dieser Wert kann gefälscht sein, daher verlassen wir uns nicht auf diese Daten, sondern verwenden stattdessen die Reverse-Hostname-Abfrage der IP-Adresse der Verbindung.
+* `HELO` – Dies signalisiert eine Begrüßung zur Identifikation des FQDN, der IP-Adresse oder des Mail-Handler-Namens des Absenders. Dieser Wert kann gefälscht sein, daher verlassen wir uns nicht auf diese Daten, sondern verwenden stattdessen die Reverse-Hostname-Abfrage der IP-Adresse der Verbindung. Wir überprüfen diesen Wert nun jedoch auch gegen unsere [Denylist](#do-you-have-a-denylist) zusätzlich zur Reverse-Hostname-Abfrage, was eine zusätzliche Schutzschicht bietet, insbesondere für IPv6-Verbindungen, bei denen kein Reverse-DNS verfügbar sein könnte.
 
 * `MAIL FROM` – Dies gibt die Absenderadresse des Umschlags der E-Mail an. Wenn ein Wert eingegeben wird, muss es eine gültige RFC 5322 E-Mail-Adresse sein. Leere Werte sind erlaubt. Wir prüfen hier auf Backscatter (#how-do-you-protect-against-backscatter), und wir prüfen auch die MAIL FROM-Adresse gegen unsere [Sperrliste](#do-you-have-a-denylist). Schließlich prüfen wir Absender, die nicht auf der Erlaubnisliste stehen, auf Ratenbegrenzung (siehe den Abschnitt zu [Ratenbegrenzung](#do-you-have-rate-limiting) und [Erlaubnisliste](#do-you-have-an-allowlist) für weitere Informationen).
 

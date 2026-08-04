@@ -3945,7 +3945,8 @@ Forward Email implementa uma proteção abrangente em múltiplas camadas:
 * **Proteção contra DDoS**: Proteção em múltiplas camadas através do sistema Shield da DataPacket e Cloudflare
 * **Escalonamento Automático**: Ajuste dinâmico de recursos baseado na demanda
 * **Prevenção de Abuso**: Verificações específicas para prevenção de abuso por usuário e bloqueio baseado em hash para conteúdo malicioso
-* **Autenticação de Email**: Protocolos SPF, DKIM, DMARC com detecção avançada de phishing
+* **Aplicação de Autenticação de Email**: Mensagens de remetentes não incluídos na lista de permissões devem passar pelo menos SPF ou DKIM (semelhante aos requisitos do Gmail, Outlook e Yahoo desde 2024). Mensagens sem nenhuma autenticação bem-sucedida são rejeitadas com código de erro 550. As políticas DMARC `p=reject` e `p=quarantine` são aplicadas.
+* **Verificação HELO/EHLO contra Lista de Bloqueio**: O nome do host apresentado durante a saudação SMTP HELO/EHLO é verificado contra nossa lista de bloqueio, fornecendo proteção mesmo quando remetentes IPv6 não possuem registros DNS reversos
 
 Fontes:
 
@@ -4204,7 +4205,7 @@ O e-mail depende do [protocolo SMTP](https://en.wikipedia.org/wiki/Simple_Mail_T
 
 * Conexão Inicial (sem nome de comando, ex. `telnet example.com 25`) - Esta é a conexão inicial. Verificamos remetentes que não estão em nossa [lista de permissões](#do-you-have-an-allowlist) contra nossa [lista de bloqueios](#do-you-have-a-denylist). Finalmente, se um remetente não estiver na lista de permissões, verificamos se ele foi [colocado em lista cinza](#do-you-have-a-greylist).
 
-* `HELO` - Indica uma saudação para identificar o FQDN do remetente, endereço IP ou nome do manipulador de e-mail. Este valor pode ser falsificado, então não confiamos nesses dados e usamos a busca reversa do nome do host do endereço IP da conexão.
+* `HELO` - Indica uma saudação para identificar o FQDN do remetente, endereço IP ou nome do manipulador de e-mail. Este valor pode ser falsificado, então não confiamos nesses dados e usamos a busca reversa do nome do host do endereço IP da conexão. No entanto, agora verificamos este valor contra nossa [lista de bloqueio](#do-you-have-a-denylist) além da busca reversa do nome do host, o que fornece uma camada adicional de proteção, especialmente para conexões IPv6 onde registros DNS reversos podem não estar disponíveis.
 
 * `MAIL FROM` - Indica o endereço do remetente do envelope do e-mail. Se um valor for inserido, deve ser um endereço de e-mail válido conforme RFC 5322. Valores vazios são permitidos. Aqui [verificamos backscatter](#how-do-you-protect-against-backscatter) e também verificamos o MAIL FROM contra nossa [lista de bloqueios](#do-you-have-a-denylist). Finalmente, verificamos remetentes que não estão na lista de permissões para limitação de taxa (veja a seção sobre [Limitação de Taxa](#do-you-have-rate-limiting) e [lista de permissões](#do-you-have-an-allowlist) para mais informações).
 

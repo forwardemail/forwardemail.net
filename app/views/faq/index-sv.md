@@ -3945,7 +3945,8 @@ Forward Email implementerar omfattande flerskiktigt skydd:
 * **DDoS-skydd**: Flerskiktsskydd genom DataPackets Shield-system och Cloudflare
 * **Automatisk skalning**: Dynamisk resursanpassning baserat på efterfrågan
 * **Missbruksprevention**: Användarspecifika kontroller för missbruk och hash-baserad blockering av skadligt innehåll
-* **E-postautentisering**: SPF, DKIM, DMARC-protokoll med avancerad phishingdetektion
+* **Tillämpning av e-postautentisering**: Meddelanden från avsändare som inte finns på tillåtningslistan måste klara minst SPF eller DKIM (liknande kraven från Gmail, Outlook och Yahoo sedan 2024). Meddelanden utan någon godkänd autentisering avvisas med felkod 550. DMARC-policyer `p=reject` och `p=quarantine` tillämpas.
+* **HELO/EHLO blockeringslistekontroll**: Värdnamnet som presenteras under SMTP HELO/EHLO-hälsningen kontrolleras mot vår blockeringslista, vilket ger skydd även när IPv6-avsändare saknar omvända DNS-poster
 
 Källor:
 
@@ -4204,7 +4205,7 @@ E-post bygger på [SMTP-protokollet](https://en.wikipedia.org/wiki/Simple_Mail_T
 
 * Initial anslutning (inget kommando, t.ex. `telnet example.com 25`) – Detta är den initiala anslutningen. Vi kontrollerar avsändare som inte finns i vår [tillåtna lista](#do-you-have-an-allowlist) mot vår [blocklista](#do-you-have-a-denylist). Slutligen, om en avsändare inte finns i vår tillåtna lista, kontrollerar vi om de har blivit [grålistade](#do-you-have-a-greylist).
 
-* `HELO` – Detta är en hälsning för att identifiera avsändarens FQDN, IP-adress eller mailhanterarens namn. Detta värde kan förfalskas, så vi förlitar oss inte på denna data utan använder istället omvänd värdnamnsuppslagning av anslutningens IP-adress.
+* `HELO` – Detta är en hälsning för att identifiera avsändarens FQDN, IP-adress eller mailhanterarens namn. Detta värde kan förfalskas, så vi förlitar oss inte på denna data utan använder istället omvänd värdnamnsuppslagning av anslutningens IP-adress. Vi kontrollerar nu dock även detta värde mot vår [blockeringslista](#do-you-have-a-denylist) utöver omvänd värdnamnsuppslagning, vilket ger ett extra skyddslager, särskilt för IPv6-anslutningar där omvänd DNS kanske inte är tillgänglig.
 
 * `MAIL FROM` – Detta anger avsändaradressen i kuvertet för e-posten. Om ett värde anges måste det vara en giltig RFC 5322-e-postadress. Tomma värden är tillåtna. Vi [kontrollerar för backscatter](#how-do-you-protect-against-backscatter) här, och vi kontrollerar också MAIL FROM mot vår [blocklista](#do-you-have-a-denylist). Slutligen kontrollerar vi avsändare som inte finns på tillåtna listan för hastighetsbegränsning (se avsnitten om [Rate Limiting](#do-you-have-rate-limiting) och [allowlist](#do-you-have-an-allowlist) för mer information).
 

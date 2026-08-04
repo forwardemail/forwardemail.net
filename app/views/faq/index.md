@@ -3970,8 +3970,9 @@ Yes. Forward Email comprehensively implements and preserves email authentication
 
 * **SPF (Sender Policy Framework)**: Properly implemented and preserved
 * **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
-* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
-* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation (both `p=reject` and `p=quarantine` are enforced for non-allowlisted senders)
+* **ARC**: Trusted ARC chain validation from truth source senders (RFC 8617) for DMARC local policy override
+* **Sender Authentication Requirement**: Non-allowlisted senders must pass at least one of SPF or DKIM (similar to Gmail, Outlook, and Yahoo requirements since 2024)
 
 Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
@@ -4007,7 +4008,8 @@ Forward Email implements comprehensive multi-layer protection:
 * **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
 * **Automatic Scaling**: Dynamic resource adjustment based on demand
 * **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
-* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
+* **Email Authentication Enforcement**: Messages from non-allowlisted senders must pass at least one of SPF or DKIM (similar to Gmail, Outlook, and Yahoo requirements since 2024).  Messages with zero passing authentication are rejected with a 550 error code.  DMARC policies of `p=reject` and `p=quarantine` are enforced.
+* **HELO/EHLO Denylist Checking**: The hostname presented during the SMTP HELO/EHLO greeting is checked against our denylist, providing protection even when IPv6 senders lack reverse DNS records
 
 Sources:
 
@@ -4269,7 +4271,7 @@ Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Tr
 
 * Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
 
-* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
+* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  Although this value can be spoofed, we now check it against our [denylist](#do-you-have-a-denylist) in addition to the reverse hostname lookup of the connection's IP address.  This provides an additional layer of protection, particularly for IPv6 connections where reverse DNS may not be available.
 
 * `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
 
@@ -4311,7 +4313,9 @@ This section describes our process related to the SMTP protocol command `DATA` i
 8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
    * If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
+   * If the message failed DMARC and the domain had a quarantine policy (e.g. `p=quarantine`) and the sender is not [allowlisted](#do-you-have-an-allowlist), then it is rejected with a 550 error code.
    * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
+   * If the sender is not [allowlisted](#do-you-have-an-allowlist) and the message has no passing authentication at all (no passing SPF, no passing DKIM, and DMARC not passing), then it is rejected with a 550 error code.  This is similar to the sender requirements enforced by Gmail, Outlook, and Yahoo since 2024 – messages must pass at least one of SPF or DKIM to be accepted.
 
 9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
 

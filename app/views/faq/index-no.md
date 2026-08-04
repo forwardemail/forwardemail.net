@@ -3946,7 +3946,8 @@ Forward Email implementerer omfattende flerlagssikring:
 * **DDoS-beskyttelse**: Flerlagsbeskyttelse gjennom DataPackets Shield-system og Cloudflare
 * **Automatisk skalering**: Dynamisk ressursjustering basert på etterspørsel
 * **Misbrukforebygging**: Brukerspesifikke misbrukssjekker og hash-basert blokkering for ondsinnet innhold
-* **E-postautentisering**: SPF, DKIM, DMARC-protokoller med avansert phishingdeteksjon
+* **Håndhevelse av e-postautentisering**: Meldinger fra avsendere som ikke er på tillattlisten, må bestå minst én av SPF eller DKIM (tilsvarende krav fra Gmail, Outlook og Yahoo siden 2024). Meldinger uten noen bestått autentisering avvises med feilkode 550. DMARC-policyer `p=reject` og `p=quarantine` håndheves.
+* **HELO/EHLO blokkeringslistekontroll**: Vertsnavnet presentert under SMTP HELO/EHLO-hilsenen sjekkes mot vår blokkeringsliste, noe som gir beskyttelse selv når IPv6-avsendere mangler omvendte DNS-poster
 
 Kilder:
 
@@ -4205,7 +4206,7 @@ E-post er avhengig av [SMTP-protokollen](https://en.wikipedia.org/wiki/Simple_Ma
 
 * Innledende tilkobling (ingen kommando, f.eks. `telnet example.com 25`) – Dette er den innledende tilkoblingen. Vi sjekker avsendere som ikke er på vår [tillatliste](#do-you-have-an-allowlist) mot vår [blokkliste](#do-you-have-a-denylist). Til slutt, hvis en avsender ikke er på tillatlisten, sjekker vi om de er [grålistet](#do-you-have-a-greylist).
 
-* `HELO` – Dette indikerer en hilsen for å identifisere avsenderens FQDN, IP-adresse eller mailhandler-navn. Denne verdien kan forfalskes, så vi stoler ikke på denne informasjonen, men bruker i stedet omvendt vertsnavnsoppslag av tilkoblingens IP-adresse.
+* `HELO` – Dette indikerer en hilsen for å identifisere avsenderens FQDN, IP-adresse eller mailhandler-navn. Denne verdien kan forfalskes, så vi stoler ikke på denne informasjonen, men bruker i stedet omvendt vertsnavnsoppslag av tilkoblingens IP-adresse. Vi sjekker nå imidlertid denne verdien mot vår [blokkeringsliste](#do-you-have-a-denylist) i tillegg til omvendt vertsnavnsoppslag, noe som gir et ekstra beskyttelseslag, spesielt for IPv6-tilkoblinger der omvendt DNS kanskje ikke er tilgjengelig.
 
 * `MAIL FROM` – Dette angir konvoluttens avsenderadresse for e-posten. Hvis en verdi oppgis, må det være en gyldig RFC 5322 e-postadresse. Tomme verdier er tillatt. Vi [sjekker for backscatter](#how-do-you-protect-against-backscatter) her, og vi sjekker også MAIL FROM mot vår [blokkliste](#do-you-have-a-denylist). Til slutt sjekker vi avsendere som ikke er på tillatlisten for hastighetsbegrensning (se seksjonen om [Rate Limiting](#do-you-have-rate-limiting) og [tillatliste](#do-you-have-an-allowlist) for mer informasjon).
 

@@ -3944,7 +3944,8 @@ Forward Email toteuttaa kattavan monikerroksisen suojauksen:
 * **DDoS-suojaus**: Monikerroksinen suojaus DataPacketin Shield-järjestelmän ja Cloudflaren kautta
 * **Automaattinen skaalaus**: Dynaaminen resurssien säätö kysynnän mukaan
 * **Väärinkäytösten ehkäisy**: Käyttäjäkohtaiset väärinkäytön estotarkastukset ja hash-pohjainen estäminen haitalliselle sisällölle
-* **Sähköpostin todennus**: SPF-, DKIM-, DMARC-protokollat kehittyneellä kalastelun tunnistuksella
+* **Sähköpostin todennuksen valvonta**: Viestien lähettäjiltä, jotka eivät ole sallittujen listalla, on läpäistävä vähintään SPF tai DKIM (vastaavasti kuin Gmailin, Outlookin ja Yahoon vaatimukset vuodesta 2024). Viestit ilman mitään läpäistyä todennusta hylätään virhekoodilla 550. DMARC-käytännöt `p=reject` ja `p=quarantine` valvotaan.
+* **HELO/EHLO-estoluettelotarkistus**: SMTP HELO/EHLO-tervehdyksessä esitetty isäntänimi tarkistetaan estoluettelostamme, mikä tarjoaa suojaa myös silloin, kun IPv6-lähettäjillä ei ole käänteisiä DNS-tietueita
 
 Lähteet:
 
@@ -4203,7 +4204,7 @@ Sähköposti perustuu [SMTP-protokollaan](https://en.wikipedia.org/wiki/Simple_M
 
 * Alkuperäinen yhteys (ei komentoa, esim. `telnet example.com 25`) – Tämä on alkuperäinen yhteys. Tarkistamme lähettäjät, jotka eivät ole [sallittujen listallamme](#do-you-have-an-allowlist), [kieltolistamme](#do-you-have-a-denylist) mukaan. Lopuksi, jos lähettäjä ei ole sallittujen listalla, tarkistamme, onko hän [harmaalistattu](#do-you-have-a-greylist).
 
-* `HELO` – Tämä on tervehdys, jolla tunnistetaan lähettäjän FQDN, IP-osoite tai sähköpostinkäsittelijän nimi. Tätä arvoa voidaan väärentää, joten emme luota tähän tietoon vaan käytämme yhteyden IP-osoitteen käänteistä isäntänimen hakua.
+* `HELO` – Tämä on tervehdys, jolla tunnistetaan lähettäjän FQDN, IP-osoite tai sähköpostinkäsittelijän nimi. Tätä arvoa voidaan väärentää, joten emme luota tähän tietoon vaan käytämme yhteyden IP-osoitteen käänteistä isäntänimen hakua. Tarkistamme kuitenkin nyt tämän arvon [estoluettelostamme](#do-you-have-a-denylist) käänteisen isäntänimen haun lisäksi, mikä tarjoaa lisäsuojakerroksen erityisesti IPv6-yhteyksille, joissa käänteinen DNS ei välttämättä ole käytettävissä.
 
 * `MAIL FROM` – Tämä ilmaisee sähköpostin kuoren lähettäjäosoitteen. Jos arvo annetaan, sen on oltava kelvollinen RFC 5322 -sähköpostiosoite. Tyhjät arvot ovat sallittuja. Tarkistamme tässä [takaisinsyötön](#how-do-you-protect-against-backscatter) ja myös MAIL FROM -osoitteen [kieltolistamme](#do-you-have-a-denylist) mukaan. Lopuksi tarkistamme sallittujen listalla olemattomat lähettäjät nopeusrajoituksen osalta (katso lisätietoja kohdista [Nopeusrajoitus](#do-you-have-rate-limiting) ja [sallittu lista](#do-you-have-an-allowlist)).
 

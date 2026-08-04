@@ -3945,7 +3945,8 @@ Forward Email implementeert uitgebreide meerlaagse bescherming:
 * **DDoS-bescherming**: Meerlaagse bescherming via het Shield-systeem van DataPacket en Cloudflare
 * **Automatische schaalvergroting**: Dynamische aanpassing van middelen op basis van vraag
 * **Misbruikpreventie**: Gebruikersspecifieke misbruikpreventiecontroles en op hashes gebaseerde blokkering voor kwaadaardige inhoud
-* **E-mailauthenticatie**: SPF-, DKIM-, DMARC-protocollen met geavanceerde phishingdetectie
+* **E-mailauthenticatie-handhaving**: Berichten van afzenders die niet op de allowlist staan, moeten ten minste SPF of DKIM doorstaan (vergelijkbaar met de vereisten van Gmail, Outlook en Yahoo sinds 2024). Berichten zonder enige geslaagde authenticatie worden afgewezen met foutcode 550. DMARC-beleid `p=reject` en `p=quarantine` worden gehandhaafd.
+* **HELO/EHLO Denylist-controle**: De hostnaam die wordt gepresenteerd tijdens de SMTP HELO/EHLO-begroeting wordt gecontroleerd tegen onze denylist, wat bescherming biedt zelfs wanneer IPv6-afzenders geen reverse DNS-records hebben
 
 Bronnen:
 
@@ -4204,7 +4205,7 @@ E-mail maakt gebruik van het [SMTP-protocol](https://en.wikipedia.org/wiki/Simpl
 
 * Initiële verbinding (geen commando naam, bv. `telnet example.com 25`) - Dit is de initiële verbinding. We controleren afzenders die niet op onze [allowlist](#do-you-have-an-allowlist) staan tegen onze [denylist](#do-you-have-a-denylist). Ten slotte, als een afzender niet op onze allowlist staat, controleren we of deze [greylisted](#do-you-have-a-greylist) is.
 
-* `HELO` - Dit geeft een begroeting aan om de FQDN, IP-adres of mail handler naam van de afzender te identificeren. Deze waarde kan worden gespoofd, dus vertrouwen wij niet op deze data en gebruiken we in plaats daarvan de reverse hostname lookup van het IP-adres van de verbinding.
+* `HELO` - Dit geeft een begroeting aan om de FQDN, IP-adres of mail handler naam van de afzender te identificeren. Deze waarde kan worden gespoofd, dus vertrouwen wij niet op deze data en gebruiken we in plaats daarvan de reverse hostname lookup van het IP-adres van de verbinding. We controleren deze waarde nu echter ook tegen onze [denylist](#do-you-have-a-denylist) naast de reverse hostname lookup, wat een extra beschermingslaag biedt, met name voor IPv6-verbindingen waar reverse DNS mogelijk niet beschikbaar is.
 
 * `MAIL FROM` - Dit geeft het enveloppe mail from adres van de e-mail aan. Als er een waarde wordt ingevoerd, moet dit een geldig RFC 5322 e-mailadres zijn. Lege waarden zijn toegestaan. We [controleren hier op backscatter](#how-do-you-protect-against-backscatter) en we controleren ook de MAIL FROM tegen onze [denylist](#do-you-have-a-denylist). We controleren ten slotte afzenders die niet op de allowlist staan op rate limiting (zie de sectie over [Rate Limiting](#do-you-have-rate-limiting) en [allowlist](#do-you-have-an-allowlist) voor meer informatie).
 
