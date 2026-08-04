@@ -18,7 +18,8 @@
       "error_file": "/var/log/pm2/carddav-error.log",
       "out_file": "/var/log/pm2/carddav-out.log",
       "combine_logs": true,
-      "merge_logs": true
+      "merge_logs": true,
+      "node_args": "--disable-proto=delete"
     },
     {
       "name": "proxy",
@@ -36,7 +37,8 @@
       "error_file": "/var/log/pm2/proxy-error.log",
       "out_file": "/var/log/pm2/proxy-out.log",
       "combine_logs": true,
-      "merge_logs": true
+      "merge_logs": true,
+      "node_args": "--disable-proto=delete"
     }
   ],
   "deploy": {

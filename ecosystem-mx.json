@@ -16,7 +16,8 @@
       "error_file": "/var/log/pm2/mx-error.log",
       "out_file": "/var/log/pm2/mx-out.log",
       "combine_logs": true,
-      "merge_logs": true
+      "merge_logs": true,
+      "node_args": "--disable-proto=delete"
     },
     {
       "name": "proxy-http",
@@ -35,7 +36,8 @@
       "error_file": "/var/log/pm2/proxy-http-error.log",
       "out_file": "/var/log/pm2/proxy-http-out.log",
       "combine_logs": true,
-      "merge_logs": true
+      "merge_logs": true,
+      "node_args": "--disable-proto=delete"
     },
     {
       "name": "proxy-https",
@@ -55,7 +57,8 @@
       "error_file": "/var/log/pm2/proxy-https-error.log",
       "out_file": "/var/log/pm2/proxy-https-out.log",
       "combine_logs": true,
-      "merge_logs": true
+      "merge_logs": true,
+      "node_args": "--disable-proto=delete"
     }
   ],
   "deploy": {

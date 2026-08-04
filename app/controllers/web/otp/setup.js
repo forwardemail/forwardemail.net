@@ -44,6 +44,29 @@ async function setup(ctx, next) {
   }
 
   if (ctx.method === 'DELETE') {
+    // require valid OTP passcode or recovery key to disable 2FA
+    if (ctx.state.user[config.passport.fields.otpEnabled]) {
+      const secret = ctx.state.user[config.passport.fields.otpToken];
+      const recoveryKeys = ctx.state.user[config.userFields.otpRecoveryKeys];
+      if (isSANB(body.token)) {
+        const isValid = authenticator.checkDelta(body.token, secret);
+        if (isValid !== 0 && isValid !== -1)
+          throw Boom.badRequest(ctx.translateError('INVALID_OTP_PASSCODE'));
+      } else if (isSANB(body.recovery_key)) {
+        if (
+          !Array.isArray(recoveryKeys) ||
+          recoveryKeys.length === 0 ||
+          !recoveryKeys.includes(body.recovery_key)
+        )
+          throw Boom.badRequest(ctx.translateError('INVALID_RECOVERY_KEY'));
+        ctx.state.user[config.userFields.otpRecoveryKeys] = recoveryKeys.filter(
+          (key) => key !== body.recovery_key
+        );
+      } else {
+        throw Boom.badRequest(ctx.translateError('INVALID_OTP_PASSCODE'));
+      }
+    }
+
     ctx.state.user[config.passport.fields.otpEnabled] = false;
     await ctx.state.user.save();
     ctx.flash('custom', {

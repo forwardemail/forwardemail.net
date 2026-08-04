@@ -170,13 +170,29 @@ block body
           )
             if user[config.userFields.hasSetPassword]
               .form-group.floating-label
-                input#input-password.form-control.form-control-lg(
+                input#input-disable-otp-password.form-control.form-control-lg(
                   type="password",
                   autocomplete=config.env === "test" ? "off" : randomstring(),
                   name="password",
                   required
                 )
-                label(for="input-password")= t("Confirm Password")
+                label(for="input-disable-otp-password")= t("Confirm Password")
+            small.form-text.text-muted.mb-3.d-block= t("Enter your 6-digit authenticator code or a recovery key to confirm.")
+            .form-group.floating-label
+              input#input-disable-otp-token.form-control.form-control-lg(
+                type="text",
+                inputmode="numeric",
+                autocomplete="one-time-code",
+                pattern="[0-9]{6}",
+                name="token"
+              )
+              label(for="input-disable-otp-token")= t("OTP Passcode")
+            .form-group.floating-label
+              input#input-disable-otp-recovery.form-control.form-control-lg(
+                type="text",
+                name="recovery_key"
+              )
+              label(for="input-disable-otp-recovery")= t("Recovery Key")
             button.btn.btn-danger.btn-lg.btn-block(type="submit")= t("Disable OTP")
   .min-vh-80.d-flex.flex-column
     .container.py-3
