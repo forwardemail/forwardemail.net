@@ -44,43 +44,23 @@ graceful.listen();
     // get list of all suspended domains
     // and recently blocked emails to exclude
     //
-    // Optimized to use cursor-based iteration instead of aggregation
-    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+    // Optimized: use distinct() instead of cursor-based iteration
+    // to reduce round-trips and avoid Mongoose document hydration overhead.
     //
     const now = new Date();
-    const suspendedDomainIds = [];
-    const recentlyBlockedIds = [];
 
-    await Promise.all([
-      (async () => {
-        for await (const domain of Domains.find({
-          is_smtp_suspended: true
-        })
-          .select('_id')
-          .lean()
-          .cursor()
-          .addCursorFlag('noCursorTimeout', true)) {
-          suspendedDomainIds.push(domain._id);
+    const [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
+      Domains.distinct('_id', { is_smtp_suspended: true }),
+      Emails.distinct('_id', {
+        updated_at: {
+          $gte: dayjs().subtract(1, 'hour').toDate(),
+          $lte: now
+        },
+        has_blocked_hashes: true,
+        blocked_hashes: {
+          $in: getBlockedHashes(env.SMTP_HOST)
         }
-      })(),
-      (async () => {
-        for await (const email of Emails.find({
-          updated_at: {
-            $gte: dayjs().subtract(1, 'hour').toDate(),
-            $lte: now
-          },
-          has_blocked_hashes: true,
-          blocked_hashes: {
-            $in: getBlockedHashes(env.SMTP_HOST)
-          }
-        })
-          .select('_id')
-          .lean()
-          .cursor()
-          .addCursorFlag('noCursorTimeout', true)) {
-          recentlyBlockedIds.push(email._id);
-        }
-      })()
+      })
     ]);
 
     logger.info('%d suspended domain ids', suspendedDomainIds.length);
@@ -116,18 +96,10 @@ graceful.listen();
     };
 
     //
-    // Optimized to use cursor-based iteration instead of aggregation
-    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+    // Optimized: use distinct('_id') instead of cursor iteration
+    // to get all matching IDs in a single server round-trip.
     //
-    const ids = [];
-    // eslint-disable-next-line unicorn/no-array-callback-reference
-    for await (const email of Emails.find(query)
-      .select('id')
-      .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      ids.push(email.id);
-    }
+    const ids = await Emails.distinct('_id', query);
 
     // if no ids then return early
     if (ids.length === 0) {
@@ -140,19 +112,12 @@ graceful.listen();
     await setTimeout(ms('1m'));
 
     // check if ids is the same
-    const newIds = [];
-    for await (const email of Emails.find({
+    const newIds = await Emails.distinct('_id', {
       ...query,
       date: {
         $lte: new Date()
       }
-    })
-      .select('id')
-      .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      newIds.push(email.id);
-    }
+    });
 
     // if no ids then return early
     if (newIds.length === 0) {
@@ -161,13 +126,20 @@ graceful.listen();
       return;
     }
 
-    if (ids.sort().join(',') === newIds.sort().join(',')) {
+    // Compare sorted string representations of ObjectId arrays
+    const idsStr = ids.map((id) => id.toString()).sort();
+    const newIdsStr = newIds.map((id) => id.toString()).sort();
+
+    if (
+      idsStr.length === newIdsStr.length &&
+      idsStr.join(',') === newIdsStr.join(',')
+    ) {
       // TODO: remove debug instrumentation once queue issue is resolved
       console.error(
         '[DEBUG:check-smtp-frozen-queue] queue is frozen',
         JSON.stringify({
           frozenCount: ids.length,
-          sampleIds: ids.slice(0, 10)
+          sampleIds: idsStr.slice(0, 10)
         })
       );
       const err = new Error('Queue is frozen');

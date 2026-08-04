@@ -17,7 +17,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const pMapSeries = require('p-map-series');
+const pMap = require('p-map');
 
 const Domains = require('#models/domains');
 const Users = require('#models/users');
@@ -52,44 +52,48 @@ graceful.listen();
     logger.info('_ids', _ids.length);
 
     // send welcome email
-    await pMapSeries(_ids, async (_id) => {
-      try {
-        const user = await Users.findById(_id).lean().exec();
+    await pMap(
+      _ids,
+      async (_id) => {
+        try {
+          const user = await Users.findById(_id).lean().exec();
 
-        // in case email was sent for whatever reason
-        if (user[config.userFields.welcomeEmailSentAt]) return;
+          // in case email was sent for whatever reason
+          if (user[config.userFields.welcomeEmailSentAt]) return;
 
-        // find a domain that the user created
-        const domain = await Domains.findOne({
-          members: {
-            $elemMatch: {
-              user: user._id,
-              group: 'admin'
+          // find a domain that the user created
+          const domain = await Domains.findOne({
+            members: {
+              $elemMatch: {
+                user: user._id,
+                group: 'admin'
+              }
             }
-          }
-        })
-          .lean()
-          .exec();
+          })
+            .lean()
+            .exec();
 
-        // send email
-        await email({
-          template: 'welcome',
-          message: {
-            to: user.email
-          },
-          locals: { user, domain }
-        });
+          // send email
+          await email({
+            template: 'welcome',
+            message: {
+              to: user.email
+            },
+            locals: { user, domain }
+          });
 
-        // store that we sent this email
-        await Users.findByIdAndUpdate(user._id, {
-          $set: {
-            [config.userFields.welcomeEmailSentAt]: new Date()
-          }
-        });
-      } catch (err) {
-        await logger.error(err);
-      }
-    });
+          // store that we sent this email
+          await Users.findByIdAndUpdate(user._id, {
+            $set: {
+              [config.userFields.welcomeEmailSentAt]: new Date()
+            }
+          });
+        } catch (err) {
+          await logger.error(err);
+        }
+      },
+      { concurrency: 4 }
+    );
   } catch (err) {
     await logger.error(err);
   }

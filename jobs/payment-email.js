@@ -17,7 +17,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
-const pMapSeries = require('p-map-series');
+const pMap = require('p-map');
 const mongoose = require('mongoose');
 const _ = require('#helpers/lodash');
 
@@ -159,7 +159,7 @@ async function mapper(id) {
         }
       ]
     });
-    await pMapSeries(ids, mapper);
+    await pMap(ids, mapper, { concurrency: 4 });
   } catch (err) {
     err.isCodeBug = true;
     await logger.error(err);

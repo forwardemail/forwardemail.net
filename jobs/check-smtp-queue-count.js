@@ -45,43 +45,23 @@ graceful.listen();
     // get list of all suspended domains
     // and recently blocked emails to exclude
     //
-    // Optimized to use cursor-based iteration instead of aggregation
-    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+    // Optimized: use distinct() instead of cursor-based iteration
+    // to reduce round-trips and avoid Mongoose document hydration overhead.
     //
     const now = new Date();
-    const suspendedDomainIds = [];
-    const recentlyBlockedIds = [];
 
-    await Promise.all([
-      (async () => {
-        for await (const domain of Domains.find({
-          is_smtp_suspended: true
-        })
-          .select('_id')
-          .lean()
-          .cursor()
-          .addCursorFlag('noCursorTimeout', true)) {
-          suspendedDomainIds.push(domain._id);
+    const [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
+      Domains.distinct('_id', { is_smtp_suspended: true }),
+      Emails.distinct('_id', {
+        updated_at: {
+          $gte: dayjs().subtract(1, 'hour').toDate(),
+          $lte: now
+        },
+        has_blocked_hashes: true,
+        blocked_hashes: {
+          $in: getBlockedHashes(env.SMTP_HOST)
         }
-      })(),
-      (async () => {
-        for await (const email of Emails.find({
-          updated_at: {
-            $gte: dayjs().subtract(1, 'hour').toDate(),
-            $lte: now
-          },
-          has_blocked_hashes: true,
-          blocked_hashes: {
-            $in: getBlockedHashes(env.SMTP_HOST)
-          }
-        })
-          .select('_id')
-          .lean()
-          .cursor()
-          .addCursorFlag('noCursorTimeout', true)) {
-          recentlyBlockedIds.push(email._id);
-        }
-      })()
+      })
     ]);
 
     logger.info('%d suspended domain ids', suspendedDomainIds.length);

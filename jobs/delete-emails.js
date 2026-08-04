@@ -35,6 +35,9 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+// Batch size for orphan chunk detection
+const ORPHAN_BATCH_SIZE = 1000;
+
 (async () => {
   await setupMongoose(logger);
 
@@ -104,26 +107,74 @@ graceful.listen();
       }
     }
 
+    //
     // delete chunks without references to files
-    for await (const chunk of Emails.db
-      .collection('fs.chunks')
-      .find({})
-      .project({ files_id: 1 })) {
-      logger.debug('chunk', { chunk });
-      const count = await Emails.db.collection('fs.files').countDocuments({
-        _id: chunk.files_id
-      });
-      if (count === 0) {
-        // delete this chunk
-        try {
-          await Emails.db.collection('fs.chunks').deleteOne({
-            _id: chunk._id
-          });
-        } catch (err) {
-          err.chunk = chunk;
-          logger.error(err);
+    //
+    // Optimized: batch chunk processing to avoid N+1 countDocuments calls.
+    // Collects files_ids in batches, does a single find on fs.files for
+    // the batch, then deletes chunks whose files_id has no matching file.
+    //
+    {
+      let batch = [];
+      const chunksCollection = Emails.db.collection('fs.chunks');
+      const filesCollection = Emails.db.collection('fs.files');
+
+      const processBatch = async (chunks) => {
+        if (chunks.length === 0) return;
+
+        // Get unique files_ids from this batch (deduplicate for efficient $in query)
+        const seen = new Set();
+        const uniqueFilesIds = [];
+        for (const c of chunks) {
+          const key = c.files_id.toString();
+          if (!seen.has(key)) {
+            seen.add(key);
+            uniqueFilesIds.push(c.files_id);
+          }
+        }
+
+        // Single query to find which files_ids actually exist
+        const existingFiles = await filesCollection
+          .find({ _id: { $in: uniqueFilesIds } })
+          .project({ _id: 1 })
+          .toArray();
+
+        const existingFileIds = new Set(
+          existingFiles.map((f) => f._id.toString())
+        );
+
+        // Find orphan chunks (files_id not in existing files)
+        const orphanChunkIds = chunks
+          .filter((c) => !existingFileIds.has(c.files_id.toString()))
+          .map((c) => c._id);
+
+        // Batch delete orphan chunks
+        if (orphanChunkIds.length > 0) {
+          try {
+            await chunksCollection.deleteMany({
+              _id: { $in: orphanChunkIds }
+            });
+            logger.info('deleted orphan chunks', {
+              count: orphanChunkIds.length
+            });
+          } catch (err) {
+            logger.error(err);
+          }
+        }
+      };
+
+      for await (const chunk of chunksCollection
+        .find({})
+        .project({ _id: 1, files_id: 1 })) {
+        batch.push(chunk);
+        if (batch.length >= ORPHAN_BATCH_SIZE) {
+          await processBatch(batch);
+          batch = [];
         }
       }
+
+      // Process remaining batch
+      await processBatch(batch);
     }
   } catch (err) {
     await logger.error(err);

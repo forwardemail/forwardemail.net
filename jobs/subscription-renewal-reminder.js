@@ -367,6 +367,7 @@ async function mapper(user) {
       [config.userFields.isBanned]: false,
       [config.userFields.hasVerifiedEmail]: true
     })
+      .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
       if (isCancelled) break;

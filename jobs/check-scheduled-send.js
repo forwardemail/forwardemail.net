@@ -40,6 +40,9 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+// 2 minutes in milliseconds
+const TWO_MINUTES_MS = 2 * 60 * 1000;
+
 (async () => {
   await setupMongoose(logger);
 
@@ -48,55 +51,49 @@ graceful.listen();
     // find any email ids that are scheduled in the future
     // (filtered from the past week)
     //
-    // Optimized to use cursor-based iteration instead of aggregation
-    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+    // Optimized: use $expr to push the date-difference filter server-side
+    // so only matching documents are returned over the wire (avoids scanning
+    // millions of emails from the past week just to find the handful with
+    // scheduled sends of >= 2 minutes).
     //
-    const results = [];
     const oneWeekAgo = dayjs().subtract(1, 'week').toDate();
 
-    for await (const email of Emails.find({
-      created_at: {
-        $gte: oneWeekAgo
+    const results = await Emails.find({
+      created_at: { $gte: oneWeekAgo },
+      date: { $exists: true },
+      $expr: {
+        $gte: [{ $subtract: ['$date', '$created_at'] }, TWO_MINUTES_MS]
       }
     })
       .select('_id user created_at date')
       .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      // Calculate duration in minutes between created_at and date
-      if (email.date && email.created_at) {
-        const duration = Math.round(
+      .exec();
+
+    // Calculate duration and sort by duration descending
+    const enriched = results
+      .map((email) => ({
+        _id: email._id,
+        user: email.user,
+        created_at: email.created_at,
+        date: email.date,
+        duration: Math.round(
           (new Date(email.date).getTime() -
             new Date(email.created_at).getTime()) /
             (1000 * 60)
-        );
-        if (duration >= 2) {
-          results.push({
-            _id: email._id,
-            user: email.user,
-            created_at: email.created_at,
-            date: email.date,
-            duration
-          });
-        }
-      }
-    }
-
-    // sort results by duration (reversed)
-    results.sort((a, b) => b.duration - a.duration);
+        )
+      }))
+      .sort((a, b) => b.duration - a.duration);
 
     const set = new Set();
 
-    for (const result of results) {
+    for (const result of enriched) {
       // difference must be at least 2 minutes to be worthwhile to notify
       // (otherwise users might get annoyed)
       if (result.duration < 2) continue;
       if (set.has(result.user.toString())) continue;
       set.add(result.user.toString());
 
-      const user = await Users.findOne({ id: result.user.toString() })
-        .lean()
-        .exec();
+      const user = await Users.findById(result.user).lean().exec();
       if (!user) continue;
       // if it has been more than 1 month since the
       // last reminder that was sent (or if they were never sent one yet)

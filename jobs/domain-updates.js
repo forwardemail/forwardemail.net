@@ -157,6 +157,7 @@ async function mapper(domain) {
         $ne: []
       }
     })
+      .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
       try {

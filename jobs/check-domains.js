@@ -308,13 +308,13 @@ async function mapper(id) {
     //
     // get all non-API created domains (sorted by last_checked_at)
     //
-    // Optimized to use cursor-based iteration instead of aggregation
-    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+    //
+    // Optimized: use distinct() instead of cursor-based iteration
+    // to collect IDs in a single server round-trip. Sort is not needed
+    // since pMap processes them concurrently anyway.
     //
     const twoHoursAgo = dayjs().subtract(2, 'hour').toDate();
-    const ids = [];
-
-    for await (const domain of Domains.find({
+    const ids = await Domains.distinct('_id', {
       $and: [
         {
           $or: [
@@ -345,14 +345,7 @@ async function mapper(id) {
           ]
         }
       ]
-    })
-      .sort({ last_checked_at: 1 })
-      .select('_id')
-      .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      ids.push(domain._id);
-    }
+    });
 
     logger.info('checking domains', { count: ids.length });
 

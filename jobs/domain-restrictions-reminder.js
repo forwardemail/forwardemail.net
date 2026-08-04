@@ -19,7 +19,6 @@ const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const pMap = require('p-map');
-const pMapSeries = require('p-map-series');
 const sharedConfig = require('@ladjs/shared-config');
 const _ = require('#helpers/lodash');
 
@@ -144,75 +143,78 @@ graceful.listen();
 
         // filter out those that have verified records and not on free plan
         // (most of this code is copied from jobs/check-domains.js)
-        domains = await pMapSeries(domains, async (domain) => {
-          // store the before state
-          const { has_mx_record: mxBefore, has_txt_record: txtBefore } = domain;
+        domains = await pMap(
+          domains,
+          async (domain) => {
+            // store the before state
+            const { has_mx_record: mxBefore, has_txt_record: txtBefore } =
+              domain;
 
-          // get verification results (and any errors too)
-          const { ns, txt, mx, errors } = await Domains.getVerificationResults(
-            domain,
-            resolver
-          );
+            // get verification results (and any errors too)
+            const { ns, txt, mx, errors } =
+              await Domains.getVerificationResults(domain, resolver);
 
-          //
-          // run a save on the domain name
-          // (as long as `errors` does not have a temporary DNS error)
-          //
-          const hasDNSError =
-            Array.isArray(errors) &&
-            errors.some(
-              (err) =>
-                (err.code && DNS_RETRY_CODES.has(err.code)) ||
-                isTimeoutError(err)
-            );
+            //
+            // run a save on the domain name
+            // (as long as `errors` does not have a temporary DNS error)
+            //
+            const hasDNSError =
+              Array.isArray(errors) &&
+              errors.some(
+                (err) =>
+                  (err.code && DNS_RETRY_CODES.has(err.code)) ||
+                  isTimeoutError(err)
+              );
 
-          if (!hasDNSError) {
-            // reset missing txt so we alert users if they are missing a TXT in future again
-            if (!txtBefore && txt && _.isDate(domain.missing_txt_sent_at)) {
-              domain.missing_txt_sent_at = undefined;
-              await Domains.findByIdAndUpdate(domain._id, {
-                $unset: {
-                  missing_txt_sent_at: 1
-                }
-              });
+            if (!hasDNSError) {
+              // reset missing txt so we alert users if they are missing a TXT in future again
+              if (!txtBefore && txt && _.isDate(domain.missing_txt_sent_at)) {
+                domain.missing_txt_sent_at = undefined;
+                await Domains.findByIdAndUpdate(domain._id, {
+                  $unset: {
+                    missing_txt_sent_at: 1
+                  }
+                });
+              }
+
+              // reset multiple exchanges error so we alert users if they have multiple MX in the future
+              if (
+                !mxBefore &&
+                mx &&
+                _.isDate(domain.multiple_exchanges_sent_at)
+              ) {
+                domain.multiple_exchanges_sent_at = undefined;
+                await Domains.findByIdAndUpdate(domain._id, {
+                  $unset: {
+                    multiple_exchanges_sent_at: 1
+                  }
+                });
+              }
+
+              // set the values (since we are skipping some verification)
+              domain.has_txt_record = txt;
+              domain.has_mx_record = mx;
+              if (ns) domain.ns = ns;
             }
 
-            // reset multiple exchanges error so we alert users if they have multiple MX in the future
-            if (
-              !mxBefore &&
-              mx &&
-              _.isDate(domain.multiple_exchanges_sent_at)
-            ) {
-              domain.multiple_exchanges_sent_at = undefined;
-              await Domains.findByIdAndUpdate(domain._id, {
-                $unset: {
-                  multiple_exchanges_sent_at: 1
-                }
-              });
-            }
+            // store when we last checked it
+            const now = new Date();
+            domain.last_checked_at = now;
+            await Domains.findByIdAndUpdate(domain._id, {
+              $set: {
+                last_checked_at: domain.last_checked_at,
+                has_txt_record: domain.has_txt_record,
+                has_mx_record: domain.has_mx_record,
+                ...(ns ? { ns } : {})
+              }
+            });
 
-            // set the values (since we are skipping some verification)
-            domain.has_txt_record = txt;
-            domain.has_mx_record = mx;
-            if (ns) domain.ns = ns;
-          }
+            if (hasDNSError) return false;
 
-          // store when we last checked it
-          const now = new Date();
-          domain.last_checked_at = now;
-          await Domains.findByIdAndUpdate(domain._id, {
-            $set: {
-              last_checked_at: domain.last_checked_at,
-              has_txt_record: domain.has_txt_record,
-              has_mx_record: domain.has_mx_record,
-              ...(ns ? { ns } : {})
-            }
-          });
-
-          if (hasDNSError) return false;
-
-          return domain;
-        });
+            return domain;
+          },
+          { concurrency: 4 }
+        );
 
         // if the domain doesn't have the MX record
         // OR if the domain is not free, has txt, and has mx

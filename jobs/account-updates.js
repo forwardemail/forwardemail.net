@@ -122,6 +122,7 @@ async function mapper(user) {
       [config.userFields.hasVerifiedEmail]: true,
       [config.userFields.isBanned]: false
     })
+      .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
       try {

@@ -17,7 +17,6 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const _ = require('#helpers/lodash');
 
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
@@ -85,9 +84,8 @@ graceful.listen();
   // go through all pending emails and check if they belong back in queue
   // (or if they need deleted because the domain doesn't exist anymore)
   //
-  // NOTE: replaced cursor-based iteration with batch .find().lean() to avoid
-  // hanging on cursor.next() when MongoDB connection pool is under pressure.
-  // Uses maxTimeMS to enforce a server-side timeout on the query.
+  // Optimized: batch domain lookups with a single query + Map instead of
+  // N+1 per-email Domains.findById calls.
   //
   try {
     const pendingEmails = await Emails.find({ status: 'pending' })
@@ -96,48 +94,80 @@ graceful.listen();
       .maxTimeMS(60000)
       .exec();
 
-    for (const email of pendingEmails) {
-      try {
-        // delete emails that don't have domains that correspond to them
-        const domain = await Domains.findById(email.domain).lean().exec();
-        if (!domain) {
-          await Emails.findByIdAndRemove(email._id);
-          continue;
-        }
+    if (pendingEmails.length > 0) {
+      // Batch fetch all unique domains referenced by pending emails
+      const uniqueDomainIds = [
+        ...new Set(pendingEmails.map((e) => e.domain.toString()))
+      ];
+      const domains = await Domains.find({
+        _id: { $in: uniqueDomainIds }
+      })
+        .select('_id smtp_suspended_sent_at')
+        .lean()
+        .exec();
 
-        // otherwise check if `smtp_suspended_sent_at` does not exist
-        if (!_.isDate(domain.smtp_suspended_sent_at)) {
-          // TODO: check if we're rate limited, if so then keep it pending
-          await Emails.findByIdAndUpdate(
-            email._id,
-            {
-              $set: {
-                is_locked: false,
-                status: 'queued'
-              },
-              $unset: {
-                locked_by: 1,
-                locked_at: 1
-              }
-            },
-            { writeConcern: { w: 1 } }
-          );
+      // Build a Map for O(1) lookups
+      const domainMap = new Map();
+      for (const domain of domains) {
+        domainMap.set(domain._id.toString(), domain);
+      }
+
+      // Categorize emails into delete vs re-queue
+      const deleteIds = [];
+      const requeueIds = [];
+
+      for (const email of pendingEmails) {
+        const domain = domainMap.get(email.domain.toString());
+        if (!domain) {
+          // Domain no longer exists - delete the email
+          deleteIds.push(email._id);
+        } else if (
+          !domain.smtp_suspended_sent_at ||
+          !(domain.smtp_suspended_sent_at instanceof Date)
+        ) {
+          // Domain is not suspended - re-queue the email
+          requeueIds.push(email._id);
         }
-      } catch (emailErr) {
-        // Log per-email errors but continue processing the rest
-        console.error(
-          '[ERROR:unlock-emails] failed to process pending email',
-          JSON.stringify({
-            emailId: email._id,
-            errName: emailErr.name,
-            errMessage: emailErr.message?.slice(0, 200)
-          })
+        // else: domain is suspended - leave email as pending (no action)
+      }
+
+      // Batch delete orphaned emails
+      if (deleteIds.length > 0) {
+        await Emails.deleteMany(
+          { _id: { $in: deleteIds } },
+          { writeConcern: { w: 1 } }
         );
+      }
+
+      // Batch re-queue emails whose domains are not suspended
+      if (requeueIds.length > 0) {
+        await Emails.updateMany(
+          { _id: { $in: requeueIds } },
+          {
+            $set: {
+              is_locked: false,
+              status: 'queued'
+            },
+            $unset: {
+              locked_by: 1,
+              locked_at: 1
+            }
+          },
+          { writeConcern: { w: 1 } }
+        );
+      }
+
+      if (deleteIds.length > 0 || requeueIds.length > 0) {
+        logger.info('processed pending emails', {
+          total: pendingEmails.length,
+          deleted: deleteIds.length,
+          requeued: requeueIds.length
+        });
       }
     }
   } catch (err) {
     console.error(
-      '[ERROR:unlock-emails] failed to query pending emails',
+      '[ERROR:unlock-emails] failed to process pending emails',
       JSON.stringify({
         errName: err.name,
         errMessage: err.message?.slice(0, 200)
