@@ -126,6 +126,8 @@ async function getLogsCsv(
       if (!isAdmin && Array.isArray(log?.meta?.session?.envelope?.rcptTo)) {
         log.meta.session.envelope.rcptTo =
           log.meta.session.envelope.rcptTo.filter((rcpt) => {
+            if (!rcpt?.address || typeof rcpt.address !== 'string')
+              return false;
             const username = rcpt.address.includes('+')
               ? rcpt.address.slice(0, rcpt.address.indexOf('+'))
               : rcpt.address.split('@')[0];
