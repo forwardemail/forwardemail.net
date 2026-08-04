@@ -986,8 +986,7 @@ async function sendEmails() {
           .sort({ created_at: -1 })
           .lean()
           .limit(limit)
-          .cursor()
-          .addCursorFlag('noCursorTimeout', true);
+          .cursor();
         return drainCursor(cursor, limit);
       })(),
       CURSOR_TIMEOUT_MS,
@@ -1000,8 +999,7 @@ async function sendEmails() {
           .sort({ updated_at: 1 })
           .lean()
           .limit(limit)
-          .cursor()
-          .addCursorFlag('noCursorTimeout', true);
+          .cursor();
         return drainCursor(cursor, limit);
       })(),
       CURSOR_TIMEOUT_MS,
