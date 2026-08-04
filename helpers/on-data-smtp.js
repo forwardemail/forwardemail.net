@@ -502,15 +502,18 @@ async function onDataSMTP(session, date, headers, body) {
         : user[config.userFields.smtpLimit] || config.smtpLimitMessages;
 
     // Skip rate limiting if any domain admin is a system-level admin
+    // NOTE: After populate, m.user can be `null` if the referenced user was deleted.
+    // Since `typeof null === 'object'`, we must explicitly guard against null.
     const adminExists = await Users.exists({
       _id: {
         $in: domain.members
-          .filter((m) => m.group === 'admin' && typeof m.user === 'object')
-          .map((m) =>
-            typeof m.user === 'object' && typeof m?.user?._id === 'object'
-              ? m.user._id
-              : m.user
+          .filter(
+            (m) =>
+              m.group === 'admin' &&
+              m.user !== null &&
+              typeof m.user === 'object'
           )
+          .map((m) => (typeof m?.user?._id === 'object' ? m.user._id : m.user))
       },
       group: 'admin'
     });
