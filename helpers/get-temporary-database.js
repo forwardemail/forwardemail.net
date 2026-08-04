@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const process = require('node:process');
@@ -71,7 +72,22 @@ async function getTemporaryDatabase(session) {
   // races; this Redis NX lock prevents inter-process races that cause
   // SQLITE_CORRUPT on newly created temp databases.
   //
-  if (this.client) {
+  // NOTE: Only acquire the lock when the file does NOT exist yet.
+  // Existing temp databases are safe to open concurrently (SQLite WAL mode
+  // handles multiple readers/writers).  Locking every cache miss causes
+  // massive SQLITE_BUSY contention after restarts when caches are cold.
+  //
+  const tmpStoragePath = getPathToDatabase({
+    id: session.user.alias_id,
+    storage_location: session.user.storage_location
+  });
+  const tmpFilePath = path.join(
+    path.dirname(tmpStoragePath),
+    `${session.user.alias_id}-tmp.sqlite`
+  );
+  const tmpFileExists = fs.existsSync(tmpFilePath);
+
+  if (this.client && !tmpFileExists) {
     const openLockKey = `db_tmp_open_lock:${cacheKey}`;
     const lockAcquired = await this.client.set(
       openLockKey,
@@ -198,8 +214,8 @@ async function getTemporaryDatabase(session) {
     return await openPromise;
   } finally {
     _tmpDbOpenInflight.delete(cacheKey);
-    // Release the distributed lock (only if we still own it)
-    if (this.client) {
+    // Release the distributed lock (only if we acquired it)
+    if (this.client && !tmpFileExists) {
       await this.client
         .eval(
           RELEASE_LOCK_SCRIPT,

@@ -541,7 +541,13 @@ async function getDatabase(
       // races; this Redis NX lock prevents inter-process races that cause
       // SQLITE_CORRUPT on newly created databases.
       //
-      if (instance.client) {
+      // NOTE: Only acquire the lock when the file does NOT exist yet.
+      // Existing databases are safe to open concurrently (SQLite WAL mode
+      // handles multiple readers/writers).  Locking every cache miss causes
+      // massive SQLITE_BUSY contention after restarts when caches are cold.
+      //
+      const dbFileExists = fs.existsSync(dbFilePath);
+      if (instance.client && !dbFileExists) {
         const openLockKey = `db_open_lock:${alias.id}`;
         const lockAcquired = await instance.client.set(
           openLockKey,
@@ -597,8 +603,8 @@ async function getDatabase(
           _dbOpenInflight.delete(alias.id);
         }
       } finally {
-        // Release the distributed lock (only if we still own it)
-        if (instance.client) {
+        // Release the distributed lock (only if we acquired it)
+        if (instance.client && !dbFileExists) {
           await instance.client
             .eval(
               RELEASE_LOCK_SCRIPT,
