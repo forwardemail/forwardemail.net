@@ -37,9 +37,29 @@
     twilio_auth_token: "{{ lookup('env', 'TWILIO_AUTH_TOKEN') }}"
     twilio_from_number: "{{ lookup('env', 'TWILIO_FROM_NUMBER') }}"
     twilio_to_number: "{{ lookup('env', 'TWILIO_TO_NUMBER') }}"
-    alert_public_ip: "{{ hostvars[inventory_hostname]['direct_alert_public_ip'] | default(ansible_host | default(ansible_default_ipv4.address), true) }}"
-    alert_helo_identity: "{{ hostvars[inventory_hostname]['direct_alert_helo_identity'] | default(ansible_fqdn, true) }}"
   pre_tasks:
+    # Freeze these values once per inventory host.  Keeping them as generic,
+    # lazily evaluated play variables allowed separate MongoDB and Valkey runs
+    # to cross-resolve each other's HELO identity while retaining the correct
+    # host IP.  Every Postfix and SPF task below must consume these facts.
+    - name: Freeze direct-alert identity for this host
+      set_fact:
+        forwardemail_direct_alert_public_ip: >-
+          {{
+            hostvars[inventory_hostname]['direct_alert_public_ip']
+            | default(ansible_host | default(ansible_default_ipv4.address), true)
+          }}
+        forwardemail_direct_alert_helo_identity: >-
+          {{
+            hostvars[inventory_hostname]['direct_alert_helo_identity']
+            | default(ansible_fqdn, true)
+            | lower
+            | regex_replace('\\.$', '')
+          }}
+      tags:
+        - always
+        - forwardemail-alert-identity
+
     # A host-specific override must never let one server advertise another
     # server's identity (for example, mongo.forwardemail.net on Redis).
     - name: Verify direct-alert HELO identity belongs to this host
@@ -47,14 +67,15 @@
         that:
           - (ansible_fqdn | default('', true) | length) > 0
           - >-
-            (alert_helo_identity | default('', true) | lower |
-            regex_replace('\\.$', '')) ==
+            (forwardemail_direct_alert_helo_identity | default('', true) |
+            lower | regex_replace('\\.$', '')) ==
             (ansible_fqdn | default('', true) | lower |
             regex_replace('\\.$', ''))
         fail_msg: >-
           Refusing to configure direct alerts on {{ inventory_hostname }}:
           direct_alert_helo_identity resolved to
-          {{ alert_helo_identity | default('UNSET', true) }}, but gathered
+          {{ forwardemail_direct_alert_helo_identity | default('UNSET', true) }},
+          but gathered
           ansible_fqdn is {{ ansible_fqdn | default('UNAVAILABLE', true) }}.
           Correct or remove this host's direct_alert_helo_identity override;
           never reuse another host's HELO identity.
@@ -477,7 +498,7 @@
         assert_postconf alias_database ''
         assert_postconf virtual_alias_maps ''
         assert_postconf virtual_mailbox_maps ''
-        assert_postconf myhostname '{{ alert_helo_identity }}'
+        assert_postconf myhostname '{{ forwardemail_direct_alert_helo_identity }}'
         assert_postconf smtp_helo_name '$myhostname'
         assert_postconf smtp_address_preference 'ipv4'
         assert_postconf smtp_tls_security_level 'may'
@@ -543,12 +564,14 @@
           - --identity
           - "{{ alert_email_sender }}"
           - --ip-address
-          - "{{ alert_public_ip }}"
+          - "{{ forwardemail_direct_alert_public_ip }}"
           - --helo-identity
-          - "{{ alert_helo_identity }}"
+          - "{{ forwardemail_direct_alert_helo_identity }}"
       register: direct_alert_spf_check
       changed_when: false
       failed_when: direct_alert_spf_check.rc != 0
+      tags:
+        - forwardemail-alert-spf
 
     # Receivers evaluate HELO SPF when the envelope sender is empty (for
     # example, delivery-status notifications), so the hostname needs its own
@@ -560,12 +583,14 @@
           - --scope
           - helo
           - --identity
-          - "{{ alert_helo_identity }}"
+          - "{{ forwardemail_direct_alert_helo_identity }}"
           - --ip-address
-          - "{{ alert_public_ip }}"
+          - "{{ forwardemail_direct_alert_public_ip }}"
       register: direct_alert_helo_spf_check
       changed_when: false
       failed_when: direct_alert_helo_spf_check.rc != 0
+      tags:
+        - forwardemail-alert-spf
 
     # Configure email for every alert and optional Twilio SMS exclusively for
     # systemd OnFailure notifications.
