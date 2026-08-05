@@ -19,6 +19,8 @@ const ServerShutdownError = require('./server-shutdown-error');
 const SocketError = require('./socket-error');
 const email = require('./email');
 const parseRootDomain = require('./parse-root-domain');
+const isRetryableError = require('./is-retryable-error');
+const isTimeoutError = require('./is-timeout-error');
 const refineAndLogError = require('./refine-and-log-error');
 const validateAlias = require('./validate-alias');
 const validateDomain = require('./validate-domain');
@@ -1267,7 +1269,35 @@ async function onAuth(auth, session, fn) {
       this.server instanceof IMAPServer,
       this
     );
-    error.response = 'NO';
+
+    //
+    // Differentiate transient infrastructure errors (MongoDB/Redis down,
+    // timeouts, server shutting down) from actual authentication failures.
+    //
+    // For transient errors:
+    // - IMAP: respond with NO [UNAVAILABLE] (RFC 5530) so clients know
+    //   this is a temporary server issue and don't prompt for password.
+    // - POP3: don't set response='NO' so WildDuck calls next(err) which
+    //   closes the connection cleanly; client auto-reconnects without
+    //   prompting for password re-entry.
+    //
+    const isTransient =
+      isRetryableError(err) ||
+      isTimeoutError(err) ||
+      err instanceof ServerShutdownError ||
+      err.isCodeBug;
+
+    if (isTransient) {
+      if (this.server instanceof IMAPServer) {
+        error.response = 'NO';
+        error.message = '[UNAVAILABLE] ' + error.message;
+      }
+      // For POP3/CalDAV/API: leave error.response unset so the
+      // connection closes and the client retries automatically
+    } else {
+      error.response = 'NO';
+    }
+
     fn(error);
   }
 }
