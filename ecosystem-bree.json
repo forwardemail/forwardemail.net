@@ -17,7 +17,7 @@
       "env_production": {
         "NODE_ENV": "production"
       },
-      "node_args": ""
+      "node_args": "--disable-proto=delete"
     }
   ],
   "deploy": {

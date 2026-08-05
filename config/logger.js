@@ -5,13 +5,13 @@
 
 // this package is ignored in `browser` config in `package.json`
 // in order to make the client-side payload less kb
-const signale = require('signale');
+const { consola } = require('consola');
 
 const env = require('./env');
 
 module.exports = {
   // eslint-disable-next-line no-undef
-  logger: typeof window === 'object' ? console : signale,
+  logger: typeof window === 'object' ? console : consola,
   level: env.NODE_ENV === 'production' ? 'info' : 'debug',
   levels:
     // ? ['info', 'warn', 'error', 'fatal']

@@ -204,7 +204,7 @@ Try running the local web server:
 npm start webAndWatch
 ```
 
-It should open a new tab for you with the local web server running and terminal output using [signale](https://github.com/klaudiosinani/signale). You can now open your browser to <http://localhost:3000> for a development playground.
+It should open a new tab for you with the local web server running and terminal output using [consola](https://github.com/unjs/consola). You can now open your browser to <http://localhost:3000> for a development playground.
 
 **You can also run all apps at once:**
 
