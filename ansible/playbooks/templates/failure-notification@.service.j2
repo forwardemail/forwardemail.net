@@ -1,6 +1,6 @@
 [Unit]
 Description=Send infrastructure notifications for %i failure
-Wants=network-online.target
+Wants=network-online.target forwardemail-systemd-incident-event@%i.service
 After=network-online.target postfix.service
 
 [Service]

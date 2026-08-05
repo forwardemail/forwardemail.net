@@ -37,13 +37,30 @@
     twilio_auth_token: "{{ lookup('env', 'TWILIO_AUTH_TOKEN') }}"
     twilio_from_number: "{{ lookup('env', 'TWILIO_FROM_NUMBER') }}"
     twilio_to_number: "{{ lookup('env', 'TWILIO_TO_NUMBER') }}"
+    github_octokit_token: "{{ lookup('env', 'GITHUB_OCTOKIT_TOKEN') }}"
+    systemd_incident_failure_threshold: >-
+      {{ lookup('env', 'SYSTEMD_INCIDENT_FAILURE_THRESHOLD') | default('3', true) | int }}
+    systemd_incident_recovery_threshold: >-
+      {{ lookup('env', 'SYSTEMD_INCIDENT_RECOVERY_THRESHOLD') | default('3', true) | int }}
+    systemd_incident_observation_interval_seconds: 60
+    systemd_incident_api_url: "https://api.github.com"
+    systemd_incident_host_map:
+      mongo.forwardemail.net:
+        component: mongo.forwardemail.net
+        unit: mongod.service
+      logs.forwardemail.net:
+        component: logs.forwardemail.net
+        unit: mongod.service
+      redis.forwardemail.net:
+        component: redis.forwardemail.net
+        unit: valkey-server.service
   pre_tasks:
     # Freeze these values once per inventory host.  Keeping them as generic,
     # lazily evaluated play variables allowed separate MongoDB and Valkey runs
     # to cross-resolve each other's HELO identity while retaining the correct
     # host IP.  Every Postfix and SPF task below must consume these facts.
     - name: Freeze direct-alert identity for this host
-      set_fact:
+      ansible.builtin.set_fact:
         forwardemail_direct_alert_public_ip: >-
           {{
             hostvars[inventory_hostname]['direct_alert_public_ip']
@@ -60,10 +77,39 @@
         - always
         - forwardemail-alert-identity
 
+    - name: Bind public systemd incident reporting to this host identity
+      ansible.builtin.set_fact:
+        forwardemail_systemd_incident_config: >-
+          {{
+            systemd_incident_host_map[
+              forwardemail_direct_alert_helo_identity
+            ]
+            | default({})
+          }}
+      tags:
+        - always
+        - forwardemail-systemd-incident
+
+    - name: Derive public systemd incident reporter state
+      ansible.builtin.set_fact:
+        forwardemail_systemd_incident_component: >-
+          {{ forwardemail_systemd_incident_config.component | default('') }}
+        forwardemail_systemd_incident_unit: >-
+          {{ forwardemail_systemd_incident_config.unit | default('') }}
+        forwardemail_systemd_incident_enabled: >-
+          {{
+            (forwardemail_systemd_incident_config | length > 0) and
+            (github_octokit_token | length > 0)
+          }}
+      no_log: true
+      tags:
+        - always
+        - forwardemail-systemd-incident
+
     # A host-specific override must never let one server advertise another
     # server's identity (for example, mongo.forwardemail.net on Redis).
     - name: Verify direct-alert HELO identity belongs to this host
-      assert:
+      ansible.builtin.assert:
         that:
           - (ansible_fqdn | default('', true) | length) > 0
           - >-
@@ -595,17 +641,18 @@
     # Configure email for every alert and optional Twilio SMS exclusively for
     # systemd OnFailure notifications.
     - name: Install infrastructure alert sender dependencies
-      apt:
+      ansible.builtin.apt:
         name:
+          - ca-certificates
           - coreutils
           - curl
           - jq
           - util-linux
         state: present
-        update_cache: yes
+        update_cache: true
 
     - name: Count configured Twilio environment variables
-      set_fact:
+      ansible.builtin.set_fact:
         twilio_values_present: >-
           {{
             [
@@ -621,7 +668,7 @@
       no_log: true
 
     - name: Validate Twilio SMS configuration
-      assert:
+      ansible.builtin.assert:
         that:
           - (twilio_values_present | int) in [0, 4]
           - >-
@@ -642,23 +689,84 @@
           and TWILIO_TO_NUMBER.
       no_log: true
 
+    - name: Validate systemd status incident configuration
+      ansible.builtin.assert:
+        that:
+          - systemd_incident_failure_threshold | int >= 2
+          - systemd_incident_failure_threshold | int <= 10
+          - systemd_incident_recovery_threshold | int >= 2
+          - systemd_incident_recovery_threshold | int <= 10
+          - >-
+            (github_octokit_token | length == 0) or
+            (github_octokit_token is match('^[A-Za-z0-9_]{20,255}$'))
+          - >-
+            (forwardemail_systemd_incident_config | length == 0) or
+            (forwardemail_systemd_incident_component is
+            match('^(mongo|logs|redis)\\.forwardemail\\.net$'))
+          - >-
+            (forwardemail_systemd_incident_config | length == 0) or
+            (forwardemail_systemd_incident_unit is
+            match('^(mongod|valkey-server)\\.service$'))
+        fail_msg: >-
+          Invalid systemd incident configuration. Use a valid
+          GITHUB_OCTOKIT_TOKEN and thresholds from 2 through 10; only the
+          fixed MongoDB, Logs, and Valkey host/unit mappings are allowed.
+      no_log: true
+      tags:
+        - forwardemail-systemd-incident
+
     - name: Report email-only alert mode
-      debug:
+      ansible.builtin.debug:
         msg: >-
           Twilio variables are unset; routine alerts and systemd failures will
           continue by email only to {{ alert_email_recipients }}.
       when: twilio_values_present | int == 0
 
+    - name: Report disabled public systemd incident mode
+      ansible.builtin.debug:
+        msg: >-
+          Public systemd incident reporting is disabled for
+          {{ forwardemail_systemd_incident_component }} because
+          GITHUB_OCTOKIT_TOKEN is unset; private failure notifications remain
+          enabled.
+      when:
+        - forwardemail_systemd_incident_config | length > 0
+        - not (forwardemail_systemd_incident_enabled | bool)
+      tags:
+        - forwardemail-systemd-incident
+
     - name: Create root-only infrastructure alert configuration directory
-      file:
+      ansible.builtin.file:
         path: /etc/forwardemail-alerts
         state: directory
         owner: root
         group: root
         mode: '0700'
 
+    - name: Deploy root-only systemd incident environment
+      ansible.builtin.template:
+        src: >-
+          {{ playbook_dir }}/templates/forwardemail-systemd-incident.env.j2
+        dest: /etc/forwardemail-alerts/github-systemd-incident.env
+        owner: root
+        group: root
+        mode: '0600'
+      when: forwardemail_systemd_incident_enabled | bool
+      no_log: true
+      tags:
+        - forwardemail-systemd-incident
+
+    - name: Remove systemd incident environment when reporting is disabled
+      ansible.builtin.file:
+        path: /etc/forwardemail-alerts/github-systemd-incident.env
+        state: absent
+      when: not (forwardemail_systemd_incident_enabled | bool)
+      no_log: true
+      tags:
+        - forwardemail-systemd-incident
+
     - name: Deploy root-only systemd failure SMS environment
-      template:
+      ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/forwardemail-alerts-twilio.env.j2"
         dest: /etc/forwardemail-alerts/twilio.env
         owner: root
@@ -668,13 +776,13 @@
       no_log: true
 
     - name: Remove Twilio environment when SMS alerts are disabled
-      file:
+      ansible.builtin.file:
         path: /etc/forwardemail-alerts/twilio.env
         state: absent
       when: twilio_values_present | int == 0
 
     - name: Deploy email-only rate-limited alert sender
-      template:
+      ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/send-rate-limited-email.sh.j2"
         dest: /usr/local/bin/send-rate-limited-email.sh
         owner: root
@@ -682,7 +790,7 @@
         mode: '0755'
 
     - name: Create root-only alert cooldown state directory
-      file:
+      ansible.builtin.file:
         path: /var/lib/forwardemail-alerts
         state: directory
         owner: root
@@ -690,23 +798,71 @@
         mode: '0700'
 
     - name: Deploy failure notification script
-      template:
+      ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/send-failure-notification.sh.j2"
         dest: /usr/local/bin/send-failure-notification.sh
         owner: root
         group: root
         mode: '0755'
 
+    - name: Deploy privacy-preserving systemd incident reporter
+      ansible.builtin.template:
+        src: >-
+          {{ playbook_dir }}/templates/report-systemd-status-incident.sh.j2
+        dest: /usr/local/bin/report-systemd-status-incident.sh
+        owner: root
+        group: root
+        mode: '0755'
+      tags:
+        - forwardemail-systemd-incident
+
     - name: Deploy systemd failure notification service template
-      template:
+      ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/failure-notification@.service.j2"
         dest: /etc/systemd/system/failure-notification@.service
         owner: root
         group: root
         mode: '0644'
+      tags:
+        - forwardemail-systemd-incident
+
+    - name: Deploy systemd incident event service template
+      ansible.builtin.template:
+        src: >-
+          {{ playbook_dir }}/templates/forwardemail-systemd-incident-event@.service.j2
+        dest: /etc/systemd/system/forwardemail-systemd-incident-event@.service
+        owner: root
+        group: root
+        mode: '0644'
+      tags:
+        - forwardemail-systemd-incident
+
+    - name: Deploy systemd incident reconciliation service
+      ansible.builtin.template:
+        src: >-
+          {{ playbook_dir }}/templates/forwardemail-systemd-incident-reconcile.service.j2
+        dest: >-
+          /etc/systemd/system/forwardemail-systemd-incident-reconcile.service
+        owner: root
+        group: root
+        mode: '0644'
+      tags:
+        - forwardemail-systemd-incident
+
+    - name: Deploy systemd incident reconciliation timer
+      ansible.builtin.template:
+        src: >-
+          {{ playbook_dir }}/templates/forwardemail-systemd-incident-reconcile.timer.j2
+        dest: >-
+          /etc/systemd/system/forwardemail-systemd-incident-reconcile.timer
+        owner: root
+        group: root
+        mode: '0644'
+      tags:
+        - forwardemail-systemd-incident
 
     - name: Create fleet-wide systemd failure-notification drop-in directories
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         owner: root
@@ -715,9 +871,11 @@
       loop:
         - /etc/systemd/system/service.d
         - /etc/systemd/system/failure-notification@.service.d
+        - /etc/systemd/system/forwardemail-systemd-incident-event@.service.d
+        - /etc/systemd/system/forwardemail-systemd-incident-reconcile.service.d
 
     - name: Hook every systemd service failure into centralized notifications
-      copy:
+      ansible.builtin.copy:
         dest: /etc/systemd/system/service.d/10-forwardemail-failure-notification.conf
         content: |
           # WARNING: This file is managed by Ansible
@@ -727,9 +885,9 @@
         group: root
         mode: '0644'
 
-    - name: Prevent recursive failure notifications from the notifier itself
-      copy:
-        dest: /etc/systemd/system/failure-notification@.service.d/99-no-recursion.conf
+    - name: Prevent recursive failure notifications from alert services
+      ansible.builtin.copy:
+        dest: "{{ item }}/99-no-recursion.conf"
         content: |
           # WARNING: This file is managed by Ansible
           [Unit]
@@ -737,10 +895,37 @@
         owner: root
         group: root
         mode: '0644'
+      loop:
+        - /etc/systemd/system/failure-notification@.service.d
+        - /etc/systemd/system/forwardemail-systemd-incident-event@.service.d
+        - /etc/systemd/system/forwardemail-systemd-incident-reconcile.service.d
+      tags:
+        - forwardemail-systemd-incident
 
     - name: Reload systemd daemon for fleet-wide failure notifications
-      systemd:
-        daemon_reload: yes
+      ansible.builtin.systemd:
+        daemon_reload: true
+      tags:
+        - forwardemail-systemd-incident
+
+    - name: Enable systemd incident reconciliation timer
+      ansible.builtin.systemd:
+        name: forwardemail-systemd-incident-reconcile.timer
+        enabled: true
+        state: started
+      when: forwardemail_systemd_incident_enabled | bool
+      tags:
+        - forwardemail-systemd-incident
+
+    - name: Disable systemd incident reconciliation timer when unconfigured
+      ansible.builtin.systemd:
+        name: forwardemail-systemd-incident-reconcile.timer
+        enabled: false
+        state: stopped
+      when: not (forwardemail_systemd_incident_enabled | bool)
+      failed_when: false
+      tags:
+        - forwardemail-systemd-incident
 
     # Deploy security monitoring scripts
     - name: Create security monitor configuration directory

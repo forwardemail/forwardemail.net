@@ -1,0 +1,13 @@
+[Unit]
+Description=Reconcile the sanitized public systemd incident state every minute
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1min
+AccuracySec=10s
+RandomizedDelaySec=15s
+Persistent=true
+Unit=forwardemail-systemd-incident-reconcile.service
+
+[Install]
+WantedBy=timers.target

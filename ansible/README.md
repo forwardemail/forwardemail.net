@@ -12,6 +12,7 @@ ansible/
 ├── docs/                        # Documentation guides
 │   ├── MONITORING.md           # Security monitoring system guide
 │   ├── MONITORING_TESTING.md   # Comprehensive monitoring testing guide
+│   ├── SYSTEMD_STATUS_INCIDENTS.md # Private-by-design public incident bridge
 │   ├── PM2_MONITORING.md       # PM2 health monitoring guide
 │   ├── SYSTEM_OPTIMIZATION.md  # System-wide optimization (tmpfs, mount options)
 │   ├── AMD_RYZEN_NUMA.md       # AMD Ryzen NUMA optimization guide
@@ -338,6 +339,10 @@ Comprehensive automated monitoring with email notifications for:
 > All monitoring submits through `/usr/local/bin/send-rate-limited-email.sh` to the root-only, send-only local Postfix queue.
 
 **Testing Guide**: See [MONITORING\_TESTING.md](docs/MONITORING_TESTING.md) for comprehensive testing procedures.
+
+### Sustained systemd status incidents
+
+The MongoDB, Logs, and Valkey/Redis hosts can publish minimal public incidents for sustained process failures while retaining diagnostics only in private alert channels. See [SYSTEMD\_STATUS\_INCIDENTS.md](docs/SYSTEMD_STATUS_INCIDENTS.md) for the privacy contract, token permissions, debounce behavior, rollout, and environment-driven end-to-end test.
 
 ### PM2 Health Monitoring
 

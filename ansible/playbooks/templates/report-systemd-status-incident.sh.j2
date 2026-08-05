@@ -1,0 +1,563 @@
+#!/bin/bash
+# Report sustained failures for one allowlisted systemd unit to the public status
+# repository.  Public payloads are deliberately static and contain no host-local
+# diagnostics; detailed failure context stays in the private notification path.
+
+set -uo pipefail
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+
+readonly ENV_FILE=/etc/forwardemail-alerts/github-systemd-incident.env
+readonly STATE_DIR=/var/lib/forwardemail-alerts
+readonly API_VERSION=2022-11-28
+readonly API_ACCEPT=application/vnd.github+json
+readonly STATUS_LABEL=status
+readonly COMPONENT_LABEL_COLOR=ededed
+
+log_incident() {
+  logger -t forwardemail-systemd-incident -- "$*" 2>/dev/null || true
+}
+
+if (( EUID != 0 )); then
+  log_incident 'non_root_invocation'
+  exit 0
+fi
+
+if [[ "$#" -lt 1 || "$#" -gt 2 ]] ||
+  [[ "$1" != 'event' && "$1" != 'reconcile' ]] ||
+  { [[ "$1" == 'event' ]] && [[ "$#" -ne 2 ]]; } ||
+  { [[ "$1" == 'reconcile' ]] && [[ "$#" -ne 1 ]]; }; then
+  printf 'Usage: %s event <unit-name> | reconcile\n' "$0" >&2
+  exit 64
+fi
+
+readonly MODE="$1"
+EVENT_UNIT="${2:-}"
+if [[ -n "$EVENT_UNIT" ]] && ! [[ "$EVENT_UNIT" =~ ^[A-Za-z0-9_.@:-]+$ ]]; then
+  log_incident 'invalid_event_unit'
+  exit 0
+fi
+
+if [[ ! -r "$ENV_FILE" ]]; then
+  # Unconfigured hosts and intentionally disabled incident reporting are quiet.
+  exit 0
+fi
+
+GITHUB_OCTOKIT_TOKEN=''
+GITHUB_REPOSITORY=''
+SYSTEMD_INCIDENT_PUBLIC_COMPONENT=''
+SYSTEMD_INCIDENT_WATCHED_UNIT=''
+SYSTEMD_INCIDENT_FAILURE_THRESHOLD=''
+SYSTEMD_INCIDENT_RECOVERY_THRESHOLD=''
+SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS=''
+SYSTEMD_INCIDENT_API_URL=''
+# The file is rendered by Ansible, owned by root, and mode 0600.
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+
+TOKEN_LENGTH=$(printf '%s' "$GITHUB_OCTOKIT_TOKEN" | wc -c)
+readonly TOKEN_LENGTH
+if [[ -z "$GITHUB_OCTOKIT_TOKEN" ]] ||
+  (( TOKEN_LENGTH < 20 || TOKEN_LENGTH > 255 )) ||
+  ! [[ "$GITHUB_OCTOKIT_TOKEN" =~ ^[A-Za-z0-9_]+$ ]] ||
+  ! [[ "$GITHUB_REPOSITORY" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] ||
+  ! [[ "$SYSTEMD_INCIDENT_PUBLIC_COMPONENT" =~ ^(mongo|logs|redis)\.forwardemail\.net$ ]] ||
+  ! [[ "$SYSTEMD_INCIDENT_WATCHED_UNIT" =~ ^(mongod|valkey-server)\.service$ ]] ||
+  ! [[ "$SYSTEMD_INCIDENT_FAILURE_THRESHOLD" =~ ^[0-9]+$ ]] ||
+  ! [[ "$SYSTEMD_INCIDENT_RECOVERY_THRESHOLD" =~ ^[0-9]+$ ]] ||
+  ! [[ "$SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS" =~ ^[0-9]+$ ]] ||
+  (( SYSTEMD_INCIDENT_FAILURE_THRESHOLD < 2 || SYSTEMD_INCIDENT_FAILURE_THRESHOLD > 10 )) ||
+  (( SYSTEMD_INCIDENT_RECOVERY_THRESHOLD < 2 || SYSTEMD_INCIDENT_RECOVERY_THRESHOLD > 10 )) ||
+  (( SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS < 30 || SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS > 600 )) ||
+  [[ "$SYSTEMD_INCIDENT_API_URL" != 'https://api.github.com' ]]; then
+  unset GITHUB_OCTOKIT_TOKEN
+  log_incident 'invalid_configuration'
+  exit 0
+fi
+
+SYSTEMD_INCIDENT_COMPONENT_LABEL=''
+case "${SYSTEMD_INCIDENT_PUBLIC_COMPONENT}:${SYSTEMD_INCIDENT_WATCHED_UNIT}" in
+  mongo.forwardemail.net:mongod.service)
+    SYSTEMD_INCIDENT_COMPONENT_LABEL='mongo-forwardemail-net'
+    ;;
+  logs.forwardemail.net:mongod.service)
+    SYSTEMD_INCIDENT_COMPONENT_LABEL='logs-forwardemail-net'
+    ;;
+  redis.forwardemail.net:valkey-server.service)
+    SYSTEMD_INCIDENT_COMPONENT_LABEL='redis-forwardemail-net'
+    ;;
+  *)
+    unset GITHUB_OCTOKIT_TOKEN
+    log_incident 'invalid_component_unit_mapping'
+    exit 0
+    ;;
+esac
+readonly SYSTEMD_INCIDENT_COMPONENT_LABEL
+
+if [[ "$MODE" == 'event' && "$EVENT_UNIT" != "$SYSTEMD_INCIDENT_WATCHED_UNIT" ]]; then
+  # The fleet-wide OnFailure target reaches every service.  Only the one fixed
+  # unit mapped to this host is public-status eligible.
+  unset GITHUB_OCTOKIT_TOKEN
+  exit 0
+fi
+
+umask 077
+if ! mkdir -p "$STATE_DIR"; then
+  unset GITHUB_OCTOKIT_TOKEN
+  log_incident 'state_directory_failed'
+  exit 0
+fi
+chmod 0700 "$STATE_DIR" 2>/dev/null || true
+
+STATE_KEY=$(printf '%s' "$SYSTEMD_INCIDENT_PUBLIC_COMPONENT" | tr -c 'A-Za-z0-9_.-' '_')
+readonly STATE_KEY
+readonly STATE_FILE="${STATE_DIR}/systemd-incident-${STATE_KEY}.json"
+readonly LOCK_FILE="${STATE_DIR}/systemd-incident-${STATE_KEY}.lock"
+if ! exec 9>"$LOCK_FILE"; then
+  unset GITHUB_OCTOKIT_TOKEN
+  log_incident 'lock_open_failed'
+  exit 0
+fi
+if ! flock -w 30 -x 9; then
+  unset GITHUB_OCTOKIT_TOKEN
+  log_incident 'lock_timeout'
+  exit 0
+fi
+
+REQUEST_FILE=$(mktemp "${STATE_DIR}/github-request.XXXXXX") || REQUEST_FILE=''
+RESPONSE_FILE=$(mktemp "${STATE_DIR}/github-response.XXXXXX") || RESPONSE_FILE=''
+if [[ -z "$REQUEST_FILE" || -z "$RESPONSE_FILE" ]]; then
+  rm -f "$REQUEST_FILE" "$RESPONSE_FILE"
+  unset GITHUB_OCTOKIT_TOKEN
+  flock -u 9
+  log_incident 'api_tempfile_failed'
+  exit 0
+fi
+chmod 0600 "$REQUEST_FILE" "$RESPONSE_FILE"
+cleanup() {
+  GITHUB_OCTOKIT_TOKEN=''
+  rm -f "$REQUEST_FILE" "$RESPONSE_FILE"
+  flock -u 9 2>/dev/null || true
+}
+trap cleanup EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+readonly ISSUE_MARKER="<!-- forwardemail-systemd-incident:v1:${SYSTEMD_INCIDENT_PUBLIC_COMPONENT} -->"
+readonly RESOLUTION_MARKER="<!-- forwardemail-systemd-incident-resolution:v1:${SYSTEMD_INCIDENT_PUBLIC_COMPONENT} -->"
+readonly ISSUE_TITLE="🛑 ${SYSTEMD_INCIDENT_PUBLIC_COMPONENT} is unavailable"
+readonly ISSUE_BODY="Automated service health checks detected a sustained interruption affecting **${SYSTEMD_INCIDENT_PUBLIC_COMPONENT}**.
+
+We are investigating and will update this incident after automated recovery checks confirm stability.
+
+${ISSUE_MARKER}"
+readonly RESOLUTION_BODY="**Resolved:** Automated health checks confirm **${SYSTEMD_INCIDENT_PUBLIC_COMPONENT}** has recovered and remained stable.
+
+${RESOLUTION_MARKER}"
+
+IFS=/ read -r REPOSITORY_OWNER REPOSITORY_NAME <<<"$GITHUB_REPOSITORY"
+readonly REPOSITORY_OWNER REPOSITORY_NAME
+readonly COMPONENT_LABEL_DESCRIPTION="Upptime monitor: ${SYSTEMD_INCIDENT_PUBLIC_COMPONENT}"
+
+api_config() {
+  local method="$1"
+  local path="$2"
+  printf 'silent\n'
+  printf 'show-error\n'
+  printf 'request = "%s"\n' "$method"
+  printf 'url = "%s%s"\n' "$SYSTEMD_INCIDENT_API_URL" "$path"
+  printf 'header = "Accept: %s"\n' "$API_ACCEPT"
+  printf 'header = "Authorization: Bearer %s"\n' "$GITHUB_OCTOKIT_TOKEN"
+  printf 'header = "X-GitHub-Api-Version: %s"\n' "$API_VERSION"
+  printf 'header = "User-Agent: forwardemail-systemd-incident/1"\n'
+  printf 'connect-timeout = 10\n'
+  printf 'max-time = 30\n'
+}
+
+github_api() {
+  local operation="$1"
+  local method="$2"
+  local path="$3"
+  local payload="$4"
+  local expected_codes="$5"
+  local http_code='000'
+  local curl_rc=0
+
+  : > "$REQUEST_FILE"
+  : > "$RESPONSE_FILE"
+  if [[ -n "$payload" ]]; then
+    printf '%s' "$payload" > "$REQUEST_FILE"
+  fi
+
+  if [[ -n "$payload" ]]; then
+    http_code=$(api_config "$method" "$path" | \
+      curl --config - \
+        --header 'Content-Type: application/json' \
+        --data-binary @"$REQUEST_FILE" \
+        --output "$RESPONSE_FILE" \
+        --write-out '%{http_code}') || curl_rc=$?
+  else
+    http_code=$(api_config "$method" "$path" | \
+      curl --config - \
+        --output "$RESPONSE_FILE" \
+        --write-out '%{http_code}') || curl_rc=$?
+  fi
+
+  if (( curl_rc != 0 )); then
+    log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT operation=$operation transport_failed rc=$curl_rc"
+    return 1
+  fi
+  if [[ " $expected_codes " != *" $http_code "* ]]; then
+    log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT operation=$operation rejected http=$http_code"
+    return 1
+  fi
+  return 0
+}
+
+label_response_matches() {
+  local expected_name="$1"
+  local actual_name
+  actual_name=$(jq -r '.name // empty' "$RESPONSE_FILE" 2>/dev/null) || return 1
+  [[ "$actual_name" == "$expected_name" ]]
+}
+
+ensure_required_repository_labels() {
+  local message
+  local payload
+
+  github_api 'get_status_label' GET "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/labels/${STATUS_LABEL}" '' '200' || return 1
+  label_response_matches "$STATUS_LABEL" || return 1
+
+  github_api 'get_component_label' GET "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/labels/${SYSTEMD_INCIDENT_COMPONENT_LABEL}" '' '200 404' || return 1
+  message=$(jq -r '.message // empty' "$RESPONSE_FILE" 2>/dev/null) || return 1
+  if [[ "$message" == 'Not Found' ]]; then
+    payload=$(jq -n \
+      --arg name "$SYSTEMD_INCIDENT_COMPONENT_LABEL" \
+      --arg color "$COMPONENT_LABEL_COLOR" \
+      --arg description "$COMPONENT_LABEL_DESCRIPTION" \
+      '{name:$name,color:$color,description:$description}') || return 1
+    # A concurrent reporter may create the same label first.  Accept 422 only
+    # long enough to re-read and verify the exact repository label below.
+    github_api 'create_component_label' POST "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/labels" "$payload" '201 422' || return 1
+    github_api 'verify_component_label' GET "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/labels/${SYSTEMD_INCIDENT_COMPONENT_LABEL}" '' '200' || return 1
+  fi
+  label_response_matches "$SYSTEMD_INCIDENT_COMPONENT_LABEL"
+}
+
+response_issue_has_required_labels() {
+  jq -e \
+    --arg status_label "$STATUS_LABEL" \
+    --arg component_label "$SYSTEMD_INCIDENT_COMPONENT_LABEL" '
+      [ .labels[]? | if type == "string" then . else .name end ] as $labels |
+      ($labels | index($status_label) != null) and
+      ($labels | index($component_label) != null)
+    ' "$RESPONSE_FILE" >/dev/null 2>&1
+}
+
+ensure_issue_has_required_labels() {
+  local payload
+  (( issue_number > 0 )) || return 1
+  payload=$(jq -n \
+    --arg status_label "$STATUS_LABEL" \
+    --arg component_label "$SYSTEMD_INCIDENT_COMPONENT_LABEL" \
+    '{labels:[$status_label,$component_label]}') || return 1
+  github_api 'add_required_labels' POST "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}/labels" "$payload" '200' || return 1
+  github_api 'verify_required_labels' GET "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}" '' '200' || return 1
+  response_issue_has_required_labels
+}
+
+failure_count=0
+recovery_count=0
+issue_number=0
+opened_at=0
+last_event_at=0
+if [[ -s "$STATE_FILE" ]] && jq -e '
+  type == "object" and
+  (.failure_count | type == "number") and
+  (.recovery_count | type == "number") and
+  (.issue_number | type == "number") and
+  (.opened_at | type == "number") and
+  (.last_event_at | type == "number")
+' "$STATE_FILE" >/dev/null 2>&1; then
+  failure_count=$(jq -r '.failure_count | floor' "$STATE_FILE")
+  recovery_count=$(jq -r '.recovery_count | floor' "$STATE_FILE")
+  issue_number=$(jq -r '.issue_number | floor' "$STATE_FILE")
+  opened_at=$(jq -r '.opened_at | floor' "$STATE_FILE")
+  last_event_at=$(jq -r '.last_event_at | floor' "$STATE_FILE")
+else
+  [[ ! -e "$STATE_FILE" ]] || log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT invalid_state_reset"
+fi
+
+for value in failure_count recovery_count issue_number opened_at last_event_at; do
+  if ! [[ "${!value}" =~ ^[0-9]+$ ]]; then
+    failure_count=0
+    recovery_count=0
+    issue_number=0
+    opened_at=0
+    last_event_at=0
+    break
+  fi
+done
+
+save_state() {
+  local state_tmp
+  state_tmp=$(mktemp "${STATE_FILE}.XXXXXX") || return 1
+  if ! jq -n \
+    --argjson failure_count "$failure_count" \
+    --argjson recovery_count "$recovery_count" \
+    --argjson issue_number "$issue_number" \
+    --argjson opened_at "$opened_at" \
+    --argjson last_event_at "$last_event_at" \
+    '{failure_count:$failure_count,recovery_count:$recovery_count,issue_number:$issue_number,opened_at:$opened_at,last_event_at:$last_event_at}' \
+    > "$state_tmp"; then
+    rm -f "$state_tmp"
+    return 1
+  fi
+  chmod 0600 "$state_tmp"
+  if ! mv -f "$state_tmp" "$STATE_FILE"; then
+    rm -f "$state_tmp"
+    return 1
+  fi
+}
+
+find_marker_owned_issue_in_response() {
+  jq -r --arg marker "$ISSUE_MARKER" '
+    [ .[]
+      | select(has("pull_request") | not)
+      | select((.body // "") | contains($marker))
+    ][0].number // 0
+  ' "$RESPONSE_FILE" 2>/dev/null
+}
+
+find_owned_open_issue() {
+  local path
+  local found
+
+  path="/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues?state=open&labels=${STATUS_LABEL},${SYSTEMD_INCIDENT_COMPONENT_LABEL}&sort=created&direction=desc&per_page=100"
+  github_api 'find_labeled_open_issue' GET "$path" '' '200' || return 1
+  found=$(find_marker_owned_issue_in_response) || return 1
+  [[ "$found" =~ ^[0-9]+$ ]] || return 1
+  if (( found > 0 )); then
+    issue_number="$found"
+    return 0
+  fi
+
+  # Migrate a marker-owned status-only issue left by an earlier reporter version.
+  path="/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues?state=open&sort=created&direction=desc&per_page=100"
+  github_api 'find_legacy_open_issue' GET "$path" '' '200' || return 1
+  found=$(find_marker_owned_issue_in_response) || return 1
+  [[ "$found" =~ ^[0-9]+$ ]] || return 1
+  issue_number="$found"
+}
+
+issue_is_owned() {
+  local state
+  local body
+  if (( issue_number == 0 )); then
+    return 1
+  fi
+  github_api 'get_issue' GET "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}" '' '200 404' || return 1
+  if [[ "$(jq -r '.message // empty' "$RESPONSE_FILE" 2>/dev/null)" == 'Not Found' ]]; then
+    return 1
+  fi
+  state=$(jq -r '.state // empty' "$RESPONSE_FILE" 2>/dev/null) || return 1
+  body=$(jq -r '.body // empty' "$RESPONSE_FILE" 2>/dev/null) || return 1
+  [[ "$body" == *"$ISSUE_MARKER"* ]] || return 1
+  [[ "$state" == 'open' || "$state" == 'closed' ]] || return 1
+  printf '%s' "$state"
+}
+
+ensure_open_incident() {
+  local issue_state=''
+  local payload
+  local created_number
+
+  ensure_required_repository_labels || return 1
+
+  if (( issue_number > 0 )); then
+    issue_state=$(issue_is_owned) || issue_state=''
+    if [[ "$issue_state" == 'open' ]]; then
+      ensure_issue_has_required_labels || return 1
+      github_api 'lock_issue' PUT "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}/lock" '' '204' || return 1
+      return 0
+    fi
+    issue_number=0
+    opened_at=0
+  fi
+
+  find_owned_open_issue || return 1
+  if (( issue_number > 0 )); then
+    issue_state=$(issue_is_owned) || issue_state=''
+    [[ "$issue_state" == 'open' ]] || return 1
+    ensure_issue_has_required_labels || return 1
+    github_api 'lock_issue' PUT "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}/lock" '' '204' || return 1
+    (( opened_at > 0 )) || opened_at=$(date +%s)
+    return 0
+  fi
+
+  payload=$(jq -n \
+    --arg title "$ISSUE_TITLE" \
+    --arg body "$ISSUE_BODY" \
+    --arg status_label "$STATUS_LABEL" \
+    --arg component_label "$SYSTEMD_INCIDENT_COMPONENT_LABEL" \
+    '{title:$title,body:$body,labels:[$status_label,$component_label]}') || return 1
+  github_api 'create_issue' POST "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues" "$payload" '201' || return 1
+  created_number=$(jq -r '.number // 0' "$RESPONSE_FILE" 2>/dev/null) || return 1
+  [[ "$created_number" =~ ^[1-9][0-9]*$ ]] || return 1
+  issue_number="$created_number"
+  opened_at=$(date +%s)
+  issue_state=$(issue_is_owned) || issue_state=''
+  [[ "$issue_state" == 'open' ]] || return 1
+  ensure_issue_has_required_labels || return 1
+  github_api 'lock_issue' PUT "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}/lock" '' '204' || return 1
+  log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT incident_opened issue=$issue_number"
+}
+
+maintain_open_incident() {
+  local issue_state=''
+  local locked
+
+  (( issue_number > 0 )) || return 1
+  issue_state=$(issue_is_owned) || return 1
+  if [[ "$issue_state" == 'closed' ]]; then
+    # Upptime selects incidents by labels alone.  If it closes this marker-owned
+    # process incident during an unrelated monitor transition, replace it while
+    # the process remains unhealthy.
+    issue_number=0
+    opened_at=0
+    ensure_open_incident
+    return
+  fi
+  [[ "$issue_state" == 'open' ]] || return 1
+
+  if ! response_issue_has_required_labels; then
+    ensure_required_repository_labels || return 1
+    ensure_issue_has_required_labels || return 1
+  fi
+  locked=$(jq -r '.locked // false' "$RESPONSE_FILE" 2>/dev/null) || return 1
+  if [[ "$locked" != 'true' ]]; then
+    github_api 'restore_issue_lock' PUT "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}/lock" '' '204' || return 1
+  fi
+}
+
+resolution_comment_exists() {
+  local found
+  github_api 'list_comments' GET "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}/comments?per_page=100" '' '200' || return 1
+  found=$(jq -r --arg marker "$RESOLUTION_MARKER" '[.[] | select((.body // "") | contains($marker))] | length' "$RESPONSE_FILE" 2>/dev/null) || return 1
+  [[ "$found" =~ ^[0-9]+$ ]] || return 1
+  (( found > 0 ))
+}
+
+resolve_incident() {
+  local issue_state=''
+  local payload
+
+  ensure_required_repository_labels || return 1
+  issue_state=$(issue_is_owned) || issue_state=''
+  [[ "$issue_state" == 'open' || "$issue_state" == 'closed' ]] || return 1
+  ensure_issue_has_required_labels || return 1
+  if [[ "$issue_state" == 'closed' ]]; then
+    github_api 'lock_resolved_issue' PUT "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}/lock" '' '204' || return 1
+    return 0
+  fi
+
+  github_api 'unlock_issue' DELETE "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}/lock" '' '204' || return 1
+  if ! resolution_comment_exists; then
+    payload=$(jq -n --arg body "$RESOLUTION_BODY" '{body:$body}') || return 1
+    github_api 'create_resolution_comment' POST "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}/comments" "$payload" '201' || return 1
+  fi
+  payload='{"state":"closed","state_reason":"completed"}'
+  github_api 'close_issue' PATCH "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}" "$payload" '200' || return 1
+  github_api 'lock_resolved_issue' PUT "/repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues/${issue_number}/lock" '' '204' || return 1
+  log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT incident_resolved issue=$issue_number"
+}
+
+now=$(date +%s)
+unhealthy=false
+count_unhealthy=false
+if [[ "$MODE" == 'event' ]]; then
+  unhealthy=true
+  count_unhealthy=true
+  last_event_at="$now"
+elif timeout --signal=TERM 10 systemctl is-active --quiet "$SYSTEMD_INCIDENT_WATCHED_UNIT"; then
+  unhealthy=false
+else
+  unhealthy=true
+  if (( last_event_at == 0 || now - last_event_at >= SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS )); then
+    count_unhealthy=true
+  fi
+fi
+
+if [[ "$unhealthy" == true ]]; then
+  recovery_count=0
+  if (( issue_number == 0 )) && [[ "$count_unhealthy" == true ]] &&
+    (( failure_count < SYSTEMD_INCIDENT_FAILURE_THRESHOLD )); then
+    failure_count=$((failure_count + 1))
+  fi
+  if (( failure_count >= SYSTEMD_INCIDENT_FAILURE_THRESHOLD )); then
+    if (( issue_number == 0 )); then
+      # Persist the threshold before the remote mutation.  If GitHub accepts a
+      # create request but this process exits before recording its response, the
+      # next observation can rediscover the marker-owned issue without duplicating
+      # or orphaning it.
+      if ! save_state; then
+        log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT state_commit_failed"
+        exit 0
+      fi
+      if ! ensure_open_incident; then
+        # Force marker-based rediscovery on the next observation after any partial
+        # create, label, verification, or lock failure.
+        issue_number=0
+        opened_at=0
+        save_state || log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT state_commit_failed"
+        exit 0
+      fi
+    elif ! maintain_open_incident; then
+      save_state || log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT state_commit_failed"
+      exit 0
+    fi
+  fi
+  save_state || log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT state_commit_failed"
+  exit 0
+fi
+
+last_event_at=0
+if (( issue_number == 0 && failure_count >= SYSTEMD_INCIDENT_FAILURE_THRESHOLD )); then
+  # A prior create request may have reached GitHub even if its response or the
+  # following local state commit was interrupted.  Search by the private
+  # ownership marker before clearing threshold state on the first healthy run.
+  if ! find_owned_open_issue; then
+    save_state || log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT state_commit_failed"
+    exit 0
+  fi
+  if (( issue_number > 0 && opened_at == 0 )); then
+    opened_at="$now"
+  fi
+fi
+
+failure_count=0
+if (( issue_number == 0 )); then
+  recovery_count=0
+  opened_at=0
+  save_state || log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT state_commit_failed"
+  exit 0
+fi
+
+if (( recovery_count < SYSTEMD_INCIDENT_RECOVERY_THRESHOLD )); then
+  recovery_count=$((recovery_count + 1))
+fi
+if (( recovery_count < SYSTEMD_INCIDENT_RECOVERY_THRESHOLD )); then
+  save_state || log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT state_commit_failed"
+  exit 0
+fi
+
+if resolve_incident; then
+  failure_count=0
+  recovery_count=0
+  issue_number=0
+  opened_at=0
+fi
+save_state || log_incident "component=$SYSTEMD_INCIDENT_PUBLIC_COMPONENT state_commit_failed"
+exit 0
