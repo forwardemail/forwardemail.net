@@ -3,7 +3,7 @@
 
 ## Overview
 
-This monitoring system provides automated email notifications for resource, access, device, package, audit, certificate, application, and service-health findings. Shared security monitors run on every host selected by `security.yml`; service-specific monitors add PM2, SQLite mirror, Redis, MongoDB, and SnappyMail coverage where applicable. Periodic checks use systemd timers so genuine execution or notification-delivery failures reach the fleet-wide failure notifier.
+This monitoring system provides automated email notifications for resource, access, device, package, audit, certificate, application, and service-health findings. Shared security monitors run on every host selected by `security.yml`; service-specific monitors add PM2, SQLite mirror, Redis, and MongoDB coverage where applicable. Periodic checks use systemd timers so genuine execution or notification-delivery failures reach the fleet-wide failure notifier.
 
 
 ## Features
@@ -121,7 +121,7 @@ Every routine monitor sends email through `/usr/local/bin/send-rate-limited-emai
 
 `MSMTP_RCPTS` is accepted only as a deprecated recipient fallback. No SMTP username, password, relay host, or application database is used. Complete the envelope-sender and HELO SPF prerequisites in the main [Ansible guide](../README.md#alert-transport-and-dns-prerequisites) before running `security.yml`; deployment fails closed when either identity does not return SPF pass. The configured HELO must also match the FQDN gathered from that host, which prevents a MongoDB or Redis inventory value from being assigned to the other server.
 
-Optional [Twilio](https://github.com/twilio) SMS is restricted to the fleet-wide [systemd](https://github.com/systemd/systemd) `OnFailure` wrapper, `/usr/local/bin/send-failure-notification.sh`. A failed unit still emails through the shared sender, then independently sends a text containing the unit result and bounded recent journal context. Successfully queued resource, SSH, sudo, USB, package, certificate, PM2-health, SQLite-health, SnappyMail-health, and open-port findings remain email-only. If a monitor cannot queue a required email or commit its cursor/cooldown state, it fails instead of discarding the finding; that execution failure is then eligible for the systemd email-plus-optional-SMS path. Set all four of `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`, and `TWILIO_TO_NUMBER` to enable failure texts; leave all four unset for email-only operation.
+Optional [Twilio](https://github.com/twilio) SMS is restricted to the fleet-wide [systemd](https://github.com/systemd/systemd) `OnFailure` wrapper, `/usr/local/bin/send-failure-notification.sh`. A failed unit still emails through the shared sender, then independently sends a text containing the unit result and bounded recent journal context. Successfully queued resource, SSH, sudo, USB, package, certificate, PM2-health, SQLite-health, and open-port findings remain email-only. If a monitor cannot queue a required email or commit its cursor/cooldown state, it fails instead of discarding the finding; that execution failure is then eligible for the systemd email-plus-optional-SMS path. Set all four of `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`, and `TWILIO_TO_NUMBER` to enable failure texts; leave all four unset for email-only operation.
 
 ### Whitelists
 
@@ -236,7 +236,6 @@ Monitor-specific rate limiting uses lockfiles in `/var/lock/` with unique identi
 * `package-monitor.service` - Package change monitoring
 * `open-ports-monitor.service` - Listening-port monitoring
 * `ssl-certificate-monitor.service` - Certificate monitoring
-* `snappymail-health-check.service` - Mail-host-only PHP-FPM, Nginx, and HTTP health check
 
 ### Timers
 
@@ -248,7 +247,6 @@ Monitor-specific rate limiting uses lockfiles in `/var/lock/` with unique identi
 * `package-monitor.timer` - Runs hourly
 * `open-ports-monitor.timer` - Runs every 5 minutes
 * `ssl-certificate-monitor.timer` - Runs daily
-* `snappymail-health-check.timer` - Runs every 5 minutes on the mail host
 
 ### Managing Services
 
@@ -259,7 +257,6 @@ sudo systemctl status system-resource-monitor.timer
 sudo systemctl status ssh-security-monitor.timer
 sudo systemctl status usb-device-monitor.timer
 sudo systemctl status root-access-monitor.timer
-sudo systemctl status snappymail-health-check.timer  # mail host only
 ```
 
 View logs:
@@ -269,7 +266,6 @@ sudo journalctl -u system-resource-monitor.service -n 50
 sudo journalctl -u ssh-security-monitor.service -n 50
 sudo journalctl -u usb-device-monitor.service -n 50
 sudo journalctl -u root-access-monitor.service -n 50
-sudo journalctl -u snappymail-health-check.service -n 50  # mail host only
 ```
 
 Manually trigger a check:
@@ -279,7 +275,6 @@ sudo systemctl start system-resource-monitor.service
 sudo systemctl start ssh-security-monitor.service
 sudo systemctl start usb-device-monitor.service
 sudo systemctl start root-access-monitor.service
-sudo systemctl start snappymail-health-check.service  # mail host only
 ```
 
 Stop/Start timers:

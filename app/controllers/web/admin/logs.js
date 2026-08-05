@@ -38,7 +38,6 @@ const HOSTNAMES = _.uniq(
         env.WEB_HOST,
         env.MX1_HOST,
         env.MX2_HOST,
-        // env.MAIL_HOST,
         env.REDIS_HOST,
         env.SQLITE_HOST,
         env.MONGO_HOST,

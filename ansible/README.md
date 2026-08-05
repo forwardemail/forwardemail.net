@@ -20,7 +20,6 @@ ansible/
 │   ├── UFW_ALLOWLIST.md        # UFW IP allowlist management guide
 │   ├── REMOVE_POSTFIX.md       # Postfix removal guide (cleanup tool)
 │   ├── README_MONGO_REDIS.md   # MongoDB & Redis/Valkey deployment
-│   ├── MAIL_DEPLOYMENT.md      # Mail server deployment guide
 │   ├── MONGODB_OPERATIONS_GUIDE.md
 │   ├── MONGODB_PERFORMANCE_TUNING.md
 │   ├── REDIS_PERFORMANCE_TUNING.md
@@ -42,7 +41,6 @@ ansible/
 │   ├── redis.yml               # Redis/Valkey deployment
 │   ├── bree.yml                # Bree job scheduler
 │   ├── http.yml                # HTTP/API servers
-│   ├── mail.yml                # Mail server deployment
 │   ├── smtp.yml                # SMTP server
 │   ├── imap.yml                # IMAP server
 │   ├── pop3.yml                # POP3 server
@@ -159,8 +157,6 @@ ansible-playbook ansible/playbooks/logs.yml -i hosts.yml
 # 4. Deploy Redis/Valkey
 ansible-playbook ansible/playbooks/redis.yml -i hosts.yml
 
-# 5. Deploy mail servers
-ansible-playbook ansible/playbooks/mail.yml -i hosts.yml
 ```
 
 ---
@@ -185,23 +181,6 @@ Complete guide for deploying [MongoDB](https://github.com/mongodb/mongo) v6 and 
 
 > \[!TIP]
 > Start here if you're deploying database services for the first time.
-
-### Mail Server Deployment
-
-**[Mail Server Deployment Guide](docs/MAIL_DEPLOYMENT.md)**
-
-Step-by-step guide for deploying SMTP, IMAP, POP3, and other mail services:
-
-* 📧 SMTP server configuration (ports 25, 587, 465, 2525, 2587, 2465, 2455, 2555)
-* 📬 IMAP server setup (ports 993, 2993)
-* 📮 POP3 server setup (ports 995, 2995)
-* 🔐 TLS/SSL certificate management
-* 🛡️ Security best practices
-
-> \[!WARNING]
-> Mail servers require proper DNS configuration (MX, SPF, DKIM, DMARC) before deployment.
-
----
 
 
 ## 🔧 System-Wide Optimization

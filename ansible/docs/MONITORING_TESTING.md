@@ -1,6 +1,6 @@
 # Comprehensive Ansible Monitoring Testing Guide
 
-This guide provides complete testing procedures for all **18 monitoring systems** deployed across the Forward Email infrastructure.
+This guide provides complete testing procedures for monitoring systems deployed across the Forward Email infrastructure.
 
 ---
 
@@ -33,8 +33,6 @@ This guide provides complete testing procedures for all **18 monitoring systems*
   * [2. Redis UFW Whitelist Update Monitoring](#2-redis-ufw-whitelist-update-monitoring)
   * [3. Redis Backup Monitoring](#3-redis-backup-monitoring)
   * [4. Redis Command Usage Monitoring](#4-redis-command-usage-monitoring)
-* [Mail Playbook Monitoring](#mail-playbook-monitoring)
-  * [Mail Service and SnappyMail Health Failure Notifications](#mail-service-and-snappymail-health-failure-notifications)
 * [Unbound Playbook Monitoring](#unbound-playbook-monitoring)
   * [Unbound DNS Service Failure Notifications](#unbound-dns-service-failure-notifications)
 * [Email Notification Testing](#email-notification-testing)
@@ -78,10 +76,6 @@ This guide provides complete testing procedures for all **18 monitoring systems*
 * Redis UFW Whitelist Update Monitoring
 * Redis Backup Monitoring
 * Redis Command Usage Monitoring (BGSAVE, KEYS)
-
-**Mail Playbook (mail.yml)**
-
-* Mail Service Failure Notifications
 
 **Unbound Playbook (unbound.yml)**
 
@@ -1203,52 +1197,6 @@ sudo tail -f /var/log/mail.log
 ---
 
 
-## Mail Playbook Monitoring
-
-### Mail Service and SnappyMail Health Failure Notifications
-
-**Purpose**: Sends routine email-only alerts for SnappyMail health findings and, when Twilio is configured, adds SMS only when a mail-host systemd unit genuinely fails. The five-minute SnappyMail probe attempts to recover PHP-FPM or Nginx, includes recovery and local HTTP findings in one routine email, and exits successfully after that email queues. Only monitor execution or email-queue faults fail the health unit.
-
-**Files Deployed**:
-
-* Fleet drop-in: `/etc/systemd/system/service.d/forwardemail-failure-notification.conf`
-* Health service: `/etc/systemd/system/snappymail-health-check.service`
-* Health timer: `/etc/systemd/system/snappymail-health-check.timer`
-
-**Testing Commands**:
-
-```bash
-# 1. Check mail-host services and the SnappyMail timer
-sudo systemctl status postfix.service nginx.service php8.2-fpm.service
-sudo systemctl status snappymail-health-check.timer
-sudo systemctl list-timers snappymail-health-check.timer
-
-# 2. Verify the five-minute schedule and inherited failure hook
-sudo systemctl cat snappymail-health-check.timer
-sudo systemctl cat snappymail-health-check.service | grep -F 'OnFailure='
-
-# 3. Run the health probe without stopping a production dependency
-sudo systemctl start snappymail-health-check.service
-sudo systemctl show snappymail-health-check.service -p Result -p ExecMainStatus
-sudo journalctl -u snappymail-health-check.service -n 50 --no-pager
-
-# 4. Exercise notification delivery with the safe failed transient unit from
-# Core Notification Infrastructure; do not stop Nginx, PHP-FPM, or Postfix.
-```
-
-**Validation Checklist**:
-
-* [ ] Postfix, Nginx, and PHP-FPM are active
-* [ ] The SnappyMail timer is enabled and scheduled every five minutes
-* [ ] The health service succeeds silently when PHP-FPM, Nginx, and the local HTTP endpoint are healthy
-* [ ] A service-recovery or HTTP finding queues one routine email and leaves the health unit successful
-* [ ] A failed routine-email queue leaves the health unit failed for retry visibility
-* [ ] The health service inherits `failure-notification@%n.service`
-* [ ] A genuine health-service execution or queueing failure triggers email and optional systemd-only SMS
-
----
-
-
 ## Unbound Playbook Monitoring
 
 ### Unbound DNS Service Failure Notifications
@@ -1526,10 +1474,6 @@ sudo systemctl status update-redis-ufw-whitelist.timer
 sudo systemctl status redis-backup.timer
 sudo systemctl status redis-command-monitor.timer
 
-echo -e "\n=== MAIL MONITORING ==="
-sudo systemctl status snappymail-health-check.timer
-sudo systemctl status snappymail-health-check.service
-
 echo -e "\n=== SQLITE MIRROR MONITORING ==="
 sudo systemctl status sqlite-mirror-health.timer 2>/dev/null || true
 
@@ -1575,6 +1519,6 @@ This guide covers **all monitoring systems** deployed across your Ansible infras
 
 **Security Playbook**: Eight shared monitors on every selected host (resource, SSH, USB, root access, Lynis, packages, open ports, and certificates).
 
-**Service Playbooks**: PM2 health and service failures, MongoDB service/UFW/backup paths, Redis service/UFW/backup/command paths, the SQLite mirror health check, the SnappyMail health timer, mail-host services, and Unbound.
+**Service Playbooks**: PM2 health and service failures, MongoDB service/UFW/backup paths, Redis service/UFW/backup/command paths, the SQLite mirror health check, and Unbound.
 
 Successfully queued routine findings remain email-only. Genuine systemd `OnFailure` events—including monitor execution, queueing, or state-commit failures—also send optional Twilio SMS with bounded diagnostics. All systemd-managed paths use the shared email sender and the recursion-safe fleet failure notifier.
