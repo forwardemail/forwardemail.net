@@ -1,6 +1,6 @@
 ---
 - name: Setup Unbound DNS Resolver
-  hosts: all
+  hosts: "{{ target_hosts | default('all') }}"
   become: true
 
   vars:

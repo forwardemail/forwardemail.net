@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: all
+- hosts: "{{ ssh_keys_target_hosts | default('all') }}"
   name: SSH Keys
   become: true
   become_user: root

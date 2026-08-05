@@ -30,8 +30,12 @@
 
 - name: Import security playbook
   import_playbook: security.yml
+  vars:
+    security_target_hosts: "redis"
 - name: Import SSH keys playbook
   import_playbook: ssh-keys.yml
+  vars:
+    ssh_keys_target_hosts: "redis"
 - name: Import UFW allowlist playbook for Redis
   import_playbook: ufw-allowlist.yml
   vars:

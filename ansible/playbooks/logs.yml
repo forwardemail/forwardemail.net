@@ -4,8 +4,12 @@
 ---
 - name: Import security playbook
   import_playbook: security.yml
+  vars:
+    security_target_hosts: "logs"
 - name: Import SSH keys playbook
   import_playbook: ssh-keys.yml
+  vars:
+    ssh_keys_target_hosts: "logs"
 - name: Import UFW allowlist playbook for MongoDB
   import_playbook: ufw-allowlist.yml
   vars:
@@ -159,97 +163,207 @@
       loop:
         - { name: 'vm.max_map_count', value: '262144' }  # Required for MongoDB WiredTiger storage engine
 
-    # Configure swap for MongoDB stability
-    # MongoDB requires swap to prevent OOM crashes during high memory usage
-    # Best practice: swap file size = total system RAM
-    - name: Get total system memory in MB
-      shell: free -m | awk '/^Mem:/{print $2}'
-      register: total_memory_mb
-      changed_when: false
+    # Configure emergency swap for the logs MongoDB.  Existing signed swapfiles
+    # are activated in place even when they are not RAM-sized; new files are
+    # created RAM-sized only after filesystem and free-space validation.
+    - name: Configure emergency swap for logs MongoDB
+      tags:
+        - logs-swap
+        - mongodb-swap
+      block:
+        - name: Calculate logs-host RAM-sized swap requirement
+          set_fact:
+            logs_swap_required_mb: "{{ ansible_memtotal_mb | int }}"
+            logs_swap_required_bytes: "{{ (ansible_memtotal_mb | int) * 1024 * 1024 }}"
+            logs_swap_reserve_bytes: "{{ (logs_swap_free_space_reserve_mb | default(1024) | int) * 1024 * 1024 }}"
 
-    - name: Check if swap file exists
-      stat:
-        path: /swapfile
-      register: swapfile_stat
+        - name: Inspect stale logs-host noswap service
+          stat:
+            path: /etc/systemd/system/noswap.service
+            follow: false
+          register: logs_stale_noswap_service
 
-    - name: Check whether swap file is active
-      shell: swapon --show=NAME --noheadings | grep -Fx /swapfile
-      register: swapfile_active
-      changed_when: false
-      failed_when: false
+        - name: Disable stale logs-host noswap service
+          systemd:
+            daemon_reload: yes
+            name: noswap
+            enabled: false
+            state: stopped
+          when: logs_stale_noswap_service.stat.exists
 
-    - name: Calculate required swap size in bytes
-      set_fact:
-        required_swap_mb: "{{ total_memory_mb.stdout | int }}"
-        required_swap_bytes: "{{ (total_memory_mb.stdout | int) * 1024 * 1024 }}"
+        - name: Remove stale logs-host noswap service
+          file:
+            path: /etc/systemd/system/noswap.service
+            state: absent
+          register: logs_stale_noswap_removed
 
-    - name: Check if swap resize is needed
-      set_fact:
-        swap_resize_needed: "{{ swapfile_stat.stat.exists and (swapfile_stat.stat.size | int != required_swap_bytes | int) }}"
+        - name: Reload systemd after stale logs-host noswap removal
+          systemd:
+            daemon_reload: yes
+          when: logs_stale_noswap_removed.changed
 
-    - name: Display swap resize warning
-      debug:
-        msg: |
-          WARNING: Swap file size ({{ swapfile_stat.stat.size | int / 1024 / 1024 }}MB) does not match required size ({{ required_swap_mb }}MB).
-          Swap resizing requires manual intervention to avoid system instability.
-          To resize swap safely:
-          1. Schedule maintenance window
-          2. Stop MongoDB: systemctl stop mongod
-          3. Disable swap: swapoff /swapfile
-          4. Remove old swap: rm /swapfile
-          5. Re-run this playbook
-          Skipping automatic swap resize for safety.
-      when: swap_resize_needed | bool
+        - name: Inspect existing logs-host swap file
+          stat:
+            path: /swapfile
+            follow: false
+          register: logs_swapfile_initial
 
-    - name: Skip swap operations if resize is needed
-      set_fact:
-        skip_swap_setup: "{{ swap_resize_needed | bool }}"
+        - name: Read active logs-host swap devices
+          command: swapon --show=NAME --noheadings --raw
+          register: logs_swap_active_initial
+          changed_when: false
+          check_mode: false
 
-    - name: Create swap file with size equal to RAM
-      command: fallocate -l {{ required_swap_mb }}M /swapfile
-      args:
-        creates: /swapfile
-      when: not (skip_swap_setup | default(false) | bool)
+        - name: Record whether the logs-host swap file is active
+          set_fact:
+            logs_swapfile_is_active: "{{ '/swapfile' in logs_swap_active_initial.stdout_lines }}"
 
-    - name: Set swap file permissions
-      file:
-        path: /swapfile
-        mode: '0600'
-        owner: root
-        group: root
+        - name: Reject an unsafe existing logs-host swap path
+          assert:
+            that:
+              - logs_swapfile_initial.stat.isreg | default(false)
+              - not (logs_swapfile_initial.stat.islnk | default(false))
+            fail_msg: >-
+              /swapfile exists but is not a regular file. Refusing to replace or
+              format it automatically.
+          when: logs_swapfile_initial.stat.exists
 
-    - name: Format swap file
-      command: mkswap /swapfile
-      when:
-        - not (skip_swap_setup | default(false) | bool)
-        - not swapfile_stat.stat.exists
-      register: mkswap_result
-      changed_when: "mkswap_result is not skipped and 'Setting up swapspace' in mkswap_result.stdout"
+        - name: Read root filesystem type for new logs-host swap file
+          command: findmnt -n -o FSTYPE -T /
+          register: logs_swap_root_fstype
+          changed_when: false
+          check_mode: false
+          when: not logs_swapfile_initial.stat.exists
 
-    - name: Enable swap file
-      command: swapon /swapfile
-      when: swapfile_active.rc != 0
+        - name: Require a supported filesystem for automatic logs-host swap creation
+          assert:
+            that:
+              - logs_swap_root_fstype.stdout | trim in ['ext2', 'ext3', 'ext4', 'xfs']
+            fail_msg: >-
+              Automatic /swapfile creation is limited to ext2/ext3/ext4/xfs.
+              Detected {{ logs_swap_root_fstype.stdout | trim }}; configure a
+              platform-supported swap device manually instead.
+          when: not logs_swapfile_initial.stat.exists
 
-    - name: Verify swap file is active
-      command: swapon --show=NAME --noheadings
-      register: active_swapfiles
-      changed_when: false
-      failed_when: "'/swapfile' not in active_swapfiles.stdout_lines"
+        - name: Read free space available for a new logs-host swap file
+          command: df -B1 --output=avail /
+          register: logs_swap_df
+          changed_when: false
+          check_mode: false
+          when: not logs_swapfile_initial.stat.exists
 
-    - name: Add swap to /etc/fstab
-      lineinfile:
-        path: /etc/fstab
-        line: '/swapfile none swap sw 0 0'
-        state: present
-        regexp: '^/swapfile'
+        - name: Require room for logs-host swap plus filesystem reserve
+          assert:
+            that:
+              - logs_swap_df.stdout_lines | last | trim | int >= (logs_swap_required_bytes | int) + (logs_swap_reserve_bytes | int)
+            fail_msg: >-
+              Insufficient free space for a {{ logs_swap_required_mb }} MiB swap
+              file plus the {{ logs_swap_free_space_reserve_mb | default(1024) }}
+              MiB safety reserve. No file was created.
+          when: not logs_swapfile_initial.stat.exists
 
-    - name: Set swappiness for MongoDB (minimize swapping but allow it for safety)
-      ansible.builtin.sysctl:
-        name: vm.swappiness
-        value: '1'
-        state: present
-        reload: true
-        sysctl_file: /etc/sysctl.d/99-mongodb.conf
+        - name: Allocate RAM-sized logs-host swap file
+          command:
+            argv:
+              - fallocate
+              - -l
+              - "{{ logs_swap_required_mb }}M"
+              - /swapfile
+            creates: /swapfile
+          when: not logs_swapfile_initial.stat.exists
+
+        - name: Set logs-host swap file ownership and permissions
+          file:
+            path: /swapfile
+            mode: '0600'
+            owner: root
+            group: root
+
+        - name: Inspect managed logs-host swap file
+          stat:
+            path: /swapfile
+            follow: false
+          register: logs_swapfile_final
+
+        - name: Verify managed logs-host swap file safety and allocation size
+          assert:
+            that:
+              - logs_swapfile_final.stat.isreg | default(false)
+              - logs_swapfile_final.stat.size | int > 0
+              - >-
+                logs_swapfile_initial.stat.exists or
+                (logs_swapfile_final.stat.size | int == logs_swap_required_bytes | int)
+              - logs_swapfile_final.stat.mode == '0600'
+            fail_msg: >-
+              /swapfile failed safety validation. Newly allocated files must be
+              exactly RAM-sized; an existing regular file may retain its current
+              nonzero size but must have a valid swap signature before activation.
+
+        - name: Inspect existing logs-host swap signature
+          command: blkid -p -s TYPE -o value /swapfile
+          register: logs_swap_signature_initial
+          changed_when: false
+          failed_when: false
+          check_mode: false
+
+        - name: Reject an unformatted or non-swap pre-existing logs-host file
+          assert:
+            that:
+              - logs_swap_signature_initial.rc == 0
+              - logs_swap_signature_initial.stdout | trim == 'swap'
+            fail_msg: >-
+              The pre-existing /swapfile does not contain a swap signature.
+              Refusing to overwrite it automatically. Verify its contents,
+              remove it if appropriate, and rerun with --tags logs-swap.
+          when: logs_swapfile_initial.stat.exists
+
+        - name: Format newly allocated logs-host swap file
+          command: mkswap /swapfile
+          register: logs_mkswap
+          changed_when: logs_mkswap.rc == 0
+          when: not logs_swapfile_initial.stat.exists
+
+        - name: Verify logs-host swap signature
+          command: blkid -p -s TYPE -o value /swapfile
+          register: logs_swap_signature_final
+          changed_when: false
+          check_mode: false
+          failed_when: >-
+            logs_swap_signature_final.rc != 0 or
+            logs_swap_signature_final.stdout | trim != 'swap'
+
+        - name: Activate logs-host swap file
+          command: swapon /swapfile
+          when: not logs_swapfile_is_active
+
+        - name: Verify logs-host swap file is active
+          command: swapon --show=NAME --noheadings --raw
+          register: logs_swap_active_final
+          changed_when: false
+          check_mode: false
+          failed_when: "'/swapfile' not in logs_swap_active_final.stdout_lines"
+
+        - name: Persist logs-host swap file in fstab
+          lineinfile:
+            path: /etc/fstab
+            line: '/swapfile none swap sw 0 0'
+            state: present
+            regexp: '^\s*/swapfile\s+'
+
+        - name: Set low logs-host MongoDB swappiness
+          ansible.builtin.sysctl:
+            name: vm.swappiness
+            value: '1'
+            state: present
+            reload: true
+            sysctl_file: /etc/sysctl.d/99-mongodb.conf
+
+        - name: Verify active logs-host MongoDB swappiness
+          command: sysctl -n vm.swappiness
+          register: logs_swappiness_final
+          changed_when: false
+          check_mode: false
+          failed_when: logs_swappiness_final.stdout | trim != '1'
 
     # Install MongoDB using custom installation (no Galaxy role)
     # WARNING: DO NOT upgrade to MongoDB 7.0 or 8.0 due to severe performance regressions

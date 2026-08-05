@@ -1,13 +1,16 @@
 [Unit]
-Description=Send email notification for %i failure
-After=network.target
+Description=Send infrastructure notifications for %i failure
+Wants=network-online.target
+After=network-online.target postfix.service
 
 [Service]
 Type=oneshot
-RemainAfterExit=no
 ExecStart=/usr/local/bin/send-failure-notification.sh %i
 User=root
 Group=root
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
 
-[Install]
-WantedBy=multi-user.target
+# This template is started only through OnFailure dependencies.

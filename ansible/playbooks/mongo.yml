@@ -4,8 +4,12 @@
 ---
 - name: Import security playbook
   import_playbook: security.yml
+  vars:
+    security_target_hosts: "mongo"
 - name: Import SSH keys playbook
   import_playbook: ssh-keys.yml
+  vars:
+    ssh_keys_target_hosts: "mongo"
 - name: Import UFW allowlist playbook for MongoDB
   import_playbook: ufw-allowlist.yml
   vars:
@@ -162,97 +166,205 @@
       loop:
         - { name: 'vm.max_map_count', value: '262144' }  # Required for MongoDB WiredTiger storage engine
 
-    # Configure swap for MongoDB stability
-    # MongoDB requires swap to prevent OOM crashes during high memory usage
-    # Best practice: swap file size = total system RAM
-    - name: Get total system memory in MB
-      shell: free -m | awk '/^Mem:/{print $2}'
-      register: total_memory_mb
-      changed_when: false
+    # Configure swap for MongoDB stability.  This block is separately tagged so
+    # zero-swap recovery does not depend on unrelated shared hardening tasks.
+    - name: Configure emergency swap for MongoDB
+      tags:
+        - mongodb-swap
+      block:
+        - name: Calculate RAM-sized swap requirement
+          set_fact:
+            mongodb_swap_required_mb: "{{ ansible_memtotal_mb | int }}"
+            mongodb_swap_required_bytes: "{{ (ansible_memtotal_mb | int) * 1024 * 1024 }}"
+            mongodb_swap_reserve_bytes: "{{ (mongodb_swap_free_space_reserve_mb | default(1024) | int) * 1024 * 1024 }}"
 
-    - name: Check if swap file exists
-      stat:
-        path: /swapfile
-      register: swapfile_stat
+        - name: Inspect stale noswap service
+          stat:
+            path: /etc/systemd/system/noswap.service
+            follow: false
+          register: mongodb_stale_noswap_service
 
-    - name: Check whether swap file is active
-      shell: swapon --show=NAME --noheadings | grep -Fx /swapfile
-      register: swapfile_active
-      changed_when: false
-      failed_when: false
+        - name: Disable stale noswap service
+          systemd:
+            daemon_reload: yes
+            name: noswap
+            enabled: false
+            state: stopped
+          when: mongodb_stale_noswap_service.stat.exists
 
-    - name: Calculate required swap size in bytes
-      set_fact:
-        required_swap_mb: "{{ total_memory_mb.stdout | int }}"
-        required_swap_bytes: "{{ (total_memory_mb.stdout | int) * 1024 * 1024 }}"
+        - name: Remove stale noswap service
+          file:
+            path: /etc/systemd/system/noswap.service
+            state: absent
+          register: mongodb_stale_noswap_removed
 
-    - name: Check if swap resize is needed
-      set_fact:
-        swap_resize_needed: "{{ swapfile_stat.stat.exists and (swapfile_stat.stat.size | int != required_swap_bytes | int) }}"
+        - name: Reload systemd after stale noswap removal
+          systemd:
+            daemon_reload: yes
+          when: mongodb_stale_noswap_removed.changed
 
-    - name: Display swap resize warning
-      debug:
-        msg: |
-          WARNING: Swap file size ({{ swapfile_stat.stat.size | int / 1024 / 1024 }}MB) does not match required size ({{ required_swap_mb }}MB).
-          Swap resizing requires manual intervention to avoid system instability.
-          To resize swap safely:
-          1. Schedule maintenance window
-          2. Stop MongoDB: systemctl stop mongod
-          3. Disable swap: swapoff /swapfile
-          4. Remove old swap: rm /swapfile
-          5. Re-run this playbook
-          Skipping automatic swap resize for safety.
-      when: swap_resize_needed | bool
+        - name: Inspect existing swap file
+          stat:
+            path: /swapfile
+            follow: false
+          register: mongodb_swapfile_initial
 
-    - name: Skip swap operations if resize is needed
-      set_fact:
-        skip_swap_setup: "{{ swap_resize_needed | bool }}"
+        - name: Read active swap devices
+          command: swapon --show=NAME --noheadings --raw
+          register: mongodb_swap_active_initial
+          changed_when: false
+          check_mode: false
 
-    - name: Create swap file with size equal to RAM
-      command: fallocate -l {{ required_swap_mb }}M /swapfile
-      args:
-        creates: /swapfile
-      when: not (skip_swap_setup | default(false) | bool)
+        - name: Record whether the managed swap file is active
+          set_fact:
+            mongodb_swapfile_is_active: "{{ '/swapfile' in mongodb_swap_active_initial.stdout_lines }}"
 
-    - name: Set swap file permissions
-      file:
-        path: /swapfile
-        mode: '0600'
-        owner: root
-        group: root
+        - name: Reject an unsafe existing swap path
+          assert:
+            that:
+              - mongodb_swapfile_initial.stat.isreg | default(false)
+              - not (mongodb_swapfile_initial.stat.islnk | default(false))
+            fail_msg: >-
+              /swapfile exists but is not a regular file. Refusing to replace or
+              format it automatically.
+          when: mongodb_swapfile_initial.stat.exists
 
-    - name: Format swap file
-      command: mkswap /swapfile
-      when:
-        - not (skip_swap_setup | default(false) | bool)
-        - not swapfile_stat.stat.exists
-      register: mkswap_result
-      changed_when: "mkswap_result is not skipped and 'Setting up swapspace' in mkswap_result.stdout"
+        - name: Read root filesystem type for new swap file
+          command: findmnt -n -o FSTYPE -T /
+          register: mongodb_swap_root_fstype
+          changed_when: false
+          check_mode: false
+          when: not mongodb_swapfile_initial.stat.exists
 
-    - name: Enable swap file
-      command: swapon /swapfile
-      when: swapfile_active.rc != 0
+        - name: Require a supported filesystem for automatic swap creation
+          assert:
+            that:
+              - mongodb_swap_root_fstype.stdout | trim in ['ext2', 'ext3', 'ext4', 'xfs']
+            fail_msg: >-
+              Automatic /swapfile creation is limited to ext2/ext3/ext4/xfs.
+              Detected {{ mongodb_swap_root_fstype.stdout | trim }}; configure a
+              platform-supported swap device manually instead.
+          when: not mongodb_swapfile_initial.stat.exists
 
-    - name: Verify swap file is active
-      command: swapon --show=NAME --noheadings
-      register: active_swapfiles
-      changed_when: false
-      failed_when: "'/swapfile' not in active_swapfiles.stdout_lines"
+        - name: Read free space available for a new swap file
+          command: df -B1 --output=avail /
+          register: mongodb_swap_df
+          changed_when: false
+          check_mode: false
+          when: not mongodb_swapfile_initial.stat.exists
 
-    - name: Add swap to /etc/fstab
-      lineinfile:
-        path: /etc/fstab
-        line: '/swapfile none swap sw 0 0'
-        state: present
-        regexp: '^/swapfile'
+        - name: Require room for swap plus filesystem reserve
+          assert:
+            that:
+              - mongodb_swap_df.stdout_lines | last | trim | int >= (mongodb_swap_required_bytes | int) + (mongodb_swap_reserve_bytes | int)
+            fail_msg: >-
+              Insufficient free space for a {{ mongodb_swap_required_mb }} MiB
+              swap file plus the {{ mongodb_swap_free_space_reserve_mb | default(1024) }}
+              MiB safety reserve. No file was created.
+          when: not mongodb_swapfile_initial.stat.exists
 
-    - name: Set swappiness for MongoDB (minimize swapping but allow it for safety)
-      ansible.builtin.sysctl:
-        name: vm.swappiness
-        value: '1'
-        state: present
-        reload: true
-        sysctl_file: /etc/sysctl.d/99-mongodb.conf
+        - name: Allocate RAM-sized swap file
+          command:
+            argv:
+              - fallocate
+              - -l
+              - "{{ mongodb_swap_required_mb }}M"
+              - /swapfile
+            creates: /swapfile
+          when: not mongodb_swapfile_initial.stat.exists
+
+        - name: Set swap file ownership and permissions
+          file:
+            path: /swapfile
+            mode: '0600'
+            owner: root
+            group: root
+
+        - name: Inspect allocated swap file
+          stat:
+            path: /swapfile
+            follow: false
+          register: mongodb_swapfile_final
+
+        - name: Verify managed swap file safety and allocation size
+          assert:
+            that:
+              - mongodb_swapfile_final.stat.isreg | default(false)
+              - mongodb_swapfile_final.stat.size | int > 0
+              - >-
+                mongodb_swapfile_initial.stat.exists or
+                (mongodb_swapfile_final.stat.size | int == mongodb_swap_required_bytes | int)
+              - mongodb_swapfile_final.stat.mode == '0600'
+            fail_msg: >-
+              /swapfile failed safety validation. Newly allocated files must be
+              exactly RAM-sized; an existing regular file may retain its current
+              nonzero size but must have a valid swap signature before activation.
+
+        - name: Inspect existing swap signature
+          command: blkid -p -s TYPE -o value /swapfile
+          register: mongodb_swap_signature_initial
+          changed_when: false
+          failed_when: false
+          check_mode: false
+
+        - name: Reject an unformatted or non-swap pre-existing file
+          assert:
+            that:
+              - mongodb_swap_signature_initial.rc == 0
+              - mongodb_swap_signature_initial.stdout | trim == 'swap'
+            fail_msg: >-
+              The pre-existing /swapfile does not contain a swap signature.
+              Refusing to overwrite it automatically. Verify its contents,
+              remove it if appropriate, and rerun with --tags mongodb-swap.
+          when: mongodb_swapfile_initial.stat.exists
+
+        - name: Format newly allocated swap file
+          command: mkswap /swapfile
+          register: mongodb_mkswap
+          changed_when: mongodb_mkswap.rc == 0
+          when: not mongodb_swapfile_initial.stat.exists
+
+        - name: Verify swap signature
+          command: blkid -p -s TYPE -o value /swapfile
+          register: mongodb_swap_signature_final
+          changed_when: false
+          check_mode: false
+          failed_when: >-
+            mongodb_swap_signature_final.rc != 0 or
+            mongodb_swap_signature_final.stdout | trim != 'swap'
+
+        - name: Activate swap file
+          command: swapon /swapfile
+          when: not mongodb_swapfile_is_active
+
+        - name: Verify swap file is active
+          command: swapon --show=NAME --noheadings --raw
+          register: mongodb_swap_active_final
+          changed_when: false
+          check_mode: false
+          failed_when: "'/swapfile' not in mongodb_swap_active_final.stdout_lines"
+
+        - name: Persist swap file in fstab
+          lineinfile:
+            path: /etc/fstab
+            line: '/swapfile none swap sw 0 0'
+            state: present
+            regexp: '^\s*/swapfile\s+'
+
+        - name: Set low MongoDB swappiness
+          ansible.builtin.sysctl:
+            name: vm.swappiness
+            value: '1'
+            state: present
+            reload: true
+            sysctl_file: /etc/sysctl.d/99-mongodb.conf
+
+        - name: Verify active MongoDB swappiness
+          command: sysctl -n vm.swappiness
+          register: mongodb_swappiness_final
+          changed_when: false
+          check_mode: false
+          failed_when: mongodb_swappiness_final.stdout | trim != '1'
 
     # Install MongoDB using custom installation (no Galaxy role)
     # WARNING: DO NOT upgrade to MongoDB 7.0 or 8.0 due to severe performance regressions

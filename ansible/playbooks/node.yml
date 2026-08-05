@@ -3,7 +3,7 @@
 
 ---
 # mail mongo and redis don't need this
-- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
+- hosts: "{{ node_target_hosts | default('imap:pop3:smtp:http:bree:sqlite:mx1:mx2') }}"
   name: Node.js
   become: true
   become_user: root
@@ -435,23 +435,15 @@
             fi
           fi
 
-          # Send alert email if needed
+          # Exit nonzero so the centralized systemd OnFailure handler sends one
+          # rate-limited email and one optional Twilio SMS for this unit.
           if [ "$ALERT_NEEDED" -eq 1 ]; then
-            echo "[$(date -Iseconds)] Queueing independent alert email"
-
-            EMAIL_BODY="PM2 Health Check Alert - $(hostname)\n"
-            EMAIL_BODY="${EMAIL_BODY}Timestamp: $(date -Iseconds)\n"
-            EMAIL_BODY="${EMAIL_BODY}\n${ALERT_MESSAGE}\n"
-            EMAIL_BODY="${EMAIL_BODY}Full PM2 Status:\n"
-            EMAIL_BODY="${EMAIL_BODY}$(sudo -u deploy bash -c 'source /home/deploy/.bashrc && /home/deploy/n/bin/pm2 list' 2>/dev/null || echo 'Unable to get PM2 status')\n"
-
-            if ! /usr/local/bin/send-rate-limited-email.sh \
-              "pm2-health-check" \
-              "[ALERT] PM2 Health Check Failed on $(hostname)" \
-              "$EMAIL_BODY"; then
-              echo "[$(date -Iseconds)] ERROR: Failed to queue alert email"
-            fi
-
+            echo "[$(date -Iseconds)] ERROR: PM2 health check failed"
+            printf '%b\n' "$ALERT_MESSAGE"
+            echo "Full PM2 status:"
+            sudo -u deploy bash -c \
+              'source /home/deploy/.bashrc && /home/deploy/n/bin/pm2 list' 2>&1 || \
+              echo 'Unable to get PM2 status'
             exit 1
           else
             echo "[$(date -Iseconds)] ✓ All PM2 processes healthy"

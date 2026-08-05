@@ -4,23 +4,27 @@
 ---
 - name: Import Unbound DNS caching playbook
   import_playbook: unbound.yml
+  vars:
+    target_hosts: "{{ security_target_hosts | default('all') }}"
 
 - name: Import System Optimization playbook
   import_playbook: system-optimization.yml
+  vars:
+    target_hosts: "{{ security_target_hosts | default('all') }}"
 
 - name: Import AMD Ryzen NUMA Optimization playbook
   import_playbook: amd-ryzen-numa.yml
   vars:
-    target_hosts: all
+    target_hosts: "{{ security_target_hosts | default('all') }}"
     service_name: "System"
     disable_thp: false
 
 - name: Import Chrony time synchronization playbook
   import_playbook: chrony-timesync.yml
   vars:
-    target_hosts: all
+    target_hosts: "{{ security_target_hosts | default('all') }}"
 
-- hosts: all
+- hosts: "{{ security_target_hosts | default('all') }}"
   name: Security
   become: true
   become_user: root
@@ -29,6 +33,10 @@
     copy_local_key_2: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa_2.pub') }}"
     alert_email_sender: "{{ lookup('env', 'ALERT_EMAIL_FROM') | default('mailerdaemon@forwardemail.net', true) }}"
     alert_email_recipients: "{{ lookup('env', 'ALERT_EMAIL_RECIPIENTS') | default(lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true), true) }}"
+    twilio_account_sid: "{{ lookup('env', 'TWILIO_ACCOUNT_SID') }}"
+    twilio_auth_token: "{{ lookup('env', 'TWILIO_AUTH_TOKEN') }}"
+    twilio_from_number: "{{ lookup('env', 'TWILIO_FROM_NUMBER') }}"
+    twilio_to_number: "{{ lookup('env', 'TWILIO_TO_NUMBER') }}"
     alert_public_ip: "{{ hostvars[inventory_hostname]['direct_alert_public_ip'] | default(ansible_host | default(ansible_default_ipv4.address), true) }}"
     alert_helo_identity: "{{ hostvars[inventory_hostname]['direct_alert_helo_identity'] | default(ansible_fqdn, true) }}"
   handlers:
@@ -132,33 +140,57 @@
         block: |
           ulimit -S -c 0 > /dev/null 2>&1
 
-    # Disable swap entirely on non-database servers
-    # MongoDB and Redis need swap as a last resort (with vm.swappiness=1)
+    # Disable swap entirely on hosts that do not manage emergency swap.
+    # MongoDB, Redis, and logs hosts retain swap as a last resort with low
+    # swappiness configured by their service playbooks.
     # https://unix.stackexchange.com/a/636526
     - name: Disable swap for current session
       command: swapoff -a
-      when: "'mongo' not in group_names and 'redis' not in group_names"
+      when: group_names | intersect(['mongo', 'redis', 'logs']) | length == 0
     - name: Disable swap permanently, persist reboots
       replace:
         path: /etc/fstab
         regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
         replace: '#\1\2\3swap\4'
         backup: yes
-      when: "'mongo' not in group_names and 'redis' not in group_names"
+      when: group_names | intersect(['mongo', 'redis', 'logs']) | length == 0
     - name: Disable swap on boot via systemd
       template:
         src: "{{ playbook_dir }}/templates/noswap.j2"
         dest: /etc/systemd/system/noswap.service
         owner: root
         mode: "0644"
-      when: "'mongo' not in group_names and 'redis' not in group_names"
+      when: group_names | intersect(['mongo', 'redis', 'logs']) | length == 0
     - name: Enable noswap service via systemd
       systemd:
         daemon_reload: yes
         name: noswap
         enabled: true
         state: started
-      when: "'mongo' not in group_names and 'redis' not in group_names"
+      when: group_names | intersect(['mongo', 'redis', 'logs']) | length == 0
+
+    - name: Inspect stale noswap service on swap-enabled hosts
+      stat:
+        path: /etc/systemd/system/noswap.service
+        follow: false
+      register: stale_noswap_service
+      when: group_names | intersect(['mongo', 'redis', 'logs']) | length > 0
+
+    - name: Disable stale noswap service on swap-enabled hosts
+      systemd:
+        daemon_reload: yes
+        name: noswap
+        enabled: false
+        state: stopped
+      when:
+        - group_names | intersect(['mongo', 'redis', 'logs']) | length > 0
+        - stale_noswap_service.stat.exists | default(false)
+
+    - name: Remove stale noswap service on swap-enabled hosts
+      file:
+        path: /etc/systemd/system/noswap.service
+        state: absent
+      when: group_names | intersect(['mongo', 'redis', 'logs']) | length > 0
 
     # Disable Modprobe Loading of USB Storage Driver
     # https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-kernel-module-usb-storage-disabled/
@@ -366,10 +398,13 @@
         - /etc/msmtprc
         - /var/log/msmtp.log
 
-    - name: Set Postfix as the default sendmail implementation
-      alternatives:
-        name: mta
-        path: /usr/sbin/sendmail.postfix
+    - name: Verify Postfix owns the local sendmail submission binary
+      command: dpkg-query -S /usr/sbin/sendmail
+      register: postfix_sendmail_owner
+      changed_when: false
+      failed_when: >-
+        postfix_sendmail_owner.rc != 0 or
+        'postfix: /usr/sbin/sendmail' not in postfix_sendmail_owner.stdout_lines
 
     - name: Enable send-only Postfix
       systemd:
@@ -487,15 +522,87 @@
       changed_when: false
       failed_when: direct_alert_helo_spf_check.rc != 0
 
-    # Configure systemd failure notifications
-    # Deploy rate-limited email script
-    - name: Install jq for rate limiting
+    # Configure centralized email and optional Twilio failure notifications.
+    - name: Install infrastructure alert sender dependencies
       apt:
-        name: jq
+        name:
+          - coreutils
+          - curl
+          - jq
+          - util-linux
         state: present
         update_cache: yes
 
-    - name: Deploy rate-limited email script
+    - name: Count configured Twilio environment variables
+      set_fact:
+        twilio_values_present: >-
+          {{
+            [
+              twilio_account_sid,
+              twilio_auth_token,
+              twilio_from_number,
+              twilio_to_number
+            ]
+            | reject('equalto', '')
+            | list
+            | length
+          }}
+      no_log: true
+
+    - name: Validate Twilio SMS configuration
+      assert:
+        that:
+          - (twilio_values_present | int) in [0, 4]
+          - >-
+            (twilio_values_present | int == 0) or
+            (twilio_account_sid is match('^AC[0-9A-Fa-f]{32}$'))
+          - >-
+            (twilio_values_present | int == 0) or
+            (twilio_auth_token is match('^[A-Za-z0-9]{32,64}$'))
+          - >-
+            (twilio_values_present | int == 0) or
+            (twilio_from_number is match('^\\+[1-9][0-9]{7,14}$'))
+          - >-
+            (twilio_values_present | int == 0) or
+            (twilio_to_number is match('^\\+[1-9][0-9]{7,14}$'))
+        fail_msg: >-
+          Set all four valid Twilio variables or leave all four unset:
+          TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER,
+          and TWILIO_TO_NUMBER.
+      no_log: true
+
+    - name: Report email-only alert mode
+      debug:
+        msg: >-
+          Twilio variables are unset; infrastructure alerts will continue by
+          email only to {{ alert_email_recipients }}.
+      when: twilio_values_present | int == 0
+
+    - name: Create root-only infrastructure alert configuration directory
+      file:
+        path: /etc/forwardemail-alerts
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: Deploy root-only Twilio SMS environment
+      template:
+        src: "{{ playbook_dir }}/templates/forwardemail-alerts-twilio.env.j2"
+        dest: /etc/forwardemail-alerts/twilio.env
+        owner: root
+        group: root
+        mode: '0600'
+      when: twilio_values_present | int == 4
+      no_log: true
+
+    - name: Remove Twilio environment when SMS alerts are disabled
+      file:
+        path: /etc/forwardemail-alerts/twilio.env
+        state: absent
+      when: twilio_values_present | int == 0
+
+    - name: Deploy dual-channel rate-limited alert sender
       template:
         src: "{{ playbook_dir }}/templates/send-rate-limited-email.sh.j2"
         dest: /usr/local/bin/send-rate-limited-email.sh
@@ -503,13 +610,13 @@
         group: root
         mode: '0755'
 
-    - name: Create rate limit directory
+    - name: Create root-only alert cooldown state directory
       file:
-        path: /var/lib/email-rate-limits
+        path: /var/lib/forwardemail-alerts
         state: directory
         owner: root
         group: root
-        mode: '0755'
+        mode: '0700'
 
     - name: Deploy failure notification script
       template:
@@ -527,7 +634,40 @@
         group: root
         mode: '0644'
 
-    - name: Reload systemd daemon for failure notification service
+    - name: Create fleet-wide systemd failure-notification drop-in directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - /etc/systemd/system/service.d
+        - /etc/systemd/system/failure-notification@.service.d
+
+    - name: Hook every systemd service failure into centralized notifications
+      copy:
+        dest: /etc/systemd/system/service.d/10-forwardemail-failure-notification.conf
+        content: |
+          # WARNING: This file is managed by Ansible
+          [Unit]
+          OnFailure=failure-notification@%n.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Prevent recursive failure notifications from the notifier itself
+      copy:
+        dest: /etc/systemd/system/failure-notification@.service.d/99-no-recursion.conf
+        content: |
+          # WARNING: This file is managed by Ansible
+          [Unit]
+          OnFailure=
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload systemd daemon for fleet-wide failure notifications
       systemd:
         daemon_reload: yes
 
@@ -1134,7 +1274,7 @@
       become_user: deploy
       shell: git config --global --add safe.directory '*'
 
-- hosts: all
+- hosts: "{{ security_target_hosts | default('all') }}"
   name: Mongo Shell
   become: true
   become_user: root
@@ -1214,7 +1354,7 @@
         mode: '0644'
       ignore_errors: true
 
-- hosts: all
+- hosts: "{{ security_target_hosts | default('all') }}"
   name: Sysctl
   become: true
   become_user: root
