@@ -472,6 +472,28 @@
         executable: /bin/bash
       changed_when: false
 
+    # A previously rendered main.cf queues no handler, but an older master
+    # process can still own sockets from its pre-hardening configuration.
+    - name: Inspect Postfix runtime for stale TCP listeners
+      shell: |
+        set -o pipefail
+        if ss -H -ltnp | \
+          grep -Eq 'users:\(\("(master|smtpd|postscreen|smtp-sink)"'; then
+          exit 0
+        fi
+        exit 1
+      args:
+        executable: /bin/bash
+      register: postfix_runtime_listener_probe
+      changed_when: false
+      failed_when: postfix_runtime_listener_probe.rc not in [0, 1]
+
+    - name: Restart Postfix to reconcile stale TCP listeners
+      service:
+        name: postfix
+        state: restarted
+      when: postfix_runtime_listener_probe.rc == 0
+
     - name: Verify Postfix exposes no TCP listening sockets
       shell: |
         set -o pipefail
