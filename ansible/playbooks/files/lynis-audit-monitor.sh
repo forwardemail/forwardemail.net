@@ -47,8 +47,17 @@ should_send_alert() {
         fi
     fi
 
-    touch "$lockfile" 2>/dev/null || true
     return 0
+}
+
+# Commit the daily cooldown only after the report email has been accepted.
+record_alert_sent() {
+    local lockfile="$LOCK_DIR/lynis-audit-monitor.lock"
+
+    if ! touch "$lockfile"; then
+        log_message "ERROR: Failed to record Lynis report cooldown"
+        return 1
+    fi
 }
 
 # Send email alert
@@ -58,10 +67,14 @@ send_alert() {
 
     log_message "Sending alert: $subject"
 
-    if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        /usr/local/bin/send-rate-limited-email.sh "lynis-audit-monitor" "$subject" "$body"
-    else
+    if [ ! -x /usr/local/bin/send-rate-limited-email.sh ]; then
         log_message "ERROR: send-rate-limited-email.sh not found"
+        return 1
+    fi
+
+    if ! /usr/local/bin/send-rate-limited-email.sh "lynis-audit-monitor" "$subject" "$body"; then
+        log_message "ERROR: Failed to queue Lynis audit report"
+        return 1
     fi
 }
 
@@ -279,7 +292,7 @@ main() {
     # Check rate limiting
     if ! should_send_alert; then
         log_message "Skipping audit - rate limit active"
-        exit 0
+        return 0
     fi
 
     # Install Lynis if needed
@@ -296,15 +309,18 @@ main() {
         exit 1
     fi
 
-    # Send audit report
-    send_audit_report "$report_data"
+    # Send the audit report, then commit the local daily cooldown.
+    if ! send_audit_report "$report_data" || ! record_alert_sent; then
+        log_message "ERROR: Lynis audit completed but its report was not committed"
+        return 1
+    fi
 
     log_message "=== Lynis Audit Monitor Completed ==="
     log_message "Report: $report_data"
 }
 
-# Run main function
-main
+# Run main function and preserve delivery/state failures for systemd OnFailure.
+main || exit 1
 
 # Explicit exit
 exit 0

@@ -74,9 +74,8 @@ should_send_alert() {
             ;;
     esac
 
-    # No rate limiting if duration is 0
-    if [ $lock_duration -eq 0 ]; then
-        touch "$lockfile" 2>/dev/null || true
+    # No local rate limiting if duration is 0.
+    if [ "$lock_duration" -eq 0 ]; then
         return 0
     fi
 
@@ -91,9 +90,18 @@ should_send_alert() {
         fi
     fi
 
-    # Create or update lockfile
-    touch "$lockfile" 2>/dev/null || true
     return 0  # Send alert
+}
+
+# Commit the local cooldown only after the shared sender has accepted the email.
+record_alert_sent() {
+    local alert_type="$1"
+    local lockfile="$LOCK_DIR/ssh-monitor-${alert_type}.lock"
+
+    if ! touch "$lockfile"; then
+        log_message "ERROR: Failed to record alert cooldown: ${alert_type}"
+        return 1
+    fi
 }
 
 # Check if IP is in authorized list
@@ -123,17 +131,21 @@ is_outside_business_hours() {
 
 # Send email alert using existing notification infrastructure
 send_alert() {
-    local subject="$1"
-    local body="$2"
-    local priority="${3:-normal}"
+    local alert_key="$1"
+    local subject="$2"
+    local body="$3"
+    local priority="${4:-normal}"
 
-    log_message "Sending alert: $subject"
+    log_message "Sending ${priority} alert: $subject"
 
-    # Use the existing send-rate-limited-email.sh script
-    if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        /usr/local/bin/send-rate-limited-email.sh "ssh-security-monitor" "$subject" "$body"
-    else
+    if [ ! -x /usr/local/bin/send-rate-limited-email.sh ]; then
         log_message "ERROR: send-rate-limited-email.sh not found"
+        return 1
+    fi
+
+    if ! /usr/local/bin/send-rate-limited-email.sh "$alert_key" "$subject" "$body"; then
+        log_message "ERROR: Failed to queue alert: $subject"
+        return 1
     fi
 }
 
@@ -198,7 +210,9 @@ analyze_successful_logins() {
 
             # Check for root login
             if [ "$user" = "root" ] && should_send_alert "root-access-$ip"; then
-                send_root_access_alert "$user" "$ip" "$method" "$timestamp"
+                if ! send_root_access_alert "$user" "$ip" "$method" "$timestamp" || ! record_alert_sent "root-access-$ip"; then
+                    ALERT_FAILURE=1
+                fi
             fi
 
             # Check for unknown IP
@@ -232,7 +246,9 @@ analyze_failed_logins() {
                 log_activity "FAILED LOGINS: ip=$ip count=$count"
 
                 if [ "$count" -ge "$FAILED_THRESHOLD" ] && should_send_alert "failed-$ip"; then
-                    send_failed_login_alert "$ip" "$count" "$failed_logins"
+                    if ! send_failed_login_alert "$ip" "$count" "$failed_logins" || ! record_alert_sent "failed-$ip"; then
+                        ALERT_FAILURE=1
+                    fi
                 fi
             fi
         done <<< "$failed_ips"
@@ -372,7 +388,7 @@ send_root_access_alert() {
 <p><em>This is an automated security alert. Root access is always reported immediately without rate limiting.</em></p>
 </body></html>"
 
-    send_alert "$subject" "$body" "critical"
+    send_alert "ssh-root-${ip}-${timestamp}" "$subject" "$body" "critical"
 }
 
 # Send failed login alert
@@ -407,7 +423,7 @@ send_failed_login_alert() {
 <p><em>This alert is rate-limited to once every 30 minutes per IP address.</em></p>
 </body></html>"
 
-    send_alert "$subject" "$body" "warning"
+    send_alert "ssh-failed-${ip}" "$subject" "$body" "warning"
 }
 
 # Send activity summary (periodic report)
@@ -466,14 +482,22 @@ Note: This summary is sent hourly when SSH activity is detected."
         fi
     fi
 
-    # Save hash for next run
-    echo "$content_hash" > "$LAST_ACTIVITY_HASH_FILE"
+    if ! send_alert "ssh-activity-summary" "$subject" "$body" "info"; then
+        return 1
+    fi
 
-    send_alert "$subject" "$body" "info"
+    # Commit duplicate and cooldown state only after the email was accepted.
+    if ! printf '%s\n' "$content_hash" > "$LAST_ACTIVITY_HASH_FILE"; then
+        log_message "ERROR: Failed to record SSH activity summary hash"
+        return 1
+    fi
+    record_alert_sent "activity-summary"
 }
 
 # Main execution
 main() {
+    ALERT_FAILURE=0
+
     log_message "=== SSH Security Monitor Started ==="
 
     # Get new log entries since last check
@@ -481,8 +505,11 @@ main() {
 
     if [ -z "$new_entries" ]; then
         log_message "No new SSH activity detected"
-        update_last_check
-        exit 0
+        if ! update_last_check; then
+            log_message "ERROR: Failed to update SSH monitor cursor"
+            return 1
+        fi
+        return 0
     fi
 
     # Analyze all SSH activity
@@ -496,18 +523,28 @@ main() {
     local failed_count=$(echo "$new_entries" | grep -E "sshd.*(Failed|Invalid)" 2>/dev/null | wc -l)
     local logged_in_users=$(who)
 
-    # Send periodic activity summary
-    send_activity_summary "$successful_count" "$failed_count" "$logged_in_users"
+    # Send periodic activity summary.
+    if ! send_activity_summary "$successful_count" "$failed_count" "$logged_in_users"; then
+        ALERT_FAILURE=1
+    fi
 
-    # Update last check timestamp
-    update_last_check
+    if [ "$ALERT_FAILURE" -ne 0 ]; then
+        log_message "ERROR: SSH monitoring completed with an unqueued alert; preserving cursor for retry"
+        return 1
+    fi
+
+    # Advance the cursor only after every required alert was accepted.
+    if ! update_last_check; then
+        log_message "ERROR: Failed to update SSH monitor cursor"
+        return 1
+    fi
 
     log_message "=== SSH Security Monitor Completed ==="
     log_message "Successful logins: $successful_count, Failed attempts: $failed_count"
 }
 
-# Run main function
-main
+# Run main function and preserve delivery/state failures for systemd OnFailure.
+main || exit 1
 
 # Explicit exit
 exit 0

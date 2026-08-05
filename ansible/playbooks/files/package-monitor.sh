@@ -48,8 +48,17 @@ should_send_alert() {
         fi
     fi
 
-    touch "$lockfile" 2>/dev/null || true
     return 0
+}
+
+# Commit the local cooldown only after the shared sender has accepted the email.
+record_alert_sent() {
+    local lockfile="$LOCK_DIR/package-monitor.lock"
+
+    if ! touch "$lockfile"; then
+        log_message "ERROR: Failed to record package alert cooldown"
+        return 1
+    fi
 }
 
 # Send email alert
@@ -59,10 +68,14 @@ send_alert() {
 
     log_message "Sending alert: $subject"
 
-    if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        /usr/local/bin/send-rate-limited-email.sh "package-monitor" "$subject" "$body"
-    else
+    if [ ! -x /usr/local/bin/send-rate-limited-email.sh ]; then
         log_message "ERROR: send-rate-limited-email.sh not found"
+        return 1
+    fi
+
+    if ! /usr/local/bin/send-rate-limited-email.sh "package-monitor" "$subject" "$body"; then
+        log_message "ERROR: Failed to queue package change alert"
+        return 1
     fi
 }
 
@@ -259,20 +272,31 @@ main() {
     else
         log_message "Package changes detected: $installed_count installed, $upgraded_count upgraded, $removed_count removed"
 
-        # Send alert if rate limit allows
-        if should_send_alert; then
-            send_package_alert "$installed" "$removed" "$upgraded"
+        # Preserve the previous baseline during a local cooldown so this change
+        # remains pending and can be emailed by a later timer run.
+        if ! should_send_alert; then
+            log_message "Package changes remain pending until the local alert cooldown expires"
+            return 0
         fi
 
-        # Update state file
-        echo "$new_state" > "$PACKAGE_STATE_FILE"
+        # Commit both the local cooldown and package baseline only after the
+        # shared sender has accepted (or intentionally suppressed) the email.
+        if ! send_package_alert "$installed" "$removed" "$upgraded" || ! record_alert_sent; then
+            log_message "ERROR: Package changes remain pending because their alert was not committed"
+            return 1
+        fi
+
+        if ! printf '%s\n' "$new_state" > "$PACKAGE_STATE_FILE"; then
+            log_message "ERROR: Failed to update stored package versions"
+            return 1
+        fi
     fi
 
     log_message "=== Package Monitor Completed ==="
 }
 
-# Run main function
-main
+# Run main function and preserve delivery/state failures for systemd OnFailure.
+main || exit 1
 
 # Explicit exit
 exit 0

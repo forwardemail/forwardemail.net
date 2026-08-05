@@ -49,9 +49,18 @@ should_send_alert() {
         fi
     fi
 
-    # Create or update lockfile
-    touch "$lockfile" 2>/dev/null || true
     return 0  # Send alert
+}
+
+# Commit the local cooldown only after the shared sender has accepted the email.
+record_alert_sent() {
+    local device_id="$1"
+    local lockfile="$LOCK_DIR/usb-monitor-${device_id}.lock"
+
+    if ! touch "$lockfile"; then
+        log_message "ERROR: Failed to record USB alert cooldown: ${device_id}"
+        return 1
+    fi
 }
 
 # Check if device is authorized
@@ -239,6 +248,8 @@ send_unknown_device_alert() {
 
 # Main monitoring logic
 main() {
+    local alert_failure=0
+
     log_message "Starting USB device monitoring check"
 
     # Get all USB devices
@@ -246,11 +257,11 @@ main() {
 
     if [ -z "$usb_devices" ]; then
         log_message "No USB devices found or lsusb not available"
-        exit 0
+        return 0
     fi
 
-    # Parse each device
-    echo "$usb_devices" | while IFS= read -r device; do
+    # Parse each device in the current shell so delivery failures are retained.
+    while IFS= read -r device; do
         # Extract vendor and product IDs
         # Format: Bus 001 Device 002: ID 1234:5678 Device Name
         if [[ $device =~ ID[[:space:]]([0-9a-f]{4}):([0-9a-f]{4}) ]]; then
@@ -270,18 +281,25 @@ main() {
                 # Check rate limiting
                 device_id="${vendor_id}-${product_id}"
                 if should_send_alert "$device_id"; then
-                    send_unknown_device_alert "$vendor_id" "$product_id" "$device"
+                    if ! send_unknown_device_alert "$vendor_id" "$product_id" "$device" || ! record_alert_sent "$device_id"; then
+                        alert_failure=1
+                    fi
                 fi
             else
                 log_message "Authorized device: ${vendor_id}:${product_id}"
             fi
         fi
-    done
+    done <<< "$usb_devices"
+
+    if [ "$alert_failure" -ne 0 ]; then
+        log_message "ERROR: USB monitoring completed with an unqueued alert"
+        return 1
+    fi
 
     log_message "USB device monitoring check completed"
 }
 
-# Execute main function
-main
+# Execute main function and preserve delivery/state failures for systemd OnFailure.
+main || exit 1
 
 exit 0

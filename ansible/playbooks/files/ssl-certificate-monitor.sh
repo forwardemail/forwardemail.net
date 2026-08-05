@@ -64,8 +64,17 @@ should_send_alert() {
         fi
     fi
 
-    touch "$lockfile" 2>/dev/null || true
     return 0
+}
+
+# Commit the daily cooldown only after the shared sender has accepted the email.
+record_alert_sent() {
+    local lockfile="$LOCK_DIR/ssl-certificate-monitor.lock"
+
+    if ! touch "$lockfile"; then
+        log_message "ERROR: Failed to record SSL alert cooldown"
+        return 1
+    fi
 }
 
 # Send email alert
@@ -75,10 +84,14 @@ send_alert() {
 
     log_message "Sending alert: $subject"
 
-    if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        /usr/local/bin/send-rate-limited-email.sh "ssl-certificate-monitor" "$subject" "$body"
-    else
+    if [ ! -x /usr/local/bin/send-rate-limited-email.sh ]; then
         log_message "ERROR: send-rate-limited-email.sh not found"
+        return 1
+    fi
+
+    if ! /usr/local/bin/send-rate-limited-email.sh "ssl-certificate-monitor" "$subject" "$body"; then
+        log_message "ERROR: Failed to queue SSL certificate alert"
+        return 1
     fi
 }
 
@@ -319,10 +332,13 @@ main() {
 
     log_message "Certificate status: $status (${days_left} days remaining)"
 
-    # Send alert if needed
+    # Send alert if needed, then commit the local daily cooldown.
     if [ "$status" != "OK" ]; then
         if should_send_alert; then
-            send_certificate_alert "$cert_info"
+            if ! send_certificate_alert "$cert_info" || ! record_alert_sent; then
+                log_message "ERROR: SSL finding detected but its alert was not committed"
+                return 1
+            fi
         fi
     else
         log_message "Certificate is valid, no alert needed"
@@ -331,8 +347,8 @@ main() {
     log_message "=== SSL Certificate Monitor Completed ==="
 }
 
-# Run main function
-main
+# Run main function and preserve delivery/state failures for systemd OnFailure.
+main || exit 1
 
 # Explicit exit
 exit 0

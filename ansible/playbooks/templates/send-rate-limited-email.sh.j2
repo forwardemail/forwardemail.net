@@ -1,11 +1,10 @@
 #!/bin/bash
-# Rate-limited infrastructure alert sender.
+# Rate-limited infrastructure alert email sender.
 # Usage: send-rate-limited-email.sh <alert-key> <subject> <body>
 #
-# Email is submitted to the host-local, send-only Postfix queue.  Optional SMS
-# is submitted directly to Twilio.  Each channel has an independent successful
-# delivery timestamp under one per-key lock, so one failing channel can retry
-# without duplicating the other.
+# Email is submitted to the host-local, send-only Postfix queue.  SMS is
+# intentionally not handled here: only the systemd OnFailure wrapper may send
+# SMS notifications.
 
 set -uo pipefail
 
@@ -13,7 +12,6 @@ readonly EX_USAGE=64
 readonly EX_TEMPFAIL=75
 readonly COOLDOWN_SECONDS=600
 readonly STATE_DIR=/var/lib/forwardemail-alerts
-readonly TWILIO_ENV_FILE=/etc/forwardemail-alerts/twilio.env
 
 log_alert() {
   logger -t forwardemail-alert -- "$*" 2>/dev/null || true
@@ -65,197 +63,78 @@ fi
 
 now=$(date +%s)
 email_success_at=0
-sms_success_at=0
 if [[ -s "$STATE_FILE" ]]; then
+  # Legacy state files may also contain sms_success_at.  Ignore that obsolete
+  # member so upgrades do not reset the successful-email cooldown.
   email_success_at=$(jq -er '.email_success_at // 0 | numbers | floor' "$STATE_FILE" 2>/dev/null || printf '0')
-  sms_success_at=$(jq -er '.sms_success_at // 0 | numbers | floor' "$STATE_FILE" 2>/dev/null || printf '0')
 fi
 
 if ! [[ "$email_success_at" =~ ^[0-9]+$ ]] || (( email_success_at > now )); then
   email_success_at=0
 fi
-if ! [[ "$sms_success_at" =~ ^[0-9]+$ ]] || (( sms_success_at > now )); then
-  sms_success_at=0
+
+if (( email_success_at != 0 && now - email_success_at < COOLDOWN_SECONDS )); then
+  flock -u 9
+  log_alert "key=$RATE_LIMIT_KEY email_suppressed_by_10m_cooldown"
+  exit 0
 fi
 
-email_due=false
-if (( email_success_at == 0 || now - email_success_at >= COOLDOWN_SECONDS )); then
-  email_due=true
-fi
-
-TWILIO_ACCOUNT_SID=''
-TWILIO_AUTH_TOKEN=''
-TWILIO_FROM_NUMBER=''
-TWILIO_TO_NUMBER=''
-twilio_enabled=false
-twilio_config_error=false
-if [[ -r "$TWILIO_ENV_FILE" ]]; then
-  # The file is root-owned 0600 and every value is constrained by Ansible and
-  # revalidated below before use.
-  # shellcheck disable=SC1090
-  source "$TWILIO_ENV_FILE"
-
-  populated=0
-  [[ -n "$TWILIO_ACCOUNT_SID" ]] && populated=$((populated + 1))
-  [[ -n "$TWILIO_AUTH_TOKEN" ]] && populated=$((populated + 1))
-  [[ -n "$TWILIO_FROM_NUMBER" ]] && populated=$((populated + 1))
-  [[ -n "$TWILIO_TO_NUMBER" ]] && populated=$((populated + 1))
-
-  if (( populated == 4 )) &&
-    [[ "$TWILIO_ACCOUNT_SID" =~ ^AC[[:xdigit:]]{32}$ ]] &&
-    [[ "$TWILIO_AUTH_TOKEN" =~ ^[A-Za-z0-9]{32,64}$ ]] &&
-    [[ "$TWILIO_FROM_NUMBER" =~ ^\+[1-9][0-9]{7,14}$ ]] &&
-    [[ "$TWILIO_TO_NUMBER" =~ ^\+[1-9][0-9]{7,14}$ ]]; then
-    twilio_enabled=true
-  elif (( populated != 0 )); then
-    twilio_config_error=true
-    log_alert "key=$RATE_LIMIT_KEY invalid_twilio_configuration"
+declare -a ADDRESSES=()
+IFS=',' read -ra RAW_ADDRESSES <<< "$RECIPIENTS"
+address_count=0
+recipients_valid=true
+for email in "${RAW_ADDRESSES[@]}"; do
+  email="$(printf '%s' "$email" | xargs)"
+  if ! [[ "$email" =~ ^[^[:space:]@,]+@[^[:space:]@,]+$ ]]; then
+    recipients_valid=false
+    break
   fi
+  ADDRESSES+=("$email")
+  address_count=$((address_count + 1))
+done
+
+if [[ "$recipients_valid" != true || "$address_count" -eq 0 ]]; then
+  flock -u 9
+  log_alert "key=$RATE_LIMIT_KEY invalid_email_recipients"
+  exit "$EX_TEMPFAIL"
 fi
 
-sms_due=false
-if [[ "$twilio_enabled" == true ]] &&
-  (( sms_success_at == 0 || now - sms_success_at >= COOLDOWN_SECONDS )); then
-  sms_due=true
+content_type='text/plain'
+if printf '%s' "$BODY" | grep -Eiq '<(html|body|div|p)([[:space:]>])'; then
+  content_type='text/html'
 fi
 
-email_attempted=false
-email_succeeded=false
-sms_attempted=false
-sms_succeeded=false
-state_changed=false
-status=0
-
-if [[ "$email_due" == true ]]; then
-  email_attempted=true
-  declare -a ADDRESSES=()
-  IFS=',' read -ra RAW_ADDRESSES <<< "$RECIPIENTS"
-  address_count=0
-  recipients_valid=true
-  for email in "${RAW_ADDRESSES[@]}"; do
-    email="$(printf '%s' "$email" | xargs)"
-    if ! [[ "$email" =~ ^[^[:space:]@,]+@[^[:space:]@,]+$ ]]; then
-      recipients_valid=false
-      break
-    fi
-    ADDRESSES+=("$email")
-    address_count=$((address_count + 1))
-  done
-
-  if [[ "$recipients_valid" == true && "$address_count" -gt 0 ]]; then
-    content_type='text/plain'
-    if printf '%s' "$BODY" | grep -Eiq '<(html|body|div|p)([[:space:]>])'; then
-      content_type='text/html'
-    fi
-
-    to_header=$(IFS=,; printf '%s' "${ADDRESSES[*]}")
-    message_id="<$(date +%s%N).$$.${RANDOM}@${HOST_ID}>"
-    if {
-      printf 'From: Forward Email Infrastructure Alerts <%s>\n' "$FROM_ADDRESS"
-      printf 'To: %s\n' "$to_header"
-      printf 'Subject: %s\n' "$SUBJECT"
-      printf 'Date: %s\n' "$(LC_ALL=C date -R)"
-      printf 'Message-ID: %s\n' "$message_id"
-      printf 'MIME-Version: 1.0\n'
-      printf 'Content-Type: %s; charset=UTF-8\n' "$content_type"
-      printf 'Content-Transfer-Encoding: 8bit\n'
-      printf 'Auto-Submitted: auto-generated\n'
-      printf 'X-Auto-Response-Suppress: All\n'
-      printf '\n%s\n' "$BODY"
-    } | /usr/bin/timeout --signal=TERM 30 /usr/sbin/sendmail \
-      -oi -f "$FROM_ADDRESS" -- "${ADDRESSES[@]}"; then
-      email_succeeded=true
-      email_success_at=$now
-      state_changed=true
-    else
-      status=$EX_TEMPFAIL
-      log_alert "key=$RATE_LIMIT_KEY email_queue_failed"
-    fi
-  else
-    status=$EX_TEMPFAIL
-    log_alert "key=$RATE_LIMIT_KEY invalid_email_recipients"
-  fi
+to_header=$(IFS=,; printf '%s' "${ADDRESSES[*]}")
+message_id="<$(date +%s%N).$$.${RANDOM}@${HOST_ID}>"
+if ! {
+  printf 'From: Forward Email Infrastructure Alerts <%s>\n' "$FROM_ADDRESS"
+  printf 'To: %s\n' "$to_header"
+  printf 'Subject: %s\n' "$SUBJECT"
+  printf 'Date: %s\n' "$(LC_ALL=C date -R)"
+  printf 'Message-ID: %s\n' "$message_id"
+  printf 'MIME-Version: 1.0\n'
+  printf 'Content-Type: %s; charset=UTF-8\n' "$content_type"
+  printf 'Content-Transfer-Encoding: 8bit\n'
+  printf 'Auto-Submitted: auto-generated\n'
+  printf 'X-Auto-Response-Suppress: All\n'
+  printf '\n%s\n' "$BODY"
+} | /usr/bin/timeout --signal=TERM 30 /usr/sbin/sendmail \
+  -oi -f "$FROM_ADDRESS" -- "${ADDRESSES[@]}"; then
+  flock -u 9
+  log_alert "key=$RATE_LIMIT_KEY email_queue_failed"
+  exit "$EX_TEMPFAIL"
 fi
 
-if [[ "$sms_due" == true ]]; then
-  sms_attempted=true
-  sms_subject="$(printf '%s' "$SUBJECT" | tr '\r\n\t' '   ' | tr -s ' ')"
-  sms_body="[ALERT] ${RATE_LIMIT_KEY} on ${HOST_NAME} at $(date -u '+%Y-%m-%dT%H:%M:%SZ'): ${sms_subject}"
-  sms_body="$(printf '%s' "$sms_body" | cut -c1-600)"
-  form_body=$(jq -rn \
-    --arg to "$TWILIO_TO_NUMBER" \
-    --arg from "$TWILIO_FROM_NUMBER" \
-    --arg body "$sms_body" \
-    '"To=" + ($to | @uri) + "&From=" + ($from | @uri) + "&Body=" + ($body | @uri)')
-  request_file=$(mktemp /run/forwardemail-twilio-request.XXXXXX)
-  response_file=$(mktemp /run/forwardemail-twilio-response.XXXXXX)
-  chmod 0600 "$request_file" "$response_file"
-  printf '%s' "$form_body" > "$request_file"
-
-  twilio_auth="${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}"
-  twilio_url="https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json"
-  unset TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN
-
-  twilio_curl_config() {
-    printf 'silent\n'
-    printf 'show-error\n'
-    printf 'request = "POST"\n'
-    printf 'url = "%s"\n' "$twilio_url"
-    printf 'user = "%s"\n' "$twilio_auth"
-    printf 'header = "Content-Type: application/x-www-form-urlencoded"\n'
-    printf 'connect-timeout = 10\n'
-    printf 'max-time = 20\n'
-  }
-
-  http_code='000'
-  if http_code=$(twilio_curl_config | \
-    curl --config - \
-      --data-binary @"$request_file" \
-      --output "$response_file" \
-      --write-out '%{http_code}'); then
-    if [[ "$http_code" == '201' ]] &&
-      jq -e '.sid | type == "string" and length > 0' "$response_file" >/dev/null 2>&1; then
-      sms_succeeded=true
-      sms_success_at=$now
-      state_changed=true
-    else
-      status=$EX_TEMPFAIL
-      api_code=$(jq -r '.code // empty' "$response_file" 2>/dev/null || true)
-      if ! [[ "$api_code" =~ ^[0-9]+$ ]]; then
-        api_code='unknown'
-      fi
-      log_alert "key=$RATE_LIMIT_KEY sms_rejected http=$http_code api_code=$api_code"
-    fi
-  else
-    status=$EX_TEMPFAIL
-    log_alert "key=$RATE_LIMIT_KEY sms_transport_failed http=$http_code"
-  fi
-  twilio_auth=''
-  rm -f "$request_file" "$response_file"
-fi
-
-if [[ "$twilio_config_error" == true ]]; then
-  status=$EX_TEMPFAIL
-fi
-
-if [[ "$state_changed" == true ]]; then
-  state_tmp=$(mktemp "${STATE_FILE}.XXXXXX")
-  printf '{"email_success_at":%d,"sms_success_at":%d}\n' \
-    "$email_success_at" "$sms_success_at" > "$state_tmp"
-  chmod 0600 "$state_tmp"
-  if ! mv -f "$state_tmp" "$STATE_FILE"; then
-    rm -f "$state_tmp"
-    status=$EX_TEMPFAIL
-    log_alert "key=$RATE_LIMIT_KEY state_commit_failed"
-  fi
+state_tmp=$(mktemp "${STATE_FILE}.XXXXXX")
+printf '{"email_success_at":%d}\n' "$now" > "$state_tmp"
+chmod 0600 "$state_tmp"
+if ! mv -f "$state_tmp" "$STATE_FILE"; then
+  rm -f "$state_tmp"
+  flock -u 9
+  log_alert "key=$RATE_LIMIT_KEY state_commit_failed"
+  exit "$EX_TEMPFAIL"
 fi
 
 flock -u 9
-
-if [[ "$email_attempted" == true || "$sms_attempted" == true ]]; then
-  log_alert "key=$RATE_LIMIT_KEY email_attempted=$email_attempted email_succeeded=$email_succeeded sms_attempted=$sms_attempted sms_succeeded=$sms_succeeded"
-else
-  log_alert "key=$RATE_LIMIT_KEY suppressed_by_10m_cooldown"
-fi
-
-exit "$status"
+log_alert "key=$RATE_LIMIT_KEY email_attempted=true email_succeeded=true"
+exit 0

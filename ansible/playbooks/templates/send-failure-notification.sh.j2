@@ -1,8 +1,16 @@
 #!/bin/bash
-# Send an email and optional Twilio SMS when a systemd unit fails.
+# Send email and optional Twilio SMS when a systemd unit enters OnFailure.
 # Usage: send-failure-notification.sh <unit-name>
 
 set -uo pipefail
+
+readonly SMS_COOLDOWN_SECONDS=600
+readonly STATE_DIR=/var/lib/forwardemail-alerts
+readonly TWILIO_ENV_FILE=/etc/forwardemail-alerts/twilio.env
+
+log_alert() {
+  logger -t forwardemail-alert -- "$*" 2>/dev/null || true
+}
 
 if [[ "$#" -ne 1 ]] || ! [[ "$1" =~ ^[A-Za-z0-9_.@:-]+$ ]]; then
   printf 'Usage: %s <unit-name>\n' "$0" >&2
@@ -11,13 +19,26 @@ fi
 
 UNIT_NAME="$1"
 ALERT_KEY="${UNIT_NAME%.service}"
+RATE_LIMIT_KEY="$(printf '%s' "$ALERT_KEY" | tr -c 'A-Za-z0-9_.@-' '_')"
 HOST_NAME="$(hostname -f 2>/dev/null || hostname)"
 TIMESTAMP="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 
-STATUS=$(timeout --signal=TERM 10 systemctl status --no-pager --full -n 50 "$UNIT_NAME" 2>&1 || true)
-LOGS=$(timeout --signal=TERM 10 journalctl -u "$UNIT_NAME" -n 50 --no-pager --output=short-iso 2>&1 || true)
+STATUS=$(timeout --signal=TERM 10 systemctl status \
+  --no-pager --full -n 50 "$UNIT_NAME" 2>&1 | head -c 12000 || true)
+SYSTEMD_SUMMARY=$(timeout --signal=TERM 10 systemctl show "$UNIT_NAME" \
+  --no-pager \
+  --property=ActiveState \
+  --property=SubState \
+  --property=Result \
+  --property=ExecMainStatus \
+  --property=NRestarts 2>&1 | head -c 2000 || true)
+LOGS=$(timeout --signal=TERM 10 journalctl -u "$UNIT_NAME" \
+  -n 50 --no-pager --output=short-iso 2>&1 | head -c 20000 || true)
 SUBJECT="[ALERT] Service Failure: $UNIT_NAME on $HOST_NAME"
 BODY="Service $UNIT_NAME failed on $HOST_NAME at $TIMESTAMP.
+
+=== SYSTEMD RESULT ===
+$SYSTEMD_SUMMARY
 
 === SERVICE STATUS ===
 $STATUS
@@ -27,10 +48,163 @@ $LOGS
 
 This is an automated infrastructure alert."
 
+# Email uses the same email-only sender as every routine monitor.  Its lock and
+# successful-delivery cooldown are intentionally independent from SMS.
 /usr/local/bin/send-rate-limited-email.sh "$ALERT_KEY" "$SUBJECT" "$BODY" || {
-  rc=$?
-  logger -t forwardemail-alert -- "key=$ALERT_KEY centralized_delivery_failed rc=$rc" 2>/dev/null || true
+  email_rc=$?
+  log_alert "key=$RATE_LIMIT_KEY systemd_failure_email_failed rc=$email_rc"
 }
+
+# Twilio is exclusive to this systemd OnFailure path.  Missing configuration
+# means email-only mode and is not an error.
+if [[ ! -r "$TWILIO_ENV_FILE" ]]; then
+  log_alert "key=$RATE_LIMIT_KEY systemd_failure_sms_skipped_unconfigured"
+  exit 0
+fi
+
+TWILIO_ACCOUNT_SID=''
+TWILIO_AUTH_TOKEN=''
+TWILIO_FROM_NUMBER=''
+TWILIO_TO_NUMBER=''
+# The file is rendered by Ansible, owned by root, and mode 0600.  Revalidate
+# every value before placing it in an HTTPS request.
+# shellcheck disable=SC1090
+source "$TWILIO_ENV_FILE"
+
+populated=0
+[[ -n "$TWILIO_ACCOUNT_SID" ]] && populated=$((populated + 1))
+[[ -n "$TWILIO_AUTH_TOKEN" ]] && populated=$((populated + 1))
+[[ -n "$TWILIO_FROM_NUMBER" ]] && populated=$((populated + 1))
+[[ -n "$TWILIO_TO_NUMBER" ]] && populated=$((populated + 1))
+
+if (( populated != 4 )) ||
+  ! [[ "$TWILIO_ACCOUNT_SID" =~ ^AC[[:xdigit:]]{32}$ ]] ||
+  ! [[ "$TWILIO_AUTH_TOKEN" =~ ^[A-Za-z0-9]{32,64}$ ]] ||
+  ! [[ "$TWILIO_FROM_NUMBER" =~ ^\+[1-9][0-9]{7,14}$ ]] ||
+  ! [[ "$TWILIO_TO_NUMBER" =~ ^\+[1-9][0-9]{7,14}$ ]]; then
+  unset TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_FROM_NUMBER TWILIO_TO_NUMBER
+  log_alert "key=$RATE_LIMIT_KEY invalid_twilio_configuration"
+  exit 0
+fi
+
+umask 077
+if ! mkdir -p "$STATE_DIR"; then
+  log_alert "key=$RATE_LIMIT_KEY sms_state_directory_failed"
+  exit 0
+fi
+chmod 0700 "$STATE_DIR" 2>/dev/null || true
+
+SMS_STATE_FILE="$STATE_DIR/systemd-sms-${RATE_LIMIT_KEY}.json"
+SMS_LOCK_FILE="$STATE_DIR/systemd-sms-${RATE_LIMIT_KEY}.lock"
+if ! exec 8>"$SMS_LOCK_FILE"; then
+  log_alert "key=$RATE_LIMIT_KEY sms_lock_open_failed"
+  exit 0
+fi
+if ! flock -w 30 -x 8; then
+  log_alert "key=$RATE_LIMIT_KEY sms_lock_timeout"
+  exit 0
+fi
+
+now=$(date +%s)
+sms_success_at=0
+if [[ -s "$SMS_STATE_FILE" ]]; then
+  sms_success_at=$(jq -er '.sms_success_at // 0 | numbers | floor' \
+    "$SMS_STATE_FILE" 2>/dev/null || printf '0')
+fi
+if ! [[ "$sms_success_at" =~ ^[0-9]+$ ]] || (( sms_success_at > now )); then
+  sms_success_at=0
+fi
+
+if (( sms_success_at != 0 && now - sms_success_at < SMS_COOLDOWN_SECONDS )); then
+  unset TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_FROM_NUMBER TWILIO_TO_NUMBER
+  flock -u 8
+  log_alert "key=$RATE_LIMIT_KEY systemd_failure_sms_suppressed_by_10m_cooldown"
+  exit 0
+fi
+
+sms_status=$(printf '%s' "$SYSTEMD_SUMMARY" | tr '\r\n\t' '   ' | tr -s ' ')
+sms_logs=$(printf '%s' "$LOGS" | tail -n 8 | tr '\r\n\t' '   ' | tr -s ' ')
+sms_body="[SYSTEMD FAILURE] Unit=$UNIT_NAME Host=$HOST_NAME Time=$TIMESTAMP Status=$sms_status Logs=$sms_logs"
+sms_body="$(printf '%s' "$sms_body" | cut -c1-600)"
+
+form_body=$(jq -rn \
+  --arg to "$TWILIO_TO_NUMBER" \
+  --arg from "$TWILIO_FROM_NUMBER" \
+  --arg body "$sms_body" \
+  '"To=" + ($to | @uri) + "&From=" + ($from | @uri) + "&Body=" + ($body | @uri)')
+request_file=$(mktemp /run/forwardemail-twilio-request.XXXXXX) || {
+  unset TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_FROM_NUMBER TWILIO_TO_NUMBER
+  flock -u 8
+  log_alert "key=$RATE_LIMIT_KEY sms_request_file_failed"
+  exit 0
+}
+response_file=$(mktemp /run/forwardemail-twilio-response.XXXXXX) || {
+  rm -f "$request_file"
+  unset TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_FROM_NUMBER TWILIO_TO_NUMBER
+  flock -u 8
+  log_alert "key=$RATE_LIMIT_KEY sms_response_file_failed"
+  exit 0
+}
+chmod 0600 "$request_file" "$response_file"
+printf '%s' "$form_body" > "$request_file"
+
+twilio_auth="${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}"
+twilio_url="https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json"
+unset TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_FROM_NUMBER TWILIO_TO_NUMBER
+
+twilio_curl_config() {
+  printf 'silent\n'
+  printf 'show-error\n'
+  printf 'request = "POST"\n'
+  printf 'url = "%s"\n' "$twilio_url"
+  printf 'user = "%s"\n' "$twilio_auth"
+  printf 'header = "Content-Type: application/x-www-form-urlencoded"\n'
+  printf 'connect-timeout = 10\n'
+  printf 'max-time = 20\n'
+}
+
+http_code='000'
+sms_succeeded=false
+if http_code=$(twilio_curl_config | \
+  curl --config - \
+    --data-binary @"$request_file" \
+    --output "$response_file" \
+    --write-out '%{http_code}'); then
+  if [[ "$http_code" == '201' ]] &&
+    jq -e '.sid | type == "string" and length > 0' \
+      "$response_file" >/dev/null 2>&1; then
+    sms_succeeded=true
+  else
+    api_code=$(jq -r '.code // empty' "$response_file" 2>/dev/null || true)
+    if ! [[ "$api_code" =~ ^[0-9]+$ ]]; then
+      api_code='unknown'
+    fi
+    log_alert "key=$RATE_LIMIT_KEY sms_rejected http=$http_code api_code=$api_code"
+  fi
+else
+  log_alert "key=$RATE_LIMIT_KEY sms_transport_failed http=$http_code"
+fi
+
+twilio_auth=''
+rm -f "$request_file" "$response_file"
+
+if [[ "$sms_succeeded" == true ]]; then
+  state_tmp=$(mktemp "${SMS_STATE_FILE}.XXXXXX") || state_tmp=''
+  if [[ -n "$state_tmp" ]]; then
+    printf '{"sms_success_at":%d}\n' "$now" > "$state_tmp"
+    chmod 0600 "$state_tmp"
+    if mv -f "$state_tmp" "$SMS_STATE_FILE"; then
+      log_alert "key=$RATE_LIMIT_KEY systemd_failure_sms_attempted=true systemd_failure_sms_succeeded=true"
+    else
+      rm -f "$state_tmp"
+      log_alert "key=$RATE_LIMIT_KEY sms_state_commit_failed"
+    fi
+  else
+    log_alert "key=$RATE_LIMIT_KEY sms_state_create_failed"
+  fi
+fi
+
+flock -u 8
 
 # Never let a notification-channel failure recursively fail the OnFailure unit.
 exit 0

@@ -5,7 +5,7 @@ Automated PM2 process health monitoring with alerting for Node.js deployments.
 
 ## Overview
 
-The PM2 health monitoring system automatically checks the health of all PM2-managed processes and sends email alerts when issues are detected. It runs every 10 minutes via a systemd timer.
+The PM2 health monitoring system automatically checks the health of all PM2-managed processes and sends email alerts when issues are detected. It runs every 10 minutes via a [systemd](https://github.com/systemd/systemd) timer. These routine health alerts never send SMS; only a genuine systemd `OnFailure` event can send optional [Twilio](https://github.com/twilio) SMS.
 
 
 ## Features
@@ -14,7 +14,8 @@ The PM2 health monitoring system automatically checks the health of all PM2-mana
 * **Uptime Tracking** - Reports uptime for all processes via `pm2 jlist`
 * **Process List Drift Detection** - Alerts if current processes differ from saved state
 * **No Process Detection** - Alerts if PM2 has no running processes
-* **Email Alerts** - Sends detailed alerts to configured recipients
+* **Email-Only Health Alerts** - Sends detailed routine alerts to configured recipients without SMS
+* **Systemd Failure Alerts** - Sends email plus optional diagnostics-rich Twilio SMS when the unit enters `OnFailure`
 * **Systemd Integration** - Runs as a systemd timer service
 * **Comprehensive Logging** - All checks logged to journalctl
 
@@ -53,7 +54,9 @@ Set `ALERT_EMAIL_RECIPIENTS` before running `security.yml`:
 export ALERT_EMAIL_RECIPIENTS="devops@example.com,security@example.com"
 ```
 
-The default is `security@forwardemail.net`. `MSMTP_RCPTS` remains a deprecated migration fallback. PM2 alerts use the root-owned shared sender and host-local direct-MX Postfix queue; they do not use the application SMTP service or MongoDB. Complete the SPF prerequisites in the main [Ansible guide](../README.md#alert-transport-and-dns-prerequisites) first.
+The default is `security@forwardemail.net`. `MSMTP_RCPTS` remains a deprecated migration fallback. PM2 health alerts use the root-owned email-only shared sender and host-local direct-MX [Postfix](https://github.com/vdukhovni/postfix) queue; they do not use the application SMTP service or MongoDB. Complete the SPF prerequisites in the main [Ansible guide](../README.md#alert-transport-and-dns-prerequisites) first.
+
+If all four Twilio variables are configured in `security.yml`, a failure of `pm2-deploy.service` sends an additional SMS from `/usr/local/bin/send-failure-notification.sh`. That message includes the unit result and bounded recent journal context. PM2 process-health findings, process-list drift, and manual shared-sender tests remain email-only.
 
 ### Timer Interval
 
@@ -225,7 +228,7 @@ sudo journalctl -u pm2-health-check.timer -n 20
 
 ### No Alerts Received
 
-Submit through the same shared path used by the health check:
+Submit through the same shared path used by the health check. This command sends email only, even when Twilio is configured:
 
 ```bash
 sudo /usr/local/bin/send-rate-limited-email.sh \
@@ -263,16 +266,16 @@ sudo -u deploy bash -c 'source /home/deploy/.bashrc && pm2 list'
 
 The PM2 health check integrates seamlessly with:
 
-* **UFW Allowlist Monitoring** - Both use the same email alert system
-* **PM2 Startup Service** - Monitors processes managed by `pm2-deploy.service`
-* **System Logs** - All output goes to journalctl for centralized logging
+* **UFW Allowlist Monitoring** - Both routine monitors use the same email-only alert sender
+* **PM2 Startup Service** - A `pm2-deploy.service` systemd failure uses the separate email-plus-optional-SMS `OnFailure` wrapper
+* **System Logs** - All output goes to `journalctl` for centralized logging
 
 
 ## Best Practices
 
 1. **Set Up Baseline** - Always run `pm2 save` after deploying new processes
 2. **Monitor Logs** - Periodically review health check logs
-3. **Test Alerts** - Manually trigger the script to verify email delivery
+3. **Test Alerts** - Manually trigger the health script to verify email-only delivery; use the safe transient-unit procedure in [MONITORING\_TESTING.md](./MONITORING_TESTING.md#core-notification-infrastructure) to verify systemd failure SMS
 4. **Adjust Timing** - Increase/decrease check frequency based on your needs
 5. **Multiple Recipients** - Configure multiple email addresses for redundancy
 

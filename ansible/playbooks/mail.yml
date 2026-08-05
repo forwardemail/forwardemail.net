@@ -576,7 +576,7 @@
       changed_when: false
 
     ##
-    # Health Check Cron
+    # Health Check Timer
     ##
 
     - name: Create health check script
@@ -584,18 +584,90 @@
         content: |
           #!/bin/bash
           # SnappyMail health check
-          set -e
-          systemctl is-active --quiet php8.2-fpm || systemctl restart php8.2-fpm
-          systemctl is-active --quiet nginx || systemctl restart nginx
-          curl -f -s http://localhost/ > /dev/null || exit 1
+          set -uo pipefail
+
+          readonly ALERT_KEY="snappymail-health-check"
+          readonly SENDER="/usr/local/bin/send-rate-limited-email.sh"
+          readonly HOST="$(hostname -f 2>/dev/null || hostname)"
+          issues=()
+
+          check_service() {
+            local service="$1"
+
+            if systemctl is-active --quiet "$service"; then
+              return 0
+            fi
+
+            if systemctl restart "$service" && systemctl is-active --quiet "$service"; then
+              issues+=("$service was inactive and restarted successfully")
+            else
+              issues+=("$service is inactive and its restart failed")
+            fi
+          }
+
+          check_service php8.2-fpm
+          check_service nginx
+
+          if ! curl --fail --silent --show-error --max-time 15 http://localhost/ >/dev/null; then
+            issues+=("SnappyMail HTTP health check failed at http://localhost/")
+          fi
+
+          if (( ${#issues[@]} == 0 )); then
+            exit 0
+          fi
+
+          body="SnappyMail health check found issues on ${HOST}:"
+          for issue in "${issues[@]}"; do
+            body+=$'\n'"- ${issue}"
+          done
+          body+=$'\n\nThe monitor attempted safe service restarts before reporting.'
+
+          if [[ ! -x "$SENDER" ]]; then
+            printf 'SnappyMail health findings could not be emailed: sender missing\n' >&2
+            exit 1
+          fi
+
+          if ! "$SENDER" "$ALERT_KEY" \
+            "[ALERT] SnappyMail Health Check - ${HOST}" "$body"; then
+            printf 'SnappyMail health findings could not be queued for email\n' >&2
+            exit 1
+          fi
+
+          printf 'SnappyMail health findings queued for routine email\n'
+          exit 0
         dest: /usr/local/bin/snappymail-health-check
         owner: root
         group: root
         mode: '0755'
 
-    - name: Add health check cron
+    - name: Remove legacy SnappyMail health check cron
       cron:
         name: "snappymail-health-check"
-        minute: "*/5"
-        job: "/usr/local/bin/snappymail-health-check > /dev/null 2>&1"
         user: root
+        state: absent
+
+    - name: Deploy SnappyMail health check service
+      template:
+        src: "{{ playbook_dir }}/templates/snappymail-health-check.service.j2"
+        dest: /etc/systemd/system/snappymail-health-check.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy SnappyMail health check timer
+      template:
+        src: "{{ playbook_dir }}/templates/snappymail-health-check.timer.j2"
+        dest: /etc/systemd/system/snappymail-health-check.timer
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload systemd for SnappyMail health check
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start SnappyMail health check timer
+      systemd:
+        name: snappymail-health-check.timer
+        enabled: yes
+        state: started

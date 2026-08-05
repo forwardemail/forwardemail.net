@@ -57,9 +57,19 @@ should_send_alert() {
         fi
     fi
 
-    # Create or update lockfile
-    touch "$lockfile" 2>/dev/null || true
     return 0  # Send alert
+}
+
+# Commit the local cooldown only after the shared sender has accepted the email.
+record_alert_sent() {
+    local alert_type="$1"
+    local user="$2"
+    local lockfile="$LOCK_DIR/root-monitor-${alert_type}-${user}.lock"
+
+    if ! touch "$lockfile"; then
+        log_message "ERROR: Failed to record root-access alert cooldown: ${alert_type} by ${user}"
+        return 1
+    fi
 }
 
 # Check if user is authorized for root access
@@ -354,6 +364,8 @@ send_su_alert() {
 
 # Main monitoring logic
 main() {
+    local alert_failure=0
+
     log_message "Starting root access monitoring check"
 
     # Check for recent sudo commands
@@ -371,7 +383,9 @@ main() {
 
                 if ! is_authorized_sudo_user "$sudo_user"; then
                     if should_send_alert "sudo" "$sudo_user"; then
-                        send_sudo_alert "$sudo_user" "$sudo_command" "$sudo_time"
+                        if ! send_sudo_alert "$sudo_user" "$sudo_command" "$sudo_time" || ! record_alert_sent "sudo" "$sudo_user"; then
+                            alert_failure=1
+                        fi
                     fi
                 else
                     log_message "Sudo user $sudo_user is authorized (skipping alert)"
@@ -394,7 +408,9 @@ main() {
 
                     if ! is_authorized_root_user "$su_user"; then
                         if should_send_alert "su" "$su_user"; then
-                            send_su_alert "$su_user" "$recent_su"
+                            if ! send_su_alert "$su_user" "$recent_su" || ! record_alert_sent "su" "$su_user"; then
+                                alert_failure=1
+                            fi
                         fi
                     else
                         log_message "Su user $su_user is authorized (skipping alert)"
@@ -412,13 +428,21 @@ main() {
         # Console logins are logged but not alerted separately
     fi
 
-    # Update last check timestamp
-    update_last_check
-    
+    if [ "$alert_failure" -ne 0 ]; then
+        log_message "ERROR: Root-access monitoring completed with an unqueued alert; preserving cursor for retry"
+        return 1
+    fi
+
+    # Advance the cursor only after every required alert was accepted.
+    if ! update_last_check; then
+        log_message "ERROR: Failed to update root-access monitor cursor"
+        return 1
+    fi
+
     log_message "Root access monitoring check completed"
 }
 
-# Execute main function
-main
+# Execute main function and preserve delivery/state failures for systemd OnFailure.
+main || exit 1
 
 exit 0

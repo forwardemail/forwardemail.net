@@ -39,6 +39,29 @@
     twilio_to_number: "{{ lookup('env', 'TWILIO_TO_NUMBER') }}"
     alert_public_ip: "{{ hostvars[inventory_hostname]['direct_alert_public_ip'] | default(ansible_host | default(ansible_default_ipv4.address), true) }}"
     alert_helo_identity: "{{ hostvars[inventory_hostname]['direct_alert_helo_identity'] | default(ansible_fqdn, true) }}"
+  pre_tasks:
+    # A host-specific override must never let one server advertise another
+    # server's identity (for example, mongo.forwardemail.net on Redis).
+    - name: Verify direct-alert HELO identity belongs to this host
+      assert:
+        that:
+          - (ansible_fqdn | default('', true) | length) > 0
+          - >-
+            (alert_helo_identity | default('', true) | lower |
+            regex_replace('\\.$', '')) ==
+            (ansible_fqdn | default('', true) | lower |
+            regex_replace('\\.$', ''))
+        fail_msg: >-
+          Refusing to configure direct alerts on {{ inventory_hostname }}:
+          direct_alert_helo_identity resolved to
+          {{ alert_helo_identity | default('UNSET', true) }}, but gathered
+          ansible_fqdn is {{ ansible_fqdn | default('UNAVAILABLE', true) }}.
+          Correct or remove this host's direct_alert_helo_identity override;
+          never reuse another host's HELO identity.
+      tags:
+        - always
+        - forwardemail-alert-identity
+
   handlers:
     - name: Restart SSH
       service:
@@ -544,7 +567,8 @@
       changed_when: false
       failed_when: direct_alert_helo_spf_check.rc != 0
 
-    # Configure centralized email and optional Twilio failure notifications.
+    # Configure email for every alert and optional Twilio SMS exclusively for
+    # systemd OnFailure notifications.
     - name: Install infrastructure alert sender dependencies
       apt:
         name:
@@ -596,8 +620,8 @@
     - name: Report email-only alert mode
       debug:
         msg: >-
-          Twilio variables are unset; infrastructure alerts will continue by
-          email only to {{ alert_email_recipients }}.
+          Twilio variables are unset; routine alerts and systemd failures will
+          continue by email only to {{ alert_email_recipients }}.
       when: twilio_values_present | int == 0
 
     - name: Create root-only infrastructure alert configuration directory
@@ -608,7 +632,7 @@
         group: root
         mode: '0700'
 
-    - name: Deploy root-only Twilio SMS environment
+    - name: Deploy root-only systemd failure SMS environment
       template:
         src: "{{ playbook_dir }}/templates/forwardemail-alerts-twilio.env.j2"
         dest: /etc/forwardemail-alerts/twilio.env
@@ -624,7 +648,7 @@
         state: absent
       when: twilio_values_present | int == 0
 
-    - name: Deploy dual-channel rate-limited alert sender
+    - name: Deploy email-only rate-limited alert sender
       template:
         src: "{{ playbook_dir }}/templates/send-rate-limited-email.sh.j2"
         dest: /usr/local/bin/send-rate-limited-email.sh
@@ -1755,9 +1779,9 @@
       fail2ban_dbpurgeage: 365d
       fail2ban_findtime: 365d
       # Email notifications for bans
-      fail2ban_destemail: "{{ alert_email_recipients }}"
-      fail2ban_sendername: "{{ alert_email_sender }}"
-      fail2ban_sender: "{{ alert_email_sender }}"
+      fail2ban_destemail: "{{ alert_email_recipients | default('security@forwardemail.net', true) }}"
+      fail2ban_sendername: "{{ alert_email_sender | default('mailerdaemon@forwardemail.net', true) }}"
+      fail2ban_sender: "{{ alert_email_sender | default('mailerdaemon@forwardemail.net', true) }}"
       fail2ban_action: "%(action_mwl)s"  # mail with logs
       fail2ban_mta: sendmail
 
@@ -1770,8 +1794,8 @@
     - role: hifis.toolkit.unattended_upgrades
       unattended_automatic_reboot_time: "02:00"
       # Email notifications for updates
-      unattended_mail: "{{ alert_email_recipients }}"
-      unattended_mail_sender: "{{ alert_email_sender }}"
+      unattended_mail: "{{ alert_email_recipients | default('security@forwardemail.net', true) }}"
+      unattended_mail_sender: "{{ alert_email_sender | default('mailerdaemon@forwardemail.net', true) }}"
       unattended_mail_report: "on-change"  # Send email only when packages are upgraded or errors occur
       # Disable automatic reboots for critical database servers (mongo, redis)
       # These servers require manual intervention for kernel updates to ensure data integrity

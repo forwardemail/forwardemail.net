@@ -55,9 +55,19 @@ should_send_alert() {
         fi
     fi
 
-    # Create or update lockfile
-    touch "$lockfile" 2>/dev/null || true
     return 0  # Send alert
+}
+
+# Commit the local cooldown only after the shared sender has accepted the email.
+record_alert_sent() {
+    local resource="$1"
+    local threshold="$2"
+    local lockfile="$LOCK_DIR/resource-monitor-${resource}-${threshold}.lock"
+
+    if ! touch "$lockfile"; then
+        log_message "ERROR: Failed to record alert cooldown: ${resource} ${threshold}%"
+        return 1
+    fi
 }
 
 # Get CPU usage percentage
@@ -317,6 +327,8 @@ send_alert() {
 
 # Main monitoring logic
 main() {
+    local alert_failure=0
+
     log_message "Starting resource monitoring check"
 
     # Get current CPU, memory, and disk usage
@@ -331,7 +343,9 @@ main() {
         if [ "$cpu_usage" -ge "$threshold" ]; then
             log_message "CPU threshold ${threshold}% exceeded (current: ${cpu_usage}%)"
             if should_send_alert "cpu" "$threshold"; then
-                send_alert "cpu" "$cpu_usage" "$threshold"
+                if ! send_alert "cpu" "$cpu_usage" "$threshold" || ! record_alert_sent "cpu" "$threshold"; then
+                    alert_failure=1
+                fi
             fi
             break  # Only alert for the highest threshold exceeded
         fi
@@ -342,7 +356,9 @@ main() {
         if [ "$mem_usage" -ge "$threshold" ]; then
             log_message "Memory threshold ${threshold}% exceeded (current: ${mem_usage}%)"
             if should_send_alert "memory" "$threshold"; then
-                send_alert "memory" "$mem_usage" "$threshold"
+                if ! send_alert "memory" "$mem_usage" "$threshold" || ! record_alert_sent "memory" "$threshold"; then
+                    alert_failure=1
+                fi
             fi
             break  # Only alert for the highest threshold exceeded
         fi
@@ -353,16 +369,23 @@ main() {
         if [ "$disk_usage" -ge "$threshold" ]; then
             log_message "Disk threshold ${threshold}% exceeded (current: ${disk_usage}%)"
             if should_send_alert "disk" "$threshold"; then
-                send_alert "disk" "$disk_usage" "$threshold"
+                if ! send_alert "disk" "$disk_usage" "$threshold" || ! record_alert_sent "disk" "$threshold"; then
+                    alert_failure=1
+                fi
             fi
             break  # Only alert for the highest threshold exceeded
         fi
     done
 
+    if [ "$alert_failure" -ne 0 ]; then
+        log_message "ERROR: Resource monitoring completed with an unqueued alert"
+        return 1
+    fi
+
     log_message "Resource monitoring check completed"
 }
 
-# Execute main function
-main
+# Execute main function and preserve delivery failures for systemd OnFailure.
+main || exit 1
 
 exit 0

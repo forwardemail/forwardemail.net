@@ -34,7 +34,7 @@ This guide provides complete testing procedures for all **18 monitoring systems*
   * [3. Redis Backup Monitoring](#3-redis-backup-monitoring)
   * [4. Redis Command Usage Monitoring](#4-redis-command-usage-monitoring)
 * [Mail Playbook Monitoring](#mail-playbook-monitoring)
-  * [Mail Service Failure Notifications](#mail-service-failure-notifications)
+  * [Mail Service and SnappyMail Health Failure Notifications](#mail-service-and-snappymail-health-failure-notifications)
 * [Unbound Playbook Monitoring](#unbound-playbook-monitoring)
   * [Unbound DNS Service Failure Notifications](#unbound-dns-service-failure-notifications)
 * [Email Notification Testing](#email-notification-testing)
@@ -113,7 +113,7 @@ Ensure these are set (usually configured via Ansible):
 printf '%s\n' "${ALERT_EMAIL_RECIPIENTS:-security@forwardemail.net}"
 ```
 
-`MSMTP_RCPTS` is accepted only as a deprecated migration fallback.
+`MSMTP_RCPTS` is accepted only as a deprecated migration fallback. Every alert sends email. Optional [Twilio](https://github.com/twilio) SMS is sent only by the fleet-wide [systemd](https://github.com/systemd/systemd) `OnFailure` wrapper; set all four of `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`, and `TWILIO_TO_NUMBER`, or leave all four unset. Routine monitor alerts are always email-only.
 
 ---
 
@@ -793,7 +793,7 @@ sudo grep "CRITICAL\|WARNING" /var/log/ssl-certificate-monitor.log
 
 ### PM2 Service Failure Notifications
 
-**Purpose**: Sends email alerts when PM2 (process manager) service fails
+**Purpose**: Sends email and, when Twilio is configured, SMS when the PM2 systemd service fails
 
 **Files Deployed**:
 
@@ -821,28 +821,16 @@ sudo -u deploy pm2 list
 sudo journalctl -u pm2-deploy.service -n 50
 ```
 
-**Trigger Alert Test**:
+**Safe Trigger Test**:
+
+Do not stop PM2 to test notifications. An intentional `systemctl stop` is a clean transition and does not exercise `OnFailure`. Run the failed transient-unit procedure in [Core Notification Infrastructure](#core-notification-infrastructure), then verify PM2 inherits the hook:
 
 ```bash
-# WARNING: This will stop PM2 service temporarily
-
-# 1. Stop PM2 service to trigger failure
-sudo systemctl stop pm2-deploy.service
-
-# 2. Check if failure notification was triggered
-sudo journalctl -u failure-notification@pm2-deploy.service.service -n 20
-
-# Expected: Shows notification script execution
-
-# 3. Check email was sent
-sudo tail -f /var/log/mail.log
-
-# 4. Restart PM2 service
-sudo systemctl start pm2-deploy.service
-
-# 5. Verify PM2 is running again
-sudo systemctl status pm2-deploy.service
+sudo systemctl cat pm2-deploy.service | grep -F 'OnFailure='
+sudo journalctl -t forwardemail-alert -n 100 --no-pager
 ```
+
+The synthetic failure must send email. When Twilio is configured, it must also send one diagnostics-rich SMS from the systemd wrapper.
 
 **Validation Checklist**:
 
@@ -850,6 +838,7 @@ sudo systemctl status pm2-deploy.service
 * [ ] OnFailure override is configured
 * [ ] Service failure triggers notification
 * [ ] Email alert is sent
+* [ ] Optional Twilio SMS is sent only by the systemd failure wrapper
 * [ ] Service can be restarted successfully
 
 ---
@@ -859,7 +848,7 @@ sudo systemctl status pm2-deploy.service
 
 ### 1. MongoDB Service Failure Notifications
 
-**Purpose**: Sends email alerts when MongoDB service fails
+**Purpose**: Sends email and, when Twilio is configured, SMS when the MongoDB systemd service fails
 
 **Files Deployed**:
 
@@ -887,26 +876,16 @@ mongo --eval "db.adminCommand('ping')"
 sudo journalctl -u mongod.service -n 50
 ```
 
-**Trigger Alert Test**:
+**Safe Trigger Test**:
+
+Do not stop MongoDB to test notifications. Run the failed transient-unit procedure in [Core Notification Infrastructure](#core-notification-infrastructure), then verify MongoDB inherits the hook without disrupting production:
 
 ```bash
-# WARNING: This will stop MongoDB temporarily
-
-# 1. Stop MongoDB to trigger failure
-sudo systemctl stop mongod.service
-
-# 2. Check if failure notification was triggered
-sudo journalctl -u failure-notification@mongod.service.service -n 20
-
-# 3. Check email was sent
-sudo tail -f /var/log/mail.log
-
-# 4. Restart MongoDB
-sudo systemctl start mongod.service
-
-# 5. Verify MongoDB is running
-sudo systemctl status mongod.service
+sudo systemctl cat mongod.service | grep -F 'OnFailure='
+sudo journalctl -t forwardemail-alert -n 100 --no-pager
 ```
+
+The synthetic failure must send email. When Twilio is configured, it must also send one diagnostics-rich SMS from the systemd wrapper.
 
 **Validation Checklist**:
 
@@ -914,6 +893,7 @@ sudo systemctl status mongod.service
 * [ ] OnFailure override is configured
 * [ ] Service failure triggers notification
 * [ ] Email alert is sent
+* [ ] Optional Twilio SMS is sent only by the systemd failure wrapper
 * [ ] Service can be restarted successfully
 
 ---
@@ -1015,7 +995,7 @@ sudo journalctl -u mongo-backup.service -n 100
 
 ### 1. Valkey/Redis Service Failure Notifications
 
-**Purpose**: Sends email alerts when Redis/Valkey service fails
+**Purpose**: Sends email and, when Twilio is configured, SMS when the Redis/Valkey systemd service fails
 
 **Files Deployed**:
 
@@ -1043,26 +1023,16 @@ redis-cli -h $REDIS_HOST -p $REDIS_PORT -a $REDIS_PASSWORD ping
 sudo journalctl -u valkey-server.service -n 50
 ```
 
-**Trigger Alert Test**:
+**Safe Trigger Test**:
+
+Do not stop Redis/Valkey to test notifications. Run the failed transient-unit procedure in [Core Notification Infrastructure](#core-notification-infrastructure), then verify the service inherits the hook:
 
 ```bash
-# WARNING: This will stop Redis temporarily
-
-# 1. Stop Redis to trigger failure
-sudo systemctl stop valkey-server.service
-
-# 2. Check if failure notification was triggered
-sudo journalctl -u failure-notification@valkey-server.service.service -n 20
-
-# 3. Check email was sent
-sudo tail -f /var/log/mail.log
-
-# 4. Restart Redis
-sudo systemctl start valkey-server.service
-
-# 5. Verify Redis is running
-sudo systemctl status valkey-server.service
+sudo systemctl cat valkey-server.service | grep -F 'OnFailure='
+sudo journalctl -t forwardemail-alert -n 100 --no-pager
 ```
+
+The synthetic failure must send email. When Twilio is configured, it must also send one diagnostics-rich SMS from the systemd wrapper.
 
 **Validation Checklist**:
 
@@ -1070,6 +1040,7 @@ sudo systemctl status valkey-server.service
 * [ ] OnFailure is configured
 * [ ] Service failure triggers notification
 * [ ] Email alert is sent
+* [ ] Optional Twilio SMS is sent only by the systemd failure wrapper
 * [ ] Service can be restarted successfully
 
 ---
@@ -1234,40 +1205,46 @@ sudo tail -f /var/log/mail.log
 
 ## Mail Playbook Monitoring
 
-### Mail Service Failure Notifications
+### Mail Service and SnappyMail Health Failure Notifications
 
-**Purpose**: Sends email alerts when mail service fails
+**Purpose**: Sends routine email-only alerts for SnappyMail health findings and, when Twilio is configured, adds SMS only when a mail-host systemd unit genuinely fails. The five-minute SnappyMail probe attempts to recover PHP-FPM or Nginx, includes recovery and local HTTP findings in one routine email, and exits successfully after that email queues. Only monitor execution or email-queue faults fail the health unit.
 
 **Files Deployed**:
 
-* Override: `/etc/systemd/system/<mail-service>.service.d/failure-notification.conf`
+* Fleet drop-in: `/etc/systemd/system/service.d/forwardemail-failure-notification.conf`
+* Health service: `/etc/systemd/system/snappymail-health-check.service`
+* Health timer: `/etc/systemd/system/snappymail-health-check.timer`
 
 **Testing Commands**:
 
 ```bash
-# 1. Identify the mail service name
-sudo systemctl list-units --type=service | grep -i mail
+# 1. Check mail-host services and the SnappyMail timer
+sudo systemctl status postfix.service nginx.service php8.2-fpm.service
+sudo systemctl status snappymail-health-check.timer
+sudo systemctl list-timers snappymail-health-check.timer
 
-# 2. Check mail service status
-sudo systemctl status <mail-service-name>
+# 2. Verify the five-minute schedule and inherited failure hook
+sudo systemctl cat snappymail-health-check.timer
+sudo systemctl cat snappymail-health-check.service | grep -F 'OnFailure='
 
-# Expected: Active: active (running)
+# 3. Run the health probe without stopping a production dependency
+sudo systemctl start snappymail-health-check.service
+sudo systemctl show snappymail-health-check.service -p Result -p ExecMainStatus
+sudo journalctl -u snappymail-health-check.service -n 50 --no-pager
 
-# 3. Verify OnFailure is configured
-sudo find /etc/systemd/system -name "*mail*.service.d" -type d
-sudo cat /etc/systemd/system/<mail-service>.service.d/failure-notification.conf
-
-# Expected: Shows OnFailure=failure-notification@%n.service
-
-# 4. View mail service logs
-sudo journalctl -u <mail-service-name> -n 50
+# 4. Exercise notification delivery with the safe failed transient unit from
+# Core Notification Infrastructure; do not stop Nginx, PHP-FPM, or Postfix.
 ```
 
 **Validation Checklist**:
 
-* [ ] Mail service is active and running
-* [ ] OnFailure override is configured
-* [ ] Service failure triggers notification
+* [ ] Postfix, Nginx, and PHP-FPM are active
+* [ ] The SnappyMail timer is enabled and scheduled every five minutes
+* [ ] The health service succeeds silently when PHP-FPM, Nginx, and the local HTTP endpoint are healthy
+* [ ] A service-recovery or HTTP finding queues one routine email and leaves the health unit successful
+* [ ] A failed routine-email queue leaves the health unit failed for retry visibility
+* [ ] The health service inherits `failure-notification@%n.service`
+* [ ] A genuine health-service execution or queueing failure triggers email and optional systemd-only SMS
 
 ---
 
@@ -1276,7 +1253,7 @@ sudo journalctl -u <mail-service-name> -n 50
 
 ### Unbound DNS Service Failure Notifications
 
-**Purpose**: Sends email alerts when Unbound DNS service fails
+**Purpose**: Sends email and, when Twilio is configured, SMS when the Unbound systemd service fails
 
 **Files Deployed**:
 
@@ -1304,26 +1281,16 @@ dig @127.0.0.1 google.com
 sudo journalctl -u unbound.service -n 50
 ```
 
-**Trigger Alert Test**:
+**Safe Trigger Test**:
+
+Do not stop Unbound to test notifications. Run the failed transient-unit procedure in [Core Notification Infrastructure](#core-notification-infrastructure), then verify Unbound inherits the hook:
 
 ```bash
-# WARNING: This will stop DNS service temporarily
-
-# 1. Stop Unbound to trigger failure
-sudo systemctl stop unbound.service
-
-# 2. Check if failure notification was triggered
-sudo journalctl -u failure-notification@unbound.service.service -n 20
-
-# 3. Check email was sent
-sudo tail -f /var/log/mail.log
-
-# 4. Restart Unbound
-sudo systemctl start unbound.service
-
-# 5. Verify Unbound is running
-sudo systemctl status unbound.service
+sudo systemctl cat unbound.service | grep -F 'OnFailure='
+sudo journalctl -t forwardemail-alert -n 100 --no-pager
 ```
+
+The synthetic failure must send email. When Twilio is configured, it must also send one diagnostics-rich SMS from the systemd wrapper.
 
 **Validation Checklist**:
 
@@ -1331,6 +1298,7 @@ sudo systemctl status unbound.service
 * [ ] OnFailure override is configured
 * [ ] Service failure triggers notification
 * [ ] Email alert is sent
+* [ ] Optional Twilio SMS is sent only by the systemd failure wrapper
 * [ ] Service can be restarted successfully
 
 ---
@@ -1344,7 +1312,11 @@ sudo systemctl status unbound.service
 
 * Template Service: `/etc/systemd/system/failure-notification@.service`
 * Script: `/usr/local/bin/send-failure-notification.sh`
-* Rate-Limited Email Script: `/usr/local/bin/send-rate-limited-email.sh`
+* Email-Only Rate-Limited Script: `/usr/local/bin/send-rate-limited-email.sh`
+* Root-Only Twilio Environment: `/etc/forwardemail-alerts/twilio.env` (only when configured)
+* Independent Cooldown State: `/var/lib/forwardemail-alerts`
+
+The shared sender is the email path for every alert and contains no Twilio delivery code. Only `send-failure-notification.sh`, invoked by systemd `OnFailure`, may read the Twilio environment and send SMS. Routine monitors commit their local cooldowns, event cursors, and package baselines only after required email is accepted; a queue or state-commit failure leaves the finding retryable and fails the monitor unit so the infrastructure fault is visible.
 
 ### Testing Email Delivery
 
@@ -1361,22 +1333,38 @@ if sudo ss -H -ltnp | grep -Eq 'users:\(\("(master|smtpd|postscreen|smtp-sink)"'
   exit 1
 fi
 
-# 3. Test the same shared, rate-limited path used by monitoring
+# 3. Test the shared routine-monitor path; this sends email only
 sudo /usr/local/bin/send-rate-limited-email.sh \
   monitoring-test \
   "Monitoring test" \
   "Test from $(hostname)"
 
-# 4. Inspect the local retry queue and delivery log
+# 4. Inspect the local retry queue, delivery log, and email cooldown
 sudo postqueue -p
 sudo journalctl -u postfix -n 100 --no-pager
+sudo cat /var/lib/forwardemail-alerts/monitoring-test.json
 
-# 5. Inspect rate-limit state
-sudo ls -la /var/lib/email-rate-limits
+# 5. Safely create a failed transient unit.  Do not stop a production service:
+# an intentional systemctl stop is clean and does not exercise OnFailure.
+sudo systemd-run --unit=forwardemail-notification-test \
+  --property=Type=oneshot /bin/false
+sleep 3
 
-# 6. Test the failure notification service directly
-sudo systemctl start failure-notification@test.service
-sudo journalctl -u failure-notification@test.service -n 20
+# 6. Confirm that the global OnFailure hook invoked the wrapper
+sudo journalctl \
+  -u failure-notification@forwardemail-notification-test.service.service \
+  -n 50 --no-pager
+
+# 7. Confirm email and, only when configured, the independent SMS result
+sudo journalctl -u postfix -n 100 --no-pager
+sudo journalctl -t forwardemail-alert -n 100 --no-pager | \
+  grep 'key=forwardemail-notification-test'
+sudo cat /var/lib/forwardemail-alerts/forwardemail-notification-test.json
+sudo test ! -r /etc/forwardemail-alerts/twilio.env || \
+  sudo cat /var/lib/forwardemail-alerts/systemd-sms-forwardemail-notification-test.json
+
+# 8. Remove the transient failed unit from systemd's failed-unit list
+sudo systemctl reset-failed forwardemail-notification-test.service
 ```
 
 ### Validation Checklist
@@ -1387,11 +1375,16 @@ sudo journalctl -u failure-notification@test.service -n 20
 * [ ] `relayhost` is empty
 * [ ] Postfix owns no TCP listening socket
 * [ ] Envelope-sender and HELO SPF preflights return pass
-* [ ] Test alerts are delivered through the shared sender
+* [ ] Routine test alerts are delivered by email and do not attempt SMS
 * [ ] Postfix logs show successful direct-MX delivery
-* [ ] Rate limiting works
-* [ ] `failure-notification@.service` works
-* [ ] All monitoring services can queue alerts
+* [ ] Successful-email rate limiting works
+* [ ] Monitor cooldowns, cursors, and package baselines advance only after email queue acceptance
+* [ ] A sender or state-commit failure leaves the finding retryable and fails the monitor unit
+* [ ] A failed transient systemd unit invokes `failure-notification@.service`
+* [ ] Failure email contains bounded status and journal diagnostics
+* [ ] When Twilio is configured, failure SMS contains unit, result, and journal context
+* [ ] Email and systemd-failure SMS cooldown states are independent
+* [ ] All monitoring services can queue email alerts
 
 ---
 
@@ -1448,7 +1441,7 @@ sudo journalctl -u postfix -n 100 --no-pager
 
 # Confirm recipients and rate-limit state
 printf '%s\n' "${ALERT_EMAIL_RECIPIENTS:-security@forwardemail.net}"
-sudo ls -la /var/lib/email-rate-limits
+sudo ls -la /var/lib/forwardemail-alerts
 
 # Test the production sender path
 sudo /usr/local/bin/send-rate-limited-email.sh \
@@ -1513,6 +1506,11 @@ sudo systemctl status system-resource-monitor.timer
 sudo systemctl status ssh-security-monitor.timer
 sudo systemctl status usb-device-monitor.timer
 sudo systemctl status root-access-monitor.timer
+sudo systemctl status lynis-audit-monitor.timer
+sudo systemctl status package-monitor.timer
+sudo systemctl status open-ports-monitor.timer
+sudo systemctl status ssl-certificate-monitor.timer
+
 
 echo -e "\n=== NODE MONITORING ==="
 sudo systemctl status pm2-deploy.service
@@ -1527,6 +1525,13 @@ sudo systemctl status valkey-server.service
 sudo systemctl status update-redis-ufw-whitelist.timer
 sudo systemctl status redis-backup.timer
 sudo systemctl status redis-command-monitor.timer
+
+echo -e "\n=== MAIL MONITORING ==="
+sudo systemctl status snappymail-health-check.timer
+sudo systemctl status snappymail-health-check.service
+
+echo -e "\n=== SQLITE MIRROR MONITORING ==="
+sudo systemctl status sqlite-mirror-health.timer 2>/dev/null || true
 
 echo -e "\n=== UNBOUND MONITORING ==="
 sudo systemctl status unbound.service
@@ -1549,7 +1554,7 @@ echo -e "\n=== RECENT LOGS ==="
 sudo ls -lh /var/log/*monitor*.log
 
 echo -e "\n=== RATE LIMIT STATE ==="
-sudo ls -la /var/lib/email-rate-limits 2>/dev/null || echo "No rate-limit state"
+sudo ls -la /var/lib/forwardemail-alerts 2>/dev/null || echo "No rate-limit state"
 
 echo -e "\n=== HEALTH CHECK COMPLETE ==="
 ```
@@ -1568,13 +1573,8 @@ chmod +x check-monitoring.sh
 
 This guide covers **all monitoring systems** deployed across your Ansible infrastructure:
 
-**Security Playbook**: 4 monitoring systems (resource, SSH, USB, root access)
-**Node Playbook**: 1 monitoring system (PM2 failure)
-**MongoDB Playbook**: 3 monitoring systems (service, UFW, backup)
-**Redis Playbook**: 4 monitoring systems (service, UFW, backup, commands)
-**Mail Playbook**: 1 monitoring system (service failure)
-**Unbound Playbook**: 1 monitoring system (service failure)
+**Security Playbook**: Eight shared monitors on every selected host (resource, SSH, USB, root access, Lynis, packages, open ports, and certificates).
 
-**Total**: 14 distinct monitoring systems with automated email notifications
+**Service Playbooks**: PM2 health and service failures, MongoDB service/UFW/backup paths, Redis service/UFW/backup/command paths, the SQLite mirror health check, the SnappyMail health timer, mail-host services, and Unbound.
 
-All systems are production-ready, battle-tested, and fully integrated with your existing notification infrastructure.
+Successfully queued routine findings remain email-only. Genuine systemd `OnFailure` events—including monitor execution, queueing, or state-commit failures—also send optional Twilio SMS with bounded diagnostics. All systemd-managed paths use the shared email sender and the recursion-safe fleet failure notifier.

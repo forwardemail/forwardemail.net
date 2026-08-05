@@ -3,7 +3,7 @@
 
 ## Overview
 
-This monitoring system provides comprehensive automated email notifications for system resource thresholds, SSH security events, USB device detection, and root access monitoring. All monitoring is implemented using battle-tested bash scripts with systemd timers for reliable periodic execution.
+This monitoring system provides automated email notifications for resource, access, device, package, audit, certificate, application, and service-health findings. Shared security monitors run on every host selected by `security.yml`; service-specific monitors add PM2, SQLite mirror, Redis, MongoDB, and SnappyMail coverage where applicable. Periodic checks use systemd timers so genuine execution or notification-delivery failures reach the fleet-wide failure notifier.
 
 
 ## Features
@@ -112,14 +112,16 @@ ansible-playbook -i hosts.yml playbooks/security.yml
 
 ## Configuration
 
-### Email Notifications
+### Alert Notifications
 
-Monitoring alerts use `/usr/local/bin/send-rate-limited-email.sh`, which submits as `root` to the host-local, send-only Postfix queue for direct delivery to recipient MX servers. Configure:
+Every routine monitor sends email through `/usr/local/bin/send-rate-limited-email.sh`. The script submits as `root` to the host-local, send-only [Postfix](https://github.com/vdukhovni/postfix) queue for direct delivery to recipient MX servers. It never sends SMS. Configure:
 
 * `ALERT_EMAIL_FROM` - Fixed aligned sender (default: `mailerdaemon@forwardemail.net`)
 * `ALERT_EMAIL_RECIPIENTS` - Alert recipients (comma-separated; default: `security@forwardemail.net`)
 
-`MSMTP_RCPTS` is accepted only as a deprecated recipient fallback. No SMTP username, password, relay host, or application database is used. Complete the envelope-sender and HELO SPF prerequisites in the main [Ansible guide](../README.md#alert-transport-and-dns-prerequisites) before running `security.yml`; deployment fails closed when either identity does not return SPF pass.
+`MSMTP_RCPTS` is accepted only as a deprecated recipient fallback. No SMTP username, password, relay host, or application database is used. Complete the envelope-sender and HELO SPF prerequisites in the main [Ansible guide](../README.md#alert-transport-and-dns-prerequisites) before running `security.yml`; deployment fails closed when either identity does not return SPF pass. The configured HELO must also match the FQDN gathered from that host, which prevents a MongoDB or Redis inventory value from being assigned to the other server.
+
+Optional [Twilio](https://github.com/twilio) SMS is restricted to the fleet-wide [systemd](https://github.com/systemd/systemd) `OnFailure` wrapper, `/usr/local/bin/send-failure-notification.sh`. A failed unit still emails through the shared sender, then independently sends a text containing the unit result and bounded recent journal context. Successfully queued resource, SSH, sudo, USB, package, certificate, PM2-health, SQLite-health, SnappyMail-health, and open-port findings remain email-only. If a monitor cannot queue a required email or commit its cursor/cooldown state, it fails instead of discarding the finding; that execution failure is then eligible for the systemd email-plus-optional-SMS path. Set all four of `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`, and `TWILIO_TO_NUMBER` to enable failure texts; leave all four unset for email-only operation.
 
 ### Whitelists
 
@@ -215,8 +217,11 @@ All monitoring scripts implement intelligent rate limiting to prevent alert floo
 * **SSH root access**: No rate limiting (always alert)
 * **USB unknown device**: 1 hour cooldown per device
 * **Root access (sudo/su)**: 30 minutes cooldown per user
+* **Package changes**: 1 hour
+* **Lynis reports**: 24 hours
+* **SSL certificate findings**: 24 hours
 
-Rate limiting uses lockfiles in `/var/lock/` with unique identifiers for each alert type and threshold.
+Monitor-specific rate limiting uses lockfiles in `/var/lock/` with unique identifiers for each alert type and threshold. A monitor records its local cooldown—and any event cursor or package baseline—only after the shared sender accepts the required email. The shared sender adds a 10-minute successful-email cooldown per alert key under `/var/lib/forwardemail-alerts`; SSH uses separate sender keys for root, failed-login, and summary alerts so one class cannot suppress another. Systemd failure SMS uses a separate per-unit lock and successful-SMS timestamp, so either channel can retry without suppressing the other.
 
 
 ## Systemd Services
@@ -227,6 +232,11 @@ Rate limiting uses lockfiles in `/var/lock/` with unique identifiers for each al
 * `ssh-security-monitor.service` - SSH security monitoring
 * `usb-device-monitor.service` - USB device monitoring
 * `root-access-monitor.service` - Root access monitoring
+* `lynis-audit-monitor.service` - Host audit reporting
+* `package-monitor.service` - Package change monitoring
+* `open-ports-monitor.service` - Listening-port monitoring
+* `ssl-certificate-monitor.service` - Certificate monitoring
+* `snappymail-health-check.service` - Mail-host-only PHP-FPM, Nginx, and HTTP health check
 
 ### Timers
 
@@ -234,6 +244,11 @@ Rate limiting uses lockfiles in `/var/lock/` with unique identifiers for each al
 * `ssh-security-monitor.timer` - Runs every 10 minutes
 * `usb-device-monitor.timer` - Runs every 5 minutes
 * `root-access-monitor.timer` - Runs every 5 minutes
+* `lynis-audit-monitor.timer` - Runs daily
+* `package-monitor.timer` - Runs hourly
+* `open-ports-monitor.timer` - Runs every 5 minutes
+* `ssl-certificate-monitor.timer` - Runs daily
+* `snappymail-health-check.timer` - Runs every 5 minutes on the mail host
 
 ### Managing Services
 
@@ -244,6 +259,7 @@ sudo systemctl status system-resource-monitor.timer
 sudo systemctl status ssh-security-monitor.timer
 sudo systemctl status usb-device-monitor.timer
 sudo systemctl status root-access-monitor.timer
+sudo systemctl status snappymail-health-check.timer  # mail host only
 ```
 
 View logs:
@@ -253,6 +269,7 @@ sudo journalctl -u system-resource-monitor.service -n 50
 sudo journalctl -u ssh-security-monitor.service -n 50
 sudo journalctl -u usb-device-monitor.service -n 50
 sudo journalctl -u root-access-monitor.service -n 50
+sudo journalctl -u snappymail-health-check.service -n 50  # mail host only
 ```
 
 Manually trigger a check:
@@ -262,6 +279,7 @@ sudo systemctl start system-resource-monitor.service
 sudo systemctl start ssh-security-monitor.service
 sudo systemctl start usb-device-monitor.service
 sudo systemctl start root-access-monitor.service
+sudo systemctl start snappymail-health-check.service  # mail host only
 ```
 
 Stop/Start timers:
@@ -311,7 +329,7 @@ sudo postconf -h relayhost               # Must print nothing
 sudo ss -H -ltnp | grep -E 'master|smtpd|postscreen|smtp-sink'  # Must print nothing
 ```
 
-2. Submit a test through the shared rate-limited path:
+2. Submit a test through the shared rate-limited path. This test sends email only, even when Twilio is configured:
 
 ```bash
 sudo /usr/local/bin/send-rate-limited-email.sh \
@@ -510,8 +528,10 @@ cat /etc/security-monitor/authorized-ips.conf
 1. **Script Permissions**: All scripts run as root but with minimal privileges via systemd security hardening
 2. **Log File Security**: Monitoring logs are readable only by root
 3. **Independent Alert Path**: Direct-MX delivery uses no SMTP credentials, application mail queue, or MongoDB
-4. **Rate Limiting**: Prevents DoS via alert flooding
-5. **Whitelist Management**: Secure storage with restricted modification
+4. **Channel Isolation**: Routine monitors cannot send SMS; only the recursion-safe systemd `OnFailure` wrapper reads the root-only Twilio environment
+5. **Commit After Queueing**: Monitor cooldowns, cursors, and package baselines advance only after required email is accepted, so transient queue failures are retryable
+6. **Rate Limiting**: Independent email and failure-SMS cooldowns prevent alert flooding without coupling channel retries
+7. **Whitelist Management**: Secure storage with restricted modification
 
 
 ## Maintenance

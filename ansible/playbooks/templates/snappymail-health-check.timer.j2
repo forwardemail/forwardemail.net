@@ -1,0 +1,13 @@
+[Unit]
+Description=SnappyMail Health Check Timer
+Requires=snappymail-health-check.service
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+AccuracySec=1min
+Persistent=true
+Unit=snappymail-health-check.service
+
+[Install]
+WantedBy=timers.target

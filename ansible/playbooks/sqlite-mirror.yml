@@ -414,13 +414,17 @@
             FULL_ALERT="${FULL_ALERT}  tail -f /var/log/sqlite-mirror/mirror.log\n"
             FULL_ALERT="${FULL_ALERT}  cat /etc/cron.d/sqlite-mirror\n"
 
-            if ! /usr/local/bin/send-rate-limited-email.sh \
+            if /usr/local/bin/send-rate-limited-email.sh \
               "sqlite-mirror-monitor" \
               "[ALERT] SQLite Mirror Health Check Failed on $(hostname)" \
               "$FULL_ALERT"; then
-              echo "[$(date -Iseconds)] ERROR: Failed to queue alert email"
+              # This is a routine health finding, not a crashed systemd unit.
+              # Return success so the global OnFailure hook cannot send SMS.
+              echo "[$(date -Iseconds)] SQLite mirror health alert email queued"
+              exit 0
             fi
 
+            echo "[$(date -Iseconds)] ERROR: Failed to queue alert email"
             exit 1
           fi
 
