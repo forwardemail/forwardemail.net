@@ -17,8 +17,7 @@
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 587
-      },
-      "node_args": "--disable-proto=delete"
+      }
     },
     {
       "name": "smtp-tls-2587",
@@ -37,8 +36,7 @@
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2587
-      },
-      "node_args": "--disable-proto=delete"
+      }
     },
     {
       "name": "smtp-tls-25",
@@ -57,8 +55,7 @@
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 25
-      },
-      "node_args": "--disable-proto=delete"
+      }
     },
     {
       "name": "smtp-tls-2525",
@@ -77,8 +74,7 @@
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2525
-      },
-      "node_args": "--disable-proto=delete"
+      }
     },
     {
       "name": "smtp-ssl-465",
@@ -97,8 +93,7 @@
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 465
-      },
-      "node_args": "--disable-proto=delete"
+      }
     },
     {
       "name": "smtp-ssl-2465",
@@ -117,8 +112,7 @@
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2465
-      },
-      "node_args": "--disable-proto=delete"
+      }
     },
     {
       "name": "smtp-ssl-2455",
@@ -130,7 +124,7 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
-      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
+      "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "error_file": "/var/log/pm2/smtp-ssl-2455-error.log",
       "out_file": "/var/log/pm2/smtp-ssl-2455-out.log",
       "combine_logs": true,
@@ -151,7 +145,7 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
-      "node_args": "--disable-proto=delete --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
+      "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "error_file": "/var/log/pm2/smtp-tls-2555-error.log",
       "out_file": "/var/log/pm2/smtp-tls-2555-out.log",
       "combine_logs": true,
@@ -178,8 +172,7 @@
       "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production"
-      },
-      "node_args": "--disable-proto=delete"
+      }
     },
     {
       "name": "proxy-http",
@@ -198,8 +191,7 @@
         "NODE_ENV": "production",
         "PROXY_PORT": 80,
         "PROXY_REDIRECT": "https://forwardemail.net"
-      },
-      "node_args": "--disable-proto=delete"
+      }
     },
     {
       "name": "proxy-https",
@@ -219,8 +211,7 @@
         "PROXY_PORT": 443,
         "PROXY_PROTOCOL": "https",
         "PROXY_REDIRECT": "https://forwardemail.net"
-      },
-      "node_args": "--disable-proto=delete"
+      }
     }
   ],
   "deploy": {

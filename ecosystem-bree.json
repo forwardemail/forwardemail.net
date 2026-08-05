@@ -16,8 +16,7 @@
       "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production"
-      },
-      "node_args": "--disable-proto=delete"
+      }
     }
   ],
   "deploy": {
