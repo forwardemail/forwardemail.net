@@ -541,13 +541,33 @@ async function getDatabase(
       // races; this Redis NX lock prevents inter-process races that cause
       // SQLITE_CORRUPT on newly created databases.
       //
-      // NOTE: Only acquire the lock when the file does NOT exist yet.
-      // Existing databases are safe to open concurrently (SQLite WAL mode
-      // handles multiple readers/writers).  Locking every cache miss causes
-      // massive SQLITE_BUSY contention after restarts when caches are cold.
+      // NOTE: We acquire the lock when:
+      //   1. The file does NOT exist yet (brand-new database), OR
+      //   2. The file exists but is smaller than INITIAL_DB_SIZE, indicating
+      //      it was partially written by another worker on the NFS mount
+      //      (the file is created by `new Database()` before setupPragma
+      //      and migrateSchema finish writing the encryption header + schema).
+      //
+      // Existing databases at or above INITIAL_DB_SIZE are safe to open
+      // concurrently (SQLite WAL mode handles multiple readers/writers).
+      // Locking every cache miss causes massive SQLITE_BUSY contention
+      // after restarts when caches are cold.
       //
       const dbFileExists = fs.existsSync(dbFilePath);
-      if (instance.client && !dbFileExists) {
+      let dbFileNeedsInit = !dbFileExists;
+      if (dbFileExists && !readonly) {
+        try {
+          const st = fs.statSync(dbFilePath);
+          if (st.size < config.INITIAL_DB_SIZE) {
+            // File exists but is smaller than a fully-initialized empty DB.
+            // This means another worker is still writing it (NFS propagated
+            // the file creation but setupPragma/migrateSchema hasn't finished).
+            dbFileNeedsInit = true;
+          }
+        } catch {}
+      }
+
+      if (instance.client && dbFileNeedsInit) {
         const openLockKey = `db_open_lock:${alias.id}`;
         const lockAcquired = await instance.client.set(
           openLockKey,
@@ -604,7 +624,7 @@ async function getDatabase(
         }
       } finally {
         // Release the distributed lock (only if we acquired it)
-        if (instance.client && !dbFileExists) {
+        if (instance.client && dbFileNeedsInit) {
           await instance.client
             .eval(
               RELEASE_LOCK_SCRIPT,
@@ -2138,7 +2158,7 @@ function retryGetDatabase(...args) {
             if (!stats.isFile() || stats.size > config.INITIAL_DB_SIZE) {
               //
               // For files with real data (> INITIAL_DB_SIZE): do NOT delete.
-              // Notify domain admins (deduplicated every 4 hours) so they can
+              // Notify domain admins (deduplicated every 72 hours) so they can
               // backup local messages and reset the password.
               //
               if (
@@ -2159,7 +2179,7 @@ function retryGetDatabase(...args) {
                       corruptAlertKey,
                       new Date().toISOString(),
                       'PX',
-                      ms('4h')
+                      ms('72h')
                     );
                   }
                 }
@@ -2235,19 +2255,22 @@ function retryGetDatabase(...args) {
           const cooldownTTL = isCorrupt ? ms('1h') : ms('7d');
 
           if (instance.client) {
-            const alreadyReset = await instance.client.get(cooldownKey);
-            if (alreadyReset) {
-              error.message = `${error.code} loop detected (Redis) for ${session.user.username} (${session.user.alias_id}) - db was already reset on ${alreadyReset}, refusing to delete again\n\n${error.message}`;
-              throw error;
-            }
-
-            // Set cooldown to break the loop
-            await instance.client.set(
+            // Atomic NX: only one worker wins the right to delete+recreate.
+            // Without NX, multiple workers hitting SQLITE_CORRUPT simultaneously
+            // could all pass the check before any sets the cooldown (TOCTOU race),
+            // causing concurrent delete+recreate which re-corrupts the file.
+            const cooldownAcquired = await instance.client.set(
               cooldownKey,
               new Date().toISOString(),
               'PX',
-              cooldownTTL
+              cooldownTTL,
+              'NX'
             );
+
+            if (!cooldownAcquired) {
+              error.message = `${error.code} loop detected (Redis) for ${session.user.username} (${session.user.alias_id}) - db was already reset recently, refusing to delete again\n\n${error.message}`;
+              throw error;
+            }
           }
 
           //
@@ -2310,9 +2333,13 @@ function retryGetDatabase(...args) {
           // When the database is recreated on retry, migrateSchema must run
           // again to create tables, indexes, default folders, etc.
           //
+          // Also clear db_open_lock so the retry (and any other blocked workers)
+          // can acquire the initialization lock for the fresh database file.
+          //
           if (instance.client) {
             await instance.client
               .del(
+                `db_open_lock:${session.user.alias_id}`,
                 `migrate_check:${session.user.alias_id}`,
                 `folder_check:${session.user.alias_id}`,
                 `trash_check:${session.user.alias_id}`,
