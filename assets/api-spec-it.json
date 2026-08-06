@@ -1832,6 +1832,12 @@
           "max_recipients_per_alias": {
             "type": "integer"
           },
+          "alias_default_smtp_limit": {
+            "type": "integer",
+            "description": "Limite predefinito giornaliero di invio SMTP applicato agli alias appena creati su questo dominio. Impostare su 0 per disabilitarlo (gli alias utilizzeranno il limite a livello di dominio). Non può superare il limite SMTP effettivo del dominio.",
+            "minimum": 0,
+            "default": 0
+          },
           "smtp_port": {
             "type": "string"
           },
@@ -1972,6 +1978,7 @@
             "is_smtp_suspended": false,
             "plan": "team",
             "max_recipients_per_alias": 10,
+            "alias_default_smtp_limit": 0,
             "smtp_port": "25",
             "name": "test.com",
             "has_mx_record": false,

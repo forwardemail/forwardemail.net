@@ -3741,6 +3741,7 @@ We enforce outbound SMTP rate limits at multiple levels to prevent abuse while k
 * **Team plan domains** — the effective daily limit is the highest `smtp_limit` among all admin members of the domain. For example, if one admin has a limit of 300 and another has 500, the domain's effective limit is 500.
 * **Enhanced Protection and other plans** — the effective daily limit is the sending user's own `smtp_limit` (which defaults to 300 messages per day).
 * **Per-alias override** — domain administrators can optionally set a custom `smtp_limit` on individual aliases. When set, this is checked first (before the domain and user limits). This is useful for restricting specific aliases to a lower sending volume.
+* **Domain default for new aliases** — domain administrators can set an `alias_default_smtp_limit` on the domain (via the API or Advanced Settings in the dashboard). When set, all newly created aliases on that domain will automatically inherit this value as their `smtp_limit`. This cannot exceed the domain’s effective SMTP limit. Existing aliases are not affected. Set to `0` to disable.
 
 **System administrators** (Forward Email staff) are exempt from all rate limits.
 

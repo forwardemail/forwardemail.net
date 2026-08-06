@@ -442,6 +442,14 @@ const Domains = new mongoose.Schema({
     min: 0,
     max: 1000
   },
+  // Default SMTP limit applied to newly created aliases on this domain.
+  // 0 means disabled (aliases use the domain/user limit as before).
+  // Cannot exceed the domain's effective SMTP limit (highest admin smtp_limit).
+  alias_default_smtp_limit: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
   smtp_port: {
     type: String,
     default: '25',

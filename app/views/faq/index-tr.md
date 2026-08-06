@@ -3698,6 +3698,7 @@ Kötüye kullanımı önlemek ve meşru kullanımlara esneklik sağlamak için �
 * **Team plan domains** — etkili günlük limit, alan adı üzerindeki tüm yönetici üyeler arasındaki en yüksek `smtp_limit`'tir. Örneğin, bir yönetici 300 limiti, bir diğeri 500 ise, alan adının etkili limiti 500'dür.
 * **Enhanced Protection ve diğer planlar** — etkili günlük limit, gönderen kullanıcının kendi `smtp_limit`'idir (varsayılan olarak günde 300 mesaj).
 * **Takma ad bazlı geçersiz kılma** — alan adı yöneticileri isteğe bağlı olarak bireysel takma adlara özel bir `smtp_limit` belirleyebilir. Ayarlanmışsa, önce bu kontrol edilir (alan adı ve kullanıcı limitlerinden önce). Bu, belirli takma adları daha düşük bir gönderim hacmiyle sınırlamak için faydalıdır.
+* **Yeni takma adlar için alan varsayılanı** — alan yöneticileri, alan için bir `alias_default_smtp_limit` belirleyebilir (API üzerinden veya kontrol panelindeki **Gelişmiş Ayarlar** aracılığıyla). Ayarlandığında, o alanda yeni oluşturulan tüm takma adlar bu değeri otomatik olarak kendi `smtp_limit` değerleri olarak devralır. Bu değer, alanın yürürlükteki SMTP limitini aşamaz. Mevcut takma adları etkilenmez. Devre dışı bırakmak için `0` olarak ayarlayın.
 
 **Sistem yöneticileri** (Forward Email personeli) tüm oran sınırlamalarından muaftır.
 

@@ -19721,5 +19721,6 @@
   "Suspend SMTP Access": "Suspend SMTP Access",
   "Alias Info": "Alias Info",
   "6a5423513b7680a7a3315af2": "6a5423513b7680a7a3315af2",
-  "Counter resets <span class=\"dayjs notranslate\" data-time=\"%d\" data-date-style=\"short\" data-time-style=\"short\">%s</span>.": "Counter resets <span class=\"dayjs notranslate\" data-time=\"%d\" data-date-style=\"short\" data-time-style=\"short\">%s</span>."
+  "Counter resets <span class=\"dayjs notranslate\" data-time=\"%d\" data-date-style=\"short\" data-time-style=\"short\">%s</span>.": "Counter resets <span class=\"dayjs notranslate\" data-time=\"%d\" data-date-style=\"short\" data-time-style=\"short\">%s</span>.",
+  "Default alias SMTP limit cannot exceed the domain's effective limit of %d messages per day.": "Default alias SMTP limit cannot exceed the domain's effective limit of %d messages per day."
 }

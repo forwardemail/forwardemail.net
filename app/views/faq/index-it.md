@@ -3699,6 +3699,7 @@ Applichiamo limiti di invio SMTP in uscita a più livelli per prevenire abusi ma
 * **I domini del piano Team** — il limite giornaliero effettivo è il valore più alto di `smtp_limit` tra tutti gli amministratori del dominio. Ad esempio, se un amministratore ha un limite di 300 e un altro di 500, il limite effettivo del dominio è 500.
 * **Enhanced Protection e altri piani** — il limite giornaliero effettivo è il `smtp_limit` dell'utente mittente (che per impostazione predefinita è 300 messaggi al giorno).
 * **Override per alias** — gli amministratori del dominio possono opzionalmente impostare un `smtp_limit` personalizzato sugli alias individuali. Quando impostato, viene controllato per primo (prima dei limiti del dominio e dell'utente). Questo è utile per limitare specifici alias a un volume di invio inferiore.
+* **Predefinito del dominio per i nuovi alias** — gli amministratori del dominio possono impostare un `alias_default_smtp_limit` sul dominio (tramite l'API o le Impostazioni avanzate nella dashboard). Quando impostato, tutti i nuovi alias creati su quel dominio erediteranno automaticamente questo valore come loro `smtp_limit`. Questo non può superare il limite SMTP effettivo del dominio. Gli alias esistenti non sono interessati. Impostare a `0` per disabilitare.
 
 **Amministratori di sistema** (personale di Forward Email) sono esenti da tutti i limiti di invio.
 

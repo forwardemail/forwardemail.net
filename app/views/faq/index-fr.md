@@ -3699,6 +3699,7 @@ Nous appliquons des limites de débit SMTP sortant à plusieurs niveaux pour pr�
 * **Team plan domains** — la limite journalière effective est le `smtp_limit` le plus élevé parmi tous les administrateurs du domaine. Par exemple, si un administrateur a une limite de 300 et un autre de 500, la limite effective du domaine sera de 500.
 * **Enhanced Protection and other plans** — la limite journalière effective est le `smtp_limit` propre à l'utilisateur qui envoie (qui est par défaut de 300 messages par jour).
 * **Per-alias override** — les administrateurs de domaine peuvent éventuellement définir un `smtp_limit` personnalisé sur des alias individuels. Lorsqu'il est défini, il est vérifié en premier (avant les limites du domaine et de l'utilisateur). Cela est utile pour restreindre certains alias à un volume d'envoi inférieur.
+* **Valeur par défaut du domaine pour les nouveaux alias** — les administrateurs de domaine peuvent définir un `alias_default_smtp_limit` sur le domaine (via l'API ou les Paramètres avancés du tableau de bord). Une fois défini, tous les alias nouvellement créés sur ce domaine hériteront automatiquement de cette valeur comme leur `smtp_limit`. Cela ne peut pas dépasser la limite SMTP effective du domaine. Les alias existants ne sont pas affectés. Définir sur `0` pour désactiver.
 
 **System administrators** (Forward Email staff) sont exemptés de toutes les limites de débit.
 

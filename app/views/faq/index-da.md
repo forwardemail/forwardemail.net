@@ -3699,6 +3699,7 @@ Vi håndhæver udgående SMTP-ratebegrænsninger på flere niveauer for at forhi
 * **Domæner på Team-planen** — den effektive daglige grænse er den højeste `smtp_limit` blandt alle adminmedlemmer af domænet. For eksempel, hvis en admin har en grænse på 300 og en anden har 500, er domænets effektive grænse 500.
 * **Forbedret beskyttelse og andre planer** — den effektive daglige grænse er den afsendende brugers egen `smtp_limit` (som standard er 300 beskeder pr. dag).
 * **Per-alias override** — domæneadministratorer kan valgfrit sætte en brugerdefineret `smtp_limit` på individuelle aliaser. Når den er sat, kontrolleres den først (før domæne- og brugergrænserne). Dette er nyttigt for at begrænse bestemte aliaser til et lavere afsendelsesvolumen.
+* **Domænestandard for nye aliaser** — domæneadministratorer kan angive en `alias_default_smtp_limit` på domænet (via API eller Avancerede indstillinger i dashboardet). Når den er indstillet, vil alle nyoprettede aliaser på det domæne automatisk arve denne værdi som deres `smtp_limit`. Denne kan ikke overstige domænets effektive SMTP-grænse. Eksisterende aliaser påvirkes ikke. Sæt til `0` for at deaktivere.
 
 **Systemadministratorer** (Forward Email-personale) er undtaget fra alle ratebegrænsninger.
 

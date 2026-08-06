@@ -1832,6 +1832,12 @@
           "max_recipients_per_alias": {
             "type": "integer"
           },
+          "alias_default_smtp_limit": {
+            "type": "integer",
+            "description": "このドメインで新規作成されるエイリアスに適用される、デフォルトの1日あたりのSMTP送信上限。無効にするには0に設定してください（エイリアスはドメイン全体の制限を使用します）。ドメインの実効SMTP制限を超えることはできません。",
+            "minimum": 0,
+            "default": 0
+          },
           "smtp_port": {
             "type": "string"
           },
@@ -1972,6 +1978,7 @@
             "is_smtp_suspended": false,
             "plan": "team",
             "max_recipients_per_alias": 10,
+            "alias_default_smtp_limit": 0,
             "smtp_port": "25",
             "name": "test.com",
             "has_mx_record": false,

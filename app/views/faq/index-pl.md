@@ -3697,6 +3697,7 @@ Stosujemy limity wysyłki SMTP wychodzącej na wielu poziomach, aby zapobiegać 
 * **Team plan domains** — efektywny dzienny limit to najwyższy `smtp_limit` spośród wszystkich administratorów domeny. Na przykład, jeśli jeden administrator ma limit 300, a inny 500, efektywny limit domeny wynosi 500.
 * **Enhanced Protection and other plans** — efektywny dzienny limit to własny `smtp_limit` użytkownika wysyłającego (który domyślnie wynosi 300 wiadomości na dzień).
 * **Nadpisanie na aliasie** — administratorzy domeny mogą opcjonalnie ustawić niestandardowy `smtp_limit` dla pojedynczych aliasów. Gdy jest ustawiony, jest on sprawdzany jako pierwszy (przed limitami domeny i użytkownika). To przydatne do ograniczania konkretnych aliasów do niższej liczby wysyłek.
+* **Domyślne ustawienie domeny dla nowych aliasów** — administratorzy domeny mogą ustawić `alias_default_smtp_limit` dla domeny (za pomocą API lub w ustawieniach zaawansowanych w panelu). Gdy jest ustawione, wszystkie nowo utworzone aliasy w tej domenie automatycznie odziedziczą tę wartość jako swoje `smtp_limit`. Nie może to przekraczać efektywnego limitu SMTP domeny. Nie dotyczy istniejących aliasów. Ustaw na `0`, aby wyłączyć.
 
 **Administratorzy systemu** (pracownicy Forward Email) są zwolnieni ze wszystkich limitów.
 

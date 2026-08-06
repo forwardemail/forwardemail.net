@@ -1832,6 +1832,12 @@
           "max_recipients_per_alias": {
             "type": "integer"
           },
+          "alias_default_smtp_limit": {
+            "type": "integer",
+            "description": "Standardgräns för daglig SMTP-sändning som tillämpas på nyskapade alias på denna domän. Sätt till 0 för att inaktivera (aliasen kommer att använda den domänövergripande gränsen). Får inte överstiga domänens effektiva SMTP-gräns.",
+            "minimum": 0,
+            "default": 0
+          },
           "smtp_port": {
             "type": "string"
           },
@@ -1972,6 +1978,7 @@
             "is_smtp_suspended": false,
             "plan": "team",
             "max_recipients_per_alias": 10,
+            "alias_default_smtp_limit": 0,
             "smtp_port": "25",
             "name": "test.com",
             "has_mx_record": false,

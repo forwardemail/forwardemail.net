@@ -3698,6 +3698,7 @@ We handhaven uitgaande SMTP-snelheidslimieten op meerdere niveaus om misbruik te
 * **Domeinen van het Team-plan** — het effectieve dagelijkse limiet is de hoogste `smtp_limit` onder alle admin-leden van het domein. Bijvoorbeeld, als de ene admin een limiet van 300 heeft en een andere 500, is het effectieve domeinlimiet 500.
 * **Enhanced Protection en andere plannen** — het effectieve dagelijkse limiet is de `smtp_limit` van de verzendende gebruiker (wat standaard 300 berichten per dag is).
 * **Per-alias override** — domeinbeheerders kunnen optioneel een aangepaste `smtp_limit` instellen op individuele aliassen. Wanneer ingesteld, wordt deze eerst gecontroleerd (voorafgaand aan de domein- en gebruikerslimieten). Dit is nuttig om specifieke aliassen te beperken tot een lager verzendvolume.
+* **Domeinstandaard voor nieuwe aliassen** — domeinbeheerders kunnen een `alias_default_smtp_limit` voor het domein instellen (via de API of Geavanceerde instellingen in het dashboard). Wanneer ingesteld zullen alle nieuw aangemaakte aliassen op dat domein deze waarde automatisch erven als hun `smtp_limit`. Dit mag de effectieve SMTP-limiet van het domein niet overschrijden. Bestaande aliassen worden niet beïnvloed. Stel in op `0` om uit te schakelen.
 
 **Systeembeheerders** (Forward Email-medewerkers) zijn vrijgesteld van alle snelheidslimieten.
 

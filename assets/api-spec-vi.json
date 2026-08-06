@@ -1832,6 +1832,12 @@
           "max_recipients_per_alias": {
             "type": "integer"
           },
+          "alias_default_smtp_limit": {
+            "type": "integer",
+            "description": "Giới hạn gửi SMTP hàng ngày mặc định được áp dụng cho các bí danh mới tạo trên miền này. Đặt thành 0 để vô hiệu hóa (các bí danh sẽ sử dụng giới hạn trên toàn miền). Không được vượt quá giới hạn SMTP hiệu dụng của miền.",
+            "minimum": 0,
+            "default": 0
+          },
           "smtp_port": {
             "type": "string"
           },
@@ -1972,6 +1978,7 @@
             "is_smtp_suspended": false,
             "plan": "team",
             "max_recipients_per_alias": 10,
+            "alias_default_smtp_limit": 0,
             "smtp_port": "25",
             "name": "test.com",
             "has_mx_record": false,

@@ -1832,6 +1832,12 @@
           "max_recipients_per_alias": {
             "type": "integer"
           },
+          "alias_default_smtp_limit": {
+            "type": "integer",
+            "description": "이 도메인에서 새로 생성된 별칭에 적용되는 기본 일일 SMTP 전송 한도입니다. 비활성화하려면 0으로 설정하세요(별칭은 도메인 전체 한도를 사용합니다). 도메인에 적용되는 유효한 SMTP 한도를 초과할 수 없습니다.",
+            "minimum": 0,
+            "default": 0
+          },
           "smtp_port": {
             "type": "string"
           },
@@ -1972,6 +1978,7 @@
             "is_smtp_suspended": false,
             "plan": "team",
             "max_recipients_per_alias": 10,
+            "alias_default_smtp_limit": 0,
             "smtp_port": "25",
             "name": "test.com",
             "has_mx_record": false,

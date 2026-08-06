@@ -3698,6 +3698,7 @@ Kimenő SMTP-korlátozásokat több szinten alkalmazunk a visszaélések megelő
 * **Team terv domainjai** — a tényleges napi korlát a domain összes admin tagja közül a legmagasabb `smtp_limit`. Például, ha az egyik admin korlátja 300 és a másiké 500, a domain tényleges korlátja 500.
 * **Enhanced Protection és egyéb tervek** — a tényleges napi korlát a küldő felhasználó saját `smtp_limit` értéke (amely alapértelmezés szerint 300 üzenet naponta).
 * **Aliasonkénti felülírás** — a domain adminisztrátorok opcionálisan beállíthatnak egyedi `smtp_limit`-et egyes aliasokra. Ha be van állítva, ezt ellenőrizzük először (mielőtt a domain és felhasználói korlátokat). Ez hasznos, ha egyes aliasokat alacsonyabb küldési mennyiségre szeretnénk korlátozni.
+* **Új aliasok alapértelmezett beállítása a domainen** — a domain adminisztrátorok beállíthatják az `alias_default_smtp_limit` értéket a domainre (az API-n keresztül vagy a műszerfalon a Speciális beállításoknál). Ha be van állítva, az adott domainen létrehozott minden új alias automatikusan örökli ezt az értéket `smtp_limit`-ként. Ez nem haladhatja meg a domain tényleges SMTP-korlátját. A meglévő aliasokat ez nem érinti. A letiltáshoz állítsa `0`-ra.
 
 **Rendszeradminisztrátorok** (Forward Email személyzete) mentesülnek minden korlátozás alól.
 

@@ -1832,6 +1832,12 @@
           "max_recipients_per_alias": {
             "type": "integer"
           },
+          "alias_default_smtp_limit": {
+            "type": "integer",
+            "description": "الحد اليومي الافتراضي للإرسال عبر SMTP والمطبق على الأسماء المستعارة التي تم إنشاؤها حديثًا في هذا النطاق. اضبطه على 0 لتعطيله (ستستخدم الأسماء المستعارة حد النطاق العام). لا يمكن أن يتجاوز الحد الفعّال لـ SMTP للنطاق.",
+            "minimum": 0,
+            "default": 0
+          },
           "smtp_port": {
             "type": "string"
           },
@@ -1972,6 +1978,7 @@
             "is_smtp_suspended": false,
             "plan": "team",
             "max_recipients_per_alias": 10,
+            "alias_default_smtp_limit": 0,
             "smtp_port": "25",
             "name": "test.com",
             "has_mx_record": false,

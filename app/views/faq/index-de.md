@@ -3698,6 +3698,7 @@ Wir setzen ausgehende SMTP-Ratenbegrenzungen auf mehreren Ebenen durch, um Missb
 * **Domains mit Team-Plan** — das effektive Tageslimit ist das höchste `smtp_limit` unter allen Administratoren der Domain. Wenn ein Administrator zum Beispiel ein Limit von 300 und ein anderer eines von 500 hat, beträgt das effektive Domain-Limit 500.
 * **Enhanced Protection und andere Pläne** — das effektive Tageslimit ist das eigene `smtp_limit` des sendenden Benutzers (standardmäßig 300 Nachrichten pro Tag).
 * **Pro-Alias-Override** — Domain-Administratoren können optional ein benutzerdefiniertes `smtp_limit` für einzelne Aliase setzen. Wenn gesetzt, wird dieses zuerst geprüft (vor Domain- und Benutzerlimits). Dies ist nützlich, um bestimmte Aliase auf ein geringeres Sendevolumen zu beschränken.
+* **Domainstandard für neue Aliase** — Domain-Administratoren können einen `alias_default_smtp_limit` für die Domain festlegen (über die API oder die erweiterten Einstellungen im Dashboard). Wenn gesetzt, erben alle neu erstellten Aliase auf dieser Domain automatisch diesen Wert als ihr `smtp_limit`. Dieser Wert darf das effektive SMTP-Limit der Domain nicht überschreiten. Bestehende Aliase sind nicht betroffen. Auf `0` setzen, um zu deaktivieren.
 
 **Systemadministratoren** (Forward Email staff) sind von allen Ratenbegrenzungen ausgenommen.
 

@@ -83,6 +83,7 @@ const keys = _.sortBy([
   'is_smtp_suspended',
   'plan',
   'max_recipients_per_alias',
+  'alias_default_smtp_limit',
   'smtp_port',
   'members',
   'invites',
@@ -3735,4 +3736,176 @@ test('default forwarding address accepts FQDN and IP', async (t) => {
 
   t.is(res.status, 200);
   t.is(res.body[config.userFields.defaultForwardingAddress], '192.168.1.100');
+});
+
+test('alias_default_smtp_limit - set, validate, and apply to new aliases', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate(),
+      [config.userFields.smtpLimit]: 300
+    })
+    .create();
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+  await user.save();
+
+  // create domain
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        domain: 'testdomain-smtp-default.com',
+        catchall: 'false'
+      });
+    t.is(res.status, 200);
+    // Should default to 0
+    t.is(res.body.alias_default_smtp_limit, 0);
+  }
+
+  // set alias_default_smtp_limit to 50
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-smtp-default.com')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        alias_default_smtp_limit: 50
+      });
+    t.is(res.status, 200);
+    t.is(res.body.alias_default_smtp_limit, 50);
+  }
+
+  // create an alias - it should inherit the domain default
+  {
+    const res = await t.context.api
+      .post('/v1/domains/testdomain-smtp-default.com/aliases')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        name: 'test-default-limit',
+        recipients: [user.email]
+      });
+    t.is(res.status, 200);
+    t.is(res.body.smtp_limit, 50);
+  }
+
+  // clear the domain default (set to 0)
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-smtp-default.com')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        alias_default_smtp_limit: 0
+      });
+    t.is(res.status, 200);
+    t.is(res.body.alias_default_smtp_limit, 0);
+  }
+
+  // create another alias - should NOT get a default (domain default is 0)
+  {
+    const res = await t.context.api
+      .post('/v1/domains/testdomain-smtp-default.com/aliases')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        name: 'test-no-default',
+        recipients: [user.email]
+      });
+    t.is(res.status, 200);
+    t.is(res.body.smtp_limit, 0);
+  }
+});
+
+test('alias_default_smtp_limit - cannot exceed domain effective limit', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate(),
+      [config.userFields.smtpLimit]: 300
+    })
+    .create();
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+  await user.save();
+
+  // create domain
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        domain: 'testdomain-smtp-security.com',
+        catchall: 'false'
+      });
+    t.is(res.status, 200);
+  }
+
+  // try to set alias_default_smtp_limit higher than the admin's limit (300)
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-smtp-security.com')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        alias_default_smtp_limit: 500
+      });
+    t.is(res.status, 400);
+  }
+
+  // set to exactly the admin's limit (should succeed)
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-smtp-security.com')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        alias_default_smtp_limit: 300
+      });
+    t.is(res.status, 200);
+    t.is(res.body.alias_default_smtp_limit, 300);
+  }
+
+  // negative values should fail
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-smtp-security.com')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        alias_default_smtp_limit: -1
+      });
+    t.is(res.status, 400);
+  }
 });

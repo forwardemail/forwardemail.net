@@ -3698,6 +3698,7 @@ Uplatňujeme limity odchozích SMTP rychlostí na několika úrovních, abychom 
 * **Domény v plánu Team** — efektivní denní limit je nejvyšší `smtp_limit` mezi všemi administrátory domény. Například, pokud jeden administrátor má limit 300 a jiný 500, efektivní limit domény bude 500.
 * **Enhanced Protection a další plány** — efektivní denní limit je vlastní `smtp_limit` odesílajícího uživatele (ve výchozím nastavení 300 zpráv za den).
 * **Přepsání pro alias** — správci domény mohou volitelně nastavit vlastní `smtp_limit` na jednotlivých aliasech. Když je nastaven, kontroluje se jako první (před limity domény a uživatele). To je užitečné pro omezení konkrétních aliasů na nižší objem odeslaných zpráv.
+* **Výchozí nastavení domény pro nové aliasy** — správci domény mohou pro doménu nastavit `alias_default_smtp_limit` (přes API nebo v pokročilých nastaveních na ovládacím panelu). Pokud je nastaveno, všechny nově vytvořené aliasy na této doméně automaticky převezmou tuto hodnotu jako svůj `smtp_limit`. Tato hodnota nesmí překročit efektivní SMTP limit domény. Existující aliasy nejsou tímto ovlivněny. Nastavte na `0` pro deaktivaci.
 
 * **Systémoví administrátoři** (zaměstnanci Forward Email) jsou osvobozeni od všech omezení rychlosti.
 

@@ -3697,6 +3697,7 @@ Chúng tôi thực thi giới hạn tốc độ SMTP đầu ra ở nhiều mức
 * **Team plan domains** — giới hạn hàng ngày hiệu quả là `smtp_limit` cao nhất trong số tất cả thành viên quản trị của tên miền. Ví dụ, nếu một quản trị viên có giới hạn 300 và một quản trị viên khác có 500, thì giới hạn hiệu quả của tên miền là 500.
 * **Enhanced Protection and other plans** — giới hạn hàng ngày hiệu quả là `smtp_limit` của người dùng gửi (mặc định là 300 tin nhắn mỗi ngày).
 * **Per-alias override** — quản trị viên tên miền có thể tùy chọn đặt `smtp_limit` tùy chỉnh trên từng bí danh. Khi được đặt, giới hạn này được kiểm tra trước (trước giới hạn tên miền và người dùng). Điều này hữu ích để hạn chế một số bí danh cụ thể ở khối lượng gửi thấp hơn.
+* **Mặc định tên miền cho các bí danh mới** — quản trị viên tên miền có thể đặt một `alias_default_smtp_limit` cho tên miền (qua API hoặc Cài đặt nâng cao trên bảng điều khiển). Khi được đặt, tất cả bí danh mới được tạo trên tên miền đó sẽ tự động kế thừa giá trị này làm `smtp_limit` của chúng. Giá trị này không được vượt quá giới hạn SMTP hiệu lực của tên miền. Các bí danh hiện có sẽ không bị ảnh hưởng. Đặt thành `0` để vô hiệu hóa.
 
 **System administrators** (Forward Email staff) được miễn mọi giới hạn tốc độ.
 

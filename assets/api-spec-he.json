@@ -1832,6 +1832,12 @@
           "max_recipients_per_alias": {
             "type": "integer"
           },
+          "alias_default_smtp_limit": {
+            "type": "integer",
+            "description": "מגבלת שליחת SMTP יומית ברירת מחדל שמוחלת על אליאסים שנוצרו זה עתה בדומיין זה. הגדר ל-0 כדי להשבית (האליאסים ישתמשו במגבלה החלה על כל הדומיין). אינה יכולה לעלות על מגבלת ה-SMTP היעילה של הדומיין.",
+            "minimum": 0,
+            "default": 0
+          },
           "smtp_port": {
             "type": "string"
           },
@@ -1972,6 +1978,7 @@
             "is_smtp_suspended": false,
             "plan": "team",
             "max_recipients_per_alias": 10,
+            "alias_default_smtp_limit": 0,
             "smtp_port": "25",
             "name": "test.com",
             "has_mx_record": false,

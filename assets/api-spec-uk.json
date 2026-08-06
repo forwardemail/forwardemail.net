@@ -1832,6 +1832,12 @@
           "max_recipients_per_alias": {
             "type": "integer"
           },
+          "alias_default_smtp_limit": {
+            "type": "integer",
+            "description": "Типовий добовий ліміт відправлення SMTP, що застосовується до щойно створених аліасів на цьому домені. Встановіть 0, щоб вимкнути (аліаси використовуватимуть ліміт, встановлений для всього домену). Не може перевищувати ефективний SMTP-ліміт домену.",
+            "minimum": 0,
+            "default": 0
+          },
           "smtp_port": {
             "type": "string"
           },
@@ -1972,6 +1978,7 @@
             "is_smtp_suspended": false,
             "plan": "team",
             "max_recipients_per_alias": 10,
+            "alias_default_smtp_limit": 0,
             "smtp_port": "25",
             "name": "test.com",
             "has_mx_record": false,

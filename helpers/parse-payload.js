@@ -2607,6 +2607,27 @@ async function parsePayload(data, ws) {
           payload.session
         );
 
+        //
+        // Integrity check: verify the newly created database is valid
+        // BEFORE returning success. If this fails, the caller
+        // (generate-alias-password) will not save the new token to MongoDB,
+        // preventing a corrupt-but-valid-token state.
+        //
+        try {
+          const integrityResult = db.pragma('integrity_check', {
+            simple: true
+          });
+          if (integrityResult !== 'ok') {
+            throw new TypeError(
+              `Integrity check failed after database reset: ${integrityResult}`
+            );
+          }
+        } catch (integrityErr) {
+          integrityErr.isCodeBug = true;
+          logger.fatal(integrityErr, { payload });
+          throw integrityErr;
+        }
+
         // update storage
         try {
           await updateStorageUsed(payload.session.user.alias_id, this.client);

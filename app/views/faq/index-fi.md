@@ -3697,6 +3697,7 @@ Sovellamme lähtevän SMTP-liikenteen rajoituksia useilla tasoilla estääksemme
 * **Team plan domains** — käytännön päivittäinen raja on korkein `smtp_limit` kaikkien verkkotunnuksen ylläpitäjäjäsenten keskuudessa. Esimerkiksi, jos yhdellä ylläpitäjällä on raja 300 ja toisella 500, verkkotunnuksen käytännön raja on 500.
 * **Enhanced Protection and other plans** — käytännön päivittäinen raja on lähettävän käyttäjän oma `smtp_limit` (oletusarvoisesti 300 viestiä päivässä).
 * **Aliaskohtainen yliajo** — verkkotunnuksen ylläpitäjät voivat valinnaisesti asettaa mukautetun `smtp_limit`-arvon yksittäisille aliaksille. Kun tämä on asetettu, se tarkistetaan ensin (ennen verkkotunnuksen ja käyttäjän rajoja). Tämä on hyödyllistä, kun halutaan rajoittaa tiettyjen aliaksien lähetysvolyymia pienemmäksi.
+* **Verkkotunnuksen oletusarvo uusille aliaksille** — Verkkotunnuksen ylläpitäjät voivat asettaa verkkotunnukselle `alias_default_smtp_limit` (API:n kautta tai kojelaudan Lisäasetuksissa). Kun tämä on asetettu, kyseisen verkkotunnuksen kaikki uudet aliakset perivät automaattisesti tämän arvon `smtp_limit`-arvokseen. Tämä ei voi ylittää verkkotunnuksen voimassa olevaa SMTP-rajaa. Olemassa oleviin aliaksiin tämä ei vaikuta. Aseta arvoksi `0` poistaaksesi käytöstä.
 
 **Järjestelmänvalvojat** (Forward Email staff) ovat vapautettuja kaikista rajoituksista.
 

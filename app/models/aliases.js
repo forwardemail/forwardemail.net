@@ -1076,6 +1076,20 @@ Aliases.pre('save', async function (next) {
         );
     }
 
+    //
+    // Apply domain's alias_default_smtp_limit to newly created aliases
+    // that don't already have an explicit smtp_limit set.
+    // This allows domain admins to enforce a default sending limit
+    // on all new aliases without manually configuring each one.
+    //
+    if (
+      alias.isNew &&
+      alias.smtp_limit === 0 &&
+      domain.alias_default_smtp_limit > 0
+    ) {
+      alias.smtp_limit = domain.alias_default_smtp_limit;
+    }
+
     // determine the domain membership for the user
     let member = domain.members.find((member) =>
       user

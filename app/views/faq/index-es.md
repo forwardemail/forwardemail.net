@@ -3699,6 +3699,7 @@ Aplicamos límites de tasa SMTP saliente en varios niveles para prevenir abusos 
 * **Dominios del plan Team** — el límite diario efectivo es el mayor `smtp_limit` entre todos los administradores del dominio. Por ejemplo, si un administrador tiene un límite de 300 y otro de 500, el límite efectivo del dominio es 500.
 * **Enhanced Protection y otros planes** — el límite diario efectivo es el propio `smtp_limit` del usuario que envía (que por defecto es de 300 mensajes por día).
 * **Anulación por alias** — los administradores de dominio pueden, opcionalmente, establecer un `smtp_limit` personalizado en alias individuales. Cuando está establecido, esto se comprueba primero (antes que los límites de dominio y usuario). Esto es útil para restringir alias específicos a un volumen de envío menor.
+* **Valor predeterminado del dominio para nuevos alias** — los administradores del dominio pueden establecer un `alias_default_smtp_limit` en el dominio (a través de la API o Advanced Settings en el panel de control). Cuando se establece, todos los alias recién creados en ese dominio heredarán automáticamente este valor como su `smtp_limit`. Esto no puede exceder el límite SMTP efectivo del dominio. Los alias existentes no se ven afectados. Establecer en `0` para desactivar.
 
 **Los administradores del sistema** (personal de Forward Email) están exentos de todos los límites de tasa.
 

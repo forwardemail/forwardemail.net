@@ -534,6 +534,47 @@ block body
                       disabled=isDisabled
                     )= t("Save")
 
+          //- Default SMTP Limit Per Alias
+          if domain.group === 'admin'
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              input(
+                type="hidden",
+                name="_section",
+                value="alias_default_smtp_limit"
+              )
+              h2.h6.card-header= t("Default SMTP Limit Per Alias")
+              .card-body
+                +planRequired(false)
+                .form-group.mb-0
+                  input#input-alias-default-smtp-limit.form-control(
+                    type="number",
+                    min="0",
+                    step="1",
+                    disabled=isDisabled,
+                    name="alias_default_smtp_limit",
+                    value=domain.alias_default_smtp_limit || "",
+                    placeholder="0"
+                  )
+                  p.form-text.small.text-black.text-themed-50.mb-0
+                    != t("Set a default daily outbound SMTP message limit for all newly created aliases on this domain. Enter 0 or leave blank to disable (aliases will use the domain-wide limit instead). This value cannot exceed your domain's effective SMTP limit. Existing aliases are not affected.")
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.confirm-prompt.btn.btn-lg.btn-secondary(
+                      type="reset",
+                      disabled=isDisabled
+                    )= t("Reset")
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(
+                      type="submit",
+                      disabled=isDisabled
+                    )= t("Save")
+
           //- Ignore MX Check
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(

@@ -291,7 +291,54 @@ async function rekey(payload) {
     if (isCancelled) throw new ServerShutdownError();
     backupDb.prepare('VACUUM').run();
 
+    //
+    // Integrity check: verify the rekeyed database is not corrupt
+    // BEFORE renaming it over the original. If this fails, the original
+    // database remains untouched and the user is notified of the failure.
+    //
+    const integrityResult = backupDb.pragma('integrity_check', {
+      simple: true
+    });
+    if (integrityResult !== 'ok') {
+      throw new TypeError(
+        `Integrity check failed after rekey VACUUM: ${integrityResult}`
+      );
+    }
+
     await closeDatabase(backupDb);
+
+    //
+    // Final verification: re-open the rekeyed database with the NEW password
+    // to confirm it can actually be decrypted. This catches edge cases where
+    // the rekey pragma appeared to succeed but the file is unreadable.
+    //
+    {
+      const verifyDb = new Database(tmp, {
+        readonly: true,
+        fileMustExist: true,
+        timeout: config.busyTimeout
+      });
+      try {
+        await setupPragma(verifyDb, {
+          user: {
+            ...payload.session.user,
+            password: payload.new_password
+          }
+        });
+        const verifyIntegrity = verifyDb.pragma('integrity_check', {
+          simple: true
+        });
+        if (verifyIntegrity !== 'ok') {
+          throw new TypeError(
+            `Post-rekey verification failed: ${verifyIntegrity}`
+          );
+        }
+      } finally {
+        try {
+          verifyDb.close();
+        } catch {}
+      }
+    }
 
     // rename backup file (overwrites existing destination file)
     await fs.promises.rename(tmp, storagePath);

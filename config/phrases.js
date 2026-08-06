@@ -1148,5 +1148,11 @@ module.exports = {
   ALIAS_SMTP_LIMIT_INVALID: 'SMTP limit must be a non-negative integer.',
   ALIAS_SMTP_LIMIT_EXCEEDS_DOMAIN:
     "SMTP limit cannot exceed the domain's limit of %d messages per day.",
+  ALIAS_DEFAULT_SMTP_LIMIT_EXCEEDS_DOMAIN:
+    "Default alias SMTP limit cannot exceed the domain's effective limit of %d messages per day.",
+  ALIAS_MAILBOX_CORRUPT_SUBJECT:
+    'Action required: mailbox for <span class="notranslate">%s</span> needs password reset',
+  ALIAS_MAILBOX_CORRUPT_MESSAGE:
+    '<p>The encrypted mailbox for <span class="notranslate text-monospace font-weight-bold">%s</span> has been detected as corrupted.</p><p>Due to connectivity issues, the password was not able to be successfully applied to the encrypted database during initial setup or a recent password change.</p><p>Please take the following steps:</p><ol><li>Back up any local messages or mail for this alias.</li><li>Go to your domain\'s alias settings and perform a password reset for this alias.</li></ol><p>If you need assistance, please contact our support team.</p>',
   ...STATUSES
 };

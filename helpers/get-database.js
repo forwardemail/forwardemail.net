@@ -2136,6 +2136,57 @@ function retryGetDatabase(...args) {
           try {
             const stats = await fs.promises.stat(error.dbFilePath);
             if (!stats.isFile() || stats.size > config.INITIAL_DB_SIZE) {
+              //
+              // For files with real data (> INITIAL_DB_SIZE): do NOT delete.
+              // Notify domain admins (deduplicated every 4 hours) so they can
+              // backup local messages and reset the password.
+              //
+              if (
+                stats.isFile() &&
+                stats.size > config.INITIAL_DB_SIZE &&
+                session.user.owner_full_email
+              ) {
+                const corruptAlertKey = `corrupt_alert:${session.user.alias_id}`;
+                let shouldNotify = true;
+                if (instance.client) {
+                  const alreadyNotified = await instance.client.get(
+                    corruptAlertKey
+                  );
+                  if (alreadyNotified) {
+                    shouldNotify = false;
+                  } else {
+                    await instance.client.set(
+                      corruptAlertKey,
+                      new Date().toISOString(),
+                      'PX',
+                      ms('4h')
+                    );
+                  }
+                }
+
+                if (shouldNotify) {
+                  email({
+                    template: 'alert',
+                    message: {
+                      to: session.user.owner_full_email,
+                      cc: config.supportEmail,
+                      subject: `Action required: mailbox for ${session.user.username} needs password reset`
+                    },
+                    locals: {
+                      message:
+                        `<p>The encrypted mailbox for <span class="notranslate text-monospace font-weight-bold">${session.user.username}</span> has been detected as corrupted.</p>` +
+                        `<p>Due to connectivity issues, the password was not able to be successfully applied to the encrypted database during initial setup or a recent password change.</p>` +
+                        `<p>Please take the following steps:</p>` +
+                        `<ol><li>Back up any local messages or mail for this alias.</li>` +
+                        `<li>Go to your domain's alias settings and perform a password reset for this alias.</li></ol>` +
+                        `<p>If you need assistance, please contact our support team.</p>`
+                    }
+                  })
+                    .then()
+                    .catch((err) => logger.fatal(err));
+                }
+              }
+
               throw error;
             }
 
@@ -2280,7 +2331,7 @@ function retryGetDatabase(...args) {
           email({
             template: 'alert',
             message: {
-              to: config.alertsEmail,
+              to: config.supportEmail,
               subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
             },
             locals: {

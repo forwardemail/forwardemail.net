@@ -13,9 +13,10 @@ const { boolean } = require('boolean');
 const { isPort } = require('@forwardemail/validator');
 const _ = require('#helpers/lodash');
 
-const { Domains } = require('#models');
+const { Domains, Users } = require('#models');
 const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
+const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
 
 //
 // NOTE: this regex is not safe according to `safe-regex2` so we use `re2` to wrap it
@@ -79,6 +80,38 @@ async function updateDomain(ctx, next) {
       ctx.state.domain.max_quota_per_alias = bytes(
         ctx.request.body.max_quota_per_alias
       );
+    }
+
+    //
+    // alias_default_smtp_limit
+    // (the default SMTP limit applied to newly created aliases)
+    //
+    if (typeof ctx.request.body.alias_default_smtp_limit !== 'undefined') {
+      const limit = Number.parseInt(
+        ctx.request.body.alias_default_smtp_limit,
+        10
+      );
+      if (!Number.isFinite(limit) || limit < 0) {
+        throw Boom.badRequest(ctx.translateError('ALIAS_SMTP_LIMIT_INVALID'));
+      }
+
+      // Cannot exceed the domain's effective SMTP limit
+      if (limit > 0) {
+        const domainSmtpLimit = await getDomainSmtpLimitAsync(
+          ctx.state.domain,
+          Users
+        );
+        if (limit > domainSmtpLimit) {
+          throw Boom.badRequest(
+            ctx.translateError(
+              'ALIAS_DEFAULT_SMTP_LIMIT_EXCEEDS_DOMAIN',
+              domainSmtpLimit
+            )
+          );
+        }
+      }
+
+      ctx.state.domain.alias_default_smtp_limit = limit;
     }
 
     // require paid plan (note that the API middleware already does this)
@@ -165,6 +198,49 @@ async function updateDomain(ctx, next) {
         ctx.state.domain.max_quota_per_alias = bytes(
           ctx.request.body.max_quota_per_alias
         );
+        break;
+      }
+
+      case 'alias_default_smtp_limit': {
+        // require paid plan
+        if (ctx.state.domain.plan === 'free')
+          throw Boom.paymentRequired(
+            ctx.translateError(
+              'PLAN_UPGRADE_REQUIRED',
+              ctx.state.l(
+                `/my-account/domains/${punycode.toASCII(
+                  ctx.state.domain.name
+                )}/billing?plan=enhanced_protection`
+              )
+            )
+          );
+        const limitStr = ctx.request.body.alias_default_smtp_limit;
+        // Allow clearing (empty string or '0' sets to 0 = disabled)
+        const limit =
+          !isSANB(limitStr) || limitStr === '0'
+            ? 0
+            : Number.parseInt(limitStr, 10);
+        if (!Number.isFinite(limit) || limit < 0) {
+          throw Boom.badRequest(ctx.translateError('ALIAS_SMTP_LIMIT_INVALID'));
+        }
+
+        // Cannot exceed the domain's effective SMTP limit
+        if (limit > 0) {
+          const domainSmtpLimit = await getDomainSmtpLimitAsync(
+            ctx.state.domain,
+            Users
+          );
+          if (limit > domainSmtpLimit) {
+            throw Boom.badRequest(
+              ctx.translateError(
+                'ALIAS_DEFAULT_SMTP_LIMIT_EXCEEDS_DOMAIN',
+                domainSmtpLimit
+              )
+            );
+          }
+        }
+
+        ctx.state.domain.alias_default_smtp_limit = limit;
         break;
       }
 

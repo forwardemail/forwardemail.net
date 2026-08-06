@@ -3698,6 +3698,7 @@ Vi upprätthåller utgående SMTP-hastighetsbegränsningar på flera nivåer fö
 * **Domäner på teamplan** — den effektiva dagliga gränsen är den högsta `smtp_limit` bland alla administratörer för domänen. Till exempel, om en administratör har en gräns på 300 och en annan 500, blir domänens effektiva gräns 500.
 * **Enhanced Protection och andra planer** — den effektiva dagliga gränsen är den skickande användarens egna `smtp_limit` (som standard är 300 meddelanden per dag).
 * **Per-alias-överskrivning** — domänadministratörer kan valfritt sätta en anpassad `smtp_limit` på enskilda alias. När den är satt kontrolleras den först (före domän- och användargränserna). Detta är användbart för att begränsa specifika alias till en lägre sändvolym.
+* **Domänstandard för nya alias** — domänadministratörer kan ställa in ett `alias_default_smtp_limit` på domänen (via API eller Avancerade inställningar i instrumentpanelen). När det är inställt kommer alla nyligen skapade alias på den domänen automatiskt att ärva detta värde som sin `smtp_limit`. Detta får inte överstiga domänens effektiva SMTP-gräns. Befintliga alias påverkas inte. Sätt till `0` för att inaktivera.
 
 **Systemadministratörer** (Forward Email-personal) är undantagna från alla hastighetsbegränsningar.
 

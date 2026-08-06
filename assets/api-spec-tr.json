@@ -1832,6 +1832,12 @@
           "max_recipients_per_alias": {
             "type": "integer"
           },
+          "alias_default_smtp_limit": {
+            "type": "integer",
+            "description": "Bu alandaki yeni oluşturulan takma adlara uygulanan varsayılan günlük SMTP gönderme limiti. Devre dışı bırakmak için 0 olarak ayarlayın (takma adlar alan genel limitini kullanacaktır). Alanın etkin SMTP limitini aşamaz.",
+            "minimum": 0,
+            "default": 0
+          },
           "smtp_port": {
             "type": "string"
           },
@@ -1972,6 +1978,7 @@
             "is_smtp_suspended": false,
             "plan": "team",
             "max_recipients_per_alias": 10,
+            "alias_default_smtp_limit": 0,
             "smtp_port": "25",
             "name": "test.com",
             "has_mx_record": false,

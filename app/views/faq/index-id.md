@@ -3698,6 +3698,7 @@ Kami menerapkan batas laju SMTP keluar pada beberapa tingkat untuk mencegah peny
 * **Team plan domains** — batas harian efektif adalah `smtp_limit` tertinggi di antara semua admin pada domain tersebut. Misalnya, jika satu admin memiliki batas 300 dan admin lain 500, maka batas efektif domain adalah 500.
 * **Enhanced Protection and other plans** — batas harian efektif adalah `smtp_limit` milik pengguna pengirim itu sendiri (yang secara default adalah 300 pesan per hari).
 * **Per-alias override** — administrator domain dapat secara opsional menetapkan `smtp_limit` kustom pada alias individual. Ketika disetel, ini diperiksa terlebih dahulu (sebelum batas domain dan pengguna). Ini berguna untuk membatasi alias tertentu ke volume pengiriman yang lebih rendah.
+* **Pengaturan default domain untuk alias baru** — administrator domain dapat menetapkan `alias_default_smtp_limit` pada domain (melalui API atau Pengaturan Lanjutan di dasbor). Jika ditetapkan, semua alias yang baru dibuat pada domain tersebut akan otomatis mewarisi nilai ini sebagai `smtp_limit` mereka. Nilai ini tidak boleh melebihi batas SMTP efektif domain. Alias yang sudah ada tidak terpengaruh. Atur ke `0` untuk menonaktifkan.
 
 **System administrators** (staf Forward Email) dibebaskan dari semua batas laju.
 
