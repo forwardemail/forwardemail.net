@@ -1,580 +1,124 @@
-# Security Monitoring System
+# Server monitoring and alerts
 
 
-## Overview
+## What you receive
 
-This monitoring system provides automated email notifications for resource, access, device, package, audit, certificate, application, and service-health findings. Shared security monitors run on every host selected by `security.yml`; service-specific monitors add PM2, SQLite mirror, Redis, and MongoDB coverage where applicable. Periodic checks use systemd timers so genuine execution or notification-delivery failures reach the fleet-wide failure notifier.
+Every real [systemd][1] service failure sends a detailed **email**. The email contains the service name, host, failure result, current service status, and logs from the failing run. Sensitive values are redacted before the email is queued.
 
+Only a small set of important services also sends an **SMS**. Text messages are intentionally short. They contain the service, host, time, failure result, exit information, and whether the email was queued. They do not contain logs, commands, process output, passwords, tokens, or other sensitive details.
 
-## Features
+| Service                                                       | Email | SMS                     | Public status page |
+| ------------------------------------------------------------- | ----- | ----------------------- | ------------------ |
+| Any genuine systemd failure                                   | Yes   | No, unless listed below | No                 |
+| MongoDB on `mongo.forwardemail.net`                           | Yes   | Yes                     | Yes                |
+| MongoDB on `logs.forwardemail.net`                            | Yes   | Yes                     | Yes                |
+| Valkey on `redis.forwardemail.net`                            | Yes   | Yes                     | Yes                |
+| PM2 startup or PM2 health check on a Node.js server           | Yes   | Yes                     | No                 |
+| Timers, package updates, Unbound, backups, and other services | Yes   | No                      | No                 |
 
-### 1. System Resource Monitoring
-
-Monitors CPU, memory, and disk usage with multiple threshold levels:
-
-* **75%** - Warning level (first alert)
-* **80%** - Elevated warning
-* **90%** - Critical warning
-* **95%** - Severe warning
-* **100%** - Maximum capacity
-
-**Monitoring Frequency**: Every 5 minutes
-
-**Alert Content**:
-
-* Current CPU/Memory/Disk percentages
-* Threshold exceeded
-* Top 10 processes by CPU usage
-* Top 10 processes by memory usage
-* System uptime and load averages
-* Disk usage details (used, available, percentage)
-* Memory breakdown (used, free, cached, swap)
-* Actionable recommendations
-
-### 2. SSH Security Monitoring
-
-Monitors SSH access for suspicious activity:
-
-**Monitored Events**:
-
-* Failed login attempts (threshold: 5 attempts)
-* Successful logins (all)
-* Root user access (immediate alert)
-* Logins from unknown IP addresses
-* Logins outside business hours (8am-6pm by default)
-
-**Monitoring Frequency**: Every 10 minutes
-
-**Alert Content**:
-
-* Event type (failed login, root access, etc.)
-* Username and IP address
-* Timestamp
-* Recent login history
-* Failed attempt count
-* Actionable recommendations
-
-### 3. USB Device Monitoring
-
-Detects and alerts on unknown USB devices:
-
-**Monitored Events**:
-
-* New USB device connected
-* Unknown device (not in whitelist)
-* USB storage device connected
-* Device removal
-
-**Monitoring Method**: Periodic checks every 5 minutes + real-time via udev rules
-
-**Alert Content**:
-
-* Device type and description
-* Vendor and product ID
-* Serial number
-* Connection timestamp
-* Current authorized devices list
-* Actionable recommendations
-
-### 4. Root Access Monitoring
-
-Monitors root user access and privilege escalation:
-
-**Monitored Events**:
-
-* Direct root login via SSH
-* Direct root login via console
-* sudo usage by users
-* su to root
-* Privilege escalation attempts
-
-**Monitoring Frequency**: Every 5 minutes
-
-**Alert Content**:
-
-* Access method (SSH, console, sudo, su)
-* Username
-* Source IP (if applicable)
-* Command executed (for sudo)
-* Timestamp
-* Actionable recommendations
+A successful, stale, malformed, or mismatched systemd event sends no alert. This prevents messages like the earlier `fwupd-refresh.service` alert that mixed an old successful run with an empty failure result.
 
 
-## Installation
+## Email and SMS cooldowns
 
-The monitoring system is automatically deployed via the `security.yml` Ansible playbook. To deploy:
+Each service has a separate **10-minute** cooldown for email and SMS.
+
+| Channel | Cooldown begins when            | What happens during the cooldown          |
+| ------- | ------------------------------- | ----------------------------------------- |
+| Email   | Local Postfix accepts the email | Another email for that service is skipped |
+| SMS     | Twilio accepts the text message | Another SMS for that service is skipped   |
+
+The two cooldowns are independent. A failed SMS can retry later without sending another email. `EmailQueue=queued` means Postfix accepted the email locally; it does not guarantee final inbox delivery.
+
+
+## PM2
+
+[PM2][2] is checked every 10 minutes. An alert is sent when PM2 is missing, has no managed processes, has a stopped or errored process, or no longer matches its saved process list. See [PM2 monitoring](PM2_MONITORING.md) for the short maintenance procedure.
+
+
+## Public status page
+
+Only sustained database failures create public incidents. The public page says that the affected component is unavailable or recovered. It never shows private logs, host diagnostics, IP addresses, commands, or credentials. See [status incidents](SYSTEMD_STATUS_INCIDENTS.md) if you need to manage that integration.
+
+
+## Check an alert
+
+Start with the email. It is the detailed private record of the failure. On the affected host, use these commands:
 
 ```bash
-cd ansible
-ansible-playbook -i hosts.yml playbooks/security.yml
-```
-
-
-## Configuration
-
-### Alert Notifications
-
-Every routine monitor sends email through `/usr/local/bin/send-rate-limited-email.sh`. The script submits as `root` to the host-local, send-only [Postfix](https://github.com/vdukhovni/postfix) queue for direct delivery to recipient MX servers. It never sends SMS. Configure:
-
-* `ALERT_EMAIL_FROM` - Fixed aligned sender (default: `mailerdaemon@forwardemail.net`)
-* `ALERT_EMAIL_RECIPIENTS` - Alert recipients (comma-separated; default: `security@forwardemail.net`)
-
-`MSMTP_RCPTS` is accepted only as a deprecated recipient fallback. No SMTP username, password, relay host, or application database is used. Complete the envelope-sender and HELO SPF prerequisites in the main [Ansible guide](../README.md#alert-transport-and-dns-prerequisites) before running `security.yml`; deployment fails closed when either identity does not return SPF pass. The configured HELO must also match the FQDN gathered from that host, which prevents a MongoDB or Redis inventory value from being assigned to the other server.
-
-Optional [Twilio](https://github.com/twilio) SMS is restricted to the fleet-wide [systemd](https://github.com/systemd/systemd) `OnFailure` wrapper, `/usr/local/bin/send-failure-notification.sh`. A failed unit still emails through the shared sender, then independently sends a text containing the unit result and bounded recent journal context. Successfully queued resource, SSH, sudo, USB, package, certificate, PM2-health, SQLite-health, and open-port findings remain email-only. If a monitor cannot queue a required email or commit its cursor/cooldown state, it fails instead of discarding the finding; that execution failure is then eligible for the systemd email-plus-optional-SMS path. Set all four of `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`, and `TWILIO_TO_NUMBER` to enable failure texts; leave all four unset for email-only operation.
-
-### Whitelists
-
-Whitelist configuration files are located in `/etc/security-monitor/`:
-
-#### Authorized IP Addresses
-
-File: `/etc/security-monitor/authorized-ips.conf`
-
-Format: One IP address per line
-
-```
-192.168.1.100
-10.0.0.50
-```
-
-#### Authorized Users
-
-File: `/etc/security-monitor/authorized-users.conf`
-
-Format: One username per line
-
-```
-devops
-deploy
-admin
-```
-
-#### Authorized USB Devices
-
-File: `/etc/security-monitor/authorized-usb-devices.conf`
-
-Format: `vendor_id:product_id` (one per line)
-
-Get device IDs using `lsusb`:
-
-```bash
-lsusb
-# Output: Bus 001 Device 002: ID 1234:5678 Device Name
-# Add to whitelist: 1234:5678
-```
-
-Example:
-
-```
-1234:5678
-abcd:ef01
-```
-
-#### Authorized Root Users
-
-File: `/etc/security-monitor/authorized-root-users.conf`
-
-Format: One username per line
-
-```
-devops
-```
-
-#### Authorized Sudo Users
-
-File: `/etc/security-monitor/authorized-sudo-users.conf`
-
-Format: One username per line
-
-```
-devops
-deploy
-```
-
-### Business Hours Configuration
-
-To change business hours for SSH monitoring, edit the script:
-
-```bash
-sudo nano /usr/local/bin/ssh-security-monitor.sh
-```
-
-Modify these variables:
-
-```bash
-BUSINESS_HOURS_START=8   # 8am
-BUSINESS_HOURS_END=18    # 6pm
-```
-
-
-## Rate Limiting
-
-All monitoring scripts implement intelligent rate limiting to prevent alert flooding:
-
-* **Resource thresholds**: 1 hour cooldown per threshold
-* **SSH failed logins**: 30 minutes cooldown
-* **SSH root access**: No rate limiting (always alert)
-* **USB unknown device**: 1 hour cooldown per device
-* **Root access (sudo/su)**: 30 minutes cooldown per user
-* **Package changes**: 1 hour
-* **Lynis reports**: 24 hours
-* **SSL certificate findings**: 24 hours
-
-Monitor-specific rate limiting uses lockfiles in `/var/lock/` with unique identifiers for each alert type and threshold. A monitor records its local cooldown—and any event cursor or package baseline—only after the shared sender accepts the required email. The shared sender adds a 10-minute successful-email cooldown per alert key under `/var/lib/forwardemail-alerts`; SSH uses separate sender keys for root, failed-login, and summary alerts so one class cannot suppress another. Systemd failure SMS uses a separate per-unit lock and successful-SMS timestamp, so either channel can retry without suppressing the other.
-
-
-## Systemd Services
-
-### Services
-
-* `system-resource-monitor.service` - System resource monitoring
-* `ssh-security-monitor.service` - SSH security monitoring
-* `usb-device-monitor.service` - USB device monitoring
-* `root-access-monitor.service` - Root access monitoring
-* `lynis-audit-monitor.service` - Host audit reporting
-* `package-monitor.service` - Package change monitoring
-* `open-ports-monitor.service` - Listening-port monitoring
-* `ssl-certificate-monitor.service` - Certificate monitoring
-
-### Timers
-
-* `system-resource-monitor.timer` - Runs every 5 minutes
-* `ssh-security-monitor.timer` - Runs every 10 minutes
-* `usb-device-monitor.timer` - Runs every 5 minutes
-* `root-access-monitor.timer` - Runs every 5 minutes
-* `lynis-audit-monitor.timer` - Runs daily
-* `package-monitor.timer` - Runs hourly
-* `open-ports-monitor.timer` - Runs every 5 minutes
-* `ssl-certificate-monitor.timer` - Runs daily
-
-### Managing Services
-
-Check status:
-
-```bash
-sudo systemctl status system-resource-monitor.timer
-sudo systemctl status ssh-security-monitor.timer
-sudo systemctl status usb-device-monitor.timer
-sudo systemctl status root-access-monitor.timer
-```
-
-View logs:
-
-```bash
-sudo journalctl -u system-resource-monitor.service -n 50
-sudo journalctl -u ssh-security-monitor.service -n 50
-sudo journalctl -u usb-device-monitor.service -n 50
-sudo journalctl -u root-access-monitor.service -n 50
-```
-
-Manually trigger a check:
-
-```bash
-sudo systemctl start system-resource-monitor.service
-sudo systemctl start ssh-security-monitor.service
-sudo systemctl start usb-device-monitor.service
-sudo systemctl start root-access-monitor.service
-```
-
-Stop/Start timers:
-
-```bash
-sudo systemctl stop system-resource-monitor.timer
-sudo systemctl start system-resource-monitor.timer
-```
-
-Disable monitoring:
-
-```bash
-sudo systemctl disable --now system-resource-monitor.timer
-```
-
-
-## Log Files
-
-Monitoring logs are stored in:
-
-* `/var/log/system-resource-monitor.log`
-* `/var/log/ssh-security-monitor.log`
-* `/var/log/usb-device-monitor.log`
-* `/var/log/root-access-monitor.log`
-
-View logs:
-
-```bash
-sudo tail -f /var/log/system-resource-monitor.log
-sudo tail -f /var/log/ssh-security-monitor.log
-sudo tail -f /var/log/usb-device-monitor.log
-sudo tail -f /var/log/root-access-monitor.log
-```
-
-
-## Testing
-
-### Test Email Notifications
-
-1. Verify the locked-down Postfix runtime:
-
-```bash
-sudo postfix check
-sudo postconf -h master_service_disable  # Must print: inet
-sudo postconf -h authorized_submit_users # Must print: root
-sudo postconf -h relayhost               # Must print nothing
-sudo ss -H -ltnp | grep -E 'master|smtpd|postscreen|smtp-sink'  # Must print nothing
-```
-
-2. Submit a test through the shared rate-limited path. This test sends email only, even when Twilio is configured:
-
-```bash
-sudo /usr/local/bin/send-rate-limited-email.sh \
-  monitoring-test \
-  "Monitoring alert test" \
-  "Test from $(hostname)"
-```
-
-3. Inspect the local retry queue and delivery log:
-
-```bash
-sudo postqueue -p
-sudo journalctl -u postfix -f
-```
-
-### Test Monitoring Scripts
-
-Run scripts manually to test functionality:
-
-```bash
-# Test system resource monitor
-sudo /usr/local/bin/system-resource-monitor.sh
-
-# Test SSH security monitor
-sudo /usr/local/bin/ssh-security-monitor.sh
-
-# Test USB device monitor
-sudo /usr/local/bin/usb-device-monitor.sh
-
-# Test root access monitor
-sudo /usr/local/bin/root-access-monitor.sh
-```
-
-### Trigger Test Alerts
-
-#### CPU/Memory Alert
-
-Use stress testing tools to increase resource usage:
-
-```bash
-# Install stress tool
-sudo apt-get install stress
-
-# Stress CPU (4 workers for 60 seconds)
-stress --cpu 4 --timeout 60s
-
-# Stress memory (allocate 2GB)
-stress --vm 1 --vm-bytes 2G --timeout 60s
-```
-
-Wait for the next monitoring cycle (5 minutes) to receive an alert.
-
-#### SSH Failed Login Alert
-
-Generate failed SSH login attempts:
-
-```bash
-# From another machine, attempt SSH login with wrong password
-# Repeat 5+ times to trigger threshold
-ssh wronguser@your-server
-```
-
-#### Root Access Alert
-
-Trigger root access monitoring:
-
-```bash
-# Use sudo (will trigger alert if not in whitelist)
-sudo ls
-
-# Or switch to root
-sudo su -
-```
-
-#### USB Device Alert
-
-Connect an unknown USB device (not in whitelist) to trigger an alert.
-
-
-## Troubleshooting
-
-### No Alerts Received
-
-1. Check if timers are running:
-
-```bash
-sudo systemctl list-timers | grep monitor
-```
-
-2. Check service status:
-
-```bash
-sudo systemctl status system-resource-monitor.service
-```
-
-3. Check logs for errors:
-
-```bash
-sudo journalctl -u system-resource-monitor.service -n 50
-```
-
-4. Verify Postfix remains send-only and has no TCP listener:
-
-```bash
-sudo postfix check
-sudo postconf -h master_service_disable
-sudo postconf -h relayhost
-sudo ss -H -ltnp | grep -E 'master|smtpd|postscreen|smtp-sink'
-```
-
-`master_service_disable` must print `inet`; `relayhost` and the `ss`/`grep` command must print nothing.
-
-5. Check queue and delivery logs:
-
-```bash
-sudo postqueue -p
+sudo systemctl status <service> --no-pager
+sudo journalctl -u <service> -n 100 --no-pager
 sudo journalctl -u postfix -n 100 --no-pager
+sudo postqueue -p
 ```
 
-6. Re-run the same SPF evaluations used by deployment, then submit through the shared sender:
+For a PM2 alert, also run:
 
 ```bash
-PUBLIC_IP=<actual-egress-ipv4>
-HELO=$(sudo postconf -h myhostname)
-spfquery.mail-spf-perl --scope mfrom \
-  --identity mailerdaemon@forwardemail.net \
-  --ip-address "$PUBLIC_IP" \
-  --helo-identity "$HELO"
-spfquery.mail-spf-perl --scope helo \
-  --identity "$HELO" \
-  --ip-address "$PUBLIC_IP"
-sudo /usr/local/bin/send-rate-limited-email.sh \
-  monitoring-test \
-  "Monitoring alert test" \
-  "Test from $(hostname)"
+sudo systemctl status pm2-health-check.timer --no-pager
+sudo journalctl -u pm2-health-check.service -n 100 --no-pager
+sudo -u deploy bash -lc 'pm2 list'
 ```
 
-Both SPF commands must return `pass` and exit zero.
 
-### Rate Limiting Issues
+## Planned PM2 maintenance
 
-If alerts are being rate-limited too aggressively, you can:
-
-1. Clear lockfiles:
+If PM2 will be intentionally stopped for longer than one health-check interval, create the maintenance marker first:
 
 ```bash
-sudo rm /var/lock/resource-monitor-*.lock
-sudo rm /var/lock/ssh-monitor-*.lock
-sudo rm /var/lock/usb-monitor-*.lock
-sudo rm /var/lock/root-monitor-*.lock
+sudo touch /run/forwardemail-pm2-maintenance
+sudo systemctl stop pm2-deploy.service
 ```
 
-2. Adjust lock duration in scripts:
+When maintenance is complete:
 
 ```bash
-sudo nano /usr/local/bin/system-resource-monitor.sh
-# Modify LOCK_DURATION variable
+sudo systemctl start pm2-deploy.service
+sudo rm -f /run/forwardemail-pm2-maintenance
+sudo systemctl start pm2-health-check.service
 ```
 
-### Script Errors
 
-Check script syntax:
+## Alert email setup
+
+Alerts use the server's local send-only [Postfix](https://github.com/vdukhovni/postfix) queue. Configure the sender and recipients before deployment:
 
 ```bash
-bash -n /usr/local/bin/system-resource-monitor.sh
-bash -n /usr/local/bin/ssh-security-monitor.sh
-bash -n /usr/local/bin/usb-device-monitor.sh
-bash -n /usr/local/bin/root-access-monitor.sh
+export ALERT_EMAIL_FROM=mailerdaemon@forwardemail.net
+export ALERT_EMAIL_RECIPIENTS=security@forwardemail.net
 ```
 
-Run with debug output:
+The server's configured hostname is used as the Postfix HELO name. Deployment checks SPF before changing Postfix. See the [Ansible alert transport guide](../README.md#alert-transport-and-dns-prerequisites) for DNS requirements.
+
+
+## Routine monitors
+
+Routine monitors remain email-only. They cover resource use, SSH activity, USB devices, root access, audits, package changes, open ports, and certificates.
+
+| Check                   | Usual interval             |
+| ----------------------- | -------------------------- |
+| Resource usage          | 5 minutes                  |
+| SSH activity            | 10 minutes                 |
+| USB devices             | 5 minutes plus udev events |
+| Root access             | 5 minutes                  |
+| Open ports              | 5 minutes                  |
+| Package changes         | Hourly                     |
+| Audits and certificates | Daily                      |
+
+
+## Safe local tests
+
+Use the repository tests for channel-routing checks. They use local mocks and do not send email or SMS:
 
 ```bash
-sudo bash -x /usr/local/bin/system-resource-monitor.sh
+ansible/scripts/test-alerts.sh
 ```
 
-### Whitelist Not Working
-
-1. Verify whitelist file exists and has correct permissions:
-
-```bash
-ls -la /etc/security-monitor/
-```
-
-2. Check file format (no extra spaces, one entry per line):
-
-```bash
-cat /etc/security-monitor/authorized-ips.conf
-```
-
-3. Ensure no trailing whitespace or special characters
-
-
-## Security Considerations
-
-1. **Script Permissions**: All scripts run as root but with minimal privileges via systemd security hardening
-2. **Log File Security**: Monitoring logs are readable only by root
-3. **Independent Alert Path**: Direct-MX delivery uses no SMTP credentials, application mail queue, or MongoDB
-4. **Channel Isolation**: Routine monitors cannot send SMS; only the recursion-safe systemd `OnFailure` wrapper reads the root-only Twilio environment
-5. **Commit After Queueing**: Monitor cooldowns, cursors, and package baselines advance only after required email is accepted, so transient queue failures are retryable
-6. **Rate Limiting**: Independent email and failure-SMS cooldowns prevent alert flooding without coupling channel retries
-7. **Whitelist Management**: Secure storage with restricted modification
-
-
-## Maintenance
-
-### Weekly Tasks
-
-* Review monitoring logs for patterns
-* Update whitelists as needed
-* Verify email delivery
-
-### Monthly Tasks
-
-* Review alert thresholds and adjust if needed
-* Check disk space for log files
-* Update authorized users/IPs/devices lists
-
-### Quarterly Tasks
-
-* Review and update business hours configuration
-* Audit monitoring effectiveness
-* Update documentation
-
-
-## Architecture
-
-The monitoring system follows these design principles:
-
-1. **Minimal System Impact**: Scripts consume minimal resources (< 10% CPU, < 256MB RAM)
-2. **Rate-Limited Notifications**: Intelligent rate limiting prevents alert flooding
-3. **Comprehensive Coverage**: Monitors all critical system metrics and security events
-4. **Battle-Tested Reliability**: Uses proven patterns from existing infrastructure
-5. **Consistent Architecture**: Follows existing systemd-based notification patterns
-
-
-## Support
-
-For issues or questions:
-
-1. Check logs: `/var/log/*-monitor.log`
-2. Check systemd journal: `sudo journalctl -u <service-name>`
-3. Review this documentation
-4. Contact the infrastructure team
+Do not stop a production database or PM2 service just to test alerts.
 
 
 ## References
 
-* [Server Auditing Best Practices](https://serverauditing.com/)
-* [SSH Monitoring Guide](https://sshmonitor.com/)
-* [SSL Certificate Monitoring](https://sslmonitor.com/)
-* [Forward Email Documentation](https://forwardemail.net/)
-* [Systemd Timer Documentation](https://www.freedesktop.org/software/systemd/man/systemd.timer.html)
+[1]: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#OnFailure= "systemd OnFailure"
+
+[2]: https://pm2.keymetrics.io/docs/usage/quick-start/ "PM2 documentation"

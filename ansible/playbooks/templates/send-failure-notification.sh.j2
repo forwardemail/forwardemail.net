@@ -1,5 +1,5 @@
 #!/bin/bash
-# Send email and optional Twilio SMS when a systemd unit enters OnFailure.
+# Send email and optional Twilio SMS for an exact systemd OnFailure invocation.
 # Usage: send-failure-notification.sh <unit-name>
 
 set -uo pipefail
@@ -7,56 +7,280 @@ set -uo pipefail
 readonly SMS_COOLDOWN_SECONDS=600
 readonly STATE_DIR=/var/lib/forwardemail-alerts
 readonly TWILIO_ENV_FILE=/etc/forwardemail-alerts/twilio.env
+readonly EX_TEMPFAIL=75
+
+EMAIL_STATUS_FILE=''
+EMAIL_BODY_FILE=''
+TWILIO_REQUEST_FILE=''
+TWILIO_RESPONSE_FILE=''
 
 log_alert() {
   logger -t forwardemail-alert -- "$*" 2>/dev/null || true
 }
+
+cleanup() {
+  # shellcheck disable=SC2317 # Invoked indirectly by the EXIT trap.
+  rm -f \
+    "$EMAIL_STATUS_FILE" \
+    "$EMAIL_BODY_FILE" \
+    "$TWILIO_REQUEST_FILE" \
+    "$TWILIO_RESPONSE_FILE"
+}
+
+redact_diagnostics() {
+  awk '
+    /-----BEGIN ([A-Z0-9 ]+ )?PRIVATE KEY-----/ {
+      print "[REDACTED PRIVATE KEY]"
+      private_key = 1
+      next
+    }
+    private_key {
+      if ($0 ~ /-----END ([A-Z0-9 ]+ )?PRIVATE KEY-----/) {
+        private_key = 0
+      }
+      next
+    }
+    { print }
+  ' | sed -E \
+    -e 's#(https?://)[^[:space:]/:@]+:[^[:space:]/@]+@#\1[REDACTED]@#g' \
+    -e 's#((mongodb(\+srv)?|postgres(ql)?|redis|rediss|mysql|amqp|smtp)://)[^[:space:]/:@]+:[^[:space:]/@]+@#\1[REDACTED]@#Ig' \
+    -e 's#(Authorization:[[:space:]]*(Basic|Bearer)[[:space:]]+)[A-Za-z0-9._~+/=-]+#\1[REDACTED]#Ig' \
+    -e 's#((Set-)?Cookie:[[:space:]]*).*#\1[REDACTED]#Ig' \
+    -e "s#((password|passwd|pwd|secret|token|api[_-]?key|auth[_-]?token|private[_-]?key|client[_-]?secret|access[_-]?key)[[:space:]]*[:=][[:space:]]*)(\"[^\"]*\"|'[^']*'|[^[:space:],;]+)#\1[REDACTED]#Ig" \
+    -e 's#github_pat_[A-Za-z0-9_]+#[REDACTED_GITHUB_TOKEN]#g' \
+    -e 's#gh[pousr]_[A-Za-z0-9]+#[REDACTED_GITHUB_TOKEN]#g' \
+    -e 's#AKIA[0-9A-Z]{16}#[REDACTED_AWS_ACCESS_KEY]#g' \
+    -e 's#[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}#[REDACTED_JWT]#g'
+}
+trap cleanup EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 if [[ "$#" -ne 1 ]] || ! [[ "$1" =~ ^[A-Za-z0-9_.@:-]+$ ]]; then
   printf 'Usage: %s <unit-name>\n' "$0" >&2
   exit 64
 fi
 
-UNIT_NAME="$1"
-ALERT_KEY="${UNIT_NAME%.service}"
-RATE_LIMIT_KEY="$(printf '%s' "$ALERT_KEY" | tr -c 'A-Za-z0-9_.@-' '_')"
-HOST_NAME="$(hostname -f 2>/dev/null || hostname)"
-TIMESTAMP="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+UNIT_NAME=$1
+ALERT_KEY=${UNIT_NAME%.service}
+RATE_LIMIT_KEY=$(printf '%s' "$ALERT_KEY" | tr -c 'A-Za-z0-9_.@-' '_')
+HOST_NAME=$(hostname 2>/dev/null || true)
+HOST_NAME=$(printf '%s' "$HOST_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/\.$//')
+[[ -n "$HOST_NAME" ]] || HOST_NAME='unknown'
+TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
 
-STATUS=$(timeout --signal=TERM 10 systemctl status \
-  --no-pager --full -n 50 "$UNIT_NAME" 2>&1 | head -c 12000 || true)
-SYSTEMD_SUMMARY=$(timeout --signal=TERM 10 systemctl show "$UNIT_NAME" \
+SMS_POLICY_HOST=${FORWARDEMAIL_SMS_HOST:-}
+SMS_POLICY_UNITS=${FORWARDEMAIL_SMS_SERVICES:-}
+unset FORWARDEMAIL_SMS_HOST FORWARDEMAIL_SMS_SERVICES
+SMS_POLICY_HOST=$(printf '%s' "$SMS_POLICY_HOST" | \
+  tr '[:upper:]' '[:lower:]' | sed 's/\.$//')
+SMS_POLICY_VALID=true
+if [[ -n "$SMS_POLICY_UNITS" ]] &&
+  ! [[ "$SMS_POLICY_UNITS" =~ ^[A-Za-z0-9_.@-]+(:[A-Za-z0-9_.@-]+)*$ ]]; then
+  SMS_POLICY_VALID=false
+  log_alert "key=$RATE_LIMIT_KEY invalid_sms_policy"
+fi
+
+MONITOR_UNIT_VALUE=${MONITOR_UNIT:-}
+MONITOR_RESULT_VALUE=${MONITOR_SERVICE_RESULT:-}
+MONITOR_EXIT_CODE_VALUE=${MONITOR_EXIT_CODE:-}
+MONITOR_EXIT_STATUS_VALUE=${MONITOR_EXIT_STATUS:-}
+MONITOR_INVOCATION_ID_VALUE=${MONITOR_INVOCATION_ID:-}
+
+if [[ -z "$MONITOR_UNIT_VALUE" || -z "$MONITOR_RESULT_VALUE" ]]; then
+  log_alert "key=$RATE_LIMIT_KEY ignored_missing_monitor_context"
+  exit 0
+fi
+if ! [[ "$MONITOR_UNIT_VALUE" =~ ^[A-Za-z0-9_.@:-]+$ ]] ||
+  [[ "$MONITOR_UNIT_VALUE" != "$UNIT_NAME" ]]; then
+  log_alert "key=$RATE_LIMIT_KEY ignored_monitor_unit_mismatch"
+  exit 0
+fi
+if ! [[ "$MONITOR_EXIT_CODE_VALUE" =~ ^(exited|killed|dumped)?$ ]] ||
+  ! [[ "$MONITOR_EXIT_STATUS_VALUE" =~ ^[A-Za-z0-9_.:+-]*$ ]]; then
+  log_alert "key=$RATE_LIMIT_KEY ignored_invalid_monitor_context"
+  exit 0
+fi
+case "$MONITOR_RESULT_VALUE" in
+  success)
+    log_alert "key=$RATE_LIMIT_KEY ignored_non_failure_monitor_context result=success"
+    exit 0
+    ;;
+  protocol | timeout | exit-code | signal | core-dump | watchdog | \
+    exec-condition | oom-kill | start-limit-hit | resources)
+    ;;
+  *)
+    log_alert "key=$RATE_LIMIT_KEY ignored_invalid_monitor_result"
+    exit 0
+    ;;
+esac
+
+CURRENT_PROPERTIES=$(timeout --signal=TERM 10 systemctl show "$UNIT_NAME" \
   --no-pager \
+  --property=Id \
+  --property=Description \
+  --property=LoadState \
+  --property=UnitFileState \
   --property=ActiveState \
   --property=SubState \
   --property=Result \
+  --property=ExecMainCode \
   --property=ExecMainStatus \
-  --property=NRestarts 2>&1 | head -c 2000 || true)
-LOGS=$(timeout --signal=TERM 10 journalctl -u "$UNIT_NAME" \
-  -n 50 --no-pager --output=short-iso 2>&1 | head -c 20000 || true)
+  --property=MainPID \
+  --property=ControlPID \
+  --property=NRestarts \
+  --property=Restart \
+  --property=RestartUSec \
+  --property=StateChangeTimestamp \
+  --property=ActiveEnterTimestamp \
+  --property=InactiveEnterTimestamp \
+  --property=InvocationID \
+  --property=MemoryCurrent \
+  --property=CPUUsageNSec \
+  --property=TasksCurrent 2>&1 | head -c 12000 || true)
+SERVICE_STATUS=$(timeout --signal=TERM 10 systemctl status "$UNIT_NAME" \
+  --no-pager --full -n 100 2>&1 | head -c 24000 || true)
+
+if [[ "$MONITOR_INVOCATION_ID_VALUE" =~ ^[[:xdigit:]]{32}$ ]]; then
+  INVOCATION_LOGS=$(timeout --signal=TERM 10 journalctl \
+    _SYSTEMD_INVOCATION_ID="$MONITOR_INVOCATION_ID_VALUE" \
+    -n 200 --no-pager --output=short-iso-precise 2>&1 | head -c 48000 || true)
+else
+  MONITOR_INVOCATION_ID_VALUE='unavailable'
+  INVOCATION_LOGS='Exact invocation ID unavailable; no unscoped historical logs included.'
+  log_alert "key=$RATE_LIMIT_KEY monitor_invocation_id_unavailable"
+fi
+
 SUBJECT="[ALERT] Service Failure: $UNIT_NAME on $HOST_NAME"
-BODY="Service $UNIT_NAME failed on $HOST_NAME at $TIMESTAMP.
-
-=== SYSTEMD RESULT ===
-$SYSTEMD_SUMMARY
-
-=== SERVICE STATUS ===
-$STATUS
-
-=== RECENT LOGS ===
-$LOGS
-
-This is an automated infrastructure alert."
-
-# Email uses the same email-only sender as every routine monitor.  Its lock and
-# successful-delivery cooldown are intentionally independent from SMS.
-/usr/local/bin/send-rate-limited-email.sh "$ALERT_KEY" "$SUBJECT" "$BODY" || {
-  email_rc=$?
-  log_alert "key=$RATE_LIMIT_KEY systemd_failure_email_failed rc=$email_rc"
+umask 077
+EMAIL_BODY_FILE=$(mktemp /run/forwardemail-email-body.XXXXXX) || {
+  EMAIL_BODY_FILE=''
+  log_alert "key=$RATE_LIMIT_KEY email_body_file_failed"
 }
+if [[ -n "$EMAIL_BODY_FILE" ]]; then
+  if ! {
+    printf 'Service %s failed on %s at %s.\n\n' \
+      "$UNIT_NAME" "$HOST_NAME" "$TIMESTAMP"
+    printf '%s\n' '=== IMMUTABLE TRIGGER CONTEXT ==='
+    printf 'TriggerUnit=%s\n' "$MONITOR_UNIT_VALUE"
+    printf 'TriggerResult=%s\n' "$MONITOR_RESULT_VALUE"
+    printf 'TriggerExitCode=%s\n' "${MONITOR_EXIT_CODE_VALUE:-unavailable}"
+    printf 'TriggerExitStatus=%s\n' "${MONITOR_EXIT_STATUS_VALUE:-unavailable}"
+    printf 'TriggerInvocationID=%s\n\n' "$MONITOR_INVOCATION_ID_VALUE"
+    printf '%s\n' '=== CURRENT UNIT PROPERTIES ==='
+    printf '%s\n\n' "$CURRENT_PROPERTIES"
+    printf '%s\n' '=== CURRENT SERVICE STATUS ==='
+    printf '%s\n\n' "$SERVICE_STATUS"
+    printf '%s\n' '=== EXACT FAILURE INVOCATION JOURNAL ==='
+    printf '%s\n\n' "$INVOCATION_LOGS"
+    printf '%s\n' '=== INTERPRETATION ==='
+    printf '%s\n' \
+      'The immutable trigger context and exact invocation journal identify the failure that generated this alert.' \
+      'The current properties and service status may show a later restart, recovery, or administrative change.' \
+      '' \
+      'This is an automated private infrastructure alert.'
+  } | redact_diagnostics > "$EMAIL_BODY_FILE"; then
+    rm -f "$EMAIL_BODY_FILE"
+    EMAIL_BODY_FILE=''
+    log_alert "key=$RATE_LIMIT_KEY email_body_redaction_failed"
+  else
+    chmod 0600 "$EMAIL_BODY_FILE"
+  fi
+fi
 
-# Twilio is exclusive to this systemd OnFailure path.  Missing configuration
-# means email-only mode and is not an error.
+EMAIL_STATUS_FILE=$(mktemp /run/forwardemail-email-status.XXXXXX) || {
+  EMAIL_STATUS_FILE=''
+  log_alert "key=$RATE_LIMIT_KEY email_status_file_failed"
+}
+if [[ -n "$EMAIL_STATUS_FILE" ]]; then
+  chmod 0600 "$EMAIL_STATUS_FILE"
+fi
+
+EMAIL_DELIVERY_STATUS=failed
+email_rc=$EX_TEMPFAIL
+if [[ -n "$EMAIL_STATUS_FILE" && -n "$EMAIL_BODY_FILE" ]]; then
+  if /usr/local/bin/send-rate-limited-email.sh \
+    --report-status "$EMAIL_STATUS_FILE" \
+    --body-file "$EMAIL_BODY_FILE" \
+    "$ALERT_KEY" "$SUBJECT"; then
+    email_rc=0
+  else
+    email_rc=$?
+  fi
+  case "$(cat "$EMAIL_STATUS_FILE" 2>/dev/null || true)" in
+    EMAIL_DELIVERY_STATUS=queued)
+      EMAIL_DELIVERY_STATUS=queued
+      ;;
+    EMAIL_DELIVERY_STATUS=suppressed)
+      if [[ "$email_rc" -eq 0 ]]; then
+        EMAIL_DELIVERY_STATUS=suppressed
+      else
+        EMAIL_DELIVERY_STATUS=failed
+        log_alert "key=$RATE_LIMIT_KEY email_suppression_status_failed rc=$email_rc"
+      fi
+      ;;
+    EMAIL_DELIVERY_STATUS=failed)
+      EMAIL_DELIVERY_STATUS=failed
+      ;;
+    *)
+      EMAIL_DELIVERY_STATUS=failed
+      email_rc=$EX_TEMPFAIL
+      log_alert "key=$RATE_LIMIT_KEY email_status_report_invalid"
+      ;;
+  esac
+fi
+rm -f "$EMAIL_STATUS_FILE" "$EMAIL_BODY_FILE"
+EMAIL_STATUS_FILE=''
+EMAIL_BODY_FILE=''
+
+case "$EMAIL_DELIVERY_STATUS" in
+  queued)
+    log_alert "key=$RATE_LIMIT_KEY systemd_failure_email_queued=true sender_rc=$email_rc"
+    ;;
+  suppressed)
+    # The shared sender reports suppression only after a previous local queue
+    # acceptance. Continue so a previously failed optional SMS can retry.
+    log_alert "key=$RATE_LIMIT_KEY systemd_failure_email_previously_queued=true"
+    ;;
+  *)
+    log_alert "key=$RATE_LIMIT_KEY systemd_failure_email_failed rc=$email_rc"
+    ;;
+esac
+
+# Every genuine systemd failure reaches the email sender above. SMS is an
+# additional channel only when Ansible rendered this live host and exact unit
+# into the private allowlist. Preserve fixed database host/unit pairs and allow
+# only PM2 startup or health-check failures on other validated Node.js hosts.
+if [[ "$SMS_POLICY_VALID" != true ]]; then
+  log_alert "key=$RATE_LIMIT_KEY systemd_failure_sms_skipped_invalid_policy"
+  exit 0
+fi
+unit_in_sms_policy=false
+case ":$SMS_POLICY_UNITS:" in
+  *":$UNIT_NAME:"*)
+    unit_in_sms_policy=true
+    ;;
+esac
+sms_pair_allowed=false
+if [[ "$HOST_NAME" == "$SMS_POLICY_HOST" && "$unit_in_sms_policy" == true ]]; then
+  case "${HOST_NAME}|${UNIT_NAME}" in
+    'mongo.forwardemail.net|mongod.service' | \
+      'logs.forwardemail.net|mongod.service' | \
+      'redis.forwardemail.net|valkey-server.service' | \
+      *'|pm2-deploy.service' | \
+      *'|pm2-health-check.service')
+      sms_pair_allowed=true
+      ;;
+  esac
+fi
+if [[ "$sms_pair_allowed" != true ]]; then
+  log_alert "key=$RATE_LIMIT_KEY systemd_failure_sms_skipped_by_policy host=$HOST_NAME unit=$UNIT_NAME"
+  exit 0
+fi
+
+# Missing Twilio configuration on an eligible host means email-only mode
+# and is not an error.
 if [[ ! -r "$TWILIO_ENV_FILE" ]]; then
   log_alert "key=$RATE_LIMIT_KEY systemd_failure_sms_skipped_unconfigured"
   exit 0
@@ -66,7 +290,7 @@ TWILIO_ACCOUNT_SID=''
 TWILIO_AUTH_TOKEN=''
 TWILIO_FROM_NUMBER=''
 TWILIO_TO_NUMBER=''
-# The file is rendered by Ansible, owned by root, and mode 0600.  Revalidate
+# The file is rendered by Ansible, owned by root, and mode 0600. Revalidate
 # every value before placing it in an HTTPS request.
 # shellcheck disable=SC1090
 source "$TWILIO_ENV_FILE"
@@ -122,31 +346,28 @@ if (( sms_success_at != 0 && now - sms_success_at < SMS_COOLDOWN_SECONDS )); the
   exit 0
 fi
 
-sms_status=$(printf '%s' "$SYSTEMD_SUMMARY" | tr '\r\n\t' '   ' | tr -s ' ')
-sms_logs=$(printf '%s' "$LOGS" | tail -n 8 | tr '\r\n\t' '   ' | tr -s ' ')
-sms_body="[SYSTEMD FAILURE] Unit=$UNIT_NAME Host=$HOST_NAME Time=$TIMESTAMP Status=$sms_status Logs=$sms_logs"
-sms_body="$(printf '%s' "$sms_body" | cut -c1-600)"
+sms_body="[SYSTEMD FAILURE] Unit=$UNIT_NAME Host=$HOST_NAME Time=$TIMESTAMP Result=$MONITOR_RESULT_VALUE ExitCode=${MONITOR_EXIT_CODE_VALUE:-unavailable} ExitStatus=${MONITOR_EXIT_STATUS_VALUE:-unavailable} EmailQueue=$EMAIL_DELIVERY_STATUS"
+sms_body=$(printf '%s' "$sms_body" | cut -c1-320)
 
 form_body=$(jq -rn \
   --arg to "$TWILIO_TO_NUMBER" \
   --arg from "$TWILIO_FROM_NUMBER" \
   --arg body "$sms_body" \
   '"To=" + ($to | @uri) + "&From=" + ($from | @uri) + "&Body=" + ($body | @uri)')
-request_file=$(mktemp /run/forwardemail-twilio-request.XXXXXX) || {
+TWILIO_REQUEST_FILE=$(mktemp /run/forwardemail-twilio-request.XXXXXX) || {
   unset TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_FROM_NUMBER TWILIO_TO_NUMBER
   flock -u 8
   log_alert "key=$RATE_LIMIT_KEY sms_request_file_failed"
   exit 0
 }
-response_file=$(mktemp /run/forwardemail-twilio-response.XXXXXX) || {
-  rm -f "$request_file"
+TWILIO_RESPONSE_FILE=$(mktemp /run/forwardemail-twilio-response.XXXXXX) || {
   unset TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_FROM_NUMBER TWILIO_TO_NUMBER
   flock -u 8
   log_alert "key=$RATE_LIMIT_KEY sms_response_file_failed"
   exit 0
 }
-chmod 0600 "$request_file" "$response_file"
-printf '%s' "$form_body" > "$request_file"
+chmod 0600 "$TWILIO_REQUEST_FILE" "$TWILIO_RESPONSE_FILE"
+printf '%s' "$form_body" > "$TWILIO_REQUEST_FILE"
 
 twilio_auth="${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}"
 twilio_url="https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json"
@@ -167,15 +388,15 @@ http_code='000'
 sms_succeeded=false
 if http_code=$(twilio_curl_config | \
   curl --config - \
-    --data-binary @"$request_file" \
-    --output "$response_file" \
+    --data-binary @"$TWILIO_REQUEST_FILE" \
+    --output "$TWILIO_RESPONSE_FILE" \
     --write-out '%{http_code}'); then
   if [[ "$http_code" == '201' ]] &&
     jq -e '.sid | type == "string" and length > 0' \
-      "$response_file" >/dev/null 2>&1; then
+      "$TWILIO_RESPONSE_FILE" >/dev/null 2>&1; then
     sms_succeeded=true
   else
-    api_code=$(jq -r '.code // empty' "$response_file" 2>/dev/null || true)
+    api_code=$(jq -r '.code // empty' "$TWILIO_RESPONSE_FILE" 2>/dev/null || true)
     if ! [[ "$api_code" =~ ^[0-9]+$ ]]; then
       api_code='unknown'
     fi
@@ -186,7 +407,9 @@ else
 fi
 
 twilio_auth=''
-rm -f "$request_file" "$response_file"
+rm -f "$TWILIO_REQUEST_FILE" "$TWILIO_RESPONSE_FILE"
+TWILIO_REQUEST_FILE=''
+TWILIO_RESPONSE_FILE=''
 
 if [[ "$sms_succeeded" == true ]]; then
   state_tmp=$(mktemp "${SMS_STATE_FILE}.XXXXXX") || state_tmp=''

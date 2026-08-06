@@ -435,9 +435,11 @@
             fi
           fi
 
-          # A detected health condition is a routine monitor alert: queue one
-          # email and return success so it cannot trigger systemd failure SMS.
-          # Only an execution/notification fault leaves this unit failed.
+          # Fail this invocation when PM2 is missing, has no managed processes,
+          # reports errored or stopped processes, or drifts from its saved state.
+          # systemd then supplies immutable failure context and exact invocation
+          # logs to the centralized handler, which sends one rate-limited email
+          # plus SMS only on an explicitly authorized PM2 host.
           if [ "$ALERT_NEEDED" -eq 1 ]; then
             echo "[$(date -Iseconds)] ERROR: PM2 health check found issues"
             printf '%b\n' "$ALERT_MESSAGE"
@@ -446,23 +448,6 @@
               'source /home/deploy/.bashrc && /home/deploy/n/bin/pm2 list' 2>&1 || \
               echo 'Unable to get PM2 status')
             printf '%s\n' "$PM2_STATUS"
-
-            ALERT_BODY=$(printf \
-              'PM2 health check found issues on %s at %s.\n%b\n\nFull PM2 status:\n%s\n' \
-              "$(hostname -f 2>/dev/null || hostname)" \
-              "$(date -Iseconds)" \
-              "$ALERT_MESSAGE" \
-              "$PM2_STATUS")
-
-            if /usr/local/bin/send-rate-limited-email.sh \
-              "pm2-health-check" \
-              "[ALERT] PM2 Health Check Failed on $(hostname)" \
-              "$ALERT_BODY"; then
-              echo "[$(date -Iseconds)] PM2 health alert email queued"
-              exit 0
-            fi
-
-            echo "[$(date -Iseconds)] ERROR: Failed to queue PM2 health alert email"
             exit 1
           else
             echo "[$(date -Iseconds)] ✓ All PM2 processes healthy"
@@ -479,6 +464,7 @@
           Description=PM2 Health Check
           After=pm2-deploy.service
           OnFailure=failure-notification@%n.service
+          ConditionPathExists=!/run/forwardemail-pm2-maintenance
 
           [Service]
           Type=oneshot

@@ -115,7 +115,7 @@ pip install ansible
 
 Infrastructure alerts use a host-local, send-only Postfix queue. Postfix delivers directly to each recipient domain's MX over outbound TCP port 25. It does not use credentials, the Forward Email SMTP service, the application mail queue, or MongoDB.
 
-Configure the alert identity and recipients before deployment:
+Configure the alert sender and recipients before deployment:
 
 ```bash
 export ALERT_EMAIL_FROM=mailerdaemon@forwardemail.net
@@ -134,9 +134,11 @@ The `security.yml` playbook fails closed unless SPF passes for both the envelope
 
 2. Add `include:_spf-alerts.forwardemail.net` to the existing `forwardemail.net` SPF record so `mailerdaemon@forwardemail.net` passes from those hosts. Keep exactly one SPF record for the domain.
 
-3. Publish `v=spf1 a -all` at each sending HELO hostname, including `mongo.forwardemail.net`, `redis.forwardemail.net`, `logs.forwardemail.net`, `bree.forwardemail.net`, `api.forwardemail.net`, `caldav.forwardemail.net`, `carddav.forwardemail.net`, `imap.forwardemail.net`, `pop3.forwardemail.net`, and `sqlite.forwardemail.net`.
+3. Publish `v=spf1 a -all` at every configured sending HELO hostname. This includes the database host variables and every Node.js host variable: `BREE_HOST`, `WEB_HOST`, `API_HOST`, `CALDAV_HOST`, `CARDDAV_HOST`, `IMAP_HOST`, `MX1_HOST`, `MX2_HOST`, `POP3_HOST`, `SMTP_HOST`, and `SQLITE_HOST`.
 
-4. Confirm outbound TCP port 25 is allowed. In inventory, set `direct_alert_public_ip` when `ansible_host` is not the actual egress IPv4, and set `direct_alert_helo_identity` when `ansible_fqdn` is not the intended public HELO hostname.
+4. Confirm outbound TCP port 25 is allowed. In inventory, set `alert_public_ip` when `ansible_host` is not the real egress IPv4. `direct_alert_public_ip` remains a temporary compatibility fallback.
+
+Each service playbook sets the server hostname before `security.yml` runs. Postfix uses that hostname for HELO, and deployment stops if the configured hostname does not match the live server hostname. This prevents one server from advertising another server's name and avoids using a provider PTR name by mistake. Use `alert_hostname` only when it matches the server hostname; `direct_alert_helo_identity` is accepted only as a compatibility fallback.
 
 The transport is IPv4-only. Revalidate the address list before every DNS change; do not weaken or bypass the Ansible SPF gates. The Postfix configuration disables every `inet` master service, accepts no TCP connections even on loopback, permits local queue submission only from `root`, has no relayhost or trusted client network, and disables local, virtual, and relay-domain delivery.
 
@@ -350,11 +352,11 @@ The MongoDB, Logs, and Valkey/Redis hosts can publish minimal public incidents f
 
 Automated PM2 process health monitoring for Node.js applications:
 
-* ✅ **Uptime checks** - Detects processes with < 90% uptime
-* 🔴 **Errored process detection** - Alerts on errored or stopped processes
-* ⏰ **Drift detection** - Identifies processes with excessive restarts
-* 📧 **Email notifications** - Detailed alerts with process status through the shared direct-MX sender
-* ⏱️ **Scheduled checks** - Runs every 20 minutes via cron
+* ✅ **Process inventory** - Reports status and uptime for every managed process
+* 🔴 **Errored and stopped detection** - Fails the health invocation when a process is unhealthy
+* ⏰ **Saved-state drift detection** - Detects missing or unexpected managed processes
+* 📧 **Email and SMS notifications** - PM2 startup and health failures use the centralized direct-MX email path plus optional eligible SMS
+* ⏱️ **Scheduled checks** - Runs every 10 minutes through a systemd timer
 
 **Integrated into**: `node.yml`
 

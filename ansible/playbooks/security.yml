@@ -55,40 +55,129 @@
         component: redis.forwardemail.net
         unit: valkey-server.service
   pre_tasks:
-    # Freeze these values once per inventory host.  Keeping them as generic,
-    # lazily evaluated play variables allowed separate MongoDB and Valkey runs
-    # to cross-resolve each other's HELO identity while retaining the correct
-    # host IP.  Every Postfix and SPF task below must consume these facts.
-    - name: Freeze direct-alert identity for this host
+    # Each entrypoint sets this server's hostname before importing this play.
+    # Read the live hostname directly because provider PTR data can differ from
+    # the hostname Postfix advertises.
+    - name: Read this server's alert hostname
+      ansible.builtin.command: hostname
+      register: forwardemail_live_hostname
+      changed_when: false
+      check_mode: false
+      tags:
+        - always
+        - forwardemail-alert-hostname
+
+    - name: Choose this server's alert hostname
       ansible.builtin.set_fact:
-        forwardemail_direct_alert_public_ip: >-
+        forwardemail_expected_alert_hostname: >-
           {{
-            hostvars[inventory_hostname]['direct_alert_public_ip']
-            | default(ansible_host | default(ansible_default_ipv4.address), true)
-          }}
-        forwardemail_direct_alert_helo_identity: >-
-          {{
-            hostvars[inventory_hostname]['direct_alert_helo_identity']
-            | default(ansible_fqdn, true)
+            security_expected_alert_hostname
+            | default(
+                hostvars[inventory_hostname]['alert_hostname']
+                | default(
+                    hostvars[inventory_hostname]['direct_alert_helo_identity']
+                    | default(forwardemail_live_hostname.stdout, true),
+                    true
+                  ),
+                true
+              )
+            | trim
             | lower
             | regex_replace('\\.$', '')
           }}
       tags:
         - always
-        - forwardemail-alert-identity
+        - forwardemail-alert-hostname
 
-    - name: Bind public systemd incident reporting to this host identity
+    - name: Verify this server's alert hostname
+      ansible.builtin.assert:
+        that:
+          - >-
+            (forwardemail_expected_alert_hostname |
+            default('', true) | length) > 0
+          - >-
+            (forwardemail_live_hostname.stdout | default('', true) |
+            trim | length) > 0
+          - >-
+            (forwardemail_live_hostname.stdout | trim | lower |
+            regex_replace('\\.$', '')) ==
+            forwardemail_expected_alert_hostname
+        fail_msg: >-
+          Refusing to configure alerts on {{ inventory_hostname }}: expected
+          {{ forwardemail_expected_alert_hostname | default('UNSET', true) }},
+          but this server is named
+          {{ forwardemail_live_hostname.stdout | default('UNAVAILABLE', true) }}.
+          Set this server's hostname before importing security.yml.
+      tags:
+        - always
+        - forwardemail-alert-hostname
+
+    - name: Save this server's alert settings
+      ansible.builtin.set_fact:
+        forwardemail_alert_public_ip: >-
+          {{
+            hostvars[inventory_hostname]['alert_public_ip']
+            | default(
+                hostvars[inventory_hostname]['direct_alert_public_ip']
+                | default(ansible_host | default(ansible_default_ipv4.address), true),
+                true
+              )
+          }}
+        forwardemail_alert_hostname: >-
+          {{ forwardemail_expected_alert_hostname }}
+      tags:
+        - always
+        - forwardemail-alert-hostname
+
+    - name: Select this server's public status component
       ansible.builtin.set_fact:
         forwardemail_systemd_incident_config: >-
           {{
             systemd_incident_host_map[
-              forwardemail_direct_alert_helo_identity
+              forwardemail_alert_hostname
             ]
             | default({})
           }}
       tags:
         - always
         - forwardemail-systemd-incident
+
+    - name: Validate SMS services for this server
+      ansible.builtin.assert:
+        that:
+          - >-
+            (security_sms_services | default([]) | type_debug) == 'list'
+          - >-
+            (security_sms_services | default([]) |
+            difference([
+              'mongod.service',
+              'valkey-server.service',
+              'pm2-deploy.service',
+              'pm2-health-check.service'
+            ]) | length) == 0
+        fail_msg: >-
+          security_sms_services may contain only MongoDB, Valkey, PM2 startup,
+          or PM2 health-check services.
+      tags:
+        - always
+        - forwardemail-systemd-sms
+
+    - name: Choose SMS services for this server
+      ansible.builtin.set_fact:
+        forwardemail_sms_services: >-
+          {{
+            (
+              [forwardemail_systemd_incident_config.unit]
+              if (forwardemail_systemd_incident_config | length > 0)
+              else []
+            )
+            | union(security_sms_services | default([]))
+            | unique
+            | list
+          }}
+      tags:
+        - always
+        - forwardemail-systemd-sms
 
     - name: Derive public systemd incident reporter state
       ansible.builtin.set_fact:
@@ -106,28 +195,30 @@
         - always
         - forwardemail-systemd-incident
 
-    # A host-specific override must never let one server advertise another
-    # server's identity (for example, mongo.forwardemail.net on Redis).
-    - name: Verify direct-alert HELO identity belongs to this host
+    # An override must never let one server use another server's hostname.
+    - name: Verify saved alert hostname matches this server
       ansible.builtin.assert:
         that:
-          - (ansible_fqdn | default('', true) | length) > 0
           - >-
-            (forwardemail_direct_alert_helo_identity | default('', true) |
+            (forwardemail_live_hostname.stdout | default('', true) |
+            trim | length) > 0
+          - >-
+            (forwardemail_alert_hostname | default('', true) |
             lower | regex_replace('\\.$', '')) ==
-            (ansible_fqdn | default('', true) | lower |
-            regex_replace('\\.$', ''))
+            (forwardemail_live_hostname.stdout | default('', true) | trim |
+            lower | regex_replace('\\.$', ''))
+          - >-
+            forwardemail_alert_hostname ==
+            forwardemail_expected_alert_hostname
         fail_msg: >-
-          Refusing to configure direct alerts on {{ inventory_hostname }}:
-          direct_alert_helo_identity resolved to
-          {{ forwardemail_direct_alert_helo_identity | default('UNSET', true) }},
-          but gathered
-          ansible_fqdn is {{ ansible_fqdn | default('UNAVAILABLE', true) }}.
-          Correct or remove this host's direct_alert_helo_identity override;
-          never reuse another host's HELO identity.
+          Refusing to configure alerts on {{ inventory_hostname }}: the saved
+          alert hostname is {{ forwardemail_alert_hostname | default('UNSET', true) }},
+          but this server is named
+          {{ forwardemail_live_hostname.stdout | default('UNAVAILABLE', true) }}.
+          The alert hostname must match this server.
       tags:
         - always
-        - forwardemail-alert-identity
+        - forwardemail-alert-hostname
 
   handlers:
     - name: Restart SSH
@@ -544,7 +635,7 @@
         assert_postconf alias_database ''
         assert_postconf virtual_alias_maps ''
         assert_postconf virtual_mailbox_maps ''
-        assert_postconf myhostname '{{ forwardemail_direct_alert_helo_identity }}'
+        assert_postconf myhostname '{{ forwardemail_alert_hostname }}'
         assert_postconf smtp_helo_name '$myhostname'
         assert_postconf smtp_address_preference 'ipv4'
         assert_postconf smtp_tls_security_level 'may'
@@ -601,7 +692,7 @@
     # authorized for the aligned envelope sender.  The transport is hardened
     # before these fail-closed DNS gates run, so a DNS error cannot leave the
     # package's temporary installation-time listener behind.
-    - name: Verify direct-alert envelope sender SPF authorization for this host
+    - name: Verify alert sender SPF authorization for this host
       command:
         argv:
           - /usr/bin/spfquery.mail-spf-perl
@@ -610,36 +701,37 @@
           - --identity
           - "{{ alert_email_sender }}"
           - --ip-address
-          - "{{ forwardemail_direct_alert_public_ip }}"
+          - "{{ forwardemail_alert_public_ip }}"
           - --helo-identity
-          - "{{ forwardemail_direct_alert_helo_identity }}"
-      register: direct_alert_spf_check
+          - "{{ forwardemail_alert_hostname }}"
+      register: alert_sender_spf_check
       changed_when: false
-      failed_when: direct_alert_spf_check.rc != 0
+      failed_when: alert_sender_spf_check.rc != 0
       tags:
         - forwardemail-alert-spf
 
     # Receivers evaluate HELO SPF when the envelope sender is empty (for
     # example, delivery-status notifications), so the hostname needs its own
     # passing policy in addition to the aligned envelope-sender policy.
-    - name: Verify direct-alert HELO SPF authorization for this host
+    - name: Verify alert hostname SPF authorization for this host
       command:
         argv:
           - /usr/bin/spfquery.mail-spf-perl
           - --scope
           - helo
           - --identity
-          - "{{ forwardemail_direct_alert_helo_identity }}"
+          - "{{ forwardemail_alert_hostname }}"
           - --ip-address
-          - "{{ forwardemail_direct_alert_public_ip }}"
-      register: direct_alert_helo_spf_check
+          - "{{ forwardemail_alert_public_ip }}"
+      register: alert_hostname_spf_check
       changed_when: false
-      failed_when: direct_alert_helo_spf_check.rc != 0
+      failed_when: alert_hostname_spf_check.rc != 0
       tags:
         - forwardemail-alert-spf
 
-    # Configure email for every alert and optional Twilio SMS exclusively for
-    # systemd OnFailure notifications.
+    # Configure email for every genuine systemd failure. Optional Twilio SMS
+    # is additionally allowed only for validated MongoDB, Logs, Redis, and PM2
+    # systemd units on their exact configured hosts.
     - name: Install infrastructure alert sender dependencies
       ansible.builtin.apt:
         name:
@@ -689,6 +781,17 @@
           and TWILIO_TO_NUMBER.
       no_log: true
 
+    - name: Derive private systemd SMS enabled state
+      ansible.builtin.set_fact:
+        forwardemail_systemd_sms_enabled: >-
+          {{
+            (twilio_values_present | int == 4) and
+            (forwardemail_sms_services | length > 0)
+          }}
+      no_log: true
+      tags:
+        - forwardemail-systemd-sms
+
     - name: Validate systemd status incident configuration
       ansible.builtin.assert:
         that:
@@ -718,9 +821,19 @@
     - name: Report email-only alert mode
       ansible.builtin.debug:
         msg: >-
-          Twilio variables are unset; routine alerts and systemd failures will
-          continue by email only to {{ alert_email_recipients }}.
+          Twilio variables are unset; every genuine systemd failure and routine
+          alert will continue by email only to {{ alert_email_recipients }}.
       when: twilio_values_present | int == 0
+
+    - name: Report email-only non-eligible systemd mode
+      ansible.builtin.debug:
+        msg: >-
+          This host has no approved MongoDB, Logs, Redis, or PM2 systemd SMS
+          units. Every genuine systemd failure remains email-enabled, while SMS
+          is disabled.
+      when:
+        - twilio_values_present | int == 4
+        - forwardemail_sms_services | length == 0
 
     - name: Report disabled public systemd incident mode
       ansible.builtin.debug:
@@ -765,21 +878,21 @@
       tags:
         - forwardemail-systemd-incident
 
-    - name: Deploy root-only systemd failure SMS environment
+    - name: Deploy Twilio environment on eligible SMS hosts
       ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/forwardemail-alerts-twilio.env.j2"
         dest: /etc/forwardemail-alerts/twilio.env
         owner: root
         group: root
         mode: '0600'
-      when: twilio_values_present | int == 4
+      when: forwardemail_systemd_sms_enabled | bool
       no_log: true
 
-    - name: Remove Twilio environment when SMS alerts are disabled
+    - name: Remove Twilio environment from email-only hosts
       ansible.builtin.file:
         path: /etc/forwardemail-alerts/twilio.env
         state: absent
-      when: twilio_values_present | int == 0
+      when: not (forwardemail_systemd_sms_enabled | bool)
 
     - name: Deploy email-only rate-limited alert sender
       ansible.builtin.template:

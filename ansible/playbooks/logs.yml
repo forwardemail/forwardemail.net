@@ -2,10 +2,53 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
+- name: Hostname
+  hosts: logs
+  gather_facts: false
+  become: true
+  become_user: root
+  tags:
+    - always
+    - forwardemail-alert-hostname
+  tasks:
+    - name: Validate required environment variables
+      ansible.builtin.assert:
+        that:
+          - lookup('env', 'LOGS_HOST') != ''
+          - lookup('env', 'LOGS_NAME') != ''
+          - lookup('env', 'LOGS_PASS') != ''
+          - lookup('env', 'LOGS_PORT') != ''
+          - lookup('env', 'LOGS_USER') != ''
+          - lookup('env', 'AWS_ACCESS_KEY_ID') != ''
+          - lookup('env', 'AWS_SECRET_ACCESS_KEY') != ''
+          - lookup('env', 'AWS_ENDPOINT_URL') != ''
+          - lookup('env', 'BACKUP_SECRET') != ''
+        fail_msg: |
+          Required environment variables are missing for Logs playbook.
+          Please ensure the following variables are set in your .env file:
+          - LOGS_HOST
+          - LOGS_NAME
+          - LOGS_PASS
+          - LOGS_PORT
+          - LOGS_USER
+          - SSL_CERT_PATH
+          - SSL_KEY_PATH
+          - SSL_CA_PATH
+          - AWS_ACCESS_KEY_ID
+          - AWS_SECRET_ACCESS_KEY
+          - AWS_ENDPOINT_URL
+          - BACKUP_SECRET
+        quiet: false
+
+    - name: Set hostname before security identity discovery
+      ansible.builtin.hostname:
+        name: "{{ lookup('env', 'LOGS_HOST') }}"
+
 - name: Import security playbook
   import_playbook: security.yml
   vars:
     security_target_hosts: "logs"
+    security_expected_alert_hostname: "{{ lookup('env', 'LOGS_HOST') }}"
 - name: Import SSH keys playbook
   import_playbook: ssh-keys.yml
   vars:
@@ -100,44 +143,6 @@
         ssl_key_path: "{{ input_key }}"
         ssl_cert_path: "{{ input_cert }}"
         ssl_ca_path: "{{ input_ca }}"
-
-- hosts: logs
-  name: Hostname
-  become: true
-  become_user: root
-  tasks:
-    - name: Validate required environment variables
-      assert:
-        that:
-          - lookup('env', 'LOGS_HOST') != ''
-          - lookup('env', 'LOGS_NAME') != ''
-          - lookup('env', 'LOGS_PASS') != ''
-          - lookup('env', 'LOGS_PORT') != ''
-          - lookup('env', 'LOGS_USER') != ''
-          - lookup('env', 'AWS_ACCESS_KEY_ID') != ''
-          - lookup('env', 'AWS_SECRET_ACCESS_KEY') != ''
-          - lookup('env', 'AWS_ENDPOINT_URL') != ''
-          - lookup('env', 'BACKUP_SECRET') != ''
-        fail_msg: |
-          Required environment variables are missing for MongoDB playbook.
-          Please ensure the following variables are set in your .env file:
-          - LOGS_HOST
-          - LOGS_NAME
-          - LOGS_PASS
-          - LOGS_PORT
-          - LOGS_USER
-          - SSL_CERT_PATH
-          - SSL_KEY_PATH
-          - SSL_CA_PATH
-          - AWS_ACCESS_KEY_ID
-          - AWS_SECRET_ACCESS_KEY
-          - AWS_ENDPOINT_URL
-          - BACKUP_SECRET
-        quiet: false
-
-    - name: Set hostname
-      hostname:
-        name: "{{ lookup('env', 'LOGS_HOST') }}"
 
 - hosts: logs
   name: MongoDB

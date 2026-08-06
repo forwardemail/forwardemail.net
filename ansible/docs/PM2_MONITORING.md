@@ -1,291 +1,78 @@
-# PM2 Health Monitoring
+# PM2 monitoring
 
-Automated PM2 process health monitoring with alerting for Node.js deployments.
-
-
-## Overview
-
-The PM2 health monitoring system automatically checks the health of all PM2-managed processes and sends email alerts when issues are detected. It runs every 10 minutes via a [systemd](https://github.com/systemd/systemd) timer. These routine health alerts never send SMS; only a genuine systemd `OnFailure` event can send optional [Twilio](https://github.com/twilio) SMS.
+[PM2][1] is checked every 10 minutes by a [systemd timer][2]. A PM2 problem sends a detailed email and a short SMS on the server running PM2.
 
 
-## Features
+## What triggers an alert
 
-* **Process Status Monitoring** - Detects errored or stopped processes
-* **Uptime Tracking** - Reports uptime for all processes via `pm2 jlist`
-* **Process List Drift Detection** - Alerts if current processes differ from saved state
-* **No Process Detection** - Alerts if PM2 has no running processes
-* **Email-Only Health Alerts** - Sends detailed routine alerts to configured recipients without SMS
-* **Systemd Failure Alerts** - Sends email plus optional diagnostics-rich Twilio SMS when the unit enters `OnFailure`
-* **Systemd Integration** - Runs as a systemd timer service
-* **Comprehensive Logging** - All checks logged to journalctl
+| Problem                                          | Alert         |
+| ------------------------------------------------ | ------------- |
+| `pm2-deploy.service` fails to start or crashes   | Email and SMS |
+| PM2 is missing                                   | Email and SMS |
+| PM2 has no managed processes                     | Email and SMS |
+| A process is stopped or errored                  | Email and SMS |
+| The running process list differs from `pm2 save` | Email and SMS |
 
-
-## How It Works
-
-The monitoring script performs the following checks every 10 minutes:
-
-1. **Verify PM2 Installation** - Ensures PM2 is available
-2. **Get Process List** - Uses `pm2 jlist` to get JSON output of all processes
-3. **Check Process Count** - Alerts if no processes are running
-4. **Check Process Status** - Identifies errored or stopped processes
-5. **Compare with Saved State** - Compares current list with `~/.pm2/dump.pm2`
-6. **Send Alerts** - Emails detailed report if any issues detected
+The email includes the service result, current status, PM2 findings, and logs from the failing run. The SMS is short and does not include process output or logs.
 
 
-## Files Created
-
-### Script
-
-* `/usr/local/bin/pm2-health-check.sh` - Main health check script
-
-### Systemd Units
-
-* `/etc/systemd/system/pm2-health-check.service` - Oneshot service
-* `/etc/systemd/system/pm2-health-check.timer` - Timer (runs every 10 minutes)
-
-
-## Configuration
-
-### Email Recipients
-
-Set `ALERT_EMAIL_RECIPIENTS` before running `security.yml`:
+## Check PM2
 
 ```bash
-export ALERT_EMAIL_RECIPIENTS="devops@example.com,security@example.com"
+sudo systemctl status pm2-health-check.timer --no-pager
+sudo journalctl -u pm2-health-check.service -n 100 --no-pager
+sudo -u deploy bash -lc 'pm2 list'
 ```
 
-The default is `security@forwardemail.net`. `MSMTP_RCPTS` remains a deprecated migration fallback. PM2 health alerts use the root-owned email-only shared sender and host-local direct-MX [Postfix](https://github.com/vdukhovni/postfix) queue; they do not use the application SMTP service or MongoDB. Complete the SPF prerequisites in the main [Ansible guide](../README.md#alert-transport-and-dns-prerequisites) first.
-
-If all four Twilio variables are configured in `security.yml`, a failure of `pm2-deploy.service` sends an additional SMS from `/usr/local/bin/send-failure-notification.sh`. That message includes the unit result and bounded recent journal context. PM2 process-health findings, process-list drift, and manual shared-sender tests remain email-only.
-
-### Timer Interval
-
-The timer runs every 10 minutes by default. To change this, edit `/etc/systemd/system/pm2-health-check.timer`:
-
-```ini
-[Timer]
-OnBootSec=5min
-OnUnitActiveSec=10min  # Change this value
-AccuracySec=1min
-```
-
-Then reload systemd:
+If the process list changed on purpose, save the new list:
 
 ```bash
-sudo systemctl daemon-reload
-sudo systemctl restart pm2-health-check.timer
+sudo -u deploy bash -lc 'pm2 save'
 ```
 
 
-## Usage
+## Planned maintenance
 
-### Manual Health Check
-
-Run the health check manually:
+A normal `systemctl stop pm2-deploy.service` does not count as a systemd failure. The health check will still notice stopped processes unless you mark planned maintenance first.
 
 ```bash
-sudo /usr/local/bin/pm2-health-check.sh
+sudo touch /run/forwardemail-pm2-maintenance
+sudo systemctl stop pm2-deploy.service
 ```
 
-### View Logs
-
-View recent health check logs:
+Bring PM2 back and remove the marker when finished:
 
 ```bash
-sudo journalctl -u pm2-health-check.service -n 50
+sudo systemctl start pm2-deploy.service
+sudo rm -f /run/forwardemail-pm2-maintenance
+sudo systemctl start pm2-health-check.service
 ```
 
-Follow logs in real-time:
+The marker lasts only until reboot and skips only the scheduled PM2 health check. It does not hide a real PM2 startup failure.
+
+
+## Safe test
+
+Run the repository test instead of stopping a production PM2 service:
 
 ```bash
-sudo journalctl -u pm2-health-check.service -f
+ansible/scripts/test-pm2-systemd-notification-runtime.sh
 ```
 
-### Check Timer Status
-
-View timer status and next run time:
-
-```bash
-sudo systemctl status pm2-health-check.timer
-```
-
-List all timers:
-
-```bash
-sudo systemctl list-timers
-```
-
-### Enable/Disable Monitoring
-
-Disable monitoring:
-
-```bash
-sudo systemctl stop pm2-health-check.timer
-sudo systemctl disable pm2-health-check.timer
-```
-
-Re-enable monitoring:
-
-```bash
-sudo systemctl enable pm2-health-check.timer
-sudo systemctl start pm2-health-check.timer
-```
-
-
-## Alert Conditions
-
-The monitoring system sends alerts when any of the following conditions are detected:
-
-### No Processes Detected
-
-```
-⚠️  NO PM2 PROCESSES DETECTED
-```
-
-**Cause:** PM2 has no running processes\
-**Action:** Check if PM2 processes crashed or were manually stopped
-
-### Errored Processes
-
-```
-⚠️  ERRORED PROCESSES: api, worker
-```
-
-**Cause:** One or more processes are in "errored" state\
-**Action:** Check process logs with `pm2 logs <process_name>`
-
-### Stopped Processes
-
-```
-⚠️  STOPPED PROCESSES: scheduler
-```
-
-**Cause:** One or more processes are in "stopped" state\
-**Action:** Restart with `pm2 restart <process_name>`
-
-### Process List Drift
-
-```
-⚠️  PROCESS LIST DRIFT DETECTED
-Saved:   api,worker,scheduler
-Current: api,worker
-```
-
-**Cause:** Current process list differs from saved state\
-**Action:** Verify if processes were intentionally removed, then run `pm2 save`
-
-
-## Baseline Setup
-
-To establish a baseline for drift detection, save the current PM2 state:
-
-```bash
-sudo -u deploy bash -c 'source /home/deploy/.bashrc && pm2 save'
-```
-
-This creates `/home/deploy/.pm2/dump.pm2` which the health check uses for comparison.
-
-
-## Example Alert Email
-
-```
-Subject: [ALERT] PM2 Health Check Failed on web-server-01
-
-PM2 Health Check Alert - web-server-01
-Timestamp: 2024-11-30T15:30:00+00:00
-
-⚠️  ERRORED PROCESSES: worker
-
-⚠️  PROCESS LIST DRIFT DETECTED
-Saved:   api,worker,scheduler
-Current: api,worker
-
-Full PM2 Status:
-┌─────┬──────────┬─────────────┬─────────┬─────────┬──────────┐
-│ id  │ name     │ mode        │ ↺       │ status  │ cpu      │
-├─────┼──────────┼─────────────┼─────────┼─────────┼──────────┤
-│ 0   │ api      │ cluster     │ 0       │ online  │ 0%       │
-│ 1   │ worker   │ fork        │ 15      │ errored │ 0%       │
-└─────┴──────────┴─────────────┴─────────┴─────────┴──────────┘
-```
-
-
-## Troubleshooting
-
-### Health Check Not Running
-
-Check if timer is active:
-
-```bash
-sudo systemctl status pm2-health-check.timer
-```
-
-Check for errors:
-
-```bash
-sudo journalctl -u pm2-health-check.timer -n 20
-```
-
-### No Alerts Received
-
-Submit through the same shared path used by the health check. This command sends email only, even when Twilio is configured:
-
-```bash
-sudo /usr/local/bin/send-rate-limited-email.sh \
-  pm2-manual-test \
-  "PM2 alert test" \
-  "Test from $(hostname)"
-```
-
-Check the health-check and Postfix logs, then inspect the local retry queue:
-
-```bash
-sudo journalctl -u pm2-health-check.service -n 50
-sudo journalctl -u postfix -n 100 --no-pager
-sudo postqueue -p
-```
-
-### False Positive: Process List Drift
-
-If you intentionally changed processes, update the saved state:
-
-```bash
-sudo -u deploy bash -c 'source /home/deploy/.bashrc && pm2 save'
-```
-
-### Permission Issues
-
-Ensure the script can access PM2 as the deploy user:
-
-```bash
-sudo -u deploy bash -c 'source /home/deploy/.bashrc && pm2 list'
-```
-
-
-## Integration with Existing Monitoring
-
-The PM2 health check integrates seamlessly with:
-
-* **UFW Allowlist Monitoring** - Both routine monitors use the same email-only alert sender
-* **PM2 Startup Service** - A `pm2-deploy.service` systemd failure uses the separate email-plus-optional-SMS `OnFailure` wrapper
-* **System Logs** - All output goes to `journalctl` for centralized logging
-
-
-## Best Practices
-
-1. **Set Up Baseline** - Always run `pm2 save` after deploying new processes
-2. **Monitor Logs** - Periodically review health check logs
-3. **Test Alerts** - Manually trigger the health script to verify email-only delivery; use the safe transient-unit procedure in [MONITORING\_TESTING.md](./MONITORING_TESTING.md#core-notification-infrastructure) to verify systemd failure SMS
-4. **Adjust Timing** - Increase/decrease check frequency based on your needs
-5. **Multiple Recipients** - Configure multiple email addresses for redundancy
+The test uses local mocks and sends no real email or SMS.
 
 
 ## Deployment
 
-The PM2 health monitoring is automatically deployed when running the `node.yml` playbook:
+PM2 monitoring is deployed by `node.yml`:
 
 ```bash
-ansible-playbook ansible/playbooks/node.yml -i hosts.yml
+ansible-playbook -i hosts.yml ansible/playbooks/node.yml
 ```
 
-After deployment, the timer starts automatically and runs every 10 minutes.
+
+## References
+
+[1]: https://pm2.keymetrics.io/docs/usage/startup/ "PM2 startup"
+
+[2]: https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html "systemd timers"

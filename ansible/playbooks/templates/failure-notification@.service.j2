@@ -2,9 +2,12 @@
 Description=Send infrastructure notifications for %i failure
 Wants=network-online.target forwardemail-systemd-incident-event@%i.service
 After=network-online.target postfix.service
+RefuseManualStart=true
 
 [Service]
 Type=oneshot
+Environment="FORWARDEMAIL_SMS_HOST={{ forwardemail_alert_hostname }}"
+Environment="FORWARDEMAIL_SMS_SERVICES={{ forwardemail_sms_services | join(':') }}"
 ExecStart=/usr/local/bin/send-failure-notification.sh %i
 User=root
 Group=root

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Rate-limited infrastructure alert email sender.
-# Usage: send-rate-limited-email.sh <alert-key> <subject> <body>
+# Usage: send-rate-limited-email.sh [--report-status <file>] [--body-file <file>] <alert-key> <subject> [body]
 #
 # Email is submitted to the host-local, send-only Postfix queue.  SMS is
 # intentionally not handled here: only the systemd OnFailure wrapper may send
@@ -17,15 +17,68 @@ log_alert() {
   logger -t forwardemail-alert -- "$*" 2>/dev/null || true
 }
 
-if [[ "$#" -ne 3 ]]; then
-  printf 'Usage: %s <alert-key> <subject> <body>\n' "$0" >&2
+REPORT_STATUS_FILE=''
+BODY_FILE=''
+while [[ "${1:-}" == --* ]]; do
+  case "$1" in
+    --report-status)
+      if [[ "$#" -lt 2 ]] || [[ ! -f "$2" ]] || [[ -L "$2" ]]; then
+        printf 'Invalid email status report file\n' >&2
+        exit "$EX_USAGE"
+      fi
+      REPORT_STATUS_FILE=$2
+      shift 2
+      ;;
+    --body-file)
+      if [[ "$#" -lt 2 ]] || [[ ! -f "$2" ]] || [[ -L "$2" ]] ||
+        [[ ! -r "$2" ]]; then
+        printf 'Invalid email body file\n' >&2
+        exit "$EX_USAGE"
+      fi
+      BODY_FILE=$2
+      shift 2
+      ;;
+    *)
+      printf 'Usage: %s [--report-status <file>] [--body-file <file>] <alert-key> <subject> [body]\n' \
+        "$0" >&2
+      exit "$EX_USAGE"
+      ;;
+  esac
+done
+
+if { [[ -n "$BODY_FILE" ]] && [[ "$#" -ne 2 ]]; } ||
+  { [[ -z "$BODY_FILE" ]] && [[ "$#" -ne 3 ]]; }; then
+  printf 'Usage: %s [--report-status <file>] [--body-file <file>] <alert-key> <subject> [body]\n' \
+    "$0" >&2
   exit "$EX_USAGE"
 fi
+
+report_status() {
+  local value=$1
+  if [[ -z "$REPORT_STATUS_FILE" ]]; then
+    return 0
+  fi
+  printf 'EMAIL_DELIVERY_STATUS=%s\n' "$value" > "$REPORT_STATUS_FILE"
+  chmod 0600 "$REPORT_STATUS_FILE"
+}
 
 ALERT_KEY="$1"
 SUBJECT=${2//$'\r'/}
 SUBJECT=${SUBJECT//$'\n'/ }
-BODY="$3"
+if [[ -n "$BODY_FILE" ]]; then
+  if [[ "$(stat -c %s "$BODY_FILE" 2>/dev/null || printf 'invalid')" =~ ^[0-9]+$ ]] &&
+    [[ "$(stat -c %s "$BODY_FILE" 2>/dev/null || printf 'invalid')" -le 131072 ]]; then
+    BODY=$(cat -- "$BODY_FILE") || {
+      printf 'Unable to read email body file\n' >&2
+      exit "$EX_TEMPFAIL"
+    }
+  else
+    printf 'Email body file exceeds 128 KiB or has invalid size\n' >&2
+    exit "$EX_USAGE"
+  fi
+else
+  BODY="$3"
+fi
 RECIPIENTS="{{ alert_email_recipients }}"
 FROM_ADDRESS="{{ alert_email_sender }}"
 HOST_NAME="$(hostname -f 2>/dev/null || hostname)"
@@ -74,6 +127,11 @@ if ! [[ "$email_success_at" =~ ^[0-9]+$ ]] || (( email_success_at > now )); then
 fi
 
 if (( email_success_at != 0 && now - email_success_at < COOLDOWN_SECONDS )); then
+  if ! report_status suppressed; then
+    flock -u 9
+    log_alert "key=$RATE_LIMIT_KEY email_status_report_failed"
+    exit "$EX_TEMPFAIL"
+  fi
   flock -u 9
   log_alert "key=$RATE_LIMIT_KEY email_suppressed_by_10m_cooldown"
   exit 0
@@ -120,12 +178,24 @@ if ! {
   printf '\n%s\n' "$BODY"
 } | /usr/bin/timeout --signal=TERM 30 /usr/sbin/sendmail \
   -oi -f "$FROM_ADDRESS" -- "${ADDRESSES[@]}"; then
+  report_status failed || true
   flock -u 9
   log_alert "key=$RATE_LIMIT_KEY email_queue_failed"
   exit "$EX_TEMPFAIL"
 fi
 
-state_tmp=$(mktemp "${STATE_FILE}.XXXXXX")
+# Report local Postfix queue acceptance before committing cooldown state. If
+# that later state write fails, callers still know the email was accepted.
+if ! report_status queued; then
+  flock -u 9
+  log_alert "key=$RATE_LIMIT_KEY email_status_report_failed"
+  exit "$EX_TEMPFAIL"
+fi
+if ! state_tmp=$(mktemp "${STATE_FILE}.XXXXXX"); then
+  flock -u 9
+  log_alert "key=$RATE_LIMIT_KEY state_create_failed"
+  exit "$EX_TEMPFAIL"
+fi
 printf '{"email_success_at":%d}\n' "$now" > "$state_tmp"
 chmod 0600 "$state_tmp"
 if ! mv -f "$state_tmp" "$STATE_FILE"; then
@@ -136,5 +206,5 @@ if ! mv -f "$state_tmp" "$STATE_FILE"; then
 fi
 
 flock -u 9
-log_alert "key=$RATE_LIMIT_KEY email_attempted=true email_succeeded=true"
+log_alert "key=$RATE_LIMIT_KEY email_queue_attempted=true email_queued=true"
 exit 0

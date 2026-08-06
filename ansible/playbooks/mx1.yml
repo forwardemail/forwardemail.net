@@ -2,10 +2,39 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
+- name: Hostname
+  hosts: mx1
+  gather_facts: false
+  become: true
+  become_user: root
+  tags:
+    - always
+    - forwardemail-alert-hostname
+  tasks:
+    - name: Validate MX1 hostname
+      ansible.builtin.assert:
+        that:
+          - lookup('env', 'MX1_HOST') != ''
+        fail_msg: MX1_HOST must be set before configuring alerts.
+
+    - name: Set hostname before security identity discovery
+      ansible.builtin.hostname:
+        name: "{{ lookup('env', 'MX1_HOST') }}"
+
+    - name: Set MX1 alert hostname
+      ansible.builtin.set_fact:
+        forwardemail_entrypoint_expected_hostname: >-
+          {{ lookup('env', 'MX1_HOST') }}
+
 - name: Import security playbook
   import_playbook: security.yml
   vars:
     security_target_hosts: "mx1"
+    security_expected_alert_hostname: >-
+      {{ forwardemail_entrypoint_expected_hostname }}
+    security_sms_services:
+      - pm2-deploy.service
+      - pm2-health-check.service
 - name: Import Node.js playbook
   import_playbook: node.yml
   vars:
@@ -14,15 +43,6 @@
   import_playbook: ssh-keys.yml
   vars:
     ssh_keys_target_hosts: "mx1"
-
-- hosts: mx1
-  name: Hostname
-  become: true
-  become_user: root
-  tasks:
-    - name: Set hostname
-      hostname:
-        name: "{{ lookup('env', 'MX1_HOST') }}"
 
 - hosts: mx1
   name: MX1

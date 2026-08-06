@@ -28,10 +28,52 @@
           Get checksums from: https://github.com/valkey-io/valkey-hashes
       when: valkey_checksum == ''
 
+- name: Hostname
+  hosts: redis
+  gather_facts: false
+  become: true
+  become_user: root
+  tags:
+    - always
+    - forwardemail-alert-hostname
+  tasks:
+    - name: Validate required environment variables
+      ansible.builtin.assert:
+        that:
+          - lookup('env', 'REDIS_HOST') != ''
+          - lookup('env', 'REDIS_PASSWORD') != ''
+          - lookup('env', 'REDIS_PORT') != ''
+          - lookup('env', 'SSL_CERT_PATH') != ''
+          - lookup('env', 'SSL_KEY_PATH') != ''
+          - lookup('env', 'SSL_CA_PATH') != ''
+          - lookup('env', 'AWS_ACCESS_KEY_ID') != ''
+          - lookup('env', 'AWS_SECRET_ACCESS_KEY') != ''
+          - lookup('env', 'AWS_ENDPOINT_URL') != ''
+          - lookup('env', 'BACKUP_SECRET') != ''
+        fail_msg: |
+          Required environment variables are missing for Redis playbook.
+          Please ensure the following variables are set in your .env file:
+          - REDIS_HOST
+          - REDIS_PASSWORD
+          - REDIS_PORT
+          - SSL_CERT_PATH
+          - SSL_KEY_PATH
+          - SSL_CA_PATH
+          - AWS_ACCESS_KEY_ID
+          - AWS_SECRET_ACCESS_KEY
+          - AWS_ENDPOINT_URL
+          - BACKUP_SECRET
+        quiet: false
+
+    - name: Set hostname before security identity discovery
+      ansible.builtin.hostname:
+        name: "{{ lookup('env', 'REDIS_HOST') }}"
+
 - name: Import security playbook
   import_playbook: security.yml
   vars:
     security_target_hosts: "redis"
+    security_expected_alert_hostname: "{{ lookup('env', 'REDIS_HOST') }}"
 - name: Import SSH keys playbook
   import_playbook: ssh-keys.yml
   vars:
@@ -126,43 +168,6 @@
         ssl_key_path: "{{ input_key }}"
         ssl_cert_path: "{{ input_cert }}"
         ssl_ca_path: "{{ input_ca }}"
-
-- hosts: redis
-  name: Hostname
-  become: true
-  become_user: root
-  tasks:
-    - name: Validate required environment variables
-      assert:
-        that:
-          - lookup('env', 'REDIS_HOST') != ''
-          - lookup('env', 'REDIS_PASSWORD') != ''
-          - lookup('env', 'REDIS_PORT') != ''
-          - lookup('env', 'SSL_CERT_PATH') != ''
-          - lookup('env', 'SSL_KEY_PATH') != ''
-          - lookup('env', 'SSL_CA_PATH') != ''
-          - lookup('env', 'AWS_ACCESS_KEY_ID') != ''
-          - lookup('env', 'AWS_SECRET_ACCESS_KEY') != ''
-          - lookup('env', 'AWS_ENDPOINT_URL') != ''
-          - lookup('env', 'BACKUP_SECRET') != ''
-        fail_msg: |
-          Required environment variables are missing for Redis playbook.
-          Please ensure the following variables are set in your .env file:
-          - REDIS_HOST
-          - REDIS_PASSWORD
-          - REDIS_PORT
-          - SSL_CERT_PATH
-          - SSL_KEY_PATH
-          - SSL_CA_PATH
-          - AWS_ACCESS_KEY_ID
-          - AWS_SECRET_ACCESS_KEY
-          - AWS_ENDPOINT_URL
-          - BACKUP_SECRET
-        quiet: false
-
-    - name: Set hostname
-      hostname:
-        name: "{{ lookup('env', 'REDIS_HOST') }}"
 
 - hosts: redis
   name: Redis
