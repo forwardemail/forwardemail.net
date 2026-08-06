@@ -2169,18 +2169,17 @@ function retryGetDatabase(...args) {
                 const corruptAlertKey = `corrupt_alert:${session.user.alias_id}`;
                 let shouldNotify = true;
                 if (instance.client) {
-                  const alreadyNotified = await instance.client.get(
-                    corruptAlertKey
+                  // Atomic NX: only one worker sends the notification.
+                  // Without NX, multiple workers could all send duplicate emails.
+                  const notifyAcquired = await instance.client.set(
+                    corruptAlertKey,
+                    new Date().toISOString(),
+                    'PX',
+                    ms('72h'),
+                    'NX'
                   );
-                  if (alreadyNotified) {
+                  if (!notifyAcquired) {
                     shouldNotify = false;
-                  } else {
-                    await instance.client.set(
-                      corruptAlertKey,
-                      new Date().toISOString(),
-                      'PX',
-                      ms('72h')
-                    );
                   }
                 }
 
@@ -2326,6 +2325,20 @@ function retryGetDatabase(...args) {
           //
           if (instance.databaseMap) {
             instance.databaseMap.evict(session.user.alias_id);
+          }
+
+          //
+          // Broadcast cache eviction to ALL workers via Redis pub/sub.
+          // Other PM2 cluster workers still have the corrupt handle cached
+          // in their local databaseMap. Without this broadcast, those workers
+          // continue using the corrupt handle (cachedDb.open === true at line 515),
+          // causing repeated SQLITE_CORRUPT errors and potential re-corruption
+          // of the newly recreated file.
+          //
+          if (instance.client) {
+            instance.client
+              .publish('db_cache_evict', session.user.alias_id)
+              .catch((err) => logger.debug(err));
           }
 
           //

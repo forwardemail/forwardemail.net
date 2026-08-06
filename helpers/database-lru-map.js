@@ -144,6 +144,8 @@ class DatabaseLRUMap {
       if (entry.db && entry.db.inTransaction) continue;
       // Skip entries with active references (in-flight requests)
       if (entry.refcount > 0) continue;
+      // Skip entries with active deferred maintenance (trash cleanup, etc.)
+      if (entry.maintenanceActive) continue;
       if (entry.lastAccess < oldestTime) {
         oldestTime = entry.lastAccess;
         oldestKey = key;
@@ -178,6 +180,8 @@ class DatabaseLRUMap {
         if (this._closing.has(key)) continue;
         // Skip entries with active references (in-flight requests)
         if (entry.refcount > 0) continue;
+        // Skip entries with active deferred maintenance (trash cleanup, etc.)
+        if (entry.maintenanceActive) continue;
         toEvict.push(key);
       }
     }

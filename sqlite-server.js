@@ -346,6 +346,30 @@ class SQLite {
     // TODO: all subscribe/unsubscribe calls need `await`'ed
     this.subscriber.subscribe('sqlite_auth_response');
 
+    //
+    // Subscribe to cross-worker cache eviction broadcasts.
+    // When one worker recovers a corrupt database (deletes + recreates),
+    // it publishes the alias_id to 'db_cache_evict'. All other workers
+    // must evict their cached (corrupt) handle so they reopen a fresh one
+    // on the next request instead of reusing the broken handle.
+    //
+    this.subscriber.subscribe('db_cache_evict');
+    this.subscriber.on('message', (channel, aliasId) => {
+      if (channel !== 'db_cache_evict') return;
+      if (!this.databaseMap) return;
+      const cachedDb = this.databaseMap.getRaw
+        ? this.databaseMap.getRaw(aliasId)
+        : undefined;
+      if (cachedDb) {
+        // evict() removes from map WITHOUT triggering the async close path
+        this.databaseMap.evict(aliasId);
+        // Close the corrupt handle to release the file descriptor
+        try {
+          if (cachedDb.open) cachedDb.close();
+        } catch {}
+      }
+    });
+
     this.wsInterval = setInterval(() => {
       for (const ws of this.wss.clients) {
         /*
@@ -378,6 +402,7 @@ class SQLite {
 
   async close() {
     this.subscriber.unsubscribe('sqlite_auth_response');
+    this.subscriber.unsubscribe('db_cache_evict');
     clearInterval(this.wsInterval);
     clearInterval(this.uuidCleanupInterval);
 
