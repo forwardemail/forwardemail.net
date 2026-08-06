@@ -4,7 +4,8 @@
  */
 
 function ensureTeamPlan(ctx, next) {
-  ctx.state.isTeamPlanRequired = ctx.state.domain.plan !== 'team';
+  if (ctx.state.domain.plan !== 'team')
+    throw Boom.paymentRequired(ctx.translateError('TEAM_PLAN_REQUIRED'));
   return next();
 }
 
