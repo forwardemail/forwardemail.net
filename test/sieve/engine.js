@@ -2118,5 +2118,50 @@ describe('Core Sieve tests (RFC 5228 Section 5)', () => {
         );
       });
     });
+
+    describe('capability enforcement at execution time', () => {
+      it('should reject foreverypart/replace used with no require statement', async () => {
+        // Capability enforcement happens only in processRequires(), which walks
+        // the strings literally listed in require; the command dispatch for
+        // foreverypart and replace has no hasCapability() guard at all. A
+        // script with no require statement whatsoever therefore executes both
+        // commands regardless.
+        //
+        // This deliberately uses NO require statement rather than
+        // `require "mime"`, to stay neutral on an open question: RFC 5703
+        // defines distinct capability strings per command (foreverypart is
+        // Section 3, replace is Section 5), but this codebase's own tests
+        // consistently drive foreverypart behind `require "mime"` alone, and
+        // the FAQ documents all five commands under a single mime entry. So
+        // whether `require "mime"` should be sufficient is a design decision
+        // for the maintainers. A script with no require at all is invalid
+        // under either reading, which is what this test pins down.
+        //
+        // Paired with the require-time test in test/sieve/filter-handler.js,
+        // the two failures are inverses: a script that declares these
+        // extensions is rejected, while this one that declares nothing runs.
+        const script = `
+          foreverypart {
+            replace "[replaced]";
+          }
+        `;
+        const message = createMimeMessage([
+          {
+            contentType: 'image/png',
+            headers: { 'content-id': '<img1@example.com>' },
+            body: 'binarydata',
+            encoding: 'base64',
+            charset: false
+          }
+        ]);
+
+        await assert.rejects(
+          () => executeScript(script, message),
+          'expected foreverypart/replace used with no require statement to be ' +
+            'an error, but the engine only checks capabilities at require-time ' +
+            'and executes the commands unguarded'
+        );
+      });
+    });
   });
 });
