@@ -13,7 +13,7 @@
 | A process is stopped or errored                  | Email and SMS |
 | The running process list differs from `pm2 save` | Email and SMS |
 
-The email includes the service result, current status, PM2 findings, and logs from the failing run. The SMS is short and does not include process output or logs.
+The email includes the service result, current status, PM2 findings, and logs from the failing run. The SMS is short and does not include process output or logs. A sustained PM2 problem also opens an incident on the public status page for the affected service. It closes automatically after PM2 has recovered.
 
 
 ## Check PM2

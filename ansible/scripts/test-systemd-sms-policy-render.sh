@@ -72,6 +72,7 @@ assert_policy() {
     "Environment=\"FORWARDEMAIL_SMS_SERVICES=$units\"" \
     "$unit"
   grep -Fxq 'RefuseManualStart=true' "$unit"
+  grep -Fxq 'ConditionPathExists=/etc/forwardemail-alerts/systemd-notifier-policy' "$unit"
   grep -Fxq 'ExecStart=/usr/local/bin/send-failure-notification.sh %i' "$unit"
   if grep -Fq 'FORWARDEMAIL_SMS_SERVICE=' "$unit"; then
     printf 'FAIL: %s rendered obsolete singular SMS unit policy\n' "$name" >&2

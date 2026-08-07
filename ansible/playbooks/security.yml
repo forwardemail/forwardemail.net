@@ -47,13 +47,85 @@
     systemd_incident_host_map:
       mongo.forwardemail.net:
         component: mongo.forwardemail.net
-        unit: mongod.service
+        label: mongo-forwardemail-net
+        units:
+          - mongod.service
       logs.forwardemail.net:
         component: logs.forwardemail.net
-        unit: mongod.service
+        label: logs-forwardemail-net
+        units:
+          - mongod.service
       redis.forwardemail.net:
         component: redis.forwardemail.net
-        unit: valkey-server.service
+        label: redis-forwardemail-net
+        units:
+          - valkey-server.service
+      bree.forwardemail.net:
+        component: bree.forwardemail.net
+        label: bree-forwardemail-net
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
+      web.forwardemail.net:
+        component: forwardemail.net
+        label: forwardemail-net-443-i-pv4
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
+      api.forwardemail.net:
+        component: api.forwardemail.net
+        label: api-forwardemail-net-443-i-pv4
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
+      caldav.forwardemail.net:
+        component: caldav.forwardemail.net
+        label: caldav-forwardemail-net-443-i-pv4
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
+      carddav.forwardemail.net:
+        component: carddav.forwardemail.net
+        label: carddav-forwardemail-net-443-i-pv4
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
+      imap.forwardemail.net:
+        component: imap.forwardemail.net
+        label: imap-forwardemail-net-993-i-pv4
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
+      mx1.forwardemail.net:
+        component: mx1.forwardemail.net
+        label: mx1-forwardemail-net-25-i-pv4
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
+      mx2.forwardemail.net:
+        component: mx2.forwardemail.net
+        label: mx2-forwardemail-net-25-i-pv4
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
+      pop3.forwardemail.net:
+        component: pop3.forwardemail.net
+        label: pop3-forwardemail-net-995-i-pv4
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
+      smtp.forwardemail.net:
+        component: smtp.forwardemail.net
+        label: smtp-forwardemail-net-587-i-pv4
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
+      sqlite.forwardemail.net:
+        component: sqlite.forwardemail.net
+        label: sqlite-forwardemail-net
+        units:
+          - pm2-deploy.service
+          - pm2-health-check.service
   pre_tasks:
     # Each entrypoint sets this server's hostname before importing this play.
     # Read the live hostname directly because provider PTR data can differ from
@@ -141,6 +213,7 @@
       tags:
         - always
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Validate SMS services for this server
       ansible.builtin.assert:
@@ -160,14 +233,14 @@
           or PM2 health-check services.
       tags:
         - always
-        - forwardemail-systemd-sms
+        - forwardemail-alert-policy
 
     - name: Choose SMS services for this server
       ansible.builtin.set_fact:
         forwardemail_sms_services: >-
           {{
             (
-              [forwardemail_systemd_incident_config.unit]
+              (forwardemail_systemd_incident_config.units | default([]))
               if (forwardemail_systemd_incident_config | length > 0)
               else []
             )
@@ -177,14 +250,16 @@
           }}
       tags:
         - always
-        - forwardemail-systemd-sms
+        - forwardemail-alert-policy
 
     - name: Derive public systemd incident reporter state
       ansible.builtin.set_fact:
         forwardemail_systemd_incident_component: >-
           {{ forwardemail_systemd_incident_config.component | default('') }}
-        forwardemail_systemd_incident_unit: >-
-          {{ forwardemail_systemd_incident_config.unit | default('') }}
+        forwardemail_systemd_incident_label: >-
+          {{ forwardemail_systemd_incident_config.label | default('') }}
+        forwardemail_systemd_incident_units: >-
+          {{ forwardemail_systemd_incident_config.units | default([]) }}
         forwardemail_systemd_incident_enabled: >-
           {{
             (forwardemail_systemd_incident_config | length > 0) and
@@ -194,6 +269,7 @@
       tags:
         - always
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     # An override must never let one server use another server's hostname.
     - name: Verify saved alert hostname matches this server
@@ -742,6 +818,8 @@
           - util-linux
         state: present
         update_cache: true
+      tags:
+        - forwardemail-alert-policy
 
     - name: Count configured Twilio environment variables
       ansible.builtin.set_fact:
@@ -758,6 +836,8 @@
             | length
           }}
       no_log: true
+      tags:
+        - forwardemail-alert-policy
 
     - name: Validate Twilio SMS configuration
       ansible.builtin.assert:
@@ -780,6 +860,8 @@
           TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER,
           and TWILIO_TO_NUMBER.
       no_log: true
+      tags:
+        - forwardemail-alert-policy
 
     - name: Derive private systemd SMS enabled state
       ansible.builtin.set_fact:
@@ -790,7 +872,7 @@
           }}
       no_log: true
       tags:
-        - forwardemail-systemd-sms
+        - forwardemail-alert-policy
 
     - name: Validate systemd status incident configuration
       ansible.builtin.assert:
@@ -805,18 +887,29 @@
           - >-
             (forwardemail_systemd_incident_config | length == 0) or
             (forwardemail_systemd_incident_component is
-            match('^(mongo|logs|redis)\\.forwardemail\\.net$'))
+            match('^(mongo|logs|redis|bree|api|caldav|carddav|imap|mx1|mx2|pop3|smtp|sqlite|forwardemail)\\.forwardemail\\.net$|^forwardemail\\.net$'))
           - >-
-            (forwardemail_systemd_incident_config | length == 0) or
-            (forwardemail_systemd_incident_unit is
-            match('^(mongod|valkey-server)\\.service$'))
+            (forwardemail_systemd_incident_label is
+            match('^[a-z0-9-]+$'))
+          - >-
+            (forwardemail_systemd_incident_units | type_debug) == 'list'
+          - >-
+            (forwardemail_systemd_incident_units | length) > 0
+          - >-
+            (forwardemail_systemd_incident_units | difference([
+              'mongod.service',
+              'valkey-server.service',
+              'pm2-deploy.service',
+              'pm2-health-check.service'
+            ]) | length) == 0
         fail_msg: >-
           Invalid systemd incident configuration. Use a valid
           GITHUB_OCTOKIT_TOKEN and thresholds from 2 through 10; only the
-          fixed MongoDB, Logs, and Valkey host/unit mappings are allowed.
+          fixed database and PM2 host/unit mappings are allowed.
       no_log: true
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Report email-only alert mode
       ansible.builtin.debug:
@@ -848,6 +941,25 @@
       tags:
         - forwardemail-systemd-incident
 
+    - name: Disable notifications while updating alert policy
+      ansible.builtin.command:
+        argv:
+          - systemctl
+          - mask
+          - --runtime
+          - failure-notification@.service
+      changed_when: false
+      failed_when: false
+      tags:
+        - forwardemail-alert-policy
+
+    - name: Remove old alert policy marker
+      ansible.builtin.file:
+        path: /etc/forwardemail-alerts/systemd-notifier-policy
+        state: absent
+      tags:
+        - forwardemail-alert-policy
+
     - name: Create root-only infrastructure alert configuration directory
       ansible.builtin.file:
         path: /etc/forwardemail-alerts
@@ -868,6 +980,7 @@
       no_log: true
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Remove systemd incident environment when reporting is disabled
       ansible.builtin.file:
@@ -877,6 +990,7 @@
       no_log: true
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Deploy Twilio environment on eligible SMS hosts
       ansible.builtin.template:
@@ -887,12 +1001,16 @@
         mode: '0600'
       when: forwardemail_systemd_sms_enabled | bool
       no_log: true
+      tags:
+        - forwardemail-alert-policy
 
     - name: Remove Twilio environment from email-only hosts
       ansible.builtin.file:
         path: /etc/forwardemail-alerts/twilio.env
         state: absent
       when: not (forwardemail_systemd_sms_enabled | bool)
+      tags:
+        - forwardemail-alert-policy
 
     - name: Deploy email-only rate-limited alert sender
       ansible.builtin.template:
@@ -901,6 +1019,8 @@
         owner: root
         group: root
         mode: '0755'
+      tags:
+        - forwardemail-alert-policy
 
     - name: Create root-only alert cooldown state directory
       ansible.builtin.file:
@@ -909,6 +1029,8 @@
         owner: root
         group: root
         mode: '0700'
+      tags:
+        - forwardemail-alert-policy
 
     - name: Deploy failure notification script
       ansible.builtin.template:
@@ -917,6 +1039,8 @@
         owner: root
         group: root
         mode: '0755'
+      tags:
+        - forwardemail-alert-policy
 
     - name: Deploy privacy-preserving systemd incident reporter
       ansible.builtin.template:
@@ -928,6 +1052,7 @@
         mode: '0755'
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Deploy systemd failure notification service template
       ansible.builtin.template:
@@ -938,6 +1063,7 @@
         mode: '0644'
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Deploy systemd incident event service template
       ansible.builtin.template:
@@ -949,6 +1075,7 @@
         mode: '0644'
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Deploy systemd incident reconciliation service
       ansible.builtin.template:
@@ -961,6 +1088,7 @@
         mode: '0644'
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Deploy systemd incident reconciliation timer
       ansible.builtin.template:
@@ -973,6 +1101,7 @@
         mode: '0644'
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Create fleet-wide systemd failure-notification drop-in directories
       ansible.builtin.file:
@@ -986,6 +1115,8 @@
         - /etc/systemd/system/failure-notification@.service.d
         - /etc/systemd/system/forwardemail-systemd-incident-event@.service.d
         - /etc/systemd/system/forwardemail-systemd-incident-reconcile.service.d
+      tags:
+        - forwardemail-alert-policy
 
     - name: Hook every systemd service failure into centralized notifications
       ansible.builtin.copy:
@@ -997,6 +1128,8 @@
         owner: root
         group: root
         mode: '0644'
+      tags:
+        - forwardemail-alert-policy
 
     - name: Prevent recursive failure notifications from alert services
       ansible.builtin.copy:
@@ -1014,12 +1147,69 @@
         - /etc/systemd/system/forwardemail-systemd-incident-reconcile.service.d
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Reload systemd daemon for fleet-wide failure notifications
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         daemon_reload: true
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
+
+    - name: Verify current failure notification unit
+      ansible.builtin.command:
+        argv:
+          - grep
+          - -Fqx
+          - ConditionPathExists=/etc/forwardemail-alerts/systemd-notifier-policy
+          - /etc/systemd/system/failure-notification@.service
+      changed_when: false
+      tags:
+        - forwardemail-alert-policy
+
+    - name: Verify legacy detailed SMS body is absent
+      ansible.builtin.command:
+        argv:
+          - grep
+          - -F
+          - Status=$sms_status
+          - /usr/local/bin/send-failure-notification.sh
+      register: forwardemail_legacy_sms_body
+      changed_when: false
+      failed_when: false
+      tags:
+        - forwardemail-alert-policy
+
+    - name: Refuse to activate legacy failure notifier
+      ansible.builtin.assert:
+        that:
+          - forwardemail_legacy_sms_body.rc != 0
+        fail_msg: >-
+          The installed failure notifier still contains the old detailed SMS
+          body. It remains disabled; rerun the alert policy rollout.
+      tags:
+        - forwardemail-alert-policy
+
+    - name: Mark current failure notification policy ready
+      ansible.builtin.copy:
+        dest: /etc/forwardemail-alerts/systemd-notifier-policy
+        content: "managed by Ansible\n"
+        owner: root
+        group: root
+        mode: '0600'
+      tags:
+        - forwardemail-alert-policy
+
+    - name: Re-enable updated failure notifications
+      ansible.builtin.command:
+        argv:
+          - systemctl
+          - unmask
+          - --runtime
+          - failure-notification@.service
+      changed_when: false
+      tags:
+        - forwardemail-alert-policy
 
     - name: Enable systemd incident reconciliation timer
       ansible.builtin.systemd:
@@ -1029,6 +1219,7 @@
       when: forwardemail_systemd_incident_enabled | bool
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     - name: Disable systemd incident reconciliation timer when unconfigured
       ansible.builtin.systemd:
@@ -1039,6 +1230,7 @@
       failed_when: false
       tags:
         - forwardemail-systemd-incident
+        - forwardemail-alert-policy
 
     # Deploy security monitoring scripts
     - name: Create security monitor configuration directory

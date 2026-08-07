@@ -1,6 +1,6 @@
 # Public status incidents
 
-Public GitHub incidents are used only for sustained database outages under the [Upptime lifecycle][1]. They support the status page; they do not replace private email or SMS alerts.
+Public GitHub incidents are used for sustained database and PM2 outages under the [Upptime lifecycle][1]. They support the status page; they do not replace private email or SMS alerts.
 
 | Public component | Service                                             | Status-page label        |
 | ---------------- | --------------------------------------------------- | ------------------------ |
@@ -8,14 +8,14 @@ Public GitHub incidents are used only for sustained database outages under the [
 | Logs             | `mongod.service` on `logs.forwardemail.net`         | `logs-forwardemail-net`  |
 | Valkey/Redis     | `valkey-server.service` on `redis.forwardemail.net` | `redis-forwardemail-net` |
 
-PM2 and all other systemd services do not create public incidents.
+PM2 deployment and PM2 health failures also create a public incident for the affected service. This covers Bree, Website, API, CalDAV, CardDAV, IMAP, MX1, MX2, POP3, SMTP, and SQLite. Other systemd services do not create public incidents.
 
 
 ## What appears publicly
 
 An incident says only that the component is unavailable or has recovered. It does not contain service logs, commands, host diagnostics, IP addresses, tokens, or credentials.
 
-An issue needs two labels to appear in the correct [status-page][3] history: `status` and the component label in the table. The deployment creates a missing component label when needed. It never changes the shared `status` label.
+An issue needs two labels to appear in the correct [status-page][3] history: `status` and the label for its affected component. The table shows the database labels; PM2 uses the matching label for its existing public status component. The deployment creates a missing component label when needed. It never changes the shared `status` label.
 
 
 ## When an incident opens and closes
@@ -36,12 +36,11 @@ Without this token, public incidents are disabled. Private email and SMS alerts 
 
 ## Deploy
 
-Run the normal playbook for each database host:
+Run the fleet alert rollout after pulling the code:
 
 ```bash
-./ansible-playbook.js ansible/playbooks/mongo.yml
-./ansible-playbook.js ansible/playbooks/logs.yml
-./ansible-playbook.js ansible/playbooks/redis.yml
+cd ansible
+node ../ansible-playbook.js playbooks/security.yml --tags forwardemail-alert-policy
 ```
 
 
@@ -54,7 +53,7 @@ export GITHUB_OCTOKIT_TOKEN='github_pat_REDACTED'
 ./ansible/scripts/test-systemd-status-incident.sh
 ```
 
-To test another component:
+To check another supported component:
 
 ```bash
 SYSTEMD_INCIDENT_TEST_COMPONENT=logs.forwardemail.net \

@@ -57,6 +57,39 @@ case "$COMPONENT" in
   redis.forwardemail.net)
     COMPONENT_LABEL='redis-forwardemail-net'
     ;;
+  bree.forwardemail.net)
+    COMPONENT_LABEL='bree-forwardemail-net'
+    ;;
+  forwardemail.net)
+    COMPONENT_LABEL='forwardemail-net-443-i-pv4'
+    ;;
+  api.forwardemail.net)
+    COMPONENT_LABEL='api-forwardemail-net-443-i-pv4'
+    ;;
+  caldav.forwardemail.net)
+    COMPONENT_LABEL='caldav-forwardemail-net-443-i-pv4'
+    ;;
+  carddav.forwardemail.net)
+    COMPONENT_LABEL='carddav-forwardemail-net-443-i-pv4'
+    ;;
+  imap.forwardemail.net)
+    COMPONENT_LABEL='imap-forwardemail-net-993-i-pv4'
+    ;;
+  mx1.forwardemail.net)
+    COMPONENT_LABEL='mx1-forwardemail-net-25-i-pv4'
+    ;;
+  mx2.forwardemail.net)
+    COMPONENT_LABEL='mx2-forwardemail-net-25-i-pv4'
+    ;;
+  pop3.forwardemail.net)
+    COMPONENT_LABEL='pop3-forwardemail-net-995-i-pv4'
+    ;;
+  smtp.forwardemail.net)
+    COMPONENT_LABEL='smtp-forwardemail-net-587-i-pv4'
+    ;;
+  sqlite.forwardemail.net)
+    COMPONENT_LABEL='sqlite-forwardemail-net'
+    ;;
   *)
     printf '%s\n' 'SYSTEMD_INCIDENT_TEST_COMPONENT is not allowlisted.' >&2
     exit 64

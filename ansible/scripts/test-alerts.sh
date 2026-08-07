@@ -44,6 +44,7 @@ run "$SCRIPT_DIR/test-email-sender-status.sh"
 run "$SCRIPT_DIR/test-pm2-systemd-policy.py"
 run "$SCRIPT_DIR/test-pm2-systemd-notification-runtime.sh"
 run "$SCRIPT_DIR/test-systemd-failure-notification-contract.py"
+run "$SCRIPT_DIR/test-alert-policy-rollout.py"
 run "$SCRIPT_DIR/test-systemd-sms-policy-render.sh"
 run "$SCRIPT_DIR/test-status-incident-lifecycle.py"
 

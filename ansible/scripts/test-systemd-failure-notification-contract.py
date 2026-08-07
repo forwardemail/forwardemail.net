@@ -196,6 +196,11 @@ def main():
             )
 
     require(unit, "RefuseManualStart=true", UNIT.name)
+    require(
+        unit,
+        "ConditionPathExists=/etc/forwardemail-alerts/systemd-notifier-policy",
+        UNIT.name,
+    )
     require(unit, "FORWARDEMAIL_SMS_HOST", UNIT.name)
     require(unit, "FORWARDEMAIL_SMS_SERVICES", UNIT.name)
     require(unit, "ExecStart=/usr/local/bin/send-failure-notification.sh %i", UNIT.name)
@@ -214,6 +219,12 @@ def main():
     require(security, "security_sms_services | default([])", SECURITY.name)
     require(security, "pm2-deploy.service", SECURITY.name)
     require(security, "pm2-health-check.service", SECURITY.name)
+    require(security, "Disable notifications while updating alert policy", SECURITY.name)
+    require(security, "Remove old alert policy marker", SECURITY.name)
+    require(security, "Verify legacy detailed SMS body is absent", SECURITY.name)
+    require(security, "Mark current failure notification policy ready", SECURITY.name)
+    require(security, "Re-enable updated failure notifications", SECURITY.name)
+    require(security, "forwardemail-alert-policy", SECURITY.name)
 
     print(
         "PASS: exact systemd context and invocation logs are enforced; every "

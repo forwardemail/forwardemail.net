@@ -1,6 +1,6 @@
 #!/bin/bash
-# Report sustained failures for one allowlisted systemd unit to the public status
-# repository.  Public payloads are deliberately static and contain no host-local
+# Report sustained failures for explicitly allowlisted systemd units to the public
+# status repository. Public payloads are static and contain no host-local
 # diagnostics; detailed failure context stays in the private notification path.
 
 set -uo pipefail
@@ -47,7 +47,8 @@ fi
 GITHUB_OCTOKIT_TOKEN=''
 GITHUB_REPOSITORY=''
 SYSTEMD_INCIDENT_PUBLIC_COMPONENT=''
-SYSTEMD_INCIDENT_WATCHED_UNIT=''
+SYSTEMD_INCIDENT_COMPONENT_LABEL=''
+SYSTEMD_INCIDENT_WATCHED_UNITS=''
 SYSTEMD_INCIDENT_FAILURE_THRESHOLD=''
 SYSTEMD_INCIDENT_RECOVERY_THRESHOLD=''
 SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS=''
@@ -62,8 +63,9 @@ if [[ -z "$GITHUB_OCTOKIT_TOKEN" ]] ||
   (( TOKEN_LENGTH < 20 || TOKEN_LENGTH > 255 )) ||
   ! [[ "$GITHUB_OCTOKIT_TOKEN" =~ ^[A-Za-z0-9_]+$ ]] ||
   ! [[ "$GITHUB_REPOSITORY" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] ||
-  ! [[ "$SYSTEMD_INCIDENT_PUBLIC_COMPONENT" =~ ^(mongo|logs|redis)\.forwardemail\.net$ ]] ||
-  ! [[ "$SYSTEMD_INCIDENT_WATCHED_UNIT" =~ ^(mongod|valkey-server)\.service$ ]] ||
+  ! [[ "$SYSTEMD_INCIDENT_PUBLIC_COMPONENT" =~ ^(mongo|logs|redis|bree|api|caldav|carddav|imap|mx1|mx2|pop3|smtp|sqlite|forwardemail)\.forwardemail\.net$|^forwardemail\.net$ ]] ||
+  ! [[ "$SYSTEMD_INCIDENT_COMPONENT_LABEL" =~ ^[a-z0-9-]+$ ]] ||
+  ! [[ "$SYSTEMD_INCIDENT_WATCHED_UNITS" =~ ^[A-Za-z0-9_.@:-]+$ ]] ||
   ! [[ "$SYSTEMD_INCIDENT_FAILURE_THRESHOLD" =~ ^[0-9]+$ ]] ||
   ! [[ "$SYSTEMD_INCIDENT_RECOVERY_THRESHOLD" =~ ^[0-9]+$ ]] ||
   ! [[ "$SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS" =~ ^[0-9]+$ ]] ||
@@ -76,16 +78,21 @@ if [[ -z "$GITHUB_OCTOKIT_TOKEN" ]] ||
   exit 0
 fi
 
-SYSTEMD_INCIDENT_COMPONENT_LABEL=''
-case "${SYSTEMD_INCIDENT_PUBLIC_COMPONENT}:${SYSTEMD_INCIDENT_WATCHED_UNIT}" in
-  mongo.forwardemail.net:mongod.service)
-    SYSTEMD_INCIDENT_COMPONENT_LABEL='mongo-forwardemail-net'
-    ;;
-  logs.forwardemail.net:mongod.service)
-    SYSTEMD_INCIDENT_COMPONENT_LABEL='logs-forwardemail-net'
-    ;;
-  redis.forwardemail.net:valkey-server.service)
-    SYSTEMD_INCIDENT_COMPONENT_LABEL='redis-forwardemail-net'
+case "${SYSTEMD_INCIDENT_PUBLIC_COMPONENT}:${SYSTEMD_INCIDENT_COMPONENT_LABEL}:${SYSTEMD_INCIDENT_WATCHED_UNITS}" in
+  mongo.forwardemail.net:mongo-forwardemail-net:mongod.service | \
+  logs.forwardemail.net:logs-forwardemail-net:mongod.service | \
+  redis.forwardemail.net:redis-forwardemail-net:valkey-server.service | \
+  bree.forwardemail.net:bree-forwardemail-net:pm2-deploy.service:pm2-health-check.service | \
+  forwardemail.net:forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service | \
+  api.forwardemail.net:api-forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service | \
+  caldav.forwardemail.net:caldav-forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service | \
+  carddav.forwardemail.net:carddav-forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service | \
+  imap.forwardemail.net:imap-forwardemail-net-993-i-pv4:pm2-deploy.service:pm2-health-check.service | \
+  mx1.forwardemail.net:mx1-forwardemail-net-25-i-pv4:pm2-deploy.service:pm2-health-check.service | \
+  mx2.forwardemail.net:mx2-forwardemail-net-25-i-pv4:pm2-deploy.service:pm2-health-check.service | \
+  pop3.forwardemail.net:pop3-forwardemail-net-995-i-pv4:pm2-deploy.service:pm2-health-check.service | \
+  smtp.forwardemail.net:smtp-forwardemail-net-587-i-pv4:pm2-deploy.service:pm2-health-check.service | \
+  sqlite.forwardemail.net:sqlite-forwardemail-net:pm2-deploy.service:pm2-health-check.service)
     ;;
   *)
     unset GITHUB_OCTOKIT_TOKEN
@@ -94,10 +101,33 @@ case "${SYSTEMD_INCIDENT_PUBLIC_COMPONENT}:${SYSTEMD_INCIDENT_WATCHED_UNIT}" in
     ;;
 esac
 readonly SYSTEMD_INCIDENT_COMPONENT_LABEL
+IFS=: read -r -a SYSTEMD_INCIDENT_WATCHED_UNIT_LIST <<<"$SYSTEMD_INCIDENT_WATCHED_UNITS"
+readonly -a SYSTEMD_INCIDENT_WATCHED_UNIT_LIST
 
-if [[ "$MODE" == 'event' && "$EVENT_UNIT" != "$SYSTEMD_INCIDENT_WATCHED_UNIT" ]]; then
-  # The fleet-wide OnFailure target reaches every service.  Only the one fixed
-  # unit mapped to this host is public-status eligible.
+is_watched_unit() {
+  local watched_unit
+  for watched_unit in "${SYSTEMD_INCIDENT_WATCHED_UNIT_LIST[@]}"; do
+    [[ "$1" == "$watched_unit" ]] && return 0
+  done
+
+  return 1
+}
+
+unit_is_unhealthy() {
+  local watched_unit="$1"
+  if [[ "$watched_unit" == 'pm2-health-check.service' ]]; then
+    # A successful oneshot health check becomes inactive. Only a failed run is
+    # unhealthy; treating inactive as failed would create a false public incident.
+    timeout --signal=TERM 10 systemctl is-failed --quiet "$watched_unit"
+    return
+  fi
+
+  ! timeout --signal=TERM 10 systemctl is-active --quiet "$watched_unit"
+}
+
+if [[ "$MODE" == 'event' ]] && ! is_watched_unit "$EVENT_UNIT"; then
+  # The fleet-wide OnFailure target reaches every service. Only the explicitly
+  # mapped unit or units on this host are public-status eligible.
   unset GITHUB_OCTOKIT_TOKEN
   exit 0
 fi
@@ -481,11 +511,16 @@ if [[ "$MODE" == 'event' ]]; then
   unhealthy=true
   count_unhealthy=true
   last_event_at="$now"
-elif timeout --signal=TERM 10 systemctl is-active --quiet "$SYSTEMD_INCIDENT_WATCHED_UNIT"; then
-  unhealthy=false
 else
-  unhealthy=true
-  if (( last_event_at == 0 || now - last_event_at >= SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS )); then
+  for watched_unit in "${SYSTEMD_INCIDENT_WATCHED_UNIT_LIST[@]}"; do
+    if unit_is_unhealthy "$watched_unit"; then
+      unhealthy=true
+      break
+    fi
+  done
+
+  if [[ "$unhealthy" == true ]] &&
+    (( last_event_at == 0 || now - last_event_at >= SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS )); then
     count_unhealthy=true
   fi
 fi

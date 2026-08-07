@@ -22,6 +22,20 @@ ENTRYPOINTS = {
 
 PM2_UNITS = ("pm2-deploy.service", "pm2-health-check.service")
 
+PUBLIC_COMPONENTS = {
+    "bree.forwardemail.net": ("bree.forwardemail.net", "bree-forwardemail-net"),
+    "web.forwardemail.net": ("forwardemail.net", "forwardemail-net-443-i-pv4"),
+    "api.forwardemail.net": ("api.forwardemail.net", "api-forwardemail-net-443-i-pv4"),
+    "caldav.forwardemail.net": ("caldav.forwardemail.net", "caldav-forwardemail-net-443-i-pv4"),
+    "carddav.forwardemail.net": ("carddav.forwardemail.net", "carddav-forwardemail-net-443-i-pv4"),
+    "imap.forwardemail.net": ("imap.forwardemail.net", "imap-forwardemail-net-993-i-pv4"),
+    "mx1.forwardemail.net": ("mx1.forwardemail.net", "mx1-forwardemail-net-25-i-pv4"),
+    "mx2.forwardemail.net": ("mx2.forwardemail.net", "mx2-forwardemail-net-25-i-pv4"),
+    "pop3.forwardemail.net": ("pop3.forwardemail.net", "pop3-forwardemail-net-995-i-pv4"),
+    "smtp.forwardemail.net": ("smtp.forwardemail.net", "smtp-forwardemail-net-587-i-pv4"),
+    "sqlite.forwardemail.net": ("sqlite.forwardemail.net", "sqlite-forwardemail-net"),
+}
+
 
 def require(text: str, needle: str, context: str) -> None:
     if needle not in text:
@@ -87,6 +101,19 @@ def main() -> None:
     require(security, "forwardemail_systemd_sms_enabled:", "security.yml")
     require(security, "pm2-deploy.service", "security.yml")
     require(security, "pm2-health-check.service", "security.yml")
+    for host, (component, label) in PUBLIC_COMPONENTS.items():
+        require(security, f"      {host}:\n", "security.yml public map")
+        require(
+            security,
+            f"        component: {component}\n        label: {label}\n",
+            "security.yml public map",
+        )
+        require(
+            security,
+            "        units:\n          - pm2-deploy.service\n"
+            "          - pm2-health-check.service\n",
+            "security.yml public map",
+        )
     require(
         security,
         "forwardemail_sms_services | length > 0",
@@ -117,6 +144,20 @@ def main() -> None:
     require(notifier, "pm2-health-check.service", "failure notifier")
     forbid(notifier, "SMS_POLICY_UNIT=", "failure notifier singular policy")
 
+    reporter = (
+        playbooks / "templates" / "report-systemd-status-incident.sh.j2"
+    ).read_text(encoding="utf-8")
+    require(reporter, "SYSTEMD_INCIDENT_WATCHED_UNITS", "public incident reporter")
+    require(reporter, "is_watched_unit", "public incident reporter")
+    require(reporter, "unit_is_unhealthy", "public incident reporter")
+    require(
+        reporter,
+        "systemctl is-failed --quiet \"$watched_unit\"",
+        "public incident reporter PM2 health",
+    )
+    for component, label in PUBLIC_COMPONENTS.values():
+        require(reporter, f"{component}:{label}:pm2-deploy.service", "public incident reporter")
+
     node = (playbooks / "node.yml").read_text(encoding="utf-8")
     require(
         node,
@@ -144,8 +185,8 @@ def main() -> None:
 
     print(
         "PASS: all PM2 entrypoints converge identity before security; "
-        "startup and health failures use exact dual-channel routing; "
-        "maintenance and non-core boundaries remain fail-closed"
+        "startup and health failures use exact dual-channel routing and public "
+        "status lifecycle labels; maintenance and non-core boundaries remain fail-closed"
     )
 
 

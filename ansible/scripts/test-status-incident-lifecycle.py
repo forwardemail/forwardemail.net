@@ -163,10 +163,10 @@ class Handler(BaseHTTPRequestHandler):
             if name in STATE.labels:
                 self._send(422, {'message': 'Validation Failed'})
                 return
-            assert re.fullmatch(r'(mongo|logs|redis)-forwardemail-net', name)
+            assert re.fullmatch(r'[a-z0-9-]+', name)
             assert body.get('color') == 'ededed'
             description = body.get('description')
-            assert description == f"Upptime monitor: {name.replace('-forwardemail-net', '.forwardemail.net')}"
+            assert isinstance(description, str) and description.startswith('Upptime monitor: ')
             label = {'name': name, 'color': 'ededed', 'description': description}
             STATE.labels[name] = label
             self._send(201, label)
@@ -280,6 +280,8 @@ def main() -> None:
         state_dir.mkdir(mode=0o700)
         env_file = root / 'incident.env'
         service_state = root / 'service.state'
+        service_state_dir = root / 'unit-states'
+        service_state_dir.mkdir()
         logger_output = root / 'logger.txt'
         mock_bin = root / 'bin'
         mock_bin.mkdir()
@@ -288,8 +290,18 @@ def main() -> None:
         systemctl.write_text(
             '#!/bin/bash\n'
             'set -euo pipefail\n'
-            '[[ "${1:-}" == is-active ]] || exit 2\n'
-            'grep -qx active "$MOCK_SYSTEMD_STATE"\n'
+            'operation="${1:-}"\n'
+            'unit="${!#}"\n'
+            'case "$operation" in\n'
+            '  is-active) expected=active ;;\n'
+            '  is-failed) expected=failed ;;\n'
+            '  *) exit 2 ;;\n'
+            'esac\n'
+            'if [[ -n "${MOCK_SYSTEMD_STATE_DIR:-}" && -f "$MOCK_SYSTEMD_STATE_DIR/$unit" ]]; then\n'
+            '  grep -qx "$expected" "$MOCK_SYSTEMD_STATE_DIR/$unit"\n'
+            'else\n'
+            '  grep -qx "$expected" "$MOCK_SYSTEMD_STATE"\n'
+            'fi\n'
         )
         logger = mock_bin / 'logger'
         logger.write_text(
@@ -338,7 +350,8 @@ fi"""
                     f'GITHUB_OCTOKIT_TOKEN={TOKEN}',
                     'GITHUB_REPOSITORY=forwardemail/status.forwardemail.net',
                     'SYSTEMD_INCIDENT_PUBLIC_COMPONENT=mongo.forwardemail.net',
-                    'SYSTEMD_INCIDENT_WATCHED_UNIT=mongod.service',
+                    'SYSTEMD_INCIDENT_COMPONENT_LABEL=mongo-forwardemail-net',
+                    'SYSTEMD_INCIDENT_WATCHED_UNITS=mongod.service',
                     'SYSTEMD_INCIDENT_FAILURE_THRESHOLD=3',
                     'SYSTEMD_INCIDENT_RECOVERY_THRESHOLD=3',
                     'SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS=60',
@@ -355,6 +368,7 @@ fi"""
         process_env.update(
             {
                 'MOCK_SYSTEMD_STATE': str(service_state),
+                'MOCK_SYSTEMD_STATE_DIR': str(service_state_dir),
                 'MOCK_LOGGER_OUTPUT': str(logger_output),
                 'MOCK_TIME_FILE': str(time_file),
             }
@@ -496,7 +510,8 @@ fi"""
                     f'GITHUB_OCTOKIT_TOKEN={TOKEN}',
                     'GITHUB_REPOSITORY=forwardemail/status.forwardemail.net',
                     'SYSTEMD_INCIDENT_PUBLIC_COMPONENT=logs.forwardemail.net',
-                    'SYSTEMD_INCIDENT_WATCHED_UNIT=mongod.service',
+                    'SYSTEMD_INCIDENT_COMPONENT_LABEL=logs-forwardemail-net',
+                    'SYSTEMD_INCIDENT_WATCHED_UNITS=mongod.service',
                     'SYSTEMD_INCIDENT_FAILURE_THRESHOLD=3',
                     'SYSTEMD_INCIDENT_RECOVERY_THRESHOLD=3',
                     'SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS=60',
@@ -507,8 +522,15 @@ fi"""
         )
         logs_env_file.chmod(0o600)
         logs_reporter_source = REPORTER_TEMPLATE.read_text()
-        assert 'redis.forwardemail.net:valkey-server.service)' in logs_reporter_source
-        assert "SYSTEMD_INCIDENT_COMPONENT_LABEL='redis-forwardemail-net'" in logs_reporter_source
+        assert (
+            'redis.forwardemail.net:redis-forwardemail-net:valkey-server.service'
+            in logs_reporter_source
+        )
+        assert (
+            'bree.forwardemail.net:bree-forwardemail-net:pm2-deploy.service:'
+            'pm2-health-check.service'
+            in logs_reporter_source
+        )
         logs_reporter_source = logs_reporter_source.replace(
             root_guard,
             ': # Contract harness bypasses only the production root guard.',
@@ -571,6 +593,93 @@ fi"""
         assert logs_incident['labels'] == ['status', 'logs-forwardemail-net']
         assert logs_incident['locked'] is True
 
+        # A PM2 host watches both deployment and health units as one public
+        # component. Either failure opens the same issue; both must recover before
+        # the usual recovery debounce resolves it.
+        pm2_state_dir = root / 'pm2-state'
+        pm2_state_dir.mkdir(mode=0o700)
+        pm2_env_file = root / 'bree-incident.env'
+        pm2_env_file.write_text(
+            '\n'.join(
+                [
+                    f'GITHUB_OCTOKIT_TOKEN={TOKEN}',
+                    'GITHUB_REPOSITORY=forwardemail/status.forwardemail.net',
+                    'SYSTEMD_INCIDENT_PUBLIC_COMPONENT=bree.forwardemail.net',
+                    'SYSTEMD_INCIDENT_COMPONENT_LABEL=bree-forwardemail-net',
+                    'SYSTEMD_INCIDENT_WATCHED_UNITS=pm2-deploy.service:pm2-health-check.service',
+                    'SYSTEMD_INCIDENT_FAILURE_THRESHOLD=3',
+                    'SYSTEMD_INCIDENT_RECOVERY_THRESHOLD=3',
+                    'SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS=60',
+                    f'SYSTEMD_INCIDENT_API_URL={api_url}',
+                    '',
+                ]
+            )
+        )
+        pm2_env_file.chmod(0o600)
+        pm2_reporter_source = REPORTER_TEMPLATE.read_text()
+        pm2_reporter_source = pm2_reporter_source.replace(
+            root_guard,
+            ': # Contract harness bypasses only the production root guard.',
+        )
+        pm2_reporter_source = pm2_reporter_source.replace(
+            'PATH=/usr/sbin:/usr/bin:/sbin:/bin',
+            f'PATH={mock_bin}:/usr/sbin:/usr/bin:/sbin:/bin',
+        )
+        pm2_reporter_source = pm2_reporter_source.replace(
+            'readonly ENV_FILE=/etc/forwardemail-alerts/github-systemd-incident.env',
+            f"readonly ENV_FILE='{pm2_env_file}'",
+        )
+        pm2_reporter_source = pm2_reporter_source.replace(
+            'readonly STATE_DIR=/var/lib/forwardemail-alerts',
+            f"readonly STATE_DIR='{pm2_state_dir}'",
+        )
+        pm2_reporter_source = pm2_reporter_source.replace(
+            "'https://api.github.com'",
+            f"'{api_url}'",
+        )
+        pm2_reporter = root / 'bree-reporter.sh'
+        pm2_reporter.write_text(pm2_reporter_source)
+        pm2_reporter.chmod(0o755)
+        (service_state_dir / 'pm2-deploy.service').write_text('inactive\n')
+        # A successful oneshot health check is inactive, not active.
+        (service_state_dir / 'pm2-health-check.service').write_text('inactive\n')
+        pm2_issue_numbers_before = set(STATE.issues)
+        run([str(pm2_reporter), 'event', 'pm2-deploy.service'], process_env)
+        run([str(pm2_reporter), 'reconcile'], process_env)
+        run([str(pm2_reporter), 'reconcile'], process_env)
+        pm2_issue_numbers = set(STATE.issues) - pm2_issue_numbers_before
+        assert len(pm2_issue_numbers) == 1
+        pm2_incident = STATE.issues[pm2_issue_numbers.pop()]
+        assert pm2_incident['labels'] == ['status', 'bree-forwardemail-net']
+        assert pm2_incident['state'] == 'open' and pm2_incident['locked'] is True
+        assert pm2_incident['title'] == '🛑 bree.forwardemail.net is unavailable'
+        assert STATE.labels['bree-forwardemail-net'] == {
+            'name': 'bree-forwardemail-net',
+            'color': 'ededed',
+            'description': 'Upptime monitor: bree.forwardemail.net',
+        }
+
+        # A failed health check during the same PM2 outage cannot create a second
+        # public issue.
+        (service_state_dir / 'pm2-health-check.service').write_text('failed\n')
+        run([str(pm2_reporter), 'event', 'pm2-health-check.service'], process_env)
+        assert len(STATE.issues) == len(pm2_issue_numbers_before) + 1
+        assert pm2_incident['state'] == 'open'
+
+        # One recovered PM2 unit is not enough to close the shared incident.
+        (service_state_dir / 'pm2-deploy.service').write_text('active\n')
+        run([str(pm2_reporter), 'reconcile'], process_env)
+        assert pm2_incident['state'] == 'open'
+        # The health check returns to its normal inactive oneshot state.
+        (service_state_dir / 'pm2-health-check.service').write_text('inactive\n')
+        run([str(pm2_reporter), 'reconcile'], process_env)
+        run([str(pm2_reporter), 'reconcile'], process_env)
+        assert pm2_incident['state'] == 'open'
+        run([str(pm2_reporter), 'reconcile'], process_env)
+        assert pm2_incident['state'] == 'closed'
+        assert pm2_incident['locked'] is True
+        assert len(pm2_incident['comments']) == 1
+
         # Render the user-facing API test against the same mock endpoint.
         rendered_test = root / 'test-cli.sh'
         test_cli = TEST_SCRIPT.read_text().replace("readonly API_URL='https://api.github.com'", f"readonly API_URL='{api_url}'")
@@ -608,9 +717,10 @@ fi"""
     server.server_close()
     thread.join(timeout=2)
     print(
-        'PASS: one public incident opens after sustained failure, stays unique '
-        'during repeated checks, and the same issue automatically unlocks, '
-        'comments, closes, and re-locks after sustained recovery'
+        'PASS: database and PM2 public incidents open once after sustained '
+        'failure, stay unique across repeated or second-unit failures, and the '
+        'same issue automatically unlocks, comments, closes, and re-locks after '
+        'sustained recovery'
     )
     print('PASS: token CLI contract, label provisioning, privacy, and crash recovery')
 

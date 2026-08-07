@@ -13,7 +13,7 @@ Only a small set of important services also sends an **SMS**. Text messages are 
 | MongoDB on `mongo.forwardemail.net`                           | Yes   | Yes                     | Yes                |
 | MongoDB on `logs.forwardemail.net`                            | Yes   | Yes                     | Yes                |
 | Valkey on `redis.forwardemail.net`                            | Yes   | Yes                     | Yes                |
-| PM2 startup or PM2 health check on a Node.js server           | Yes   | Yes                     | No                 |
+| PM2 startup or PM2 health check on a Node.js server           | Yes   | Yes                     | Yes                |
 | Timers, package updates, Unbound, backups, and other services | Yes   | No                      | No                 |
 
 A successful, stale, malformed, or mismatched systemd event sends no alert. This prevents messages like the earlier `fwupd-refresh.service` alert that mixed an old successful run with an empty failure result.
@@ -38,7 +38,7 @@ The two cooldowns are independent. A failed SMS can retry later without sending 
 
 ## Public status page
 
-Only sustained database failures create public incidents. The public page says that the affected component is unavailable or recovered. It never shows private logs, host diagnostics, IP addresses, commands, or credentials. See [status incidents](SYSTEMD_STATUS_INCIDENTS.md) if you need to manage that integration.
+When the GitHub token is configured, sustained database and PM2 failures create public incidents. Each incident is attached to the affected status-page component and closes automatically after recovery. The public page never shows private logs, host diagnostics, IP addresses, commands, or credentials. See [status incidents](SYSTEMD_STATUS_INCIDENTS.md) if you need to manage that integration.
 
 
 ## Check an alert
@@ -104,6 +104,19 @@ Routine monitors remain email-only. They cover resource use, SSH activity, USB d
 | Open ports              | 5 minutes                  |
 | Package changes         | Hourly                     |
 | Audits and certificates | Daily                      |
+
+
+## Apply an alert update
+
+A `git pull` or PM2 reload updates the application only. It does **not** update systemd alert files on servers.
+
+Run this from the Ansible directory after pulling the alerting code:
+
+```bash
+node ../ansible-playbook.js playbooks/security.yml --tags forwardemail-alert-policy
+```
+
+The rollout pauses notifications, replaces the shared notifier on every host, checks that the old detailed-SMS script is gone, then turns notifications back on. If the check fails, notifications stay off instead of using the old script.
 
 
 ## Safe local tests
