@@ -198,3 +198,59 @@ test('deliverUnifiedPush > leaves temporary endpoint failure retryable', async (
   t.falsy(error.isPermanentPushFailure);
   t.regex(error.message, /503/);
 });
+
+test('deliverUnifiedPush > omits title and body for a silent event', async (t) => {
+  // The Android client displays whatever title/body it is handed when the app
+  // is backgrounded, so a silent event must not carry them at all. `silent` is
+  // sent explicitly so the client can tell a deliberately silent event apart
+  // from an older server that simply omitted the strings.
+  const generateRequestDetails = sinon.stub().returns(createRequest());
+  const fetch = sinon.stub().resolves(createResponse(201));
+
+  await deliverUnifiedPush(
+    { token: serializeSubscription() },
+    {
+      event: 'flagsUpdated',
+      silent: true,
+      title: undefined,
+      body: undefined,
+      data: { alias_id: 'alias-1', event: 'flagsUpdated' }
+    },
+    undefined,
+    { generateRequestDetails, fetch }
+  );
+
+  const [, body] = generateRequestDetails.firstCall.args;
+  t.deepEqual(JSON.parse(body), {
+    event: 'flagsUpdated',
+    silent: true,
+    alias_id: 'alias-1'
+  });
+});
+
+test('deliverUnifiedPush > still sends title and body for new mail', async (t) => {
+  const generateRequestDetails = sinon.stub().returns(createRequest());
+  const fetch = sinon.stub().resolves(createResponse(201));
+
+  await deliverUnifiedPush(
+    { token: serializeSubscription() },
+    {
+      event: 'newMessage',
+      silent: false,
+      title: 'John Smith',
+      body: 'Hello',
+      data: { alias_id: 'alias-1', event: 'newMessage' }
+    },
+    undefined,
+    { generateRequestDetails, fetch }
+  );
+
+  const [, body] = generateRequestDetails.firstCall.args;
+  t.deepEqual(JSON.parse(body), {
+    event: 'newMessage',
+    title: 'John Smith',
+    body: 'Hello',
+    alias_id: 'alias-1'
+  });
+  t.is(JSON.parse(body).silent, undefined);
+});

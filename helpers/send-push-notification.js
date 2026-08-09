@@ -24,8 +24,14 @@ const safeFetch = require('#helpers/safe-fetch');
 //
 // Push notification delivery helper for the Forward Email Mail App.
 //
-// This module delivers "alert"-style push notifications to registered
-// mobile/desktop devices for every per-alias realtime notification.
+// This module delivers push notifications to registered mobile/desktop devices
+// for every per-alias realtime notification.
+//
+// Only the events in USER_VISIBLE_PUSH_EVENTS are delivered as user-visible
+// alerts. Every other event is still delivered, but silently: clients need
+// them for badge counts and cache invalidation, and the device must not raise
+// a notification for one. See that constant for why this is decided here
+// rather than on the client.
 //
 // Architecture:
 //   1. `sendNotification` creates one immutable notificationId.
@@ -37,7 +43,8 @@ const safeFetch = require('#helpers/safe-fetch');
 //      delivery performs exactly one visual notification and one state update.
 //
 // Delivery transports:
-//   * APNs  — via token-based auth (.p8 key) with pushType='alert'.
+//   * APNs  — via token-based auth (.p8 key); pushType 'alert', or
+//             'background' for silent events.
 //   * FCM   — via Firebase Admin SDK HTTP v1 API.
 //   * UnifiedPush — RFC 8291 encrypted Web Push to the distributor endpoint.
 //   * Web Push — reserved for browser PushSubscription delivery.
@@ -55,6 +62,25 @@ const safeFetch = require('#helpers/safe-fetch');
 
 const PUSH_COALESCE_MS = ms('30s');
 const PUSH_CONCURRENCY = 5;
+
+//
+// Events that justify interrupting the user.
+//
+// This has to be decided here, not on the device. A push carrying an FCM
+// `notification` block or an APNs `alert` is displayed by the OS before the
+// app is given the payload, so a client cannot suppress one it did not want.
+// Sending an alert for every event type meant a single user action fanned out
+// into a screenful of notifications: marking a thread read emits one
+// flagsUpdated event per message, and each arrived as "Flags Updated / You
+// have a new flagsUpdated event".
+//
+// Everything absent from this set is still delivered — clients depend on it
+// for badge counts and cache invalidation — but as a silent data-only message
+// the app decides what, if anything, to show. That also lets device-scoped
+// preferences (the mail app's app-update toggle, for instance) actually apply,
+// which they cannot when the OS draws the notification for us.
+//
+const USER_VISIBLE_PUSH_EVENTS = new Set(['newMessage']);
 
 //
 // FCM rejects the entire message with 400 INVALID_ARGUMENT when the data
@@ -365,6 +391,12 @@ function extractSenderName(from) {
  * Sanitizes all string fields to prevent injection.
  */
 function buildPayload(event, data) {
+  // Silent events carry no title or body at all. Computing them "just in case"
+  // is how the generic `You have a new ${event} event` string reached devices
+  // in the first place — a transport that forwards whatever it is given (the
+  // UnifiedPush body, for one) will happily display it.
+  const silent = !USER_VISIBLE_PUSH_EVENTS.has(event);
+
   // Map WS events to human-readable notification content
   const TITLES = {
     newMessage: 'New Email',
@@ -408,7 +440,10 @@ function buildPayload(event, data) {
   // When expanded (BigTextStyle on Android), users see both subject and preview.
   // When collapsed, they see the subject line.
   //
-  if (event === 'newMessage' && data.message) {
+  if (silent) {
+    title = undefined;
+    body = undefined;
+  } else if (event === 'newMessage' && data.message) {
     const senderName = extractSenderName(senderString);
     title = senderName
       ? senderName.slice(0, MAX_TITLE_LENGTH)
@@ -433,10 +468,14 @@ function buildPayload(event, data) {
     const bodySource = [data.body, data.subject, data.name].find(
       (value) => typeof value === 'string'
     );
+    // Never interpolate the raw event name: it is an internal camelCase
+    // identifier and reads as gibberish on a lock screen.
     body =
       typeof bodySource === 'string'
         ? bodySource.slice(0, MAX_BODY_LENGTH)
-        : `You have a new ${event} event`;
+        : event === 'newMessage'
+        ? 'You have new mail'
+        : 'Open Forward Email for details';
   }
 
   // Sanitize data fields: only include known safe identifiers
@@ -472,6 +511,7 @@ function buildPayload(event, data) {
     title,
     body,
     event,
+    silent,
     data: {
       event,
       alias_id: safeAliasId,
@@ -524,29 +564,50 @@ async function deliverToToken(tokenDoc, payload, resolver) {
  *
  * If APNs env vars are not configured, this is a silent no-op.
  */
-async function deliverApns(tokenDoc, payload) {
+async function deliverApns(
+  tokenDoc,
+  payload,
+  { getProvider = getApnsProvider } = {}
+) {
   if (!isApnsConfigured()) {
     logger.debug('APNs not configured, skipping push delivery');
     return;
   }
 
-  const provider = getApnsProvider();
+  const provider = getProvider();
   const bundleId =
     config.pushNotifications?.apnsBundleId ||
     process.env.APNS_BUNDLE_ID ||
     'net.forwardemail.mail';
 
   const note = new apn.Notification();
-  note.pushType = 'alert';
   note.topic = bundleId;
   note.expiry = Math.floor(Date.now() / 1000) + 86400; // 24 hours
-  note.priority = 10;
-  note.alert = {
-    title: String(payload.title).slice(0, 128),
-    body: String(payload.body).slice(0, 256)
-  };
   note.payload = payload.data;
-  note.sound = 'default';
+
+  if (payload.silent === true) {
+    //
+    // An `alert` is drawn by iOS before the app sees the payload, so a silent
+    // event has to go out as a background push instead: pushType 'background'
+    // with content-available and no alert or sound. Priority must be 5 —
+    // APNs rejects a background push sent at priority 10.
+    //
+    // Apple throttles these and only delivers them to an app that declares the
+    // `remote-notification` background mode, so treat them as best effort. The
+    // WebSocket remains the reliable path for state the client needs promptly.
+    //
+    note.pushType = 'background';
+    note.priority = 5;
+    note.contentAvailable = 1;
+  } else {
+    note.pushType = 'alert';
+    note.priority = 10;
+    note.alert = {
+      title: String(payload.title).slice(0, 128),
+      body: String(payload.body).slice(0, 256)
+    };
+    note.sound = 'default';
+  }
 
   const result = await provider.send(note, tokenDoc.token);
 
@@ -600,26 +661,42 @@ async function deliverFcm(
 
   const accessToken = await auth.getAccessToken();
 
+  //
+  // A `notification` block is what makes Android's FCM SDK draw the
+  // notification itself, before the app is handed the payload. Omitting it
+  // leaves a data-only message, which is delivered to onMessageReceived and
+  // displays nothing — the only way to keep a silent event silent on Android.
+  //
+  const silent = payload.silent === true;
   const message = {
     message: {
       token: tokenDoc.token,
-      notification: {
-        title: String(payload.title).slice(0, 128),
-        body: String(payload.body).slice(0, 256)
-      },
+      ...(silent
+        ? {}
+        : {
+            notification: {
+              title: String(payload.title).slice(0, 128),
+              body: String(payload.body).slice(0, 256)
+            }
+          }),
       data: Object.fromEntries(
         Object.entries(payload.data)
           .filter(([k]) => !isFcmReservedDataKey(String(k)))
           .map(([k, v]) => [String(k).slice(0, 64), String(v).slice(0, 255)])
       ),
       android: {
-        priority: 'high',
-        notification: {
-          channel_id: 'new-mail',
-          // Use the dedicated monochrome notification icon resource
-          // (defined in the Android app as res/drawable/ic_notification)
-          icon: 'ic_notification'
-        }
+        // Silent events are background state, not something to wake for.
+        priority: silent ? 'normal' : 'high',
+        ...(silent
+          ? {}
+          : {
+              notification: {
+                channel_id: 'new-mail',
+                // Use the dedicated monochrome notification icon resource
+                // (defined in the Android app as res/drawable/ic_notification)
+                icon: 'ic_notification'
+              }
+            })
       }
     }
   };
@@ -729,10 +806,15 @@ async function deliverUnifiedPush(
     );
   }
 
+  // The Android client displays whatever title/body it is handed when the app
+  // is backgrounded, so a silent event must not carry them. `silent` is sent
+  // explicitly as well so the client can distinguish a deliberately silent
+  // event from an older server that simply omitted the strings.
   const body = JSON.stringify({
     event: payload.event,
-    title: payload.title,
-    body: payload.body,
+    ...(payload.silent === true
+      ? { silent: true }
+      : { title: payload.title, body: payload.body }),
     ...payload.data
   });
 
