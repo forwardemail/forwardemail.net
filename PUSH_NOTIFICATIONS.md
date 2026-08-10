@@ -18,6 +18,14 @@ Only the events listed in `USER_VISIBLE_PUSH_EVENTS` (`helpers/send-push-notific
 
 This split has to be decided on the server. A push carrying an FCM `notification` block or an APNs `alert` is drawn by the operating system **before** the app is handed the payload, so a client cannot suppress an alert it did not want. Sending an alert for every event type meant one user action fanned out into a screenful of notifications: marking a thread read emits one `flagsUpdated` per message, and each arrived on the device as "Flags Updated / You have a new flagsUpdated event".
 
+Being a `newMessage` is not on its own enough to raise an alert. The event fires for *any* message appended to *any* mailbox, so saving a draft or filing a Sent copy looks identical to incoming mail at the event level. `isAlertWorthyNewMessage` silences three cases:
+
+- the mailbox is one of `SILENT_MAILBOX_PATHS` (Drafts, Sent, Archive, All Mail, Junk, Spam, Trash and their common aliases), matched case-insensitively against `data.mailbox` or `data.message.folder_path`;
+- the message carries `\Draft`, whatever folder it landed in;
+- the message arrives already `\Seen`, which a real delivery never is — that is another client copying or migrating existing mail.
+
+A payload that says nothing about its folder stays visible: a stray alert is better than a swallowed delivery. This list is kept in step with `SILENT_FOLDERS` in the mail app's `utils/notification-manager.js`, which applies the same rules to the WebSocket path.
+
 `buildPayload` sets `silent` on the payload, and each transport honors it:
 
 | Transport   | User-visible                                            | Silent                                                             |

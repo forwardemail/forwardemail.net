@@ -83,6 +83,72 @@ const PUSH_CONCURRENCY = 5;
 const USER_VISIBLE_PUSH_EVENTS = new Set(['newMessage']);
 
 //
+// Folders whose arrivals are not something to interrupt the user about.
+//
+// newMessage fires for any message appended to any mailbox, so saving a draft
+// or filing a copy into Sent looks exactly like incoming mail from here. The
+// app already refuses to draw these itself, but that only covers the WebSocket
+// path: the OS draws an FCM `notification` block or an APNs `alert` before the
+// app sees the payload, so a push for a draft cannot be taken back on-device.
+// The decision has to be made here to have any effect.
+//
+// Matched on the mailbox path because that is all the newMessage emitters
+// carry (see helpers/imap/on-append.js and helpers/parse-payload.js) — no
+// specialUse attribute reaches this point. Kept in step with SILENT_FOLDERS in
+// the mail app's utils/notification-manager.js.
+//
+const SILENT_MAILBOX_PATHS = new Set([
+  'DRAFTS',
+  'DRAFT',
+  'SENT',
+  'SENT MAIL',
+  'SENT MESSAGES',
+  'SENT ITEMS',
+  'ARCHIVE',
+  'ARCHIVES',
+  'ALL MAIL',
+  'JUNK',
+  'JUNK EMAIL',
+  'SPAM',
+  'TRASH',
+  'BIN',
+  'DELETED ITEMS',
+  'DELETED MESSAGES'
+]);
+
+//
+// Whether a newMessage event is a delivery worth alerting about.
+//
+// Three ways it is not, in order of how much we trust them:
+//   1. The message carries \Draft — a draft the user is writing, whatever
+//      folder it landed in.
+//   2. It arrives already \Seen. A genuine delivery is never pre-read, so
+//      this is another client copying or migrating existing mail.
+//   3. The mailbox is one of the paths above.
+//
+function isAlertWorthyNewMessage(data) {
+  const message = data && data.message;
+  const flags = message && Array.isArray(message.flags) ? message.flags : [];
+  const hasFlag = (name) =>
+    flags.some(
+      (flag) => typeof flag === 'string' && flag.toLowerCase() === name
+    );
+
+  if (message && message.is_draft === true) return false;
+  if (hasFlag('\\draft')) return false;
+  if (message && message.is_unread === false) return false;
+  if (hasFlag('\\seen')) return false;
+
+  const mailbox =
+    (data && typeof data.mailbox === 'string' && data.mailbox) ||
+    (message &&
+      typeof message.folder_path === 'string' &&
+      message.folder_path) ||
+    '';
+  return !SILENT_MAILBOX_PATHS.has(mailbox.trim().toUpperCase());
+}
+
+//
 // FCM rejects the entire message with 400 INVALID_ARGUMENT when the data
 // payload contains a reserved key: "from", "notification", "message_type",
 // or any key starting with "google" or "gcm".
@@ -395,7 +461,8 @@ function buildPayload(event, data) {
   // is how the generic `You have a new ${event} event` string reached devices
   // in the first place — a transport that forwards whatever it is given (the
   // UnifiedPush body, for one) will happily display it.
-  const silent = !USER_VISIBLE_PUSH_EVENTS.has(event);
+  const silent =
+    !USER_VISIBLE_PUSH_EVENTS.has(event) || !isAlertWorthyNewMessage(data);
 
   // Map WS events to human-readable notification content
   const TITLES = {
@@ -881,6 +948,7 @@ module.exports._test = {
   PUSH_CONCURRENCY,
   fanOutToTokens,
   buildPayload,
+  isAlertWorthyNewMessage,
   extractSenderName,
   formatSenderString,
   deliverToToken,

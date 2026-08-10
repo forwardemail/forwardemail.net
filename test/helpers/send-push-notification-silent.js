@@ -181,3 +181,123 @@ test('deliverApns > still sends an alert for new mail', async (t) => {
   t.deepEqual(note.aps.alert, { title: 'John Smith', body: 'Hello' });
   t.is(note.aps.sound, 'default');
 });
+
+// ── newMessage folder / flag gating ────────────────────────────────────────
+//
+// newMessage fires for anything appended to any mailbox, so saving a draft or
+// filing a Sent copy is indistinguishable from incoming mail at the event
+// level. The OS draws the alert before the app sees the payload, so a push for
+// a draft cannot be suppressed on-device — it has to be decided here.
+//
+
+test('buildPayload > silences a newMessage saved into Drafts', (t) => {
+  const payload = buildPayload('newMessage', {
+    aliasId: 'alias-1',
+    mailbox: 'Drafts',
+    message: { from: 'me@example.com', subject: 'Half-written' }
+  });
+
+  t.true(payload.silent);
+  t.is(payload.title, undefined);
+  t.is(payload.body, undefined);
+  // Still delivered, so the client can refresh its Drafts view.
+  t.is(payload.data.event, 'newMessage');
+  t.is(payload.data.mailbox, 'Drafts');
+});
+
+test('buildPayload > silences a draft regardless of the folder it landed in', (t) => {
+  const payload = buildPayload('newMessage', {
+    aliasId: 'alias-1',
+    mailbox: 'INBOX',
+    message: { from: 'me@example.com', subject: 'Draft', flags: ['\\Draft'] }
+  });
+
+  t.true(payload.silent);
+});
+
+test('buildPayload > silences the other non-delivery folders', (t) => {
+  for (const mailbox of [
+    'Sent',
+    'Sent Mail',
+    'Archive',
+    'All Mail',
+    'Junk',
+    'Spam',
+    'Trash',
+    'Deleted Items'
+  ]) {
+    const payload = buildPayload('newMessage', {
+      aliasId: 'alias-1',
+      mailbox,
+      message: { from: 'me@example.com', subject: 'x' }
+    });
+    t.true(payload.silent, `${mailbox} should not raise an alert`);
+  }
+});
+
+test('buildPayload > matches folder names case-insensitively', (t) => {
+  t.true(
+    buildPayload('newMessage', {
+      aliasId: 'alias-1',
+      mailbox: 'drafts',
+      message: { subject: 'x' }
+    }).silent
+  );
+});
+
+// A real delivery is never already read, so a pre-\Seen arrival is another
+// client copying or migrating existing mail.
+test('buildPayload > silences mail that arrives already seen', (t) => {
+  t.true(
+    buildPayload('newMessage', {
+      aliasId: 'alias-1',
+      mailbox: 'INBOX',
+      message: { subject: 'x', flags: ['\\Seen'] }
+    }).silent
+  );
+  t.true(
+    buildPayload('newMessage', {
+      aliasId: 'alias-1',
+      mailbox: 'INBOX',
+      message: { subject: 'x', is_unread: false }
+    }).silent
+  );
+});
+
+test('buildPayload > still alerts for real inbox delivery', (t) => {
+  const payload = buildPayload('newMessage', {
+    aliasId: 'alias-1',
+    mailbox: 'INBOX',
+    message: {
+      from: 'John Smith <john@example.com>',
+      subject: 'Hello',
+      flags: ['\\Recent'],
+      is_unread: true
+    }
+  });
+
+  t.false(payload.silent);
+  t.is(payload.title, 'John Smith');
+});
+
+// Falling back to the folder on the message covers the parse-payload emitter,
+// which sets folder_path alongside mailbox.
+test('buildPayload > reads the folder from the message when mailbox is absent', (t) => {
+  t.true(
+    buildPayload('newMessage', {
+      aliasId: 'alias-1',
+      message: { subject: 'x', folder_path: 'Drafts' }
+    }).silent
+  );
+});
+
+// Better a stray alert than a swallowed delivery: with nothing to classify on,
+// stay visible.
+test('buildPayload > stays visible when the payload says nothing about the folder', (t) => {
+  t.false(
+    buildPayload('newMessage', {
+      aliasId: 'alias-1',
+      message: { from: 'a@b.com', subject: 'x' }
+    }).silent
+  );
+});
