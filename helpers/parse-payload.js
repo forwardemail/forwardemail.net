@@ -2596,6 +2596,17 @@ async function parsePayload(data, ws) {
           }
         }
 
+        //
+        // Broadcast cache eviction to ALL workers via Redis pub/sub.
+        // Other PM2 cluster workers may still have the old (now deleted)
+        // database handle cached in their local databaseMap; without this
+        // broadcast they would keep writing to the deleted inode.
+        // (Mirrors the recovery path in helpers/get-database.js.)
+        //
+        this.client
+          .publish('db_cache_evict', payload.session.user.alias_id)
+          .catch((err) => logger.debug(err));
+
         // TODO: don't allow getDatabase to perform a reset here
         db = await getDatabase(
           this,

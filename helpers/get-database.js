@@ -40,6 +40,7 @@ const isRetryableError = require('#helpers/is-retryable-error');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
+const safeVacuum = require('#helpers/safe-vacuum');
 const setupPragma = require('#helpers/setup-pragma');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { decrypt } = require('#helpers/encrypt-decrypt');
@@ -498,9 +499,49 @@ async function getDatabase(
 
   let db;
 
+  //
+  // Tracks whether this call holds the distributed `db_open_lock` so the
+  // critical section can extend past migrateSchema (see below).  The lock
+  // is released via Lua CAS only after a newly-created database has been
+  // fully initialized (setupPragma + migrateSchema), preventing other
+  // workers from opening a half-initialized encrypted file.
+  //
+  let openLockAcquired = false;
+
   try {
     // if server is shutting down then don't bother getting database
     if (instance.isClosing) throw new ServerShutdownError();
+
+    //
+    // If a file swap (VACUUM/rekey) is in progress on this alias, wait
+    // for it to finish instead of opening a file that is about to be
+    // replaced — a swap of a huge mailbox can outlast pRetry's retry
+    // budget, so poll here (up to 60s) before falling back to the
+    // synthetic retryable error below.
+    //
+    if (instance.server && instance.client && !customDbFilePath) {
+      const swapLockKey = `db_swap_lock:${alias.id}`;
+      let swapLockHeld = await instance.client
+        .get(swapLockKey)
+        .catch(() => null);
+      let waited = 0;
+      while (swapLockHeld && waited < ms('60s')) {
+        await new Promise((resolve) => {
+          setTimeout(resolve, ms('500ms'));
+        });
+        waited += ms('500ms');
+        swapLockHeld = await instance.client.get(swapLockKey).catch(() => null);
+      }
+
+      if (swapLockHeld) {
+        const err = new Error(
+          `Database swap in progress by another worker for alias ${alias.id}`
+        );
+        err.code = 'SQLITE_BUSY';
+        err.isDbSwapLock = true;
+        throw err;
+      }
+    }
 
     //
     // <https://github.com/WiseLibs/better-sqlite3/issues/1217>
@@ -587,6 +628,8 @@ async function getDatabase(
           err.code = 'SQLITE_BUSY';
           throw err;
         }
+
+        openLockAcquired = true;
       }
 
       try {
@@ -623,8 +666,14 @@ async function getDatabase(
           _dbOpenInflight.delete(alias.id);
         }
       } finally {
-        // Release the distributed lock (only if we acquired it)
-        if (instance.client && dbFileNeedsInit) {
+        //
+        // If the open failed, release the distributed lock right away so
+        // the next worker can retry initialization.  On success the release
+        // is deferred until after migrateSchema completes below so other
+        // workers cannot open the half-initialized file in the meantime.
+        //
+        if (openLockAcquired && (!db || !db.open)) {
+          openLockAcquired = false;
           await instance.client
             .eval(
               RELEASE_LOCK_SCRIPT,
@@ -639,7 +688,10 @@ async function getDatabase(
       // Store in-memory open connection AFTER setupPragma succeeds.
       // If setupPragma throws (e.g. bad password), the handle must NOT
       // be cached — otherwise subsequent requests get a broken handle.
-      if (instance.databaseMap) instance.databaseMap.set(alias.id, db);
+      // Never cache custom-path handles (e.g. backup tmp files) — they
+      // are one-off opens and caching them would poison the cache entry.
+      if (instance.databaseMap && !customDbFilePath)
+        instance.databaseMap.set(alias.id, db);
 
       // assigns to session so we can easily re-use
       // (also used in allocateConnection in IMAP notifier)
@@ -681,7 +733,8 @@ async function getDatabase(
           `highestmodseq_check:${session.user.alias_id}`,
           `storage_format_check:${session.user.alias_id}`,
           `caldav_href_check:${session.user.alias_id}`,
-          `calendar_date_check_v2:${session.user.alias_id}`
+          `calendar_date_check_v2:${session.user.alias_id}`,
+          `db_swap_lock:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
@@ -693,6 +746,33 @@ async function getDatabase(
         storageFormatCheck = boolean(results[7]);
         caldavHrefCheck = boolean(results[8]);
         calendarDateCheck = boolean(results[9]);
+
+        //
+        // If a file swap (VACUUM/rekey) is in progress on this alias,
+        // throw the same synthetic retryable error used for db_open_lock
+        // contenders so pRetry waits and retries once the swap finished
+        // (instead of reading/writing through a stale handle or inode).
+        //
+        if (results[10]) {
+          //
+          // Evict and close the handle this call opened/cached — it points
+          // at the file that is about to be (or was just) replaced, and
+          // keeping it cached would let later requests write to a stale
+          // inode after the swap completes (mirrors the db_cache_evict
+          // subscriber in sqlite-server.js).
+          //
+          if (instance.databaseMap) instance.databaseMap.evict(alias.id);
+          try {
+            if (db && db.open) db.close();
+          } catch {}
+
+          const err = new Error(
+            `Database swap in progress by another worker for alias ${alias.id}`
+          );
+          err.code = 'SQLITE_BUSY';
+          err.isDbSwapLock = true;
+          throw err;
+        }
 
         // If Redis cache miss, check the MongoDB field as fallback
         if (!storageFormatCheck && alias.has_storage_format_migration) {
@@ -717,6 +797,9 @@ async function getDatabase(
             .catch((err) => logger.warn(err));
         }
       } catch (err) {
+        // Re-throw the synthetic swap-lock error so pRetry retries it;
+        // only swallow genuine Redis/mget errors here.
+        if (err.isDbSwapLock) throw err;
         logger.fatal(err);
       }
     }
@@ -854,6 +937,19 @@ async function getDatabase(
       } catch (err) {
         logger.fatal(err);
       }
+    }
+
+    //
+    // Release the distributed open lock now that migrateSchema has
+    // completed for a newly-created database.  This is a CAS release
+    // (only if we still own it) so it stays safe even if the lock's
+    // TTL already expired and another worker re-acquired it.
+    //
+    if (openLockAcquired && instance.client) {
+      openLockAcquired = false;
+      await instance.client
+        .eval(RELEASE_LOCK_SCRIPT, 1, `db_open_lock:${alias.id}`, LOCK_OWNER)
+        .catch(() => {});
     }
 
     if (!migrateCheck) {
@@ -1012,6 +1108,7 @@ async function getDatabase(
     // Instead of blocking the event loop for 10-14s, publish to Redis
     // so the sqlite-worker handles VACUUM in a separate process.
     if (
+      boolean(env.SQLITE_AUTO_VACUUM_MIGRATION_ENABLED) &&
       !vacuumCheck &&
       !customDbFilePath &&
       instance.client &&
@@ -1064,6 +1161,7 @@ async function getDatabase(
 
     if (
       needsDeferredMaint &&
+      !customDbFilePath &&
       !_deferredMaintenanceRunning.has(session.user.alias_id)
     ) {
       // Capture references for the deferred closure.
@@ -1083,6 +1181,8 @@ async function getDatabase(
       setImmediate(() => {
         _runDeferredMaintenance(instance, _db, _session, {
           alias: _alias,
+          // Pass the already-resolved dbFilePath instead of recomputing it
+          dbFilePath,
           trashCheck,
           threadCheck,
           calendarDuplicateCheck,
@@ -1193,6 +1293,14 @@ async function getDatabase(
 
     return db;
   } catch (err) {
+    // Release the distributed open lock if an error occurred while held
+    if (openLockAcquired && instance.client) {
+      openLockAcquired = false;
+      await instance.client
+        .eval(RELEASE_LOCK_SCRIPT, 1, `db_open_lock:${alias.id}`, LOCK_OWNER)
+        .catch(() => {});
+    }
+
     // in case developers are connected to it in SQLiteStudio (this will cause a read/write error)
     if (err.code === 'SQLITE_IOERR_SHORT_READ') {
       err.message +=
@@ -1210,6 +1318,7 @@ async function getDatabase(
     // if (err.code === 'SQLITE_NOTADB') throw new Error('Bad password');
     err.readonly = readonly;
     err.dbFilePath = dbFilePath;
+    err.customDbFilePath = customDbFilePath;
     throw err;
   }
 }
@@ -1224,6 +1333,9 @@ async function getDatabase(
 async function _runDeferredMaintenance(instance, db, session, checks) {
   const {
     alias,
+    // The caller already resolved dbFilePath; reusing it here avoids
+    // recomputing (and potentially diverging from) the open handle's path
+    dbFilePath,
     trashCheck,
     threadCheck,
     calendarDuplicateCheck,
@@ -1238,10 +1350,6 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
   if (!db || !db.open) return;
 
   let _maint_t0;
-  const dbFilePath = getPathToDatabase({
-    id: session.user.alias_id,
-    storage_location: session.user.storage_location
-  });
 
   // NOTE: we remove messages in Junk/Trash folder that are >= 30 days old
   //       (but we only do this once every day)
@@ -1849,18 +1957,10 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
     try {
       //
       // Ensure that auto vacuum is enabled.
-      // Uses VACUUM INTO + atomic rename to avoid blocking readers.
-      //
-      // SAFETY: This operation replaces the database file on disk.
-      // Race condition prevention:
-      //  1. Redis distributed lock (NX) prevents concurrent VACUUM across workers
-      //  2. We remove the db from databaseMap BEFORE close+rename so no other
-      //     in-process request can obtain a stale handle
-      //  3. WAL checkpoint ensures all data is in the main file before VACUUM
-      //  4. We verify the new file is a valid encrypted DB before committing
-      //     the rename (open + setupPragma on tmpPath first)
-      //  5. Only after successful reopen do we store in databaseMap and
-      //     mark has_auto_vacuum_migration in MongoDB
+      // Uses the shared safe-swap implementation (helpers/safe-vacuum.js)
+      // which performs VACUUM INTO + atomic rename with cross-process
+      // quiesce (db_swap_lock + db_cache_evict broadcast) so that stale
+      // handles in other workers cannot corrupt the new file.
       //
       if (!db.open) throw new TypeError('database connection is not open');
       const autoVacuumMode = db.pragma('auto_vacuum', { simple: true });
@@ -1870,135 +1970,73 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
           await instance.client.get(`vacuum_check:${session.user.alias_id}`)
         );
         if (!vacuumCheck) {
-          //
-          // Acquire a distributed lock to prevent concurrent VACUUM
-          // across multiple workers on the same alias database.
-          // Uses Redis SET NX with 5-minute expiry as a safety net.
-          //
-          const vacuumLockKey = `vacuum_lock:${session.user.alias_id}`;
-          const acquired = await instance.client.set(
-            vacuumLockKey,
-            '1',
-            'PX',
-            ms('5m'),
-            'NX'
-          );
-          if (acquired) {
-            try {
-              const tmpPath = `${dbFilePath}.vacuum-tmp`;
-
-              // Clean up any stale tmp file from a previous failed attempt
+          let result;
+          try {
+            result = await safeVacuum({
+              db,
+              dbFilePath,
+              aliasId: session.user.alias_id,
+              client: instance.client,
+              databaseMap: instance.databaseMap,
+              session
+            });
+          } catch (err) {
+            // If VACUUM failed, ensure we still have a valid db handle
+            if (!db || !db.open) {
               try {
-                fs.unlinkSync(tmpPath);
-              } catch {}
-
-              // Checkpoint WAL so all committed data is in the main DB file
-              db.pragma('wal_checkpoint(TRUNCATE)');
-
-              // Set auto_vacuum mode to FULL and VACUUM INTO the temp file
-              db.pragma('auto_vacuum=FULL');
-              db.exec(`VACUUM INTO '${tmpPath.replace(/'/g, "''")}';`);
-
-              //
-              // SAFETY: Verify the new file is a valid encrypted database
-              // BEFORE replacing the original. This prevents SQLITE_NOTADB
-              // if VACUUM produced a corrupt or incomplete file.
-              //
-              let verifyDb;
-              try {
-                verifyDb = new Database(tmpPath, {
+                db = new Database(dbFilePath, {
                   timeout: config.busyTimeout,
                   verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
                 });
-                await setupPragma(verifyDb, session);
-                // Quick integrity check — reads first page + schema
-                const integrityResult = verifyDb.pragma('quick_check', {
-                  simple: true
-                });
-                if (integrityResult !== 'ok') {
-                  throw new Error(
-                    `VACUUM INTO integrity check failed: ${integrityResult}`
-                  );
-                }
-              } finally {
-                if (verifyDb && verifyDb.open) verifyDb.close();
-              }
-
-              //
-              // SAFETY: Remove from databaseMap BEFORE close+rename
-              // so no concurrent request can obtain a handle to the
-              // about-to-be-replaced file.
-              //
-              if (instance.databaseMap) instance.databaseMap.evict(alias.id);
-
-              // Close the current db handle
-              db.close();
-
-              // Atomic rename (same filesystem, so this is atomic on Linux)
-              fs.renameSync(tmpPath, dbFilePath);
-
-              // Reopen the database with the new file
-              db = new Database(dbFilePath, {
-                timeout: config.busyTimeout,
-                verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
-              });
-
-              // Re-apply encryption and pragmas
-              try {
                 await setupPragma(db, session);
-              } catch (pragmaErr) {
-                // Close the handle so it doesn't leak if pragma fails
-                try {
-                  db.close();
-                } catch {}
-
-                throw pragmaErr;
+                if (instance.databaseMap)
+                  instance.databaseMap.set(alias.id, db);
+                session.db = db;
+              } catch (reopenErr) {
+                reopenErr.isCodeBug = true;
+                logger.fatal(reopenErr);
               }
-
-              // Store reopened db in map and update session
-              if (instance.databaseMap) instance.databaseMap.set(alias.id, db);
-              session.db = db;
-
-              // Mark migration complete in MongoDB
-              // (only after everything succeeded)
-              await Aliases.findByIdAndUpdate(session.user.alias_id, {
-                $set: { has_auto_vacuum_migration: true }
-              });
-
-              // Rate-limit: only set AFTER success so failures can retry
-              await instance.client.set(
-                `vacuum_check:${session.user.alias_id}`,
-                true,
-                'PX',
-                ms('7d')
-              );
-            } catch (err) {
-              // If VACUUM failed, ensure we still have a valid db handle
-              if (!db || !db.open) {
-                try {
-                  db = new Database(dbFilePath, {
-                    timeout: config.busyTimeout,
-                    verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
-                  });
-                  await setupPragma(db, session);
-                  if (instance.databaseMap)
-                    instance.databaseMap.set(alias.id, db);
-                  session.db = db;
-                } catch (reopenErr) {
-                  reopenErr.isCodeBug = true;
-                  logger.fatal(reopenErr);
-                }
-              }
-
-              throw err;
-            } finally {
-              // Release the distributed lock
-              await instance.client.del(vacuumLockKey);
-              // Clean up tmp file if it still exists (e.g. on error)
-              try {
-                fs.unlinkSync(`${dbFilePath}.vacuum-tmp`);
-              } catch {}
             }
+
+            throw err;
+          }
+
+          if (result.swapped) {
+            // Reopen the database with the new file
+            db = new Database(dbFilePath, {
+              timeout: config.busyTimeout,
+              verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
+            });
+
+            // Re-apply encryption and pragmas
+            try {
+              await setupPragma(db, session);
+            } catch (pragmaErr) {
+              // Close the handle so it doesn't leak if pragma fails
+              try {
+                db.close();
+              } catch {}
+
+              throw pragmaErr;
+            }
+
+            // Store reopened db in map and update session
+            if (instance.databaseMap) instance.databaseMap.set(alias.id, db);
+            session.db = db;
+
+            // Mark migration complete in MongoDB
+            // (only after everything succeeded)
+            await Aliases.findByIdAndUpdate(session.user.alias_id, {
+              $set: { has_auto_vacuum_migration: true }
+            });
+
+            // Rate-limit: only set AFTER success so failures can retry
+            await instance.client.set(
+              `vacuum_check:${session.user.alias_id}`,
+              true,
+              'PX',
+              ms('7d')
+            );
           }
         }
       }
@@ -2078,7 +2116,8 @@ function retryGetDatabase(...args) {
       if (
         (error.code === 'SQLITE_NOTADB' || error.code === 'SQLITE_CORRUPT') &&
         error.dbFilePath &&
-        !error.readonly
+        !error.readonly &&
+        !error.customDbFilePath
       ) {
         try {
           //
@@ -2167,7 +2206,13 @@ function retryGetDatabase(...args) {
                 session.user.owner_full_email
               ) {
                 const corruptAlertKey = `corrupt_alert:${session.user.alias_id}`;
-                let shouldNotify = true;
+                //
+                // Fail-closed: without Redis we cannot deduplicate or
+                // throttle notifications across workers, so skip the email
+                // entirely to avoid mass duplicate "needs password reset"
+                // alerts during a Redis outage.
+                //
+                let shouldNotify = false;
                 if (instance.client) {
                   // Atomic NX: only one worker sends the notification.
                   // Without NX, multiple workers could all send duplicate emails.
@@ -2178,8 +2223,45 @@ function retryGetDatabase(...args) {
                     ms('72h'),
                     'NX'
                   );
-                  if (!notifyAcquired) {
+                  if (notifyAcquired) {
+                    shouldNotify = true;
+                  }
+                } else {
+                  logger.fatal(
+                    new Error(
+                      `Corruption notification skipped for ${session.user.username} (${session.user.alias_id}) due to missing Redis connection`
+                    )
+                  );
+                }
+
+                //
+                // Fleet-level throttle: never send more than 50 corruption
+                // alert emails fleet-wide per hourly bucket.  A mass
+                // corruption incident would otherwise email thousands of
+                // users at once.
+                //
+                if (shouldNotify) {
+                  const globalAlertKey = `corrupt_alert_global:${dayjs().format(
+                    'YYYYMMDDHH'
+                  )}`;
+                  const firstAlert = await instance.client.set(
+                    globalAlertKey,
+                    1,
+                    'PX',
+                    ms('2h'),
+                    'NX'
+                  );
+                  const globalAlertCount = firstAlert
+                    ? 1
+                    : await instance.client.incr(globalAlertKey);
+
+                  if (globalAlertCount > 50) {
                     shouldNotify = false;
+                    logger.fatal(
+                      new Error(
+                        `Corruption notification for ${session.user.username} (${session.user.alias_id}) skipped: fleet throttle exceeded (${globalAlertCount} alerts this hour)`
+                      )
+                    );
                   }
                 }
 
@@ -2353,6 +2435,7 @@ function retryGetDatabase(...args) {
             await instance.client
               .del(
                 `db_open_lock:${session.user.alias_id}`,
+                `db_swap_lock:${session.user.alias_id}`,
                 `migrate_check:${session.user.alias_id}`,
                 `folder_check:${session.user.alias_id}`,
                 `trash_check:${session.user.alias_id}`,
@@ -2367,23 +2450,35 @@ function retryGetDatabase(...args) {
               .catch((err) => logger.fatal(err));
           }
 
+          //
           // email admins of the renaming
-          email({
-            template: 'alert',
-            message: {
-              to: config.supportEmail,
-              subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
-            },
-            locals: {
-              message: `<p>${error.dbFilePath}</p><hr /><pre><code>${encode(
-                safeStringify(error.stats, null, 2)
-              )}</code></pre><pre><code>${encode(
-                safeStringify(parseErr(error), null, 2)
-              )}</code></pre>`
-            }
-          })
-            .then()
-            .catch((err) => logger.fatal(err));
+          // (fail-closed: without Redis we cannot deduplicate/throttle
+          //  notifications, so skip the email to avoid alert storms)
+          //
+          if (instance.client) {
+            email({
+              template: 'alert',
+              message: {
+                to: config.supportEmail,
+                subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
+              },
+              locals: {
+                message: `<p>${error.dbFilePath}</p><hr /><pre><code>${encode(
+                  safeStringify(error.stats, null, 2)
+                )}</code></pre><pre><code>${encode(
+                  safeStringify(parseErr(error), null, 2)
+                )}</code></pre>`
+              }
+            })
+              .then()
+              .catch((err) => logger.fatal(err));
+          } else {
+            logger.fatal(
+              new Error(
+                `Database backup fix notification skipped for ${session.user.username} (${session.user.alias_id}) due to missing Redis connection`
+              )
+            );
+          }
 
           // return here so we can retry and it will re-create database
           return;

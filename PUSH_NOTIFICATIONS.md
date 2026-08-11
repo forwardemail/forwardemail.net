@@ -20,25 +20,26 @@ This split has to be decided on the server. A push carrying an FCM `notification
 
 Being a `newMessage` is not on its own enough to raise an alert. The event fires for *any* message appended to *any* mailbox, so saving a draft or filing a Sent copy looks identical to incoming mail at the event level. `isAlertWorthyNewMessage` silences three cases:
 
-- the mailbox is one of `SILENT_MAILBOX_PATHS` (Drafts, Sent, Archive, All Mail, Junk, Spam, Trash and their common aliases), matched case-insensitively against `data.mailbox` or `data.message.folder_path`;
-- the message carries `\Draft`, whatever folder it landed in;
-- the message arrives already `\Seen`, which a real delivery never is — that is another client copying or migrating existing mail.
+* the mailbox is one of `SILENT_MAILBOX_PATHS` (Drafts, Sent, Archive, All Mail, Junk, Spam, Trash and their common aliases), matched case-insensitively against `data.mailbox` or `data.message.folder_path`;
+* the message carries `\Draft`, whatever folder it landed in;
+* the message arrives already `\Seen`, which a real delivery never is — that is another client copying or migrating existing mail.
 
 A payload that says nothing about its folder stays visible: a stray alert is better than a swallowed delivery. This list is kept in step with `SILENT_FOLDERS` in the mail app's `utils/notification-manager.js`, which applies the same rules to the WebSocket path.
 
 `buildPayload` sets `silent` on the payload, and each transport honors it:
 
-| Transport   | User-visible                                            | Silent                                                             |
-| ----------- | ------------------------------------------------------- | ------------------------------------------------------------------ |
-| FCM         | `notification` block, `android.priority` `high`          | data-only, no `notification` block, `android.priority` `normal`      |
-| APNs        | `pushType` `alert`, `priority` 10, `alert`, `sound`      | `pushType` `background`, `priority` 5, `content-available` 1         |
-| UnifiedPush | `title` and `body` in the encrypted body                 | `silent: true`, no `title` or `body`                                 |
+| Transport   | User-visible                                        | Silent                                                          |
+| ----------- | --------------------------------------------------- | --------------------------------------------------------------- |
+| FCM         | `notification` block, `android.priority` `high`     | data-only, no `notification` block, `android.priority` `normal` |
+| APNs        | `pushType` `alert`, `priority` 10, `alert`, `sound` | `pushType` `background`, `priority` 5, `content-available` 1    |
+| UnifiedPush | `title` and `body` in the encrypted body            | `silent: true`, no `title` or `body`                            |
 
 Silent events carry no `title` or `body` at all, rather than unused strings. A transport that forwards whatever it is given — the UnifiedPush body reaches an Android client that renders it directly — will otherwise display them.
 
 > **APNs background pushes are best effort.** Apple throttles them and only delivers them to an app that declares the `remote-notification` background mode. Treat the WebSocket as the reliable path for state a client needs promptly, and silent push as an optimization.
 
 Adding an event to `USER_VISIBLE_PUSH_EVENTS` also needs a matching client change: the Android UnifiedPush plugin keeps its own allowlist and suppresses anything outside it, and FCM's `android.notification.channel_id` is currently hardcoded to `new-mail`, which is only correct while mail is the sole visible category.
+
 
 ## Environment variable summary
 

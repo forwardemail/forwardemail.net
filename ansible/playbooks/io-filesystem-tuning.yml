@@ -11,9 +11,9 @@
         path: "{{ data_directory }}"
       register: data_dir_check
 
-    - name: "Skip I/O tuning if {{ data_directory }} does not exist"
-      debug:
-        msg: "Skipping I/O tuning - {{ data_directory }} does not exist yet"
+    - name: "Fail if {{ data_directory }} does not exist"
+      fail:
+        msg: "I/O tuning aborted - {{ data_directory }} does not exist yet"
       when: not data_dir_check.stat.exists
 
     # Copy device detection script

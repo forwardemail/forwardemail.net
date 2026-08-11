@@ -8,6 +8,7 @@ require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const process = require('node:process');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -63,6 +64,7 @@ const i18n = require('#helpers/i18n');
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const safeVacuum = require('#helpers/safe-vacuum');
 const setupMongoose = require('#helpers/setup-mongoose');
 const setupPragma = require('#helpers/setup-pragma');
 const { decrypt } = require('#helpers/encrypt-decrypt');
@@ -73,6 +75,11 @@ const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 const env = require('#config/env');
 
 const builder = new Builder({ bufferAsNative: true });
+
+// Lua script to atomically release a Redis lock only if we still own it.
+// Prevents releasing a lock that expired and was re-acquired by another worker.
+const RELEASE_LOCK_SCRIPT =
+  "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
 const attachmentStorage = new AttachmentStorage();
 const indexer = new Indexer({
@@ -340,39 +347,101 @@ async function rekey(payload) {
       }
     }
 
-    // rename backup file (overwrites existing destination file)
-    await fs.promises.rename(tmp, storagePath);
-    backup = false;
-    logger.debug('renamed', { tmp, storagePath });
-
     //
-    // remove the old -whm and -shm files
+    // Cross-process quiesce BEFORE swapping the rekeyed file over the
+    // live database.  Stale handles in other PM2 cluster workers keep
+    // writing to the old inode, and their orphaned encrypted -wal file
+    // would get replayed onto the new file after the rename, causing
+    // SQLITE_NOTADB / SQLITE_CORRUPT corruption.
     //
-
-    // -wal
-    try {
-      await fs.promises.rm(storagePath.replace('.sqlite', '.sqlite-wal'), {
-        force: true,
-        recursive: true
-      });
-    } catch (err) {
-      if (err.code !== 'ENOENT') {
-        err.isCodeBug = true;
-        throw err;
-      }
+    const swapLockKey = `db_swap_lock:${payload.session.user.alias_id}`;
+    const swapLockOwner = `${os.hostname()}:${process.pid}:${Date.now()}`;
+    const swapLockAcquired = await client.set(
+      swapLockKey,
+      swapLockOwner,
+      'PX',
+      ms('5m'),
+      'NX'
+    );
+    if (!swapLockAcquired) {
+      const err = new Error(
+        `Database swap in progress by another worker for alias ${payload.session.user.alias_id}`
+      );
+      err.code = 'SQLITE_BUSY';
+      throw err;
     }
 
-    // -shm
     try {
-      await fs.promises.rm(storagePath.replace('.sqlite', '.sqlite-shm'), {
-        force: true,
-        recursive: true
-      });
-    } catch (err) {
-      if (err.code !== 'ENOENT') {
-        err.isCodeBug = true;
+      //
+      // Broadcast cache eviction to ALL workers via Redis pub/sub so stale
+      // handles to the about-to-be-replaced file are closed everywhere,
+      // then wait a grace period for the eviction to propagate.
+      //
+      try {
+        await client.publish('db_cache_evict', payload.session.user.alias_id);
+      } catch (err) {
+        logger.debug(err);
+      }
+
+      await setTimeout(ms('1s'));
+
+      //
+      // Exclusivity proof: if -wal/-shm files still exist after eviction,
+      // a stale handle somewhere is still writing to the old inode —
+      // abort the swap (retryable) instead of corrupting the new file.
+      //
+      if (
+        fs.existsSync(storagePath.replace('.sqlite', '.sqlite-wal')) ||
+        fs.existsSync(storagePath.replace('.sqlite', '.sqlite-shm'))
+      ) {
+        const err = new Error(
+          `REKEY aborted, -wal/-shm files still exist for alias ${payload.session.user.alias_id} (another connection is still writing)`
+        );
+        err.code = 'SQLITE_BUSY';
         throw err;
       }
+
+      //
+      // remove the old -wal and -shm files BEFORE the rename
+      // (removing them after the rename could delete files belonging
+      //  to the freshly swapped-in database)
+      //
+
+      // -wal
+      try {
+        await fs.promises.rm(storagePath.replace('.sqlite', '.sqlite-wal'), {
+          force: true,
+          recursive: true
+        });
+      } catch (err) {
+        if (err.code !== 'ENOENT') {
+          err.isCodeBug = true;
+          throw err;
+        }
+      }
+
+      // -shm
+      try {
+        await fs.promises.rm(storagePath.replace('.sqlite', '.sqlite-shm'), {
+          force: true,
+          recursive: true
+        });
+      } catch (err) {
+        if (err.code !== 'ENOENT') {
+          err.isCodeBug = true;
+          throw err;
+        }
+      }
+
+      // rename backup file (overwrites existing destination file)
+      await fs.promises.rename(tmp, storagePath);
+      backup = false;
+      logger.debug('renamed', { tmp, storagePath });
+    } finally {
+      // Release the swap lock (only if we still own it)
+      await client
+        .eval(RELEASE_LOCK_SCRIPT, 1, swapLockKey, swapLockOwner)
+        .catch(() => {});
     }
   } catch (_err) {
     err = _err;
@@ -824,7 +893,12 @@ async function backup(payload) {
 
         backup = true;
 
+        //
         // open the backup to ensure that encryption still valid
+        // (getDatabase takes 5 params: instance, alias, session,
+        //  newlyCreated, customDbFilePath — pass `tmp` as the custom
+        //  path so the BACKUP file is verified, not the live database)
+        //
         const backupDb = await getDatabase(
           instance,
           // alias
@@ -833,7 +907,6 @@ async function backup(payload) {
             storage_location: payload.session.user.storage_location
           },
           payload.session,
-          null,
           false,
           tmp
         );
@@ -1384,11 +1457,6 @@ async function vacuum(payload) {
 
   if (!stats.isFile() || stats.size === 0) return;
 
-  // Acquire distributed lock (prevents concurrent VACUUM across workers)
-  const vacuumLockKey = `vacuum_lock:${aliasId}`;
-  const acquired = await client.set(vacuumLockKey, '1', 'PX', ms('5m'), 'NX');
-  if (!acquired) return;
-
   let db;
   try {
     // Open database directly (NOT via getDatabase) to avoid re-triggering
@@ -1406,48 +1474,29 @@ async function vacuum(payload) {
       db.close();
       db = null;
       await client.set(`vacuum_check:${aliasId}`, 'true', 'PX', ms('7d'));
-      await client.del(vacuumLockKey);
       return;
     }
 
-    const tmpPath = `${storagePath}.vacuum-tmp`;
+    //
+    // Perform the swap via the shared safe-swap implementation, which
+    // acquires vacuum_lock + db_swap_lock, broadcasts db_cache_evict to
+    // quiesce stale handles in the other PM2 workers, checkpoints the WAL
+    // fail-closed, verifies the new file, and only then atomically renames
+    // it over the live database.  It also handles lock release and tmp
+    // cleanup, and closes `db` when the swap succeeds.
+    //
+    const result = await safeVacuum({
+      db,
+      dbFilePath: storagePath,
+      aliasId,
+      client,
+      session: payload.session
+    });
 
-    // Clean up any stale tmp file from a previous failed attempt
-    try {
-      fs.unlinkSync(tmpPath);
-    } catch {}
+    if (!result.swapped) return;
 
-    // Checkpoint WAL so all committed data is in the main DB file
-    db.pragma('wal_checkpoint(TRUNCATE)');
-
-    // Set auto_vacuum mode to FULL and VACUUM INTO the temp file.
-    db.pragma('auto_vacuum=FULL');
-    db.exec(`VACUUM INTO '${tmpPath.replace(/'/g, "''")}';`);
-
-    // Verify the new file is a valid encrypted database
-    let verifyDb;
-    try {
-      verifyDb = new Database(tmpPath, {
-        timeout: config.busyTimeout,
-        verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
-      });
-      await setupPragma(verifyDb, payload.session);
-      const integrityResult = verifyDb.pragma('quick_check', {
-        simple: true
-      });
-      if (integrityResult !== 'ok') {
-        throw new Error(
-          `VACUUM INTO integrity check failed: ${integrityResult}`
-        );
-      }
-    } finally {
-      if (verifyDb && verifyDb.open) verifyDb.close();
-    }
-
-    // Close the current handle and atomic rename
-    db.close();
+    // safeVacuum closed the handle before the rename
     db = null;
-    fs.renameSync(tmpPath, storagePath);
 
     // Mark migration complete in MongoDB
     await Aliases.findByIdAndUpdate(aliasId, {
@@ -1466,11 +1515,6 @@ async function vacuum(payload) {
     logger.fatal(err, { alias_id: aliasId });
   } finally {
     if (db && db.open) db.close();
-    await client.del(vacuumLockKey);
-    // Clean up tmp file if it still exists (e.g. on error)
-    try {
-      fs.unlinkSync(`${storagePath}.vacuum-tmp`);
-    } catch {}
   }
 }
 
