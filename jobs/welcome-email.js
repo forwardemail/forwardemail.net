@@ -8,6 +8,7 @@ require('#helpers/polyfill-towellformed');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
+const dns = require('node:dns').promises;
 const process = require('node:process');
 const { parentPort } = require('node:worker_threads');
 
@@ -32,6 +33,28 @@ const graceful = new Graceful({
 });
 
 graceful.listen();
+
+async function getHasEncryptedTxtRecord(domain, locale) {
+  if (!domain?.name) return;
+
+  try {
+    const { hasBase64 } = await Domains.getTxtAddresses(
+      domain.name,
+      locale,
+      true,
+      {
+        resolveTxt(name) {
+          return dns.resolveTxt(name);
+        }
+      },
+      false
+    );
+
+    return hasBase64;
+  } catch (err) {
+    logger.warn(err, { domain: domain.name });
+  }
+}
 
 (async () => {
   await setupMongoose(logger);
@@ -73,13 +96,25 @@ graceful.listen();
             .lean()
             .exec();
 
+          const locale = user[config.lastLocaleField] || 'en';
+          const hasEncryptedTxtRecord = await getHasEncryptedTxtRecord(
+            domain,
+            locale
+          );
+
           // send email
           await email({
             template: 'welcome',
             message: {
               to: user.email
             },
-            locals: { user, domain }
+            locals: {
+              to: user.email,
+              locale,
+              user,
+              domain,
+              hasEncryptedTxtRecord
+            }
           });
 
           // store that we sent this email

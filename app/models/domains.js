@@ -2443,6 +2443,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
   let ns = false;
   let txt = false;
   let mx = false;
+  let hasEncryptedTxtRecord = false;
   let requiresPaidPlan = false;
 
   await Promise.all([
@@ -2471,6 +2472,8 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
           true,
           resolver
         );
+
+        hasEncryptedTxtRecord = result.hasBase64;
 
         if (isPaidPlan) {
           if (
@@ -2737,7 +2740,13 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
     }
   }
 
-  return { ns, txt, mx, errors: _.uniqBy(errors, 'message') };
+  return {
+    ns,
+    txt,
+    mx,
+    hasEncryptedTxtRecord,
+    errors: _.uniqBy(errors, 'message')
+  };
 }
 
 Domains.statics.getVerificationResults = getVerificationResults;

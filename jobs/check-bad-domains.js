@@ -119,10 +119,8 @@ async function mapper(id) {
     const { has_mx_record: mxBefore, has_txt_record: txtBefore } = domain;
 
     // get verification results (and any errors too)
-    const { ns, txt, mx, errors } = await Domains.getVerificationResults(
-      domain,
-      resolver
-    );
+    const { ns, txt, mx, hasEncryptedTxtRecord, errors } =
+      await Domains.getVerificationResults(domain, resolver);
 
     //
     // run a save on the domain name
@@ -192,6 +190,7 @@ async function mapper(id) {
           to,
           locale,
           domain,
+          hasEncryptedTxtRecord,
           errorMessage
         }
       });
@@ -218,6 +217,7 @@ async function mapper(id) {
           to,
           locale,
           domain,
+          hasEncryptedTxtRecord,
           errorMessage
         }
       });
@@ -246,6 +246,7 @@ async function mapper(id) {
           to,
           locale,
           domain,
+          hasEncryptedTxtRecord,
           errorMessage
         }
       });
@@ -277,6 +278,7 @@ async function mapper(id) {
           to,
           locale,
           domain,
+          hasEncryptedTxtRecord,
           errorMessage
         }
       });

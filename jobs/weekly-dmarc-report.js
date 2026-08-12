@@ -46,6 +46,7 @@ const Logs = require('#models/logs');
 const Users = require('#models/users');
 const config = require('#config');
 const email = require('#helpers/email');
+const hasDmarcIssues = require('#helpers/has-dmarc-issues');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
@@ -405,11 +406,7 @@ async function processUser(user, endDate) {
     const reportPeriod = formatReportPeriod(startDate, endDate, locale);
 
     // Determine if there are issues that need attention
-    const hasIssues =
-      stats.quarantined > 0 ||
-      stats.rejected > 0 ||
-      Number.parseFloat(stats.spfAlignedPct) < 90 ||
-      Number.parseFloat(stats.dkimAlignedPct) < 90;
+    const hasIssues = hasDmarcIssues(stats);
 
     // Send the email
     await email({
