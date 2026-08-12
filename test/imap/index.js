@@ -1907,6 +1907,51 @@ ${base64image}
   t.true(splitLines(raw).join('') === splitLines(content).join(''));
 });
 
+test('FETCH parses a legacy raw MIME-tree string before rebuilding', async (t) => {
+  const { alias, domain, imap, imapFlow, session } = t.context;
+  const raw = `
+Date: ${new Date().toISOString()}
+MIME-Version: 1.0
+To: ${alias.name}@${domain.name}
+From: ${alias.name}@${domain.name}
+Subject: legacy MIME-tree fetch
+Content-Type: multipart/mixed; boundary="legacy-boundary"
+
+--legacy-boundary
+Content-Type: text/plain; charset=UTF-8
+
+legacy MIME-tree body
+--legacy-boundary
+Content-Type: application/octet-stream; name="test.txt"
+Content-Disposition: attachment; filename="test.txt"
+Content-Transfer-Encoding: base64
+
+dGVzdC1hdHRhY2htZW50
+--legacy-boundary--
+`.trim();
+
+  const appended = await imapFlow.append('INBOX', Buffer.from(raw), []);
+  const message = await Messages.findOne(imap, session, { uid: appended.uid });
+  t.truthy(message);
+
+  // Simulate a legacy record whose packed MIME metadata decodes to raw source.
+  await Messages.findOneAndUpdate(
+    imap,
+    session,
+    { _id: message._id },
+    { $set: { mimeTree: raw } }
+  );
+
+  await imapFlow.mailboxOpen('INBOX');
+  const download = await imapFlow.download(String(appended.uid), undefined, {
+    uid: true
+  });
+  const content = await getStream(download.content);
+
+  t.true(splitLines(content).join('').includes('legacy MIME-tree body'));
+  t.true(splitLines(content).join('').includes('dGVzdC1hdHRhY2htZW50'));
+});
+
 test('imap_flag_consistency_test', async (t) => {
   const { imapFlow, alias, domain } = t.context;
   const mailboxPath = 'INBOX'; // Or a dedicated test mailbox

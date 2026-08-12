@@ -33,6 +33,12 @@ function getQueryResponse(query, message, options = {}, instance, session) {
   let { mimeTree } = message;
   const indexer = new Indexer(options);
 
+  // Older records can contain the original RFC 5322 source as a MIME-tree
+  // string. Parse it before any BODY selector mutates or rebuilds a node.
+  if (typeof mimeTree === 'string' || Buffer.isBuffer(mimeTree)) {
+    mimeTree = indexer.parseMimeTree(mimeTree);
+  }
+
   // generate response object
   const values = [];
   for (const item of query) {

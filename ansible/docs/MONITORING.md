@@ -19,6 +19,11 @@ Only a small set of important services also sends an **SMS**. Text messages are 
 A successful, stale, malformed, or mismatched systemd event sends no alert. This prevents messages like the earlier `fwupd-refresh.service` alert that mixed an old successful run with an empty failure result.
 
 
+## Automatic security-update reboots
+
+Non-database hosts may reboot automatically at **08:00 UTC** after security updates. `logs`, `mongo`, and `redis` hosts never reboot automatically; schedule their maintenance restart yourself.
+
+
 ## Email and SMS cooldowns
 
 Each service has a separate **10-minute** cooldown for email and SMS.
