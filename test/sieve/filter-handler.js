@@ -232,6 +232,34 @@ describe('Sieve Filter Handler', () => {
     });
   });
 
+  describe('RFC 5703 capability registration', () => {
+    it('should accept a script that requires foreverypart/replace', async () => {
+      // The engine implements these commands (executeForeverypart,
+      // executeReplace), but the capability strings 'foreverypart', 'replace',
+      // 'extracttext' and 'enclose' are absent from all three capability
+      // lists: DEFAULT_CAPABILITIES and EXTENDED_CAPABILITIES in engine.js,
+      // and SUPPORTED_CAPABILITIES in filter-handler.js. processRequires()
+      // throws on any capability it cannot find, so a script that declares
+      // these extensions the way RFC 5703 Sections 3 and 5 require is
+      // rejected outright, before any condition is evaluated.
+      //
+      // Asserting on the absence of a throw rather than on a resulting action:
+      // executeScript() propagates the capability error as an exception, so
+      // the script never reaches the point of producing actions at all.
+      const script = `
+        require ["foreverypart", "mime", "replace"];
+        keep;
+      `;
+
+      await assert.doesNotReject(
+        () => handler.executeScript(script, createMessage(), {}),
+        'expected a script declaring foreverypart/replace to be accepted, but ' +
+          'those capability strings are registered nowhere, so processRequires() ' +
+          'throws "Unsupported capability: foreverypart"'
+      );
+    });
+  });
+
   describe('Vacation handling', () => {
     it('should send auto-reply', async () => {
       const result = {
