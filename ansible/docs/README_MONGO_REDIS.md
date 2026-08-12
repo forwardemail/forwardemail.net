@@ -210,11 +210,11 @@ https://forwardemail.net/ips/v4.txt?comments=false
 ```bash
 # MongoDB backup encryption
 mongodump --archive --gzip | \
-  gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET" | \
+  gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase | \
   aws s3 cp - s3://bucket/path/backup.archive.gz.gpg
 
 # Redis backup encryption
-gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET" < dump.rdb | \
+gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase < dump.rdb | \
   aws s3 cp - s3://bucket/path/backup.rdb.gpg
 ```
 
@@ -373,7 +373,7 @@ net.ipv4.tcp_max_syn_backlog = 65536
 # Download and decrypt backup
 aws s3 cp s3://bucket/mongo/mongo-backup-2025-11-18T02:00:00Z.gz.gpg - \
   --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" | \
+  gpg --decrypt --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase | \
   mongorestore --archive --gzip
 
 # Or save to file first
@@ -392,7 +392,7 @@ sudo systemctl stop redis-server
 # Download, decrypt, and restore
 aws s3 cp s3://bucket/redis/redis-backup-2025-11-18T02:30:00Z.rdb.gpg - \
   --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" > /var/lib/valkey/dump.rdb
+  gpg --decrypt --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase > /var/lib/valkey/dump.rdb
 
 # Set ownership
 sudo chown redis:redis /var/lib/valkey/dump.rdb

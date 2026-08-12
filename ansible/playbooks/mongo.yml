@@ -1076,16 +1076,6 @@
         - not mongod_was_running
         - not admin_user_exists
 
-    # DEBUG: Check environment variables before user creation
-    - name: DEBUG - Verify MONGO_USER, MONGO_HOST, and MONGO_PASS are set
-      debug:
-        msg: |
-          MONGO_USER: '{{ lookup('env', 'MONGO_USER') }}' (length: {{ lookup('env', 'MONGO_USER') | length }})
-          MONGO_PASS: '{{ lookup('env', 'MONGO_PASS') }}' (length: {{ lookup('env', 'MONGO_PASS') | length }})
-          MONGO_HOST: '{{ lookup('env', 'MONGO_HOST') }}' (length: {{ lookup('env', 'MONGO_HOST') | length }})
-          MONGO_PASS first 8 chars: {{ lookup('env', 'MONGO_PASS')[:8] }}...
-      when: not admin_user_exists
-
     - name: Copy MongoDB user creation Python script
       copy:
         src: files/create_mongo_user.py
@@ -1094,28 +1084,22 @@
       when: not admin_user_exists
 
     - name: Create MongoDB user creation script using Python
-      shell: |
-        export MONGO_USER='{{ lookup('env', 'MONGO_USER') }}'
-        export MONGO_PASS='{{ lookup('env', 'MONGO_PASS') }}'
-        python3 /tmp/create_mongo_user.py
+      command: python3 /tmp/create_mongo_user.py
+      environment:
+        MONGO_USER: "{{ lookup('env', 'MONGO_USER') }}"
+        MONGO_PASS: "{{ lookup('env', 'MONGO_PASS') }}"
       register: script_creation
       when: not admin_user_exists
       failed_when: false
+      no_log: true
 
-    - name: DEBUG - Show Python script output
-      debug:
-        msg: |
-          Python script exit code: {{ script_creation.rc }}
-          Python script stdout: {{ script_creation.stdout }}
-          Python script stderr: {{ script_creation.stderr }}
-      when: not admin_user_exists
-
-    - name: Check Python script result
+    - name: Check MongoDB user creation script result
       fail:
-        msg: "Failed to create MongoDB user creation script: {{ script_creation.stderr }}"
+        msg: MongoDB user creation script failed
       when:
         - not admin_user_exists
         - script_creation.rc != 0
+      no_log: true
 
     - name: Create MongoDB admin user
       shell: |
@@ -1125,14 +1109,7 @@
       register: create_user_result
       when: not admin_user_exists
       failed_when: false
-
-    - name: DEBUG - Show user creation output
-      debug:
-        msg: |
-          User creation exit code: {{ create_user_result.rc }}
-          User creation stdout: {{ create_user_result.stdout }}
-          User creation stderr: {{ create_user_result.stderr }}
-      when: not admin_user_exists
+      no_log: true
 
     - name: Remove temporary MongoDB scripts
       file:
@@ -1146,7 +1123,7 @@
 
     - name: Check MongoDB user creation result
       fail:
-        msg: "Failed to create MongoDB admin user: {{ create_user_result.stdout | default('') }} {{ create_user_result.stderr | default('') }}"
+        msg: MongoDB admin user creation failed
       when:
         - not admin_user_exists
         - create_user_result.rc != 0
@@ -1155,6 +1132,7 @@
         - "'User already exists' not in create_user_result.stderr"
         - "'already exists' not in create_user_result.stderr"
         - "'duplicate key' not in create_user_result.stderr"
+      no_log: true
 
     - name: Stop mongod if it was started temporarily
       systemd:
@@ -1451,9 +1429,8 @@
 
           # Perform backup, encrypt with GPG, and stream directly to S3
           echo "Starting mongodump on localhost:${MONGO_PORT}..."
-          # if ! mongodump --uri="mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}/?tls=true&tlsCAFile=/etc/mongodb/ssl/ca.pem&authSource=admin" --oplog --archive --gzip --quiet | \
-          if ! mongodump --uri="mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_NAME}?tls=true&tlsCAFile=/etc/mongodb/ssl/ca.pem&authSource=admin" --archive --gzip --quiet | \
-            gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET" | \
+          if ! mongodump --config /etc/forwardemail-backups/mongodump.yml --archive --gzip --quiet | \
+            gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase | \
             aws s3 cp - "${S3_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
             ERROR_MSG="Failed to backup/encrypt/upload MongoDB at $(date -u +%Y-%m-%dT%H:%M:%SZ). Check MongoDB connection and AWS credentials."
             echo "ERROR: $ERROR_MSG"
@@ -1680,10 +1657,56 @@
 
           echo "MongoDB backup cleanup completed successfully"
 
-    # Create systemd service for MongoDB backup
-    - name: Create MongoDB backup systemd service
+    - name: Create root-only MongoDB backup credential directory
+      file:
+        path: /etc/forwardemail-backups
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: Write root-only MongoDB backup environment
+      copy:
+        dest: /etc/forwardemail-backups/mongodb.env
+        owner: root
+        group: root
+        mode: '0600'
+        content: |
+          AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}
+          AWS_SECRET_ACCESS_KEY={{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}
+          AWS_ENDPOINT_URL={{ lookup('env', 'AWS_ENDPOINT_URL') }}
+          AWS_DEFAULT_REGION={{ lookup('env', 'AWS_DEFAULT_REGION') or 'auto' }}
+          MONGO_BACKUP_BUCKET={{ lookup('env', 'MONGO_BACKUP_BUCKET') | default('forwardemail-backups', true) }}
+          BACKUP_MAX_BANDWIDTH={{ lookup('env', 'BACKUP_MAX_BANDWIDTH') | default('62.5MB/s', true) }}
+          MONGO_PORT={{ lookup('env', 'MONGO_PORT') | default('27017', true) }}
+          MONGO_NAME={{ lookup('env', 'MONGO_NAME') }}
+          MONGO_HOST={{ lookup('env', 'MONGO_HOST') }}
+      no_log: true
+
+    - name: Write root-only mongodump credentials
+      copy:
+        dest: /etc/forwardemail-backups/mongodump.yml
+        owner: root
+        group: root
+        mode: '0600'
+        content: |
+          password: {{ lookup('env', 'MONGO_PASS') | to_json }}
+          uri: {{ ('mongodb://' ~ lookup('env', 'MONGO_USER') ~ '@' ~ lookup('env', 'MONGO_HOST') ~ ':' ~ (lookup('env', 'MONGO_PORT') | default('27017', true)) ~ '/' ~ lookup('env', 'MONGO_NAME') ~ '?tls=true&tlsCAFile=/etc/mongodb/ssl/ca.pem&authSource=admin') | to_json }}
+      no_log: true
+
+    - name: Write root-only MongoDB backup passphrase
+      copy:
+        dest: /etc/forwardemail-backups/backup.passphrase
+        owner: root
+        group: root
+        mode: '0600'
+        content: "{{ lookup('env', 'BACKUP_SECRET') }}\n"
+      no_log: true
+
+    - name: Create systemd service for MongoDB backup
       copy:
         dest: /etc/systemd/system/mongodb-backup.service
+        mode: '0644'
         content: |
           # WARNING: This file is managed by Ansible
           # Manual changes will be overwritten on next deployment
@@ -1697,18 +1720,7 @@
           # A throttled backup may legitimately take longer than one hour
           TimeoutStartSec=86400
           TimeoutStopSec=60
-          Environment="AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-          Environment="AWS_SECRET_ACCESS_KEY={{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-          Environment="AWS_ENDPOINT_URL={{ lookup('env', 'AWS_ENDPOINT_URL') }}"
-          Environment="AWS_DEFAULT_REGION={{ lookup('env', 'AWS_DEFAULT_REGION') or 'auto' }}"
-          Environment="MONGO_BACKUP_BUCKET={{ lookup('env', 'MONGO_BACKUP_BUCKET') | default('forwardemail-backups', true) }}"
-          Environment="BACKUP_SECRET={{ lookup('env', 'BACKUP_SECRET') }}"
-          Environment="BACKUP_MAX_BANDWIDTH={{ lookup('env', 'BACKUP_MAX_BANDWIDTH') | default('62.5MB/s', true) }}"
-          Environment="MONGO_PORT={{ lookup('env', 'MONGO_PORT') | default('27017', true) }}"
-          Environment="MONGO_NAME={{ lookup('env', 'MONGO_NAME') }}"
-          Environment="MONGO_USER={{ lookup('env', 'MONGO_USER') }}"
-          Environment="MONGO_PASS={{ lookup('env', 'MONGO_PASS') }}"
-          Environment="MONGO_HOST={{ lookup('env', 'MONGO_HOST') }}"
+          EnvironmentFile=/etc/forwardemail-backups/mongodb.env
           # Run backups at lowest I/O and CPU priority to avoid starving MongoDB
           IOSchedulingClass=idle
           IOSchedulingPriority=7

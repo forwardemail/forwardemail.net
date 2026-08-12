@@ -18,6 +18,7 @@ const { WebSocket } = require('ws');
 
 const config = require('#config');
 const env = require('#config/env');
+const { getPrimaryApiSecret } = require('#helpers/api-secrets');
 const isRetryableError = require('#helpers/is-retryable-error');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
@@ -282,9 +283,7 @@ function createWebSocketAsPromised(options = {}) {
   const protocol =
     options.protocol || (config.env === 'production' ? 'wss' : 'ws');
 
-  const auth = `${encrypt(
-    Array.isArray(env.API_SECRETS) ? env.API_SECRETS[0] : env.API_SECRETS
-  )}:`;
+  const auth = `${encrypt(getPrimaryApiSecret())}:`;
   const host = options.host || env.SQLITE_HOST;
   const port = options.port || env.SQLITE_PORT;
   const url = `${protocol}://${host}:${port}`;

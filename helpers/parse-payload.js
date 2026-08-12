@@ -48,6 +48,7 @@ const email = require('#helpers/email');
 const encryptMessage = require('#helpers/encrypt-message');
 const encryptMessageSMIME = require('#helpers/encrypt-message-smime');
 const env = require('#config/env');
+const { getPrimaryApiSecret } = require('#helpers/api-secrets');
 const closeDatabase = require('#helpers/close-database');
 const getDatabase = require('#helpers/get-database');
 const getFingerprint = require('#helpers/get-fingerprint');
@@ -958,11 +959,7 @@ async function parsePayload(data, ws) {
                   alias_user_id: alias.user.id,
                   domain_id: alias.domain.id,
                   domain_name: alias.domain.name,
-                  password: encrypt(
-                    Array.isArray(env.API_SECRETS)
-                      ? env.API_SECRETS[0]
-                      : env.API_SECRETS
-                  ),
+                  password: encrypt(getPrimaryApiSecret()),
                   storage_location: alias.storage_location,
                   alias_has_pgp: alias.has_pgp,
                   alias_public_key: alias.public_key,

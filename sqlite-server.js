@@ -19,6 +19,7 @@ const pWaitFor = require('p-wait-for');
 const { WebSocketServer } = require('ws');
 const { mkdirp } = require('mkdirp');
 
+const { isValidApiSecret } = require('#helpers/api-secrets');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const DatabaseLRUMap = require('#helpers/database-lru-map');
 const IMAPNotifier = require('#helpers/imap-notifier');
@@ -208,7 +209,7 @@ class SQLite {
             )
           );
 
-        if (!env.API_SECRETS.includes(decrypt(credentials.name)))
+        if (!isValidApiSecret(decrypt(credentials.name)))
           return fn(
             Boom.unauthorized(
               i18n.translateError(

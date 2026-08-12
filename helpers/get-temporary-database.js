@@ -19,6 +19,7 @@ const setupPragma = require('./setup-pragma');
 const { encrypt } = require('./encrypt-decrypt');
 const config = require('#config');
 const env = require('#config/env');
+const { getPrimaryApiSecret } = require('#helpers/api-secrets');
 
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const TemporaryMessages = require('#models/temporary-messages');
@@ -131,9 +132,7 @@ async function getTemporaryDatabase(session) {
       ...session,
       user: {
         ...session.user,
-        password: encrypt(
-          Array.isArray(env.API_SECRETS) ? env.API_SECRETS[0] : env.API_SECRETS
-        )
+        password: encrypt(getPrimaryApiSecret())
       }
     };
 

@@ -653,6 +653,9 @@
         path: /etc/valkey/valkey.conf
         marker: "# {mark} ANSIBLE MANAGED BLOCK - VALKEY CONFIG"
         create: yes
+        owner: root
+        group: valkey
+        mode: '0640'
         block: |
           # Bind to all interfaces
           bind 0.0.0.0 ::
@@ -682,6 +685,7 @@
           tcp-keepalive 300
           timeout 0
           maxclients 65536
+      no_log: true
 
     - name: Ensure Valkey is enabled and started
       service:
@@ -753,11 +757,11 @@
           AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
           AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL}"
           BACKUP_BUCKET="${REDIS_BACKUP_BUCKET:-forwardemail-backups}"
-          BACKUP_SECRET="${BACKUP_SECRET}"
           REDIS_HOST="${REDIS_HOST}"
           REDIS_PORT="${REDIS_PORT}"
           REDIS_PASSWORD="${REDIS_PASSWORD}"
           REDIS_DATA_DIR="${REDIS_DATA_DIR:-/var/lib/valkey}"
+          GPG_PASSPHRASE_FILE=/etc/forwardemail-backups/backup.passphrase
 
           BACKUP_MAX_BANDWIDTH="${BACKUP_MAX_BANDWIDTH:-62.5MB/s}"
 
@@ -777,9 +781,8 @@
 
           echo "Backup bandwidth limit: ${BACKUP_MAX_BANDWIDTH}"
 
-          # Check if BACKUP_SECRET is set
-          if [ -z "$BACKUP_SECRET" ]; then
-            echo "Error: BACKUP_SECRET environment variable is not set"
+          if [ ! -r "$GPG_PASSPHRASE_FILE" ]; then
+            echo "Error: backup passphrase file is not readable"
             exit 1
           fi
 
@@ -787,23 +790,21 @@
           BACKUP_NAME="redis-backup-$(date -u +%Y-%m-%dT%H:%M:%SZ).rdb.gpg"
           S3_PATH="s3://${BACKUP_BUCKET}/redis/${BACKUP_NAME}"
 
-          # Build valkey-cli connection command
-          VALKEY_CMD="valkey-cli -h ${REDIS_HOST} -p ${REDIS_PORT}"
-          if [ -n "${REDIS_PASSWORD}" ]; then
-            VALKEY_CMD="${VALKEY_CMD} -a ${REDIS_PASSWORD}"
+          VALKEY_ARGS=(-h "$REDIS_HOST" -p "$REDIS_PORT")
+          if [ -n "$REDIS_PASSWORD" ]; then
+            export REDISCLI_AUTH="$REDIS_PASSWORD"
           fi
-          # Add TLS flags if using TLS port
-          if [ "${REDIS_PORT}" != "6379" ]; then
-            VALKEY_CMD="${VALKEY_CMD} --tls --insecure"
+          if [ "$REDIS_PORT" != "6379" ]; then
+            VALKEY_ARGS+=(--tls --insecure)
           fi
 
           # Get LASTSAVE timestamp BEFORE triggering BGSAVE
-          INITIAL_SAVE=$(${VALKEY_CMD} LASTSAVE)
+          INITIAL_SAVE=$(valkey-cli "${VALKEY_ARGS[@]}" LASTSAVE)
           echo "Current LASTSAVE: $INITIAL_SAVE"
 
           # Trigger Valkey BGSAVE
           echo "Triggering BGSAVE on ${REDIS_HOST}:${REDIS_PORT}..."
-          BGSAVE_RESULT=$(${VALKEY_CMD} BGSAVE 2>&1)
+          BGSAVE_RESULT=$(valkey-cli "${VALKEY_ARGS[@]}" BGSAVE 2>&1)
           echo "BGSAVE response: $BGSAVE_RESULT"
 
           # Check if BGSAVE was accepted or already in progress
@@ -822,7 +823,7 @@
           while [ $ELAPSED -lt $TIMEOUT ]; do
             sleep 2
             ELAPSED=$((ELAPSED + 2))
-            CURRENT_SAVE=$(${VALKEY_CMD} LASTSAVE)
+            CURRENT_SAVE=$(valkey-cli "${VALKEY_ARGS[@]}" LASTSAVE)
 
             # Check if LASTSAVE has changed (BGSAVE completed)
             if [ "$CURRENT_SAVE" != "$INITIAL_SAVE" ]; then
@@ -899,7 +900,7 @@
           echo "RDB file size: $(du -h ${RDB_FILE} | cut -f1)"
 
           # Run encryption and upload with error capture
-          if ! gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET" < "${RDB_FILE}" | \
+          if ! gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase-file "$GPG_PASSPHRASE_FILE" < "${RDB_FILE}" | \
             aws s3 cp - "${S3_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
             ERROR_MSG="Failed to encrypt/upload backup at $(date). Check AWS credentials and network connectivity."
             echo "ERROR: $ERROR_MSG"
@@ -1122,10 +1123,46 @@
 
           echo "Redis backup cleanup completed successfully"
 
-    # Create systemd service for Redis backup
+    - name: Create root-only Valkey backup credential directory
+      file:
+        path: /etc/forwardemail-backups
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: Write root-only Valkey backup environment
+      copy:
+        dest: /etc/forwardemail-backups/redis.env
+        owner: root
+        group: root
+        mode: '0600'
+        content: |
+          AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}
+          AWS_SECRET_ACCESS_KEY={{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}
+          AWS_ENDPOINT_URL={{ lookup('env', 'AWS_ENDPOINT_URL') }}
+          AWS_DEFAULT_REGION={{ lookup('env', 'AWS_DEFAULT_REGION') or 'auto' }}
+          REDIS_BACKUP_BUCKET={{ lookup('env', 'REDIS_BACKUP_BUCKET') | default('forwardemail-backups', true) }}
+          BACKUP_MAX_BANDWIDTH={{ lookup('env', 'BACKUP_MAX_BANDWIDTH') | default('62.5MB/s', true) }}
+          REDIS_HOST={{ lookup('env', 'REDIS_HOST') }}
+          REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default('6380', true) }}
+          REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}
+          REDIS_DATA_DIR={{ lookup('env', 'REDIS_DATA_DIR') or '/var/lib/valkey' }}
+      no_log: true
+
+    - name: Write root-only Valkey backup passphrase
+      copy:
+        dest: /etc/forwardemail-backups/backup.passphrase
+        owner: root
+        group: root
+        mode: '0600'
+        content: "{{ lookup('env', 'BACKUP_SECRET') }}\n"
+      no_log: true
+
     - name: Create Redis backup systemd service
       copy:
         dest: /etc/systemd/system/redis-backup.service
+        mode: '0644'
         content: |
           [Unit]
           Description=Redis Backup to Cloudflare R2
@@ -1137,17 +1174,7 @@
           # A throttled backup may legitimately take longer than ten minutes
           TimeoutStartSec=86400
           TimeoutStopSec=30
-          Environment="AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-          Environment="AWS_SECRET_ACCESS_KEY={{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-          Environment="AWS_ENDPOINT_URL={{ lookup('env', 'AWS_ENDPOINT_URL') }}"
-          Environment="AWS_DEFAULT_REGION={{ lookup('env', 'AWS_DEFAULT_REGION') or 'auto' }}"
-          Environment="REDIS_BACKUP_BUCKET={{ lookup('env', 'REDIS_BACKUP_BUCKET') | default('forwardemail-backups', true) }}"
-          Environment="BACKUP_SECRET={{ lookup('env', 'BACKUP_SECRET') }}"
-          Environment="BACKUP_MAX_BANDWIDTH={{ lookup('env', 'BACKUP_MAX_BANDWIDTH') | default('62.5MB/s', true) }}"
-          Environment="REDIS_HOST={{ lookup('env', 'REDIS_HOST') }}"
-          Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default('6380', true) }}"
-          Environment="REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}"
-          Environment="REDIS_DATA_DIR={{ lookup('env', 'REDIS_DATA_DIR') or '/var/lib/valkey' }}"
+          EnvironmentFile=/etc/forwardemail-backups/redis.env
           # Run backups at lowest I/O and CPU priority to avoid starving Redis
           IOSchedulingClass=idle
           IOSchedulingPriority=7
@@ -1195,28 +1222,26 @@
           REDIS_HOST="${REDIS_HOST}"
           REDIS_PORT="${REDIS_PORT}"
           REDIS_PASSWORD="${REDIS_PASSWORD}"
+          if [ -n "$REDIS_PASSWORD" ]; then
+            export REDISCLI_AUTH="$REDIS_PASSWORD"
+          fi
           STATE_DIR="/var/lib/redis-monitoring"
           BGSAVE_STATE_FILE="${STATE_DIR}/bgsave-count.txt"
           KEYS_STATE_FILE="${STATE_DIR}/keys-count.txt"
           BGSAVE_THRESHOLD=2  # Alert if more than 2 BGSAVE calls per hour (backup runs daily)
           KEYS_THRESHOLD=5    # Alert if more than 5 KEYS calls per hour (KEYS should rarely be used)
 
-          # Build valkey-cli connection command
-          VALKEY_CMD="valkey-cli -h ${REDIS_HOST} -p ${REDIS_PORT}"
-          if [ -n "${REDIS_PASSWORD}" ]; then
-            VALKEY_CMD="${VALKEY_CMD} -a ${REDIS_PASSWORD}"
-          fi
-          # Add TLS flags if using TLS port
-          if [ "${REDIS_PORT}" != "6379" ]; then
-            VALKEY_CMD="${VALKEY_CMD} --tls --insecure"
+          VALKEY_ARGS=(-h "$REDIS_HOST" -p "$REDIS_PORT")
+          if [ "$REDIS_PORT" != "6379" ]; then
+            VALKEY_ARGS+=(--tls --insecure)
           fi
 
           # Create state directory if it doesn't exist
           mkdir -p "$STATE_DIR"
 
           # Get command stats from Redis
-          COMMANDSTATS=$(${VALKEY_CMD} INFO commandstats)
-          CONNECTED_CLIENTS=$(${VALKEY_CMD} INFO clients | grep "connected_clients:" | cut -d: -f2 | tr -d '\r')
+          COMMANDSTATS=$(valkey-cli "${VALKEY_ARGS[@]}" INFO commandstats)
+          CONNECTED_CLIENTS=$(valkey-cli "${VALKEY_ARGS[@]}" INFO clients | grep "connected_clients:" | cut -d: -f2 | tr -d '\r')
 
           # Track BGSAVE usage
           BGSAVE_CURRENT=$(echo "$COMMANDSTATS" | grep "cmdstat_bgsave:" | grep -oP 'calls=\K[0-9]+' || echo "0")
@@ -1266,10 +1291,10 @@
           echo "$BGSAVE_CURRENT" > "$BGSAVE_STATE_FILE"
           echo "$KEYS_CURRENT" > "$KEYS_STATE_FILE"
 
-    # Create systemd service for Redis command monitoring
     - name: Create Redis command monitoring systemd service
       copy:
         dest: /etc/systemd/system/redis-command-monitor.service
+        mode: '0644'
         content: |
           # WARNING: This file is managed by Ansible
           # Manual changes will be overwritten on next deployment
@@ -1281,9 +1306,7 @@
           [Service]
           Type=oneshot
           RemainAfterExit=no
-          Environment="REDIS_HOST={{ lookup('env', 'REDIS_HOST') }}"
-          Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default('6380', true) }}"
-          Environment="REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}"
+          EnvironmentFile=/etc/forwardemail-backups/redis.env
           ExecStart=/usr/local/bin/monitor-redis-commands.sh
 
     # Create systemd timer for Redis command monitoring (every hour)
@@ -1337,7 +1360,7 @@
         ║    • Monitor logs: sudo journalctl -u valkey-server -f               ║
         ║                                                                        ║
         ║  To verify Valkey is running after restart:                           ║
-        ║    redis-cli -p 6380 --tls -a "$REDIS_PASSWORD" PING                 ║
+        ║    REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli -p 6380 --tls PING     ║
         ║                                                                        ║
         ╚════════════════════════════════════════════════════════════════════════╝
 

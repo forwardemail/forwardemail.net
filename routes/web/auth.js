@@ -16,6 +16,7 @@ const {
 } = require('@forwardemail/passport-fido2-webauthn');
 
 const config = require('#config');
+const completeWebauthnAuthentication = require('#helpers/complete-webauthn-authentication');
 const emailHelper = require('#helpers/email');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
@@ -33,16 +34,33 @@ const storeChallenge = promisify(store.challenge).bind(store);
 const router = new Router({ prefix: '/auth' });
 
 function callbackCheck(ctx, next) {
+  if (
+    ctx.params.provider === 'webauthn' &&
+    ctx.method === 'POST' &&
+    ctx.passport &&
+    ctx.passport.authenticate
+  ) {
+    return ctx.passport.authenticate(
+      'webauthn',
+      {
+        ...config.passportCallbackOptions,
+        failureFlash: false,
+        failureRedirect: false,
+        successReturnToOrRedirect: false
+      },
+      async (err, user) => {
+        if (err) throw err;
+        await completeWebauthnAuthentication(ctx, user);
+      }
+    )(ctx, next);
+  }
+
   return (ctx.method === 'POST' ||
     (ctx.method === 'GET' && ctx.params.provider !== 'webauthn')) &&
     ctx.passport &&
     ctx.passport.authenticate
     ? ctx.passport.authenticate(ctx.params.provider, {
         ...config.passportCallbackOptions,
-        // webauthn shouldn't redirect or flash errors
-        ...(ctx.params.provider === 'webauthn'
-          ? { failureRedirect: false, failureFlash: false }
-          : {}),
         successReturnToOrRedirect: false
       })(ctx, next)
     : next();
@@ -54,6 +72,10 @@ async function callbackRedirect(ctx, next) {
   //
   // NOTE: passkeys work with OTP, so if user has OTP enabled then set to true
   //
+  if (ctx.params.provider === 'webauthn' && !ctx.state.webauthnAuthenticated) {
+    throw Boom.unauthorized(ctx.translateError('INVALID_WEBAUTHN_KEY'));
+  }
+
   if (
     ctx.params.provider === 'webauthn' &&
     ctx.isAuthenticated() &&

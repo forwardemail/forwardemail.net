@@ -121,7 +121,7 @@ sudo systemctl stop mongod
 
 # Restore encrypted backup
 aws s3 cp "s3://forwardemail-backups/${BACKUP_PATH}" - --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" | \
+  gpg --decrypt --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase | \
   mongorestore --archive --gzip --oplogReplay --drop
 
 # Start MongoDB
@@ -204,7 +204,7 @@ sudo mv /var/lib/mongodb /var/lib/mongodb.corrupted.$(date +%Y%m%d-%H%M%S)
 # Restore from R2 backup (choose backup before corruption occurred)
 aws s3 cp "s3://forwardemail-backups/mongodb/2025/11/19/18/mongodb-backup-20251119-180000.archive.gz.gpg" - \
   --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" | \
+  gpg --decrypt --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase | \
   mongorestore --archive --gzip --oplogReplay
 
 # Start MongoDB
@@ -266,7 +266,7 @@ sudo systemctl stop redis-server
 
 # Restore encrypted backup
 aws s3 cp "s3://forwardemail-backups/${BACKUP_PATH}" - --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" > /var/lib/valkey/dump.rdb
+  gpg --decrypt --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase > /var/lib/valkey/dump.rdb
 
 # Set correct permissions
 sudo chown redis:redis /var/lib/valkey/dump.rdb
@@ -327,7 +327,7 @@ sudo systemctl stop redis-server
 
 aws s3 cp "s3://forwardemail-backups/redis/LATEST_BACKUP.rdb.gpg" - \
   --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" > /var/lib/valkey/dump.rdb
+  gpg --decrypt --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase > /var/lib/valkey/dump.rdb
 
 sudo chown redis:redis /var/lib/valkey/dump.rdb
 sudo systemctl start redis-server
@@ -467,7 +467,7 @@ aws s3 ls s3://forwardemail-backups/mongodb/ --recursive --endpoint-url="$AWS_EN
 # Restore to test server
 aws s3 cp "s3://forwardemail-backups/mongodb/BACKUP_PATH.archive.gz.gpg" - \
   --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" | \
+  gpg --decrypt --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase | \
   mongorestore --archive --gzip --oplogReplay --host test-mongo.example.com
 ```
 
@@ -545,7 +545,7 @@ fi
 # Verify backup can be decrypted
 LATEST_FILE=$(echo "$RECENT_BACKUPS" | tail -1 | awk '{print $4}')
 aws s3 cp "s3://forwardemail-backups/${LATEST_FILE}" - --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" | head -c 1000 > /dev/null
+  gpg --decrypt --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase | head -c 1000 > /dev/null
 
 if [ $? -eq 0 ]; then
   echo "OK: Backup can be decrypted"

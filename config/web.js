@@ -29,7 +29,12 @@ const env = require('./env');
 const koaCashConfig = require('./koa-cash');
 
 const config = require('.');
+const getSessionKeys = require('#helpers/get-session-keys');
 const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
+const {
+  createOtpRememberMeCookie,
+  isValidOtpRememberMeCookie
+} = require('#helpers/otp-remember-me');
 const _ = require('#helpers/lodash');
 
 const Users = require('#models/users');
@@ -153,6 +158,7 @@ const reportUri = isSANB(process.env.WEB_URL)
   : null;
 
 const sharedWebConfig = sharedConfig('WEB');
+const sessionKeys = getSessionKeys();
 
 // setup our Cabin instance
 const cabin = new Cabin({ logger });
@@ -300,6 +306,7 @@ module.exports = (redis) => ({
     },
     xssFilter: false
   },
+  sessionKeys,
   session: {
     errorHandler(err, type, ctx) {
       if (
@@ -659,14 +666,21 @@ module.exports = (redis) => ({
             if (ctx.session.otp_remember_me) {
               ctx.cookies.set(
                 'otp_remember_me',
-                ctx.state.user.id,
+                createOtpRememberMeCookie(ctx.state.user.id),
                 cookieOptions
               );
             } else {
               ctx.cookies.set('otp_remember_me', null);
             }
-          } else if (ctx.cookies.get('otp_remember_me') === ctx.state.user.id) {
+          } else if (
+            isValidOtpRememberMeCookie(
+              ctx.cookies.get('otp_remember_me'),
+              ctx.state.user.id
+            )
+          ) {
             ctx.session.otp = 'remember_me';
+          } else {
+            ctx.cookies.set('otp_remember_me', null, cookieOptions);
           }
         }
       }

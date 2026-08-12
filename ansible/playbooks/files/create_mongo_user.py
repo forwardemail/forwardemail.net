@@ -14,10 +14,6 @@ def main():
     username = os.environ.get('MONGO_USER', '')
     password = os.environ.get('MONGO_PASS', '')
 
-    # Debug output (will be visible in Ansible logs)
-    print(f"DEBUG: MONGO_USER length: {len(username)}")
-    print(f"DEBUG: MONGO_PASS length: {len(password)}")
-
     if not username:
         print("ERROR: MONGO_USER environment variable is not set or empty")
         sys.exit(1)
@@ -36,7 +32,7 @@ def main():
         print("ERROR: MONGO_PASS must be at least 8 characters")
         sys.exit(1)
 
-    print(f"INFO: Creating user '{username}' with password of length {len(password)}")
+    print(f"INFO: Creating user '{username}'")
 
     # Use JSON encoding to properly escape for JavaScript
     username_json = json.dumps(username)
