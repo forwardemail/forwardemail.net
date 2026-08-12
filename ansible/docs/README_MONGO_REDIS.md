@@ -12,7 +12,7 @@
 > This approach gives us full control over configuration and follows a consistent pattern across all database deployments.
 
 > \[!IMPORTANT]
-> These playbooks deploy production-grade database infrastructure with automated backups, security hardening, and email alerting..
+> These playbooks deploy production-grade database infrastructure with automated backups, security hardening, and email alerting.
 
 
 ## Overview
@@ -26,8 +26,9 @@ These playbooks provide complete automation for:
 * **UFW firewall** with dynamic IP whitelist management
 * **DNS caching** with DNSSEC, DANE, and DNS-over-TLS support
 * **Kernel optimizations** for database performance
-* **Automated encrypted backups** to Cloudflare R2 every 6 hours
-* **Intelligent backup retention** (30-day retention with daily consolidation after 7 days)
+* **Automated encrypted backups** to Cloudflare R2 once daily
+* **Backup bandwidth limits** (62.5MB/s = 500Mbps per backup process by default)
+* **Intelligent backup retention** (30-day retention with daily consolidation after 2 days)
 
 
 ## Architecture
@@ -109,6 +110,9 @@ export AWS_ENDPOINT_URL="https://your-account-id.r2.cloudflarestorage.com"
 
 # Backup Encryption
 export BACKUP_SECRET="your-strong-backup-encryption-password"
+
+# Optional: maximum transfer rate per backup process (62.5MB/s = 500Mbps)
+export BACKUP_MAX_BANDWIDTH="62.5MB/s"
 ```
 
 #### MongoDB-Specific Variables
@@ -192,9 +196,11 @@ https://forwardemail.net/ips/v4.txt?comments=false
 
 #### Backup Schedule
 
-* Backups run every 6 hours via systemd timer
-* First backup runs 15 minutes after boot
-* Subsequent backups run at 6-hour intervals
+* MongoDB backups run daily at 02:00 via systemd timer
+* Logs MongoDB backups run daily at 02:15 via systemd timer
+* Redis backups run daily at 02:30 via systemd timer
+* Each timer adds up to 10 minutes of randomized delay and catches up after downtime
+* Uploads are capped at `BACKUP_MAX_BANDWIDTH` (default `62.5MB/s` = 500Mbps)
 
 #### Encryption
 
@@ -203,7 +209,7 @@ https://forwardemail.net/ips/v4.txt?comments=false
 
 ```bash
 # MongoDB backup encryption
-mongodump --oplog --archive --gzip | \
+mongodump --archive --gzip | \
   gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET" | \
   aws s3 cp - s3://bucket/path/backup.archive.gz.gpg
 
@@ -216,7 +222,7 @@ gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET"
 
 **MongoDB:**
 
-* Uses `mongodump` with `--oplog` for point-in-time recovery capability
+* Uses `mongodump` with `--archive` for a single streamed archive
 * Compressed with gzip before encryption
 * Streamed directly to R2 (no local storage required)
 
@@ -232,35 +238,24 @@ Backups are organized in a hierarchical folder structure for easy navigation:
 
 ```
 s3://bucket-name/
-  mongodb/
-    2025/
-      11/
-        18/
-          00/mongodb-backup-20251118-000015.archive.gz.gpg
-          06/mongodb-backup-20251118-060015.archive.gz.gpg
-          12/mongodb-backup-20251118-120015.archive.gz.gpg
-          18/mongodb-backup-20251118-180015.archive.gz.gpg
+  mongo/
+    mongo-backup-2025-11-18T02:00:00Z.gz.gpg
+    logs-mongo-backup-2025-11-18T02:15:00Z.gz.gpg
   redis/
-    2025/
-      11/
-        18/
-          00/redis-backup-20251118-000015.rdb.gpg
-          06/redis-backup-20251118-060015.rdb.gpg
-          12/redis-backup-20251118-120015.rdb.gpg
-          18/redis-backup-20251118-180015.rdb.gpg
+    redis-backup-2025-11-18T02:30:00Z.rdb.gpg
 ```
 
 ### 3. Intelligent Backup Retention
 
 Cleanup runs automatically after each backup with the following retention policy:
 
-* **0-7 days**: Keep all backups (4 per day = 28 backups)
-* **8-30 days**: Keep only the latest backup per day (23 backups)
+* **0-2 days**: Keep all daily backups
+* **3-30 days**: Keep only the latest backup per day
 * **30+ days**: Delete all backups
 
 This provides:
 
-* Fine-grained recovery for the past week
+* Fine-grained recovery for the past 2 days
 * Daily recovery points for the past month
 * Automatic cleanup to control storage costs
 
@@ -376,16 +371,16 @@ net.ipv4.tcp_max_syn_backlog = 65536
 
 ```bash
 # Download and decrypt backup
-aws s3 cp s3://bucket/mongodb/2025/11/18/00/backup.archive.gz.gpg - \
+aws s3 cp s3://bucket/mongo/mongo-backup-2025-11-18T02:00:00Z.gz.gpg - \
   --endpoint-url="$AWS_ENDPOINT_URL" | \
   gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" | \
-  mongorestore --archive --gzip --oplogReplay
+  mongorestore --archive --gzip
 
 # Or save to file first
-aws s3 cp s3://bucket/mongodb/2025/11/18/00/backup.archive.gz.gpg backup.gpg \
+aws s3 cp s3://bucket/mongo/mongo-backup-2025-11-18T02:00:00Z.gz.gpg backup.gpg \
   --endpoint-url="$AWS_ENDPOINT_URL"
 gpg --decrypt --output backup.archive.gz backup.gpg
-mongorestore --archive=backup.archive.gz --gzip --oplogReplay
+mongorestore --archive=backup.archive.gz --gzip
 ```
 
 #### Redis Restore
@@ -395,7 +390,7 @@ mongorestore --archive=backup.archive.gz --gzip --oplogReplay
 sudo systemctl stop redis-server
 
 # Download, decrypt, and restore
-aws s3 cp s3://bucket/redis/2025/11/18/00/backup.rdb.gpg - \
+aws s3 cp s3://bucket/redis/redis-backup-2025-11-18T02:30:00Z.rdb.gpg - \
   --endpoint-url="$AWS_ENDPOINT_URL" | \
   gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" > /var/lib/valkey/dump.rdb
 
@@ -566,7 +561,7 @@ curl -s https://forwardemail.net/ips/v4.txt?comments=false
 
 ### MongoDB
 
-* Backups run with `--oplog` which captures incremental changes
+* Backups stream compressed archives without requiring a local dump file
 * `mongodump` reads from the database but doesn't block writes
 * Consider running backups during off-peak hours if performance is critical
 * Monitor WiredTiger cache pressure during backups

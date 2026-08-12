@@ -11,7 +11,7 @@ RETENTION_DAYS=7
 S3_BUCKET="forwardemail-selfhosted"
 S3_PATH="s3://$S3_BUCKET/redis-backups/"
 
-# */5 * * * * $HOME/forwardemail.net/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1
+# 30 0 * * * $HOME/forwardemail.net/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1
 
 # NOTE: restore
 # aws s3 cp s3://forwardemail-selfhosted/redis-backups/redis-YYYY-MM-DD_HH-MM.rdb /tmp/dump.rdb
@@ -41,6 +41,13 @@ else
     echo "Error: Redis backup failed. Dump file not found!" >&2
     exit 1
 fi
+
+BACKUP_MAX_BANDWIDTH="${BACKUP_MAX_BANDWIDTH:-62.5MB/s}"
+
+# Preserve endpoint_url and other existing settings while enforcing the cap.
+aws configure set default.s3.preferred_transfer_client classic
+aws configure set default.s3.max_bandwidth "$BACKUP_MAX_BANDWIDTH"
+aws configure set default.s3.max_concurrent_requests 2
 
 # Upload to AWS S3 (if enabled)
 echo "Uploading to S3..."

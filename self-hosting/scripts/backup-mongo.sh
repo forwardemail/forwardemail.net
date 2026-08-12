@@ -14,7 +14,7 @@ TAR_FILE="$BACKUP_DIR/$BACKUP_NAME.tgz"
 S3_BUCKET="forwardemail-selfhosted"
 S3_PATH="s3://$S3_BUCKET/mongo-backups/"
 
-# */5 * * * * $HOME/forwardemail.net/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1
+# 0 0 * * * $HOME/forwardemail.net/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1
 
 # NOTE: restore
 # aws s3 cp s3://forwardemail-selfhosted/mongo-backups/mongo-backup-YYYY-MM-DD_HH-MM.tgz /tmp/mongo-backup.tgz
@@ -33,6 +33,13 @@ rm -rf "$BACKUP_PATH"
 # Delete old backups
 echo "Removing backups older than $RETENTION_DAYS days..."
 find "$BACKUP_DIR" -name "mongo-backup-*.tgz" -mtime +$RETENTION_DAYS -exec rm -f {} \;
+
+BACKUP_MAX_BANDWIDTH="${BACKUP_MAX_BANDWIDTH:-62.5MB/s}"
+
+# Preserve endpoint_url and other existing settings while enforcing the cap.
+aws configure set default.s3.preferred_transfer_client classic
+aws configure set default.s3.max_bandwidth "$BACKUP_MAX_BANDWIDTH"
+aws configure set default.s3.max_concurrent_requests 2
 
 # Upload to S3 if enabled
 echo "Uploading to S3..."

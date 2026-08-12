@@ -7,6 +7,7 @@ const Redis = require('ioredis-mock');
 const test = require('ava');
 
 const config = require('#config');
+const { MAX_CONCURRENCY } = require('#helpers/sqlite-worker-config');
 
 const CHANNEL = `sqlite_backup_queue:${config.env}`;
 const BUSY_KEY = `sqlite_worker_busy:${config.env}`;
@@ -223,13 +224,13 @@ test.serial('memory gate check - os.freemem returns a number', (t) => {
   t.true(freeMem > 0);
 });
 
-test.serial('MAX_CONCURRENT_JOBS limits concurrency correctly', (t) => {
-  // Simulate the concurrency check from sqlite-worker.js
-  const MAX_CONCURRENT_JOBS = 2;
+test.serial('MAX_CONCURRENCY limits worker to one job', (t) => {
+  // Keep the test in sync with sqlite-worker.js without loading native modules.
+  t.is(MAX_CONCURRENCY, 1);
   let activeJobs = 0;
 
   const startJob = () => {
-    if (activeJobs >= MAX_CONCURRENT_JOBS) return false;
+    if (activeJobs >= MAX_CONCURRENCY) return false;
     activeJobs++;
     return true;
   };
@@ -239,10 +240,9 @@ test.serial('MAX_CONCURRENT_JOBS limits concurrency correctly', (t) => {
   };
 
   t.true(startJob(), 'first job should start');
-  t.true(startJob(), 'second job should start');
-  t.false(startJob(), 'third job should be rejected');
+  t.false(startJob(), 'second job should be rejected');
 
   endJob();
   t.true(startJob(), 'after ending one, new job should start');
-  t.is(activeJobs, 2);
+  t.is(activeJobs, 1);
 });

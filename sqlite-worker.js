@@ -28,6 +28,11 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { backup, rekey, vacuum } = require('#helpers/worker');
+const {
+  MAX_CONCURRENCY,
+  MIN_FREE_MEM,
+  REKEY_STALE_THRESHOLD
+} = require('#helpers/sqlite-worker-config');
 
 const imapSharedConfig = sharedConfig('IMAP');
 const client = new Redis(imapSharedConfig.redis, logger);
@@ -43,9 +48,6 @@ const CHANNEL = `sqlite_backup_queue:${config.env}`;
 const VACUUM_CHANNEL = `sqlite_vacuum_queue:${config.env}`;
 const REKEY_QUEUE = `rekey_queue:${config.env}`;
 const BUSY_KEY = `sqlite_worker_busy:${config.env}`;
-const MAX_CONCURRENCY = 2;
-const MIN_FREE_MEM = 1024 * 1024 * 1024; // 1 GB
-const REKEY_STALE_THRESHOLD = ms('15m');
 
 //
 // State

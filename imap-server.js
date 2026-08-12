@@ -40,6 +40,7 @@ require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
 const getTLSOptions = require('#helpers/get-tls-options');
 const imap = require('#helpers/imap');
+const getBackupSweepDelay = require('#helpers/backup-sweep-delay');
 
 // Force enable TLS 1.0 (if node_args approach is not used, safety net)
 if (env.IMAP_TLS_MIN_VERSION === 'TLSv1') {
@@ -228,12 +229,12 @@ class IMAP {
       );
     };
 
-    // every hour attempt to run a backup on the connected users
+    // every day attempt to run a backup on the connected users
     // (initial auth may attempt to backup, but could fail)
     this.backupConnections = this.backupConnections.bind(this);
     this._backupTimer = setTimeout(() => {
       this.backupConnections();
-    }, ms('1h'));
+    }, getBackupSweepDelay());
     this._isClosing = false;
 
     // listen for websocket write stream
@@ -404,7 +405,7 @@ class IMAP {
       if (!this?.server?.connections || this.server.connections.size === 0) {
         this._backupTimer = setTimeout(() => {
           this.backupConnections();
-        }, ms('1h'));
+        }, getBackupSweepDelay());
         return;
       }
 
@@ -433,7 +434,7 @@ class IMAP {
 
       this._backupTimer = setTimeout(() => {
         this.backupConnections();
-      }, ms('1h'));
+      }, getBackupSweepDelay());
     } catch (err) {
       this.logger.fatal(err);
     }

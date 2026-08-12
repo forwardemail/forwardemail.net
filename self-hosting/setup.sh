@@ -150,24 +150,29 @@ prompt_command() {
       update_env_file AWS_ENDPOINT_URL "$AWS_ENDPOINT_URL"
     fi
 
+    BACKUP_MAX_BANDWIDTH="62.5MB/s"
+    update_env_file BACKUP_MAX_BANDWIDTH "$BACKUP_MAX_BANDWIDTH"
+    export BACKUP_MAX_BANDWIDTH
+
     set_aws_credentials
     chmod +x "$HOME"/forwardemail.net/self-hosting/scripts/backup-mongo.sh
     chmod +x "$HOME"/forwardemail.net/self-hosting/scripts/backup-redis.sh
 
+    # Stagger backups so their 500-megabit limits cannot add together.
     MONGO_BACKUP_CRON="0 0 * * * $HOME/forwardemail.net/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1"
-    (crontab -l 2>/dev/null | grep -Fq "$MONGO_BACKUP_CRON") || (
-      crontab -l 2>/dev/null
+    (
+      crontab -l 2>/dev/null | grep -Fv "$HOME/forwardemail.net/self-hosting/scripts/backup-mongo.sh" || true
       echo "$MONGO_BACKUP_CRON"
     ) | crontab -
 
-    REDIS_BACKUP_CRON="0 0 * * * $HOME/forwardemail.net/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1"
-    (crontab -l 2>/dev/null | grep -Fq "$REDIS_BACKUP_CRON") || (
-      crontab -l 2>/dev/null
+    REDIS_BACKUP_CRON="30 0 * * * $HOME/forwardemail.net/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1"
+    (
+      crontab -l 2>/dev/null | grep -Fv "$HOME/forwardemail.net/self-hosting/scripts/backup-redis.sh" || true
       echo "$REDIS_BACKUP_CRON"
     ) | crontab -
 
     echo "✅ Backup setup complete!"
-    echo "You can find the crons using: \`crontab -l\`. These will run at midnight by default."
+    echo "You can find the crons using: \`crontab -l\`. MongoDB runs at 00:00 and Redis runs at 00:30 daily."
     echo "NOTE: Please be sure to save your .env file in a safe place in the event of a restore from backup."
     ;;
   3)
@@ -427,6 +432,10 @@ EOF
 [default]
 region = auto
 output = json
+s3 =
+  preferred_transfer_client = classic
+  max_bandwidth = ${BACKUP_MAX_BANDWIDTH:-62.5MB/s}
+  max_concurrent_requests = 2
 EOF
 
   if [[ -n $AWS_ENDPOINT_URL ]]; then

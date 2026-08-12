@@ -43,8 +43,8 @@ This replaces the previous lsyncd-based approach which consumed excessive memory
 
 1. Cron triggers `/usr/local/bin/sqlite-mirror.sh` every 2 minutes
 2. Script acquires an exclusive flock (skips if previous run still active)
-3. Rsync mirrors source to target with `--whole-file` (no delta computation)
-4. WAL/SHM/journal files are excluded (transient, not needed for backup)
+3. Rsync mirrors source to target with `--no-whole-file` (delta transfer)
+4. WAL/SHM/journal files are included so the mirror remains recoverable
 5. Runs at lowest I/O priority (`ionice -c 3 nice -n 19`)
 6. Health monitor checks every 5 minutes for staleness or errors
 
@@ -73,6 +73,7 @@ The 2-minute RPO is acceptable because:
 | `MIRROR_SOURCE`          | Source directory to mirror  | `/mnt/storage_do_1`         |
 | `MIRROR_TARGET`          | Target directory for mirror | `/mnt/storage_do_2`         |
 | `MIRROR_INTERVAL`        | Cron interval in minutes    | `2`                         |
+| `MIRROR_BANDWIDTH_LIMIT` | Rsync limit in KiB/s        | `61035` (≈500Mbps)          |
 | `ALERT_EMAIL_RECIPIENTS` | Email recipients for alerts | `security@forwardemail.net` |
 | `MIRROR_SKIP_SAFETY`     | Skip safety checks          | `false`                     |
 
@@ -87,6 +88,9 @@ ansible-playbook ansible/playbooks/sqlite-mirror.yml -l sqlite
 
 # With custom interval (5 minutes)
 MIRROR_INTERVAL=5 ansible-playbook ansible/playbooks/sqlite-mirror.yml -l sqlite
+
+# With a lower bandwidth limit (100MB/s)
+MIRROR_BANDWIDTH_LIMIT=97657 ansible-playbook ansible/playbooks/sqlite-mirror.yml -l sqlite
 
 # Skip safety checks (target already has data)
 MIRROR_SKIP_SAFETY=true ansible-playbook ansible/playbooks/sqlite-mirror.yml -l sqlite

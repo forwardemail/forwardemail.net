@@ -29,6 +29,7 @@
 #   MIRROR_SOURCE      - Source directory (default: /mnt/storage_do_1)
 #   MIRROR_TARGET      - Target directory (default: /mnt/storage_do_2)
 #   MIRROR_INTERVAL    - Cron interval in minutes (default: 2)
+#   MIRROR_BANDWIDTH_LIMIT - Rsync limit in KiB/s (default: 61035 = 500Mbps)
 #   ALERT_EMAIL_RECIPIENTS - Email recipients for alerts (default: security@forwardemail.net)
 #   MIRROR_SKIP_SAFETY - Set to "true" to skip safety checks (default: false)
 #
@@ -42,6 +43,7 @@
     mirror_source: "{{ lookup('env', 'MIRROR_SOURCE') | default('/mnt/storage_do_1', true) }}"
     mirror_target: "{{ lookup('env', 'MIRROR_TARGET') | default('/mnt/storage_do_2', true) }}"
     mirror_interval: "{{ lookup('env', 'MIRROR_INTERVAL') | default('2', true) }}"
+    mirror_bandwidth_limit: "{{ lookup('env', 'MIRROR_BANDWIDTH_LIMIT') | default('61035', true) }}"
     alert_email_recipients: "{{ lookup('env', 'ALERT_EMAIL_RECIPIENTS') | default(lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true), true) }}"
     mirror_skip_safety: "{{ lookup('env', 'MIRROR_SKIP_SAFETY') | default('false', true) }}"
   handlers:
@@ -63,6 +65,7 @@
             Source: {{ mirror_source }}
             Target: {{ mirror_target }}
             Interval: every {{ mirror_interval }} minutes
+            Bandwidth Limit: {{ mirror_bandwidth_limit }} KiB/s
             Skip Safety: {{ mirror_skip_safety }}
 
     - name: Check if source directory exists
@@ -272,6 +275,7 @@
               --inplace \
               --partial \
               --info=stats2 \
+              --bwlimit={{ mirror_bandwidth_limit }} \
               "$SOURCE/" "$TARGET/" >> "$LOG" 2>&1
 
           RC=$?
@@ -496,6 +500,7 @@
             Source: {{ mirror_source }}
             Target: {{ mirror_target }}
             Interval: every {{ mirror_interval }} minutes
+            Bandwidth Limit: {{ mirror_bandwidth_limit }} KiB/s
             Email alerts: {{ alert_email_recipients }}
 
           Files deployed:

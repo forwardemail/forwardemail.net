@@ -5,7 +5,8 @@
 
 const {
   ListObjectsV2Command,
-  DeleteObjectCommand
+  DeleteObjectCommand,
+  DeleteObjectsCommand
 } = require('@aws-sdk/client-s3');
 const dashify = require('dashify');
 
@@ -61,60 +62,84 @@ async function removeAliasBackup(alias, options = {}) {
     // Default (system) S3 uses flat keys (e.g. "alias_id.sqlite")
     // so prefix-based listing works correctly.
     //
-    const listCommand = new ListObjectsV2Command({
-      Bucket: bucket,
-      Prefix: aliasId
-    });
+    const matchingFiles = [];
+    let continuationToken;
 
-    const response = await s3.send(listCommand);
+    do {
+      const response = await s3.send(
+        new ListObjectsV2Command({
+          Bucket: bucket,
+          Prefix: aliasId,
+          ContinuationToken: continuationToken
+        })
+      );
 
-    if (response.Contents && response.Contents.length > 0) {
-      // Delete each file that matches the alias ID
-      for (const object of response.Contents) {
-        const key = object.Key;
+      if (response.Contents && response.Contents.length > 0) {
+        for (const object of response.Contents) {
+          const key = object.Key;
 
-        // Extract the alias ID by removing known extensions
-        let extractedAliasId = key;
+          // Extract the alias ID by removing known extensions
+          let extractedAliasId = key;
 
-        // Remove common extensions including SQLite WAL/SHM files
-        extractedAliasId = extractedAliasId.replace(
-          /\.(sqlite|sqlite-shm|sqlite-wal|zip|gz)$/,
-          ''
-        );
-
-        // Remove backup suffix if present
-        extractedAliasId = extractedAliasId.replace(/-backup$/, '');
-
-        // Remove temp suffix if present (handles -tmp variants)
-        extractedAliasId = extractedAliasId.replace(/-tmp$/, '');
-
-        // If the extracted alias ID matches the target alias ID, delete the file
-        if (extractedAliasId === aliasId) {
-          if (!dryRun) {
-            const deleteCommand = new DeleteObjectCommand({
-              Bucket: bucket,
-              Key: key
-            });
-
-            await s3.send(deleteCommand);
-          }
-
-          deletedFiles.push(key);
-
-          logger.info(
-            dryRun
-              ? 'Would delete R2 backup file (dry run)'
-              : 'Deleted R2 backup file',
-            {
-              bucket,
-              key,
-              aliasId,
-              storageLocation: aliasObject.storage_location,
-              dryRun
-            }
+          // Remove common extensions including SQLite WAL/SHM files
+          extractedAliasId = extractedAliasId.replace(
+            /\.(sqlite|sqlite-shm|sqlite-wal|zip|gz)$/,
+            ''
           );
+
+          // Remove backup suffix if present
+          extractedAliasId = extractedAliasId.replace(/-backup$/, '');
+
+          // Remove temp suffix if present (handles -tmp variants)
+          extractedAliasId = extractedAliasId.replace(/-tmp$/, '');
+
+          // If the extracted alias ID matches the target alias ID, delete the file
+          if (extractedAliasId === aliasId) matchingFiles.push(key);
         }
       }
+
+      continuationToken = response.NextContinuationToken;
+    } while (continuationToken);
+
+    if (!dryRun && matchingFiles.length > 0) {
+      // S3 DeleteObjects accepts at most 1,000 keys per request.
+      for (let index = 0; index < matchingFiles.length; index += 1000) {
+        const batch = matchingFiles.slice(index, index + 1000);
+        const result = await s3.send(
+          new DeleteObjectsCommand({
+            Bucket: bucket,
+            Delete: {
+              Objects: batch.map((Key) => ({ Key })),
+              Quiet: true
+            }
+          })
+        );
+
+        if (result.Errors && result.Errors.length > 0) {
+          const err = new Error(
+            `Failed to delete ${result.Errors.length} R2 backup file(s)`
+          );
+          err.failures = result.Errors;
+          throw err;
+        }
+      }
+    }
+
+    for (const key of matchingFiles) {
+      deletedFiles.push(key);
+
+      logger.info(
+        dryRun
+          ? 'Would delete R2 backup file (dry run)'
+          : 'Deleted R2 backup file',
+        {
+          bucket,
+          key,
+          aliasId,
+          storageLocation: aliasObject.storage_location,
+          dryRun
+        }
+      );
     }
 
     return deletedFiles;

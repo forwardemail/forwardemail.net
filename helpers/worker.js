@@ -74,7 +74,14 @@ const { getS3Client } = require('#helpers/get-s3-client');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 const env = require('#config/env');
 
+const parseBandwidth = require('#helpers/parse-bandwidth');
+const createThrottleStream = require('#helpers/throttle-stream');
+
 const builder = new Builder({ bufferAsNative: true });
+
+const BACKUP_UPLOAD_BYTES_PER_SECOND = parseBandwidth(
+  env.BACKUP_MAX_BANDWIDTH || '62.5MB/s'
+);
 
 // Lua script to atomically release a Redis lock only if we still own it.
 // Prevents releasing a lock that expired and was re-acquired by another worker.
@@ -1083,10 +1090,14 @@ async function backup(payload) {
     // Close db handle for mbox/eml cases (sqlite case already closes it)
     if (db && db.open) await closeDatabase(db);
 
+    // The temporary backup now exists and must be cleaned up for every format.
+    backup = true;
+
     // calculate hash of file
     const hash = await hasha.fromFile(tmp, { algorithm: 'sha256' });
 
     // check if hash already exists in s3
+    let shouldUpload = true;
     try {
       const obj = await s3.send(
         new HeadObjectCommand({
@@ -1095,14 +1106,19 @@ async function backup(payload) {
         })
       );
 
-      if (obj?.Metadata?.hash === hash)
-        throw new TypeError('Hash already exists, returning early');
+      if (obj?.Metadata?.hash === hash) {
+        shouldUpload = false;
+        logger.debug('Backup hash already exists, skipping upload', {
+          bucket,
+          key,
+          hash
+        });
+      }
     } catch (err) {
       // For custom S3 providers, transient errors (timeouts, throttling)
       // from HeadObject should not abort the backup — just proceed with upload.
       // Only re-throw for default (system) S3 where NotFound is the only expected error.
       if (customBucket) {
-        if (err.message === 'Hash already exists, returning early') throw err;
         logger.warn('HeadObject failed on custom S3, proceeding with upload', {
           bucket,
           key,
@@ -1115,26 +1131,36 @@ async function backup(payload) {
 
     if (isCancelled) throw new ServerShutdownError();
 
-    const upload = new Upload({
-      client: s3,
-      params: {
-        Bucket: bucket,
-        Key: key,
-        Body: fs.createReadStream(tmp),
-        ContentType:
-          mimeTypes.lookup(extension) ||
-          (extension === 'sqlite'
-            ? 'application/vnd.sqlite3'
-            : 'application/octet-stream'),
-        Metadata: { hash }
-      }
-    });
-    await upload.done();
+    if (shouldUpload) {
+      const source = fs.createReadStream(tmp);
+      const body = source.pipe(
+        createThrottleStream(BACKUP_UPLOAD_BYTES_PER_SECOND)
+      );
+      source.on('error', (err) => body.destroy(err));
 
-    // Immediately unlink tmp file to release page cache
-    try {
-      await fs.promises.rm(tmp, { force: true });
-    } catch {}
+      const upload = new Upload({
+        client: s3,
+        queueSize: 2,
+        partSize: 8 * 1024 * 1024,
+        params: {
+          Bucket: bucket,
+          Key: key,
+          Body: body,
+          ContentType:
+            mimeTypes.lookup(extension) ||
+            (extension === 'sqlite'
+              ? 'application/vnd.sqlite3'
+              : 'application/octet-stream'),
+          Metadata: { hash }
+        }
+      });
+      await upload.done();
+
+      // Immediately unlink tmp file to release page cache
+      try {
+        await fs.promises.rm(tmp, { force: true });
+      } catch {}
+    }
 
     // update alias imap backup date using provided time
     if (payload.format === 'sqlite') {

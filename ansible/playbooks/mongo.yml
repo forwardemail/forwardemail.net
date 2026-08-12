@@ -1377,6 +1377,24 @@
           MONGO_HOST="${MONGO_HOST}"
           MONGO_PASS="${MONGO_PASS}"
 
+          BACKUP_MAX_BANDWIDTH="${BACKUP_MAX_BANDWIDTH:-62.5MB/s}"
+
+          # Keep the AWS CLI on the classic transfer client so max_bandwidth is honored.
+          # The isolated config avoids changing any operator-managed ~/.aws/config settings.
+          AWS_CONFIG_FILE="${AWS_CONFIG_FILE:-/root/.aws/backup-config}"
+          export AWS_CONFIG_FILE
+          mkdir -p "$(dirname "$AWS_CONFIG_FILE")"
+          cat > "$AWS_CONFIG_FILE" <<EOF
+          [default]
+          s3 =
+            preferred_transfer_client = classic
+            max_bandwidth = ${BACKUP_MAX_BANDWIDTH}
+            max_concurrent_requests = 2
+          EOF
+          chmod 600 "$AWS_CONFIG_FILE"
+
+          echo "Backup bandwidth limit: ${BACKUP_MAX_BANDWIDTH}"
+
           # Check if BACKUP_SECRET is set
           if [ -z "$BACKUP_SECRET" ]; then
             ERROR_MSG="BACKUP_SECRET environment variable is not set"
@@ -1477,7 +1495,7 @@
           THIRTY_DAYS_AGO=$(date -d "30 days ago" +%s)
           TWO_DAYS_AGO=$(date -d "2 days ago" +%s)
 
-          echo "Retention policy: Keep all hourly backups for last 2 days, keep latest daily backup for days 3-30, delete backups older than 30 days"
+          echo "Retention policy: Keep all daily backups for last 2 days, keep latest daily backup for days 3-30, delete backups older than 30 days"
           echo "Current time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           echo "Two days ago cutoff: $(date -u -d @${TWO_DAYS_AGO} +%Y-%m-%dT%H:%M:%SZ)"
           echo "Thirty days ago cutoff: $(date -u -d @${THIRTY_DAYS_AGO} +%Y-%m-%dT%H:%M:%SZ)"
@@ -1636,9 +1654,9 @@
                 fi
               fi
 
-            # RULE 3: Keep all hourly backups from the last 2 days
+            # RULE 3: Keep all daily backups from the last 2 days
             else
-              echo "Keeping recent hourly backup (< 2 days old): ${FILE_PATH}"
+              echo "Keeping recent daily backup (< 2 days old): ${FILE_PATH}"
               KEPT_RECENT=$((KEPT_RECENT + 1))
             fi
           done <<< "$BACKUP_LIST"
@@ -1649,7 +1667,7 @@
           echo "Deleted (>30 days old): ${DELETED_OLD}"
           echo "Deleted (daily consolidation, days 3-30): ${DELETED_DAILY}"
           echo "Kept (latest daily backup, days 3-30): ${KEPT_DAILY}"
-          echo "Kept (hourly backups, last 2 days): ${KEPT_RECENT}"
+          echo "Kept (daily backups, last 2 days): ${KEPT_RECENT}"
           echo "Errors: ${ERRORS}"
           echo "Completed at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
@@ -1676,7 +1694,8 @@
           [Service]
           Type=oneshot
           RemainAfterExit=no
-          TimeoutStartSec=3600
+          # A throttled backup may legitimately take longer than one hour
+          TimeoutStartSec=86400
           TimeoutStopSec=60
           Environment="AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
           Environment="AWS_SECRET_ACCESS_KEY={{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
@@ -1684,6 +1703,7 @@
           Environment="AWS_DEFAULT_REGION={{ lookup('env', 'AWS_DEFAULT_REGION') or 'auto' }}"
           Environment="MONGO_BACKUP_BUCKET={{ lookup('env', 'MONGO_BACKUP_BUCKET') | default('forwardemail-backups', true) }}"
           Environment="BACKUP_SECRET={{ lookup('env', 'BACKUP_SECRET') }}"
+          Environment="BACKUP_MAX_BANDWIDTH={{ lookup('env', 'BACKUP_MAX_BANDWIDTH') | default('62.5MB/s', true) }}"
           Environment="MONGO_PORT={{ lookup('env', 'MONGO_PORT') | default('27017', true) }}"
           Environment="MONGO_NAME={{ lookup('env', 'MONGO_NAME') }}"
           Environment="MONGO_USER={{ lookup('env', 'MONGO_USER') }}"
@@ -1697,7 +1717,7 @@
           ExecStart=/usr/local/bin/backup-mongodb.sh
           ExecStartPost=/usr/local/bin/cleanup-mongodb-backups.sh
 
-    # Create systemd timer for MongoDB backup (hourly)
+    # Create systemd timer for MongoDB backup (daily)
     - name: Create MongoDB backup systemd timer
       copy:
         dest: /etc/systemd/system/mongodb-backup.timer
@@ -1705,11 +1725,12 @@
           # WARNING: This file is managed by Ansible
           # Manual changes will be overwritten on next deployment
           [Unit]
-          Description=MongoDB Backup Hourly
+          Description=MongoDB Backup Daily
 
           [Timer]
-          OnBootSec=15min
-          OnUnitActiveSec=1h
+          OnCalendar=*-*-* 02:00:00
+          RandomizedDelaySec=10min
+          Persistent=true
 
           [Install]
           WantedBy=timers.target
