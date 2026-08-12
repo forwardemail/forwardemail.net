@@ -215,6 +215,87 @@ test('API-created contact vCard is valid VERSION:3.0', async (t) => {
   t.true(content.includes('TEL;TYPE=CELL:+1234567890'));
 });
 
+test('API contact list preserves every CardDAV EMAIL value for webmail autocomplete', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  const emails = [
+    { value: 'primary@multi-email.example.test', type: 'INTERNET' },
+    { value: 'work@multi-email.example.test', type: 'WORK' },
+    { value: 'home@multi-email.example.test', type: 'HOME' }
+  ];
+
+  const createRes = await api
+    .post('/v1/contacts')
+    .set('Authorization', auth)
+    .send({
+      full_name: 'Multi Email Test Contact',
+      emails
+    });
+
+  t.is(createRes.status, 200);
+  t.deepEqual(
+    createRes.body.emails.map((e) => ({ value: e.value, type: e.type })),
+    emails
+  );
+  for (const { value } of emails) {
+    t.true(
+      createRes.body.content.includes(`:${value}`),
+      `vCard must retain ${value}`
+    );
+  }
+
+  // This is the exact API path consumed by webmail's Contacts page and
+  // recipient autocomplete cache. Regression coverage prevents a CardDAV
+  // parser/index change from silently reducing a multi-address contact to one.
+  const listRes = await api.get('/v1/contacts').set('Authorization', auth);
+  t.is(listRes.status, 200);
+  const contact = listRes.body.find((item) => item.id === createRes.body.id);
+  t.truthy(contact);
+  t.deepEqual(
+    contact.emails.map((e) => ({ value: e.value, type: e.type })),
+    emails
+  );
+});
+
+test('API indexes every grouped vCard EMAIL property for webmail autocomplete', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  const content = [
+    'BEGIN:VCARD',
+    'VERSION:3.0',
+    'UID:grouped-email-example',
+    'FN:Grouped Email Test Contact',
+    'item1.EMAIL;TYPE=INTERNET:primary@grouped-email.example.test',
+    'item2.EMAIL;TYPE=WORK:work@grouped-email.example.test',
+    'item3.EMAIL;TYPE=HOME:home@grouped-email.example.test',
+    'END:VCARD'
+  ].join('\r\n');
+
+  const createRes = await api
+    .post('/v1/contacts')
+    .set('Authorization', auth)
+    .send({ content });
+
+  t.is(createRes.status, 200);
+  t.deepEqual(createRes.body.emails.map((email) => email.value).sort(), [
+    'home@grouped-email.example.test',
+    'primary@grouped-email.example.test',
+    'work@grouped-email.example.test'
+  ]);
+
+  const listRes = await api.get('/v1/contacts').set('Authorization', auth);
+  t.is(listRes.status, 200);
+  const contact = listRes.body.find((item) => item.id === createRes.body.id);
+  t.truthy(contact);
+  t.deepEqual(contact.emails.map((email) => email.value).sort(), [
+    'home@grouped-email.example.test',
+    'primary@grouped-email.example.test',
+    'work@grouped-email.example.test'
+  ]);
+});
+
 test('API-updated contact vCard includes N property', async (t) => {
   const { api } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);

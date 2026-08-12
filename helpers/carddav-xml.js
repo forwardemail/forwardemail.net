@@ -737,8 +737,14 @@ function parseVCard(vCardString) {
 
       // Handle parameters
       const semiIndex = keyPart.indexOf(';');
-      currentKey =
+      const propertyKey =
         semiIndex > 0 ? keyPart.slice(0, Math.max(0, semiIndex)) : keyPart;
+      // vCard 3.0 group prefixes (for example item1.EMAIL) are labels, not
+      // property names. Normalize them so grouped and standard properties
+      // populate the same index fields.
+      const groupIndex = propertyKey.lastIndexOf('.');
+      currentKey =
+        groupIndex > 0 ? propertyKey.slice(groupIndex + 1) : propertyKey;
       currentValue = valuePart;
 
       // Store in result
