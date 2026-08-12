@@ -51,6 +51,10 @@ function callbackCheck(ctx, next) {
       async (err, user) => {
         if (err) throw err;
         await completeWebauthnAuthentication(ctx, user);
+        // A custom Passport callback must resume Koa's route middleware.
+        // Otherwise callbackRedirect is never reached and Koa returns 404
+        // despite the session having been successfully authenticated.
+        return next();
       }
     )(ctx, next);
   }
