@@ -66,7 +66,7 @@
         units:
           - pm2-deploy.service
           - pm2-health-check.service
-      web.forwardemail.net:
+      forwardemail.net:
         component: forwardemail.net
         label: forwardemail-net-443-i-pv4
         units:
@@ -264,6 +264,27 @@
           {{
             (forwardemail_systemd_incident_config | length > 0) and
             (github_octokit_token | length > 0)
+          }}
+      no_log: true
+      tags:
+        - always
+        - forwardemail-systemd-incident
+        - forwardemail-alert-policy
+
+    - name: Derive public systemd incident mapping key
+      ansible.builtin.set_fact:
+        forwardemail_systemd_incident_mapping_key: >-
+          {{
+            (
+              forwardemail_systemd_incident_component ~ ':' ~
+              forwardemail_systemd_incident_label ~ ':' ~
+              (forwardemail_systemd_incident_units | join(':'))
+            )
+            if (
+              (forwardemail_systemd_incident_config | length > 0) and
+              ((forwardemail_systemd_incident_units | type_debug) == 'list')
+            )
+            else ''
           }}
       no_log: true
       tags:
@@ -889,19 +910,41 @@
             (forwardemail_systemd_incident_component is
             match('^(mongo|logs|redis|bree|api|caldav|carddav|imap|mx1|mx2|pop3|smtp|sqlite|forwardemail)\\.forwardemail\\.net$|^forwardemail\\.net$'))
           - >-
+            (forwardemail_systemd_incident_config | length == 0) or
             (forwardemail_systemd_incident_label is
             match('^[a-z0-9-]+$'))
           - >-
-            (forwardemail_systemd_incident_units | type_debug) == 'list'
+            (forwardemail_systemd_incident_config | length == 0) or
+            ((forwardemail_systemd_incident_units | type_debug) == 'list')
           - >-
-            (forwardemail_systemd_incident_units | length) > 0
+            (forwardemail_systemd_incident_config | length == 0) or
+            ((forwardemail_systemd_incident_units | length) > 0)
           - >-
-            (forwardemail_systemd_incident_units | difference([
+            (forwardemail_systemd_incident_config | length == 0) or
+            ((forwardemail_systemd_incident_units | difference([
               'mongod.service',
               'valkey-server.service',
               'pm2-deploy.service',
               'pm2-health-check.service'
-            ]) | length) == 0
+            ]) | length) == 0)
+          - >-
+            (forwardemail_systemd_incident_config | length == 0) or
+            (forwardemail_systemd_incident_mapping_key in [
+              'mongo.forwardemail.net:mongo-forwardemail-net:mongod.service',
+              'logs.forwardemail.net:logs-forwardemail-net:mongod.service',
+              'redis.forwardemail.net:redis-forwardemail-net:valkey-server.service',
+              'bree.forwardemail.net:bree-forwardemail-net:pm2-deploy.service:pm2-health-check.service',
+              'forwardemail.net:forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service',
+              'api.forwardemail.net:api-forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service',
+              'caldav.forwardemail.net:caldav-forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service',
+              'carddav.forwardemail.net:carddav-forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service',
+              'imap.forwardemail.net:imap-forwardemail-net-993-i-pv4:pm2-deploy.service:pm2-health-check.service',
+              'mx1.forwardemail.net:mx1-forwardemail-net-25-i-pv4:pm2-deploy.service:pm2-health-check.service',
+              'mx2.forwardemail.net:mx2-forwardemail-net-25-i-pv4:pm2-deploy.service:pm2-health-check.service',
+              'pop3.forwardemail.net:pop3-forwardemail-net-995-i-pv4:pm2-deploy.service:pm2-health-check.service',
+              'smtp.forwardemail.net:smtp-forwardemail-net-587-i-pv4:pm2-deploy.service:pm2-health-check.service',
+              'sqlite.forwardemail.net:sqlite-forwardemail-net:pm2-deploy.service:pm2-health-check.service'
+            ])
         fail_msg: >-
           Invalid systemd incident configuration. Use a valid
           GITHUB_OCTOKIT_TOKEN and thresholds from 2 through 10; only the

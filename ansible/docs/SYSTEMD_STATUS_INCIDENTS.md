@@ -2,20 +2,23 @@
 
 Public GitHub incidents are used for sustained database and PM2 outages under the [Upptime lifecycle][1]. They support the status page; they do not replace private email or SMS alerts.
 
-| Public component | Service                                             | Status-page label        |
-| ---------------- | --------------------------------------------------- | ------------------------ |
-| MongoDB          | `mongod.service` on `mongo.forwardemail.net`        | `mongo-forwardemail-net` |
-| Logs             | `mongod.service` on `logs.forwardemail.net`         | `logs-forwardemail-net`  |
-| Valkey/Redis     | `valkey-server.service` on `redis.forwardemail.net` | `redis-forwardemail-net` |
+| Public component | Service                                              | Status-page label            |
+| ---------------- | ---------------------------------------------------- | ---------------------------- |
+| MongoDB          | `mongod.service` on `mongo.forwardemail.net`         | `mongo-forwardemail-net`     |
+| Logs             | `mongod.service` on `logs.forwardemail.net`          | `logs-forwardemail-net`      |
+| Valkey/Redis     | `valkey-server.service` on `redis.forwardemail.net`  | `redis-forwardemail-net`     |
+| Website          | PM2 deployment or health check on `forwardemail.net` | `forwardemail-net-443-i-pv4` |
 
 PM2 deployment and PM2 health failures also create a public incident for the affected service. This covers Bree, Website, API, CalDAV, CardDAV, IMAP, MX1, MX2, POP3, SMTP, and SQLite. Other systemd services do not create public incidents.
+
+The public incident map is keyed by the server's **configured live hostname** (for HTTP, `WEB_HOST`), not its Ansible inventory alias. For example, `web-dp-dv-co` is an inventory/server alias in the `web` group; it is not excluded from `http.yml`, which applies hostname convergence, `security.yml`, Node.js, SSH keys, and the HTTP configuration to every member of that group. With `WEB_HOST=forwardemail.net`, its PM2 failures map to the Website component above. An unmapped host still receives the private email and eligible SMS alerts; it simply does not create a public status incident.
 
 
 ## What appears publicly
 
 An incident says only that the component is unavailable or has recovered. It does not contain service logs, commands, host diagnostics, IP addresses, tokens, or credentials.
 
-An issue needs two labels to appear in the correct [status-page][3] history: `status` and the label for its affected component. The table shows the database labels; PM2 uses the matching label for its existing public status component. The deployment creates a missing component label when needed. It never changes the shared `status` label.
+An issue needs two labels to appear in the correct [status-page][3] history: `status` and the label for its affected component. The table shows the database and Website labels; other PM2 services use the matching label for their existing public status component. The incident reporter creates a missing component label only when it opens that component's first eligible incident, then verifies it before applying it. It never changes the shared `status` label.
 
 
 ## When an incident opens and closes

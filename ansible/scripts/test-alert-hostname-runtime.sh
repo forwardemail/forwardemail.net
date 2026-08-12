@@ -80,7 +80,7 @@ all:
         bree.forwardemail.net:
     web:
       hosts:
-        web.forwardemail.net:
+        web-dp-dv-co:
     api:
       hosts:
         api.forwardemail.net:
@@ -165,7 +165,7 @@ EOF_HOSTS
     REDIS_PASSWORD='test' \
     REDIS_PORT='6380' \
     BREE_HOST='bree.forwardemail.net' \
-    WEB_HOST='web.forwardemail.net' \
+    WEB_HOST='forwardemail.net' \
     API_HOST='api.forwardemail.net' \
     CALDAV_HOST='caldav.forwardemail.net' \
     CARDDAV_HOST='carddav.forwardemail.net' \
@@ -238,7 +238,7 @@ run_case mongo mongo mongo.forwardemail.net redis.forwardemail.net
 run_case logs logs logs.forwardemail.net mongo.forwardemail.net
 run_case redis redis redis.forwardemail.net mongo.forwardemail.net
 run_case bree bree bree.forwardemail.net redis.forwardemail.net
-run_case http web web.forwardemail.net redis.forwardemail.net
+run_case http web forwardemail.net redis.forwardemail.net
 run_case http api api.forwardemail.net redis.forwardemail.net
 run_case http caldav caldav.forwardemail.net redis.forwardemail.net
 run_case http carddav carddav.forwardemail.net redis.forwardemail.net
