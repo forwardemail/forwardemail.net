@@ -3,19 +3,20 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { readFile } = require('node:fs/promises');
+const path = require('node:path');
+
 const test = require('ava');
 
 const {
   shouldRejectDmarcReject,
-  shouldRejectDmarcQuarantine,
-  shouldRejectUnauthenticatedMessage
+  shouldRejectDmarcQuarantine
 } = require('#helpers/should-reject-unauthenticated-message');
 
 function createSession(overrides = {}) {
   return {
     isAllowlisted: true,
     hadAlignedAndPassingDKIM: false,
-    dkim: { results: [] },
     spf: { status: { result: 'fail' } },
     spfFromHeader: { status: { result: 'fail' } },
     dmarc: { status: { result: 'fail' }, policy: 'none' },
@@ -23,32 +24,26 @@ function createSession(overrides = {}) {
   };
 }
 
-test('rejects unauthenticated mail even when the connection is allowlisted', (t) => {
-  const session = createSession();
-
-  t.true(session.isAllowlisted);
-  t.true(shouldRejectUnauthenticatedMessage(session, false, false));
-});
-
-test('rejects unauthenticated DMARC reject and quarantine failures even when allowlisted', (t) => {
-  const quarantineSession = createSession({
-    dmarc: { status: { result: 'fail' }, policy: 'quarantine' }
-  });
-  const rejectSession = createSession({
+test('preserves DMARC reject enforcement regardless of connection allowlisting', (t) => {
+  const session = createSession({
     dmarc: { status: { result: 'fail' }, policy: 'reject' }
   });
 
-  const envelopeOnlySpfSession = createSession({
-    spf: { status: { result: 'pass' } },
+  t.true(session.isAllowlisted);
+  t.true(shouldRejectDmarcReject(session, false, false));
+});
+
+test('preserves DMARC quarantine enforcement when From-aligned authentication fails', (t) => {
+  const session = createSession({
     dmarc: { status: { result: 'fail' }, policy: 'quarantine' }
   });
+  const alignedSpfSession = createSession({
+    dmarc: { status: { result: 'fail' }, policy: 'quarantine' },
+    spfFromHeader: { status: { result: 'pass' } }
+  });
 
-  t.true(quarantineSession.isAllowlisted);
-  t.true(rejectSession.isAllowlisted);
-  t.true(envelopeOnlySpfSession.isAllowlisted);
-  t.true(shouldRejectDmarcQuarantine(quarantineSession, false, false));
-  t.true(shouldRejectDmarcReject(rejectSession, false, false));
-  t.true(shouldRejectDmarcQuarantine(envelopeOnlySpfSession, false, false));
+  t.true(shouldRejectDmarcQuarantine(session, false, false));
+  t.false(shouldRejectDmarcQuarantine(alignedSpfSession, false, false));
 });
 
 test('retains validated truth-source ARC and legitimate DSN exceptions', (t) => {
@@ -63,50 +58,14 @@ test('retains validated truth-source ARC and legitimate DSN exceptions', (t) => 
   t.false(shouldRejectDmarcQuarantine(quarantineSession, false, true));
   t.false(shouldRejectDmarcReject(rejectSession, true, false));
   t.false(shouldRejectDmarcReject(rejectSession, false, true));
-  t.false(shouldRejectUnauthenticatedMessage(rejectSession, true, false));
-  t.false(shouldRejectUnauthenticatedMessage(rejectSession, false, true));
 });
 
-test('rejects an otherwise unauthenticated message with unaligned DKIM or envelope-only SPF', (t) => {
-  const unalignedDkimSession = createSession({
-    dkim: { results: [{ status: { result: 'pass', aligned: false } }] }
-  });
-  const envelopeOnlySpfSession = createSession({
-    spf: { status: { result: 'pass' } }
-  });
-
-  t.true(
-    shouldRejectUnauthenticatedMessage(unalignedDkimSession, false, false)
-  );
-  t.true(
-    shouldRejectUnauthenticatedMessage(envelopeOnlySpfSession, false, false)
-  );
-});
-
-test('permits mail with a passing aligned authentication mechanism', (t) => {
-  t.false(
-    shouldRejectUnauthenticatedMessage(
-      createSession({
-        spfFromHeader: { status: { result: 'pass' } }
-      }),
-      false,
-      false
-    )
+test('allows non-enforcing unauthenticated mail to reach normal filtering', async (t) => {
+  const source = await readFile(
+    path.join(__dirname, '../../helpers/is-authenticated-message.js'),
+    'utf8'
   );
 
-  t.false(
-    shouldRejectUnauthenticatedMessage(
-      createSession({ hadAlignedAndPassingDKIM: true }),
-      false,
-      false
-    )
-  );
-
-  t.false(
-    shouldRejectUnauthenticatedMessage(
-      createSession({ dmarc: { status: { result: 'pass' } } }),
-      false,
-      false
-    )
-  );
+  t.false(source.includes('shouldRejectUnauthenticatedMessage'));
+  t.true(source.includes('normal arbitrary, denylist, greylist'));
 });

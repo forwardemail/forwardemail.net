@@ -27,26 +27,7 @@ function shouldRejectDmarcQuarantine(session, isTruthSource, isLegitDSN) {
   );
 }
 
-function shouldRejectUnauthenticatedMessage(
-  session,
-  isTruthSource,
-  isLegitDSN
-) {
-  return (
-    !isTruthSource &&
-    !isLegitDSN &&
-    !session.hadAlignedAndPassingDKIM &&
-    session.spfFromHeader.status.result !== 'pass' &&
-    !(
-      session.dmarc &&
-      session.dmarc.status &&
-      session.dmarc.status.result === 'pass'
-    )
-  );
-}
-
 module.exports = {
   shouldRejectDmarcReject,
-  shouldRejectDmarcQuarantine,
-  shouldRejectUnauthenticatedMessage
+  shouldRejectDmarcQuarantine
 };

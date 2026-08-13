@@ -19,8 +19,7 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const isTruthSourceArc = require('#helpers/is-truth-source-arc');
 const {
   shouldRejectDmarcReject,
-  shouldRejectDmarcQuarantine,
-  shouldRejectUnauthenticatedMessage
+  shouldRejectDmarcQuarantine
 } = require('#helpers/should-reject-unauthenticated-message');
 
 const HOSTNAME = os.hostname();
@@ -360,38 +359,12 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     );
 
   //
-  // Sender authentication enforcement.
+  // A message that lacks passing From-aligned authentication, but does not
+  // fail a sender-published DMARC enforcement policy above, is not rejected
+  // solely for that reason.  RFC 9989 leaves treatment of unauthenticated
+  // and p=none mail outside DMARC's scope; it must continue through the
+  // normal arbitrary, denylist, greylist, and recipient-level filtering path.
   //
-  // Reject messages that have no authentication aligned to the RFC 5322 From:
-  // - No passing aligned DKIM
-  // - No passing SPF evaluated for the From address
-  // - DMARC not passing
-  //
-  // This prevents completely unauthenticated mail from being delivered,
-  // which is the primary vector for spam from throwaway VPS instances
-  // (e.g. IPv6 addresses with no rDNS, no SPF, no DKIM, DMARC p=none).
-  //
-  // A connection allowlist is transport reputation only. It does not prove
-  // that the claimed sender authorized the message, so it must not exempt
-  // unauthenticated mail. Validated truth-source ARC and legitimate DSNs are
-  // the only exceptions here.
-  //
-  if (
-    shouldRejectUnauthenticatedMessage(session, isTruthSource, isLegitDSN) &&
-    // exception for Ubuntu custom postfix setup
-    (!session.resolvedRootClientHostname ||
-      !UBUNTU_DOMAINS.includes(session.resolvedRootClientHostname))
-  )
-    throw new SMTPError(
-      'The email sent has no passing authentication aligned with the From address (SPF, DKIM, or DMARC). Please configure email authentication for your sending domain.',
-      {
-        responseCode:
-          session.spf.status.result === 'temperror' ||
-          session.spfFromHeader.status.result === 'temperror'
-            ? 421
-            : 550
-      }
-    );
 }
 
 module.exports = isAuthenticatedMessage;
