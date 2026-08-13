@@ -154,7 +154,9 @@ async function onboard(ctx, next) {
            </li>
            <li class="list-inline-item">
              <form class="ajax-form confirm-prompt d-block" action="/encrypt" method="POST">
-               <input type="hidden" name="input" value="${code.rawText}" />
+               <input type="hidden" name="input" value="${_.escape(
+                 code.rawText
+               )}" />
                <button type="submit" class="btn btn-dark btn-sm mt-1">
                  <i class="fas fa-user-secret"></i> ${ctx.state.t('Encrypt')}
                </button>

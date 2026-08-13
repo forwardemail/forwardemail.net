@@ -1419,7 +1419,11 @@ block body
 
                 .form-group
                   label= t("HTML Preview")
+                //- The preview renders intentionally user-authored email HTML. Keep it in an
+                //- opaque, script-disabled iframe so a saved template cannot execute in the
+                //- authenticated Forward Email application origin.
                 iframe#custom-verification-preview.border.border-themed.mb-3.min-vh-80.w-100(
+                  sandbox="",
                   src="about:blank"
                 )
 

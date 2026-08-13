@@ -346,7 +346,7 @@ function initDomainSearch() {
     resultsContainer.innerHTML =
       '<div class="alert alert-danger mb-0">' +
       '<i class="fa fa-exclamation-circle mr-2"></i>' +
-      (msg || 'An error occurred. Please try again.') +
+      escapeHtml(msg || 'An error occurred. Please try again.') +
       '</div>';
   }
 

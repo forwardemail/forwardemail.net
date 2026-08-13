@@ -1337,6 +1337,7 @@
         content: |
           #!/bin/bash
           set -e
+          set -o pipefail
           exec 2>&1  # Redirect stderr to stdout for journal logging
 
           echo "Starting MongoDB backup at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -1347,7 +1348,7 @@
           AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL}"
           AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-auto}"
           BACKUP_BUCKET="${LOGS_BACKUP_BUCKET:-forwardemail-backups}"
-          BACKUP_SECRET="${BACKUP_SECRET}"
+          GPG_PASSPHRASE_FILE=/etc/forwardemail-backups/backup.passphrase
           LOGS_PORT="${LOGS_PORT:-27017}"
           LOGS_USER="${LOGS_USER:-admin}"
           LOGS_NAME="${LOGS_NAME}"
@@ -1372,9 +1373,9 @@
 
           echo "Backup bandwidth limit: ${BACKUP_MAX_BANDWIDTH}"
 
-          # Check if BACKUP_SECRET is set
-          if [ -z "$BACKUP_SECRET" ]; then
-            ERROR_MSG="BACKUP_SECRET environment variable is not set"
+          # Fail before starting the pipeline when the root-only passphrase is absent or empty.
+          if [ ! -s "$GPG_PASSPHRASE_FILE" ]; then
+            ERROR_MSG="Backup passphrase file is missing or empty"
             echo "ERROR: $ERROR_MSG"
             /usr/local/bin/send-rate-limited-email.sh "mongodb-backup" "[ERROR] MongoDB Backup Failed on $(hostname)" "$ERROR_MSG"
             exit 1
@@ -1429,7 +1430,7 @@
           # Perform backup, encrypt with GPG, and stream directly to S3
           echo "Starting mongodump on localhost:${LOGS_PORT}..."
           if ! mongodump --config /etc/forwardemail-backups/mongodump.yml --archive --gzip --quiet | \
-            gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase-file /etc/forwardemail-backups/backup.passphrase | \
+            gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase-file "$GPG_PASSPHRASE_FILE" | \
             aws s3 cp - "${S3_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
             ERROR_MSG="Failed to backup/encrypt/upload MongoDB at $(date -u +%Y-%m-%dT%H:%M:%SZ). Check MongoDB connection and AWS credentials."
             echo "ERROR: $ERROR_MSG"
@@ -1739,7 +1740,9 @@
           Description=MongoDB Backup Daily
 
           [Timer]
-          OnCalendar=*-*-* 02:15:00
+          # This window follows the primary MongoDB backup and remains stable
+          # across CST/CDT because the IANA timezone is part of the expression.
+          OnCalendar=*-*-* 02:20:00 America/Chicago
           RandomizedDelaySec=10min
           Persistent=true
 

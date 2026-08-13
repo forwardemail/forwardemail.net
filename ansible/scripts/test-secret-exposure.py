@@ -47,10 +47,23 @@ def main() -> int:
         )
         require(
             source,
-            "--passphrase-file /etc/forwardemail-backups/backup.passphrase",
+            "GPG_PASSPHRASE_FILE=/etc/forwardemail-backups/backup.passphrase",
+            f"{name} runtime GPG passphrase file variable",
+            failures,
+        )
+        require(
+            source,
+            "[ ! -s \"$GPG_PASSPHRASE_FILE\" ]",
+            f"{name} nonempty GPG passphrase check",
+            failures,
+        )
+        require(
+            source,
+            "--passphrase-file \"$GPG_PASSPHRASE_FILE\"",
             f"{name} GPG passphrase file",
             failures,
         )
+        require(source, "set -o pipefail", f"{name} pipeline failure propagation", failures)
         require(
             source,
             "mode: '0600'",
@@ -59,6 +72,7 @@ def main() -> int:
         )
         require(source, "no_log: true", f"{name} Ansible redaction", failures)
         forbid(source, "mongodump --uri=\"mongodb://${", f"{name} password URI", failures)
+        forbid(source, "BACKUP_SECRET=\"${BACKUP_SECRET}\"", f"{name} runtime secret variable", failures)
         forbid(source, "--passphrase \"$BACKUP_SECRET\"", f"{name} GPG argument", failures)
         forbid(source, "PASS first 8 chars", f"{name} password preview", failures)
         forbid(source, "export MONGO_PASS=", f"{name} shell password export", failures)
@@ -74,15 +88,43 @@ def main() -> int:
         failures,
     )
     require(redis, "export REDISCLI_AUTH=\"$REDIS_PASSWORD\"", "Valkey environment authentication", failures)
+    require(
+        redis,
+        "GPG_PASSPHRASE_FILE=/etc/forwardemail-backups/backup.passphrase",
+        "Valkey runtime GPG passphrase file variable",
+        failures,
+    )
+    require(redis, "[ ! -s \"$GPG_PASSPHRASE_FILE\" ]", "Valkey nonempty GPG passphrase check", failures)
     require(redis, "--passphrase-file \"$GPG_PASSPHRASE_FILE\"", "Valkey GPG passphrase file", failures)
+    require(redis, "set -o pipefail", "Valkey pipeline failure propagation", failures)
     require(redis, "group: valkey", "restricted Valkey config group", failures)
     require(redis, "mode: '0640'", "restricted Valkey config mode", failures)
     require(redis, "no_log: true", "Valkey Ansible redaction", failures)
     forbid(redis, "VALKEY_CMD=\"${VALKEY_CMD} -a ${REDIS_PASSWORD}\"", "Valkey password argument", failures)
     forbid(redis, 'redis-cli -p 6380 --tls -a "$REDIS_PASSWORD"', "Valkey password example", failures)
+    forbid(redis, "BACKUP_SECRET=\"${BACKUP_SECRET}\"", "Valkey runtime secret variable", failures)
     forbid(redis, "--passphrase \"$BACKUP_SECRET\"", "Valkey GPG argument", failures)
     forbid(redis, 'Environment="REDIS_PASSWORD=', "Valkey password unit", failures)
     forbid(redis, 'Environment="AWS_SECRET_ACCESS_KEY=', "Valkey AWS secret unit", failures)
+
+    require(
+        mongo,
+        "OnCalendar=*-*-* 02:00:00 America/Chicago",
+        "MongoDB DST-safe Central Time schedule",
+        failures,
+    )
+    require(
+        logs,
+        "OnCalendar=*-*-* 02:20:00 America/Chicago",
+        "logs MongoDB DST-safe Central Time schedule",
+        failures,
+    )
+    require(
+        redis,
+        "OnCalendar=*-*-* 02:40:00 America/Chicago",
+        "Valkey DST-safe Central Time schedule",
+        failures,
+    )
 
     require(env, 'mode: "0600"', "application environment-file mode", failures)
     require(env, "no_log: true", "application environment-file redaction", failures)

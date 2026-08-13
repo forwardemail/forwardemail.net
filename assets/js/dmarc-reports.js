@@ -47,109 +47,170 @@ function getPercentClass(value) {
   return 'text-danger';
 }
 
+function toFiniteNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function appendTextElement(parent, tagName, value, className) {
+  const element = document.createElement(tagName);
+  if (className) element.className = className;
+  element.textContent = String(value);
+  parent.append(element);
+  return element;
+}
+
+function appendReportCell(row, value, className) {
+  return appendTextElement(row, 'td', value, className);
+}
+
+function getPageHref(pageNumber) {
+  const parameters = window.location.search
+    .slice(1)
+    .split('&')
+    .filter((parameter) => parameter !== '' && !/^page=\d+$/.test(parameter));
+  parameters.push(`page=${pageNumber}`);
+  return `?${parameters.join('&')}`;
+}
+
 function renderReportsTable(reports) {
   const $table = $('#reports-table');
+  $table.empty();
 
   if (!reports || reports.length === 0) {
-    $table.html(`
-      <div class="text-center py-4 text-muted">
-        <i class="fa fa-inbox fa-3x mb-3"></i>
-        <p>${
-          window.LOCALE === 'en'
-            ? 'No DMARC reports received yet.'
-            : 'No DMARC reports received yet.'
-        }</p>
-        <p class="small">DMARC reports are typically sent daily by receiving mail servers.</p>
-      </div>
-    `);
+    const emptyState = document.createElement('div');
+    emptyState.className = 'text-center py-4 text-muted';
+    const icon = document.createElement('i');
+    icon.className = 'fa fa-inbox fa-3x mb-3';
+    emptyState.append(icon);
+    appendTextElement(emptyState, 'p', 'No DMARC reports received yet.');
+    appendTextElement(
+      emptyState,
+      'p',
+      'DMARC reports are typically sent daily by receiving mail servers.',
+      'small'
+    );
+    $table.append(emptyState);
     return;
   }
 
-  let html = `
-    <div class="table-responsive">
-      <table class="table table-hover table-sm">
-        <thead>
-          <tr>
-            <th>Received</th>
-            <th>Domain</th>
-            <th>Reporter</th>
-            <th class="text-center">Messages</th>
-            <th class="text-center">SPF Aligned</th>
-            <th class="text-center">DKIM Aligned</th>
-            <th class="text-center">Accepted</th>
-            <th class="text-center">Quarantined</th>
-            <th class="text-center">Rejected</th>
-            <th class="text-center">Pass Rate</th>
-          </tr>
-        </thead>
-        <tbody>
-  `;
+  const responsive = document.createElement('div');
+  responsive.className = 'table-responsive';
+  const table = document.createElement('table');
+  table.className = 'table table-hover table-sm';
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+  const headers = [
+    ['Received'],
+    ['Domain'],
+    ['Reporter'],
+    ['Messages', 'text-center'],
+    ['SPF Aligned', 'text-center'],
+    ['DKIM Aligned', 'text-center'],
+    ['Accepted', 'text-center'],
+    ['Quarantined', 'text-center'],
+    ['Rejected', 'text-center'],
+    ['Pass Rate', 'text-center']
+  ];
 
-  for (const report of reports) {
-    const receivedDate = dayjs(report.received_at).format('MMM D, YYYY HH:mm');
-    const spfClass = getPercentClass(report.spf_aligned_pct);
-    const dkimClass = getPercentClass(report.dkim_aligned_pct);
-    const passClass = getPercentClass(report.pass_rate);
-
-    html += `
-      <tr>
-        <td class="text-nowrap">${receivedDate}</td>
-        <td>${report.domain_name}</td>
-        <td>${report.org_name}</td>
-        <td class="text-center">${report.total_messages.toLocaleString()}</td>
-        <td class="text-center ${spfClass}">${formatPercent(
-      report.spf_aligned_pct
-    )}</td>
-        <td class="text-center ${dkimClass}">${formatPercent(
-      report.dkim_aligned_pct
-    )}</td>
-        <td class="text-center text-success">${report.accepted.toLocaleString()}</td>
-        <td class="text-center text-warning">${report.quarantined.toLocaleString()}</td>
-        <td class="text-center text-danger">${report.rejected.toLocaleString()}</td>
-        <td class="text-center ${passClass}">${formatPercent(
-      report.pass_rate
-    )}</td>
-      </tr>
-    `;
+  for (const [label, className] of headers) {
+    appendTextElement(headerRow, 'th', label, className);
   }
 
-  html += `
-        </tbody>
-      </table>
-    </div>
-  `;
+  thead.append(headerRow);
+  table.append(thead);
+  const tbody = document.createElement('tbody');
 
-  $table.html(html);
+  for (const report of reports) {
+    const spfAlignedPct = toFiniteNumber(report.spf_aligned_pct);
+    const dkimAlignedPct = toFiniteNumber(report.dkim_aligned_pct);
+    const passRate = toFiniteNumber(report.pass_rate);
+    const row = document.createElement('tr');
+    appendReportCell(
+      row,
+      dayjs(report.received_at).format('MMM D, YYYY HH:mm'),
+      'text-nowrap'
+    );
+    appendReportCell(row, report.domain_name || 'Unknown');
+    appendReportCell(row, report.org_name || 'Unknown');
+    appendReportCell(
+      row,
+      toFiniteNumber(report.total_messages).toLocaleString(),
+      'text-center'
+    );
+    appendReportCell(
+      row,
+      formatPercent(spfAlignedPct),
+      `text-center ${getPercentClass(spfAlignedPct)}`
+    );
+    appendReportCell(
+      row,
+      formatPercent(dkimAlignedPct),
+      `text-center ${getPercentClass(dkimAlignedPct)}`
+    );
+    appendReportCell(
+      row,
+      toFiniteNumber(report.accepted).toLocaleString(),
+      'text-center text-success'
+    );
+    appendReportCell(
+      row,
+      toFiniteNumber(report.quarantined).toLocaleString(),
+      'text-center text-warning'
+    );
+    appendReportCell(
+      row,
+      toFiniteNumber(report.rejected).toLocaleString(),
+      'text-center text-danger'
+    );
+    appendReportCell(
+      row,
+      formatPercent(passRate),
+      `text-center ${getPercentClass(passRate)}`
+    );
+    tbody.append(row);
+  }
+
+  table.append(tbody);
+  responsive.append(table);
+  $table.append(responsive);
 }
 
 function renderPagination(pages, pageCount, itemCount) {
   const $pagination = $('#reports-pagination');
+  $pagination.empty();
 
-  if (!pages || pages.length === 0 || pageCount <= 1) {
-    $pagination.empty();
-    return;
-  }
+  if (!pages || pages.length === 0 || pageCount <= 1) return;
 
-  let html =
-    '<nav aria-label="Page navigation"><ul class="pagination pagination-sm mb-0">';
-
-  // Get current page from URL using regex for better browser compatibility
   const pageMatch = window.location.search.match(/[?&]page=(\d+)/);
   const currentPage = pageMatch ? Number.parseInt(pageMatch[1], 10) : 1;
+  const nav = document.createElement('nav');
+  nav.setAttribute('aria-label', 'Page navigation');
+  const list = document.createElement('ul');
+  list.className = 'pagination pagination-sm mb-0';
 
   for (const page of pages) {
-    const activeClass = page.number === currentPage ? 'active' : '';
-    html += `<li class="page-item ${activeClass}"><a class="page-link" href="?page=${
-      page.number
-    }${window.location.search.replace(/[?&]page=\d+/, '')}">${
-      page.number
-    }</a></li>`;
+    const pageNumber = Number(page && page.number);
+    if (!Number.isSafeInteger(pageNumber) || pageNumber < 1) continue;
+
+    const item = document.createElement('li');
+    item.className = `page-item${pageNumber === currentPage ? ' active' : ''}`;
+    const link = document.createElement('a');
+    link.className = 'page-link';
+    link.setAttribute('href', getPageHref(pageNumber));
+    link.textContent = String(pageNumber);
+    item.append(link);
+    list.append(item);
   }
 
-  html += '</ul></nav>';
-  html += `<small class="text-muted ms-3">${itemCount.toLocaleString()} total reports</small>`;
-
-  $pagination.html(html);
+  nav.append(list);
+  $pagination.append(nav);
+  appendTextElement(
+    $pagination.get(0),
+    'small',
+    `${toFiniteNumber(itemCount).toLocaleString()} total reports`,
+    'text-muted ms-3'
+  );
 }
 
 async function loadCharts(reset = false) {

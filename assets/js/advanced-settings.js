@@ -60,8 +60,9 @@ const cm = CodeMirror.fromTextArea($editor.get(0), {
 });
 
 function change() {
-  const val = cm.getValue();
-  $preview.contents().find('html').html(val);
+  // `sandbox` is declared on the iframe in the Pug template.  Assigning srcdoc
+  // renders the email template without inserting it into this page's origin.
+  $preview.attr('srcdoc', cm.getValue());
 }
 
 change();

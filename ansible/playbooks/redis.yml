@@ -744,6 +744,7 @@
         content: |
           #!/bin/bash
           set -e
+          set -o pipefail
 
           # Redirect stderr to stdout so all output goes to journal
           exec 2>&1
@@ -781,8 +782,8 @@
 
           echo "Backup bandwidth limit: ${BACKUP_MAX_BANDWIDTH}"
 
-          if [ ! -r "$GPG_PASSPHRASE_FILE" ]; then
-            echo "Error: backup passphrase file is not readable"
+          if [ ! -s "$GPG_PASSPHRASE_FILE" ]; then
+            echo "Error: backup passphrase file is missing or empty"
             exit 1
           fi
 
@@ -1195,7 +1196,9 @@
           Description=Redis Backup Daily
 
           [Timer]
-          OnCalendar=*-*-* 02:30:00
+          # Run after both MongoDB windows, with the IANA timezone preserving
+          # the intended 02:40 Central Time start through daylight-saving changes.
+          OnCalendar=*-*-* 02:40:00 America/Chicago
           RandomizedDelaySec=10min
           Persistent=true
 
