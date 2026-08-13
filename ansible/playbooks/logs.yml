@@ -1357,6 +1357,46 @@
 
           BACKUP_MAX_BANDWIDTH="${BACKUP_MAX_BANDWIDTH:-62.5MB/s}"
 
+          # AWS CLI's classic S3 transfer configuration requires an integer
+          # byte-per-second value. Normalize operator-friendly decimal units
+          # such as 62.5MB/s before writing the generated config.
+          normalize_bandwidth_bytes() {
+            local raw="${1//[[:space:]]/}"
+            local value unit multiplier bytes
+
+            if [[ "$raw" =~ ^([0-9]+([.][0-9]+)?)(B|KB|MB|GB|TB|KiB|MiB|GiB|TiB)/s$ ]]; then
+              value="${BASH_REMATCH[1]}"
+              unit="${BASH_REMATCH[3]}"
+              case "$unit" in
+                B) multiplier=1 ;;
+                KB) multiplier=1000 ;;
+                MB) multiplier=1000000 ;;
+                GB) multiplier=1000000000 ;;
+                TB) multiplier=1000000000000 ;;
+                KiB) multiplier=1024 ;;
+                MiB) multiplier=1048576 ;;
+                GiB) multiplier=1073741824 ;;
+                TiB) multiplier=1099511627776 ;;
+                *) return 1 ;;
+              esac
+              bytes=$(awk -v value="$value" -v multiplier="$multiplier" 'BEGIN { printf "%.0f", value * multiplier }')
+            elif [[ "$raw" =~ ^[0-9]+$ ]]; then
+              bytes="$raw"
+            else
+              return 1
+            fi
+
+            [[ "$bytes" =~ ^[1-9][0-9]*$ ]] || return 1
+            printf '%s' "$bytes"
+          }
+
+          if ! BACKUP_MAX_BANDWIDTH_BYTES=$(normalize_bandwidth_bytes "$BACKUP_MAX_BANDWIDTH"); then
+            ERROR_MSG="Invalid BACKUP_MAX_BANDWIDTH '${BACKUP_MAX_BANDWIDTH}'. Use integer bytes/s or a value such as 62.5MB/s."
+            echo "ERROR: $ERROR_MSG"
+            /usr/local/bin/send-rate-limited-email.sh "mongodb-backup" "[ERROR] MongoDB Backup Failed on $(hostname)" "$ERROR_MSG"
+            exit 1
+          fi
+
           # Keep the AWS CLI on the classic transfer client so max_bandwidth is honored.
           # The isolated config avoids changing any operator-managed ~/.aws/config settings.
           AWS_CONFIG_FILE="${AWS_CONFIG_FILE:-/root/.aws/backup-config}"
@@ -1366,12 +1406,12 @@
           [default]
           s3 =
             preferred_transfer_client = classic
-            max_bandwidth = ${BACKUP_MAX_BANDWIDTH}
+            max_bandwidth = ${BACKUP_MAX_BANDWIDTH_BYTES}
             max_concurrent_requests = 2
           EOF
           chmod 600 "$AWS_CONFIG_FILE"
 
-          echo "Backup bandwidth limit: ${BACKUP_MAX_BANDWIDTH}"
+          echo "Backup bandwidth limit: ${BACKUP_MAX_BANDWIDTH} (${BACKUP_MAX_BANDWIDTH_BYTES} bytes/s)"
 
           # Fail before starting the pipeline when the root-only passphrase is absent or empty.
           if [ ! -s "$GPG_PASSPHRASE_FILE" ]; then

@@ -2,7 +2,7 @@
 """Exercise generated backup scripts with mocked external dependencies.
 
 The test extracts the shell script bodies embedded in the Ansible playbooks and
-runs them in a temporary directory.  Only the root-owned passphrase path is
+runs them in a temporary directory. Only the root-owned passphrase path is
 remapped to a fixture; all pipeline, error-handling, and command behavior is
 otherwise the deployed script.
 """
@@ -50,6 +50,11 @@ def create_mocks(temp: Path) -> Path:
 set -euo pipefail
 printf 'aws:%s\\n' "$*" >> "$MOCK_LOG"
 if [ "$1" = s3 ] && [ "$2" = cp ]; then
+  bandwidth=$(awk -F= '/^[[:space:]]*max_bandwidth[[:space:]]*=/ { gsub(/[[:space:]]/, "", $2); print $2 }' "$AWS_CONFIG_FILE")
+  if ! [[ "$bandwidth" =~ ^[1-9][0-9]*$ ]]; then
+    echo "invalid literal for int() with base 10: '$bandwidth'" >&2
+    exit 1
+  fi
   cat >/dev/null
 fi
 """,
@@ -87,6 +92,10 @@ set -euo pipefail
 printf 'valkey-cli:%s\\n' "$*" >> "$MOCK_LOG"
 case " $* " in
   *" LASTSAVE "*)
+    if [ "${VALKEY_LASTSAVE_STATIC:-0}" = 1 ]; then
+      printf '%s\\n' 100
+      exit 0
+    fi
     count=0
     [ -f "$VALKEY_CALLS" ] && count=$(cat "$VALKEY_CALLS")
     count=$((count + 1))
@@ -94,6 +103,19 @@ case " $* " in
     printf '%s\\n' "$count"
     ;;
   *" BGSAVE "*) printf '%s\\n' 'Background saving started' ;;
+  *" INFO persistence "*)
+    count=0
+    [ -f "$VALKEY_INFO_CALLS" ] && count=$(cat "$VALKEY_INFO_CALLS")
+    count=$((count + 1))
+    printf '%s' "$count" > "$VALKEY_INFO_CALLS"
+    if [ "${VALKEY_BGSAVE_STUCK:-0}" = 1 ]; then
+      printf 'rdb_bgsave_in_progress:1\\nrdb_last_bgsave_status:ok\\n'
+    elif [ "$count" -eq 1 ]; then
+      printf 'rdb_bgsave_in_progress:1\\nrdb_last_bgsave_status:ok\\n'
+    else
+      printf 'rdb_bgsave_in_progress:0\\nrdb_last_bgsave_status:ok\\n'
+    fi
+    ;;
 esac
 """,
     )
@@ -129,6 +151,7 @@ def run(script: Path, temp: Path, **extra: str) -> subprocess.CompletedProcess[s
         "REDIS_HOST": "redis.example.test",
         "REDIS_PORT": "6379",
         "VALKEY_CALLS": str(temp / "valkey-calls"),
+        "VALKEY_INFO_CALLS": str(temp / "valkey-info-calls"),
     }
     environment.update(extra)
     return subprocess.run(
@@ -140,30 +163,54 @@ def run(script: Path, temp: Path, **extra: str) -> subprocess.CompletedProcess[s
     )
 
 
-def test_successful_backups_use_file_passphrases() -> None:
+def create_passphrase(temp: Path) -> Path:
+    passphrase = temp / "backup.passphrase"
+    passphrase.write_text("backup-secret\n", encoding="utf-8")
+    return passphrase
+
+
+def create_redis_dump(temp: Path) -> None:
+    redis_data = temp / "redis-data"
+    redis_data.mkdir()
+    (redis_data / "dump.rdb").write_bytes(b"mock redis dump")
+
+
+def test_successful_backups_normalize_decimal_bandwidth_and_use_file_passphrases() -> None:
     with tempfile.TemporaryDirectory() as temporary:
         temp = Path(temporary)
-        passphrase = temp / "backup.passphrase"
-        passphrase.write_text("backup-secret\n", encoding="utf-8")
+        passphrase = create_passphrase(temp)
         create_mocks(temp)
-        redis_data = temp / "redis-data"
-        redis_data.mkdir()
-        (redis_data / "dump.rdb").write_bytes(b"mock redis dump")
-
+        create_redis_dump(temp)
         scripts = [
             prepare_script(temp, "ansible/playbooks/mongo.yml", "backup-mongodb.sh", passphrase),
             prepare_script(temp, "ansible/playbooks/logs.yml", "backup-mongodb.sh", passphrase),
             prepare_script(temp, "ansible/playbooks/redis.yml", "backup-redis.sh", passphrase),
         ]
         for script in scripts:
-            result = run(script, temp)
+            result = run(script, temp, BACKUP_MAX_BANDWIDTH="62.5MB/s")
             assert result.returncode == 0, result.stdout + result.stderr
+            assert "62500000 bytes/s" in result.stdout
 
         log = (temp / "mock.log").read_text(encoding="utf-8")
         assert log.count("gpg:") == 3
         assert str(passphrase) in log
         assert "backup-secret" not in log
         assert log.count("aws:s3 cp") == 3
+
+
+def test_invalid_bandwidth_fails_before_backup_pipeline() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        temp = Path(temporary)
+        passphrase = create_passphrase(temp)
+        create_mocks(temp)
+        script = prepare_script(
+            temp, "ansible/playbooks/mongo.yml", "backup-mongodb.sh", passphrase
+        )
+
+        result = run(script, temp, BACKUP_MAX_BANDWIDTH="62.5MB/s; bad")
+        assert result.returncode != 0
+        assert "Invalid BACKUP_MAX_BANDWIDTH" in result.stdout
+        assert not (temp / "mock.log").exists()
 
 
 def test_empty_passphrase_fails_before_backup_pipeline() -> None:
@@ -185,8 +232,7 @@ def test_empty_passphrase_fails_before_backup_pipeline() -> None:
 def test_mongodump_failure_is_not_masked_by_downstream_success() -> None:
     with tempfile.TemporaryDirectory() as temporary:
         temp = Path(temporary)
-        passphrase = temp / "backup.passphrase"
-        passphrase.write_text("backup-secret\n", encoding="utf-8")
+        passphrase = create_passphrase(temp)
         create_mocks(temp)
         script = prepare_script(
             temp, "ansible/playbooks/mongo.yml", "backup-mongodb.sh", passphrase
@@ -197,11 +243,51 @@ def test_mongodump_failure_is_not_masked_by_downstream_success() -> None:
         assert "Failed to backup/encrypt/upload MongoDB" in result.stdout
 
 
+def test_redis_waits_for_persistence_state_when_lastsave_is_unchanged() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        temp = Path(temporary)
+        passphrase = create_passphrase(temp)
+        create_mocks(temp)
+        create_redis_dump(temp)
+        script = prepare_script(
+            temp, "ansible/playbooks/redis.yml", "backup-redis.sh", passphrase
+        )
+
+        result = run(script, temp, VALKEY_LASTSAVE_STATIC="1")
+        assert result.returncode == 0, result.stdout + result.stderr
+        assert "BGSAVE completed successfully" in result.stdout
+
+
+def test_redis_bgsave_timeout_is_bounded_and_actionable() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        temp = Path(temporary)
+        passphrase = create_passphrase(temp)
+        create_mocks(temp)
+        create_redis_dump(temp)
+        script = prepare_script(
+            temp, "ansible/playbooks/redis.yml", "backup-redis.sh", passphrase
+        )
+
+        result = run(
+            script,
+            temp,
+            REDIS_BGSAVE_POLL_INTERVAL="2",
+            REDIS_BGSAVE_TIMEOUT="4",
+            VALKEY_BGSAVE_STUCK="1",
+        )
+        assert result.returncode != 0
+        assert "BGSAVE timed out after 4 seconds" in result.stdout
+        assert "in_progress=1" in result.stdout
+
+
 def main() -> int:
     tests = [
-        test_successful_backups_use_file_passphrases,
+        test_successful_backups_normalize_decimal_bandwidth_and_use_file_passphrases,
+        test_invalid_bandwidth_fails_before_backup_pipeline,
         test_empty_passphrase_fails_before_backup_pipeline,
         test_mongodump_failure_is_not_masked_by_downstream_success,
+        test_redis_waits_for_persistence_state_when_lastsave_is_unchanged,
+        test_redis_bgsave_timeout_is_bounded_and_actionable,
     ]
     for test in tests:
         test()
