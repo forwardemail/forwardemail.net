@@ -38,6 +38,7 @@ const isValidPassword = require('#helpers/is-valid-password');
 const onConnect = require('#helpers/on-connect');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const logger = require('#helpers/logger');
+const { getRekeyLockKey } = require('#helpers/rekey-lock');
 const { checkAndSendAlerts } = require('#helpers/imap/send-imap-alert');
 
 const onConnectPromise = pify(onConnect);
@@ -265,6 +266,22 @@ async function onAuth(auth, session, fn) {
           this.logger.debug('auth cache parse error', { err });
         }
 
+        let isRekeying = false;
+        if (user?.alias_id) {
+          try {
+            // Password rotations must invalidate cache hits for every service,
+            // including HTTP DAV/API processes that do not use Redis Pub/Sub.
+            isRekeying = Boolean(
+              await this.client.get(getRekeyLockKey(user.alias_id))
+            );
+          } catch (err) {
+            // A failed cache safeguard must not grant access. Continue through
+            // the normal MongoDB authorization path, which checks is_rekey.
+            this.logger.debug('rekey lock cache read error', { err });
+            isRekeying = true;
+          }
+        }
+
         if (
           user &&
           typeof user === 'object' &&
@@ -273,7 +290,8 @@ async function onAuth(auth, session, fn) {
           user.domain_name &&
           // IMAP/POP3 sessions require alias_id; SMTP catch-all logins
           // cache a user object without one — skip cache for those.
-          (!isIMAPorPOP3 || user.alias_id)
+          (!isIMAPorPOP3 || user.alias_id) &&
+          !isRekeying
         ) {
           // Re-encrypt the current request's password (same password since
           // the cache key includes the password hash) so the session has
@@ -628,6 +646,19 @@ async function onAuth(auth, session, fn) {
     // validate the `auth.password` provided
     //
 
+    // Never authenticate an alias while its SQLite password is being rekeyed.
+    // This applies to SMTP too: its optional domain-wide token fallback must
+    // not bypass the rekey lock and allow an inconsistent mailbox session.
+    if (alias && typeof alias.is_rekey === 'boolean' && alias.is_rekey === true)
+      throw new SMTPError(
+        'Alias is undergoing a rekey operation, please try again once completed',
+        {
+          responseCode: 535,
+          ignoreHook: true,
+          imapResponse: 'AUTHENTICATIONFAILED'
+        }
+      );
+
     // IMAP/POP3/CalDAV/CardDAV/API/ManageSieve servers can only validate against aliases
     if (
       isIMAPorPOP3 ||
@@ -636,20 +667,6 @@ async function onAuth(auth, session, fn) {
       (alias && isCardDAV) ||
       (alias && isAPI)
     ) {
-      if (
-        alias &&
-        typeof alias.is_rekey === 'boolean' &&
-        alias.is_rekey === true
-      )
-        throw new SMTPError(
-          'Alias is undergoing a rekey operation, please try again once completed',
-          {
-            responseCode: 535,
-            ignoreHook: true,
-            imapResponse: 'AUTHENTICATIONFAILED'
-          }
-        );
-
       if (
         (alias && !Array.isArray(alias.tokens)) ||
         alias?.tokens?.length === 0

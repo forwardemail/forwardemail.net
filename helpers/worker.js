@@ -68,6 +68,7 @@ const safeVacuum = require('#helpers/safe-vacuum');
 const setupMongoose = require('#helpers/setup-mongoose');
 const setupPragma = require('#helpers/setup-pragma');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const { releaseRekeyLock } = require('#helpers/rekey-lock');
 const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
 const createTangerine = require('#helpers/create-tangerine');
 const { getS3Client } = require('#helpers/get-s3-client');
@@ -153,6 +154,34 @@ async function rekey(payload) {
   if (isCancelled) throw new ServerShutdownError();
 
   await setupMongoose(logger);
+
+  // Claim this specific rekey before touching SQLite. A controller can then
+  // distinguish an unacknowledged queue request from work already in flight.
+  const claimedRekey = await Aliases.findOneAndUpdate(
+    {
+      _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
+      domain: new mongoose.Types.ObjectId(payload.session.user.domain_id),
+      is_rekey: true,
+      ...(payload.rekey_id
+        ? { rekey_id: payload.rekey_id }
+        : { rekey_id: { $exists: false } }),
+      rekey_processing: { $ne: true }
+    },
+    {
+      $set: { rekey_processing: true }
+    }
+  )
+    .select('_id')
+    .lean()
+    .exec();
+
+  if (!claimedRekey) {
+    logger.info('Skipping stale or already-claimed rekey job', {
+      alias_id: payload?.session?.user?.alias_id,
+      rekey_id: payload?.rekey_id
+    });
+    return;
+  }
 
   console.log(
     '[DEBUG:worker] rekey started',
@@ -479,25 +508,86 @@ async function rekey(payload) {
   // auth while the rekey is incomplete (corrupted state).
   //
   if (err instanceof ServerShutdownError) {
+    // This job is immediately re-queued by sqlite-worker.js, so make it
+    // claimable by the next worker rather than allowing stale recovery to
+    // restore a rekey that is still scheduled to run.
+    await Aliases.updateOne(
+      {
+        _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
+        domain: new mongoose.Types.ObjectId(payload.session.user.domain_id),
+        is_rekey: true,
+        ...(payload.rekey_id
+          ? { rekey_id: payload.rekey_id }
+          : { rekey_id: { $exists: false } })
+      },
+      {
+        $set: { rekey_processing: false }
+      }
+    ).catch((shutdownErr) => logger.fatal(shutdownErr));
     throw err;
   }
 
   try {
-    // unset `is_rekey` on the user
-    await Aliases.findOneAndUpdate(
-      {
-        _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
-        domain: new mongoose.Types.ObjectId(payload.session.user.domain_id)
-      },
-      {
+    const filter = {
+      _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
+      domain: new mongoose.Types.ObjectId(payload.session.user.domain_id),
+      is_rekey: true,
+      ...(payload.rekey_id
+        ? { rekey_id: payload.rekey_id }
+        : { rekey_id: { $exists: false } })
+    };
+
+    if (err) {
+      // The live SQLite file still uses the old password after a failed
+      // rekey. Restore its persisted token snapshot and clear the rekey
+      // state in one database operation before authentication is re-enabled.
+      const restoredAlias = await Aliases.findOneAndUpdate(filter, [
+        {
+          $set: {
+            is_rekey: false,
+            tokens: {
+              $ifNull: ['$rekey_previous_tokens', '$tokens']
+            }
+          }
+        },
+        {
+          $unset: [
+            'rekey_started_at',
+            'rekey_previous_tokens',
+            'rekey_id',
+            'rekey_processing'
+          ]
+        }
+      ]);
+
+      if (restoredAlias)
+        await releaseRekeyLock(
+          client,
+          payload.session.user.alias_id,
+          payload.rekey_id
+        );
+    } else {
+      // The SQLite file now uses the new token, so discard only the
+      // rollback snapshot and re-enable authentication.
+      const completedAlias = await Aliases.findOneAndUpdate(filter, {
         $set: {
           is_rekey: false
         },
         $unset: {
-          rekey_started_at: 1
+          rekey_started_at: 1,
+          rekey_previous_tokens: 1,
+          rekey_id: 1,
+          rekey_processing: 1
         }
-      }
-    );
+      });
+
+      if (completedAlias)
+        await releaseRekeyLock(
+          client,
+          payload.session.user.alias_id,
+          payload.rekey_id
+        );
+    }
   } catch (err) {
     logger.fatal(err);
   }

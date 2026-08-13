@@ -279,6 +279,28 @@ const Aliases = new mongoose.Schema({
     type: Date
   },
 
+  // Previous tokens are retained only while an asynchronous rekey is running.
+  // They allow failure and crash recovery to atomically restore the password
+  // that still decrypts the live SQLite mailbox.
+  rekey_previous_tokens: {
+    type: [Token],
+    default: [],
+    select: false
+  },
+
+  // Correlates a queued job to one specific password-rotation attempt. The
+  // worker claims this operation before altering SQLite so a lost WSP reply
+  // can safely roll back only work that never started.
+  rekey_id: {
+    type: String,
+    select: false
+  },
+  rekey_processing: {
+    type: Boolean,
+    default: false,
+    select: false
+  },
+
   // alias specific max quota (set by admins only)
   max_quota: {
     type: Number,
@@ -891,6 +913,9 @@ Aliases.plugin(mongooseCommonPlugin, {
     'is_rekey',
     'is_api',
     'tokens',
+    'rekey_previous_tokens',
+    'rekey_id',
+    'rekey_processing',
     'pgp_error_sent_at',
     'aps',
     'has_auto_vacuum_migration'

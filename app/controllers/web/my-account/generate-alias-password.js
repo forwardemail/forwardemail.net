@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { randomUUID } = require('node:crypto');
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
@@ -29,6 +30,7 @@ const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const isValidPassword = require('#helpers/is-valid-password');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const { acquireRekeyLock, releaseRekeyLock } = require('#helpers/rekey-lock');
 
 //
 // (this punctuation stuff is borrowed from our work with `spamscanner`)
@@ -47,13 +49,23 @@ async function generateAliasPassword(ctx) {
 
   let originalTokens;
   let newToken = false;
+  let rekeyStateSaved = false;
+  let rekeyId;
 
   try {
     const alias = await Aliases.findById(ctx.state.alias._id)
-      .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
+      .select(
+        '+tokens.description +tokens.hash +tokens.salt +tokens.has_pbkdf2_migration'
+      )
       .exec();
 
-    originalTokens = alias.tokens;
+    // Clone token subdocuments before replacing the array.  The snapshot is
+    // persisted with is_rekey below and is the authoritative rollback state
+    // if the asynchronous SQLite rekey does not complete.
+    originalTokens = alias.tokens.map((token) => token.toObject());
+
+    if (alias.is_rekey)
+      throw Boom.conflict(ctx.translateError('ALIAS_REKEY_IN_PROGRESS'));
 
     if (alias.name === '*')
       throw Boom.badRequest(
@@ -177,12 +189,35 @@ async function generateAliasPassword(ctx) {
           throw new ServerShutdownError();
         }
 
+        // Persist the replacement token and rollback snapshot before the
+        // asynchronous job is queued.  The worker can only re-enable auth
+        // after either atomically completing the rekey or restoring this
+        // snapshot, including after a process restart.
+        rekeyId = randomUUID();
+        alias.is_rekey = true;
+        alias.rekey_started_at = new Date();
+        alias.rekey_previous_tokens = originalTokens;
+        alias.rekey_id = rekeyId;
+        alias.rekey_processing = false;
+        await alias.save();
+        rekeyStateSaved = true;
+
+        // Cache hits do not query MongoDB. Acquire the operation-scoped lock
+        // before queuing work so every protocol is forced to see is_rekey.
+        await acquireRekeyLock(ctx.client, alias.id, rekeyId);
+
+        // Invalidate cached credentials across SMTP, IMAP, and POP3 before
+        // queuing work. Otherwise a prior SMTP cache hit could bypass the
+        // rekey lock until its TTL expires.
+        await ctx.client.publish('sqlite_auth_reset', alias.id);
+
         // Enqueue the rekey job via WSP → parse-payload → Redis List.
         // The actual rekey is performed asynchronously by sqlite-worker;
         // the user is emailed on completion or failure.
         await wsp.request(
           {
             action: 'rekey',
+            rekey_id: rekeyId,
             new_password: encrypt(pass),
             session: {
               user: {
@@ -209,11 +244,6 @@ async function generateAliasPassword(ctx) {
           // e.g. it won't keep retrying and flood it
           0
         );
-
-        // don't save until we're sure that the job was enqueued
-        alias.is_rekey = true;
-        alias.rekey_started_at = new Date();
-        await alias.save();
 
         //
         // Return early for rekey — the user will be emailed once complete.
@@ -544,20 +574,57 @@ async function generateAliasPassword(ctx) {
     }
   } catch (err) {
     //
-    // if an error occurs then remove any tokens created (if any)
-    // and restore the original tokens that were there (if any)
-    // (this edge case happens if `wsp.request` cannot connect or set new key)
-    //
+    // If no rekey state was persisted, remove any created tokens and restore
+    // the original tokens.  Once the state is persisted, do not roll it back
+    // here: a WebSocket transport failure can occur after the job was queued.
+    // In that uncertain case the worker, startup recovery, or stale-rekey job
+    // performs an atomic rollback from rekey_previous_tokens instead.
     if (newToken && Array.isArray(originalTokens)) {
-      // restore original tokens
       try {
-        await Aliases.findByIdAndUpdate(ctx.state.alias._id, {
-          $set: {
-            tokens: originalTokens
-          }
-        });
-      } catch (err) {
-        ctx.logger.fatal(err);
+        if (rekeyStateSaved && rekeyId) {
+          // A transport error can happen after the queue accepted the job.
+          // Roll back only when the worker has not atomically claimed this
+          // exact operation; otherwise its completion path owns the state.
+          const rolledBackRekey = await Aliases.findOneAndUpdate(
+            {
+              _id: ctx.state.alias._id,
+              is_rekey: true,
+              rekey_id: rekeyId,
+              rekey_processing: { $ne: true }
+            },
+            [
+              {
+                $set: {
+                  is_rekey: false,
+                  tokens: {
+                    $ifNull: ['$rekey_previous_tokens', '$tokens']
+                  }
+                }
+              },
+              {
+                $unset: [
+                  'rekey_started_at',
+                  'rekey_previous_tokens',
+                  'rekey_id',
+                  'rekey_processing'
+                ]
+              }
+            ]
+          );
+
+          if (rolledBackRekey)
+            await releaseRekeyLock(ctx.client, ctx.state.alias._id, rekeyId);
+        } else {
+          // No asynchronous state was saved, so a regular token-generation
+          // error can restore the in-memory pre-change token set directly.
+          await Aliases.findByIdAndUpdate(ctx.state.alias._id, {
+            $set: {
+              tokens: originalTokens
+            }
+          });
+        }
+      } catch (rollbackErr) {
+        ctx.logger.fatal(rollbackErr);
       }
     }
 

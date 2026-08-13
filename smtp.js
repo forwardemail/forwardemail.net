@@ -26,13 +26,14 @@ const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
+const subscriber = new Redis(breeSharedConfig.redis, logger);
 
-const smtp = new SMTP({ client });
+const smtp = new SMTP({ client, subscriber });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [smtp.server],
-  redisClients: [client],
+  redisClients: [client, subscriber],
   customHandlers: [
     () => {
       smtp.isClosing = true;

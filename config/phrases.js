@@ -260,6 +260,8 @@ module.exports = {
     'Please <a href="%s" target="_blank">click here</a> to download the backup. This link will expire soon.',
   ALIAS_REKEY_STARTED:
     'Alias password change (rekey) has been started for <span class="notranslate text-monospace font-weight-bold">%s</span> and you will be emailed upon completion.',
+  ALIAS_REKEY_IN_PROGRESS:
+    'This alias is currently undergoing a password change (rekey). Please wait for the completion email before trying again.',
   ALIAS_REKEY_READY:
     'Alias password change (rekey) is now complete.  You can now log in to IMAP, POP3, and CalDAV servers with the new password for <span class="notranslate font-weight-bold text-monospace">%s</span>.',
   ALIAS_REKEY_READY_SUBJECT:

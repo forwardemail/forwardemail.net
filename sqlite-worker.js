@@ -26,6 +26,7 @@ const config = require('#config');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
+const { releaseRekeyLock } = require('#helpers/rekey-lock');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { backup, rekey, vacuum } = require('#helpers/worker');
 const {
@@ -270,7 +271,7 @@ async function recoverStuckRekeys() {
         { rekey_started_at: { $exists: false } }
       ]
     })
-      .select('name domain user rekey_started_at')
+      .select('name domain user rekey_started_at +rekey_id')
       .populate('domain', 'name')
       .populate('user', 'email locale')
       .lean()
@@ -284,10 +285,35 @@ async function recoverStuckRekeys() {
 
     for (const alias of stuckAliases) {
       try {
-        await Aliases.findByIdAndUpdate(alias._id, {
-          $set: { is_rekey: false },
-          $unset: { rekey_started_at: 1 }
-        });
+        // The live SQLite database still uses its old password after an
+        // interrupted rekey. Restore the persisted token snapshot atomically
+        // before making the alias available for authentication again.
+        await Aliases.findOneAndUpdate({ _id: alias._id, is_rekey: true }, [
+          {
+            $set: {
+              is_rekey: false,
+              tokens: {
+                $ifNull: ['$rekey_previous_tokens', '$tokens']
+              }
+            }
+          },
+          {
+            $unset: [
+              'rekey_started_at',
+              'rekey_previous_tokens',
+              'rekey_id',
+              'rekey_processing'
+            ]
+          }
+        ]);
+
+        await releaseRekeyLock(client, alias._id, alias.rekey_id).catch(
+          (releaseErr) =>
+            logger.error('Failed to release rekey lock', {
+              err: releaseErr,
+              alias_id: alias._id
+            })
+        );
 
         const ownerEmail = alias.user?.email;
         const locale = alias.user?.locale || i18n.config.defaultLocale;

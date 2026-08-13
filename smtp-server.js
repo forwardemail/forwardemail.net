@@ -47,6 +47,7 @@ class SMTP {
       env.SMTP_PORT === 2455
   ) {
     this.client = options.client;
+    this.subscriber = options.subscriber;
 
     const resolver = createTangerine(this.client, logger);
 
@@ -69,6 +70,18 @@ class SMTP {
     });
 
     this.logger = logger;
+
+    // Keep the shared authorization cache coherent with IMAP and POP3 when
+    // password resets or rekeys are initiated through the SQLite service.
+    this._onSubscriberMessage = (channel, aliasId) => {
+      if (channel !== 'sqlite_auth_reset') return;
+      onAuth.clearAuthCache(this.client, aliasId).catch((err) => {
+        this.logger.debug('clearAuthCache error', { err, aliasId });
+      });
+    };
+
+    if (this.subscriber)
+      this.subscriber.on('message', this._onSubscriberMessage);
 
     //
     // Determine TLS profile:
@@ -165,7 +178,7 @@ class SMTP {
         : {}),
 
       // override with any options passed (useful for testing)
-      ..._.omit(options, ['client'])
+      ..._.omit(options, ['client', 'subscriber'])
     });
 
     // override logger
@@ -192,10 +205,16 @@ class SMTP {
   }
 
   async listen(port = env.SMTP_PORT, host = '::', ...args) {
+    if (this.subscriber) await this.subscriber.subscribe('sqlite_auth_reset');
     await pify(this.server.listen).bind(this.server)(port, host, ...args);
   }
 
   async close() {
+    if (this.subscriber) {
+      await this.subscriber.unsubscribe('sqlite_auth_reset');
+      this.subscriber.removeListener('message', this._onSubscriberMessage);
+    }
+
     await pify(this.server.close).bind(this.server);
   }
 }
