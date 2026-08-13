@@ -787,7 +787,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       const addressBookProps = [
         {
           name: 'd:displayname',
-          value: encodeXMLEntities(addressBook.name)
+          value: addressBook.name
         },
         {
           name: 'd:resourcetype',
@@ -799,7 +799,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
         { name: 'cs:getctag', value: addressBook.synctoken },
         {
           name: 'card:addressbook-description',
-          value: encodeXMLEntities(addressBook.description || '')
+          value: addressBook.description || ''
         },
         {
           name: 'card:supported-address-data',
@@ -843,7 +843,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       if (wantsPushkey) {
         addressBookProps.push({
           name: 'cs:pushkey',
-          value: encodeXMLEntities(addressBook.address_book_id)
+          value: addressBook.address_book_id
         });
       }
 
@@ -1307,7 +1307,7 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
         const childProps = [
           {
             name: 'd:displayname',
-            value: encodeXMLEntities(addressBook.name)
+            value: addressBook.name
           },
           {
             name: 'd:resourcetype',
@@ -1318,7 +1318,7 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
           { name: 'cs:getctag', value: addressBook.synctoken },
           {
             name: 'card:addressbook-description',
-            value: encodeXMLEntities(addressBook.description || '')
+            value: addressBook.description || ''
           },
           {
             name: 'card:supported-address-data',
@@ -1363,7 +1363,7 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
         if (wantsPushkey) {
           childProps.push({
             name: 'cs:pushkey',
-            value: encodeXMLEntities(addressBook.address_book_id)
+            value: addressBook.address_book_id
           });
         }
 

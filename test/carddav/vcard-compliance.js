@@ -386,3 +386,43 @@ test('getMultistatusXML declares CalendarServer namespace', (t) => {
   t.true(xml.includes('xmlns:cs="http://calendarserver.org/ns/"'));
   t.true(xml.includes('<cs:getctag>1234567890</cs:getctag>'));
 });
+
+test('CardDAV responses do not double-escape special characters (Issue #573)', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  const vCardCustom = [
+    'BEGIN:VCARD',
+    'VERSION:3.0',
+    'FN:A&B Services',
+    'N:Services;A&B;;;',
+    'item1.URL;type=pref:https://www.example.test/',
+    'item1.X-ABLabel:_$!<HomePage>!$_',
+    'END:VCARD'
+  ].join('\r\n');
+
+  const createRes = await api
+    .post('/v1/contacts')
+    .set('Authorization', auth)
+    .send({ content: vCardCustom });
+
+  t.is(createRes.status, 200);
+
+  const { getAddressbookQueryXML } = require('./../../helpers/carddav-xml');
+  const xmlOutput = getAddressbookQueryXML(
+    [
+      {
+        href: '/dav/test/addressbooks/default/1.vcf',
+        etag: '"123"',
+        content: vCardCustom
+      }
+    ],
+    ['address-data', 'getetag']
+  );
+
+  t.true(xmlOutput.includes('A&amp;B Services'));
+  t.false(xmlOutput.includes('&amp;amp;'));
+  t.true(xmlOutput.includes('&lt;HomePage&gt;'));
+  t.false(xmlOutput.includes('&amp;lt;'));
+});

@@ -340,7 +340,7 @@ function getPropfindContactXML(contact, props) {
       case 'address-data': {
         propstat.props.push({
           name: 'card:address-data',
-          value: encodeXMLEntities(contact.content)
+          value: contact.content
         });
         break;
       }
@@ -393,7 +393,7 @@ function getAddressbookQueryXML(contacts, props) {
           const vcardContent = contact.vcard || contact.content;
           propstat.props.push({
             name: 'card:address-data',
-            value: encodeXMLEntities(vcardContent)
+            value: vcardContent
           });
           break;
         }
@@ -467,7 +467,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
       case 'displayname': {
         propElements.push({
           name: 'd:displayname',
-          value: encodeXMLEntities(addressBook.name)
+          value: addressBook.name
         });
         break;
       }
@@ -475,7 +475,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
       case 'addressbook-description': {
         propElements.push({
           name: 'card:addressbook-description',
-          value: encodeXMLEntities(addressBook.description || '')
+          value: addressBook.description || ''
         });
         break;
       }
@@ -592,7 +592,7 @@ function getSyncCollectionXML(addressBook, changes, props) {
           case 'address-data': {
             propstat.props.push({
               name: 'card:address-data',
-              value: encodeXMLEntities(change.vcard)
+              value: change.vcard
             });
             break;
           }
