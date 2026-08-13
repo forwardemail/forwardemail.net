@@ -115,7 +115,12 @@ const EXTENDED_CAPABILITIES = new Set([
   'mboxmetadata',
   'servermetadata',
   'extlists',
+  // RFC 5703 command capability names; "mime" remains the compatible umbrella.
   'mime',
+  'foreverypart',
+  'replace',
+  'extracttext',
+  'enclose',
   'notify'
 ]);
 
@@ -178,7 +183,8 @@ class SieveEngine {
   hasCapability(capability) {
     // Map deprecated capability names to their modern equivalents
     // 'notify' (draft-martin-sieve-notify) is superseded by 'enotify' (RFC 5435)
-    // 'mime' enables partial RFC 5703 support (vacation :mime tag)
+    // RFC 5703 command names are accepted individually; "mime" remains the
+    // backward-compatible umbrella for MIME part tests and manipulation.
     const resolved = CAPABILITY_ALIASES.get(capability) || capability;
     // Accept core tests (RFC 5228 Section 5) even though they don't need require
     // This provides compatibility with scripts that incorrectly require them
@@ -187,6 +193,36 @@ class SieveEngine {
       EXTENDED_CAPABILITIES.has(resolved) ||
       CORE_TESTS.has(resolved)
     );
+  }
+
+  /**
+   * Check whether a declared capability enables an RFC 5703 command.
+   * The established "mime" declaration remains a compatible umbrella.
+   *
+   * @param {Object} state - Execution state
+   * @param {string} capability - RFC 5703 command capability
+   * @returns {boolean} Whether the capability is enabled for this script
+   */
+  hasEnabledMimeCapability(state, capability) {
+    return (
+      state.enabledCapabilities.has(capability) ||
+      state.enabledCapabilities.has('mime')
+    );
+  }
+
+  /**
+   * Require an RFC 5703 command capability at execution time.
+   *
+   * @param {Object} state - Execution state
+   * @param {string} capability - RFC 5703 command capability
+   * @throws {Error} If the capability was not declared with require
+   */
+  requireEnabledMimeCapability(state, capability) {
+    if (!this.hasEnabledMimeCapability(state, capability)) {
+      throw new Error(
+        `Capability "${capability}" must be declared with require.`
+      );
+    }
   }
 
   /**
@@ -505,6 +541,7 @@ class SieveEngine {
       }
 
       case 'Foreverypart': {
+        this.requireEnabledMimeCapability(state, 'foreverypart');
         await this.executeForeverypart(command, state);
         break;
       }
@@ -516,16 +553,19 @@ class SieveEngine {
       }
 
       case 'Extracttext': {
+        this.requireEnabledMimeCapability(state, 'extracttext');
         this.executeExtracttext(command, state);
         break;
       }
 
       case 'Replace': {
+        this.requireEnabledMimeCapability(state, 'replace');
         this.executeReplace(command, state);
         break;
       }
 
       case 'Enclose': {
+        this.requireEnabledMimeCapability(state, 'enclose');
         this.executeEnclose(command, state);
         break;
       }

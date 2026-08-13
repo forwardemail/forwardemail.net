@@ -296,8 +296,15 @@ async function sendMessage(t, options) {
  * Helper to connect to IMAP and check mailbox
  */
 async function checkMailbox(t, options) {
-  const { email, password, mailbox, expectedCount, checkFlags, checkSubject } =
-    options;
+  const {
+    email,
+    password,
+    mailbox,
+    expectedCount,
+    checkFlags,
+    checkSubject,
+    includeSource = false
+  } = options;
 
   const client = new ImapFlow({
     host: ip.address(),
@@ -329,13 +336,15 @@ async function checkMailbox(t, options) {
       for await (const msg of client.fetch(fetchRange, {
         envelope: true,
         flags: true,
-        bodyStructure: true
+        bodyStructure: true,
+        source: includeSource
       })) {
         result.messages.push({
           uid: msg.uid,
           subject: msg.envelope.subject,
           flags: [...msg.flags],
           from: msg.envelope.from,
+          source: includeSource ? msg.source.toString() : undefined,
           to: msg.envelope.to
         });
       }
@@ -3308,5 +3317,47 @@ if address :domain "from" "example.com" {
     });
 
     t.is(example.exists, 1);
+  }
+);
+
+// ============================================================================
+// RFC 5703 MIME PART MANIPULATION TESTS
+// ============================================================================
+
+test.serial(
+  'RFC 5703 replace - explicit capabilities replace MIME bodies through MX delivery',
+  async (t) => {
+    t.timeout(TEST_TIMEOUT);
+
+    const sieveScript = `
+require ["foreverypart", "mime", "replace"];
+foreverypart {
+  replace "RFC 5703 replacement";
+}
+`;
+    const { alias, domain, password } = await createTestSetup(t, sieveScript);
+    const email = `${alias.name}@${domain.name}`;
+
+    await sendMessage(t, {
+      from: `sender@${domain.name}`,
+      to: email,
+      subject: 'RFC 5703 replacement test',
+      text: 'Original plain text',
+      html: '<p>Original HTML</p>'
+    });
+    await delay(2000);
+
+    const inbox = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'INBOX',
+      expectedCount: 1,
+      checkSubject: 'RFC 5703 replacement test',
+      includeSource: true
+    });
+
+    t.true(inbox.messages[0].source.includes('RFC 5703 replacement'));
+    t.false(inbox.messages[0].source.includes('Original plain text'));
+    t.false(inbox.messages[0].source.includes('<p>Original HTML</p>'));
   }
 );

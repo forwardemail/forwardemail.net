@@ -82,7 +82,13 @@ const SUPPORTED_CAPABILITIES = [
   // Notify (RFC 5435)
   'enotify',
   // Environment (RFC 5183)
-  'environment'
+  'environment',
+  // MIME part tests and manipulation (RFC 5703)
+  'mime',
+  'foreverypart',
+  'replace',
+  'extracttext',
+  'enclose'
 ];
 
 /**

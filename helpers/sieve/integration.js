@@ -106,13 +106,17 @@ const DEFAULT_CONFIG = {
     'duplicate',
     'ihave',
     'subaddress',
-    // Partial support
-    'mime', // RFC 5703 - partial: vacation :mime tag supported; foreverypart/extracttext not yet
+    // RFC 5703 MIME part tests and manipulation; "mime" remains the
+    // compatible umbrella for scripts that declare only that capability.
+    'mime',
+    'foreverypart',
+    'replace',
+    'extracttext',
+    'enclose',
     'notify' // Alias for enotify (draft-martin-sieve-notify -> RFC 5435)
     // NOT IMPLEMENTED (require external dependencies):
     // - mboxmetadata, servermetadata (require IMAP METADATA extension)
     // - include (security risk, requires global script storage)
-    // - extracttext, foreverypart, replace, enclose (complex MIME manipulation)
   ]
 };
 
@@ -155,9 +159,9 @@ class SieveIntegration {
       logger
     });
 
-    // Initialize engine with enabled extensions
+    // Initialize engine with enabled capabilities
     this.engine = new SieveEngine({
-      extensions: this.config.enabledExtensions,
+      capabilities: this.config.enabledExtensions,
       protectedHeaders: this.config.protectedHeaders || [
         'from',
         'sender',
@@ -797,7 +801,19 @@ class SieveIntegration {
           // Parse part headers
           try {
             const rawHeaders = chunk.getHeaders().toString();
+            const headerLines = [];
+
             for (const line of rawHeaders.split(/\r?\n/)) {
+              if (/^[ \t]/.test(line)) {
+                if (headerLines.length > 0) {
+                  headerLines[headerLines.length - 1] += ` ${line.trim()}`;
+                }
+              } else if (line) {
+                headerLines.push(line);
+              }
+            }
+
+            for (const line of headerLines) {
               const colonIdx = line.indexOf(':');
               if (colonIdx > 0) {
                 const name = line.slice(0, colonIdx).trim().toLowerCase();
@@ -1040,9 +1056,14 @@ class SieveIntegration {
 
     let rawStr = raw.toString('utf8');
 
-    // Find the boundary from the top-level Content-Type
-    const ctMatch = rawStr.match(
-      /content-type:[^\r\n]*boundary="?([^"\s;]+)"?/i
+    // Find the boundary from the unfolded top-level Content-Type without
+    // mutating the original folded header in the output message.
+    const headerEndIndex = rawStr.search(/\r?\n\r?\n/);
+    const topLevelHeaders = rawStr
+      .slice(0, headerEndIndex === -1 ? rawStr.length : headerEndIndex)
+      .replace(/\r?\n[ \t]+/g, ' ');
+    const ctMatch = topLevelHeaders.match(
+      /^content-type:[^\r\n]*boundary="?([^"\s;]+)"?/im
     );
     if (!ctMatch) {
       // Not a multipart message — cannot apply replace

@@ -53,7 +53,12 @@ const SUPPORTED_CAPABILITIES = [
   'regex',
   'enotify',
   'environment',
+  // RFC 5703 command names; "mime" remains the compatible umbrella.
   'mime',
+  'foreverypart',
+  'replace',
+  'extracttext',
+  'enclose',
   'notify'
 ];
 
