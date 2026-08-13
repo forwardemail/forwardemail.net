@@ -18,12 +18,16 @@ const {
   parseDmarcReport,
   isDmarcReportEmail
 } = require('#helpers/parse-dmarc-report');
+const {
+  findUnsafeDmarcContent,
+  validateReportContent,
+  DMARC_MAX_REPORT_SIZE_BYTES,
+  DMARC_MAX_RECORDS_PER_REPORT
+} = require('#helpers/validate-dmarc-report');
 
 // Rate limits for DMARC reports
 const DMARC_RATE_LIMIT_PER_DOMAIN_PER_DAY = 100; // Max 100 reports per domain per day
 const DMARC_RATE_LIMIT_PER_SENDER_PER_HOUR = 50; // Max 50 reports per sender IP per hour
-const DMARC_MAX_REPORT_SIZE_BYTES = 10 * 1024 * 1024; // 10MB max report size
-const DMARC_MAX_RECORDS_PER_REPORT = 10000; // Max records in a single report
 
 /**
  * Check if sender is a truth source (trusted sender)
@@ -110,78 +114,6 @@ async function checkRateLimits(client, domainId, senderIp, isTrustedSender) {
   }
 
   return { allowed: true };
-}
-
-/**
- * Validate DMARC report content for suspicious patterns
- * @param {Object} report - Parsed DMARC report
- * @param {number} rawSize - Size of raw email in bytes
- * @returns {{valid: boolean, reason?: string}}
- */
-function validateReportContent(report, rawSize) {
-  // Check report size
-  if (rawSize > DMARC_MAX_REPORT_SIZE_BYTES) {
-    return {
-      valid: false,
-      reason: `Report too large: ${rawSize} bytes (max: ${DMARC_MAX_REPORT_SIZE_BYTES})`
-    };
-  }
-
-  // Check number of records
-  if (report.records && report.records.length > DMARC_MAX_RECORDS_PER_REPORT) {
-    return {
-      valid: false,
-      reason: `Too many records: ${report.records.length} (max: ${DMARC_MAX_RECORDS_PER_REPORT})`
-    };
-  }
-
-  // Validate report has required metadata
-  if (!report.report_metadata) {
-    return {
-      valid: false,
-      reason: 'Missing report metadata'
-    };
-  }
-
-  // Validate date range is reasonable (not more than 30 days in the past or future)
-  if (report.report_metadata.date_range) {
-    const now = Date.now();
-    const maxAge = ms('30d');
-    const maxFuture = ms('1d');
-
-    if (report.report_metadata.date_range.begin) {
-      const beginTime = new Date(
-        report.report_metadata.date_range.begin
-      ).getTime();
-      if (now - beginTime > maxAge) {
-        return {
-          valid: false,
-          reason: 'Report date range too old (> 30 days)'
-        };
-      }
-
-      if (beginTime - now > maxFuture) {
-        return {
-          valid: false,
-          reason: 'Report date range in the future'
-        };
-      }
-    }
-  }
-
-  // Validate summary totals are reasonable
-  if (report.summary) {
-    const { total_messages } = report.summary;
-    // Suspicious if claiming millions of messages in a single report
-    if (total_messages > 10_000_000) {
-      return {
-        valid: false,
-        reason: `Suspicious message count: ${total_messages}`
-      };
-    }
-  }
-
-  return { valid: true };
 }
 
 /**
@@ -338,6 +270,10 @@ async function processDmarcReport(session, raw, resolver, client) {
       return null;
     }
 
+    // An unsafe raw XML attachment is deliberately consumed at the reserved
+    // DMARC recipient instead of becoming ordinary delivered mail.
+    if (dmarcReport.rejected) return dmarcReport;
+
     // Validate report content
     const validation = validateReportContent(dmarcReport, raw.length);
     if (!validation.valid) {
@@ -348,7 +284,13 @@ async function processDmarcReport(session, raw, resolver, client) {
         senderIp,
         mailFrom
       });
-      return null;
+      // This recipient is reserved for aggregate reports. Signal to the MX
+      // data handler that an unsafe report was handled and must not fall
+      // through to normal forwarding or delivery.
+      return {
+        rejected: true,
+        reason: validation.reason
+      };
     }
 
     // Generate report hash to check for duplicates
@@ -461,6 +403,7 @@ module.exports = {
   // Export for testing
   isTruthSource,
   validateReportContent,
+  findUnsafeDmarcContent,
   DMARC_RATE_LIMIT_PER_DOMAIN_PER_DAY,
   DMARC_RATE_LIMIT_PER_SENDER_PER_HOUR,
   DMARC_MAX_REPORT_SIZE_BYTES,

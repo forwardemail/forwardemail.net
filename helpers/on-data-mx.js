@@ -2100,15 +2100,25 @@ async function onDataMX(session, headers, body) {
         this.client
       );
       if (dmarcReport) {
-        logger.debug('DMARC report processed successfully', {
-          domainId: dmarcReport.domain_id,
-          domainName: dmarcReport.domain_name,
-          reportId: dmarcReport.report_metadata?.report_id,
-          session,
-          resolver: this.resolver
-        });
-        // Return early after processing DMARC report
-        // The report has been logged and we don't need to forward it
+        if (dmarcReport.rejected) {
+          logger.warn('DMARC report rejected during content validation', {
+            reason: dmarcReport.reason,
+            session,
+            resolver: this.resolver
+          });
+        } else {
+          logger.debug('DMARC report processed successfully', {
+            domainId: dmarcReport.domain_id,
+            domainName: dmarcReport.domain_name,
+            reportId: dmarcReport.report_metadata?.report_id,
+            session,
+            resolver: this.resolver
+          });
+        }
+
+        // The DMARC recipient is reserved for aggregate reports. Whether it
+        // was persisted or rejected as unsafe, never forward it as regular
+        // user mail.
         return;
       }
     } catch (err) {
