@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "İzin verilen göndericilerin listesi (IP adresleri, tam nitelikli alan adları, e-posta adresleri veya joker karakterli TLD'ler). Ayarlandığında, yalnızca bu göndericilerden gelen postalar kabul edilecektir. Mevcut listeyi değiştirir."
+            "description": "İzin verilen göndericilerin listesi (IP adresleri, tam nitelikli alan adları, e-posta adresleri veya joker karakterli TLD'ler). Ayarlandığında, yalnızca bu göndericilerden gelen postalar kabul edilecektir. Mevcut listeyi değiştirir. Wildcard public-suffix kuralları birden fazla etiket içerebilir, örneğin `*.gov.co` ve `*.gov.br`; bunlar tam olarak o son ek altındaki gönderenlerle eşleşir."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Kara listeye alınmış göndericilerin listesi (IP adresleri, tam nitelikli alan adları, e-posta adresleri veya joker karakterli TLD'ler). Bu göndericilerden gelen postalar reddedilecektir. Mevcut listenin yerini alır."
+            "description": "Kara listeye alınmış göndericilerin listesi (IP adresleri, tam nitelikli alan adları, e-posta adresleri veya joker karakterli TLD'ler). Bu göndericilerden gelen postalar reddedilecektir. Mevcut listenin yerini alır. Wildcard public-suffix kuralları birden fazla etiket içerebilir, örneğin `*.gov.co` ve `*.gov.br`; bunlar tam olarak o son ek altındaki gönderenlerle eşleşir."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Etki alanı izin listesini güncelle",
-        "description": "Bir etki alanı için izin verilenler listesini değiştirin. İzin verilenler listesi, gelen postaları yalnızca belirtilen göndericilerle sınırlandırır. Her giriş geçerli bir IP adresi, tam nitelikli alan adı (FQDN), e-posta adresi veya joker karakterli üst düzey alan adı (örneğin `*.com`) olmalıdır. En fazla 1000 girişe izin verilir.",
+        "description": "Bir etki alanı için izin verilenler listesini değiştirin. İzin verilenler listesi, gelen postaları yalnızca belirtilen göndericilerle sınırlandırır. Her giriş geçerli bir IP adresi, tam nitelikli alan adı (FQDN), e-posta adresi veya joker karakterli üst düzey alan adı (örneğin `*.com`) olmalıdır. En fazla 1000 girişe izin verilir. Wildcard public-suffix kuralları birden fazla etiket içerebilir, örneğin `*.gov.co` ve `*.gov.br`; bunlar tam olarak o son ek altındaki gönderenlerle eşleşir.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Alan Adları"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "İzin verilen göndericilerin dizisi (IP adresleri, tam nitelikli alan adları, e-posta adresleri veya `*.com` gibi joker karakterli üst düzey alan adları). İzin verilenler listesini temizlemek için boş bir dizi geçirin."
+                    "description": "İzin verilen göndericilerin dizisi (IP adresleri, tam nitelikli alan adları, e-posta adresleri veya `*.com` gibi joker karakterli üst düzey alan adları). İzin verilenler listesini temizlemek için boş bir dizi geçirin. Wildcard public-suffix kuralları birden fazla etiket içerebilir, örneğin `*.gov.co` ve `*.gov.br`; bunlar tam olarak o son ek altındaki gönderenlerle eşleşir."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Alan adı kara listesini güncelle",
-        "description": "Bir alan adı için kara listeyi değiştirin. Kara listeye alınmış göndericilerden gelen e-postalar reddedilecektir. Her giriş geçerli bir IP adresi, tam nitelikli alan adı (FQDN), e-posta adresi veya joker karakterli üst düzey alan adı (örneğin `*.com`) olmalıdır. En fazla 1000 girişe izin verilir.",
+        "description": "Bir alan adı için kara listeyi değiştirin. Kara listeye alınmış göndericilerden gelen e-postalar reddedilecektir. Her giriş geçerli bir IP adresi, tam nitelikli alan adı (FQDN), e-posta adresi veya joker karakterli üst düzey alan adı (örneğin `*.com`) olmalıdır. En fazla 1000 girişe izin verilir. Wildcard public-suffix kuralları birden fazla etiket içerebilir, örneğin `*.gov.co` ve `*.gov.br`; bunlar tam olarak o son ek altındaki gönderenlerle eşleşir.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Alan Adları"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Kara listeye alınmış göndericilerin dizisi (IP adresleri, tam nitelikli alan adları, e-posta adresleri veya `*.com` gibi joker karakterli üst düzey alan adları). Kara listeyi kaldırmak için boş bir dizi geçirin."
+                    "description": "Kara listeye alınmış göndericilerin dizisi (IP adresleri, tam nitelikli alan adları, e-posta adresleri veya `*.com` gibi joker karakterli üst düzey alan adları). Kara listeyi kaldırmak için boş bir dizi geçirin. Wildcard public-suffix kuralları birden fazla etiket içerebilir, örneğin `*.gov.co` ve `*.gov.br`; bunlar tam olarak o son ek altındaki gönderenlerle eşleşir."
                   }
                 },
                 "required": [

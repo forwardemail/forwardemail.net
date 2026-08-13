@@ -32,12 +32,12 @@ const { convert } = require('html-to-text');
 const { isPort, isURL } = require('@forwardemail/validator');
 const Redis = require('@ladjs/redis');
 const sharedConfig = require('@ladjs/shared-config');
-const tlds = require('tlds');
 
 const pkg = require('../../package.json');
 const _ = require('#helpers/lodash');
 
 const isEmail = require('#helpers/is-email');
+const normalizeWildcardTLD = require('#helpers/normalize-wildcard-tld');
 const { isPrivateHostResolved } = require('#helpers/is-private-host');
 const env = require('#config/env');
 const config = require('#config');
@@ -169,16 +169,6 @@ async function crawlDisposable() {
 */
 
 const REGEX_VERIFICATION = new RE2(/[^\da-z]/i);
-
-const WILDCARD_TLDS = new Set();
-
-for (const tld of tlds) {
-  WILDCARD_TLDS.add(`*.${punycode.toASCII(tld)}`);
-}
-
-function isWildcardTLD(v) {
-  return WILDCARD_TLDS.has(v);
-}
 
 const conn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
@@ -950,10 +940,13 @@ Domains.pre('validate', function (next) {
     // cleanup allowlist/denylist
     this[key] = _.compact(_.uniq(this[key].map((v) => v.toLowerCase().trim())));
 
-    // must be IP, FQDN, email, or wildcard TLD
-    this[key] = this[key].filter(
-      (v) => isIP(v) || isFQDN(v) || isEmail(v) || isWildcardTLD(v)
-    );
+    // Normalize valid wildcard public-suffix rules (including compound ICANN
+    // and PSL private suffixes), then retain only supported entry types.
+    this[key] = this[key]
+      .map((v) => normalizeWildcardTLD(v) || v)
+      .filter(
+        (v) => isIP(v) || isFQDN(v) || isEmail(v) || normalizeWildcardTLD(v)
+      );
 
     // can have at most 1000 entries in each list (arbitrary, can increase later)
     if (this[key].length > 1000)

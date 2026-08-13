@@ -2942,7 +2942,16 @@ test('updates domain allowlist via API', async (t) => {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .send({
-        allowlist: ['1.2.3.4', 'example.com', 'test@example.com']
+        allowlist: [
+          '1.2.3.4',
+          'example.com',
+          'test@example.com',
+          '*.GOV.CO',
+          '*.gov.br',
+          '*.github.io',
+          '*.公司.cn',
+          '*.example.com'
+        ]
       });
 
     t.is(res.status, 200);
@@ -2950,7 +2959,11 @@ test('updates domain allowlist via API', async (t) => {
     t.deepEqual(res.body.allowlist, [
       '1.2.3.4',
       'example.com',
-      'test@example.com'
+      'test@example.com',
+      '*.gov.co',
+      '*.gov.br',
+      '*.github.io',
+      '*.xn--55qx5d.cn'
     ]);
     t.deepEqual(res.body.denylist, []);
   }
@@ -3031,7 +3044,15 @@ test('updates domain denylist via API', async (t) => {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .send({
-        denylist: ['10.0.0.1', 'spam.example.com', 'spammer@example.com']
+        denylist: [
+          '10.0.0.1',
+          'spam.example.com',
+          'spammer@example.com',
+          '*.gov.co',
+          '*.GOV.BR',
+          '*.blogspot.com',
+          '*.example.com'
+        ]
       });
 
     t.is(res.status, 200);
@@ -3039,7 +3060,10 @@ test('updates domain denylist via API', async (t) => {
     t.deepEqual(res.body.denylist, [
       '10.0.0.1',
       'spam.example.com',
-      'spammer@example.com'
+      'spammer@example.com',
+      '*.gov.co',
+      '*.gov.br',
+      '*.blogspot.com'
     ]);
     t.deepEqual(res.body.allowlist, []);
   }

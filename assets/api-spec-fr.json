@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "Liste des expéditeurs autorisés (adresses IP, noms de domaine complets, adresses e-mail ou TLD génériques). Une fois cette liste définie, seuls les e-mails provenant de ces expéditeurs seront acceptés. Remplace la liste existante."
+            "description": "Liste des expéditeurs autorisés (adresses IP, noms de domaine complets, adresses e-mail ou TLD génériques). Une fois cette liste définie, seuls les e-mails provenant de ces expéditeurs seront acceptés. Remplace la liste existante. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Liste des expéditeurs bloqués (adresses IP, noms de domaine complets, adresses e-mail ou TLD génériques). Les e-mails provenant de ces expéditeurs seront rejetés. Remplace la liste existante."
+            "description": "Liste des expéditeurs bloqués (adresses IP, noms de domaine complets, adresses e-mail ou TLD génériques). Les e-mails provenant de ces expéditeurs seront rejetés. Remplace la liste existante. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Mettre à jour la liste blanche des domaines",
-        "description": "Modifiez la liste blanche d'un domaine. Cette liste blanche restreint la réception des courriels aux seuls expéditeurs spécifiés. Chaque entrée doit correspondre à une adresse IP valide, un nom de domaine pleinement qualifié (FQDN), une adresse courriel ou un domaine de premier niveau générique (par exemple, `*.com`). Le nombre d'entrées autorisé est de 1 000.",
+        "description": "Modifiez la liste blanche d'un domaine. Cette liste blanche restreint la réception des courriels aux seuls expéditeurs spécifiés. Chaque entrée doit correspondre à une adresse IP valide, un nom de domaine pleinement qualifié (FQDN), une adresse courriel ou un domaine de premier niveau générique (par exemple, `*.com`). Le nombre d'entrées autorisé est de 1 000. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domaines"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Tableau des expéditeurs autorisés (adresses IP, noms de domaine pleinement qualifiés, adresses e-mail ou extensions génériques telles que `*.com`). Indiquez un tableau vide pour effacer la liste blanche."
+                    "description": "Tableau des expéditeurs autorisés (adresses IP, noms de domaine pleinement qualifiés, adresses e-mail ou extensions génériques telles que `*.com`). Indiquez un tableau vide pour effacer la liste blanche. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Mise à jour de la liste noire des domaines",
-        "description": "Modifiez la liste noire d'un domaine. Les courriels provenant d'expéditeurs figurant sur cette liste seront rejetés. Chaque entrée doit correspondre à une adresse IP valide, un nom de domaine pleinement qualifié (FQDN), une adresse courriel ou un domaine de premier niveau générique (par exemple, `*.com`). Le nombre d'entrées autorisé est de 1 000.",
+        "description": "Modifiez la liste noire d'un domaine. Les courriels provenant d'expéditeurs figurant sur cette liste seront rejetés. Chaque entrée doit correspondre à une adresse IP valide, un nom de domaine pleinement qualifié (FQDN), une adresse courriel ou un domaine de premier niveau générique (par exemple, `*.com`). Le nombre d'entrées autorisé est de 1 000. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domaines"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Tableau des expéditeurs bloqués (adresses IP, noms de domaine pleinement qualifiés, adresses e-mail ou extensions génériques telles que `*.com`). Indiquez un tableau vide pour effacer la liste noire."
+                    "description": "Tableau des expéditeurs bloqués (adresses IP, noms de domaine pleinement qualifiés, adresses e-mail ou extensions génériques telles que `*.com`). Indiquez un tableau vide pour effacer la liste noire. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact."
                   }
                 },
                 "required": [

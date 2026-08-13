@@ -1452,7 +1452,7 @@ This should be blocked by denylist
   await smtp.close();
 });
 
-test('domain denylist should block domain even when hostname is not denylisted', async (t) => {
+test('domain denylist should block conventional and compound public-suffix senders', async (t) => {
   const smtp = new MX({
     client: t.context.client,
     wsp: t.context.wsp
@@ -1528,8 +1528,8 @@ test('domain denylist should block domain even when hostname is not denylisted',
       has_smtp: true,
       resolver,
       smtp_port: serverPort.toString(),
-      // Add domain to denylist
-      denylist: ['spam-domain.com']
+      // Add a conventional domain and compound public suffixes to the denylist
+      denylist: ['spam-domain.com', '*.gov.co', '*.gov.br']
     })
     .create();
 
@@ -1582,25 +1582,31 @@ test('domain denylist should block domain even when hostname is not denylisted',
   // set our local IP to allowlist so message does not get greylisted
   await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
 
-  // Create MX connection and transporter
-  const mx = await asyncMxConnect({
-    target: IP_ADDRESS,
-    port: smtp.server.address().port,
-    dnsOptions: {
-      // <https://github.com/zone-eu/mx-connect/pull/4>
-      resolve: util.callbackify(resolver.resolve.bind(resolver))
-    }
-  });
-  const transporter = nodemailer.createTransport({
-    logger,
-    debug: true,
-    host: mx.host,
-    port: mx.port,
-    connection: mx.socket,
-    ignoreTLS: true,
-    secure: false,
-    tls
-  });
+  // A rejected SMTP transaction closes its connection, so each expected 550
+  // assertion uses a fresh MX connection rather than reusing a closed socket.
+  const createTransporter = async () => {
+    const mx = await asyncMxConnect({
+      target: IP_ADDRESS,
+      port: smtp.server.address().port,
+      dnsOptions: {
+        // <https://github.com/zone-eu/mx-connect/pull/4>
+        resolve: util.callbackify(resolver.resolve.bind(resolver))
+      }
+    });
+
+    return nodemailer.createTransport({
+      logger,
+      debug: true,
+      host: mx.host,
+      port: mx.port,
+      connection: mx.socket,
+      ignoreTLS: true,
+      secure: false,
+      tls
+    });
+  };
+
+  const transporter = await createTransporter();
 
   // Try to send email from denylisted domain
   try {
@@ -1627,17 +1633,51 @@ This should be blocked by denylist
   // Should get denylist error
   t.truthy(smtpError);
   t.regex(smtpError.message, /denylisted/i);
+
+  // The model must retain and the MX path must enforce compound public suffix
+  // rules in addition to conventional domain entries.
+  for (const sender of [
+    'agency@department.gov.co',
+    'agency@department.gov.br'
+  ]) {
+    smtpError = null;
+    const transporter = await createTransporter();
+    try {
+      await transporter.sendMail({
+        envelope: {
+          from: sender,
+          to: `test@${domain.name}`
+        },
+        raw: `
+To: test@${domain.name}
+From: ${sender}
+Subject: test denylist public suffix
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+This should be blocked by a compound public-suffix denylist rule
+`
+      });
+      t.fail(`Should have rejected ${sender}`);
+    } catch (err) {
+      smtpError = err;
+    }
+
+    t.truthy(smtpError);
+    t.regex(smtpError.message, /denylisted/i);
+  }
+
   t.is(
     receivedEmails.length,
     0,
-    'Email from denylisted domain should not be received'
+    'Email from denylisted domain or public suffix should not be received'
   );
 
   await server.close();
   await smtp.close();
 });
 
-test('domain denylist should allow email when not in denylist', async (t) => {
+test('domain allowlist should permit a compound public-suffix sender', async (t) => {
   const smtp = new MX({
     client: t.context.client,
     wsp: t.context.wsp
@@ -1712,8 +1752,8 @@ test('domain denylist should allow email when not in denylist', async (t) => {
       has_smtp: true,
       resolver,
       smtp_port: serverPort.toString(),
-      // Add different email to denylist
-      denylist: ['spammer@gmail.com']
+      // A matching compound public-suffix rule must permit delivery.
+      allowlist: ['*.gov.co']
     })
     .create();
 
@@ -1786,20 +1826,20 @@ test('domain denylist should allow email when not in denylist', async (t) => {
     tls
   });
 
-  // Send email from non-denylisted email address
+  // Send from a subdomain that matches the compound public-suffix allowlist.
   await transporter.sendMail({
     envelope: {
-      from: 'legitimate@gmail.com',
+      from: 'legitimate@department.gov.co',
       to: `test@${domain.name}`
     },
     raw: `
 To: test@${domain.name}
-From: legitimate@gmail.com
-Subject: test allowed email
+From: legitimate@department.gov.co
+Subject: test compound public-suffix allowlist
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
-This should be allowed through
+This should be allowed through the compound public-suffix allowlist
 `
   });
 
@@ -1810,7 +1850,7 @@ This should be allowed through
   t.is(
     receivedEmails.length,
     1,
-    'Email from non-denylisted address should be received'
+    'Email from compound public-suffix allowlist should be received'
   );
 
   await server.close();

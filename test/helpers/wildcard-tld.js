@@ -1,127 +1,70 @@
-/**
+/*
  * Copyright (c) Forward Email LLC
  * SPDX-License-Identifier: BUSL-1.1
  */
 
 const test = require('ava');
 
-//
-// matchesWildcardTLD is defined in get-recipients.js but not exported,
-// so we replicate it here for unit testing. The implementation must
-// stay in sync with helpers/get-recipients.js.
-//
-function matchesWildcardTLD(domain, list) {
-  for (const entry of list) {
-    if (entry.startsWith('*.') && domain.endsWith(entry.slice(1))) return true;
-  }
+const matchesWildcardTLD = require('#helpers/matches-wildcard-tld');
+const normalizeWildcardTLD = require('#helpers/normalize-wildcard-tld');
 
-  return false;
-}
+test('normalizes ICANN public-suffix wildcard rules', (t) => {
+  t.is(normalizeWildcardTLD('*.gov.co'), '*.gov.co');
+  t.is(normalizeWildcardTLD('*.gov.br'), '*.gov.br');
+  t.is(normalizeWildcardTLD('*.co.uk'), '*.co.uk');
+  t.is(normalizeWildcardTLD('*.UK'), '*.uk');
+});
 
-//
-// *.uk should match all UK domains
-//
-test('*.uk matches example.uk', (t) => {
+test('normalizes private and internationalized public-suffix wildcard rules', (t) => {
+  t.is(normalizeWildcardTLD('*.github.io'), '*.github.io');
+  t.is(normalizeWildcardTLD('*.blogspot.com'), '*.blogspot.com');
+  t.is(normalizeWildcardTLD('*.公司.cn'), '*.xn--55qx5d.cn');
+});
+
+test('rejects non-suffix and malformed wildcard rules', (t) => {
+  for (const value of [
+    'gov.co',
+    '*.example.com',
+    '*.not-a-real-tld',
+    '*.localhost',
+    '*.www.ck',
+    '*.*.gov.co',
+    '*.gov.co.example'
+  ])
+    t.is(normalizeWildcardTLD(value), undefined);
+});
+
+test('one-label wildcard TLDs retain their existing broad suffix behavior', (t) => {
   t.true(matchesWildcardTLD('example.uk', ['*.uk']));
-});
-
-test('*.uk matches example.co.uk', (t) => {
   t.true(matchesWildcardTLD('example.co.uk', ['*.uk']));
-});
-
-test('*.uk matches example.org.uk', (t) => {
-  t.true(matchesWildcardTLD('example.org.uk', ['*.uk']));
-});
-
-test('*.uk matches deeply.nested.co.uk', (t) => {
   t.true(matchesWildcardTLD('deeply.nested.co.uk', ['*.uk']));
-});
-
-test('*.uk matches mail.example.me.uk', (t) => {
-  t.true(matchesWildcardTLD('mail.example.me.uk', ['*.uk']));
-});
-
-//
-// *.uk should NOT match unrelated domains
-//
-test('*.uk does not match example.com', (t) => {
-  t.false(matchesWildcardTLD('example.com', ['*.uk']));
-});
-
-test('*.uk does not match example.de', (t) => {
-  t.false(matchesWildcardTLD('example.de', ['*.uk']));
-});
-
-test('*.uk does not match ukexample.com (partial suffix)', (t) => {
+  t.true(matchesWildcardTLD('example.com.br', ['*.br']));
+  t.false(matchesWildcardTLD('uk', ['*.uk']));
   t.false(matchesWildcardTLD('ukexample.com', ['*.uk']));
 });
 
-//
-// Other wildcard TLDs
-//
-test('*.com matches example.com', (t) => {
-  t.true(matchesWildcardTLD('example.com', ['*.com']));
+test('compound government public suffix rules match only their own suffix', (t) => {
+  const list = ['*.gov.co', '*.gov.br'];
+
+  t.true(matchesWildcardTLD('agency.gov.co', list));
+  t.true(matchesWildcardTLD('mail.agency.gov.co', list));
+  t.true(matchesWildcardTLD('agency.gov.br', list));
+  t.false(matchesWildcardTLD('gov.co', list));
+  t.false(matchesWildcardTLD('agency.co', list));
+  t.false(matchesWildcardTLD('agency.gov.com', list));
+  t.false(matchesWildcardTLD('gov.co.example', list));
 });
 
-test('*.de matches example.de', (t) => {
-  t.true(matchesWildcardTLD('example.de', ['*.de']));
+test('private, exception, and internationalized suffix rules match safely', (t) => {
+  t.true(matchesWildcardTLD('project.github.io', ['*.github.io']));
+  t.false(matchesWildcardTLD('github.io', ['*.github.io']));
+  t.true(matchesWildcardTLD('www.ck', ['*.ck']));
+  t.true(matchesWildcardTLD('shop.xn--55qx5d.cn', ['*.公司.cn']));
+  t.true(matchesWildcardTLD('shop.公司.cn', ['*.公司.cn']));
 });
 
-test('*.jp matches example.co.jp', (t) => {
-  t.true(matchesWildcardTLD('example.co.jp', ['*.jp']));
-});
-
-test('*.au matches example.com.au', (t) => {
-  t.true(matchesWildcardTLD('example.com.au', ['*.au']));
-});
-
-test('*.br matches example.com.br', (t) => {
-  t.true(matchesWildcardTLD('example.com.br', ['*.br']));
-});
-
-//
-// Multiple wildcard entries in the list
-//
-test('matches when list has multiple wildcards', (t) => {
-  const list = ['*.uk', '*.de', '*.fr', '192.168.1.1', 'specific.com'];
-  t.true(matchesWildcardTLD('example.co.uk', list));
-  t.true(matchesWildcardTLD('example.de', list));
-  t.true(matchesWildcardTLD('example.fr', list));
-  t.false(matchesWildcardTLD('example.com', list));
-});
-
-//
-// Non-wildcard entries in the list should not match
-//
-test('non-wildcard entries are ignored', (t) => {
-  const list = ['example.com', '192.168.1.1', 'user@test.com'];
-  t.false(matchesWildcardTLD('example.com', list));
-  t.false(matchesWildcardTLD('anything.com', list));
-});
-
-//
-// Empty list
-//
-test('empty list returns false', (t) => {
-  t.false(matchesWildcardTLD('example.uk', []));
-});
-
-//
-// Edge case: domain is exactly the TLD (should not match since *.uk means "something.uk")
-// entry.slice(1) = '.uk', and 'uk'.endsWith('.uk') = false
-//
-test('bare TLD does not match *.uk', (t) => {
-  t.false(matchesWildcardTLD('uk', ['*.uk']));
-});
-
-//
-// Regression: ensure *.uk does not accidentally match a domain
-// that merely contains "uk" as a substring (e.g. "dukeshire.com")
-//
-test('*.uk does not match dukeshire.com', (t) => {
-  t.false(matchesWildcardTLD('dukeshire.com', ['*.uk']));
-});
-
-test('*.uk does not match spooky.net', (t) => {
-  t.false(matchesWildcardTLD('spooky.net', ['*.uk']));
+test('ignores invalid wildcard entries even if they have a matching string suffix', (t) => {
+  t.false(matchesWildcardTLD('mail.example.com', ['*.example.com']));
+  t.false(matchesWildcardTLD('mail.gov.co', ['*.not-a-real-tld']));
+  t.false(matchesWildcardTLD('mail.gov.co', []));
 });

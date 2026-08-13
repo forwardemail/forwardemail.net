@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "Liste over godkjente avsendere (IP-adresser, fullt kvalifiserte domenenavn, e-postadresser eller jokertegn-TLD-er). Når dette er angitt, vil bare e-post fra disse avsenderne bli godtat. Erstatter den eksisterende listen."
+            "description": "Liste over godkjente avsendere (IP-adresser, fullt kvalifiserte domenenavn, e-postadresser eller jokertegn-TLD-er). Når dette er angitt, vil bare e-post fra disse avsenderne bli godtat. Erstatter den eksisterende listen. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Liste over avsendere på listen over avviste avsendere (IP-adresser, fullt kvalifiserte domenenavn, e-postadresser eller jokertegn-TLD-er). E-post fra disse avsenderne vil bli avvist. Erstatter den eksisterende listen."
+            "description": "Liste over avsendere på listen over avviste avsendere (IP-adresser, fullt kvalifiserte domenenavn, e-postadresser eller jokertegn-TLD-er). E-post fra disse avsenderne vil bli avvist. Erstatter den eksisterende listen. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Oppdater tillatelseslisten for domener",
-        "description": "Erstatt tillatelseslisten for et domene. Tillatelseslisten begrenser innkommende e-post til kun de angitte avsenderne. Hver oppføring må være en gyldig IP-adresse, et fullstendig kvalifisert domenenavn (FQDN), en e-postadresse eller et jokertegndomene på toppnivå (f.eks. `*.com`). Maksimalt 1000 oppføringer er tillatt.",
+        "description": "Erstatt tillatelseslisten for et domene. Tillatelseslisten begrenser innkommende e-post til kun de angitte avsenderne. Hver oppføring må være en gyldig IP-adresse, et fullstendig kvalifisert domenenavn (FQDN), en e-postadresse eller et jokertegndomene på toppnivå (f.eks. `*.com`). Maksimalt 1000 oppføringer er tillatt. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domener"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Matrise med tillatelseslistede avsendere (IP-adresser, FQDN-er, e-postadresser eller jokertegn-TLD-er som `*.com`). Send inn en tom matrise for å tømme tillatelseslisten."
+                    "description": "Matrise med tillatelseslistede avsendere (IP-adresser, FQDN-er, e-postadresser eller jokertegn-TLD-er som `*.com`). Send inn en tom matrise for å tømme tillatelseslisten. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Oppdater domeneavvistliste",
-        "description": "Erstatt avvisningslisten for et domene. E-post fra avsendere på avvisningslisten vil bli avvist. Hver oppføring må være en gyldig IP-adresse, et fullstendig kvalifisert domenenavn (FQDN), en e-postadresse eller et jokertegndomene på toppnivå (f.eks. `*.com`). Maksimalt 1000 oppføringer er tillatt.",
+        "description": "Erstatt avvisningslisten for et domene. E-post fra avsendere på avvisningslisten vil bli avvist. Hver oppføring må være en gyldig IP-adresse, et fullstendig kvalifisert domenenavn (FQDN), en e-postadresse eller et jokertegndomene på toppnivå (f.eks. `*.com`). Maksimalt 1000 oppføringer er tillatt. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domener"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Matrise med avsendere på avvisningslisten (IP-adresser, FQDN-er, e-postadresser eller jokertegn-TLD-er som `*.com`). Send inn en tom matrise for å tømme avvisningslisten."
+                    "description": "Matrise med avsendere på avvisningslisten (IP-adresser, FQDN-er, e-postadresser eller jokertegn-TLD-er som `*.com`). Send inn en tom matrise for å tømme avvisningslisten. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset."
                   }
                 },
                 "required": [

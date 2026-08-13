@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "Liste der zulässigen Absender (IP-Adressen, vollqualifizierte Domainnamen, E-Mail-Adressen oder Wildcard-TLDs). Wenn diese Liste gesetzt ist, werden nur E-Mails von diesen Absendern akzeptiert. Ersetzt die bestehende Liste."
+            "description": "Liste der zulässigen Absender (IP-Adressen, vollqualifizierte Domainnamen, E-Mail-Adressen oder Wildcard-TLDs). Wenn diese Liste gesetzt ist, werden nur E-Mails von diesen Absendern akzeptiert. Ersetzt die bestehende Liste. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Liste gesperrter Absender (IP-Adressen, vollqualifizierte Domainnamen, E-Mail-Adressen oder Wildcard-TLDs). E-Mails von diesen Absendern werden abgewiesen. Ersetzt die bestehende Liste."
+            "description": "Liste gesperrter Absender (IP-Adressen, vollqualifizierte Domainnamen, E-Mail-Adressen oder Wildcard-TLDs). E-Mails von diesen Absendern werden abgewiesen. Ersetzt die bestehende Liste. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Aktualisierung der Domain-Zulassungsliste",
-        "description": "Ersetzen Sie die Zulassungsliste für eine Domain. Die Zulassungsliste beschränkt eingehende E-Mails auf die angegebenen Absender. Jeder Eintrag muss eine gültige IP-Adresse, ein vollqualifizierter Domainname (FQDN), eine E-Mail-Adresse oder eine Wildcard-Top-Level-Domain (z. B. `*.com`) sein. Maximal 1000 Einträge sind zulässig.",
+        "description": "Ersetzen Sie die Zulassungsliste für eine Domain. Die Zulassungsliste beschränkt eingehende E-Mails auf die angegebenen Absender. Jeder Eintrag muss eine gültige IP-Adresse, ein vollqualifizierter Domainname (FQDN), eine E-Mail-Adresse oder eine Wildcard-Top-Level-Domain (z. B. `*.com`) sein. Maximal 1000 Einträge sind zulässig. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domänen"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array von zulässigen Absendern (IP-Adressen, FQDNs, E-Mail-Adressen oder Wildcard-TLDs wie `*.com`). Übergeben Sie ein leeres Array, um die Zulassungsliste zu leeren."
+                    "description": "Array von zulässigen Absendern (IP-Adressen, FQDNs, E-Mail-Adressen oder Wildcard-TLDs wie `*.com`). Übergeben Sie ein leeres Array, um die Zulassungsliste zu leeren. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Aktualisierung der Domain-Sperrliste",
-        "description": "Ersetzen Sie die Sperrliste durch eine Domain. E-Mails von gesperrten Absendern werden abgewiesen. Jeder Eintrag muss eine gültige IP-Adresse, ein vollqualifizierter Domainname (FQDN), eine E-Mail-Adresse oder eine Wildcard-Top-Level-Domain (z. B. `*.com`) sein. Maximal 1000 Einträge sind zulässig.",
+        "description": "Ersetzen Sie die Sperrliste durch eine Domain. E-Mails von gesperrten Absendern werden abgewiesen. Jeder Eintrag muss eine gültige IP-Adresse, ein vollqualifizierter Domainname (FQDN), eine E-Mail-Adresse oder eine Wildcard-Top-Level-Domain (z. B. `*.com`) sein. Maximal 1000 Einträge sind zulässig. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domänen"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array von gesperrten Absendern (IP-Adressen, FQDNs, E-Mail-Adressen oder Wildcard-TLDs wie `*.com`). Übergeben Sie ein leeres Array, um die Sperrliste zu leeren."
+                    "description": "Array von gesperrten Absendern (IP-Adressen, FQDNs, E-Mail-Adressen oder Wildcard-TLDs wie `*.com`). Übergeben Sie ein leeres Array, um die Sperrliste zu leeren. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein."
                   }
                 },
                 "required": [

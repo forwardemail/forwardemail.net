@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "Lista nadawców z listy dozwolonych (adresy IP, w pełni kwalifikowane nazwy domen, adresy e-mail lub domeny najwyższego poziomu z symbolem wieloznacznym). Po ustawieniu akceptowane będą tylko wiadomości od tych nadawców. Zastępuje istniejącą listę."
+            "description": "Lista nadawców z listy dozwolonych (adresy IP, w pełni kwalifikowane nazwy domen, adresy e-mail lub domeny najwyższego poziomu z symbolem wieloznacznym). Po ustawieniu akceptowane będą tylko wiadomości od tych nadawców. Zastępuje istniejącą listę. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Lista zablokowanych nadawców (adresy IP, w pełni kwalifikowane nazwy domen, adresy e-mail lub domeny najwyższego poziomu z symbolem wieloznacznym). Wiadomości od tych nadawców będą odrzucane. Zastępuje istniejącą listę."
+            "description": "Lista zablokowanych nadawców (adresy IP, w pełni kwalifikowane nazwy domen, adresy e-mail lub domeny najwyższego poziomu z symbolem wieloznacznym). Wiadomości od tych nadawców będą odrzucane. Zastępuje istniejącą listę. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Zaktualizuj listę dozwolonych domen",
-        "description": "Zastąp listę dozwolonych dla domeny. Lista dozwolonych ogranicza pocztę przychodzącą tylko do określonych nadawców. Każdy wpis musi zawierać prawidłowy adres IP, w pełni kwalifikowaną nazwę domeny (FQDN), adres e-mail lub wieloznaczną domenę najwyższego poziomu (np. `*.com`). Dozwolone jest maksymalnie 1000 wpisów.",
+        "description": "Zastąp listę dozwolonych dla domeny. Lista dozwolonych ogranicza pocztę przychodzącą tylko do określonych nadawców. Każdy wpis musi zawierać prawidłowy adres IP, w pełni kwalifikowaną nazwę domeny (FQDN), adres e-mail lub wieloznaczną domenę najwyższego poziomu (np. `*.com`). Dozwolone jest maksymalnie 1000 wpisów. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domeny"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Tablica nadawców z listy dozwolonych (adresy IP, nazwy w pełni kwalifikowane (FQDN), adresy e-mail lub wieloznaczne domeny najwyższego poziomu (TLD), takie jak `*.com`). Przekaż pustą tablicę, aby wyczyścić listę dozwolonych."
+                    "description": "Tablica nadawców z listy dozwolonych (adresy IP, nazwy w pełni kwalifikowane (FQDN), adresy e-mail lub wieloznaczne domeny najwyższego poziomu (TLD), takie jak `*.com`). Przekaż pustą tablicę, aby wyczyścić listę dozwolonych. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Zaktualizuj listę zablokowanych domen",
-        "description": "Zmień listę zablokowanych dla domeny. Wiadomości od nadawców z listy zablokowanych będą odrzucane. Każdy wpis musi zawierać prawidłowy adres IP, w pełni kwalifikowaną nazwę domeny (FQDN), adres e-mail lub wieloznaczną domenę najwyższego poziomu (np. `*.com`). Dozwolone jest maksymalnie 1000 wpisów.",
+        "description": "Zmień listę zablokowanych dla domeny. Wiadomości od nadawców z listy zablokowanych będą odrzucane. Każdy wpis musi zawierać prawidłowy adres IP, w pełni kwalifikowaną nazwę domeny (FQDN), adres e-mail lub wieloznaczną domenę najwyższego poziomu (np. `*.com`). Dozwolone jest maksymalnie 1000 wpisów. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domeny"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Tablica zablokowanych nadawców (adresy IP, nazwy w pełni kwalifikowane (FQDN), adresy e-mail lub wieloznaczne domeny najwyższego poziomu (TLD), takie jak `*.com`). Przekaż pustą tablicę, aby wyczyścić listę zablokowanych."
+                    "description": "Tablica zablokowanych nadawców (adresy IP, nazwy w pełni kwalifikowane (FQDN), adresy e-mail lub wieloznaczne domeny najwyższego poziomu (TLD), takie jak `*.com`). Przekaż pustą tablicę, aby wyczyścić listę zablokowanych. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu."
                   }
                 },
                 "required": [

@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "Sallittujen lähettäjien luettelo (IP-osoitteet, täysin pätevät verkkotunnukset, sähköpostiosoitteet tai jokerimerkki-ylätason verkkotunnukset). Kun tämä on asetettu, vain näiden lähettäjien posti hyväksytään. Korvaa olemassa olevan luettelon."
+            "description": "Sallittujen lähettäjien luettelo (IP-osoitteet, täysin pätevät verkkotunnukset, sähköpostiosoitteet tai jokerimerkki-ylätason verkkotunnukset). Kun tämä on asetettu, vain näiden lähettäjien posti hyväksytään. Korvaa olemassa olevan luettelon. Jokerimerkillä varustetut public-suffix-säännöt voivat sisältää useita tunnisteita, esimerkiksi `*.gov.co` ja `*.gov.br`; ne vastaavat lähettäjiä juuri tuon tarkan sufiksin alla."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Estettyjen lähettäjien luettelo (IP-osoitteet, täysin pätevät verkkotunnukset, sähköpostiosoitteet tai jokerimerkki-ylätason verkkotunnukset). Näiltä lähettäjiltä tuleva posti hylätään. Korvaa olemassa olevan luettelon."
+            "description": "Estettyjen lähettäjien luettelo (IP-osoitteet, täysin pätevät verkkotunnukset, sähköpostiosoitteet tai jokerimerkki-ylätason verkkotunnukset). Näiltä lähettäjiltä tuleva posti hylätään. Korvaa olemassa olevan luettelon. Jokerimerkillä varustetut public-suffix-säännöt voivat sisältää useita tunnisteita, esimerkiksi `*.gov.co` ja `*.gov.br`; ne vastaavat lähettäjiä juuri tuon tarkan sufiksin alla."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Päivitä verkkotunnusten sallittujen luettelo",
-        "description": "Korvaa verkkotunnuksen sallittujen luettelo. Sallittujen luettelo rajoittaa saapuvan postin vain määritetyille lähettäjille. Kunkin merkinnän on oltava kelvollinen IP-osoite, täydellinen verkkotunnus (FQDN), sähköpostiosoite tai jokerimerkki-ylimmän tason verkkotunnus (esim. `*.com`). Sallittu on enintään 1000 merkintää.",
+        "description": "Korvaa verkkotunnuksen sallittujen luettelo. Sallittujen luettelo rajoittaa saapuvan postin vain määritetyille lähettäjille. Kunkin merkinnän on oltava kelvollinen IP-osoite, täydellinen verkkotunnus (FQDN), sähköpostiosoite tai jokerimerkki-ylimmän tason verkkotunnus (esim. `*.com`). Sallittu on enintään 1000 merkintää. Jokerimerkillä varustetut public-suffix-säännöt voivat sisältää useita tunnisteita, esimerkiksi `*.gov.co` ja `*.gov.br`; ne vastaavat lähettäjiä juuri tuon tarkan sufiksin alla.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Verkkotunnukset"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Sallittujen lähettäjien taulukko (IP-osoitteet, täydelliset toimialuenimet (FQDN-nimet), sähköpostiosoitteet tai jokerimerkki-yliverkolla varustetut verkkotunnukset, kuten `*.com`). Tyhjennä sallittujen luettelo antamalla tyhjä taulukko."
+                    "description": "Sallittujen lähettäjien taulukko (IP-osoitteet, täydelliset toimialuenimet (FQDN-nimet), sähköpostiosoitteet tai jokerimerkki-yliverkolla varustetut verkkotunnukset, kuten `*.com`). Tyhjennä sallittujen luettelo antamalla tyhjä taulukko. Jokerimerkillä varustetut public-suffix-säännöt voivat sisältää useita tunnisteita, esimerkiksi `*.gov.co` ja `*.gov.br`; ne vastaavat lähettäjiä juuri tuon tarkan sufiksin alla."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Päivitä verkkotunnusten kieltolista",
-        "description": "Korvaa verkkotunnuksen estolista. Estolistalla olevilta lähettäjiltä tuleva sähköposti hylätään. Jokaisen merkinnän on oltava kelvollinen IP-osoite, täydellinen verkkotunnusnimi (FQDN), sähköpostiosoite tai jokerimerkki-ylitason verkkotunnus (esim. `*.com`). Sallittu on enintään 1000 merkintää.",
+        "description": "Korvaa verkkotunnuksen estolista. Estolistalla olevilta lähettäjiltä tuleva sähköposti hylätään. Jokaisen merkinnän on oltava kelvollinen IP-osoite, täydellinen verkkotunnusnimi (FQDN), sähköpostiosoite tai jokerimerkki-ylitason verkkotunnus (esim. `*.com`). Sallittu on enintään 1000 merkintää. Jokerimerkillä varustetut public-suffix-säännöt voivat sisältää useita tunnisteita, esimerkiksi `*.gov.co` ja `*.gov.br`; ne vastaavat lähettäjiä juuri tuon tarkan sufiksin alla.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Verkkotunnukset"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Estoluettelossa olevien lähettäjien taulukko (IP-osoitteet, täydelliset toimialuenimet (FQDN-nimet), sähköpostiosoitteet tai jokerimerkki-ylätason tunnukset, kuten `*.com`). Tyhjennä estoluettelo antamalla tyhjä taulukko."
+                    "description": "Estoluettelossa olevien lähettäjien taulukko (IP-osoitteet, täydelliset toimialuenimet (FQDN-nimet), sähköpostiosoitteet tai jokerimerkki-ylätason tunnukset, kuten `*.com`). Tyhjennä estoluettelo antamalla tyhjä taulukko. Jokerimerkillä varustetut public-suffix-säännöt voivat sisältää useita tunnisteita, esimerkiksi `*.gov.co` ja `*.gov.br`; ne vastaavat lähettäjiä juuri tuon tarkan sufiksin alla."
                   }
                 },
                 "required": [

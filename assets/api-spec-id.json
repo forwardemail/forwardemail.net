@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "Daftar pengirim yang diizinkan (alamat IP, nama domain yang sepenuhnya memenuhi syarat, alamat email, atau TLD wildcard). Jika diatur, hanya email dari pengirim ini yang akan diterima. Menggantikan daftar yang ada."
+            "description": "Daftar pengirim yang diizinkan (alamat IP, nama domain yang sepenuhnya memenuhi syarat, alamat email, atau TLD wildcard). Jika diatur, hanya email dari pengirim ini yang akan diterima. Menggantikan daftar yang ada. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Daftar pengirim yang diblokir (alamat IP, nama domain yang sepenuhnya memenuhi syarat, alamat email, atau TLD wildcard). Email dari pengirim ini akan ditolak. Menggantikan daftar yang ada."
+            "description": "Daftar pengirim yang diblokir (alamat IP, nama domain yang sepenuhnya memenuhi syarat, alamat email, atau TLD wildcard). Email dari pengirim ini akan ditolak. Menggantikan daftar yang ada. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Perbarui daftar domain yang diizinkan",
-        "description": "Ganti daftar yang diizinkan untuk suatu domain. Daftar yang diizinkan membatasi email masuk hanya untuk pengirim yang ditentukan. Setiap entri harus berupa alamat IP yang valid, nama domain yang sepenuhnya memenuhi syarat (FQDN), alamat email, atau domain tingkat atas wildcard (misalnya `*.com`). Maksimum 1000 entri diperbolehkan.",
+        "description": "Ganti daftar yang diizinkan untuk suatu domain. Daftar yang diizinkan membatasi email masuk hanya untuk pengirim yang ditentukan. Setiap entri harus berupa alamat IP yang valid, nama domain yang sepenuhnya memenuhi syarat (FQDN), alamat email, atau domain tingkat atas wildcard (misalnya `*.com`). Maksimum 1000 entri diperbolehkan. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domain"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array pengirim yang diizinkan (alamat IP, FQDN, alamat email, atau TLD wildcard seperti `*.com`). Berikan array kosong untuk menghapus daftar yang diizinkan."
+                    "description": "Array pengirim yang diizinkan (alamat IP, FQDN, alamat email, atau TLD wildcard seperti `*.com`). Berikan array kosong untuk menghapus daftar yang diizinkan. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Perbarui daftar penolakan domain",
-        "description": "Ganti daftar hitam untuk suatu domain. Email dari pengirim yang ada dalam daftar hitam akan ditolak. Setiap entri harus berupa alamat IP yang valid, nama domain yang sepenuhnya memenuhi syarat (FQDN), alamat email, atau domain tingkat atas wildcard (misalnya `*.com`). Maksimal 1000 entri diperbolehkan.",
+        "description": "Ganti daftar hitam untuk suatu domain. Email dari pengirim yang ada dalam daftar hitam akan ditolak. Setiap entri harus berupa alamat IP yang valid, nama domain yang sepenuhnya memenuhi syarat (FQDN), alamat email, atau domain tingkat atas wildcard (misalnya `*.com`). Maksimal 1000 entri diperbolehkan. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domain"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array pengirim yang masuk daftar hitam (alamat IP, FQDN, alamat email, atau TLD wildcard seperti `*.com`). Berikan array kosong untuk menghapus daftar hitam."
+                    "description": "Array pengirim yang masuk daftar hitam (alamat IP, FQDN, alamat email, atau TLD wildcard seperti `*.com`). Berikan array kosong untuk menghapus daftar hitam. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat."
                   }
                 },
                 "required": [

@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "Elenco dei mittenti consentiti (indirizzi IP, nomi di dominio completi, indirizzi e-mail o TLD jolly). Una volta impostato, verranno accettate solo le e-mail provenienti da questi mittenti. Sostituisce l'elenco esistente."
+            "description": "Elenco dei mittenti consentiti (indirizzi IP, nomi di dominio completi, indirizzi e-mail o TLD jolly). Una volta impostato, verranno accettate solo le e-mail provenienti da questi mittenti. Sostituisce l'elenco esistente. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Elenco dei mittenti bloccati (indirizzi IP, nomi di dominio completi, indirizzi email o TLD jolly). La posta proveniente da questi mittenti verrà rifiutata. Sostituisce l'elenco esistente."
+            "description": "Elenco dei mittenti bloccati (indirizzi IP, nomi di dominio completi, indirizzi email o TLD jolly). La posta proveniente da questi mittenti verrà rifiutata. Sostituisce l'elenco esistente. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Aggiorna la lista dei domini consentiti",
-        "description": "Sostituisci la lista di mittenti consentiti per un dominio. La lista di mittenti consentiti limita la posta in entrata ai soli mittenti specificati. Ogni voce deve essere un indirizzo IP valido, un nome di dominio completo (FQDN), un indirizzo email o un dominio di primo livello jolly (ad esempio, *.com). È consentito un massimo di 1000 voci.",
+        "description": "Sostituisci la lista di mittenti consentiti per un dominio. La lista di mittenti consentiti limita la posta in entrata ai soli mittenti specificati. Ogni voce deve essere un indirizzo IP valido, un nome di dominio completo (FQDN), un indirizzo email o un dominio di primo livello jolly (ad esempio, *.com). È consentito un massimo di 1000 voci. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domini"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array di mittenti consentiti (indirizzi IP, FQDN, indirizzi email o TLD jolly come `*.com`). Passare un array vuoto per cancellare l'elenco dei mittenti consentiti."
+                    "description": "Array di mittenti consentiti (indirizzi IP, FQDN, indirizzi email o TLD jolly come `*.com`). Passare un array vuoto per cancellare l'elenco dei mittenti consentiti. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Aggiorna la lista nera del dominio",
-        "description": "Sostituisci l'elenco di mittenti bloccati per un dominio. Le email provenienti da mittenti presenti nell'elenco verranno rifiutate. Ogni voce deve essere un indirizzo IP valido, un nome di dominio completo (FQDN), un indirizzo email o un dominio di primo livello jolly (ad esempio, *.com). È consentito un massimo di 1000 voci.",
+        "description": "Sostituisci l'elenco di mittenti bloccati per un dominio. Le email provenienti da mittenti presenti nell'elenco verranno rifiutate. Ogni voce deve essere un indirizzo IP valido, un nome di dominio completo (FQDN), un indirizzo email o un dominio di primo livello jolly (ad esempio, *.com). È consentito un massimo di 1000 voci. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domini"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array di mittenti bloccati (indirizzi IP, FQDN, indirizzi email o TLD jolly come `*.com`). Passare un array vuoto per cancellare l'elenco dei mittenti bloccati."
+                    "description": "Array di mittenti bloccati (indirizzi IP, FQDN, indirizzi email o TLD jolly come `*.com`). Passare un array vuoto per cancellare l'elenco dei mittenti bloccati. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto."
                   }
                 },
                 "required": [

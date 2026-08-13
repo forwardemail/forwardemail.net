@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "Lijst met toegestane afzenders (IP-adressen, volledig gekwalificeerde domeinnamen, e-mailadressen of wildcard-TLD's). Indien ingesteld, wordt alleen e-mail van deze afzenders geaccepteerd. Vervangt de bestaande lijst."
+            "description": "Lijst met toegestane afzenders (IP-adressen, volledig gekwalificeerde domeinnamen, e-mailadressen of wildcard-TLD's). Indien ingesteld, wordt alleen e-mail van deze afzenders geaccepteerd. Vervangt de bestaande lijst. Wildcard public-suffix-regels kunnen meerdere labels bevatten, bijvoorbeeld `*.gov.co` en `*.gov.br`; ze komen overeen met afzenders onder dat exacte suffix."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Lijst met geblokkeerde afzenders (IP-adressen, volledig gekwalificeerde domeinnamen, e-mailadressen of wildcard-TLD's). E-mail van deze afzenders wordt geweigerd. Vervangt de bestaande lijst."
+            "description": "Lijst met geblokkeerde afzenders (IP-adressen, volledig gekwalificeerde domeinnamen, e-mailadressen of wildcard-TLD's). E-mail van deze afzenders wordt geweigerd. Vervangt de bestaande lijst. Wildcard public-suffix-regels kunnen meerdere labels bevatten, bijvoorbeeld `*.gov.co` en `*.gov.br`; ze komen overeen met afzenders onder dat exacte suffix."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Domein-whitelist bijwerken",
-        "description": "Vervang de whitelist voor een domein. De whitelist beperkt inkomende e-mail tot alleen de opgegeven afzenders. Elke vermelding moet een geldig IP-adres, volledig gekwalificeerde domeinnaam (FQDN), e-mailadres of wildcard-topdomein (bijv. `*.com`) zijn. Er zijn maximaal 1000 vermeldingen toegestaan.",
+        "description": "Vervang de whitelist voor een domein. De whitelist beperkt inkomende e-mail tot alleen de opgegeven afzenders. Elke vermelding moet een geldig IP-adres, volledig gekwalificeerde domeinnaam (FQDN), e-mailadres of wildcard-topdomein (bijv. `*.com`) zijn. Er zijn maximaal 1000 vermeldingen toegestaan. Wildcard public-suffix-regels kunnen meerdere labels bevatten, bijvoorbeeld `*.gov.co` en `*.gov.br`; ze komen overeen met afzenders onder dat exacte suffix.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domeinen"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Een array met toegestane afzenders (IP-adressen, FQDN's, e-mailadressen of wildcard-TLD's zoals *.com). Geef een lege array door om de lijst met toegestane afzenders te wissen."
+                    "description": "Een array met toegestane afzenders (IP-adressen, FQDN's, e-mailadressen of wildcard-TLD's zoals *.com). Geef een lege array door om de lijst met toegestane afzenders te wissen. Wildcard public-suffix-regels kunnen meerdere labels bevatten, bijvoorbeeld `*.gov.co` en `*.gov.br`; ze komen overeen met afzenders onder dat exacte suffix."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "De domeinblokkeerlijst bijwerken",
-        "description": "Vervang de geblokkeerde lijst door een domein. E-mail van geblokkeerde afzenders wordt geweigerd. Elke vermelding moet een geldig IP-adres, volledig gekwalificeerde domeinnaam (FQDN), e-mailadres of wildcard-topdomein (bijv. `*.com`) zijn. Maximaal 1000 vermeldingen zijn toegestaan.",
+        "description": "Vervang de geblokkeerde lijst door een domein. E-mail van geblokkeerde afzenders wordt geweigerd. Elke vermelding moet een geldig IP-adres, volledig gekwalificeerde domeinnaam (FQDN), e-mailadres of wildcard-topdomein (bijv. `*.com`) zijn. Maximaal 1000 vermeldingen zijn toegestaan. Wildcard public-suffix-regels kunnen meerdere labels bevatten, bijvoorbeeld `*.gov.co` en `*.gov.br`; ze komen overeen met afzenders onder dat exacte suffix.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domeinen"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Een array met geblokkeerde afzenders (IP-adressen, FQDN's, e-mailadressen of wildcard-TLD's zoals *.com). Geef een lege array door om de blokkering op te heffen."
+                    "description": "Een array met geblokkeerde afzenders (IP-adressen, FQDN's, e-mailadressen of wildcard-TLD's zoals *.com). Geef een lege array door om de blokkering op te heffen. Wildcard public-suffix-regels kunnen meerdere labels bevatten, bijvoorbeeld `*.gov.co` en `*.gov.br`; ze komen overeen met afzenders onder dat exacte suffix."
                   }
                 },
                 "required": [

@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "Lista över tillåtna avsändare (IP-adresser, fullständigt kvalificerade domännamn, e-postadresser eller jokertecken-TLD:er). När den är inställd accepteras endast e-post från dessa avsändare. Ersätter den befintliga listan."
+            "description": "Lista över tillåtna avsändare (IP-adresser, fullständigt kvalificerade domännamn, e-postadresser eller jokertecken-TLD:er). När den är inställd accepteras endast e-post från dessa avsändare. Ersätter den befintliga listan. Wildcard public-suffix-regler kan innehålla flera etiketter, till exempel `*.gov.co` och `*.gov.br`; de matchar avsändare under just det suffixet."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Lista över nekade avsändare (IP-adresser, fullständigt kvalificerade domännamn, e-postadresser eller jokertecken-TLD:er). E-post från dessa avsändare kommer att avvisas. Ersätter den befintliga listan."
+            "description": "Lista över nekade avsändare (IP-adresser, fullständigt kvalificerade domännamn, e-postadresser eller jokertecken-TLD:er). E-post från dessa avsändare kommer att avvisas. Ersätter den befintliga listan. Wildcard public-suffix-regler kan innehålla flera etiketter, till exempel `*.gov.co` och `*.gov.br`; de matchar avsändare under just det suffixet."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Uppdatera domänens tillåtelselista",
-        "description": "Ersätt tillåtelselistan för en domän. Tillåtelselistan begränsar inkommande e-post till endast de angivna avsändarna. Varje post måste vara en giltig IP-adress, ett fullständigt kvalificerat domännamn (FQDN), en e-postadress eller en jokerteckendomän på toppnivå (t.ex. `*.com`). Maximalt 1000 poster är tillåtna.",
+        "description": "Ersätt tillåtelselistan för en domän. Tillåtelselistan begränsar inkommande e-post till endast de angivna avsändarna. Varje post måste vara en giltig IP-adress, ett fullständigt kvalificerat domännamn (FQDN), en e-postadress eller en jokerteckendomän på toppnivå (t.ex. `*.com`). Maximalt 1000 poster är tillåtna. Wildcard public-suffix-regler kan innehålla flera etiketter, till exempel `*.gov.co` och `*.gov.br`; de matchar avsändare under just det suffixet.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domäner"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Matris med tillåtna avsändare (IP-adresser, FQDN-adresser, e-postadresser eller jokertecken-TLD:er som `*.com`). Skicka en tom matris för att rensa tillåtelselistan."
+                    "description": "Matris med tillåtna avsändare (IP-adresser, FQDN-adresser, e-postadresser eller jokertecken-TLD:er som `*.com`). Skicka en tom matris för att rensa tillåtelselistan. Wildcard public-suffix-regler kan innehålla flera etiketter, till exempel `*.gov.co` och `*.gov.br`; de matchar avsändare under just det suffixet."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Uppdatera listan över avvisade domäner",
-        "description": "Ersätt nekallistan för en domän. E-post från nekade avsändare kommer att avvisas. Varje post måste vara en giltig IP-adress, ett fullständigt kvalificerat domännamn (FQDN), en e-postadress eller en jokerteckendomän på toppnivå (t.ex. `*.com`). Maximalt 1000 poster är tillåtna.",
+        "description": "Ersätt nekallistan för en domän. E-post från nekade avsändare kommer att avvisas. Varje post måste vara en giltig IP-adress, ett fullständigt kvalificerat domännamn (FQDN), en e-postadress eller en jokerteckendomän på toppnivå (t.ex. `*.com`). Maximalt 1000 poster är tillåtna. Wildcard public-suffix-regler kan innehålla flera etiketter, till exempel `*.gov.co` och `*.gov.br`; de matchar avsändare under just det suffixet.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domäner"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Matris med nekade avsändare (IP-adresser, FQDN-namn, e-postadresser eller jokertecken-TLD:er som `*.com`). Skicka en tom matris för att rensa nekad lista."
+                    "description": "Matris med nekade avsändare (IP-adresser, FQDN-namn, e-postadresser eller jokertecken-TLD:er som `*.com`). Skicka en tom matris för att rensa nekad lista. Wildcard public-suffix-regler kan innehålla flera etiketter, till exempel `*.gov.co` och `*.gov.br`; de matchar avsändare under just det suffixet."
                   }
                 },
                 "required": [

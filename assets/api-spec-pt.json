@@ -2211,14 +2211,14 @@
             "items": {
               "type": "string"
             },
-            "description": "Lista de remetentes permitidos (endereços IP, nomes de domínio totalmente qualificados, endereços de e-mail ou TLDs curinga). Quando configurada, somente e-mails desses remetentes serão aceitos. Substitui a lista existente."
+            "description": "Lista de remetentes permitidos (endereços IP, nomes de domínio totalmente qualificados, endereços de e-mail ou TLDs curinga). Quando configurada, somente e-mails desses remetentes serão aceitos. Substitui a lista existente. Regras de public-suffix com coringa podem conter múltiplos rótulos, por exemplo `*.gov.co` e `*.gov.br`; elas correspondem a remetentes sob esse sufixo exato."
           },
           "denylist": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Lista de remetentes bloqueados (endereços IP, nomes de domínio totalmente qualificados, endereços de e-mail ou TLDs curinga). Mensagens desses remetentes serão rejeitadas. Substitui a lista existente."
+            "description": "Lista de remetentes bloqueados (endereços IP, nomes de domínio totalmente qualificados, endereços de e-mail ou TLDs curinga). Mensagens desses remetentes serão rejeitadas. Substitui a lista existente. Regras de public-suffix com coringa podem conter múltiplos rótulos, por exemplo `*.gov.co` e `*.gov.br`; elas correspondem a remetentes sob esse sufixo exato."
           }
         }
       },
@@ -8826,7 +8826,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Atualizar lista de domínios permitidos",
-        "description": "Substitua a lista de permissões de um domínio. A lista de permissões restringe o recebimento de e-mails apenas aos remetentes especificados. Cada entrada deve ser um endereço IP válido, um nome de domínio totalmente qualificado (FQDN), um endereço de e-mail ou um domínio de nível superior curinga (por exemplo, `*.com`). É permitido um máximo de 1000 entradas.",
+        "description": "Substitua a lista de permissões de um domínio. A lista de permissões restringe o recebimento de e-mails apenas aos remetentes especificados. Cada entrada deve ser um endereço IP válido, um nome de domínio totalmente qualificado (FQDN), um endereço de e-mail ou um domínio de nível superior curinga (por exemplo, `*.com`). É permitido um máximo de 1000 entradas. Regras de public-suffix com coringa podem conter múltiplos rótulos, por exemplo `*.gov.co` e `*.gov.br`; elas correspondem a remetentes sob esse sufixo exato.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domínios"
@@ -8859,7 +8859,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Matriz de remetentes permitidos (endereços IP, FQDNs, endereços de e-mail ou TLDs curinga como `*.com`). Passe uma matriz vazia para limpar a lista de permissões."
+                    "description": "Matriz de remetentes permitidos (endereços IP, FQDNs, endereços de e-mail ou TLDs curinga como `*.com`). Passe uma matriz vazia para limpar a lista de permissões. Regras de public-suffix com coringa podem conter múltiplos rótulos, por exemplo `*.gov.co` e `*.gov.br`; elas correspondem a remetentes sob esse sufixo exato."
                   }
                 },
                 "required": [
@@ -8898,7 +8898,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Atualizar lista de bloqueio de domínios",
-        "description": "Substitua a lista de bloqueio de um domínio. Mensagens de remetentes bloqueados serão rejeitadas. Cada entrada deve ser um endereço IP válido, um nome de domínio totalmente qualificado (FQDN), um endereço de e-mail ou um domínio curinga de nível superior (por exemplo, `*.com`). É permitido um máximo de 1000 entradas.",
+        "description": "Substitua a lista de bloqueio de um domínio. Mensagens de remetentes bloqueados serão rejeitadas. Cada entrada deve ser um endereço IP válido, um nome de domínio totalmente qualificado (FQDN), um endereço de e-mail ou um domínio curinga de nível superior (por exemplo, `*.com`). É permitido um máximo de 1000 entradas. Regras de public-suffix com coringa podem conter múltiplos rótulos, por exemplo `*.gov.co` e `*.gov.br`; elas correspondem a remetentes sob esse sufixo exato.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domínios"
@@ -8931,7 +8931,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Matriz de remetentes bloqueados (endereços IP, FQDNs, endereços de e-mail ou TLDs curinga como `*.com`). Passe uma matriz vazia para limpar a lista de bloqueio."
+                    "description": "Matriz de remetentes bloqueados (endereços IP, FQDNs, endereços de e-mail ou TLDs curinga como `*.com`). Passe uma matriz vazia para limpar a lista de bloqueio. Regras de public-suffix com coringa podem conter múltiplos rótulos, por exemplo `*.gov.co` e `*.gov.br`; elas correspondem a remetentes sob esse sufixo exato."
                   }
                 },
                 "required": [

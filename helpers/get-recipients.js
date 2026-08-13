@@ -22,25 +22,11 @@ const getSettings = require('#helpers/get-settings');
 const isDenylisted = require('#helpers/is-denylisted');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const logger = require('#helpers/logger');
+const matchesWildcardTLD = require('#helpers/matches-wildcard-tld');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
 const { encrypt } = require('#helpers/encrypt-decrypt');
-
-//
-// Check if a domain matches any wildcard TLD entry in the list
-// e.g. *.uk should match example.uk, example.co.uk, example.org.uk
-// This uses endsWith so that *.uk matches any domain ending in .uk
-//
-function matchesWildcardTLD(domain, list) {
-  for (const entry of list) {
-    if (entry.startsWith('*.') && domain.endsWith(entry.slice(1))) {
-      return true;
-    }
-  }
-
-  return false;
-}
 
 async function getRecipients(session, scan) {
   const bounces = [];
