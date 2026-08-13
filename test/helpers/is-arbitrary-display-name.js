@@ -4,8 +4,11 @@
  */
 
 const { Buffer } = require('node:buffer');
+const process = require('node:process');
 
 const test = require('ava');
+
+process.env.WEB_HOST = 'forwardemail.net';
 
 const env = require('#config/env');
 const isArbitrary = require('#helpers/is-arbitrary');
@@ -237,6 +240,14 @@ test('allows legitimate email with company name: ACME Corp<lynnied@mhtc.net>', (
   t.notThrows(() => isArbitrary(session, headers));
 });
 
+test('allows the special DocuSign sender when SPF has no domain result', (t) => {
+  const headers = createMockHeaders('DocuSign <dse_na4@docusign.net>');
+  const session = createMockSession('dse_na4@docusign.net');
+  session.spf = { status: { result: 'none' } };
+
+  t.notThrows(() => isArbitrary(session, headers));
+});
+
 test('allows authenticated Forward Email sender with display name', (t) => {
   // Use env.WEB_HOST to match the authenticated session domain
   const headers = createMockHeaders(`Forward Email<support@${env.WEB_HOST}>`);
@@ -276,7 +287,7 @@ test('blocks display name containing brand: MyForwardEmailService<lynnied@mhtc.n
 
 test('blocks display name containing domain: support@forwardemail.net<lynnied@mhtc.net>', (t) => {
   const headers = createMockHeaders(
-    'support@forwardemail.net<lynnied@mhtc.net>'
+    '"support@forwardemail.net" <lynnied@mhtc.net>'
   );
   const session = createMockSession();
 

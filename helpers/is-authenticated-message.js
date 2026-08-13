@@ -16,6 +16,12 @@ const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');
 // const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const isTruthSourceArc = require('#helpers/is-truth-source-arc');
+const {
+  shouldRejectDmarcReject,
+  shouldRejectDmarcQuarantine,
+  shouldRejectUnauthenticatedMessage
+} = require('#helpers/should-reject-unauthenticated-message');
 
 const HOSTNAME = os.hostname();
 
@@ -137,19 +143,9 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
   // session.arc.signature contains the latest ARC-Message-Signature result
   // with signingDomain being the d= value from the ARC-Message-Signature header
   //
-  let isTruthSource = false;
-  if (
-    session.arc &&
-    session.arc.status &&
-    session.arc.status.result === 'pass' &&
-    session.arc.signature &&
-    isSANB(session.arc.signature.signingDomain)
-  ) {
-    const sealerDomain = parseRootDomain(session.arc.signature.signingDomain);
-    if (config.truthSources.has(sealerDomain)) {
-      isTruthSource = true;
-    }
-  }
+  // Trust only a passing ARC chain whose sealer root is explicitly configured
+  // through TRUTH_SOURCES.
+  const isTruthSource = isTruthSourceArc(session.arc, config.truthSources);
 
   //
   // only reject if ARC was not passing from a truth source
@@ -300,14 +296,7 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
   // this allows DMARC local policy override when the ARC chain passes
   // and was sealed by a trusted intermediary (e.g., Google, Microsoft)
   //
-  if (
-    session.dmarc &&
-    session.dmarc.status &&
-    session.dmarc.status.result === 'fail' &&
-    session.dmarc.policy === 'reject' &&
-    !isLegitDSN &&
-    !isTruthSource
-  ) {
+  if (shouldRejectDmarcReject(session, isTruthSource, isLegitDSN)) {
     throw new SMTPError(
       "The email sent has failed DMARC validation and is rejected due to the domain's DMARC policy",
       {
@@ -317,18 +306,9 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     );
   }
 
-  // DMARC p=quarantine rejection (non-allowlisted senders only)
-  if (
-    session.dmarc &&
-    session.dmarc.status &&
-    session.dmarc.status.result === 'fail' &&
-    session.dmarc.policy === 'quarantine' &&
-    !session.isAllowlisted &&
-    !session.hadAlignedAndPassingDKIM &&
-    session.spf.status.result !== 'pass' &&
-    !isLegitDSN &&
-    !isTruthSource
-  ) {
+  // DMARC p=quarantine rejection. A connection allowlist describes the
+  // transport, not the claimed sender, and must not override DMARC failure.
+  if (shouldRejectDmarcQuarantine(session, isTruthSource, isLegitDSN)) {
     // console.error('DMARC p=quarantine would reject', {
     //   remoteAddress: session.remoteAddress,
     //   hostNameAppearsAs: session.hostNameAppearsAs,
@@ -380,47 +360,30 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     );
 
   //
-  // Sender authentication enforcement for non-allowlisted senders
-  // (similar to Gmail/Outlook/Yahoo 2024+ requirements)
+  // Sender authentication enforcement.
   //
-  // Reject messages from non-allowlisted senders that have NO authentication:
-  // - No passing DKIM (aligned or otherwise)
-  // - No passing SPF (envelope or From header)
+  // Reject messages that have no authentication aligned to the RFC 5322 From:
+  // - No passing aligned DKIM
+  // - No passing SPF evaluated for the From address
   // - DMARC not passing
   //
   // This prevents completely unauthenticated mail from being delivered,
   // which is the primary vector for spam from throwaway VPS instances
   // (e.g. IPv6 addresses with no rDNS, no SPF, no DKIM, DMARC p=none).
   //
-  // Allowlisted senders (session.isAllowlisted) are exempt because they
-  // are trusted infrastructure (Gmail, Outlook, etc.) that may relay
-  // mail on behalf of misconfigured senders.
-  //
-  // Truth source ARC sealers are also exempt (already handled above).
+  // A connection allowlist is transport reputation only. It does not prove
+  // that the claimed sender authorized the message, so it must not exempt
+  // unauthenticated mail. Validated truth-source ARC and legitimate DSNs are
+  // the only exceptions here.
   //
   if (
-    !session.isAllowlisted &&
-    !isTruthSource &&
-    !isLegitDSN &&
-    // no passing DKIM at all (aligned or unaligned)
-    !session.hadAlignedAndPassingDKIM &&
-    !hasSomePassingDKIM(session) &&
-    // SPF did not pass for envelope MAIL FROM
-    session.spf.status.result !== 'pass' &&
-    // SPF did not pass for From header either
-    session.spfFromHeader.status.result !== 'pass' &&
-    // DMARC did not pass
-    !(
-      session.dmarc &&
-      session.dmarc.status &&
-      session.dmarc.status.result === 'pass'
-    ) &&
+    shouldRejectUnauthenticatedMessage(session, isTruthSource, isLegitDSN) &&
     // exception for Ubuntu custom postfix setup
     (!session.resolvedRootClientHostname ||
       !UBUNTU_DOMAINS.includes(session.resolvedRootClientHostname))
   )
     throw new SMTPError(
-      'The email sent has no passing authentication (SPF, DKIM, or DMARC). Messages must pass at least one of SPF or DKIM to be accepted. Please configure email authentication for your sending domain.',
+      'The email sent has no passing authentication aligned with the From address (SPF, DKIM, or DMARC). Please configure email authentication for your sending domain.',
       {
         responseCode:
           session.spf.status.result === 'temperror' ||
@@ -429,21 +392,6 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
             : 550
       }
     );
-}
-
-//
-// helper: returns true if at least one DKIM signature passed (regardless of alignment)
-//
-function hasSomePassingDKIM(session) {
-  if (
-    !session.dkim ||
-    !_.isArray(session.dkim.results) ||
-    _.isEmpty(session.dkim.results)
-  )
-    return false;
-  return session.dkim.results.some(
-    (r) => _.isObject(r) && _.isObject(r.status) && r.status.result === 'pass'
-  );
 }
 
 module.exports = isAuthenticatedMessage;

@@ -907,7 +907,7 @@ if (
   //
   if (
     session.originalFromAddress === 'dse_na4@docusign.net' &&
-    (session?.spf?.domain.endsWith('.onmicrosoft.com') ||
+    (session?.spf?.domain?.endsWith('.onmicrosoft.com') ||
       session?.spf?.domain === 'onmicrosoft.com')
   ) {
     throw new SMTPError(
