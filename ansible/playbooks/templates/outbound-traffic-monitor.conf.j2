@@ -1,0 +1,11 @@
+# Managed by Ansible.  Values are read by outbound-traffic-monitor.service.
+# Set INTERFACE to an interface name to override automatic default-route detection.
+INTERFACE={{ outbound_traffic_monitor_interface | quote }}
+# 1,000,000,000 bps is 1 Gbps using decimal network units.
+THRESHOLD_BPS={{ outbound_traffic_monitor_threshold_bps }}
+# The oneshot service samples for this interval on every timer activation.
+INTERVAL_SECONDS={{ outbound_traffic_monitor_interval_seconds }}
+# Require repeated elevated samples before sending the first alert.
+CONSECUTIVE_BREACHES={{ outbound_traffic_monitor_consecutive_breaches }}
+# Maximum lines in endpoint, socket, and process evidence sections.
+TOP_LINES={{ outbound_traffic_monitor_top_lines }}

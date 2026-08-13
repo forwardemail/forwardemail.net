@@ -22,6 +22,7 @@ class ThrottleStream extends Transform {
     this.tokens = 0;
     this.lastRefill = Date.now();
     this.timer = null;
+    this.limiter = options.limiter;
   }
 
   refillTokens() {
@@ -47,20 +48,25 @@ class ThrottleStream extends Transform {
     }, delay);
   }
 
-  pushChunk(chunk, offset, callback) {
+  async pushChunk(chunk, offset, callback) {
     this.refillTokens();
     if (this.tokens <= 0) {
-      this.schedule(() => this.pushChunk(chunk, offset, callback));
+      this.schedule(() => {
+        this.pushChunk(chunk, offset, callback).catch(callback);
+      });
       return;
     }
 
     const length = Math.min(Math.floor(this.tokens), chunk.length - offset);
     if (length <= 0) {
-      this.schedule(() => this.pushChunk(chunk, offset, callback));
+      this.schedule(() => {
+        this.pushChunk(chunk, offset, callback).catch(callback);
+      });
       return;
     }
 
     this.tokens -= length;
+    if (this.limiter) await this.limiter.reserve(length);
     this.push(chunk.subarray(offset, offset + length));
 
     const nextOffset = offset + length;
@@ -69,11 +75,13 @@ class ThrottleStream extends Transform {
       return;
     }
 
-    this.schedule(() => this.pushChunk(chunk, nextOffset, callback));
+    this.schedule(() => {
+      this.pushChunk(chunk, nextOffset, callback).catch(callback);
+    });
   }
 
   _transform(chunk, encoding, callback) {
-    this.pushChunk(chunk, 0, callback);
+    this.pushChunk(chunk, 0, callback).catch(callback);
   }
 
   _destroy(error, callback) {

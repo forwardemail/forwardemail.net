@@ -75,6 +75,7 @@ const { getS3Client } = require('#helpers/get-s3-client');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 const env = require('#config/env');
 
+const BackupUploadLimiter = require('#helpers/backup-upload-limiter');
 const parseBandwidth = require('#helpers/parse-bandwidth');
 const createThrottleStream = require('#helpers/throttle-stream');
 
@@ -127,6 +128,13 @@ const graceful = new Graceful({
 graceful.listen();
 
 client.setMaxListeners(0);
+
+// All sqlite-worker instances and hosts reserve from this one Redis-backed
+// budget before emitting upload chunks to R2 or another S3-compatible target.
+const backupUploadLimiter = new BackupUploadLimiter({
+  client,
+  bytesPerSecond: BACKUP_UPLOAD_BYTES_PER_SECOND
+});
 
 //
 // NOTE: out of scope asynchronous code will NOT get run
@@ -1224,7 +1232,9 @@ async function backup(payload) {
     if (shouldUpload) {
       const source = fs.createReadStream(tmp);
       const body = source.pipe(
-        createThrottleStream(BACKUP_UPLOAD_BYTES_PER_SECOND)
+        createThrottleStream(BACKUP_UPLOAD_BYTES_PER_SECOND, {
+          limiter: backupUploadLimiter
+        })
       );
       source.on('error', (err) => body.destroy(err));
 

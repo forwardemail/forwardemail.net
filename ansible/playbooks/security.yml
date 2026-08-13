@@ -44,6 +44,18 @@
       {{ lookup('env', 'SYSTEMD_INCIDENT_RECOVERY_THRESHOLD') | default('3', true) | int }}
     systemd_incident_observation_interval_seconds: 60
     systemd_incident_api_url: "https://api.github.com"
+    outbound_traffic_monitor_enabled: >-
+      {{ lookup('env', 'OUTBOUND_TRAFFIC_MONITOR_ENABLED') | default('true', true) | bool }}
+    outbound_traffic_monitor_interface: >-
+      {{ lookup('env', 'OUTBOUND_TRAFFIC_MONITOR_INTERFACE') | default('auto', true) }}
+    outbound_traffic_monitor_threshold_bps: >-
+      {{ lookup('env', 'OUTBOUND_TRAFFIC_MONITOR_THRESHOLD_BPS') | default('1000000000', true) | int }}
+    outbound_traffic_monitor_interval_seconds: >-
+      {{ lookup('env', 'OUTBOUND_TRAFFIC_MONITOR_INTERVAL_SECONDS') | default('15', true) | int }}
+    outbound_traffic_monitor_consecutive_breaches: >-
+      {{ lookup('env', 'OUTBOUND_TRAFFIC_MONITOR_CONSECUTIVE_BREACHES') | default('2', true) | int }}
+    outbound_traffic_monitor_top_lines: >-
+      {{ lookup('env', 'OUTBOUND_TRAFFIC_MONITOR_TOP_LINES') | default('25', true) | int }}
     systemd_incident_host_map:
       mongo.forwardemail.net:
         component: mongo.forwardemail.net
@@ -350,6 +362,7 @@
         - package-monitor.timer
         - open-ports-monitor.timer
         - ssl-certificate-monitor.timer
+        - outbound-traffic-monitor.timer
   tasks:
     # Ensure netplan is installed and protected from removal
     - name: Ensure netplan is installed
@@ -1366,6 +1379,103 @@
         group: root
         mode: '0755'
 
+    - name: Validate outbound traffic monitor configuration
+      ansible.builtin.assert:
+        that:
+          - outbound_traffic_monitor_threshold_bps | int >= 1000000
+          - outbound_traffic_monitor_interval_seconds | int >= 1
+          - outbound_traffic_monitor_interval_seconds | int <= 300
+          - outbound_traffic_monitor_consecutive_breaches | int >= 1
+          - outbound_traffic_monitor_consecutive_breaches | int <= 60
+          - outbound_traffic_monitor_top_lines | int >= 1
+          - outbound_traffic_monitor_top_lines | int <= 100
+        fail_msg: >-
+          Invalid outbound traffic monitor configuration. The threshold must be
+          at least 1 Mbps; the sample interval must be 1-300 seconds; the
+          consecutive breach count must be 1-60; and TOP_LINES must be 1-100.
+      when: outbound_traffic_monitor_enabled | bool
+      tags:
+        - forwardemail-outbound-traffic-monitor
+
+    - name: Install outbound traffic monitor runtime dependencies
+      ansible.builtin.apt:
+        name:
+          - iproute2
+          - procps
+        state: present
+      when: outbound_traffic_monitor_enabled | bool
+      tags:
+        - forwardemail-outbound-traffic-monitor
+
+    - name: Create outbound traffic monitor state directory
+      ansible.builtin.file:
+        path: /var/lib/outbound-traffic-monitor
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+      when: outbound_traffic_monitor_enabled | bool
+      tags:
+        - forwardemail-outbound-traffic-monitor
+
+    - name: Deploy outbound traffic monitor script
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/outbound-traffic-monitor.sh"
+        dest: /usr/local/bin/outbound-traffic-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+      when: outbound_traffic_monitor_enabled | bool
+      notify: Restart monitoring services
+      tags:
+        - forwardemail-outbound-traffic-monitor
+
+    - name: Deploy outbound traffic monitor configuration
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/outbound-traffic-monitor.conf.j2"
+        dest: /etc/security-monitor/outbound-traffic-monitor.conf
+        owner: root
+        group: root
+        mode: '0644'
+      when: outbound_traffic_monitor_enabled | bool
+      notify: Restart monitoring services
+      tags:
+        - forwardemail-outbound-traffic-monitor
+
+    - name: Deploy outbound traffic monitor service
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/outbound-traffic-monitor.service.j2"
+        dest: /etc/systemd/system/outbound-traffic-monitor.service
+        owner: root
+        group: root
+        mode: '0644'
+      when: outbound_traffic_monitor_enabled | bool
+      notify: Restart monitoring services
+      tags:
+        - forwardemail-outbound-traffic-monitor
+
+    - name: Deploy outbound traffic monitor timer
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/outbound-traffic-monitor.timer.j2"
+        dest: /etc/systemd/system/outbound-traffic-monitor.timer
+        owner: root
+        group: root
+        mode: '0644'
+      when: outbound_traffic_monitor_enabled | bool
+      notify: Restart monitoring services
+      tags:
+        - forwardemail-outbound-traffic-monitor
+
+    - name: Disable outbound traffic monitoring when configured off
+      ansible.builtin.systemd:
+        name: outbound-traffic-monitor.timer
+        enabled: false
+        state: stopped
+      when: not (outbound_traffic_monitor_enabled | bool)
+      failed_when: false
+      tags:
+        - forwardemail-outbound-traffic-monitor
+
     - name: Deploy system resource monitor script
       copy:
         src: "{{ playbook_dir }}/files/system-resource-monitor.sh"
@@ -1593,6 +1703,15 @@
     - name: Reload systemd daemon for monitoring services
       systemd:
         daemon_reload: yes
+
+    - name: Enable and start outbound traffic monitor timer
+      ansible.builtin.systemd:
+        name: outbound-traffic-monitor.timer
+        enabled: true
+        state: started
+      when: outbound_traffic_monitor_enabled | bool
+      tags:
+        - forwardemail-outbound-traffic-monitor
 
     - name: Enable and start system resource monitor timer
       systemd:

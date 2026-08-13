@@ -1,0 +1,13 @@
+[Unit]
+Description=Forward Email Outbound Traffic Monitor Timer
+Documentation=https://github.com/forwardemail/forwardemail.net
+Requires=outbound-traffic-monitor.service
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=1min
+AccuracySec=5s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

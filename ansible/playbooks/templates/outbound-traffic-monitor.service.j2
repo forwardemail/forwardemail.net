@@ -1,0 +1,21 @@
+[Unit]
+Description=Forward Email Outbound Traffic Monitor
+Documentation=https://github.com/forwardemail/forwardemail.net
+After=network-online.target
+Wants=network-online.target
+OnFailure=failure-notification@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/outbound-traffic-monitor.sh
+User=root
+Group=root
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/outbound-traffic-monitor /tmp
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=outbound-traffic-monitor

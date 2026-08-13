@@ -30,6 +30,35 @@ test('throttles stream throughput', async (t) => {
   t.deepEqual(Buffer.concat(chunks), payload);
 });
 
+test('reserves every emitted chunk through an optional shared limiter', async (t) => {
+  const payload = Buffer.alloc(300, 1);
+  const chunks = [];
+  const reservations = [];
+  const throttle = createThrottleStream(1000, {
+    burstWindow: 100,
+    limiter: {
+      async reserve(length) {
+        reservations.push(length);
+      }
+    }
+  });
+
+  throttle.on('data', (chunk) => chunks.push(chunk));
+
+  await new Promise((resolve, reject) => {
+    throttle.once('error', reject);
+    throttle.once('end', resolve);
+    Readable.from([payload]).pipe(throttle);
+  });
+
+  t.deepEqual(Buffer.concat(chunks), payload);
+  t.is(
+    reservations.reduce((total, length) => total + length, 0),
+    payload.length
+  );
+  t.true(reservations.every((length) => length > 0 && length <= 100));
+});
+
 test('rejects invalid throughput', (t) => {
   for (const value of [undefined, 0, -1, Number.NaN]) {
     t.throws(() => createThrottleStream(value), { instanceOf: TypeError });
