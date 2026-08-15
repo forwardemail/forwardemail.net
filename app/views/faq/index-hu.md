@@ -635,6 +635,13 @@ echo "Teszt e-mail törzse" | mail -s "Teszt tárgy" recipient@example.com
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>A Google elavulttá tette ezt a Gmail Send Mail As beállítást. Kérjük, tekintse át <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Használjon ehelyett <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>‑et, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a>‑ot vagy más e-mail klienst. Lásd <a class="alert-link" href="/faq">Forward Email FAQ</a> segítségért.</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Teszt e-mail törzse" | mail -s "Teszt tárgy" recipient@example.com
 </div>
 
 ### Mi az a legacy free útmutató a Send Mail As használatához Gmailen keresztül {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>A Google elavulttá tette ezt a Gmail Send Mail As beállítást. Kérjük, tekintse át <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Használjon ehelyett <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>‑et, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a>‑ot vagy más e-mail klienst. Lásd <a class="alert-link" href="/faq">Forward Email FAQ</a> segítségért.</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Fontos:</strong> Ez a legacy free útmutató 2023 májusa óta elavult, mivel <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">most már támogatjuk a kimenő SMTP-t</a>. Ha az alábbi útmutatót használod, akkor <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">ez azt eredményezi, hogy a kimenő e-mailed</a> a Gmailben "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" felirattal jelenik meg.</a></div>
 

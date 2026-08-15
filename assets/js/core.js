@@ -450,7 +450,7 @@ window.addEventListener(
         if ($container.length === 0) $container = $(this);
         $container.tooltip('dispose').css('cursor', 'copy');
       });
-      const clipboard = new Clipboard('code', {
+      const codeClipboard = new Clipboard('code', {
         text(trigger) {
           return trigger.textContent;
         },
@@ -458,8 +458,15 @@ window.addEventListener(
           return trigger.tagName === 'CODE' ? trigger : trigger.closest('code');
         }
       });
-      clipboard.on('success', successHandler);
-      clipboard.on('error', errorHandler);
+      codeClipboard.on('success', successHandler);
+      codeClipboard.on('error', errorHandler);
+
+      // Existing templates use Clipboard.js data attributes for controls such
+      // as OTP recovery-key Copy. Instantiate that selector explicitly; the
+      // code-block initializer above only handles <code> elements.
+      const buttonClipboard = new Clipboard('[data-toggle="clipboard"]');
+      buttonClipboard.on('success', successHandler);
+      buttonClipboard.on('error', errorHandler);
     }
 
     //

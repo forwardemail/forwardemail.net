@@ -635,6 +635,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google telah menghentikan dukungan untuk pengaturan Gmail Send Mail As ini. Harap tinjau <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Gunakan <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a>, atau klien email lain sebagai gantinya. Lihat <a class="alert-link" href="/faq">Forward Email FAQ</a> untuk bantuan.</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 ### Apa itu panduan legacy gratis untuk Kirim Email Sebagai menggunakan Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google telah menghentikan dukungan untuk pengaturan Gmail Send Mail As ini. Harap tinjau <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Gunakan <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a>, atau klien email lain sebagai gantinya. Lihat <a class="alert-link" href="/faq">Forward Email FAQ</a> untuk bantuan.</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Penting:</strong> Panduan legacy gratis ini sudah tidak digunakan sejak Mei 2023 karena <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">kami sekarang mendukung SMTP keluar</a>. Jika Anda menggunakan panduan di bawah ini, maka <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">ini akan menyebabkan email keluar Anda</a> menampilkan "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" di Gmail.</a></div>
 

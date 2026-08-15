@@ -99,8 +99,23 @@ test('GET otp/setup > successful', async (t) => {
   // GET setup page
   const res = await web.get(`/en${config.otpRoutePrefix}/setup`);
 
+  const csp = res.headers['content-security-policy'];
+  const nonceMatch = csp.match(/script-src[^;]*'nonce-([a-f\d]+)'/);
+  const scripts = [...res.text.matchAll(/<script\b[^>]*>/g)];
+
   t.is(res.status, 200);
   t.true(res.text.includes('id="otp-recovery-keys"'));
+  t.truthy(nonceMatch, 'OTP setup must include a script-src nonce');
+  t.true(scripts.length > 0, 'OTP setup must render scripts');
+  for (const script of scripts)
+    t.regex(
+      script[0],
+      new RegExp(`\\bnonce="${nonceMatch[1]}"`),
+      `OTP setup script must carry the response CSP nonce: ${script[0].slice(
+        0,
+        120
+      )}`
+    );
 });
 
 test('POST otp/setup > successful', async (t) => {

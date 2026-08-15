@@ -635,6 +635,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google이 이 Gmail Send Mail As 설정을 더 이상 지원하지 않습니다. <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>을(를) 확인하세요. 대신 <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> 또는 다른 이메일 클라이언트를 사용하세요. 도움말은 <a class="alert-link" href="/faq">Forward Email FAQ</a>를 참조하세요.</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 ### Gmail을 사용한 Send Mail As의 레거시 무료 가이드란 무엇인가요 {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google이 이 Gmail Send Mail As 설정을 더 이상 지원하지 않습니다. <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>을(를) 확인하세요. 대신 <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> 또는 다른 이메일 클라이언트를 사용하세요. 도움말은 <a class="alert-link" href="/faq">Forward Email FAQ</a>를 참조하세요.</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">중요:</strong> 이 레거시 무료 가이드는 2023년 5월부터 <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">이제 아웃바운드 SMTP를 지원하기 때문에</a> 더 이상 사용되지 않습니다. 아래 가이드를 사용하면 <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">Gmail에서 아웃바운드 이메일에 "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>"가 표시됩니다.</a></div>
 

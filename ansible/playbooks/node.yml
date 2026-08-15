@@ -171,14 +171,64 @@
     #    hour: '*'
     #    minute: '*/20'
     #    job: 'NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/check-pm2.js > /dev/null 2>&1'
-    - name: Reload pm2 every 6 hours
+    - name: Remove legacy PM2 reload cron job
       become: true
       become_user: deploy
       cron:
         name: 'reload'
-        hour: '*/6'
-        minute: '0'
-        job: '/home/deploy/n/bin/node /home/deploy/n/bin/pm2 reload all > /dev/null 2>&1'
+        state: absent
+
+    - name: Create daily PM2 reload service
+      copy:
+        dest: /etc/systemd/system/forwardemail-pm2-reload.service
+        content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          [Unit]
+          Description=Reload all PM2 applications once per day
+
+          [Service]
+          Type=oneshot
+          User=deploy
+          Group=deploy
+          Environment=HOME=/home/deploy
+          Environment=PATH=/home/deploy/n/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          RuntimeDirectory=forwardemail-pm2-reload
+          RuntimeDirectoryMode=0755
+          ExecStart=/usr/bin/flock -n /run/forwardemail-pm2-reload/reload.lock /home/deploy/n/bin/pm2 reload all
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create daily PM2 reload timer
+      copy:
+        dest: /etc/systemd/system/forwardemail-pm2-reload.timer
+        content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          [Unit]
+          Description=Reload all PM2 applications daily at 1:00 AM Central Time
+
+          [Timer]
+          OnCalendar=*-*-* 01:00:00 America/Chicago
+          AccuracySec=1min
+          Unit=forwardemail-pm2-reload.service
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload systemd daemon for daily PM2 reload
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start daily PM2 reload timer
+      systemd:
+        name: forwardemail-pm2-reload.timer
+        enabled: yes
+        state: started
     - name: Install or upgrade pnpm
       become: true
       become_user: deploy
@@ -302,8 +352,12 @@
       stat:
         path: /etc/systemd/system/pm2-deploy.service
       register: pm2_startup_result
-    - name: Install pm2 startup script
-      shell: sudo env PATH=$PATH:/home/deploy/n/bin pm2 startup ubuntu -u deploy --hp /home/deploy
+    - name: Install PM2 startup script when missing
+      become: true
+      command: /home/deploy/n/bin/pm2 startup systemd -u deploy --hp /home/deploy
+      environment:
+        PATH: /home/deploy/n/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      when: not pm2_startup_result.stat.exists
 
     # Add failure notification to PM2 service
     - name: Create pm2-deploy service override directory

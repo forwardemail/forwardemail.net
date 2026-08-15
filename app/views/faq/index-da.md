@@ -635,6 +635,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google har afviklet denne Gmail Send Mail As-opsætning. Gennemse venligst <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Brug i stedet <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> eller en anden e-mailklient. Se <a class="alert-link" href="/faq">Forward Email FAQ</a> for hjælp.</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 ### Hvad er den legacy gratis guide til Send Mail As ved brug af Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google har afviklet denne Gmail Send Mail As-opsætning. Gennemse venligst <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Brug i stedet <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> eller en anden e-mailklient. Se <a class="alert-link" href="/faq">Forward Email FAQ</a> for hjælp.</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Vigtigt:</strong> Denne legacy gratis guide er forældet fra maj 2023, da <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">vi nu understøtter udgående SMTP</a>. Hvis du bruger guiden nedenfor, vil <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">det få din udgående e-mail</a> til at vise "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" i Gmail.</a></div>
 

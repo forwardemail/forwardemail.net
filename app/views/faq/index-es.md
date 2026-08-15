@@ -635,6 +635,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google ha desaprobado esta configuración Gmail Send Mail As. Por favor revise <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Use <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> u otro cliente de correo en su lugar. Consulte <a class="alert-link" href="/faq">Forward Email FAQ</a> para obtener ayuda.</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 ### ¿Qué es la guía legacy free para Enviar correo como usando Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google ha desaprobado esta configuración Gmail Send Mail As. Por favor revise <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Use <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> u otro cliente de correo en su lugar. Consulte <a class="alert-link" href="/faq">Forward Email FAQ</a> para obtener ayuda.</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Importante:</strong> Esta guía legacy free está obsoleta desde mayo de 2023 ya que <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">ahora soportamos SMTP saliente</a>. Si usas la guía a continuación, entonces <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">esto hará que tu correo saliente</a> diga "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" en Gmail.</a></div>
 

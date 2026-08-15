@@ -635,6 +635,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>أوقفت Google دعم إعداد Gmail Send Mail As هذا. يرجى مراجعة <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. استخدم <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a> أو <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> أو عميل بريد إلكتروني آخر بدلًا من ذلك. انظر <a class="alert-link" href="/faq">Forward Email FAQ</a> للمساعدة.</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 ### ما هو الدليل الخالي من التراث لإرسال البريد كـ باستخدام Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>أوقفت Google دعم إعداد Gmail Send Mail As هذا. يرجى مراجعة <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. استخدم <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a> أو <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> أو عميل بريد إلكتروني آخر بدلًا من ذلك. انظر <a class="alert-link" href="/faq">Forward Email FAQ</a> للمساعدة.</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">مهم:</strong> هذا الدليل الخالي من التراث مهجور اعتبارًا من مايو 2023 لأن <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">نحن الآن ندعم SMTP الصادر</a>. إذا استخدمت الدليل أدناه، فإن <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">هذا سيجعل بريدك الصادر</a> يظهر "<span class="notranslate text-danger font-weight-bold">عبر forwardemail dot net</span>" في Gmail.</a></div>
 

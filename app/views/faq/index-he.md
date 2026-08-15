@@ -635,6 +635,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google הפסיקה את התמיכה בהגדרת Gmail Send Mail As זו. אנא בדוק את <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. השתמש במקום זאת ב-<a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, ב-<a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> או בלקוח דואר אחר. ראה <a class="alert-link" href="/faq">Forward Email FAQ</a> לעזרה.</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 ### מהו המדריך ללא מורשת לשליחת דואר בשם באמצעות Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google הפסיקה את התמיכה בהגדרת Gmail Send Mail As זו. אנא בדוק את <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. השתמש במקום זאת ב-<a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, ב-<a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> או בלקוח דואר אחר. ראה <a class="alert-link" href="/faq">Forward Email FAQ</a> לעזרה.</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">חשוב:</strong> מדריך ללא מורשת זה אינו בתוקף מאז מאי 2023 מכיוון ש<a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">כעת אנו תומכים ב-SMTP יוצא</a>. אם תשתמש במדריך למטה, אז <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">זה יגרום למייל היוצא שלך</a> להופיע כ-"<span class="notranslate text-danger font-weight-bold">דרך forwardemail dot net</span>" ב-Gmail.</a></div>
 

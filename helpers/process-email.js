@@ -1193,6 +1193,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
               user.group !== 'admin' &&
               domain.name !== env.WEB_HOST &&
               err.truthSource &&
+              // Catch-all passwords and stale queued emails may not resolve to
+              // an Alias document. Only persisted aliases can be suspended or
+              // generate a suspension notification.
+              alias &&
+              alias._id &&
               typeof err.bounceInfo === 'object' &&
               typeof err.bounceInfo.category === 'string' &&
               ['virus', 'spam'].includes(err.bounceInfo.category)

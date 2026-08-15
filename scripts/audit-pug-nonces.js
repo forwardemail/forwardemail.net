@@ -4,8 +4,10 @@
  * Copyright (c) Forward Email LLC
  * SPDX-License-Identifier: BUSL-1.1
  *
- * Audit all .pug templates for inline <script> and <style> blocks
- * that are missing a `nonce` attribute.  Exits non-zero when violations
+ * Audit all .pug templates for <script> and <style> blocks that are
+ * missing a `nonce` attribute.  This includes external scripts because
+ * script-src uses strict-dynamic, which requires the nonce in modern browsers.
+ * Exits non-zero when violations
  * are found so it can gate CI.
  *
  * Usage:  node scripts/audit-pug-nonces.js [dir]
@@ -81,8 +83,9 @@ for (const file of files) {
   for (let i = 0; i < lines.length; i++) {
     const trimmed = lines[i].trimStart();
 
-    // Match inline script or style tags (not script(src=...) external refs)
-    const isScript = /^script[\s.(]/.test(trimmed) && !trimmed.includes('src=');
+    // Match every script tag, including external script(src=...) references.
+    // strict-dynamic requires the per-request nonce for both kinds of script.
+    const isScript = /^script[\s.(]/.test(trimmed);
     const isStyle = /^style[\s.(]/.test(trimmed);
 
     if (!isScript && !isStyle) continue;
@@ -98,11 +101,11 @@ for (const file of files) {
 
 if (violations.length > 0) {
   console.error(
-    `\n\u274C  Found ${violations.length} inline script/style tag(s) missing nonce:\n`
+    `\n❌  Found ${violations.length} script/style tag(s) missing nonce:\n`
   );
   for (const v of violations) console.error(`   ${v}`);
   console.error(
-    '\n   Every inline <script> and <style> MUST have nonce=nonce for CSP.\n'
+    '\n   Every <script> and <style> tag MUST have nonce=nonce for CSP.\n'
   );
   process.exit(1);
 } else {

@@ -635,6 +635,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google визнала застарілим це налаштування Gmail Send Mail As. Будь ласка, перегляньте <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Використовуйте натомість <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> або інший поштовий клієнт. Див. <a class="alert-link" href="/faq">Forward Email FAQ</a> для допомоги.</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 ### Що таке спадковий безкоштовний посібник для Send Mail As за допомогою Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google визнала застарілим це налаштування Gmail Send Mail As. Будь ласка, перегляньте <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Використовуйте натомість <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> або інший поштовий клієнт. Див. <a class="alert-link" href="/faq">Forward Email FAQ</a> для допомоги.</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Важливо:</strong> Цей спадковий безкоштовний посібник застарів станом на травень 2023 року, оскільки <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">ми тепер підтримуємо вихідний SMTP</a>. Якщо ви використовуєте посібник нижче, то <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">це спричинить появу у вашій вихідній електронній пошті</a> напису "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" у Gmail.</a></div>
 

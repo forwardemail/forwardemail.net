@@ -4,9 +4,8 @@
  */
 
 const test = require('ava');
-const cheerio = require('cheerio');
-
 const utils = require('../utils');
+const config = require('#config');
 
 test.before(utils.setupMongoose);
 test.before(utils.setupWebServer);
@@ -17,6 +16,25 @@ async function fetchPage(t, path = '/en') {
   const { web } = t.context;
   const res = await web.get(path).set({ Accept: 'text/html' });
   return res;
+}
+
+function assertAllScriptsCarryResponseNonce(t, res, path) {
+  const csp = res.headers['content-security-policy'];
+  const nonceMatch = csp.match(/script-src[^;]*'nonce-([a-f\d]+)'/);
+  const scripts = [...res.text.matchAll(/<script\b[^>]*>/g)];
+
+  t.truthy(nonceMatch, `${path} must include a script-src nonce`);
+  t.true(scripts.length > 0, `${path} must render at least one script`);
+
+  for (const script of scripts)
+    t.regex(
+      script[0],
+      new RegExp(`\\bnonce="${nonceMatch[1]}"`),
+      `${path} script must carry its response CSP nonce: ${script[0].slice(
+        0,
+        120
+      )}`
+    );
 }
 
 test('CSP header is present on HTML responses', async (t) => {
@@ -51,18 +69,9 @@ test('CSP style-src does NOT contain a nonce (unsafe-inline only)', async (t) =>
   );
 });
 
-test('CSP script-src nonce matches nonce attributes in HTML', async (t) => {
+test('every root-page script tag carries the response CSP nonce', async (t) => {
   const res = await fetchPage(t);
-  const csp = res.headers['content-security-policy'];
-  const nonceMatch = csp.match(/'nonce-([a-f\d]+)'/);
-  t.truthy(nonceMatch, 'CSP must contain a nonce token');
-  const nonce = nonceMatch[1];
-  const $ = cheerio.load(res.text);
-  const scripts = $('script[nonce]');
-  t.true(scripts.length > 0, 'page must have at least one nonced script');
-  scripts.each((_, el) => {
-    t.is($(el).attr('nonce'), nonce, 'script nonce must match CSP nonce');
-  });
+  assertAllScriptsCarryResponseNonce(t, res, '/en');
 });
 
 test('CSP header has no double-spaces (no empty/undefined tokens)', async (t) => {
@@ -103,16 +112,17 @@ test('X-CSP-Nonce header is NOT exposed to the client', async (t) => {
 
 test('every inline <script> in the HTML carries a nonce attribute', async (t) => {
   const res = await fetchPage(t);
-  const $ = cheerio.load(res.text);
-  const inlineScripts = $('script:not([src])');
+  const inlineScripts = [
+    ...res.text.matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>/g)
+  ];
+
   t.true(inlineScripts.length > 0, 'page must have at least one inline script');
-  inlineScripts.each((_, el) => {
-    const nonce = $(el).attr('nonce');
-    t.truthy(
-      nonce,
-      `inline script must have a nonce attribute: ${$(el).html()?.slice(0, 40)}`
+  for (const script of inlineScripts)
+    t.regex(
+      script[0],
+      /\bnonce="[a-f\d]+"/,
+      `inline script must carry a nonce attribute: ${script[0].slice(0, 80)}`
     );
-  });
 });
 
 test('CSP nonce works on non-root pages (e.g. /en/about)', async (t) => {
@@ -123,4 +133,46 @@ test('CSP nonce works on non-root pages (e.g. /en/about)', async (t) => {
     /script-src[^;]*'nonce-[a-f\d]+'/,
     'non-root page must also have nonce in CSP'
   );
+});
+
+test('password recovery pages carry the nonce on every script', async (t) => {
+  const resetToken = 'a'.repeat(32);
+
+  for (const path of [
+    '/en/forgot-password',
+    `/en/reset-password/${resetToken}`
+  ]) {
+    const res = await fetchPage(t, path);
+    t.is(res.status, 200, `${path} must render successfully`);
+    assertAllScriptsCarryResponseNonce(t, res, path);
+  }
+});
+
+test('shared client bundle and Turnstile loader carry the CSP nonce', async (t) => {
+  const res = await fetchPage(t, '/en/forgot-password');
+  const csp = res.headers['content-security-policy'];
+  const nonceMatch = csp.match(/script-src[^;]*'nonce-([a-f\d]+)'/);
+
+  assertAllScriptsCarryResponseNonce(t, res, '/en/forgot-password');
+  t.regex(
+    res.text,
+    new RegExp(
+      `<script[^>]*nonce="${nonceMatch[1]}"[^>]*src="[^"]*/js/build\\.js[^"]*"`
+    ),
+    'the shared client bundle must carry the CSP nonce'
+  );
+
+  if (config.turnstileEnabled) {
+    t.regex(
+      res.text,
+      new RegExp(
+        `<script[^>]*nonce="${nonceMatch[1]}"[^>]*src="https://challenges\\.cloudflare\\.com/turnstile/`
+      ),
+      'the Turnstile script must carry the CSP nonce'
+    );
+    t.true(
+      csp.includes('https://challenges.cloudflare.com'),
+      'CSP must allow the Turnstile host'
+    );
+  }
 });

@@ -635,6 +635,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google ได้ยกเลิกการใช้งานการตั้งค่า Gmail Send Mail As นี้แล้ว กรุณาตรวจสอบ <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a> ใช้ <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> หรือโปรแกรมอีเมลอื่นแทน ดู <a class="alert-link" href="/faq">Forward Email FAQ</a> สำหรับความช่วยเหลือ</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 ### คู่มือฟรีแบบเก่าสำหรับการส่งอีเมลในนาม Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google ได้ยกเลิกการใช้งานการตั้งค่า Gmail Send Mail As นี้แล้ว กรุณาตรวจสอบ <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a> ใช้ <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> หรือโปรแกรมอีเมลอื่นแทน ดู <a class="alert-link" href="/faq">Forward Email FAQ</a> สำหรับความช่วยเหลือ</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">สำคัญ:</strong> คู่มือฟรีแบบเก่านี้เลิกใช้ตั้งแต่เดือนพฤษภาคม 2023 เนื่องจาก <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">ตอนนี้เรารองรับการส่งอีเมลผ่าน SMTP แล้ว</a> หากคุณใช้คู่มือด้านล่างนี้ <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">จะทำให้อีเมลขาออกของคุณ</a> แสดงข้อความ "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" ใน Gmail</a></div>
 

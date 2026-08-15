@@ -35,6 +35,28 @@ footer.mt-auto(aria-label=t("Footer"))
         if (domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
           //- Empty on purpose
         else
+          - const isTrustpilotEligibleUser = user && user.created_at && dayjs(user.created_at).add(3, "month").isBefore(dayjs());
+          - const hasOnlyGoodDomains = typeof domains !== "undefined" && Array.isArray(domains) && domains.length > 0 && domains.every((userDomain) => typeof userDomain.name === "string" && config.goodDomains.some((ext) => userDomain.name.toLowerCase().endsWith(`.${ext}`)));
+          if isTrustpilotEligibleUser && hasOnlyGoodDomains
+            .text-center.mb-3
+              a(
+                href="https://www.trustpilot.com/review/forwardemail.net",
+                target="_blank",
+                rel="noopener noreferrer"
+              )
+                noscript
+                  img(
+                    alt=t("Review us on Trustpilot"),
+                    src=manifest("img/trustpilot.png"),
+                    width="216.5",
+                    height="52"
+                  )
+                img.lazyload(
+                  alt=t("Review us on Trustpilot"),
+                  data-src=manifest("img/trustpilot.png"),
+                  width="216.5",
+                  height="52"
+                )
           .small.text-center.mb-3: strong= t("Learn more about:")
           ul.list-inline.mb-5.text-center
             li.list-inline-item.mb-3

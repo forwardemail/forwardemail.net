@@ -635,6 +635,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google on poistanut tämän Gmail Send Mail As -asetuksen käytöstä. Tarkista <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Käytä sen sijaan <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> tai muuta sähköpostiohjelmaa. Katso <a class="alert-link" href="/faq">Forward Email FAQ</a> apua varten.</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </div>
 
 ### Mikä on perinteetön opas Send Mail As -toiminnon käyttöön Gmaililla {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google on poistanut tämän Gmail Send Mail As -asetuksen käytöstä. Tarkista <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Käytä sen sijaan <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> tai muuta sähköpostiohjelmaa. Katso <a class="alert-link" href="/faq">Forward Email FAQ</a> apua varten.</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Tärkeää:</strong> Tämä perinteetön opas on vanhentunut toukokuusta 2023 lähtien, koska <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">tuemme nyt lähtevää SMTP:tä</a>. Jos käytät alla olevaa opasta, <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">tämä saa lähtevän sähköpostisi</a> näyttämään Gmailissa "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" -merkinnän.</a></div>
 

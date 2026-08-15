@@ -635,6 +635,13 @@ echo "Тело тестового письма" | mail -s "Тестовая те
 </div>
 
 <div id="send-mail-as-content">
+<!-- gmail-send-as-deprecation-notice -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google объявил устаревшим эту настройку Gmail Send Mail As. Пожалуйста, ознакомьтесь с <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Используйте вместо этого <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> или другой почтовый клиент. См. <a class="alert-link" href="/faq">Forward Email FAQ</a> для получения помощи.</span>
+</div>
+
 
 <div class="alert alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,6 +709,13 @@ echo "Тело тестового письма" | mail -s "Тестовая те
 </div>
 
 ### Что такое устаревшее бесплатное руководство по отправке почты от имени с использованием Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<!-- gmail-send-as-deprecation-notice-free -->
+<div class="alert my-3 alert-danger">
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">Important:</strong>
+  <span>Google объявил устаревшим эту настройку Gmail Send Mail As. Пожалуйста, ознакомьтесь с <a class="alert-link" href="https://support.google.com/mail/answer/17101213" target="_blank" rel="noopener noreferrer">Google announcement</a>. Используйте вместо этого <a class="alert-link" href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email Webmail</a>, <a class="alert-link" href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Forward Email apps</a> или другой почтовый клиент. См. <a class="alert-link" href="/faq">Forward Email FAQ</a> для получения помощи.</span>
+</div>
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Важно:</strong> Это устаревшее бесплатное руководство устарело с мая 2023 года, так как <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">мы теперь поддерживаем исходящий SMTP</a>. Если вы используете руководство ниже, то <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">ваша исходящая почта</a> будет отображаться с надписью «<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>» в Gmail.</a></div>
 
