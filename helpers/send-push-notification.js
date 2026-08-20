@@ -461,8 +461,14 @@ function buildPayload(event, data) {
   // is how the generic `You have a new ${event} event` string reached devices
   // in the first place — a transport that forwards whatever it is given (the
   // UnifiedPush body, for one) will happily display it.
+  //
+  // `suppressAlert` is set by a producer that knows an earlier alert already
+  // fired for this message (e.g. the tmp storage sync-back in on-append via
+  // sync-temporary-mailbox): deliver the data for cache sync, never re-alert.
   const silent =
-    !USER_VISIBLE_PUSH_EVENTS.has(event) || !isAlertWorthyNewMessage(data);
+    !USER_VISIBLE_PUSH_EVENTS.has(event) ||
+    !isAlertWorthyNewMessage(data) ||
+    data.suppressAlert === true;
 
   // Map WS events to human-readable notification content
   const TITLES = {
@@ -590,7 +596,12 @@ function buildPayload(event, data) {
       //       with 400 INVALID_ARGUMENT if it is present
       sender: safeFrom,
       subject: safeSubject,
-      snippet: safeSnippet
+      snippet: safeSnippet,
+      // Forwarded so clients that draw their own notification from the data
+      // payload (Android foreground, web) also skip re-alerting. Kept as a
+      // distinct key rather than reusing `silent` because the UnifiedPush
+      // body spreads this object after its own boolean silent field.
+      ...(data.suppressAlert === true ? { suppressAlert: 'true' } : {})
     }
   };
 }

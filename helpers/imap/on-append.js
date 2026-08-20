@@ -920,6 +920,11 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // send websocket push notification (enriched payload mirrors GET /v1/messages/:id)
     sendNotification(this.client, session.user.alias_id, 'newMessage', {
       mailbox: path,
+      // Set by sync-temporary-mailbox when draining tmp storage into the
+      // main DB. The tmp storage delivery already sent a user-visible alert
+      // for this message, so this event must stay silent on the push side
+      // (websocket clients and data pushes still receive it for cache sync).
+      ...(session.suppressPushAlert === true ? { suppressAlert: true } : {}),
       message: {
         id: message._id.toString(),
         root_id: message.root ? message.root.toString() : undefined,

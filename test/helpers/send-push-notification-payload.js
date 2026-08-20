@@ -113,3 +113,45 @@ test('buildPayload > newMessage without snippet uses subject-only body', (t) => 
   t.is(payload.title, 'John Smith');
   t.is(payload.body, 'Meeting tomorrow');
 });
+
+test('buildPayload > suppressAlert forces an otherwise alert-worthy newMessage silent', (t) => {
+  // Shape sent by onAppend when sync-temporary-mailbox drains tmp storage:
+  // the tmp delivery already alerted the user, so this event must carry data
+  // for cache sync but never draw a second notification.
+  const payload = buildPayload('newMessage', {
+    aliasId: 'alias-1',
+    suppressAlert: true,
+    message: {
+      from: 'John Smith <john@example.com>',
+      subject: 'Meeting tomorrow',
+      snippet: 'Hey, just wanted to confirm our meeting',
+      flags: [],
+      is_unread: true
+    }
+  });
+
+  t.true(payload.silent);
+  t.is(payload.title, undefined);
+  t.is(payload.body, undefined);
+  // Data still flows for cache sync, and the flag is forwarded so clients
+  // that draw from data also skip alerting.
+  t.is(payload.data.subject, 'Meeting tomorrow');
+  t.is(payload.data.suppressAlert, 'true');
+});
+
+test('buildPayload > absent suppressAlert keeps newMessage alert-worthy', (t) => {
+  const payload = buildPayload('newMessage', {
+    aliasId: 'alias-1',
+    message: {
+      from: 'John Smith <john@example.com>',
+      subject: 'Meeting tomorrow',
+      snippet: 'Hey, just wanted to confirm our meeting',
+      flags: [],
+      is_unread: true
+    }
+  });
+
+  t.false(payload.silent);
+  t.is(payload.title, 'John Smith');
+  t.is(payload.data.suppressAlert, undefined);
+});

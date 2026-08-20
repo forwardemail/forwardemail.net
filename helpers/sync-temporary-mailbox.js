@@ -116,7 +116,15 @@ async function syncTemporaryMailbox(session) {
               checkForExisting: true,
 
               // auto-create missing Sieve-filtered mailboxes (RFC 5490)
-              createFolder: true
+              createFolder: true,
+
+              // The MX delivery that wrote this message to the temporary
+              // mailbox already sent a user-visible push alert for it
+              // (parse-payload tmp storage path). onAppend must still emit
+              // the newMessage event so websocket clients and silent data
+              // pushes keep caches in sync, but it must not alert the user
+              // a second time.
+              suppressPushAlert: true
             }
           );
 
