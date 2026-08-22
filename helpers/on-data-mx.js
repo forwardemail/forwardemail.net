@@ -1937,14 +1937,21 @@ async function onDataMX(session, headers, body) {
   // arbitrary spam checks
   // (this throws an error if any arbitrary checks were detected)
   // (this relies on `isAuthenticatedMessage` to populate `session.spf` etc)
+  let shouldRejectUnauthenticatedGmail = false;
   const [silentBanned] = await Promise.all([
     (async () => {
       //
       // check message against DKIM, SPF, DMARC
       // (this populates `session.spf`, `session.dmarc`, etc)
-      // (it also throws an error if it was found to be unauthenticated)
+      // (it returns the Gmail-specific local-policy result after standard
+      //  sender-published authentication policy checks have completed)
       //
-      await isAuthenticatedMessage(headers, body, session, this.resolver);
+      shouldRejectUnauthenticatedGmail = await isAuthenticatedMessage(
+        headers,
+        body,
+        session,
+        this.resolver
+      );
 
       isArbitrary(session, headers); // , body.toString());
 
@@ -2135,6 +2142,22 @@ async function onDataMX(session, headers, body) {
   // TODO: re-enable spam scanner once v7 released
   // const data = await getRecipients.call(this, session, scan);
   const data = await getRecipients.call(this, session);
+
+  // Domain-specific allowlist/denylist checks happen during recipient
+  // resolution. Do not preempt their SMTP error or observability with the
+  // Gmail-only local policy; reject only after recipient policy evaluation
+  // completed without an error and before any delivery occurs.
+  if (shouldRejectUnauthenticatedGmail)
+    throw new SMTPError(
+      'The email sent has no passing authentication aligned with the From address (SPF, DKIM, or DMARC). Please configure email authentication for your sending domain.',
+      {
+        responseCode:
+          session.spf.status.result === 'temperror' ||
+          session.spfFromHeader.status.result === 'temperror'
+            ? 421
+            : 550
+      }
+    );
 
   // return early if necessary (e.g. all recipients were silent banned)
   if (

@@ -19,7 +19,8 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const isTruthSourceArc = require('#helpers/is-truth-source-arc');
 const {
   shouldRejectDmarcReject,
-  shouldRejectDmarcQuarantine
+  shouldRejectDmarcQuarantine,
+  shouldRejectUnauthenticatedGmail
 } = require('#helpers/should-reject-unauthenticated-message');
 
 const HOSTNAME = os.hostname();
@@ -365,6 +366,12 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
   // and p=none mail outside DMARC's scope; it must continue through the
   // normal arbitrary, denylist, greylist, and recipient-level filtering path.
   //
+
+  // Defer the Gmail-only local policy decision until `on-data-mx` has completed
+  // direct sender/domain denylist enforcement. This preserves the established
+  // denylist rejection and counter semantics while still rejecting an
+  // otherwise-acceptable unauthenticated Gmail impersonation.
+  return shouldRejectUnauthenticatedGmail(session, isTruthSource, isLegitDSN);
 }
 
 module.exports = isAuthenticatedMessage;

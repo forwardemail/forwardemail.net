@@ -1256,7 +1256,7 @@ This should get 250 quiet reject, not be caught by catch-all
   await smtp.close();
 });
 
-test('domain denylist should block email address even when hostname is not denylisted', async (t) => {
+test('domain denylist takes precedence over unauthenticated Gmail rejection', async (t) => {
   const smtp = new MX({
     client: t.context.client,
     wsp: t.context.wsp
@@ -1435,13 +1435,59 @@ This should be blocked by denylist
     smtpError = err;
   }
 
-  // Should get denylist error
+  // The sender denylist must retain precedence over the Gmail-specific
+  // authentication rejection that would otherwise apply to this message.
   t.truthy(smtpError);
   t.regex(smtpError.message, /denylisted/i);
+
+  // A different, non-denylisted Gmail sender on the identical connection path
+  // must still be rejected by the Gmail impersonation mitigation.
+  let authenticationError = null;
+  const authenticationMx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const authenticationTransporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: authenticationMx.host,
+    port: authenticationMx.port,
+    connection: authenticationMx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  try {
+    await authenticationTransporter.sendMail({
+      envelope: {
+        from: 'not-denylisted@gmail.com',
+        to: `test@${domain.name}`
+      },
+      raw: `
+To: test@${domain.name}
+From: not-denylisted@gmail.com
+Subject: test Gmail authentication rejection
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+This should be blocked by the Gmail impersonation mitigation
+`
+    });
+    t.fail('Should have thrown Gmail authentication error');
+  } catch (err) {
+    authenticationError = err;
+  }
+
+  t.truthy(authenticationError);
+  t.regex(authenticationError.message, /no passing authentication aligned/i);
   t.is(
     receivedEmails.length,
     0,
-    'Email from denylisted address should not be received'
+    'Neither denylisted nor unauthenticated Gmail mail should be received'
   );
 
   // Clear the PTR spoof so it does not bleed into subsequent tests via the
@@ -2229,6 +2275,19 @@ if address :domain "from" "gmail.com"
     )
   );
 
+  // Model a legitimate Gmail-originating message. The local test transport
+  // connects from IP_ADDRESS, so spoof aligned Gmail SPF for this fixture.
+  map.set(
+    'txt:gmail.com',
+    resolver.spoofPacket(
+      'gmail.com',
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
   await resolver.options.cache.mset(map);
 
   // Set allowlist for local IP
@@ -2852,6 +2911,19 @@ if header :contains "from" "@gmail.com"
     `txt:${domain.return_path}.${domain.name}`,
     resolver.spoofPacket(
       `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Model a legitimate Gmail-originating message. The local test transport
+  // connects from IP_ADDRESS, so spoof aligned Gmail SPF for this fixture.
+  map.set(
+    'txt:gmail.com',
+    resolver.spoofPacket(
+      'gmail.com',
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
       true,

@@ -27,7 +27,26 @@ function shouldRejectDmarcQuarantine(session, isTruthSource, isLegitDSN) {
   );
 }
 
+// gmail.com is the only Google consumer From domain whose published
+// organizational policy is p=none. Googlemail and Google are handled by their
+// published p=quarantine and p=reject policies, respectively.
+function shouldRejectUnauthenticatedGmail(session, isTruthSource, isLegitDSN) {
+  return (
+    session.originalFromAddressDomain === 'gmail.com' &&
+    !isTruthSource &&
+    !isLegitDSN &&
+    !session.hadAlignedAndPassingDKIM &&
+    session.spfFromHeader.status.result !== 'pass' &&
+    !(
+      session.dmarc &&
+      session.dmarc.status &&
+      session.dmarc.status.result === 'pass'
+    )
+  );
+}
+
 module.exports = {
   shouldRejectDmarcReject,
-  shouldRejectDmarcQuarantine
+  shouldRejectDmarcQuarantine,
+  shouldRejectUnauthenticatedGmail
 };
