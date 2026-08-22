@@ -2143,10 +2143,19 @@ async function onDataMX(session, headers, body) {
   // const data = await getRecipients.call(this, session, scan);
   const data = await getRecipients.call(this, session);
 
-  // Domain-specific allowlist/denylist checks happen during recipient
-  // resolution. Do not preempt their SMTP error or observability with the
-  // Gmail-only local policy; reject only after recipient policy evaluation
-  // completed without an error and before any delivery occurs.
+  // Recipient resolution stores domain-custom policy failures as bounces so a
+  // multi-recipient message can still reach non-blocked destinations.  When an
+  // SMTP rejection is required, however, an explicit domain denylist must take
+  // precedence over Gmail's authentication-specific local policy; otherwise a
+  // domain admin loses the intended denylist reason and observability.
+  const denylistBounce = data?.bounces?.find(
+    ({ err }) => err instanceof DenylistError
+  );
+  if (denylistBounce) throw denylistBounce.err;
+
+  // Do not preempt recipient policy evaluation with the Gmail-only local
+  // policy.  It is enforced only after no explicit domain denylist rejected
+  // the transaction and before any message delivery occurs.
   if (shouldRejectUnauthenticatedGmail)
     throw new SMTPError(
       'The email sent has no passing authentication aligned with the From address (SPF, DKIM, or DMARC). Please configure email authentication for your sending domain.',
