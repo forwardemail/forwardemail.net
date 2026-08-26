@@ -13,6 +13,15 @@ const config = require('#config');
 const Emails = require('#models/emails');
 const createSession = require('#helpers/create-session');
 const getMongoQuery = require('#helpers/get-mongo-query');
+const getAllowedSort = require('#helpers/get-allowed-sort');
+
+const EMAIL_SORT_FIELDS = new Set([
+  'id',
+  'created_at',
+  'updated_at',
+  'status',
+  'subject'
+]);
 
 // Index hints for envelope queries to ensure optimal index usage
 const ENVELOPE_FROM_INDEX_HINT = { 'envelope.from': 1, created_at: -1 };
@@ -58,7 +67,7 @@ async function list(ctx) {
   let findQuery = Emails.find(query)
     .limit(ctx.query.limit)
     .skip(ctx.paginate.skip)
-    .sort(ctx.query.sort || '-created_at')
+    .sort(getAllowedSort(ctx.query.sort, EMAIL_SORT_FIELDS, '-created_at'))
     .select('-message -headers -accepted -rejectedErrors')
     .lean()
     .maxTimeMS(MAX_TIME_MS);

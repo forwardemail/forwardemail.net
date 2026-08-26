@@ -27,7 +27,29 @@ const HOSTNAME = os.hostname();
 
 const UBUNTU_DOMAINS = Object.keys(config.ubuntuTeamMapping);
 
+function hasMultipleFromHeaders(headers) {
+  if (!headers?.headers) return false;
+
+  // Only header field lines beginning at column zero count. Folded lines can
+  // contain arbitrary text and must not be interpreted as additional fields.
+  return (
+    headers.headers
+      .toString()
+      .split(/\r?\n/)
+      .filter((line) => /^from\s*:/i.test(line)).length > 1
+  );
+}
+
 async function isAuthenticatedMessage(headers, body, session, resolver) {
+  // RFC 5322 permits exactly one From field. Reject before authentication so a
+  // malformed message cannot produce mailauth's boolean false DMARC result and
+  // fall through the normal p=none processing path.
+  if (hasMultipleFromHeaders(headers))
+    throw new SMTPError('The email sent contains multiple From headers', {
+      responseCode: 550,
+      ignore_hook: true
+    });
+
   const options = {
     ip: session.remoteAddress,
     helo: session.hostNameAppearsAs,
@@ -69,6 +91,16 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
   session.arc = results.arc;
   session.dmarc = results.dmarc;
   session.bimi = results.bimi;
+
+  // mailauth returns boolean false for structurally invalid DMARC input (for
+  // example duplicate From fields). Treat that value as authentication failure
+  // rather than as an absent p=none policy; otherwise malformed spoofed mail
+  // would evade the policy branches below.
+  if (session.dmarc === false)
+    throw new SMTPError('The email sent has invalid DMARC headers', {
+      responseCode: 550,
+      ignore_hook: true
+    });
   session.receivedChain = results.receivedChain;
 
   // we check that if SPF was aligned with "From" header

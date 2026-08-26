@@ -842,3 +842,26 @@ test('tangerine: apex $1 regex unchanged', async (t) => {
   const { addresses } = await run(ctx, 'support@testdomain.com');
   t.deepEqual(addresses, ['user+support@example.net']);
 });
+
+test.serial(
+  'regex substitution forwarding is bounded by address length',
+  async (t) => {
+    const ctx = makeContext({});
+    ctx.resolver.resolveTxt = async (host) => {
+      if (host === ROOT)
+        // The resolver returns a fresh array per request, as production DNS does.
+        return [['forward-email=/^(.+)$/:$1$1@testdomain.com']];
+
+      const err = new Error(`queryTxt ENODATA ${host}`);
+      err.code = 'ENODATA';
+      throw err;
+    };
+
+    const { addresses } = await run(ctx, 'a@testdomain.com');
+
+    // Each substitution doubles the local part. Expansion stops before the
+    // next result would exceed the RFC mailbox-length limit, avoiding worker
+    // DoS while retaining legitimate multi-hop forwarding behavior.
+    t.deepEqual(addresses, [`${'a'.repeat(128)}@testdomain.com`]);
+  }
+);

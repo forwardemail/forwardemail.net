@@ -13,16 +13,13 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const crypto = require('node:crypto');
 const { Buffer } = require('node:buffer');
 
 const intoStream = require('into-stream');
 const ms = require('ms');
 const pRetry = require('p-retry');
-const pify = require('pify');
-const revHash = require('rev-hash');
 const { Builder } = require('json-sql-enhanced');
-
-const WildDuckAttachmentStorage = require('@zone-eu/wildduck/lib/attachment-storage');
 const _ = require('#helpers/lodash');
 
 //
@@ -118,10 +115,11 @@ async function retryCreateAttachment(...args) {
     minTimeout: ms('5s'),
     async onFailedAttempt(error) {
       // TODO: add fallback mechanism which returns existing unique attachment
-      if (error.message === 'UNIQUE constraint failed: Attachments.hash') {
-        error.isCodeBug = true;
-        throw error;
-      }
+      // A concurrent create can race after both workers observe no matching
+      // body. Retrying lets the next attempt atomically update that row only
+      // when its blob is byte-for-byte identical.
+      if (error.message === 'UNIQUE constraint failed: Attachments.hash')
+        return;
 
       if (isRetryableError(error)) {
         logger.fatal(error);
@@ -134,9 +132,14 @@ async function retryCreateAttachment(...args) {
 }
 
 async function createAttachment(instance, session, node) {
-  // const hex = await this.calculateHashPromise(node.body);
-  // node.hash = revHash(Buffer.from(hex, 'hex'));
-  node.hash = revHash(node.body);
+  // `rev-hash` is a short MD5-derived identifier and is unsafe as an
+  // attachment-content identity. Use a namespaced, full SHA-256 digest instead
+  // so new attachments cannot collide with legacy identifiers or each other.
+  const body = Buffer.from(node.body);
+  node.hash = `sha256:${crypto
+    .createHash('sha256')
+    .update(body)
+    .digest('hex')}`;
   node.counter = 1;
   node.counterUpdated = new Date();
   node.size = node.body.length;
@@ -149,8 +152,12 @@ async function createAttachment(instance, session, node) {
   const sql = builder.build({
     type: 'update',
     table: 'Attachments',
+    // A matching digest is insufficient by itself: require the exact stored
+    // blob to match too. This means a theoretical digest collision cannot make
+    // a different attachment inherit another attachment's body.
     condition: {
-      hash: node.hash
+      hash: node.hash,
+      body
     },
     modifier: {
       $inc: {
@@ -180,6 +187,18 @@ async function createAttachment(instance, session, node) {
 
   if (result) return syncConvertResult(Attachments, result);
 
+  // If an existing row has the same SHA-256 key but a different body, preserve
+  // data integrity by deriving a collision-disambiguated SHA-512 identity. In
+  // ordinary operation this branch is unreachable; it is defense in depth.
+  const existing = await Attachments.findOne(instance, session, {
+    hash: node.hash
+  });
+  if (existing && !Buffer.from(existing.body).equals(body))
+    node.hash = `sha512:${crypto
+      .createHash('sha512')
+      .update(body)
+      .digest('hex')}`;
+
   // TODO: finish this INSERT statement with validation of a field returned
   // const attachment = new Attachments(node);
   // await attachment.validate();
@@ -200,9 +219,6 @@ async function createAttachment(instance, session, node) {
 class AttachmentStorage {
   constructor(options) {
     this.options = options || {};
-    this.calculateHashPromise = pify(
-      WildDuckAttachmentStorage.prototype.calculateHash
-    );
   }
 
   async get(mimeTree, hash, instance, session) {

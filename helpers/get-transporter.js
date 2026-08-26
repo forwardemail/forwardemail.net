@@ -20,6 +20,7 @@ const isRetryableError = require('./is-retryable-error');
 const isSSLError = require('./is-ssl-error');
 const isSocketError = require('./is-socket-error');
 const isTLSError = require('./is-tls-error');
+const isPrivateHost = require('./is-private-host');
 const parseRootDomain = require('./parse-root-domain');
 const { prepareDaneTlsOptions } = require('./dane-tls-wrapper');
 
@@ -212,6 +213,40 @@ async function getTransporter(options = {}, err) {
     host: target,
     port
   };
+
+  // Custom SMTP forwarding bypasses mx-connect to avoid recursive MX lookups.
+  // Resolve a hostname exactly once, reject every non-public DNS answer, and
+  // connect to one validated address.  This blocks internal-network probing and
+  // eliminates the DNS-rebinding window between validation and SMTP connection.
+  if (env.NODE_ENV !== 'test' && port !== 25) {
+    if (isPrivateHost(target)) {
+      const error = new Error('Custom SMTP target is not publicly routable');
+      error.code = 'EPRIVATEHOST';
+      throw error;
+    }
+
+    if (!isIP(target)) {
+      const [addresses4, addresses6] = await Promise.all([
+        resolver.resolve4(target).catch(() => []),
+        resolver.resolve6(target).catch(() => [])
+      ]);
+      const addresses = [...addresses4, ...addresses6];
+
+      if (
+        addresses.length === 0 ||
+        addresses.some((address) => !isIP(address) || isPrivateHost(address))
+      ) {
+        const error = new Error('Custom SMTP target is not publicly routable');
+        error.code = 'EPRIVATEHOST';
+        throw error;
+      }
+
+      // Retain the original hostname for SNI while pinning the socket to this
+      // inspected public address rather than performing a second DNS lookup.
+      mx.hostname = target;
+      mx.host = addresses[0];
+    }
+  }
 
   //
   // TODO: rewrite to use SMTPConnection object instead of nodemailer

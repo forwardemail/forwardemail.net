@@ -74,6 +74,11 @@ const RRULE_INPUT_ALLOWED_PROPS = new Set([
   'RDATE'
 ]);
 
+// The SQLite query builder receives sort keys as identifiers.  Keep this
+// allowlist deliberately narrow and aligned with the documented API contract
+// so request parameters cannot become SQL functions or expressions.
+const SORTABLE_FIELDS = new Set(['created_at', 'updated_at', 'eventId']);
+
 function sanitizeRruleLines(lines) {
   const out = [];
   for (const original of lines) {
@@ -271,13 +276,11 @@ async function list(ctx) {
     const sortFields = ctx.query.sort.split(',').map((s) => s.trim());
     const sortObj = {};
     for (const field of sortFields) {
-      if (field.startsWith('-')) {
-        // Descending order
-        sortObj[field.slice(1)] = -1;
-      } else {
-        // Ascending order
-        sortObj[field] = 1;
-      }
+      const name = field.startsWith('-') ? field.slice(1) : field;
+      if (!SORTABLE_FIELDS.has(name))
+        throw Boom.badRequest('Invalid calendar event sort field');
+
+      sortObj[name] = field.startsWith('-') ? -1 : 1;
     }
 
     sort = sortObj;

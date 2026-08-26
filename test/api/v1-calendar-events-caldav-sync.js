@@ -440,3 +440,19 @@ test.serial(
     );
   }
 );
+
+test.serial(
+  'calendar events API rejects SQL-expression sort fields',
+  async (t) => {
+    const { api, username, pass } = t.context;
+    const auth = createAliasAuth(username, pass);
+
+    const response = await api
+      .get('/v1/calendar-events')
+      .set('Authorization', auth)
+      .query({ sort: 'created_at,random()' });
+
+    t.is(response.status, 400);
+    t.regex(response.body.message, /invalid calendar event sort field/i);
+  }
+);

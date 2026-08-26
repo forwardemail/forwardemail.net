@@ -11,7 +11,16 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const env = require('#config/env');
 const getMongoQuery = require('#helpers/get-mongo-query');
+const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Logs } = require('#models');
+
+const LOG_SORT_FIELDS = new Set([
+  'id',
+  'created_at',
+  'message',
+  'meta.level',
+  'user'
+]);
 
 //
 // Performance constants (aligned with my-account/list-logs.js and admin/emails.js)
@@ -162,7 +171,7 @@ async function list(ctx) {
     .select(
       'id created_at message err meta.level meta.is_http meta.request.method meta.request.url meta.response.status_code meta.user.email'
     )
-    .sort(ctx.query.sort || '-created_at')
+    .sort(getAllowedSort(ctx.query.sort, LOG_SORT_FIELDS, '-created_at'))
     .lean()
     .maxTimeMS(MAX_TIME_MS);
 

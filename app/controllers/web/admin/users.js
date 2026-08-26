@@ -12,6 +12,7 @@ const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
+const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Domains, Users } = require('#models');
 // Const { removeUserAliasBackups } = require('#helpers/remove-alias-backup');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
@@ -19,6 +20,22 @@ const config = require('#config');
 const stripe = require('#helpers/stripe');
 
 const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
+
+const USER_SORT_FIELDS = new Set([
+  config.passport.fields.givenName,
+  config.passport.fields.familyName,
+  config.passport.fields.otpEnabled,
+  'email',
+  'domain_count',
+  'alias_count',
+  'plan',
+  'group',
+  'has_passed_kyc',
+  'max_quota_per_alias',
+  'smtp_limit',
+  'created_at',
+  'updated_at'
+]);
 
 const USER_SEARCH_PATHS = [
   'email',
@@ -83,7 +100,7 @@ async function list(ctx) {
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
       .lean()
-      .sort(ctx.query.sort || '-created_at')
+      .sort(getAllowedSort(ctx.query.sort, USER_SORT_FIELDS, '-created_at'))
       .exec(),
     Users.countDocuments(query)
   ]);
