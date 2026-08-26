@@ -46,7 +46,12 @@ const {
   useCases
 } = require('#config/utilities');
 const { web } = require('#controllers');
+const getAppDownloads = require('#helpers/get-app-downloads');
+const getFaqIndex = require('#helpers/get-faq-index');
+
+const { filterFaqIndex } = getFaqIndex;
 const getFaqSchema = require('#helpers/get-faq-schema');
+const { getLatestMailAppRelease } = require('#helpers/get-mail-app-releases');
 
 const MAX_AGE = ms('1y') / 1000;
 
@@ -457,7 +462,8 @@ localeRouter
   )
   .get(
     '/faq',
-    hasSidebar,
+    // hasSidebar is gone: the page carries its own topic rail, and that flag
+    // switches the layout to container-fluid and turns on scrollspy.
     async (ctx, next) => {
       // Load FAQ structured data (JSON-LD) from Redis cache or parse from markdown
       try {
@@ -470,10 +476,36 @@ localeRouter
         ctx.logger.error(err);
       }
 
-      // FAQ takes 30s+ to render in dev/test
-      // (we need to rewrite and optimize it)
-      if (_.isEmpty(ctx.query) && !ctx.isAuthenticated())
-        return ctx.render('faq');
+      // Set unconditionally, before the branch. web.onboard further down this
+      // chain re-renders this same view itself with pug.renderFile(ctx.state),
+      // so the view needs `faq` on that path too, not only on the one that
+      // calls ctx.render here.
+      try {
+        const index = await getFaqIndex(
+          ctx.client,
+          config.views.root,
+          ctx.locale
+        );
+        // `q` is what the search form submits with JavaScript off. Filtering
+        // here means that request returns a narrowed page rather than the
+        // whole list with a prefilled box that looks broken.
+        ctx.state.faq = isSANB(ctx.query.q)
+          ? filterFaqIndex(index, ctx.query.q)
+          : index;
+      } catch (err) {
+        ctx.logger.error(err);
+        ctx.state.faq = { categories: [], total: 0 };
+      }
+
+      // The rest of the chain exists for the onboarding form, which arrives
+      // with a domain or email in the query. A plain read, including a
+      // search, renders straight away and skips the domain lookup.
+      const queryKeys = Object.keys(ctx.query);
+      const isPlainRead =
+        queryKeys.length === 0 ||
+        (queryKeys.length === 1 && queryKeys[0] === 'q');
+
+      if (isPlainRead && !ctx.isAuthenticated()) return ctx.render('faq');
 
       return next();
     },
@@ -563,6 +595,23 @@ localeRouter
     web.onboard,
     render('email-forwarding-regex-pattern-filter')
   )
+  // The desktop and mobile app downloads, built from the latest release of
+  // forwardemail/mail.forwardemail.net. The release is already polled and
+  // cached in redis for the app update websocket, so this reads that cache
+  // rather than adding traffic against the github rate limit. If the fetch
+  // or the cache is unavailable the page still renders, with every download
+  // pointing at the release page on github instead of straight at a file.
+  .get('/download', async (ctx) => {
+    let release = null;
+    try {
+      release = await getLatestMailAppRelease({ client: ctx.client });
+    } catch (err) {
+      ctx.logger.error(err);
+    }
+
+    ctx.state.downloads = getAppDownloads(release);
+    return ctx.render('download');
+  })
   .get('/self-hosted', render('self-hosted'))
   .get('/resources', render('resources'))
   .get('/guides', render('guides'))

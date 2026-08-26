@@ -137,6 +137,11 @@ const PAYPAL_MAPPING = {
   }
 };
 
+// Enterprise is quoted, not sold through Stripe or PayPal, so it has no entry
+// in the mappings above. The figure lived only inside a translation string in
+// _pricing-table.pug, which meant the translation job could rewrite a price.
+const ENTERPRISE_MONTHLY = 250;
+
 const PAYPAL_PLAN_MAPPING = {
   enhanced_protection: {
     '30d': process.env.PAYPAL_ENHANCED_PLAN_30D,
@@ -189,6 +194,7 @@ const paypalRestSdkConfigLegacy = {
 };
 
 module.exports = {
+  ENTERPRISE_MONTHLY,
   STRIPE_MAPPING,
   STRIPE_PRODUCTS,
   PAYMENT_DURATIONS,

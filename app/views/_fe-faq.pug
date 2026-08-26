@@ -1,0 +1,130 @@
+//- Simplified FAQ. No images anywhere on the page.
+//-
+//- The problem this solves is that there are ~150 answers, and the page this
+//- replaced rendered every one of them expanded in a single column, so finding
+//- yours meant scrolling past all the others. Here every answer is collapsed,
+//- which turns the page into a list you can scan, and the filter narrows it.
+//-
+//- Content comes from helpers/get-faq-index.js, which parses the same per
+//- locale markdown the old page rendered inline and caches the result, so this
+//- is string interpolation rather than a markdown pass per request. Headings
+//- carry their anchor as `{#id}` in every translated file, which is how a link
+//- like /faq#what-is-forward-email lands on the same answer in all 25
+//- languages; the parser reads that rather than deriving an id from the
+//- translated text.
+mixin feFaq
+  -
+    //- Set when the request carried ?q=, which is what the search form submits
+    //- with JavaScript off. faq-search.js takes over from here on.
+    const faqFiltered = typeof faq.matched === "number" && faq.query;
+  section.fe-section.fe-surface-dark.fe-faq-hero(
+    aria-labelledby="fe-faq-title"
+  )
+    .fe-container.fe-faq-hero__inner
+      p.fe-eyebrow.fe-label
+        i.fa.fa-life-ring(aria-hidden="true")
+        = t("Support")
+
+      h1#fe-faq-title.fe-faq-hero__title= t("How can we help?")
+
+      //- A real form, so submitting on a phone keyboard does something sane
+      //- rather than nothing. The filter is progressive enhancement on top.
+      form.fe-faq-search(role="search", action=l("/faq"), method="GET")
+        label.sr-only(for="fe-faq-q")= t("Search the FAQ")
+        span.fe-faq-search__icon(aria-hidden="true")
+          i.fa.fa-search
+        input#fe-faq-q.fe-faq-search__input(
+          type="search",
+          name="q",
+          autocomplete="off",
+          value=ctx.query && ctx.query.q ? ctx.query.q : "",
+          placeholder=t("Search questions"),
+          aria-describedby="fe-faq-count"
+        )
+        button.fe-faq-search__clear(
+          type="button",
+          hidden,
+          aria-label=t("Clear search")
+        )
+          i.fa.fa-times(aria-hidden="true")
+
+      //- Announced politely so a screen reader hears the count change as the
+      //- list narrows, without interrupting typing.
+      p#fe-faq-count.fe-faq-hero__count(aria-live="polite")
+        if faqFiltered
+          = `${faq.matched} / ${faq.total}`
+        else
+          //- One string with both numbers in it, not "n" + t("answers across")
+          //- + "n" + t("topics"). Those fragments cannot be translated on their
+          //- own, and the languages that put the count after the noun, or
+          //- inflect it, cannot be reached by concatenation at all.
+          != t('<span class="notranslate">%d</span> answers across <span class="notranslate">%d</span> topics', faq.total, faq.categories.length)
+
+  section.fe-section.fe-surface-light.fe-faq-body
+    .fe-container
+      .fe-faq-layout
+        //- Topic rail. Plain anchors, so it works with the filter off and
+        //- with JavaScript off.
+        nav.fe-faq-nav(aria-label=t("FAQ topics"))
+          p.fe-faq-nav__label.fe-label= t("Topics")
+          ul.fe-faq-nav__list
+            each category in faq.categories
+              li
+                a.fe-faq-nav__link(
+                  href=`#${category.slug}`,
+                  data-fe-faq-nav=category.slug
+                )
+                  span.fe-faq-nav__text= category.title
+                  //- Quick Start and Additional Resources are prose, not
+                  //- questions, so a "0" beside them would read as empty.
+                  if category.questions.length
+                    span.fe-faq-nav__count.fe-numeral= category.questions.length
+
+        .fe-faq-content
+          //- Shown by the filter when nothing matches, so the page never goes
+          //- silently blank.
+          p#fe-faq-empty.fe-faq-empty(hidden=!faqFiltered || faq.matched > 0)
+            = t("No answers matched. Try a different word, or")
+            = " "
+            a(href=l("/help"))= t("ask us directly")
+            | .
+
+          each category in faq.categories
+            section.fe-faq-topic(
+              id=category.slug,
+              data-fe-faq-topic=category.slug,
+              aria-labelledby=`${category.slug}-title`
+            )
+              h2.fe-faq-topic__title(id=`${category.slug}-title`)= category.title
+
+              //- Prose that sits under the section heading before its first
+              //- question. /faq#quick-start is linked from every pricing page,
+              //- so this content and this anchor have to stay reachable.
+              if category.introHtml
+                .fe-faq-topic__intro.fe-faq-prose!= category.introHtml
+
+              ul.fe-faq-list
+                each item in category.questions
+                  li.fe-faq-item(data-fe-faq-search=item.search)
+                    //- details/summary rather than a scripted accordion: it
+                    //- opens with the keyboard, it is announced correctly, and
+                    //- it still opens with JavaScript off.
+                    details.fe-faq-answer(id=item.id)
+                      summary.fe-faq-answer__q
+                        span.fe-faq-answer__text= item.question
+                        span.fe-faq-answer__marker(aria-hidden="true")
+                          i.fa.fa-plus
+                      .fe-faq-answer__body.fe-faq-prose
+                        != item.answerHtml
+
+  section.fe-section.fe-surface-dark.fe-faq-foot
+    .fe-container.fe-faq-foot__inner
+      h2.fe-faq-foot__title= t("Still stuck?")
+      p.fe-faq-foot__body= t("Every question here came from someone asking it. If yours is not answered, send it to us.")
+      .fe-faq-foot__actions
+        a.fe-btn.fe-btn--hero.fe-btn--md(href=l("/help"))
+          i.fa.fa-envelope(aria-hidden="true")
+          = t("Contact support")
+        a.fe-btn.fe-btn--ghost.fe-btn--md(href=l("/guides"))
+          i.fa.fa-book(aria-hidden="true")
+          = t("Read the guides")

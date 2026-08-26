@@ -294,6 +294,30 @@ const purgeCssOptions = {
       // reduced navbar for certain locales
       // (manually curated, see `app/views/_nav.pug`)
       'navbar-small',
+      // redesigned landing page navbar (pushed to navbarClasses in _nav.pug)
+      'fe-nav',
+      // download page section modifiers. purgecss-from-pug reads literal class
+      // attributes, and these are built from a template literal in
+      // `_fe-download-platforms.pug` because one mixin renders both groups
+      'fe-dl-group--desktop',
+      'fe-dl-group--mobile',
+      'fe-dl-cards--desktop',
+      'fe-dl-cards--mobile',
+      // added by assets/js/download.js when a checksum is copied
+      'is-copied',
+      // hero console. purgecss-from-pug reads literal class attributes, so it
+      // sees none of these: the tone modifiers are built from a template
+      // literal in `_fe-console.pug` because one mixin renders all five views,
+      // the unrolled modifier is behind a conditional, and the two active
+      // modifiers are only ever added by assets/js/hero-console.js
+      'fe-console--unrolled',
+      'fe-console__view--primary',
+      'fe-console__view--mint',
+      'fe-console__view--signal',
+      'fe-console__view--vault',
+      'fe-console__view--caution',
+      'fe-console__view--active',
+      'fe-console__tab--active',
       // sidebar
       /^sidebar/,
       'nav',

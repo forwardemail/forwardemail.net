@@ -1,9 +1,5 @@
 extends layout
 
-block append stylesheets
-  if freddyCss
-    style(nonce=nonce)!= freddyCss
-
 block append scripts
   if !isBot(ctx.get('User-Agent'))
     if config.env === 'test'
@@ -71,25 +67,17 @@ block body
                 = " "
                 i.fa.fa-search-plus
 
+  //- The hero condition is unchanged. Bots are included deliberately: the h1
+  //- carries the per-route useCases headline, which is the SEO content of all
+  //- 7,252 programmatic pages.
   if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
-    section.min-vh-100.bg-dark.d-flex.flex-column.pb-5.text-white(
-      data-ignore-hash-change,
-      id=!isPDF && !isBot(ctx.get("User-Agent")) ? "freddy" : ""
-    )
-      if !isPDF
-        //- #stars
-        #stars2
-        #stars3
-      .container.my-auto.pt-5
-        .row
-          .col-12.text-center
-            h1.mb-1.display-4
-              if Object.keys(useCases).includes(ctx.pathWithoutLocale)
-                != t(useCases[ctx.pathWithoutLocale][0])
-              else
-                != meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
-            h2.h5.font-weight-normal.mb-3!= meta.description
-            include _quick-start
+    include _fe-pricing-hero
+    //- .fe-landing is wrapped around the hero alone rather than the whole page,
+    //- because everything below it is still the previous design. The flush
+    //- modifier pulls it under the fixed navbar, which is transparent on these
+    //- routes.
+    .fe-landing.fe-landing--flush
+      +fePricingHero
     //-.
       if !isBot(ctx.get('User-Agent'))
         a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto.bounce-animation(

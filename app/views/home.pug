@@ -1,9 +1,5 @@
 extends layout
 
-block append stylesheets
-  if freddyCss
-    style(nonce=nonce)!= freddyCss
-
 block append scripts
   if !isBot(ctx.get('User-Agent'))
     if config.env === 'test'
@@ -21,8 +17,29 @@ block append scripts
         integrity=manifest("js/domain-search.js", "integrity"),
         crossorigin="anonymous"
       )
+    if config.env === 'test'
+      script(
+        nonce=nonce,
+        defer,
+        src=`${config.urls.web}/js/hero-console.js`,
+        crossorigin="anonymous"
+      )
+    else
+      script(
+        nonce=nonce,
+        defer,
+        src=manifest("js/hero-console.js"),
+        integrity=manifest("js/hero-console.js", "integrity"),
+        crossorigin="anonymous"
+      )
 
 block body
+  //- Inlined by pug, so feConsoleViews and the +feConsole mixin are in scope
+  //- for _fe-hero below, which renders the console into the hero's right column.
+  include _fe-console
+  include _fe-hero
+  include _fe-product
+  include _fe-pricing
   include _modal-storage
   include _modal-domain-search
   +modalDomainSearch
@@ -117,55 +134,27 @@ block body
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
             )
-  .min-vh-100.bg-dark.text-white.d-flex.flex-column.pb-5.text-center(
-    data-ignore-hash-change,
-    id=!isPDF && ["/", "/private-business-email", ...Object.keys(useCases)].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent")) && !boolean(ctx.query.pricing) ? "freddy" : ""
-  )
-    if !isPDF && ['/', '/private-business-email', ...Object.keys(useCases)].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent")) && !boolean(ctx.query.pricing)
-      //- #stars
-      #stars2
-      #stars3
-    .container.my-auto.pt-5
-      .row.mb-3
-        .col-12(
-          class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
-        )
-        .col-12
-          if isBot(ctx.get('User-Agent'))
-            h1.mb-1.display-4.font-weight-normal= t("Free Email Forwarding for Custom Domains")
-          else
-            h1.mb-1.display-3.font-weight-normal!= t("All-in-one Email Solution")
-      if isBot(ctx.get('User-Agent'))
-        .row.mb-3
-          .col-12
-            p.lead.text-white.mb-0= t("Forward Email is a free, open-source email service for custom domains. Create unlimited aliases, forward to any inbox, and host email with IMAP, POP3, and SMTP. 10GB encrypted storage, quantum-resistant security, and a developer API. Trusted by 1.6+ million domains including Netflix Games, Disney, and The Linux Foundation. Free forwarding; paid hosting from $3/mo.")
-            p.text-white.mb-0= t("Supports SPF, DKIM, DMARC, BIMI, MTA-STS, and DANE. Works with Gmail, Outlook, Apple Mail, Thunderbird, and any standard email client. Setup takes 2 minutes with step-by-step DNS guides for 100+ providers.")
-      else
-        .row.mb-3
-          .col-12
-            h2.h3.font-weight-normal.mb-3!= t("Privacy-focused email hosting, forwarding, newsletters, and API")
-      .row
-        .col-12
-          include _quick-start
-    //-.
-      if !isBot(ctx.get('User-Agent'))
-        a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto.bounce-animation(
-          href="#learn-more"
-        )
-          i.fa.fa-angle-double-down
-          = " "
-          = t("Learn more")
-          = " "
-          i.fa.fa-angle-double-down
-  #learn-more.d-block.overflow-hidden.no-search(data-ignore-hash-change)
-    include _marketing
+  //- The flush modifier pulls the hero up under the transparent fixed navbar.
+  //- It is a separate class from .fe-landing because /download shares that
+  //- wrapper but must not pull up when a signed in visitor gets the opaque bar.
+  .fe-landing.fe-landing--flush
+    +feHero(isBot(ctx.get('User-Agent')))
+    +feProduct
+    +fePricing
+
+  //- _marketing was dropped from this page rather than kept below the new
+  //- sections. Its "All-inclusive features / No additional fees for must-have
+  //- features" pitch is the same one the product section now makes, so
+  //- rendering both would put duplicate content on the page. The partial is
+  //- untouched and still rendered by pricing.pug, open-source.pug and
+  //- compare.pug, so nothing else loses that copy.
   a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto.bounce-animation(
     href="#testimonials"
   )
-    i.fa.fa-angle-double-down
+    i.fa.fa-angle-double-down(aria-hidden="true")
     = " "
     = t("Happy Customers")
     = " "
-    i.fa.fa-angle-double-down
+    i.fa.fa-angle-double-down(aria-hidden="true")
   include _testimonials
   include _tti

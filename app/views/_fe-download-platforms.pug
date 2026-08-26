@@ -1,0 +1,91 @@
+//- The download matrix itself. Light surface, one card per platform.
+//- Desktop and mobile are separate sections because the install path differs:
+//- a desktop download is a file you open, a mobile one needs a step the
+//- platform puts in your way. Structure follows helpers/get-app-downloads.js,
+//- so a platform with no assets in the release simply does not render.
+
+//- One downloadable file. The row itself is the link, so the whole strip is a
+//- tap target; the checksum control has to sit outside it because a button
+//- cannot be nested inside an anchor.
+mixin feDownloadRow(option)
+  li.fe-dl-row
+    a.fe-dl-row__link(
+      href=option.url,
+      rel=option.isDirect ? "noopener" : "noopener noreferrer"
+    )
+      span.fe-dl-row__label
+        span.fe-dl-row__arch= option.arch === "universal" && universalTitles[option.format] ? universalTitles[option.format] : archLabels[option.arch]
+        span.fe-dl-row__note= formatNotes[option.format]
+      span.fe-dl-row__format.fe-code= formatLabels[option.format]
+      span.fe-dl-row__size.fe-numeral
+        if option.size
+          = option.size
+        else
+          = t("GitHub")
+      span.fe-dl-row__go(aria-hidden="true")
+        i.fa.fa-arrow-down
+
+    //- Only rendered when the release actually reported a digest, so the
+    //- control is never present with nothing to copy.
+    if option.sha256
+      button.fe-dl-copy(
+        type="button",
+        data-fe-copy=option.sha256,
+        aria-label=t("Copy SHA-256 checksum for %s", option.fileName)
+      )
+        i.fa.fa-clipboard(aria-hidden="true")
+        span.fe-dl-copy__done(aria-hidden="true")
+          i.fa.fa-check
+
+mixin feDownloadCard(platform)
+  -
+    const meta = platformMeta[platform.key];
+  li.fe-dl-card
+    .fe-dl-card__head
+      span.fe-dl-card__icon
+        i(class=meta.icon, aria-hidden="true")
+      span.fe-dl-card__titles
+        h3.fe-dl-card__title= meta.name
+        span.fe-dl-card__requires= meta.requires
+
+    ul.fe-dl-rows
+      each option in platform.options
+        +feDownloadRow(option)
+
+    //- Platform specific caveats. Only the two mobile platforms have one, and
+    //- both are about the platform's own install restrictions rather than
+    //- anything about the build.
+    if platform.key === "android"
+      p.fe-dl-card__note= t("Android asks you to allow installs from your browser the first time.")
+    else if platform.key === "ios"
+      p.fe-dl-card__note= t("The iOS build is not signed for direct install. Sideload it with AltStore, Sideloadly, or Xcode.")
+
+//- The base names are written as literal classes and only the modifier is
+//- interpolated. purgecss-from-pug reads dot syntax and literal class
+//- attributes but not template interpolation, so a base name built inside the
+//- template string would be stripped from the build. The two modifiers are
+//- listed in the purgecss safelist in gulpfile.js instead.
+mixin feDownloadGroup(group, id, eyebrow, title, lede)
+  section.fe-section.fe-surface-light.fe-dl-group(
+    class=`fe-dl-group--${group.key}`,
+    aria-labelledby=`${id}-title`
+  )
+    .fe-container
+      p.fe-eyebrow.fe-label
+        i.fa.fa-download(aria-hidden="true")
+        = eyebrow
+      .fe-dl-group__head
+        h2.fe-dl-group__title(id=`${id}-title`)= title
+        p.fe-lede.fe-dl-group__lede= lede
+      ul.fe-dl-cards(class=`fe-dl-cards--${group.key}`)
+        each platform in group.platforms
+          +feDownloadCard(platform)
+
+mixin feDownloadPlatforms
+  each group in downloads.groups
+    if group.key === "desktop"
+      span#fe-download-desktop.fe-dl-anchor
+      +feDownloadGroup(group, "fe-download-desktop", t("Desktop"), t("Built for the machine you work on."), t("Every desktop build ships as a signed installer with an auto updater, so you stay current without coming back here."))
+    else
+      span#fe-download-mobile.fe-dl-anchor
+      +feDownloadGroup(group, "fe-download-mobile", t("Mobile"), t("The same mailbox in your pocket."), t("Installed directly rather than through a store, so you get the build exactly as it left CI."))

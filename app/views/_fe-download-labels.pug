@@ -1,0 +1,82 @@
+//- Shared label maps for the download page.
+//- An `include` is inlined by pug, so the constants below land in the scope of
+//- whatever includes this, which is how the hero and the platform sections
+//- both read them. Kept out of helpers/get-app-downloads.js because these go
+//- through t() and t() only exists in the view.
+//- The keys are the `arch` and `format` values the helper's matrix produces.
+-
+  const archLabels = {
+    appleSilicon: t("Apple Silicon"),
+    intel: t("Intel"),
+    x64: t("64-bit"),
+    arm64: t("ARM64"),
+    universal: t("Universal")
+  };
+
+  //- File extensions and package-format names are product names, so they are
+  //- literals. Only the words around them are translated.
+  const formatLabels = {
+    dmg: ".dmg",
+    exe: ".exe",
+    msi: ".msi",
+    appimage: "AppImage",
+    deb: ".deb",
+    rpm: ".rpm",
+    snap: "Snap",
+    apk: ".apk",
+    fdroid: "F-Droid",
+    ipa: ".ipa"
+  };
+
+  //- The second line on each row, explaining what the format is for. Without
+  //- it a visitor has to already know the difference between a .deb and a
+  //- .rpm to pick correctly.
+  const formatNotes = {
+    dmg: t("Disk image"),
+    exe: t("Installer"),
+    msi: t("For managed deployment"),
+    appimage: t("Runs without installing"),
+    deb: t("Debian, Ubuntu, Mint"),
+    rpm: t("Fedora, RHEL, openSUSE"),
+    snap: t("Snap store package"),
+    apk: t("Installs straight from your browser"),
+    fdroid: t("Reproducible, for the F-Droid client"),
+    ipa: t("Requires a sideloading tool")
+  };
+
+  //- On desktop the arch is what tells two builds apart, so it is the row
+  //- title. On mobile every build is universal, so the arch says nothing and
+  //- the format is the useful title instead.
+  const universalTitles = {
+    apk: t("Android package"),
+    fdroid: t("F-Droid build"),
+    ipa: t("iOS package")
+  };
+
+  const platformMeta = {
+    macos: {
+      name: "macOS",
+      icon: "fab fa-apple",
+      requires: t("macOS 10.15 or later")
+    },
+    windows: {
+      name: "Windows",
+      icon: "fab fa-windows",
+      requires: t("Windows 10 or later")
+    },
+    linux: {
+      name: "Linux",
+      icon: "fab fa-linux",
+      requires: t("GTK with WebKit2GTK 4.1")
+    },
+    android: {
+      name: "Android",
+      icon: "fab fa-android",
+      requires: t("Android 7.0 or later")
+    },
+    ios: {
+      name: "iOS",
+      icon: "fab fa-apple",
+      requires: t("iOS 15 or later")
+    }
+  };

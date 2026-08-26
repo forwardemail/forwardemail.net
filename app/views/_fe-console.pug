@@ -1,0 +1,172 @@
+//- The hero console. Five views of the platform behind one tab rail, so the
+//- hero carries the whole product rather than the one slice a static diagram
+//- could show. Replaces the single delivery-path graphic that used to live in
+//- _fe-hero.pug.
+//-
+//- Every panel ships in the DOM on every request. Without JavaScript they are
+//- all visible, stacked, and the rail is five ordinary jump links, so the page
+//- still says everything it has to say and every word stays crawlable. The
+//- collapse to one-at-a-time is done in CSS off `html.no-js`, which _meta.pug
+//- strips in the head, so there is no flash of five panels and no layout shift.
+
+//- Content lives here rather than inside the mixins so the five views read as
+//- one table and the story arc (route, store, send, sync, observe) can be
+//- checked by reading straight down.
+//-
+//- `tone` picks the kicker and dot colour. Every value is text-legal on the
+//- dark hero surface: `primary` resolves to --fe-primary-lift rather than
+//- --fe-primary, which is 3.1:1 on Ink and would fail as a text colour.
+//-
+//- Prices are pulled from config.views.locals.planPricing through `subArg`
+//- rather than written into the copy, for the same reason _pricing-table.pug
+//- stopped writing them: a figure inside a translation string can be rewritten
+//- by the translation job.
+-
+  var feConsoleViews = [
+    {
+      id: 'forward',
+      tab: 'Forward',
+      kicker: 'Route',
+      tone: 'primary',
+      title: 'Forwarding & aliases',
+      promise: 'Point one MX record and every address on your domain becomes yours — wildcards, regex rules, disposable aliases, PGP on the way out.',
+      cards: [
+        { label: 'Unlimited aliases', sub: '$%d per alias, per user, forever', subArg: planPricing.free },
+        { label: 'Catch-all & regex', sub: '*@ and pattern-based routing' },
+        { label: 'Multi-recipient', sub: 'Fan out to people, teams, webhooks' },
+        { label: 'Disposable', sub: 'Burn an alias without losing history' }
+      ],
+      glyph: '→',
+      evidence: 'forward hello@studio.dev → you@gmail.com · 41ms'
+    },
+    {
+      id: 'mailbox',
+      tab: 'Mailbox',
+      kicker: 'Store',
+      tone: 'mint',
+      title: 'Encrypted mailboxes',
+      promise: 'Real mailboxes with individually encrypted, sandboxed storage. Use any client — nothing about the mail is readable by us.',
+      cards: [
+        { label: 'IMAP · POP3', sub: 'Apple Mail, Thunderbird, mobile' },
+        { label: '10 GB pooled', sub: 'Shared across every domain' },
+        { label: 'Zero-knowledge', sub: 'Quantum-resistant encryption options' },
+        { label: 'Search & filters', sub: 'Server-side, on encrypted data' }
+      ],
+      glyph: '✓',
+      evidence: 'imap.forwardemail.net · TLS 1.3 ·',
+      note: 'mailbox sealed'
+    },
+    {
+      id: 'send',
+      tab: 'Send',
+      kicker: 'Send',
+      tone: 'signal',
+      title: 'Outbound SMTP & newsletters',
+      promise: 'Send as your domain from an app, a script, or a campaign — with the authentication and reputation work already done.',
+      cards: [
+        { label: '9,000+ / month', sub: 'Included in the $%d plan', subArg: planPricing.enhanced },
+        { label: 'SMTP relay', sub: 'Drop-in for any framework' },
+        { label: 'Newsletters', sub: 'Lists, unsubscribes, bounce handling' },
+        { label: 'Warm IPs', sub: 'Aligned SPF, DKIM and DMARC' }
+      ],
+      evidence: 'POST /v1/emails → 202',
+      note: 'accepted · signed · tracked'
+    },
+    {
+      id: 'sync',
+      tab: 'Sync',
+      kicker: 'Sync',
+      tone: 'vault',
+      title: 'Calendars & contacts',
+      promise: 'CalDAV and CardDAV on the same domain and the same login, so the mailbox is an actual workspace and not just an inbox.',
+      cards: [
+        { label: 'CalDAV', sub: 'Shared and personal calendars' },
+        { label: 'CardDAV', sub: 'Contacts across every device' },
+        { label: 'Same credentials', sub: 'One account, all protocols' },
+        { label: 'Open standards', sub: 'Export or leave any time' }
+      ],
+      glyph: '✓',
+      evidence: 'dav.forwardemail.net ·',
+      note: '3 calendars · 412 contacts synced'
+    },
+    {
+      id: 'api',
+      tab: 'API',
+      kicker: 'Observe',
+      tone: 'caution',
+      title: 'API, webhooks & reports',
+      promise: 'Everything the dashboard does is an API call, and everything that happens to your mail can be pushed to your systems.',
+      cards: [
+        { label: 'REST API', sub: 'Domains, aliases, messages, logs' },
+        { label: 'Webhooks', sub: 'Inbound mail as JSON events' },
+        { label: 'DMARC reports', sub: 'Parsed, aggregated, human-readable' },
+        { label: 'Deliverability', sub: 'Per-domain analytics and alerts' }
+      ],
+      evidence: 'POST https://your.app/hooks/mail → 200 ·',
+      note: '1,284 events today'
+    }
+  ];
+
+//- `bot` renders every view visible and stacked rather than one at a time. A
+//- crawler that does not run our JavaScript would otherwise be shown one view
+//- and four hidden ones, and four fifths of this copy would be discounted.
+mixin feConsole(bot)
+  .fe-console(class=bot ? "fe-console--unrolled" : "", data-fe-console)
+    //- The rail is a plain <nav> of in-page links here. assets/js/hero-console.js
+    //- re-labels it as a tablist and takes over the arrow keys once it has
+    //- loaded: announcing tab semantics before anything can answer an arrow key
+    //- would promise a screen reader an interaction that does not exist yet.
+    //- The hrefs are what makes /#send deep-linkable from docs and support.
+    nav.fe-console__rail(aria-label=t("Platform"), data-fe-console-rail)
+      each view, i in feConsoleViews
+        //- The pill is rendered here rather than left to JavaScript so the
+        //- first view is not shown under a rail with nothing selected for the
+        //- window between paint and DOMContentLoaded. aria-selected is not set
+        //- here on purpose: until hero-console.js runs these are links, not
+        //- tabs, and the attribute would be meaningless on them.
+        a.fe-console__tab(
+          id=`tab-${view.id}`,
+          href=`#${view.id}`,
+          class=i === 0 ? "fe-console__tab--active" : "",
+          data-fe-console-tab=view.id
+        )= t(view.tab)
+
+    .fe-console__views
+      each view, i in feConsoleViews
+        +feConsoleView(view, i === 0)
+
+//- One view. Kicker and dot teach the pipeline stage, the title and promise say
+//- what it is, the four cards carry the specifics the old feature list used to,
+//- and the evidence line is real output rather than another sentence of pitch.
+mixin feConsoleView(view, isFirst)
+  //- Named by its own heading rather than by its tab, in both modes. As a
+  //- section that is the only correct name, and as a tabpanel the heading says
+  //- more than the one word on the tab does.
+  section.fe-console__view(
+    id=view.id,
+    class=[`fe-console__view--${view.tone}`, isFirst ? "fe-console__view--active" : ""],
+    aria-labelledby=`view-${view.id}-title`,
+    data-fe-console-view=view.id
+  )
+    p.fe-console__kicker
+      span.fe-console__dot(aria-hidden="true")
+      = t(view.kicker)
+
+    h2.fe-console__heading(id=`view-${view.id}-title`)= t(view.title)
+    p.fe-console__promise= t(view.promise)
+
+    ul.fe-console__cards
+      each card in view.cards
+        +feConsoleCard(card)
+
+    p.fe-console__evidence.fe-code
+      if view.glyph
+        span.fe-console__evidence-glyph(aria-hidden="true")= view.glyph
+      span= view.evidence
+      if view.note
+        span= t(view.note)
+
+mixin feConsoleCard(card)
+  li.fe-console__card
+    span.fe-console__card-label= t(card.label)
+    span.fe-console__card-sub= card.subArg === undefined ? t(card.sub) : t(card.sub, card.subArg)

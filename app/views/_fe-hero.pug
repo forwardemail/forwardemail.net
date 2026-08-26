@@ -1,0 +1,66 @@
+//- Redesigned landing hero, per section 2 of the landing page build spec.
+//- Dark surface, two columns at >=1024px, routing console on the right.
+//- Replaced the #freddy starfield, which pricing.pug has since dropped too, so
+//- nothing renders it any more.
+mixin feHero(bot)
+  section.fe-section.fe-surface-dark.fe-hero(aria-labelledby="fe-hero-title")
+    .fe-container.fe-hero__inner
+      .fe-hero__grid
+        div
+          //- Eyebrow
+          p.fe-hero__eyebrow.fe-eyebrow.fe-label
+            i.fab.fa-github(aria-hidden="true")
+            = t("100% open-source email infrastructure")
+
+          //- The crawler headline is a deliberate keyword target and differs
+          //- from the headline shown to people. Preserved from the previous
+          //- design: changing it would be an SEO regression, not a restyle.
+          if bot
+            h1#fe-hero-title.fe-hero__title= t("Free Email Forwarding for Custom Domains")
+          else
+            h1#fe-hero-title.fe-hero__title
+              //- Two spans, one h1. The mobile headline is different copy per
+              //- section 5, and display:none keeps the inactive one out of
+              //- the accessibility tree so only one is ever announced.
+              span.fe-hero__title--wide= t("Email infrastructure that respects privacy.")
+              span.fe-hero__title--narrow= t("Private email for every domain you own.")
+
+          p.fe-hero__body= t("Host, forward, and deliver email for unlimited custom domains, with encrypted storage, standards-grade authentication, newsletters, and a developer API.")
+
+          //- Long-form crawler copy, carried over unchanged.
+          if bot
+            p.fe-hero__body= t("Forward Email is a free, open-source email service for custom domains. Create unlimited aliases, forward to any inbox, and host email with IMAP, POP3, and SMTP. 10GB encrypted storage, quantum-resistant security, and a developer API. Trusted by 1.6+ million domains including Netflix Games, Disney, and The Linux Foundation. Free forwarding; paid hosting from $3/mo.")
+            p.fe-hero__body= t("Supports SPF, DKIM, DMARC, BIMI, MTA-STS, and DANE. Works with Gmail, Outlook, Apple Mail, Thunderbird, and any standard email client. Setup takes 2 minutes with step-by-step DNS guides for 100+ providers.")
+
+          .fe-hero__actions
+            a.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--glow(href=l("/register"))
+              = t("Start free")
+              i.fa.fa-angle-right(aria-hidden="true")
+            button.fe-btn.fe-btn--ghost.fe-btn--lg(
+              type="button",
+              data-toggle="modal",
+              data-target="#modal-domain-search"
+            )
+              i.fa.fa-search(aria-hidden="true")
+              = t("Check a domain")
+
+          .fe-hero__trust
+            p.fe-hero__trust-label.fe-label= t("Trusted by 1.6M+ domains")
+            ul.fe-hero__logos
+              li Netflix Games
+              li Disney
+              li The Linux Foundation
+              li Ubuntu
+
+        //- Right column. The console renders all five of its views on every
+        //- request and condenses at narrow widths rather than being swapped for
+        //- separate markup. One DOM means a phone visitor gets the same message
+        //- the desktop does, and there is only one thing to keep true.
+        div
+          +feConsole(bot)
+
+//- +feConsole and the five views it renders now live in _fe-console.pug, which
+//- home.pug includes ahead of this file. The single delivery-path graphic that
+//- used to sit here was replaced by that tab rail: the console can only show
+//- one thing at a time, and five switchable views carry considerably more of
+//- the platform than one static diagram did.

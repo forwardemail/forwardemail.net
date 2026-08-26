@@ -1,0 +1,529 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Download page. Shares the .fe-landing wrapper, the surface contexts and the
+// button scale with the landing page, so only the parts that page has no
+// equivalent for live here.
+// Every value is a token reference for the same reason as _fe-landing.scss:
+// see the header of _fe-tokens.scss for the palette and the surface model.
+// Bootstrap classes are avoided inside this scope, because app-dark.scss
+// overrides .card, .bg-dark and .text-themed with !important under
+// prefers-color-scheme: dark and would fight these rules.
+
+// ============================================
+// HERO
+// ============================================
+// Single column, unlike the landing hero. There is no product illustration to
+// balance, and centring one column reads as a utility page rather than a
+// pitch, which is what this is.
+
+.fe-dl-hero {
+  // Matches .fe-hero so the two pages start at the same place, including the
+  // navbar offset that .fe-landing--flush cancels.
+  padding-block: calc(6rem + var(--fe-nav-offset)) 6rem;
+}
+
+.fe-dl-hero__inner {
+  max-width: 46rem;
+  text-align: center;
+}
+
+.fe-dl-hero__title {
+  margin-bottom: var(--fe-space-6);
+  font-size: var(--fe-text-display-xl);
+  color: var(--fe-fg-primary);
+}
+
+.fe-dl-hero__body {
+  max-width: 46ch;
+  margin-inline: auto;
+  margin-bottom: var(--fe-space-8);
+  font-size: var(--fe-text-body-md);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-dl-hero__actions {
+  display: flex;
+  gap: var(--fe-space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+// The detector fills this in and unhides it. It is reserved rather than
+// collapsed so the facts below do not jump when that happens.
+.fe-dl-hero__meta {
+  min-height: 1.5rem;
+  margin-block: var(--fe-space-4) 0;
+  font-size: var(--fe-text-body-sm);
+  // secondary rather than muted: muted measures 4.13:1 on Ink, under the
+  // 4.5:1 this size needs
+  color: var(--fe-fg-secondary);
+}
+
+.fe-dl-hero__facts {
+  display: flex;
+  gap: var(--fe-space-8);
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+  margin-block: var(--fe-space-8) 0;
+  list-style: none;
+}
+
+.fe-dl-hero__facts > li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-1);
+}
+
+.fe-dl-hero__fact-value {
+  font-size: var(--fe-text-body-lg);
+  font-weight: var(--fe-weight-bold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-dl-hero__fact-label {
+  color: var(--fe-fg-secondary);
+}
+
+// ============================================
+// GROUP SECTIONS
+// ============================================
+// The desktop and mobile sections are two .fe-section elements on the same
+// light ground, so the second one drops its top padding and the pair reads as
+// one field, the way the product and pricing sections do on the landing page.
+
+.fe-dl-group {
+  padding-block: 6rem;
+}
+
+.fe-dl-group--mobile {
+  padding-top: 0;
+}
+
+// Scroll target for the hero's fallback link. Offset by the fixed navbar so
+// the section heading is not hidden under the bar on arrival.
+.fe-dl-anchor {
+  display: block;
+  height: 0;
+  scroll-margin-top: var(--fe-nav-offset);
+}
+
+.fe-dl-group__head {
+  margin-bottom: var(--fe-space-8);
+}
+
+.fe-dl-group__title {
+  margin-bottom: var(--fe-space-5);
+  font-size: var(--fe-text-display-lg);
+  color: var(--fe-fg-primary);
+}
+
+.fe-dl-group__lede {
+  margin-bottom: 0;
+}
+
+// ============================================
+// PLATFORM CARDS
+// ============================================
+
+.fe-dl-cards {
+  display: grid;
+  gap: var(--fe-grid-gap);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-dl-card {
+  display: flex;
+  flex-direction: column;
+
+  // No height: 100% here. A percentage height on a grid item resolves against
+  // the row, which is as tall as the tallest card, so it would re-stretch the
+  // desktop cards straight past the align-items: start set on that grid. The
+  // mobile grid keeps the default stretch, which gives the same result without
+  // the declaration.
+  padding: var(--fe-space-6);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-lg);
+}
+
+.fe-dl-card__head {
+  display: flex;
+  gap: var(--fe-space-4);
+  align-items: center;
+  padding-bottom: var(--fe-space-5);
+  margin-bottom: var(--fe-space-2);
+  border-bottom: 1px solid var(--fe-border-subtle);
+}
+
+// Mint and Signal are not legal as text on a light ground, so the platform
+// glyph is filled with the icon token rather than coloured like a label.
+.fe-dl-card__icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-size: var(--fe-text-body-lg);
+  color: var(--fe-icon-primary);
+  background-color: var(--fe-primary-a08);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-dl-card__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fe-dl-card__title {
+  margin: 0;
+  font-size: var(--fe-text-display-sm);
+  color: var(--fe-fg-primary);
+}
+
+.fe-dl-card__requires {
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-dl-card__note {
+  padding-top: var(--fe-space-4);
+  margin-block: auto 0;
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+// ============================================
+// DOWNLOAD ROWS
+// ============================================
+
+.fe-dl-rows {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-dl-row {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+}
+
+.fe-dl-row + .fe-dl-row {
+  border-top: 1px solid var(--fe-border-subtle);
+}
+
+// The whole strip is the link, so the target is the full row height rather
+// than the width of a word.
+.fe-dl-row__link {
+  display: flex;
+  gap: var(--fe-space-3);
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  padding-block: var(--fe-space-4);
+  color: var(--fe-fg-primary);
+  text-decoration: none;
+  border-radius: var(--fe-radius-sm);
+  transition: color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-dl-row__link:hover,
+.fe-dl-row__link:focus {
+  color: var(--fe-fg-link);
+  text-decoration: none;
+}
+
+.fe-dl-row__label {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fe-dl-row__arch {
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-semibold);
+}
+
+.fe-dl-row__note {
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-dl-row__format {
+  flex: 0 0 auto;
+  padding: 2px var(--fe-space-2);
+  color: var(--fe-fg-code);
+  background-color: var(--fe-bg-sunken);
+  border-radius: var(--fe-radius-sm);
+}
+
+.fe-dl-row__size {
+  flex: 0 0 auto;
+  min-width: 4.5rem;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+  text-align: right;
+}
+
+.fe-dl-row__go {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--fe-icon-primary);
+  background-color: var(--fe-primary-a08);
+  border-radius: var(--fe-radius-full);
+  transition: background-color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-dl-row__link:hover .fe-dl-row__go {
+  background-color: var(--fe-primary-a16);
+}
+
+// ============================================
+// CHECKSUM CONTROL
+// ============================================
+// Sibling of the row link rather than a child, because a button cannot be
+// nested inside an anchor. Rendered only when the release reported a digest.
+
+.fe-dl-copy {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-muted);
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-sm);
+  transition: color var(--fe-motion-fast) var(--fe-ease),
+    border-color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-dl-copy:hover {
+  color: var(--fe-fg-primary);
+  border-color: var(--fe-border-strong);
+}
+
+// The tick is stacked on the clipboard rather than replacing it, so the
+// control does not change width when it fires.
+.fe-dl-copy__done {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fe-icon-success);
+  visibility: hidden;
+  background-color: var(--fe-bg-raised);
+  border-radius: var(--fe-radius-sm);
+}
+
+.fe-dl-copy.is-copied {
+  border-color: var(--fe-mint-deep);
+}
+
+.fe-dl-copy.is-copied .fe-dl-copy__done {
+  visibility: visible;
+}
+
+// ============================================
+// VERIFY
+// ============================================
+
+.fe-dl-verify {
+  padding-block: 6rem;
+}
+
+.fe-dl-verify__grid {
+  display: grid;
+  gap: var(--fe-space-8);
+}
+
+.fe-dl-verify__title {
+  margin-bottom: var(--fe-space-5);
+  font-size: var(--fe-text-display-lg);
+  color: var(--fe-fg-primary);
+}
+
+.fe-dl-verify__links {
+  display: flex;
+  gap: var(--fe-space-5);
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-dl-verify__link {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-link);
+  text-decoration: none;
+}
+
+.fe-dl-verify__link:hover,
+.fe-dl-verify__link:focus {
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+}
+
+.fe-dl-verify__points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-5);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-dl-verify__point {
+  display: flex;
+  gap: var(--fe-space-4);
+  align-items: flex-start;
+}
+
+.fe-dl-verify__point-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: var(--fe-text-body-sm);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-dl-verify__point-icon--mint {
+  color: var(--fe-icon-success);
+  background-color: var(--fe-mint-a12);
+}
+
+.fe-dl-verify__point-icon--signal {
+  color: var(--fe-icon-active);
+  background-color: var(--fe-signal-a10);
+}
+
+.fe-dl-verify__point-icon--primary {
+  color: var(--fe-primary-lift);
+  background-color: var(--fe-primary-a16);
+}
+
+.fe-dl-verify__point-title {
+  display: block;
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-dl-verify__point-body {
+  display: block;
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-dl-verify__point-link {
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-link);
+}
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
+@media (min-width: 768px) {
+  .fe-dl-cards--mobile {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .fe-dl-cards--desktop {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    // Linux ships seven packages and macOS two, so stretching the row to the
+    // tallest card leaves most of the macOS panel empty. Each card ends where
+    // its own list does instead. The mobile grid keeps the default stretch,
+    // where the two cards are close in height and the notes line up.
+    align-items: start;
+  }
+
+  .fe-dl-verify__grid {
+    grid-template-columns: 6fr 5fr;
+    gap: var(--fe-space-8) 4rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .fe-dl-hero {
+    padding-block: calc(3rem + var(--fe-nav-offset)) 4rem;
+  }
+
+  .fe-dl-group,
+  .fe-dl-verify {
+    padding-block: 4rem;
+  }
+
+  .fe-dl-group--mobile {
+    padding-top: 0;
+  }
+
+  // The arch and the format sit on one line and the size moves under them,
+  // so a narrow row keeps the download affordance on screen.
+  .fe-dl-row__size {
+    min-width: 0;
+  }
+
+  .fe-dl-hero__facts {
+    gap: var(--fe-space-6);
+  }
+}
+
+@media (max-width: 479px) {
+  .fe-dl-hero__actions .fe-btn {
+    width: 100%;
+  }
+
+  .fe-dl-row__format {
+    display: none;
+  }
+}
+
+// ============================================
+// RIGHT TO LEFT
+// ============================================
+// postcss-preset-env flattens logical properties to physical ones assuming
+// LTR, because op_mini and kaios are in our browserslist and do not support
+// the logical forms. Only text-align on the size column actually cares about
+// direction here; every other declaration on this page is symmetric.
+
+[dir='rtl'] .fe-dl-row__size {
+  text-align: left;
+}

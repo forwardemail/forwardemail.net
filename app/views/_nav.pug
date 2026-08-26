@@ -82,12 +82,22 @@ if !user && !registerOrLogin
 - const navbarClasses = [];
 if user
   - navbarClasses.push("navbar-dark", "bg-dark", "border-bottom");
-else if ['/', '/private-business-email', ...Object.keys(useCases)].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent")) && !boolean(ctx.query.pricing)
+else if ['/', '/download', '/faq', '/private-business-email', ...Object.keys(useCases)].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent")) && !boolean(ctx.query.pricing)
   - navbarClasses.push("text-white");
   //- used by core.js JavaScript file
   //- (purely for `hasClass('text-white-required')` check
   //- (hacky but we can clean this up later)
   - navbarClasses.push("text-white-required");
+  //- Every route reaching this branch now opens on a dark hero built from the
+  //- new surface, so they all take the redesigned navbar. That is the landing
+  //- page, the download page, the FAQ, /private-business-email and every
+  //- useCases route. The branch is already gated to logged out non-bot
+  //- visitors without ?pricing, which is the same condition those heroes
+  //- render under.
+  //- `fe-nav` is pushed from a code block rather than written as a literal
+  //- class, so it is listed in the purgecss safelist in gulpfile.js alongside
+  //- the other classes added this way.
+  - navbarClasses.push("fe-nav");
 else
   - navbarClasses.push("bg-white", "navbar-themed", "bg-themed", "border-bottom");
 if !isBot(ctx.get("User-Agent"))
@@ -346,6 +356,14 @@ nav.navbar(class=navbarClasses.join(" "))
                 )
                   = t("Apps")
                 .dropdown-menu(aria-labelledby="navbar-dropdown-apps")
+                  //- Download
+                  a.dropdown-item(
+                    href=l("/download"),
+                    class=ctx.pathWithoutLocale === "/download" ? "active" : ""
+                  )
+                    i.fa.fa-download
+                    = " "
+                    = t("Download")
                   //- Webmail
                   a.dropdown-item(
                     href="https://mail.forwardemail.net",

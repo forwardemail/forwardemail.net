@@ -82,7 +82,6 @@ if (isSANB(env.GPG_SECURITY_KEY) && isSANB(env.GPG_SECURITY_PASSPHRASE)) {
 
 let appCss;
 let botCss;
-let freddyCss;
 
 try {
   appCss = fs.readFileSync(
@@ -96,15 +95,6 @@ try {
 try {
   botCss = fs.readFileSync(
     path.join(config.buildDir, 'css', 'app-bot.css'),
-    'utf8'
-  );
-} catch (err) {
-  logger.error(err);
-}
-
-try {
-  freddyCss = fs.readFileSync(
-    path.join(config.buildDir, 'css', 'freddy.css'),
     'utf8'
   );
 } catch (err) {
@@ -747,12 +737,6 @@ module.exports = (redis) => ({
         // to avoid LCP lighthouse issues
         ctx.state.appCss = appCss;
         ctx.state.botCss = botCss;
-        //
-        // test mode should not render this because stars function
-        // uses `random()` which causes CSS output to constantly change
-        // (and CI would otherwise fail)
-        //
-        if (config.env !== 'test') ctx.state.freddyCss = freddyCss;
 
         ctx.state.tti = false;
       }

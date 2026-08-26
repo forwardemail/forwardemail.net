@@ -63,13 +63,46 @@ html.h-100.no-js(
           document.head.appendChild(script);
         })();
 
+  //- Landing page gate. This mirrors the condition in _nav.pug that adds the
+  //- `fe-nav` class, and the two have to stay in sync. It is repeated here
+  //- because the sign up, sign in and domain search modals render as siblings
+  //- of nav.navbar rather than inside it, so scoping their restyle to `/` needs
+  //- a hook on the page itself. The condition cannot simply be computed here
+  //- and read from _nav.pug, because email-api.pug builds its own html element
+  //- and includes _nav.pug without going through this layout.
+  //- Routes whose first section is a dark hero built from the new surface.
+  //- Split three ways because they do not share a condition.
+  //-
+  //- `/` only ever renders home.pug for a logged out visitor, since
+  //- auth.homeOrDomains redirects everyone else.
+  - const isFeLandingPage = !user && ctx.pathWithoutLocale === "/" && !isBot(ctx.get("User-Agent")) && !boolean(ctx.query.pricing);
+  //- /download and /faq render for signed in visitors too. Someone who already
+  //- has an account is the most likely person to want the app or the answers,
+  //- so these are not gated on !user.
+  - const isFeAccountAgnosticPage = ["/download", "/faq"].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent"));
+  //- The pricing template. Its hero renders under the same condition the
+  //- template itself uses, so the surface follows it exactly: drop the hero for
+  //- a signed in visitor or for ?pricing, and the page is the previous design
+  //- all the way down and should not be restyled around it.
+  - const isFePricingPage = !user && !boolean(ctx.query.pricing) && !isBot(ctx.get("User-Agent")) && (ctx.pathWithoutLocale === "/private-business-email" || Object.keys(useCases).includes(ctx.pathWithoutLocale));
+  - const isFePage = isFeLandingPage || isFeAccountAgnosticPage || isFePricingPage;
+  //- Whether the first section may sit under the navbar. True only while that
+  //- bar is transparent, which _nav.pug decides with the same condition.
+  //- The page templates read this to add .fe-landing--flush.
+  - const isFeFlushNav = isFeLandingPage || isFePricingPage || (isFeAccountAgnosticPage && !user);
+  //- The two class attributes are deliberately separate rather than merged into
+  //- one expression. Pug concatenates repeated class attributes, and keeping
+  //- each class as its own string literal inside a class attribute is what lets
+  //- purgecss-from-pug find them. Building the list in a `-` block instead would
+  //- hide both names from the extractor and purge .ubuntu-font out of the build.
   body.d-flex.flex-column.min-h-100.app(
     role="document",
     data-spy=hasSidebar ? "scroll" : false,
     data-target=hasSidebar ? "#sidebar-scrollspy" : false,
     data-offset=hasSidebar ? "80" : false,
     data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false,
-    class=(domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ["/ubuntu", "/kubuntu", "/lubuntu", "/edubuntu", "/ubuntu-studio"].includes(ctx.pathWithoutLocale) ? "ubuntu-font" : ""
+    class=(domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ["/ubuntu", "/kubuntu", "/lubuntu", "/edubuntu", "/ubuntu-studio"].includes(ctx.pathWithoutLocale) ? "ubuntu-font" : "",
+    class=isFePage ? "fe-page" : ""
   )
     - const isHelp = ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);

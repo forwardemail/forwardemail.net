@@ -1,0 +1,64 @@
+//- Hero for pricing.pug, which serves /private-business-email and every
+//- useCases route. Replaces the #freddy starfield section.
+//-
+//- The headline and the description are read from exactly the same places the
+//- starfield section read them from: useCases[path][0] when the route is a use
+//- case, otherwise the page title with the affix stripped, and meta.description
+//- underneath. That is what makes this one template correct for all 7,254
+//- routes, and it is why this is a visual swap rather than a content migration.
+//- Both are emitted unescaped, as before, because the copy contains entities.
+//-
+//- The proof links are the same set _quick-start.pug carries, rebuilt with this
+//- page's own classes. That partial is left alone because _marketing.pug still
+//- includes it further down the page, and pulling bootstrap button styling onto
+//- an Ink surface is what caused the contrast failures on the FAQ.
+mixin fePricingHero
+  section.fe-section.fe-surface-dark.fe-phero(
+    data-ignore-hash-change,
+    aria-labelledby="fe-phero-title"
+  )
+    .fe-container.fe-phero__inner
+      p.fe-eyebrow.fe-label
+        i.fab.fa-github(aria-hidden="true")
+        = t("100% open-source email infrastructure")
+
+      h1#fe-phero-title.fe-phero__title
+        if Object.keys(useCases).includes(ctx.pathWithoutLocale)
+          != t(useCases[ctx.pathWithoutLocale][0])
+        else
+          != meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
+
+      p.fe-phero__body!= meta.description
+
+      .fe-phero__actions
+        a.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--glow(href=l("/register"))
+          = t("Start free")
+          i.fa.fa-angle-right(aria-hidden="true")
+        button.fe-btn.fe-btn--ghost.fe-btn--lg(
+          type="button",
+          data-toggle="modal",
+          data-target="#modal-domain-search"
+        )
+          i.fa.fa-search(aria-hidden="true")
+          = t("Check a domain")
+
+      //- Same destinations as before, including the /faq#quick-start anchor
+      //- the old primary button used.
+      ul.fe-phero__proof
+        +fePheroProof(l("/faq#quick-start"), "fa fa-bolt", t("Quick Start"), false)
+        +fePheroProof("/technical-whitepaper.pdf", "fa fa-book", t("Whitepaper"), true)
+        +fePheroProof("/pentest-report_forward-email.pdf", "fa fa-user-secret", t("Security Audit"), true)
+        +fePheroProof(l("/blog/docs/canonical-ubuntu-email-enterprise-case-study"), "fa fa-briefcase", t("Enterprise"), true)
+        +fePheroProof(l("/blog/docs/alumni-email-forwarding-university-case-study"), "fa fa-user-graduate", t("Education"), true)
+        +fePheroProof(l("/blog/docs/federal-government-email-service-section-889-compliant"), "fa fa-landmark", t("Government"), true)
+        +fePheroProof(l("/gdpr"), "fa fa-check-circle", t("EU and GDPR Compliant Email"), true)
+
+mixin fePheroProof(href, icon, label, external)
+  li
+    a.fe-phero__proof-link(
+      href=href,
+      target=external ? "_blank" : false,
+      rel=external ? "noopener" : false
+    )
+      i(class=icon, aria-hidden="true")
+      = label

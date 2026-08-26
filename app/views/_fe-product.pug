@@ -1,0 +1,93 @@
+//- Redesigned product section, per section 3 of the landing page build spec.
+//- Light surface. Numeric values are emitted as literals rather than through
+//- t(), so the translation job never rewrites a figure or a currency symbol.
+mixin feProduct
+  section.fe-section.fe-surface-light.fe-product(
+    aria-labelledby="fe-product-title"
+  )
+    .fe-container
+      p.fe-eyebrow.fe-label
+        i.fa.fa-check(aria-hidden="true")
+        = t("All-in-one, no add-on fees")
+
+      .fe-product__head
+        h2#fe-product-title.fe-product__title= t("One control plane for forwarding, mailboxes, sending, and deliverability.")
+
+        ul.fe-stats.fe-product__stats
+          li
+            span.fe-stats__value.fe-numeral 99.99%
+            span.fe-stats__label.fe-label= t("Uptime")
+          li
+            span.fe-stats__value.fe-numeral 10 GB
+            span.fe-stats__label.fe-label= t("Pooled storage")
+          li
+            span.fe-stats__value.fe-numeral $0
+            span.fe-stats__label.fe-label= t("Per alias")
+
+      //- Section 7 replacement copy. The mockup line here described the
+      //- redesign rather than the product.
+      p.fe-lede= t("Connect a domain, prove ownership, route mail securely, and observe everything, from one place.")
+
+      hr.fe-divider
+
+      //- Route stepper. The colour sequence blue, cyan, mint, blue encodes
+      //- progression and is intentional per section 3.1.
+      p.fe-stepper__label.fe-label= t("The route")
+      ol.fe-stepper
+        +feStep("01", "primary", t("Connect"), t("Add unlimited domains and aliases"))
+        +feStep("02", "signal", t("Authenticate"), "SPF, DKIM, DMARC, MTA-STS, DANE")
+        +feStep("03", "mint", t("Route + store"), t("Forward, send via SMTP, or keep encrypted mail"))
+        +feStep("04", "primary", t("Observe"), t("Analytics, DMARC reports, webhooks, API"))
+
+      .fe-features
+        .fe-feature.fe-feature--light
+          h3.fe-feature__title= t("Privacy by default")
+          p.fe-feature__body= t("Zero-knowledge architecture, quantum-resistant encryption options, sandboxed mailboxes, and safe web lookups.")
+          ul.fe-chips
+            li.fe-chip
+              i.fab.fa-github(aria-hidden="true")
+              = t("Open-source")
+            li.fe-chip
+              i.fa.fa-lock.fe-chip__icon--success(aria-hidden="true")
+              = t("PGP forwarding")
+            li.fe-chip
+              i.fa.fa-shield-alt.fe-chip__icon--primary(aria-hidden="true")
+              = t("Spam + phishing guard")
+
+        //- The only inverse panel in this section. .fe-surface-dark re-points
+        //- the semantic tokens for this subtree, so nothing inside needs a
+        //- per-element colour override.
+        .fe-feature.fe-feature--inverse.fe-surface-dark
+          h3.fe-feature__title= t("Built for developers")
+          .fe-codeblock
+            pre
+              code
+                span.fe-tok-method POST /v1/messages
+                = "\n"
+                span.fe-tok-key { "from"
+                span.fe-tok-value : "you@domain.com",
+                = " "
+                span.fe-tok-key "to"
+                span.fe-tok-value : "customer@co.com" }
+                = "\n"
+                span.fe-tok-result → 202 Accepted · signed · tracked
+          ul.fe-chips
+            li.fe-chip.fe-chip--code REST · SMTP · IMAP · DAV
+
+mixin feStep(num, dot, title, desc)
+  li.fe-stepper__step
+    span.fe-stepper__num.fe-code= num
+    .fe-stepper__dot-row(aria-hidden="true")
+      //- Written as three literal branches rather than a built class name.
+      //- purgecss-from-pug only extracts classes it can see as dot syntax or
+      //- a literal class attribute, so a concatenated name is stripped from
+      //- the production bundle while still looking correct in dev.
+      if dot === "signal"
+        span.fe-stepper__dot.fe-stepper__dot--signal
+      else if dot === "mint"
+        span.fe-stepper__dot.fe-stepper__dot--mint
+      else
+        span.fe-stepper__dot.fe-stepper__dot--primary
+      span.fe-stepper__rule
+    h3.fe-stepper__title= title
+    p.fe-stepper__desc= desc

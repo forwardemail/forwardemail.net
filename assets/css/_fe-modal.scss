@@ -1,0 +1,300 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Landing page modals: sign up, sign in and domain search.
+// These render as siblings of nav.navbar rather than inside it, so .fe-nav
+// cannot reach them. layout.pug puts `fe-page` on the body element under the
+// same condition that adds `fe-nav`, and everything here hangs off that, so no
+// other page's modals change.
+// The panels are dark in both OS colour schemes, for the same reason the bar is:
+// the page they open over is surface locked, and following the scheme would make
+// the modal light over a dark hero in one and dark over a light section in the
+// other. The domain search header was already .bg-dark, so this continues a
+// direction the markup had already taken.
+// Deliberately untouched: .btn-auth. The Apple, Google and GitHub buttons follow
+// each vendor's published sign-in branding rules, which specify their own fill,
+// border and logo treatment. _btn-auth.scss owns them and this file must not.
+
+// .fe-page takes the dark token set from _fe-tokens.scss, alongside
+// .fe-surface-dark and .fe-nav, so there is no second copy of it here.
+
+// ============================================
+// PANEL
+// ============================================
+
+.fe-page .modal-content {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-subtle);
+  border-radius: var(--fe-radius-xl);
+  box-shadow: var(--fe-elev-3);
+}
+
+.fe-page .modal-header {
+  // .bg-dark on the domain search header is !important inside app-dark.scss
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--fe-border-subtle);
+}
+
+.fe-page .modal-header .modal-title,
+.fe-page .modal-header .h4,
+.fe-page .modal-header .h5 {
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-display-sm);
+  font-weight: var(--fe-weight-bold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-page .modal-header .fa {
+  color: var(--fe-icon-active);
+}
+
+.fe-page .modal-footer {
+  border-top: 1px solid var(--fe-border-subtle);
+}
+
+.fe-page .modal-content .close {
+  color: var(--fe-fg-secondary);
+  text-shadow: none;
+  opacity: 1;
+}
+
+.fe-page .modal-content .close:hover,
+.fe-page .modal-content .close:focus {
+  color: var(--fe-fg-primary);
+  opacity: 1;
+}
+
+// ============================================
+// TEXT
+// ============================================
+// Bootstrap's .text-muted is #6c757d, which is 4.0:1 on this panel and misses AA
+// at the small sizes these modals use it at. .text-black and .text-themed-50 are
+// worse: both resolve to near black. All three are utilities, so all three need
+// !important to reach.
+
+.fe-page .modal-content .text-muted,
+.fe-page .modal-content .text-secondary,
+.fe-page .modal-content .text-black,
+.fe-page .modal-content .text-themed-50 {
+  color: var(--fe-fg-secondary) !important;
+}
+
+// The two link contexts inside these panels: the privacy and terms line, and
+// the forgot-password link. Both carry the utilities above, which is why they
+// need their own rule after it.
+.fe-page .modal-content .text-black a,
+.fe-page .modal-content .text-themed-50 a,
+.fe-page .modal-content a.text-black,
+.fe-page .modal-content a.text-themed-50 {
+  color: var(--fe-fg-link) !important;
+}
+
+// The "or" rule between the vendor buttons and the email form. Its label also
+// carries .text-secondary, which is handled by the utility override above; this
+// only has to cover the rule itself.
+.fe-page .modal-content .hr-text {
+  color: var(--fe-fg-secondary);
+}
+
+.fe-page .modal-content .hr-text::before {
+  background-color: var(--fe-border-subtle);
+}
+
+.fe-page .modal-content .hr-text::after {
+  color: var(--fe-fg-secondary);
+  background-color: var(--fe-bg-raised);
+}
+
+// ============================================
+// FORM FIELDS
+// ============================================
+
+.fe-page .modal-content .form-control {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-border-control);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-page .modal-content .form-control:focus {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border-color: var(--fe-primary);
+  box-shadow: 0 0 0 3px var(--fe-primary-a24);
+}
+
+// Placeholders are deliberately not styled across the board. Inside a
+// .floating-label group the plugin keeps the resting placeholder transparent on
+// purpose, because the label itself is sitting over the field, and revealing it
+// prints the placeholder and the label on top of each other. So the resting
+// placeholder is only coloured for fields that have no floating label, which on
+// this page means the domain search input inside its .input-group.
+.fe-page .modal-content .input-group > .form-control::placeholder {
+  color: var(--fe-fg-secondary);
+  opacity: 1;
+}
+
+// The plugin does reveal the placeholder once the field has focus and the label
+// has moved above it, and that state does need a colour for this surface.
+.fe-page .modal-content .floating-label > .form-control:focus::placeholder {
+  color: var(--fe-fg-secondary);
+  opacity: 1;
+}
+
+.fe-page .modal-content .floating-label > label {
+  color: var(--fe-fg-secondary);
+}
+
+// Once the label lifts above the field, the plugin gives it
+// background-color: $input-bg so it can punch a hole in the field's top border.
+// That compiles to #fff and reads as a white chip on a dark field. These mirror
+// the plugin's own raised-state selectors one for one rather than setting the
+// background on the label unconditionally, because at rest the label sits inside
+// the field and must stay transparent, or it punches a hole in an intact border.
+.fe-page .modal-content .floating-label > select + label,
+.fe-page .modal-content .floating-label > input:focus + label,
+.fe-page .modal-content .floating-label > textarea:focus + label,
+.fe-page .modal-content .floating-label > input:-webkit-autofill + label,
+.fe-page .modal-content .floating-label > textarea:-webkit-autofill + label,
+.fe-page
+  .modal-content
+  .floating-label
+  > input[placeholder]:not(:placeholder-shown)
+  + label,
+.fe-page
+  .modal-content
+  .floating-label
+  > textarea[placeholder]:not(:placeholder-shown)
+  + label,
+.fe-page
+  .modal-content
+  .floating-label
+  > input:not([placeholder]):not([value])
+  + label,
+.fe-page .modal-content .floating-label > textarea:not([placeholder]):empty + label {
+  background-color: var(--fe-bg-sunken);
+}
+
+// ============================================
+// BUTTONS
+// ============================================
+// The submit button is the third gradient call to action the spec allows, shared
+// with the hero and the Enhanced plan through --fe-gradient-cta.
+
+.fe-page .modal-content .btn-success,
+.fe-page .modal-content .btn-primary {
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary);
+  background-image: var(--fe-gradient-cta);
+  border: 0;
+  border-radius: var(--fe-radius-md);
+  transition: filter var(--fe-motion-base) var(--fe-ease);
+}
+
+.fe-page .modal-content .btn-success:hover,
+.fe-page .modal-content .btn-success:focus,
+.fe-page .modal-content .btn-primary:hover,
+.fe-page .modal-content .btn-primary:focus {
+  color: var(--fe-l-000);
+  filter: brightness(1.08);
+}
+
+.fe-page .modal-content .btn-outline-secondary {
+  color: var(--fe-fg-primary);
+  background-color: transparent;
+  border-color: var(--fe-border-default);
+}
+
+.fe-page .modal-content .btn-outline-secondary:hover,
+.fe-page .modal-content .btn-outline-secondary:focus {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border-color: var(--fe-border-strong);
+}
+
+.fe-page .modal-content .input-group > .form-control {
+  border-end-start-radius: var(--fe-radius-md);
+  border-start-start-radius: var(--fe-radius-md);
+}
+
+.fe-page .modal-content .input-group-append > .btn {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.fe-page .modal-content .spinner-border {
+  color: var(--fe-icon-active) !important;
+}
+
+// ============================================
+// ALERTS
+// ============================================
+// Bootstrap fills these with pale tints meant for a white page. On the dark
+// panel they become bright blocks with near black text, so each becomes a tinted
+// panel with a legible border instead.
+
+.fe-page .modal-content .alert {
+  border-radius: var(--fe-radius-lg);
+}
+
+.fe-page .modal-content .alert-warning {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-primary-a08);
+  border: 1px solid var(--fe-primary-a24);
+}
+
+.fe-page .modal-content .alert-warning .alert-link {
+  color: var(--fe-fg-primary);
+}
+
+.fe-page .modal-content .alert-info {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-signal-a10);
+  border: 1px solid var(--fe-signal-a24);
+}
+
+.fe-page .modal-content .alert-danger {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-state-danger);
+}
+
+// ============================================
+// DOMAIN SEARCH RESULTS
+// ============================================
+// domain-search.js injects these rows at runtime. Only classes that already
+// appear in the markup or the purgecss safelist are targeted, so nothing here
+// depends on a class purge cannot see.
+
+.fe-page #domain-search-results .alert {
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-border-subtle);
+}
+
+.fe-page #domain-search-results .alert-success,
+.fe-page #domain-search-results .alert-warning,
+.fe-page #domain-search-results .alert-danger {
+  color: var(--fe-fg-primary);
+}
+
+.fe-page #domain-register-overlay .fa {
+  color: var(--fe-icon-success);
+}
+
+.fe-page #domain-register-name {
+  color: var(--fe-fg-primary);
+}
+
+// ============================================
+// FOCUS
+// ============================================
+
+// Matched on the pseudo-class rather than on a, button and input separately, so
+// everything focusable in the panel is covered by one rule.
+.fe-page .modal-content :focus-visible {
+  outline: 2px solid var(--fe-focus-ring);
+  outline-offset: var(--fe-focus-offset);
+}

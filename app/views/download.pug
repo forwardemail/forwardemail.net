@@ -1,0 +1,38 @@
+extends layout
+
+block append scripts
+  if !isBot(ctx.get('User-Agent'))
+    if config.env === 'test'
+      script(
+        nonce=nonce,
+        defer,
+        src=`${config.urls.web}/js/download.js`,
+        crossorigin="anonymous"
+      )
+    else
+      script(
+        nonce=nonce,
+        defer,
+        src=manifest("js/download.js"),
+        integrity=manifest("js/download.js", "integrity"),
+        crossorigin="anonymous"
+      )
+
+block body
+  //- Inlined by pug, so archLabels, formatLabels, formatNotes and
+  //- platformMeta are in scope for both partials below.
+  include _fe-download-labels
+  include _fe-download-hero
+  include _fe-download-platforms
+  include _fe-download-verify
+
+  //- fe-landing carries the page's typography and token scoping. The flush
+  //- modifier, which pulls the first section up under the fixed navbar, is
+  //- only correct while that navbar is transparent. _nav.pug makes it
+  //- transparent for logged out visitors on this route; a signed in visitor
+  //- gets the opaque dark bar instead, and pulling up under that one would
+  //- hide the top of the hero.
+  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+    +feDownloadHero
+    +feDownloadPlatforms
+    +feDownloadVerify

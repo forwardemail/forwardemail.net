@@ -6,6 +6,7 @@
 const fs = require('node:fs');
 
 const MarkdownIt = require('markdown-it');
+const markdownItAttrs = require('markdown-it-attrs');
 const markdownItGitHubAlerts = require('markdown-it-github-alerts');
 const ms = require('ms');
 const sanitizeHtml = require('sanitize-html');
@@ -73,6 +74,38 @@ const QUESTION_PREFIXES = [
 // (avoids the full helpers/markdown.js which has heavier dependencies)
 const md = new MarkdownIt({ html: true, linkify: true });
 md.use(markdownItGitHubAlerts);
+// Headings inside answers pin their anchor as `{#id}`, which every translated
+// FAQ file uses. Without this the braces render as visible text and end up in
+// the structured data Google reads. `id` is the only attribute allowed, so the
+// attribute injection this plugin permits by default is not reachable.
+md.use(markdownItAttrs, { allowedAttributes: ['id'] });
+
+// markdown-it-attrs syntax on a heading, e.g. `## Introducción {#introduction}`.
+// Exported because helpers/get-faq-index.js needs the same rule, and this
+// module is the one that already owns heading text handling.
+const HEADING_ATTR = /\s*{#([\w-]+)}\s*/;
+
+/**
+ * Split a heading into the text a reader sees and the anchor it pins.
+ * Returns a null id when the heading does not pin one.
+ *
+ * @param {string} heading
+ * @returns {Object} - { text, id }
+ */
+function splitHeadingAttr(heading) {
+  const value = String(heading || '');
+  const match = value.match(HEADING_ATTR);
+  if (!match) return { text: value.trim(), id: null };
+  return {
+    text: value
+      .replace(HEADING_ATTR, ' ')
+      // the attribute sometimes sat before the punctuation, so close the gap
+      .replace(/\s+([!,.:;?])/g, '$1')
+      .replace(/\s{2,}/g, ' ')
+      .trim(),
+    id: match[1].toLowerCase()
+  };
+}
 
 /**
  * Ensure a question string ends with a trailing question mark
@@ -109,8 +142,24 @@ function parseFaqMarkdown(faqFilePath) {
   const pairs = [];
   let currentQuestion = null;
   let answerLines = [];
+  // Several answers contain shell snippets whose comments start with `#`, so a
+  // line inside a fenced block can look exactly like a heading. Without this,
+  // `# Ubuntu/Debian` inside a bash block read as an h1 and every question
+  // after it was dropped from the structured data.
+  let inFence = false;
 
   for (const line of lines) {
+    if (/^\s*(```|~~~)/.test(line)) {
+      inFence = !inFence;
+      if (currentQuestion) answerLines.push(line);
+      continue;
+    }
+
+    if (inFence) {
+      if (currentQuestion) answerLines.push(line);
+      continue;
+    }
+
     if (line.startsWith('### ')) {
       // Save previous Q&A pair
       if (currentQuestion && answerLines.length > 0) {
@@ -173,7 +222,10 @@ function buildFaqSchema(pairs) {
     }).trim();
 
     // Ensure question ends with "?" per Google's FAQ spec examples
-    const name = ensureQuestionMark(pair.question);
+    // Strip the pinned anchor before it reaches the structured data. Google
+    // shows this name verbatim in rich results, so `{#can-i-forward-email...}`
+    // was being published as part of the question.
+    const name = ensureQuestionMark(splitHeadingAttr(pair.question).text);
 
     // Only include pairs that have both a question and a non-empty answer
     if (name && cleanHtml) {
@@ -255,6 +307,7 @@ async function getFaqSchema(client, faqFilePath, logger) {
 }
 
 module.exports = getFaqSchema;
+module.exports.splitHeadingAttr = splitHeadingAttr;
 module.exports.parseFaqMarkdown = parseFaqMarkdown;
 module.exports.buildFaqSchema = buildFaqSchema;
 module.exports.ensureQuestionMark = ensureQuestionMark;

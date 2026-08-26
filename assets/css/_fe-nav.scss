@@ -1,0 +1,340 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Landing page navbar restyle.
+// The navbar lives in layout.pug and is shared by every page on the site, so
+// this file changes nothing structurally. _nav.pug adds a single `fe-nav`
+// class when the request is for `/` and the visitor is logged out, which is
+// exactly the condition under which auth.homeOrDomains renders home.pug.
+// Every selector here is prefixed with that class, so the other pages keep the
+// navbar they have today.
+// This is imported last in app-bot.scss so it wins order ties against
+// bootstrap and _custom.scss without needing inflated selectors. It still
+// needs !important in a handful of places, and each of those is fighting a
+// bootstrap utility or an app-dark.scss override that is itself !important.
+// Being imported last is not enough on its own, though. app-dark.scss re-emits
+// the whole of bootstrap inside @media (prefers-color-scheme: dark), and that
+// copy is concatenated after this file, so anything here that only ties with a
+// bootstrap selector on specificity loses in dark mode. The base rule below is
+// therefore written as nav.fe-nav rather than .fe-nav, which outranks .navbar
+// whatever the order.
+// Nav copy is unchanged. The sign up button still reads "SIGNUP" in upper case
+// because that string and the .text-uppercase class are shared with every
+// other page's navbar. Both change when the navbar migration reaches the rest
+// of the site.
+
+// ============================================
+// THE BAR
+// ============================================
+// core.js swaps `bg-white navbar-themed bg-themed border-bottom` onto the
+// navbar once the page scrolls past it, or whenever the mobile menu opens, and
+// strips `text-white` at the same time. On this page that would turn the bar
+// white over a dark hero in light mode, and near black over a light section in
+// dark mode. So instead of following the scheme, the bar is Ink glass in both
+// scroll states and under both OS colour schemes, and its text stays light
+// throughout. The scroll classes then only decide whether the glass is there.
+
+nav.fe-nav {
+  // .navbar carries 1rem of its own horizontal padding, which stacks on top of
+  // the container gutter and shifts the whole bar inboard of the sections. It is
+  // zeroed so the container gutter below does the whole job. Only the inline
+  // axis; the vertical padding sets the bar's height.
+  padding-inline: 0;
+
+  color: var(--fe-fg-primary);
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color var(--fe-motion-base) var(--fe-ease),
+    border-color var(--fe-motion-base) var(--fe-ease);
+}
+
+nav.fe-nav.bg-white,
+nav.fe-nav.bg-themed,
+nav.fe-nav.navbar-themed {
+  // .bg-white is a bootstrap utility and .bg-themed is !important inside
+  // app-dark.scss, so this has to be !important to reach the same longhand.
+  background-color: var(--fe-ink-a92) !important;
+  // Unprefixed only. Our browserslist resolves to Safari 26.x and iOS 18.5+,
+  // which support this without -webkit-, and autoprefixer strips the prefix as
+  // outdated if you add it anyway.
+  backdrop-filter: blur(12px);
+}
+
+nav.fe-nav.border-bottom {
+  border-bottom-color: var(--fe-hairline-light-16) !important;
+}
+
+// ============================================
+// WIDTH
+// ============================================
+// The navbar's inner element is bootstrap's .container, which caps at 1140px
+// and takes a fixed 15px gutter, while the page's sections use the fluid
+// container tokens. That left the wordmark 61px inboard of the h1 and the sign
+// up button 85px inboard of the console's right edge at every desktop width.
+// Borrowing the same two tokens puts the two rows of the page on the same edges
+// and keeps them there as the window grows.
+
+// Written as nav.fe-nav for the same reason as the base rule. Below 992px
+// bootstrap zeroes this padding via `.navbar-expand-lg > .container`, which ties
+// with .fe-nav > .container on specificity, so the dark-media copy of it would
+// otherwise win and pull the bar 24px outboard of the sections.
+nav.fe-nav > .container,
+nav.fe-nav > .container-fluid {
+  max-width: var(--fe-container-max);
+  padding-inline: var(--fe-container-gutter);
+}
+
+// The last nav item carries its own end margin on top of the container gutter,
+// which would push the call to action back off the line.
+nav.fe-nav .navbar-nav > .nav-item:last-child {
+  margin-inline-end: 0;
+}
+
+// ============================================
+// BRAND
+// ============================================
+// The brand, the search button, the dropdown toggles, the log in link and the
+// toggler all carry .text-themed. Under prefers-color-scheme: dark that class
+// is pulled into bootstrap-dark's .text-light group by an @extend in
+// app-dark.scss and comes out as `color: #dee2e6 !important`, which outranks any
+// specificity. Without !important here the whole bar collapses to one grey in
+// dark mode: the wordmark stops being white and the secondary links stop being
+// dim. It stays legible either way, which is why the contrast sweep did not
+// catch it; this is about keeping the hierarchy, and about the bar looking the
+// same under both schemes.
+
+nav.fe-nav .navbar-brand {
+  // bootstrap gives the brand its own horizontal padding, which sits on top of
+  // the container gutter and would knock the wordmark off the h1's edge
+  padding-inline: 0;
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-bold);
+  color: var(--fe-l-000) !important;
+}
+
+nav.fe-nav .navbar-brand:hover,
+nav.fe-nav .navbar-brand:focus {
+  color: var(--fe-l-000) !important;
+  text-decoration: none;
+}
+
+// ============================================
+// LINKS AND DROPDOWN TOGGLES
+// ============================================
+// The markup gives these .btn.btn-link plus .text-themed, which resolves to
+// `color: inherit` in light mode and to nothing in dark mode. Setting the
+// colour on the elements themselves makes both schemes agree.
+// font-size is deliberately not forced. _custom.scss drops navbar buttons to
+// 0.8rem !important for the ten locales whose translations are long enough to
+// wrap the bar, and that accommodation should survive this restyle.
+
+nav.fe-nav .navbar-nav .btn,
+nav.fe-nav .list-inline .btn {
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-secondary) !important;
+  text-decoration: none;
+  border-radius: var(--fe-radius-md);
+  transition: color var(--fe-motion-fast) var(--fe-ease);
+}
+
+nav.fe-nav .navbar-nav .btn:hover,
+nav.fe-nav .navbar-nav .btn:focus,
+nav.fe-nav .list-inline .btn:hover,
+nav.fe-nav .list-inline .btn:focus {
+  color: var(--fe-l-000) !important;
+  text-decoration: none;
+}
+
+// The dropdown carets sit next to a dimmed label, so they follow it.
+nav.fe-nav .dropdown-toggle::after {
+  opacity: 0.6;
+}
+
+nav.fe-nav .navbar-toggler {
+  color: var(--fe-l-000) !important;
+  border: 0;
+
+  // Below the expand breakpoint the toggler is the last thing on the bar, and
+  // bootstrap's own end padding left its glyph 12px inboard of the edge the
+  // sections line up on. Pulling it out by exactly that padding puts the glyph
+  // on the edge while the padding stays part of the tap target.
+  margin-inline-end: -0.75rem;
+}
+
+// ============================================
+// DROPDOWN PANELS
+// ============================================
+// Bootstrap draws these on white and bootstrap-dark draws them on its own
+// grey. Both look wrong hanging off an Ink bar, so they take the raised dark
+// surface in either scheme.
+
+nav.fe-nav .dropdown-menu {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-subtle);
+  border-radius: var(--fe-radius-lg);
+  box-shadow: var(--fe-elev-3);
+}
+
+nav.fe-nav .dropdown-item {
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-primary);
+}
+
+nav.fe-nav .dropdown-item:hover,
+nav.fe-nav .dropdown-item:focus,
+nav.fe-nav .dropdown-item.active,
+nav.fe-nav .dropdown-item:active {
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary-a16);
+}
+
+// Group labels inside the panels. --fe-fg-muted is 3.3:1 on this surface and
+// these are 11px, so they take the secondary tier instead. Same deviation as
+// the one recorded in _fe-landing.scss.
+nav.fe-nav .dropdown-header {
+  font-size: var(--fe-text-label);
+  font-weight: var(--fe-weight-semibold);
+  letter-spacing: var(--fe-tracking-label);
+  color: var(--fe-fg-secondary);
+  text-transform: uppercase;
+}
+
+nav.fe-nav .dropdown-divider {
+  border-top-color: var(--fe-border-subtle);
+}
+
+// Icons in the panels sit beside their own label, so they recede a tier and
+// let the label lead. 6.2:1 on this surface, well past the 3:1 graphics bar.
+// This matches on the element rather than on .fa: 27 of the 40 icon variants in
+// these panels are written .fas or .fab with no bare .fa token, and the only
+// <i> elements in a dropdown item are icons.
+nav.fe-nav .dropdown-item i {
+  color: var(--fe-fg-secondary);
+}
+
+nav.fe-nav .dropdown-item:hover i,
+nav.fe-nav .dropdown-item:focus i {
+  color: var(--fe-l-000);
+}
+
+// Pills inside the panels. Bootstrap fills these with its own theme colours,
+// which land at 2.6:1 against their own labels once the panel is dark. Filled
+// brand hues with an Ink label read at 9:1 or better and stay on palette.
+nav.fe-nav .badge-success {
+  color: var(--fe-ink);
+  background-color: var(--fe-mint);
+}
+
+nav.fe-nav .badge-warning {
+  color: var(--fe-ink);
+  background-color: var(--fe-caution);
+}
+
+nav.fe-nav .badge-primary {
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary);
+}
+
+// ============================================
+// CALLS TO ACTION
+// ============================================
+// Sign up is one of the three gradient buttons the spec allows on this page.
+// These selectors carry the same .navbar-nav / .list-inline step as the link
+// rules above, and sit below them, so the gradient and its white label win.
+// The label colour has to repeat the !important from the link rules: .btn-success
+// is also a .btn inside .navbar-nav, so without it the generic dim link colour
+// would win and put a 2:1 label on the gradient.
+
+nav.fe-nav .navbar-nav .btn-success,
+nav.fe-nav .list-inline .btn-success {
+  padding-inline: var(--fe-space-4);
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-l-000) !important;
+  background-color: var(--fe-primary);
+  background-image: var(--fe-gradient-cta);
+  border: 0;
+  border-radius: var(--fe-radius-md);
+  transition: filter var(--fe-motion-base) var(--fe-ease);
+}
+
+nav.fe-nav .navbar-nav .btn-success:hover,
+nav.fe-nav .navbar-nav .btn-success:focus,
+nav.fe-nav .list-inline .btn-success:hover,
+nav.fe-nav .list-inline .btn-success:focus {
+  color: var(--fe-l-000) !important;
+  background-color: var(--fe-primary);
+  background-image: var(--fe-gradient-cta);
+  filter: brightness(1.08);
+}
+
+// Below lg the sign up link is a plain .btn-link carrying .text-success, whose
+// green is 2.9:1 on Ink. .text-success is a bootstrap utility so this needs
+// !important to reach it.
+// This is the one place that names a palette token rather than the matching
+// semantic one. --fe-state-success is declared on the surface contexts, not on
+// :root, so postcss-preset-env cannot flatten it into a static fallback, and
+// on the two browserslist targets without var() support the whole declaration
+// would be dropped and bootstrap's green would win. Every other surface token
+// on the page degrades to inherited text, which is harmless; this one degrades
+// to a real contrast failure, so it takes the value the polyfill can see.
+nav.fe-nav .navbar-nav .btn-link.text-success {
+  color: var(--fe-mint) !important;
+  background-image: none;
+}
+
+// ============================================
+// EXPANDED MOBILE MENU
+// ============================================
+// Bootstrap's own mixin rather than a literal breakpoint, so this cannot drift
+// from the .navbar-expand-lg the markup sets. Above it the collapse is a plain
+// flex row and must not pick up the panel padding or the separator.
+
+@include media-breakpoint-down(md) {
+  nav.fe-nav .navbar-collapse {
+    padding-block: var(--fe-space-2);
+  }
+
+  nav.fe-nav .navbar-collapse.show,
+  nav.fe-nav .navbar-collapse.collapsing {
+    margin-block-start: var(--fe-space-3);
+    border-top: 1px solid var(--fe-hairline-light-16);
+  }
+}
+
+// ============================================
+// FOCUS
+// ============================================
+
+nav.fe-nav a:focus-visible,
+nav.fe-nav button:focus-visible {
+  outline: 2px solid var(--fe-focus-ring);
+  outline-offset: var(--fe-focus-offset);
+}
+
+// ============================================
+// RIGHT TO LEFT
+// ============================================
+// postcss-preset-env flattens every logical property to a physical one at build
+// time, assuming LTR, because op_mini and kaios are in our browserslist and do
+// not support the logical forms. The padding-inline shorthands above set both
+// sides equally and survive that, but the two margin-inline-end declarations
+// come out as margin-right and would sit on the wrong side for ar and he.
+// layout.pug sets dir on the html element, which is the same hook
+// bootstrap-v4-rtl uses. Physical properties here on purpose: logical ones
+// would be flattened back to the LTR side.
+
+[dir='rtl'] nav.fe-nav .navbar-nav > .nav-item:last-child {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+[dir='rtl'] nav.fe-nav .navbar-toggler {
+  margin-right: 0;
+  margin-left: -0.75rem;
+}

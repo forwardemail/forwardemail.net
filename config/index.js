@@ -1947,6 +1947,22 @@ config.launchDate = dayjs('11/23/2020 10:00 AM', 'MM/DD/YYYY h:mm A').toDate();
 
 config.payments = payments;
 
+//
+// Monthly plan pricing for marketing views.
+//
+// The payments module itself is deliberately NOT added to the
+// config.views.locals.config pick list above: it also carries Stripe price
+// ids and PayPal plan credentials, and templates only need the display
+// figures. This also has to be assigned after the pick, which runs earlier in
+// this file and would capture payments as undefined.
+//
+config.views.locals.planPricing = {
+  free: 0,
+  enhanced: payments.PAYPAL_MAPPING.enhanced_protection['30d'],
+  team: payments.PAYPAL_MAPPING.team['30d'],
+  enterprise: payments.ENTERPRISE_MONTHLY
+};
+
 // Sieve configuration (used by ManageSieve server, API, and web controllers)
 config.sieve = {
   // Server settings (for ManageSieve protocol)

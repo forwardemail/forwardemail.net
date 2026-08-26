@@ -1,0 +1,110 @@
+//- Redesigned pricing grid, per section 4 of the landing page build spec.
+//- Continues the light surface from the product section with no visible break.
+//-
+//- Prices come from planPricing, a view local derived from
+//- payments.PAYPAL_MAPPING in config/index.js, so the page cannot drift from
+//- what a customer is actually charged. It is a narrow local rather than
+//- config.payments because views receive only an _.pick() subset of config,
+//- and because the payments module also holds Stripe price ids and PayPal
+//- credentials that templates have no reason to see.
+mixin fePricing
+  -
+    const plans = [
+      {
+        name: t("Free"),
+        line: t("Forwarding only"),
+        price: planPricing.free,
+        cta: t("Forward mail"),
+        href: l("/my-account/domains/new"),
+        featured: false,
+        features: [
+          t("Unlimited inbound email"),
+          t("Spam protection"),
+          t("%s attachment limit", config.smtpMessageMaxSize),
+          t("Webhooks + regex filters")
+        ]
+      },
+      {
+        name: t("Enhanced"),
+        line: t("Send + receive as you@domain"),
+        price: planPricing.enhanced,
+        cta: t("Get you@domain.com"),
+        href: l("/my-account/domains/new?plan=enhanced_protection"),
+        featured: true,
+        features: [
+          t("Everything in Free"),
+          t("Unlimited aliases ($0/user)"),
+          t("10 GB pooled storage"),
+          t("9,000+ outbound / month"),
+          t("API + DMARC reporting")
+        ]
+      },
+      {
+        name: t("Team"),
+        line: t("Families and organizations"),
+        price: planPricing.team,
+        cta: t("Create team"),
+        href: l("/my-account/domains/new?plan=team"),
+        featured: false,
+        features: [
+          t("Everything in Enhanced"),
+          t("Unlimited team members"),
+          t("Permission management"),
+          t("Priority support")
+        ]
+      },
+      {
+        name: t("Enterprise"),
+        line: t("Education, gov, healthcare"),
+        price: planPricing.enterprise,
+        cta: t("Schedule a call"),
+        href: l("/help"),
+        featured: false,
+        features: [
+          t("Everything in Team"),
+          t("Unlimited API requests"),
+          t("Dedicated support room"),
+          t("Onboarding + DocuSign")
+        ]
+      }
+    ];
+
+  section.fe-section.fe-surface-light.fe-pricing(
+    aria-labelledby="fe-pricing-title"
+  )
+    .fe-container
+      p.fe-eyebrow.fe-eyebrow--mint.fe-label
+        i.fa.fa-tag(aria-hidden="true")
+        = t("Simple pricing")
+
+      .fe-pricing__head
+        h2#fe-pricing-title.fe-pricing__title= t("Unlimited domains at every tier.")
+        a.fe-pricing__aside(href=l("/private-business-email"))= t("Recommended for most professionals")
+
+      //- Section 7 replacement copy.
+      p.fe-lede= t("Start with forwarding, upgrade to real mailboxes, then add team controls. Every tier includes unlimited domains.")
+
+      //- A ul of li, with the feature lists nested. DOM order follows price
+      //- order; the mobile reordering that puts Enhanced first is done with
+      //- CSS order so the reading order never changes.
+      ul.fe-plans
+        each plan in plans
+          li(
+            class=plan.featured ? "fe-plan-item fe-plan-item--featured" : "fe-plan-item"
+          )
+            div(
+              class=plan.featured ? "fe-plan fe-plan--featured fe-surface-dark" : "fe-plan"
+            )
+              h3.fe-plan__name= plan.name
+              p.fe-plan__line= plan.line
+              span.fe-plan__price.fe-numeral $#{ plan.price }
+              span.fe-plan__period= t("/ month · unlimited domains")
+              a.fe-plan__cta.fe-btn.fe-btn--md.fe-btn--block(
+                href=plan.href,
+                class=plan.featured ? "fe-btn--hero" : "fe-btn--subtle"
+              )= plan.cta
+              ul.fe-plan__features
+                each feature in plan.features
+                  li.fe-plan__feature
+                    i.fa.fa-check.fe-plan__check(aria-hidden="true")
+                    span= feature

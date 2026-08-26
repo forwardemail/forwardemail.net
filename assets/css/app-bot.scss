@@ -8,6 +8,23 @@
 // variables
 @import 'variables';
 
+// design system tokens (redesigned landing page)
+// must come after 'variables': the font tokens interpolate $font-family-*
+@import 'fe-tokens';
+
+// redesigned landing page, scoped under .fe-landing
+@import 'fe-landing';
+
+// redesigned download page, scoped under .fe-dl-*
+// after fe-landing because it builds on that file's buttons and containers
+@import 'fe-download';
+
+// simplified FAQ, scoped under .fe-faq-*
+@import 'fe-faq';
+
+// pricing template hero, scoped under .fe-phero
+@import 'fe-pricing-hero';
+
 // font awesome
 @import 'font-awesome';
 
@@ -124,3 +141,10 @@ $question: theme-color('light');
 @import 'scalar-app';
 
 @import 'sidebar';
+
+// redesigned landing page navbar, scoped under .fe-nav
+// imported last so it wins order ties against bootstrap and 'custom'
+@import 'fe-nav';
+
+// redesigned landing page modals, scoped under .fe-page
+@import 'fe-modal';

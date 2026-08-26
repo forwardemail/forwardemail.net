@@ -1,0 +1,1133 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Redesigned landing page, per the Forward Email landing page build spec.
+// Everything is scoped under .fe-landing so no other page is affected. The
+// page is served only at `/` and only to logged out visitors, via
+// auth.homeOrDomains.
+// Every value here is a token reference. No raw colours, sizes, radii or
+// shadows. See _fe-tokens.scss for the palette and for why the page uses
+// surface contexts instead of a theme.
+// Bootstrap classes are deliberately avoided inside this scope. app-dark.scss
+// overrides .card, .bg-dark, .bg-themed and .text-themed with !important under
+// prefers-color-scheme: dark, which would otherwise fight these rules.
+
+.fe-landing {
+  // Each .fe-section sets its own colour, so nothing visible inherits this
+  // today. It is set anyway so the wrapper does not quietly hand the OS theme's
+  // body colour to anything added here later outside a section.
+  color: var(--fe-fg-primary);
+  font-family: var(--fe-font-body);
+
+  // Bootstrap sets a global heading font. The landing page uses the display
+  // token instead, scoped here so no other page's headings change.
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--fe-font-display);
+    font-weight: var(--fe-weight-bold);
+    line-height: var(--fe-leading-tight);
+  }
+}
+
+// body.app carries padding-top for the fixed navbar. Cancel it here so the
+// first section's Ink canvas starts at the top of the viewport and runs under
+// the transparent bar; without this the light scheme shows a strip of white
+// body background above it, with the white wordmark sitting on that strip.
+// Separate from .fe-landing because /download shares that wrapper and only
+// gets a transparent bar when the visitor is logged out. Pulling up under the
+// opaque bar a signed in visitor sees would hide the top of the hero.
+.fe-landing--flush {
+  margin-block-start: calc(-1 * var(--fe-nav-offset));
+}
+
+// ============================================
+// LAYOUT
+// ============================================
+
+.fe-container {
+  width: 100%;
+  max-width: var(--fe-container-max);
+  margin-inline: auto;
+  padding-inline: var(--fe-container-gutter);
+}
+
+.fe-section {
+  background-color: var(--fe-bg-canvas);
+  color: var(--fe-fg-primary);
+}
+
+// ============================================
+// SHARED TYPOGRAPHY
+// ============================================
+
+.fe-label {
+  font-family: var(--fe-font-body);
+  font-size: var(--fe-text-label);
+  font-weight: var(--fe-weight-bold);
+  letter-spacing: var(--fe-tracking-label);
+  text-transform: uppercase;
+}
+
+.fe-code {
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  font-variant-ligatures: none;
+}
+
+.fe-numeral {
+  font-family: var(--fe-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.fe-lede {
+  max-width: 58ch;
+  margin-bottom: 3rem;
+  font-size: var(--fe-text-body-md);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+// ============================================
+// EYEBROW PILL
+// ============================================
+
+.fe-eyebrow {
+  display: inline-flex;
+  margin-block: 0 1.75rem;
+  gap: var(--fe-space-2);
+  align-items: center;
+  padding: 6px 14px;
+  border: 1px solid;
+  border-radius: var(--fe-radius-full);
+}
+
+// Signal is legal as text on Ink. On light it is not, so the light variant
+// uses Primary instead. See section 3 of the build spec.
+.fe-surface-dark .fe-eyebrow {
+  color: var(--fe-signal);
+  background-color: var(--fe-signal-a10);
+  border-color: var(--fe-signal-a24);
+}
+
+.fe-surface-light .fe-eyebrow {
+  color: var(--fe-primary-deep);
+  background-color: var(--fe-primary-a08);
+  border-color: var(--fe-primary-a16);
+}
+
+// Pricing eyebrow uses the mint -deep variant, which is legal as text.
+.fe-eyebrow--mint {
+  color: var(--fe-mint-deep);
+  background-color: var(--fe-mint-a12);
+  border-color: var(--fe-mint-deep-a20);
+}
+
+// ============================================
+// BUTTONS
+// ============================================
+
+.fe-btn {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  justify-content: center;
+  padding-inline: 20px;
+  font-family: var(--fe-font-body);
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-semibold);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--fe-radius-md);
+  transition: filter var(--fe-motion-base) var(--fe-ease),
+    background-color var(--fe-motion-base) var(--fe-ease);
+}
+
+.fe-btn:hover,
+.fe-btn:focus {
+  text-decoration: none;
+}
+
+// Gradient fill. Per the spec checklist this variant is allowed on exactly
+// three elements: nav Sign up, hero Start free, and the Enhanced plan CTA. The
+// gradient itself is a token so the navbar's copy of this button cannot drift
+// from it. See --fe-gradient-cta for why it does not end on --fe-signal.
+.fe-btn--hero {
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary);
+  background-image: var(--fe-gradient-cta);
+}
+
+.fe-btn--hero:hover {
+  color: var(--fe-l-000);
+  filter: brightness(1.08);
+}
+
+.fe-btn--ghost {
+  color: var(--fe-fg-primary);
+  background-color: transparent;
+  border-color: var(--fe-border-default);
+}
+
+.fe-btn--ghost:hover {
+  color: var(--fe-fg-primary);
+  border-color: var(--fe-border-strong);
+}
+
+.fe-btn--subtle {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border-color: var(--fe-border-default);
+}
+
+.fe-btn--subtle:hover {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-canvas);
+}
+
+.fe-btn--md {
+  height: 44px;
+}
+
+.fe-btn--lg {
+  height: 48px;
+}
+
+.fe-btn--block {
+  width: 100%;
+}
+
+.fe-btn--glow {
+  box-shadow: var(--fe-glow-primary);
+}
+
+// ============================================
+// FOCUS
+// ============================================
+// Applies at every breakpoint. Uses :focus-visible so pointer users do not
+// see a ring, but keyboard users always do.
+
+.fe-landing a:focus-visible,
+.fe-landing button:focus-visible,
+.fe-landing [tabindex]:focus-visible {
+  outline: 2px solid var(--fe-focus-ring);
+  outline-offset: var(--fe-focus-offset);
+}
+
+// ============================================
+// HERO
+// ============================================
+
+.fe-hero {
+  position: relative;
+  // the nav offset is added back so the hero content keeps its spacing
+  padding-block: calc(6rem + var(--fe-nav-offset)) 7rem;
+  overflow: hidden;
+}
+
+// Single radial gradient, bottom left, replacing the animated starfield.
+// The old effect generated 1000 box-shadow coordinates at Sass compile time
+// and painted a full bleed galaxy bitmap. This is one paint, no animation.
+.fe-hero::before {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  width: 800px;
+  height: 800px;
+  pointer-events: none;
+  content: '';
+  background-image: radial-gradient(
+    circle at 0 100%,
+    var(--fe-primary-a08) 0%,
+    transparent 70%
+  );
+}
+
+.fe-hero__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.fe-hero__grid {
+  display: grid;
+  gap: 3rem;
+}
+
+.fe-hero__eyebrow {
+  margin-block: 0 2rem;
+}
+
+.fe-hero__title {
+  max-width: 16ch;
+  margin-bottom: 1.75rem;
+  font-size: var(--fe-text-display-xl);
+  color: var(--fe-fg-primary);
+}
+
+.fe-hero__body {
+  max-width: 52ch;
+  margin-bottom: 2rem;
+  font-size: var(--fe-text-body-md);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fe-space-3);
+}
+
+.fe-hero__trust {
+  margin-top: 3rem;
+}
+
+// Deviation from the build spec, applied in five places below.
+// The spec asks for --text-muted on the trust label, console meta, status log
+// count, stat labels and plan period. Measured against the grounds they
+// actually sit on, the muted tier lands between 3.79:1 and 4.48:1, which is
+// under the 4.5:1 AA floor for body text. None of these are large enough to
+// qualify for the 3:1 large-text allowance: the labels are 11px and the rest
+// are 13 to 15px. So they use --fe-fg-secondary instead, which measures 7:1 or
+// better on both grounds.
+// --fe-fg-muted is still correct for the decorative middot between the trust
+// logos, which carries no information.
+
+.fe-hero__trust-label {
+  margin-block: 0 var(--fe-space-3);
+  color: var(--fe-fg-secondary);
+}
+
+// Logos render as text, not images, so they translate and cost no requests.
+.fe-hero__logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-secondary);
+  list-style: none;
+}
+
+.fe-hero__logos > li + li::before {
+  margin-inline: var(--fe-space-3);
+  color: var(--fe-fg-muted);
+  content: '\00B7';
+}
+
+// ============================================
+// HERO CONSOLE
+// ============================================
+
+.fe-console {
+  padding: 20px;
+  background-color: var(--fe-bg-frame);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-xl);
+  box-shadow: var(--fe-elev-inset);
+}
+
+// Five views of the platform behind one rail, replacing the single delivery
+// path diagram that used to sit here. A console can only show one thing at a
+// time, and five switchable views carry considerably more of the product than
+// one static graphic did.
+
+// The views are stacked in a single grid cell rather than laid out in sequence,
+// so the container is always as tall as the tallest of them and switching tabs
+// never changes the height of the hero. Inactive views are hidden with
+// visibility, which takes them out of the accessibility tree while keeping that
+// box; display:none would collapse it and bring the jump back.
+
+.fe-console__rail {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--fe-space-1);
+
+  // The spec's 8px inset. Not a space token: this is the gap between the active
+  // pill and the trough it sits in, a fixed hairline rather than a step on the
+  // spacing scale.
+  padding: 8px;
+  margin-bottom: var(--fe-space-5);
+  background-color: var(--fe-bg-sunken);
+  border-radius: var(--fe-radius-lg);
+}
+
+// One word each, per the spec, so the five columns stay equal and nothing
+// wraps. The ellipsis is a backstop for the locales where the one word is much
+// longer than the English one.
+.fe-console__tab {
+  padding: var(--fe-space-2) var(--fe-space-3);
+  overflow: hidden;
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-secondary);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: var(--fe-radius-md);
+  transition:
+    color var(--fe-motion-fast) var(--fe-ease),
+    background-color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-console__tab:hover,
+.fe-console__tab:focus {
+  color: var(--fe-fg-primary);
+  text-decoration: none;
+}
+
+.fe-console__tab:focus-visible {
+  outline: 2px solid var(--fe-focus-ring);
+  outline-offset: var(--fe-focus-offset);
+}
+
+// The rail is the only element that changes chrome. The frame, the header and
+// the trough all stay put between views, so the eye stays on the content
+// instead of tracking a moving container.
+.fe-console__tab--active {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-raised);
+  box-shadow: var(--fe-elev-1);
+}
+
+.fe-console__views {
+  display: grid;
+}
+
+.fe-console__view {
+  // Only ever a fallback. Every view carries a tone modifier below, but a view
+  // added without one should come out legible rather than unstyled.
+  --fe-console-tone: var(--fe-fg-secondary);
+
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.fe-console__view--active {
+  visibility: visible;
+}
+
+// The tone each view carries on its kicker and its dot. Every value here is
+// text legal on the dark hero, which is the only surface the console renders
+// on: --fe-primary is 3.1:1 on Ink and would fail as a text colour, so the
+// routing view takes --fe-primary-lift at 7.4:1 instead.
+.fe-console__view--primary {
+  --fe-console-tone: var(--fe-primary-lift);
+}
+
+.fe-console__view--mint {
+  --fe-console-tone: var(--fe-mint);
+}
+
+.fe-console__view--signal {
+  --fe-console-tone: var(--fe-signal);
+}
+
+.fe-console__view--vault {
+  --fe-console-tone: var(--fe-vault);
+}
+
+.fe-console__view--caution {
+  --fe-console-tone: var(--fe-caution);
+}
+
+// Mono caps verb with the view's dot. This is the part that teaches the
+// pipeline: read the five in order and the arc is route, store, send, sync,
+// observe.
+.fe-console__kicker {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  margin-bottom: var(--fe-space-3);
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-label);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-console-tone);
+  text-transform: uppercase;
+  letter-spacing: var(--fe-tracking-label);
+}
+
+.fe-console__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background-color: var(--fe-console-tone);
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-console__heading {
+  margin-bottom: var(--fe-space-3);
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-display-xs);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-primary);
+}
+
+// The spec's 520px measure, as a max-width rather than a character count so it
+// still holds in the locales whose average word runs much longer than English.
+.fe-console__promise {
+  max-width: 520px;
+  margin-bottom: var(--fe-space-5);
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+// Always exactly four, two by two. These carry the specifics the old feature
+// list used to.
+.fe-console__cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--fe-space-3);
+  padding: 0;
+  margin: 0 0 var(--fe-space-5);
+  list-style: none;
+}
+
+.fe-console__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-1);
+  padding: var(--fe-space-3) var(--fe-space-4);
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-border-subtle);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-console__card-label {
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-console__card-sub {
+  font-size: var(--fe-text-code);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-secondary);
+}
+
+// One line of real output, never marketing copy. Signal on Ink measures 10.9:1.
+// The line is deliberately not wrapped: these read as terminal output, and a
+// route or a request folding onto two lines stops looking like one. It scrolls
+// instead, which is why the padding is on the element rather than a child.
+.fe-console__evidence {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: baseline;
+  padding: var(--fe-space-3) var(--fe-space-4);
+  margin: 0;
+  overflow-x: auto;
+  color: var(--fe-signal);
+  white-space: nowrap;
+  background-color: var(--fe-ink);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-console__evidence-glyph {
+  flex: none;
+  color: var(--fe-state-success);
+}
+
+// Unrolled: every view visible and stacked. Two audiences get this, for the
+// same reason. `html.no-js` is stripped by the inline script in _meta.pug
+// before the body paints, so a visitor with scripting on never sees this state
+// and there is no reflow; a visitor without it gets five complete views and a
+// rail of five working jump links instead of one view and four dead ones.
+// `.fe-console--unrolled` is the server-rendered equivalent for crawlers, so
+// none of this copy depends on a bot choosing to run our JavaScript.
+.fe-console--unrolled .fe-console__views,
+html.no-js .fe-console__views {
+  display: block;
+}
+
+.fe-console--unrolled .fe-console__view,
+html.no-js .fe-console__view {
+  visibility: visible;
+}
+
+.fe-console--unrolled .fe-console__view + .fe-console__view,
+html.no-js .fe-console__view + .fe-console__view {
+  padding-top: var(--fe-space-6);
+  margin-top: var(--fe-space-6);
+  border-top: 1px solid var(--fe-border-subtle);
+}
+
+// With every view on screen the pill would be claiming one of them is the one
+// being shown, so it comes off and the rail reads as the five jump links it
+// actually is here.
+.fe-console--unrolled .fe-console__tab--active,
+html.no-js .fe-console__tab--active {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+// ============================================
+// PRODUCT SECTION
+// ============================================
+
+.fe-product {
+  padding-block: 6rem;
+}
+
+.fe-product__head {
+  display: grid;
+  gap: var(--fe-grid-gap);
+  margin-bottom: 2rem;
+}
+
+.fe-product__title {
+  font-size: var(--fe-text-display-lg);
+  color: var(--fe-fg-primary);
+}
+
+.fe-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-stats__value {
+  display: block;
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-display-md);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-tight);
+  color: var(--fe-primary);
+}
+
+.fe-stats__label {
+  display: block;
+  margin-top: var(--fe-space-1);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-divider {
+  height: 1px;
+  margin-bottom: 3rem;
+  background-color: var(--fe-border-subtle);
+  border: 0;
+}
+
+// ============================================
+// ROUTE STEPPER
+// ============================================
+
+.fe-stepper__label {
+  margin-block: 0 var(--fe-space-6);
+  color: var(--fe-primary);
+}
+
+.fe-stepper {
+  position: relative;
+  display: grid;
+  gap: var(--fe-space-6);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-stepper__step {
+  position: relative;
+}
+
+.fe-stepper__num {
+  display: block;
+  margin-bottom: var(--fe-space-2);
+  color: var(--fe-primary);
+}
+
+// The dot sits on a 1px rule that runs through its centre. The rule is drawn
+// per step rather than as one line so it reflows correctly when the stepper
+// goes vertical, where the rule runs down the left of the dots instead.
+.fe-stepper__dot-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--fe-space-4);
+}
+
+.fe-stepper__dot {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-stepper__dot--primary {
+  background-color: var(--fe-primary);
+}
+
+.fe-stepper__dot--signal {
+  background-color: var(--fe-signal);
+}
+
+.fe-stepper__dot--mint {
+  background-color: var(--fe-mint);
+}
+
+.fe-stepper__rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background-color: var(--fe-border-default);
+}
+
+.fe-stepper__title {
+  margin-bottom: var(--fe-space-2);
+  font-size: var(--fe-text-display-sm);
+  color: var(--fe-fg-primary);
+}
+
+.fe-stepper__desc {
+  margin: 0;
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+// ============================================
+// FEATURE CARD PAIR
+// ============================================
+
+.fe-features {
+  display: grid;
+  gap: var(--fe-grid-gap);
+  margin-top: 3rem;
+}
+
+.fe-feature {
+  padding: 1.75rem;
+  border-radius: var(--fe-radius-lg);
+}
+
+.fe-feature--light {
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-default);
+}
+
+// The one inverse panel in this section. It carries .fe-surface-dark in the
+// markup, which re-points the semantic tokens for its subtree, so the copy
+// inside needs no per-element colour overrides.
+.fe-feature--inverse {
+  background-color: var(--fe-ink);
+}
+
+.fe-feature__title {
+  margin-bottom: var(--fe-space-3);
+  font-size: var(--fe-text-display-sm);
+  color: var(--fe-fg-primary);
+}
+
+.fe-feature__body {
+  margin-bottom: var(--fe-space-5);
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fe-space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-chip {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  padding: var(--fe-space-1) var(--fe-space-3);
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-canvas);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-chip--code {
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  background-color: var(--fe-n-200);
+  border-color: var(--fe-n-300);
+}
+
+.fe-chip__icon--success {
+  color: var(--fe-icon-success);
+}
+
+.fe-chip__icon--primary {
+  color: var(--fe-icon-primary);
+}
+
+.fe-codeblock {
+  padding: var(--fe-space-4);
+  margin-bottom: var(--fe-space-5);
+  overflow-x: auto;
+  background-color: var(--fe-n-100);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-codeblock pre {
+  margin: 0;
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-tok-method {
+  color: var(--fe-signal);
+}
+
+.fe-tok-key {
+  color: var(--fe-n-600);
+}
+
+.fe-tok-value {
+  color: var(--fe-n-700);
+}
+
+.fe-tok-result {
+  color: var(--fe-mint);
+}
+
+// ============================================
+// PRICING
+// ============================================
+
+.fe-pricing {
+  padding-bottom: 6rem;
+}
+
+.fe-pricing__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fe-space-4);
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--fe-space-6);
+}
+
+.fe-pricing__title {
+  font-size: var(--fe-text-display-lg);
+  color: var(--fe-fg-primary);
+}
+
+.fe-pricing__aside {
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-link);
+}
+
+.fe-plans {
+  display: grid;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-plan {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--fe-space-6);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-lg);
+}
+
+// Enhanced. The visual emphasis is CSS only: DOM order is unchanged so the
+// reading order still matches the price order.
+.fe-plan--featured {
+  background-color: var(--fe-ink);
+  border-color: transparent;
+  box-shadow: var(--fe-elev-3), 0 0 0 1px var(--fe-primary-a24);
+}
+
+.fe-plan__name {
+  font-size: var(--fe-text-display-sm);
+  color: var(--fe-fg-primary);
+}
+
+.fe-plan__line {
+  margin-top: var(--fe-space-1);
+  margin-bottom: var(--fe-space-4);
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-plan__price {
+  display: block;
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-price);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-tight);
+  color: var(--fe-fg-primary);
+}
+
+.fe-plan--featured .fe-plan__price {
+  color: var(--fe-primary-lift);
+}
+
+.fe-plan__period {
+  display: block;
+  margin-bottom: var(--fe-space-5);
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-plan__cta {
+  margin-bottom: var(--fe-space-5);
+}
+
+.fe-plan__features {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-plan__feature {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: baseline;
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-plan__feature + .fe-plan__feature {
+  margin-top: var(--fe-space-3);
+}
+
+// Icon fill only. Mint at brand saturation is 1.8:1 on light, which passes the
+// 3:1 graphics threshold but not the 4.5:1 text threshold, so this colour must
+// never land on a text node.
+.fe-plan__check {
+  flex: none;
+  color: var(--fe-icon-success);
+}
+
+.fe-plan--featured .fe-plan__check {
+  color: var(--fe-primary-lift);
+}
+
+// ============================================
+// RESPONSIVE
+// ============================================
+// Breakpoints are 1280 / 1024 / 768 / 480 per section 5 of the build spec.
+// These are not Bootstrap's breakpoints (576/768/992/1200) on purpose, so the
+// landing page is not silently coupled to the framework's grid.
+// Mobile first: the single column and vertical stepper are the base rules
+// above, and the wide layouts are added here.
+
+.fe-hero__title--wide {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .fe-stats {
+    gap: 2.5rem;
+  }
+
+  .fe-plans {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .fe-hero__title--wide {
+    display: inline;
+  }
+
+  .fe-hero__title--narrow {
+    display: none;
+  }
+
+  // Left 5 columns, right 7, per section 2 of the spec.
+  .fe-hero__grid {
+    grid-template-columns: 5fr 7fr;
+    align-items: center;
+  }
+
+  // Heading takes 7 columns, stats take 5 and align to the end.
+  .fe-product__head {
+    grid-template-columns: 7fr 5fr;
+    align-items: end;
+  }
+
+  .fe-product__stats {
+    justify-content: flex-end;
+  }
+
+  .fe-stepper {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--fe-grid-gap);
+  }
+
+  // 45/55 split, equal height via grid stretch.
+  .fe-features {
+    grid-template-columns: 45fr 55fr;
+  }
+
+  .fe-plans {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  // Scale is applied only where there is room for it. Below this width the
+  // featured card is full bleed and scaling it would overflow the gutter.
+  .fe-plan--featured {
+    transform: scale(1.04);
+  }
+}
+
+// Vertical stepper. The rule runs down the left of the dots instead of through
+// their centres.
+@media (max-width: 767px) {
+  // The rail becomes a horizontal scroller and the cards stack one up, per the
+  // spec's mobile behaviour. Five equal columns at this width would put every
+  // tab under 60px and truncate all five labels.
+  .fe-console__rail {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .fe-console__tab {
+    flex: none;
+  }
+
+  .fe-console__cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fe-stepper__step {
+    padding-inline-start: var(--fe-space-6);
+  }
+
+  .fe-stepper__step::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 5px;
+    width: 1px;
+    content: '';
+    background-color: var(--fe-border-default);
+  }
+
+  .fe-stepper__step:first-child::before {
+    inset-block-start: 12px;
+  }
+
+  .fe-stepper__step:last-child::before {
+    inset-block-end: calc(100% - 12px);
+  }
+
+  .fe-stepper__dot-row {
+    position: absolute;
+    inset-block-start: 6px;
+    inset-inline-start: 0;
+    margin-bottom: 0;
+  }
+
+  .fe-stepper__rule {
+    display: none;
+  }
+
+  // Enhanced first on mobile. Order only, so the DOM sequence still reads in
+  // price order for screen readers and keyboard users.
+  .fe-plan-item--featured {
+    order: -1;
+  }
+
+  .fe-hero {
+    padding-block: calc(3rem + var(--fe-nav-offset)) 4rem;
+  }
+
+  .fe-product,
+  .fe-pricing {
+    padding-block: 4rem;
+  }
+
+  .fe-pricing {
+    padding-top: 0;
+  }
+}
+
+// The primary action stays full width and thumb reachable.
+@media (max-width: 479px) {
+  .fe-hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fe-hero__actions .fe-btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fe-landing * {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}
+
+// ============================================
+// RTL
+// ============================================
+// The rules above use logical properties, but postcss-preset-env's
+// logical-properties-and-values transform flattens every one of them to a
+// physical property at build time, because op_mini and kaios are in our
+// browserslist and do not support the logical forms. It flattens assuming LTR,
+// so inset-inline-start becomes left unconditionally and the source's direction
+// independence is lost by the time the CSS ships.
+// Bootstrap's own utilities are flipped by bootstrap-v4-rtl, which keys on
+// [dir="rtl"], and layout.pug sets that attribute for ar and he. These rules
+// follow the same mechanism for the handful of declarations on this page that
+// actually care about direction. Physical properties are used deliberately:
+// writing logical ones here would be flattened to the LTR side again.
+// Only the inline axis needs this. margin-block, padding-block and inset-block
+// map to top and bottom whatever the direction, and the padding-inline and
+// margin-inline shorthands set both sides equally.
+
+[dir='rtl'] {
+  .fe-hero::before {
+    right: 0;
+    left: auto;
+    background-image: radial-gradient(
+      circle at 100% 100%,
+      var(--fe-primary-a08) 0%,
+      transparent 70%
+    );
+  }
+
+}
+
+@media (max-width: 767px) {
+  [dir='rtl'] {
+    .fe-stepper__step {
+      padding-right: var(--fe-space-6);
+      padding-left: 0;
+    }
+
+    .fe-stepper__step::before {
+      right: 5px;
+      left: auto;
+    }
+
+    .fe-stepper__dot-row {
+      right: 0;
+      left: auto;
+    }
+  }
+}

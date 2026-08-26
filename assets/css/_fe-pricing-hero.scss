@@ -1,0 +1,104 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Hero for the pricing template, which serves /private-business-email and
+// every useCases route. Replaces the #freddy starfield, so freddy.scss and the
+// freddyCss inline block in config/web.js have nothing left rendering them.
+// Shares the surface contexts and the button scale with the landing page;
+// only what those do not cover lives here.
+// Every value is a token reference. See _fe-tokens.scss, and note that
+// --fe-fg-muted is never used on text.
+
+.fe-phero {
+  // The starfield section was min-vh-100, which pushed the pricing table and
+  // everything else a full screen down on 7,254 pages. This is sized to its
+  // content instead, and the nav offset is added back the way .fe-hero does it.
+  padding-block: calc(4.5rem + var(--fe-nav-offset)) 4.5rem;
+  text-align: center;
+}
+
+.fe-phero__inner {
+  max-width: 52rem;
+}
+
+// The headline is per-route copy, and across 7,254 routes it ranges from three
+// words to a full sentence, so this scales with the viewport rather than
+// assuming a length.
+.fe-phero__title {
+  margin-bottom: var(--fe-space-5);
+  font-size: var(--fe-text-display-lg);
+  color: var(--fe-fg-primary);
+}
+
+.fe-phero__body {
+  max-width: 60ch;
+  margin-inline: auto;
+  margin-bottom: var(--fe-space-8);
+  font-size: var(--fe-text-body-md);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-phero__actions {
+  display: flex;
+  gap: var(--fe-space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+// Secondary destinations. Quiet enough not to compete with the two buttons
+// above, which is the opposite of the row of solid light buttons this replaced.
+.fe-phero__proof {
+  display: flex;
+  gap: var(--fe-space-2) var(--fe-space-5);
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+  margin-block: var(--fe-space-8) 0;
+  list-style: none;
+}
+
+.fe-phero__proof-link {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+  text-decoration: none;
+  transition: color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-phero__proof-link:hover,
+.fe-phero__proof-link:focus {
+  color: var(--fe-fg-primary);
+  text-decoration: underline;
+}
+
+.fe-phero__proof-link i {
+  color: var(--fe-icon-active);
+}
+
+.fe-phero a:focus-visible,
+.fe-phero button:focus-visible {
+  outline: 2px solid var(--fe-focus-ring);
+  outline-offset: var(--fe-focus-offset);
+}
+
+@media (max-width: 767px) {
+  .fe-phero {
+    padding-block: calc(2.5rem + var(--fe-nav-offset)) 3rem;
+  }
+
+  .fe-phero__proof {
+    gap: var(--fe-space-2) var(--fe-space-4);
+    margin-top: var(--fe-space-6);
+  }
+}
+
+@media (max-width: 479px) {
+  .fe-phero__actions .fe-btn {
+    width: 100%;
+  }
+}

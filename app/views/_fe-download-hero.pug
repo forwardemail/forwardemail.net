@@ -1,0 +1,73 @@
+//- Download page hero. Dark surface, single column.
+//- The primary button is resolved on the client from the visitor's platform.
+//- Without JavaScript, and on a platform we do not build for, it stays an
+//- anchor down to the full matrix, which is why the server-rendered label is
+//- the neutral one. js/download.js rewrites the href, the label and the meta
+//- line from the map in data-fe-download-map.
+mixin feDownloadHero
+  -
+    // Built here rather than in the helper because the labels go through t(),
+    // which only exists in the view. Keyed by the same platform keys the
+    // client detector produces.
+    const platformNames = {
+      macos: "macOS",
+      windows: "Windows",
+      linux: "Linux",
+      android: "Android",
+      ios: "iOS"
+    };
+    const primaryMap = {};
+    for (const group of downloads.groups) {
+      for (const platform of group.platforms) {
+        if (!platform.recommended) continue;
+        const option = platform.recommended;
+        primaryMap[platform.key] = {
+          url: option.url,
+          label: t("Download for %s", platformNames[platform.key]),
+          meta: [option.arch === "universal" ? null : archLabels[option.arch], option.size]
+            .filter(Boolean)
+            .join(" · ")
+        };
+      }
+    }
+
+  section.fe-section.fe-surface-dark.fe-dl-hero(
+    aria-labelledby="fe-download-title"
+  )
+    .fe-container.fe-dl-hero__inner
+      p.fe-eyebrow.fe-label
+        i.fab.fa-github(aria-hidden="true")
+        = t("Open source, on every device")
+
+      h1#fe-download-title.fe-dl-hero__title= t("Forward Email, wherever you read it.")
+
+      p.fe-dl-hero__body= t("Native apps for macOS, Windows, Linux, Android, and iOS. Encrypted storage, IMAP, POP3, and CalDAV, all against your own domain.")
+
+      .fe-dl-hero__actions
+        //- The map is a data attribute rather than an inline script so the
+        //- page needs no script-src exception.
+        a#fe-download-primary.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--glow(
+          href="#fe-download-desktop",
+          data-fe-download-map=JSON.stringify(primaryMap)
+        )
+          i.fa.fa-download(aria-hidden="true")
+          span#fe-download-primary-label= t("See all downloads")
+
+        a.fe-btn.fe-btn--ghost.fe-btn--lg(href="https://mail.forwardemail.net")
+          i.fa.fa-globe(aria-hidden="true")
+          = t("Open the web app")
+
+      //- Hidden until the detector fills it, so no empty line flashes.
+      p#fe-download-primary-meta.fe-dl-hero__meta.fe-numeral(hidden)
+
+      ul.fe-dl-hero__facts
+        if downloads.version
+          li
+            span.fe-dl-hero__fact-value.fe-numeral= downloads.version
+            span.fe-dl-hero__fact-label.fe-label= t("Latest release")
+        li
+          span.fe-dl-hero__fact-value.fe-numeral 5
+          span.fe-dl-hero__fact-label.fe-label= t("Platforms")
+        li
+          span.fe-dl-hero__fact-value.fe-numeral BUSL-1.1
+          span.fe-dl-hero__fact-label.fe-label= t("Source available")
