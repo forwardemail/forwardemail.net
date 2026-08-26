@@ -1,6 +1,6 @@
 # Presse & Medienkit {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email Presse- und Medienkit" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="Forward Email Presse- und Medienkit" class="rounded-lg" /> -->
 
 
 ## Inhaltsverzeichnis {#table-of-contents}

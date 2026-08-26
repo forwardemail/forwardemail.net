@@ -1,6 +1,6 @@
 # Thực hành Bảo mật {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Thực hành bảo mật Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Thực hành bảo mật Forward Email" class="rounded-lg" /> -->
 
 
 ## Mục lục {#table-of-contents}

@@ -1,6 +1,6 @@
 # Email Tự Lưu Trữ: Cam Kết Với Mã Nguồn Mở {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Minh họa giải pháp email tự lưu trữ" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Minh họa giải pháp email tự lưu trữ" class="rounded-lg" /> -->
 
 
 ## Mục Lục {#table-of-contents}

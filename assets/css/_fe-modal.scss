@@ -1,0 +1,308 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Modal restyle, scoped under body.fe-page (set by layout.pug for logged out
+// and account-agnostic fe pages). Panels are dark in both OS schemes, like
+// the bar. .fe-page takes the dark token set from _fe-tokens.scss.
+// Deliberately untouched: .btn-auth — the vendor sign-in buttons follow each
+// vendor's published branding rules and _btn-auth.scss owns them.
+
+// ============================================
+// PANEL
+// ============================================
+
+.fe-page .modal-content {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-subtle);
+  border-radius: var(--fe-radius-xl);
+  box-shadow: var(--fe-elev-3);
+}
+
+.fe-page .modal-header {
+  // .bg-dark on the domain search header is !important inside app-dark.scss
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--fe-border-subtle);
+}
+
+.fe-page .modal-header .modal-title,
+.fe-page .modal-header .h4,
+.fe-page .modal-header .h5 {
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-display-sm);
+  font-weight: var(--fe-weight-bold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-page .modal-header .fa {
+  color: var(--fe-icon-active);
+}
+
+.fe-page .modal-footer {
+  border-top: 1px solid var(--fe-border-subtle);
+}
+
+.fe-page .modal-content .close {
+  color: var(--fe-fg-secondary);
+  text-shadow: none;
+  opacity: 1;
+}
+
+.fe-page .modal-content .close:hover,
+.fe-page .modal-content .close:focus {
+  color: var(--fe-fg-primary);
+  opacity: 1;
+}
+
+// Bootstrap's .text-muted is 4.0:1 on this panel and .text-black/.text-themed-50
+// resolve near black; all are utilities, so !important is needed to reach them.
+.fe-page .modal-content .text-muted,
+.fe-page .modal-content .text-secondary,
+.fe-page .modal-content .text-black,
+.fe-page .modal-content .text-themed-50 {
+  color: var(--fe-fg-secondary) !important;
+}
+
+.fe-page .modal-content .text-black a,
+.fe-page .modal-content .text-themed-50 a,
+.fe-page .modal-content a.text-black,
+.fe-page .modal-content a.text-themed-50 {
+  color: var(--fe-fg-link) !important;
+}
+
+// ============================================
+// CONTENT MODALS
+// ============================================
+// The "Learn more" panels (e.g. Encrypted Email Storage) carry article-style
+// content: headings, rules, prose links, and badge chips. These give that
+// content the redesign treatment on the dark panel.
+
+.fe-page .modal-content .modal-header .h3 {
+  font-family: var(--fe-font-display);
+  font-weight: var(--fe-weight-bold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-page .modal-body h2,
+.fe-page .modal-body h3,
+.fe-page .modal-body .h4,
+.fe-page .modal-body .h5 {
+  font-family: var(--fe-font-display);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-page .modal-body hr {
+  border-top-color: var(--fe-border-subtle);
+}
+
+// Prose links inside the panel; buttons and badge chips style themselves.
+.fe-page .modal-body a:not(.btn):not(.badge) {
+  color: var(--fe-fg-link);
+}
+
+// bootstrap's light badges read as bright chips on the dark panel; restyle
+// them as fe chips.
+.fe-page .modal-content .badge-light {
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-page .modal-content a.badge-light:hover,
+.fe-page .modal-content a.badge-light:focus {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-primary-a16);
+  border-color: var(--fe-primary-a24);
+}
+
+// The one green accent in these panels (e.g. the storage modal's lock title):
+// brand mint is text-legal on the dark surface.
+.fe-page .modal-content .text-success {
+  color: var(--fe-state-success) !important;
+}
+
+.fe-page .modal-content .hr-text {
+  color: var(--fe-fg-secondary);
+}
+
+.fe-page .modal-content .hr-text::before {
+  background-color: var(--fe-border-subtle);
+}
+
+.fe-page .modal-content .hr-text::after {
+  color: var(--fe-fg-secondary);
+  background-color: var(--fe-bg-raised);
+}
+
+// ============================================
+// FORM FIELDS
+// ============================================
+
+.fe-page .modal-content .form-control {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-border-control);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-page .modal-content .form-control:focus {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border-color: var(--fe-primary);
+  box-shadow: 0 0 0 3px var(--fe-primary-a24);
+}
+
+// Resting placeholders are only coloured on fields WITHOUT a floating label:
+// the plugin keeps them transparent there so label and placeholder never print
+// on top of each other.
+.fe-page .modal-content .input-group > .form-control::placeholder {
+  color: var(--fe-fg-secondary);
+  opacity: 1;
+}
+
+// The plugin does reveal the placeholder once the field has focus and the label
+// has moved above it, and that state does need a colour for this surface.
+.fe-page .modal-content .floating-label > .form-control:focus::placeholder {
+  color: var(--fe-fg-secondary);
+  opacity: 1;
+}
+
+.fe-page .modal-content .floating-label > label {
+  color: var(--fe-fg-secondary);
+}
+
+// The plugin's raised state gives the label background-color: $input-bg (#fff)
+// to punch a hole in the field's top border. Mirror its raised-state selectors
+// exactly: at rest the label sits inside the field and must stay transparent.
+.fe-page .modal-content .floating-label > select + label,
+.fe-page .modal-content .floating-label > input:focus + label,
+.fe-page .modal-content .floating-label > textarea:focus + label,
+.fe-page .modal-content .floating-label > input:-webkit-autofill + label,
+.fe-page .modal-content .floating-label > textarea:-webkit-autofill + label,
+.fe-page
+  .modal-content
+  .floating-label
+  > input[placeholder]:not(:placeholder-shown)
+  + label,
+.fe-page
+  .modal-content
+  .floating-label
+  > textarea[placeholder]:not(:placeholder-shown)
+  + label,
+.fe-page
+  .modal-content
+  .floating-label
+  > input:not([placeholder]):not([value])
+  + label,
+.fe-page .modal-content .floating-label > textarea:not([placeholder]):empty + label {
+  background-color: var(--fe-bg-sunken);
+}
+
+.fe-page .modal-content .btn-success,
+.fe-page .modal-content .btn-primary {
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary);
+  border: 0;
+  border-radius: var(--fe-radius-md);
+  transition: filter var(--fe-motion-base) var(--fe-ease);
+}
+
+.fe-page .modal-content .btn-success:hover,
+.fe-page .modal-content .btn-success:focus,
+.fe-page .modal-content .btn-primary:hover,
+.fe-page .modal-content .btn-primary:focus {
+  color: var(--fe-l-000);
+  filter: brightness(1.08);
+}
+
+.fe-page .modal-content .btn-outline-secondary {
+  color: var(--fe-fg-primary);
+  background-color: transparent;
+  border-color: var(--fe-border-default);
+}
+
+.fe-page .modal-content .btn-outline-secondary:hover,
+.fe-page .modal-content .btn-outline-secondary:focus {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border-color: var(--fe-border-strong);
+}
+
+.fe-page .modal-content .input-group > .form-control {
+  border-end-start-radius: var(--fe-radius-md);
+  border-start-start-radius: var(--fe-radius-md);
+}
+
+.fe-page .modal-content .input-group-append > .btn {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.fe-page .modal-content .spinner-border {
+  color: var(--fe-icon-active) !important;
+}
+
+// Bootstrap's pale alert tints read as bright blocks with near-black text on
+// the dark panel, so each becomes a tinted panel with a legible border.
+.fe-page .modal-content .alert {
+  border-radius: var(--fe-radius-lg);
+}
+
+.fe-page .modal-content .alert-warning {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-primary-a08);
+  border: 1px solid var(--fe-primary-a24);
+}
+
+.fe-page .modal-content .alert-warning .alert-link {
+  color: var(--fe-fg-primary);
+}
+
+.fe-page .modal-content .alert-info {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-signal-a10);
+  border: 1px solid var(--fe-signal-a24);
+}
+
+.fe-page .modal-content .alert-danger {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-state-danger);
+}
+
+// domain-search.js injects these rows at runtime; only classes already in the
+// markup or the purgecss safelist are targeted.
+.fe-page #domain-search-results .alert {
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-border-subtle);
+}
+
+.fe-page #domain-search-results .alert-success,
+.fe-page #domain-search-results .alert-warning,
+.fe-page #domain-search-results .alert-danger {
+  color: var(--fe-fg-primary);
+}
+
+.fe-page #domain-register-overlay .fa {
+  color: var(--fe-icon-success);
+}
+
+.fe-page #domain-register-name {
+  color: var(--fe-fg-primary);
+}
+
+// ============================================
+// FOCUS
+// ============================================
+
+// Matched on the pseudo-class rather than on a, button and input separately, so
+// everything focusable in the panel is covered by one rule.
+.fe-page .modal-content :focus-visible {
+  outline: 2px solid var(--fe-focus-ring);
+  outline-offset: var(--fe-focus-offset);
+}

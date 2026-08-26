@@ -1,6 +1,6 @@
 # دراسة حالة: كيف تحسن مؤسسة لينكس إدارة البريد الإلكتروني عبر أكثر من 250 نطاقًا باستخدام Forward Email {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="دراسة حالة مؤسسة لينكس لإدارة البريد الإلكتروني في المؤسسات" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/linux-foundation.webp" alt="دراسة حالة مؤسسة لينكس لإدارة البريد الإلكتروني في المؤسسات" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

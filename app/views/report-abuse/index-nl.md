@@ -1,6 +1,6 @@
 # Misbruik rapporteren {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Misbruik en spam melden bij Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Misbruik en spam melden bij Forward Email" class="rounded-lg" /> -->
 
 
 ## Inhoudsopgave {#table-of-contents}

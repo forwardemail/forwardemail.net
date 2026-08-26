@@ -1,6 +1,6 @@
 # セキュリティ対策 {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Forward Emailのセキュリティ対策" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Forward Emailのセキュリティ対策" class="rounded-lg" /> -->
 
 
 ## 目次 {#table-of-contents}

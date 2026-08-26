@@ -1,6 +1,6 @@
 # Політика конфіденційності {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Політика конфіденційності Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Політика конфіденційності Forward Email" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

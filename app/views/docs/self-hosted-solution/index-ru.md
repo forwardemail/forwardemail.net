@@ -1,6 +1,6 @@
 # Самостоятельный хостинг электронной почты: обязательство перед открытым исходным кодом {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Иллюстрация решения для самостоятельного хостинга электронной почты" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Иллюстрация решения для самостоятельного хостинга электронной почты" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

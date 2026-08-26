@@ -1,6 +1,6 @@
 # การปรับแต่งประสิทธิภาพ SQLite: การตั้งค่า PRAGMA สำหรับการใช้งานจริง & การเข้ารหัส ChaCha20 {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="คู่มือการปรับแต่งประสิทธิภาพ SQLite" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="คู่มือการปรับแต่งประสิทธิภาพ SQLite" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

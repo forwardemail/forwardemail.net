@@ -1,0 +1,142 @@
+//- The download matrix itself. Light surface, one card per platform.
+//- Desktop and mobile are separate sections because the install path differs:
+//- a desktop download is a file you open, a mobile one needs a step the
+//- platform puts in your way. Structure follows helpers/get-app-downloads.js,
+//- so a platform with no assets in the release simply does not render.
+
+//- One downloadable file. The row itself is the link, so the whole strip is a
+//- tap target; the checksum control has to sit outside it because a button
+//- cannot be nested inside an anchor.
+mixin feDownloadRow(option)
+  li.fe-download-row
+    a.fe-download-row__link(
+      href=option.url,
+      rel=option.isDirect ? "noopener" : "noopener noreferrer"
+    )
+      span.fe-download-row__label
+        span.fe-download-row__arch= option.arch === "universal" && universalTitles[option.format] ? universalTitles[option.format] : archLabels[option.arch]
+        span.fe-download-row__note= formatNotes[option.format]
+      span.fe-download-row__format.fe-code= formatLabels[option.format]
+      span.fe-download-row__size.fe-numeral
+        if option.size
+          = option.size
+        else
+          = t("GitHub")
+      span.fe-icon-tile.fe-icon-tile--sm.fe-icon-tile--round.fe-icon-tile--primary.fe-download-row__go(
+        aria-hidden="true"
+      )
+        i.fa.fa-arrow-down
+
+    //- Only rendered when the release actually reported a digest, so the
+    //- control is never present with nothing to copy.
+    if option.sha256
+      +feDownloadCopy(option.sha256, t("Copy SHA-256 checksum for %s", option.fileName))
+
+//- A live distribution channel: the store or package manager's name (a link
+//- when it has a page), what installing through it gets you, and the
+//- command or value to paste when it is a package manager.
+mixin feDownloadChannel(channel)
+  li.fe-download-channel
+    span.fe-download-channel__head
+      if channel.url
+        a.fe-download-channel__name.fe-download-channel__name--link(
+          href=channel.url,
+          rel="noopener noreferrer"
+        )= channel.name
+      else
+        span.fe-download-channel__name= channel.name
+      if channelNotes[channel.key]
+        span.fe-download-channel__note= channelNotes[channel.key]
+    if channel.command
+      span.fe-download-channel__command
+        code.fe-download-channel__code= channel.command
+        +feDownloadCopy(channel.command, t("Copy %s", channel.command))
+
+mixin feDownloadCard(platform)
+  -
+    const meta = platformMeta[platform.key];
+    const hasBuild = (format, arch) => platform.options.some((o) => o.format === format && o.arch === arch);
+
+    // Honest platform notes: what a visitor on this platform should know
+    // before installing. Each is derived from the release or the channel
+    // config rather than hard coded, so it disappears once the thing it
+    // describes is fixed (the Windows note goes when signing flips on; the
+    // arm64 notes go when those builds ship).
+    const notes = [];
+    if (platform.key === "windows" && !platform.signed) notes.push(t("Installers are not code-signed yet, so SmartScreen warns on first run: choose More info, then Run anyway. Check the SHA-256 until the certificate lands."));
+    if (platform.key === "windows" && hasBuild("exe", "arm64") && !hasBuild("msi", "arm64")) notes.push(t("No .msi for ARM64; the .exe installer covers it."));
+    if (platform.key === "linux" && hasBuild("deb", "arm64") && !hasBuild("appimage", "arm64")) notes.push(t("No AppImage for ARM64. The .deb and .rpm builds update themselves through the in-app updater; the Snap updates through snapd."));
+    if (platform.key === "android") notes.push(t("Android asks you to allow installs from your browser the first time."));
+    if (platform.key === "ios") notes.push(t("The iOS build is not signed for direct install. Sideload it with AltStore, Sideloadly, or Xcode."));
+
+    const liveChannels = platform.channels.filter((channel) => channel.state === "live");
+    const soonChannels = platform.channels.filter((channel) => channel.state === "soon");
+  //- The id is the target of the hero's manual override without JavaScript.
+  li.fe-panel.fe-download-card(id=`fe-download-${platform.key}`)
+    .fe-download-card__head
+      span.fe-icon-tile.fe-icon-tile--primary
+        i(class=meta.icon, aria-hidden="true")
+      span.fe-download-card__titles
+        h3.fe-display-sm.fe-download-card__title= meta.name
+        span.fe-download-card__requires= meta.requires
+
+    ul.fe-download-rows
+      each option in platform.options
+        +feDownloadRow(option)
+
+    //- Everything below the rows sits at the foot of the card, so the cards
+    //- in a row line up even when one platform has more builds than another.
+    if notes.length > 0 || liveChannels.length > 0 || soonChannels.length > 0
+      .fe-download-card__foot
+        if notes.length > 0
+          ul.fe-download-card__notes
+            each note in notes
+              li.fe-text.fe-download-card__note= note
+
+        //- Live channels: other ways to get this platform's build today.
+        if liveChannels.length > 0
+          ul.fe-download-card__channels
+            each channel in liveChannels
+              +feDownloadChannel(channel)
+
+        //- Planned distribution channels (stores, package managers) that are
+        //- not live yet, so visitors know they are on the roadmap.
+        if soonChannels.length > 0
+          p.fe-download-card__soon
+            span.fe-download-card__soon-label.fe-label= t("Coming soon")
+            each channel in soonChannels
+              span.fe-chip.fe-chip--soon= channel.name
+
+//- Desktop cards end where their own list does (Linux ships seven packages,
+//- macOS two), so that grid does not stretch its items; the mobile grid
+//- keeps the default stretch. The mobile section follows the desktop one on
+//- the same light surface, so it drops its top padding.
+mixin feDownloadGroup(group, id, eyebrow, title, lede)
+  section.fe-section.fe-surface-light.fe-section--pad(
+    class=group.key === "mobile" ? "fe-section--tight" : "",
+    aria-labelledby=`${id}-title`
+  )
+    .fe-container
+      p.fe-eyebrow.fe-label
+        i.fa.fa-download(aria-hidden="true")
+        = eyebrow
+      .fe-download-group__head
+        h2.fe-display-lg.fe-download-group__title(id=`${id}-title`)= title
+        p.fe-lede.fe-download-group__lede= lede
+      ul.fe-grid(
+        class=group.key === "desktop" ? "fe-grid--lg-3 fe-grid--start" : "fe-grid--md-2"
+      )
+        each platform in group.platforms
+          +feDownloadCard(platform)
+
+mixin feDownloadPlatforms
+  each group in downloads.groups
+    if group.key === "desktop"
+      span#fe-download-desktop.fe-download-anchor
+      //- "Signed auto updater", not "signed installer": the updater signature
+      //- is true on every desktop platform, installer signing is not yet
+      //- (see the Windows card's note).
+      +feDownloadGroup(group, "fe-download-desktop", t("Desktop"), t("Built for the machine you work on."), t("Every desktop build carries a signed auto updater, so you stay current without coming back here."))
+    else
+      span#fe-download-mobile.fe-download-anchor
+      +feDownloadGroup(group, "fe-download-mobile", t("Mobile"), t("The same mailbox in your pocket."), t("Installed directly rather than through a store, so you get the build exactly as it left CI."))

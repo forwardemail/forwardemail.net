@@ -1,48 +1,26 @@
 extends ../layout
 
+include ../_fe-page-header
+include ../_fe-cards
+
 block body
-  .py-5.position-relative.bg-dark.bg-fixed.lazyload(
-    data-src=manifest("img/art/stars.svg")
-  )
-    .container
-      .row
-        .col-12
-          .text-center(class=isBot(ctx.get("User-Agent")) ? "" : "text-white")
-            h1= t("Free Email Developer Tools and Resources")
-            p!= t("Developer-focused email API, tools, and resources to send email, trigger webhooks, forward messages, and more.")
-            include ../_author
-      .row.mt-3.no-search
-        - const tools = [];
-        - const list = ["/email-api", "/free-email-webhooks", "/email-forwarding-regex-pattern-filter"];
-        each item in list
-          - const match = config.meta[item];
-          if match
-            - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item });
-        each developerDoc in developerDocs
-          - tools.push(developerDoc);
-        each doc in tools
-          .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
-            .card.rounded-lg
-              img.card-img-top.img-fluid(
-                loading="lazy",
-                src=doc.ogImage ? manifest(doc.ogImage) : l(`${doc.slug}.png`),
-                alt=striptags(t(doc.title))
-              )
-              .card-body
-                h2.h5.card-title.text-monospace!= t(doc.title)
-                // h3.h6.card-subtitle.text-muted.mb-1!= doc.subtitle
-                p.card-text.text-monospace!= t(doc.description)
-              .card-footer
-                a.stretched-link.btn.btn-md.btn-dark.btn-block(
-                  href=l(doc.slug),
-                  title=striptags(t(doc.title))
-                )
-                  if isBot(ctx.get("User-Agent"))
-                    != t(doc.title)
-                  else
-                    if doc.icon
-                      i.align-middle(class=doc.icon)
-                      = " "
-                    span.text-uppercase.font-weight-bold.align-middle= doc.ogBtnText || t("Learn more")
-                    = " "
-                    i.fa.fa-angle-double-right.align-middle
+  //- Was: bootstrap cards on the stars parallax. Same list (the three
+  //- developer tools, then every developer doc), same destinations, same
+  //- images, on the fe page header and the shared card grid.
+  - const tools = [];
+  - const list = ["/email-api", "/free-email-webhooks", "/email-forwarding-regex-pattern-filter"];
+  each item in list
+    - const match = config.meta[item];
+    if match
+      - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item });
+  each developerDoc in developerDocs
+    - tools.push(developerDoc);
+  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+    +fePageHeader({ id: "fe-docs", icon: "fa fa-code", eyebrow: t("Developers"), title: t("Free Email Developer Tools and Resources"), body: t("Developer-focused email API, tools, and resources to send email, trigger webhooks, forward messages, and more.") })
+      .fe-page-header__meta
+        +feByline
+    section.fe-section.fe-surface-light.fe-section--pad-sm.fe-body.no-search
+      .fe-container
+        ul.fe-grid.fe-grid--md-2.fe-grid--lg-3
+          each doc, i in tools
+            +feCard({ title: t(doc.title), description: t(doc.description), href: l(doc.slug), alt: striptags(t(doc.title)), image: doc.ogImage ? manifest(doc.ogImage) : l(`${doc.slug}.png`), eager: i <= 2, cta: doc.ogBtnText })

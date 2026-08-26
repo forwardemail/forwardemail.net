@@ -1,6 +1,6 @@
 # Adatvédelmi Szabályzat {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email adatvédelmi szabályzat" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email adatvédelmi szabályzat" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

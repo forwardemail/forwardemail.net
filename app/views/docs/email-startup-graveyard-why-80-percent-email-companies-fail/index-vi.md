@@ -1,6 +1,6 @@
 # Nghĩa Trang Khởi Nghiệp Email: Tại Sao Hầu Hết Các Công Ty Email Thất Bại {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Minh họa nghĩa trang khởi nghiệp email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Minh họa nghĩa trang khởi nghiệp email" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Trong khi nhiều công ty khởi nghiệp email đã đầu tư hàng triệu đô la để giải quyết các vấn đề được cho là tồn tại, chúng tôi tại <a href="https://forwardemail.net">Forward Email</a> đã tập trung xây dựng hạ tầng email đáng tin cậy từ đầu kể từ năm 2017. Phân tích này khám phá các mô hình đằng sau kết quả của các công ty khởi nghiệp email và những thách thức cơ bản của hạ tầng email.</p>
 

@@ -1,6 +1,6 @@
 # SQLite-suorituskyvyn optimointi: Tuotannon PRAGMA-asetukset & ChaCha20-salaus {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite-suorituskyvyn optimointiohje" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite-suorituskyvyn optimointiohje" class="rounded-lg" /> -->
 
 
 ## Sisällysluettelo {#table-of-contents}

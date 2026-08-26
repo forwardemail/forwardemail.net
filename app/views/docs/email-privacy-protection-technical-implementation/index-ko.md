@@ -1,6 +1,6 @@
 # Forward Email로 이메일 전달 작동 방식: 궁극 가이드 {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="이메일 개인정보 보호 기술 구현" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="이메일 개인정보 보호 기술 구현" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

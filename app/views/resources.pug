@@ -1,48 +1,24 @@
 extends layout
 
+include _fe-page-header
+include _fe-cards
+
 block body
-  .py-5.position-relative.bg-fixed.lazyload(
-    data-src=manifest("img/art/stars.svg")
-  )
-    .container
-      .row
-        .col-12
-          .text-center
-            h1= t("Free Startup and Developer Email Tools List")
-            p!= t("Listed below are free email resources and tools for startups and developers.")
-            include _author
-      .row.mt-3.no-search
-        - const tools = [];
-        - const list = ["/faq", "/help", "/about", "/press", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse", "/blog/docs/best-quantum-safe-encrypted-email-service", "/guides", "/blogs/docs", "/private-business-email", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
-        each item in list
-          - const match = config.meta[item];
-          if match
-            - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item, image: match[2] });
-        each tool in tools
-          .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
-            .card.rounded-lg.position-relative
-              noscript
-                img.card-img-top.img-fluid(
-                  src=tool.image ? manifest(tool.image) : l(`${tool.slug}.png`),
-                  alt=striptags(t(tool.title))
-                )
-              img.card-img-top.img-fluid(
-                loading="lazy",
-                src=tool.image ? manifest(tool.image) : l(`${tool.slug}.png`),
-                alt=striptags(t(tool.title))
-              )
-              .card-body
-                h2.h5.card-title!= t(tool.title)
-                // h3.h6.card-subtitle.text-muted.mb-1!= tool.subtitle
-                p.card-text!= t(tool.description)
-              .card-footer
-                a.stretched-link.btn.btn-md.btn-dark.btn-block(
-                  href=l(tool.slug),
-                  title=striptags(t(tool.title))
-                )
-                  if isBot(ctx.get("User-Agent"))
-                    != t(tool.title)
-                  else
-                    span.text-uppercase.font-weight-bold.align-middle= t("Learn more")
-                    = " "
-                    i.fa.fa-angle-double-right.align-middle
+  //- Was: bootstrap cards on the stars parallax. Same list, same
+  //- destinations, same Open Graph images, on the fe page header and the
+  //- shared card grid (see _fe-cards.pug).
+  - const tools = [];
+  - const list = ["/faq", "/help", "/about", "/press", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse", "/blog/docs/best-quantum-safe-encrypted-email-service", "/guides", "/blogs/docs", "/private-business-email", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
+  each item in list
+    - const match = config.meta[item];
+    if match
+      - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item, image: match[2] });
+  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+    +fePageHeader({ id: "fe-resources", icon: "fa fa-toolbox", eyebrow: t("Resources"), title: t("Free Startup and Developer Email Tools List"), body: t("Listed below are free email resources and tools for startups and developers.") })
+      .fe-page-header__meta
+        +feByline
+    section.fe-section.fe-surface-light.fe-section--pad-sm.fe-body.no-search
+      .fe-container
+        ul.fe-grid.fe-grid--md-2.fe-grid--lg-3
+          each tool, i in tools
+            +feCard({ title: t(tool.title), description: t(tool.description), href: l(tool.slug), alt: striptags(t(tool.title)), image: tool.image ? manifest(tool.image) : l(`${tool.slug}.png`), eager: i <= 2 })

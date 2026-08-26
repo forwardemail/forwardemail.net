@@ -1,6 +1,6 @@
 # دراسة حالة: كيف تدير Canonical بريد Ubuntu الإلكتروني باستخدام حل المؤسسات مفتوح المصدر من Forward Email {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
 
-<img loading="lazy" src="/img/articles/canonical.webp" alt="دراسة حالة بريد إلكتروني لمؤسسة Canonical Ubuntu" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/canonical.webp" alt="دراسة حالة بريد إلكتروني لمؤسسة Canonical Ubuntu" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

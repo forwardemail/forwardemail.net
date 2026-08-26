@@ -1,6 +1,6 @@
 # ممارسات الأمان {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="ممارسات أمان بريد Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="ممارسات أمان بريد Forward Email" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > Vào ngày 1 tháng 6 năm 2026, chúng tôi đã công bố kiểm toán bảo mật bên thứ ba được thực hiện bởi [Cure53](https://cure53.de/), được công nhận rộng rãi là một trong những công ty nghiên cứu bảo mật tốt nhất trong ngành. Báo cáo kiểm tra xâm nhập đầy đủ có sẵn tại [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email là dịch vụ email mã nguồn mở 100% duy nhất có kiểm toán bảo mật được xác minh độc lập.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="So sánh các công ty kiểm toán an ninh" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="So sánh các công ty kiểm toán an ninh" class="rounded-lg" /> -->
 
 
 ## Mục Lục {#table-of-contents}

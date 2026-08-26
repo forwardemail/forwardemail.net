@@ -1,0 +1,310 @@
+//- The four full plan cards, rebuilt on the tokens. Replaces
+//- _pricing-table.pug wherever the marketing tail renders (the pricing
+//- template, /compare, /open-source); that partial is untouched.
+//-
+//- Content is the previous table's, row for row: same features, same
+//- links, same (i) explainers (the confirm-prompt sweetalerts and the
+//- storage modal), same signed in branches (add-domain button, the
+//- select-a-domain dropdown, the struck price for a visitor already on a
+//- paid plan). The ids #features, #free, #enhanced, #team and #enterprise
+//- are kept so every existing deep link still lands.
+//-
+//- Names, prices and destinations come from _fe-plan-data.pug, shared
+//- with the landing page grid; figures are emitted as literals outside t(),
+//- so the translation job never rewrites one.
+//-
+//- Icons are written as literal classes rather than passed into a mixin,
+//- so purgecss-from-pug sees every one of them.
+
+mixin fePlanPrice(amount)
+  span.fe-plan__price.fe-numeral.notranslate= `$${amount}`
+  span.fe-plan__period!= t('/month for <span class="text-decoration-underline">unlimited domains</span>')
+
+//- Struck-through variant, shown to a visitor who is already on a paid plan.
+mixin fePlanPriceWas(amount)
+  span.fe-plan__upgraded= t("Already upgraded")
+  s.fe-plan__was
+    span.notranslate= `$${amount}`
+    != t('/month for <span class="text-decoration-underline">unlimited domains</span>')
+
+//- The (i) that opens a sweetalert. Same hooks as before (.confirm-prompt
+//- plus the data-confirm-* attributes core.js reads); .no-js hides it when
+//- scripts are off, since it would do nothing.
+mixin feInfo(label, html)
+  if !isBotUa
+    button.fe-info.confirm-prompt.no-js(
+      type="button",
+      aria-label=label,
+      data-confirm-type="info",
+      data-confirm-show-cancel-button="false",
+      data-confirm-prompt-title=label,
+      data-confirm-prompt-html=html
+    )
+      i.fa.fa-info-circle(aria-hidden="true")
+
+//- Signed in visitors with domains pick which one to upgrade. Bootstrap's
+//- dropdown, with only the trigger restyled.
+mixin fePlanDomainSelect(plan)
+  .btn-group.btn-block
+    button.fe-btn.fe-btn--subtle.fe-btn--md.fe-btn--block.dropdown-toggle(
+      type="button",
+      data-toggle="dropdown",
+      aria-haspopup="true",
+      aria-expanded="false",
+      data-boundary="window"
+    )= t("Select Domain")
+    .dropdown-menu.w-100
+      each domain in sortedDomains
+        a.dropdown-item(
+          href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=${plan}`),
+          class=domain.plan === plan ? "disabled" : "",
+          aria-disabled=domain.plan === plan ? "true" : "false"
+        )
+          = domain.name
+          if domain.plan === plan
+            = " ("
+            = t("already on this plan")
+            = ")"
+      .dropdown-divider
+      a.dropdown-item(href=l(`/my-account/domains/new?plan=${plan}`))
+        i.fa.fa-plus
+        = " "
+        = t("Add New Domain")
+
+mixin fePricingDetail
+  include _fe-plan-data
+  -
+    //- Same rule the previous table used for its #features anchor: dropped
+    //- for signed in visitors and for the ?pricing=true jump link, which
+    //- lands here by other means.
+    const feFeaturesId = user || (!isBotUa && boolean(ctx.query.pricing) && ctx.pathWithoutLocale !== "/") ? false : "features";
+  section.fe-section.fe-surface-light.fe-section--pad.fe-section--tight.fe-plans-detail(
+    id=feFeaturesId,
+    aria-labelledby="fe-plans-detail-title"
+  )
+    .fe-container
+      p.fe-eyebrow.fe-eyebrow--mint.fe-label
+        i.fa.fa-tag(aria-hidden="true")
+        = t("Simple pricing")
+      .fe-marketing__head
+        h2#fe-plans-detail-title.fe-display-lg.fe-marketing__title= t("Unlimited domains at every tier.")
+      p.fe-lede= t("Start with forwarding, upgrade to real mailboxes, then add team controls. Every tier includes unlimited domains.")
+
+      ul.fe-grid.fe-grid--md-2.fe-grid--xl-4.fe-grid--gap-5
+        //- Free
+        li#free.fe-plans-detail__item
+          .fe-panel.fe-plan.fe-plan--detail
+            .fe-plan__head
+              h3.fe-display-sm.fe-plan__name= fePlans.free.name
+              p.fe-plan__line= t("Only supports email forwarding")
+              if user && user.plan !== 'free'
+                +fePlanPriceWas(fePlans.free.price)
+              else
+                +fePlanPrice(fePlans.free.price)
+              a.fe-btn.fe-btn--subtle.fe-btn--md.fe-btn--block(
+                href=fePlans.free.href
+              )
+                if user
+                  i.fa.fa-plus(aria-hidden="true")
+                  = t("Add New Domain")
+                else
+                  = t("Forward your domain's mail")
+                  i.fa.fa-angle-right(aria-hidden="true")
+            ul.fe-plan__features
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-infinity.fe-plan__icon(aria-hidden="true")
+                span!= t("Unlimited inbound email")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-shield-alt.fe-plan__icon(aria-hidden="true")
+                span
+                  = t("Spam protection")
+                  +feInfo(t("Spam Scanner"), t('We built our own anti-spam, phishing, and virus protection software called <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>. It abides by the same privacy-first and zero logging policies.'))
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-paperclip.fe-plan__icon(aria-hidden="true")
+                span
+                  = config.smtpMessageMaxSize
+                  != "&nbsp;"
+                  = t("attachment limit")
+              li.fe-plan__feature.fe-plan__feature--plus
+                i.fa.fa-fw.fa-plus.fe-plan__icon(aria-hidden="true")
+                span
+                  a(
+                    href=l("/guides/send-mail-as-gmail-custom-domain#legacy-free-guide")
+                  )= t("Send Mail As with Gmail")
+              li.fe-plan__feature.fe-plan__feature--plus
+                i.fa.fa-fw.fa-plus.fe-plan__icon(aria-hidden="true")
+                span= t("Catch-all email addresses")
+              li.fe-plan__feature.fe-plan__feature--plus
+                i.fa.fa-fw.fa-plus.fe-plan__icon(aria-hidden="true")
+                span= t("Multiple recipients per alias")
+              li.fe-plan__feature.fe-plan__feature--plus
+                i.fa.fa-fw.fa-plus.fe-plan__icon(aria-hidden="true")
+                span
+                  a(href=l("/free-email-webhooks"), target="_blank")= t("Send emails to webhooks")
+              li.fe-plan__feature.fe-plan__feature--plus
+                i.fa.fa-fw.fa-plus.fe-plan__icon(aria-hidden="true")
+                span
+                  a(
+                    href=l("/email-forwarding-regex-pattern-filter"),
+                    target="_blank"
+                  )= t("Regular expression filtering")
+            .fe-plan__foot
+              i.fa.fa-fw.fa-info-circle(aria-hidden="true")
+              strong= t("Limitations")
+              = ": "
+              = t("Email forwarding only, which means you cannot send mail")
+
+        //- Enhanced Protection. The featured card, on the dark surface.
+        li#enhanced.fe-plans-detail__item
+          .fe-panel.fe-panel--featured.fe-surface-dark.fe-plan.fe-plan--detail
+            .fe-plan__head
+              h3.fe-display-sm.fe-plan__name= fePlans.enhanced.name
+              p.fe-plan__line!= t('Send &amp; receive as <span class="notranslate">you@yourdomain.com</span>')
+              if user && user.plan !== 'free'
+                +fePlanPriceWas(fePlans.enhanced.price)
+              else
+                +fePlanPrice(fePlans.enhanced.price)
+              if !sortedDomains || sortedDomains.length === 0
+                a.fe-btn.fe-btn--hero.fe-btn--md.fe-btn--block(
+                  href=fePlans.enhanced.href
+                )
+                  != t('Get <span class="notranslate">you@domain.com</span>')
+                  i.fa.fa-angle-right(aria-hidden="true")
+              else
+                +fePlanDomainSelect("enhanced_protection")
+            ul.fe-plan__features
+              li.fe-plan__more.fe-label
+                i.fa.fa-fw.fa-arrow-up(aria-hidden="true")
+                = t("Everything in Free plus:")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-infinity.fe-plan__icon(aria-hidden="true")
+                span
+                  span.text-decoration-underline= t("Unlimited aliases")
+                  = " ("
+                  = t("$0/user")
+                  = ")"
+                  +feInfo(t("Unlimited Aliases"), t('Unlike other email services, we do not charge extra per user (commonly referred to as an "alias"). This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class="notranslate">you@yourdomain.com</span>, <span class="notranslate">info@yourdomain.com</span>, <span class="notranslate">help@yourdomain.com</span>, and <span class="notranslate">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.'))
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-lock.fe-plan__icon(aria-hidden="true")
+                span
+                  = t("10 GB pooled storage")
+                  if !isBotUa
+                    button.fe-info.no-js(
+                      type="button",
+                      aria-label=t("Email Storage"),
+                      data-toggle="modal",
+                      data-target="#modal-storage"
+                    )
+                      i.fa.fa-info-circle(aria-hidden="true")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-lock.fe-plan__icon(aria-hidden="true")
+                span
+                  = t("Secure inbox privacy")
+                  +feInfo(t("Encrypted Configuration"), t("No publicly searchable DNS records are used. Instead we store your configuration in a secure and backed-up database."))
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-envelope.fe-plan__icon(aria-hidden="true")
+                span
+                  a(
+                    href=l("/faq#do-you-support-sending-email-with-smtp"),
+                    target="_blank"
+                  )= t("%d+ outbound / month", feOutbound)
+                  +feInfo(t("Outbound SMTP Limits"), t("We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.", config.smtpLimitMessages, prettyMilliseconds(config.smtpLimitDuration, { verbose: true, secondsDecimalDigits: 0 }), feOutbound))
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-chart-area.fe-plan__icon(aria-hidden="true")
+                span!= t("Email analytics &amp; insights")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-shield-alt.fe-plan__icon(aria-hidden="true")
+                span
+                  a(href=l("/my-account/dmarc-reports"))= t("DMARC Reporting")
+                  +feInfo(t("DMARC Reporting"), t("Get deliverability insights across all your domains with DMARC aggregate reports. Monitor email authentication (SPF, DKIM, DMARC) compliance and identify potential spoofing or configuration issues."))
+              li.fe-plan__feature.fe-plan__feature--plus
+                i.fa.fa-fw.fa-plus.fe-plan__icon(aria-hidden="true")
+                span
+                  a(href=l("/guides/send-email-with-custom-domain-smtp"))= t("Send outbound SMTP email")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-code.fe-plan__icon(aria-hidden="true")
+                span
+                  a(href=l("/email-api"), target="_blank")= t("Developer API access")
+            .fe-plan__foot
+              i.fa.fa-fw.fa-user(aria-hidden="true")
+              strong= t("Best for")
+              = ": "
+              = t("Individuals, freelancers, and small businesses")
+
+        //- Team
+        li#team.fe-plans-detail__item
+          .fe-panel.fe-plan.fe-plan--detail
+            .fe-plan__head
+              h3.fe-display-sm.fe-plan__name= fePlans.team.name
+              p.fe-plan__line= t("For families, groups, and organizations")
+              if user && user.plan === 'team'
+                +fePlanPriceWas(fePlans.team.price)
+              else
+                +fePlanPrice(fePlans.team.price)
+              if !sortedDomains || sortedDomains.length === 0
+                a.fe-btn.fe-btn--subtle.fe-btn--md.fe-btn--block(
+                  href=fePlans.team.href
+                )
+                  = t("Create Team")
+                  i.fa.fa-angle-right(aria-hidden="true")
+              else
+                +fePlanDomainSelect("team")
+            ul.fe-plan__features
+              li.fe-plan__more.fe-label
+                i.fa.fa-fw.fa-arrow-up(aria-hidden="true")
+                = t("Everything in Enhanced plus:")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-infinity.fe-plan__icon(aria-hidden="true")
+                span= t("Unlimited team members")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-users.fe-plan__icon(aria-hidden="true")
+                span= t("Team permission management")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-sitemap.fe-plan__icon(aria-hidden="true")
+                span= t("Shared organizational access")
+              li.fe-plan__feature.fe-plan__feature--plus
+                i.fa.fa-fw.fa-bullhorn.fe-plan__icon(aria-hidden="true")
+                span= t("Priority support requests")
+              li.fe-plan__feature.fe-plan__feature--plus
+                i.fa.fa-fw.fa-palette.fe-plan__icon(aria-hidden="true")
+                span= t("Custom recipient verification")
+            .fe-plan__foot
+              i.fa.fa-fw.fa-users(aria-hidden="true")
+              strong= t("Best for")
+              = ": "
+              = t("Collaboration across families, teams, and organizations")
+
+        //- Enterprise
+        li#enterprise.fe-plans-detail__item
+          .fe-panel.fe-plan.fe-plan--detail
+            .fe-plan__head
+              h3.fe-display-sm.fe-plan__name= fePlans.enterprise.name
+              p.fe-plan__line
+                != t('For <a href="%s" class="text-themed font-weight-bold">education</a>, <a href="%s" class="text-themed font-weight-bold">universities</a>, <a href="%s" class="text-themed font-weight-bold">alumni</a>, <a href="%s" class="text-themed font-weight-bold">healthcare</a>, <a href="%s" class="text-themed font-weight-bold">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/universities-email-service"), l("/alumni-email-forwarding"), l("/healthcare-email-hosting-forwarding-hipaa"), l("/government-email-hosting-forwarding"))
+              +fePlanPrice(fePlans.enterprise.price)
+              a.fe-btn.fe-btn--subtle.fe-btn--md.fe-btn--block(
+                href=fePlans.enterprise.href
+              )
+                = t("Contact us to schedule a call")
+                i.fa.fa-angle-right(aria-hidden="true")
+            ul.fe-plan__features
+              li.fe-plan__more.fe-label
+                i.fa.fa-fw.fa-arrow-up(aria-hidden="true")
+                = t("Everything in Team plus:")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-infinity.fe-plan__icon(aria-hidden="true")
+                span= t("Unlimited API requests")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-user-graduate.fe-plan__icon(aria-hidden="true")
+                span
+                  = t("Terms of Use exception for 3rd parties")
+                  +feInfo(t("Terms of Use Exception"), t('According to <a href="%s" target="_blank" rel="noopener noreferrer">our terms of use</a>, you cannot operate a service nor integration which allows third parties (other than your own employees and contractors) to access, use, or benefit from our service. The Enterprise plan specifically allows this through a signed agreement.', l("/terms")))
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-comment-dots.fe-plan__icon(aria-hidden="true")
+                span= t("Dedicated customer support chatroom")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-file-signature.fe-plan__icon(aria-hidden="true")
+                span= t("Enterprise contract agreement sent via DocuSign")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-life-ring.fe-plan__icon(aria-hidden="true")
+                span= t("Onboarding assistance and real-time engineering support")

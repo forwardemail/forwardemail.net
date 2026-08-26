@@ -1,6 +1,6 @@
 # Zgłoś Nadużycie {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Zgłoś nadużycie i spam do Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Zgłoś nadużycie i spam do Forward Email" class="rounded-lg" /> -->
 
 
 ## Spis treści {#table-of-contents}

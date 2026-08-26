@@ -1,15 +1,20 @@
 extends layout
 
-include _onboard
+include _fe-page-header
+include _fe-onboard
 
 block body
   - const hash = "do-you-support-regular-expressions-or-regex";
-  if !user
-    +onboard(t('Need email regex forwarding?'), t('Skip ahead to the instructions to forward emails using regex.'), l(`/faq?hash=${hash}`), l(`/faq#${hash}`), 'border-bottom', true)
-  .container.py-3.py-md-4.py-lg-5
-    .text-center.mb-5
-      h1.h2.mb-0= t("Email forwarding regex")
-      .small.text-black.text-themed-50.text-uppercase.mb-3= t("Setup an email forwarding regex in minutes")
-      p.lead.mb-3= t("Easily set up an email forwarding regex to filter and forward incoming email to your custom domain.")
-      p.text-muted.mb-5.text-center
-        a.btn.btn-lg.btn-primary(href=l(`/faq#${hash}`))= t("Create an email forwarding regex filter")
+  //- Same shape as free-email-webhooks.pug: fe page header with the one
+  //- button, onboarding form inline at the foot for a logged out visitor.
+  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+    +fePageHeader({ id: "fe-regex", icon: "fa fa-filter", eyebrow: t("Setup an email forwarding regex in minutes"), title: t("Email forwarding regex"), body: t("Easily set up an email forwarding regex to filter and forward incoming email to your custom domain.") })
+      .fe-actions.fe-page-header__actions
+        a.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--glow(href=l(`/faq#${hash}`))
+          = t("Create an email forwarding regex filter")
+          i.fa.fa-angle-right(aria-hidden="true")
+        a.fe-btn.fe-btn--ghost.fe-btn--lg(href=l("/free-email-webhooks"))
+          i.fa.fa-plug(aria-hidden="true")
+          = t("Email webhooks")
+    if !user
+      +feOnboard(t('Need email regex forwarding?'), t('Skip ahead to the instructions to forward emails using regex.'), l(`/faq?hash=${hash}`), l(`/faq#${hash}`))

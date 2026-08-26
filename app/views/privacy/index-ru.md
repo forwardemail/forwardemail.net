@@ -1,6 +1,6 @@
 # Политика конфиденциальности {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Политика конфиденциальности Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Политика конфиденциальности Forward Email" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

@@ -1,6 +1,6 @@
 # Villkor {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email terms of service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email terms of service" class="rounded-lg" /> -->
 
 
 ## Innehållsförteckning {#table-of-contents}

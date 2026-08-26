@@ -41,6 +41,7 @@ const { randomstring } = require('@sidoshi/random-string');
 const _ = require('#helpers/lodash');
 
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const getPublishedDate = require('#helpers/get-published-date');
 const {
   formatPaymentAmount,
   formatPaymentNetAmount,
@@ -2905,6 +2906,7 @@ module.exports = {
   capitalize,
   dashify,
   dayjs,
+  getPublishedDate,
   emoji,
   hljs,
   humanize,

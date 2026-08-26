@@ -1,6 +1,6 @@
 # Construire un agent de support client IA axé sur la confidentialité avec LanceDB, Ollama et Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="Agent de support client IA avec LanceDB Ollama Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="Agent de support client IA avec LanceDB Ollama Node.js" class="rounded-lg" /> -->
 
 > \[!NOTE]
 > Ce document couvre notre parcours de création d’un agent de support IA auto-hébergé. Nous avons écrit sur des défis similaires dans notre article de blog [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). Nous avons honnêtement pensé à écrire un suivi intitulé « AI Startup Graveyard » mais peut-être devrons-nous attendre encore un an ou plus jusqu’à ce que la bulle IA éclate potentiellement (?). Pour l’instant, c’est notre synthèse de ce qui a fonctionné, ce qui n’a pas fonctionné, et pourquoi nous l’avons fait ainsi.

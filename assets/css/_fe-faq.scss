@@ -1,0 +1,437 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Simplified FAQ. Builds on _fe-base.scss and _fe-primitives.scss; only what
+// those do not cover lives here. The page carries no images by design.
+
+.fe-faq-hero__inner {
+  max-width: 44rem;
+  text-align: center;
+}
+
+.fe-faq-hero__title {
+  margin-bottom: var(--fe-space-6);
+}
+
+.fe-faq-hero__count {
+  margin-block: var(--fe-space-4) 0;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+// ============================================
+// SEARCH
+// ============================================
+
+.fe-faq-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fe-faq-search__icon {
+  position: absolute;
+  inset-inline-start: var(--fe-space-4);
+  display: flex;
+  color: var(--fe-fg-secondary);
+  pointer-events: none;
+}
+
+// Composes .fe-field__input; taller and rounder than a form field, with room
+// for the glyph and the clear button at either end.
+.fe-faq-search__input {
+  height: 52px;
+  padding-inline: 3rem;
+  border-radius: var(--fe-radius-lg);
+}
+
+.fe-faq-search__input::placeholder {
+  opacity: 1;
+}
+
+// The browser's own search clear button is inconsistent across engines and
+// invisible on a dark field, so it is suppressed and replaced.
+.fe-faq-search__input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.fe-faq-search__clear {
+  position: absolute;
+  inset-inline-end: var(--fe-space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--fe-fg-secondary);
+  cursor: pointer;
+  background-color: transparent;
+  border: 0;
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-faq-search__clear:hover {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+}
+
+// ============================================
+// LAYOUT
+// ============================================
+
+.fe-faq-layout {
+  display: grid;
+  gap: var(--fe-space-8);
+  // minmax(0, 1fr): answers hold long unbreakable strings, and the default
+  // auto minimum would widen the track past the viewport.
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.fe-faq-content {
+  min-width: 0;
+}
+
+// ============================================
+// TOPIC RAIL
+// ============================================
+
+.fe-faq-nav__label {
+  display: block;
+  margin-bottom: var(--fe-space-3);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-faq-nav__list {
+  display: flex;
+  gap: var(--fe-space-1);
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-faq-nav__link {
+  display: flex;
+  gap: var(--fe-space-3);
+  align-items: baseline;
+  justify-content: space-between;
+  padding: var(--fe-space-2) var(--fe-space-3);
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+  text-decoration: none;
+  border-radius: var(--fe-radius-sm);
+}
+
+.fe-faq-nav__link:hover,
+.fe-faq-nav__link:focus {
+  color: var(--fe-fg-primary);
+  text-decoration: none;
+  background-color: var(--fe-bg-sunken);
+}
+
+// The topic being read, set by the scroll spy in faq-search.js.
+.fe-faq-nav__link.is-active {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  box-shadow: inset 3px 0 0 var(--fe-primary);
+}
+
+.fe-faq-nav__count {
+  flex: none;
+  font-size: var(--fe-text-label);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-faq-nav__link.is-active .fe-faq-nav__count {
+  color: var(--fe-fg-primary);
+}
+
+// ============================================
+// TOPICS AND QUESTIONS
+// ============================================
+
+.fe-faq-topic {
+  // Clears the fixed navbar when a topic is jumped to from the rail.
+  scroll-margin-top: calc(var(--fe-nav-offset) + var(--fe-space-4));
+}
+
+.fe-faq-topic + .fe-faq-topic {
+  margin-top: var(--fe-space-8);
+}
+
+.fe-faq-topic__title {
+  padding-bottom: var(--fe-space-3);
+  margin-bottom: var(--fe-space-2);
+  border-bottom: 1px solid var(--fe-border-default);
+}
+
+.fe-faq-topic__intro {
+  min-width: 0;
+  padding-block: var(--fe-space-4);
+  overflow-wrap: anywhere;
+}
+
+.fe-faq-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-faq-item + .fe-faq-item {
+  border-top: 1px solid var(--fe-border-subtle);
+}
+
+.fe-faq-answer {
+  scroll-margin-top: calc(var(--fe-nav-offset) + var(--fe-space-4));
+}
+
+.fe-faq-answer__q {
+  // Pinned: the light and dark cascades resolve box-sizing differently here.
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--fe-space-4);
+  align-items: baseline;
+  justify-content: space-between;
+  padding-block: var(--fe-space-4);
+  font-size: var(--fe-text-body-md);
+  color: var(--fe-fg-primary);
+  cursor: pointer;
+  list-style: none;
+}
+
+// Safari draws its own disclosure triangle through a shadow pseudo-element,
+// which list-style: none does not remove.
+.fe-faq-answer__q::-webkit-details-marker {
+  display: none;
+}
+
+.fe-faq-answer__q:hover {
+  color: var(--fe-fg-link);
+}
+
+.fe-faq-answer__text {
+  font-weight: var(--fe-weight-medium);
+}
+
+.fe-faq-answer__marker {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-icon-primary);
+  background-color: var(--fe-primary-a08);
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-faq-answer[open] .fe-faq-answer__marker {
+  transform: rotate(45deg);
+}
+
+.fe-faq-answer__body {
+  box-sizing: border-box;
+  min-width: 0;
+  // `anywhere`, not `break-word`: only it also shrinks the intrinsic minimum
+  // width, which bare URLs as link text otherwise inflate. Reset in pre below.
+  overflow-wrap: anywhere;
+  padding-bottom: var(--fe-space-6);
+}
+
+.fe-faq-empty {
+  padding: var(--fe-space-6);
+  color: var(--fe-fg-secondary);
+  text-align: center;
+  background-color: var(--fe-bg-sunken);
+  border-radius: var(--fe-radius-lg);
+}
+
+.fe-faq-prose > :first-child {
+  margin-top: 0;
+}
+
+.fe-faq-prose > :last-child {
+  margin-bottom: 0;
+}
+
+.fe-faq-prose p,
+.fe-faq-prose ul,
+.fe-faq-prose ol {
+  margin-block: 0 var(--fe-space-4);
+}
+
+.fe-faq-prose h4,
+.fe-faq-prose h5,
+.fe-faq-prose h6 {
+  margin-block: var(--fe-space-5) var(--fe-space-2);
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-faq-prose a {
+  color: var(--fe-fg-link);
+}
+
+.fe-faq-prose strong {
+  color: var(--fe-fg-primary);
+}
+
+.fe-faq-prose code {
+  // Inline code carries DNS records and long hostnames. They break rather than
+  // push the column wide; the block form below scrolls instead.
+  overflow-wrap: anywhere;
+  padding: 2px var(--fe-space-1);
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-code);
+  background-color: var(--fe-bg-sunken);
+  border-radius: var(--fe-radius-sm);
+}
+
+.fe-faq-prose pre {
+  overflow-wrap: normal;
+  padding: var(--fe-space-4);
+  margin-block: 0 var(--fe-space-4);
+  overflow-x: auto;
+  background-color: var(--fe-bg-sunken);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-faq-prose pre code {
+  padding: 0;
+  // Inside a pre the line must stay intact and scroll, not wrap mid-command.
+  overflow-wrap: normal;
+  background-color: transparent;
+}
+
+.fe-faq-prose blockquote {
+  padding: var(--fe-space-3) var(--fe-space-4);
+  margin-block: 0 var(--fe-space-4);
+  border-inline-start: 2px solid var(--fe-border-strong);
+}
+
+// Tables are the widest thing in any answer, so they scroll inside their own
+// box rather than pushing the page sideways.
+.fe-faq-prose table {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--fe-space-4);
+  overflow-x: auto;
+  font-size: var(--fe-text-code);
+  border-collapse: collapse;
+}
+
+.fe-faq-prose th,
+.fe-faq-prose td {
+  padding: var(--fe-space-2) var(--fe-space-3);
+  text-align: start;
+  border: 1px solid var(--fe-border-subtle);
+}
+
+.fe-faq-prose th {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+}
+
+// Callouts in authored markdown: bootstrap `div.alert` and the
+// `div.markdown-alert` blocks markdown-it-github-alerts emits. The
+// !importants out-rank bootstrap's utilities and app-dark's re-emitted copy,
+// which the authored markdown carries and this file cannot remove.
+.fe-faq-prose .alert,
+.fe-faq-prose .markdown-alert {
+  padding: var(--fe-space-3) var(--fe-space-4) !important;
+  margin-block: 0 var(--fe-space-4) !important;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary) !important;
+  background-color: var(--fe-bg-sunken) !important;
+  border: 0 !important;
+  border-inline-start: 3px solid var(--fe-border-strong) !important;
+  border-radius: var(--fe-radius-sm) !important;
+}
+
+.fe-faq-prose .alert > :last-child,
+.fe-faq-prose .markdown-alert > :last-child {
+  margin-bottom: 0;
+}
+
+.fe-faq-prose .alert strong,
+.fe-faq-prose .markdown-alert strong,
+.fe-faq-prose .markdown-alert-title {
+  color: var(--fe-fg-primary) !important;
+}
+
+// The variant only changes the edge, so the text stays on one known ground and
+// its contrast cannot depend on which variant an author picked.
+.fe-faq-prose .alert-danger,
+.fe-faq-prose .markdown-alert-caution {
+  border-inline-start-color: var(--fe-danger) !important;
+}
+
+.fe-faq-prose .alert-warning,
+.fe-faq-prose .markdown-alert-important {
+  border-inline-start-color: var(--fe-caution) !important;
+}
+
+.fe-faq-prose .alert-success,
+.fe-faq-prose .markdown-alert-tip {
+  border-inline-start-color: var(--fe-mint) !important;
+}
+
+.fe-faq-prose .alert-primary,
+.fe-faq-prose .markdown-alert-note {
+  border-inline-start-color: var(--fe-primary) !important;
+}
+
+.fe-faq-prose .alert a {
+  color: var(--fe-fg-link) !important;
+}
+
+// Inline glyphs keep their shape but not bootstrap's colour.
+.fe-faq-prose .fa,
+.fe-faq-prose .fas,
+.fe-faq-prose .fab {
+  color: inherit;
+}
+
+// ============================================
+// FOOT
+// ============================================
+
+.fe-faq-foot__inner {
+  max-width: 40rem;
+  text-align: center;
+}
+
+.fe-faq-foot__title {
+  margin-bottom: var(--fe-space-3);
+}
+
+.fe-faq-foot__body {
+  margin-bottom: var(--fe-space-6);
+}
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
+@include fe-up(lg) {
+  .fe-faq-layout {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 4rem;
+    align-items: start;
+  }
+
+  // The rail follows the reader down the page, so a topic is always one click
+  // away however deep into the answers they are.
+  .fe-faq-nav {
+    position: sticky;
+    top: calc(var(--fe-nav-offset) + var(--fe-space-4));
+    max-height: calc(100vh - var(--fe-nav-offset) - var(--fe-space-8));
+    overflow-y: auto;
+  }
+}

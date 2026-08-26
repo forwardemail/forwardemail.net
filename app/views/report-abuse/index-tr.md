@@ -1,6 +1,6 @@
 # İhlal Bildirimi {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Forward Email'e kötüye kullanım ve spam bildir" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Forward Email'e kötüye kullanım ve spam bildir" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

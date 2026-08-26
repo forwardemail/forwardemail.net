@@ -1,6 +1,6 @@
 # 第一个完整的电子邮件 API：Forward Email 如何革新电子邮件管理 {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>简要说明：</strong> 我们构建了全球首个具备高级搜索功能的完整电子邮件管理 REST API，这是其他服务无法提供的。虽然 Gmail、Outlook 和 Apple 迫使开发者陷入 IMAP 地狱或受限的 API，Forward Email 通过统一的 REST 接口，提供针对邮件、文件夹、联系人和日历的极速 CRUD 操作，支持 15+ 搜索参数。这正是开发者一直期待的电子邮件 API。

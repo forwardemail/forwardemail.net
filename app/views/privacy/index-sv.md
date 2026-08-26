@@ -1,6 +1,6 @@
 # Integritetspolicy {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email integritetspolicy" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email integritetspolicy" class="rounded-lg" /> -->
 
 
 ## Innehållsförteckning {#table-of-contents}

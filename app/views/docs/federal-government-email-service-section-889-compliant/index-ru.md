@@ -1,6 +1,6 @@
 # Forward Email: Ваше решение для пересылки электронной почты, соответствующее Разделу 889 {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="Федеральный сервис электронной почты, соответствующий Разделу 889" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="Федеральный сервис электронной почты, соответствующий Разделу 889" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

@@ -1,0 +1,239 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Site-wide navbar; _nav.pug adds `fe-nav` on every non-bot request together
+// with one state class. The bar is Ink in both schemes on every page; only
+// solid versus transparent varies:
+//   .fe-nav--solid        opaque Ink glass, from first paint on most pages
+//   .fe-nav--transparent  over a dark fe hero; core.js adds --solid once the
+//                         visitor scrolls or opens the menu
+// The non-bot markup carries no bootstrap colour utilities (text-white,
+// bg-*), so nothing here needs !important. Selectors are written nav.fe-nav
+// so they outrank bootstrap's own .navbar rules on specificity.
+
+nav.fe-nav {
+  // Zero .navbar's own inline padding so the container gutter does the job.
+  padding-inline: 0;
+  color: var(--fe-fg-primary);
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color var(--fe-motion-base) var(--fe-ease),
+    border-color var(--fe-motion-base) var(--fe-ease);
+}
+
+nav.fe-nav--solid {
+  background-color: var(--fe-ink-a92);
+  border-bottom-color: var(--fe-hairline-light-16);
+  // Unprefixed on purpose: autoprefixer strips -webkit- as outdated here.
+  backdrop-filter: blur(12px);
+}
+
+// The one page without .fixed-top is /email-api, where the Scalar reference's
+// sticky chrome creates stacking contexts that paint over a static bar's
+// dropdowns. Give the static bar the same tier bootstrap gives .fixed-top.
+// Scoped with :not so this can never override .fixed-top's position: fixed.
+nav.fe-nav:not(.fixed-top) {
+  position: relative;
+  z-index: 1030;
+}
+
+// Same width tokens as the fe sections, so the wordmark and the CTA sit on
+// the section edges. The nav.fe-nav prefix matters below 992px, where
+// bootstrap's `.navbar-expand-lg > .container` would otherwise tie.
+// Deliberately NOT applied to > .container-fluid: full-width pages (admin,
+// logs, domains) pair the bar with container-fluid content on bootstrap's
+// 15px gutter, and the fe gutter (up to 2.5rem) left the bar's items floating
+// inboard of the content's edges.
+nav.fe-nav > .container {
+  max-width: var(--fe-container-max);
+  padding-inline: var(--fe-container-gutter);
+}
+
+// The last nav item carries its own end margin on top of the container gutter,
+// which would push the call to action back off the line.
+nav.fe-nav .navbar-nav > .nav-item:last-child {
+  margin-inline-end: 0;
+}
+
+nav.fe-nav .navbar-brand {
+  // bootstrap gives the brand its own horizontal padding, which sits on top of
+  // the container gutter and would knock the wordmark off the h1's edge
+  padding-inline: 0;
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-bold);
+  color: var(--fe-l-000);
+}
+
+nav.fe-nav .navbar-brand:hover,
+nav.fe-nav .navbar-brand:focus {
+  color: var(--fe-l-000);
+  text-decoration: none;
+}
+
+// _custom.scss's .navbar-small (long-translation locales) still wins its
+// 0.8rem !important font-size here, on purpose.
+nav.fe-nav .navbar-nav .btn,
+nav.fe-nav .list-inline .btn {
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-secondary);
+  text-decoration: none;
+  border-radius: var(--fe-radius-md);
+  transition: color var(--fe-motion-fast) var(--fe-ease);
+}
+
+nav.fe-nav .navbar-nav .btn:hover,
+nav.fe-nav .navbar-nav .btn:focus,
+nav.fe-nav .list-inline .btn:hover,
+nav.fe-nav .list-inline .btn:focus {
+  color: var(--fe-l-000);
+  text-decoration: none;
+}
+
+// The dropdown carets sit next to a dimmed label, so they follow it.
+nav.fe-nav .dropdown-toggle::after {
+  opacity: 0.6;
+}
+
+nav.fe-nav .navbar-toggler {
+  color: var(--fe-l-000);
+  border: 0;
+
+  // Pulls the glyph onto the section edge; the padding stays a tap target.
+  margin-inline-end: -0.75rem;
+}
+
+// Panels take the raised dark surface in both schemes.
+nav.fe-nav .dropdown-menu {
+  // Explicit family: panels portal over pages that set their own stacks.
+  font-family: var(--fe-font-body);
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-subtle);
+  border-radius: var(--fe-radius-lg);
+  box-shadow: var(--fe-elev-3);
+}
+
+nav.fe-nav .dropdown-item {
+  padding-block: 0.375rem;
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-normal);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-primary);
+}
+
+nav.fe-nav .dropdown-item:hover,
+nav.fe-nav .dropdown-item:focus,
+nav.fe-nav .dropdown-item.active,
+nav.fe-nav .dropdown-item:active {
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary-a16);
+}
+
+// The guides/developer panels wrap parts of their lists in .small; restate
+// the token size so every row in a panel renders the same.
+nav.fe-nav .dropdown-menu .small .dropdown-item,
+nav.fe-nav .dropdown-menu .dropdown-item.small {
+  font-size: var(--fe-text-body-sm);
+}
+
+// 12px, not the 11px label token: next to 15px items the 11px header read as
+// a different typeface rather than a tier of the same one.
+nav.fe-nav .dropdown-header {
+  font-family: var(--fe-font-body);
+  font-size: 0.75rem;
+  font-weight: var(--fe-weight-semibold);
+  letter-spacing: var(--fe-tracking-label);
+  color: var(--fe-fg-secondary);
+  text-transform: uppercase;
+}
+
+nav.fe-nav .dropdown-divider {
+  border-top-color: var(--fe-border-subtle);
+}
+
+// Icons recede a tier so the label leads. Matched on the element: many are
+// .fas/.fab with no bare .fa token, and the only <i> in an item is an icon.
+nav.fe-nav .dropdown-item i {
+  color: var(--fe-fg-secondary);
+}
+
+nav.fe-nav .dropdown-item:hover i,
+nav.fe-nav .dropdown-item:focus i {
+  color: var(--fe-l-000);
+}
+
+// Bootstrap's badge fills land ~2.6:1 against their labels on a dark panel;
+// filled brand hues with an Ink label read at 9:1+.
+nav.fe-nav .badge-success {
+  color: var(--fe-ink);
+  background-color: var(--fe-mint);
+}
+
+nav.fe-nav .badge-warning {
+  color: var(--fe-ink);
+  background-color: var(--fe-caution);
+}
+
+nav.fe-nav .badge-primary {
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary);
+}
+
+// Sign up CTA. Restated after the link rule above, which it would otherwise
+// take the dim colour from (.btn-success is also a .btn inside .navbar-nav).
+nav.fe-nav .navbar-nav .btn-success,
+nav.fe-nav .list-inline .btn-success {
+  padding-inline: var(--fe-space-4);
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary);
+  border: 0;
+  border-radius: var(--fe-radius-md);
+  transition: filter var(--fe-motion-base) var(--fe-ease);
+}
+
+nav.fe-nav .navbar-nav .btn-success:hover,
+nav.fe-nav .navbar-nav .btn-success:focus,
+nav.fe-nav .list-inline .btn-success:hover,
+nav.fe-nav .list-inline .btn-success:focus {
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary);
+  filter: brightness(1.08);
+}
+
+// The collapsed menu's Signup link (phones only).
+nav.fe-nav .navbar-nav .btn-link.text-success {
+  color: var(--fe-mint);
+  background-image: none;
+}
+
+@include media-breakpoint-down(md) {
+  nav.fe-nav .navbar-collapse {
+    padding-block: var(--fe-space-2);
+  }
+
+  nav.fe-nav .navbar-collapse.show,
+  nav.fe-nav .navbar-collapse.collapsing {
+    margin-block-start: var(--fe-space-3);
+    border-top: 1px solid var(--fe-hairline-light-16);
+  }
+}
+
+// ============================================
+// FOCUS
+// ============================================
+// No ring in the bar: the Signal outline read as a stray light-blue border
+// around the dropdown toggles whenever bootstrap's dropdown JS moved focus.
+// Keyboard users get a tinted pill instead (the toggles already carry a
+// border-radius), and the panel items keep their own focus background.
+
+nav.fe-nav a:focus-visible,
+nav.fe-nav button:focus-visible {
+  outline: 0;
+  background-color: var(--fe-primary-a16);
+}

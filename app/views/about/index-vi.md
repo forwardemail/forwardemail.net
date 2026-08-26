@@ -1,6 +1,6 @@
 # Về Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Câu chuyện đội ngũ và công ty Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Câu chuyện đội ngũ và công ty Forward Email" class="rounded-lg" /> -->
 
 # Về Forward Email {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ Tính đến tháng 3 năm 2026, Forward Email phục vụ hơn 500.000 tên mi�
 
 Nền tảng tiếp tục phát triển với các bản phát hành tính năng và cải tiến hạ tầng thường xuyên, duy trì vị thế là dịch vụ email duy nhất 100% mã nguồn mở, mã hóa, tập trung vào quyền riêng tư, minh bạch và chống lượng tử có sẵn hiện nay—giờ đây được hỗ trợ bởi [kiểm toán bảo mật độc lập](/pentest-report_forward-email.pdf) từ Cure53.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

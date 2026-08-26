@@ -1,6 +1,6 @@
 # Şartlar {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email hizmet şartları" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email hizmet şartları" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

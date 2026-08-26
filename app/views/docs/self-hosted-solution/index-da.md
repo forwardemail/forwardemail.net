@@ -1,6 +1,6 @@
 # Selvhostet Email: Forpligtelse til Open Source {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Self-hosted email solution illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Self-hosted email solution illustration" class="rounded-lg" /> -->
 
 
 ## Indholdsfortegnelse {#table-of-contents}

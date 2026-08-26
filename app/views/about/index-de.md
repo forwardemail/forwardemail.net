@@ -1,6 +1,6 @@
 # Über Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email Team- und Firmengeschichte" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Forward Email Team- und Firmengeschichte" class="rounded-lg" /> -->
 
 # Über Forward Email {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ Stand März 2026 bedient Forward Email weltweit über 500.000 Domains, darunter 
 
 Die Plattform entwickelt sich mit regelmäßigen Feature-Releases und Infrastrukturverbesserungen weiter und behauptet ihre Position als einziger 100 % quelloffener, verschlüsselter, datenschutzorientierter, transparenter und quantensicherer E-Mail-Dienst, der heute verfügbar ist—jetzt unterstützt durch ein [unabhängiges Sicherheitsaudit](/pentest-report_forward-email.pdf) von Cure53.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

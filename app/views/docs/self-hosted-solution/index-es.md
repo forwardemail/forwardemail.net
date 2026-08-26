@@ -1,6 +1,6 @@
 # Correo Electrónico Autoalojado: Compromiso con el Código Abierto {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Ilustración de solución de correo electrónico autoalojado" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Ilustración de solución de correo electrónico autoalojado" class="rounded-lg" /> -->
 
 
 ## Tabla de Contenidos {#table-of-contents}

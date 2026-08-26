@@ -1,0 +1,62 @@
+//- Onboarding form for the small landing pages, rebuilt on the tokens.
+//- Replaces both variants of _onboard.pug those pages used: the inline
+//- banner and the modal that opened itself on load. It always renders
+//- inline, at the foot of the page, so a visitor reads the page they asked
+//- for and meets the form when they get to it. (_onboard.pug is untouched;
+//- the docs and guides still render it.)
+//-
+//- Everything the controller and the client depend on is unchanged: the
+//- POST target, the input ids and names, .ajax-form, and the turnstile
+//- mount. domainName and email are the view locals web.onboard sets.
+//-
+//- header, text   heading and one line under it, rendered unescaped like
+//-                the previous partial did
+//- action         where the form posts; defaults to the current path
+//- keepReading    href for the "not interested" link, or false to omit it
+mixin feOnboard(header, text, action, keepReading)
+  if !isBotUa
+    section.fe-section.fe-surface-light.fe-section--pad-sm.fe-onboard(
+      aria-labelledby="fe-onboard-title"
+    )
+      .fe-container.fe-onboard__inner
+        h2#fe-onboard-title.fe-display-sm.fe-onboard__title!= header
+        if text
+          p.fe-text.fe-onboard__text!= text
+        form.ajax-form.fe-onboard__form(
+          action=action || ctx.path,
+          method="POST"
+        )
+          .fe-field
+            label.fe-field__label.fe-label(for="input-onboard-domain")
+              span= t("Your custom domain")
+              span.fe-field__step.fe-code= t("Step 1")
+            input#input-onboard-domain.fe-field__input(
+              type="text",
+              name="domain",
+              value=domainName ? domainName : (domain && domain.name) || "",
+              required,
+              placeholder="example.com"
+            )
+          .fe-field
+            label.fe-field__label.fe-label(for="input-onboard-email")
+              span= t("Your existing email")
+              span.fe-field__step.fe-code= t("Step 2")
+            input#input-onboard-email.fe-field__input(
+              type="email",
+              autocomplete="email",
+              name="email",
+              value=email,
+              placeholder="name@gmail.com",
+              required
+            )
+          if config.turnstileEnabled
+            noscript
+              p.fe-onboard__noscript= t("Please enable JavaScript to use our website.")
+            .cf-explicit-turnstile
+          button.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--block(type="submit")
+            = t("Continue")
+            i.fa.fa-angle-right(aria-hidden="true")
+          p.fe-onboard__legal!= t('You agree to our <a href="%s" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="%s" target="_blank" rel="noopener noreferrer">Terms</a>.', l("/privacy"), l("/terms"))
+        if keepReading
+          p.fe-onboard__skip
+            a(href=keepReading)= t("Not interested?  Click here to keep reading")

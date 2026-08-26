@@ -1,6 +1,6 @@
 # Termini {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Termini di servizio di Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Termini di servizio di Forward Email" class="rounded-lg" /> -->
 
 
 ## Indice {#table-of-contents}

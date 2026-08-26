@@ -1,6 +1,6 @@
 # Ilmoita väärinkäytöstä {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Ilmoita väärinkäytöksistä ja roskapostista Forward Emailille" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Ilmoita väärinkäytöksistä ja roskapostista Forward Emailille" class="rounded-lg" /> -->
 
 
 ## Sisällysluettelo {#table-of-contents}

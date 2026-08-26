@@ -51,7 +51,7 @@ module.exports = function (config, isSitemap = false) {
     // in the title bar in the user's browser
     '/': [
       `Free Email Forwarding for Custom Domains - #1 Open Source Email Service ${currentYear}`,
-      `Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage, IMAP/POP3/SMTP & 100% open-source security. Trusted by 500K+ users. Setup in 2 minutes.`
+      `Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage, IMAP/POP3/SMTP & 100% open-source security. Trusted by 1.6M+ domains. Setup in 2 minutes.`
     ],
     '/about': [
       `About Forward Email - Our Story & Mission`,
@@ -85,6 +85,10 @@ module.exports = function (config, isSitemap = false) {
       `Email API for Developers - RESTful API with Webhooks & SMTP ${currentYear}`,
       `Powerful RESTful email API for developers. Send transactional emails, manage domains, create aliases programmatically. Comprehensive documentation, SDKs, and code examples.`,
       'img/articles/email-api.webp'
+    ],
+    '/download': [
+      `Download Forward Email - Desktop and Mobile Apps for macOS, Windows, Linux, Android and iOS`,
+      `Download the open-source Forward Email app. Native builds for macOS, Windows and Linux, plus Android and iOS. Every release is signed and published with SHA-256 checksums.`
     ],
     '/free-email-webhooks': [
       `Free Email Webhooks - HTTP Callbacks for Incoming Email ${currentYear}`,

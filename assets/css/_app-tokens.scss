@@ -1,0 +1,33 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// App-chrome tokens: the scheme-driven counterpart to the surface-locked
+// --fe-* set. Light values live on :root, so postcss-preset-env's static
+// fallbacks and the flattened email bundle stay light; app-dark.scss
+// re-points them under prefers-color-scheme: dark. Values are drawn from the
+// same _fe-palette.scss ramps as everything else.
+// Light values intentionally match what bootstrap renders today, so nothing
+// consuming these tokens shifts light mode.
+
+:root {
+  --app-bg-canvas: #{$fe-l-000};
+  --app-bg-raised: #{$fe-l-000};
+  --app-bg-sunken: #f8f9fa;
+  --app-fg-primary: #212529;
+  --app-fg-secondary: #6c757d;
+  --app-fg-muted: #6c757d;
+  --app-link: #{$fe-primary};
+  // stylelint-disable-next-line scss/no-global-function-names
+  --app-link-hover: #{darken($fe-primary, 15%)};
+  --app-border: #dee2e6;
+  --app-border-strong: #{$fe-l-400};
+  --app-hairline: rgba(0, 0, 0, 0.125);
+  --app-stripe: rgba(0, 0, 0, 0.05);
+  --app-input-bg: #{$fe-l-000};
+  --app-input-fg: #495057;
+  --app-input-border: #ced4da;
+  --app-code-bg: #f8f9fa;
+  --app-focus-ring: #{rgba($fe-primary, 0.25)};
+}

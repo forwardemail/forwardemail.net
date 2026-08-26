@@ -1,6 +1,6 @@
 # Kvantsäkert e-post: Hur vi använder krypterade SQLite-postlådor för att hålla din e-post säker {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" /> -->
 
 
 ## Innehållsförteckning {#table-of-contents}

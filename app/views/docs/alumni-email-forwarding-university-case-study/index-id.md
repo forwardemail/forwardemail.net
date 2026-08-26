@@ -1,6 +1,6 @@
 # Studi Kasus: Bagaimana Forward Email Mendukung Solusi Email Alumni untuk Universitas Teratas {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="Studi kasus penerusan email alumni universitas" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="Studi kasus penerusan email alumni universitas" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

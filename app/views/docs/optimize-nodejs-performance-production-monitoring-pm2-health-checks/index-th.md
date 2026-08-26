@@ -1,6 +1,6 @@
 # วิธีเพิ่มประสิทธิภาพโครงสร้างพื้นฐาน Node.js สำหรับการใช้งานจริง: แนวทางปฏิบัติที่ดีที่สุด {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="คู่มือการเพิ่มประสิทธิภาพ Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="คู่มือการเพิ่มประสิทธิภาพ Node.js" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

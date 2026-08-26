@@ -7,7 +7,7 @@
 >
 > Namun, seperti kebiasaan PayPal, mereka tidak pernah memberi tahu kami. Kami hanya menemukan pembaruan ini sendiri pada Desember 2025, berbulan-bulan setelah fitur tersebut dirilis secara diam-diam.
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="Ilustrasi bencana API PayPal" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="Ilustrasi bencana API PayPal" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Di Forward Email, kami telah menghadapi API PayPal yang rusak selama lebih dari satu dekade. Apa yang dimulai sebagai frustrasi kecil berubah menjadi bencana total yang memaksa kami membangun solusi sendiri, memblokir template phishing mereka, dan akhirnya menghentikan semua pembayaran PayPal selama migrasi akun yang kritis.</p>
 <p class="lead mt-3">Ini adalah kisah 11 tahun PayPal mengabaikan kebutuhan dasar pengembang sementara kami mencoba segala cara agar platform mereka berfungsi.</p>
@@ -372,20 +372,20 @@ Dasbor pengembang PayPal adalah bencana. Berikut yang kami hadapi setiap hari:
   <figcaption><div class="alert alert-danger small text-center">
   Antarmuka manajemen langganan - antarmukanya sangat buruk sehingga kami harus mengandalkan kode untuk membuat produk dan rencana langganan
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="Tangkapan layar langganan PayPal" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="Tangkapan layar langganan PayPal" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Tampilan antarmuka langganan yang rusak dengan fungsi yang hilang (Anda tidak bisa dengan mudah membuat produk/rencana/langganan – dan tampaknya tidak ada cara sama sekali untuk menghapus produk maupun rencana setelah dibuat di UI)
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="Tangkapan layar langganan PayPal 2" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="Tangkapan layar langganan PayPal 2" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Pesan kesalahan PayPal yang khas - membingungkan dan tidak membantu
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" /> -->
 </figure>
 
 ### Masalah SDK {#sdk-problems}
@@ -430,38 +430,38 @@ Yang seharusnya sederhana berubah menjadi bencana total:
   <figcaption><div class="alert alert-danger small text-center">
   Kesalahan yang dilihat pelanggan saat mencoba membayar - tanpa penjelasan, tanpa log, tanpa apa pun
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Dukungan PayPal mengklaim semuanya baik-baik saja sementara pembayaran benar-benar rusak. Pesan terakhir menunjukkan mereka mengatakan mereka "memulihkan beberapa fitur" tapi masih meminta informasi lebih lanjut yang tidak ditentukan - teater dukungan PayPal klasik
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Proses verifikasi identitas yang katanya "memperbaiki" tidak ada apa-apanya
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Pesan yang tidak jelas dan masih belum ada penyelesaian. Nol informasi, pemberitahuan, atau apapun mengenai informasi tambahan apa yang diperlukan. Dukungan pelanggan menjadi diam.
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" /> -->
 </figure>
 
 
@@ -564,7 +564,7 @@ Masalah ini melampaui hanya desain template yang buruk. Sistem faktur PayPal san
   <figcaption><div class="alert alert-danger small text-center">
   Tangkapan layar yang menunjukkan banyak faktur PayPal palsu membanjiri kotak masuk, semuanya tampak sah karena memang berasal dari sistem PayPal
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="Tangkapan layar peringatan penipuan PayPal" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="Tangkapan layar peringatan penipuan PayPal" class="rounded-lg" /> -->
 </figure>
 
 Peneliti mencatat:
@@ -931,4 +931,4 @@ Jika Anda membangun sistem pembayaran, pelajari dari pengalaman kami: bangun [pe
 
 > Tulisan ini mendokumentasikan pengalaman kami selama 11 tahun dengan API PayPal di Forward Email. Semua contoh kode dan tautan berasal dari sistem produksi kami yang sebenarnya. Kami terus mendukung pembayaran PayPal meskipun ada masalah ini karena beberapa pelanggan tidak memiliki pilihan lain
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" /> -->

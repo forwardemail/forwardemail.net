@@ -1,6 +1,6 @@
 # Der E-Mail-Startup-Friedhof: Warum die meisten E-Mail-Unternehmen scheitern {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Während viele E-Mail-Startups Millionen investiert haben, um vermeintliche Probleme zu lösen, konzentrieren wir uns bei <a href="https://forwardemail.net">Forward Email</a> seit 2017 darauf, zuverlässige E-Mail-Infrastruktur von Grund auf neu zu entwickeln. Diese Analyse untersucht die Muster hinter den Ergebnissen von E-Mail-Startups und die grundlegenden Herausforderungen der E-Mail-Infrastruktur.</p>
 

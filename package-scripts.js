@@ -12,7 +12,14 @@ module.exports = {
     appsAndWatch: concurrent.nps('apps', 'watch'),
     apps: series.nps('bree', 'api', 'web', 'smtp', 'imap', 'pop3', 'sqlite'),
 
-    webAndWatch: series.nps('build', 'web', 'watch'),
+    // `web` is nodemon and never exits, so it and `watch` must run side by
+    // side (as appsAndWatch does) rather than in series.
+    webAndWatch: series.nps('build', 'web-and-watch-only'),
+    webAndWatchOnly: concurrent.nps('web', 'watch'),
+    // Rule-multiset diff of two compiled bundles, and the screenshot sweep;
+    // see the headers of the two scripts for usage.
+    cssDiff: 'node scripts/css-diff.js',
+    visualSweep: 'node test/visual/sweep.js',
 
     bree: 'nodemon bree.js',
     api: 'nodemon api.js',

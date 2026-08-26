@@ -1,6 +1,6 @@
 # Email RFCプロトコルサポート - 完全な標準＆仕様ガイド {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" /> -->
 
 
 ## 目次 {#table-of-contents}

@@ -1,6 +1,6 @@
 # De Email Startup Begraafplaats: Waarom de Meeste Emailbedrijven Falen {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup begraafplaats illustratie" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup begraafplaats illustratie" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Hoewel veel email startups miljoenen hebben geïnvesteerd in het oplossen van vermeende problemen, hebben wij bij <a href="https://forwardemail.net">Forward Email</a> ons sinds 2017 gericht op het vanaf nul bouwen van betrouwbare emailinfrastructuur. Deze analyse onderzoekt de patronen achter de uitkomsten van email startups en de fundamentele uitdagingen van emailinfrastructuur.</p>
 

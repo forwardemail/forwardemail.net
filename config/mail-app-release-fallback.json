@@ -1,0 +1,277 @@
+{
+  "id": 392603912,
+  "tagName": "v0.14.0",
+  "name": "v0.14.0",
+  "body": "",
+  "htmlUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/tag/v0.14.0",
+  "tarballUrl": "https://api.github.com/repos/forwardemail/mail.forwardemail.net/tarball/v0.14.0",
+  "zipballUrl": "https://api.github.com/repos/forwardemail/mail.forwardemail.net/zipball/v0.14.0",
+  "draft": false,
+  "prerelease": false,
+  "createdAt": "2026-09-20T23:03:38Z",
+  "publishedAt": "2026-09-20T23:43:36Z",
+  "author": null,
+  "assets": [
+    {
+      "id": 577755709,
+      "name": "Forward.Email-0.14.0-1.aarch64.rpm",
+      "size": 15499915,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email-0.14.0-1.aarch64.rpm",
+      "contentType": "application/zip",
+      "digest": "sha256:36f729fdbe3158fad604c9c3d18d3fb4f1fb11467849c600ba28a6b1e4d2d420"
+    },
+    {
+      "id": 577755739,
+      "name": "Forward.Email-0.14.0-1.aarch64.rpm.sig",
+      "size": 428,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email-0.14.0-1.aarch64.rpm.sig",
+      "contentType": "application/zip",
+      "digest": "sha256:3fe07ea9c1294508a88d4831c9349edc0172379c6d64d2ad0b6cf81e3a837e6d"
+    },
+    {
+      "id": 577757183,
+      "name": "Forward.Email-0.14.0-1.x86_64.rpm",
+      "size": 16464092,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email-0.14.0-1.x86_64.rpm",
+      "contentType": "application/zip",
+      "digest": "sha256:1ce4f96637f152473a329273bd4e2ae379204951aca9fe100bdd262fa7357538"
+    },
+    {
+      "id": 577757204,
+      "name": "Forward.Email-0.14.0-1.x86_64.rpm.sig",
+      "size": 424,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email-0.14.0-1.x86_64.rpm.sig",
+      "contentType": "application/zip",
+      "digest": "sha256:d3f3b8a4a39d52676940d92ff90db6c7eb977a216177d538c06a4a46c3f06cd8"
+    },
+    {
+      "id": 577754298,
+      "name": "Forward.Email_0.14.0_aarch64.dmg",
+      "size": 9934870,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_aarch64.dmg",
+      "contentType": "application/zip",
+      "digest": "sha256:ab5b02e9e8c3a30057333ca36a5e1cf325eabceff3eb02aa78dca12cbe8c36ef"
+    },
+    {
+      "id": 577757212,
+      "name": "Forward.Email_0.14.0_amd64.AppImage",
+      "size": 93649400,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_amd64.AppImage",
+      "contentType": "application/zip",
+      "digest": "sha256:674be626b954e6e140a07cc90789fe5184a04caa1d0704d1bc65b3115f405403"
+    },
+    {
+      "id": 577757269,
+      "name": "Forward.Email_0.14.0_amd64.AppImage.sig",
+      "size": 428,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_amd64.AppImage.sig",
+      "contentType": "application/zip",
+      "digest": "sha256:7b70af7a4083459e17090234025f76744e453ecce205cf29e0e926af48840abf"
+    },
+    {
+      "id": 577757145,
+      "name": "Forward.Email_0.14.0_amd64.deb",
+      "size": 16463050,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_amd64.deb",
+      "contentType": "application/zip",
+      "digest": "sha256:a217beb9ad67ac836b1066e145faa484f72468841ab40194dbd515b98f2d7172"
+    },
+    {
+      "id": 577757176,
+      "name": "Forward.Email_0.14.0_amd64.deb.sig",
+      "size": 420,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_amd64.deb.sig",
+      "contentType": "application/zip",
+      "digest": "sha256:2168ed25e6b75cf7541d34519c9a8d46ebee173bb3554e416d38dfb3a4a26a66"
+    },
+    {
+      "id": 577761962,
+      "name": "Forward.Email_0.14.0_arm64-setup.exe",
+      "size": 6840518,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_arm64-setup.exe",
+      "contentType": "application/zip",
+      "digest": "sha256:6c5122aa64f5aab19a1ee1ed3966a7ceaf53d5d91ac098864942b0229806f2c8"
+    },
+    {
+      "id": 577761975,
+      "name": "Forward.Email_0.14.0_arm64-setup.exe.sig",
+      "size": 428,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_arm64-setup.exe.sig",
+      "contentType": "application/zip",
+      "digest": "sha256:99654c53b72c34337972ec39e8c9e8f3d612bd996a8fa751646d7af238bc8a97"
+    },
+    {
+      "id": 577755656,
+      "name": "Forward.Email_0.14.0_arm64.deb",
+      "size": 15501520,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_arm64.deb",
+      "contentType": "application/zip",
+      "digest": "sha256:59c2e8f1447ca8e4842faed9a48fe2e8d6ae30f0288247da4510526f0fa07e31"
+    },
+    {
+      "id": 577755696,
+      "name": "Forward.Email_0.14.0_arm64.deb.sig",
+      "size": 420,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_arm64.deb.sig",
+      "contentType": "application/zip",
+      "digest": "sha256:40637878d89c27376a8097e5b5186a4d4398ef2ef9435eb190a2c3698b2220d4"
+    },
+    {
+      "id": 577759726,
+      "name": "Forward.Email_0.14.0_x64-setup.exe",
+      "size": 7066923,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_x64-setup.exe",
+      "contentType": "application/zip",
+      "digest": "sha256:0fbb6a344f4e71f845b0d2e25a198f99518b6bd17818313ef0f4993d6275ebc6"
+    },
+    {
+      "id": 577759746,
+      "name": "Forward.Email_0.14.0_x64-setup.exe.sig",
+      "size": 428,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_x64-setup.exe.sig",
+      "contentType": "application/zip",
+      "digest": "sha256:be9319a6ff814281c4111b76f69efcace501242d7eb720256c1979a2e532ce68"
+    },
+    {
+      "id": 577761826,
+      "name": "Forward.Email_0.14.0_x64.dmg",
+      "size": 10241313,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_x64.dmg",
+      "contentType": "application/zip",
+      "digest": "sha256:032f47e0400b280a66c68b47e3e7d283e59a336dfe43c8b825ba4ba97f06a67f"
+    },
+    {
+      "id": 577759692,
+      "name": "Forward.Email_0.14.0_x64_en-US.msi",
+      "size": 7966720,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_x64_en-US.msi",
+      "contentType": "application/zip",
+      "digest": "sha256:433146455ad7e8c6d09df2bb2a2737a625bd74064dd577fc839d14144de93fcb"
+    },
+    {
+      "id": 577759715,
+      "name": "Forward.Email_0.14.0_x64_en-US.msi.sig",
+      "size": 428,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_0.14.0_x64_en-US.msi.sig",
+      "contentType": "application/zip",
+      "digest": "sha256:7b2eb589684a602b5722e4477b7d4305910f96151ce359c00fa265be716a1728"
+    },
+    {
+      "id": 577754323,
+      "name": "Forward.Email_aarch64.app.tar.gz",
+      "size": 9044904,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_aarch64.app.tar.gz",
+      "contentType": "application/zip",
+      "digest": "sha256:b86a1f2c0150f756f18d1ca330ebc8ec3c28b41d42decb0c9d24c2edb93cbbab"
+    },
+    {
+      "id": 577754343,
+      "name": "Forward.Email_aarch64.app.tar.gz.sig",
+      "size": 412,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_aarch64.app.tar.gz.sig",
+      "contentType": "application/zip",
+      "digest": "sha256:ce06ab9e7c797da9cb62c7c3af87c34047037ced5d0c4ad61f5df3c4562eb016"
+    },
+    {
+      "id": 577761875,
+      "name": "Forward.Email_x64.app.tar.gz",
+      "size": 9297662,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_x64.app.tar.gz",
+      "contentType": "application/zip",
+      "digest": "sha256:02ca2546d53a309b9e2174d8dac03c41926348c48b4e89ed7621c966117b0ebd"
+    },
+    {
+      "id": 577761914,
+      "name": "Forward.Email_x64.app.tar.gz.sig",
+      "size": 412,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/Forward.Email_x64.app.tar.gz.sig",
+      "contentType": "application/zip",
+      "digest": "sha256:d7a0b4e6b1b7f7a9e32eeb7741b9993bcd38691d178d0666df92d996c3c55fd5"
+    },
+    {
+      "id": 577775978,
+      "name": "forwardemail-mail_0.14.0_amd64.snap",
+      "size": 152051712,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/forwardemail-mail_0.14.0_amd64.snap",
+      "contentType": "application/octet-stream",
+      "digest": "sha256:5ca803c454d54e7ec164a9aef47b3ce8753f1b1b546f112699ed656bf5a42f90"
+    },
+    {
+      "id": 577766977,
+      "name": "forwardemail-mail_0.14.0_android.aab",
+      "size": 61006731,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/forwardemail-mail_0.14.0_android.aab",
+      "contentType": "application/octet-stream",
+      "digest": "sha256:d33ff015166682c61dbb304fa3c06cfbb305275f229069ab7e9f995c7cb1dbfc"
+    },
+    {
+      "id": 577766859,
+      "name": "forwardemail-mail_0.14.0_android.apk",
+      "size": 197684494,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/forwardemail-mail_0.14.0_android.apk",
+      "contentType": "application/vnd.android.package-archive",
+      "digest": "sha256:1cad3673ef0b29a9519a1b0b62c27b7c96b7f59fd076a1ff5c98d54d821e9453"
+    },
+    {
+      "id": 577771570,
+      "name": "forwardemail-mail_0.14.0_arm64.snap",
+      "size": 142802944,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/forwardemail-mail_0.14.0_arm64.snap",
+      "contentType": "application/octet-stream",
+      "digest": "sha256:8c36cd556af20102d0c24a4f079cba9c21853a64294bff98f7e31d088720e039"
+    },
+    {
+      "id": 577759343,
+      "name": "forwardemail-mail_0.14.0_fdroid.apk",
+      "size": 196325340,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/forwardemail-mail_0.14.0_fdroid.apk",
+      "contentType": "application/vnd.android.package-archive",
+      "digest": "sha256:efe5641cc30a1661d4ee697d3f60b28ade826cada711e75b5e6bcf47890a2b21"
+    },
+    {
+      "id": 577754662,
+      "name": "forwardemail-mail_0.14.0_ios.ipa",
+      "size": 7769820,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/forwardemail-mail_0.14.0_ios.ipa",
+      "contentType": "application/octet-stream",
+      "digest": "sha256:724d33acb737098d8411ebde7fb2f1998bf7763064de19ac7073369321194829"
+    },
+    {
+      "id": 577761999,
+      "name": "latest.json",
+      "size": 9816,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/latest.json",
+      "contentType": "application/zip",
+      "digest": "sha256:7d13d72f46dd467728c796c858490800fad06f025f43d8f29bfcb3c519291f9d"
+    }
+  ]
+}

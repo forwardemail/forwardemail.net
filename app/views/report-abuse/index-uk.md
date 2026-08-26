@@ -1,6 +1,6 @@
 # Повідомити про зловживання {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Повідомити про зловживання та спам у Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Повідомити про зловживання та спам у Forward Email" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

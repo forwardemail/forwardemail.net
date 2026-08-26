@@ -7,7 +7,7 @@
 >
 > Nicméně, v pravém stylu PayPalu, nás nikdy neinformovali. O této aktualizaci jsme se dozvěděli sami až v prosinci 2025, měsíce poté, co byla funkce tiše vydána.
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="Ilustrace katastrofy PayPal API" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="Ilustrace katastrofy PayPal API" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Ve Forward Email se již více než deset let potýkáme s rozbitými API PayPalu. To, co začalo jako drobné frustrace, se proměnilo v úplnou katastrofu, která nás donutila vytvářet vlastní obcházení, blokovat jejich phishingové šablony a nakonec během kritické migrace účtu zastavit všechny platby přes PayPal.</p>
 <p class="lead mt-3">Toto je příběh 11 let, kdy PayPal ignoroval základní potřeby vývojářů, zatímco jsme dělali vše pro to, aby jejich platforma fungovala.</p>
@@ -372,20 +372,20 @@ Vývojářská konzole PayPalu je katastrofa. Toto řešíme denně:
   <figcaption><div class="alert alert-danger small text-center">
   Rozhraní pro správu předplatných – rozhraní je tak špatné, že jsme museli spoléhat na kód pro generování produktů a plánů předplatného
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Pohled na rozbité rozhraní předplatného s chybějící funkcionalitou (nemůžete snadno vytvářet produkty/plány/předplatná – a zdá se, že v UI není vůbec žádný způsob, jak smazat produkty ani plány po jejich vytvoření)
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Typické chybové zprávy PayPalu - záhadné a nepomáhající
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" /> -->
 </figure>
 
 ### Problémy se SDK {#sdk-problems}
@@ -430,38 +430,38 @@ Co mělo být jednoduché, se změnilo v úplnou katastrofu:
   <figcaption><div class="alert alert-danger small text-center">
   Chyba, kterou zákazníci viděli při pokusu o platbu - žádné vysvětlení, žádné záznamy, nic
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Podpora PayPalu tvrdí, že je vše v pořádku, zatímco platby byly úplně rozbité. Závěrečná zpráva ukazuje, že „některé funkce obnovili“, ale stále žádají o další nespecifikované informace – klasické divadlo podpory PayPalu
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Proces ověření identity, který údajně „nic neopravilo“
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Vágní zpráva a stále žádné řešení. Žádné informace, upozornění ani cokoli, co by naznačovalo, jaké další informace jsou potřeba. Zákaznická podpora mlčí.
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" /> -->
 </figure>
 
 
@@ -564,7 +564,7 @@ Problém přesahuje jen špatný design šablon. Fakturační systém PayPalu je
   <figcaption><div class="alert alert-danger small text-center">
   Screenshot ukazující několik podvodných PayPal faktur zaplavujících schránku, všechny vypadající legitimně, protože skutečně pocházejí ze systémů PayPalu
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="Screenshot varování před podvodem PayPal" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="Screenshot varování před podvodem PayPal" class="rounded-lg" /> -->
 </figure>
 
 Výzkumník poznamenal:
@@ -931,4 +931,4 @@ Pokud budujete platební systém, poučte se z naší zkušenosti: vytvořte si 
 
 > Tento příspěvek dokumentuje naši 11letou zkušenost s PayPal API ve Forward Email. Všechny ukázky kódu a odkazy pocházejí z našich skutečných produkčních systémů. Přestože tyto problémy existují, nadále podporujeme platby přes PayPal, protože někteří zákazníci nemají jinou možnost
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" /> -->

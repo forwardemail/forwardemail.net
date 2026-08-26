@@ -1,6 +1,6 @@
 # Servidor MCP de Reenvío de Email {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="Servidor MCP de Reenvío de Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="Servidor MCP de Reenvío de Email" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>Resumen:</strong> Nuestro <a href="https://github.com/forwardemail/mcp-server">servidor MCP de código abierto</a> permite que asistentes de IA como Claude, ChatGPT, Cursor y Windsurf gestionen tu correo electrónico, dominios, alias, contactos y calendarios mediante lenguaje natural. Los 68 endpoints de la API están expuestos como herramientas MCP. Se ejecuta localmente vía <code>npx @forwardemail/mcp-server</code> — tus credenciales nunca salen de tu máquina.

@@ -1,6 +1,6 @@
 # Introduksjon av Crypto Payments: Forbedret personvern for din e-posttjeneste {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" /> -->
 
 
 ## Innholdsfortegnelse {#table-of-contents}

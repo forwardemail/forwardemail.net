@@ -1,6 +1,6 @@
 # 신고 남용 {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Report abuse and spam to Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Report abuse and spam to Forward Email" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

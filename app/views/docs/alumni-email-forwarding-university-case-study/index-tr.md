@@ -1,6 +1,6 @@
 # Vaka Çalışması: Forward Email'in En İyi Üniversiteler İçin Mezun E-Posta Çözümlerini Nasıl Güçlendirdiği {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="Üniversite mezun e-posta yönlendirme vaka çalışması" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="Üniversite mezun e-posta yönlendirme vaka çalışması" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

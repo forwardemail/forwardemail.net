@@ -1,6 +1,6 @@
 # Як Forward Email захищає вашу конфіденційність, домен і безпеку: технічний глибокий аналіз {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Порівняння найкращих сервісів переадресації електронної пошти" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Порівняння найкращих сервісів переадресації електронної пошти" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

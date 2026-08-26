@@ -1,6 +1,6 @@
 # E-post med egen hosting: Forpliktelse til åpen kildekode {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustrasjon av e-postløsning med egen hosting" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustrasjon av e-postløsning med egen hosting" class="rounded-lg" /> -->
 
 
 ## Innholdsfortegnelse {#table-of-contents}

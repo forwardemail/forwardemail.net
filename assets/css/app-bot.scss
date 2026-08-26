@@ -8,6 +8,27 @@
 // variables
 @import 'variables';
 
+// fe design system: breakpoint mixins (emit nothing), then the tokens. The
+// tokens must come after 'variables': the font tokens interpolate
+// $font-family-*
+@import 'fe-mixins';
+@import 'fe-tokens';
+
+// app-chrome tokens (--app-*): light values on :root here; app-dark.scss
+// re-points them under prefers-color-scheme: dark
+@import 'app-tokens';
+
+// fe design system: the base layer (wrapper, section, type roles, focus),
+// the reusable components, then one file per page or page family that
+// composes them
+@import 'fe-base';
+@import 'fe-primitives';
+@import 'fe-home';
+@import 'fe-marketing';
+@import 'fe-pages';
+@import 'fe-faq';
+@import 'fe-download';
+
 // font awesome
 @import 'font-awesome';
 
@@ -124,3 +145,13 @@ $question: theme-color('light');
 @import 'scalar-app';
 
 @import 'sidebar';
+
+// redesigned landing page navbar, scoped under .fe-nav
+// imported last so it wins order ties against bootstrap and 'custom'
+@import 'fe-nav';
+
+// redesigned landing page modals, scoped under .fe-page
+@import 'fe-modal';
+
+// site-wide footer restyle, scoped under footer.fe-footer
+@import 'fe-footer';

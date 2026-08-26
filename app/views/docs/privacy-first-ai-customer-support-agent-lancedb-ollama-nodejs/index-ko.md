@@ -1,6 +1,6 @@
 # LanceDB, Ollama, Node.js로 프라이버시 우선 AI 고객 지원 에이전트 구축하기 {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="LanceDB Ollama Node.js와 함께하는 AI 고객 지원 에이전트" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="LanceDB Ollama Node.js와 함께하는 AI 고객 지원 에이전트" class="rounded-lg" /> -->
 
 > \[!NOTE]
 > 이 문서는 자체 호스팅 AI 지원 에이전트를 구축한 여정을 다룹니다. 비슷한 도전 과제에 대해서는 저희가 쓴 [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) 블로그 글에서 확인할 수 있습니다. 솔직히 "AI Startup Graveyard"라는 후속 글을 쓸까도 생각했지만, AI 버블이 잠재적으로 꺼질 때까지 아마 1년 정도는 더 기다려야 할 것 같습니다(?). 지금은 무엇이 효과적이었고, 무엇이 그렇지 않았으며, 왜 이렇게 했는지에 대한 저희의 생각 정리입니다.

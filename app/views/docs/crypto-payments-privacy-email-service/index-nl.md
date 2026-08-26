@@ -1,6 +1,6 @@
 # Introductie van Crypto Betalingen: Verbeterde Privacy voor Uw E-mailservice {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" /> -->
 
 
 ## Inhoudsopgave {#table-of-contents}

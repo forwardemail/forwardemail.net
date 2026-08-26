@@ -3,7 +3,7 @@
 > \[!IMPORTANT]
 > On June 1, 2026, we published our third-party security audit conducted by [Cure53](https://cure53.de/), widely regarded as one of the best security research firms in the industry. The full pentest report is available at [pentest-report\_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email is the only 100% open-source email service with an independently verified security audit.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" /> -->
 
 
 ## Table of Contents

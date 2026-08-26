@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+// Brand palette shared with the fe token layer (see _fe-palette.scss).
+@import 'fe-palette';
+
 $fa-font-path: "/fonts";
 // <https://github.com/stylelint/stylelint/issues/3848>
 $fontAwesomeBrands: 'Font Awesome 5 Brands';
@@ -33,16 +36,27 @@ $headings-font-weight:        400;
 $lead-font-weight:            400;
 //$badge-font-weight:           400;
 
-// For lighthouse to pass Accessibility audit we darken this for bots
-// stylelint-disable-next-line scss/no-global-function-names
-$blue: #0066ff !default; // darken(#20C1ED, 10%) !default;
-// stylelint-disable-next-line scss/no-global-function-names
-$cyan: darken(#9DE5F9, 10%) !default;
+// Bootstrap's theme colors are bridged onto the fe brand palette so legacy
+// components (buttons, links, badges, alerts) match the redesigned pages.
+// $fe-primary is 5.2:1 on white and under a white label — better than the
+// #0066ff it replaces (4.8:1) — and its YIQ (~96) keeps white .btn-primary
+// labels. $cyan takes the text-safe -deep cyan: brand Signal is 1.8:1 on
+// white and illegal as text. $green stays: success semantics, already AA.
+$blue: $fe-primary !default;
+$cyan: $fe-signal-deep !default;
 // stylelint-disable-next-line scss/no-global-function-names
 $green: darken(#269C32, 10%) !default;
-$yellow: #f8a534;
+$yellow: $fe-caution;
+$red: $fe-danger-deep;
 
-$dark: #1d1d1d;
+// Aligns .bg-dark and $list-group-active-bg with the Ink navbar.
+$dark: $fe-ink;
+
+// Radius ramp from the fe layer, so legacy buttons/cards/inputs share the
+// redesigned pages' corner language. Kept as its own block: revert these two
+// lines to restore Bootstrap's 4px/3px if the sitewide shift reads wrong.
+$border-radius: $fe-radius-sm;
+$border-radius-lg: $fe-radius-lg;
 $dropdown-header-color: $dark;
 $yiq-contrasted-threshold:  150;
 

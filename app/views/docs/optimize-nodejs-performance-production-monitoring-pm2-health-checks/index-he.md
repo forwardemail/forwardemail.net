@@ -1,6 +1,6 @@
 # כיצד לייעל תשתית הפקה של Node.js: שיטות עבודה מומלצות {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="מדריך לאופטימיזציית ביצועי Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="מדריך לאופטימיזציית ביצועי Node.js" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

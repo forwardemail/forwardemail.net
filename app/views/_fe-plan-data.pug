@@ -1,0 +1,85 @@
+//- The four plans, once. Both plan grids read from this: the compact grid on
+//- the landing page (_fe-pricing.pug) and the detail cards on the pricing
+//- template (_fe-pricing-detail.pug). Names, prices, destinations and the
+//- featured flag live here so the two cannot drift; each grid keeps the copy
+//- that is particular to its form (the compact grid's four-line summaries,
+//- the detail cards' full feature markup with their explainers).
+//-
+//- Prices come from planPricing, a view local derived from
+//- payments.PAYPAL_MAPPING in config/index.js, so the page cannot drift from
+//- what a customer is actually charged. Figures are emitted as literals
+//- outside t(), so the translation job never rewrites a number.
+-
+  const feOutbound = Math.round(config.smtpLimitMessages * Math.round(config.smtpLimitDuration / ms("1d")) * 30);
+  const fePlans = {
+    free: {
+      key: "free",
+      name: t("Free"),
+      price: planPricing.free,
+      href: l("/my-account/domains/new"),
+      featured: false,
+      summary: {
+        line: t("Forwarding only"),
+        cta: t("Forward mail"),
+        features: [
+          t("Unlimited inbound email"),
+          t("Spam protection"),
+          t("%s attachment limit", config.smtpMessageMaxSize),
+          t("Webhooks + regex filters")
+        ]
+      }
+    },
+    enhanced: {
+      key: "enhanced",
+      name: t("Enhanced Protection"),
+      price: planPricing.enhanced,
+      href: l("/my-account/domains/new?plan=enhanced_protection"),
+      featured: true,
+      summary: {
+        name: t("Enhanced"),
+        line: t("Send + receive as you@domain"),
+        cta: t("Get you@domain.com"),
+        features: [
+          t("Everything in Free"),
+          t("Unlimited aliases ($0/user)"),
+          t("10 GB pooled storage"),
+          t("%d+ outbound / month", feOutbound),
+          t("API + DMARC reporting")
+        ]
+      }
+    },
+    team: {
+      key: "team",
+      name: t("Team"),
+      price: planPricing.team,
+      href: l("/my-account/domains/new?plan=team"),
+      featured: false,
+      summary: {
+        line: t("Families and organizations"),
+        cta: t("Create team"),
+        features: [
+          t("Everything in Enhanced"),
+          t("Unlimited team members"),
+          t("Permission management"),
+          t("Priority support")
+        ]
+      }
+    },
+    enterprise: {
+      key: "enterprise",
+      name: t("Enterprise"),
+      price: planPricing.enterprise,
+      href: l("/help"),
+      featured: false,
+      summary: {
+        line: t("Education, gov, healthcare"),
+        cta: t("Schedule a call"),
+        features: [
+          t("Everything in Team"),
+          t("Unlimited API requests"),
+          t("Dedicated support room"),
+          t("Onboarding + DocuSign")
+        ]
+      }
+    }
+  };

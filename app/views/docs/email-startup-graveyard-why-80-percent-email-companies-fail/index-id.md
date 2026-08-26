@@ -1,6 +1,6 @@
 # Kuburan Startup Email: Mengapa Sebagian Besar Perusahaan Email Gagal {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Ilustrasi kuburan startup email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Ilustrasi kuburan startup email" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Sementara banyak startup email telah menginvestasikan jutaan untuk memecahkan masalah yang dianggap ada, kami di <a href="https://forwardemail.net">Forward Email</a> telah fokus membangun infrastruktur email yang andal dari nol sejak 2017. Analisis ini mengeksplorasi pola di balik hasil startup email dan tantangan mendasar dari infrastruktur email.</p>
 

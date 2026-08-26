@@ -1,6 +1,6 @@
 # E-posta RFC Protokol Desteği - Tam Standartlar ve Spesifikasyonlar Rehberi {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="RFC E-posta Protokol Kütüphanesi Sahnesi" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="RFC E-posta Protokol Kütüphanesi Sahnesi" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

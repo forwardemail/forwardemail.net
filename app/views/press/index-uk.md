@@ -1,6 +1,6 @@
 # Прес-реліз та медіа-кит {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email прес-реліз та медіа-кит" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="Forward Email прес-реліз та медіа-кит" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

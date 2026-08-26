@@ -1,6 +1,6 @@
 # 电子邮件 RFC 协议支持 - 完整标准与规范指南 {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

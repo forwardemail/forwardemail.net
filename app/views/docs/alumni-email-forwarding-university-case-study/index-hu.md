@@ -1,6 +1,6 @@
 # Esettanulmány: Hogyan támogatja a Forward Email az alumni e-mail megoldásokat a vezető egyetemeken {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="Egyetemi alumni e-mail továbbítás esettanulmány" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="Egyetemi alumni e-mail továbbítás esettanulmány" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

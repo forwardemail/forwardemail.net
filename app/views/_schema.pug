@@ -12,7 +12,7 @@ if ctx.pathWithoutLocale === '/'
       "operatingSystem": "Web, iOS, Android, Windows, macOS, Linux",
       "offers": {
         "@type": "Offer",
-        "price": "0",
+        "price": "#{planPricing.free}",
         "priceCurrency": "USD"
       },
       "aggregateRating": {
@@ -205,7 +205,7 @@ if ctx.pathWithoutLocale === '/'
           "name": "What is the best free email service for custom domains?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Forward Email offers free email forwarding for unlimited custom domains and aliases with no credit card required. Paid plans start at $3/month for full IMAP/POP3/SMTP hosting with 10GB encrypted storage per alias."
+            "text": "Forward Email offers free email forwarding for unlimited custom domains and aliases with no credit card required. Paid plans start at $#{planPricing.enhanced}/month for full IMAP/POP3/SMTP hosting with 10GB encrypted storage per alias."
           }
         },
         {
@@ -267,8 +267,8 @@ if ctx.pathWithoutLocale && ctx.pathWithoutLocale.includes('alternative')
       },
       "offers": {
         "@type": "AggregateOffer",
-        "lowPrice": "0",
-        "highPrice": "9",
+        "lowPrice": "#{planPricing.free}",
+        "highPrice": "#{planPricing.team}",
         "priceCurrency": "USD",
         "offerCount": "3"
       },

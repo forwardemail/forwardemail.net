@@ -1,6 +1,6 @@
 # Впровадження криптовалютних платежів: покращена конфіденційність для вашої поштової служби {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Криптовалютні платежі для поштової служби" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Криптовалютні платежі для поштової служби" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

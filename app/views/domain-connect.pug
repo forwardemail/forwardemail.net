@@ -5,7 +5,7 @@ block body
       .col-md-8.offset-md-2
         h1.text-center= t("Domain Connect")
         p.text-center.lead
-          != t("Automatically configure your DNS settings for email forwarding and outbound SMTP — including MX records, SPF, DKIM, DMARC, and site verification — in one step.")
+          != t("Automatically configure your DNS settings for email forwarding and outbound SMTP, including MX records, SPF, DKIM, DMARC, and site verification, in one step.")
 
         //- 1-Click Provider Buttons
         - const dcProviders = nsProviders.filter((p) => p.domainConnect && p.domainConnect.applyUrl);

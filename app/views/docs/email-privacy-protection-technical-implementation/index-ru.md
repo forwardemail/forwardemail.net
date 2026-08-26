@@ -1,6 +1,6 @@
 # Как работает переадресация электронной почты с Forward Email: Полное руководство {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Техническая реализация защиты конфиденциальности электронной почты" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Техническая реализация защиты конфиденциальности электронной почты" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

@@ -1,6 +1,6 @@
 # API อีเมลครบวงจรตัวแรกของโลก: วิธีที่ Forward Email ปฏิวัติการจัดการอีเมล {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>สรุปสั้น ๆ:</strong> เราสร้าง REST API สำหรับการจัดการอีเมลครบวงจรตัวแรกของโลกที่มีความสามารถในการค้นหาขั้นสูงซึ่งไม่มีบริการใดเสนอ ในขณะที่ Gmail, Outlook และ Apple บังคับให้นักพัฒนาใช้ IMAP ที่ยุ่งยากหรือ API ที่มีข้อจำกัดเรื่องอัตราการใช้งาน Forward Email มอบการดำเนินการ CRUD ที่รวดเร็วมากสำหรับข้อความ, โฟลเดอร์, รายชื่อ และปฏิทินผ่านอินเทอร์เฟซ REST เดียวที่มีพารามิเตอร์ค้นหามากกว่า 15 ตัว นี่คือ API อีเมลที่นักพัฒนารอคอย

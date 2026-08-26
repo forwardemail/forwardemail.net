@@ -1,6 +1,6 @@
 # Forward Email: Giải Pháp Chuyển Tiếp Email Tuân Thủ Mục 889 Của Bạn {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="Dịch vụ email chính phủ liên bang tuân thủ Mục 889" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="Dịch vụ email chính phủ liên bang tuân thủ Mục 889" class="rounded-lg" /> -->
 
 
 ## Mục Lục {#table-of-contents}
