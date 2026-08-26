@@ -58,21 +58,46 @@ class SitemapFetcher {
     }
   }
 
+  async fetchXML(url) {
+    const response = await axios.get(url, {
+      timeout: 30_000,
+      headers: {
+        'User-Agent': 'ForwardEmail-CustomerSupportAI/1.0'
+      }
+    });
+    return response.data;
+  }
+
   /**
    * Fetch and parse sitemap XML
+   *
+   * `/sitemap.xml` is a sitemap *index* - a <sitemapindex> whose <loc>
+   * entries point to one real per-locale sitemap each (e.g.
+   * /en/sitemap.xml), not actual page URLs. Blindly regex-matching every
+   * <loc> in the index (as this used to do) silently harvested those 25
+   * sub-sitemap URLs themselves - which then almost all failed the
+   * locale-prefix filter below, leaving just the /en/ index URL. Follow the
+   * index to the real /en/sitemap.xml (the only locale this class keeps
+   * anyway, per shouldProcessUrl) and parse its <url><loc> entries instead.
    * @returns {Promise<Array<string>>} Array of URLs from sitemap
    */
   async fetchSitemap() {
     try {
       logger.info('Fetching sitemap', { url: this.sitemapUrl });
-      const response = await axios.get(this.sitemapUrl, {
-        timeout: 30_000,
-        headers: {
-          'User-Agent': 'ForwardEmail-CustomerSupportAI/1.0'
-        }
-      });
+      let xml = await this.fetchXML(this.sitemapUrl);
 
-      const urls = this.parseSitemapXML(response.data);
+      if (xml.includes('<sitemapindex')) {
+        const enSitemapUrl = `${this.baseUrl}/en/sitemap.xml`;
+        logger.info(
+          'Root sitemap is an index, following to per-locale sitemap',
+          {
+            url: enSitemapUrl
+          }
+        );
+        xml = await this.fetchXML(enSitemapUrl);
+      }
+
+      const urls = this.parseSitemapXML(xml);
       logger.info('Sitemap fetched successfully', {
         totalUrls: urls.length
       });

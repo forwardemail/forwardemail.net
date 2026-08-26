@@ -235,6 +235,13 @@ ${urlList}
 5. NEVER say "I don't have that information" or "Please contact support@forwardemail.net" - you ARE support
 6. If context is limited, provide what you know and ask clarifying questions to help better
 
+**CRITICAL: NEVER CLAIM AN ACCOUNT ACTION WAS TAKEN**
+You draft text. You do not have the ability to approve, ban, unban, refund, allowlist, denylist, increase limits, or change any account, domain, or alias setting - and nothing you write causes any of those things to happen.
+1. NEVER say or imply that an action has been completed: no "I've approved this," "you've been unbanned," "I've increased your limit," "this has been added to the allowlist," "I've issued a refund," or similar.
+2. NEVER say an action will happen automatically as a result of this message ("I'll get that fixed for you," "this will be resolved shortly") unless the knowledge base context explicitly describes an automated, self-service process the customer performs themselves (e.g. the automatic 30-day refund policy).
+3. If the customer needs something changed on their account that only a human admin can do, describe how to request it (the correct page, form, or email) - do not claim it has been or will be done.
+4. This applies even if the customer's message quotes or references a previous action - do not confirm, deny, or restate account-specific actions you cannot verify.
+
 **CRITICAL: ABUSE REPORTS - EXACT INSTRUCTIONS**
 For ANY abuse, phishing, spam, fraud, or security reports:
 1. Direct users to: https://forwardemail.net/report-abuse
@@ -244,6 +251,20 @@ For ANY abuse, phishing, spam, fraud, or security reports:
 5. ONLY say: "Please file an abuse report at https://forwardemail.net/report-abuse if you haven't already"
 6. DO NOT fabricate any additional steps or instructions
 7. If the user did not provide an attachment with the raw headers, please ask them to attach the report.
+
+**CRITICAL: COMMERCIAL-SCALE OR CONTRACTUAL QUESTIONS**
+If the customer describes a business reselling or operating the service for third parties, asks about capacity planning at commercial scale (thousands of domains, high aggregate volume), or asks about Enterprise-tier terms (SLA, uptime commitment, contractual volume limits, Terms of Service exceptions):
+1. NEVER compute or assert a capacity conclusion (e.g. "you're within limits," "this plan covers your volume") by comparing numbers with different units or scope than what the customer described (e.g. a monthly fleet-wide total against a daily per-recipient cap). If you cannot compare like-for-like from the context, say so instead of asserting a conclusion.
+2. NEVER assert plan suitability for commercial/reseller-scale operation based on individual-user-oriented FAQ content (e.g. "unlimited domains for one price" describes pricing structure, not suitability for bulk commercial provisioning). Say what the context documents about each plan and let the customer decide.
+3. If the customer's own framing suggests a compliance or contractual gate (e.g. a Terms of Service exception required for their business model), treat that as the priority - do not suggest working around it by defaulting to a lower plan for the parts of their question the knowledge base can answer.
+4. SLA terms, uptime commitments, incident/escalation processes, and Enterprise-specific volume or domain limits are not in the knowledge base. Say so plainly and direct them to contact the team for an Enterprise conversation rather than answering from general documentation.
+
+**CRITICAL: MULTI-PART QUESTIONS AND EXPLICIT PERMISSION REQUESTS**
+If the customer asks several distinct numbered or listed questions, or explicitly asks for written confirmation/permission before proceeding with a specific usage plan:
+1. Address each distinct question individually. Do not collapse several specific questions into one general summary that only answers the easy ones and silently drops the hard ones.
+2. If the knowledge base context does not address a specific question the customer asked, say so explicitly for that question - do not fold an unaddressed question into a blanket "yes," "this is permitted," or "this is fine" that covers the whole message.
+3. This applies with extra weight to usage patterns the knowledge base context does not specifically cover - for example multiple accounts on the same third-party service, or anyone other than the customer controlling or using the resulting accounts/aliases. A confident blanket permission on a pattern like this is fabricated, not grounded, even if other parts of the same message are genuinely fine (e.g. the alias count or forwarding mechanism).
+4. When a definitive compliance or policy determination is requested and the context doesn't clearly cover it, say what IS documented, name what ISN'T addressed, and direct them to contact the team for an explicit answer to the specific unaddressed questions - rather than resolving the ambiguity yourself in either direction.
 
 **CRITICAL: HELP REQUEST TEMPLATES**
 If the customer's message contains a "Your Help Request" section or similar template with Forward Email logo at bottom:
@@ -306,7 +327,7 @@ DO NOT:
 IF YOU NEED TO REFERENCE SOMETHING WITHOUT A URL:
 - Describe it in plain text
 - Tell the user to check their account settings
-- Tell them to contact support
+- Ask a clarifying question to narrow down what they need
 
 COMMON MISTAKES TO AVOID:
 - https://forwardemail.net/dashboard (DOES NOT EXIST)
@@ -399,8 +420,11 @@ Write your response now:`;
       );
 
       let response = await ollamaClient.generate(prompt, {
-        temperature: config.ollamaTemperature || 0.7,
-        maxTokens: config.ollamaMaxTokens || 2000
+        // config.ollamaTemperature already resolves its own default
+        // correctly (0 is a valid, intentional value here) - don't re-apply
+        // `|| 0.7` on top of it, that would silently discard an explicit 0.
+        temperature: config.ollamaTemperature,
+        maxTokens: config.ollamaMaxTokens || 6000
       });
 
       // Post-process: Remove any signatures/closings the LLM added despite instructions
@@ -446,14 +470,19 @@ Write your response now:`;
     return cleaned.trim();
   }
 
-  async generateWithFallback(analysis, context, historicalContext = '') {
+  async generateWithFallback(
+    analysis,
+    context,
+    historicalContext = '',
+    topSourceUrl
+  ) {
     try {
       return await this.generate(analysis, context, historicalContext);
     } catch (err) {
       logger.error(err, { context: 'response generation with fallback' });
 
       return {
-        response: this.getFallbackResponse(analysis),
+        response: this.getFallbackResponse(analysis, topSourceUrl),
         model: 'fallback',
         generatedAt: new Date(),
         contextUsed: false,
@@ -462,12 +491,14 @@ Write your response now:`;
     }
   }
 
-  getFallbackResponse(analysis) {
+  // TODO: /en/ is hardcoded here - once responses are localized to the
+  // customer's language, point this at the matching locale's FAQ instead.
+  getFallbackResponse(analysis, helpUrl = 'https://forwardemail.net/en/faq') {
     return `Thank you for contacting Forward Email support.
 
 We've received your message regarding: ${analysis.subject}
 
-Our team is reviewing your inquiry and will respond shortly with detailed assistance. In the meantime, you may find helpful information in our documentation at https://forwardemail.net/en/faq
+Our team is reviewing your inquiry and will respond shortly with detailed assistance. In the meantime, you may find helpful information at ${helpUrl}
 
 If your issue is urgent, please let us know and we'll prioritize your request.`;
   }

@@ -27,6 +27,7 @@ const {
   extractRecipients,
   buildReplyRecipients
 } = require('#helpers/customer-support-ai/message-utils');
+const { appendDraftLog } = require('#helpers/customer-support-ai/draft-log');
 
 const graceful = new Graceful({
   logger
@@ -34,269 +35,16 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-// Source weights for ranking (higher = more important)
-const SOURCE_WEIGHTS = {
-  faq: 1, // Highest priority - official FAQ
-  technical_whitepaper: 0.95, // Very authoritative
-  api_spec: 0.9, // Official API documentation
-  local_markdown: 0.85, // Official docs
-  github_issue: 0.7, // Community discussions
-  github_discussion: 0.65,
-  github_pr: 0.6,
-  historical_email: 0.5 // Lower priority - past conversations
-};
+const {
+  retrieveContext,
+  retrieveHistoricalContext,
+  getSourceUrl
+} = require('#helpers/customer-support-ai/rag-retrieval');
+const {
+  checkGrounding
+} = require('#helpers/customer-support-ai/grounding-check');
 
-// Dynamic context limits based on question type
-function getContextLimits(analysis) {
-  const limits = {
-    technical: { kb: 8, history: 2 }, // More docs, less history
-    billing: { kb: 3, history: 5 }, // Less docs, more history
-    account: { kb: 4, history: 4 }, // Balanced
-    feature: { kb: 6, history: 3 }, // More docs
-    bug: { kb: 5, history: 4 }, // Balanced with history
-    other: { kb: 5, history: 3 } // Default
-  };
-
-  return limits[analysis.questionType] || limits.other;
-}
-
-// Deduplicate context chunks based on content similarity
-function deduplicateContext(chunks) {
-  const seen = new Set();
-  return chunks.filter((chunk) => {
-    // Use first 100 chars as signature
-    const signature = chunk.text.slice(0, 100).trim().toLowerCase();
-    if (seen.has(signature)) {
-      return false;
-    }
-
-    seen.add(signature);
-    return true;
-  });
-}
-
-// Weight and rank results by source type and distance
-function rankResults(results, sourceType = 'knowledge_base') {
-  if (!results.documents || !results.documents[0]) {
-    return [];
-  }
-
-  const ranked = results.documents[0].map((doc, index) => {
-    const metadata = results.metadatas?.[0]?.[index] || {};
-    const distance = results.distances?.[0]?.[index] || 1;
-
-    // Get source weight
-    const source = metadata.source || sourceType;
-    const sourceWeight = SOURCE_WEIGHTS[source] || 0.5;
-
-    // Calculate final score (lower distance = higher similarity)
-    // LanceDB returns normalized/squared L2 distances (typically 0.0-0.1)
-    // Use exponential decay for better score distribution:
-    // - distance 0.0 → score ~1.0 (perfect match)
-    // - distance 0.01 → score ~0.9 (excellent match)
-    // - distance 0.1 → score ~0.37 (good match)
-    // - distance 1.0 → score ~0.00005 (poor match)
-    const similarityScore = sourceWeight * Math.exp(-distance * 10);
-
-    return {
-      text: doc,
-      metadata,
-      distance,
-      sourceWeight,
-      score: similarityScore
-    };
-  });
-
-  // Sort by score (highest first)
-  ranked.sort((a, b) => b.score - a.score);
-
-  return ranked;
-}
-
-// Generate source URL for attribution
-function getSourceUrl(metadata) {
-  const {
-    source,
-    path: sourcePath,
-    issueNumber,
-    prNumber,
-    discussionNumber
-  } = metadata;
-
-  switch (source) {
-    case 'faq': {
-      return 'https://forwardemail.net/faq';
-    }
-
-    case 'local_markdown': {
-      if (sourcePath) {
-        // Map app/views paths to actual website URLs
-        // Docs: app/views/docs/{dir-name}/index.pug -> /blog/docs/{dir-name}
-        // Other: app/views/{path}.pug -> /{path}
-
-        // Handle docs directory structure
-        const docsMatch = sourcePath.match(/^app\/views\/docs\/([^/]+)/);
-        if (docsMatch) {
-          const dirName = docsMatch[1];
-          return `https://forwardemail.net/blog/docs/${dirName}`;
-        }
-
-        // Handle other views (remove app/views/ prefix and file extension)
-        const webPath = sourcePath
-          .replace(/^app\/views\//, '')
-          .replace(/\.(md|pug)$/, '')
-          .replace(/\/index$/, '');
-        return `https://forwardemail.net/${webPath}`;
-      }
-
-      return 'https://forwardemail.net/search';
-    }
-
-    case 'technical_whitepaper': {
-      return 'https://forwardemail.net/technical-whitepaper.pdf';
-    }
-
-    case 'api_spec': {
-      return 'https://forwardemail.net/email-api';
-    }
-
-    case 'github_issue': {
-      return `https://github.com/forwardemail/forwardemail.net/issues/${issueNumber}`;
-    }
-
-    case 'github_pr': {
-      return `https://github.com/forwardemail/forwardemail.net/pull/${prNumber}`;
-    }
-
-    case 'github_discussion': {
-      return `https://github.com/forwardemail/forwardemail.net/discussions/${discussionNumber}`;
-    }
-
-    default: {
-      return 'https://forwardemail.net';
-    }
-  }
-}
-
-async function retrieveContext(analysis, vectorStore) {
-  try {
-    // Use full message content for better context matching
-    const queryText = `${analysis.subject} ${analysis.content}`;
-    logger.debug(
-      { queryTextLength: queryText.length, subject: analysis.subject },
-      'Query text for context retrieval'
-    );
-
-    const queryEmbedding = await ollamaClient.generateEmbedding(queryText);
-    logger.debug(
-      { embeddingLength: queryEmbedding.length },
-      'Generated query embedding'
-    );
-
-    // Get dynamic limits based on question type
-    const limits = getContextLimits(analysis);
-    logger.debug({ limits }, 'Context limits');
-
-    // Query with higher limit to allow for filtering
-    const results = await vectorStore.query(queryEmbedding, {
-      limit: limits.kb * 2
-    });
-    logger.debug(
-      {
-        documentsCount: results.documents?.[0]?.length || 0,
-        distancesCount: results.distances?.[0]?.length || 0,
-        metadatasCount: results.metadatas?.[0]?.length || 0
-      },
-      'Raw LanceDB results'
-    );
-
-    // Rank and weight results
-    let ranked = rankResults(results, 'knowledge_base');
-    logger.debug(
-      {
-        rankedCount: ranked.length,
-        topScores: ranked.slice(0, 3).map((r) => r.score)
-      },
-      'After ranking'
-    );
-
-    // Deduplicate
-    ranked = deduplicateContext(ranked);
-    logger.debug({ afterDedup: ranked.length }, 'After deduplication');
-
-    // Take top N after ranking and deduplication
-    ranked = ranked.slice(0, limits.kb);
-    logger.debug({ finalCount: ranked.length }, 'Final context count');
-
-    // Format context with source attribution
-    const contextParts = ranked.map((item) => {
-      const sourceUrl = getSourceUrl(item.metadata);
-      const sourceLabel = item.metadata.source || 'documentation';
-      return `Source: ${sourceLabel} (${sourceUrl})\nRelevance: ${(
-        item.score * 100
-      ).toFixed(1)}%\n\n${item.text}`;
-    });
-
-    logger.debug('Retrieved knowledge base context', {
-      total: results.documents?.[0]?.length || 0,
-      afterRanking: ranked.length,
-      questionType: analysis.questionType
-    });
-
-    return contextParts.join('\n\n---\n\n');
-  } catch (err) {
-    logger.error(err, { context: 'retrieve context' });
-    return '';
-  }
-}
-
-async function retrieveHistoricalContext(analysis, historyVectorStore) {
-  try {
-    // Use full message content for better context matching
-    const queryText = `${analysis.subject} ${analysis.content}`;
-    const queryEmbedding = await ollamaClient.generateEmbedding(queryText);
-
-    // Get dynamic limits
-    const limits = getContextLimits(analysis);
-
-    // Query historical emails
-    const results = await historyVectorStore.query(queryEmbedding, {
-      limit: limits.history * 2
-    });
-
-    // Rank results
-    let ranked = rankResults(results, 'historical_email');
-
-    // Deduplicate
-    ranked = deduplicateContext(ranked);
-
-    // Take top N
-    ranked = ranked.slice(0, limits.history);
-
-    const contextParts = ranked.map((item) => {
-      const { metadata } = item;
-      return `Past Email (${metadata.date || 'unknown'}):\nSubject: ${
-        metadata.subject || 'N/A'
-      }\nRelevance: ${(item.score * 100).toFixed(1)}%\n\n${item.text.slice(
-        0,
-        500
-      )}...`;
-    });
-
-    logger.debug('Retrieved historical context', {
-      total: results.documents?.[0]?.length || 0,
-      afterRanking: ranked.length,
-      questionType: analysis.questionType
-    });
-
-    return contextParts.join('\n\n---\n\n');
-  } catch (err) {
-    logger.error(err, { context: 'retrieve historical context' });
-    return '';
-  }
-}
-
-async function createDraft(message, analysis, generatedResponse) {
+async function createDraft(message, analysis, generatedResponse, grounding) {
   try {
     const subject = `Re: ${analysis.subject
       .replace(/^(re:|fwd?:)\s*/gi, '')
@@ -408,6 +156,24 @@ ${quotedOriginal}`;
 
     const draft = await forwardEmailClient.createDraft(draftData);
 
+    // Log what we generated, keyed by the original message's Message-ID -
+    // track-draft-outcomes.js diffs this against whatever eventually gets
+    // sent (or doesn't) to build the sent-as-is/edited/discarded signal.
+    appendDraftLog({
+      draftId: draft.id,
+      originalMessageId: messageId,
+      subject,
+      generatedText: generatedResponse.response,
+      fallback: Boolean(generatedResponse.fallback),
+      // Lets track-draft-outcomes.js correlate "was this flagged
+      // ungrounded" against what a human actually did with it
+      // (sent-as-is/edited/discarded) - the real-world calibration data
+      // for whether this signal is worth acting on automatically later.
+      grounded: grounding?.grounded ?? null,
+      groundingClaims: grounding?.claims || [],
+      createdAt: new Date().toISOString()
+    });
+
     logger.info(
       { draftId: draft.id, messageId: analysis.messageId },
       'Draft created successfully'
@@ -458,20 +224,39 @@ async function processMessage(message, vectorStore, historyVectorStore) {
       'Analysis result'
     );
 
-    const context = await retrieveContext(analysis, vectorStore);
-    const historicalContext = await retrieveHistoricalContext(
+    const { text: context, ranked: kbRanked } = await retrieveContext(
+      analysis,
+      vectorStore
+    );
+    const { text: historicalContext } = await retrieveHistoricalContext(
       analysis,
       historyVectorStore
     );
 
+    const topSourceUrl = kbRanked[0]
+      ? getSourceUrl(kbRanked[0].metadata)
+      : undefined;
+
     const generatedResponse = await responseGenerator.generateWithFallback(
       analysis,
       context,
-      historicalContext
+      historicalContext,
+      topSourceUrl
     );
 
+    // Skip the check on fallback responses - the canned template makes no
+    // factual claims to verify, and it's not worth the extra LLM call.
+    const grounding = generatedResponse.fallback
+      ? { grounded: true, claims: [], checkFailed: false }
+      : await checkGrounding(generatedResponse.response, context);
+
     // Note: Draft check is done upfront in main loop, no need to check again
-    const draft = await createDraft(fullMessage, analysis, generatedResponse);
+    const draft = await createDraft(
+      fullMessage,
+      analysis,
+      generatedResponse,
+      grounding
+    );
 
     logger.info(
       {

@@ -124,11 +124,12 @@ graceful.listen();
 
 ${content}`;
 
-            // Chunk the content
-            const chunks = processor.chunkText(fullContent, {
-              chunkSize: 1000,
-              chunkOverlap: 200
-            });
+            // Chunk the content. chunkText()'s 2nd argument is per-chunk
+            // metadata, not chunk-size config (chunk size/overlap are fixed
+            // on the processor instance) - the real per-message metadata is
+            // layered on below via `...chunk.metadata`, so nothing belongs
+            // here.
+            const chunks = processor.chunkText(fullContent);
 
             // Add each chunk to vector store with metadata
             for (const chunk of chunks) {

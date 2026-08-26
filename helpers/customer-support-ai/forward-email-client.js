@@ -93,27 +93,22 @@ class ForwardEmailClient {
           }
         });
 
-        const messages = response.data;
-        if (Array.isArray(messages)) {
-          allMessages.push(...messages);
-        }
-
-        // Check pagination headers to see if there are more pages
-        const pageCount = Number.parseInt(response.headers['x-page-count'], 10);
-        const currentPage = Number.parseInt(
-          response.headers['x-page-current'],
-          10
-        );
+        const messages = Array.isArray(response.data) ? response.data : [];
+        allMessages.push(...messages);
 
         logger.debug('Fetched page of messages', {
           folder: options.folder || 'INBOX',
-          page: currentPage,
-          pageCount,
+          page,
+          pageCountHeader: response.headers['x-page-count'],
           messagesOnPage: messages.length,
           totalSoFar: allMessages.length
         });
 
-        hasMore = currentPage < pageCount;
+        // Don't trust X-Page-Count/X-Page-Current - keep paging purely off
+        // whether the last page came back full. The API has been observed
+        // reporting X-Page-Count: 1 for folders with thousands of messages,
+        // so trusting it silently truncates results.
+        hasMore = messages.length === 100;
         page++;
       }
 

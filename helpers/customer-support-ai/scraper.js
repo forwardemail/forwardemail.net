@@ -157,9 +157,16 @@ class KnowledgeBaseScraper {
     const documents = [];
 
     try {
-      // Split by headings (#, ##, ###, ####)
-      // Match any heading level and capture the heading text
-      const headingRegex = /^(#{1,4})\s+(.+)$/gm;
+      // Split only on H3 (###) - that's the level every real FAQ question
+      // uses. H1/H2 are structural section headers (e.g. "## Table of
+      // Contents", "## Quick Start") that aren't questions at all, and H4
+      // is a sub-step heading nested inside one H3 answer (e.g.
+      // "#### Configuration" / "#### Testing" under a client setup guide) -
+      // splitting on those would fragment a single answer into disconnected
+      // pieces. Matching #{1,4} also caught `# Ubuntu/Debian`-style bash
+      // comments inside fenced code examples as if they were real headings,
+      // which corrupted the client-config sections the same way.
+      const headingRegex = /^(#{3})\s+(.+)$/gm;
       const sections = [];
       let match;
       let lastIndex = 0;
@@ -187,13 +194,13 @@ class KnowledgeBaseScraper {
       // Filter out non-question sections
       const questionSections = sections.filter((s) => {
         const firstLine = s.split('\n')[0];
-        return /^#{1,4}\s+/.test(firstLine);
+        return /^#{3}\s+/.test(firstLine);
       });
 
       for (const section of questionSections) {
         const lines = section.split('\n');
-        // Remove heading markers (#, ##, ###, ####) from question
-        const question = lines[0].replace(/^#{1,4}\s+/, '').trim();
+        // Remove the ### heading marker from the question
+        const question = lines[0].replace(/^#{3}\s+/, '').trim();
 
         // Skip if not a question-like heading
         if (!question || question.length < 10) continue;
@@ -207,17 +214,17 @@ class KnowledgeBaseScraper {
         // Create Q&A pair
         const qaText = `Q: ${question}\n\nA: ${answer}`;
 
-        // Summarize if too long
-        const summary =
-          qaText.length > 2000
-            ? await this.summarizeContent(qaText, `FAQ: ${question}`)
-            : qaText;
+        // Never summarize FAQ answers, regardless of length: they're
+        // already the exact fact-dense, verified text (specific limits,
+        // dates, URLs) we want retrieved and cited verbatim. Running them
+        // through a summarization pass risks paraphrasing away the one
+        // number or URL that made the answer correct.
 
         // Determine question type for better classification
         const questionType = this.classifyQuestion(question);
 
         documents.push({
-          content: summary,
+          content: qaText,
           metadata: {
             source: 'faq',
             path: filePath,
@@ -327,8 +334,14 @@ ${content}
 
 Summary:`;
 
+      // 1000 was tuned for non-reasoning models. A hybrid-reasoning model
+      // (e.g. Qwen3) spends a chunk of this budget on <think> before ever
+      // reaching the summary, and ollama-client.js now throws rather than
+      // silently returning truncated reasoning - so this needs the same
+      // real headroom the response generator required (see config.js
+      // ollamaMaxTokens for the equivalent generation-side fix).
       const summary = await ollamaClient.generate(prompt, {
-        maxTokens: 1000
+        maxTokens: 3000
       });
 
       return summary || content;

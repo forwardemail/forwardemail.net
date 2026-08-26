@@ -195,6 +195,26 @@ class VectorStore {
         documents: [results.map((item) => item.text)]
       };
     } catch (err) {
+      // LanceDB's own message for this ("No vector column found to match
+      // with the query vector dimension: N") doesn't say what's actually
+      // wrong - it reads like a schema/corruption problem. It's almost
+      // always a config mismatch: the query embedding came from a
+      // different OLLAMA_EMBEDDING_MODEL than the one the table was built
+      // with (e.g. mxbai-embed-large's 1024 dims vs qwen3-embedding:8b's
+      // 4096), because OLLAMA_EMBEDDING_MODEL wasn't set to match.
+      if (/vector dimension/i.test(err.message || '')) {
+        const mismatchErr = new Error(
+          `Embedding dimension mismatch (query: ${queryEmbedding.length} dims). This table was built with a different OLLAMA_EMBEDDING_MODEL than the one currently configured (${config.ollamaEmbeddingModel}). Set OLLAMA_EMBEDDING_MODEL to match whatever update-knowledge-base.js was last run with, or rebuild the KB with the current one. Original error: ${err.message}`
+        );
+        logger.error(
+          'Vector store query failed - embedding dimension mismatch',
+          {
+            error: mismatchErr
+          }
+        );
+        throw mismatchErr;
+      }
+
       logger.error('Vector store query failed', { error: err });
       throw err;
     }

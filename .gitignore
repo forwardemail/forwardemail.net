@@ -52,3 +52,6 @@ firebase-service-account.json
 google-services.json
 dev-screenshots/
 forwardemail-fdroid-repo.p12
+
+# real customer email content extracted for RAG eval-set generation - never commit
+.customer-support-archive/
