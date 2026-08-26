@@ -917,8 +917,16 @@ const config = {
   ollamaHost: env.OLLAMA_HOST || 'http://localhost:11434',
   ollamaModel: env.OLLAMA_MODEL || 'gpt-oss:20b',
   ollamaEmbeddingModel: env.OLLAMA_EMBEDDING_MODEL || 'mxbai-embed-large',
-  ollamaTemperature: Number.parseFloat(env.OLLAMA_TEMPERATURE) || 0.7,
-  ollamaMaxTokens: Number.parseInt(env.OLLAMA_MAX_TOKENS, 10) || 2000,
+  // `|| 0.7` would silently discard an explicit 0 (falsy) - Number.isNaN
+  // check instead so temperature: 0 (e.g. deterministic eval runs) works.
+  ollamaTemperature: Number.isNaN(Number.parseFloat(env.OLLAMA_TEMPERATURE))
+    ? 0.7
+    : Number.parseFloat(env.OLLAMA_TEMPERATURE),
+  // 2000 was too low for hybrid-reasoning models (e.g. Qwen3): reasoning
+  // alone regularly consumed the full budget before an answer was ever
+  // reached (~32% of calls empirically, on a real eval run). Raised to
+  // give reasoning + answer room to actually complete.
+  ollamaMaxTokens: Number.parseInt(env.OLLAMA_MAX_TOKENS, 10) || 6000,
   lancedbPath: env.LANCEDB_PATH,
   githubOctokitToken: env.GITHUB_OCTOKIT_TOKEN,
   inboxZero: env.INBOX_ZERO || false,
