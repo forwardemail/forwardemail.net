@@ -12,18 +12,15 @@
 // must come after 'variables': the font tokens interpolate $font-family-*
 @import 'fe-tokens';
 
-// redesigned landing page, scoped under .fe-landing
+// app-chrome tokens (--app-*): light values on :root here; app-dark.scss
+// re-points them under prefers-color-scheme: dark
+@import 'app-tokens';
+
+// redesigned marketing pages: landing (plus shared fe primitives and the
+// pricing template hero), then the pages that build on those primitives
 @import 'fe-landing';
-
-// redesigned download page, scoped under .fe-dl-*
-// after fe-landing because it builds on that file's buttons and containers
 @import 'fe-download';
-
-// simplified FAQ, scoped under .fe-faq-*
 @import 'fe-faq';
-
-// pricing template hero, scoped under .fe-phero
-@import 'fe-pricing-hero';
 
 // font awesome
 @import 'font-awesome';

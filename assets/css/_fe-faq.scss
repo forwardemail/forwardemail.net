@@ -3,18 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// Simplified FAQ. Shares the .fe-landing wrapper, the surface contexts and the
-// button scale with the landing page; only what those do not cover lives here.
-// Every value is a token reference. See _fe-tokens.scss for the palette and
-// for why --fe-fg-muted is never used on text.
-// The page carries no images by design, so nothing here sizes or frames one.
-
-// ============================================
-// HERO
-// ============================================
-// Deliberately short. It exists to hold the search field, not to sell
-// anything, and the list of questions should be visible without scrolling on
-// a laptop.
+// Simplified FAQ. Shares the .fe-landing wrapper and the primitives in
+// _fe-landing.scss; only what those do not cover lives here. The page
+// carries no images by design.
 
 .fe-faq-hero {
   padding-block: calc(4rem + var(--fe-nav-offset)) 3rem;
@@ -117,16 +108,11 @@
 .fe-faq-layout {
   display: grid;
   gap: var(--fe-space-8);
-  // minmax(0, 1fr) rather than the default minmax(auto, 1fr). A grid track
-  // defaults to being at least as wide as its content's minimum, and answers
-  // contain long unbreakable strings, so without this an opened answer widens
-  // the track past the viewport and scrolls the whole page sideways.
+  // minmax(0, 1fr): answers hold long unbreakable strings, and the default
+  // auto minimum would widen the track past the viewport.
   grid-template-columns: minmax(0, 1fr);
 }
 
-// Same reason one level down: the content column has to be allowed to be
-// narrower than the widest thing inside it, so the scrollers below can do
-// their job instead of the page doing it.
 .fe-faq-content {
   min-width: 0;
 }
@@ -196,9 +182,6 @@
   border-bottom: 1px solid var(--fe-border-default);
 }
 
-// Section prose, for the two topics that are a short guide rather than a list
-// of questions. It reuses the answer body's typography so authored markdown
-// looks the same wherever it appears on the page.
 .fe-faq-topic__intro {
   min-width: 0;
   padding-block: var(--fe-space-4);
@@ -222,15 +205,8 @@
   scroll-margin-top: calc(var(--fe-nav-offset) + var(--fe-space-4));
 }
 
-// The whole summary row is the control, so the target is the full width of
-// the question rather than the text alone.
-// box-sizing is pinned because the two colour schemes resolve it differently
-// here: the cascade carries both `* { box-sizing: inherit }` and, inside the
-// dark media query where app-dark.scss re-emits bootstrap, `* { box-sizing:
-// border-box }`. The rendered box came out the same 58px either way, so this
-// changes nothing visually; it is set so the value cannot drift apart the
-// moment anything on this element is sized explicitly.
 .fe-faq-answer__q {
+  // Pinned: the light and dark cascades resolve box-sizing differently here.
   box-sizing: border-box;
   display: flex;
   gap: var(--fe-space-4);
@@ -282,10 +258,8 @@
 .fe-faq-answer__body {
   box-sizing: border-box;
   min-width: 0;
-  // `anywhere` rather than `break-word`, because only `anywhere` also reduces
-  // the intrinsic minimum width. Answers contain bare URLs and long hostnames
-  // as link text, and with `break-word` they still widen the column even
-  // though they wrap. Restored to normal inside pre below.
+  // `anywhere`, not `break-word`: only it also shrinks the intrinsic minimum
+  // width, which bare URLs as link text otherwise inflate. Reset in pre below.
   overflow-wrap: anywhere;
   padding-bottom: var(--fe-space-6);
   font-size: var(--fe-text-body-sm);
@@ -300,14 +274,6 @@
   background-color: var(--fe-bg-sunken);
   border-radius: var(--fe-radius-lg);
 }
-
-// ============================================
-// PROSE CONTENT
-// ============================================
-// Authored markdown, so this styles tags rather than classes. Both the answer
-// bodies and the two prose sections carry .fe-faq-prose, which is what keeps
-// this one set of rules covering each of them. Scoped to that class so no
-// other page picks it up.
 
 .fe-faq-prose > :first-child {
   margin-top: 0;
@@ -397,17 +363,10 @@
   background-color: var(--fe-bg-sunken);
 }
 
-// ============================================
-// CALLOUTS INSIDE ANSWERS
-// ============================================
-// The markdown carries two kinds: hand-written `div.alert` from bootstrap, and
-// `div.markdown-alert` produced by markdown-it-github-alerts from `> [!NOTE]`
-// blocks. Both are restyled here rather than inheriting bootstrap's palette,
-// which is what put light-on-light text into the answers.
-// Selectors are two classes deep so they outrank both bootstrap's own .alert
-// and the copy app-dark.scss re-emits inside the dark media query, without
-// needing !important.
-
+// Callouts in authored markdown: bootstrap `div.alert` and the
+// `div.markdown-alert` blocks markdown-it-github-alerts emits. Two classes
+// deep so they outrank bootstrap and app-dark's re-emitted copy without
+// !important.
 .fe-faq-prose .alert,
 .fe-faq-prose .markdown-alert {
   padding: var(--fe-space-3) var(--fe-space-4) !important;
@@ -534,14 +493,6 @@
     width: 100%;
   }
 }
-
-// ============================================
-// RIGHT TO LEFT
-// ============================================
-// postcss-preset-env flattens logical properties to physical ones assuming
-// LTR, because op_mini and kaios are in our browserslist and do not support
-// the logical forms. These are the declarations on this page whose side
-// actually matters.
 
 [dir='rtl'] .fe-faq-search__icon {
   right: var(--fe-space-4);

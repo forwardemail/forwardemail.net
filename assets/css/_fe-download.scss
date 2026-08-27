@@ -3,26 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// Download page. Shares the .fe-landing wrapper, the surface contexts and the
-// button scale with the landing page, so only the parts that page has no
-// equivalent for live here.
-// Every value is a token reference for the same reason as _fe-landing.scss:
-// see the header of _fe-tokens.scss for the palette and the surface model.
-// Bootstrap classes are avoided inside this scope, because app-dark.scss
-// overrides .card, .bg-dark and .text-themed with !important under
-// prefers-color-scheme: dark and would fight these rules.
-
-// ============================================
-// HERO
-// ============================================
-// Single column, unlike the landing hero. There is no product illustration to
-// balance, and centring one column reads as a utility page rather than a
-// pitch, which is what this is.
+// Download page. Shares the .fe-landing wrapper and the primitives defined in
+// _fe-landing.scss; only what that file has no equivalent for lives here.
 
 .fe-dl-hero {
   // Matches .fe-hero so the two pages start at the same place, including the
   // navbar offset that .fe-landing--flush cancels.
-  padding-block: calc(6rem + var(--fe-nav-offset)) 6rem;
+  padding-block: calc(3rem + var(--fe-nav-offset)) 5rem;
 }
 
 .fe-dl-hero__inner {
@@ -89,13 +76,6 @@
   color: var(--fe-fg-secondary);
 }
 
-// ============================================
-// GROUP SECTIONS
-// ============================================
-// The desktop and mobile sections are two .fe-section elements on the same
-// light ground, so the second one drops its top padding and the pair reads as
-// one field, the way the product and pricing sections do on the landing page.
-
 .fe-dl-group {
   padding-block: 6rem;
 }
@@ -142,11 +122,6 @@
   display: flex;
   flex-direction: column;
 
-  // No height: 100% here. A percentage height on a grid item resolves against
-  // the row, which is as tall as the tallest card, so it would re-stretch the
-  // desktop cards straight past the align-items: start set on that grid. The
-  // mobile grid keeps the default stretch, which gives the same result without
-  // the declaration.
   padding: var(--fe-space-6);
   background-color: var(--fe-bg-raised);
   border: 1px solid var(--fe-border-default);
@@ -296,12 +271,6 @@
 .fe-dl-row__link:hover .fe-dl-row__go {
   background-color: var(--fe-primary-a16);
 }
-
-// ============================================
-// CHECKSUM CONTROL
-// ============================================
-// Sibling of the row link rather than a child, because a button cannot be
-// nested inside an anchor. Rendered only when the release reported a digest.
 
 .fe-dl-copy {
   position: relative;
@@ -465,13 +434,13 @@
 }
 
 @media (min-width: 1024px) {
+  // Desktop cards end where their own list does (Linux ships seven packages,
+  // macOS two); the mobile grid keeps the default stretch. Do not add
+  // height: 100% to the cards — it resolves against the row and re-stretches
+  // them past this align-items: start.
   .fe-dl-cards--desktop {
     grid-template-columns: repeat(3, minmax(0, 1fr));
 
-    // Linux ships seven packages and macOS two, so stretching the row to the
-    // tallest card leaves most of the macOS panel empty. Each card ends where
-    // its own list does instead. The mobile grid keeps the default stretch,
-    // where the two cards are close in height and the notes line up.
     align-items: start;
   }
 
@@ -516,14 +485,8 @@
   }
 }
 
-// ============================================
-// RIGHT TO LEFT
-// ============================================
-// postcss-preset-env flattens logical properties to physical ones assuming
-// LTR, because op_mini and kaios are in our browserslist and do not support
-// the logical forms. Only text-align on the size column actually cares about
-// direction here; every other declaration on this page is symmetric.
-
+// postcss flattens logical props to LTR physical ones, so the one
+// direction-sensitive declaration is restated for [dir='rtl'].
 [dir='rtl'] .fe-dl-row__size {
   text-align: left;
 }

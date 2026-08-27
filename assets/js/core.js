@@ -679,11 +679,15 @@ window.addEventListener(
         return true;
       });
 
-    const $nav = $('.navbar.fixed-top');
-    const $toggler = $nav.find('.navbar-toggler');
-    const isTextWhiteRequired = $nav.hasClass('text-white-required');
-    const togglerIsDark = $toggler.hasClass('text-themed');
-    const navbarIsDark = $nav.hasClass('navbar-dark');
+    //
+    // The bar is Ink in every state under the site-wide fe-nav restyle, so
+    // the scroll toggle only matters on pages that open with a transparent
+    // bar over a dark hero. _nav.pug marks those with `text-white-required`;
+    // swapping `text-white` for the bg-* classes is what moves the bar from
+    // transparent to Ink glass (see _fe-nav.scss). Everywhere else the bar is
+    // opaque from first paint and needs no scroll handling at all.
+    //
+    const $nav = $('.navbar.fixed-top.text-white-required');
 
     function navbarScroll() {
       if (
@@ -692,21 +696,15 @@ window.addEventListener(
       ) {
         $nav
           .addClass('bg-white navbar-themed bg-themed border-bottom')
-          .removeClass(isTextWhiteRequired ? 'text-white' : '');
-        $toggler
-          .addClass(togglerIsDark ? '' : 'text-dark')
-          .removeClass(isTextWhiteRequired ? 'text-white' : '');
+          .removeClass('text-white');
       } else {
         $nav
-          .addClass(isTextWhiteRequired ? 'text-white' : '')
+          .addClass('text-white')
           .removeClass('bg-white navbar-themed bg-themed border-bottom');
-        $toggler
-          .addClass(isTextWhiteRequired ? 'text-white' : '')
-          .removeClass(togglerIsDark ? '' : 'text-dark');
       }
     }
 
-    if ($nav.length > 0 && !navbarIsDark) {
+    if ($nav.length > 0) {
       navbarScroll();
       $(window).scroll(debounce(navbarScroll, 125));
       $('#navbar-header')

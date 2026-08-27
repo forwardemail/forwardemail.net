@@ -1,0 +1,54 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// The single source of truth for the brand palette. Two consumers:
+//   1. _fe-tokens.scss interpolates these into the --fe-* custom properties
+//      that drive the redesigned marketing pages.
+//   2. _variables.scss maps them onto Bootstrap's Sass variables ($blue etc.)
+//      so legacy components carry the same palette with no markup changes.
+// Sass variables only — this file must emit no CSS of its own.
+
+// Brand
+$fe-ink: #070b16;
+$fe-primary: #2563eb; // 5.2:1 on white and under a white label
+$fe-primary-lift: #60a5fa; // 7.4:1 on Ink; links/text on dark
+$fe-primary-deep: #1d4ed8; // AA on the 8% primary tint the eyebrow uses
+$fe-signal: #22d3ee;
+$fe-signal-deep: #0e7490; // 5.1:1 on light; the text-safe cyan
+$fe-mint: #34d399;
+$fe-mint-deep: #047857; // 5.4:1 on light
+$fe-caution: #f59e0b;
+$fe-caution-deep: #92400e;
+$fe-danger: #f87171;
+$fe-danger-deep: #dc2626;
+$fe-vault: #a78bfa;
+
+// Neutral ramp, dark
+$fe-n-100: #0e1628;
+$fe-n-200: #16223a;
+$fe-n-300: #22304d;
+$fe-n-400: #3a4a6b;
+$fe-n-500: #64748b;
+$fe-n-600: #94a3b8;
+$fe-n-700: #e2e8f0;
+
+// Neutral ramp, light
+$fe-l-000: #ffffff;
+$fe-l-100: #f5f8ff;
+$fe-l-200: #ebf0f9;
+$fe-l-300: #d9e1ee;
+$fe-l-400: #b4c0d4;
+$fe-l-500: #64748b;
+$fe-l-600: #3a4a6b;
+$fe-l-700: #0e1628;
+
+// Radii
+$fe-radius-sm: 6px;
+$fe-radius-md: 8px;
+$fe-radius-lg: 12px;
+$fe-radius-xl: 16px;
+
+// The fixed navbar's height (_custom.scss pads body.app by it)
+$fe-nav-offset: 60px;

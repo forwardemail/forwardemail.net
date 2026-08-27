@@ -59,10 +59,14 @@ mixin feProduct
         //- per-element colour override.
         .fe-feature.fe-feature--inverse.fe-surface-dark
           h3.fe-feature__title= t("Built for developers")
+          p.fe-feature__body
+            = t("Everything the dashboard does is an API call. Send with one request, receive as JSON webhooks, and script the rest.")
+            = " "
+            a.fe-feature__link(href=l("/email-api"))= t("Read the API reference")
           .fe-codeblock
             pre
               code
-                span.fe-tok-method POST /v1/messages
+                span.fe-tok-method POST /v1/emails
                 = "\n"
                 span.fe-tok-key { "from"
                 span.fe-tok-value : "you@domain.com",
@@ -71,8 +75,16 @@ mixin feProduct
                 span.fe-tok-value : "customer@co.com" }
                 = "\n"
                 span.fe-tok-result → 202 Accepted · signed · tracked
+          //- One chip per protocol rather than one chip listing them all, so
+          //- each reads as a capability and the row wraps cleanly on mobile.
           ul.fe-chips
-            li.fe-chip.fe-chip--code REST · SMTP · IMAP · DAV
+            li.fe-chip.fe-chip--code REST API
+            li.fe-chip.fe-chip--code SMTP
+            li.fe-chip.fe-chip--code IMAP
+            li.fe-chip.fe-chip--code POP3
+            li.fe-chip.fe-chip--code CalDAV
+            li.fe-chip.fe-chip--code CardDAV
+            li.fe-chip.fe-chip--code= t("Webhooks")
 
 mixin feStep(num, dot, title, desc)
   li.fe-stepper__step

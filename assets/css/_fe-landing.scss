@@ -3,21 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// Redesigned landing page, per the Forward Email landing page build spec.
-// Everything is scoped under .fe-landing so no other page is affected. The
-// page is served only at `/` and only to logged out visitors, via
-// auth.homeOrDomains.
-// Every value here is a token reference. No raw colours, sizes, radii or
-// shadows. See _fe-tokens.scss for the palette and for why the page uses
-// surface contexts instead of a theme.
-// Bootstrap classes are deliberately avoided inside this scope. app-dark.scss
-// overrides .card, .bg-dark, .bg-themed and .text-themed with !important under
-// prefers-color-scheme: dark, which would otherwise fight these rules.
+// Redesigned landing page plus the shared fe primitives (container, section,
+// eyebrow, buttons, chips, codeblock, pricing hero) the other fe pages build
+// on. Token references only; bootstrap classes are avoided inside fe scopes
+// because app-dark.scss overrides them with !important in dark mode.
 
 .fe-landing {
-  // Each .fe-section sets its own colour, so nothing visible inherits this
-  // today. It is set anyway so the wrapper does not quietly hand the OS theme's
-  // body colour to anything added here later outside a section.
   color: var(--fe-fg-primary);
   font-family: var(--fe-font-body);
 
@@ -33,13 +24,9 @@
   }
 }
 
-// body.app carries padding-top for the fixed navbar. Cancel it here so the
-// first section's Ink canvas starts at the top of the viewport and runs under
-// the transparent bar; without this the light scheme shows a strip of white
-// body background above it, with the white wordmark sitting on that strip.
-// Separate from .fe-landing because /download shares that wrapper and only
-// gets a transparent bar when the visitor is logged out. Pulling up under the
-// opaque bar a signed in visitor sees would hide the top of the hero.
+// Cancels body.app's fixed-navbar padding so the hero runs under the
+// transparent bar. Separate from .fe-landing: /download shares that wrapper
+// but must not pull up under the opaque bar a signed in visitor gets.
 .fe-landing--flush {
   margin-block-start: calc(-1 * var(--fe-nav-offset));
 }
@@ -151,10 +138,8 @@
   text-decoration: none;
 }
 
-// Gradient fill. Per the spec checklist this variant is allowed on exactly
-// three elements: nav Sign up, hero Start free, and the Enhanced plan CTA. The
-// gradient itself is a token so the navbar's copy of this button cannot drift
-// from it. See --fe-gradient-cta for why it does not end on --fe-signal.
+// The gradient is allowed on exactly three CTAs: nav sign up, this, and the
+// Enhanced plan button.
 .fe-btn--hero {
   color: var(--fe-l-000);
   background-color: var(--fe-primary);
@@ -204,12 +189,6 @@
   box-shadow: var(--fe-glow-primary);
 }
 
-// ============================================
-// FOCUS
-// ============================================
-// Applies at every breakpoint. Uses :focus-visible so pointer users do not
-// see a ring, but keyboard users always do.
-
 .fe-landing a:focus-visible,
 .fe-landing button:focus-visible,
 .fe-landing [tabindex]:focus-visible {
@@ -223,14 +202,12 @@
 
 .fe-hero {
   position: relative;
-  // the nav offset is added back so the hero content keeps its spacing
-  padding-block: calc(6rem + var(--fe-nav-offset)) 7rem;
+  // Offset clears the transparent fixed bar; 3rem on top of it keeps the
+  // trust row inside the first screen on a 13" laptop (6rem pushed it out).
+  padding-block: calc(3rem + var(--fe-nav-offset)) 5rem;
   overflow: hidden;
 }
 
-// Single radial gradient, bottom left, replacing the animated starfield.
-// The old effect generated 1000 box-shadow coordinates at Sass compile time
-// and painted a full bleed galaxy bitmap. This is one paint, no animation.
 .fe-hero::before {
   position: absolute;
   inset-block-end: 0;
@@ -285,17 +262,10 @@
   margin-top: 3rem;
 }
 
-// Deviation from the build spec, applied in five places below.
-// The spec asks for --text-muted on the trust label, console meta, status log
-// count, stat labels and plan period. Measured against the grounds they
-// actually sit on, the muted tier lands between 3.79:1 and 4.48:1, which is
-// under the 4.5:1 AA floor for body text. None of these are large enough to
-// qualify for the 3:1 large-text allowance: the labels are 11px and the rest
-// are 13 to 15px. So they use --fe-fg-secondary instead, which measures 7:1 or
-// better on both grounds.
-// --fe-fg-muted is still correct for the decorative middot between the trust
-// logos, which carries no information.
-
+// Spec deviation, here and in four sibling spots (console meta, status count,
+// stat labels, plan period): the muted tier measures 3.8-4.5:1 at these small
+// sizes, under the AA floor, so they take --fe-fg-secondary (7:1+) instead.
+// --fe-fg-muted stays correct for decorative marks like the logo middots.
 .fe-hero__trust-label {
   margin-block: 0 var(--fe-space-3);
   color: var(--fe-fg-secondary);
@@ -332,34 +302,17 @@
   box-shadow: var(--fe-elev-inset);
 }
 
-// Five views of the platform behind one rail, replacing the single delivery
-// path diagram that used to sit here. A console can only show one thing at a
-// time, and five switchable views carry considerably more of the product than
-// one static graphic did.
-
-// The views are stacked in a single grid cell rather than laid out in sequence,
-// so the container is always as tall as the tallest of them and switching tabs
-// never changes the height of the hero. Inactive views are hidden with
-// visibility, which takes them out of the accessibility tree while keeping that
-// box; display:none would collapse it and bring the jump back.
-
 .fe-console__rail {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--fe-space-1);
 
-  // The spec's 8px inset. Not a space token: this is the gap between the active
-  // pill and the trough it sits in, a fixed hairline rather than a step on the
-  // spacing scale.
   padding: 8px;
   margin-bottom: var(--fe-space-5);
   background-color: var(--fe-bg-sunken);
   border-radius: var(--fe-radius-lg);
 }
 
-// One word each, per the spec, so the five columns stay equal and nothing
-// wraps. The ellipsis is a backstop for the locales where the one word is much
-// longer than the English one.
 .fe-console__tab {
   padding: var(--fe-space-2) var(--fe-space-3);
   overflow: hidden;
@@ -386,15 +339,15 @@
   outline-offset: var(--fe-focus-offset);
 }
 
-// The rail is the only element that changes chrome. The frame, the header and
-// the trough all stay put between views, so the eye stays on the content
-// instead of tracking a moving container.
 .fe-console__tab--active {
   color: var(--fe-fg-primary);
   background-color: var(--fe-bg-raised);
   box-shadow: var(--fe-elev-1);
 }
 
+// Views stack in one grid cell so the console is as tall as its tallest view
+// and switching tabs never changes the hero's height. Inactive views hide via
+// visibility, which keeps the box while leaving the accessibility tree.
 .fe-console__views {
   display: grid;
 }
@@ -412,10 +365,8 @@
   visibility: visible;
 }
 
-// The tone each view carries on its kicker and its dot. Every value here is
-// text legal on the dark hero, which is the only surface the console renders
-// on: --fe-primary is 3.1:1 on Ink and would fail as a text colour, so the
-// routing view takes --fe-primary-lift at 7.4:1 instead.
+// Every tone is text-legal on the dark hero: primary takes -lift because
+// --fe-primary itself is 3.1:1 on Ink and would fail as a text colour.
 .fe-console__view--primary {
   --fe-console-tone: var(--fe-primary-lift);
 }
@@ -436,9 +387,6 @@
   --fe-console-tone: var(--fe-caution);
 }
 
-// Mono caps verb with the view's dot. This is the part that teaches the
-// pipeline: read the five in order and the arc is route, store, send, sync,
-// observe.
 .fe-console__kicker {
   display: flex;
   gap: var(--fe-space-2);
@@ -512,10 +460,6 @@
   color: var(--fe-fg-secondary);
 }
 
-// One line of real output, never marketing copy. Signal on Ink measures 10.9:1.
-// The line is deliberately not wrapped: these read as terminal output, and a
-// route or a request folding onto two lines stops looking like one. It scrolls
-// instead, which is why the padding is on the element rather than a child.
 .fe-console__evidence {
   display: flex;
   gap: var(--fe-space-2);
@@ -534,13 +478,9 @@
   color: var(--fe-state-success);
 }
 
-// Unrolled: every view visible and stacked. Two audiences get this, for the
-// same reason. `html.no-js` is stripped by the inline script in _meta.pug
-// before the body paints, so a visitor with scripting on never sees this state
-// and there is no reflow; a visitor without it gets five complete views and a
-// rail of five working jump links instead of one view and four dead ones.
-// `.fe-console--unrolled` is the server-rendered equivalent for crawlers, so
-// none of this copy depends on a bot choosing to run our JavaScript.
+// Unrolled: all five views visible and stacked. html.no-js serves script-less
+// visitors (stripped by _meta.pug's inline script before paint, so no reflow);
+// .fe-console--unrolled is the server-rendered equivalent for crawlers.
 .fe-console--unrolled .fe-console__views,
 html.no-js .fe-console__views {
   display: block;
@@ -558,9 +498,6 @@ html.no-js .fe-console__view + .fe-console__view {
   border-top: 1px solid var(--fe-border-subtle);
 }
 
-// With every view on screen the pill would be claiming one of them is the one
-// being shown, so it comes off and the rail reads as the five jump links it
-// actually is here.
 .fe-console--unrolled .fe-console__tab--active,
 html.no-js .fe-console__tab--active {
   background-color: transparent;
@@ -645,9 +582,6 @@ html.no-js .fe-console__tab--active {
   color: var(--fe-primary);
 }
 
-// The dot sits on a 1px rule that runs through its centre. The rule is drawn
-// per step rather than as one line so it reflows correctly when the stepper
-// goes vertical, where the rule runs down the left of the dots instead.
 .fe-stepper__dot-row {
   position: relative;
   display: flex;
@@ -715,9 +649,6 @@ html.no-js .fe-console__tab--active {
   border: 1px solid var(--fe-border-default);
 }
 
-// The one inverse panel in this section. It carries .fe-surface-dark in the
-// markup, which re-points the semantic tokens for its subtree, so the copy
-// inside needs no per-element colour overrides.
 .fe-feature--inverse {
   background-color: var(--fe-ink);
 }
@@ -733,6 +664,18 @@ html.no-js .fe-console__tab--active {
   font-size: var(--fe-text-body-sm);
   line-height: var(--fe-leading-normal);
   color: var(--fe-fg-secondary);
+}
+
+.fe-feature__link {
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fe-feature__link:hover,
+.fe-feature__link:focus {
+  color: var(--fe-fg-primary);
 }
 
 .fe-chips {
@@ -910,9 +853,6 @@ html.no-js .fe-console__tab--active {
   margin-top: var(--fe-space-3);
 }
 
-// Icon fill only. Mint at brand saturation is 1.8:1 on light, which passes the
-// 3:1 graphics threshold but not the 4.5:1 text threshold, so this colour must
-// never land on a text node.
 .fe-plan__check {
   flex: none;
   color: var(--fe-icon-success);
@@ -922,18 +862,15 @@ html.no-js .fe-console__tab--active {
   color: var(--fe-primary-lift);
 }
 
-// ============================================
-// RESPONSIVE
-// ============================================
-// Breakpoints are 1280 / 1024 / 768 / 480 per section 5 of the build spec.
-// These are not Bootstrap's breakpoints (576/768/992/1200) on purpose, so the
-// landing page is not silently coupled to the framework's grid.
-// Mobile first: the single column and vertical stepper are the base rules
-// above, and the wide layouts are added here.
-
 .fe-hero__title--wide {
   display: none;
 }
+
+// ============================================
+// RESPONSIVE
+// ============================================
+// Breakpoints are 1280/1024/768/480 per the spec — deliberately not
+// bootstrap's grid, so the page is not coupled to the framework.
 
 @media (min-width: 768px) {
   .fe-stats {
@@ -994,10 +931,9 @@ html.no-js .fe-console__tab--active {
 
 // Vertical stepper. The rule runs down the left of the dots instead of through
 // their centres.
+// The rail becomes a horizontal scroller on mobile: five equal columns at
+// this width would truncate every tab label.
 @media (max-width: 767px) {
-  // The rail becomes a horizontal scroller and the cards stack one up, per the
-  // spec's mobile behaviour. Five equal columns at this width would put every
-  // tab under 60px and truncate all five labels.
   .fe-console__rail {
     display: flex;
     overflow-x: auto;
@@ -1050,7 +986,7 @@ html.no-js .fe-console__tab--active {
   }
 
   .fe-hero {
-    padding-block: calc(3rem + var(--fe-nav-offset)) 4rem;
+    padding-block: calc(2rem + var(--fe-nav-offset)) 3rem;
   }
 
   .fe-product,
@@ -1085,21 +1021,9 @@ html.no-js .fe-console__tab--active {
 // ============================================
 // RTL
 // ============================================
-// The rules above use logical properties, but postcss-preset-env's
-// logical-properties-and-values transform flattens every one of them to a
-// physical property at build time, because op_mini and kaios are in our
-// browserslist and do not support the logical forms. It flattens assuming LTR,
-// so inset-inline-start becomes left unconditionally and the source's direction
-// independence is lost by the time the CSS ships.
-// Bootstrap's own utilities are flipped by bootstrap-v4-rtl, which keys on
-// [dir="rtl"], and layout.pug sets that attribute for ar and he. These rules
-// follow the same mechanism for the handful of declarations on this page that
-// actually care about direction. Physical properties are used deliberately:
-// writing logical ones here would be flattened to the LTR side again.
-// Only the inline axis needs this. margin-block, padding-block and inset-block
-// map to top and bottom whatever the direction, and the padding-inline and
-// margin-inline shorthands set both sides equally.
-
+// postcss-preset-env flattens logical properties to LTR physical ones
+// (op_mini/kaios lack the logical forms), so direction-sensitive declarations
+// are restated here keyed on [dir='rtl'], with physical props on purpose.
 [dir='rtl'] {
   .fe-hero::before {
     right: 0;
@@ -1129,5 +1053,98 @@ html.no-js .fe-console__tab--active {
       right: 0;
       left: auto;
     }
+  }
+}
+
+// ============================================
+// PRICING TEMPLATE HERO
+// ============================================
+// Hero for the pricing template (/private-business-email and every useCases
+// route). Replaced the #freddy starfield, whose min-vh-100 section pushed the
+// pricing table a full screen down; this sizes to its content instead.
+
+.fe-phero {
+  padding-block: calc(4.5rem + var(--fe-nav-offset)) 4.5rem;
+  text-align: center;
+}
+
+.fe-phero__inner {
+  max-width: 52rem;
+}
+
+.fe-phero__title {
+  margin-bottom: var(--fe-space-5);
+  font-size: var(--fe-text-display-lg);
+  color: var(--fe-fg-primary);
+}
+
+.fe-phero__body {
+  max-width: 60ch;
+  margin-inline: auto;
+  margin-bottom: var(--fe-space-8);
+  font-size: var(--fe-text-body-md);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-phero__actions {
+  display: flex;
+  gap: var(--fe-space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+// Secondary destinations. Quiet enough not to compete with the two buttons
+// above, which is the opposite of the row of solid light buttons this replaced.
+.fe-phero__proof {
+  display: flex;
+  gap: var(--fe-space-2) var(--fe-space-5);
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+  margin-block: var(--fe-space-8) 0;
+  list-style: none;
+}
+
+.fe-phero__proof-link {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+  text-decoration: none;
+  transition: color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-phero__proof-link:hover,
+.fe-phero__proof-link:focus {
+  color: var(--fe-fg-primary);
+  text-decoration: underline;
+}
+
+.fe-phero__proof-link i {
+  color: var(--fe-icon-active);
+}
+
+.fe-phero a:focus-visible,
+.fe-phero button:focus-visible {
+  outline: 2px solid var(--fe-focus-ring);
+  outline-offset: var(--fe-focus-offset);
+}
+
+@media (max-width: 767px) {
+  .fe-phero {
+    padding-block: calc(2.5rem + var(--fe-nav-offset)) 3rem;
+  }
+
+  .fe-phero__proof {
+    gap: var(--fe-space-2) var(--fe-space-4);
+    margin-top: var(--fe-space-6);
+  }
+}
+
+@media (max-width: 479px) {
+  .fe-phero__actions .fe-btn {
+    width: 100%;
   }
 }

@@ -8,7 +8,8 @@
   min-height: 80vh !important;
 }
 .min-vh-100 {
-  min-height: calc(100vh - 58.61px) !important;
+  // full viewport minus the fixed navbar ($fe-nav-offset in _fe-palette.scss)
+  min-height: calc(100vh - #{$fe-nav-offset}) !important;
 }
 .min-h-100 {
   min-height: 100%;
@@ -25,7 +26,7 @@
 // NOTE: we have to use class name here otherwise emails get a padding on top
 //       which is especially annoying in email clients like Thunderbird where it pads the top of composition window
 body.app {
-  padding-top: 60px;
+  padding-top: $fe-nav-offset;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -34,7 +35,7 @@ body.app {
 // <https://github.com/forwardemail/forwardemail.net/issues/479>
 // Offset scroll target for hash navigation to account for fixed navbar
 [id^='table-'] {
-  scroll-margin-top: 66px;
+  scroll-margin-top: $fe-nav-offset + 6px;
 }
 
 .text-decoration-underline {
@@ -165,7 +166,9 @@ body.app {
 @media (prefers-color-scheme: dark) {
   @include media-breakpoint-up(md) {
     .bg-fixed {
-      background-color: #0d1116;
+      // static rather than var(--app-bg-canvas): this block also ships in
+      // app-bot.css, which never gets the dark token re-point
+      background-color: $fe-ink;
     }
   }
 }

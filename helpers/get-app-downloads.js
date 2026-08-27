@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+// Checked-in snapshot of a real release, used when GitHub and the Redis cache
+// are both unavailable at render time. Tagged download URLs are immutable, so
+// every link in the snapshot keeps working even after newer releases ship; the
+// worst case is offering a slightly older version rather than a page whose
+// every button dumps the visitor on the /releases listing.
+// Refresh it with: node scripts/update-mail-app-release-fallback.js
+const FALLBACK_RELEASE = require('../config/mail-app-release-fallback.json');
+
 const logger = require('#helpers/logger');
 
 // Repository the desktop and mobile apps are released from.
@@ -190,15 +198,27 @@ function parseDigest(digest) {
  * Turn a release into the structure the download page renders.
  *
  * Called with a null release (GitHub unreachable, Redis cold, or the fetch
- * failing) it still returns the full platform structure, with every download
- * pointing at the latest release page on GitHub and no size or checksum
- * claimed. The page stays useful and nothing on it can go stale, which is why
- * there is no checked-in copy of a release here.
+ * failing) it falls back to the checked-in snapshot above, so every download
+ * still points directly at a real file with a real checksum rather than at
+ * the /releases listing. Only the checker in get-mail-app-releases.js sees
+ * the null; the fallback lives here so a fetch failure can never be mistaken
+ * for a release change and broadcast.
  *
  * @param {Object|null} release - a release from getLatestMailAppRelease
  * @returns {Object}
  */
 function getAppDownloads(release) {
+  if (
+    !release ||
+    !Array.isArray(release.assets) ||
+    release.assets.length === 0
+  ) {
+    // A release object with no assets (the tag exists but CI is still
+    // uploading) degrades the same way a failed fetch does, so it takes the
+    // snapshot too rather than rendering a page of /releases links.
+    release = FALLBACK_RELEASE;
+  }
+
   const assets = release && Array.isArray(release.assets) ? release.assets : [];
   const isLive = assets.length > 0;
   const claimed = new Set();

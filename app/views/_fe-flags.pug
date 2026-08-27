@@ -1,0 +1,26 @@
+//- The fe design-system gates, computed once per page render. layout.pug
+//- includes this ahead of _nav.pug (pug includes share one compiled scope, so
+//- the nav reads these without recomputing them — and including this twice in
+//- one chain would emit duplicate consts). email-api.pug builds its own html
+//- element without going through layout.pug and includes this itself.
+
+//- `/` only ever renders home.pug for a logged out visitor, since
+//- auth.homeOrDomains redirects everyone else.
+- const isFeLandingPage = !user && ctx.pathWithoutLocale === "/" && !isBot(ctx.get("User-Agent")) && !boolean(ctx.query.pricing);
+//- /download and /faq render their redesigned surfaces for signed in visitors
+//- too: someone who already has an account is the most likely person to want
+//- the app or the answers.
+- const isFeAccountAgnosticPage = ["/download", "/faq"].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent"));
+//- The pricing template's hero renders under the same condition the template
+//- itself uses: no hero for a signed in visitor or for ?pricing, and then the
+//- page is the previous design all the way down.
+- const isFePricingPage = !user && !boolean(ctx.query.pricing) && !isBot(ctx.get("User-Agent")) && (ctx.pathWithoutLocale === "/private-business-email" || Object.keys(useCases).includes(ctx.pathWithoutLocale));
+//- body.fe-page scopes the dark fe modal treatment (_fe-modal.scss): every
+//- logged out page, plus /download and /faq for signed in visitors. Signed in
+//- dashboard modals instead follow the OS scheme via the --app-* tokens in
+//- app-dark.scss, matching the chrome around them.
+- const isFePage = !isBot(ctx.get("User-Agent")) && (!user || isFeAccountAgnosticPage);
+//- Whether the page opens on a dark fe hero that runs under a transparent
+//- navbar. _nav.pug keys the transparent bar on this same flag, and the page
+//- templates read it to add .fe-landing--flush, so the pair cannot drift.
+- const isFeFlushNav = isFeLandingPage || isFePricingPage || (isFeAccountAgnosticPage && !user);

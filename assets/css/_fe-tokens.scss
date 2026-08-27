@@ -3,107 +3,62 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// Forward Email design system tokens, marketing site.
-// Ported from the webmail app's canonical token layer so both surfaces draw
-// from the same palette. The values here are the source of truth for the
-// redesigned landing page. Nothing else on the site references them yet, so
-// adding this file changes no existing page.
-// Two things differ from the app on purpose:
-//   1. Marketing pages use Ink as the dark ground, the app uses Panel.
-//      Do not unify them.
-//   2. The app themes globally off a `.dark` class. This page does not theme
-//      at all. It alternates surfaces down the page: dark hero, light product,
-//      light pricing, dark footer. So the semantic tokens are set by a surface
-//      CONTEXT, not by a theme, and the page looks the same whether or not the
-//      reader's OS is in dark mode. That is what the mockups show.
-// Surface contexts are `.fe-surface-dark` and `.fe-surface-light`. A component
-// inside either one references only the semantic names (--fe-bg-canvas,
-// --fe-fg-primary and so on) and comes out correct on both grounds. This is the
-// spec's inverse Panel idea generalised to whole sections.
-// Do not reuse Bootstrap's .card, .bg-dark, .bg-themed or .text-themed inside
-// the landing page. app-dark.scss overrides all four with !important under
-// prefers-color-scheme: dark and will fight anything built on top of them.
-// postcss-preset-env emits a hardcoded fallback declaration ahead of every
-// var() because op_mini is in our browserslist targets. That is expected. Real
-// browsers use the token, Opera Mini gets a static colour. Avoid #0d1116 and
-// #d3d3d3 in this file: gulpfile.js runs a raw string replace() on those two
-// values over the compiled CSS.
+// Design tokens for the redesigned marketing pages (fe-* layer).
+// Semantic tokens are set by surface CONTEXT (.fe-surface-dark/-light), not by
+// OS theme: the pages alternate dark/light sections and look the same in both
+// schemes. Inside any fe-* scope avoid bootstrap's .card/.bg-dark/.bg-themed/
+// .text-themed (app-dark.scss overrides them with !important), and avoid the
+// literals #0d1116/#d3d3d3 (gulpfile.js string-replaces them in compiled CSS).
+// postcss-preset-env emits a static fallback before every var() for op_mini.
 
 :root {
-  // ============================================
-  // RAW PALETTE
-  // Brand values, unchanged from the mockups.
-  // ============================================
-  --fe-ink: #070b16;
-  --fe-panel: #0e1628;
-  --fe-primary: #2563eb;
-  --fe-signal: #22d3ee;
-  --fe-mint: #34d399;
+  // Hex values live in _fe-palette.scss (shared with _variables.scss).
+  --fe-ink: #{$fe-ink};
+  --fe-primary: #{$fe-primary};
+  --fe-signal: #{$fe-signal};
+  --fe-mint: #{$fe-mint};
 
-  // Text-safe accent variants. The brand accents above each fail WCAG AA as
-  // text on one of the two grounds: Primary is 3.8:1 on Ink, Signal is 1.7:1
-  // on light, Mint is 1.8:1 on light. These clear 4.5:1 where they are used.
-  --fe-primary-lift: #60a5fa; // 7.4:1 on Ink, for links and text on dark
-  // Primary is legal as text on the plain light canvas, but the spec's own
-  // eyebrow recipe puts it on an 8% Primary tint, which lifts the ground and
-  // drops it to 4.37:1 measured. That misses AA for the 11px label, so the
-  // light eyebrow uses this deeper blue instead (5.6:1 on the same tint).
-  --fe-primary-deep: #1d4ed8;
-  --fe-signal-deep: #0e7490; // 5.1:1 on light
-  --fe-mint-deep: #047857; // 5.4:1 on light, used by the pricing eyebrow
+  // Text-safe accent variants: the brand accents each fail AA as text on one
+  // of the two grounds (Primary 3.8:1 on Ink; Signal/Mint ~1.8:1 on light).
+  --fe-primary-lift: #{$fe-primary-lift}; // 7.4:1 on Ink, for links and text on dark
+  --fe-primary-deep: #{$fe-primary-deep}; // eyebrow's 8% tint drops Primary to 4.37:1; this clears AA
+  --fe-signal-deep: #{$fe-signal-deep}; // 5.1:1 on light
+  --fe-mint-deep: #{$fe-mint-deep}; // 5.4:1 on light, used by the pricing eyebrow
 
   // Caution has no light-safe variant in the specification, which is a gap.
   // --fe-caution measures 2.0:1 on the light canvas and cannot be text there.
-  --fe-caution-deep: #92400e;
+  --fe-caution-deep: #{$fe-caution-deep};
 
-  --fe-caution: #f59e0b;
-  --fe-danger: #f87171;
-  --fe-danger-deep: #dc2626;
-  --fe-vault: #a78bfa;
+  --fe-caution: #{$fe-caution};
+  --fe-danger: #{$fe-danger};
+  --fe-danger-deep: #{$fe-danger-deep};
+  --fe-vault: #{$fe-vault};
 
   // Neutral ramp, dark
-  --fe-n-000: #070b16;
-  --fe-n-100: #0e1628;
-  --fe-n-200: #16223a;
-  --fe-n-300: #22304d;
-  --fe-n-400: #3a4a6b;
-  --fe-n-500: #64748b;
-  --fe-n-600: #94a3b8;
-  --fe-n-700: #e2e8f0;
+  --fe-n-100: #{$fe-n-100};
+  --fe-n-200: #{$fe-n-200};
+  --fe-n-300: #{$fe-n-300};
+  --fe-n-400: #{$fe-n-400};
+  --fe-n-500: #{$fe-n-500};
+  --fe-n-600: #{$fe-n-600};
+  --fe-n-700: #{$fe-n-700};
 
   // Neutral ramp, light
-  --fe-l-000: #ffffff;
-  --fe-l-100: #f5f8ff;
-  --fe-l-200: #ebf0f9;
-  --fe-l-300: #d9e1ee;
-  --fe-l-400: #b4c0d4;
-  --fe-l-500: #64748b;
-  --fe-l-600: #3a4a6b;
-  --fe-l-700: #0e1628;
+  --fe-l-000: #{$fe-l-000};
+  --fe-l-100: #{$fe-l-100};
+  --fe-l-200: #{$fe-l-200};
+  --fe-l-300: #{$fe-l-300};
+  --fe-l-400: #{$fe-l-400};
+  --fe-l-500: #{$fe-l-500};
+  --fe-l-600: #{$fe-l-600};
+  --fe-l-700: #{$fe-l-700};
 
-  // ============================================
-  // TYPEFACES
-  // ============================================
-  // The specification calls for Space Grotesk on display copy. It is not
-  // vendored in assets/fonts and is not available as a local package, so
-  // --fe-font-display currently resolves to the body stack. Swapping it is a
-  // one-line change here once the woff2 files land. Every display size below
-  // is at or above 24px, so the spec's "never below 24px" rule holds either
-  // way.
-  // Nunito Sans is the site's existing body face and is already preloaded, so
-  // this adds no font requests.
+  // Display resolves to the body stack until Space Grotesk woff2s are
+  // vendored; swapping it is a one-line change here.
   --fe-font-body: #{$font-family-sans-serif};
   --fe-font-display: var(--fe-font-body);
   --fe-font-mono: #{$font-family-monospace};
 
-  // ============================================
-  // TYPE SCALE
-  // ============================================
-  // The upstream design-system-spec.md does not exist in either repository, so
-  // it defines no numeric type scale. These values are derived from the sizes
-  // the landing page spec states outright (44px stats, 52px price, 28px plan
-  // name and route step title) and interpolated for the rest. Flagging that
-  // rather than hardcoding sizes at the call sites.
   --fe-text-display-xl: clamp(2.5rem, 5.5vw, 4.25rem); // 40px to 68px, H1
   --fe-text-display-lg: clamp(2rem, 3.6vw, 2.75rem); // 32px to 44px, H2
   --fe-text-display-md: 2.75rem; // 44px, stat values
@@ -136,31 +91,22 @@
   --fe-space-4: 1rem;
   --fe-space-5: 1.25rem;
   --fe-space-6: 1.5rem;
-  --fe-space-7: 1.75rem;
   --fe-space-8: 2rem;
 
-  --fe-radius-sm: 6px;
-  --fe-radius-md: 8px;
-  --fe-radius-lg: 12px;
-  --fe-radius-xl: 16px;
+  --fe-radius-sm: #{$fe-radius-sm};
+  --fe-radius-md: #{$fe-radius-md};
+  --fe-radius-lg: #{$fe-radius-lg};
+  --fe-radius-xl: #{$fe-radius-xl};
   --fe-radius-full: 9999px;
-
-  --fe-elev-0: none;
-  --fe-elev-1: 0 1px 2px rgba(7, 11, 22, 0.06), 0 1px 3px rgba(7, 11, 22, 0.1);
-  --fe-elev-2: 0 4px 6px -1px rgba(7, 11, 22, 0.1), 0 2px 4px -2px rgba(7, 11, 22, 0.06);
-  --fe-elev-3: 0 10px 15px -3px rgba(7, 11, 22, 0.12), 0 4px 6px -4px rgba(7, 11, 22, 0.1);
+  --fe-elev-1: 0 1px 2px #{rgba($fe-ink, 0.06)}, 0 1px 3px #{rgba($fe-ink, 0.1)};
+  --fe-elev-3: 0 10px 15px -3px #{rgba($fe-ink, 0.12)}, 0 4px 6px -4px #{rgba($fe-ink, 0.1)};
   --fe-elev-inset: inset 0 1px 0 var(--fe-hairline-light);
 
-  --fe-glow-primary: 0 8px 24px rgba(37, 99, 235, 0.32);
+  --fe-glow-primary: 0 8px 24px #{rgba($fe-primary, 0.32)};
 
-  // The one gradient fill, shared by the three buttons allowed to carry it:
-  // nav sign up, hero start free, and the Enhanced plan CTA.
-  // Deviation from the spec. The spec ends this gradient on --fe-signal,
-  // which is 1.81:1 against the white label it carries. Measured across the
-  // stops, white text falls below 4.5:1 from 20% of the way along, so more
-  // than three quarters of the button fails AA. Ending on --fe-signal-deep
-  // instead holds 5.17:1 at the Primary end and 5.36:1 at the far end, and
-  // keeps the blue to cyan read the spec asked for.
+  // The one gradient fill (nav sign up, hero CTA, Enhanced plan CTA). Ends on
+  // signal-deep rather than the spec's --fe-signal so its white label holds AA
+  // (4.5:1+) along the whole run.
   --fe-gradient-cta: linear-gradient(
     135deg,
     var(--fe-primary) 0%,
@@ -169,94 +115,48 @@
 
   --fe-motion-fast: 120ms;
   --fe-motion-base: 200ms;
-  --fe-motion-slow: 320ms;
   --fe-ease: cubic-bezier(0.4, 0, 0.2, 1);
 
-  // Layout container, per section 0 of the landing page spec.
-  // The fixed navbar's height, which _custom.scss adds to body.app as
-  // padding-top: 60px. The landing page pulls itself back up by this much so
-  // the dark hero runs under the transparent bar instead of leaving a strip of
-  // body background above it. freddy.scss did the same with a literal -60px.
-  --fe-nav-offset: 60px;
+  // The fixed navbar's height (_custom.scss pads body.app by it); flush
+  // heroes pull themselves back up by it so the dark hero runs under the bar.
+  --fe-nav-offset: #{$fe-nav-offset};
 
-  // The spec's section 0 puts the container at 1280px. That is a deviation we
-  // are taking deliberately: at 1280px the page stops growing while the window
-  // keeps going, so a 1541px viewport spends 130px a side on nothing and the
-  // wordmark and the sign up button both read as pulled inboard. The container
-  // is fluid instead. Width past the cap is absorbed by the gutter below, so
-  // there is one mechanism doing the work rather than two stacking up.
-  // The cap is set past the widest laptop panel we expect (a 16 inch MacBook on
-  // More Space reports 2056px), so on a laptop the page is always fluid. It
-  // only engages on an external 4K or ultrawide display, where a grid row any
-  // wider stops being readable.
+  // Fluid container: the cap only engages on 4K/ultrawide displays. The
+  // gutter is static here so the no-var() fallback stays a real length; the
+  // fluid clamp() is layered on at 576px+ below, guarded there because kaios
+  // cannot compute the compiled clamp() and would fall back to 0.
   --fe-container-max: 2200px;
-
-  // Static here so the postcss-preset-env custom-property fallback stays a real
-  // length for browsers with no var() support, and so the narrow end of the
-  // range is untouched. The fluid value is layered on below 576px up.
   --fe-container-gutter: 1.5rem;
   --fe-grid-gap: 1.5rem;
 
-  // Alpha tints. rgba() cannot take a hex custom property as its first
-  // argument, and color-mix() is not safe here: op_mini and kaios are in our
-  // browserslist targets and postcss-preset-env does not polyfill it. So the
-  // tints are declared explicitly, which keeps every call site token-only.
-  --fe-primary-a08: rgba(37, 99, 235, 0.08);
-  --fe-primary-a16: rgba(37, 99, 235, 0.16);
-  --fe-primary-a24: rgba(37, 99, 235, 0.24);
-  --fe-primary-a60: rgba(37, 99, 235, 0.6);
-  --fe-signal-a10: rgba(34, 211, 238, 0.1);
-  --fe-signal-a24: rgba(34, 211, 238, 0.24);
-  --fe-signal-a60: rgba(34, 211, 238, 0.6);
-  --fe-mint-a12: rgba(52, 211, 153, 0.12);
-  --fe-mint-deep-a20: rgba(4, 120, 87, 0.2);
-  --fe-panel-a40: rgba(14, 22, 40, 0.4);
-  --fe-ink-a92: rgba(7, 11, 22, 0.92);
+  // Alpha tints are Sass-computed because CSS rgba() cannot take a hex custom
+  // property and color-mix() is not polyfilled for op_mini/kaios.
+  --fe-primary-a08: #{rgba($fe-primary, 0.08)};
+  --fe-primary-a16: #{rgba($fe-primary, 0.16)};
+  --fe-primary-a24: #{rgba($fe-primary, 0.24)};
+  --fe-signal-a10: #{rgba($fe-signal, 0.1)};
+  --fe-signal-a24: #{rgba($fe-signal, 0.24)};
+  --fe-mint-a12: #{rgba($fe-mint, 0.12)};
+  --fe-mint-deep-a20: #{rgba($fe-mint-deep, 0.2)};
+  --fe-panel-a40: #{rgba($fe-n-100, 0.4)};
+  --fe-ink-a92: #{rgba($fe-ink, 0.92)};
   --fe-hairline-light-16: rgba(255, 255, 255, 0.16);
   --fe-light-a60: rgba(255, 255, 255, 0.6);
   --fe-hairline-light: rgba(255, 255, 255, 0.06);
-  --fe-dot-muted: rgba(100, 116, 139, 0.2);
 
-  // Default for anything outside a surface context. Each surface overrides it,
-  // because a focus indicator needs 3:1 against what surrounds it and Signal is
-  // 1.7:1 on the light canvas.
+  // Overridden per surface: a focus ring needs 3:1 against its surroundings.
   --fe-focus-ring: var(--fe-signal);
   --fe-focus-offset: 2px;
 }
 
-// ============================================
-// FLUID GUTTER
-// ============================================
-// 4vw keeps the page's side margin proportional at every width instead of
-// fixed, so the content field grows with the window rather than sitting in a
-// band. The floor matches the static token, so nothing changes at the narrow
-// end; the ceiling stops the margin running away once the container hits its
-// cap.
-// Guarded at 576px rather than declared in :root for two reasons. Our
-// browserslist includes kaios 2.5, which supports var() but not the min()/max()
-// pair that postcss-preset-env compiles clamp() down to: it would take the
-// custom property, fail to compute the padding, and fall back to 0 rather than
-// to the static value, putting text against the edge of a 240px screen. Those
-// devices never match this query. Opera Mini has no var() support at all and so
-// keeps the static fallback either way.
 @media (min-width: 576px) {
   :root {
     --fe-container-gutter: clamp(1.5rem, 4vw, 5rem);
   }
 }
 
-// ============================================
-// SURFACE CONTEXTS
-// ============================================
-// Each context sets the semantic tokens for everything nested inside it.
-// Sections opt in by class, which is what produces the page's dark/light/
-// light/dark rhythm without any theme switching.
-
-// .fe-nav and .fe-page are listed here because the navbar and the modals live in
-// layout.pug and _nav.pug, outside .fe-landing, so they cannot inherit a surface
-// from a section. .fe-page sits on the body element and makes dark the page's
-// default surface; the light sections opt back out by carrying
-// .fe-surface-light, which re-points these same tokens for their subtree.
+// .fe-nav and .fe-page take the dark set too: the navbar and the modals live
+// outside any section and cannot inherit a surface from one.
 .fe-surface-dark,
 .fe-nav,
 .fe-page {
@@ -267,10 +167,7 @@
 
   --fe-fg-primary: var(--fe-n-700);
   --fe-fg-secondary: var(--fe-n-600);
-  // Not text-safe on any dark ground. n-500 measures 4.13:1 on the Ink canvas
-  // and falls to 3.33:1 on a raised surface, so it clears 3:1 for icons,
-  // borders and large text but misses AA for body copy anywhere. Reach for
-  // --fe-fg-secondary when the thing being coloured is words.
+  // 3.3-4.1:1 on dark grounds: icons/borders/large text only, never body copy.
   --fe-fg-muted: var(--fe-n-500);
   --fe-fg-link: var(--fe-primary-lift);
   --fe-fg-code: var(--fe-n-700);
@@ -279,17 +176,12 @@
   --fe-border-default: var(--fe-n-300);
   --fe-border-strong: var(--fe-n-400);
 
-  // Form field borders are UI components, so WCAG 1.4.11 wants 3:1 against what
-  // sits either side of them. The border ramp above tops out at 2:1 against the
-  // field fill, so controls take their own step: 3.8:1 on the field, 3.3:1 on
-  // the panel behind it.
+  // Field borders need 3:1 (WCAG 1.4.11); the ramp above tops out at 2:1.
   --fe-border-control: var(--fe-n-500);
 
   // Signal and Mint are legal as text on Ink, so the state tokens keep the
   // brand hues here rather than the -deep variants.
   --fe-state-success: var(--fe-mint);
-  --fe-state-active: var(--fe-signal);
-  --fe-state-caution: var(--fe-caution);
   --fe-state-danger: var(--fe-danger);
 
   --fe-focus-ring: var(--fe-signal); // 10.9:1 on Ink
@@ -314,17 +206,11 @@
   // 5.0:1 on white, same reasoning as the dark context.
   --fe-border-control: var(--fe-l-500);
 
-  // The -deep variants. Mint and Signal at brand saturation are 1.8:1 and
-  // 1.7:1 on light and are illegal as text. They stay legal as icon fills
-  // via --fe-icon-*, which is what the pricing checkmarks use.
+  // -deep variants: brand Mint/Signal are ~1.8:1 on light, illegal as text.
   --fe-state-success: var(--fe-mint-deep);
-  --fe-state-active: var(--fe-signal-deep);
-  --fe-state-caution: var(--fe-caution-deep);
   --fe-state-danger: var(--fe-danger-deep);
 
-  // Signal is 1.7:1 on the canvas, 1.8:1 on raised and 1.6:1 on sunken, so a
-  // Signal ring is effectively invisible here. Primary-deep is 5.9:1 or better
-  // against all three.
+  // A Signal ring is invisible on light grounds; primary-deep is 5.9:1+.
   --fe-focus-ring: var(--fe-primary-deep);
 }
 
@@ -341,6 +227,5 @@
   :root {
     --fe-motion-fast: 0ms;
     --fe-motion-base: 0ms;
-    --fe-motion-slow: 0ms;
   }
 }

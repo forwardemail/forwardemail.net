@@ -57,7 +57,6 @@ const purgeFromPug = require('purgecss-from-pug');
 const purgecss = require('gulp-purgecss');
 // const pWaitFor = require('p-wait-for');
 const rename = require('gulp-rename');
-const replace = require('gulp-replace');
 const reporter = require('postcss-reporter');
 const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
@@ -409,12 +408,6 @@ function css() {
         cssnano({ autoprefixer: false }),
         reporter()
       ]),
-      // manual hack to override styling dark mode
-      // <https://m2.material.io/design/color/dark-theme.html>
-      // replace('#0d1116', '#121212'),
-      replace('#0d1116', '#0d1116'),
-      replace('#d3d3d3', 'rgba(253,255,255,.95)'),
-      // replace('#343a40', '#0d1116'),
       purgecss({
         ...purgeCssOptions,
         content: ['build/**/*.js', 'app/views/**/*.md', 'app/views/**/*.pug']

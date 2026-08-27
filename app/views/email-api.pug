@@ -29,6 +29,9 @@ html.h-100.no-js(
         crossorigin="anonymous"
       )
   body(role="document")
+    //- _nav.pug reads the fe gates; this page bypasses layout.pug, so it
+    //- includes them itself.
+    include _fe-flags
     include _nav
     //- Visually-hidden h1 for SEO and accessibility.
     //- The visible "Email API" heading is rendered client-side by the

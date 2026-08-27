@@ -27,9 +27,6 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: 3.844.0
         version: 3.844.0
-      '@forevolve/bootstrap-dark':
-        specifier: 4.0.2
-        version: 4.0.2
       '@fortawesome/fontawesome-free':
         specifier: 5.15.4
         version: 5.15.4
@@ -245,7 +242,7 @@ importers:
         version: 1.5.2
       awesome-mail-server-providers:
         specifier: github:forwardemail/awesome-mail-server-providers
-        version: https://codeload.github.com/forwardemail/awesome-mail-server-providers/tar.gz/2c950cf9f58a597c645d7388ea2f3964de9cb26f
+        version: https://codeload.github.com/forwardemail/awesome-mail-server-providers/tar.gz/1a8ad10f04d4c9295ea042fbff637f0245f9499c
       axe:
         specifier: 13.0.0
         version: 13.0.0
@@ -2418,9 +2415,6 @@ packages:
   '@floating-ui/vue@1.1.11':
     resolution: {integrity: sha512-HzHKCNVxnGS35r9fCHBc3+uCnjw9IWIlCPL683cGgM9Kgj2BiAl8x1mS7vtvP6F9S/e/q4O6MApwSHj8hNLGfw==}
 
-  '@forevolve/bootstrap-dark@4.0.2':
-    resolution: {integrity: sha512-Vngx12H11pFmegQRh5cTz1xgpidA83KstPFkyzFahrqJl1N6MdsqxRoVpKxIKUFFsPsdlw91c5czMoYngrBLbg==}
-
   '@fortawesome/fontawesome-free@5.15.4':
     resolution: {integrity: sha512-eYm8vijH/hpzr/6/1CJ/V/Eb1xQFW2nnUKArb3z+yUWv7HTwj6M7SP957oMjfZjAHU6qpoNc2wQvIxBLWYa/Jg==}
     engines: {node: '>=6'}
@@ -3160,6 +3154,7 @@ packages:
   '@lancedb/lancedb@0.22.3':
     resolution: {integrity: sha512-nRC0fkg+d7dzCtudKHT+VH7znk6KUXRZyuS6HJYNnIrbvXBxaT6wAPjEbf70KTuqvP2znj48Zg+kiwRqkRnAJw==}
     engines: {node: '>= 18'}
+    cpu: [x64, arm64]
     os: [darwin, linux, win32]
     peerDependencies:
       apache-arrow: '>=15.0.0 <=18.1.0'
@@ -5400,6 +5395,7 @@ packages:
   '@xmldom/xmldom@0.8.13':
     resolution: {integrity: sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version has critical issues, please update to the latest version
 
   '@xtuc/ieee754@1.2.0':
     resolution: {integrity: sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA==}
@@ -6063,8 +6059,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  awesome-mail-server-providers@https://codeload.github.com/forwardemail/awesome-mail-server-providers/tar.gz/2c950cf9f58a597c645d7388ea2f3964de9cb26f:
-    resolution: {tarball: https://codeload.github.com/forwardemail/awesome-mail-server-providers/tar.gz/2c950cf9f58a597c645d7388ea2f3964de9cb26f}
+  awesome-mail-server-providers@https://codeload.github.com/forwardemail/awesome-mail-server-providers/tar.gz/1a8ad10f04d4c9295ea042fbff637f0245f9499c:
+    resolution: {tarball: https://codeload.github.com/forwardemail/awesome-mail-server-providers/tar.gz/1a8ad10f04d4c9295ea042fbff637f0245f9499c}
     version: 0.0.0
     engines: {node: '>=18'}
 
@@ -7412,6 +7408,7 @@ packages:
   cron-parser@4.9.0:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
     engines: {node: '>=12.0.0'}
+    deprecated: v4 is no longer maintained, upgrade to v5
 
   cron-validate@1.5.3:
     resolution: {integrity: sha512-jcu8g/3wZL8OBr4MkEcbeIdLpM8pp5Y6UoOlRktcJG3WjgpifijR0s26Yac7ywR0gC2ABtevOsz5mlD3l3gzwA==}
@@ -9743,7 +9740,7 @@ packages:
   git-raw-commits@4.0.0:
     resolution: {integrity: sha512-ICsMM1Wk8xSGMowkOmPrzo2Fgmfo4bMHLNX6ytHjajRJUqvHOw/TFapQ+QG75c3X/tTDDhOSRPGC52dDbNM8FQ==}
     engines: {node: '>=16'}
-    deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
+    deprecated: This package is no longer maintained. For the JavaScript API, please use @conventional-changelog/git-client instead.
     hasBin: true
 
   git-sha1@0.1.2:
@@ -11545,6 +11542,7 @@ packages:
 
   jsrsasign@9.1.9:
     resolution: {integrity: sha512-BMajAcUANeo07/MnscMAsHJtddYtqN/ix4twr+dOheHc5KH/Ad06bI6YfUB2M7ZQhqxvt9pbVWFXYQXe6G+yXw==}
+    deprecated: This package is no longer maintained.
 
   jstransformer@1.0.0:
     resolution: {integrity: sha512-C9YK3Rf8q6VAPDCCU9fnqo3mAfOH6vUGnMcP4AQAYIEpWtfGLpwOTmZ+igtdK5y+VvI2n3CyYSzy4Qh34eq24A==}
@@ -15042,6 +15040,7 @@ packages:
   prom-client@15.1.3:
     resolution: {integrity: sha512-6ZiOBfCywsD4k1BN9IX0uZhF+tJkV8q8llP64G5Hajs4JOeVLPCwpPVcpXy3BwYiUGgyJzsJJQeOIv7+hDSq8g==}
     engines: {node: ^16 || ^18 || >=20}
+    deprecated: prom-client has been replaced by @prometheus-io/client
 
   promise-controller@1.0.0:
     resolution: {integrity: sha512-goA0zA9L91tuQbUmiMinSYqlyUtEgg4fxJcjYnLYOQnrktb4o4UqciXDNXiRUPiDBPACmsr1k8jDW4r7UDq9Qw==}
@@ -21089,12 +21088,6 @@ snapshots:
       - '@vue/composition-api'
       - vue
 
-  '@forevolve/bootstrap-dark@4.0.2':
-    dependencies:
-      bootstrap: 4.6.2(jquery@3.5.1)(popper.js@1.16.1)
-      jquery: 3.5.1
-      popper.js: 1.16.1
-
   '@fortawesome/fontawesome-free@5.15.4': {}
 
   '@forwardemail/bytes@4.0.0': {}
@@ -25667,7 +25660,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  awesome-mail-server-providers@https://codeload.github.com/forwardemail/awesome-mail-server-providers/tar.gz/2c950cf9f58a597c645d7388ea2f3964de9cb26f: {}
+  awesome-mail-server-providers@https://codeload.github.com/forwardemail/awesome-mail-server-providers/tar.gz/1a8ad10f04d4c9295ea042fbff637f0245f9499c: {}
 
   aws-sign2@0.7.0: {}
 
@@ -28709,7 +28702,7 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
       '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
       eslint: 7.32.0
@@ -41946,7 +41939,7 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
       eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.6))(postcss@8.5.6))
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)

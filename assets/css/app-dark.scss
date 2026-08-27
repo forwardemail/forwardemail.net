@@ -5,53 +5,111 @@
 
 // stylelint-disable no-invalid-position-at-import-rule
 
+// Dark mode for the app chrome, written as a compact token-driven theme.
+// This replaced @forevolve/bootstrap-dark, which re-emitted ALL of bootstrap
+// inside the dark media query (~98K, of which ~60% was byte-identical to the
+// light bundle) with its own stock palette (#007bff controls) that was never
+// brand-aligned. Here only what actually changes in dark mode is stated, and
+// every value comes from _fe-palette.scss via the --app-* tokens declared in
+// _app-tokens.scss (light values on :root; re-pointed below).
+// The redesigned marketing surfaces (.fe-*) are surface-locked and token
+// driven, so they render identically in both schemes without any exclusions
+// here; legacy sections embedded on those pages (testimonials, footer) keep
+// following the scheme, as they did under bootstrap-dark.
+
 @import 'node_modules/bootstrap/scss/functions';
 @import 'node_modules/bootstrap/scss/variables';
 @import 'variables';
 
 @import 'node_modules/bootstrap/scss/mixins';
-@import 'node_modules/@forevolve/bootstrap-dark/scss/bootstrap-prefers-dark';
 
-$input-bg:                              $black;
-$input-disabled-bg:                     $dark;
+// The floating-label import below builds its raised-label chip from
+// $input-bg, which must match --app-input-bg's dark value.
+$input-bg: $fe-n-100;
+$input-disabled-bg: $fe-n-200;
 
-// stylelint-disable scss/at-extend-no-missing-placeholder
 @media (prefers-color-scheme: dark) {
-  a, .markdown-body a {
-    color: $link-color;
+  // Re-point the app-chrome tokens (light set lives in _app-tokens.scss).
+  :root {
+    --app-bg-canvas: #{$fe-ink};
+    --app-bg-raised: #{$fe-n-100};
+    --app-bg-sunken: #{$fe-n-200};
+    --app-fg-primary: #{$fe-n-700};
+    --app-fg-secondary: #{$fe-n-600};
+    --app-fg-muted: #{$fe-n-500};
+    --app-link: #{$fe-primary-lift};
+    // stylelint-disable-next-line scss/no-global-function-names
+    --app-link-hover: #{lighten($fe-primary-lift, 12%)};
+    --app-border: #{$fe-n-300};
+    --app-border-strong: #{$fe-n-400};
+    --app-hairline: rgba(255, 255, 255, 0.125);
+    --app-stripe: rgba(255, 255, 255, 0.05);
+    --app-input-bg: #{$fe-n-100};
+    --app-input-fg: #{$fe-n-700};
+    --app-input-border: #{$fe-n-500};
+    --app-code-bg: #{$fe-n-100};
+    --app-focus-ring: #{rgba($fe-primary-lift, 0.35)};
+  }
+
+  // ============================================
+  // BASE
+  // ============================================
+
+  body {
+    color: var(--app-fg-primary);
+    background-color: var(--app-bg-canvas);
+  }
+
+  // <https://github.com/chakra-ui/chakra-ui/issues/1786>
+  input,
+  select,
+  textarea {
+    color-scheme: dark;
+  }
+
+  a,
+  .markdown-body a {
+    color: var(--app-link);
     text-decoration: $link-decoration;
-    background-color: transparent; // Remove the gray background on active links in IE 10.
+    background-color: transparent;
 
     @include hover() {
-      color: $link-hover-color;
+      color: var(--app-link-hover);
       text-decoration: $link-hover-decoration;
     }
   }
-  .navbar-dark .navbar-toggler {
-    color: white !important;
+
+  hr {
+    border-top-color: var(--app-hairline);
   }
-  .btn-outline-dark {
-    @extend .text-light;
-  }
-  .card {
-    background-color: #0d1116 !important;
-  }
-  .bg-dark, .bg-themed, .navbar-themed {
-    background-color: #0d1116 !important;
-    .btn-outline-dark {
-      @extend .text-light;
-    }
-  }
+
   code {
-    color: $white;
+    color: var(--app-fg-primary);
   }
+
+  mark, .mark {
+    padding: 0;
+    color: inherit !important;
+    background: none !important;
+  }
+
+  pre, .highlight pre {
+    padding: 0 !important;
+  }
+
+  // ============================================
+  // MARKDOWN
+  // ============================================
+  // Rendered by github-markdown-dark (imported below); these are the local
+  // patches that always sat on top of it.
+
   .markdown-body {
     .bg-dark {
-      background-color: $gray-800 !important;
+      background-color: $fe-n-200 !important;
     }
     code {
-      background-color: $gray-800 !important;
-      color: $white;
+      background-color: $fe-n-200 !important;
+      color: var(--app-fg-primary);
     }
     pre code {
       background-color: transparent !important;
@@ -67,22 +125,130 @@ $input-disabled-bg:                     $dark;
       border-top: 1px solid rgba(255, 255, 255, 0.7) !important;
     }
   }
-  mark, .mark {
-    padding: 0;
-    color: inherit !important;
-    background: none !important;
+
+  // ============================================
+  // SURFACES AND UTILITIES
+  // ============================================
+  // .bg-dark needs no dark rule any more: $dark is bridged to $fe-ink, so the
+  // light bundle already paints it Ink. .text-dark and .bg-light are
+  // bootstrap utilities (!important), so mapping them across schemes needs
+  // the same weight.
+
+  .card {
+    background-color: var(--app-bg-raised);
+    border-color: var(--app-hairline);
   }
-  pre, .highlight pre {
-    padding: 0 !important;
+
+  .card-header,
+  .card-footer {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: var(--app-hairline);
   }
-  /*
-  .text-themed {
+
+  .bg-themed,
+  .navbar-themed {
+    background-color: var(--app-bg-canvas) !important;
+  }
+
+  .bg-light {
+    background-color: var(--app-bg-sunken) !important;
+  }
+
+  .text-dark {
+    color: var(--app-fg-primary) !important;
+  }
+
+  // Exception to the remap above: .bg-white is scheme-locked (the utility is
+  // !important and gets no dark re-point), so anything carrying both classes
+  // — e.g. the footer's payment-method badges — sits on a white tile in both
+  // schemes and must keep scheme-locked dark text.
+  .bg-white.text-dark,
+  .bg-white .text-dark {
+    color: $fe-ink !important;
+  }
+
+  // #6c757d is 4.0:1 on Ink; the secondary tier keeps it legible.
+  .text-muted {
+    color: var(--app-fg-secondary) !important;
+  }
+
+  .border,
+  .border-top,
+  .border-right,
+  .border-bottom,
+  .border-left {
+    border-color: var(--app-border) !important;
+  }
+
+  .btn-link {
+    color: var(--app-link);
+  }
+
+  .btn-link:hover,
+  .btn-link:focus {
+    color: var(--app-link-hover);
+  }
+
+  .btn-outline-dark,
+  .btn-outline-secondary {
+    color: var(--app-fg-primary);
+    border-color: var(--app-border-strong);
+  }
+
+  .navbar-dark .navbar-toggler {
     color: white !important;
-    &:hover {
-      color: white !important;
-    }
   }
-  */
+
+  .close {
+    color: var(--app-fg-primary);
+    text-shadow: none;
+  }
+
+  // ============================================
+  // TABLES
+  // ============================================
+  // Contextual row variants (.table-success etc.) keep their light tints:
+  // each carries its own dark text, so they stay legible on the dark canvas.
+
+  .table {
+    color: var(--app-fg-primary);
+  }
+
+  .table th,
+  .table td {
+    border-color: var(--app-border);
+  }
+
+  .table-bordered,
+  .table-bordered th,
+  .table-bordered td {
+    border-color: var(--app-border);
+  }
+
+  .table-active,
+  .table-active > th,
+  .table-active > td {
+    background-color: var(--app-stripe);
+  }
+
+  .table thead th {
+    border-bottom-color: var(--app-border);
+  }
+
+  .table .thead-light th {
+    color: var(--app-fg-primary);
+    background-color: var(--app-bg-sunken);
+    border-color: var(--app-border);
+  }
+
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--app-stripe);
+  }
+
+  .table-hover tbody tr:hover {
+    color: var(--app-fg-primary);
+    background-color: var(--app-stripe);
+  }
 
   .table-success, .table-warning, .table-danger, .table-secondary {
     code.text-themed {
@@ -90,9 +256,188 @@ $input-disabled-bg:                     $dark;
     }
   }
 
+  // ============================================
+  // FORMS
+  // ============================================
+
+  .form-control {
+    color: var(--app-input-fg);
+    background-color: var(--app-input-bg);
+    border-color: var(--app-input-border);
+  }
+
+  .form-control:focus {
+    color: var(--app-input-fg);
+    background-color: var(--app-input-bg);
+    border-color: var(--app-link);
+    box-shadow: 0 0 0 0.2rem var(--app-focus-ring);
+  }
+
+  .form-control:disabled,
+  .form-control[readonly] {
+    background-color: var(--app-bg-sunken);
+  }
+
+  .form-control::placeholder {
+    color: var(--app-fg-muted);
+  }
+
+  .input-group-text {
+    color: var(--app-fg-primary);
+    background-color: var(--app-bg-sunken);
+    border-color: var(--app-input-border);
+  }
+
+  // Unchecked control chrome; the checked state keeps the light bundle's
+  // brand primary, which is correct on both schemes.
+  .custom-control-label::before {
+    background-color: var(--app-input-bg);
+    border-color: var(--app-input-border);
+  }
+
+  // ============================================
+  // DROPDOWNS
+  // ============================================
+  // The navbar's panels are owned by _fe-nav.scss (imported later, higher
+  // specificity); these cover page-level dropdowns like table action menus.
+
+  .dropdown-menu {
+    color: var(--app-fg-primary);
+    background-color: var(--app-bg-raised);
+    border-color: var(--app-hairline);
+  }
+
+  .dropdown-item {
+    color: var(--app-fg-primary);
+  }
+
+  .dropdown-item:hover,
+  .dropdown-item:focus {
+    color: var(--app-fg-primary);
+    background-color: var(--app-bg-sunken);
+  }
+
   .dropdown-item.active, .dropdown-item:active {
     color: white;
   }
+
+  .dropdown-header {
+    color: var(--app-fg-secondary);
+  }
+
+  .dropdown-divider {
+    border-top-color: var(--app-border);
+  }
+
+  // ============================================
+  // MODALS, LISTS, PAGINATION, PROGRESS
+  // ============================================
+
+  .modal-content {
+    color: var(--app-fg-primary);
+    background-color: var(--app-bg-raised);
+    border-color: var(--app-hairline);
+  }
+
+  .modal-header,
+  .modal-footer {
+    border-color: var(--app-border);
+  }
+
+  .list-group-item {
+    color: var(--app-fg-primary);
+    background-color: var(--app-bg-raised);
+    border-color: var(--app-hairline);
+  }
+
+  .list-group-item-action {
+    color: var(--app-fg-primary);
+  }
+
+  .list-group-item-action:hover,
+  .list-group-item-action:focus {
+    color: var(--app-fg-primary);
+    background-color: var(--app-bg-sunken);
+  }
+
+  .page-link {
+    color: var(--app-link);
+    background-color: var(--app-bg-raised);
+    border-color: var(--app-border);
+  }
+
+  .page-link:hover {
+    color: var(--app-link-hover);
+    background-color: var(--app-bg-sunken);
+    border-color: var(--app-border);
+  }
+
+  .page-item.disabled .page-link {
+    color: var(--app-fg-muted);
+    background-color: var(--app-bg-raised);
+    border-color: var(--app-border);
+  }
+
+  .progress {
+    background-color: var(--app-bg-sunken);
+  }
+
+  .breadcrumb-item.active,
+  .breadcrumb-item + .breadcrumb-item::before {
+    color: var(--app-fg-secondary);
+  }
+
+  // ============================================
+  // ALERTS
+  // ============================================
+  // Bootstrap's pale light-mode tints become tinted panels with a legible
+  // border, the same treatment _fe-modal.scss uses. One link rule covers all
+  // variants: it ties bootstrap's per-variant .alert-* .alert-link selectors
+  // on specificity and wins on order.
+
+  .alert-primary {
+    color: var(--app-fg-primary);
+    background-color: #{rgba($fe-primary, 0.15)};
+    border-color: #{rgba($fe-primary, 0.4)};
+  }
+
+  .alert-secondary {
+    color: var(--app-fg-primary);
+    background-color: var(--app-bg-sunken);
+    border-color: var(--app-border);
+  }
+
+  .alert-success {
+    color: var(--app-fg-primary);
+    background-color: #{rgba($fe-mint-deep, 0.2)};
+    border-color: #{rgba($fe-mint, 0.4)};
+  }
+
+  .alert-danger {
+    color: var(--app-fg-primary);
+    background-color: #{rgba($fe-danger-deep, 0.2)};
+    border-color: #{rgba($fe-danger, 0.4)};
+  }
+
+  .alert-warning {
+    color: var(--app-fg-primary);
+    background-color: #{rgba($fe-caution, 0.12)};
+    border-color: #{rgba($fe-caution, 0.4)};
+  }
+
+  .alert-info {
+    color: var(--app-fg-primary);
+    background-color: #{rgba($fe-signal-deep, 0.2)};
+    border-color: #{rgba($fe-signal, 0.35)};
+  }
+
+  .alert .alert-link {
+    color: var(--app-fg-primary);
+  }
+
+  // ============================================
+  // VENDOR DARK THEMES
+  // ============================================
 
   @import 'node_modules/github-markdown-css/github-markdown-dark';
   @import 'node_modules/@tkrotoff/bootstrap-floating-label/src/bootstrap-floating-label';
@@ -103,14 +448,4 @@ $input-disabled-bg:                     $dark;
   .btn-ubuntu {
     @include button-variant(#e95320, darken(#e95320, 10%));
   }
-
-  // <https://github.com/chakra-ui/chakra-ui/issues/1786>
-  input {
-    color-scheme: dark;
-  }
-
-  // scalar app CSS reset
-  // <https://github.com/devinschumacher/css-reset/blob/main/reset.css>
-  // <https://github.com/elad2412/the-new-css-reset/blob/main/css/reset.css>
-  @import 'scalar-app';
 }

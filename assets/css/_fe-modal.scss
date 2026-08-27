@@ -3,22 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// Landing page modals: sign up, sign in and domain search.
-// These render as siblings of nav.navbar rather than inside it, so .fe-nav
-// cannot reach them. layout.pug puts `fe-page` on the body element under the
-// same condition that adds `fe-nav`, and everything here hangs off that, so no
-// other page's modals change.
-// The panels are dark in both OS colour schemes, for the same reason the bar is:
-// the page they open over is surface locked, and following the scheme would make
-// the modal light over a dark hero in one and dark over a light section in the
-// other. The domain search header was already .bg-dark, so this continues a
-// direction the markup had already taken.
-// Deliberately untouched: .btn-auth. The Apple, Google and GitHub buttons follow
-// each vendor's published sign-in branding rules, which specify their own fill,
-// border and logo treatment. _btn-auth.scss owns them and this file must not.
-
-// .fe-page takes the dark token set from _fe-tokens.scss, alongside
-// .fe-surface-dark and .fe-nav, so there is no second copy of it here.
+// Modal restyle, scoped under body.fe-page (set by layout.pug for logged out
+// and account-agnostic fe pages). Panels are dark in both OS schemes, like
+// the bar. .fe-page takes the dark token set from _fe-tokens.scss.
+// Deliberately untouched: .btn-auth — the vendor sign-in buttons follow each
+// vendor's published branding rules and _btn-auth.scss owns them.
 
 // ============================================
 // PANEL
@@ -67,14 +56,8 @@
   opacity: 1;
 }
 
-// ============================================
-// TEXT
-// ============================================
-// Bootstrap's .text-muted is #6c757d, which is 4.0:1 on this panel and misses AA
-// at the small sizes these modals use it at. .text-black and .text-themed-50 are
-// worse: both resolve to near black. All three are utilities, so all three need
-// !important to reach.
-
+// Bootstrap's .text-muted is 4.0:1 on this panel and .text-black/.text-themed-50
+// resolve near black; all are utilities, so !important is needed to reach them.
 .fe-page .modal-content .text-muted,
 .fe-page .modal-content .text-secondary,
 .fe-page .modal-content .text-black,
@@ -82,9 +65,6 @@
   color: var(--fe-fg-secondary) !important;
 }
 
-// The two link contexts inside these panels: the privacy and terms line, and
-// the forgot-password link. Both carry the utilities above, which is why they
-// need their own rule after it.
 .fe-page .modal-content .text-black a,
 .fe-page .modal-content .text-themed-50 a,
 .fe-page .modal-content a.text-black,
@@ -92,9 +72,6 @@
   color: var(--fe-fg-link) !important;
 }
 
-// The "or" rule between the vendor buttons and the email form. Its label also
-// carries .text-secondary, which is handled by the utility override above; this
-// only has to cover the rule itself.
 .fe-page .modal-content .hr-text {
   color: var(--fe-fg-secondary);
 }
@@ -126,12 +103,9 @@
   box-shadow: 0 0 0 3px var(--fe-primary-a24);
 }
 
-// Placeholders are deliberately not styled across the board. Inside a
-// .floating-label group the plugin keeps the resting placeholder transparent on
-// purpose, because the label itself is sitting over the field, and revealing it
-// prints the placeholder and the label on top of each other. So the resting
-// placeholder is only coloured for fields that have no floating label, which on
-// this page means the domain search input inside its .input-group.
+// Resting placeholders are only coloured on fields WITHOUT a floating label:
+// the plugin keeps them transparent there so label and placeholder never print
+// on top of each other.
 .fe-page .modal-content .input-group > .form-control::placeholder {
   color: var(--fe-fg-secondary);
   opacity: 1;
@@ -148,12 +122,9 @@
   color: var(--fe-fg-secondary);
 }
 
-// Once the label lifts above the field, the plugin gives it
-// background-color: $input-bg so it can punch a hole in the field's top border.
-// That compiles to #fff and reads as a white chip on a dark field. These mirror
-// the plugin's own raised-state selectors one for one rather than setting the
-// background on the label unconditionally, because at rest the label sits inside
-// the field and must stay transparent, or it punches a hole in an intact border.
+// The plugin's raised state gives the label background-color: $input-bg (#fff)
+// to punch a hole in the field's top border. Mirror its raised-state selectors
+// exactly: at rest the label sits inside the field and must stay transparent.
 .fe-page .modal-content .floating-label > select + label,
 .fe-page .modal-content .floating-label > input:focus + label,
 .fe-page .modal-content .floating-label > textarea:focus + label,
@@ -177,12 +148,6 @@
 .fe-page .modal-content .floating-label > textarea:not([placeholder]):empty + label {
   background-color: var(--fe-bg-sunken);
 }
-
-// ============================================
-// BUTTONS
-// ============================================
-// The submit button is the third gradient call to action the spec allows, shared
-// with the hero and the Enhanced plan through --fe-gradient-cta.
 
 .fe-page .modal-content .btn-success,
 .fe-page .modal-content .btn-primary {
@@ -229,13 +194,8 @@
   color: var(--fe-icon-active) !important;
 }
 
-// ============================================
-// ALERTS
-// ============================================
-// Bootstrap fills these with pale tints meant for a white page. On the dark
-// panel they become bright blocks with near black text, so each becomes a tinted
-// panel with a legible border instead.
-
+// Bootstrap's pale alert tints read as bright blocks with near-black text on
+// the dark panel, so each becomes a tinted panel with a legible border.
 .fe-page .modal-content .alert {
   border-radius: var(--fe-radius-lg);
 }
@@ -262,13 +222,8 @@
   border: 1px solid var(--fe-state-danger);
 }
 
-// ============================================
-// DOMAIN SEARCH RESULTS
-// ============================================
-// domain-search.js injects these rows at runtime. Only classes that already
-// appear in the markup or the purgecss safelist are targeted, so nothing here
-// depends on a class purge cannot see.
-
+// domain-search.js injects these rows at runtime; only classes already in the
+// markup or the purgecss safelist are targeted.
 .fe-page #domain-search-results .alert {
   background-color: var(--fe-bg-sunken);
   border: 1px solid var(--fe-border-subtle);

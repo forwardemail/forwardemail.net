@@ -80,26 +80,33 @@ if !user && !registerOrLogin
             .modal-body
               +registerOrLogin(verb, true)
 - const navbarClasses = [];
+//- `fe-nav` is the redesigned Ink bar and is pushed on every non-bot branch,
+//- so the navbar and its dropdowns read the same on every page of the site
+//- rather than only on the redesigned ones. The pre-redesign classes stay on
+//- each branch as the fallback for browsers the fe styles degrade in, and as
+//- the hooks core.js still toggles on scroll.
+//- On the dark-hero branch the bar opens transparent and takes Ink glass on
+//- scroll; everywhere else _fe-nav.scss renders it opaque Ink from the start.
+//- `fe-nav` is pushed from a code block rather than written as a literal
+//- class, so it is listed in the purgecss safelist in gulpfile.js alongside
+//- the other classes added this way.
 if user
   - navbarClasses.push("navbar-dark", "bg-dark", "border-bottom");
-else if ['/', '/download', '/faq', '/private-business-email', ...Object.keys(useCases)].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent")) && !boolean(ctx.query.pricing)
+  if !isBot(ctx.get("User-Agent"))
+    - navbarClasses.push("fe-nav");
+else if isFeFlushNav
+  //- The page opens on a dark fe hero (per _fe-flags.pug, which layout.pug
+  //- and email-api.pug include ahead of this file), so the bar starts
+  //- transparent over it. core.js keys its scroll toggle on
+  //- `text-white-required` and swaps `text-white` for the bg-* classes once
+  //- scrolled, which is what moves the bar from transparent to Ink glass.
   - navbarClasses.push("text-white");
-  //- used by core.js JavaScript file
-  //- (purely for `hasClass('text-white-required')` check
-  //- (hacky but we can clean this up later)
   - navbarClasses.push("text-white-required");
-  //- Every route reaching this branch now opens on a dark hero built from the
-  //- new surface, so they all take the redesigned navbar. That is the landing
-  //- page, the download page, the FAQ, /private-business-email and every
-  //- useCases route. The branch is already gated to logged out non-bot
-  //- visitors without ?pricing, which is the same condition those heroes
-  //- render under.
-  //- `fe-nav` is pushed from a code block rather than written as a literal
-  //- class, so it is listed in the purgecss safelist in gulpfile.js alongside
-  //- the other classes added this way.
   - navbarClasses.push("fe-nav");
 else
   - navbarClasses.push("bg-white", "navbar-themed", "bg-themed", "border-bottom");
+  if !isBot(ctx.get("User-Agent"))
+    - navbarClasses.push("fe-nav");
 if !isBot(ctx.get("User-Agent"))
   - navbarClasses.unshift("navbar-expand-lg");
   if ctx.pathWithoutLocale !== '/email-api'
