@@ -28,7 +28,6 @@ const getQueryResponse = require('#helpers/get-query-response');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const sendNotification = require('#helpers/send-notification');
-const config = require('#config');
 const {
   prepareQuery,
   syncConvertResult
@@ -41,22 +40,6 @@ const builder = new Builder({ bufferAsNative: true });
 
 const { formatResponse } = IMAPConnection.prototype;
 
-async function renewConcurrentConnectionTTL(session) {
-  const id = session?.user?.alias_id || session?.user?.domain_id;
-  if (!id) return;
-
-  try {
-    await this.client.pexpire(
-      `concurrent_imap_${config.env}:${id}`,
-      config.socketTimeout
-    );
-  } catch (err) {
-    // The limiter is a safeguard; a Redis outage must not prevent retrieval of
-    // a mailbox that was already authenticated successfully.
-    this.logger.fatal(err, { session, resolver: this.resolver });
-  }
-}
-
 //
 // Byte-based flush threshold for batch mode (10 MB).
 // When accumulated compiled payloads exceed this threshold, they are
@@ -68,9 +51,6 @@ const FLUSH_BYTES = 10 * 1024 * 1024; // 10 MB
 
 async function onFetch(mailboxId, options, session, fn) {
   this.logger.debug('FETCH', { mailboxId, options, session });
-
-  // Keep the connection counted while it is actively serving mailbox data.
-  await renewConcurrentConnectionTTL.call(this, session);
 
   if (this.wsp) {
     try {

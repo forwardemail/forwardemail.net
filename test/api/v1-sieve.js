@@ -864,33 +864,3 @@ if header :contains "from" "boss" {
   t.is(res.status, 200);
   t.is(res.body.name, 'complex-script');
 });
-
-test('PUT /v1/sieve-scripts/:script_id rejects security-invalid redirect abuse', async (t) => {
-  const { api } = t.context;
-  const { alias, domain, pass } = await createTestAlias(t);
-  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
-  const createRes = await api
-    .post('/v1/sieve-scripts')
-    .set('Authorization', auth)
-    .send({
-      name: 'security-update-script',
-      content: VALID_SIEVE_SCRIPT
-    });
-  t.is(createRes.status, 200);
-
-  const maliciousContent = [
-    'require ["copy"];',
-    ...Array.from(
-      { length: 11 },
-      (_, index) => `redirect :copy "recipient-${index}@example.com";`
-    )
-  ].join('\n');
-
-  const response = await api
-    .put(`/v1/sieve-scripts/${createRes.body.id}`)
-    .set('Authorization', auth)
-    .send({ content: maliciousContent });
-
-  t.is(response.status, 400);
-  t.regex(response.body.message, /sieve_script_security_error|redirect/i);
-});

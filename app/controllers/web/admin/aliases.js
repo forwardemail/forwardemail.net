@@ -15,16 +15,7 @@ const emailHelper = require('#helpers/email');
 const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
 const i18n = require('#helpers/i18n');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
-const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Aliases, Domains, Emails, Users } = require('#models');
-
-const ALIAS_SORT_FIELDS = new Set([
-  'name',
-  'smtp_limit',
-  'is_smtp_suspended',
-  'is_enabled',
-  'created_at'
-]);
 
 async function list(ctx) {
   const domain = await Domains.findById(ctx.params.id)
@@ -51,7 +42,7 @@ async function list(ctx) {
     Aliases.find(query)
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
-      .sort(getAllowedSort(ctx.query.sort, ALIAS_SORT_FIELDS, '-created_at'))
+      .sort(ctx.query.sort || '-created_at')
       .populate('user', 'id email')
       .lean()
       .exec(),

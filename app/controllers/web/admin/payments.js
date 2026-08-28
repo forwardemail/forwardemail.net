@@ -13,19 +13,7 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const refundHelper = require('#helpers/refund');
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
-const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Domains, Payments, Users } = require('#models');
-
-const PAYMENT_SORT_FIELDS = new Set([
-  'reference',
-  'user.email',
-  'amount',
-  'currency',
-  'method',
-  'plan',
-  'kind',
-  'created_at'
-]);
 
 const { PAYMENT_DURATIONS } = config.payments;
 
@@ -79,14 +67,13 @@ async function list(ctx) {
     }
   }
 
-  const sort = getAllowedSort(
-    ctx.query.sort,
-    PAYMENT_SORT_FIELDS,
-    '-created_at'
-  );
-  const $sort = {
-    [sort.startsWith('-') ? sort.slice(1) : sort]: sort.startsWith('-') ? -1 : 1
-  };
+  let $sort = { created_at: -1 };
+  if (ctx.query.sort) {
+    const order = ctx.query.sort.startsWith('-') ? -1 : 1;
+    $sort = {
+      [order === -1 ? ctx.query.sort.slice(1) : ctx.query.sort]: order
+    };
+  }
 
   // FWD-01-010: mongodb_query is validated by assertAllowedMongoQuery() below,
   // which whitelists operators and caps size/depth regardless of transport, so

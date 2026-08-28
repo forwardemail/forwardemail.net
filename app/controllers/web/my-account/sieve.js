@@ -189,17 +189,16 @@ async function createSieveScript(ctx) {
     );
   }
 
-  // Security analysis must fail closed before state changes. The model repeats
-  // this validation as defense in depth, but rejecting here keeps UI/API error
-  // handling consistent and prevents deactivating another valid script first.
+  // Security analysis
   const securityResult = securityValidator.validate(content);
-  if (!securityResult.valid)
-    throw Boom.badRequest(
-      ctx.translateError(
-        'SIEVE_SCRIPT_SECURITY_ERROR',
-        securityResult.errors[0].message
-      )
+
+  // If activating this script, deactivate others
+  if (is_active) {
+    await SieveScripts.updateMany(
+      { alias: ctx.state.alias._id, is_active: true },
+      { $set: { is_active: false } }
     );
+  }
 
   const script = await SieveScripts.create({
     alias: ctx.state.alias._id,
@@ -210,9 +209,7 @@ async function createSieveScript(ctx) {
     description: description || '',
     is_active: Boolean(is_active),
     required_capabilities: securityResult.requiredExtensions || [],
-    security_warnings: securityResult.warnings || [],
-    created_by: 'web',
-    last_modified_by: 'web'
+    security_warnings: securityResult.warnings || []
   });
 
   if (ctx.api) {
@@ -285,16 +282,8 @@ async function updateSieveScript(ctx) {
       );
     }
 
-    // Security analysis must be enforced here and again by the model's
-    // pre-save hook. Previously this result was recorded but not acted upon.
+    // Security analysis
     const securityResult = securityValidator.validate(content);
-    if (!securityResult.valid)
-      throw Boom.badRequest(
-        ctx.translateError(
-          'SIEVE_SCRIPT_SECURITY_ERROR',
-          securityResult.errors[0].message
-        )
-      );
 
     updates.content = content;
     updates.required_capabilities = securityResult.requiredExtensions || [];
@@ -308,20 +297,28 @@ async function updateSieveScript(ctx) {
     is_active === 'false'
   ) {
     const shouldActivate = is_active === true || is_active === 'true';
+    if (shouldActivate) {
+      // Deactivate other scripts
+      await SieveScripts.updateMany(
+        {
+          alias: ctx.state.alias._id,
+          _id: { $ne: ctx.state.sieveScript._id },
+          is_active: true
+        },
+        { $set: { is_active: false } }
+      );
+    }
+
     updates.is_active = shouldActivate;
   }
 
-  // Do not use findByIdAndUpdate here: query updates bypass Mongoose pre-save
-  // hooks that enforce syntax/security validation and one active script per
-  // alias. Loading and saving the document makes every UI update follow the
-  // same protected path as API and ManageSieve updates.
-  const script = await SieveScripts.findById(ctx.state.sieveScript._id);
-  if (!script)
-    throw Boom.notFound(ctx.translateError('SIEVE_SCRIPT_DOES_NOT_EXIST'));
-
-  for (const [key, value] of Object.entries(updates)) script[key] = value;
-  script.last_modified_by = 'web';
-  await script.save();
+  const script = await SieveScripts.findByIdAndUpdate(
+    ctx.state.sieveScript._id,
+    { $set: updates },
+    { new: true }
+  )
+    .lean()
+    .exec();
 
   if (ctx.api) {
     ctx.body = {

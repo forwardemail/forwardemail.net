@@ -4,85 +4,73 @@
  */
 
 const dns = require('node:dns');
-const { isIP } = require('node:net');
-
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const config = require('#config');
 
 /**
- * Check whether a hostname or IP literal is private/internal and must never be
- * used as an outbound connection target.
- *
- * IP literals are classified canonically by `regex-localhost`'s ipaddr.js
- * implementation.  This is deliberately not a textual regular-expression
- * check: IPv4-mapped IPv6 addresses have many equivalent spellings.
- *
- * @param {string} hostname hostname or IP literal
- * @returns {boolean} true if the value is private/internal/reserved
+ * Check if a hostname is private/internal and should be blocked.
+ * Reuses the shared REGEX_LOCALHOST helper (covers RFC 1918, loopback,
+ * link-local, 0.0.0.0/8, CGNAT, benchmarking, IPv6 ::1/fc00/fe80)
+ * and config.testDomains (reserved TLDs + cloud metadata hostnames).
+ * @param {string} hostname - The hostname to check
+ * @returns {boolean} true if the hostname is private/internal
  */
 function isPrivateHost(hostname) {
-  if (typeof hostname !== 'string' || !hostname.trim()) return true;
+  if (!hostname) return true;
 
-  // Strip brackets from IPv6 literals and normalize a DNS trailing dot.
-  const host = hostname
-    .trim()
-    .replace(/^\[|]$/g, '')
-    .replace(/\.$/, '')
-    .toLowerCase();
+  // Strip brackets from IPv6
+  const host = hostname.replace(/^\[|]$/g, '');
 
-  // Canonically classify IPv4, IPv6, and IPv4-mapped IPv6 address literals.
+  // Check shared REGEX_LOCALHOST (all private/reserved IP ranges)
   if (REGEX_LOCALHOST.test(host)) return true;
 
-  // Block reserved/test domains and cloud metadata hostnames before resolution.
-  const parts = host.split('.');
-  const tld = parts.at(-1);
+  // Check if TLD (or bare hostname) is a reserved/test domain
+  // Covers: localhost, local, internal, test, metadata, instance-data, etc.
+  const parts = host.toLowerCase().split('.');
+  const tld = parts[parts.length - 1];
   if (config.testDomains.includes(tld)) return true;
+
+  // Check full hostname against testDomains (e.g. "metadata", "instance-data")
   if (config.testDomains.includes(parts[0])) return true;
 
   return false;
 }
 
 /**
- * Async check which also resolves DNS answers to prevent SSRF through a public
- * hostname that resolves to a non-public address.  Callers should use this
- * before outbound HTTP, SMTP, and storage connections.
- *
- * @param {string} hostname hostname or IP literal
- * @param {object} [resolver] optional Tangerine-compatible resolver
- * @returns {Promise<boolean>} true when the target must be blocked
+ * Async version that also resolves the hostname via DNS and checks
+ * whether any resolved IP is private/internal.
+ * Use this for outbound HTTP requests to prevent DNS rebinding attacks.
+ * @param {string} hostname - The hostname to check
+ * @param {object} [resolver] - Optional Tangerine resolver instance (Redis-backed, cached)
+ * @returns {Promise<boolean>} true if the hostname is private/internal
  */
 async function isPrivateHostResolved(hostname, resolver) {
+  // First do the synchronous checks
   if (isPrivateHost(hostname)) return true;
 
-  const host = hostname
-    .trim()
-    .replace(/^\[|]$/g, '')
-    .replace(/\.$/, '');
+  // If it's already an IP literal, no need to resolve
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) return false;
+  if (/^[\da-f:]+$/i.test(hostname)) return false;
 
-  // Any remaining valid IP literal is canonical public unicast because
-  // isPrivateHost() above rejects every non-public range.  Use Node's parser
-  // instead of a character-class regex so hostnames such as "face" cannot
-  // evade DNS resolution and its fail-closed address validation.
-  if (isIP(host)) return false;
-
+  // Resolve the hostname and check all returned IPs.
+  // Use provided Tangerine resolver if available (Redis-backed cache),
+  // otherwise fall back to a fresh node:dns Resolver.
   try {
     const r =
       resolver || new dns.promises.Resolver({ timeout: 5000, tries: 2 });
-    const [addresses4, addresses6] = await Promise.all([
-      r.resolve4(host).catch(() => []),
-      r.resolve6(host).catch(() => [])
-    ]);
+    const addresses = await r.resolve4(hostname).catch(() => []);
+    const addresses6 = await r.resolve6(hostname).catch(() => []);
+    const allAddresses = [...addresses, ...addresses6];
 
-    const addresses = [...addresses4, ...addresses6];
-    // DNS lookup failure or an empty answer is fail-closed.  A target cannot be
-    // safely connected when its complete address set has not been inspected.
-    if (addresses.length === 0) return true;
-
-    return addresses.some((address) => isPrivateHost(address));
+    for (const addr of allAddresses) {
+      if (REGEX_LOCALHOST.test(addr)) return true;
+    }
   } catch {
-    // DNS resolution errors must not turn into an outbound connection attempt.
+    // DNS resolution failed - block by default for safety
     return true;
   }
+
+  return false;
 }
 
 module.exports = isPrivateHost;

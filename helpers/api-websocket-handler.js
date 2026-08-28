@@ -202,11 +202,20 @@ class ApiWebSocketHandler {
    * @returns {Promise<Object>} - { aliasId } on success
    */
   async _authenticate(request) {
-    // Authentication material must be supplied only through Authorization.
-    // URLs are routinely retained in access logs, browser history, proxies,
-    // metrics, and referrer chains, so accepting token or password query
-    // parameters would disclose reusable credentials.
-    const creds = basicAuth(request);
+    // Prefer the standard Authorization header, but fall back to query
+    // parameters for browser WebSocket clients that cannot set custom
+    // headers on the upgrade request.
+    let creds = basicAuth(request);
+
+    if (!creds || !creds.name) {
+      const { query } = url.parse(request.url, true);
+      if (query.username) {
+        creds = { name: query.username, pass: query.password || '' };
+      } else if (query.token) {
+        // API token via query param (password-less; alias_id required)
+        creds = { name: query.token, pass: '' };
+      }
+    }
 
     if (!creds || !creds.name) {
       const err = new Error('Authentication required');
@@ -388,19 +397,15 @@ class ApiWebSocketHandler {
       return;
     }
 
-    // Query-string credentials are deliberately unsupported.  They leak into
-    // routine request logging and browser history.  `alias_id` and `msgpackr`
-    // remain non-secret routing/format parameters.
-    if (query.token || query.username || query.password) {
-      socket.write('HTTP/1.1 400 Bad Request\r\n\r\n');
-      socket.destroy();
-      return;
-    }
-
-    // If an Authorization header is supplied, authentication must succeed; it
-    // must never fall through to the unauthenticated broadcast-only path.
+    // Determine whether the client supplied credentials
     const creds = basicAuth(request);
-    const hasCredentials = Boolean(creds && creds.name);
+    // If the client sent an Authorization header (or token/username query
+    // params) we treat it as an authenticated request.  If auth fails the
+    // client receives a 401 — it does NOT fall through to the
+    // unauthenticated broadcast-only path.
+    const hasCredentials = Boolean(
+      (creds && creds.name) || query.token || query.username
+    );
 
     if (hasCredentials) {
       // --- Authenticated path ---

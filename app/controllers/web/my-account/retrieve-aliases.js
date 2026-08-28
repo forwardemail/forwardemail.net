@@ -19,18 +19,8 @@ const Users = require('#models/users');
 const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
 const sendPaginationCheck = require('#helpers/send-pagination-check');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
-const getAllowedSort = require('#helpers/get-allowed-sort');
 
 const config = require('#config');
-
-const ALIAS_SORT_FIELDS = new Set([
-  'name',
-  'description',
-  'is_enabled',
-  'smtp_limit',
-  'is_smtp_suspended',
-  'created_at'
-]);
 
 async function retrieveAliases(ctx, next) {
   let query =
@@ -208,19 +198,13 @@ async function retrieveAliases(ctx, next) {
     //
     if (!hasPagination) await sendPaginationCheck(ctx);
 
-    const sort = getAllowedSort(
-      ctx.query.sort,
-      ALIAS_SORT_FIELDS,
-      'created_at'
-    );
-
     const [aliases, itemCount] = await Promise.all([
       hasPagination
         ? // eslint-disable-next-line unicorn/no-array-callback-reference
           Aliases.find(query)
             .limit(ctx.query.limit)
             .skip(ctx?.paginate?.skip)
-            .sort(sort)
+            .sort(isSANB(ctx.query.sort) ? ctx.query.sort : 'created_at')
             .populate(
               'user',
               `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
@@ -235,7 +219,7 @@ async function retrieveAliases(ctx, next) {
               `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
             )
             .populate('domain', 'id name')
-            .sort(sort)
+            .sort(isSANB(ctx.query.sort) ? ctx.query.sort : 'created_at')
             .lean()
             .exec(),
       Aliases.countDocuments(query)
@@ -255,14 +239,12 @@ async function retrieveAliases(ctx, next) {
       itemCount
     );
   } else {
-    const sort = getAllowedSort(ctx.query.sort, ALIAS_SORT_FIELDS, 'name');
-
     const [aliases, itemCount] = await Promise.all([
       // eslint-disable-next-line unicorn/no-array-callback-reference
       Aliases.find(query)
         .limit(ctx.query.limit)
         .skip(ctx?.paginate?.skip)
-        .sort(sort)
+        .sort(isSANB(ctx.query.sort) ? ctx.query.sort : 'name')
         .populate(
           'user',
           `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`

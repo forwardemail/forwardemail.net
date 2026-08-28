@@ -20,9 +20,6 @@ const config = require('#config');
 const populateDomainStorage = require('#helpers/populate-domain-storage');
 const sendPaginationCheck = require('#helpers/send-pagination-check');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
-const getAllowedSort = require('#helpers/get-allowed-sort');
-
-const DOMAIN_SORT_FIELDS = new Set(['name']);
 
 async function getCharts(ctx) {
   const query = { $or: [] };
@@ -319,10 +316,10 @@ async function listDomains(ctx, next) {
   const pageCount =
     !ctx.api || hasPagination ? Math.ceil(itemCount / ctx.query.limit) : 1;
 
-  // Sort only by the field exposed by the account-domain table.
-  const sort = getAllowedSort(ctx.query.sort, DOMAIN_SORT_FIELDS, '');
+  // sort domains
   let sortFn;
-  if (sort) sortFn = (d) => d[sort.replace(/^-/, '')];
+  if (isSANB(ctx.query.sort))
+    sortFn = (d) => d[ctx.query.sort.replace(/^-/, '')];
   else {
     // use the default A-Z sort fn but put not verified at top, followed by mismatch
     // (but the API will return default sort by `created_at` for pagination purposes)
@@ -360,7 +357,8 @@ async function listDomains(ctx, next) {
   // domains are already pre-sorted A-Z by 'name' so only use sortFn if passed
   if (sortFn) domains = _.sortBy(domains, [sortFn]);
 
-  if (sort && sort.startsWith('-')) domains = _.reverse(domains);
+  if (isSANB(ctx.query.sort) && ctx.query.sort.startsWith('-'))
+    domains = _.reverse(domains);
 
   // slice for page
   if (!ctx.api || hasPagination)

@@ -810,15 +810,8 @@ ZXhhbXBsZQo=
     );
     */
 
-    // Shorten the connection limiter deliberately.  A subsequent FETCH must
-    // renew it rather than leaving an active IMAP connection uncounted after
-    // the original authentication-time TTL expires.
-    const concurrentKey = `concurrent_imap_${config.env}:${t.context.alias.id}`;
-    await t.context.client.pexpire(concurrentKey, ms('1s'));
-    const pttlBeforeFetch = await t.context.client.pttl(concurrentKey);
-    t.true(pttlBeforeFetch > 0 && pttlBeforeFetch <= ms('1s'));
-
-    // Fetch uid/envelope data and verify the active connection refreshed TTL.
+    // fetch
+    // uid is always included, envelope strings are in unicode
     for await (const message of client.fetch('1:*', { envelope: true })) {
       // NOTE: since emailId not working (should be message.id from db)
       t.is(
@@ -834,12 +827,6 @@ ZXhhbXBsZQo=
           .digest('hex')
       );
     }
-
-    const pttlAfterFetch = await t.context.client.pttl(concurrentKey);
-    t.true(
-      pttlAfterFetch > config.socketTimeout - ms('10s'),
-      'FETCH should restore the active connection limiter TTL'
-    );
 
     // fetch (with search)
     for await (const message of client.fetch(

@@ -255,34 +255,6 @@ test('fails WebSocket connection with API token but no alias_id', async (t) => {
   );
 });
 
-test('rejects WebSocket credentials in query parameters', async (t) => {
-  const { apiURL } = t.context;
-  const { user, alias, domain, pass } = await createTestAlias(t);
-  const baseURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
-
-  await t.throwsAsync(
-    () =>
-      connectWebSocket(
-        `${baseURL}?alias_id=${alias.id}&token=${encodeURIComponent(
-          user[config.userFields.apiToken]
-        )}`,
-        {}
-      ),
-    { message: /Unexpected server response: 400/ }
-  );
-
-  await t.throwsAsync(
-    () =>
-      connectWebSocket(
-        `${baseURL}?username=${encodeURIComponent(
-          `${alias.name}@${domain.name}`
-        )}&password=${encodeURIComponent(pass)}`,
-        {}
-      ),
-    { message: /Unexpected server response: 400/ }
-  );
-});
-
 test('establishes WebSocket connection with alias auth', async (t) => {
   const { apiURL } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);

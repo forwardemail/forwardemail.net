@@ -14,7 +14,6 @@ const SMTPError = require('#helpers/smtp-error');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const env = require('#config/env');
-const _ = require('#helpers/lodash');
 const getHeaders = require('#helpers/get-headers');
 // const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
@@ -65,14 +64,7 @@ const YAHOO_DOMAINS = new Set([
 ]);
 */
 
-// Configuration values are literal identifiers, not regular-expression source.
-// Anchor the full host check because this branch is explicitly an exact match.
-function createLiteralRegex(value, exact = false) {
-  const source = _.escapeRegExp(value);
-  return new RE2(new RegExp(exact ? `^${source}$` : source, 'i'));
-}
-
-const REGEX_DOMAIN = createLiteralRegex(env.WEB_HOST, true);
+const REGEX_DOMAIN = new RE2(new RegExp(env.WEB_HOST, 'im'));
 
 // this accounts for spammers that spoof our domain name in From
 // but omit the ".com" portion, e.g. "ForwardEmail" or "forwardemail"
@@ -82,8 +74,8 @@ const result = parseDomain(fromUrl(env.WEB_HOST));
 const domainWithoutTLD =
   result?.type === 'LISTED' && result?.domain ? result.domain : env.WEB_HOST;
 
-const REGEX_DOMAIN_WITHOUT_TLD = createLiteralRegex(domainWithoutTLD);
-const REGEX_APP_NAME = createLiteralRegex(env.APP_NAME);
+const REGEX_DOMAIN_WITHOUT_TLD = new RE2(new RegExp(domainWithoutTLD, 'im'));
+const REGEX_APP_NAME = new RE2(new RegExp(env.APP_NAME, 'im'));
 
 // function isArbitrary(session, headers, bodyStr) {
 
@@ -1156,4 +1148,3 @@ if (
 }
 
 module.exports = isArbitrary;
-module.exports.createLiteralRegex = createLiteralRegex;

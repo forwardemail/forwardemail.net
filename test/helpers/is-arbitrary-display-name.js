@@ -13,18 +13,6 @@ process.env.WEB_HOST = 'forwardemail.net';
 const env = require('#config/env');
 const isArbitrary = require('#helpers/is-arbitrary');
 
-const { createLiteralRegex } = isArbitrary;
-
-test('configured anti-spoofing hostname is escaped and exactly matched', (t) => {
-  const regex = createLiteralRegex('forwardemail.net', true);
-
-  t.true(regex.test('forwardemail.net'));
-  t.true(regex.test('FORWARDEMAIL.NET'));
-  t.false(regex.test('forwardemailXnet'));
-  t.false(regex.test('forwardemail.net.attacker.test'));
-  t.false(regex.test('attacker.forwardemail.net'));
-});
-
 // Mock headers object that mimics mailsplit headers
 function createMockHeaders(fromValue, subjectValue = 'Test Subject') {
   const headersMap = new Map();

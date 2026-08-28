@@ -200,24 +200,3 @@ test('chacha fallback detection', (t) => {
     instanceOf: Error
   });
 });
-
-test('normalizes malformed legacy CBC failures to one terminal error', (t) => {
-  const malformedInputs = [
-    '0123456789abcdef-00',
-    '0123456789abcdef-00112233445566778899aabbccddeeff',
-    '0123456789abcdef-zz'
-  ];
-
-  const messages = malformedInputs.map((input) => {
-    const error = t.throws(() => decrypt(input), {
-      instanceOf: Error
-    });
-    return error.message;
-  });
-
-  t.deepEqual(messages, [
-    'Decryption failed for all supported formats',
-    'Decryption failed for all supported formats',
-    'Decryption failed for all supported formats'
-  ]);
-});

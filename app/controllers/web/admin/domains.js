@@ -17,26 +17,7 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
-const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Users, Domains, Emails } = require('#models');
-
-const DOMAIN_SORT_FIELDS = new Set([
-  'name',
-  'is_global',
-  'alias_count',
-  'plan',
-  'has_mx_record',
-  'has_txt_record',
-  'has_dkim_record',
-  'has_spf_record',
-  'has_dmarc_record',
-  'has_smtp',
-  'has_newsletter',
-  'smtp_suspended_sent_at',
-  'smtp_count',
-  'max_recipients_per_alias',
-  'created_at'
-]);
 
 async function list(ctx) {
   let query = {};
@@ -105,7 +86,7 @@ async function list(ctx) {
     Domains.find(query)
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
-      .sort(getAllowedSort(ctx.query.sort, DOMAIN_SORT_FIELDS, '-created_at'))
+      .sort(ctx.query.sort || '-created_at')
       .populate('members.user', 'id email')
       .lean()
       .exec(),

@@ -4,9 +4,6 @@
  */
 
 const Boom = require('@hapi/boom');
-const { encode } = require('html-entities');
-const humanize = require('humanize-string');
-const titleize = require('titleize');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -53,12 +50,6 @@ async function unsubscribe(ctx) {
     ctx.state.unsubscribeSuccess = true;
     ctx.state.unsubscribeEmail = email;
     ctx.state.unsubscribeTemplate = template;
-    // The view deliberately renders its translated string as HTML because it
-    // contains a `<strong>` element. Escape the token-derived substitution
-    // before it reaches that raw interpolation.
-    ctx.state.unsubscribeTemplateLabel = template
-      ? encode(humanize(titleize(template)))
-      : null;
     return ctx.render('unsubscribe');
   }
 
@@ -104,12 +95,6 @@ async function unsubscribe(ctx) {
   ctx.state.unsubscribeSuccess = true;
   ctx.state.unsubscribeEmail = email;
   ctx.state.unsubscribeTemplate = template;
-  // See the equivalent unknown-user response above. Signed tokens still carry
-  // attacker-controlled input when an encryption key is compromised, so this
-  // output boundary must always HTML-encode the display label.
-  ctx.state.unsubscribeTemplateLabel = template
-    ? encode(humanize(titleize(template)))
-    : null;
   return ctx.render('unsubscribe');
 }
 
