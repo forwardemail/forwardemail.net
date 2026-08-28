@@ -10,7 +10,7 @@ const RE2 = require('re2');
 const dashify = require('dashify');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const mobileconfig = require('@zone-eu/mobileconfig');
+const mobileconfig = require('mobileconfig');
 const mongoose = require('mongoose');
 const plist = require('plist');
 const shortID = require('mongodb-short-id');
@@ -43,7 +43,7 @@ if (isSANB(env.WEB_SSL_CA_PATH) && env.WEB_SSL_CA_PATH && env.WEB_SSL_CA_PATH)
     cert: fs.readFileSync(env.WEB_SSL_CERT_PATH),
     ca: fs.readFileSync(env.WEB_SSL_CA_PATH)
     // `hashAlg` option defaults to "sha256"
-    // <https://github.com/zone-eu/mobileconfig#signing-configuration>
+    // <https://github.com/andris9/mobileconfig?tab=readme-ov-file#signing-configuration>
   };
 
 // macOS and iOS mobileconfig template (gets signed with our website SSL keys)
