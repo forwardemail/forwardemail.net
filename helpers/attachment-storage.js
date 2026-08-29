@@ -31,7 +31,10 @@ const _ = require('#helpers/lodash');
 const Attachments = require('#models/attachments');
 const logger = require('#helpers/logger');
 const isRetryableError = require('#helpers/is-retryable-error');
-const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
+const {
+  prepareQuery,
+  syncConvertResult
+} = require('#helpers/mongoose-to-sqlite');
 
 const builder = new Builder({ bufferAsNative: true });
 
@@ -109,19 +112,108 @@ async function updateAttachments(attachmentIds, magic, session) {
   }
 }
 
+function normalizeAttachmentBody(value) {
+  if (Buffer.isBuffer(value)) return value;
+
+  // `msgpackr` preserves Buffers, but accept the standard serialized Buffer
+  // representation as a defensive compatibility measure for queued work from
+  // older processes or transports.
+  if (
+    value &&
+    value.type === 'Buffer' &&
+    Array.isArray(value.data) &&
+    value.data.every(
+      (byte) => Number.isInteger(byte) && byte >= 0 && byte <= 0xff
+    )
+  )
+    return Buffer.from(value.data);
+
+  if (value instanceof ArrayBuffer) return Buffer.from(value);
+
+  if (ArrayBuffer.isView(value))
+    return Buffer.from(value.buffer, value.byteOffset, value.byteLength);
+
+  const err = new TypeError(
+    'Attachment body must be a Buffer, an ArrayBuffer view, or a serialized Buffer'
+  );
+  err.isCodeBug = true;
+  throw err;
+}
+
+function getAttachmentHash(algorithm, body) {
+  return `${algorithm}:${crypto
+    .createHash(algorithm)
+    .update(body)
+    .digest('hex')}`;
+}
+
+async function executeGet(instance, session, sql) {
+  if (session.db.readonly) {
+    return instance.wsp.request({
+      action: 'stmt',
+      session: { user: session.user },
+      stmt: [
+        ['prepare', sql.query],
+        ['get', sql.values]
+      ]
+    });
+  }
+
+  return session.db.prepare(sql.query).get(sql.values);
+}
+
+async function updateExistingAttachment(instance, session, options) {
+  const { hash, body, magic } = options;
+  const sql = builder.build({
+    type: 'update',
+    table: 'Attachments',
+    // A digest alone is never trusted as an identity.  The byte-for-byte BLOB
+    // condition prevents even a theoretical digest collision from merging two
+    // different attachment bodies or corrupting their reference counters.
+    condition: {
+      hash,
+      body
+    },
+    modifier: {
+      $inc: {
+        counter: 1,
+        magic
+      },
+      $set: {
+        counterUpdated: new Date().toISOString()
+      }
+    },
+    returning: ['*']
+  });
+
+  return executeGet(instance, session, sql);
+}
+
+async function insertAttachmentIgnoringConflict(instance, session, node) {
+  const attachment = new Attachments(node);
+  attachment.instance = instance;
+  attachment.session = session;
+  await attachment.validate();
+
+  const sql = builder.build({
+    type: 'insert',
+    // The update-then-insert sequence must not throw if an equivalent append
+    // wins the race.  A losing request performs the exact-body UPDATE again.
+    or: 'ignore',
+    table: 'Attachments',
+    values: prepareQuery(Attachments.mapping, attachment),
+    returning: ['*']
+  });
+
+  return executeGet(instance, session, sql);
+}
+
 async function retryCreateAttachment(...args) {
   return pRetry(() => createAttachment.call(this, ...args), {
     retries: 2,
     minTimeout: ms('5s'),
     async onFailedAttempt(error) {
-      // TODO: add fallback mechanism which returns existing unique attachment
-      // A concurrent create can race after both workers observe no matching
-      // body. Retrying lets the next attempt atomically update that row only
-      // when its blob is byte-for-byte identical.
-      if (error.message === 'UNIQUE constraint failed: Attachments.hash')
-        return;
-
-      if (isRetryableError(error)) {
+      if (error.code === 'EATTACHMENTRACE' || isRetryableError(error)) {
         logger.fatal(error);
         return;
       }
@@ -132,88 +224,83 @@ async function retryCreateAttachment(...args) {
 }
 
 async function createAttachment(instance, session, node) {
-  // `rev-hash` is a short MD5-derived identifier and is unsafe as an
-  // attachment-content identity. Use a namespaced, full SHA-256 digest instead
-  // so new attachments cannot collide with legacy identifiers or each other.
-  const body = Buffer.from(node.body);
-  node.hash = `sha256:${crypto
-    .createHash('sha256')
-    .update(body)
-    .digest('hex')}`;
-  node.counter = 1;
-  node.counterUpdated = new Date();
-  node.size = node.body.length;
-  if (Number.isNaN(node.magic) || typeof node.magic !== 'number') {
+  const body = normalizeAttachmentBody(node.body);
+  if (!Number.isSafeInteger(node.magic)) {
     const err = new TypeError('Invalid magic');
     err.node = node;
     throw err;
   }
 
-  const sql = builder.build({
-    type: 'update',
-    table: 'Attachments',
-    // A matching digest is insufficient by itself: require the exact stored
-    // blob to match too. This means a theoretical digest collision cannot make
-    // a different attachment inherit another attachment's body.
-    condition: {
-      hash: node.hash,
-      body
-    },
-    modifier: {
-      $inc: {
-        counter: 1,
-        magic: node.magic
-      },
-      $set: {
-        counterUpdated: new Date().toISOString()
-      }
-    },
-    returning: ['*']
-  });
+  node.body = body;
+  node.counter = 1;
+  node.counterUpdated = new Date();
+  node.size = body.length;
 
-  let result;
-  if (session.db.readonly) {
-    result = await instance.wsp.request({
-      action: 'stmt',
-      session: { user: session.user },
-      stmt: [
-        ['prepare', sql.query],
-        ['get', sql.values]
-      ]
+  // Legacy rev-hash values remain readable but are intentionally not reused
+  // for new writes.  New rows have a full, namespaced SHA-256 content key.
+  const hash = getAttachmentHash('sha256', body);
+  const collisionHash = getAttachmentHash('sha512', body);
+
+  for (const candidateHash of [hash, collisionHash]) {
+    node.hash = candidateHash;
+
+    let result = await updateExistingAttachment(instance, session, {
+      hash: node.hash,
+      body,
+      magic: node.magic
     });
-  } else {
-    result = session.db.prepare(sql.query).get(sql.values);
+    if (result) return syncConvertResult(Attachments, result);
+
+    result = await insertAttachmentIgnoringConflict(instance, session, node);
+    if (result) return syncConvertResult(Attachments, result);
+
+    // INSERT OR IGNORE can only return no row when a unique key already exists.
+    // Re-read it.  If it contains the same BLOB, its writer won the race and a
+    // second exact-body UPDATE performs the required counter/magic increment.
+    const existing = await Attachments.findOne(instance, session, {
+      hash: node.hash
+    });
+    if (existing) {
+      if (normalizeAttachmentBody(existing.body).equals(body)) {
+        result = await updateExistingAttachment(instance, session, {
+          hash: node.hash,
+          body,
+          magic: node.magic
+        });
+        if (result) return syncConvertResult(Attachments, result);
+
+        // A concurrent cleanup can remove a row between the lookup and this
+        // update. Retry the same SHA-256 candidate; do not create a needless
+        // SHA-512 duplicate for identical content.
+        const err = new Error('Attachment update lost an expected hash race');
+        err.code = 'EATTACHMENTRACE';
+        err.hash = node.hash;
+        throw err;
+      }
+
+      // The SHA-256 key is occupied by a different BLOB. This is defense in
+      // depth for a cryptographic collision or corrupted historical row; use
+      // the distinct SHA-512 key and repeat the same atomic procedure.
+      if (candidateHash === hash) continue;
+
+      const err = new Error(
+        'Attachment hash collision could not be disambiguated'
+      );
+      err.code = 'EATTACHMENTCOLLISION';
+      err.hash = node.hash;
+      throw err;
+    }
+
+    const err = new Error('Attachment insert lost an expected hash race');
+    err.code = 'EATTACHMENTRACE';
+    err.hash = node.hash;
+    throw err;
   }
 
-  if (result) return syncConvertResult(Attachments, result);
-
-  // If an existing row has the same SHA-256 key but a different body, preserve
-  // data integrity by deriving a collision-disambiguated SHA-512 identity. In
-  // ordinary operation this branch is unreachable; it is defense in depth.
-  const existing = await Attachments.findOne(instance, session, {
-    hash: node.hash
-  });
-  if (existing && !Buffer.from(existing.body).equals(body))
-    node.hash = `sha512:${crypto
-      .createHash('sha512')
-      .update(body)
-      .digest('hex')}`;
-
-  // TODO: finish this INSERT statement with validation of a field returned
-  // const attachment = new Attachments(node);
-  // await attachment.validate();
-  // {
-  //   const sql = builder.build({
-  //     type: 'insert',
-  //   });
-  //   // TODO: finish this
-  // }
-
-  // virtual helper
-  node.instance = instance;
-  node.session = session;
-
-  return Attachments.create(node);
+  const err = new Error('Attachment hash collision could not be disambiguated');
+  err.code = 'EATTACHMENTCOLLISION';
+  err.hash = node.hash;
+  throw err;
 }
 
 class AttachmentStorage {

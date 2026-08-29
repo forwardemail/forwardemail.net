@@ -1920,6 +1920,70 @@ ${base64image}
   t.true(splitLines(raw).join('') === splitLines(content).join(''));
 });
 
+test('atomically deduplicates concurrent attachment writes', async (t) => {
+  const { imap, session } = t.context;
+  const body = Buffer.from(`attachment-${randomUUID()}`);
+  const magic = 1;
+  const createNode = (attachmentId, value) => ({
+    attachmentId,
+    body: value,
+    contentType: 'application/octet-stream',
+    lineCount: 1,
+    magic,
+    transferEncoding: 'base64'
+  });
+
+  const attachments = await Promise.all([
+    imap.attachmentStorage.create(imap, session, createNode('ATT00001', body)),
+    imap.attachmentStorage.create(
+      imap,
+      session,
+      createNode('ATT00002', new Uint8Array(body))
+    ),
+    imap.attachmentStorage.create(
+      imap,
+      session,
+      createNode('ATT00003', { type: 'Buffer', data: [...body] })
+    ),
+    imap.attachmentStorage.create(
+      imap,
+      session,
+      createNode('ATT00004', Buffer.from(body))
+    )
+  ]);
+
+  const hashes = new Set(attachments.map((attachment) => attachment.hash));
+  t.is(hashes.size, 1);
+  t.true(attachments[0].hash.startsWith('sha256:'));
+
+  const stored = await Attachments.findOne(imap, session, {
+    hash: attachments[0].hash
+  });
+  t.truthy(stored);
+  t.is(stored.counter, attachments.length);
+  t.is(stored.magic, magic * attachments.length);
+  t.deepEqual(Buffer.from(stored.body), body);
+});
+
+test('rejects unsupported attachment body values before storage', async (t) => {
+  const error = await t.throwsAsync(
+    t.context.imap.attachmentStorage.create(t.context.imap, t.context.session, {
+      attachmentId: 'ATT00001',
+      body: 'not a binary body',
+      contentType: 'application/octet-stream',
+      lineCount: 1,
+      magic: 1,
+      transferEncoding: 'base64'
+    })
+  );
+
+  t.true(error.isCodeBug);
+  t.is(
+    error.message,
+    'Attachment body must be a Buffer, an ArrayBuffer view, or a serialized Buffer'
+  );
+});
+
 test('FETCH parses a legacy raw MIME-tree string before rebuilding', async (t) => {
   const { alias, domain, imap, imapFlow, session } = t.context;
   const raw = `
