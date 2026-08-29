@@ -19726,5 +19726,8 @@
   "Default alias SMTP limit cannot exceed the domain's effective limit of %d messages per day.": "Default alias SMTP limit cannot exceed the domain's effective limit of %d messages per day.",
   "Confirm Password Reset - Forward Email": "Confirm Password Reset - Forward Email",
   "Confirm your password reset and create a new secure password for your Forward Email account. Choose a strong password to keep your email forwarding secure.": "Confirm your password reset and create a new secure password for your Forward Email account. Choose a strong password to keep your email forwarding secure.",
-  "Sieve script security error: %s": "Sieve script security error: %s"
+  "Sieve script security error: %s": "Sieve script security error: %s",
+  "Prevented outbound SMTP message for <span class=\"notranslate\">%s</span>": "Prevented outbound SMTP message for <span class=\"notranslate\">%s</span>",
+  "Message prevented": "Message prevented",
+  "virus": "virus"
 }
