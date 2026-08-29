@@ -241,3 +241,75 @@ test('CSP script-src does not include unsafe-inline', (t) => {
   // Should contain 'strict-dynamic'
   t.true(scriptSrcMatch[1].includes("'strict-dynamic'"));
 });
+
+test('isPrivateHost canonically blocks IPv4-mapped IPv6 private ranges', (t) => {
+  const isPrivateHost = require('#helpers/is-private-host');
+
+  t.true(isPrivateHost('::ffff:127.0.0.1'));
+  t.true(isPrivateHost('::ffff:7f00:1'));
+  t.true(isPrivateHost('0:0:0:0:0:ffff:10.0.0.1'));
+  t.true(isPrivateHost('[::ffff:169.254.169.254]'));
+  t.false(isPrivateHost('::ffff:8.8.8.8'));
+});
+
+test('isPrivateHostResolved blocks a host with any non-public DNS answer', async (t) => {
+  const { isPrivateHostResolved } = require('#helpers/is-private-host');
+  const resolver = {
+    async resolve4() {
+      return ['8.8.8.8'];
+    },
+    async resolve6() {
+      return ['::ffff:7f00:1'];
+    }
+  };
+
+  t.true(await isPrivateHostResolved('mixed.example', resolver));
+});
+
+test('isPrivateHostResolved fails closed for an empty DNS response', async (t) => {
+  const { isPrivateHostResolved } = require('#helpers/is-private-host');
+  const resolver = {
+    async resolve4() {
+      return [];
+    },
+    async resolve6() {
+      return [];
+    }
+  };
+
+  t.true(await isPrivateHostResolved('unresolved.example', resolver));
+});
+
+test('isPrivateHostResolved resolves hostname-like hexadecimal labels', async (t) => {
+  const { isPrivateHostResolved } = require('#helpers/is-private-host');
+  let calls = 0;
+  const resolver = {
+    async resolve4(hostname) {
+      calls++;
+      t.is(hostname, 'face');
+      return ['127.0.0.1'];
+    },
+    async resolve6() {
+      return [];
+    }
+  };
+
+  // `face` matches a broad hexadecimal character class but is a hostname, not
+  // an IP literal. It must be DNS-resolved and rejected when it maps internally.
+  t.true(await isPrivateHostResolved('face', resolver));
+  t.is(calls, 1);
+});
+
+test('isPrivateHostResolved accepts a public IPv6 literal without DNS', async (t) => {
+  const { isPrivateHostResolved } = require('#helpers/is-private-host');
+  const resolver = {
+    async resolve4() {
+      throw new Error('DNS lookup should not occur for an IP literal');
+    },
+    async resolve6() {
+      throw new Error('DNS lookup should not occur for an IP literal');
+    }
+  };
+
+  t.false(await isPrivateHostResolved('2606:4700:4700::1111', resolver));
+});

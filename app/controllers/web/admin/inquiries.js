@@ -15,7 +15,16 @@ const Axe = require('axe');
 const _ = require('#helpers/lodash');
 
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
+const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Emails, Inquiries, Users } = require('#models');
+
+const INQUIRY_SORT_FIELDS = new Set([
+  'email',
+  'plan',
+  'reference',
+  'created_at',
+  'updated_at'
+]);
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 
@@ -47,13 +56,14 @@ async function list(ctx) {
     query.$or.push({ is_resolved: false });
   }
 
-  let $sort = { created_at: -1 };
-  if (ctx.query.sort) {
-    const order = ctx.query.sort.startsWith('-') ? -1 : 1;
-    $sort = {
-      [order === -1 ? ctx.query.sort.slice(1) : ctx.query.sort]: order
-    };
-  }
+  const sort = getAllowedSort(
+    ctx.query.sort,
+    INQUIRY_SORT_FIELDS,
+    '-created_at'
+  );
+  const $sort = {
+    [sort.startsWith('-') ? sort.slice(1) : sort]: sort.startsWith('-') ? -1 : 1
+  };
 
   // FWD-01-010: mongodb_query is validated by assertAllowedMongoQuery() below,
   // which whitelists operators and caps size/depth regardless of transport, so

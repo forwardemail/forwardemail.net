@@ -11,7 +11,7 @@ block body
                 i.fa.fa-check-circle.text-success.fa-4x.mb-4
                 h2.h4.mb-3= t("Unsubscribe Successful")
                 if unsubscribeTemplate
-                  p.text-muted.mb-4!= t('You have been unsubscribed from <strong class="notranslate">%s</strong> emails.', humanize(titleize(unsubscribeTemplate)))
+                  p.text-muted.mb-4!= t('You have been unsubscribed from <strong class="notranslate">%s</strong> emails.', unsubscribeTemplateLabel)
                 else
                   p.text-muted.mb-4= t("You have been unsubscribed from all promotional emails.")
                 p.small.text-muted.mb-4= t("You will still receive important account-related emails.")

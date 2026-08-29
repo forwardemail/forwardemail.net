@@ -21,9 +21,15 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const getLogsCsv = require('#helpers/get-logs-csv');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Aliases, Logs } = require('#models');
 
 const SIXTY_SECONDS = ms('60s');
+const LOG_SORT_FIELDS = new Set([
+  'created_at',
+  'meta.info.messageSize',
+  'meta.info.deliveryTime'
+]);
 
 async function listLogs(ctx) {
   //
@@ -608,18 +614,18 @@ async function listLogs(ctx) {
     MAX_COUNT_LIMIT - ctx.query.limit
   );
 
+  const sort = getAllowedSort(
+    ctx.query.sort,
+    LOG_SORT_FIELDS,
+    ctx.api ? 'created_at' : '-created_at'
+  );
+
   const [logs, itemCount, responseCodes, bounceCategories] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference
     Logs.find(query)
       .limit(ctx.query.limit)
       .skip(Math.max(0, cappedSkip))
-      .sort(
-        isSANB(ctx.query.sort)
-          ? ctx.query.sort
-          : ctx.api
-          ? 'created_at'
-          : '-created_at'
-      )
+      .sort(sort)
       // KEEP: Field selection optimization to reduce data transfer
       .select(
         ctx.api

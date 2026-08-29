@@ -1,50 +1,38 @@
-/**
+/*
  * Copyright (c) Forward Email LLC
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// <https://github.com/Kikobeats/localhost-url-regex/issues/9>
-// <https://github.com/tinovyatkin/is-localhost-ip>
+const ipaddr = require('ipaddr.js');
 
-const IP_RANGES = [
-  // 0.0.0.0/8 - "This host on this network" (RFC 1122)
-  /^(:{2}f{4}: )?0(?:\.\d{1,3}){3}$/,
-  // 10.0.0.0 - 10.255.255.255
-  /^(:{2}f{4}:)?10(?:\.\d{1,3}){3}$/,
-  // 100.64.0.0/10 - CGNAT (RFC 6598)
-  /^(:{2}f{4}:)?100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])(?:\.\d{1,3}){2}$/,
-  // 127.0.0.0 - 127.255.255.255
-  /^(:{2}f{4}:)?127(?:\.\d{1,3}){3}$/,
-  // 169.254.0.0/16 - Link-Local (RFC 3927) - full range
-  /^(:{2}f{4}:)?169\.254(?:\.\d{1,3}){2}$/,
-  // 172.16.0.0 - 172.31.255.255
-  /^(:{2}f{4}:)?(172\.1[6-9]|172\.2\d|172\.3[01])(?:\.\d{1,3}){2}$/,
-  // 192.168.0.0 - 192.168.255.255
-  /^(:{2}f{4}:)?192\.168(?:\.\d{1,3}){2}$/,
-  // 198.18.0.0/15 - Benchmarking (RFC 2544)
-  /^(:{2}f{4}:)?198\.1[89](?:\.\d{1,3}){2}$/,
-  // ::1 - IPv6 loopback
-  /^:{2}1$/,
-  // fc00::/7
-  /^f[cd][\da-f]{2}(::1$|:[\da-f]{1,4}){1,7}$/,
-  // fe80::/10
-  /^fe[89ab][\da-f](::1$|:[\da-f]{1,4}){1,7}$/,
-  // 192.0.0.0/24 - IETF Protocol Assignments (RFC 6890)
-  /^(:{2}f{4}:)?192\.0\.0\.\d{1,3}$/,
-  // 192.0.2.0/24 - Documentation TEST-NET-1 (RFC 5737)
-  /^(:{2}f{4}:)?192\.0\.2\.\d{1,3}$/,
-  // 198.51.100.0/24 - Documentation TEST-NET-2 (RFC 5737)
-  /^(:{2}f{4}:)?198\.51\.100\.\d{1,3}$/,
-  // 203.0.113.0/24 - Documentation TEST-NET-3 (RFC 5737)
-  /^(:{2}f{4}:)?203\.0\.113\.\d{1,3}$/,
-  // 224.0.0.0/4 - Multicast (RFC 5771)
-  /^(:{2}f{4}:)?2(2[4-9]|3\d)(?:\.\d{1,3}){3}$/,
-  // 240.0.0.0/4 - Reserved for future use (RFC 1112)
-  /^(:{2}f{4}:)?2(4\d|5[0-5])(?:\.\d{1,3}){3}$/,
-  // 255.255.255.255/32 - Limited Broadcast
-  /^(:{2}f{4}:)?255\.255\.255\.255$/
-];
+/**
+ * Return true when an IP literal is not globally routable.  `ipaddr.process()`
+ * canonicalizes IPv4-mapped IPv6 forms (including hexadecimal and expanded
+ * forms) to IPv4 before range classification, which prevents textual IPv6
+ * representations from bypassing private-address safeguards.
+ *
+ * @param {string} value IP literal, optionally enclosed in brackets
+ * @returns {boolean} whether the address is private, reserved, or otherwise
+ * non-public
+ */
+function isNonPublicIPAddress(value) {
+  if (typeof value !== 'string') return false;
 
-module.exports = new RegExp(
-  `^(${IP_RANGES.map((re) => re.source).join('|')})$`
-);
+  const host = value.trim().replace(/^\[|]$/g, '');
+  if (!host || !ipaddr.isValid(host)) return false;
+
+  // `unicast` is the only range accepted for outbound connections.  This
+  // fail-closed policy blocks loopback, private, link-local, CGNAT,
+  // benchmarking, documentation, multicast, unspecified, reserved, and
+  // IPv4-mapped forms of those ranges.
+  return ipaddr.process(host).range() !== 'unicast';
+}
+
+// Preserve the historic `.test(value)` interface for all existing consumers
+// while making every check use canonical IP classification instead of regexes.
+const regexLocalhost = {
+  test: isNonPublicIPAddress,
+  isNonPublicIPAddress
+};
+
+module.exports = Object.freeze(regexLocalhost);

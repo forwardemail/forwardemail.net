@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const paginate = require('koa-ctx-paginate');
 
 const { Logs } = require('#models');
+const getAllowedSort = require('#helpers/get-allowed-sort');
 
 // Job message types for filtering
 const JOB_MESSAGE_TYPES = [
@@ -18,6 +19,12 @@ const JOB_MESSAGE_TYPES = [
 
 // Index hint for job-related queries
 const JOB_INDEX_HINT = { message: 1, 'meta.job.name': 1, created_at: -1 };
+const JOB_SORT_FIELDS = new Set([
+  'created_at',
+  'message',
+  'meta.job.name',
+  'meta.job.breeInstance'
+]);
 
 /**
  * Get all unique job names from logs
@@ -231,7 +238,7 @@ async function list(ctx) {
       .hint(JOB_INDEX_HINT)
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
-      .sort(ctx.query.sort || '-created_at')
+      .sort(getAllowedSort(ctx.query.sort, JOB_SORT_FIELDS, '-created_at'))
       .lean()
       .exec(),
     Logs.countDocuments(baseQuery).hint(JOB_INDEX_HINT),

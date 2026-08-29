@@ -47,12 +47,21 @@ function parseFilter(address) {
 // <https://github.com/pdl/regexp-capture-interpolation/blob/fbe04423b37699c2d653d9bc57b085c24dfe1c75/lib/index.js#L92>
 const REGEX_INTERPOLATED_DOLLAR = new RE2(/(\$)([1-9]\d*|[$&`'])/);
 
+// Recursive IMAP/address expansion remains compatible with legitimate
+// multi-hop forwarding, but cannot be unlimited: user-controlled regex
+// substitutions can otherwise grow a new local-part exponentially.  Combined
+// with the RFC mailbox-length cap below, ten lookups prevent worker exhaustion.
+const MAX_RECURSIVE_FORWARDING_DEPTH = 10;
+const MAX_FORWARDING_ADDRESS_LENGTH = 254;
+const RECURSION_DEPTHS = new WeakMap();
+
 async function getForwardingAddresses(
   address,
   recursive = [],
   ignoreBilling = false,
   session
 ) {
+  const recursionDepth = RECURSION_DEPTHS.get(recursive) || 0;
   let hasIMAP = false;
   let aliasPublicKey = false;
   let aliasSmimeCertificate = false;
@@ -905,6 +914,17 @@ async function getForwardingAddresses(
           ? username.toLowerCase().replace(regex, target)
           : target;
 
+        // RFC 5321 limits a mailbox address to 254 octets. Enforce the bound
+        // before validation or recursive lookup so a regex replacement cannot
+        // generate an ever-growing sequence of otherwise accepted aliases.
+        if (
+          Buffer.byteLength(substitutedAlias, 'utf8') >
+          MAX_FORWARDING_ADDRESS_LENGTH
+        )
+          throw new SMTPError(
+            `Domain of ${domain} has an invalid "${config.recordPrefix}" TXT record due to an oversized regular expression email address match`
+          );
+
         if (
           wasIgnoredRegex === 'hard' ||
           (substitutedAlias && substitutedAlias.indexOf('!!!') === 0)
@@ -1075,11 +1095,15 @@ async function getForwardingAddresses(
   for (let x = 0; x < length; x++) {
     const forwardingAddress = forwardingAddresses[x];
     try {
-      // TODO: is the culprit
       if (recursive.includes(forwardingAddress)) continue;
       if (isURL(forwardingAddress, config.isURLOptions)) continue;
 
+      // Preserve the historical single recursive lookup while preventing a
+      // substitution result from recursively producing another new address.
+      if (recursionDepth >= MAX_RECURSIVE_FORWARDING_DEPTH) continue;
+
       const newRecursive = [...forwardingAddresses, ...recursive];
+      RECURSION_DEPTHS.set(newRecursive, recursionDepth + 1);
 
       // prevent a double-lookup if user is using + symbols
       if (isEmail(address) && forwardingAddress.includes('+'))

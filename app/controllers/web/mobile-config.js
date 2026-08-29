@@ -428,13 +428,19 @@ async function mobileConfig(ctx, next) {
     if (!Array.isArray(alias.tokens) || alias.tokens.length === 0)
       return next(); // 404
 
-    // validate password
-    // ensure that the token is valid
-    const isValid = await isValidPassword(
-      alias.tokens,
-      decrypt(ctx.query.p),
-      alias
-    );
+    // Decrypt once and collapse malformed legacy/new ciphertext to this
+    // endpoint's existing indistinguishable 404 path.  This prevents a public
+    // caller from observing cryptographic parser or padding failure details.
+    let password;
+    try {
+      password = decrypt(ctx.query.p);
+    } catch (err) {
+      ctx.logger.debug(err);
+      return next(); // 404
+    }
+
+    // Validate that the decrypted token is the current alias password.
+    const isValid = await isValidPassword(alias.tokens, password, alias);
 
     if (!isValid) return next(); // 404
 
@@ -483,11 +489,7 @@ async function mobileConfig(ctx, next) {
         `attachment; filename="${username}.mobileconfig"`
       );
 
-      const plistData = mobileConfigTemplate(
-        name,
-        username,
-        decrypt(ctx.query.p)
-      );
+      const plistData = mobileConfigTemplate(name, username, password);
 
       // development and test envs usually don't have SSL keys
       if (!keys) {

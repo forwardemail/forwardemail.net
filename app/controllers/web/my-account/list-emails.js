@@ -16,10 +16,18 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
+const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Domains, Emails, Aliases, Users } = require('#models');
 
 // Cap count at 10,000 like list-logs to improve performance
 const MAX_COUNT_LIMIT = 10_000;
+const EMAIL_SORT_FIELDS = new Set([
+  'id',
+  'created_at',
+  'date',
+  'status',
+  'subject'
+]);
 
 async function listEmails(ctx, next) {
   const isAliasAuth = Boolean(ctx.state?.session?.db);
@@ -244,12 +252,12 @@ async function listEmails(ctx, next) {
     }
   }
 
-  // Determine sort field
-  const sortField = isSANB(ctx.query.sort)
-    ? ctx.query.sort
-    : ctx.api
-    ? 'created_at'
-    : '-created_at';
+  // Only pass documented account-email fields to the database sort option.
+  const sortField = getAllowedSort(
+    ctx.query.sort,
+    EMAIL_SORT_FIELDS,
+    ctx.api ? 'created_at' : '-created_at'
+  );
 
   // For search queries: fetch emails and do comprehensive search in memory
   if (isSANB(ctx.query.q)) {
