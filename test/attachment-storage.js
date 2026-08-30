@@ -2,6 +2,7 @@ const { Buffer } = require('node:buffer');
 const crypto = require('node:crypto');
 
 const Database = require('better-sqlite3-multiple-ciphers');
+const getStream = require('get-stream');
 const test = require('ava');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
@@ -75,7 +76,14 @@ test('atomically deduplicates concurrent identical attachment bodies', async (t)
       session,
       createNode('ATT00003', { type: 'Buffer', data: [...body] })
     ),
-    storage.create(instance, session, createNode('ATT00004', Buffer.from(body)))
+    storage.create(
+      instance,
+      session,
+      createNode(
+        'ATT00004',
+        body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength)
+      )
+    )
   ]);
 
   const hashes = new Set(attachments.map((attachment) => attachment.hash));
@@ -148,6 +156,127 @@ test('separates a different body occupying a SHA-256 key', async (t) => {
   t.true(rows.every((row) => row.counter === 1 && row.magic === 1));
 });
 
+test('retrieves attachment bodies and honors IMAP byte ranges', async (t) => {
+  const body = Buffer.from('download this attachment exactly');
+  const { instance, session, storage } = t.context;
+  const created = await storage.create(
+    instance,
+    session,
+    createNode('ATT00001', body)
+  );
+
+  const attachment = await storage.get({}, created.hash, instance, session);
+  t.deepEqual(Buffer.from(attachment.body), body);
+  t.is(attachment.length, body.length);
+
+  const full = await getStream(
+    storage.createReadStream(created.hash, attachment)
+  );
+  t.deepEqual(Buffer.from(full), body);
+
+  const partial = await getStream(
+    storage.createReadStream(created.hash, attachment, {
+      startFrom: 9,
+      maxLength: 4
+    })
+  );
+  t.deepEqual(Buffer.from(partial), body.slice(9, 13));
+
+  const empty = await getStream(
+    storage.createReadStream(created.hash, attachment, {
+      startFrom: body.length + 1,
+      maxLength: 4
+    })
+  );
+  t.deepEqual(Buffer.from(empty), Buffer.alloc(0));
+
+  const missing = await t.throwsAsync(
+    storage.get({}, 'sha256:missing', instance, session)
+  );
+  t.is(missing.code, 'FileNotFound');
+});
+
+test('releases every duplicate attachment reference from a message', async (t) => {
+  const body = Buffer.from('same attachment used twice');
+  const { db, instance, session, storage } = t.context;
+  const first = await storage.create(
+    instance,
+    session,
+    createNode('ATT00001', body)
+  );
+  const second = await storage.create(
+    instance,
+    session,
+    createNode('ATT00002', Buffer.from(body))
+  );
+
+  await storage.deleteMany(instance, session, [first.hash, second.hash], 1);
+  t.is(db.prepare('SELECT count(*) AS count FROM Attachments').get().count, 0);
+});
+
+test('does not delete an attachment reused during cleanup', async (t) => {
+  const body = Buffer.from('attachment reused during cleanup');
+  const { db, instance, session, storage } = t.context;
+  const attachment = await storage.create(
+    instance,
+    session,
+    createNode('ATT00001', body)
+  );
+
+  db.exec(`
+    CREATE TRIGGER retain_attachment_after_decrement
+    AFTER UPDATE OF counter ON Attachments
+    WHEN NEW.counter = 0 AND NEW.magic = 0
+    BEGIN
+      UPDATE Attachments SET counter = 1, magic = 1 WHERE _id = NEW._id;
+    END
+  `);
+
+  await storage.deleteMany(instance, session, [attachment.hash], 1);
+  const stored = db
+    .prepare('SELECT counter, magic FROM Attachments WHERE hash = ?')
+    .get(attachment.hash);
+  t.deepEqual(stored, { counter: 1, magic: 1 });
+});
+
+test('reads legacy attachment rows without reusing their short hash', async (t) => {
+  const body = Buffer.from('legacy attachment body');
+  const { db, instance, session, storage } = t.context;
+  const legacyHash = 'legacy-rev-hash';
+  const now = new Date().toISOString();
+  db.prepare(
+    `
+      INSERT INTO Attachments
+        (_id, hash, attachmentId, magic, contentType, transferEncoding,
+         lineCount, counter, counterUpdated, size, body)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `
+  ).run(
+    '000000000000000000000001',
+    legacyHash,
+    'ATT00001',
+    1,
+    'application/octet-stream',
+    'base64',
+    1,
+    1,
+    now,
+    body.length,
+    body
+  );
+
+  const legacy = await storage.get({}, legacyHash, instance, session);
+  t.deepEqual(Buffer.from(legacy.body), body);
+
+  const created = await storage.create(
+    instance,
+    session,
+    createNode('ATT00002', body)
+  );
+  t.is(created.hash, getHash('sha256', body));
+  t.is(db.prepare('SELECT count(*) AS count FROM Attachments').get().count, 2);
+});
+
 test('rejects unsupported attachment body values before any insert', async (t) => {
   const { db, instance, session, storage } = t.context;
   const error = await t.throwsAsync(
@@ -159,5 +288,18 @@ test('rejects unsupported attachment body values before any insert', async (t) =
     error.message,
     'Attachment body must be a Buffer, an ArrayBuffer view, or a serialized Buffer'
   );
+  t.is(db.prepare('SELECT count(*) AS count FROM Attachments').get().count, 0);
+});
+
+test('rejects an invalid attachment reference count before storage', async (t) => {
+  const { db, instance, session, storage } = t.context;
+  const error = await t.throwsAsync(
+    storage.create(
+      instance,
+      session,
+      createNode('ATT00001', Buffer.from('body'), Number.MAX_SAFE_INTEGER + 1)
+    )
+  );
+  t.is(error.message, 'Invalid magic');
   t.is(db.prepare('SELECT count(*) AS count FROM Attachments').get().count, 0);
 });

@@ -37,87 +37,92 @@ const {
 } = require('#helpers/mongoose-to-sqlite');
 
 const builder = new Builder({ bufferAsNative: true });
+const ATTACHMENT_FIELDS = [
+  '_id',
+  'hash',
+  'attachmentId',
+  'magic',
+  'contentType',
+  'transferEncoding',
+  'lineCount',
+  'counter',
+  'counterUpdated',
+  'size',
+  'body'
+];
+const ATTACHMENT_UPSERT_QUERY = `
+  INSERT INTO "Attachments" (
+    "_id", "hash", "attachmentId", "magic", "contentType",
+    "transferEncoding", "lineCount", "counter", "counterUpdated",
+    "size", "body"
+  ) VALUES (
+    $_id, $hash, $attachmentId, $magic, $contentType,
+    $transferEncoding, $lineCount, $counter, $counterUpdated,
+    $size, $body
+  )
+  ON CONFLICT("hash") DO UPDATE SET
+    "counter" = "Attachments"."counter" + excluded."counter",
+    "magic" = "Attachments"."magic" + excluded."magic",
+    "counterUpdated" = excluded."counterUpdated"
+  WHERE "Attachments"."body" = excluded."body"
+  RETURNING *
+`;
 
-async function updateAttachments(attachmentIds, magic, session) {
-  const sql = builder.build({
-    type: 'update',
-    table: 'Attachments',
-    condition: {
-      hash: { $in: attachmentIds }
-    },
-    modifier: {
-      $inc: {
-        counter: -1,
-        magic: -magic
-      },
-      $set: {
-        counterUpdated: new Date().toISOString()
-      }
-    },
-    returning: ['_id', 'counter', 'magic']
-  });
-
-  // update attachment data
-  let attachments;
+async function execute(instance, session, sql, operation) {
   if (session.db.readonly) {
-    attachments = await this.wsp.request({
+    return instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
       stmt: [
         ['prepare', sql.query],
-        ['all', sql.values]
+        [operation, sql.values]
       ]
     });
-  } else {
-    attachments = session.db.prepare(sql.query).all(sql.values);
   }
 
-  if (!Array.isArray(attachments)) attachments = [];
+  return session.db.prepare(sql.query)[operation](sql.values);
+}
 
-  // delete attachments if necessary
-  const $in = [];
-  for (const attachment of attachments) {
-    if (attachment.counter === 0 && attachment.magic === 0) {
-      $in.push(attachment._id);
-    }
-  }
+async function updateAttachments(attachmentIds, magic, session) {
+  const counts = new Map();
+  for (const hash of attachmentIds)
+    counts.set(hash, (counts.get(hash) || 0) + 1);
 
-  //
-  // NOTE: wildduck has this disabled (as they have a cleanup job that runs after a duration)
-  //       (e.g. if a user quickly re-adds the attachment, it would save the re-creation by hash lookup)
-  //       (but to keep things simple for now we're just going to delete it)
-  //
-  if ($in.length > 0) {
+  for (const [hash, count] of counts) {
     const sql = builder.build({
+      type: 'update',
+      table: 'Attachments',
+      condition: { hash },
+      modifier: {
+        $inc: {
+          counter: -count,
+          magic: -(magic * count)
+        },
+        $set: {
+          counterUpdated: new Date().toISOString()
+        }
+      },
+      returning: ['_id', 'counter', 'magic']
+    });
+    const attachment = await execute(this, session, sql, 'get');
+
+    if (!attachment || attachment.counter !== 0 || attachment.magic !== 0)
+      continue;
+
+    // Delete only if the row is still unreferenced. A new append can revive it
+    // after the decrement and before this statement acquires its write lock.
+    const remove = builder.build({
       type: 'remove',
       table: 'Attachments',
-      condition: {
-        _id: {
-          $in
-        }
-      }
+      condition: { _id: attachment._id, counter: 0, magic: 0 }
     });
-    if (session.db.readonly) {
-      await this.wsp.request({
-        action: 'stmt',
-        session: { user: session.user },
-        stmt: [
-          ['prepare', sql.query],
-          ['run', sql.values]
-        ]
-      });
-    } else {
-      session.db.prepare(sql.query).run(sql.values);
-    }
+    await execute(this, session, remove, 'run');
   }
 }
 
 function normalizeAttachmentBody(value) {
   if (Buffer.isBuffer(value)) return value;
 
-  // `msgpackr` preserves Buffers, but accept the standard serialized Buffer
-  // representation as a defensive compatibility measure for queued work from
-  // older processes or transports.
   if (
     value &&
     value.type === 'Buffer' &&
@@ -147,65 +152,20 @@ function getAttachmentHash(algorithm, body) {
     .digest('hex')}`;
 }
 
-async function executeGet(instance, session, sql) {
-  if (session.db.readonly) {
-    return instance.wsp.request({
-      action: 'stmt',
-      session: { user: session.user },
-      stmt: [
-        ['prepare', sql.query],
-        ['get', sql.values]
-      ]
-    });
-  }
-
-  return session.db.prepare(sql.query).get(sql.values);
-}
-
-async function updateExistingAttachment(instance, session, options) {
-  const { hash, body, magic } = options;
-  const sql = builder.build({
-    type: 'update',
-    table: 'Attachments',
-    // A digest alone is never trusted as an identity.  The byte-for-byte BLOB
-    // condition prevents even a theoretical digest collision from merging two
-    // different attachment bodies or corrupting their reference counters.
-    condition: {
-      hash,
-      body
-    },
-    modifier: {
-      $inc: {
-        counter: 1,
-        magic
-      },
-      $set: {
-        counterUpdated: new Date().toISOString()
-      }
-    },
-    returning: ['*']
-  });
-
-  return executeGet(instance, session, sql);
-}
-
-async function insertAttachmentIgnoringConflict(instance, session, node) {
+async function upsertAttachment(instance, session, node) {
   const attachment = new Attachments(node);
   attachment.instance = instance;
   attachment.session = session;
   await attachment.validate();
 
-  const sql = builder.build({
-    type: 'insert',
-    // The update-then-insert sequence must not throw if an equivalent append
-    // wins the race.  A losing request performs the exact-body UPDATE again.
-    or: 'ignore',
-    table: 'Attachments',
-    values: prepareQuery(Attachments.mapping, attachment),
-    returning: ['*']
-  });
-
-  return executeGet(instance, session, sql);
+  const values = prepareQuery(Attachments.mapping, attachment);
+  const sql = {
+    query: ATTACHMENT_UPSERT_QUERY,
+    values: Object.fromEntries(
+      ATTACHMENT_FIELDS.map((field) => [field, values[field]])
+    )
+  };
+  return execute(instance, session, sql, 'get');
 }
 
 async function retryCreateAttachment(...args) {
@@ -213,7 +173,7 @@ async function retryCreateAttachment(...args) {
     retries: 2,
     minTimeout: ms('5s'),
     async onFailedAttempt(error) {
-      if (error.code === 'EATTACHMENTRACE' || isRetryableError(error)) {
+      if (isRetryableError(error)) {
         logger.fatal(error);
         return;
       }
@@ -236,66 +196,17 @@ async function createAttachment(instance, session, node) {
   node.counterUpdated = new Date();
   node.size = body.length;
 
-  // Legacy rev-hash values remain readable but are intentionally not reused
-  // for new writes.  New rows have a full, namespaced SHA-256 content key.
-  const hash = getAttachmentHash('sha256', body);
-  const collisionHash = getAttachmentHash('sha512', body);
+  // New rows use a full namespaced SHA-256 content identity. Existing legacy
+  // `rev-hash` rows remain readable through their stored MIME-tree references.
+  node.hash = getAttachmentHash('sha256', body);
+  let result = await upsertAttachment(instance, session, node);
+  if (result) return syncConvertResult(Attachments, result);
 
-  for (const candidateHash of [hash, collisionHash]) {
-    node.hash = candidateHash;
-
-    let result = await updateExistingAttachment(instance, session, {
-      hash: node.hash,
-      body,
-      magic: node.magic
-    });
-    if (result) return syncConvertResult(Attachments, result);
-
-    result = await insertAttachmentIgnoringConflict(instance, session, node);
-    if (result) return syncConvertResult(Attachments, result);
-
-    // INSERT OR IGNORE can only return no row when a unique key already exists.
-    // Re-read it.  If it contains the same BLOB, its writer won the race and a
-    // second exact-body UPDATE performs the required counter/magic increment.
-    const existing = await Attachments.findOne(instance, session, {
-      hash: node.hash
-    });
-    if (existing) {
-      if (normalizeAttachmentBody(existing.body).equals(body)) {
-        result = await updateExistingAttachment(instance, session, {
-          hash: node.hash,
-          body,
-          magic: node.magic
-        });
-        if (result) return syncConvertResult(Attachments, result);
-
-        // A concurrent cleanup can remove a row between the lookup and this
-        // update. Retry the same SHA-256 candidate; do not create a needless
-        // SHA-512 duplicate for identical content.
-        const err = new Error('Attachment update lost an expected hash race');
-        err.code = 'EATTACHMENTRACE';
-        err.hash = node.hash;
-        throw err;
-      }
-
-      // The SHA-256 key is occupied by a different BLOB. This is defense in
-      // depth for a cryptographic collision or corrupted historical row; use
-      // the distinct SHA-512 key and repeat the same atomic procedure.
-      if (candidateHash === hash) continue;
-
-      const err = new Error(
-        'Attachment hash collision could not be disambiguated'
-      );
-      err.code = 'EATTACHMENTCOLLISION';
-      err.hash = node.hash;
-      throw err;
-    }
-
-    const err = new Error('Attachment insert lost an expected hash race');
-    err.code = 'EATTACHMENTRACE';
-    err.hash = node.hash;
-    throw err;
-  }
+  // `ON CONFLICT(hash)` returns no row only when the SHA-256 is already bound
+  // to different bytes. Preserve both bodies under an independent SHA-512 key.
+  node.hash = getAttachmentHash('sha512', body);
+  result = await upsertAttachment(instance, session, node);
+  if (result) return syncConvertResult(Attachments, result);
 
   const err = new Error('Attachment hash collision could not be disambiguated');
   err.code = 'EATTACHMENTCOLLISION';

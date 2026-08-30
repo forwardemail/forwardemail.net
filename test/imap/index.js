@@ -40,6 +40,7 @@ const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 const Attachments = require('#models/attachments');
+const TemporaryMessages = require('#models/temporary-messages');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const config = require('#config');
@@ -48,6 +49,7 @@ const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised
 const getDatabase = require('#helpers/get-database');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const createPassword = require('#helpers/create-password');
+const getTemporaryDatabase = require('#helpers/get-temporary-database');
 // dynamically import get-port
 let getPort;
 import('get-port').then((obj) => {
@@ -1918,6 +1920,132 @@ ${base64image}
   const download = await t.context.imapFlow.download('*');
   const content = await getStream(download.content);
   t.true(splitLines(raw).join('') === splitLines(content).join(''));
+});
+
+test('deduplicates attachments through IMAP append, FETCH, and expunge', async (t) => {
+  const { imap, imapFlow, session } = t.context;
+  const mailboxPath = `attachment-lifecycle-${randomUUID()}`;
+  const body = Buffer.from(`attachment body ${randomUUID()}`);
+  const encoded = body.toString('base64');
+  const raw = `
+MIME-Version: 1.0
+From: sender@example.com
+To: recipient@example.com
+Subject: attachment lifecycle
+Content-Type: multipart/mixed; boundary="attachment-lifecycle"
+
+--attachment-lifecycle
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+attachment lifecycle message
+--attachment-lifecycle
+Content-Type: application/octet-stream; name="attachment.bin"
+Content-Disposition: attachment; filename="attachment.bin"
+Content-Transfer-Encoding: base64
+
+${encoded}
+--attachment-lifecycle--
+`.trim();
+
+  await imapFlow.mailboxCreate(mailboxPath);
+  const first = await imapFlow.append(
+    mailboxPath,
+    Buffer.from(raw),
+    [],
+    new Date()
+  );
+  const second = await imapFlow.append(
+    mailboxPath,
+    Buffer.from(raw),
+    [],
+    new Date()
+  );
+
+  const attachments = await Attachments.find(imap, session, {});
+  t.is(attachments.length, 1);
+  t.is(attachments[0].counter, 2);
+  t.deepEqual(Buffer.from(attachments[0].body), Buffer.from(encoded));
+
+  await imapFlow.mailboxOpen(mailboxPath);
+  const download = await imapFlow.download(String(second.uid), undefined, {
+    uid: true
+  });
+  const content = await getStream(download.content);
+  t.true(content.includes(encoded));
+
+  await imapFlow.messageFlagsAdd(String(first.uid), ['\\Deleted'], {
+    uid: true
+  });
+  await imapFlow.messageDelete(String(first.uid), { uid: true });
+  let stored = await Attachments.findOne(imap, session, {
+    hash: attachments[0].hash
+  });
+  t.truthy(stored);
+  t.is(stored.counter, 1);
+
+  await imapFlow.messageFlagsAdd(String(second.uid), ['\\Deleted'], {
+    uid: true
+  });
+  await imapFlow.messageDelete(String(second.uid), { uid: true });
+  stored = await Attachments.findOne(imap, session, {
+    hash: attachments[0].hash
+  });
+  t.is(stored, null);
+});
+
+test('promotes an attachment-bearing temporary message into IMAP', async (t) => {
+  const { imap, imapFlow, session } = t.context;
+  const body = Buffer.from(`temporary attachment ${randomUUID()}`);
+  const encoded = body.toString('base64');
+  const raw = `
+MIME-Version: 1.0
+From: sender@example.com
+To: recipient@example.com
+Subject: temporary attachment promotion
+Content-Type: multipart/mixed; boundary="temporary-attachment"
+
+--temporary-attachment
+Content-Type: text/plain; charset=UTF-8
+
+queued message
+--temporary-attachment
+Content-Type: application/octet-stream; name="queued.bin"
+Content-Disposition: attachment; filename="queued.bin"
+Content-Transfer-Encoding: base64
+
+${encoded}
+--temporary-attachment--
+`.trim();
+  const tmpDb = await getTemporaryDatabase.call(imap, session);
+  await TemporaryMessages.create({
+    instance: imap,
+    session: { user: session.user, db: tmpDb },
+    date: new Date(),
+    raw: Buffer.from(raw),
+    remoteAddress: session.remoteAddress,
+    mailbox: 'INBOX',
+    flags: []
+  });
+
+  await imapFlow.getQuota();
+  await pWaitFor(
+    () =>
+      tmpDb
+        .prepare('SELECT count(*) AS count FROM TemporaryMessages')
+        .pluck()
+        .get() === 0,
+    { timeout: ms('30s') }
+  );
+
+  const attachments = await Attachments.find(imap, session, {});
+  t.is(attachments.length, 1);
+  t.is(attachments[0].counter, 1);
+
+  await imapFlow.mailboxOpen('INBOX');
+  const download = await imapFlow.download('*');
+  const content = await getStream(download.content);
+  t.true(content.includes(encoded));
 });
 
 test('atomically deduplicates concurrent attachment writes', async (t) => {
