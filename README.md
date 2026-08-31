@@ -304,7 +304,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    cp ansible/playbooks/templates/env .env.production
    ```
 
-7. Edit this configuration and reference the official [Lad][] documentation for a list of all available environment variables (or see [.env.defaults](.env.defaults)). **You will need to open this file in your preferred editor** and set the values for any fields containing `TODO`, whereby you replace `TODO` with the appropriate value. Preserve double quotes where they are already defined.
+7. Edit this configuration and reference the official [Lad][] documentation for a list of all available environment variables (or see [.env.defaults](.env.defaults)). **You will need to open this file in your preferred editor** and set the values for any fields containing `TODO`, whereby you replace `TODO` with the appropriate value. Preserve double quotes where they are already defined. In production, set `API_SECRETS` to at least one secret with 32 or more bytes, for example `openssl rand -hex 32`; the application rejects blank, short, and predictable defaults.
 
    ```sh
    vim .env.production

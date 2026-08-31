@@ -20,6 +20,26 @@ const env = require('@ladjs/env')({
   schema: path.join(__dirname, '..', '.env.schema')
 });
 
+if (env.NODE_ENV === 'production') {
+  const apiSecrets = Array.isArray(env.API_SECRETS)
+    ? env.API_SECRETS
+    : typeof env.API_SECRETS === 'string'
+    ? env.API_SECRETS.split(',')
+    : [];
+
+  if (
+    !apiSecrets.some(
+      (secret) =>
+        // eslint-disable-next-line n/prefer-global/buffer
+        typeof secret === 'string' && Buffer.byteLength(secret) >= 32
+    )
+  ) {
+    throw new TypeError(
+      'API_SECRETS must contain at least one 32-byte secret in production'
+    );
+  }
+}
+
 // always show full stack traces for debugging
 Error.stackTraceLimit = Number.POSITIVE_INFINITY;
 

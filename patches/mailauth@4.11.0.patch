@@ -1,0 +1,23 @@
+diff --git a/lib/parse-dkim-headers.js b/lib/parse-dkim-headers.js
+index af8b39f75b49dd38619e1d2852a2d615881d397f..96bc042f9a7015e2519962a403d86dc6714c572e 100644
+--- a/lib/parse-dkim-headers.js
++++ b/lib/parse-dkim-headers.js
+@@ -1,5 +1,7 @@
+ 'use strict';
+ 
++const DANGEROUS_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
++
+ // NB! fails to properly parse nested comments (should be rare enough though)
+ 
+ const valueParser = str => {
+@@ -99,6 +101,10 @@ const valueParser = str => {
+                 let path = part.key.split('.');
+                 let curRes = result;
+                 let final = path.pop();
++                if (DANGEROUS_KEYS.has(final) || path.some(p => DANGEROUS_KEYS.has(p))) {
++                    return;
++                }
++
+                 for (let p of path) {
+                     if (typeof curRes[p] !== 'object' || !curRes[p]) {
+                         curRes[p] = {};
