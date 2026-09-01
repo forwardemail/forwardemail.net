@@ -1,6 +1,6 @@
 # سياسة الخصوصية {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="سياسة خصوصية بريد التوجيه" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="سياسة خصوصية بريد التوجيه" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

@@ -1,6 +1,6 @@
 # 常见问题 {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email 常见问题" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email 常见问题" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}
@@ -2186,7 +2186,7 @@ DMARC 报告列出了**所有**试图发送声称来自您域名的邮件的服�
 
 **配置日历时，请使用 CalDAV URL：** `https://caldav.forwardemail.net`（如果您的客户端允许，也可以直接使用 `caldav.forwardemail.net`）
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### 如何添加更多日历及管理现有日历 {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

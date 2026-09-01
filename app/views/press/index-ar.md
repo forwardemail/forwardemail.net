@@ -1,6 +1,6 @@
 # مجموعة الصحافة والإعلام {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="مجموعة الصحافة والإعلام لخدمة Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="مجموعة الصحافة والإعلام لخدمة Forward Email" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

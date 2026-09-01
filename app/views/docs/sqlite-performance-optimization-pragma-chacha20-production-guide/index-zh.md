@@ -1,6 +1,6 @@
 # SQLite 性能优化：生产环境 PRAGMA 设置与 ChaCha20 加密 {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite 性能优化指南" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite 性能优化指南" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

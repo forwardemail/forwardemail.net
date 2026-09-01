@@ -1,6 +1,6 @@
 # Pourquoi l'email open-source est l'avenir : l'avantage Forward Email {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="Sécurité et confidentialité des emails open source" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/open-source.webp" alt="Sécurité et confidentialité des emails open source" class="rounded-lg" /> -->
 
 
 ## Table des matières {#table-of-contents}

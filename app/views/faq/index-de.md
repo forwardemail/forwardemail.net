@@ -1,6 +1,6 @@
 # Häufig gestellte Fragen {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email häufig gestellte Fragen" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email häufig gestellte Fragen" class="rounded-lg" /> -->
 
 
 ## Inhaltsverzeichnis {#table-of-contents}
@@ -2189,7 +2189,7 @@ Wenn Sie auch andere Dienste nutzen, um E-Mails im Namen Ihrer Domain zu senden 
 
 **Um Ihren Kalender zu konfigurieren, verwenden Sie die CalDAV-URL:** `https://caldav.forwardemail.net` (oder einfach `caldav.forwardemail.net`, wenn Ihr Client dies erlaubt)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Beispielkonfiguration" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Beispielkonfiguration" /> -->
 
 ### Wie füge ich weitere Kalender hinzu und verwalte bestehende Kalender {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

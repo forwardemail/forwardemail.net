@@ -1,6 +1,6 @@
 # Zgodność z RODO {#gdpr-compliance}
 
-<img loading="lazy" src="/img/articles/gdpr.webp" alt="Forward Email zgodność z RODO" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/gdpr.webp" alt="Forward Email zgodność z RODO" class="rounded-lg" /> -->
 
 
 ## Spis treści {#table-of-contents}

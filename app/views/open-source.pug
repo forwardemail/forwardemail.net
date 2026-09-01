@@ -185,18 +185,17 @@ block body
       if platform
         - const isEmailClients = ctx.pathWithoutLocale.endsWith("-email-clients");
         - const providers = getServersOrClientsList(platform, isEmailClients);
+        //- The "compatible with all email clients" banner was replaced with a
+        //- recommendation that leads with our own apps, since these pages are
+        //- the site's biggest third-party client listings.
         if isEmailClients && !isBot(ctx.get('User-Agent'))
           .row.mt-3
             .col-12
               .alert.alert-primary.small.text-center.mb-0
-                = emoji("tada")
-                = " "
-                = t("Great news!")
-                = " "
-                = t("Forward Email is compatible with all email clients.")
+                != t('Skip the setup entirely with <a href="%s" class="alert-link text-decoration-underline">our official Forward Email apps</a> for macOS, Windows, Linux, Android, and iOS.', l("/download"))
                 br.d-none.d-md-block
                 = " "
-                != t('Download and install your favorite &rarr; and then <a href="%s" target="_blank" class="alert-link text-decoration-underline">click here to follow instructions</a>.', l("/faq#do-you-support-receiving-email-with-imap"))
+                != t('Prefer one of the clients below? Download and install your favorite, then <a href="%s" target="_blank" class="alert-link text-decoration-underline">follow these instructions</a>.', l("/faq#do-you-support-receiving-email-with-imap"))
         .row
           .col-12.no-search
             h2.text-center.py-3.py-md-5.mb-0(

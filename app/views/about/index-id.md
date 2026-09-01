@@ -1,6 +1,6 @@
 # Tentang Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Tim dan cerita perusahaan Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Tim dan cerita perusahaan Forward Email" class="rounded-lg" /> -->
 
 # Tentang Forward Email {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ Per Maret 2026, Forward Email melayani lebih dari 500.000 domain di seluruh duni
 
 Platform ini terus berkembang dengan rilis fitur dan peningkatan infrastruktur secara reguler, mempertahankan posisinya sebagai satu-satunya layanan email yang 100% open-source, terenkripsi, berfokus pada privasi, transparan, dan tahan kuantum yang tersedia saat ini—kini didukung oleh [audit keamanan independen](/pentest-report_forward-email.pdf) dari Cure53.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

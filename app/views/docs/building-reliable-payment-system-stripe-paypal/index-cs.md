@@ -1,6 +1,6 @@
 # Jak jsme vybudovali robustní platební systém se Stripe a PayPal: Přístup Trifecta {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Platební systém se Stripe a PayPal" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Platební systém se Stripe a PayPal" class="rounded-lg" /> -->
 
 
 ## Obsah {#table-of-contents}

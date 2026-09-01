@@ -1,6 +1,6 @@
 # Egy adatvédelmi szemléletű AI ügyfélszolgálati ügynök építése LanceDB-vel, Ollamával és Node.js-sel {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" /> -->
 
 > \[!NOTE]
 > Ez a dokumentum az önállóan üzemeltetett AI ügyfélszolgálati ügynök építésének történetét mutatja be. Hasonló kihívásokról írtunk a [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blogbejegyzésünkben. Őszintén gondolkodtunk egy folytatáson „AI Startup Graveyard” címmel, de lehet, hogy még egy évet várnunk kell, amíg az AI buborék esetleg kipukkan(?). Egyelőre ez az agyeldobásunk arról, mi működött, mi nem, és miért így csináltuk.

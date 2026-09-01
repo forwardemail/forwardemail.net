@@ -2,7 +2,7 @@
 
 <!-- v1.0 from <https://github.com/CommonPaper/DPA> -->
 
-<img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email 数据处理协议" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email 数据处理协议" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

@@ -1,6 +1,6 @@
 # כיצד Forward Email מגנה על הפרטיות, הדומיין והאבטחה שלך: העומק הטכני {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="השוואת שירותי העברת דואר אלקטרוני הטובים ביותר" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-forwarding.webp" alt="השוואת שירותי העברת דואר אלקטרוני הטובים ביותר" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

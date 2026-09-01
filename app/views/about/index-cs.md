@@ -1,6 +1,6 @@
 # O Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Tým Forward Email a příběh společnosti" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Tým Forward Email a příběh společnosti" class="rounded-lg" /> -->
 
 # O Forward Email {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ K březnu 2026 Forward Email obsluhuje více než 500 000 domén po celém svět
 
 Platforma se nadále vyvíjí pravidelnými vydáními nových funkcí a zlepšení infrastruktury, udržujíc si pozici jediné 100% open-source, šifrované, na soukromí zaměřené, transparentní a kvantově odolné e-mailové služby dostupné dnes—nyní podpořeno [nezávislým bezpečnostním auditem](/pentest-report_forward-email.pdf) od Cure53.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

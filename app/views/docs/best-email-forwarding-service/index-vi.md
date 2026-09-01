@@ -1,6 +1,6 @@
 # Cách Forward Email Bảo Vệ Quyền Riêng Tư, Tên Miền và Bảo Mật Của Bạn: Phân Tích Kỹ Thuật Sâu {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="So sánh dịch vụ chuyển tiếp email tốt nhất" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-forwarding.webp" alt="So sánh dịch vụ chuyển tiếp email tốt nhất" class="rounded-lg" /> -->
 
 
 ## Mục Lục {#table-of-contents}

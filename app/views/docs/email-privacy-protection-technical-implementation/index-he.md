@@ -1,6 +1,6 @@
 # איך הפניית דואר אלקטרוני עובדת עם Forward Email: המדריך האולטימטיבי {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

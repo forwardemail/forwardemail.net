@@ -50,6 +50,24 @@
   color: var(--fe-fg-secondary);
 }
 
+// The other-architecture escape hatch under the hero button, filled and
+// unhidden by the detector alongside the meta line above.
+.fe-dl-hero__alt {
+  margin-block: var(--fe-space-2) 0;
+  font-size: var(--fe-text-body-sm);
+}
+
+.fe-dl-hero__alt a {
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fe-dl-hero__alt a:hover,
+.fe-dl-hero__alt a:focus {
+  color: var(--fe-fg-primary);
+}
+
 .fe-dl-hero__facts {
   display: flex;
   gap: var(--fe-space-8);
@@ -176,6 +194,27 @@
   font-size: var(--fe-text-body-sm);
   line-height: var(--fe-leading-normal);
   color: var(--fe-fg-secondary);
+}
+
+// Planned distribution channels at the foot of a card.
+.fe-dl-card__soon {
+  display: flex;
+  gap: var(--fe-space-2);
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: var(--fe-space-4);
+  margin-block: auto 0;
+}
+
+.fe-dl-card__soon-label {
+  color: var(--fe-fg-secondary);
+}
+
+// Dashed and dimmed: present on the roadmap, not clickable today.
+.fe-chip--soon {
+  color: var(--fe-fg-secondary);
+  background-color: transparent;
+  border-style: dashed;
 }
 
 // ============================================
@@ -445,7 +484,9 @@
   }
 
   .fe-dl-verify__grid {
-    grid-template-columns: 6fr 5fr;
+    // minmax(0, …), not bare fr: the checksum/code column's intrinsic width
+    // must not widen its track past the split (bare fr means minmax(auto, …)).
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
     gap: var(--fe-space-8) 4rem;
   }
 }

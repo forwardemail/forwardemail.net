@@ -1,6 +1,6 @@
 # О сервисе Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Команда и история компании Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Команда и история компании Forward Email" class="rounded-lg" /> -->
 
 # О сервисе Forward Email {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ Forward Email был основан **Николасом Боу** в 2017 год
 
 Платформа продолжает развиваться с регулярными выпусками новых функций и улучшениями инфраструктуры, сохраняя позицию единственного 100% открытого, зашифрованного, ориентированного на конфиденциальность, прозрачного и квантово-устойчивого почтового сервиса, доступного сегодня—теперь подкреплённый [независимым аудитом безопасности](/pentest-report_forward-email.pdf) от Cure53.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

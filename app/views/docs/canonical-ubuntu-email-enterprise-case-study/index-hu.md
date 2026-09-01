@@ -1,6 +1,6 @@
 # Esettanulmány: Hogyan támogatja a Canonical az Ubuntu e-mail-kezelését a Forward Email nyílt forráskódú vállalati megoldásával {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
 
-<img loading="lazy" src="/img/articles/canonical.webp" alt="Canonical Ubuntu email enterprise case study" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/canonical.webp" alt="Canonical Ubuntu email enterprise case study" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

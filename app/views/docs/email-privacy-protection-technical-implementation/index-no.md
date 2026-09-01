@@ -1,6 +1,6 @@
 # Hvordan e-postvideresending fungerer med Forward Email: Den ultimate guiden {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Teknisk implementering av e-postpersonvern" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Teknisk implementering av e-postpersonvern" class="rounded-lg" /> -->
 
 
 ## Innholdsfortegnelse {#table-of-contents}

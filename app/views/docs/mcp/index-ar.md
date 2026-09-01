@@ -1,6 +1,6 @@
 # خادم MCP لإعادة توجيه البريد الإلكتروني {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="خادم MCP لإعادة توجيه البريد الإلكتروني" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="خادم MCP لإعادة توجيه البريد الإلكتروني" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>ملخص:</strong> يتيح <a href="https://github.com/forwardemail/mcp-server">خادم MCP مفتوح المصدر</a> لمساعدي الذكاء الاصطناعي مثل Claude و ChatGPT و Cursor و Windsurf إدارة بريدك الإلكتروني والنطاقات والاسماء المستعارة وجهات الاتصال والتقاويم من خلال اللغة الطبيعية. يتم عرض جميع نقاط النهاية الـ 68 لواجهة برمجة التطبيقات كأدوات MCP. يعمل محليًا عبر <code>npx @forwardemail/mcp-server</code> — بيانات اعتمادك لا تغادر جهازك أبدًا.

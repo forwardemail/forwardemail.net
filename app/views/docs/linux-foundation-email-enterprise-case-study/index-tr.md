@@ -1,6 +1,6 @@
 # Vaka Çalışması: Linux Foundation'ın 250+ Alan Adı Genelinde E-posta Yönetimini Forward Email ile Nasıl Optimize Ettiği {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation e-posta kurumsal vaka çalışması" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation e-posta kurumsal vaka çalışması" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

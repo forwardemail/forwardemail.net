@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > 1 Haziran 2026'da, sektördeki en iyi güvenlik araştırma firmalarından biri olarak kabul edilen [Cure53](https://cure53.de/) tarafından gerçekleştirilen üçüncü taraf güvenlik denetimimizi yayınladık. Tam penetrasyon testi raporu [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf) adresinde mevcuttur. Forward Email, bağımsız olarak doğrulanmış bir güvenlik denetimine sahip tek %100 açık kaynaklı e-posta hizmetidir.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Güvenlik denetim şirketleri karşılaştırması" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Güvenlik denetim şirketleri karşılaştırması" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

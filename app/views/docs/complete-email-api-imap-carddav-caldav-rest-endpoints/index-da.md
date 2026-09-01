@@ -1,6 +1,6 @@
 # Den Første Komplette Email API: Hvordan Forward Email Revolutionerede Email Administration {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>TL;DR:</strong> Vi byggede verdens første komplette REST API til email-administration med avancerede søgemuligheder, som ingen anden tjeneste tilbyder. Mens Gmail, Outlook og Apple tvinger udviklere ind i IMAP-helvede eller rate-begrænsede API'er, leverer Forward Email lynhurtige CRUD-operationer for beskeder, mapper, kontakter og kalendere gennem en samlet REST-grænseflade med 15+ søgeparametre. Dette er den email API, udviklere har ventet på.

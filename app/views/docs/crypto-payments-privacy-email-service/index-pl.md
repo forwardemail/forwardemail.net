@@ -1,6 +1,6 @@
 # Wprowadzenie płatności kryptowalutowych: Zwiększona prywatność dla Twojej usługi e-mail {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Płatności kryptowalutowe dla usługi e-mail" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Płatności kryptowalutowe dla usługi e-mail" class="rounded-lg" /> -->
 
 
 ## Spis treści {#table-of-contents}

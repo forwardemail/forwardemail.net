@@ -1,6 +1,6 @@
 # Gyakran Ismételt Kérdések {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email gyakran ismételt kérdések" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email gyakran ismételt kérdések" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}
@@ -2189,7 +2189,7 @@ Ha más szolgáltatásokat is használ arra, hogy levelet küldjön a domainje n
 
 **A naptár konfigurálásához használd a következő CalDAV URL-t:** `https://caldav.forwardemail.net` (vagy egyszerűen `caldav.forwardemail.net`, ha az ügyfeled ezt engedi)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Hogyan adjak hozzá több naptárt és kezeljem a meglévő naptárakat {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

@@ -1,6 +1,6 @@
 # Chính sách bảo mật {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Chính sách bảo mật Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Chính sách bảo mật Forward Email" class="rounded-lg" /> -->
 
 
 ## Mục lục {#table-of-contents}

@@ -1,6 +1,6 @@
 # Кейс: Как Linux Foundation оптимизирует управление электронной почтой более чем на 250 доменах с Forward Email {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Кейс корпоративного использования электронной почты Linux Foundation" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Кейс корпоративного использования электронной почты Linux Foundation" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

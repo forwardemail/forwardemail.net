@@ -1,6 +1,6 @@
 # Présentation des paiements en crypto : confidentialité renforcée pour votre service de messagerie {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Paiements en cryptomonnaie pour le service de messagerie" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Paiements en cryptomonnaie pour le service de messagerie" class="rounded-lg" /> -->
 
 
 ## Table des matières {#table-of-contents}

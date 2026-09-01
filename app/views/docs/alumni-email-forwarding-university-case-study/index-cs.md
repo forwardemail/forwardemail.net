@@ -1,6 +1,6 @@
 # Případová studie: Jak Forward Email podporuje e-mailová řešení pro absolventy předních univerzit {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="Případová studie přesměrování e-mailů absolventů univerzity" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="Případová studie přesměrování e-mailů absolventů univerzity" class="rounded-lg" /> -->
 
 
 ## Obsah {#table-of-contents}

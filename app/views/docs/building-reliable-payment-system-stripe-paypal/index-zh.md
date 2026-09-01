@@ -1,6 +1,6 @@
 # 我们如何用 Stripe 和 PayPal 构建了一个强大的支付系统：三重奏方法 {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="使用 Stripe 和 PayPal 的支付系统" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="使用 Stripe 和 PayPal 的支付系统" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

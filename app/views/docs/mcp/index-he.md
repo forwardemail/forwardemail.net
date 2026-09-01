@@ -1,6 +1,6 @@
 # שרת Forward Email MCP {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="שרת Forward Email MCP" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="שרת Forward Email MCP" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>תקציר:</strong> <a href="https://github.com/forwardemail/mcp-server">שרת MCP בקוד פתוח שלנו</a> מאפשר לעוזרי AI כמו Claude, ChatGPT, Cursor ו-Windsurf לנהל את הדוא"ל, הדומיינים, הכינויים, אנשי הקשר והלוחות שלך באמצעות שפה טבעית. כל 68 נקודות הקצה של ה-API מוצגות ככלי MCP. הוא פועל מקומית דרך <code>npx @forwardemail/mcp-server</code> — האישורים שלך לעולם לא עוזבים את המחשב שלך.

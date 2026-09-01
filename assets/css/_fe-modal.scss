@@ -72,6 +72,60 @@
   color: var(--fe-fg-link) !important;
 }
 
+// ============================================
+// CONTENT MODALS
+// ============================================
+// The "Learn more" panels (e.g. Encrypted Email Storage) carry article-style
+// content: headings, rules, prose links, and badge chips. These give that
+// content the redesign treatment on the dark panel.
+
+.fe-page .modal-content .modal-header .h3 {
+  font-family: var(--fe-font-display);
+  font-weight: var(--fe-weight-bold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-page .modal-body h2,
+.fe-page .modal-body h3,
+.fe-page .modal-body .h4,
+.fe-page .modal-body .h5 {
+  font-family: var(--fe-font-display);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-page .modal-body hr {
+  border-top-color: var(--fe-border-subtle);
+}
+
+// Prose links inside the panel; buttons and badge chips style themselves.
+.fe-page .modal-body a:not(.btn):not(.badge) {
+  color: var(--fe-fg-link);
+}
+
+// bootstrap's light badges read as bright chips on the dark panel; restyle
+// them as fe chips.
+.fe-page .modal-content .badge-light {
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-page .modal-content a.badge-light:hover,
+.fe-page .modal-content a.badge-light:focus {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-primary-a16);
+  border-color: var(--fe-primary-a24);
+}
+
+// The one green accent in these panels (e.g. the storage modal's lock title):
+// brand mint is text-legal on the dark surface.
+.fe-page .modal-content .text-success {
+  color: var(--fe-state-success) !important;
+}
+
 .fe-page .modal-content .hr-text {
   color: var(--fe-fg-secondary);
 }

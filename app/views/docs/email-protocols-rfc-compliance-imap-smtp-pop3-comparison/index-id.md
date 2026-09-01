@@ -1,6 +1,6 @@
 # Dukungan Protokol RFC Email - Panduan Lengkap Standar & Spesifikasi {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

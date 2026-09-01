@@ -1,6 +1,6 @@
 # Over Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team en bedrijfsverhaal" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team en bedrijfsverhaal" class="rounded-lg" /> -->
 
 # Over Forward Email {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ Vanaf maart 2026 bedient Forward Email meer dan 500.000 domeinen wereldwijd, waa
 
 Het platform blijft zich ontwikkelen met regelmatige functiereleases en verbeteringen aan de infrastructuur, en behoudt daarmee zijn positie als de enige 100% open-source, versleutelde, privacygerichte, transparante en kwantumresistente e-mailservice die vandaag beschikbaar is—nu ondersteund door een [onafhankelijke beveiligingsaudit](/pentest-report_forward-email.pdf) van Cure53.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

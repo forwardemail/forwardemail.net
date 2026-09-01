@@ -7,7 +7,7 @@
 >
 > 그러나 페이팔답게 우리에게는 전혀 알리지 않았습니다. 우리는 이 업데이트가 조용히 출시된 지 몇 달 후인 2025년 12월에야 스스로 발견했습니다.
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Forward Email에서는 10년 넘게 페이팔의 망가진 API와 씨름해왔습니다. 사소한 불만에서 시작된 일이 완전한 재앙으로 변해, 자체 우회 방법을 만들고, 그들의 피싱 템플릿을 차단하며, 결국 중요한 계정 이전 기간 동안 모든 페이팔 결제를 중단해야 했습니다.</p>
 <p class="lead mt-3">이것은 11년 동안 페이팔이 기본적인 개발자 요구를 무시하는 동안 우리가 그들의 플랫폼을 작동시키기 위해 모든 노력을 기울인 이야기입니다.</p>
@@ -372,20 +372,20 @@ PayPal 개발자 대시보드는 재앙입니다. 우리가 매일 겪는 상황
   <figcaption><div class="alert alert-danger small text-center">
   구독 관리 인터페이스 - 인터페이스가 너무 나빠서 제품과 구독 플랜을 생성하기 위해 코드를 사용해야 했습니다
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   기능이 누락된 깨진 구독 인터페이스 뷰 (제품/플랜/구독을 쉽게 생성할 수 없으며, UI에서 생성된 제품이나 플랜을 삭제하는 방법도 전혀 없는 것 같습니다)
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   일반적인 PayPal 오류 메시지 - 암호 같고 도움이 되지 않음
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" /> -->
 </figure>
 
 ### SDK 문제점 {#sdk-problems}
@@ -430,38 +430,38 @@ Mark Stuart 본인이 인정함:
   <figcaption><div class="alert alert-danger small text-center">
   고객이 결제 시도 시 본 오류 - 설명도, 로그도 없음
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   결제가 완전히 고장난 동안 PayPal 지원팀은 모든 것이 정상이라고 주장함. 마지막 메시지에서는 "일부 기능을 복구했다"고 하면서도 여전히 더 많은 불명확한 정보를 요구함 - 전형적인 PayPal 지원 쇼
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   아무것도 "고치지 못한" 것으로 추정되는 신원 확인 절차
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   모호한 메시지와 여전히 해결되지 않은 문제. 추가로 어떤 정보가 필요한지에 대한 정보, 공지 또는 아무런 안내도 없습니다. 고객 지원은 침묵합니다.
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" /> -->
 </figure>
 
 
@@ -564,7 +564,7 @@ if (
   <figcaption><div class="alert alert-danger small text-center">
   여러 개의 사기 PayPal 송장이 받은 편지함을 가득 채우고 있으며, 모두 실제로 PayPal 시스템에서 온 것처럼 보여 정식으로 보이는 스크린샷
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" /> -->
 </figure>
 
 연구원은 다음과 같이 언급했습니다:
@@ -931,4 +931,4 @@ PayPal이 광범위한 피드백을 수집하면서도 기본적인 개발자 �
 
 > 이 게시물은 Forward Email에서 PayPal API를 사용한 11년간의 경험을 문서화한 것입니다. 모든 코드 예제와 링크는 실제 운영 시스템에서 가져온 것입니다. 일부 고객에게 다른 선택지가 없기 때문에 이러한 문제에도 불구하고 PayPal 결제를 계속 지원하고 있습니다
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" /> -->

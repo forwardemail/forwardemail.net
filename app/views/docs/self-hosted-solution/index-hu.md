@@ -1,6 +1,6 @@
 # Önállóan Üzemeltetett E-mail: Elkötelezettség a Nyílt Forráskód Felé {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Önállóan üzemeltetett e-mail megoldás illusztráció" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Önállóan üzemeltetett e-mail megoldás illusztráció" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

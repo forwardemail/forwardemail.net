@@ -1,6 +1,6 @@
 # 이메일 RFC 프로토콜 지원 - 완전한 표준 및 사양 가이드 {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="RFC 이메일 프로토콜 라이브러리 장면" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="RFC 이메일 프로토콜 라이브러리 장면" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

@@ -1,6 +1,6 @@
 # Самохостинг електронної пошти: Відданість відкритому коду {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Ілюстрація рішення для самохостингу електронної пошти" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Ілюстрація рішення для самохостингу електронної пошти" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

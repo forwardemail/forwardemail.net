@@ -1,6 +1,6 @@
 # 셀프 호스팅 이메일: 오픈 소스에 대한 약속 {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="셀프 호스팅 이메일 솔루션 일러스트" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="셀프 호스팅 이메일 솔루션 일러스트" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

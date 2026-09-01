@@ -1,6 +1,6 @@
 # Nahlásit zneužití {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Nahlásit zneužití a spam Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Nahlásit zneužití a spam Forward Email" class="rounded-lg" /> -->
 
 
 ## Obsah {#table-of-contents}

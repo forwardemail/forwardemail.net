@@ -1,6 +1,6 @@
 # Často kladené otázky {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email často kladené otázky" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email často kladené otázky" class="rounded-lg" /> -->
 
 
 ## Obsah {#table-of-contents}
@@ -2189,7 +2189,7 @@ Pokud k odesílání e-mailů jménem vaší domény používáte i jiné služb
 
 **Pro konfiguraci kalendáře použijte CalDAV URL:** `https://caldav.forwardemail.net` (nebo jednoduše `caldav.forwardemail.net`, pokud to váš klient umožňuje)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Jak přidat další kalendáře a spravovat stávající kalendáře {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

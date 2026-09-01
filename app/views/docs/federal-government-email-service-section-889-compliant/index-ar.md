@@ -1,6 +1,6 @@
 # إعادة توجيه البريد الإلكتروني: حل إعادة توجيه البريد الإلكتروني المتوافق مع القسم 889 الخاص بك {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="خدمة البريد الإلكتروني الحكومية الفيدرالية المتوافقة مع القسم 889" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="خدمة البريد الإلكتروني الحكومية الفيدرالية المتوافقة مع القسم 889" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

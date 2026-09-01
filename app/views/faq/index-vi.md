@@ -1,6 +1,6 @@
 # Câu Hỏi Thường Gặp {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Các câu hỏi thường gặp về Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Các câu hỏi thường gặp về Forward Email" class="rounded-lg" /> -->
 
 
 ## Mục Lục {#table-of-contents}
@@ -2188,7 +2188,7 @@ Nếu bạn cũng sử dụng các dịch vụ khác để gửi thư thay mặt
 
 **Để cấu hình lịch, sử dụng URL CalDAV:** `https://caldav.forwardemail.net` (hoặc đơn giản là `caldav.forwardemail.net` nếu ứng dụng của bạn cho phép)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Làm thế nào để thêm nhiều lịch hơn và quản lý các lịch hiện có {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

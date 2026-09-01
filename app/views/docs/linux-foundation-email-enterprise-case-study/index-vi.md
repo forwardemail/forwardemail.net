@@ -1,6 +1,6 @@
 # Nghiên Cứu Tình Huống: Cách Linux Foundation Tối Ưu Quản Lý Email Trên Hơn 250 Miền với Forward Email {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" /> -->
 
 
 ## Mục Lục {#table-of-contents}

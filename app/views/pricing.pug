@@ -22,7 +22,7 @@ block body
   include _modal-domain-search
   +modalDomainSearch
   include _modal-storage
-  if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
+  if !user || isBot(ctx.get('User-Agent'))
     #modal-watch-video.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -67,10 +67,13 @@ block body
                 = " "
                 i.fa.fa-search-plus
 
-  //- The hero condition is unchanged. Bots are included deliberately: the h1
-  //- carries the per-route useCases headline, which is the SEO content of all
-  //- 7,252 programmatic pages.
-  if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
+  //- Bots are included deliberately: the h1 carries the per-route useCases
+  //- headline, which is the SEO content of all 7,252 programmatic pages.
+  //- ?pricing=true no longer drops the hero: the redesigned hero is compact,
+  //- so the "jump to pricing" nav link still lands the table in view while
+  //- the page opens on the new surface (matches isFePricingPage in
+  //- _fe-flags.pug).
+  if !user || isBot(ctx.get('User-Agent'))
     include _fe-pricing-hero
     //- .fe-landing is wrapped around the hero alone rather than the whole page,
     //- because everything below it is still the previous design. The flush

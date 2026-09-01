@@ -1,6 +1,6 @@
 # Come Funziona l'Inoltro Email con Forward Email: La Guida Definitiva {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Implementazione tecnica della protezione della privacy delle email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Implementazione tecnica della protezione della privacy delle email" class="rounded-lg" /> -->
 
 
 ## Indice {#table-of-contents}

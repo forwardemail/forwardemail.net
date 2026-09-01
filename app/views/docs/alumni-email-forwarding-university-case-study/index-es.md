@@ -1,6 +1,6 @@
 # Estudio de Caso: Cómo Forward Email Impulsa Soluciones de Correo Electrónico para Exalumnos en Universidades de Primer Nivel {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="Estudio de caso sobre reenvío de correo electrónico para exalumnos universitarios" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="Estudio de caso sobre reenvío de correo electrónico para exalumnos universitarios" class="rounded-lg" /> -->
 
 
 ## Tabla de Contenidos {#table-of-contents}

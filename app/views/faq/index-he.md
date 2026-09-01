@@ -1,6 +1,6 @@
 # שאלות נפוצות {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}
@@ -2189,7 +2189,7 @@ Forward Email מספק לוח מחוונים מקיף לדוחות DMARC שמא�
 
 **להגדרת היומן, השתמש בכתובת CalDAV של:** `https://caldav.forwardemail.net` (או פשוט `caldav.forwardemail.net` אם הלקוח שלך מאפשר זאת)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### איך מוסיפים יומנים נוספים ומנהלים יומנים קיימים {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

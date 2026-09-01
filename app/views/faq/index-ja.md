@@ -1,6 +1,6 @@
 # よくある質問 {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email よくある質問" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email よくある質問" class="rounded-lg" /> -->
 
 
 ## 目次 {#table-of-contents}
@@ -2189,7 +2189,7 @@ DMARCレポートには、許可されていないサーバーを含め、あな
 
 **カレンダーを設定するには、以下のCalDAV URLを使用してください：** `https://caldav.forwardemail.net`（クライアントが許可する場合は単に `caldav.forwardemail.net` でも可）
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### 追加のカレンダーの追加と既存カレンダーの管理方法 {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

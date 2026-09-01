@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > 2026年6月1日，我们发布了由[Cure53](https://cure53.de/)进行的第三方安全审计，Cure53被广泛认为是业内最好的安全研究公司之一。完整的渗透测试报告可在[pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf)获取。Forward Email是唯一一个拥有独立验证安全审计的100%开源电子邮件服务。
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="安全审计公司比较" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="安全审计公司比较" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

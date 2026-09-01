@@ -1,6 +1,6 @@
 # 安全实践 {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email 安全实践" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Forward Email 安全实践" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

@@ -1,6 +1,6 @@
 # الأسئلة المتكررة {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="الأسئلة المتكررة حول خدمة إعادة توجيه البريد الإلكتروني" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="الأسئلة المتكررة حول خدمة إعادة توجيه البريد الإلكتروني" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}
@@ -2189,7 +2189,7 @@ Drafts/
 
 **لتكوين التقويم الخاص بك، استخدم عنوان CalDAV التالي:** `https://caldav.forwardemail.net` (أو ببساطة `caldav.forwardemail.net` إذا سمح عميل البريد بذلك)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### كيف أضيف المزيد من التقويمات وأدير التقويمات الحالية {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

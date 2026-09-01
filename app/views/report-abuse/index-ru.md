@@ -1,6 +1,6 @@
 # Жалобы на злоупотребления {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Сообщить о злоупотреблениях и спаме в Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Сообщить о злоупотреблениях и спаме в Forward Email" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

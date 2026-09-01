@@ -1,6 +1,6 @@
 # Kit de Presse & Médias {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email kit de presse et médias" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="Forward Email kit de presse et médias" class="rounded-lg" /> -->
 
 
 ## Table des Matières {#table-of-contents}

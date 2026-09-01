@@ -1,6 +1,6 @@
 # Datenschutzrichtlinie {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email Datenschutzrichtlinie" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email Datenschutzrichtlinie" class="rounded-lg" /> -->
 
 
 ## Inhaltsverzeichnis {#table-of-contents}

@@ -145,3 +145,6 @@ $question: theme-color('light');
 
 // redesigned landing page modals, scoped under .fe-page
 @import 'fe-modal';
+
+// site-wide footer restyle, scoped under footer.fe-footer
+@import 'fe-footer';

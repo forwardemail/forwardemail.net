@@ -1,6 +1,6 @@
 # 개인정보 처리방침 {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email privacy policy" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email privacy policy" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

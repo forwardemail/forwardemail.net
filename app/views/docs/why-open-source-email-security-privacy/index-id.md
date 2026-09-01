@@ -1,6 +1,6 @@
 # Mengapa Email Open-Source adalah Masa Depan: Keunggulan Forward Email {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="Keamanan dan privasi email open source" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/open-source.webp" alt="Keamanan dan privasi email open source" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

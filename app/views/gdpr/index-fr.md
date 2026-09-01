@@ -1,6 +1,6 @@
 # Conformité RGPD {#gdpr-compliance}
 
-<img loading="lazy" src="/img/articles/gdpr.webp" alt="Conformité RGPD Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/gdpr.webp" alt="Conformité RGPD Forward Email" class="rounded-lg" /> -->
 
 
 ## Table des matières {#table-of-contents}

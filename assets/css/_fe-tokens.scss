@@ -151,15 +151,17 @@
 
 @media (min-width: 576px) {
   :root {
-    --fe-container-gutter: clamp(1.5rem, 4vw, 5rem);
+    --fe-container-gutter: clamp(1.5rem, 2vw, 2.5rem);
   }
 }
 
-// .fe-nav and .fe-page take the dark set too: the navbar and the modals live
-// outside any section and cannot inherit a surface from one.
+// .fe-nav, .fe-page and .fe-footer take the dark set too: the navbar, the
+// modals and the footer live outside any section and cannot inherit a
+// surface from one. The footer, like the bar, is Ink in both schemes.
 .fe-surface-dark,
 .fe-nav,
-.fe-page {
+.fe-page,
+.fe-footer {
   --fe-bg-canvas: var(--fe-ink);
   --fe-bg-raised: var(--fe-n-200);
   --fe-bg-sunken: var(--fe-n-100);

@@ -1,6 +1,6 @@
 # Correo Electrónico Resistente a la Computación Cuántica: Cómo usamos buzones SQLite cifrados para mantener seguro tu correo electrónico {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="Ilustración del servicio de correo electrónico cifrado seguro contra computación cuántica" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/quantum.webp" alt="Ilustración del servicio de correo electrónico cifrado seguro contra computación cuántica" class="rounded-lg" /> -->
 
 
 ## Tabla de Contenidos {#table-of-contents}

@@ -1,6 +1,6 @@
 # แนะนำการชำระเงินด้วยคริปโต: ความเป็นส่วนตัวที่เพิ่มขึ้นสำหรับบริการอีเมลของคุณ {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

@@ -1,6 +1,6 @@
 # Email Tahan Kuantum: Bagaimana kami menggunakan kotak surat SQLite terenkripsi untuk menjaga email Anda tetap aman {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="Ilustrasi layanan email terenkripsi aman kuantum" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/quantum.webp" alt="Ilustrasi layanan email terenkripsi aman kuantum" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

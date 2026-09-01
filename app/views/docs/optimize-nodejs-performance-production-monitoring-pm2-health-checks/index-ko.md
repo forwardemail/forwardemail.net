@@ -1,6 +1,6 @@
 # Node.js 프로덕션 인프라 최적화 방법: 모범 사례 {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js 성능 최적화 가이드" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js 성능 최적화 가이드" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

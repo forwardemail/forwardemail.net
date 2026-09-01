@@ -1,6 +1,6 @@
 # Presse & Mediekit {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email presse og mediekit" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="Forward Email presse og mediekit" class="rounded-lg" /> -->
 
 
 ## Indholdsfortegnelse {#table-of-contents}

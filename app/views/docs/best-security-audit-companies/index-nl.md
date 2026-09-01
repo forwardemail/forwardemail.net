@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > Op 1 juni 2026 hebben we onze beveiligingsaudit door derden gepubliceerd, uitgevoerd door [Cure53](https://cure53.de/), algemeen beschouwd als een van de beste beveiligingsonderzoeksbedrijven in de branche. Het volledige penetratietestrapport is beschikbaar op [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email is de enige 100% open-source e-mailservice met een onafhankelijk geverifieerde beveiligingsaudit.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" /> -->
 
 
 ## Inhoudsopgave {#table-of-contents}

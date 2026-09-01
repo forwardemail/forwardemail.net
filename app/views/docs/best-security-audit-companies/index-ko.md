@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > 2026년 6월 1일, 업계에서 가장 우수한 보안 연구 기업 중 하나로 널리 인정받는 [Cure53](https://cure53.de/)가 수행한 제3자 보안 감사를 발표했습니다. 전체 침투 테스트 보고서는 [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf)에서 확인할 수 있습니다. Forward Email은 독립적으로 검증된 보안 감사를 보유한 유일한 100% 오픈 소스 이메일 서비스입니다.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

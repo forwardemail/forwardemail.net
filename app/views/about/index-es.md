@@ -1,6 +1,6 @@
 # Acerca de Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Equipo y historia de la empresa Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Equipo y historia de la empresa Forward Email" class="rounded-lg" /> -->
 
 # Acerca de Forward Email {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ A marzo de 2026, Forward Email atiende a más de 1,6 millones de dominios en tod
 
 La plataforma continúa evolucionando con lanzamientos regulares de funciones y mejoras en la infraestructura, manteniendo su posición como el único servicio de correo electrónico 100% código abierto, cifrado, enfocado en la privacidad, transparente y resistente a la computación cuántica disponible hoy en día—ahora respaldado por una [auditoría de seguridad independiente](/pentest-report_forward-email.pdf) de Cure53.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

@@ -1,6 +1,6 @@
 # Sıkça Sorulan Sorular {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email sıkça sorulan sorular" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email sıkça sorulan sorular" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}
@@ -2189,7 +2189,7 @@ Alan adınız adına e-posta göndermek için başka hizmetler (pazarlama araçl
 
 **Takviminizi yapılandırmak için CalDAV URL'sini kullanın:** `https://caldav.forwardemail.net` (veya istemciniz izin veriyorsa sadece `caldav.forwardemail.net`)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Takvim CalDAV Thunderbird Örnek Kurulum" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Takvim CalDAV Thunderbird Örnek Kurulum" /> -->
 
 ### Daha fazla takvim nasıl ekler ve mevcut takvimleri nasıl yönetirim {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

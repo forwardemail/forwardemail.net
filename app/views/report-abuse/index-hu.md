@@ -1,6 +1,6 @@
 # Visszaélés jelentése {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Visszaélés és spam jelentése a Forward Emailnek" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Visszaélés és spam jelentése a Forward Emailnek" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

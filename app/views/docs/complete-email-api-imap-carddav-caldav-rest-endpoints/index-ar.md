@@ -1,6 +1,6 @@
 # أول واجهة برمجة تطبيقات بريد إلكتروني كاملة: كيف أحدث Forward Email ثورة في إدارة البريد الإلكتروني {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="واجهة برمجة تطبيقات بريد إلكتروني كاملة مع IMAP CardDAV CalDAV REST" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="واجهة برمجة تطبيقات بريد إلكتروني كاملة مع IMAP CardDAV CalDAV REST" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>ملخص:</strong> قمنا ببناء أول واجهة برمجة تطبيقات REST كاملة في العالم لإدارة البريد الإلكتروني مع قدرات بحث متقدمة لا تقدمها أي خدمة أخرى. بينما تجبر Gmail و Outlook و Apple المطورين على التعامل مع جحيم IMAP أو واجهات برمجة التطبيقات المحدودة بالسرعة، يقدم Forward Email عمليات CRUD فائقة السرعة للرسائل والمجلدات وجهات الاتصال والتقاويم من خلال واجهة REST موحدة مع أكثر من 15 معلمة بحث. هذه هي واجهة برمجة التطبيقات للبريد الإلكتروني التي كان المطورون ينتظرونها.

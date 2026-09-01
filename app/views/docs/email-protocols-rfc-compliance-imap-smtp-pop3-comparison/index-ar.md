@@ -1,6 +1,6 @@
 # دعم بروتوكولات RFC للبريد الإلكتروني - دليل كامل للمعايير والمواصفات {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="مشهد مكتبة بروتوكولات البريد الإلكتروني RFC" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="مشهد مكتبة بروتوكولات البريد الإلكتروني RFC" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

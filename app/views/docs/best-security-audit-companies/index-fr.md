@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > Le 1er juin 2026, nous avons publié notre audit de sécurité tiers réalisé par [Cure53](https://cure53.de/), largement considéré comme l'une des meilleures entreprises de recherche en sécurité du secteur. Le rapport complet du test d'intrusion est disponible sur [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email est le seul service de messagerie 100% open source avec un audit de sécurité vérifié de manière indépendante.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Comparaison des entreprises d'audit de sécurité" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Comparaison des entreprises d'audit de sécurité" class="rounded-lg" /> -->
 
 
 ## Table des matières {#table-of-contents}

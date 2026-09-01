@@ -1,6 +1,6 @@
 # Conditions {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Conditions d'utilisation de Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Conditions d'utilisation de Forward Email" class="rounded-lg" /> -->
 
 
 ## Table des matières {#table-of-contents}

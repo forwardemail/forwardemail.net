@@ -1,6 +1,6 @@
 # Az e-mail startup sírkertje: Miért buknak el a legtöbb e-mail cég {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="E-mail startup sírkert illusztráció" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="E-mail startup sírkert illusztráció" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Miközben sok e-mail startup milliókat fektetett be az észlelt problémák megoldásába, mi a <a href="https://forwardemail.net">Forward Email</a> csapatánál 2017 óta megbízható e-mail infrastruktúra építésére koncentrálunk a semmiből. Ez az elemzés feltárja az e-mail startupok eredményei mögötti mintákat és az e-mail infrastruktúra alapvető kihívásait.</p>
 

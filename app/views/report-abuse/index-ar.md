@@ -1,6 +1,6 @@
 # الإبلاغ عن إساءة الاستخدام {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="الإبلاغ عن الإساءة والبريد المزعج إلى Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="الإبلاغ عن الإساءة والبريد المزعج إلى Forward Email" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

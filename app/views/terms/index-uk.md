@@ -1,6 +1,6 @@
 # Умови {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email умови обслуговування" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email умови обслуговування" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

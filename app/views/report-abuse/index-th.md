@@ -1,6 +1,6 @@
 # รายงานการละเมิด {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="รายงานการละเมิดและสแปมไปยัง Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="รายงานการละเมิดและสแปมไปยัง Forward Email" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

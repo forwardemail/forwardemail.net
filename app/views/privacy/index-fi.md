@@ -1,6 +1,6 @@
 # Tietosuojakäytäntö {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email tietosuojakäytäntö" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email tietosuojakäytäntö" class="rounded-lg" /> -->
 
 
 ## Sisällysluettelo {#table-of-contents}

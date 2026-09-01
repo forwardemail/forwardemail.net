@@ -1,6 +1,6 @@
 # SQLite Performans Optimizasyonu: Üretim PRAGMA Ayarları & ChaCha20 Şifreleme {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite performans optimizasyon rehberi" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite performans optimizasyon rehberi" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

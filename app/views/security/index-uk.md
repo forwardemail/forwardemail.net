@@ -1,6 +1,6 @@
 # Практики безпеки {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Практики безпеки Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Практики безпеки Forward Email" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

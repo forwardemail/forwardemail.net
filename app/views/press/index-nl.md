@@ -1,6 +1,6 @@
 # Pers & Media Kit {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email pers- en mediakit" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="Forward Email pers- en mediakit" class="rounded-lg" /> -->
 
 
 ## Inhoudsopgave {#table-of-contents}

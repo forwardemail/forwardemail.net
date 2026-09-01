@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > 2026年6月1日、業界で最高のセキュリティ研究企業の一つとして広く認められている[Cure53](https://cure53.de/)による第三者セキュリティ監査を公開しました。完全なペネトレーションテストレポートは[pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf)で入手できます。Forward Emailは、独立して検証されたセキュリティ監査を持つ唯一の100%オープンソースメールサービスです。
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" /> -->
 
 
 ## 目次 {#table-of-contents}

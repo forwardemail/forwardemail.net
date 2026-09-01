@@ -1,6 +1,6 @@
 # セルフホスト型メール：オープンソースへのコミットメント {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="セルフホスト型メールソリューションのイラスト" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="セルフホスト型メールソリューションのイラスト" class="rounded-lg" /> -->
 
 
 ## 目次 {#table-of-contents}

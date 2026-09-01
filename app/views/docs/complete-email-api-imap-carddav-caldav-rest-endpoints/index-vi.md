@@ -1,6 +1,6 @@
 # API Email Hoàn Chỉnh Đầu Tiên: Cách Forward Email Cách Mạng Hóa Quản Lý Email {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>Tóm tắt nhanh:</strong> Chúng tôi đã xây dựng API REST hoàn chỉnh đầu tiên trên thế giới cho quản lý email với khả năng tìm kiếm nâng cao mà không dịch vụ nào khác có. Trong khi Gmail, Outlook và Apple bắt các nhà phát triển phải chịu cảnh địa ngục IMAP hoặc API giới hạn tốc độ, Forward Email cung cấp các thao tác CRUD cực nhanh cho tin nhắn, thư mục, danh bạ và lịch qua giao diện REST thống nhất với hơn 15 tham số tìm kiếm. Đây chính là API email mà các nhà phát triển đã chờ đợi.

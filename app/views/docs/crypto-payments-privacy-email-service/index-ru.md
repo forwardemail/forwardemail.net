@@ -1,6 +1,6 @@
 # Введение криптовалютных платежей: повышенная конфиденциальность для вашего почтового сервиса {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Платежи криптовалютой для почтового сервиса" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Платежи криптовалютой для почтового сервиса" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

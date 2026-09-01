@@ -1,6 +1,6 @@
 # 포워드 이메일 MCP 서버 {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>요약:</strong> 우리의 <a href="https://github.com/forwardemail/mcp-server">오픈소스 MCP 서버</a>는 Claude, ChatGPT, Cursor, Windsurf 같은 AI 어시스턴트가 자연어를 통해 이메일, 도메인, 별칭, 연락처, 캘린더를 관리할 수 있게 해줍니다. 68개의 모든 API 엔드포인트가 MCP 도구로 노출됩니다. <code>npx @forwardemail/mcp-server</code>로 로컬에서 실행되며, 자격 증명은 절대 기기를 벗어나지 않습니다.

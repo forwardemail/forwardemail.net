@@ -1,6 +1,6 @@
 # Praktik Keamanan {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Praktik keamanan Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Praktik keamanan Forward Email" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

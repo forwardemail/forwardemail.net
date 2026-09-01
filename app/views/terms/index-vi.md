@@ -1,6 +1,6 @@
 # Điều khoản {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Điều khoản dịch vụ Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Điều khoản dịch vụ Forward Email" class="rounded-lg" /> -->
 
 
 ## Mục lục {#table-of-contents}

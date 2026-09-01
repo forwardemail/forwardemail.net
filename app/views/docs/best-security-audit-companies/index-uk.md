@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > 1 червня 2026 року ми опублікували наш аудит безпеки від третьої сторони, проведений компанією [Cure53](https://cure53.de/), яка широко визнана однією з найкращих дослідницьких фірм у галузі безпеки. Повний звіт про тестування на проникнення доступний за адресою [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email — єдиний 100% поштовий сервіс з відкритим вихідним кодом з незалежно підтвердженим аудитом безпеки.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Порівняння компаній з аудиту безпеки" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Порівняння компаній з аудиту безпеки" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

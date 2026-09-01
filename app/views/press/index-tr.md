@@ -1,6 +1,6 @@
 # Basın & Medya Kiti {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email basın ve medya kiti" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="Forward Email basın ve medya kiti" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

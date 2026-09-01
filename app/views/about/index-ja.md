@@ -1,6 +1,6 @@
 # Forward Emailについて {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Emailチームと会社のストーリー" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Forward Emailチームと会社のストーリー" class="rounded-lg" /> -->
 
 # Forward Emailについて {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ Forward Emailは創設以来、プライバシーとセキュリティの原則�
 
 プラットフォームは定期的な機能リリースとインフラ改善を続け、現在も唯一の100%オープンソース、暗号化、プライバシー重視、透明性、量子耐性を備えたメールサービスとしての地位を維持しています——Cure53による[独立セキュリティ監査](/pentest-report_forward-email.pdf)に裏付けられています。
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

@@ -1,6 +1,6 @@
 # Bezpečnostní postupy {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email bezpečnostní postupy" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Forward Email bezpečnostní postupy" class="rounded-lg" /> -->
 
 
 ## Obsah {#table-of-contents}

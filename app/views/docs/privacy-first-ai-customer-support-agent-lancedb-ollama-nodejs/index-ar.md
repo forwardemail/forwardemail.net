@@ -1,6 +1,6 @@
 # بناء وكيل دعم عملاء ذكي يراعي الخصوصية أولاً باستخدام LanceDB و Ollama و Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="وكيل دعم عملاء ذكي مع LanceDB Ollama Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="وكيل دعم عملاء ذكي مع LanceDB Ollama Node.js" class="rounded-lg" /> -->
 
 > \[!NOTE]
 > تغطي هذه الوثيقة رحلتنا في بناء وكيل دعم ذكي مستضاف ذاتيًا. كتبنا عن تحديات مشابهة في منشور مدونتنا [مقبرة شركات البريد الإلكتروني الناشئة](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). فكّرنا بجدية في كتابة متابعة بعنوان "مقبرة شركات الذكاء الاصطناعي الناشئة" لكن ربما علينا الانتظار سنة أخرى أو نحو ذلك حتى تنفجر فقاعة الذكاء الاصطناعي المحتملة (؟). في الوقت الحالي، هذه هي خلاصة أفكارنا حول ما نجح، وما لم ينجح، ولماذا فعلنا ذلك بهذه الطريقة.

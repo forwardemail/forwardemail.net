@@ -12,9 +12,10 @@
 //- the app or the answers.
 - const isFeAccountAgnosticPage = ["/download", "/faq"].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent"));
 //- The pricing template's hero renders under the same condition the template
-//- itself uses: no hero for a signed in visitor or for ?pricing, and then the
-//- page is the previous design all the way down.
-- const isFePricingPage = !user && !boolean(ctx.query.pricing) && !isBot(ctx.get("User-Agent")) && (ctx.pathWithoutLocale === "/private-business-email" || Object.keys(useCases).includes(ctx.pathWithoutLocale));
+//- itself uses: every logged out visitor gets it, ?pricing=true included —
+//- the redesigned hero is compact enough that "jump to pricing" still lands
+//- the table in view. Signed in visitors keep the previous design.
+- const isFePricingPage = !user && !isBot(ctx.get("User-Agent")) && (ctx.pathWithoutLocale === "/private-business-email" || Object.keys(useCases).includes(ctx.pathWithoutLocale));
 //- body.fe-page scopes the dark fe modal treatment (_fe-modal.scss): every
 //- logged out page, plus /download and /faq for signed in visitors. Signed in
 //- dashboard modals instead follow the OS scheme via the --app-* tokens in

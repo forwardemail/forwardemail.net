@@ -1,6 +1,6 @@
 # 약관 {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email 서비스 약관" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email 서비스 약관" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

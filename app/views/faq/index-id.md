@@ -1,6 +1,6 @@
 # Pertanyaan yang Sering Diajukan {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Pertanyaan yang sering diajukan tentang Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Pertanyaan yang sering diajukan tentang Forward Email" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}
@@ -2189,7 +2189,7 @@ Jika Anda juga menggunakan layanan lain untuk mengirim email atas nama domain An
 
 **Untuk mengonfigurasi kalender Anda, gunakan URL CalDAV:** `https://caldav.forwardemail.net` (atau cukup `caldav.forwardemail.net` jika klien Anda mengizinkannya)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Bagaimana cara menambahkan lebih banyak kalender dan mengelola kalender yang ada {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

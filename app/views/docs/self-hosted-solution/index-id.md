@@ -1,6 +1,6 @@
 # Email Self-Hosted: Komitmen terhadap Open Source {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Ilustrasi solusi email self-hosted" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Ilustrasi solusi email self-hosted" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

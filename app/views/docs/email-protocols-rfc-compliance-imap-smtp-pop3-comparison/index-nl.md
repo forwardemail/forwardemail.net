@@ -1,6 +1,6 @@
 # E-mail RFC Protocol Ondersteuning - Complete Standaarden & Specificaties Gids {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" /> -->
 
 
 ## Inhoudsopgave {#table-of-contents}

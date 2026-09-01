@@ -1,6 +1,6 @@
 # Кейс: Як Forward Email забезпечує рішення для електронної пошти випускників провідних університетів {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="Кейс з переспрямування електронної пошти випускників університету" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="Кейс з переспрямування електронної пошти випускників університету" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

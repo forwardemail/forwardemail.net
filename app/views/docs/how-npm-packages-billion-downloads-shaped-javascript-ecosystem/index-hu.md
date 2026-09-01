@@ -1,6 +1,6 @@
 # Egy évtized hatása: Hogyan érték el npm csomagjaink az 1 milliárd letöltést és formálták a JavaScriptet {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img loading="lazy" src="/img/articles/npm.webp" alt="NPM csomagok milliárdos letöltési ökoszisztéma" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/npm.webp" alt="NPM csomagok milliárdos letöltési ökoszisztéma" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

@@ -1,6 +1,6 @@
 # 新闻与媒体工具包 {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email 新闻与媒体工具包" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="Forward Email 新闻与媒体工具包" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

@@ -1,6 +1,6 @@
 # Membangun Agen Dukungan Pelanggan AI yang Mengutamakan Privasi dengan LanceDB, Ollama, dan Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" /> -->
 
 > \[!NOTE]
 > Dokumen ini membahas perjalanan kami membangun agen dukungan AI yang di-host sendiri. Kami menulis tentang tantangan serupa dalam posting blog kami [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). Kami sebenarnya berpikir untuk menulis kelanjutan berjudul "AI Startup Graveyard" tapi mungkin kami harus menunggu satu tahun lagi sampai gelembung AI mungkin pecah(?). Untuk saat ini, ini adalah catatan pemikiran kami tentang apa yang berhasil, apa yang tidak, dan mengapa kami melakukannya dengan cara ini.

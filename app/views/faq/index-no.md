@@ -1,6 +1,6 @@
 # Ofte stilte spørsmål {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" /> -->
 
 
 ## Innholdsfortegnelse {#table-of-contents}
@@ -2190,7 +2190,7 @@ Hvis du også bruker andre tjenester til å sende e-post på vegne av domenet di
 
 **For å konfigurere kalenderen din, bruk CalDAV-URL-en:** `https://caldav.forwardemail.net` (eller bare `caldav.forwardemail.net` hvis klienten din tillater det)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Hvordan legger jeg til flere kalendere og administrerer eksisterende kalendere {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

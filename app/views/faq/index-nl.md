@@ -1,6 +1,6 @@
 # Veelgestelde Vragen {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email veelgestelde vragen" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email veelgestelde vragen" class="rounded-lg" /> -->
 
 
 ## Inhoudsopgave {#table-of-contents}
@@ -2189,7 +2189,7 @@ Als u ook andere services gebruikt om e-mail namens uw domein te verzenden (mark
 
 **Om je agenda te configureren, gebruik de CalDAV-URL van:** `https://caldav.forwardemail.net` (of gewoon `caldav.forwardemail.net` als je client dit toestaat)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Hoe voeg ik meer agenda's toe en beheer ik bestaande agenda's {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

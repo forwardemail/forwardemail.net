@@ -1,6 +1,6 @@
 # Rapportér misbrug {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Rapportér misbrug og spam til Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Rapportér misbrug og spam til Forward Email" class="rounded-lg" /> -->
 
 
 ## Indholdsfortegnelse {#table-of-contents}

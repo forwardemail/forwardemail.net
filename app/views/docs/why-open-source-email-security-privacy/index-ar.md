@@ -1,6 +1,6 @@
 # لماذا البريد الإلكتروني مفتوح المصدر هو المستقبل: ميزة Forward Email {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="أمان وخصوصية البريد الإلكتروني مفتوح المصدر" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/open-source.webp" alt="أمان وخصوصية البريد الإلكتروني مفتوح المصدر" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

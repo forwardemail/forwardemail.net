@@ -1,6 +1,6 @@
 # Sajtó és Média Készlet {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email sajtó és média készlet" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="Forward Email sajtó és média készlet" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

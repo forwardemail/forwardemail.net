@@ -1,6 +1,6 @@
 # Forward Email MCP Server {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>สรุปสั้น ๆ:</strong> <a href="https://github.com/forwardemail/mcp-server">เซิร์ฟเวอร์ MCP แบบโอเพนซอร์สของเรา</a> ช่วยให้ผู้ช่วย AI อย่าง Claude, ChatGPT, Cursor และ Windsurf จัดการอีเมล โดเมน อลิอาส รายชื่อผู้ติดต่อ และปฏิทินของคุณผ่านภาษาธรรมชาติ ทั้ง 68 จุดเชื่อมต่อ API ถูกเปิดเผยเป็นเครื่องมือ MCP ทั้งหมด มันทำงานบนเครื่องของคุณผ่าน <code>npx @forwardemail/mcp-server</code> — ข้อมูลรับรองของคุณจะไม่ถูกส่งออกจากเครื่องของคุณ

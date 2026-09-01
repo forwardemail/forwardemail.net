@@ -9,11 +9,7 @@
 // the release reported a digest and they do nothing until wired up here.
 
 /**
- * Work out which build to offer, from the coarsest signal that is actually
- * reliable. Only the platform is detected, never the architecture: Safari
- * reports Intel on Apple Silicon, so a guess would send some visitors the
- * wrong Mac build. The card for their platform sits immediately below with
- * both options on it.
+ * Work out which platform to offer.
  *
  * navigator.platform is deprecated but is the one signal every browser in our
  * targets still answers, and it only has to separate five operating systems.
@@ -43,9 +39,71 @@ function detectPlatform() {
 }
 
 /**
- * Point the hero button at the detected platform's default build.
+ * Work out which architecture to offer, best effort. Architecture is only
+ * exposed where the browser chooses to tell us:
+ *
+ *   - Chromium answers navigator.userAgentData high-entropy hints, which is
+ *     the majority of visitors and is authoritative.
+ *   - Elsewhere the unmasked WebGL renderer separates "Apple M1/M2/..." from
+ *     Intel/AMD/NVIDIA GPUs on the browsers that still report it.
+ *   - Safari masks both (it reports Intel on Apple Silicon and "Apple GPU"
+ *     on every Mac), so this returns null there.
+ *
+ * A null result falls back to the platform's first build, and the visible
+ * switch link under the hero button covers every wrong or unknown guess.
+ *
+ * @returns {Promise<string|null>} 'arm', 'x86', or null when unknowable
  */
-function setUpPrimary() {
+async function detectArch() {
+  try {
+    if (
+      navigator.userAgentData &&
+      typeof navigator.userAgentData.getHighEntropyValues === 'function'
+    ) {
+      const data = await navigator.userAgentData.getHighEntropyValues([
+        'architecture'
+      ]);
+      if (data && data.architecture === 'arm') return 'arm';
+      if (data && data.architecture === 'x86') return 'x86';
+    }
+  } catch (err) {
+    // fall through to the WebGL heuristic
+    if (window.console && window.console.debug) window.console.debug(err);
+  }
+
+  try {
+    const gl = document.createElement('canvas').getContext('webgl');
+    if (gl) {
+      const ext = gl.getExtension('WEBGL_debug_renderer_info');
+      const renderer = String(
+        ext
+          ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)
+          : gl.getParameter(gl.RENDERER)
+      );
+      if (/apple m\d/i.test(renderer)) return 'arm';
+      if (/intel|amd|radeon|nvidia|geforce/i.test(renderer)) return 'x86';
+    }
+  } catch (err) {
+    // unknowable is fine; the switch link covers it
+    if (window.console && window.console.debug) window.console.debug(err);
+  }
+
+  return null;
+}
+
+// The arch keys helpers/get-app-downloads.js uses, per platform, for each
+// answer the detector can give.
+const ARCH_KEYS = {
+  macos: { arm: 'appleSilicon', x86: 'intel' },
+  windows: { arm: 'arm64', x86: 'x64' },
+  linux: { arm: 'arm64', x86: 'x64' }
+};
+
+/**
+ * Point the hero button at the detected platform's build for the detected
+ * architecture, and offer the other architecture one click away.
+ */
+async function setUpPrimary() {
   const button = document.querySelector('#fe-download-primary');
   if (!button) return;
 
@@ -64,19 +122,47 @@ function setUpPrimary() {
   const entry = platform ? map[platform] : null;
   // No detection, or a platform with no build in this release, leaves the
   // server-rendered anchor to the matrix exactly as it is.
-  if (!entry || !entry.url) return;
+  if (!entry || !Array.isArray(entry.options) || entry.options.length === 0)
+    return;
 
-  button.href = entry.url;
+  const arch = await detectArch();
+  const archKey =
+    arch && ARCH_KEYS[platform] ? ARCH_KEYS[platform][arch] : null;
+  const chosen =
+    (archKey && entry.options.find((option) => option.arch === archKey)) ||
+    entry.options[0];
+  if (!chosen || !chosen.url) return;
+
+  button.href = chosen.url;
   button.rel = 'noopener';
 
   const label = document.querySelector('#fe-download-primary-label');
   if (label && entry.label) label.textContent = entry.label;
 
   const meta = document.querySelector('#fe-download-primary-meta');
-  if (meta && entry.meta) {
-    meta.textContent = entry.meta;
+  if (meta && chosen.meta) {
+    meta.textContent = chosen.meta;
     meta.hidden = false;
   }
+
+  // The escape hatch for a wrong or unknowable guess: link the platform's
+  // other architecture right under the button.
+  const other = entry.options.find(
+    (option) =>
+      option !== chosen && option.url && option.switchLabel && option.arch
+  );
+  const alt = document.querySelector('#fe-download-primary-alt');
+  if (other && alt) {
+    alt.href = other.url;
+    alt.rel = 'noopener';
+    alt.textContent = other.switchLabel;
+    if (alt.parentElement) alt.parentElement.hidden = false;
+  }
+
+  // Keep the verification example honest: name the file this visitor is
+  // actually offered rather than the release's first file.
+  const sample = document.querySelector('#fe-download-verify-sample');
+  if (sample && chosen.fileName) sample.textContent = chosen.fileName;
 }
 
 /**

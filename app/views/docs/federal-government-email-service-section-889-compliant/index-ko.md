@@ -1,6 +1,6 @@
 # 포워드 이메일: 귀하의 섹션 889 준수 이메일 전달 솔루션 {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

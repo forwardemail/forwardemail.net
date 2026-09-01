@@ -1,6 +1,6 @@
 # Kebijakan Privasi {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Kebijakan privasi Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Kebijakan privasi Forward Email" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

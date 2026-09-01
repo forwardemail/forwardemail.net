@@ -1,6 +1,6 @@
 # Часто задаваемые вопросы {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Часто задаваемые вопросы Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Часто задаваемые вопросы Forward Email" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}
@@ -2189,7 +2189,7 @@ Forward Email предоставляет подробную панель упр�
 
 **Для настройки календаря используйте CalDAV URL:** `https://caldav.forwardemail.net` (или просто `caldav.forwardemail.net`, если ваш клиент это позволяет)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Как добавить дополнительные календари и управлять существующими {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

@@ -1,6 +1,6 @@
 # สุสานสตาร์ทอัพอีเมล: ทำไมบริษัทอีเมลส่วนใหญ่ถึงล้มเหลว {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="ภาพประกอบสุสานสตาร์ทอัพอีเมล" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="ภาพประกอบสุสานสตาร์ทอัพอีเมล" class="rounded-lg" /> -->
 
 <p class="lead mt-3">ในขณะที่สตาร์ทอัพอีเมลหลายแห่งได้ลงทุนหลายล้านดอลลาร์ในการแก้ไขปัญหาที่รับรู้ เราที่ <a href="https://forwardemail.net">Forward Email</a> มุ่งเน้นการสร้างโครงสร้างพื้นฐานอีเมลที่เชื่อถือได้ตั้งแต่ปี 2017 การวิเคราะห์นี้สำรวจรูปแบบเบื้องหลังผลลัพธ์ของสตาร์ทอัพอีเมลและความท้าทายพื้นฐานของโครงสร้างพื้นฐานอีเมล</p>
 

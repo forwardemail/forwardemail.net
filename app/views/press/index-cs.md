@@ -1,6 +1,6 @@
 # Tiskový a mediální balíček {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email tiskový a mediální balíček" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="Forward Email tiskový a mediální balíček" class="rounded-lg" /> -->
 
 
 ## Obsah {#table-of-contents}

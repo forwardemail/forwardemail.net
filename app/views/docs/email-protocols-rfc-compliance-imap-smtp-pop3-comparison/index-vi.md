@@ -1,6 +1,6 @@
 # Hỗ Trợ Giao Thức RFC Email - Hướng Dẫn Tiêu Chuẩn & Đặc Tả Hoàn Chỉnh {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="Cảnh Thư Viện Giao Thức Email RFC" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="Cảnh Thư Viện Giao Thức Email RFC" class="rounded-lg" /> -->
 
 
 ## Mục Lục {#table-of-contents}

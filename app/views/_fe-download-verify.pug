@@ -26,9 +26,14 @@ mixin feDownloadVerify
             pre
               code
                 span.fe-tok-method shasum
-                |
+                //- an explicit space: a lone pipe emits nothing, which
+                //- rendered this as "shasum-a 256"
+                = " "
                 span.fe-tok-key -a 256
-                = ` ${sampleName}`
+                = " "
+                //- js/download.js swaps this for the file the hero actually
+                //- offers this visitor, so the example matches their download
+                span#fe-download-verify-sample= sampleName
 
           ul.fe-dl-verify__links
             li

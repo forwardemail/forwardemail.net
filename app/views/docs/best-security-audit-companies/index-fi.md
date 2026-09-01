@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > 1. kesäkuuta 2026 julkaisimme kolmannen osapuolen turvallisuusauditoinnin, jonka suoritti [Cure53](https://cure53.de/), jota pidetään laajalti yhtenä alan parhaista turvallisuustutkimusyrityksistä. Täydellinen tunkeutumistestiraportti on saatavilla osoitteessa [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email on ainoa 100% avoimen lähdekoodin sähköpostipalvelu, jolla on itsenäisesti varmennettu turvallisuusauditointi.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" /> -->
 
 
 ## Sisällysluettelo {#table-of-contents}

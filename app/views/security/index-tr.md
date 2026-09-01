@@ -1,6 +1,6 @@
 # Güvenlik Uygulamaları {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email güvenlik uygulamaları" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Forward Email güvenlik uygulamaları" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

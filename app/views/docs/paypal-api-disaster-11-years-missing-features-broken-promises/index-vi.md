@@ -7,7 +7,7 @@
 >
 > Tuy nhiên, theo phong cách đặc trưng của PayPal, họ không bao giờ thông báo cho chúng tôi. Chúng tôi chỉ phát hiện cập nhật này một cách độc lập vào tháng 12 năm 2025, nhiều tháng sau khi tính năng được phát hành một cách lặng lẽ.
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Tại Forward Email, chúng tôi đã phải đối mặt với các API hỏng hóc của PayPal hơn một thập kỷ. Những khó chịu nhỏ ban đầu đã biến thành một thảm họa hoàn toàn buộc chúng tôi phải xây dựng các giải pháp thay thế riêng, chặn các mẫu email lừa đảo của họ, và cuối cùng là ngừng tất cả các khoản thanh toán PayPal trong quá trình di chuyển tài khoản quan trọng.</p>
 <p class="lead mt-3">Đây là câu chuyện về 11 năm PayPal phớt lờ những nhu cầu cơ bản của nhà phát triển trong khi chúng tôi cố gắng mọi cách để làm cho nền tảng của họ hoạt động.</p>
@@ -372,20 +372,20 @@ Bảng điều khiển nhà phát triển PayPal là một thảm họa. Đây l
   <figcaption><div class="alert alert-danger small text-center">
   Giao diện quản lý đăng ký - giao diện tệ đến mức chúng tôi phải dựa vào mã để tạo sản phẩm và kế hoạch đăng ký
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="Ảnh chụp màn hình đăng ký PayPal" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="Ảnh chụp màn hình đăng ký PayPal" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Một góc nhìn về giao diện đăng ký bị hỏng với chức năng thiếu hụt (bạn không thể dễ dàng tạo sản phẩm/kế hoạch/đăng ký – và dường như không có cách nào để xóa sản phẩm hoặc kế hoạch sau khi tạo trong giao diện)
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="Ảnh chụp màn hình đăng ký PayPal 2" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="Ảnh chụp màn hình đăng ký PayPal 2" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Các thông báo lỗi điển hình của PayPal - khó hiểu và không hữu ích
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" /> -->
 </figure>
 
 ### Vấn đề với SDK {#sdk-problems}
@@ -429,38 +429,38 @@ Sau 11 năm với cùng những vấn đề, điểm bùng phát xảy ra trong 
   <figcaption><div class="alert alert-danger small text-center">
   Lỗi khách hàng thấy khi cố gắng thanh toán - không giải thích, không nhật ký, không gì cả
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Hỗ trợ PayPal khẳng định mọi thứ đều ổn trong khi thanh toán hoàn toàn bị hỏng. Tin nhắn cuối cùng cho thấy họ nói đã "khôi phục một số tính năng" nhưng vẫn yêu cầu thêm thông tin không rõ - điển hình của hỗ trợ PayPal
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Quá trình xác minh danh tính mà theo đó "không sửa được gì"
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Thông điệp mơ hồ và vẫn chưa có giải pháp. Không có thông tin, thông báo hay bất cứ điều gì về những thông tin bổ sung cần thiết. Bộ phận hỗ trợ khách hàng im lặng.
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" /> -->
 </figure>
 
 
@@ -563,7 +563,7 @@ Vấn đề không chỉ nằm ở thiết kế mẫu kém. Hệ thống hóa đ
   <figcaption><div class="alert alert-danger small text-center">
   Ảnh chụp màn hình cho thấy nhiều hóa đơn PayPal giả mạo tràn vào hộp thư, tất cả đều trông hợp pháp vì thực sự đến từ hệ thống của PayPal
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="Ảnh cảnh báo lừa đảo PayPal" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="Ảnh cảnh báo lừa đảo PayPal" class="rounded-lg" /> -->
 </figure>
 
 Nhà nghiên cứu lưu ý:
@@ -929,4 +929,4 @@ Nếu bạn đang xây dựng một hệ thống thanh toán, hãy học hỏi t
 
 > Bài viết này ghi lại kinh nghiệm 11 năm của chúng tôi với các API của PayPal tại Forward Email. Tất cả các ví dụ mã và liên kết đều từ các hệ thống sản xuất thực tế của chúng tôi. Chúng tôi tiếp tục hỗ trợ thanh toán PayPal mặc dù có những vấn đề này vì một số khách hàng không có lựa chọn khác
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="Minh họa thảm họa API PayPal" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="Minh họa thảm họa API PayPal" class="rounded-lg" /> -->

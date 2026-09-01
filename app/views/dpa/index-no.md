@@ -2,7 +2,7 @@
 
 <!-- v1.0 from <https://github.com/CommonPaper/DPA> -->
 
-<img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email databehandleravtale" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email databehandleravtale" class="rounded-lg" /> -->
 
 
 ## Innholdsfortegnelse {#table-of-contents}

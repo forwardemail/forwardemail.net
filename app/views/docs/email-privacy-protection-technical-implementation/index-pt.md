@@ -1,6 +1,6 @@
 # Como o Encaminhamento de Email Funciona com Forward Email: O Guia Definitivo {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Implementação técnica de proteção de privacidade de email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Implementação técnica de proteção de privacidade de email" class="rounded-lg" /> -->
 
 
 ## Índice {#table-of-contents}

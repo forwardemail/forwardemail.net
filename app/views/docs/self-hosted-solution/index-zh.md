@@ -1,6 +1,6 @@
 # 自托管电子邮件：对开源的承诺 {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="自托管电子邮件解决方案插图" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="自托管电子邮件解决方案插图" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

@@ -1,6 +1,6 @@
 # Пресс- и Медиа-набор {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email пресс- и медиа-набор" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="Forward Email пресс- и медиа-набор" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

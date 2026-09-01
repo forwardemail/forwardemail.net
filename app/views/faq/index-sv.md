@@ -1,6 +1,6 @@
 # Vanliga frågor {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" /> -->
 
 
 ## Innehållsförteckning {#table-of-contents}
@@ -2189,7 +2189,7 @@ Om du också använder andra tjänster för att skicka e-post å din domäns vä
 
 **För att konfigurera din kalender, använd CalDAV-URL:en:** `https://caldav.forwardemail.net` (eller helt enkelt `caldav.forwardemail.net` om din klient tillåter det)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Hur lägger jag till fler kalendrar och hanterar befintliga kalendrar {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

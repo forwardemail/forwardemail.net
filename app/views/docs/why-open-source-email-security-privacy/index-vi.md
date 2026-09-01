@@ -1,6 +1,6 @@
 # Tại Sao Email Mã Nguồn Mở Là Tương Lai: Lợi Thế Của Forward Email {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="Bảo mật và quyền riêng tư email mã nguồn mở" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/open-source.webp" alt="Bảo mật và quyền riêng tư email mã nguồn mở" class="rounded-lg" /> -->
 
 
 ## Mục Lục {#table-of-contents}

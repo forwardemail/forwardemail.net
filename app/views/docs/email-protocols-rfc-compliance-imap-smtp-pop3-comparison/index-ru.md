@@ -1,6 +1,6 @@
 # Поддержка протоколов Email RFC - Полное руководство по стандартам и спецификациям {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

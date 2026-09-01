@@ -1,6 +1,6 @@
 # คำถามที่พบบ่อย {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="คำถามที่พบบ่อยเกี่ยวกับ Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="คำถามที่พบบ่อยเกี่ยวกับ Forward Email" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}
@@ -2188,7 +2188,7 @@ Forward Email มีแดชบอร์ดรายงาน DMARC ที่�
 
 **ในการตั้งค่าปฏิทินของคุณ ให้ใช้ URL CalDAV:** `https://caldav.forwardemail.net` (หรือเพียง `caldav.forwardemail.net` หากไคลเอนต์ของคุณรองรับ)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### วิธีเพิ่มปฏิทินเพิ่มเติมและจัดการปฏิทินที่มีอยู่ {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

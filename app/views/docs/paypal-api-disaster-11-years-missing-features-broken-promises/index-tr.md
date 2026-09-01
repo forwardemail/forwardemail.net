@@ -7,7 +7,7 @@
 >
 > Ancak, tipik PayPal tarzında, bize asla bildirilmedi. Bu güncellemeyi ancak Aralık 2025'te, özellik sessizce yayınlandıktan aylar sonra kendi başımıza keşfettik.
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API felaketi illüstrasyonu" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API felaketi illüstrasyonu" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Forward Email olarak, on yılı aşkın süredir PayPal'ın bozuk API'leriyle uğraşıyoruz. Küçük rahatsızlıklarla başlayan süreç, kendi çözümlerimizi geliştirmemize, onların oltalama şablonlarını engellememize ve nihayetinde kritik bir hesap geçişi sırasında tüm PayPal ödemelerini durdurmamıza neden olan tam bir felakete dönüştü.</p>
 <p class="lead mt-3">Bu, PayPal'ın temel geliştirici ihtiyaçlarını 11 yıl boyunca görmezden gelmesi ve bizlerin platformlarını çalıştırmak için her şeyi denememizin hikayesidir.</p>
@@ -372,20 +372,20 @@ PayPal geliştirici kontrol paneli bir felaket. Günlük olarak karşılaştıkl
   <figcaption><div class="alert alert-danger small text-center">
   Abonelik yönetim arayüzü - arayüz o kadar kötü ki ürünler ve abonelik planları oluşturmak için koda güvenmek zorunda kaldık
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal abonelik ekran görüntüsü" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal abonelik ekran görüntüsü" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Eksik işlevselliğe sahip bozuk abonelik arayüzünün bir görünümü (ürünler/planlar/abonelikler kolayca oluşturulamıyor – ve oluşturulduktan sonra ürünleri veya planları arayüzden silmenin hiçbir yolu görünmüyor)
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal abonelik ekran görüntüsü 2" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal abonelik ekran görüntüsü 2" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Tipik PayPal hata mesajları - şifreli ve yardımcı olmayan
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API hata ekran görüntüsü" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API hata ekran görüntüsü" class="rounded-lg" /> -->
 </figure>
 
 ### SDK Sorunları {#sdk-problems}
@@ -429,38 +429,38 @@ Basit olması gereken şey tam bir felakete dönüştü:
   <figcaption><div class="alert alert-danger small text-center">
   Müşterilerin ödeme yapmaya çalışırken gördüğü hata - açıklama yok, kayıt yok, hiçbir şey yok
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal bir şeyler yanlış gitti hatası" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal bir şeyler yanlış gitti hatası" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Ödemeler tamamen bozukken PayPal desteğinin her şeyin yolunda olduğunu iddia etmesi. Son mesajda "bazı özellikleri geri yüklediklerini" söylüyorlar ama hala daha fazla belirtilmemiş bilgi istiyorlar - klasik PayPal destek tiyatrosu
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal yardım merkezi ekran görüntüsü 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal yardım merkezi ekran görüntüsü 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal yardım merkezi ekran görüntüsü 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal yardım merkezi ekran görüntüsü 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal yardım merkezi ekran görüntüsü 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal yardım merkezi ekran görüntüsü 6" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal yardım merkezi ekran görüntüsü 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal yardım merkezi ekran görüntüsü 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal yardım merkezi ekran görüntüsü 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal yardım merkezi ekran görüntüsü 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal yardım merkezi ekran görüntüsü 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal yardım merkezi ekran görüntüsü 6" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Hiçbir şeyi "düzeltmediği" iddia edilen kimlik doğrulama süreci
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal dikkat ekran görüntüsü 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal dikkat ekran görüntüsü 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal dikkat ekran görüntüsü 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal dikkat ekran görüntüsü 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal dikkat ekran görüntüsü 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal dikkat ekran görüntüsü 6" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal dikkat ekran görüntüsü 7" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal dikkat ekran görüntüsü 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal dikkat ekran görüntüsü 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal dikkat ekran görüntüsü 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal dikkat ekran görüntüsü 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal dikkat ekran görüntüsü 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal dikkat ekran görüntüsü 6" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal dikkat ekran görüntüsü 7" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Belirsiz mesaj ve hâlâ çözüm yok. Ek bilgi olarak ne gerektiğine dair sıfır bilgi, bildirim veya herhangi bir şey. Müşteri desteği sessiz kalıyor.
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" /> -->
 </figure>
 
 
@@ -563,7 +563,7 @@ Sorun sadece kötü şablon tasarımıyla sınırlı değil. PayPal'ın fatura s
   <figcaption><div class="alert alert-danger small text-center">
   Bir gelen kutusunu dolduran ve hepsi meşru görünen çok sayıda sahte PayPal faturası gösteren ekran görüntüsü, çünkü aslında PayPal sistemlerinden geliyorlar
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal dolandırıcılık uyarısı ekran görüntüsü" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal dolandırıcılık uyarısı ekran görüntüsü" class="rounded-lg" /> -->
 </figure>
 
 Araştırmacı şöyle belirtti:
@@ -930,4 +930,4 @@ Eğer bir ödeme sistemi kuruyorsanız, deneyimimizden öğrenin: birden fazla i
 
 > Bu yazı, Forward Email'deki 11 yıllık PayPal API deneyimimizi belgelemektedir. Tüm kod örnekleri ve bağlantılar gerçek üretim sistemlerimizden alınmıştır. Bazı müşterilerin başka seçeneği olmadığı için bu sorunlara rağmen PayPal ödemelerini desteklemeye devam ediyoruz.
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API felaketi illüstrasyonu" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API felaketi illüstrasyonu" class="rounded-lg" /> -->

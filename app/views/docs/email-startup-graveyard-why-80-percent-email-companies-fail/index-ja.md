@@ -1,6 +1,6 @@
 # メールスタートアップの墓場：なぜほとんどのメール企業は失敗するのか {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" /> -->
 
 <p class="lead mt-3">多くのメールスタートアップが認識された問題の解決に数百万ドルを投資してきましたが、私たち<a href="https://forwardemail.net">Forward Email</a>は2017年から信頼できるメールインフラをゼロから構築することに注力してきました。本分析では、メールスタートアップの結果に見られるパターンとメールインフラの根本的な課題を探ります。</p>
 

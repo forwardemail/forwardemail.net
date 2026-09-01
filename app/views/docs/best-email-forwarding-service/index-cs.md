@@ -1,6 +1,6 @@
 # Jak Forward Email chrání vaše soukromí, doménu a bezpečnost: Technický hluboký ponor {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Nejlepší srovnání služeb přeposílání e-mailů" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Nejlepší srovnání služeb přeposílání e-mailů" class="rounded-lg" /> -->
 
 
 ## Obsah {#table-of-contents}

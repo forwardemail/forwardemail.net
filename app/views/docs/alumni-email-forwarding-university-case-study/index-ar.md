@@ -1,6 +1,6 @@
 # دراسة حالة: كيف تدعم Forward Email حلول البريد الإلكتروني للخريجين في أفضل الجامعات {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="دراسة حالة إعادة توجيه البريد الإلكتروني لخريجي الجامعة" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="دراسة حالة إعادة توجيه البريد الإلكتروني لخريجي الجامعة" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

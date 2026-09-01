@@ -1,6 +1,6 @@
 # Zásady ochrany osobních údajů {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email zásady ochrany osobních údajů" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email zásady ochrany osobních údajů" class="rounded-lg" /> -->
 
 
 ## Obsah {#table-of-contents}

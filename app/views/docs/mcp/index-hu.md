@@ -1,6 +1,6 @@
 # Forward Email MCP Server {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>Röviden:</strong> Nyílt forráskódú <a href="https://github.com/forwardemail/mcp-server">MCP szerverünk</a> lehetővé teszi, hogy olyan AI asszisztensek, mint Claude, ChatGPT, Cursor és Windsurf természetes nyelven kezeljék az e-mailjeidet, domaineidet, aliasaidat, kapcsolataidat és naptáraidat. Mind a 68 API végpont MCP eszközként érhető el. Helyileg fut a <code>npx @forwardemail/mcp-server</code> paranccsal — a hitelesítő adataid soha nem hagyják el a gépedet.

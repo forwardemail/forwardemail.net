@@ -1,6 +1,6 @@
 # なぜオープンソースのメールが未来なのか：Forward Emailの優位性 {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="オープンソースのメールセキュリティとプライバシー" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/open-source.webp" alt="オープンソースのメールセキュリティとプライバシー" class="rounded-lg" /> -->
 
 
 ## 目次 {#table-of-contents}

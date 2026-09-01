@@ -1,6 +1,6 @@
 # הצגת תשלומי קריפטו: פרטיות משופרת לשירות האימייל שלך {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

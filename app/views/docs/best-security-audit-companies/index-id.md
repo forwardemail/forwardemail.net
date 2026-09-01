@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > Pada 1 Juni 2026, kami menerbitkan audit keamanan pihak ketiga yang dilakukan oleh [Cure53](https://cure53.de/), yang secara luas dianggap sebagai salah satu perusahaan riset keamanan terbaik di industri. Laporan pentest lengkap tersedia di [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email adalah satu-satunya layanan email 100% open-source dengan audit keamanan yang diverifikasi secara independen.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Perbandingan perusahaan audit keamanan" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Perbandingan perusahaan audit keamanan" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

@@ -1,6 +1,6 @@
 # Hoe E-mail Doorsturen Werkt met Forward Email: De Ultieme Gids {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Technische implementatie van e-mail privacybescherming" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Technische implementatie van e-mail privacybescherming" class="rounded-lg" /> -->
 
 
 ## Inhoudsopgave {#table-of-contents}

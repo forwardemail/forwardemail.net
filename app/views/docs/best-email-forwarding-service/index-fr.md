@@ -1,6 +1,6 @@
 # Comment Forward Email Protège Votre Vie Privée, Votre Domaine et Votre Sécurité : L’Analyse Technique Approfondie {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Comparaison des meilleurs services de transfert d’email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Comparaison des meilleurs services de transfert d’email" class="rounded-lg" /> -->
 
 
 ## Table des Matières {#table-of-contents}

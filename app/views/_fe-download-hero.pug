@@ -9,6 +9,11 @@ mixin feDownloadHero
     // Built here rather than in the helper because the labels go through t(),
     // which only exists in the view. Keyed by the same platform keys the
     // client detector produces.
+    // Each platform carries one option per architecture (the first build the
+    // matrix lists for that arch), so js/download.js can pick the visitor's
+    // arch where it can detect one and offer a switch link to the other —
+    // Safari reports Intel on Apple Silicon, so a silent guess would send
+    // some visitors the wrong Mac build.
     const platformNames = {
       macos: "macOS",
       windows: "Windows",
@@ -20,13 +25,24 @@ mixin feDownloadHero
     for (const group of downloads.groups) {
       for (const platform of group.platforms) {
         if (!platform.recommended) continue;
-        const option = platform.recommended;
+        const seenArch = new Set();
+        const options = [];
+        for (const option of platform.options) {
+          if (seenArch.has(option.arch)) continue;
+          seenArch.add(option.arch);
+          options.push({
+            url: option.url,
+            arch: option.arch,
+            fileName: option.fileName,
+            meta: [option.arch === "universal" ? null : archLabels[option.arch], option.size]
+              .filter(Boolean)
+              .join(" · "),
+            switchLabel: option.arch === "universal" ? null : t("Get the %s build instead", archLabels[option.arch])
+          });
+        }
         primaryMap[platform.key] = {
-          url: option.url,
           label: t("Download for %s", platformNames[platform.key]),
-          meta: [option.arch === "universal" ? null : archLabels[option.arch], option.size]
-            .filter(Boolean)
-            .join(" · ")
+          options
         };
       }
     }
@@ -57,8 +73,13 @@ mixin feDownloadHero
           i.fa.fa-globe(aria-hidden="true")
           = t("Open the web app")
 
-      //- Hidden until the detector fills it, so no empty line flashes.
+      //- Hidden until the detector fills them, so no empty lines flash.
       p#fe-download-primary-meta.fe-dl-hero__meta.fe-numeral(hidden)
+      //- The other architecture for the detected platform. Always offered
+      //- once a platform is detected: arch detection is best effort (Safari
+      //- masks it), so the wrong-guess escape hatch stays one click away.
+      p.fe-dl-hero__alt(hidden)
+        a#fe-download-primary-alt(href="#fe-download-desktop")
 
       ul.fe-dl-hero__facts
         if downloads.version

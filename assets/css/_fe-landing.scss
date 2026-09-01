@@ -233,6 +233,14 @@
   gap: 3rem;
 }
 
+// Grid items default to min-width auto, so the console's nowrap evidence line
+// would set the column's floor and shove the whole hero past the viewport on
+// phones (the hero's overflow: hidden then crops it unreachable). Zeroing the
+// floor lets columns shrink; the evidence line scrolls inside its own box.
+.fe-hero__grid > * {
+  min-width: 0;
+}
+
 .fe-hero__eyebrow {
   margin-block: 0 2rem;
 }
@@ -358,6 +366,9 @@
   --fe-console-tone: var(--fe-fg-secondary);
 
   grid-area: 1 / 1;
+  // Same auto-minimum trap as the hero columns: without this the widest view's
+  // nowrap evidence line sets the console's floor on phones.
+  min-width: 0;
   visibility: hidden;
 }
 
@@ -891,15 +902,17 @@ html.no-js .fe-console__tab--active {
     display: none;
   }
 
-  // Left 5 columns, right 7, per section 2 of the spec.
+  // Left 5 columns, right 7, per section 2 of the spec. minmax(0, …) because
+  // bare fr means minmax(auto, …): the console's intrinsic width would widen
+  // its column past the split whenever a view's content ran long.
   .fe-hero__grid {
-    grid-template-columns: 5fr 7fr;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     align-items: center;
   }
 
   // Heading takes 7 columns, stats take 5 and align to the end.
   .fe-product__head {
-    grid-template-columns: 7fr 5fr;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     align-items: end;
   }
 
@@ -914,7 +927,7 @@ html.no-js .fe-console__tab--active {
 
   // 45/55 split, equal height via grid stretch.
   .fe-features {
-    grid-template-columns: 45fr 55fr;
+    grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
   }
 
   .fe-plans {

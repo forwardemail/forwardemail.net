@@ -1,6 +1,6 @@
 # E-mail RFC Protokoll Támogatás - Teljes Szabványok és Specifikációk Útmutató {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="RFC Email Protocol Library Scene" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

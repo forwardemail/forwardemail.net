@@ -1,6 +1,6 @@
 # SQLite Ytelsesoptimalisering: Produksjons PRAGMA-innstillinger & ChaCha20-kryptering {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite ytelsesoptimaliseringsguide" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite ytelsesoptimaliseringsguide" class="rounded-lg" /> -->
 
 
 ## Innholdsfortegnelse {#table-of-contents}

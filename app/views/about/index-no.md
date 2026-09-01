@@ -1,6 +1,6 @@
 # Om Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" /> -->
 
 # Om Forward Email {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ Per mars 2026 betjener Forward Email over 500 000 domener verden over, inkludert
 
 Plattformen fortsetter å utvikle seg med regelmessige funksjonsutgivelser og infrastrukturforbedringer, og opprettholder sin posisjon som den eneste 100 % åpen kildekode, krypterte, personvernfokuserte, transparente og kvantesikre e-posttjenesten som er tilgjengelig i dag—nå støttet av en [uavhengig sikkerhetsrevisjon](/pentest-report_forward-email.pdf) fra Cure53.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

@@ -1,6 +1,6 @@
 # 转发邮件 MCP 服务器 {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="转发邮件 MCP 服务器" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="转发邮件 MCP 服务器" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>简要说明：</strong>我们的<a href="https://github.com/forwardemail/mcp-server">开源 MCP 服务器</a>让 Claude、ChatGPT、Cursor 和 Windsurf 等 AI 助手通过自然语言管理您的电子邮件、域名、别名、联系人和日历。所有 68 个 API 端点都作为 MCP 工具公开。它通过 <code>npx @forwardemail/mcp-server</code> 本地运行——您的凭据永远不会离开您的机器。

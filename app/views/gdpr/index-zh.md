@@ -1,6 +1,6 @@
 # GDPR 合规 {#gdpr-compliance}
 
-<img loading="lazy" src="/img/articles/gdpr.webp" alt="Forward Email GDPR compliance" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/gdpr.webp" alt="Forward Email GDPR compliance" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

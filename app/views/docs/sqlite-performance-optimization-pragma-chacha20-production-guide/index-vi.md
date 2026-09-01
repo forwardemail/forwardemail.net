@@ -1,6 +1,6 @@
 # Tối ưu hiệu suất SQLite: Cấu hình PRAGMA sản xuất & Mã hóa ChaCha20 {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="Hướng dẫn tối ưu hiệu suất SQLite" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="Hướng dẫn tối ưu hiệu suất SQLite" class="rounded-lg" /> -->
 
 
 ## Mục lục {#table-of-contents}

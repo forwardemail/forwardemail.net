@@ -1,6 +1,6 @@
 # อีเมลแบบโฮสต์ด้วยตนเอง: ความมุ่งมั่นต่อโอเพนซอร์ส {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="ภาพประกอบโซลูชันอีเมลแบบโฮสต์ด้วยตนเอง" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="ภาพประกอบโซลูชันอีเมลแบบโฮสต์ด้วยตนเอง" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

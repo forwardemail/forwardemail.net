@@ -1,6 +1,6 @@
 # העברת דואר אלקטרוני: פתרון העברת דואר אלקטרוני התואם לסעיף 889 שלך {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="שירות דואר אלקטרוני ממשלתי תואם לסעיף 889" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="שירות דואר אלקטרוני ממשלתי תואם לסעיף 889" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

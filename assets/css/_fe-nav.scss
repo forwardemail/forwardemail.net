@@ -16,12 +16,20 @@
 nav.fe-nav {
   // Zero .navbar's own inline padding so the container gutter does the job.
   padding-inline: 0;
-
   color: var(--fe-fg-primary);
   background-color: var(--fe-ink);
   border-bottom: 1px solid transparent;
   transition: background-color var(--fe-motion-base) var(--fe-ease),
     border-color var(--fe-motion-base) var(--fe-ease);
+}
+
+// The one page without .fixed-top is /email-api, where the Scalar reference's
+// sticky chrome creates stacking contexts that paint over a static bar's
+// dropdowns. Give the static bar the same tier bootstrap gives .fixed-top.
+// Scoped with :not so this can never override .fixed-top's position: fixed.
+nav.fe-nav:not(.fixed-top) {
+  position: relative;
+  z-index: 1030;
 }
 
 nav.fe-nav.text-white {
@@ -45,8 +53,11 @@ nav.fe-nav.border-bottom {
 // the section edges. The nav.fe-nav prefix matters below 992px, where
 // bootstrap's `.navbar-expand-lg > .container` would otherwise tie and its
 // dark-media copy would win.
-nav.fe-nav > .container,
-nav.fe-nav > .container-fluid {
+// Deliberately NOT applied to > .container-fluid: full-width pages (admin,
+// logs, domains) pair the bar with container-fluid content on bootstrap's
+// 15px gutter, and the fe gutter (up to 2.5rem) left the bar's items floating
+// inboard of the content's edges.
+nav.fe-nav > .container {
   max-width: var(--fe-container-max);
   padding-inline: var(--fe-container-gutter);
 }
@@ -236,11 +247,15 @@ nav.fe-nav .navbar-nav .btn-link.text-success {
 // ============================================
 // FOCUS
 // ============================================
+// No ring in the bar: the Signal outline read as a stray light-blue border
+// around the dropdown toggles whenever bootstrap's dropdown JS moved focus.
+// Keyboard users get a tinted pill instead (the toggles already carry a
+// border-radius), and the panel items keep their own focus background.
 
 nav.fe-nav a:focus-visible,
 nav.fe-nav button:focus-visible {
-  outline: 2px solid var(--fe-focus-ring);
-  outline-offset: var(--fe-focus-offset);
+  outline: 0;
+  background-color: var(--fe-primary-a16);
 }
 
 // postcss-preset-env flattens logical properties to LTR physical ones

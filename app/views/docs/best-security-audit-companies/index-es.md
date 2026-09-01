@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > El 1 de junio de 2026, publicamos nuestra auditoría de seguridad de terceros realizada por [Cure53](https://cure53.de/), ampliamente considerada como una de las mejores firmas de investigación de seguridad de la industria. El informe completo de la prueba de penetración está disponible en [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email es el único servicio de correo electrónico 100% de código abierto con una auditoría de seguridad verificada de forma independiente.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Comparación de empresas de auditoría de seguridad" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Comparación de empresas de auditoría de seguridad" class="rounded-lg" /> -->
 
 
 ## Tabla de Contenidos {#table-of-contents}

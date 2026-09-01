@@ -1,6 +1,6 @@
 # Cómo Funciona el Reenvío de Email con Forward Email: La Guía Definitiva {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Implementación técnica de protección de privacidad de email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Implementación técnica de protección de privacidad de email" class="rounded-lg" /> -->
 
 
 ## Tabla de Contenidos {#table-of-contents}

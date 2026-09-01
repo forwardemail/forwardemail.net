@@ -1,6 +1,6 @@
 # Sähköpostojen startup-hautausmaa: Miksi useimmat sähköpostoyritykset epäonnistuvat {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Sähköpostojen startup-hautausmaan kuvitus" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Sähköpostojen startup-hautausmaan kuvitus" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Vaikka monet sähköpostojen startupit ovat investoineet miljoonia havaittujen ongelmien ratkaisemiseen, me <a href="https://forwardemail.net">Forward Emailillä</a> olemme keskittyneet luomaan luotettavaa sähköpostoinfrastruktuuria alusta alkaen vuodesta 2017 lähtien. Tämä analyysi tutkii sähköpostostartupien tulosten taustalla olevia malleja ja sähköpostoinfrastruktuurin perustavanlaatuisia haasteita.</p>
 

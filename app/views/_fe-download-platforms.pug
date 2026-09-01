@@ -60,6 +60,14 @@ mixin feDownloadCard(platform)
     else if platform.key === "ios"
       p.fe-dl-card__note= t("The iOS build is not signed for direct install. Sideload it with AltStore, Sideloadly, or Xcode.")
 
+    //- Planned distribution channels (stores, package managers) that are not
+    //- live yet, so visitors know they are on the roadmap.
+    if meta.comingSoon
+      p.fe-dl-card__soon
+        span.fe-dl-card__soon-label.fe-label= t("Coming soon")
+        each channel in meta.comingSoon
+          span.fe-chip.fe-chip--soon= channel
+
 //- The base names are written as literal classes and only the modifier is
 //- interpolated. purgecss-from-pug reads dot syntax and literal class
 //- attributes but not template interpolation, so a base name built inside the

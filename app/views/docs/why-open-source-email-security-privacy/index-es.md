@@ -1,6 +1,6 @@
 # Por qué el correo electrónico de código abierto es el futuro: La ventaja de Forward Email {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="Seguridad y privacidad del correo electrónico de código abierto" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/open-source.webp" alt="Seguridad y privacidad del correo electrónico de código abierto" class="rounded-lg" /> -->
 
 
 ## Tabla de Contenidos {#table-of-contents}

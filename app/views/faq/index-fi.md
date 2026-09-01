@@ -1,6 +1,6 @@
 # Usein Kysytyt Kysymykset {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email usein kysytyt kysymykset" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email usein kysytyt kysymykset" class="rounded-lg" /> -->
 
 
 ## Sisällysluettelo {#table-of-contents}
@@ -2188,7 +2188,7 @@ Jos käytät myös muita palveluita sähköpostin lähettämiseen verkkotunnukse
 
 **Konfiguroidaksesi kalenterisi, käytä CalDAV-URL-osoitetta:** `https://caldav.forwardemail.net` (tai yksinkertaisesti `caldav.forwardemail.net`, jos asiakasohjelmasi sallii sen)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Kuinka lisään lisää kalentereita ja hallinnoin olemassa olevia kalentereita {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

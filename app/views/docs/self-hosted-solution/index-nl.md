@@ -1,6 +1,6 @@
 # Zelfgehoste E-mail: Toewijding aan Open Source {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustratie van zelfgehoste e-mailoplossing" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustratie van zelfgehoste e-mailoplossing" class="rounded-lg" /> -->
 
 
 ## Inhoudsopgave {#table-of-contents}

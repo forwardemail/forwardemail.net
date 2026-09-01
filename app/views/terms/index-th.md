@@ -1,6 +1,6 @@
 # ข้อตกลง {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="ข้อกำหนดการให้บริการ Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="ข้อกำหนดการให้บริการ Forward Email" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

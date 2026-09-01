@@ -1,6 +1,6 @@
 # Case Study: Hvordan Forward Email driver e-postløsninger for alumner ved toppuniversiteter {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" /> -->
 
 
 ## Innholdsfortegnelse {#table-of-contents}

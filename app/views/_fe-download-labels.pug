@@ -53,11 +53,15 @@
     ipa: t("iOS package")
   };
 
+  //- `comingSoon` lists distribution channels that are planned but not live
+  //- yet, rendered as muted chips at the foot of the platform's card. Store
+  //- and package-manager names are product names, so they are literals.
   const platformMeta = {
     macos: {
       name: "macOS",
       icon: "fab fa-apple",
-      requires: t("macOS 10.15 or later")
+      requires: t("macOS 10.15 or later"),
+      comingSoon: ["Mac App Store", "Homebrew"]
     },
     windows: {
       name: "Windows",
@@ -72,11 +76,13 @@
     android: {
       name: "Android",
       icon: "fab fa-android",
-      requires: t("Android 7.0 or later")
+      requires: t("Android 7.0 or later"),
+      comingSoon: ["Google Play"]
     },
     ios: {
       name: "iOS",
       icon: "fab fa-apple",
-      requires: t("iOS 15 or later")
+      requires: t("iOS 15 or later"),
+      comingSoon: ["App Store"]
     }
   };

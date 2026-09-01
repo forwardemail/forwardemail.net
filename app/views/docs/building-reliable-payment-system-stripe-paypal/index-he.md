@@ -1,6 +1,6 @@
 # איך בנינו מערכת תשלומים חזקה עם Stripe ו-PayPal: גישת הטריפלקס {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="מערכת תשלומים עם Stripe ו-PayPal" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="מערכת תשלומים עם Stripe ו-PayPal" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

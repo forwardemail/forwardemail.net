@@ -2,7 +2,7 @@
 
 <!-- v1.0 from <https://github.com/CommonPaper/DPA> -->
 
-<img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email 데이터 처리 계약" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email 데이터 처리 계약" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

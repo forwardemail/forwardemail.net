@@ -1,6 +1,6 @@
 # Hřbitov emailových startupů: Proč většina emailových společností selhává {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Ilustrace hřbitova emailových startupů" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Ilustrace hřbitova emailových startupů" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Zatímco mnoho emailových startupů investovalo miliony do řešení vnímaných problémů, my ve <a href="https://forwardemail.net">Forward Email</a> se od roku 2017 zaměřujeme na budování spolehlivé emailové infrastruktury od základu. Tato analýza zkoumá vzorce výsledků emailových startupů a základní výzvy emailové infrastruktury.</p>
 

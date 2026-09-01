@@ -1,6 +1,6 @@
 # Laporkan Penyalahgunaan {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Laporkan penyalahgunaan dan spam ke Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Laporkan penyalahgunaan dan spam ke Forward Email" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

@@ -1,6 +1,6 @@
 # Forward Email：您的第889条合规电子邮件转发解决方案 {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="联邦政府电子邮件服务第889条合规" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="联邦政府电子邮件服务第889条合规" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

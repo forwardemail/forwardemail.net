@@ -1,6 +1,6 @@
 # אופטימיזציית ביצועי SQLite: הגדרות PRAGMA לייצור והצפנת ChaCha20 {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="מדריך לאופטימיזציית ביצועי SQLite" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="מדריך לאופטימיזציית ביצועי SQLite" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

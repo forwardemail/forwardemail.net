@@ -2,7 +2,7 @@
 
 <!-- v1.0 z <https://github.com/CommonPaper/DPA> -->
 
-<img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email dohoda o zpracování údajů" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email dohoda o zpracování údajů" class="rounded-lg" /> -->
 
 
 ## Obsah {#table-of-contents}

@@ -1,6 +1,6 @@
 # 자주 묻는 질문 {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email 자주 묻는 질문" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email 자주 묻는 질문" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}
@@ -2189,7 +2189,7 @@ DMARC 보고서에는 승인되지 않은 서버를 포함하여 귀하의 도�
 
 **캘린더를 구성하려면 다음 CalDAV URL을 사용하세요:** `https://caldav.forwardemail.net` (또는 클라이언트가 허용하면 단순히 `caldav.forwardemail.net`)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### 추가 캘린더 추가 및 기존 캘린더 관리 방법 {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

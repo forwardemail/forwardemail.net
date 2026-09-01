@@ -1,6 +1,6 @@
 # Kvanttiturvallinen sähköposti: Kuinka käytämme salattuja SQLite-postilaatikoita pitääksemme sähköpostisi turvassa {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="Kvanttiturvallinen salattu sähköpostipalvelun kuvaus" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/quantum.webp" alt="Kvanttiturvallinen salattu sähköpostipalvelun kuvaus" class="rounded-lg" /> -->
 
 
 ## Sisällysluettelo {#table-of-contents}

@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > 2026. június 1-jén közzétettük a [Cure53](https://cure53.de/) által végzett harmadik feles biztonsági auditunkat, amelyet széles körben az iparág egyik legjobb biztonsági kutatócégének tartanak. A teljes penetrációs teszt jelentés elérhető a [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf) címen. A Forward Email az egyetlen 100%-ban nyílt forráskódú e-mail szolgáltatás, amely független módon ellenőrzött biztonsági audittal rendelkezik.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

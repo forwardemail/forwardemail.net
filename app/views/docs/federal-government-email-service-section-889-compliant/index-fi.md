@@ -1,6 +1,6 @@
 # Forward Email: Section 889 -yhteensopiva sähköpostin edelleenlähetysratkaisusi {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" /> -->
 
 
 ## Sisällysluettelo {#table-of-contents}

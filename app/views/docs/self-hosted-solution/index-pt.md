@@ -1,6 +1,6 @@
 # Email Auto-Hospedado: Compromisso com o Código Aberto {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Ilustração da solução de email auto-hospedado" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Ilustração da solução de email auto-hospedado" class="rounded-lg" /> -->
 
 
 ## Índice {#table-of-contents}

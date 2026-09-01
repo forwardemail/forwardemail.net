@@ -1,6 +1,6 @@
 # Una Década de Impacto: Cómo Nuestros Paquetes npm Alcanzaron 1 Mil Millones de Descargas y Moldearon JavaScript {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" /> -->
 
 
 ## Tabla de Contenidos {#table-of-contents}

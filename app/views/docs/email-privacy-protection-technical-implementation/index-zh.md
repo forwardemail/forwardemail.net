@@ -1,6 +1,6 @@
 # 使用 Forward Email 进行电子邮件转发的工作原理：终极指南 {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="电子邮件隐私保护技术实现" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="电子邮件隐私保护技术实现" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

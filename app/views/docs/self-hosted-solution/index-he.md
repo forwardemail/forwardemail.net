@@ -1,6 +1,6 @@
 # דואר אלקטרוני מתארח עצמי: מחויבות לקוד פתוח {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="איור של פתרון דואר אלקטרוני מתארח עצמי" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="איור של פתרון דואר אלקטרוני מתארח עצמי" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

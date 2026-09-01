@@ -1,6 +1,6 @@
 # Jak działa przekazywanie e-maili z Forward Email: Kompletny przewodnik {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Techniczna implementacja ochrony prywatności e-mail" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Techniczna implementacja ochrony prywatności e-mail" class="rounded-lg" /> -->
 
 
 ## Spis treści {#table-of-contents}

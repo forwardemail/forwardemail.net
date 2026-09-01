@@ -1,6 +1,6 @@
 # A Forward Email-ről {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email csapat és cég története" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Forward Email csapat és cég története" class="rounded-lg" /> -->
 
 # A Forward Email-ről {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ A kezdetektől fogva a Forward Email szilárd elkötelezettséget mutatott a mag
 
 A platform folyamatosan fejlődik rendszeres funkciófrissítésekkel és infrastruktúra fejlesztésekkel, megőrizve pozícióját, mint az egyetlen 100%-ban nyílt forráskódú, titkosított, adatvédelmi fókuszú, átlátható és kvantumrezisztens e-mail szolgáltatás, amely ma elérhető—immár [független biztonsági audittal](/pentest-report_forward-email.pdf) a Cure53-tól.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

@@ -1,6 +1,6 @@
 # תנאים {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="תנאי השירות של Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="תנאי השירות של Forward Email" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

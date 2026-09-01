@@ -1,6 +1,6 @@
 # Biztonsági Gyakorlatok {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email biztonsági gyakorlatok" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Forward Email biztonsági gyakorlatok" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

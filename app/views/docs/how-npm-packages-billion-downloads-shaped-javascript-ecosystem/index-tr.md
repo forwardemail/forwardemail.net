@@ -1,6 +1,6 @@
 # Bir On Yıllık Etki: npm Paketlerimizin 1 Milyar İndirmeye Ulaşması ve JavaScript'i Şekillendirmesi {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img loading="lazy" src="/img/articles/npm.webp" alt="NPM paketleri milyar indirme ekosistemi" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/npm.webp" alt="NPM paketleri milyar indirme ekosistemi" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

@@ -1,6 +1,6 @@
 # אודות Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" /> -->
 
 # אודות Forward Email {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ Forward Email נוסדה על ידי **ניקולאס באו** בשנת 2017. ל
 
 הפלטפורמה ממשיכה להתפתח עם שחרורי תכונות ושיפורי תשתית סדירים, ושומרת על מעמדה כשירות הדואר האלקטרוני היחיד שהוא 100% קוד פתוח, מוצפן, ממוקד פרטיות, שקוף ועמיד בפני מחשוב קוונטי הזמין כיום—נתמך כעת ב[ביקורת אבטחה עצמאית](/pentest-report_forward-email.pdf) מ-Cure53.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

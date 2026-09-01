@@ -1,6 +1,6 @@
 # วิธีการทำงานของการส่งต่ออีเมลกับ Forward Email: คู่มือฉบับสมบูรณ์ {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="การปกป้องความเป็นส่วนตัวของอีเมลด้วยการประยุกต์ใช้ทางเทคนิค" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="การปกป้องความเป็นส่วนตัวของอีเมลด้วยการประยุกต์ใช้ทางเทคนิค" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

@@ -1,6 +1,6 @@
 # Preguntas Frecuentes {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Preguntas frecuentes sobre Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Preguntas frecuentes sobre Forward Email" class="rounded-lg" /> -->
 
 
 ## Tabla de Contenidos {#table-of-contents}
@@ -2190,7 +2190,7 @@ Si también utiliza otros servicios para enviar correo en nombre de su dominio (
 
 **Para configurar tu calendario, usa la URL CalDAV:** `https://caldav.forwardemail.net` (o simplemente `caldav.forwardemail.net` si tu cliente lo permite)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Cómo agrego más calendarios y gestiono calendarios existentes {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

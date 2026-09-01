@@ -1,6 +1,6 @@
 # 보안 관행 {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email 보안 관행" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Forward Email 보안 관행" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

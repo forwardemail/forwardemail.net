@@ -1,6 +1,6 @@
 # Часті запитання {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}
@@ -2189,7 +2189,7 @@ Forward Email надає комплексну панель звітів DMARC, �
 
 **Щоб налаштувати календар, використовуйте CalDAV URL:** `https://caldav.forwardemail.net` (або просто `caldav.forwardemail.net`, якщо ваш клієнт це дозволяє)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Як додати більше календарів та керувати існуючими календарями {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 

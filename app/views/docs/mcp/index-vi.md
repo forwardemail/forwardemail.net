@@ -1,6 +1,6 @@
 # Forward Email MCP Server {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>Tóm tắt:</strong> <a href="https://github.com/forwardemail/mcp-server">Máy chủ MCP mã nguồn mở</a> của chúng tôi cho phép các trợ lý AI như Claude, ChatGPT, Cursor và Windsurf quản lý email, tên miền, bí danh, danh bạ và lịch của bạn thông qua ngôn ngữ tự nhiên. Tất cả 68 điểm cuối API đều được cung cấp dưới dạng công cụ MCP. Nó chạy cục bộ qua <code>npx @forwardemail/mcp-server</code> — thông tin đăng nhập của bạn không bao giờ rời khỏi máy của bạn.

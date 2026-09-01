@@ -1,6 +1,6 @@
 # Samodzielnie hostowana poczta e-mail: Zaangażowanie w open source {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Ilustracja rozwiązania samodzielnie hostowanej poczty e-mail" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Ilustracja rozwiązania samodzielnie hostowanej poczty e-mail" class="rounded-lg" /> -->
 
 
 ## Spis treści {#table-of-contents}

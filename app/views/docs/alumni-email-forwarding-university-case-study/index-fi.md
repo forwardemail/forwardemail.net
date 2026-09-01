@@ -1,6 +1,6 @@
 # Case Study: Kuinka Forward Email tehostaa alumnisähköpostiratkaisuja huippuyliopistoille {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="Yliopiston alumnien sähköpostin edelleenlähetyksen tapaustutkimus" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="Yliopiston alumnien sähköpostin edelleenlähetyksen tapaustutkimus" class="rounded-lg" /> -->
 
 
 ## Sisällysluettelo {#table-of-contents}

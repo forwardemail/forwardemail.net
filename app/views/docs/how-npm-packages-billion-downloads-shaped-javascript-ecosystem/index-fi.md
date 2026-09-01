@@ -1,6 +1,6 @@
 # Kymmenen Vuoden Vaikutus: Kuinka npm-pakettimme Saavuttivat 1 Miljardia Latausta ja Muokkasivat JavaScriptiä {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" /> -->
 
 
 ## Sisällysluettelo {#table-of-contents}

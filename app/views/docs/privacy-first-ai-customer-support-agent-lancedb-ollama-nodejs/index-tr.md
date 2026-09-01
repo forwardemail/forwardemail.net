@@ -1,6 +1,6 @@
 # LanceDB, Ollama ve Node.js ile Gizliliği Önceliklendiren AI Müşteri Destek Ajanı Oluşturma {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="LanceDB Ollama Node.js ile AI müşteri destek ajanı" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="LanceDB Ollama Node.js ile AI müşteri destek ajanı" class="rounded-lg" /> -->
 
 > \[!NOTE]
 > Bu doküman, kendi kendine barındırılan bir AI destek ajanı oluşturma yolculuğumuzu kapsıyor. Benzer zorlukları [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog yazımızda yazmıştık. Dürüst olmak gerekirse "AI Startup Graveyard" adlı bir devam yazısı yazmayı düşündük ama belki AI balonu patlayana kadar bir yıl daha beklememiz gerekecek(?). Şimdilik, bu bizim neyin işe yaradığını, neyin yaramadığını ve neden böyle yaptığımızı anlattığımız beyin dökümümüz.

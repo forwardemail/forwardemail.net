@@ -1,0 +1,176 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Site-wide footer restyle onto the fe tokens; _footer.pug adds `fe-footer`
+// on the <footer> element (which _fe-tokens.scss puts on the dark token set).
+// The markup keeps its bg-dark/text-white/badge utilities as the base layer
+// (this file only retints and retypes, it does not re-implement bootstrap's
+// spacing or badge chrome), so the !importants below exist to out-rank those
+// utilities and app-dark.scss, which re-emits bootstrap with !important
+// AFTER this file in the bundle (same caveat as _fe-nav.scss).
+
+footer.fe-footer {
+  font-family: var(--fe-font-body);
+}
+
+footer.fe-footer .bg-dark {
+  background-color: var(--fe-ink) !important;
+  border-top: 1px solid var(--fe-hairline-light-16);
+}
+
+// Same width tokens as the fe sections and the navbar, so the footer columns
+// sit on the same edges as the hero copy and the nav wordmark.
+footer.fe-footer .container {
+  max-width: var(--fe-container-max);
+  padding-inline: var(--fe-container-gutter);
+}
+
+// Column headings take the label tier (uppercase, tracked), matching the
+// nav's dropdown headers; h5's size and weight come from bootstrap so both
+// are restated here. No text-white on the h2 itself, so no !important needed.
+footer.fe-footer h2 {
+  font-family: var(--fe-font-body);
+  font-size: var(--fe-text-label);
+  font-weight: var(--fe-weight-bold);
+  letter-spacing: var(--fe-tracking-label);
+  color: var(--fe-fg-secondary);
+  text-transform: uppercase;
+}
+
+// Link rows and heading links both carry .text-white (the base layer), which
+// is !important in bootstrap — hence the !importants through this block. The
+// ul rules sit first so specificity ascends for stylelint.
+footer.fe-footer ul a.text-white {
+  font-size: var(--fe-text-body-sm);
+}
+
+footer.fe-footer ul a.text-white,
+footer.fe-footer h2 a.text-white {
+  color: var(--fe-fg-secondary) !important;
+  text-decoration: none;
+  transition: color var(--fe-motion-fast) var(--fe-ease);
+}
+
+footer.fe-footer ul a.text-white:hover,
+footer.fe-footer ul a.text-white:focus,
+footer.fe-footer h2 a.text-white:hover,
+footer.fe-footer h2 a.text-white:focus {
+  color: var(--fe-l-000) !important;
+  text-decoration: none;
+}
+
+// Accordion caret flips while a column is open; the motion tokens zero out
+// under prefers-reduced-motion, so no extra media query is needed.
+footer.fe-footer h2 a[data-toggle='collapse'] i {
+  display: inline-block;
+  transition: transform var(--fe-motion-base) var(--fe-ease);
+}
+
+footer.fe-footer h2 a[data-toggle='collapse'][aria-expanded='true'] i {
+  transform: rotate(-180deg);
+}
+
+// The trademark/copyright block sets .text-white on its wrapper; the legal
+// fine print reads as a quieter tier on the fe pages.
+footer.fe-footer .text-white.small {
+  color: var(--fe-fg-secondary) !important;
+}
+
+footer.fe-footer strong {
+  color: var(--fe-fg-secondary);
+}
+
+// Payment chips: sunken dark chips instead of white pills (bg-white and
+// text-dark are both bootstrap !importants).
+footer.fe-footer .badge.bg-white {
+  color: var(--fe-fg-primary) !important;
+  background-color: var(--fe-bg-sunken) !important;
+  border: 1px solid var(--fe-border-subtle);
+}
+
+footer.fe-footer a.badge {
+  text-decoration: none;
+}
+
+// "30+ more" link and the grey event-feed pill.
+footer.fe-footer .badge-secondary {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-default);
+}
+
+// Brand hues with an Ink label, same contrast reasoning as the navbar's
+// badges (bootstrap's fills land ~2.6:1 against their labels on Ink).
+footer.fe-footer .badge-success {
+  color: var(--fe-ink);
+  background-color: var(--fe-mint);
+}
+
+footer.fe-footer .badge-warning {
+  color: var(--fe-ink);
+  background-color: var(--fe-caution);
+}
+
+// The GPG info chip; badge-dark disappears into the Ink ground.
+footer.fe-footer .badge-dark {
+  color: var(--fe-fg-secondary);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-subtle);
+}
+
+// Language picker. The !importants out-rank app-dark's re-emitted
+// btn-outline-light in dark mode.
+footer.fe-footer .btn-outline-light {
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-primary) !important;
+  border-color: var(--fe-border-control);
+  border-radius: var(--fe-radius-md);
+}
+
+footer.fe-footer .btn-outline-light:hover,
+footer.fe-footer .btn-outline-light:focus {
+  color: var(--fe-l-000) !important;
+  background-color: var(--fe-primary-a16) !important;
+  border-color: var(--fe-border-strong);
+}
+
+// The language dropup panel takes the raised dark surface, mirroring the
+// nav's dropdown panels.
+footer.fe-footer .dropdown-menu {
+  font-family: var(--fe-font-body);
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-subtle);
+  border-radius: var(--fe-radius-lg);
+  box-shadow: var(--fe-elev-3);
+}
+
+footer.fe-footer .dropdown-item {
+  padding-block: 0.375rem;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-primary);
+}
+
+footer.fe-footer .dropdown-item:hover,
+footer.fe-footer .dropdown-item:focus,
+footer.fe-footer .dropdown-item:active {
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary-a16);
+}
+
+// Mobile separators between the accordion rows: a visible hairline on a
+// tighter rhythm than bootstrap's 1rem hr default.
+footer.fe-footer hr {
+  margin-block: var(--fe-space-2);
+  border-top-color: var(--fe-hairline-light);
+}
+
+// Same focus treatment as the navbar: a tinted pill instead of the Signal
+// ring, which read as a stray border against the dark ground.
+footer.fe-footer a:focus-visible,
+footer.fe-footer button:focus-visible {
+  outline: 0;
+  background-color: var(--fe-primary-a16);
+}

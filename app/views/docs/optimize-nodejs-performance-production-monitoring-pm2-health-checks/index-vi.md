@@ -1,6 +1,6 @@
 # Cách Tối Ưu Hóa Hạ Tầng Sản Xuất Node.js: Các Thực Tiễn Tốt Nhất {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Hướng dẫn tối ưu hiệu năng Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Hướng dẫn tối ưu hiệu năng Node.js" class="rounded-lg" /> -->
 
 
 ## Mục Lục {#table-of-contents}

@@ -1,6 +1,6 @@
 # První kompletní Email API: Jak Forward Email revolucionalizoval správu emailů {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>TL;DR:</strong> Vytvořili jsme první kompletní REST API pro správu emailů na světě s pokročilými vyhledávacími schopnostmi, které žádná jiná služba nenabízí. Zatímco Gmail, Outlook a Apple nutí vývojáře do IMAP pekla nebo API s omezením rychlosti, Forward Email poskytuje bleskově rychlé CRUD operace pro zprávy, složky, kontakty a kalendáře prostřednictvím sjednoceného REST rozhraní s více než 15 vyhledávacími parametry. Toto je emailové API, na které vývojáři čekali.

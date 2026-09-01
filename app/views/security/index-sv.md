@@ -1,6 +1,6 @@
 # Säkerhetspraxis {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email security practices" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Forward Email security practices" class="rounded-lg" /> -->
 
 
 ## Innehållsförteckning {#table-of-contents}

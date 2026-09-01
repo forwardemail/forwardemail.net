@@ -7,7 +7,8 @@ block body
       p.lead.text-muted!= meta.description
       form.mb-3.mb-md-4.mb-lg-5(action=ctx.path, method="GET")
         button.btn.btn-outline-success.btn-lg(type="submit")= t("Try again")
-      .markdown-body: img.rounded-lg(
-        src=manifest("img/articles/500.webp"),
-        alt="Server error illustration"
-      )
+      //- article images are hidden site-wide for now
+      //- .markdown-body: img.rounded-lg(
+      //- src=manifest("img/articles/500.webp"),
+      //- alt="Server error illustration"
+      //- )

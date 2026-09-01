@@ -1,6 +1,6 @@
 # Forward Email MCP Server {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>Кратко:</strong> Наш <a href="https://github.com/forwardemail/mcp-server">открытый MCP сервер</a> позволяет AI-ассистентам, таким как Claude, ChatGPT, Cursor и Windsurf, управлять вашей электронной почтой, доменами, псевдонимами, контактами и календарями с помощью естественного языка. Все 68 API эндпоинтов доступны как MCP инструменты. Он запускается локально через <code>npx @forwardemail/mcp-server</code> — ваши учетные данные никогда не покидают ваше устройство.
