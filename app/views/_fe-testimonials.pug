@@ -1,0 +1,58 @@
+//- Redesigned proof section: replaces the legacy _testimonials parallax on
+//- the landing page only (pricing.pug, compare.pug and open-source.pug still
+//- render the legacy partial). Keeps id="testimonials" so old deep links keep
+//- resolving. Three value pillars, each evidenced by the quote that actually
+//- describes it and closed by a receipt link the reader can verify; the
+//- remaining legacy quotes were cut on purpose — praise without information.
+//- Quotes are verbatim tweets and deliberately not run through t(), same as
+//- the legacy partial.
+mixin feProofCard(card)
+  figure.fe-proof__card(class=card.featured ? "fe-proof__card--featured" : "")
+    p.fe-proof__pillar.fe-label
+      span.fe-proof__dot(aria-hidden="true", class=`fe-proof__dot--${card.tone}`)
+      = card.pillar
+    blockquote.fe-proof__quote
+      block
+    figcaption.fe-proof__who
+      img.fe-proof__avatar(
+        loading="lazy",
+        width=44,
+        height=44,
+        src=manifest(`img/testimonials/${card.avatar}.jpg`),
+        alt=card.name
+      )
+      .fe-proof__id
+        span.fe-proof__name= card.name
+        span.fe-proof__meta= `${card.handle} · ${card.role}`
+    a.fe-proof__receipt(href=card.receiptHref)
+      = card.receiptLabel
+      = " "
+      i.fa.fa-angle-right(aria-hidden="true")
+
+mixin feTestimonials
+  section#testimonials.fe-section.fe-surface-light.fe-proof(
+    aria-labelledby="fe-proof-title"
+  )
+    .fe-container
+      p.fe-eyebrow.fe-label= t("Why people switch")
+      h2#fe-proof-title.fe-proof__title= t("Trusted for the reasons that matter.")
+      p.fe-lede= t("The claims this page makes, backed by people with no reason to flatter us — and a receipt you can check yourself.")
+      .fe-proof__grid
+        +feProofCard({ featured: true, tone: "primary", pillar: t("Private by architecture"), avatar: "dhh", name: "DHH", handle: "@dhh", role: "Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY", receiptHref: "/pentest-report_forward-email.pdf", receiptLabel: t("Read the security audit") })
+          | Congrats for fully launching Forward Email – a forwarding service
+          | for email that doesn't keep logs or store emails, and which works with ARC to ensure
+          | signed forwards don't trip email filters
+          = " "
+          = emoji("clap")
+          | . I'm a happy user!
+          = " "
+          = emoji("heart")
+        +feProofCard({ tone: "mint", pillar: t("Migration is a DNS change"), avatar: "abhinemani", name: "abhi nemani", handle: "@abhinemani", role: "Government Technology Advisor, Sacramento and Los Angeles", receiptHref: l("/guides"), receiptLabel: t("Browse the setup guides") })
+          | Have now switched email forwarding from MailGun to
+          = " "
+          | ForwardEmail.net
+          | . Simple and painless (and free!). Just some DNS changes, and it just works. Thanks
+        +feProofCard({ tone: "signal", pillar: t("One inbox for every address"), avatar: "andregce", name: "Andre Goncalves", handle: "@andregce", role: "Computer Engineer, Software Developer", receiptHref: l("/faq#can-i-have-multiple-global-catch-all-recipients"), receiptLabel: t("How catch-alls work") })
+          | So they made this cool app that forwards email from your own domain to your Gmail inbox. There is even a catch all option, so sales@, support@, etc all goes to your own inbox. Check it out! It's free!
+          = " "
+          | forwardemail.net

@@ -211,6 +211,12 @@ const purgeCssOptions = {
       'fa-envelope-open-text',
       'fa-flag-usa',
       'fade',
+      // _fe-testimonials.pug builds these via expressions the pug extractor
+      // cannot see (tone template literal, featured ternary)
+      'fe-proof__card--featured',
+      'fe-proof__dot--primary',
+      'fe-proof__dot--mint',
+      'fe-proof__dot--signal',
       'fixed-bottom',
       'flex-grow-1',
       'floating-label',

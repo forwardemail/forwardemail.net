@@ -40,6 +40,7 @@ block body
   include _fe-hero
   include _fe-product
   include _fe-pricing
+  include _fe-testimonials
   include _modal-storage
   include _modal-domain-search
   +modalDomainSearch
@@ -141,6 +142,11 @@ block body
     +feHero(isBot(ctx.get('User-Agent')))
     +feProduct
     +fePricing
+    //- Replaces the legacy _testimonials parallax and its "Happy Customers"
+    //- bounce anchor; the section keeps id="testimonials" so old deep links
+    //- still resolve. The legacy partial is untouched and still rendered by
+    //- pricing.pug, compare.pug and open-source.pug.
+    +feTestimonials
 
   //- _marketing was dropped from this page rather than kept below the new
   //- sections. Its "All-inclusive features / No additional fees for must-have
@@ -148,13 +154,4 @@ block body
   //- rendering both would put duplicate content on the page. The partial is
   //- untouched and still rendered by pricing.pug, open-source.pug and
   //- compare.pug, so nothing else loses that copy.
-  a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto.bounce-animation(
-    href="#testimonials"
-  )
-    i.fa.fa-angle-double-down(aria-hidden="true")
-    = " "
-    = t("Happy Customers")
-    = " "
-    i.fa.fa-angle-double-down(aria-hidden="true")
-  include _testimonials
   include _tti

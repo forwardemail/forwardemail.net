@@ -878,6 +878,129 @@ html.no-js .fe-console__tab--active {
 }
 
 // ============================================
+// PROOF (testimonials)
+// ============================================
+// Replaces the legacy parallax testimonials on the landing page: three value
+// pillars, each evidenced by one verbatim quote and closed by a receipt link.
+
+.fe-proof {
+  padding-block: 6rem;
+}
+
+.fe-proof__title {
+  font-size: var(--fe-text-display-lg);
+  color: var(--fe-fg-primary);
+}
+
+.fe-proof__grid {
+  display: grid;
+  gap: var(--fe-grid-gap);
+}
+
+.fe-proof__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-4);
+  padding: var(--fe-space-6);
+  margin: 0;
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-subtle);
+  border-radius: var(--fe-radius-lg);
+}
+
+.fe-proof__pillar {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  margin: 0;
+  color: var(--fe-fg-secondary);
+}
+
+// Tones take the icon tokens: 3:1 graphics-legal, never used as text here.
+.fe-proof__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-proof__dot--primary {
+  background-color: var(--fe-icon-primary);
+}
+
+.fe-proof__dot--mint {
+  background-color: var(--fe-icon-success);
+}
+
+.fe-proof__dot--signal {
+  background-color: var(--fe-icon-active);
+}
+
+.fe-proof__quote {
+  margin: 0;
+  font-size: var(--fe-text-body-md);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-primary);
+}
+
+// The featured card spans both rows at >=1024px, so its content centers as a
+// pull-quote instead of pinning to the card's foot like the short cards.
+.fe-proof__card--featured {
+  justify-content: center;
+}
+
+.fe-proof__card--featured .fe-proof__quote {
+  font-size: var(--fe-text-display-xs);
+  line-height: var(--fe-leading-snug);
+}
+
+// margin-top auto pins the attribution and receipt to the card's foot, so the
+// short quotes' cards keep their rows aligned with the featured card.
+.fe-proof__who {
+  display: flex;
+  gap: var(--fe-space-3);
+  align-items: center;
+  margin: auto 0 0;
+}
+
+.fe-proof__card--featured .fe-proof__who {
+  margin-top: 0;
+}
+
+.fe-proof__avatar {
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-proof__id {
+  display: flex;
+  flex-direction: column;
+}
+
+.fe-proof__name {
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-proof__meta {
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-proof__receipt {
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-link);
+  text-decoration: none;
+}
+
+.fe-proof__receipt:hover,
+.fe-proof__receipt:focus {
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+}
+
+// ============================================
 // RESPONSIVE
 // ============================================
 // Breakpoints are 1280/1024/768/480 per the spec — deliberately not
@@ -928,6 +1051,15 @@ html.no-js .fe-console__tab--active {
   // 45/55 split, equal height via grid stretch.
   .fe-features {
     grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+  }
+
+  // Featured quote holds the left column; the two short ones stack right.
+  .fe-proof__grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+
+  .fe-proof__card--featured {
+    grid-row: span 2;
   }
 
   .fe-plans {
