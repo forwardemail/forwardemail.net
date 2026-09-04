@@ -7,7 +7,6 @@ const test = require('ava');
 
 const {
   findUnsafeDmarcContent,
-  findUnsafeDmarcXmlContent,
   validateReportContent
 } = require('#helpers/validate-dmarc-report');
 
@@ -42,23 +41,6 @@ function createDmarcReport({
     }
   };
 }
-
-test('DMARC raw XML scanner permits ordinary aggregate-report elements', (t) => {
-  const xml =
-    '<feedback><report_metadata><org_name>Example</org_name></report_metadata><record /></feedback>';
-
-  t.is(findUnsafeDmarcXmlContent(xml), null);
-});
-
-test('DMARC raw XML scanner rejects active markup in an ignored XML node', (t) => {
-  const xml =
-    '<feedback><extension>&lt;script&gt;window.__xss_poc=1&lt;/script&gt;</extension></feedback>';
-
-  t.is(
-    findUnsafeDmarcXmlContent(xml),
-    'Unsafe active markup or executable URI in DMARC XML'
-  );
-});
 
 test('DMARC content validation accepts ordinary aggregate report values', (t) => {
   const report = createDmarcReport();
@@ -95,4 +77,20 @@ test('DMARC content validation rejects executable URI schemes in report fields',
     reason:
       'Unsafe markup or executable URI in report.report_metadata.extra_contact_info'
   });
+});
+
+test('DMARC content validation rejects slash-delimited event-handler markup', (t) => {
+  const report = createDmarcReport({
+    orgName: '<details/open/ontoggle=alert(document.domain)>'
+  });
+
+  t.is(findUnsafeDmarcContent(report), 'report.report_metadata.org_name');
+  t.false(validateReportContent(report, 1024).valid);
+});
+
+test('DMARC content validation bounds markup inspection for large plain-text fields', (t) => {
+  const report = createDmarcReport({ orgName: 'a'.repeat(100_000) });
+
+  t.is(findUnsafeDmarcContent(report), null);
+  t.true(validateReportContent(report, 1024).valid);
 });

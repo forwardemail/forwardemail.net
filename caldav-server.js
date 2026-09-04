@@ -24,7 +24,6 @@ const uuid = require('uuid');
 const { rrulestr } = require('rrule');
 const sanitizeHtml = require('sanitize-html');
 
-const _ = require('#helpers/lodash');
 const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
 const Aliases = require('#models/aliases');
 const CalendarEvents = require('#models/calendar-events');
@@ -54,57 +53,10 @@ const {
   sendCalendarEmail
 } = require('#helpers/send-calendar-email');
 const { parseContentDispositionFilename } = require('#helpers/ical-filename');
-
-const exdateRegex =
-  /^EXDATE(?:;TZID=[\w/+=-]+|;VALUE=DATE)?:\d{8}(?:T\d{6}(?:\.\d{1,3})?Z?)?$/;
-
-function isValidExdate(str) {
-  return exdateRegex.test(str);
-}
-
-//
-// Property names that rrulestr() accepts at the top level of its input.
-// Anything else (BEGIN/END child markers, TZNAME bleed, the literal
-// "Standard"/"Daylight" line that leaks out of mis-folded VTIMEZONE
-// children produced by some Outlook/iOS exporters, etc.) MUST be filtered
-// out before joining, otherwise rrulestr@2.8.1 throws with messages like:
-//   Unknown RRULE property 'Standard'
-//   unsupported property: BEGIN
-// and the entire CalDAV REPORT request fails. See test coverage in
-// test/caldav/test-caldav-rrule-sanitize.js.
-//
-const RRULE_INPUT_ALLOWED_PROPS = new Set([
-  'DTSTART',
-  'RRULE',
-  'EXRULE',
-  'EXDATE',
-  'RDATE'
-]);
-
-function sanitizeRruleLines(lines) {
-  const out = [];
-  for (const original of lines) {
-    if (typeof original !== 'string') continue;
-    // RFC 5545 §3.1: a content line is a single logical line. If a
-    // producer (or our own toICALString round-trip on malformed input)
-    // returns multi-line content, keep only the first non-empty
-    // fragment so we never feed a stray "Standard" / "BEGIN:STANDARD"
-    // continuation into rrulestr.
-    for (const piece of original.split(/\r?\n/)) {
-      const line = piece.trim();
-      if (!line) continue;
-      // Property name is everything before the first ';' (parameters)
-      // or ':' (value). Compare case-insensitively per RFC 5545 §3.1.
-      const sep = line.search(/[;:]/);
-      const name = (sep === -1 ? line : line.slice(0, sep)).toUpperCase();
-      if (!RRULE_INPUT_ALLOWED_PROPS.has(name)) break;
-      out.push(line);
-      break;
-    }
-  }
-
-  return out;
-}
+const {
+  isRecoverableRruleParseError,
+  sanitizeRruleLines
+} = require('#helpers/sanitize-rrule-lines');
 
 //
 // Return a DTSTART line that rrulestr can use as a recurrence anchor.
@@ -2776,7 +2728,18 @@ class CalDAV extends API {
       ...noEndEvents
     ];
     for (const event of eventsNeedingParsing) {
-      const comp = new ICAL.Component(ICAL.parse(event.ical));
+      let comp;
+      try {
+        comp = new ICAL.Component(ICAL.parse(event.ical));
+      } catch (err) {
+        ctx.logger.warn('Skipping calendar resource with invalid ICS', {
+          err,
+          event: event._id,
+          calendar: calendar._id
+        });
+        continue;
+      }
+
       const vevents = comp.getAllSubcomponents('vevent');
       const vtodos = comp.getAllSubcomponents('vtodo');
 
@@ -2799,7 +2762,7 @@ class CalDAV extends API {
         let dtstart = vevent.getFirstPropertyValue('dtstart');
         if (!dtstart || !(dtstart instanceof ICAL.Time)) {
           const err = new TypeError('DTSTART missing on event');
-          ctx.logger.error(err, {
+          ctx.logger.warn(err, {
             eventId: event?.eventId,
             calendarId: calendar?._id
           });
@@ -2854,41 +2817,10 @@ class CalDAV extends API {
         try {
           rruleSet = rrulestr(lines.join('\n'));
         } catch (err) {
-          if (err.message.includes('Unsupported RFC prop EXDATE in EXDATE')) {
-            try {
-              lines = _.compact(
-                lines.map((line) => {
-                  if (line.includes('EXDATE')) {
-                    return isValidExdate(line) ? line : null;
-                  }
-
-                  return line;
-                })
-              );
-              rruleSet = rrulestr(lines.join('\n'));
-            } catch (err) {
-              // Skip events with invalid recurrence rules (e.g., malformed UNTIL values)
-              ctx.logger.warn('Skipping event with invalid RRULE', {
-                err,
-                event: event._id,
-                calendar: calendar._id
-              });
-              continue;
-            }
-          } else if (
-            err.message.includes('Invalid UNTIL value') ||
-            err.message.includes('Invalid RRULE') ||
-            err.message.includes('Invalid DTSTART') ||
-            err.message.includes('Unknown RRULE property') ||
-            err.message.includes('unsupported property:')
-          ) {
-            // Skip events with invalid recurrence rules. Includes:
-            //   - Malformed UNTIL values like "--T::"
-            //   - Mis-folded VTIMEZONE child content bleeding into the
-            //     line set (e.g. "Unknown RRULE property 'Standard'"
-            //     when an Outlook/iOS exporter wraps RRULE without RFC
-            //     5545 §3.1 leading-whitespace continuation)
-            //   - Stray BEGIN/END markers ("unsupported property: BEGIN")
+          if (isRecoverableRruleParseError(err)) {
+            // The source resource is retained verbatim, but cannot be safely
+            // evaluated for this time-range query.  RFC 4791 collection
+            // reports must continue processing other resources.
             ctx.logger.warn('Skipping event with invalid RRULE', {
               err,
               event: event._id,
@@ -3090,35 +3022,9 @@ class CalDAV extends API {
           try {
             rruleSet = rrulestr(lines.join('\n'));
           } catch (err) {
-            if (err.message.includes('Unsupported RFC prop EXDATE in EXDATE')) {
-              try {
-                lines = _.compact(
-                  lines.map((line) => {
-                    if (line.includes('EXDATE')) {
-                      return isValidExdate(line) ? line : null;
-                    }
-
-                    return line;
-                  })
-                );
-                rruleSet = rrulestr(lines.join('\n'));
-              } catch (err) {
-                // Skip tasks with invalid recurrence rules (e.g., malformed UNTIL values)
-                ctx.logger.warn('Skipping task with invalid RRULE', {
-                  err,
-                  event: event._id,
-                  calendar: calendar._id
-                });
-                continue;
-              }
-            } else if (
-              err.message.includes('Invalid UNTIL value') ||
-              err.message.includes('Invalid RRULE') ||
-              err.message.includes('Invalid DTSTART') ||
-              err.message.includes('Unknown RRULE property') ||
-              err.message.includes('unsupported property:')
-            ) {
-              // Skip tasks with invalid recurrence rules (e.g., malformed UNTIL values like "--T::")
+            if (isRecoverableRruleParseError(err)) {
+              // The source resource is retained verbatim, but cannot be safely
+              // evaluated for this time-range query.  Continue with other tasks.
               ctx.logger.warn('Skipping task with invalid RRULE', {
                 err,
                 event: event._id,

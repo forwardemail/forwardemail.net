@@ -236,8 +236,14 @@ async function createDomain(ctx, next) {
     try {
       obj = await isExpiredOrNewlyCreated(ctx.request.body.domain, ctx.client);
     } catch (err) {
-      err.isCodeBug = true;
-      logger.fatal(err);
+      if (err.message === 'Domain is not a FQDN') {
+        throw Boom.badRequest('Domain must be a fully qualified domain name');
+      }
+
+      // RDAP is an external availability check.  A provider failure must not
+      // be reported as an internal code bug or block a valid domain request.
+      err.isCodeBug = false;
+      logger.warn(err);
     }
 
     if (

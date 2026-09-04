@@ -5,6 +5,7 @@
 
 const crypto = require('node:crypto');
 const { Buffer } = require('node:buffer');
+const process = require('node:process');
 
 const env = require('#config/env');
 
@@ -22,6 +23,10 @@ const env = require('#config/env');
 
 const VERSION_V2 = 0x02;
 const VERSION_V3 = 0x03; // Reserved for future quantum-resistant implementation
+
+function isLegacyAesCbcEnabled() {
+  return process.env.ALLOW_LEGACY_AES_CBC_DECRYPTION === 'true';
+}
 
 //
 // V2: Fixed AES-256-GCM implementation
@@ -328,7 +333,9 @@ function decrypt(
     !text.includes('_') &&
     secondPartIsHex;
 
-  if (looksLikeLegacy) {
+  // New installations leave legacy CBC disabled. Operators can enable this
+  // temporarily during a documented ciphertext migration, then remove it.
+  if (looksLikeLegacy && isLegacyAesCbcEnabled()) {
     try {
       return decryptLegacyAES(text, encryptionKey, algorithm);
     } catch {

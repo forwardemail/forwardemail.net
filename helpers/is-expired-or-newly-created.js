@@ -15,6 +15,7 @@ const SMTPError = require('#helpers/smtp-error');
 const _ = require('#helpers/lodash');
 const config = require('#config');
 const logger = require('#helpers/logger');
+const normalizeRdapUrl = require('#helpers/normalize-rdap-url');
 
 // dynamically import @forwardemail/whois-rdap
 let whois;
@@ -42,7 +43,7 @@ import('@forwardemail/whois-rdap').then((obj) => {
 //
 async function wrappedFetch(url, options) {
   try {
-    return await undici.fetch(url, options);
+    return await undici.fetch(normalizeRdapUrl(url), options);
   } catch (err) {
     // Enhanced error logging for fetch failures
     if (err.cause) {
@@ -185,3 +186,4 @@ async function isExpiredOrNewlyCreated(input, client) {
 }
 
 module.exports = isExpiredOrNewlyCreated;
+module.exports.normalizeRdapUrl = normalizeRdapUrl;

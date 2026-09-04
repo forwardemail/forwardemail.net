@@ -5,10 +5,37 @@
 
 const crypto = require('node:crypto');
 const { Buffer } = require('node:buffer');
+const process = require('node:process');
 
 const test = require('ava');
 
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
+
+function createLegacyCiphertext(encryptionKey) {
+  const iv = Buffer.from(crypto.randomBytes(16)).toString('hex').slice(0, 16);
+  const cipher = crypto.createCipheriv(
+    'aes-256-cbc',
+    Buffer.from(encryptionKey),
+    Buffer.from(iv, 'binary')
+  );
+  let encrypted = cipher.update('test@example.com', 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return `${iv}-${encrypted}`;
+}
+
+function withLegacyAesCbc(enabled, callback) {
+  const original = process.env.ALLOW_LEGACY_AES_CBC_DECRYPTION;
+  if (enabled) process.env.ALLOW_LEGACY_AES_CBC_DECRYPTION = 'true';
+  else delete process.env.ALLOW_LEGACY_AES_CBC_DECRYPTION;
+
+  try {
+    callback();
+  } finally {
+    if (original === undefined)
+      delete process.env.ALLOW_LEGACY_AES_CBC_DECRYPTION;
+    else process.env.ALLOW_LEGACY_AES_CBC_DECRYPTION = original;
+  }
+}
 
 test('basic v2 encryption and decryption', (t) => {
   const original = 'test@example.com';
@@ -35,21 +62,32 @@ test('magic byte is 0x02', (t) => {
   t.is(data[0], 0x02, 'first byte should be 0x02');
 });
 
-test('backwards compatibility with legacy AES-256-CBC format', (t) => {
+test.serial('legacy AES-256-CBC decryption is disabled by default', (t) => {
   const encryptionKey = crypto.randomBytes(32);
-  const iv = Buffer.from(crypto.randomBytes(16)).toString('hex').slice(0, 16);
-  const cipher = crypto.createCipheriv(
-    'aes-256-cbc',
-    Buffer.from(encryptionKey),
-    Buffer.from(iv, 'binary')
-  );
-  let enc = cipher.update('test@example.com', 'utf8', 'hex');
-  enc += cipher.final('hex');
-  const legacyFormat = `${iv}-${enc}`;
+  const legacyCiphertext = createLegacyCiphertext(encryptionKey);
 
-  const decrypted = decrypt(legacyFormat, encryptionKey);
-  t.is(decrypted, 'test@example.com', 'should decrypt legacy format');
+  withLegacyAesCbc(false, () => {
+    t.throws(() => decrypt(legacyCiphertext, encryptionKey), {
+      message: 'Decryption failed for all supported formats'
+    });
+  });
 });
+
+test.serial(
+  'legacy AES-256-CBC decryption requires explicit migration opt-in',
+  (t) => {
+    const encryptionKey = crypto.randomBytes(32);
+    const legacyCiphertext = createLegacyCiphertext(encryptionKey);
+
+    withLegacyAesCbc(true, () => {
+      t.is(
+        decrypt(legacyCiphertext, encryptionKey),
+        'test@example.com',
+        'should decrypt legacy format only when explicitly enabled'
+      );
+    });
+  }
+);
 
 test('IV uniqueness (different ciphertext each time)', (t) => {
   const original = 'test@example.com';

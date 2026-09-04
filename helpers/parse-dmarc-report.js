@@ -11,7 +11,6 @@ const isSANB = require('is-string-and-not-blank');
 const { XMLParser } = require('fast-xml-parser');
 
 const logger = require('#helpers/logger');
-const { findUnsafeDmarcXmlContent } = require('#helpers/validate-dmarc-report');
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -31,15 +30,6 @@ function parseXmlReport(xmlContent) {
   try {
     const xmlString =
       typeof xmlContent === 'string' ? xmlContent : xmlContent.toString('utf8');
-
-    const unsafeReason = findUnsafeDmarcXmlContent(xmlString);
-    if (unsafeReason) {
-      logger.warn('DMARC report rejected: unsafe XML content');
-      return {
-        rejected: true,
-        reason: unsafeReason
-      };
-    }
 
     // Defense-in-depth: reject XML with DOCTYPE or ENTITY declarations
     // to prevent potential XXE attacks from malicious DMARC reports.

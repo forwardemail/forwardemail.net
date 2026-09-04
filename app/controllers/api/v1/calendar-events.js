@@ -23,12 +23,15 @@ const {
   resetPartstatsOnSignificantChange,
   sendCalendarEmail
 } = require('#helpers/send-calendar-email');
-const _ = require('#helpers/lodash');
 const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
 const { ensureICSTimestamps } = require('#helpers/stamp-ics');
 const { prepareICSForStorage } = require('#helpers/prepare-ics');
 const { sendApnCalendar } = require('#helpers/send-apn');
 const sendNotification = require('#helpers/send-notification');
+const {
+  isRecoverableRruleParseError,
+  sanitizeRruleLines
+} = require('#helpers/sanitize-rrule-lines');
 
 // Helper function to detect component type from ICS data
 // (mirrors caldav-server.js getComponentType)
@@ -52,50 +55,10 @@ function getComponentType(icsData) {
   }
 }
 
-const exdateRegex =
-  /^EXDATE(?:;TZID=[\w/+=-]+|;VALUE=DATE)?:\d{8}(?:T\d{6}(?:\.\d{1,3})?Z?)?$/;
-
-function isValidExdate(str) {
-  return exdateRegex.test(str);
-}
-
-//
-// Property names that rrulestr() accepts at the top level of its input.
-// See caldav-server.js sanitizeRruleLines() for the full rationale and
-// the list of pathological producers we've observed in production. The
-// helper is duplicated here (rather than imported) to keep the v1 REST
-// controller free of a require() into the CalDAV server module.
-//
-const RRULE_INPUT_ALLOWED_PROPS = new Set([
-  'DTSTART',
-  'RRULE',
-  'EXRULE',
-  'EXDATE',
-  'RDATE'
-]);
-
 // The SQLite query builder receives sort keys as identifiers.  Keep this
 // allowlist deliberately narrow and aligned with the documented API contract
 // so request parameters cannot become SQL functions or expressions.
 const SORTABLE_FIELDS = new Set(['created_at', 'updated_at', 'eventId']);
-
-function sanitizeRruleLines(lines) {
-  const out = [];
-  for (const original of lines) {
-    if (typeof original !== 'string') continue;
-    for (const piece of original.split(/\r?\n/)) {
-      const line = piece.trim();
-      if (!line) continue;
-      const sep = line.search(/[;:]/);
-      const name = (sep === -1 ? line : line.slice(0, sep)).toUpperCase();
-      if (!RRULE_INPUT_ALLOWED_PROPS.has(name)) break;
-      out.push(line);
-      break;
-    }
-  }
-
-  return out;
-}
 
 //
 // Return a DTSTART line that rrulestr can use as a recurrence anchor.
@@ -341,7 +304,7 @@ async function list(ctx) {
           let dtstart = vevent.getFirstPropertyValue('dtstart');
           if (!dtstart || !(dtstart instanceof ICAL.Time)) {
             const err = new TypeError('DTSTART missing on event');
-            ctx.logger.error(err, { event, calendar });
+            ctx.logger.warn(err, { event, calendar });
             continue;
           }
 
@@ -405,36 +368,9 @@ async function list(ctx) {
           try {
             rruleSet = rrulestr(lines.join('\n'));
           } catch (err) {
-            if (err.message.includes('Unsupported RFC prop EXDATE in EXDATE')) {
-              try {
-                lines = _.compact(
-                  lines.map((line) => {
-                    if (line.includes('EXDATE')) {
-                      return isValidExdate(line) ? line : null;
-                    }
-
-                    return line;
-                  })
-                );
-                rruleSet = rrulestr(lines.join('\n'));
-              } catch (err) {
-                ctx.logger.warn('Skipping event with invalid RRULE', {
-                  err,
-                  event: event._id,
-                  calendar: calendar._id
-                });
-                continue;
-              }
-            } else if (
-              err.message.includes('Invalid UNTIL value') ||
-              err.message.includes('Invalid RRULE') ||
-              err.message.includes('Invalid DTSTART') ||
-              err.message.includes('Unknown RRULE property') ||
-              err.message.includes('unsupported property:')
-            ) {
-              // Skip events with invalid recurrence rules. See the
-              // matching block in caldav-server.js for the full list
-              // of recoverable producer-side bugs.
+            if (isRecoverableRruleParseError(err)) {
+              // Preserve the stored resource, but do not let malformed client
+              // recurrence metadata abort the remainder of this API query.
               ctx.logger.warn('Skipping event with invalid RRULE', {
                 err,
                 event: event._id,
@@ -548,36 +484,9 @@ async function list(ctx) {
             try {
               rruleSet = rrulestr(lines.join('\n'));
             } catch (err) {
-              if (
-                err.message.includes('Unsupported RFC prop EXDATE in EXDATE')
-              ) {
-                try {
-                  lines = _.compact(
-                    lines.map((line) => {
-                      if (line.includes('EXDATE')) {
-                        return isValidExdate(line) ? line : null;
-                      }
-
-                      return line;
-                    })
-                  );
-                  rruleSet = rrulestr(lines.join('\n'));
-                } catch (err) {
-                  ctx.logger.warn('Skipping task with invalid RRULE', {
-                    err,
-                    event: event._id,
-                    calendar: calendar._id
-                  });
-                  continue;
-                }
-              } else if (
-                err.message.includes('Invalid UNTIL value') ||
-                err.message.includes('Invalid RRULE') ||
-                err.message.includes('Invalid DTSTART') ||
-                err.message.includes('Unknown RRULE property') ||
-                err.message.includes('unsupported property:')
-              ) {
-                // Skip tasks with invalid recurrence rules.
+              if (isRecoverableRruleParseError(err)) {
+                // Preserve the stored resource, but do not let malformed client
+                // recurrence metadata abort the remainder of this API query.
                 ctx.logger.warn('Skipping task with invalid RRULE', {
                   err,
                   event: event._id,

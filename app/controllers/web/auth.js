@@ -21,6 +21,7 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const email = require('#helpers/email');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
+const isSafeReturnTo = require('#helpers/is-safe-return-to');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const sendVerificationEmail = require('#helpers/send-verification-email');
 const stripe = require('#helpers/stripe');
@@ -85,42 +86,7 @@ function parseReturnOrRedirectTo(ctx, next) {
   // prevents being used as an open redirect
   if (ctx.session && ctx.session.returnTo) {
     const { returnTo } = ctx.session;
-    //
-    // Allowlist approach: only permit relative paths that:
-    // 1. Start with exactly one forward slash
-    // 2. Do NOT have / or \ as the second character (blocks // and /\)
-    // 3. Contain no backslashes (browsers normalize \ to / in Location headers)
-    // 4. Contain no control characters (blocks tab/newline injection)
-    // 5. Do not use a dangerous URI scheme (javascript:, data:, vbscript:)
-    //
-    // Absolute URLs to config.urls.web are also allowed.
-    //
-    let allowed = false;
-    if (
-      returnTo.startsWith('/') &&
-      returnTo[1] !== '/' &&
-      returnTo[1] !== '\\' &&
-      !returnTo.includes('\\') &&
-      // eslint-disable-next-line no-control-regex
-      !/[\u0000-\u001F\u007F]/.test(returnTo)
-    ) {
-      allowed = true;
-    } else if (returnTo.includes('://')) {
-      try {
-        const parsed = new URL(returnTo);
-        const trusted = new URL(config.urls.web);
-        if (
-          parsed.origin === trusted.origin &&
-          ['http:', 'https:'].includes(parsed.protocol)
-        ) {
-          allowed = true;
-        }
-      } catch {
-        // malformed URL → not allowed
-      }
-    }
-
-    if (!allowed) {
+    if (!isSafeReturnTo(returnTo, config.urls.web)) {
       ctx.logger.warn(`Prevented open redirect via returnTo to ${returnTo}`);
       ctx.session.returnTo = null;
     }

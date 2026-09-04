@@ -27,6 +27,7 @@ const recursivelyParse = require('#helpers/recursively-parse');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
+const { unpackMessagePack } = require('#helpers/unpack-messagepack');
 
 const DEFAULT = {
   maxReconnectionDelay: 3000,
@@ -173,6 +174,7 @@ function disconnect(code, reason) {
 }
 
 // <https://github.com/pladaria/reconnecting-websocket/issues/199>
+
 function _getNextDelay() {
   const {
     reconnectionDelayGrowFactor = DEFAULT.reconnectionDelayGrowFactor,
@@ -324,7 +326,7 @@ function createWebSocketAsPromised(options = {}) {
       return rws;
     },
     packMessage: (data) => encoder.pack(data),
-    unpackMessage: (data) => decoder.unpack(data),
+    unpackMessage: (data) => unpackMessagePack(decoder, data, logger),
     attachRequestId(data, id) {
       return {
         id,

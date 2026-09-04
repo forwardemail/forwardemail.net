@@ -1,3 +1,33 @@
+diff --git a/lib/bimi/index.js b/lib/bimi/index.js
+index 9155bcdb69f8b56bb24ed5c65db57b770bde575b..55f2fd321d26ffadfaefcedc2acfe8341aee8699 100644
+--- a/lib/bimi/index.js
++++ b/lib/bimi/index.js
+@@ -86,7 +86,10 @@ const lookup = async data => {
+             }
+ 
+             bimiSelectorHeader = parseDkimHeaders(row.line);
+-            if (bimiSelectorHeader?.parsed?.v?.value?.toLowerCase() !== 'bimi1') {
++            if (
++                typeof bimiSelectorHeader?.parsed?.v?.value !== 'string' ||
++                bimiSelectorHeader.parsed.v.value.toLowerCase() !== 'bimi1'
++            ) {
+                 response.status.result = 'fail';
+                 response.status.comment = 'missing bimi version in selector header';
+                 response.info = formatAuthHeaderRow('bimi', response.status);
+@@ -140,7 +143,10 @@ const lookup = async data => {
+     }
+ 
+     let recordData = parseDkimHeaders(`DNS: TXT;${record}`);
+-    if (recordData?.parsed?.v?.value?.toLowerCase() !== 'bimi1') {
++    if (
++        typeof recordData?.parsed?.v?.value !== 'string' ||
++        recordData.parsed.v.value.toLowerCase() !== 'bimi1'
++    ) {
+         response.status.result = 'fail';
+         response.status.comment = 'missing bimi version in dns record';
+         response.info = formatAuthHeaderRow('bimi', response.status);
+diff --git a/lib/parse-dkim-headers.js b/lib/parse-dkim-headers.js
+index af8b39f75b49dd38619e1d2852a2d615881d397f..daf52a487b0143c519d5ddeaef0ca0338fd7ba7c 100644
 --- a/lib/parse-dkim-headers.js
 +++ b/lib/parse-dkim-headers.js
 @@ -1,5 +1,8 @@
@@ -9,7 +39,7 @@
  // NB! fails to properly parse nested comments (should be rare enough though)
  
  const valueParser = str => {
-@@ -99,6 +102,12 @@
+@@ -99,6 +102,12 @@ const valueParser = str => {
                  let path = part.key.split('.');
                  let curRes = result;
                  let final = path.pop();

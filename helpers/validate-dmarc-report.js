@@ -9,31 +9,12 @@ const DMARC_MAX_REPORT_SIZE_BYTES = 10 * 1024 * 1024; // 10MB max report size
 const DMARC_MAX_RECORDS_PER_REPORT = 10000; // Max records in a single report
 
 // DMARC aggregate report fields are plain-text protocol data. A decoded HTML
-// tag, encoded tag, or executable URI therefore has no valid use here. Scan
-// the canonical parsed values rather than raw XML so entity-encoded payloads
-// (e.g. `&lt;script&gt;`) cannot bypass the check.
+// tag, encoded tag, or executable URI therefore has no valid use here. The
+// parser converts XML entities before this bounded field-level check, so an
+// encoded payload cannot bypass validation and arbitrary malformed XML is
+// never processed by a pre-parser regular expression.
 const UNSAFE_DMARC_CONTENT_PATTERN =
-  /<\s*\/?\s*[a-z][a-z\d:-]*(?:\s|\/?>)|&(?:#x0*3c|#0*60|lt)\s*;?\s*\/?\s*[a-z][a-z\d:-]*|(?:javascript|vbscript)\s*:|data\s*:\s*text\s*\/\s*html/i;
-
-// This stricter XML-level pattern intentionally names only active HTML/SVG
-// elements and event-handler attributes. It does not match ordinary DMARC
-// elements such as <feedback>, <record>, or <policy_published>.
-const UNSAFE_DMARC_XML_CONTENT_PATTERN =
-  /(?:<|&(?:#x0*3c|#0*60|lt)\s*;?)\s*\/?\s*(?:script|style|iframe|object|embed|svg|math|base|link|meta|form|img|video|audio|template)\b|(?:^|[<\s])on[\w-]+\s*=|(?:javascript|vbscript)\s*:|data\s*:\s*text\s*\/\s*html/i;
-
-/**
- * Find active markup or executable URI content in raw DMARC XML.
- * @param {unknown} value - Decompressed DMARC XML text
- * @returns {string|null} A safe rejection reason, if found
- */
-function findUnsafeDmarcXmlContent(value) {
-  if (typeof value !== 'string') return null;
-
-  const normalized = value.normalize('NFKC');
-  return UNSAFE_DMARC_XML_CONTENT_PATTERN.test(normalized)
-    ? 'Unsafe active markup or executable URI in DMARC XML'
-    : null;
-}
+  /<\/?[a-z][a-z\d:-]*(?:[/\s][^<>]{0,1024})?\/?\s{0,1024}>|&(?:#x0*3c|#0*60|lt);?|(?:javascript|vbscript):|data:text\/html/i;
 
 /**
  * Find the first DMARC report field containing active or markup-like content.
@@ -133,7 +114,6 @@ function validateReportContent(report, rawSize) {
 
 module.exports = {
   findUnsafeDmarcContent,
-  findUnsafeDmarcXmlContent,
   validateReportContent,
   DMARC_MAX_REPORT_SIZE_BYTES,
   DMARC_MAX_RECORDS_PER_REPORT

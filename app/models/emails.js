@@ -52,6 +52,7 @@ const env = require('#config/env');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const getErrorCode = require('#helpers/get-error-code');
 const getHeaders = require('#helpers/get-headers');
+const getEmailMessageStream = require('#helpers/get-email-message-stream');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
@@ -1432,10 +1433,12 @@ Emails.statics.queue = async function (
   const messageSplitter = new MessageSplitter({
     maxBytes: MAX_BYTES
   });
-
-  const body = await getStream.buffer(info.message.pipe(messageSplitter), {
-    maxBuffer: MAX_BYTES
-  });
+  const body = await getStream.buffer(
+    getEmailMessageStream(info?.message).pipe(messageSplitter),
+    {
+      maxBuffer: MAX_BYTES
+    }
+  );
 
   // ensure the message is not more than 50 MB
   if (messageSplitter.sizeExceeded) {

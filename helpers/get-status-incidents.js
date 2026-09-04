@@ -91,6 +91,9 @@ async function getStatusIncidents(options = {}) {
       const cached = await client.get(CACHE_KEY_INCIDENTS);
       if (cached) {
         const incidents = JSON.parse(cached);
+        if (!Array.isArray(incidents))
+          throw new TypeError('Cached status incidents must be an array');
+
         logger.debug('Returning status incidents from Redis cache', {
           extra: { count: incidents.length }
         });
@@ -150,8 +153,16 @@ async function getStatusIncidents(options = {}) {
       issues = await response.body.json();
     }
 
+    // GitHub may return a non-array error payload through a proxy or a stale
+    // cache layer.  Do not let that turn an optional event-feed refresh into a
+    // recurring application error.
+    if (!Array.isArray(issues))
+      throw new TypeError('GitHub status incidents response must be an array');
+
     // Parse all issues into incidents
-    const incidents = issues.map((issue) => parseIncident(issue));
+    const incidents = issues
+      .filter((issue) => issue && typeof issue === 'object')
+      .map((issue) => parseIncident(issue));
 
     // Store in Redis cache
     if (client && incidents.length > 0) {
@@ -176,7 +187,8 @@ async function getStatusIncidents(options = {}) {
 
     return incidents.slice(0, count);
   } catch (err) {
-    logger.error(err, {
+    err.isCodeBug = false;
+    logger.warn(err, {
       extra: { message: 'Failed to fetch status incidents' }
     });
 
@@ -202,6 +214,9 @@ async function getStatusSummary(options = {}) {
       const cached = await client.get(CACHE_KEY_SUMMARY);
       if (cached) {
         const summary = JSON.parse(cached);
+        if (!Array.isArray(summary))
+          throw new TypeError('Cached status summary must be an array');
+
         logger.debug('Returning status summary from Redis cache');
         return summary;
       }
@@ -253,6 +268,9 @@ async function getStatusSummary(options = {}) {
       summary = await response.body.json();
     }
 
+    if (!Array.isArray(summary))
+      throw new TypeError('GitHub status summary response must be an array');
+
     // Store in Redis cache
     if (client) {
       try {
@@ -274,7 +292,8 @@ async function getStatusSummary(options = {}) {
 
     return summary;
   } catch (err) {
-    logger.error(err, { extra: { message: 'Failed to fetch status summary' } });
+    err.isCodeBug = false;
+    logger.warn(err, { extra: { message: 'Failed to fetch status summary' } });
     return [];
   }
 }

@@ -181,14 +181,19 @@ async function getLogsCsv(
         }
 
         const filteredBccEmails = bccEmails.filter((email) => {
-          const username = email.includes('+')
-            ? email.slice(0, email.indexOf('+'))
-            : email.split('@')[0];
-          const domain = email.split('@')[1];
+          const atIndex = email.lastIndexOf('@');
+          if (atIndex <= 0 || atIndex === email.length - 1) return false;
+
+          const local = email.slice(0, atIndex);
+          const username = local.includes('+')
+            ? local.slice(0, local.indexOf('+'))
+            : local;
+          const domain = email.slice(atIndex + 1).toLowerCase();
+          if (!username || !domain) return false;
 
           let isAdminOfDomain = false;
           const matchingDomain = userDomains.find(
-            (d) => d.name === domain.toLowerCase()
+            (d) => d.name.toLowerCase() === domain
           );
 
           if (!matchingDomain) return false;
