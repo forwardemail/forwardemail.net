@@ -26,7 +26,8 @@ const TemporaryMessages = new mongoose.Schema(
     date: {
       type: Date,
       required: true,
-      index: true
+      index: true,
+      encrypted: true
     },
     raw: {
       type: Buffer,

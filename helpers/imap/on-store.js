@@ -271,7 +271,7 @@ async function onStore(mailboxId, update, session, fn) {
     }
 
     // converts objectids -> strings and arrays/json appropriately
-    const condition = prepareQuery(Messages.mapping, query);
+    const condition = prepareQuery(Messages.mapping, query, session);
     const projection = {
       _id: true,
       uid: true,
@@ -318,7 +318,7 @@ async function onStore(mailboxId, update, session, fn) {
         session.db
           .transaction((messages) => {
             for (const result of messages) {
-              const message = syncConvertResult(Messages, result);
+              const message = syncConvertResult(Messages, result, session);
               // this.logger.debug('fetched message', {
               //   result,
               //   message,
@@ -550,7 +550,7 @@ async function onStore(mailboxId, update, session, fn) {
                 // modseq: {
                 //   $lt: newModseq
                 // }
-              });
+              }, session);
 
               // RFC 7162 Section 3.1.4: STORE and UID STORE Commands
               // "For any two successful STORE operations performed in the same session
@@ -562,7 +562,7 @@ async function onStore(mailboxId, update, session, fn) {
                 table: 'Messages',
                 condition,
                 modifier: {
-                  $set: prepareQuery(Messages.mapping, $set)
+                  $set: prepareQuery(Messages.mapping, $set, session)
                 }
               });
 
@@ -675,7 +675,7 @@ async function onStore(mailboxId, update, session, fn) {
                   _id: mailbox._id.toString()
                 },
                 modifier: {
-                  $set: prepareQuery(Mailboxes.mapping, $set)
+                  $set: prepareQuery(Mailboxes.mapping, $set, session)
                 }
               });
               session.db.prepare(sql.query).run(sql.values);

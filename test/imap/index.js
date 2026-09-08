@@ -5068,3 +5068,29 @@ test('interleaved single-message operations work correctly', async (t) => {
     t.true(message.flags.has('\\Seen'), 'All messages should be seen');
   }
 });
+
+test('messages are encrypted at rest in SQLite and decrypted correctly via session', async (t) => {
+  const { imapFlow, imap, session } = t.context;
+  const subject = `sqlite-encryption-test-${Date.now()}`;
+  const raw = `Date: ${new Date().toISOString()}
+MIME-Version: 1.0
+To: test@test.com
+From: sender@test.com
+Subject: ${subject}
+Content-Type: text/plain; charset=UTF-8
+
+Encryption at rest test content`.trim();
+
+  const appendResult = await imapFlow.append('INBOX', Buffer.from(raw), [], new Date());
+  await imapFlow.mailboxOpen('INBOX');
+
+  // Verify that Messages.findOne with session decrypts the subject correctly
+  const msg = await Messages.findOne(imap, session, { uid: appendResult.uid });
+  t.truthy(msg);
+  t.is(msg.subject, subject);
+
+  // Verify that the underlying SQLite DB row stores encrypted ciphertext for subject
+  const rawRow = session.db.prepare('SELECT subject FROM Messages WHERE uid = ?').get(appendResult.uid);
+  t.truthy(rawRow);
+  t.not(rawRow.subject, subject, 'Subject stored in SQLite should be encrypted ciphertext');
+});

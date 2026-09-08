@@ -355,7 +355,7 @@ async function onMove(mailboxId, update, session, fn) {
             remoteAddress: session.remoteAddress,
             transaction: 'MOVE',
             searchable: !flags.has('\\Deleted')
-          })
+          }, session)
         }
       });
 

@@ -170,7 +170,7 @@ const instance = {
       sort: 'uid'
     });
     for (const result of db.prepare(sql.query).iterate(sql.values)) {
-      const message = syncConvertResult(Messages, result);
+      const message = syncConvertResult(Messages, result, session);
       const mailboxPath = map.get(message.mailbox.toString());
       const name = punycode.toASCII(
         mailboxPath

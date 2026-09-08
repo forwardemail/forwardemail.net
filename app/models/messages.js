@@ -78,20 +78,23 @@ const Messages = new mongoose.Schema(
     rdate: {
       type: Date,
       required: true,
-      index: true
+      index: true,
+      encrypted: true
     },
 
     // internal date
     idate: {
       type: Date,
       required: true,
-      index: true
+      index: true,
+      encrypted: true
     },
     // header date
     hdate: {
       type: Date,
       required: true,
-      index: true
+      index: true,
+      encrypted: true
     },
 
     // TODO: does it need to be [{ type: String, index: true }] (?)
@@ -131,7 +134,8 @@ const Messages = new mongoose.Schema(
     },
     envelope: {
       type: Array,
-      required: true
+      required: true,
+      encrypted: true
     },
     bodystructure: {
       type: Array,
@@ -183,7 +187,8 @@ const Messages = new mongoose.Schema(
     // parsed message Subject header
     subject: {
       type: String,
-      required: true
+      required: true,
+      encrypted: true
     },
 
     // TODO: don't archive messages that have been copied

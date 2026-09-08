@@ -158,7 +158,7 @@ async function upsertAttachment(instance, session, node) {
   attachment.session = session;
   await attachment.validate();
 
-  const values = prepareQuery(Attachments.mapping, attachment);
+  const values = prepareQuery(Attachments.mapping, attachment, session);
   const sql = {
     query: ATTACHMENT_UPSERT_QUERY,
     values: Object.fromEntries(
@@ -200,13 +200,13 @@ async function createAttachment(instance, session, node) {
   // `rev-hash` rows remain readable through their stored MIME-tree references.
   node.hash = getAttachmentHash('sha256', body);
   let result = await upsertAttachment(instance, session, node);
-  if (result) return syncConvertResult(Attachments, result);
+  if (result) return syncConvertResult(Attachments, result, session);
 
   // `ON CONFLICT(hash)` returns no row only when the SHA-256 is already bound
   // to different bytes. Preserve both bodies under an independent SHA-512 key.
   node.hash = getAttachmentHash('sha512', body);
   result = await upsertAttachment(instance, session, node);
-  if (result) return syncConvertResult(Attachments, result);
+  if (result) return syncConvertResult(Attachments, result, session);
 
   const err = new Error('Attachment hash collision could not be disambiguated');
   err.code = 'EATTACHMENTCOLLISION';

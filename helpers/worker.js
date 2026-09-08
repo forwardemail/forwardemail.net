@@ -1058,7 +1058,7 @@ async function backup(payload) {
             name: punycode.toASCII(mailbox.path) + '.mbox'
           });
           for (const result of db.prepare(sql.query).iterate(sql.values)) {
-            const message = syncConvertResult(Messages, result);
+            const message = syncConvertResult(Messages, result, payload.session);
             // <https://github.com/nodemailer/wildduck/blob/49bd5015c188079e3a265c0873178e805f84ca2e/lib/mbox-stream.js#L31C38-L31C78>
             // similar to 'rfc822' case in `helpers/get-query-response.js`
             // (value is a stream)
@@ -1151,7 +1151,7 @@ async function backup(payload) {
             sort: 'uid'
           });
           for (const result of db.prepare(sql.query).iterate(sql.values)) {
-            const message = syncConvertResult(Messages, result);
+            const message = syncConvertResult(Messages, result, payload.session);
             const mailboxPath = map.get(message.mailbox.toString());
             const name = punycode.toASCII(
               mailboxPath

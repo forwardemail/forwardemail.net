@@ -199,7 +199,7 @@ async function onFetch(mailboxId, options, session, fn) {
     }
 
     // converts objectids -> strings and arrays/json appropriately
-    const condition = prepareQuery(Messages.mapping, pageQuery);
+    const condition = prepareQuery(Messages.mapping, pageQuery, session);
 
     // TODO: `condition` may need further refined for accuracy (e.g. see `prepareQuery`)
     const fields = [];
@@ -245,7 +245,7 @@ async function onFetch(mailboxId, options, session, fn) {
     // Extracted to avoid duplicating logic between .get() and .iterate() paths.
     //
     const processMessage = async (result) => {
-      const message = syncConvertResult(Messages, result, projection);
+      const message = syncConvertResult(Messages, result, session);
 
       // don't process messages that are new since query started
       // <https://github.com/nodemailer/wildduck/issues/708>
@@ -374,7 +374,7 @@ async function onFetch(mailboxId, options, session, fn) {
               flags: message.flags,
               unseen: false,
               modseq: newModseq
-            })
+            }, session)
           }
         });
         ops.push([updateSql.query, updateSql.values]);

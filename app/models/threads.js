@@ -125,7 +125,7 @@ async function getThreadId(instance, session, subject, mimeTree) {
     }
 
     if (thread) {
-      thread = syncConvertResult(this, thread);
+      thread = syncConvertResult(this, thread, session);
 
       for (const id of referenceIds) {
         thread.ids.push(id);
@@ -164,7 +164,7 @@ async function getThreadId(instance, session, subject, mimeTree) {
       }
 
       if (!thread) throw new TypeError('Thread does not exist');
-      thread = syncConvertResult(this, thread);
+      thread = syncConvertResult(this, thread, session);
     }
   }
 

@@ -89,7 +89,7 @@ async function syncTemporaryMailbox(session) {
 
       for (const m of messages) {
         try {
-          const message = syncConvertResult(TemporaryMessages, m);
+          const message = syncConvertResult(TemporaryMessages, m, session);
           //
           // if one message fails then not all of them should
           // (e.g. one might have an issue with `date` or `raw`)

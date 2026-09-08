@@ -14,6 +14,7 @@ const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 const config = require('#config');
 const env = require('#config/env');
+const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const recursivelyParse = require('#helpers/recursively-parse');
@@ -154,10 +155,10 @@ async function updateMany(
 
   if (filter.$or) {
     condition = {
-      $or: filter.$or.map((v) => prepareQuery(mapping, v))
+      $or: filter.$or.map((v) => prepareQuery(mapping, v, session))
     };
   } else {
-    condition = prepareQuery(mapping, filter);
+    condition = prepareQuery(mapping, filter, session);
   }
 
   let beforeDocs = [];
@@ -204,7 +205,8 @@ async function updateMany(
         if (key !== '$set' && key !== '$inc')
           throw new TypeError('Only $set and $inc are supported');
 
-        if (key === '$set') update[key] = prepareQuery(mapping, update[key]);
+        if (key === '$set')
+          update[key] = prepareQuery(mapping, update[key], session);
       }
 
       // Auto-set updated_at so that ETags (derived from updated_at) change
@@ -212,7 +214,10 @@ async function updateMany(
       if (mapping.updated_at && mapping.updated_at.setter) {
         if (!update.$set) update.$set = {};
         if (!update.$set.updated_at) {
-          update.$set.updated_at = mapping.updated_at.setter(new Date());
+          update.$set.updated_at = mapping.updated_at.setter(
+            new Date(),
+            session
+          );
         }
       }
 
@@ -248,9 +253,9 @@ async function updateMany(
   if (err) throw err;
 
   if (options?.returnDocument === 'after')
-    return docs.map((doc) => syncConvertResult(this, doc));
+    return docs.map((doc) => syncConvertResult(this, doc, session));
 
-  return beforeDocs.map((doc) => syncConvertResult(this, doc));
+  return beforeDocs.map((doc) => syncConvertResult(this, doc, session));
 }
 
 async function countDocuments(instance, session, filter = {}) {
@@ -272,7 +277,7 @@ async function countDocuments(instance, session, filter = {}) {
   const sql = builder.build({
     type: 'select',
     table,
-    condition: prepareQuery(mapping, filter),
+    condition: prepareQuery(mapping, filter, session),
     fields: [
       {
         expression
@@ -323,7 +328,7 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
   const sql = builder.build({
     type: 'remove',
     table,
-    condition: prepareQuery(mapping, condition)
+    condition: prepareQuery(mapping, condition, session)
   });
 
   let result;
@@ -390,7 +395,7 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
   const sql = builder.build({
     type: 'remove',
     table,
-    condition: prepareQuery(mapping, conditions)
+    condition: prepareQuery(mapping, conditions, session)
   });
 
   let result;
@@ -456,7 +461,7 @@ async function find(
     throw err;
   }
 
-  const condition = prepareQuery(mapping, filter);
+  const condition = prepareQuery(mapping, filter, session);
 
   const opts = {
     type: 'select',
@@ -512,7 +517,7 @@ async function find(
   if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
   if (docs.length === 0) return [];
   const results = await Promise.all(
-    docs.map((doc) => convertResult(this, doc, projections))
+    docs.map((doc) => convertResult(this, doc, projections, false, session))
   );
   return results;
 }
@@ -549,7 +554,7 @@ async function findAndCount(
     throw err;
   }
 
-  const condition = prepareQuery(mapping, filter);
+  const condition = prepareQuery(mapping, filter, session);
 
   // Build the count subquery
   const countSql = builder.build({
@@ -655,7 +660,7 @@ async function findAndCount(
   if (docs.length === 0) return { results: [], count };
 
   const results = await Promise.all(
-    docs.map((doc) => convertResult(this, doc, projections))
+    docs.map((doc) => convertResult(this, doc, projections, false, session))
   );
 
   return { results, count };
@@ -709,7 +714,7 @@ async function findOne(
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
 
-  const condition = prepareQuery(mapping, conditions);
+  const condition = prepareQuery(mapping, conditions, session);
 
   const opts = {
     type: 'select',
@@ -748,7 +753,7 @@ async function findOne(
   }
 
   if (!doc) return null;
-  doc = await convertResult(this, doc, projections);
+  doc = await convertResult(this, doc, projections, false, session);
   return doc;
 }
 
@@ -778,7 +783,7 @@ async function $__handleSave(options = {}, fn) {
     // validate doc (since pre hooks don't seem to be working)
     await this.validate();
 
-    const values = prepareQuery(mapping, this);
+    const values = prepareQuery(mapping, this, this.session);
 
     let err;
     let doc;
@@ -843,7 +848,7 @@ async function $__handleSave(options = {}, fn) {
     if (err) throw err;
 
     if (!doc) throw new TypeError('Document failed to save');
-    doc = syncConvertResult(this.constructor, doc);
+    doc = syncConvertResult(this.constructor, doc, this.session);
     fn(null, doc);
   } catch (err) {
     fn(err);
@@ -994,7 +999,8 @@ async function findOneAndUpdate(
         }
       }
 
-      if (update.$set) update.$set = prepareQuery(mapping, update.$set);
+      if (update.$set)
+        update.$set = prepareQuery(mapping, update.$set, session);
 
       // Auto-set updated_at so that ETags (derived from updated_at) change
       // whenever a document is modified via findOneAndUpdate.
@@ -1003,7 +1009,10 @@ async function findOneAndUpdate(
       if (mapping.updated_at && mapping.updated_at.setter) {
         if (!update.$set) update.$set = {};
         if (!update.$set.updated_at) {
-          update.$set.updated_at = mapping.updated_at.setter(new Date());
+          update.$set.updated_at = mapping.updated_at.setter(
+            new Date(),
+            session
+          );
         }
       }
 
@@ -1053,7 +1062,7 @@ async function findOneAndUpdate(
   if (err) throw err;
 
   if (!doc) throw new TypeError('Document does not exist');
-  doc = await convertResult(this, doc, options?.projection, true);
+  doc = await convertResult(this, doc, options?.projection, true, session);
   return options?.returnDocument === 'after' ? doc : beforeDoc;
 }
 
@@ -1074,7 +1083,7 @@ async function distinct(instance, session, field, conditions = {}) {
   const sql = builder.build({
     type: 'select',
     table,
-    condition: prepareQuery(mapping, conditions),
+    condition: prepareQuery(mapping, conditions, session),
     group: field,
     fields: [field]
   });
@@ -1209,7 +1218,7 @@ function dummyProofModel(model) {
 // a mapping, and whether it was a SQL result or not
 // in and it will output the mutated object (or new document mongoose instance)
 //
-function prepareQuery(mapping, doc) {
+function prepareQuery(mapping, doc, session) {
   const obj = {};
   const toObject =
     typeof doc === 'object' && typeof doc.toObject === 'function'
@@ -1220,7 +1229,7 @@ function prepareQuery(mapping, doc) {
     if (typeof mapping[key].setter !== 'function')
       throw new TypeError(`Mapping setter for ${key} does not exist`);
 
-    obj[key] = mapping[key].setter(toObject[key]);
+    obj[key] = mapping[key].setter(toObject[key], session);
   }
 
   return obj;
@@ -1266,8 +1275,8 @@ function parseSchema(Model, modelName = '') {
       indexStatement: `CREATE UNIQUE INDEX IF NOT EXISTS "${name}__id" ON ${name} ("_id")`,
       alterStatement: false,
 
-      getter: (v) => new mongoose.Types.ObjectId(v),
-      setter(v) {
+      getter: (v, session) => new mongoose.Types.ObjectId(v),
+      setter(v, session) {
         if (mongoose.isObjectIdOrHexString(v)) return v.toString();
 
         // could be an object such as:
@@ -1286,6 +1295,7 @@ function parseSchema(Model, modelName = '') {
   };
   for (const key of Object.keys(schema.paths)) {
     const obj = schema.paths[key];
+    const isEncrypted = obj?.options?.encrypted === true;
 
     // these match the column metadata shape used by migrateSchema
     let data_type;
@@ -1343,6 +1353,26 @@ function parseSchema(Model, modelName = '') {
           default_value = obj.options.default;
         }
 
+        if (isEncrypted) {
+          const originalSetter = setter;
+          const originalGetter = getter;
+          setter = (v, session) => {
+            const val = originalSetter(v);
+            if (!isSANB(val) || !session?.user?.password) return val;
+            return encrypt(val, decrypt(session.user.password));
+          };
+
+          getter = (v, session) => {
+            const val = originalGetter(v);
+            if (!isSANB(val) || !session?.user?.password) return val;
+            try {
+              return decrypt(val, decrypt(session.user.password));
+            } catch {
+              return val;
+            }
+          };
+        }
+
         break;
       }
 
@@ -1366,6 +1396,28 @@ function parseSchema(Model, modelName = '') {
           // { $gt: Date }
           return v;
         };
+
+        if (isEncrypted) {
+          data_type = 'text';
+          const originalSetter = setter;
+          const originalGetter = getter;
+          setter = (v, session) => {
+            const val = originalSetter(v);
+            if (!isSANB(val) || !session?.user?.password) return val;
+            return encrypt(val, decrypt(session.user.password));
+          };
+
+          getter = (v, session) => {
+            if (!isSANB(v) || !session?.user?.password)
+              return originalGetter(v);
+            try {
+              const decrypted = decrypt(v, decrypt(session.user.password));
+              return originalGetter(decrypted);
+            } catch {
+              return originalGetter(v);
+            }
+          };
+        }
 
         break;
       }
@@ -1419,8 +1471,31 @@ function parseSchema(Model, modelName = '') {
             _default = `DEFAULT '${default_value}'`;
           }
 
-          getter = (v) => decodeMetadata(v, recursivelyParse);
-          setter = (v) => encodeMetadata(v);
+          getter = (v, session) => {
+            let val = v;
+            if (isEncrypted && Buffer.isBuffer(val) && session?.user?.password) {
+              try {
+                const decrypted = decrypt(
+                  val.toString('utf8'),
+                  decrypt(session.user.password)
+                );
+                val = Buffer.from(decrypted, 'base64');
+              } catch {}
+            }
+
+            return decodeMetadata(val, recursivelyParse);
+          };
+
+          setter = (v, session) => {
+            const val = encodeMetadata(v);
+            if (isEncrypted && Buffer.isBuffer(val) && session?.user?.password) {
+              return Buffer.from(
+                encrypt(val.toString('base64'), decrypt(session.user.password))
+              );
+            }
+
+            return val;
+          };
         }
 
         break;
@@ -1446,8 +1521,31 @@ function parseSchema(Model, modelName = '') {
             _default = `DEFAULT '${default_value}'`;
           }
 
-          getter = (v) => decodeMetadata(v, recursivelyParse);
-          setter = (v) => encodeMetadata(v);
+          getter = (v, session) => {
+            let val = v;
+            if (isEncrypted && Buffer.isBuffer(val) && session?.user?.password) {
+              try {
+                const decrypted = decrypt(
+                  val.toString('utf8'),
+                  decrypt(session.user.password)
+                );
+                val = Buffer.from(decrypted, 'base64');
+              } catch {}
+            }
+
+            return decodeMetadata(val, recursivelyParse);
+          };
+
+          setter = (v, session) => {
+            const val = encodeMetadata(v);
+            if (isEncrypted && Buffer.isBuffer(val) && session?.user?.password) {
+              return Buffer.from(
+                encrypt(val.toString('base64'), decrypt(session.user.password))
+              );
+            }
+
+            return val;
+          };
         }
 
         break;
@@ -1664,13 +1762,13 @@ function parseSchema(Model, modelName = '') {
   };
 }
 
-function syncConvertResult(Model, doc) {
+function syncConvertResult(Model, doc, session) {
   const obj = {};
   if (!Model?.mapping) throw new TypeError('Mapping was not found');
 
   for (const key in doc) {
     if (Model.mapping[key]) {
-      obj[key] = Model.mapping[key].getter(doc[key]);
+      obj[key] = Model.mapping[key].getter(doc[key], session);
     } else {
       // sometimes we have a legacy column such as "uid"
       // which is a type String and so we can easily add mapping
@@ -1687,14 +1785,15 @@ async function convertResult(
   Model,
   doc,
   projection = {},
-  shouldValidate = false
+  shouldValidate = false,
+  session
 ) {
   const obj = {};
   if (!Model?.mapping) throw new TypeError('Mapping was not found');
 
   for (const key in doc) {
     if (Model.mapping[key]) {
-      obj[key] = Model.mapping[key].getter(doc[key]);
+      obj[key] = Model.mapping[key].getter(doc[key], session);
     } else {
       // sometimes we have a legacy column such as "uid" (or "method" for CalendarEvents)
       // which is a type String or it just has a null value, so we can easily add mapping
