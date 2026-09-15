@@ -15,6 +15,7 @@ const SMTPError = require('#helpers/smtp-error');
 const _ = require('#helpers/lodash');
 const config = require('#config');
 const logger = require('#helpers/logger');
+const isRdapRenewalGracePeriod = require('#helpers/is-rdap-renewal-grace-period');
 const normalizeRdapUrl = require('#helpers/normalize-rdap-url');
 
 // dynamically import @forwardemail/whois-rdap
@@ -151,6 +152,7 @@ async function isExpiredOrNewlyCreated(input, client) {
   // (safeguard for users in case they have a domain that expired they should renew it first)
   // (added 48 hour buffer to give WHOIS/RDAP data time to refresh)
   else if (
+    !isRdapRenewalGracePeriod(response.status) &&
     _.isDate(response?.ts?.expires) &&
     new Date(response.ts.expires).getTime() + ms('2d') <= Date.now() &&
     new Date(response.ts.expires).getTime() + ms('2d') >= Date.now() - ms('90d')
