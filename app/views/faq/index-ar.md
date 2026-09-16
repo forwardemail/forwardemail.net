@@ -1172,9 +1172,11 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 | الصيغة   | الامتداد  | الوصف                                                                       |
 | -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | لقطة قاعدة بيانات SQLite مشفرة خام (الافتراضي للنسخ الاحتياطية التلقائية عبر IMAP) |
-| `mbox`   | `.zip`    | ملف ZIP محمي بكلمة مرور يحتوي على صندوق البريد بصيغة mbox                   |
-| `eml`    | `.zip`    | ملف ZIP محمي بكلمة مرور يحتوي على ملفات `.eml` فردية لكل رسالة             |
+| `sqlite` | `.sqlite` | لقطة `sqlite` خام مشفرة بتنسيق `.sqlite` تحتوي على سجلات صندوق البريد وجهات الاتصال والتقويم وأحداث التقويم؛ النسخ الاحتياطي التلقائي الافتراضي لـ IMAP. |
+| `mbox` | `.zip` | ملف `.zip` محمي بكلمة مرور يحتوي على ملفات MBOX بصيغة `mbox` لصندوق البريد بالإضافة إلى مجلدات VCF تحت `Contacts` و ICS تحت `Calendars`. |
+| `eml` | `.zip` | ملف `.zip` محمي بكلمة مرور يحتوي على ملفات `.eml` فردية بصيغة `eml` بالإضافة إلى مجلدات VCF تحت `Contacts` و ICS تحت `Calendars`. |
+
+تحافظ جميع تنسيقات التصدير على جهات الاتصال والتقاويم وأحداث التقويم. تنظم ملفات ZIP المحمولة بتنسيقات EML/MBOX ملفات VCF حسب دفتر العناوين تحت `Contacts` وموارد الأحداث أو المهام بتنسيق ICS حسب التقويم تحت `Calendars`. يحتفظ SQLite الخام بنفس السجلات في الجداول الأصلية.
 
 > **نصيحة:** إذا كان لديك ملفات نسخ احتياطية `.sqlite` وترغب في تحويلها إلى ملفات `.eml` محليًا، استخدم أداة CLI المستقلة الخاصة بنا **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**.  تعمل على ويندوز، لينكس، وماك ولا تتطلب اتصالًا بالشبكة.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### كيف أحول نسخ SQLite الاحتياطية إلى ملفات EML {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-إذا قمت بتنزيل أو تخزين نسخ SQLite الاحتياطية (سواء من التخزين الافتراضي لدينا أو من [دلوك S3 المخصص](#how-do-i-use-my-own-s3-compatible-storage-for-backups) الخاص بك)، يمكنك تحويلها إلى ملفات `.eml` قياسية باستخدام أداة CLI المستقلة الخاصة بنا **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. يمكن فتح ملفات EML باستخدام أي عميل بريد إلكتروني ([Thunderbird](https://www.thunderbird.net/)، [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook)، [Apple Mail](https://support.apple.com/mail)، إلخ) أو استيرادها إلى خوادم بريد أخرى.
+إذا قمت بتنزيل أو تخزين نسخ SQLite الاحتياطية (سواء من التخزين الافتراضي لدينا أو من [دلوك S3 المخصص](#how-do-i-use-my-own-s3-compatible-storage-for-backups) الخاص بك)، يمكنك تحويلها إلى ملفات `.eml` قياسية باستخدام أداة CLI المستقلة الخاصة بنا **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. يمكن فتح ملفات EML باستخدام أي عميل بريد إلكتروني ([Thunderbird](https://www.thunderbird.net/)، [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook)، [Apple Mail](https://support.apple.com/mail)، إلخ) أو استيرادها إلى خوادم بريد أخرى. يحتوي ملف ZIP المحمي بكلمة مرور الخاص بالمحول أيضًا على جهات اتصال VCF حسب دفتر العناوين تحت `Contacts` وأحداث أو مهام تقويم ICS حسب التقويم تحت `Calendars`.
 
 #### التثبيت {#installation-1}
 
@@ -2349,6 +2351,8 @@ Tasks.org هو مدير مهام مفتوح المصدر شهير يعمل بش�
 يرجى الاطلاع على قسمنا الخاص بـ [البريد الإلكتروني](/email-api#outbound-emails) في توثيق API الخاص بنا للاطلاع على الخيارات، الأمثلة، والمزيد من المعلومات.
 
 لإرسال البريد الإلكتروني الصادر باستخدام API الخاص بنا، يجب عليك استخدام رمز API الخاص بك المتوفر ضمن [أماني](/my-account/security).
+
+يمكنك تعطيل رمز API الخاص بك عن طريق إرسال طلب DELETE إلى /v1/account/api-token، ويمكن إعادة تفعيله عن طريق إعادة تعيينه ضمن [أماني](/my-account/security).
 
 ### هل تدعم استقبال البريد الإلكتروني عبر IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -5083,11 +5087,13 @@ Antrim, BT1 - 5EF
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

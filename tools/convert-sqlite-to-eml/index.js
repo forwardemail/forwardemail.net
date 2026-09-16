@@ -5,7 +5,8 @@
  * SPDX-License-Identifier: MPL-2.0
  *
  * Standalone CLI tool to convert Forward Email encrypted SQLite
- * mailbox backups to EML files packaged in a password-protected ZIP.
+ * mailbox backups to EML files, VCF contacts, and ICS calendar resources
+ * packaged in a password-protected ZIP.
  *
  * Usage:
  *   node index.js                    # Interactive mode (prompts for all inputs)
@@ -28,6 +29,7 @@ import zlib from 'node:zlib';
 import Database from 'better-sqlite3-multiple-ciphers';
 import archiver from 'archiver';
 import archiverZipEncrypted from 'archiver-zip-encrypted';
+import { appendContactsAndCalendarsToArchive } from './resources.js';
 
 // Register the encrypted zip format
 archiver.registerFormat('zip-encrypted', archiverZipEncrypted);
@@ -497,9 +499,21 @@ async function convert(options) {
 
     archive.pipe(output);
 
+    const resourceSummary = appendContactsAndCalendarsToArchive({
+      archive,
+      database,
+      onProgress: log
+    });
+
     // Add README
     archive.append(
-      `EML backup created via Forward Email\nhttps://forwardemail.net\n${new Date().toISOString()}\n\nThis archive contains ${messageCount} email message(s) exported from an encrypted SQLite mailbox backup.\nEach .eml file can be opened with any email client or imported into another mail server.\n`,
+      `EML backup created via Forward Email\nhttps://forwardemail.net\n${new Date().toISOString()}\n\nThis archive contains ${messageCount} email message(s) exported from an encrypted SQLite mailbox backup. Each .eml file can be opened with any email client or imported into another mail server.\n\nContacts: ${
+        resourceSummary.contactCount
+      } VCF file(s) organized by address book under Contacts.\nCalendars: ${
+        resourceSummary.calendarCount
+      } calendar(s) with ${
+        resourceSummary.calendarEventCount
+      } ICS resource file(s) organized under Calendars.\n`,
       { name: 'README.txt' }
     );
 
@@ -563,6 +577,7 @@ async function convert(options) {
       folderCount: mailboxRows.length,
       attachmentCount,
       totalAttachmentRows,
+      ...resourceSummary,
       skippedCount: skipped,
       outputPath,
       archiveSize
@@ -604,7 +619,9 @@ function printSummary(result) {
     '',
     `  Folders:      ${result.folderCount}`,
     `  Messages:     ${result.messageCount}`,
-    `  Attachments:  ${result.attachmentCount} referenced in messages (${result.totalAttachmentRows} stored in database)`
+    `  Attachments:  ${result.attachmentCount} referenced in messages (${result.totalAttachmentRows} stored in database)`,
+    `  Contacts:     ${result.contactCount} in ${result.addressBookCount} address book(s)`,
+    `  Calendars:    ${result.calendarEventCount} ICS resource(s) in ${result.calendarCount} calendar(s)`
   ];
 
   if (result.skippedCount > 0) {
@@ -622,7 +639,7 @@ function printSummary(result) {
  */
 function showHelp() {
   process.stderr.write(`
-convert-sqlite-to-eml - Convert Forward Email SQLite backups to EML files
+convert-sqlite-to-eml - Export Forward Email SQLite backups to portable files
 
 USAGE:
   convert-sqlite-to-eml [options]
@@ -650,6 +667,8 @@ NOTES:
   - The SQLite file is your encrypted mailbox backup downloaded from Forward Email
   - The password is the same IMAP/alias password used to access your mailbox
   - Output is a password-protected ZIP containing .eml files organized by mailbox folder
+  - VCF contacts are organized by address book under Contacts
+  - ICS calendar events and tasks are organized by calendar under Calendars
   - The ZIP password is the same as your IMAP/alias password
   - Supports both chacha20 and aes256cbc encrypted databases
 
@@ -677,9 +696,7 @@ async function main() {
     const prompt = createPrompt();
 
     try {
-      process.stderr.write(
-        '\n  Forward Email - Convert SQLite Backup to EML\n'
-      );
+      process.stderr.write('\n  Forward Email - Export SQLite Backup\n');
       process.stderr.write(
         '  =============================================\n\n'
       );
@@ -791,3 +808,5 @@ if (isMainModule) {
   // eslint-disable-next-line unicorn/prefer-top-level-await
   main();
 }
+
+export { appendContactsAndCalendarsToArchive } from './resources.js';

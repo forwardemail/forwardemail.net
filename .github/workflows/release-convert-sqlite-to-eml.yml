@@ -47,6 +47,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Run converter tests
+        run: npm test
+
       - name: Build SEA binary
         run: npm run build
 

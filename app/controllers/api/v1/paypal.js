@@ -15,6 +15,7 @@ const { encode } = require('html-entities');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
+const acquirePayPalWebhookEvent = require('#helpers/acquire-paypal-webhook-event');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const { Users, Payments } = require('#models');
@@ -939,6 +940,17 @@ async function webhook(ctx) {
     // throw an error if something was wrong
     if (!_.isObject(response) || response.verification_status !== 'SUCCESS')
       throw Boom.badRequest(ctx.translateError('INVALID_PAYPAL_SIGNATURE'));
+  }
+
+  if (!isSANB(ctx.request.body?.id))
+    throw Boom.badRequest('PayPal webhook event ID missing');
+
+  // Atomically reserve the verified event before returning HTTP 200. Redis
+  // failures remain retryable so an event is never processed without replay
+  // protection. A duplicate is acknowledged but never processed again.
+  if (!(await acquirePayPalWebhookEvent(ctx.client, ctx.request.body.id))) {
+    ctx.body = { received: true };
+    return;
   }
 
   // return a response to acknowledge receipt of the event

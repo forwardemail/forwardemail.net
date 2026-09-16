@@ -1172,9 +1172,11 @@ Microsoft 365(이전 Office 365) 사용자가 메일박스와 일치하지 않�
 
 | 형식     | 확장자    | 설명                                                                        |
 | -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | 원시 암호화된 SQLite 데이터베이스 스냅샷 (자동 IMAP 백업의 기본값)            |
-| `mbox`   | `.zip`    | mbox 형식의 메일박스를 포함하는 비밀번호 보호 ZIP                           |
-| `eml`    | `.zip`    | 메시지별 개별 `.eml` 파일을 포함하는 비밀번호 보호 ZIP                      |
+| `sqlite` | `.sqlite` | 메일함, 연락처, 캘린더 및 캘린더 일정 레코드를 포함하는 암호화된 원본 `sqlite` (.sqlite) 스냅샷; 기본 자동 IMAP 백업. |
+| `mbox` | `.zip` | 메일함 `mbox` 파일과 `Contacts` VCF 및 `Calendars` ICS 폴더를 포함하는 비밀번호로 보호된 `.zip`. |
+| `eml` | `.zip` | 개별 `.eml` 파일과 `Contacts` VCF 및 `Calendars` ICS 폴더를 포함하는 비밀번호로 보호된 `eml` (.zip). |
+
+모든 내보내기 형식은 연락처, 캘린더 및 캘린더 일정을 보존합니다. 휴대용 EML/MBOX ZIP 파일은 VCF 파일을 `Contacts` 아래의 주소록별로 정리하고, ICS 일정 또는 작업 리소스를 `Calendars` 아래의 캘린더별로 정리합니다. 원본 SQLite는 기본 테이블에 동일한 레코드를 유지합니다.
 
 > **팁:** `.sqlite` 백업 파일을 가지고 있고 로컬에서 `.eml` 파일로 변환하려면 독립 실행형 CLI 도구 **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**를 사용하세요. Windows, Linux, macOS에서 작동하며 네트워크 연결이 필요 없습니다.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### SQLite 백업을 EML 파일로 변환하는 방법 {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-SQLite 백업을 다운로드하거나 저장한 경우(기본 스토리지 또는 자신의 [사용자 지정 S3 버킷](#how-do-i-use-my-own-s3-compatible-storage-for-backups)에서), 독립 실행형 CLI 도구 **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** 를 사용하여 표준 `.eml` 파일로 변환할 수 있습니다. EML 파일은 모든 이메일 클라이언트([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) 등)에서 열거나 다른 메일 서버로 가져올 수 있습니다.
+SQLite 백업을 다운로드하거나 저장한 경우(기본 스토리지 또는 자신의 [사용자 지정 S3 버킷](#how-do-i-use-my-own-s3-compatible-storage-for-backups)에서), 독립 실행형 CLI 도구 **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** 를 사용하여 표준 `.eml` 파일로 변환할 수 있습니다. EML 파일은 모든 이메일 클라이언트([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) 등)에서 열거나 다른 메일 서버로 가져올 수 있습니다. 변환기의 비밀번호로 보호된 ZIP 파일에는 `Contacts` 아래의 주소록별 VCF 연락처와 `Calendars` 아래의 캘린더별 ICS 캘린더 일정 또는 작업도 포함되어 있습니다.
 
 #### 설치 {#installation-1}
 
@@ -2349,6 +2351,8 @@ IP 평판을 유지하고 전달 가능성을 보장하기 위해 Forward Email�
 API 문서 내 [이메일](/email-api#outbound-emails) 섹션에서 옵션, 예제 및 추가 정보를 확인하세요.
 
 API를 통해 아웃바운드 이메일을 보내려면 [내 보안](/my-account/security)에서 확인할 수 있는 API 토큰을 사용해야 합니다.
+
+DELETE /v1/account/api-token에 DELETE 요청을 보내 API 토큰을 비활성화할 수 있으며, 다시 활성화하려면 My Security에서 토큰을 재설정해야 합니다.
 
 ### IMAP을 통한 이메일 수신을 지원하나요? {#do-you-support-receiving-email-with-imap}
 
@@ -5084,11 +5088,13 @@ DNS 또는 연결 오류가 발생하면 `DATA` 명령에 SMTP 응답 코드 421
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

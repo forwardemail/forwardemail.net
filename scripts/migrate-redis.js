@@ -19,6 +19,8 @@ const isSANB = require('is-string-and-not-blank');
 
 const Redis = require('@ladjs/redis');
 
+const { scanRedisKeys } = require('#helpers/scan-redis-keys');
+
 if (!isSANB(process.env.NEW_REDIS_URI))
   throw new TypeError('NEW_REDIS_URI not defined');
 
@@ -42,18 +44,25 @@ graceful.listen();
   const [koa, allowlist, denylist, backscatter, silent] = await pMap(
     ['koa:sess', 'allowlist', 'denylist', 'backscatter', 'silent'],
     async (key) => {
-      const keys = await oldRedis.keys(`${key}:*`);
-      console.log('copying over', key, 'keys.length', keys.length);
-      const pipeline = newRedis.pipeline();
-      const values = await oldRedis.mget(keys);
-      for (const [i, key_] of keys.entries()) {
-        console.log(`${key_} = ${values[i]}`);
-        pipeline.set(key_, values[i]);
+      let count = 0;
+
+      // Scan and migrate small batches so the source Valkey instance can
+      // continue serving its normal clients throughout the migration.
+      for await (const keys of scanRedisKeys(oldRedis, `${key}:*`)) {
+        const values = await oldRedis.mget(keys);
+        const pipeline = newRedis.pipeline();
+
+        for (const [index, key_] of keys.entries()) {
+          console.log(`${key_} = ${values[index]}`);
+          pipeline.set(key_, values[index]);
+        }
+
+        await pipeline.exec();
+        count += keys.length;
       }
 
-      await pipeline.exec();
-
-      return keys.length;
+      console.log('copying over', key, 'keys.length', count);
+      return count;
     }
   );
 

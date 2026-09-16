@@ -30,6 +30,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const { Builder } = require('json-sql-enhanced');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
+const appendContactsAndCalendarsToArchive = require('#helpers/append-contacts-and-calendars-to-archive');
 const Messages = require('#models/messages');
 const Indexer = require('#helpers/indexer');
 const getDatabase = require('#helpers/get-database');
@@ -141,8 +142,17 @@ const instance = {
   });
   const output = fs.createWriteStream(tmp);
   archive.pipe(output);
+  const resourceSummary = appendContactsAndCalendarsToArchive({
+    archive,
+    database: db,
+    onProgress: (message) => logger.debug(message)
+  });
   archive.append(
-    `EML backup created via Forward Email\nhttps://forwardemail.net\n${new Date().toISOString()}`,
+    `EML backup created via Forward Email\nhttps://forwardemail.net\n${new Date().toISOString()}\n\nThis archive contains EML files organized by mailbox folder, VCF files organized under Contacts, and ICS files organized under Calendars.\n\nContacts: ${
+      resourceSummary.contactCount
+    }\nCalendars: ${resourceSummary.calendarCount}\nCalendar resources: ${
+      resourceSummary.calendarEventCount
+    }`,
     { name: 'README.txt' }
   );
 

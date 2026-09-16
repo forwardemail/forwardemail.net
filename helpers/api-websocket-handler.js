@@ -15,6 +15,7 @@ const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
+const ensureApiTokenEnabled = require('#helpers/ensure-api-token-enabled');
 const isEmail = require('#helpers/is-email');
 const isValidPassword = require('#helpers/is-valid-password');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
@@ -229,6 +230,8 @@ class ApiWebSocketHandler {
         err.statusCode = 401;
         throw err;
       }
+
+      ensureApiTokenEnabled(user);
 
       // For API token auth, the client must specify which alias to subscribe to
       const { query } = url.parse(request.url, true);

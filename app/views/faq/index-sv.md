@@ -1172,9 +1172,11 @@ Tre backupformat stöds:
 
 | Format   | Extension | Beskrivning                                                                 |
 | -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | Rå krypterad SQLite-databassnapshot (standard för automatiska IMAP-backuper) |
-| `mbox`   | `.zip`    | Lösenordsskyddad ZIP som innehåller brevlåda i mbox-format                   |
-| `eml`    | `.zip`    | Lösenordsskyddad ZIP som innehåller individuella `.eml`-filer per meddelande |
+| `sqlite` | `.sqlite` | Krypterad rå `sqlite`-ögonblicksbild som innehåller poster för brevlåda, kontakter, kalender och kalenderhändelser; standard för automatisk IMAP-säkerhetskopiering i `.sqlite`. |
+| `mbox` | `.zip` | Lösenordsskyddad `.zip` som innehåller `mbox`-filer för brevlåda samt mapparna `Contacts` (VCF) och `Calendars` (ICS). |
+| `eml` | `.zip` | Lösenordsskyddad `.zip` som innehåller enskilda `.eml`-filer i `eml`-format samt mapparna `Contacts` (VCF) och `Calendars` (ICS). |
+
+Alla exportformat bevarar kontakter, kalendrar och kalenderhändelser. Portabla EML/MBOX ZIP-filer organiserar VCF-filer efter adressbok under `Contacts` och ICS-händelse- eller uppgiftsresurser efter kalender under `Calendars`. Rå SQLite behåller samma poster i sina ursprungliga tabeller.
 
 > **Tips:** Om du har `.sqlite` backupfiler och vill konvertera dem till `.eml`-filer lokalt, använd vårt fristående CLI-verktyg **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Det fungerar på Windows, Linux och macOS och kräver ingen nätverksanslutning.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Hur konverterar jag SQLite-säkerhetskopior till EML-filer {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Om du laddar ner eller lagrar SQLite-säkerhetskopior (antingen från vår standardlagring eller din egen [anpassade S3-bucket](#how-do-i-use-my-own-s3-compatible-storage-for-backups)) kan du konvertera dem till standard `.eml`-filer med vårt fristående CLI-verktyg **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML-filer kan öppnas med vilken e-postklient som helst ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), etc.) eller importeras till andra e-postservrar.
+Om du laddar ner eller lagrar SQLite-säkerhetskopior (antingen från vår standardlagring eller din egen [anpassade S3-bucket](#how-do-i-use-my-own-s3-compatible-storage-for-backups)) kan du konvertera dem till standard `.eml`-filer med vårt fristående CLI-verktyg **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML-filer kan öppnas med vilken e-postklient som helst ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), etc.) eller importeras till andra e-postservrar. Konverterarens lösenordsskyddade ZIP-fil innehåller även VCF-kontakter efter adressbok under `Contacts` och ICS-kalenderhändelser eller uppgifter efter kalender under `Calendars`.
 
 #### Installation {#installation-1}
 
@@ -2349,6 +2351,8 @@ Ja, från och med maj 2023 stödjer vi att skicka e-post med API som ett tilläg
 Se vår sektion om [E-post](/email-api#outbound-emails) i vår API-dokumentation för alternativ, exempel och mer insikt.
 
 För att skicka utgående e-post med vårt API måste du använda din API-token som finns under [Min säkerhet](/my-account/security).
+
+Anrop till ``DELETE /v1/account/api-token`` inaktiverar ditt API-token, vilket innebär att det inte längre kan användas för att autentisera HTTP API- eller WebSocket-anrop. API-åtkomst kan endast återaktiveras genom att logga in på sidan [/my-account/security](/my-account/security) och återställa ditt token, vilket genererar en ersättningstoken; autentisering med alias-lösenord förblir oförändrad.
 
 ### Stöder ni att ta emot e-post med IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -5084,11 +5088,13 @@ Denna nya regel tillåter endast följande domännamnstillägg att användas på
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

@@ -6,6 +6,8 @@
 const config = require('#config');
 
 async function resetAPIToken(ctx) {
+  // Resetting creates a fresh token and is the explicit re-enable action.
+  ctx.state.user[config.userFields.apiTokenDisabled] = false;
   ctx.state.user[config.userFields.apiToken] = undefined;
   ctx.state.user = await ctx.state.user.save();
 

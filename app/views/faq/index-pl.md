@@ -1172,9 +1172,11 @@ Obsługiwane są trzy formaty kopii zapasowych:
 
 | Format   | Rozszerzenie | Opis                                                                       |
 | -------- | ------------ | -------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite`    | Surowy zaszyfrowany zrzut bazy danych SQLite (domyślny dla automatycznych kopii IMAP) |
-| `mbox`   | `.zip`       | Chroniony hasłem ZIP zawierający skrzynkę pocztową w formacie mbox          |
-| `eml`    | `.zip`       | Chroniony hasłem ZIP zawierający pojedyncze pliki `.eml` dla każdej wiadomości |
+| `sqlite` | `.sqlite` | Surowa, zaszyfrowana migawka `sqlite` zawierająca rekordy skrzynki pocztowej, kontaktów, kalendarza i zdarzeń kalendarza; domyślna automatyczna kopia zapasowa IMAP w formacie `.sqlite`. |
+| `mbox` | `.zip` | Chroniony hasłem plik `.zip` zawierający pliki `mbox` skrzynki pocztowej oraz foldery `Contacts` z plikami VCF i `Calendars` z plikami ICS. |
+| `eml` | `.zip` | Chroniony hasłem plik `.zip` zawierający pojedyncze pliki `.eml` (format `eml`) oraz foldery `Contacts` z plikami VCF i `Calendars` z plikami ICS. |
+
+Wszystkie formaty eksportu zachowują kontakty, kalendarze i zdarzenia kalendarza. Przenośne pliki ZIP EML/MBOX organizują pliki VCF według książki adresowej w folderze `Contacts` oraz zasoby zdarzeń lub zadań ICS według kalendarza w folderze `Calendars`. Surowy format SQLite zachowuje te same rekordy w natywnych tabelach.
 
 > **Wskazówka:** Jeśli masz pliki kopii zapasowej `.sqlite` i chcesz przekonwertować je lokalnie na pliki `.eml`, użyj naszego samodzielnego narzędzia CLI **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Działa na Windows, Linux i macOS i nie wymaga połączenia z siecią.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Jak przekonwertować kopie zapasowe SQLite na pliki EML {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Jeśli pobierasz lub przechowujesz kopie zapasowe SQLite (zarówno z naszego domyślnego magazynu, jak i z własnego [niestandardowego bucketu S3](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), możesz przekonwertować je na standardowe pliki `.eml` za pomocą naszego samodzielnego narzędzia CLI **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. Pliki EML można otworzyć w dowolnym kliencie poczty ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) itd.) lub zaimportować do innych serwerów pocztowych.
+Jeśli pobierasz lub przechowujesz kopie zapasowe SQLite (zarówno z naszego domyślnego magazynu, jak i z własnego [niestandardowego bucketu S3](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), możesz przekonwertować je na standardowe pliki `.eml` za pomocą naszego samodzielnego narzędzia CLI **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. Pliki EML można otworzyć w dowolnym kliencie poczty ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) itd.) lub zaimportować do innych serwerów pocztowych. Chroniony hasłem plik `.zip` konwertera zawiera również kontakty VCF według książki adresowej w folderze `Contacts` oraz zdarzenia kalendarza lub zadania ICS według kalendarza w folderze `Calendars`.
 
 #### Instalacja {#installation-1}
 
@@ -2348,6 +2350,8 @@ Tak, od maja 2023 roku obsługujemy wysyłanie e-maili przez API jako dodatek dl
 Zapoznaj się z sekcją dotyczącą [E-maili](/email-api#outbound-emails) w naszej dokumentacji API, aby poznać opcje, przykłady i więcej informacji.
 
 Aby wysyłać e-maile wychodzące za pomocą naszego API, musisz użyć swojego tokena API dostępnego w [Moje bezpieczeństwo](/my-account/security).
+
+Możesz wyłączyć swój token API, wysyłając żądanie `DELETE` do `/v1/account/api-token`. Ponowne włączenie wymaga zresetowania tokena w sekcji [My Security](/my-account/security), co wygeneruje nowy klucz.
 
 ### Czy obsługujecie odbieranie e-maili przez IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -5083,11 +5087,13 @@ Ta nowa zasada pozwala na używanie tylko następujących rozszerzeń nazw domen
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

@@ -1172,9 +1172,11 @@ Drie back-upformaten worden ondersteund:
 
 | Formaat  | Extensie  | Beschrijving                                                                 |
 | -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | Ruwe versleutelde SQLite database snapshot (standaard voor automatische IMAP-back-ups) |
-| `mbox`   | `.zip`    | Wachtwoordbeveiligde ZIP met mailbox in mbox-formaat                        |
-| `eml`    | `.zip`    | Wachtwoordbeveiligde ZIP met individuele `.eml` bestanden per bericht       |
+| `sqlite` | `.sqlite` | Ruwe gecodeerde `sqlite`-snapshot (.sqlite) met records voor mailboxen, contacten, agenda's en agenda-items; standaard automatische IMAP-back-up. |
+| `mbox` | `.zip` | Met wachtwoord beveiligd `.zip`-bestand met `mbox`-mailboxbestanden plus de mappen `Contacts` (VCF) en `Calendars` (ICS). |
+| `eml` | `.zip` | Met wachtwoord beveiligd `.zip`-bestand met afzonderlijke `.eml`-bestanden (`eml`) plus de mappen `Contacts` (VCF) en `Calendars` (ICS). |
+
+Alle exportformaten behouden contacten, agenda's en agenda-items. Draagbare EML/MBOX ZIP-bestanden ordenen VCF-bestanden per adresboek onder `Contacts` en ICS-agenda- of taakbronnen per agenda onder `Calendars`. Ruwe SQLite behoudt dezelfde gegevens in systeemeigen tabellen.
 
 > **Tip:** Als je `.sqlite` back-upbestanden hebt en deze lokaal wilt converteren naar `.eml` bestanden, gebruik dan onze standalone CLI-tool **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Deze werkt op Windows, Linux en macOS en vereist geen netwerkverbinding.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Hoe converteer ik SQLite-back-ups naar EML-bestanden {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Als je SQLite-back-ups downloadt of opslaat (ofwel van onze standaardopslag of je eigen [aangepaste S3-bucket](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), kun je deze converteren naar standaard `.eml`-bestanden met onze zelfstandige CLI-tool **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML-bestanden kunnen worden geopend met elke e-mailclient ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), enz.) of geïmporteerd in andere mailservers.
+Als je SQLite-back-ups downloadt of opslaat (ofwel van onze standaardopslag of je eigen [aangepaste S3-bucket](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), kun je deze converteren naar standaard `.eml`-bestanden met onze zelfstandige CLI-tool **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML-bestanden kunnen worden geopend met elke e-mailclient ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), enz.) of geïmporteerd in andere mailservers. Het met wachtwoord beveiligde ZIP-bestand van de converter bevat ook VCF-contacten per adresboek onder `Contacts` en ICS-agenda-items of taken per agenda onder `Calendars`.
 
 #### Installatie {#installation-1}
 
@@ -2349,6 +2351,8 @@ Ja, sinds mei 2023 ondersteunen we het verzenden van e-mail via API als een add-
 Bekijk onze sectie over [E-mails](/email-api#outbound-emails) in onze API-documentatie voor opties, voorbeelden en meer inzicht.
 
 Om uitgaande e-mail te verzenden met onze API, moet u uw API-token gebruiken dat beschikbaar is onder [Mijn Beveiliging](/my-account/security).
+
+Het aanroepen van ``DELETE /v1/account/api-token`` schakelt de API-token uit, waardoor de uitgeschakelde token niet langer HTTP API- of WebSocket-verzoeken authenticeert. API-toegang kan alleen opnieuw worden ingeschakeld door in te loggen op de bestaande Mijn beveiliging-pagina op [/my-account/security](/my-account/security) en de token te resetten, wat een vervangende token genereert; de authenticatie met alias-wachtwoorden blijft ongewijzigd.
 
 ### Ondersteunt u het ontvangen van e-mail via IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -5084,11 +5088,13 @@ Deze nieuwe regel staat alleen de volgende domeinnaamextensies toe op ons gratis
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

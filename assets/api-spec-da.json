@@ -3383,6 +3383,57 @@
         }
       }
     },
+    "/v1/account/api-token": {
+      "delete": {
+        "tags": [
+          "Konto"
+        ],
+        "summary": "Deaktiver API-token",
+        "description": "Dette slutpunkt deaktiverer det godkendte API-token med øjeblikkelig virkning via DELETE /v1/account/api-token. Ved succes returneres {\"api_token_disabled\": true}.\\n\\nTokenet vil herefter fejle ved godkendelse til HTTP API og WebSocket. Genaktivering kræver, at du logger ind på My Security og nulstiller dit token, hvilket genererer en erstatning. Godkendelse med alias-adgangskode ændres ikke.",
+        "operationId": "disableApiToken",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API-token blev deaktiveret med succes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "api_token_disabled"
+                  ],
+                  "properties": {
+                    "api_token_disabled": {
+                      "type": "boolean",
+                      "description": "Denne boolske værdi er sand, når API-tokenet er blevet deaktiveret."
+                    }
+                  }
+                },
+                "example": {
+                  "api_token_disabled": true
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/v1/contacts": {
       "get": {
         "tags": [

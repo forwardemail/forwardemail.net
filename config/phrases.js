@@ -435,6 +435,8 @@ module.exports = {
   INVALID_WEBAUTHN_KEY: 'Invalid WebAuthn key.',
   INVALID_API_CREDENTIALS: 'Invalid API credentials.',
   INVALID_API_TOKEN: 'Invalid API token.',
+  API_TOKEN_DISABLED:
+    'This API token has been disabled. Generate a new API token from your account security settings to enable API access.',
   INVALID_EMAIL: 'Email address was invalid.',
   INVALID_FORWARDING_ADDRESS:
     'Default forwarding address must be a valid email address, fully-qualified domain name ("FQDN"), IP address, or webhook URL.',

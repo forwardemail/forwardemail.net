@@ -3383,6 +3383,57 @@
         }
       }
     },
+    "/v1/account/api-token": {
+      "delete": {
+        "tags": [
+          "Tài khoản"
+        ],
+        "summary": "Vô hiệu hóa mã thông báo API",
+        "description": "DELETE /v1/account/api-token vô hiệu hóa mã thông báo API đã xác thực ngay lập tức; phản hồi là { \"api_token_disabled\": true }.\\n\\nMã thông báo này sau đó sẽ không thể xác thực HTTP API và WebSocket. Để bật lại, bạn cần đăng nhập vào **My Security** và đặt lại mã thông báo, thao tác này sẽ tạo ra một mã thông báo thay thế. Xác thực bằng mật khẩu bí danh không thay đổi.",
+        "operationId": "disableApiToken",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mã thông báo API đã được vô hiệu hóa thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "api_token_disabled"
+                  ],
+                  "properties": {
+                    "api_token_disabled": {
+                      "type": "boolean",
+                      "description": "Giá trị này là true sau khi mã thông báo API bị vô hiệu hóa."
+                    }
+                  }
+                },
+                "example": {
+                  "api_token_disabled": true
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/v1/contacts": {
       "get": {
         "tags": [

@@ -1172,9 +1172,11 @@ Se admiten tres formatos de copia de seguridad:
 
 | Formato  | Extensión | Descripción                                                                 |
 | -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | Instantánea cruda cifrada de la base de datos SQLite (predeterminado para copias IMAP automáticas) |
-| `mbox`   | `.zip`    | ZIP protegido con contraseña que contiene el buzón en formato mbox          |
-| `eml`    | `.zip`    | ZIP protegido con contraseña que contiene archivos individuales `.eml` por mensaje |
+| `sqlite` | `.sqlite` | Instantánea `sqlite` (`.sqlite`) cifrada sin procesar que contiene registros de buzón, contactos, calendario y eventos de calendario; copia de seguridad IMAP automática predeterminada. |
+| `mbox` | `.zip` | Archivo `.zip` protegido con contraseña que contiene archivos `mbox` del buzón más carpetas VCF de `Contacts` e ICS de `Calendars`. |
+| `eml` | `.zip` | Archivo `.zip` protegido con contraseña que contiene archivos `.eml` individuales (`eml`) más carpetas VCF de `Contacts` e ICS de `Calendars`. |
+
+Todos los formatos de exportación preservan los contactos, los calendarios y los eventos del calendario. Los archivos ZIP portátiles EML/MBOX organizan los archivos VCF por libreta de direcciones en `Contacts` y los recursos de eventos o tareas ICS por calendario en `Calendars`. SQLite sin procesar conserva los mismos registros en tablas nativas.
 
 > **Consejo:** Si tienes archivos de copia de seguridad `.sqlite` y quieres convertirlos a archivos `.eml` localmente, usa nuestra herramienta CLI independiente **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Funciona en Windows, Linux y macOS y no requiere conexión a la red.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### ¿Cómo convierto copias de seguridad SQLite a archivos EML? {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Si descargas o almacenas copias de seguridad SQLite (ya sea desde nuestro almacenamiento predeterminado o tu propio [bucket S3 personalizado](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), puedes convertirlas a archivos estándar `.eml` usando nuestra herramienta CLI independiente **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. Los archivos EML pueden abrirse con cualquier cliente de correo ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), etc.) o importarse en otros servidores de correo.
+Si descargas o almacenas copias de seguridad SQLite (ya sea desde nuestro almacenamiento predeterminado o tu propio [bucket S3 personalizado](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), puedes convertirlas a archivos estándar `.eml` usando nuestra herramienta CLI independiente **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. Los archivos EML pueden abrirse con cualquier cliente de correo ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), etc.) o importarse en otros servidores de correo. El archivo ZIP protegido con contraseña del convertidor también contiene contactos VCF por libreta de direcciones en `Contacts` y eventos o tareas de calendario ICS por calendario en `Calendars`.
 
 #### Instalación {#installation-1}
 
@@ -2350,6 +2352,8 @@ Sí, desde mayo de 2023 soportamos el envío de correos electrónicos mediante A
 Por favor revisa nuestra sección sobre [Correos Electrónicos](/email-api#outbound-emails) en nuestra documentación API para opciones, ejemplos y más información.
 
 Para enviar correos electrónicos salientes con nuestra API, debes usar tu token API disponible en [Mi Seguridad](/my-account/security).
+
+Al llamar a ``DELETE /v1/account/api-token`` se desactiva el token de la API, por lo que este dejará de autenticar solicitudes de la API HTTP o de WebSocket. El acceso a la API solo puede volver a habilitarse iniciando sesión en la página [/my-account/security](/my-account/security) y restableciendo el token, lo que genera uno de reemplazo; la autenticación mediante alias y contraseña no se ve afectada.
 
 ### ¿Soportan la recepción de correos electrónicos mediante IMAP? {#do-you-support-receiving-email-with-imap}
 
@@ -5085,11 +5089,13 @@ Esta nueva regla permite usar solo las siguientes extensiones de nombres de domi
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

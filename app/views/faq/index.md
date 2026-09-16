@@ -1186,11 +1186,13 @@ The backup process works as follows:
 
 Three backup formats are supported:
 
-| Format   | Extension | Description                                                                 |
-| -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | Raw encrypted SQLite database snapshot (default for automatic IMAP backups) |
-| `mbox`   | `.zip`    | Password-protected ZIP containing mailbox in mbox format                    |
-| `eml`    | `.zip`    | Password-protected ZIP containing individual `.eml` files per message       |
+| Format   | Extension | Description                                                                                                                          |
+| -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `sqlite` | `.sqlite` | Raw encrypted SQLite snapshot containing mailbox, contact, calendar, and calendar-event records (default for automatic IMAP backups) |
+| `mbox`   | `.zip`    | Password-protected ZIP containing mailbox MBOX files plus `Contacts` VCF and `Calendars` ICS folders                                 |
+| `eml`    | `.zip`    | Password-protected ZIP containing individual `.eml` files plus `Contacts` VCF and `Calendars` ICS folders                            |
+
+All export formats preserve contacts, calendars, and calendar events. The portable EML and MBOX ZIP archives organize VCF files by address book under `Contacts` and ICS event or task resources by calendar under `Calendars`. Raw SQLite backups retain the same records in their native tables.
 
 > **Tip:** If you have `.sqlite` backup files and want to convert them to `.eml` files locally, use our standalone CLI tool **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**.  It works on Windows, Linux, and macOS and does not require a network connection.
 
@@ -1265,7 +1267,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### How do I convert SQLite backups to EML files
 
-If you download or store SQLite backups (either from our default storage or your own [custom S3 bucket](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), you can convert them to standard `.eml` files using our standalone CLI tool **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**.  EML files can be opened with any email client ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), etc.) or imported into other mail servers.
+If you download or store SQLite backups (either from our default storage or your own [custom S3 bucket](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), you can convert them to standard `.eml` files using our standalone CLI tool **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. The password-protected ZIP also contains VCF contacts organized by address book under `Contacts` and ICS calendar events or tasks organized by calendar under `Calendars`. EML files can be opened with any email client ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), etc.) or imported into other mail servers.
 
 #### Installation
 
@@ -2378,6 +2380,8 @@ Yes, as of May 2023 we support sending email with API as an add-on for all paid 
 Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
 
 In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
+
+If you no longer need API access, you can disable your token with `DELETE /v1/account/api-token`. A disabled token cannot authenticate API or WebSocket requests. To enable API access again, sign in to [My Security](/my-account/security) and reset your token, which generates a replacement. Alias-password authentication is unchanged.
 
 ### Do you support receiving email with IMAP
 
@@ -5159,11 +5163,13 @@ This new rule allows only the following domain name extensions to be used on our
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

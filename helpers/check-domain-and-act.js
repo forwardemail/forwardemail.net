@@ -30,6 +30,7 @@ const ms = require('ms');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const getCloudflareRadarFeedbackUrl = require('#helpers/get-cloudflare-radar-feedback-url');
 const getDomainCategorization = require('#helpers/get-domain-categorization');
 const logger = require('#helpers/logger');
 
@@ -264,6 +265,9 @@ async function checkDomainAndAct(domainDoc, ctx, opts) {
             message: `
               <h3>Domain Flagged for Review</h3>
               <p>The following domain was flagged by the Cloudflare Family DNS &amp; content categorisation check and requires manual review before any ban action is taken.</p>
+              <p><a href="${getCloudflareRadarFeedbackUrl(
+                name
+              )}" target="_blank" rel="noopener noreferrer">Submit a Cloudflare Radar classification change request for ${name}</a>.</p>
               <table border="1" cellpadding="5" cellspacing="0">
                 <tr><th>Field</th><th>Value</th></tr>
                 <tr><td><strong>Domain</strong></td><td>${name}</td></tr>

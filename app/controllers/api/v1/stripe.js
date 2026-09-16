@@ -19,6 +19,9 @@ const { Users, Domains } = require('#models');
 const config = require('#config');
 const env = require('#config/env');
 const emailHelper = require('#helpers/email');
+const getActiveStripeSubscriptions = require('#helpers/get-active-stripe-subscriptions');
+
+const { ACTIVE_STRIPE_SUBSCRIPTION_STATUSES } = getActiveStripeSubscriptions;
 const logger = require('#helpers/logger');
 const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
 const stripe = require('#helpers/stripe');
@@ -742,12 +745,13 @@ async function processEvent(ctx, event) {
         );
       }
 
-      // If user had more than one subscription then notify admins by email
+      // Pending or unresolved payment states do not prove duplicate service.
+      // Only multiple active or trialing subscriptions are reported for review.
       const subscriptions = await stripe.subscriptions.list({
         customer: event.data.object.customer
       });
-      const filtered = subscriptions.data.filter(
-        (s) => s.status !== 'canceled'
+      const activeSubscriptions = getActiveStripeSubscriptions(
+        subscriptions.data
       );
 
       // Lookup user in our system
@@ -759,87 +763,31 @@ async function processEvent(ctx, event) {
         throw new Error('User did not exist for customer');
       }
 
-      if (filtered.length > 1) {
-        // If user had verified domains then alert admins
-        // otherwise ban the user and refund all their payments
-        const count = await Domains.countDocuments({
-          members: {
-            $elemMatch: {
-              user: user._id,
-              group: 'admin'
-            }
+      if (activeSubscriptions.length > 1) {
+        const pendingSubscriptions = subscriptions.data.filter(
+          (subscription) =>
+            !ACTIVE_STRIPE_SUBSCRIPTION_STATUSES.has(subscription.status)
+        );
+
+        logger.warn(
+          `Multiple active or trialing Stripe subscriptions require review for ${user.email} (${event.data.object.customer})`
+        );
+
+        // Never ban the user, refund payments, or cancel subscriptions here.
+        // Duplicate service can result from delayed bank-payment confirmation,
+        // asynchronous webhook ordering, or a legitimate plan transition.
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.alertsEmail,
+            subject: `Multiple Active Stripe Subscriptions Detected: ${event.data.object.customer}`
           },
-          plan: { $in: ['enhanced_protection', 'team'] },
-          has_txt_record: true
-        });
-
-        if (count === 0) {
-          if (!user.is_banned) {
-            const banReason = `Automated ban: ${filtered.length} active subscriptions with 0 verified domains (Stripe customer: ${event.data.object.customer})`;
-            user.is_banned = true;
-            user[config.userFields.banReason] = banReason;
-            await user.save();
-            emailHelper({
-              template: 'alert',
-              message: {
-                to: config.alertsEmail,
-                subject: `Banned User for Fraud Alert: ${user.email}`
-              },
-              locals: {
-                message: `<p><strong>Ban reason:</strong> ${banReason}</p><p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
-              }
-            })
-              .then()
-              .catch((err) => logger.fatal(err));
+          locals: {
+            message: `<p>Detected ${activeSubscriptions.length} active or trialing Stripe subscriptions for ${user.email}. No user, payment, or subscription action was taken automatically.</p><p>Pending or unresolved subscriptions excluded from this review: ${pendingSubscriptions.length}.</p><p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
           }
-
-          const [charges, subscriptions] = await Promise.all([
-            stripe.charges.list({
-              customer: event.data.object.customer
-            }),
-            stripe.subscriptions.list({
-              customer: event.data.object.customer
-            })
-          ]);
-
-          // Refund all payments as fraudulent
-          if (charges?.data?.length > 0) {
-            await pMapSeries(charges.data, async (charge) => {
-              try {
-                await stripe.refunds.create({
-                  charge: charge.id,
-                  reason: 'fraudulent'
-                });
-              } catch (err) {
-                logger.fatal(err, { charge });
-              }
-            });
-          }
-
-          // Cancel all subscriptions
-          if (subscriptions?.data?.length > 0) {
-            await pMapSeries(subscriptions.data, async (subscription) => {
-              if (subscription.status !== 'canceled') {
-                return;
-              }
-
-              await stripe.subscriptions.cancel(subscription.id);
-            });
-          }
-        } else {
-          emailHelper({
-            template: 'alert',
-            message: {
-              to: config.alertsEmail,
-              subject: `Multiple Subscriptions Detected: ${event.data.object.customer}`
-            },
-            locals: {
-              message: `<p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
-            }
-          })
-            .then()
-            .catch((err) => logger.fatal(err));
-        }
+        })
+          .then()
+          .catch((err) => logger.fatal(err));
       }
 
       break;

@@ -49,6 +49,8 @@ const verificationRecordOptions = require('#config/verification-record');
 const checkDomainAndAct = require('#helpers/check-domain-and-act');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
+const getCloudflareRadarFeedbackUrl = require('#helpers/get-cloudflare-radar-feedback-url');
+const getDomainNameRestrictions = require('#helpers/get-domain-name-restrictions');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 const {
@@ -84,7 +86,7 @@ function getDomainClient() {
 function getFamilyResolver() {
   if (!_familyResolver) {
     _familyResolver = createTangerine(getDomainClient(), logger, {
-      servers: new Set(['1.1.1.3', '1.1.0.3'])
+      servers: new Set(['1.1.1.3', '1.0.0.3'])
     });
   }
 
@@ -136,10 +138,6 @@ const EXCHANGES = config.exchanges
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
-
-const REGEX_MAIL_DISPOSABLE_INBOX = new RE2(
-  /disposable|temporary|10minut|24hour|minutemail|tempmail/i
-);
 
 //
 // TODO: this should be moved to redis or its own package under forwardemail or @ladjs
@@ -1117,7 +1115,7 @@ Domains.pre('validate', async function (next) {
   try {
     const domain = this;
 
-    const { isGood, isDisposable, isRestricted } = getNameRestrictions(
+    const { isGood, isDisposable, isRestricted } = getDomainNameRestrictions(
       domain.name
     );
 
@@ -1799,7 +1797,12 @@ Domains.post('save', (doc, next) => {
         // Build a simple HTML summary for the alert email
         //
         const lines = [
-          `<p>Domain <strong>${doc.name}</strong> was just created and flagged by Cloudflare Family DNS &amp; content categorisation.</p>`
+          `<p>Domain <strong>${doc.name}</strong> was just created and flagged by Cloudflare Family DNS &amp; content categorisation.</p>`,
+          `<p><a href="${getCloudflareRadarFeedbackUrl(
+            doc.name
+          )}" target="_blank" rel="noopener noreferrer">Submit a Cloudflare Radar classification change request for ${
+            doc.name
+          }</a>.</p>`
         ];
 
         for (const r of ctx.bannedResults) {
@@ -2543,9 +2546,8 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
             )
           );
         } else if (result.errors.length === 0) {
-          const { isGood, isDisposable, isRestricted } = getNameRestrictions(
-            domain.name
-          );
+          const { isGood, isDisposable, isRestricted } =
+            getDomainNameRestrictions(domain.name);
           if (isRestricted) {
             requiresPaidPlan = true;
             errors.push(
@@ -2744,26 +2746,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
 
 Domains.statics.getVerificationResults = getVerificationResults;
 
-function getNameRestrictions(domainName) {
-  const rootDomain = parseRootDomain(domainName);
-  const isGood = config.goodDomains.some((ext) =>
-    rootDomain.endsWith(`.${ext}`)
-  );
-  const isDisposable = REGEX_MAIL_DISPOSABLE_INBOX.test(rootDomain);
-  // REGEX_MAIL_DISPOSABLE_INBOX.test(rootDomain) ||
-  // disposableDomains.has(rootDomain);
-  // NOTE: this also takes into account `nic.ext` for registrars
-  const isRestricted = config.restrictedDomains.some(
-    (ext) =>
-      rootDomain === ext ||
-      rootDomain.endsWith(`.${ext}`) ||
-      rootDomain === `nic.${ext}`
-  );
-
-  return { isGood, isDisposable, isRestricted };
-}
-
-Domains.statics.getNameRestrictions = getNameRestrictions;
+Domains.statics.getNameRestrictions = getDomainNameRestrictions;
 
 async function getToAndMajorityLocaleByDomain(domain) {
   // Get all the admins we should send the email to

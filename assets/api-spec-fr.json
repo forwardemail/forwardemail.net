@@ -3383,6 +3383,57 @@
         }
       }
     },
+    "/v1/account/api-token": {
+      "delete": {
+        "tags": [
+          "Compte"
+        ],
+        "summary": "Désactiver le jeton API",
+        "description": "L'appel de `DELETE` sur `/v1/account/api-token` désactive immédiatement le jeton API authentifié. La réponse est `{ \\\"api_token_disabled\\\": true }`.\\n\\nUne fois désactivé, le jeton échouera lors de l'authentification de l'API HTTP et de WebSocket. Pour le réactiver, vous devez vous connecter à My Security et réinitialiser le jeton, ce qui en générera un nouveau. L'authentification par mot de passe d'alias reste inchangée.",
+        "operationId": "disableApiToken",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Le jeton API a été désactivé avec succès.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "api_token_disabled"
+                  ],
+                  "properties": {
+                    "api_token_disabled": {
+                      "type": "boolean",
+                      "description": "Ce booléen est à vrai une fois que le jeton API a été désactivé."
+                    }
+                  }
+                },
+                "example": {
+                  "api_token_disabled": true
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/v1/contacts": {
       "get": {
         "tags": [

@@ -258,9 +258,8 @@ test('openDatabase throws for wrong password', (t) => {
 });
 
 test('openDatabase throws for non-existent file', (t) => {
-  const error = t.throws(
-    () => openDatabase('/tmp/nonexistent-file.sqlite', 'pass'),
-    { any: true }
+  const error = t.throws(() =>
+    openDatabase('/tmp/nonexistent-file.sqlite', 'pass')
   );
   t.truthy(error);
 });
@@ -309,6 +308,25 @@ test('convert creates a ZIP from a test SQLite database', async (t) => {
       body BLOB,
       counter INTEGER DEFAULT 1
     )
+  `);
+  database.exec(`
+    CREATE TABLE AddressBooks (_id TEXT PRIMARY KEY, name TEXT);
+    CREATE TABLE Contacts (
+      _id TEXT PRIMARY KEY,
+      address_book TEXT,
+      contact_id TEXT,
+      uid TEXT,
+      content TEXT,
+      deleted_at TEXT
+    );
+    CREATE TABLE Calendars (_id TEXT PRIMARY KEY, name TEXT);
+    CREATE TABLE CalendarEvents (
+      _id TEXT PRIMARY KEY,
+      calendar TEXT,
+      eventId TEXT,
+      ical TEXT,
+      deleted_at TEXT
+    );
   `);
 
   // Insert mailboxes
@@ -383,6 +401,32 @@ test('convert creates a ZIP from a test SQLite database', async (t) => {
     .prepare('INSERT INTO Attachments VALUES (?, ?, ?, ?)')
     .run('att1', attachmentHash, attachmentBody, 1);
 
+  database
+    .prepare('INSERT INTO AddressBooks VALUES (?, ?)')
+    .run('address-book-1', 'Personal');
+  database
+    .prepare('INSERT INTO Contacts VALUES (?, ?, ?, ?, ?, ?)')
+    .run(
+      'contact-1',
+      'address-book-1',
+      'alice.vcf',
+      'alice',
+      'BEGIN:VCARD\r\nVERSION:4.0\r\nFN:Alice\r\nEND:VCARD\r\n',
+      null
+    );
+  database
+    .prepare('INSERT INTO Calendars VALUES (?, ?)')
+    .run('calendar-1', 'Work');
+  database
+    .prepare('INSERT INTO CalendarEvents VALUES (?, ?, ?, ?, ?)')
+    .run(
+      'event-1',
+      'calendar-1',
+      'planning.ics',
+      'BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:planning\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n',
+      null
+    );
+
   database.close();
 
   // Run the conversion
@@ -397,6 +441,10 @@ test('convert creates a ZIP from a test SQLite database', async (t) => {
   t.is(result.messageCount, 2);
   t.is(result.folderCount, 2);
   t.is(result.attachmentCount, 1);
+  t.is(result.addressBookCount, 1);
+  t.is(result.contactCount, 1);
+  t.is(result.calendarCount, 1);
+  t.is(result.calendarEventCount, 1);
   t.is(result.skippedCount, 0);
   t.is(result.outputPath, outputPath);
   t.true(result.archiveSize > 0);
@@ -409,6 +457,8 @@ test('convert creates a ZIP from a test SQLite database', async (t) => {
   t.true(logText.includes('Sent'));
   t.true(logText.includes('2 message(s)'));
   t.true(logText.includes('Processed 2/2'));
+  t.true(logText.includes('Contacts: 1'));
+  t.true(logText.includes('Calendar resources: 1'));
 
   // Cleanup
   fs.unlinkSync(databasePath);

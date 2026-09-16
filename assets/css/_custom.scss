@@ -239,6 +239,13 @@ pre {
   }
 }
 
+.tooltip {
+  // Tooltips are informational overlays, never interactive controls.  Keeping
+  // them out of hit testing prevents the mouseleave and mouseenter loop that
+  // causes flicker and blocks the underlying click target.
+  pointer-events: none;
+}
+
 .dropdown-menu {
   overflow-y: auto !important;
   max-height: 50vh !important;

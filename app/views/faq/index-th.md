@@ -1172,9 +1172,11 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 | รูปแบบ   | นามสกุล  | คำอธิบาย                                                                 |
 | -------- | --------- | ------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | ภาพสแนปช็อตฐานข้อมูล SQLite ที่เข้ารหัสแบบดิบ (ค่าเริ่มต้นสำหรับการสำรองข้อมูล IMAP อัตโนมัติ) |
-| `mbox`   | `.zip`    | ไฟล์ ZIP ที่ป้องกันด้วยรหัสผ่านซึ่งบรรจุกล่องจดหมายในรูปแบบ mbox          |
-| `eml`    | `.zip`    | ไฟล์ ZIP ที่ป้องกันด้วยรหัสผ่านซึ่งบรรจุไฟล์ `.eml` แยกแต่ละข้อความ         |
+| `sqlite` | `.sqlite` | สแนปชอต `sqlite` ที่เข้ารหัสแบบดิบ (ไฟล์ `.sqlite`) ซึ่งประกอบด้วยบันทึกกล่องจดหมาย รายชื่อติดต่อ ปฏิทิน และกิจกรรมในปฏิทิน; การสำรองข้อมูล IMAP อัตโนมัติที่เป็นค่าเริ่มต้น |
+| `mbox` | `.zip` | ไฟล์ `.zip` ที่ป้องกันด้วยรหัสผ่านซึ่งประกอบด้วยไฟล์ `mbox` ของกล่องจดหมาย พร้อมด้วยโฟลเดอร์ VCF ของ `Contacts` และ ICS ของ `Calendars` |
+| `eml` | `.zip` | ไฟล์ `.zip` ที่ป้องกันด้วยรหัสผ่านซึ่งประกอบด้วยไฟล์ `eml` แต่ละไฟล์ (นามสกุล `.eml`) พร้อมด้วยโฟลเดอร์ VCF ของ `Contacts` และ ICS ของ `Calendars` |
+
+รูปแบบการส่งออกทั้งหมดจะรักษาข้อมูลรายชื่อติดต่อ ปฏิทิน และกิจกรรมในปฏิทินไว้ ไฟล์ ZIP ของ EML/MBOX แบบพกพาจะจัดระเบียบไฟล์ VCF ตามสมุดที่อยู่ภายใต้ `Contacts` และทรัพยากรกิจกรรมหรือภารกิจ ICS ตามปฏิทินภายใต้ `Calendars` ส่วน SQLite แบบดิบจะคงบันทึกเดิมไว้ในตารางเนทีฟ
 
 > **เคล็ดลับ:** หากคุณมีไฟล์สำรองข้อมูล `.sqlite` และต้องการแปลงเป็นไฟล์ `.eml` ในเครื่อง ให้ใช้เครื่องมือ CLI แบบสแตนด์อโลนของเรา **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)** ซึ่งรองรับ Windows, Linux และ macOS และไม่ต้องการการเชื่อมต่อเครือข่าย
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### ฉันจะแปลงการสำรองข้อมูล SQLite เป็นไฟล์ EML ได้อย่างไร {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-หากคุณดาวน์โหลดหรือเก็บการสำรองข้อมูล SQLite (ไม่ว่าจะจากที่เก็บข้อมูลเริ่มต้นของเราหรือ [บัคเก็ต S3 แบบกำหนดเองของคุณ](#how-do-i-use-my-own-s3-compatible-storage-for-backups)) คุณสามารถแปลงเป็นไฟล์ `.eml` มาตรฐานโดยใช้เครื่องมือ CLI แบบสแตนด์อโลนของเรา **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** ไฟล์ EML สามารถเปิดด้วยโปรแกรมรับส่งอีเมลใดก็ได้ ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) เป็นต้น) หรือสามารถนำเข้าไปยังเซิร์ฟเวอร์อีเมลอื่น ๆ ได้
+หากคุณดาวน์โหลดหรือเก็บการสำรองข้อมูล SQLite (ไม่ว่าจะจากที่เก็บข้อมูลเริ่มต้นของเราหรือ [บัคเก็ต S3 แบบกำหนดเองของคุณ](#how-do-i-use-my-own-s3-compatible-storage-for-backups)) คุณสามารถแปลงเป็นไฟล์ `.eml` มาตรฐานโดยใช้เครื่องมือ CLI แบบสแตนด์อโลนของเรา **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** ไฟล์ EML สามารถเปิดด้วยโปรแกรมรับส่งอีเมลใดก็ได้ ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) เป็นต้น) หรือสามารถนำเข้าไปยังเซิร์ฟเวอร์อีเมลอื่น ๆ ได้ ไฟล์ ZIP ที่ป้องกันด้วยรหัสผ่านของตัวแปลงยังมีรายชื่อติดต่อ VCF ตามสมุดที่อยู่ภายใต้ `Contacts` และกิจกรรมหรือภารกิจในปฏิทิน ICS ตามปฏิทินภายใต้ `Calendars`
 
 #### การติดตั้ง {#installation-1}
 
@@ -2348,6 +2350,8 @@ Tasks.org เป็นแอปจัดการงานโอเพนซอ�
 โปรดดูส่วนของเราเกี่ยวกับ [อีเมล](/email-api#outbound-emails) ในเอกสาร API ของเราเพื่อดูตัวเลือก ตัวอย่าง และข้อมูลเชิงลึกเพิ่มเติม
 
 เพื่อส่งอีเมลขาออกด้วย API ของเรา คุณต้องใช้โทเค็น API ของคุณที่มีอยู่ภายใต้ [บัญชีของฉัน ความปลอดภัย](/my-account/security)
+
+การเรียกใช้งาน ``DELETE /v1/account/api-token`` จะปิดการใช้งาน API token ซึ่งทำให้ไม่สามารถใช้ยืนยันตัวตนสำหรับคำขอ HTTP API หรือ WebSocket ได้อีกต่อไป โดยคุณสามารถเปิดใช้งานการเข้าถึง API ใหม่ได้ด้วยการลงชื่อเข้าใช้หน้า [ความปลอดภัยของฉัน](/my-account/security) และรีเซ็ต token ซึ่งจะสร้าง token ใหม่ขึ้นมาทดแทน ทั้งนี้การยืนยันตัวตนด้วย alias-password จะไม่มีการเปลี่ยนแปลง
 
 ### คุณรองรับการรับอีเมลด้วย IMAP หรือไม่ {#do-you-support-receiving-email-with-imap}
 
@@ -5083,11 +5087,13 @@ Forward Email พึ่งพาผู้ให้บริการโครง
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

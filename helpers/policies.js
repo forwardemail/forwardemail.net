@@ -5,6 +5,8 @@
 
 const Policies = require('@ladjs/policies');
 
+const ensureApiTokenEnabled = require('#helpers/ensure-api-token-enabled');
+
 const {
   loginOtpRoute,
   verifyRoute,
@@ -27,10 +29,12 @@ const policies = new Policies(
     turnstileEnabled,
     turnstileSecretKey
   },
-  (apiToken) => {
-    return Users.findOne({
+  async (apiToken, ctx) => {
+    const user = await Users.findOne({
       [userFields.apiToken]: apiToken
     });
+
+    return ensureApiTokenEnabled(user, ctx);
   }
 );
 

@@ -3383,6 +3383,57 @@
         }
       }
     },
+    "/v1/account/api-token": {
+      "delete": {
+        "tags": [
+          "계정"
+        ],
+        "summary": "API 토큰 비활성화",
+        "description": "DELETE /v1/account/api-token은 인증된 API 토큰을 즉시 비활성화합니다. 응답은 { \\\"api_token_disabled\\\": true }이며, 이후 해당 토큰은 HTTP API 및 WebSocket 인증에 실패합니다.\\n\\n다시 활성화하려면 My Security에 로그인하여 토큰을 재설정해야 하며, 이 과정에서 대체 토큰이 생성됩니다. 별칭 비밀번호 인증은 변경되지 않습니다.",
+        "operationId": "disableApiToken",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API 토큰이 성공적으로 비활성화되었습니다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "api_token_disabled"
+                  ],
+                  "properties": {
+                    "api_token_disabled": {
+                      "type": "boolean",
+                      "description": "API 토큰이 비활성화된 후 이 부울 값은 true가 됩니다."
+                    }
+                  }
+                },
+                "example": {
+                  "api_token_disabled": true
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/v1/contacts": {
       "get": {
         "tags": [

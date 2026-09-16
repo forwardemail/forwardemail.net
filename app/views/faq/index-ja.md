@@ -1172,9 +1172,11 @@ Gmailで自分宛にテストメールを送った際や、エイリアスを使
 
 | 形式     | 拡張子    | 説明                                                                 |
 | -------- | --------- | ------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | 生の暗号化されたSQLiteデータベーススナップショット（自動IMAPバックアップのデフォルト） |
-| `mbox`   | `.zip`    | mbox形式のメールボックスを含むパスワード保護ZIP                      |
-| `eml`    | `.zip`    | メッセージごとの個別の`.eml`ファイルを含むパスワード保護ZIP          |
+| `sqlite` | `.sqlite` | メールボックス、連絡先、カレンダー、およびカレンダーイベントのレコードを含む、暗号化された生の `sqlite` スナップショット（`.sqlite`）。デフォルトの自動 IMAP バックアップです。 |
+| `mbox` | `.zip` | メールボックスの MBOX ファイルに加え、`Contacts` VCF フォルダと `Calendars` ICS フォルダを含むパスワード保護された `.zip` ファイル（`mbox`）。 |
+| `eml` | `.zip` | 個別の `.eml` ファイルに加え、`Contacts` VCF フォルダと `Calendars` ICS フォルダを含むパスワード保護された `.zip` ファイル（`eml`）。 |
+
+すべてのエクスポート形式で連絡先、カレンダー、カレンダーイベントが保持されます。ポータブルな EML/MBOX の ZIP では、VCF ファイルは `Contacts` 内のアドレス帳ごとに、ICS のイベントまたはタスクのリソースは `Calendars` 内のカレンダーごとに整理されます。生の SQLite は、ネイティブテーブル内に同じレコードを保持します。
 
 > **ヒント：** `.sqlite`バックアップファイルを持っていてローカルで`.eml`ファイルに変換したい場合は、スタンドアロンCLIツール**[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**を使用してください。Windows、Linux、macOSで動作し、ネットワーク接続は不要です。
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### SQLiteバックアップをEMLファイルに変換する方法 {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-SQLiteバックアップをダウンロードまたは保存した場合（デフォルトストレージまたはご自身の[カスタムS3バケット](#how-do-i-use-my-own-s3-compatible-storage-for-backups)から）、スタンドアロンCLIツール **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** を使って標準の `.eml` ファイルに変換できます。EMLファイルは任意のメールクライアント（[Thunderbird](https://www.thunderbird.net/)、[Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook)、[Apple Mail](https://support.apple.com/mail)など）で開くことができ、他のメールサーバーにインポートすることも可能です。
+SQLiteバックアップをダウンロードまたは保存した場合（デフォルトストレージまたはご自身の[カスタムS3バケット](#how-do-i-use-my-own-s3-compatible-storage-for-backups)から）、スタンドアロンCLIツール **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** を使って標準の `.eml` ファイルに変換できます。EMLファイルは任意のメールクライアント（[Thunderbird](https://www.thunderbird.net/)、[Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook)、[Apple Mail](https://support.apple.com/mail)など）で開くことができ、他のメールサーバーにインポートすることも可能です。 コンバーターのパスワード保護された ZIP にも、`Contacts` 内のアドレス帳ごとの VCF 連絡先と、`Calendars` 内のカレンダーごとの ICS カレンダーイベントまたはタスクが含まれています。
 
 #### インストール {#installation-1}
 
@@ -2349,6 +2351,8 @@ IPの評判を維持し、配信可能性を確保するために、Forward Emai
 APIドキュメントの[Emails](/email-api#outbound-emails)セクションでオプション、例、および詳細をご覧ください。
 
 APIで送信メールを送るには、[マイセキュリティ](/my-account/security)で利用可能なAPIトークンを使用する必要があります。
+
+``DELETE /v1/account/api-token`` を呼び出すとAPIトークンが無効になり、HTTP APIおよびWebSocketリクエストの認証に使用できなくなります。APIアクセスを再度有効にするには、既存の [/my-account/security](/my-account/security) ページにサインインしてトークンをリセットする必要があります。リセットにより新しい代替トークンが生成されますが、エイリアス・パスワード認証は変更されません。
 
 ### IMAPでのメール受信をサポートしていますか {#do-you-support-receiving-email-with-imap}
 
@@ -5084,11 +5088,13 @@ DNSまたは接続エラーが発生した場合は、`DATA`コマンドにSMTP�
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

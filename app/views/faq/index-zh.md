@@ -1170,9 +1170,11 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 | 格式     | 扩展名    | 描述                                                                        |
 | -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | 原始加密的 SQLite 数据库快照（自动 IMAP 备份的默认格式）                     |
-| `mbox`   | `.zip`    | 包含 mbox 格式邮箱的密码保护 ZIP 文件                                       |
-| `eml`    | `.zip`    | 包含每条邮件单独 `.eml` 文件的密码保护 ZIP 文件                            |
+| `sqlite` | `.sqlite` | 包含邮箱、联系人、日历和日历事件记录的原始加密 `sqlite` 快照（`.sqlite`）；默认的自动 IMAP 备份。 |
+| `mbox` | `.zip` | 受密码保护的 `.zip` 压缩包，包含邮箱 `mbox` 文件以及 `Contacts` VCF 和 `Calendars` ICS 文件夹。 |
+| `eml` | `.zip` | 受密码保护的 `.zip` 压缩包，包含单个 `eml` 格式的 `.eml` 文件以及 `Contacts` VCF 和 `Calendars` ICS 文件夹。 |
+
+所有导出格式均保留联系人、日历和日历事件。便携式 EML/MBOX `.zip` 压缩包在 `Contacts` 下按地址簿组织 VCF 文件，并在 `Calendars` 下按日历组织 ICS 事件或任务资源。原始 SQLite 在原生表中保留相同的记录。
 
 > **提示：** 如果您有 `.sqlite` 备份文件并想在本地将其转换为 `.eml` 文件，请使用我们的独立 CLI 工具 **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**。该工具支持 Windows、Linux 和 macOS，且不需要网络连接。
 
@@ -1246,7 +1248,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### 如何将 SQLite 备份转换为 EML 文件 {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-如果您下载或存储 SQLite 备份（无论是来自我们的默认存储还是您自己的 [自定义 S3 存储桶](#how-do-i-use-my-own-s3-compatible-storage-for-backups)），您可以使用我们的独立 CLI 工具 **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** 将其转换为标准的 `.eml` 文件。EML 文件可以用任何邮件客户端打开（如 [Thunderbird](https://www.thunderbird.net/)、[Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook)、[Apple Mail](https://support.apple.com/mail) 等），也可以导入到其他邮件服务器。
+如果您下载或存储 SQLite 备份（无论是来自我们的默认存储还是您自己的 [自定义 S3 存储桶](#how-do-i-use-my-own-s3-compatible-storage-for-backups)），您可以使用我们的独立 CLI 工具 **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** 将其转换为标准的 `.eml` 文件。EML 文件可以用任何邮件客户端打开（如 [Thunderbird](https://www.thunderbird.net/)、[Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook)、[Apple Mail](https://support.apple.com/mail) 等），也可以导入到其他邮件服务器。 转换器的受密码保护 `.zip` 压缩包也在 `Contacts` 下包含按地址簿分类的 VCF 联系人，并在 `Calendars` 下包含按日历分类的 ICS 日历事件或任务。
 
 #### 安装 {#installation-1}
 
@@ -2346,6 +2348,8 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
 请查看我们 API 文档中关于[邮件](/email-api#outbound-emails)的章节，了解选项、示例及更多信息。
 
 要通过我们的 API 发送外发邮件，您必须使用在[我的安全](/my-account/security)中可用的 API 令牌。
+
+调用 ``DELETE /v1/account/api-token`` 将禁用 API 令牌，禁用的令牌将无法再用于 HTTP API 或 WebSocket 请求的身份验证。API 访问仅可通过登录 [/my-account/security](/my-account/security) 页面并重置令牌来重新启用，重置操作会生成一个替换令牌，而别名密码（alias-password）身份验证保持不变。
 
 ### 您支持通过 IMAP 接收邮件吗 {#do-you-support-receiving-email-with-imap}
 
@@ -5081,11 +5085,13 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

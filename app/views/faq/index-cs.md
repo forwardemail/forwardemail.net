@@ -1172,9 +1172,11 @@ Jsou podporovány tři formáty záloh:
 
 | Formát   | Přípona  | Popis                                                                       |
 | -------- | -------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite`| Surový šifrovaný snímek SQLite databáze (výchozí pro automatické IMAP zálohy)|
-| `mbox`   | `.zip`   | ZIP chráněný heslem obsahující poštovní schránku ve formátu mbox            |
-| `eml`    | `.zip`   | ZIP chráněný heslem obsahující jednotlivé `.eml` soubory pro každou zprávu  |
+| `sqlite` | `.sqlite` | Surový šifrovaný snímek `sqlite` obsahující záznamy poštovní schránky, kontaktů, kalendáře a událostí kalendáře; výchozí automatická záloha IMAP ve formátu `.sqlite`. |
+| `mbox` | `.zip` | Heslem chráněný `.zip` obsahující soubory `mbox` (MBOX) poštovní schránky a složky `Contacts` (VCF) a `Calendars` (ICS). |
+| `eml` | `.zip` | Heslem chráněný `.zip` obsahující jednotlivé soubory `.eml` (formát `eml`) a složky `Contacts` (VCF) a `Calendars` (ICS). |
+
+Všechny formáty exportu zachovávají kontakty, kalendáře a události kalendáře. Přenosné archivy ZIP (EML/MBOX) organizují soubory VCF podle adresáře v `Contacts` a prostředky událostí nebo úkolů ICS podle kalendáře v `Calendars`. Surový SQLite uchovává stejné záznamy v nativních tabulkách.
 
 > **Tip:** Pokud máte záložní soubory `.sqlite` a chcete je lokálně převést na `.eml` soubory, použijte náš samostatný CLI nástroj **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Funguje na Windows, Linuxu i macOS a nevyžaduje síťové připojení.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Jak převést SQLite zálohy na EML soubory {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Pokud si stáhnete nebo uložíte SQLite zálohy (buď z našeho výchozího úložiště, nebo z vašeho vlastního [vlastního S3 bucketu](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), můžete je převést na standardní `.eml` soubory pomocí našeho samostatného CLI nástroje **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML soubory lze otevřít v libovolném e-mailovém klientu ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) atd.) nebo importovat do jiných poštovních serverů.
+Pokud si stáhnete nebo uložíte SQLite zálohy (buď z našeho výchozího úložiště, nebo z vašeho vlastního [vlastního S3 bucketu](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), můžete je převést na standardní `.eml` soubory pomocí našeho samostatného CLI nástroje **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML soubory lze otevřít v libovolném e-mailovém klientu ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) atd.) nebo importovat do jiných poštovních serverů. Heslem chráněný ZIP konvertoru obsahuje také kontakty VCF podle adresáře v `Contacts` a události nebo úkoly kalendáře ICS podle kalendáře v `Calendars`.
 
 #### Instalace {#installation-1}
 
@@ -2349,6 +2351,8 @@ Ano, od května 2023 podporujeme odesílání e-mailů přes API jako doplněk p
 Podívejte se na naši sekci o [E-mailech](/email-api#outbound-emails) v dokumentaci API pro možnosti, příklady a další informace.
 
 Pro odesílání odchozích e-mailů přes naše API musíte použít svůj API token dostupný v sekci [Moje bezpečnost](/my-account/security).
+
+Volání ``DELETE /v1/account/api-token`` deaktivuje API token, který poté přestane autentizovat HTTP API i WebSocket požadavky. Přístup k API lze znovu aktivovat pouze přihlášením na stávající stránku `/my-account/security` a resetováním tokenu, čímž se vygeneruje jeho náhrada; autentizace pomocí aliasu a hesla zůstává touto akcí nedotčena.
 
 ### Podporujete příjem e-mailů přes IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -5084,11 +5088,13 @@ Toto nové pravidlo umožňuje používat na našem bezplatném plánu pouze ná
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

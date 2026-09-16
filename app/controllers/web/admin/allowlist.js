@@ -12,9 +12,10 @@ const { isIP } = require('@forwardemail/validator');
 const _ = require('#helpers/lodash');
 
 const isEmail = require('#helpers/is-email');
+const { getRedisKeys } = require('#helpers/scan-redis-keys');
 
 async function list(ctx) {
-  let results = await ctx.client.keys('allowlist:*');
+  let results = await getRedisKeys(ctx.client, 'allowlist:*');
 
   if (isSANB(ctx.query.key)) {
     const regex = new RE2(_.escapeRegExp(ctx.query.key), 'i');

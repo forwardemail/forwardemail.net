@@ -150,6 +150,24 @@ test("returns current user's account", async (t) => {
   t.is(res.status, 401);
 });
 
+test('disables an API token and rejects it on subsequent requests', async (t) => {
+  const user = await t.context.userFactory
+    .withState({ [config.userFields.hasVerifiedEmail]: true })
+    .create();
+  const token = user[config.userFields.apiToken];
+
+  let res = await t.context.api.delete('/v1/account/api-token').auth(token);
+  t.is(res.status, 200);
+  t.true(res.body[config.userFields.apiTokenDisabled]);
+
+  const disabledUser = await user.constructor.findById(user._id).lean();
+  t.true(disabledUser[config.userFields.apiTokenDisabled]);
+
+  res = await t.context.api.get('/v1/account').auth(token);
+  t.is(res.status, 401);
+  t.is(res.body.message, phrases.API_TOKEN_DISABLED);
+});
+
 test('rate limits account signups', async (t) => {
   const { api } = t.context;
   let res = await api.post('/v1/account');

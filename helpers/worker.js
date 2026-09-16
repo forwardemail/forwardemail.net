@@ -50,6 +50,7 @@ const _ = require('#helpers/lodash');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const AttachmentStorage = require('#helpers/attachment-storage');
+const appendContactsAndCalendarsToArchive = require('#helpers/append-contacts-and-calendars-to-archive');
 const Messages = require('#models/messages');
 const Indexer = require('#helpers/indexer');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
@@ -1031,8 +1032,17 @@ async function backup(payload) {
         });
         const output = fs.createWriteStream(tmp);
         archive.pipe(output);
+        const resourceSummary = appendContactsAndCalendarsToArchive({
+          archive,
+          database: db,
+          onProgress: (message) => logger.debug(message, { payload })
+        });
         archive.append(
-          `MBOX backup created via Forward Email\nhttps://forwardemail.net\n${new Date().toISOString()}`,
+          `MBOX backup created via Forward Email\nhttps://forwardemail.net\n${new Date().toISOString()}\n\nThis archive contains MBOX files organized by mailbox folder, VCF files organized under Contacts, and ICS files organized under Calendars.\n\nContacts: ${
+            resourceSummary.contactCount
+          }\nCalendars: ${resourceSummary.calendarCount}\nCalendar resources: ${
+            resourceSummary.calendarEventCount
+          }`,
           { name: 'README.txt' }
         );
 
@@ -1122,8 +1132,17 @@ async function backup(payload) {
         });
         const output = fs.createWriteStream(tmp);
         archive.pipe(output);
+        const resourceSummary = appendContactsAndCalendarsToArchive({
+          archive,
+          database: db,
+          onProgress: (message) => logger.debug(message, { payload })
+        });
         archive.append(
-          `EML backup created via Forward Email\nhttps://forwardemail.net\n${new Date().toISOString()}`,
+          `EML backup created via Forward Email\nhttps://forwardemail.net\n${new Date().toISOString()}\n\nThis archive contains EML files organized by mailbox folder, VCF files organized under Contacts, and ICS files organized under Calendars.\n\nContacts: ${
+            resourceSummary.contactCount
+          }\nCalendars: ${resourceSummary.calendarCount}\nCalendar resources: ${
+            resourceSummary.calendarEventCount
+          }`,
           { name: 'README.txt' }
         );
 

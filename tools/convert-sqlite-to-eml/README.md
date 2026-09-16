@@ -1,6 +1,6 @@
 # convert-sqlite-to-eml
 
-> Standalone CLI tool to convert [Forward Email](https://forwardemail.net) encrypted SQLite mailbox backups to EML files packaged in a password-protected ZIP archive.
+> Standalone CLI tool to export [Forward Email](https://forwardemail.net) encrypted SQLite mailbox backups as EML files, VCF contacts, and ICS calendar resources in a password-protected ZIP archive.
 
 
 ## Features
@@ -11,7 +11,7 @@
 * **Encrypted database support** — handles both chacha20 and aes256cbc ciphers
 * **Brotli decompression** — transparently decompresses modern compressed metadata and attachments
 * **Password-protected ZIP** — output archive is encrypted with AES-256
-* **Organized output** — EML files are organized by mailbox folder (INBOX, Sent, Drafts, etc.)
+* **Organized output** — EML files are organized by mailbox folder, VCF contacts by address book under `Contacts`, and ICS events or tasks by calendar under `Calendars`
 * **Pre-built binaries** — download from [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases) (no Node.js required)
 
 
@@ -110,11 +110,19 @@ Sent/
   <message-id-3>.eml
 Drafts/
   <message-id-4>.eml
+Contacts/
+  Personal/
+    alice.vcf
+Calendars/
+  Work/
+    planning.ics
 ...
 ```
 
 * Each `.eml` file is a standard RFC 5322 email message
-* Files are organized by mailbox folder
+* EML files are organized by mailbox folder
+* VCF contact files are organized by address book under `Contacts`
+* ICS event and task resources are organized by calendar under `Calendars`
 * The ZIP password is the same as your IMAP/alias password
 * EML files can be opened with any email client (Thunderbird, Outlook, Apple Mail, etc.)
 * EML files can be imported into other mail servers
@@ -126,7 +134,9 @@ Drafts/
 2. Reads the Mailboxes table to discover folder structure
 3. For each message, decodes the mimeTree (brotli-compressed JSON) from the Messages table
 4. Reconstructs the full EML by walking the MIME tree and fetching attachment bodies from the Attachments table
-5. Packages everything into a password-protected ZIP archive
+5. Exports active CardDAV contacts as their stored VCF resources, organized by address book
+6. Exports active CalDAV event and task resources as their stored ICS files, organized by calendar
+7. Packages everything into a password-protected ZIP archive
 
 
 ## Requirements

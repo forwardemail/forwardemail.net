@@ -1171,9 +1171,11 @@ Kolme varmuuskopioformaattia on tuettu:
 
 | Formaatti | Tiedostopääte | Kuvaus                                                                    |
 | --------- | ------------- | ------------------------------------------------------------------------- |
-| `sqlite`  | `.sqlite`     | Raaka salattu SQLite-tietokannan tilannekuva (oletus automaattisille IMAP-varmuuskopioille) |
-| `mbox`    | `.zip`        | Salasanalla suojattu ZIP, joka sisältää postilaatikon mbox-muodossa       |
-| `eml`     | `.zip`        | Salasanalla suojattu ZIP, joka sisältää yksittäiset `.eml`-tiedostot viesteittäin |
+| `sqlite` | `.sqlite` | Raaka salattu SQLite-tilannevedos (`sqlite`, `.sqlite`), joka sisältää postilaatikko-, yhteystieto-, kalenteri- ja kalenteritapahtumatietueet; oletusarvoinen automaattinen IMAP-varmuuskopio. |
+| `mbox` | `.zip` | Salasanasuojattu `.zip`-tiedosto, joka sisältää postilaatikon MBOX-tiedostot (`mbox`) sekä `Contacts` VCF- ja `Calendars` ICS -kansiot. |
+| `eml` | `.zip` | Salasanasuojattu `.zip`-tiedosto, joka sisältää yksittäisiä EML-tiedostoja (`.eml`, `eml`) sekä `Contacts` VCF- ja `Calendars` ICS -kansiot. |
+
+Kaikki vientimuodot säilyttävät yhteystiedot, kalenterit ja kalenteritapahtumat. Siirrettävät EML/MBOX `.zip`-tiedostot järjestävät VCF-tiedostot osoitekirjan mukaan `Contacts`-kansioon ja ICS-tapahtuma- tai tehtäväresurssit kalenterin mukaan `Calendars`-kansioon. Raaka SQLite säilyttää samat tietueet alkuperäisissä taulukoissa.
 
 > **Vinkki:** Jos sinulla on `.sqlite`-varmuuskopiotiedostoja ja haluat muuntaa ne paikallisesti `.eml`-tiedostoiksi, käytä erillistä komentorivityökalua **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Se toimii Windowsissa, Linuxissa ja macOS:ssä eikä vaadi verkkoyhteyttä.
 
@@ -1247,7 +1249,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Kuinka muuntaa SQLite-varmuuskopiot EML-tiedostoiksi {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Jos lataat tai tallennat SQLite-varmuuskopioita (joko oletustallennuksestamme tai omasta [mukautetusta S3-säiliöstäsi](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), voit muuntaa ne standardeiksi `.eml`-tiedostoiksi käyttämällä erillistä komentorivityökalua **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML-tiedostot voi avata millä tahansa sähköpostiohjelmalla ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) jne.) tai tuoda muihin sähköpostipalvelimiin.
+Jos lataat tai tallennat SQLite-varmuuskopioita (joko oletustallennuksestamme tai omasta [mukautetusta S3-säiliöstäsi](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), voit muuntaa ne standardeiksi `.eml`-tiedostoiksi käyttämällä erillistä komentorivityökalua **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML-tiedostot voi avata millä tahansa sähköpostiohjelmalla ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) jne.) tai tuoda muihin sähköpostipalvelimiin. Muuntimen salasanasuojattu `.zip`-tiedosto sisältää myös VCF-yhteystiedot osoitekirjan mukaan `Contacts`-kansiossa ja ICS-kalenteritapahtumat tai -tehtävät kalenterin mukaan `Calendars`-kansiossa.
 
 #### Asennus {#installation-1}
 
@@ -2348,6 +2350,8 @@ Kyllä, toukokuusta 2023 lähtien tuemme sähköpostin lähettämistä API:n kau
 Tutustu API-dokumentaatiomme kohtaan [Sähköpostit](/email-api#outbound-emails) vaihtoehtojen, esimerkkien ja lisätietojen saamiseksi.
 
 Lähettääksesi lähtevää sähköpostia API:n kautta, sinun on käytettävä API-tunnustasi, joka löytyy kohdasta [Oma turvallisuus](/my-account/security).
+
+Voit poistaa API-tunnuksesi käytöstä välittömästi tekemällä `DELETE`-pyynnön osoitteeseen `/v1/account/api-token`. Sen ottaminen uudelleen käyttöön vaatii tunnuksen nollaamisen kohdassa [Oma turvallisuus](/my-account/security), mikä luo uuden korvaavan tunnuksen.
 
 ### Tuetteko sähköpostin vastaanottamista IMAPin kautta {#do-you-support-receiving-email-with-imap}
 
@@ -5083,11 +5087,13 @@ Tämä uusi sääntö sallii seuraavien verkkotunnuksen päätteiden käytön va
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

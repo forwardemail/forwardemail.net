@@ -338,31 +338,57 @@ block body
           .card.border-themed
             h2.h6.card-header= t("Developer Access")
             .card-body
-              .row
-                label.control-label.col-md-4.col-form-label.text-md-right= t("API token")
-                .col-md-8
-                  .input-group
-                    input#api-token.form-control(
-                      type="text",
-                      readonly,
-                      value=user[config.userFields.apiToken]
-                    )
-                    .input-group-append
-                      button.btn.btn-primary(
-                        type="button",
-                        data-toggle="clipboard",
-                        data-clipboard-target="#api-token"
+              if user[config.userFields.apiTokenDisabled]
+                .alert.alert-warning.mb-0(role="alert")
+                  strong.d-block= t("API token disabled")
+                  = t("This API token cannot be used. Reset it to generate a new token and enable API access again.")
+              else
+                .row
+                  label.control-label.col-md-4.col-form-label.text-md-right= t("API token")
+                  .col-md-8
+                    .input-group
+                      input#api-token.form-control(
+                        type="text",
+                        readonly,
+                        value=user[config.userFields.apiToken]
                       )
-                        i.fa.fa-clipboard
-                        = " "
-                        = t("Copy")
-                  .small.form-text.text-muted= t("Keep your token secure and never share it publicly")
+                      .input-group-append
+                        button.btn.btn-primary(
+                          type="button",
+                          data-toggle="clipboard",
+                          data-clipboard-target="#api-token"
+                        )
+                          i.fa.fa-clipboard
+                          = " "
+                          = t("Copy")
+                    .small.form-text.text-muted= t("Keep your token secure and never share it publicly")
             .card-footer.text-right
               ul.list-inline.mb-0
-                li.list-inline-item
-                  form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
-                    input(type="hidden", name="_method", value="DELETE")
-                    button.btn.btn-danger(type="submit")= t("Reset API Token")
+                if user[config.userFields.apiTokenDisabled]
+                  li.list-inline-item
+                    form.ajax-form.confirm-prompt(
+                      action=ctx.path,
+                      method="POST"
+                    )
+                      input(type="hidden", name="_method", value="DELETE")
+                      button.btn.btn-success(type="submit")= t("Enable and Create New API Token")
+                else
+                  li.list-inline-item
+                    form.ajax-form.confirm-prompt(
+                      action=ctx.path,
+                      method="POST"
+                    )
+                      input(type="hidden", name="_method", value="DELETE")
+                      button.btn.btn-danger(type="submit")= t("Reset API Token")
+                  li.list-inline-item
+                    form.ajax-form.confirm-prompt(
+                      action=l("/my-account/security/api-token"),
+                      method="POST",
+                      data-confirm-prompt-title=t("Disable API Token?"),
+                      data-confirm-prompt-html=t("This will immediately disable API access for this token. You can enable API access later by generating a new token.")
+                    )
+                      input(type="hidden", name="_method", value="DELETE")
+                      button.btn.btn-outline-danger(type="submit")= t("Disable API Token")
                 li.list-inline-item
                   a.btn.btn-dark(href=l("/email-api"))= t("Learn more")
     .container

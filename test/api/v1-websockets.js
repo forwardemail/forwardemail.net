@@ -241,6 +241,23 @@ test('fails WebSocket connection with invalid API token', async (t) => {
   );
 });
 
+test('fails WebSocket connection with an explicitly disabled API token', async (t) => {
+  const { apiURL } = t.context;
+  const { user, alias } = await createTestAlias(t);
+  user[config.userFields.apiTokenDisabled] = true;
+  await user.save();
+
+  const wsURL = apiURL.replace(/^http/, 'ws') + `/v1/ws?alias_id=${alias.id}`;
+
+  await t.throwsAsync(
+    () =>
+      connectWebSocket(wsURL, {
+        Authorization: createApiTokenAuth(user[config.userFields.apiToken])
+      }),
+    { message: /Unexpected server response: 401/ }
+  );
+});
+
 test('fails WebSocket connection with API token but no alias_id', async (t) => {
   const { apiURL } = t.context;
   const { user } = await createTestAlias(t);

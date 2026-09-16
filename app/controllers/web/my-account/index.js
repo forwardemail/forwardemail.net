@@ -10,6 +10,7 @@ const createAliasForm = require('./create-alias-form');
 const createDomain = require('./create-domain');
 const createDomainBilling = require('./create-domain-billing');
 const disconnectOAuthProvider = require('./disconnect-oauth-provider');
+const disableAPIToken = require('./disable-api-token');
 const createDomainForm = require('./create-domain-form');
 const createInvite = require('./create-invite');
 const ensureAliasAdmin = require('./ensure-alias-admin');
@@ -84,6 +85,7 @@ module.exports = {
   createDomainForm,
   createDomainBilling,
   disconnectOAuthProvider,
+  disableAPIToken,
   createInvite,
   ensureAliasAdmin,
   ensureDomainAdmin,

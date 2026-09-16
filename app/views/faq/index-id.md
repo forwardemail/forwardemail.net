@@ -1172,9 +1172,11 @@ Tiga format backup didukung:
 
 | Format   | Extension | Deskripsi                                                                   |
 | -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | Snapshot database SQLite terenkripsi mentah (default untuk backup IMAP otomatis) |
-| `mbox`   | `.zip`    | ZIP yang dilindungi kata sandi berisi mailbox dalam format mbox             |
-| `eml`    | `.zip`    | ZIP yang dilindungi kata sandi berisi file `.eml` individual per pesan      |
+| `sqlite` | `.sqlite` | Snapshot `sqlite` mentah terenkripsi yang berisi rekaman kotak surat, kontak, kalender, dan acara kalender; cadangan IMAP otomatis standar dalam format `.sqlite`. |
+| `mbox` | `.zip` | Arsip `.zip` yang dilindungi kata sandi berisi berkas `mbox` kotak surat serta folder `Contacts` VCF dan `Calendars` ICS. |
+| `eml` | `.zip` | Arsip `.zip` yang dilindungi kata sandi berisi berkas `eml` individual dengan ekstensi `.eml` serta folder `Contacts` VCF dan `Calendars` ICS. |
+
+Semua format ekspor mempertahankan kontak, kalender, dan acara kalender. `.zip` EML/MBOX portabel menyusun berkas VCF berdasarkan buku alamat di bawah `Contacts` dan sumber daya acara atau tugas ICS berdasarkan kalender di bawah `Calendars`. `sqlite` mentah menyimpan rekaman yang sama dalam tabel asli.
 
 > **Tip:** Jika Anda memiliki file backup `.sqlite` dan ingin mengonversinya ke file `.eml` secara lokal, gunakan alat CLI mandiri kami **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Alat ini bekerja di Windows, Linux, dan macOS dan tidak memerlukan koneksi jaringan.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Bagaimana cara mengonversi cadangan SQLite ke file EML {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Jika Anda mengunduh atau menyimpan cadangan SQLite (baik dari penyimpanan default kami atau [bucket S3 kustom Anda sendiri](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), Anda dapat mengonversinya menjadi file `.eml` standar menggunakan alat CLI mandiri kami **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. File EML dapat dibuka dengan klien email apa pun ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), dll.) atau diimpor ke server email lain.
+Jika Anda mengunduh atau menyimpan cadangan SQLite (baik dari penyimpanan default kami atau [bucket S3 kustom Anda sendiri](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), Anda dapat mengonversinya menjadi file `.eml` standar menggunakan alat CLI mandiri kami **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. File EML dapat dibuka dengan klien email apa pun ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), dll.) atau diimpor ke server email lain. Arsip `.zip` pengonversi yang dilindungi kata sandi juga berisi kontak VCF berdasarkan buku alamat di bawah `Contacts` dan acara atau tugas kalender ICS berdasarkan kalender di bawah `Calendars`.
 
 #### Instalasi {#installation-1}
 
@@ -2349,6 +2351,8 @@ Ya, sejak Mei 2023 kami mendukung pengiriman email dengan API sebagai tambahan u
 Silakan lihat bagian kami tentang [Email](/email-api#outbound-emails) dalam dokumentasi API kami untuk opsi, contoh, dan wawasan lebih lanjut.
 
 Untuk mengirim email keluar dengan API kami, Anda harus menggunakan token API Anda yang tersedia di bawah [Keamanan Saya](/my-account/security).
+
+Memanggil ``DELETE /v1/account/api-token`` akan menonaktifkan token API, sehingga token tersebut tidak lagi dapat mengautentikasi permintaan HTTP API atau WebSocket. Akses API hanya dapat diaktifkan kembali dengan masuk ke halaman [/my-account/security](/my-account/security) dan mengatur ulang token, yang akan menghasilkan token pengganti; autentikasi kata sandi alias tetap tidak berubah.
 
 ### Apakah Anda mendukung penerimaan email dengan IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -5084,11 +5088,13 @@ Aturan baru ini hanya mengizinkan ekstensi nama domain berikut untuk digunakan p
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

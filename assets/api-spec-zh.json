@@ -3383,6 +3383,57 @@
         }
       }
     },
+    "/v1/account/api-token": {
+      "delete": {
+        "tags": [
+          "帐户"
+        ],
+        "summary": "禁用 API 令牌",
+        "description": "使用 DELETE /v1/account/api-token 端点可立即禁用经过身份验证的 API 令牌。\\n\\n成功调用后，响应将返回 { \"api_token_disabled\": true }。禁用后，该令牌将立即失效，无法用于 HTTP API 和 WebSocket 身份验证。若要重新启用，您必须登录 My Security 并重置令牌，这将生成一个新的替换令牌。别名密码身份验证不受此操作影响。",
+        "operationId": "disableApiToken",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API 令牌已成功禁用。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "api_token_disabled"
+                  ],
+                  "properties": {
+                    "api_token_disabled": {
+                      "type": "boolean",
+                      "description": "在 API 令牌被禁用后，此布尔值为 true。"
+                    }
+                  }
+                },
+                "example": {
+                  "api_token_disabled": true
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/v1/contacts": {
       "get": {
         "tags": [

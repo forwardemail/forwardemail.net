@@ -69,6 +69,7 @@ const omitExtraFields = [
   // TODO: change to allowlist
   config.userFields.isRateLimitWhitelisted,
   config.userFields.apiToken,
+  config.userFields.apiTokenDisabled,
   config.userFields.resetTokenExpiresAt,
   config.userFields.resetToken,
   config.userFields.changeEmailTokenExpiresAt,
@@ -490,6 +491,12 @@ object[config.userFields.apiToken] = {
   lowercase: true,
   trim: true,
   unique: true,
+  index: true
+};
+
+object[config.userFields.apiTokenDisabled] = {
+  type: Boolean,
+  default: false,
   index: true
 };
 

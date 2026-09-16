@@ -580,6 +580,7 @@ router
   })
   .post('/timezone', web.myAccount.updateTimezone)
   .delete('/security', web.myAccount.resetAPIToken)
+  .delete('/security/api-token', web.myAccount.disableAPIToken)
   .post('/invalidate-other-sessions', async (ctx) => {
     await invalidateOtherSessions(ctx);
     ctx.flash('success', ctx.translate('LOGGED_OUT_OTHER_DEVICES'));

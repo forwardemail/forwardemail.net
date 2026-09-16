@@ -1172,9 +1172,11 @@ Hỗ trợ ba định dạng sao lưu:
 
 | Định dạng | Phần mở rộng | Mô tả                                                                 |
 | -------- | ------------ | -------------------------------------------------------------------- |
-| `sqlite` | `.sqlite`    | Bản chụp cơ sở dữ liệu SQLite được mã hóa thô (mặc định cho sao lưu IMAP tự động) |
-| `mbox`   | `.zip`       | Tệp ZIP được bảo vệ bằng mật khẩu chứa hộp thư theo định dạng mbox   |
-| `eml`    | `.zip`       | Tệp ZIP được bảo vệ bằng mật khẩu chứa các tệp `.eml` riêng lẻ cho mỗi tin nhắn |
+| `sqlite` | `.sqlite` | Bản sao `sqlite` thô được mã hóa chứa các bản ghi hộp thư, danh bạ, lịch và sự kiện lịch; sao lưu IMAP tự động mặc định (tệp `.sqlite`). |
+| `mbox` | `.zip` | Tệp `.zip` được bảo vệ bằng mật khẩu chứa các tệp `mbox` của hộp thư cùng với các thư mục `Contacts` VCF và `Calendars` ICS. |
+| `eml` | `.zip` | Tệp `.zip` được bảo vệ bằng mật khẩu chứa các tệp `.eml` riêng lẻ cùng với các thư mục `Contacts` VCF và `Calendars` ICS (định dạng `eml`). |
+
+Tất cả các định dạng xuất đều bảo toàn danh bạ, lịch và các sự kiện lịch. Các tệp ZIP EML/MBOX di động sắp xếp các tệp VCF theo sổ địa chỉ trong mục `Contacts` và các tài nguyên sự kiện hoặc tác vụ ICS theo lịch trong mục `Calendars`. SQLite thô vẫn giữ nguyên các bản ghi tương tự trong các bảng gốc.
 
 > **Mẹo:** Nếu bạn có các tệp sao lưu `.sqlite` và muốn chuyển đổi chúng thành các tệp `.eml` cục bộ, hãy sử dụng công cụ CLI độc lập của chúng tôi **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Nó hoạt động trên Windows, Linux và macOS và không yêu cầu kết nối mạng.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Làm thế nào để chuyển đổi bản sao lưu SQLite sang file EML {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Nếu bạn tải xuống hoặc lưu trữ các bản sao lưu SQLite (dù từ lưu trữ mặc định của chúng tôi hoặc [bucket S3 tùy chỉnh của bạn](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), bạn có thể chuyển đổi chúng thành các file `.eml` chuẩn bằng công cụ CLI độc lập của chúng tôi **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. File EML có thể được mở bằng bất kỳ ứng dụng email nào ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), v.v.) hoặc nhập vào các máy chủ mail khác.
+Nếu bạn tải xuống hoặc lưu trữ các bản sao lưu SQLite (dù từ lưu trữ mặc định của chúng tôi hoặc [bucket S3 tùy chỉnh của bạn](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), bạn có thể chuyển đổi chúng thành các file `.eml` chuẩn bằng công cụ CLI độc lập của chúng tôi **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. File EML có thể được mở bằng bất kỳ ứng dụng email nào ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), v.v.) hoặc nhập vào các máy chủ mail khác. Tệp ZIP được bảo vệ bằng mật khẩu của trình chuyển đổi cũng chứa danh bạ VCF theo sổ địa chỉ trong mục `Contacts` và các sự kiện hoặc tác vụ lịch ICS theo lịch trong mục `Calendars`.
 
 #### Cài đặt {#installation-1}
 
@@ -2348,6 +2350,8 @@ Vâng, kể từ tháng 5 năm 2023, chúng tôi hỗ trợ gửi email bằng A
 Vui lòng xem phần [Emails](/email-api#outbound-emails) trong tài liệu API của chúng tôi để biết các tùy chọn, ví dụ và thông tin chi tiết hơn.
 
 Để gửi email gửi đi bằng API của chúng tôi, bạn phải sử dụng token API có sẵn trong [My Security](/my-account/security).
+
+Bạn có thể vô hiệu hóa token này ngay lập tức qua điểm cuối `DELETE /v1/account/api-token` và bật lại bằng cách đặt lại token trong **My Security**.
 
 ### Bạn có hỗ trợ nhận email bằng IMAP không {#do-you-support-receiving-email-with-imap}
 
@@ -5083,11 +5087,13 @@ Quy tắc mới này chỉ cho phép các phần mở rộng tên miền sau đ�
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

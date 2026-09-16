@@ -17,6 +17,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const validator = require('@forwardemail/validator');
 
 const logger = require('#helpers/logger');
+const { scanRedisKeys } = require('#helpers/scan-redis-keys');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -31,20 +32,21 @@ graceful.listen();
 (async () => {
   await setupMongoose(logger);
   try {
-    // delete all IP's prefixed with backscatter or denylist
-    // (this will ensure our latest dataset is accurate)
-    const [denylistKeys, backscatterKeys] = await Promise.all([
-      client.keys('denylist:*'),
-      client.keys('backscatter:*')
-    ]);
-    const pipeline = client.pipeline();
-    for (const key of [...denylistKeys, ...backscatterKeys]) {
-      // filter out keys to be IP addresses only
-      const [, ip] = key.split(':');
-      if (validator.isIP(ip)) pipeline.del(key);
-    }
+    // Delete IP-only backscatter and denylist entries in bounded batches.
+    // SCAN yields control to Valkey between batches, unlike blocking KEYS.
+    for (const pattern of ['denylist:*', 'backscatter:*']) {
+      for await (const keys of scanRedisKeys(client, pattern)) {
+        const pipeline = client.pipeline();
 
-    await pipeline.exec();
+        for (const key of keys) {
+          // Filter out keys to be IP addresses only.
+          const [, ip] = key.split(':');
+          if (validator.isIP(ip)) pipeline.del(key);
+        }
+
+        await pipeline.exec();
+      }
+    }
   } catch (err) {
     await logger.error(err);
   }

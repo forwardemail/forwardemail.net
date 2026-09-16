@@ -49,14 +49,10 @@ block content
                     th= t("SMTP Response")
                     td: pre: code= response
             .p-3.text-center
-              h2.h5= t("What will happen if I don't resolve this?")
+              h2.h5= t("What happened to this message?")
               p.small.card-text
-                = t("Outbound SMTP is currently paused and suspended.")
+                = t("Only this outbound message was prevented from delivery.")
                 = " "
-                = t("This means that all of your outbound emails are not being processed.")
-                = " "
-                = t("We have currently paused your outbound SMTP queue.")
-                = " "
-                = t("No emails will be attempted to be delivered.")
+                = t("Your outbound SMTP service and other queued messages remain active.")
           .card-footer.text-center.small.text-muted
-            = t("You must contact us to resolve this issue.")
+            = t("Contact us if you believe this message was prevented in error.")

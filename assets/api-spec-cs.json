@@ -3383,6 +3383,57 @@
         }
       }
     },
+    "/v1/account/api-token": {
+      "delete": {
+        "tags": [
+          "Účet"
+        ],
+        "summary": "Zakázat API token",
+        "description": "DELETE /v1/account/api-token okamžitě zakáže autentizovaný API token; odpověď je { \"api_token_disabled\": true }; token následně selže při autentizaci HTTP API a WebSocket; opětovné povolení vyžaduje přihlášení v sekci My Security a resetování tokenu, což vygeneruje náhradu. Autentizace pomocí hesla aliasu zůstává beze změny.",
+        "operationId": "disableApiToken",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API token úspěšně zakázán.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "api_token_disabled"
+                  ],
+                  "properties": {
+                    "api_token_disabled": {
+                      "type": "boolean",
+                      "description": "Tato logická hodnota je true poté, co je API token zakázán."
+                    }
+                  }
+                },
+                "example": {
+                  "api_token_disabled": true
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/v1/contacts": {
       "get": {
         "tags": [

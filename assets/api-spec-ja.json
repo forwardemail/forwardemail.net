@@ -3383,6 +3383,57 @@
         }
       }
     },
+    "/v1/account/api-token": {
+      "delete": {
+        "tags": [
+          "アカウント"
+        ],
+        "summary": "API トークンの無効化",
+        "description": "`DELETE /v1/account/api-token` を呼び出すと、認証に使用された API トークンが即座に無効になります。レスポンスは `{ \\\"api_token_disabled\\\": true }` です。無効化されたトークンは、HTTP API および WebSocket の認証に使用できなくなります。トークンを再度有効にするには、My Security にサインインしてトークンをリセットし、新しいトークンを生成する必要があります。エイリアスパスワード認証は変更されません。",
+        "operationId": "disableApiToken",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API トークンが正常に無効化されました。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "api_token_disabled"
+                  ],
+                  "properties": {
+                    "api_token_disabled": {
+                      "type": "boolean",
+                      "description": "API トークンが無効化された場合、この値は true になります。"
+                    }
+                  }
+                },
+                "example": {
+                  "api_token_disabled": true
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/v1/contacts": {
       "get": {
         "tags": [

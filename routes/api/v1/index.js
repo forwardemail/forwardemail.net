@@ -251,6 +251,13 @@ router
     },
     api.v1.users.retrieve
   )
+  .delete(
+    '/account/api-token',
+    policies.ensureApiToken,
+    policies.checkVerifiedEmail,
+    rateLimit(10, 'disable API token'),
+    api.v1.users.disableAPIToken
+  )
   .put(
     '/account',
     ensureApiTokenOrAliasAuth,

@@ -1,6 +1,6 @@
 {
   "name": "@forwardemail/convert-sqlite-to-eml",
-  "description": "Standalone CLI tool to convert Forward Email encrypted SQLite mailbox backups to EML files packaged in a password-protected ZIP archive.",
+  "description": "Standalone CLI tool to export Forward Email encrypted SQLite mailbox backups as EML, VCF contact, and ICS calendar files in a password-protected ZIP archive.",
   "version": "1.0.0",
   "author": "Forward Email LLC <support@forwardemail.net> (https://forwardemail.net)",
   "bin": {

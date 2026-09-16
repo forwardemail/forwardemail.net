@@ -71,6 +71,7 @@ const checkDomainAndAct = require('#helpers/check-domain-and-act');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
+const getCloudflareRadarFeedbackUrl = require('#helpers/get-cloudflare-radar-feedback-url');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
@@ -167,6 +168,7 @@ function buildDigestCsv(opts) {
   const headers = [
     'Section',
     'Domain',
+    'Cloudflare Radar Change Request',
     'All Categories',
     'Actionable Categories',
     'Title',
@@ -194,6 +196,7 @@ function buildDigestCsv(opts) {
         [
           csvEscape('Flagged for Review'),
           csvEscape(row.domain),
+          csvEscape(getCloudflareRadarFeedbackUrl(row.domain)),
           csvEscape(row.categories.join('; ')),
           csvEscape(row.bannableCategories.join('; ')),
           csvEscape(row.title || ''),
@@ -415,7 +418,8 @@ function buildDigestHtml(opts) {
     <p style="margin-top: 20px;">
       <strong>Full details are attached as a gzip-compressed CSV file.</strong>
       The CSV contains one row per flagged domain/user with all categories,
-      HTTP metadata, user details, and exclusion reasons.
+      HTTP metadata, user details, exclusion reasons, and a direct Cloudflare
+      Radar classification change-request URL for that domain.
     </p>
     <p style="margin-top: 10px; background: #e8f5e9; padding: 10px; border-radius: 5px;">
       <strong>Note:</strong> No users were automatically banned or denylisted.

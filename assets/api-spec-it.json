@@ -3383,6 +3383,57 @@
         }
       }
     },
+    "/v1/account/api-token": {
+      "delete": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Disabilita il token API",
+        "description": "L'endpoint DELETE /v1/account/api-token disabilita immediatamente il token API autenticato. Una volta disabilitato, il token non supererà più l'autenticazione HTTP API e WebSocket. La risposta restituita è {\"api_token_disabled\": true}. Per riabilitare l'accesso, è necessario accedere a My Security e reimpostare il token, operazione che genererà un nuovo token sostitutivo. L'autenticazione tramite password alias non subisce variazioni.",
+        "operationId": "disableApiToken",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token API disabilitato con successo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "api_token_disabled"
+                  ],
+                  "properties": {
+                    "api_token_disabled": {
+                      "type": "boolean",
+                      "description": "Questo valore è true se il token API è stato disabilitato."
+                    }
+                  }
+                },
+                "example": {
+                  "api_token_disabled": true
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/v1/contacts": {
       "get": {
         "tags": [

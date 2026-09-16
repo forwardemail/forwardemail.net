@@ -1172,9 +1172,11 @@ Yedekleme süreci şu şekilde işler:
 
 | Format   | Uzantı   | Açıklama                                                                    |
 | -------- | -------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite`| Ham şifreli SQLite veritabanı anlık görüntüsü (otomatik IMAP yedekleri için varsayılan) |
-| `mbox`   | `.zip`   | mbox formatında posta kutusunu içeren parola korumalı ZIP                   |
-| `eml`    | `.zip`   | Her mesaj için ayrı `.eml` dosyaları içeren parola korumalı ZIP             |
+| `sqlite` | `.sqlite` | Posta kutusu, kişi, takvim ve takvim etkinliği kayıtlarını içeren ham şifreli `sqlite` (`.sqlite`) anlık görüntüsü; varsayılan otomatik IMAP yedeği. |
+| `mbox` | `.zip` | Posta kutusu MBOX (`mbox`) dosyalarının yanı sıra `Contacts` VCF ve `Calendars` ICS klasörlerini içeren şifre korumalı `.zip`. |
+| `eml` | `.zip` | Ayrı EML (`.eml`) dosyalarının yanı sıra `Contacts` VCF ve `Calendars` ICS klasörlerini içeren şifre korumalı `.zip` (`eml`). |
+
+Tüm dışa aktarma biçimleri kişileri, takvimleri ve takvim etkinliklerini korur. Taşınabilir EML/MBOX `.zip` dosyaları, VCF dosyalarını `Contacts` altında adres defterine göre, ICS etkinlik veya görev kaynaklarını ise `Calendars` altında takvime göre düzenler. Ham SQLite, aynı kayıtları yerel tablolarda tutar.
 
 > **İpucu:** `.sqlite` yedek dosyalarınız varsa ve bunları yerel olarak `.eml` dosyalarına dönüştürmek istiyorsanız, bağımsız CLI aracımız **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**'i kullanabilirsiniz. Windows, Linux ve macOS üzerinde çalışır ve ağ bağlantısı gerektirmez.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### SQLite yedeklerini EML dosyalarına nasıl dönüştürürüm {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-SQLite yedeklerini indirir veya depolarsanız (ister varsayılan depolamamızdan ister kendi [özel S3 kovanızdan](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), bunları bağımsız CLI aracımız **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** ile standart `.eml` dosyalarına dönüştürebilirsiniz. EML dosyaları herhangi bir e-posta istemcisiyle ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) vb.) açılabilir veya diğer posta sunucularına aktarılabilir.
+SQLite yedeklerini indirir veya depolarsanız (ister varsayılan depolamamızdan ister kendi [özel S3 kovanızdan](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), bunları bağımsız CLI aracımız **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** ile standart `.eml` dosyalarına dönüştürebilirsiniz. EML dosyaları herhangi bir e-posta istemcisiyle ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) vb.) açılabilir veya diğer posta sunucularına aktarılabilir. Dönüştürücünün şifre korumalı `.zip` dosyası ayrıca `Contacts` altında adres defterine göre VCF kişilerini ve `Calendars` altında takvime göre ICS takvim etkinliklerini veya görevlerini içerir.
 
 #### Kurulum {#installation-1}
 
@@ -2349,6 +2351,8 @@ Evet, Mayıs 2023 itibarıyla tüm ücretli kullanıcılar için bir eklenti ola
 Seçenekler, örnekler ve daha fazla bilgi için API dokümantasyonumuzdaki [E-postalar](/email-api#outbound-emails) bölümüne bakınız.
 
 API ile giden e-posta gönderebilmek için, [Hesabım Güvenlik](/my-account/security) altında bulunan API tokenınızı kullanmalısınız.
+
+``DELETE /v1/account/api-token`` uç noktasının çağrılması API belirtecini devre dışı bırakır; devre dışı bırakılan belirteç artık HTTP API veya WebSocket isteklerinin kimliğini doğrulamaz. API erişimi yalnızca mevcut [/my-account/security](/my-account/security) sayfasına giriş yapıp belirteci sıfırlayarak yeniden etkinleştirilebilir, bu işlem yeni bir belirteç oluşturur; takma ad-parola (alias-password) kimlik doğrulaması ise değişmeden kalır.
 
 ### IMAP ile e-posta almayı destekliyor musunuz? {#do-you-support-receiving-email-with-imap}
 
@@ -5084,11 +5088,13 @@ Bu yeni kural, ücretsiz planımızda yalnızca aşağıdaki alan adı uzantıla
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

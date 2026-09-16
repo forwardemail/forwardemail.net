@@ -54,7 +54,6 @@ window.jQuery = $;
 window.Popper = Popper;
 
 require('bootstrap');
-
 require('bootstrap-dropdown-hover')(window, $);
 
 const {
@@ -260,8 +259,13 @@ window.addEventListener(
     // if (!navigator || !navigator.userAgentData || !navigator.userAgentData.mobile)
     //   $(window).on('scroll.changeHashOnScroll', debounce(changeHashOnScroll, 1000));
 
-    // Automatically show tooltips and popovers
-    $('[data-toggle="tooltip"]').tooltip();
+    // Render tooltips at the document root. This keeps the positioned overlay
+    // outside table cells and other hover targets, preventing show and hide
+    // oscillation without changing tooltip, dropdown, or stretched-link UX.
+    $('[data-toggle="tooltip"]').tooltip({
+      boundary: 'window',
+      container: 'body'
+    });
     $('[data-toggle="popover"]').popover();
 
     // Handle custom file inputs

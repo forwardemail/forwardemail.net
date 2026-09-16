@@ -1172,9 +1172,11 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 | פורמט    | סיומת     | תיאור                                                                       |
 | -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | צילום מצב של מסד נתונים SQLite מוצפן גולמי (ברירת מחדל לגיבויים אוטומטיים של IMAP) |
-| `mbox`   | `.zip`    | קובץ ZIP מוגן בסיסמה המכיל תיבת דואר בפורמט mbox                            |
-| `eml`    | `.zip`    | קובץ ZIP מוגן בסיסמה המכיל קבצי `.eml` נפרדים לכל הודעה                     |
+| `sqlite` | `.sqlite` | צילום מצב `sqlite` גולמי ומוצפן המכיל רשומות תיבת דואר, אנשי קשר, לוח שנה ואירועי לוח שנה; גיבוי IMAP אוטומטי כברירת מחדל בקובץ `.sqlite`. |
+| `mbox` | `.zip` | ארכיון `.zip` מוגן בסיסמה המכיל קובצי `mbox` של תיבת הדואר בתוספת תיקיות VCF של `Contacts` ו-ICS של `Calendars`. |
+| `eml` | `.zip` | ארכיון `.zip` מוגן בסיסמה המכיל קובצי `eml` בודדים בפורמט `.eml` בתוספת תיקיות VCF של `Contacts` ו-ICS של `Calendars`. |
+
+כל פורמטי הייצוא שומרים על אנשי קשר, לוחות שנה ואירועי לוח שנה. קובצי ZIP ניידים מסוג EML/MBOX מארגנים קובצי VCF לפי פנקס כתובות תחת `Contacts` ומשאבי אירועים או משימות ICS לפי לוח שנה תחת `Calendars`. SQLite גולמי שומר על אותן רשומות בטבלאות מקוריות.
 
 > **טיפ:** אם יש לך קבצי גיבוי `.sqlite` ואתה רוצה להמיר אותם לקבצי `.eml` באופן מקומי, השתמש בכלי ה-CLI העצמאי שלנו **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. הוא עובד על Windows, Linux ו-macOS ואינו דורש חיבור לרשת.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### איך להמיר גיבויי SQLite לקבצי EML {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-אם הורדת או שמרת גיבויי SQLite (או מהאחסון המוגדר כברירת מחדל שלנו או מה-[דלי S3 מותאם אישית שלך](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), תוכל להמיר אותם לקבצי `.eml` סטנדרטיים באמצעות כלי ה-CLI העצמאי שלנו **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. קבצי EML ניתנים לפתיחה עם כל לקוח דואר אלקטרוני ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) וכו') או לייבוא לשרתים אחרים.
+אם הורדת או שמרת גיבויי SQLite (או מהאחסון המוגדר כברירת מחדל שלנו או מה-[דלי S3 מותאם אישית שלך](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), תוכל להמיר אותם לקבצי `.eml` סטנדרטיים באמצעות כלי ה-CLI העצמאי שלנו **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. קבצי EML ניתנים לפתיחה עם כל לקוח דואר אלקטרוני ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) וכו') או לייבוא לשרתים אחרים. קובץ ה-ZIP המוגן בסיסמה של הממיר מכיל גם אנשי קשר VCF לפי פנקס כתובות תחת `Contacts` ואירועי לוח שנה או משימות ICS לפי לוח שנה תחת `Calendars`.
 
 #### התקנה {#installation-1}
 
@@ -2349,6 +2351,8 @@ Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד
 אנא עיינו בסעיף שלנו על [מיילים](/email-api#outbound-emails) בתיעוד ה-API שלנו לאפשרויות, דוגמאות ותובנות נוספות.
 
 כדי לשלוח מייל יוצא עם ה-API שלנו, עליכם להשתמש בטוקן ה-API שלכם הזמין תחת [האבטחה שלי](/my-account/security).
+
+ניתן להשבית את מפתח ה-API על ידי שליחת בקשת DELETE לנקודת הקצה /v1/account/api-token. כדי להפעילו מחדש, עליך לאפס את המפתח ב-My Security, מה שייצר מפתח חדש.
 
 ### האם אתם תומכים בקבלת מייל באמצעות IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -5084,11 +5088,13 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

@@ -1172,9 +1172,11 @@ echo "Тело тестового письма" | mail -s "Тестовая те
 
 | Формат   | Расширение | Описание                                                                    |
 | -------- | ---------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite`  | Сырой зашифрованный снимок базы данных SQLite (по умолчанию для автоматических IMAP-резервных копий) |
-| `mbox`   | `.zip`     | Защищенный паролем ZIP, содержащий почтовый ящик в формате mbox             |
-| `eml`    | `.zip`     | Защищенный паролем ZIP, содержащий отдельные файлы `.eml` для каждого сообщения |
+| `sqlite` | `.sqlite` | Необработанный зашифрованный снимок `sqlite`, содержащий записи почтового ящика, контактов, календарей и событий календаря; стандартная автоматическая копия IMAP в формате `.sqlite`. |
+| `mbox` | `.zip` | Защищенный паролем архив `.zip`, содержащий MBOX-файлы почтового ящика, а также папки `Contacts` с VCF и `Calendars` с ICS для формата `mbox`. |
+| `eml` | `.zip` | Защищенный паролем архив `.zip`, содержащий отдельные файлы `.eml` для формата `eml`, а также папки `Contacts` с VCF и `Calendars` с ICS. |
+
+Все форматы экспорта сохраняют контакты, календари и события календаря. Переносимые ZIP-архивы EML/MBOX упорядочивают VCF-файлы по адресным книгам в `Contacts`, а ресурсы событий или задач ICS — по календарям в `Calendars`. Необработанный SQLite сохраняет те же записи в нативных таблицах.
 
 > **Совет:** Если у вас есть файлы резервных копий `.sqlite` и вы хотите конвертировать их в файлы `.eml` локально, используйте наш автономный CLI-инструмент **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Он работает на Windows, Linux и macOS и не требует подключения к сети.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Как конвертировать резервные копии SQLite в файлы EML {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Если вы скачали или сохранили резервные копии SQLite (либо из нашего стандартного хранилища, либо из вашего собственного [пользовательского S3 бакета](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), вы можете конвертировать их в стандартные файлы `.eml` с помощью нашего автономного CLI-инструмента **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. Файлы EML можно открыть в любом почтовом клиенте ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) и др.) или импортировать в другие почтовые серверы.
+Если вы скачали или сохранили резервные копии SQLite (либо из нашего стандартного хранилища, либо из вашего собственного [пользовательского S3 бакета](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), вы можете конвертировать их в стандартные файлы `.eml` с помощью нашего автономного CLI-инструмента **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. Файлы EML можно открыть в любом почтовом клиенте ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) и др.) или импортировать в другие почтовые серверы. Защищенный паролем ZIP-архив конвертера также содержит контакты VCF по адресным книгам в `Contacts` и события или задачи ICS по календарям в `Calendars`.
 
 #### Установка {#installation-1}
 
@@ -2349,6 +2351,8 @@ Tasks.org — популярный менеджер задач с открыты
 Пожалуйста, ознакомьтесь с разделом [Письма](/email-api#outbound-emails) в нашей документации по API для вариантов, примеров и дополнительной информации.
 
 Для отправки исходящих писем через наш API вы должны использовать ваш API токен, доступный в разделе [Моя безопасность](/my-account/security).
+
+Вы можете отключить свой API токен с помощью запроса DELETE на /v1/account/api-token. Для его повторного включения необходимо войти в раздел [Моя безопасность](/my-account/security) и сбросить токен, что создаст новый ключ.
 
 ### Поддерживаете ли вы получение писем через IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -5084,11 +5088,13 @@ Forward Email полагается исключительно на двух кл
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

@@ -1172,9 +1172,11 @@ Tre sikkerhetskopiformater støttes:
 
 | Format   | Extension | Beskrivelse                                                                 |
 | -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | Rå kryptert SQLite-databaseøyeblikksbilde (standard for automatiske IMAP-sikkerhetskopier) |
-| `mbox`   | `.zip`    | Passordbeskyttet ZIP som inneholder postkasse i mbox-format                 |
-| `eml`    | `.zip`    | Passordbeskyttet ZIP som inneholder individuelle `.eml` filer per melding   |
+| `sqlite` | `.sqlite` | Rå kryptert `sqlite`-øyeblikksbilde (`.sqlite`) som inneholder poster for postboks, kontakter, kalendere og kalenderhendelser; standard automatisk IMAP-sikkerhetskopi. |
+| `mbox` | `.zip` | Passordbeskyttet `.zip` som inneholder postboks-`mbox`-filer pluss `Contacts` VCF- og `Calendars` ICS-mapper. |
+| `eml` | `.zip` | Passordbeskyttet `.zip` i `eml`-format som inneholder individuelle `.eml`-filer pluss `Contacts` VCF- og `Calendars` ICS-mapper. |
+
+Alle eksportformater bevarer kontakter, kalendere og kalenderhendelser. Portable EML/MBOX `.zip`-filer organiserer VCF-filer etter adressebok under `Contacts` og ICS-hendelses- eller oppgaveressurser etter kalender under `Calendars`. Rå SQLite beholder de samme postene i native tabeller.
 
 > **Tips:** Hvis du har `.sqlite` sikkerhetskopifiler og ønsker å konvertere dem til `.eml` filer lokalt, bruk vårt frittstående CLI-verktøy **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Det fungerer på Windows, Linux og macOS og krever ikke nettverkstilkobling.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Hvordan konverterer jeg SQLite-sikkerhetskopier til EML-filer {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Hvis du laster ned eller lagrer SQLite-sikkerhetskopier (enten fra vår standardlagring eller din egen [tilpassede S3-bøtte](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), kan du konvertere dem til standard `.eml`-filer ved hjelp av vårt frittstående CLI-verktøy **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML-filer kan åpnes med hvilken som helst e-postklient ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), osv.) eller importeres til andre e-postservere.
+Hvis du laster ned eller lagrer SQLite-sikkerhetskopier (enten fra vår standardlagring eller din egen [tilpassede S3-bøtte](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), kan du konvertere dem til standard `.eml`-filer ved hjelp av vårt frittstående CLI-verktøy **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. EML-filer kan åpnes med hvilken som helst e-postklient ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), osv.) eller importeres til andre e-postservere. Konvertererens passordbeskyttede `.zip` inneholder også VCF-kontakter etter adressebok under `Contacts` og ICS-kalenderhendelser eller -oppgaver etter kalender under `Calendars`.
 
 #### Installasjon {#installation-1}
 
@@ -2350,6 +2352,8 @@ Ja, fra og med mai 2023 støtter vi sending av e-post med API som et tillegg for
 Se vår seksjon om [E-poster](/email-api#outbound-emails) i vår API-dokumentasjon for alternativer, eksempler og mer innsikt.
 
 For å sende utgående e-post med vår API må du bruke din API-token som er tilgjengelig under [Min sikkerhet](/my-account/security).
+
+Du kan deaktivere API-tokenet umiddelbart ved å sende en DELETE-forespørsel til /v1/account/api-token, og reaktivering krever en tilbakestilling av tokenet på My Security.
 
 ### Støtter dere mottak av e-post med IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -5085,11 +5089,13 @@ Denne nye regelen tillater kun følgende domenenavnutvidelser å brukes på vår
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

@@ -3383,6 +3383,57 @@
         }
       }
     },
+    "/v1/account/api-token": {
+      "delete": {
+        "tags": [
+          "Счет"
+        ],
+        "summary": "Отключить API-токен",
+        "description": "`DELETE /v1/account/api-token` немедленно отключает аутентифицированный API-токен. Ответ: `{ \"api_token_disabled\": true }`.\\n\\nПосле этого токен перестает проходить аутентификацию HTTP API и WebSocket. Для повторного включения требуется войти в My Security и сбросить токен, что приведет к генерации нового. Аутентификация по паролю псевдонима не меняется.",
+        "operationId": "disableApiToken",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API-токен успешно отключен.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "api_token_disabled"
+                  ],
+                  "properties": {
+                    "api_token_disabled": {
+                      "type": "boolean",
+                      "description": "Это логическое значение принимает значение true после отключения API-токена."
+                    }
+                  }
+                },
+                "example": {
+                  "api_token_disabled": true
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/v1/contacts": {
       "get": {
         "tags": [

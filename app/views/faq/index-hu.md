@@ -1172,9 +1172,11 @@ Három biztonsági mentési formátum támogatott:
 
 | Formátum | Kiterjesztés | Leírás                                                                 |
 | -------- | ------------ | --------------------------------------------------------------------- |
-| `sqlite` | `.sqlite`    | Nyers titkosított SQLite adatbázis pillanatkép (alapértelmezett automatikus IMAP mentésekhez) |
-| `mbox`   | `.zip`       | Jelszóval védett ZIP, amely a postaládát mbox formátumban tartalmazza |
-| `eml`    | `.zip`       | Jelszóval védett ZIP, amely egyedi `.eml` fájlokat tartalmaz üzenetenként |
+| `sqlite` | `.sqlite` | Nyers, titkosított `sqlite` pillanatkép (`.sqlite`), amely tartalmazza a levelezőláda, névjegy, naptár és naptáresemény rekordokat; alapértelmezett automatikus IMAP mentés. |
+| `mbox` | `.zip` | Jelszóval védett `.zip` fájl, amely tartalmazza a levelezőláda `mbox` fájljait, valamint a `Contacts` VCF és `Calendars` ICS mappákat. |
+| `eml` | `.zip` | Jelszóval védett `.zip` fájl, amely egyedi `eml` (`.eml`) fájlokat, valamint a `Contacts` VCF és `Calendars` ICS mappákat tartalmazza. |
+
+Minden exportálási formátum megőrzi a névjegyeket, naptárakat és naptáreseményeket. A hordozható EML/MBOX ZIP-ek a VCF fájlokat címjegyzék szerint a `Contacts`, az ICS esemény- vagy feladatforrásokat pedig naptár szerint a `Calendars` mappába rendezik. A nyers SQLite ugyanezeket a rekordokat natív táblákban tárolja.
 
 > **Tipp:** Ha rendelkezel `.sqlite` biztonsági mentési fájlokkal és helyben szeretnéd őket `.eml` fájlokká konvertálni, használd önálló CLI eszközünket, a **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**-t. Ez Windows, Linux és macOS rendszereken működik, és nem igényel hálózati kapcsolatot.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Hogyan konvertálhatom az SQLite mentéseket EML fájlokká {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Ha letölti vagy tárolja az SQLite mentéseket (akár az alapértelmezett tárolónkból, akár a saját [egyedi S3 vödréből](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), azokat a szabványos `.eml` fájlokká alakíthatja a különálló CLI eszközünkkel, a **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** segítségével. Az EML fájlok bármelyik e-mail klienssel megnyithatók ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) stb.), vagy importálhatók más levelezőszerverekbe.
+Ha letölti vagy tárolja az SQLite mentéseket (akár az alapértelmezett tárolónkból, akár a saját [egyedi S3 vödréből](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), azokat a szabványos `.eml` fájlokká alakíthatja a különálló CLI eszközünkkel, a **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** segítségével. Az EML fájlok bármelyik e-mail klienssel megnyithatók ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) stb.), vagy importálhatók más levelezőszerverekbe. A konvertáló jelszóval védett ZIP-fájlja szintén tartalmazza a VCF névjegyeket címjegyzék szerint a `Contacts`, az ICS naptáreseményeket vagy feladatokat pedig naptár szerint a `Calendars` mappában.
 
 #### Telepítés {#installation-1}
 
@@ -2349,6 +2351,8 @@ Igen, 2023 májusa óta támogatjuk az e-mailek küldését API-n keresztül, mi
 Kérjük, tekintsd meg az API dokumentációnk [E-mailek](/email-api#outbound-emails) szakaszát a lehetőségek, példák és további információk érdekében.
 
 Az API-n keresztüli kimenő e-mail küldéshez használd az [Saját biztonságom](/my-account/security) alatt elérhető API tokenedet.
+
+Az API-tokent a `/v1/account/api-token` végpontra küldött `DELETE` kéréssel tilthatod le; az újbóli engedélyezéshez a token alaphelyzetbe állítása szükséges a [Saját biztonságom](/my-account/security) oldalon.
 
 ### Támogatjátok az e-mailek fogadását IMAP-on keresztül? {#do-you-support-receiving-email-with-imap}
 
@@ -5084,11 +5088,13 @@ Ez az új szabály csak az alábbi domain névkiterjesztések használatát enge
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>

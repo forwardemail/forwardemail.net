@@ -3383,6 +3383,57 @@
         }
       }
     },
+    "/v1/account/api-token": {
+      "delete": {
+        "tags": [
+          "Hesap"
+        ],
+        "summary": "API anahtarını devre dışı bırak",
+        "description": "DELETE /v1/account/api-token uç noktası, kimliği doğrulanmış API anahtarını anında devre dışı bırakır. Yanıt { \"api_token_disabled\": true } şeklindedir.\\n\\nBu işlemden sonra, anahtar HTTP API ve WebSocket kimlik doğrulamasında başarısız olur. Tekrar etkinleştirmek için My Security ([Hesabım Güvenlik](/my-account/security)) sayfasında oturum açılması ve anahtarın sıfırlanması gerekir; bu işlem yeni bir anahtar oluşturur. Takma ad şifresi (alias-password) kimlik doğrulaması değişmez.",
+        "operationId": "disableApiToken",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API anahtarı başarıyla devre dışı bırakıldı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "api_token_disabled"
+                  ],
+                  "properties": {
+                    "api_token_disabled": {
+                      "type": "boolean",
+                      "description": "API anahtarı devre dışı bırakıldıktan sonra bu boolean değeri true olur."
+                    }
+                  }
+                },
+                "example": {
+                  "api_token_disabled": true
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/v1/contacts": {
       "get": {
         "tags": [

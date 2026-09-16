@@ -1860,31 +1860,6 @@ Emails.statics.queue = async function (
         logger.fatal(err);
       }
 
-      /*
-      // if any of the domain admins are admins then don't ban
-      const adminExists = await Users.exists({
-        _id: {
-          $in: domain.members
-            .filter((m) => m.group === 'admin')
-            .map((m) =>
-              typeof m.user === 'object' && typeof m?.user?._id === 'object'
-                ? m.user._id
-                : m.user
-            )
-        },
-        group: 'admin'
-      });
-
-      // store when we sent this email
-      if (!adminExists)
-        await Domains.findByIdAndUpdate(domain._id, {
-          $set: {
-            smtp_suspended_sent_at: new Date(),
-            is_smtp_suspended: true
-          }
-        });
-      */
-
       // needs to be forbidden so it gets mapped to 5xx error
       const error = Boom.forbidden(messages.join(' '));
       error.scan = scan;

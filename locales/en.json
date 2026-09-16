@@ -19729,5 +19729,6 @@
   "Sieve script security error: %s": "Sieve script security error: %s",
   "Prevented outbound SMTP message for <span class=\"notranslate\">%s</span>": "Prevented outbound SMTP message for <span class=\"notranslate\">%s</span>",
   "Message prevented": "Message prevented",
-  "virus": "virus"
+  "virus": "virus",
+  "This API token has been disabled. Generate a new API token from your account security settings to enable API access.": "This API token has been disabled. Generate a new API token from your account security settings to enable API access."
 }

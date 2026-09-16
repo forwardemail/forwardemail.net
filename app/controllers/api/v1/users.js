@@ -162,6 +162,12 @@ async function retrieve(ctx) {
   }
 }
 
+async function disableAPIToken(ctx) {
+  ctx.state.user[config.userFields.apiTokenDisabled] = true;
+  ctx.state.user = await ctx.state.user.save();
+  ctx.body = { [config.userFields.apiTokenDisabled]: true };
+}
+
 async function update(ctx) {
   const { body } = ctx.request;
 
@@ -201,6 +207,7 @@ async function update(ctx) {
 module.exports = {
   create,
   retrieve,
+  disableAPIToken,
   update,
   updateAliasSettingsForContext
 };

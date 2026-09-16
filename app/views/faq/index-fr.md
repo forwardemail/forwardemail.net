@@ -1172,9 +1172,11 @@ Trois formats de sauvegarde sont pris en charge :
 
 | Format   | Extension | Description                                                                 |
 | -------- | --------- | --------------------------------------------------------------------------- |
-| `sqlite` | `.sqlite` | Instantané brut de la base de données SQLite chiffrée (par défaut pour les sauvegardes IMAP automatiques) |
-| `mbox`   | `.zip`    | ZIP protégé par mot de passe contenant la boîte aux lettres au format mbox  |
-| `eml`    | `.zip`    | ZIP protégé par mot de passe contenant des fichiers `.eml` individuels par message |
+| `sqlite` | `.sqlite` | Instantané `sqlite` (`.sqlite`) chiffré brut contenant les enregistrements de boîte aux lettres, de contacts, de calendriers et d'événements de calendrier ; sauvegarde IMAP automatique par défaut. |
+| `mbox` | `.zip` | Archive `.zip` protégée par mot de passe contenant les fichiers `mbox` de boîte aux lettres ainsi que les dossiers `Contacts` (VCF) et `Calendars` (ICS). |
+| `eml` | `.zip` | Archive `.zip` protégée par mot de passe contenant des fichiers `.eml` (`eml`) individuels ainsi que les dossiers `Contacts` (VCF) et `Calendars` (ICS). |
+
+Tous les formats d'exportation préservent les contacts, les calendriers et les événements de calendrier. Les archives ZIP EML/MBOX portables organisent les fichiers VCF par carnet d'adresses sous `Contacts` et les ressources d'événements ou de tâches ICS par calendrier sous `Calendars`. Le SQLite brut conserve les mêmes enregistrements dans des tables natives.
 
 > **Astuce :** Si vous avez des fichiers de sauvegarde `.sqlite` et souhaitez les convertir localement en fichiers `.eml`, utilisez notre outil CLI autonome **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**. Il fonctionne sous Windows, Linux et macOS et ne nécessite pas de connexion réseau.
 
@@ -1248,7 +1250,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### Comment convertir les sauvegardes SQLite en fichiers EML {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-Si vous téléchargez ou stockez des sauvegardes SQLite (soit depuis notre stockage par défaut, soit depuis votre propre [bucket S3 personnalisé](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), vous pouvez les convertir en fichiers `.eml` standards en utilisant notre outil CLI autonome **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. Les fichiers EML peuvent être ouverts avec n'importe quel client mail ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), etc.) ou importés dans d'autres serveurs de messagerie.
+Si vous téléchargez ou stockez des sauvegardes SQLite (soit depuis notre stockage par défaut, soit depuis votre propre [bucket S3 personnalisé](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), vous pouvez les convertir en fichiers `.eml` standards en utilisant notre outil CLI autonome **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**. Les fichiers EML peuvent être ouverts avec n'importe quel client mail ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), etc.) ou importés dans d'autres serveurs de messagerie. L'archive `.zip` protégée par mot de passe du convertisseur contient également les contacts VCF par carnet d'adresses sous `Contacts` et les événements ou tâches de calendrier ICS par calendrier sous `Calendars`.
 
 #### Installation {#installation-1}
 
@@ -2350,6 +2352,8 @@ Oui, depuis mai 2023, nous prenons en charge l'envoi d'emails via API en tant qu
 Veuillez consulter notre section sur les [Emails](/email-api#outbound-emails) dans notre documentation API pour les options, exemples et plus d'informations.
 
 Pour envoyer des emails sortants avec notre API, vous devez utiliser votre jeton API disponible sous [Ma sécurité](/my-account/security).
+
+L'appel de ``DELETE /v1/account/api-token`` désactive le jeton API, qui ne peut alors plus authentifier les requêtes HTTP API ou WebSocket. L'accès API peut uniquement être réactivé en se connectant à la page [/my-account/security](/my-account/security) pour réinitialiser le jeton, ce qui génère un jeton de remplacement ; l'authentification par alias et mot de passe reste inchangée.
 
 ### Prenez-vous en charge la réception d'emails via IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -5085,11 +5089,13 @@ Cette nouvelle règle autorise uniquement les extensions de noms de domaine suiv
 <ul class="list-inline">
   <li class="list-inline-item"><code class="notranslate">ac</code></li>
   <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ae</code></li>
   <li class="list-inline-item"><code class="notranslate">ag</code></li>
   <li class="list-inline-item"><code class="notranslate">ai</code></li>
   <li class="list-inline-item"><code class="notranslate">al</code></li>
   <li class="list-inline-item"><code class="notranslate">am</code></li>
   <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar</code></li>
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>
