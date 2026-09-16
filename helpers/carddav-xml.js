@@ -10,6 +10,8 @@ const Boom = require('@hapi/boom');
 const xmlbuilder = require('xmlbuilder');
 const { parseStringPromise, processors } = require('xml2js');
 
+const assertSafeXml = require('#helpers/assert-safe-xml');
+
 /**
  * Encode special characters for XML content to prevent parsing errors
  * @param {string} str - String to encode
@@ -40,11 +42,8 @@ async function parseXML(xmlString) {
   if (xmlString.length > 1024 * 1024)
     throw Boom.badRequest('XML input too large');
 
-  // Check for XML bomb patterns
-  if (xmlString.includes('<!ENTITY') || xmlString.includes('<!DOCTYPE'))
-    throw Boom.badRequest(
-      'XML entities and DOCTYPE declarations are not allowed'
-    );
+  // Check for XML bomb / XXE patterns (case-insensitive, shared helper)
+  assertSafeXml(xmlString);
 
   // Parse with security options
   return parseStringPromise(xmlString, {

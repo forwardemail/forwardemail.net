@@ -37,6 +37,7 @@
 
 const { Buffer } = require('node:buffer');
 const dns = require('node:dns');
+const net = require('node:net');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
@@ -65,22 +66,42 @@ const loggerDefault = require('#helpers/logger');
 // Use a custom connect.lookup that validates resolved IPs at connect time
 // to prevent DNS rebinding attacks (TOCTOU gap between isPrivateHostResolved
 // pre-check and the actual TCP connection) and redirect-to-private-IP attacks.
-const dispatcher = new undici.Agent({
-  connect: {
-    lookup(hostname, options, fn) {
-      dns.lookup(hostname, options, (err, address, family) => {
-        if (err) return fn(err);
-        if (address && isPrivateHost(address)) {
-          const error = new Error(
-            `Resolved IP ${address} is a private/reserved address`
-          );
-          error.code = 'EPRIVATEADDR';
-          return fn(error);
-        }
+//
+// NOTE: Node's net.connect() only invokes `lookup` for hostnames. An
+// IP-literal target -- e.g. a redirect to http://169.254.169.254/ -- is
+// connected to directly and never reaches the validating lookup. Because
+// the redirect interceptor below follows up to 5 hops, the private-address
+// invariant must be enforced at the connection itself so it holds on every
+// hop. The custom `connect` handles IP literals; hostnames still flow
+// through the validating lookup.
+const baseConnect = undici.buildConnector({
+  lookup(hostname, options, fn) {
+    dns.lookup(hostname, options, (err, address, family) => {
+      if (err) return fn(err);
+      if (address && isPrivateHost(address)) {
+        const error = new Error(
+          `Resolved IP ${address} is a private/reserved address`
+        );
+        error.code = 'EPRIVATEADDR';
+        return fn(error);
+      }
 
-        return fn(null, address, family);
-      });
+      return fn(null, address, family);
+    });
+  }
+});
+
+const dispatcher = new undici.Agent({
+  connect(opts, cb) {
+    if (net.isIP(opts.hostname) && isPrivateHost(opts.hostname)) {
+      const error = new Error(
+        `Refusing to connect to private/reserved address ${opts.hostname}`
+      );
+      error.code = 'EPRIVATEADDR';
+      return cb(error);
     }
+
+    return baseConnect(opts, cb);
   }
 }).compose(undici.interceptors.redirect({ maxRedirections: 5 }));
 

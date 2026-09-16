@@ -11,6 +11,7 @@ const isSANB = require('is-string-and-not-blank');
 const { XMLParser } = require('fast-xml-parser');
 
 const logger = require('#helpers/logger');
+const { isSafeXml } = require('#helpers/assert-safe-xml');
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -33,7 +34,9 @@ function parseXmlReport(xmlContent) {
 
     // Defense-in-depth: reject XML with DOCTYPE or ENTITY declarations
     // to prevent potential XXE attacks from malicious DMARC reports.
-    if (xmlString.includes('<!ENTITY') || xmlString.includes('<!DOCTYPE')) {
+    // Case-insensitive shared guard (a lowercase <!doctype bypassed the
+    // previous substring check, which only matched uppercase).
+    if (!isSafeXml(xmlString)) {
       logger.warn('DMARC report rejected: contains DOCTYPE or ENTITY');
       return null;
     }

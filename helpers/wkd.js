@@ -119,9 +119,39 @@ function WKD(resolver, client) {
     try {
       const response = await undici.fetch(url, {
         signal: abortController.signal,
-        dispatcher
+        dispatcher,
+        // WKD keys are served as raw binary (application/octet-stream); ask
+        // well-behaved servers not to compress at all.
+        headers: { 'accept-encoding': 'identity' }
       });
       clearTimeout(t);
+
+      //
+      // A compressed WKD response is never legitimate. `undici.fetch`
+      // auto-decompresses a chained `Content-Encoding` header, and a
+      // malicious WKD server can nest thousands of gzip layers to burn CPU
+      // and memory (GHSA-g9mf-h72j-4rw9). The upstream fix ships in undici
+      // >=7.18.2, which requires Node 20 (undici >=7.13.0 needs the `File`
+      // global), so it cannot be taken on Node 18. The decompression work
+      // accrues while the body is consumed, so reject before reading it.
+      //
+      const contentEncoding = response.headers.get('content-encoding');
+      if (
+        contentEncoding &&
+        contentEncoding.trim().toLowerCase() !== 'identity'
+      ) {
+        try {
+          await response.body?.cancel();
+        } catch {}
+
+        // (the catch block below destroys the dispatcher and logs context)
+        const err = new Error(
+          `Refusing compressed WKD response (content-encoding: ${contentEncoding})`
+        );
+        err.code = 'EWKDCOMPRESSED';
+        throw err;
+      }
+
       // Close the agent after the response is obtained to avoid leaking
       // sockets.  The response body stream remains readable after close().
       dispatcher.close();

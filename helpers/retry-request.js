@@ -4,6 +4,7 @@
  */
 
 const timers = require('node:timers/promises');
+const dns = require('node:dns');
 const undici = require('undici');
 const ms = require('ms');
 
@@ -65,48 +66,54 @@ async function retryRequest(url, opts = {}, count = 1) {
         // bodyTimeout: ms(DURATION),
         //
         //
-        // TODO: there is a bug in tangerine where if we supply
+        // NOTE: there is a bug in tangerine where if we supply
         //       a custom resolver in self-hosted mode then
         //       it causes an uncaught exception it appears
+        //       (TypeError: Cannot read properties of undefined (reading 'length'))
         //
+        //       That bug is specific to routing resolution through the custom
+        //       Tangerine resolver. It is NOT a reason to skip the private-address
+        //       validation itself: without a validating connect-time lookup the
+        //       DNS-rebinding TOCTOU between the `isPrivateHostResolved` pre-check
+        //       and the TCP connection is left open (the pre-check reads Tangerine's
+        //       Redis cache while a plain Agent uses the system resolver, so the two
+        //       can disagree without any timing race). In self-hosted mode we
+        //       therefore resolve via the system resolver instead, but always
+        //       validate the resolved address before connecting.
         //
-        // TODO: an uncaught exception occurs here in self hosting sometimes (?)
-        // TypeError: Cannot read properties of undefined (reading 'length')
-        // (which means it occurs in tangerine under the hood)
-        //
-        ...(config.isSelfHosted
-          ? {}
-          : {
-              connect: {
-                lookup(hostname, options, fn) {
-                  opts.resolver
-                    .lookup(hostname, options)
-                    .then((result) => {
-                      //
-                      // prevent DNS rebinding attacks by validating the
-                      // resolved IP at connect time against private ranges
-                      // (mitigates TOCTOU gap between isPrivateHostResolved
-                      // pre-check and the actual TCP connection)
-                      //
-                      if (
-                        config.env !== 'test' &&
-                        result?.address &&
-                        isPrivateHost(result.address)
-                      ) {
-                        const err = new Error(
-                          `Resolved IP ${result.address} is a private/reserved address`
-                        );
-                        err.code = 'EPRIVATEADDR';
-                        fn(err);
-                        return;
-                      }
-
-                      fn(null, result?.address, result?.family);
-                    })
-                    .catch((err) => fn(err));
-                }
+        connect: {
+          lookup(hostname, options, fn) {
+            const validate = (err, address, family) => {
+              if (err) return fn(err);
+              //
+              // prevent DNS rebinding attacks by validating the
+              // resolved IP at connect time against private ranges
+              // (mitigates TOCTOU gap between isPrivateHostResolved
+              // pre-check and the actual TCP connection)
+              //
+              if (config.env !== 'test' && address && isPrivateHost(address)) {
+                const err = new Error(
+                  `Resolved IP ${address} is a private/reserved address`
+                );
+                err.code = 'EPRIVATEADDR';
+                fn(err);
+                return;
               }
-            })
+
+              fn(null, address, family);
+            };
+
+            if (config.isSelfHosted) {
+              dns.lookup(hostname, options, validate);
+              return;
+            }
+
+            opts.resolver
+              .lookup(hostname, options)
+              .then((result) => validate(null, result?.address, result?.family))
+              .catch((err) => fn(err));
+          }
+        }
       });
 
     const response = await undici.request(url, opts);

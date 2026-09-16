@@ -969,9 +969,31 @@ class SieveIntegration {
     // Apply changes
     for (const change of changes) {
       if (change.action === 'add') {
+        //
+        // Header text is emitted verbatim below, so this is the last point
+        // at which an `addheader` name/value from a user's script can be
+        // made safe. The engine blocks protected header NAMES, but a value
+        // (or name) containing CR/LF would otherwise be serialized as one or
+        // more additional raw header lines -- smuggling e.g.
+        // `Authentication-Results: ... dkim=pass` through an allowed header
+        // and bypassing the protected-header check entirely. RFC 5322 field
+        // names are printable ASCII excluding ':'; a header value has no
+        // semantic newlines (folding is transport-only), so unfold to a space.
+        //
+        if (
+          typeof change.name !== 'string' ||
+          !/^[\u0021-\u0039\u003B-\u007E]+$/.test(change.name)
+        ) {
+          continue;
+        }
+
+        const safeValue = String(change.value ?? '')
+          .replace(/\r\n|\r|\n/g, ' ')
+          .replaceAll('\u0000', '');
+
         const newHeader = {
           name: change.name,
-          value: ' ' + change.value
+          value: ' ' + safeValue
         };
         if (change.last) {
           // Add at end of headers
@@ -1136,13 +1158,28 @@ class SieveIntegration {
         const subjectMatch =
           message || `Notification from ${context.aliasAddress}`;
 
+        //
+        // The notification is assembled as a raw RFC 5322 string, so the
+        // script-supplied :from / :message / :importance values (and the
+        // mailto target) must not be able to terminate a header line.
+        // Emails.queue() independently enforces that the From header equals
+        // an alias the user owns, so this is defense-in-depth against raw
+        // header injection rather than a standalone control.
+        //
+        const headerSafe = (value) =>
+          String(value ?? '')
+            .replace(/\r\n|\r|\n/g, ' ')
+            .replaceAll('\u0000', '');
+        const fromHeader = headerSafe(from || context.aliasAddress);
+        const toHeader = headerSafe(emailTarget);
+        const subjectHeader = headerSafe(subjectMatch);
+        const importanceHeader = headerSafe(importance || 'normal');
+
         await Emails.queue({
           info: {
-            message: `From: ${
-              from || context.aliasAddress
-            }\r\nTo: ${emailTarget}\r\nSubject: ${subjectMatch}\r\nX-Sieve-Notify: true\r\nX-Sieve-Importance: ${
-              importance || 'normal'
-            }\r\n\r\n${message || 'You have received a notification.'}`,
+            message: `From: ${fromHeader}\r\nTo: ${toHeader}\r\nSubject: ${subjectHeader}\r\nX-Sieve-Notify: true\r\nX-Sieve-Importance: ${importanceHeader}\r\n\r\n${
+              message || 'You have received a notification.'
+            }`,
             envelope: {
               from: from || context.aliasAddress,
               to: [emailTarget]
