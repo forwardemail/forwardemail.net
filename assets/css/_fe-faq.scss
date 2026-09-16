@@ -3,13 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// Simplified FAQ. Shares the .fe-landing wrapper and the primitives in
-// _fe-landing.scss; only what those do not cover lives here. The page
-// carries no images by design.
-
-.fe-faq-hero {
-  padding-block: calc(4rem + var(--fe-nav-offset)) 3rem;
-}
+// Simplified FAQ. Builds on _fe-base.scss and _fe-primitives.scss; only what
+// those do not cover lives here. The page carries no images by design.
 
 .fe-faq-hero__inner {
   max-width: 44rem;
@@ -18,8 +13,6 @@
 
 .fe-faq-hero__title {
   margin-bottom: var(--fe-space-6);
-  font-size: var(--fe-text-display-lg);
-  color: var(--fe-fg-primary);
 }
 
 .fe-faq-hero__count {
@@ -40,34 +33,22 @@
 
 .fe-faq-search__icon {
   position: absolute;
-  left: var(--fe-space-4);
+  inset-inline-start: var(--fe-space-4);
   display: flex;
   color: var(--fe-fg-secondary);
   pointer-events: none;
 }
 
+// Composes .fe-field__input; taller and rounder than a form field, with room
+// for the glyph and the clear button at either end.
 .fe-faq-search__input {
-  width: 100%;
   height: 52px;
   padding-inline: 3rem;
-  font-family: var(--fe-font-body);
-  font-size: var(--fe-text-body-md);
-  color: var(--fe-fg-primary);
-  background-color: var(--fe-bg-raised);
-  border: 1px solid var(--fe-border-control);
   border-radius: var(--fe-radius-lg);
-  appearance: none;
 }
 
 .fe-faq-search__input::placeholder {
-  color: var(--fe-fg-secondary);
   opacity: 1;
-}
-
-.fe-faq-search__input:focus {
-  border-color: var(--fe-focus-ring);
-  outline: 2px solid var(--fe-focus-ring);
-  outline-offset: var(--fe-focus-offset);
 }
 
 // The browser's own search clear button is inconsistent across engines and
@@ -78,7 +59,7 @@
 
 .fe-faq-search__clear {
   position: absolute;
-  right: var(--fe-space-3);
+  inset-inline-end: var(--fe-space-3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,10 +81,6 @@
 // ============================================
 // LAYOUT
 // ============================================
-
-.fe-faq-body {
-  padding-block: 3rem 5rem;
-}
 
 .fe-faq-layout {
   display: grid;
@@ -177,8 +154,6 @@
 .fe-faq-topic__title {
   padding-bottom: var(--fe-space-3);
   margin-bottom: var(--fe-space-2);
-  font-size: var(--fe-text-display-sm);
-  color: var(--fe-fg-primary);
   border-bottom: 1px solid var(--fe-border-default);
 }
 
@@ -186,9 +161,6 @@
   min-width: 0;
   padding-block: var(--fe-space-4);
   overflow-wrap: anywhere;
-  font-size: var(--fe-text-body-sm);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
 }
 
 .fe-faq-list {
@@ -229,11 +201,6 @@
   color: var(--fe-fg-link);
 }
 
-.fe-faq-answer__q:focus-visible {
-  outline: 2px solid var(--fe-focus-ring);
-  outline-offset: var(--fe-focus-offset);
-}
-
 .fe-faq-answer__text {
   font-weight: var(--fe-weight-medium);
 }
@@ -262,9 +229,6 @@
   // width, which bare URLs as link text otherwise inflate. Reset in pre below.
   overflow-wrap: anywhere;
   padding-bottom: var(--fe-space-6);
-  font-size: var(--fe-text-body-sm);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
 }
 
 .fe-faq-empty {
@@ -337,7 +301,7 @@
 .fe-faq-prose blockquote {
   padding: var(--fe-space-3) var(--fe-space-4);
   margin-block: 0 var(--fe-space-4);
-  border-left: 2px solid var(--fe-border-strong);
+  border-inline-start: 2px solid var(--fe-border-strong);
 }
 
 // Tables are the widest thing in any answer, so they scroll inside their own
@@ -354,7 +318,7 @@
 .fe-faq-prose th,
 .fe-faq-prose td {
   padding: var(--fe-space-2) var(--fe-space-3);
-  text-align: left;
+  text-align: start;
   border: 1px solid var(--fe-border-subtle);
 }
 
@@ -364,9 +328,9 @@
 }
 
 // Callouts in authored markdown: bootstrap `div.alert` and the
-// `div.markdown-alert` blocks markdown-it-github-alerts emits. Two classes
-// deep so they outrank bootstrap and app-dark's re-emitted copy without
-// !important.
+// `div.markdown-alert` blocks markdown-it-github-alerts emits. The
+// !importants out-rank bootstrap's utilities and app-dark's re-emitted copy,
+// which the authored markdown carries and this file cannot remove.
 .fe-faq-prose .alert,
 .fe-faq-prose .markdown-alert {
   padding: var(--fe-space-3) var(--fe-space-4) !important;
@@ -375,7 +339,7 @@
   color: var(--fe-fg-secondary) !important;
   background-color: var(--fe-bg-sunken) !important;
   border: 0 !important;
-  border-left: 3px solid var(--fe-border-strong) !important;
+  border-inline-start: 3px solid var(--fe-border-strong) !important;
   border-radius: var(--fe-radius-sm) !important;
 }
 
@@ -394,22 +358,22 @@
 // its contrast cannot depend on which variant an author picked.
 .fe-faq-prose .alert-danger,
 .fe-faq-prose .markdown-alert-caution {
-  border-left-color: var(--fe-danger) !important;
+  border-inline-start-color: var(--fe-danger) !important;
 }
 
 .fe-faq-prose .alert-warning,
 .fe-faq-prose .markdown-alert-important {
-  border-left-color: var(--fe-caution) !important;
+  border-inline-start-color: var(--fe-caution) !important;
 }
 
 .fe-faq-prose .alert-success,
 .fe-faq-prose .markdown-alert-tip {
-  border-left-color: var(--fe-mint) !important;
+  border-inline-start-color: var(--fe-mint) !important;
 }
 
 .fe-faq-prose .alert-primary,
 .fe-faq-prose .markdown-alert-note {
-  border-left-color: var(--fe-primary) !important;
+  border-inline-start-color: var(--fe-primary) !important;
 }
 
 .fe-faq-prose .alert a {
@@ -427,10 +391,6 @@
 // FOOT
 // ============================================
 
-.fe-faq-foot {
-  padding-block: 4rem;
-}
-
 .fe-faq-foot__inner {
   max-width: 40rem;
   text-align: center;
@@ -438,28 +398,17 @@
 
 .fe-faq-foot__title {
   margin-bottom: var(--fe-space-3);
-  font-size: var(--fe-text-display-sm);
-  color: var(--fe-fg-primary);
 }
 
 .fe-faq-foot__body {
   margin-bottom: var(--fe-space-6);
-  font-size: var(--fe-text-body-sm);
-  color: var(--fe-fg-secondary);
-}
-
-.fe-faq-foot__actions {
-  display: flex;
-  gap: var(--fe-space-3);
-  flex-wrap: wrap;
-  justify-content: center;
 }
 
 // ============================================
 // BREAKPOINTS
 // ============================================
 
-@media (min-width: 1024px) {
+@include fe-up(lg) {
   .fe-faq-layout {
     grid-template-columns: 15rem minmax(0, 1fr);
     gap: 4rem;
@@ -474,48 +423,4 @@
     max-height: calc(100vh - var(--fe-nav-offset) - var(--fe-space-8));
     overflow-y: auto;
   }
-}
-
-@media (max-width: 767px) {
-  .fe-faq-hero {
-    padding-block: calc(2.5rem + var(--fe-nav-offset)) 2rem;
-  }
-
-  .fe-faq-body {
-    padding-block: 2rem 3rem;
-  }
-
-  .fe-faq-foot {
-    padding-block: 3rem;
-  }
-
-  .fe-faq-foot__actions .fe-btn {
-    width: 100%;
-  }
-}
-
-[dir='rtl'] .fe-faq-search__icon {
-  right: var(--fe-space-4);
-  left: auto;
-}
-
-[dir='rtl'] .fe-faq-search__clear {
-  right: auto;
-  left: var(--fe-space-3);
-}
-
-[dir='rtl'] .fe-faq-prose blockquote {
-  border-right: 2px solid var(--fe-border-strong);
-  border-left: 0;
-}
-
-[dir='rtl'] .fe-faq-prose .alert,
-[dir='rtl'] .fe-faq-prose .markdown-alert {
-  border-right: 3px solid var(--fe-border-strong) !important;
-  border-left: 0 !important;
-}
-
-[dir='rtl'] .fe-faq-prose th,
-[dir='rtl'] .fe-faq-prose td {
-  text-align: right;
 }

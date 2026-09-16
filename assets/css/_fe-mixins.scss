@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Breakpoints for the fe design system. Deliberately not bootstrap's grid, so
+// the redesigned pages are not coupled to the framework. Emits nothing on its
+// own; every fe file writes its media queries through these two mixins so a
+// min/max pair can never drift apart:
+//   @include fe-up(lg) { … }     min-width: 1024px
+//   @include fe-down(md) { … }   max-width: 767px
+
+$fe-breakpoints: (
+  sm: 480px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px
+);
+
+@mixin fe-up($name) {
+  @media (min-width: map-get($fe-breakpoints, $name)) {
+    @content;
+  }
+}
+
+@mixin fe-down($name) {
+  @media (max-width: map-get($fe-breakpoints, $name) - 1px) {
+    @content;
+  }
+}

@@ -153,9 +153,9 @@ mixin feConsoleView(view, isFirst)
       = t(view.kicker)
 
     h2.fe-console__heading(id=`view-${view.id}-title`)= t(view.title)
-    p.fe-console__promise= t(view.promise)
+    p.fe-text.fe-console__promise= t(view.promise)
 
-    ul.fe-console__cards
+    ul.fe-grid.fe-grid--2.fe-console__cards
       each card in view.cards
         +feConsoleCard(card)
 

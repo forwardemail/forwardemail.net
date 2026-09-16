@@ -187,7 +187,9 @@ async function copyChecksum(button) {
     return;
   }
 
-  for (const other of document.querySelectorAll('.fe-dl-copy.is-copied')) {
+  for (const other of document.querySelectorAll(
+    '.fe-download-copy.is-copied'
+  )) {
     if (other === button) continue;
     other.classList.remove('is-copied');
     if (other.dataset.feCopyTimer) {

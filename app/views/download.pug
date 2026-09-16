@@ -2,21 +2,7 @@ extends layout
 
 block append scripts
   if !isBot(ctx.get('User-Agent'))
-    if config.env === 'test'
-      script(
-        nonce=nonce,
-        defer,
-        src=`${config.urls.web}/js/download.js`,
-        crossorigin="anonymous"
-      )
-    else
-      script(
-        nonce=nonce,
-        defer,
-        src=manifest("js/download.js"),
-        integrity=manifest("js/download.js", "integrity"),
-        crossorigin="anonymous"
-      )
+    +script("js/download.js")
 
 block body
   //- Inlined by pug, so archLabels, formatLabels, formatNotes and

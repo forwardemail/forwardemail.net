@@ -680,28 +680,20 @@ window.addEventListener(
       });
 
     //
-    // The bar is Ink in every state under the site-wide fe-nav restyle, so
-    // the scroll toggle only matters on pages that open with a transparent
-    // bar over a dark hero. _nav.pug marks those with `text-white-required`;
-    // swapping `text-white` for the bg-* classes is what moves the bar from
-    // transparent to Ink glass (see _fe-nav.scss). Everywhere else the bar is
-    // opaque from first paint and needs no scroll handling at all.
+    // The bar is Ink in every state, so the scroll toggle only matters on
+    // pages that open with a transparent bar over a dark fe hero. _nav.pug
+    // marks those with `fe-nav--transparent`; adding `fe-nav--solid` is what
+    // moves the bar to Ink glass (see _fe-nav.scss). Everywhere else the bar
+    // is solid from first paint and needs no scroll handling at all.
     //
-    const $nav = $('.navbar.fixed-top.text-white-required');
+    const $nav = $('.navbar.fixed-top.fe-nav--transparent');
 
     function navbarScroll() {
-      if (
+      $nav.toggleClass(
+        'fe-nav--solid',
         $(window).scrollTop() >= $nav.outerHeight() ||
-        $('.navbar-collapse').hasClass('show')
-      ) {
-        $nav
-          .addClass('bg-white navbar-themed bg-themed border-bottom')
-          .removeClass('text-white');
-      } else {
-        $nav
-          .addClass('text-white')
-          .removeClass('bg-white navbar-themed bg-themed border-bottom');
-      }
+          $('.navbar-collapse').hasClass('show')
+      );
     }
 
     if ($nav.length > 0) {

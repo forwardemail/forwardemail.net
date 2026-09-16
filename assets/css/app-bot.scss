@@ -8,19 +8,26 @@
 // variables
 @import 'variables';
 
-// design system tokens (redesigned landing page)
-// must come after 'variables': the font tokens interpolate $font-family-*
+// fe design system: breakpoint mixins (emit nothing), then the tokens. The
+// tokens must come after 'variables': the font tokens interpolate
+// $font-family-*
+@import 'fe-mixins';
 @import 'fe-tokens';
 
 // app-chrome tokens (--app-*): light values on :root here; app-dark.scss
 // re-points them under prefers-color-scheme: dark
 @import 'app-tokens';
 
-// redesigned marketing pages: landing (plus shared fe primitives and the
-// pricing template hero), then the pages that build on those primitives
-@import 'fe-landing';
-@import 'fe-download';
+// fe design system: the base layer (wrapper, section, type roles, focus),
+// the reusable components, then one file per page or page family that
+// composes them
+@import 'fe-base';
+@import 'fe-primitives';
+@import 'fe-home';
+@import 'fe-marketing';
+@import 'fe-pages';
 @import 'fe-faq';
+@import 'fe-download';
 
 // font awesome
 @import 'font-awesome';

@@ -1,37 +1,9 @@
 extends layout
 
 block append scripts
-  if !isBot(ctx.get('User-Agent'))
-    if config.env === 'test'
-      script(
-        nonce=nonce,
-        defer,
-        src=`${config.urls.web}/js/domain-search.js`,
-        crossorigin="anonymous"
-      )
-    else
-      script(
-        nonce=nonce,
-        defer,
-        src=manifest("js/domain-search.js"),
-        integrity=manifest("js/domain-search.js", "integrity"),
-        crossorigin="anonymous"
-      )
-    if config.env === 'test'
-      script(
-        nonce=nonce,
-        defer,
-        src=`${config.urls.web}/js/hero-console.js`,
-        crossorigin="anonymous"
-      )
-    else
-      script(
-        nonce=nonce,
-        defer,
-        src=manifest("js/hero-console.js"),
-        integrity=manifest("js/hero-console.js", "integrity"),
-        crossorigin="anonymous"
-      )
+  if !isBotUa
+    +script("js/domain-search.js")
+    +script("js/hero-console.js")
 
 block body
   //- Inlined by pug, so feConsoleViews and the +feConsole mixin are in scope
@@ -45,7 +17,7 @@ block body
   include _modal-domain-search
   +modalDomainSearch
   //- modal watch video
-  if !isBot(ctx.get('User-Agent'))
+  if !isBotUa
     #modal-watch-video.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -68,7 +40,7 @@ block body
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/N6zjv40zuIY?autoplay=0"
             )
-  if !isBot(ctx.get('User-Agent'))
+  if !isBotUa
     #modal-for-creators.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -138,8 +110,8 @@ block body
   //- The flush modifier pulls the hero up under the transparent fixed navbar.
   //- It is a separate class from .fe-landing because /download shares that
   //- wrapper but must not pull up when a signed in visitor gets the opaque bar.
-  .fe-landing.fe-landing--flush
-    +feHero(isBot(ctx.get('User-Agent')))
+  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+    +feHero(isBotUa)
     +feProduct
     +fePricing
     //- Replaces the legacy _testimonials parallax and its "Happy Customers"

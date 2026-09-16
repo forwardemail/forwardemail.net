@@ -116,10 +116,24 @@ const developerDocsIcons = [
   )
 ];
 
-const CONCAT_CSS_ORDER = [
-  `${config.buildBase}/css/app-light.css`,
-  `${config.buildBase}/css/app-dark.css`
-];
+// The two halves that concatenate into css/app.css. They are intermediate:
+// css() pulls them out of the stream before anything is written, so they
+// never land in build/ (nothing serves them; only app.css and app-bot.css
+// are referenced). Paths are relative to the assets base the stream carries.
+const CONCAT_CSS_ORDER = ['css/app-light.css', 'css/app-dark.css'];
+const CONCAT_CSS_GLOBS = CONCAT_CSS_ORDER.map(
+  (p) => `${config.assetsBase}/${p}`
+);
+
+// Shared by css() and cssDev(): the transforms every bundle needs.
+function cssPostcssPlugins() {
+  return [
+    postcss100VHFix(),
+    postcssViewportHeightCorrection(),
+    postcssInlineBase64(),
+    postcssPresetEnv()
+  ];
+}
 
 const staticAssets = [
   'assets/**/*',
@@ -211,12 +225,11 @@ const purgeCssOptions = {
       'fa-envelope-open-text',
       'fa-flag-usa',
       'fade',
-      // _fe-testimonials.pug builds these via expressions the pug extractor
-      // cannot see (tone template literal, featured ternary)
-      'fe-proof__card--featured',
-      'fe-proof__dot--primary',
-      'fe-proof__dot--mint',
-      'fe-proof__dot--signal',
+      // The fe design system: every fe-* rule is hand-written for a page that
+      // exists, so there is nothing to purge, and several fe classes are built
+      // from expressions (tone modifiers, state classes added by JS) that the
+      // pug extractor cannot see. One pattern keeps them all.
+      /^fe-/,
       'fixed-bottom',
       'flex-grow-1',
       'floating-label',
@@ -299,30 +312,18 @@ const purgeCssOptions = {
       // reduced navbar for certain locales
       // (manually curated, see `app/views/_nav.pug`)
       'navbar-small',
-      // redesigned landing page navbar (pushed to navbarClasses in _nav.pug)
-      'fe-nav',
-      // download page section modifiers. purgecss-from-pug reads literal class
-      // attributes, and these are built from a template literal in
-      // `_fe-download-platforms.pug` because one mixin renders both groups
-      'fe-dl-group--desktop',
-      'fe-dl-group--mobile',
-      'fe-dl-cards--desktop',
-      'fe-dl-cards--mobile',
+      // eyebrow glyphs on the secondary page headers. _fe-page-header.pug
+      // renders the icon from an option (`i(class=opts.icon)`), which the
+      // pug extractor cannot see, so each icon a page passes is listed here
+      'fa-filter',
+      'fa-mail-bulk',
+      'fa-user-lock',
+      'fa-server',
+      'fa-toolbox',
+      'fa-code',
+      'fa-book',
       // added by assets/js/download.js when a checksum is copied
       'is-copied',
-      // hero console. purgecss-from-pug reads literal class attributes, so it
-      // sees none of these: the tone modifiers are built from a template
-      // literal in `_fe-console.pug` because one mixin renders all five views,
-      // the unrolled modifier is behind a conditional, and the two active
-      // modifiers are only ever added by assets/js/hero-console.js
-      'fe-console--unrolled',
-      'fe-console__view--primary',
-      'fe-console__view--mint',
-      'fe-console__view--signal',
-      'fe-console__view--vault',
-      'fe-console__view--caution',
-      'fe-console__view--active',
-      'fe-console__tab--active',
       // sidebar
       /^sidebar/,
       'nav',
@@ -330,6 +331,11 @@ const purgeCssOptions = {
       'flex-column'
     ])
   ]
+};
+
+const PURGE_APP = {
+  ...purgeCssOptions,
+  content: ['build/**/*.js', 'app/views/**/*.md', 'app/views/**/*.pug']
 };
 
 //
@@ -394,8 +400,46 @@ function faFonts() {
   );
 }
 
+//
+// Development rebuild used by `watch`: everything css() does that changes how
+// a page renders (lint, sass, the postcss transforms, the concatenation) and
+// nothing that only shrinks the file (purge, cssnano, the email bundle). A
+// change shows up in a few seconds instead of most of a minute, and `build`
+// still runs the full css() below, so production output is unaffected.
+//
+function cssDev() {
+  const halves = filter(CONCAT_CSS_GLOBS, { restore: true });
+  return pump(
+    [
+      src('assets/css/**/*.scss', {
+        base: config.assetsBase
+      }),
+      stylelint({
+        reporters: [{ formatter: 'string', console: true }]
+      }),
+      sass().on('error', sass.logError),
+      postcss([...cssPostcssPlugins(), reporter()]),
+      halves,
+      order(CONCAT_CSS_ORDER),
+      concat('css/app.css'),
+      halves.restore,
+      dest(config.buildBase),
+      ...(DEV ? [lr(config.livereload)] : [])
+    ],
+    (err) => {
+      if (err) throw err;
+    }
+  );
+}
+
 function css() {
-  const f = filter(CONCAT_CSS_ORDER);
+  // Holds app-light.css and app-dark.css back while the rest of the stream
+  // (app-bot.css, codemirror.css) goes on; restored after they have been
+  // concatenated into app.css and given their second pass, so the two halves
+  // are never written to disk and the other bundles are not processed twice.
+  const halves = filter(CONCAT_CSS_GLOBS, { restore: true });
+  // dest() above rewrites each file's path to its build location.
+  const appOnly = filter(`${config.buildBase}/css/app.css`);
   return pump(
     [
       src('assets/css/**/*.scss', {
@@ -407,39 +451,27 @@ function css() {
       // sourcemaps.init()
       sass().on('error', sass.logError),
       postcss([
-        postcss100VHFix(),
-        postcssViewportHeightCorrection(),
-        postcssInlineBase64(),
-        postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
+        ...cssPostcssPlugins(),
         cssnano({ autoprefixer: false }),
         reporter()
       ]),
-      purgecss({
-        ...purgeCssOptions,
-        content: ['build/**/*.js', 'app/views/**/*.md', 'app/views/**/*.pug']
-      }),
-      dest(config.buildBase),
-      ...(DEV ? [lr(config.livereload)] : []),
+      purgecss(PURGE_APP),
       // sourcemaps.write('./')
-      f,
-      order(CONCAT_CSS_ORDER, { base: './' }),
+      halves,
+      order(CONCAT_CSS_ORDER),
       concat('css/app.css'),
+      // Second pass over the concatenation so cssnano can merge across the
+      // light/dark seam.
       postcss([
-        postcss100VHFix(),
-        postcssViewportHeightCorrection(),
-        postcssInlineBase64(),
-        postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
+        ...cssPostcssPlugins(),
         cssnano({ autoprefixer: false }),
         reporter()
       ]),
-      // TODO: this may not be necessary
-      purgecss({
-        ...purgeCssOptions,
-        content: ['build/**/*.js', 'app/views/**/*.md', 'app/views/**/*.pug']
-      }),
+      halves.restore,
       dest(config.buildBase),
       ...(DEV ? [lr(config.livereload)] : []),
       // purge css for email specifically
+      appOnly,
       rename('css/app-email.css'),
       purgecss({
         ...purgeCssOptions,
@@ -822,7 +854,7 @@ module.exports = {
     // watch(Mandarin.DEFAULT_PATTERNS, markdown);
     watch('assets/img/**/*', img);
     watch('assets/fonts/**/*', fonts);
-    watch('assets/css/**/*.scss', css);
+    watch('assets/css/**/*.scss', cssDev);
     watch('assets/js/**/*.js', series(xo, bundle));
     watch(['app/views/**/*.pug', 'emails/**/*.pug'], pug);
     watch(staticAssets, static);
@@ -834,7 +866,8 @@ module.exports = {
   remark,
   fonts,
   faFonts,
-  css
+  css,
+  cssDev
 };
 
 exports.default = build;

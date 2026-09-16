@@ -1,0 +1,68 @@
+//- Compact dark page header shared by the secondary marketing pages
+//- (webhooks, regex filter, disposable and reserved addresses, IPs, the
+//- three index pages). Replaces the "display icon + h1 + uppercase kicker"
+//- block each of those pages carried its own copy of.
+//-
+//- opts:
+//-   id       prefix for the heading id (aria-labelledby)
+//-   icon     font awesome class string for the eyebrow glyph. Built from
+//-            an expression rather than dot syntax, so purgecss-from-pug
+//-            cannot see it: every icon passed here is listed in the purgecss
+//-            safelist in gulpfile.js.
+//-   eyebrow  short label (the previous uppercase kicker, usually)
+//-   title    the h1. Rendered unescaped, as the previous headers were,
+//-            because some titles carry entities.
+//-   body     lede paragraph, unescaped for the same reason (optional)
+//-
+//- The block, if given, renders under the lede: actions, a byline, etc.
+mixin fePageHeader(opts)
+  section.fe-section.fe-surface-dark.fe-section--hero.fe-page-header(
+    aria-labelledby=`${opts.id}-title`
+  )
+    .fe-container.fe-page-header__inner
+      if opts.eyebrow
+        p.fe-eyebrow.fe-label
+          if opts.icon
+            i(class=opts.icon, aria-hidden="true")
+          = opts.eyebrow
+      h1.fe-display-lg.fe-page-header__title(id=`${opts.id}-title`)!= opts.title
+      if opts.body
+        p.fe-lede.fe-page-header__body!= opts.body
+      block
+
+//- The three facts _author.pug shows (author, published, time to read),
+//- rebuilt on the tokens so they read on the dark header. The date comes
+//- from the same helper _author.pug uses (helpers/get-published-date.js),
+//- and core.js reformats the .dayjs element on the client.
+mixin feByline
+  - const published = getPublishedDate(publishedISOString, user);
+  ul.fe-byline.no-search
+    li
+      span.fe-byline__label.fe-label= t("Written by")
+      span.fe-byline__value
+        i.fa.fa-check-circle(aria-hidden="true")
+        = config.appName
+        = " "
+        = t("Team")
+    li
+      span.fe-byline__label.fe-label= t("Published")
+      span.fe-byline__value.dayjs(
+        data-time=published.time,
+        data-time-style="false"
+      )= published.formatted
+    li
+      span.fe-byline__label.fe-label= t("Time to read")
+      span.fe-byline__value= t("Less than 5 minutes")
+
+//- 404 and 500. Dark, centred, the one action each page has.
+//- `code` is the status shown as a label above the title.
+mixin feStatus(code, title, body)
+  section.fe-section.fe-surface-dark.fe-status(
+    aria-labelledby="fe-status-title"
+  )
+    .fe-container.fe-status__inner
+      span.fe-status__code.fe-code= code
+      h1#fe-status-title.fe-display-xl.fe-status__title!= title
+      p.fe-lede.fe-status__body!= body
+      .fe-actions
+        block

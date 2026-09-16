@@ -3,7 +3,9 @@
 //- Replaced the #freddy starfield, which pricing.pug has since dropped too, so
 //- nothing renders it any more.
 mixin feHero(bot)
-  section.fe-section.fe-surface-dark.fe-hero(aria-labelledby="fe-hero-title")
+  section.fe-section.fe-surface-dark.fe-section--hero.fe-hero(
+    aria-labelledby="fe-hero-title"
+  )
     .fe-container.fe-hero__inner
       .fe-hero__grid
         div
@@ -16,23 +18,23 @@ mixin feHero(bot)
           //- from the headline shown to people. Preserved from the previous
           //- design: changing it would be an SEO regression, not a restyle.
           if bot
-            h1#fe-hero-title.fe-hero__title= t("Free Email Forwarding for Custom Domains")
+            h1#fe-hero-title.fe-display-xl.fe-hero__title= t("Free Email Forwarding for Custom Domains")
           else
-            h1#fe-hero-title.fe-hero__title
+            h1#fe-hero-title.fe-display-xl.fe-hero__title
               //- Two spans, one h1. The mobile headline is different copy per
               //- section 5, and display:none keeps the inactive one out of
               //- the accessibility tree so only one is ever announced.
               span.fe-hero__title--wide= t("Email infrastructure that respects privacy.")
               span.fe-hero__title--narrow= t("Private email for every domain you own.")
 
-          p.fe-hero__body= t("Host, forward, and deliver email for unlimited custom domains, with encrypted storage, standards-grade authentication, newsletters, and a developer API.")
+          p.fe-lede.fe-hero__body= t("Host, forward, and deliver email for unlimited custom domains, with encrypted storage, standards-grade authentication, newsletters, and a developer API.")
 
           //- Long-form crawler copy, carried over unchanged.
           if bot
-            p.fe-hero__body= t("Forward Email is a free, open-source email service for custom domains. Create unlimited aliases, forward to any inbox, and host email with IMAP, POP3, and SMTP. 10GB encrypted storage, quantum-resistant security, and a developer API. Trusted by 1.6+ million domains including Netflix Games, Disney, and The Linux Foundation. Free forwarding; paid hosting from $3/mo.")
-            p.fe-hero__body= t("Supports SPF, DKIM, DMARC, BIMI, MTA-STS, and DANE. Works with Gmail, Outlook, Apple Mail, Thunderbird, and any standard email client. Setup takes 2 minutes with step-by-step DNS guides for 100+ providers.")
+            p.fe-lede.fe-hero__body= t("Forward Email is a free, open-source email service for custom domains. Create unlimited aliases, forward to any inbox, and host email with IMAP, POP3, and SMTP. 10GB encrypted storage, quantum-resistant security, and a developer API. Trusted by 1.6+ million domains including Netflix Games, Disney, and The Linux Foundation. Free forwarding; paid hosting from $3/mo.")
+            p.fe-lede.fe-hero__body= t("Supports SPF, DKIM, DMARC, BIMI, MTA-STS, and DANE. Works with Gmail, Outlook, Apple Mail, Thunderbird, and any standard email client. Setup takes 2 minutes with step-by-step DNS guides for 100+ providers.")
 
-          .fe-hero__actions
+          .fe-actions.fe-actions--start
             a.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--glow(href=l("/register"))
               = t("Start free")
               i.fa.fa-angle-right(aria-hidden="true")

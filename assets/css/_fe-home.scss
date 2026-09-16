@@ -3,198 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// Redesigned landing page plus the shared fe primitives (container, section,
-// eyebrow, buttons, chips, codeblock, pricing hero) the other fe pages build
-// on. Token references only; bootstrap classes are avoided inside fe scopes
-// because app-dark.scss overrides them with !important in dark mode.
-
-.fe-landing {
-  color: var(--fe-fg-primary);
-  font-family: var(--fe-font-body);
-
-  // Bootstrap sets a global heading font. The landing page uses the display
-  // token instead, scoped here so no other page's headings change.
-  h1,
-  h2,
-  h3,
-  h4 {
-    font-family: var(--fe-font-display);
-    font-weight: var(--fe-weight-bold);
-    line-height: var(--fe-leading-tight);
-  }
-}
-
-// Cancels body.app's fixed-navbar padding so the hero runs under the
-// transparent bar. Separate from .fe-landing: /download shares that wrapper
-// but must not pull up under the opaque bar a signed in visitor gets.
-.fe-landing--flush {
-  margin-block-start: calc(-1 * var(--fe-nav-offset));
-}
-
-// ============================================
-// LAYOUT
-// ============================================
-
-.fe-container {
-  width: 100%;
-  max-width: var(--fe-container-max);
-  margin-inline: auto;
-  padding-inline: var(--fe-container-gutter);
-}
-
-.fe-section {
-  background-color: var(--fe-bg-canvas);
-  color: var(--fe-fg-primary);
-}
-
-// ============================================
-// SHARED TYPOGRAPHY
-// ============================================
-
-.fe-label {
-  font-family: var(--fe-font-body);
-  font-size: var(--fe-text-label);
-  font-weight: var(--fe-weight-bold);
-  letter-spacing: var(--fe-tracking-label);
-  text-transform: uppercase;
-}
-
-.fe-code {
-  font-family: var(--fe-font-mono);
-  font-size: var(--fe-text-code);
-  font-variant-ligatures: none;
-}
-
-.fe-numeral {
-  font-family: var(--fe-font-mono);
-  font-variant-numeric: tabular-nums;
-}
-
-.fe-lede {
-  max-width: 58ch;
-  margin-bottom: 3rem;
-  font-size: var(--fe-text-body-md);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
-}
-
-// ============================================
-// EYEBROW PILL
-// ============================================
-
-.fe-eyebrow {
-  display: inline-flex;
-  margin-block: 0 1.75rem;
-  gap: var(--fe-space-2);
-  align-items: center;
-  padding: 6px 14px;
-  border: 1px solid;
-  border-radius: var(--fe-radius-full);
-}
-
-// Signal is legal as text on Ink. On light it is not, so the light variant
-// uses Primary instead. See section 3 of the build spec.
-.fe-surface-dark .fe-eyebrow {
-  color: var(--fe-signal);
-  background-color: var(--fe-signal-a10);
-  border-color: var(--fe-signal-a24);
-}
-
-.fe-surface-light .fe-eyebrow {
-  color: var(--fe-primary-deep);
-  background-color: var(--fe-primary-a08);
-  border-color: var(--fe-primary-a16);
-}
-
-// Pricing eyebrow uses the mint -deep variant, which is legal as text.
-.fe-eyebrow--mint {
-  color: var(--fe-mint-deep);
-  background-color: var(--fe-mint-a12);
-  border-color: var(--fe-mint-deep-a20);
-}
-
-// ============================================
-// BUTTONS
-// ============================================
-
-.fe-btn {
-  display: inline-flex;
-  gap: var(--fe-space-2);
-  align-items: center;
-  justify-content: center;
-  padding-inline: 20px;
-  font-family: var(--fe-font-body);
-  font-size: var(--fe-text-body-md);
-  font-weight: var(--fe-weight-semibold);
-  text-decoration: none;
-  border: 1px solid transparent;
-  border-radius: var(--fe-radius-md);
-  transition: filter var(--fe-motion-base) var(--fe-ease),
-    background-color var(--fe-motion-base) var(--fe-ease);
-}
-
-.fe-btn:hover,
-.fe-btn:focus {
-  text-decoration: none;
-}
-
-// The gradient is allowed on exactly three CTAs: nav sign up, this, and the
-// Enhanced plan button.
-.fe-btn--hero {
-  color: var(--fe-l-000);
-  background-color: var(--fe-primary);
-  background-image: var(--fe-gradient-cta);
-}
-
-.fe-btn--hero:hover {
-  color: var(--fe-l-000);
-  filter: brightness(1.08);
-}
-
-.fe-btn--ghost {
-  color: var(--fe-fg-primary);
-  background-color: transparent;
-  border-color: var(--fe-border-default);
-}
-
-.fe-btn--ghost:hover {
-  color: var(--fe-fg-primary);
-  border-color: var(--fe-border-strong);
-}
-
-.fe-btn--subtle {
-  color: var(--fe-fg-primary);
-  background-color: var(--fe-bg-sunken);
-  border-color: var(--fe-border-default);
-}
-
-.fe-btn--subtle:hover {
-  color: var(--fe-fg-primary);
-  background-color: var(--fe-bg-canvas);
-}
-
-.fe-btn--md {
-  height: 44px;
-}
-
-.fe-btn--lg {
-  height: 48px;
-}
-
-.fe-btn--block {
-  width: 100%;
-}
-
-.fe-btn--glow {
-  box-shadow: var(--fe-glow-primary);
-}
-
-.fe-landing a:focus-visible,
-.fe-landing button:focus-visible,
-.fe-landing [tabindex]:focus-visible {
-  outline: 2px solid var(--fe-focus-ring);
-  outline-offset: var(--fe-focus-offset);
-}
+// The landing page (hero, console, product, pricing grid, proof) and the
+// pricing template's hero. Builds on _fe-base.scss and _fe-primitives.scss;
+// only what those do not cover lives here.
 
 // ============================================
 // HERO
@@ -202,9 +13,6 @@
 
 .fe-hero {
   position: relative;
-  // Offset clears the transparent fixed bar; 3rem on top of it keeps the
-  // trust row inside the first screen on a 13" laptop (6rem pushed it out).
-  padding-block: calc(3rem + var(--fe-nav-offset)) 5rem;
   overflow: hidden;
 }
 
@@ -218,6 +26,14 @@
   content: '';
   background-image: radial-gradient(
     circle at 0 100%,
+    var(--fe-primary-a08) 0%,
+    transparent 70%
+  );
+}
+
+[dir='rtl'] .fe-hero::before {
+  background-image: radial-gradient(
+    circle at 100% 100%,
     var(--fe-primary-a08) 0%,
     transparent 70%
   );
@@ -247,23 +63,16 @@
 
 .fe-hero__title {
   max-width: 16ch;
-  margin-bottom: 1.75rem;
-  font-size: var(--fe-text-display-xl);
-  color: var(--fe-fg-primary);
+  margin-bottom: var(--fe-space-6);
+}
+
+.fe-hero__title--wide {
+  display: none;
 }
 
 .fe-hero__body {
   max-width: 52ch;
   margin-bottom: 2rem;
-  font-size: var(--fe-text-body-md);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
-}
-
-.fe-hero__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--fe-space-3);
 }
 
 .fe-hero__trust {
@@ -314,7 +123,6 @@
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--fe-space-1);
-
   padding: 8px;
   margin-bottom: var(--fe-space-5);
   background-color: var(--fe-bg-sunken);
@@ -340,11 +148,6 @@
 .fe-console__tab:focus {
   color: var(--fe-fg-primary);
   text-decoration: none;
-}
-
-.fe-console__tab:focus-visible {
-  outline: 2px solid var(--fe-focus-ring);
-  outline-offset: var(--fe-focus-offset);
 }
 
 .fe-console__tab--active {
@@ -433,20 +236,13 @@
 .fe-console__promise {
   max-width: 520px;
   margin-bottom: var(--fe-space-5);
-  font-size: var(--fe-text-body-sm);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
 }
 
 // Always exactly four, two by two. These carry the specifics the old feature
 // list used to.
 .fe-console__cards {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--fe-space-3);
-  padding: 0;
-  margin: 0 0 var(--fe-space-5);
-  list-style: none;
+  margin-bottom: var(--fe-space-5);
 }
 
 .fe-console__card {
@@ -519,19 +315,10 @@ html.no-js .fe-console__tab--active {
 // PRODUCT SECTION
 // ============================================
 
-.fe-product {
-  padding-block: 6rem;
-}
-
 .fe-product__head {
   display: grid;
   gap: var(--fe-grid-gap);
   margin-bottom: 2rem;
-}
-
-.fe-product__title {
-  font-size: var(--fe-text-display-lg);
-  color: var(--fe-fg-primary);
 }
 
 .fe-stats {
@@ -629,15 +416,10 @@ html.no-js .fe-console__tab--active {
 
 .fe-stepper__title {
   margin-bottom: var(--fe-space-2);
-  font-size: var(--fe-text-display-sm);
-  color: var(--fe-fg-primary);
 }
 
 .fe-stepper__desc {
   margin: 0;
-  font-size: var(--fe-text-body-sm);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
 }
 
 // ============================================
@@ -655,26 +437,16 @@ html.no-js .fe-console__tab--active {
   border-radius: var(--fe-radius-lg);
 }
 
-.fe-feature--light {
-  background-color: var(--fe-bg-raised);
-  border: 1px solid var(--fe-border-default);
-}
-
 .fe-feature--inverse {
   background-color: var(--fe-ink);
 }
 
 .fe-feature__title {
   margin-bottom: var(--fe-space-3);
-  font-size: var(--fe-text-display-sm);
-  color: var(--fe-fg-primary);
 }
 
 .fe-feature__body {
   margin-bottom: var(--fe-space-5);
-  font-size: var(--fe-text-body-sm);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
 }
 
 .fe-feature__link {
@@ -689,80 +461,9 @@ html.no-js .fe-console__tab--active {
   color: var(--fe-fg-primary);
 }
 
-.fe-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--fe-space-2);
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.fe-chip {
-  display: inline-flex;
-  gap: var(--fe-space-2);
-  align-items: center;
-  padding: var(--fe-space-1) var(--fe-space-3);
-  font-size: var(--fe-text-body-sm);
-  color: var(--fe-fg-primary);
-  background-color: var(--fe-bg-canvas);
-  border: 1px solid var(--fe-border-default);
-  border-radius: var(--fe-radius-full);
-}
-
-.fe-chip--code {
-  font-family: var(--fe-font-mono);
-  font-size: var(--fe-text-code);
-  background-color: var(--fe-n-200);
-  border-color: var(--fe-n-300);
-}
-
-.fe-chip__icon--success {
-  color: var(--fe-icon-success);
-}
-
-.fe-chip__icon--primary {
-  color: var(--fe-icon-primary);
-}
-
-.fe-codeblock {
-  padding: var(--fe-space-4);
-  margin-bottom: var(--fe-space-5);
-  overflow-x: auto;
-  background-color: var(--fe-n-100);
-  border-radius: var(--fe-radius-md);
-}
-
-.fe-codeblock pre {
-  margin: 0;
-  font-family: var(--fe-font-mono);
-  font-size: var(--fe-text-code);
-  color: var(--fe-fg-secondary);
-}
-
-.fe-tok-method {
-  color: var(--fe-signal);
-}
-
-.fe-tok-key {
-  color: var(--fe-n-600);
-}
-
-.fe-tok-value {
-  color: var(--fe-n-700);
-}
-
-.fe-tok-result {
-  color: var(--fe-mint);
-}
-
 // ============================================
-// PRICING
+// PRICING GRID (landing)
 // ============================================
-
-.fe-pricing {
-  padding-bottom: 6rem;
-}
 
 .fe-pricing__head {
   display: flex;
@@ -773,124 +474,16 @@ html.no-js .fe-console__tab--active {
   margin-bottom: var(--fe-space-6);
 }
 
-.fe-pricing__title {
-  font-size: var(--fe-text-display-lg);
-  color: var(--fe-fg-primary);
-}
-
 .fe-pricing__aside {
   font-size: var(--fe-text-body-sm);
   color: var(--fe-fg-link);
 }
 
-.fe-plans {
-  display: grid;
-  gap: 20px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.fe-plan {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: var(--fe-space-6);
-  background-color: var(--fe-bg-raised);
-  border: 1px solid var(--fe-border-default);
-  border-radius: var(--fe-radius-lg);
-}
-
-// Enhanced. The visual emphasis is CSS only: DOM order is unchanged so the
-// reading order still matches the price order.
-.fe-plan--featured {
-  background-color: var(--fe-ink);
-  border-color: transparent;
-  box-shadow: var(--fe-elev-3), 0 0 0 1px var(--fe-primary-a24);
-}
-
-.fe-plan__name {
-  font-size: var(--fe-text-display-sm);
-  color: var(--fe-fg-primary);
-}
-
-.fe-plan__line {
-  margin-top: var(--fe-space-1);
-  margin-bottom: var(--fe-space-4);
-  font-size: var(--fe-text-body-sm);
-  color: var(--fe-fg-secondary);
-}
-
-.fe-plan__price {
-  display: block;
-  font-family: var(--fe-font-display);
-  font-size: var(--fe-text-price);
-  font-weight: var(--fe-weight-bold);
-  line-height: var(--fe-leading-tight);
-  color: var(--fe-fg-primary);
-}
-
-.fe-plan--featured .fe-plan__price {
-  color: var(--fe-primary-lift);
-}
-
-.fe-plan__period {
-  display: block;
-  margin-bottom: var(--fe-space-5);
-  font-size: var(--fe-text-body-sm);
-  color: var(--fe-fg-secondary);
-}
-
-.fe-plan__cta {
-  margin-bottom: var(--fe-space-5);
-}
-
-.fe-plan__features {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.fe-plan__feature {
-  display: flex;
-  gap: var(--fe-space-2);
-  align-items: baseline;
-  font-size: var(--fe-text-body-sm);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
-}
-
-.fe-plan__feature + .fe-plan__feature {
-  margin-top: var(--fe-space-3);
-}
-
-.fe-plan__check {
-  flex: none;
-  color: var(--fe-icon-success);
-}
-
-.fe-plan--featured .fe-plan__check {
-  color: var(--fe-primary-lift);
-}
-
-.fe-hero__title--wide {
-  display: none;
-}
-
 // ============================================
 // PROOF (testimonials)
 // ============================================
-// Replaces the legacy parallax testimonials on the landing page: three value
-// pillars, each evidenced by one verbatim quote and closed by a receipt link.
-
-.fe-proof {
-  padding-block: 6rem;
-}
-
-.fe-proof__title {
-  font-size: var(--fe-text-display-lg);
-  color: var(--fe-fg-primary);
-}
+// Three value pillars, each evidenced by one verbatim quote and closed by a
+// receipt link.
 
 .fe-proof__grid {
   display: grid;
@@ -903,9 +496,6 @@ html.no-js .fe-console__tab--active {
   gap: var(--fe-space-4);
   padding: var(--fe-space-6);
   margin: 0;
-  background-color: var(--fe-bg-raised);
-  border: 1px solid var(--fe-border-subtle);
-  border-radius: var(--fe-radius-lg);
 }
 
 .fe-proof__pillar {
@@ -1001,22 +591,33 @@ html.no-js .fe-console__tab--active {
 }
 
 // ============================================
-// RESPONSIVE
+// PRICING TEMPLATE HERO
 // ============================================
-// Breakpoints are 1280/1024/768/480 per the spec — deliberately not
-// bootstrap's grid, so the page is not coupled to the framework.
+// Hero for /private-business-email and every useCases route. Sizes to its
+// content rather than the viewport.
 
-@media (min-width: 768px) {
-  .fe-stats {
-    gap: 2.5rem;
-  }
-
-  .fe-plans {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.fe-pricing-hero {
+  text-align: center;
 }
 
-@media (min-width: 1024px) {
+.fe-pricing-hero__inner {
+  max-width: 52rem;
+}
+
+.fe-pricing-hero__title {
+  margin-bottom: var(--fe-space-5);
+}
+
+.fe-pricing-hero__body {
+  max-width: 60ch;
+  margin: 0 auto var(--fe-space-8);
+}
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
+@include fe-up(lg) {
   .fe-hero__title--wide {
     display: inline;
   }
@@ -1061,24 +662,11 @@ html.no-js .fe-console__tab--active {
   .fe-proof__card--featured {
     grid-row: span 2;
   }
-
-  .fe-plans {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    align-items: stretch;
-  }
-
-  // Scale is applied only where there is room for it. Below this width the
-  // featured card is full bleed and scaling it would overflow the gutter.
-  .fe-plan--featured {
-    transform: scale(1.04);
-  }
 }
 
-// Vertical stepper. The rule runs down the left of the dots instead of through
-// their centres.
-// The rail becomes a horizontal scroller on mobile: five equal columns at
-// this width would truncate every tab label.
-@media (max-width: 767px) {
+@include fe-down(md) {
+  // The rail becomes a horizontal scroller: five equal columns at this width
+  // would truncate every tab label.
   .fe-console__rail {
     display: flex;
     overflow-x: auto;
@@ -1092,6 +680,8 @@ html.no-js .fe-console__tab--active {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  // Vertical stepper. The rule runs down the start edge of the dots instead
+  // of through their centres.
   .fe-stepper__step {
     padding-inline-start: var(--fe-space-6);
   }
@@ -1122,174 +712,5 @@ html.no-js .fe-console__tab--active {
 
   .fe-stepper__rule {
     display: none;
-  }
-
-  // Enhanced first on mobile. Order only, so the DOM sequence still reads in
-  // price order for screen readers and keyboard users.
-  .fe-plan-item--featured {
-    order: -1;
-  }
-
-  .fe-hero {
-    padding-block: calc(2rem + var(--fe-nav-offset)) 3rem;
-  }
-
-  .fe-product,
-  .fe-pricing {
-    padding-block: 4rem;
-  }
-
-  .fe-pricing {
-    padding-top: 0;
-  }
-}
-
-// The primary action stays full width and thumb reachable.
-@media (max-width: 479px) {
-  .fe-hero__actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .fe-hero__actions .fe-btn {
-    width: 100%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .fe-landing * {
-    transition-duration: 0ms !important;
-    animation-duration: 0ms !important;
-  }
-}
-
-// ============================================
-// RTL
-// ============================================
-// postcss-preset-env flattens logical properties to LTR physical ones
-// (op_mini/kaios lack the logical forms), so direction-sensitive declarations
-// are restated here keyed on [dir='rtl'], with physical props on purpose.
-[dir='rtl'] {
-  .fe-hero::before {
-    right: 0;
-    left: auto;
-    background-image: radial-gradient(
-      circle at 100% 100%,
-      var(--fe-primary-a08) 0%,
-      transparent 70%
-    );
-  }
-
-}
-
-@media (max-width: 767px) {
-  [dir='rtl'] {
-    .fe-stepper__step {
-      padding-right: var(--fe-space-6);
-      padding-left: 0;
-    }
-
-    .fe-stepper__step::before {
-      right: 5px;
-      left: auto;
-    }
-
-    .fe-stepper__dot-row {
-      right: 0;
-      left: auto;
-    }
-  }
-}
-
-// ============================================
-// PRICING TEMPLATE HERO
-// ============================================
-// Hero for the pricing template (/private-business-email and every useCases
-// route). Replaced the #freddy starfield, whose min-vh-100 section pushed the
-// pricing table a full screen down; this sizes to its content instead.
-
-.fe-phero {
-  padding-block: calc(4.5rem + var(--fe-nav-offset)) 4.5rem;
-  text-align: center;
-}
-
-.fe-phero__inner {
-  max-width: 52rem;
-}
-
-.fe-phero__title {
-  margin-bottom: var(--fe-space-5);
-  font-size: var(--fe-text-display-lg);
-  color: var(--fe-fg-primary);
-}
-
-.fe-phero__body {
-  max-width: 60ch;
-  margin-inline: auto;
-  margin-bottom: var(--fe-space-8);
-  font-size: var(--fe-text-body-md);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
-}
-
-.fe-phero__actions {
-  display: flex;
-  gap: var(--fe-space-3);
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-// Secondary destinations. Quiet enough not to compete with the two buttons
-// above, which is the opposite of the row of solid light buttons this replaced.
-.fe-phero__proof {
-  display: flex;
-  gap: var(--fe-space-2) var(--fe-space-5);
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 0;
-  margin-block: var(--fe-space-8) 0;
-  list-style: none;
-}
-
-.fe-phero__proof-link {
-  display: inline-flex;
-  gap: var(--fe-space-2);
-  align-items: center;
-  font-size: var(--fe-text-body-sm);
-  color: var(--fe-fg-secondary);
-  text-decoration: none;
-  transition: color var(--fe-motion-fast) var(--fe-ease);
-}
-
-.fe-phero__proof-link:hover,
-.fe-phero__proof-link:focus {
-  color: var(--fe-fg-primary);
-  text-decoration: underline;
-}
-
-.fe-phero__proof-link i {
-  color: var(--fe-icon-active);
-}
-
-.fe-phero a:focus-visible,
-.fe-phero button:focus-visible {
-  outline: 2px solid var(--fe-focus-ring);
-  outline-offset: var(--fe-focus-offset);
-}
-
-@media (max-width: 767px) {
-  .fe-phero {
-    padding-block: calc(2.5rem + var(--fe-nav-offset)) 3rem;
-  }
-
-  .fe-phero__proof {
-    gap: var(--fe-space-2) var(--fe-space-4);
-    margin-top: var(--fe-space-6);
-  }
-}
-
-@media (max-width: 479px) {
-  .fe-phero__actions .fe-btn {
-    width: 100%;
   }
 }

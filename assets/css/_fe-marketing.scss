@@ -1,0 +1,171 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// The marketing tail that follows the hero on the pricing template and
+// closes /compare and /open-source: feature tiles, devices, checklist, the
+// four full plan cards, questions, organisations. Builds on _fe-base.scss
+// and _fe-primitives.scss; only what those do not cover lives here.
+
+// ============================================
+// SECTION SHELL
+// ============================================
+
+.fe-marketing__head {
+  max-width: 60rem;
+}
+
+.fe-marketing__title {
+  margin-bottom: var(--fe-space-5);
+}
+
+.fe-marketing__center {
+  text-align: center;
+}
+
+.fe-marketing__center .fe-marketing__head,
+.fe-marketing__center .fe-lede {
+  margin-inline: auto;
+}
+
+.fe-marketing__ready {
+  margin-bottom: var(--fe-space-5);
+  font-size: var(--fe-text-body-md);
+  color: var(--fe-fg-primary);
+}
+
+// ============================================
+// FEATURE TILES ("Custom domain email hosting")
+// ============================================
+
+.fe-tile {
+  display: flex;
+  gap: var(--fe-space-4);
+  align-items: flex-start;
+  padding: var(--fe-space-6);
+}
+
+.fe-tile__title {
+  margin-bottom: var(--fe-space-2);
+  font-size: var(--fe-text-body-lg);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-primary);
+}
+
+.fe-tile__body {
+  margin: 0;
+}
+
+// ============================================
+// DEVICES ("Access your email anywhere")
+// ============================================
+
+.fe-devices {
+  margin-bottom: var(--fe-space-8);
+}
+
+.fe-devices > li {
+  padding: var(--fe-space-6) var(--fe-space-4);
+}
+
+.fe-devices__icon {
+  display: block;
+  margin-bottom: var(--fe-space-3);
+  font-size: var(--fe-text-display-sm);
+  color: var(--fe-icon-active);
+}
+
+.fe-devices__label {
+  display: block;
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+// ============================================
+// CHECKLIST ("All-inclusive features")
+// ============================================
+
+.fe-checklist {
+  gap: var(--fe-space-3) var(--fe-grid-gap);
+}
+
+.fe-checklist > li {
+  display: flex;
+  gap: var(--fe-space-3);
+  align-items: baseline;
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-primary);
+}
+
+.fe-checklist i {
+  flex: none;
+  color: var(--fe-icon-success);
+}
+
+// ============================================
+// PLANS DETAIL (the four full plan cards)
+// ============================================
+// The #features anchor lands on the section and #free/#enhanced/#team/
+// #enterprise on the items; both keep the heading clear of the bar.
+
+.fe-plans-detail {
+  scroll-margin-top: var(--fe-nav-offset);
+}
+
+.fe-plans-detail__item {
+  scroll-margin-top: calc(var(--fe-nav-offset) + var(--fe-space-4));
+}
+
+// ============================================
+// QUESTIONS (pricing FAQ)
+// ============================================
+
+.fe-questions {
+  margin-bottom: var(--fe-space-8);
+}
+
+.fe-questions__item {
+  padding: var(--fe-space-6);
+}
+
+.fe-questions__q {
+  margin-bottom: var(--fe-space-3);
+  font-size: var(--fe-text-body-lg);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-primary);
+}
+
+.fe-questions__a {
+  margin: 0;
+}
+
+// ============================================
+// ORGANIZATIONS ("Trusted by millions")
+// ============================================
+
+.fe-orgs {
+  margin-bottom: var(--fe-space-8);
+  text-align: start;
+}
+
+.fe-orgs > li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-3);
+  padding: var(--fe-space-6);
+}
+
+.fe-orgs__label {
+  color: var(--fe-fg-secondary);
+}
+
+.fe-orgs__names {
+  margin: 0;
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-medium);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-primary);
+}

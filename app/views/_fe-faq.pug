@@ -17,7 +17,7 @@ mixin feFaq
     //- Set when the request carried ?q=, which is what the search form submits
     //- with JavaScript off. faq-search.js takes over from here on.
     const faqFiltered = typeof faq.matched === "number" && faq.query;
-  section.fe-section.fe-surface-dark.fe-faq-hero(
+  section.fe-section.fe-surface-dark.fe-section--hero.fe-faq-hero(
     aria-labelledby="fe-faq-title"
   )
     .fe-container.fe-faq-hero__inner
@@ -25,7 +25,7 @@ mixin feFaq
         i.fa.fa-life-ring(aria-hidden="true")
         = t("Support")
 
-      h1#fe-faq-title.fe-faq-hero__title= t("How can we help?")
+      h1#fe-faq-title.fe-display-lg.fe-faq-hero__title= t("How can we help?")
 
       //- A real form, so submitting on a phone keyboard does something sane
       //- rather than nothing. The filter is progressive enhancement on top.
@@ -33,7 +33,7 @@ mixin feFaq
         label.sr-only(for="fe-faq-q")= t("Search the FAQ")
         span.fe-faq-search__icon(aria-hidden="true")
           i.fa.fa-search
-        input#fe-faq-q.fe-faq-search__input(
+        input#fe-faq-q.fe-field__input.fe-faq-search__input(
           type="search",
           name="q",
           autocomplete="off",
@@ -60,7 +60,7 @@ mixin feFaq
           //- inflect it, cannot be reached by concatenation at all.
           != t('<span class="notranslate">%d</span> answers across <span class="notranslate">%d</span> topics', faq.total, faq.categories.length)
 
-  section.fe-section.fe-surface-light.fe-faq-body
+  section.fe-section.fe-surface-light.fe-section--pad-sm.fe-faq-body
     .fe-container
       .fe-faq-layout
         //- Topic rail. Plain anchors, so it works with the filter off and
@@ -95,13 +95,13 @@ mixin feFaq
               data-fe-faq-topic=category.slug,
               aria-labelledby=`${category.slug}-title`
             )
-              h2.fe-faq-topic__title(id=`${category.slug}-title`)= category.title
+              h2.fe-display-sm.fe-faq-topic__title(id=`${category.slug}-title`)= category.title
 
               //- Prose that sits under the section heading before its first
               //- question. /faq#quick-start is linked from every pricing page,
               //- so this content and this anchor have to stay reachable.
               if category.introHtml
-                .fe-faq-topic__intro.fe-faq-prose!= category.introHtml
+                .fe-text.fe-faq-topic__intro.fe-faq-prose!= category.introHtml
 
               ul.fe-faq-list
                 each item in category.questions
@@ -114,14 +114,14 @@ mixin feFaq
                         span.fe-faq-answer__text= item.question
                         span.fe-faq-answer__marker(aria-hidden="true")
                           i.fa.fa-plus
-                      .fe-faq-answer__body.fe-faq-prose
+                      .fe-text.fe-faq-answer__body.fe-faq-prose
                         != item.answerHtml
 
-  section.fe-section.fe-surface-dark.fe-faq-foot
+  section.fe-section.fe-surface-dark.fe-section--pad-sm.fe-faq-foot
     .fe-container.fe-faq-foot__inner
-      h2.fe-faq-foot__title= t("Still stuck?")
-      p.fe-faq-foot__body= t("Every question here came from someone asking it. If yours is not answered, send it to us.")
-      .fe-faq-foot__actions
+      h2.fe-display-sm.fe-faq-foot__title= t("Still stuck?")
+      p.fe-text.fe-faq-foot__body= t("Every question here came from someone asking it. If yours is not answered, send it to us.")
+      .fe-actions
         a.fe-btn.fe-btn--hero.fe-btn--md(href=l("/help"))
           i.fa.fa-envelope(aria-hidden="true")
           = t("Contact support")

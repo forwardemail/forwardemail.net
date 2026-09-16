@@ -1,10 +1,32 @@
 //- Pug makes it DOCTYPE if we do this:
 //- `doctype html`
 != "<!doctype html>"
+//- The fe gates (isBotUa, isFePage, isFeFlushNav, …), shared with every
+//- partial and page block below. Pug includes share one compiled scope.
+include _fe-flags
+
+//- A page-level script. In test the unhashed build is served from the web
+//- URL; everywhere else the hashed, SRI-signed file from the manifest.
+mixin script(file, attrs)
+  if config.env === 'test'
+    script(
+      nonce=nonce,
+      defer,
+      src=`${config.urls.web}/${file}`,
+      crossorigin="anonymous"
+    )&attributes(attrs)
+  else
+    script(
+      nonce=nonce,
+      defer,
+      src=manifest(file),
+      integrity=manifest(file, "integrity"),
+      crossorigin="anonymous"
+    )&attributes(attrs)
 - const isNotPrivateRoute = ["/my-account", "/admin", "/verify", "/denylist", "/forgot-password", "/reset-password", "/help", "/auth", "/register", config.loginOtpRoute, config.loginRoute, config.verifyRoute, config.otpRoutePrefix].every((s) => !ctx.pathWithoutLocale.startsWith(s));
 html.h-100.no-js(
   lang=locale,
-  class=isBot(ctx.get("User-Agent")) ? "bot-detected" : "",
+  class=isBotUa ? "bot-detected" : "",
   dir=["ar", "he"].includes(locale) ? "rtl" : false
 )
   head
@@ -17,7 +39,7 @@ html.h-100.no-js(
     block fonts
       include _fonts
     block stylesheets
-      if isBot(ctx.get('User-Agent'))
+      if isBotUa
         if botCss
           style(nonce=nonce)!= botCss
         else
@@ -63,8 +85,6 @@ html.h-100.no-js(
           document.head.appendChild(script);
         })();
 
-  //- The fe gates (isFePage, isFeFlushNav, …), shared with _nav.pug below.
-  include _fe-flags
   //- The two class attributes are deliberately separate rather than merged into
   //- one expression. Pug concatenates repeated class attributes, and keeping
   //- each class as its own string literal inside a class attribute is what lets
@@ -98,7 +118,7 @@ html.h-100.no-js(
       include _footer
 
     //- chat
-    if !isBot(ctx.get('User-Agent'))
+    if !isBotUa
       a.fixed-bottom.mb-2.mr-2.btn.btn-primary.rounded-lg.text-center.is-bot.no-js.d-print-none(
         href="https://matrix.to/#/#forwardemail:matrix.org",
         target="_blank",
@@ -117,7 +137,7 @@ html.h-100.no-js(
     //- scripts
     //- prettier-ignore
     block scripts
-      if !isBot(ctx.get('User-Agent'))
+      if !isBotUa
         //- flash messaging (with koa-better-flash and sweetalert2)
         script(defer, nonce=nonce).
           window._types = {
@@ -154,7 +174,7 @@ html.h-100.no-js(
           window.API_URL = "#{config.urls.api}";
 
       //- set the user and API key to be used by CabinJS
-      if config.env !== 'test' && !isBot(ctx.get('User-Agent'))
+      if config.env !== 'test' && !isBotUa
         //- set the user and API key to be used by CabinJS
         //- FWD-01-007: Use json() helper for safe JS interpolation to prevent
         //- XSS via user-controlled displayName or email breaking out of string context
@@ -172,42 +192,12 @@ html.h-100.no-js(
               id: "#{ctx.sessionId}",
             };
 
-      if isBot(ctx.get('User-Agent'))
+      if isBotUa
         //- lazyload only support for bots
-        if config.env === 'test'
-          script(
-            nonce=nonce,
-            defer,
-            src=`${config.urls.web}/js/lazyload.js`,
-            crossorigin="anonymous"
-          )
-        else
-          script(
-            nonce=nonce,
-            defer,
-            src=manifest("js/lazyload.js"),
-            integrity=manifest("js/lazyload.js", "integrity"),
-            crossorigin="anonymous"
-          )
+        +script("js/lazyload.js")
       else
         //- build
-        if config.env === 'test'
-          script(
-            nonce=nonce,
-            defer,
-            src=`${config.urls.web}/js/build.js`,
-            crossorigin="anonymous",
-            fetchpriority="low"
-          )
-        else
-          script(
-            nonce=nonce,
-            defer,
-            src=manifest("js/build.js"),
-            integrity=manifest("js/build.js", "integrity"),
-            crossorigin="anonymous",
-            fetchpriority="low"
-          )
+        +script("js/build.js", { fetchpriority: "low" })
 
         //- cloudflare turnstile (hidden from bots and admins)
         if config.turnstileEnabled && (!user || user.group !== 'admin')

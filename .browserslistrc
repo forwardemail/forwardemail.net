@@ -1,1 +1,10 @@
+# The shared base is `defaults, not ie 11`. Opera Mini and KaiOS are excluded
+# here for the web bundles: they cannot resolve the surface-scoped custom
+# properties the fe design system is built on, so the marketing pages already
+# render without their surface colours there, and keeping them as targets only
+# costs static fallbacks before every var(), the flattening of logical
+# properties to LTR (which forced hand-written RTL twins), and cascade layers.
+# The email bundle does not consult this file: it runs no preset-env pass.
 extends @ladjs/browserslist-config
+not op_mini all
+not kaios > 0

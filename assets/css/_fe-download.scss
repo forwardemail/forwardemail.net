@@ -3,45 +3,26 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// Download page. Shares the .fe-landing wrapper and the primitives defined in
-// _fe-landing.scss; only what that file has no equivalent for lives here.
+// Download page. Builds on _fe-base.scss and _fe-primitives.scss; only what
+// those do not cover lives here.
 
-.fe-dl-hero {
-  // Matches .fe-hero so the two pages start at the same place, including the
-  // navbar offset that .fe-landing--flush cancels.
-  padding-block: calc(3rem + var(--fe-nav-offset)) 5rem;
-}
-
-.fe-dl-hero__inner {
+.fe-download-hero__inner {
   max-width: 46rem;
   text-align: center;
 }
 
-.fe-dl-hero__title {
+.fe-download-hero__title {
   margin-bottom: var(--fe-space-6);
-  font-size: var(--fe-text-display-xl);
-  color: var(--fe-fg-primary);
 }
 
-.fe-dl-hero__body {
+.fe-download-hero__body {
   max-width: 46ch;
-  margin-inline: auto;
-  margin-bottom: var(--fe-space-8);
-  font-size: var(--fe-text-body-md);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
-}
-
-.fe-dl-hero__actions {
-  display: flex;
-  gap: var(--fe-space-3);
-  flex-wrap: wrap;
-  justify-content: center;
+  margin: 0 auto var(--fe-space-8);
 }
 
 // The detector fills this in and unhides it. It is reserved rather than
 // collapsed so the facts below do not jump when that happens.
-.fe-dl-hero__meta {
+.fe-download-hero__meta {
   min-height: 1.5rem;
   margin-block: var(--fe-space-4) 0;
   font-size: var(--fe-text-body-sm);
@@ -52,23 +33,23 @@
 
 // The other-architecture escape hatch under the hero button, filled and
 // unhidden by the detector alongside the meta line above.
-.fe-dl-hero__alt {
+.fe-download-hero__alt {
   margin-block: var(--fe-space-2) 0;
   font-size: var(--fe-text-body-sm);
 }
 
-.fe-dl-hero__alt a {
+.fe-download-hero__alt a {
   color: var(--fe-fg-link);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.fe-dl-hero__alt a:hover,
-.fe-dl-hero__alt a:focus {
+.fe-download-hero__alt a:hover,
+.fe-download-hero__alt a:focus {
   color: var(--fe-fg-primary);
 }
 
-.fe-dl-hero__facts {
+.fe-download-hero__facts {
   display: flex;
   gap: var(--fe-space-8);
   flex-wrap: wrap;
@@ -78,49 +59,39 @@
   list-style: none;
 }
 
-.fe-dl-hero__facts > li {
+.fe-download-hero__facts > li {
   display: flex;
   flex-direction: column;
   gap: var(--fe-space-1);
 }
 
-.fe-dl-hero__fact-value {
+.fe-download-hero__fact-value {
   font-size: var(--fe-text-body-lg);
   font-weight: var(--fe-weight-bold);
   color: var(--fe-fg-primary);
 }
 
-.fe-dl-hero__fact-label {
+.fe-download-hero__fact-label {
   color: var(--fe-fg-secondary);
-}
-
-.fe-dl-group {
-  padding-block: 6rem;
-}
-
-.fe-dl-group--mobile {
-  padding-top: 0;
 }
 
 // Scroll target for the hero's fallback link. Offset by the fixed navbar so
 // the section heading is not hidden under the bar on arrival.
-.fe-dl-anchor {
+.fe-download-anchor {
   display: block;
   height: 0;
   scroll-margin-top: var(--fe-nav-offset);
 }
 
-.fe-dl-group__head {
+.fe-download-group__head {
   margin-bottom: var(--fe-space-8);
 }
 
-.fe-dl-group__title {
+.fe-download-group__title {
   margin-bottom: var(--fe-space-5);
-  font-size: var(--fe-text-display-lg);
-  color: var(--fe-fg-primary);
 }
 
-.fe-dl-group__lede {
+.fe-download-group__lede {
   margin-bottom: 0;
 }
 
@@ -128,25 +99,13 @@
 // PLATFORM CARDS
 // ============================================
 
-.fe-dl-cards {
-  display: grid;
-  gap: var(--fe-grid-gap);
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.fe-dl-card {
+.fe-download-card {
   display: flex;
   flex-direction: column;
-
   padding: var(--fe-space-6);
-  background-color: var(--fe-bg-raised);
-  border: 1px solid var(--fe-border-default);
-  border-radius: var(--fe-radius-lg);
 }
 
-.fe-dl-card__head {
+.fe-download-card__head {
   display: flex;
   gap: var(--fe-space-4);
   align-items: center;
@@ -155,49 +114,29 @@
   border-bottom: 1px solid var(--fe-border-subtle);
 }
 
-// Mint and Signal are not legal as text on a light ground, so the platform
-// glyph is filled with the icon token rather than coloured like a label.
-.fe-dl-card__icon {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  font-size: var(--fe-text-body-lg);
-  color: var(--fe-icon-primary);
-  background-color: var(--fe-primary-a08);
-  border-radius: var(--fe-radius-md);
-}
-
-.fe-dl-card__titles {
+.fe-download-card__titles {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
 }
 
-.fe-dl-card__title {
+.fe-download-card__title {
   margin: 0;
-  font-size: var(--fe-text-display-sm);
-  color: var(--fe-fg-primary);
 }
 
-.fe-dl-card__requires {
+.fe-download-card__requires {
   font-size: var(--fe-text-body-sm);
   color: var(--fe-fg-secondary);
 }
 
-.fe-dl-card__note {
+.fe-download-card__note {
   padding-top: var(--fe-space-4);
   margin-block: auto 0;
-  font-size: var(--fe-text-body-sm);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
 }
 
 // Planned distribution channels at the foot of a card.
-.fe-dl-card__soon {
+.fe-download-card__soon {
   display: flex;
   gap: var(--fe-space-2);
   flex-wrap: wrap;
@@ -206,22 +145,15 @@
   margin-block: auto 0;
 }
 
-.fe-dl-card__soon-label {
+.fe-download-card__soon-label {
   color: var(--fe-fg-secondary);
-}
-
-// Dashed and dimmed: present on the roadmap, not clickable today.
-.fe-chip--soon {
-  color: var(--fe-fg-secondary);
-  background-color: transparent;
-  border-style: dashed;
 }
 
 // ============================================
 // DOWNLOAD ROWS
 // ============================================
 
-.fe-dl-rows {
+.fe-download-rows {
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -229,19 +161,19 @@
   list-style: none;
 }
 
-.fe-dl-row {
+.fe-download-row {
   display: flex;
   gap: var(--fe-space-2);
   align-items: center;
 }
 
-.fe-dl-row + .fe-dl-row {
+.fe-download-row + .fe-download-row {
   border-top: 1px solid var(--fe-border-subtle);
 }
 
 // The whole strip is the link, so the target is the full row height rather
 // than the width of a word.
-.fe-dl-row__link {
+.fe-download-row__link {
   display: flex;
   gap: var(--fe-space-3);
   flex: 1 1 auto;
@@ -254,13 +186,13 @@
   transition: color var(--fe-motion-fast) var(--fe-ease);
 }
 
-.fe-dl-row__link:hover,
-.fe-dl-row__link:focus {
+.fe-download-row__link:hover,
+.fe-download-row__link:focus {
   color: var(--fe-fg-link);
   text-decoration: none;
 }
 
-.fe-dl-row__label {
+.fe-download-row__label {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -268,17 +200,17 @@
   min-width: 0;
 }
 
-.fe-dl-row__arch {
+.fe-download-row__arch {
   font-size: var(--fe-text-body-md);
   font-weight: var(--fe-weight-semibold);
 }
 
-.fe-dl-row__note {
+.fe-download-row__note {
   font-size: var(--fe-text-body-sm);
   color: var(--fe-fg-secondary);
 }
 
-.fe-dl-row__format {
+.fe-download-row__format {
   flex: 0 0 auto;
   padding: 2px var(--fe-space-2);
   color: var(--fe-fg-code);
@@ -286,32 +218,24 @@
   border-radius: var(--fe-radius-sm);
 }
 
-.fe-dl-row__size {
+.fe-download-row__size {
   flex: 0 0 auto;
   min-width: 4.5rem;
   font-size: var(--fe-text-body-sm);
   color: var(--fe-fg-secondary);
-  text-align: right;
+  text-align: end;
 }
 
-.fe-dl-row__go {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  color: var(--fe-icon-primary);
-  background-color: var(--fe-primary-a08);
-  border-radius: var(--fe-radius-full);
+// The arrow tile (an .fe-icon-tile) lifts a tint with the row.
+.fe-download-row__go {
   transition: background-color var(--fe-motion-fast) var(--fe-ease);
 }
 
-.fe-dl-row__link:hover .fe-dl-row__go {
+.fe-download-row__link:hover .fe-download-row__go {
   background-color: var(--fe-primary-a16);
 }
 
-.fe-dl-copy {
+.fe-download-copy {
   position: relative;
   display: inline-flex;
   flex: 0 0 auto;
@@ -330,14 +254,14 @@
     border-color var(--fe-motion-fast) var(--fe-ease);
 }
 
-.fe-dl-copy:hover {
+.fe-download-copy:hover {
   color: var(--fe-fg-primary);
   border-color: var(--fe-border-strong);
 }
 
 // The tick is stacked on the clipboard rather than replacing it, so the
 // control does not change width when it fires.
-.fe-dl-copy__done {
+.fe-download-copy__done {
   position: absolute;
   inset: 0;
   display: flex;
@@ -349,11 +273,11 @@
   border-radius: var(--fe-radius-sm);
 }
 
-.fe-dl-copy.is-copied {
+.fe-download-copy.is-copied {
   border-color: var(--fe-mint-deep);
 }
 
-.fe-dl-copy.is-copied .fe-dl-copy__done {
+.fe-download-copy.is-copied .fe-download-copy__done {
   visibility: visible;
 }
 
@@ -361,22 +285,16 @@
 // VERIFY
 // ============================================
 
-.fe-dl-verify {
-  padding-block: 6rem;
-}
-
-.fe-dl-verify__grid {
+.fe-download-verify__grid {
   display: grid;
   gap: var(--fe-space-8);
 }
 
-.fe-dl-verify__title {
+.fe-download-verify__title {
   margin-bottom: var(--fe-space-5);
-  font-size: var(--fe-text-display-lg);
-  color: var(--fe-fg-primary);
 }
 
-.fe-dl-verify__links {
+.fe-download-verify__links {
   display: flex;
   gap: var(--fe-space-5);
   flex-wrap: wrap;
@@ -385,7 +303,7 @@
   list-style: none;
 }
 
-.fe-dl-verify__link {
+.fe-download-verify__link {
   display: inline-flex;
   gap: var(--fe-space-2);
   align-items: center;
@@ -395,13 +313,13 @@
   text-decoration: none;
 }
 
-.fe-dl-verify__link:hover,
-.fe-dl-verify__link:focus {
+.fe-download-verify__link:hover,
+.fe-download-verify__link:focus {
   color: var(--fe-fg-link);
   text-decoration: underline;
 }
 
-.fe-dl-verify__points {
+.fe-download-verify__points {
   display: flex;
   flex-direction: column;
   gap: var(--fe-space-5);
@@ -410,53 +328,24 @@
   list-style: none;
 }
 
-.fe-dl-verify__point {
+.fe-download-verify__point {
   display: flex;
   gap: var(--fe-space-4);
   align-items: flex-start;
 }
 
-.fe-dl-verify__point-icon {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  font-size: var(--fe-text-body-sm);
-  border-radius: var(--fe-radius-md);
-}
-
-.fe-dl-verify__point-icon--mint {
-  color: var(--fe-icon-success);
-  background-color: var(--fe-mint-a12);
-}
-
-.fe-dl-verify__point-icon--signal {
-  color: var(--fe-icon-active);
-  background-color: var(--fe-signal-a10);
-}
-
-.fe-dl-verify__point-icon--primary {
-  color: var(--fe-primary-lift);
-  background-color: var(--fe-primary-a16);
-}
-
-.fe-dl-verify__point-title {
+.fe-download-verify__point-title {
   display: block;
   font-size: var(--fe-text-body-md);
   font-weight: var(--fe-weight-semibold);
   color: var(--fe-fg-primary);
 }
 
-.fe-dl-verify__point-body {
+.fe-download-verify__point-body {
   display: block;
-  font-size: var(--fe-text-body-sm);
-  line-height: var(--fe-leading-normal);
-  color: var(--fe-fg-secondary);
 }
 
-.fe-dl-verify__point-link {
+.fe-download-verify__point-link {
   font-family: var(--fe-font-mono);
   font-size: var(--fe-text-code);
   color: var(--fe-fg-link);
@@ -466,24 +355,8 @@
 // BREAKPOINTS
 // ============================================
 
-@media (min-width: 768px) {
-  .fe-dl-cards--mobile {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  // Desktop cards end where their own list does (Linux ships seven packages,
-  // macOS two); the mobile grid keeps the default stretch. Do not add
-  // height: 100% to the cards — it resolves against the row and re-stretches
-  // them past this align-items: start.
-  .fe-dl-cards--desktop {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-
-    align-items: start;
-  }
-
-  .fe-dl-verify__grid {
+@include fe-up(lg) {
+  .fe-download-verify__grid {
     // minmax(0, …), not bare fr: the checksum/code column's intrinsic width
     // must not widen its track past the split (bare fr means minmax(auto, …)).
     grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
@@ -491,43 +364,20 @@
   }
 }
 
-@media (max-width: 767px) {
-  .fe-dl-hero {
-    padding-block: calc(3rem + var(--fe-nav-offset)) 4rem;
-  }
-
-  .fe-dl-group,
-  .fe-dl-verify {
-    padding-block: 4rem;
-  }
-
-  .fe-dl-group--mobile {
-    padding-top: 0;
-  }
-
+@include fe-down(md) {
   // The arch and the format sit on one line and the size moves under them,
   // so a narrow row keeps the download affordance on screen.
-  .fe-dl-row__size {
+  .fe-download-row__size {
     min-width: 0;
   }
 
-  .fe-dl-hero__facts {
+  .fe-download-hero__facts {
     gap: var(--fe-space-6);
   }
 }
 
-@media (max-width: 479px) {
-  .fe-dl-hero__actions .fe-btn {
-    width: 100%;
-  }
-
-  .fe-dl-row__format {
+@include fe-down(sm) {
+  .fe-download-row__format {
     display: none;
   }
-}
-
-// postcss flattens logical props to LTR physical ones, so the one
-// direction-sensitive declaration is restated for [dir='rtl'].
-[dir='rtl'] .fe-dl-row__size {
-  text-align: left;
 }

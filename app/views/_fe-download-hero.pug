@@ -47,19 +47,19 @@ mixin feDownloadHero
       }
     }
 
-  section.fe-section.fe-surface-dark.fe-dl-hero(
+  section.fe-section.fe-surface-dark.fe-section--hero.fe-download-hero(
     aria-labelledby="fe-download-title"
   )
-    .fe-container.fe-dl-hero__inner
+    .fe-container.fe-download-hero__inner
       p.fe-eyebrow.fe-label
         i.fab.fa-github(aria-hidden="true")
         = t("Open source, on every device")
 
-      h1#fe-download-title.fe-dl-hero__title= t("Your domain. Your inbox. Every device.")
+      h1#fe-download-title.fe-display-xl.fe-download-hero__title= t("Your domain. Your inbox. Every device.")
 
-      p.fe-dl-hero__body= t("Native apps for macOS, Windows, Linux, Android, and iOS. Encrypted storage, IMAP, POP3, CalDAV, and CardDAV, all against your own domain.")
+      p.fe-lede.fe-download-hero__body= t("Native apps for macOS, Windows, Linux, Android, and iOS. Encrypted storage, IMAP, POP3, CalDAV, and CardDAV, all against your own domain.")
 
-      .fe-dl-hero__actions
+      .fe-actions
         //- The map is a data attribute rather than an inline script so the
         //- page needs no script-src exception.
         a#fe-download-primary.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--glow(
@@ -74,21 +74,21 @@ mixin feDownloadHero
           = t("Open the web app")
 
       //- Hidden until the detector fills them, so no empty lines flash.
-      p#fe-download-primary-meta.fe-dl-hero__meta.fe-numeral(hidden)
+      p#fe-download-primary-meta.fe-download-hero__meta.fe-numeral(hidden)
       //- The other architecture for the detected platform. Always offered
       //- once a platform is detected: arch detection is best effort (Safari
       //- masks it), so the wrong-guess escape hatch stays one click away.
-      p.fe-dl-hero__alt(hidden)
+      p.fe-download-hero__alt(hidden)
         a#fe-download-primary-alt(href="#fe-download-desktop")
 
-      ul.fe-dl-hero__facts
+      ul.fe-download-hero__facts
         if downloads.version
           li
-            span.fe-dl-hero__fact-value.fe-numeral= downloads.version
-            span.fe-dl-hero__fact-label.fe-label= t("Latest release")
+            span.fe-download-hero__fact-value.fe-numeral= downloads.version
+            span.fe-download-hero__fact-label.fe-label= t("Latest release")
         li
-          span.fe-dl-hero__fact-value.fe-numeral 5
-          span.fe-dl-hero__fact-label.fe-label= t("Platforms")
+          span.fe-download-hero__fact-value.fe-numeral 5
+          span.fe-download-hero__fact-label.fe-label= t("Platforms")
         li
-          span.fe-dl-hero__fact-value.fe-numeral BUSL-1.1
-          span.fe-dl-hero__fact-label.fe-label= t("Source available")
+          span.fe-download-hero__fact-value.fe-numeral BUSL-1.1
+          span.fe-download-hero__fact-label.fe-label= t("Source available")

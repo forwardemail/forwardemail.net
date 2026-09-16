@@ -2,7 +2,7 @@
 //- Light surface. Numeric values are emitted as literals rather than through
 //- t(), so the translation job never rewrites a figure or a currency symbol.
 mixin feProduct
-  section.fe-section.fe-surface-light.fe-product(
+  section.fe-section.fe-surface-light.fe-section--pad.fe-product(
     aria-labelledby="fe-product-title"
   )
     .fe-container
@@ -11,7 +11,7 @@ mixin feProduct
         = t("All-in-one, no add-on fees")
 
       .fe-product__head
-        h2#fe-product-title.fe-product__title= t("One control plane for forwarding, mailboxes, sending, and deliverability.")
+        h2#fe-product-title.fe-display-lg= t("One control plane for forwarding, mailboxes, sending, and deliverability.")
 
         ul.fe-stats.fe-product__stats
           li
@@ -40,9 +40,9 @@ mixin feProduct
         +feStep("04", "primary", t("Observe"), t("Analytics, DMARC reports, webhooks, API"))
 
       .fe-features
-        .fe-feature.fe-feature--light
-          h3.fe-feature__title= t("Privacy by default")
-          p.fe-feature__body= t("Zero-knowledge architecture, quantum-resistant encryption options, sandboxed mailboxes, and safe web lookups.")
+        .fe-panel.fe-feature
+          h3.fe-display-sm.fe-feature__title= t("Privacy by default")
+          p.fe-text.fe-feature__body= t("Zero-knowledge architecture, quantum-resistant encryption options, sandboxed mailboxes, and safe web lookups.")
           ul.fe-chips
             li.fe-chip
               i.fab.fa-github(aria-hidden="true")
@@ -58,8 +58,8 @@ mixin feProduct
         //- the semantic tokens for this subtree, so nothing inside needs a
         //- per-element colour override.
         .fe-feature.fe-feature--inverse.fe-surface-dark
-          h3.fe-feature__title= t("Built for developers")
-          p.fe-feature__body
+          h3.fe-display-sm.fe-feature__title= t("Built for developers")
+          p.fe-text.fe-feature__body
             = t("Everything the dashboard does is an API call. Send with one request, receive as JSON webhooks, and script the rest.")
             = " "
             a.fe-feature__link(href=l("/email-api"))= t("Read the API reference")
@@ -90,16 +90,7 @@ mixin feStep(num, dot, title, desc)
   li.fe-stepper__step
     span.fe-stepper__num.fe-code= num
     .fe-stepper__dot-row(aria-hidden="true")
-      //- Written as three literal branches rather than a built class name.
-      //- purgecss-from-pug only extracts classes it can see as dot syntax or
-      //- a literal class attribute, so a concatenated name is stripped from
-      //- the production bundle while still looking correct in dev.
-      if dot === "signal"
-        span.fe-stepper__dot.fe-stepper__dot--signal
-      else if dot === "mint"
-        span.fe-stepper__dot.fe-stepper__dot--mint
-      else
-        span.fe-stepper__dot.fe-stepper__dot--primary
+      span.fe-stepper__dot(class=`fe-stepper__dot--${dot}`)
       span.fe-stepper__rule
-    h3.fe-stepper__title= title
-    p.fe-stepper__desc= desc
+    h3.fe-display-sm.fe-stepper__title= title
+    p.fe-text.fe-stepper__desc= desc

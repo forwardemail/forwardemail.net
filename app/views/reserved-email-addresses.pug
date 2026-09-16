@@ -1,38 +1,44 @@
 extends layout
 
-include _onboard
+include _fe-page-header
+include _fe-onboard
 
 block body
-  +onboard(t('Need email for your domain?'), t('Skip ahead to the instructions to setup email for your domain.'), l('/faq?redirect_to_domain=true'), '#reserved-email-addresses', 'border-bottom', true)
-  #reserved-email-addresses.container.py-3.py-md-4.py-lg-5
-    .text-center.mb-5
-      .h2.display-3.mb-1
-        i.fa.fa-user-lock
-      h1.h2.mb-0= t("Reserved Email Addresses")
-      .small.text-black.text-themed-50.text-uppercase= t("Security-Focused List")
-    .row.mt-3
-      .col-md-6.offset-md-3
-        p.lead.mb-3
-          = t("We compiled a list of 1250+ email addresses that should be reserved by admins for security concerns.")
-        .text-center.mb-3
-          a.btn.btn-dark(
-            href="https://github.com/forwardemail/reserved-email-addresses-list",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            = t("View source code on GitHub")
-            = " "
-            i.fa.fa-external-link
-        .alert.alert-info.mb-3!= t('<strong>Did you know?</strong> In our paid plans, organizations can have members that belong to an "admin" or a "user" group &ndash; and the "user" group is not permitted to add aliases that equal one of the reserved email addresses below.  We also restrict the "user" group from having an email address that starts with, ends with, or equals "admin", "administrator", "webmaster", "hostmaster", "postmaster", and "ssl".')
-        ol.markdown-body.mb-0.ml-0.mr-0.mt-5
+  //- Was: the auto-opening onboarding modal, then a centred header, a
+  //- GitHub button, an info alert and the 1,250-entry list. Same content on
+  //- the fe page header, a callout, the list in columns, and the onboarding
+  //- form inline at the foot. #reserved-email-addresses stays as the anchor
+  //- the previous "keep reading" link pointed at.
+  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+    +fePageHeader({ id: "fe-reserved", icon: "fa fa-user-lock", eyebrow: t("Security-Focused List"), title: t("Reserved Email Addresses"), body: t("We compiled a list of 1250+ email addresses that should be reserved by admins for security concerns.") })
+      .fe-actions.fe-page-header__actions
+        a.fe-btn.fe-btn--hero.fe-btn--lg(
+          href="https://github.com/forwardemail/reserved-email-addresses-list",
+          target="_blank",
+          rel="noopener noreferrer"
+        )
+          i.fab.fa-github(aria-hidden="true")
+          = t("View source code on GitHub")
+
+    section#reserved-email-addresses.fe-section.fe-surface-light.fe-section--pad-sm.fe-body(
+      aria-labelledby="fe-reserved-list-title"
+    )
+      .fe-container
+        .fe-body__inner
+          .fe-panel.fe-panel--md.fe-callout
+            i.fa.fa-lightbulb(aria-hidden="true")
+            div!= t('<strong>Did you know?</strong> In our paid plans, organizations can have members that belong to an "admin" or a "user" group &ndash; and the "user" group is not permitted to add aliases that equal one of the reserved email addresses below.  We also restrict the "user" group from having an email address that starts with, ends with, or equals "admin", "administrator", "webmaster", "hostmaster", "postmaster", and "ssl".')
+          h2#fe-reserved-list-title.fe-display-sm.fe-body__title= t("Reserved Email Addresses")
+        ol.fe-codelist
           each reservedEmailAddress in reservedEmailAddressesList
             li: code= reservedEmailAddress
-        p.mt-5.mb-0.text-center
-          a(
+        .fe-actions.fe-body__actions
+          a.fe-btn.fe-btn--subtle.fe-btn--md(
             href="https://github.com/forwardemail/reserved-email-addresses-list",
             target="_blank",
             rel="noopener noreferrer"
           )
+            i.fab.fa-github(aria-hidden="true")
             = t("View source code on GitHub")
-            = " "
-            i.fa.fa-external-link
+
+    +feOnboard(t('Need email for your domain?'), t('Skip ahead to the instructions to setup email for your domain.'), l('/faq?redirect_to_domain=true'), '#reserved-email-addresses')

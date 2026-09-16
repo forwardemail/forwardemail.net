@@ -1,0 +1,67 @@
+//- Card grid for the three index pages (/resources, /blog/docs, /guides).
+//- Replaces the bootstrap .card grid each of them built on the stars
+//- parallax. One card per item; the whole card is the link, as the
+//- stretched-link made it before.
+//-
+//- card:
+//-   title, description   unescaped, as before (both carry markup)
+//-   subtitle             optional second line under the title
+//-   href                 destination
+//-   alt                  plain-text title for the image alt and link title
+//-   image                src for the Open Graph image (optional)
+//-   video                base name under img/guides/ with .webm and .mp4
+//-                        variants (optional; wins over image)
+//-   eager                true to skip loading="lazy" (first row)
+//-   badgeVideo, badgeGif corner badges, as the guides grid shows
+//-   cta                  link label for people; crawlers get the title as
+//-                        anchor text instead, as before
+mixin feCard(card)
+  li.fe-panel.fe-card
+    if card.video || card.image
+      .fe-card__media(class=card.video ? "fe-card__media--live" : "")
+        if card.badgeVideo || card.badgeGif
+          .fe-card__badges
+            if card.badgeVideo
+              span.fe-card__badge.fe-card__badge--video
+                i.fa.fa-play-circle(aria-hidden="true")
+                = " "
+                = t("Video")
+            if card.badgeGif
+              span.fe-card__badge.fe-card__badge--gif GIF
+        if card.video
+          video(
+            loading=card.eager ? false : "lazy",
+            controls,
+            autoplay,
+            loop,
+            muted,
+            playsinline,
+            width="480",
+            height="270"
+          )
+            source(
+              src=manifest(`img/guides/${card.video}.webm`),
+              type="video/webm"
+            )
+            source(
+              src=manifest(`img/guides/${card.video}.mp4`),
+              type="video/mp4"
+            )
+            = t("Your browser does not support the video tag.")
+        else
+          img(
+            loading=card.eager ? false : "lazy",
+            src=card.image,
+            alt=card.alt
+          )
+    .fe-card__body
+      h2.fe-card__title!= card.title
+      if card.subtitle
+        p.fe-card__subtitle!= card.subtitle
+      p.fe-text.fe-card__text!= card.description
+      a.fe-card__link(href=card.href, title=card.alt)
+        if isBotUa
+          != card.title
+        else
+          span= card.cta || t("Learn more")
+          i.fa.fa-angle-right(aria-hidden="true")

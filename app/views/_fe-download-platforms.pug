@@ -8,47 +8,49 @@
 //- tap target; the checksum control has to sit outside it because a button
 //- cannot be nested inside an anchor.
 mixin feDownloadRow(option)
-  li.fe-dl-row
-    a.fe-dl-row__link(
+  li.fe-download-row
+    a.fe-download-row__link(
       href=option.url,
       rel=option.isDirect ? "noopener" : "noopener noreferrer"
     )
-      span.fe-dl-row__label
-        span.fe-dl-row__arch= option.arch === "universal" && universalTitles[option.format] ? universalTitles[option.format] : archLabels[option.arch]
-        span.fe-dl-row__note= formatNotes[option.format]
-      span.fe-dl-row__format.fe-code= formatLabels[option.format]
-      span.fe-dl-row__size.fe-numeral
+      span.fe-download-row__label
+        span.fe-download-row__arch= option.arch === "universal" && universalTitles[option.format] ? universalTitles[option.format] : archLabels[option.arch]
+        span.fe-download-row__note= formatNotes[option.format]
+      span.fe-download-row__format.fe-code= formatLabels[option.format]
+      span.fe-download-row__size.fe-numeral
         if option.size
           = option.size
         else
           = t("GitHub")
-      span.fe-dl-row__go(aria-hidden="true")
+      span.fe-icon-tile.fe-icon-tile--sm.fe-icon-tile--round.fe-icon-tile--primary.fe-download-row__go(
+        aria-hidden="true"
+      )
         i.fa.fa-arrow-down
 
     //- Only rendered when the release actually reported a digest, so the
     //- control is never present with nothing to copy.
     if option.sha256
-      button.fe-dl-copy(
+      button.fe-download-copy(
         type="button",
         data-fe-copy=option.sha256,
         aria-label=t("Copy SHA-256 checksum for %s", option.fileName)
       )
         i.fa.fa-clipboard(aria-hidden="true")
-        span.fe-dl-copy__done(aria-hidden="true")
+        span.fe-download-copy__done(aria-hidden="true")
           i.fa.fa-check
 
 mixin feDownloadCard(platform)
   -
     const meta = platformMeta[platform.key];
-  li.fe-dl-card
-    .fe-dl-card__head
-      span.fe-dl-card__icon
+  li.fe-panel.fe-download-card
+    .fe-download-card__head
+      span.fe-icon-tile.fe-icon-tile--primary
         i(class=meta.icon, aria-hidden="true")
-      span.fe-dl-card__titles
-        h3.fe-dl-card__title= meta.name
-        span.fe-dl-card__requires= meta.requires
+      span.fe-download-card__titles
+        h3.fe-display-sm.fe-download-card__title= meta.name
+        span.fe-download-card__requires= meta.requires
 
-    ul.fe-dl-rows
+    ul.fe-download-rows
       each option in platform.options
         +feDownloadRow(option)
 
@@ -56,44 +58,45 @@ mixin feDownloadCard(platform)
     //- both are about the platform's own install restrictions rather than
     //- anything about the build.
     if platform.key === "android"
-      p.fe-dl-card__note= t("Android asks you to allow installs from your browser the first time.")
+      p.fe-text.fe-download-card__note= t("Android asks you to allow installs from your browser the first time.")
     else if platform.key === "ios"
-      p.fe-dl-card__note= t("The iOS build is not signed for direct install. Sideload it with AltStore, Sideloadly, or Xcode.")
+      p.fe-text.fe-download-card__note= t("The iOS build is not signed for direct install. Sideload it with AltStore, Sideloadly, or Xcode.")
 
     //- Planned distribution channels (stores, package managers) that are not
     //- live yet, so visitors know they are on the roadmap.
     if meta.comingSoon
-      p.fe-dl-card__soon
-        span.fe-dl-card__soon-label.fe-label= t("Coming soon")
+      p.fe-download-card__soon
+        span.fe-download-card__soon-label.fe-label= t("Coming soon")
         each channel in meta.comingSoon
           span.fe-chip.fe-chip--soon= channel
 
-//- The base names are written as literal classes and only the modifier is
-//- interpolated. purgecss-from-pug reads dot syntax and literal class
-//- attributes but not template interpolation, so a base name built inside the
-//- template string would be stripped from the build. The two modifiers are
-//- listed in the purgecss safelist in gulpfile.js instead.
+//- Desktop cards end where their own list does (Linux ships seven packages,
+//- macOS two), so that grid does not stretch its items; the mobile grid
+//- keeps the default stretch. The mobile section follows the desktop one on
+//- the same light surface, so it drops its top padding.
 mixin feDownloadGroup(group, id, eyebrow, title, lede)
-  section.fe-section.fe-surface-light.fe-dl-group(
-    class=`fe-dl-group--${group.key}`,
+  section.fe-section.fe-surface-light.fe-section--pad(
+    class=group.key === "mobile" ? "fe-section--tight" : "",
     aria-labelledby=`${id}-title`
   )
     .fe-container
       p.fe-eyebrow.fe-label
         i.fa.fa-download(aria-hidden="true")
         = eyebrow
-      .fe-dl-group__head
-        h2.fe-dl-group__title(id=`${id}-title`)= title
-        p.fe-lede.fe-dl-group__lede= lede
-      ul.fe-dl-cards(class=`fe-dl-cards--${group.key}`)
+      .fe-download-group__head
+        h2.fe-display-lg.fe-download-group__title(id=`${id}-title`)= title
+        p.fe-lede.fe-download-group__lede= lede
+      ul.fe-grid(
+        class=group.key === "desktop" ? "fe-grid--lg-3 fe-grid--start" : "fe-grid--md-2"
+      )
         each platform in group.platforms
           +feDownloadCard(platform)
 
 mixin feDownloadPlatforms
   each group in downloads.groups
     if group.key === "desktop"
-      span#fe-download-desktop.fe-dl-anchor
+      span#fe-download-desktop.fe-download-anchor
       +feDownloadGroup(group, "fe-download-desktop", t("Desktop"), t("Built for the machine you work on."), t("Every desktop build ships as a signed installer with an auto updater, so you stay current without coming back here."))
     else
-      span#fe-download-mobile.fe-dl-anchor
+      span#fe-download-mobile.fe-download-anchor
       +feDownloadGroup(group, "fe-download-mobile", t("Mobile"), t("The same mailbox in your pocket."), t("Installed directly rather than through a store, so you get the build exactly as it left CI."))

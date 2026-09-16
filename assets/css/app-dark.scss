@@ -192,7 +192,9 @@ $input-disabled-bg: $fe-n-200;
   .btn-outline-dark,
   .btn-outline-secondary {
     color: var(--app-fg-primary);
-    border-color: var(--app-border-strong);
+    // The fallback is for the email bundle, whose purge prunes the :root
+    // definition before postcss-css-variables resolves this reference.
+    border-color: var(--app-border-strong, #{$fe-l-400});
   }
 
   .navbar-dark .navbar-toggler {

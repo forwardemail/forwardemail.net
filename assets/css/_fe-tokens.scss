@@ -25,10 +25,9 @@
   --fe-signal-deep: #{$fe-signal-deep}; // 5.1:1 on light
   --fe-mint-deep: #{$fe-mint-deep}; // 5.4:1 on light, used by the pricing eyebrow
 
-  // Caution has no light-safe variant in the specification, which is a gap.
+  // Caution has no light-safe variant in the specification, which is a gap:
   // --fe-caution measures 2.0:1 on the light canvas and cannot be text there.
-  --fe-caution-deep: #{$fe-caution-deep};
-
+  // $fe-caution-deep exists in the palette for when one is needed.
   --fe-caution: #{$fe-caution};
   --fe-danger: #{$fe-danger};
   --fe-danger-deep: #{$fe-danger-deep};
@@ -101,6 +100,8 @@
   --fe-elev-1: 0 1px 2px #{rgba($fe-ink, 0.06)}, 0 1px 3px #{rgba($fe-ink, 0.1)};
   --fe-elev-3: 0 10px 15px -3px #{rgba($fe-ink, 0.12)}, 0 4px 6px -4px #{rgba($fe-ink, 0.1)};
   --fe-elev-inset: inset 0 1px 0 var(--fe-hairline-light);
+  // The hairline ring the featured plan card wears over its shadow.
+  --fe-ring-primary: 0 0 0 1px var(--fe-primary-a24);
 
   --fe-glow-primary: 0 8px 24px #{rgba($fe-primary, 0.32)};
 
@@ -129,6 +130,14 @@
   --fe-container-gutter: 1.5rem;
   --fe-grid-gap: 1.5rem;
 
+  // Vertical rhythm (_fe-base.scss section modifiers). One number for the
+  // marketing sections, one for reading sections, and the hero pair: the
+  // start value clears the transparent bar on top of --fe-nav-offset.
+  --fe-section-pad: 6rem;
+  --fe-section-pad-sm: 4rem;
+  --fe-hero-pad: 3rem;
+  --fe-hero-pad-end: 4rem;
+
   // Alpha tints are Sass-computed because CSS rgba() cannot take a hex custom
   // property and color-mix() is not polyfilled for op_mini/kaios.
   --fe-primary-a08: #{rgba($fe-primary, 0.08)};
@@ -152,6 +161,15 @@
 @media (min-width: 576px) {
   :root {
     --fe-container-gutter: clamp(1.5rem, 2vw, 2.5rem);
+  }
+}
+
+@include fe-down(md) {
+  :root {
+    --fe-section-pad: 4rem;
+    --fe-section-pad-sm: 3rem;
+    --fe-hero-pad: 2rem;
+    --fe-hero-pad-end: 3rem;
   }
 }
 

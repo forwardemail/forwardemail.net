@@ -1,14 +1,16 @@
 extends layout
 
+include _fe-page-header
+
 block body
-  .min-vh-80.d-flex.flex-column
-    .container-fluid.text-center.py-3.py-md-4.py-lg-5.my-auto
-      h1= t("Page not found")
-      p.lead.text-muted= t("We're sorry, but the page you requested could not be found.")
-      form.mb-3.mb-md-4.mb-lg-5(action="/", type="GET")
-        button.btn.btn-outline-primary.btn-lg(type="submit")= t("Go to homepage")
-      //- article images are hidden site-wide for now
-      //- .markdown-body: img.rounded-lg(
-      //- src=manifest("img/articles/404.webp"),
-      //- alt="Page not found illustration"
-      //- )
+  //- Dark, centred, one action, on the shared status mixin. The article
+  //- illustration this page used to show is hidden site-wide for now.
+  .fe-landing
+    +feStatus("404", t("Page not found"), t("We're sorry, but the page you requested could not be found."))
+      form(action="/", type="GET")
+        button.fe-btn.fe-btn--hero.fe-btn--lg(type="submit")
+          i.fa.fa-home(aria-hidden="true")
+          = t("Go to homepage")
+      a.fe-btn.fe-btn--ghost.fe-btn--lg(href=l("/faq"))
+        i.fa.fa-life-ring(aria-hidden="true")
+        = t("Frequently Asked Questions")

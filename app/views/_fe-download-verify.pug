@@ -9,7 +9,7 @@ mixin feDownloadVerify
     //- back to the generic form when there is no live release to name.
     const sample = downloads.options.find((o) => o.fileName);
     const sampleName = sample ? sample.fileName : t("the file you downloaded");
-  section.fe-section.fe-surface-dark.fe-dl-verify(
+  section.fe-section.fe-surface-dark.fe-section--pad.fe-download-verify(
     aria-labelledby="fe-download-verify-title"
   )
     .fe-container
@@ -17,9 +17,9 @@ mixin feDownloadVerify
         i.fa.fa-lock(aria-hidden="true")
         = t("Verify before you install")
 
-      .fe-dl-verify__grid
+      .fe-download-verify__grid
         div
-          h2#fe-download-verify-title.fe-dl-verify__title= t("Check what you downloaded.")
+          h2#fe-download-verify-title.fe-display-lg.fe-download-verify__title= t("Check what you downloaded.")
           p.fe-lede= t("Every release publishes a checksum for each file. Compare the one you got against the published list, and it either matches or it does not.")
 
           .fe-codeblock
@@ -35,43 +35,49 @@ mixin feDownloadVerify
                 //- offers this visitor, so the example matches their download
                 span#fe-download-verify-sample= sampleName
 
-          ul.fe-dl-verify__links
+          ul.fe-download-verify__links
             li
-              a.fe-dl-verify__link(href=downloads.checksumsUrl, rel="noopener")
+              a.fe-download-verify__link(
+                href=downloads.checksumsUrl,
+                rel="noopener"
+              )
                 i.fa.fa-file-text-o(aria-hidden="true")
                 = t("SHA256SUMS.txt")
             li
-              a.fe-dl-verify__link(href=downloads.releaseUrl, rel="noopener")
+              a.fe-download-verify__link(
+                href=downloads.releaseUrl,
+                rel="noopener"
+              )
                 i.fa.fa-tag(aria-hidden="true")
                 = t("Release notes")
             li
-              a.fe-dl-verify__link(
+              a.fe-download-verify__link(
                 href=downloads.allReleasesUrl,
                 rel="noopener"
               )
                 i.fa.fa-history(aria-hidden="true")
                 = t("All releases")
 
-        ul.fe-dl-verify__points
-          li.fe-dl-verify__point
-            span.fe-dl-verify__point-icon.fe-dl-verify__point-icon--mint
+        ul.fe-download-verify__points
+          li.fe-download-verify__point
+            span.fe-icon-tile.fe-icon-tile--sm.fe-icon-tile--success
               i.fa.fa-check(aria-hidden="true")
             span
-              strong.fe-dl-verify__point-title= t("Signed updates")
-              span.fe-dl-verify__point-body= t("Desktop builds carry a signature the auto updater checks before it applies anything.")
-          li.fe-dl-verify__point
-            span.fe-dl-verify__point-icon.fe-dl-verify__point-icon--signal
+              strong.fe-download-verify__point-title= t("Signed updates")
+              span.fe-text.fe-download-verify__point-body= t("Desktop builds carry a signature the auto updater checks before it applies anything.")
+          li.fe-download-verify__point
+            span.fe-icon-tile.fe-icon-tile--sm.fe-icon-tile--active
               i.fa.fa-code(aria-hidden="true")
             span
-              strong.fe-dl-verify__point-title= t("Built in the open")
-              span.fe-dl-verify__point-body= t("Each file here is the artifact a public CI run produced from a public commit.")
-          li.fe-dl-verify__point
-            span.fe-dl-verify__point-icon.fe-dl-verify__point-icon--primary
+              strong.fe-download-verify__point-title= t("Built in the open")
+              span.fe-text.fe-download-verify__point-body= t("Each file here is the artifact a public CI run produced from a public commit.")
+          li.fe-download-verify__point
+            span.fe-icon-tile.fe-icon-tile--sm.fe-icon-tile--lift
               i.fa.fa-github(aria-hidden="true")
             span
-              strong.fe-dl-verify__point-title= t("Read the source")
+              strong.fe-download-verify__point-title= t("Read the source")
               span
-                a.fe-dl-verify__point-link(
+                a.fe-download-verify__point-link(
                   href=downloads.repoUrl,
                   rel="noopener"
                 )= t("mail.forwardemail.net")

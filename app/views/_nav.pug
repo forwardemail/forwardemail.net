@@ -13,7 +13,7 @@ if ctx.pathWithoutLocale !== '/email-api'
             span(aria-hidden="true") &times;
         .modal-body
           include _search-form
-if !isHelp && user && !isBot(ctx.get('User-Agent'))
+if !isHelp && user && !isBotUa
   #modal-help.modal.fade(
     tabindex="-1",
     role="dialog",
@@ -54,7 +54,7 @@ if !isHelp && user && !isBot(ctx.get('User-Agent'))
 
 if !user && !registerOrLogin
   include _register-or-login
-  if !isBot(ctx.get('User-Agent')) && ctx.pathWithoutLocale !== '/register' && ctx.pathWithoutLocale !== config.loginRoute
+  if !isBotUa && ctx.pathWithoutLocale !== '/register' && ctx.pathWithoutLocale !== config.loginRoute
     each verb in [ 'sign up', 'sign in' ]
       .modal.fade(
         tabindex="-1",
@@ -80,34 +80,22 @@ if !user && !registerOrLogin
             .modal-body
               +registerOrLogin(verb, true)
 - const navbarClasses = [];
-//- `fe-nav` is the redesigned Ink bar and is pushed on every non-bot branch,
-//- so the navbar and its dropdowns read the same on every page of the site
-//- rather than only on the redesigned ones. The pre-redesign classes stay on
-//- each branch as the fallback for browsers the fe styles degrade in, and as
-//- the hooks core.js still toggles on scroll.
-//- On the dark-hero branch the bar opens transparent and takes Ink glass on
-//- scroll; everywhere else _fe-nav.scss renders it opaque Ink from the start.
-//- `fe-nav` is pushed from a code block rather than written as a literal
-//- class, so it is listed in the purgecss safelist in gulpfile.js alongside
-//- the other classes added this way.
-if user
-  - navbarClasses.push("navbar-dark", "bg-dark", "border-bottom");
-  if !isBot(ctx.get("User-Agent"))
-    - navbarClasses.push("fe-nav");
-else if isFeFlushNav
-  //- The page opens on a dark fe hero (per _fe-flags.pug, which layout.pug
-  //- and email-api.pug include ahead of this file), so the bar starts
-  //- transparent over it. core.js keys its scroll toggle on
-  //- `text-white-required` and swaps `text-white` for the bg-* classes once
-  //- scrolled, which is what moves the bar from transparent to Ink glass.
-  - navbarClasses.push("text-white");
-  - navbarClasses.push("text-white-required");
-  - navbarClasses.push("fe-nav");
-else
+//- People get the fe bar (`fe-nav`, styled by _fe-nav.scss) with one state
+//- class: `fe-nav--transparent` when the page opens on a dark fe hero (per
+//- _fe-flags.pug), which core.js swaps for `fe-nav--solid` on scroll or when
+//- the menu opens; `fe-nav--solid` everywhere else. No bootstrap colour
+//- utilities ride along, so the stylesheet needs no !important to win.
+//- Crawlers keep the pre-redesign bootstrap bar.
+if isBotUa
   - navbarClasses.push("bg-white", "navbar-themed", "bg-themed", "border-bottom");
-  if !isBot(ctx.get("User-Agent"))
-    - navbarClasses.push("fe-nav");
-if !isBot(ctx.get("User-Agent"))
+else if isFeFlushNav
+  - navbarClasses.push("fe-nav", "fe-nav--transparent");
+else
+  - navbarClasses.push("fe-nav", "fe-nav--solid");
+//- Link colour: the fe bar colours its links itself; the crawler bar keeps
+//- bootstrap's themed text.
+- const navLinkClass = isBotUa ? "btn-link text-themed" : "btn-link";
+if !isBotUa
   - navbarClasses.unshift("navbar-expand-lg");
   if ctx.pathWithoutLocale !== '/email-api'
     - navbarClasses.unshift("fixed-top");
@@ -124,8 +112,7 @@ nav.navbar(class=navbarClasses.join(" "))
     class=hasSidebar || ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/analytics") || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || ctx.pathWithoutLocale.startsWith("/my-account/domains") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
   )
     a.navbar-brand.d-inline-block.m-0.font-weight-bold(
-      href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l(),
-      class=isBot(ctx.get("User-Agent")) ? "" : "text-themed"
+      href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l()
     )
       if (domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
         if user
@@ -151,11 +138,11 @@ nav.navbar(class=navbarClasses.join(" "))
         span.sr-only.sr-only-focusable Forward Email
         include ../../assets/img/logo-square-30-30.svg
         span.m-0.align-middle.no-js.ml-2(
-          class=isBot(ctx.get("User-Agent")) ? "d-none d-md-inline-block" : "d-inline-block"
+          class=isBotUa ? "d-none d-md-inline-block" : "d-inline-block"
         )= "Forward Email"
     //- Event Feed Badge (only for non-bots)
     //- Red badge for new events, grey outline badge for total events when no new
-    if !isBot(ctx.get("User-Agent")) && eventFeedBadgeCount && eventFeedBadgeCount > 0
+    if !isBotUa && eventFeedBadgeCount && eventFeedBadgeCount > 0
       if eventFeedHasNew
         a.ml-3.d-inline-block.m-0.badge.badge-danger.rounded-lg.rounded(
           href=l("/event-feed"),
@@ -190,7 +177,7 @@ nav.navbar(class=navbarClasses.join(" "))
               data-toggle="modal",
               data-target="#modal-search",
               role="button",
-              class=`btn-link ${user ? 'text-white' : 'text-themed'}`
+              class=navLinkClass
             )
               i.fa.fa-search
               span.sr-only
@@ -212,13 +199,13 @@ nav.navbar(class=navbarClasses.join(" "))
               data-toggle="modal",
               data-target="#modal-search",
               role="button",
-              class=`btn-link ${user ? 'text-white' : 'text-themed'}`
+              class=navLinkClass
             )
               i.fa.fa-search
               span.sr-only
                 = " "
                 = t("Search")
-    else if !user && !isBot(ctx.get('User-Agent'))
+    else if !user && !isBotUa
       ul.list-inline.ml-auto.d-inline-block.d-lg-none.mb-0
         //- Site Search
         if ctx.pathWithoutLocale !== '/email-api'
@@ -228,7 +215,7 @@ nav.navbar(class=navbarClasses.join(" "))
               data-toggle="modal",
               data-target="#modal-search",
               role="button",
-              class=`btn-link ${user ? 'text-white' : 'text-themed'}`
+              class=navLinkClass
             )
               i.fa.fa-search
               span.sr-only
@@ -236,31 +223,31 @@ nav.navbar(class=navbarClasses.join(" "))
                 = t("Search")
 
         //- do same for noscript
-        if !isBot(ctx.get('User-Agent'))
+        if !isBotUa
           noscript
             li.list-inline-item
-              a.btn.btn-link.text-themed.btn-sm(
+              a.btn.btn-link.btn-sm(
                 href=l("/private-business-email?pricing=true"),
                 class=ctx.pathWithoutLocale.startsWith("/private-business-email") ? "text-decoration-underline" : ""
               )
                 != t("Features &amp; Pricing")
             //-.
               li.list-inline-item
-                a.btn.btn-link.text-themed.btn-sm(
+                a.btn.btn-link.btn-sm(
                   href=l("/email-analytics"),
                   class=ctx.pathWithoutLocale.startsWith("/email-analytics") ? "text-decoration-underline" : ""
                 )
                   != t("Email Analytics")
             li.list-inline-item
-              a.btn.btn-link.text-themed.btn-sm(
+              a.btn.btn-link.btn-sm(
                 href=l("/faq"),
                 class=ctx.pathWithoutLocale.startsWith("/faq") ? "text-decoration-underline" : ""
               )
                 = t("FAQ")
-        if !isBot(ctx.get('User-Agent'))
+        if !isBotUa
           if ctx.pathWithoutLocale !== config.loginRoute
             li.list-inline-item.d-none.d-md-inline-block.d-lg-none
-              a.btn.btn-link.btn-sm.text-themed(
+              a.btn.btn-link.btn-sm(
                 role=isRegisterOrLogin ? "link" : "button",
                 href=l(config.loginRoute),
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
@@ -278,22 +265,21 @@ nav.navbar(class=navbarClasses.join(" "))
                 else
                   = t("Signup")
       .no-js.is-bot.d-inline-block.mr-3
-    if !isBot(ctx.get('User-Agent'))
+    if !isBotUa
       button.navbar-toggler.d-lg-none.no-js(
         type="button",
         data-toggle="collapse",
         data-target="#navbar-header",
         aria-controls="navbar-header",
         aria-expanded="false",
-        aria-label=t("Toggle navigation"),
-        class=user ? "text-white" : "text-themed"
+        aria-label=t("Toggle navigation")
       )
         i.fas.fa-bars
     //- once we have responsive border utilities added to bootstrap
     //- then we can apply them to the anchor tags inside the navbar
     //- so that on mobile devices there is no border around the links
     //- <https://github.com/twbs/bootstrap/issues/25030>
-    if isBot(ctx.get("User-Agent"))
+    if isBotUa
       //- Encrypted Email
       //- Private Business Email
       //- FAQ
@@ -324,7 +310,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 data-toggle="modal",
                 data-target="#modal-search",
                 role="button",
-                class=`btn-link ${user ? 'text-white' : 'text-themed'}`
+                class=navLinkClass
               )
                 i.fa.fa-search
                 span.sr-only
@@ -340,17 +326,17 @@ nav.navbar(class=navbarClasses.join(" "))
 
           //-.
             - let hasFAQLink = false;
-            if !isBot(ctx.get('User-Agent')) && (!user || user.plan === 'free')
+            if !isBotUa && (!user || user.plan === 'free')
               - hasFAQLink = true;
               li.nav-item
                 a.btn.btn-link.d-block.text-left(
                   href=l("/faq"),
-                  class=ctx.pathWithoutLocale === "/faq" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                  class=ctx.pathWithoutLocale === "/faq" ? `${navLinkClass} text-decoration-underline` : navLinkClass
                 )= t("FAQ")
 
           //- Apps
           - const isApps = ["/blog/open-source/apple-email-clients", "/blog/open-source/windows-email-clients", "/blog/open-source/android-email-clients", "/blog/open-source/linux-email-clients", "/blog/open-source/terminal-email-clients", "/blog/open-source/web-email-clients"].includes(ctx.pathWithoutLocale);
-          if !isBot(ctx.get('User-Agent'))
+          if !isBotUa
             li.nav-item.dropdown.no-js
               form.mb-0
                 a#navbar-dropdown-apps.btn.dropdown-toggle.d-block.text-left.no-js(
@@ -359,7 +345,7 @@ nav.navbar(class=navbarClasses.join(" "))
                   data-boundary="window",
                   aria-haspopup="true",
                   aria-expanded="false",
-                  class=isApps ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                  class=isApps ? `${navLinkClass} text-decoration-underline` : navLinkClass
                 )
                   = t("Apps")
                 .dropdown-menu(aria-labelledby="navbar-dropdown-apps")
@@ -451,7 +437,7 @@ nav.navbar(class=navbarClasses.join(" "))
                     = "Terminal"
 
           //- Solutions aka Use Cases (bots only)
-          if isBot(ctx.get('User-Agent'))
+          if isBotUa
             li.nav-item.dropdown.no-js
               - const isUseCasesPage = Object.keys(useCases).includes(ctx.pathWithoutLocale);
               form.mb-0
@@ -460,7 +446,7 @@ nav.navbar(class=navbarClasses.join(" "))
                   data-boundary="window",
                   aria-haspopup="true",
                   aria-expanded="false",
-                  class=isUseCasesPage ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                  class=isUseCasesPage ? `${navLinkClass} text-decoration-underline` : navLinkClass
                 )
                   = t("Solutions")
                 .dropdown-menu(aria-labelledby="navbar-dropdown-solutions")
@@ -471,7 +457,7 @@ nav.navbar(class=navbarClasses.join(" "))
                     )
                       != t(useCases[useCase][0])
           //- Resources
-          if !isBot(ctx.get('User-Agent'))
+          if !isBotUa
             //- - const resourcePages = ["/private-business-email", "/email-analytics", "/faq", "/tti", "/help", "/disposable-addresses", "/domain-registration", "/encrypt", "/reserved-email-addresses", "/denylist"];
             - const resourcePages = ["/private-business-email", "/faq", "/tti", "/help", "/disposable-addresses", "/domain-registration", "/encrypt", "/reserved-email-addresses", "/denylist"];
             - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || (resourcePages.includes(ctx.pathWithoutLocale) && ctx.query && !boolean(ctx.query.pricing)));
@@ -483,11 +469,11 @@ nav.navbar(class=navbarClasses.join(" "))
                   data-boundary="window",
                   aria-haspopup="true",
                   aria-expanded="false",
-                  class=isResourcesPage ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                  class=isResourcesPage ? `${navLinkClass} text-decoration-underline` : navLinkClass
                 )
                   = t("Resources")
                 .dropdown-menu(aria-labelledby="navbar-dropdown-resources")
-                  if !isBot(ctx.get('User-Agent')) && ctx.pathWithoutLocale !== '/faq'
+                  if !isBotUa && ctx.pathWithoutLocale !== '/faq'
                     a.dropdown-item.font-weight-bold(
                       href=l("/faq#what-is-forward-email")
                     )
@@ -495,7 +481,7 @@ nav.navbar(class=navbarClasses.join(" "))
                   each resourcePage in resourcePages
                     if resourcePage === '/private-business-email'
                       - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
-                      if !isBot(ctx.get('User-Agent'))
+                      if !isBotUa
                         - pricingPageHref += "?pricing=true";
                       a.dropdown-item(
                         href=pricingPageHref,
@@ -560,7 +546,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 aria-haspopup="true",
                 aria-expanded="false",
                 data-display="static",
-                class=ctx.pathWithoutLocale.startsWith("/guides") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                class=ctx.pathWithoutLocale.startsWith("/guides") ? `${navLinkClass} text-decoration-underline` : navLinkClass
               )
                 = t("Guides")
               .dropdown-menu.dropdown-menu-xl-left(
@@ -614,7 +600,7 @@ nav.navbar(class=navbarClasses.join(" "))
                       href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
                       class=classes.join(" ")
                     )
-                      if isBot(ctx.get('User-Agent'))
+                      if isBotUa
                         != t('How to Setup Email with <span class="notranslate">%s</span>', provider.name)
                       else
                         = provider.name
@@ -636,7 +622,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 data-boundary="window",
                 aria-haspopup="true",
                 aria-expanded="false",
-                class=!isApps && (isEmailComparison || ctx.pathWithoutLocale === "/email-api" || ctx.pathWithoutLocale === "/free-email-webhooks" || ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" || ctx.pathWithoutLocale.startsWith("/blog/docs") || ctx.pathWithoutLocale.startsWith("/blog/open-source")) ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                class=!isApps && (isEmailComparison || ctx.pathWithoutLocale === "/email-api" || ctx.pathWithoutLocale === "/free-email-webhooks" || ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" || ctx.pathWithoutLocale.startsWith("/blog/docs") || ctx.pathWithoutLocale.startsWith("/blog/open-source")) ? `${navLinkClass} text-decoration-underline` : navLinkClass
               )
                 = t("Developers")
               .dropdown-menu.dropdown-menu-right(
@@ -646,7 +632,7 @@ nav.navbar(class=navbarClasses.join(" "))
                   href=l("/email-api"),
                   class=ctx.pathWithoutLocale === "/email-api" ? "active" : ""
                 )
-                  if isBot(ctx.get("User-Agent"))
+                  if isBotUa
                     = t("Email API Reference")
                   else
                     = t("API Reference")
@@ -673,10 +659,10 @@ nav.navbar(class=navbarClasses.join(" "))
                 )
                   = t("Self Hosted Email")
                 a.dropdown-item(
-                  href=isBot(ctx.get("User-Agent")) ? l("/free-email-webhooks") : l("/faq#do-you-support-webhooks"),
+                  href=isBotUa ? l("/free-email-webhooks") : l("/faq#do-you-support-webhooks"),
                   class=ctx.pathWithoutLocale === "/free-email-webhooks" ? "active font-weight-bold" : ""
                 )
-                  if isBot(ctx.get("User-Agent"))
+                  if isBotUa
                     = t("Free Email Webhooks")
                   else
                     = t("Email Webhooks")
@@ -696,7 +682,7 @@ nav.navbar(class=navbarClasses.join(" "))
                         class=ctx.pathWithoutLocale === `/blog/${str}` ? "active" : ""
                       )
                         - let title = config.meta[`/blog/${str}`][0];
-                        if !isBot(ctx.get("User-Agent"))
+                        if !isBotUa
                           //- Strip the number prefix, "Best " prefix, and year suffix for cleaner display
                           - title = title.replace(/^\d+\s+/, '').replace(/^Best\s+/i, '').replace(/\s+\d{4}$/, '').split(' - ')[0];
                         != striptags(t(title))
@@ -709,14 +695,14 @@ nav.navbar(class=navbarClasses.join(" "))
                         href=l(doc.slug),
                         class=ctx.pathWithoutLocale === doc.slug ? "active" : ""
                       )
-                        if !isBot(ctx.get('User-Agent')) && doc.icon
+                        if !isBotUa && doc.icon
                           i(class=doc.icon)
                           = " "
-                        if isBot(ctx.get('User-Agent'))
+                        if isBotUa
                           = t(doc.shortTitle || doc.title)
                         else
                           = t(doc.shortTitle || doc.title.replace("Best ", ""))
-                if platforms.length > 0 && isBot(ctx.get('User-Agent'))
+                if platforms.length > 0 && isBotUa
                   hr.dropdown-divider
                   h6.dropdown-header= t("Open Source")
                   .card-columns.small
@@ -734,7 +720,7 @@ nav.navbar(class=navbarClasses.join(" "))
                       )!= t(tool.title)
 
           //- Company
-          if !isBot(ctx.get('User-Agent'))
+          if !isBotUa
             - const companyPages = ["/event-feed", "/about", "/security", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse", "/press"];
             - const isCompanyPage = companyPages.includes(ctx.pathWithoutLocale);
             li.nav-item.dropdown.no-js
@@ -745,7 +731,7 @@ nav.navbar(class=navbarClasses.join(" "))
                   data-boundary="window",
                   aria-haspopup="true",
                   aria-expanded="false",
-                  class=isCompanyPage ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                  class=isCompanyPage ? `${navLinkClass} text-decoration-underline` : navLinkClass
                 )
                   = t("Company")
                 .dropdown-menu(aria-labelledby="navbar-dropdown-company")
@@ -784,7 +770,7 @@ nav.navbar(class=navbarClasses.join(" "))
                     data-title=t("Send us an email"),
                     data-placement="bottom"
                   )= t("Careers")
-                  if !isBot(ctx.get('User-Agent'))
+                  if !isBotUa
                     a.dropdown-item(
                       href="https://status.forwardemail.net/",
                       target="_blank",
@@ -860,7 +846,7 @@ nav.navbar(class=navbarClasses.join(" "))
                     data-boundary="window",
                     aria-haspopup="true",
                     aria-expanded="false",
-                    class=ctx.pathWithoutLocale.startsWith("/admin") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                    class=ctx.pathWithoutLocale.startsWith("/admin") ? `${navLinkClass} text-decoration-underline` : navLinkClass
                   )
                     = t("Admin")
                   .dropdown-menu(aria-labelledby="navbar-dropdown-admin")
@@ -916,7 +902,7 @@ nav.navbar(class=navbarClasses.join(" "))
                   data-boundary="window",
                   aria-haspopup="true",
                   aria-expanded="false",
-                  class=ctx.pathWithoutLocale.startsWith("/my-account") ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                  class=ctx.pathWithoutLocale.startsWith("/my-account") ? `${navLinkClass} text-decoration-underline` : navLinkClass
                 )
                   = t("My Account")
                 .dropdown-menu(aria-labelledby="navbar-dropdown-my-account")
@@ -962,10 +948,10 @@ nav.navbar(class=navbarClasses.join(" "))
                   a.dropdown-item(href=l("/logout"))= t("Sign out")
           //- links that show only if you're logged out
           else
-            if !isBot(ctx.get('User-Agent'))
+            if !isBotUa
               if ctx.pathWithoutLocale !== config.loginRoute
                 li.nav-item.ml-0.ml-xl-3
-                  a.btn.btn-link.text-themed.d-block.text-left(
+                  a.btn.btn-link.d-block.text-left(
                     role=isRegisterOrLogin ? "link" : "button",
                     href=l(config.loginRoute),
                     data-toggle=isRegisterOrLogin ? false : "modal-anchor",
@@ -989,7 +975,7 @@ if user
   noscript
     .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
 //-.
-  else if !isBot(ctx.get('User-Agent')) && dayjs().isBefore(dayjs('1/1/24', 'M/D/YY')) && ctx.pathWithoutLocale === '/' || (ctx.pathWithoutLocale === '/private-business-email' && ctx.query.pricing !== 'true')
+  else if !isBotUa && dayjs().isBefore(dayjs('1/1/24', 'M/D/YY')) && ctx.pathWithoutLocale === '/' || (ctx.pathWithoutLocale === '/private-business-email' && ctx.query.pricing !== 'true')
     div.text-center.my-3.text-uppercase.lead
       a.badge.badge-pill.badge-primary(
         href=l("/faq#do-you-support-sending-email-with-smtp")
