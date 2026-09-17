@@ -178,6 +178,7 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
   // Trust only a passing ARC chain whose sealer root is explicitly configured
   // through TRUTH_SOURCES.
   const isTruthSource = isTruthSourceArc(session.arc, config.truthSources);
+  session.isTrustedArc = isTruthSource;
 
   //
   // only reject if ARC was not passing from a truth source

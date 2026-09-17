@@ -75,6 +75,7 @@ const isDenylisted = require('#helpers/is-denylisted');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const isEmail = require('#helpers/is-email');
 const isGreylisted = require('#helpers/is-greylisted');
+const isHighConfidencePhpHostingSpam = require('#helpers/is-high-confidence-php-hosting-spam');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
@@ -2065,6 +2066,23 @@ async function onDataMX(session, headers, body) {
 
   // return early if it was silent banned
   if (silentBanned) return;
+
+  // The individual traits below occur in legitimate messages. Reject only
+  // unauthenticated blind PHP-origin mail after mailauth has populated trusted
+  // authentication results, and never apply it to allowlisted senders.
+  if (isHighConfidencePhpHostingSpam(headers, session)) {
+    this.client
+      .incr(`php_hosting_spam_prevented:${session.arrivalDateFormatted}`)
+      .then()
+      .catch((err) => logger.fatal(err));
+
+    throw new SMTPError(
+      'The email sent matches a high-confidence spam pattern',
+      {
+        responseCode: 550
+      }
+    );
+  }
 
   /*
   // TODO: re-enable spam scanner once v7 released
