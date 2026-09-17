@@ -51,11 +51,15 @@ test('launches isolated commands using the CI shard environment', async (t) => {
   ]);
   t.is(calls.length, 3);
 
-  for (const [index, call] of calls.entries()) {
-    const shard = index + 1;
+  const callsByShard = new Map(
+    calls.map((call) => [call.options.env.CI_SHARD, call])
+  );
+  t.deepEqual([...callsByShard.keys()].sort(), ['1', '2', '3']);
+
+  for (const [shard, call] of callsByShard) {
     t.is(call.command, process.execPath);
     t.is(call.options.env.AVA_SHARD, '1');
-    t.is(call.options.env.CI_SHARD, String(shard));
+    t.is(call.options.env.CI_SHARD, shard);
     t.is(call.options.env.CI_TOTAL_SHARDS, '3');
     t.is(call.options.prefix, `[shard ${shard}/3]`);
     t.true(call.args.includes('--silent'));
