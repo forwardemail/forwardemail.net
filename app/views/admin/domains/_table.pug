@@ -242,6 +242,15 @@ include ../../_pagination
                   i.fa.fa-fw.fa-at
                   = " "
                   = t("Aliases")
+                button.btn.btn-sm.btn-outline-danger.mr-1(
+                  type="button",
+                  data-toggle="modal",
+                  data-target="#modal-transfer-domain",
+                  data-domain-name=domain.name,
+                  data-title=t("Transfer Domain")
+                )
+                  i.fa.fa-fw.fa-exchange-alt
+                  span.sr-only= t("Transfer Domain")
                 form.ajax-form.confirm-prompt.d-inline-block(
                   action=l(`/admin/domains/${domain.id}`),
                   method="POST",

@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
 const dayjs = require('dayjs-with-plugins');
@@ -18,6 +20,7 @@ const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
 const getAllowedSort = require('#helpers/get-allowed-sort');
+const { transferDomain } = require('#helpers/transfer-domain');
 const { Users, Domains, Emails } = require('#models');
 
 const DOMAIN_SORT_FIELDS = new Set([
@@ -363,6 +366,237 @@ async function update(ctx) {
   }
 }
 
+async function transfer(ctx) {
+  const {
+    domain: domainName,
+    original_owner_email: originalOwnerEmail,
+    email,
+    confirmation
+  } = ctx.request.body;
+
+  if (
+    !isSANB(domainName) ||
+    !isSANB(originalOwnerEmail) ||
+    !isSANB(email) ||
+    !isSANB(confirmation)
+  ) {
+    throw Boom.badRequest(
+      ctx.translateError('DOMAIN_TRANSFER_FIELDS_REQUIRED')
+    );
+  }
+
+  let normalizedDomain;
+  try {
+    normalizedDomain = punycode.toUnicode(domainName.trim().toLowerCase());
+  } catch {
+    throw Boom.badRequest(ctx.translateError('INVALID_DOMAIN'));
+  }
+
+  if (normalizedDomain !== confirmation.trim().toLowerCase()) {
+    throw Boom.badRequest(
+      ctx.translateError('DOMAIN_TRANSFER_CONFIRMATION_REQUIRED')
+    );
+  }
+
+  if (!isEmail(originalOwnerEmail) || !isEmail(email)) {
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
+  }
+
+  const [originalOwner, user] = await Promise.all([
+    Users.findOne({ email: originalOwnerEmail.trim().toLowerCase() }),
+    Users.findOne({ email: email.trim().toLowerCase() })
+  ]);
+
+  if (!originalOwner) {
+    throw Boom.notFound(
+      ctx.translateError('DOMAIN_TRANSFER_ORIGINAL_OWNER_NOT_FOUND')
+    );
+  }
+
+  if (!user) {
+    throw Boom.notFound(ctx.translateError('DOMAIN_TRANSFER_TARGET_NOT_FOUND'));
+  }
+
+  if (originalOwner._id.toString() === user._id.toString()) {
+    throw Boom.badRequest(
+      ctx.translateError('DOMAIN_TRANSFER_TARGET_SAME_AS_ORIGINAL_OWNER')
+    );
+  }
+
+  const domains = await Domains.find({
+    name: normalizedDomain,
+    members: {
+      $elemMatch: { user: originalOwner._id, group: 'admin' }
+    }
+  })
+    .limit(2)
+    .exec();
+
+  if (domains.length === 0) {
+    throw Boom.notFound(
+      ctx.translateError('DOMAIN_TRANSFER_ORIGINAL_OWNER_MISMATCH')
+    );
+  }
+
+  if (domains.length > 1) {
+    throw Boom.conflict(ctx.translateError('DOMAIN_TRANSFER_AMBIGUOUS'));
+  }
+
+  const [domain] = domains;
+  const lockKey = `domain_transfer:${domain._id}`;
+  const lockToken = crypto.randomUUID();
+  let lockAcquired;
+
+  try {
+    lockAcquired = await ctx.client.set(
+      lockKey,
+      lockToken,
+      'PX',
+      ms('10m'),
+      'NX'
+    );
+  } catch (err) {
+    ctx.logger.fatal(err, {
+      domain: domain._id,
+      event: 'domain_transfer_lock_acquisition'
+    });
+    throw Boom.serverUnavailable(
+      ctx.translateError('DOMAIN_TRANSFER_LOCK_UNAVAILABLE')
+    );
+  }
+
+  if (lockAcquired !== 'OK') {
+    throw Boom.conflict(ctx.translateError('DOMAIN_TRANSFER_LOCKED'));
+  }
+
+  try {
+    const previousAdminIds = domain.members
+      .filter((member) => member?.group === 'admin' && member.user)
+      .map((member) => member.user);
+    const previousAdmins = await Users.find({
+      _id: {
+        $in: previousAdminIds.filter(
+          (id) => id.toString() !== user._id.toString()
+        )
+      }
+    })
+      .select(`email ${config.lastLocaleField}`)
+      .lean()
+      .exec();
+
+    const result = await transferDomain({
+      domain,
+      sourceUser: originalOwner,
+      user,
+      admin: ctx.state.user,
+      locale: ctx.locale
+    });
+
+    await Promise.all(
+      [`v1_max_forwarded:${domain.name}`, `v1_settings:${domain.name}`].map(
+        async (key) => {
+          try {
+            await ctx.client.del(key);
+          } catch (err) {
+            ctx.logger.fatal(err, {
+              domain: domain._id,
+              event: 'domain_transfer_cache_invalidation',
+              key
+            });
+          }
+        }
+      )
+    );
+
+    const notify = (recipient, phrase) => {
+      const locale = recipient[config.lastLocaleField] || ctx.locale;
+      const subject = i18n.translate(
+        'DOMAIN_TRANSFERRED_SUBJECT',
+        locale,
+        domain.name
+      );
+      const url = `${
+        config.urls.web
+      }/${locale}/my-account/domains/${punycode.toASCII(domain.name)}`;
+      const message = i18n.translate(
+        phrase,
+        locale,
+        domain.name,
+        user.email,
+        url,
+        url
+      );
+
+      return emailHelper({
+        template: 'alert',
+        message: {
+          to: recipient.email,
+          bcc: config.email.message.from,
+          subject
+        },
+        locals: {
+          message,
+          locale
+        }
+      });
+    };
+
+    await Promise.all(
+      [
+        ...previousAdmins.map((admin) =>
+          notify(admin, 'DOMAIN_TRANSFERRED_PREVIOUS_ADMIN_MESSAGE')
+        ),
+        notify(user, 'DOMAIN_TRANSFERRED_NEW_ADMIN_MESSAGE')
+      ].map((promise) =>
+        promise.catch((err) => {
+          ctx.logger.fatal(err, {
+            domain: domain._id,
+            user: user._id,
+            event: 'domain_transfer_notification'
+          });
+        })
+      )
+    );
+
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate(
+        'DOMAIN_TRANSFERRED',
+        domain.name,
+        user.email,
+        result.aliasCount,
+        result.pendingEmailCount,
+        result.sieveScriptCount
+      ),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 5000,
+      position: 'top'
+    });
+
+    if (ctx.accepts('html')) {
+      ctx.redirect('back');
+    } else {
+      ctx.body = { reloadPage: true };
+    }
+  } finally {
+    try {
+      await ctx.client.eval(
+        'if redis.call("get", KEYS[1]) == ARGV[1] then return redis.call("del", KEYS[1]) end return 0',
+        1,
+        lockKey,
+        lockToken
+      );
+    } catch (err) {
+      ctx.logger.fatal(err, {
+        domain: domain._id,
+        event: 'domain_transfer_lock_release'
+      });
+    }
+  }
+}
+
 async function remove(ctx) {
   const domain = await Domains.findById(ctx.params.id);
 
@@ -391,5 +625,6 @@ async function remove(ctx) {
 module.exports = {
   list,
   remove,
+  transfer,
   update
 };

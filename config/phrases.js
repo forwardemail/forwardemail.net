@@ -96,6 +96,41 @@ const ALIAS_GENERATED_PASSWORD = `
 
 module.exports = {
   AUTHENTICATION_REQUIRED: 'Authentication is required.',
+  DOMAIN_TRANSFER_FIELDS_REQUIRED:
+    'Domain name, current owner email address, new owner email address, and confirmation are required.',
+  DOMAIN_TRANSFER_CONFIRMATION_REQUIRED:
+    'Type the exact domain name again to confirm the transfer.',
+  DOMAIN_TRANSFER_TARGET_NOT_FOUND: 'The target user does not exist.',
+  DOMAIN_TRANSFER_ORIGINAL_OWNER_NOT_FOUND:
+    'The current owner user does not exist.',
+  DOMAIN_TRANSFER_ORIGINAL_OWNER_MISMATCH:
+    'No domain with this name is currently owned by the specified current owner.',
+  DOMAIN_TRANSFER_TARGET_SAME_AS_ORIGINAL_OWNER:
+    'The new owner must be different from the current owner.',
+  DOMAIN_TRANSFER_AMBIGUOUS:
+    'More than one domain record matches this domain name and current owner. Resolve the duplicate records manually before transferring.',
+  DOMAIN_TRANSFER_LOCKED:
+    'A transfer for this exact domain is already in progress. Please wait for it to finish.',
+  DOMAIN_TRANSFER_LOCK_UNAVAILABLE:
+    'Domain transfer is temporarily unavailable because its safety lock could not be acquired. Please try again.',
+  DOMAIN_TRANSFER_TARGET_BANNED:
+    'A domain cannot be transferred to a banned user.',
+  DOMAIN_TRANSFER_TARGET_UNVERIFIED:
+    'A domain cannot be transferred to a user without a verified email address.',
+  DOMAIN_TRANSFER_TARGET_PLAN_REQUIRED:
+    'The target user must have the exact same active plan as this domain.',
+  DOMAIN_TRANSFER_TARGET_ALREADY_OWNER:
+    'The target user is already the sole administrator of this domain.',
+  DOMAIN_TRANSFER_GLOBAL_NOT_PERMITTED: 'Global domains cannot be transferred.',
+  DOMAIN_TRANSFER_REKEY_IN_PROGRESS:
+    'This domain has an alias password rekey in progress. Wait for it to finish before transferring the domain.',
+  DOMAIN_TRANSFERRED:
+    '%s was transferred to %s. %s aliases, %s pending outbound messages, and %s Sieve scripts now belong to the new owner. Existing domain-linked logs, delivered email history, mailbox data, contacts, and calendars remain attached to this domain.',
+  DOMAIN_TRANSFERRED_SUBJECT: 'Domain ownership transferred: %s',
+  DOMAIN_TRANSFERRED_PREVIOUS_ADMIN_MESSAGE:
+    '<p>An administrator transferred <strong class="notranslate">%s</strong> to <strong class="notranslate">%s</strong>.</p><p>You no longer have access to this domain, its aliases, or future mailbox data. Existing domain and alias credentials remain unchanged for the new owner.</p>',
+  DOMAIN_TRANSFERRED_NEW_ADMIN_MESSAGE:
+    '<p>You are now the sole administrator of <strong class="notranslate">%s</strong>.</p><p>Aliases, forwarding settings, mailbox data, contacts, calendars, Sieve scripts, domain-linked history, and existing domain and alias credentials were retained. You can manage the transferred domain at <a href="%s">%s</a>.</p>',
   MAILBOX_CREATION_FAILED: 'Mailbox creation failed. Please try again.',
   IMAP_OUT_OF_SYNC_TRY_AGAIN:
     'Your client is not in sync with another process or client.',

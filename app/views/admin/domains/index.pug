@@ -29,6 +29,112 @@ block body
                 name="name",
                 placeholder=t("Search by domain name (RegExp supported) or email")
               )
-            button.btn.btn-success(type="submit")= t("Search")
+            .d-flex.justify-content-between.align-items-center
+              button.btn.btn-success(type="submit")= t("Search")
+              button#button-open-domain-transfer.btn.btn-outline-danger(
+                type="button",
+                data-toggle="modal",
+                data-target="#modal-transfer-domain"
+              )
+                i.fa.fa-fw.fa-exchange-alt
+                = " "
+                = t("Transfer Domain")
         #table-domains
           include ./_table
+
+  #modal-transfer-domain.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-transfer-domain-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-dialog-centered(role="document")
+      .modal-content
+        form#form-transfer-domain.ajax-form(
+          action=l("/admin/domains/transfer"),
+          method="POST",
+          autocomplete=config.env === "test" ? "off" : randomstring()
+        )
+          .modal-header
+            h5#modal-transfer-domain-title.modal-title= t("Transfer Domain")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label=t("Close")
+            )
+              span(aria-hidden="true") &times;
+          .modal-body
+            .alert.alert-danger.small
+              p.mb-2.font-weight-bold= t("This permanently removes every current domain member and gives the target user sole administrative access.")
+              ul.mb-0.pl-3
+                li= t("Aliases, forwarding settings, mailbox data, contacts, calendars, Sieve scripts, domain-linked history, and all existing credentials are retained.")
+                li= t("Existing domain catch-all and alias passwords, PGP and S/MIME encryption settings, device push tokens, and operational alias state remain unchanged.")
+                li= t("Enter the current owner email to bind this transfer to the exact domain record. The new owner must have a verified email address and the exact same active plan as this domain.")
+            .form-group
+              label(for="input-transfer-domain")= t("Domain name")
+              input#input-transfer-domain.form-control.notranslate(
+                name="domain",
+                type="text",
+                inputmode="url",
+                autocomplete="off",
+                required,
+                spellcheck=false,
+                placeholder="example.com"
+              )
+            .form-group
+              label(for="input-transfer-original-owner-email")= t("Current owner email address")
+              input#input-transfer-original-owner-email.form-control.notranslate(
+                name="original_owner_email",
+                type="email",
+                autocomplete="off",
+                required,
+                spellcheck=false,
+                placeholder="current-owner@example.com"
+              )
+            .form-group
+              label(for="input-transfer-email")= t("New owner email address")
+              input#input-transfer-email.form-control.notranslate(
+                name="email",
+                type="email",
+                autocomplete="off",
+                required,
+                spellcheck=false,
+                placeholder="user@example.com"
+              )
+            .form-group.mb-0
+              label(for="input-transfer-confirmation")= t("Type the exact domain name again to confirm")
+              input#input-transfer-confirmation.form-control.notranslate(
+                name="confirmation",
+                type="text",
+                autocomplete="off",
+                required,
+                spellcheck=false
+              )
+          .modal-footer
+            button.btn.btn-outline-secondary(
+              type="button",
+              data-dismiss="modal"
+            )= t("Cancel")
+            button.btn.btn-danger(type="submit")
+              i.fa.fa-fw.fa-exchange-alt
+              = " "
+              = t("Transfer Domain")
+
+block scripts
+  script(defer, nonce=nonce).
+    document.addEventListener("DOMContentLoaded", () => {
+      const modal = document.querySelector("#modal-transfer-domain");
+      const domainInput = document.querySelector("#input-transfer-domain");
+      const confirmationInput = document.querySelector("#input-transfer-confirmation");
+      const $ = window.jQuery || window.$;
+      if (!modal || !domainInput || !confirmationInput || !$) return;
+      $(modal).on("show.bs.modal", (event) => {
+        const domain = $(event.relatedTarget).data("domain-name");
+        if (!domain) return;
+        domainInput.value = domain;
+        confirmationInput.value = "";
+      });
+      $(modal).on("hidden.bs.modal", () => {
+        confirmationInput.value = "";
+      });
+    });

@@ -88,6 +88,7 @@ router
   // FWD-01-010: Accept mongodb_query via POST to prevent cross-origin timing attacks
   .post('/domains', paginate.middleware(10, 50), web.admin.domains.list)
   .get('/domains', paginate.middleware(10, 50), web.admin.domains.list)
+  .post('/domains/transfer', web.admin.domains.transfer)
   .put('/domains/:id', web.admin.domains.update)
   .delete('/domains/:id', web.admin.domains.remove)
 

@@ -16,10 +16,10 @@ const Mongoose = require('@ladjs/mongoose');
 const isSANB = require('is-string-and-not-blank');
 const sharedConfig = require('@ladjs/shared-config');
 
-const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const logger = require('#helpers/logger');
+const { transferDomain } = require('#helpers/transfer-domain');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -36,48 +36,49 @@ graceful.listen();
 
   if (!isSANB(process.env.DOMAIN_ID)) throw new TypeError('DOMAIN_ID missing');
 
+  if (!isSANB(process.env.ORIGINAL_OWNER_ID))
+    throw new TypeError('ORIGINAL_OWNER_ID missing');
+
   if (!isSANB(process.env.NEW_USER_ID))
     throw new TypeError('NEW_USER_ID missing');
 
-  const [domain, user] = await Promise.all([
-    Domains.findOne({
-      id: process.env.DOMAIN_ID
-    }),
-    Users.findOne({
-      id: process.env.NEW_USER_ID
-    })
+  const [sourceUser, user] = await Promise.all([
+    Users.findOne({ id: process.env.ORIGINAL_OWNER_ID }),
+    Users.findOne({ id: process.env.NEW_USER_ID })
   ]);
 
-  if (!domain) throw new TypeError('Domain does not exist');
-  if (!user) throw new TypeError('User does not exist');
+  if (!sourceUser) throw new TypeError('Original owner does not exist');
+  if (!user) throw new TypeError('New user does not exist');
 
-  // replace all members of the domain with the single new user
-  domain.members = [
-    {
-      user: user._id,
-      group: 'admin'
+  const domain = await Domains.findOne({
+    id: process.env.DOMAIN_ID,
+    members: {
+      $elemMatch: { user: sourceUser._id, group: 'admin' }
     }
-  ];
+  });
 
-  // Set audit metadata for admin-initiated domain migration
-  // (this script is run by admins to migrate domains between users)
-  domain.__audit_metadata = {
+  if (!domain) {
+    throw new TypeError(
+      'Domain does not exist or is not owned by ORIGINAL_OWNER_ID'
+    );
+  }
+
+  const result = await transferDomain({
+    domain,
+    sourceUser,
+    user,
+    admin: null
+  });
+
+  logger.info('Domain migration completed', {
+    domain: domain._id,
+    originalOwner: sourceUser._id,
+    user: user._id,
+    aliasCount: result.aliasCount,
+    pendingEmailCount: result.pendingEmailCount,
+    sieveScriptCount: result.sieveScriptCount,
     isAdmin: true
-  };
-
-  await domain.save();
-
-  // update all existing aliases on the domain with the new user
-  await Aliases.updateMany(
-    {
-      domain: domain._id
-    },
-    {
-      $set: {
-        user: user._id
-      }
-    }
-  );
+  });
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
