@@ -1317,6 +1317,22 @@ const config = {
       OTP_NOT_ENABLED: phrases.OTP_NOT_ENABLED,
       OTP_TOKEN_DOES_NOT_EXIST: phrases.OTP_TOKEN_DOES_NOT_EXIST,
       INVALID_WEBAUTHN_KEY: phrases.INVALID_WEBAUTHN_KEY
+    },
+    //
+    // OAuth CSRF protection: `@ladjs/passport` deep-merges these into its
+    // default Google/GitHub strategy options (clientID, callbackURL, scope
+    // are inherited). Neither passport-google-oauth20 nor passport-github2
+    // sends a `state` parameter by default, which leaves the provider
+    // callback open to login CSRF: an attacker can have a victim's browser
+    // complete a callback carrying the attacker's authorization code and
+    // silently log the victim into the attacker's account. With
+    // `state: true`, passport-oauth2 stores a random value in the session
+    // on the authorize redirect and rejects any callback that does not
+    // present it.
+    //
+    strategies: {
+      google: { state: true },
+      github: { state: true }
     }
   },
 
