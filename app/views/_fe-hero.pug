@@ -20,14 +20,12 @@ mixin feHero(bot)
           if bot
             h1#fe-hero-title.fe-display-xl.fe-hero__title= t("Free Email Forwarding for Custom Domains")
           else
-            h1#fe-hero-title.fe-display-xl.fe-hero__title
-              //- Two spans, one h1. The mobile headline is different copy per
-              //- section 5, and display:none keeps the inactive one out of
-              //- the accessibility tree so only one is ever announced.
-              span.fe-hero__title--wide= t("Email infrastructure that respects privacy.")
-              span.fe-hero__title--narrow= t("Private email for every domain you own.")
+            //- The headline and lede are the ones the previous home page
+            //- carried (already translated in all 25 locales), one headline
+            //- at every width rather than the wide / narrow pair.
+            h1#fe-hero-title.fe-display-xl.fe-hero__title!= t("All-in-one Email Solution")
 
-          p.fe-lede.fe-hero__body= t("Host, forward, and deliver email for unlimited custom domains, with encrypted storage, standards-grade authentication, newsletters, and a developer API.")
+          p.fe-lede.fe-hero__body!= t("Privacy-focused email hosting, forwarding, newsletters, and API")
 
           //- Long-form crawler copy, carried over unchanged.
           if bot
@@ -54,15 +52,15 @@ mixin feHero(bot)
               li The Linux Foundation
               li Ubuntu
 
-        //- Right column. The console renders all five of its views on every
+        //- Right column. The console renders all six of its views on every
         //- request and condenses at narrow widths rather than being swapped for
         //- separate markup. One DOM means a phone visitor gets the same message
         //- the desktop does, and there is only one thing to keep true.
         div
           +feConsole(bot)
 
-//- +feConsole and the five views it renders now live in _fe-console.pug, which
+//- +feConsole and the six views it renders now live in _fe-console.pug, which
 //- home.pug includes ahead of this file. The single delivery-path graphic that
 //- used to sit here was replaced by that tab rail: the console can only show
-//- one thing at a time, and five switchable views carry considerably more of
+//- one thing at a time, and six switchable views carry considerably more of
 //- the platform than one static diagram did.

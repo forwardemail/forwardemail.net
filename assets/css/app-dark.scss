@@ -32,17 +32,19 @@ $input-disabled-bg: $fe-n-200;
   // Re-point the app-chrome tokens (light set lives in _app-tokens.scss).
   :root {
     --app-bg-canvas: #{$fe-ink};
-    --app-bg-raised: #{$fe-n-100};
-    --app-bg-sunken: #{$fe-n-200};
+    // Two ramp steps above the Ink canvas so cards read as cards; sunken sits
+    // between the two for inputs and table heads.
+    --app-bg-raised: #{$fe-n-200};
+    --app-bg-sunken: #{$fe-n-100};
     --app-fg-primary: #{$fe-n-700};
     --app-fg-secondary: #{$fe-n-600};
     --app-fg-muted: #{$fe-n-500};
     --app-link: #{$fe-primary-lift};
     // stylelint-disable-next-line scss/no-global-function-names
     --app-link-hover: #{lighten($fe-primary-lift, 12%)};
-    --app-border: #{$fe-n-300};
-    --app-border-strong: #{$fe-n-400};
-    --app-hairline: rgba(255, 255, 255, 0.125);
+    --app-border: #{$fe-n-400};
+    --app-border-strong: #{$fe-n-500};
+    --app-hairline: rgba(255, 255, 255, 0.16);
     --app-stripe: rgba(255, 255, 255, 0.05);
     --app-input-bg: #{$fe-n-100};
     --app-input-fg: #{$fe-n-700};
@@ -252,9 +254,30 @@ $input-disabled-bg: $fe-n-200;
     background-color: var(--app-stripe);
   }
 
-  .table-success, .table-warning, .table-danger, .table-secondary {
+  // The tints are near-white, so the text on them has to stay dark: the
+  // .table colour above would otherwise put the light foreground on them.
+  // The utilities are !important, so they are restated at that strength.
+  .table-success,
+  .table-primary,
+  .table-info,
+  .table-warning,
+  .table-danger,
+  .table-secondary,
+  .table-light {
+    // On the row: bootstrap's variant rules only paint the cells' background,
+    // so the cells inherit this colour.
+    color: $fe-ink;
+
+    a:not(.btn):not(.badge) {
+      color: $fe-primary-deep;
+    }
+
+    .text-muted,
+    .text-themed,
+    .text-themed-50,
+    .text-dark,
     code.text-themed {
-      color: $dark !important;
+      color: $fe-l-600 !important;
     }
   }
 

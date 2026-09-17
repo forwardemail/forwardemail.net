@@ -105,15 +105,6 @@
 
   --fe-glow-primary: 0 8px 24px #{rgba($fe-primary, 0.32)};
 
-  // The one gradient fill (nav sign up, hero CTA, Enhanced plan CTA). Ends on
-  // signal-deep rather than the spec's --fe-signal so its white label holds AA
-  // (4.5:1+) along the whole run.
-  --fe-gradient-cta: linear-gradient(
-    135deg,
-    var(--fe-primary) 0%,
-    var(--fe-signal-deep) 100%
-  );
-
   --fe-motion-fast: 120ms;
   --fe-motion-base: 200ms;
   --fe-ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -147,7 +138,7 @@
   --fe-signal-a24: #{rgba($fe-signal, 0.24)};
   --fe-mint-a12: #{rgba($fe-mint, 0.12)};
   --fe-mint-deep-a20: #{rgba($fe-mint-deep, 0.2)};
-  --fe-panel-a40: #{rgba($fe-n-100, 0.4)};
+  --fe-panel-a60: #{rgba($fe-n-200, 0.6)};
   --fe-ink-a92: #{rgba($fe-ink, 0.92)};
   --fe-hairline-light-16: rgba(255, 255, 255, 0.16);
   --fe-light-a60: rgba(255, 255, 255, 0.6);
@@ -181,9 +172,12 @@
 .fe-page,
 .fe-footer {
   --fe-bg-canvas: var(--fe-ink);
-  --fe-bg-raised: var(--fe-n-200);
-  --fe-bg-sunken: var(--fe-n-100);
-  --fe-bg-frame: var(--fe-panel-a40);
+  // Each surface sits two ramp steps above the one under it (Ink, then n-200,
+  // then n-300), so a card on a dark section reads as a card rather than as
+  // a slightly different dark. n-100 was one step and disappeared.
+  --fe-bg-raised: var(--fe-n-300);
+  --fe-bg-sunken: var(--fe-n-200);
+  --fe-bg-frame: var(--fe-panel-a60);
 
   --fe-fg-primary: var(--fe-n-700);
   --fe-fg-secondary: var(--fe-n-600);
@@ -192,9 +186,9 @@
   --fe-fg-link: var(--fe-primary-lift);
   --fe-fg-code: var(--fe-n-700);
 
-  --fe-border-subtle: var(--fe-n-200);
-  --fe-border-default: var(--fe-n-300);
-  --fe-border-strong: var(--fe-n-400);
+  --fe-border-subtle: var(--fe-n-300);
+  --fe-border-default: var(--fe-n-400);
+  --fe-border-strong: var(--fe-n-500);
 
   // Field borders need 3:1 (WCAG 1.4.11); the ramp above tops out at 2:1.
   --fe-border-control: var(--fe-n-500);

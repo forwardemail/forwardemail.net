@@ -4,8 +4,8 @@
  */
 
 // Behaviour for the hero console in app/views/_fe-console.pug. Everything here
-// is additive: with this file blocked the rail is five real in-page links, all
-// five views are visible stacked (see the html.no-js rules in _fe-landing.scss),
+// is additive: with this file blocked the rail is six real in-page links, all
+// six views are visible stacked (see the html.no-js rules in _fe-landing.scss),
 // and every deep link still lands on the right one. What this adds is showing
 // one view at a time, the arrow-key tablist, and the auto-advance.
 

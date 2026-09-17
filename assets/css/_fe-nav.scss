@@ -192,7 +192,6 @@ nav.fe-nav .list-inline .btn-success {
   font-weight: var(--fe-weight-semibold);
   color: var(--fe-l-000);
   background-color: var(--fe-primary);
-  background-image: var(--fe-gradient-cta);
   border: 0;
   border-radius: var(--fe-radius-md);
   transition: filter var(--fe-motion-base) var(--fe-ease);
@@ -204,7 +203,6 @@ nav.fe-nav .list-inline .btn-success:hover,
 nav.fe-nav .list-inline .btn-success:focus {
   color: var(--fe-l-000);
   background-color: var(--fe-primary);
-  background-image: var(--fe-gradient-cta);
   filter: brightness(1.08);
 }
 

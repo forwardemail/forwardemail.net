@@ -67,12 +67,11 @@
   text-decoration: none;
 }
 
-// The gradient is allowed on exactly three CTAs: nav sign up, the hero, and
-// the Enhanced plan button.
+// Solid brand blue. The primary CTAs (nav sign up, the hero, the Enhanced
+// plan button) all take this; there is no gradient fill in the system.
 .fe-btn--hero {
   color: var(--fe-l-000);
   background-color: var(--fe-primary);
-  background-image: var(--fe-gradient-cta);
 }
 
 .fe-btn--hero:hover {

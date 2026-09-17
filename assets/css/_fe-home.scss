@@ -66,10 +66,6 @@
   margin-bottom: var(--fe-space-6);
 }
 
-.fe-hero__title--wide {
-  display: none;
-}
-
 .fe-hero__body {
   max-width: 52ch;
   margin-bottom: 2rem;
@@ -121,7 +117,7 @@
 
 .fe-console__rail {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--fe-space-1);
   padding: 8px;
   margin-bottom: var(--fe-space-5);
@@ -285,7 +281,7 @@
   color: var(--fe-state-success);
 }
 
-// Unrolled: all five views visible and stacked. html.no-js serves script-less
+// Unrolled: all six views visible and stacked. html.no-js serves script-less
 // visitors (stripped by _meta.pug's inline script before paint, so no reflow);
 // .fe-console--unrolled is the server-rendered equivalent for crawlers.
 .fe-console--unrolled .fe-console__views,
@@ -618,14 +614,6 @@ html.no-js .fe-console__tab--active {
 // ============================================
 
 @include fe-up(lg) {
-  .fe-hero__title--wide {
-    display: inline;
-  }
-
-  .fe-hero__title--narrow {
-    display: none;
-  }
-
   // Left 5 columns, right 7, per section 2 of the spec. minmax(0, …) because
   // bare fr means minmax(auto, …): the console's intrinsic width would widen
   // its column past the split whenever a view's content ran long.
@@ -665,7 +653,7 @@ html.no-js .fe-console__tab--active {
 }
 
 @include fe-down(md) {
-  // The rail becomes a horizontal scroller: five equal columns at this width
+  // The rail becomes a horizontal scroller: six equal columns at this width
   // would truncate every tab label.
   .fe-console__rail {
     display: flex;
