@@ -30,7 +30,8 @@ const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const isValidPassword = require('#helpers/is-valid-password');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
-const { acquireRekeyLock, releaseRekeyLock } = require('#helpers/rekey-lock');
+const { acquireRekeyLock } = require('#helpers/rekey-lock');
+const { rollbackRekey } = require('#helpers/rekey-recovery');
 
 //
 // (this punctuation stuff is borrowed from our work with `spamscanner`)
@@ -59,10 +60,37 @@ async function generateAliasPassword(ctx) {
       )
       .exec();
 
-    // Clone token subdocuments before replacing the array.  The snapshot is
-    // persisted with is_rekey below and is the authoritative rollback state
-    // if the asynchronous SQLite rekey does not complete.
-    originalTokens = alias.tokens.map((token) => token.toObject());
+    //
+    // Clone the token subdocuments before replacing the array.  The snapshot
+    // is persisted with is_rekey below and is the authoritative rollback
+    // state if the rotation does not complete.
+    //
+    // The fields are copied one by one on purpose: `toObject()` applies the
+    // model's hidden-field transform, which strips the salt and the hash
+    // (they are `select: false`), and a snapshot without them cannot
+    // validate the previous password once it is restored -- the owner would
+    // be locked out of an intact mailbox after every rollback.
+    //
+    originalTokens = alias.tokens.map((token) => ({
+      _id: token._id,
+      description: token.description,
+      salt: token.salt,
+      hash: token.hash,
+      has_pbkdf2_migration: token.has_pbkdf2_migration,
+      ...(token.created_at ? { created_at: token.created_at } : {}),
+      ...(token.updated_at ? { updated_at: token.updated_at } : {})
+    }));
+
+    // never persist (or restore) a snapshot that cannot validate a password
+    if (
+      originalTokens.some((token) => !isSANB(token.salt) || !isSANB(token.hash))
+    ) {
+      const err = new TypeError(
+        `Token snapshot of alias ${alias.id} is missing its salt or hash`
+      );
+      err.isCodeBug = true;
+      throw err;
+    }
 
     if (alias.is_rekey)
       throw Boom.conflict(ctx.translateError('ALIAS_REKEY_IN_PROGRESS'));
@@ -182,35 +210,58 @@ async function generateAliasPassword(ctx) {
     const wsp = hasSharedWsp ? ctx.instance.wsp : createWebSocketAsPromised();
 
     try {
+      // Bail early if the server is shutting down: do not start a rotation
+      // that may never complete.
+      if (ctx.instance?.isClosing || ctx.isClosing) {
+        throw new ServerShutdownError();
+      }
+
+      //
+      // Every rotation of the mailbox password -- a rekey of the existing
+      // mailbox, or a reset that replaces it with a fresh one -- persists the
+      // replacement token together with the rollback snapshot BEFORE the
+      // sqlite server is asked to do anything.  Authentication is refused
+      // and mailbox operations are gated while `is_rekey` is set, so no
+      // session can touch the mailbox with either password until the
+      // rotation is settled: by the sqlite-worker (rekey), by the sqlite
+      // server (reset), by the rollback below, or by recovery after a crash
+      // (helpers/recover-rekeys.js, jobs/cleanup-stuck-rekeys.js).
+      //
+      rekeyId = randomUUID();
+      alias.is_rekey = true;
+      alias.rekey_started_at = new Date();
+      alias.rekey_previous_tokens = originalTokens;
+      alias.rekey_id = rekeyId;
+      alias.rekey_processing = false;
+      await alias.save();
+      rekeyStateSaved = true;
+
+      // Cache hits do not query MongoDB. Acquire the operation-scoped lock
+      // before queuing work so every protocol is forced to see is_rekey.
+      await acquireRekeyLock(ctx.client, alias.id, rekeyId);
+
+      // Invalidate cached credentials across SMTP, IMAP, and POP3 (and
+      // cached mailbox handles in the sqlite server) before any work starts.
+      await ctx.client.publish('sqlite_auth_reset', alias.id);
+
+      const sessionUser = {
+        id: alias.id,
+        username: `${alias.name}@${ctx.state.domain.name}`,
+        alias_id: alias.id,
+        alias_name: alias.name,
+        domain_id: ctx.state.domain.id,
+        domain_name: ctx.state.domain.name,
+        storage_location: alias.storage_location,
+        alias_has_pgp: alias.has_pgp,
+        alias_public_key: alias.public_key,
+        alias_has_smime: alias.has_smime,
+        alias_smime_certificate: alias.smime_certificate,
+        alias_has_wkd_disabled: alias.has_wkd_disabled,
+        locale: ctx.locale,
+        owner_full_email: ctx.state.user.email
+      };
+
       if (isSANB(ctx.request.body.password)) {
-        // Bail early if the server is shutting down — do not start a
-        // long-running rekey operation that may never complete.
-        if (ctx.instance?.isClosing || ctx.isClosing) {
-          throw new ServerShutdownError();
-        }
-
-        // Persist the replacement token and rollback snapshot before the
-        // asynchronous job is queued.  The worker can only re-enable auth
-        // after either atomically completing the rekey or restoring this
-        // snapshot, including after a process restart.
-        rekeyId = randomUUID();
-        alias.is_rekey = true;
-        alias.rekey_started_at = new Date();
-        alias.rekey_previous_tokens = originalTokens;
-        alias.rekey_id = rekeyId;
-        alias.rekey_processing = false;
-        await alias.save();
-        rekeyStateSaved = true;
-
-        // Cache hits do not query MongoDB. Acquire the operation-scoped lock
-        // before queuing work so every protocol is forced to see is_rekey.
-        await acquireRekeyLock(ctx.client, alias.id, rekeyId);
-
-        // Invalidate cached credentials across SMTP, IMAP, and POP3 before
-        // queuing work. Otherwise a prior SMTP cache hit could bypass the
-        // rekey lock until its TTL expires.
-        await ctx.client.publish('sqlite_auth_reset', alias.id);
-
         // Enqueue the rekey job via WSP → parse-payload → Redis List.
         // The actual rekey is performed asynchronously by sqlite-worker;
         // the user is emailed on completion or failure.
@@ -221,21 +272,8 @@ async function generateAliasPassword(ctx) {
             new_password: encrypt(pass),
             session: {
               user: {
-                id: alias.id,
-                username: `${alias.name}@${ctx.state.domain.name}`,
-                alias_id: alias.id,
-                alias_name: alias.name,
-                domain_id: ctx.state.domain.id,
-                domain_name: ctx.state.domain.name,
-                password: encrypt(ctx.request.body.password),
-                storage_location: alias.storage_location,
-                alias_has_pgp: alias.has_pgp,
-                alias_public_key: alias.public_key,
-                alias_has_smime: alias.has_smime,
-                alias_smime_certificate: alias.smime_certificate,
-                alias_has_wkd_disabled: alias.has_wkd_disabled,
-                locale: ctx.locale,
-                owner_full_email: ctx.state.user.email
+                ...sessionUser,
+                password: encrypt(ctx.request.body.password)
               }
             }
           },
@@ -272,28 +310,24 @@ async function generateAliasPassword(ctx) {
         return;
       }
 
-      if (boolean(ctx.request.body.is_override)) {
-        // reset existing mailbox and create new mailbox
+      //
+      // Reset (the owner overrides a lost password, or the alias gets its
+      // first one): the sqlite server replaces the mailbox with a fresh one
+      // encrypted with the new password and finalizes the rotation itself
+      // (helpers/reset-mailbox.js and the `reset` action).  The outcome is
+      // read from MongoDB rather than from the reply, which can be lost in
+      // transit after the work was done.
+      //
+      let resetErr;
+      try {
         await wsp.request(
           {
             action: 'reset',
+            rekey_id: rekeyId,
             session: {
               user: {
-                id: alias.id,
-                username: `${alias.name}@${ctx.state.domain.name}`,
-                alias_id: alias.id,
-                alias_name: alias.name,
-                domain_id: ctx.state.domain.id,
-                domain_name: ctx.state.domain.name,
-                password: encrypt(pass),
-                storage_location: alias.storage_location,
-                alias_has_pgp: alias.has_pgp,
-                alias_public_key: alias.public_key,
-                alias_has_smime: alias.has_smime,
-                alias_smime_certificate: alias.smime_certificate,
-                alias_has_wkd_disabled: alias.has_wkd_disabled,
-                locale: ctx.locale,
-                owner_full_email: ctx.state.user.email
+                ...sessionUser,
+                password: encrypt(pass)
               }
             }
           },
@@ -302,73 +336,47 @@ async function generateAliasPassword(ctx) {
           // e.g. it won't keep retrying and flood it
           0
         );
-
-        // don't save until we're sure that sqlite operations were performed
-        await alias.save();
-      } else {
-        // create new mailbox
-        /*
-        // NOTE: we're just using reset here as a safeguard
-        await wsp.request({
-          action: 'setup',
-          session: {
-            user: {
-              id: alias.id,
-              username: `${alias.name}@${ctx.state.domain.name}`,
-              alias_id: alias.id,
-              alias_name: alias.name,
-              domain_id: ctx.state.domain.id,
-              domain_name: ctx.state.domain.name,
-              password: encrypt(pass),
-              storage_location: alias.storage_location,
-              alias_has_pgp: alias.has_pgp,
-              alias_public_key: alias.public_key,
-              alias_has_smime: alias.has_smime,
-              alias_smime_certificate: alias.smime_certificate,
-              alias_has_wkd_disabled: alias.has_wkd_disabled,
-              locale: ctx.locale,
-              owner_full_email: ctx.state.user.email
-            }
-          }
-        },
-        // don't retry so we can email user quicker to try again
-        // and also in case of an error with the backup worker
-        // e.g. it won't keep retrying and flood it
-        0
-        );
-        */
-        await wsp.request(
-          {
-            action: 'reset',
-            session: {
-              user: {
-                id: alias.id,
-                username: `${alias.name}@${ctx.state.domain.name}`,
-                alias_id: alias.id,
-                alias_name: alias.name,
-                domain_id: ctx.state.domain.id,
-                domain_name: ctx.state.domain.name,
-                password: encrypt(pass),
-                storage_location: alias.storage_location,
-                alias_has_pgp: alias.has_pgp,
-                alias_public_key: alias.public_key,
-                alias_has_smime: alias.has_smime,
-                alias_smime_certificate: alias.smime_certificate,
-                alias_has_wkd_disabled: alias.has_wkd_disabled,
-                locale: ctx.locale,
-                owner_full_email: ctx.state.user.email
-              }
-            }
-          },
-          // don't retry so we can email user quicker to try again
-          // and also in case of an error with the backup worker
-          // e.g. it won't keep retrying and flood it
-          0
-        );
-
-        // save alias
-        await alias.save();
+      } catch (err) {
+        resetErr = err;
       }
+
+      const newTokenHash = alias.tokens[0].hash;
+      const state = await Aliases.findById(alias._id)
+        .select({
+          is_rekey: 1,
+          rekey_id: 1,
+          rekey_swap_ino: 1,
+          'tokens.hash': 1
+        })
+        .lean()
+        .exec();
+
+      // the sqlite server finalized the rotation with the new token
+      const finalized =
+        state &&
+        state.is_rekey !== true &&
+        Array.isArray(state.tokens) &&
+        state.tokens.some((token) => token.hash === newTokenHash);
+
+      // the fresh mailbox is in place (recorded right before it replaces
+      // the old one) and the sqlite server is still finalizing, or died
+      // before it could: recovery finalizes from that record
+      const swapRecorded =
+        state &&
+        state.is_rekey === true &&
+        state.rekey_id === rekeyId &&
+        isSANB(state.rekey_swap_ino);
+
+      if (!finalized && !swapRecorded)
+        throw resetErr || new Error('Mailbox reset did not complete');
+
+      if (resetErr)
+        ctx.logger.warn(resetErr, {
+          alias_id: alias.id,
+          rekey_id: rekeyId,
+          finalized,
+          swap_recorded: swapRecorded
+        });
     } finally {
       // close ephemeral websocket (do not close the shared instance)
       if (!hasSharedWsp && wsp?.isOpened) {
@@ -582,38 +590,21 @@ async function generateAliasPassword(ctx) {
     if (newToken && Array.isArray(originalTokens)) {
       try {
         if (rekeyStateSaved && rekeyId) {
-          // A transport error can happen after the queue accepted the job.
-          // Roll back only when the worker has not atomically claimed this
-          // exact operation; otherwise its completion path owns the state.
-          const rolledBackRekey = await Aliases.findOneAndUpdate(
-            {
-              _id: ctx.state.alias._id,
-              is_rekey: true,
-              rekey_id: rekeyId,
-              rekey_processing: { $ne: true }
-            },
-            [
-              {
-                $set: {
-                  is_rekey: false,
-                  tokens: {
-                    $ifNull: ['$rekey_previous_tokens', '$tokens']
-                  }
-                }
-              },
-              {
-                $unset: [
-                  'rekey_started_at',
-                  'rekey_previous_tokens',
-                  'rekey_id',
-                  'rekey_processing'
-                ]
-              }
-            ]
-          );
-
-          if (rolledBackRekey)
-            await releaseRekeyLock(ctx.client, ctx.state.alias._id, rekeyId);
+          //
+          // A transport error can happen after the sqlite server accepted
+          // the request.  Roll back only when the operation is still
+          // unclaimed (the sqlite-worker claims a rekey before touching the
+          // mailbox) and no swap was recorded (the sqlite server records a
+          // reset's fresh mailbox before it replaces the old one); otherwise
+          // the owner of the operation, or recovery, settles the state.
+          // The pre-rotation tokens are restored as they were, so an alias
+          // that had no password before has none afterwards.
+          //
+          await rollbackRekey(ctx.client, ctx.state.alias._id, {
+            filter: { rekey_id: rekeyId, rekey_processing: { $ne: true } },
+            rekeyId,
+            tokens: originalTokens
+          });
         } else {
           // No asynchronous state was saved, so a regular token-generation
           // error can restore the in-memory pre-change token set directly.
@@ -630,6 +621,21 @@ async function generateAliasPassword(ctx) {
 
     if (err && err.isBoom) throw err;
     if (isErrorConstructorName(err, 'ValidationError')) throw err;
+
+    //
+    // A reset that could not replace the mailbox (a connection to it is
+    // still open somewhere, or another rotation owns the alias) was rolled
+    // back above and nothing changed: tell the owner to try again.
+    //
+    if (err && (err.isResetRetryable || err.isRekeying)) {
+      ctx.logger.warn(err);
+      throw Boom.conflict(
+        ctx.translateError(
+          err.isRekeying ? 'ALIAS_REKEY_IN_PROGRESS' : 'MAILBOX_CREATION_FAILED'
+        )
+      );
+    }
+
     ctx.logger.fatal(err);
 
     if (ctx.api) {

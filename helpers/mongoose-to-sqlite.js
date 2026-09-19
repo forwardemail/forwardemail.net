@@ -1099,6 +1099,30 @@ async function distinct(instance, session, field, conditions = {}) {
   return docs;
 }
 
+//
+// Whether the session's handle is (or was) the live mailbox of its alias, as
+// opposed to a one-off handle to another file that shares the session's user
+// (the temporary mailbox for inbound mail, a copy that is being rekeyed).
+//
+function isLiveDatabaseSession(session) {
+  if (!session.db || session.db.wsp) return true;
+  if (typeof session.db.name !== 'string') return false;
+
+  try {
+    // lazy-require (see `wrapWithRetry`)
+    const getPathToDatabase = require('#helpers/get-path-to-database');
+    return (
+      session.db.name ===
+      getPathToDatabase({
+        id: session.user.alias_id,
+        storage_location: session.user.storage_location
+      })
+    );
+  } catch {
+    return false;
+  }
+}
+
 function wrapWithRetry(fn, model) {
   return function (...args) {
     // arg[0] -> instance
@@ -1119,14 +1143,28 @@ function wrapWithRetry(fn, model) {
         logger.error(error);
 
         if (isRetryableError(error)) {
-          // If the database was evicted mid-operation, re-open it via getDatabase
+          //
+          // If the database was evicted mid-operation, re-open it via
+          // getDatabase -- but only when the operation is retried at all:
+          // with `retries: 0` (e.g. the direct append of inbound mail, which
+          // falls back to the temporary mailbox) a fresh handle would never
+          // be used, yet the reference `getDatabase` takes on it would never
+          // be released either, pinning the handle in the cache.
+          //
+          // Only the live mailbox is ever re-opened: a query against another
+          // file (the temporary mailbox, a copy being rekeyed) must not be
+          // re-pointed at the live database, whose password the session
+          // does not even carry.
+          //
           if (
+            retries > 0 &&
             error.message &&
             error.message.includes('database connection is not open') &&
             args[0] &&
             args[1] &&
             args[1].user &&
-            args[1].user.alias_id
+            args[1].user.alias_id &&
+            isLiveDatabaseSession(args[1])
           ) {
             // lazy-require to avoid circular dependency
             // (mongoose-to-sqlite -> get-database -> models -> mongoose-to-sqlite)
@@ -1778,5 +1816,6 @@ module.exports = {
   parseSchema,
   convertResult,
   syncConvertResult,
-  sqliteVirtualDB
+  sqliteVirtualDB,
+  isLiveDatabaseSession
 };

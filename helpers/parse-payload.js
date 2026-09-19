@@ -51,6 +51,7 @@ const env = require('#config/env');
 const { getPrimaryApiSecret } = require('#helpers/api-secrets');
 const closeDatabase = require('#helpers/close-database');
 const getDatabase = require('#helpers/get-database');
+const resetMailbox = require('#helpers/reset-mailbox');
 const getFingerprint = require('#helpers/get-fingerprint');
 const getHeaders = require('#helpers/get-headers');
 const getPathToDatabase = require('#helpers/get-path-to-database');
@@ -70,6 +71,8 @@ const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const { finalizeRekey } = require('#helpers/rekey-recovery');
+const { getRekeyLockKey, releaseRekeyLock } = require('#helpers/rekey-lock');
 const { createSieveIntegration } = require('#helpers/sieve');
 const { checkAndProcessImipMessage } = require('#helpers/process-imip-reply');
 
@@ -182,7 +185,187 @@ const PAYLOAD_ACTIONS = new Set([
 ]);
 const STATEMENT_OPERATIONS = new Set(['prepare', 'run', 'get', 'all', 'pluck']);
 
+//
+// Actions that are still served while the alias' password is being rotated:
+// `size` only stats the file, `tmp` writes inbound mail to the separate
+// temporary mailbox (keyed with the API secret, never the alias password),
+// `rekey` is the request that queues the rotation in the first place, and
+// `reset` performs one (it proves that it belongs to the rotation in
+// progress, see `assertResetAllowed`).
+//
+const REKEY_EXEMPT_ACTIONS = new Set(['size', 'tmp', 'rekey', 'reset']);
+
+// rekey operation IDs are UUIDs minted by the controller
+const REKEY_ID_REGEX = /^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/i;
+
 const SIXTY_FOUR_MB_IN_BYTES = bytes('64MB');
+
+//
+// Refuse to touch a mailbox whose password is being rotated.
+//
+// The sqlite-worker rekeys a VACUUM INTO copy of the mailbox and then
+// renames it over the live file, so every write that lands on the live file
+// in the meantime is lost with the swap.  Authentication is already refused
+// while `is_rekey` is set and existing IMAP/POP3 sessions are closed, but a
+// request that was already in flight (or a client that raced the session
+// close) still reaches this server; the operation-scoped rekey lock (set by
+// the controller before the job is queued, released when the alias is
+// finalized or rolled back) covers the whole rotation.
+//
+// The lock has no TTL, so it is verified against the authoritative flag in
+// MongoDB before a request is refused: a lock left behind by a failed
+// release is removed instead of locking the mailbox out forever.
+//
+// A negative answer ("not rekeying", by far the common case) is remembered
+// per alias for a moment so the check costs one Redis round-trip per alias
+// and a couple of seconds, not one per request.  The entry is dropped the
+// moment a rotation announces itself (`sqlite_auth_reset` / `db_cache_evict`,
+// see sqlite-server.js), and the worker only takes its snapshot well after
+// that announcement, so a stale negative answer cannot let a write slip
+// past the rotation (a commit that does race the snapshot is detected by
+// the worker and makes it start over, see helpers/worker.js).
+//
+// When the answer cannot be determined, `assumeOnError` decides for a
+// caller that can fall back to the temporary mailbox (it assumes "yes", so
+// a write can never land in a live file that is about to be replaced).  The
+// gate itself assumes "no" when the lock cannot be read (without Redis the
+// worker cannot swap files either), but refuses the request with a
+// retryable error when a lock exists and MongoDB cannot confirm it: the
+// rotation may well be running.
+//
+const REKEY_GATE_CACHE_TTL = ms('2s');
+const REKEY_GATE_CACHE_MAX_SIZE = 10_000;
+// alias ID -> time until which the alias is known NOT to be rekeying
+const rekeyGateCache = new Map();
+
+function rememberNotRekeying(aliasId) {
+  if (rekeyGateCache.size >= REKEY_GATE_CACHE_MAX_SIZE) {
+    const now = Date.now();
+    for (const [key, expiresAt] of rekeyGateCache) {
+      if (expiresAt <= now) rekeyGateCache.delete(key);
+    }
+
+    if (rekeyGateCache.size >= REKEY_GATE_CACHE_MAX_SIZE)
+      rekeyGateCache.clear();
+  }
+
+  rekeyGateCache.set(String(aliasId), Date.now() + REKEY_GATE_CACHE_TTL);
+}
+
+// a rotation announced itself (or ended): re-check on the next request
+function forgetRekeyState(aliasId) {
+  rekeyGateCache.delete(String(aliasId));
+}
+
+function createRekeyGateError(aliasId, verified = true) {
+  const err = new Error(
+    verified
+      ? `Mailbox for alias ${aliasId} is undergoing a rekey operation, please try again once completed`
+      : `Mailbox for alias ${aliasId} may be undergoing a rekey operation and its state could not be verified, please try again later`
+  );
+  err.code = 'SQLITE_BUSY';
+  err.responseCode = 421;
+  err.isRekeying = true;
+  err.ignoreHook = true;
+  return err;
+}
+
+async function isAliasRekeying(
+  client,
+  aliasId,
+  { assumeOnError = false, cache = true } = {}
+) {
+  if (cache) {
+    const expiresAt = rekeyGateCache.get(String(aliasId));
+    if (expiresAt !== undefined) {
+      if (expiresAt > Date.now()) return false;
+      rekeyGateCache.delete(String(aliasId));
+    }
+  }
+
+  let rekeyId;
+  try {
+    rekeyId = await client.get(getRekeyLockKey(aliasId));
+  } catch (err) {
+    logger.debug('rekey lock read error', { err, alias_id: aliasId });
+    return assumeOnError;
+  }
+
+  if (!rekeyId) {
+    rememberNotRekeying(aliasId);
+    return false;
+  }
+
+  let alias;
+  try {
+    alias = await Aliases.findById(aliasId).select('is_rekey').lean().exec();
+  } catch (err) {
+    logger.debug('rekey state read error', { err, alias_id: aliasId });
+    if (assumeOnError) return true;
+    throw createRekeyGateError(aliasId, false);
+  }
+
+  if (alias && alias.is_rekey === true) {
+    forgetRekeyState(aliasId);
+    return true;
+  }
+
+  // stale lock (compare-and-delete: a newer rotation's lock is left alone)
+  logger.warn('Releasing stale rekey lock', { alias_id: aliasId, rekeyId });
+  await releaseRekeyLock(client, aliasId, rekeyId).catch((err) =>
+    logger.debug(err)
+  );
+  rememberNotRekeying(aliasId);
+  return false;
+}
+
+async function assertAliasNotRekeying(client, aliasId) {
+  if (!(await isAliasRekeying(client, aliasId))) return;
+  throw createRekeyGateError(aliasId);
+}
+
+//
+// A mailbox reset replaces the live file, so it is only allowed when the
+// rotation in progress is the reset's own (the controller sets `is_rekey`
+// and the rekey lock to the operation ID before sending the request), or
+// when no rotation is in progress at all (a caller without an operation ID).
+//
+async function assertResetAllowed(client, aliasId, rekeyId) {
+  let lockValue;
+  try {
+    lockValue = await client.get(getRekeyLockKey(aliasId));
+  } catch (err) {
+    logger.debug('rekey lock read error', { err, alias_id: aliasId });
+    // a reset that is part of a rotation cannot prove it: try again later
+    if (rekeyId) {
+      const busy = new Error(
+        `Mailbox reset of alias ${aliasId} could not verify its rotation, please try again later`
+      );
+      busy.code = 'SQLITE_BUSY';
+      busy.isResetRetryable = true;
+      busy.ignoreHook = true;
+      throw busy;
+    }
+
+    return;
+  }
+
+  if (lockValue) {
+    if (rekeyId && lockValue === rekeyId) return;
+    throw createRekeyGateError(aliasId);
+  }
+
+  // the controller's lock is gone: the rotation was rolled back meanwhile
+  if (rekeyId) {
+    const err = new Error(
+      `Mailbox reset aborted, alias ${aliasId} no longer owns rekey operation ${rekeyId}`
+    );
+    err.isRekeySuperseded = true;
+    err.responseCode = 409;
+    err.ignoreHook = true;
+    throw err;
+  }
+}
 
 //
 // Rate limiting constants.
@@ -443,6 +626,11 @@ async function parsePayload(data, ws) {
     // Reject new work immediately when the server is shutting down.
     // This prevents new requests from acquiring database handles during drain.
     if (this.isClosing) throw new ServerShutdownError();
+
+    // Reject mailbox operations while the alias' password is being rotated
+    // (see `assertAliasNotRekeying` above)
+    if (!REKEY_EXEMPT_ACTIONS.has(payload.action))
+      await assertAliasNotRekeying(this.client, payload.session.user.alias_id);
 
     // handle action
     switch (payload.action) {
@@ -918,6 +1106,11 @@ async function parsePayload(data, ws) {
             // yield event loop between aliases so other WS requests aren't starved
 
             await new Promise(setImmediate);
+
+            // the cached live handle this delivery borrowed, if any
+            let borrowedDb;
+            let borrowedAliasId;
+
             try {
               const alias = aliasMap.get(obj.id.toString()) || null;
 
@@ -1206,12 +1399,36 @@ async function parsePayload(data, ws) {
                   )} was available`
                 );
 
-              // we should only use in-memory database is if was connected (IMAP session open)
-              {
-                const cachedDb =
-                  this.databaseMap &&
-                  this.databaseMap.get(session.user.alias_id);
-                if (cachedDb && cachedDb.open === true) {
+              //
+              // Only write straight into the live mailbox when a cached
+              // handle exists (an IMAP session is open) AND the mailbox is
+              // not being rekeyed: the rekey swaps a copy over the live
+              // file, and anything appended to the live file in the
+              // meantime is lost with the swap.  While rekeying, inbound
+              // mail goes to the temporary mailbox (keyed with the API
+              // secret) and is synced in by the next IMAP session.
+              //
+              const rekeying = await isAliasRekeying(
+                this.client,
+                session.user.alias_id,
+                // when in doubt, the temporary mailbox is always safe
+                { assumeOnError: true }
+              );
+              //
+              // The handle is borrowed with a reference: an eviction that
+              // arrives while this delivery is half-way through (a rotation
+              // starting right now) then closes it once the delivery is done
+              // instead of underneath it.
+              //
+              if (!rekeying && this.databaseMap) {
+                const cachedDb = this.databaseMap.get(session.user.alias_id);
+                if (
+                  cachedDb &&
+                  cachedDb.open === true &&
+                  this.databaseMap.acquire(session.user.alias_id, cachedDb)
+                ) {
+                  borrowedDb = cachedDb;
+                  borrowedAliasId = session.user.alias_id;
                   session.db = cachedDb;
                 }
               }
@@ -1599,10 +1816,23 @@ async function parsePayload(data, ws) {
               // tmp DB writes and the sync-back overhead they cause).
               //
               if (fallback && !session.db) {
+                // the direct append above is over: give its handle back
+                if (borrowedDb) {
+                  this.databaseMap.release(borrowedAliasId, borrowedDb);
+                  borrowedDb = undefined;
+                }
+
                 const recheckDb =
+                  !rekeying &&
                   this.databaseMap &&
                   this.databaseMap.get(session.user.alias_id);
-                if (recheckDb && recheckDb.open === true) {
+                if (
+                  recheckDb &&
+                  recheckDb.open === true &&
+                  this.databaseMap.acquire(session.user.alias_id, recheckDb)
+                ) {
+                  borrowedDb = recheckDb;
+                  borrowedAliasId = session.user.alias_id;
                   session.db = recheckDb;
                   try {
                     await onAppendPromise.call(
@@ -2170,6 +2400,9 @@ async function parsePayload(data, ws) {
               errors[`${obj.address}`] = JSON.parse(
                 safeStringify(parseErr(err))
               );
+            } finally {
+              if (borrowedDb)
+                this.databaseMap.release(borrowedAliasId, borrowedDb);
             }
           },
           { concurrency }
@@ -2415,6 +2648,13 @@ async function parsePayload(data, ws) {
         if (!isSANB(payload.new_password))
           throw new TypeError('New password missing');
 
+        // the operation ID names files on disk (the rekeyed copy)
+        if (
+          payload.rekey_id !== undefined &&
+          !REKEY_ID_REGEX.test(payload.rekey_id)
+        )
+          throw new TypeError('Payload rekey ID invalid');
+
         // check how much space is remaining on storage location
         const storagePath = getPathToDatabase({
           id: payload.session.user.alias_id,
@@ -2453,25 +2693,23 @@ async function parsePayload(data, ws) {
             )} was available`
           );
 
-        // only allow one reset/rekey at a time
-        const cache = await this.client.get(
-          `reset_check:${payload.session.user.alias_id}`
+        // only allow one reset/rekey at a time (atomic: two requests that
+        // race each other cannot both pass a check-then-set)
+        const rekeyCheckAcquired = await this.client.set(
+          `reset_check:${payload.session.user.alias_id}`,
+          true,
+          'PX',
+          ms('30s'),
+          'NX'
         );
 
-        if (cache) {
+        if (!rekeyCheckAcquired) {
           const err = Boom.clientTimeout(
             i18n.translateError('RATE_LIMITED', payload.session.user.locale)
           );
           err.ignoreHook = true;
           throw err;
         }
-
-        await this.client.set(
-          `reset_check:${payload.session.user.alias_id}`,
-          true,
-          'PX',
-          ms('30s')
-        );
 
         //
         // Enqueue to Redis List (persistent queue) instead of Pub/Sub.
@@ -2495,11 +2733,33 @@ async function parsePayload(data, ws) {
       }
 
       case 'reset': {
-        // only allow one reset/rekey at a time
-        const cache = await this.client.get(
-          `reset_check:${payload.session.user.alias_id}`
+        // do not start a file swap on a server that is shutting down
+        if (this.isClosing) throw new ServerShutdownError();
+
+        // the operation ID names files on disk (the fresh mailbox)
+        if (
+          payload.rekey_id !== undefined &&
+          !REKEY_ID_REGEX.test(payload.rekey_id)
+        )
+          throw new TypeError('Payload rekey ID invalid');
+
+        // a rotation in progress must be this reset's own
+        await assertResetAllowed(
+          this.client,
+          payload.session.user.alias_id,
+          payload.rekey_id
         );
-        if (cache) {
+
+        // only allow one reset/rekey at a time (atomic, see `rekey`)
+        const resetCheckAcquired = await this.client.set(
+          `reset_check:${payload.session.user.alias_id}`,
+          true,
+          'PX',
+          ms('30s'),
+          'NX'
+        );
+
+        if (!resetCheckAcquired) {
           const err = Boom.clientTimeout(
             i18n.translateError('RATE_LIMITED', payload.session.user.locale)
           );
@@ -2507,144 +2767,128 @@ async function parsePayload(data, ws) {
           throw err;
         }
 
-        await this.client.set(
-          `reset_check:${payload.session.user.alias_id}`,
-          true,
-          'PX',
-          ms('30s')
-        );
-
-        // check how much space is remaining on storage location
-        const storagePath = getPathToDatabase({
-          id: payload.session.user.alias_id,
-          storage_location: payload.session.user.storage_location
-        });
-
-        // slight 2x overhead for backups
-        const maxQuotaPerAlias = await Domains.getMaxQuota(
-          payload.session.user.domain_id,
-          payload.session.user.alias_id
-        );
-        const spaceRequired = maxQuotaPerAlias * 2;
-
-        const diskSpace = await checkDiskSpace(storagePath);
-        if (config.env !== 'development' && diskSpace.free < spaceRequired)
-          throw new TypeError(
-            `Needed ${bytes(spaceRequired)} but only ${bytes(
-              diskSpace.free
-            )} was available`
-          );
-
         try {
-          await fs.promises.rm(storagePath, {
-            force: true,
-            recursive: true
-          });
-        } catch (err) {
-          if (err.code !== 'ENOENT') {
-            err.isCodeBug = true;
-            throw err;
-          }
-        }
-
-        // -wal
-        try {
-          await fs.promises.rm(storagePath.replace('.sqlite', '.sqlite-wal'), {
-            force: true,
-            recursive: true
-          });
-        } catch (err) {
-          if (err.code !== 'ENOENT') {
-            err.isCodeBug = true;
-            throw err;
-          }
-        }
-
-        // -shm
-        try {
-          await fs.promises.rm(storagePath.replace('.sqlite', '.sqlite-shm'), {
-            force: true,
-            recursive: true
-          });
-        } catch (err) {
-          if (err.code !== 'ENOENT') {
-            err.isCodeBug = true;
-            throw err;
-          }
-        }
-
-        await Promise.all([
-          this.client.del(`refresh_check:${payload.session.user.alias_id}`),
-          this.client.del(`migrate_check:${payload.session.user.alias_id}`),
-          this.client.del(`folder_check:${payload.session.user.alias_id}`),
-          this.client.del(`trash_check:${payload.session.user.alias_id}`)
-        ]);
-
-        // close existing connection if any and purge it
-        if (this?.databaseMap) {
-          const existingDb = this.databaseMap.get(
-            payload.session.user.alias_id
-          );
-          if (existingDb) {
-            // evict() removes from map WITHOUT triggering close,
-            // then we close manually to avoid double-close race
-            this.databaseMap.evict(payload.session.user.alias_id);
-            await closeDatabase(existingDb);
-          }
-        }
-
-        //
-        // Broadcast cache eviction to ALL workers via Redis pub/sub.
-        // Other PM2 cluster workers may still have the old (now deleted)
-        // database handle cached in their local databaseMap; without this
-        // broadcast they would keep writing to the deleted inode.
-        // (Mirrors the recovery path in helpers/get-database.js.)
-        //
-        this.client
-          .publish('db_cache_evict', payload.session.user.alias_id)
-          .catch((err) => logger.debug(err));
-
-        // TODO: don't allow getDatabase to perform a reset here
-        db = await getDatabase(
-          this,
-          // alias
-          {
+          // check how much space is remaining on storage location
+          const storagePath = getPathToDatabase({
             id: payload.session.user.alias_id,
             storage_location: payload.session.user.storage_location
-          },
-          payload.session
-        );
-
-        //
-        // Integrity check: verify the newly created database is valid
-        // BEFORE returning success. If this fails, the caller
-        // (generate-alias-password) will not save the new token to MongoDB,
-        // preventing a corrupt-but-valid-token state.
-        //
-        try {
-          const integrityResult = db.pragma('integrity_check', {
-            simple: true
           });
-          if (integrityResult !== 'ok') {
+
+          // slight 2x overhead for backups
+          const maxQuotaPerAlias = await Domains.getMaxQuota(
+            payload.session.user.domain_id,
+            payload.session.user.alias_id
+          );
+          const spaceRequired = maxQuotaPerAlias * 2;
+
+          const diskSpace = await checkDiskSpace(storagePath);
+          if (config.env !== 'development' && diskSpace.free < spaceRequired)
             throw new TypeError(
-              `Integrity check failed after database reset: ${integrityResult}`
+              `Needed ${bytes(spaceRequired)} but only ${bytes(
+                diskSpace.free
+              )} was available`
             );
+
+          //
+          // Replace the live mailbox with a fresh one encrypted with the
+          // new password (see helpers/reset-mailbox.js): built next to the
+          // live file, swapped in under the same locks and exclusivity
+          // proof as a rekey, with the swap recorded on the rotation so
+          // that a process that dies at any point leaves a state recovery
+          // can settle.
+          //
+          await resetMailbox({
+            client: this.client,
+            storagePath,
+            session: payload.session,
+            rekeyId: payload.rekey_id,
+            databaseMap: this.databaseMap,
+            isCancelled: () => Boolean(this.isClosing)
+          });
+
+          // the fresh mailbox gets its schema, folders, etc. on the open below
+          await Promise.all([
+            this.client.del(`refresh_check:${payload.session.user.alias_id}`),
+            this.client.del(`migrate_check:${payload.session.user.alias_id}`),
+            this.client.del(`folder_check:${payload.session.user.alias_id}`),
+            this.client.del(`trash_check:${payload.session.user.alias_id}`)
+          ]);
+
+          //
+          // The mailbox now uses the new password (verified before it was
+          // swapped in): settle the rotation right away -- keep the new
+          // tokens, re-enable authentication, release the rekey lock.  The
+          // schema below is created on this open or on the owner's first
+          // login, whichever comes first, so a hiccup there can never lock
+          // the owner out.  A rotation that was settled by someone else in
+          // the meantime is left alone; the controller reads the outcome
+          // from MongoDB.
+          //
+          if (payload.rekey_id) {
+            const finalized = await finalizeRekey(
+              this.client,
+              payload.session.user.alias_id,
+              {
+                filter: { rekey_id: payload.rekey_id },
+                rekeyId: payload.rekey_id
+              }
+            );
+            if (!finalized)
+              logger.warn('Mailbox reset finalized by another process', {
+                alias_id: payload.session.user.alias_id,
+                rekey_id: payload.rekey_id
+              });
           }
-        } catch (integrityErr) {
-          integrityErr.isCodeBug = true;
-          logger.fatal(integrityErr, { payload });
-          throw integrityErr;
-        }
 
-        // update storage
-        try {
-          await updateStorageUsed(payload.session.user.alias_id, this.client);
-        } catch (err) {
-          logger.fatal(err, { payload });
-        }
+          // (handles were evicted fleet-wide by the swap; a safeguard)
+          if (
+            this?.databaseMap &&
+            typeof this.databaseMap.evictAndClose === 'function'
+          )
+            this.databaseMap.evictAndClose(payload.session.user.alias_id);
 
-        // remove write lock
-        // await this.client.del(`reset_check:${payload.session.user.alias_id}`);
+          // TODO: don't allow getDatabase to perform a reset here
+          db = await getDatabase(
+            this,
+            // alias
+            {
+              id: payload.session.user.alias_id,
+              storage_location: payload.session.user.storage_location
+            },
+            payload.session
+          );
+
+          //
+          // Integrity check of the initialized mailbox (the fresh file was
+          // already verified before it was swapped in)
+          //
+          try {
+            const integrityResult = db.pragma('integrity_check', {
+              simple: true
+            });
+            if (integrityResult !== 'ok') {
+              throw new TypeError(
+                `Integrity check failed after database reset: ${integrityResult}`
+              );
+            }
+          } catch (integrityErr) {
+            integrityErr.isCodeBug = true;
+            logger.fatal(integrityErr, { payload });
+            throw integrityErr;
+          }
+
+          // update storage
+          try {
+            await updateStorageUsed(payload.session.user.alias_id, this.client);
+          } catch (err) {
+            logger.fatal(err, { payload });
+          }
+        } finally {
+          // the reset is over (either way): the owner may try again at once
+          await this.client
+            .del(`reset_check:${payload.session.user.alias_id}`)
+            .catch((err) => logger.debug(err));
+        }
 
         response = {
           id: payload.id,
@@ -2820,9 +3064,13 @@ async function parsePayload(data, ws) {
     if (
       this?.databaseMap &&
       this.databaseMap.release &&
-      payload?.session?.user?.alias_id
+      payload?.session?.user?.alias_id &&
+      Array.isArray(payload.session.dbAcquired)
     ) {
-      this.databaseMap.release(payload.session.user.alias_id);
+      // release exactly the handles this request acquired (see getDatabase)
+      for (const db of payload.session.dbAcquired)
+        this.databaseMap.release(payload.session.user.alias_id, db);
+      payload.session.dbAcquired = [];
     }
 
     //
@@ -2838,5 +3086,9 @@ async function parsePayload(data, ws) {
     payload = null;
   }
 }
+
+// exposed for the eviction subscriber (sqlite-server.js) and for tests
+parsePayload.forgetRekeyState = forgetRekeyState;
+parsePayload.isAliasRekeying = isAliasRekeying;
 
 module.exports = parsePayload;

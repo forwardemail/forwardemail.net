@@ -301,6 +301,29 @@ const Aliases = new mongoose.Schema({
     select: false
   },
 
+  // When the (single) sqlite-worker claimed the operation.  Recovery measures
+  // the age of claimed work from here, not from `rekey_started_at`: a job can
+  // wait in the Redis queue for a long time before it is picked up.
+  rekey_claimed_at: {
+    type: Date,
+    select: false
+  },
+
+  // Inode of the rekeyed copy, recorded immediately before it is renamed
+  // over the live database (a rename preserves the inode).  Recovery can
+  // therefore tell with certainty whether the swap happened -- the live file
+  // carries this inode -- and finalize the rotation (the mailbox can only be
+  // decrypted with the NEW password) instead of restoring the previous
+  // tokens.  Stored as a string since inode numbers may exceed 2^53.
+  rekey_swap_ino: {
+    type: String,
+    select: false
+  },
+  rekey_swapped_at: {
+    type: Date,
+    select: false
+  },
+
   // alias specific max quota (set by admins only)
   max_quota: {
     type: Number,
@@ -916,6 +939,9 @@ Aliases.plugin(mongooseCommonPlugin, {
     'rekey_previous_tokens',
     'rekey_id',
     'rekey_processing',
+    'rekey_claimed_at',
+    'rekey_swap_ino',
+    'rekey_swapped_at',
     'pgp_error_sent_at',
     'aps',
     'has_auto_vacuum_migration'

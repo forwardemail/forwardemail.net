@@ -29,10 +29,31 @@ class DatabaseLRUMap {
     this.idleTTL = options.idleTTL || ms('5m');
     this._map = new Map(); // alias_id -> { db, lastAccess, refcount }
     this._closing = new Set(); // alias_ids currently being closed
+    //
+    // Handles that were removed from the map (a cross-process cache
+    // eviction, a file swap) while a request was still using them.  They
+    // are closed as soon as their last reference is released, and retried
+    // by the periodic sweep in case the request never released them.
+    //
+    // Without this a handle whose `close()` threw "busy executing a query"
+    // at eviction time would leak forever, keeping its -wal/-shm files
+    // alive and blocking every rekey/VACUUM swap of that alias.
+    //
+    // An alias can have several such handles at once (evicted, reopened,
+    // evicted again), so they are kept per handle.  A request that never
+    // releases its reference (a crash inside the handler) must not pin the
+    // handle forever either: the sweep force-closes a pending handle after
+    // `pendingCloseGraceMs`.  The same goes for a handle that the deferred
+    // maintenance of `getDatabase` is still using (`maintenanceActive` on
+    // the evicted entry, which is kept for that reason).
+    //
+    this._pendingClose = new Map(); // alias_id -> [{ db, entry, refcount, since }]
+    this.pendingCloseGraceMs = options.pendingCloseGraceMs || ms('5m');
 
     // Periodic sweep to close idle databases
     this._sweepInterval = setInterval(() => {
       this._sweepIdle();
+      this._closePending();
     }, ms('1m'));
     this._sweepInterval.unref();
   }
@@ -56,14 +77,32 @@ class DatabaseLRUMap {
   //
   // Acquire a reference to the database handle.
   // Increments refcount so eviction/sweep will not close it.
-  // Caller MUST call release(key) when the request is done.
+  // Caller MUST call release(key, db) when the request is done.
   //
-  acquire(key) {
+  // `db` is the handle the request is going to use.  The alias may have
+  // been evicted (and reopened) between the moment the request obtained the
+  // handle and this call, in which case the reference belongs to the
+  // evicted handle -- which is then kept open until it is released -- and
+  // not to whatever handle is in the map now.  Returns the handle the
+  // reference was taken on, or `undefined` when none was taken (the handle
+  // is not cached at all: an eviction already closed it).
+  //
+  acquire(key, db) {
     const entry = this._map.get(key);
-    if (!entry) return undefined;
-    entry.lastAccess = Date.now();
-    entry.refcount = (entry.refcount || 0) + 1;
-    return entry.db;
+    if (entry && (!db || entry.db === db)) {
+      entry.lastAccess = Date.now();
+      entry.refcount = (entry.refcount || 0) + 1;
+      return entry.db;
+    }
+
+    if (!db) return undefined;
+
+    const pending = (this._pendingClose.get(key) || []).find(
+      (candidate) => candidate.db === db
+    );
+    if (!pending) return undefined;
+    pending.refcount = (pending.refcount || 0) + 1;
+    return pending.db;
   }
 
   //
@@ -71,10 +110,167 @@ class DatabaseLRUMap {
   // Decrements refcount. If the entry was marked for deferred close
   // (removed from map while refcount > 0), close it now.
   //
-  release(key) {
+  // `db` is the handle the releasing request was actually using: the alias
+  // may have been evicted and reopened since the request acquired it, in
+  // which case the reference belongs to the evicted (pending) handle and not
+  // to the one now in the map.
+  //
+  release(key, db) {
     const entry = this._map.get(key);
-    if (!entry) return;
-    entry.refcount = Math.max(0, (entry.refcount || 0) - 1);
+    const pendings = this._pendingClose.get(key);
+
+    if (entry && (!db || entry.db === db)) {
+      entry.refcount = Math.max(0, (entry.refcount || 0) - 1);
+      return;
+    }
+
+    if (!pendings) return;
+
+    // The handle was evicted while this request was using it: close it now
+    // that the request is done (a swap may be waiting for its -wal/-shm).
+    const pending = db
+      ? pendings.find((candidate) => candidate.db === db)
+      : pendings.find((candidate) => candidate.refcount > 0);
+    if (!pending) return;
+    pending.refcount = Math.max(0, (pending.refcount || 0) - 1);
+    if (!this._isPendingInUse(pending)) this._closePendingEntry(key, pending);
+  }
+
+  //
+  // The deferred maintenance of `getDatabase` is done with the handle.  If
+  // the handle was evicted meanwhile (a file swap may be waiting for its
+  // -wal/-shm files to disappear) it is closed now rather than at the next
+  // sweep, provided no request still references it.
+  //
+  maintenanceDone(key, db) {
+    const entry = this._map.get(key);
+    if (entry && (!db || entry.db === db)) {
+      entry.maintenanceActive = false;
+      return;
+    }
+
+    for (const pending of this._pendingClose.get(key) || []) {
+      if (db && pending.db !== db) continue;
+      if (pending.entry) pending.entry.maintenanceActive = false;
+      if (!this._isPendingInUse(pending)) this._closePendingEntry(key, pending);
+    }
+  }
+
+  // Whether a request or the deferred maintenance still uses the handle
+  _isPendingInUse(pending) {
+    return (
+      pending.refcount > 0 ||
+      Boolean(pending.entry && pending.entry.maintenanceActive)
+    );
+  }
+
+  //
+  // Remove an entry from the map and close its handle as soon as it is no
+  // longer in use.  Returns true when the handle was closed immediately.
+  //
+  // Used for cross-process cache eviction broadcasts (`db_cache_evict`) and
+  // before a file swap, where the handle MUST end up closed even if a request
+  // is mid-query right now.
+  //
+  evictAndClose(key) {
+    const entry = this._map.get(key);
+    if (!entry) {
+      // maybe some are already pending: retry the idle ones
+      let closedAll = true;
+      for (const pending of this._pendingClose.get(key) || []) {
+        if (
+          this._isPendingInUse(pending) ||
+          !this._closePendingEntry(key, pending)
+        )
+          closedAll = false;
+      }
+
+      return closedAll && !this._pendingClose.has(key);
+    }
+
+    this._map.delete(key);
+    if (!entry.db || !entry.db.open) return true;
+
+    if (
+      (entry.refcount || 0) === 0 &&
+      !entry.maintenanceActive &&
+      !entry.db.inTransaction
+    ) {
+      try {
+        entry.db.close();
+        return true;
+      } catch (err) {
+        // busy executing a query: fall through to deferred close
+        logger.debug(err);
+      }
+    }
+
+    const pendings = this._pendingClose.get(key) || [];
+    pendings.push({
+      db: entry.db,
+      entry,
+      refcount: entry.refcount || 0,
+      since: Date.now()
+    });
+    this._pendingClose.set(key, pendings);
+    return false;
+  }
+
+  //
+  // Close a handle deferred by `evictAndClose`.  Returns true when closed.
+  //
+  _closePendingEntry(key, pending) {
+    const forget = () => {
+      const pendings = (this._pendingClose.get(key) || []).filter(
+        (candidate) => candidate !== pending
+      );
+      if (pendings.length === 0) this._pendingClose.delete(key);
+      else this._pendingClose.set(key, pendings);
+    };
+
+    if (!pending.db || !pending.db.open) {
+      forget();
+      return true;
+    }
+
+    if (pending.db.inTransaction) return false;
+
+    try {
+      pending.db.close();
+      forget();
+      return true;
+    } catch (err) {
+      // still busy: the sweep will retry
+      logger.debug(err);
+      return false;
+    }
+  }
+
+  //
+  // Retry every deferred close.  A handle still in use (referenced by a
+  // request, or used by the deferred maintenance) is left alone until the
+  // grace period has passed (a request that crashed without releasing its
+  // reference must not pin the handle forever).
+  //
+  _closePending() {
+    const now = Date.now();
+    for (const [key, pendings] of this._pendingClose) {
+      for (const pending of pendings) {
+        if (
+          this._isPendingInUse(pending) &&
+          now - pending.since < this.pendingCloseGraceMs
+        )
+          continue;
+        this._closePendingEntry(key, pending);
+      }
+    }
+  }
+
+  // Number of evicted handles still waiting to be closed (for tests/metrics)
+  get pendingCloseSize() {
+    let size = 0;
+    for (const pendings of this._pendingClose.values()) size += pendings.length;
+    return size;
   }
 
   set(key, db) {
@@ -216,7 +412,16 @@ class DatabaseLRUMap {
       }
     }
 
+    for (const pendings of this._pendingClose.values()) {
+      for (const pending of pendings) {
+        if (pending.db && pending.db.open) {
+          promises.push(closeDatabase(pending.db));
+        }
+      }
+    }
+
     this._map.clear();
+    this._pendingClose.clear();
     await Promise.allSettled(promises);
   }
 

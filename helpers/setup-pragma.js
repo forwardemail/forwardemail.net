@@ -8,6 +8,7 @@ const process = require('node:process');
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 
+const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const { mkdirp } = require('mkdirp');
 
@@ -16,12 +17,19 @@ const logger = require('#helpers/logger');
 const IMAPError = require('#helpers/imap-error');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
-// dynamically import file-type
+// dynamically import sqlite-regex
 let sqliteRegex;
+let sqliteRegexError;
 
-import('sqlite-regex').then((obj) => {
-  sqliteRegex = obj;
-});
+import('sqlite-regex')
+  .then((obj) => {
+    sqliteRegex = obj;
+  })
+  .catch((err) => {
+    // the extension is optional (see the load below); an import that fails
+    // must not keep every open waiting for it forever
+    sqliteRegexError = err;
+  });
 
 //
 // NOTE: on all invocations of db.close() we run the pragma command "optimize"
@@ -41,7 +49,14 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   // <https://www.zetetic.net/sqlcipher/sqlcipher-api/#example-2-raw-key-data-without-key-derivation>
   else db.pragma(`key="${decrypt(session.user.password)}"`);
   try {
-    db.pragma('journal_mode=WAL');
+    //
+    // A read-only handle cannot rewrite the database header, so switching a
+    // rollback-journal file (e.g. a freshly rekeyed VACUUM INTO copy) into
+    // WAL mode throws SQLITE_READONLY.  Querying the journal mode still reads
+    // page 1, so an invalid password surfaces as SQLITE_NOTADB either way.
+    //
+    if (db.readonly) db.pragma('journal_mode');
+    else db.pragma('journal_mode=WAL');
   } catch (err) {
     // legacy fallback
     if (
@@ -83,7 +98,10 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   //       and also optimize the 'vacuum' parse-payload switch/case
   //       statement so that it checks for os.freemem() similar to 'backup'
   //
-  db.pragma('auto_vacuum=FULL');
+  // (a read-only handle cannot change auto_vacuum, and it only takes effect
+  //  on VACUUM anyways)
+  //
+  if (!db.readonly) db.pragma('auto_vacuum=FULL');
 
   // <https://litestream.io/tips/#busy-timeout>
   db.pragma(`busy_timeout=${config.busyTimeout}`);
@@ -146,11 +164,24 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   //
   // <https://www.sqlite.org/pragma.html#pragma_optimize>
   //
-  db.pragma('optimize=0x10002;');
+  // (optimize may run ANALYZE, which attempts to write to a read-only handle)
+  //
+  if (!db.readonly) db.pragma('optimize=0x10002;');
 
+  //
   // load regex extension for REGEX support
+  //
+  // NOTE: an open of a live database holds that database's file mutex while
+  //       this runs (see helpers/open-database-handle.js), so the wait for
+  //       the dynamic import is bounded: without the extension only REGEXP
+  //       in IMAP SEARCH is unavailable, a hung open would block the mailbox
+  //
   try {
-    if (!sqliteRegex) await pWaitFor(() => Boolean(sqliteRegex));
+    if (!sqliteRegex && !sqliteRegexError)
+      await pWaitFor(() => Boolean(sqliteRegex || sqliteRegexError), {
+        timeout: ms('10s')
+      });
+    if (sqliteRegexError) throw sqliteRegexError;
     db.loadExtension(sqliteRegex.getLoadablePath());
   } catch (err) {
     // <https://github.com/asg017/sqlite-regex/issues/14>

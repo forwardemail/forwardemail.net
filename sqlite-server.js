@@ -350,14 +350,40 @@ class SQLite {
     //
     // Subscribe to cross-worker cache eviction broadcasts.
     // When one worker recovers a corrupt database (deletes + recreates),
-    // it publishes the alias_id to 'db_cache_evict'. All other workers
-    // must evict their cached (corrupt) handle so they reopen a fresh one
-    // on the next request instead of reusing the broken handle.
+    // or the sqlite-worker is about to swap a rekeyed/vacuumed file over
+    // the live database, it publishes the alias_id to 'db_cache_evict'.
+    // All other workers must drop their cached handle so they reopen a
+    // fresh one on the next request instead of reusing a broken handle
+    // (or writing to an inode that is about to be replaced).
     //
-    this.subscriber.subscribe('db_cache_evict');
+    // The handle may be mid-query right now, in which case closing it
+    // throws; `evictAndClose` then closes it the moment the request that
+    // is using it releases its reference, so the -wal/-shm files of the
+    // old inode are guaranteed to disappear and a pending file swap can
+    // proceed instead of aborting.
+    //
+    //
+    // `sqlite_auth_reset` is published the moment an alias password rotation
+    // (rekey) or a mailbox reset starts.  Dropping the cached handle right
+    // away (instead of only when the worker is about to swap the file)
+    // means no handle of this process can write to the live file while the
+    // worker copies it, so nothing is lost with the swap.
+    //
+    this.subscriber.subscribe('db_cache_evict', 'sqlite_auth_reset');
     this.subscriber.on('message', (channel, aliasId) => {
-      if (channel !== 'db_cache_evict') return;
+      if (channel !== 'db_cache_evict' && channel !== 'sqlite_auth_reset')
+        return;
+
+      // a rotation announced itself: the next request re-checks the gate
+      if (typeof parsePayload.forgetRekeyState === 'function')
+        parsePayload.forgetRekeyState(aliasId);
+
       if (!this.databaseMap) return;
+      if (typeof this.databaseMap.evictAndClose === 'function') {
+        this.databaseMap.evictAndClose(aliasId);
+        return;
+      }
+
       const cachedDb = this.databaseMap.getRaw
         ? this.databaseMap.getRaw(aliasId)
         : undefined;
@@ -403,7 +429,7 @@ class SQLite {
 
   async close() {
     this.subscriber.unsubscribe('sqlite_auth_response');
-    this.subscriber.unsubscribe('db_cache_evict');
+    this.subscriber.unsubscribe('db_cache_evict', 'sqlite_auth_reset');
     clearInterval(this.wsInterval);
     clearInterval(this.uuidCleanupInterval);
 

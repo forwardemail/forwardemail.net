@@ -17,6 +17,7 @@ const config = require('#config');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const setupPragma = require('#helpers/setup-pragma');
+const { withDbFileLock } = require('#helpers/db-file-lock');
 
 const HOSTNAME = os.hostname();
 
@@ -154,9 +155,32 @@ async function safeVacuum({
       fs.unlinkSync(tmpPath);
     } catch {}
 
+    //
+    // A request in flight in another worker may still commit to the live
+    // file around the copy below (its handle is closed once it is done).
+    // Such a commit must never be lost with the swap, so the migration is
+    // abandoned (and retried on a later request) whenever one is detected,
+    // the same way the rekey worker does it (see helpers/worker.js):
+    //  1. `data_version` changes when another connection commits while
+    //     our handle is open
+    //  2. the main file changing across our own close means the close
+    //     checkpointed frames of another connection into it
+    //  3. from the close until the proof, an mtime marker set into the
+    //     past is moved by any later commit that gets checkpointed
+    //
+    const dataVersionBefore = db.pragma('data_version', { simple: true });
+
     // Set auto_vacuum mode to FULL and VACUUM INTO the temp file
     db.pragma('auto_vacuum=FULL');
     db.exec(`VACUUM INTO '${tmpPath.replace(/'/g, "''")}';`);
+
+    if (db.pragma('data_version', { simple: true }) !== dataVersionBefore) {
+      const err = new Error(
+        `VACUUM aborted, another connection committed to ${dbFilePath} while the copy was taken`
+      );
+      err.code = 'SQLITE_BUSY';
+      throw err;
+    }
 
     //
     // SAFETY: Verify the new file is a valid encrypted database
@@ -186,6 +210,7 @@ async function safeVacuum({
     // Close our handle directly — better-sqlite3 transactions are
     // synchronous, so no transaction can be in-flight at this point.
     // (Avoid closeDatabase()'s `optimize` write inside the swap.)
+    const preCloseStats = fs.statSync(dbFilePath, { bigint: true });
     try {
       if (db.open) db.close();
     } catch {
@@ -196,59 +221,144 @@ async function safeVacuum({
       throw err;
     }
 
-    //
-    // Exclusivity proof: after our handle is closed and every other
-    // worker has evicted theirs, no -wal/-shm files may exist.  If they
-    // do, a stale handle somewhere is still writing to the old inode and
-    // swapping would orphan its encrypted -wal onto the new file.
-    //
+    const postCloseStats = fs.statSync(dbFilePath, { bigint: true });
     if (
-      fs.existsSync(`${dbFilePath}-wal`) ||
-      fs.existsSync(`${dbFilePath}-shm`)
+      postCloseStats.size !== preCloseStats.size ||
+      postCloseStats.mtimeNs !== preCloseStats.mtimeNs
     ) {
       const err = new Error(
-        `VACUUM aborted, exclusivity proof failed for ${dbFilePath} (-wal/-shm still exist after close)`
+        `VACUUM aborted, ${dbFilePath} was checkpointed after the copy was taken`
       );
       err.code = 'SQLITE_BUSY';
       throw err;
     }
 
-    //
-    // Ownership re-check: if our locks expired during a long VACUUM and
-    // were re-acquired (or force-deleted by corruption recovery), abort
-    // rather than rename a possibly-stale snapshot over the live file.
-    //
-    const [vacuumOwner, swapOwner] = await client.mget(
-      vacuumLockKey,
-      swapLockKey
-    );
-    if (vacuumOwner !== lockOwner || swapOwner !== lockOwner) {
-      const err = new Error(
-        `VACUUM aborted, lost lock ownership for ${dbFilePath}`
-      );
-      err.code = 'SQLITE_BUSY';
-      throw err;
-    }
-
-    // Atomic rename (same filesystem, so this is atomic on Linux)
-    fs.renameSync(tmpPath, dbFilePath);
-
-    // Best-effort removal of any -wal/-shm recreated between close and rename
-    for (const suffix of ['-wal', '-shm']) {
-      try {
-        fs.unlinkSync(`${dbFilePath}${suffix}`);
-      } catch {}
-    }
-
-    //
-    // Second eviction broadcast: closes any handle that was opened and
-    // cached in the proof→rename gap, before waiting contenders unblock.
-    //
+    // the marker (see above); without it a change is still detected unless
+    // it lands within the file system's timestamp granularity of the close
     try {
-      await client.publish('db_cache_evict', aliasId);
+      fs.utimesSync(
+        dbFilePath,
+        Number(preCloseStats.atimeMs) / 1000,
+        (Date.now() - ms('1m') - Math.floor(Math.random() * 1000)) / 1000
+      );
     } catch (err) {
-      logger.debug(err);
+      logger.warn(err, { dbFilePath });
     }
+
+    const copyStats = fs.statSync(dbFilePath, { bigint: true });
+
+    //
+    // The proof and the rename run under the per-file mutex that every
+    // open of a live database takes synchronously around `new Database()`
+    // (helpers/db-file-lock.js).  Once we hold it, no connection can be
+    // opened until the new file is in place, however long another
+    // process' event loop stalls between checking the Redis swap lock and
+    // actually opening the file.
+    //
+    await withDbFileLock(
+      dbFilePath,
+      { purpose: 'vacuum', timeoutMs: ms('2m') },
+      async (fileLock) => {
+        //
+        // A mutex that had to be broken as stale may belong to an open
+        // that is merely stalled (alive, not running): its connection can
+        // still appear.  This inline VACUUM is opportunistic, so it simply
+        // gives way (the rekey worker double-checks its proof instead).
+        //
+        if (fileLock.brokeStale) {
+          const err = new Error(
+            `VACUUM aborted, a stale file lock had to be broken for ${dbFilePath}`
+          );
+          err.code = 'SQLITE_BUSY';
+          throw err;
+        }
+
+        //
+        // Exclusivity proof: after our handle is closed and every other
+        // worker has evicted theirs, no -wal/-shm files (nor a hot
+        // rollback journal) may exist.  If they do, a stale handle
+        // somewhere is still open on the old inode and swapping would
+        // orphan its encrypted -wal onto the new file.
+        //
+        // (an empty rollback journal proves nothing: SQLite ignores it)
+        let journalSize = 0;
+        try {
+          journalSize = fs.statSync(`${dbFilePath}-journal`).size;
+        } catch {}
+
+        if (
+          fs.existsSync(`${dbFilePath}-wal`) ||
+          fs.existsSync(`${dbFilePath}-shm`) ||
+          journalSize > 0
+        ) {
+          const err = new Error(
+            `VACUUM aborted, exclusivity proof failed for ${dbFilePath} (-wal/-shm/-journal still exist after close)`
+          );
+          err.code = 'SQLITE_BUSY';
+          throw err;
+        }
+
+        //
+        // Nothing can open the live file now and no connection to it
+        // exists: it must not have changed since the copy was taken
+        // (see above).
+        //
+        const liveStats = fs.statSync(dbFilePath, { bigint: true });
+        if (
+          liveStats.ino !== copyStats.ino ||
+          liveStats.size !== copyStats.size ||
+          liveStats.mtimeNs !== copyStats.mtimeNs
+        ) {
+          const err = new Error(
+            `VACUUM aborted, ${dbFilePath} changed after the copy was taken`
+          );
+          err.code = 'SQLITE_BUSY';
+          throw err;
+        }
+
+        //
+        // Ownership re-check: if our locks expired during a long VACUUM
+        // and were re-acquired (or force-deleted by corruption recovery),
+        // abort rather than rename a possibly-stale snapshot over the
+        // live file.
+        //
+        const [vacuumOwner, swapOwner] = await client.mget(
+          vacuumLockKey,
+          swapLockKey
+        );
+        if (
+          vacuumOwner !== lockOwner ||
+          swapOwner !== lockOwner ||
+          !fileLock.isOwned()
+        ) {
+          const err = new Error(
+            `VACUUM aborted, lost lock ownership for ${dbFilePath}`
+          );
+          err.code = 'SQLITE_BUSY';
+          throw err;
+        }
+
+        // Atomic rename (same filesystem, so this is atomic on Linux)
+        fs.renameSync(tmpPath, dbFilePath);
+
+        //
+        // NOTE: -wal/-shm files must never be removed AFTER the rename:
+        //       the proof above showed none exist, and any that appear
+        //       from here on belong to the freshly swapped-in database.
+        //
+
+        //
+        // Second eviction broadcast: closes any handle that was opened
+        // and cached in the meantime (there should be none), before
+        // waiting contenders unblock.
+        //
+        try {
+          await client.publish('db_cache_evict', aliasId);
+        } catch (err) {
+          logger.debug(err);
+        }
+      }
+    );
 
     swapped = true;
     return { swapped: true };

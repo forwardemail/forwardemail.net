@@ -6,6 +6,7 @@
 const process = require('node:process');
 const fs = require('node:fs');
 const os = require('node:os');
+const { setTimeout: delay } = require('node:timers/promises');
 
 const Database = require('better-sqlite3-multiple-ciphers');
 const dayjs = require('dayjs-with-plugins');
@@ -40,8 +41,12 @@ const isRetryableError = require('#helpers/is-retryable-error');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
+const openDatabaseHandle = require('#helpers/open-database-handle');
 const safeVacuum = require('#helpers/safe-vacuum');
 const setupPragma = require('#helpers/setup-pragma');
+const { withDbFileLock } = require('#helpers/db-file-lock');
+const { leftoverCompanionFiles } = require('#helpers/sqlite-file-utils');
+const workerConfig = require('#helpers/sqlite-worker-config');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const backfillCalendarDates = require('#helpers/backfill-calendar-dates');
@@ -94,7 +99,14 @@ async function getDatabase(
 ) {
   // const { stack } = new Error('stack');
   // return early if the session.db was already assigned
+  //
+  // NOTE: a custom path (e.g. a VACUUM INTO copy about to be rekeyed) must
+  //       never be satisfied by `session.db`, which points at the live
+  //       database — otherwise a handle that failed to close would be handed
+  //       back and destructive pragmas would run against the live file
+  //
   if (
+    !customDbFilePath &&
     session.db &&
     (session.db instanceof Database || instance.wsp) &&
     session.db.open === true
@@ -388,9 +400,12 @@ async function getDatabase(
     // <https://github.com/WiseLibs/better-sqlite3/blob/master/docs/api.md#:~:text=Transaction%20functions%20do,loop%20ticks%20anyways>
     //
     // check if we have in-memory existing opened database
-    const cachedDb = instance.databaseMap
-      ? instance.databaseMap.get(alias.id)
-      : undefined;
+    // (the cache and the in-flight map are keyed by alias ID and always
+    //  refer to the live database, so a custom path can never use them)
+    const cachedDb =
+      instance.databaseMap && !customDbFilePath
+        ? instance.databaseMap.get(alias.id)
+        : undefined;
     let isCacheHit = false;
     if (cachedDb && cachedDb.open === true && cachedDb.readonly === false) {
       db = cachedDb;
@@ -401,7 +416,7 @@ async function getDatabase(
           alias_id: alias.id
         });
       }
-    } else if (_dbOpenInflight.has(alias.id)) {
+    } else if (!customDbFilePath && _dbOpenInflight.has(alias.id)) {
       //
       // Another call is already opening this database (setupPragma is async
       // and yields the event loop).  Await the same promise to avoid opening
@@ -474,35 +489,45 @@ async function getDatabase(
       try {
         // Wrap the open+setupPragma in a tracked promise so concurrent
         // callers for the same alias coalesce onto a single handle.
-        const openPromise = (async () => {
-          const handle = new Database(dbFilePath, {
-            readonly,
-            fileMustExist: readonly,
-            timeout: config.busyTimeout,
-            // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
-            verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
-          });
+        //
+        // Live database files are opened through `openDatabaseHandle`, which
+        // holds the per-file mutex shared with rekey/VACUUM file swaps so a
+        // handle can never be opened against an inode that is being replaced
+        // (see helpers/db-file-lock.js).  A custom path (e.g. a VACUUM INTO
+        // copy that is about to be rekeyed) is private to its caller and is
+        // never swapped, so it does not take the mutex.
+        //
+        const openPromise = customDbFilePath
+          ? (async () => {
+              const handle = new Database(dbFilePath, {
+                readonly,
+                fileMustExist: readonly,
+                timeout: config.busyTimeout,
+                // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
+                verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
+              });
 
-          try {
-            await setupPragma(handle, session); // takes about 30ms
-          } catch (pragmaErr) {
-            // Close the handle to prevent file descriptor leak
-            // (the handle is NOT in the cache since we set() after success)
-            try {
-              handle.close();
-            } catch {}
+              try {
+                await setupPragma(handle, session); // takes about 30ms
+              } catch (pragmaErr) {
+                // Close the handle to prevent file descriptor leak
+                // (the handle is NOT in the cache since we set() after success)
+                try {
+                  handle.close();
+                } catch {}
 
-            throw pragmaErr;
-          }
+                throw pragmaErr;
+              }
 
-          return handle;
-        })();
+              return handle;
+            })()
+          : openDatabaseHandle(dbFilePath, session, { readonly });
 
-        _dbOpenInflight.set(alias.id, openPromise);
+        if (!customDbFilePath) _dbOpenInflight.set(alias.id, openPromise);
         try {
           db = await openPromise;
         } finally {
-          _dbOpenInflight.delete(alias.id);
+          if (!customDbFilePath) _dbOpenInflight.delete(alias.id);
         }
       } finally {
         //
@@ -534,7 +559,9 @@ async function getDatabase(
 
       // assigns to session so we can easily re-use
       // (also used in allocateConnection in IMAP notifier)
-      session.db = db;
+      // (custom-path handles are one-off opens owned by the caller, so a
+      //  later call for the live database must not reuse them either)
+      if (!customDbFilePath) session.db = db;
       if (boolean(env.SQLITE_DEBUG_TIMERS)) {
         console.debug('getDatabase cache miss (opened)', {
           duration_ms: Date.now() - t0,
@@ -600,10 +627,19 @@ async function getDatabase(
           // inode after the swap completes (mirrors the db_cache_evict
           // subscriber in sqlite-server.js).
           //
-          if (instance.databaseMap) instance.databaseMap.evict(alias.id);
-          try {
-            if (db && db.open) db.close();
-          } catch {}
+          // (a handle another request is using right now is closed the
+          //  moment that request releases it, not underneath it)
+          if (
+            instance.databaseMap &&
+            typeof instance.databaseMap.evictAndClose === 'function'
+          ) {
+            instance.databaseMap.evictAndClose(alias.id);
+          } else {
+            if (instance.databaseMap) instance.databaseMap.evict(alias.id);
+            try {
+              if (db && db.open) db.close();
+            } catch {}
+          }
 
           const err = new Error(
             `Database swap in progress by another worker for alias ${alias.id}`
@@ -1041,8 +1077,14 @@ async function getDatabase(
           })
           .finally(() => {
             _deferredMaintenanceRunning.delete(_aliasId);
-            // Clear the LRU maintenance guard
-            if (_lruEntry) _lruEntry.maintenanceActive = false;
+            // Clear the LRU maintenance guard (and close the handle right
+            // away if it was evicted in the meantime)
+            if (
+              instance.databaseMap &&
+              typeof instance.databaseMap.maintenanceDone === 'function'
+            )
+              instance.databaseMap.maintenanceDone(_aliasId, _db);
+            else if (_lruEntry) _lruEntry.maintenanceActive = false;
           });
       });
     }
@@ -1126,8 +1168,29 @@ async function getDatabase(
       }
     }
 
-    if (instance.databaseMap && instance.databaseMap.acquire) {
-      instance.databaseMap.acquire(alias.id);
+    if (
+      instance.databaseMap &&
+      instance.databaseMap.acquire &&
+      // the reference is taken on THIS handle (the alias may have been
+      // evicted and reopened since it was obtained above) and only recorded
+      // when it was actually taken, so that the release matches it exactly
+      instance.databaseMap.acquire(alias.id, db)
+    ) {
+      //
+      // Remember which handles this request holds so the request can release
+      // exactly those (see `parsePayload`): a release for a handle that was
+      // never acquired, or for the wrong handle after an eviction/reopen,
+      // would let the cache close a handle another request still uses.
+      //
+      // (non-enumerable: the session is serialized into logs and errors)
+      if (!Array.isArray(session.dbAcquired))
+        Object.defineProperty(session, 'dbAcquired', {
+          value: [],
+          writable: true,
+          enumerable: false,
+          configurable: true
+        });
+      session.dbAcquired.push(db);
     }
 
     return db;
@@ -1823,11 +1886,7 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
             // If VACUUM failed, ensure we still have a valid db handle
             if (!db || !db.open) {
               try {
-                db = new Database(dbFilePath, {
-                  timeout: config.busyTimeout,
-                  verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
-                });
-                await setupPragma(db, session);
+                db = await openDatabaseHandle(dbFilePath, session);
                 if (instance.databaseMap)
                   instance.databaseMap.set(alias.id, db);
                 session.db = db;
@@ -1842,22 +1901,8 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
 
           if (result.swapped) {
             // Reopen the database with the new file
-            db = new Database(dbFilePath, {
-              timeout: config.busyTimeout,
-              verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
-            });
-
-            // Re-apply encryption and pragmas
-            try {
-              await setupPragma(db, session);
-            } catch (pragmaErr) {
-              // Close the handle so it doesn't leak if pragma fails
-              try {
-                db.close();
-              } catch {}
-
-              throw pragmaErr;
-            }
+            // (re-applies encryption and pragmas, never leaks on failure)
+            db = await openDatabaseHandle(dbFilePath, session);
 
             // Store reopened db in map and update session
             if (instance.databaseMap) instance.databaseMap.set(alias.id, db);
@@ -1996,6 +2041,17 @@ function retryGetDatabase(...args) {
           }
 
           if (!alias.is_enabled) {
+            throw error;
+          }
+
+          //
+          // Never touch the file while the alias' password is being rotated
+          // (rekey or reset): the sqlite-worker may be about to swap it, or
+          // the tokens in MongoDB may not yet match the file.  Recovery of
+          // the rotation itself (helpers/recover-rekeys.js) settles this.
+          //
+          if (alias.is_rekey === true) {
+            error.isRekeying = true;
             throw error;
           }
 
@@ -2194,50 +2250,84 @@ function retryGetDatabase(...args) {
           }
 
           //
-          // remove db file and all related files
+          // Move the unreadable file (and its companions) out of the way
+          // instead of deleting it, under the per-file mutex so this can
+          // never interleave with a rekey/VACUUM swap or an in-progress open
+          // of the same file.  Quarantined files are kept for a while
+          // (jobs/cleanup-sqlite.js) so that a mailbox that was merely keyed
+          // with another password, or damaged in a single page, can still
+          // be recovered by hand.
           //
-          try {
-            await fs.promises.rm(error.dbFilePath, {
-              force: true,
-              recursive: true
-            });
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
-          }
+          // Before the file is replaced, no connection to it may exist
+          // anywhere: a stale connection that closes later would unlink
+          // the fresh file's -wal/-shm files by name (the same proof a
+          // rekey performs, see helpers/worker.js).  If exclusivity cannot
+          // be proven in time the file is left alone for the next request
+          // and the cooldown is released so that request can try again.
+          //
+          const quarantined = await withDbFileLock(
+            error.dbFilePath,
+            { purpose: 'recovery' },
+            async (fileLock) => {
+              const deadline =
+                Date.now() + workerConfig.RECOVERY_QUIESCE_TIMEOUT;
+              const cleanChecksRequired = fileLock.brokeStale ? 2 : 1;
+              let cleanChecks = 0;
+              for (;;) {
+                if (
+                  instance.databaseMap &&
+                  typeof instance.databaseMap.evictAndClose === 'function'
+                )
+                  instance.databaseMap.evictAndClose(session.user.alias_id);
+                if (instance.client)
+                  await instance.client
+                    .publish('db_cache_evict', session.user.alias_id)
+                    .catch((err) => logger.debug(err));
 
-          // -wal
-          try {
-            await fs.promises.rm(
-              error.dbFilePath.replace('.sqlite', '.sqlite-wal'),
-              {
-                force: true,
-                recursive: true
-              }
-            );
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
-          }
+                await delay(ms('1s'));
 
-          // -shm
-          try {
-            await fs.promises.rm(
-              error.dbFilePath.replace('.sqlite', '.sqlite-shm'),
-              {
-                force: true,
-                recursive: true
+                const leftover = leftoverCompanionFiles(error.dbFilePath);
+                if (leftover.length === 0) {
+                  cleanChecks++;
+                  if (cleanChecks >= cleanChecksRequired) break;
+                  await delay(ms('1s'));
+                  continue;
+                }
+
+                cleanChecks = 0;
+                if (Date.now() > deadline) return false;
+                await delay(ms('2s'));
               }
-            );
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
+
+              const quarantinePath = `${
+                error.dbFilePath
+              }.quarantine-${Date.now()}`;
+              for (const suffix of ['', '-wal', '-shm', '-journal']) {
+                try {
+                  await fs.promises.rename(
+                    `${error.dbFilePath}${suffix}`,
+                    `${quarantinePath}${suffix}`
+                  );
+                } catch (err) {
+                  if (err.code !== 'ENOENT') {
+                    err.isCodeBug = true;
+                    throw err;
+                  }
+                }
+              }
+
+              error.quarantinePath = quarantinePath;
+              return true;
             }
+          );
+
+          if (!quarantined) {
+            if (instance.client)
+              await instance.client
+                .del(cooldownKey)
+                .catch((err) => logger.debug(err));
+            error.message = `${error.code} recovery deferred for ${session.user.username} (${session.user.alias_id}) - another connection to the database is still open\n\n${error.message}`;
+            throw error;
           }
 
           //
@@ -2302,7 +2392,9 @@ function retryGetDatabase(...args) {
                 subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
               },
               locals: {
-                message: `<p>${error.dbFilePath}</p><hr /><pre><code>${encode(
+                message: `<p>${error.dbFilePath}</p><p>Quarantined as ${
+                  error.quarantinePath
+                }</p><hr /><pre><code>${encode(
                   safeStringify(error.stats, null, 2)
                 )}</code></pre><pre><code>${encode(
                   safeStringify(parseErr(error), null, 2)

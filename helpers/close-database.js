@@ -25,9 +25,25 @@ async function closeDatabase(db) {
     }
   }
 
+  //
+  // NOTE: `optimize` may run ANALYZE and therefore can throw (e.g. SQLITE_BUSY
+  //       past the busy timeout, SQLITE_FULL, SQLITE_READONLY).  It must never
+  //       prevent the handle from being closed, otherwise the handle leaks and
+  //       keeps -wal/-shm files alive (and callers that reuse `session.db`
+  //       while it is still open would operate on the wrong database).
+  //
+  if (!db.readonly) {
+    try {
+      db.pragma('analysis_limit=400');
+      db.pragma('optimize');
+    } catch (err) {
+      // TODO: remove later
+      console.error(err);
+      logger.error(err, { db });
+    }
+  }
+
   try {
-    db.pragma('analysis_limit=400');
-    db.pragma('optimize');
     db.close();
   } catch (err) {
     // TODO: remove later

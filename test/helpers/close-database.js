@@ -51,6 +51,23 @@ test('closeDatabase > handles close() throwing', async (t) => {
   t.true(db.close.calledOnce);
 });
 
+test('closeDatabase > still closes when optimize throws', async (t) => {
+  const { db } = t.context;
+  // e.g. SQLITE_BUSY past the busy timeout or SQLITE_FULL during ANALYZE
+  db.pragma.withArgs('optimize').throws(new Error('database is locked'));
+  await closeDatabase(db);
+  t.true(db.pragma.calledWith('optimize'));
+  t.true(db.close.calledOnce);
+});
+
+test('closeDatabase > skips optimize on read-only handles', async (t) => {
+  const { db } = t.context;
+  db.readonly = true;
+  await closeDatabase(db);
+  t.false(db.pragma.calledWith('optimize'));
+  t.true(db.close.calledOnce);
+});
+
 test('closeDatabase > waits for inTransaction to clear', async (t) => {
   const { db } = t.context;
   db.inTransaction = true;

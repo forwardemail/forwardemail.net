@@ -235,6 +235,35 @@ services:
       smtp:
         condition: service_healthy
 
+  #
+  # Runs backups, VACUUMs and alias password rotations (rekeys) queued by the
+  # sqlite server.  Exactly one instance may run: it must see the same
+  # mailbox files as `sqlite` (same bind mount).
+  #
+  sqlite_worker:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: sqlite_worker
+    network_mode: host
+    hostname: sqlite.${DOMAIN}
+    command: ["node", "sqlite-worker.js"]
+    volumes:
+      - ./sqlite-data:/mnt/${SQLITE_STORAGE_PATH}
+      - ./ssl:/app/ssl/
+      - ./.env:/app/.env
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "imap.${DOMAIN}:127.0.0.1"
+      - "sqlite.${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      sqlite:
+        condition: service_healthy
+
   sqlite_bree:
     image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
     container_name: sqlite_bree

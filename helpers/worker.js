@@ -10,6 +10,7 @@ require('#config/mongoose');
 
 const process = require('node:process');
 const fs = require('node:fs');
+const { Buffer } = require('node:buffer');
 const os = require('node:os');
 const path = require('node:path');
 const punycode = require('node:punycode');
@@ -25,6 +26,7 @@ const bytes = require('@forwardemail/bytes');
 const dashify = require('dashify');
 const getStream = require('get-stream');
 const hasha = require('hasha');
+const isSANB = require('is-string-and-not-blank');
 const mimeTypes = require('mime-types');
 const mongoose = require('mongoose');
 const ms = require('ms');
@@ -43,7 +45,6 @@ const {
 const { Builder } = require('json-sql-enhanced');
 const { Upload } = require('@aws-sdk/lib-storage');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const { boolean } = require('boolean');
 
 const isEmail = require('#helpers/is-email');
 const _ = require('#helpers/lodash');
@@ -61,15 +62,25 @@ const config = require('#config');
 const email = require('#helpers/email');
 const getDatabase = require('#helpers/get-database');
 const getPathToDatabase = require('#helpers/get-path-to-database');
+const getRekeyTmpPath = require('#helpers/get-rekey-tmp-path');
+const openDatabaseHandle = require('#helpers/open-database-handle');
 const i18n = require('#helpers/i18n');
 const isRetryableError = require('#helpers/is-retryable-error');
+const isStorageAvailable = require('#helpers/is-storage-available');
 const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const safeVacuum = require('#helpers/safe-vacuum');
 const setupMongoose = require('#helpers/setup-mongoose');
 const setupPragma = require('#helpers/setup-pragma');
 const { decrypt } = require('#helpers/encrypt-decrypt');
-const { releaseRekeyLock } = require('#helpers/rekey-lock');
+const workerConfig = require('#helpers/sqlite-worker-config');
+const { finalizeRekey, rollbackRekey } = require('#helpers/rekey-recovery');
+const { withDbFileLock } = require('#helpers/db-file-lock');
+const {
+  companionFileExists,
+  fsyncDirectory,
+  removeCompanionFiles
+} = require('#helpers/sqlite-file-utils');
 const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
 const createTangerine = require('#helpers/create-tangerine');
 const { getS3Client } = require('#helpers/get-s3-client');
@@ -81,6 +92,11 @@ const parseBandwidth = require('#helpers/parse-bandwidth');
 const createThrottleStream = require('#helpers/throttle-stream');
 
 const builder = new Builder({ bufferAsNative: true });
+
+const HOSTNAME = os.hostname();
+
+// rekey operation IDs are UUIDs minted by the controller (they name files)
+const REKEY_ID_REGEX = /^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/i;
 
 const BACKUP_UPLOAD_BYTES_PER_SECOND = parseBandwidth(
   env.BACKUP_MAX_BANDWIDTH || '62.5MB/s'
@@ -159,30 +175,176 @@ const instance = {
 // <https://github.com/artem-karpenko/archiver-zip-encrypted/>
 archiver.registerFormat('zip-encrypted', archiverZipEncrypted);
 
+//
+// Error thrown when this rekey no longer owns the alias' rekey state (it was
+// rolled back or superseded while running).  It is not a failure of the
+// mailbox and the user has already been (or will be) notified by whoever
+// took the state over, so no "rekey failed" email is sent for it.
+//
+class RekeySupersededError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'RekeySupersededError';
+    this.code = 'SQLITE_BUSY';
+    this.isRekeySuperseded = true;
+  }
+}
+
+//
+// Thrown (and caught) inside `rekey` to leave the main sequence early when
+// the mailbox already uses the new password and no file swap is needed.  It
+// is control flow, not a failure: the alias is finalized as a success.
+//
+class RekeyNotNeeded extends Error {
+  constructor() {
+    super('Rekey not needed');
+    this.name = 'RekeyNotNeeded';
+  }
+}
+
+//
+// A transient condition (storage not mounted, MongoDB/Redis unavailable,
+// another swap in progress, a stale connection that does not close in time,
+// low memory).  Nothing about the mailbox has changed: the rekey is put back
+// in the queue with a backoff and run again from the start instead of being
+// failed and rolled back.  Only after REKEY_MAX_ATTEMPTS does it fail.
+//
+class RekeyRetryableError extends Error {
+  constructor(message, cause) {
+    super(message);
+    this.name = 'RekeyRetryableError';
+    this.code = 'SQLITE_BUSY';
+    this.isRekeyRetryable = true;
+    if (cause) this.cause = cause;
+  }
+}
+
+function isTransientRekeyError(err) {
+  return Boolean(
+    err &&
+      !err.isRekeySuperseded &&
+      (err.isRekeyRetryable ||
+        err.isDbFileLock ||
+        err.code === 'SQLITE_BUSY' ||
+        err.code === 'SQLITE_LOCKED' ||
+        err.code === 'SQLITE_PROTOCOL' ||
+        err.name === 'MongoNetworkError' ||
+        err.name === 'MongoNetworkTimeoutError' ||
+        err.name === 'MongoServerSelectionError' ||
+        err.name === 'MongooseServerSelectionError' ||
+        err.name === 'MongoNotConnectedError' ||
+        err.name === 'MongoTopologyClosedError' ||
+        err.name === 'MongoPoolClearedError' ||
+        // mongoose buffered the operation while disconnected and gave up
+        (err.name === 'MongooseError' &&
+          /buffering timed out/i.test(err.message || '')) ||
+        err.name === 'MaxRetriesPerRequestError' ||
+        err.code === 'ECONNREFUSED' ||
+        err.code === 'ECONNRESET' ||
+        err.code === 'ETIMEDOUT')
+  );
+}
+
+async function sendRekeyEmail(payload, subjectKey, messageKey, ...args) {
+  try {
+    await email({
+      template: 'alert',
+      message: {
+        to: payload.session.user.owner_full_email,
+        ...(subjectKey === 'ALIAS_REKEY_FAILED_SUBJECT'
+          ? { cc: config.alertsEmail }
+          : {}),
+        subject: i18n.translate(
+          subjectKey,
+          payload.session.user.locale,
+          payload.session.user.username
+        )
+      },
+      locals: {
+        message: i18n.translate(
+          messageKey,
+          payload.session.user.locale,
+          payload.session.user.username,
+          ...args
+        ),
+        locale: payload.session.user.locale
+      }
+    });
+  } catch (err) {
+    // an email failure must never change the outcome of a rekey
+    logger.fatal(err, { payload: { ...payload, session: undefined } });
+  }
+}
+
 async function rekey(payload) {
   if (isCancelled) throw new ServerShutdownError();
 
   await setupMongoose(logger);
 
+  //
+  // Validate the payload before touching anything: every field below is
+  // used to locate or decrypt the mailbox and a malformed job must fail here
+  // rather than half way through.
+  //
+  if (
+    !mongoose.isObjectIdOrHexString(payload?.session?.user?.alias_id) ||
+    !mongoose.isObjectIdOrHexString(payload?.session?.user?.domain_id) ||
+    typeof payload?.session?.user?.storage_location !== 'string' ||
+    !isSANB(payload?.session?.user?.password) ||
+    !isSANB(payload?.new_password) ||
+    (payload.rekey_id !== undefined && !REKEY_ID_REGEX.test(payload.rekey_id))
+  ) {
+    const err = new TypeError('Invalid rekey payload');
+    err.isCodeBug = true;
+    err.payload = { ...payload, session: undefined };
+    throw err;
+  }
+
+  const aliasId = new mongoose.Types.ObjectId(payload.session.user.alias_id);
+  const domainId = new mongoose.Types.ObjectId(payload.session.user.domain_id);
+
+  // Every state transition below is scoped to this exact operation so a
+  // duplicate, re-queued, or superseded job can never touch newer state.
+  const rekeyFilter = {
+    _id: aliasId,
+    domain: domainId,
+    is_rekey: true,
+    ...(payload.rekey_id
+      ? { rekey_id: payload.rekey_id }
+      : { rekey_id: { $exists: false } })
+  };
+
+  //
   // Claim this specific rekey before touching SQLite. A controller can then
-  // distinguish an unacknowledged queue request from work already in flight.
-  const claimedRekey = await Aliases.findOneAndUpdate(
-    {
-      _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
-      domain: new mongoose.Types.ObjectId(payload.session.user.domain_id),
-      is_rekey: true,
-      ...(payload.rekey_id
-        ? { rekey_id: payload.rekey_id }
-        : { rekey_id: { $exists: false } }),
-      rekey_processing: { $ne: true }
-    },
-    {
-      $set: { rekey_processing: true }
-    }
-  )
-    .select('_id')
-    .lean()
-    .exec();
+  // distinguish an unacknowledged queue request from work already in flight,
+  // and recovery knows that a claimed rekey which this (single) worker is
+  // not processing belongs to a process that died.
+  //
+  const claimedAt = new Date();
+  let claimedRekey;
+  try {
+    claimedRekey = await Aliases.findOneAndUpdate(
+      {
+        ...rekeyFilter,
+        rekey_processing: { $ne: true }
+      },
+      {
+        $set: {
+          rekey_processing: true,
+          rekey_claimed_at: claimedAt
+        }
+      }
+    )
+      .select('_id storage_used')
+      .lean()
+      .exec();
+  } catch (claimErr) {
+    // nothing was claimed: the job simply runs again later
+    throw new RekeyRetryableError(
+      `Unable to claim rekey ${payload.rekey_id}: ${claimErr.message}`,
+      claimErr
+    );
+  }
 
   if (!claimedRekey) {
     logger.info('Skipping stale or already-claimed rekey job', {
@@ -206,6 +368,17 @@ async function rekey(payload) {
   let err;
   let tmp;
   let backup = true;
+  // handles are tracked outside of the try block so they are always closed
+  // (a leaked handle keeps -wal/-shm files alive and makes every subsequent
+  //  rekey attempt for this alias fail its exclusivity proof)
+  let db;
+  let backupDb;
+  // `swapMarked` is set once the swap was recorded in MongoDB, `swapped` once
+  // the rename over the live database was confirmed on disk
+  let swapMarked = false;
+  let swapped = false;
+  // set when the mailbox already uses the new password and no swap is needed
+  let alreadyRekeyed = false;
 
   try {
     const storagePath = getPathToDatabase({
@@ -213,16 +386,124 @@ async function rekey(payload) {
       storage_location: payload.session.user.storage_location
     });
 
+    //
+    // The new password decrypts to the raw key of the rekeyed database.  An
+    // empty key would REMOVE the encryption (that is how SQLite3MultipleCiphers
+    // interprets it), so it must be validated before anything else.
+    //
+    const newPassword = decrypt(payload.new_password);
+    if (typeof newPassword !== 'string' || newPassword.length === 0) {
+      const err = new TypeError('New password is empty');
+      err.isCodeBug = true;
+      throw err;
+    }
+
+    //
+    // No process may keep a handle to the live file from here on: cached
+    // handles are dropped fleet-wide (a request still using one closes it
+    // the moment it is done) and the sqlite server refuses to open new
+    // ones while `is_rekey` is set.  Together with the temporary-mailbox
+    // fallback for inbound mail this guarantees that nothing written after
+    // the VACUUM INTO snapshot below can be lost with the swap.
+    //
+    try {
+      await client.publish('db_cache_evict', payload.session.user.alias_id);
+    } catch (err) {
+      logger.debug(err);
+    }
+
+    await setTimeout(ms('1s'));
+
     // <https://github.com/nodejs/node/issues/38006>
-    const stats = await fs.promises.stat(storagePath);
-    if (
-      !stats.isFile() ||
-      stats.size === 0
-      // || stats.size <= config.INITIAL_DB_SIZE
-    ) {
-      const err = new TypeError('Database empty');
+    let stats;
+    try {
+      stats = await fs.promises.stat(storagePath);
+    } catch (statErr) {
+      if (statErr.code !== 'ENOENT') throw statErr;
+    }
+
+    if (stats && !stats.isFile()) {
+      const err = new TypeError(`${storagePath} is not a file`);
+      err.isCodeBug = true;
       err.stats = stats;
       throw err;
+    }
+
+    //
+    // A missing file only means "no mailbox" when the storage volume is
+    // actually there; otherwise nothing can be concluded and the rekey
+    // waits for the volume (retried with backoff).
+    //
+    if (!stats && !isStorageAvailable(storagePath))
+      throw new RekeyRetryableError(
+        `Storage volume for ${storagePath} is not available`
+      );
+
+    //
+    // The volume is there but the mailbox of an alias that is known to hold
+    // data is not: the file is lost or misplaced (e.g. an empty volume was
+    // mounted in place of the real one).  Finalizing would discard the only
+    // password that can decrypt the mailbox once it is back, so the rekey
+    // waits instead (and fails, with the previous password restored, once
+    // the retries are used up).
+    //
+    if (
+      !stats &&
+      typeof claimedRekey.storage_used === 'number' &&
+      claimedRekey.storage_used > 0
+    )
+      throw new RekeyRetryableError(
+        `Mailbox file ${storagePath} is missing although the alias reports ${bytes(
+          claimedRekey.storage_used
+        )} in use`
+      );
+
+    //
+    // No mailbox on disk, or an empty file: there is nothing to rekey.  The
+    // next open initializes the mailbox with the password that opens it,
+    // i.e. the new one, so the rotation is complete.  An empty file (a
+    // creation that never finished) is removed together with any companion
+    // files so a stale -wal cannot be replayed into the fresh mailbox --
+    // under the file mutex and re-checked there, so a creation that is in
+    // progress right now (the file grows once its creator releases the
+    // mutex) is rekeyed like any other mailbox instead.
+    //
+    let nothingToRekey = !stats;
+    if (stats && stats.size === 0) {
+      nothingToRekey = await withDbFileLock(
+        storagePath,
+        { purpose: 'rekey' },
+        async () => {
+          let current;
+          try {
+            current = fs.statSync(storagePath);
+          } catch (statErr) {
+            if (statErr.code !== 'ENOENT') throw statErr;
+            return true;
+          }
+
+          if (current.size > 0) return false;
+
+          await removeCompanionFiles(storagePath, [
+            '',
+            '-wal',
+            '-shm',
+            '-journal'
+          ]);
+          return true;
+        }
+      );
+
+      // the file was being created: use its real size below
+      if (!nothingToRekey) stats = await fs.promises.stat(storagePath);
+    }
+
+    if (nothingToRekey) {
+      logger.warn('Rekey of an alias without a mailbox, nothing to rekey', {
+        alias_id: payload.session.user.alias_id,
+        storagePath
+      });
+      throw new RekeyNotNeeded();
     }
 
     // we calculate size of db x 2 (backup + tarball)
@@ -230,44 +511,54 @@ async function rekey(payload) {
 
     const diskSpace = await checkDiskSpace(storagePath);
     if (diskSpace.free < spaceRequired)
-      throw new TypeError(
+      throw new RekeyRetryableError(
         `Needed ${bytes(spaceRequired)} but only ${bytes(
           diskSpace.free
         )} was available`
       );
 
     //
-    // ensure that we have the space required available in memory
-    // (prevents multiple backups from taking up all of the memory on server)
+    // Ensure a reasonable amount of memory is free before starting.
+    //
+    // NOTE: unlike `backup` (which builds mbox/eml archives in memory) a
+    //       rekey is a VACUUM INTO followed by VACUUMs with `temp_store=1`
+    //       (temporary tables on disk) and a 16 MB page cache, so its memory
+    //       use does not scale with the mailbox size.  Requiring 2x the
+    //       database size in free memory made every rekey of a large
+    //       mailbox time out on a busy host.
+    //
     try {
-      await pWaitFor(
-        () => {
-          return os.freemem() > spaceRequired;
-        },
-        {
-          interval: ms('30s'),
-          timeout: ms('5m')
-        }
-      );
+      await pWaitFor(() => os.freemem() > workerConfig.MIN_FREE_MEM, {
+        interval: ms('30s'),
+        timeout: ms('5m')
+      });
     } catch (err) {
-      if (isRetryableError(err)) {
-        err.message = `Backup not complete due to OOM for ${payload.session.user.username}`;
-        err.isCodeBug = true;
-      }
-
-      err.freemem = os.freemem();
-      err.spaceRequired = spaceRequired;
-      err.payload = payload;
-      throw err;
+      const retryErr = new RekeyRetryableError(
+        `Rekey not started due to low memory for ${payload.session.user.username}`,
+        err
+      );
+      retryErr.freemem = os.freemem();
+      retryErr.minFreeMem = workerConfig.MIN_FREE_MEM;
+      throw retryErr;
     }
 
+    //
     // create backup
-    tmp = path.join(
-      path.dirname(storagePath),
-      `${payload.session.user.alias_id}-${payload.id}-backup.sqlite`
-    );
+    //
+    // NOTE: the temporary file is named after the rekey operation (instead of
+    //       the WebSocket request) so a re-queued job can clean up after a
+    //       hard kill and recovery can reason about it
+    //
+    tmp = getRekeyTmpPath(storagePath, payload);
 
     if (isCancelled) throw new ServerShutdownError();
+
+    //
+    // cleanup tmp if it already exists (e.g. this job was re-queued after a
+    // hard kill mid-VACUUM INTO), otherwise SQLite throws
+    // "output file already exists" and the retry can never succeed
+    //
+    await removeCompanionFiles(tmp, ['', '-wal', '-shm', '-journal']);
 
     //
     // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
@@ -284,8 +575,67 @@ async function rekey(payload) {
     //
     //       so instead we use the VACUUM INTO command with the `tmp` path
     //
+    //
+    // Which password opens the mailbox right now?  Normally the previous
+    // one.  If only the NEW one does, a previous run of this rotation
+    // already swapped the file and just the bookkeeping is missing:
+    // finalize instead of failing (a rollback would restore tokens that
+    // cannot decrypt the mailbox).  If neither does the mailbox is
+    // unreadable and the rotation fails (the previous tokens are restored,
+    // which is the state the user started from).
+    //
+    // The probes are read-only (a read-only connection to a WAL-mode file
+    // may create empty -wal/-shm companions, which are harmless and are
+    // cleaned up by the read-write open below), and they happen before
+    // `getDatabase` so an unreadable mailbox does not enter its
+    // corruption-recovery path.
+    //
+    const opensWith = (password) =>
+      withDbFileLock(storagePath, { purpose: 'rekey-probe' }, async () => {
+        const probeDb = new Database(storagePath, {
+          readonly: true,
+          fileMustExist: true,
+          timeout: config.busyTimeout
+        });
+        try {
+          await setupPragma(probeDb, {
+            user: { ...payload.session.user, password }
+          });
+          // reads the schema page: a wrong key cannot get this far
+          return Number.isInteger(
+            probeDb.pragma('schema_version', { simple: true })
+          );
+        } catch (probeErr) {
+          if (probeErr.code !== 'SQLITE_NOTADB') throw probeErr;
+          return false;
+        } finally {
+          try {
+            probeDb.close();
+          } catch {}
+        }
+      });
+
+    if (!(await opensWith(payload.session.user.password))) {
+      if (await opensWith(payload.new_password)) {
+        logger.warn('Mailbox already uses the new password, nothing to rekey', {
+          alias_id: payload.session.user.alias_id,
+          storagePath
+        });
+        throw new RekeyNotNeeded();
+      }
+
+      const err = new Error(
+        `Mailbox for ${payload.session.user.username} cannot be opened with the previous nor the new password`
+      );
+      err.code = 'SQLITE_NOTADB';
+      err.isCodeBug = true;
+      throw err;
+    }
+
+    if (isCancelled) throw new ServerShutdownError();
+
     // TODO: this should not fix database
-    const db = await getDatabase(
+    db = await getDatabase(
       instance,
       // alias
       {
@@ -295,17 +645,84 @@ async function rekey(payload) {
       payload.session
     );
 
+    //
+    // A request that was already in flight when the rotation started may
+    // still commit to the live file around the snapshot (its handle is
+    // closed as soon as it is done).  Such a commit must never be lost with
+    // the swap, so the rekey starts over with a fresh snapshot whenever one
+    // is detected.  Three checks cover the three phases:
+    //
+    //  1. while our handle is open: `data_version` changes whenever another
+    //     connection (in any process) commits, so a different value after
+    //     VACUUM INTO means the snapshot may not include that commit
+    //  2. at our close: the last connection to close checkpoints the WAL
+    //     into the main file, so a main file that changed across our own
+    //     close carried frames of another connection (ours only read after
+    //     the checkpoint below)
+    //  3. after our close and until the swap: the main file's mtime is set
+    //     to a marker in the past right after the close; a commit that is
+    //     checkpointed later (by the closing connection) moves it, which
+    //     the exclusivity proof re-checks before the rename.  A marker
+    //     cannot be mistaken for "unchanged" whatever the timestamp
+    //     granularity of the file system.
+    //
     // run a checkpoint to copy over wal to db
     db.pragma('wal_checkpoint(PASSIVE)');
+
+    const dataVersionBefore = db.pragma('data_version', { simple: true });
 
     // create backup
     db.exec(`VACUUM INTO '${tmp.replace(/'/g, "''")}';`);
 
-    await closeDatabase(db);
+    const dataVersionAfter = db.pragma('data_version', { simple: true });
+    if (dataVersionAfter !== dataVersionBefore)
+      throw new RekeyRetryableError(
+        `REKEY aborted, another connection committed to the live database of alias ${payload.session.user.alias_id} while the snapshot was taken`
+      );
+
+    //
+    // The handle is closed right away and without the usual `optimize`
+    // (which may write): from here on nothing of ours may change the live
+    // file, and the handle must be closed before the exclusivity proof
+    // below (our own -wal/-shm files would abort the swap).
+    //
+    // (synchronous: nothing may run between the stats and the close)
+    //
+    const preCloseStats = fs.statSync(storagePath, { bigint: true });
+    db.close();
+    if (db.open)
+      throw new TypeError('Live database handle could not be closed');
+    const postCloseStats = fs.statSync(storagePath, { bigint: true });
+    if (
+      postCloseStats.size !== preCloseStats.size ||
+      postCloseStats.mtimeNs !== preCloseStats.mtimeNs
+    )
+      throw new RekeyRetryableError(
+        `REKEY aborted, the live database of alias ${payload.session.user.alias_id} was checkpointed after the snapshot was taken`
+      );
+
+    //
+    // Baseline for the swap (see above): the marker is a minute in the past
+    // so that any later write to the main file -- which sets the current
+    // time -- differs from it.  When the marker cannot be set the plain
+    // baseline is used (a change is then still detected, unless it lands
+    // within the file system's timestamp granularity of our close).
+    //
+    try {
+      fs.utimesSync(
+        storagePath,
+        Number(preCloseStats.atimeMs) / 1000,
+        (Date.now() - ms('1m') - Math.floor(Math.random() * 1000)) / 1000
+      );
+    } catch (err) {
+      logger.warn(err, { storagePath });
+    }
+
+    const snapshotStats = fs.statSync(storagePath, { bigint: true });
 
     if (isCancelled) throw new ServerShutdownError();
     // open the backup and encrypt it
-    const backupDb = await getDatabase(
+    backupDb = await getDatabase(
       instance,
       // alias
       {
@@ -317,6 +734,18 @@ async function rekey(payload) {
       tmp
     );
 
+    //
+    // safeguard: every pragma below is destructive, so never run them
+    // against anything other than the temporary copy we just created
+    //
+    if (backupDb.name !== tmp) {
+      const err = new TypeError(
+        `Expected backup handle for "${tmp}" but got "${backupDb.name}"`
+      );
+      err.isCodeBug = true;
+      throw err;
+    }
+
     // ensure journal mode changed to delete so we can rekey database
     const journalModeResult = backupDb.pragma('journal_mode=DELETE', {
       simple: true
@@ -327,8 +756,13 @@ async function rekey(payload) {
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/91>
     backupDb.prepare('VACUUM').run();
     if (isCancelled) throw new ServerShutdownError();
-    // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
-    backupDb.pragma(`rekey="${decrypt(payload.new_password)}"`);
+
+    //
+    // Rekey through the binary API so the key is derived exactly the way
+    // `setupPragma` derives it on open (`db.key(Buffer)`), with no SQL
+    // string quoting involved.
+    //
+    backupDb.rekey(Buffer.from(newPassword));
 
     //
     // NOTE: do not enable this again because if so it will create
@@ -359,10 +793,16 @@ async function rekey(payload) {
 
     await closeDatabase(backupDb);
 
+    if (backupDb.open)
+      throw new TypeError('Rekeyed database handle could not be closed');
+
     //
     // Final verification: re-open the rekeyed database with the NEW password
     // to confirm it can actually be decrypted. This catches edge cases where
-    // the rekey pragma appeared to succeed but the file is unreadable.
+    // the rekey appeared to succeed but the file is unreadable.
+    //
+    // NOTE: the handle is read-only so nothing (journal mode, -wal/-shm files)
+    //       can be changed on the file that is about to replace the live one
     //
     {
       const verifyDb = new Database(tmp, {
@@ -385,12 +825,37 @@ async function rekey(payload) {
             `Post-rekey verification failed: ${verifyIntegrity}`
           );
         }
+
+        // the rekeyed copy must be a rollback-journal database: a WAL-mode
+        // copy would create -wal/-shm files the moment it is opened
+        const verifyJournalMode = verifyDb.pragma('journal_mode', {
+          simple: true
+        });
+        if (verifyJournalMode === 'wal') {
+          throw new TypeError('Rekeyed database is unexpectedly in WAL mode');
+        }
       } finally {
         try {
           verifyDb.close();
         } catch {}
       }
     }
+
+    // the verification must not have left companion files behind
+    for (const suffix of ['-wal', '-shm', '-journal']) {
+      if (fs.existsSync(`${tmp}${suffix}`))
+        throw new TypeError(`Rekeyed database left a ${suffix} file behind`);
+    }
+
+    //
+    // Identity of the copy that was just verified: only this exact file may
+    // be renamed over the live database (re-checked right before the
+    // rename, so a copy that was replaced or written to in the meantime --
+    // which no process should ever do -- can never be swapped in).
+    //
+    const verifiedStats = fs.statSync(tmp, { bigint: true });
+
+    if (isCancelled) throw new ServerShutdownError();
 
     //
     // Cross-process quiesce BEFORE swapping the rekeyed file over the
@@ -399,89 +864,230 @@ async function rekey(payload) {
     // would get replayed onto the new file after the rename, causing
     // SQLITE_NOTADB / SQLITE_CORRUPT corruption.
     //
+    // Two locks are held for the swap:
+    //
+    //  1. the Redis `db_swap_lock` tells `getDatabase()` callers in the
+    //     sqlite cluster workers to wait instead of opening the file, and
+    //     serializes this swap with an inline VACUUM migration
+    //  2. the per-file mutex (helpers/db-file-lock.js) is what makes the
+    //     exclusivity proof airtight: every open of a live database takes
+    //     it synchronously around `new Database()`, so once we hold it no
+    //     connection can appear until the new file is in place, no matter
+    //     how long another process' event loop stalls
+    //
     const swapLockKey = `db_swap_lock:${payload.session.user.alias_id}`;
-    const swapLockOwner = `${os.hostname()}:${process.pid}:${Date.now()}`;
-    const swapLockAcquired = await client.set(
-      swapLockKey,
-      swapLockOwner,
-      'PX',
-      ms('5m'),
-      'NX'
-    );
-    if (!swapLockAcquired) {
-      const err = new Error(
-        `Database swap in progress by another worker for alias ${payload.session.user.alias_id}`
+    const swapLockOwner = `${HOSTNAME}:${process.pid}:${Date.now()}`;
+    const swapLockDeadline = Date.now() + workerConfig.REKEY_SWAP_LOCK_WAIT;
+    let swapLockAcquired = false;
+    for (;;) {
+      swapLockAcquired = await client.set(
+        swapLockKey,
+        swapLockOwner,
+        'PX',
+        ms('5m'),
+        'NX'
       );
-      err.code = 'SQLITE_BUSY';
-      throw err;
+      if (swapLockAcquired) break;
+      if (Date.now() > swapLockDeadline)
+        throw new RekeyRetryableError(
+          `Database swap in progress by another worker for alias ${payload.session.user.alias_id}`
+        );
+
+      if (isCancelled) throw new ServerShutdownError();
+      await setTimeout(ms('1s'));
     }
 
     try {
-      //
-      // Broadcast cache eviction to ALL workers via Redis pub/sub so stale
-      // handles to the about-to-be-replaced file are closed everywhere,
-      // then wait a grace period for the eviction to propagate.
-      //
-      try {
-        await client.publish('db_cache_evict', payload.session.user.alias_id);
-      } catch (err) {
-        logger.debug(err);
-      }
+      await withDbFileLock(
+        storagePath,
+        { purpose: 'rekey', timeoutMs: workerConfig.REKEY_SWAP_LOCK_WAIT },
+        async (fileLock) => {
+          //
+          // Broadcast cache eviction to ALL workers via Redis pub/sub so
+          // stale handles to the about-to-be-replaced file are closed
+          // everywhere, then wait a grace period for the eviction to land.
+          //
+          // Exclusivity proof: if -wal/-shm files (or a hot rollback
+          // journal) still exist after eviction, a stale handle somewhere
+          // is still open on the old inode.  A handle that was mid-query
+          // when the eviction arrived is closed by the sqlite cluster worker
+          // as soon as that query finishes, so keep re-broadcasting and
+          // re-checking until the quiesce timeout, then abort instead of
+          // corrupting the new file.
+          //
+          //
+          // A mutex that had to be broken as stale may have belonged to an
+          // open that is merely stalled (a process that is alive but not
+          // running): its connection could still appear.  The proof is
+          // then only trusted once it held for two consecutive checks.
+          //
+          const quiesceDeadline =
+            Date.now() + workerConfig.REKEY_QUIESCE_TIMEOUT;
+          const cleanChecksRequired = fileLock.brokeStale ? 2 : 1;
+          let cleanChecks = 0;
+          let attempt = 0;
+          for (;;) {
+            attempt++;
+            try {
+              await client.publish(
+                'db_cache_evict',
+                payload.session.user.alias_id
+              );
+            } catch (err) {
+              logger.debug(err);
+            }
 
-      await setTimeout(ms('1s'));
+            await setTimeout(ms('1s'));
 
-      //
-      // Exclusivity proof: if -wal/-shm files still exist after eviction,
-      // a stale handle somewhere is still writing to the old inode —
-      // abort the swap (retryable) instead of corrupting the new file.
-      //
-      if (
-        fs.existsSync(storagePath.replace('.sqlite', '.sqlite-wal')) ||
-        fs.existsSync(storagePath.replace('.sqlite', '.sqlite-shm'))
-      ) {
-        const err = new Error(
-          `REKEY aborted, -wal/-shm files still exist for alias ${payload.session.user.alias_id} (another connection is still writing)`
-        );
-        err.code = 'SQLITE_BUSY';
-        throw err;
-      }
+            const leftover = ['-wal', '-shm', '-journal'].filter((suffix) =>
+              companionFileExists(storagePath, suffix)
+            );
+            if (leftover.length === 0) {
+              cleanChecks++;
+              if (cleanChecks >= cleanChecksRequired) break;
+              await setTimeout(workerConfig.REKEY_QUIESCE_INTERVAL);
+              continue;
+            }
 
-      //
-      // remove the old -wal and -shm files BEFORE the rename
-      // (removing them after the rename could delete files belonging
-      //  to the freshly swapped-in database)
-      //
+            cleanChecks = 0;
 
-      // -wal
-      try {
-        await fs.promises.rm(storagePath.replace('.sqlite', '.sqlite-wal'), {
-          force: true,
-          recursive: true
-        });
-      } catch (err) {
-        if (err.code !== 'ENOENT') {
-          err.isCodeBug = true;
-          throw err;
+            if (isCancelled) throw new ServerShutdownError();
+
+            if (Date.now() > quiesceDeadline)
+              throw new RekeyRetryableError(
+                `REKEY aborted, ${leftover.join(
+                  '/'
+                )} files still exist for alias ${
+                  payload.session.user.alias_id
+                } (another connection is still open)`
+              );
+
+            logger.warn(
+              `REKEY waiting for stale connections to close for alias ${
+                payload.session.user.alias_id
+              } (attempt ${attempt}, ${leftover.join('/')} still exist)`
+            );
+            await setTimeout(workerConfig.REKEY_QUIESCE_INTERVAL);
+          }
+
+          //
+          // Nothing can open the live file now (we hold the mutex) and no
+          // connection to it exists (the proof above): compare it with the
+          // baseline taken after the snapshot.  A difference means an
+          // in-flight request committed after the snapshot; see above.
+          //
+          const liveStats = fs.statSync(storagePath, { bigint: true });
+          if (
+            liveStats.ino !== snapshotStats.ino ||
+            liveStats.size !== snapshotStats.size ||
+            liveStats.mtimeNs !== snapshotStats.mtimeNs
+          )
+            throw new RekeyRetryableError(
+              `REKEY aborted, live database of alias ${payload.session.user.alias_id} changed after the snapshot was taken (${snapshotStats.size} -> ${liveStats.size} bytes)`
+            );
+
+          //
+          // Ownership re-check and swap marker in ONE atomic update: if
+          // this operation was rolled back in the meantime (e.g. by the
+          // stale-rekey job) nothing matches and the live file is left
+          // untouched, so the restored tokens still decrypt it.  The inode
+          // of the rekeyed copy is recorded so that recovery can tell for
+          // certain whether the rename below happened.
+          //
+          const tmpStats = await fs.promises.stat(tmp, { bigint: true });
+          if (
+            tmpStats.ino !== verifiedStats.ino ||
+            tmpStats.size !== verifiedStats.size ||
+            tmpStats.mtimeNs !== verifiedStats.mtimeNs
+          ) {
+            const err = new Error(
+              `REKEY aborted, rekeyed copy ${tmp} changed after it was verified`
+            );
+            err.isCodeBug = true;
+            throw err;
+          }
+
+          const marked = await Aliases.updateOne(
+            {
+              ...rekeyFilter,
+              rekey_processing: true
+            },
+            {
+              $set: {
+                rekey_swap_ino: tmpStats.ino.toString(),
+                rekey_swapped_at: new Date()
+              }
+            }
+          );
+
+          if (marked.matchedCount !== 1)
+            throw new RekeySupersededError(
+              `REKEY aborted, alias ${payload.session.user.alias_id} no longer owns rekey operation ${payload.rekey_id}`
+            );
+
+          swapMarked = true;
+
+          //
+          // Both locks must still be ours: a lock that was broken as stale
+          // (only possible if this process stalled for minutes) means
+          // another process may have opened the old inode meanwhile.
+          //
+          const swapLockValue = await client.get(swapLockKey);
+          if (!fileLock.isOwned() || swapLockValue !== swapLockOwner) {
+            const err = new Error(
+              `REKEY aborted, lost swap lock ownership for alias ${payload.session.user.alias_id}`
+            );
+            err.code = 'SQLITE_BUSY';
+            throw err;
+          }
+
+          //
+          // remove the old -wal/-shm/-journal files BEFORE the rename
+          // (removing them after the rename could delete files belonging
+          //  to the freshly swapped-in database); the proof above showed
+          //  no connection owns them
+          //
+          await removeCompanionFiles(storagePath, ['-wal', '-shm', '-journal']);
+
+          // rename backup file (overwrites existing destination file)
+          try {
+            await fs.promises.rename(tmp, storagePath);
+            swapped = true;
+          } catch (renameErr) {
+            //
+            // The file system is the source of truth: confirm on disk
+            // before treating this as a failure (the inode moves with the
+            // file, so this cannot be fooled by a stale copy)
+            //
+            let liveIno;
+            try {
+              liveIno = fs.statSync(storagePath, { bigint: true }).ino;
+            } catch {}
+
+            swapped = liveIno === tmpStats.ino;
+            if (!swapped) throw renameErr;
+            logger.warn(renameErr, { payload });
+          }
+
+          backup = false;
+          fsyncDirectory(path.dirname(storagePath));
+          logger.debug('renamed', { tmp, storagePath });
+
+          //
+          // Second eviction broadcast: closes any handle that was cached
+          // in between (there should be none) before waiting contenders
+          // are allowed to open the new file
+          //
+          try {
+            await client.publish(
+              'db_cache_evict',
+              payload.session.user.alias_id
+            );
+          } catch (err) {
+            logger.debug(err);
+          }
         }
-      }
-
-      // -shm
-      try {
-        await fs.promises.rm(storagePath.replace('.sqlite', '.sqlite-shm'), {
-          force: true,
-          recursive: true
-        });
-      } catch (err) {
-        if (err.code !== 'ENOENT') {
-          err.isCodeBug = true;
-          throw err;
-        }
-      }
-
-      // rename backup file (overwrites existing destination file)
-      await fs.promises.rename(tmp, storagePath);
-      backup = false;
-      logger.debug('renamed', { tmp, storagePath });
+      );
     } finally {
       // Release the swap lock (only if we still own it)
       await client
@@ -489,16 +1095,25 @@ async function rekey(payload) {
         .catch(() => {});
     }
   } catch (_err) {
-    err = _err;
+    if (_err instanceof RekeyNotNeeded) alreadyRekeyed = true;
+    else err = _err;
+  }
+
+  // always close handles in case of errors
+  for (const handle of [backupDb, db]) {
+    if (handle && handle.open) {
+      try {
+        await closeDatabase(handle);
+      } catch (closeErr) {
+        logger.fatal(closeErr, { payload });
+      }
+    }
   }
 
   // always do cleanup in case of errors
   if (backup && tmp) {
     try {
-      await fs.promises.rm(tmp, {
-        force: true,
-        recursive: true
-      });
+      await removeCompanionFiles(tmp, ['', '-wal', '-shm', '-journal']);
     } catch (err) {
       logger.fatal(err, { payload });
     }
@@ -516,92 +1131,102 @@ async function rekey(payload) {
   // after the next restart. Clearing is_rekey here would allow
   // auth while the rekey is incomplete (corrupted state).
   //
-  if (err instanceof ServerShutdownError) {
+  // (a shutdown is never signalled once the swap was recorded)
+  //
+  if (err instanceof ServerShutdownError && !swapMarked) {
     // This job is immediately re-queued by sqlite-worker.js, so make it
     // claimable by the next worker rather than allowing stale recovery to
     // restore a rekey that is still scheduled to run.
-    await Aliases.updateOne(
-      {
-        _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
-        domain: new mongoose.Types.ObjectId(payload.session.user.domain_id),
-        is_rekey: true,
-        ...(payload.rekey_id
-          ? { rekey_id: payload.rekey_id }
-          : { rekey_id: { $exists: false } })
-      },
-      {
-        $set: { rekey_processing: false }
-      }
-    ).catch((shutdownErr) => logger.fatal(shutdownErr));
+    await Aliases.updateOne(rekeyFilter, {
+      $set: { rekey_processing: false },
+      $unset: { rekey_claimed_at: 1 }
+    }).catch((shutdownErr) => logger.fatal(shutdownErr));
     throw err;
   }
 
-  try {
-    const filter = {
-      _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
-      domain: new mongoose.Types.ObjectId(payload.session.user.domain_id),
-      is_rekey: true,
-      ...(payload.rekey_id
-        ? { rekey_id: payload.rekey_id }
-        : { rekey_id: { $exists: false } })
-    };
+  //
+  // A transient failure before anything irreversible happened: nothing about
+  // the mailbox has changed, so instead of rolling back and telling the user
+  // to try again, release the claim (only if it is still ours) and let
+  // sqlite-worker.js put the job back in the queue with a backoff.  The
+  // attempt counter travels with the job; past REKEY_MAX_ATTEMPTS the
+  // failure is handled like any other below.
+  //
+  const attempts = Number(payload.rekey_attempts) || 0;
+  if (
+    err &&
+    !swapMarked &&
+    isTransientRekeyError(err) &&
+    attempts < workerConfig.REKEY_MAX_ATTEMPTS
+  ) {
+    await Aliases.updateOne(
+      {
+        ...rekeyFilter,
+        rekey_processing: true,
+        rekey_claimed_at: claimedAt
+      },
+      {
+        $set: { rekey_processing: false },
+        $unset: { rekey_claimed_at: 1 }
+      }
+    ).catch((releaseErr) => logger.fatal(releaseErr));
 
-    if (err) {
+    const retryErr = err.isRekeyRetryable
+      ? err
+      : new RekeyRetryableError(err.message, err);
+    retryErr.attempts = attempts + 1;
+    logger.warn(
+      `Rekey of ${
+        payload.session.user.username
+      } hit a transient error and will be retried (attempt ${attempts + 1} of ${
+        workerConfig.REKEY_MAX_ATTEMPTS
+      }): ${err.message}`,
+      { alias_id: payload.session.user.alias_id, rekey_id: payload.rekey_id }
+    );
+    throw retryErr;
+  }
+
+  // the retries are used up (or the swap was already recorded): from here
+  // on the error is final and must not be scheduled for another retry
+  if (err && err.isRekeyRetryable) {
+    err.isRekeyRetryable = false;
+    err.retriesExhausted = true;
+  }
+
+  // whether THIS run settled the alias (rolled it back or finalized it)
+  let settled = false;
+  try {
+    if (err && !swapped) {
       // The live SQLite file still uses the old password after a failed
       // rekey. Restore its persisted token snapshot and clear the rekey
       // state in one database operation before authentication is re-enabled.
-      const restoredAlias = await Aliases.findOneAndUpdate(filter, [
-        {
-          $set: {
-            is_rekey: false,
-            tokens: {
-              $ifNull: ['$rekey_previous_tokens', '$tokens']
-            }
-          }
-        },
-        {
-          $unset: [
-            'rekey_started_at',
-            'rekey_previous_tokens',
-            'rekey_id',
-            'rekey_processing'
-          ]
-        }
-      ]);
-
-      if (restoredAlias)
-        await releaseRekeyLock(
-          client,
-          payload.session.user.alias_id,
-          payload.rekey_id
-        );
+      // (if the rename failed after the swap was recorded then the record
+      //  is cleared as part of the same atomic rollback)
+      settled = Boolean(
+        await rollbackRekey(client, payload.session.user.alias_id, {
+          filter: rekeyFilter,
+          rekeyId: payload.rekey_id,
+          allowSwapped: swapMarked
+        })
+      );
     } else {
       // The SQLite file now uses the new token, so discard only the
       // rollback snapshot and re-enable authentication.
-      const completedAlias = await Aliases.findOneAndUpdate(filter, {
-        $set: {
-          is_rekey: false
-        },
-        $unset: {
-          rekey_started_at: 1,
-          rekey_previous_tokens: 1,
-          rekey_id: 1,
-          rekey_processing: 1
-        }
-      });
-
-      if (completedAlias)
-        await releaseRekeyLock(
-          client,
-          payload.session.user.alias_id,
-          payload.rekey_id
-        );
+      settled = Boolean(
+        await finalizeRekey(client, payload.session.user.alias_id, {
+          filter: rekeyFilter,
+          rekeyId: payload.rekey_id
+        })
+      );
     }
   } catch (err) {
+    // NOTE: if this fails after the swap then the recorded inode lets the
+    //       worker's startup recovery and periodic sweep finalize the alias
+    //       (and notify the user); nothing is announced here in that case
     logger.fatal(err);
   }
 
-  if (err) {
+  if (err && !swapped) {
     console.error(
       '[ERROR:worker] rekey failed',
       JSON.stringify({
@@ -614,53 +1239,35 @@ async function rekey(payload) {
         storageLocation: payload?.session?.user?.storage_location
       })
     );
-    await email({
-      template: 'alert',
-      message: {
-        to: payload.session.user.owner_full_email,
-        cc: config.alertsEmail,
-        subject: i18n.translate(
-          'ALIAS_REKEY_FAILED_SUBJECT',
-          payload.session.user.locale,
-          payload.session.user.username
-        )
-      },
-      locals: {
-        message: i18n.translate(
-          'ALIAS_REKEY_FAILED_MESSAGE',
-          payload.session.user.locale,
-          payload.session.user.username,
-          err.message === 'Database empty'
-            ? err.message
-            : refineAndLogError(err, payload.session).message
-        ),
-        locale: payload.session.user.locale
-      }
-    });
+
+    // (a superseded operation is normally settled -- and its user notified
+    //  -- by whoever took the state over; if this run settled it after all,
+    //  this run tells the user)
+    if (settled)
+      await sendRekeyEmail(
+        payload,
+        'ALIAS_REKEY_FAILED_SUBJECT',
+        'ALIAS_REKEY_FAILED_MESSAGE',
+        refineAndLogError(err, payload.session).message
+      );
 
     throw err;
   }
 
-  // email the user
-  await email({
-    template: 'alert',
-    message: {
-      to: payload.session.user.owner_full_email,
-      subject: i18n.translate(
-        'ALIAS_REKEY_READY_SUBJECT',
-        payload.session.user.locale,
-        payload.session.user.username
-      )
-    },
-    locals: {
-      message: i18n.translate(
-        'ALIAS_REKEY_READY',
-        payload.session.user.locale,
-        payload.session.user.username
-      ),
-      locale: payload.session.user.locale
-    }
-  });
+  if (err) logger.fatal(err, { payload: { ...payload, session: undefined } });
+
+  if (alreadyRekeyed)
+    logger.info('Rekey finalized without a file swap', {
+      alias_id: payload.session.user.alias_id
+    });
+
+  // email the user (only once the alias is really open for the new password)
+  if (settled)
+    await sendRekeyEmail(
+      payload,
+      'ALIAS_REKEY_READY_SUBJECT',
+      'ALIAS_REKEY_READY'
+    );
 }
 
 async function backup(payload) {
@@ -1605,12 +2212,9 @@ async function vacuum(payload) {
   let db;
   try {
     // Open database directly (NOT via getDatabase) to avoid re-triggering
-    // maintenance or VACUUM recursion.
-    db = new Database(storagePath, {
-      timeout: config.busyTimeout,
-      verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
-    });
-    await setupPragma(db, payload.session);
+    // maintenance or VACUUM recursion, but still under the per-file mutex
+    // so the open can never interleave with a rekey/VACUUM file swap.
+    db = await openDatabaseHandle(storagePath, payload.session);
 
     // Check if auto_vacuum is already enabled (FULL=1)
     const autoVacuumMode = db.pragma('auto_vacuum', { simple: true });

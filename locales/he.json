@@ -19748,5 +19748,9 @@
   "The target user must have the exact same active plan as this domain.": "The target user must have the exact same active plan as this domain.",
   "No domain with this name is currently owned by the specified current owner.": "No domain with this name is currently owned by the specified current owner.",
   "More than one domain record matches this domain name and current owner. Resolve the duplicate records manually before transferring.": "More than one domain record matches this domain name and current owner. Resolve the duplicate records manually before transferring.",
-  "A transfer for this exact domain is already in progress. Please wait for it to finish.": "A transfer for this exact domain is already in progress. Please wait for it to finish."
+  "A transfer for this exact domain is already in progress. Please wait for it to finish.": "A transfer for this exact domain is already in progress. Please wait for it to finish.",
+  "Alias password change (rekey) for <span class=\"notranslate\">%s</span> has failed due to an error": "Alias password change (rekey) for <span class=\"notranslate\">%s</span> has failed due to an error",
+  "<p>The alias password change (rekey) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the rekey process was:</p><pre><code>%s</code></pre>": "<p>The alias password change (rekey) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the rekey process was:</p><pre><code>%s</code></pre>",
+  "Mailbox creation failed. Please try again.": "Mailbox creation failed. Please try again.",
+  "This alias is currently undergoing a password change (rekey). Please wait for the completion email before trying again.": "This alias is currently undergoing a password change (rekey). Please wait for the completion email before trying again."
 }
