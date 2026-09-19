@@ -1,0 +1,22 @@
+{
+  "notes": "You can learn more about instances when a post’s reach may be limited by reading our open-source code at https://github.com/xai-org/x-algorithm and the guide at https://help.x.com/rules-and-policies/x-reach-limited. Learn more about account and post-level enforcement options here https://help.x.com/rules-and-policies/enforcement-options. This report is provided on a best-effort basis — the code that generates it is open-source: https://github.com/xai-org/x-algorithm/tree/main/under-the-hood",
+  "period": {
+    "startDate": "2026-08-01",
+    "endDate": "2026-08-31",
+    "timezone": "UTC"
+  },
+  "generatedAt": "2026-09-09T23:59:59Z",
+  "postCount": "24",
+  "postLabels": [
+    {
+      "label": "SPAM_HIGH_RECALL",
+      "about": "Post detected by automated systems as one that may contain spam.",
+      "effect": "Post hidden from recommendations to non-followers.",
+      "posts": "1",
+      "totalPostsInMonth": "24",
+      "percentageOfPosts": "4.16%"
+    }
+  ],
+  "accountLabels": [],
+  "totalAccountLabels": 0
+}

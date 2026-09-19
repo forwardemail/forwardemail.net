@@ -16,7 +16,7 @@ const auth = require('basic-auth');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
-const { WebSocketServer } = require('ws');
+const { WebSocket, WebSocketServer } = require('ws');
 const { mkdirp } = require('mkdirp');
 
 const { isValidApiSecret } = require('#helpers/api-secrets');
@@ -127,6 +127,25 @@ class SQLite {
       maxPayload: 0 // disable max payload size
     });
 
+    //
+    // Stream part of a response (e.g. a batch of compiled FETCH lines, see
+    // helpers/imap/on-fetch.js) to the IMAP connection of `session` and
+    // wait until the process that owns it acknowledges the batch (it sends
+    // the uuid back), which bounds the amount of data in flight.
+    //
+    // The connection lives in exactly one process: the one whose socket
+    // carried the request (`session.ws`, attached by parsePayload).  The
+    // batch is written to that socket only.  Every other client used to
+    // receive (and decode, and discard) each batch as well, which turned a
+    // 10 MB flush into 10 MB times the number of connected processes --
+    // IMAP, POP3, MX, SMTP, API, CalDAV, CardDAV, ManageSieve -- on every
+    // large FETCH, and again every five seconds until the owner replied.
+    //
+    // The owning socket can be gone by the time a batch is ready (the IMAP
+    // process reconnected or was restarted while the FETCH ran, and the
+    // session may live on a new socket of that process): only then is the
+    // batch offered to every connected client, until one acknowledges it.
+    //
     this.wss.broadcast = async (session, payload) => {
       const uuid = randomUUID();
       const packed = encoder.pack({
@@ -136,27 +155,27 @@ class SQLite {
         payload
       });
 
-      //
-      // TODO: wss.broadcast should write to socket
-      //       of ALL connected clients where
-      //       selected mailbox and alias id are matching
-      //
+      const targets = () => {
+        const ws = session?.ws;
+        if (
+          ws &&
+          ws.readyState === WebSocket.OPEN &&
+          ws.isAlive !== false &&
+          this.wss.clients.has(ws)
+        )
+          return [ws];
+
+        return [...this.wss.clients].filter((client) => client.isAlive);
+      };
 
       //
       // NOTE: redis pub/sub seemed to add +1-2ms overhead from testing
-      //
-      // NOTE: an existing websocket connection
-      //       (e.g. IMAP server could get restarted)
-      //       and so we can't just iterate over the current
-      //       we have to continously iterate over all clients
-      //       (sending the data every 5s until we get a response)
       //
       await pWaitFor(
         async () => {
           if (this.uuidsReceived.has(uuid)) return true;
 
-          for (const client of this.wss.clients) {
-            if (!client.isAlive) continue;
+          for (const client of targets()) {
             if (this.uuidsReceived.has(uuid)) break;
 
             try {

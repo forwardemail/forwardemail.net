@@ -610,6 +610,20 @@ async function parsePayload(data, ws) {
         throw new TypeError('Payload storage location missing');
     }
 
+    //
+    // The socket the request arrived on: a handler that streams part of its
+    // response (`wss.broadcast`, see sqlite-server.js) writes it there and
+    // nowhere else.  Non-enumerable, so the session still serializes into
+    // logs, errors and responses as before.
+    //
+    if (ws && _.isPlainObject(payload.session))
+      Object.defineProperty(payload.session, 'ws', {
+        value: ws,
+        enumerable: false,
+        configurable: true,
+        writable: true
+      });
+
     // clear migrate check cache if necessary
     if (
       payload.migrate_check === true &&

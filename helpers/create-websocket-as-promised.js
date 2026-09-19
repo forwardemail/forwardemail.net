@@ -29,17 +29,33 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const { unpackMessagePack } = require('#helpers/unpack-messagepack');
 
+//
+// Reconnection policy of the long-lived client every process keeps to the
+// SQLite server.  Every IMAP, POP3, MX, SMTP, API, CalDAV, CardDAV and
+// ManageSieve process (most of them `cluster max`) holds one, so a SQLite
+// restart or an overloaded SQLite host has hundreds of them reconnecting at
+// once, and every attempt costs the SQLite host a TLS handshake.  Attempts
+// therefore back off (500ms growing to 3s) and carry jitter (see
+// `_getNextDelay` below) so the fleet never retries in lockstep; a
+// connection that stayed up for `minUptime` starts over at the shortest
+// delay.
+//
 const DEFAULT = {
   maxReconnectionDelay: 3000,
-  minReconnectionDelay: 500, // 1000 + Math.random() * 4000,
+  minReconnectionDelay: 500,
   minUptime: 1000,
-  reconnectionDelayGrowFactor: 1, // 1.3,
+  reconnectionDelayGrowFactor: 1.5,
   connectionTimeout: 5000,
   maxRetries: Number.POSITIVE_INFINITY,
   maxEnqueuedMessages: Number.POSITIVE_INFINITY,
   startClosed: false,
   debug: !env.AXE_SILENT
 };
+
+// spread a delay by up to half of itself (never below the delay itself)
+function withJitter(delay) {
+  return Math.round(delay + Math.random() * delay * 0.5);
+}
 
 // <https://github.com/vitalets/websocket-as-promised/pull/49>
 WebSocketAsPromised.prototype._handleClose = function (event) {
@@ -193,6 +209,9 @@ function _getNextDelay() {
     // -1 `_retryCount` indicates it's reconnecting so wait
     delay = 1000;
   }
+
+  // never in lockstep with the other processes (see DEFAULT)
+  delay = withJitter(delay);
 
   this._debug('next delay', delay);
   return delay;
@@ -481,6 +500,35 @@ function createWebSocketAsPromised(options = {}) {
       //
       // throw refineAndLogError(err, data?.session, false, { client, resolver });
     }
+  };
+
+  //
+  // `close()` must always stop the reconnecting socket underneath.  The
+  // stock implementation returns early whenever the socket is not open at
+  // that moment -- which is exactly the state of a socket whose connection
+  // attempts keep failing -- and then never touches the ReconnectingWebSocket,
+  // so a connection that could not be opened (the SQLite host down or
+  // overloaded, an open that timed out) kept reconnecting once a second for
+  // the lifetime of the process.  Every failed request that created a
+  // connection of its own (the web server does that per request) added one
+  // more such loop, and each attempt costs the SQLite host a TLS handshake
+  // and an API secret verification.
+  //
+  const close = wsp.close.bind(wsp);
+  wsp.close = function (...args) {
+    if (wsp._interval) {
+      clearInterval(wsp._interval);
+      wsp._interval = null;
+    }
+
+    try {
+      // ReconnectingWebSocket: no more reconnection attempts, ever
+      if (wsp._ws) wsp._ws.close(...args);
+    } catch (err) {
+      logger.debug(err);
+    }
+
+    return close(...args);
   };
 
   wsp.onOpen.addListener(() => {

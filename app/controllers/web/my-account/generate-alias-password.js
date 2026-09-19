@@ -378,8 +378,10 @@ async function generateAliasPassword(ctx) {
           swap_recorded: swapRecorded
         });
     } finally {
-      // close ephemeral websocket (do not close the shared instance)
-      if (!hasSharedWsp && wsp?.isOpened) {
+      // close the ephemeral websocket (do not close the shared instance),
+      // opened or not: a socket that could not connect would otherwise keep
+      // trying to for the lifetime of the process
+      if (!hasSharedWsp) {
         try {
           wsp.close();
         } catch (err) {
