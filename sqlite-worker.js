@@ -24,7 +24,12 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
-const { backup, rekey, vacuum } = require('#helpers/worker');
+const {
+  backup,
+  rekey,
+  setWorkerCancelled,
+  vacuum
+} = require('#helpers/worker');
 const { getRekeyKey, recoverRekeys } = require('#helpers/recover-rekeys');
 const { REKEY_QUEUE } = require('#helpers/rekey-recovery');
 const {
@@ -435,6 +440,13 @@ const graceful = new Graceful({
     async () => {
       isShuttingDown = true;
       if (recoveryInterval) clearInterval(recoveryInterval);
+
+      //
+      // Tell the in-flight job to stop at its next checkpoint (it throws a
+      // ServerShutdownError there, and a rekey is then put back in the
+      // queue); the wait below gives it the time to get there.
+      //
+      setWorkerCancelled();
 
       // Unsubscribe to stop receiving new backup jobs
       try {

@@ -18,7 +18,6 @@ const { PassThrough } = require('node:stream');
 
 const { setTimeout } = require('node:timers/promises');
 const Database = require('better-sqlite3-multiple-ciphers');
-const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const archiver = require('archiver');
 const archiverZipEncrypted = require('archiver-zip-encrypted');
@@ -56,6 +55,7 @@ const Messages = require('#models/messages');
 const Indexer = require('#helpers/indexer');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const asctime = require('#helpers/asctime');
+const createArchiveThrottle = require('#helpers/archive-throttle');
 const checkDiskSpace = require('#helpers/check-disk-space');
 const closeDatabase = require('#helpers/close-database');
 const config = require('#config');
@@ -74,6 +74,7 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const setupPragma = require('#helpers/setup-pragma');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const workerConfig = require('#helpers/sqlite-worker-config');
+const { assertRekeyDiskSpace } = require('#helpers/rekey-disk-space');
 const { finalizeRekey, rollbackRekey } = require('#helpers/rekey-recovery');
 const { withDbFileLock } = require('#helpers/db-file-lock');
 const {
@@ -118,31 +119,22 @@ const indexer = new Indexer({
 const imapSharedConfig = sharedConfig('IMAP');
 const client = new Redis(imapSharedConfig.redis, logger);
 
-// TODO: do better graceful shutdown
+//
+// Cancellation of the jobs of this module (see `setWorkerCancelled`).
+//
+// The process lifecycle belongs to `sqlite-worker.js`, the only process
+// that runs these jobs: it sets this flag from its shutdown handler and
+// then waits for the in-flight job to reach its next checkpoint.  This
+// module must not register a Graceful handler of its own: a second handler
+// exits the process after its own (shorter) timeout and cuts the worker's
+// drain short, so a rekey or backup that would have finished in time was
+// killed instead.
+//
 let isCancelled = false;
 
-const graceful = new Graceful({
-  //
-  // NOTE: we are explicitly not gracefully closing these
-  //       to allow the backups to complete if they were being uploaded
-  //
-  ...(config.env === 'test'
-    ? {
-        mongooses: [mongoose],
-        redisClients: [client]
-      }
-    : {}),
-  logger,
-  timeoutMs: config.env === 'test' ? ms('5s') : ms('1m'),
-  customHandlers: [
-    async () => {
-      isCancelled = true;
-      if (config.env === 'production') await setTimeout(ms('30s'));
-    }
-  ]
-});
-
-graceful.listen();
+function setWorkerCancelled(value = true) {
+  isCancelled = Boolean(value);
+}
 
 client.setMaxListeners(0);
 
@@ -506,16 +498,14 @@ async function rekey(payload) {
       throw new RekeyNotNeeded();
     }
 
-    // we calculate size of db x 2 (backup + tarball)
-    const spaceRequired = stats.size * 2;
-
-    const diskSpace = await checkDiskSpace(storagePath);
-    if (diskSpace.free < spaceRequired)
-      throw new RekeyRetryableError(
-        `Needed ${bytes(spaceRequired)} but only ${bytes(
-          diskSpace.free
-        )} was available`
-      );
+    //
+    // The volume must hold the copy and its VACUUM (see
+    // helpers/rekey-disk-space.js); a full volume is a transient condition
+    // and the job is retried later.
+    //
+    await assertRekeyDiskSpace(storagePath, {
+      createError: (message) => new RekeyRetryableError(message)
+    });
 
     //
     // Ensure a reasonable amount of memory is free before starting.
@@ -1474,26 +1464,30 @@ async function backup(payload) {
       );
 
     //
-    // ensure that we have the space required available in memory
-    // (prevents multiple backups from taking up all of the memory on server)
+    // Ensure a reasonable amount of memory is free before starting (the
+    // worker runs one job at a time, see MAX_CONCURRENCY).
+    //
+    // NOTE: a backup never holds the mailbox in memory: the SQLite format
+    //       is a page copy (VACUUM INTO) and the archive formats stream
+    //       every message into a file, with back-pressure from the archive
+    //       (see helpers/archive-throttle.js), so the reserve does not scale
+    //       with the mailbox.  Requiring twice the database size in free
+    //       memory made every backup of a large mailbox fail after a
+    //       minute on a busy host, however healthy it was.
+    //
     try {
-      await pWaitFor(
-        () => {
-          return os.freemem() > spaceRequired;
-        },
-        {
-          interval: ms('5s'),
-          timeout: ms('1m')
-        }
-      );
+      await pWaitFor(() => os.freemem() > workerConfig.MIN_FREE_MEM, {
+        interval: ms('5s'),
+        timeout: ms('5m')
+      });
     } catch (err) {
       if (isRetryableError(err)) {
-        err.message = `Backup not complete due to OOM for ${payload.session.user.username}`;
+        err.message = `Backup not started due to low memory for ${payload.session.user.username}`;
         err.isCodeBug = true;
       }
 
       err.freemem = os.freemem();
-      err.spaceRequired = spaceRequired;
+      err.minFreeMem = workerConfig.MIN_FREE_MEM;
       err.payload = payload;
       throw err;
     }
@@ -1639,6 +1633,7 @@ async function backup(payload) {
         });
         const output = fs.createWriteStream(tmp);
         archive.pipe(output);
+        const throttle = createArchiveThrottle(archive, { output });
         const resourceSummary = appendContactsAndCalendarsToArchive({
           archive,
           database: db,
@@ -1671,7 +1666,7 @@ async function backup(payload) {
           });
 
           const stream = new PassThrough();
-          archive.append(stream, {
+          await throttle.append(stream, {
             name: punycode.toASCII(mailbox.path) + '.mbox'
           });
           for (const result of db.prepare(sql.query).iterate(sql.values)) {
@@ -1702,7 +1697,9 @@ async function backup(payload) {
             //
 
             const content = await getStream(value);
-            stream.write(
+            // (waits for the archive to read the stream before writing more)
+            await throttle.write(
+              stream,
               `From ${
                 message.mimeTree?.parsedHeader?.from?.find(
                   (obj) =>
@@ -1722,6 +1719,11 @@ async function backup(payload) {
           logger.warn(err);
         });
         await new Promise((resolve, reject) => {
+          if (throttle.error) {
+            reject(throttle.error);
+            return;
+          }
+
           output.once('error', reject);
           output.once('close', resolve);
           archive.once('error', reject);
@@ -1739,6 +1741,7 @@ async function backup(payload) {
         });
         const output = fs.createWriteStream(tmp);
         archive.pipe(output);
+        const throttle = createArchiveThrottle(archive, { output });
         const resourceSummary = appendContactsAndCalendarsToArchive({
           archive,
           database: db,
@@ -1784,16 +1787,27 @@ async function backup(payload) {
                 ? `${mailboxPath}/${message._id.toString()}.eml`
                 : `${message._id.toString()}.eml`
             );
+            //
+            // The message is rebuilt lazily into a stream (see
+            // helpers/indexer.js) which the archive reads once it gets to
+            // this entry; only a bounded number of entries is queued at a
+            // time (the iterator stays open meanwhile, which is fine for
+            // the reads the rebuild does on this handle).
+            //
             // similar to 'rfc822' case in `helpers/get-query-response.js`
             // (value is a stream)
-            const { value } = indexer.getContents(
-              message.mimeTree,
-              false,
-              {},
-              instance,
-              payload.session
+            //
+            await throttle.append(
+              () =>
+                indexer.getContents(
+                  message.mimeTree,
+                  false,
+                  {},
+                  instance,
+                  payload.session
+                ).value,
+              { name }
             );
-            archive.append(value, { name });
           }
         }
 
@@ -1802,6 +1816,11 @@ async function backup(payload) {
           logger.warn(err);
         });
         await new Promise((resolve, reject) => {
+          if (throttle.error) {
+            reject(throttle.error);
+            return;
+          }
+
           output.once('error', reject);
           output.once('close', resolve);
           archive.once('error', reject);
@@ -2267,4 +2286,4 @@ async function vacuum(payload) {
   }
 }
 
-module.exports = { rekey, backup, vacuum };
+module.exports = { rekey, backup, setWorkerCancelled, vacuum };

@@ -8,6 +8,7 @@ const { Buffer } = require('node:buffer');
 const ObjectID = require('bson-objectid');
 const dayjs = require('dayjs-with-plugins');
 const falso = require('@ngneat/falso');
+const libmime = require('libmime');
 const ms = require('ms');
 const test = require('ava');
 
@@ -2895,6 +2896,149 @@ test('messages search with pagination', async (t) => {
 
   t.is(res2.status, 200);
   t.is(res2.body.length, 0); // No remaining messages (4 total, all fit on page 1)
+});
+
+//
+// Header searches match a literal term with LIKE (see
+// app/controllers/api/v1/messages.js): wildcards in the term are literal,
+// matching is case-insensitive for non-ASCII characters too, and a header
+// that cannot be decoded to valid UTF-8 (which made the REGEXP operator fail
+// every header search of the mailbox with "utf8 err") does not break them.
+//
+test('messages header searches are literal, case-insensitive and tolerate undecodable headers', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  const messages = [
+    {
+      // a truncated UTF-16 encoded-word decodes to a lone surrogate, which
+      // is stored as a JSON escape and extracted by SQLite as invalid UTF-8
+      subject: '=?UTF-16BE?B?2D0=?=',
+      from: '=?UTF-16BE?B?2D0=?= <broken@example.com>',
+      to: 'someone@example.com'
+    },
+    {
+      subject: 'Quarterly report',
+      from: `${libmime.encodeWord('Émile 100% Sûr')} <emile@example.com>`,
+      to: 'team_lead@example.com',
+      listId: 'Dev List <dev-list.example.com>'
+    },
+    {
+      subject: 'Lunch',
+      from: 'Pat <pat@example.com>',
+      to: 'teamXlead@example.com'
+    }
+  ];
+
+  const ids = [];
+  for (const message of messages) {
+    const raw = [
+      'MIME-Version: 1.0',
+      `Date: ${new Date().toUTCString()}`,
+      `From: ${message.from}`,
+      `To: ${message.to}`,
+      `Subject: ${message.subject}`,
+      message.listId ? `List-Id: ${message.listId}` : undefined,
+      'Content-Type: text/plain; charset=UTF-8',
+      '',
+      'body'
+    ]
+      .filter(Boolean)
+      .join('\r\n');
+    const res = await api
+      .post('/v1/messages')
+      .set('Authorization', auth)
+      .send({ raw, folder: 'INBOX' });
+    t.is(res.status, 200, `${message.subject}: ${JSON.stringify(res.body)}`);
+    ids.push(res.body.id);
+  }
+
+  const list = async (query) => {
+    const res = await api
+      .get(`/v1/messages?${query}`)
+      .set('Authorization', auth);
+    t.is(res.status, 200, `${query}: ${JSON.stringify(res.body)}`);
+    return res.body.map((message) => message.id).sort();
+  };
+
+  // the mailbox holds an undecodable header: every search still works
+  t.deepEqual(await list('from=broken'), [ids[0]]);
+
+  // non-ASCII case folding, and `%` matches literally
+  t.deepEqual(await list(`from=${encodeURIComponent('ÉMILE 100%')}`), [ids[1]]);
+  t.deepEqual(await list(`from=${encodeURIComponent('100% sûr')}`), [ids[1]]);
+
+  // `_` matches literally (it would match any character otherwise)
+  t.deepEqual(await list(`to=${encodeURIComponent('team_lead')}`), [ids[1]]);
+  t.deepEqual(await list(`to=${encodeURIComponent('teamxlead')}`), [ids[2]]);
+
+  // key:value and value-only header searches
+  t.deepEqual(
+    await list(`headers=${encodeURIComponent('list-id:DEV-LIST.example.com')}`),
+    [ids[1]]
+  );
+  t.deepEqual(
+    await list(`headers=${encodeURIComponent('broken@example.com')}`),
+    [ids[0]]
+  );
+
+  // a general search across headers and text
+  t.deepEqual(await list(`search=${encodeURIComponent('pat@example.com')}`), [
+    ids[2]
+  ]);
+
+  // no match yields an empty page, not an error
+  t.deepEqual(await list('from=nobody'), []);
+  t.deepEqual(await list(`headers=${encodeURIComponent('list-id:%')}`), []);
+});
+
+test('messages search refuses a result set larger than the query can hold', async (t) => {
+  const { api, wsp } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  await api
+    .post('/v1/messages')
+    .set('Authorization', auth)
+    .send({
+      to: [{ address: 'test@example.com' }],
+      from: 'someone@company.com',
+      subject: 'Message',
+      text: 'Hello'
+    });
+
+  //
+  // every matched ID becomes a bound variable of the listing query, which
+  // SQLite caps at 32766: pretend the header lookup matched more than that
+  //
+  const { request } = wsp;
+  wsp.request = async function (payload, ...args) {
+    if (
+      payload?.action === 'stmt' &&
+      typeof payload.stmt?.[0]?.[1] === 'string' &&
+      payload.stmt[0][1].includes('json_each(Messages.headers)')
+    )
+      return Array.from({ length: 30001 }, () => new ObjectID().toString());
+    return request.call(this, payload, ...args);
+  };
+
+  try {
+    const res = await api
+      .get('/v1/messages?from=someone')
+      .set('Authorization', auth);
+    t.is(res.status, 400);
+    t.true(res.body.message.includes('too many messages'));
+  } finally {
+    wsp.request = request;
+  }
+
+  // a search within the limit is unaffected
+  const res = await api
+    .get('/v1/messages?from=someone')
+    .set('Authorization', auth);
+  t.is(res.status, 200);
+  t.is(res.body.length, 1);
 });
 
 //

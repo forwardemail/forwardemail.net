@@ -999,6 +999,8 @@ module.exports = {
   MESSAGE_DOES_NOT_EXIST: 'Message does not exist.',
   MESSAGE_FLAGS_INVALID: 'Message flags invalid.',
   MESSAGE_LABELS_INVALID: 'Message labels invalid.',
+  SEARCH_TOO_MANY_RESULTS:
+    'Search matched too many messages. Please use a more specific search term or add another filter.',
 
   // Contact validation phrases
   CONTACT_ID_REQUIRED: 'Contact ID is required.',

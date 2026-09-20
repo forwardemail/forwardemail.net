@@ -1500,6 +1500,93 @@ test
   }
 });
 
+//
+// SEARCH HEADER matches a literal term with LIKE (see
+// helpers/imap/on-search.js): wildcards are literal, matching is
+// case-insensitive for non-ASCII characters too, and a header that cannot
+// be decoded to valid UTF-8 (which made the REGEXP operator fail every
+// HEADER search of the mailbox with "utf8 err") does not break it.
+//
+test('onSearch > HEADER', async (t) => {
+  await t.context.imapFlow.mailboxCreate('headersearch');
+
+  const messages = [
+    {
+      // a truncated UTF-16 encoded-word decodes to a lone surrogate, which
+      // is stored as a JSON escape and extracted by SQLite as invalid UTF-8
+      subject: '=?UTF-16BE?B?2D0=?=',
+      from: '=?UTF-16BE?B?2D0=?= <broken@example.com>',
+      to: 'someone@example.com'
+    },
+    {
+      subject: 'Quarterly report',
+      from: '=?UTF-8?Q?=C3=89mile_100=25_S=C3=BBr?= <emile@example.com>',
+      to: 'team_lead@example.com',
+      listId: 'Dev List <dev-list.example.com>'
+    },
+    {
+      subject: 'Lunch',
+      from: 'Pat <pat@example.com>',
+      to: 'teamXlead@example.com'
+    }
+  ];
+
+  for (const message of messages) {
+    const raw = [
+      `Date: ${new Date().toISOString()}`,
+      'MIME-Version: 1.0',
+      `From: ${message.from}`,
+      `To: ${message.to}`,
+      `Subject: ${message.subject}`,
+      message.listId ? `List-Id: ${message.listId}` : undefined,
+      'Content-Type: text/plain; charset=UTF-8',
+      '',
+      'body'
+    ]
+      .filter(Boolean)
+      .join('\r\n');
+    await t.context.imapFlow.append(
+      'headersearch',
+      Buffer.from(raw),
+      [],
+      new Date()
+    );
+  }
+
+  await t.context.imapFlow.mailboxOpen('headersearch');
+
+  const search = async (query) => {
+    const seq = await t.context.imapFlow.search(query);
+    return seq.sort((a, b) => a - b);
+  };
+
+  // the mailbox holds an undecodable header: every search still works
+  t.deepEqual(await search({ header: { from: 'broken' } }), [1]);
+
+  // non-ASCII case folding, and `%` matches literally
+  t.deepEqual(await search({ header: { from: 'ÉMILE 100%' } }), [2]);
+  t.deepEqual(await search({ header: { from: '100% sûr' } }), [2]);
+
+  // `_` matches literally (it would match any character otherwise)
+  t.deepEqual(await search({ header: { to: 'team_lead' } }), [2]);
+  t.deepEqual(await search({ header: { to: 'teamxlead' } }), [3]);
+
+  // any header name that is indexed
+  t.deepEqual(await search({ header: { 'list-id': 'DEV-LIST.example.com' } }), [
+    2
+  ]);
+
+  // NOT HEADER: the header is absent or does not match
+  t.deepEqual(await search({ not: { header: { from: 'example.com' } } }), []);
+  t.deepEqual(await search({ not: { header: { to: 'team_lead' } } }), [1, 3]);
+  t.deepEqual(await search({ not: { header: { 'list-id': 'dev' } } }), [1, 3]);
+
+  // no match, and a wildcard alone is a literal (only one sender has one)
+  t.deepEqual(await search({ header: { from: 'nobody' } }), []);
+  t.deepEqual(await search({ header: { from: '%' } }), [2]);
+  t.deepEqual(await search({ header: { to: '%' } }), []);
+});
+
 test('onStatus', async (t) => {
   await t.context.imapFlow.mailboxCreate('yoyo');
 

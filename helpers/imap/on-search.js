@@ -23,6 +23,7 @@ const _ = require('#helpers/lodash');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const env = require('#config/env');
+const escapeSqliteLike = require('#helpers/escape-sqlite-like');
 const logger = require('#helpers/logger');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -179,10 +180,7 @@ async function onSearch(mailboxId, options, session, fn) {
               }
             } else {
               // Escape LIKE metacharacters (%, _, \) so they match literally
-              const escaped = term.value
-                .replaceAll('\\', '\\\\')
-                .replaceAll('%', '\\%')
-                .replaceAll('_', '\\_');
+              const escaped = escapeSqliteLike(term.value);
               sql = {
                 query: `select _id from Messages where mailbox = $mailbox and text ${
                   ne ? 'NOT LIKE' : 'LIKE'
@@ -205,10 +203,7 @@ async function onSearch(mailboxId, options, session, fn) {
                 err.message &&
                 err.message.includes('Messages_fts')
               ) {
-                const escaped = term.value
-                  .replaceAll('\\', '\\\\')
-                  .replaceAll('%', '\\%')
-                  .replaceAll('_', '\\_');
+                const escaped = escapeSqliteLike(term.value);
                 const fallbackSql = {
                   query: `select _id from Messages where mailbox = $mailbox and text ${
                     ne ? 'NOT LIKE' : 'LIKE'
@@ -391,16 +386,23 @@ async function onSearch(mailboxId, options, session, fn) {
           case 'header': {
             {
               //
-              // NOTE: we can use using lodash instead of `tools.escapeRegexStr`
-              //       since the usage is the same (but perf slightly better in lodash)
-              //       <https://github.com/lodash/lodash/blob/0843bd46ef805dd03c0c8d804630804f3ba0ca3c/lodash.js#L14274-L14279>
+              // The header value is matched as a literal with LIKE.  Indexed
+              // header values are stored lowercased (see
+              // `generateIndexedHeaders` in the message handler), so the
+              // lowercased term matches them case-insensitively, non-ASCII
+              // characters included.
               //
-
-              // <https://github.com/asg017/sqlite-regex/issues/13>
-              // <https://github.com/nalgeon/sqlean/issues/100>
-              const regex =
-                '(?i)' + // case insensitive (PCRE_CASELESS)
-                _.escapeRegExp(Buffer.from(term.value, 'binary').toString());
+              // REGEXP must not be used for user-supplied terms: the
+              // sqlite-regex extension is optional, and it fails with
+              // "utf8 err" for every row of a mailbox as soon as one header
+              // value is not valid UTF-8 (a header that decoded to a lone
+              // surrogate is stored as a JSON escape and extracted as
+              // invalid UTF-8), which made every HEADER search of such a
+              // mailbox fail.
+              //
+              const pattern = `%${escapeSqliteLike(
+                Buffer.from(term.value, 'binary').toString().toLowerCase()
+              )}%`;
 
               if (term.value) {
                 if (ne) {
@@ -408,14 +410,11 @@ async function onSearch(mailboxId, options, session, fn) {
                     // NOT HEADER X value: messages where the header is absent
                     // OR the header value does not match the pattern.
                     // Using NOT IN (positive match set) captures both cases.
-                    query: `select _id from Messages where mailbox = $mailbox and _id NOT IN (select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2);`,
+                    query: `select _id from Messages where mailbox = $mailbox and _id NOT IN (select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') LIKE $p2 ESCAPE '\\');`,
                     values: {
                       mailbox: mailbox._id.toString(),
                       p1: term.header,
-                      // Use the escaped regex (with (?i) prefix) for consistency
-                      // with the positive branch — prevents regex injection from
-                      // user-supplied header search values.
-                      p2: regex
+                      p2: pattern
                     }
                   };
                   const ids = session.db
@@ -437,13 +436,11 @@ async function onSearch(mailboxId, options, session, fn) {
                   mustIncludeIds = true;
                 } else {
                   const sql = {
-                    // NOTE: for array lookups:
-                    // REGEXP `select _id from Messages, json_each(Messages.headers) where key = $p1 and value REGEXP $p2;`
-                    query: `select _id from Messages, json_each(Messages.headers) where Messages.mailbox = $mailbox and json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2;`,
+                    query: `select _id from Messages, json_each(Messages.headers) where Messages.mailbox = $mailbox and json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') LIKE $p2 ESCAPE '\\';`,
                     values: {
                       mailbox: mailbox._id.toString(),
                       p1: term.header,
-                      p2: regex
+                      p2: pattern
                     }
                   };
                   const ids = session.db

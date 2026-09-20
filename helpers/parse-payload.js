@@ -4,7 +4,6 @@
  */
 
 const process = require('node:process');
-const fs = require('node:fs');
 const os = require('node:os');
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
@@ -52,6 +51,7 @@ const { getPrimaryApiSecret } = require('#helpers/api-secrets');
 const closeDatabase = require('#helpers/close-database');
 const getDatabase = require('#helpers/get-database');
 const resetMailbox = require('#helpers/reset-mailbox');
+const { assertRekeyDiskSpace } = require('#helpers/rekey-disk-space');
 const getFingerprint = require('#helpers/get-fingerprint');
 const getHeaders = require('#helpers/get-headers');
 const getPathToDatabase = require('#helpers/get-path-to-database');
@@ -2675,37 +2675,12 @@ async function parsePayload(data, ws) {
           storage_location: payload.session.user.storage_location
         });
 
-        const maxQuotaPerAlias = await Domains.getMaxQuota(
-          payload.session.user.domain_id,
-          payload.session.user.alias_id
-        );
-
-        let stats;
-        try {
-          // <https://github.com/nodejs/node/issues/38006>
-          stats = await fs.promises.stat(storagePath);
-          if (!stats.isFile())
-            throw new TypeError(`${storagePath} was not a file`);
-        } catch (err) {
-          if (err.code !== 'ENOENT') {
-            err.isCodeBug = true;
-            throw err;
-          }
-        }
-
-        // we calculate size of db x 2 (backup + tarball)
-        const spaceRequired = Math.max(
-          maxQuotaPerAlias * 2,
-          stats && stats.size > 0 ? stats.size * 2 : 0
-        );
-
-        const diskSpace = await checkDiskSpace(storagePath);
-        if (diskSpace.free < spaceRequired)
-          throw new TypeError(
-            `Needed ${bytes(spaceRequired)} but only ${bytes(
-              diskSpace.free
-            )} was available`
-          );
+        //
+        // The volume must hold the copy of the mailbox and its VACUUM (the
+        // worker checks again right before it starts, see
+        // helpers/rekey-disk-space.js)
+        //
+        await assertRekeyDiskSpace(storagePath);
 
         // only allow one reset/rekey at a time (atomic: two requests that
         // race each other cannot both pass a check-then-set)
@@ -2788,20 +2763,13 @@ async function parsePayload(data, ws) {
             storage_location: payload.session.user.storage_location
           });
 
-          // slight 2x overhead for backups
-          const maxQuotaPerAlias = await Domains.getMaxQuota(
-            payload.session.user.domain_id,
-            payload.session.user.alias_id
-          );
-          const spaceRequired = maxQuotaPerAlias * 2;
-
-          const diskSpace = await checkDiskSpace(storagePath);
-          if (config.env !== 'development' && diskSpace.free < spaceRequired)
-            throw new TypeError(
-              `Needed ${bytes(spaceRequired)} but only ${bytes(
-                diskSpace.free
-              )} was available`
-            );
+          //
+          // A reset builds a fresh (empty) mailbox next to the live one, so
+          // the volume only needs the floor of free space kept for
+          // rotations (see helpers/rekey-disk-space.js)
+          //
+          if (config.env !== 'development')
+            await assertRekeyDiskSpace(storagePath, { mailboxSize: 0 });
 
           //
           // Replace the live mailbox with a fresh one encrypted with the

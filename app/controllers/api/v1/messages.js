@@ -22,6 +22,7 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const _ = require('#helpers/lodash');
 const env = require('#config/env');
+const escapeSqliteLike = require('#helpers/escape-sqlite-like');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
 const i18n = require('#helpers/i18n');
 const recursivelyParse = require('#helpers/recursively-parse');
@@ -30,6 +31,36 @@ const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
 
 const builder = new Builder({ bufferAsNative: true });
+
+//
+// Every message ID matched by a header or full-text lookup becomes a bound
+// variable of the listing query (`_id IN (...)`).  SQLite accepts at most
+// 32766 variables per statement (SQLITE_MAX_VARIABLE_NUMBER) and fails the
+// whole query beyond that, so a search matching more messages than this has
+// to be narrowed by the caller instead of failing with an internal error.
+//
+const MAX_SEARCH_ID_VARIABLES = 30000;
+
+//
+// Header lookups match a literal, case-insensitively, with LIKE.
+//
+// Indexed header values are stored lowercased (see `generateIndexedHeaders`
+// in the message handler), so lowercasing the term in the same way matches
+// them regardless of case, non-ASCII characters included.
+//
+// REGEXP must not be used for user-supplied terms: the sqlite-regex
+// extension is optional, and it fails with "utf8 err" for every row of a
+// mailbox as soon as one header value is not valid UTF-8 (a header that
+// decoded to a lone surrogate is stored as a JSON escape and extracted as
+// invalid UTF-8), which broke every header search of such a mailbox.
+//
+const HEADER_LIKE_KEY_VALUE_SQL = `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') LIKE $p2 ESCAPE '\\';`;
+const HEADER_LIKE_VALUE_SQL = `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.value') LIKE $p1 ESCAPE '\\';`;
+
+function headerLikePattern(value) {
+  return `%${escapeSqliteLike(value.toLowerCase())}%`;
+}
+
 const attachmentStorage = new AttachmentStorage();
 const indexer = new Indexer({
   attachmentStorage
@@ -417,6 +448,21 @@ async function list(ctx) {
   const searchConditions = [];
 
   //
+  // Restrict the listing to the given message IDs (see
+  // MAX_SEARCH_ID_VARIABLES above).  An empty list yields `_id IN ()`,
+  // which SQLite accepts and which matches nothing, so a lookup without
+  // results still produces an (empty) page instead of an error.
+  //
+  let searchIdVariables = 0;
+  const addSearchIdCondition = (ids) => {
+    const normalized = Array.isArray(ids) ? ids.map((id) => id.toString()) : [];
+    searchIdVariables += normalized.length;
+    if (searchIdVariables > MAX_SEARCH_ID_VARIABLES)
+      throw Boom.badRequest(ctx.translateError('SEARCH_TOO_MANY_RESULTS'));
+    searchConditions.push({ _id: { $in: normalized } });
+  };
+
+  //
   // Filter by flags
   //
 
@@ -501,7 +547,7 @@ async function list(ctx) {
         .map((w) => `"${w}"`)
         .join(' ');
       try {
-        let ftsIds = await ctx.instance.wsp.request({
+        const ftsIds = await ctx.instance.wsp.request({
           action: 'stmt',
           session: { user: ctx.state.session.user },
           stmt: [
@@ -510,15 +556,8 @@ async function list(ctx) {
             ['all', { p1: fts5Query }]
           ]
         });
-        if (!Array.isArray(ftsIds)) ftsIds = [];
-        if (ftsIds.length > 0) {
-          searchConditions.push({
-            _id: { $in: ftsIds.map((id) => id.toString()) }
-          });
-        } else {
-          // No FTS5 matches — force empty result set
-          searchConditions.push({ _id: { $in: [] } });
-        }
+        // no FTS5 matches yields an empty result set
+        addSearchIdCondition(ftsIds);
       } catch (err) {
         // Graceful fallback if Messages_fts table doesn't exist yet (migration pending)
         if (err.message && err.message.includes('Messages_fts')) {
@@ -549,13 +588,9 @@ async function list(ctx) {
   if (requestedHeaders.length > 0) {
     // Build all queries in parallel
     const headerQueries = requestedHeaders.map((header) => {
-      const regex =
-        '(?i)' + // case insensitive (PCRE_CASELESS)
-        _.escapeRegExp(ctx.query[header]);
-
       const sql = {
-        query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2;`,
-        values: { p1: header, p2: regex }
+        query: HEADER_LIKE_KEY_VALUE_SQL,
+        values: { p1: header, p2: headerLikePattern(ctx.query[header]) }
       };
 
       return ctx.instance.wsp.request({
@@ -571,11 +606,7 @@ async function list(ctx) {
     // Add all results to search conditions
     for (const ids of results) {
       if (!Array.isArray(ids)) continue;
-      searchConditions.push({
-        _id: {
-          $in: ids.map((id) => id.toString())
-        }
-      });
+      addSearchIdCondition(ids);
     }
   }
 
@@ -587,49 +618,35 @@ async function list(ctx) {
     //
     if (ctx.query.headers.includes(':')) {
       const [key, value] = ctx.query.headers.split(':', 2);
-      const regex =
-        '(?i)' + // case insensitive (PCRE_CASELESS)
-        _.escapeRegExp(value.toLowerCase().trim());
 
       const sql = {
-        query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2;`,
-        values: { p1: key.toLowerCase().trim(), p2: regex }
+        query: HEADER_LIKE_KEY_VALUE_SQL,
+        values: {
+          p1: key.toLowerCase().trim(),
+          p2: headerLikePattern(value.trim())
+        }
       };
 
-      let ids = await ctx.instance.wsp.request({
+      const ids = await ctx.instance.wsp.request({
         action: 'stmt',
         session: { user: ctx.state.session.user },
         stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
       });
-      if (!Array.isArray(ids)) ids = [];
 
-      searchConditions.push({
-        _id: {
-          $in: ids.map((id) => id.toString())
-        }
-      });
+      addSearchIdCondition(ids);
     } else {
-      const regex =
-        '(?i)' + // case insensitive (PCRE_CASELESS)
-        _.escapeRegExp(ctx.query.headers);
-
       const sql = {
-        query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.value') REGEXP $p1;`,
-        values: { p1: regex }
+        query: HEADER_LIKE_VALUE_SQL,
+        values: { p1: headerLikePattern(ctx.query.headers) }
       };
 
-      let ids = await ctx.instance.wsp.request({
+      const ids = await ctx.instance.wsp.request({
         action: 'stmt',
         session: { user: ctx.state.session.user },
         stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
       });
-      if (!Array.isArray(ids)) ids = [];
 
-      searchConditions.push({
-        _id: {
-          $in: ids.map((id) => id.toString())
-        }
-      });
+      addSearchIdCondition(ids);
     }
   }
 
@@ -646,13 +663,9 @@ async function list(ctx) {
       ? ctx.query.search
       : ctx.query.q;
     // NOTE: this searches both text and headers via $or
-    const regex =
-      '(?i)' + // case insensitive (PCRE_CASELESS)
-      _.escapeRegExp(searchTerm);
-
     const sql = {
-      query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.value') REGEXP $p1;`,
-      values: { p1: regex }
+      query: HEADER_LIKE_VALUE_SQL,
+      values: { p1: headerLikePattern(searchTerm) }
     };
 
     let headerIds = await ctx.instance.wsp.request({
@@ -697,20 +710,19 @@ async function list(ctx) {
     const allMatchIds = [...new Set([...headerIds, ...textMatchIds])];
     if (env.SQLITE_FTS5_ENABLED && !fts5Failed) {
       // With FTS5, we already have all text match IDs — no need for LIKE fallback
-      if (allMatchIds.length > 0) {
-        searchConditions.push({
-          _id: { $in: allMatchIds.map((id) => id.toString()) }
-        });
-      } else {
-        searchConditions.push({ _id: { $in: [] } });
-      }
+      // (no matches at all yields an empty result set)
+      addSearchIdCondition(allMatchIds);
     } else {
       // Without FTS5 (or FTS5 table missing), fall back to LIKE for text search
+      const normalizedHeaderIds = headerIds.map((id) => id.toString());
+      searchIdVariables += normalizedHeaderIds.length;
+      if (searchIdVariables > MAX_SEARCH_ID_VARIABLES)
+        throw Boom.badRequest(ctx.translateError('SEARCH_TOO_MANY_RESULTS'));
       searchConditions.push({
         $or: [
           {
             _id: {
-              $in: headerIds.map((id) => id.toString())
+              $in: normalizedHeaderIds
             }
           },
           {

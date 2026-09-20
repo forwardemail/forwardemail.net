@@ -622,3 +622,26 @@ test('a request that is not retried never re-opens the live database', (t) => {
   t.regex(helper, /if \(!session\.db \|\| session\.db\.wsp\) return true;/);
   t.regex(helper, /session\.db\.name ===\s*getPathToDatabase\(/);
 });
+
+//
+// Passwords reach SQLite through the driver's binary key API, never as
+// text interpolated into a PRAGMA (which the characters `"` and `'` would
+// break); custom passwords may not contain those characters either.
+//
+test('passwords reach SQLite through the binary key API', (t) => {
+  const worker = source('helpers/worker.js');
+  t.true(worker.includes('backupDb.rekey(Buffer.from(newPassword));'));
+  t.notRegex(worker, /pragma\(`rekey=/);
+
+  const pragma = source('helpers/setup-pragma.js');
+  t.true(
+    pragma.includes('db.key(Buffer.from(decrypt(session.user.password)))')
+  );
+
+  const password = source('helpers/create-password.js');
+  t.true(
+    password.includes(
+      `existingPassword.includes("'") || existingPassword.includes('"')`
+    )
+  );
+});

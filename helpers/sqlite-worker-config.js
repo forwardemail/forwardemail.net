@@ -15,7 +15,30 @@ const ms = require('ms');
 module.exports = {
   // One upload at a time per worker keeps BACKUP_MAX_BANDWIDTH enforceable.
   MAX_CONCURRENCY: 1,
+
+  //
+  // Free memory a job waits for before it starts.  Neither a rekey (VACUUM
+  // INTO, then VACUUMs with the temporary store on disk and a bounded page
+  // cache) nor a backup (a page copy, or an archive streamed to disk) holds
+  // the mailbox in memory, so the reserve does not scale with its size:
+  // requiring a multiple of the mailbox size made every job of a large
+  // mailbox time out on a busy host.
+  //
   MIN_FREE_MEM: 1024 * 1024 * 1024, // 1 GB
+
+  //
+  // Free disk space a password rotation needs on the mailbox volume (see
+  // helpers/rekey-disk-space.js).  A rekey copies the live mailbox (VACUUM
+  // INTO) and then VACUUMs the copy with its temporary store on disk, so up
+  // to twice the mailbox (main file plus WAL) is in use at its peak; a third
+  // is kept as margin for the other mailboxes of the volume, which keep
+  // receiving mail meanwhile.  A reset only builds a fresh mailbox, so the
+  // floor alone applies to it.  Requiring a multiple of the alias quota
+  // instead refused rotations of small mailboxes on volumes with plenty of
+  // room for them.
+  //
+  REKEY_DISK_MULTIPLIER: 3,
+  REKEY_MIN_FREE_DISK: 1024 * 1024 * 1024, // 1 GB
 
   //
   // An unclaimed rekey (queued but never picked up by the worker) is only
