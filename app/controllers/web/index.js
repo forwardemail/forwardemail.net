@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const fs = require('node:fs');
-const path = require('node:path');
 const { Buffer } = require('node:buffer');
 
 const Boom = require('@hapi/boom');
@@ -20,9 +18,7 @@ const revHash = require('rev-hash');
 const sanitizeHtml = require('sanitize-html');
 const sharp = require('sharp');
 const shortID = require('mongodb-short-id');
-const splitLines = require('split-lines');
 const titleize = require('titleize');
-const wrap = require('word-wrap');
 const undici = require('undici');
 const { gzip } = require('node-gzip');
 
@@ -65,6 +61,7 @@ const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
+const { renderOpenGraphImage } = require('#helpers/open-graph-image');
 // const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
@@ -137,11 +134,6 @@ if (config.env !== 'test' && !config.isSelfHosted) {
   checkGitHubStars();
   setInterval(checkGitHubStars, ms('6h'));
 }
-
-const SVG_STR = fs.readFileSync(
-  path.join(__dirname, '..', '..', '..', 'assets', 'img', 'template.svg'),
-  'utf8'
-);
 
 const MAX_AGE = ms('1y') / 1000;
 
@@ -366,6 +358,12 @@ async function generateOpenGraphImage(ctx, next) {
       ? 'image/jpeg'
       : 'image/png';
 
+    //
+    // The image is laid out from measurements (helpers/open-graph-image.js)
+    // so the whole title fits, wrapped over two lines and shrunk as needed,
+    // and the description is cut at the last line that fits: neither has
+    // to be shortened blindly here any more.
+    //
     let [title] = data.title
       .replace(config.views.locals.striptags(config.metaTitleAffix), '')
       .replace(
@@ -376,51 +374,37 @@ async function generateOpenGraphImage(ctx, next) {
       )
       .split(' - ');
     title = title.trim();
-    if (url.startsWith('/guides') && title.includes(' for '))
-      title = title.split(' for ')[1].trim();
-    else if (title.includes(' for ')) title = title.split(' for ')[0].trim();
-    if (title.length > 40)
-      title = _.escape(_.unescape(title.trim()).slice(0, 40).trim() + '...');
 
-    // if it was a developer doc then parse the title
+    // a developer doc carries its own title for the image
     const doc = config.views.locals.developerDocs.find((d) => d.slug === url);
     if (doc && isSANB(doc.ogBtnText)) title = doc.ogBtnText.trim();
 
-    // if it was a open source guide then parse the title
-    const platform = config.views.locals.platforms.find(
-      (p) =>
-        `/blog/open-source/${config.views.locals.dashify(p)}-email-server` ===
-          url ||
-        `/blog/open-source/${config.views.locals.dashify(p)}-email-clients` ===
-          url
-    );
-    if (platform) title = platform.trim();
-
-    // remove year
+    // remove year (the current one anywhere, any year the title ends with)
     title = title.replace(`in ${dayjs().format('YYYY')}`, ' ').trim();
     title = title.replace(`for ${dayjs().format('YYYY')}`, ' ').trim();
     title = title.replace(dayjs().format('YYYY'), ' ').trim();
     title = title.replace('( )', '').trim();
+    title = title
+      .replace(/\s+(?:in|for|of)?\s*\(?(?:19|20)\d{2}\)?$/i, '')
+      .trim();
 
-    // fallback safeguard
-    if (title.length > 24)
-      title = i18n.translate('PRIVATE_BUSINESS', 'en').trim();
+    // plain text only (the renderer escapes it for the SVG)
+    const plain = (string) =>
+      _.unescape(
+        sanitizeHtml(string, { allowedTags: [], allowedAttributes: {} })
+      )
+        .replace(/\s+/g, ' ')
+        .trim();
 
-    // LINE1, LINE2, LINE3
-    let [line1, line2, line3, line4] = splitLines(
-      wrap(data.description.trim(), { width: 50 })
-    );
+    const svgString = await renderOpenGraphImage({
+      title: plain(title),
+      description: plain(data.description),
+      url,
+      stars: STARS
+    });
 
-    if (line4) line3 += '...';
-
-    const svgReplaced = SVG_STR.replace('TITLE', title.trim())
-      .replace('LINE1', line1 || '')
-      .replace('LINE2', line2 || '')
-      .replace('LINE3', line3 || '')
-      .replace('COUNT', STARS);
-
-    const svg = Buffer.from(svgReplaced, 'utf8');
-    const hash = revHash(ctx.type + ':' + svgReplaced);
+    const svg = Buffer.from(svgString, 'utf8');
+    const hash = revHash(ctx.type + ':' + svgString);
 
     const key = `og:gzip:${hash}`;
     let result;
@@ -449,15 +433,13 @@ async function generateOpenGraphImage(ctx, next) {
         .then()
         .catch((err) => ctx.logger.fatal(err));
     } else {
+      // (full colour: a palette bands the gradients of the image)
       const buffer =
         ctx.type === 'image/jpeg'
           ? await sharp(svg).jpeg({ quality: 80, mozjpeg: true }).toBuffer()
           : await sharp(svg)
               .png({
-                quality: 100,
-                palette: true,
                 compressionLevel: 9,
-                dither: 0,
                 effort: 10
               })
               .toBuffer();
