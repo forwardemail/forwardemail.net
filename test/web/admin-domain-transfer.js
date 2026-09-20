@@ -183,6 +183,14 @@ test.serial(
 
     const page = await web.get('/en/admin/domains').set('Accept', 'text/html');
     t.is(page.status, 200);
+    // The transfer view must append its modal setup to the base layout's scripts.
+    // Replacing `block scripts` removes build.js, which disables every Bootstrap
+    // data-API control on the page, including this modal and all dropdowns.
+    t.regex(page.text, /\/js\/build\.js/);
+    t.true(
+      page.text.indexOf('/js/build.js') <
+        page.text.indexOf('document.addEventListener("DOMContentLoaded"')
+    );
     t.true(page.text.includes('modal-transfer-domain'));
     t.true(page.text.includes('input-transfer-original-owner-email'));
     t.true(page.text.includes('input-transfer-confirmation'));

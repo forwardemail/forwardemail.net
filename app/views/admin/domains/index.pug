@@ -120,7 +120,7 @@ block body
               = " "
               = t("Transfer Domain")
 
-block scripts
+block append scripts
   script(defer, nonce=nonce).
     document.addEventListener("DOMContentLoaded", () => {
       const modal = document.querySelector("#modal-transfer-domain");
