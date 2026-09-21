@@ -1013,8 +1013,8 @@ importers:
         specifier: 9.0.0
         version: 9.0.0
       gulp-rev:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 12.0.0
+        version: 12.0.0(gulp@4.0.2)
       gulp-rev-all:
         specifier: 3.0.0
         version: 3.0.0
@@ -5649,14 +5649,6 @@ packages:
       ajv:
         optional: true
 
-  ajv-formats@2.1.1:
-    resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
-    peerDependencies:
-      ajv: ^8.0.0
-    peerDependenciesMeta:
-      ajv:
-        optional: true
-
   ajv-formats@3.0.1:
     resolution: {integrity: sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==}
     peerDependencies:
@@ -6259,8 +6251,8 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  baseline-browser-mapping@2.11.20:
-    resolution: {integrity: sha512-H0ulySigv6icDJ1F7SjtdCD6PrhTpdYCmP0CactWy1+ekh0AFd0o1Wn5T8b+hnTmdBx19u9yhL6wvCylXMY7zw==}
+  baseline-browser-mapping@2.11.25:
+    resolution: {integrity: sha512-gMmEShwwq7FJqMwvfRwvCl00v4kN+KOfJqXn+f4nrufak5gNHJOksd/60Dvjuz7sI8Y5WiSFBa8FEYr+zoyqCw==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -6487,8 +6479,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
-  browserslist@4.28.8:
-    resolution: {integrity: sha512-V2NpofLblG64mfOtSgDhOJESZEGogzDMBv/q+W6oc4LXWP/q75eOXoOaaOu1EOadB9U4Bwx/e0yzbvwKH8zalA==}
+  browserslist@4.29.0:
+    resolution: {integrity: sha512-3GSvyjvDI4Dur1Meg2BekJquu5uF+9R9a1+5M1Mde192eZoXbeXjzgOsgqPS2V8D5wrrip0gR5Hf/GhWQ9ZzaA==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
@@ -8368,8 +8360,8 @@ packages:
   electron-to-chromium@1.5.353:
     resolution: {integrity: sha512-kOrWphBi8TOZyiJZqsgqIle0lw+tzmnQK83pV9dZUd01Nm2POECSyFQMAuarzZdYqQW7FH9RaYOuaRo3h+bQ3w==}
 
-  electron-to-chromium@1.5.418:
-    resolution: {integrity: sha512-UzS26r3AEbG5wSoGVpJKqwHIU9zwQN7LHdVIThDrJpS0I5KdlXFMEb8543fhc9dVnIIAST6ar8rhwa00AL5MlA==}
+  electron-to-chromium@1.5.433:
+    resolution: {integrity: sha512-5lCAbyZBjtmUt/RAGHRqrL2q0oEFRThDAsZHHDn9XHa89Qw7gMYOeSicBTy+AHfvo0r6vwsZvqNJTQIQy1BLzA==}
 
   elkjs@0.9.3:
     resolution: {integrity: sha512-f/ZeWvW/BCXbhGEf1Ujp29EASo/lk1FDnETgNKwJrsVvGZhUWCZyg3xLJjAsxfOmt8KjswHmI5EwCQcPMpOYhQ==}
@@ -8456,8 +8448,8 @@ packages:
     resolution: {integrity: sha512-kxpoMgrdtkXZ5h0SeraBS1iRntpTpQ3R8ussdb38+UAFnMGX5DDyJXePm+OCHOcoXvHDw7mc2erbJBpDnl7TPw==}
     engines: {node: '>=0.6'}
 
-  enhanced-resolve@5.24.5:
-    resolution: {integrity: sha512-L1l8TNvomm6UVW5B253AGxQagSQr+vGwhMlrrfRS2qmhx46AMpMVJKQYLvWYbysTMY8VoicOvzHzoHMbyzB+4A==}
+  enhanced-resolve@5.25.1:
+    resolution: {integrity: sha512-nGXts5znJzmWPu+mIE9izCOzdg63oJca2mDzGWWTth7sr4aCToKcoyFVBQwN75Ij5Pf6p510EwkTqViTRzDV+w==}
     engines: {node: '>=10.13.0'}
 
   enquirer@2.3.6:
@@ -9407,9 +9399,9 @@ packages:
     resolution: {integrity: sha512-ZYDqPLGxDkDhDZBjZBb+oD1+j0rA4E0pXY50eplAAOPg2N/gUBSSk5IM1/QhPfyVo19lJ+CvXpqfvk+b2p/8Ng==}
     engines: {node: '>= 0.10'}
 
-  first-chunk-stream@2.0.0:
-    resolution: {integrity: sha512-X8Z+b/0L4lToKYq+lwnKqi9X/Zek0NibLpsJgVsSxpoYq7JtiCtRb5HqKVEjEw/qAb/4AKKRLOwwKHlWNpm2Eg==}
-    engines: {node: '>=0.10.0'}
+  first-chunk-stream@5.0.0:
+    resolution: {integrity: sha512-WdHo4ejd2cG2Dl+sLkW79SctU7mUQDfr4s1i26ffOZRs5mgv+BRttIM9gwcq0rDbemo0KlpVPaa3LBVLqPXzcQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   first-match@0.0.1:
     resolution: {integrity: sha512-VvKbnaxrC0polTFDC+teKPTdl2mn6B/KUW+WB3C9RzKDeNwbzfLdnUz3FxC+tnjvus6bI0jWrWicQyVIPdS37A==}
@@ -10092,9 +10084,14 @@ packages:
     resolution: {integrity: sha512-96aLNlEVXthNOjGFfxa51Uw/D208orMFggyf6xw/crOPDgSNkfLKcCsxRcmnKLC8Y3T/7YL8SNJBjadif3wylg==}
     engines: {node: '>=8.3'}
 
-  gulp-rev@9.0.0:
-    resolution: {integrity: sha512-Ytx/uzDA2xNxHlPG8GReS1ut00msd0HlKDk9Ai/0xF2yvg+DAeGRAviCFlQzQmdZtqAoXznYspwWoGEoxDvhyA==}
-    engines: {node: '>=6'}
+  gulp-rev@12.0.0:
+    resolution: {integrity: sha512-MU3IASTTx+XZQrmz5WdhoflA2AIir815b/ItpRBFWkIP8kWSInU1IFRSvdX36AvIDRxR9izFqod/PXdjSw7tXw==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      gulp: '>=4'
+    peerDependenciesMeta:
+      gulp:
+        optional: true
 
   gulp-sass@5.1.0:
     resolution: {integrity: sha512-7VT0uaF+VZCmkNBglfe1b34bxn/AfcssquLKVDYnCDJ3xNBaW7cUuI3p3BQmoKcoKFrs9jdzUxyb+u+NGfL4OQ==}
@@ -13027,6 +13024,10 @@ packages:
     resolution: {integrity: sha512-EickqnKq3kVVaZisYuCxhtKbZjInCuwgwZWyAmRIp1NTMhri7r3380/uqwrUHfaDiPzLVTuoNy4whX66bxPVog==}
     engines: {node: '>=0.10.0'}
 
+  modify-filename@2.0.0:
+    resolution: {integrity: sha512-VX9/MdgUN9StpSLImJ0+AyV2dxJJtyojIwRHF/Ja942tW7FTzxXI186jDSTk4k5wj2+59a4bRzFnJUgMSi+ygg==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
   module-deps@6.2.3:
     resolution: {integrity: sha512-fg7OZaQBcL4/L+AK5f4iVqf9OMbCclXfy/znXRxTVhJSeW5AIlS9AwheYwDaXM3lVW7OBeaeUEY3gbaC6cLlSA==}
     engines: {node: '>= 0.8.0'}
@@ -13272,8 +13273,8 @@ packages:
   nan@2.26.2:
     resolution: {integrity: sha512-0tTvBTYkt3tdGw22nrAy50x7gpbGCCFH3AFcyS5WiUu7Eu4vWlri1woE6qHBSfy11vksDqkiwjOnlR7WV8G1Hw==}
 
-  nan@2.28.0:
-    resolution: {integrity: sha512-fTsDz99OTq2sVePhGdp4qQhggZFtKr64ZNVyVajRKtMOkJxYekplBh577PiJB12v/D3s2E5cGtOI45LWp6rnLQ==}
+  nan@2.29.0:
+    resolution: {integrity: sha512-GlGk3HIvitbvs+LT3g6XUP1kpirKNvmDFwF/bmo6XNWSb/eYEs/O4bfgIEIXCZ+lIOTS5xNwDvSGMw6FJdAhtA==}
 
   nan@https://codeload.github.com/JCMais/nan/tar.gz/0ec2eca8b2fd7518affb3945d087e393ad839b7e:
     resolution: {tarball: https://codeload.github.com/JCMais/nan/tar.gz/0ec2eca8b2fd7518affb3945d087e393ad839b7e}
@@ -13489,8 +13490,8 @@ packages:
   node-releases@2.0.38:
     resolution: {integrity: sha512-3qT/88Y3FbH/Kx4szpQQ4HzUbVrHPKTLVpVocKiLfoYvw9XSGOX2FmD2d6DrXbVYyAQTF2HeF6My8jmzx7/CRw==}
 
-  node-releases@2.0.54:
-    resolution: {integrity: sha512-YHs7BmmcsdAI5Ozuf8JZo6PT0mv2GIWC9vMfvUC3dp65M8hn7Ux8CPL+2oBI7juNuj9d0ndhTcznq2ODBps9cQ==}
+  node-releases@2.0.56:
+    resolution: {integrity: sha512-x0InOIyzgdk+eyaWaRJFH5snEtiImgBgblZ2CyPrLmqqcuMQkEvcDPHbzqbD8eDsSeJbVOjn+crzyzHaM4D+/A==}
     engines: {node: '>=18'}
 
   node-sass@9.0.0:
@@ -16153,17 +16154,17 @@ packages:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  rev-hash@2.0.0:
-    resolution: {integrity: sha512-U6EkYZI87C3B5KS46HAEy+g+rtueIdfF9Zb6XBlGe3R/RaF3V8drN7nRFm7/swHOK1zQLGvIYwQ4Q6WDAAlynw==}
-    engines: {node: '>=4'}
-
   rev-hash@3.0.0:
     resolution: {integrity: sha512-s+87HfEKAu95TaTxnbCobn0/BkbzR23LHSwVdYvr8mn5+PPjzy+hTWyh92b5oaLgig9TKPe5d6ZcubsVBtUrZg==}
     engines: {node: '>=8'}
 
-  rev-path@2.0.0:
-    resolution: {integrity: sha512-G5R2L9gYu9kEuqPfIFgO9gO+OhBWOAT83HyauOQmGHO6y9Fsa4acv+XsmNhNDrod0HDh1/VxJRmsffThzeHJlQ==}
-    engines: {node: '>=4'}
+  rev-hash@4.1.0:
+    resolution: {integrity: sha512-e0EGnaveLY2IYpYwHNdh43WZ2M84KgW3Z/T4F6+Z/BlZI/T1ZbxTWj36xgYgUPOieGXYo2q225jTeUXn+LWYjw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
+  rev-path@3.0.0:
+    resolution: {integrity: sha512-2fUuv6IC7Z+Vj+DXEunJYJDZuwSsaJJHeLar3n2PGvHSH7j5+Xpd/Xh7PenekH4WQhxFuHtsGwd1dCh/HvT6Gw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   reversepoint@0.2.1:
     resolution: {integrity: sha512-MFA06BYS9ZXFApJBMeDa8VTxypfDNzbJ6Sp1CoT8mlsxXbB6zhVJa1f24WFEPDGcF4akN+dpTe7gfs9htHYFWw==}
@@ -16304,8 +16305,8 @@ packages:
     resolution: {integrity: sha512-5LBh1Tls8c9xgGjw3QrMwETmTMVk0oFgvrFSvWx62llR2hcEInrKNZ2GZCCuuy2lvWrdl5jhbpeqc5hRYKFOcw==}
     engines: {node: '>=10'}
 
-  schema-utils@4.3.3:
-    resolution: {integrity: sha512-eflK8wEtyOE6+hsaRVPxvUKYCpRgzLqDTb8krvAsRIwOGlHoSgYLgBXoubGgLd2fT41/OUYdb48v4k4WWHQurA==}
+  schema-utils@4.5.0:
+    resolution: {integrity: sha512-zJlMCZ0cAR5p/Y4oVpRoqioDMJcGxaXRrQ/4rP4WyR84vc5z/DolXdbvXeDpTwbtocDFr2rhPqHPErDCUtz2kA==}
     engines: {node: '>= 10.13.0'}
 
   scmp@2.1.0:
@@ -16637,6 +16638,10 @@ packages:
     resolution: {integrity: sha512-/dPCrG1s3ePpWm6yBbxZq5Be1dXGLyLn9Z791chDC3NFrpkVbWGzkBwPN1knaciexFXgRJ7hzdnwZ4stHSDmjg==}
     engines: {node: '>=4'}
 
+  sort-keys@6.0.1:
+    resolution: {integrity: sha512-w7xWRu8U9MneKNna8ptG194jp9PLtbd/Rl6gwrmbK4yUeKbE66a64rHgl0iKTBBDr/hpanx7zMGP1Qo8MRkc/w==}
+    engines: {node: '>=20'}
+
   source-map-generator@0.8.0:
     resolution: {integrity: sha512-psgxdGMwl5MZM9S3FWee4EgsEaIjahYV5AzGnwUvPhWeITz/j6rKpysQHlQ4USdxvINlb8lKfWGIXwfkrgtqkA==}
     engines: {node: '>= 10'}
@@ -16930,6 +16935,9 @@ packages:
   streamx@2.25.0:
     resolution: {integrity: sha512-0nQuG6jf1w+wddNEEXCF4nTg3LtufWINB5eFEN+5TNZW7KWJp6x87+JFL43vaAUPyCfH1wID+mNVyW6OHtFamg==}
 
+  streamx@2.28.1:
+    resolution: {integrity: sha512-zEzXb0s5Cds7tqMH6rhZ05lcJydCWiQPEwiNngVqzsxCc962vLY4Uw+mW7od8kDH258k2Uz/JrOkdIAAhSh9VA==}
+
   strict-uri-encode@1.1.0:
     resolution: {integrity: sha512-R3f198pcvnB+5IpnBlRkphuE9n46WyVl8I39W/ZUTZLz4nqSP/oLYUrcnJrw462Ds8he4YKMov2efsTIw1BDGQ==}
     engines: {node: '>=0.10.0'}
@@ -17016,13 +17024,13 @@ packages:
     resolution: {integrity: sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==}
     engines: {node: '>=12'}
 
-  strip-bom-buf@1.0.0:
-    resolution: {integrity: sha512-1sUIL1jck0T1mhOLP2c696BIznzT525Lkub+n4jjMHjhjhoAQA6Ye659DxdlZBr0aLDMQoTxKIpnlqxgtwjsuQ==}
-    engines: {node: '>=4'}
+  strip-bom-buf@3.0.1:
+    resolution: {integrity: sha512-iJaWw2WroigLHzQysdc5WWeUc99p7ea7AEgB6JkY8CMyiO1yTVAA1gIlJJgORElUIR+lcZJkNl1OGChMhvc2Cw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  strip-bom-stream@2.0.0:
-    resolution: {integrity: sha512-yH0+mD8oahBZWnY43vxs4pSinn8SMKAdml/EOGBewoe1Y0Eitd0h2Mg3ZRiXruUW6L4P+lvZiEgbh0NgUGia1w==}
-    engines: {node: '>=0.10.0'}
+  strip-bom-stream@5.0.0:
+    resolution: {integrity: sha512-Yo472mU+3smhzqeKlIxClre4s4pwtYZEvDNQvY/sJpnChdaxmKuwU28UVx/v1ORKNMxkmj1GBuvxJQyBk6wYMQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   strip-bom-string@1.0.0:
     resolution: {integrity: sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g==}
@@ -18262,8 +18270,8 @@ packages:
     peerDependencies:
       browserslist: '>= 4.21.0'
 
-  update-browserslist-db@1.3.2:
-    resolution: {integrity: sha512-UQ+MSxlhRm1bzjhU+DcuXfjFO1FzNtqhK5+9Yvlp90ItDLk5vT932A0rFu619nf7RVS+Y/VeaUW1jaRDqZ8VJw==}
+  update-browserslist-db@1.3.3:
+    resolution: {integrity: sha512-pJ2sYawQS0R/WI928Gj5GlPhTGzbMelq0+4INtSYNDV9ErKJcX6xjGWkoG/VnB3dpUm00zALaqkrUD77pO5TDQ==}
     hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
@@ -18458,9 +18466,9 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vinyl-file@3.0.0:
-    resolution: {integrity: sha512-BoJDj+ca3D9xOuPEM6RWVtWQtvEPQiQYn82LvdxhLWplfQsBzBqtgK0yhCP0s1BNTi6dH9BO+dzybvyQIacifg==}
-    engines: {node: '>=4'}
+  vinyl-file@5.0.0:
+    resolution: {integrity: sha512-MvkPF/yA1EX7c6p+juVIvp9+Lxp70YUfNKzEWeHMKpUNVSnTZh2coaOqLxI0pmOe2V9nB+OkgFaMDkodaJUyGw==}
+    engines: {node: '>=14.16'}
 
   vinyl-fs@3.0.3:
     resolution: {integrity: sha512-vIu34EkyNyJxmP0jscNzWBSygh7VWhqun6RmqVfXePrOwi9lhvRs//dOaGOTRUQr4tx7/zd26Tk5WeSVZitgng==}
@@ -18476,6 +18484,10 @@ packages:
   vinyl@2.2.1:
     resolution: {integrity: sha512-LII3bXRFBZLlezoG5FfZVcXflZgWP/4dCwKtxd5ky9+LOtM4CS3bIRQsmR1KMnMW07jpE8fqR2lcxPZ+8sJIcw==}
     engines: {node: '>= 0.10'}
+
+  vinyl@3.0.1:
+    resolution: {integrity: sha512-0QwqXteBNXgnLCdWdvPQBX6FXRHtIH3VhJPTd5Lwn28tJXc34YqSCWUmkOvtJHBmB3gGoPtrOKk3Ts8/kEZ9aA==}
+    engines: {node: '>=10.13.0'}
 
   vizion@2.2.1:
     resolution: {integrity: sha512-sfAcO2yeSU0CSPFI/DmZp3FsFE9T+8913nv1xWBOyzODv13fwkn6Vl7HqxGpkr9F608M+8SuFId3s+BlZqfXww==}
@@ -25348,10 +25360,6 @@ snapshots:
     optionalDependencies:
       ajv: 8.20.0
 
-  ajv-formats@2.1.1(ajv@8.20.0):
-    optionalDependencies:
-      ajv: 8.20.0
-
   ajv-formats@3.0.1(ajv@8.20.0):
     optionalDependencies:
       ajv: 8.20.0
@@ -25976,7 +25984,7 @@ snapshots:
 
   bare-stream@2.13.1(bare-events@2.8.2):
     dependencies:
-      streamx: 2.25.0
+      streamx: 2.28.1
       teex: 1.0.1
     optionalDependencies:
       bare-events: 2.8.2
@@ -26013,7 +26021,7 @@ snapshots:
 
   baseline-browser-mapping@2.10.29: {}
 
-  baseline-browser-mapping@2.11.20: {}
+  baseline-browser-mapping@2.11.25: {}
 
   basic-auth@2.0.1:
     dependencies:
@@ -26356,13 +26364,13 @@ snapshots:
       node-releases: 2.0.38
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
 
-  browserslist@4.28.8:
+  browserslist@4.29.0:
     dependencies:
-      baseline-browser-mapping: 2.11.20
+      baseline-browser-mapping: 2.11.25
       caniuse-lite: 1.0.30001810
-      electron-to-chromium: 1.5.418
-      node-releases: 2.0.54
-      update-browserslist-db: 1.3.2(browserslist@4.28.8)
+      electron-to-chromium: 1.5.433
+      node-releases: 2.0.56
+      update-browserslist-db: 1.3.3(browserslist@4.29.0)
 
   bson-objectid@2.0.4: {}
 
@@ -28472,7 +28480,7 @@ snapshots:
 
   dtrace-provider@0.8.8:
     dependencies:
-      nan: 2.28.0
+      nan: 2.29.0
     optional: true
 
   dunder-proto@1.0.1:
@@ -28534,7 +28542,7 @@ snapshots:
 
   electron-to-chromium@1.5.353: {}
 
-  electron-to-chromium@1.5.418: {}
+  electron-to-chromium@1.5.433: {}
 
   elkjs@0.9.3: {}
 
@@ -28676,7 +28684,7 @@ snapshots:
       memory-fs: 0.2.0
       tapable: 0.1.10
 
-  enhanced-resolve@5.24.5:
+  enhanced-resolve@5.25.1:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.3
@@ -30040,9 +30048,7 @@ snapshots:
       object.pick: 1.3.0
       parse-filepath: 1.0.2
 
-  first-chunk-stream@2.0.0:
-    dependencies:
-      readable-stream: 2.3.8
+  first-chunk-stream@5.0.0: {}
 
   first-match@0.0.1: {}
 
@@ -30223,7 +30229,7 @@ snapshots:
   fsevents@1.2.13:
     dependencies:
       bindings: 1.5.0
-      nan: 2.28.0
+      nan: 2.29.0
     optional: true
 
   fsevents@2.3.3:
@@ -31005,16 +31011,20 @@ snapshots:
       hasha: 5.2.2
       vinyl: 2.2.1
 
-  gulp-rev@9.0.0:
+  gulp-rev@12.0.0(gulp@4.0.2):
     dependencies:
-      modify-filename: 1.1.0
-      plugin-error: 1.0.1
-      rev-hash: 2.0.0
-      rev-path: 2.0.0
-      sort-keys: 2.0.0
-      through2: 2.0.5
-      vinyl: 2.2.1
-      vinyl-file: 3.0.0
+      gulp-plugin-extras: 1.1.0
+      modify-filename: 2.0.0
+      rev-hash: 4.1.0
+      rev-path: 3.0.0
+      sort-keys: 6.0.1
+      vinyl: 3.0.1
+      vinyl-file: 5.0.0
+    optionalDependencies:
+      gulp: 4.0.2
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - react-native-b4a
 
   gulp-sass@5.1.0:
     dependencies:
@@ -34853,6 +34863,8 @@ snapshots:
 
   modify-filename@1.1.0: {}
 
+  modify-filename@2.0.0: {}
+
   module-deps@6.2.3:
     dependencies:
       JSONStream: 1.3.5
@@ -35192,8 +35204,7 @@ snapshots:
 
   nan@2.26.2: {}
 
-  nan@2.28.0:
-    optional: true
+  nan@2.29.0: {}
 
   nan@https://codeload.github.com/JCMais/nan/tar.gz/0ec2eca8b2fd7518affb3945d087e393ad839b7e: {}
 
@@ -35471,7 +35482,7 @@ snapshots:
 
   node-releases@2.0.38: {}
 
-  node-releases@2.0.54: {}
+  node-releases@2.0.56: {}
 
   node-sass@9.0.0:
     dependencies:
@@ -35495,7 +35506,7 @@ snapshots:
 
   node-snowball@0.6.0:
     dependencies:
-      nan: 2.26.2
+      nan: 2.29.0
 
   nodemailer@6.10.1: {}
 
@@ -38956,13 +38967,13 @@ snapshots:
 
   reusify@1.1.0: {}
 
-  rev-hash@2.0.0: {}
-
   rev-hash@3.0.0: {}
 
-  rev-path@2.0.0:
+  rev-hash@4.1.0: {}
+
+  rev-path@3.0.0:
     dependencies:
-      modify-filename: 1.1.0
+      modify-filename: 2.0.0
 
   reversepoint@0.2.1: {}
 
@@ -39112,11 +39123,11 @@ snapshots:
     dependencies:
       xmlchars: 2.2.0
 
-  schema-utils@4.3.3:
+  schema-utils@4.5.0:
     dependencies:
       '@types/json-schema': 7.0.15
       ajv: 8.20.0
-      ajv-formats: 2.1.1(ajv@8.20.0)
+      ajv-formats: 3.0.1(ajv@8.20.0)
       ajv-keywords: 5.1.0(ajv@8.20.0)
 
   scmp@2.1.0: {}
@@ -39551,6 +39562,11 @@ snapshots:
   sort-keys@2.0.0:
     dependencies:
       is-plain-obj: 1.1.0
+    optional: true
+
+  sort-keys@6.0.1:
+    dependencies:
+      is-plain-obj: 4.1.0
 
   source-map-generator@0.8.0: {}
 
@@ -39928,6 +39944,15 @@ snapshots:
       - bare-abort-controller
       - react-native-b4a
 
+  streamx@2.28.1:
+    dependencies:
+      events-universal: 1.0.1
+      fast-fifo: 1.3.2
+      text-decoder: 1.2.7
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - react-native-b4a
+
   strict-uri-encode@1.1.0:
     optional: true
 
@@ -40050,14 +40075,14 @@ snapshots:
     dependencies:
       ansi-regex: 6.2.2
 
-  strip-bom-buf@1.0.0:
+  strip-bom-buf@3.0.1:
     dependencies:
       is-utf8: 0.2.1
 
-  strip-bom-stream@2.0.0:
+  strip-bom-stream@5.0.0:
     dependencies:
-      first-chunk-stream: 2.0.0
-      strip-bom: 2.0.0
+      first-chunk-stream: 5.0.0
+      strip-bom-buf: 3.0.1
 
   strip-bom-string@1.0.0: {}
 
@@ -40549,7 +40574,7 @@ snapshots:
 
   teex@1.0.1:
     dependencies:
-      streamx: 2.25.0
+      streamx: 2.28.1
     transitivePeerDependencies:
       - bare-abort-controller
       - react-native-b4a
@@ -40580,7 +40605,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
-      schema-utils: 4.3.3
+      schema-utils: 4.5.0
       terser: 5.51.2
       webpack: 5.106.2(cssnano@6.1.2(postcss@8.5.26))(postcss@8.5.26)
     optionalDependencies:
@@ -41516,9 +41541,9 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
-  update-browserslist-db@1.3.2(browserslist@4.28.8):
+  update-browserslist-db@1.3.3(browserslist@4.29.0):
     dependencies:
-      browserslist: 4.28.8
+      browserslist: 4.29.0
       escalade: 3.2.0
       picocolors: 1.1.1
 
@@ -41742,13 +41767,15 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vinyl-file@3.0.0:
+  vinyl-file@5.0.0:
     dependencies:
-      graceful-fs: 4.2.11
-      pify: 2.3.0
-      strip-bom-buf: 1.0.0
-      strip-bom-stream: 2.0.0
-      vinyl: 2.2.1
+      '@types/vinyl': 2.0.12
+      strip-bom-buf: 3.0.1
+      strip-bom-stream: 5.0.0
+      vinyl: 3.0.1
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - react-native-b4a
 
   vinyl-fs@3.0.3:
     dependencies:
@@ -41792,6 +41819,16 @@ snapshots:
       cloneable-readable: 1.1.3
       remove-trailing-separator: 1.1.0
       replace-ext: 1.0.1
+
+  vinyl@3.0.1:
+    dependencies:
+      clone: 2.1.2
+      remove-trailing-separator: 1.1.0
+      replace-ext: 2.0.0
+      teex: 1.0.1
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - react-native-b4a
 
   vizion@2.2.1:
     dependencies:
@@ -41912,9 +41949,9 @@ snapshots:
       '@webassemblyjs/wasm-parser': 1.14.1
       acorn: 8.18.0
       acorn-import-phases: 1.0.4(acorn@8.18.0)
-      browserslist: 4.28.8
+      browserslist: 4.29.0
       chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.24.5
+      enhanced-resolve: 5.25.1
       es-module-lexer: 2.3.2
       eslint-scope: 5.1.1
       events: 3.3.0
@@ -41923,7 +41960,7 @@ snapshots:
       loader-runner: 4.3.2
       mime-db: 1.54.0
       neo-async: 2.6.2
-      schema-utils: 4.3.3
+      schema-utils: 4.5.0
       tapable: 2.3.3
       terser-webpack-plugin: 5.6.1(cssnano@6.1.2(postcss@8.5.26))(postcss@8.5.26)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.26))(postcss@8.5.26))
       watchpack: 2.5.2
