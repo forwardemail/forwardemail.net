@@ -161,7 +161,7 @@
     "fastest-levenshtein": "1.0.16",
     "feed": "4.2.2",
     "gemoji": "6.1.0",
-    "get-stream": "6.0.1",
+    "get-stream": "9.0.1",
     "github-markdown-css": "5.8.1",
     "google-auth-library": "10.9.0",
     "got": "11.8.6",
