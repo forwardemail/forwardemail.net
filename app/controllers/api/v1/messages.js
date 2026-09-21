@@ -56,9 +56,26 @@ const MAX_SEARCH_ID_VARIABLES = 30000;
 //
 const HEADER_LIKE_KEY_VALUE_SQL = `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') LIKE $p2 ESCAPE '\\';`;
 const HEADER_LIKE_VALUE_SQL = `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.value') LIKE $p1 ESCAPE '\\';`;
+const SUBJECT_LIKE_SQL = `select _id from Messages where subject LIKE $p1 ESCAPE '\\';`;
+const TEXT_LIKE_SQL = `select _id from Messages where text LIKE $p1 ESCAPE '\\';`;
+const MESSAGE_ID_LIKE_SQL = `select _id from Messages where msgid LIKE $p1 ESCAPE '\\';`;
 
 function headerLikePattern(value) {
   return `%${escapeSqliteLike(value.toLowerCase())}%`;
+}
+
+function messageLikePattern(value) {
+  return `%${escapeSqliteLike(value)}%`;
+}
+
+async function findMessageIds(ctx, query, values) {
+  const ids = await ctx.instance.wsp.request({
+    action: 'stmt',
+    session: { user: ctx.state.session.user },
+    stmt: [['prepare', query], ['pluck'], ['all', values]]
+  });
+
+  return Array.isArray(ids) ? ids : [];
 }
 
 const attachmentStorage = new AttachmentStorage();
@@ -529,9 +546,11 @@ async function list(ctx) {
 
   // Search in subject
   if (isSANB(ctx.query.subject)) {
-    searchConditions.push({
-      subject: { $regex: _.escapeRegExp(ctx.query.subject), $options: 'i' }
-    });
+    addSearchIdCondition(
+      await findMessageIds(ctx, SUBJECT_LIKE_SQL, {
+        p1: messageLikePattern(ctx.query.subject)
+      })
+    );
   }
 
   // Search in message body/text
@@ -561,18 +580,22 @@ async function list(ctx) {
       } catch (err) {
         // Graceful fallback if Messages_fts table doesn't exist yet (migration pending)
         if (err.message && err.message.includes('Messages_fts')) {
-          searchConditions.push({
-            text: { $regex: _.escapeRegExp(searchText), $options: 'i' }
-          });
+          addSearchIdCondition(
+            await findMessageIds(ctx, TEXT_LIKE_SQL, {
+              p1: messageLikePattern(searchText)
+            })
+          );
         } else {
           throw err;
         }
       }
     } else {
       // Fallback: LIKE '%term%' full table scan
-      searchConditions.push({
-        text: { $regex: _.escapeRegExp(searchText), $options: 'i' }
-      });
+      addSearchIdCondition(
+        await findMessageIds(ctx, TEXT_LIKE_SQL, {
+          p1: messageLikePattern(searchText)
+        })
+      );
     }
   }
 
@@ -652,9 +675,11 @@ async function list(ctx) {
 
   // Search in message ID
   if (isSANB(ctx.query.message_id)) {
-    searchConditions.push({
-      msgid: { $regex: _.escapeRegExp(ctx.query.message_id), $options: 'i' }
-    });
+    addSearchIdCondition(
+      await findMessageIds(ctx, MESSAGE_ID_LIKE_SQL, {
+        p1: messageLikePattern(ctx.query.message_id)
+      })
+    );
   }
 
   // General search across multiple fields
@@ -668,12 +693,7 @@ async function list(ctx) {
       values: { p1: headerLikePattern(searchTerm) }
     };
 
-    let headerIds = await ctx.instance.wsp.request({
-      action: 'stmt',
-      session: { user: ctx.state.session.user },
-      stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
-    });
-    if (!Array.isArray(headerIds)) headerIds = [];
+    const headerIds = await findMessageIds(ctx, sql.query, sql.values);
 
     // For the text portion, use FTS5 MATCH when available
     let textMatchIds = [];
@@ -713,23 +733,15 @@ async function list(ctx) {
       // (no matches at all yields an empty result set)
       addSearchIdCondition(allMatchIds);
     } else {
-      // Without FTS5 (or FTS5 table missing), fall back to LIKE for text search
-      const normalizedHeaderIds = headerIds.map((id) => id.toString());
-      searchIdVariables += normalizedHeaderIds.length;
-      if (searchIdVariables > MAX_SEARCH_ID_VARIABLES)
-        throw Boom.badRequest(ctx.translateError('SEARCH_TOO_MANY_RESULTS'));
-      searchConditions.push({
-        $or: [
-          {
-            _id: {
-              $in: normalizedHeaderIds
-            }
-          },
-          {
-            text: { $regex: _.escapeRegExp(searchTerm), $options: 'i' }
-          }
-        ]
+      // Without FTS5 (or if its table is not available), get literal text
+      // matches first, then carry the union of text/header IDs into the final
+      // list query.  Passing `$regex` to json-sql-enhanced emits SQLite
+      // REGEXP, which fails with "utf8 err" if any scanned message text is
+      // not valid UTF-8.
+      textMatchIds = await findMessageIds(ctx, TEXT_LIKE_SQL, {
+        p1: messageLikePattern(searchTerm)
       });
+      addSearchIdCondition([...new Set([...headerIds, ...textMatchIds])]);
     }
   }
 

@@ -19753,5 +19753,6 @@
   "<p>The alias password change (rekey) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the rekey process was:</p><pre><code>%s</code></pre>": "<p>The alias password change (rekey) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the rekey process was:</p><pre><code>%s</code></pre>",
   "Mailbox creation failed. Please try again.": "Mailbox creation failed. Please try again.",
   "This alias is currently undergoing a password change (rekey). Please wait for the completion email before trying again.": "This alias is currently undergoing a password change (rekey). Please wait for the completion email before trying again.",
-  "Search matched too many messages. Please use a more specific search term or add another filter.": "Search matched too many messages. Please use a more specific search term or add another filter."
+  "Search matched too many messages. Please use a more specific search term or add another filter.": "Search matched too many messages. Please use a more specific search term or add another filter.",
+  "Email API for Developers - RESTful API with Webhooks & SMTP 2024": "Email API for Developers - RESTful API with Webhooks & SMTP 2024"
 }

@@ -2993,6 +2993,74 @@ test('messages header searches are literal, case-insensitive and tolerate undeco
   t.deepEqual(await list(`headers=${encodeURIComponent('list-id:%')}`), []);
 });
 
+//
+// The SQLite REGEXP extension rejects a query when one scanned text/header
+// value is not valid UTF-8.  Every API list filter must therefore turn a
+// literal user query into a separate LIKE ID lookup, never a `$regex` passed
+// to json-sql-enhanced.  This test covers the exact generic-search fallback
+// that previously emitted `text REGEXP $p2`, plus the other message fields.
+//
+test('messages literal searches never emit SQLite REGEXP statements', async (t) => {
+  const { api, wsp } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  const messageId = 'literal-search-100-percent@example.com';
+
+  const raw = [
+    'MIME-Version: 1.0',
+    `Date: ${new Date().toUTCString()}`,
+    'From: sender@example.com',
+    'To: recipient@example.com',
+    `Message-ID: <${messageId}>`,
+    'Subject: Literal Search 100% _ Marker',
+    'Content-Type: text/plain; charset=UTF-8',
+    '',
+    'The body contains literal 100% _ marker.'
+  ].join('\r\n');
+  const created = await api
+    .post('/v1/messages')
+    .set('Authorization', auth)
+    .send({ raw, folder: 'INBOX' });
+  t.is(created.status, 200);
+
+  const statements = [];
+  const { request } = wsp;
+  wsp.request = async function (payload, ...args) {
+    if (payload?.action === 'stmt') {
+      for (const operation of payload.stmt || []) {
+        if (operation?.[0] === 'prepare' && typeof operation[1] === 'string')
+          statements.push(operation[1]);
+      }
+    }
+
+    return request.call(this, payload, ...args);
+  };
+
+  try {
+    for (const query of [
+      `subject=${encodeURIComponent('100% _ marker')}`,
+      `body=${encodeURIComponent('100% _ marker')}`,
+      `text=${encodeURIComponent('100% _ marker')}`,
+      `message_id=${encodeURIComponent(messageId)}`,
+      `search=${encodeURIComponent(`<${messageId}>`)}`
+    ]) {
+      const result = await api
+        .get(`/v1/messages?${query}`)
+        .set('Authorization', auth);
+      t.is(result.status, 200, `${query}: ${JSON.stringify(result.body)}`);
+      t.true(
+        result.body.some((message) => message.id === created.body.id),
+        `expected the literal query to return the created message: ${query}`
+      );
+    }
+  } finally {
+    wsp.request = request;
+  }
+
+  t.true(statements.some((statement) => statement.includes(' LIKE ')));
+  t.false(statements.some((statement) => /\bregexp\b/i.test(statement)));
+});
+
 test('messages search refuses a result set larger than the query can hold', async (t) => {
   const { api, wsp } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);
