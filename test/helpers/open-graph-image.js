@@ -123,14 +123,19 @@ test('wrap breaks words and scripts without spaces', async (t) => {
   t.is(lines.join('').replace(/ /g, ''), `${word}thenmorewords`);
   t.true((await widest(style, lines)) <= 500);
 
+  // Repeat the no-space script enough to exceed two lines for every supported
+  // renderer/font fallback.  A single sentence is a boundary case: it may fit
+  // exactly in two lines, where `truncated: false` is the correct result.
   const japanese =
-    'エンタープライズグレードのメールを誰にでも。オープンソース、暗号化、プライバシー重視のメールホスティング、転送、IMAP、POP3、SMTP、CalDAV、CardDAVに対応しています。';
+    'エンタープライズグレードのメールを誰にでも。オープンソース、暗号化、プライバシー重視のメールホスティング、転送、IMAP、POP3、SMTP、CalDAV、CardDAVに対応しています。'.repeat(
+      3
+    );
   const result = await wrap(style, japanese, CONTENT_WIDTH, { maxLines: 2 });
   t.is(result.lines.length, 2);
   t.true(result.truncated);
   t.true(result.lines[1].endsWith(ELLIPSIS));
   t.true((await widest(style, result.lines)) <= CONTENT_WIDTH);
-  t.true(japanese.startsWith(result.lines[0]));
+  t.true(japanese.startsWith(result.lines.join('').slice(0, -1)));
 });
 
 test('layoutTitle shrinks a long title to two lines', async (t) => {
