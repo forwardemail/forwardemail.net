@@ -77,7 +77,7 @@
     "@octokit/rest": "20.1.1",
     "@openpgp/wkd-client": "0.0.4",
     "@opensumi/reconnecting-websocket": "4.4.0",
-    "@parse/node-apn": "6.5.0",
+    "@parse/node-apn": "8.1.0",
     "@peculiar/webcrypto": "1.7.1",
     "@peculiar/x509": "1.13.0",
     "@scalar/api-reference": "1.32.6",
