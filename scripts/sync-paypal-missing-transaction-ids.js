@@ -102,34 +102,59 @@ async function lookupPayPalOrder(payment, agent, agentType) {
     }
 
     // Calculate refund amount
-    let amountRefunded = 0;
+    let amountRefunded = payment.amount_refunded || 0;
+    let hasVerifiedRefundAmount = false;
     if (capture.status === 'REFUNDED') {
       amountRefunded = payment.amount;
+      hasVerifiedRefundAmount = true;
       console.log(
         `Full refund detected for transaction ${capture.id}, amount: ${amountRefunded}`
       );
     } else if (capture.status === 'PARTIALLY_REFUNDED') {
-      try {
-        // Lookup the refund and parse the amount refunded
-        const { body: refund } = await agent.get(
-          `/v2/payments/refunds/${capture.id}`
-        );
-        amountRefunded = Math.round(Number(refund.amount.value) * 100);
+      // PayPal's order response contains refund records. A capture ID is not
+      // a refund ID and cannot be used with the refund-detail endpoint.
+      const { refunds } = response.body.purchase_units[0].payments;
+      const completedRefunds = Array.isArray(refunds)
+        ? refunds.filter(
+            (refund) =>
+              refund.status === 'COMPLETED' &&
+              (response.body.purchase_units[0].payments.captures.length === 1 ||
+                refund.links?.some(
+                  (link) =>
+                    link.rel === 'up' &&
+                    link.href.endsWith(`/captures/${capture.id}`)
+                ))
+          )
+        : [];
+      const amounts = completedRefunds
+        .map((refund) =>
+          Number(
+            refund.seller_payable_breakdown?.total_refunded_amount?.value ||
+              refund.amount?.value
+          )
+        )
+        .filter((amount) => Number.isFinite(amount));
+      if (amounts.length > 0) {
+        amountRefunded = Math.round(Math.max(...amounts) * 100);
+        hasVerifiedRefundAmount = true;
         console.log(
           `Partial refund detected for transaction ${capture.id}, amount: ${amountRefunded}`
         );
-      } catch (refundErr) {
+      } else {
         console.error(
-          `Error fetching refund details for ${capture.id}:`,
-          refundErr.message
+          `No completed refund details found for transaction ${capture.id}`
         );
       }
+    } else {
+      amountRefunded = 0;
+      hasVerifiedRefundAmount = true;
     }
 
     return {
       transactionId: capture.id,
       invoiceAt,
       amountRefunded,
+      hasVerifiedRefundAmount,
       status: capture.status
     };
   } catch (err) {
@@ -257,7 +282,10 @@ async function syncPaymentTransaction(payment) {
     }
 
     // Check refund amount
-    if (payment.amount_refunded !== transactionData.amountRefunded) {
+    if (
+      transactionData.hasVerifiedRefundAmount &&
+      payment.amount_refunded !== transactionData.amountRefunded
+    ) {
       payment.amount_refunded = transactionData.amountRefunded;
       shouldSave = true;
       updates.push(`Updated refund amount: ${transactionData.amountRefunded}`);

@@ -14,6 +14,10 @@ const config = require('#config');
 const refundHelper = require('#helpers/refund');
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
 const getAllowedSort = require('#helpers/get-allowed-sort');
+const {
+  canRefundPayment,
+  isPaymentRefunded
+} = require('#helpers/payment-refund-status');
 const { Domains, Payments, Users } = require('#models');
 
 const PAYMENT_SORT_FIELDS = new Set([
@@ -37,18 +41,55 @@ const PAYMENT_SEARCH_PATHS = [
 
 const PAYMENT_ENUM_FIELDS = ['currency', 'method', 'plan', 'kind'];
 
+const MAX_TIME_MS = 30_000;
+const PAYMENT_LIST_FIELDS = {
+  reference: 1,
+  user: 1,
+  amount: 1,
+  amount_refunded: 1,
+  currency: 1,
+  currency_amount: 1,
+  currency_amount_refunded: 1,
+  method: 1,
+  plan: 1,
+  kind: 1,
+  created_at: 1,
+  refunded_at: 1,
+  stripe_payment_intent_id: 1,
+  paypal_transaction_id: 1,
+  is_legacy_paypal: 1
+};
+
+const PAYMENT_DETAIL_FIELDS = {
+  reference: 1,
+  user: 1,
+  amount: 1,
+  amount_refunded: 1,
+  currency: 1,
+  currency_amount: 1,
+  currency_amount_refunded: 1,
+  method: 1,
+  plan: 1,
+  kind: 1,
+  duration: 1,
+  created_at: 1,
+  invoice_at: 1,
+  refunded_at: 1,
+  stripe_payment_intent_id: 1,
+  paypal_transaction_id: 1,
+  is_legacy_paypal: 1
+};
+
 async function list(ctx) {
   let query = {};
 
   if (ctx.query.q) {
     query = { $or: [] };
+    const search = _.escapeRegExp(ctx.query.q);
 
     // Search in string payment fields
     for (const field of PAYMENT_SEARCH_PATHS) {
-      query.$or.push(
-        { [field]: { $regex: ctx.query.q, $options: 'i' } },
-        { [field]: { $regex: _.escapeRegExp(ctx.query.q), $options: 'i' } }
-      );
+      query.$or.push({ [field]: { $regex: search, $options: 'i' } });
     }
 
     // Search in enum/categorical fields with exact matches (faster than regex)
@@ -57,16 +98,17 @@ async function list(ctx) {
       const exactMatch = ctx.query.q.toLowerCase();
       query.$or.push(
         { [field]: exactMatch },
-        { [field]: { $regex: ctx.query.q, $options: 'i' } }
+        { [field]: { $regex: search, $options: 'i' } }
       );
     }
 
     // Search by user email - optimized query
     const users = await Users.find({
-      email: { $regex: ctx.query.q, $options: 'i' }
+      email: { $regex: search, $options: 'i' }
     })
       .select('_id')
       .lean()
+      .maxTimeMS(MAX_TIME_MS)
       .exec();
 
     if (users.length > 0) {
@@ -87,6 +129,8 @@ async function list(ctx) {
   const $sort = {
     [sort.startsWith('-') ? sort.slice(1) : sort]: sort.startsWith('-') ? -1 : 1
   };
+  const isSortingByUserEmail =
+    (sort.startsWith('-') ? sort.slice(1) : sort) === 'user.email';
 
   // FWD-01-010: mongodb_query is validated by assertAllowedMongoQuery() below,
   // which whitelists operators and caps size/depth regardless of transport, so
@@ -126,34 +170,43 @@ async function list(ctx) {
     }
   }
 
-  // OPTIMIZATION: Get count separately (faster than $facet)
-  // This avoids counting after the expensive $lookup
-  const itemCount = await Payments.countDocuments(query);
+  const findQuery = isSortingByUserEmail
+    ? Payments.aggregate([
+        { $match: query },
+        { $project: PAYMENT_LIST_FIELDS },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            pipeline: [{ $project: { email: 1, plan: 1 } }],
+            as: 'user'
+          }
+        },
+        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+        { $sort },
+        { $skip: ctx.paginate.skip },
+        { $limit: ctx.paginate.limit || 50 }
+      ]).option({ maxTimeMS: MAX_TIME_MS })
+    : // eslint-disable-next-line unicorn/no-array-callback-reference
+      Payments.find(query)
+        .select(PAYMENT_LIST_FIELDS)
+        .sort($sort)
+        .skip(ctx.paginate.skip)
+        .limit(ctx.paginate.limit || 50)
+        .populate('user', 'email plan')
+        .lean()
+        .maxTimeMS(MAX_TIME_MS);
 
-  // OPTIMIZATION: Paginate FIRST, then join
-  // This dramatically reduces the number of $lookup operations
-  const payments = await Payments.aggregate([
-    { $match: query },
-    { $sort },
-    { $skip: ctx.paginate.skip },
-    { $limit: ctx.paginate.limit || 50 },
-    // Now $lookup only happens on the paginated subset (e.g., 50 records instead of 100,000)
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'user',
-        foreignField: '_id',
-        pipeline: [
-          { $project: { email: 1, plan: 1 } } // Only select needed fields
-        ],
-        as: 'user'
-      }
-    },
-    {
-      $addFields: {
-        user: { $arrayElemAt: ['$user', 0] } // More efficient than $unwind
-      }
-    }
+  // An unfiltered exact count must scan the whole collection and made the
+  // default admin page slow. Keep pagination useful without blocking on it.
+  const countQuery = _.isEmpty(query)
+    ? Payments.estimatedDocumentCount()
+    : Payments.countDocuments(query).maxTimeMS(MAX_TIME_MS);
+
+  const [payments, itemCount] = await Promise.all([
+    findQuery.exec(),
+    countQuery.exec()
   ]);
 
   const pageCount = Math.ceil(itemCount / (ctx.paginate.limit || 50));
@@ -183,7 +236,9 @@ async function list(ctx) {
 async function retrieve(ctx) {
   const payment = await Payments.findById(ctx.params.id)
     .populate('user', 'email plan')
+    .select(PAYMENT_DETAIL_FIELDS)
     .lean()
+    .maxTimeMS(MAX_TIME_MS)
     .exec();
 
   if (!payment) {
@@ -198,7 +253,9 @@ async function retrieve(ctx) {
       })
         .sort({ created_at: -1 })
         .limit(10)
+        .select(PAYMENT_DETAIL_FIELDS)
         .lean()
+        .maxTimeMS(MAX_TIME_MS)
         .exec()
     : [];
 
@@ -207,7 +264,9 @@ async function retrieve(ctx) {
   if (payment.duration) {
     const durationMapping =
       config.durationMapping?.[payment.duration.toString()];
-    durationFormatted = `${durationMapping[0]} ${durationMapping[1]}`;
+    durationFormatted = durationMapping
+      ? `${durationMapping[0]} ${durationMapping[1]}`
+      : ms(payment.duration);
   }
 
   await ctx.render('admin/payments/retrieve', {
@@ -218,18 +277,24 @@ async function retrieve(ctx) {
 }
 
 async function refund(ctx) {
-  const payment = await Payments.findById(ctx.params.id).populate('user');
+  const payment = await Payments.findById(ctx.params.id)
+    .select(PAYMENT_DETAIL_FIELDS)
+    .lean()
+    .maxTimeMS(MAX_TIME_MS)
+    .exec();
   if (!payment) {
     throw Boom.notFound('Payment does not exist');
   }
 
-  // Check if already refunded
-  if (payment.amount_refunded > 0) {
-    throw Boom.badRequest('Payment already refunded');
+  if (!canRefundPayment(payment)) {
+    const message = isPaymentRefunded(payment)
+      ? 'Payment has already been refunded'
+      : 'Payment cannot be refunded';
+    throw Boom.badRequest(message);
   }
 
-  // Use existing refund helper
-  await refundHelper(payment._id);
+  const refundedPayment = await refundHelper(payment._id);
+  if (!refundedPayment) throw Boom.badRequest('Payment cannot be refunded');
 
   const message = ctx.translate('PAYMENT_REFUNDED');
   if (ctx.accepts('html')) {

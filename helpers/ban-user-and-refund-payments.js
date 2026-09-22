@@ -99,10 +99,15 @@ async function banUserAndRefundPayments(user, reason = 'Fraud detected') {
     // Get eligible payments (within 30 days of plan_set_at, not refunded)
     const payments = await Payments.find({
       user: user._id,
-      amount_refunded: { $eq: 0 }, // Only non-refunded payments
+      amount: { $gt: 0 },
       method: {
         $nin: ['free_beta_program', 'plan_conversion'] // Exclude free/conversion payments
       },
+      $or: [
+        { amount_refunded: { $exists: false } },
+        { amount_refunded: null },
+        { amount_refunded: { $lte: 0 } }
+      ],
       invoice_at: {
         $gte: planSetAt,
         $lte: thirtyDaysAfterPlanSet
@@ -132,15 +137,30 @@ async function banUserAndRefundPayments(user, reason = 'Fraud detected') {
 
       await pMapSeries(stripePayments, async (payment) => {
         try {
-          await stripe.refunds.create({
-            payment_intent: payment.stripe_payment_intent_id,
-            reason: 'fraudulent'
-          });
+          const stripeRefund = await stripe.refunds.create(
+            {
+              payment_intent: payment.stripe_payment_intent_id,
+              reason: 'fraudulent'
+            },
+            {
+              idempotencyKey: `ban-refund-${payment._id}`
+            }
+          );
+
+          if (stripeRefund.status !== 'succeeded') {
+            summary.errors.push({
+              paymentId: payment._id,
+              type: 'stripe',
+              error: `Stripe refund is ${stripeRefund.status}`
+            });
+            return;
+          }
 
           // Update payment record
           await Payments.findByIdAndUpdate(payment._id, {
             amount_refunded: payment.amount,
-            currency_amount_refunded: payment.currency_amount
+            currency_amount_refunded: payment.currency_amount,
+            refunded_at: new Date()
           });
 
           summary.stripeRefunds++;
@@ -177,14 +197,26 @@ async function banUserAndRefundPayments(user, reason = 'Fraud detected') {
       await pMapSeries(paypalPayments, async (payment) => {
         try {
           const agent = await paypalAgent();
-          await agent.post(
-            `/v2/payments/captures/${payment.paypal_transaction_id}/refund`
-          );
+          const response = await agent
+            .post(
+              `/v2/payments/captures/${payment.paypal_transaction_id}/refund`
+            )
+            .set('PayPal-Request-Id', `ban-refund-${payment._id}`);
+
+          if (response.body?.status !== 'COMPLETED') {
+            summary.errors.push({
+              paymentId: payment._id,
+              type: 'paypal',
+              error: `PayPal refund is ${response.body?.status || 'pending'}`
+            });
+            return;
+          }
 
           // Update payment record
           await Payments.findByIdAndUpdate(payment._id, {
             amount_refunded: payment.amount,
-            currency_amount_refunded: payment.currency_amount
+            currency_amount_refunded: payment.currency_amount,
+            refunded_at: new Date()
           });
 
           summary.paypalRefunds++;

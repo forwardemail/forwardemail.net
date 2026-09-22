@@ -12,8 +12,8 @@
 //    use the earliest refund object's `created` timestamp from charge.refunds.data.
 // 2. For PayPal order payments: fetch `/v2/checkout/orders/{order_id}` to get
 //    the capture. If REFUNDED, use the capture's `update_time`. If
-//    PARTIALLY_REFUNDED, call `/v2/payments/refunds/{capture_id}` and use
-//    the refund response's `create_time`.
+//    PARTIALLY_REFUNDED, use the earliest completed refund in the order's
+//    `payments.refunds` array.
 // 3. For PayPal subscription payments: fetch `/v2/payments/captures/{tx_id}`
 //    and use `update_time` (reflects when the refund was processed).
 // 4. Fallback: if the API call fails (e.g. 404 for deleted/legacy accounts),
@@ -110,15 +110,26 @@ async function getPayPalOrderRefundedAt(payment) {
     // update_time on a fully-refunded capture reflects when the refund occurred
     if (capture.update_time) return new Date(capture.update_time);
   } else if (capture.status === 'PARTIALLY_REFUNDED') {
-    // Fetch the refund detail to get the exact create_time
-    try {
-      const { body: refund } = await agent.get(
-        `/v2/payments/refunds/${capture.id}`
-      );
-      if (refund.create_time) return new Date(refund.create_time);
-    } catch {
-      // Fall through to null
-    }
+    // PayPal provides refund records in the order response. A capture ID is
+    // not a refund ID and cannot be used with the refund-detail endpoint.
+    const refunds = order?.purchase_units?.[0]?.payments?.refunds;
+    if (!Array.isArray(refunds)) return null;
+
+    const dates = refunds
+      .filter(
+        (refund) =>
+          refund.status === 'COMPLETED' &&
+          typeof refund.create_time === 'string' &&
+          (captures.length === 1 ||
+            refund.links?.some(
+              (link) =>
+                link.rel === 'up' &&
+                link.href.endsWith(`/captures/${capture.id}`)
+            ))
+      )
+      .map((refund) => new Date(refund.create_time).getTime())
+      .filter((date) => Number.isFinite(date));
+    if (dates.length > 0) return new Date(Math.min(...dates));
   }
 
   return null;

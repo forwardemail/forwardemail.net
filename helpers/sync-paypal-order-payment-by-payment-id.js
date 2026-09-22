@@ -96,20 +96,42 @@ async function syncPayPalOrderPaymentByPaymentId(id) {
         capture
       });
     } else if (capture.status === 'PARTIALLY_REFUNDED') {
-      // lookup the refund and parse the amount refunded
-      // Early return for deprecated legacy PayPal agent
-      if (payment.is_legacy_paypal) {
-        logger.debug(
-          'Skipping legacy PayPal agent usage for refund lookup - deprecated'
-        );
-        return;
+      // PayPal's order response contains refund objects. A capture ID is not
+      // a refund ID and cannot be used with the refund-detail endpoint.
+      const { refunds } = response.body.purchase_units[0].payments;
+      if (!_.isArray(refunds) || _.isEmpty(refunds)) {
+        throw new Error('Partially refunded capture has no refund details');
       }
 
-      const agent = await paypalAgent();
-      const { body: refund } = await agent.get(
-        `/v2/payments/refunds/${capture.id}`
+      const completedRefunds = refunds.filter(
+        (refund) =>
+          refund.status === 'COMPLETED' &&
+          (response.body.purchase_units[0].payments.captures.length === 1 ||
+            refund.links?.some(
+              (link) =>
+                link.rel === 'up' &&
+                link.href.endsWith(`/captures/${capture.id}`)
+            ))
       );
-      amountRefunded = Math.round(Number(refund.amount.value) * 100);
+      if (_.isEmpty(completedRefunds)) {
+        throw new Error('Partially refunded capture has no completed refund');
+      }
+
+      const amounts = completedRefunds
+        .map((refund) =>
+          Number(
+            refund.seller_payable_breakdown?.total_refunded_amount?.value ||
+              refund.amount?.value
+          )
+        )
+        .filter((amount) => Number.isFinite(amount));
+      if (_.isEmpty(amounts)) {
+        throw new Error(
+          'Partially refunded capture has no valid refund amount'
+        );
+      }
+
+      amountRefunded = Math.round(Math.max(...amounts) * 100);
     }
 
     if (payment.amount_refunded !== amountRefunded) shouldSave = true;

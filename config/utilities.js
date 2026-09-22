@@ -41,6 +41,17 @@ const { randomstring } = require('@sidoshi/random-string');
 const _ = require('#helpers/lodash');
 
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const {
+  formatPaymentAmount,
+  formatPaymentNetAmount,
+  getPaymentNetAmount,
+  getPaymentCurrency
+} = require('#helpers/format-payment-amount');
+const {
+  canRefundPayment,
+  isPaymentFullyRefunded,
+  isPaymentRefunded
+} = require('#helpers/payment-refund-status');
 
 // wrapper around ansiHTML that escapes HTML entities first
 // to prevent raw HTML in log messages from being rendered
@@ -2924,6 +2935,13 @@ module.exports = {
   randomstring,
   useCases,
   decrypt,
+  formatPaymentAmount,
+  formatPaymentNetAmount,
+  getPaymentNetAmount,
+  getPaymentCurrency,
+  canRefundPayment,
+  isPaymentFullyRefunded,
+  isPaymentRefunded,
   punycode,
   bytes,
   slug

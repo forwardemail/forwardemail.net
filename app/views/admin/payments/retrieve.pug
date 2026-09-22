@@ -19,11 +19,11 @@ block body
                         td: code= payment.reference
                       tr
                         th= t("Amount")
-                        td= `$${(payment.amount / 100).toFixed(2)} ${payment.currency.toUpperCase()}`
-                      if payment.amount_refunded > 0
+                        td= formatPaymentAmount(payment, ctx.locale)
+                      if isPaymentRefunded(payment)
                         tr
                           th= t("Amount Refunded")
-                          td.text-danger= `$${(payment.amount_refunded / 100).toFixed(2)} ${payment.currency.toUpperCase()}`
+                          td.text-danger= formatPaymentAmount(payment, ctx.locale, true)
                       tr
                         th= t("Method")
                         td= titleize(humanize(payment.method))
@@ -73,15 +73,19 @@ block body
                             )= t("View User")
 
                   h5.mt-4= t("Refund Actions")
-                  if payment.amount > payment.amount_refunded
+                  if canRefundPayment(payment)
                     form.ajax-form.confirm-prompt(
                       action=l(`/admin/payments/${payment._id}/refund`),
                       method="POST"
                     )
                       .form-group
                         button.btn.btn-warning(type="submit")= t("Refund Payment")
-                  else
+                  else if isPaymentFullyRefunded(payment)
                     p.text-muted= t("Payment has been fully refunded")
+                  else if isPaymentRefunded(payment)
+                    p.text-muted= t("Payment has been partially refunded")
+                  else
+                    p.text-muted= t("Refund is unavailable for this payment")
                 else
                   p.text-muted= t("User information not available")
 
@@ -118,7 +122,7 @@ block body
                     each userPayment in userPayments
                       tr
                         td: code= userPayment.reference
-                        td= `$${(userPayment.amount / 100).toFixed(2)} ${userPayment.currency.toUpperCase()}`
+                        td= formatPaymentAmount(userPayment, ctx.locale)
                         td= titleize(humanize(userPayment.method))
                         td= titleize(humanize(userPayment.plan))
                         td.dayjs(

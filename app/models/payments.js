@@ -26,6 +26,7 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const config = require('#config');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
+const { formatPaymentNetAmount } = require('#helpers/format-payment-amount');
 
 const inline = pify(webResourceInliner.html);
 
@@ -474,32 +475,10 @@ async function getUniqueReference(payment) {
 
 Payments.pre('validate', async function (next) {
   try {
-    if (this.currency && this.currency !== 'usd') {
-      const sum =
-        Number.isFinite(this.currency_amount_refunded) &&
-        this.currency_amount_refunded > 0 &&
-        this.currency_amount_refunded <= this.currency_amount
-          ? (this.currency_amount - this.currency_amount_refunded) / 100
-          : this.currency_amount / 100;
-
-      this.amount_formatted = new Intl.NumberFormat(this.locale || 'en-US', {
-        style: 'currency',
-        currency: this.currency.toUpperCase()
-      }).format(sum);
-    } else {
-      const sum =
-        Number.isFinite(this.amount_refunded) &&
-        this.amount_refunded > 0 &&
-        this.amount_refunded <= this.amount
-          ? (this.amount - this.amount_refunded) / 100
-          : this.amount / 100;
-
-      // this.amount_formatted = numeral(sum).format('$0,0,0.00');
-      this.amount_formatted = new Intl.NumberFormat(this.locale || 'en-US', {
-        style: 'currency',
-        currency: 'USD'
-      }).format(sum);
-    }
+    this.amount_formatted = formatPaymentNetAmount(
+      this,
+      this.locale || 'en-US'
+    );
 
     if (!isSANB(this.reference))
       this.reference = await cryptoRandomString.async(config.referenceOptions);

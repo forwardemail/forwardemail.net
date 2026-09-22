@@ -4,28 +4,55 @@
  */
 
 const { paypalAgent } = require('./paypal');
+
 const logger = require('#helpers/logger');
+const { canRefundPayment } = require('#helpers/payment-refund-status');
 const stripe = require('#helpers/stripe');
 const { Payments } = require('#models');
+
+async function completeRefund(payment) {
+  payment.amount_refunded = payment.amount;
+  payment.currency_amount_refunded = payment.currency_amount;
+  payment.refunded_at = new Date();
+  await payment.save();
+  return payment.toObject();
+}
+
+function getRefundRequestId(payment) {
+  return `refund-${payment._id}`;
+}
 
 // this function accepts a payment ID
 // and refunds it appropriately in Stripe or PayPal
 async function refund(id) {
   const payment = await Payments.findById(id);
   if (!payment) throw new Error('Payment does not exist');
+
+  if (!canRefundPayment(payment)) return false;
+
+  const requestId = getRefundRequestId(payment);
+
   //
   // if it was stripe then we can attempt to refund by:
   // - stripe_payment_intent_id
   //
   if (payment.stripe_payment_intent_id) {
-    await stripe.refunds.create({
-      payment_intent: payment.stripe_payment_intent_id
-    });
-    payment.amount_refunded = payment.amount;
-    payment.currency_amount_refunded = payment.currency_amount;
-    payment.refunded_at = new Date();
-    await payment.save();
-    return payment.toObject();
+    const stripeRefund = await stripe.refunds.create(
+      {
+        payment_intent: payment.stripe_payment_intent_id
+      },
+      {
+        idempotencyKey: requestId
+      }
+    );
+
+    if (stripeRefund.status !== 'succeeded') {
+      throw new Error(
+        `Stripe refund was not completed: ${stripeRefund.status}`
+      );
+    }
+
+    return completeRefund(payment);
   }
 
   //
@@ -36,24 +63,25 @@ async function refund(id) {
     // Early return for deprecated legacy PayPal agent
     if (payment.is_legacy_paypal) {
       logger.debug('Skipping legacy PayPal agent usage - deprecated');
-      throw new Error('Legacy PayPal refunds are no longer supported');
+      return false;
     }
 
     const agent = await paypalAgent();
-    // <https://developer.paypal.com/docs/api/payments/v2/#captures_refund>
-    await agent.post(
-      `/v2/payments/captures/${payment.paypal_transaction_id}/refund`
-    );
-    payment.amount_refunded = payment.amount;
-    payment.refunded_at = new Date();
-    await payment.save();
-    return payment.toObject();
+    // <https://developer.paypal.com/docs/api/payments/v2/captures-refund>
+    const response = await agent
+      .post(`/v2/payments/captures/${payment.paypal_transaction_id}/refund`)
+      .set('PayPal-Request-Id', requestId);
+
+    if (response.body?.status !== 'COMPLETED') {
+      throw new Error(
+        `PayPal refund was not completed: ${response.body?.status || 'unknown'}`
+      );
+    }
+
+    return completeRefund(payment);
   }
 
-  // otherwise throw an error
-  throw new Error(
-    'Unknown payment to refund; no Stripe or PayPal necessary ID'
-  );
+  return false;
 }
 
 module.exports = refund;

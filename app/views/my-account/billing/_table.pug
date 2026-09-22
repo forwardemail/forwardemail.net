@@ -71,7 +71,7 @@ mixin receipt(payment)
               +receipt(payment)
           td.align-middle.d-none.d-lg-table-cell
             +paymentMethod(payment)
-          td.align-middle.text-right= payment.amount_formatted
+          td.align-middle.text-right= formatPaymentNetAmount(payment, ctx.locale)
           td.align-middle.d-none.d-lg-table-cell.text-center
             +receipt(payment)
 +paginate('#table-payments')

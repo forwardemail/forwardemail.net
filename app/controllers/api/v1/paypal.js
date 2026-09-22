@@ -767,15 +767,10 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
 
         // Attempt to cancel the order on PayPal's side
         try {
-          const cancelResponse = await paypalAgent.post(
-            `/v2/checkout/orders/${body.resource.id}/cancel`,
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'PayPal-Request-Id': `cancel-${body.resource.id}-${Date.now()}`
-              }
-            }
-          );
+          const agent = await paypalAgent();
+          const cancelResponse = await agent
+            .post(`/v2/checkout/orders/${body.resource.id}/cancel`)
+            .set('PayPal-Request-Id', `cancel-${body.id || body.resource.id}`);
 
           ctx.logger.info('Successfully cancelled PayPal order', {
             paypal_order_id: body.resource.id,

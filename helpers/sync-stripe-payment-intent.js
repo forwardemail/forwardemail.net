@@ -107,6 +107,7 @@ function syncStripePaymentIntent(user) {
       let fee;
       let exchangeRate;
       let currencyAmountRefunded;
+      let refundedAt;
 
       let { amount } = paymentIntent;
       if (stripeCharge.refunded) {
@@ -127,6 +128,7 @@ function syncStripePaymentIntent(user) {
         }
 
         const [stripeChargeRefund] = stripeCharge.refunds.data;
+        refundedAt = dayjs.unix(stripeChargeRefund.created).toDate();
 
         if (
           !isSANB(stripeChargeRefund.balance_transaction) &&
@@ -430,6 +432,8 @@ function syncStripePaymentIntent(user) {
         payment.currency = currency;
         payment.currency_amount = currencyAmount;
         payment.currency_amount_refunded = currencyAmountRefunded;
+        if (amountRefunded > 0 && !payment.refunded_at)
+          payment.refunded_at = refundedAt;
 
         await payment.save();
 
@@ -450,6 +454,7 @@ function syncStripePaymentIntent(user) {
           currency,
           currency_amount: currencyAmount,
           currency_amount_refunded: currencyAmountRefunded,
+          ...(amountRefunded > 0 ? { refunded_at: refundedAt } : {}),
           stripe_session_id: checkoutSession?.id,
           stripe_payment_intent_id: paymentIntent?.id,
           stripe_invoice_id: invoice?.id,

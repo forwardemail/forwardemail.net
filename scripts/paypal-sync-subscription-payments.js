@@ -169,16 +169,20 @@ async function syncSubscriptionPayments(
             10
           ) * 100;
 
-        let amountRefunded = 0;
+        let amountRefunded = existingPayment?.amount_refunded || 0;
         // Check for refunds
         if (transaction.status === 'REFUNDED') {
           amountRefunded = amount;
         } else if (transaction.status === 'PARTIALLY_REFUNDED') {
-          // Lookup the refund details
-          const { body: refund } = await agent.get(
-            `/v2/payments/refunds/${transaction.id}`
+          // Subscription transaction IDs are capture IDs, not refund IDs.
+          // The subscription API does not disclose a cumulative partial refund
+          // amount, so preserve a verified stored amount rather than inventing
+          // one from an invalid refund-detail request.
+          console.warn(
+            `Cannot determine partial refund amount for transaction ${transaction.id}`
           );
-          amountRefunded = Math.round(Number(refund.amount.value) * 100);
+        } else {
+          amountRefunded = 0;
         }
 
         if (existingPayment) {
@@ -221,6 +225,8 @@ async function syncSubscriptionPayments(
           // Update refund amount if different
           if (existingPayment.amount_refunded !== amountRefunded) {
             existingPayment.amount_refunded = amountRefunded;
+            if (amountRefunded > 0 && !existingPayment.refunded_at)
+              existingPayment.refunded_at = new Date();
             shouldSave = true;
           }
 
@@ -264,6 +270,7 @@ async function syncSubscriptionPayments(
             plan,
             duration,
             amount_refunded: amountRefunded,
+            ...(amountRefunded > 0 ? { refunded_at: new Date() } : {}),
             [config.userFields.paypalSubscriptionID]: subscription.id,
             paypal_transaction_id: transaction.id,
             invoice_at: new Date(transaction.time),

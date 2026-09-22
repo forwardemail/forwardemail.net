@@ -3,16 +3,14 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const RE2 = require('re2');
 // const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
+const { getPaymentNetAmount } = require('#helpers/format-payment-amount');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
-
-const REGEX_AMOUNT_FORMATTED = new RE2('amount_formatted', 'i');
 
 async function listBilling(ctx) {
   let { payments } = ctx.state;
@@ -23,8 +21,8 @@ async function listBilling(ctx) {
   // sort payments
   let sortFn;
   if (isSANB(ctx.query.sort)) {
-    sortFn = REGEX_AMOUNT_FORMATTED.test(ctx.query.sort)
-      ? (p) => p.amount_formatted.replace(/[^\d.]/, '')
+    sortFn = ctx.query.sort.toLowerCase().includes('amount_formatted')
+      ? getPaymentNetAmount
       : (p) => p[ctx.query.sort.replace(/^-/, '')];
   }
 
