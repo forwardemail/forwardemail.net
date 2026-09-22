@@ -15,6 +15,7 @@ const falso = require('@ngneat/falso');
 const intoStream = require('into-stream');
 const ip = require('ip');
 const isBase64 = require('is-base64');
+const libmime = require('libmime');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
@@ -861,10 +862,13 @@ Test`.trim()
       `"${emoji('blush')} Test" <${alias.name}@${domain.name}>`
     );
     t.is(res.body.headers.Subject, `${emoji('blush')} testing this`);
-    t.true(
-      res.body.message.includes(
-        `From: "=?UTF-8?Q?=F0=9F=98=8A?= Test" <${alias.name}@${domain.name}>`
-      )
+    const from = res.body.message.match(
+      /(?:^|\r?\n)from:\s*(.*(?:\r?\n[ \t]+.*)*)/i
+    );
+    t.truthy(from);
+    t.is(
+      libmime.decodeWords(from[1].replace(/\r?\n[ \t]+/g, ' ')),
+      res.body.headers.From
     );
   }
 

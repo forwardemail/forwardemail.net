@@ -50,7 +50,7 @@ test('the name cell of a domain is a link to it, with the DNS indicators above t
   // a verified domain and one that still needs its DNS records
   const verified = await t.context.domainFactory
     .withState({
-      name: `${randomUUID().replaceAll('-', '').slice(0, 12)}.com`,
+      name: `test-${randomUUID()}.example.com`,
       members: [{ user: user._id, group: 'admin' }],
       plan: 'free',
       has_mx_record: true,
@@ -61,7 +61,7 @@ test('the name cell of a domain is a link to it, with the DNS indicators above t
     .create();
   const unverified = await t.context.domainFactory
     .withState({
-      name: `${randomUUID().replaceAll('-', '').slice(0, 12)}.com`,
+      name: `test-${randomUUID()}.example.com`,
       members: [{ user: user._id, group: 'admin' }],
       plan: 'free',
       has_mx_record: false,

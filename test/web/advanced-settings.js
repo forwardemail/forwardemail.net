@@ -40,7 +40,7 @@ test('the custom verification preview is a blank, sandboxed frame', async (t) =>
   const { user, web } = t.context;
   const domain = await t.context.domainFactory
     .withState({
-      name: `${randomUUID().replaceAll('-', '').slice(0, 12)}.com`,
+      name: `test-${randomUUID()}.example.com`,
       members: [{ user: user._id, group: 'admin' }],
       plan: 'free',
       has_mx_record: true,

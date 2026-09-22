@@ -17,8 +17,6 @@ const Redis = require('ioredis-mock');
 const Web = require('@ladjs/web');
 const falso = require('@ngneat/falso');
 const mongoose = require('mongoose');
-const ms = require('ms');
-const pWaitFor = require('p-wait-for');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { listen } = require('async-listen');
@@ -37,12 +35,6 @@ const setupMongooseHelper = require('#helpers/setup-mongoose');
 const webConfig = require('#config/web');
 
 const { Users, Domains, Payments, Aliases } = require('#models');
-
-// dynamically import get-port
-let getPort;
-import('get-port').then((obj) => {
-  getPort = obj.default;
-});
 
 const crypto = new Crypto();
 x509.cryptoProvider.set(crypto);
@@ -76,10 +68,8 @@ exports.setupWebServer = async (t) => {
     Users
   );
   t.context._web = web;
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
-  const port = await getPort();
   // remove trailing slash from web URL
-  t.context.webURL = await listen(web.server, { host: '127.0.0.1', port });
+  t.context.webURL = await listen(web.server, { host: '127.0.0.1', port: 0 });
   t.context.webURL = t.context.webURL.toString().slice(0, -1);
   t.context.web = request.agent(web.server);
 };
@@ -94,11 +84,10 @@ exports.setupApiServer = async (t) => {
   subscriber.setMaxListeners(0);
   t.context.subscriber = subscriber;
 
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
-  const sqlitePort = await getPort();
   const SQLite = require('../sqlite-server');
   const sqlite = new SQLite({ client, subscriber });
-  await sqlite.listen(sqlitePort);
+  await sqlite.listen(0);
+  const { port: sqlitePort } = sqlite.server.address();
   t.context.sqlite = sqlite;
   const wsp = createWebSocketAsPromised({
     port: sqlitePort
@@ -114,10 +103,8 @@ exports.setupApiServer = async (t) => {
     },
     Users
   );
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
-  const port = await getPort();
   // remove trailing slash from API URL
-  t.context.apiURL = await listen(api.server, { host: '127.0.0.1', port });
+  t.context.apiURL = await listen(api.server, { host: '127.0.0.1', port: 0 });
   t.context.apiURL = t.context.apiURL.toString().slice(0, -1);
   t.context.api = request.agent(api.server);
   t.context._api = api;
@@ -187,7 +174,12 @@ class DomainFactory extends BaseFactory {
 
   async definition() {
     return {
-      name: falso.randDomainName()
+      // Never create a test domain from the public DNS namespace. MX tests
+      // may forward to a factory-generated recipient and must not reach an
+      // unrelated live host when a fixture lacks a local DNS override.
+      // `example.com` is reserved for documentation and is accepted by the
+      // application's domain denylist unlike reserved testing TLDs.
+      name: `test-${randomUUID()}.example.com`
     };
   }
 }

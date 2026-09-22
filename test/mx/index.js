@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { randomUUID } = require('node:crypto');
 const net = require('node:net');
 const util = require('node:util');
 const { Buffer } = require('node:buffer');
@@ -531,7 +532,7 @@ Test`.trim()
 // TODO: this needs tested against MX integration
 //
 test('isExpiredOrNewlyCreated', async (t) => {
-  const rootDomain = falso.randDomainName();
+  const rootDomain = `test-${randomUUID()}.example.com`;
 
   //
   // NOTE: we basically test by spoofing the DNS whois cache
