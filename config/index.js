@@ -840,6 +840,10 @@ const config = {
     1,
     Number(env.SMTP_SPAM_SUSPENSION_MIN_UNIQUE_RECIPIENTS) || 2
   ),
+  // only log and count (rather than reject) unauthenticated legacy-HELO mail
+  // from generic reverse DNS that impersonates its From domain
+  // (see `helpers/is-high-confidence-generic-rdns-spam.js`)
+  genericRdnsSpamMonitorOnly: boolean(env.GENERIC_RDNS_SPAM_MONITOR_ONLY),
   // Suspend domain when >= this fraction of its aliases are suspended
   smtpDomainSuspensionAliasThreshold:
     Number(env.SMTP_DOMAIN_SUSPENSION_ALIAS_THRESHOLD) || 0.25,

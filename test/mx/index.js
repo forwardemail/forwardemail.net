@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const net = require('node:net');
 const util = require('node:util');
 const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
@@ -1901,6 +1902,398 @@ This should be allowed through the compound public-suffix allowlist
 
   await server.close();
   await smtp.close();
+});
+
+//
+// Minimal raw SMTP client so a test can greet with legacy "HELO" (nodemailer
+// always sends EHLO first). Sends each command once the previous reply is
+// complete and resolves with the server's reply to each command.
+//
+function sendRawSMTP({ host, port, commands }) {
+  return new Promise((resolve, reject) => {
+    const socket = net.createConnection({ host, port });
+    const replies = [];
+    let buffer = '';
+    let lines = [];
+    let step = -1;
+
+    const finish = (err) => {
+      socket.removeAllListeners();
+      socket.destroy();
+      if (err) reject(err);
+      else resolve(replies);
+    };
+
+    socket.setTimeout(ms('30s'), () =>
+      finish(new Error('Timed out waiting for SMTP response'))
+    );
+    socket.on('error', finish);
+    socket.on('close', () => finish());
+    socket.on('data', (chunk) => {
+      buffer += chunk.toString();
+      let index = buffer.indexOf('\r\n');
+      while (index !== -1) {
+        const line = buffer.slice(0, index);
+        buffer = buffer.slice(index + 2);
+        lines.push(line);
+        // a reply is complete once a line has a space after the status code
+        if (/^\d{3} /.test(line)) {
+          const reply = {
+            command: step === -1 ? 'CONNECT' : commands[step],
+            code: Number.parseInt(line.slice(0, 3), 10),
+            text: lines.join('\n')
+          };
+          lines = [];
+          replies.push(reply);
+          step++;
+          if (step >= commands.length) return finish();
+          socket.write(`${commands[step]}\r\n`);
+        }
+
+        index = buffer.indexOf('\r\n');
+      }
+    });
+  });
+}
+
+test('rejects unauthenticated legacy HELO spoofing from a generic cloud reverse hostname', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  //
+  // The test client connects from a non-public address, which the MX treats
+  // as an allowlisted local host, so the public address of the sending cloud
+  // VM is presented to this test instance instead: the connection hook sees
+  // it when it performs the reverse DNS lookup and allowlist checks, and the
+  // client then issues smtp-server's XCLIENT extension (enabled on this
+  // instance only) so the SMTP transaction carries the same address.
+  //
+  const spoofedAddress = '35.196.140.60';
+  smtp.server.options.useXClient = true;
+  const { onConnect } = smtp.server;
+  smtp.server.onConnect = (session, fn) => {
+    session.remoteAddress = spoofedAddress;
+    return onConnect(session, fn);
+  };
+
+  const receivedEmails = [];
+
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: serverPort.toString()
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: 'test',
+      recipients: [`test@${IP_ADDRESS}`],
+      is_enabled: true
+    })
+    .create();
+
+  //
+  // The impersonated From domain: SPF that does not authorize the sender
+  // (softfail) and DMARC p=none, which is the profile of the domains abused by
+  // this campaign (no enforcing policy means no policy-based rejection).
+  //
+  const spoofedDomain = 'spoofed-victim-brand.com';
+
+  //
+  // The sending address is a Google Cloud VM with the provider's generated
+  // reverse DNS (<reversed octets>.bc.googleusercontent.com), and the
+  // provider's root domain is on the connection allowlist exactly as in
+  // production, where the popularity-based allowlist job adds it. This is what
+  // lets the campaign bypass greylisting and the other allowlist-gated checks.
+  //
+  const genericHostname = `${spoofedAddress
+    .split('.')
+    .reverse()
+    .join('.')}.bc.googleusercontent.com`;
+
+  // spoof dns records
+  const map = new Map();
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+  );
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+  map.set(
+    `txt:${spoofedDomain}`,
+    resolver.spoofPacket(
+      spoofedDomain,
+      'TXT',
+      ['v=spf1 ip4:203.0.113.5 ~all'],
+      true
+    )
+  );
+  map.set(
+    `txt:_dmarc.${spoofedDomain}`,
+    resolver.spoofPacket(
+      `_dmarc.${spoofedDomain}`,
+      'TXT',
+      ['v=DMARC1; p=none;'],
+      true
+    )
+  );
+  // reverse DNS is resolved as a PTR query on the in-addr.arpa name
+  const arpaName = `${spoofedAddress
+    .split('.')
+    .reverse()
+    .join('.')}.in-addr.arpa`;
+  map.set(
+    `ptr:${arpaName}`,
+    resolver.spoofPacket(arpaName, 'PTR', [genericHostname], true)
+  );
+  await resolver.options.cache.mset(map);
+
+  // only the provider root domain is allowlisted (not the address itself)
+  await t.context.client.del(`allowlist:${spoofedAddress}`);
+  await t.context.client.set('allowlist:googleusercontent.com', true);
+
+  // each attempt is a distinct message so message fingerprinting does not
+  // treat it as a redelivery of a previous attempt
+  let attempt = 0;
+  const createRaw = () => `
+From: "Top US Neurologist" <support@${spoofedDomain}>
+To: test@${domain.name}
+Subject: 45 days to reverse memory loss without injections
+Message-ID: <0747b914d6e74981b0de1580243b8c${++attempt}@${spoofedDomain}>
+Date: ${new Date().toUTCString()}
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<html><body><p>Unauthenticated spoofed message ${attempt}</p></body></html>
+`;
+
+  //
+  // The client greets as the impersonated domain (as in the campaign), using
+  // either the legacy HELO or the ESMTP EHLO command.
+  //
+  const send = async (greetingCommand) => {
+    const raw = createRaw();
+    const replies = await sendRawSMTP({
+      host: IP_ADDRESS,
+      port: smtp.server.address().port,
+      commands: [
+        `XCLIENT ADDR=${spoofedAddress}`,
+        `${greetingCommand} ${spoofedDomain}`,
+        `MAIL FROM:<support@${spoofedDomain}>`,
+        `RCPT TO:<test@${domain.name}>`,
+        'DATA',
+        `${raw.trim().replace(/\r?\n/g, '\r\n')}\r\n.`,
+        'QUIT'
+      ]
+    });
+    // the reply to the message body follows the 354 reply to DATA
+    const index = replies.findIndex((reply) => reply.command === 'DATA');
+    t.true(index !== -1, 'DATA command should have been sent');
+    t.is(replies[index].code, 354);
+    t.truthy(replies[index + 1]);
+    return replies[index + 1];
+  };
+
+  // counters are kept per UTC arrival date
+  const counter = async (name) => {
+    const dates = new Set([
+      new Date().toISOString().split('T')[0],
+      new Date(Date.now() - ms('1m')).toISOString().split('T')[0]
+    ]);
+    let total = 0;
+    for (const date of dates) {
+      const value = await t.context.client.get(`${name}:${date}`);
+      total += Number.parseInt(value, 10) || 0;
+    }
+
+    return total;
+  };
+
+  const { genericRdnsSpamMonitorOnly } = config;
+  try {
+    // scenarios 1-4 exercise enforcement (the default configuration is
+    // monitor-only, which is covered by scenario 5)
+    config.genericRdnsSpamMonitorOnly = false;
+
+    //
+    // 1. legacy HELO, no DKIM, SPF softfail, DMARC p=none, generic reverse
+    //    DNS on an allowlisted provider root domain -> temporarily rejected
+    //    with 421 (so a legitimate sender keeps retrying if the rule is
+    //    ever rolled back)
+    //
+    const rejection = await send('HELO');
+    t.is(rejection.code, 421);
+    t.regex(rejection.text, /legacy helo greeting/i);
+    t.regex(rejection.text, /generic \(provider-generated\) reverse dns/i);
+    t.is(receivedEmails.length, 0);
+    t.is(await counter('generic_rdns_spam_prevented'), 1);
+
+    //
+    // 2. the identical message greeted with EHLO is outside this rule and
+    //    must continue through the normal (non-enforcing DMARC) path
+    //
+    const acceptance = await send('EHLO');
+    t.is(acceptance.code, 250);
+    await pWaitFor(() => receivedEmails.length > 0, { timeout: ms('10s') });
+    t.is(receivedEmails.length, 1);
+
+    //
+    // 3. legacy HELO from the same generic host is still accepted once the
+    //    From domain's SPF record authorizes the sending address
+    //
+    await resolver.options.cache.mset(
+      new Map([
+        [
+          `txt:${spoofedDomain}`,
+          resolver.spoofPacket(
+            spoofedDomain,
+            'TXT',
+            [`v=spf1 ip4:${spoofedAddress} ~all`],
+            true
+          )
+        ]
+      ])
+    );
+    const authorization = await send('HELO');
+    t.is(authorization.code, 250);
+    await pWaitFor(() => receivedEmails.length > 1, { timeout: ms('10s') });
+    t.is(receivedEmails.length, 2);
+
+    //
+    // 4. an explicit allowlist entry for the sending address itself (which is
+    //    shadowed by the provider root domain match at connection time) is
+    //    honored even for the unauthenticated legacy HELO message
+    //
+    await resolver.options.cache.mset(
+      new Map([
+        [
+          `txt:${spoofedDomain}`,
+          resolver.spoofPacket(
+            spoofedDomain,
+            'TXT',
+            ['v=spf1 ip4:203.0.113.5 ~all'],
+            true
+          )
+        ]
+      ])
+    );
+    await t.context.client.set(`allowlist:${spoofedAddress}`, true);
+    const exemption = await send('HELO');
+    t.is(exemption.code, 250);
+    await pWaitFor(() => receivedEmails.length > 2, { timeout: ms('10s') });
+    t.is(receivedEmails.length, 3);
+    await t.context.client.del(`allowlist:${spoofedAddress}`);
+
+    //
+    // 5. in monitor-only mode (the default) the same message is logged and
+    //    counted but still delivered
+    //
+    config.genericRdnsSpamMonitorOnly = true;
+    const monitored = await send('HELO');
+    t.is(monitored.code, 250);
+    await pWaitFor(() => receivedEmails.length > 3, { timeout: ms('10s') });
+    t.is(receivedEmails.length, 4);
+    t.is(await counter('generic_rdns_spam_monitored'), 1);
+    t.is(await counter('generic_rdns_spam_prevented'), 1);
+  } finally {
+    config.genericRdnsSpamMonitorOnly = genericRdnsSpamMonitorOnly;
+
+    // Clear the spoofed records and allowlist entries so they do not bleed
+    // into subsequent tests via the shared Tangerine Redis cache.
+    await t.context.client.del(`tangerine:ptr:${arpaName}`);
+    await t.context.client.del(`tangerine:txt:${spoofedDomain}`);
+    await t.context.client.del(`tangerine:txt:_dmarc.${spoofedDomain}`);
+    await t.context.client.del('allowlist:googleusercontent.com');
+    await t.context.client.del(`allowlist:${spoofedAddress}`);
+
+    await server.close();
+    await smtp.close();
+  }
 });
 
 test('requiretls propagation', async (t) => {

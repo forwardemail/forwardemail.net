@@ -40,6 +40,7 @@ const status = require('statuses');
 const { Headers } = require('mailsplit');
 const { Iconv } = require('iconv');
 const { SRS } = require('sender-rewriting-scheme');
+const { boolean } = require('boolean');
 const { sealMessage } = require('mailauth');
 const { simpleParser } = require('mailparser');
 const _ = require('#helpers/lodash');
@@ -75,6 +76,7 @@ const isDenylisted = require('#helpers/is-denylisted');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const isEmail = require('#helpers/is-email');
 const isGreylisted = require('#helpers/is-greylisted');
+const isHighConfidenceGenericRdnsSpam = require('#helpers/is-high-confidence-generic-rdns-spam');
 const isHighConfidencePhpHostingSpam = require('#helpers/is-high-confidence-php-hosting-spam');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const logger = require('#helpers/logger');
@@ -2082,6 +2084,61 @@ async function onDataMX(session, headers, body) {
         responseCode: 550
       }
     );
+  }
+
+  //
+  // Reject unauthenticated mail injected with a legacy HELO greeting straight
+  // from a cloud/hosting address that still has the provider's generated
+  // reverse DNS (e.g. *.bc.googleusercontent.com) while impersonating an
+  // unrelated From domain. The provider's root domain is typically on the
+  // popularity-based allowlist, which is why this must run regardless of
+  // `session.isAllowlisted`.
+  //
+  if (isHighConfidenceGenericRdnsSpam(session)) {
+    //
+    // The allowlist match recorded by `on-connect` for such a host is the
+    // provider's shared root domain, which shadows an explicit Redis allowlist
+    // entry (e.g. added by an admin) for the address itself or for its exact
+    // hostname, so honor those here before rejecting.
+    //
+    const keys = [`allowlist:${session.remoteAddress}`];
+    if (isFQDN(session.resolvedClientHostname))
+      keys.push(`allowlist:${session.resolvedClientHostname}`);
+    const results = await this.client.mget(keys);
+
+    if (!results.some((result) => boolean(result))) {
+      // NOTE: a temporary rejection is used (rather than 550) so that a
+      //       legitimate sender's MTA keeps retrying and is delivered
+      //       normally if this rule ever has to be rolled back
+      const err = new SMTPError(
+        'The email sent has no passing authentication aligned with the From address (SPF, DKIM, or DMARC) and was sent using a legacy HELO greeting from a host with a generic (provider-generated) reverse DNS hostname; configure SPF or DKIM for your sending domain and a custom PTR record for your mail server',
+        {
+          responseCode: 421
+        }
+      );
+
+      //
+      // in monitor-only mode (the default) the match is logged with the full
+      // session and counted, but the message continues through the normal
+      // path; this allows the rule to be observed against real traffic before
+      // `GENERIC_RDNS_SPAM_MONITOR_ONLY=false` turns on rejection
+      //
+      if (config.genericRdnsSpamMonitorOnly) {
+        this.client
+          .incr(`generic_rdns_spam_monitored:${session.arrivalDateFormatted}`)
+          .then()
+          .catch((err) => logger.fatal(err));
+
+        logger.warn(err, { session });
+      } else {
+        this.client
+          .incr(`generic_rdns_spam_prevented:${session.arrivalDateFormatted}`)
+          .then()
+          .catch((err) => logger.fatal(err));
+
+        throw err;
+      }
+    }
   }
 
   /*
