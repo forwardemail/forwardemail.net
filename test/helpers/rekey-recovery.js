@@ -170,6 +170,24 @@ test.serial(
     const alias = await getAlias(_id);
     t.deepEqual(alias.tokens, []);
     assertStateCleared(t, alias);
+
+    // a token that could never validate a password is not restored either,
+    // whoever passes it
+    const second = await insertRekeyingAlias({ rekey_previous_tokens: [] });
+    t.truthy(
+      await rollbackRekey(client, second._id, {
+        rekeyId: second.rekeyId,
+        tokens: [
+          { description: 'legacy', has_pbkdf2_migration: false },
+          ...OLD_TOKENS,
+          { description: 'no hash', salt: 'salt' }
+        ]
+      })
+    );
+    const restored = await getAlias(second._id);
+    t.is(restored.tokens.length, 1);
+    t.like(restored.tokens[0], OLD_TOKENS[0]);
+    assertStateCleared(t, restored);
   }
 );
 

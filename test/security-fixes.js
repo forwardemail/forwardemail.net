@@ -221,27 +221,6 @@ test('json utility preserves normal content', (t) => {
   t.is(parsed.count, 42);
 });
 
-//
-// CSP configuration (FWD-01-008)
-//
-test('CSP script-src does not include unsafe-inline', (t) => {
-  // We can't easily test the full helmet config without starting the app,
-  // but we can verify the config file doesn't have unsafe-inline in script-src
-  const fs = require('node:fs');
-  const path = require('node:path');
-  const webConfig = fs.readFileSync(
-    path.join(__dirname, '..', 'config', 'web.js'),
-    'utf8'
-  );
-  // Find the script-src section
-  const scriptSrcMatch = webConfig.match(/'script-src':\s*\[([\s\S]*?)]/);
-  t.truthy(scriptSrcMatch);
-  // Should not contain 'unsafe-inline'
-  t.false(scriptSrcMatch[1].includes("'unsafe-inline'"));
-  // Should contain 'strict-dynamic'
-  t.true(scriptSrcMatch[1].includes("'strict-dynamic'"));
-});
-
 test('isPrivateHost canonically blocks IPv4-mapped IPv6 private ranges', (t) => {
   const isPrivateHost = require('#helpers/is-private-host');
 

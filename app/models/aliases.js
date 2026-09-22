@@ -34,6 +34,7 @@ const getKeyInfo = require('#helpers/get-key-info');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const { detectInvisibleUnicode } = require('#helpers/detect-invisible-unicode');
+const { guardTokenPaths } = require('#helpers/token-guard');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 
@@ -639,6 +640,9 @@ Aliases.index(
   { partialFilterExpression: { has_recipient_verification: true } }
 );
 
+// a token is only ever saved with its salt and hash (see the helper)
+guardTokenPaths(Aliases, ['tokens', 'rekey_previous_tokens']);
+
 // validate PGP key if any
 Aliases.pre('save', async function (next) {
   if (!this.public_key) return next();
@@ -936,6 +940,7 @@ Aliases.plugin(mongooseCommonPlugin, {
     'is_rekey',
     'is_api',
     'tokens',
+    'rekey_started_at',
     'rekey_previous_tokens',
     'rekey_id',
     'rekey_processing',

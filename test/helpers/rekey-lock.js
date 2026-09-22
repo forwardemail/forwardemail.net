@@ -3,35 +3,71 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const fs = require('node:fs');
-const path = require('node:path');
+const { randomUUID } = require('node:crypto');
 
+const Redis = require('ioredis-mock');
+const mongoose = require('mongoose');
 const test = require('ava');
 
-const source = fs.readFileSync(
-  path.join(__dirname, '../../helpers/rekey-lock.js'),
-  'utf8'
-);
+const config = require('#config');
+const {
+  acquireRekeyLock,
+  getRekeyLockKey,
+  releaseRekeyLock
+} = require('#helpers/rekey-lock');
 
-test('rekey lock is environment- and alias-scoped', (t) => {
-  t.regex(
-    source,
-    /function getRekeyLockKey\(aliasId\)\s*{\s*return `rekey_lock:\${config\.env}:\${aliasId}`/s
-  );
+test.beforeEach((t) => {
+  t.context.client = new Redis({ keyPrefix: randomUUID() });
 });
 
-test('rekey lock acquisition records the operation ID without a TTL', (t) => {
-  const start = source.indexOf('async function acquireRekeyLock');
-  const end = source.indexOf('async function releaseRekeyLock', start);
-  const acquireSource = source.slice(start, end);
-
-  t.regex(acquireSource, /client\.set\(getRekeyLockKey\(aliasId\), rekeyId\)/);
-  t.notRegex(acquireSource, /'PX'/);
+test.afterEach.always((t) => {
+  t.context.client.disconnect();
 });
 
-test('rekey lock release uses compare-and-delete semantics', (t) => {
-  t.true(source.includes("redis.call('get', KEYS[1]) == ARGV[1]"));
-  t.true(source.includes("redis.call('del', KEYS[1])"));
-  t.true(source.includes('if (!rekeyId) return;'));
-  t.true(source.includes('RELEASE_REKEY_LOCK_SCRIPT'));
+test('the lock of an alias is its own, in this environment', (t) => {
+  const a = new mongoose.Types.ObjectId();
+  const b = new mongoose.Types.ObjectId();
+  t.not(getRekeyLockKey(a), getRekeyLockKey(b));
+  // (an ObjectId and its string name the same lock)
+  t.is(getRekeyLockKey(a), getRekeyLockKey(a.toString()));
+  // (one Redis is shared by environments)
+  t.true(getRekeyLockKey(a).includes(config.env));
+});
+
+test('acquiring the lock records the operation and never expires', async (t) => {
+  const { client } = t.context;
+  const aliasId = new mongoose.Types.ObjectId().toString();
+  const rekeyId = randomUUID();
+
+  await acquireRekeyLock(client, aliasId, rekeyId);
+  t.is(await client.get(getRekeyLockKey(aliasId)), rekeyId);
+  // a rotation is only ever settled by its owner or by recovery, never
+  // by the clock
+  t.is(await client.ttl(getRekeyLockKey(aliasId)), -1);
+});
+
+test('releasing the lock is a compare-and-delete on the operation', async (t) => {
+  const { client } = t.context;
+  const aliasId = new mongoose.Types.ObjectId().toString();
+  const rekeyId = randomUUID();
+  await acquireRekeyLock(client, aliasId, rekeyId);
+
+  // another operation cannot release it
+  await releaseRekeyLock(client, aliasId, randomUUID());
+  t.is(await client.get(getRekeyLockKey(aliasId)), rekeyId);
+
+  // a caller without an operation cannot either
+  await releaseRekeyLock(client, aliasId);
+  t.is(await client.get(getRekeyLockKey(aliasId)), rekeyId);
+
+  // its owner can, once
+  await releaseRekeyLock(client, aliasId, rekeyId);
+  t.is(await client.get(getRekeyLockKey(aliasId)), null);
+  await t.notThrowsAsync(releaseRekeyLock(client, aliasId, rekeyId));
+
+  // and a lock that changed hands meanwhile is left to its new owner
+  const newer = randomUUID();
+  await acquireRekeyLock(client, aliasId, newer);
+  await releaseRekeyLock(client, aliasId, rekeyId);
+  t.is(await client.get(getRekeyLockKey(aliasId)), newer);
 });

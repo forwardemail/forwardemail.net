@@ -10,6 +10,7 @@ const config = require('#config');
 const isStorageAvailable = require('#helpers/is-storage-available');
 const logger = require('#helpers/logger');
 const { releaseRekeyLock } = require('#helpers/rekey-lock');
+const { usableTokens } = require('#helpers/token-guard');
 
 //
 // Fields that only exist for the lifetime of one asynchronous rekey
@@ -101,8 +102,10 @@ async function reopenAuthentication(client, aliasId, rekeyId) {
 //
 // A caller that still holds the pre-rotation token set (the controller that
 // started the rotation) passes it as `tokens`; it is restored as is, even
-// when empty (an alias that had no password yet gets none back).  Every
-// other caller restores the persisted snapshot.
+// when empty (an alias that had no password yet gets none back), except for
+// tokens that could never validate a password (no salt or hash), which are
+// dropped as the pipeline drops them.  Every other caller restores the
+// persisted snapshot.
 //
 // Returns the matched alias (pre-update) or `null` when nothing matched.
 //
@@ -120,7 +123,7 @@ async function rollbackRekey(
     },
     Array.isArray(tokens)
       ? {
-          $set: { is_rekey: false, tokens },
+          $set: { is_rekey: false, tokens: usableTokens(tokens) },
           $unset: Object.fromEntries(
             REKEY_STATE_FIELDS.map((field) => [field, 1])
           )

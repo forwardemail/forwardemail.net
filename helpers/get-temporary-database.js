@@ -61,53 +61,12 @@ async function getTemporaryDatabase(session) {
   // If another call is already opening this temp database (setupPragma is
   // async and yields the event loop), await the same promise to avoid
   // opening a second handle — saves ~100-200ms of SQLCipher key derivation.
+  // (The promise is registered before anything is awaited, the distributed
+  // lock below included: a second caller that arrived while the lock was
+  // being taken used to be refused by that very lock.)
   //
   if (_tmpDbOpenInflight.has(cacheKey)) {
     return _tmpDbOpenInflight.get(cacheKey);
-  }
-
-  //
-  // Distributed lock: prevent multiple PM2 cluster workers from
-  // simultaneously initializing the same brand-new temp database.
-  // The per-process _tmpDbOpenInflight guard above only prevents intra-process
-  // races; this Redis NX lock prevents inter-process races that cause
-  // SQLITE_CORRUPT on newly created temp databases.
-  //
-  // NOTE: Only acquire the lock when the file does NOT exist yet.
-  // Existing temp databases are safe to open concurrently (SQLite WAL mode
-  // handles multiple readers/writers).  Locking every cache miss causes
-  // massive SQLITE_BUSY contention after restarts when caches are cold.
-  //
-  const tmpStoragePath = getPathToDatabase({
-    id: session.user.alias_id,
-    storage_location: session.user.storage_location
-  });
-  const tmpFilePath = path.join(
-    path.dirname(tmpStoragePath),
-    `${session.user.alias_id}-tmp.sqlite`
-  );
-  const tmpFileExists = fs.existsSync(tmpFilePath);
-
-  if (this.client && !tmpFileExists) {
-    const openLockKey = `db_tmp_open_lock:${cacheKey}`;
-    const lockAcquired = await this.client.set(
-      openLockKey,
-      LOCK_OWNER,
-      'PX',
-      ms('30s'),
-      'NX'
-    );
-
-    if (!lockAcquired) {
-      // Another worker is initializing this temp database right now.
-      // Throw a retryable error so pRetry waits 1s and tries again
-      // (by then the DB will be initialized and cached or on disk).
-      const err = new Error(
-        `Temp database open in progress by another worker for alias ${cacheKey}`
-      );
-      err.code = 'SQLITE_BUSY';
-      throw err;
-    }
   }
 
   const openPromise = (async () => {
@@ -120,92 +79,47 @@ async function getTemporaryDatabase(session) {
       `${session.user.alias_id}-tmp.sqlite`
     );
 
-    const tmpDb = new Database(filePath, {
-      // if the db wasn't found it means there wasn't any mail
-      // fileMustExist: true,
-      timeout: config.busyTimeout,
-      // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
-      verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
-    });
+    //
+    // Distributed lock: prevent multiple PM2 cluster workers from
+    // simultaneously initializing the same brand-new temp database.
+    // The per-process _tmpDbOpenInflight guard above only prevents
+    // intra-process races; this Redis NX lock prevents inter-process races
+    // that cause SQLITE_CORRUPT on newly created temp databases.
+    //
+    // NOTE: Only acquire the lock when the file does NOT exist yet.
+    // Existing temp databases are safe to open concurrently (SQLite WAL mode
+    // handles multiple readers/writers).  Locking every cache miss causes
+    // massive SQLITE_BUSY contention after restarts when caches are cold.
+    //
+    const openLockKey = `db_tmp_open_lock:${cacheKey}`;
+    let lockAcquired = false;
+    if (this.client && !fs.existsSync(filePath)) {
+      lockAcquired = Boolean(
+        await this.client.set(openLockKey, LOCK_OWNER, 'PX', ms('30s'), 'NX')
+      );
 
-    const tmpSession = {
-      ...session,
-      user: {
-        ...session.user,
-        password: encrypt(getPrimaryApiSecret())
+      if (!lockAcquired) {
+        // Another worker is initializing this temp database right now.
+        // Throw a retryable error so pRetry waits 1s and tries again
+        // (by then the DB will be initialized and cached or on disk).
+        const err = new Error(
+          `Temp database open in progress by another worker for alias ${cacheKey}`
+        );
+        err.code = 'SQLITE_BUSY';
+        throw err;
       }
-    };
+    }
 
     try {
-      await setupPragma(tmpDb, tmpSession);
-    } catch (pragmaErr) {
-      // Close the handle to prevent file descriptor leak
-      try {
-        tmpDb.close();
-      } catch {}
-
-      throw pragmaErr;
+      return await openTemporaryDatabase.call(this, filePath, session);
+    } finally {
+      // Release the distributed lock (only if we acquired it)
+      if (lockAcquired) {
+        await this.client
+          .eval(RELEASE_LOCK_SCRIPT, 1, openLockKey, LOCK_OWNER)
+          .catch(() => {});
+      }
     }
-
-    //
-    // Override cache_size for temporary databases (2MB instead of 64MB).
-    // Temp DBs are small and short-lived; 2MB is more than sufficient.
-    //
-    tmpDb.pragma('cache_size = -2048');
-
-    //
-    // Override synchronous to NORMAL for temporary databases.
-    // Temp DBs hold ephemeral data that will be re-delivered by the MX server
-    // on crash — the durability guarantee of FULL is unnecessary here and the
-    // per-commit fsync adds ~5-10ms latency per write that compounds across
-    // many aliases (e.g. 50 aliases × 10ms = 500ms wasted).
-    //
-    tmpDb.pragma('synchronous=NORMAL');
-
-    // migrate schema
-    const commands = migrateSchema(this, tmpDb, tmpSession, {
-      TemporaryMessages
-    });
-
-    if (commands.length > 0) {
-      tmpDb.transaction(() => {
-        for (const command of commands) {
-          try {
-            tmpDb.prepare(command).run();
-          } catch (err) {
-            // duplicate column errors are expected when migration was already applied
-            if (err.message.startsWith('duplicate column name:')) {
-              logger.debug(err, { command });
-            } else {
-              err.isCodeBug = true;
-              logger.fatal(err, { command });
-            }
-
-            // migration support in case existing rows
-            if (
-              err.message.includes(
-                'Cannot add a NOT NULL column with default value NULL'
-              ) &&
-              command.endsWith(' NOT NULL')
-            ) {
-              try {
-                tmpDb.prepare(command.replace(' NOT NULL', '')).run();
-              } catch (err) {
-                err.isCodeBug = true;
-                logger.fatal(err, { command });
-              }
-            }
-          }
-        }
-      })();
-    }
-
-    // Store in the LRU cache so subsequent calls reuse this connection
-    if (this.temporaryDatabaseMap) {
-      this.temporaryDatabaseMap.set(cacheKey, tmpDb);
-    }
-
-    return tmpDb;
   })();
 
   _tmpDbOpenInflight.set(cacheKey, openPromise);
@@ -213,18 +127,99 @@ async function getTemporaryDatabase(session) {
     return await openPromise;
   } finally {
     _tmpDbOpenInflight.delete(cacheKey);
-    // Release the distributed lock (only if we acquired it)
-    if (this.client && !tmpFileExists) {
-      await this.client
-        .eval(
-          RELEASE_LOCK_SCRIPT,
-          1,
-          `db_tmp_open_lock:${cacheKey}`,
-          LOCK_OWNER
-        )
-        .catch(() => {});
-    }
   }
+}
+
+// opens (creating it if needed), keys and migrates the temporary mailbox
+async function openTemporaryDatabase(filePath, session) {
+  const cacheKey = session.user.alias_id;
+
+  const tmpDb = new Database(filePath, {
+    // if the db wasn't found it means there wasn't any mail
+    // fileMustExist: true,
+    timeout: config.busyTimeout,
+    // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
+    verbose: boolean(env.SQLITE_VERBOSE) ? console.log : null
+  });
+
+  const tmpSession = {
+    ...session,
+    user: {
+      ...session.user,
+      password: encrypt(getPrimaryApiSecret())
+    }
+  };
+
+  try {
+    await setupPragma(tmpDb, tmpSession);
+  } catch (pragmaErr) {
+    // Close the handle to prevent file descriptor leak
+    try {
+      tmpDb.close();
+    } catch {}
+
+    throw pragmaErr;
+  }
+
+  //
+  // Override cache_size for temporary databases (2MB instead of 64MB).
+  // Temp DBs are small and short-lived; 2MB is more than sufficient.
+  //
+  tmpDb.pragma('cache_size = -2048');
+
+  //
+  // Override synchronous to NORMAL for temporary databases.
+  // Temp DBs hold ephemeral data that will be re-delivered by the MX server
+  // on crash — the durability guarantee of FULL is unnecessary here and the
+  // per-commit fsync adds ~5-10ms latency per write that compounds across
+  // many aliases (e.g. 50 aliases × 10ms = 500ms wasted).
+  //
+  tmpDb.pragma('synchronous=NORMAL');
+
+  // migrate schema
+  const commands = migrateSchema(this, tmpDb, tmpSession, {
+    TemporaryMessages
+  });
+
+  if (commands.length > 0) {
+    tmpDb.transaction(() => {
+      for (const command of commands) {
+        try {
+          tmpDb.prepare(command).run();
+        } catch (err) {
+          // duplicate column errors are expected when migration was already applied
+          if (err.message.startsWith('duplicate column name:')) {
+            logger.debug(err, { command });
+          } else {
+            err.isCodeBug = true;
+            logger.fatal(err, { command });
+          }
+
+          // migration support in case existing rows
+          if (
+            err.message.includes(
+              'Cannot add a NOT NULL column with default value NULL'
+            ) &&
+            command.endsWith(' NOT NULL')
+          ) {
+            try {
+              tmpDb.prepare(command.replace(' NOT NULL', '')).run();
+            } catch (err) {
+              err.isCodeBug = true;
+              logger.fatal(err, { command });
+            }
+          }
+        }
+      }
+    })();
+  }
+
+  // Store in the LRU cache so subsequent calls reuse this connection
+  if (this.temporaryDatabaseMap) {
+    this.temporaryDatabaseMap.set(cacheKey, tmpDb);
+  }
+
+  return tmpDb;
 }
 
 module.exports = getTemporaryDatabase;

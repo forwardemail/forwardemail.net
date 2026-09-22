@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
 const util = require('node:util');
 const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
@@ -33,7 +34,8 @@ const env = require('#config/env');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
-const { Emails } = require('#models');
+const { Aliases, Emails } = require('#models');
+const { acquireRekeyLock, releaseRekeyLock } = require('#helpers/rekey-lock');
 
 // dynamically import get-port
 let getPort;
@@ -591,6 +593,142 @@ Test`.trim()
     t.is(err.responseCode, 550);
     t.regex(err.message, /From header must be equal to/);
   }
+
+  await smtp.close();
+});
+
+//
+// Alias authentication follows a password rotation: it is refused while the
+// rotation runs (cached credentials included, which are checked against the
+// rotation lock), and the announcement of the rotation drops the cached
+// credentials, so a password that was replaced stops working at once.
+//
+test('alias authentication follows a password rotation', async (t) => {
+  const smtp = new SMTP(
+    { client: t.context.client, subscriber: t.context.subscriber },
+    true
+  );
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const resolver = createTangerine(t.context.client, logger);
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const pass = await alias.createToken();
+  await alias.save();
+
+  // spoof dns records
+  const map = new Map();
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+  await resolver.options.cache.mset(map);
+
+  // AUTH only (no message)
+  const login = (password) =>
+    nodemailer
+      .createTransport({
+        host: IP_ADDRESS,
+        port,
+        ignoreTLS: true,
+        secure: true,
+        tls: { rejectUnauthorized: false },
+        auth: { user: `${alias.name}@${domain.name}`, pass: password }
+      })
+      .verify();
+
+  t.true(await login(pass));
+  // (served from the authentication cache from now on)
+  t.true(await login(pass));
+
+  // the controller starts a rotation: the flag and the operation-scoped lock
+  const rekeyId = crypto.randomUUID();
+  await Aliases.updateOne(
+    { _id: alias._id },
+    {
+      $set: { is_rekey: true, rekey_id: rekeyId, rekey_started_at: new Date() }
+    }
+  );
+  await acquireRekeyLock(t.context.client, alias.id, rekeyId);
+  let err = await t.throwsAsync(login(pass));
+  t.is(err.responseCode, 535);
+  t.regex(err.message, /rekey/);
+
+  // the rotation is over: the password was replaced
+  const rotated = await Aliases.findById(alias._id)
+    .select('+tokens.description +tokens.hash +tokens.salt')
+    .exec();
+  rotated.tokens = [];
+  const newPass = await rotated.createToken();
+  rotated.is_rekey = false;
+  rotated.rekey_id = undefined;
+  rotated.rekey_started_at = undefined;
+  await rotated.save();
+  await releaseRekeyLock(t.context.client, alias.id, rekeyId);
+
+  // the announcement drops the cached credentials: the previous password
+  // is refused at once, the new one works
+  await t.context.client.publish('sqlite_auth_reset', alias.id);
+  await pWaitFor(
+    async () => {
+      try {
+        await login(pass);
+        return false;
+      } catch {
+        return true;
+      }
+    },
+    { timeout: ms('10s') }
+  );
+  err = await t.throwsAsync(login(pass));
+  t.is(err.responseCode, 535);
+  t.regex(err.message, /Invalid password/);
+  t.true(await login(newPass));
 
   await smtp.close();
 });

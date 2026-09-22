@@ -9,12 +9,23 @@
 // damaged page (a single flipped bit: every page is authenticated):
 //
 //  - the unreadable mailbox is quarantined next to the fresh one instead of
-//    being deleted, so it can be recovered by hand
+//    being deleted, so it can be recovered by hand, and the admins get an
+//    alert that says what the file looked like
 //  - nothing is touched while a connection to the mailbox is still open in
 //    another process (a stale connection that closes later would unlink
 //    the fresh mailbox's -wal/-shm files); the next request tries again
 //  - nothing is touched while the alias' password is being rotated
 //
+
+// the alerts the recovery emails are captured (the module is wrapped
+// before anything binds to it)
+const sentEmails = [];
+const emailModulePath = require.resolve('#helpers/email');
+const emailHelper = require(emailModulePath);
+require.cache[emailModulePath].exports = (data) => {
+  sentEmails.push(data);
+  return emailHelper(data);
+};
 
 const fs = require('node:fs');
 const os = require('node:os');
@@ -61,6 +72,7 @@ test.after.always((t) => {
 });
 
 test.beforeEach(async (t) => {
+  sentEmails.length = 0;
   await utils.setupFactories(t);
   await utils.setupRedisClient(t);
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
@@ -270,6 +282,58 @@ test('quarantines an unreadable mailbox instead of deleting it', async (t) => {
   t.regex(quarantined[0], /\.sqlite\.quarantine-\d+$/);
   const quarantinedPath = path.join(path.dirname(storagePath), quarantined[0]);
   t.is(fs.statSync(quarantinedPath, { bigint: true }).ino, before.ino);
+
+  // the admins were told, with what the file looked like: a mailbox that
+  // never held mail, written moments ago by this very process, with no
+  // connection open to it, kept for a week
+  await pWaitFor(
+    () =>
+      sentEmails.some((data) =>
+        data.message.subject.startsWith('Database backup fix for ')
+      ),
+    { timeout: ms('10s') }
+  );
+  const alert = sentEmails.find((data) =>
+    data.message.subject.startsWith('Database backup fix for ')
+  );
+  t.is(alert.message.to, config.supportEmail);
+  t.is(
+    alert.message.subject,
+    `Database backup fix for ${session.user.username} (${t.context.alias.id})`
+  );
+  t.true(alert.locals.message.includes(`<p>${storagePath}</p>`));
+  t.true(alert.locals.message.includes(`Quarantined as ${quarantinedPath}`));
+  t.regex(
+    alert.locals.message,
+    /<li>Size: [\d,]+ bytes, within the [\d,]+ bytes an initialized empty mailbox can take: the file held little or no mail\.<\/li>/
+  );
+  t.regex(
+    alert.locals.message,
+    /<li>Last written less than a minute before this alert \(\d{4}-\d{2}-\d{2}T[^)]+\), created \d{4}-\d{2}-\d{2}T[^)]+\.<\/li>/
+  );
+  t.regex(
+    alert.locals.message,
+    /<li>The file was written to after this process started \(\d{4}-\d{2}-\d{2}T[^)]+\)\.<\/li>/
+  );
+  t.true(
+    alert.locals.message.includes(
+      '<li>No -wal, -shm or -journal file was next to it: no connection to it was open.</li>'
+    )
+  );
+  const keptUntil = alert.locals.message.match(
+    /<li>The quarantined file is kept until (\d{4}-\d{2}-\d{2}T[^ ]+) \(jobs\/cleanup-sqlite\.js\) and removed after that\.<\/li>/
+  );
+  t.truthy(keptUntil);
+  // (the time in the name of the quarantined file is when the retention
+  //  starts)
+  const quarantinedAt = Number(quarantined[0].split('.quarantine-')[1]);
+  t.is(
+    Date.parse(keptUntil[1]),
+    quarantinedAt + workerConfig.QUARANTINE_RETENTION
+  );
+  // the raw stats and the error are attached for the record
+  t.true(alert.locals.message.includes('&quot;ino&quot;'));
+  t.true(alert.locals.message.includes('SQLITE_CORRUPT'));
 
   // and the fresh mailbox opens with the password
   await dropCachedHandle(t);

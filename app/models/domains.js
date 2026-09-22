@@ -58,6 +58,7 @@ const {
   respondsToHTTP
 } = require('#helpers/check-domain-reputation');
 const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
+const { guardTokenPaths } = require('#helpers/token-guard');
 
 const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
@@ -773,6 +774,9 @@ Domains.pre('remove', function (next) {
 
   next();
 });
+
+// a catch-all token is only ever saved with its salt and hash (see the helper)
+guardTokenPaths(Domains, ['tokens']);
 
 // generate webhook_key if one does not exist
 Domains.pre('validate', function (next) {

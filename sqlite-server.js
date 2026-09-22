@@ -8,6 +8,7 @@ const http = require('node:http');
 const https = require('node:https');
 const { promisify } = require('node:util');
 const { randomUUID } = require('node:crypto');
+const { setTimeout } = require('node:timers/promises');
 
 const Boom = require('@hapi/boom');
 const MessageHandler = require('@zone-eu/wildduck/lib/message-handler');
@@ -22,6 +23,7 @@ const { mkdirp } = require('mkdirp');
 const { isValidApiSecret } = require('#helpers/api-secrets');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const DatabaseLRUMap = require('#helpers/database-lru-map');
+const closeDatabase = require('#helpers/close-database');
 const IMAPNotifier = require('#helpers/imap-notifier');
 const Indexer = require('#helpers/indexer');
 const config = require('#config');
@@ -444,6 +446,77 @@ class SQLite {
     }, ms('1m'));
 
     await promisify(this.server.listen).bind(this.server)(port, host, ...args);
+  }
+
+  //
+  // The shutdown of a process (`sqlite.js` runs it as the one custom
+  // handler of @ladjs/graceful, which would run several in parallel), in a
+  // strict order:
+  //
+  //   1. stop accepting work: every request checks `isClosing` first
+  //   2. wait for the requests in flight to release their handles
+  //   3. disconnect the peers and close the WebSocket server
+  //   4. checkpoint and close every cached mailbox, which is safe now
+  //   5. close the temporary mailboxes
+  //
+  // A request that does not finish within `drainTimeout` does not hold the
+  // process up: pm2 would kill it anyway, and closing its handle under it
+  // is what the checkpoint is for.
+  //
+  // The peers (the IMAP, POP3, CalDAV, ... processes) reconnect on their
+  // own, to another worker of the cluster, so they are disconnected here
+  // once the work in flight is answered: `wss.close` completes only when no
+  // client is left, and a peer that is not told to go stays connected until
+  // the process is killed -- with the mailboxes never closed.
+  //
+  async shutdown({
+    drainTimeout = ms('30s'),
+    drainInterval = 250,
+    closeTimeout = ms('10s')
+  } = {}) {
+    this.isClosing = true;
+
+    if (this.databaseMap) {
+      const drainStart = Date.now();
+      while (
+        this.databaseMap.activeReferences > 0 &&
+        Date.now() - drainStart < drainTimeout
+      )
+        await setTimeout(drainInterval);
+    }
+
+    const closed = promisify(this.wss.close)
+      .bind(this.wss)()
+      .catch((err) => logger.error(err));
+    // (a closing handshake follows the responses already queued on the
+    //  socket; a peer that does not answer it is cut off)
+    for (const ws of this.wss.clients) ws.close(1001, 'Server shutting down');
+    await Promise.race([closed, setTimeout(closeTimeout)]);
+    for (const ws of this.wss.clients) ws.terminate();
+    await closed;
+
+    if (this.databaseMap && this.databaseMap.size > 0) {
+      await Promise.allSettled(
+        [...this.databaseMap.keys()].map(async (key) => {
+          const db = this.databaseMap.get(key);
+          if (!db) return;
+          this.databaseMap.evict(key);
+          // the WAL is folded into the main file before the handle is
+          // closed: nothing is lost if the process is killed before the OS
+          // flushes the WAL pages
+          try {
+            if (db.open && !db.readonly) db.pragma('wal_checkpoint(PASSIVE)');
+          } catch (err) {
+            logger.error(err);
+          }
+
+          await closeDatabase(db);
+        })
+      );
+    }
+
+    if (this.temporaryDatabaseMap && this.temporaryDatabaseMap.size > 0)
+      await this.temporaryDatabaseMap.closeAll();
   }
 
   async close() {

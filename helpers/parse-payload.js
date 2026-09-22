@@ -488,17 +488,18 @@ async function decrementRateLimiting(client, date, sender, root, byteLength) {
   const specificSizeKey = `imap_limit_size_${config.env}:${date}:${sender}:${root}`;
   const specificCountKey = `imap_limit_count_${config.env}:${date}:${sender}:${root}`;
   // Use safe decrement scripts to prevent negative values
-  await client
-    .pipeline()
-    .eval(SAFE_DECRBY_SCRIPT, 1, sizeKey, byteLength)
-    .eval(SAFE_DECR_SCRIPT, 1, countKey)
-    .eval(SAFE_DECRBY_SCRIPT, 1, specificSizeKey, byteLength)
-    .eval(SAFE_DECR_SCRIPT, 1, specificCountKey)
+  // (four independent atomic decrements; this only runs for a message that
+  //  could not be stored)
+  await Promise.all([
+    client.eval(SAFE_DECRBY_SCRIPT, 1, sizeKey, byteLength),
+    client.eval(SAFE_DECR_SCRIPT, 1, countKey),
+    client.eval(SAFE_DECRBY_SCRIPT, 1, specificSizeKey, byteLength),
+    client.eval(SAFE_DECR_SCRIPT, 1, specificCountKey)
     // NOTE: burst counter is intentionally NOT decremented.
     // It expires in 60s and decrementing could allow burst-limit bypass.
     // NOTE: recipient counter is intentionally NOT decremented.
     // It protects the mailbox from flooding regardless of delivery outcome.
-    .exec();
+  ]);
 }
 
 async function parsePayload(data, ws) {
@@ -1909,11 +1910,14 @@ async function parsePayload(data, ws) {
                   }
                 }
 
-                const tmpDb = await getTemporaryDatabase.call(this, session);
-
                 let err;
 
                 try {
+                  // (opening the temporary mailbox is part of storing the
+                  //  message: a message that cannot be stored because the
+                  //  mailbox cannot be opened is given back as well)
+                  const tmpDb = await getTemporaryDatabase.call(this, session);
+
                   // check if fingerprint exists
                   const count = await TemporaryMessages.countDocuments(
                     this,

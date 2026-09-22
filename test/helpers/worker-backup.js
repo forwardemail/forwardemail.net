@@ -10,18 +10,28 @@
 // test, then the uploaded object is inspected.
 //
 
+const process = require('node:process');
+
+// every upload of this test is throttled to this rate, through the limiter
+// the workers share (the environment is read once, before anything loads
+// it)
+process.env.BACKUP_MAX_BANDWIDTH = '512KB/s';
+
 const fs = require('node:fs');
 const http = require('node:http');
 const os = require('node:os');
 const path = require('node:path');
 const { Buffer } = require('node:buffer');
 const { randomUUID } = require('node:crypto');
+const { spawn } = require('node:child_process');
 
 const AdmZip = require('adm-zip');
 const Axe = require('axe');
 const Database = require('better-sqlite3-multiple-ciphers');
+const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
+const mongoose = require('mongoose');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const test = require('ava');
@@ -31,9 +41,14 @@ const utils = require('../utils');
 const SQLite = require('../../sqlite-server');
 const IMAP = require('../../imap-server');
 
+const AddressBooks = require('#models/address-books');
 const Aliases = require('#models/aliases');
+const CalendarEvents = require('#models/calendar-events');
+const Calendars = require('#models/calendars');
+const Contacts = require('#models/contacts');
 const Domains = require('#models/domains');
 const config = require('#config');
+const getDatabase = require('#helpers/get-database');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const setupPragma = require('#helpers/setup-pragma');
 const workerConfig = require('#helpers/sqlite-worker-config');
@@ -312,6 +327,61 @@ ${String(i % 10).repeat(BODY_SIZE)}`;
 
     await imapFlow.append('INBOX', Buffer.from(raw), [], new Date());
   }
+
+  // a contact and a calendar event, which the archive formats carry along
+  // (the address book is the one CardDAV creates on first access)
+  const session = { user: t.context.sessionUser };
+  await getDatabase(imap, t.context.alias, session);
+  const addressBook = await AddressBooks.create({
+    instance: imap,
+    session,
+    address_book_id: 'default',
+    name: 'Contacts',
+    description: 'Default address book',
+    color: '#0000FF',
+    readonly: false,
+    synctoken: `${config.urls.web}/ns/sync-token/1`,
+    timezone: 'UTC',
+    url: `${config.urls.web}/dav/${t.context.sessionUser.username}/addressbooks/default/`,
+    prodId: '//forwardemail.net//carddav//EN'
+  });
+  await Contacts.create({
+    instance: imap,
+    session,
+    address_book: addressBook._id,
+    contact_id: 'alice',
+    uid: 'alice',
+    content:
+      'BEGIN:VCARD\r\nVERSION:3.0\r\nUID:alice\r\nFN:Alice Example\r\nEMAIL:alice@example.com\r\nEND:VCARD\r\n',
+    etag: 'alice-1',
+    fullName: 'Alice Example',
+    isGroup: false,
+    emails: [{ value: 'alice@example.com' }],
+    phoneNumbers: []
+  });
+  const calendar = await Calendars.create({
+    instance: imap,
+    session,
+    calendarId: 'work',
+    name: 'Work',
+    description: config.urls.web,
+    color: '#00ff00',
+    order: 0,
+    prodId: '-//forwardemail.net//caldav//EN',
+    timezone: 'UTC',
+    url: config.urls.web,
+    readonly: false,
+    synctoken: `${config.urls.web}/ns/sync-token/1`
+  });
+  await CalendarEvents.create({
+    instance: imap,
+    session,
+    eventId: 'planning',
+    calendar: calendar._id,
+    ical: 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//forwardemail.net//caldav//EN\r\nBEGIN:VEVENT\r\nUID:planning\r\nDTSTAMP:20260101T090000Z\r\nDTSTART:20260102T090000Z\r\nDTEND:20260102T100000Z\r\nSUMMARY:Planning\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n',
+    href: `/dav/${t.context.sessionUser.username}/calendars/work/planning.ics`
+  });
+  t.context.session = session;
 });
 
 test.afterEach.always(async (t) => {
@@ -381,6 +451,10 @@ test('sqlite: uploads an encrypted copy of the mailbox', async (t) => {
     db.prepare('select count(*) from Messages').pluck().get(),
     MESSAGE_COUNT
   );
+  // the snapshot is the whole encrypted database: contacts and calendars
+  // are in it as rows, not as exported files
+  t.is(db.prepare('select count(*) from Contacts').pluck().get(), 1);
+  t.is(db.prepare('select count(*) from CalendarEvents').pluck().get(), 1);
   t.is(db.pragma('integrity_check', { simple: true }), 'ok');
 
   // the backup is recorded on the alias
@@ -408,7 +482,31 @@ test('mbox: streams every mailbox into an encrypted archive', async (t) => {
   );
   // (AES encrypted entries carry the WinZip AES method)
   t.is(inbox.header.method, 99);
+
+  assertPortableResources(t, names);
 });
+
+//
+// The archive formats carry the contacts and the calendars of the mailbox
+// along, as portable files under their own folders, and the README counts
+// them.
+//
+function assertPortableResources(t, names) {
+  t.true(names.includes('Contacts/'), `entries: ${names.join(', ')}`);
+  t.true(names.includes('Contacts/Contacts/'));
+  t.true(names.includes('Contacts/Contacts/alice.vcf'));
+  t.true(names.includes('Calendars/'));
+  t.true(names.includes('Calendars/Work/'));
+  t.true(names.includes('Calendars/Work/planning.ics'));
+}
+
+// the README of the last archive uploaded (its entry is not encrypted)
+function readme(t) {
+  const entries = new AdmZip(uploaded(t, 'zip')).getEntries();
+  const entry = entries.find((entry) => entry.entryName === 'README.txt');
+  t.truthy(entry);
+  return entry;
+}
 
 test('eml: streams every message into an encrypted archive', async (t) => {
   t.timeout(ms('5m'));
@@ -430,4 +528,140 @@ test('eml: streams every message into an encrypted archive', async (t) => {
     `sizes: ${messages.map((entry) => entry.header.size).join(', ')}`
   );
   t.true(messages.every((entry) => entry.header.method === 99));
+
+  assertPortableResources(t, names);
+  t.true(readme(t).header.size > 0);
+});
+
+//
+// Every upload goes through the limiter the workers share (a leaky bucket
+// in Redis, see helpers/backup-upload-limiter.js): at the rate this test
+// configures, the reservation of the upload is visible in Redis right
+// after it, and the upload took the time the rate allows.
+//
+test('uploads are paced by the shared limiter', async (t) => {
+  t.timeout(ms('5m'));
+  const started = Date.now();
+  await backup(backupPayload(t, 'sqlite'));
+  const elapsed = Date.now() - started;
+
+  const object = uploaded(t, 'sqlite');
+  const seconds = object.length / (512 * 1024);
+  t.true(
+    elapsed >= seconds * 1000 * 0.8,
+    `${object.length} bytes took ${elapsed} ms at 512 KB/s`
+  );
+
+  // the shared reservation: the next upload, of any worker, starts after
+  // this one's time slot
+  const redis = new Redis();
+  t.teardown(() => redis.disconnect());
+  const next = Number(await redis.get(`backup_upload:${config.env}`));
+  t.true(next > started, `${next} > ${started}`);
+  t.true(next <= Date.now() + 1000, `${next} <= now`);
+});
+
+//
+// A backup never holds the mailbox in memory, so the free memory it waits
+// for is the worker's fixed reserve, not a multiple of the mailbox.
+//
+test('a backup waits for the fixed memory reserve, whatever the mailbox size', async (t) => {
+  t.timeout(ms('5m'));
+
+  // the reserve is not available: the backup is put off (without touching
+  // storage)
+  workerConfig.MIN_FREE_MEM = os.totalmem() * 2;
+  const wait = {
+    timeout: workerConfig.MEMORY_WAIT_TIMEOUT,
+    interval: workerConfig.MEMORY_WAIT_INTERVAL
+  };
+  workerConfig.MEMORY_WAIT_TIMEOUT = ms('2s');
+  workerConfig.MEMORY_WAIT_INTERVAL = ms('500ms');
+  t.teardown(() => {
+    workerConfig.MEMORY_WAIT_TIMEOUT = wait.timeout;
+    workerConfig.MEMORY_WAIT_INTERVAL = wait.interval;
+  });
+  const payload = backupPayload(t, 'sqlite');
+  const err = await t.throwsAsync(backup(payload));
+  // (users are told of an internal error; the cause is kept for the team)
+  t.regex(err._message, /low memory/i);
+  t.is(err.minFreeMem, os.totalmem() * 2);
+  t.true(Number.isFinite(err.freemem));
+  t.is(t.context.s3.objects.size, 0);
+
+  // the reserve is available: a mailbox that reports far more storage in
+  // use than any multiple of the free memory is backed up all the same
+  workerConfig.MIN_FREE_MEM = 0;
+  await Aliases.updateOne(
+    { _id: t.context.alias._id },
+    { $set: { storage_used: os.totalmem() * 4 } }
+  );
+  await backup(backupPayload(t, 'sqlite'));
+  t.true(uploaded(t, 'sqlite').length > 0);
+});
+
+//
+// The manual conversion (scripts/convert-sqlite-to-eml.js, which restores
+// a user from a backup by hand) writes the same archive from a mailbox
+// file: every message under its folder, the contacts and the calendars.
+//
+test('the conversion script turns a mailbox file into the EML archive', async (t) => {
+  t.timeout(ms('5m'));
+  await backup(backupPayload(t, 'sqlite'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'convert-'));
+  t.teardown(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const file = path.join(dir, `${t.context.alias.id}.sqlite`);
+  fs.writeFileSync(file, uploaded(t, 'sqlite'));
+
+  // (the script connects to the databases of this test)
+  const [MONGO_URI, LOGS_URI] = mongoose.connections.map(
+    (connection) => connection._connectionString
+  );
+  const child = spawn(
+    process.execPath,
+    [path.join(__dirname, '..', '..', 'scripts', 'convert-sqlite-to-eml.js')],
+    {
+      env: {
+        ...process.env,
+        NODE_ENV: 'test',
+        MONGO_URI,
+        LOGS_URI,
+        SQLITE_PATH: file,
+        ALIAS_ID: t.context.alias.id,
+        SQLITE_PASSWORD: t.context.pass
+      }
+    }
+  );
+  let stdout = '';
+  let stderr = '';
+  child.stderr.on('data', (chunk) => {
+    stderr = `${stderr}${chunk}`.slice(-4000);
+  });
+  const zip = await new Promise((resolve, reject) => {
+    child.on('error', reject);
+    child.on('exit', (code) => {
+      reject(new Error(`the script exited with ${code}: ${stderr}`));
+    });
+    child.stdout.on('data', (chunk) => {
+      stdout += chunk;
+      const match = stdout.match(/^tmp (.+\.zip)$/m);
+      if (match) resolve(match[1]);
+    });
+  });
+  // (the script keeps its connections open once done)
+  child.kill('SIGTERM');
+  t.teardown(() => fs.rmSync(zip, { force: true }));
+
+  const entries = new AdmZip(zip).getEntries();
+  const names = entries.map((entry) => entry.entryName);
+  t.true(names.includes('README.txt'), `entries: ${names.join(', ')}`);
+  t.true(names.includes('INBOX/'));
+  const messages = entries.filter(
+    (entry) =>
+      entry.entryName.startsWith('INBOX/') && entry.entryName.endsWith('.eml')
+  );
+  t.is(messages.length, MESSAGE_COUNT);
+  t.true(messages.every((entry) => entry.header.size > BODY_SIZE));
+  t.true(messages.every((entry) => entry.header.method === 99));
+  assertPortableResources(t, names);
 });

@@ -333,3 +333,59 @@ test('inbound mail and mailbox operations while the alias is being rekeyed', asy
   );
   t.is(process.env.NODE_ENV, 'test');
 });
+
+//
+// A login is refused while the alias is being rekeyed, whether it is checked
+// against MongoDB or served from the authentication cache (a session that
+// logged in a moment ago filled it), and the sessions the alias has open are
+// closed when the rotation announces itself.
+//
+test('IMAP login is refused while the alias is being rekeyed', async (t) => {
+  t.timeout(ms('2m'));
+  const { alias, client, domain, imapFlow, pass, port } = t.context;
+
+  const login = async () => {
+    const flow = new ImapFlow({
+      host: IP_ADDRESS,
+      port,
+      secure: false,
+      logger,
+      tls,
+      auth: { user: `${alias.name}@${domain.name}`, pass },
+      commandTimeout: 120000
+    });
+    await flow.connect();
+    return flow;
+  };
+
+  // (the session of the setup filled the authentication cache)
+  const before = await login();
+  await before.logout();
+
+  const rekeyId = randomUUID();
+  await Aliases.updateOne(
+    { _id: alias._id },
+    {
+      $set: { is_rekey: true, rekey_id: rekeyId, rekey_started_at: new Date() }
+    }
+  );
+  await acquireRekeyLock(client, alias.id, rekeyId);
+
+  const err = await t.throwsAsync(login());
+  t.true(err.authenticationFailed);
+
+  // the announcement closes the session that was open before the rotation
+  t.true(imapFlow.usable);
+  await client.publish('sqlite_auth_reset', alias.id);
+  await pWaitFor(() => !imapFlow.usable, { timeout: ms('30s') });
+
+  // the rotation ends
+  await Aliases.updateOne(
+    { _id: alias._id },
+    { $set: { is_rekey: false }, $unset: { rekey_id: 1, rekey_started_at: 1 } }
+  );
+  await releaseRekeyLock(client, alias.id, rekeyId);
+  const after = await login();
+  await after.logout();
+  t.pass();
+});

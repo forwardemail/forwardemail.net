@@ -102,21 +102,16 @@ process.send('ready');
   t.is(exitCode, 0);
 });
 
-test('the worker process cancels the jobs module from its shutdown handler', (t) => {
-  const jobs = fs.readFileSync(path.join(ROOT, 'helpers/worker.js'), 'utf8');
-  t.false(jobs.includes('@ladjs/graceful'));
-  t.false(jobs.includes('new Graceful('));
-  t.true(
-    jobs.includes(
-      'module.exports = { rekey, backup, setWorkerCancelled, vacuum };'
-    )
-  );
-
-  const worker = fs.readFileSync(path.join(ROOT, 'sqlite-worker.js'), 'utf8');
-  const handler = worker.indexOf('customHandlers: [');
-  const cancel = worker.indexOf('setWorkerCancelled();', handler);
-  const drain = worker.indexOf('SHUTDOWN_DRAIN_TIMEOUT;', cancel);
-  t.true(handler > -1);
-  t.true(cancel > handler, 'the shutdown handler cancels the in-flight job');
-  t.true(drain > cancel, 'before it waits for the job to finish');
+//
+// The jobs module leaves the process lifecycle to the worker process
+// (sqlite-worker.js), which cancels it from its own shutdown handler: it
+// exposes the jobs and the cancellation, nothing else.
+//
+test('the jobs module exposes its jobs and its cancellation to the worker process', (t) => {
+  t.deepEqual(Object.keys(require('#helpers/worker')).sort(), [
+    'backup',
+    'rekey',
+    'setWorkerCancelled',
+    'vacuum'
+  ]);
 });

@@ -26,6 +26,12 @@ module.exports = {
   //
   MIN_FREE_MEM: 1024 * 1024 * 1024, // 1 GB
 
+  // How long a job waits for that reserve before it is put off (a rekey is
+  // retried later, a backup fails and is emailed about), and how often it
+  // looks.
+  MEMORY_WAIT_TIMEOUT: ms('5m'),
+  MEMORY_WAIT_INTERVAL: ms('5s'),
+
   //
   // Free disk space a password rotation needs on the mailbox volume (see
   // helpers/rekey-disk-space.js).  A rekey copies the live mailbox (VACUUM
@@ -91,6 +97,13 @@ module.exports = {
   RESET_SWAP_LOCK_WAIT: ms('10s'),
   RESET_QUIESCE_TIMEOUT: ms('20s'),
   RECOVERY_QUIESCE_TIMEOUT: ms('15s'),
+
+  //
+  // How long a mailbox file the corruption recovery moved out of the way
+  // (`<id>.sqlite.quarantine-<ts>`) is kept before jobs/cleanup-sqlite.js
+  // removes it, so that it can still be recovered by hand.
+  //
+  QUARANTINE_RETENTION: ms('7d'),
 
   // Interval of the in-process sweep that recovers dead claims and rekeys
   // that were swapped but never finalized.

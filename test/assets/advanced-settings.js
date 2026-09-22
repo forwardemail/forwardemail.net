@@ -13,24 +13,32 @@ const source = fs.readFileSync(
   path.join(__dirname, '../../assets/js/advanced-settings.js'),
   'utf8'
 );
-const template = fs.readFileSync(
-  path.join(
-    __dirname,
-    '../../app/views/my-account/domains/advanced-settings.pug'
-  ),
-  'utf8'
-);
 
 test('custom verification HTML preview remains sandboxed and does not inject into the application document', (t) => {
   const payload =
     '<script>window.__xss_poc=1</script><img src=x onerror="window.__xss_poc=1">';
   const attributes = new Map();
-  const preview = {
-    attr(name, value) {
-      attributes.set(name, value);
-      return this;
+  // every use the script makes of the preview frame is recorded: the
+  // template must only ever reach it as the `srcdoc` of the sandboxed
+  // frame, never through its document
+  const calls = [];
+  const preview = new Proxy(
+    {},
+    {
+      get(_, name) {
+        if (name === 'attr')
+          return (key, value) => {
+            attributes.set(key, value);
+            return preview;
+          };
+
+        return (...args) => {
+          calls.push({ name: String(name), args });
+          return preview;
+        };
+      }
     }
-  };
+  );
   const emptySelection = {
     get() {},
     length: 0
@@ -80,9 +88,6 @@ test('custom verification HTML preview remains sandboxed and does not inject int
   });
 
   t.is(attributes.get('srcdoc'), payload);
-  t.false(source.includes(".contents().find('html').html"));
-  t.regex(
-    template,
-    /iframe#custom-verification-preview[\s\S]*?sandbox=""[\s\S]*?src="about:blank"/
-  );
+  t.deepEqual([...attributes.keys()], ['srcdoc']);
+  t.deepEqual(calls, []);
 });

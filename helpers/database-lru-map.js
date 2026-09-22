@@ -273,6 +273,16 @@ class DatabaseLRUMap {
     return size;
   }
 
+  // Number of references requests currently hold on handles (cached or
+  // evicted): the work in flight a shutdown waits for.
+  get activeReferences() {
+    let count = 0;
+    for (const entry of this._map.values()) count += entry.refcount || 0;
+    for (const pendings of this._pendingClose.values())
+      for (const pending of pendings) count += pending.refcount || 0;
+    return count;
+  }
+
   set(key, db) {
     // If already exists, just update
     if (this._map.has(key)) {

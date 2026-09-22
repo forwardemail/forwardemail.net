@@ -39,6 +39,7 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { removeAliasBackup } = require('#helpers/remove-alias-backup');
+const { removeStaleSwapArtifact } = require('#helpers/sqlite-file-utils');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
@@ -127,60 +128,14 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
       for (const file of files) {
         //
-        // Artifacts of file swaps that were cut short (a process killed
-        // mid-operation) are removed once they are a day old, whichever
-        // alias they belong to: the rekeyed copy `<id>-<operation>-backup.sqlite`
-        // (with companions), the inline VACUUM copy `<id>.sqlite.vacuum-tmp-<pid>`
-        // and a broken file mutex that could not be removed
-        // (`<id>.sqlite.lock.stale-<uuid>`, see helpers/db-file-lock.js).
-        // A running rekey never uses a copy that old: it removes and
-        // re-creates its copy on every attempt.  (A `<id>.sqlite.lock`
-        // directory itself is never touched here: a stale one is broken by
-        // the next process that needs the mutex, and removing one that was
-        // just re-created would break a live mutex.)
+        // Artifacts of file swaps that were cut short and mailboxes the
+        // corruption recovery quarantined are removed once they are old
+        // enough (see helpers/sqlite-file-utils.js)
         //
-        // A mailbox that could not be opened with a valid password is
-        // quarantined by helpers/get-database.js (`<id>.sqlite.quarantine-<ts>`
-        // with companions) rather than deleted, and kept for a week so it
-        // can be recovered by hand.
-        //
-        const isSwapArtifact =
-          /^[a-f\d]{24}(?:-[\w-]+-backup\.sqlite(?:-wal|-shm|-journal)?|\.sqlite\.vacuum-tmp-\d+|\.sqlite\.lock\.stale-[\w-]+)$/.test(
-            file.name
-          );
-        const quarantineMatch = file.name.match(
-          /^[a-f\d]{24}\.sqlite\.quarantine-(\d+)(?:-wal|-shm|-journal)?$/
+        await removeStaleSwapArtifact(
+          path.join(mountDir, dirent.name, file.name),
+          { dryRun }
         );
-        if (isSwapArtifact || quarantineMatch) {
-          const artifactPath = path.join(mountDir, dirent.name, file.name);
-          try {
-            // (a rename keeps the mtime, so a quarantined file is aged by
-            //  the time of its quarantine, which its name carries)
-            const stats = await fs.promises.stat(artifactPath);
-            const age = quarantineMatch
-              ? Date.now() - Number(quarantineMatch[1])
-              : Date.now() - stats.mtimeMs;
-            const maxAge = quarantineMatch ? ms('7d') : ms('1d');
-            if (age > maxAge) {
-              if (dryRun) {
-                logger.info('Would remove stale swap artifact (dry run)', {
-                  artifactPath
-                });
-              } else {
-                await fs.promises.rm(artifactPath, {
-                  force: true,
-                  recursive: true
-                });
-                logger.info('Removed stale swap artifact', { artifactPath });
-              }
-            }
-          } catch (err) {
-            if (err.code !== 'ENOENT') logger.error(err, { artifactPath });
-          }
-
-          // a copy is still an alias' file for the checks below
-          if (!file.isFile()) continue;
-        }
 
         if (!file.isFile()) {
           continue;

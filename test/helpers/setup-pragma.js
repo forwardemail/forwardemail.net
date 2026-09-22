@@ -6,6 +6,7 @@
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const process = require('node:process');
 const { Buffer } = require('node:buffer');
 
 const Database = require('better-sqlite3-multiple-ciphers');
@@ -127,6 +128,11 @@ test('setupPragma > keeps the durability settings of a live mailbox', async (t) 
     // 2 = FULL
     t.is(db.pragma('synchronous', { simple: true }), 2);
     t.is(db.pragma('mmap_size', { simple: true }), 0);
+    // a 16 MB page cache (SQLITE_CACHE_SIZE_KB), negative = KiB
+    t.is(
+      db.pragma('cache_size', { simple: true }),
+      -(Number(process.env.SQLITE_CACHE_SIZE_KB) || 16_384)
+    );
     t.is(db.pragma('cipher', { simple: true }), 'chacha20');
     db.exec('CREATE TABLE t (id INTEGER PRIMARY KEY, value TEXT)');
     db.prepare('INSERT INTO t (value) VALUES (?)').run('x'.repeat(5000));

@@ -31,6 +31,7 @@ const isValidPassword = require('#helpers/is-valid-password');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const { acquireRekeyLock } = require('#helpers/rekey-lock');
+const { isUsableToken } = require('#helpers/token-guard');
 const { rollbackRekey } = require('#helpers/rekey-recovery');
 
 //
@@ -71,7 +72,22 @@ async function generateAliasPassword(ctx) {
     // validate the previous password once it is restored -- the owner would
     // be locked out of an intact mailbox after every rollback.
     //
-    originalTokens = alias.tokens.map((token) => ({
+    // A token that has no salt or no hash cannot validate any password
+    // (earlier rollbacks restored snapshots stripped of both), so it is
+    // left out of the snapshot instead of standing in the way: an alias
+    // that only has such tokens is exactly one whose owner needs to set a
+    // new password.  Nothing is lost by not restoring it.
+    //
+    const usableTokens = alias.tokens.filter((token) => isUsableToken(token));
+    if (usableTokens.length < alias.tokens.length)
+      ctx.logger.warn(
+        `Alias ${alias.id} has ${
+          alias.tokens.length - usableTokens.length
+        } token(s) without a salt or hash; they cannot validate a password and are dropped by this rotation`,
+        { alias_id: alias.id }
+      );
+
+    originalTokens = usableTokens.map((token) => ({
       _id: token._id,
       description: token.description,
       salt: token.salt,
@@ -80,17 +96,6 @@ async function generateAliasPassword(ctx) {
       ...(token.created_at ? { created_at: token.created_at } : {}),
       ...(token.updated_at ? { updated_at: token.updated_at } : {})
     }));
-
-    // never persist (or restore) a snapshot that cannot validate a password
-    if (
-      originalTokens.some((token) => !isSANB(token.salt) || !isSANB(token.hash))
-    ) {
-      const err = new TypeError(
-        `Token snapshot of alias ${alias.id} is missing its salt or hash`
-      );
-      err.isCodeBug = true;
-      throw err;
-    }
 
     if (alias.is_rekey)
       throw Boom.conflict(ctx.translateError('ALIAS_REKEY_IN_PROGRESS'));

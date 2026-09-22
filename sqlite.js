@@ -11,7 +11,6 @@ require('#config/env');
 require('#config/mongoose');
 
 const process = require('node:process');
-const { promisify } = require('node:util');
 const { setTimeout } = require('node:timers/promises');
 
 const Graceful = require('@ladjs/graceful');
@@ -23,7 +22,6 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const SQLite = require('./sqlite-server');
 
-const closeDatabase = require('#helpers/close-database');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
@@ -41,75 +39,10 @@ const graceful = new Graceful({
   redisClients: [client, subscriber],
   logger,
   timeoutMs: ms('1m'),
-  customHandlers: [
-    //
-    // Single sequential handler to enforce strict shutdown ordering.
-    // @ladjs/graceful runs customHandlers in parallel via Promise.all(),
-    // so we must consolidate into one async function to guarantee:
-    //   1. Stop accepting new work (isClosing)
-    //   2. Wait for in-flight requests to drain (refcount polling)
-    //   3. Close WebSocket server (no new connections)
-    //   4. Close all database handles (safe after drain)
-    //
-    async () => {
-      // 1. Signal all request handlers to reject new work
-      sqlite.isClosing = true;
-
-      // 2. Wait for in-flight requests to complete (poll refcounts)
-      //    parsePayload checks isClosing and will reject new work,
-      //    so only existing requests need to finish.
-      const drainStart = Date.now();
-      const drainTimeout = ms('30s');
-      if (sqlite.databaseMap && sqlite.databaseMap.size > 0) {
-        while (Date.now() - drainStart < drainTimeout) {
-          let activeRefs = 0;
-          for (const key of sqlite.databaseMap.keys()) {
-            const entry = sqlite.databaseMap._map.get(key);
-            if (entry && entry.refcount > 0) activeRefs += entry.refcount;
-          }
-
-          if (activeRefs === 0) break;
-          await setTimeout(250);
-        }
-      }
-
-      // 3. Close the WebSocket server (stops accepting new connections,
-      //    terminates existing ones after in-flight work has drained)
-      try {
-        await promisify(sqlite.wss.close).bind(sqlite.wss)();
-      } catch (err) {
-        logger.error(err);
-      }
-
-      // 4. Close all normal databases (checkpoint WAL first for durability)
-      if (sqlite.databaseMap && sqlite.databaseMap.size > 0) {
-        await Promise.allSettled(
-          [...sqlite.databaseMap.keys()].map(async (key) => {
-            const db = sqlite.databaseMap.get(key);
-            if (db) {
-              sqlite.databaseMap.evict(key);
-              // Checkpoint WAL to main DB file before closing to prevent
-              // corruption if pm2 SIGKILLs before OS flushes WAL pages.
-              try {
-                if (db.open && !db.readonly) {
-                  db.pragma('wal_checkpoint(PASSIVE)');
-                }
-              } catch (err) {
-                logger.error(err);
-              }
-
-              await closeDatabase(db);
-            }
-          })
-        );
-      }
-
-      // 5. Close all temporary databases
-      if (sqlite.temporaryDatabaseMap && sqlite.temporaryDatabaseMap.size > 0) {
-        await sqlite.temporaryDatabaseMap.closeAll();
-      }
-    }
-  ]
+  // @ladjs/graceful runs custom handlers in parallel; the shutdown of the
+  // server has a strict order (see `SQLite#shutdown`), so it is the one
+  // handler
+  customHandlers: [() => sqlite.shutdown()]
 });
 graceful.listen();
 

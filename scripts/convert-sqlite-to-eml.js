@@ -108,6 +108,9 @@ const instance = {
     false,
     storagePath
   );
+  // (a handle opened on an explicit path is the caller's: the attachments
+  //  of the messages are read through the session)
+  session.db = db;
 
   const tmp = path.join(os.tmpdir(), `${randomUUID()}.zip`);
 
@@ -204,10 +207,14 @@ const instance = {
   archive.on('warning', (err) => {
     logger.warn(err);
   });
+  // (the file is complete once the output stream has closed)
   await new Promise((resolve, reject) => {
     archive.on('error', reject);
-    archive.on('end', resolve);
+    output.on('error', reject);
+    output.on('close', resolve);
   });
+  db.close();
 
   console.log('tmp', tmp);
+  process.exit(0);
 })();

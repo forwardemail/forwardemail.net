@@ -42,6 +42,7 @@ const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
 const openDatabaseHandle = require('#helpers/open-database-handle');
+const quarantineReport = require('#helpers/quarantine-report');
 const safeVacuum = require('#helpers/safe-vacuum');
 const setupPragma = require('#helpers/setup-pragma');
 const { withDbFileLock } = require('#helpers/db-file-lock');
@@ -2299,15 +2300,16 @@ function retryGetDatabase(...args) {
                 await delay(ms('2s'));
               }
 
-              const quarantinePath = `${
-                error.dbFilePath
-              }.quarantine-${Date.now()}`;
+              const quarantinedAt = Date.now();
+              const quarantinePath = `${error.dbFilePath}.quarantine-${quarantinedAt}`;
+              const companions = [];
               for (const suffix of ['', '-wal', '-shm', '-journal']) {
                 try {
                   await fs.promises.rename(
                     `${error.dbFilePath}${suffix}`,
                     `${quarantinePath}${suffix}`
                   );
+                  if (suffix) companions.push(suffix);
                 } catch (err) {
                   if (err.code !== 'ENOENT') {
                     err.isCodeBug = true;
@@ -2317,6 +2319,8 @@ function retryGetDatabase(...args) {
               }
 
               error.quarantinePath = quarantinePath;
+              error.quarantinedAt = quarantinedAt;
+              error.quarantinedCompanions = companions;
               return true;
             }
           );
@@ -2380,11 +2384,19 @@ function retryGetDatabase(...args) {
           }
 
           //
-          // email admins of the renaming
+          // email admins of the renaming, with what the file looked like
+          // (whether the damage is old or new, how much mail it could have
+          // held) so the alert can be triaged without a shell on the server
           // (fail-closed: without Redis we cannot deduplicate/throttle
           //  notifications, so skip the email to avoid alert storms)
           //
           if (instance.client) {
+            const report = quarantineReport({
+              stats: error.stats,
+              companions: error.quarantinedCompanions,
+              now: error.quarantinedAt,
+              processStartedAt: Date.now() - process.uptime() * 1000
+            });
             email({
               template: 'alert',
               message: {
@@ -2392,9 +2404,13 @@ function retryGetDatabase(...args) {
                 subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
               },
               locals: {
-                message: `<p>${error.dbFilePath}</p><p>Quarantined as ${
+                message: `<p>${encode(
+                  error.dbFilePath
+                )}</p><p>Quarantined as ${encode(
                   error.quarantinePath
-                }</p><hr /><pre><code>${encode(
+                )}</p><ul>${report
+                  .map((line) => `<li>${encode(line)}</li>`)
+                  .join('')}</ul><hr /><pre><code>${encode(
                   safeStringify(error.stats, null, 2)
                 )}</code></pre><pre><code>${encode(
                   safeStringify(parseErr(error), null, 2)

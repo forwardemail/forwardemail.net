@@ -519,8 +519,8 @@ async function rekey(payload) {
     //
     try {
       await pWaitFor(() => os.freemem() > workerConfig.MIN_FREE_MEM, {
-        interval: ms('30s'),
-        timeout: ms('5m')
+        interval: workerConfig.MEMORY_WAIT_INTERVAL,
+        timeout: workerConfig.MEMORY_WAIT_TIMEOUT
       });
     } catch (err) {
       const retryErr = new RekeyRetryableError(
@@ -1477,8 +1477,8 @@ async function backup(payload) {
     //
     try {
       await pWaitFor(() => os.freemem() > workerConfig.MIN_FREE_MEM, {
-        interval: ms('5s'),
-        timeout: ms('5m')
+        interval: workerConfig.MEMORY_WAIT_INTERVAL,
+        timeout: workerConfig.MEMORY_WAIT_TIMEOUT
       });
     } catch (err) {
       if (isRetryableError(err)) {
