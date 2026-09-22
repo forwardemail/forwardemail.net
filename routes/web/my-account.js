@@ -525,6 +525,7 @@ router
     '/change-email/:token',
     policies.ensureLoggedIn,
     policies.ensureOtp,
+    web.auth.retrieveChangeEmail,
     render('change-email')
   )
   .post(

@@ -625,24 +625,39 @@ async function resetPassword(ctx) {
   }
 }
 
+async function getChangeEmailUser(ctx) {
+  if (!isSANB(ctx.params.token))
+    throw Boom.badRequest(ctx.translateError('LINK_EXPIRED_OR_INVALID'));
+
+  const user = await Users.findOne({
+    _id: ctx.state.user._id,
+    [config.userFields.changeEmailToken]: ctx.params.token,
+    [config.userFields.changeEmailTokenExpiresAt]: { $gte: new Date() },
+    [config.userFields.isBanned]: false
+  });
+
+  if (
+    !user ||
+    !validator.isEmail(user[config.userFields.changeEmailNewAddress] || '')
+  )
+    throw Boom.badRequest(ctx.translateError('LINK_EXPIRED_OR_INVALID'));
+
+  return user;
+}
+
+async function retrieveChangeEmail(ctx, next) {
+  // Render only the current authenticated user's valid pending change.
+  ctx.state.user = await getChangeEmailUser(ctx);
+  return next();
+}
+
 async function changeEmail(ctx) {
   const { body } = ctx.request;
 
   if (!isSANB(body.password))
     throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
-  if (!isSANB(ctx.params.token))
-    throw Boom.badRequest(ctx.translateError('INVALID_RESET_TOKEN'));
-
-  // lookup the user that has this token and if it matches the email passed
-  const query = { email: body.email };
-  query[config.userFields.changeEmailToken] = ctx.params.token;
-  // ensure that the reset token expires at value is in the future (hasn't expired)
-  query[config.userFields.changeEmailTokenExpiresAt] = { $gte: new Date() };
-  query[config.userFields.isBanned] = false;
-  const user = await Users.findOne(query);
-
-  if (!user) throw Boom.badRequest(ctx.translateError('INVALID_SET_EMAIL'));
+  const user = await getChangeEmailUser(ctx);
 
   const auth = await user.authenticate(body.password);
   if (!auth.user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
@@ -924,6 +939,7 @@ module.exports = {
   forgotPassword,
   recoveryKey,
   resetPassword,
+  retrieveChangeEmail,
   changeEmail,
   catchError,
   verify,
