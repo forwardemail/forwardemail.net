@@ -13,6 +13,7 @@ const isEmail = require('#helpers/is-email');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const config = require('#config');
 const env = require('#config/env');
+const isForwardConfirmedRdns = require('#helpers/is-forward-confirmed-rdns');
 const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
@@ -99,7 +100,17 @@ async function isAllowlisted(val, client, resolver, ignoreRedis = false) {
     try {
       // reverse lookup IP and if it was allowlisted then return early
       const [clientHostname] = await resolver.reverse(val);
-      if (isFQDN(clientHostname)) {
+      //
+      // NOTE: a PTR record is controlled by whoever owns the IP, so it is
+      //       only trusted when the hostname forward-confirms to this IP
+      //       (FCrDNS); otherwise a spoofed PTR of e.g. "mail.google.com"
+      //       would allowlist an arbitrary IP (and, since allowlisted values
+      //       are skipped by `isDenylisted`, let a denylisted IP through)
+      //
+      if (
+        isFQDN(clientHostname) &&
+        (await isForwardConfirmedRdns(resolver, clientHostname, val))
+      ) {
         // check domain
         const hostnameResult = await isAllowlisted(
           clientHostname,

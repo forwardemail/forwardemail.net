@@ -543,7 +543,7 @@ Test`.trim()
     );
 
     t.is(err.responseCode, 535);
-    t.regex(err.message, /Invalid password/);
+    t.regex(err.message, /Invalid username or password/);
   }
 
   const noReplyAlias = await t.context.aliasFactory
@@ -727,7 +727,7 @@ test('alias authentication follows a password rotation', async (t) => {
   );
   err = await t.throwsAsync(login(pass));
   t.is(err.responseCode, 535);
-  t.regex(err.message, /Invalid password/);
+  t.regex(err.message, /Invalid username or password/);
   t.true(await login(newPass));
 
   await smtp.close();

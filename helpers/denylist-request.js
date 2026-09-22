@@ -10,6 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 
 const config = require('#config');
 const i18n = require('#helpers/i18n');
+const isForwardConfirmedRdns = require('#helpers/is-forward-confirmed-rdns');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
@@ -219,11 +220,29 @@ function denylistMiddleware(ratelimitAllowlist = []) {
           );
           ctx.resolvedRootClientHostname = rootClientHostname;
 
-          // Check allowlist for rate limiting
-          if (ratelimitAllowlist.includes(clientHostname))
-            ctx.allowlistValue = clientHostname;
-          else if (ratelimitAllowlist.includes(rootClientHostname))
-            ctx.allowlistValue = rootClientHostname;
+          //
+          // Check allowlist for rate limiting -- only for a forward-confirmed
+          // reverse hostname (FCrDNS). `ctx.allowlistValue` turns off rate
+          // limiting entirely (`config.rateLimit.id` returns `false`) and
+          // gates internal endpoints (e.g. API inquiries from our MX hosts),
+          // and a bare PTR record is attacker-controlled. The denylist check
+          // above intentionally still uses the raw PTR: a spoofed value there
+          // can only hurt the party that spoofed it.
+          //
+          if (
+            (ratelimitAllowlist.includes(clientHostname) ||
+              ratelimitAllowlist.includes(rootClientHostname)) &&
+            // Maximum of 3s for the forward lookup (same bound as the PTR lookup)
+            (await isForwardConfirmedRdns(
+              ctx.resolver,
+              clientHostname,
+              ctx.request.ip,
+              { timeout: 3000 }
+            ))
+          )
+            ctx.allowlistValue = ratelimitAllowlist.includes(clientHostname)
+              ? clientHostname
+              : rootClientHostname;
         }
       } catch (err) {
         // Rethrow Boom errors (denylist errors), warn on other errors

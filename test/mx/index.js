@@ -40,6 +40,7 @@ const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised
 const env = require('#config/env');
 const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 const logger = require('#helpers/logger');
+const parseRootDomain = require('#helpers/parse-root-domain');
 const processEmail = require('#helpers/process-email');
 
 // dynamically import get-port
@@ -2132,6 +2133,18 @@ test('rejects unauthenticated legacy HELO spoofing from a generic cloud reverse 
     `ptr:${arpaName}`,
     resolver.spoofPacket(arpaName, 'PTR', [genericHostname], true)
   );
+  //
+  // The provider-generated reverse hostname forward-confirms (its A record is
+  // the connecting address), exactly as real cloud PTRs do: the provider
+  // controls both the reverse zone and the forward zone. This is required for
+  // the connection to be treated as allowlisted via the provider root domain
+  // (only a forward-confirmed reverse hostname is trusted, FCrDNS), which is
+  // what lets the campaign bypass greylisting and reach this rule directly.
+  //
+  map.set(
+    `a:${genericHostname}`,
+    resolver.spoofPacket(genericHostname, 'A', [spoofedAddress], true)
+  );
   await resolver.options.cache.mset(map);
 
   // only the provider root domain is allowlisted (not the address itself)
@@ -2287,6 +2300,7 @@ Content-Type: text/html; charset=utf-8
     // Clear the spoofed records and allowlist entries so they do not bleed
     // into subsequent tests via the shared Tangerine Redis cache.
     await t.context.client.del(`tangerine:ptr:${arpaName}`);
+    await t.context.client.del(`tangerine:a:${genericHostname}`);
     await t.context.client.del(`tangerine:txt:${spoofedDomain}`);
     await t.context.client.del(`tangerine:txt:_dmarc.${spoofedDomain}`);
     await t.context.client.del('allowlist:googleusercontent.com');
@@ -4468,5 +4482,246 @@ Hello, this is a test message sent via AWS SES.`.trim()
     'Vacation responder must have Precedence: bulk header'
   );
 
+  await smtp.close();
+});
+
+test('reverse hostname is only trusted when it forward-confirms (FCrDNS)', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: serverPort.toString(),
+      allowlist: ['*.gov.co']
+    })
+    .create();
+
+  // Create alias to receive emails
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: 'test',
+      recipients: [`test@${IP_ADDRESS}`],
+      is_enabled: true
+    })
+    .create();
+
+  // the connecting IP claims (via PTR) to be this hostname
+  // (Tangerine caches PTR answers under the reversed in-addr.arpa name)
+  const claimedHostname = 'mx1.fcrdns-test.com';
+  t.true(net.isIPv4(IP_ADDRESS));
+  const reversedIp = `${IP_ADDRESS.split('.')
+    .reverse()
+    .join('.')}.in-addr.arpa`;
+
+  // spoof dns records
+  const map = new Map();
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+  );
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+  map.set(
+    `ptr:${reversedIp}`,
+    resolver.spoofPacket(reversedIp, 'PTR', [claimedHostname], true)
+  );
+  await resolver.options.cache.mset(map);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  const send = async (subject) => {
+    const mx = await asyncMxConnect({
+      target: IP_ADDRESS,
+      port: smtp.server.address().port,
+      dnsOptions: {
+        resolve: util.callbackify(resolver.resolve.bind(resolver))
+      }
+    });
+    const transporter = nodemailer.createTransport({
+      logger,
+      debug: true,
+      host: mx.host,
+      port: mx.port,
+      connection: mx.socket,
+      ignoreTLS: true,
+      secure: false,
+      tls
+    });
+    const count = receivedEmails.length;
+    await transporter.sendMail({
+      envelope: {
+        from: 'legitimate@department.gov.co',
+        to: `test@${domain.name}`
+      },
+      raw: `
+To: test@${domain.name}
+From: legitimate@department.gov.co
+Subject: ${subject}
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+${subject}
+`
+    });
+    await pWaitFor(() => receivedEmails.length > count, {
+      timeout: ms('10s')
+    });
+    // unfold header continuation lines so a header can be matched as one line
+    return receivedEmails[receivedEmails.length - 1].data.replace(
+      /\r?\n[ \t]+/g,
+      ' '
+    );
+  };
+
+  // 1) the claimed hostname forward-confirms (its A record is our IP):
+  //    the reverse hostname is trusted and advertised on the delivered message
+  await resolver.options.cache.mset(
+    new Map([
+      [
+        `a:${claimedHostname}`,
+        resolver.spoofPacket(claimedHostname, 'A', [IP_ADDRESS], true)
+      ]
+    ])
+  );
+  const confirmed = await send('fcrdns confirmed');
+  t.regex(
+    confirmed,
+    new RegExp(
+      `^X-Forward-Email-Sender: rfc822; .*, ${claimedHostname.replace(
+        /\./g,
+        '\\.'
+      )}, ${IP_ADDRESS.replace(/\./g, '\\.')}\\r?$`,
+      'm'
+    )
+  );
+
+  // 2) the same PTR, but the hostname does not resolve to our IP (a spoofed
+  //    reverse record): the reverse hostname must not be trusted
+  await resolver.options.cache.mset(
+    new Map([
+      [
+        `a:${claimedHostname}`,
+        resolver.spoofPacket(claimedHostname, 'A', ['198.51.100.7'], true)
+      ]
+    ])
+  );
+  const unconfirmed = await send('fcrdns unconfirmed');
+  t.regex(
+    unconfirmed,
+    new RegExp(
+      `^X-Forward-Email-Sender: rfc822; .*, ${IP_ADDRESS.replace(
+        /\./g,
+        '\\.'
+      )}\\r?$`,
+      'm'
+    )
+  );
+  t.false(unconfirmed.includes(claimedHostname));
+
+  t.is(receivedEmails.length, 2);
+
+  // 3) an unconfirmed reverse hostname is still subject to *negative* checks:
+  //    denylisting its root domain must reject the message
+  const claimedRootDomain = parseRootDomain(claimedHostname);
+  await t.context.client.set(`denylist:${claimedRootDomain}`, true);
+  const err = await t.throwsAsync(send('fcrdns unconfirmed but denylisted'));
+  t.regex(err.message, /denylisted/i);
+  t.is(receivedEmails.length, 2);
+  await t.context.client.del(`denylist:${claimedRootDomain}`);
+
+  // Clear the spoofed records so they do not bleed into subsequent tests via
+  // the shared Tangerine Redis cache (prefixed 'tangerine:').
+  await t.context.client.del(`tangerine:ptr:${reversedIp}`);
+  await t.context.client.del(`tangerine:a:${claimedHostname}`);
+
+  await server.close();
   await smtp.close();
 });

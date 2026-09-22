@@ -12,6 +12,46 @@ const { XMLParser } = require('fast-xml-parser');
 
 const logger = require('#helpers/logger');
 const { isSafeXml } = require('#helpers/assert-safe-xml');
+const {
+  DMARC_MAX_REPORT_SIZE_BYTES,
+  DMARC_MAX_RECORDS_PER_REPORT
+} = require('#helpers/validate-dmarc-report');
+
+//
+// Pre-parse structural bounds.
+//
+// `xmlParser.parse()` allocates per token, so its cost is linear in the number
+// of tags and attributes -- measured at ~0.5 s CPU and ~70 MB per MB of input
+// for an attribute flood on this version of fast-xml-parser. DMARC report
+// addresses are published in DNS (rua=), so anyone can send a report, and the
+// gzip/zip path admits up to MAX_DECOMPRESSED_SIZE (25 MB) of XML. Until now
+// the 10 MB report cap was applied to the raw *email* size and only *after*
+// parsing, so a ~250 KB gzip inflating to a 25 MB flood was parsed in full
+// before any check ran.
+//
+// A real report at DMARC_MAX_RECORDS_PER_REPORT records has on the order of
+// 30 opening tags per record and almost no attributes (the schema carries its
+// data in elements). Both ceilings below leave several times that headroom
+// and are checked by a single early-exiting scan before the parser is given
+// the string.
+//
+const DMARC_MAX_XML_TAGS = DMARC_MAX_RECORDS_PER_REPORT * 60; // 600k
+const DMARC_MAX_XML_ATTRIBUTES = 2000;
+const XML_TOKEN_REGEX = /<[A-Za-z]|=\s*["']/g;
+
+function exceedsStructuralLimits(xmlString) {
+  let tags = 0;
+  let attributes = 0;
+  XML_TOKEN_REGEX.lastIndex = 0;
+  let match;
+  while ((match = XML_TOKEN_REGEX.exec(xmlString)) !== null) {
+    if (match[0].codePointAt(0) === 60 /* < */) {
+      if (++tags > DMARC_MAX_XML_TAGS) return 'tags';
+    } else if (++attributes > DMARC_MAX_XML_ATTRIBUTES) return 'attributes';
+  }
+
+  return false;
+}
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -38,6 +78,26 @@ function parseXmlReport(xmlContent) {
     // previous substring check, which only matched uppercase).
     if (!isSafeXml(xmlString)) {
       logger.warn('DMARC report rejected: contains DOCTYPE or ENTITY');
+      return null;
+    }
+
+    // Enforce the report size cap on the decompressed XML *before* parsing
+    // (previously it was checked against the raw email size, after parsing).
+    const xmlBytes = Buffer.byteLength(xmlString, 'utf8');
+    if (xmlBytes > DMARC_MAX_REPORT_SIZE_BYTES) {
+      logger.warn('DMARC report rejected: XML exceeds size cap', {
+        xmlBytes,
+        maxBytes: DMARC_MAX_REPORT_SIZE_BYTES
+      });
+      return null;
+    }
+
+    const exceeded = exceedsStructuralLimits(xmlString);
+    if (exceeded) {
+      logger.warn('DMARC report rejected: exceeds structural limits', {
+        exceeded,
+        xmlBytes
+      });
       return null;
     }
 

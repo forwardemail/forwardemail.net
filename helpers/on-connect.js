@@ -17,6 +17,7 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const config = require('#config');
 const env = require('#config/env');
 const isAllowlisted = require('#helpers/is-allowlisted');
+const isForwardConfirmedRdns = require('#helpers/is-forward-confirmed-rdns');
 // const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -196,9 +197,35 @@ async function onConnect(session, fn) {
       );
       // OPTIMIZATION: Use helper function to process hostname
       const processed = processHostname(clientHostname);
+      //
+      // Only trust the reverse hostname when it forward-confirms (FCrDNS):
+      // `session.resolvedClientHostname` feeds the client IP passthrough and
+      // hostname allowlist below, skips the per-IP auth brute-force limiter
+      // for our own servers, and feeds spam-trust scoring -- and a bare PTR
+      // is attacker-controlled (see `helpers/is-forward-confirmed-rdns.js`).
+      //
+      // The raw reverse hostname is kept as `session.unconfirmedClientHostname`
+      // for logs and for *negative* checks only (denylists), where a spoofed
+      // value can only hurt the party that spoofed it.
+      //
       if (processed) {
-        session.resolvedClientHostname = processed.domain;
-        session.resolvedRootClientHostname = processed.rootDomain;
+        session.unconfirmedClientHostname = processed.domain;
+        session.unconfirmedRootClientHostname = processed.rootDomain;
+        if (
+          await isForwardConfirmedRdns(
+            this.resolver,
+            processed.domain,
+            session.remoteAddress
+          )
+        ) {
+          session.resolvedClientHostname = processed.domain;
+          session.resolvedRootClientHostname = processed.rootDomain;
+        } else if (env.NODE_ENV !== 'production') {
+          this.logger.debug('Reverse hostname did not forward-confirm', {
+            hostname: processed.domain,
+            remoteAddress: session.remoteAddress
+          });
+        }
       }
     } catch (err) {
       //
@@ -254,6 +281,8 @@ async function onConnect(session, fn) {
         session.remoteAddress = parsedClientIp;
         delete session.resolvedClientHostname;
         delete session.resolvedRootClientHostname;
+        delete session.unconfirmedClientHostname;
+        delete session.unconfirmedRootClientHostname;
 
         // Resolve the hostname for the new client IP
         try {
@@ -263,6 +292,19 @@ async function onConnect(session, fn) {
           // OPTIMIZATION: Use helper function to process hostname
           const processed = processHostname(newClientHostname);
           if (processed) {
+            session.unconfirmedClientHostname = processed.domain;
+            session.unconfirmedRootClientHostname = processed.rootDomain;
+          }
+
+          // NOTE: same FCrDNS requirement as the initial lookup above
+          if (
+            processed &&
+            (await isForwardConfirmedRdns(
+              this.resolver,
+              processed.domain,
+              parsedClientIp
+            ))
+          ) {
             session.resolvedClientHostname = processed.domain;
             session.resolvedRootClientHostname = processed.rootDomain;
             this.logger.debug('Resolved hostname for passthrough IP', {
@@ -270,7 +312,7 @@ async function onConnect(session, fn) {
               resolvedHostname: processed.domain
             });
           } else {
-            // If not a valid FQDN, clear the resolved hostname
+            // If not a valid FQDN (or not forward-confirmed), clear the resolved hostname
             session.resolvedClientHostname = undefined;
             session.resolvedRootClientHostname = undefined;
           }
@@ -295,9 +337,14 @@ async function onConnect(session, fn) {
     // This is cleaner and slightly faster than multiple if-else statements
     let isDenylisted = false;
 
+    // (the raw reverse hostname is included even when it did not
+    //  forward-confirm: this is a negative check, so a spoofed PTR can
+    //  only hurt the party that spoofed it)
     const denylistCheckValues = [
       session.resolvedClientHostname,
       session.resolvedRootClientHostname,
+      session.unconfirmedClientHostname,
+      session.unconfirmedRootClientHostname,
       session.remoteAddress
     ].filter(Boolean);
 

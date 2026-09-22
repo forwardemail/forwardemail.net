@@ -49,10 +49,10 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
   const replyToAddresses = parseAddresses(getHeaders(headers, 'reply-to'));
 
   //
-  // NOTE: we include hostNameAppearsAs (EHLO/HELO hostname) for denylist checking.
-  //       Although it can be spoofed, if a known-bad domain is used in HELO,
-  //       we should still block it. This also covers the IPv6 case where
-  //       resolvedClientHostname is unavailable (no rDNS for IPv6 addresses).
+  // NOTE: `session.resolvedClientHostname` is only set when the reverse
+  //       hostname forward-confirmed (FCrDNS, see `helpers/on-connect.js`),
+  //       so it and the connecting IP are the only session values a client
+  //       cannot choose for itself.
   //
   const arr = [
     session.resolvedClientHostname,
@@ -60,14 +60,36 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
     session.remoteAddress
   ];
 
-  if (isSANB(session.hostNameAppearsAs) && isFQDN(session.hostNameAppearsAs)) {
-    const heloDomain = session.hostNameAppearsAs.toLowerCase();
-    // Skip private/reserved hostnames (e.g. .local, .test, .localhost, link-local)
-    // to avoid false-positive denylist hits from local/internal MTAs
-    if (!isPrivateHost(heloDomain)) {
-      arr.push(heloDomain);
-      const heloRoot = parseRootDomain(heloDomain);
-      if (heloRoot !== heloDomain) arr.push(heloRoot);
+  //
+  // NOTE: we include the raw (unconfirmed) reverse hostname and the EHLO/HELO
+  //       hostname for denylist *checking*. Although both can be spoofed, if a
+  //       known-bad domain is used there we should still block it: a spoofed
+  //       value can only hurt the party that spoofed it. (HELO also covers the
+  //       IPv6 case where rDNS is unavailable.)
+  //
+  //       Both are deliberately left out of the aligned set, which is what
+  //       gets *added* to the denylist after bounces: otherwise anyone could
+  //       get a third party's domain denylisted by sending spam with a PTR or
+  //       HELO of that domain.
+  //
+  if (!isAligned) {
+    arr.push(
+      session.unconfirmedClientHostname,
+      session.unconfirmedRootClientHostname
+    );
+
+    if (
+      isSANB(session.hostNameAppearsAs) &&
+      isFQDN(session.hostNameAppearsAs)
+    ) {
+      const heloDomain = session.hostNameAppearsAs.toLowerCase();
+      // Skip private/reserved hostnames (e.g. .local, .test, .localhost, link-local)
+      // to avoid false-positive denylist hits from local/internal MTAs
+      if (!isPrivateHost(heloDomain)) {
+        arr.push(heloDomain);
+        const heloRoot = parseRootDomain(heloDomain);
+        if (heloRoot !== heloDomain) arr.push(heloRoot);
+      }
     }
   }
 

@@ -288,7 +288,92 @@ test('prevents domain-wide passwords', async (t) => {
   });
   const err = await t.throwsAsync(imapFlow.connect());
   t.true(err.authenticationFailed);
-  t.regex(err.response, /Alias does not exist/);
+  // pre-auth responses must not reveal whether the alias exists
+  t.regex(err.response, /Invalid username or password/);
+  t.notRegex(err.response, /Alias does not exist/);
+});
+
+test('does not reveal alias existence or state on failed login', async (t) => {
+  const { domain, alias, pass } = t.context;
+
+  // a second alias that exists but is disabled (with a real password)
+  const disabledAlias = await t.context.aliasFactory
+    .withState({
+      user: t.context.user._id,
+      domain: domain._id,
+      recipients: [t.context.user.email],
+      has_imap: true,
+      is_enabled: false
+    })
+    .create();
+  const disabledPass = await disabledAlias.createToken();
+  await disabledAlias.save();
+
+  const attempt = async (user, password) => {
+    const imapFlow = new ImapFlow({
+      host: IP_ADDRESS,
+      port: t.context.port,
+      secure: t.context.secure,
+      logger,
+      tls,
+      auth: { user, pass: password }
+    });
+    const err = await t.throwsAsync(imapFlow.connect());
+    t.true(err.authenticationFailed);
+    return err.response;
+  };
+
+  // alias does not exist
+  const missing = await attempt(
+    `does-not-exist-${randomUUID()}@${domain.name}`,
+    pass
+  );
+  // alias exists but is disabled (correct password)
+  const disabled = await attempt(
+    `${disabledAlias.name}@${domain.name}`,
+    disabledPass
+  );
+  // alias exists and is enabled, wrong password
+  const wrongPassword = await attempt(
+    `${alias.name}@${domain.name}`,
+    `${pass}-wrong`
+  );
+
+  // every pre-auth failure is indistinguishable to the client
+  t.regex(missing, /Invalid username or password/);
+  t.is(disabled, missing);
+  t.is(wrongPassword, missing);
+  for (const response of [missing, disabled, wrongPassword]) {
+    t.notRegex(response, /Alias does not exist/);
+    t.notRegex(response, /Alias is disabled/);
+    t.notRegex(response, /add the alias/);
+  }
+
+  // and each one counted toward the per-IP failed attempt limiter
+  // (three distinct passwords were used above, so a non-existent alias can
+  //  no longer be told apart from a wrong password by whether the account
+  //  lockout eventually triggers)
+  // (the remote address is keyed however the server observed it, so find the
+  //  key by pattern; `keys` returns keys with the client's prefix included)
+  const { keyPrefix } = t.context.client.options;
+  const prefixedLimitKeys = await t.context.client.keys(
+    `${keyPrefix}auth_limit_${config.env}:*`
+  );
+  const limitKeys = prefixedLimitKeys.map((key) => key.slice(keyPrefix.length));
+  t.is(limitKeys.length, 1);
+  t.is(await t.context.client.incrby(limitKeys[0], 0), 3);
+
+  // the correct password still works for the enabled alias
+  const imapFlow = new ImapFlow({
+    host: IP_ADDRESS,
+    port: t.context.port,
+    secure: t.context.secure,
+    logger,
+    tls,
+    auth: { user: `${alias.name}@${domain.name}`, pass }
+  });
+  await imapFlow.connect();
+  await imapFlow.logout();
 });
 
 test('onAppend with private PGP', async (t) => {

@@ -164,8 +164,18 @@ function isHighConfidenceGenericRdnsSpam(session) {
   )
     return false;
 
+  //
+  // Use the raw reverse hostname, not the forward-confirmed
+  // `session.resolvedClientHostname` (which `on-connect` sets only on FCrDNS).
+  // This is a rejection (negative) check, and `isGenericReverseHostname`
+  // structurally requires the hostname to embed the *connecting* address's own
+  // octets, so a spoofed or non-forward-confirming PTR can only implicate the
+  // host that presented it -- never a third party. Gating this on FCrDNS would
+  // instead let a sender drop the rule by publishing a generic PTR with no
+  // matching forward record.
+  //
   return isGenericReverseHostname(
-    session.resolvedClientHostname,
+    session.unconfirmedClientHostname || session.resolvedClientHostname,
     session.remoteAddress
   );
 }

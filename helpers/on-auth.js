@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const punycode = require('node:punycode');
 
 const POP3Server = require('@zone-eu/wildduck/lib/pop3/server');
+const argon2 = require('@node-rs/argon2');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pify = require('pify');
@@ -42,6 +43,60 @@ const { getRekeyLockKey } = require('#helpers/rekey-lock');
 const { checkAndSendAlerts } = require('#helpers/imap/send-imap-alert');
 
 const onConnectPromise = pify(onConnect);
+
+//
+// Alias enumeration hardening for the pre-authentication path.
+//
+// Before a client has proven anything, the LOGIN/AUTH response must not
+// reveal whether an alias exists, is disabled, or belongs to a banned user:
+// distinct messages ("Alias does not exist, go to ... and add the alias",
+// "Alias is disabled", "Invalid password, ...") let an unauthenticated
+// client enumerate a domain's private aliases and their state one guess at
+// a time. Every such failure therefore returns the same message (which still
+// points the user at "Generate Password", as the invalid password message
+// always did); the specific reason is kept on the error as
+// `authFailureReason` for server-side logs only.
+//
+// Two side channels are closed alongside the message:
+//
+// - Timing: when the alias does not exist (or is disabled/banned) no argon2
+//   verify would otherwise run, making the failure measurably faster than a
+//   wrong password. A dummy hash generated with the same argon2 parameters
+//   as real alias tokens is verified instead whenever no real verification
+//   ran, so every failure path costs the same.
+//
+// - The per-IP failed-attempt limiter: a wrong password on an existing alias
+//   counts toward `config.smtpLimitAuth` while a non-existent alias did not,
+//   so the eventual "exceeded the maximum number of failed authentication
+//   attempts" response revealed existence. Every uniform failure now counts
+//   (once per distinct password, as before).
+//
+const UNIFORM_AUTH_FAILURE_MESSAGE = 'Invalid username or password';
+
+function getUniformAuthFailureMessage(domainName) {
+  return `${UNIFORM_AUTH_FAILURE_MESSAGE}, please try again or go to ${
+    config.urls.web
+  }/my-account/domains/${punycode.toASCII(
+    domainName
+  )}/aliases and click "Generate Password"`;
+}
+
+let dummyArgon2HashPromise;
+function getDummyArgon2Hash() {
+  if (!dummyArgon2HashPromise)
+    dummyArgon2HashPromise = argon2
+      .hash(crypto.randomBytes(32).toString('hex'), config.argon2)
+      .catch(() => null);
+  return dummyArgon2HashPromise;
+}
+
+async function equalizeAuthFailureTiming(password) {
+  const hash = await getDummyArgon2Hash();
+  if (!hash || typeof password !== 'string' || password.length === 0) return;
+  try {
+    await argon2.verify(hash, password);
+  } catch {}
+}
 
 //
 // Redis-backed auth cache shared by ALL protocols and ALL processes
@@ -633,14 +688,76 @@ async function onAuth(auth, session, fn) {
     const domain = result;
     const alias = name === '*' ? null : result.alias;
 
-    // Parallel validation
-    await Promise.all([
-      validateDomain(domain, domainName),
-      // validate alias (will throw an error if !alias)
-      alias || isIMAPorPOP3 || isManageSieve
-        ? validateAlias(alias, domain.name, name)
-        : Promise.resolve()
-    ]);
+    //
+    // Uniform pre-auth failure (see the note near the top of this file).
+    // Records the attempt against the per-IP limiter (once per distinct
+    // password) and, unless a real password verification already ran on
+    // this path, spends the equivalent argon2 cost before responding.
+    //
+    const uniformAuthFailure = async (reason, verified = false) => {
+      if (!verified) await equalizeAuthFailureTiming(auth.password);
+
+      // increase failed counter by 1 iff new password was used
+      const hash = revHash(auth.password);
+
+      // OPTIMIZATION: Use previousPasswordHashesRaw from earlier pipeline if available
+      // This avoids a duplicate Redis call
+      let previousPasswordHashes =
+        previousPasswordHashesRaw || (await this.client.get(attemptsKey));
+      if (isSANB(previousPasswordHashes)) {
+        try {
+          previousPasswordHashes = JSON.parse(previousPasswordHashes);
+        } catch (err) {
+          this.logger.fatal(err, { session, resolver: this.resolver });
+        }
+      }
+
+      if (!Array.isArray(previousPasswordHashes)) previousPasswordHashes = [];
+
+      if (!previousPasswordHashes.includes(hash)) {
+        previousPasswordHashes.push(hash);
+        await this.client
+          .pipeline()
+          .incrby(authLimitKey, 1)
+          .pexpire(authLimitKey, config.smtpLimitAuthDuration)
+          .set(
+            attemptsKey,
+            safeStringify(previousPasswordHashes),
+            'PX',
+            config.smtpLimitAuthDuration
+          )
+          .exec();
+      }
+
+      const isReasonError = reason instanceof Error;
+      const err = new SMTPError(getUniformAuthFailureMessage(domainName), {
+        responseCode: 535,
+        imapResponse: 'AUTHENTICATIONFAILED',
+        // keep the upstream logging behavior of the underlying reason
+        ignoreHook: isReasonError ? reason.ignoreHook === true : true
+      });
+      // preserve the real reason for server-side logs without exposing it
+      err.authFailureReason = isReasonError ? reason.message : reason;
+      this.logger.debug(err.authFailureReason, {
+        session,
+        resolver: this.resolver
+      });
+      return err;
+    };
+
+    // validate domain (its messages describe domain-level state that is
+    // public via DNS and guide the user, so they are intentionally distinct)
+    validateDomain(domain, domainName);
+
+    // validate alias (will throw an error if !alias)
+    if (alias || isIMAPorPOP3 || isManageSieve) {
+      try {
+        validateAlias(alias, domain.name, name);
+      } catch (err) {
+        // pre-auth: do not reveal alias existence/state
+        throw await uniformAuthFailure(err);
+      }
+    }
 
     //
     // validate the `auth.password` provided
@@ -703,9 +820,14 @@ async function onAuth(auth, session, fn) {
       );
 
     // ensure that the token is valid
+    // (`verified` tracks whether a real password verification ran, so the
+    //  uniform failure only spends the dummy argon2 cost when none did)
     let isValid = false;
-    if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0)
+    let verified = false;
+    if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0) {
+      verified = true;
       isValid = await isValidPassword(alias.tokens, auth.password, alias);
+    }
 
     //
     // NOTE: this is only applicable to SMTP servers (outbound mail)
@@ -716,55 +838,12 @@ async function onAuth(auth, session, fn) {
       !isValid &&
       Array.isArray(domain.tokens) &&
       domain.tokens.length > 0
-    )
+    ) {
+      verified = true;
       isValid = await isValidPassword(domain.tokens, auth.password, domain);
-
-    if (!isValid) {
-      // increase failed counter by 1 iff new password was used
-      const hash = revHash(auth.password);
-
-      // OPTIMIZATION: Use previousPasswordHashesRaw from earlier pipeline if available
-      // This avoids a duplicate Redis call
-      let previousPasswordHashes =
-        previousPasswordHashesRaw || (await this.client.get(attemptsKey));
-      if (isSANB(previousPasswordHashes)) {
-        try {
-          previousPasswordHashes = JSON.parse(previousPasswordHashes);
-        } catch (err) {
-          this.logger.fatal(err, { session, resolver: this.resolver });
-        }
-      }
-
-      if (!Array.isArray(previousPasswordHashes)) previousPasswordHashes = [];
-
-      if (!previousPasswordHashes.includes(hash)) {
-        previousPasswordHashes.push(hash);
-        await this.client
-          .pipeline()
-          .incrby(authLimitKey, 1)
-          .pexpire(authLimitKey, config.smtpLimitAuthDuration)
-          .set(
-            attemptsKey,
-            safeStringify(previousPasswordHashes),
-            'PX',
-            config.smtpLimitAuthDuration
-          )
-          .exec();
-      }
-
-      throw new SMTPError(
-        `Invalid password, please try again or go to ${
-          config.urls.web
-        }/my-account/domains/${punycode.toASCII(
-          domainName
-        )}/aliases and click "Generate Password"`,
-        {
-          responseCode: 535,
-          imapResponse: 'AUTHENTICATIONFAILED',
-          ignoreHook: true
-        }
-      );
     }
+
+    if (!isValid) throw await uniformAuthFailure('Invalid password', verified);
 
     //
     // OPTIMIZATION: Parallelize independent async operations

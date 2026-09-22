@@ -60,6 +60,7 @@ const i18n = require('#helpers/i18n');
 const isAllowlisted = require('#helpers/is-allowlisted');
 const createSession = require('#helpers/create-session');
 const isCodeBug = require('#helpers/is-code-bug');
+const isForwardConfirmedRdns = require('#helpers/is-forward-confirmed-rdns');
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
@@ -990,8 +991,11 @@ async function parsePayload(data, ws) {
         // but attempt to use the reverse PTR root domain of the remoteAddress
         //
         // NOTE: resolvedClientHostname is already resolved during on-connect
-        //       via Tangerine (which has built-in Redis-backed DNS caching).
-        //       Fall back to a reverse lookup if it wasn't set (e.g. direct WS call).
+        //       via Tangerine (which has built-in Redis-backed DNS caching)
+        //       and is only set when the reverse hostname forward-confirmed.
+        //       Fall back to a reverse lookup if it wasn't set (e.g. direct WS call),
+        //       with the same FCrDNS requirement so a spoofed PTR cannot be used
+        //       to share (and exhaust) another sender's rate limit bucket.
         //
         let sender = payload.remoteAddress;
         if (
@@ -1005,7 +1009,15 @@ async function parsePayload(data, ws) {
             const [hostname] = await this.resolver.reverse(
               payload.remoteAddress
             );
-            if (hostname && isFQDN(hostname)) {
+            if (
+              hostname &&
+              isFQDN(hostname) &&
+              (await isForwardConfirmedRdns(
+                this.resolver,
+                hostname,
+                payload.remoteAddress
+              ))
+            ) {
               sender = parseRootDomain(hostname);
             }
           } catch {
