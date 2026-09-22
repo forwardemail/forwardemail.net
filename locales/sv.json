@@ -19778,5 +19778,6 @@
   "What happened to this message?": "What happened to this message?",
   "Only this outbound message was prevented from delivery.": "Only this outbound message was prevented from delivery.",
   "Your outbound SMTP service and other queued messages remain active.": "Your outbound SMTP service and other queued messages remain active.",
-  "Contact us if you believe this message was prevented in error.": "Contact us if you believe this message was prevented in error."
+  "Contact us if you believe this message was prevented in error.": "Contact us if you believe this message was prevented in error.",
+  "<p>An error occurred while backing up <span class=\"notranslate text-monospace font-weight-bold\">%s</span> to your custom S3 storage for domain <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</p><p>Please verify your custom S3 credentials and endpoint URL in your domain advanced settings.</p><p>The error received was:</p><pre><code>%s</code></pre>": "<p>An error occurred while backing up <span class=\"notranslate text-monospace font-weight-bold\">%s</span> to your custom S3 storage for domain <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</p><p>Please verify your custom S3 credentials and endpoint URL in your domain advanced settings.</p><p>The error received was:</p><pre><code>%s</code></pre>"
 }
