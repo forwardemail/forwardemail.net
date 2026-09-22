@@ -16,6 +16,9 @@ const isPrivateHost = require('#helpers/is-private-host');
 const config = require('#config');
 
 async function retryRequest(url, opts = {}, count = 1) {
+  const ownsDispatcher = !opts.dispatcher && Boolean(opts.resolver);
+  let timer;
+
   try {
     // Validate URL before making request to prevent ERR_INVALID_URL errors
     // This can happen when redirects have malformed Location headers
@@ -51,14 +54,14 @@ async function retryRequest(url, opts = {}, count = 1) {
     const abortController = new AbortController();
     opts.signal = abortController.signal;
 
-    const t = setTimeout(() => {
+    timer = setTimeout(() => {
       if (!abortController?.signal?.aborted)
         abortController.abort(
           new TimeoutError(`${url} took longer than ${opts.timeout}ms`)
         );
     }, opts.timeout);
 
-    if (opts.resolver)
+    if (ownsDispatcher)
       opts.dispatcher = new undici.Agent({
         // TODO: should we change defaults here; if so, change elsewhere too
         // headersTimeout: ms(DURATION),
@@ -117,7 +120,6 @@ async function retryRequest(url, opts = {}, count = 1) {
       });
 
     const response = await undici.request(url, opts);
-    clearTimeout(t);
 
     // <https://github.com/nodejs/undici/issues/3353#issuecomment-2184635954>
     // the error code is between 200-400 (e.g. 302 redirect)
@@ -142,6 +144,11 @@ async function retryRequest(url, opts = {}, count = 1) {
     response.signal = opts.signal;
     return response;
   } catch (err) {
+    if (timer) {
+      clearTimeout(timer);
+      timer = undefined;
+    }
+
     //
     // Enhanced error logging for fetch failures
     // This helps diagnose "TypeError: fetch failed" errors by logging
@@ -176,13 +183,18 @@ async function retryRequest(url, opts = {}, count = 1) {
       };
     }
 
-    // Log fetch failures with full context for debugging
+    const retryable = isRetryableError(err);
+
+    // Preserve error-level logging for terminal failures while allowing
+    // expected in-budget retries to remain diagnostic-only.
     if (
       err.message === 'fetch failed' ||
       err.name === 'TypeError' ||
       err.code?.startsWith?.('UND_ERR')
     ) {
-      logger.error(err, {
+      const log =
+        retryable && count < opts.retries ? logger.warn : logger.error;
+      log(err, {
         url: err.requestContext?.url,
         method: err.requestContext?.method,
         cause: err.underlyingCause,
@@ -190,10 +202,10 @@ async function retryRequest(url, opts = {}, count = 1) {
       });
     }
 
-    if (count >= opts.retries || !isRetryableError(err)) {
+    if (count >= opts.retries || !retryable) {
       // Destroy per-request dispatcher on terminal failure to prevent
       // socket/fd leak (the response body won't be consumed on error).
-      if (opts.dispatcher) {
+      if (ownsDispatcher && opts.dispatcher) {
         opts.dispatcher.destroy();
         opts.dispatcher = undefined;
       }
@@ -201,9 +213,9 @@ async function retryRequest(url, opts = {}, count = 1) {
       throw err;
     }
 
-    // Destroy the dispatcher before retrying — the recursive call will
-    // create a fresh one.  Without this, each retry leaks an Agent.
-    if (opts.dispatcher) {
+    // Only a resolver-created Agent belongs to this invocation.  A caller may
+    // deliberately share its dispatcher across requests (e.g. Launchpad).
+    if (ownsDispatcher && opts.dispatcher) {
       opts.dispatcher.destroy();
       opts.dispatcher = undefined;
     }
@@ -211,6 +223,8 @@ async function retryRequest(url, opts = {}, count = 1) {
     const ms = opts.calculateDelay(count);
     if (ms) await timers.setTimeout(ms);
     return retryRequest(url, opts, count + 1);
+  } finally {
+    if (timer) clearTimeout(timer);
   }
 }
 

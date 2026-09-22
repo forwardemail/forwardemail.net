@@ -30,7 +30,9 @@ async function unsubscribe(ctx) {
   try {
     payload = parseUnsubscribeToken(decodeURIComponent(token));
   } catch (err) {
-    logger.error(err, { token });
+    // Invalid, stale, and tampered public tokens are expected to reach this
+    // boundary.  Keep a diagnostic without persisting a production error.
+    logger.warn(err, { token });
     throw Boom.badRequest(ctx.translateError('INVALID_UNSUBSCRIBE_TOKEN'));
   }
 

@@ -33,7 +33,6 @@ const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const mongoose = require('mongoose');
 const ms = require('ms');
-const pWaitFor = require('p-wait-for');
 const test = require('ava');
 const { ImapFlow } = require('imapflow');
 
@@ -54,12 +53,6 @@ const setupPragma = require('#helpers/setup-pragma');
 const workerConfig = require('#helpers/sqlite-worker-config');
 const { backup } = require('#helpers/worker');
 const { encrypt } = require('#helpers/encrypt-decrypt');
-
-// dynamically import get-port
-let getPort;
-import('get-port').then((obj) => {
-  getPort = obj.default;
-});
 
 const logger = new Axe({ silent: true });
 const IP_ADDRESS = ip.address();
@@ -153,15 +146,13 @@ test.after.always(utils.teardownMongoose);
 test.beforeEach(async (t) => {
   await utils.setupFactories(t);
   await utils.setupRedisClient(t);
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
-  const port = await getPort();
-  const sqlitePort = await getPort();
   const sqlite = new SQLite({
     client: t.context.client,
     subscriber: t.context.subscriber
   });
   t.context.sqlite = sqlite;
-  await sqlite.listen(sqlitePort);
+  await sqlite.listen(0);
+  const { port: sqlitePort } = sqlite.server.address();
   const wsp = createWebSocketAsPromised({ port: sqlitePort });
   await wsp.open();
   t.context.wsp = wsp;
@@ -169,8 +160,9 @@ test.beforeEach(async (t) => {
     { client: t.context.client, subscriber: t.context.subscriber, wsp },
     false
   );
+  await imap.listen(0);
+  const { port } = imap.server.address();
   t.context.port = port;
-  t.context.server = await imap.listen(port);
   t.context.imap = imap;
 
   const user = await t.context.userFactory
@@ -404,11 +396,14 @@ test.afterEach.always(async (t) => {
   } catch {}
 
   try {
-    await t.context.server?.close();
-  } catch {}
+    await new Promise((resolve, reject) => {
+      if (!t.context.s3?.server) {
+        resolve();
+        return;
+      }
 
-  try {
-    t.context.s3?.server.close();
+      t.context.s3.server.close((err) => (err ? reject(err) : resolve()));
+    });
   } catch {}
 });
 

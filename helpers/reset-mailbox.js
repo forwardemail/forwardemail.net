@@ -65,6 +65,9 @@ function busyError(message) {
   const err = new Error(message);
   err.code = 'SQLITE_BUSY';
   err.isResetRetryable = true;
+  // The caller turns this expected fail-closed condition into a retryable 421.
+  // Persisting it as fatal obscures actual reset and storage failures.
+  err.ignoreHook = true;
   return err;
 }
 

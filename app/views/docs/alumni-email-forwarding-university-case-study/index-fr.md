@@ -204,20 +204,20 @@ gantt
     dateFormat  YYYY-MM-DD
     section Planification
     Consultation initiale           :a1, 2025-01-01, 14d
-    Collecte des exigences          :a2, après a1, 14d
-    Conception de la solution       :a3, après a2, 21d
+    Collecte des exigences          :a2, after a1, 14d
+    Conception de la solution       :a3, after a2, 21d
     section Mise en œuvre
-    Configuration DNS               :b1, après a3, 7d
-    Intégration API                 :b2, après a3, 21d
-    Configuration SSO               :b3, après a3, 14d
+    Configuration DNS               :b1, after a3, 7d
+    Intégration API                 :b2, after a3, 21d
+    Configuration SSO               :b3, after a3, 14d
     section Tests
-    Tests de sécurité               :c1, après b1 b2 b3, 14d
-    Tests d'acceptation utilisateur :c2, après c1, 14d
+    Tests de sécurité               :c1, after b1 b2 b3, 14d
+    Tests d'acceptation utilisateur :c2, after c1, 14d
     section Déploiement
-    Déploiement groupe pilote       :d1, après c2, 14d
-    Déploiement complet             :d2, après d1, 21d
+    Déploiement groupe pilote       :d1, after c2, 14d
+    Déploiement complet             :d2, after d1, 21d
     section Support
-    Maintenance continue            :e1, après d2, 365d
+    Maintenance continue            :e1, after d2, 365d
 ```
 
 

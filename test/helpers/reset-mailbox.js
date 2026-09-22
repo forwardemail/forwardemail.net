@@ -277,6 +277,7 @@ test.serial(
     );
     t.is(err.code, 'SQLITE_BUSY');
     t.true(err.isResetRetryable);
+    t.true(err.ignoreHook);
 
     // nothing changed: same file, same data, no copy, no swap recorded
     t.is(fs.statSync(storagePath, { bigint: true }).ino, before.ino);

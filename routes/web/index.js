@@ -10,7 +10,6 @@ const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
-const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pTimeout = require('p-timeout');
 const pWaitFor = require('p-wait-for');
@@ -38,7 +37,7 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
-const { decrypt } = require('#helpers/encrypt-decrypt');
+const parseMermaidQuery = require('#helpers/parse-mermaid-query');
 const {
   developerDocs,
   nsProviders,
@@ -152,14 +151,10 @@ router
     // in test environments we don't want to spawn the browser process
     if (config.env === 'test') return next();
 
+    const mermaidQuery = parseMermaidQuery(ctx);
     let browser;
     try {
-      if (!isSANB(ctx.query.code)) throw new Error('Code missing');
-      if (ctx.query.theme !== 'dark' && ctx.query.theme !== 'default')
-        throw new Error('Theme invalid');
-
-      const code = decrypt(ctx.query.code);
-      const hash = revHash(`${ctx.query.theme}:${code}`);
+      const hash = revHash(`${mermaidQuery.theme}:${mermaidQuery.code}`);
 
       if (global.mermaid && global.mermaid[hash]) {
         ctx.type = 'image/png';
@@ -196,7 +191,7 @@ router
         await pWaitFor(() => Boolean(parseMMD), { timeout: ms('15s') });
 
       browser = await puppeteer.launch();
-      const svg = await parseMMD(browser, code, 'png', {
+      const svg = await parseMMD(browser, mermaidQuery.code, 'png', {
         viewport: {
           width: 3000,
           height: 3000,
@@ -204,9 +199,10 @@ router
         },
         mermaidConfig: {
           diagramPadding: 100,
-          theme: ctx.query.theme
+          theme: mermaidQuery.theme
         },
-        backgroundColor: ctx.query.theme === 'default' ? 'white' : 'transparent'
+        backgroundColor:
+          mermaidQuery.theme === 'default' ? 'white' : 'transparent'
       });
       browser
         .close()
