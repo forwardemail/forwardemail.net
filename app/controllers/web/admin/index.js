@@ -15,6 +15,7 @@ const emails = require('./emails');
 const inquiries = require('./inquiries');
 const payments = require('./payments');
 const jobs = require('./jobs');
+const spam = require('./spam');
 
 module.exports = {
   aliases,
@@ -28,5 +29,6 @@ module.exports = {
   emails,
   inquiries,
   payments,
-  jobs
+  jobs,
+  spam
 };
