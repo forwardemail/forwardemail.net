@@ -12,6 +12,9 @@
 
 // Brand
 $fe-ink: #070b16;
+// The original dark canvas, kept as a brand value: marketing surfaces, scrims
+// and the light ramp's darkest text step ($fe-l-700) still use it.
+$fe-panel: #0e1628;
 $fe-primary: #2563eb; // 5.2:1 on white and under a white label
 $fe-primary-lift: #60a5fa; // 7.4:1 on Ink; links/text on dark
 $fe-primary-deep: #1d4ed8; // AA on the 8% primary tint the eyebrow uses
@@ -25,14 +28,25 @@ $fe-danger: #f87171;
 $fe-danger-deep: #dc2626;
 $fe-vault: #a78bfa;
 
-// Neutral ramp, dark
-$fe-n-100: #0e1628;
-$fe-n-200: #16223a;
-$fe-n-300: #22304d;
-$fe-n-400: #3a4a6b;
-$fe-n-500: #64748b;
-$fe-n-600: #94a3b8;
-$fe-n-700: #e2e8f0;
+// Neutral ramp, dark. Shared with mail.forwardemail.net (src/styles/
+// fe-tokens.css), which lifted it two steps in September 2026: the ramp used
+// to start at Panel, which left the app's canvas, cards and separators within
+// a step of each other and muted text at 3.8:1 on the canvas. The hue is
+// unchanged and leans slightly slate; every step is brighter. Ink and Panel
+// are brand values and stay as they are above.
+// n-000 is the sunken well (inputs, code) under an n-100 canvas. n-350 is a
+// half step: the default border sits between the overlay surface (n-300) and
+// the strong border (n-400) so it shows on the canvas without reading as an
+// outline.
+$fe-n-000: #111a2e;
+$fe-n-100: #182238;
+$fe-n-200: #212e48;
+$fe-n-300: #293856;
+$fe-n-350: #354666;
+$fe-n-400: #4a5d84;
+$fe-n-500: #8493ab;
+$fe-n-600: #a9b6ca;
+$fe-n-700: #e8edf5;
 
 // Neutral ramp, light
 $fe-l-000: #ffffff;

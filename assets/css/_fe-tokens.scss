@@ -35,10 +35,14 @@
   --fe-danger-deep: #{$fe-danger-deep};
   --fe-vault: #{$fe-vault};
 
-  // Neutral ramp, dark
+  --fe-panel: #{$fe-panel};
+
+  // Neutral ramp, dark (see _fe-palette.scss for the lift and the half step)
+  --fe-n-000: #{$fe-n-000};
   --fe-n-100: #{$fe-n-100};
   --fe-n-200: #{$fe-n-200};
   --fe-n-300: #{$fe-n-300};
+  --fe-n-350: #{$fe-n-350};
   --fe-n-400: #{$fe-n-400};
   --fe-n-500: #{$fe-n-500};
   --fe-n-600: #{$fe-n-600};
@@ -183,7 +187,8 @@
 
   --fe-fg-primary: var(--fe-n-700);
   --fe-fg-secondary: var(--fe-n-600);
-  // 3.3-4.1:1 on dark grounds: icons/borders/large text only, never body copy.
+  // 6.3:1 on Ink but 3.8:1 on a raised card: icons, borders, labels and large
+  // text only, never body copy, so a line reads the same on every dark ground.
   --fe-fg-muted: var(--fe-n-500);
   --fe-fg-link: var(--fe-primary-lift);
   --fe-fg-code: var(--fe-n-700);
@@ -192,7 +197,7 @@
   --fe-border-default: var(--fe-n-400);
   --fe-border-strong: var(--fe-n-500);
 
-  // Field borders need 3:1 (WCAG 1.4.11); the ramp above tops out at 2:1.
+  // Field borders need 3:1 (WCAG 1.4.11); n-400 is 2.99:1 on Ink, just under.
   --fe-border-control: var(--fe-n-500);
 
   // Signal and Mint are legal as text on Ink, so the state tokens keep the

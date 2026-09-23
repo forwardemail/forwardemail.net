@@ -26,31 +26,41 @@
 
 // The floating-label import below builds its raised-label chip from
 // $input-bg, which must match --app-input-bg's dark value.
-$input-bg: $fe-n-100;
-$input-disabled-bg: $fe-n-200;
+$input-bg: $fe-n-000;
+$input-disabled-bg: $fe-n-100;
 
 @media (prefers-color-scheme: dark) {
   // Re-point the app-chrome tokens (light set lives in _app-tokens.scss).
+  // The same surface ladder as mail.forwardemail.net's dark theme: the canvas
+  // sits one ramp step above Panel rather than on Ink, which reads well for a
+  // few seconds on a marketing page but is fatiguing for all-day reading.
+  // Cards take the next step up, and the sunken well below the canvas is
+  // where inputs and code go, so overlays still have somewhere darker. The
+  // marketing surfaces (.fe-*) keep Ink; the navbar and footer are Ink in
+  // both schemes.
   :root {
-    --app-bg-canvas: #{$fe-ink};
-    // Two ramp steps above the Ink canvas so cards read as cards; sunken sits
-    // between the two for inputs and table heads.
+    --app-bg-canvas: #{$fe-n-100};
     --app-bg-raised: #{$fe-n-200};
-    --app-bg-sunken: #{$fe-n-100};
+    --app-bg-sunken: #{$fe-n-000};
     --app-fg-primary: #{$fe-n-700};
     --app-fg-secondary: #{$fe-n-600};
+    // 5.09:1 on the canvas (AA for body text) and 4.35:1 on raised surfaces
+    // (labels, timestamps and counts only; secondary body copy uses the tier
+    // above).
     --app-fg-muted: #{$fe-n-500};
     --app-link: #{$fe-primary-lift};
     // stylelint-disable-next-line scss/no-global-function-names
     --app-link-hover: #{lighten($fe-primary-lift, 12%)};
-    --app-border: #{$fe-n-400};
-    --app-border-strong: #{$fe-n-500};
+    // The half step: visible on the canvas without reading as an outline.
+    --app-border: #{$fe-n-350};
+    --app-border-strong: #{$fe-n-400};
     --app-hairline: rgba(255, 255, 255, 0.16);
     --app-stripe: rgba(255, 255, 255, 0.05);
-    --app-input-bg: #{$fe-n-100};
+    --app-input-bg: #{$fe-n-000};
     --app-input-fg: #{$fe-n-700};
+    // Field boundaries need 3:1 (WCAG 1.4.11); n-400 is 2.4:1 on the canvas.
     --app-input-border: #{$fe-n-500};
-    --app-code-bg: #{$fe-n-100};
+    --app-code-bg: #{$fe-n-000};
     --app-focus-ring: #{rgba($fe-primary-lift, 0.35)};
   }
 
@@ -188,7 +198,8 @@ $input-disabled-bg: $fe-n-200;
     color: $fe-ink !important;
   }
 
-  // #6c757d is 4.0:1 on Ink; the secondary tier keeps it legible.
+  // Bootstrap's #6c757d is under 3:1 on the canvas; the secondary tier keeps
+  // it legible.
   .text-muted {
     color: var(--app-fg-secondary) !important;
   }
