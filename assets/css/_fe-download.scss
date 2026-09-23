@@ -26,8 +26,8 @@
   min-height: 1.5rem;
   margin-block: var(--fe-space-4) 0;
   font-size: var(--fe-text-body-sm);
-  // secondary rather than muted: muted measures 4.13:1 on Ink, under the
-  // 4.5:1 this size needs
+  // secondary rather than muted: this is a full line of body copy, and muted
+  // is reserved for labels and counts
   color: var(--fe-fg-secondary);
 }
 
@@ -413,6 +413,9 @@
 
 .fe-download-verify__grid {
   display: grid;
+  // Explicit single column on a phone, for the same reason as .fe-grid: the
+  // checksum command inside is a scroll box that must not size the track.
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--fe-space-8);
 }
 
@@ -481,6 +484,8 @@
 // updater key, build provenance and the F-Droid repository.
 .fe-download-verify__keys {
   display: grid;
+  // Same reason as .fe-grid: the provenance command inside is a scroll box.
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--fe-space-5);
   padding: 0;
   margin-block: var(--fe-space-8) 0;

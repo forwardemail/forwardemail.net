@@ -184,6 +184,11 @@
 
 .fe-grid {
   display: grid;
+  // The single column every grid collapses to on a phone. minmax(0, …), not
+  // the implicit auto track: an auto track grows to its widest item's
+  // min-content width, so one no-wrap value in a card (a URL, an install
+  // command) widened the whole page past the viewport.
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--fe-grid-gap);
   padding: 0;
   margin: 0;
