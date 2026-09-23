@@ -12,7 +12,11 @@ const allFilePatterns = [
   'test/**/*.js',
   'test/**/**/*.js',
   '!test/utils.js',
-  '!test/sieve/**/*.js'
+  '!test/sieve/**/*.js',
+  // test/visual/sweep.js is a standalone puppeteer CLI (it reads process.argv
+  // and calls process.exit), not an AVA test — AVA rejects the process.exit and
+  // fails the run, so it is excluded here the same way test/utils.js is.
+  '!test/visual/**/*.js'
 ];
 
 // Walk a directory tree and return all .js file paths (relative to cwd)

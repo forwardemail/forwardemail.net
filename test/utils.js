@@ -341,3 +341,19 @@ async function generateSmtpKeys() {
 }
 
 exports.generateSmtpKeys = generateSmtpKeys;
+
+// Rendered pages embed rev-hashed asset filenames (e.g.
+// favicon-32x32-e8ecadcbfb.png) and their subresource-integrity hashes, both a
+// product of the local `gulp build` that differ between build environments
+// (image optimisers are not byte-identical across machines). Snapshotting them
+// verbatim ties the snapshot to one exact build, so a fresh checkout fails the
+// local-only (`if (!isCI)`) page snapshots with no source change. Neutralise
+// those hashes before snapshotting so the snapshot captures page structure, not
+// build noise.
+exports.normalizeBuildHashes = (html) =>
+  html
+    .replace(
+      /-[\da-f]{10}(\.(?:png|svg|jpe?g|ico|webp|css|js|woff2?))/g,
+      '-HASH$1'
+    )
+    .replace(/(integrity="sha\d{3}-)[^"]+"/g, '$1HASH"');

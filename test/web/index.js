@@ -25,28 +25,28 @@ if (!isCI) {
     const { web } = t.context;
     const res = await web.get('/en').set({ Accept: 'text/html' });
 
-    t.snapshot(res.text);
+    t.snapshot(utils.normalizeBuildHashes(res.text));
   });
 
   test('returns Spanish homepage', async (t) => {
     const { web } = t.context;
     const res = await web.get('/es').set({ Accept: 'text/html' });
 
-    t.snapshot(res.text);
+    t.snapshot(utils.normalizeBuildHashes(res.text));
   });
 
   test('returns English ToS', async (t) => {
     const { web } = t.context;
     const res = await web.get('/en/terms').set({ Accept: 'text/html' });
 
-    t.snapshot(res.text);
+    t.snapshot(utils.normalizeBuildHashes(res.text));
   });
 
   test('returns Spanish ToS', async (t) => {
     const { web } = t.context;
     const res = await web.get('/es/terms').set({ Accept: 'text/html' });
 
-    t.snapshot(res.text);
+    t.snapshot(utils.normalizeBuildHashes(res.text));
   });
 }
 

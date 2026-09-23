@@ -20040,5 +20040,6 @@
   "Real mailboxes with individually encrypted, sandboxed storage. Use any client. Nothing about the mail is readable by us.": "Real mailboxes with individually encrypted, sandboxed storage. Use any client. Nothing about the mail is readable by us.",
   "Send as your domain from an app, a script, or a campaign. The authentication and reputation work is already done.": "Send as your domain from an app, a script, or a campaign. The authentication and reputation work is already done.",
   "Desktop and mobile apps built by us, with encrypted local storage, offline-first, auto-updating. Or keep using Apple Mail; both work.": "Desktop and mobile apps built by us, with encrypted local storage, offline-first, auto-updating. Or keep using Apple Mail; both work.",
-  "The claims this page makes, backed by people with no reason to flatter us, and a receipt you can check yourself.": "The claims this page makes, backed by people with no reason to flatter us, and a receipt you can check yourself."
+  "The claims this page makes, backed by people with no reason to flatter us, and a receipt you can check yourself.": "The claims this page makes, backed by people with no reason to flatter us, and a receipt you can check yourself.",
+  "Automatically configure your DNS settings for email forwarding and outbound SMTP, including MX records, SPF, DKIM, DMARC, and site verification, in one step.": "Automatically configure your DNS settings for email forwarding and outbound SMTP, including MX records, SPF, DKIM, DMARC, and site verification, in one step."
 }

@@ -4,9 +4,11 @@
  */
 
 // Design tokens for the redesigned marketing pages (fe-* layer).
-// Semantic tokens are set by surface CONTEXT (.fe-surface-dark/-light), not by
-// OS theme: the pages alternate dark/light sections and look the same in both
-// schemes. Inside any fe-* scope avoid bootstrap's .card/.bg-dark/.bg-themed/
+// Semantic tokens are set by surface CONTEXT (.fe-surface-dark/-light). In
+// light mode the pages alternate dark and light sections; in dark mode the
+// light sections re-point to the dark ramp (see the prefers-color-scheme block
+// after .fe-surface-light) so the page is dark throughout and never shows a
+// large light panel. Inside any fe-* scope avoid bootstrap's .card/.bg-dark/.bg-themed/
 // .text-themed (app-dark.scss overrides them with !important), and avoid the
 // literals #0d1116/#d3d3d3 (gulpfile.js string-replaces them in compiled CSS).
 // postcss-preset-env emits a static fallback before every var() for op_mini.
@@ -226,6 +228,44 @@
 
   // A Signal ring is invisible on light grounds; primary-deep is 5.9:1+.
   --fe-focus-ring: var(--fe-primary-deep);
+}
+
+// Dark mode. The light-surface sections would otherwise stay near-white in
+// dark mode — large panels of light against a dark browser — so here the
+// light surface re-points to the dark ramp and becomes identical to
+// .fe-surface-dark: the same Ink canvas the rest of the site (the app-chrome
+// pages, the footer, the nav) already uses in dark mode. A lighter canvas here
+// was tried, but it left the redesigned pages a shade off from every legacy
+// page, which read as an inconsistency across the site; one Ink for every
+// surface keeps the whole site cohesive, and sections separate by their cards,
+// borders and spacing instead. Because every fe-* surface reads its background
+// and text from these tokens, this one re-point flips all of them without
+// touching a single component rule.
+@media (prefers-color-scheme: dark) {
+  .fe-surface-light {
+    --fe-bg-canvas: var(--fe-ink);
+    --fe-bg-raised: var(--fe-n-300);
+    --fe-bg-sunken: var(--fe-n-200);
+    --fe-bg-frame: var(--fe-panel-a60);
+
+    --fe-fg-primary: var(--fe-n-700);
+    --fe-fg-secondary: var(--fe-n-600);
+    --fe-fg-muted: var(--fe-n-500);
+    --fe-fg-link: var(--fe-primary-lift);
+    --fe-fg-code: var(--fe-n-700);
+
+    --fe-border-subtle: var(--fe-n-300);
+    --fe-border-default: var(--fe-n-400);
+    --fe-border-strong: var(--fe-n-500);
+
+    --fe-border-control: var(--fe-n-500);
+
+    // Brand Mint/Signal are legal as text on the dark ramp, like .fe-surface-dark.
+    --fe-state-success: var(--fe-mint);
+    --fe-state-danger: var(--fe-danger);
+
+    --fe-focus-ring: var(--fe-signal);
+  }
 }
 
 // Icon-only fills. These clear the 3:1 threshold for graphics but not the

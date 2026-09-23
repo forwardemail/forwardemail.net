@@ -272,6 +272,15 @@
       "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/latest.json",
       "contentType": "application/zip",
       "digest": "sha256:7d13d72f46dd467728c796c858490800fad06f025f43d8f29bfcb3c519291f9d"
+    },
+    {
+      "id": 577762000,
+      "name": "SHA256SUMS.txt",
+      "size": 2048,
+      "downloadCount": 0,
+      "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v0.14.0/SHA256SUMS.txt",
+      "contentType": "text/plain",
+      "digest": null
     }
   ]
 }

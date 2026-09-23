@@ -13,9 +13,14 @@ const undici = require('undici');
 
 const env = require('#config/env');
 const logger = require('#helpers/logger');
+const singleFlightCache = require('#helpers/single-flight-cache');
 
 // Redis cache key for mail app releases
 const CACHE_KEY = 'mail_app:github_releases';
+
+// Redis key for the single-flight lock guarding the GitHub fetch, so a cold
+// cache under load (or several workers polling) makes one request, not many.
+const CACHE_LOCK_KEY = 'mail_app:github_releases:lock';
 
 // Redis key for the last known release fingerprint (tag + assets + body hash)
 const LAST_RELEASE_KEY = 'mail_app:last_release_fingerprint';
@@ -85,34 +90,14 @@ function parseRelease(release) {
 }
 
 /**
- * Fetch the latest release from the mail app repository.
- * Uses Redis for caching to share state across all processes and
- * to respect GitHub API rate limits.
+ * Fetch the latest release from the mail app repository over the GitHub API.
+ * This is the uncached `compute` behind getLatestMailAppRelease's single-flight
+ * lock, so it takes no arguments and never touches Redis itself.
  *
- * @param {Object} options - Options
- * @param {Object} options.client - Redis client (required for caching)
- * @param {boolean} options.forceRefresh - Force refresh cache
- * @returns {Promise<Object|null>} - Latest parsed release or null
+ * @returns {Promise<Object|null>} - Latest parsed release, or null on a draft,
+ *   a 404 (no releases yet), a timeout, or any fetch/parse error
  */
-async function getLatestMailAppRelease(options = {}) {
-  const { client, forceRefresh = false } = options;
-
-  // Try Redis cache first
-  if (client && !forceRefresh) {
-    try {
-      const cached = await client.get(CACHE_KEY);
-      if (cached) {
-        const release = JSON.parse(cached);
-        logger.debug('Returning mail app release from Redis cache');
-        return release;
-      }
-    } catch (err) {
-      logger.warn('Failed to read mail app release from Redis cache', {
-        extra: { error: err.message }
-      });
-    }
-  }
-
+async function fetchLatestReleaseFromGitHub() {
   try {
     // Fetch only the latest release (single API call, minimal rate limit impact)
     const url = `${GITHUB_API_BASE}/repos/${MAIL_APP_REPO}/releases/latest`;
@@ -130,7 +115,13 @@ async function getLatestMailAppRelease(options = {}) {
 
     const response = await undici.fetch(url, {
       method: 'GET',
-      headers
+      headers,
+      // Bound the outbound call. This runs inline on a /download view whenever
+      // the Redis cache is cold, so without this a slow or hung GitHub API would
+      // stall that request (and the background poller) for undici's full default
+      // timeout. On abort the catch below returns null and the page falls back
+      // to the checked-in release snapshot.
+      signal: AbortSignal.timeout(ms('10s'))
     });
 
     if (!response.ok) {
@@ -157,34 +148,44 @@ async function getLatestMailAppRelease(options = {}) {
       return null;
     }
 
-    const release = parseRelease(data);
-
-    // Store in Redis cache
-    if (client && release) {
-      try {
-        await client.set(
-          CACHE_KEY,
-          JSON.stringify(release),
-          'EX',
-          CACHE_TTL_SECONDS
-        );
-        logger.debug(
-          `Cached mail app release in Redis (TTL: ${CACHE_TTL_SECONDS}s)`
-        );
-      } catch (err) {
-        logger.warn('Failed to cache mail app release in Redis', {
-          extra: { error: err.message }
-        });
-      }
-    }
-
-    return release;
+    return parseRelease(data);
   } catch (err) {
     logger.error(err, {
       extra: { message: 'Failed to fetch mail app release' }
     });
     return null;
   }
+}
+
+/**
+ * Get the latest mail app release, Redis-cached and shared across all
+ * processes. On a cold cache the GitHub fetch is single-flighted, so N
+ * concurrent /download views (or a worker poll) make one API call, not N.
+ *
+ * @param {Object} options - Options
+ * @param {Object} options.client - Redis client (required for caching)
+ * @param {boolean} [options.forceRefresh] - Skip the cached value and refetch
+ *   (still single-flighted); used by the background poller
+ * @returns {Promise<Object|null>} - Latest parsed release, or null when the
+ *   fetch failed and nothing is cached (the caller falls back to the snapshot)
+ */
+async function getLatestMailAppRelease(options = {}) {
+  const { client, forceRefresh = false } = options;
+
+  // Single-flight: on a cold cache exactly one caller fetches GitHub; the
+  // concurrent /download views and any other worker's poll get `null` and fall
+  // back to the checked-in release snapshot rather than each hitting the API.
+  // `compute` returns null on a failed fetch, which the helper never caches, so
+  // a transient GitHub error is not memoised for the full TTL.
+  return singleFlightCache(client, {
+    cacheKey: CACHE_KEY,
+    lockKey: CACHE_LOCK_KEY,
+    ttlSeconds: CACHE_TTL_SECONDS,
+    contended: 'skip',
+    forceRefresh,
+    logger,
+    compute: fetchLatestReleaseFromGitHub
+  });
 }
 
 /**

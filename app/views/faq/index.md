@@ -137,6 +137,7 @@
   * [Is this well-tested](#is-this-well-tested)
   * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
   * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [How can I verify a domain is genuinely using Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}](#how-can-i-verify-a-domain-is-genuinely-using-forward-email-how-can-i-verify-a-domain-is-using-forward-email)
   * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Account and Billing](#account-and-billing)
   * [How do I delete my account](#how-do-i-delete-my-account)
@@ -149,8 +150,8 @@
   * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Can I recursively forward emails](#can-i-recursively-forward-emails)
   * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How is it free](#how-is-it-free)
   * [How do I increase my storage or outbound SMTP sending limit](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+  * [How is it free](#how-is-it-free)
   * [What is the max email size limit](#what-is-the-max-email-size-limit)
   * [Do you store logs of emails](#do-you-store-logs-of-emails)
   * [Do you store error logs](#do-you-store-error-logs)
@@ -268,7 +269,7 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
 
 ## Email Clients
 
-> [!TIP]
+> \[!TIP]
 > The easiest way to use Forward Email is with our official apps for macOS, Windows, Linux, Android, and iOS. They come pre-configured for your encrypted mailboxes, calendars (CalDAV), and contacts (CardDAV) — no manual IMAP or SMTP setup — and desktop builds keep themselves current with signed automatic updates. [Download Forward Email](/download) or use any standard client below.
 
 ### Thunderbird
@@ -323,7 +324,7 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
 
 ### Do you offer a webmail client
 
-Yes.  Our official, open-source webmail client is available at <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a> &mdash; no installation required, just log in from any browser using an alias address and its generated password (the same credentials used for IMAP, SMTP, and POP3).
+Yes.  Our official, open-source webmail client is available at <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a> — no installation required, just log in from any browser using an alias address and its generated password (the same credentials used for IMAP, SMTP, and POP3).
 
 It launched in February 2026 and also supports [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities), and [Domain Connect](https://domainconnect.org) for 1-click DNS setup, with real-time push notifications for IMAP, CalDAV, and CardDAV delivered over WebSockets.
 
@@ -333,7 +334,7 @@ The source code is fully open-source and available on GitHub at <a href="https:/
 
 Yes.  Native apps are available for desktop and mobile, built from the same open-source project as our webmail client, and can all be downloaded from our <a href="/download" target="_blank" rel="noopener noreferrer">download page</a>:
 
-* **Desktop**: macOS (Apple Silicon and Intel), Windows (x64 and ARM64, as either an `.exe` or `.msi` installer), and Linux (AppImage, `.deb`, `.rpm`, and Snap &mdash; each for x64 and ARM64).
+* **Desktop**: macOS (Apple Silicon and Intel), Windows (x64 and ARM64, as either an `.exe` or `.msi` installer), and Linux (AppImage, `.deb`, `.rpm`, and Snap — each for x64 and ARM64).
 * **Mobile**: Android (APK, with an alternate F-Droid build) and iOS.
 
 All release builds are published on GitHub at <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, and the download page lets you verify release checksums against `SHA256SUMS.txt`.
@@ -3025,9 +3026,9 @@ Learn more about passkeys at the following links:
 
 ### Is two-factor authentication (2FA) supported
 
-Yes, for logging into your account &mdash; including <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a> &mdash; via one-time passcodes, backed by recovery keys.
+Yes, for logging into your account — including <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a> — via one-time passcodes, backed by recovery keys.
 
-2FA applies to your account login itself, not to IMAP, SMTP, POP3, CalDAV, or CardDAV connections from third-party clients (Thunderbird, Apple Mail, etc.) &mdash; those authenticate with an alias-specific generated password instead, so there isn't currently a 2FA-equivalent standard for that class of client. If you'd like to see that change, a GitHub feature request is the best way to make the case for it.
+2FA applies to your account login itself, not to IMAP, SMTP, POP3, CalDAV, or CardDAV connections from third-party clients (Thunderbird, Apple Mail, etc.) — those authenticate with an alias-specific generated password instead, so there isn't currently a 2FA-equivalent standard for that class of client. If you'd like to see that change, a GitHub feature request is the best way to make the case for it.
 
 ### Do you support email best practices
 
@@ -3812,29 +3813,29 @@ When you request outbound SMTP approval (or ask us to reinstate it after a [susp
 
 * Confirmation that you've read and agree to our [terms](/terms), which specifically prohibit using the service for anything on [Stripe's Prohibited Businesses](https://stripe.com/legal/restricted-businesses) or [PayPal's Prohibited Activities](https://www.paypal.com/us/legalhub/acceptableuse-full) lists.
 * What you intend to use outbound SMTP for.
-* A link to your website, business information, or a profile (e.g. LinkedIn, GitHub) that lets us verify you're a real, legitimate sender &mdash; a domain pointing to a blank or empty website is a common reason approval is delayed.
+* A link to your website, business information, or a profile (e.g. LinkedIn, GitHub) that lets us verify you're a real, legitimate sender — a domain pointing to a blank or empty website is a common reason approval is delayed.
 * Confirmation that you won't use the service for spam or bulk/unsolicited marketing.
 
 This is the same information we ask for either way, whether it's a first-time approval or reinstating a domain after suspension.
 
 ### Why was my outbound SMTP suspended
 
-Outbound SMTP that has already been approved can still be paused if we detect a pattern of abuse. This is separate from the [approval process](#do-i-need-approval-to-enable-smtp) above and from our [outbound rate limits](#what-are-your-outbound-smtp-limits) &mdash; it triggers when a trusted source (e.g. a major mailbox provider) reports your outgoing mail as a virus or spam.
+Outbound SMTP that has already been approved can still be paused if we detect a pattern of abuse. This is separate from the [approval process](#do-i-need-approval-to-enable-smtp) above and from our [outbound rate limits](#what-are-your-outbound-smtp-limits) — it triggers when a trusted source (e.g. a major mailbox provider) reports your outgoing mail as a virus or spam.
 
 There are two stages:
 
-1. **A single detection** sends you a "Message prevented" notice for that one message &mdash; informational, and your outbound queue keeps running.
-2. **Multiple detections within a short rolling window** cross our abuse-detection threshold and trigger a full "Outbound SMTP is suspended" notice. At that point your entire outbound SMTP queue is paused &mdash; no further outbound messages are attempted for that domain until the issue is resolved.
+1. **A single detection** sends you a "Message prevented" notice for that one message — informational, and your outbound queue keeps running.
+2. **Multiple detections within a short rolling window** cross our abuse-detection threshold and trigger a full "Outbound SMTP is suspended" notice. At that point your entire outbound SMTP queue is paused — no further outbound messages are attempted for that domain until the issue is resolved.
 
 Either notice includes the specific message that was flagged (`MAIL FROM`, `RCPT TO`, `Message-ID`, subject, and date), which trusted source and content category flagged it, how many detections you've had against the threshold, how many unique recipients and trusted sources were involved, and the SMTP status code and response.
 
-If you receive one of these notices, please contact us at <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) &mdash; suspension is not lifted automatically, so you'll need to reach out to resolve it.
+If you receive one of these notices, please contact us at <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) — suspension is not lifted automatically, so you'll need to reach out to resolve it.
 
 ### Why do newly registered or recently expired domains require a paid plan
 
 When you add a domain (and on an ongoing basis for domains on the free plan), we run a WHOIS/RDAP lookup against it. If the domain was **created within the past 90 days**, **expired within the past 90 days**, or is currently in a **pending transfer, update, or delete** state with its registrar, we require it to be on a paid plan before you can send or receive mail with it.
 
-This is an abuse-prevention measure, not a reflection on you personally &mdash; major registrars including GoDaddy, Namecheap, and Hostgator have previously blocked our infrastructure entirely because of abuse patterns involving recently expired domain takeovers and fraudulently registered new domains. Requiring a paid plan for these domains is what lets us keep offering a free plan at all without losing registrar trust.
+This is an abuse-prevention measure, not a reflection on you personally — major registrars including GoDaddy, Namecheap, and Hostgator have previously blocked our infrastructure entirely because of abuse patterns involving recently expired domain takeovers and fraudulently registered new domains. Requiring a paid plan for these domains is what lets us keep offering a free plan at all without losing registrar trust.
 
 WHOIS/RDAP results are cached for 24 hours, so a domain that just crossed the 90-day mark may take up to a day to reflect that. To use the domain immediately, upgrade to a paid plan (starting at $3/mo for unlimited domains and aliases).
 
@@ -4107,12 +4108,12 @@ Sources:
 
 Yes. Every domain scans incoming links and attachments using <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>, the open-source anti-spam, phishing, and virus protection we built ourselves (and which follows the same privacy-first, zero-logging policies as the rest of Forward Email). Four categories can each be toggled independently at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Advanced Settings:
 
-* **Adult-related content protection** &mdash; if disabled, links are not scanned for adult-related content.
-* **Phishing protection** &mdash; if disabled, links are not scanned for malware, domain swapping, IDN homograph attacks, or phishing in general.
-* **Executable protection** &mdash; if disabled, links and attachments are not scanned for potentially-malicious executable file types, extensions, names, headers, or IDN homograph attacks.
-* **Virus protection** &mdash; if disabled, attachments are not scanned for trojans, viruses, malware, or other malicious threats (via ClamAV).
+* **Adult-related content protection** — if disabled, links are not scanned for adult-related content.
+* **Phishing protection** — if disabled, links are not scanned for malware, domain swapping, IDN homograph attacks, or phishing in general.
+* **Executable protection** — if disabled, links and attachments are not scanned for potentially-malicious executable file types, extensions, names, headers, or IDN homograph attacks.
+* **Virus protection** — if disabled, attachments are not scanned for trojans, viruses, malware, or other malicious threats (via ClamAV).
 
-All four default to enabled. Disabling one only turns off scanning for that specific category &mdash; it does not disable spam filtering as a whole, and it's separate from [disabling a specific alias](#can-i-disable-specific-aliases). The most common reason to disable a category is a false-positive pattern specific to your traffic (e.g. adult-content scanning flagging legitimate mailing lists for an adult-themed venue or business).
+All four default to enabled. Disabling one only turns off scanning for that specific category — it does not disable spam filtering as a whole, and it's separate from [disabling a specific alias](#can-i-disable-specific-aliases). The most common reason to disable a category is a false-positive pattern specific to your traffic (e.g. adult-content scanning flagging legitimate mailing lists for an adult-themed venue or business).
 
 ### Do you store email content on disk
 
@@ -4279,7 +4280,7 @@ Sources:
 
 ### How do I report a security vulnerability
 
-If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>. This is a dedicated address for vulnerability and bug reports, separate from general support &mdash; emailing it directly gets your report to the team responsible for handling it.
+If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>. This is a dedicated address for vulnerability and bug reports, separate from general support — emailing it directly gets your report to the team responsible for handling it.
 
 ### Do you offer a test environment
 
@@ -5632,11 +5633,11 @@ If the answer does not include `mx1.forwardemail.net` and `mx2.forwardemail.net`
 dig example.com txt +short
 ```
 
-| TXT value                                | What it means                                                                                              |
-| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `forward-email=user@example.com`         | A free plan.  The value is the plaintext destination that mail is forwarded to.                              |
+| TXT value                                    | What it means                                                                                                   |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `forward-email=user@example.com`             | A free plan.  The value is the plaintext destination that mail is forwarded to.                                 |
 | `forward-email-site-verification=XXXXXXXXXX` | A paid plan.  The forwarding configuration is held in our database under the ID `XXXXXXXXXX` and is not public. |
-| Neither is present                       | The domain is not configured for our forwarding service.                                                     |
+| Neither is present                           | The domain is not configured for our forwarding service.                                                        |
 
 > \[!NOTE]
 > These records are how our service works at the DNS level, so the same lookup answers "is this domain ours", "is it free or paid", and "where does its mail go" for a free plan.  See [how our forwarding system works](#how-does-your-email-forwarding-system-work) for the delivery path itself.
@@ -5921,12 +5922,12 @@ We use MX and <strong class="notranslate">TXT</strong> record verification, ther
 
 ### How do I increase my storage or outbound SMTP sending limit
 
-Go to <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">My Account &rarr; Billing</a> and scroll to the **Add-ons** section, which has two request forms:
+Go to <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">My Account → Billing</a> and scroll to the **Add-ons** section, which has two request forms:
 
-* **Storage Upgrade** &mdash; choose an amount to add (+10, +20, +30, +40, or +50 GB), or select "Other" to request a custom amount.
-* **Outbound SMTP Limit Upgrade** &mdash; choose an amount to add (+1000, +2000, or +3000 emails daily), or select "Other" to request a custom amount.
+* **Storage Upgrade** — choose an amount to add (+10, +20, +30, +40, or +50 GB), or select "Other" to request a custom amount.
+* **Outbound SMTP Limit Upgrade** — choose an amount to add (+1000, +2000, or +3000 emails daily), or select "Other" to request a custom amount.
 
-Submitting either form sends your request to our team for review &mdash; it does not charge you immediately. Once approved, we'll email you a secure payment link to complete the upgrade. You can have one pending request per type (storage or SMTP) at a time; submitting again within 3 days of a prior request for the same type isn't allowed until that window passes.
+Submitting either form sends your request to our team for review — it does not charge you immediately. Once approved, we'll email you a secure payment link to complete the upgrade. You can have one pending request per type (storage or SMTP) at a time; submitting again within 3 days of a prior request for the same type isn't allowed until that window passes.
 
 ### How is it free
 

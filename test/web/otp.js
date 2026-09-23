@@ -58,7 +58,9 @@ test('GET otp/login > successful', async (t) => {
   const res = await web.get(`/en${config.loginOtpRoute}`);
 
   t.is(res.status, 200);
-  t.snapshot(res.text.replace(/<head>[\S\s]*<\/head>/, ''));
+  t.snapshot(
+    utils.normalizeBuildHashes(res.text.replace(/<head>[\S\s]*<\/head>/, ''))
+  );
 });
 
 test('POST otp/login > successful', async (t) => {
@@ -326,7 +328,9 @@ test('GET otp/keys > successful', async (t) => {
   const res = await web.get(`/en${config.otpRoutePrefix}/keys`);
 
   t.is(res.status, 200);
-  t.snapshot(res.text.replace(/<head>[\S\s]*<\/head>/, ''));
+  t.snapshot(
+    utils.normalizeBuildHashes(res.text.replace(/<head>[\S\s]*<\/head>/, ''))
+  );
 });
 
 test('POST otp/keys > successful', async (t) => {

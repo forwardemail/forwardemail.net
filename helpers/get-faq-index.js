@@ -14,13 +14,20 @@ const ms = require('ms');
 const sanitizeHtml = require('sanitize-html');
 
 const logger = require('#helpers/logger');
+const singleFlightCache = require('#helpers/single-flight-cache');
 const {
   ensureQuestionMark,
   splitHeadingAttr
 } = require('#helpers/get-faq-schema');
 
-// One key per locale, since each locale has its own markdown file.
-const CACHE_PREFIX = 'faq_index:';
+// One key per locale, since each locale has its own markdown file. The `:v2`
+// is a schema version: the parsed HTML shape changed (the sanitizer now keeps
+// `id` on every element, which the guide-page scrape and in-page anchors
+// depend on), and this cache has a 12h TTL, so without a new key a deploy would
+// keep serving the old id-stripped HTML for up to 12h — leaving the guide pages
+// blank and deep links broken. Bump this whenever parseFaqIndex's output shape
+// changes so a deploy can't serve stale HTML.
+const CACHE_PREFIX = 'faq_index:v2:';
 
 // The markdown only changes on deploy, so this can be long. It exists to keep
 // the parse off the request path, not to track a moving source.
@@ -71,11 +78,16 @@ const ALLOWED_TAGS = [
 ];
 
 const ALLOWED_ATTRIBUTES = {
-  // `id` on the heading tags is what markdown-it-attrs writes from `{#id}`,
-  // and it is what makes a deep link to a sub-heading inside an answer work.
-  h4: ['id'],
-  h5: ['id'],
-  h6: ['id'],
+  // `id` is allowed on every element. On headings it is what markdown-it-attrs
+  // writes from `{#id}`, so a deep link to a sub-heading inside an answer
+  // works. Several answers also pin an explicit `<div id>`/`<li id>`/`<table
+  // id>` anchor — e.g. `#send-mail-as-content`, `#smtp-instructions`,
+  // `#legacy-free-guide` — which the guide controllers (controllers/web/
+  // guides.js) render this page and querySelector out by that id, and which
+  // /guides/...#legacy-free-guide links to directly. Stripping id (as this
+  // list did when it named only the heading tags) left those anchors and every
+  // guide scrape empty. id is inert, so allowing it everywhere is safe.
+  '*': ['id'],
   a: ['href', 'name', 'target', 'rel'],
   code: ['class'],
   pre: ['class'],
@@ -306,35 +318,18 @@ function faqFilePathForLocale(viewsRoot, locale) {
 async function getFaqIndex(client, viewsRoot, locale = 'en') {
   const cacheKey = `${CACHE_PREFIX}${locale}`;
 
-  if (client) {
-    try {
-      const cached = await client.get(cacheKey);
-      if (cached) return JSON.parse(cached);
-    } catch (err) {
-      logger.warn('Failed to read FAQ index from redis', {
-        extra: { error: err.message, locale }
-      });
-    }
-  }
-
-  const parsed = parseFaqIndex(faqFilePathForLocale(viewsRoot, locale), locale);
-
-  if (client) {
-    try {
-      await client.set(
-        cacheKey,
-        JSON.stringify(parsed),
-        'EX',
-        CACHE_TTL_SECONDS
-      );
-    } catch (err) {
-      logger.warn('Failed to cache FAQ index in redis', {
-        extra: { error: err.message, locale }
-      });
-    }
-  }
-
-  return parsed;
+  // Single-flight: the ~137-answer markdown parse is CPU-bound, so on a cold
+  // key (deploy, or the 12h TTL expiring under load) one caller parses and the
+  // concurrent requests — across every worker — wait for its result instead of
+  // all parsing at once.
+  return singleFlightCache(client, {
+    cacheKey,
+    lockKey: `${cacheKey}:lock`,
+    ttlSeconds: CACHE_TTL_SECONDS,
+    logger,
+    compute: () =>
+      parseFaqIndex(faqFilePathForLocale(viewsRoot, locale), locale)
+  });
 }
 
 /**

@@ -14,9 +14,13 @@
 //- translated text.
 mixin feFaq
   -
+    //- Fall back to an empty index so a caller that renders this page without
+    //- `faq` in scope degrades to an empty FAQ instead of throwing. Both the
+    //- /faq route and the guide controllers that scrape this page populate it.
+    const faqData = (typeof faq !== "undefined" && faq) ? faq : { categories: [], total: 0, matched: 0, query: "" };
     //- Set when the request carried ?q=, which is what the search form submits
     //- with JavaScript off. faq-search.js takes over from here on.
-    const faqFiltered = typeof faq.matched === "number" && faq.query;
+    const faqFiltered = typeof faqData.matched === "number" && faqData.query;
   section.fe-section.fe-surface-dark.fe-section--hero.fe-faq-hero(
     aria-labelledby="fe-faq-title"
   )
@@ -52,13 +56,13 @@ mixin feFaq
       //- list narrows, without interrupting typing.
       p#fe-faq-count.fe-faq-hero__count(aria-live="polite")
         if faqFiltered
-          = `${faq.matched} / ${faq.total}`
+          = `${faqData.matched} / ${faqData.total}`
         else
           //- One string with both numbers in it, not "n" + t("answers across")
           //- + "n" + t("topics"). Those fragments cannot be translated on their
           //- own, and the languages that put the count after the noun, or
           //- inflect it, cannot be reached by concatenation at all.
-          != t('<span class="notranslate">%d</span> answers across <span class="notranslate">%d</span> topics', faq.total, faq.categories.length)
+          != t('<span class="notranslate">%d</span> answers across <span class="notranslate">%d</span> topics', faqData.total, faqData.categories.length)
 
   section.fe-section.fe-surface-light.fe-section--pad-sm.fe-faq-body
     .fe-container
@@ -68,7 +72,7 @@ mixin feFaq
         nav.fe-faq-nav(aria-label=t("FAQ topics"))
           p.fe-faq-nav__label.fe-label= t("Topics")
           ul.fe-faq-nav__list
-            each category in faq.categories
+            each category in faqData.categories
               li
                 a.fe-faq-nav__link(
                   href=`#${category.slug}`,
@@ -83,13 +87,15 @@ mixin feFaq
         .fe-faq-content
           //- Shown by the filter when nothing matches, so the page never goes
           //- silently blank.
-          p#fe-faq-empty.fe-faq-empty(hidden=!faqFiltered || faq.matched > 0)
+          p#fe-faq-empty.fe-faq-empty(
+            hidden=!faqFiltered || faqData.matched > 0
+          )
             = t("No answers matched. Try a different word, or")
             = " "
             a(href=l("/help"))= t("ask us directly")
             | .
 
-          each category in faq.categories
+          each category in faqData.categories
             section.fe-faq-topic(
               id=category.slug,
               data-fe-faq-topic=category.slug,

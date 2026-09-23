@@ -11,6 +11,8 @@ const markdownItGitHubAlerts = require('markdown-it-github-alerts');
 const ms = require('ms');
 const sanitizeHtml = require('sanitize-html');
 
+const singleFlightCache = require('#helpers/single-flight-cache');
+
 // Redis cache key for FAQ structured data
 const CACHE_KEY = 'faq_schema:json_ld';
 
@@ -256,54 +258,29 @@ function buildFaqSchema(pairs) {
  * @param {Object} [logger] - Optional logger instance (e.g. ctx.logger)
  * @returns {Promise<Object>} - FAQPage JSON-LD structured data object
  */
+function isValidFaqSchema(schema) {
+  return Boolean(
+    schema &&
+      schema['@type'] === 'FAQPage' &&
+      Array.isArray(schema.mainEntity) &&
+      schema.mainEntity.length > 0
+  );
+}
+
 async function getFaqSchema(client, faqFilePath, logger) {
-  // Try to get from Redis cache first
-  if (client) {
-    try {
-      const cached = await client.get(CACHE_KEY);
-      if (cached) {
-        const parsed = typeof cached === 'string' ? JSON.parse(cached) : cached;
-        if (
-          parsed &&
-          parsed['@type'] === 'FAQPage' &&
-          Array.isArray(parsed.mainEntity) &&
-          parsed.mainEntity.length > 0
-        ) {
-          return parsed;
-        }
-      }
-    } catch (err) {
-      if (logger && typeof logger.warn === 'function') {
-        logger.warn('Failed to read FAQ schema from Redis cache', {
-          extra: { error: err.message }
-        });
-      }
-    }
-  }
-
-  // Parse the FAQ markdown and build the schema
-  const pairs = parseFaqMarkdown(faqFilePath);
-  const schema = buildFaqSchema(pairs);
-
-  // Store in Redis cache
-  if (client && schema.mainEntity.length > 0) {
-    try {
-      await client.set(
-        CACHE_KEY,
-        JSON.stringify(schema),
-        'EX',
-        CACHE_TTL_SECONDS
-      );
-    } catch (err) {
-      if (logger && typeof logger.warn === 'function') {
-        logger.warn('Failed to cache FAQ schema in Redis', {
-          extra: { error: err.message }
-        });
-      }
-    }
-  }
-
-  return schema;
+  // Single-flight: the markdown parse + sanitize is CPU-bound, so on a cold key
+  // one caller builds the schema and concurrent requests across every worker
+  // wait for its result. An empty schema (e.g. the file was momentarily
+  // unreadable) is returned but not cached, so a transient miss is not memoised
+  // for the full TTL.
+  return singleFlightCache(client, {
+    cacheKey: CACHE_KEY,
+    lockKey: `${CACHE_KEY}:lock`,
+    ttlSeconds: CACHE_TTL_SECONDS,
+    logger,
+    shouldCache: isValidFaqSchema,
+    compute: () => buildFaqSchema(parseFaqMarkdown(faqFilePath))
+  });
 }
 
 module.exports = getFaqSchema;

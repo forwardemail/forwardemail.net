@@ -12,10 +12,11 @@
 // brand-aligned. Here only what actually changes in dark mode is stated, and
 // every value comes from _fe-palette.scss via the --app-* tokens declared in
 // _app-tokens.scss (light values on :root; re-pointed below).
-// The redesigned marketing surfaces (.fe-*) are surface-locked and token
-// driven, so they render identically in both schemes without any exclusions
-// here; legacy sections embedded on those pages (testimonials, footer) keep
-// following the scheme, as they did under bootstrap-dark.
+// The redesigned marketing surfaces (.fe-*) are token driven and handle dark
+// mode themselves in _fe-tokens.scss (the .fe-surface-light re-point under
+// prefers-color-scheme: dark), so they need no exclusions here; legacy
+// sections embedded on those pages (testimonials, footer) keep following the
+// scheme, as they did under bootstrap-dark.
 
 @import 'node_modules/bootstrap/scss/functions';
 @import 'node_modules/bootstrap/scss/variables';
@@ -106,6 +107,24 @@ $input-disabled-bg: $fe-n-200;
   // patches that always sat on top of it.
 
   .markdown-body {
+    // github-markdown-dark (imported below) paints its own GitHub palette here
+    // — a brighter white text (#f0f6fc) and a different blue link (#4493f8)
+    // than the redesign. Pull the text, headings and links onto the shared app
+    // tokens so the article pages (about, guides, blog, docs, terms, privacy)
+    // match every other page. !important because that vendor stylesheet is
+    // imported after this block and would otherwise win on source order.
+    color: var(--app-fg-primary) !important;
+
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--app-fg-primary) !important;
+    }
+    a {
+      color: var(--app-link) !important;
+    }
+    a:hover {
+      color: var(--app-link-hover) !important;
+    }
+
     .bg-dark {
       background-color: $fe-n-200 !important;
     }
@@ -459,6 +478,67 @@ $input-disabled-bg: $fe-n-200;
   .alert .alert-link {
     color: var(--app-fg-primary);
   }
+
+  // ============================================
+  // COMPARISON TABLES
+  // ============================================
+  // The comparison tables on the marketing pages (compare / open-source /
+  // provider, and the blog posts that embed them) carry .bg-themed, so the
+  // table itself already follows the scheme and sits dark. Their contextual row
+  // tints do not: the global .table-* block above keeps .table-success (the
+  // recommended row) and .table-primary (a compared row) light with dark text —
+  // deliberate for the app's own status tables, but on a themed dark table it
+  // leaves a large light band, the "light panel in dark mode" the fe-* surfaces
+  // are built to avoid. Re-point just those tints to the dark ramp, scoped to
+  // .bg-themed so the app's status tables (which are not themed) keep their
+  // light tints. These win by !important; the ordering the linter wants would
+  // hoist them above the .table rules they sit below, so it is disabled here.
+  /* stylelint-disable no-descending-specificity */
+  .bg-themed .table-success,
+  .bg-themed .table-success > td,
+  .bg-themed .table-success > th {
+    color: var(--app-fg-primary) !important;
+    background-color: #{rgba($fe-mint-deep, 0.22)} !important;
+  }
+
+  .bg-themed .table-primary,
+  .bg-themed .table-primary > td,
+  .bg-themed .table-primary > th {
+    color: var(--app-fg-primary) !important;
+    background-color: #{rgba($fe-primary, 0.16)} !important;
+  }
+
+  .bg-themed .table-danger,
+  .bg-themed .table-danger > td,
+  .bg-themed .table-danger > th {
+    color: var(--app-fg-primary) !important;
+    background-color: #{rgba($fe-danger-deep, 0.22)} !important;
+  }
+
+  .bg-themed .table-warning,
+  .bg-themed .table-warning > td,
+  .bg-themed .table-warning > th {
+    color: var(--app-fg-primary) !important;
+    background-color: #{rgba($fe-caution, 0.14)} !important;
+  }
+
+  .bg-themed .table-info,
+  .bg-themed .table-info > td,
+  .bg-themed .table-info > th {
+    color: var(--app-fg-primary) !important;
+    background-color: #{rgba($fe-signal-deep, 0.22)} !important;
+  }
+
+  // Links in the now-dark tinted cells (the .table-* block set them to
+  // primary-deep for the light tint; lift them for legibility on the dark).
+  .bg-themed .table-success a:not(.btn):not(.badge),
+  .bg-themed .table-primary a:not(.btn):not(.badge),
+  .bg-themed .table-danger a:not(.btn):not(.badge),
+  .bg-themed .table-warning a:not(.btn):not(.badge),
+  .bg-themed .table-info a:not(.btn):not(.badge) {
+    color: var(--app-link) !important;
+  }
+  /* stylelint-enable no-descending-specificity */
 
   // ============================================
   // VENDOR DARK THEMES
