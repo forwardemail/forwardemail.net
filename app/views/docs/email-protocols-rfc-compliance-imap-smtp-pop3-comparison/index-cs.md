@@ -1095,76 +1095,75 @@ Následující rozšíření kalendáře nejsou podporována:
 ## Filtrování e-mailových zpráv {#email-message-filtering}
 
 > \[!IMPORTANT]
-> Forward Email poskytuje **plnou podporu Sieve a ManageSieve** pro serverové filtrování e-mailů. Vytvářejte výkonná pravidla pro automatické třídění, filtrování, přeposílání a odpovídání na příchozí zprávy.
+> Forward Email poskytuje filtrování Sieve a správu skriptů ManageSieve.
 
 ### Sieve (RFC 5228) {#sieve-rfc-5228}
 
-[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) je standardizovaný, výkonný skriptovací jazyk pro serverové filtrování e-mailů. Forward Email implementuje komplexní podporu Sieve s 24 rozšířeními.
+[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) je standardizovaný jazyk pro serverové filtrování e-mailů. Forward Email ověřuje každý skript před jeho uložením, aktivací nebo spuštěním. Skript je odmítnut, pokud požaduje nedostupnou schopnost nebo používá rozšíření, které není deklarováno v `require`.
 
 **Zdrojový kód:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
 
-#### Podporované základní RFC Sieve {#core-sieve-rfcs-supported}
+#### Sieve RFC compatibility {#core-sieve-rfcs-supported}
 
-| RFC                                                                                    | Název                                                         | Stav           |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------------- | -------------- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Sieve: Jazyk pro filtrování e-mailů                           | ✅ Plná podpora |
-| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Sieve filtrování e-mailů: Rozšíření Reject a Extended Reject  | ✅ Plná podpora |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Sieve filtrování e-mailů: Rozšíření dovolené                   | ✅ Plná podpora |
-| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Sieve rozšíření dovolené: parametr "Seconds"                   | ✅ Plná podpora |
-| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Sieve filtrování e-mailů: Rozšíření Imap4flags                 | ✅ Plná podpora |
-| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Sieve filtrování e-mailů: Rozšíření těla zprávy                | ✅ Plná podpora |
-| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Sieve filtrování e-mailů: Rozšíření proměnných                 | ✅ Plná podpora |
-| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Sieve filtrování e-mailů: Relační rozšíření                     | ✅ Plná podpora |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Registr protokolů internetových aplikací                       | ✅ Plná podpora |
-| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Sieve rozšíření: Kopírování bez vedlejších efektů              | ✅ Plná podpora |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Sieve filtrování e-mailů: Rozšíření Editheader                 | ✅ Plná podpora |
-| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Sieve filtrování e-mailů: Rozšíření pro datum a index          | ✅ Plná podpora |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Sieve filtrování e-mailů: Rozšíření pro notifikace             | ✅ Plná podpora |
-| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Sieve filtrování e-mailů: Rozšíření prostředí                   | ✅ Plná podpora |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Sieve filtrování e-mailů: Rozšíření pro kontrolu stavu schránky | ✅ Plná podpora |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Sieve filtrování e-mailů: Doručování do speciálních schránek   | ✅ Plná podpora |
-| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Sieve filtrování e-mailů: Detekce duplicitních doručení        | ✅ Plná podpora |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Sieve filtrování e-mailů: Rozšíření Ihave                       | ✅ Plná podpora |
-| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Sieve filtrování e-mailů: Rozšíření Subaddress                  | ✅ Plná podpora |
-| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve filtrování e-mailů: Rozšíření regulárních výrazů          | ✅ Plná podpora |
-#### Podporované rozšíření Sieve {#supported-sieve-extensions}
+Tabulka rozlišuje úplnou implementaci uvedeného chování od úmyslně omezeného chování. ManageSieve inzeruje pouze veřejné názvy schopností uvedené v této tabulce.
 
-| Rozšíření                    | Popis                                   | Integrace                                  |
-| ---------------------------- | ---------------------------------------- | ------------------------------------------ |
-| `fileinto`                   | Ukládání zpráv do konkrétních složek    | Zprávy uložené ve specifikované IMAP složce |
-| `reject` / `ereject`         | Odmítnutí zpráv s chybou                 | SMTP odmítnutí s bounce zprávou             |
-| `vacation`                   | Automatické odpovědi na dovolenou/mimo kancelář | Zařazeno do fronty přes Emails.queue s omezením rychlosti |
-| `vacation-seconds`           | Jemné intervaly odpovědí na dovolenou    | TTL z parametru `:seconds`                   |
-| `imap4flags`                 | Nastavení IMAP příznaků (\Seen, \Flagged, atd.) | Příznaky aplikovány při ukládání zprávy      |
-| `envelope`                   | Test odesílatele/příjemce v obálce       | Přístup k datům SMTP obálky                  |
-| `body`                       | Test obsahu těla zprávy                   | Porovnání celého textu těla                   |
-| `variables`                  | Ukládání a použití proměnných ve skriptech | Rozšiřování proměnných s modifikátory        |
-| `relational`                 | Relační porovnání                         | `:count`, `:value` s gt/lt/eq                 |
-| `comparator-i;ascii-numeric` | Číselná porovnání                         | Porovnání číselných řetězců                   |
-| `copy`                       | Kopírování zpráv při přesměrování        | Příznak `:copy` u fileinto/redirect           |
-| `editheader`                 | Přidání nebo odstranění hlaviček zprávy  | Hlavičky upraveny před uložením                |
-| `date`                       | Test hodnot data/času                      | Testy `currentdate` a data v hlavičce          |
-| `index`                      | Access specific header occurrences       | `:index` and `:last` for multi-value headers in header tests and deleteheader |
-| `regex`                      | Porovnání pomocí regulárních výrazů       | Plná podpora regexů v testech                   |
-| `enotify`                    | Odesílání notifikací                      | Notifikace `mailto:` přes Emails.queue          |
-| `notify`                     | Send notifications (alias for enotify)   | Deprecated [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) alias; rate-limited (10/hr per alias) |
-| `mime`                       | MIME part tests and iteration    | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags on header/address tests. Security hardened with iteration limits, instruction counting, and depth restrictions. |
-| `environment`                | Přístup k informacím o prostředí           | Doména, host, remote-ip ze session              |
-| `mailbox`                    | Test existence schránky                    | Test `mailboxexists`                             |
-| `special-use`                | Ukládání do speciálních schránek           | Mapování \Junk, \Trash atd. na složky            |
-| `duplicate`                  | Detekce duplicitních zpráv                 | Sledování duplicit pomocí Redis                  |
-| `ihave`                      | Test dostupnosti rozšíření                  | Kontrola schopností za běhu                       |
-| `subaddress`                 | Přístup k částem adresy user+detail         | Části adresy `:user` a `:detail`                  |
+| RFC or specification | Capability | Supported behavior |
+| --- | --- | --- |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, podmíněné bloky a základní testy `address`, `header`, `exists`, `size` a booleovské testy. `fileinto` a `redirect` jsou zpracovávány prostřednictvím příchozího doručovacího potrubí. |
+| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | Odmítnutí přes SMTP s poskytnutou zprávou. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Automatické odpovědi (vacation) jsou zařazeny do fronty s opatřeními proti zneužití. |
+| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | Interval `:seconds` řídí TTL odpovědi dovolené. |
+| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | Příznaky se aplikují při ukládání do schránky. |
+| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Porovnávání obsahu těla zprávy. |
+| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Rozbalování proměnných a podporované modifikátory. |
+| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Porovnávání pomocí `:count` a `:value`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` a `i;octet`. `i;ascii-numeric` není inzerován. |
+| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` u `fileinto` a `redirect`. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Změny hlaviček před uložením, s výjimkou chráněných polí pro autentizaci a směrování doručení. |
+| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Testy `currentdate` a data v hlavičkách, plus `:index` a `:last`. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Notifikace `mailto:` s omezením rychlosti. Zastaralé `require "notify"` je akceptováno jako alias, ale inzerováno je `enotify`. |
+| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | Podporované hodnoty prostředí relace. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | Pouze `fileinto :create`. Živé dotazy `mailboxexists` nejsou podporovány. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | Mapování standardních složek `:specialuse` a deterministické kontroly `specialuse_exists`. |
+| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Detekce duplicitního doručení s využitím Redis. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Kontroluje, zda je inzerovaná schopnost dostupná. |
+| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | Části adresy `:user` a `:detail`. |
+| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | Porovnávání regulárních výrazů s použitím [RE2](https://github.com/uhop/node-re2). |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME testy a `foreverypart`, `break`, `extracttext` a `replace`. `enclose` je odmítnuto, protože nemá bezpečnou implementaci doručení. |
 
-#### Nepodporovaná rozšíření Sieve {#sieve-extensions-not-supported}
+#### Supported Sieve extensions {#supported-sieve-extensions}
 
-| Rozšíření                               | RFC                                                       | Důvod                                                           |
-| --------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
-| `include`                               | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Bezpečnostní riziko (injekce skriptu), vyžaduje globální úložiště skriptů |
-| `mboxmetadata` / `servermetadata`       | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Vyžaduje IMAP rozšíření METADATA                                 |
-| `fcc`                                   | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Vyžaduje integraci složky Odeslané                              |
-| `encoded-character`                     | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Vyžaduje změny parseru pro syntaxi ${hex:}                      |
-#### Průběh zpracování Sieve {#sieve-processing-flow}
+| Extension | Behavior | Delivery or enforcement |
+| --- | --- | --- |
+| `fileinto` | Uloží zprávu do složky. | Uloženo do vybrané IMAP složky. `fileinto :create` vyžaduje `mailbox`. |
+| `copy` | Ponechá původní doručení a zároveň přidá `fileinto` nebo `redirect`. | Aplikováno doručovacím procesem. |
+| `redirect` | Odesílá kopii nebo nahrazené doručení jinému příjemci. | Zařazeno do fronty běžnou odchozí cestou, podléhá politice domény, kontrolám denylistu a omezením rychlosti. |
+| `reject` / `ereject` | Odmítne zprávu s chybou SMTP. | Vráceno přes MX doručovací cestu. |
+| `vacation` / `vacation-seconds` | Odesílá automatickou odpověď. | Zařazeno do fronty s omezením počtu odpovědí podle příjemce a intervalu. |
+| `imap4flags` | Nastavuje nebo testuje IMAP příznaky. | Aplikováno při uložení zprávy. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | Testuje data zprávy a obálky. | Vyhodnoceno Sieve motorem. |
+| `variables`, `duplicate`, `ihave` | Ukládá hodnoty, detekuje duplicity a kontroluje schopnosti. | Proměnné jsou lokální ke skriptu; stav duplicit používá Redis. |
+| `editheader` | Přidává nebo maže nechráněné hlavičky. | Hlavičky pro autentizaci a směrování doručení nelze upravovat. |
+| `enotify` | Odesílá notifikaci pomocí `mailto:`. | Zařazeno do fronty s omezením rychlosti notifikací. |
+| `environment` | Čte podporovaná data prostředí relace. | Vyhodnoceno Sieve motorem. |
+| `special-use` | Řeší standardní využití složek. | Mapuje standardní složky a poskytuje deterministické výsledky `specialuse_exists`. |
+| `mime` | Inspektuje a mění podporované MIME části. | Požaduje obecnou schopnost `mime`. Jednotlivé příkazy RFC 5703 nejsou inzerovány samostatně. |
+
+#### Sieve features not supported {#sieve-extensions-not-supported}
+
+Tyto funkce jsou odmítnuty před uložením, aktivací, přijetím ManageSieve nebo spuštěním filtru. Sama rozpoznání parserem nezajišťuje, že je funkce podporována.
+
+| Feature | RFC or specification | Reason |
+| --- | --- | --- |
+| `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Vytvoření nové zprávy, která obaluje původní zprávu, není bezpečně implementováno end-to-end. |
+| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Živé dotazy na stav IMAP schránky nejsou dostupné. |
+| `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Globální a vkládané úložiště skriptů není dostupné. |
+| `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Integrace IMAP METADATA není dostupná. |
+| `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Integrace ukládání odeslané pošty není dostupná. |
+| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Syntax `${hex:...}` není implementována. |
+| External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | Operace `valid_ext_list` a další operace s externími seznamy nejsou dostupné. |
+
+#### Sieve processing flow {#sieve-processing-flow}
 
 ```mermaid
 sequenceDiagram
@@ -1174,41 +1173,35 @@ sequenceDiagram
     participant SQLite as SQLite Storage
     participant Queue as Email Queue
 
-    MX->>Sieve: Příchozí zpráva
-    Sieve->>Sieve: Parsování aktivního skriptu
-    Sieve->>Sieve: Spuštění pravidel
+    MX->>Sieve: Incoming message
+    Sieve->>Sieve: Validate declared capabilities
+    Sieve->>Sieve: Execute active script
 
-    alt akce fileinto
-        Sieve->>SQLite: Uložení do složky s příznaky
-    else akce přesměrování
-        Sieve->>Queue: Zařazení do fronty pro doručení
-    else akce dovolená
-        Sieve->>Redis: Kontrola limitu rychlosti
-        Redis-->>Sieve: Povolení odeslání
-        Sieve->>Queue: Zařazení odpovědi dovolené do fronty
-    else akce odmítnutí
-        Sieve->>MX: Vrácení SMTP odmítnutí
-    else akce zahodit
-        Sieve->>Sieve: Tiché zahazení zprávy
+    alt fileinto action
+        Sieve->>SQLite: Store in folder with flags
+    else redirect action
+        Sieve->>Redis: Check redirect limits
+        Sieve->>Queue: Queue redirected message
+    else vacation action
+        Sieve->>Redis: Check reply limit
+        Redis-->>Sieve: Reply allowed
+        Sieve->>Queue: Queue vacation reply
+    else reject action
+        Sieve->>MX: Return SMTP rejection
+    else discard action
+        Sieve->>Sieve: Drop message silently
     end
 
-    Sieve-->>MX: Zpracování dokončeno
+    Sieve-->>MX: Processing complete
 ```
 
-#### Bezpečnostní funkce {#security-features}
+#### Security features {#security-features}
 
-Implementace Sieve ve Forward Email zahrnuje komplexní bezpečnostní ochrany:
+Forward Email ověřuje celý skript před jeho uložením, aktivací nebo spuštěním. Odmítá neohlášené a nedostupné schopnosti, omezuje velikost skriptu a iteraci MIME částí, používá [RE2](https://github.com/uhop/node-re2) pro porovnávání regulárních výrazů, omezuje rychlost přesměrování, automatických odpovědí a notifikací, zakazuje nebezpečná cílová přesměrování a zabraňuje `editheader` měnit hlavičky pro autentizaci nebo směrování doručení. Stav omezení rychlosti pro přesměrování a automatické odpovědi je uchováván v [Redis](https://github.com/redis/redis), zatímco doručené pošty jsou ukládány pomocí [SQLite](https://github.com/sqlite/sqlite).
 
-* **Ochrana proti CVE-2023-26430**: Zabraňuje smyčkám přesměrování a útokům typu mail bombing
-* **Omezení rychlosti**: Limity na přesměrování (10/zprávu, 100/den) a odpovědi dovolené
-* **Kontrola denylistu**: Přesměrovací adresy kontrolovány proti denylistu
-* **Chráněné hlavičky**: Hlavičky DKIM, ARC a autentizace nelze měnit pomocí editheader
-* **Limity velikosti skriptu**: Vynucení maximální velikosti skriptu
-* **Časové limity vykonávání**: Skripty jsou ukončeny, pokud překročí časový limit
+#### Example Sieve scripts {#example-sieve-scripts}
 
-#### Příkladové Sieve skripty {#example-sieve-scripts}
-
-**Uložení newsletterů do složky:**
+**Ukládání newsletterů do složky:**
 
 ```sieve
 require ["fileinto"];
@@ -1218,39 +1211,37 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Automatická odpověď dovolené s jemným časováním:**
+**Automatická odpověď (vacation) s jemným časováním:**
 
 ```sieve
 require ["vacation", "vacation-seconds"];
 
-vacation :seconds 3600 :subject "Mimo kancelář"
-    "Momentálně jsem pryč a odpovím do 24 hodin.";
+vacation :seconds 3600 :subject "Out of Office"
+    "I'm currently away and will respond within 24 hours.";
 ```
 
-**Filtrování spamu s příznaky:**
+**Uložení do složky s příznaky:**
 
 ```sieve
-require ["fileinto", "imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if header :contains "X-Spam-Status" "Yes" {
-    setflag "\\Seen";
-    fileinto "Junk";
+    fileinto :create :flags ["\\Seen"] "Junk";
 }
 ```
 
-**Komplexní filtrování s proměnnými:**
+**Přesměrování faktur:**
 
 ```sieve
-require ["variables", "fileinto", "mailbox"];
+require ["redirect"];
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
 > \[!TIP]
-> Pro kompletní dokumentaci, příkladové skripty a instrukce konfigurace viz [FAQ: Podporujete filtrování e-mailů pomocí Sieve?](/faq#do-you-support-sieve-email-filtering)
+> Pro úplnou dokumentaci, ukázkové skripty a instrukce pro konfiguraci viz [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
 
 ### ManageSieve (RFC 5804) {#managesieve-rfc-5804}
 

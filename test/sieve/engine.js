@@ -10,32 +10,7 @@ const assert = require('node:assert');
 
 const { parse } = require('../../helpers/sieve/parser');
 const SieveEngine = require('../../helpers/sieve/engine');
-
-// Supported capabilities for engine creation
-const SUPPORTED_CAPABILITIES = [
-  'fileinto',
-  'reject',
-  'ereject',
-  'envelope',
-  'encoded-character',
-  'comparator-i;ascii-casemap',
-  'comparator-i;octet',
-  'copy',
-  'body',
-  'vacation',
-  'vacation-seconds',
-  'variables',
-  'imap4flags',
-  'relational',
-  'editheader',
-  'date',
-  'index',
-  'regex',
-  'enotify',
-  'environment',
-  'mime',
-  'notify'
-];
+const { SUPPORTED_CAPABILITIES } = require('../../helpers/sieve/capabilities');
 
 // Helper to execute a script
 async function executeScript(script, message, options = {}) {
@@ -1771,7 +1746,7 @@ describe('Core Sieve tests (RFC 5228 Section 5)', () => {
     });
 
     describe('enclose command', () => {
-      it('should produce enclose action', async () => {
+      it('should reject enclose because delivery is unavailable', async () => {
         const script = `
           require "mime";
           foreverypart {
@@ -1788,11 +1763,10 @@ describe('Core Sieve tests (RFC 5228 Section 5)', () => {
             charset: 'utf8'
           }
         ]);
-        const result = await executeScript(script, message);
-        assert.ok(!result.error);
-        const enclose = result.actions.find((a) => a.type === 'enclose');
-        assert.ok(enclose);
-        assert.strictEqual(enclose.subject, 'Wrapped');
+        await assert.rejects(
+          executeScript(script, message),
+          /Sieve enclose is not supported/
+        );
       });
     });
 

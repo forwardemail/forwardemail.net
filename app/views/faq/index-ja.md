@@ -2802,50 +2802,38 @@ RSA証明書とECC（楕円曲線暗号）証明書の両方をサポートし�
   </div>
 </div>
 
-### Sieveメールフィルタリングはサポートしていますか？ {#do-you-support-sieve-email-filtering}
+### Sieve メールフィルタリングをサポートしていますか {#do-you-support-sieve-email-filtering}
 
-はい！当社は[RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)で定義された[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\))メールフィルタリングをサポートしています。Sieveは、サーバー側のメールフィルタリングのための強力で標準化されたスクリプト言語で、受信メッセージを自動的に整理、フィルタリング、応答することができます。
+はい。Forward Email は [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) に基づくサーバーサイドの [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) フィルタリングをサポートします。スクリプトはメールボックス配信前に受信メッセージをフィルタリングします。利用できない capability を要求するか、`require` で宣言せずに拡張を使用するとスクリプトは拒否されます。
 
-#### サポートされているSieve拡張機能 {#supported-sieve-extensions}
+完全な、実装に裏付けられた capability リストと RFC 注記は [Sieve protocol documentation](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228) にあります。
 
-当社は包括的なSieve拡張機能セットをサポートしています：
+#### 利用可能な Sieve capability
 
-| 拡張機能                    | RFC                                                                                    | 説明                                      |
-| ---------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `fileinto`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | メッセージを特定のフォルダに振り分ける              |
-| `reject` / `ereject`         | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | エラーでメッセージを拒否する                    |
-| `vacation`                   | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | 自動応答の休暇/不在返信                         |
-| `vacation-seconds`           | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | 細かい休暇応答間隔の設定                         |
-| `imap4flags`                 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | IMAPフラグ（\Seen、\Flaggedなど）を設定           |
-| `envelope`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | エンベロープの送信者/受信者をテスト                   |
-| `body`                       | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | メッセージ本文の内容をテスト                        |
-| `variables`                  | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | スクリプト内で変数を保存・使用                       |
-| `relational`                 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | 関係演算子による比較（より大きい、より小さい）         |
-| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | 数値比較                                      |
-| `copy`                       | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | リダイレクトしながらメッセージをコピー                  |
-| `editheader`                 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | メッセージヘッダーの追加または削除                    |
-| `date`                       | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | 日付/時刻の値をテスト                            |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                      | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | 正規表現マッチング                              |
-| `enotify`                    | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | 通知の送信（例：mailto:）                           |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`                | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | 環境情報へのアクセス                             |
-| `mailbox`                    | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | メールボックスの存在確認、メールボックスの作成         |
-| `special-use`                | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | 特殊用途メールボックスへの振り分け（\Junk、\Trash）  |
-| `duplicate`                  | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | 重複メッセージの検出                            |
-| `ihave`                      | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | 拡張機能の利用可能性をテスト                        |
-| `subaddress`                 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | user+detail形式のアドレス部分にアクセス                 |
-#### Extensions Not Supported {#extensions-not-supported}
+| カテゴリ | 機能と動作 |
+| --- | --- |
+| コア言語 | `keep`, `discard`, `stop`, 条件ブロック、および基本的な `address`, `header`, `exists`, `size`、およびブールテスト。 |
+| 配信 | `fileinto`, `copy`, `redirect`, `mailbox`（`fileinto :create` 用）、および標準フォルダの `:specialuse` マッピングと `specialuse_exists` のための `special-use`。 |
+| テストと比較 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, および `i;octet`。 |
+| 状態と変数 | `variables`, `imap4flags`, `duplicate`, および `ihave`。 |
+| アクションと応答 | `reject`, `ereject`, `vacation`, `vacation-seconds`, および `enotify`（`mailto:` を使用）。レガシーな宣言 `require "notify"` は `enotify` の入力エイリアスとして受け入れられますが、公開されている capability は `enotify` です。 |
+| メッセージ処理 | `editheader`, `environment`, および `mime`（`foreverypart`, `break`, `extracttext`, `replace` を含む）。 |
 
-以下の拡張機能は現在サポートされていません：
+`redirect` は通常の送信キューを通じて配信されます。これは構成されたリダイレクトドメインポリシー、denylist チェック、およびレート制限の対象となります。`editheader` は保護された認証ヘッダーや配信ルーティングヘッダーを変更できません。
 
-| Extension                                                       | Reason                                                              |
-| --------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `include`                                                       | セキュリティリスク（スクリプトインジェクション）およびグローバルスクリプトストレージが必要 |
-| `mboxmetadata` / `servermetadata`                               | IMAP METADATA拡張機能のサポートが必要                              |
+#### サポートされていない機能
 
-#### Example Sieve Scripts {#example-sieve-scripts}
+| 機能 | 理由 |
+| --- | --- |
+| `enclose` | 元のメッセージを包む新しいメッセージを作成する機能は実装されていません。 |
+| `mailboxexists` | Forward Email はライブの IMAP メールボックス状態クエリを行いません。`fileinto :create` は `mailbox` を通じて引き続き利用可能です。 |
+| `include` | グローバルおよび include されたスクリプトの保存は利用できません。 |
+| `mboxmetadata` / `servermetadata` | IMAP METADATA 統合は利用できません。 |
+| `fcc` | 送信メールのファイリング統合は利用できません。 |
+| `encoded-character` | `${hex:...}` 構文は実装されていません。 |
+| External lists | `valid_ext_list` およびその他の外部リスト操作は利用できません。 |
+
+#### Sieve スクリプトの例
 
 **ニュースレターをフォルダに振り分ける:**
 
@@ -2857,62 +2845,44 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**休暇中の自動返信:**
+**不在時の自動応答:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Out of Office"
+vacation :seconds 604800 :subject "Out of Office"
     "I am currently out of the office and will respond when I return.";
 ```
 
-**重要な送信者からのメッセージにマークを付ける:**
+**メッセージを振り分ける際にフォルダを作成する:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**特定の件名のスパムを拒否する:**
+**メッセージをリダイレクトする:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "Message rejected due to spam content.";
-}
-```
-**不要なメッセージを静かに破棄する:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**変数を使った複雑なフィルタリング:**
+#### Sieve スクリプトの管理
 
-```sieve
-require ["variables", "fileinto", "mailbox"];
+以下の方法で Sieve スクリプトを管理できます:
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
+1. **Web インターフェース**: <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス <i class="fa fa-angle-right"></i> Sieve スクリプト に移動してスクリプトを作成および管理します。
 
-#### Managing Sieve Scripts {#managing-sieve-scripts}
+2. **ManageSieve プロトコル**: Thunderbird の Sieve アドオンや [sieve-connect](https://github.com/philpennock/sieve-connect) のような ManageSieve 互換クライアントを使用して `imap.forwardemail.net` に接続します。STARTTLS を使用する場合はポート `2190`、暗黙の TLS を使用する場合はポート `4190` を使用してください。
 
-Sieveスクリプトは以下の方法で管理できます：
-
-1. **Webインターフェース**: <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス <i class="fa fa-angle-right"></i> Sieveスクリプト からスクリプトの作成・管理が可能です。
-
-2. **ManageSieveプロトコル**: ThunderbirdのSieveアドオンや[sieve-connect](https://github.com/philpennock/sieve-connect)などのManageSieve対応クライアントを使って `imap.forwardemail.net` に接続します。ポートは `2190`（STARTTLS推奨）または `4190`（暗黙のTLS）を使用します。
-
-3. **API**: [REST API](/api#sieve-scripts) を使ってプログラム的にスクリプトを管理できます。
+3. **API**: スクリプトをプログラムで管理するには [REST API](/api#sieve-scripts) を使用します。
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2920,7 +2890,7 @@ Sieveスクリプトは以下の方法で管理できます：
     注意:
   </strong>
   <span>
-    Sieveフィルタリングは受信メッセージがメールボックスに保存される前に適用されます。スクリプトは優先順に実行され、最初に一致したアクションがメッセージの処理方法を決定します。
+    Sieve フィルタリングはメールボックス配信前に受信メッセージに適用されます。スクリプトは優先順に実行され、最初に一致したアクションがメッセージの処理方法を決定します。
   </span>
 </div>
 
@@ -2930,7 +2900,7 @@ Sieveスクリプトは以下の方法で管理できます：
     セキュリティ:
   </strong>
   <span>
-    セキュリティ上の理由から、リダイレクトアクションはスクリプトごとに10回、1日あたり100回に制限されています。休暇応答も乱用防止のためレート制限されています。
+    リダイレクトは構成されたポリシーおよびレート制限に照らして確認されます。バケーション応答および通知は乱用を防ぐためレート制限されています。
   </span>
 </div>
 

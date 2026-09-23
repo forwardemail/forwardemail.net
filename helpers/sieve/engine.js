@@ -9,6 +9,12 @@
 const { Buffer } = require('node:buffer');
 
 const RE2 = require('re2');
+const {
+  CORE_CAPABILITIES,
+  SUPPORTED_CAPABILITIES,
+  getCapability,
+  isSupportedCapability
+} = require('./capabilities');
 
 /**
  * Parse email address(es) from a header value
@@ -64,71 +70,6 @@ function parseAddresses(value) {
   return results;
 }
 
-// Core Sieve tests (RFC 5228 Section 5) - these are always available
-// and don't need to be declared with "require", but some scripts
-// incorrectly include them. We accept them silently for compatibility.
-const CORE_TESTS = new Set([
-  'address',
-  'allof',
-  'anyof',
-  'exists',
-  'false',
-  'header',
-  'not',
-  'size',
-  'true'
-]);
-
-// Default supported capabilities
-const DEFAULT_CAPABILITIES = new Set([
-  'fileinto',
-  'reject',
-  'ereject',
-  'envelope',
-  // 'encoded-character', // Not implemented - requires parser changes
-  'comparator-i;ascii-casemap',
-  'comparator-i;octet'
-]);
-
-// Extended capabilities that can be enabled
-const EXTENDED_CAPABILITIES = new Set([
-  'copy',
-  'body',
-  'vacation',
-  'vacation-seconds',
-  'variables',
-  'imap4flags',
-  'relational',
-  'editheader',
-  'date',
-  'index',
-  'regex',
-  'enotify',
-  'environment',
-  'include',
-  'mailbox',
-  'special-use',
-  'duplicate',
-  'ihave',
-  'subaddress',
-  'comparator-i;ascii-numeric',
-  'mboxmetadata',
-  'servermetadata',
-  'extlists',
-  // RFC 5703 command capability names; "mime" remains the compatible umbrella.
-  'mime',
-  'foreverypart',
-  'replace',
-  'extracttext',
-  'enclose',
-  'notify'
-]);
-
-// Capability aliases - maps deprecated/alternate names to canonical names
-const CAPABILITY_ALIASES = new Map([
-  ['notify', 'enotify'] // draft-martin-sieve-notify -> RFC 5435 enotify
-]);
-
 /**
  * Sieve Execution Engine
  */
@@ -140,10 +81,11 @@ class SieveEngine {
    * @param {Object} options.logger - Logger instance
    */
   constructor(options = {}) {
-    this.capabilities = new Set([
-      ...DEFAULT_CAPABILITIES,
-      ...(options.capabilities || [])
-    ]);
+    this.capabilities = new Set(
+      (options.capabilities || SUPPORTED_CAPABILITIES)
+        .map((capability) => getCapability(capability))
+        .filter((capability) => SUPPORTED_CAPABILITIES.includes(capability))
+    );
     this.logger = options.logger || console;
     this.extensions = new Map();
 
@@ -181,17 +123,10 @@ class SieveEngine {
    * @returns {boolean} True if supported
    */
   hasCapability(capability) {
-    // Map deprecated capability names to their modern equivalents
-    // 'notify' (draft-martin-sieve-notify) is superseded by 'enotify' (RFC 5435)
-    // RFC 5703 command names are accepted individually; "mime" remains the
-    // backward-compatible umbrella for MIME part tests and manipulation.
-    const resolved = CAPABILITY_ALIASES.get(capability) || capability;
-    // Accept core tests (RFC 5228 Section 5) even though they don't need require
-    // This provides compatibility with scripts that incorrectly require them
+    const value = getCapability(capability);
     return (
-      this.capabilities.has(resolved) ||
-      EXTENDED_CAPABILITIES.has(resolved) ||
-      CORE_TESTS.has(resolved)
+      isSupportedCapability(value) &&
+      (this.capabilities.has(value) || CORE_CAPABILITIES.includes(value))
     );
   }
 
@@ -200,14 +135,10 @@ class SieveEngine {
    * The established "mime" declaration remains a compatible umbrella.
    *
    * @param {Object} state - Execution state
-   * @param {string} capability - RFC 5703 command capability
    * @returns {boolean} Whether the capability is enabled for this script
    */
-  hasEnabledMimeCapability(state, capability) {
-    return (
-      state.enabledCapabilities.has(capability) ||
-      state.enabledCapabilities.has('mime')
-    );
+  hasEnabledMimeCapability(state) {
+    return state.enabledCapabilities.has('mime');
   }
 
   /**
@@ -218,9 +149,9 @@ class SieveEngine {
    * @throws {Error} If the capability was not declared with require
    */
   requireEnabledMimeCapability(state, capability) {
-    if (!this.hasEnabledMimeCapability(state, capability)) {
+    if (!this.hasEnabledMimeCapability(state)) {
       throw new Error(
-        `Capability "${capability}" must be declared with require.`
+        `MIME command "${capability}" requires "mime" to be declared with require.`
       );
     }
   }
@@ -333,11 +264,7 @@ class SieveEngine {
             throw new Error(`Unsupported capability: ${capability}`);
           }
 
-          // Resolve aliases so downstream checks use the canonical name
-          const resolved = CAPABILITY_ALIASES.get(capability) || capability;
-          state.enabledCapabilities.add(resolved);
-          // Also add the original name for scripts that check it
-          state.enabledCapabilities.add(capability);
+          state.enabledCapabilities.add(getCapability(capability));
         }
       }
     }
@@ -547,6 +474,7 @@ class SieveEngine {
       }
 
       case 'Break': {
+        this.requireEnabledMimeCapability(state, 'break');
         // Signal break to the nearest enclosing foreverypart loop
         state.breakSignal = command.name || true;
         break;
@@ -565,9 +493,7 @@ class SieveEngine {
       }
 
       case 'Enclose': {
-        this.requireEnabledMimeCapability(state, 'enclose');
-        this.executeEnclose(command, state);
-        break;
+        throw new Error('Sieve enclose is not supported');
       }
 
       default: {

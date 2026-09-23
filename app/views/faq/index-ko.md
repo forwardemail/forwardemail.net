@@ -2802,52 +2802,40 @@ IPv4와 IPv6 모두를 지원하며 포트 `443`(HTTPS)에서 이용 가능합�
   </div>
 </div>
 
-### Sieve 이메일 필터링을 지원하나요? {#do-you-support-sieve-email-filtering}
+### Sieve 이메일 필터링을 지원하나요 {#do-you-support-sieve-email-filtering}
 
-네! 저희는 [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)에 정의된 대로 [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) 이메일 필터링을 지원합니다. Sieve는 서버 측 이메일 필터링을 위한 강력하고 표준화된 스크립팅 언어로, 수신 메시지를 자동으로 정리, 필터링 및 응답할 수 있게 해줍니다.
+예. Forward Email은 [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)을 기반으로 한 서버 측 [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) 필터링을 지원합니다. 스크립트는 메일박스 전달 전에 수신 메시지를 필터링합니다. 사용할 수 없는 capability를 요청하거나 `require`에 선언하지 않은 확장을 사용하면 스크립트가 거부됩니다.
 
-#### 지원하는 Sieve 확장 {#supported-sieve-extensions}
+완전한 구현 기반의 capability 목록 및 RFC 노트는 [Sieve protocol documentation](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228)에서 확인할 수 있습니다.
 
-저희는 다음과 같은 포괄적인 Sieve 확장 세트를 지원합니다:
+#### 사용 가능한 Sieve 기능
 
-| 확장                        | RFC                                                                                     | 설명                                             |
-| ---------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `fileinto`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | 메시지를 특정 폴더에 저장                         |
-| `reject` / `ereject`         | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | 오류와 함께 메시지 거부                           |
-| `vacation`                   | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | 자동 부재중/휴가 응답                             |
-| `vacation-seconds`           | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | 세분화된 휴가 응답 간격                           |
-| `imap4flags`                 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | IMAP 플래그 설정 (\Seen, \Flagged 등)             |
-| `envelope`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | 봉투 발신자/수신자 테스트                         |
-| `body`                       | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | 메시지 본문 내용 테스트                           |
-| `variables`                  | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | 스크립트 내 변수 저장 및 사용                      |
-| `relational`                 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | 관계 비교 (크다, 작다)                            |
-| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | 숫자 비교                                        |
-| `copy`                       | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | 리디렉션 시 메시지 복사                           |
-| `editheader`                 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | 메시지 헤더 추가 또는 삭제                        |
-| `date`                       | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | 날짜/시간 값 테스트                              |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                      | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | 정규 표현식 매칭                                 |
-| `enotify`                    | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | 알림 전송 (예: mailto:)                          |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`                | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | 환경 정보 접근                                   |
-| `mailbox`                    | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | 메일박스 존재 테스트, 메일박스 생성               |
-| `special-use`                | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | 특수 용도 메일박스에 저장 (\Junk, \Trash 등)      |
-| `duplicate`                  | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | 중복 메시지 감지                                |
-| `ihave`                      | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | 확장 기능 사용 가능 여부 테스트                    |
-| `subaddress`                 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | 사용자+세부 주소 부분 접근                        |
-#### 지원되지 않는 확장 기능 {#extensions-not-supported}
+| 범주 | 기능 및 동작 |
+| --- | --- |
+| 코어 언어 | `keep`, `discard`, `stop`, 조건 블록 및 기본 `address`, `header`, `exists`, `size` 및 불리언 테스트. |
+| 배달 | `fileinto`, `copy`, `redirect`, `mailbox`( `fileinto :create` 용), 및 표준 폴더 `:specialuse` 매핑을 위한 `special-use`와 `specialuse_exists`. |
+| 테스트 및 비교 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, 및 `i;octet`. |
+| 상태 및 변수 | `variables`, `imap4flags`, `duplicate`, 및 `ihave`. |
+| 동작 및 응답 | `reject`, `ereject`, `vacation`, `vacation-seconds`, 및 `enotify` (mailto: 사용). 레거시 선언인 `require "notify"`는 `enotify`의 입력 별칭으로 허용되지만, 광고된 capability는 `enotify`입니다. |
+| 메시지 처리 | `editheader`, `environment`, 및 `mime` (여기에는 `foreverypart`, `break`, `extracttext`, 및 `replace` 포함). |
 
-다음 확장 기능은 현재 지원되지 않습니다:
+`redirect`는 일반 아웃바운드 큐를 통해 전달됩니다. 구성된 리다이렉트 도메인 정책, 차단 목록 검사 및 속도 제한의 적용을 받습니다. `editheader`는 보호된 인증 헤더나 전달 라우팅 헤더를 수정할 수 없습니다.
 
-| 확장 기능                                                       | 이유                                                              |
-| --------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `include`                                                       | 보안 위험(스크립트 인젝션) 및 전역 스크립트 저장소 필요               |
-| `mboxmetadata` / `servermetadata`                               | IMAP METADATA 확장 기능 지원 필요                                   |
+#### 지원되지 않는 기능
 
-#### 예제 Sieve 스크립트 {#example-sieve-scripts}
+| 기능 | 사유 |
+| --- | --- |
+| `enclose` | 원본 메시지를 포함하는 새 메시지 생성은 구현되어 있지 않습니다. |
+| `mailboxexists` | Forward Email은 실시간 IMAP 메일박스 상태 쿼리를 수행하지 않습니다. `fileinto :create`는 여전히 `mailbox`를 통해 사용 가능합니다. |
+| `include` | 전역 및 포함된 스크립트 저장소는 제공되지 않습니다. |
+| `mboxmetadata` / `servermetadata` | IMAP METADATA 통합을 사용할 수 없습니다. |
+| `fcc` | 발신 메일 파일링 통합을 사용할 수 없습니다. |
+| `encoded-character` | `${hex:...}` 구문은 구현되어 있지 않습니다. |
+| 외부 리스트 | `valid_ext_list` 및 기타 외부 리스트 작업은 사용할 수 없습니다. |
 
-**뉴스레터를 폴더에 분류하기:**
+#### Sieve 스크립트 예시
+
+**뉴스레터를 폴더에 파일링:**
 
 ```sieve
 require ["fileinto"];
@@ -2857,62 +2845,44 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**휴가 중 자동 응답:**
+**부재중 자동응답:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Out of Office"
-    "현재 부재 중이며 복귀 후 답변드리겠습니다.";
+vacation :seconds 604800 :subject "Out of Office"
+    "I am currently out of the office and will respond when I return.";
 ```
 
-**중요 발신자 메시지 표시:**
+**메시지 파일링 시 폴더 생성:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**특정 제목의 스팸 거부:**
+**메시지 리다이렉트:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "스팸 내용으로 인해 메시지가 거부되었습니다.";
-}
-```
-**원치 않는 메시지를 조용히 폐기:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**변수를 사용한 복잡한 필터링:**
-
-```sieve
-require ["variables", "fileinto", "mailbox"];
-
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
-
-#### Sieve 스크립트 관리 {#managing-sieve-scripts}
+#### Sieve 스크립트 관리
 
 Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
 
-1. **웹 인터페이스**: <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭 <i class="fa fa-angle-right"></i> Sieve 스크립트에서 스크립트를 생성하고 관리하세요.
+1. **웹 인터페이스**: <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭 <i class="fa fa-angle-right"></i> Sieve 스크립트로 이동하여 스크립트를 생성하고 관리하십시오.
 
-2. **ManageSieve 프로토콜**: Thunderbird의 Sieve 애드온이나 [sieve-connect](https://github.com/philpennock/sieve-connect) 같은 ManageSieve 호환 클라이언트를 사용해 `imap.forwardemail.net`에 연결하세요. 대부분 클라이언트에 권장되는 STARTTLS 포트 `2190` 또는 암시적 TLS 포트 `4190`을 사용합니다.
+2. **ManageSieve 프로토콜**: Thunderbird의 Sieve 애드온이나 [sieve-connect](https://github.com/philpennock/sieve-connect)과 같은 ManageSieve 호환 클라이언트를 사용하여 `imap.forwardemail.net`에 연결하십시오. STARTTLS 사용 시 포트 `2190`, 암시적 TLS 사용 시 포트 `4190`을 사용합니다.
 
-3. **API**: [REST API](/api#sieve-scripts)를 사용해 프로그래밍 방식으로 스크립트를 관리할 수 있습니다.
+3. **API**: 스크립트를 프로그래밍 방식으로 관리하려면 [REST API](/api#sieve-scripts)를 사용하십시오.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2920,7 +2890,7 @@ Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
     참고:
   </strong>
   <span>
-    Sieve 필터링은 메일함에 저장되기 전에 수신 메시지에 적용됩니다. 스크립트는 우선순위 순서대로 실행되며, 첫 번째 일치하는 동작이 메시지 처리 방식을 결정합니다.
+    Sieve 필터링은 메일박스 전달 전에 수신 메시지에 적용됩니다. 스크립트는 우선순위 순으로 실행되며, 첫 번째로 일치하는 동작이 메시지 처리 방식을 결정합니다.
   </span>
 </div>
 
@@ -2930,7 +2900,7 @@ Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
     보안:
   </strong>
   <span>
-    보안을 위해 리디렉션 동작은 스크립트당 10회, 하루 100회로 제한됩니다. 휴가 응답은 남용 방지를 위해 속도 제한이 적용됩니다.
+    리다이렉트는 구성된 정책 및 속도 제한에 대해 검사됩니다. 부재중 응답 및 알림은 남용을 방지하기 위해 속도 제한이 적용됩니다.
   </span>
 </div>
 

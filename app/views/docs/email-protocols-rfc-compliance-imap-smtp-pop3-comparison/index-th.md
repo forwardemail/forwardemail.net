@@ -1095,76 +1095,75 @@ sequenceDiagram
 ## การกรองข้อความอีเมล {#email-message-filtering}
 
 > \[!IMPORTANT]
-> Forward Email มี **การรองรับ Sieve และ ManageSieve เต็มรูปแบบ** สำหรับการกรองอีเมลฝั่งเซิร์ฟเวอร์ สร้างกฎที่ทรงพลังเพื่อจัดเรียง กรอง ส่งต่อ และตอบกลับข้อความที่เข้ามาโดยอัตโนมัติ
+> Forward Email มีการกรองด้วย Sieve และการจัดการสคริปต์ด้วย ManageSieve.
 
 ### Sieve (RFC 5228) {#sieve-rfc-5228}
 
-[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) เป็นภาษาสคริปต์ที่ได้มาตรฐานและทรงพลังสำหรับการกรองอีเมลฝั่งเซิร์ฟเวอร์ Forward Email ใช้งาน Sieve อย่างครบถ้วนพร้อมส่วนขยาย 24 รายการ
+[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) เป็นภาษามาตรฐานสำหรับการกรองอีเมลฝั่งเซิร์ฟเวอร์ Forward Email จะตรวจสอบสคริปต์แต่ละฉบับก่อนที่จะถูกเก็บ เปิดใช้งาน หรือนำไปประมวลผล สคริปต์จะถูกปฏิเสธหากร้องขอความสามารถที่ไม่มีหรือใช้ส่วนขยายโดยไม่ประกาศใน `require`
 
-**ซอร์สโค้ด:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
+**รหัสต้นฉบับ:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
 
-#### RFC หลักของ Sieve ที่รองรับ {#core-sieve-rfcs-supported}
+#### ความเข้ากันได้ของ Sieve RFC {#core-sieve-rfcs-supported}
 
-| RFC                                                                                    | ชื่อเรื่อง                                                    | สถานะ          |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------------- | -------------- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Sieve: ภาษาในการกรองอีเมล                                    | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | ส่วนขยายการปฏิเสธและปฏิเสธแบบขยายของการกรองอีเมล         | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | ส่วนขยายการลาพักร้อนของการกรองอีเมล                         | ✅ รองรับเต็มรูปแบบ |
-| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | ส่วนขยายลาพักร้อน: พารามิเตอร์ "วินาที"                     | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | ส่วนขยาย Imap4flags ของการกรองอีเมล                           | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | ส่วนขยายเนื้อหาของการกรองอีเมล                               | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | ส่วนขยายตัวแปรของการกรองอีเมล                                | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | ส่วนขยายเชิงสัมพันธ์ของการกรองอีเมล                           | ✅ รองรับเต็มรูปแบบ |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Internet Application Protocol Collation Registry              | ✅ รองรับเต็มรูปแบบ |
-| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | ส่วนขยายการคัดลอกโดยไม่มีผลข้างเคียง                         | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | ส่วนขยาย Editheader ของการกรองอีเมล                           | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | ส่วนขยายวันที่และดัชนีของการกรองอีเมล                        | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | ส่วนขยายสำหรับการแจ้งเตือนของการกรองอีเมล                    | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | ส่วนขยายสภาพแวดล้อมของการกรองอีเมล                          | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | ส่วนขยายสำหรับการตรวจสอบสถานะกล่องจดหมายของการกรองอีเมล    | ✅ รองรับเต็มรูปแบบ |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | การกรองอีเมล: การส่งไปยังกล่องจดหมายที่ใช้พิเศษ              | ✅ รองรับเต็มรูปแบบ |
-| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | การกรองอีเมล: การตรวจจับการส่งซ้ำ                              | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | ส่วนขยาย Ihave ของการกรองอีเมล                                | ✅ รองรับเต็มรูปแบบ |
-| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | ส่วนขยาย Subaddress ของการกรองอีเมล                           | ✅ รองรับเต็มรูปแบบ |
-| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | ส่วนขยายการกรองอีเมลด้วยนิพจน์ปกติ (Regular Expression)     | ✅ รองรับเต็มรูปแบบ |
+ตารางนี้แยกความแตกต่างระหว่างการใช้งานพฤติกรรมที่ครบถ้วนกับพฤติกรรมที่จำกัดโดยตั้งใจ ManageSieve ประกาศเฉพาะชื่อความสามารถสาธารณะในตารางนี้
+
+| RFC หรือข้อกำหนด | ความสามารถ | พฤติกรรมที่รองรับ |
+| --- | --- | --- |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, บล็อกตามเงื่อนไข และการทดสอบพื้นฐาน `address`, `header`, `exists`, `size` และการทดสอบบูลีน. `fileinto` และ `redirect` ถูกส่งผ่านท่อจัดส่งขาเข้า. |
+| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | การปฏิเสธแบบ SMTP พร้อมข้อความที่ระบุ. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | การตอบกลับแบบ vacation ถูกจัดคิวพร้อมการควบคุมการละเมิด. |
+| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | ช่วงเวลา `:seconds` ควบคุม TTL ของการตอบกลับ vacation. |
+| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | แฟลกถูกนำไปใช้ระหว่างการเก็บในกล่องจดหมาย. |
+| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | การจับคู่เนื้อหาของส่วนเนื้อข้อความ (message-body). |
+| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | การขยายตัวแปรและตัวดัดแปลงที่รองรับ. |
+| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | การเปรียบเทียบ `:count` และ `:value`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | รองรับ `i;ascii-casemap` และ `i;octet`. `i;ascii-numeric` ไม่ได้ประกาศ. |
+| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | รองรับ `:copy` บน `fileinto` และ `redirect`. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | การเปลี่ยนแปลงเฮดเดอร์ก่อนการเก็บ โดยยกเว้นฟิลด์การพิสูจน์ตัวตนและการกำหนดเส้นทางการส่งที่ได้รับการป้องกัน. |
+| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | การทดสอบ `currentdate` และวันที่ในเฮดเดอร์ รวมถึง `:index` และ `:last`. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | การแจ้งเตือนแบบ `mailto:` พร้อมจำกัดอัตรา. คำประกาศเก่า `require "notify"` ยอมรับเป็นชื่อเรียกแทน แต่ประกาศความสามารถเป็น `enotify`. |
+| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | ค่าต่างๆ ของสภาพแวดล้อมเซสชันที่รองรับ. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | รองรับเฉพาะ `fileinto :create`. การสืบค้น `mailboxexists` แบบสดไม่รองรับ. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | การแมปโฟลเดอร์มาตรฐานด้วย `:specialuse` และการตรวจสอบ `specialuse_exists` แบบกำหนดผลลัพธ์ได้. |
+| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | การตรวจจับการส่งซ้ำโดยใช้ Redis เป็นแบ็กเอนด์. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | ตรวจสอบว่าความสามารถที่ประกาศนั้นใช้งานได้หรือไม่. |
+| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | ส่วนที่อยู่ `:user` และ `:detail`. |
+| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | การจับคู่ด้วยนิพจน์ปกติโดยใช้ [RE2](https://github.com/uhop/node-re2). |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | การทดสอบ MIME และ `foreverypart`, `break`, `extracttext`, และ `replace`. ปฏิเสธ `enclose` เนื่องจากไม่มีการใช้งานที่ปลอดภัยสำหรับการจัดส่งแบบครบวงจร. |
+
 #### ส่วนขยาย Sieve ที่รองรับ {#supported-sieve-extensions}
 
-| Extension                    | คำอธิบาย                              | การผสานรวม                                |
-| ---------------------------- | ---------------------------------------- | ------------------------------------------ |
-| `fileinto`                   | จัดเก็บข้อความลงในโฟลเดอร์เฉพาะ      | ข้อความถูกเก็บในโฟลเดอร์ IMAP ที่ระบุ   |
-| `reject` / `ereject`         | ปฏิเสธข้อความพร้อมข้อผิดพลาด            | การปฏิเสธ SMTP พร้อมข้อความเด้งกลับ         |
-| `vacation`                   | ตอบกลับอัตโนมัติเมื่อลาหยุด/ไม่อยู่สำนักงาน | คิวผ่าน Emails.queue พร้อมจำกัดอัตรา          |
-| `vacation-seconds`           | ช่วงเวลาตอบกลับลาหยุดละเอียด             | TTL จากพารามิเตอร์ `:seconds`              |
-| `imap4flags`                 | ตั้งค่า IMAP flags (\Seen, \Flagged, ฯลฯ)   | ธงถูกตั้งค่าระหว่างการเก็บข้อความ             |
-| `envelope`                   | ทดสอบผู้ส่ง/ผู้รับในซองจดหมาย           | เข้าถึงข้อมูลซองจดหมาย SMTP               |
-| `body`                       | ทดสอบเนื้อหาข้อความ                    | การจับคู่ข้อความเต็ม                        |
-| `variables`                  | เก็บและใช้ตัวแปรในสคริปต์               | การขยายตัวแปรพร้อมตัวแก้ไข                  |
-| `relational`                 | การเปรียบเทียบเชิงสัมพันธ์               | `:count`, `:value` กับ gt/lt/eq           |
-| `comparator-i;ascii-numeric` | การเปรียบเทียบเชิงตัวเลข                | การเปรียบเทียบสตริงตัวเลข                  |
-| `copy`                       | คัดลอกข้อความขณะเปลี่ยนเส้นทาง           | ธง `:copy` บน fileinto/redirect          |
-| `editheader`                 | เพิ่มหรือลบหัวข้อข้อความ                | หัวข้อถูกแก้ไขก่อนการเก็บ                  |
-| `date`                       | ทดสอบค่าของวันที่/เวลา                   | การทดสอบ `currentdate` และวันที่ในหัวข้อ    |
-| `index`                      | Access specific header occurrences       | `:index` and `:last` for multi-value headers in header tests and deleteheader |
-| `regex`                      | การจับคู่ด้วยนิพจน์ปกติ                  | รองรับนิพจน์ปกติเต็มรูปแบบในการทดสอบ       |
-| `enotify`                    | ส่งการแจ้งเตือน                        | การแจ้งเตือน `mailto:` ผ่าน Emails.queue   |
-| `notify`                     | Send notifications (alias for enotify)   | Deprecated [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) alias; rate-limited (10/hr per alias) |
-| `mime`                       | MIME part tests and iteration    | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags on header/address tests. Security hardened with iteration limits, instruction counting, and depth restrictions. |
-| `environment`                | เข้าถึงข้อมูลสภาพแวดล้อม                | โดเมน, โฮสต์, remote-ip จากเซสชัน          |
-| `mailbox`                    | ทดสอบการมีอยู่ของกล่องจดหมาย             | การทดสอบ `mailboxexists`                   |
-| `special-use`                | จัดเก็บลงกล่องจดหมายพิเศษ               | แผนที่ \Junk, \Trash, ฯลฯ ไปยังโฟลเดอร์    |
-| `duplicate`                  | ตรวจจับข้อความซ้ำ                      | การติดตามซ้ำโดยใช้ Redis                    |
-| `ihave`                      | ทดสอบการมีอยู่ของส่วนขยาย               | การตรวจสอบความสามารถในเวลารัน              |
-| `subaddress`                 | เข้าถึงส่วนที่อยู่ user+detail            | ส่วนที่อยู่ `:user` และ `:detail`            |
+| ส่วนขยาย | พฤติกรรม | การจัดส่งหรือการบังคับใช้ |
+| --- | --- | --- |
+| `fileinto` | จัดเก็บข้อความลงโฟลเดอร์. | ถูกเก็บในโฟลเดอร์ IMAP ที่เลือก. `fileinto :create` ต้องการ `mailbox`. |
+| `copy` | คงการส่งต้นฉบับไว้พร้อมเพิ่ม `fileinto` หรือ `redirect`. | นำไปใช้โดยท่อจัดส่ง. |
+| `redirect` | ส่งสำเนาหรือส่งทดแทนไปยังผู้รับอื่น. | ถูกจัดคิวผ่านเส้นทางส่งออกปกติ ภายใต้ประมวลนโยบายโดเมน การตรวจสอบรายการปฏิเสธ และการจำกัดอัตรา. |
+| `reject` / `ereject` | ปฏิเสธข้อความด้วยข้อผิดพลาด SMTP. | ส่งกลับผ่านเส้นทางการจัดส่ง MX. |
+| `vacation` / `vacation-seconds` | ส่งการตอบกลับอัตโนมัติ. | จัดคิวพร้อมจำกัดอัตราตามผู้รับและช่วงเวลา. |
+| `imap4flags` | ตั้งค่าหรือทดสอบแฟลก IMAP. | นำไปใช้เมื่อตัวข้อความถูกเก็บ. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | ทดสอบข้อมูลข้อความและซองจดหมาย. | ประเมินโดยเอนจิน Sieve. |
+| `variables`, `duplicate`, `ihave` | จัดเก็บค่า ตรวจจับการซ้ำ และตรวจสอบความสามารถ. | ตัวแปรเป็นระดับสคริปต์; สถานะการซ้ำใช้ Redis. |
+| `editheader` | เพิ่มหรือลบเฮดเดอร์ที่ไม่ได้รับการปกป้อง. | เฮดเดอร์การพิสูจน์ตัวตนและการกำหนดเส้นทางการส่งไม่สามารถแก้ไขได้. |
+| `enotify` | ส่งการแจ้งเตือนโดยใช้ `mailto:`. | จัดคิวพร้อมจำกัดอัตราการแจ้งเตือน. |
+| `environment` | อ่านข้อมูลสภาพแวดล้อมเซสชันที่รองรับ. | ประเมินโดยเอนจิน Sieve. |
+| `special-use` | จัดการกับโฟลเดอร์การใช้งานมาตรฐาน. | แมปโฟลเดอร์มาตรฐานและให้ผลลัพธ์ `specialuse_exists` แบบกำหนดได้. |
+| `mime` | ตรวจสอบและเปลี่ยนส่วน MIME ที่รองรับ. | ต้องการความสามารถทั่วไป `mime`. คำสั่ง RFC 5703 แต่ละคำสั่งไม่ได้ประกาศแยกกัน. |
 
-#### ส่วนขยาย Sieve ที่ไม่รองรับ {#sieve-extensions-not-supported}
+#### ฟีเจอร์ Sieve ที่ไม่รองรับ {#sieve-extensions-not-supported}
 
-| Extension                               | RFC                                                       | เหตุผล                                                           |
-| --------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
-| `include`                               | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | ความเสี่ยงด้านความปลอดภัย (การแทรกสคริปต์), ต้องการที่เก็บสคริปต์ระดับโลก |
-| `mboxmetadata` / `servermetadata`       | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | ต้องการส่วนขยาย IMAP METADATA                                 |
-| `fcc`                                   | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | ต้องการการผสานรวมโฟลเดอร์ Sent                                 |
-| `encoded-character`                     | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | ต้องการการเปลี่ยนแปลงตัวแยกวิเคราะห์สำหรับไวยากรณ์ ${hex:}    |
-#### Sieve Processing Flow {#sieve-processing-flow}
+คุณสมบัติเหล่านี้จะถูกปฏิเสธก่อนการจัดเก็บ การเปิดใช้งาน การยอมรับของ ManageSieve หรือการรันฟิลเตอร์ การที่พาร์เซอร์รู้จำเพียงอย่างเดียวนั้นไม่ได้หมายความว่าคุณสมบัติถูกรองรับ
+
+| คุณสมบัติ | RFC หรือข้อกำหนด | เหตุผล |
+| --- | --- | --- |
+| `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | การสร้างข้อความใหม่ที่ห่อหุ้มข้อความต้นฉบับไม่มีการใช้งานที่ปลอดภัยแบบ end-to-end. |
+| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | การสืบค้นสถานะกล่องจดหมาย IMAP แบบสดไม่พร้อมใช้งาน. |
+| `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | การจัดเก็บสคริปต์ระดับโลกและสคริปต์ที่รวมอยู่ไม่พร้อมใช้งาน. |
+| `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | การบูรณาการ IMAP METADATA ไม่พร้อมใช้งาน. |
+| `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | การรวมระบบการจัดเก็บอีเมลที่ส่งแล้ว (sent-mail filing) ไม่พร้อมใช้งาน. |
+| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | ไวยากรณ์ `${hex:...}` ยังไม่ได้ถูกใช้งาน. |
+| External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` และการทำงานอื่นๆ กับรายการภายนอกไม่พร้อมใช้งาน. |
+
+#### Sieve processing flow {#sieve-processing-flow}
 
 ```mermaid
 sequenceDiagram
@@ -1175,16 +1174,17 @@ sequenceDiagram
     participant Queue as Email Queue
 
     MX->>Sieve: Incoming message
-    Sieve->>Sieve: Parse active script
-    Sieve->>Sieve: Execute rules
+    Sieve->>Sieve: Validate declared capabilities
+    Sieve->>Sieve: Execute active script
 
     alt fileinto action
         Sieve->>SQLite: Store in folder with flags
     else redirect action
-        Sieve->>Queue: Queue for delivery
+        Sieve->>Redis: Check redirect limits
+        Sieve->>Queue: Queue redirected message
     else vacation action
-        Sieve->>Redis: Check rate limit
-        Redis-->>Sieve: OK to send
+        Sieve->>Redis: Check reply limit
+        Redis-->>Sieve: Reply allowed
         Sieve->>Queue: Queue vacation reply
     else reject action
         Sieve->>MX: Return SMTP rejection
@@ -1195,18 +1195,11 @@ sequenceDiagram
     Sieve-->>MX: Processing complete
 ```
 
-#### Security Features {#security-features}
+#### คุณสมบัติด้านความปลอดภัย {#security-features}
 
-การใช้งาน Sieve ของ Forward Email มีการป้องกันความปลอดภัยอย่างครอบคลุม:
+Forward Email ตรวจสอบสคริปต์ทั้งหมดก่อนที่จะถูกเก็บ เปิดใช้งาน หรือนำไปประมวลผล โดยจะปฏิเสธความสามารถที่ไม่ได้ประกาศหรือไม่พร้อมใช้งาน จำกัดขนาดสคริปต์และการวนส่วน MIME ใช้ [RE2](https://github.com/uhop/node-re2) สำหรับการจับคู่แบบนิพจน์ปกติ จำกัดอัตราการส่งสำหรับ redirect, การตอบ vacation และการแจ้งเตือน ปฏิเสธจุดหมายปลายทาง redirect ที่ไม่ปลอดภัย และป้องกันไม่ให้ `editheader` เปลี่ยนแปลงเฮดเดอร์การพิสูจน์ตัวตนหรือการกำหนดเส้นทางการส่ง สถานะการจำกัดอัตราสำหรับ redirect และ vacation ถูกเก็บใน [Redis](https://github.com/redis/redis) ขณะที่อีเมลที่ส่งแล้วถูกเก็บด้วย [SQLite](https://github.com/sqlite/sqlite)
 
-* **การป้องกัน CVE-2023-26430**: ป้องกันการวนลูปการเปลี่ยนเส้นทางและการโจมตีแบบ mail bombing
-* **การจำกัดอัตรา**: จำกัดการเปลี่ยนเส้นทาง (10/ข้อความ, 100/วัน) และการตอบกลับช่วงวันหยุด
-* **การตรวจสอบรายการปฏิเสธ**: ที่อยู่เปลี่ยนเส้นทางถูกตรวจสอบกับรายการปฏิเสธ
-* **หัวข้อที่ได้รับการป้องกัน**: หัวข้อ DKIM, ARC และการตรวจสอบสิทธิ์ไม่สามารถแก้ไขผ่าน editheader ได้
-* **ขนาดสคริปต์จำกัด**: บังคับใช้ขนาดสคริปต์สูงสุด
-* **หมดเวลาการทำงาน**: สคริปต์จะถูกยุติหากการทำงานเกินเวลาที่กำหนด
-
-#### Example Sieve Scripts {#example-sieve-scripts}
+#### ตัวอย่างสคริปต์ Sieve {#example-sieve-scripts}
 
 **จัดเก็บจดหมายข่าวลงในโฟลเดอร์:**
 
@@ -1218,7 +1211,7 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**ตอบกลับอัตโนมัติช่วงวันหยุดด้วยการตั้งเวลาละเอียด:**
+**ตัวตอบกลับอัตโนมัติ (vacation) พร้อมการตั้งเวลาระดับละเอียด:**
 
 ```sieve
 require ["vacation", "vacation-seconds"];
@@ -1227,30 +1220,28 @@ vacation :seconds 3600 :subject "Out of Office"
     "I'm currently away and will respond within 24 hours.";
 ```
 
-**กรองสแปมด้วยธง:**
+**จัดเก็บลงโฟลเดอร์พร้อมแฟลก:**
 
 ```sieve
-require ["fileinto", "imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if header :contains "X-Spam-Status" "Yes" {
-    setflag "\\Seen";
-    fileinto "Junk";
+    fileinto :create :flags ["\\Seen"] "Junk";
 }
 ```
 
-**กรองซับซ้อนด้วยตัวแปร:**
+**เปลี่ยนเส้นทางใบแจ้งหนี้:**
 
 ```sieve
-require ["variables", "fileinto", "mailbox"];
+require ["redirect"];
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
 > \[!TIP]
-> สำหรับเอกสารฉบับสมบูรณ์ สคริปต์ตัวอย่าง และคำแนะนำการตั้งค่า ดูที่ [FAQ: คุณรองรับการกรองอีเมลด้วย Sieve หรือไม่?](/faq#do-you-support-sieve-email-filtering)
+> สำหรับเอกสารฉบับสมบูรณ์ ตัวอย่างสคริปต์ และคำแนะนำการตั้งค่า ดูได้ที่ [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
 
 ### ManageSieve (RFC 5804) {#managesieve-rfc-5804}
 

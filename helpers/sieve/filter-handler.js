@@ -17,6 +17,10 @@
 
 const { parse } = require('./parser');
 const SieveEngine = require('./engine');
+const {
+  SUPPORTED_CAPABILITIES,
+  validateSieveCapabilities
+} = require('./capabilities');
 
 // Use a no-op logger in test environments where the full config isn't available
 let logger;
@@ -30,37 +34,6 @@ try {
     error() {}
   };
 }
-
-// Supported capabilities for engine creation
-const SUPPORTED_CAPABILITIES = [
-  'fileinto',
-  'reject',
-  'ereject',
-  'envelope',
-  // 'encoded-character', // Not implemented - requires parser changes
-  'comparator-i;ascii-casemap',
-  'comparator-i;octet',
-  'copy',
-  'body',
-  'vacation',
-  'vacation-seconds',
-  'variables',
-  'imap4flags',
-  'relational',
-  'editheader',
-  'date',
-  'index',
-  'regex',
-  'enotify',
-  'environment',
-  // RFC 5703 command names; "mime" remains the compatible umbrella.
-  'mime',
-  'foreverypart',
-  'replace',
-  'extracttext',
-  'enclose',
-  'notify'
-];
 
 /**
  * Create a new Sieve engine instance
@@ -116,6 +89,11 @@ class SieveFilterHandler {
     try {
       // Parse and execute the script
       const ast = parse(script.content);
+      const capabilityResult = validateSieveCapabilities(ast);
+      if (!capabilityResult.valid) {
+        throw new Error(capabilityResult.errors.join('; '));
+      }
+
       const result = await this.engine.execute(ast, message, {
         ...context,
         environment: {
@@ -179,6 +157,11 @@ class SieveFilterHandler {
     try {
       // Parse and execute the script
       const ast = parse(scriptContent);
+      const capabilityResult = validateSieveCapabilities(ast);
+      if (!capabilityResult.valid) {
+        throw new Error(capabilityResult.errors.join('; '));
+      }
+
       const engineResult = await this.engine.execute(ast, message, {
         ...context,
         environment: {

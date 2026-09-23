@@ -2803,52 +2803,40 @@ Følgende e-mail-klienter har indbygget S/MIME-understøttelse:
   </div>
 </div>
 
-### Understøtter I Sieve e-mail filtrering {#do-you-support-sieve-email-filtering}
+### Understøtter I Sieve-e-mailfiltrering {#do-you-support-sieve-email-filtering}
 
-Ja! Vi understøtter [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) e-mail filtrering som defineret i [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve er et kraftfuldt, standardiseret scriptsprog til server-side e-mail filtrering, som gør det muligt automatisk at organisere, filtrere og svare på indkommende beskeder.
+Ja. Forward Email understøtter server-side [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) filtrering baseret på [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Scripts filtrerer indgående beskeder før levering til postkasse. Et script afvises, hvis det anmoder om en utilgængelig kapabilitet eller bruger en extension uden at erklære den i `require`.
 
-#### Understøttede Sieve-udvidelser {#supported-sieve-extensions}
+Den komplette, implementations-understøttede kapabilitetsliste og RFC-noter findes i [Sieve protocol documentation](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228).
 
-Vi understøtter et omfattende sæt af Sieve-udvidelser:
+#### Tilgængelige Sieve-kapabiliteter
 
-| Udvidelse                   | RFC                                                                                    | Beskrivelse                                      |
-| --------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `fileinto`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Fil beskeder ind i specifikke mapper             |
-| `reject` / `ereject`        | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Afvis beskeder med en fejl                        |
-| `vacation`                  | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Automatisk ferie-/fraværsbesvarelse               |
-| `vacation-seconds`          | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Finmasket ferie-respons intervaller               |
-| `imap4flags`                | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Sæt IMAP-flags (\Seen, \Flagged, osv.)            |
-| `envelope`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Test af afsender/modtager i kuvert                |
-| `body`                      | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Test af beskedens indhold                          |
-| `variables`                 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Gem og brug variabler i scripts                    |
-| `relational`                | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Relationelle sammenligninger (større end, mindre end) |
-| `comparator-i;ascii-numeric`| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Numeriske sammenligninger                          |
-| `copy`                      | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Kopier beskeder under omdirigering                 |
-| `editheader`                | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Tilføj eller slet beskedhoveder                    |
-| `date`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Test dato/tid værdier                              |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                     | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Regulære udtryk matchning                          |
-| `enotify`                   | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifikationer (f.eks. mailto:)               |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`               | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Adgang til miljøinformation                        |
-| `mailbox`                   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Test postkasseeksistens, opret postkasser          |
-| `special-use`               | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Fil ind i special-use postkasser (\Junk, \Trash)  |
-| `duplicate`                 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Opdag dublerede beskeder                           |
-| `ihave`                     | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Test for udvidelses tilgængelighed                 |
-| `subaddress`                | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Adgang til bruger+detalje adressedele              |
-#### Extensions Ikke Understøttet {#extensions-not-supported}
+| Kategori | Kapabiliteter og opførsel |
+| --- | --- |
+| Kernesprog | `keep`, `discard`, `stop`, betingede blokke, og de grundlæggende tests `address`, `header`, `exists`, `size`, og boolske tests. |
+| Levering | `fileinto`, `copy`, `redirect`, `mailbox` for `fileinto :create`, og `special-use` til standard-mappe `:specialuse` kortlægning samt `specialuse_exists`. |
+| Tests og sammenligninger | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, og `i;octet`. |
+| Tilstand og variabler | `variables`, `imap4flags`, `duplicate`, og `ihave`. |
+| Handlinger og svar | `reject`, `ereject`, `vacation`, `vacation-seconds`, og `enotify` ved brug af `mailto:`. Den ældre deklaration `require "notify"` accepteres som et input-alias for `enotify`, men `enotify` er den annoncerede kapabilitet. |
+| Beskedbehandling | `editheader`, `environment`, og `mime`, inklusive `foreverypart`, `break`, `extracttext`, og `replace`. |
 
-Følgende extensions understøttes ikke i øjeblikket:
+`redirect` leveres gennem den normale udgående kø. Den er underlagt den konfigurerede redirect-domænepolitik, denylist-kontroller og hastighedsbegrænsninger. `editheader` kan ikke ændre beskyttede autentifikations- eller leverings-routing-headere.
 
-| Extension                                                       | Årsag                                                              |
-| --------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `include`                                                       | Sikkerhedsrisiko (script-injektion) og kræver global script-lagring |
-| `mboxmetadata` / `servermetadata`                               | Kræver IMAP METADATA extension-understøttelse                       |
+#### Ikke understøttede funktioner
 
-#### Eksempel på Sieve Scripts {#example-sieve-scripts}
+| Funktion | Årsag |
+| --- | --- |
+| `enclose` | Oprettelse af en ny besked, der indkapsler den originale besked, er ikke implementeret. |
+| `mailboxexists` | Forward Email foretager ikke live IMAP-forespørgsler om postkasses tilstand. `fileinto :create` forbliver tilgængelig via `mailbox`. |
+| `include` | Global og inkluderet script-lagring er ikke tilgængelig. |
+| `mboxmetadata` / `servermetadata` | IMAP METADATA-integration er ikke tilgængelig. |
+| `fcc` | Integration til arkivering af sendte beskeder er ikke tilgængelig. |
+| `encoded-character` | `${hex:...}` syntaksen er ikke implementeret. |
+| Eksterne lister | `valid_ext_list` og andre operationer med eksterne lister er ikke tilgængelige. |
 
-**Filtrer nyhedsbreve til en mappe:**
+#### Eksempel på Sieve-scripts
+
+**Arkiver nyhedsbreve i en mappe:**
 
 ```sieve
 require ["fileinto"];
@@ -2858,62 +2846,44 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Automatisk svar ved ferie:**
+**Automatisk svar ved fravær:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Out of Office"
-    "Jeg er i øjeblikket ude af kontoret og vil svare, når jeg er tilbage.";
+vacation :seconds 604800 :subject "Out of Office"
+    "I am currently out of the office and will respond when I return.";
 ```
 
-**Marker beskeder fra vigtige afsendere:**
+**Opret en mappe når en besked arkiveres:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**Afvis spam med specifikke emner:**
+**Omdiriger en besked:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "Besked afvist på grund af spam-indhold.";
-}
-```
-**Kassér uønskede beskeder stille:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**Kompleks filtrering med variabler:**
+#### Håndtering af Sieve-scripts
 
-```sieve
-require ["variables", "fileinto", "mailbox"];
+Du kan administrere Sieve-scripts på flere måder:
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
+1. **Webgrænseflade**: Gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliasser <i class="fa fa-angle-right"></i> Sieve-scripts for at oprette og administrere scripts.
 
-#### Håndtering af Sieve Scripts {#managing-sieve-scripts}
+2. **ManageSieve-protokol**: Opret forbindelse med enhver ManageSieve-kompatibel klient, såsom Thunderbirds Sieve-tilføjelse eller [sieve-connect](https://github.com/philpennock/sieve-connect), til `imap.forwardemail.net`. Brug port `2190` med STARTTLS eller port `4190` med implicit TLS.
 
-Du kan håndtere dine Sieve scripts på flere måder:
-
-1. **Web Interface**: Gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliasser <i class="fa fa-angle-right"></i> Sieve Scripts for at oprette og administrere scripts.
-
-2. **ManageSieve Protokol**: Forbind med en hvilken som helst ManageSieve-kompatibel klient (som Thunderbirds Sieve-tilføjelse eller [sieve-connect](https://github.com/philpennock/sieve-connect)) til `imap.forwardemail.net`. Brug port `2190` med STARTTLS (anbefales til de fleste klienter) eller port `4190` med implicit TLS.
-
-3. **API**: Brug vores [REST API](/api#sieve-scripts) til programmatisk at administrere scripts.
+3. **API**: Brug [REST API'en](/api#sieve-scripts) til at administrere scripts programmatisk.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2921,7 +2891,7 @@ Du kan håndtere dine Sieve scripts på flere måder:
     Bemærk:
   </strong>
   <span>
-    Sieve-filtrering anvendes på indkommende beskeder, før de gemmes i din postkasse. Scripts udføres i prioriteret rækkefølge, og den første matchende handling bestemmer, hvordan beskeden håndteres.
+    Sieve-filtrering anvendes på indgående beskeder før levering til postkasse. Scripts køres i prioriteret rækkefølge, og den første matchende handling bestemmer, hvordan beskeden håndteres.
   </span>
 </div>
 
@@ -2931,7 +2901,7 @@ Du kan håndtere dine Sieve scripts på flere måder:
     Sikkerhed:
   </strong>
   <span>
-    Af sikkerhedshensyn er videresendelseshandlinger begrænset til 10 pr. script og 100 pr. dag. Feriesvar er ratebegrænset for at forhindre misbrug.
+    Omdirigeringer kontrolleres i forhold til den konfigurerede politik og hastighedsbegrænsninger. Ferie-svar og notifikationer er underlagt hastighedsbegrænsning for at forhindre misbrug.
   </span>
 </div>
 

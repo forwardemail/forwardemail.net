@@ -2802,52 +2802,40 @@ Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד
   </div>
 </div>
 
-### האם אתם תומכים בסינון מיילים באמצעות Sieve {#do-you-support-sieve-email-filtering}
+### האם אתם תומכים בסינון דואר אלקטרוני באמצעות Sieve {#do-you-support-sieve-email-filtering}
 
-כן! אנו תומכים בסינון מיילים באמצעות [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) כפי שמוגדר ב-[RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve היא שפת סקריפטים חזקה ומאוחדת לסינון מיילים בצד השרת, המאפשרת לארגן, לסנן ולהגיב להודעות נכנסות באופן אוטומטי.
+כן. Forward Email תומכת בסינון צד-שרת של [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) המבוסס על [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). הסקריפטים מסננים הודעות נכנסות לפני מסירתן לתיבת הדואר. סקריפט נדחה אם הוא מבקש יכולת שאינה זמינה או משתמש בהרחבה מבלי להצהיר עליה ב-`require`.
 
-#### הרחבות Sieve נתמכות {#supported-sieve-extensions}
+רשימת היכולות המלאה, הנתמכת על-ידי היישום והערות ה-RFC זמינות ב-[Sieve protocol documentation](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228).
 
-אנו תומכים במערך מקיף של הרחבות Sieve:
+#### יכולות Sieve זמינות
 
-| הרחבה                      | RFC                                                                                     | תיאור                                            |
-| -------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `fileinto`                 | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | לארכוב הודעות לתיקיות ספציפיות                   |
-| `reject` / `ereject`       | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | לדחות הודעות עם שגיאה                              |
-| `vacation`                 | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | תגובות חופשה/מחוץ למשרד אוטומטיות                |
-| `vacation-seconds`         | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | פרקי זמן מדויקים לתגובות חופשה                     |
-| `imap4flags`               | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | הגדרת דגלי IMAP (\Seen, \Flagged וכו')             |
-| `envelope`                 | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | בדיקת שולח/נמען במעטפה                            |
-| `body`                     | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | בדיקת תוכן גוף ההודעה                             |
-| `variables`                | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | אחסון ושימוש במשתנים בסקריפטים                     |
-| `relational`               | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | השוואות יחסיות (גדול מ-, קטן מ-)                   |
-| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                            | השוואות מספריות                                   |
-| `copy`                     | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | העתקת הודעות תוך הפניה מחדש                        |
-| `editheader`               | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | הוספה או מחיקה של כותרות הודעה                      |
-| `date`                     | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | בדיקת ערכי תאריך/שעה                              |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                    | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | התאמת ביטוי רגולרי                                |
-| `enotify`                  | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | שליחת התראות (למשל, mailto:)                       |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`              | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | גישה למידע סביבתי                                 |
-| `mailbox`                  | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | בדיקת קיום תיבת דואר, יצירת תיבות דואר            |
-| `special-use`              | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | ארכוב לתיבות דואר לשימוש מיוחד (\Junk, \Trash)     |
-| `duplicate`                | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | זיהוי הודעות כפולות                               |
-| `ihave`                    | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | בדיקת זמינות הרחבה                                |
-| `subaddress`               | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | גישה לחלקי כתובת user+detail                      |
-#### הרחבות שלא נתמכות {#extensions-not-supported}
+| קטגוריה | יכולות והתנהגות |
+| --- | --- |
+| שפת הליבה | `keep`, `discard`, `stop`, בלוקים מותנים, ובדיקות הבסיס `address`, `header`, `exists`, `size`, ובדיקות בוליאניות. |
+| מסירה | `fileinto`, `copy`, `redirect`, `mailbox` עבור `fileinto :create`, ו-`special-use` עבור מיפוי תיקיה סטנדרטית `:specialuse` ו-`specialuse_exists`. |
+| בדיקות והשוואות | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, ו-`i;octet`. |
+| מצב ומשתנים | `variables`, `imap4flags`, `duplicate`, ו-`ihave`. |
+| פעולות ותשובות | `reject`, `ereject`, `vacation`, `vacation-seconds`, ו-`enotify` המשתמש ב-`mailto:`. ההצהרה הישנה `require "notify"` מתקבלת כ_ALIAS_ קלט עבור `enotify`, אך `enotify` היא היכולת המפורסמת. |
+| עיבוד הודעות | `editheader`, `environment`, ו-`mime`, כולל `foreverypart`, `break`, `extracttext`, ו-`replace`. |
 
-ההרחבות הבאות אינן נתמכות כרגע:
+`redirect` מועבר דרך תור היציאה הרגיל. הוא כפוף למדיניות התחום המוגדרת להפניות, לבדיקות רשימות מניעה, ולמגבלות קצב. `editheader` אינו יכול לשנות כותרות אימות או ניתוב מסירה שמוגנות.
 
-| הרחבה                                                        | סיבה                                                               |
-| ------------------------------------------------------------ | ------------------------------------------------------------------ |
-| `include`                                                    | סיכון אבטחה (הזרקת סקריפטים) ודורש אחסון סקריפטים גלובלי          |
-| `mboxmetadata` / `servermetadata`                            | דורש תמיכה בהרחבת IMAP METADATA                                    |
+#### תכונות שלא נתמכות
 
-#### דוגמאות לסקריפטים של Sieve {#example-sieve-scripts}
+| תכונה | סיבה |
+| --- | --- |
+| `enclose` | יצירת הודעה חדשה הכוללת את ההודעה המקורית לא ממומשת. |
+| `mailboxexists` | Forward Email אינו מבצע שאילתות מצב תיבת IMAP חיות. `fileinto :create` נשאר זמין דרך `mailbox`. |
+| `include` | אחסון סקריפטים גלובלי וכלול אינו זמין. |
+| `mboxmetadata` / `servermetadata` | אינטגרציה עם IMAP METADATA אינה זמינה. |
+| `fcc` | אינטגרציית תיוק של דואר שנשלח אינה זמינה. |
+| `encoded-character` | התחביר `${hex:...}` לא ממומש. |
+| רשימות חיצוניות | `valid_ext_list` ופעולות רשימות-חיצוניות אחרות אינן זמינות. |
 
-**לסווג ניוזלטרים לתיקייה:**
+#### דוגמאות של סקריפטים ב-Sieve
+
+**File newsletters into a folder:**
 
 ```sieve
 require ["fileinto"];
@@ -2857,62 +2845,44 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**תשובה אוטומטית בזמן חופשה:**
+**Auto-reply when on vacation:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Out of Office"
-    "אני כרגע מחוץ למשרד ואענה כשאשוב.";
+vacation :seconds 604800 :subject "Out of Office"
+    "I am currently out of the office and will respond when I return.";
 ```
 
-**סימון הודעות ממקור חשוב:**
+**Create a folder when filing a message:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**דחיית ספאם עם נושאים ספציפיים:**
+**Redirect a message:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "ההודעה נדחתה עקב תוכן ספאם.";
-}
-```
-**השלכת הודעות לא רצויות בשקט:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**סינון מורכב עם משתנים:**
+#### ניהול סקריפטים של Sieve
 
-```sieve
-require ["variables", "fileinto", "mailbox"];
+ניתן לנהל סקריפטים של Sieve בכמה דרכים:
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
+1. **ממשק אינטרנטי**: עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים <i class="fa fa-angle-right"></i> סקריפטים של Sieve כדי ליצור ולנהל סקריפטים.
 
-#### ניהול סקריפטים של Sieve {#managing-sieve-scripts}
+2. **פרוטוקול ManageSieve**: התחבר באמצעות כל לקוח התואם ל-ManageSieve, כגון תוסף Sieve של Thunderbird או [sieve-connect](https://github.com/philpennock/sieve-connect), אל `imap.forwardemail.net`. השתמש ביציאה `2190` עם STARTTLS או ביציאה `4190` עם TLS מרומז.
 
-ניתן לנהל את סקריפטי ה-Sieve שלכם בכמה דרכים:
-
-1. **ממשק אינטרנט**: גשו ל- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים <i class="fa fa-angle-right"></i> סקריפטים של Sieve כדי ליצור ולנהל סקריפטים.
-
-2. **פרוטוקול ManageSieve**: התחברו באמצעות כל לקוח התומך ב-ManageSieve (כמו תוסף Sieve של Thunderbird או [sieve-connect](https://github.com/philpennock/sieve-connect)) לכתובת `imap.forwardemail.net`. השתמשו ביציאה `2190` עם STARTTLS (מומלץ לרוב הלקוחות) או ביציאה `4190` עם TLS מרומז.
-
-3. **API**: השתמשו ב-[REST API](/api#sieve-scripts) שלנו לניהול סקריפטים בתכנות.
+3. **API**: השתמש ב-[REST API](/api#sieve-scripts) כדי לנהל סקריפטים בצורה תכנותית.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2920,7 +2890,7 @@ if address :all :matches "From" "*@example.com" {
     הערה:
   </strong>
   <span>
-    סינון Sieve מתבצע על הודעות נכנסות לפני שהן נשמרות בתיבת הדואר שלכם. הסקריפטים מבוצעים לפי סדר עדיפות, והפעולה הראשונה שתואמת קובעת כיצד ההודעה מטופלת.
+    סינון Sieve מוחל על הודעות נכנסות לפני מסירתן לתיבת הדואר. הסקריפטים מבוצעים לפי סדר עדיפויות, והפעולה הראשונה שתתאים תקבע כיצד ההודעה מטופלת.
   </span>
 </div>
 
@@ -2930,7 +2900,7 @@ if address :all :matches "From" "*@example.com" {
     אבטחה:
   </strong>
   <span>
-    לצורך אבטחה, פעולות הפניה מוגבלות ל-10 לכל סקריפט ו-100 ליום. תגובות חופשה מוגבלות בקצב כדי למנוע שימוש לרעה.
+    הפניות נבדקות בהתאם למדיניות והגבלות קצב שהוגדרו. תגובות חופשה והתראות מוגבלות בקצב כדי למנוע שימוש לרעה.
   </span>
 </div>
 

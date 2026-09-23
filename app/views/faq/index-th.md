@@ -2803,50 +2803,38 @@ It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
 
 ### คุณรองรับการกรองอีเมลด้วย Sieve หรือไม่ {#do-you-support-sieve-email-filtering}
 
-ใช่! เรารองรับการกรองอีเมลด้วย [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) ตามที่กำหนดใน [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) Sieve เป็นภาษาสคริปต์ที่มีมาตรฐานและทรงพลังสำหรับการกรองอีเมลฝั่งเซิร์ฟเวอร์ที่ช่วยให้คุณจัดระเบียบ กรอง และตอบกลับข้อความขาเข้าโดยอัตโนมัติ
+ใช่ Forward Email รองรับการกรองฝั่งเซิร์ฟเวอร์ด้วย [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) ตามมาตรฐาน [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) สคริปต์จะกรองข้อความที่เข้ามาก่อนการส่งลงกล่องเมล สคริปต์จะถูกปฏิเสธหากเรียกใช้งานความสามารถที่ไม่พร้อมใช้งานหรือใช้ส่วนขยายโดยไม่ประกาศไว้ใน `require`
 
-#### ส่วนขยาย Sieve ที่รองรับ {#supported-sieve-extensions}
+รายการความสามารถครบถ้วนพร้อมหมายเหตุ RFC และการใช้งานจริงสามารถดูได้ใน [Sieve protocol documentation](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228)
 
-เรารองรับชุดส่วนขยาย Sieve อย่างครบถ้วน:
+#### ความสามารถของ Sieve ที่พร้อมใช้งาน
 
-| ส่วนขยาย                    | RFC                                                                                    | คำอธิบาย                                      |
-| ---------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `fileinto`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | จัดเก็บข้อความลงในโฟลเดอร์เฉพาะ               |
-| `reject` / `ereject`         | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | ปฏิเสธข้อความพร้อมข้อผิดพลาด                  |
-| `vacation`                   | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | ตอบกลับอัตโนมัติเมื่อไม่อยู่หรือวันหยุด         |
-| `vacation-seconds`           | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | กำหนดช่วงเวลาการตอบกลับวันหยุดอย่างละเอียด     |
-| `imap4flags`                 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | ตั้งค่า IMAP flags (\Seen, \Flagged, ฯลฯ)      |
-| `envelope`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | ทดสอบผู้ส่ง/ผู้รับในซองจดหมาย                   |
-| `body`                       | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | ทดสอบเนื้อหาของข้อความ                          |
-| `variables`                  | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | เก็บและใช้ตัวแปรในสคริปต์                        |
-| `relational`                 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | การเปรียบเทียบเชิงสัมพันธ์ (มากกว่า น้อยกว่า)    |
-| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | การเปรียบเทียบเชิงตัวเลข                         |
-| `copy`                       | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | คัดลอกข้อความในขณะเปลี่ยนเส้นทาง                 |
-| `editheader`                 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | เพิ่มหรือลบหัวข้อข้อความ                        |
-| `date`                       | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | ทดสอบค่าวันที่/เวลา                              |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                      | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | การจับคู่ด้วยนิพจน์ปกติ                          |
-| `enotify`                    | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | ส่งการแจ้งเตือน (เช่น mailto:)                   |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`                | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | เข้าถึงข้อมูลสภาพแวดล้อม                        |
-| `mailbox`                    | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | ทดสอบการมีอยู่ของกล่องจดหมาย สร้างกล่องจดหมาย  |
-| `special-use`                | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | จัดเก็บลงกล่องจดหมายพิเศษ (\Junk, \Trash)       |
-| `duplicate`                  | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | ตรวจจับข้อความซ้ำ                                |
-| `ihave`                      | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | ทดสอบการมีอยู่ของส่วนขยาย                        |
-| `subaddress`                 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | เข้าถึงส่วนที่อยู่ผู้ใช้+รายละเอียด               |
-#### Extensions Not Supported {#extensions-not-supported}
+| ประเภท | ความสามารถและพฤติกรรม |
+| --- | --- |
+| ภาษาหลัก | `keep`, `discard`, `stop`, บล็อกตามเงื่อนไข และการทดสอบพื้นฐาน `address`, `header`, `exists`, `size` และการทดสอบบูลีน |
+| การจัดส่ง | `fileinto`, `copy`, `redirect`, `mailbox` สำหรับ `fileinto :create` และ `special-use` สำหรับการแมปโฟลเดอร์มาตรฐาน `:specialuse` และ `specialuse_exists` |
+| การทดสอบและการเปรียบเทียบ | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, และ `i;octet` |
+| สถานะและตัวแปร | `variables`, `imap4flags`, `duplicate`, และ `ihave` |
+| การกระทำและการตอบกลับ | `reject`, `ereject`, `vacation`, `vacation-seconds`, และ `enotify` โดยใช้ `mailto:` ประกาศเก่า `require "notify"` ถูกยอมรับเป็นนามแฝงของอินพุตสำหรับ `enotify` แต่ `enotify` คือตัวความสามารถที่ประกาศจริง |
+| การประมวลผลข้อความ | `editheader`, `environment`, และ `mime` รวมถึง `foreverypart`, `break`, `extracttext`, และ `replace` |
 
-ส่วนขยายต่อไปนี้ยังไม่รองรับในขณะนี้:
+`redirect` จะส่งผ่านคิวขาออกปกติ และอยู่ภายใต้นโยบาย redirect-domain ที่ตั้งค่าไว้ การตรวจสอบ denylist และข้อจำกัดอัตรา (`rate limits`) `editheader` ไม่สามารถแก้ไขเฮดเดอร์ที่ได้รับการป้องกันด้านการพิสูจน์ตัวตนหรือการกำหนดเส้นทางการส่งได้
 
-| Extension                                                       | Reason                                                              |
-| --------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `include`                                                       | ความเสี่ยงด้านความปลอดภัย (การแทรกสคริปต์) และต้องการการจัดเก็บสคริปต์แบบทั่วโลก |
-| `mboxmetadata` / `servermetadata`                               | ต้องการการรองรับส่วนขยาย IMAP METADATA                            |
+#### คุณสมบัติที่ไม่รองรับ
 
-#### Example Sieve Scripts {#example-sieve-scripts}
+| คุณสมบัติ | เหตุผล |
+| --- | --- |
+| `enclose` | การสร้างข้อความใหม่ที่ห่อข้อความเดิมไม่ได้ถูกนำมาใช้ |
+| `mailboxexists` | Forward Email ไม่ทำการสอบถามสถานะกล่องจดหมาย IMAP แบบเรียลไทม์ `fileinto :create` ยังคงใช้ได้ผ่าน `mailbox` |
+| `include` | ไม่มีการเก็บสคริปต์แบบรวมหรือสคริปต์ทั่วโลก |
+| `mboxmetadata` / `servermetadata` | ไม่มีการผสาน IMAP METADATA |
+| `fcc` | ไม่มีการผสานการจัดเก็บเมลที่ส่งแล้ว |
+| `encoded-character` | ไวยากรณ์ `${hex:...}` ยังไม่ได้ถูกนำมาใช้ |
+| รายการภายนอก | `valid_ext_list` และการดำเนินการรายการภายนอกอื่น ๆ ไม่พร้อมใช้งาน |
 
-**จัดเก็บจดหมายข่าวลงในโฟลเดอร์:**
+#### ตัวอย่างสคริปต์ Sieve
+
+**เก็บจดหมายข่าวลงในโฟลเดอร์:**
 
 ```sieve
 require ["fileinto"];
@@ -2856,62 +2844,42 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**ตอบกลับอัตโนมัติเมื่ออยู่ในช่วงวันหยุด:**
+**ตอบกลับอัตโนมัติเมื่อไม่อยู่:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Out of Office"
+vacation :seconds 604800 :subject "Out of Office"
     "I am currently out of the office and will respond when I return.";
 ```
 
-**ทำเครื่องหมายข้อความจากผู้ส่งที่สำคัญ:**
+**สร้างโฟลเดอร์เมื่อจัดเก็บข้อความ:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**ปฏิเสธสแปมที่มีหัวข้อเฉพาะ:**
+**ส่งต่อข้อความ:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "Message rejected due to spam content.";
-}
-```
-**ทิ้งข้อความที่ไม่ต้องการอย่างเงียบ ๆ:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**การกรองที่ซับซ้อนด้วยตัวแปร:**
+#### การจัดการสคริปต์ Sieve
 
-```sieve
-require ["variables", "fileinto", "mailbox"];
+คุณสามารถจัดการสคริปต์ Sieve ได้หลายวิธี:
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
-
-#### Managing Sieve Scripts {#managing-sieve-scripts}
-
-คุณสามารถจัดการสคริปต์ Sieve ของคุณได้หลายวิธี:
-
-1. **เว็บอินเทอร์เฟซ**: ไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> อาลิอาส <i class="fa fa-angle-right"></i> สคริปต์ Sieve เพื่อสร้างและจัดการสคริปต์
-
-2. **โปรโตคอล ManageSieve**: เชื่อมต่อโดยใช้ไคลเอนต์ที่รองรับ ManageSieve (เช่น ส่วนเสริม Sieve ของ Thunderbird หรือ [sieve-connect](https://github.com/philpennock/sieve-connect)) ไปยัง `imap.forwardemail.net` ใช้พอร์ต `2190` กับ STARTTLS (แนะนำสำหรับไคลเอนต์ส่วนใหญ่) หรือพอร์ต `4190` กับ TLS แบบ implicit
-
-3. **API**: ใช้ [REST API](/api#sieve-scripts) ของเราเพื่อจัดการสคริปต์แบบโปรแกรม
+1. **ส่วนติดต่อเว็บ**: ไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง <i class="fa fa-angle-right"></i> สคริปต์ Sieve เพื่อสร้างและจัดการสคริปต์
+2. **โปรโตคอล ManageSieve**: เชื่อมต่อโดยใช้ไคลเอนต์ที่เข้ากันได้กับ ManageSieve เช่น ส่วนเสริม Sieve ของ Thunderbird หรือ [sieve-connect](https://github.com/philpennock/sieve-connect) ไปยัง `imap.forwardemail.net` ใช้พอร์ต `2190` ร่วมกับ STARTTLS หรือพอร์ต `4190` กับ TLS แบบ implicit
+3. **API**: ใช้ [REST API](/api#sieve-scripts) เพื่อจัดการสคริปต์แบบโปรแกรมมิ่ง
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2919,7 +2887,7 @@ if address :all :matches "From" "*@example.com" {
     หมายเหตุ:
   </strong>
   <span>
-    การกรอง Sieve จะถูกนำไปใช้กับข้อความที่เข้ามาก่อนที่จะถูกเก็บในกล่องจดหมายของคุณ สคริปต์จะถูกดำเนินการตามลำดับความสำคัญ และการกระทำที่ตรงกับเงื่อนไขแรกจะเป็นตัวกำหนดวิธีการจัดการข้อความนั้น
+    การกรองแบบ Sieve จะถูกนำไปใช้กับข้อความขาเข้าก่อนการส่งลงกล่องเมล สคริปต์จะถูกรันตามลำดับความสำคัญ และการกระทำแรกที่ตรงเงื่อนไขจะเป็นตัวกำหนดวิธีจัดการข้อความ
   </span>
 </div>
 
@@ -2929,7 +2897,7 @@ if address :all :matches "From" "*@example.com" {
     ความปลอดภัย:
   </strong>
   <span>
-    เพื่อความปลอดภัย การกระทำการเปลี่ยนเส้นทางถูกจำกัดไว้ที่ 10 ครั้งต่อสคริปต์และ 100 ครั้งต่อวัน การตอบกลับช่วงวันหยุดถูกจำกัดอัตราเพื่อป้องกันการใช้งานในทางที่ผิด
+    การส่งต่อจะถูกตรวจสอบตามนโยบายที่ตั้งค่าไว้และข้อจำกัดอัตรา คำตอบแบบ vacation และการแจ้งเตือนจะถูกจำกัดอัตราเพื่อป้องกันการนำไปใช้ในทางที่ผิด
   </span>
 </div>
 

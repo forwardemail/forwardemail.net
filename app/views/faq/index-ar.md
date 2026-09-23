@@ -2802,52 +2802,40 @@ Tasks.org هو مدير مهام مفتوح المصدر شهير يعمل بش�
   </div>
 </div>
 
-### هل تدعمون تصفية البريد الإلكتروني باستخدام Sieve {#do-you-support-sieve-email-filtering}
+### هل تدعم تصفية البريد الإلكتروني Sieve {#do-you-support-sieve-email-filtering}
 
-نعم! نحن ندعم تصفية البريد الإلكتروني باستخدام [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) كما هو معرف في [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve هي لغة برمجة معيارية وقوية لتصفية البريد الإلكتروني على الخادم تتيح لك تنظيم الرسائل الواردة وتصفيتها والرد عليها تلقائيًا.
+نعم. يدعم Forward Email التصفية على جانب الخادم بواسطة [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) استنادًا إلى [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). تقوم السكربتات بتصفية الرسائل الواردة قبل تسليمها إلى صندوق البريد. يتم رفض السكربت إذا طلب قدرة غير متوفرة أو استخدم امتدادًا دون إعلانه في `require`.
 
-#### امتدادات Sieve المدعومة {#supported-sieve-extensions}
+تتوفر قائمة القدرات الكاملة المدعومة من قِبل التطبيق وملاحظات RFC في [توثيق بروتوكول Sieve](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228).
 
-ندعم مجموعة شاملة من امتدادات Sieve:
+#### إمكانيات Sieve المتاحة
 
-| الامتداد                    | RFC                                                                                     | الوصف                                           |
-| --------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `fileinto`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                               | حفظ الرسائل في مجلدات محددة                      |
-| `reject` / `ereject`        | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                               | رفض الرسائل مع رسالة خطأ                         |
-| `vacation`                  | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                               | ردود تلقائية للعطلات/خارج المكتب                 |
-| `vacation-seconds`          | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                               | فترات استجابة دقيقة للردود التلقائية             |
-| `imap4flags`                | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                               | تعيين علامات IMAP (\Seen, \Flagged, إلخ)         |
-| `envelope`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                               | اختبار مرسل/مستلم الظرف                           |
-| `body`                      | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                               | اختبار محتوى جسم الرسالة                         |
-| `variables`                 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                               | تخزين واستخدام المتغيرات في السكريبتات           |
-| `relational`                | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                               | مقارنات علاقية (أكبر من، أصغر من)                |
-| `comparator-i;ascii-numeric`| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                               | مقارنات رقمية                                    |
-| `copy`                      | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                               | نسخ الرسائل أثناء إعادة التوجيه                   |
-| `editheader`                | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                               | إضافة أو حذف رؤوس الرسائل                         |
-| `date`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                               | اختبار قيم التاريخ/الوقت                         |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                     | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex)  | مطابقة التعبيرات النمطية                          |
-| `enotify`                   | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                               | إرسال الإشعارات (مثل mailto:)                     |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`               | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                               | الوصول إلى معلومات البيئة                         |
-| `mailbox`                   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                               | اختبار وجود صندوق البريد، إنشاء صناديق بريد       |
-| `special-use`               | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                               | حفظ في صناديق بريد خاصة الاستخدام (\Junk, \Trash) |
-| `duplicate`                 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                               | اكتشاف الرسائل المكررة                            |
-| `ihave`                     | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                               | اختبار توفر الامتداد                              |
-| `subaddress`                | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                               | الوصول إلى أجزاء عنوان المستخدم+التفاصيل         |
-#### الإضافات غير المدعومة {#extensions-not-supported}
+| الفئة | القدرات والسلوك |
+| --- | --- |
+| اللغة الأساسية | `keep`, `discard`, `stop`, الكتل الشرطية، والاختبارات الأساسية `address`, `header`, `exists`, `size`, واختبارات القيم البوليانية. |
+| التسليم | `fileinto`, `copy`, `redirect`, `mailbox` لاستخدام `fileinto :create`، و`special-use` لربط المجلدات القياسية `:specialuse` و`specialuse_exists`. |
+| الاختبارات والمقارنات | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, و`i;octet`. |
+| الحالة والمتغيرات | `variables`, `imap4flags`, `duplicate`, و`ihave`. |
+| الإجراءات والاستجابات | `reject`, `ereject`, `vacation`, `vacation-seconds`, و`enotify` باستخدام `mailto:`. يتم قبول التصريح القديم `require "notify"` كاسم مرادف إدخالي لـ `enotify`، لكن `enotify` هي القدرة المعلنة. |
+| معالجة الرسائل | `editheader`, `environment`, و`mime`، بما في ذلك `foreverypart`, `break`, `extracttext`, و`replace`. |
 
-الإضافات التالية غير مدعومة حالياً:
+يتم تسليم `redirect` عبر قائمة الإرسال العادية. يخضع لسياسة النطاق المعاد التوجيه المكوّنة، وفحوصات قوائم المنع، وحدود المعدل. لا يمكن لـ `editheader` تعديل رؤوس المصادقة أو رؤوس توجيه التسليم المحمية.
 
-| الإضافة                                                        | السبب                                                               |
-| ------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `include`                                                     | خطر أمني (حقن سكريبت) ويتطلب تخزين سكريبت عالمي                   |
-| `mboxmetadata` / `servermetadata`                             | يتطلب دعم إضافة IMAP METADATA                                      |
+#### الميزات غير المدعومة
 
-#### أمثلة على سكريبتات Sieve {#example-sieve-scripts}
+| الميزة | السبب |
+| --- | --- |
+| `enclose` | إنشاء رسالة جديدة تضم الرسالة الأصلية غير مُنفَّذ. |
+| `mailboxexists` | لا يقوم Forward Email بإجراء استعلامات حالة صندوق البريد IMAP مباشرة. يظل `fileinto :create` متاحًا عبر `mailbox`. |
+| `include` | لا يتوفر تخزين السكربتات العامة والمدرجة. |
+| `mboxmetadata` / `servermetadata` | لا يتوفر تكامل IMAP METADATA. |
+| `fcc` | لا يتوفر تكامل حفظ الرسائل المرسلة. |
+| `encoded-character` | ليست هناك تنفيذ لصياغة `${hex:...}`. |
+| External lists | `valid_ext_list` وعمليات القوائم الخارجية الأخرى غير متاحة. |
 
-**تصنيف النشرات الإخبارية في مجلد:**
+#### أمثلة على سكربتات Sieve
+
+**وضع النشرات الإخبارية في مجلد:**
 
 ```sieve
 require ["fileinto"];
@@ -2860,59 +2848,41 @@ if header :contains "List-Id" "newsletter" {
 **الرد التلقائي أثناء الإجازة:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Out of Office"
-    "أنا حالياً خارج المكتب وسأرد عند عودتي.";
+vacation :seconds 604800 :subject "Out of Office"
+    "I am currently out of the office and will respond when I return.";
 ```
 
-**تمييز الرسائل من مرسلين مهمين:**
+**إنشاء مجلد عند حفظ رسالة:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**رفض الرسائل المزعجة ذات المواضيع المحددة:**
+**إعادة توجيه رسالة:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "تم رفض الرسالة بسبب محتوى مزعج.";
-}
-```
-**تجاهل الرسائل غير المرغوب فيها بصمت:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**تصفية معقدة مع المتغيرات:**
+#### إدارة سكربتات Sieve
 
-```sieve
-require ["variables", "fileinto", "mailbox"];
+يمكنك إدارة سكربتات Sieve بعدة طرق:
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
+1. **واجهة الويب**: انتقل إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة <i class="fa fa-angle-right"></i> سكربتات Sieve لإنشاء وإدارة السكربتات.
 
-#### إدارة سكريبتات Sieve {#managing-sieve-scripts}
+2. **بروتوكول ManageSieve**: اتصل باستخدام أي عميل متوافق مع ManageSieve، مثل إضافة Sieve لثندربرد أو [sieve-connect](https://github.com/philpennock/sieve-connect)، إلى `imap.forwardemail.net`. استخدم المنفذ `2190` مع STARTTLS أو المنفذ `4190` مع TLS الضمني.
 
-يمكنك إدارة سكريبتات Sieve الخاصة بك بعدة طرق:
-
-1. **واجهة الويب**: اذهب إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة <i class="fa fa-angle-right"></i> سكريبتات Sieve لإنشاء وإدارة السكريبتات.
-
-2. **بروتوكول ManageSieve**: اتصل باستخدام أي عميل متوافق مع ManageSieve (مثل إضافة Sieve لثندربرد أو [sieve-connect](https://github.com/philpennock/sieve-connect)) إلى `imap.forwardemail.net`. استخدم المنفذ `2190` مع STARTTLS (موصى به لمعظم العملاء) أو المنفذ `4190` مع TLS ضمني.
-
-3. **واجهة برمجة التطبيقات (API)**: استخدم [REST API](/api#sieve-scripts) لإدارة السكريبتات برمجياً.
+3. **API**: استخدم [REST API](/api#sieve-scripts) لإدارة السكربتات برمجيًا.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2920,7 +2890,7 @@ if address :all :matches "From" "*@example.com" {
     ملاحظة:
   </strong>
   <span>
-    يتم تطبيق تصفية Sieve على الرسائل الواردة قبل تخزينها في صندوق بريدك. يتم تنفيذ السكريبتات حسب الأولوية، وتحدد أول عملية مطابقة كيفية التعامل مع الرسالة.
+    يتم تطبيق تصفية Sieve على الرسائل الواردة قبل تسليمها إلى صندوق البريد. تُنفَّذ السكربتات بحسب ترتيب الأولوية، والإجراء الأول المتطابق هو الذي يحدد كيفية معالجة الرسالة.
   </span>
 </div>
 
@@ -2930,7 +2900,7 @@ if address :all :matches "From" "*@example.com" {
     الأمان:
   </strong>
   <span>
-    لأسباب أمنية، تقتصر عمليات إعادة التوجيه على 10 لكل سكريبت و100 يومياً. يتم تحديد معدل الردود التلقائية لمنع سوء الاستخدام.
+    تُفحص عمليات إعادة التوجيه مقابل السياسة المكوّنة وحدود المعدل. يتم تقييد معدل ردود الإجازة والإشعارات لمنع الإساءة.
   </span>
 </div>
 

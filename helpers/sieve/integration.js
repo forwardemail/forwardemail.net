@@ -26,6 +26,7 @@ const RE2 = require('re2');
 const { simpleParser } = require('mailparser');
 const { Splitter } = require('mailsplit');
 const SieveEngine = require('./engine');
+const { SUPPORTED_CAPABILITIES, getCapability } = require('./capabilities');
 const { SieveFilterHandler } = require('./filter-handler');
 const {
   SieveSecurityValidator,
@@ -74,50 +75,7 @@ const DEFAULT_CONFIG = {
     'delivered-to',
     'x-original-to'
   ],
-  enabledExtensions: [
-    // Core extensions (RFC 5228)
-    'fileinto',
-    'reject',
-    'ereject',
-    'envelope',
-    // 'encoded-character', // Not implemented - requires parser changes
-    'comparator-i;ascii-casemap',
-    'comparator-i;octet',
-    // Common extensions
-    'copy',
-    'body',
-    'vacation',
-    'vacation-seconds',
-    'variables',
-    'imap4flags',
-    'relational',
-    'comparator-i;ascii-numeric',
-    // Advanced extensions
-    'editheader',
-    'date',
-    'index',
-    'regex',
-    'enotify',
-    'environment',
-    // Mailbox extensions
-    'mailbox',
-    'special-use',
-    // Utility extensions
-    'duplicate',
-    'ihave',
-    'subaddress',
-    // RFC 5703 MIME part tests and manipulation; "mime" remains the
-    // compatible umbrella for scripts that declare only that capability.
-    'mime',
-    'foreverypart',
-    'replace',
-    'extracttext',
-    'enclose',
-    'notify' // Alias for enotify (draft-martin-sieve-notify -> RFC 5435)
-    // NOT IMPLEMENTED (require external dependencies):
-    // - mboxmetadata, servermetadata (require IMAP METADATA extension)
-    // - include (security risk, requires global script storage)
-  ]
+  enabledExtensions: SUPPORTED_CAPABILITIES
 };
 
 /**
@@ -139,6 +97,13 @@ class SieveIntegration {
     this.client = options.client;
     this.resolver = options.resolver;
     this.config = { ...DEFAULT_CONFIG, ...options.config };
+    this.config.enabledExtensions = [
+      ...new Set(
+        (this.config.enabledExtensions || [])
+          .map((capability) => getCapability(capability))
+          .filter((capability) => SUPPORTED_CAPABILITIES.includes(capability))
+      )
+    ];
 
     // Initialize security components
     this.securityValidator = new SieveSecurityValidator({

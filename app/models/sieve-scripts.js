@@ -10,9 +10,9 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const i18n = require('#helpers/i18n');
 const {
   validate: sieveValidate,
-  getRequiredCapabilities,
   parse: sieveParse
 } = require('#helpers/sieve/parser');
+const { validateSieveCapabilities } = require('#helpers/sieve/capabilities');
 const { SieveSecurityValidator } = require('#helpers/sieve/security');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
@@ -188,9 +188,20 @@ SieveScripts.pre('save', async function (next) {
       );
     }
 
-    // Parse and extract required capabilities
+    // Parse and verify the capabilities needed by every command and test.
     const ast = sieveParse(this.content);
-    this.required_capabilities = getRequiredCapabilities(ast);
+    const capabilityResult = validateSieveCapabilities(ast);
+    this.required_capabilities = capabilityResult.required;
+    if (!capabilityResult.valid) {
+      this.validation_errors = capabilityResult.errors.map((message) => ({
+        message
+      }));
+      throw Boom.badRequest(
+        i18n.translateError('SIEVE_SCRIPT_INVALID', this.locale, {
+          errors: capabilityResult.errors.join(', ')
+        })
+      );
+    }
 
     // Check if script uses vacation extension
     const usesVacation =

@@ -10,45 +10,7 @@
  */
 
 const { SieveValidator, sanitizeScript } = require('./validator');
-
-// Core Sieve tests (RFC 5228 Section 5) - these are always available
-// and don't need to be declared with "require", but some scripts
-// incorrectly include them. We accept them silently for compatibility.
-const CORE_TESTS = [
-  'address',
-  'allof',
-  'anyof',
-  'exists',
-  'false',
-  'header',
-  'not',
-  'size',
-  'true'
-];
-
-// Supported capabilities - duplicated to avoid circular dependency
-const SUPPORTED_CAPABILITIES = [
-  'fileinto',
-  'reject',
-  'ereject',
-  'envelope',
-  'encoded-character',
-  'comparator-i;ascii-casemap',
-  'comparator-i;octet',
-  'copy',
-  'body',
-  'vacation',
-  'vacation-seconds',
-  'variables',
-  'imap4flags',
-  'relational',
-  'editheader',
-  'date',
-  'index',
-  'regex',
-  'enotify',
-  'environment'
-];
+const { CORE_CAPABILITIES, SUPPORTED_CAPABILITIES } = require('./capabilities');
 
 /**
  * Script checker for user-facing validation
@@ -132,14 +94,18 @@ class SieveScriptChecker {
     // Process capability errors
     if (!validationResult.capabilities.valid) {
       result.success = false;
+      const unsupported = validationResult.capabilities.unsupported.map(
+        (entry) =>
+          typeof entry === 'string'
+            ? entry
+            : `${entry.feature}: ${entry.reason}`
+      );
       result.errors.push({
         code: 'UNSUPPORTED_CAPABILITY',
-        message: `Unsupported capabilities: ${validationResult.capabilities.unsupported.join(
-          ', '
-        )}`,
+        message: `Unsupported capabilities: ${unsupported.join(', ')}`,
         suggestion: `Remove or replace the unsupported capabilities. Supported: ${[
           ...this.options.allowedCapabilities,
-          ...CORE_TESTS
+          ...CORE_CAPABILITIES
         ].join(', ')}`
       });
     }

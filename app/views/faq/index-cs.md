@@ -2804,50 +2804,38 @@ Následující e-mailoví klienti mají vestavěnou podporu S/MIME:
 
 ### Podporujete filtrování e-mailů Sieve {#do-you-support-sieve-email-filtering}
 
-Ano! Podporujeme filtrování e-mailů pomocí [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) dle definice v [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve je výkonný, standardizovaný skriptovací jazyk pro serverové filtrování e-mailů, který vám umožňuje automaticky organizovat, filtrovat a reagovat na příchozí zprávy.
+Ano. Forward Email podporuje server-side filtrování pomocí [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) založené na [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Skripty filtrují příchozí zprávy před doručením do schránky. Skript je odmítnut, pokud požaduje nedostupnou schopnost nebo používá rozšíření bez deklarace v `require`.
 
-#### Podporované rozšíření Sieve {#supported-sieve-extensions}
+Úplný, implementací podložený seznam schopností a poznámky k RFC jsou k dispozici v [dokumentaci protokolu Sieve](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228).
 
-Podporujeme rozsáhlou sadu rozšíření Sieve:
+#### Dostupné schopnosti Sieve
 
-| Rozšíření                   | RFC                                                                                     | Popis                                            |
-| --------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `fileinto`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Ukládat zprávy do specifických složek            |
-| `reject` / `ereject`        | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Odmítnout zprávy s chybou                         |
-| `vacation`                  | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Automatické odpovědi během dovolené / nepřítomnosti |
-| `vacation-seconds`          | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Jemně nastavit intervaly odpovědí během dovolené  |
-| `imap4flags`                | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Nastavit IMAP příznaky (\Seen, \Flagged, atd.)    |
-| `envelope`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Testovat odesílatele/příjemce v obálce            |
-| `body`                      | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Testovat obsah těla zprávy                         |
-| `variables`                 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Ukládat a používat proměnné ve skriptech          |
-| `relational`                | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Relační porovnání (větší než, menší než)          |
-| `comparator-i;ascii-numeric`| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Číselná porovnání                                  |
-| `copy`                      | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Kopírovat zprávy při přesměrování                  |
-| `editheader`                | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Přidávat nebo mazat hlavičky zpráv                 |
-| `date`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Testovat datum/časové hodnoty                      |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                     | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Porovnávání pomocí regulárních výrazů              |
-| `enotify`                   | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Odesílat oznámení (např. mailto:)                  |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`               | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Přistupovat k informacím o prostředí                |
-| `mailbox`                   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Testovat existenci schránky, vytvářet schránky     |
-| `special-use`               | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Ukládat do speciálních schránek (\Junk, \Trash)    |
-| `duplicate`                 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Detekovat duplicitní zprávy                         |
-| `ihave`                     | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Testovat dostupnost rozšíření                        |
-| `subaddress`                | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Přistupovat k částem adresy uživatele+detailu      |
-#### Rozšíření nejsou podporována {#extensions-not-supported}
+| Kategorie | Schopnosti a chování |
+| --- | --- |
+| Core language | `keep`, `discard`, `stop`, podmíněné bloky a základní testy `address`, `header`, `exists`, `size` a logické testy. |
+| Delivery | `fileinto`, `copy`, `redirect`, `mailbox` pro `fileinto :create`, a `special-use` pro mapování standardních složek `:specialuse` a `specialuse_exists`. |
+| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, a `i;octet`. |
+| State and variables | `variables`, `imap4flags`, `duplicate`, a `ihave`. |
+| Actions and responses | `reject`, `ereject`, `vacation`, `vacation-seconds`, a `enotify` používající `mailto:`. Zastaralé prohlášení `require "notify"` je přijímáno jako vstupní alias pro `enotify`, ale `enotify` je inzerovaná schopnost. |
+| Message processing | `editheader`, `environment`, a `mime`, včetně `foreverypart`, `break`, `extracttext`, a `replace`. |
 
-Následující rozšíření momentálně nejsou podporována:
+`redirect` je doručováno přes běžnou odchozí frontu. Podléhá nakonfigurované politice pro přesměrování domén, kontrolám denylistu a limitům rychlosti. `editheader` nemůže upravovat chráněné hlavičky ověřování nebo směrování doručení.
 
-| Rozšíření                                                      | Důvod                                                               |
-| -------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `include`                                                      | Bezpečnostní riziko (injekce skriptu) a vyžaduje globální úložiště skriptů |
-| `mboxmetadata` / `servermetadata`                              | Vyžaduje podporu rozšíření IMAP METADATA                           |
+#### Funkce, které nejsou podporovány
 
-#### Příklad Sieve skriptů {#example-sieve-scripts}
+| Funkce | Důvod |
+| --- | --- |
+| `enclose` | Vytvoření nové zprávy, která obaluje původní zprávu, není implementováno. |
+| `mailboxexists` | Forward Email neprovádí živé dotazy na stav IMAP schránek. `fileinto :create` zůstává dostupné přes `mailbox`. |
+| `include` | Globální a vkládané úložiště skriptů není k dispozici. |
+| `mboxmetadata` / `servermetadata` | Integrace IMAP METADATA není k dispozici. |
+| `fcc` | Integrace pro ukládání odeslané pošty není k dispozici. |
+| `encoded-character` | Syntax `${hex:...}` není implementována. |
+| External lists | `valid_ext_list` a další operace s externími seznamy nejsou k dispozici. |
 
-**Uložení newsletterů do složky:**
+#### Příklady Sieve skriptů
+
+**File newsletters into a folder:**
 
 ```sieve
 require ["fileinto"];
@@ -2857,62 +2845,44 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Automatická odpověď během dovolené:**
+**Auto-reply when on vacation:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Out of Office"
+vacation :seconds 604800 :subject "Out of Office"
     "I am currently out of the office and will respond when I return.";
 ```
 
-**Označení zpráv od důležitých odesílatelů:**
+**Create a folder when filing a message:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**Odmítnutí spamu s konkrétními předměty:**
+**Redirect a message:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "Message rejected due to spam content.";
-}
-```
-**Tiché zahození nežádoucích zpráv:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**Složité filtrování s proměnnými:**
+#### Správa Sieve skriptů
 
-```sieve
-require ["variables", "fileinto", "mailbox"];
+S Sieve skripty můžete pracovat několika způsoby:
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
+1. **Webové rozhraní**: Přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Sieve skripty pro vytváření a správu skriptů.
 
-#### Správa Sieve skriptů {#managing-sieve-scripts}
+2. **Protokol ManageSieve**: Připojte se pomocí libovolného klienta kompatibilního s ManageSieve, například Sieve rozšíření pro Thunderbird nebo [sieve-connect](https://github.com/philpennock/sieve-connect), na `imap.forwardemail.net`. Použijte port `2190` se STARTTLS nebo port `4190` s implicitním TLS.
 
-Své Sieve skripty můžete spravovat několika způsoby:
-
-1. **Webové rozhraní**: Přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Sieve skripty pro vytváření a správu skriptů.
-
-2. **Protokol ManageSieve**: Připojte se pomocí libovolného klienta kompatibilního s ManageSieve (například Sieve doplněk pro Thunderbird nebo [sieve-connect](https://github.com/philpennock/sieve-connect)) na `imap.forwardemail.net`. Použijte port `2190` se STARTTLS (doporučeno pro většinu klientů) nebo port `4190` s implicitním TLS.
-
-3. **API**: Použijte naše [REST API](/api#sieve-scripts) pro programovou správu skriptů.
+3. **API**: Použijte [REST API](/api#sieve-scripts) pro programovou správu skriptů.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2920,17 +2890,17 @@ Své Sieve skripty můžete spravovat několika způsoby:
     Poznámka:
   </strong>
   <span>
-    Sieve filtrování se aplikuje na příchozí zprávy před jejich uložením do vaší schránky. Skripty se vykonávají podle priority a první odpovídající akce určuje, jak bude zpráva zpracována.
+    Filtrování Sieve se aplikuje na příchozí zprávy před doručením do schránky. Skripty se vykonávají podle priority a první odpovídající akce určuje, jak bude zpráva zpracována.
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    Bezpečnost:
+    Zabezpečení:
   </strong>
   <span>
-    Z bezpečnostních důvodů jsou přesměrovací akce omezeny na 10 na skript a 100 za den. Odpovědi během dovolené jsou omezeny kvůli prevenci zneužití.
+    Přesměrování jsou kontrolována vůči nakonfigurované politice a limitům rychlosti. Odpovědi v režimu dovolené a notifikace jsou omezeny rychlostí, aby se zabránilo zneužití.
   </span>
 </div>
 

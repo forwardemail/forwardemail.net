@@ -2804,50 +2804,38 @@ Klien email berikut memiliki dukungan S/MIME bawaan:
 
 ### Apakah Anda mendukung penyaringan email Sieve {#do-you-support-sieve-email-filtering}
 
-Ya! Kami mendukung penyaringan email [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) seperti yang didefinisikan dalam [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve adalah bahasa skrip yang kuat dan standar untuk penyaringan email sisi server yang memungkinkan Anda secara otomatis mengatur, menyaring, dan merespons pesan masuk.
+Ya. Forward Email mendukung penyaringan sisi-server [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) berdasarkan [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Skrip menyaring pesan masuk sebelum pengantaran ke kotak surat. Sebuah skrip akan ditolak jika meminta kemampuan yang tidak tersedia atau menggunakan ekstensi tanpa menyatakannya di `require`.
 
-#### Ekstensi Sieve yang Didukung {#supported-sieve-extensions}
+Daftar kemampuan lengkap yang didukung implementasi dan catatan RFC tersedia dalam [dokumentasi protokol Sieve](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228).
 
-Kami mendukung serangkaian lengkap ekstensi Sieve:
+#### Kemampuan Sieve yang tersedia
 
-| Ekstensi                    | RFC                                                                                     | Deskripsi                                       |
-| --------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `fileinto`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                               | Memasukkan pesan ke folder tertentu              |
-| `reject` / `ereject`        | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                               | Menolak pesan dengan kesalahan                   |
-| `vacation`                  | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                               | Balasan otomatis liburan/di luar kantor           |
-| `vacation-seconds`          | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                               | Interval balasan liburan yang lebih rinci         |
-| `imap4flags`                | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                               | Mengatur flag IMAP (\Seen, \Flagged, dll.)        |
-| `envelope`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                               | Menguji pengirim/penerima amplop                  |
-| `body`                      | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                               | Menguji isi badan pesan                            |
-| `variables`                 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                               | Menyimpan dan menggunakan variabel dalam skrip   |
-| `relational`                | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                               | Perbandingan relasional (lebih besar, lebih kecil) |
-| `comparator-i;ascii-numeric`| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                               | Perbandingan numerik                              |
-| `copy`                      | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                               | Menyalin pesan saat mengalihkan                   |
-| `editheader`                | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                               | Menambah atau menghapus header pesan              |
-| `date`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                               | Menguji nilai tanggal/waktu                        |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                     | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex)  | Pencocokan ekspresi reguler                        |
-| `enotify`                   | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                               | Mengirim notifikasi (misalnya, mailto:)           |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`               | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                               | Mengakses informasi lingkungan                     |
-| `mailbox`                   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                               | Menguji keberadaan mailbox, membuat mailbox       |
-| `special-use`               | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                               | Memasukkan ke mailbox penggunaan khusus (\Junk, \Trash) |
-| `duplicate`                 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                               | Mendeteksi pesan duplikat                          |
-| `ihave`                     | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                               | Menguji ketersediaan ekstensi                      |
-| `subaddress`                | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                               | Mengakses bagian alamat user+detail                |
-#### Ekstensi yang Tidak Didukung {#extensions-not-supported}
+| Kategori | Kemampuan dan perilaku |
+| --- | --- |
+| Bahasa inti | `keep`, `discard`, `stop`, blok kondisional, dan tes dasar `address`, `header`, `exists`, `size`, dan tes boolean. |
+| Pengiriman | `fileinto`, `copy`, `redirect`, `mailbox` untuk `fileinto :create`, dan `special-use` untuk pemetaan folder-standar `:specialuse` serta `specialuse_exists`. |
+| Tes dan perbandingan | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, dan `i;octet`. |
+| Status dan variabel | `variables`, `imap4flags`, `duplicate`, dan `ihave`. |
+| Aksi dan respons | `reject`, `ereject`, `vacation`, `vacation-seconds`, dan `enotify` menggunakan `mailto:`. Deklarasi warisan `require "notify"` diterima sebagai alias input untuk `enotify`, tetapi `enotify` adalah kemampuan yang diiklankan. |
+| Pemrosesan pesan | `editheader`, `environment`, dan `mime`, termasuk `foreverypart`, `break`, `extracttext`, dan `replace`. |
 
-Ekstensi berikut saat ini tidak didukung:
+`redirect` dikirim melalui antrean keluar normal. Itu tunduk pada kebijakan redirect-domain yang dikonfigurasi, pemeriksaan denylist, dan batas laju. `editheader` tidak dapat memodifikasi header otentikasi atau routing-pengantaran yang dilindungi.
 
-| Ekstensi                                                       | Alasan                                                              |
-| --------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `include`                                                       | Risiko keamanan (injeksi skrip) dan memerlukan penyimpanan skrip global |
-| `mboxmetadata` / `servermetadata`                               | Memerlukan dukungan ekstensi IMAP METADATA                          |
+#### Fitur yang tidak didukung
 
-#### Contoh Skrip Sieve {#example-sieve-scripts}
+| Fitur | Alasan |
+| --- | --- |
+| `enclose` | Pembuatan pesan baru yang menyertakan pesan asli tidak diimplementasikan. |
+| `mailboxexists` | Forward Email tidak melakukan kueri status mailbox IMAP secara langsung. `fileinto :create` tetap tersedia melalui `mailbox`. |
+| `include` | Penyimpanan skrip global dan yang disertakan tidak tersedia. |
+| `mboxmetadata` / `servermetadata` | Integrasi IMAP METADATA tidak tersedia. |
+| `fcc` | Integrasi pemfilenan pesan terkirim tidak tersedia. |
+| `encoded-character` | Sintaks `${hex:...}` tidak diimplementasikan. |
+| Daftar eksternal | `valid_ext_list` dan operasi daftar-eksternal lainnya tidak tersedia. |
 
-**Memasukkan newsletter ke dalam folder:**
+#### Contoh skrip Sieve
+
+**File newsletters into a folder:**
 
 ```sieve
 require ["fileinto"];
@@ -2857,62 +2845,44 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Balasan otomatis saat sedang cuti:**
+**Auto-reply when on vacation:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Out of Office"
-    "Saya sedang tidak di kantor dan akan membalas saat saya kembali.";
+vacation :seconds 604800 :subject "Out of Office"
+    "I am currently out of the office and will respond when I return.";
 ```
 
-**Menandai pesan dari pengirim penting:**
+**Create a folder when filing a message:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**Menolak spam dengan subjek tertentu:**
+**Redirect a message:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "Pesan ditolak karena konten spam.";
-}
-```
-**Buang pesan yang tidak diinginkan secara diam-diam:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**Penyaringan kompleks dengan variabel:**
+#### Mengelola skrip Sieve
 
-```sieve
-require ["variables", "fileinto", "mailbox"];
-
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
-
-#### Mengelola Skrip Sieve {#managing-sieve-scripts}
-
-Anda dapat mengelola skrip Sieve Anda dengan beberapa cara:
+Anda dapat mengelola skrip Sieve dengan beberapa cara:
 
 1. **Antarmuka Web**: Pergi ke <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Skrip Sieve untuk membuat dan mengelola skrip.
 
-2. **Protokol ManageSieve**: Sambungkan menggunakan klien yang kompatibel dengan ManageSieve (seperti add-on Sieve Thunderbird atau [sieve-connect](https://github.com/philpennock/sieve-connect)) ke `imap.forwardemail.net`. Gunakan port `2190` dengan STARTTLS (direkomendasikan untuk sebagian besar klien) atau port `4190` dengan TLS implisit.
+2. **Protokol ManageSieve**: Sambungkan menggunakan klien yang kompatibel ManageSieve, seperti add-on Sieve Thunderbird atau [sieve-connect](https://github.com/philpennock/sieve-connect), ke `imap.forwardemail.net`. Gunakan port `2190` dengan STARTTLS atau port `4190` dengan TLS implisit.
 
-3. **API**: Gunakan [REST API](/api#sieve-scripts) kami untuk mengelola skrip secara programatik.
+3. **API**: Gunakan [REST API](/api#sieve-scripts) untuk mengelola skrip secara programatis.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2920,7 +2890,7 @@ Anda dapat mengelola skrip Sieve Anda dengan beberapa cara:
     Catatan:
   </strong>
   <span>
-    Penyaringan Sieve diterapkan pada pesan masuk sebelum disimpan di kotak surat Anda. Skrip dijalankan berdasarkan urutan prioritas, dan aksi pertama yang cocok menentukan bagaimana pesan ditangani.
+    Penyaringan Sieve diterapkan pada pesan masuk sebelum pengantaran ke kotak surat. Skrip dieksekusi berdasarkan urutan prioritas, dan aksi pertama yang cocok menentukan bagaimana pesan ditangani.
   </span>
 </div>
 
@@ -2930,7 +2900,7 @@ Anda dapat mengelola skrip Sieve Anda dengan beberapa cara:
     Keamanan:
   </strong>
   <span>
-    Untuk keamanan, aksi pengalihan dibatasi hingga 10 per skrip dan 100 per hari. Balasan cuti dibatasi kecepatannya untuk mencegah penyalahgunaan.
+    Pengalihan diperiksa terhadap kebijakan yang dikonfigurasi dan batas laju. Respons liburan dan notifikasi dibatasi laju untuk mencegah penyalahgunaan.
   </span>
 </div>
 

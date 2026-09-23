@@ -2803,52 +2803,40 @@ Los siguientes clientes de correo tienen soporte integrado para S/MIME:
   </div>
 </div>
 
-### ¿Soportan filtrado de correo con Sieve? {#do-you-support-sieve-email-filtering}
+### ¿Admiten el filtrado de correo Sieve {#do-you-support-sieve-email-filtering}
 
-¡Sí! Soportamos el filtrado de correo con [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) tal como se define en [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve es un lenguaje de scripting potente y estandarizado para el filtrado de correo en el servidor que te permite organizar, filtrar y responder automáticamente a los mensajes entrantes.
+Sí. Forward Email admite el filtrado del lado del servidor [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) basado en [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Los scripts filtran los mensajes entrantes antes de la entrega al buzón. Se rechaza un script si solicita una capacidad no disponible o utiliza una extensión sin declararla en `require`.
 
-#### Extensiones Sieve soportadas {#supported-sieve-extensions}
+La lista completa de capacidades respaldadas por la implementación y las notas del RFC están disponibles en la [documentación del protocolo Sieve](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228).
 
-Soportamos un conjunto completo de extensiones Sieve:
+#### Capacidades Sieve disponibles
 
-| Extensión                   | RFC                                                                                     | Descripción                                      |
-| --------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `fileinto`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                               | Archivar mensajes en carpetas específicas        |
-| `reject` / `ereject`        | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                               | Rechazar mensajes con un error                    |
-| `vacation`                  | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                               | Respuestas automáticas de vacaciones/ausencia     |
-| `vacation-seconds`          | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                               | Intervalos detallados para respuestas de vacaciones |
-| `imap4flags`                | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                               | Establecer flags IMAP (\Seen, \Flagged, etc.)     |
-| `envelope`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                               | Probar remitente/destinatario del sobre           |
-| `body`                      | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                               | Probar contenido del cuerpo del mensaje           |
-| `variables`                 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                               | Almacenar y usar variables en scripts             |
-| `relational`                | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                               | Comparaciones relacionales (mayor que, menor que) |
-| `comparator-i;ascii-numeric`| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                               | Comparaciones numéricas                            |
-| `copy`                      | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                               | Copiar mensajes mientras se redirigen             |
-| `editheader`                | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                               | Añadir o eliminar encabezados de mensajes         |
-| `date`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                               | Probar valores de fecha/hora                        |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                     | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex)  | Coincidencia con expresiones regulares             |
-| `enotify`                   | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                               | Enviar notificaciones (por ejemplo, mailto:)       |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`               | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                               | Acceder a información del entorno                   |
-| `mailbox`                   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                               | Probar existencia de buzones, crear buzones        |
-| `special-use`               | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                               | Archivar en buzones de uso especial (\Junk, \Trash)|
-| `duplicate`                 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                               | Detectar mensajes duplicados                        |
-| `ihave`                     | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                               | Probar disponibilidad de extensiones               |
-| `subaddress`                | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                               | Acceder a partes de direcciones user+detalle       |
-#### Extensiones No Soportadas {#extensions-not-supported}
+| Categoría | Capacidades y comportamiento |
+| --- | --- |
+| Lenguaje básico | `keep`, `discard`, `stop`, bloques condicionales, y las pruebas básicas `address`, `header`, `exists`, `size` y pruebas booleanas. |
+| Entrega | `fileinto`, `copy`, `redirect`, `mailbox` para `fileinto :create`, y `special-use` para el mapeo de carpeta estándar `:specialuse` y `specialuse_exists`. |
+| Pruebas y comparaciones | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, y `i;octet`. |
+| Estado y variables | `variables`, `imap4flags`, `duplicate`, y `ihave`. |
+| Acciones y respuestas | `reject`, `ereject`, `vacation`, `vacation-seconds`, y `enotify` usando `mailto:`. La declaración heredada `require "notify"` se acepta como alias de entrada para `enotify`, pero `enotify` es la capacidad anunciada. |
+| Procesamiento de mensajes | `editheader`, `environment`, y `mime`, incluyendo `foreverypart`, `break`, `extracttext`, y `replace`. |
 
-Las siguientes extensiones no están soportadas actualmente:
+`redirect` se entrega a través de la cola saliente normal. Está sujeto a la política configurada de dominio de redirección, comprobaciones de denylist y límites de tasa. `editheader` no puede modificar cabeceras protegidas de autenticación o enrutamiento de entrega.
 
-| Extensión                                                      | Razón                                                               |
-| -------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `include`                                                      | Riesgo de seguridad (inyección de scripts) y requiere almacenamiento global de scripts |
-| `mboxmetadata` / `servermetadata`                              | Requiere soporte para la extensión IMAP METADATA                   |
+#### Funciones no admitidas
 
-#### Ejemplos de Scripts Sieve {#example-sieve-scripts}
+| Función | Motivo |
+| --- | --- |
+| `enclose` | No se ha implementado la creación de un nuevo mensaje que incluya el mensaje original. |
+| `mailboxexists` | Forward Email no realiza consultas en vivo del estado de buzones IMAP. `fileinto :create` permanece disponible a través de `mailbox`. |
+| `include` | El almacenamiento global y de scripts incluidos no está disponible. |
+| `mboxmetadata` / `servermetadata` | La integración IMAP METADATA no está disponible. |
+| `fcc` | La integración para archivado de correo enviado no está disponible. |
+| `encoded-character` | La sintaxis `${hex:...}` no está implementada. |
+| Listas externas | `valid_ext_list` y otras operaciones con listas externas no están disponibles. |
 
-**Archivar boletines en una carpeta:**
+#### Ejemplos de scripts Sieve
+
+**File newsletters into a folder:**
 
 ```sieve
 require ["fileinto"];
@@ -2858,62 +2846,44 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Respuesta automática cuando estás de vacaciones:**
+**Auto-reply when on vacation:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Fuera de la oficina"
-    "Actualmente estoy fuera de la oficina y responderé cuando regrese.";
+vacation :seconds 604800 :subject "Out of Office"
+    "I am currently out of the office and will respond when I return.";
 ```
 
-**Marcar mensajes de remitentes importantes:**
+**Create a folder when filing a message:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**Rechazar spam con asuntos específicos:**
+**Redirect a message:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "Mensaje rechazado debido a contenido de spam.";
-}
-```
-**Descartar silenciosamente mensajes no deseados:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**Filtrado complejo con variables:**
+#### Administración de scripts Sieve
 
-```sieve
-require ["variables", "fileinto", "mailbox"];
+Puedes gestionar scripts Sieve de varias maneras:
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
+1. **Interfaz web**: Ve a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Scripts Sieve para crear y administrar scripts.
 
-#### Gestión de Scripts Sieve {#managing-sieve-scripts}
+2. **Protocolo ManageSieve**: Conéctate usando cualquier cliente compatible con ManageSieve, como el complemento Sieve de Thunderbird o [sieve-connect](https://github.com/philpennock/sieve-connect), a `imap.forwardemail.net`. Usa el puerto `2190` con STARTTLS o el puerto `4190` con TLS implícito.
 
-Puedes gestionar tus scripts Sieve de varias maneras:
-
-1. **Interfaz Web**: Ve a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Scripts Sieve para crear y administrar scripts.
-
-2. **Protocolo ManageSieve**: Conéctate usando cualquier cliente compatible con ManageSieve (como el complemento Sieve de Thunderbird o [sieve-connect](https://github.com/philpennock/sieve-connect)) a `imap.forwardemail.net`. Usa el puerto `2190` con STARTTLS (recomendado para la mayoría de clientes) o el puerto `4190` con TLS implícito.
-
-3. **API**: Usa nuestra [API REST](/api#sieve-scripts) para gestionar scripts programáticamente.
+3. **API**: Usa la [REST API](/api#sieve-scripts) para gestionar scripts de forma programática.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2921,7 +2891,7 @@ Puedes gestionar tus scripts Sieve de varias maneras:
     Nota:
   </strong>
   <span>
-    El filtrado Sieve se aplica a los mensajes entrantes antes de que se almacenen en tu buzón. Los scripts se ejecutan en orden de prioridad, y la primera acción coincidente determina cómo se maneja el mensaje.
+    El filtrado Sieve se aplica a los mensajes entrantes antes de la entrega al buzón. Los scripts se ejecutan en orden de prioridad, y la primera acción que coincida determina cómo se maneja el mensaje.
   </span>
 </div>
 
@@ -2931,7 +2901,7 @@ Puedes gestionar tus scripts Sieve de varias maneras:
     Seguridad:
   </strong>
   <span>
-    Por seguridad, las acciones de redirección están limitadas a 10 por script y 100 por día. Las respuestas de vacaciones tienen limitación de frecuencia para prevenir abusos.
+    Las redirecciones se verifican frente a la política configurada y los límites de tasa. Las respuestas de vacaciones y las notificaciones tienen límites de tasa para prevenir abusos.
   </span>
 </div>
 

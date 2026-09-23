@@ -1095,76 +1095,75 @@ Các phần mở rộng lịch sau KHÔNG được hỗ trợ:
 ## Lọc Tin nhắn Email {#email-message-filtering}
 
 > \[!IMPORTANT]
-> Forward Email cung cấp **hỗ trợ đầy đủ Sieve và ManageSieve** cho lọc email phía máy chủ. Tạo các quy tắc mạnh mẽ để tự động phân loại, lọc, chuyển tiếp và phản hồi các tin nhắn đến.
+> Forward Email cung cấp chức năng lọc Sieve và quản lý script ManageSieve.
 
 ### Sieve (RFC 5228) {#sieve-rfc-5228}
 
-[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) là một ngôn ngữ kịch bản chuẩn hóa, mạnh mẽ cho lọc email phía máy chủ. Forward Email triển khai hỗ trợ Sieve toàn diện với 24 phần mở rộng.
+[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) là một ngôn ngữ tiêu chuẩn để lọc email phía máy chủ. Forward Email xác thực từng script trước khi nó được lưu, kích hoạt, hoặc thực thi. Một script sẽ bị từ chối khi nó yêu cầu một capability không có sẵn hoặc sử dụng một extension mà không khai báo trong `require`.
 
 **Mã nguồn:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
 
-#### Các RFC Sieve cốt lõi được hỗ trợ {#core-sieve-rfcs-supported}
+#### Tương thích Sieve theo RFC {#core-sieve-rfcs-supported}
 
-| RFC                                                                                    | Tiêu đề                                                       | Trạng thái       |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ---------------- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Sieve: Ngôn ngữ Lọc Email                                     | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Sieve Email Filtering: Reject and Extended Reject Extensions  | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Sieve Email Filtering: Vacation Extension                     | ✅ Hỗ trợ đầy đủ  |
-| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Sieve Vacation Extension: Tham số "Seconds"                   | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Sieve Email Filtering: Imap4flags Extension                   | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Sieve Email Filtering: Body Extension                         | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Sieve Email Filtering: Variables Extension                    | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Sieve Email Filtering: Relational Extension                   | ✅ Hỗ trợ đầy đủ  |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Internet Application Protocol Collation Registry              | ✅ Hỗ trợ đầy đủ  |
-| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Sieve Extension: Copying Without Side Effects                 | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Sieve Email Filtering: Editheader Extension                   | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Sieve Email Filtering: Date and Index Extensions              | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Sieve Email Filtering: Extension for Notifications            | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Sieve Email Filtering: Environment Extension                  | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Sieve Email Filtering: Extensions for Checking Mailbox Status | ✅ Hỗ trợ đầy đủ  |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Sieve Email Filtering: Delivering to Special-Use Mailboxes    | ✅ Hỗ trợ đầy đủ  |
-| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Sieve Email Filtering: Detecting Duplicate Deliveries         | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Sieve Email Filtering: Ihave Extension                        | ✅ Hỗ trợ đầy đủ  |
-| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Sieve Email Filtering: Subaddress Extension                   | ✅ Hỗ trợ đầy đủ  |
-| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve Email Filtering: Regular Expression Extension           | ✅ Hỗ trợ đầy đủ  |
-#### Các phần mở rộng Sieve được hỗ trợ {#supported-sieve-extensions}
+Bảng phân biệt việc triển khai đầy đủ của các hành vi được liệt kê so với hành vi bị giới hạn có chủ ý. ManageSieve chỉ quảng bá các tên capability công khai trong bảng này.
 
-| Phần mở rộng                 | Mô tả                                   | Tích hợp                                  |
-| ---------------------------- | ---------------------------------------- | ------------------------------------------ |
-| `fileinto`                   | Lưu thư vào các thư mục cụ thể            | Thư được lưu trong thư mục IMAP chỉ định    |
-| `reject` / `ereject`         | Từ chối thư với lỗi                      | Từ chối SMTP kèm thông báo trả lại          |
-| `vacation`                   | Trả lời tự động khi nghỉ/vắng mặt         | Xếp hàng qua Emails.queue với giới hạn tốc độ |
-| `vacation-seconds`           | Khoảng thời gian trả lời nghỉ chi tiết    | TTL từ tham số `:seconds`                   |
-| `imap4flags`                 | Đặt cờ IMAP (\Seen, \Flagged, v.v.)      | Cờ được áp dụng khi lưu thư                   |
-| `envelope`                   | Kiểm tra người gửi/người nhận phong bì   | Truy cập dữ liệu phong bì SMTP               |
-| `body`                       | Kiểm tra nội dung thân thư                 | So khớp toàn bộ văn bản thân thư             |
-| `variables`                  | Lưu và sử dụng biến trong kịch bản        | Mở rộng biến với các bộ điều chỉnh           |
-| `relational`                 | So sánh quan hệ                          | `:count`, `:value` với gt/lt/eq               |
-| `comparator-i;ascii-numeric` | So sánh số học                          | So sánh chuỗi số học                          |
-| `copy`                       | Sao chép thư khi chuyển tiếp              | Cờ `:copy` trên fileinto/redirect             |
-| `editheader`                 | Thêm hoặc xóa tiêu đề thư                  | Tiêu đề được chỉnh sửa trước khi lưu          |
-| `date`                       | Kiểm tra giá trị ngày/giờ                  | Kiểm tra `currentdate` và ngày tiêu đề        |
-| `index`                      | Access specific header occurrences       | `:index` and `:last` for multi-value headers in header tests and deleteheader |
-| `regex`                      | So khớp biểu thức chính quy               | Hỗ trợ đầy đủ regex trong kiểm tra             |
-| `enotify`                    | Gửi thông báo                            | Thông báo `mailto:` qua Emails.queue           |
-| `notify`                     | Send notifications (alias for enotify)   | Deprecated [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) alias; rate-limited (10/hr per alias) |
-| `mime`                       | MIME part tests and iteration    | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags on header/address tests. Security hardened with iteration limits, instruction counting, and depth restrictions. |
-| `environment`                | Truy cập thông tin môi trường             | Tên miền, máy chủ, IP từ phiên làm việc        |
-| `mailbox`                    | Kiểm tra sự tồn tại hộp thư                | Kiểm tra `mailboxexists`                      |
-| `special-use`                | Lưu vào các hộp thư đặc biệt               | Ánh xạ \Junk, \Trash, v.v. thành thư mục       |
-| `duplicate`                  | Phát hiện thư trùng lặp                    | Theo dõi trùng lặp dựa trên Redis              |
-| `ihave`                      | Kiểm tra khả năng phần mở rộng             | Kiểm tra khả năng chạy thời gian thực           |
-| `subaddress`                 | Truy cập các phần địa chỉ user+detail      | Các phần địa chỉ `:user` và `:detail`           |
+| RFC hoặc đặc tả | Khả năng | Mô tả hỗ trợ |
+| --- | --- | --- |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, các khối điều kiện, và các kiểm tra cơ bản `address`, `header`, `exists`, `size`, và các kiểm tra boolean. `fileinto` và `redirect` được xử lý thông qua pipeline phân phối inbound. |
+| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | Từ chối SMTP với thông điệp được cung cấp. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Các phản hồi vacation được đưa vào hàng đợi với cơ chế kiểm soát lạm dụng. |
+| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | Khoảng `:seconds` điều khiển TTL của phản hồi vacation. |
+| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | Các flag được áp dụng khi lưu vào hộp thư. |
+| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | So khớp nội dung thân thư. |
+| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Mở rộng biến và các modifier được hỗ trợ. |
+| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | So sánh `:count` và `:value`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` và `i;octet`. `i;ascii-numeric` không được quảng bá. |
+| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` trên `fileinto` và `redirect`. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Thay đổi header trước khi lưu, ngoại trừ các trường xác thực và điều hướng giao hàng được bảo vệ. |
+| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Kiểm tra `currentdate` và header-date, cùng với `:index` và `:last`. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Thông báo `mailto:` với giới hạn tần suất. Khai báo kế thừa `require "notify"` được chấp nhận như một bí danh, nhưng `enotify` được quảng bá. |
+| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | Các giá trị môi trường phiên được hỗ trợ. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | Chỉ `fileinto :create`. Các truy vấn `mailboxexists` trực tiếp không được hỗ trợ. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | Ánh xạ thư mục chuẩn `:specialuse` và kiểm tra `specialuse_exists` có kết quả xác định. |
+| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Phát hiện gửi trùng lặp dựa trên Redis. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Kiểm tra liệu một capability được quảng bá có khả dụng hay không. |
+| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | Các phần địa chỉ `:user` và `:detail`. |
+| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | So khớp biểu thức chính quy sử dụng [RE2](https://github.com/uhop/node-re2). |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | Kiểm tra MIME và `foreverypart`, `break`, `extracttext`, và `replace`. `enclose` bị từ chối vì không có triển khai chuyển phát an toàn. |
 
-#### Các phần mở rộng Sieve KHÔNG được hỗ trợ {#sieve-extensions-not-supported}
+#### Các extension Sieve được hỗ trợ {#supported-sieve-extensions}
 
-| Phần mở rộng                         | RFC                                                       | Lý do                                                           |
-| ----------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
-| `include`                           | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Rủi ro bảo mật (chèn mã độc), yêu cầu lưu trữ kịch bản toàn cục |
-| `mboxmetadata` / `servermetadata`   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Yêu cầu phần mở rộng METADATA của IMAP                           |
-| `fcc`                               | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Yêu cầu tích hợp thư mục Sent                                    |
-| `encoded-character`                 | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Cần thay đổi trình phân tích cú pháp cho cú pháp ${hex:}         |
-#### Luồng Xử Lý Sieve {#sieve-processing-flow}
+| Phần mở rộng | Hành vi | Giao hàng hoặc thực thi |
+| --- | --- | --- |
+| `fileinto` | Ghi một tin nhắn vào một thư mục. | Lưu trong thư mục IMAP đã chọn. `fileinto :create` yêu cầu `mailbox`. |
+| `copy` | Giữ bản gốc của lần giao trong khi thêm `fileinto` hoặc `redirect`. | Được áp dụng bởi pipeline giao hàng. |
+| `redirect` | Gửi một bản sao hoặc giao thay thế tới người nhận khác. | Được xếp vào hàng qua đường đi outbound bình thường, chịu chính sách miền, kiểm tra danh sách chặn, và giới hạn tần suất. |
+| `reject` / `ereject` | Từ chối một tin nhắn với lỗi SMTP. | Trả lại qua đường dẫn giao hàng MX. |
+| `vacation` / `vacation-seconds` | Gửi phản hồi tự động. | Được đưa vào hàng đợi với giới hạn tần suất theo người nhận và theo khoảng thời gian. |
+| `imap4flags` | Đặt hoặc kiểm tra cờ IMAP. | Áp dụng khi tin nhắn được lưu. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | Kiểm tra dữ liệu tin nhắn và phong bì. | Được đánh giá bởi engine Sieve. |
+| `variables`, `duplicate`, `ihave` | Lưu giá trị, phát hiện trùng lặp, và kiểm tra capability. | Các biến là cục bộ trong script; trạng thái trùng lặp sử dụng Redis. |
+| `editheader` | Thêm hoặc xóa các header không được bảo vệ. | Các header xác thực và điều hướng giao hàng không thể bị sửa đổi. |
+| `enotify` | Gửi thông báo sử dụng `mailto:`. | Được xếp vào hàng với giới hạn tần suất thông báo. |
+| `environment` | Đọc dữ liệu môi trường phiên được hỗ trợ. | Được đánh giá bởi engine Sieve. |
+| `special-use` | Xử lý các thư mục dùng chuẩn. | Ánh xạ thư mục chuẩn và cung cấp kết quả `specialuse_exists` xác định. |
+| `mime` | Kiểm tra và thay đổi các phần MIME được hỗ trợ. | Yêu cầu capability chung `mime`. Các lệnh riêng lẻ theo RFC 5703 không được quảng bá riêng biệt. |
+
+#### Các tính năng Sieve không được hỗ trợ {#sieve-extensions-not-supported}
+
+Những tính năng này bị từ chối trước khi lưu trữ, kích hoạt, chấp nhận ManageSieve, hoặc thực thi bộ lọc. Việc trình phân tích cú pháp nhận diện không có nghĩa là một tính năng được hỗ trợ.
+
+| Tính năng | RFC hoặc đặc tả | Lý do |
+| --- | --- | --- |
+| `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Việc tạo một thông điệp mới bao bọc thông điệp gốc không được triển khai an toàn đầu-cuối. |
+| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Các truy vấn trạng thái hộp thư IMAP trực tiếp không khả dụng. |
+| `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Lưu trữ script toàn cục và script được include không khả dụng. |
+| `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Tích hợp IMAP METADATA không khả dụng. |
+| `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Tích hợp lưu bản sao thư gửi không khả dụng. |
+| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Cú pháp `${hex:...}` chưa được triển khai. |
+| External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` và các thao tác danh sách ngoài khác không khả dụng. |
+
+#### Luồng xử lý Sieve {#sieve-processing-flow}
 
 ```mermaid
 sequenceDiagram
@@ -1174,41 +1173,35 @@ sequenceDiagram
     participant SQLite as SQLite Storage
     participant Queue as Email Queue
 
-    MX->>Sieve: Tin nhắn đến
-    Sieve->>Sieve: Phân tích kịch bản đang hoạt động
-    Sieve->>Sieve: Thực thi các quy tắc
+    MX->>Sieve: Incoming message
+    Sieve->>Sieve: Validate declared capabilities
+    Sieve->>Sieve: Execute active script
 
-    alt hành động fileinto
-        Sieve->>SQLite: Lưu vào thư mục với các cờ
-    else hành động chuyển tiếp
-        Sieve->>Queue: Đưa vào hàng đợi để gửi
-    else hành động nghỉ phép
-        Sieve->>Redis: Kiểm tra giới hạn tần suất
-        Redis-->>Sieve: OK để gửi
-        Sieve->>Queue: Đưa trả lời nghỉ phép vào hàng đợi
-    else hành động từ chối
-        Sieve->>MX: Trả về từ chối SMTP
-    else hành động loại bỏ
-        Sieve->>Sieve: Bỏ qua tin nhắn một cách im lặng
+    alt fileinto action
+        Sieve->>SQLite: Store in folder with flags
+    else redirect action
+        Sieve->>Redis: Check redirect limits
+        Sieve->>Queue: Queue redirected message
+    else vacation action
+        Sieve->>Redis: Check reply limit
+        Redis-->>Sieve: Reply allowed
+        Sieve->>Queue: Queue vacation reply
+    else reject action
+        Sieve->>MX: Return SMTP rejection
+    else discard action
+        Sieve->>Sieve: Drop message silently
     end
 
-    Sieve-->>MX: Hoàn tất xử lý
+    Sieve-->>MX: Processing complete
 ```
 
-#### Tính Năng Bảo Mật {#security-features}
+#### Tính năng bảo mật {#security-features}
 
-Triển khai Sieve của Forward Email bao gồm các biện pháp bảo mật toàn diện:
+Forward Email xác thực toàn bộ script trước khi nó được lưu, kích hoạt, hoặc thực thi. Hệ thống từ chối các capability không khai báo và không có sẵn, giới hạn kích thước script và số lần lặp các phần MIME, sử dụng [RE2](https://github.com/uhop/node-re2) cho việc so khớp biểu thức chính quy, giới hạn tần suất cho redirect, phản hồi vacation và thông báo, từ chối các đích redirect không an toàn, và ngăn `editheader` thay đổi các header xác thực hoặc điều hướng giao hàng. Trạng thái giới hạn tần suất cho redirect và vacation được lưu trong [Redis](https://github.com/redis/redis), trong khi thư đã giao được lưu bằng [SQLite](https://github.com/sqlite/sqlite).
 
-* **Bảo vệ CVE-2023-26430**: Ngăn chặn vòng lặp chuyển tiếp và tấn công mail bombing
-* **Giới hạn tần suất**: Giới hạn chuyển tiếp (10/tin nhắn, 100/ngày) và trả lời nghỉ phép
-* **Kiểm tra danh sách chặn**: Địa chỉ chuyển tiếp được kiểm tra với danh sách chặn
-* **Tiêu đề được bảo vệ**: Tiêu đề DKIM, ARC và xác thực không thể bị chỉnh sửa qua editheader
-* **Giới hạn kích thước kịch bản**: Áp dụng kích thước tối đa cho kịch bản
-* **Giới hạn thời gian thực thi**: Kịch bản bị dừng nếu vượt quá giới hạn thời gian
+#### Ví dụ script Sieve {#example-sieve-scripts}
 
-#### Ví Dụ Kịch Bản Sieve {#example-sieve-scripts}
-
-**Lưu bản tin vào thư mục:**
+**Lưu bản tin vào một thư mục:**
 
 ```sieve
 require ["fileinto"];
@@ -1218,39 +1211,37 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Trả lời tự động nghỉ phép với thời gian chi tiết:**
+**Trả lời tự động khi nghỉ với điều chỉnh thời gian chi tiết:**
 
 ```sieve
 require ["vacation", "vacation-seconds"];
 
 vacation :seconds 3600 :subject "Out of Office"
-    "Tôi hiện đang vắng mặt và sẽ phản hồi trong vòng 24 giờ.";
+    "I'm currently away and will respond within 24 hours.";
 ```
 
-**Lọc thư rác với cờ:**
+**Lưu vào thư mục với flag:**
 
 ```sieve
-require ["fileinto", "imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if header :contains "X-Spam-Status" "Yes" {
-    setflag "\\Seen";
-    fileinto "Junk";
+    fileinto :create :flags ["\\Seen"] "Junk";
 }
 ```
 
-**Lọc phức tạp với biến:**
+**Chuyển tiếp hóa đơn:**
 
 ```sieve
-require ["variables", "fileinto", "mailbox"];
+require ["redirect"];
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
 > \[!TIP]
-> Để xem tài liệu đầy đủ, các kịch bản ví dụ và hướng dẫn cấu hình, xem [FAQ: Bạn có hỗ trợ lọc email bằng Sieve không?](/faq#do-you-support-sieve-email-filtering)
+> Để xem tài liệu đầy đủ, các script mẫu và hướng dẫn cấu hình, xem [FAQ: Bạn có hỗ trợ lọc email bằng Sieve không?](/faq#do-you-support-sieve-email-filtering)
 
 ### ManageSieve (RFC 5804) {#managesieve-rfc-5804}
 

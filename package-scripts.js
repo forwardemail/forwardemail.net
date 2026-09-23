@@ -72,7 +72,7 @@ module.exports = {
         : 'nps test-shards',
     testShards: 'node scripts/run-local-test-shards.js',
     testSieve:
-      'node --test test/sieve/parser.js test/sieve/engine.js test/sieve/extensions.js test/sieve/store.js test/sieve/filter-handler.js test/sieve/security.js test/sieve/managesieve-server.js test/sieve/mx-integration.js test/sieve/runtime-enforcement.js',
+      'node --test test/sieve/parser.js test/sieve/engine.js test/sieve/extensions.js test/sieve/store.js test/sieve/filter-handler.js test/sieve/security.js test/sieve/managesieve-server.js test/sieve/mx-integration.js test/sieve/runtime-enforcement.js test/sieve/capabilities.js',
     testUpdateSnapshots: series('nps pretest', 'ava --update-snapshots'),
     testSieveAva: 'ava test/sieve/auth.js test/sieve/integration.js',
     testCustomerSupportAi:

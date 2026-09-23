@@ -2799,52 +2799,40 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
   </div>
 </div>
 
-### 您支持 Sieve 邮件过滤吗 {#do-you-support-sieve-email-filtering}
+### 您支持 Sieve 电子邮件过滤吗 {#do-you-support-sieve-email-filtering}
 
-支持！我们支持根据 [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) 定义的 [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) 邮件过滤。Sieve 是一种强大且标准化的服务器端邮件过滤脚本语言，允许您自动组织、过滤和响应来信。
+是的。Forward Email 支持基于 [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) 的服务器端 [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) 过滤。脚本在投递到邮箱之前对传入邮件进行筛选。如果脚本请求不可用的功能或在未通过 `require` 声明扩展的情况下使用该扩展，则该脚本会被拒绝。
 
-#### 支持的 Sieve 扩展 {#supported-sieve-extensions}
+完整且有实现支持的功能列表和 RFC 说明可在 [Sieve 协议文档](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228) 中查阅。
 
-我们支持一套全面的 Sieve 扩展：
+#### 可用的 Sieve 功能
 
-| 扩展                       | RFC                                                                                     | 描述                                              |
-| -------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| `fileinto`                 | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                               | 将邮件归档到指定文件夹                             |
-| `reject` / `ereject`       | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                               | 拒绝邮件并返回错误                                |
-| `vacation`                 | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                               | 自动假期/离开回复                                 |
-| `vacation-seconds`         | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                               | 精细控制假期回复间隔                              |
-| `imap4flags`               | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                               | 设置 IMAP 标记（\Seen、\Flagged 等）              |
-| `envelope`                 | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                               | 测试信封发件人/收件人                             |
-| `body`                     | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                               | 测试邮件正文内容                                  |
-| `variables`                | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                               | 在脚本中存储和使用变量                            |
-| `relational`               | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                               | 关系比较（大于、小于）                            |
-| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                             | 数值比较                                          |
-| `copy`                     | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                               | 重定向时复制邮件                                  |
-| `editheader`               | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                               | 添加或删除邮件头                                  |
-| `date`                     | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                               | 测试日期/时间值                                  |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                    | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex)  | 正则表达式匹配                                   |
-| `enotify`                  | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                               | 发送通知（例如 mailto:）                          |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`              | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                               | 访问环境信息                                     |
-| `mailbox`                  | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                               | 测试邮箱存在性，创建邮箱                          |
-| `special-use`              | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                               | 归档到特殊用途邮箱（\Junk、\Trash）               |
-| `duplicate`                | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                               | 检测重复邮件                                     |
-| `ihave`                    | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                               | 测试扩展可用性                                   |
-| `subaddress`               | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                               | 访问 user+detail 地址部分                         |
-#### 不支持的扩展 {#extensions-not-supported}
+| 类别 | 功能与行为 |
+| --- | --- |
+| 核心语言 | `keep`, `discard`, `stop`, 条件块，以及基本的 `address`, `header`, `exists`, `size` 和布尔测试。 |
+| 投递 | `fileinto`, `copy`, `redirect`, 用于 `fileinto :create` 的 `mailbox`，以及用于标准文件夹 `:specialuse` 映射和 `specialuse_exists` 的 `special-use`。 |
+| 测试和比较 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, 和 `i;octet`。 |
+| 状态与变量 | `variables`, `imap4flags`, `duplicate`, 和 `ihave`。 |
+| 操作与响应 | `reject`, `ereject`, `vacation`, `vacation-seconds`, 以及使用 `mailto:` 的 `enotify`。遗留声明 `require "notify"` 被接受作为 `enotify` 的输入别名，但 `enotify` 是对外声明的功能。 |
+| 消息处理 | `editheader`, `environment`, 和 `mime`，包括 `foreverypart`, `break`, `extracttext`, 和 `replace`。 |
 
-以下扩展当前不支持：
+`redirect` 会通过常规的外发队列发送。它受配置的重定向域策略、拒绝列表检查和速率限制的约束。`editheader` 无法修改受保护的认证或投递路由头。
 
-| 扩展                                                         | 原因                                                                |
-| ------------------------------------------------------------ | ------------------------------------------------------------------- |
-| `include`                                                    | 安全风险（脚本注入）且需要全局脚本存储                              |
-| `mboxmetadata` / `servermetadata`                            | 需要 IMAP METADATA 扩展支持                                         |
+#### 不支持的功能
 
-#### 示例 Sieve 脚本 {#example-sieve-scripts}
+| 功能 | 原因 |
+| --- | --- |
+| `enclose` | 未实现创建包含原始邮件的新邮件的功能。 |
+| `mailboxexists` | Forward Email 不进行实时的 IMAP 邮箱状态查询。`fileinto :create` 仍可通过 `mailbox` 使用。 |
+| `include` | 不提供全局和包含脚本存储。 |
+| `mboxmetadata` / `servermetadata` | 未集成 IMAP METADATA。 |
+| `fcc` | 未提供发件存档的归档集成功能。 |
+| `encoded-character` | 未实现 `${hex:...}` 语法。 |
+| 外部列表 | 不提供 `valid_ext_list` 及其他外部列表操作。 |
 
-**将新闻通讯归档到文件夹：**
+#### 示例 Sieve 脚本
+
+**File newsletters into a folder:**
 
 ```sieve
 require ["fileinto"];
@@ -2854,62 +2842,44 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**休假时自动回复：**
+**Auto-reply when on vacation:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Out of Office"
+vacation :seconds 604800 :subject "Out of Office"
     "I am currently out of the office and will respond when I return.";
 ```
 
-**标记来自重要发件人的邮件：**
+**Create a folder when filing a message:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**拒绝带有特定主题的垃圾邮件：**
+**Redirect a message:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "Message rejected due to spam content.";
-}
-```
-**静默丢弃不需要的消息:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**使用变量进行复杂过滤:**
+#### 管理 Sieve 脚本
 
-```sieve
-require ["variables", "fileinto", "mailbox"];
+您可以通过多种方式管理 Sieve 脚本：
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
+1. **Web 界面**：前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名 <i class="fa fa-angle-right"></i> Sieve 脚本 来创建和管理脚本。
 
-#### 管理 Sieve 脚本 {#managing-sieve-scripts}
+2. **ManageSieve 协议**：使用任何与 ManageSieve 兼容的客户端连接，例如 Thunderbird 的 Sieve 插件或 [sieve-connect](https://github.com/philpennock/sieve-connect)，连接到 `imap.forwardemail.net`。使用带 STARTTLS 的端口 `2190` 或 使用隐式 TLS 的端口 `4190`。
 
-您可以通过多种方式管理您的 Sieve 脚本：
-
-1. **网页界面**：访问 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名 <i class="fa fa-angle-right"></i> Sieve 脚本 来创建和管理脚本。
-
-2. **ManageSieve 协议**：使用任何兼容 ManageSieve 的客户端（如 Thunderbird 的 Sieve 插件或 [sieve-connect](https://github.com/philpennock/sieve-connect)）连接到 `imap.forwardemail.net`。使用端口 `2190` 并启用 STARTTLS（大多数客户端推荐）或端口 `4190` 并启用隐式 TLS。
-
-3. **API**：使用我们的 [REST API](/api#sieve-scripts) 以编程方式管理脚本。
+3. **API**：使用 [REST API](/api#sieve-scripts) 以编程方式管理脚本。
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2917,17 +2887,17 @@ if address :all :matches "From" "*@example.com" {
     注意：
   </strong>
   <span>
-    Sieve 过滤在邮件存储到您的邮箱之前应用。脚本按优先级顺序执行，第一个匹配的动作决定邮件的处理方式。
+    Sieve 过滤在邮件投递到邮箱之前应用。脚本按优先级顺序执行，首个匹配的操作决定邮件的处理方式。
   </span>
 </div>
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
   <strong class="font-weight-bold">
-    安全性：
+    安全：
   </strong>
   <span>
-    出于安全考虑，重定向操作每个脚本限制为 10 次，每天限制为 100 次。休假自动回复有速率限制以防止滥用。
+    重定向会根据配置的策略和速率限制进行检查。假期自动回复和通知会被速率限制以防滥用。
   </span>
 </div>
 

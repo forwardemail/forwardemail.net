@@ -1095,118 +1095,111 @@ Seuraavia kalenterilaajennuksia EI tueta:
 ## Sähköpostiviestien suodatus {#email-message-filtering}
 
 > \[!IMPORTANT]
-> Forward Email tarjoaa **täyden Sieve- ja ManageSieve-tuen** palvelinpuolen sähköpostisuodatukseen. Luo tehokkaita sääntöjä saapuvien viestien automaattiseen lajitteluun, suodatukseen, edelleenlähetykseen ja vastaamiseen.
+> Forward Email tarjoaa Sieve-suodatuksen ja ManageSieve-skriptien hallinnan.
 
 ### Sieve (RFC 5228) {#sieve-rfc-5228}
 
-[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) on standardoitu, tehokas skriptikieli palvelinpuolen sähköpostisuodatukseen. Forward Email toteuttaa kattavan Sieve-tuen 24 laajennuksella.
+[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) on standardoitu kieli palvelinpuolen sähköpostisuodatukseen. Forward Email validoi jokaisen skriptin ennen sen tallentamista, aktivointia tai suorittamista. Skripti hylätään, jos se pyytää saatavilla olematonta kyvykkyyttä tai käyttää laajennusta ilmoittamatta siitä `require`-lausessa.
 
 **Lähdekoodi:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
 
-#### Tuetut ydinsieve-RFC:t {#core-sieve-rfcs-supported}
+#### Sieve RFC -yhteensopivuus {#core-sieve-rfcs-supported}
 
-| RFC                                                                                    | Otsikko                                                       | Tila           |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------------- | -------------- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Sieve: Sähköpostin suodatuskieli                              | ✅ Täysi tuki  |
-| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Sieve-sähköpostisuodatus: Hylkäys- ja laajennettu hylkäys     | ✅ Täysi tuki  |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Sieve-sähköpostisuodatus: Lomalaajennus                       | ✅ Täysi tuki  |
-| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Sieve-lomalaajennus: "Seconds"-parametri                      | ✅ Täysi tuki  |
-| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Sieve-sähköpostisuodatus: Imap4flags-laajennus                | ✅ Täysi tuki  |
-| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Sieve-sähköpostisuodatus: Body-laajennus                      | ✅ Täysi tuki  |
-| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Sieve-sähköpostisuodatus: Muuttujalaajennus                   | ✅ Täysi tuki  |
-| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Sieve-sähköpostisuodatus: Relaatiolaajennus                   | ✅ Täysi tuki  |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Internet Application Protocol Collation Registry              | ✅ Täysi tuki  |
-| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Sieve-laajennus: Kopiointi ilman sivuvaikutuksia             | ✅ Täysi tuki  |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Sieve-sähköpostisuodatus: Editheader-laajennus                | ✅ Täysi tuki  |
-| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Sieve-sähköpostisuodatus: Päivämäärä- ja indeksiälaajennukset | ✅ Täysi tuki  |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Sieve-sähköpostisuodatus: Ilmoituslaajennus                   | ✅ Täysi tuki  |
-| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Sieve-sähköpostisuodatus: Ympäristölaajennus                  | ✅ Täysi tuki  |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Sieve-sähköpostisuodatus: Laajennukset postilaatikon tilan tarkistukseen | ✅ Täysi tuki  |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Sieve-sähköpostisuodatus: Toimitus erityiskäyttöpostilaatikoihin | ✅ Täysi tuki  |
-| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Sieve-sähköpostisuodatus: Kaksoistoimitusten tunnistus       | ✅ Täysi tuki  |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Sieve-sähköpostisuodatus: Ihave-laajennus                     | ✅ Täysi tuki  |
-| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Sieve-sähköpostisuodatus: Aliosoite-laajennus                 | ✅ Täysi tuki  |
-| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve-sähköpostisuodatus: Säännöllisten lausekkeiden laajennus | ✅ Täysi tuki  |
+Taulukko erottaa listatun toiminnallisuuden täydellisen toteutuksen tahallisesti rajatusta toiminnasta. ManageSieve mainostaa tässä taulukossa vain julkisia kyvykkyysnimiä.
+
+| RFC tai spesifikaatio | Ominaisuus | Tuettu toiminta |
+| --- | --- | --- |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, ehdolliset lohkot, sekä perus `address`, `header`, `exists`, `size` ja boolean-testit. `fileinto` ja `redirect` toimitetaan saapuvan toimitusputken kautta. |
+| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | SMTP-hylkäys annetulla viestillä. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Poissaolovastaukset jonotetaan väärinkäytönestolla. |
+| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | `:seconds`-aikaväli ohjaa poissaolovastauksen elinaikaa. |
+| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | Liput asetetaan postilaatikkoon tallennuksen yhteydessä. |
+| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Viestin rungon sisällön tarkistus. |
+| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Muuttujien laajennus ja tuetut modifikaattorit. |
+| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` ja `:value` vertailut. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` ja `i;octet`. `i;ascii-numeric` ei ole mainostettu. |
+| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` `fileinto`- ja `redirect`-komentoihin. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Otsakkeiden muokkaus ennen tallennusta, lukuun ottamatta suojattuja todentamis- ja toimitusreitityskenttiä. |
+| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate`- ja otsikkopäivämäärätestit, sekä `:index` ja `:last`. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | `mailto:`-ilmoitukset nopeusrajoituksin. Legacy-`require "notify"`-ilmoitus hyväksytään aliasena, mutta `enotify` mainostetaan. |
+| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | Tuetut istunnon ympäristöarvot. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | Vain `fileinto :create`. Live-`mailboxexists`-kyselyjä ei tueta. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | Standardikansioiden `:specialuse`-kartoitus ja deterministiset `specialuse_exists`-tarkistukset. |
+| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Redisiin pohjautuva kaksoistoimitusten tunnistus. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Tarkistaa, onko mainostettu kyvykkyys saatavilla. |
+| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | `:user` ja `:detail` osoiteosat. |
+| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | Säännöllisten lausekkeiden vastineet käyttäen [RE2](https://github.com/uhop/node-re2). |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME-testit sekä `foreverypart`, `break`, `extracttext` ja `replace`. `enclose` hylätään, koska sille ei ole turvallista toimitustoteutusta. |
+
 #### Tuetut Sieve-laajennukset {#supported-sieve-extensions}
 
-| Laajennus                    | Kuvaus                                  | Integraatio                                |
-| ---------------------------- | ---------------------------------------- | ------------------------------------------ |
-| `fileinto`                   | Tallenna viestit tiettyihin kansioihin  | Viestit tallennetaan määriteltyyn IMAP-kansioon |
-| `reject` / `ereject`         | Hylkää viestit virheilmoituksella       | SMTP-hylkäys palautusviestillä             |
-| `vacation`                   | Automaattiset lomavastausviestit         | Jonotetaan Emails.queue-palvelussa rajoituksin |
-| `vacation-seconds`           | Tarkemmat lomavastausvälit                | TTL `:seconds`-parametrista                 |
-| `imap4flags`                 | Aseta IMAP-liput (\Seen, \Flagged, jne.) | Liput asetetaan viestin tallennuksen yhteydessä |
-| `envelope`                   | Testaa kuoren lähettäjä/vastaanottaja    | Pääsy SMTP-kuoren tietoihin                  |
-| `body`                       | Testaa viestin sisältöä                   | Kokonaisen viestitekstin vastaavuus         |
-| `variables`                  | Tallenna ja käytä muuttujia skripteissä  | Muuttujien laajennus modifikaattoreilla    |
-| `relational`                 | Relaatiovertailut                        | `:count`, `:value` gt/lt/eq-vertailut       |
-| `comparator-i;ascii-numeric` | Numeraaliset vertailut                   | Numeraalinen merkkijonojen vertailu         |
-| `copy`                       | Kopioi viestit uudelleenohjauksen yhteydessä | `:copy`-lippu fileinto/redirect-komentoihin |
-| `editheader`                 | Lisää tai poista viestin otsikoita       | Otsikoita muokataan ennen tallennusta       |
-| `date`                       | Testaa päivämäärä/aikaleima-arvoja       | `currentdate` ja otsikon päivämäärätestit   |
-| `index`                      | Access specific header occurrences       | `:index` and `:last` for multi-value headers in header tests and deleteheader |
-| `regex`                      | Säännöllisten lausekkeiden vastaavuus    | Täysi regex-tuki testeissä                   |
-| `enotify`                    | Lähetä ilmoituksia                       | `mailto:`-ilmoitukset Emails.queue-palvelun kautta |
-| `notify`                     | Send notifications (alias for enotify)   | Deprecated [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) alias; rate-limited (10/hr per alias) |
-| `mime`                       | MIME part tests and iteration    | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags on header/address tests. Security hardened with iteration limits, instruction counting, and depth restrictions. |
-| `environment`                | Pääsy ympäristötietoihin                  | Domain, host, remote-ip istunnosta           |
-| `mailbox`                    | Testaa postilaatikon olemassaolo          | `mailboxexists`-testi                        |
-| `special-use`                | Tallenna erikoiskäyttöisiin postilaatikoihin | Karttaa \Junk, \Trash jne. kansioihin        |
-| `duplicate`                  | Havaitse kaksoiskappaleviestit            | Redis-pohjainen kaksoiskappaleiden seuranta |
-| `ihave`                      | Testaa laajennuksen saatavuus              | Ajonaikainen kyvykkyyden tarkistus          |
-| `subaddress`                 | Pääsy käyttäjä+lisätiedot-osioihin        | `:user` ja `:detail` osoiteosat              |
+| Laajennus | Toiminta | Toimitus tai valvonta |
+| --- | --- | --- |
+| `fileinto` | Tiedostaa viestin kansioon. | Tallennetaan valittuun IMAP-kansioon. `fileinto :create` vaatii `mailbox`. |
+| `copy` | Säilyttää alkuperäisen toimituksen lisättäessä `fileinto` tai `redirect`. | Sovelletaan toimitusputkessa. |
+| `redirect` | Lähettää kopion tai korvaavan toimituksen toiselle vastaanottajalle. | Jonotetaan normaalin lähtevän polun kautta, alistettuna domenipolitiikalle, estolistoille ja nopeusrajoituksille. |
+| `reject` / `ereject` | Hylkää viestin SMTP-virheellä. | Palautetaan MX-toimituspolun kautta. |
+| `vacation` / `vacation-seconds` | Lähettää automaattisen vastauksen. | Jonotetaan vastaanottaja- ja aikavälirajoitusten mukaisesti. |
+| `imap4flags` | Asettaa tai testaa IMAP-lippuja. | Sovelletaan viestin tallennuksen yhteydessä. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | Testaa viestin ja kehystiedon arvoja. | Arvioidaan Sieve-moottorissa. |
+| `variables`, `duplicate`, `ihave` | Tallentaa arvoja, tunnistaa duplikaatteja ja tarkistaa kyvykkyyksiä. | Muuttujat ovat skriptiin sidottuja; duplikaattitila käyttää Redis:iä. |
+| `editheader` | Lisää tai poistaa ei-suojattuja otsakkeita. | Todentamis- ja toimitusreititysohjauskenttiä ei voi muuttaa. |
+| `enotify` | Lähettää ilmoituksen käyttäen `mailto:`-osoitetta. | Jonotetaan ilmoitusnopeusrajoituksin. |
+| `environment` | Lukee tuettuja istunnon ympäristötietoja. | Arvioidaan Sieve-moottorissa. |
+| `special-use` | Käsittelee standardikäyttökansioita. | Kartoittaa standardikansiot ja tarjoaa deterministiset `specialuse_exists`-tulokset. |
+| `mime` | Tarkastelee ja muuttaa tuettuja MIME-osia. | Vaatii yleisen `mime`-kyvykkyyden. Yksittäisiä RFC 5703 -komentoja ei mainosteta erikseen. |
 
-#### Sieve-laajennukset, joita EI tueta {#sieve-extensions-not-supported}
+#### Sieve-ominaisuudet, joita ei tueta {#sieve-extensions-not-supported}
 
-| Laajennus                               | RFC                                                       | Syy                                                             |
-| --------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
-| `include`                               | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Turvariski (skriptin injektointi), vaatii globaalin skriptivaraston |
-| `mboxmetadata` / `servermetadata`       | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Vaatii IMAP METADATA -laajennuksen                              |
-| `fcc`                                   | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Vaatii Lähetetyt-kansion integraation                           |
-| `encoded-character`                     | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Parsinmuutoksia vaaditaan ${hex:}-syntaksille                   |
-#### Siivilän käsittelyprosessi {#sieve-processing-flow}
+Nämä ominaisuudet hylätään ennen pysyvyyttä, aktivointia, ManageSieve-hyväksyntää tai suodattimen suorittamista. Pelkkä parserin tunnistus ei tee ominaisuudesta tuettua.
+
+| Ominaisuus | RFC tai spesifikaatio | Syy |
+| --- | --- | --- |
+| `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Uuden viestin luominen, joka liittää alkuperäisen viestin sisäänsä, ei ole toteutettu turvallisesti päästä päähän. |
+| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Reaaliaikaiset IMAP-postilaatikon tilakyselyt eivät ole käytettävissä. |
+| `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Globaalien ja sisällytettävien skriptien tallennusta ei ole saatavilla. |
+| `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | IMAP METADATA -integraatio ei ole saatavilla. |
+| `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Lähetettyjen viestien arkistoinnin integrointi ei ole saatavilla. |
+| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | `${hex:...}`-syntaksia ei ole toteutettu. |
+| External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` ja muut ulkoislistan toiminnot eivät ole saatavilla. |
+
+#### Sieve-käsittelyvirtaus {#sieve-processing-flow}
 
 ```mermaid
 sequenceDiagram
-    participant MX as MX-palvelin
-    participant Sieve as Siivilämoottori
-    participant Redis as Redis-välimuisti
-    participant SQLite as SQLite-tallennus
-    participant Queue as Sähköpostojono
+    participant MX as MX Server
+    participant Sieve as Sieve Engine
+    participant Redis as Redis Cache
+    participant SQLite as SQLite Storage
+    participant Queue as Email Queue
 
-    MX->>Sieve: Saapuva viesti
-    Sieve->>Sieve: Jäsennä aktiivinen skripti
-    Sieve->>Sieve: Suorita säännöt
+    MX->>Sieve: Incoming message
+    Sieve->>Sieve: Validate declared capabilities
+    Sieve->>Sieve: Execute active script
 
-    alt fileinto-toiminto
-        Sieve->>SQLite: Tallenna kansioon lipukkeiden kanssa
-    else uudelleenohjaustoiminto
-        Sieve->>Queue: Jono toimitusta varten
-    else lomatoiminto
-        Sieve->>Redis: Tarkista rajoitus
-        Redis-->>Sieve: OK lähettää
-        Sieve->>Queue: Jono lomavastausta varten
-    else hylkäystoiminto
-        Sieve->>MX: Palauta SMTP-hylkäys
-    else hylkää-toiminto
-        Sieve->>Sieve: Pudota viesti hiljaisesti
+    alt fileinto action
+        Sieve->>SQLite: Store in folder with flags
+    else redirect action
+        Sieve->>Redis: Check redirect limits
+        Sieve->>Queue: Queue redirected message
+    else vacation action
+        Sieve->>Redis: Check reply limit
+        Redis-->>Sieve: Reply allowed
+        Sieve->>Queue: Queue vacation reply
+    else reject action
+        Sieve->>MX: Return SMTP rejection
+    else discard action
+        Sieve->>Sieve: Drop message silently
     end
 
-    Sieve-->>MX: Käsittely valmis
+    Sieve-->>MX: Processing complete
 ```
 
 #### Turvaominaisuudet {#security-features}
 
-Forward Emailn Siivilä-toteutus sisältää kattavat turvasuojaukset:
+Forward Email validoi koko skriptin ennen sen tallentamista, aktivointia tai suorittamista. Se hylkää ilmoittamattomat ja saatavilla olemattomat kyvykkyydet, rajoittaa skriptin kokoa ja MIME-osien läpikäyntiä, käyttää [RE2](https://github.com/uhop/node-re2):ta säännöllisten lausekkeiden vertailuun, rajoittaa uudelleenohjauksia, poissaolovastauksia ja ilmoituksia nopeusrajoituksin, kieltää turvattomat uudelleenohjauskohteet ja estää `editheader`-komentoa muuttamasta todentamis- tai toimitusreititysohjeita. Uudelleenohjausten ja poissaolovastausten nopeusrajoitustila pidetään [Redis](https://github.com/redis/redis):issä, kun taas toimitetut viestit tallennetaan [SQLite](https://github.com/sqlite/sqlite):lla.
 
-* **CVE-2023-26430-suojaus**: Estää uudelleenohjaussilmukat ja sähköpostipommitushyökkäykset
-* **Rajoitukset**: Uudelleenohjauksille (10/viesti, 100/päivä) ja lomavastauksille asetetut rajat
-* **Kieltolistatarkistus**: Uudelleenohjausosoitteet tarkistetaan kieltolistalta
-* **Suojaetut otsikot**: DKIM-, ARC- ja todennusotsikoita ei voi muokata editheader-komennolla
-* **Skriptin kokorajoitukset**: Maksimikoko pakotettu
-* **Suoritusaikarajat**: Skriptit keskeytetään, jos suoritusaika ylittää rajan
-
-#### Esimerkkisiiviläskriptit {#example-sieve-scripts}
+#### Esimerkkit Sieve-skripteistä {#example-sieve-scripts}
 
 **Tallenna uutiskirjeet kansioon:**
 
@@ -1218,39 +1211,37 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Lomavastaaja hienosäädetyllä ajoituksella:**
+**Poissaoloautomaatti tarkemmalla ajoituksella:**
 
 ```sieve
 require ["vacation", "vacation-seconds"];
 
-vacation :seconds 3600 :subject "Poissa toimistolta"
-    "Olen tällä hetkellä poissa ja vastaan 24 tunnin sisällä.";
+vacation :seconds 3600 :subject "Out of Office"
+    "I'm currently away and will respond within 24 hours.";
 ```
 
-**Roskapostisuodatus lipukkeilla:**
+**Tiedostoi kansioon lippujen kanssa:**
 
 ```sieve
-require ["fileinto", "imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if header :contains "X-Spam-Status" "Yes" {
-    setflag "\\Seen";
-    fileinto "Junk";
+    fileinto :create :flags ["\\Seen"] "Junk";
 }
 ```
 
-**Monimutkainen suodatus muuttujilla:**
+**Uudelleenohjaa laskut:**
 
 ```sieve
-require ["variables", "fileinto", "mailbox"];
+require ["redirect"];
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
 > \[!TIP]
-> Täydellistä dokumentaatiota, esimerkkiskriptejä ja konfigurointiohjeita varten katso [UKK: Tuetteko Siivilä-sähköpostisuodatusta?](/faq#do-you-support-sieve-email-filtering)
+> Täydellinen dokumentaatio, esimerkkiskriptit ja konfigurointiohjeet löytyvät kohdasta [UKK: Tuetteko Sieve-sähköpostisuodatusta?](/faq#do-you-support-sieve-email-filtering)
 
 ### ManageSieve (RFC 5804) {#managesieve-rfc-5804}
 

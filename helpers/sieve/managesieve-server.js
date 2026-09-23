@@ -30,31 +30,11 @@ const { Buffer } = require('node:buffer');
 const { EventEmitter } = require('node:events');
 const net = require('node:net');
 const tls = require('node:tls');
-const { validate } = require('./parser');
-
-// Supported capabilities - duplicated to avoid circular dependency
-const SUPPORTED_CAPABILITIES = [
-  'fileinto',
-  'reject',
-  'ereject',
-  'envelope',
-  'encoded-character',
-  'comparator-i;ascii-casemap',
-  'comparator-i;octet',
-  'copy',
-  'body',
-  'vacation',
-  'vacation-seconds',
-  'variables',
-  'imap4flags',
-  'relational',
-  'editheader',
-  'date',
-  'index',
-  'regex',
-  'enotify',
-  'environment'
-];
+const { parse, validate } = require('./parser');
+const {
+  SUPPORTED_CAPABILITIES,
+  validateSieveCapabilities
+} = require('./capabilities');
 
 // ManageSieve response codes
 const RESPONSE = {
@@ -197,7 +177,6 @@ class ManageSieveServer extends EventEmitter {
       `"VERSION" "${this.config.version}"`,
       '"SASL" "PLAIN LOGIN"',
       `"SIEVE" "${SUPPORTED_CAPABILITIES.join(' ')}"`,
-      '"MAXREDIRECTS" "10"',
       '"NOTIFY" "mailto"',
       '"LANGUAGE" "en"'
     ];
@@ -668,11 +647,18 @@ class ManageSieveConnection {
 
     // Validate script
     const validation = validate(script);
-    if (!validation.valid) {
-      const error = validation.errors[0];
+    const capabilityValidation = validation.valid
+      ? validateSieveCapabilities(parse(script))
+      : null;
+    if (!validation.valid || !capabilityValidation.valid) {
+      const error = validation.valid
+        ? { message: capabilityValidation.errors[0] }
+        : validation.errors[0];
       this.send(
         RESPONSE.NO,
-        `Script error at line ${error.line}: ${error.message}`
+        `Script error${error.line ? ` at line ${error.line}` : ''}: ${
+          error.message
+        }`
       );
       return;
     }
@@ -847,14 +833,21 @@ class ManageSieveConnection {
    */
   handleCheckScript(script) {
     const validation = validate(script);
+    const capabilityValidation = validation.valid
+      ? validateSieveCapabilities(parse(script))
+      : null;
 
-    if (validation.valid) {
+    if (validation.valid && capabilityValidation.valid) {
       this.send(RESPONSE.OK, 'Script is valid');
     } else {
-      const error = validation.errors[0];
+      const error = validation.valid
+        ? { message: capabilityValidation.errors[0] }
+        : validation.errors[0];
       this.send(
         RESPONSE.NO,
-        `Script error at line ${error.line}: ${error.message}`
+        `Script error${error.line ? ` at line ${error.line}` : ''}: ${
+          error.message
+        }`
       );
     }
   }

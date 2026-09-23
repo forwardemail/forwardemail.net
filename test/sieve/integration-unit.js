@@ -85,7 +85,7 @@ function createMultipartMessage({ foldedBoundary }) {
 }
 
 describe('Sieve RFC 5703 integration regressions', () => {
-  it('accepts explicit command declarations alongside the mime umbrella', async () => {
+  it('rejects unadvertised MIME pseudo-capabilities', () => {
     const script = `
       require ["foreverypart", "mime", "replace"];
       foreverypart {
@@ -93,31 +93,9 @@ describe('Sieve RFC 5703 integration regressions', () => {
       }
     `;
     const validation = validateScript(script);
-    const engine = new SieveEngine({ logger });
-    const result = await engine.execute(parse(script), createMimeMessage());
 
-    assert.strictEqual(validation.valid, true);
-    assert.deepStrictEqual(
-      result.actions.filter((action) => action.type === 'replace'),
-      [
-        {
-          type: 'replace',
-          partIndex: 1,
-          replacement: 'Replacement text',
-          mime: false,
-          subject: null,
-          from: null
-        },
-        {
-          type: 'replace',
-          partIndex: 2,
-          replacement: 'Replacement text',
-          mime: false,
-          subject: null,
-          from: null
-        }
-      ]
-    );
+    assert.strictEqual(validation.valid, false);
+    assert.match(validation.errors[0].message, /foreverypart/);
   });
 
   it('retains mime as a compatible umbrella for RFC 5703 commands', async () => {
@@ -141,14 +119,14 @@ describe('Sieve RFC 5703 integration regressions', () => {
 
     await assert.rejects(
       engine.execute(parse('foreverypart { keep; }'), createMimeMessage()),
-      /Capability "foreverypart" must be declared with require\./
+      /MIME command "foreverypart" requires "mime" to be declared with require\./
     );
     await assert.rejects(
       engine.execute(
         parse('require "foreverypart"; foreverypart { replace "text"; }'),
         createMimeMessage()
       ),
-      /Capability "replace" must be declared with require\./
+      /Unsupported capability: foreverypart/
     );
     await assert.rejects(
       engine.execute(
@@ -157,11 +135,11 @@ describe('Sieve RFC 5703 integration regressions', () => {
         ),
         createMimeMessage()
       ),
-      /Capability "extracttext" must be declared with require\./
+      /Unsupported capability: foreverypart/
     );
     await assert.rejects(
       engine.execute(parse('enclose "message/rfc822";'), createMimeMessage()),
-      /Capability "enclose" must be declared with require\./
+      /Sieve enclose is not supported/
     );
   });
 

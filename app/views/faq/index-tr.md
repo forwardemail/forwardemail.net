@@ -2804,50 +2804,38 @@ Aşağıdaki e-posta istemcileri yerleşik S/MIME desteğine sahiptir:
 
 ### Sieve e-posta filtrelemeyi destekliyor musunuz {#do-you-support-sieve-email-filtering}
 
-Evet! [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) ile tanımlandığı şekilde [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) e-posta filtrelemeyi destekliyoruz. Sieve, gelen mesajları otomatik olarak düzenlemenize, filtrelemenize ve yanıtlamanıza olanak tanıyan güçlü, standartlaştırılmış bir sunucu tarafı e-posta filtreleme betik dilidir.
+Evet. Forward Email, [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) temelinde sunucu tarafı [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) filtrelemeyi destekler. Betikler, gelen mesajları posta kutusuna teslim edilmeden önce filtreler. Bir betik, mevcut olmayan bir yetenek talep ederse veya bir uzantıyı `require` içinde beyan etmeden kullanırsa reddedilir.
 
-#### Desteklenen Sieve Uzantıları {#supported-sieve-extensions}
+Tam, uygulama tarafından desteklenen yetenek listesi ve RFC notları [Sieve protokol belgelerinde](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison#sieve-rfc-5228) mevcuttur.
 
-Kapsamlı bir Sieve uzantıları setini destekliyoruz:
+#### Mevcut Sieve yetenekleri
 
-| Uzantı                      | RFC                                                                                   | Açıklama                                        |
-| --------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `fileinto`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                             | Mesajları belirli klasörlere dosyalama          |
-| `reject` / `ereject`        | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                             | Hata ile mesajları reddetme                      |
-| `vacation`                  | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                             | Otomatik tatil/ofis dışı yanıtları               |
-| `vacation-seconds`          | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                             | İnce ayarlı tatil yanıt aralıkları               |
-| `imap4flags`                | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                             | IMAP bayraklarını ayarlama (\Seen, \Flagged vb.)|
-| `envelope`                  | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                             | Zarf gönderen/alıcı testi                         |
-| `body`                      | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                             | Mesaj gövdesi içeriği testi                       |
-| `variables`                 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                             | Betiklerde değişkenleri saklama ve kullanma      |
-| `relational`                | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                             | İlişkisel karşılaştırmalar (büyüktür, küçüktür)  |
-| `comparator-i;ascii-numeric`| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                             | Sayısal karşılaştırmalar                          |
-| `copy`                      | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                             | Yönlendirirken mesajları kopyalama               |
-| `editheader`                | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                             | Mesaj başlıklarını ekleme veya silme              |
-| `date`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                             | Tarih/saat değerlerini test etme                  |
-| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences (`:index` and `:last` for header tests)   |
-| `regex`                     | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex)| Düzenli ifade eşleştirme                          |
-| `enotify`                   | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                             | Bildirim gönderme (örneğin, mailto:)             |
-| `notify`                     | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (deprecated alias for enotify; rate-limited 10/hr per alias) |
-| `mime`                       | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703)                              | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags. Security hardened with iteration limits and depth restrictions. |
-| `environment`               | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                             | Ortam bilgilerine erişim                           |
-| `mailbox`                   | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                             | Posta kutusu varlığını test etme, posta kutuları oluşturma |
-| `special-use`               | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                             | Özel kullanım posta kutularına dosyalama (\Junk, \Trash) |
-| `duplicate`                 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                             | Çift mesajları tespit etme                        |
-| `ihave`                     | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                             | Uzantı kullanılabilirliğini test etme             |
-| `subaddress`                | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                             | kullanıcı+detay adres parçalarına erişim          |
-#### Desteklenmeyen Uzantılar {#extensions-not-supported}
+| Kategori | Yetenekler ve davranış |
+| --- | --- |
+| Temel dil | `keep`, `discard`, `stop`, koşullu bloklar ve temel `address`, `header`, `exists`, `size` ve boolean testleri. |
+| Teslimat | `fileinto`, `copy`, `redirect`, `mailbox` (`fileinto :create` için) ve standart klasör `:specialuse` eşlemesi ile `special-use` ve `specialuse_exists`. |
+| Testler ve karşılaştırmalar | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap` ve `i;octet`. |
+| Durum ve değişkenler | `variables`, `imap4flags`, `duplicate` ve `ihave`. |
+| Eylemler ve yanıtlar | `reject`, `ereject`, `vacation`, `vacation-seconds` ve `enotify` ( `mailto:` kullanılarak). Kalıcı bildirim bildirimi olan `require "notify"` girdi takma adı olarak `enotify` kabul edilir, ancak duyurulan yetenek `enotify`'dir. |
+| Mesaj işleme | `editheader`, `environment` ve `mime`, `foreverypart`, `break`, `extracttext` ve `replace` dahil. |
 
-Aşağıdaki uzantılar şu anda desteklenmemektedir:
+`redirect` normal giden kuyruk üzerinden teslim edilir. Yapılandırılmış redirect-domain politikası, reddetme listesi kontrolleri ve hız sınırlamalarına tabidir. `editheader` korumalı kimlik doğrulama veya teslimat-yönlendirme başlıklarını değiştiremez.
 
-| Uzantı                                                        | Sebep                                                               |
-| ------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `include`                                                     | Güvenlik riski (script enjeksiyonu) ve global script depolama gerektirir |
-| `mboxmetadata` / `servermetadata`                             | IMAP METADATA uzantısı desteği gerektirir                          |
+#### Desteklenmeyen özellikler
 
-#### Örnek Sieve Scriptleri {#example-sieve-scripts}
+| Özellik | Sebep |
+| --- | --- |
+| `enclose` | Orijinal mesajı kapsayan yeni bir mesaj oluşturma uygulanmamıştır. |
+| `mailboxexists` | Forward Email canlı IMAP posta kutusu durumu sorgulamaları yapmaz. `fileinto :create` `mailbox` üzerinden kullanılmaya devam eder. |
+| `include` | Küresel ve eklenen betik depolaması mevcut değildir. |
+| `mboxmetadata` / `servermetadata` | IMAP METADATA entegrasyonu mevcut değildir. |
+| `fcc` | Gönderilen posta dosyalama entegrasyonu mevcut değildir. |
+| `encoded-character` | `${hex:...}` sözdizimi uygulanmamıştır. |
+| External lists | `valid_ext_list` ve diğer dış-liste işlemleri mevcut değildir. |
 
-**Bültenleri bir klasöre dosyalama:**
+#### Örnek Sieve betikleri
+
+**File newsletters into a folder:**
 
 ```sieve
 require ["fileinto"];
@@ -2857,62 +2845,44 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**Tatil durumunda otomatik yanıt:**
+**Auto-reply when on vacation:**
 
 ```sieve
-require ["vacation"];
+require ["vacation", "vacation-seconds"];
 
-vacation :days 7 :subject "Out of Office"
-    "Şu anda ofis dışında bulunmaktayım ve döndüğümde yanıt vereceğim.";
+vacation :seconds 604800 :subject "Out of Office"
+    "I am currently out of the office and will respond when I return.";
 ```
 
-**Önemli gönderenlerden gelen mesajları işaretleme:**
+**Create a folder when filing a message:**
 
 ```sieve
-require ["imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if address :is "from" "boss@example.com" {
-    setflag "\\Flagged";
+    fileinto :create :flags ["\\Flagged"] "Important";
 }
 ```
 
-**Belirli konulu spam mesajları reddetme:**
+**Redirect a message:**
 
 ```sieve
-require ["reject"];
+require ["redirect"];
 
-if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
-    reject "Mesaj spam içeriği nedeniyle reddedildi.";
-}
-```
-**İstenmeyen mesajları sessizce at:**
-
-```sieve
-if header :contains "List-Unsubscribe" "marketing.example.com" {
-    discard;
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
-**Değişkenlerle karmaşık filtreleme:**
+#### Sieve betiklerini yönetme
 
-```sieve
-require ["variables", "fileinto", "mailbox"];
+Sieve betiklerini birkaç yolla yönetebilirsiniz:
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
-}
-```
+1. **Web Arayüzü**: Betikleri oluşturmak ve yönetmek için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alanlar</a> <i class="fa fa-angle-right"></i> Takma Adlar <i class="fa fa-angle-right"></i> Sieve Betikleri sayfasına gidin.
 
-#### Sieve Scriptlerini Yönetme {#managing-sieve-scripts}
+2. **ManageSieve Protokolü**: Thunderbird'in Sieve eklentisi veya [sieve-connect](https://github.com/philpennock/sieve-connect) gibi herhangi bir ManageSieve uyumlu istemci ile `imap.forwardemail.net` adresine bağlanın. STARTTLS ile `2190` portunu veya implicit TLS ile `4190` portunu kullanın.
 
-Sieve scriptlerinizi birkaç şekilde yönetebilirsiniz:
-
-1. **Web Arayüzü**: Script oluşturmak ve yönetmek için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar <i class="fa fa-angle-right"></i> Sieve Scriptleri bölümüne gidin.
-
-2. **ManageSieve Protokolü**: Thunderbird'ün Sieve eklentisi veya [sieve-connect](https://github.com/philpennock/sieve-connect) gibi ManageSieve uyumlu herhangi bir istemci kullanarak `imap.forwardemail.net` adresine bağlanın. Çoğu istemci için önerilen STARTTLS ile `2190` portunu veya implicit TLS ile `4190` portunu kullanın.
-
-3. **API**: Scriptleri programlı olarak yönetmek için [REST API](/api#sieve-scripts) kullanabilirsiniz.
+3. **API**: Betikleri programlı olarak yönetmek için [REST API](/api#sieve-scripts) kullanın.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2920,7 +2890,7 @@ Sieve scriptlerinizi birkaç şekilde yönetebilirsiniz:
     Not:
   </strong>
   <span>
-    Sieve filtreleme, gelen mesajlar posta kutunuza kaydedilmeden önce uygulanır. Scriptler öncelik sırasına göre çalıştırılır ve ilk eşleşen işlem mesajın nasıl işleneceğini belirler.
+    Sieve filtreleme, gelen mesajlara posta kutusuna teslim edilmeden önce uygulanır. Betikler öncelik sırasına göre yürütülür ve ilk eşleşen eylem, mesajın nasıl işleneceğini belirler.
   </span>
 </div>
 
@@ -2930,7 +2900,7 @@ Sieve scriptlerinizi birkaç şekilde yönetebilirsiniz:
     Güvenlik:
   </strong>
   <span>
-    Güvenlik nedeniyle, yönlendirme işlemleri script başına 10 ve günlük 100 ile sınırlandırılmıştır. Tatil yanıtları kötüye kullanımı önlemek için oran sınırlamasına tabidir.
+    Yönlendirmeler yapılandırılmış politika ve hız sınırlarına karşı kontrol edilir. Tatil yanıtları ve bildirimleri kötüye kullanımı önlemek için hız sınırlamasına tabidir.
   </span>
 </div>
 

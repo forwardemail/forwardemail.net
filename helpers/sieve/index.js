@@ -32,64 +32,11 @@ const SieveFilterHandler = require('./filter-handler');
 const ManageSieveServer = require('./managesieve-server');
 const { MemorySieveStore } = require('./store');
 const { SieveIntegration, createSieveIntegration } = require('./integration');
-
-// Core Sieve tests (RFC 5228 Section 5) - these are always available
-// and don't need to be declared with "require", but some scripts
-// incorrectly include them. We accept them silently for compatibility.
-const CORE_TESTS = [
-  'address',
-  'allof',
-  'anyof',
-  'exists',
-  'false',
-  'header',
-  'not',
-  'size',
-  'true'
-];
-
-// Supported capabilities
-const SUPPORTED_CAPABILITIES = [
-  // Core (RFC 5228)
-  'fileinto',
-  'reject',
-  'ereject',
-  'envelope',
-  'encoded-character',
-  'comparator-i;ascii-casemap',
-  'comparator-i;octet',
-  // Copy (RFC 3894)
-  'copy',
-  // Body (RFC 5173)
-  'body',
-  // Vacation (RFC 5230)
-  'vacation',
-  'vacation-seconds',
-  // Variables (RFC 5229)
-  'variables',
-  // IMAP4 Flags (RFC 5232)
-  'imap4flags',
-  // Relational (RFC 5231)
-  'relational',
-  // Edit Header (RFC 5293)
-  'editheader',
-  // Date (RFC 5260)
-  'date',
-  // Index (RFC 5260)
-  'index',
-  // Regex (draft-ietf-sieve-regex)
-  'regex',
-  // Notify (RFC 5435)
-  'enotify',
-  // Environment (RFC 5183)
-  'environment',
-  // MIME part tests and manipulation (RFC 5703)
-  'mime',
-  'foreverypart',
-  'replace',
-  'extracttext',
-  'enclose'
-];
+const {
+  CORE_CAPABILITIES,
+  SUPPORTED_CAPABILITIES,
+  validateSieveCapabilities
+} = require('./capabilities');
 
 /**
  * Execute a Sieve script against a message
@@ -100,6 +47,11 @@ const SUPPORTED_CAPABILITIES = [
  */
 async function executeScript(script, message, options = {}) {
   const ast = parse(script);
+  const capabilityResult = validateSieveCapabilities(ast);
+  if (!capabilityResult.valid) {
+    throw new Error(capabilityResult.errors.join('; '));
+  }
+
   const engine = new SieveEngine({
     capabilities: SUPPORTED_CAPABILITIES,
     ...options
@@ -119,30 +71,23 @@ function validateScript(script) {
     return result;
   }
 
-  // Check for unsupported capabilities
   const ast = parse(script);
-  const required = getRequiredCapabilities(ast);
-  const unsupported = required.filter(
-    (cap) => !SUPPORTED_CAPABILITIES.includes(cap) && !CORE_TESTS.includes(cap)
-  );
-
-  if (unsupported.length > 0) {
+  const capabilityResult = validateSieveCapabilities(ast);
+  if (!capabilityResult.valid) {
     return {
       valid: false,
-      errors: [
-        {
-          message: `Unsupported capabilities: ${unsupported.join(', ')}`,
-          line: 1,
-          column: 1
-        }
-      ]
+      errors: capabilityResult.errors.map((message) => ({
+        message,
+        line: 1,
+        column: 1
+      }))
     };
   }
 
   return {
     valid: true,
     errors: [],
-    capabilities: required
+    capabilities: capabilityResult.required
   };
 }
 
@@ -186,5 +131,5 @@ module.exports = {
 
   // Constants
   SUPPORTED_CAPABILITIES,
-  CORE_TESTS
+  CORE_TESTS: CORE_CAPABILITIES
 };

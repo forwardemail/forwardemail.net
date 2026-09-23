@@ -1095,120 +1095,113 @@ sequenceDiagram
 ## 邮件消息过滤 {#email-message-filtering}
 
 > \[!IMPORTANT]
-> Forward Email 提供 **完整的 Sieve 和 ManageSieve 支持**，用于服务器端邮件过滤。创建强大的规则，自动分类、过滤、转发和响应来信。
+> Forward Email 提供 Sieve 过滤和 ManageSieve 脚本管理，其支持的功能和明确的限制在下文中记录。
 
-### Sieve（RFC 5228）{#sieve-rfc-5228}
+### Sieve（RFC 5228） {#sieve-rfc-5228}
 
-[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) 是一种标准化的强大脚本语言，用于服务器端邮件过滤。Forward Email 实现了包含 24 个扩展的全面 Sieve 支持。
+[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) 是一种用于服务器端邮件过滤的标准化语言。Forward Email 在脚本被存储、激活或执行之前会对其进行验证。如果脚本请求不可用的能力或使用未在 `require` 中声明的扩展，则该脚本会被拒绝。
 
 **源代码：** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
 
-#### 支持的核心 Sieve RFC {#core-sieve-rfcs-supported}
+#### Sieve RFC 兼容性 {#core-sieve-rfcs-supported}
 
-| RFC                                                                                    | 标题                                                         | 状态           |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------------- | -------------- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Sieve：一种邮件过滤语言                                      | ✅ 完全支持     |
-| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Sieve 邮件过滤：拒绝和扩展拒绝扩展                            | ✅ 完全支持     |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Sieve 邮件过滤：假期扩展                                      | ✅ 完全支持     |
-| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Sieve 假期扩展：“秒”参数                                     | ✅ 完全支持     |
-| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Sieve 邮件过滤：Imap4flags 扩展                              | ✅ 完全支持     |
-| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Sieve 邮件过滤：正文扩展                                      | ✅ 完全支持     |
-| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Sieve 邮件过滤：变量扩展                                      | ✅ 完全支持     |
-| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Sieve 邮件过滤：关系扩展                                      | ✅ 完全支持     |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | 互联网应用协议排序注册表                                      | ✅ 完全支持     |
-| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Sieve 扩展：无副作用复制                                     | ✅ 完全支持     |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Sieve 邮件过滤：编辑头扩展                                    | ✅ 完全支持     |
-| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Sieve 邮件过滤：日期和索引扩展                                | ✅ 完全支持     |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Sieve 邮件过滤：通知扩展                                      | ✅ 完全支持     |
-| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Sieve 邮件过滤：环境扩展                                      | ✅ 完全支持     |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Sieve 邮件过滤：检查邮箱状态的扩展                            | ✅ 完全支持     |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Sieve 邮件过滤：投递到特殊用途邮箱                            | ✅ 完全支持     |
-| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Sieve 邮件过滤：检测重复投递                                  | ✅ 完全支持     |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Sieve 邮件过滤：Ihave 扩展                                   | ✅ 完全支持     |
-| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Sieve 邮件过滤：子地址扩展                                   | ✅ 完全支持     |
-| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve 邮件过滤：正则表达式扩展                               | ✅ 完全支持     |
+下表区分了对所列行为的完整实现与故意限制的行为。ManageSieve 仅公布本表中列出的公共能力名称。
+
+| RFC 或 规范 | 能力 | 支持的行为 |
+| --- | --- | --- |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | 支持 `keep`、`discard`、`stop`、条件块，以及基础的 `address`、`header`、`exists`、`size` 和布尔测试。`fileinto` 和 `redirect` 通过入站投递管道进行投递。 |
+| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | 使用所提供的消息进行 SMTP 拒绝。 |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | 启用带有滥用控制的休假自动回复。 |
+| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | `:seconds` 间隔控制休假回复的 TTL。 |
+| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | 在邮箱存储期间应用标志。 |
+| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | 消息正文内容匹配。 |
+| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | 变量展开及支持的修饰符。 |
+| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | 支持 `:count` 和 `:value` 比较。 |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | 支持 `i;ascii-casemap` 和 `i;octet`。不公布 `i;ascii-numeric`。 |
+| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | 在 `fileinto` 和 `redirect` 上支持 `:copy`。 |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | 在存储之前更改头部，但受保护的身份验证和投递路由字段除外。 |
+| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | 支持 `currentdate` 和头部日期测试，以及 `:index` 和 `:last`。 |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | 使用 `mailto:` 通知并带有速率限制。接受传统的 `require "notify"` 声明作为别名，但公布为 `enotify`。 |
+| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | 支持的会话环境值。 |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | 仅支持 `fileinto :create`。不支持实时的 `mailboxexists` 查询。 |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | 标准文件夹的 `:specialuse` 映射和确定性的 `specialuse_exists` 检查。 |
+| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | 基于 Redis 的重复投递检测。 |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | 检查一个宣告的能力是否可用。 |
+| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | 支持地址的 `:user` 和 `:detail` 部分。 |
+| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | 使用 [RE2](https://github.com/uhop/node-re2) 进行正则表达式匹配。 |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME 测试及 `foreverypart`、`break`、`extracttext` 和 `replace`。`enclose` 被拒绝，因为它没有安全的投递实现。 |
+
 #### 支持的 Sieve 扩展 {#supported-sieve-extensions}
 
-| 扩展                         | 描述                                   | 集成                                      |
-| ---------------------------- | -------------------------------------- | ----------------------------------------- |
-| `fileinto`                   | 将邮件归档到指定文件夹                   | 邮件存储在指定的 IMAP 文件夹中               |
-| `reject` / `ereject`         | 拒绝邮件并返回错误                       | SMTP 拒绝并带有退信消息                       |
-| `vacation`                   | 自动假期/离开回复                        | 通过 Emails.queue 排队并限速                   |
-| `vacation-seconds`           | 细粒度假期响应间隔                       | 从 `:seconds` 参数获取 TTL                   |
-| `imap4flags`                 | 设置 IMAP 标记（\Seen, \Flagged 等）    | 在邮件存储时应用标记                          |
-| `envelope`                   | 测试信封发件人/收件人                     | 访问 SMTP 信封数据                           |
-| `body`                       | 测试邮件正文内容                         | 完整正文文本匹配                             |
-| `variables`                  | 在脚本中存储和使用变量                    | 带修饰符的变量扩展                           |
-| `relational`                 | 关系比较                               | 使用 gt/lt/eq 的 `:count`、`:value`          |
-| `comparator-i;ascii-numeric` | 数值比较                               | 数字字符串比较                              |
-| `copy`                       | 重定向时复制邮件                         | 在 fileinto/redirect 上使用 `:copy` 标志      |
-| `editheader`                 | 添加或删除邮件头                         | 存储前修改邮件头                             |
-| `date`                       | 测试日期/时间值                         | `currentdate` 和邮件头日期测试                 |
-| `index`                      | Access specific header occurrences       | `:index` and `:last` for multi-value headers in header tests and deleteheader |
-| `regex`                      | 正则表达式匹配                          | 测试中支持完整正则表达式                       |
-| `enotify`                    | 发送通知                               | 通过 Emails.queue 发送 `mailto:` 通知          |
-| `notify`                     | Send notifications (alias for enotify)   | Deprecated [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) alias; rate-limited (10/hr per alias) |
-| `mime`                       | MIME part tests and iteration    | ✅ Full — `foreverypart`, `break`, `extracttext`, `replace`, `enclose` commands; `:mime`, `:type`, `:subtype`, `:contenttype`, `:param`, `:anychild` tags on header/address tests. Security hardened with iteration limits, instruction counting, and depth restrictions. |
-| `environment`                | 访问环境信息                           | 会话中的域、主机、远程 IP                      |
-| `mailbox`                    | 测试邮箱是否存在                         | `mailboxexists` 测试                         |
-| `special-use`                | 归档到特殊用途邮箱                        | 映射 \Junk、\Trash 等到文件夹                   |
-| `duplicate`                  | 检测重复邮件                           | 基于 Redis 的重复检测                         |
-| `ihave`                      | 测试扩展可用性                          | 运行时能力检查                              |
-| `subaddress`                 | 访问 user+detail 地址部分                | `:user` 和 `:detail` 地址部分                  |
+| 扩展 | 行为 | 投递或执行方式 |
+| --- | --- | --- |
+| `fileinto` | 将邮件归档到文件夹。 | 存储到所选的 IMAP 文件夹。`fileinto :create` 需要 `mailbox`。 |
+| `copy` | 在添加 `fileinto` 或 `redirect` 的同时保留原始投递。 | 由投递管道应用。 |
+| `redirect` | 将副本或替换投递发送到另一个收件人。 | 按常规出站路径入队，受域策略、拒绝列表检查和速率限制约束。 |
+| `reject` / `ereject` | 使用 SMTP 错误拒绝邮件。 | 通过 MX 投递路径返回。 |
+| `vacation` / `vacation-seconds` | 发送自动回复。 | 带有收件人和时间间隔的速率限制后入队。 |
+| `imap4flags` | 设置或测试 IMAP 标志。 | 在消息存储时应用。 |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | 测试消息和信封数据。 | 由 Sieve 引擎评估。 |
+| `variables`, `duplicate`, `ihave` | 存储值、检测重复并检查能力。 | 变量为脚本本地；重复状态使用 Redis。 |
+| `editheader` | 添加或删除非受保护的头部。 | 不能修改身份验证和投递路由头部。 |
+| `enotify` | 使用 `mailto:` 发送通知。 | 带有通知速率限制后入队。 |
+| `environment` | 读取受支持的会话环境数据。 | 由 Sieve 引擎评估。 |
+| `special-use` | 指向标准用途文件夹。 | 映射标准文件夹并提供确定性的 `specialuse_exists` 结果。 |
+| `mime` | 检查并更改受支持的 MIME 部分。 | 需要通用的 `mime` 能力。不单独公布 RFC 5703 的各个命令。 |
 
-#### 不支持的 Sieve 扩展 {#sieve-extensions-not-supported}
+#### 不支持的 Sieve 功能 {#sieve-extensions-not-supported}
 
-| 扩展                                   | RFC                                                        | 原因                                                             |
-| ------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------- |
-| `include`                             | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609)  | 安全风险（脚本注入），需要全局脚本存储                             |
-| `mboxmetadata` / `servermetadata`     | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)  | 需要 IMAP METADATA 扩展                                           |
-| `fcc`                                 | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580)  | 需要已发送文件夹集成                                             |
-| `encoded-character`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)  | 解析器需支持 `${hex:}` 语法的更改                                 |
-#### 筛选器处理流程 {#sieve-processing-flow}
+这些功能在持久化、激活、ManageSieve 接受或过滤器执行之前即被拒绝。仅解析器识别并不表示该功能被支持。
+
+| 功能 | RFC 或 规范 | 原因 |
+| --- | --- | --- |
+| `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | 创建一个包含原始消息的新邮件在端到端上无法安全实现。 |
+| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | 无法进行实时的 IMAP 邮箱状态查询。 |
+| `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | 不提供全局和包含脚本的存储。 |
+| `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | 不支持 IMAP METADATA 集成。 |
+| `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | 不支持已发送邮件的归档集成。 |
+| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | 未实现 `${hex:...}` 语法。 |
+| External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | 不支持 `valid_ext_list` 和其他外部列表操作。 |
+
+#### Sieve 处理流程 {#sieve-processing-flow}
 
 ```mermaid
 sequenceDiagram
-    participant MX as MX 服务器
-    participant Sieve as 筛选器引擎
-    participant Redis as Redis 缓存
-    participant SQLite as SQLite 存储
-    participant Queue as 邮件队列
+    participant MX as MX Server
+    participant Sieve as Sieve Engine
+    participant Redis as Redis Cache
+    participant SQLite as SQLite Storage
+    participant Queue as Email Queue
 
-    MX->>Sieve: 收到邮件
-    Sieve->>Sieve: 解析活动脚本
-    Sieve->>Sieve: 执行规则
+    MX->>Sieve: Incoming message
+    Sieve->>Sieve: Validate declared capabilities
+    Sieve->>Sieve: Execute active script
 
-    alt fileinto 操作
-        Sieve->>SQLite: 存储到文件夹并带标记
-    else redirect 操作
-        Sieve->>Queue: 排队等待投递
-    else vacation 操作
-        Sieve->>Redis: 检查速率限制
-        Redis-->>Sieve: 允许发送
-        Sieve->>Queue: 排队发送假期回复
-    else reject 操作
-        Sieve->>MX: 返回 SMTP 拒绝
-    else discard 操作
-        Sieve->>Sieve: 静默丢弃邮件
+    alt fileinto action
+        Sieve->>SQLite: Store in folder with flags
+    else redirect action
+        Sieve->>Redis: Check redirect limits
+        Sieve->>Queue: Queue redirected message
+    else vacation action
+        Sieve->>Redis: Check reply limit
+        Redis-->>Sieve: Reply allowed
+        Sieve->>Queue: Queue vacation reply
+    else reject action
+        Sieve->>MX: Return SMTP rejection
+    else discard action
+        Sieve->>Sieve: Drop message silently
     end
 
-    Sieve-->>MX: 处理完成
+    Sieve-->>MX: Processing complete
 ```
 
-#### 安全特性 {#security-features}
+#### 安全功能 {#security-features}
 
-Forward Email 的筛选器实现包含全面的安全保护：
+Forward Email 在脚本被存储、激活或执行之前会对完整脚本进行验证。它会拒绝未声明或不可用的能力，限制脚本大小和 MIME 部分迭代，使用 [RE2](https://github.com/uhop/node-re2) 进行正则表达式匹配，对重定向、休假回复和通知进行速率限制，拒绝不安全的重定向目标，并防止 `editheader` 更改身份验证或投递路由头部。重定向和休假速率限制状态保存在 [Redis](https://github.com/redis/redis)，而已投递邮件则存储在 [SQLite](https://github.com/sqlite/sqlite)。
 
-* **CVE-2023-26430 保护**：防止重定向循环和邮件轰炸攻击
-* **速率限制**：重定向限制（每封邮件10次，每天100次）和假期回复限制
-* **拒绝列表检查**：重定向地址会检查拒绝列表
-* **受保护的头部**：DKIM、ARC 和认证头部不能通过 editheader 修改
-* **脚本大小限制**：强制最大脚本大小
-* **执行超时**：执行时间超过限制时终止脚本
+#### 示例 Sieve 脚本 {#example-sieve-scripts}
 
-#### 示例筛选器脚本 {#example-sieve-scripts}
-
-**将新闻通讯归档到文件夹：**
+**将时事通讯归档到文件夹：**
 
 ```sieve
 require ["fileinto"];
@@ -1218,39 +1211,37 @@ if header :contains "List-Id" "newsletter" {
 }
 ```
 
-**带有细粒度时间控制的假期自动回复：**
+**具有细粒度定时的休假自动回复：**
 
 ```sieve
 require ["vacation", "vacation-seconds"];
 
-vacation :seconds 3600 :subject "外出中"
-    "我目前不在，会在24小时内回复。";
+vacation :seconds 3600 :subject "Out of Office"
+    "I'm currently away and will respond within 24 hours.";
 ```
 
-**带标记的垃圾邮件过滤：**
+**带标志的归档到文件夹：**
 
 ```sieve
-require ["fileinto", "imap4flags"];
+require ["fileinto", "imap4flags", "mailbox"];
 
 if header :contains "X-Spam-Status" "Yes" {
-    setflag "\\Seen";
-    fileinto "Junk";
+    fileinto :create :flags ["\\Seen"] "Junk";
 }
 ```
 
-**使用变量的复杂过滤：**
+**重定向发票：**
 
 ```sieve
-require ["variables", "fileinto", "mailbox"];
+require ["redirect"];
 
-if address :all :matches "From" "*@example.com" {
-    set :lower :upperfirst "sender" "${1}";
-    fileinto :create "Contacts/${sender}";
+if header :contains "Subject" "invoice" {
+    redirect "recipient@example.com";
 }
 ```
 
 > \[!TIP]
-> 有关完整文档、示例脚本和配置说明，请参见 [FAQ：你们支持筛选器邮件过滤吗？](/faq#do-you-support-sieve-email-filtering)
+> 有关完整文档、示例脚本和配置说明，请参见 [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
 
 ### ManageSieve (RFC 5804) {#managesieve-rfc-5804}
 

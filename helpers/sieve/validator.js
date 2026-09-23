@@ -12,47 +12,14 @@
  * - Capability verification
  */
 
-const { parse, validate, getRequiredCapabilities } = require('./parser');
+const { parse, validate } = require('./parser');
 const { SieveSecurityValidator } = require('./security');
-
-// Core Sieve tests (RFC 5228 Section 5) - these are always available
-// and don't need to be declared with "require", but some scripts
-// incorrectly include them. We accept them silently for compatibility.
-const CORE_TESTS = new Set([
-  'address',
-  'allof',
-  'anyof',
-  'exists',
-  'false',
-  'header',
-  'not',
-  'size',
-  'true'
-]);
-
-// Supported capabilities - duplicated here to avoid circular dependency
-const SUPPORTED_CAPABILITIES = [
-  'fileinto',
-  'reject',
-  'ereject',
-  'envelope',
-  'encoded-character',
-  'comparator-i;ascii-casemap',
-  'comparator-i;octet',
-  'copy',
-  'body',
-  'vacation',
-  'vacation-seconds',
-  'variables',
-  'imap4flags',
-  'relational',
-  'editheader',
-  'date',
-  'index',
-  'regex',
-  'enotify',
-  'environment'
-];
+const {
+  CORE_CAPABILITIES,
+  SUPPORTED_CAPABILITIES,
+  getCapability,
+  validateSieveCapabilities
+} = require('./capabilities');
 
 /**
  * Comprehensive Sieve script validator
@@ -92,7 +59,13 @@ class SieveValidator {
         warnings: [],
         issues: []
       },
-      capabilities: { valid: true, required: [], unsupported: [] },
+      capabilities: {
+        valid: true,
+        declared: [],
+        required: [],
+        unsupported: [],
+        errors: []
+      },
       recommendations: [],
       stats: {}
     };
@@ -147,18 +120,32 @@ class SieveValidator {
     }
 
     // Capability validation
-    const requiredCaps = getRequiredCapabilities(ast);
-    result.capabilities.required = requiredCaps;
+    const capabilityResult = validateSieveCapabilities(ast);
+    result.capabilities = capabilityResult;
 
-    const unsupported = requiredCaps.filter(
-      (cap) =>
-        !this.options.allowedCapabilities.includes(cap) && !CORE_TESTS.has(cap)
+    const allowedCapabilities = new Set(
+      this.options.allowedCapabilities.map((capability) =>
+        getCapability(capability)
+      )
     );
+    const disabledCapabilities = capabilityResult.declared.filter(
+      (capability) =>
+        !allowedCapabilities.has(capability) &&
+        !CORE_CAPABILITIES.includes(capability)
+    );
+    for (const capability of disabledCapabilities) {
+      result.capabilities.unsupported.push({
+        feature: capability,
+        reason: 'capability is disabled by this validator configuration'
+      });
+      result.capabilities.errors.push(
+        `Unsupported Sieve feature "${capability}": capability is disabled by this validator configuration`
+      );
+    }
 
-    if (unsupported.length > 0) {
+    result.capabilities.valid = result.capabilities.errors.length === 0;
+    if (!result.capabilities.valid) {
       result.valid = false;
-      result.capabilities.valid = false;
-      result.capabilities.unsupported = unsupported;
     }
 
     // Security validation
@@ -212,21 +199,19 @@ class SieveValidator {
   analyzeCapabilities(script) {
     try {
       const ast = parse(script);
-      const required = getRequiredCapabilities(ast);
+      const capabilityResult = validateSieveCapabilities(ast);
+      const { required } = capabilityResult;
 
       return {
-        valid: true,
+        valid: capabilityResult.valid,
         required,
-        supported: required.filter(
-          (cap) =>
-            this.options.allowedCapabilities.includes(cap) ||
-            CORE_TESTS.has(cap)
+        declared: capabilityResult.declared,
+        supported: required.filter((cap) =>
+          this.options.allowedCapabilities
+            .map((capability) => getCapability(capability))
+            .includes(cap)
         ),
-        unsupported: required.filter(
-          (cap) =>
-            !this.options.allowedCapabilities.includes(cap) &&
-            !CORE_TESTS.has(cap)
-        )
+        unsupported: capabilityResult.unsupported
       };
     } catch (err) {
       return {
@@ -246,8 +231,8 @@ class SieveValidator {
       return;
     }
 
-    const hasRequire = ast.commands.some((cmd) => cmd.type === 'require');
-    const usedCapabilities = this.detectUsedCapabilities(ast);
+    const hasRequire = ast.commands.some((cmd) => cmd.type === 'Require');
+    const { required: usedCapabilities } = validateSieveCapabilities(ast);
 
     // Check for missing require statements
     if (usedCapabilities.length > 0 && !hasRequire) {
@@ -256,16 +241,6 @@ class SieveValidator {
         message: `Script uses capabilities that should be declared with require: ${usedCapabilities.join(
           ', '
         )}`
-      });
-    }
-
-    // Check for redirect without copy
-    const hasRedirectWithoutCopy = this.hasRedirectWithoutCopy(ast);
-    if (hasRedirectWithoutCopy) {
-      result.recommendations.push({
-        type: 'redirect_without_copy',
-        message:
-          'Consider using :copy with redirect to keep a local copy of messages. Without :copy, messages are only forwarded and not stored locally.'
       });
     }
 
@@ -292,109 +267,7 @@ class SieveValidator {
    * @returns {string[]} List of used capabilities
    */
   detectUsedCapabilities(ast) {
-    const capabilities = new Set();
-
-    const checkCommand = (cmd) => {
-      switch (cmd.type) {
-        case 'fileinto': {
-          capabilities.add('fileinto');
-          break;
-        }
-
-        case 'reject': {
-          capabilities.add('reject');
-          break;
-        }
-
-        case 'ereject': {
-          capabilities.add('ereject');
-          break;
-        }
-
-        case 'vacation': {
-          capabilities.add('vacation');
-          break;
-        }
-
-        case 'addflag':
-        case 'removeflag':
-        case 'setflag': {
-          capabilities.add('imap4flags');
-          break;
-        }
-
-        case 'addheader':
-        case 'deleteheader': {
-          capabilities.add('editheader');
-          break;
-        }
-
-        case 'set': {
-          capabilities.add('variables');
-          break;
-        }
-
-        case 'notify': {
-          capabilities.add('enotify');
-          break;
-        }
-
-        default: {
-          break;
-        }
-      }
-
-      // Check for copy flag
-      if (cmd.copy) {
-        capabilities.add('copy');
-      }
-
-      // Recurse into if/elsif blocks
-      if (cmd.then) {
-        for (const subcmd of cmd.then) {
-          checkCommand(subcmd);
-        }
-      }
-
-      if (cmd.else) {
-        for (const subcmd of cmd.else) {
-          checkCommand(subcmd);
-        }
-      }
-    };
-
-    for (const cmd of ast.commands) {
-      checkCommand(cmd);
-    }
-
-    return [...capabilities];
-  }
-
-  /**
-   * Check if script has redirect without copy
-   * @param {Object} ast - The parsed AST
-   * @returns {boolean} True if redirect without copy found
-   */
-  hasRedirectWithoutCopy(ast) {
-    const checkCommands = (commands) => {
-      for (const cmd of commands) {
-        if (cmd.type === 'redirect' && !cmd.copy) {
-          return true;
-        }
-
-        if (cmd.then && checkCommands(cmd.then)) {
-          return true;
-        }
-
-        if (cmd.else && checkCommands(cmd.else)) {
-          return true;
-        }
-      }
-
-      return false;
-    };
-
-    return checkCommands(ast.commands);
+    return validateSieveCapabilities(ast).required;
   }
 
   /**
@@ -501,10 +374,10 @@ class SieveValidator {
     }
 
     if (!result.capabilities.valid) {
-      lines.push(
-        'Unsupported Capabilities:',
-        `  ${result.capabilities.unsupported.join(', ')}`
+      const unsupported = result.capabilities.unsupported.map((entry) =>
+        typeof entry === 'string' ? entry : `${entry.feature}: ${entry.reason}`
       );
+      lines.push('Unsupported Capabilities:', `  ${unsupported.join(', ')}`);
     }
 
     if (!result.security.valid) {
@@ -559,7 +432,10 @@ class SieveValidator {
       `Required: ${result.capabilities.required.join(', ') || 'None'}`
     );
     if (result.capabilities.unsupported.length > 0) {
-      lines.push(`Unsupported: ${result.capabilities.unsupported.join(', ')}`);
+      const unsupported = result.capabilities.unsupported.map((entry) =>
+        typeof entry === 'string' ? entry : `${entry.feature}: ${entry.reason}`
+      );
+      lines.push(`Unsupported: ${unsupported.join(', ')}`);
     }
 
     lines.push(
