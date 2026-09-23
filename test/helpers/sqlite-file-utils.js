@@ -90,6 +90,9 @@ test('artifacts of interrupted file swaps are removed once they are a day old', 
   const freshCopy = place(t, `${id}-${randomUUID()}-backup.sqlite`, {
     mtime: fresh
   });
+  const freshWal = place(t, `${freshCopy.split('/').pop()}-wal`, {
+    mtime: stale
+  });
   const staleCopy = place(t, `${id}-${randomUUID()}-backup.sqlite`, {
     mtime: stale
   });
@@ -109,14 +112,67 @@ test('artifacts of interrupted file swaps are removed once they are a day old', 
 
   t.false(await removeStaleSwapArtifact(freshCopy, { now }));
   t.true(fs.existsSync(freshCopy));
+  // The sidecar's own mtime must not age a fresh backup prematurely.
+  t.false(await removeStaleSwapArtifact(freshWal, { now }));
+  t.true(fs.existsSync(freshWal));
 
-  for (const file of [
-    staleCopy,
-    staleWal,
-    staleJournal,
-    staleVacuum,
-    staleMutex
-  ]) {
+  // Visiting a sidecar first deletes the expired primary and every sidecar.
+  t.true(await removeStaleSwapArtifact(staleWal, { now }));
+  for (const file of [staleCopy, staleWal, staleJournal]) {
+    t.false(fs.existsSync(file));
+  }
+
+  for (const file of [staleVacuum, staleMutex]) {
+    t.true(await removeStaleSwapArtifact(file, { now }));
+    t.false(fs.existsSync(file));
+  }
+});
+
+test('request-scoped backup artifacts are removed once they are a day old', async (t) => {
+  const { id } = t.context;
+  const now = Date.now();
+  const fresh = new Date(now - ms('23h'));
+  const stale = new Date(now - ms('25h'));
+  // WebSocket request IDs are two short hexadecimal hashes separated by `:`.
+  const freshRequestId = 'a0fef79322:2f76e999b69';
+  const staleRequestId = 'a0fef79322:2f76e999b6a';
+
+  const freshExport = place(t, `${freshRequestId}-backup.sqlite`, {
+    mtime: fresh
+  });
+  const freshExportWal = place(t, `${freshRequestId}-backup.sqlite-wal`, {
+    mtime: stale
+  });
+  const staleExport = place(t, `${staleRequestId}-backup.sqlite`, {
+    mtime: stale
+  });
+  const staleExportWal = place(t, `${staleRequestId}-backup.sqlite-wal`, {
+    mtime: stale
+  });
+  const staleMbox = place(t, `${staleRequestId}-backup.mbox`, { mtime: stale });
+  const staleZip = place(t, `${staleRequestId}-backup.zip`, { mtime: stale });
+  // Requeued pre-operation-ID rekeys use the same request ID after alias ID.
+  const staleRekey = place(t, `${id}-${staleRequestId}-backup.sqlite`, {
+    mtime: stale
+  });
+  const orphanedWal = place(t, 'a0fef79322:2f76e999b6b-backup.sqlite-wal', {
+    mtime: stale
+  });
+
+  t.false(await removeStaleSwapArtifact(freshExport, { now }));
+  t.true(fs.existsSync(freshExport));
+  t.false(await removeStaleSwapArtifact(freshExportWal, { now }));
+  t.true(fs.existsSync(freshExportWal));
+
+  t.true(await removeStaleSwapArtifact(staleExportWal, { now }));
+  for (const file of [staleExport, staleExportWal]) {
+    t.false(fs.existsSync(file));
+  }
+
+  t.true(await removeStaleSwapArtifact(orphanedWal, { now }));
+  t.false(fs.existsSync(orphanedWal));
+
+  for (const file of [staleMbox, staleZip, staleRekey]) {
     t.true(await removeStaleSwapArtifact(file, { now }));
     t.false(fs.existsSync(file));
   }
@@ -136,6 +192,7 @@ test('the live mailbox, its companions, its mutex and its backups are never touc
     place(t, `${id}-tmp.sqlite`, { mtime: ancient }),
     place(t, `${id}.sqlite.gz`, { mtime: ancient }),
     place(t, `${id}-backup.sqlite`, { mtime: ancient }),
+    place(t, 'a:b-backup.sqlite', { mtime: ancient }),
     place(t, `${id}.sqlite.quarantine-notanumber`, { mtime: ancient }),
     place(t, `not-an-id.sqlite.quarantine-1`, { mtime: ancient })
   ];

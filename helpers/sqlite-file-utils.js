@@ -80,12 +80,14 @@ function fsyncDirectory(dirPath) {
 }
 
 //
-// Artifacts of file swaps that were cut short (a process killed
+// Artifacts of file swaps and exports that were cut short (a process killed
 // mid-operation) are removed once they are a day old, whichever alias they
 // belong to: the rekeyed copy `<id>-<operation>-backup.sqlite` (with
-// companions), the inline VACUUM copy `<id>.sqlite.vacuum-tmp-<pid>` and a
-// broken file mutex that could not be removed (`<id>.sqlite.lock.stale-<uuid>`,
-// see helpers/db-file-lock.js).  A running rekey never uses a copy that old:
+// companions), the legacy request-scoped export
+// `<request-hash>:<request-hash>-backup.<extension>`, the inline VACUUM copy
+// `<id>.sqlite.vacuum-tmp-<pid>` and a broken file mutex that could not be
+// removed (`<id>.sqlite.lock.stale-<uuid>`, see helpers/db-file-lock.js).  A
+// running rekey never uses a copy that old:
 // it removes and re-creates its copy on every attempt.  (A `<id>.sqlite.lock`
 // directory itself is never touched: a stale one is broken by the next
 // process that needs the mutex, and removing one that was just re-created
@@ -101,8 +103,15 @@ function fsyncDirectory(dirPath) {
 // directory.  Resolves with `null` for a file that is neither, otherwise
 // with whether the file was removed (or would have been, on a dry run).
 //
-const SWAP_ARTIFACT_NAME =
-  /^[a-f\d]{24}(?:-[\w-]+-backup\.sqlite(?:-wal|-shm|-journal)?|\.sqlite\.vacuum-tmp-\d+|\.sqlite\.lock\.stale-[\w-]+)$/;
+const SQLITE_BACKUP_SUFFIX = 'backup\\.sqlite(?:-wal|-shm|-journal)?';
+const LEGACY_BACKUP_SUFFIX =
+  'backup\\.(?:sqlite(?:-wal|-shm|-journal)?|mbox|zip)';
+const SWAP_ARTIFACT_NAME = new RegExp(
+  // `getRekeyTmpPath()` accepts a legacy WebSocket request ID when a queued
+  // rekey has no operation UUID.  Those IDs contain a colon (see
+  // `create-websocket-as-promised.js`), so `:` is deliberate here.
+  `^(?:[a-f\\d]{24}-[\\w:-]+-${SQLITE_BACKUP_SUFFIX}|[a-f\\d]{10,64}:[a-f\\d]{10,64}-${LEGACY_BACKUP_SUFFIX}|[a-f\\d]{24}\\.sqlite\\.vacuum-tmp-\\d+|[a-f\\d]{24}\\.sqlite\\.lock\\.stale-[\\w-]+)$`
+);
 const QUARANTINE_NAME =
   /^[a-f\d]{24}\.sqlite\.quarantine-(\d+)(?:-wal|-shm|-journal)?$/;
 const SWAP_ARTIFACT_MAX_AGE = ms('1d');
@@ -116,7 +125,32 @@ async function removeStaleSwapArtifact(
   if (!quarantineMatch && !SWAP_ARTIFACT_NAME.test(name)) return null;
 
   try {
-    const stats = await fs.promises.stat(artifactPath);
+    // A SQLite backup verification opens the copied database with WAL mode.
+    // A normal close removes its -wal and -shm files, but an abrupt worker
+    // death can leave them next to the copied database.  Age a companion by
+    // its primary backup file when that file is still present: an old,
+    // untouched WAL must not be removed from a backup that is otherwise
+    // fresh.  Once the primary expires, remove the whole artifact group.
+    let primaryPath = artifactPath;
+    let shouldRemoveCompanions = false;
+    if (!quarantineMatch) {
+      const suffix = COMPANION_SUFFIXES.find((value) => name.endsWith(value));
+      if (suffix) {
+        const candidate = artifactPath.slice(0, -suffix.length);
+        if (SWAP_ARTIFACT_NAME.test(path.basename(candidate))) {
+          try {
+            await fs.promises.stat(candidate);
+            primaryPath = candidate;
+          } catch (err) {
+            if (err.code !== 'ENOENT') throw err;
+          }
+        }
+      }
+
+      shouldRemoveCompanions = primaryPath.endsWith('.sqlite');
+    }
+
+    const stats = await fs.promises.stat(primaryPath);
     const age = quarantineMatch
       ? now - Number(quarantineMatch[1])
       : now - stats.mtimeMs;
@@ -127,11 +161,13 @@ async function removeStaleSwapArtifact(
 
     if (dryRun) {
       logger.info('Would remove stale swap artifact (dry run)', {
-        artifactPath
+        artifactPath: primaryPath
       });
     } else {
-      await fs.promises.rm(artifactPath, { force: true, recursive: true });
-      logger.info('Removed stale swap artifact', { artifactPath });
+      await fs.promises.rm(primaryPath, { force: true, recursive: true });
+      if (shouldRemoveCompanions)
+        await removeCompanionFiles(primaryPath, COMPANION_SUFFIXES);
+      logger.info('Removed stale swap artifact', { artifactPath: primaryPath });
     }
 
     return true;
