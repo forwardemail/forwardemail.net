@@ -79,14 +79,16 @@
 
 تشمل البنية الحاويات لـ:
 
-* واجهة ويب للإدارة
-* خادم SMTP للبريد الصادر
+* واجهة ويب للإدارة، بالإضافة إلى خادم API للوصول البرمجي
+* موجّه SNI من nginx يُنهي اتصال TLS على المنفذ 443 ويعمل كوكيل لتطبيقات الويب و API و CalDAV و CardDAV
+* خادم SMTP للبريد الصادر وخادم MX للبريد الوارد
 * خوادم IMAP/POP3 لاسترجاع البريد
-* خادم CalDAV للتقاويم
+* خادم CalDAV للتقويمات
 * خادم CardDAV لجهات الاتصال
-* قاعدة بيانات لتخزين الإعدادات
+* خادم SQLite لتخزين صناديق البريد بشكل آمن ومشفّر، بالإضافة إلى عامل SQLite يقوم بنسخ صناديق البريد احتياطيًا وعمليات `VACUUM` وتدوير كلمات مرور الأسماء المستعارة
+* مشغّلات المهام المجدولة (Bree) لطبقات الويب/API والصادر و SQLite
+* MongoDB لتخزين الإعدادات
 * Redis للتخزين المؤقت والأداء
-* SQLite لتخزين صناديق البريد المشفرة والآمنة
 
 > \[!NOTE]
 > تأكد من مراجعة [دليل المطورين المستضاف ذاتيًا](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@
 صممنا عملية التثبيت لتكون بسيطة قدر الإمكان مع الحفاظ على أفضل ممارسات الأمان:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 هذا الأمر الواحد يقوم بـ:
@@ -196,7 +198,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### متطلبات النظام {#system-requirements}
 
-* أوبونتو 20.04 LTS أو أحدث (موصى به)  
+* أوبونتو 20.04 LTS أو أحدث، أو Debian 11/12 (راجع دليلي [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) و [Debian](https://forwardemail.net/guides/selfhosted-on-debian) خطوة بخطوة)
 * ذاكرة 1 جيجابايت كحد أدنى (2 جيجابايت أو أكثر موصى به)  
 * 20 جيجابايت تخزين موصى به  
 * اسم نطاق تملكه  
@@ -211,7 +213,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 1. **تشغيل سكريبت التثبيت**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **اتبع التعليمات التفاعلية**:  

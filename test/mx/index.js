@@ -4495,6 +4495,30 @@ test('reverse hostname is only trusted when it forward-confirms (FCrDNS)', async
   const port = await getPort();
   await smtp.listen(port);
 
+  //
+  // Present the connection to this instance as coming from a *public* address.
+  // A private CI address (e.g. 10.x on the runner) is shadowed by the runner's
+  // /etc/hosts, so Tangerine's reverse() short-circuits on the local hostname
+  // and never consults the spoofed PTR (the connecting IP and hostname are the
+  // only session values a client cannot choose for itself, so this is the sole
+  // path that sets `session.resolvedClientHostname`). We reuse the same
+  // deterministic pattern as the generic reverse-DNS spoofing test above: the
+  // connect-hook override makes the reverse-DNS/allowlist checks observe the
+  // public address, and smtp-server's XCLIENT extension (enabled on this
+  // instance only, and issued by the raw SMTP client below) makes the SMTP
+  // transaction -- and therefore the delivered `X-Forward-Email-Sender` header
+  // -- carry the same address. Without XCLIENT, `_resetSession` would reset
+  // `session.remoteAddress` back to the loopback socket address before DATA.
+  //
+  const senderAddress = '185.243.7.12';
+  t.true(net.isIPv4(senderAddress));
+  smtp.server.options.useXClient = true;
+  const { onConnect } = smtp.server;
+  smtp.server.onConnect = (session, fn) => {
+    session.remoteAddress = senderAddress;
+    return onConnect(session, fn);
+  };
+
   const receivedEmails = [];
 
   const serverPort = await getPort();
@@ -4578,8 +4602,8 @@ test('reverse hostname is only trusted when it forward-confirms (FCrDNS)', async
   // the connecting IP claims (via PTR) to be this hostname
   // (Tangerine caches PTR answers under the reversed in-addr.arpa name)
   const claimedHostname = 'mx1.fcrdns-test.com';
-  t.true(net.isIPv4(IP_ADDRESS));
-  const reversedIp = `${IP_ADDRESS.split('.')
+  const reversedIp = `${senderAddress
+    .split('.')
     .reverse()
     .join('.')}.in-addr.arpa`;
 
@@ -4614,77 +4638,96 @@ test('reverse hostname is only trusted when it forward-confirms (FCrDNS)', async
   );
   await resolver.options.cache.mset(map);
 
-  // set our local IP to allowlist so message does not get greylisted
-  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+  // allowlist the (public) connecting address so the message is not greylisted
+  await t.context.client.set(`allowlist:${senderAddress}`, true);
 
+  //
+  // Raw SMTP client that issues XCLIENT so the transaction is attributed to the
+  // spoofed public address (nodemailer cannot send XCLIENT). Resolves with the
+  // server's reply to the message body, i.e. the reply that follows the 354
+  // reply to DATA.
+  //
   const send = async (subject) => {
-    const mx = await asyncMxConnect({
-      target: IP_ADDRESS,
+    const raw = [
+      `To: test@${domain.name}`,
+      'From: legitimate@department.gov.co',
+      `Subject: ${subject}`,
+      'Content-Type: text/plain; charset=us-ascii',
+      'Content-Transfer-Encoding: 7bit',
+      '',
+      subject
+    ].join('\r\n');
+    const replies = await sendRawSMTP({
+      host: IP_ADDRESS,
       port: smtp.server.address().port,
-      dnsOptions: {
-        resolve: util.callbackify(resolver.resolve.bind(resolver))
-      }
+      commands: [
+        `XCLIENT ADDR=${senderAddress}`,
+        // greet with a bracketed address literal: this is not an FQDN, so the
+        // HELO hostname cannot itself contribute to the denylist check in
+        // scenario 3 -- the reverse hostname is then the sole source of the
+        // denylisted domain (this mirrors what nodemailer previously sent)
+        `EHLO [${senderAddress}]`,
+        'MAIL FROM:<legitimate@department.gov.co>',
+        `RCPT TO:<test@${domain.name}>`,
+        'DATA',
+        `${raw}\r\n.`,
+        'QUIT'
+      ]
     });
-    const transporter = nodemailer.createTransport({
-      logger,
-      debug: true,
-      host: mx.host,
-      port: mx.port,
-      connection: mx.socket,
-      ignoreTLS: true,
-      secure: false,
-      tls
-    });
-    const count = receivedEmails.length;
-    await transporter.sendMail({
-      envelope: {
-        from: 'legitimate@department.gov.co',
-        to: `test@${domain.name}`
-      },
-      raw: `
-To: test@${domain.name}
-From: legitimate@department.gov.co
-Subject: ${subject}
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+    const dataIndex = replies.findIndex((reply) => reply.command === 'DATA');
+    t.true(dataIndex !== -1, 'DATA command should have been sent');
+    t.is(replies[dataIndex].code, 354);
+    t.truthy(replies[dataIndex + 1], 'server must reply to the message body');
+    return replies[dataIndex + 1];
+  };
 
-${subject}
-`
-    });
+  //
+  // Deliver a message that is expected to be accepted, then return the
+  // delivered copy with header continuation lines unfolded so a header can be
+  // matched as a single line.
+  //
+  const deliver = async (subject) => {
+    const count = receivedEmails.length;
+    const reply = await send(subject);
+    t.is(
+      reply.code,
+      250,
+      `message should be accepted (got ${reply.code} ${reply.text})`
+    );
     await pWaitFor(() => receivedEmails.length > count, {
       timeout: ms('10s')
     });
-    // unfold header continuation lines so a header can be matched as one line
     return receivedEmails[receivedEmails.length - 1].data.replace(
       /\r?\n[ \t]+/g,
       ' '
     );
   };
 
-  // 1) the claimed hostname forward-confirms (its A record is our IP):
-  //    the reverse hostname is trusted and advertised on the delivered message
+  // 1) the claimed hostname forward-confirms (its A record is the connecting
+  //    address): the reverse hostname is trusted and advertised on the message
   await resolver.options.cache.mset(
     new Map([
       [
         `a:${claimedHostname}`,
-        resolver.spoofPacket(claimedHostname, 'A', [IP_ADDRESS], true)
+        resolver.spoofPacket(claimedHostname, 'A', [senderAddress], true)
       ]
     ])
   );
-  const confirmed = await send('fcrdns confirmed');
+  const confirmed = await deliver('fcrdns confirmed');
   t.regex(
     confirmed,
     new RegExp(
       `^X-Forward-Email-Sender: rfc822; .*, ${claimedHostname.replace(
         /\./g,
         '\\.'
-      )}, ${IP_ADDRESS.replace(/\./g, '\\.')}\\r?$`,
+      )}, ${senderAddress.replace(/\./g, '\\.')}\\r?$`,
       'm'
     )
   );
 
-  // 2) the same PTR, but the hostname does not resolve to our IP (a spoofed
-  //    reverse record): the reverse hostname must not be trusted
+  // 2) the same PTR, but the hostname does not resolve to the connecting
+  //    address (a spoofed reverse record): the reverse hostname must not be
+  //    trusted, so only the IP is advertised
   await resolver.options.cache.mset(
     new Map([
       [
@@ -4693,11 +4736,11 @@ ${subject}
       ]
     ])
   );
-  const unconfirmed = await send('fcrdns unconfirmed');
+  const unconfirmed = await deliver('fcrdns unconfirmed');
   t.regex(
     unconfirmed,
     new RegExp(
-      `^X-Forward-Email-Sender: rfc822; .*, ${IP_ADDRESS.replace(
+      `^X-Forward-Email-Sender: rfc822; .*, ${senderAddress.replace(
         /\./g,
         '\\.'
       )}\\r?$`,
@@ -4712,8 +4755,12 @@ ${subject}
   //    denylisting its root domain must reject the message
   const claimedRootDomain = parseRootDomain(claimedHostname);
   await t.context.client.set(`denylist:${claimedRootDomain}`, true);
-  const err = await t.throwsAsync(send('fcrdns unconfirmed but denylisted'));
-  t.regex(err.message, /denylisted/i);
+  const denylistedReply = await send('fcrdns unconfirmed but denylisted');
+  t.true(
+    denylistedReply.code >= 400,
+    `denylisted message must be rejected (got ${denylistedReply.code} ${denylistedReply.text})`
+  );
+  t.regex(denylistedReply.text, /denylisted/i);
   t.is(receivedEmails.length, 2);
   await t.context.client.del(`denylist:${claimedRootDomain}`);
 
@@ -4721,6 +4768,7 @@ ${subject}
   // the shared Tangerine Redis cache (prefixed 'tangerine:').
   await t.context.client.del(`tangerine:ptr:${reversedIp}`);
   await t.context.client.del(`tangerine:a:${claimedHostname}`);
+  await t.context.client.del(`allowlist:${senderAddress}`);
 
   await server.close();
   await smtp.close();

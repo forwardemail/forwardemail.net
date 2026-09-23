@@ -79,14 +79,16 @@ We hebben onze gehele e-mailinfrastructuur verpakt met Docker, waardoor het eenv
 
 De architectuur bevat containers voor:
 
-* Webinterface voor administratie
-* SMTP-server voor uitgaande e-mail
-* IMAP/POP3-servers voor e-mail ophalen
+* Webinterface voor beheer, plus een API-server voor programmatische toegang
+* Een nginx-SNI-router die TLS op poort 443 termineert en als proxy fungeert naar de web-, API-, CalDAV- en CardDAV-apps
+* SMTP-server voor uitgaande e-mail en een MX-server voor inkomende e-mail
+* IMAP/POP3-servers voor het ophalen van e-mail
 * CalDAV-server voor agenda's
 * CardDAV-server voor contacten
-* Database voor configuratieopslag
+* SQLite-server voor veilige, versleutelde mailboxopslag, plus een SQLite-worker die mailbox-back-ups, `VACUUM`s en alias-wachtwoordrotaties uitvoert
+* Uitvoerders van geplande taken (Bree) voor de web-/API-, uitgaande en SQLite-lagen
+* MongoDB voor configuratieopslag
 * Redis voor caching en prestaties
-* SQLite voor veilige, versleutelde mailboxopslag
 
 > \[!NOTE]
 > Bekijk zeker onze [zelf-gehoste ontwikkelaarsgids](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@ De architectuur bevat containers voor:
 We hebben het installatieproces zo eenvoudig mogelijk ontworpen, terwijl we de beste beveiligingspraktijken handhaven:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 Deze enkele opdracht:
@@ -196,7 +198,7 @@ Klaar om de controle over je e-mailinfrastructuur te nemen? Zo begin je:
 
 ### Systeemvereisten {#system-requirements}
 
-* Ubuntu 20.04 LTS of nieuwer (aanbevolen)  
+* Ubuntu 20.04 LTS of nieuwer, of Debian 11/12 (zie de stapsgewijze handleidingen voor [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) en [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * Minimaal 1GB RAM (2GB+ aanbevolen)  
 * 20GB opslag aanbevolen  
 * Een domeinnaam die je beheert  
@@ -211,7 +213,7 @@ Klaar om de controle over je e-mailinfrastructuur te nemen? Zo begin je:
 
 1. **Voer het Installatiescript uit**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Volg de Interactieve Prompts**:  

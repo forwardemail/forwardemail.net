@@ -79,14 +79,16 @@ Vi har pakket hele vores e-mailinfrastruktur ind i Docker, hvilket gør det nemt
 
 Arkitekturen inkluderer containere til:
 
-* Webinterface til administration
-* SMTP-server til udgående e-mail
-* IMAP/POP3-servere til e-mail hentning
+* Webgrænseflade til administration samt en API-server til programmatisk adgang
+* En nginx-SNI-router, der afslutter TLS på port 443 og fungerer som proxy til web-, API-, CalDAV- og CardDAV-apps
+* SMTP-server til udgående e-mail og en MX-server til indgående e-mail
+* IMAP/POP3-servere til hentning af e-mail
 * CalDAV-server til kalendere
 * CardDAV-server til kontakter
-* Database til konfigurationslagring
+* SQLite-server til sikker, krypteret postkasselagring samt en SQLite-worker, der kører postkasse-backups, `VACUUM`s og rotationer af alias-adgangskoder
+* Afviklere af planlagte job (Bree) til web/API-, udgående og SQLite-lagene
+* MongoDB til konfigurationslagring
 * Redis til caching og ydeevne
-* SQLite til sikker, krypteret postkasselagring
 
 > \[!NOTE]
 > Sørg for at tjekke vores [self-hosted developer guide](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@ Arkitekturen inkluderer containere til:
 Vi har designet installationsprocessen til at være så enkel som muligt, samtidig med at vi opretholder bedste sikkerhedspraksis:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 Denne enkeltkommando:
@@ -196,7 +198,7 @@ Klar til at tage kontrol over din e-mail-infrastruktur? Her er, hvordan du komme
 
 ### Systemkrav {#system-requirements}
 
-* Ubuntu 20.04 LTS eller nyere (anbefalet)  
+* Ubuntu 20.04 LTS eller nyere, eller Debian 11/12 (se de trinvise vejledninger til [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) og [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * Minimum 1GB RAM (2GB+ anbefalet)  
 * 20GB lagerplads anbefalet  
 * Et domænenavn, du kontrollerer  
@@ -211,7 +213,7 @@ Klar til at tage kontrol over din e-mail-infrastruktur? Her er, hvordan du komme
 
 1. **Kør Installationsscriptet**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Følg de Interaktive Prompter**:  

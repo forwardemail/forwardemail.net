@@ -79,14 +79,16 @@ Vi har paketerat hela vår e-postinfrastruktur med Docker, vilket gör det enkel
 
 Arkitekturen inkluderar containrar för:
 
-* Webbgränssnitt för administration
-* SMTP-server för utgående e-post
-* IMAP/POP3-servrar för e-posthämtning
+* Webbgränssnitt för administration, plus en API-server för programmatisk åtkomst
+* En nginx-SNI-router som avslutar TLS på port 443 och fungerar som proxy till webb-, API-, CalDAV- och CardDAV-apparna
+* SMTP-server för utgående e-post och en MX-server för inkommande e-post
+* IMAP/POP3-servrar för hämtning av e-post
 * CalDAV-server för kalendrar
 * CardDAV-server för kontakter
-* Databas för konfigurationslagring
-* Redis för caching och prestanda
-* SQLite för säker, krypterad lagring av brevlådor
+* SQLite-server för säker, krypterad brevlådelagring, plus en SQLite-worker som kör brevlådesäkerhetskopior, `VACUUM`-er och rotationer av alias-lösenord
+* Körare för schemalagda jobb (Bree) för webb/API-, utgående och SQLite-nivåerna
+* MongoDB för konfigurationslagring
+* Redis för cachning och prestanda
 
 > \[!NOTE]
 > Se till att kolla in vår [självhostade utvecklarguide](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@ Arkitekturen inkluderar containrar för:
 Vi har designat installationsprocessen för att vara så enkel som möjligt samtidigt som säkerhetsbästa praxis upprätthålls:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 Detta enda kommando:
@@ -196,7 +198,7 @@ Redo att ta kontroll över din e-postinfrastruktur? Så här kommer du igång:
 
 ### Systemkrav {#system-requirements}
 
-* Ubuntu 20.04 LTS eller nyare (rekommenderas)  
+* Ubuntu 20.04 LTS eller senare, eller Debian 11/12 (se de stegvisa guiderna för [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) och [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * Minst 1GB RAM (2GB+ rekommenderas)  
 * 20GB lagringsutrymme rekommenderas  
 * Ett domännamn som du kontrollerar  
@@ -211,7 +213,7 @@ Redo att ta kontroll över din e-postinfrastruktur? Så här kommer du igång:
 
 1. **Kör installationsskriptet**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Följ de interaktiva instruktionerna**:  

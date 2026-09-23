@@ -79,14 +79,16 @@
 
 הארכיטקטורה כוללת מכולות עבור:
 
-* ממשק ווב לניהול
-* שרת SMTP לדואר יוצא
-* שרתי IMAP/POP3 לשליפת דואר
-* שרת CalDAV ללוחות שנה
+* ממשק web לניהול, בתוספת שרת API לגישה תוכניתית
+* נתב SNI של nginx שמסיים TLS ביציאה 443 ומשמש כפרוקסי ליישומי הweb, ה-API, ה-CalDAV וה-CardDAV
+* שרת SMTP לדואר יוצא ושרת MX לדואר נכנס
+* שרתי IMAP/POP3 לאחזור דואר
+* שרת CalDAV ליומנים
 * שרת CardDAV לאנשי קשר
-* מסד נתונים לאחסון תצורה
-* Redis למטמון וביצועים
-* SQLite לאחסון תיבות דואר מוצפנות ובטוחות
+* שרת SQLite לאחסון תיבות דואר מאובטח ומוצפן, בתוספת worker של SQLite שמריץ גיבויי תיבות דואר, פעולות `VACUUM` וסבב סיסמאות של כינויים
+* מריצי משימות מתוזמנות (Bree) עבור שכבות הweb/API, הדואר היוצא ו-SQLite
+* MongoDB לאחסון תצורה
+* Redis למטמון ולביצועים
 
 > \[!NOTE]
 > הקפד לבדוק את [מדריך המפתחים לאחסון עצמי](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@
 עיצבנו את תהליך ההתקנה להיות פשוט ככל האפשר תוך שמירה על שיטות אבטחה מיטביות:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 פקודה אחת זו:
@@ -196,7 +198,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### דרישות מערכת {#system-requirements}
 
-* אובונטו 20.04 LTS או חדש יותר (מומלץ)  
+* אובונטו 20.04 LTS ואילך, או Debian 11/12 (ראו את המדריכים שלב-אחר-שלב ל-[Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) ול-[Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * מינימום 1GB RAM (מומלץ 2GB ומעלה)  
 * מומלץ 20GB אחסון  
 * שם דומיין שבבעלותך  
@@ -211,7 +213,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 1. **הרץ את סקריפט ההתקנה**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **עקוב אחר ההנחיות האינטראקטיביות**:  

@@ -80,14 +80,16 @@ We've packaged our entire email infrastructure using Docker, making it easy to d
 
 The architecture includes containers for:
 
-* Web interface for administration
-* SMTP server for outbound email
+* Web interface for administration, plus an API server for programmatic access
+* An nginx SNI router that terminates TLS on port 443 and proxies to the web, API, CalDAV, and CardDAV apps
+* SMTP server for outbound email and an MX server for inbound mail
 * IMAP/POP3 servers for email retrieval
 * CalDAV server for calendars
 * CardDAV server for contacts
-* Database for configuration storage
+* SQLite server for secure, encrypted mailbox storage, plus a SQLite worker that runs mailbox backups, `VACUUM`s, and alias-password rotations
+* Scheduled job runners (Bree) for the web/API, outbound, and SQLite tiers
+* MongoDB for configuration storage
 * Redis for caching and performance
-* SQLite for secure, encrypted mailbox storage
 
 > \[!NOTE]
 > Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
@@ -97,7 +99,7 @@ The architecture includes containers for:
 We've designed the installation process to be as simple as possible while maintaining security best practices:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 This single command:
@@ -198,7 +200,7 @@ Ready to take control of your email infrastructure? Here's how to get started:
 
 ### System Requirements
 
-* Ubuntu 20.04 LTS or newer (recommended)
+* Ubuntu 20.04 LTS or newer, or Debian 11/12 (see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) and [Debian](https://forwardemail.net/guides/selfhosted-on-debian) step-by-step guides)
 * 1GB RAM minimum (2GB+ recommended)
 * 20GB storage recommended
 * A domain name you control
@@ -213,7 +215,7 @@ Ready to take control of your email infrastructure? Here's how to get started:
 
 1. **Run the Installation Script**:
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Follow the Interactive Prompts**:

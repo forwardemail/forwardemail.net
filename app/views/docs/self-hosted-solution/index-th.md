@@ -79,14 +79,16 @@
 
 สถาปัตยกรรมประกอบด้วยคอนเทนเนอร์สำหรับ:
 
-* อินเทอร์เฟซเว็บสำหรับการบริหารจัดการ
-* เซิร์ฟเวอร์ SMTP สำหรับอีเมลขาออก
+* อินเทอร์เฟซ web สำหรับการดูแลระบบ พร้อมเซิร์ฟเวอร์ API สำหรับการเข้าถึงแบบโปรแกรม
+* เราเตอร์ SNI ของ nginx ที่ยุติ TLS ที่พอร์ต 443 และทำหน้าที่เป็นพร็อกซีไปยังแอป web, API, CalDAV และ CardDAV
+* เซิร์ฟเวอร์ SMTP สำหรับอีเมลขาออกและเซิร์ฟเวอร์ MX สำหรับอีเมลขาเข้า
 * เซิร์ฟเวอร์ IMAP/POP3 สำหรับการดึงอีเมล
 * เซิร์ฟเวอร์ CalDAV สำหรับปฏิทิน
 * เซิร์ฟเวอร์ CardDAV สำหรับรายชื่อผู้ติดต่อ
-* ฐานข้อมูลสำหรับการจัดเก็บการตั้งค่า
+* เซิร์ฟเวอร์ SQLite สำหรับการจัดเก็บกล่องจดหมายอย่างปลอดภัยและเข้ารหัส พร้อม SQLite worker ที่รันการสำรองข้อมูลกล่องจดหมาย, `VACUUM` และการหมุนเวียนรหัสผ่านของ alias
+* ตัวรันงานตามกำหนดเวลา (Bree) สำหรับชั้น web/API, ขาออก และ SQLite
+* MongoDB สำหรับการจัดเก็บการกำหนดค่า
 * Redis สำหรับแคชและประสิทธิภาพ
-* SQLite สำหรับการจัดเก็บกล่องจดหมายที่ปลอดภัยและเข้ารหัส
 
 > \[!NOTE]
 > อย่าลืมตรวจสอบ [คู่มือสำหรับนักพัฒนาโฮสต์ด้วยตนเองของเรา](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@
 เราออกแบบกระบวนการติดตั้งให้เรียบง่ายที่สุดเท่าที่จะเป็นไปได้ในขณะที่ยังคงรักษาแนวทางปฏิบัติที่ดีที่สุดด้านความปลอดภัย:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 คำสั่งเดียวนี้:
@@ -196,7 +198,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### ข้อกำหนดของระบบ {#system-requirements}
 
-* Ubuntu 20.04 LTS หรือใหม่กว่า (แนะนำ)  
+* Ubuntu 20.04 LTS หรือใหม่กว่า หรือ Debian 11/12 (ดูคู่มือทีละขั้นตอนของ [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) และ [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * RAM อย่างน้อย 1GB (แนะนำ 2GB ขึ้นไป)  
 * พื้นที่เก็บข้อมูลแนะนำ 20GB  
 * ชื่อโดเมนที่คุณควบคุม  
@@ -211,7 +213,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 1. **รันสคริปต์ติดตั้ง**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **ทำตามคำแนะนำแบบโต้ตอบ**:  

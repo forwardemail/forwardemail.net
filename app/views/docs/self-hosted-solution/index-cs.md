@@ -79,14 +79,16 @@ Celou naši e-mailovou infrastrukturu jsme zabalili pomocí Dockeru, což usnad�
 
 Architektura zahrnuje kontejnery pro:
 
-* Webové rozhraní pro administraci
-* SMTP server pro odchozí e-maily
-* IMAP/POP3 servery pro příjem e-mailů
-* CalDAV server pro kalendáře
-* CardDAV server pro kontakty
-* Databázi pro ukládání konfigurace
-* Redis pro cache a výkon
-* SQLite pro bezpečné, šifrované ukládání poštovních schránek
+* Webové rozhraní pro správu a server API pro programový přístup
+* Směrovač SNI nginx, který ukončuje TLS na portu 443 a funguje jako proxy k webové aplikaci a aplikacím API, CalDAV a CardDAV
+* Server SMTP pro odchozí poštu a server MX pro příchozí poštu
+* Servery IMAP/POP3 pro načítání pošty
+* Server CalDAV pro kalendáře
+* Server CardDAV pro kontakty
+* Server SQLite pro bezpečné, šifrované ukládání schránek a worker SQLite, který provádí zálohy schránek, operace `VACUUM` a rotace hesel aliasů
+* Spouštěče plánovaných úloh (Bree) pro vrstvy web/API, odchozí a SQLite
+* MongoDB pro ukládání konfigurace
+* Redis pro mezipaměť a výkon
 
 > \[!NOTE]
 > Nezapomeňte si prohlédnout náš [návod pro vývojáře samostatně hostované verze](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@ Architektura zahrnuje kontejnery pro:
 Instalační proces jsme navrhli tak, aby byl co nejjednodušší a zároveň dodržoval nejlepší bezpečnostní postupy:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 Tento jediný příkaz:
@@ -196,7 +198,7 @@ Chcete převzít kontrolu nad svou e-mailovou infrastrukturou? Zde je návod, ja
 
 ### Systémové požadavky {#system-requirements}
 
-* Ubuntu 20.04 LTS nebo novější (doporučeno)  
+* Ubuntu 20.04 LTS nebo novější, případně Debian 11/12 (viz podrobné návody pro [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) a [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * Minimálně 1GB RAM (doporučeno 2GB a více)  
 * Doporučeno 20GB úložiště  
 * Doména, kterou ovládáte  
@@ -211,7 +213,7 @@ Chcete převzít kontrolu nad svou e-mailovou infrastrukturou? Zde je návod, ja
 
 1. **Spusťte instalační skript**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Postupujte podle interaktivních pokynů**:  

@@ -4,7 +4,7 @@
 # Enhanced version with Debian support
 #
 # How to install:
-# bash <(curl -fsSL selfhost.forwardemail.net)
+# bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 
 set -e          # Exit immediately if a command exits with a non-zero status
 set -o pipefail # Exit if any command in a pipeline fails

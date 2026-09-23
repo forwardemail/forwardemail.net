@@ -79,14 +79,16 @@
 
 アーキテクチャには以下のコンテナが含まれます：
 
-* 管理用のウェブインターフェース
-* 送信用SMTPサーバー
-* 受信用IMAP/POP3サーバー
-* カレンダー用CalDAVサーバー
-* 連絡先用CardDAVサーバー
-* 設定保存用データベース
-* キャッシュとパフォーマンス用Redis
-* 安全で暗号化されたメールボックス保存用SQLite
+* 管理用の web インターフェースと、プログラムからアクセスするための API サーバー
+* 443 番ポートで TLS を終端し、web、API、CalDAV、CardDAV の各アプリにプロキシする nginx SNI ルーター
+* 送信メール用の SMTP サーバーと受信メール用の MX サーバー
+* メール取得用の IMAP/POP3 サーバー
+* カレンダー用の CalDAV サーバー
+* 連絡先用の CardDAV サーバー
+* 安全で暗号化されたメールボックス保存用の SQLite サーバーと、メールボックスのバックアップ、`VACUUM`、エイリアスパスワードのローテーションを実行する SQLite ワーカー
+* web/API、送信、SQLite の各層向けのスケジュールジョブ実行機構（Bree）
+* 設定保存用の MongoDB
+* キャッシュとパフォーマンス用の Redis
 
 > \[!NOTE]
 > ぜひ[セルフホスト開発者ガイド](https://forwardemail.net/self-hosted)もご覧ください
@@ -96,7 +98,7 @@
 インストールプロセスは可能な限り簡単にしつつ、セキュリティのベストプラクティスを維持するよう設計しています：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 この単一コマンドは：
@@ -196,7 +198,7 @@ bashにスクリプトをパイプすることに懸念がある方（その通�
 
 ### システム要件 {#system-requirements}
 
-* Ubuntu 20.04 LTS 以降（推奨）  
+* Ubuntu 20.04 LTS 以降、または Debian 11/12（[Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) および [Debian](https://forwardemail.net/guides/selfhosted-on-debian) のステップバイステップガイドを参照）
 * 最低1GB RAM（2GB以上推奨）  
 * 20GBのストレージ推奨  
 * あなたが管理するドメイン名  
@@ -211,7 +213,7 @@ bashにスクリプトをパイプすることに懸念がある方（その通�
 
 1. **インストールスクリプトを実行**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **対話形式の指示に従う**:  

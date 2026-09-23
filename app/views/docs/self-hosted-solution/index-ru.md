@@ -79,14 +79,16 @@
 
 Архитектура включает контейнеры для:
 
-* Веб-интерфейса для администрирования
-* SMTP-сервера для исходящей почты
-* IMAP/POP3 серверов для получения почты
-* CalDAV-сервера для календарей
-* CardDAV-сервера для контактов
-* Базы данных для хранения конфигурации
+* Веб-интерфейс для администрирования, а также сервер API для программного доступа
+* SNI-маршрутизатор nginx, который завершает TLS на порту 443 и проксирует на веб-, API-, CalDAV- и CardDAV-приложения
+* SMTP-сервер для исходящей почты и сервер MX для входящей почты
+* Серверы IMAP/POP3 для получения почты
+* Сервер CalDAV для календарей
+* Сервер CardDAV для контактов
+* Сервер SQLite для безопасного зашифрованного хранения почтовых ящиков, а также воркер SQLite, выполняющий резервное копирование ящиков, операции `VACUUM` и ротацию паролей псевдонимов
+* Исполнители запланированных задач (Bree) для уровней web/API, исходящего и SQLite
+* MongoDB для хранения конфигурации
 * Redis для кэширования и производительности
-* SQLite для безопасного, зашифрованного хранения почтовых ящиков
 
 > \[!NOTE]
 > Обязательно ознакомьтесь с нашим [руководством для разработчиков по самостоятельному хостингу](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@
 Мы разработали процесс установки максимально простым, сохраняя при этом лучшие практики безопасности:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 Эта одна команда:
@@ -196,7 +198,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### Системные требования {#system-requirements}
 
-* Ubuntu 20.04 LTS или новее (рекомендуется)  
+* Ubuntu 20.04 LTS или новее, либо Debian 11/12 (см. пошаговые руководства для [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) и [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * Минимум 1 ГБ ОЗУ (рекомендуется 2 ГБ и более)  
 * Рекомендуется 20 ГБ свободного места  
 * Доменное имя, которым вы управляете  
@@ -211,7 +213,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 1. **Запустите скрипт установки**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Следуйте интерактивным подсказкам**:  

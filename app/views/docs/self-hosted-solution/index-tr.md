@@ -79,14 +79,16 @@ Tüm e-posta altyapımızı Docker kullanarak paketledik, böylece neredeyse her
 
 Mimari şu konteynerleri içerir:
 
-* Yönetim için web arayüzü
-* Giden e-posta için SMTP sunucusu
-* E-posta alma için IMAP/POP3 sunucuları
+* Yönetim için web arayüzü ve programatik erişim için bir API sunucusu
+* TLS'yi 443 numaralı bağlantı noktasında sonlandıran ve web, API, CalDAV ve CardDAV uygulamalarına proxy yapan bir nginx SNI yönlendiricisi
+* Giden e-posta için SMTP sunucusu ve gelen e-posta için bir MX sunucusu
+* E-posta alımı için IMAP/POP3 sunucuları
 * Takvimler için CalDAV sunucusu
 * Kişiler için CardDAV sunucusu
-* Konfigürasyon depolama için veritabanı
-* Önbellekleme ve performans için Redis
-* Güvenli, şifreli posta kutusu depolaması için SQLite
+* Güvenli, şifreli posta kutusu depolaması için SQLite sunucusu ve posta kutusu yedeklerini, `VACUUM` işlemlerini ve alias parola rotasyonlarını çalıştıran bir SQLite worker'ı
+* web/API, giden ve SQLite katmanları için zamanlanmış iş çalıştırıcıları (Bree)
+* Yapılandırma depolaması için MongoDB
+* Önbelleğe alma ve performans için Redis
 
 > \[!NOTE]
 > Kesinlikle [kendi sunucunuzda geliştirici rehberimizi](https://forwardemail.net/self-hosted) inceleyin
@@ -96,7 +98,7 @@ Mimari şu konteynerleri içerir:
 Kurulum sürecini mümkün olduğunca basit tutarken güvenlik en iyi uygulamalarını koruyacak şekilde tasarladık:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 Bu tek komut:
@@ -196,7 +198,7 @@ E-posta altyapınızın kontrolünü ele almaya hazır mısınız? İşte nasıl
 
 ### Sistem Gereksinimleri {#system-requirements}
 
-* Ubuntu 20.04 LTS veya daha yenisi (önerilir)  
+* Ubuntu 20.04 LTS veya daha yenisi ya da Debian 11/12 (adım adım [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) ve [Debian](https://forwardemail.net/guides/selfhosted-on-debian) kılavuzlarına bakın)
 * En az 1GB RAM (2GB+ önerilir)  
 * 20GB depolama önerilir  
 * Kontrolünüzde bir alan adı  
@@ -211,7 +213,7 @@ E-posta altyapınızın kontrolünü ele almaya hazır mısınız? İşte nasıl
 
 1. **Kurulum Betiğini Çalıştırın**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Etkileşimli Yönergeleri Takip Edin**:  

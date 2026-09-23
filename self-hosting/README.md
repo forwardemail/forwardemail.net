@@ -114,18 +114,23 @@ This script:
 
 The `docker-compose-self-hosted.yml` file defines all the services required for the self-hosted solution:
 
-* **Web**: Main web interface
-* **API**: API server for programmatic access
-* **SMTP**: Email sending service
-* **IMAP/POP3**: Email retrieval services
-* **MX**: Mail exchange service
-* **CalDAV**: Calendar service
-* **CardDAV**: Contacts service
-* **MongoDB**: Database for storing user data
-* **Redis**: In-memory data store
-* **SQLite**: Database for storing emails
+* **nginx** (`sni-router`): SNI-based TLS router that terminates port 443 and proxies to the web, API, CalDAV, and CardDAV apps (uses the `nginx:stable` image)
+* **web**: Main web interface (`node web.js`)
+* **api**: API server for programmatic access (`node api.js`)
+* **bree**: Scheduled job runner for the web/API tier (`node bree.js`)
+* **smtp**: Outbound email (submission) service (`node smtp.js`)
+* **smtp\_bree**: Scheduled job runner for the outbound queue (`node smtp-bree.js`)
+* **mx**: Mail exchange service for inbound mail (`node mx.js`)
+* **imap** / **pop3**: Email retrieval services (`node imap.js` / `node pop3.js`)
+* **caldav**: Calendar service (`node caldav.js`)
+* **carddav**: Contacts service (`node carddav.js`)
+* **sqlite**: Encrypted SQLite mailbox server (`node sqlite.js`)
+* **sqlite\_worker**: Runs the mailbox backups, `VACUUM`s, and alias-password rotations (rekeys) queued by the `sqlite` server. Exactly one instance may run, and it must share the same mailbox bind mount as `sqlite` (`node sqlite-worker.js`)
+* **sqlite\_bree**: Scheduled job runner for the SQLite tier (`node sqlite-bree.js`)
+* **mongodb**: Database for storing user data (uses the `mongo:latest` image)
+* **redis**: In-memory data store (uses the `redis:latest` image)
 
-Each service uses the same Docker image but with different entry points, allowing for a modular architecture while simplifying maintenance.
+Every Forward Email service shares the same application Docker image and only differs by its entry point (the `command`), which keeps the architecture modular while simplifying maintenance; the `nginx`, `mongodb`, and `redis` services use their respective official upstream images.
 
 
 ## Maintenance Features

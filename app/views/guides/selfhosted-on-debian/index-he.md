@@ -250,6 +250,7 @@ ufw allow 25/tcp    # SMTP
 ufw allow 80/tcp    # HTTP (for Let's Encrypt)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
+ufw allow 587/tcp   # שליחת SMTP (STARTTLS)
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
 ufw allow 2993/tcp  # IMAP (alternative port)
@@ -332,12 +333,24 @@ update_env_file() {
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
+update_env_file "WEB_URL" "https://$DOMAIN"
 update_env_file "WEB_HOST" "$DOMAIN"
-update_env_file "WEB_PORT" "443"
+# ‏nginx (השירות sni-router) מסיים TLS ב-443 ומשמש כפרוקסי ליישום הweb ב-3000
+# (ראו docker-compose-self-hosted.yml ו-nginx.conf). השאירו את WEB_PORT על 3000;
+# הגדרתו ל-443 מתנגשת עם nginx ברשת המארח והופכת את ממשק הweb לבלתי נגיש.
+update_env_file "WEB_PORT" "3000"
+update_env_file "SQLITE_HOST" "sqlite.$DOMAIN"
 update_env_file "CALDAV_HOST" "caldav.$DOMAIN"
 update_env_file "CARDDAV_HOST" "carddav.$DOMAIN"
 update_env_file "API_HOST" "api.$DOMAIN"
 update_env_file "APP_NAME" "$DOMAIN"
+update_env_file "TRANSPORT_DEBUG" "true"
+update_env_file "SEND_EMAIL" "true"
+update_env_file "PREVIEW_EMAIL" "false"
+update_env_file "MONGO_HOST" "127.0.0.1"
+update_env_file "LOGS_HOST" "127.0.0.1"
+update_env_file "REDIS_HOST" "127.0.0.1"
+update_env_file "TURNSTILE_ENABLED" "false"
 update_env_file "SMTP_HOST" "smtp.$DOMAIN"
 update_env_file "SMTP_PORT" "465"
 update_env_file "IMAP_HOST" "imap.$DOMAIN"
@@ -345,8 +358,12 @@ update_env_file "IMAP_PORT" "993"
 update_env_file "POP3_HOST" "pop3.$DOMAIN"
 update_env_file "POP3_PORT" "995"
 update_env_file "MX_HOST" "mx.$DOMAIN"
+update_env_file "MX_PORT" "25"
 update_env_file "SMTP_EXCHANGE_DOMAINS" "mx.$DOMAIN"
+update_env_file "SQLITE_STORAGE_PATH" "sqlite_storage"
 update_env_file "SELF_HOSTED" "true"
+update_env_file "ENABLE_MONITOR_SERVER" "false"
+update_env_file "CACHE_RESPONSES" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
@@ -631,8 +648,9 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 # הוסף עבודת cron לגיבוי MongoDB (רצה מדי יום בחצות)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# הוסף עבודת cron לגיבוי Redis (רצה מדי יום בחצות)
-(crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
+# הוספת משימת cron לגיבוי Redis (רצה מדי יום ב-00:30, בהיסט של 30 דקות אחרי
+# גיבוי MongoDB כדי ששתי ההעלאות לא יתחרו על אותו רוחב פס)
+(crontab -l 2>/dev/null; echo "30 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
 # אמת שעבודות ה-cron נוספו
 crontab -l

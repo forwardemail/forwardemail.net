@@ -79,14 +79,16 @@ Spakowaliśmy całą infrastrukturę poczty e-mail za pomocą Dockera, co ułatw
 
 Architektura obejmuje kontenery dla:
 
-* Interfejsu webowego do administracji
-* Serwera SMTP do wysyłania poczty
-* Serwerów IMAP/POP3 do odbioru poczty
-* Serwera CalDAV do kalendarzy
-* Serwera CardDAV do kontaktów
-* Bazy danych do przechowywania konfiguracji
-* Redis do cache’owania i wydajności
-* SQLite do bezpiecznego, zaszyfrowanego przechowywania skrzynek pocztowych
+* Interfejs web do administracji oraz serwer API do dostępu programowego
+* Router SNI nginx, który kończy TLS na porcie 443 i przekazuje ruch do aplikacji web, API, CalDAV i CardDAV
+* Serwer SMTP dla poczty wychodzącej i serwer MX dla poczty przychodzącej
+* Serwery IMAP/POP3 do pobierania poczty
+* Serwer CalDAV dla kalendarzy
+* Serwer CardDAV dla kontaktów
+* Serwer SQLite do bezpiecznego, szyfrowanego przechowywania skrzynek, oraz worker SQLite, który wykonuje kopie zapasowe skrzynek, operacje `VACUUM` i rotacje haseł aliasów
+* Wykonawcy zaplanowanych zadań (Bree) dla warstw web/API, wychodzącej i SQLite
+* MongoDB do przechowywania konfiguracji
+* Redis do buforowania i wydajności
 
 > \[!NOTE]
 > Koniecznie sprawdź nasz [przewodnik dla deweloperów samodzielnie hostujących](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@ Architektura obejmuje kontenery dla:
 Proces instalacji zaprojektowaliśmy tak, aby był jak najprostszy, zachowując jednocześnie najlepsze praktyki bezpieczeństwa:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 To jedno polecenie:
@@ -196,7 +198,7 @@ Gotowy, aby przejąć kontrolę nad swoją infrastrukturą e-mail? Oto jak zacz�
 
 ### Wymagania systemowe {#system-requirements}
 
-* Ubuntu 20.04 LTS lub nowszy (zalecany)  
+* Ubuntu 20.04 LTS lub nowszy, albo Debian 11/12 (zobacz przewodniki krok po kroku dla [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) i [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * Minimum 1 GB RAM (zalecane 2 GB+)  
 * Zalecane 20 GB miejsca na dysku  
 * Nazwa domeny, którą kontrolujesz  
@@ -211,7 +213,7 @@ Gotowy, aby przejąć kontrolę nad swoją infrastrukturą e-mail? Oto jak zacz�
 
 1. **Uruchom skrypt instalacyjny**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Postępuj zgodnie z interaktywnymi wskazówkami**:  

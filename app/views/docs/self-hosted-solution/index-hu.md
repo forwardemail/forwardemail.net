@@ -79,14 +79,16 @@ Az egész e-mail infrastruktúránkat Docker segítségével csomagoltuk, így s
 
 Az architektúra tartalmaz konténereket a következőkhöz:
 
-* Webes felület az adminisztrációhoz
-* SMTP szerver a kimenő e-mailekhez
-* IMAP/POP3 szerverek az e-mailek lekéréséhez
-* CalDAV szerver a naptárakhoz
-* CardDAV szerver a névjegyekhez
-* Adatbázis a konfiguráció tárolásához
-* Redis a gyorsítótárazáshoz és teljesítményhez
-* SQLite a biztonságos, titkosított postaláda tároláshoz
+* Webes felület az adminisztrációhoz, valamint egy API-kiszolgáló a programozott hozzáféréshez
+* Egy nginx SNI-útválasztó, amely a 443-as porton zárja le a TLS-t, és proxyként továbbít a web-, API-, CalDAV- és CardDAV-alkalmazásokhoz
+* SMTP-kiszolgáló a kimenő levelekhez és egy MX-kiszolgáló a bejövő levelekhez
+* IMAP/POP3-kiszolgálók a levelek lekéréséhez
+* CalDAV-kiszolgáló a naptárakhoz
+* CardDAV-kiszolgáló a névjegyekhez
+* SQLite-kiszolgáló a biztonságos, titkosított postafiók-tároláshoz, valamint egy SQLite worker, amely postafiók-mentéseket, `VACUUM` műveleteket és alias-jelszóforgatásokat futtat
+* Ütemezett feladatok futtatói (Bree) a web/API, a kimenő és az SQLite rétegekhez
+* MongoDB a konfiguráció tárolásához
+* Redis a gyorsítótárazáshoz és a teljesítményhez
 
 > \[!NOTE]
 > Feltétlenül nézze meg a [saját üzemeltetésű fejlesztői útmutatónkat](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@ Az architektúra tartalmaz konténereket a következőkhöz:
 A telepítési folyamatot úgy alakítottuk ki, hogy a lehető legegyszerűbb legyen, miközben betartja a biztonsági legjobb gyakorlatokat:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 Ez az egyetlen parancs:
@@ -196,7 +198,7 @@ Készen állsz, hogy átvedd az irányítást az e-mail infrastruktúrád felett
 
 ### Rendszerkövetelmények {#system-requirements}
 
-* Ubuntu 20.04 LTS vagy újabb (ajánlott)  
+* Ubuntu 20.04 LTS vagy újabb, vagy Debian 11/12 (lásd a lépésről lépésre útmutatókat: [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) és [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * Minimum 1GB RAM (2GB+ ajánlott)  
 * Ajánlott 20GB tárhely  
 * Egy általad kezelt domain név  
@@ -211,7 +213,7 @@ Készen állsz, hogy átvedd az irányítást az e-mail infrastruktúrád felett
 
 1. **Futtasd a Telepítő Szkriptet**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Kövesd az Interaktív Kérdéseket**:  

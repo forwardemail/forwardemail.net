@@ -79,14 +79,16 @@
 
 架构包含以下容器：
 
-* 用于管理的 Web 界面
-* 用于发信的 SMTP 服务器
-* 用于收信的 IMAP/POP3 服务器
+* 用于管理的 web 界面，以及用于程序化访问的 API 服务器
+* 一个 nginx SNI 路由器，在 443 端口终止 TLS 并代理到 web、API、CalDAV 和 CardDAV 应用
+* 用于出站邮件的 SMTP 服务器和用于入站邮件的 MX 服务器
+* 用于收取邮件的 IMAP/POP3 服务器
 * 用于日历的 CalDAV 服务器
-* 用于联系人管理的 CardDAV 服务器
-* 用于配置存储的数据库
+* 用于联系人的 CardDAV 服务器
+* 用于安全加密邮箱存储的 SQLite 服务器，以及运行邮箱备份、`VACUUM` 和别名密码轮换的 SQLite 工作进程
+* 用于 web/API、出站和 SQLite 各层的计划任务执行器（Bree）
+* 用于配置存储的 MongoDB
 * 用于缓存和性能的 Redis
-* 用于安全加密邮箱存储的 SQLite
 
 > \[!NOTE]
 > 请务必查看我们的 [自托管开发者指南](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@
 我们设计了尽可能简单的安装流程，同时遵循安全最佳实践：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 这条命令将：
@@ -196,7 +198,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### 系统要求 {#system-requirements}
 
-* Ubuntu 20.04 LTS 或更高版本（推荐）  
+* Ubuntu 20.04 LTS 或更新版本，或 Debian 11/12（参见 [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) 和 [Debian](https://forwardemail.net/guides/selfhosted-on-debian) 分步指南）
 * 最少 1GB 内存（推荐 2GB 以上）  
 * 推荐 20GB 存储空间  
 * 您控制的域名  
@@ -211,7 +213,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 1. **运行安装脚本**：  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **按照交互提示操作**：  

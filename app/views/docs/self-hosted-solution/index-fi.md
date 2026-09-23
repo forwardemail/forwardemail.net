@@ -79,14 +79,16 @@ Olemme paketoineet koko sähköpostiinfrastruktuurimme Dockerilla, mikä tekee s
 
 Arkkitehtuuri sisältää kontteja:
 
-* Hallintaa varten web-käyttöliittymä
-* SMTP-palvelin lähtevälle sähköpostille
-* IMAP/POP3-palvelimet sähköpostin noutoon
+* Web-käyttöliittymä hallintaan sekä API-palvelin ohjelmalliseen käyttöön
+* nginx-SNI-reititin, joka päättää TLS:n portissa 443 ja välittää liikenteen web-, API-, CalDAV- ja CardDAV-sovelluksille
+* SMTP-palvelin lähtevälle sähköpostille ja MX-palvelin saapuvalle sähköpostille
+* IMAP/POP3-palvelimet sähköpostin noutamiseen
 * CalDAV-palvelin kalentereille
 * CardDAV-palvelin yhteystiedoille
-* Tietokanta konfiguraation tallennukseen
+* SQLite-palvelin turvalliseen, salattuun postilaatikkojen tallennukseen sekä SQLite-worker, joka suorittaa postilaatikoiden varmuuskopiot, `VACUUM`-toiminnot ja aliasten salasanojen kierrätykset
+* Ajastettujen tehtävien suorittajat (Bree) web/API-, lähtevän liikenteen ja SQLite-tasoille
+* MongoDB asetusten tallennukseen
 * Redis välimuistiin ja suorituskykyyn
-* SQLite turvalliseen, salattuun postilaatikon tallennukseen
 
 > \[!NOTE]
 > Muista tutustua [itseisännöintikehittäjän oppaaseemme](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@ Arkkitehtuuri sisältää kontteja:
 Olemme suunnitelleet asennusprosessin mahdollisimman yksinkertaiseksi säilyttäen samalla turvallisuuden parhaat käytännöt:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 Tämä yksittäinen komento:
@@ -196,7 +198,7 @@ Valmiina ottamaan sähköpostiinfrastruktuurisi hallintaan? Näin pääset alkuu
 
 ### Järjestelmävaatimukset {#system-requirements}
 
-* Ubuntu 20.04 LTS tai uudempi (suositeltu)  
+* Ubuntu 20.04 LTS tai uudempi, tai Debian 11/12 (katso vaiheittaiset oppaat: [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) ja [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * Vähintään 1 Gt RAM (2 Gt+ suositeltu)  
 * 20 Gt tallennustilaa suositeltu  
 * Hallitsemasi verkkotunnus  
@@ -211,7 +213,7 @@ Valmiina ottamaan sähköpostiinfrastruktuurisi hallintaan? Näin pääset alkuu
 
 1. **Suorita asennusskripti**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Seuraa vuorovaikutteisia ohjeita**:  

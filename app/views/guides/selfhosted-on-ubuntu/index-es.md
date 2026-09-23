@@ -206,6 +206,7 @@ ufw allow 25/tcp    # SMTP
 ufw allow 80/tcp    # HTTP (para Let's Encrypt)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
+ufw allow 587/tcp   # Envío SMTP (STARTTLS)
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
 ufw allow 2993/tcp  # IMAP (puerto alternativo)
@@ -289,12 +290,25 @@ update_env_file() {
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
+update_env_file "WEB_URL" "https://$DOMAIN"
 update_env_file "WEB_HOST" "$DOMAIN"
-update_env_file "WEB_PORT" "443"
+# nginx (el servicio sni-router) termina TLS en el puerto 443 y hace de proxy
+# a la aplicación web en el 3000 (consulta docker-compose-self-hosted.yml y
+# nginx.conf). Deja WEB_PORT en 3000; ponerlo en 443 entra en conflicto con
+# nginx en la red del host y deja la interfaz web inaccesible.
+update_env_file "WEB_PORT" "3000"
+update_env_file "SQLITE_HOST" "sqlite.$DOMAIN"
 update_env_file "CALDAV_HOST" "caldav.$DOMAIN"
 update_env_file "CARDDAV_HOST" "carddav.$DOMAIN"
 update_env_file "API_HOST" "api.$DOMAIN"
 update_env_file "APP_NAME" "$DOMAIN"
+update_env_file "TRANSPORT_DEBUG" "true"
+update_env_file "SEND_EMAIL" "true"
+update_env_file "PREVIEW_EMAIL" "false"
+update_env_file "MONGO_HOST" "127.0.0.1"
+update_env_file "LOGS_HOST" "127.0.0.1"
+update_env_file "REDIS_HOST" "127.0.0.1"
+update_env_file "TURNSTILE_ENABLED" "false"
 update_env_file "SMTP_HOST" "smtp.$DOMAIN"
 update_env_file "SMTP_PORT" "465"
 update_env_file "IMAP_HOST" "imap.$DOMAIN"
@@ -302,8 +316,12 @@ update_env_file "IMAP_PORT" "993"
 update_env_file "POP3_HOST" "pop3.$DOMAIN"
 update_env_file "POP3_PORT" "995"
 update_env_file "MX_HOST" "mx.$DOMAIN"
+update_env_file "MX_PORT" "25"
 update_env_file "SMTP_EXCHANGE_DOMAINS" "mx.$DOMAIN"
+update_env_file "SQLITE_STORAGE_PATH" "sqlite_storage"
 update_env_file "SELF_HOSTED" "true"
+update_env_file "ENABLE_MONITOR_SERVER" "false"
+update_env_file "CACHE_RESPONSES" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
@@ -568,8 +586,9 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 # Agregar tarea cron para respaldo de MongoDB (se ejecuta diariamente a medianoche)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# Agregar tarea cron para respaldo de Redis (se ejecuta diariamente a medianoche)
-(crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
+# Añadir tarea cron de copia de seguridad de Redis (se ejecuta a diario a las 00:30,
+# escalonada 30 minutos después de la de MongoDB para que ambas subidas no compitan por el mismo ancho de banda)
+(crontab -l 2>/dev/null; echo "30 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
 # Verificar que las tareas cron fueron agregadas
 crontab -l

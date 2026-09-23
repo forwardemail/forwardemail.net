@@ -206,6 +206,7 @@ ufw allow 25/tcp    # SMTP
 ufw allow 80/tcp    # HTTP (لـ Let's Encrypt)
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
+ufw allow 587/tcp   # إرسال SMTP (STARTTLS)
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
 ufw allow 2993/tcp  # IMAP (منفذ بديل)
@@ -289,12 +290,25 @@ update_env_file() {
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
+update_env_file "WEB_URL" "https://$DOMAIN"
 update_env_file "WEB_HOST" "$DOMAIN"
-update_env_file "WEB_PORT" "443"
+# يُنهي nginx (خدمة sni-router) اتصال TLS على المنفذ 443 ويعمل كوكيل لتطبيق
+# الويب على المنفذ 3000 (راجع docker-compose-self-hosted.yml و nginx.conf).
+# اترك WEB_PORT على 3000؛ ضبطه على 443 يتعارض مع nginx على شبكة المضيف
+# ويجعل واجهة الويب غير قابلة للوصول.
+update_env_file "WEB_PORT" "3000"
+update_env_file "SQLITE_HOST" "sqlite.$DOMAIN"
 update_env_file "CALDAV_HOST" "caldav.$DOMAIN"
 update_env_file "CARDDAV_HOST" "carddav.$DOMAIN"
 update_env_file "API_HOST" "api.$DOMAIN"
 update_env_file "APP_NAME" "$DOMAIN"
+update_env_file "TRANSPORT_DEBUG" "true"
+update_env_file "SEND_EMAIL" "true"
+update_env_file "PREVIEW_EMAIL" "false"
+update_env_file "MONGO_HOST" "127.0.0.1"
+update_env_file "LOGS_HOST" "127.0.0.1"
+update_env_file "REDIS_HOST" "127.0.0.1"
+update_env_file "TURNSTILE_ENABLED" "false"
 update_env_file "SMTP_HOST" "smtp.$DOMAIN"
 update_env_file "SMTP_PORT" "465"
 update_env_file "IMAP_HOST" "imap.$DOMAIN"
@@ -302,8 +316,12 @@ update_env_file "IMAP_PORT" "993"
 update_env_file "POP3_HOST" "pop3.$DOMAIN"
 update_env_file "POP3_PORT" "995"
 update_env_file "MX_HOST" "mx.$DOMAIN"
+update_env_file "MX_PORT" "25"
 update_env_file "SMTP_EXCHANGE_DOMAINS" "mx.$DOMAIN"
+update_env_file "SQLITE_STORAGE_PATH" "sqlite_storage"
 update_env_file "SELF_HOSTED" "true"
+update_env_file "ENABLE_MONITOR_SERVER" "false"
+update_env_file "CACHE_RESPONSES" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
@@ -568,8 +586,9 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 # إضافة مهمة كرون لنسخ MongoDB الاحتياطي (تعمل يوميًا عند منتصف الليل)
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# إضافة مهمة كرون لنسخ Redis الاحتياطي (تعمل يوميًا عند منتصف الليل)
-(crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
+# أضف مهمة cron لنسخ Redis الاحتياطي (تعمل يوميًا في الساعة 00:30، بفارق 30 دقيقة
+# بعد نسخة MongoDB الاحتياطية حتى لا يتنافس التحميلان على نفس عرض النطاق الترددي)
+(crontab -l 2>/dev/null; echo "30 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
 # تحقق من إضافة مهام كرون
 crontab -l

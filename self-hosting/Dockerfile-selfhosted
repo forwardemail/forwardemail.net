@@ -13,7 +13,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 
+# `package.json` declares `pnpm.patchedDependencies`, so the referenced patch
+# files must be present before install -- otherwise `pnpm install` aborts with
+# `ENOENT: ... patches/<pkg>.patch`. Copy them alongside the manifests so this
+# step still caches on dependency changes only.
 COPY package.json pnpm-lock.yaml ./
+COPY patches ./patches
 RUN pnpm install --frozen-lockfile
 
 COPY . ./

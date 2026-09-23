@@ -79,14 +79,16 @@ Chúng tôi đã đóng gói toàn bộ hạ tầng email bằng Docker, giúp d
 
 Kiến trúc bao gồm các container cho:
 
-* Giao diện web để quản trị
-* Máy chủ SMTP cho email gửi đi
-* Máy chủ IMAP/POP3 để lấy email
+* Giao diện web để quản trị, cùng với một máy chủ API cho truy cập theo chương trình
+* Một bộ định tuyến SNI nginx kết thúc TLS trên cổng 443 và làm proxy đến các ứng dụng web, API, CalDAV và CardDAV
+* Máy chủ SMTP cho email gửi đi và một máy chủ MX cho email đến
+* Máy chủ IMAP/POP3 để truy xuất email
 * Máy chủ CalDAV cho lịch
 * Máy chủ CardDAV cho danh bạ
-* Cơ sở dữ liệu để lưu cấu hình
-* Redis để cache và tăng hiệu suất
-* SQLite để lưu trữ hộp thư mã hóa an toàn
+* Máy chủ SQLite để lưu trữ hộp thư an toàn, được mã hóa, cùng với một worker SQLite chạy sao lưu hộp thư, các lệnh `VACUUM` và xoay vòng mật khẩu alias
+* Bộ chạy tác vụ theo lịch (Bree) cho các tầng web/API, gửi đi và SQLite
+* MongoDB để lưu trữ cấu hình
+* Redis để lưu bộ nhớ đệm và hiệu năng
 
 > \[!NOTE]
 > Hãy chắc chắn xem qua [hướng dẫn dành cho nhà phát triển tự lưu trữ của chúng tôi](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@ Kiến trúc bao gồm các container cho:
 Chúng tôi thiết kế quy trình cài đặt đơn giản nhất có thể trong khi vẫn duy trì các thực hành bảo mật tốt nhất:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 Lệnh duy nhất này:
@@ -196,7 +198,7 @@ Sẵn sàng kiểm soát hạ tầng email của bạn? Đây là cách bắt đ
 
 ### Yêu Cầu Hệ Thống {#system-requirements}
 
-* Ubuntu 20.04 LTS hoặc mới hơn (khuyến nghị)  
+* Ubuntu 20.04 LTS trở lên, hoặc Debian 11/12 (xem hướng dẫn từng bước cho [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) và [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * Tối thiểu 1GB RAM (khuyến nghị 2GB trở lên)  
 * Khuyến nghị 20GB dung lượng lưu trữ  
 * Một tên miền bạn kiểm soát  
@@ -211,7 +213,7 @@ Sẵn sàng kiểm soát hạ tầng email của bạn? Đây là cách bắt đ
 
 1. **Chạy Script Cài Đặt**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Theo Các Hướng Dẫn Tương Tác**:  

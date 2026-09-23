@@ -79,14 +79,16 @@
 
 아키텍처에는 다음 컨테이너가 포함됩니다:
 
-* 관리용 웹 인터페이스
-* 발신 이메일용 SMTP 서버
-* 이메일 수신용 IMAP/POP3 서버
+* 관리를 위한 web 인터페이스와 프로그래밍 방식 접근을 위한 API 서버
+* 443 포트에서 TLS를 종료하고 web, API, CalDAV, CardDAV 앱으로 프록시하는 nginx SNI 라우터
+* 발신 메일용 SMTP 서버와 수신 메일용 MX 서버
+* 메일 검색을 위한 IMAP/POP3 서버
 * 캘린더용 CalDAV 서버
 * 연락처용 CardDAV 서버
-* 구성 저장용 데이터베이스
-* 캐싱 및 성능용 Redis
-* 안전하고 암호화된 메일박스 저장용 SQLite
+* 안전하고 암호화된 메일박스 저장을 위한 SQLite 서버와, 메일박스 백업, `VACUUM`, 별칭 비밀번호 교체를 실행하는 SQLite 워커
+* web/API, 발신, SQLite 계층을 위한 예약 작업 실행기(Bree)
+* 구성 저장을 위한 MongoDB
+* 캐싱 및 성능을 위한 Redis
 
 > \[!NOTE]
 > 반드시 [자체 호스팅 개발자 가이드](https://forwardemail.net/self-hosted)를 확인하세요
@@ -96,7 +98,7 @@
 우리는 보안 모범 사례를 유지하면서 설치 과정을 최대한 간단하게 설계했습니다:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 이 단일 명령은:
@@ -196,7 +198,7 @@ bash에 스크립트를 파이핑하는 것에 대해 걱정하는 분들을 위
 
 ### 시스템 요구사항 {#system-requirements}
 
-* Ubuntu 20.04 LTS 이상 (권장)  
+* Ubuntu 20.04 LTS 이상 또는 Debian 11/12([Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) 및 [Debian](https://forwardemail.net/guides/selfhosted-on-debian) 단계별 가이드 참조)
 * 최소 1GB RAM (2GB 이상 권장)  
 * 20GB 저장 공간 권장  
 * 본인이 소유한 도메인 이름  
@@ -211,7 +213,7 @@ bash에 스크립트를 파이핑하는 것에 대해 걱정하는 분들을 위
 
 1. **설치 스크립트 실행**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **대화형 프롬프트 따라하기**:  

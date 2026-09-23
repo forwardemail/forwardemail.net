@@ -206,6 +206,7 @@ ufw allow 25/tcp    # SMTP
 ufw allow 80/tcp    # HTTP（用于 Let's Encrypt）
 ufw allow 443/tcp   # HTTPS
 ufw allow 465/tcp   # SMTPS
+ufw allow 587/tcp   # SMTP 提交 (STARTTLS)
 ufw allow 993/tcp   # IMAPS
 ufw allow 995/tcp   # POP3S
 ufw allow 2993/tcp  # IMAP（备用端口）
@@ -289,12 +290,24 @@ update_env_file() {
 update_env_file "DOMAIN" "$DOMAIN"
 update_env_file "NODE_ENV" "production"
 update_env_file "HTTP_PROTOCOL" "https"
+update_env_file "WEB_URL" "https://$DOMAIN"
 update_env_file "WEB_HOST" "$DOMAIN"
-update_env_file "WEB_PORT" "443"
+# nginx（sni-router 服务）在 443 上终止 TLS，并代理到 3000 上的 web 应用
+# （参见 docker-compose-self-hosted.yml 和 nginx.conf）。请将 WEB_PORT 保持为 3000；
+# 将其设为 443 会在主机网络上与 nginx 冲突，导致 web 界面无法访问。
+update_env_file "WEB_PORT" "3000"
+update_env_file "SQLITE_HOST" "sqlite.$DOMAIN"
 update_env_file "CALDAV_HOST" "caldav.$DOMAIN"
 update_env_file "CARDDAV_HOST" "carddav.$DOMAIN"
 update_env_file "API_HOST" "api.$DOMAIN"
 update_env_file "APP_NAME" "$DOMAIN"
+update_env_file "TRANSPORT_DEBUG" "true"
+update_env_file "SEND_EMAIL" "true"
+update_env_file "PREVIEW_EMAIL" "false"
+update_env_file "MONGO_HOST" "127.0.0.1"
+update_env_file "LOGS_HOST" "127.0.0.1"
+update_env_file "REDIS_HOST" "127.0.0.1"
+update_env_file "TURNSTILE_ENABLED" "false"
 update_env_file "SMTP_HOST" "smtp.$DOMAIN"
 update_env_file "SMTP_PORT" "465"
 update_env_file "IMAP_HOST" "imap.$DOMAIN"
@@ -302,8 +315,12 @@ update_env_file "IMAP_PORT" "993"
 update_env_file "POP3_HOST" "pop3.$DOMAIN"
 update_env_file "POP3_PORT" "995"
 update_env_file "MX_HOST" "mx.$DOMAIN"
+update_env_file "MX_PORT" "25"
 update_env_file "SMTP_EXCHANGE_DOMAINS" "mx.$DOMAIN"
+update_env_file "SQLITE_STORAGE_PATH" "sqlite_storage"
 update_env_file "SELF_HOSTED" "true"
+update_env_file "ENABLE_MONITOR_SERVER" "false"
+update_env_file "CACHE_RESPONSES" "true"
 update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
@@ -568,8 +585,9 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 # 添加 MongoDB 备份定时任务（每天午夜运行）
 (crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-mongo.sh >> /var/log/mongo-backup.log 2>&1") | crontab -
 
-# 添加 Redis 备份定时任务（每天午夜运行）
-(crontab -l 2>/dev/null; echo "0 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
+# 添加 Redis 备份 cron 任务（每天 00:30 运行，比 MongoDB 备份错开 30 分钟，
+# 以免两次上传争用同一带宽）
+(crontab -l 2>/dev/null; echo "30 0 * * * $ROOT_DIR/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1") | crontab -
 
 # 验证定时任务是否添加成功
 crontab -l

@@ -79,14 +79,16 @@ Kami telah mengemas seluruh infrastruktur email kami menggunakan Docker, sehingg
 
 Arsitektur ini mencakup container untuk:
 
-* Antarmuka web untuk administrasi
-* Server SMTP untuk email keluar
+* Antarmuka web untuk administrasi, plus server API untuk akses terprogram
+* Router SNI nginx yang mengakhiri TLS di port 443 dan menjadi proxy ke aplikasi web, API, CalDAV, dan CardDAV
+* Server SMTP untuk email keluar dan server MX untuk email masuk
 * Server IMAP/POP3 untuk pengambilan email
 * Server CalDAV untuk kalender
 * Server CardDAV untuk kontak
-* Database untuk penyimpanan konfigurasi
+* Server SQLite untuk penyimpanan kotak surat yang aman dan terenkripsi, plus worker SQLite yang menjalankan pencadangan kotak surat, `VACUUM`, dan rotasi kata sandi alias
+* Penjalan tugas terjadwal (Bree) untuk lapisan web/API, keluar, dan SQLite
+* MongoDB untuk penyimpanan konfigurasi
 * Redis untuk caching dan performa
-* SQLite untuk penyimpanan mailbox yang aman dan terenkripsi
 
 > \[!NOTE]
 > Pastikan untuk melihat [panduan pengembang self-hosted kami](https://forwardemail.net/self-hosted)
@@ -96,7 +98,7 @@ Arsitektur ini mencakup container untuk:
 Kami merancang proses instalasi agar sesederhana mungkin sambil mempertahankan praktik keamanan terbaik:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
 Perintah tunggal ini:
@@ -196,7 +198,7 @@ Siap mengendalikan infrastruktur email Anda? Berikut cara memulai:
 
 ### Persyaratan Sistem {#system-requirements}
 
-* Ubuntu 20.04 LTS atau lebih baru (direkomendasikan)  
+* Ubuntu 20.04 LTS atau yang lebih baru, atau Debian 11/12 (lihat panduan langkah demi langkah [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) dan [Debian](https://forwardemail.net/guides/selfhosted-on-debian))
 * RAM minimal 1GB (2GB+ direkomendasikan)  
 * Penyimpanan 20GB direkomendasikan  
 * Nama domain yang Anda kendalikan  
@@ -211,7 +213,7 @@ Siap mengendalikan infrastruktur email Anda? Berikut cara memulai:
 
 1. **Jalankan Skrip Instalasi**:  
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
    ```
 
 2. **Ikuti Petunjuk Interaktif**:  
