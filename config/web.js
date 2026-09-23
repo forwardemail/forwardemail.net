@@ -82,7 +82,6 @@ if (isSANB(env.GPG_SECURITY_KEY) && isSANB(env.GPG_SECURITY_PASSPHRASE)) {
 
 let appCss;
 let botCss;
-let freddyCss;
 
 try {
   appCss = fs.readFileSync(
@@ -102,13 +101,36 @@ try {
   logger.error(err);
 }
 
-try {
-  freddyCss = fs.readFileSync(
-    path.join(config.buildDir, 'css', 'freddy.css'),
-    'utf8'
-  );
-} catch (err) {
-  logger.error(err);
+//
+// The bundles are read once above and inlined into every page. In
+// development they are rebuilt while this process runs (`gulp watch`), so
+// re-read them when they change rather than requiring a restart. Production
+// keeps the single read at boot.
+//
+if (config.env === 'development') {
+  try {
+    const cssDir = path.join(config.buildDir, 'css');
+    const timers = new Map();
+    fs.watch(cssDir, (eventType, filename) => {
+      if (filename !== 'app.css' && filename !== 'app-bot.css') return;
+      clearTimeout(timers.get(filename));
+      timers.set(
+        filename,
+        setTimeout(() => {
+          try {
+            const css = fs.readFileSync(path.join(cssDir, filename), 'utf8');
+            if (filename === 'app.css') appCss = css;
+            else botCss = css;
+            logger.info(`reloaded css/${filename}`);
+          } catch (err) {
+            logger.error(err);
+          }
+        }, 250)
+      );
+    });
+  } catch (err) {
+    logger.error(err);
+  }
 }
 
 async function checkGitHubIssues() {
@@ -747,12 +769,6 @@ module.exports = (redis) => ({
         // to avoid LCP lighthouse issues
         ctx.state.appCss = appCss;
         ctx.state.botCss = botCss;
-        //
-        // test mode should not render this because stars function
-        // uses `random()` which causes CSS output to constantly change
-        // (and CI would otherwise fail)
-        //
-        if (config.env !== 'test') ctx.state.freddyCss = freddyCss;
 
         ctx.state.tti = false;
       }

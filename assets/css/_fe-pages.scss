@@ -1,0 +1,407 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// The secondary marketing pages (webhooks, regex, disposable and reserved
+// addresses, IPs, the three index pages, the error pages). Builds on
+// _fe-base.scss and _fe-primitives.scss; only what those do not cover lives
+// here.
+
+// ============================================
+// PAGE HEADER
+// ============================================
+// Compact dark hero: eyebrow, h1, lede, and a row of actions or a byline.
+
+.fe-page-header {
+  text-align: center;
+}
+
+.fe-page-header__inner {
+  max-width: 48rem;
+}
+
+.fe-page-header__title {
+  margin-bottom: var(--fe-space-4);
+}
+
+.fe-page-header__body {
+  margin: 0 auto;
+}
+
+.fe-page-header__body a {
+  color: var(--fe-fg-link);
+}
+
+.fe-page-header__actions,
+.fe-page-header__meta {
+  margin-top: var(--fe-space-8);
+}
+
+// Byline for the index pages: the same three facts _author.pug carries,
+// rebuilt on the tokens so they read on the dark header.
+.fe-byline {
+  display: inline-flex;
+  gap: var(--fe-space-4) var(--fe-space-8);
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-byline > li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+}
+
+.fe-byline__label {
+  color: var(--fe-fg-secondary);
+}
+
+.fe-byline__value {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-byline__value i {
+  color: var(--fe-icon-active);
+}
+
+// ============================================
+// BODY SECTION
+// ============================================
+// Light reading column under a page header.
+
+.fe-body__inner {
+  max-width: 46rem;
+}
+
+.fe-body__title {
+  margin-bottom: var(--fe-space-3);
+}
+
+.fe-body__actions {
+  margin-top: var(--fe-space-8);
+}
+
+// Vanity domain rows on /disposable-addresses.
+.fe-vanity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-3);
+  padding: 0;
+  margin: 0 0 var(--fe-space-8);
+  list-style: none;
+}
+
+.fe-vanity__row {
+  display: flex;
+  gap: var(--fe-space-3);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--fe-space-4) var(--fe-space-5);
+}
+
+.fe-vanity__addr {
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-body-md);
+  color: var(--fe-fg-code);
+  overflow-wrap: anywhere;
+}
+
+// The 1,250 reserved addresses. Columns rather than one long list so the
+// page is a few screens instead of a few dozen; the number is kept because
+// the list is referenced by position elsewhere.
+.fe-codelist {
+  padding: 0;
+  padding-inline-start: 2.5rem;
+  margin: 0 0 var(--fe-space-8);
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-secondary);
+  columns: 2;
+  column-gap: var(--fe-space-8);
+}
+
+.fe-codelist li {
+  padding-block: 2px;
+  break-inside: avoid;
+}
+
+.fe-codelist code {
+  padding: 1px var(--fe-space-1);
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--fe-fg-code);
+  background-color: var(--fe-bg-sunken);
+  border-radius: var(--fe-radius-sm);
+}
+
+// Non-affiliation notice under the guides grid.
+.fe-disclaimer {
+  margin: var(--fe-space-8) 0 0;
+  font-size: var(--fe-text-code);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-disclaimer strong {
+  color: var(--fe-fg-primary);
+}
+
+// ============================================
+// ONBOARD FORM
+// ============================================
+// The onboarding form at the foot of the small landing pages. Same ids,
+// names and hooks (.ajax-form, .cf-explicit-turnstile) as the bootstrap
+// banner it replaced, so the controller and the client script see the form
+// they always did.
+
+.fe-onboard__inner {
+  max-width: 34rem;
+  text-align: center;
+}
+
+.fe-onboard__title {
+  margin-bottom: var(--fe-space-2);
+}
+
+.fe-onboard__text {
+  margin-bottom: var(--fe-space-6);
+}
+
+.fe-onboard__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-4);
+  text-align: start;
+}
+
+.fe-onboard__noscript {
+  margin: 0;
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-state-danger);
+  text-align: center;
+}
+
+.fe-onboard__legal {
+  margin: 0;
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-secondary);
+  text-align: center;
+}
+
+.fe-onboard__legal a {
+  color: var(--fe-fg-link);
+}
+
+.fe-onboard__skip {
+  margin: var(--fe-space-6) 0 0;
+  font-size: var(--fe-text-body-sm);
+}
+
+.fe-onboard__skip a {
+  color: var(--fe-fg-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fe-onboard__skip a:hover,
+.fe-onboard__skip a:focus {
+  color: var(--fe-fg-primary);
+}
+
+// ============================================
+// CARD GRID
+// ============================================
+// One card per resource, doc or guide on the three index pages. The whole
+// card is the link.
+
+.fe-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color var(--fe-motion-base) var(--fe-ease),
+    box-shadow var(--fe-motion-base) var(--fe-ease);
+}
+
+.fe-card:hover {
+  border-color: var(--fe-border-strong);
+  box-shadow: var(--fe-elev-3);
+}
+
+// Open Graph images are 1200x630; the box is reserved at that ratio so the
+// grid does not reflow as they lazy load.
+.fe-card__media {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--fe-bg-sunken);
+  border-bottom: 1px solid var(--fe-border-subtle);
+  aspect-ratio: 1200 / 630;
+}
+
+.fe-card__media img,
+.fe-card__media video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// A video with controls has to sit above the card's stretched link, or the
+// link would swallow every click on the controls.
+.fe-card__media--live {
+  z-index: 2;
+}
+
+.fe-card__badges {
+  position: absolute;
+  top: var(--fe-space-3);
+  inset-inline-end: var(--fe-space-3);
+  z-index: 1;
+  display: flex;
+  gap: var(--fe-space-2);
+}
+
+.fe-card__badge {
+  padding: 2px var(--fe-space-2);
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-label);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-l-000);
+  text-transform: uppercase;
+  letter-spacing: var(--fe-tracking-label);
+  background-color: var(--fe-ink-a92);
+  border-radius: var(--fe-radius-sm);
+}
+
+// -deep variants: white on them clears 4.5:1, white on brand danger/mint
+// does not.
+.fe-card__badge--video {
+  background-color: var(--fe-danger-deep);
+}
+
+.fe-card__badge--gif {
+  background-color: var(--fe-mint-deep);
+}
+
+.fe-card__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--fe-space-2);
+  padding: var(--fe-space-5);
+}
+
+.fe-card__title {
+  margin: 0;
+  font-size: var(--fe-text-body-lg);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-primary);
+}
+
+.fe-card__subtitle {
+  margin: 0;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-card__text {
+  margin: 0;
+}
+
+// The link is stretched over the whole card (the ::after), so the card is
+// the tap target.
+.fe-card__link {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  margin-top: auto;
+  padding-top: var(--fe-space-4);
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-link);
+  text-decoration: none;
+}
+
+.fe-card__link::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  content: '';
+}
+
+.fe-card__link:hover,
+.fe-card__link:focus {
+  color: var(--fe-fg-link);
+  text-decoration: none;
+}
+
+.fe-card__link i {
+  transition: transform var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-card:hover .fe-card__link i {
+  transform: translateX(2px);
+}
+
+// ============================================
+// STATUS PAGES (404 / 500)
+// ============================================
+
+.fe-status {
+  display: flex;
+  align-items: center;
+  min-height: 70vh;
+  padding-block: 4rem;
+  text-align: center;
+}
+
+.fe-status__inner {
+  max-width: 40rem;
+}
+
+.fe-status__code {
+  display: block;
+  margin-bottom: var(--fe-space-4);
+  color: var(--fe-signal);
+}
+
+.fe-status__title {
+  margin-bottom: var(--fe-space-4);
+}
+
+.fe-status__body {
+  max-width: 48ch;
+  margin: 0 auto var(--fe-space-8);
+}
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
+@include fe-up(lg) {
+  .fe-codelist {
+    columns: 3;
+  }
+}
+
+@include fe-down(sm) {
+  .fe-codelist {
+    columns: 1;
+  }
+
+  .fe-vanity__row .fe-btn {
+    width: 100%;
+  }
+}

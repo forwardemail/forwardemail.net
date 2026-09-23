@@ -1,6 +1,6 @@
 # กรณีศึกษา: วิธีที่ Forward Email สนับสนุนโซลูชันอีเมลศิษย์เก่าสำหรับมหาวิทยาลัยชั้นนำ {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

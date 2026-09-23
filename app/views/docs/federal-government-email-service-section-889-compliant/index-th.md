@@ -1,6 +1,6 @@
 # ส่งต่ออีเมล: โซลูชันการส่งต่ออีเมลที่สอดคล้องกับมาตรา 889 ของคุณ {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="บริการอีเมลรัฐบาลกลางที่สอดคล้องกับมาตรา 889" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="บริการอีเมลรัฐบาลกลางที่สอดคล้องกับมาตรา 889" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

@@ -1,0 +1,147 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// The fe design system's base layer: the page wrapper, the section and
+// container, the type roles, and focus. Everything in the fe layer builds on
+// this file and _fe-primitives.scss; page files hold only what is particular
+// to one page. Token references only: bootstrap classes are avoided inside fe
+// scopes because app-dark.scss overrides them with !important in dark mode.
+
+// ============================================
+// WRAPPER
+// ============================================
+
+.fe-landing {
+  color: var(--fe-fg-primary);
+  font-family: var(--fe-font-body);
+
+  // Bootstrap sets a global heading font. The fe pages use the display token
+  // instead, scoped here so no other page's headings change.
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--fe-font-display);
+    font-weight: var(--fe-weight-bold);
+    line-height: var(--fe-leading-tight);
+  }
+}
+
+// Cancels body.app's fixed-navbar padding so a dark hero runs under the
+// transparent bar. Only correct while the bar is transparent, which is what
+// isFeFlushNav in _fe-flags.pug decides; crawlers and signed in visitors get
+// an in-flow or opaque bar and must not pull up.
+.fe-landing--flush {
+  margin-block-start: calc(-1 * var(--fe-nav-offset));
+}
+
+// ============================================
+// LAYOUT
+// ============================================
+
+.fe-container {
+  width: 100%;
+  max-width: var(--fe-container-max);
+  margin-inline: auto;
+  padding-inline: var(--fe-container-gutter);
+}
+
+.fe-section {
+  background-color: var(--fe-bg-canvas);
+  color: var(--fe-fg-primary);
+}
+
+// Vertical rhythm. The values live on tokens (_fe-tokens.scss) and are
+// re-pointed once for phones, so every section on every page shares one
+// number rather than restating it.
+.fe-section--pad {
+  padding-block: var(--fe-section-pad);
+}
+
+// Reading sections (page bodies, the onboarding form, the FAQ column).
+.fe-section--pad-sm {
+  padding-block: var(--fe-section-pad-sm);
+}
+
+// A light section that follows another light section reads as one surface,
+// so it drops its top padding rather than doubling the gap.
+.fe-section--tight {
+  padding-block-start: 0;
+}
+
+// A dark hero at the top of a page. The offset clears the transparent fixed
+// bar the hero runs under.
+.fe-section--hero {
+  padding-block: calc(var(--fe-hero-pad) + var(--fe-nav-offset))
+    var(--fe-hero-pad-end);
+}
+
+// ============================================
+// TYPE ROLES
+// ============================================
+// Size and colour only. Margins stay on the block that owns the element,
+// because the same heading sits in grids, flex heads and plain flow.
+
+.fe-display-xl {
+  font-size: var(--fe-text-display-xl);
+  color: var(--fe-fg-primary);
+}
+
+.fe-display-lg {
+  font-size: var(--fe-text-display-lg);
+  color: var(--fe-fg-primary);
+}
+
+.fe-display-sm {
+  font-size: var(--fe-text-display-sm);
+  color: var(--fe-fg-primary);
+}
+
+// Section lede: the sentence under a heading.
+.fe-lede {
+  max-width: 58ch;
+  margin-bottom: 3rem;
+  font-size: var(--fe-text-body-md);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+// Secondary running text: card bodies, descriptions, answers.
+.fe-text {
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-label {
+  font-family: var(--fe-font-body);
+  font-size: var(--fe-text-label);
+  font-weight: var(--fe-weight-bold);
+  letter-spacing: var(--fe-tracking-label);
+  text-transform: uppercase;
+}
+
+.fe-code {
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  font-variant-ligatures: none;
+}
+
+.fe-numeral {
+  font-family: var(--fe-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+// ============================================
+// FOCUS
+// ============================================
+// One ring for everything focusable inside an fe page. The bar and the
+// footer use a tinted pill instead (see their files); the modals are scoped
+// by .fe-page rather than .fe-landing and carry their own copy.
+
+.fe-landing :focus-visible {
+  outline: 2px solid var(--fe-focus-ring);
+  outline-offset: var(--fe-focus-offset);
+}

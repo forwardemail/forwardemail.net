@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > ב-1 ביוני 2026, פרסמנו את ביקורת האבטחה של צד שלישי שבוצעה על ידי [Cure53](https://cure53.de/), הנחשבת באופן נרחב לאחת מחברות מחקר האבטחה הטובות ביותר בתעשייה. דוח בדיקת החדירה המלא זמין ב-[pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email הוא שירות הדוא"ל היחיד בקוד פתוח 100% עם ביקורת אבטחה מאומתת באופן עצמאי.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

@@ -1,6 +1,6 @@
 # SQLite パフォーマンス最適化：本番用 PRAGMA 設定と ChaCha20 暗号化 {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite パフォーマンス最適化ガイド" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite パフォーマンス最適化ガイド" class="rounded-lg" /> -->
 
 
 ## 目次 {#table-of-contents}

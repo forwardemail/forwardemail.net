@@ -1,6 +1,6 @@
 # عن فورورد إيميل {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="فريق وقصة شركة فورورد إيميل" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="فريق وقصة شركة فورورد إيميل" class="rounded-lg" /> -->
 
 # عن فورورد إيميل {#about-forward-email-1}
 
@@ -165,4 +165,4 @@
 
 تستمر المنصة في التطور مع إصدارات ميزات منتظمة وتحسينات في البنية التحتية، محافظة على مكانتها كخدمة البريد الإلكتروني الوحيدة 100% مفتوحة المصدر، مشفرة، تركز على الخصوصية، شفافة، ومقاومة للحوسبة الكمومية المتاحة اليوم—مدعومة الآن بـ[تدقيق أمني مستقل](/pentest-report_forward-email.pdf) من Cure53.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

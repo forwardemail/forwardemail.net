@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > في 1 يونيو 2026، نشرنا تدقيق الأمان الخارجي الذي أجرته [Cure53](https://cure53.de/)، والتي تُعتبر على نطاق واسع واحدة من أفضل شركات أبحاث الأمان في الصناعة. التقرير الكامل لاختبار الاختراق متاح على [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email هي خدمة البريد الإلكتروني الوحيدة مفتوحة المصدر بنسبة 100% مع تدقيق أمني مستقل تم التحقق منه.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="مقارنة شركات تدقيق الأمان" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="مقارنة شركات تدقيق الأمان" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

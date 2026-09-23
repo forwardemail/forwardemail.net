@@ -7,7 +7,7 @@
 >
 > Однако, в истинном стиле PayPal, они никогда нас не уведомляли. Мы обнаружили это обновление самостоятельно только в декабре 2025 года, спустя месяцы после тихого релиза функции.
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="Иллюстрация катастрофы API PayPal" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="Иллюстрация катастрофы API PayPal" class="rounded-lg" /> -->
 
 <p class="lead mt-3">В Forward Email мы уже более десяти лет сталкиваемся с неисправными API PayPal. То, что начиналось как мелкие раздражения, превратилось в полную катастрофу, которая заставила нас создавать собственные обходные пути, блокировать их фишинговые шаблоны и в конечном итоге приостановить все платежи PayPal во время критической миграции аккаунта.</p>
 <p class="lead mt-3">Это история 11 лет игнорирования PayPal базовых потребностей разработчиков, пока мы пытались всеми силами заставить их платформу работать.</p>
@@ -372,20 +372,20 @@ TypeScript SDK PayPal, который на данный момент подде�
   <figcaption><div class="alert alert-danger small text-center">
   Интерфейс управления подписками — интерфейс настолько плох, что нам пришлось полагаться на код для создания продуктов и планов подписок
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="Скриншот подписок PayPal" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="Скриншот подписок PayPal" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Вид сломанного интерфейса подписок с отсутствующей функциональностью (вы не можете легко создавать продукты/планы/подписки — и, похоже, вообще нет способа удалить продукты или планы после их создания в UI)
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="Скриншот подписок PayPal 2" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="Скриншот подписок PayPal 2" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Типичные сообщения об ошибках PayPal — загадочные и бесполезные
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" /> -->
 </figure>
 
 ### Проблемы SDK {#sdk-problems}
@@ -430,38 +430,38 @@ TypeScript SDK PayPal, который на данный момент подде�
   <figcaption><div class="alert alert-danger small text-center">
   Ошибка, которую видели клиенты при попытке оплаты — без объяснений, без логов, ничего
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Служба поддержки PayPal утверждает, что всё в порядке, в то время как платежи полностью не работают. В последнем сообщении они говорят, что "восстановили некоторые функции", но всё равно просят дополнительную неопределённую информацию — классический театр поддержки PayPal
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Процесс проверки личности, который якобы "ничего не исправил"
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Расплывчатое сообщение и до сих пор нет решения. Никакой информации, уведомлений или объяснений, какая дополнительная информация требуется. Служба поддержки клиентов молчит.
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" /> -->
 </figure>
 
 
@@ -564,7 +564,7 @@ PayPal, компания, которая должна быть лидером в
   <figcaption><div class="alert alert-danger small text-center">
   Скриншот, показывающий множество мошеннических счетов PayPal, заполонивших почтовый ящик, все выглядят легитимно, потому что они действительно исходят из систем PayPal
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" /> -->
 </figure>
 
 Исследователь отметил:
@@ -931,4 +931,4 @@ PayPal — единственный крупный платежный проце
 
 > В этом посте задокументирован наш 11-летний опыт работы с API PayPal в Forward Email. Все примеры кода и ссылки взяты из наших реальных производственных систем. Мы продолжаем поддерживать платежи через PayPal несмотря на эти проблемы, потому что у некоторых клиентов нет другого выбора
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" /> -->

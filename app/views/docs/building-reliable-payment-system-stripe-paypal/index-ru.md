@@ -1,6 +1,6 @@
 # Как мы создали надежную платежную систему с Stripe и PayPal: подход трифекта {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Платежная система с Stripe и PayPal" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Платежная система с Stripe и PayPal" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

@@ -1,6 +1,6 @@
 # Gizlilik Politikası {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email gizlilik politikası" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email gizlilik politikası" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

@@ -2,7 +2,7 @@
 
 <!-- v1.0 from <https://github.com/CommonPaper/DPA> -->
 
-<img loading="lazy" src="/img/articles/dpa.webp" alt="Thỏa thuận xử lý dữ liệu Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/dpa.webp" alt="Thỏa thuận xử lý dữ liệu Forward Email" class="rounded-lg" /> -->
 
 
 ## Mục Lục {#table-of-contents}

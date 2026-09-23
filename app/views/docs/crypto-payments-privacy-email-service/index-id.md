@@ -1,6 +1,6 @@
 # Memperkenalkan Pembayaran Crypto: Privasi yang Ditingkatkan untuk Layanan Email Anda {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Pembayaran cryptocurrency untuk layanan email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Pembayaran cryptocurrency untuk layanan email" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

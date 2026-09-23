@@ -1,6 +1,6 @@
 # 10년의 영향력: 우리의 npm 패키지가 10억 다운로드를 달성하고 자바스크립트를 형성한 방법 {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

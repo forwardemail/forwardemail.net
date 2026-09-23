@@ -1,6 +1,6 @@
 # Aufbau eines datenschutzorientierten KI-Kundensupport-Agenten mit LanceDB, Ollama und Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="KI-Kundensupport-Agent mit LanceDB Ollama Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="KI-Kundensupport-Agent mit LanceDB Ollama Node.js" class="rounded-lg" /> -->
 
 > \[!NOTE]
 > Dieses Dokument beschreibt unsere Reise beim Aufbau eines selbstgehosteten KI-Support-Agenten. Wir haben über ähnliche Herausforderungen in unserem Blogbeitrag [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) geschrieben. Ehrlich gesagt haben wir überlegt, einen Nachfolgebeitrag mit dem Titel „AI Startup Graveyard“ zu schreiben, aber vielleicht müssen wir noch ein weiteres Jahr warten, bis die KI-Blase möglicherweise platzt(?). Für den Moment ist dies unser Brain Dump darüber, was funktioniert hat, was nicht und warum wir es so gemacht haben.

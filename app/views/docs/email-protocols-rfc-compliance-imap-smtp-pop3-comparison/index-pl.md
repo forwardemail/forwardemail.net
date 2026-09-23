@@ -1,6 +1,6 @@
 # Wsparcie protokołów RFC dla poczty e-mail - Kompletny przewodnik po standardach i specyfikacjach {#email-rfc-protocol-support---complete-standards--specifications-guide}
 
-<img loading="lazy" src="/img/articles/rfc.webp" alt="Biblioteka protokołów RFC dla poczty e-mail" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/rfc.webp" alt="Biblioteka protokołów RFC dla poczty e-mail" class="rounded-lg" /> -->
 
 
 ## Spis treści {#table-of-contents}

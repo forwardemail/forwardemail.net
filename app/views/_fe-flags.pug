@@ -1,0 +1,34 @@
+//- The fe design-system gates, computed once per page render. layout.pug
+//- includes this ahead of _nav.pug (pug includes share one compiled scope, so
+//- the nav reads these without recomputing them — and including this twice in
+//- one chain would emit duplicate consts). email-api.pug builds its own html
+//- element without going through layout.pug and includes this itself.
+
+//- The bot check, once per render. isbot runs a large regex, and the
+//- templates used to call it forty-odd times per page.
+- const isBotUa = isBot(ctx.get("User-Agent"));
+
+//- `/` only ever renders home.pug for a logged out visitor, since
+//- auth.homeOrDomains redirects everyone else.
+- const isFeLandingPage = !user && ctx.pathWithoutLocale === "/" && !isBotUa && !boolean(ctx.query.pricing);
+//- /download and /faq render their redesigned surfaces for signed in visitors
+//- too: someone who already has an account is the most likely person to want
+//- the app or the answers.
+//- The secondary marketing pages joined the same list when they moved onto
+//- the fe page header: they read the same signed in or out (the onboarding
+//- form prefills the visitor's email either way).
+- const isFeAccountAgnosticPage = ["/download", "/faq", "/free-email-webhooks", "/email-forwarding-regex-pattern-filter", "/disposable-addresses", "/reserved-email-addresses", "/ips", "/resources", "/blog/docs", "/guides"].includes(ctx.pathWithoutLocale) && !isBotUa;
+//- The pricing template's hero renders under the same condition the template
+//- itself uses: every logged out visitor gets it, ?pricing=true included —
+//- the redesigned hero is compact enough that "jump to pricing" still lands
+//- the table in view. Signed in visitors keep the previous design.
+- const isFePricingPage = !user && !isBotUa && (ctx.pathWithoutLocale === "/private-business-email" || Object.keys(useCases).includes(ctx.pathWithoutLocale));
+//- body.fe-page scopes the dark fe modal treatment (_fe-modal.scss): every
+//- logged out page, plus /download and /faq for signed in visitors. Signed in
+//- dashboard modals instead follow the OS scheme via the --app-* tokens in
+//- app-dark.scss, matching the chrome around them.
+- const isFePage = !isBotUa && (!user || isFeAccountAgnosticPage);
+//- Whether the page opens on a dark fe hero that runs under a transparent
+//- navbar. _nav.pug keys the transparent bar on this same flag, and the page
+//- templates read it to add .fe-landing--flush, so the pair cannot drift.
+- const isFeFlushNav = isFeLandingPage || isFePricingPage || (isFeAccountAgnosticPage && !user);

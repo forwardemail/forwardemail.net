@@ -1,13 +1,17 @@
 extends layout
 
+include _fe-page-header
+
 block body
-  .min-vh-80.d-flex.flex-column
-    .container-fluid.text-center.py-3.py-md-4.py-lg-5.my-auto
-      h1!= meta.title
-      p.lead.text-muted!= meta.description
-      form.mb-3.mb-md-4.mb-lg-5(action=ctx.path, method="GET")
-        button.btn.btn-outline-success.btn-lg(type="submit")= t("Try again")
-      .markdown-body: img.rounded-lg(
-        src=manifest("img/articles/500.webp"),
-        alt="Server error illustration"
-      )
+  //- Dark, centred, one action, on the shared status mixin. Title and
+  //- description come from meta, as before. The article illustration this
+  //- page used to show is hidden site-wide for now.
+  .fe-landing
+    +feStatus("500", meta.title, meta.description)
+      form(action=ctx.path, method="GET")
+        button.fe-btn.fe-btn--hero.fe-btn--lg(type="submit")
+          i.fa.fa-redo(aria-hidden="true")
+          = t("Try again")
+      a.fe-btn.fe-btn--ghost.fe-btn--lg(href=l("/help"))
+        i.fa.fa-envelope(aria-hidden="true")
+        = t("Contact support")

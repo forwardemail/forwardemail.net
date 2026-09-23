@@ -1,6 +1,6 @@
 # Amazon WorkMail Migration Guide: Step-by-Step Switch to Forward Email Before the 2027 Shutdown
 
-<img loading="lazy" src="/img/articles/workmail-migration.webp" alt="Amazon WorkMail to Forward Email migration guide" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/workmail-migration.webp" alt="Amazon WorkMail to Forward Email migration guide" class="rounded-lg" /> -->
 
 > \[!IMPORTANT]
 > **Disclaimer**: Forward Email is not affiliated with, endorsed by, or sponsored by Amazon Web Services (AWS), Amazon WorkMail, or any Amazon subsidiary. All Amazon and AWS trademarks are the property of Amazon.com, Inc. This guide is provided independently to help Amazon WorkMail customers evaluate their migration options.

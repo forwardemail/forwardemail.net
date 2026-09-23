@@ -1,6 +1,6 @@
 # Forward Email: La tua soluzione di inoltro email conforme alla Sezione 889 {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="Servizio email del governo federale conforme alla Sezione 889" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="Servizio email del governo federale conforme alla Sezione 889" class="rounded-lg" /> -->
 
 
 ## Indice {#table-of-contents}

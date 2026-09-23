@@ -1,6 +1,6 @@
 # DSGVO-Konformität {#gdpr-compliance}
 
-<img loading="lazy" src="/img/articles/gdpr.webp" alt="Forward Email DSGVO-Konformität" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/gdpr.webp" alt="Forward Email DSGVO-Konformität" class="rounded-lg" /> -->
 
 
 ## Inhaltsverzeichnis {#table-of-contents}

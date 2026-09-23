@@ -1,3 +1,25 @@
+//- The monthly figure is read from planPricing, the same view local the
+//- redesigned landing page uses, which derives it from
+//- payments.PAYPAL_MAPPING. Before this it was written into the translated
+//- string itself, so the price existed in 8 separate keys and was duplicated
+//- into all 25 locale files: changing what we charge meant editing marketing
+//- copy in 25 languages, and nothing would have caught it if that were missed.
+//-
+//- The figure is emitted as a literal outside t(), which is the same rule the
+//- landing page follows, so the translation job can never rewrite a number or
+//- a currency symbol. Only the words around it are translated, and they are now
+//- one key shared by all four plans rather than one key per price.
+mixin planPrice(amount)
+  span.d-inline-block.h4.mb-0.font-sans-serif.font-weight-bold.notranslate= `$${amount}`
+  span.d-inline-block.h6.text-black.font-sans-serif.text-themed-50
+    != t('/month for <span class="text-decoration-underline">unlimited domains</span>')
+
+//- Struck-through variant, shown to a visitor who is already on a paid plan.
+mixin planPriceWas(amount)
+  s.d-block.h6.text-muted.font-sans-serif
+    span.notranslate= `$${amount}`
+    != t('/month for <span class="text-decoration-underline">unlimited domains</span>')
+
 .bg-fixed.lazyload.py-3.py-md-4.py-lg-5(
   id=user || (!isBot(ctx.get("User-Agent")) && boolean(ctx.query.pricing) && ctx.pathWithoutLocale !== "/") ? false : "features",
   data-src=manifest("img/articles/testimonials-lg.webp")
@@ -13,9 +35,9 @@
             .lead.text-center.mb-3.text-nowrap
               if user && user.plan !== 'free'
                 span.h5.font-weight-bold.d-block= t("Already upgraded")
-                s.d-block.h6.text-muted.font-sans-serif!= t('$0/month for <span class="text-decoration-underline">unlimited domains</span>')
+                +planPriceWas(planPricing.free)
               else
-                != t('<span class="d-inline-block h4 mb-0 font-sans-serif font-weight-bold">$0</span><span class="d-inline-block h6 text-black font-sans-serif text-themed-50">/month for <span class="text-decoration-underline">unlimited domains</span></span>')
+                +planPrice(planPricing.free)
             a.btn.btn-block.btn-dark.font-weight-bold(
               href=l("/my-account/domains/new")
             )
@@ -98,9 +120,9 @@
             .lead.text-center.mb-3.text-nowrap
               if user && user.plan !== 'free'
                 span.h5.font-weight-bold.d-block= t("Already upgraded")
-                s.d-block.h6.text-muted.font-sans-serif!= t('$3/month for <span class="text-decoration-underline">unlimited domains</span>')
+                +planPriceWas(planPricing.enhanced)
               else
-                != t('<span class="d-inline-block h4 mb-0 font-sans-serif font-weight-bold">$3</span><span class="d-inline-block h6 text-black font-sans-serif text-themed-50">/month for <span class="text-decoration-underline">unlimited domains</span></span>')
+                +planPrice(planPricing.enhanced)
             if !sortedDomains || sortedDomains.length === 0
               a.btn.btn-block.btn-success.font-weight-bold.text-nowrap(
                 href=l("/my-account/domains/new?plan=enhanced_protection")
@@ -262,9 +284,9 @@
             .lead.text-center.mb-3.text-nowrap
               if user && user.plan === 'team'
                 span.h5.font-weight-bold.d-block= t("Already upgraded")
-                s.d-block.h6.text-muted.font-sans-serif!= t('$9/month for <span class="text-decoration-underline">unlimited domains</span>')
+                +planPriceWas(planPricing.team)
               else
-                != t('<span class="d-inline-block h4 mb-0 font-sans-serif font-weight-bold">$9</span><span class="d-inline-block h6 text-black font-sans-serif text-themed-50">/month for <span class="text-decoration-underline">unlimited domains</span></span>')
+                +planPrice(planPricing.team)
             if !sortedDomains || sortedDomains.length === 0
               a.btn.btn-block.btn-primary.font-weight-bold(
                 href=l("/my-account/domains/new?plan=team")
@@ -340,7 +362,7 @@
             p.text-center.mb-3.small
               != t('For <a href="%s" class="text-themed font-weight-bold">education</a>, <a href="%s" class="text-themed font-weight-bold">universities</a>, <a href="%s" class="text-themed font-weight-bold">alumni</a>, <a href="%s" class="text-themed font-weight-bold">healthcare</a>, <a href="%s" class="text-themed font-weight-bold">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/universities-email-service"), l("/alumni-email-forwarding"), l("/healthcare-email-hosting-forwarding-hipaa"), l("/government-email-hosting-forwarding"))
             .lead.text-center.mb-3.text-nowrap
-              != t('<span class="d-inline-block h4 mb-0 font-sans-serif font-weight-bold">$250</span><span class="d-inline-block h6 text-black font-sans-serif text-themed-50">/month for <span class="text-decoration-underline">unlimited domains</span></span>')
+              +planPrice(planPricing.enterprise)
             a.btn.btn-block.btn-success.font-weight-bold(href=l("/help"))
               = t("Contact us to schedule a call")
               = " "

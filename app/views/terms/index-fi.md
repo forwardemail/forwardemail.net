@@ -1,6 +1,6 @@
 # Ehdot {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email palveluehdot" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email palveluehdot" class="rounded-lg" /> -->
 
 
 ## Sisällysluettelo {#table-of-contents}

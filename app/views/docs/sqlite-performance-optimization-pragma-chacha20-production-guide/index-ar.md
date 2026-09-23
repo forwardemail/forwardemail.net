@@ -1,6 +1,6 @@
 # تحسين أداء SQLite: إعدادات PRAGMA للإنتاج وتشفير ChaCha20 {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="دليل تحسين أداء SQLite" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="دليل تحسين أداء SQLite" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

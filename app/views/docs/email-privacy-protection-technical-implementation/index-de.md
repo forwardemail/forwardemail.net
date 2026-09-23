@@ -1,6 +1,6 @@
 # Wie E-Mail-Weiterleitung mit Forward Email funktioniert: Der ultimative Leitfaden {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Technische Umsetzung des E-Mail-Datenschutzes" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Technische Umsetzung des E-Mail-Datenschutzes" class="rounded-lg" /> -->
 
 
 ## Inhaltsverzeichnis {#table-of-contents}

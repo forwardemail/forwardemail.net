@@ -1,6 +1,6 @@
 # Missbrauch melden {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Missbrauch und Spam an Forward Email melden" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="Missbrauch und Spam an Forward Email melden" class="rounded-lg" /> -->
 
 
 ## Inhaltsverzeichnis {#table-of-contents}

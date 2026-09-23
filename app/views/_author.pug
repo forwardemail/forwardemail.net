@@ -27,20 +27,8 @@
             i.fa.fa-calendar-day
             = " "
           = t("Published")
-        .dayjs(
-          data-time=publishedISOString ? new Date(publishedISOString).getTime() : dayjs().startOf("month").toDate().getTime(),
-          data-time-style="false"
-        )
-          if publishedISOString
-            if user
-              = dayjs(new Date(publishedISOString)).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY")
-            else
-              = dayjs(new Date(publishedISOString)).format("M/D/YY")
-          else
-            if user
-              = dayjs().tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).startOf("month").format("M/D/YY")
-            else
-              = dayjs().startOf("month").format("M/D/YY")
+        - const published = getPublishedDate(publishedISOString, user);
+        .dayjs(data-time=published.time, data-time-style="false")= published.formatted
     .d-none.d-md-flex.flex-column.ml-3.ml-md-5.font-weight-bold.text-themed
       div
         .small

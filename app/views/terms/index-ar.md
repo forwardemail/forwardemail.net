@@ -1,6 +1,6 @@
 # الشروط {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="شروط خدمة Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="شروط خدمة Forward Email" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

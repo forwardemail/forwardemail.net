@@ -1,6 +1,6 @@
 # Kuantum Dirençli E-posta: E-postanızı Güvende Tutmak İçin Şifrelenmiş SQLite Posta Kutularını Nasıl Kullanıyoruz {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="Kuantum-güvenli şifrelenmiş e-posta servisi illüstrasyonu" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/quantum.webp" alt="Kuantum-güvenli şifrelenmiş e-posta servisi illüstrasyonu" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

@@ -1,6 +1,6 @@
 # Hogyan építettünk ki egy robusztus fizetési rendszert Stripe és PayPal segítségével: Egy trifecta megközelítés {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

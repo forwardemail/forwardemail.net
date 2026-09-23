@@ -7,10 +7,11 @@ block body
         h1!= meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
         p!= meta.description
         include ../../_author
-        .markdown-body.mt-3: img.rounded-lg(
-          src=manifest("img/articles/react.webp"),
-          alt="React email templates illustration"
-        )
+        //- article images are hidden site-wide for now
+        //- .markdown-body.mt-3: img.rounded-lg(
+        //- src=manifest("img/articles/react.webp"),
+        //- alt="React email templates illustration"
+        //- )
     .row.mt-3
       .col
         case locale

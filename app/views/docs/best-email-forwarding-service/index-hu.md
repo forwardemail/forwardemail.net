@@ -1,6 +1,6 @@
 # Hogyan védi a Forward Email az Ön adatvédelmét, domainjét és biztonságát: A technikai mélyreható elemzés {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Legjobb email továbbító szolgáltatás összehasonlítás" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Legjobb email továbbító szolgáltatás összehasonlítás" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

@@ -1,0 +1,235 @@
+//- The marketing tail below the hero on the pricing template (and the tail
+//- of /compare and /open-source), rebuilt on the tokens. Replaces the run
+//- of _marketing.pug, _pricing-table.pug, _quick-start.pug and
+//- _testimonials.pug those pages rendered; the legacy partials are
+//- untouched.
+//-
+//- This is a visual swap, not a content migration: every section keeps the
+//- copy, links and order of the one it replaces. Two additions: the devices
+//- section now links to /download (the apps exist now and the copy is
+//- about them), and the closing proof section is the landing page's, so
+//- the same three quotes and receipts show wherever testimonials do.
+//-
+//- Surfaces run light / dark / light / light / light / dark / light. The
+//- three adjacent light sections (checklist, plans, questions) drop their
+//- top padding (.fe-section--tight) so they read as one surface.
+include _fe-pricing-detail
+include _fe-testimonials
+
+mixin feTile(title)
+  li.fe-panel.fe-tile
+    span.fe-icon-tile.fe-icon-tile--success
+      i.fa.fa-check(aria-hidden="true")
+    div
+      h3.fe-tile__title= title
+      p.fe-text.fe-tile__body
+        block
+
+mixin feOrg(label, names)
+  li.fe-panel.fe-panel--frame
+    span.fe-icon-tile.fe-icon-tile--active
+      block
+    span.fe-orgs__label.fe-label= label
+    p.fe-orgs__names= names
+
+//- "Custom domain email hosting": the four-point feature grid.
+mixin feMarketingFeatures
+  section.fe-section.fe-surface-light.fe-section--pad.fe-marketing(
+    aria-labelledby="fe-marketing-features-title"
+  )
+    .fe-container
+      p.fe-eyebrow.fe-label
+        i.fa.fa-envelope(aria-hidden="true")
+        = t("Custom domain email hosting")
+      .fe-marketing__head
+        h2#fe-marketing-features-title.fe-display-lg.fe-marketing__title= t("Free email forwarding and custom domain hosting that works everywhere.")
+      ul.fe-grid.fe-grid--md-2
+        +feTile(t("Custom Domain Email Address"))
+          = t("Establish credibility with you@yourdomain.com – professional email addresses that build trust.")
+        +feTile(t("Unlimited Email Accounts"))
+          = t("Create as many domain names and email addresses as your team needs, without extra costs.")
+        +feTile(t("Generous 10 GB Email Storage"))
+          = t("Ample space for all your important communications and attachments. Pay as you go.")
+        +feTile(t("Seamless Compatibility & Deliverability"))
+          != t("Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all <span class='notranslate'>%d</span> email standards for optimal deliverability.", dayjs().format("YYYY"))
+
+//- "Access your email anywhere": the four device tiles.
+mixin feMarketingDevices
+  section.fe-section.fe-surface-dark.fe-section--pad.fe-marketing(
+    aria-labelledby="fe-marketing-devices-title"
+  )
+    .fe-container.fe-marketing__center
+      p.fe-eyebrow.fe-label
+        i.fa.fa-mobile-alt(aria-hidden="true")
+        = t("Any device")
+      .fe-marketing__head
+        h2#fe-marketing-devices-title.fe-display-lg.fe-marketing__title= t("Access your email anywhere")
+      p.fe-lede= t("Our professional email solution offers universal compatibility, ensuring you stay connected from anywhere.")
+      ul.fe-grid.fe-grid--2.fe-grid--lg-4.fe-devices
+        li.fe-panel.fe-panel--frame
+          i.fab.fa-apple.fe-devices__icon(aria-hidden="true")
+          span.fe-devices__label= t("iPhone & macOS")
+        li.fe-panel.fe-panel--frame
+          i.fab.fa-android.fe-devices__icon(aria-hidden="true")
+          span.fe-devices__label= t("Android")
+        li.fe-panel.fe-panel--frame
+          i.fab.fa-windows.fe-devices__icon(aria-hidden="true")
+          span.fe-devices__label= t("Windows")
+        li.fe-panel.fe-panel--frame
+          i.fa.fa-desktop.fe-devices__icon(aria-hidden="true")
+          span.fe-devices__label= t("Any Email Client")
+      .fe-actions
+        a.fe-btn.fe-btn--hero.fe-btn--md(href=l("/download"))
+          i.fa.fa-download(aria-hidden="true")
+          = t("Download")
+        a.fe-btn.fe-btn--ghost.fe-btn--md(
+          href=l("/faq#how-do-i-configure-my-email-client-to-work-with-forward-email")
+        )
+          i.fa.fa-book(aria-hidden="true")
+          = t("Email client setup")
+
+//- "All-inclusive features": the eighteen-point checklist.
+mixin feMarketingChecklist
+  section.fe-section.fe-surface-light.fe-section--pad.fe-marketing(
+    aria-labelledby="fe-marketing-checklist-title"
+  )
+    .fe-container
+      p.fe-eyebrow.fe-label
+        i.fa.fa-check(aria-hidden="true")
+        = t("All-inclusive features")
+      .fe-marketing__head
+        h2#fe-marketing-checklist-title.fe-display-lg.fe-marketing__title= t("No additional fees for must-have features.")
+      ul.fe-grid.fe-grid--md-2.fe-grid--lg-3.fe-checklist
+        each item in [t("100% Open-Source Software"), t("Quantum-Resistant Encryption"), t("Advanced Email Security"), t("Reliable Email Sending & Receiving"), t("Email Archiving & Download"), t("Integrated Calendars & Contacts"), t("Bounce & Web Alert Notifications"), t("Developer-Friendly Email API"), t("Email Encryption & Message Signing"), t("Encrypted PGP Forwarding"), t("Intelligent Spam & Phishing Protection"), t("Email Standards Compliance"), t("Forwarding & Secure Delivery"), t("Safe Web Lookups & Data Protection"), t("Sandboxed Mailboxes"), t("Self-Hosted Docker Email"), t("Zero-Knowledge Architecture"), t("99.99% Uptime")]
+          li
+            i.fa.fa-check(aria-hidden="true")
+            span= item
+
+//- The six pricing questions.
+mixin feMarketingFaq
+  section.fe-section.fe-surface-light.fe-section--pad.fe-section--tight.fe-marketing(
+    aria-labelledby="fe-marketing-faq-title"
+  )
+    .fe-container
+      p.fe-eyebrow.fe-label
+        i.fa.fa-question-circle(aria-hidden="true")
+        = t("Frequently Asked Questions")
+      .fe-marketing__head
+        h2#fe-marketing-faq-title.fe-display-lg.fe-marketing__title= t("Common questions about plans.")
+      ul.fe-grid.fe-grid--md-2.fe-questions
+        li.fe-panel.fe-questions__item
+          h3.fe-questions__q= t("What's the difference between Enhanced Protection and Team plans?")
+          p.fe-text.fe-questions__a= t("Enhanced Protection ($3/month) is perfect for individuals who need professional email with sending/receiving capabilities, 10GB storage, and API access. Team plan ($9/month) adds collaborative features like team member management, shared organizational access, and priority support - ideal for families, groups, and businesses.")
+        li.fe-panel.fe-questions__item
+          h3.fe-questions__q= t("Can I send and receive emails with the Free plan?")
+          p.fe-text.fe-questions__a= t("No, the Free plan only supports email forwarding. You can receive emails at your custom domain and forward them to your existing email address, but you cannot send emails directly from your custom domain or store emails on our servers.")
+        li.fe-panel.fe-questions__item
+          h3.fe-questions__q= t("Who should choose the Team plan?")
+          p.fe-text.fe-questions__a= t("The Team plan is perfect for families sharing a domain (like @smithfamily.com), small businesses with multiple employees, organizations needing shared email management, or any group that requires collaborative access to email accounts with proper permission controls.")
+        li.fe-panel.fe-questions__item
+          h3.fe-questions__q= t("What does 'unlimited domains' mean?")
+          p.fe-text.fe-questions__a= t("All plans include unlimited domains at no extra cost. Whether you have 1 domain or 100 domains, you pay the same price. This makes our service extremely cost-effective for users managing multiple websites or businesses.")
+        li.fe-panel.fe-questions__item
+          h3.fe-questions__q= t("Do you charge per user/alias like other services?")
+          p.fe-text.fe-questions__a= t("No! Unlike other email services that charge per user or alias, we include unlimited aliases in our Enhanced Protection and Team plans. Create as many email addresses as you need (info@, sales@, support@, etc.) without additional fees.")
+        li.fe-panel.fe-questions__item
+          h3.fe-questions__q= t("Can I upgrade or downgrade my plan anytime?")
+          p.fe-text.fe-questions__a= t("Yes, you can upgrade or downgrade your plan at any time. When upgrading, you'll get immediate access to new features. When downgrading, changes take effect at your next billing cycle, and you'll retain access to paid features until then.")
+      .fe-actions
+        a.fe-btn.fe-btn--subtle.fe-btn--md(href=l("/faq"))
+          = t("Frequently Asked Questions")
+          i.fa.fa-angle-right(aria-hidden="true")
+
+//- "Trusted by millions": the four organisation groups, then the quick
+//- start actions and proof links that _quick-start.pug carried.
+mixin feMarketingTrust
+  section.fe-section.fe-surface-dark.fe-section--pad.fe-marketing(
+    aria-labelledby="fe-marketing-trust-title"
+  )
+    .fe-container.fe-marketing__center
+      p.fe-eyebrow.fe-label
+        i.fa.fa-globe(aria-hidden="true")
+        = t("Trusted by millions")
+      .fe-marketing__head
+        h2#fe-marketing-trust-title.fe-display-lg.fe-marketing__title= t("Leading organizations and businesses worldwide rely on our secure and reliable email service.")
+      ul.fe-grid.fe-grid--md-2.fe-grid--lg-4.fe-orgs
+        +feOrg(t("Government"), t("US Naval Academy, Government of South Australia, Government of Dominican Republic"))
+          i.fa.fa-landmark(aria-hidden="true")
+        +feOrg(t("Enterprise"), t("Netflix Games, Disney Ad Sales, Fox News Radio, RCD Hotels"))
+          i.fa.fa-briefcase(aria-hidden="true")
+        +feOrg(t("Open-source"), t("The Linux Foundation, jQuery, Ubuntu, LineageOS, Canonical"))
+          i.fa.fa-code(aria-hidden="true")
+        +feOrg(t("Education"), t("Carnegie Mellon, Cambridge, UMD, UW, Tufts, Swarthmore"))
+          i.fa.fa-user-graduate(aria-hidden="true")
+      p.fe-marketing__ready= t("Ready to join these organizations?")
+      .fe-actions
+        a.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--glow(
+          href=l("/faq#quick-start")
+        )
+          = t("Quick Start")
+          i.fa.fa-angle-right(aria-hidden="true")
+        button.fe-btn.fe-btn--ghost.fe-btn--lg(
+          type="button",
+          data-toggle="modal",
+          data-target="#modal-domain-search"
+        )
+          i.fa.fa-search(aria-hidden="true")
+          = t("Search Domain Availability")
+      //- Same destinations _quick-start.pug linked, on the pricing hero's
+      //- proof-link primitive.
+      ul.fe-evidence
+        li
+          a.fe-evidence__link(
+            href="/technical-whitepaper.pdf",
+            target="_blank",
+            rel="noopener"
+          )
+            i.fa.fa-book(aria-hidden="true")
+            = t("Whitepaper")
+        li
+          a.fe-evidence__link(
+            href="/pentest-report_forward-email.pdf",
+            target="_blank",
+            rel="noopener"
+          )
+            i.fa.fa-user-secret(aria-hidden="true")
+            = t("Security Audit")
+        li
+          a.fe-evidence__link(
+            href=l("/blog/docs/canonical-ubuntu-email-enterprise-case-study"),
+            target="_blank",
+            rel="noopener"
+          )
+            i.fa.fa-briefcase(aria-hidden="true")
+            = t("Enterprise")
+        li
+          a.fe-evidence__link(
+            href=l("/blog/docs/alumni-email-forwarding-university-case-study"),
+            target="_blank",
+            rel="noopener"
+          )
+            i.fa.fa-user-graduate(aria-hidden="true")
+            = t("Education")
+        li
+          a.fe-evidence__link(
+            href=l("/blog/docs/federal-government-email-service-section-889-compliant"),
+            target="_blank",
+            rel="noopener"
+          )
+            i.fa.fa-landmark(aria-hidden="true")
+            = t("Government")
+        li
+          a.fe-evidence__link(href=l("/gdpr"), target="_blank", rel="noopener")
+            i.fa.fa-check-circle(aria-hidden="true")
+            = t("EU and GDPR Compliant Email")
+
+//- The whole tail, in the order the legacy run rendered it, closed by the
+//- landing page's proof section (which keeps id="testimonials").
+mixin feMarketing
+  +feMarketingFeatures
+  +feMarketingDevices
+  +feMarketingChecklist
+  +fePricingDetail
+  +feMarketingFaq
+  +feMarketingTrust
+  +feTestimonials

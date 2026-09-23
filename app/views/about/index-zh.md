@@ -1,6 +1,6 @@
 # 关于 Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email 团队和公司故事" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Forward Email 团队和公司故事" class="rounded-lg" /> -->
 
 # 关于 Forward Email {#about-forward-email-1}
 
@@ -163,4 +163,4 @@ Forward Email 的使命不仅仅是提供邮件服务——它旨在改变行业
 
 该平台持续发展，定期发布新功能和基础设施改进，保持其作为目前唯一 100% 开源、加密、注重隐私、透明且抗量子攻击的邮件服务的地位——现在由Cure53的[独立安全审计](/pentest-report_forward-email.pdf)支持。
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

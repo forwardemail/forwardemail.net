@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > เมื่อวันที่ 1 มิถุนายน 2026 เราได้เผยแพร่การตรวจสอบความปลอดภัยจากบุคคลที่สามที่ดำเนินการโดย [Cure53](https://cure53.de/) ซึ่งได้รับการยอมรับอย่างกว้างขวางว่าเป็นหนึ่งในบริษัทวิจัยด้านความปลอดภัยที่ดีที่สุดในอุตสาหกรรม รายงานการทดสอบการเจาะระบบฉบับเต็มมีให้ที่ [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf) Forward Email เป็นบริการอีเมลโอเพ่นซอร์ส 100% เพียงรายเดียวที่มีการตรวจสอบความปลอดภัยที่ได้รับการยืนยันอย่างเป็นอิสระ
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

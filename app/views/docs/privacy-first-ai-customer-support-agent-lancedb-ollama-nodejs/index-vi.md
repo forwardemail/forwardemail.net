@@ -1,6 +1,6 @@
 # Xây dựng Đại lý Hỗ trợ Khách hàng AI Ưu tiên Quyền riêng tư với LanceDB, Ollama và Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="AI customer support agent with LanceDB Ollama Node.js" class="rounded-lg" /> -->
 
 > \[!NOTE]
 > Tài liệu này trình bày hành trình xây dựng đại lý hỗ trợ AI tự lưu trữ của chúng tôi. Chúng tôi đã viết về những thách thức tương tự trong bài đăng blog [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). Thật lòng chúng tôi đã nghĩ đến việc viết tiếp theo có tên "AI Startup Graveyard" nhưng có lẽ phải đợi thêm một năm nữa cho đến khi bong bóng AI có thể vỡ(?). Hiện tại, đây là bản tổng hợp suy nghĩ của chúng tôi về những gì hiệu quả, những gì không, và lý do chúng tôi làm theo cách này.

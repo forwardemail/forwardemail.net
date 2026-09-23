@@ -1,6 +1,6 @@
 # Stripe와 PayPal로 견고한 결제 시스템을 구축한 방법: 삼중 접근법 {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Stripe와 PayPal 결제 시스템" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Stripe와 PayPal 결제 시스템" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

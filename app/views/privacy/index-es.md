@@ -1,6 +1,6 @@
 # Política de Privacidad {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Política de privacidad de Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Política de privacidad de Forward Email" class="rounded-lg" /> -->
 
 
 ## Tabla de Contenidos {#table-of-contents}

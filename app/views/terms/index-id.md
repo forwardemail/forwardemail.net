@@ -1,6 +1,6 @@
 # Ketentuan {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Ketentuan layanan Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Ketentuan layanan Forward Email" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

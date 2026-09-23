@@ -76,7 +76,10 @@ function parseRelease(release) {
       size: asset.size,
       downloadCount: asset.download_count,
       browserDownloadUrl: asset.browser_download_url,
-      contentType: asset.content_type
+      contentType: asset.content_type,
+      // GitHub returns this as a prefixed string, e.g. "sha256:e9c6906b...".
+      // The download page shows it so a visitor can verify what they fetched.
+      digest: asset.digest || null
     }))
   };
 }
@@ -310,4 +313,8 @@ async function checkForNewMailAppRelease(options = {}) {
 
 module.exports = checkForNewMailAppRelease;
 module.exports.checkForNewMailAppRelease = checkForNewMailAppRelease;
+// The download page reads the same Redis-cached release the websocket handler
+// polls, so a page view costs nothing extra against the GitHub rate limit.
+module.exports.getLatestMailAppRelease = getLatestMailAppRelease;
 module.exports.POLL_INTERVAL = POLL_INTERVAL;
+module.exports.MAIL_APP_REPO = MAIL_APP_REPO;

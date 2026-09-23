@@ -1,17 +1,29 @@
 extends layout
 
-include _onboard
+include _fe-page-header
 
 block body
+  //- The header is the shared fe page header; the four address cards below
+  //- it are unchanged. They are bootstrap cards with highlighted code, and
+  //- they sit outside the .fe-landing wrapper on purpose: app-dark.scss
+  //- restyles .card and .markdown-body with !important, so inside an fe
+  //- scope they would fight the tokens (see the note atop _fe-tokens.scss).
+  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+    +fePageHeader({ id: "fe-ips", icon: "fa fa-server", eyebrow: t("We publish our server's IP addresses below."), title: t("IP Addresses"), body: t("This page is published mainly for email service providers and system administrators as the definitive source of our server infrastructure's addresses.") })
+      .fe-actions.fe-page-header__actions
+        a.fe-btn.fe-btn--subtle.fe-btn--md(
+          href=`${config.urls.web}/ips.txt`,
+          target="_blank"
+        )
+          i.fa.fa-file-alt(aria-hidden="true")
+          = "ips.txt"
+        a.fe-btn.fe-btn--subtle.fe-btn--md(
+          href=`${config.urls.web}/ips.json`,
+          target="_blank"
+        )
+          i.fa.fa-code(aria-hidden="true")
+          = "ips.json"
   .container.py-3.py-md-4.py-lg-5
-    .text-center.mb-5
-      .h2.display-3.mb-1
-        i.fa.fa-server
-      h1.h2.mb-0= t("IP Addresses")
-      .small.text-black.text-themed-50.text-uppercase= t("We publish our server's IP addresses below.")
-    .row.mt-3
-      .col-md-12
-        p.mb-3.text-center= t("This page is published mainly for email service providers and system administrators as the definitive source of our server infrastructure's addresses.")
     .row
       .col-12
         //- hostnames

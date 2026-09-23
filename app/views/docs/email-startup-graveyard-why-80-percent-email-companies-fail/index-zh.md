@@ -1,6 +1,6 @@
 # 电子邮件创业坟场：为什么大多数电子邮件公司会失败 {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="电子邮件创业坟场插图" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="电子邮件创业坟场插图" class="rounded-lg" /> -->
 
 <p class="lead mt-3">虽然许多电子邮件创业公司投入了数百万资金来解决他们认为存在的问题，但我们 <a href="https://forwardemail.net">Forward Email</a> 自2017年以来一直专注于从零开始构建可靠的电子邮件基础设施。本文分析了电子邮件创业公司结果背后的模式以及电子邮件基础设施的根本挑战。</p>
 

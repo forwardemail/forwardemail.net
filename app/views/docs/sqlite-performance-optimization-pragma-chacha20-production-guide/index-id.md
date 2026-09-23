@@ -1,6 +1,6 @@
 # Optimasi Performa SQLite: Pengaturan PRAGMA Produksi & Enkripsi ChaCha20 {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="Panduan optimasi performa SQLite" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="Panduan optimasi performa SQLite" class="rounded-lg" /> -->
 
 
 ## Daftar Isi {#table-of-contents}

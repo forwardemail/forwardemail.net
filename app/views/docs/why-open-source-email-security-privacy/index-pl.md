@@ -1,6 +1,6 @@
 # Dlaczego otwartoźródłowa poczta elektroniczna to przyszłość: przewaga Forward Email {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="Bezpieczeństwo i prywatność otwartoźródłowej poczty elektronicznej" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/open-source.webp" alt="Bezpieczeństwo i prywatność otwartoźródłowej poczty elektronicznej" class="rounded-lg" /> -->
 
 
 ## Spis treści {#table-of-contents}

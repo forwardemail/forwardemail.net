@@ -1,6 +1,6 @@
 # Email Auto-Hébergé : Engagement envers l'Open Source {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustration de solution email auto-hébergée" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustration de solution email auto-hébergée" class="rounded-lg" /> -->
 
 
 ## Table des Matières {#table-of-contents}

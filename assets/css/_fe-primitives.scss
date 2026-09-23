@@ -1,0 +1,712 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Reusable fe components. A block on a page composes these in its markup
+// (`li.fe-panel.fe-tile`) and keeps only the rules the primitive does not
+// cover. Token references only, for the reasons _fe-base.scss gives.
+
+// ============================================
+// EYEBROW PILL
+// ============================================
+
+.fe-eyebrow {
+  display: inline-flex;
+  margin-block: 0 1.75rem;
+  gap: var(--fe-space-2);
+  align-items: center;
+  padding: 6px 14px;
+  border: 1px solid;
+  border-radius: var(--fe-radius-full);
+}
+
+// Signal is legal as text on Ink. On light it is not, so the light variant
+// uses Primary instead.
+.fe-surface-dark .fe-eyebrow {
+  color: var(--fe-signal);
+  background-color: var(--fe-signal-a10);
+  border-color: var(--fe-signal-a24);
+}
+
+.fe-surface-light .fe-eyebrow {
+  color: var(--fe-primary-deep);
+  background-color: var(--fe-primary-a08);
+  border-color: var(--fe-primary-a16);
+}
+
+// Pricing eyebrow uses the mint -deep variant, which is legal as text.
+.fe-eyebrow--mint {
+  color: var(--fe-mint-deep);
+  background-color: var(--fe-mint-a12);
+  border-color: var(--fe-mint-deep-a20);
+}
+
+// ============================================
+// BUTTONS
+// ============================================
+
+.fe-btn {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  justify-content: center;
+  padding-inline: 20px;
+  font-family: var(--fe-font-body);
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-semibold);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--fe-radius-md);
+  transition: filter var(--fe-motion-base) var(--fe-ease),
+    background-color var(--fe-motion-base) var(--fe-ease);
+}
+
+.fe-btn:hover,
+.fe-btn:focus {
+  text-decoration: none;
+}
+
+// Solid brand blue. The primary CTAs (nav sign up, the hero, the Enhanced
+// plan button) all take this; there is no gradient fill in the system.
+.fe-btn--hero {
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary);
+}
+
+.fe-btn--hero:hover {
+  color: var(--fe-l-000);
+  filter: brightness(1.08);
+}
+
+.fe-btn--ghost {
+  color: var(--fe-fg-primary);
+  background-color: transparent;
+  border-color: var(--fe-border-default);
+}
+
+.fe-btn--ghost:hover {
+  color: var(--fe-fg-primary);
+  border-color: var(--fe-border-strong);
+}
+
+.fe-btn--subtle {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  border-color: var(--fe-border-default);
+}
+
+.fe-btn--subtle:hover {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-canvas);
+}
+
+.fe-btn--md {
+  height: 44px;
+}
+
+.fe-btn--lg {
+  height: 48px;
+}
+
+.fe-btn--block {
+  width: 100%;
+}
+
+.fe-btn--glow {
+  box-shadow: var(--fe-glow-primary);
+}
+
+// ============================================
+// ACTIONS ROW
+// ============================================
+// A row of buttons. Centred by default; heroes with left-aligned copy take
+// --start. On phones the buttons stack and fill the row so the primary
+// action stays thumb reachable.
+
+.fe-actions {
+  display: flex;
+  gap: var(--fe-space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.fe-actions--start {
+  justify-content: flex-start;
+}
+
+@include fe-down(sm) {
+  .fe-actions .fe-btn {
+    width: 100%;
+  }
+}
+
+// ============================================
+// PANEL
+// ============================================
+// The raised card surface. Compose with the block that fills it.
+
+.fe-panel {
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-lg);
+}
+
+// Quieter edge, for cards that sit in a group rather than standing alone.
+.fe-panel--quiet {
+  border-color: var(--fe-border-subtle);
+}
+
+// Translucent tile on a dark canvas.
+.fe-panel--frame {
+  background-color: var(--fe-bg-frame);
+  border-color: var(--fe-border-subtle);
+}
+
+// Row-height panels (form rows, callouts).
+.fe-panel--md {
+  border-radius: var(--fe-radius-md);
+}
+
+// The one emphasised card in a set. Pair with .fe-surface-dark on the same
+// element so the tokens inside re-point for the subtree.
+.fe-panel--featured {
+  background-color: var(--fe-ink);
+  border-color: transparent;
+  box-shadow: var(--fe-elev-3), var(--fe-ring-primary);
+}
+
+// ============================================
+// GRID
+// ============================================
+// Card grids. One column by default; the modifiers add columns per
+// breakpoint. Also resets list chrome so a ul can be the grid.
+
+.fe-grid {
+  display: grid;
+  gap: var(--fe-grid-gap);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+// 20px between plan cards, per the pricing spec.
+.fe-grid--gap-5 {
+  gap: var(--fe-space-5);
+}
+
+// Items end where their own content does instead of stretching to the row.
+.fe-grid--start {
+  align-items: start;
+}
+
+@include fe-up(md) {
+  .fe-grid--md-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@include fe-up(lg) {
+  .fe-grid--lg-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .fe-grid--lg-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@include fe-up(xl) {
+  .fe-grid--xl-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+// The item that leads on phones (the featured plan). Order only, so the DOM
+// still reads in price order for screen readers and keyboard users.
+@include fe-down(md) {
+  .fe-grid__item--first {
+    order: -1;
+  }
+}
+
+// ============================================
+// ICON TILE
+// ============================================
+// A glyph on a tinted square. Icon-only fills: they clear 3:1 for graphics,
+// not 4.5:1 for text, so never put a text node inside one.
+
+.fe-icon-tile {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-size: var(--fe-text-body-lg);
+  color: var(--fe-icon-tile-fg);
+  background-color: var(--fe-icon-tile-bg);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-icon-tile--sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--fe-text-body-sm);
+}
+
+.fe-icon-tile--round {
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-icon-tile--primary {
+  --fe-icon-tile-fg: var(--fe-icon-primary);
+  --fe-icon-tile-bg: var(--fe-primary-a08);
+}
+
+// Primary on a dark ground takes -lift so the glyph clears 3:1.
+.fe-icon-tile--lift {
+  --fe-icon-tile-fg: var(--fe-primary-lift);
+  --fe-icon-tile-bg: var(--fe-primary-a16);
+}
+
+.fe-icon-tile--success {
+  --fe-icon-tile-fg: var(--fe-icon-success);
+  --fe-icon-tile-bg: var(--fe-mint-a12);
+}
+
+.fe-icon-tile--active {
+  --fe-icon-tile-fg: var(--fe-icon-active);
+  --fe-icon-tile-bg: var(--fe-signal-a10);
+}
+
+// ============================================
+// CHIPS
+// ============================================
+
+.fe-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fe-space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-chip {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  padding: var(--fe-space-1) var(--fe-space-3);
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-canvas);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-chip--code {
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  background-color: var(--fe-n-200);
+  border-color: var(--fe-n-300);
+}
+
+// Dashed and dimmed: on the roadmap, not clickable today.
+.fe-chip--soon {
+  color: var(--fe-fg-secondary);
+  background-color: transparent;
+  border-style: dashed;
+}
+
+.fe-chip__icon--success {
+  color: var(--fe-icon-success);
+}
+
+.fe-chip__icon--primary {
+  color: var(--fe-icon-primary);
+}
+
+// ============================================
+// CODE BLOCK
+// ============================================
+
+.fe-codeblock {
+  padding: var(--fe-space-4);
+  margin-bottom: var(--fe-space-5);
+  overflow-x: auto;
+  background-color: var(--fe-n-100);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-codeblock pre {
+  margin: 0;
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-tok-method {
+  color: var(--fe-signal);
+}
+
+.fe-tok-key {
+  color: var(--fe-n-600);
+}
+
+.fe-tok-value {
+  color: var(--fe-n-700);
+}
+
+.fe-tok-result {
+  color: var(--fe-mint);
+}
+
+// ============================================
+// FORM FIELD
+// ============================================
+
+.fe-field__label {
+  display: flex;
+  gap: var(--fe-space-3);
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--fe-space-2);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-field__step {
+  color: var(--fe-primary);
+}
+
+.fe-field__input {
+  width: 100%;
+  height: 48px;
+  padding-inline: var(--fe-space-4);
+  font-family: var(--fe-font-body);
+  font-size: var(--fe-text-body-md);
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-control);
+  border-radius: var(--fe-radius-md);
+  appearance: none;
+}
+
+.fe-field__input::placeholder {
+  color: var(--fe-fg-secondary);
+  opacity: 0.7;
+}
+
+// The ring itself comes from the base focus rule.
+.fe-field__input:focus {
+  border-color: var(--fe-focus-ring);
+}
+
+// ============================================
+// CALLOUT
+// ============================================
+// Replaces .alert.alert-info: the edge carries the tone, the text stays on
+// one known ground. Compose with .fe-panel.fe-panel--md.
+
+.fe-callout {
+  display: flex;
+  gap: var(--fe-space-3);
+  align-items: flex-start;
+  padding: var(--fe-space-4) var(--fe-space-5);
+  margin-bottom: var(--fe-space-6);
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+  border-inline-start: 3px solid var(--fe-primary);
+}
+
+.fe-callout > i {
+  flex: none;
+  margin-top: 3px;
+  color: var(--fe-icon-primary);
+}
+
+.fe-callout strong {
+  color: var(--fe-fg-primary);
+}
+
+.fe-callout a {
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-link);
+}
+
+// ============================================
+// INFO BUTTON
+// ============================================
+// The (i) that opens a sweetalert or a modal.
+
+.fe-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  margin-inline-start: var(--fe-space-1);
+  font-size: var(--fe-text-code);
+  color: var(--fe-icon-primary);
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: var(--fe-primary-a08);
+  border: 0;
+  border-radius: var(--fe-radius-full);
+  transition: background-color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-info:hover,
+.fe-info:focus {
+  background-color: var(--fe-primary-a16);
+}
+
+.fe-surface-dark .fe-info {
+  color: var(--fe-primary-lift);
+  background-color: var(--fe-primary-a16);
+}
+
+.fe-surface-dark .fe-info:hover,
+.fe-surface-dark .fe-info:focus {
+  background-color: var(--fe-primary-a24);
+}
+
+// ============================================
+// EVIDENCE LINKS
+// ============================================
+// Quiet row of receipts (whitepaper, audit, case studies) under a hero or a
+// trust section. Quiet enough not to compete with the buttons above.
+
+.fe-evidence {
+  display: flex;
+  gap: var(--fe-space-2) var(--fe-space-5);
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+  margin-block: var(--fe-space-8) 0;
+  list-style: none;
+}
+
+.fe-evidence__link {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+  text-decoration: none;
+  transition: color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-evidence__link:hover,
+.fe-evidence__link:focus {
+  color: var(--fe-fg-primary);
+  text-decoration: underline;
+}
+
+.fe-evidence__link i {
+  color: var(--fe-icon-active);
+}
+
+@include fe-down(md) {
+  .fe-evidence {
+    gap: var(--fe-space-2) var(--fe-space-4);
+    margin-top: var(--fe-space-6);
+  }
+}
+
+// ============================================
+// PLAN CARD
+// ============================================
+// One card for one plan, in two forms: --compact (the landing page grid:
+// name, price, button, four lines) and --detail (the pricing page: a head,
+// the full feature list, a foot). Compose with .fe-panel; the featured plan
+// adds .fe-panel--featured.fe-surface-dark.
+
+.fe-plan {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.fe-plan--compact {
+  padding: var(--fe-space-6);
+}
+
+.fe-plan__head {
+  padding: var(--fe-space-6);
+  border-bottom: 1px solid var(--fe-border-subtle);
+}
+
+.fe-plan__name {
+  margin-bottom: var(--fe-space-1);
+}
+
+.fe-plan__line {
+  margin-block: 0 var(--fe-space-4);
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-plan__line a {
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-link);
+}
+
+.fe-plan__price {
+  display: block;
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-price);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-tight);
+  color: var(--fe-fg-primary);
+}
+
+.fe-panel--featured .fe-plan__price {
+  color: var(--fe-primary-lift);
+}
+
+.fe-plan__period {
+  display: block;
+  margin-bottom: var(--fe-space-5);
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+// Shown to a visitor already on a paid plan, in place of the price.
+.fe-plan__upgraded {
+  display: block;
+  margin-bottom: var(--fe-space-1);
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-state-success);
+}
+
+.fe-plan__was {
+  display: block;
+  margin-bottom: var(--fe-space-5);
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+  text-decoration: line-through;
+}
+
+.fe-plan__cta {
+  margin-bottom: var(--fe-space-5);
+}
+
+.fe-plan__features {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-plan--detail .fe-plan__features {
+  flex: 1 1 auto;
+  padding: var(--fe-space-5) var(--fe-space-6);
+}
+
+// "Everything in Free plus:" divider row at the top of a paid list.
+.fe-plan__more {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  margin-bottom: var(--fe-space-4);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-plan__more i {
+  color: var(--fe-icon-active);
+}
+
+.fe-plan__feature {
+  display: flex;
+  gap: var(--fe-space-3);
+  align-items: baseline;
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-primary);
+}
+
+.fe-plan__feature + .fe-plan__feature {
+  margin-top: var(--fe-space-3);
+}
+
+// The compact card's lines are a summary, so they sit a tier back.
+.fe-plan--compact .fe-plan__feature {
+  gap: var(--fe-space-2);
+  color: var(--fe-fg-secondary);
+}
+
+// The secondary rows (the "+" ones) drop a tier so the headline features
+// stand out.
+.fe-plan__feature--plus {
+  color: var(--fe-fg-secondary);
+}
+
+.fe-plan__icon {
+  flex: none;
+  color: var(--fe-icon-primary);
+}
+
+.fe-plan--compact .fe-plan__icon {
+  color: var(--fe-icon-success);
+}
+
+.fe-panel--featured .fe-plan__icon {
+  color: var(--fe-primary-lift);
+}
+
+.fe-plan__feature--plus .fe-plan__icon {
+  color: var(--fe-fg-muted);
+}
+
+.fe-plan__feature a {
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fe-plan__feature a:hover,
+.fe-plan__feature a:focus {
+  color: var(--fe-fg-primary);
+}
+
+// "Best for" / "Limitations" foot.
+.fe-plan__foot {
+  padding: var(--fe-space-4) var(--fe-space-6);
+  font-size: var(--fe-text-code);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+  border-top: 1px solid var(--fe-border-subtle);
+}
+
+.fe-plan__foot strong {
+  color: var(--fe-fg-primary);
+}
+
+.fe-plan__foot i {
+  margin-inline-end: var(--fe-space-1);
+  color: var(--fe-icon-primary);
+}
+
+// Signed in visitors with domains get bootstrap's dropdown in place of the
+// button. Only the trigger is restyled; the menu is bootstrap's, so it
+// follows the OS scheme through app-dark like the dashboard's do.
+// stylelint-disable-next-line selector-class-pattern -- bootstrap's class
+.fe-plan .dropdown-toggle::after {
+  margin-inline-start: var(--fe-space-2);
+}
+
+// The compact featured card scales up where there is room for it. Below
+// this width it is full bleed and scaling would overflow the gutter.
+@include fe-up(lg) {
+  .fe-plan--compact.fe-panel--featured {
+    transform: scale(1.04);
+  }
+}

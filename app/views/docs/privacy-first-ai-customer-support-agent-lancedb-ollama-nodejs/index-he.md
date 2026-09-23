@@ -1,6 +1,6 @@
 # בניית סוכן תמיכת לקוחות מבוסס בינה מלאכותית עם דגש על פרטיות בעזרת LanceDB, Ollama ו-Node.js {#building-a-privacy-first-ai-customer-support-agent-with-lancedb-ollama-and-nodejs}
 
-<img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="סוכן תמיכת לקוחות מבוסס בינה מלאכותית עם LanceDB Ollama Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/ai-customer-support-agent-maze.webp" alt="סוכן תמיכת לקוחות מבוסס בינה מלאכותית עם LanceDB Ollama Node.js" class="rounded-lg" /> -->
 
 > \[!NOTE]
 > מסמך זה מתאר את המסע שלנו בבניית סוכן תמיכה מבוסס בינה מלאכותית שמתארח בעצמנו. כתבנו על אתגרים דומים בפוסט הבלוג שלנו [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). חשבנו ברצינות לכתוב המשך בשם "AI Startup Graveyard" אבל אולי נצטרך להמתין עוד שנה או כך עד שהבועה של הבינה המלאכותית תתפוצץ(?). לעת עתה, זהו סיכום המחשבות שלנו על מה שעבד, מה שלא עבד, ולמה עשינו זאת כך.

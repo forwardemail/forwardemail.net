@@ -4,7 +4,7 @@
 > [!IMPORTANT]
 > Den 1. juni 2026 publiserte vi vår tredjeparts sikkerhetsrevisjon utført av [Cure53](https://cure53.de/), som er bredt anerkjent som et av de beste sikkerhetsforskningsfirmaene i bransjen. Den fullstendige penetrasjonstestrapport er tilgjengelig på [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Forward Email er den eneste 100% åpen kildekode e-posttjenesten med en uavhengig verifisert sikkerhetsrevisjon.
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="Sammenligning av sikkerhetsrevisjonsselskaper" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security-audit.webp" alt="Sammenligning av sikkerhetsrevisjonsselskaper" class="rounded-lg" /> -->
 
 
 ## Innholdsfortegnelse {#table-of-contents}

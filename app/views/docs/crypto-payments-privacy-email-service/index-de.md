@@ -1,6 +1,6 @@
 # Einführung von Krypto-Zahlungen: Verbesserter Datenschutz für Ihren E-Mail-Dienst {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Kryptowährungszahlungen für E-Mail-Dienst" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Kryptowährungszahlungen für E-Mail-Dienst" class="rounded-lg" /> -->
 
 
 ## Inhaltsverzeichnis {#table-of-contents}

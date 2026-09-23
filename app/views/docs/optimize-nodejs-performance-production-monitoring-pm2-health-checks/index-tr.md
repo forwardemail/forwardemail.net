@@ -1,6 +1,6 @@
 # Node.js Üretim Altyapısını Nasıl Optimize Edilir: En İyi Uygulamalar {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js performans optimizasyon rehberi" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js performans optimizasyon rehberi" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

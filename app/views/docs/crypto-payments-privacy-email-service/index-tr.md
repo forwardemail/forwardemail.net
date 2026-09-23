@@ -1,6 +1,6 @@
 # Kripto Ödemeleri Tanıtıyoruz: E-posta Servisiniz İçin Gelişmiş Gizlilik {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="E-posta servisi için kripto para ödemeleri" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="E-posta servisi için kripto para ödemeleri" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

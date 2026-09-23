@@ -30,9 +30,6 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: 3.844.0
         version: 3.844.0
-      '@forevolve/bootstrap-dark':
-        specifier: 4.0.2
-        version: 4.0.2
       '@fortawesome/fontawesome-free':
         specifier: 5.15.4
         version: 5.15.4
@@ -1078,6 +1075,12 @@ importers:
       parse-git-config:
         specifier: 3.0.0
         version: 3.0.0
+      pixelmatch:
+        specifier: 5.3.0
+        version: 5.3.0
+      pngjs:
+        specifier: 7.0.0
+        version: 7.0.0
       postcss:
         specifier: 8.5.26
         version: 8.5.26
@@ -1126,6 +1129,9 @@ importers:
       stylelint-config-recommended-scss:
         specifier: 13.1.0
         version: 13.1.0(postcss@8.5.26)(stylelint@15.11.0(typescript@3.9.10))
+      stylelint-declaration-strict-value:
+        specifier: 1.10.6
+        version: 1.10.6(stylelint@15.11.0(typescript@3.9.10))
       stylelint-scss:
         specifier: 5.3.2
         version: 5.3.2(stylelint@15.11.0(typescript@3.9.10))
@@ -2420,9 +2426,6 @@ packages:
 
   '@floating-ui/vue@1.1.11':
     resolution: {integrity: sha512-HzHKCNVxnGS35r9fCHBc3+uCnjw9IWIlCPL683cGgM9Kgj2BiAl8x1mS7vtvP6F9S/e/q4O6MApwSHj8hNLGfw==}
-
-  '@forevolve/bootstrap-dark@4.0.2':
-    resolution: {integrity: sha512-Vngx12H11pFmegQRh5cTz1xgpidA83KstPFkyzFahrqJl1N6MdsqxRoVpKxIKUFFsPsdlw91c5czMoYngrBLbg==}
 
   '@fortawesome/fontawesome-free@5.15.4':
     resolution: {integrity: sha512-eYm8vijH/hpzr/6/1CJ/V/Eb1xQFW2nnUKArb3z+yUWv7HTwj6M7SP957oMjfZjAHU6qpoNc2wQvIxBLWYa/Jg==}
@@ -14523,6 +14526,10 @@ packages:
   piscina@4.9.3:
     resolution: {integrity: sha512-3e3ka9QCE8RJ5I9uszdAADZnkcYi21cqmF3gxox3u884N72qpFHCsIVhHt8cEQ9t3Auq/NqoiCEuhxlxxQuDWA==}
 
+  pixelmatch@5.3.0:
+    resolution: {integrity: sha512-o8mkY4E/+LNUf6LzX96ht6k6CEDi65k9G2rjMtBe9Oo+VPKSvl+0GKHuH/AlG+GA5LPG/i5hrekkxUc3s2HU+Q==}
+    hasBin: true
+
   pkg-conf@4.0.0:
     resolution: {integrity: sha512-7dmgi4UY4qk+4mj5Cd8v/GExPo0K+SlY+hulOSdfZ/T6jVH6//y7NtzZo5WrfhDBxuQ0jCa7fLZmNaNh7EWL/w==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -14613,6 +14620,14 @@ packages:
   pngjs@5.0.0:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
+
+  pngjs@6.0.0:
+    resolution: {integrity: sha512-TRzzuFRRmEoSW/p1KVAmiOgPco2Irlah+bGFCeNfJXxxYGwSw7YwAOAcd7X28K/m5bjBWKsC29KyoMfHbypayg==}
+    engines: {node: '>=12.13.0'}
+
+  pngjs@7.0.0:
+    resolution: {integrity: sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==}
+    engines: {node: '>=14.19.0'}
 
   popper.js@1.16.1:
     resolution: {integrity: sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==}
@@ -17140,6 +17155,12 @@ packages:
     engines: {node: ^14.13.1 || >=16.0.0}
     peerDependencies:
       stylelint: ^15.10.0
+
+  stylelint-declaration-strict-value@1.10.6:
+    resolution: {integrity: sha512-aZGEW4Ee26Tx4UvpQJbcElVXZ42EleujEByiyKDTT7t83EeSe9t0lAG3OOLJnnvLjz/dQnp+L+3IYTMeQI51vQ==}
+    engines: {node: '>=18.12.0'}
+    peerDependencies:
+      stylelint: '>=7 <=16'
 
   stylelint-scss@5.3.2:
     resolution: {integrity: sha512-4LzLaayFhFyneJwLo0IUa8knuIvj+zF0vBFueQs4e3tEaAMIQX8q5th8ziKkgOavr6y/y9yoBe+RXN/edwLzsQ==}
@@ -21221,12 +21242,6 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
-
-  '@forevolve/bootstrap-dark@4.0.2':
-    dependencies:
-      bootstrap: 4.6.2(jquery@3.5.1)(popper.js@1.16.1)
-      jquery: 3.5.1
-      popper.js: 1.16.1
 
   '@fortawesome/fontawesome-free@5.15.4': {}
 
@@ -36617,6 +36632,10 @@ snapshots:
     optionalDependencies:
       '@napi-rs/nice': 1.1.1
 
+  pixelmatch@5.3.0:
+    dependencies:
+      pngjs: 6.0.0
+
   pkg-conf@4.0.0:
     dependencies:
       find-up: 6.3.0
@@ -36771,6 +36790,10 @@ snapshots:
       - utf-8-validate
 
   pngjs@5.0.0: {}
+
+  pngjs@6.0.0: {}
+
+  pngjs@7.0.0: {}
 
   popper.js@1.16.1: {}
 
@@ -40156,6 +40179,10 @@ snapshots:
       postcss: 8.5.26
 
   stylelint-config-recommended@13.0.0(stylelint@15.11.0(typescript@3.9.10)):
+    dependencies:
+      stylelint: 15.11.0(typescript@3.9.10)
+
+  stylelint-declaration-strict-value@1.10.6(stylelint@15.11.0(typescript@3.9.10)):
     dependencies:
       stylelint: 15.11.0(typescript@3.9.10)
 

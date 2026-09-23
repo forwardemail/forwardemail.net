@@ -1,6 +1,6 @@
 # Personvernregler {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email personvernregler" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email personvernregler" class="rounded-lg" /> -->
 
 
 ## Innholdsfortegnelse {#table-of-contents}

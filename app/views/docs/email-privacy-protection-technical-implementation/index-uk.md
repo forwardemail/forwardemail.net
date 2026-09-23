@@ -1,6 +1,6 @@
 # Як працює пересилання електронної пошти з Forward Email: остаточний посібник {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Технічна реалізація захисту конфіденційності електронної пошти" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Технічна реалізація захисту конфіденційності електронної пошти" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

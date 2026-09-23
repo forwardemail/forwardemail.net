@@ -1,6 +1,6 @@
 # Vilkår {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email vilkår for tjenesten" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email vilkår for tjenesten" class="rounded-lg" /> -->
 
 
 ## Innholdsfortegnelse {#table-of-contents}

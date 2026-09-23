@@ -1,6 +1,6 @@
 # ทำไมอีเมลแบบโอเพนซอร์สจึงเป็นอนาคต: ข้อได้เปรียบของ Forward Email {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="ความปลอดภัยและความเป็นส่วนตัวของอีเมลแบบโอเพนซอร์ส" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/open-source.webp" alt="ความปลอดภัยและความเป็นส่วนตัวของอีเมลแบบโอเพนซอร์ส" class="rounded-lg" /> -->
 
 
 ## สารบัญ {#table-of-contents}

@@ -1,6 +1,6 @@
 # Étude de cas : Comment Forward Email alimente les solutions d’email pour les anciens élèves des meilleures universités {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="Étude de cas sur le transfert d’email des anciens élèves universitaires" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="Étude de cas sur le transfert d’email des anciens élèves universitaires" class="rounded-lg" /> -->
 
 
 ## Table des matières {#table-of-contents}

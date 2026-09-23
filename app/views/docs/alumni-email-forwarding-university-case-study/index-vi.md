@@ -1,6 +1,6 @@
 # Nghiên cứu trường hợp: Cách Forward Email cung cấp giải pháp email cựu sinh viên cho các trường đại học hàng đầu {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="Nghiên cứu trường hợp chuyển tiếp email cựu sinh viên đại học" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="Nghiên cứu trường hợp chuyển tiếp email cựu sinh viên đại học" class="rounded-lg" /> -->
 
 
 ## Mục lục {#table-of-contents}

@@ -1,6 +1,6 @@
 # Кладовище стартапів електронної пошти: чому більшість компаній з електронної пошти зазнають невдачі {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Ілюстрація кладовища стартапів електронної пошти" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Ілюстрація кладовища стартапів електронної пошти" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Хоча багато стартапів у сфері електронної пошти вклали мільйони у вирішення уявних проблем, ми у <a href="https://forwardemail.net">Forward Email</a> з 2017 року зосереджуємося на створенні надійної інфраструктури електронної пошти з нуля. Цей аналіз досліджує закономірності результатів стартапів електронної пошти та фундаментальні виклики інфраструктури електронної пошти.</p>
 

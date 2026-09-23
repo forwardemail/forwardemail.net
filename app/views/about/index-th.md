@@ -1,6 +1,6 @@
 # เกี่ยวกับ Forward Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="เรื่องราวทีมและบริษัท Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="เรื่องราวทีมและบริษัท Forward Email" class="rounded-lg" /> -->
 
 # เกี่ยวกับ Forward Email {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 
 แพลตฟอร์มยังคงพัฒนาอย่างต่อเนื่องด้วยการปล่อยฟีเจอร์และปรับปรุงโครงสร้างพื้นฐานอย่างสม่ำเสมอ รักษาตำแหน่งเป็นบริการอีเมลที่โอเพนซอร์ส 100%, เข้ารหัส, เน้นความเป็นส่วนตัว, โปร่งใส และต้านทานควอนตัมเพียงแห่งเดียวที่มีให้บริการในปัจจุบัน—ตอนนี้ได้รับการสนับสนุนจาก[การตรวจสอบความปลอดภัยอิสระ](/pentest-report_forward-email.pdf)จาก Cure53
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

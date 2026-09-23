@@ -1,6 +1,6 @@
 # Hur e-post vidarebefordran fungerar med Forward Email: Den ultimata guiden {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Teknisk implementering av e-postintegritetsskydd" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="Teknisk implementering av e-postintegritetsskydd" class="rounded-lg" /> -->
 
 
 ## Innehållsförteckning {#table-of-contents}

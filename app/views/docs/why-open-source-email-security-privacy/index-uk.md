@@ -1,6 +1,6 @@
 # Чому відкритий електронний лист — це майбутнє: переваги Forward Email {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="Безпека та конфіденційність відкритого електронного листа" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/open-source.webp" alt="Безпека та конфіденційність відкритого електронного листа" class="rounded-lg" /> -->
 
 
 ## Зміст {#table-of-contents}

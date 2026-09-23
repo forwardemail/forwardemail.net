@@ -7,7 +7,7 @@
 >
 > Azonban, a PayPal szokásos módján, minket erről soha nem értesítettek. Csak 2025 decemberében fedeztük fel önállóan ezt a frissítést, hónapokkal azután, hogy a funkció csendben megjelent.
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API katasztrófa illusztráció" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API katasztrófa illusztráció" class="rounded-lg" /> -->
 
 <p class="lead mt-3">A Forward Email-nél több mint egy évtizede küzdünk a PayPal hibás API-jaival. Ami kezdetben kisebb bosszúság volt, az teljes katasztrófává vált, amely arra kényszerített minket, hogy saját megoldásokat építsünk, blokkoljuk a phishing sablonjaikat, és végül egy kritikus fiókátállás alatt leállítsuk az összes PayPal fizetést.</p>
 <p class="lead mt-3">Ez a történet 11 évről szól, amikor a PayPal figyelmen kívül hagyta az alapvető fejlesztői igényeket, miközben mi mindent megtettünk, hogy működésre bírjuk a platformjukat.</p>
@@ -371,20 +371,20 @@ A PayPal fejlesztői irányítópultja katasztrófa. Így néz ki a napi helyzet
   <figcaption><div class="alert alert-danger small text-center">
   Az előfizetés-kezelő felület – a felület annyira rossz, hogy kódra kellett hagyatkoznunk termékek és előfizetési tervek generálásához
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal előfizetések képernyőkép" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal előfizetések képernyőkép" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Egy nézet a törött előfizetés-kezelő felületről hiányzó funkciókkal (nem lehet könnyen termékeket/terveket/előfizetéseket létrehozni – és úgy tűnik, hogy a felületen egyáltalán nincs mód termékek vagy tervek törlésére, ha egyszer létre lettek hozva)
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal előfizetések képernyőkép 2" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal előfizetések képernyőkép 2" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Tipikus PayPal hibaüzenetek – titokzatosak és nem segítőkészek
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" /> -->
 </figure>
 
 ### SDK problémák {#sdk-problems}
@@ -429,38 +429,38 @@ Ami egyszerűnek kellett volna lennie, az teljes katasztrófává vált:
   <figcaption><div class="alert alert-danger small text-center">
   Az a hiba, amit az ügyfelek láttak fizetés közben – sem magyarázat, sem napló, semmi
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   A PayPal ügyfélszolgálat azt állítja, hogy minden rendben van, miközben a fizetések teljesen működésképtelenek. Az utolsó üzenetben azt mondják, hogy "visszaállítottak néhány funkciót", de még mindig további meg nem határozott információkat kérnek – klasszikus PayPal ügyfélszolgálati színház
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Az azonosítási folyamat, ami állítólag semmit sem "javított"
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Homályos üzenet és még mindig nincs megoldás. Nulla információ, értesítés vagy bármi arról, hogy milyen további információkra van szükség. Az ügyfélszolgálat elhallgat.
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" /> -->
 </figure>
 
 
@@ -563,7 +563,7 @@ A probléma túlmutat a rossz sablontervezésen. A PayPal számlázási rendszer
   <figcaption><div class="alert alert-danger small text-center">
   Képernyőkép, amely több hamis PayPal számlát mutat, amelyek egy postaládát elárasztanak, mind legitimnek tűnnek, mert valójában a PayPal rendszereiből érkeznek
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal csalás figyelmeztető képernyőkép" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal csalás figyelmeztető képernyőkép" class="rounded-lg" /> -->
 </figure>
 
 A kutató megjegyezte:
@@ -930,4 +930,4 @@ Ha fizetési rendszert építesz, tanulj a tapasztalatainkból: építsd fel a [
 
 > Ez a bejegyzés a PayPal API-kal kapcsolatos 11 éves tapasztalatunkat dokumentálja a Forward Emailnél. Minden kódpélda és link a tényleges éles rendszereinkből származik. Ezek ellenére továbbra is támogatjuk a PayPal fizetéseket, mert néhány ügyfélnek nincs más lehetősége
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" /> -->

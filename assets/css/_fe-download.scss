@@ -1,0 +1,575 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Download page. Builds on _fe-base.scss and _fe-primitives.scss; only what
+// those do not cover lives here.
+
+.fe-download-hero__inner {
+  max-width: 46rem;
+  text-align: center;
+}
+
+.fe-download-hero__title {
+  margin-bottom: var(--fe-space-6);
+}
+
+.fe-download-hero__body {
+  max-width: 46ch;
+  margin: 0 auto var(--fe-space-8);
+}
+
+// The detector fills this in and unhides it. It is reserved rather than
+// collapsed so the facts below do not jump when that happens.
+.fe-download-hero__meta {
+  min-height: 1.5rem;
+  margin-block: var(--fe-space-4) 0;
+  font-size: var(--fe-text-body-sm);
+  // secondary rather than muted: muted measures 4.13:1 on Ink, under the
+  // 4.5:1 this size needs
+  color: var(--fe-fg-secondary);
+}
+
+// The other-architecture escape hatch under the hero button, filled and
+// unhidden by the detector alongside the meta line above.
+.fe-download-hero__alt {
+  margin-block: var(--fe-space-2) 0;
+  font-size: var(--fe-text-body-sm);
+}
+
+.fe-download-hero__alt a {
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fe-download-hero__alt a:hover,
+.fe-download-hero__alt a:focus {
+  color: var(--fe-fg-primary);
+}
+
+// Manual override for the detector: one chip per platform in the release.
+.fe-download-hero__switch-label {
+  display: block;
+  margin-block: var(--fe-space-8) var(--fe-space-3);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-download-hero__switch {
+  display: flex;
+  gap: var(--fe-space-2);
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-download-hero__switch-item {
+  text-decoration: none;
+  transition: color var(--fe-motion-fast) var(--fe-ease),
+    border-color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-download-hero__switch-item:hover,
+.fe-download-hero__switch-item:focus {
+  color: var(--fe-fg-primary);
+  text-decoration: none;
+  border-color: var(--fe-border-strong);
+}
+
+// The detected platform, or the one the visitor picked.
+.fe-download-hero__switch-item.is-active {
+  color: var(--fe-fg-link);
+  border-color: var(--fe-fg-link);
+}
+
+.fe-download-hero__facts {
+  display: flex;
+  gap: var(--fe-space-8);
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+  margin-block: var(--fe-space-8) 0;
+  list-style: none;
+}
+
+.fe-download-hero__facts > li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-1);
+}
+
+.fe-download-hero__fact-value {
+  font-size: var(--fe-text-body-lg);
+  font-weight: var(--fe-weight-bold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-download-hero__fact-label {
+  color: var(--fe-fg-secondary);
+}
+
+// Scroll target for the hero's fallback link. Offset by the fixed navbar so
+// the section heading is not hidden under the bar on arrival.
+.fe-download-anchor {
+  display: block;
+  height: 0;
+  scroll-margin-top: var(--fe-nav-offset);
+}
+
+.fe-download-group__head {
+  margin-bottom: var(--fe-space-8);
+}
+
+.fe-download-group__title {
+  margin-bottom: var(--fe-space-5);
+}
+
+.fe-download-group__lede {
+  margin-bottom: 0;
+}
+
+// ============================================
+// PLATFORM CARDS
+// ============================================
+
+.fe-download-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--fe-space-6);
+  // The hero's override row links here without JavaScript; keep the card
+  // head clear of the fixed navbar on arrival.
+  scroll-margin-top: var(--fe-nav-offset);
+}
+
+.fe-download-card__head {
+  display: flex;
+  gap: var(--fe-space-4);
+  align-items: center;
+  padding-bottom: var(--fe-space-5);
+  margin-bottom: var(--fe-space-2);
+  border-bottom: 1px solid var(--fe-border-subtle);
+}
+
+.fe-download-card__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fe-download-card__title {
+  margin: 0;
+}
+
+.fe-download-card__requires {
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+// Everything under the rows: notes, live channels, planned channels. One
+// wrapper takes the auto margin so the foot sits at the bottom of the card
+// however many of the three it holds.
+.fe-download-card__foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-4);
+  padding-top: var(--fe-space-4);
+  margin-block: auto 0;
+}
+
+.fe-download-card__notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-download-card__note {
+  margin: 0;
+}
+
+// Live distribution channels: a store link or a package manager's install
+// command, with what installing that way gets you.
+.fe-download-card__channels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-4);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-download-channel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-2);
+}
+
+.fe-download-channel__head {
+  display: flex;
+  gap: var(--fe-space-2);
+  flex-wrap: wrap;
+  align-items: baseline;
+  font-size: var(--fe-text-body-sm);
+}
+
+.fe-download-channel__name {
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-download-channel__name--link {
+  color: var(--fe-fg-link);
+  text-decoration: none;
+}
+
+.fe-download-channel__name--link:hover,
+.fe-download-channel__name--link:focus {
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+}
+
+.fe-download-channel__note {
+  color: var(--fe-fg-secondary);
+}
+
+.fe-download-channel__command {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  min-width: 0;
+}
+
+// The command scrolls rather than wraps: a wrapped shell command reads as
+// two commands. Sunken, not the n-100 the dark verify section's blocks use:
+// the cards sit on the light surface, where n-100 is near black.
+.fe-download-channel__code {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--fe-space-2) var(--fe-space-3);
+  overflow-x: auto;
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-code);
+  white-space: nowrap;
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-border-subtle);
+  border-radius: var(--fe-radius-sm);
+}
+
+// Planned distribution channels at the foot of a card.
+.fe-download-card__soon {
+  display: flex;
+  gap: var(--fe-space-2);
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+}
+
+.fe-download-card__soon-label {
+  color: var(--fe-fg-secondary);
+}
+
+// ============================================
+// DOWNLOAD ROWS
+// ============================================
+
+.fe-download-rows {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-download-row {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+}
+
+.fe-download-row + .fe-download-row {
+  border-top: 1px solid var(--fe-border-subtle);
+}
+
+// The whole strip is the link, so the target is the full row height rather
+// than the width of a word.
+.fe-download-row__link {
+  display: flex;
+  gap: var(--fe-space-3);
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  padding-block: var(--fe-space-4);
+  color: var(--fe-fg-primary);
+  text-decoration: none;
+  border-radius: var(--fe-radius-sm);
+  transition: color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-download-row__link:hover,
+.fe-download-row__link:focus {
+  color: var(--fe-fg-link);
+  text-decoration: none;
+}
+
+.fe-download-row__label {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fe-download-row__arch {
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-semibold);
+}
+
+.fe-download-row__note {
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-download-row__format {
+  flex: 0 0 auto;
+  padding: 2px var(--fe-space-2);
+  color: var(--fe-fg-code);
+  background-color: var(--fe-bg-sunken);
+  border-radius: var(--fe-radius-sm);
+}
+
+.fe-download-row__size {
+  flex: 0 0 auto;
+  min-width: 4.5rem;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+  text-align: end;
+}
+
+// The arrow tile (an .fe-icon-tile) lifts a tint with the row.
+.fe-download-row__go {
+  transition: background-color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-download-row__link:hover .fe-download-row__go {
+  background-color: var(--fe-primary-a16);
+}
+
+.fe-download-copy {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-muted);
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-sm);
+  transition: color var(--fe-motion-fast) var(--fe-ease),
+    border-color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-download-copy:hover {
+  color: var(--fe-fg-primary);
+  border-color: var(--fe-border-strong);
+}
+
+// The tick is stacked on the clipboard rather than replacing it, so the
+// control does not change width when it fires.
+.fe-download-copy__done {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fe-icon-success);
+  visibility: hidden;
+  background-color: var(--fe-bg-raised);
+  border-radius: var(--fe-radius-sm);
+}
+
+.fe-download-copy.is-copied {
+  border-color: var(--fe-mint-deep);
+}
+
+.fe-download-copy.is-copied .fe-download-copy__done {
+  visibility: visible;
+}
+
+// ============================================
+// VERIFY
+// ============================================
+
+.fe-download-verify__grid {
+  display: grid;
+  gap: var(--fe-space-8);
+}
+
+.fe-download-verify__title {
+  margin-bottom: var(--fe-space-5);
+}
+
+.fe-download-verify__links {
+  display: flex;
+  gap: var(--fe-space-5);
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-download-verify__link {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-link);
+  text-decoration: none;
+}
+
+.fe-download-verify__link:hover,
+.fe-download-verify__link:focus {
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+}
+
+.fe-download-verify__points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-5);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-download-verify__point {
+  display: flex;
+  gap: var(--fe-space-4);
+  align-items: flex-start;
+}
+
+.fe-download-verify__point-title {
+  display: block;
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-download-verify__point-body {
+  display: block;
+}
+
+.fe-download-verify__point-link {
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-link);
+}
+
+// The keys and attestations row under the grid: one panel each for the
+// updater key, build provenance and the F-Droid repository.
+.fe-download-verify__keys {
+  display: grid;
+  gap: var(--fe-space-5);
+  padding: 0;
+  margin-block: var(--fe-space-8) 0;
+  list-style: none;
+}
+
+.fe-download-verify__key {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-3);
+  align-items: flex-start;
+  min-width: 0;
+  padding: var(--fe-space-5);
+}
+
+.fe-download-verify__key-title {
+  margin: 0;
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-download-verify__key-body {
+  margin: 0;
+}
+
+.fe-download-verify__key-meta {
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-download-verify__key .fe-codeblock {
+  align-self: stretch;
+  margin-bottom: 0;
+}
+
+// A key, URL or fingerprint beside its copy control. Unlike a command it
+// wraps, since a 44-character key has no line to break the sense of.
+.fe-download-verify__value {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  align-self: stretch;
+  min-width: 0;
+}
+
+.fe-download-verify__code {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--fe-space-2) var(--fe-space-3);
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-code);
+  word-break: break-all;
+  background-color: var(--fe-n-100);
+  border-radius: var(--fe-radius-sm);
+}
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
+@include fe-up(lg) {
+  .fe-download-verify__grid {
+    // minmax(0, …), not bare fr: the checksum/code column's intrinsic width
+    // must not widen its track past the split (bare fr means minmax(auto, …)).
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: var(--fe-space-8) 4rem;
+  }
+
+  .fe-download-verify__keys {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@include fe-down(md) {
+  // The arch and the format sit on one line and the size moves under them,
+  // so a narrow row keeps the download affordance on screen.
+  .fe-download-row__size {
+    min-width: 0;
+  }
+
+  .fe-download-hero__facts {
+    gap: var(--fe-space-6);
+  }
+}
+
+@include fe-down(sm) {
+  .fe-download-row__format {
+    display: none;
+  }
+}

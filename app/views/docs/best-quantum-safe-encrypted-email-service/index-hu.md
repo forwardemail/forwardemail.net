@@ -1,6 +1,6 @@
 # Kvantumbiztos e-mail: Hogyan használunk titkosított SQLite postaládákat az e-mailjeid biztonságáért {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="Kvantumbiztos titkosított e-mail szolgáltatás illusztráció" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/quantum.webp" alt="Kvantumbiztos titkosított e-mail szolgáltatás illusztráció" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

@@ -1,6 +1,6 @@
 # Podmínky {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Podmínky služby Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Podmínky služby Forward Email" class="rounded-lg" /> -->
 
 
 ## Obsah {#table-of-contents}

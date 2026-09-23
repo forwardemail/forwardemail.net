@@ -1,6 +1,6 @@
 # Forward Email: あなたのセクション889準拠のメール転送ソリューション {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="連邦政府のメールサービス セクション889準拠" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="連邦政府のメールサービス セクション889準拠" class="rounded-lg" /> -->
 
 
 ## 目次 {#table-of-contents}

@@ -1,6 +1,6 @@
 # Neden Açık Kaynak E-posta Gelecektir: Forward Email Avantajı {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="Açık kaynak e-posta güvenliği ve gizliliği" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/open-source.webp" alt="Açık kaynak e-posta güvenliği ve gizliliği" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

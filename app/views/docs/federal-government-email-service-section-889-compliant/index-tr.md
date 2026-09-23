@@ -1,6 +1,6 @@
 # E-posta Yönlendirme: Bölüm 889 Uyumlu E-posta Yönlendirme Çözümünüz {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="Federal hükümet e-posta servisi Bölüm 889 uyumlu" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/federal.webp" alt="Federal hükümet e-posta servisi Bölüm 889 uyumlu" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

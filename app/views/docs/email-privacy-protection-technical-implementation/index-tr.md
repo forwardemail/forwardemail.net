@@ -1,6 +1,6 @@
 # Forward Email ile E-posta Yönlendirme Nasıl Çalışır: Nihai Rehber {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="E-posta gizliliği koruma teknik uygulaması" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="E-posta gizliliği koruma teknik uygulaması" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

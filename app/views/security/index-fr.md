@@ -1,6 +1,6 @@
 # Pratiques de Sécurité {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="Pratiques de sécurité Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/security.webp" alt="Pratiques de sécurité Forward Email" class="rounded-lg" /> -->
 
 
 ## Table des Matières {#table-of-contents}

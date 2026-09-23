@@ -1,0 +1,704 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// The landing page (hero, console, product, pricing grid, proof) and the
+// pricing template's hero. Builds on _fe-base.scss and _fe-primitives.scss;
+// only what those do not cover lives here.
+
+// ============================================
+// HERO
+// ============================================
+
+.fe-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.fe-hero::before {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  width: 800px;
+  height: 800px;
+  pointer-events: none;
+  content: '';
+  background-image: radial-gradient(
+    circle at 0 100%,
+    var(--fe-primary-a08) 0%,
+    transparent 70%
+  );
+}
+
+[dir='rtl'] .fe-hero::before {
+  background-image: radial-gradient(
+    circle at 100% 100%,
+    var(--fe-primary-a08) 0%,
+    transparent 70%
+  );
+}
+
+.fe-hero__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.fe-hero__grid {
+  display: grid;
+  gap: 3rem;
+}
+
+// Grid items default to min-width auto, so the console's nowrap evidence line
+// would set the column's floor and shove the whole hero past the viewport on
+// phones (the hero's overflow: hidden then crops it unreachable). Zeroing the
+// floor lets columns shrink; the evidence line scrolls inside its own box.
+.fe-hero__grid > * {
+  min-width: 0;
+}
+
+.fe-hero__eyebrow {
+  margin-block: 0 2rem;
+}
+
+.fe-hero__title {
+  max-width: 16ch;
+  margin-bottom: var(--fe-space-6);
+}
+
+.fe-hero__body {
+  max-width: 52ch;
+  margin-bottom: 2rem;
+}
+
+.fe-hero__trust {
+  margin-top: 3rem;
+}
+
+// Spec deviation, here and in four sibling spots (console meta, status count,
+// stat labels, plan period): the muted tier measures 3.8-4.5:1 at these small
+// sizes, under the AA floor, so they take --fe-fg-secondary (7:1+) instead.
+// --fe-fg-muted stays correct for decorative marks like the logo middots.
+.fe-hero__trust-label {
+  margin-block: 0 var(--fe-space-3);
+  color: var(--fe-fg-secondary);
+}
+
+// Logos render as text, not images, so they translate and cost no requests.
+.fe-hero__logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-secondary);
+  list-style: none;
+}
+
+.fe-hero__logos > li + li::before {
+  margin-inline: var(--fe-space-3);
+  color: var(--fe-fg-muted);
+  content: '\00B7';
+}
+
+// ============================================
+// HERO CONSOLE
+// ============================================
+
+.fe-console {
+  padding: 20px;
+  background-color: var(--fe-bg-frame);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-xl);
+  box-shadow: var(--fe-elev-inset);
+}
+
+.fe-console__rail {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--fe-space-1);
+  padding: 8px;
+  margin-bottom: var(--fe-space-5);
+  background-color: var(--fe-bg-sunken);
+  border-radius: var(--fe-radius-lg);
+}
+
+.fe-console__tab {
+  padding: var(--fe-space-2) var(--fe-space-3);
+  overflow: hidden;
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-secondary);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: var(--fe-radius-md);
+  transition:
+    color var(--fe-motion-fast) var(--fe-ease),
+    background-color var(--fe-motion-fast) var(--fe-ease);
+}
+
+.fe-console__tab:hover,
+.fe-console__tab:focus {
+  color: var(--fe-fg-primary);
+  text-decoration: none;
+}
+
+.fe-console__tab--active {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-raised);
+  box-shadow: var(--fe-elev-1);
+}
+
+// Views stack in one grid cell so the console is as tall as its tallest view
+// and switching tabs never changes the hero's height. Inactive views hide via
+// visibility, which keeps the box while leaving the accessibility tree.
+.fe-console__views {
+  display: grid;
+}
+
+.fe-console__view {
+  // Only ever a fallback. Every view carries a tone modifier below, but a view
+  // added without one should come out legible rather than unstyled.
+  --fe-console-tone: var(--fe-fg-secondary);
+
+  grid-area: 1 / 1;
+  // Same auto-minimum trap as the hero columns: without this the widest view's
+  // nowrap evidence line sets the console's floor on phones.
+  min-width: 0;
+  visibility: hidden;
+}
+
+.fe-console__view--active {
+  visibility: visible;
+}
+
+// Every tone is text-legal on the dark hero: primary takes -lift because
+// --fe-primary itself is 3.1:1 on Ink and would fail as a text colour.
+.fe-console__view--primary {
+  --fe-console-tone: var(--fe-primary-lift);
+}
+
+.fe-console__view--mint {
+  --fe-console-tone: var(--fe-mint);
+}
+
+.fe-console__view--signal {
+  --fe-console-tone: var(--fe-signal);
+}
+
+.fe-console__view--vault {
+  --fe-console-tone: var(--fe-vault);
+}
+
+.fe-console__view--caution {
+  --fe-console-tone: var(--fe-caution);
+}
+
+.fe-console__kicker {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  margin-bottom: var(--fe-space-3);
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-label);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-console-tone);
+  text-transform: uppercase;
+  letter-spacing: var(--fe-tracking-label);
+}
+
+.fe-console__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background-color: var(--fe-console-tone);
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-console__heading {
+  margin-bottom: var(--fe-space-3);
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-display-xs);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-primary);
+}
+
+// The spec's 520px measure, as a max-width rather than a character count so it
+// still holds in the locales whose average word runs much longer than English.
+.fe-console__promise {
+  max-width: 520px;
+  margin-bottom: var(--fe-space-5);
+}
+
+// Always exactly four, two by two. These carry the specifics the old feature
+// list used to.
+.fe-console__cards {
+  gap: var(--fe-space-3);
+  margin-bottom: var(--fe-space-5);
+}
+
+.fe-console__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-1);
+  padding: var(--fe-space-3) var(--fe-space-4);
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-border-subtle);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-console__card-label {
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-console__card-sub {
+  font-size: var(--fe-text-code);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-console__evidence {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: baseline;
+  padding: var(--fe-space-3) var(--fe-space-4);
+  margin: 0;
+  overflow-x: auto;
+  color: var(--fe-signal);
+  white-space: nowrap;
+  background-color: var(--fe-ink);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-console__evidence-glyph {
+  flex: none;
+  color: var(--fe-state-success);
+}
+
+// Unrolled: all six views visible and stacked. html.no-js serves script-less
+// visitors (stripped by _meta.pug's inline script before paint, so no reflow);
+// .fe-console--unrolled is the server-rendered equivalent for crawlers.
+.fe-console--unrolled .fe-console__views,
+html.no-js .fe-console__views {
+  display: block;
+}
+
+.fe-console--unrolled .fe-console__view,
+html.no-js .fe-console__view {
+  visibility: visible;
+}
+
+.fe-console--unrolled .fe-console__view + .fe-console__view,
+html.no-js .fe-console__view + .fe-console__view {
+  padding-top: var(--fe-space-6);
+  margin-top: var(--fe-space-6);
+  border-top: 1px solid var(--fe-border-subtle);
+}
+
+.fe-console--unrolled .fe-console__tab--active,
+html.no-js .fe-console__tab--active {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+// ============================================
+// PRODUCT SECTION
+// ============================================
+
+.fe-product__head {
+  display: grid;
+  gap: var(--fe-grid-gap);
+  margin-bottom: 2rem;
+}
+
+.fe-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-stats__value {
+  display: block;
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-display-md);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-tight);
+  color: var(--fe-primary);
+}
+
+.fe-stats__label {
+  display: block;
+  margin-top: var(--fe-space-1);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-divider {
+  height: 1px;
+  margin-bottom: 3rem;
+  background-color: var(--fe-border-subtle);
+  border: 0;
+}
+
+// ============================================
+// ROUTE STEPPER
+// ============================================
+
+.fe-stepper__label {
+  margin-block: 0 var(--fe-space-6);
+  color: var(--fe-primary);
+}
+
+.fe-stepper {
+  position: relative;
+  display: grid;
+  gap: var(--fe-space-6);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-stepper__step {
+  position: relative;
+}
+
+.fe-stepper__num {
+  display: block;
+  margin-bottom: var(--fe-space-2);
+  color: var(--fe-primary);
+}
+
+.fe-stepper__dot-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--fe-space-4);
+}
+
+.fe-stepper__dot {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-stepper__dot--primary {
+  background-color: var(--fe-primary);
+}
+
+.fe-stepper__dot--signal {
+  background-color: var(--fe-signal);
+}
+
+.fe-stepper__dot--mint {
+  background-color: var(--fe-mint);
+}
+
+.fe-stepper__rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background-color: var(--fe-border-default);
+}
+
+.fe-stepper__title {
+  margin-bottom: var(--fe-space-2);
+}
+
+.fe-stepper__desc {
+  margin: 0;
+}
+
+// ============================================
+// FEATURE CARD PAIR
+// ============================================
+
+.fe-features {
+  display: grid;
+  gap: var(--fe-grid-gap);
+  margin-top: 3rem;
+}
+
+.fe-feature {
+  padding: 1.75rem;
+  border-radius: var(--fe-radius-lg);
+}
+
+.fe-feature--inverse {
+  background-color: var(--fe-ink);
+}
+
+.fe-feature__title {
+  margin-bottom: var(--fe-space-3);
+}
+
+.fe-feature__body {
+  margin-bottom: var(--fe-space-5);
+}
+
+.fe-feature__link {
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fe-feature__link:hover,
+.fe-feature__link:focus {
+  color: var(--fe-fg-primary);
+}
+
+// ============================================
+// PRICING GRID (landing)
+// ============================================
+
+.fe-pricing__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fe-space-4);
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--fe-space-6);
+}
+
+.fe-pricing__aside {
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-link);
+}
+
+// ============================================
+// PROOF (testimonials)
+// ============================================
+// Three value pillars, each evidenced by one verbatim quote and closed by a
+// receipt link.
+
+.fe-proof__grid {
+  display: grid;
+  gap: var(--fe-grid-gap);
+}
+
+.fe-proof__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fe-space-4);
+  padding: var(--fe-space-6);
+  margin: 0;
+}
+
+.fe-proof__pillar {
+  display: flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  margin: 0;
+  color: var(--fe-fg-secondary);
+}
+
+// Tones take the icon tokens: 3:1 graphics-legal, never used as text here.
+.fe-proof__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-proof__dot--primary {
+  background-color: var(--fe-icon-primary);
+}
+
+.fe-proof__dot--mint {
+  background-color: var(--fe-icon-success);
+}
+
+.fe-proof__dot--signal {
+  background-color: var(--fe-icon-active);
+}
+
+.fe-proof__quote {
+  margin: 0;
+  font-size: var(--fe-text-body-md);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-primary);
+}
+
+// The featured card spans both rows at >=1024px, so its content centers as a
+// pull-quote instead of pinning to the card's foot like the short cards.
+.fe-proof__card--featured {
+  justify-content: center;
+}
+
+.fe-proof__card--featured .fe-proof__quote {
+  font-size: var(--fe-text-display-xs);
+  line-height: var(--fe-leading-snug);
+}
+
+// margin-top auto pins the attribution and receipt to the card's foot, so the
+// short quotes' cards keep their rows aligned with the featured card.
+.fe-proof__who {
+  display: flex;
+  gap: var(--fe-space-3);
+  align-items: center;
+  margin: auto 0 0;
+}
+
+.fe-proof__card--featured .fe-proof__who {
+  margin-top: 0;
+}
+
+.fe-proof__avatar {
+  border-radius: var(--fe-radius-full);
+}
+
+.fe-proof__id {
+  display: flex;
+  flex-direction: column;
+}
+
+.fe-proof__name {
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-fg-primary);
+}
+
+.fe-proof__meta {
+  font-size: var(--fe-text-code);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-proof__receipt {
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-link);
+  text-decoration: none;
+}
+
+.fe-proof__receipt:hover,
+.fe-proof__receipt:focus {
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+}
+
+// ============================================
+// PRICING TEMPLATE HERO
+// ============================================
+// Hero for /private-business-email and every useCases route. Sizes to its
+// content rather than the viewport.
+
+.fe-pricing-hero {
+  text-align: center;
+}
+
+.fe-pricing-hero__inner {
+  max-width: 52rem;
+}
+
+.fe-pricing-hero__title {
+  margin-bottom: var(--fe-space-5);
+}
+
+.fe-pricing-hero__body {
+  max-width: 60ch;
+  margin: 0 auto var(--fe-space-8);
+}
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
+@include fe-up(lg) {
+  // Left 5 columns, right 7, per section 2 of the spec. minmax(0, …) because
+  // bare fr means minmax(auto, …): the console's intrinsic width would widen
+  // its column past the split whenever a view's content ran long.
+  .fe-hero__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: center;
+  }
+
+  // Heading takes 7 columns, stats take 5 and align to the end.
+  .fe-product__head {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: end;
+  }
+
+  .fe-product__stats {
+    justify-content: flex-end;
+  }
+
+  .fe-stepper {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--fe-grid-gap);
+  }
+
+  // 45/55 split, equal height via grid stretch.
+  .fe-features {
+    grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+  }
+
+  // Featured quote holds the left column; the two short ones stack right.
+  .fe-proof__grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+
+  .fe-proof__card--featured {
+    grid-row: span 2;
+  }
+}
+
+@include fe-down(md) {
+  // The rail becomes a horizontal scroller: six equal columns at this width
+  // would truncate every tab label.
+  .fe-console__rail {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .fe-console__tab {
+    flex: none;
+  }
+
+  .fe-console__cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  // Vertical stepper. The rule runs down the start edge of the dots instead
+  // of through their centres.
+  .fe-stepper__step {
+    padding-inline-start: var(--fe-space-6);
+  }
+
+  .fe-stepper__step::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 5px;
+    width: 1px;
+    content: '';
+    background-color: var(--fe-border-default);
+  }
+
+  .fe-stepper__step:first-child::before {
+    inset-block-start: 12px;
+  }
+
+  .fe-stepper__step:last-child::before {
+    inset-block-end: calc(100% - 12px);
+  }
+
+  .fe-stepper__dot-row {
+    position: absolute;
+    inset-block-start: 6px;
+    inset-inline-start: 0;
+    margin-bottom: 0;
+  }
+
+  .fe-stepper__rule {
+    display: none;
+  }
+}

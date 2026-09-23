@@ -1,6 +1,6 @@
 # דיווח על התעללות {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="דווח על התעללות וספאם ל-Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/report-abuse.webp" alt="דווח על התעללות וספאם ל-Forward Email" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

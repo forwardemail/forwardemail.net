@@ -1,6 +1,6 @@
 # 사례 연구: Forward Email이 최고의 대학들을 위한 동문 이메일 솔루션을 어떻게 지원하는가 {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="대학 동문 이메일 전달 사례 연구" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="대학 동문 이메일 전달 사례 연구" class="rounded-lg" /> -->
 
 
 ## 목차 {#table-of-contents}

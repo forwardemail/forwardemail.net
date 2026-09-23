@@ -1,6 +1,6 @@
 # Оптимизация производительности SQLite: настройки PRAGMA для продакшена и шифрование ChaCha20 {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="Руководство по оптимизации производительности SQLite" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="Руководство по оптимизации производительности SQLite" class="rounded-lg" /> -->
 
 
 ## Содержание {#table-of-contents}

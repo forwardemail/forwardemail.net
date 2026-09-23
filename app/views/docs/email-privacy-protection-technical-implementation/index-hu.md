@@ -1,6 +1,6 @@
 # Hogyan működik az e-mail továbbítás a Forward Email-lel: Az ultimát útmutató {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="E-mail adatvédelem technikai megvalósítása" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="E-mail adatvédelem technikai megvalósítása" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

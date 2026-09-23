@@ -1,6 +1,6 @@
 # Stripe ve PayPal ile Güçlü Bir Ödeme Sistemi Nasıl Kurduk: Üçlü Yaklaşım {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Stripe ve PayPal ile ödeme sistemi" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Stripe ve PayPal ile ödeme sistemi" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}

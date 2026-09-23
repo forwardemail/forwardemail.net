@@ -1,6 +1,6 @@
 # Hur vi byggde ett robust betalningssystem med Stripe och PayPal: En trifecta-metod {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Betalningssystem med Stripe och PayPal" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Betalningssystem med Stripe och PayPal" class="rounded-lg" /> -->
 
 
 ## Innehållsförteckning {#table-of-contents}

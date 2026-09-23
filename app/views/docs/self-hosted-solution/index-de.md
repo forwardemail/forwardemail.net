@@ -1,6 +1,6 @@
 # Selbstgehostete E-Mail: Verpflichtung zu Open Source {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustration einer selbstgehosteten E-Mail-Lösung" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Illustration einer selbstgehosteten E-Mail-Lösung" class="rounded-lg" /> -->
 
 
 ## Inhaltsverzeichnis {#table-of-contents}

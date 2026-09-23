@@ -1,6 +1,6 @@
 # Forward Email MCP Server {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>TL;DR:</strong> Avoimen lähdekoodin <a href="https://github.com/forwardemail/mcp-server">MCP-palvelimemme</a> antaa tekoälyavustajille kuten Claude, ChatGPT, Cursor ja Windsurf mahdollisuuden hallita sähköpostiasi, domainejasi, aliaksiasi, yhteystietojasi ja kalentereitasi luonnollisen kielen avulla. Kaikki 68 API-päätepistettä ovat saatavilla MCP-työkaluina. Se toimii paikallisesti komennolla <code>npx @forwardemail/mcp-server</code> — tunnistetietosi eivät koskaan poistu koneeltasi.

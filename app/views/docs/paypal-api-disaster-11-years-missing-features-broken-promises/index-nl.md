@@ -7,7 +7,7 @@
 >
 > Echter, in ware PayPal-stijl, hebben ze ons hier nooit over geïnformeerd. We ontdekten deze update pas zelf in december 2025, maanden nadat de functie stilletjes was uitgebracht.
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" /> -->
 
 <p class="lead mt-3">Bij Forward Email hebben we al meer dan tien jaar te maken met de kapotte API's van PayPal. Wat begon als kleine frustraties, is uitgegroeid tot een complete ramp die ons dwong om onze eigen workarounds te bouwen, hun phishing-sjablonen te blokkeren en uiteindelijk alle PayPal-betalingen stop te zetten tijdens een kritieke accountmigratie.</p>
 <p class="lead mt-3">Dit is het verhaal van 11 jaar waarin PayPal de basisbehoeften van ontwikkelaars negeerde terwijl wij alles probeerden om hun platform werkend te krijgen.</p>
@@ -372,20 +372,20 @@ Het PayPal developer dashboard is een ramp. Dit is wat we dagelijks meemaken:
   <figcaption><div class="alert alert-danger small text-center">
   De interface voor abonnementenbeheer - de interface is zo slecht dat we op code moesten vertrouwen om producten en abonnementenplannen te genereren
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Een weergave van de kapotte abonnementeninterface met ontbrekende functionaliteit (je kunt niet eenvoudig producten/plannen/abonnementen aanmaken – en er lijkt helemaal geen manier te zijn om producten of plannen te verwijderen zodra ze in de UI zijn aangemaakt)
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Typische PayPal foutmeldingen - cryptisch en niet behulpzaam
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" /> -->
 </figure>
 
 ### SDK Problemen {#sdk-problems}
@@ -430,38 +430,38 @@ Wat eenvoudig had moeten zijn, veranderde in een complete ramp:
   <figcaption><div class="alert alert-danger small text-center">
   De fout die klanten zagen bij het proberen te betalen - geen uitleg, geen logs, niets
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   PayPal support beweert dat alles in orde was terwijl betalingen volledig kapot waren. Het laatste bericht toont dat ze zeggen dat ze "enkele functies hebben hersteld" maar nog steeds om meer ongespecificeerde informatie vragen - klassieke PayPal support theater
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" /> -->
 </figure>
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Het identiteitsverificatieproces dat zogenaamd "niets heeft opgelost"
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
-  <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" /> -->
+  <!-- <img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" /> -->
 </figure>
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
   Vage boodschap en nog steeds geen oplossing. Geen enkele informatie, kennisgevingen of iets over welke aanvullende informatie nodig is. Klantenservice zwijgt.
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" /> -->
 </figure>
 
 
@@ -564,7 +564,7 @@ Het probleem gaat verder dan alleen slecht sjabloonontwerp. Het factureringssyst
   <figcaption><div class="alert alert-danger small text-center">
   Screenshot die meerdere frauduleuze PayPal-facturen toont die een inbox overspoelen, allemaal legitiem lijkend omdat ze daadwerkelijk van de systemen van PayPal komen
   </div></figcaption>
-  <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" />
+  <!-- <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" /> -->
 </figure>
 
 De onderzoeker merkte op:
@@ -931,4 +931,4 @@ Als je een betalingssysteem bouwt, leer dan van onze ervaring: bouw je [trifecta
 
 > Dit bericht documenteert onze 11-jarige ervaring met de PayPal-API's bij Forward Email. Alle codevoorbeelden en links zijn afkomstig van onze daadwerkelijke productiesystemen. We blijven PayPal-betalingen ondersteunen ondanks deze problemen omdat sommige klanten geen andere optie hebben
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" /> -->

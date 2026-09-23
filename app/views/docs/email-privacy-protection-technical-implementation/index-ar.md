@@ -1,6 +1,6 @@
 # كيف يعمل إعادة توجيه البريد الإلكتروني مع Forward Email: الدليل النهائي {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="التنفيذ التقني لحماية خصوصية البريد الإلكتروني" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-privacy.webp" alt="التنفيذ التقني لحماية خصوصية البريد الإلكتروني" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

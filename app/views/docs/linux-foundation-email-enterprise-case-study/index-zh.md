@@ -1,6 +1,6 @@
 # 案例研究：Linux 基金会如何通过 Forward Email 优化 250+ 域名的邮件管理 {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

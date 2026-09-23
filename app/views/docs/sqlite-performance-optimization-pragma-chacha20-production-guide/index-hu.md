@@ -1,6 +1,6 @@
 # SQLite Teljesítményoptimalizálás: Termelési PRAGMA Beállítások & ChaCha20 Titkosítás {#sqlite-performance-optimization-production-pragma-settings--chacha20-encryption}
 
-<img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite teljesítményoptimalizálási útmutató" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/sqlite.webp" alt="SQLite teljesítményoptimalizálási útmutató" class="rounded-lg" /> -->
 
 
 ## Tartalomjegyzék {#table-of-contents}

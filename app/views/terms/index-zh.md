@@ -1,6 +1,6 @@
 # 条款 {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email 服务条款" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email 服务条款" class="rounded-lg" /> -->
 
 
 ## 目录 {#table-of-contents}

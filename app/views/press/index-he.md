@@ -1,6 +1,6 @@
 # ערכת עיתונות ומדיה {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="ערכת עיתונות ומדיה של Forward Email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/press.webp" alt="ערכת עיתונות ומדיה של Forward Email" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

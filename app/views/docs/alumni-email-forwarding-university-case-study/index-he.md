@@ -1,6 +1,6 @@
 # מחקר מקרה: כיצד Forward Email מחזקת פתרונות דואר אלקטרוני לבוגרי אוניברסיטאות מובילות {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" /> -->
 
 
 ## תוכן העניינים {#table-of-contents}

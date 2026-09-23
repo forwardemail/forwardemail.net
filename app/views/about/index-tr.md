@@ -1,6 +1,6 @@
 # Forward Email Hakkında {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email ekibi ve şirket hikayesi" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about.webp" alt="Forward Email ekibi ve şirket hikayesi" class="rounded-lg" /> -->
 
 # Forward Email Hakkında {#about-forward-email-1}
 
@@ -165,4 +165,4 @@ Mart 2026 itibarıyla Forward Email, dünya çapında 500.000’den fazla alan a
 
 Platform, düzenli özellik güncellemeleri ve altyapı iyileştirmeleri ile gelişmeye devam etmekte olup, bugün mevcut olan tek %100 açık kaynak, şifreli, gizlilik odaklı, şeffaf ve kuantum dirençli e-posta hizmeti olarak konumunu korumaktadır—artık Cure53'ten [bağımsız bir güvenlik denetimiyle](/pentest-report_forward-email.pdf) desteklenmektedir.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email gizlilik odaklı e-posta hizmeti" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email gizlilik odaklı e-posta hizmeti" class="rounded-lg" /> -->

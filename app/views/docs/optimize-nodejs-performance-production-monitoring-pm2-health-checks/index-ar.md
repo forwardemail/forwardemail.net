@@ -1,6 +1,6 @@
 # كيفية تحسين بنية إنتاج Node.js: أفضل الممارسات {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="دليل تحسين أداء Node.js" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="دليل تحسين أداء Node.js" class="rounded-lg" /> -->
 
 
 ## جدول المحتويات {#table-of-contents}

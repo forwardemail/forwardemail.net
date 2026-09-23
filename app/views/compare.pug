@@ -7,7 +7,7 @@ mixin renderCard(alternative, i)
         span.badge.badge-success.mr-3.mt-3
           = emoji("star")
           = " "
-          if isBot(ctx.get("User-Agent"))
+          if isBotUa
             = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
           else
             = t("Recommended")
@@ -22,14 +22,14 @@ mixin renderCard(alternative, i)
           span.badge.badge-success.mr-3
             = emoji("star")
             = " "
-            if isBot(ctx.get("User-Agent"))
+            if isBotUa
               = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
             else
             = t("Recommended")
       p
         != str
         = " "
-        if isBot(ctx.get("User-Agent"))
+        if isBotUa
           = t(_.sample(["Its description from its website is:", "Their official description reads:", "Their website says:", "According to their website:"]))
           = " "
           = t(alternative.description)
@@ -54,14 +54,14 @@ mixin renderCard(alternative, i)
           target="_blank",
           rel="noopener noreferrer"
         )
-          if isBot(ctx.get("User-Agent"))
+          if isBotUa
             = _.sample([t("Photograph by Forward Email"), t("Photo by Forward Email"), t("Screenshot by Forward Email")])
           else
             = t("Screenshot by Forward Email")
       else
         .small.text-center.mt-3
           small.text-muted
-            if isBot(ctx.get("User-Agent"))
+            if isBotUa
               = _.sample([t("Photograph by Forward Email"), t("Photo by Forward Email"), t("Screenshot by Forward Email")])
             else
               = t("Screenshot by Forward Email")
@@ -73,7 +73,7 @@ mixin renderCard(alternative, i)
         title=striptags(t('<span class="notranslate">%s</span> <span class="notranslate">%s</span> Email Service', alternative.name))
       )
         span.text-uppercase.font-weight-bold.align-middle
-          if isBot(ctx.get("User-Agent"))
+          if isBotUa
             != _.sample([t("Visit Website"), t("Go to site"), t("Visit Website")])
           else
             != t("Visit Website")
@@ -81,22 +81,8 @@ mixin renderCard(alternative, i)
         i.fa.fa-external-link.align-middle
 
 block append scripts
-  if !isBot(ctx.get('User-Agent'))
-    if config.env === 'test'
-      script(
-        nonce=nonce,
-        defer,
-        src=`${config.urls.web}/js/domain-search.js`,
-        crossorigin="anonymous"
-      )
-    else
-      script(
-        nonce=nonce,
-        defer,
-        src=manifest("js/domain-search.js"),
-        integrity=manifest("js/domain-search.js", "integrity"),
-        crossorigin="anonymous"
-      )
+  if !isBotUa
+    +script("js/domain-search.js")
   script(
     nonce=nonce,
     defer,
@@ -104,7 +90,7 @@ block append scripts
     integrity=manifest("js/ekko-lightbox.js", "integrity"),
     crossorigin="anonymous"
   )
-  if !isBot(ctx.get("User-Agent")) && comparison
+  if !isBotUa && comparison
     script(
       nonce=nonce,
       defer,
@@ -133,7 +119,7 @@ block append scripts
     script(nonce=nonce)!= "function checkboxSort(a, b) { a = a === '❌' ? 0 : a === '✅' ? 1 : 0.5; b = b === '❌' ? 0 : b === '✅' ? 1 : 0.5; if (a > b) return 1; if (a < b) return -1; return 0; }"
 
 block append stylesheets
-  if !isBot(ctx.get("User-Agent")) && comparison
+  if !isBotUa && comparison
     link(
       rel="stylesheet",
       href=manifest("css/bootstrap-table.css"),
@@ -155,13 +141,14 @@ block append stylesheets
       }
 
 block body
+  include _fe-marketing
   include _modal-domain-search
   +modalDomainSearch
   include _modal-storage
 
   - const sorted = config.alternatives ? _.sortBy(config.alternatives, "name") : [];
 
-  if !isBot(ctx.get('User-Agent'))
+  if !isBotUa
     script(defer, nonce=nonce).
       window.addEventListener(
         "load",
@@ -177,7 +164,7 @@ block body
         false
       );
 
-  if !isBot(ctx.get('User-Agent'))
+  if !isBotUa
     .fixed-bottom.text-center.d-print-none
       .bg-dark.p-2.border-top.border-themed
         ul.list-inline.mb-0
@@ -271,7 +258,7 @@ block body
                         href=l(`/blog/best-${alternatives[0].slug}-alternative`),
                         target="_blank",
                         rel="noopener noreferrer",
-                        title=isBot(ctx.get("User-Agent")) ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternatives[0].name, dayjs().format("YYYY"))) : false,
+                        title=isBotUa ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternatives[0].name, dayjs().format("YYYY"))) : false,
                         class=alternatives[0].name === "Forward Email" ? "text-themed font-weight-bold" : "text-themed"
                       )= alternatives[0].name
                     if alternatives[0].name === "Forward Email"
@@ -279,7 +266,7 @@ block body
                         span.badge.badge-success
                           = emoji("star")
                           = " "
-                          if isBot(ctx.get("User-Agent"))
+                          if isBotUa
                             = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
                           else
                             = t("Recommended")
@@ -312,7 +299,7 @@ block body
                           i.fa.fa-external-link
                           = " "
                           = t("Website")
-                      if !isBot(ctx.get("User-Agent")) && sorted.length > 0
+                      if !isBotUa && sorted.length > 0
                         li.list-inline-item.mb-1
                           button.btn.btn-sm.btn-dark.dropdown-toggle(
                             type="button",
@@ -435,7 +422,7 @@ block body
                         href=l(`/blog/best-${alternatives[1].slug}-alternative`),
                         target="_blank",
                         rel="noopener noreferrer",
-                        title=isBot(ctx.get("User-Agent")) ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternatives[1].name, dayjs().format("YYYY"))) : false,
+                        title=isBotUa ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternatives[1].name, dayjs().format("YYYY"))) : false,
                         class=alternatives[1].name === "Forward Email" ? "text-themed font-weight-bold" : "text-themed"
                       )= alternatives[1].name
                     if alternatives[1].name === "Forward Email"
@@ -443,7 +430,7 @@ block body
                         span.badge.badge-success
                           = emoji("star")
                           = " "
-                          if isBot(ctx.get("User-Agent"))
+                          if isBotUa
                             = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
                           else
                             = t("Recommended")
@@ -476,7 +463,7 @@ block body
                           i.fa.fa-external-link
                           = " "
                           = t("Website")
-                      if !isBot(ctx.get("User-Agent")) && sorted.length > 0
+                      if !isBotUa && sorted.length > 0
                         li.list-inline-item.mb-1
                           button.btn.btn-sm.btn-dark.dropdown-toggle(
                             type="button",
@@ -599,7 +586,7 @@ block body
                 tr
                   td.w-33.align-middle.text-center
                     if alternatives[0].storage === false
-                      if isBot(ctx.get("User-Agent"))
+                      if isBotUa
                         = t("No")
                       else
                         = emoji("x")
@@ -610,7 +597,7 @@ block body
                   th.align-middle.text-center(scope="row")= t("Storage")
                   td.w-33.align-middle.text-center
                     if alternatives[1].storage === false
-                      if isBot(ctx.get("User-Agent"))
+                      if isBotUa
                         = t("No")
                       else
                         = emoji("x")
@@ -621,7 +608,7 @@ block body
                 tr
                   td.w-33.align-middle.text-center
                     if alternatives[0].attachment_limit === false
-                      if isBot(ctx.get("User-Agent"))
+                      if isBotUa
                         = t("No")
                       else
                         = emoji("x")
@@ -632,7 +619,7 @@ block body
                   th.align-middle.text-center(scope="row")= t("Attachments")
                   td.w-33.align-middle.text-center
                     if alternatives[1].attachment_limit === false
-                      if isBot(ctx.get("User-Agent"))
+                      if isBotUa
                         = t("No")
                       else
                         = emoji("x")
@@ -673,7 +660,7 @@ block body
                           = " "
                           != alternatives[0][key]
                       else
-                        if isBot(ctx.get("User-Agent"))
+                        if isBotUa
                           = alternatives[0][key] ? t("Yes") : t("No")
                         else
                           = alternatives[0][key] ? emoji("white_check_mark") : emoji("x")
@@ -772,7 +759,7 @@ block body
                           = " "
                           != alternatives[1][key]
                       else
-                        if isBot(ctx.get("User-Agent"))
+                        if isBotUa
                           = alternatives[1][key] ? t("Yes") : t("No")
                         else
                           = alternatives[1][key] ? emoji("white_check_mark") : emoji("x")
@@ -907,7 +894,7 @@ block body
                     href=l(`/blog/best-${alternative.slug}-alternative`),
                     target="_blank",
                     rel="noopener noreferrer",
-                    title=isBot(ctx.get("User-Agent")) ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternative.name, dayjs().format("YYYY"))) : false,
+                    title=isBotUa ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternative.name, dayjs().format("YYYY"))) : false,
                     class=alternative.name === "Forward Email" ? "text-dark font-weight-bold" : alternative.comparison ? "text-dark" : "text-themed"
                   )= alternative.name
                 if alternative.name === "Forward Email"
@@ -916,7 +903,7 @@ block body
                     span.badge.badge-success
                       = emoji("star")
                       = " "
-                      if isBot(ctx.get("User-Agent"))
+                      if isBotUa
                         = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
                       else
                         = t("Recommended")
@@ -945,7 +932,7 @@ block body
                       i.fa.fa-external-link
                       = " "
                       = t("Website")
-                  if !isBot(ctx.get("User-Agent")) && sorted.length > 0
+                  if !isBotUa && sorted.length > 0
                     li.list-inline-item.mb-1
                       button.btn.btn-sm.btn-dark.dropdown-toggle(
                         type="button",
@@ -1067,7 +1054,7 @@ block body
               //- Storage
               td.align-middle.text-center
                 if alternative.storage === false
-                  if isBot(ctx.get("User-Agent"))
+                  if isBotUa
                     = t("No")
                   else
                     = emoji("x")
@@ -1078,7 +1065,7 @@ block body
               //- Attachment Limit
               td.align-middle.text-center
                 if alternative.attachment_limit === false
-                  if isBot(ctx.get("User-Agent"))
+                  if isBotUa
                     = t("No")
                   else
                     = emoji("x")
@@ -1118,7 +1105,7 @@ block body
                       = " "
                       != alternative[key]
                   else
-                    if isBot(ctx.get("User-Agent"))
+                    if isBotUa
                       = alternative[key] ? t("Yes") : t("No")
                     else
                       = alternative[key] ? emoji("white_check_mark") : emoji("x")
@@ -1150,13 +1137,13 @@ block body
                 li.mb-3
                   a.btn.btn-dark.btn-lg.btn-block(href=l(`/blog/${str}`))
                     - let title = config.meta[`/blog/${str}`][0];
-                    if !isBot(ctx.get("User-Agent"))
+                    if !isBotUa
                       - title = title.split("Best ")[1].split(" in")[0];
                     != striptags(t(title))
                     = " "
                     i.fa.fa-angle-double-right.align-middle
 
-      if config.alternatives && sorted.length > 0 && (comparison || alternativeTo) && isBot(ctx.get("User-Agent"))
+      if config.alternatives && sorted.length > 0 && (comparison || alternativeTo) && isBotUa
         - const match = alternatives.find((a) => a.name === alternativeTo);
         .row.mt-3
           .col.text-center
@@ -1171,7 +1158,7 @@ block body
                     )= strippedTitle
 
       //- Disclaimer
-      if !isBot(ctx.get('User-Agent'))
+      if !isBotUa
         - const externalalternatives = alternatives.filter((p) => p.name !== "Forward Email");
         if externalalternatives.length > 0
           .row.mt-3
@@ -1184,18 +1171,10 @@ block body
                 strong= t("Notice of Non-Affiliation and Disclaimer:")
                 = " "
                 != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(externalalternatives.map((p) => p.name)), arrayJoinConjunction(externalalternatives.map((p) => p.name)))
-  if !isBot(ctx.get('User-Agent'))
-    .d-block.overflow-hidden.no-search(data-ignore-hash-change)
-      include _marketing
-    .container.text-center
-      .row.mb-3
-        .col-12
-          a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto.text-white(
-            href="#testimonials"
-          )
-            i.fa.fa-angle-double-down
-            = " "
-            = t("Testimonials")
-            = " "
-            i.fa.fa-angle-double-down
-    include _testimonials
+  //- The marketing tail: was _marketing and _testimonials on bootstrap and
+  //- parallax images, now the same sections on the fe tokens (see
+  //- _fe-marketing.pug). Wrapped in .fe-landing for its typography; the
+  //- comparison content above it is unchanged.
+  if !isBotUa
+    .fe-landing.no-search(data-ignore-hash-change)
+      +feMarketing

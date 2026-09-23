@@ -1,6 +1,6 @@
 # Come Forward Email Protegge la Tua Privacy, il Tuo Dominio e la Tua Sicurezza: L'Approfondimento Tecnico {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Confronto tra i migliori servizi di inoltro email" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Confronto tra i migliori servizi di inoltro email" class="rounded-lg" /> -->
 
 
 ## Indice {#table-of-contents}

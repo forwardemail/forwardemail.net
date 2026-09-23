@@ -1,6 +1,6 @@
 # Forward Email MCP Server {#forward-email-mcp-server}
 
-<img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
   <strong>ÖZET:</strong> <a href="https://github.com/forwardemail/mcp-server">açık kaynak MCP sunucumuz</a>, Claude, ChatGPT, Cursor ve Windsurf gibi yapay zeka asistanlarının e-postalarınızı, alan adlarınızı, takma adlarınızı, kişilerinizi ve takvimlerinizi doğal dil aracılığıyla yönetmesini sağlar. Tüm 68 API uç noktası MCP araçları olarak sunulur. <code>npx @forwardemail/mcp-server</code> ile yerel olarak çalışır — kimlik bilgileriniz asla makinenizden dışarı çıkmaz.

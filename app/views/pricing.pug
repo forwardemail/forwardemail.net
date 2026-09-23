@@ -1,32 +1,14 @@
 extends layout
 
-block append stylesheets
-  if freddyCss
-    style(nonce=nonce)!= freddyCss
-
 block append scripts
-  if !isBot(ctx.get('User-Agent'))
-    if config.env === 'test'
-      script(
-        nonce=nonce,
-        defer,
-        src=`${config.urls.web}/js/domain-search.js`,
-        crossorigin="anonymous"
-      )
-    else
-      script(
-        nonce=nonce,
-        defer,
-        src=manifest("js/domain-search.js"),
-        integrity=manifest("js/domain-search.js", "integrity"),
-        crossorigin="anonymous"
-      )
+  if !isBotUa
+    +script("js/domain-search.js")
 
 block body
   include _modal-domain-search
   +modalDomainSearch
   include _modal-storage
-  if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
+  if !user || isBotUa
     #modal-watch-video.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -51,7 +33,7 @@ block body
             )
 
   //-.
-    if !isBot(ctx.get('User-Agent'))
+    if !isBotUa
       .fixed-bottom.text-center.d-print-none.d-lg-none
         .bg-dark.p-2.border-top.border-themed
           ul.list-inline.mb-0
@@ -71,27 +53,22 @@ block body
                 = " "
                 i.fa.fa-search-plus
 
-  if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
-    section.min-vh-100.bg-dark.d-flex.flex-column.pb-5.text-white(
-      data-ignore-hash-change,
-      id=!isPDF && !isBot(ctx.get("User-Agent")) ? "freddy" : ""
-    )
-      if !isPDF
-        //- #stars
-        #stars2
-        #stars3
-      .container.my-auto.pt-5
-        .row
-          .col-12.text-center
-            h1.mb-1.display-4
-              if Object.keys(useCases).includes(ctx.pathWithoutLocale)
-                != t(useCases[ctx.pathWithoutLocale][0])
-              else
-                != meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
-            h2.h5.font-weight-normal.mb-3!= meta.description
-            include _quick-start
+  //- Bots are included deliberately: the h1 carries the per-route useCases
+  //- headline, which is the SEO content of all 7,252 programmatic pages.
+  //- ?pricing=true no longer drops the hero: the redesigned hero is compact,
+  //- so the "jump to pricing" nav link still lands the table in view while
+  //- the page opens on the new surface (matches isFePricingPage in
+  //- _fe-flags.pug).
+  if !user || isBotUa
+    include _fe-pricing-hero
+    //- .fe-landing is wrapped around the hero alone rather than the whole page,
+    //- because everything below it is still the previous design. The flush
+    //- modifier pulls it under the fixed navbar, which is transparent on these
+    //- routes.
+    .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+      +fePricingHero
     //-.
-      if !isBot(ctx.get('User-Agent'))
+      if !isBotUa
         a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto.bounce-animation(
           href="#learn-more"
         )
@@ -100,15 +77,13 @@ block body
           = t("Learn more")
           = " "
           i.fa.fa-angle-double-down
-  #learn-more.d-block.overflow-hidden.no-search(data-ignore-hash-change)
-    include _marketing
-  a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto.bounce-animation(
-    href="#testimonials"
-  )
-    i.fa.fa-angle-double-down
-    = " "
-    = t("Happy Customers")
-    = " "
-    i.fa.fa-angle-double-down
-  include _testimonials
+  //- Everything below the hero. Was _marketing (with _pricing-table and
+  //- _quick-start inside it) and then _testimonials, both on bootstrap and
+  //- parallax images; now the fe marketing tail, which renders the same
+  //- sections on the tokens. The #learn-more id stays for the deep link.
+  //- Own .fe-landing wrapper, without --flush: only the hero above (which is
+  //- conditional) pulls up under the transparent bar.
+  include _fe-marketing
+  #learn-more.fe-landing.no-search(data-ignore-hash-change)
+    +feMarketing
   include _tti

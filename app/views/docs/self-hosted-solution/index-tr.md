@@ -1,6 +1,6 @@
 # Kendi Sunucunuzda Barındırılan E-posta: Açık Kaynak Taahhüdü {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Kendi sunucunuzda barındırılan e-posta çözümü illüstrasyonu" class="rounded-lg" />
+<!-- <img loading="lazy" src="/img/articles/self-hosted.webp" alt="Kendi sunucunuzda barındırılan e-posta çözümü illüstrasyonu" class="rounded-lg" /> -->
 
 
 ## İçindekiler {#table-of-contents}
