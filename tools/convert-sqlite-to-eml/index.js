@@ -407,7 +407,20 @@ function countAttachments(node) {
  * Tries chacha20 cipher first, then falls back to aes256cbc.
  */
 function openDatabase(databasePath, password) {
-  const database = new Database(databasePath, { readonly: true });
+  //
+  // A missing or unreadable file makes the readonly open throw a raw
+  // better-sqlite3 `SqliteError` (e.g. SQLITE_CANTOPEN) here, before any
+  // cipher is tried. Wrap it so every failure of this function surfaces as a
+  // regular `Error` with the same "Failed to open database" prefix the
+  // password/cipher path below already uses, instead of leaking the native
+  // error object to callers.
+  //
+  let database;
+  try {
+    database = new Database(databasePath, { readonly: true });
+  } catch (error) {
+    throw new Error(`Failed to open database: ${error.message}`);
+  }
 
   // Try chacha20 first
   try {
