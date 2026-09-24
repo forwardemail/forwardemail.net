@@ -330,6 +330,9 @@ module.exports = {
   ALIAS_PASSWORD_CLAIMED_SUBJECT: `Password was claimed for <span class="notranslate">%s</span>`,
   ALIAS_PASSWORD_GENERATED:
     'New password created for <span class="font-weight-bold text-monospace notranslate">%s</span>.  This action was done by <span class="font-weight-bold text-monospace notranslate">%s</span>.',
+  ALIAS_PASSWORD_LINK_SUBJECT: `View your new password for <span class="notranslate">%s</span>`,
+  ALIAS_PASSWORD_LINK:
+    '<p>A new password was generated for <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p>For your security the password is not included in this email. <a href="%s" rel="noopener noreferrer" class="font-weight-bold text-decoration-underline" target="_blank">Click this link</a> while logged in to view it. The link can only be used once and expires in 3 days.</p>',
   ALIAS_PASSWORD_GENERATED_SUBJECT: `New password generated for <span class="notranslate">%s</span>`,
   NO_RESULTS_FOUND: 'No results were found.',
   EMAIL_SETUP_GUIDE: 'Email Setup Guide',

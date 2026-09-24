@@ -4,14 +4,13 @@
  */
 
 const { Buffer } = require('node:buffer');
+const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const Meta = require('koa-meta');
-const QRCode = require('qrcode');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const mongoose = require('mongoose');
 const ms = require('ms');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const revHash = require('rev-hash');
@@ -55,12 +54,16 @@ const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
-const Users = require('#models/users');
 const config = require('#config');
 // const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
+const getAliasPasswordSwal = require('#helpers/get-alias-password-swal');
 const isValidPassword = require('#helpers/is-valid-password');
+const {
+  claimAliasPasswordLink,
+  peekAliasPasswordLink
+} = require('#helpers/alias-password-link');
 const logger = require('#helpers/logger');
 const { renderOpenGraphImage } = require('#helpers/open-graph-image');
 // const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
@@ -459,226 +462,148 @@ async function generateOpenGraphImage(ctx, next) {
   }
 }
 
+//
+// One-time link to view a newly generated alias password (the password is
+// never emailed, see helpers/alias-password-link.js).  A link for the owner
+// requires them to be logged in (so a link scanner cannot use it up) and
+// re-opens the password popup on the aliases page; a link for emailed
+// instructions opens the popup on the email client setup guide.
+//
 async function regenerateAliasPassword(ctx) {
+  const invalid = () =>
+    Boom.badRequest(ctx.translateError('LINK_EXPIRED_OR_INVALID'));
+
+  // links in the previous format (they carried the encrypted password) are
+  // no longer accepted
+  if (!isSANB(ctx.params.token)) throw invalid();
+
+  let record;
   try {
-    // validate domain_id is set
-    if (
-      !isSANB(ctx.params.domain_id) ||
-      !mongoose.isObjectIdOrHexString(ctx.params.domain_id)
-    )
-      throw new Error('Domain param missing');
+    record = await peekAliasPasswordLink(ctx.client, ctx.params.token);
+  } catch (err) {
+    ctx.logger.error(err);
+  }
 
-    // validate alias_id is set
-    if (
-      !isSANB(ctx.params.alias_id) ||
-      !mongoose.isObjectIdOrHexString(ctx.params.alias_id)
-    )
-      throw new Error('Alias param missing');
+  if (!record) throw invalid();
 
-    // validate encrypted_password is set
-    // When using wildcard route, the captured value is in params[0]
-    const encryptedPassword = ctx.params.encrypted_password || ctx.params[0];
-    if (!isSANB(encryptedPassword))
-      throw new Error('Encrypted password param missing');
+  // owner links can only be claimed by the user who generated the password
+  if (record.user_id) {
+    if (!ctx.isAuthenticated()) {
+      ctx.session.returnTo = ctx.originalUrl;
+      ctx.flash('warning', ctx.translate('LOGIN_REQUIRED'));
+      ctx.redirect(ctx.state.l('/login'));
+      return;
+    }
 
-    // Security: validate encrypted token format and length
-    if (encryptedPassword.length > 1000) throw new Error('Token too long');
-    if (!/^[\w+/=-]+$/.test(encryptedPassword))
-      throw new Error('Invalid token format');
+    if (ctx.state.user.id !== record.user_id) throw invalid();
+  }
 
-    // validate domain exists
-    const domain = await Domains.findById(ctx.params.domain_id).lean().exec();
+  try {
+    const domain = await Domains.findById(record.domain_id).lean().exec();
     if (!domain) throw new Error('Domain does not exist');
 
     const alias = await Aliases.findOne({
-      id: ctx.params.alias_id,
+      _id: record.alias_id,
       domain: domain._id
     })
       .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
+      .lean()
       .exec();
 
     // validate alias exists
     if (!alias || alias.name === '*' || alias.name.startsWith('/'))
       throw new Error('Alias does not exist');
 
-    const user = await Users.findById(alias.user)
-      .select(`email ${config.lastLocaleField}`)
-      .lean()
-      .exec();
-
-    if (!user) throw new Error('User does not exist');
-
     if (!Array.isArray(alias.tokens) || alias.tokens.length === 0)
       throw new Error('Alias does not have any generated passwords');
 
-    // validate emailed_instructions is set and an email
+    // instructions that were emailed again (or to someone else) since
     if (
-      !isSANB(alias.emailed_instructions) ||
-      !isEmail(alias.emailed_instructions)
+      record.emailed_instructions &&
+      alias.emailed_instructions !== record.emailed_instructions
     )
-      throw new Error('Emailed instructions was not set');
+      throw new Error('Emailed instructions do not match');
 
-    // validate password
-    // ensure that the token is valid
-    const isValid = await isValidPassword(
-      alias.tokens,
-      decrypt(encryptedPassword)
-    );
+    // the link is used up here, whatever happens next
+    const password = await claimAliasPasswordLink(ctx.client, ctx.params.token);
+    if (!password) throw new Error('Link was already claimed');
 
+    // a password generated after this one replaced it
+    const isValid = await isValidPassword(alias.tokens, password);
     if (!isValid) throw new Error('Invalid password');
 
-    const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(domain);
-
-    /*
-    // generate new password
-    // set locale for translation in `createToken`
-    alias.locale = ctx.locale;
-    alias.tokens = [];
-    const pass = await alias.createToken(alias.emailed_instructions);
-
-    // change password on existing sqlite file using supplied password and new password
-    const wsp = createWebSocketAsPromised();
-    await wsp.request({
-      action: 'rekey',
-      new_password: encrypt(pass),
-      session: {
-        user: {
-          id: alias.id,
-          username: `${alias.name}@${domain.name}`,
-          alias_id: alias.id,
-          alias_name: alias.name,
-          domain_id: domain.id,
-          domain_name: domain.name,
-          password: ctx.params.encrypted_password,
-          storage_location: alias.storage_location,
-          alias_has_pgp: alias.has_pgp,
-          alias_public_key: alias.public_key,
-          alias_has_smime: alias.has_smime,
-          alias_smime_certificate: alias.smime_certificate,
-          alias_has_wkd_disabled: alias.has_wkd_disabled,
-          locale: user[config.lastLocaleField] || i18n.config.defaultLocale,
-          owner_full_email: user.email
-        }
-      }
-    }, 0);
-
-    // don't save until we're sure that sqlite operations were performed
-    await alias.save();
-
-    // close websocket
-    try {
-      wsp.close();
-    } catch (err) {
-      ctx.logger.fatal(err);
-    }
-    */
-
-    // email admins that user claimed password
-    email({
-      template: 'alert',
-      message: {
-        to,
-        subject: i18n.translate(
-          'ALIAS_PASSWORD_CLAIMED_SUBJECT',
-          locale,
-          `${alias.name}@${domain.name}`
-        )
-      },
-      locals: {
-        locale,
-        message: i18n.translate(
-          'ALIAS_PASSWORD_CLAIMED',
-          locale,
-          `${alias.name}@${domain.name}`,
-          alias.emailed_instructions
-        )
-      }
-    })
-      .then()
-      .catch((err) => ctx.logger.fatal(err));
-
-    // we use shortID to generate shorter querystring for less complicated QR code
-    // (this same logic is in app/controllers/web/my-account/generate-alias-password.js)
-    const username = `${alias.name}@${domain.name}`;
-    const appleLink = `${
-      config.urls.web
-    }/c/${username}.mobileconfig?a=${shortID.longToShort(alias.id)}&p=${
-      ctx.params.encrypted_password
-    }`;
-    const appleImgSrc = await QRCode.toDataURL(appleLink, {
-      margin: 0,
-      width: 200
+    const swal = await getAliasPasswordSwal(ctx, {
+      aliasId: alias._id.toString(),
+      aliasName: alias.name,
+      domainName: domain.name,
+      password,
+      isRekey: alias.is_rekey === true
     });
-    const k9Link = `${
-      config.urls.web
-    }/c/${username}.k9s?a=${shortID.longToShort(alias.id)}&p=${
-      ctx.params.encrypted_password
-    }`;
-    const k9ImgSrc = await QRCode.toDataURL(k9Link, {
-      margin: 0,
-      width: 200
-    });
-
-    // render modal with pass
-    const html = ctx.translate(
-      'ALIAS_GENERATED_PASSWORD',
-      username,
-      username,
-      decrypt(encryptedPassword),
-      decrypt(encryptedPassword),
-      appleImgSrc,
-      appleLink,
-      `${username}.mobileconfig`,
-      k9ImgSrc,
-      k9Link,
-      `${username}.k9s`
-    );
-
-    const swal = {
-      title: ctx.request.t('Success'),
-      html,
-      type: 'success',
-      timer: ms('10m'),
-      position: 'top',
-      allowEscapeKey: false,
-      allowOutsideClick: false,
-      focusConfirm: false,
-      confirmButtonText: ctx.translate('CLOSE_POPUP'),
-      grow: 'row'
-    };
-
     ctx.flash('custom', swal);
 
-    // redirect to faq section:
-    const redirectTo = ctx.state.l(
-      '/faq#how-do-i-configure-my-email-client-to-work-with-forward-email'
-    );
+    if (record.emailed_instructions) {
+      const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
+        domain
+      );
+
+      // email admins that user claimed password
+      email({
+        template: 'alert',
+        message: {
+          to,
+          subject: i18n.translate(
+            'ALIAS_PASSWORD_CLAIMED_SUBJECT',
+            locale,
+            `${alias.name}@${domain.name}`
+          )
+        },
+        locals: {
+          locale,
+          message: i18n.translate(
+            'ALIAS_PASSWORD_CLAIMED',
+            locale,
+            `${alias.name}@${domain.name}`,
+            record.emailed_instructions
+          )
+        }
+      })
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
+
+      // in the background remove the `emailed_instructions`
+      // since it was claimed already by the end user
+      Aliases.findByIdAndUpdate(alias._id, {
+        $unset: {
+          emailed_instructions: 1
+        }
+      })
+        .then()
+        .catch((err) => {
+          ctx.logger.fatal(
+            new TypeError(
+              `Error while removing emailed_instructions for alias ID ${alias._id}`
+            )
+          );
+          ctx.logger.fatal(err);
+        });
+    }
+
+    const redirectTo = record.emailed_instructions
+      ? ctx.state.l(
+          '/faq#how-do-i-configure-my-email-client-to-work-with-forward-email'
+        )
+      : ctx.state.l(
+          `/my-account/domains/${punycode.toASCII(domain.name)}/aliases`
+        );
 
     if (ctx.accepts('html')) {
       ctx.redirect(redirectTo);
     } else {
       ctx.body = { redirectTo };
     }
-
-    // in the background remove the `emailed_instructions`
-    // since it was claimed already by the end user
-    Aliases.findByIdAndUpdate(alias._id, {
-      $unset: {
-        emailed_instructions: 1
-      }
-    })
-      .then()
-      .catch((err) => {
-        ctx.logger.fatal(
-          new TypeError(
-            `Error while removing emailed_instructions for alias ID ${alias.id}`
-          )
-        );
-        ctx.logger.fatal(err);
-      });
   } catch (err) {
     ctx.logger.error(err);
-    throw Boom.badRequest(ctx.translateError('LINK_EXPIRED_OR_INVALID'));
+    throw invalid();
   }
 }
 

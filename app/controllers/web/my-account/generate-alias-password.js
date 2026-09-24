@@ -7,14 +7,8 @@ const { randomUUID } = require('node:crypto');
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
-const QRCode = require('qrcode');
-const RE2 = require('re2');
-const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
 const sanitizeHtml = require('sanitize-html');
-const shortID = require('mongodb-short-id');
-const titleize = require('titleize');
 const { boolean } = require('boolean');
 
 const Aliases = require('#models/aliases');
@@ -23,7 +17,7 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
-const env = require('#config/env');
+const getAliasPasswordSwal = require('#helpers/get-alias-password-swal');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
@@ -33,16 +27,7 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
 const { acquireRekeyLock } = require('#helpers/rekey-lock');
 const { isUsableToken } = require('#helpers/token-guard');
 const { rollbackRekey } = require('#helpers/rekey-recovery');
-
-//
-// (this punctuation stuff is borrowed from our work with `spamscanner`)
-// punctuation characters
-// (need stripped from tokenization)
-// <https://github.com/regexhq/punctuation-regex>
-// NOTE: we prepended a normal "-" hyphen since it was missing
-const PUNCTUATION_REGEX = new RE2(
-  /[-‒–—―|$&~=\\/⁄@+*!?({[\]})<>‹›«».;:^‘’“”'",،、`·•†‡°″¡¿※#№÷×%‰−‱¶′‴§_‖¦]/g
-);
+const { createAliasPasswordLink } = require('#helpers/alias-password-link');
 
 async function generateAliasPassword(ctx) {
   const redirectTo = ctx.state.l(
@@ -53,6 +38,7 @@ async function generateAliasPassword(ctx) {
   let newToken = false;
   let rekeyStateSaved = false;
   let rekeyId;
+  let isRekey = false;
 
   try {
     const alias = await Aliases.findById(ctx.state.alias._id)
@@ -262,6 +248,9 @@ async function generateAliasPassword(ctx) {
         alias_has_smime: alias.has_smime,
         alias_smime_certificate: alias.smime_certificate,
         alias_has_wkd_disabled: alias.has_wkd_disabled,
+        // required by `getDatabase` to send the `welcome-mailbox` email on
+        // the initial setup of the fresh mailbox built by `reset`
+        alias_has_imap: alias.has_imap,
         locale: ctx.locale,
         owner_full_email: ctx.state.user.email
       };
@@ -289,99 +278,86 @@ async function generateAliasPassword(ctx) {
         );
 
         //
-        // Return early for rekey — the user will be emailed once complete.
-        // This avoids HTTP timeout issues since rekey involves VACUUM INTO
-        // and VACUUM calls that can take longer than the HTTP timeout.
+        // Do not wait for the rekey -- the user will be emailed once it is
+        // complete.  This avoids HTTP timeout issues since rekey involves
+        // VACUUM INTO and VACUUM calls that can take longer than the HTTP
+        // timeout.
         //
-        if (ctx.api) {
-          ctx.body = {
-            message: ctx.translate(
-              'ALIAS_REKEY_STARTED',
-              `${alias.name}@${ctx.state.domain.name}`
-            )
-          };
-        } else {
-          ctx.flash(
-            'success',
-            ctx.translate(
-              'ALIAS_REKEY_STARTED',
-              `${alias.name}@${ctx.state.domain.name}`
-            )
+        // The new password is only known here (it may have been generated
+        // for the owner when `new_password` was left blank, and it is never
+        // included in the completion email), so fall through and show it
+        // (or email the instructions) exactly like a reset does.
+        //
+        isRekey = true;
+      } else {
+        //
+        // Reset (the owner overrides a lost password, or the alias gets its
+        // first one): the sqlite server replaces the mailbox with a fresh one
+        // encrypted with the new password and finalizes the rotation itself
+        // (helpers/reset-mailbox.js and the `reset` action).  The outcome is
+        // read from MongoDB rather than from the reply, which can be lost in
+        // transit after the work was done.
+        //
+        let resetErr;
+        try {
+          await wsp.request(
+            {
+              action: 'reset',
+              rekey_id: rekeyId,
+              session: {
+                user: {
+                  ...sessionUser,
+                  password: encrypt(pass)
+                }
+              }
+            },
+            // don't retry so we can email user quicker to try again
+            // and also in case of an error with the backup worker
+            // e.g. it won't keep retrying and flood it
+            0
           );
-          if (ctx.accepts('html')) ctx.redirect(redirectTo);
-          else ctx.body = { redirectTo };
+        } catch (err) {
+          resetErr = err;
         }
 
-        return;
-      }
+        const newTokenHash = alias.tokens[0].hash;
+        const state = await Aliases.findById(alias._id)
+          .select({
+            is_rekey: 1,
+            rekey_id: 1,
+            rekey_swap_ino: 1,
+            'tokens.hash': 1
+          })
+          .lean()
+          .exec();
 
-      //
-      // Reset (the owner overrides a lost password, or the alias gets its
-      // first one): the sqlite server replaces the mailbox with a fresh one
-      // encrypted with the new password and finalizes the rotation itself
-      // (helpers/reset-mailbox.js and the `reset` action).  The outcome is
-      // read from MongoDB rather than from the reply, which can be lost in
-      // transit after the work was done.
-      //
-      let resetErr;
-      try {
-        await wsp.request(
-          {
-            action: 'reset',
+        // the sqlite server finalized the rotation with the new token
+        const finalized =
+          state &&
+          state.is_rekey !== true &&
+          Array.isArray(state.tokens) &&
+          state.tokens.some((token) => token.hash === newTokenHash);
+
+        // the fresh mailbox is in place (recorded right before it replaces
+        // the old one) and the sqlite server is still finalizing, or died
+        // before it could: recovery finalizes from that record
+        const swapRecorded =
+          state &&
+          state.is_rekey === true &&
+          state.rekey_id === rekeyId &&
+          isSANB(state.rekey_swap_ino);
+
+        if (!finalized && !swapRecorded)
+          throw resetErr || new Error('Mailbox reset did not complete');
+
+        if (resetErr)
+          ctx.logger.warn(resetErr, {
+            alias_id: alias.id,
             rekey_id: rekeyId,
-            session: {
-              user: {
-                ...sessionUser,
-                password: encrypt(pass)
-              }
-            }
-          },
-          // don't retry so we can email user quicker to try again
-          // and also in case of an error with the backup worker
-          // e.g. it won't keep retrying and flood it
-          0
-        );
-      } catch (err) {
-        resetErr = err;
+            finalized,
+            swap_recorded: swapRecorded
+          });
       }
-
-      const newTokenHash = alias.tokens[0].hash;
-      const state = await Aliases.findById(alias._id)
-        .select({
-          is_rekey: 1,
-          rekey_id: 1,
-          rekey_swap_ino: 1,
-          'tokens.hash': 1
-        })
-        .lean()
-        .exec();
-
-      // the sqlite server finalized the rotation with the new token
-      const finalized =
-        state &&
-        state.is_rekey !== true &&
-        Array.isArray(state.tokens) &&
-        state.tokens.some((token) => token.hash === newTokenHash);
-
-      // the fresh mailbox is in place (recorded right before it replaces
-      // the old one) and the sqlite server is still finalizing, or died
-      // before it could: recovery finalizes from that record
-      const swapRecorded =
-        state &&
-        state.is_rekey === true &&
-        state.rekey_id === rekeyId &&
-        isSANB(state.rekey_swap_ino);
-
-      if (!finalized && !swapRecorded)
-        throw resetErr || new Error('Mailbox reset did not complete');
-
-      if (resetErr)
-        ctx.logger.warn(resetErr, {
-          alias_id: alias.id,
-          rekey_id: rekeyId,
-          finalized,
-          swap_recorded: swapRecorded
-        });
     } finally {
       // close the ephemeral websocket (do not close the shared instance),
       // opened or not: a socket that could not connect would otherwise keep
@@ -399,8 +375,23 @@ async function generateAliasPassword(ctx) {
       ctx.state.domain
     );
 
-    // send password instructions to address provided
+    const username = `${alias.name}@${ctx.state.domain.name}`;
+
+    //
+    // The password itself is NEVER emailed (not even encrypted): a one-time
+    // link is emailed instead (see helpers/alias-password-link.js), which
+    // re-opens the password popup and then stops working.  It is sent when
+    // the instructions were emailed to someone, or when the owner left the
+    // new password blank (it was generated for them, so they get a way to
+    // see it again in case the popup is closed or lost).
+    //
     if (emailedInstructions) {
+      const link = await createAliasPasswordLink(ctx.client, {
+        domainId: ctx.state.domain.id,
+        aliasId: alias.id,
+        password: pass,
+        emailedInstructions
+      });
       await email({
         template: 'alert',
         message: {
@@ -409,7 +400,7 @@ async function generateAliasPassword(ctx) {
           subject: i18n.translate(
             'ALIAS_PASSWORD_INSTRUCTIONS_SUBJECT',
             locale,
-            `${alias.name}@${ctx.state.domain.name}`
+            username
           )
         },
         locals: {
@@ -418,17 +409,43 @@ async function generateAliasPassword(ctx) {
             'ALIAS_PASSWORD_EMAIL',
             locale,
             ctx.state.user.email,
-            `${alias.name}@${ctx.state.domain.name}`,
-            //
-            // NOTE: if this URL is retrieved and valid then a new password is generated and rendered for 30s
-            //       (and can only be accessed if the alias has `emailed_instructions` equal to the entered value
-            //
-            `${config.urls.web}/ap/${ctx.state.domain.id}/${alias.id}/${encrypt(
-              pass
-            )}`
+            username,
+            link
           )
         }
       });
+    } else if (!ctx.api && !isSANB(ctx.request.body.new_password)) {
+      // best-effort: the password was already changed and is shown below
+      (async () => {
+        const link = await createAliasPasswordLink(ctx.client, {
+          domainId: ctx.state.domain.id,
+          aliasId: alias.id,
+          password: pass,
+          userId: ctx.state.user.id
+        });
+        const userLocale = ctx.state.user[config.lastLocaleField] || locale;
+        await email({
+          template: 'alert',
+          message: {
+            to: ctx.state.user.email,
+            locale: userLocale,
+            subject: i18n.translate(
+              'ALIAS_PASSWORD_LINK_SUBJECT',
+              userLocale,
+              username
+            )
+          },
+          locals: {
+            locale: userLocale,
+            message: i18n.translate(
+              'ALIAS_PASSWORD_LINK',
+              userLocale,
+              username,
+              link
+            )
+          }
+        });
+      })().catch((err) => ctx.logger.fatal(err));
     }
 
     // send email notification when new password generated
@@ -442,7 +459,7 @@ async function generateAliasPassword(ctx) {
         subject: i18n.translate(
           'ALIAS_PASSWORD_GENERATED_SUBJECT',
           locale,
-          `${alias.name}@${ctx.state.domain.name}`
+          username
         )
       },
       locals: {
@@ -452,7 +469,7 @@ async function generateAliasPassword(ctx) {
           i18n.translate(
             'ALIAS_PASSWORD_GENERATED',
             locale,
-            `${alias.name}@${ctx.state.domain.name}`,
+            username,
             ctx.state.user.email
           ) +
           ' ' +
@@ -469,83 +486,6 @@ async function generateAliasPassword(ctx) {
       .then()
       .catch((err) => ctx.logger.fatal(err));
 
-    // we use shortID to generate shorter querystring for less complicated QR code
-    // (this same logic is in app/controllers/web/index.js)
-    const username = `${alias.name}@${ctx.state.domain.name}`;
-    const appleLink = `${
-      config.urls.web
-    }/c/${username}.mobileconfig?a=${shortID.longToShort(alias.id)}&p=${encrypt(
-      pass
-    )}`;
-    const appleImgSrc = await QRCode.toDataURL(appleLink, {
-      margin: 0,
-      width: 200
-    });
-    /*
-    const k9Link = `${
-      config.urls.web
-    }/c/${username}.k9s?a=${shortID.longToShort(alias.id)}&p=${encrypt(pass)}`;
-    const k9ImgSrc = await QRCode.toDataURL(k9Link, {
-      margin: 0,
-      width: 200
-    });
-    */
-
-    const name = titleize(humanize(alias.name.replace(PUNCTUATION_REGEX, ' ')));
-
-    // <https://gist.github.com/titanism/4a1a2816e0b57a5fa930f449256b75f6>
-    //
-    // 3 = TLS/SSL connection security
-    // if (env.IMAP_PORT === 993 || env.IMAP_PORT === 2993) = 3
-    // if (!env.SMTP_ALLOW_INSECURE_AUTH || config.env === 'production') = 3
-    // otherwise 1 or 2 (probably 2)
-    //
-    // 1 = Password (cleartext) authentication
-    //
-    const imapTLS = env.IMAP_PORT === 993 || env.IMAP_PORT === 2993 ? 3 : 2;
-    const smtpTLS =
-      !env.SMTP_ALLOW_INSECURE_AUTH || config.env === 'production' ? 3 : 2;
-    const thunderbirdQRCode = await QRCode.toDataURL(
-      `[1,[1,1],[0,"${env.IMAP_HOST}",${env.IMAP_PORT},${imapTLS},1,"${username}","${username}","${pass}"],[[[0,"${env.SMTP_HOST}",${env.SMTP_PORT},${smtpTLS},1,"${username}","${pass}"],["${username}","${name}"]]]]`,
-      {
-        margin: 0,
-        width: 200
-      }
-    );
-
-    //
-    // FWD-01-007: HTML-escape user-controlled values before interpolation
-    // into the HTML template. The password can be user-supplied via
-    // ctx.request.body.new_password and username contains the alias name.
-    // Without escaping, these could inject arbitrary HTML/JS into the
-    // SweetAlert2 popup which renders via the `html` property.
-    //
-    const escapeHtml = (str) =>
-      str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#x27;');
-    const safeUsername = escapeHtml(username);
-    const safePass = escapeHtml(pass);
-
-    const html = emailedInstructions
-      ? ctx.translate('ALIAS_PASSWORD_INSTRUCTIONS', emailedInstructions)
-      : ctx.translate(
-          'ALIAS_GENERATED_PASSWORD',
-          safeUsername,
-          safeUsername,
-          safePass,
-          safePass,
-          appleImgSrc,
-          appleLink,
-          `${safeUsername}.mobileconfig`,
-          thunderbirdQRCode
-          // k9Link,
-          // `${username}.k9s`
-        );
-
     if (ctx.api) {
       if (emailedInstructions) {
         ctx.body = sanitizeHtml(
@@ -557,7 +497,10 @@ async function generateAliasPassword(ctx) {
         );
       } else {
         ctx.body = {
-          username: `${alias.name}@${ctx.state.domain.name}`,
+          ...(isRekey
+            ? { message: ctx.translate('ALIAS_REKEY_STARTED', username) }
+            : {}),
+          username,
           password: pass
         };
       }
@@ -565,22 +508,26 @@ async function generateAliasPassword(ctx) {
       return;
     }
 
-    const swal = {
-      title: ctx.request.t('Success'),
-      html,
-      type: 'success',
-      ...(emailedInstructions
-        ? {}
-        : {
-            timer: ms('10m'),
-            position: 'top',
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-            focusConfirm: false,
-            confirmButtonText: ctx.translate('CLOSE_POPUP'),
-            grow: 'row'
-          })
-    };
+    const swal = emailedInstructions
+      ? {
+          title: ctx.request.t('Success'),
+          html:
+            (isRekey
+              ? `<p class="alert alert-warning">${ctx.translate(
+                  'ALIAS_REKEY_STARTED',
+                  username
+                )}</p>`
+              : '') +
+            ctx.translate('ALIAS_PASSWORD_INSTRUCTIONS', emailedInstructions),
+          type: 'success'
+        }
+      : await getAliasPasswordSwal(ctx, {
+          aliasId: alias.id,
+          aliasName: alias.name,
+          domainName: ctx.state.domain.name,
+          password: pass,
+          isRekey
+        });
     ctx.flash('custom', swal);
     if (ctx.accepts('html')) {
       ctx.redirect(redirectTo);

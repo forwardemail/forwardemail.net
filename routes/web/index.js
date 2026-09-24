@@ -691,7 +691,14 @@ localeRouter
     web.auth.forgotPassword
   )
   .get(
-    // Use (.*) for encrypted_password to capture forward slashes
+    // one-time alias password link (see helpers/alias-password-link.js)
+    '/ap/:token',
+    rateLimit(20, 'regenerate alias password'),
+    web.regenerateAliasPassword
+  )
+  .get(
+    // previous link format (it carried the encrypted password in the URL);
+    // no longer accepted, always answers "link expired or invalid"
     '/ap/:domain_id/:alias_id/(.*)',
     rateLimit(20, 'regenerate alias password'),
     web.regenerateAliasPassword

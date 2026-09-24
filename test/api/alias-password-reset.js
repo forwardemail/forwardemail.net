@@ -411,6 +411,11 @@ test('a password change with the current password starts a rekey with a usable r
     phrases.ALIAS_REKEY_STARTED.replace('%s', `test@${ctx.domain.name}`)
   );
 
+  // the (generated) new password is returned, it is never emailed
+  t.is(res.body.username, `test@${ctx.domain.name}`);
+  t.true(typeof res.body.password === 'string' && res.body.password.length > 0);
+  t.not(res.body.password, first.body.password);
+
   // the rotation is in progress: queued for the worker, auth refused
   const alias = await getRotationState(aliasId);
   t.true(alias.is_rekey);
