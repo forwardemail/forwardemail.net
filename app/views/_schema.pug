@@ -72,8 +72,10 @@ if ctx.pathWithoutLocale === '/'
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": "https://forwardemail.net/#website",
       "name": "Forward Email",
       "url": "https://forwardemail.net",
+      "publisher": { "@id": "https://forwardemail.net/#organization" },
       "potentialAction": {
         "@type": "SearchAction",
         "target": {
@@ -86,7 +88,7 @@ if ctx.pathWithoutLocale === '/'
 
 //- BreadcrumbList Schema for non-homepage pages
 if ctx.pathWithoutLocale && ctx.pathWithoutLocale !== '/'
-  - var breadcrumbName = meta && meta.title ? meta.title.split(" - ")[0] : "Page";
+  - var schemaBreadcrumbName = meta && meta.title ? meta.title.split(" - ")[0] : "Page";
   script(type="application/ld+json", nonce=nonce).
     {
       "@context": "https://schema.org",
@@ -101,7 +103,7 @@ if ctx.pathWithoutLocale && ctx.pathWithoutLocale !== '/'
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "#{breadcrumbName}",
+          "name": "#{schemaBreadcrumbName}",
           "item": "https://forwardemail.net/#{ctx.locale}#{ctx.pathWithoutLocale}"
         }
       ]

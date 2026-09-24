@@ -59,7 +59,10 @@ html.h-100.no-js(
             crossorigin="anonymous"
           )
         else
-          if appCss
+          //- Inline on the first page view, then the cached revisioned file
+          //- once the load-time script below has put it in the HTTP cache
+          //- (appCssCached, see config/web.js).
+          if appCss && !appCssCached
             style(nonce=nonce, data-critical="true")!= appCss
           else
             link(
@@ -192,6 +195,30 @@ html.h-100.no-js(
               id: "#{ctx.sessionId}",
             };
 
+      //- The stylesheet was inlined on this view: after load, when the network
+      //- is idle, pull app.<rev>.css into the HTTP cache (same URL, CORS mode
+      //- and integrity as the <link> in <head>) and record the revision so the
+      //- next page view links to it instead of inlining ~250KB again.
+      if !isBotUa && appCss && !appCssCached && appCssRev && config.env !== 'test' && !isPDF
+        script(nonce=nonce).
+          (function () {
+            if (!window.fetch) return;
+            function warm() {
+              fetch(!{json(manifest("css/app.css"))}, {
+                credentials: "same-origin",
+                integrity: !{json(manifest("css/app.css", "integrity"))}
+              }).then(function (res) {
+                if (!res.ok) return;
+                document.cookie = !{json(appCssCookie + "=" + appCssRev)} + "; path=/; max-age=31536000; samesite=lax" + (location.protocol === "https:" ? "; secure" : "");
+              }).catch(function () {});
+            }
+            function idle() {
+              if (window.requestIdleCallback) window.requestIdleCallback(warm, { timeout: 5000 });
+              else setTimeout(warm, 1000);
+            }
+            if (document.readyState === "complete") idle();
+            else window.addEventListener("load", idle);
+          })();
       if isBotUa
         //- lazyload only support for bots
         +script("js/lazyload.js")
@@ -199,9 +226,48 @@ html.h-100.no-js(
         //- build
         +script("js/build.js", { fetchpriority: "low" })
 
+        //- WebMCP tools for in-browser AI agents (no-op without WebMCP)
+        +script("js/webmcp.js", { fetchpriority: "low", "data-locale": locale, "data-pricing": Object.keys(planPricing).map((k) => `${k}:${Number(planPricing[k])}`).join(",") })
+
         //- cloudflare turnstile (hidden from bots and admins)
         if config.turnstileEnabled && (!user || user.group !== 'admin')
           script(defer, nonce=nonce).
             window.TURNSTILE_RENDER_ERROR = "#{ t('Turnstile render error, please try again or contact us.') }";
             window.TURNSTILE_SITE_KEY = "#{ config.turnstileSiteKey }";
-          script(nonce=nonce, defer, src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback')
+          //- Pages whose form (and widget) is the page itself load Turnstile
+          //- up front. Everywhere else the widget sits in a modal or below the
+          //- fold, so the ~150KB of third-party script (and its main thread
+          //- time) waits for the visitor's first interaction: nobody can open
+          //- a modal or fill a form without one, and the challenge finishes
+          //- while they type.
+          if ["/register", "/login", "/forgot-password", "/reset-password", "/help", "/denylist", config.loginRoute, config.verifyRoute].includes(ctx.pathWithoutLocale)
+            script(nonce=nonce, defer, src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback')
+          else
+            script(nonce=nonce).
+              (function () {
+                var src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback";
+                var events = ["pointerdown", "keydown", "touchstart", "focusin", "scroll"];
+                var opts = { passive: true, capture: true };
+                var loaded = false;
+                function load() {
+                  if (loaded) return;
+                  loaded = true;
+                  events.forEach(function (e) { window.removeEventListener(e, load, opts); });
+                  var s = document.createElement("script");
+                  s.src = src;
+                  s.async = true;
+                  s.nonce = !{json(nonce)};
+                  document.head.appendChild(s);
+                }
+                function arm() {
+                  // a widget already in view (not in a closed modal) loads now
+                  var inView = Array.prototype.some.call(document.querySelectorAll(".cf-explicit-turnstile"), function (el) {
+                    return !el.closest(".modal") && window.innerHeight > el.getBoundingClientRect().top;
+                  });
+                  if (inView) return load();
+                  events.forEach(function (e) { window.addEventListener(e, load, opts); });
+                }
+                // after DOMContentLoaded so build.js has defined onloadTurnstileCallback
+                if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arm);
+                else arm();
+              })();

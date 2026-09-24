@@ -101,6 +101,65 @@
     url('/fonts/nunito-sans-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
+// Metric-matched fallbacks for Nunito Sans.
+// Text first paints in a local font while Nunito Sans downloads
+// (font-display: swap). Unadjusted, the swap changes the text box: Nunito's
+// ascent + descent is 1.364em against Arial's 1.117em, so every line's box
+// grows about 20%. That shifts layout (CLS), and because the hero h1 got
+// bigger, Chrome logged a second, later LCP entry at font arrival instead of
+// keeping the first paint as LCP.
+// These faces point at local fonts and rescale them so the swap is
+// near-invisible. Values come from the font files (hhea/OS2 metrics and
+// advance widths over a sample of the site's copy):
+//   size-adjust     = Nunito advance width / fallback advance width
+//   ascent-override = Nunito ascent / size-adjust (descent likewise)
+// Arial (Windows, macOS, iOS; Liberation Sans/Arimo on Linux share its
+// metrics) and Roboto (Android) are separate families because their widths
+// differ; a family whose local() font is missing is skipped by the browser.
+@font-face {
+  font-family: 'Nunito Sans Fallback Arial';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('LiberationSans'), local('Arimo');
+  size-adjust: 100.81%;
+  ascent-override: 100.28%;
+  descent-override: 35.01%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Nunito Sans Fallback Arial';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold');
+  size-adjust: 97.47%;
+  ascent-override: 103.72%;
+  descent-override: 36.22%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Nunito Sans Fallback Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), local('Roboto Regular');
+  size-adjust: 101.34%;
+  ascent-override: 99.76%;
+  descent-override: 34.83%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Nunito Sans Fallback Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Roboto Bold'), local('Roboto-Bold');
+  size-adjust: 102.92%;
+  ascent-override: 98.23%;
+  descent-override: 34.30%;
+  line-gap-override: 0%;
+}
+
 // ubuntu-regular-400
 @font-face {
   font-family: 'Ubuntu';

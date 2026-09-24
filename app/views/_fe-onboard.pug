@@ -22,9 +22,13 @@ mixin feOnboard(header, text, action, keepReading)
         h2#fe-onboard-title.fe-display-sm.fe-onboard__title!= header
         if text
           p.fe-text.fe-onboard__text!= text
+        //- WebMCP declarative tool. No toolautosubmit: submitting starts
+        //- sign up, so the visitor reviews and submits it themselves.
         form.ajax-form.fe-onboard__form(
           action=action || ctx.path,
-          method="POST"
+          method="POST",
+          toolname="start_email_forwarding_setup",
+          tooldescription="Start setting up free email forwarding for a custom domain on Forward Email: enter the domain to receive mail for and the existing inbox to forward it to. The visitor submits the form to continue sign up."
         )
           .fe-field
             label.fe-field__label.fe-label(for="input-onboard-domain")
@@ -33,6 +37,7 @@ mixin feOnboard(header, text, action, keepReading)
             input#input-onboard-domain.fe-field__input(
               type="text",
               name="domain",
+              toolparamdescription="The custom domain name to receive email for, without protocol or path (e.g. example.com).",
               value=domainName ? domainName : (domain && domain.name) || "",
               required,
               placeholder="example.com"
@@ -45,6 +50,7 @@ mixin feOnboard(header, text, action, keepReading)
               type="email",
               autocomplete="email",
               name="email",
+              toolparamdescription="The visitor's existing email address that mail to the custom domain should be forwarded to (e.g. name@gmail.com).",
               value=email,
               placeholder="name@gmail.com",
               required

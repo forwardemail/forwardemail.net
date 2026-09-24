@@ -19,14 +19,24 @@ Forward Email provides email forwarding, IMAP/POP3 hosting, SMTP sending, newsle
 - [FAQ](https://forwardemail.net/en/faq): Frequently asked questions and troubleshooting
 - [Developer Docs](https://forwardemail.net/en/blog/docs): Comprehensive developer documentation
 - [Email API](https://forwardemail.net/en/email-api): RESTful API reference and examples
-- [OpenAPI Spec](https://forwardemail.net/en/api-spec.json): Machine-readable API specification
+- [OpenAPI Spec](https://forwardemail.net/api-spec.json): Machine-readable API specification
 - [MCP Server](https://forwardemail.net/en/blog/docs/mcp): Model Context Protocol server for AI integration
+
+## For AI Agents
+
+- [MCP Server](https://forwardemail.net/en/blog/docs/mcp): Install with `npx @forwardemail/mcp-server` (stdio) and set `FORWARD_EMAIL_API_KEY`
+- [MCP Server Card](https://forwardemail.net/.well-known/mcp/server-card.json): Machine-readable MCP server metadata
+- [AI Catalog](https://forwardemail.net/.well-known/ai-catalog.json): Index of MCP server, OpenAPI spec, and LLM context files
+- [API Catalog](https://forwardemail.net/.well-known/api-catalog): RFC 9727 API discovery document
+- [OpenAPI Spec](https://forwardemail.net/api-spec.json): Every REST endpoint with request and response schemas
+- [IP Addresses](https://forwardemail.net/ips.json): Outbound mail server IPs and hostnames (JSON)
+- WebMCP: pages on forwardemail.net register in-browser tools (site search, IP lookup, plan pricing, service overview) for agents in browsers that support WebMCP
 
 ## Guides
 
 - [Quick Start](https://forwardemail.net/en/faq#how-do-i-get-started-and-set-up-email-forwarding): Setup email forwarding in 2 minutes
 - [DNS Setup Guides](https://forwardemail.net/en/guides): Step-by-step guides for 100+ DNS providers
-- [Self-Hosting](https://forwardemail.net/en/blog/docs/self-hosted-email): Run your own Forward Email instance
+- [Self-Hosting](https://forwardemail.net/en/blog/docs/self-hosted-solution): Run your own Forward Email instance
 
 ## Product
 

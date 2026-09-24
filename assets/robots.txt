@@ -1,5 +1,9 @@
 # We're an open book. Crawl away.
+#
+# Content signals (https://contentsignals.org): our content may be used for
+# search indexing, as input to AI answers, and for AI training.
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Disallow:
 Crawl-delay: 1
 
@@ -72,5 +76,38 @@ Disallow:
 
 User-agent: AI2Bot
 Disallow:
+
+User-agent: OAI-SearchBot
+Disallow:
+
+User-agent: Claude-SearchBot
+Disallow:
+
+User-agent: Claude-User
+Disallow:
+
+User-agent: Perplexity-User
+Disallow:
+
+User-agent: MistralAI-User
+Disallow:
+
+User-agent: DuckAssistBot
+Disallow:
+
+User-agent: PhindBot
+Disallow:
+
+User-agent: Kagibot
+Disallow:
+
+User-agent: cohere-training-data-crawler
+Disallow:
+
+# AI agent discovery:
+# https://forwardemail.net/llms.txt
+# https://forwardemail.net/.well-known/ai-catalog.json
+# https://forwardemail.net/.well-known/api-catalog
+# https://forwardemail.net/.well-known/mcp/server-card.json
 
 Sitemap: https://forwardemail.net/sitemap.xml

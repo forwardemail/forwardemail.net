@@ -68,7 +68,14 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                 h2.h3.text-center!= onboardHeader
               if onboardText && !isInsideModal
                 p.text-center.mb-0.text-muted.small!= onboardText
-              form.ajax-form.pt-3.mb-3(action=onboardFormAction, method="POST")
+              //- WebMCP declarative tool (same as _fe-onboard.pug). No
+              //- toolautosubmit: the visitor submits to continue sign up.
+              form.ajax-form.pt-3.mb-3(
+                action=onboardFormAction,
+                method="POST",
+                toolname="start_email_forwarding_setup",
+                tooldescription="Start setting up free email forwarding for a custom domain on Forward Email: enter the domain to receive mail for and the existing inbox to forward it to. The visitor submits the form to continue sign up."
+              )
                 .form-row
                   div(class=isInsideModal ? "col-12" : "col-12 col-md-6 offset-md-3")
                     .form-group.floating-label.position-relative
@@ -79,6 +86,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                       input#input-onboard-domain.form-control.form-control-lg(
                         type="text",
                         name="domain",
+                        toolparamdescription="The custom domain name to receive email for, without protocol or path (e.g. example.com).",
                         value=domainName ? domainName : (domain && domain.name) || "",
                         required,
                         placeholder="example.com"
@@ -93,6 +101,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                         type="email",
                         autocomplete="email",
                         name="email",
+                        toolparamdescription="The visitor's existing email address that mail to the custom domain should be forwarded to (e.g. name@gmail.com).",
                         value=email,
                         placeholder="name@gmail.com",
                         required

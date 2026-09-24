@@ -135,6 +135,11 @@ router
   .get('/ips/v6.txt', web.ips)
   .get('/ips/v4.json', web.ips)
   .get('/ips/v6.json', web.ips)
+  // AI agent and API discovery documents
+  // (AI Catalog 1.0, RFC 9727 API catalog, MCP server card)
+  .get('/.well-known/ai-catalog.json', web.aiDiscovery.aiCatalog)
+  .get('/.well-known/api-catalog', web.aiDiscovery.apiCatalog)
+  .get('/.well-known/mcp/server-card.json', web.aiDiscovery.mcpServerCard)
   // sitemap
   .get('/sitemap.xml', web.sitemap)
   // feed

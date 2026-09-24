@@ -549,7 +549,9 @@ window.addEventListener(
       const $modal = $(this);
       const $lazyframe = $modal.find('.lazyframe:first');
       if ($lazyframe.length === 0) return;
-      lazyframe('.lazyframe', {
+      // Only this modal's frame: frames in other (closed) modals would each
+      // fire a noembed.com request for a title and thumbnail nobody sees.
+      lazyframe($lazyframe.get(0), {
         autoplay: true,
         initinview: false,
         onAppend(iframe) {
@@ -578,17 +580,26 @@ window.addEventListener(
     // lazyload iframes
     // <https://github.com/vb/lazyframe>
     //
-    lazyframe('.lazyframe', {
-      autoplay: true,
-      initinview: false,
-      onAppend(iframe) {
-        if (iframe)
-          iframe.setAttribute(
-            'referrerpolicy',
-            'strict-origin-when-cross-origin'
-          );
-      }
-    });
+    // Frames inside modals are set up when their modal opens (see the
+    // shown.bs.modal handler above). Initializing them here fired a
+    // noembed.com request per hidden video on every page load (four on the
+    // home page), competing with the page's own requests on mobile.
+    const pageLazyframes = Array.prototype.filter.call(
+      document.querySelectorAll('.lazyframe'),
+      (el) => !el.closest('.modal')
+    );
+    if (pageLazyframes.length > 0)
+      lazyframe(pageLazyframes, {
+        autoplay: true,
+        initinview: false,
+        onAppend(iframe) {
+          if (iframe)
+            iframe.setAttribute(
+              'referrerpolicy',
+              'strict-origin-when-cross-origin'
+            );
+        }
+      });
 
     //
     // TODO: replace this with loading lazy attribute

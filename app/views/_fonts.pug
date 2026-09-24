@@ -1,12 +1,24 @@
-//- preload fonts
+//- Preload only the fonts that paint above the fold.
+//-
+//- Every preload is fetched at high priority and competes with the document
+//- and with the font the LCP text is waiting for, so the list is kept to what
+//- first paint needs:
+//-
+//- - Nunito Sans 400/700 is the body and fe display face. The hero h1 (the
+//-   mobile LCP element) is Nunito Sans 700, and it re-renders when the font
+//-   arrives, so the font is on the LCP critical path.
+//- - Font Awesome (about 155KB for solid + brands) is an icon font: icons are
+//-   not LCP candidates, and since the stylesheet is inlined the browser
+//-   discovers these as soon as an icon is laid out anyway.
+//-
+//- Bots get no preloads (their stylesheet is the lean app-bot.css).
+//-
 //- https://caniuse.com/link-rel-preload
-//- integrity attribute not currently supported
-//- <https://crbug.com/981419>
-//-.
-- const fonts = ["fa-solid-900.woff2", "fa-brands-400.woff2"];
+//- integrity attribute not currently supported <https://crbug.com/981419>
+- const fonts = [];
 if !isBot(ctx.get('User-Agent'))
-  - fonts.push("nunito-sans-latin-400.woff2");
   - fonts.push("nunito-sans-latin-700.woff2");
+  - fonts.push("nunito-sans-latin-400.woff2");
 each font in fonts
   link(
     rel="preload",

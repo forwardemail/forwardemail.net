@@ -42,6 +42,7 @@ const domainConnect = require('./domain-connect');
 const domainSuggestions = require('./domain-suggestions');
 const search = require('./search');
 const ips = require('./ips');
+const aiDiscovery = require('./ai-discovery');
 const mobileConfig = require('./mobile-config');
 const feed = require('./feed');
 const calendar = require('./calendar');
@@ -682,6 +683,7 @@ async function regenerateAliasPassword(ctx) {
 }
 
 module.exports = {
+  aiDiscovery,
   autoconfig,
   autodiscover,
   domainAvailability,

@@ -46,7 +46,7 @@ Forward Email is trusted by Netflix Games, Disney, The Linux Foundation, Ubuntu,
 
 ## API Reference
 
-The Forward Email API is RESTful and uses HTTP Basic authentication. Base URL: https://api.forwardemail.net. Full documentation: https://forwardemail.net/en/email-api. OpenAPI spec: https://forwardemail.net/en/api-spec.json.
+The Forward Email API is RESTful and uses HTTP Basic authentication. Base URL: https://api.forwardemail.net. Full documentation: https://forwardemail.net/en/email-api. OpenAPI spec: https://forwardemail.net/api-spec.json.
 
 Key endpoints:
 - `GET /v1/domains` — List domains

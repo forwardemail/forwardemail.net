@@ -31,9 +31,19 @@ const _ = require('./lodash');
 const isCodeBug = require('./is-code-bug');
 const isErrorConstructorName = require('./is-error-constructor-name');
 const isMongoError = require('./is-mongo-error');
-const isSSLError = require('./is-ssl-error');
-const isSocketError = require('./is-socket-error');
-const isTLSError = require('./is-tls-error');
+const isSSLErrorModule = require('./is-ssl-error');
+const isSocketErrorModule = require('./is-socket-error');
+const isTLSErrorModule = require('./is-tls-error');
+
+// These three are stubbed out of the browser bundle (package.json "browser"
+// field maps them to false, so require() returns an empty object there), and
+// this logger is bundled into client JS via assets/js/logger.js. Calling them
+// unguarded threw "isSocketError is not a function" from the logger itself
+// whenever a client-side error was logged, masking the original error.
+const orFalse = (fn) => (typeof fn === 'function' ? fn : () => false);
+const isSSLError = orFalse(isSSLErrorModule);
+const isSocketError = orFalse(isSocketErrorModule);
+const isTLSError = orFalse(isTLSErrorModule);
 
 const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');

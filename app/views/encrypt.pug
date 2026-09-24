@@ -8,11 +8,18 @@ block body
         .col-sm-12.col-md-10.offset-md-1.col-lg-8.offset-lg-2
           .alert.alert-primary.text-center.mb-4.small
             != t("Enter your plaintext TXT record below to encrypt it &ndash; which will effectively hide and mask your forwarding configuration from being publicly searchable.")
-          form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
+          //- WebMCP declarative tool; the visitor confirms before it runs.
+          form.ajax-form.confirm-prompt(
+            action=ctx.path,
+            method="POST",
+            toolname="encrypt_forwarding_txt_record",
+            tooldescription="Encrypt a Forward Email DNS TXT record (for example forward-email=user@gmail.com) so the forwarding destination is not publicly readable in DNS. Returns the encrypted value to publish as the TXT record."
+          )
             .form-group
               label(for="input-txt")= t("Plaintext TXT Record")
               textarea#input-txt.form-control(
                 name="input",
+                toolparamdescription="The plaintext TXT record value, e.g. forward-email=user@gmail.com or forward-email-site-verification=... (max 1000 characters).",
                 required,
                 rows=3,
                 maxlength=1000,

@@ -83,6 +83,35 @@ if (isSANB(env.GPG_SECURITY_KEY) && isSANB(env.GPG_SECURITY_PASSPHRASE)) {
 let appCss;
 let botCss;
 
+//
+// The stylesheet is inlined on a visitor's first page view (no extra round
+// trip before first paint on a cold connection), and after the page loads a
+// small script fetches the revisioned app.<hash>.css into the HTTP cache and
+// sets the `fe_css` cookie to that revision. Later page views from that
+// browser get a <link> to the cached file instead of ~250KB of inline CSS in
+// every HTML response (~40KB compressed that could never be cached).
+//
+// A stale or missing cookie simply means inlining again, and a cookie whose
+// cache entry was evicted costs one normal render-blocking stylesheet fetch.
+//
+const APP_CSS_COOKIE = 'fe_css';
+let appCssRev;
+
+function readAppCssRev() {
+  try {
+    const revManifest = JSON.parse(fs.readFileSync(config.manifest, 'utf8'));
+    const file = revManifest['css/app.css'];
+    const match =
+      typeof file === 'string' && file.match(/app\.([\da-f]{8,})\.css$/);
+    appCssRev = match ? match[1] : undefined;
+  } catch (err) {
+    appCssRev = undefined;
+    logger.error(err);
+  }
+}
+
+readAppCssRev();
+
 try {
   appCss = fs.readFileSync(
     path.join(config.buildDir, 'css', 'app.css'),
@@ -119,8 +148,13 @@ if (config.env === 'development') {
         setTimeout(() => {
           try {
             const css = fs.readFileSync(path.join(cssDir, filename), 'utf8');
-            if (filename === 'app.css') appCss = css;
-            else botCss = css;
+            if (filename === 'app.css') {
+              appCss = css;
+              readAppCssRev();
+            } else {
+              botCss = css;
+            }
+
             logger.info(`reloaded css/${filename}`);
           } catch (err) {
             logger.error(err);
@@ -468,6 +502,53 @@ module.exports = (redis) => ({
       }
     });
     //
+    // Browser cache policy for static build assets.
+    //
+    // koa-better-static always writes `Cache-Control: max-age=<maxage>` and
+    // runs after koa-cache-responses, so any request that missed koa-cash
+    // (cold Redis key, expiry, a new deploy) went out with `max-age=0` and
+    // the browser revalidated or re-downloaded fonts, CSS, JS and images on
+    // every page view. This runs outermost and sets the final header:
+    //
+    // - revisioned files (`app.5d4a813b.css`, `logo-710d76ea36.svg`) never
+    //   change at a given URL, so they are immutable for a year
+    // - fonts are not revisioned but change about never, so a year without
+    //   `immutable` (a hard reload still revalidates)
+    // - unrevisioned discovery files (robots.txt, llms.txt, .well-known/*)
+    //   get an hour so crawlers and agents see edits the same day
+    //
+    const REVISIONED_ASSET =
+      /[.-][\da-f]{8,10}\.(?:css|js|mjs|map|png|jpe?g|gif|svg|webp|avif|ico|woff2?|ttf|otf|eot|json|pdf|mp4|webm|txt|xml)$/;
+    const DISCOVERY_FILES = new Set([
+      '/robots.txt',
+      '/llms.txt',
+      '/llms-full.txt',
+      '/site.webmanifest',
+      '/browserconfig.xml',
+      '/opensearch.xml'
+    ]);
+    app.use(async (ctx, next) => {
+      await next();
+      if (ctx.method !== 'GET' && ctx.method !== 'HEAD') return;
+      if (ctx.status !== 200 && ctx.status !== 304) return;
+      const { path } = ctx;
+      if (
+        /^\/(?:css|js|img|fonts)\//.test(path) &&
+        REVISIONED_ASSET.test(path)
+      ) {
+        ctx.set('Cache-Control', 'public, max-age=31536000, immutable');
+      } else if (path.startsWith('/fonts/')) {
+        ctx.set('Cache-Control', 'public, max-age=31536000');
+      } else if (
+        DISCOVERY_FILES.has(path) ||
+        (path.startsWith('/.well-known/') &&
+          !path.startsWith('/.well-known/openpgpkey/') &&
+          path !== '/.well-known/security.txt')
+      ) {
+        ctx.set('Cache-Control', 'public, max-age=3600');
+      }
+    });
+    //
     // Chrome DevTools automatic workspace discovery
     // <https://developer.chrome.com/docs/devtools/automatic-workspaces>
     // Chrome sends this request to localhost dev servers; return 204 to
@@ -489,6 +570,32 @@ module.exports = (redis) => ({
     app.use(async (ctx, next) => {
       if (ctx.path.startsWith('/.well-known/openpgpkey'))
         ctx.set('Access-Control-Allow-Origin', '*');
+      return next();
+    });
+    //
+    // AI agent / API discovery documents (app/controllers/web/ai-discovery.js)
+    // are public and read by browser-based agents, so allow any origin. Set
+    // here rather than in the controller because /.well-known/* responses are
+    // served from koa-cash, which does not replay custom headers.
+    //
+    app.use(async (ctx, next) => {
+      if (
+        ctx.path === '/.well-known/ai-catalog.json' ||
+        ctx.path === '/.well-known/api-catalog' ||
+        ctx.path === '/.well-known/mcp/server-card.json' ||
+        ctx.path === '/.well-known/mcp.json' ||
+        ctx.path === '/llms.txt' ||
+        ctx.path === '/llms-full.txt' ||
+        ctx.path === '/api-spec.json'
+      )
+        ctx.set('Access-Control-Allow-Origin', '*');
+      // RFC 9727 section 4: advertise the API catalog (the <head> of every
+      // page also carries <link rel="api-catalog">, see _meta.pug)
+      if (ctx.path === '/.well-known/api-catalog' || ctx.path === '/')
+        ctx.append(
+          'Link',
+          `<${config.urls.web}/.well-known/api-catalog>; rel="api-catalog"`
+        );
       return next();
     });
     // dynamic security.txt with 1 yr expiry
@@ -548,7 +655,13 @@ module.exports = (redis) => ({
     // triggers the error handler, ctx.pathWithoutLocale, ctx.locale and t()
     // are already set and the 500 error page renders correctly instead of
     // falling back to a generic "Internal Server Error" response.
-    app.use(denylistMiddleware(RATELIMIT_ALLOWLIST));
+    // Page views do not wait on cold reverse DNS lookups (mobile TTFB); see
+    // helpers/denylist-request.js
+    app.use(
+      denylistMiddleware(RATELIMIT_ALLOWLIST, {
+        safeMethodBudgetMs: denylistMiddleware.PTR_SAFE_METHOD_BUDGET_MS
+      })
+    );
 
     // Redirect www to non-www
     app.use((ctx, next) => {
@@ -766,9 +879,16 @@ module.exports = (redis) => ({
   hookBeforePassport(app) {
     app.use(async (ctx, next) => {
       if (!ctx.api && ctx.method === 'GET' && ctx.accepts('html')) {
-        // to avoid LCP lighthouse issues
+        // inline on first view, cached <link> once the browser has it
+        // (see APP_CSS_COOKIE above)
         ctx.state.appCss = appCss;
         ctx.state.botCss = botCss;
+        ctx.state.appCssRev = appCssRev;
+        ctx.state.appCssCookie = APP_CSS_COOKIE;
+        ctx.state.appCssCached = Boolean(
+          appCssRev &&
+            ctx.cookies.get(APP_CSS_COOKIE, { signed: false }) === appCssRev
+        );
 
         ctx.state.tti = false;
       }

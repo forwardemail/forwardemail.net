@@ -32,11 +32,18 @@ mixin modalDomainSearch(attributes)
           #domain-search-body
             p.text-muted.small.mb-3
               = t("Search for a domain name or enter a keyword to generate ideas.")
-            form#form-domain-search(novalidate)
+            //- WebMCP declarative tool: fills the domain search; results
+            //- render in this modal (see assets/js/domain-search.js).
+            form#form-domain-search(
+              novalidate,
+              toolname="search_domain_names",
+              tooldescription="Check whether a domain name is available to register, or generate available domain name ideas from a keyword. Results are shown in the domain search dialog."
+            )
               .input-group.mb-3
                 input#domain-search-input.form-control(
                   type="text",
                   name="q",
+                  toolparamdescription="A full domain name to check (e.g. example.com) or a keyword to generate domain ideas from (e.g. my-startup).",
                   placeholder=t("e.g. example.com or my-startup"),
                   required,
                   autocomplete="off",

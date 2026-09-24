@@ -10,7 +10,20 @@ form.d-block.d-md-none(action=l("/search"), method="GET")
     )
     .input-group-append
       button.btn.btn-success.btn-sm(type="submit")= t("Search")
-form.d-none.d-md-block(action=l("/search"), method="GET")
+//- WebMCP declarative tool (https://github.com/webmachinelearning/webmcp):
+//- lets an in-browser agent run a site search. A GET navigation with no side
+//- effects, so it may auto-submit. Only this form carries the tool name (the
+//- small-screen twin above would register a duplicate), and only the first
+//- time the partial renders on a page (/search includes it twice). The flag
+//- lives on ctx rather than in a declared variable because pug inlines every
+//- include into one function, where a repeated declaration fails to compile.
+form.d-none.d-md-block(
+  action=l("/search"),
+  method="GET",
+  toolname=ctx.searchToolDeclared ? false : "search_forward_email_docs",
+  tooldescription=ctx.searchToolDeclared ? false : "Search Forward Email's help center, FAQ, guides and developer docs (DNS setup, SPF/DKIM/DMARC, IMAP/SMTP settings, API, pricing). Opens the results page.",
+  toolautosubmit=!ctx.searchToolDeclared
+)
   .input-group.input-group-lg
     .input-group-prepend
       span.input-group-text
@@ -18,10 +31,13 @@ form.d-none.d-md-block(action=l("/search"), method="GET")
     input#input-search-md.form-control.form-control-lg(
       type="search",
       name="q",
+      aria-label=t("Search"),
+      toolparamdescription=ctx.searchToolDeclared ? false : 'Keywords to search for, letters and numbers only, at most 50 characters (e.g. "DKIM", "custom domain gmail").',
       value=ctx.query.q
     )
     .input-group-append
       button.btn.btn-success.btn-lg(type="submit")= t("Search")
+- ctx.searchToolDeclared = true;
 ul.list-inline.mt-3.text-center.mb-0
   li.list-inline-item.d-block.d-md-inline-block
     strong.small
