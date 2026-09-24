@@ -714,7 +714,7 @@ const config = {
     appleKeyId: env.APPLE_KEY_ID || '',
     appleTeamId: env.APPLE_TEAM_ID || '',
     appleKeyPath: env.APPLE_KEY_PATH || '',
-    apnsProduction: env.APNS_PRODUCTION === 'true',
+    apnsProduction: boolean(env.APNS_PRODUCTION),
     // FCM (Firebase Cloud Messaging)
     fcmProjectId: env.FCM_PROJECT_ID || '',
     fcmServiceAccountPath: env.FCM_SERVICE_ACCOUNT_PATH || '',
