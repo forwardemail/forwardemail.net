@@ -860,41 +860,7 @@ async function getDatabase(
               _instanceRef2,
               _sessionRef2
             );
-            if (
-              isInitialSetup &&
-              config.env !== 'test' &&
-              _sessionRef2.user.alias_has_imap
-            ) {
-              Aliases.findOneAndUpdate(
-                {
-                  id: _sessionRef2.user.alias_id,
-                  welcome_email_sent_at: { $exists: false }
-                },
-                { $set: { welcome_email_sent_at: new Date() } }
-              )
-                .then((result) => {
-                  if (result) {
-                    const aliasAddress = _sessionRef2.user.username;
-                    email({
-                      template: 'welcome-mailbox',
-                      message: { to: aliasAddress },
-                      locals: {
-                        aliasAddress,
-                        locale: _sessionRef2.user.locale || 'en'
-                      }
-                    }).catch((err) =>
-                      logger.warn('Failed to send welcome email', {
-                        error: err.message
-                      })
-                    );
-                  }
-                })
-                .catch((err) =>
-                  logger.warn('Failed to update welcome_email_sent_at', {
-                    error: err.message
-                  })
-                );
-            }
+            if (isInitialSetup) sendWelcomeMessage(_instanceRef2, _sessionRef2);
           } catch (err) {
             logger.fatal(err, { session: _sessionRef2 });
           }
@@ -907,47 +873,7 @@ async function getDatabase(
             session
           );
 
-          // Send welcome email on first-time mailbox setup via email queue
-          // Only send for aliases with IMAP enabled and only once (persisted in MongoDB)
-          // Fire-and-forget: do NOT await MongoDB here — it can take seconds and
-          // blocks the database open path, causing 10-17s folderCheck durations.
-          if (
-            isInitialSetup &&
-            config.env !== 'test' &&
-            session.user.alias_has_imap
-          ) {
-            Aliases.findOneAndUpdate(
-              {
-                id: session.user.alias_id,
-                welcome_email_sent_at: { $exists: false }
-              },
-              { $set: { welcome_email_sent_at: new Date() } }
-            )
-              .then((result) => {
-                if (result) {
-                  const aliasAddress = session.user.username;
-                  email({
-                    template: 'welcome-mailbox',
-                    message: { to: aliasAddress },
-                    locals: {
-                      aliasAddress,
-                      locale: session.user.locale || 'en'
-                    }
-                  }).catch((err) =>
-                    logger.warn('Failed to send welcome email', {
-                      session,
-                      error: err.message
-                    })
-                  );
-                }
-              })
-              .catch((err) =>
-                logger.warn('Failed to update welcome_email_sent_at', {
-                  session,
-                  error: err.message
-                })
-              );
-          }
+          if (isInitialSetup) sendWelcomeMessage(instance, { ...session, db });
         } catch (err) {
           logger.fatal(err, { session, resolver: instance.resolver });
         }
@@ -1956,6 +1882,29 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
         _d
       );
   }
+}
+
+//
+// Write the welcome message into the INBOX of a mailbox that was just set up
+// (only for aliases with IMAP enabled, only once, see
+// helpers/append-welcome-message.js).
+//
+// Fire-and-forget on the next tick: it appends through the same instance
+// (session.db is set, so it does not re-enter the open path) and must NOT
+// block the database open path (MongoDB can take seconds).
+//
+function sendWelcomeMessage(instance, session) {
+  if (config.env === 'test' || !session?.user?.alias_has_imap) return;
+  setImmediate(() => {
+    // lazy-loaded to avoid a require cycle (on-append -> ... -> get-database)
+    const appendWelcomeMessage = require('#helpers/append-welcome-message');
+    appendWelcomeMessage(instance, session).catch((err) =>
+      logger.warn('Failed to append welcome message', {
+        error: err.message,
+        alias_id: session?.user?.alias_id
+      })
+    );
+  });
 }
 
 function retryGetDatabase(...args) {
