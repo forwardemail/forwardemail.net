@@ -26,6 +26,7 @@ const api = require('./api');
 const auth = require('./auth');
 const encryptTxt = require('./encrypt');
 const faq = require('./faq');
+const faqSuggest = require('./faq-suggest');
 const help = require('./help');
 const myAccount = require('./my-account');
 const onboard = require('./onboard');
@@ -623,6 +624,7 @@ module.exports = {
   eventFeed,
   encryptTxt,
   faq,
+  faqSuggest,
   help,
   myAccount,
   onboard,

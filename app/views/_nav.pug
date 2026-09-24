@@ -40,6 +40,14 @@ if !isHelp && user && !isBotUa
                 placeholder=t("Write your message")
               )
               label(for="input-message")= t("Message")
+            //- Filled by assets/js/help-suggest.js with FAQ answers that match
+            //- the message as it is typed. Empty and hidden until then.
+            .help-suggest(
+              hidden,
+              aria-live="polite",
+              data-help-suggest=l("/faq/suggest.json"),
+              data-help-suggest-label=t("These answers from our FAQ may help:")
+            )
             if config.turnstileEnabled
               noscript
                 .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")

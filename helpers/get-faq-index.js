@@ -27,7 +27,10 @@ const {
 // keep serving the old id-stripped HTML for up to 12h — leaving the guide pages
 // blank and deep links broken. Bump this whenever parseFaqIndex's output shape
 // changes so a deploy can't serve stale HTML.
-const CACHE_PREFIX = 'faq_index:v2:';
+//
+// v3: each question carries an `excerpt` (plain-text opening of its answer),
+// which suggestFaq below matches against for the help form's suggestions.
+const CACHE_PREFIX = 'faq_index:v3:';
 
 // The markdown only changes on deploy, so this can be long. It exists to keep
 // the parse off the request path, not to track a moving source.
@@ -168,6 +171,30 @@ function splitHeading(heading) {
   return { text, id: id || slugify(text) };
 }
 
+// How much of each answer suggestFaq gets to match against. The opening of an
+// answer names the thing it is about ("Our servers are located primarily in
+// Denver"); the rest is procedure and tables that would only add noise, and
+// this is carried in the cached index for every question, so it stays short.
+const EXCERPT_LENGTH = 400;
+
+/**
+ * The opening of an answer as plain lowercased text, for matching.
+ *
+ * Works from the sanitized HTML rather than the markdown so that link targets,
+ * `{#anchors}`, emoji shortcodes and table pipes do not count as words.
+ *
+ * @param {string} html
+ * @returns {string}
+ */
+function excerptFromHtml(html) {
+  return sanitizeHtml(html, { allowedTags: [], allowedAttributes: {} })
+    .replace(/&[a-z#\d]+;/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase()
+    .slice(0, EXCERPT_LENGTH);
+}
+
 /**
  * Parse a FAQ markdown file into categories of questions.
  *
@@ -222,6 +249,7 @@ function parseFaqIndex(faqFilePath, locale = 'en') {
     // is only meaningful on the English file. Translators wrote their own
     // punctuation, and Spanish would want an opening mark this could not add.
     const text = isEnglish ? ensureQuestionMark(heading) : heading;
+    const answerHtml = renderMd(answerMd);
     category.questions.push({
       // The bare anchor, not a prefixed one: the translated files cross-link
       // each other with /faq#<id> and the rest of the site links in the same
@@ -231,7 +259,8 @@ function parseFaqIndex(faqFilePath, locale = 'en') {
       // Lowercased once here so the client side filter does not have to
       // lowercase 137 strings on every keystroke.
       search: text.toLowerCase(),
-      answerHtml: renderMd(answerMd)
+      excerpt: excerptFromHtml(answerHtml),
+      answerHtml
     });
   }
 
@@ -369,8 +398,163 @@ function filterFaqIndex(index, query) {
   };
 }
 
+// Words that carry no signal about which answer someone needs. The English
+// function words, plus the handful of nouns that appear in almost every
+// question on this FAQ ("email", "forward") and so would match everything.
+// The FAQ is written in English and the localized files keep the English
+// anchors, so an English list is the right one even for a translated index.
+const STOP_WORDS = new Set(
+  `a about after all also am an and any are as at be because been before being
+  but by can could did do does doing don done down during each few for from
+  further get got had has have having he her here hers him his how i if in into
+  is it its itself just let like me more most my myself no nor not now of off on
+  once only or other our ours ourselves out over own please same she should so
+  some still such than that the their theirs them themselves then there these
+  they this those through to too under until up us very want was we were what
+  when where which while who whom why will with would you your yours yourself
+  yourselves
+  email emails e-mail mail mails forward forwarding forwardemail
+  sub non pre re`
+    .split(/\s+/)
+    .filter(Boolean)
+);
+
+// Bounds on what a single request can make us do. The query is a support
+// message someone is still typing, so it can be long; only its first words are
+// needed to find the answer it is about.
+const MAX_QUERY_LENGTH = 1000;
+const MAX_TOKENS = 24;
+// Two, not three: "eu", "uk", "ip" and "id" are exactly the words a question
+// about data residency or an allowlist turns on, and the function words of
+// that length are all in STOP_WORDS.
+const MIN_TOKEN_LENGTH = 2;
+// Only a word this long loses a trailing "s": "kindergartens" and
+// "subprocessors" should find the singular, but "dns" and "ips" should not
+// become "dn" and "ip".
+const MIN_SINGULARIZE_LENGTH = 5;
+const DEFAULT_LIMIT = 5;
+
+// A hit in the question itself is worth more than one in the answer's opening:
+// the question is a title someone wrote to be found by, the excerpt is prose.
+const QUESTION_HIT = 3;
+const EXCERPT_HIT = 1;
+
+/**
+ * Break a support message into the words worth matching on.
+ *
+ * Lowercased, split on anything that is not a letter or digit, with short
+ * words and stop words dropped, and a trailing plural "s" removed from longer
+ * words so "kindergartens" and "subprocessors" match the singular in a heading.
+ *
+ * @param {string} query
+ * @returns {string[]} unique tokens, in order of first appearance
+ */
+function tokenize(query) {
+  const seen = new Set();
+  const tokens = [];
+  const text = String(query || '')
+    .slice(0, MAX_QUERY_LENGTH)
+    .toLowerCase();
+  // "sub-processor" and "e-mail" are one word each to the person typing
+  // them, and the FAQ writes them closed up. The joined form is matched as
+  // well as the parts, and the parts still count for "eu-only" and
+  // "third-party".
+  const words = text.split(/[^\p{L}\p{N}]+/u);
+  for (const match of text.matchAll(/\p{L}+(?:-\p{L}+)+/gu)) {
+    words.push(match[0].replaceAll('-', ''));
+  }
+
+  for (let word of words) {
+    if (word.length < MIN_TOKEN_LENGTH || STOP_WORDS.has(word)) continue;
+    if (
+      word.length >= MIN_SINGULARIZE_LENGTH &&
+      word.endsWith('s') &&
+      !word.endsWith('ss')
+    )
+      word = word.slice(0, -1);
+    if (seen.has(word)) continue;
+    seen.add(word);
+    tokens.push(word);
+    if (tokens.length >= MAX_TOKENS) break;
+  }
+
+  return tokens;
+}
+
+/**
+ * A matcher for one token: true when some word in the text starts with it.
+ *
+ * Matching at word starts rather than anywhere means "eu" finds "EU" and
+ * "europe" but not "queue", and it is what lets a stem match its inflections
+ * ("log" finds "logs", "forward" finds "forwarding") without a stemmer.
+ *
+ * @param {string} token
+ * @returns {RegExp}
+ */
+function matcherFor(token) {
+  const escaped = token.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&');
+  return new RegExp(`(?:^|[^\\p{L}\\p{N}])${escaped}`, 'u');
+}
+
+/**
+ * The questions most likely to answer a support message.
+ *
+ * This is what sits under the help form as someone types: unlike
+ * filterFaqIndex, which needs every word to appear in the question, a whole
+ * sentence about a problem will rarely contain a heading verbatim. So each
+ * question is scored by how many of the message's meaningful words appear in
+ * it (weighted) or in the opening of its answer, and the best few come back.
+ *
+ * @param {Object} index - the result of getFaqIndex
+ * @param {string} query - what has been typed so far
+ * @param {Object} [options]
+ * @param {number} [options.limit=5]
+ * @returns {Array<{ id: string, question: string, topic: string, score: number }>}
+ */
+function suggestFaq(index, query, options = {}) {
+  const limit =
+    Number.isInteger(options.limit) && options.limit > 0
+      ? options.limit
+      : DEFAULT_LIMIT;
+  const tokens = tokenize(query);
+  if (tokens.length === 0 || !index || !Array.isArray(index.categories))
+    return [];
+
+  const matchers = tokens.map((token) => matcherFor(token));
+  const scored = [];
+  for (const category of index.categories) {
+    for (const q of category.questions) {
+      const search = q.search || '';
+      const excerpt = q.excerpt || '';
+      let score = 0;
+      for (const matcher of matchers) {
+        if (matcher.test(search)) score += QUESTION_HIT;
+        else if (matcher.test(excerpt)) score += EXCERPT_HIT;
+      }
+
+      if (score === 0) continue;
+      scored.push({
+        id: q.id,
+        question: q.question,
+        topic: category.title,
+        score
+      });
+    }
+  }
+
+  // Ties go to the shorter question: "Do you store error logs" over a
+  // heading that merely mentions logs somewhere in a longer title.
+  scored.sort(
+    (a, b) => b.score - a.score || a.question.length - b.question.length
+  );
+
+  return scored.slice(0, limit);
+}
+
 module.exports = getFaqIndex;
 module.exports.filterFaqIndex = filterFaqIndex;
+module.exports.suggestFaq = suggestFaq;
+module.exports.tokenize = tokenize;
 module.exports.getFaqIndex = getFaqIndex;
 module.exports.parseFaqIndex = parseFaqIndex;
 module.exports.faqFilePathForLocale = faqFilePathForLocale;

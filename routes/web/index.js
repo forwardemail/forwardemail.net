@@ -445,6 +445,13 @@ localeRouter
     loadTtiSummary,
     render('pricing')
   )
+  // Answers the help form's "related FAQ answers" list as someone types their
+  // message. Public, like the FAQ itself; the help form that calls it is not.
+  .get(
+    '/faq/suggest.json',
+    rateLimit(2000, 'faq_suggest', ms('1h')),
+    web.faqSuggest
+  )
   .get(
     '/faq',
     // hasSidebar is gone: the page carries its own topic rail, and that flag
