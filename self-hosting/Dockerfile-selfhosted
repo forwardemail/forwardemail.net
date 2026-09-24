@@ -22,8 +22,12 @@ COPY patches ./patches
 RUN pnpm install --frozen-lockfile
 
 COPY . ./
-ENV NODE_ENV=production
-RUN pnpm run build
+
+# The asset build imports config/env in production mode, but the runtime .env is
+# intentionally excluded from the image build context. Supply a non-runtime
+# placeholder only for this build command; deployers must still provide their
+# own API_SECRETS when running the final image.
+RUN API_SECRETS=build-only-api-secret-000000000000 NODE_ENV=production pnpm run build
 
 ## build everything in the first stage and then
 ## leverage .dockerignore and 2nd stage to remove files

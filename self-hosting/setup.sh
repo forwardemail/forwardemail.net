@@ -571,6 +571,9 @@ generate_encryption_keys() {
   srs_secret=$(openssl rand -base64 32 | tr -d /=+ | cut -c -32)
   update_env_file "SRS_SECRET" "$srs_secret"
 
+  api_secret=$(openssl rand -hex 32)
+  update_env_file "API_SECRETS" "$api_secret"
+
   txt_encryption_key=$(openssl rand -hex 16)
   update_env_file "TXT_ENCRYPTION_KEY" "$txt_encryption_key"
 
@@ -580,7 +583,7 @@ generate_encryption_keys() {
   webhook_signature_key=$(openssl rand -hex 16)
   update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
 
-  echo "Helper, DKIM and SRS encryption keys generated."
+  echo "API, helper, DKIM and SRS encryption keys generated."
 }
 
 clone_repo() {
