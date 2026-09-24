@@ -1,85 +1,64 @@
-#tti
-  if tti && ctx.pathWithoutLocale !== '/' || (tti && tti.providers && tti.providers.every(p => p.forwardingMs && p.directMs < 10000))
-    .container.text-center.mb-3
-      .row
-        .col
-          h2.display-4.mt-3.mt-md-5
-            = t("Time to Inbox")
-      .row.mb-5
-        .col-xs-12.col-sm-12.col-md-8.offset-md-2
-          .small.text-muted.mb-3
-            != t('Last updated on <span class="dayjs" data-time="%d">%s</span>', tti.created_at.getTime(), dayjs(tti.created_at).format("M/D/YY h:mm A z"))
-          p.small.mb-0
-            = t("We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.")
-            = " "
-            = t("This monitoring helps us to ensure high-quality IP reputation and email deliverability.")
-            = " "
-            = t("Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.")
-      .row
-        .col
-          h2.text-center= t("Current Delivery Times")
-      .row
-        .col
-          .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch.justify-content-center.flex-grow-1.mt-3
-            each provider, i in tti.providers
-              - let providerClass = "mb-3";
-              if i === tti.providers.length - 1
-                - providerClass = "";
-              .col-12.col-sm-6.col-lg-4(class=providerClass)
-                h3.mb-3= provider.name
-                ul.list-inline.mb-0
-                  li.list-inline-item.mr-3.border.p-3.rounded-lg
-                    - let directClass = "text-success";
+- const isTtiPage = ctx.pathWithoutLocale === "/tti";
+- const ttiData = typeof tti === "undefined" ? null : tti;
+- const ttiHistory = typeof ttiChartData === "undefined" ? null : ttiChartData;
+- const canRenderTti = ttiData && Array.isArray(ttiData.providers) && ttiData.providers.length > 0 && ttiData.providers.every((provider) => provider.directMs > 0 && provider.forwardingMs > 0 && provider.directMs <= 10000 && provider.forwardingMs <= 10000);
+
+if ttiData && (isTtiPage || canRenderTti)
+  section#tti.fe-tti.fe-surface-dark(
+    data-tti-refresh=isTtiPage ? "true" : undefined
+  )
+    .fe-tti__container
+      .fe-tti__summary
+        header.fe-tti__header
+          p.fe-tti__eyebrow.fe-label= t("Time to Inbox")
+          if isTtiPage
+            h1.fe-tti__title= t("Time to Inbox")
+          else
+            h2.fe-tti__title= t("Time to Inbox")
+          p.fe-tti__updated
+            != t('Last updated on <span class="dayjs notranslate" data-time="%d">%s</span>', ttiData.created_at.getTime(), dayjs(ttiData.created_at).format("M/D/YY h:mm A z"))
+          p.fe-tti__intro= t("We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers. This monitoring helps us to ensure high-quality IP reputation and email deliverability. Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.")
+
+        h2.fe-tti__section-title= t("Current Delivery Times")
+        ul.fe-tti__metrics
+          each provider in ttiData.providers
+            li.fe-tti__metric
+              h3.fe-tti__provider= provider.name
+              dl.fe-tti__measurement-list
+                - const directClass = provider.directMs > 10000 ? "fe-tti__measurement--warning" : "";
+                .fe-tti__measurement(class=directClass)
+                  dt= t("Direct")
+                  dd
                     if provider.directMs === 0
-                      - directClass = "text-muted";
-                    else if provider.directMs > 10000
-                      - directClass = "text-warning";
-                    .h4.text-monospace.font-weight-bold(class=directClass)
-                      if provider.directMs === 0
-                        i.fa.fa-spin.fa-spinner.text-muted
-                      else
-                        = prettyMilliseconds(provider.directMs)
-                    .small= t("Direct")
-                  li.list-inline-item.border.p-3.rounded-lg
-                    - let forwardingClass = "text-success";
+                      i.fa.fa-spin.fa-spinner(aria-label=t("Loading"))
+                    else
+                      = prettyMilliseconds(provider.directMs)
+                - const forwardingClass = provider.forwardingMs > 10000 ? "fe-tti__measurement--warning" : "";
+                .fe-tti__measurement(class=forwardingClass)
+                  dt= t("Forwarding")
+                  dd
                     if provider.forwardingMs === 0
-                      - forwardingClass = "text-muted";
-                    else if provider.forwardingMs > 10000
-                      - forwardingClass = "text-warning";
-                    .h4.text-monospace.font-weight-bold(class=forwardingClass)
-                      if provider.forwardingMs === 0
-                        i.fa.fa-spin.fa-spinner.text-muted
-                      else
-                        = prettyMilliseconds(provider.forwardingMs)
-                    .small= t("Forwarding")
+                      i.fa.fa-spin.fa-spinner(aria-label=t("Loading"))
+                    else
+                      = prettyMilliseconds(provider.forwardingMs)
 
-          // Historical TTI Timeline Charts
-          .row
-            .col.mt-5
-              h2.text-center.mb-4= t("Historical Timeline")
-
-              // Chart data embedded for client-side rendering
-              if ttiChartData
-                #chart-data(
-                  data-json=JSON.stringify(ttiChartData),
-                  style="display: none"
-                )
-
-              // Single chart container for all providers
-              .row.justify-content-center
-                .col-lg-12
-                  .card
-                    .card-header
-                      h5.card-title.mb-0.text-center= t("24-Hour Performance by Provider")
-                      p.card-text.small.text-muted.text-center.mb-0
-                        = t("Average delivery times for each email provider")
-                    .card-body
-                      #tti-timeline-chart
-          .alert.alert-success.d-inline-block.mb-0.small.my-5
+      if isTtiPage
+        .fe-tti__history
+          h2.fe-tti__section-title= t("Historical Timeline")
+          if ttiHistory
+            .fe-tti__chart-data(
+              data-json=JSON.stringify(ttiHistory),
+              data-labels=JSON.stringify({ time: t("Time (24 Hours)"), average: t("Average Delivery Time"), unavailable: t("N/A") }),
+              hidden
+            )
+          .fe-tti__chart-card
+            .fe-tti__chart-head
+              h3.fe-tti__chart-title= t("24-Hour Performance by Provider")
+              p.fe-tti__chart-description= t("Average delivery times for each email provider")
+            #tti-timeline-chart.fe-tti__chart(data-tti-chart)
+          p.fe-tti__note
             strong= t("Did you know?")
             = " "
-            != t("We are the only email service with 100% open-source and transparent monitoring.")
+            = t("We are the only email service with 100% open-source and transparent monitoring.")
             = " "
-            != t('Source code is <a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js" target="_blank" rel="noopener noreferrer" class="alert-link">available on GitHub</a>.')
-          // if ctx.pathWithoutLocale === '/tti'
-          //   .markdown-body: img.rounded-lg(src=manifest("img/articles/tti.webp"), alt="")
+            != t('Source code is <a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js" target="_blank" rel="noopener noreferrer">available on GitHub</a>.')

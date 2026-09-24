@@ -5,7 +5,6 @@
 
 const path = require('node:path');
 
-const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const dashify = require('dashify');
@@ -33,7 +32,6 @@ const auth = require('./auth');
 const myAccount = require('./my-account');
 const otp = require('./otp');
 
-const TTI = require('#models/tti');
 const _ = require('#helpers/lodash');
 const config = require('#config');
 const policies = require('#helpers/policies');
@@ -48,6 +46,7 @@ const {
 const { web } = require('#controllers');
 const getAppDownloads = require('#helpers/get-app-downloads');
 const getFaqIndex = require('#helpers/get-faq-index');
+const { getLatestTti, hasHealthyTti } = require('#helpers/get-latest-tti');
 
 const { filterFaqIndex } = getFaqIndex;
 const getFaqSchema = require('#helpers/get-faq-schema');
@@ -62,6 +61,18 @@ const router = new Router();
 
 function hasSidebar(ctx, next) {
   ctx.state.hasSidebar = true;
+  return next();
+}
+
+async function loadTtiSummary(ctx, next) {
+  try {
+    const { tti } = await getLatestTti();
+    ctx.state.tti = hasHealthyTti(tti) ? tti : null;
+  } catch (err) {
+    ctx.logger.error(err);
+    ctx.state.tti = null;
+  }
+
   return next();
 }
 
@@ -292,7 +303,7 @@ localeRouter
   .get('/search', web.search)
   // svg dynamically generated og images
   .get('(.*).(png|svg|jpeg)', web.generateOpenGraphImage)
-  .get('/', web.auth.homeOrDomains)
+  .get('/', loadTtiSummary, web.auth.homeOrDomains)
   .post(
     '/',
     web.myAccount.retrieveDomains,
@@ -302,30 +313,9 @@ localeRouter
   )
 
   .get('/tti', hasSidebar, async (ctx) => {
-    // get TTI stats for footer (v1 rudimentary approach)
-    ctx.state.tti = false;
-    ctx.state.ttiChartData = null;
-
     try {
-      const tti = await Promise.race([
-        TTI.findOne().sort({ created_at: -1 }).lean(),
-        setTimeout(ms('10s'))
-      ]);
-      if (tti) {
-        ctx.state.tti = tti;
-      }
-
-      // Always get historical data for charts when on TTI page
-      if (ctx.pathWithoutLocale === '/tti') {
-        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        const chartData = await TTI.find({
-          created_at: { $gte: twentyFourHoursAgo }
-        })
-          .sort({ created_at: 1 })
-          .lean(); // Sort ascending for chronological order
-
-        ctx.state.ttiChartData = chartData;
-      }
+      ({ tti: ctx.state.tti, ttiChartData: ctx.state.ttiChartData } =
+        await getLatestTti({ includeHistory: true }));
     } catch (err) {
       ctx.logger.error(err);
     }
@@ -336,15 +326,7 @@ localeRouter
       return ctx.render('time-to-inbox');
     }
 
-    const html = pug.renderFile(filePath, {
-      ...ctx.state,
-      ctx: {
-        pathWithoutLocale:
-          ctx.get('Referrer') === `${config.urls.web}/${ctx.locale}`
-            ? '/'
-            : ctx.pathWithoutLocale
-      }
-    });
+    const html = pug.renderFile(filePath, { ...ctx.state, ctx });
 
     ctx.body = html;
   })
@@ -455,6 +437,7 @@ localeRouter
     '/private-business-email',
     web.myAccount.retrieveDomains,
     web.myAccount.sortedDomains,
+    loadTtiSummary,
     render('pricing')
   )
   .get(
@@ -784,6 +767,7 @@ for (const route of Object.keys(useCases)) {
 
       return next();
     },
+    loadTtiSummary,
     render('pricing')
   );
 }

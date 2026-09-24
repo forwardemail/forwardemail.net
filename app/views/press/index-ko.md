@@ -61,7 +61,7 @@ Forward Email은 다양한 산업 분야의 선도 조직들로부터 신뢰받�
 
 * **로고:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (볼드; 700 굵기)
 * **본문:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (일반; 400 굵기)
-* **헤딩:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (볼드; 700 굵기)
+* **헤딩:** Nunito Sans (볼드; 700 굵기)
 * **아이콘:** [Font Awesome 5](https://fontawesome.com/)
 ## 색상 {#colors}
 

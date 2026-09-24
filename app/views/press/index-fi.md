@@ -61,7 +61,7 @@ Forward Emailiin luottavat alan johtavat organisaatiot:
 
 * **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (lihavoitu; 700 paino)
 * **Leipäteksti:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normaali; 400 paino)
-* **Otsikot:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (lihavoitu; 700 paino)
+* **Otsikot:** Nunito Sans (lihavoitu; 700 paino)
 * **Ikonit:** [Font Awesome 5](https://fontawesome.com/)
 ## Värit {#colors}
 

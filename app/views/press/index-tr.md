@@ -61,7 +61,7 @@ Forward Email, sektörler arası önde gelen kuruluşlar tarafından güvenilmek
 
 * **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (kalın; 700 ağırlık)
 * **Metin:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normal; 400 ağırlık)
-* **Başlıklar:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (kalın; 700 ağırlık)
+* **Başlıklar:** Nunito Sans (kalın; 700 ağırlık)
 * **Simgeler:** [Font Awesome 5](https://fontawesome.com/)
 ## Renkler {#colors}
 

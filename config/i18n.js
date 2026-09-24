@@ -33,5 +33,10 @@ module.exports = {
     '/.well-known/**/*'
   ],
   lastLocaleField: 'last_locale',
+  // Catalog changes are source-controlled and reviewed. In particular, never
+  // treat runtime values such as database identifiers as translation phrases.
+  autoReload: false,
+  updateFiles: false,
+  syncFiles: false,
   locales
 };

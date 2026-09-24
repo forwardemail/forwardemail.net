@@ -61,7 +61,7 @@ Forward Email доверяют ведущие организации из раз
 
 * **Логотип:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (жирный; вес 700)
 * **Основной текст:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (обычный; вес 400)
-* **Заголовки:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (жирный; вес 700)
+* **Заголовки:** Nunito Sans (жирный; вес 700)
 * **Иконки:** [Font Awesome 5](https://fontawesome.com/)
 ## Цвета {#colors}
 

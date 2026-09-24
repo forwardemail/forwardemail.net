@@ -61,7 +61,7 @@ Forward Email důvěřují přední organizace napříč odvětvími:
 
 * **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (tučný; váha 700)
 * **Text:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (běžný; váha 400)
-* **Nadpisy:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (tučný; váha 700)
+* **Nadpisy:** Nunito Sans (tučný; váha 700)
 * **Ikony:** [Font Awesome 5](https://fontawesome.com/)
 ## Barvy {#colors}
 

@@ -115,6 +115,10 @@
   box-shadow: var(--fe-elev-inset);
 }
 
+.fe-console__rail-wrap {
+  position: relative;
+}
+
 .fe-console__rail {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -123,6 +127,11 @@
   margin-bottom: var(--fe-space-5);
   background-color: var(--fe-bg-sunken);
   border-radius: var(--fe-radius-lg);
+}
+
+.fe-console__rail-control,
+.fe-console__rail-hint {
+  display: none;
 }
 
 .fe-console__tab {
@@ -654,41 +663,127 @@ html.no-js .fe-console__tab--active {
 
 @include fe-down(md) {
   // The rail becomes a horizontal scroller: six equal columns at this width
-  // would truncate every tab label.
+  // would truncate every tab label. The hint, edge fade, and buttons make the
+  // continuation obvious on devices that hide native overlay scrollbars.
   .fe-console__rail {
     display: flex;
+    gap: var(--fe-space-2);
     overflow-x: auto;
+    padding-inline: 2.75rem;
+    scroll-behavior: smooth;
+    scroll-snap-type: inline proximity;
+    scrollbar-width: none;
+  }
+
+  .fe-console__rail::-webkit-scrollbar {
+    display: none;
   }
 
   .fe-console__tab {
-    flex: none;
+    flex: 0 0 max-content;
+    min-width: 7rem;
+    overflow: visible;
+    scroll-snap-align: center;
+    text-overflow: clip;
+  }
+
+  .fe-console--rail-overflow .fe-console__rail-wrap::after {
+    position: absolute;
+    inset-block: 0 var(--fe-space-5);
+    inset-inline-end: 0;
+    width: 3.25rem;
+    pointer-events: none;
+    content: '';
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--fe-bg-sunken) 80%
+    );
+    border-radius: 0 var(--fe-radius-lg) var(--fe-radius-lg) 0;
+    transition: opacity var(--fe-motion-fast) var(--fe-ease);
+  }
+
+  .fe-console--rail-at-end .fe-console__rail-wrap::after {
+    opacity: 0;
+  }
+
+  [dir='rtl'] .fe-console--rail-overflow .fe-console__rail-wrap::after {
+    inset-inline-end: auto;
+    inset-inline-start: 0;
+    background: linear-gradient(
+      to left,
+      transparent,
+      var(--fe-bg-sunken) 80%
+    );
+    border-radius: var(--fe-radius-lg) 0 0 var(--fe-radius-lg);
+  }
+
+  .fe-console__rail-control {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: calc(100% - var(--fe-space-5) - 8px);
+    padding: 0;
+    color: var(--fe-fg-primary);
+    cursor: pointer;
+    background-color: var(--fe-bg-raised);
+    border: 1px solid var(--fe-border-default);
+    border-radius: var(--fe-radius-md);
+    box-shadow: var(--fe-elev-1);
+  }
+
+  .fe-console__rail-control:disabled {
+    cursor: default;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .fe-console__rail-control--previous {
+    inset-inline-start: 4px;
+  }
+
+  .fe-console__rail-control--next {
+    inset-inline-end: 4px;
+  }
+
+  [dir='rtl'] .fe-console__rail-control i {
+    transform: rotate(180deg);
+  }
+
+  .fe-console__rail-hint {
+    display: block;
+    padding-inline: var(--fe-space-1);
+    margin: var(--fe-space-2) 0 0;
+    font-size: var(--fe-text-label);
+    color: var(--fe-fg-secondary);
+    text-align: center;
   }
 
   .fe-console__cards {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  // Vertical stepper. The rule runs down the start edge of the dots instead
-  // of through their centres.
-  .fe-stepper__step {
-    padding-inline-start: var(--fe-space-6);
-  }
-
-  .fe-stepper__step::before {
+  // Vertical stepper. One parent connector spans grid gaps, rather than one
+  // connector per item that leaves a visible break between numbered steps.
+  .fe-stepper::before {
     position: absolute;
-    inset-block: 0;
+    inset-block: 6px;
     inset-inline-start: 5px;
     width: 1px;
     content: '';
     background-color: var(--fe-border-default);
   }
 
-  .fe-stepper__step:first-child::before {
-    inset-block-start: 12px;
+  .fe-stepper__step {
+    padding-inline-start: var(--fe-space-6);
   }
 
-  .fe-stepper__step:last-child::before {
-    inset-block-end: calc(100% - 12px);
+  .fe-stepper__step::before {
+    content: none;
   }
 
   .fe-stepper__dot-row {

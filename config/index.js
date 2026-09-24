@@ -1033,8 +1033,10 @@ const config = {
     i18n: {
       ...i18n,
       autoReload: false,
-      updateFiles: true,
-      syncFiles: true
+      // Locale catalogs are source-controlled, reviewed data. Runtime strings
+      // must never become translation keys or write into every locale file.
+      updateFiles: false,
+      syncFiles: false
     }
   },
   logger: loggerConfig,

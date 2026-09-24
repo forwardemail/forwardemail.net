@@ -1,0 +1,228 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Time to Inbox is embedded on the landing and pricing pages and also renders
+// as its own page. It owns every visual rule so its typography never inherits
+// a host page's legacy, footer, or Bootstrap heading cascade.
+
+.fe-tti {
+  color: var(--fe-fg-primary);
+  font-family: var(--fe-font-body);
+  background-color: var(--fe-bg-canvas);
+}
+
+.fe-tti__container {
+  width: 100%;
+  max-width: var(--fe-container-max);
+  padding-inline: var(--fe-container-gutter);
+  margin-inline: auto;
+}
+
+.fe-tti__summary {
+  padding-block: var(--fe-section-pad-sm);
+}
+
+.fe-tti__header {
+  max-width: 60rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.fe-tti__eyebrow {
+  margin-block: 0 var(--fe-space-3);
+  color: var(--fe-primary-lift);
+}
+
+.fe-tti__title {
+  margin: 0;
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-display-lg);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-tight);
+  color: var(--fe-fg-primary);
+}
+
+.fe-tti__updated {
+  margin: var(--fe-space-3) 0 0;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-tti__intro {
+  max-width: 66ch;
+  margin: var(--fe-space-5) auto 0;
+  font-size: var(--fe-text-body-md);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-tti__section-title {
+  margin: 0 0 var(--fe-space-5);
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-display-sm);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-tight);
+  color: var(--fe-fg-primary);
+  text-align: center;
+}
+
+.fe-tti__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--fe-grid-gap);
+  max-width: 74rem;
+  padding: 0;
+  margin: 0 auto;
+  list-style: none;
+}
+
+.fe-tti__metric {
+  padding: var(--fe-space-5);
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-lg);
+  box-shadow: var(--fe-elev-1);
+}
+
+.fe-tti__provider {
+  margin: 0 0 var(--fe-space-4);
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-primary);
+}
+
+.fe-tti__measurement-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--fe-space-3);
+  margin: 0;
+}
+
+.fe-tti__measurement {
+  min-width: 0;
+  padding: var(--fe-space-3);
+  background-color: var(--fe-bg-sunken);
+  border: 1px solid var(--fe-border-subtle);
+  border-radius: var(--fe-radius-md);
+}
+
+.fe-tti__measurement dt {
+  margin: 0;
+  font-size: var(--fe-text-label);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-secondary);
+  letter-spacing: var(--fe-tracking-label);
+  text-transform: uppercase;
+}
+
+.fe-tti__measurement dd {
+  margin: var(--fe-space-2) 0 0;
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-display-xs);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-tight);
+  color: var(--fe-state-success);
+  font-variant-numeric: tabular-nums;
+}
+
+.fe-tti__measurement--warning dd {
+  color: var(--fe-caution);
+}
+
+.fe-tti__measurement--pending dd {
+  color: var(--fe-fg-secondary);
+}
+
+.fe-tti__history {
+  margin-top: var(--fe-section-pad-sm);
+  padding-top: var(--fe-section-pad-sm);
+  border-top: 1px solid var(--fe-border-subtle);
+}
+
+.fe-tti__chart-card {
+  max-width: 90rem;
+  padding: var(--fe-space-5);
+  margin-inline: auto;
+  overflow: hidden;
+  background-color: var(--fe-bg-raised);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-lg);
+  box-shadow: var(--fe-elev-1);
+}
+
+.fe-tti__chart-head {
+  margin-bottom: var(--fe-space-5);
+  text-align: center;
+}
+
+.fe-tti__chart-title {
+  margin: 0;
+  font-family: var(--fe-font-display);
+  font-size: var(--fe-text-body-md);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-snug);
+  color: var(--fe-fg-primary);
+}
+
+.fe-tti__chart-description {
+  margin: var(--fe-space-2) 0 0;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-tti__chart {
+  min-height: 28rem;
+}
+
+.fe-tti__note {
+  max-width: 64rem;
+  padding: var(--fe-space-4) var(--fe-space-5);
+  margin: var(--fe-section-pad-sm) auto 0;
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+  background-color: var(--fe-primary-a08);
+  border-inline-start: 3px solid var(--fe-primary);
+  border-radius: var(--fe-radius-sm);
+}
+
+.fe-tti__note strong,
+.fe-tti__note a {
+  color: var(--fe-fg-primary);
+}
+
+.fe-tti__note a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@include fe-down(md) {
+  .fe-tti__summary {
+    padding-block: var(--fe-section-pad-sm);
+  }
+
+  .fe-tti__metric {
+    padding: var(--fe-space-4);
+  }
+
+  .fe-tti__chart-card {
+    padding: var(--fe-space-3);
+    border-inline-width: 0;
+    border-radius: 0;
+  }
+
+  .fe-tti__chart {
+    min-height: 22rem;
+  }
+}
+
+@include fe-down(sm) {
+  .fe-tti__metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

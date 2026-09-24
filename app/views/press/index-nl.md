@@ -61,7 +61,7 @@ Forward Email wordt vertrouwd door toonaangevende organisaties in diverse sector
 
 * **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (vet; gewicht 700)
 * **Tekst:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normaal; gewicht 400)
-* **Koppen:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (vet; gewicht 700)
+* **Koppen:** Nunito Sans (vet; gewicht 700)
 * **Iconen:** [Font Awesome 5](https://fontawesome.com/)
 ## Kleuren {#colors}
 

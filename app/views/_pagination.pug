@@ -56,7 +56,7 @@ mixin paginate(tableSelector)
       )
         strong= t("Results per page:")
         = " "
-        = t(ctx.query.limit.toString())
+        = ctx.query.limit
       .dropdown-menu(aria-labelledby="pagination-menu-link")
         //- my-account/billing = max of 100, min of 25
         //- my-account/logs = max of 100, min of 25
@@ -73,7 +73,7 @@ mixin paginate(tableSelector)
           a.dropdown-item(
             class=ctx.query.limit === limit ? "active" : "",
             href=paginate.href({ page: 1, limit })
-          )= t(limit.toString())
+          )= limit
   //- FIX: Only show itemCount when it accurately reflects rendered results
   //- Hide when hideItemCount flag is set (post-filtering caused mismatch)
   //- Use typeof check to safely handle undefined in other routes that use this mixin

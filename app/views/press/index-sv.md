@@ -61,7 +61,7 @@ Forward Email är betrodd av ledande organisationer inom olika branscher:
 
 * **Logotyp:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (fetstil; vikt 700)
 * **Brödtext:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normal; vikt 400)
-* **Rubriker:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (fetstil; vikt 700)
+* **Rubriker:** Nunito Sans (fetstil; vikt 700)
 * **Ikoner:** [Font Awesome 5](https://fontawesome.com/)
 ## Färger {#colors}
 

@@ -61,7 +61,7 @@ Forward Email được tin tưởng bởi các tổ chức hàng đầu trong nh
 
 * **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (đậm; trọng số 700)
 * **Nội dung:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (thường; trọng số 400)
-* **Tiêu đề:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (đậm; trọng số 700)
+* **Tiêu đề:** Nunito Sans (đậm; trọng số 700)
 * **Biểu tượng:** [Font Awesome 5](https://fontawesome.com/)
 ## Màu sắc {#colors}
 

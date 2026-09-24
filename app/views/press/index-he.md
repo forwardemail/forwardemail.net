@@ -61,7 +61,7 @@ Forward Email מהימן על ידי ארגונים מובילים בתעשיו�
 
 * **לוגו:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (מודגש; משקל 700)
 * **גוף הטקסט:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (רגיל; משקל 400)
-* **כותרות:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (מודגש; משקל 700)
+* **כותרות:** Nunito Sans (מודגש; משקל 700)
 * **אייקונים:** [Font Awesome 5](https://fontawesome.com/)
 ## צבעים {#colors}
 

@@ -61,7 +61,7 @@ A Forward Email vezető szervezetek bizalmát élvezi különböző iparágakban
 
 * **Logó:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (félkövér; 700 súly)
 * **Törzs:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normál; 400 súly)
-* **Címsorok:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (félkövér; 700 súly)
+* **Címsorok:** Nunito Sans (félkövér; 700 súly)
 * **Ikonok:** [Font Awesome 5](https://fontawesome.com/)
 ## Színek {#colors}
 

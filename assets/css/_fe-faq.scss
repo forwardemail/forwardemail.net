@@ -6,6 +6,17 @@
 // Simplified FAQ. Builds on _fe-base.scss and _fe-primitives.scss; only what
 // those do not cover lives here. The page carries no images by design.
 
+// The shared hero and section utilities intentionally carry generous padding.
+// On the FAQ they meet directly, so scope a tighter seam here rather than
+// shrinking every landing-page hero or reading section.
+.fe-faq-hero {
+  padding-block-end: var(--fe-space-5);
+}
+
+.fe-faq-body {
+  padding-block-start: var(--fe-space-5);
+}
+
 .fe-faq-hero__inner {
   max-width: 44rem;
   text-align: center;
@@ -419,7 +430,19 @@
 // BREAKPOINTS
 // ============================================
 
-@include fe-up(lg) {
+@include fe-down(md) {
+  .fe-faq-hero {
+    padding-block-end: var(--fe-space-4);
+  }
+
+  .fe-faq-body {
+    padding-block-start: var(--fe-space-4);
+  }
+}
+
+@include fe-up(md) {
+  // The topic rail belongs beside the answers on tablets and larger screens.
+  // On phones it remains above them in normal reading order.
   .fe-faq-layout {
     grid-template-columns: 15rem minmax(0, 1fr);
     gap: 4rem;

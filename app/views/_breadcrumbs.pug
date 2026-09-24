@@ -1,3 +1,8 @@
+- const isObjectIdLike = (value) => typeof value === "string" && /^[a-f\d]{24}$/i.test(value);
+- const breadcrumbValue = (value) => (_.isObject(value) ? value.name : value);
+- const breadcrumbName = (value) => (isObjectIdLike(breadcrumbValue(value)) ? titleize(humanize(breadcrumbValue(value))) : t(titleize(humanize(breadcrumbValue(value)))));
+- const breadcrumbHeader = (value) => (_.isObject(value) && value.header ? value.header : breadcrumbName(value));
+
 if breadcrumbs.length > 1
   nav.d-none.d-md-block(aria-label="breadcrumb")
     ol.breadcrumb.justify-content-center.justify-content-md-start.mb-3.py-1.small
@@ -8,21 +13,21 @@ if breadcrumbs.length > 1
               a.text-themed(
                 href=_.isObject(breadcrumb) ? breadcrumb.href : `/${breadcrumbs.slice(0, i + 1).join("/")}/`
               )
-                = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
+                = breadcrumbName(breadcrumb)
             else
-              = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
+              = breadcrumbName(breadcrumb)
         else
           li.breadcrumb-item
             a.text-themed(
               href=_.isObject(breadcrumb) ? breadcrumb.href : `/${breadcrumbs.slice(0, i + 1).join("/")}/`
             )
-              = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
+              = breadcrumbName(breadcrumb)
   .text-center.text-md-left.d-md-flex.my-3
     h1.mb-0(class=breadcrumbHeaderCentered ? "flex-grow-1 text-center" : "")
       if breadcrumbs.length > 0
-        = _.isObject(breadcrumbs[breadcrumbs.length - 1]) ? breadcrumbs[breadcrumbs.length - 1].header || breadcrumbs[breadcrumbs.length - 1].name : t(titleize(humanize(breadcrumbs[breadcrumbs.length - 1])))
+        = breadcrumbHeader(breadcrumbs[breadcrumbs.length - 1])
       else
-        = _.isObject(breadcrumbs[0]) ? breadcrumbs[0].header || breadcrumbs[0].name : t(titleize(humanize(breadcrumbs[0])))
+        = breadcrumbHeader(breadcrumbs[0])
     if !breadcrumbHeaderCentered
       .flex-grow-1.ml-md-5.d-md-flex.align-items-center.justify-content-md-end.justify-content-center.mt-3.mt-md-0
         if domain && ((domain.has_mx_record && domain.has_txt_record) || domain.plan !== 'free') && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${punycode.toASCII(domain.name)}`)

@@ -1004,7 +1004,7 @@ window.addEventListener(
       return color;
     }
 
-    function createTTIChartOptions(data) {
+    function createTTIChartOptions(data, labels) {
       // Create series for each provider (averaged direct + forwarding)
       const providerData = new Map();
 
@@ -1105,7 +1105,7 @@ window.addEventListener(
             }
           },
           title: {
-            text: 'Time (24 Hours)',
+            text: labels.time,
             style: {
               fontSize: '13px',
               fontWeight: 600
@@ -1117,7 +1117,7 @@ window.addEventListener(
         },
         yaxis: {
           title: {
-            text: 'Average Delivery Time',
+            text: labels.average,
             style: {
               fontSize: '13px',
               fontWeight: 600
@@ -1125,7 +1125,7 @@ window.addEventListener(
           },
           labels: {
             formatter(value) {
-              if (value === 0) return 'N/A';
+              if (value === 0) return labels.unavailable;
               if (value >= 1000) return (value / 1000).toFixed(1) + 's';
               return Math.round(value) + 'ms';
             },
@@ -1140,7 +1140,7 @@ window.addEventListener(
           },
           y: {
             formatter(value) {
-              if (value === 0) return 'N/A';
+              if (value === 0) return labels.unavailable;
               if (value >= 1000) return (value / 1000).toFixed(2) + 's';
               return Math.round(value) + 'ms';
             }
@@ -1190,15 +1190,20 @@ window.addEventListener(
       };
     }
 
-    function initializeTTIChart() {
-      const $chartElement = $('#tti-timeline-chart');
-      const $chartData = $('#chart-data');
+    function initializeTTIChart($tti) {
+      const $chartElement = $tti.find('[data-tti-chart]');
+      const $chartData = $tti.find('.fe-tti__chart-data');
 
       if ($chartElement.length > 0 && $chartData.length > 0) {
         try {
           const chartData = $chartData.data('json');
+          const labels = $chartData.data('labels') || {};
           if (chartData && chartData.length > 0) {
-            const chartOptions = createTTIChartOptions(chartData);
+            const chartOptions = createTTIChartOptions(chartData, {
+              time: labels.time || 'Time (24 Hours)',
+              average: labels.average || 'Average Delivery Time',
+              unavailable: labels.unavailable || 'N/A'
+            });
 
             // Destroy previous chart instance to prevent memory leak
             if (ttiChart) {
@@ -1221,12 +1226,12 @@ window.addEventListener(
       }
     }
 
-    // Only start TTI polling and chart handling on pages that have the #tti element
-    if ($('#tti').length > 0) {
+    // Only the full dashboard refreshes. Summary embeds are server-rendered.
+    if ($('#tti[data-tti-refresh="true"]').length > 0) {
       let ttiIntervalId;
 
       const tti = async () => {
-        const $tti = $('#tti');
+        const $tti = $('#tti[data-tti-refresh="true"]');
         if ($tti.length === 0) return;
         try {
           const res = await superagent
@@ -1239,19 +1244,29 @@ window.addEventListener(
             .retry(3)
             .send();
 
-          // Update the TTI HTML content
-          $tti.html($(res.text).html());
+          // The endpoint returns the complete #tti component.  Replace the
+          // component root rather than injecting its children, since injecting
+          // an unexpected or nested response can leave two dashboards in the
+          // document after a refresh.
+          const $replacement = $(res.text).filter('#tti').first();
+          if ($replacement.length !== 1) {
+            throw new Error(
+              'Time to Inbox refresh returned an invalid component'
+            );
+          }
+
+          $tti.replaceWith($replacement);
           renderDayjs();
 
-          // Initialize chart after HTML update (in case the chart container was updated)
-          initializeTTIChart();
+          // Initialize chart after the component root is replaced.
+          initializeTTIChart($replacement);
         } catch (err) {
           logger.error(err);
         }
       };
 
       // Initialize TTI chart on page load
-      initializeTTIChart();
+      initializeTTIChart($('#tti[data-tti-refresh="true"]'));
 
       // Start polling with setInterval (replaces recursive setTimeout to avoid
       // accumulating closures and to allow cleanup via clearInterval)

@@ -61,7 +61,7 @@ Forward Email 受到各行业领先组织的信赖：
 
 * **标志字体：** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans)（加粗；700 权重）
 * **正文字体：** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans)（常规；400 权重）
-* **标题字体：** [VC Honey](https://verycoolstudio.com/typefaces/honey)（加粗；700 权重）
+* **标题字体：** Nunito Sans（加粗；700 权重）
 * **图标字体：** [Font Awesome 5](https://fontawesome.com/)
 ## 颜色 {#colors}
 

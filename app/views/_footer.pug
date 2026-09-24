@@ -3,8 +3,6 @@
 //- people get four curated columns per the footer consolidation plan. The
 //- human variant is what the phase-2 mobile accordion will collapse.
 footer.fe-footer.mt-auto(aria-label=t("Footer"))
-  if !user && ctx.pathWithoutLocale !== '/' && ctx.pathWithoutLocale !== '/tti'
-    include _tti
   div
     .container.py-3.py-md-4.py-lg-5.text-center.text-lg-left
       //- Crawlers keep the FAQ banner; for people FAQ lives in the Product

@@ -103,8 +103,8 @@ jobs:
       CI_TOTAL_SHARDS: 6
       AUTH_GITHUB_ENABLED: "false"
       AUTH_GOOGLE_ENABLED: "false"
-      I18N_SYNC_FILES: "true"
-      I18N_UPDATE_FILES: "true"
+      I18N_SYNC_FILES: "false"
+      I18N_UPDATE_FILES: "false"
       PREVIEW_EMAIL: "false"
       TRUTH_SOURCES: "truthsource.com"
       TURNSTILE_ENABLED: "false"

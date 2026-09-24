@@ -61,7 +61,7 @@ Forward Emailは業界を超えた主要な組織に信頼されています：
 
 * **ロゴ:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans)（ボールド; 700ウェイト）
 * **本文:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans)（レギュラー; 400ウェイト）
-* **見出し:** [VC Honey](https://verycoolstudio.com/typefaces/honey)（ボールド; 700ウェイト）
+* **見出し:** Nunito Sans（ボールド; 700ウェイト）
 * **アイコン:** [Font Awesome 5](https://fontawesome.com/)
 ## Colors {#colors}
 

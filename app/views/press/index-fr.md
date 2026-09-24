@@ -61,7 +61,7 @@ Forward Email est utilisé par des organisations leaders dans divers secteurs :
 
 * **Logo :** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (gras ; poids 700)
 * **Corps :** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normal ; poids 400)
-* **Titres :** [VC Honey](https://verycoolstudio.com/typefaces/honey) (gras ; poids 700)
+* **Titres :** Nunito Sans (gras ; poids 700)
 * **Icônes :** [Font Awesome 5](https://fontawesome.com/)
 ## Couleurs {#colors}
 

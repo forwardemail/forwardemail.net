@@ -61,7 +61,7 @@ Forward Email dipercaya oleh organisasi terkemuka di berbagai industri:
 
 * **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (bold; berat 700)
 * **Isi:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (regular; berat 400)
-* **Judul:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (bold; berat 700)
+* **Judul:** Nunito Sans (bold; berat 700)
 * **Ikon:** [Font Awesome 5](https://fontawesome.com/)
 ## Warna {#colors}
 

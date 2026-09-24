@@ -61,7 +61,7 @@ Forward Email ได้รับความไว้วางใจจากอ
 
 * **โลโก้:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (ตัวหนา; น้ำหนัก 700)
 * **เนื้อหา:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (ปกติ; น้ำหนัก 400)
-* **หัวเรื่อง:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (ตัวหนา; น้ำหนัก 700)
+* **หัวเรื่อง:** Nunito Sans (ตัวหนา; น้ำหนัก 700)
 * **ไอคอน:** [Font Awesome 5](https://fontawesome.com/)
 ## สี {#colors}
 

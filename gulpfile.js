@@ -7,11 +7,11 @@ const process = require('node:process');
 const path = require('node:path');
 const fs = require('node:fs');
 
-// required to disable watching of I18N files in @ladjs/i18n
-// otherwises tasks will fail to exit due to watchers running
-process.env.I18N_SYNC_FILES = true;
+// Disable watching and persistence of I18N files in build processes. Locale
+// changes must come from an explicit, reviewed extraction workflow.
+process.env.I18N_SYNC_FILES = false;
 process.env.I18N_AUTO_RELOAD = false;
-process.env.I18N_UPDATE_FILES = true;
+process.env.I18N_UPDATE_FILES = false;
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');

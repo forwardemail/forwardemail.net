@@ -134,19 +134,38 @@ mixin feConsole(bot)
     //- loaded: announcing tab semantics before anything can answer an arrow key
     //- would promise a screen reader an interaction that does not exist yet.
     //- The hrefs are what makes /#send deep-linkable from docs and support.
-    nav.fe-console__rail(aria-label=t("Platform"), data-fe-console-rail)
-      each view, i in feConsoleViews
-        //- The pill is rendered here rather than left to JavaScript so the
-        //- first view is not shown under a rail with nothing selected for the
-        //- window between paint and DOMContentLoaded. aria-selected is not set
-        //- here on purpose: until hero-console.js runs these are links, not
-        //- tabs, and the attribute would be meaningless on them.
-        a.fe-console__tab(
-          id=`tab-${view.id}`,
-          href=`#${view.id}`,
-          class=i === 0 ? "fe-console__tab--active" : "",
-          data-fe-console-tab=view.id
-        )= t(view.tab)
+    .fe-console__rail-wrap(data-fe-console-rail-wrap)
+      button.fe-console__rail-control.fe-console__rail-control--previous.no-js(
+        type="button",
+        disabled,
+        data-fe-console-scroll="previous",
+        aria-label=t("Show previous platform area")
+      )
+        i.fa.fa-chevron-left(aria-hidden="true")
+      nav.fe-console__rail(aria-label=t("Platform"), data-fe-console-rail)
+        each view, i in feConsoleViews
+          //- The pill is rendered here rather than left to JavaScript so the
+          //- first view is not shown under a rail with nothing selected for the
+          //- window between paint and DOMContentLoaded. aria-selected is not set
+          //- here on purpose: until hero-console.js runs these are links, not
+          //- tabs, and the attribute would be meaningless on them.
+          a.fe-console__tab(
+            id=`tab-${view.id}`,
+            href=`#${view.id}`,
+            class=i === 0 ? "fe-console__tab--active" : "",
+            data-fe-console-tab=view.id
+          )= t(view.tab)
+      button.fe-console__rail-control.fe-console__rail-control--next.no-js(
+        type="button",
+        disabled,
+        data-fe-console-scroll="next",
+        aria-label=t("Show next platform area")
+      )
+        i.fa.fa-chevron-right(aria-hidden="true")
+      p.fe-console__rail-hint.no-js(data-fe-console-rail-hint)
+        i.fa.fa-arrows-h(aria-hidden="true")
+        = " "
+        = t("Swipe or scroll to see all platform areas.")
 
     .fe-console__views
       each view, i in feConsoleViews

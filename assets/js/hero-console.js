@@ -13,6 +13,7 @@ const CONSOLE = '[data-fe-console]';
 const RAIL = '[data-fe-console-rail]';
 const TAB = '[data-fe-console-tab]';
 const VIEW = '[data-fe-console-view]';
+const SCROLL = '[data-fe-console-scroll]';
 
 const ACTIVE_TAB = 'fe-console__tab--active';
 const ACTIVE_VIEW = 'fe-console__view--active';
@@ -48,6 +49,7 @@ function setUpConsole(root) {
   const rail = root.querySelector(RAIL);
   const tabs = [...root.querySelectorAll(TAB)];
   const views = [...root.querySelectorAll(VIEW)];
+  const scrollControls = [...root.querySelectorAll(SCROLL)];
   if (!rail || tabs.length === 0 || tabs.length !== views.length) return;
 
   rail.setAttribute('role', 'tablist');
@@ -58,10 +60,41 @@ function setUpConsole(root) {
     tab.setAttribute('aria-controls', id);
   }
 
-  for (const view of views) view.setAttribute('role', 'tabpanel');
+  for (const [i, view] of views.entries()) {
+    view.setAttribute('role', 'tabpanel');
+    view.setAttribute('aria-labelledby', tabs[i].id);
+  }
 
   let timer = null;
   let stopped = false;
+
+  function updateRailControls() {
+    const overflow = rail.scrollWidth > rail.clientWidth + 1;
+    root.classList.toggle('fe-console--rail-overflow', overflow);
+
+    if (!overflow) {
+      root.classList.remove('fe-console--rail-at-end');
+      for (const control of scrollControls) control.disabled = true;
+      return;
+    }
+
+    const rtl = document.documentElement.getAttribute('dir') === 'rtl';
+    const railBox = rail.getBoundingClientRect();
+    const firstBox = tabs[0].getBoundingClientRect();
+    const lastBox = tabs[tabs.length - 1].getBoundingClientRect();
+    const atStart = rtl
+      ? firstBox.right <= railBox.right + 1
+      : firstBox.left >= railBox.left - 1;
+    const atEnd = rtl
+      ? lastBox.left >= railBox.left - 1
+      : lastBox.right <= railBox.right + 1;
+
+    root.classList.toggle('fe-console--rail-at-end', atEnd);
+    for (const control of scrollControls) {
+      control.disabled =
+        control.dataset.feConsoleScroll === 'previous' ? atStart : atEnd;
+    }
+  }
 
   /**
    * Show one view by id. Inactive views keep their box (they are stacked in the
@@ -86,6 +119,13 @@ function setUpConsole(root) {
       views[i].classList.toggle(ACTIVE_VIEW, on);
     }
 
+    tabs[index].scrollIntoView({
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+      block: 'nearest',
+      inline: 'nearest'
+    });
+
+    window.setTimeout(updateRailControls, 0);
     if (focusTab) tabs[index].focus();
     return true;
   }
@@ -221,6 +261,24 @@ function setUpConsole(root) {
 
   rail.addEventListener('click', onClick);
   rail.addEventListener('keydown', onKeydown);
+  rail.addEventListener('scroll', updateRailControls, { passive: true });
+
+  for (const control of scrollControls) {
+    control.addEventListener('click', () => {
+      const current = tabs.findIndex((tab) =>
+        tab.classList.contains(ACTIVE_TAB)
+      );
+      const offset = control.dataset.feConsoleScroll === 'previous' ? -1 : 1;
+      const next = current + offset;
+      if (next < 0 || next >= tabs.length) return;
+      stop();
+      show(tabs[next].dataset.feConsoleTab, true);
+    });
+  }
+
+  if (typeof ResizeObserver === 'function') {
+    new ResizeObserver(updateRailControls).observe(rail);
+  }
 
   // A pointer resting on the console, or focus landing anywhere inside it,
   // counts as the first interaction.
@@ -245,6 +303,8 @@ function setUpConsole(root) {
     show(tabs[0].dataset.feConsoleTab);
     start();
   }
+
+  updateRailControls();
 }
 
 function init() {

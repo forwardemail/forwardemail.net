@@ -625,9 +625,6 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     Note that at the time of this writing we copy these files:
 
     * `inconsolata-dz.otf`
-    * `VCHoney-Bold.otf`
-    * `VCHoney-Regular.otf`
-    * `VCHoney-SemiBold.otf`
 
 23. (Optional) Copy over GPG keys to be installed on the server (e.g. used for GPG signing `security.txt`, see <https://forwardemail.net/security.txt>).
 

@@ -61,7 +61,7 @@ Forward Email هي الخدمة الوحيدة لاستضافة البريد ا�
 
 * **الشعار:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (عريض؛ وزن 700)
 * **النص الأساسي:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (عادي؛ وزن 400)
-* **العناوين:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (عريض؛ وزن 700)
+* **العناوين:** Nunito Sans (عريض؛ وزن 700)
 * **الأيقونات:** [Font Awesome 5](https://fontawesome.com/)
 ## الألوان {#colors}
 

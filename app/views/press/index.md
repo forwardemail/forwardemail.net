@@ -61,7 +61,7 @@ Forward Email is trusted by leading organizations across industries:
 
 * **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (bold; 700 weight)
 * **Body:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (regular; 400 weight)
-* **Headings:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (bold; 700 weight)
+* **Headings:** Nunito Sans (bold; 700 weight)
 * **Icons:** [Font Awesome 5](https://fontawesome.com/)
 
 
