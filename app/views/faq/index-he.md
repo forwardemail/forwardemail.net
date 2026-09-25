@@ -96,6 +96,9 @@
   * [מי יש לו גישה לתשתית הדואר שלכם](#who-has-access-to-your-email-infrastructure)
   * [אילו ספקי תשתית אתם משתמשים](#what-infrastructure-providers-do-you-use)
   * [האם אתם מציעים הסכם עיבוד נתונים (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+* [האם ניתן לשמור את עיבוד ואחסון הדוא״ל שלי באיחוד האירופי (ריבונות נתונים)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [היכן מעובד ומאוחסן הדוא״ל הנכנס לשם המתחם שלי, ולכמה זמן](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [כיצד אוכל לרשום את Forward Email כמעבד משנה ב‑DPA שלי](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [איך אתם מטפלים בהודעות פריצות נתונים](#how-do-you-handle-data-breach-notifications)
   * [האם אתם מציעים סביבת בדיקה](#do-you-offer-a-test-environment)
   * [האם אתם מספקים כלים לניטור והתראות](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [האם יש מגבלה מקסימלית על מספר כתובות הדואר שאני יכול להעביר לכל כינוי](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [האם אפשר להעביר מיילים ברקורסיה](#can-i-recursively-forward-emails)
   * [האם אנשים יכולים להסיר או להירשם להעברת הדואר שלי ללא רשותי](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [כיצד להגדיל את נפח האחסון או את מגבלת השליחה של SMTP היוצא](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [מה כלול ב-Enterprise License](#what-is-included-in-the-enterprise-license)
   * [איך זה בחינם](#how-is-it-free)
   * [מה המגבלה המקסימלית על גודל מייל](#what-is-the-max-email-size-limit)
   * [האם אתם מאחסנים לוגים של מיילים](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### היכן ממוקמים השרתים שלכם {#where-are-your-servers-located}
 
 > \[!TIP]
-> אנו עשויים בקרוב להודיע על מיקום מרכז הנתונים שלנו באיחוד האירופי המופעל תחת [forwardemail.eu](https://forwardemail.eu). הירשם לדיון בכתובת <https://github.com/orgs/forwardemail/discussions/336> לקבלת עדכונים.
+> אנו עשויים בקרוב להודיע על מיקום מרכז הנתונים שלנו באיחוד האירופי המופעל תחת [forwardemail.eu](https://forwardemail.eu). הירשם לדיון בכתובת <https://github.com/orgs/forwardemail/discussions/336> לקבלת עדכונים.  כיום אין פריסה ייעודית לאיחוד האירופי או אפשרות הצטרפות – ראו [האם ניתן לשמור את עיבוד ואחסון הדוא״ל שלי באיחוד האירופי (ריבונות נתונים)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 השרתים שלנו ממוקמים בעיקר בדנבר, קולורדו – ראה <https://forwardemail.net/ips> לרשימת כתובות ה-IP המלאה שלנו.
 
@@ -4067,12 +4072,73 @@ Forward Email מיישם בקרות גישה מקיפות לצוות ההנדס�
 * מכסה תאימות ל-GDPR ולמסגרות EU-US/Swiss-US Privacy Shield
 * מתקבל אוטומטית עם הסכמתכם לתנאי השירות שלנו
 * אין צורך בחתימה נפרדת עבור DPA סטנדרטי
-* הסדרי DPA מותאמים זמינים דרך רישיון ארגוני
+* עותק חתום על-ידי שני הצדדים, והסדרי DPA מותאמים אישית, זמינים באמצעות ה-[Enterprise License](#what-is-included-in-the-enterprise-license)
+* כדי לציין אותנו בנספח מעבדי המשנה שלכם, ראו [כיצד אוכל לרשום את Forward Email כמעבד משנה ב‑DPA שלי](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **מסגרת תאימות GDPR:**
 ה-DPA שלנו מפרט את התאימות ל-GDPR וכן את דרישות העברת הנתונים הבינלאומיות. מידע מלא זמין בכתובת: <https://forwardemail.net/gdpr>
 
 ללקוחות ארגוניים הזקוקים לתנאי DPA מותאמים או להסדרים חוזיים ספציפיים, ניתן לטפל בכך דרך תוכנית **רישיון ארגוני (250$/חודש)** שלנו.
+
+
+### האם אוכל לשמור את עיבוד ואחסון הדוא״ל שלי בתוך האיחוד האירופי (רזידנסי של נתונים) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> לא בשלב זה. אין כיום פריסה בלעדית לאיחוד האירופי או אפשרות הצטרפות ייעודית לאיחוד האירופי, ואין עליך לתאר את Forward Email כמעבד בלעדי לאיחוד האירופי ברישומים שלך או בהסכם עיבוד הנתונים שלך.
+
+**היכן מתבצע העיבוד כיום:** השרתים שלנו ממוקמים בעיקר ב-Denver, Colorado, United States (ראו [היכן השרתים שלכם ממוקמים](#where-are-your-servers-located) ו-<https://forwardemail.net/ips>). זה חל על כל התכונות: העברה נכנסת, יומני שגיאות, אחסון תיבת דואר (IMAP/POP3/CalDAV/CardDAV), ו-SMTP יוצא.
+
+**מה מתוכנן:** מרכז נתונים באיחוד האירופי באמסטרדם, המתארח תחת [forwardemail.eu](https://forwardemail.eu). כדי לשמור על בידוד אמיתי של נתוני האיחוד האירופי – משפטית וגם טכנית – עליו לפעול באמצעות חברה נפרדת המבוססת באיחוד האירופי, ולא רק באמצעות שרתים במיקום באיחוד האירופי. אין לנו עדיין תאריך השקה, והצטרפות לרשימת המתנה אינה משנה את מיקום עיבוד הדוא״ל שלך כיום. הירשמו ל-<https://github.com/orgs/forwardemail/discussions/336> לקבלת עדכונים; שם נסביר כיצד לקוחות קיימים יוכלו להצטרף כשהאפשרות תהיה זמינה.
+
+**מה ניתן לציין במדויק כבר היום:**
+
+* מעבד: Forward Email LLC, חברה רשומה ב-Delaware, United States
+* מיקום העיבוד והאחסון: United States
+* מנגנון העברה ואמצעי הגנה: כמפורט בעמודי ה-[DPA](/dpa) וה-[GDPR](/gdpr) שלנו
+* מעבדי המשנה שלנו: מפורטים בעמוד ה-[GDPR](/gdpr) שלנו (כולם ספקים מבוססי ארצות הברית)
+
+ראו [היכן מעובד ונשמר הדוא״ל הנכנס עבור הדומיין שלי, ולכמה זמן](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) לפירוט לפי תכונה, ו-[כיצד לרשום את Forward Email כמעבד משנה ב-DPA שלי](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa) לנספח מוכן להעתקה.
+
+### היכן מעובד ונשמר הדוא״ל הנכנס עבור הדומיין שלי, ולכמה זמן {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+כל העיבוד והאחסון מתבצעים על השרתים שלנו ב-Denver, Colorado, United States. מה נשמר, ולכמה זמן, תלוי בתכונה:
+
+| תכונה | מה נשמר | תקופת שמירה |
+| --- | --- | --- |
+| **העברת דוא״ל** (כינוי שמעביר לכתובת אחרת או לוובהוק) | שום דבר. ההודעה מעובדת כולה בזיכרון ומועברת ליעד; היא לעולם אינה נכתבת לדיסק או למסד נתונים. | אין – ההודעה נמחקת ברגע שמתבצע ניסיון מסירה |
+| **יומני שגיאות SMTP** (תגובות `4xx`/`5xx`) | שגיאת ה-SMTP, המעטפת, וכותרות הדוא״ל. **לא** גוף ההודעה או הקבצים המצורפים. | 7 ימים (ראו [האם אתם שומרים יומני שגיאות](#do-you-store-error-logs)) |
+| **מטמונים נגד התעללות** (רשימה אפורה, רשימת חסימה, הגבלת קצב) | מפתחות הנגזרים מנתוני השולח והנמען (כתובות, דומיינים, גיבובים), ללא תוכן הודעה. | עד 30 ימים (ראו [האם קיימת אצלכם רשימה אפורה](#do-you-have-a-greylist) ו-[האם קיימת אצלכם רשימת חסימה](#do-you-have-a-denylist)) |
+| **אחסון תיבת דואר** (IMAP/POP3/CalDAV/CardDAV, כאשר מופעל על כינוי) | הודעות, אנשי קשר ולוחות שנה, בתיבת דואר SQLite מוצפנת באופן פרטני שרק הסיסמה שלך יכולה לפתוח. | עד שתמחק/י את ההודעה, הכינוי, הדומיין או החשבון (ראו [כיצד לייצא ולגבות את תיבת הדואר שלי](#how-do-i-export-and-backup-my-mailbox)) |
+| **SMTP יוצא** | רשומות תור למסירה ולדיווח שגיאות. גופי ההודעות נשמרים למשך 0 ימים כברירת מחדל לאחר מסירה מוצלחת או שגיאה קבועה; ניתן להעלות זאת לכל היותר ל-30 ימים לכל דומיין. | ~30 ימים עבור רשומות התור (ראו את [מדיניות הפרטיות](/privacy) שלנו) |
+
+שני דברים שכדאי לציין ברישומים שלך:
+
+* הודעה שהועברה נמסרת לתיבת הדואר ביעד שהגדרת (לדוגמה Google Workspace או Microsoft 365). מה שהספק הזה שומר מוסדר על פי ההסכם שלך איתו, לא על ידינו.
+* רשומות הדומיין והחשבון (כתובת הדוא״ל שלך, שמות דומיין, כינויים, פרטי חיוב) נשמרות כל עוד החשבון שלך קיים. ראו את [מדיניות הפרטיות](/privacy) שלנו לרשימה המלאה.
+
+מקורות: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf>, ו־MX handler ב-<https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### כיצד לרשום את Forward Email כמעבד משנה ב-DPA שלי {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+אם אתה בקר (Controller) לפי סעיף 28 ל-GDPR (או מעבד בעצמך) ואתה משתמש ב-Forward Email לטיפול בדוא״ל עבור הלקוחות או המשתמשים שלך, בדרך כלל יהיה עליך לציין אותנו בנספח מעבדי המשנה שלך. הערך שלהלן הוא מה שהיינו כותבים:
+
+| שדה | ערך |
+| --- | --- |
+| **מעבד משנה** | Forward Email LLC |
+| **רשומה ב** | State of Delaware, United States |
+| **שירות** | העברת דוא״ל (inbound MX) וכאשר מופעל – אחסון תיבת דואר מוצפן (IMAP/POP3/CalDAV/CardDAV) ו-SMTP יוצא |
+| **נתונים אישיים המעובדים** | כתובות דוא״ל, מטא-נתונים של מעטפה וכותרות, ותוכן הודעות במעבר (בזיכרון בלבד לצורך העברה; מוצפן במנוחה עבור אחסון תיבת דואר) |
+| **מיקום העיבוד** | United States (Denver, Colorado) |
+| **תקופת שמירה** | ראו [היכן מעובד ונשמר הדוא״ל הנכנס עבור הדומיין שלי, ולכמה זמן](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **מנגנון העברה** | כמפורט בעמודי ה-[Data Processing Agreement](/dpa) וה-[GDPR](/gdpr) שלנו |
+| **מעבדי המשנה שלנו** | מפורטים בעמוד ה-[GDPR](/gdpr) וב-[DPA](/dpa) (נכון לעכשיו Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe, ו-PayPal) |
+| **נציג באיחוד האירופי (סעיף 27)** | Osano International Compliance Services Limited, Dublin, Ireland – הכתובת המלאה בעמוד ה-[GDPR](/gdpr) שלנו |
+| **נציג בבריטניה** | Osano UK Compliance LTD, Belfast – הכתובת המלאה בעמוד ה-[GDPR](/gdpr) שלנו |
+| **הסכם עיבוד נתונים** | <https://forwardemail.net/dpa> (מתקבל יחד עם ה-[תנאים](/terms) שלנו; עותק חתום-נגד מסופק תחת Enterprise License) |
+| **איש קשר לאבטחה** | <security@forwardemail.net> |
+
+> [!WARNING]
+> ה-[תנאים](/terms) שלנו אינם מתירים הפעלת שירות המאפשר לצדדים שלישיים (כל מי שאינו עובדיך וקבלניך) לגשת, להשתמש או להפיק תועלת מ-Forward Email ללא הסכם ארגוני. אם אתה מציין אותנו כמעבד משנה משום שאתה מעבד את הדוא״ל של לקוחותיך, עליך לרכוש את [Enterprise License](#what-is-included-in-the-enterprise-license) – כך גם תקבל DPA חתום-נגד.
 
 ### כיצד אתם מטפלים בהודעות על פרצות אבטחה {#how-do-you-handle-data-breach-notifications}
 
@@ -5695,6 +5761,34 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
 ### האם אנשים יכולים להסיר או להירשם להעברת האימייל שלי ללא רשותי {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 אנו משתמשים באימות רשומות MX ו-<strong class="notranslate">TXT</strong>, לכן אם תוסיף את רשומות ה-MX וה-<strong class="notranslate">TXT</strong> המתאימות לשירות זה, אז אתה רשום. אם תסיר אותן, אז אתה לא רשום. אתה בעלים של הדומיין וניהול ה-DNS שלך, אז אם מישהו אחר יש לו גישה לכך זו בעיה.
+
+
+### כיצד להגדיל את נפח האחסון או את מגבלת השליחה של SMTP היוצא {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+עברו אל <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">החשבון שלי → חיוב</a> וגללו אל הסעיף **תוספים**, שבו שני טפסי בקשה:
+
+* **שדרוג אחסון** — בחרו כמות להוספה (+10, +20, +30, +40, או +50 GB), או בחרו "Other" כדי לבקש כמות מותאמת אישית.
+* **שדרוג מגבלת SMTP יוצא** — בחרו כמות להוספה (+1000, +2000, או +3000 אימיילים ביום), או בחרו "Other" כדי לבקש כמות מותאמת אישית.
+
+שליחת אחד מהטפסים מעבירה את הבקשה שלכם לצוות שלנו לסקירה — היא אינה מחייבת אתכם מיידית. לאחר האישור, נשלח אליכם קישור תשלום מאובטח להשלמת השדרוג. ניתן להחזיק בקשה ממתינה אחת לכל סוג (אחסון או SMTP) בכל זמן; שליחה חוזרת בתוך 3 ימים מבקשה קודמת מאותו סוג אינה מותרת עד שיחלוף חלון הזמן הזה.
+
+
+### מה כלול ב-Enterprise License {#what-is-included-in-the-enterprise-license}
+
+Enterprise License עולה **$250/month**, מצוטט ומחויב ישירות ולא נרכש דרך דף התמחור. הוא כולל את כל מה שבתוכנית הצוות בתוספת:
+
+* **חריג לתנאי השימוש עבור צדדים שלישיים** – באפשרותך להפעיל שירות או אינטגרציה שבה הלקוחות, התלמידים או הלקוחות המקצועיים שלך (לא רק עובדיך וקבלניך) משתמשים ב-Forward Email או נהנים ממנו. ה-[תנאים](/terms) הסטנדרטיים שלנו אינם מתירים זאת.
+* **הסכם ארגוני ו-DPA חתומים נגד** – נשלחים לבחינה ולחתימה באמצעות DocuSign. כך מתקבל [הסכם עיבוד נתונים](/dpa) חתום במקום העותק המתקבל יחד עם התנאים שלנו.
+* **תנאים חוזיים מותאמים אישית** היכן שנוכל לתמוך בהם, כגון התחייבויות רמת שירות להודעות על הפרת אבטחה (ראו [כיצד אתם מטפלים בהודעות על פרצות אבטחה](#how-do-you-handle-data-breach-notifications)).
+* **בקשות API ללא הגבלה** ללא הגבלת קצב.
+* **חדר צ׳אט תמיכת לקוחות ייעודי** עם צוות ההנדסה שלנו.
+* **סיוע בהטמעה ותמיכה הנדסית בזמן אמת.**
+
+דבר זה אינו משנה את מיקום עיבוד הנתונים שלך: ראו [האם אוכל לשמור את עיבוד ואחסון הדוא״ל שלי בתוך האיחוד האירופי (רזידנסי של נתונים)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**למי זה נדרש:** לכל מי שהשימוש שלו בשירות חורג מן התנאים (גישה של צדדים שלישיים), ולכל מי שזקוק ל-DPA חתום-נגד, לתנאי DPA מותאמים אישית, או לאיש קשר הנדסי נקוב לצורכי ציות.
+
+**כיצד מתחילים:** [צרו קשר](/help) עם שם החברה המשפטי, הכתובת הרשומה, מספרי רישום החברה והמע״מ, ושמו, תפקידו וכתובת הדוא״ל של האדם שיחתום. נשיב עם הסכם DocuSign לסקירה.
 
 ### איך זה בחינם {#how-is-it-free}
 

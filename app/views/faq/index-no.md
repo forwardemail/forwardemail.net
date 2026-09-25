@@ -96,6 +96,9 @@
   * [Hvem har tilgang til deres e-postinfrastruktur](#who-has-access-to-your-email-infrastructure)
   * [Hvilke infrastrukturleverandører bruker dere](#what-infrastructure-providers-do-you-use)
   * [Tilbyr dere en databehandleravtale (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+* [Kan jeg beholde e-postbehandling og -lagring i EU (dataresidens)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [Hvor blir innkommende e-post for domenet mitt behandlet og lagret, og hvor lenge](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [Hvordan oppgir jeg Forward Email som underbehandler i min egen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Hvordan håndterer dere varsler om datainnbrudd](#how-do-you-handle-data-breach-notifications)
   * [Tilbyr dere et testmiljø](#do-you-offer-a-test-environment)
   * [Tilbyr dere overvåkings- og varslingsverktøy](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [Er det en maksimal grense for antall e-postadresser jeg kan videresende til per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Kan jeg videresende e-poster rekursivt](#can-i-recursively-forward-emails)
   * [Kan folk avregistrere eller registrere min e-postvideresending uten min tillatelse](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [Hvordan øker jeg lagringsplassen min eller grensen for utgående SMTP-sending](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Hva er inkludert i Enterprise License](#what-is-included-in-the-enterprise-license)
   * [Hvordan er det gratis](#how-is-it-free)
   * [Hva er maksimal e-poststørrelsesgrense](#what-is-the-max-email-size-limit)
   * [Lagrer dere logger av e-poster](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ Se seksjonen om [Støtter dere sending av e-post med SMTP](#do-you-support-sendi
 ### Hvor er serverne deres lokalisert {#where-are-your-servers-located}
 
 > \[!TIP]
-> Vi kan snart kunngjøre vår EU-datacenters lokasjon som hostes under [forwardemail.eu](https://forwardemail.eu). Abonner på diskusjonen på <https://github.com/orgs/forwardemail/discussions/336> for oppdateringer.
+> Vi kan snart kunngjøre vår EU-datacenters lokasjon som hostes under [forwardemail.eu](https://forwardemail.eu). Abonner på diskusjonen på <https://github.com/orgs/forwardemail/discussions/336> for oppdateringer.  Det finnes ingen EU-eksklusiv utrulling eller tilvalg i dag – se [Kan jeg beholde e-postbehandling og -lagring i EU (dataresidens)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 Våre servere er primært lokalisert i Denver, Colorado – se <https://forwardemail.net/ips> for vår komplette liste over IP-adresser.
 
@@ -4068,12 +4073,73 @@ Ja, Forward Email tilbyr en omfattende databehandleravtale (DPA) som kan signere
 * Dekker GDPR-samsvar og EU-US/Sveits-US Privacy Shield-rammeverk
 * Aksepteres automatisk ved godkjenning av våre bruksvilkår
 * Ingen separat signatur kreves for standard DPA
-* Tilpassede DPA-avtaler tilgjengelig gjennom Enterprise-lisens
+* En motsignert kopi og tilpassede DPA-ordninger er tilgjengelige via [Enterprise License](#what-is-included-in-the-enterprise-license)
+* For å navngi oss i ditt eget vedlegg for underbehandlere, se [Hvordan oppgir jeg Forward Email som underbehandler i min egen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **GDPR-samsvarsrammeverk:**
 Vår DPA beskriver samsvar med GDPR samt internasjonale krav til dataoverføring. Fullstendig informasjon er tilgjengelig på: <https://forwardemail.net/gdpr>
 
 For bedriftskunder som krever tilpassede DPA-vilkår eller spesifikke kontraktsmessige ordninger, kan dette håndteres gjennom vårt **Enterprise License ($250/month)**-program.
+
+
+### Kan jeg holde e-postbehandling og -lagring i EU (datahjemmehørighet) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> Ikke ennå. Det finnes ingen EU-eksklusiv utrulling eller EU-opt-in tilgjengelig i dag, og du bør ikke beskrive Forward Email som en EU-eksklusiv databehandler i dine egne opptegnelser eller databehandleravtale.
+
+**Hvor behandlingen skjer i dag:** serverne våre er hovedsakelig plassert i Denver, Colorado, United States (se [Where are your servers located](#where-are-your-servers-located) og <https://forwardemail.net/ips>). Dette gjelder for alle funksjoner: innkommende videresending, feillogger, postbokslagring (IMAP/POP3/CalDAV/CardDAV) og utgående SMTP.
+
+**Hva som er planlagt:** et EU-datasenter i Amsterdam, driftet under [forwardemail.eu](https://forwardemail.eu). For å holde EU-data reelt isolert – både juridisk og teknisk – må det drives gjennom et eget EU-basert selskap, ikke bare gjennom servere på en EU-lokasjon. Vi har ikke en lanseringsdato ennå, og å bli med på en venteliste endrer ikke hvor e-posten din behandles i dag. Abonner på <https://github.com/orgs/forwardemail/discussions/336> for kunngjøringer; vi vil der beskrive hvordan eksisterende kunder kan velge det når det er tilgjengelig.
+
+**Hva du nøyaktig kan oppgi i dag:**
+
+* Databehandler: Forward Email LLC, et selskap registrert i Delaware, United States
+* Plassering for behandling og lagring: United States
+* Overføringsmekanisme og sikkerhetstiltak: som beskrevet på våre [DPA](/dpa)- og [GDPR](/gdpr)-sider
+* Våre egne underdatabehandlere: oppført på vår [GDPR](/gdpr)-side (alle leverandører med base i USA)
+
+Se [Hvor behandles og lagres innkommende e-post for domenet mitt, og hvor lenge](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) for en funksjonsvis gjennomgang, og [Hvordan fører jeg opp Forward Email som underdatabehandler i min egen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa) for en ferdig kopiérbar vedleggsoppføring.
+
+### Hvor behandles og lagres innkommende e-post for domenet mitt, og hvor lenge {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+All behandling og lagring skjer på serverne våre i Denver, Colorado, United States. Hva som oppbevares, og hvor lenge, avhenger av funksjonen:
+
+| Funksjon | Hva som oppbevares | Oppbevaringstid |
+| --- | --- | --- |
+| **E-postvideresending** (et alias som videresender til en annen adresse eller webhook) | Ingenting. Meldingen behandles utelukkende i minnet og videresendes til destinasjonen; den skrives aldri til disk eller til en database. | Ingen – meldingen forkastes så snart levering forsøkes |
+| **SMTP-feillogger** (`4xx`/`5xx`-responser) | SMTP-feilen, konvolutten og e-posthodene. **Ikke** meldingskroppen eller vedlegg. | 7 dager (se [Lagrer dere feillogger](#do-you-store-error-logs)) |
+| **Anti-misbruks-cacher** (gråliste, nekteliste, ratebegrensning) | Nøkler avledet fra avsender- og mottakerdata (adresser, domener, hasher), ikke noe meldingsinnhold. | Opptil 30 dager (se [Har dere en gråliste](#do-you-have-a-greylist) og [Har dere en nekteliste](#do-you-have-a-denylist)) |
+| **Postbokslagring** (IMAP/POP3/CalDAV/CardDAV, når aktivert på et alias) | Meldinger, kontakter og kalendere, i en individuelt kryptert SQLite-postboks som bare passordet ditt kan åpne. | Til du sletter meldingen, aliaset, domenet eller kontoen (se [Hvordan eksporterer og sikkerhetskopierer jeg postboksen min](#how-do-i-export-and-backup-my-mailbox)) |
+| **Utgående SMTP** | Køoppføringer for levering og feilrapportering. Meldingskropper beholdes i 0 dager som standard etter vellykket levering eller en permanent feil; du kan øke dette til maksimalt 30 dager per domene. | ~30 dager for køoppføringer (se vår [Personvernerklæring](/privacy)) |
+
+To ting det er verdt å oppgi i dine egne opptegnelser:
+
+* En videresendt melding leveres til destinasjonspostboksen du har konfigurert (for eksempel Google Workspace eller Microsoft 365). Det leverandøren lagrer, reguleres av din avtale med dem, ikke av oss.
+* Domene- og kontodata (e-postadressen din, domenenavn, aliaser, fakturadetaljer) lagres så lenge kontoen din eksisterer. Se vår [Personvernerklæring](/privacy) for hele listen.
+
+Kilder: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf>, og MX-handleren på <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### Hvordan fører jeg opp Forward Email som underdatabehandler i min egen DPA {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+Hvis du er behandlingsansvarlig (eller selv en databehandler) etter GDPR artikkel 28 og du bruker Forward Email til å håndtere e-post for kundene eller brukerne dine, vil du som regel måtte navngi oss i ditt eget vedlegg for underdatabehandlere. Oppføringen nedenfor er det vi ville skrevet:
+
+| Felt | Verdi |
+| --- | --- |
+| **Underdatabehandler** | Forward Email LLC |
+| **Registrert i** | State of Delaware, United States |
+| **Tjeneste** | E-postvideresending (innkommende MX) og, der aktivert, kryptert postbokslagring (IMAP/POP3/CalDAV/CardDAV) og utgående SMTP |
+| **Personopplysninger som behandles** | E-postadresser, konvolutt- og header-metadata, samt meldingsinnhold under overføring (kun i minnet for videresending; kryptert i hvile for postbokslagring) |
+| **Plassering for behandling** | United States (Denver, Colorado) |
+| **Oppbevaringstid** | Se [Hvor behandles og lagres innkommende e-post for domenet mitt, og hvor lenge](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **Overføringsmekanisme** | Som angitt på våre sider for [Data Processing Agreement](/dpa) og [GDPR](/gdpr) |
+| **Våre underdatabehandlere** | Oppført på vår [GDPR](/gdpr)-side og i [DPA](/dpa) (for tiden Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe og PayPal) |
+| **EU-representant (art. 27)** | Osano International Compliance Services Limited, Dublin, Ireland – full adresse på vår [GDPR](/gdpr)-side |
+| **UK-representant** | Osano UK Compliance LTD, Belfast – full adresse på vår [GDPR](/gdpr)-side |
+| **Databehandleravtale** | <https://forwardemail.net/dpa> (akseptert med våre [Terms](/terms); en motsignert kopi gis under Enterprise License) |
+| **Sikkerhetskontakt** | <security@forwardemail.net> |
+
+> [!WARNING]
+> Våre [Terms](/terms) tillater ikke å drive en tjeneste som lar tredjeparter (andre enn dine egne ansatte og oppdragstakere) få tilgang til, bruke eller dra nytte av Forward Email uten en bedriftsavtale. Hvis du navngir oss som underdatabehandler fordi du behandler kundenes e-post, trenger du [Enterprise License](#what-is-included-in-the-enterprise-license) – det er også slik du får en motsignert DPA.
 
 ### Hvordan håndterer dere varsler om datainnbrudd {#how-do-you-handle-data-breach-notifications}
 
@@ -5696,6 +5762,34 @@ Ja, det kan du, men du må fortsatt overholde maksimalgrensen. Hvis du har `hell
 ### Kan folk avregistrere eller registrere min e-postvideresending uten min tillatelse {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 Vi bruker MX- og <strong class="notranslate">TXT</strong>-postverifisering, så hvis du legger til denne tjenestens respektive MX- og <strong class="notranslate">TXT</strong>-poster, er du registrert. Hvis du fjerner dem, er du avregistrert. Du eier domenet ditt og DNS-administrasjonen, så hvis noen har tilgang til det, er det et problem.
+
+
+### Hvordan øker jeg lagringsplassen min eller grensen for utgående SMTP-sending {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+Gå til <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Min konto → Fakturering</a> og rull ned til delen **Tillegg**, som har to forespørselsskjemaer:
+
+* **Lagringsoppgradering** — velg en mengde å legge til (+10, +20, +30, +40, eller +50 GB), eller velg "Other" for å be om en egendefinert mengde.
+* **Oppgradering av grense for utgående SMTP** — velg en mengde å legge til (+1000, +2000, eller +3000 e-poster daglig), eller velg "Other" for å be om en egendefinert mengde.
+
+Å sende inn et av skjemaene sender forespørselen din til teamet vårt for gjennomgang — det belaster deg ikke umiddelbart. Når den er godkjent, sender vi deg en sikker betalingslenke på e-post for å fullføre oppgraderingen. Du kan ha én ventende forespørsel per type (lagring eller SMTP) om gangen; innsending på nytt innen 3 dager etter en tidligere forespørsel av samme type er ikke tillatt før dette vinduet har utløpt.
+
+
+### Hva er inkludert i Enterprise License {#what-is-included-in-the-enterprise-license}
+
+Enterprise License er **$250/month**, prises og faktureres direkte i stedet for å kjøpes via prissiden. Den inkluderer alt i Team-planen pluss:
+
+* **Unntak fra vilkår for bruk for tredjeparter** – du kan drive en tjeneste eller integrasjon der kundene, studentene eller klientene dine (ikke bare dine egne ansatte og oppdragstakere) bruker eller drar nytte av Forward Email. Våre standard [Terms](/terms) tillater ikke dette.
+* **Motsignert bedriftsavtale og DPA** – sendt for gjennomgang og signatur via DocuSign. Dette er hvordan du får en signert [Data Processing Agreement](/dpa) i stedet for kopien som aksepteres med våre Terms.
+* **Tilpassede avtalebetingelser** der vi kan støtte dem, som for eksempel SLA-er for varsling om brudd (se [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)).
+* **Ubegrensede API-forespørsler** uten ratebegrensning.
+* **Dedikert kundestøtte-chatrom** med vårt ingeniørteam.
+* **Hjelp med onboarding og sanntidsstøtte fra ingeniører.**
+
+Dette endrer ikke hvor dataene dine behandles: se [Kan jeg holde e-postbehandling og -lagring i EU (datahjemmehørighet)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**Hvem trenger det:** alle hvis bruk av tjenesten faller utenfor Terms (tredjepartstilgang), og alle som krever en motsignert DPA, tilpassede DPA-vilkår eller en navngitt ingeniørkontakt for etterlevelsesformål.
+
+**Slik kommer du i gang:** [contact us](/help) med ditt juridiske selskapsnavn, registrert adresse, organisasjons- og MVA-nummer, samt navn, tittel og e-postadresse til personen som skal signere. Vi svarer med en DocuSign-avtale for gjennomgang.
 
 ### Hvordan er det gratis {#how-is-it-free}
 

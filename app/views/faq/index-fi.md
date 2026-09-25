@@ -96,6 +96,9 @@
   * [Kuka pääsee käsiksi sähköpostiinfrastruktuuriinne](#who-has-access-to-your-email-infrastructure)
   * [Mitä infrastruktuuripalveluntarjoajia käytätte](#what-infrastructure-providers-do-you-use)
   * [Tarjoatteko tietojenkäsittelysopimusta (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+* [Voinko pitää sähköpostin käsittelyn ja tallennuksen EU:ssa (tietojen sijainti)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [Missä verkkotunnuksen saapuva sähköposti käsitellään ja tallennetaan, ja kuinka kauan](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [Miten nimitän Forward Emailin aliprosessoriksi omassa DPA:ssani](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Kuinka käsittelette tietomurtotiedotteet](#how-do-you-handle-data-breach-notifications)
   * [Tarjoatteko testausympäristön](#do-you-offer-a-test-environment)
   * [Tarjoatteko valvonta- ja hälytystyökaluja](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [Onko aliaksia kohden enimmäismäärä sähköpostiosoitteita, joihin voi edelleenlähettää](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Voinko edelleenlähettää sähköposteja rekursiivisesti](#can-i-recursively-forward-emails)
   * [Voivatko ihmiset rekisteröidä tai poistaa edelleenlähetykseni ilman lupaani](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [Miten lisään tallennustilaa tai lähtevän SMTP:n lähetysrajaa](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Mitä Enterprise License sisältää](#what-is-included-in-the-enterprise-license)
   * [Miten tämä on ilmaista](#how-is-it-free)
   * [Mikä on suurin sallittu sähköpostin koko](#what-is-the-max-email-size-limit)
   * [Tallennatteko sähköpostilokeja](#do-you-store-logs-of-emails)
@@ -1041,7 +1046,7 @@ Katso ohjeet kohdasta [Tuetteko sähköpostin lähettämistä SMTP:llä](#do-you
 ### Missä palvelimenne sijaitsevat {#where-are-your-servers-located}
 
 > \[!TIP]
-> Saatamme pian ilmoittaa EU:n datakeskuksemme sijainnin, joka sijaitsee [forwardemail.eu](https://forwardemail.eu) -palvelun alla. Tilaa keskustelu osoitteessa <https://github.com/orgs/forwardemail/discussions/336> saadaksesi päivityksiä.
+> Saatamme pian ilmoittaa EU:n datakeskuksemme sijainnin, joka sijaitsee [forwardemail.eu](https://forwardemail.eu) -palvelun alla. Tilaa keskustelu osoitteessa <https://github.com/orgs/forwardemail/discussions/336> saadaksesi päivityksiä.  Vain EU:hun rajoittuvaa käyttöönottoa tai valittavaa EU-vaihtoehtoa ei ole tällä hetkellä – katso [Voinko pitää sähköpostin käsittelyn ja tallennuksen EU:ssa (tietojen sijainti)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 Palvelimemme sijaitsevat pääasiassa Denverissä, Coloradossa – katso täydellinen IP-osoitelistamme osoitteesta <https://forwardemail.net/ips>.
 
@@ -4066,12 +4071,73 @@ Kyllä, Forward Email tarjoaa kattavan tietojenkäsittelysopimuksen (DPA), joka 
 * Kattaa GDPR-vaatimustenmukaisuuden sekä EU-USA/Sveitsi-USA Privacy Shield -kehykset
 * Hyväksytään automaattisesti hyväksyttäessä käyttöehtomme
 * Ei erillistä allekirjoitusta vakio-DPA:lle
-* Räätälöidyt DPA-järjestelyt saatavilla Enterprise-lisenssin kautta
+* Vastakirjoitettu kopio ja räätälöidyt DPA-järjestelyt ovat saatavilla [Enterprise License](#what-is-included-in-the-enterprise-license):n kautta
+* Nimetäksesi meidät omaan aliprosessoriliitteeseesi, katso [Miten nimitän Forward Emailin aliprosessoriksi omassa DPA:ssani](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **GDPR-vaatimustenmukaisuuden kehys:**
 DPA:ssamme kuvataan GDPR:n sekä kansainvälisten tietojen siirron vaatimustenmukaisuus. Täydelliset tiedot löytyvät osoitteesta: <https://forwardemail.net/gdpr>
 
 Yritysasiakkaille, jotka tarvitsevat räätälöityjä DPA-ehtoja tai erityisiä sopimusjärjestelyjä, nämä voidaan hoitaa **Enterprise License ($250/kuukausi)** -ohjelmamme kautta.
+
+
+### Voinko pitää sähköpostin käsittelyn ja tallennuksen EU:ssa (tietojen sijainti) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> Ei vielä. EU:hun rajoittuvaa käyttöönottoa tai EU-valintamahdollisuutta ei ole tällä hetkellä saatavilla, eikä sinun tule kuvata Forward Emailia EU:hun rajoittuvana käsittelijänä omissa asiakirjoissasi tai tietojenkäsittelysopimuksessa.
+
+**Missä käsittely tapahtuu tällä hetkellä:** palvelimemme sijaitsevat ensisijaisesti Denver, Colorado, United States (katso [Missä palvelimenne sijaitsevat](#where-are-your-servers-located) ja <https://forwardemail.net/ips>). Tämä koskee kaikkia ominaisuuksia: saapuvan postin edelleenlähetys, virhelokit, postilaatikon tallennus (IMAP/POP3/CalDAV/CardDAV) ja lähtevä SMTP.
+
+**Suunnitelmissa:** EU-tietokeskus Amsterdamissa, julkaistuna osoitteessa [forwardemail.eu](https://forwardemail.eu). Jotta EU-tiedot pysyvät aidosti eristettyinä – sekä oikeudellisesti että teknisesti – toiminnan on tapahduttava erillisen EU:hun sijoittautuneen yhtiön kautta, ei vain EU:ssa sijaitsevien palvelimien kautta. Meillä ei vielä ole julkaisupäivää, eikä jonotuslistalle liittyminen muuta sitä, missä sähköpostisi käsitellään tänään. Tilaa ilmoitukset osoitteesta <https://github.com/orgs/forwardemail/discussions/336>; kerromme siellä, miten nykyiset asiakkaat voivat ottaa sen käyttöön, kun se on saatavilla.
+
+**Mitä voit kuvata täsmällisesti tällä hetkellä:**
+
+* Käsittelijä: Forward Email LLC, yhtiö, joka on rekisteröity Delaware, United States
+* Käsittelyn ja tallennuksen sijainti: United States
+* Siirtomekanismi ja suojatoimet: kuten [DPA](/dpa)- ja [GDPR](/gdpr)-sivuillamme on kuvattu
+* Omat alikäsittelijämme: listattu [GDPR](/gdpr)-sivullamme (kaikki Yhdysvalloissa toimivia palveluntarjoajia)
+
+Katso [Missä toimialueeni saapuva sähköposti käsitellään ja tallennetaan, ja kuinka pitkään](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) ominaisuuksittain jaottelua varten, sekä [Miten listaan Forward Emailin alikäsittelijäksi omaan DPA:ani](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa) valmiiksi kopioitavaa liite-merkintää varten.
+
+### Missä toimialueeni saapuva sähköposti käsitellään ja tallennetaan, ja kuinka pitkään {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+Kaikki käsittely ja tallennus tapahtuu palvelimillamme Denver, Colorado, United States. Mitä säilytetään ja kuinka pitkään, riippuu ominaisuudesta:
+
+| Ominaisuus | Mitä säilytetään | Säilytysaika |
+| --- | --- | --- |
+| **Sähköpostin edelleenlähetys** (alias, joka välittää toiseen osoitteeseen tai webhookiin) | Ei mitään. Viesti käsitellään kokonaan muistissa ja välitetään määränpäähän; sitä ei koskaan kirjoiteta levylle tai tietokantaan. | Ei säilytystä – viesti poistetaan heti, kun toimitusta on yritetty |
+| **SMTP-virhelokit** (`4xx`/`5xx` vastaukset) | SMTP-virhe, kirjekuori ja sähköpostin otsaketiedot. **Ei** viestin runkoa tai liitteitä. | 7 päivää (katso [Säilytättekö virhelokeja](#do-you-store-error-logs)) |
+| **Väärinkäytön eston välimuistit** (greylist, denylist, nopeusrajoitus) | Avaimet, jotka on johdettu lähettäjä- ja vastaanottajatiedoista (osoitteet, toimialueet, tiivisteet), ei viestisisältöä. | Enintään 30 päivää (katso [Onko teillä greylist](#do-you-have-a-greylist) ja [Onko teillä denylist](#do-you-have-a-denylist)) |
+| **Postilaatikon tallennus** (IMAP/POP3/CalDAV/CardDAV, kun aliasilla on käytössä) | Viestit, yhteystiedot ja kalenterit, yksittäin salatussa SQLite-postilaatikossa, jonka vain salasanasi voi avata. | Kunnes poistat viestin, aliaksen, toimialueen tai tilin (katso [Miten vien ja varmuuskopioin postilaatikkoni](#how-do-i-export-and-backup-my-mailbox)) |
+| **Lähtevä SMTP** | Toimitusta ja virheraportointia varten kerätyt jonotietueet. Viestirunkoja säilytetään oletuksena 0 päivää onnistuneen toimituksen tai pysyvän virheen jälkeen; voit nostaa tämän enintään 30 päivään per toimialue. | ~30 päivää jonotietueille (katso [Tietosuojakäytäntö](/privacy)) |
+
+Kaksi asiaa, jotka kannattaa mainita omissa asiakirjoissasi:
+
+* Edelleenlähetetty viesti toimitetaan määrittämääsi kohdepostilaatikkoon (esimerkiksi Google Workspace tai Microsoft 365). Sen tarjoajan suorittamaa tallennusta koskevat sinun ja heidän väliset sopimusehdot, eivät meidän.
+* Toimialue- ja tilitietueita (sähköpostiosoitteesi, toimialueiden nimet, aliakset, laskutustiedot) säilytetään niin kauan kuin tilisi on olemassa. Täydellinen luettelo on kohdassa [Tietosuojakäytäntö](/privacy).
+
+Lähteet: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf> ja MX-käsittelijä osoitteessa <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### Miten listaan Forward Emailin alikäsittelijäksi omaan DPA:ani {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+Jos olet rekisterinpitäjä (tai itse käsittelijä) GDPR:n 28 artiklan nojalla ja käytät Forward Emailia asiakkaidesi tai käyttäjiesi postien käsittelyyn, sinun on tyypillisesti nimettävä meidät oman alikäsittelijäliitteesi luetteloon. Alla oleva merkintä on sellainen, jonka me kirjoittaisimme:
+
+| Kenttä | Arvo |
+| --- | --- |
+| **Alikäsittelijä** | Forward Email LLC |
+| **Rekisteröity** | State of Delaware, United States |
+| **Palvelu** | Sähköpostin edelleenlähetys (saapuva MX) ja, kun käytössä, salattu postilaatikon tallennus (IMAP/POP3/CalDAV/CardDAV) sekä lähtevä SMTP |
+| **Käsiteltävät henkilötiedot** | Sähköpostiosoitteet, kirjekuori- ja otsakemetadata sekä viestisisältö siirron aikana (vain muistissa edelleenlähetystä varten; levossa salattuna postilaatikon tallennuksessa) |
+| **Käsittelyn sijainti** | United States (Denver, Colorado) |
+| **Säilytysaika** | Katso [Missä toimialueeni saapuva sähköposti käsitellään ja tallennetaan, ja kuinka pitkään](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **Siirtomekanismi** | Kuten [DPA](/dpa)- ja [GDPR](/gdpr)-sivuillamme on esitetty |
+| **Omat alikäsittelijämme** | Listattu [GDPR](/gdpr)-sivullamme ja [DPA](/dpa):ssa (tällä hetkellä Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe ja PayPal) |
+| **EU-edustaja (Art. 27)** | Osano International Compliance Services Limited, Dublin, Irlanti – täydellinen osoite [GDPR](/gdpr)-sivullamme |
+| **UK-edustaja** | Osano UK Compliance LTD, Belfast – täydellinen osoite [GDPR](/gdpr)-sivullamme |
+| **Tietojenkäsittelysopimus** | <https://forwardemail.net/dpa> (hyväksytty [Terms](/terms)-ehtojemme yhteydessä; vastapuolen allekirjoittama kopio toimitetaan Enterprise License -lisenssin puitteissa) |
+| **Tietoturvayhteyshenkilö** | <security@forwardemail.net> |
+
+> [!WARNING]
+> [Terms](/terms) eivät salli palvelun operointia, jossa kolmannet osapuolet (muut kuin omat työntekijäsi ja alihankkijasi) pääsevät käsiksi Forward Emailiin, käyttävät sitä tai hyötyvät siitä ilman enterprise-sopimusta. Jos nimeät meidät alikäsittelijäksi, koska käsittelet asiakkaidesi postia, tarvitset [Enterprise License](#what-is-included-in-the-enterprise-license) – sitä kautta saat myös vastapuolen allekirjoittaman DPA:n.
 
 ### Miten käsittelette tietomurtotiedotteet {#how-do-you-handle-data-breach-notifications}
 
@@ -5694,6 +5760,34 @@ Kyllä, voit, mutta sinun on silti noudatettava enimmäisrajaa. Jos sinulla on `
 ### Voivatko ihmiset rekisteröidä tai poistaa sähköpostin edelleenlähetyksen ilman lupaasi {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 Käytämme MX- ja <strong class="notranslate">TXT</strong>-tietueiden vahvistusta, joten jos lisäät tämän palvelun vastaavat MX- ja <strong class="notranslate">TXT</strong>-tietueet, olet rekisteröitynyt. Jos poistat ne, olet poistunut rekisteristä. Omistat verkkotunnuksesi ja DNS-hallinnan, joten jos joku pääsee niihin käsiksi, se on ongelma.
+
+
+### Miten lisään tallennustilaa tai lähtevän SMTP:n lähetysrajaa {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+Siirry kohtaan <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Oma tili → Laskutus</a> ja selaa kohtaan **Lisäosat**, jossa on kaksi pyyntölomaketta:
+
+* **Tallennustilan nosto** — valitse lisättävä määrä (+10, +20, +30, +40 tai +50 GB), tai valitse "Other" pyytääksesi mukautetun määrän.
+* **Lähtevän SMTP-lähetysrajan nosto** — valitse lisättävä määrä (+1000, +2000 tai +3000 sähköpostia päivässä), tai valitse "Other" pyytääksesi mukautetun määrän.
+
+Jommankumman lomakkeen lähettäminen välittää pyyntösi tiimillemme tarkistettavaksi — sinua ei veloiteta heti. Kun pyyntö on hyväksytty, lähetämme sinulle sähköpostitse suojatun maksulinkin päivityksen viimeistelemiseksi. Voit pitää kerrallaan yhden odottavan pyynnön tyyppiä kohden (tallennus tai SMTP); saman tyyppisen aiemman pyynnön jälkeen uuden lähettäminen 3 päivän sisällä ei ole sallittua ennen kuin tuo aikaikkuna on kulunut.
+
+
+### Mitä Enterprise License sisältää {#what-is-included-in-the-enterprise-license}
+
+Enterprise License on **$250/month**, joka tarjotaan ja laskutetaan suoraan eikä osteta hinnoittelusivun kautta. Se sisältää kaiken Tiimi-suunnitelmasta sekä lisäksi:
+
+* **Käyttöehtopoikkeus kolmansille osapuolille** – voit operoida palvelua tai integraatiota, jossa asiakkaasi, opiskelijasi tai toimeksiantajasi (ei vain omat työntekijäsi ja alihankkijasi) käyttävät Forward Emailia tai hyötyvät siitä. Vakiomuotoiset [Terms](/terms) eivät salli tätä.
+* **Vastapuolen allekirjoittama enterprise-sopimus ja DPA** – lähetetään tarkistettavaksi ja allekirjoitettavaksi DocuSignin kautta. Näin saat allekirjoitetun [DPA](/dpa):n sen sijaan, että hyväksyisit kopion osana [Terms](/terms)-ehtoja.
+* **Räätälöidyt sopimusehdot** silloin, kun voimme tukea niitä, kuten tietoturvaloukkauksista ilmoittamisen SLA:t (katso [Miten käsittelette tietoturvaloukkausilmoitukset](#how-do-you-handle-data-breach-notifications)).
+* **Rajattomat API-pyynnöt** ilman nopeusrajoitusta.
+* **Oma asiakastuen keskusteluhuone** insinööritiimimme kanssa.
+* **Käyttöönottotuki ja reaaliaikainen insinöörituki.**
+
+Se ei muuta sitä, missä tietojasi käsitellään: katso [Voinko pitää sähköpostin käsittelyn ja tallennuksen EU:ssa (tietojen sijainti)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**Kenelle se on tarkoitettu:** kaikille, joiden palvelun käyttö poikkeaa Ehdosta (kolmansien osapuolten pääsy), sekä kaikille, jotka tarvitsevat vastapuolen allekirjoittaman DPA:n, räätälöidyt DPA-ehdot tai nimetyn insinööriyhteyshenkilön sääntelyvaatimusten vuoksi.
+
+**Miten aloitat:** [ota meihin yhteyttä](/help) yrityksesi virallisella nimellä, rekisteröidyllä osoitteella, yhtiön rekisteri- ja ALV-tunnuksilla sekä sen henkilön nimellä, nimikkeellä ja sähköpostiosoitteella, joka allekirjoittaa. Vastaamme lähettämällä DocuSign-sopimuksen tarkistettavaksi.
 
 ### Miten tämä on ilmaista {#how-is-it-free}
 

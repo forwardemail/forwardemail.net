@@ -153,7 +153,7 @@
   * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Can I recursively forward emails](#can-i-recursively-forward-emails)
   * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How do I increase my storage or outbound SMTP sending limit](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+  * [How do I increase my storage or outbound SMTP sending limit {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit-how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
   * [What is included in the Enterprise License](#what-is-included-in-the-enterprise-license)
   * [How is it free](#how-is-it-free)
   * [What is the max email size limit](#what-is-the-max-email-size-limit)
@@ -5952,7 +5952,7 @@ Yes, you can, however you still must adhere to the maximum limit.  If you have `
 
 We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
 
-### How do I increase my storage or outbound SMTP sending limit
+### How do I increase my storage or outbound SMTP sending limit {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
 Go to <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">My Account → Billing</a> and scroll to the **Add-ons** section, which has two request forms:
 

@@ -96,6 +96,9 @@
   * [Kik férnek hozzá az email infrastruktúrátokhoz](#who-has-access-to-your-email-infrastructure)
   * [Milyen infrastruktúra szolgáltatókat használtok](#what-infrastructure-providers-do-you-use)
   * [Kínáltok adatfeldolgozási megállapodást (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+* [Megtarthatom az e-mailek feldolgozását és tárolását az EU-ban (adatrezidencia)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [Hol dolgozzák fel és hol tárolják a domainomra érkező e-maileket, és mennyi ideig](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [Hogyan tüntethetem fel a Forward Email szolgáltatót aladatfeldolgozóként a saját DPA-ban](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Hogyan kezelitek az adatvédelmi incidens értesítéseket](#how-do-you-handle-data-breach-notifications)
   * [Kínáltok teszt környezetet](#do-you-offer-a-test-environment)
   * [Biztosítotok monitorozó és riasztó eszközöket](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [Van maximális limit az aliasonként továbbítható email címek számára](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Továbbíthatok emailt rekurzívan](#can-i-recursively-forward-emails)
   * [Lehet valaki engedély nélkül regisztrálni vagy leiratkozni az email továbbításomról](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [Hogyan növelhetem a tárhelyemet vagy a kimenő SMTP küldési limitet](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Mit tartalmaz az Enterprise License](#what-is-included-in-the-enterprise-license)
   * [Hogyan ingyenes](#how-is-it-free)
   * [Mi az email maximális méretkorlátja](#what-is-the-max-email-size-limit)
   * [Tároltok email naplókat](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ Kérjük, tekintse meg a [Támogatják-e az SMTP-vel történő e-mail küldést
 ### Hol találhatók a szervereik? {#where-are-your-servers-located}
 
 > \[!TIP]
-> Hamarosan bejelenthetjük az EU adatközpontunk helyszínét, amely a [forwardemail.eu](https://forwardemail.eu) alatt működik. Iratkozzon fel a beszélgetésre a <https://github.com/orgs/forwardemail/discussions/336> címen a frissítésekért.
+> Hamarosan bejelenthetjük az EU adatközpontunk helyszínét, amely a [forwardemail.eu](https://forwardemail.eu) alatt működik. Iratkozzon fel a beszélgetésre a <https://github.com/orgs/forwardemail/discussions/336> címen a frissítésekért.  Jelenleg nincs kizárólag EU-ra korlátozott telepítés vagy külön aktiválható opció – lásd: [Megtarthatom az e-mailek feldolgozását és tárolását az EU-ban (adatrezidencia)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 Szervereink elsősorban Denverben, Colorado államban találhatók – a teljes IP-cím listánkat lásd a <https://forwardemail.net/ips> oldalon.
 
@@ -4067,12 +4072,73 @@ Igen, a Forward Email átfogó Adatfeldolgozási Megállapodást (DPA) kínál, 
 * Lefedi a GDPR megfelelést és az EU-USA/Svájc-USA Privacy Shield keretrendszereket
 * Automatikusan elfogadott a Szolgáltatási Feltételeink elfogadásakor
 * A szabványos DPA-hoz nincs szükség külön aláírásra
-* Egyedi DPA megállapodások elérhetők vállalati licenc keretében
+* Ellenjegyzett példány, valamint egyedi DPA-megállapodások az [Enterprise License](#what-is-included-in-the-enterprise-license) keretében érhetők el
+* A saját aladatfeldolgozói mellékletedben való megnevezésünkhöz lásd: [Hogyan tüntethetem fel a Forward Email szolgáltatót aladatfeldolgozóként a saját DPA-ban](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **GDPR megfelelőségi keretrendszer:**
 DPA-nk részletezi a GDPR-nak és a nemzetközi adatátviteli követelményeknek való megfelelést. Teljes információ elérhető itt: <https://forwardemail.net/gdpr>
 
 Vállalati ügyfelek számára, akik egyedi DPA feltételeket vagy specifikus szerződéses megállapodásokat igényelnek, ezek a **Vállalati Licenc ($250/hónap)** programunkon keresztül kezelhetők.
+
+
+### Tarthatom-e az e‑mail-feldolgozást és -tárolást az EU-ban (adatrezidencia) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> Még nem. Jelenleg nincs kizárólag EU-s telepítés vagy EU-s bekapcsolási lehetőség, és a saját nyilvántartásaidban vagy adatfeldolgozási megállapodásodban nem szabad a Forward Emailt kizárólag EU-s feldolgozóként feltüntetni.
+
+**Hol történik ma a feldolgozás:** a szervereink elsősorban Denver, Colorado, United States területén találhatók (lásd: [Hol találhatók a szervereitek](#where-are-your-servers-located) és <https://forwardemail.net/ips>). Ez minden funkcióra érvényes: bejövő továbbítás, hibanaplók, postafiók-tárolás (IMAP/POP3/CalDAV/CardDAV) és kimenő SMTP.
+
+**Mi van tervben:** egy EU-s adatközpont Amszterdamban, a [forwardemail.eu](https://forwardemail.eu) alatt üzemeltetve. Az EU-s adatok valódi elszigeteléséhez – jogilag és technikailag egyaránt – egy külön, EU‑ban bejegyzett vállalatnak kell üzemeltetnie, nem elég pusztán EU‑ban lévő szervereken futtatni. Még nincs indulási dátumunk, és a várólistára feliratkozás nem változtat azon, hogy ma hol kerül feldolgozásra a leveled. Iratkozz fel a <https://github.com/orgs/forwardemail/discussions/336> hivatkozáson a bejelentésekre; ott leírjuk majd, hogy a meglévő ügyfelek hogyan tudnak csatlakozni, amint elérhetővé válik.
+
+**Amit ma pontosan állíthatsz:**
+
+* Feldolgozó: Forward Email LLC, Delaware, United States államban bejegyzett vállalat
+* A feldolgozás és tárolás helye: United States
+* Átadási mechanizmus és garanciák: ahogyan a [DPA](/dpa) és [GDPR](/gdpr) oldalainkon leírtuk
+* Saját alfeldolgozóink: a [GDPR](/gdpr) oldalunkon felsorolva (mind US‑alapú szolgáltatók)
+
+Lásd: [Hol kerül feldolgozásra és tárolásra a domainom bejövő e‑mailje, és mennyi ideig](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) a funkciónkénti bontásért, valamint [Hogyan tüntessem fel a Forward Emailt alfeldolgozóként a saját DPA‑mban](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa) egy kész, másolható melléklet-bejegyzésért.
+
+### Hol kerül feldolgozásra és tárolásra a domainom bejövő e‑mailje, és mennyi ideig {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+Minden feldolgozás és tárolás a Denver, Colorado, United States területén lévő szervereinken történik. Hogy mi marad meg, és mennyi ideig, az a funkciótól függ:
+
+| Funkció | Mi kerül megőrzésre | Megőrzési idő |
+| --- | --- | --- |
+| **Email továbbítás** (egy alias, amely egy másik címre vagy webhookra továbbít) | Semmi. Az üzenet teljes egészében memóriában kerül feldolgozásra, és a célhelyre továbbítjuk; soha nem írjuk le lemezre vagy adatbázisba. | Nincs – az üzenetet azonnal eldobjuk, amint a kézbesítést megkíséreljük |
+| **SMTP hibanaplók** (`4xx`/`5xx` válaszok) | Az SMTP hiba, a boríték és az e‑mail fejlécek. **Nem** az üzenet törzse vagy a mellékletek. | 7 nap (lásd: [Tároltok hibanaplókat](#do-you-store-error-logs)) |
+| **Visszaélés elleni gyorsítótárak** (szürkelista, tiltólista, ráta‑korlátozás) | Kulcsok a feladói és címzett adatokból (címek, domainek, hashek) származtatva, üzenettartalom nélkül. | Legfeljebb 30 nap (lásd: [Van szürkelistátok](#do-you-have-a-greylist) és [Van tiltólistátok](#do-you-have-a-denylist)) |
+| **Postafiók-tárolás** (IMAP/POP3/CalDAV/CardDAV, ha engedélyezve van egy aliason) | Üzenetek, névjegyek és naptárak, egyedileg titkosított SQLite postafiókban, amelyet csak a jelszavad nyithat meg. | Amíg nem törlöd az üzenetet, az aliast, a domaint vagy a fiókot (lásd: [Hogyan exportálhatom és készíthetek biztonsági mentést a postafiókomról](#how-do-i-export-and-backup-my-mailbox)) |
+| **Kimenő SMTP** | Sorrekordok a kézbesítéshez és a hibajelentéshez. Az üzenettörzsek alapértelmezetten 0 napig kerülnek megőrzésre a sikeres kézbesítés vagy végleges hiba után; ezt domaineként legfeljebb 30 napra emelheted. | ~30 nap a sorrekordokra (lásd az [Adatvédelmi irányelveinket](/privacy)) |
+
+Két dolog, amit érdemes a saját nyilvántartásodban rögzíteni:
+
+* A továbbított üzenet arra a célpostafiókra kerül kézbesítésre, amelyet beállítottál (például Google Workspace vagy Microsoft 365). Amit az a szolgáltató tárol, arra a vele kötött megállapodásod vonatkozik, nem a miénk.
+* A domain- és fiókadataid (e‑mail‑címed, domainnevek, aliasok, számlázási adatok) addig kerülnek tárolásra, amíg a fiókod létezik. A teljes listáért lásd az [Adatvédelmi irányelveinket](/privacy).
+
+Források: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf>, és az MX kezelő a következő helyen: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### Hogyan tüntessem fel a Forward Emailt alfeldolgozóként a saját DPA‑mban {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+Ha GDPR 28. cikke szerinti adatkezelő (vagy magad is adatfeldolgozó) vagy, és a Forward Emailt használod az ügyfeleid vagy felhasználóid levelezésének kezelésére, akkor jellemzően fel kell tüntetned minket a saját alfeldolgozói mellékletedben. Az alábbi bejegyzés azt mutatja, mit írnánk mi:
+
+| Mező | Érték |
+| --- | --- |
+| **Alfeldolgozó** | Forward Email LLC |
+| **Bejegyezve** | State of Delaware, United States |
+| **Szolgáltatás** | Email továbbítás (bejövő MX) és, ahol engedélyezve van, titkosított postafiók‑tárolás (IMAP/POP3/CalDAV/CardDAV) és kimenő SMTP |
+| **Feldolgozott személyes adatok** | E‑mail‑címek, boríték‑ és fejléc‑metaadatok, valamint üzenettartalom az átvitel során (továbbításnál csak memóriában; postafiók‑tárolásnál nyugalmi állapotban titkosítva) |
+| **A feldolgozás helye** | United States (Denver, Colorado) |
+| **Megőrzés** | Lásd: [Hol kerül feldolgozásra és tárolásra a domainom bejövő e‑mailje, és mennyi ideig](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **Átadási mechanizmus** | A [Data Processing Agreement](/dpa) és [GDPR](/gdpr) oldalainkon foglaltak szerint |
+| **Saját alfeldolgozóink** | A [GDPR](/gdpr) oldalunkon és a [DPA](/dpa) dokumentumban felsorolva (jelenleg Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe és PayPal) |
+| **EU képviselő (Art. 27)** | Osano International Compliance Services Limited, Dublin, Ireland – a teljes cím a [GDPR](/gdpr) oldalunkon |
+| **UK képviselő** | Osano UK Compliance LTD, Belfast – a teljes cím a [GDPR](/gdpr) oldalunkon |
+| **Adatfeldolgozási megállapodás** | <https://forwardemail.net/dpa> (a [Feltételeinkkel](/terms) együtt elfogadva; ellenjegyzett példány a Vállalati licenc keretében biztosított) |
+| **Biztonsági kapcsolat** | <security@forwardemail.net> |
+
+> [!WARNING]
+> A [Feltételeink](/terms) nem engedélyezik olyan szolgáltatás üzemeltetését, amely lehetővé teszi harmadik feleknek (azaz a saját alkalmazottaidon és vállalkozóidon kívül bárkinek), hogy hozzáférjenek a Forward Emailhez, használják azt, vagy részesüljenek belőle, vállalati megállapodás nélkül. Ha azért tüntetsz fel minket alfeldolgozóként, mert az ügyfeleid leveleit kezeled, akkor szükséged van a [Vállalati licencre](#what-is-included-in-the-enterprise-license) – ez az az út is, amelyen ellenjegyzett DPA‑t kapsz.
 
 ### Hogyan kezelik az adatvédelmi incidensek értesítését? {#how-do-you-handle-data-breach-notifications}
 
@@ -5695,6 +5761,34 @@ Igen, tudsz, azonban továbbra is be kell tartanod a maximális korlátot. Ha va
 ### Tudnak-e az emberek engedélyem nélkül leiratkozni vagy regisztrálni az email továbbításomat {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 MX és <strong class="notranslate">TXT</strong> rekord ellenőrzést használunk, ezért ha hozzáadod a szolgáltatás megfelelő MX és <strong class="notranslate">TXT</strong> rekordjait, akkor regisztrált vagy. Ha eltávolítod őket, akkor le vagy iratkozva. A domain és DNS kezelés a te tulajdonodban van, így ha valaki hozzáfér ehhez, az problémát jelent.
+
+
+### Hogyan növelhetem a tárhelyemet vagy a kimenő SMTP küldési limitet {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+Nyisd meg a <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Fiókom → Számlázás</a> oldalt, és görgess le a **Kiegészítők** szakaszig, ahol két igénylőűrlap található:
+
+* **Tárhelybővítés** — válassz hozzáadandó mennyiséget (+10, +20, +30, +40 vagy +50 GB), vagy válaszd az "Other" opciót egyedi mennyiség kéréséhez.
+* **Kimenő SMTP limit bővítése** — válassz hozzáadandó mennyiséget (+1000, +2000 vagy +3000 e-mail naponta), vagy válaszd az "Other" opciót egyedi mennyiség kéréséhez.
+
+Az űrlapok bármelyikének beküldése elküldi a kérésedet a csapatunknak felülvizsgálatra — ez nem jár azonnali terheléssel. Jóváhagyás után e-mailben küldünk egy biztonságos fizetési linket a frissítés befejezéséhez. Egyszerre típusonként (tárhely vagy SMTP) egy függőben lévő kérésed lehet; ugyanarra a típusra 3 napon belül újabb beküldés nem engedélyezett, amíg ez az időablak le nem telik.
+
+
+### Mit tartalmaz a Vállalati licenc {#what-is-included-in-the-enterprise-license}
+
+A Vállalati licenc díja **$250/hó**, amelyet közvetlen ajánlat és számlázás alapján rendezünk, nem az árképzési oldalon keresztül vásárolva. Tartalmaz mindent a Team csomagból, továbbá:
+
+* **Felhasználási feltételek alóli kivétel harmadik felek számára** – üzemeltethetsz olyan szolgáltatást vagy integrációt, ahol az ügyfeleid, hallgatóid vagy klienseid (nem csak a saját alkalmazottaid és vállalkozóid) használják a Forward Emailt vagy részesülnek belőle. A szabványos [Feltételek](/terms) ezt nem engedik.
+* **Ellenjegyzett vállalati megállapodás és DPA** – felülvizsgálatra és aláírásra DocuSignon keresztül küldjük. Így kaphatsz aláírt [Adatfeldolgozási megállapodást](/dpa), nem csak a Feltételekkel elfogadott példányt.
+* **Egyedi szerződéses feltételek**, ahol tudjuk támogatni őket, például incidensértesítési szolgáltatási szint megállapodások (lásd: [Hogyan kezelitek az adatvédelmi incidensek bejelentését](#how-do-you-handle-data-breach-notifications)).
+* **Korlátlan API‑kérelmek** rátakorlátozás nélkül.
+* **Dedikált ügyféltámogatási chatszoba** a mérnökcsapatunkkal.
+* **Bevezetési segítség és valós idejű mérnöki támogatás.**
+
+Ez nem változtatja meg, hol kerülnek feldolgozásra az adataid: lásd [Tarthatom-e az e‑mail-feldolgozást és -tárolást az EU-ban (adatrezidencia)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**Kinek szükséges:** mindenkinek, akinek a szolgáltatáshasználata kívül esik a Feltételeken (harmadik fél hozzáférése), és mindenkinek, akinek ellenjegyzett DPA-ra, egyedi DPA-feltételekre vagy megfelelési célból név szerinti mérnöki kapcsolattartóra van szüksége.
+
+**Hogyan kezdj hozzá:** [lépj kapcsolatba velünk](/help) a jogi cégneveddel, bejegyzett címeddel, cégjegyzék- és ÁFA-számoddal, valamint az aláíró személy nevével, beosztásával és e‑mail‑címével. Válaszul elküldünk egy DocuSign megállapodást áttekintésre.
 
 ### Hogyan lehet ingyenes {#how-is-it-free}
 

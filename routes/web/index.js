@@ -450,7 +450,7 @@ localeRouter
   // message. Public, like the FAQ itself; the help form that calls it is not.
   .get(
     '/faq/suggest.json',
-    rateLimit(2000, 'faq_suggest', ms('1h')),
+    rateLimit(60, 'faq_suggest', ms('1m')),
     web.faqSuggest
   )
   .get(

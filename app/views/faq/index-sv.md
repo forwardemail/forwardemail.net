@@ -96,6 +96,9 @@
   * [Vem har tillgång till er e-postinfrastruktur](#who-has-access-to-your-email-infrastructure)
   * [Vilka infrastrukturleverantörer använder ni](#what-infrastructure-providers-do-you-use)
   * [Erbjuder ni ett databehandlingsavtal (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+* [Kan jag behålla min e‑postbehandling och lagring inom EU (datahemvist)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [Var behandlas och lagras inkommande e‑post för min domän och hur länge](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [Hur listar jag Forward Email som underbiträde i min egen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Hur hanterar ni dataintrångsmeddelanden](#how-do-you-handle-data-breach-notifications)
   * [Erbjuder ni en testmiljö](#do-you-offer-a-test-environment)
   * [Tillhandahåller ni övervaknings- och larmverktyg](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [Finns det en maxgräns för antal e-postadresser jag kan vidarebefordra till per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Kan jag vidarebefordra mail rekursivt](#can-i-recursively-forward-emails)
   * [Kan folk avregistrera eller registrera min e-postvidarebefordran utan mitt tillstånd](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [Hur ökar jag mitt lagringsutrymme eller gränsen för utgående SMTP-sändning](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Vad ingår i Enterprise License](#what-is-included-in-the-enterprise-license)
   * [Hur är det gratis](#how-is-it-free)
   * [Vad är maxstorleken för e-post](#what-is-the-max-email-size-limit)
   * [Sparar ni loggar över e-post](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ Se avsnittet om [Stöder ni att skicka e-post med SMTP](#do-you-support-sending-
 ### Var finns era servrar {#where-are-your-servers-located}
 
 > \[!TIP]
-> Vi kan snart komma att tillkännage vår EU-datacenterplats som hostas under [forwardemail.eu](https://forwardemail.eu). Prenumerera på diskussionen på <https://github.com/orgs/forwardemail/discussions/336> för uppdateringar.
+> Vi kan snart komma att tillkännage vår EU-datacenterplats som hostas under [forwardemail.eu](https://forwardemail.eu). Prenumerera på diskussionen på <https://github.com/orgs/forwardemail/discussions/336> för uppdateringar.  Det finns ingen EU‑endast driftsättning eller aktivt val i dag – se [Kan jag behålla min e‑postbehandling och lagring inom EU (datahemvist)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 Våra servrar är främst placerade i Denver, Colorado – se <https://forwardemail.net/ips> för vår kompletta lista över IP-adresser.
 
@@ -4067,12 +4072,73 @@ Ja, Forward Email erbjuder ett omfattande databehandlingsavtal (DPA) som kan und
 * Täcker GDPR-efterlevnad och EU-US/Schweiz-US Privacy Shield-ramverk
 * Accepteras automatiskt vid godkännande av våra användarvillkor
 * Ingen separat underskrift krävs för standard-DPA
-* Anpassade DPA-arrangemang finns tillgängliga via Enterprise License
+* En motsignerad kopia och anpassade DPA‑arrangemang är tillgängliga via [Enterprise License](#what-is-included-in-the-enterprise-license)
+* För att namnge oss i din egen bilaga för underbiträden, se [Hur listar jag Forward Email som underbiträde i min egen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **GDPR-efterlevnadsramverk:**
 Vårt DPA beskriver efterlevnad av GDPR samt internationella krav för dataöverföring. Fullständig information finns på: <https://forwardemail.net/gdpr>
 
 För företagskunder som kräver anpassade DPA-villkor eller specifika avtalsarrangemang kan dessa hanteras genom vårt **Enterprise License ($250/månad)**-program.
+
+
+### Kan jag behålla min e‑postbearbetning och lagring inom EU (dataplacering) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> Inte ännu. Det finns ingen distribution endast inom EU eller EU‑opt‑in tillgänglig idag, och du ska inte beskriva Forward Email som ett personuppgiftsbiträde endast inom EU i dina egna register eller i ditt personuppgiftsbiträdesavtal.
+
+**Var bearbetning sker idag:** våra servrar är huvudsakligen placerade i Denver, Colorado, United States (se [Var finns era servrar](#where-are-your-servers-located) och <https://forwardemail.net/ips>). Detta gäller för varje funktion: inkommande vidarebefordran, felloggar, postlådelagring (IMAP/POP3/CalDAV/CardDAV) och utgående SMTP.
+
+**Vad som planeras:** ett EU‑datacenter i Amsterdam, driftat under [forwardemail.eu](https://forwardemail.eu). För att hålla EU‑data genuint isolerad – juridiskt såväl som tekniskt – måste det bedrivas via ett separat EU‑baserat bolag, inte bara via servrar på en plats inom EU. Vi har ännu inget lanseringsdatum, och att anmäla sig till en väntelista ändrar inte var din e‑post behandlas idag. Prenumerera på <https://github.com/orgs/forwardemail/discussions/336> för tillkännagivanden; där kommer vi att beskriva hur befintliga kunder kan välja in när det finns tillgängligt.
+
+**Vad du korrekt kan uppge idag:**
+
+* Personuppgiftsbiträde: Forward Email LLC, a company registered in Delaware, United States
+* Plats för behandling och lagring: United States
+* Överföringsmekanism och skyddsåtgärder: enligt beskrivningen på våra sidor [DPA](/dpa) och [GDPR](/gdpr)
+* Våra egna underbiträden: listade på vår [GDPR](/gdpr)-sida (alla leverantörer baserade i United States)
+
+Se [Var behandlas och lagras inkommande e‑post för min domän, och hur länge](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) för en funktionsvis genomgång, och [Hur listar jag Forward Email som ett underbiträde i mitt eget DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa) för en färdig bilaga att kopiera.
+
+### Var behandlas och lagras inkommande e‑post för min domän, och hur länge {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+All behandling och lagring sker på våra servrar i Denver, Colorado, United States. Vad som sparas, och hur länge, beror på funktionen:
+
+| Funktion | Vad sparas | Lagringstid |
+| --- | --- | --- |
+| **Vidarebefordran av e‑post** (ett alias som vidarebefordrar till en annan adress eller webhook) | Ingenting. Meddelandet behandlas helt i minnet och skickas vidare till destinationen; det skrivs aldrig till disk eller till en databas. | Ingen – meddelandet kasseras så snart leverans har försökts |
+| **SMTP‑felloggar** (`4xx`/`5xx`‑svar) | SMTP‑felet, kuvertet och e‑posthuvudena. **Inte** meddelandetexten eller bilagor. | 7 dagar (se [Sparar ni felloggar](#do-you-store-error-logs)) |
+| **Anti‑missbruks‑cachar** (grålista, neklista, frekvensbegränsning) | Nycklar härledda från avsändar- och mottagaruppgifter (adresser, domäner, hashar), inget meddelandeinnehåll. | Upp till 30 dagar (se [Har ni en grålista](#do-you-have-a-greylist) och [Har ni en neklista](#do-you-have-a-denylist)) |
+| **Postlådelagring** (IMAP/POP3/CalDAV/CardDAV, när aktiverat på ett alias) | Meddelanden, kontakter och kalendrar, i en individuellt krypterad SQLite‑postlåda som endast ditt lösenord kan öppna. | Tills du raderar meddelandet, aliaset, domänen eller kontot (se [Hur exporterar och säkerhetskopierar jag min postlåda](#how-do-i-export-and-backup-my-mailbox)) |
+| **Utgående SMTP** | Köposter för leverans och felrapportering. Meddelandetexter behålls som standard i 0 dagar efter lyckad leverans eller ett permanent fel; du kan höja detta till som mest 30 dagar per domän. | ~30 dagar för köposter (se vår [Integritetspolicy](/privacy)) |
+
+Två saker som är värda att ange i dina egna register:
+
+* Ett vidarebefordrat meddelande levereras till den destinationspostlåda du har konfigurerat (till exempel Google Workspace eller Microsoft 365). Vad den leverantören lagrar styrs av ditt avtal med dem, inte av oss.
+* Domän- och kontouppgifter (din e‑postadress, domännamn, alias, faktureringsuppgifter) lagras så länge ditt konto finns. Se vår [Integritetspolicy](/privacy) för hela listan.
+
+Källor: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf>, och MX‑hanteraren på <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### Hur listar jag Forward Email som ett underbiträde i mitt eget DPA {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+Om du är personuppgiftsansvarig (eller själv ett biträde) enligt GDPR artikel 28 och du använder Forward Email för att hantera e‑post för dina kunder eller användare, behöver du normalt namnge oss i din egen bilaga över underbiträden. Posten nedan är vad vi skulle skriva:
+
+| Fält | Värde |
+| --- | --- |
+| **Underbiträde** | Forward Email LLC |
+| **Registrerad i** | State of Delaware, United States |
+| **Tjänst** | Vidarebefordran av e‑post (inkommande MX) och, där det är aktiverat, krypterad postlådelagring (IMAP/POP3/CalDAV/CardDAV) samt utgående SMTP |
+| **Behandlade personuppgifter** | E‑postadresser, kuvert- och rubrikmetadata samt meddelandeinnehåll under överföring (endast i minnet för vidarebefordran; krypterat i vila för postlådelagring) |
+| **Plats för behandling** | United States (Denver, Colorado) |
+| **Lagringstid** | Se [Var behandlas och lagras inkommande e‑post för min domän, och hur länge](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **Överföringsmekanism** | Så som anges på våra sidor [Data Processing Agreement](/dpa) och [GDPR](/gdpr) |
+| **Våra underbiträden** | Listade på vår [GDPR](/gdpr)-sida och i [DPA](/dpa) (för närvarande Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe och PayPal) |
+| **EU‑representant (Art. 27)** | Osano International Compliance Services Limited, Dublin, Ireland – fullständig adress på vår [GDPR](/gdpr)-sida |
+| **Representant i Storbritannien** | Osano UK Compliance LTD, Belfast – fullständig adress på vår [GDPR](/gdpr)-sida |
+| **Personuppgiftsbiträdesavtal** | <https://forwardemail.net/dpa> (accepteras tillsammans med våra [Terms](/terms); en motundertecknad kopia tillhandahålls under Enterprise License) |
+| **Säkerhetskontakt** | <security@forwardemail.net> |
+
+> [!WARNING]
+> Våra [Terms](/terms) tillåter inte att driva en tjänst som låter tredje parter (någon annan än dina egna anställda och konsulter) få åtkomst till, använda eller dra nytta av Forward Email utan ett företagsavtal. Om du namnger oss som ett underbiträde eftersom du behandlar dina kunders e‑post behöver du [Enterprise License](#what-is-included-in-the-enterprise-license) – det är också så du får ett motundertecknat DPA.
 
 ### Hur hanterar ni anmälningar om dataintrång {#how-do-you-handle-data-breach-notifications}
 
@@ -5695,6 +5761,34 @@ Ja, det kan du, men du måste fortfarande följa den maximala gränsen. Om du ha
 ### Kan folk avregistrera eller registrera min e-postvidarebefordran utan mitt tillstånd {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 Vi använder MX- och <strong class="notranslate">TXT</strong>-postverifiering, så om du lägger till denna tjänsts respektive MX- och <strong class="notranslate">TXT</strong>-poster är du registrerad. Om du tar bort dem är du avregistrerad. Du äger din domän och DNS-hantering, så om någon har tillgång till det är det ett problem.
+
+
+### Hur ökar jag mitt lagringsutrymme eller gränsen för utgående SMTP-sändning {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+Gå till <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mitt konto → Fakturering</a> och skrolla till avsnittet **Tillägg**, som har två formulär för förfrågningar:
+
+* **Lagringsuppgradering** — välj en mängd att lägga till (+10, +20, +30, +40 eller +50 GB), eller välj "Other" för att begära en anpassad mängd.
+* **Uppgradering av gräns för utgående SMTP** — välj en mängd att lägga till (+1000, +2000 eller +3000 e-postmeddelanden per dag), eller välj "Other" för att begära en anpassad mängd.
+
+Att skicka in något av formulären skickar din begäran till vårt team för granskning — du debiteras inte omedelbart. När den har godkänts skickar vi dig en säker betalningslänk via e-post för att slutföra uppgraderingen. Du kan ha en väntande begäran per typ (lagring eller SMTP) åt gången; att skicka in igen inom 3 dagar efter en tidigare begäran av samma typ är inte tillåtet förrän det tidsfönstret har passerat.
+
+
+### Vad ingår i Enterprise License {#what-is-included-in-the-enterprise-license}
+
+Enterprise License är **$250/month**, offereras och faktureras direkt i stället för att köpas via prissidan. Den inkluderar allt i Team‑planen plus:
+
+* **Undantag i Terms of Use för tredje parter** – du får driva en tjänst eller integration där dina kunder, studenter eller klienter (inte bara dina egna anställda och konsulter) använder eller drar nytta av Forward Email. Våra standard‑[Terms](/terms) tillåter inte detta.
+* **Motundertecknat företagsavtal och DPA** – skickas för granskning och signering via DocuSign. Detta är hur du får ett undertecknat [Data Processing Agreement](/dpa) i stället för kopian som accepteras tillsammans med våra Terms.
+* **Anpassade avtalsvillkor** där vi kan stödja dem, såsom SLA:er för incidentrapportering vid intrång (se [Hur hanterar ni aviseringar om dataintrång](#how-do-you-handle-data-breach-notifications)).
+* **Obegränsade API‑förfrågningar** utan hastighetsbegränsning.
+* **Dedikerat kundsupportchattrum** med vårt ingenjörsteam.
+* **Onboarding‑stöd och teknisk support i realtid.**
+
+Det ändrar inte var dina data behandlas: se [Kan jag behålla min e‑postbearbetning och lagring inom EU (dataplacering)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**Vem behöver den:** alla vars användning av tjänsten faller utanför Terms (åtkomst för tredje part), och alla som kräver ett motundertecknat DPA, anpassade DPA‑villkor eller en namngiven ingenjörskontakt för regelefterlevnad.
+
+**Så här börjar du:** [kontakta oss](/help) med ditt juridiska företagsnamn, registrerade adress, organisationsnummer och momsregistreringsnummer (VAT‑nummer), samt namn, befattning och e‑postadress till den som ska signera. Vi svarar med ett DocuSign‑avtal för granskning.
 
 ### Hur är det gratis {#how-is-it-free}
 

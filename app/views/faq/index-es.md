@@ -96,6 +96,9 @@
   * [Quién tiene acceso a su infraestructura de correo](#who-has-access-to-your-email-infrastructure)
   * [Qué proveedores de infraestructura usan](#what-infrastructure-providers-do-you-use)
   * [Ofrecen un Acuerdo de Procesamiento de Datos (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+* [¿Puedo mantener el procesamiento y el almacenamiento de mi correo electrónico en la UE (residencia de datos)?](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [¿Dónde se procesan y almacenan los correos electrónicos entrantes de mi dominio y durante cuánto tiempo?](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [¿Cómo incluyo a Forward Email como subencargado en mi propio DPA?](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Cómo manejan notificaciones de brechas de datos](#how-do-you-handle-data-breach-notifications)
   * [Ofrecen un entorno de prueba](#do-you-offer-a-test-environment)
   * [Proveen herramientas de monitoreo y alertas](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [Hay un límite máximo en la cantidad de direcciones de correo a las que puedo reenviar por alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Puedo reenviar correos recursivamente](#can-i-recursively-forward-emails)
   * [Pueden las personas cancelar o registrar mi reenvío de correo sin mi permiso](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [¿Cómo aumento mi almacenamiento o el límite de envío de SMTP saliente](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [¿Qué incluye la Enterprise License?](#what-is-included-in-the-enterprise-license)
   * [Cómo es gratis](#how-is-it-free)
   * [Cuál es el límite máximo de tamaño de correo](#what-is-the-max-email-size-limit)
   * [Almacenan registros de correos](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ Consulte la sección sobre [¿Soportan enviar correo con SMTP?](#do-you-support-
 ### ¿Dónde están ubicados sus servidores? {#where-are-your-servers-located}
 
 > \[!TIP]
-> Pronto podríamos anunciar la ubicación de nuestro centro de datos en la UE alojado bajo [forwardemail.eu](https://forwardemail.eu). Suscríbase a la discusión en <https://github.com/orgs/forwardemail/discussions/336> para actualizaciones.
+> Pronto podríamos anunciar la ubicación de nuestro centro de datos en la UE alojado bajo [forwardemail.eu](https://forwardemail.eu). Suscríbase a la discusión en <https://github.com/orgs/forwardemail/discussions/336> para actualizaciones.  Hoy no existe un despliegue exclusivo en la UE ni una opción de adhesión – consulte [¿Puedo mantener el procesamiento y el almacenamiento de mi correo electrónico en la UE (residencia de datos)?](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 Nuestros servidores están ubicados principalmente en Denver, Colorado – vea <https://forwardemail.net/ips> para nuestra lista completa de direcciones IP.
 
@@ -4068,12 +4073,73 @@ Sí, Forward Email ofrece un Acuerdo de Procesamiento de Datos (DPA) completo qu
 * Cubre el cumplimiento GDPR y los marcos de Privacy Shield EU-US/Suizo-US
 * Aceptado automáticamente al aceptar nuestros Términos de Servicio
 * No se requiere firma separada para el DPA estándar
-* Arreglos personalizados de DPA disponibles mediante Licencia Empresarial
+* Una copia contrafirmada y acuerdos de DPA personalizados están disponibles a través de la [Enterprise License](#what-is-included-in-the-enterprise-license)
+* Para incluirnos en el anexo de subencargados de su propio DPA, consulte [¿Cómo incluyo a Forward Email como subencargado en mi propio DPA?](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **Marco de Cumplimiento GDPR:**
 Nuestro DPA detalla el cumplimiento con GDPR así como los requisitos internacionales de transferencia de datos. Información completa disponible en: <https://forwardemail.net/gdpr>
 
 Para clientes empresariales que requieran términos personalizados de DPA o acuerdos contractuales específicos, estos pueden gestionarse a través de nuestro programa de **Licencia Empresarial ($250/mes)**.
+
+
+### ¿Puedo mantener el procesamiento y el almacenamiento de mi correo electrónico en la UE (residencia de datos) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> Aún no. Hoy no existe un despliegue solo en la UE ni una opción de inclusión en la UE, y no debes describir a Forward Email como un encargado exclusivamente de la UE en tus propios registros ni en tu acuerdo de tratamiento de datos.
+
+**Dónde se procesa hoy:** nuestros servidores están ubicados principalmente en Denver, Colorado, Estados Unidos (consulta [¿Dónde están ubicados sus servidores?](#where-are-your-servers-located) y <https://forwardemail.net/ips>). Esto se aplica a todas las funciones: reenvío entrante, registros de errores, almacenamiento de buzón (IMAP/POP3/CalDAV/CardDAV) y SMTP saliente.
+
+**Qué está previsto:** un centro de datos en la UE en Ámsterdam, alojado bajo [forwardemail.eu](https://forwardemail.eu). Para mantener los datos de la UE realmente aislados —legal y técnicamente— es necesario operar a través de una empresa separada con sede en la UE, no solo mediante servidores en una ubicación de la UE. Aún no tenemos fecha de lanzamiento, y unirse a una lista de espera no cambia dónde se procesa tu correo hoy. Suscríbete a <https://github.com/orgs/forwardemail/discussions/336> para anuncios; allí describiremos cómo los clientes existentes pueden optar por participar cuando esté disponible.
+
+**Lo que hoy puedes declarar con precisión:**
+
+* Encargado del tratamiento: Forward Email LLC, una empresa registrada en Delaware, Estados Unidos
+* Ubicación del tratamiento y almacenamiento: Estados Unidos
+* Mecanismo de transferencia y salvaguardas: según se describe en nuestras páginas [DPA](/dpa) y [GDPR](/gdpr)
+* Nuestros propios subencargados del tratamiento: enumerados en nuestra página [GDPR](/gdpr) (todos proveedores con sede en Estados Unidos)
+
+Consulta [¿Dónde se procesa y almacena el correo entrante de mi dominio y durante cuánto tiempo?](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) para un desglose por función, y [¿Cómo incluyo a Forward Email como subencargado en mi propio DPA?](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa) para una entrada de anexo lista para copiar.
+
+### ¿Dónde se procesa y almacena el correo entrante de mi dominio y durante cuánto tiempo {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+Todo el procesamiento y el almacenamiento se realiza en nuestros servidores en Denver, Colorado, Estados Unidos. Lo que se conserva, y durante cuánto tiempo, depende de la función:
+
+| Función | Qué se conserva | Conservación |
+| --- | --- | --- |
+| **Reenvío de correo** (un alias que reenvía a otra dirección o webhook) | Nada. El mensaje se procesa completamente en memoria y se retransmite al destino; nunca se escribe en disco ni en una base de datos. | Ninguna – el mensaje se descarta en cuanto se intenta la entrega |
+| **Registros de errores SMTP** (respuestas `4xx`/`5xx`) | El error SMTP, el sobre y las cabeceras del correo electrónico. **No** el cuerpo del mensaje ni los archivos adjuntos. | 7 días (consulta [¿Almacenan registros de errores?](#do-you-store-error-logs)) |
+| **Cachés antiabuso** (lista gris, lista de denegación, limitación de tasa) | Claves derivadas de los datos del remitente y del destinatario (direcciones, dominios, hashes), sin contenido del mensaje. | Hasta 30 días (consulta [¿Tienen una lista gris?](#do-you-have-a-greylist) y [¿Tienen una lista de denegación?](#do-you-have-a-denylist)) |
+| **Almacenamiento de buzón** (IMAP/POP3/CalDAV/CardDAV, cuando está habilitado en un alias) | Mensajes, contactos y calendarios, en un buzón SQLite cifrado individualmente que solo tu contraseña puede abrir. | Hasta que elimines el mensaje, alias, dominio o cuenta (consulta [¿Cómo exporto y hago copia de seguridad de mi buzón?](#how-do-i-export-and-backup-my-mailbox)) |
+| **SMTP saliente** | Registros de cola para entrega e informes de errores. Los cuerpos de los mensajes se conservan durante 0 días de forma predeterminada tras una entrega correcta o un error permanente; puedes aumentar esto hasta un máximo de 30 días por dominio. | ~30 días para los registros de la cola (consulta nuestra [Política de Privacidad](/privacy)) |
+
+Dos cosas que conviene indicar en tus propios registros:
+
+* Un mensaje reenviado se entrega al buzón de destino que configuraste (por ejemplo, Google Workspace o Microsoft 365). Lo que ese proveedor almacene se rige por tu acuerdo con él, no por nosotros.
+* Los registros de dominio y de cuenta (tu dirección de correo, nombres de dominio, alias, datos de facturación) se almacenan mientras exista tu cuenta. Consulta nuestra [Política de Privacidad](/privacy) para la lista completa.
+
+Fuentes: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf>, y el manejador MX en <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### ¿Cómo incluyo a Forward Email como subencargado en mi propio DPA {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+Si eres responsable (o tú mismo eres encargado) en virtud del artículo 28 del GDPR y utilizas Forward Email para gestionar el correo de tus clientes o usuarios, normalmente tendrás que nombrarnos en tu propio anexo de subencargados. La siguiente entrada es lo que escribiríamos:
+
+| Campo | Valor |
+| --- | --- |
+| **Subencargado del tratamiento** | Forward Email LLC |
+| **Registrado en** | Estado de Delaware, Estados Unidos |
+| **Servicio** | Reenvío de correo (MX entrante) y, cuando esté habilitado, almacenamiento de buzón cifrado (IMAP/POP3/CalDAV/CardDAV) y SMTP saliente |
+| **Datos personales tratados** | Direcciones de correo, metadatos del sobre y de las cabeceras, y contenido de mensajes en tránsito (solo en memoria para reenvío; cifrado en reposo para almacenamiento de buzón) |
+| **Ubicación del tratamiento** | Estados Unidos (Denver, Colorado) |
+| **Conservación** | Consulta [¿Dónde se procesa y almacena el correo entrante de mi dominio y durante cuánto tiempo](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **Mecanismo de transferencia** | Según lo establecido en nuestras páginas [Data Processing Agreement](/dpa) y [GDPR](/gdpr) |
+| **Nuestros subencargados** | Enumerados en nuestra página [GDPR](/gdpr) y en el [DPA](/dpa) (actualmente Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe y PayPal) |
+| **Representante en la UE (art. 27)** | Osano International Compliance Services Limited, Dublín, Irlanda – dirección completa en nuestra página [GDPR](/gdpr) |
+| **Representante en el Reino Unido** | Osano UK Compliance LTD, Belfast – dirección completa en nuestra página [GDPR](/gdpr) |
+| **Acuerdo de tratamiento de datos** | <https://forwardemail.net/dpa> (aceptado con nuestros [Términos](/terms); se proporciona una copia contrafirmada bajo la Enterprise License) |
+| **Contacto de seguridad** | <security@forwardemail.net> |
+
+> [!WARNING]
+> Nuestros [Términos](/terms) no permiten operar un servicio que permita a terceros (cualquiera que no sean tus propios empleados y contratistas) acceder, usar o beneficiarse de Forward Email sin un acuerdo empresarial. Si nos nombras como subencargado porque procesas el correo de tus clientes, necesitas la [Enterprise License](#what-is-included-in-the-enterprise-license) – esa es también la forma de obtener un DPA contrafirmado.
 
 ### ¿Cómo manejan las notificaciones de violaciones de datos {#how-do-you-handle-data-breach-notifications}
 
@@ -5696,6 +5762,34 @@ Sí, puedes, sin embargo, aún debes respetar el límite máximo. Si tienes `hel
 ### ¿Pueden las personas cancelar o registrar mi reenvío de correo electrónico sin mi permiso {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 Usamos verificación de registros MX y <strong class="notranslate">TXT</strong>, por lo tanto, si agregas los respectivos registros MX y <strong class="notranslate">TXT</strong> de este servicio, entonces estás registrado. Si los eliminas, entonces estás dado de baja. Tú tienes la propiedad de tu dominio y la gestión del DNS, así que si alguien tiene acceso a eso, entonces eso es un problema.
+
+
+### ¿Cómo aumento mi almacenamiento o el límite de envío de SMTP saliente {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+Ve a <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mi cuenta → Facturación</a> y desplázate hasta la sección **Complementos**, que tiene dos formularios de solicitud:
+
+* **Mejora de almacenamiento** — elige una cantidad para añadir (+10, +20, +30, +40, o +50 GB), o selecciona "Other" para solicitar una cantidad personalizada.
+* **Mejora del límite de SMTP saliente** — elige una cantidad para añadir (+1000, +2000, o +3000 correos electrónicos diarios), o selecciona "Other" para solicitar una cantidad personalizada.
+
+Al enviar cualquiera de los formularios, tu solicitud se envía a nuestro equipo para su revisión — no se te cobrará de inmediato. Una vez aprobada, te enviaremos por correo electrónico un enlace de pago seguro para completar la mejora. Puedes tener una solicitud pendiente por tipo (almacenamiento o SMTP) a la vez; enviar otra dentro de los 3 días posteriores a una solicitud anterior del mismo tipo no está permitido hasta que pase ese período.
+
+
+### ¿Qué incluye la Enterprise License {#what-is-included-in-the-enterprise-license}
+
+La Enterprise License es **$250/month**, se cotiza y factura directamente en lugar de comprarse a través de la página de precios. Incluye todo en el plan Team más:
+
+* **Excepción de Términos de uso para terceros** – puedes operar un servicio o integración en el que tus clientes, estudiantes o clientes (no solo tus propios empleados y contratistas) usen o se beneficien de Forward Email. Nuestros [Términos](/terms) estándar no permiten esto.
+* **Acuerdo empresarial y DPA contrafirmados** – enviados para revisión y firma mediante DocuSign. Así es como obtienes un [Data Processing Agreement](/dpa) firmado en lugar de la copia aceptada con nuestros Términos.
+* **Términos contractuales personalizados** donde podamos admitirlos, como SLAs de notificación de brechas (consulta [¿Cómo gestionan las notificaciones de brechas de datos?](#how-do-you-handle-data-breach-notifications)).
+* **Solicitudes ilimitadas a la API** sin limitación de tasa.
+* **Sala de chat de soporte al cliente dedicada** con nuestro equipo de ingeniería.
+* **Asistencia de incorporación y soporte de ingeniería en tiempo real.**
+
+No cambia dónde se procesan tus datos: consulta [¿Puedo mantener el procesamiento y el almacenamiento de mi correo electrónico en la UE (residencia de datos)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**Quién la necesita:** cualquiera cuyo uso del servicio quede fuera de los Términos (acceso de terceros), y cualquiera que requiera un DPA contrafirmado, términos DPA personalizados o un contacto de ingeniería designado para fines de cumplimiento.
+
+**Cómo empezar:** [contacta con nosotros](/help) con tu razón social, domicilio social, números de registro mercantil e IVA, y el nombre, cargo y dirección de correo electrónico de la persona que firmará. Responderemos con un acuerdo DocuSign para revisión.
 
 ### ¿Cómo es gratis {#how-is-it-free}
 

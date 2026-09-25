@@ -7,7 +7,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 
 const config = require('#config');
-const { getFaqIndex, suggestFaq } = require('#helpers/get-faq-index');
+const { getFaqIndex, suggestFaq, tokenize } = require('#helpers/get-faq-index');
 
 // The help form asks this endpoint on every pause in typing. The cached index
 // in redis carries every answer's full HTML, well over a megabyte per locale,
@@ -17,8 +17,16 @@ const { getFaqIndex, suggestFaq } = require('#helpers/get-faq-index');
 // deploy, and a deploy restarts the process, so a short TTL is purely a guard.
 const MEMO_TTL = ms('1h');
 const memo = new Map();
+const MAX_QUERY_LENGTH = 1000;
+
+function getSafeLocale(locale) {
+  return config.i18n.locales.includes(locale)
+    ? locale
+    : config.i18n.defaultLocale;
+}
 
 async function getSuggestIndex(client, locale) {
+  locale = getSafeLocale(locale);
   const hit = memo.get(locale);
   if (hit && hit.expires > Date.now()) return hit.index;
 
@@ -39,12 +47,20 @@ async function getSuggestIndex(client, locale) {
 }
 
 async function faqSuggest(ctx) {
-  const query = isSANB(ctx.query.q) ? ctx.query.q : '';
+  const query = isSANB(ctx.query.q)
+    ? ctx.query.q.slice(0, MAX_QUERY_LENGTH)
+    : '';
 
   let suggestions = [];
-  if (query) {
+  // Avoid a cache lookup or Markdown parse for spaces, stop words, and other
+  // queries that cannot produce a result. This endpoint is public and called
+  // as a visitor types, so invalid input must remain cheap.
+  if (tokenize(query).length > 0) {
     try {
-      const index = await getSuggestIndex(ctx.client, ctx.locale);
+      const index = await getSuggestIndex(
+        ctx.client,
+        getSafeLocale(ctx.locale)
+      );
       suggestions = suggestFaq(index, query).map((s) => ({
         id: s.id,
         question: s.question,
@@ -66,4 +82,5 @@ async function faqSuggest(ctx) {
 
 module.exports = faqSuggest;
 module.exports.getSuggestIndex = getSuggestIndex;
+module.exports.getSafeLocale = getSafeLocale;
 module.exports.memo = memo;

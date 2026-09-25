@@ -96,6 +96,9 @@
   * [Siapa yang memiliki akses ke infrastruktur email Anda](#who-has-access-to-your-email-infrastructure)
   * [Penyedia infrastruktur apa yang Anda gunakan](#what-infrastructure-providers-do-you-use)
   * [Apakah Anda menawarkan Perjanjian Pemrosesan Data (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+* [Apakah saya dapat mempertahankan pemrosesan dan penyimpanan email saya di Uni Eropa (residensi data)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [Di mana email masuk untuk domain saya diproses dan disimpan, dan untuk berapa lama](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [Bagaimana cara saya mencantumkan Forward Email sebagai subprosesor dalam DPA milik saya](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Bagaimana Anda menangani pemberitahuan pelanggaran data](#how-do-you-handle-data-breach-notifications)
   * [Apakah Anda menawarkan lingkungan pengujian](#do-you-offer-a-test-environment)
   * [Apakah Anda menyediakan alat pemantauan dan peringatan](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [Apakah ada batas maksimum jumlah alamat email yang dapat saya teruskan per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Bisakah saya meneruskan email secara rekursif](#can-i-recursively-forward-emails)
   * [Bisakah orang membatalkan pendaftaran atau mendaftar penerusan email saya tanpa izin saya](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [Bagaimana cara meningkatkan penyimpanan saya atau batas pengiriman SMTP keluar](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Apa saja yang termasuk dalam Enterprise License](#what-is-included-in-the-enterprise-license)
   * [Bagaimana ini bisa gratis](#how-is-it-free)
   * [Berapa batas ukuran email maksimum](#what-is-the-max-email-size-limit)
   * [Apakah Anda menyimpan log email](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ Silakan lihat bagian [Apakah Anda mendukung pengiriman email dengan SMTP](#do-yo
 ### Di mana lokasi server Anda {#where-are-your-servers-located}
 
 > \[!TIP]
-> Kami mungkin segera mengumumkan lokasi pusat data UE kami yang dihosting di bawah [forwardemail.eu](https://forwardemail.eu). Berlangganan diskusi di <https://github.com/orgs/forwardemail/discussions/336> untuk pembaruan.
+> Kami mungkin segera mengumumkan lokasi pusat data UE kami yang dihosting di bawah [forwardemail.eu](https://forwardemail.eu). Berlangganan diskusi di <https://github.com/orgs/forwardemail/discussions/336> untuk pembaruan.  Saat ini tidak ada penerapan yang hanya di Uni Eropa atau opsi ikut-serta – lihat [Apakah saya dapat mempertahankan pemrosesan dan penyimpanan email saya di Uni Eropa (residensi data)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 Server kami terutama berlokasi di Denver, Colorado – lihat <https://forwardemail.net/ips> untuk daftar lengkap alamat IP kami.
 
@@ -4067,12 +4072,73 @@ Ya, Forward Email menawarkan Perjanjian Pemrosesan Data (DPA) yang komprehensif 
 * Mencakup kepatuhan GDPR dan kerangka kerja EU-AS/Swiss-AS Privacy Shield
 * Otomatis diterima saat menyetujui Ketentuan Layanan kami
 * Tidak diperlukan tanda tangan terpisah untuk DPA standar
-* Pengaturan DPA khusus tersedia melalui Lisensi Enterprise
+* Salinan yang ditandatangani bersama, dan pengaturan DPA khusus, tersedia melalui [Enterprise License](#what-is-included-in-the-enterprise-license)
+* Untuk mencantumkan kami dalam lampiran subprosesor Anda sendiri, lihat [Bagaimana cara saya mencantumkan Forward Email sebagai subprosesor dalam DPA milik saya](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **Kerangka Kepatuhan GDPR:**
 DPA kami merinci kepatuhan terhadap GDPR serta persyaratan transfer data internasional. Informasi lengkap tersedia di: <https://forwardemail.net/gdpr>
 
 Untuk pelanggan enterprise yang memerlukan ketentuan DPA khusus atau pengaturan kontraktual tertentu, hal ini dapat diatur melalui program **Lisensi Enterprise ($250/bulan)** kami.
+
+
+### Bisakah saya menjaga pemrosesan dan penyimpanan email saya tetap di UE (residensi data) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> Belum. Tidak ada penerapan khusus UE atau opsi ikut-serta UE yang tersedia saat ini, dan Anda tidak boleh menggambarkan Forward Email sebagai pemroses khusus UE dalam catatan Anda sendiri atau perjanjian pemrosesan data.
+
+**Di mana pemrosesan terjadi saat ini:** server kami terutama berlokasi di Denver, Colorado, United States (lihat [Di mana server Anda berada](#where-are-your-servers-located) dan <https://forwardemail.net/ips>). Ini berlaku untuk setiap fitur: penerusan masuk, log kesalahan, penyimpanan kotak surat (IMAP/POP3/CalDAV/CardDAV), dan SMTP keluar.
+
+**Apa yang direncanakan:** sebuah pusat data UE di Amsterdam, dihosting di bawah [forwardemail.eu](https://forwardemail.eu). Untuk menjaga data UE benar-benar terisolasi – secara hukum sekaligus teknis – layanan ini harus beroperasi melalui perusahaan terpisah yang berbasis di UE, bukan hanya melalui server di lokasi UE. Kami belum memiliki tanggal peluncuran, dan bergabung ke daftar tunggu tidak mengubah di mana email Anda diproses saat ini. Berlangganan <https://github.com/orgs/forwardemail/discussions/336> untuk pengumuman; di sana kami akan menjelaskan bagaimana pelanggan yang ada dapat ikut-serta setelah tersedia.
+
+**Apa yang secara akurat dapat Anda nyatakan hari ini:**
+
+* Pemroses: Forward Email LLC, sebuah perusahaan yang terdaftar di Delaware, United States
+* Lokasi pemrosesan dan penyimpanan: United States
+* Mekanisme transfer dan pengamanan: sebagaimana dijelaskan di halaman [DPA](/dpa) dan [GDPR](/gdpr) kami
+* Subprosesor kami sendiri: tercantum di halaman [GDPR](/gdpr) kami (semua penyedia berbasis US)
+
+Lihat [Di mana email masuk untuk domain saya diproses dan disimpan, dan untuk berapa lama](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) untuk rincian per fitur, dan [Bagaimana cara mencantumkan Forward Email sebagai subprosesor dalam DPA saya sendiri](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa) untuk entri lampiran siap salin.
+
+### Di mana email masuk untuk domain saya diproses dan disimpan, dan untuk berapa lama {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+Seluruh pemrosesan dan penyimpanan terjadi di server kami di Denver, Colorado, United States. Apa yang disimpan, dan untuk berapa lama, bergantung pada fiturnya:
+
+| Fitur | Apa yang disimpan | Retensi |
+| --- | --- | --- |
+| **Penerusan email** (alias yang meneruskan ke alamat lain atau webhook) | Tidak ada. Pesan diproses sepenuhnya di memori dan diteruskan ke tujuan; pesan tidak pernah ditulis ke cakram atau ke basis data. | Tidak ada – pesan dibuang segera setelah upaya pengiriman dilakukan |
+| **Log kesalahan SMTP** (`4xx`/`5xx` responses) | Kesalahan SMTP, amplop, dan tajuk email. **Bukan** isi pesan atau lampiran. | 7 hari (lihat [Apakah Anda menyimpan log kesalahan](#do-you-store-error-logs)) |
+| **Cache anti-penyalahgunaan** (daftar abu-abu, daftar tolak, pembatasan laju) | Kunci yang diturunkan dari data pengirim dan penerima (alamat, domain, hash), tanpa konten pesan. | Hingga 30 hari (lihat [Apakah Anda memiliki daftar abu-abu](#do-you-have-a-greylist) dan [Apakah Anda memiliki daftar tolak](#do-you-have-a-denylist)) |
+| **Penyimpanan kotak surat** (IMAP/POP3/CalDAV/CardDAV, ketika diaktifkan pada sebuah alias) | Pesan, kontak, dan kalender, dalam kotak surat SQLite terenkripsi secara individual yang hanya dapat dibuka oleh kata sandi Anda. | Hingga Anda menghapus pesan, alias, domain, atau akun (lihat [Bagaimana cara mengekspor dan mencadangkan kotak surat saya](#how-do-i-export-and-backup-my-mailbox)) |
+| **SMTP keluar** | Catatan antrean untuk pengiriman dan pelaporan kesalahan. Isi pesan dipertahankan selama 0 hari secara bawaan setelah pengiriman berhasil atau terjadi kesalahan permanen; Anda dapat menaikkannya hingga paling banyak 30 hari per domain. | ~30 hari untuk catatan antrean (lihat [Kebijakan Privasi](/privacy) kami) |
+
+Dua hal yang layak dicantumkan dalam catatan Anda sendiri:
+
+* Sebuah pesan yang diteruskan dikirimkan ke kotak surat tujuan yang Anda konfigurasikan (misalnya Google Workspace atau Microsoft 365). Apa pun yang disimpan oleh penyedia tersebut diatur oleh perjanjian Anda dengan mereka, bukan oleh kami.
+* Catatan domain dan akun (alamat email Anda, nama domain, alias, detail penagihan) disimpan selama akun Anda ada. Lihat [Kebijakan Privasi](/privacy) kami untuk daftar lengkapnya.
+
+Sumber: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf>, dan pengendali MX di <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### Bagaimana cara mencantumkan Forward Email sebagai subprosesor dalam DPA saya sendiri {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+Jika Anda adalah pengendali (atau pemroses itu sendiri) berdasarkan Pasal 28 GDPR dan Anda menggunakan Forward Email untuk menangani email bagi pelanggan atau pengguna Anda, biasanya Anda perlu mencantumkan kami dalam lampiran subprosesor Anda sendiri. Entri di bawah ini adalah apa yang akan kami tulis:
+
+| Bidang | Nilai |
+| --- | --- |
+| **Subprosesor** | Forward Email LLC |
+| **Terdaftar di** | State of Delaware, United States |
+| **Layanan** | Penerusan email (MX masuk) dan, jika diaktifkan, penyimpanan kotak surat terenkripsi (IMAP/POP3/CalDAV/CardDAV) dan SMTP keluar |
+| **Data pribadi yang diproses** | Alamat email, metadata amplop dan tajuk, serta konten pesan saat transit (hanya di memori untuk penerusan; terenkripsi saat disimpan untuk penyimpanan kotak surat) |
+| **Lokasi pemrosesan** | United States (Denver, Colorado) |
+| **Retensi** | Lihat [Di mana email masuk untuk domain saya diproses dan disimpan, dan untuk berapa lama](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **Mekanisme transfer** | Sebagaimana ditetapkan di halaman [Data Processing Agreement](/dpa) dan [GDPR](/gdpr) kami |
+| **Subprosesor kami** | Tercantum di halaman [GDPR](/gdpr) kami dan di [DPA](/dpa) (saat ini Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe, dan PayPal) |
+| **Perwakilan UE (Pasal 27)** | Osano International Compliance Services Limited, Dublin, Ireland – alamat lengkap ada di halaman [GDPR](/gdpr) kami |
+| **Perwakilan UK** | Osano UK Compliance LTD, Belfast – alamat lengkap ada di halaman [GDPR](/gdpr) kami |
+| **Perjanjian pemrosesan data** | <https://forwardemail.net/dpa> (diterima bersama [Persyaratan](/terms) kami; salinan yang ditandatangani bersama disediakan di bawah Enterprise License) |
+| **Kontak keamanan** | <security@forwardemail.net> |
+
+> [!WARNING]
+> [Persyaratan](/terms) kami tidak mengizinkan pengoperasian layanan yang memungkinkan pihak ketiga (siapa pun selain karyawan dan kontraktor Anda sendiri) mengakses, menggunakan, atau memperoleh manfaat dari Forward Email tanpa perjanjian tingkat perusahaan. Jika Anda mencantumkan kami sebagai subprosesor karena Anda memproses email pelanggan Anda, Anda memerlukan [Enterprise License](#what-is-included-in-the-enterprise-license) – itu juga cara Anda memperoleh DPA yang ditandatangani bersama.
 
 ### Bagaimana Anda menangani pemberitahuan pelanggaran data {#how-do-you-handle-data-breach-notifications}
 
@@ -5695,6 +5761,34 @@ Ya, Anda bisa, namun Anda tetap harus mematuhi batas maksimum. Jika Anda memilik
 ### Apakah orang bisa membatalkan pendaftaran atau mendaftarkan penerusan email saya tanpa izin saya {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 Kami menggunakan verifikasi MX dan <strong class="notranslate">TXT</strong> record, oleh karena itu jika Anda menambahkan MX dan <strong class="notranslate">TXT</strong> record layanan ini, maka Anda terdaftar. Jika Anda menghapusnya, maka Anda tidak terdaftar. Anda memiliki kepemilikan domain dan pengelolaan DNS Anda, jadi jika seseorang memiliki akses ke itu maka itu adalah masalah.
+
+
+### Bagaimana cara meningkatkan penyimpanan saya atau batas pengiriman SMTP keluar {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+Buka <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Akun Saya → Penagihan</a> dan gulir ke bagian **Add-on**, yang memiliki dua formulir permintaan:
+
+* **Peningkatan Penyimpanan** — pilih jumlah untuk ditambahkan (+10, +20, +30, +40, atau +50 GB), atau pilih "Other" untuk meminta jumlah khusus.
+* **Peningkatan Batas SMTP Keluar** — pilih jumlah untuk ditambahkan (+1000, +2000, atau +3000 email per hari), atau pilih "Other" untuk meminta jumlah khusus.
+
+Mengirim salah satu formulir akan mengirim permintaan Anda kepada tim kami untuk peninjauan — ini tidak langsung membebankan biaya kepada Anda. Setelah disetujui, kami akan mengirim email berisi tautan pembayaran yang aman untuk menyelesaikan peningkatan. Anda dapat memiliki satu permintaan tertunda per tipe (penyimpanan atau SMTP) pada satu waktu; mengajukan lagi dalam 3 hari sejak permintaan sebelumnya untuk tipe yang sama tidak diizinkan hingga jangka waktu tersebut berlalu.
+
+
+### Apa saja yang termasuk dalam Enterprise License {#what-is-included-in-the-enterprise-license}
+
+Enterprise License berharga **$250/bulan**, dikutip dan ditagihkan secara langsung alih-alih dibeli melalui halaman harga. Ini mencakup semua hal dalam paket Tim ditambah:
+
+* **Pengecualian Ketentuan Penggunaan untuk pihak ketiga** – Anda dapat mengoperasikan layanan atau integrasi di mana pelanggan, siswa, atau klien Anda (bukan hanya karyawan dan kontraktor Anda sendiri) menggunakan atau memperoleh manfaat dari Forward Email. [Persyaratan](/terms) standar kami tidak mengizinkan ini.
+* **Perjanjian tingkat perusahaan dan DPA yang ditandatangani bersama** – dikirim untuk ditinjau dan ditandatangani melalui DocuSign. Ini adalah cara Anda memperoleh [Data Processing Agreement](/dpa) yang ditandatangani, bukan salinan yang diterima bersama Persyaratan kami.
+* **Ketentuan kontraktual khusus** jika dapat kami dukung, seperti SLA pemberitahuan pelanggaran (lihat [Bagaimana Anda menangani pemberitahuan pelanggaran data](#how-do-you-handle-data-breach-notifications)).
+* **Permintaan API tanpa batas** tanpa pembatasan laju.
+* **Ruang obrolan dukungan pelanggan khusus** dengan tim rekayasa kami.
+* **Bantuan orientasi awal dan dukungan rekayasa waktu nyata.**
+
+Ini tidak mengubah lokasi pemrosesan data Anda: lihat [Bisakah saya menjaga pemrosesan dan penyimpanan email saya tetap di UE (residensi data)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**Siapa yang membutuhkannya:** siapa pun yang penggunaan layanannya berada di luar Persyaratan (akses pihak ketiga), dan siapa pun yang memerlukan DPA yang ditandatangani bersama, ketentuan DPA khusus, atau kontak rekayasa yang ditunjuk untuk tujuan kepatuhan.
+
+**Cara memulai:** [hubungi kami](/help) dengan nama perusahaan resmi Anda, alamat terdaftar, nomor pendaftaran perusahaan dan VAT, serta nama, jabatan, dan alamat email orang yang akan menandatangani. Kami akan membalas dengan perjanjian DocuSign untuk ditinjau.
 
 ### Bagaimana ini bisa gratis {#how-is-it-free}
 

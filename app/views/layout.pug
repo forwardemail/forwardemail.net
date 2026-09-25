@@ -228,7 +228,7 @@ html.h-100.no-js(
 
         //- WebMCP tools for in-browser AI agents (no-op without WebMCP)
         +script("js/webmcp.js", { fetchpriority: "low", "data-locale": locale, "data-pricing": Object.keys(planPricing).map((k) => `${k}:${Number(planPricing[k])}`).join(",") })
-        
+
         //- related FAQ answers under the help form. The form exists only for
         //- signed in visitors: the nav modal on every page, the page at /help.
         if user

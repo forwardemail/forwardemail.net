@@ -96,6 +96,9 @@
   * [Kdo má přístup k vaší emailové infrastruktuře](#who-has-access-to-your-email-infrastructure)
   * [Jaké poskytovatele infrastruktury používáte](#what-infrastructure-providers-do-you-use)
   * [Nabízíte smlouvu o zpracování dat (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+* [Mohu zachovat zpracování a ukládání e‑mailů v EU (rezidence dat)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [Kde jsou příchozí e‑maily pro mou doménu zpracovávány a ukládány a jak dlouho](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [Jak uvedu Forward Email jako subzpracovatele ve své vlastní DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Jak řešíte oznámení o narušení dat](#how-do-you-handle-data-breach-notifications)
   * [Nabízíte testovací prostředí](#do-you-offer-a-test-environment)
   * [Poskytujete nástroje pro monitorování a upozornění](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [Existuje maximální limit počtu emailových adres, na které mohu přeposílat za alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Mohu přeposílat emaily rekurzivně](#can-i-recursively-forward-emails)
   * [Mohou lidé odregistrovat nebo registrovat mé přeposílání emailů bez mého svolení](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [Jak zvýším kapacitu úložiště nebo odchozí limit odesílání SMTP](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Co je součástí Enterprise License](#what-is-included-in-the-enterprise-license)
   * [Jak je to zdarma](#how-is-it-free)
   * [Jaký je maximální limit velikosti emailu](#what-is-the-max-email-size-limit)
   * [Ukládáte logy emailů](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ Pro pokyny k nastavení si prosím přečtěte sekci [Podporujete odesílání e
 ### Kde se nacházejí vaše servery {#where-are-your-servers-located}
 
 > \[!TIP]
-> Brzy můžeme oznámit naši lokalitu datového centra v EU hostovanou pod [forwardemail.eu](https://forwardemail.eu). Přihlaste se k odběru diskuse na <https://github.com/orgs/forwardemail/discussions/336> pro aktualizace.
+> Brzy můžeme oznámit naši lokalitu datového centra v EU hostovanou pod [forwardemail.eu](https://forwardemail.eu). Přihlaste se k odběru diskuse na <https://github.com/orgs/forwardemail/discussions/336> pro aktualizace.  V současnosti neexistuje nasazení pouze v EU ani možnost dobrovolného zapnutí – viz [Mohu zachovat zpracování a ukládání e‑mailů v EU (rezidence dat)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 Naše servery se nacházejí převážně v Denveru, Colorado – kompletní seznam IP adres najdete na <https://forwardemail.net/ips>.
 
@@ -4067,12 +4072,73 @@ Ano, Forward Email nabízí komplexní smlouvu o zpracování údajů (DPA), kte
 * Pokrývá soulad s GDPR a rámce EU-USA/Švýcarsko-USA Privacy Shield
 * Automaticky přijímána při souhlasu s našimi Podmínkami služby
 * Pro standardní DPA není vyžadován samostatný podpis
-* Možnosti vlastních DPA dohod dostupné prostřednictvím Enterprise License
+* Oboustranně podepsaná kopie a individuální ujednání DPA jsou k dispozici prostřednictvím [Enterprise License](#what-is-included-in-the-enterprise-license)
+* Chcete‑li nás uvést ve své vlastní příloze k subzpracovatelům, viz [Jak uvedu Forward Email jako subzpracovatele ve své vlastní DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **Rámec souladu s GDPR:**
 Naše DPA podrobně popisuje soulad s GDPR i mezinárodními požadavky na přenos dat. Kompletní informace jsou k dispozici na: <https://forwardemail.net/gdpr>
 
 Pro podnikové zákazníky vyžadující vlastní podmínky DPA nebo specifické smluvní ujednání lze tyto řešit prostřednictvím našeho programu **Enterprise License (250 USD/měsíc)**.
+
+
+### Mohu ponechat zpracování a ukládání e‑mailů v EU (umístění dat) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> Zatím ne. Aktuálně není k dispozici nasazení pouze v EU ani možnost zvolit EU, a ve svých záznamech nebo ve své dohodě o zpracování údajů byste neměli uvádět Forward Email jako zpracovatele výhradně v EU.
+
+**Kde dnes probíhá zpracování:** naše servery se nacházejí především v Denver, Colorado, United States (viz [Kde jsou umístěny vaše servery](#where-are-your-servers-located) a <https://forwardemail.net/ips>). Platí to pro všechny funkce: přeposílání příchozí pošty, chybové logy, úložiště schránky (IMAP/POP3/CalDAV/CardDAV) a odchozí SMTP.
+
+**Co je v plánu:** datové centrum v EU v Amsterdamu, provozované pod [forwardemail.eu](https://forwardemail.eu). Aby byla data EU skutečně izolována – právně i technicky – je nutné provozovat službu prostřednictvím samostatné společnosti se sídlem v EU, nikoli pouze na serverech v umístění v EU. Datum spuštění zatím nemáme a zařazení na čekací listinu nemění, kde je vaše pošta dnes zpracovávána. Přihlaste se k odběru <https://github.com/orgs/forwardemail/discussions/336> pro oznámení; tam popíšeme, jak se budou moci stávající zákazníci přihlásit, jakmile bude k dispozici.
+
+**Co dnes můžete uvést přesně:**
+
+* Zpracovatel: Forward Email LLC, společnost registrovaná v Delaware, United States
+* Místo zpracování a uložení: United States
+* Mechanismus předávání a záruky: jak je popsáno na našich stránkách [DPA](/dpa) a [GDPR](/gdpr)
+* Naši vlastní subzpracovatelé: uvedeni na naší stránce [GDPR](/gdpr) (všichni poskytovatelé se sídlem v United States)
+
+Viz [Kde se zpracovává a ukládá příchozí e‑mail pro mou doménu a jak dlouho](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) pro rozpis podle funkcí a [Jak uvést Forward Email jako subzpracovatele ve své vlastní DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa) pro připravenou položku do přílohy.
+
+### Kde se zpracovává a ukládá příchozí e‑mail pro mou doménu a jak dlouho {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+Veškeré zpracování a ukládání probíhá na našich serverech v Denver, Colorado, United States. Co a jak dlouho se uchovává, závisí na funkci:
+
+| Funkce | Co se uchovává | Doba uchování |
+| --- | --- | --- |
+| **Přeposílání e‑mailů** (alias, který přeposílá na jinou adresu nebo webhook) | Nic. Zpráva je zpracována výhradně v paměti a předána na cílové místo; nikdy není zapsána na disk ani do databáze. | Žádná – zpráva je zahozena okamžitě po pokusu o doručení |
+| **Protokoly chyb SMTP** (odpovědi `4xx`/`5xx`) | Chyba SMTP, obálka a e‑mailové hlavičky. **Ne** tělo zprávy ani přílohy. | 7 dní (viz [Ukládáte chybové logy](#do-you-store-error-logs)) |
+| **Antiabuzní cache** (greylist, denylist, omezování rychlosti) | Klíče odvozené z údajů o odesílateli a příjemci (adresy, domény, hashe), žádný obsah zprávy. | Až 30 dní (viz [Máte greylist](#do-you-have-a-greylist) a [Máte denylist](#do-you-have-a-denylist)) |
+| **Úložiště schránky** (IMAP/POP3/CalDAV/CardDAV, je‑li na aliasu povoleno) | Zprávy, kontakty a kalendáře v individuálně šifrované schránce SQLite, kterou lze otevřít pouze vaším heslem. | Dokud neodstraníte zprávu, alias, doménu nebo účet (viz [Jak exportuji a zálohuji svou schránku](#how-do-i-export-and-backup-my-mailbox)) |
+| **Odchozí SMTP** | Záznamy fronty pro doručování a hlášení chyb. Těla zpráv se po úspěšném doručení nebo trvalé chybě ve výchozím nastavení uchovávají 0 dní; můžete to zvýšit nejvýše na 30 dní na doménu. | ~30 dní pro záznamy fronty (viz naše [Zásady ochrany osobních údajů](/privacy)) |
+
+Dvě věci, které stojí za to uvést ve vašich záznamech:
+
+* Přeposlaná zpráva je doručena do cílové schránky, kterou jste nastavili (například Google Workspace nebo Microsoft 365). To, co tento poskytovatel ukládá, se řídí vaší smlouvou s ním, nikoli námi.
+* Záznamy o doménách a účtech (vaše e‑mailová adresa, názvy domén, aliasy, fakturační údaje) se uchovávají po dobu existence vašeho účtu. Úplný seznam viz naše [Zásady ochrany osobních údajů](/privacy).
+
+Zdroje: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf> a obsluha MX na <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### Jak uvést Forward Email jako subzpracovatele ve své vlastní DPA {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+Pokud jste správcem (nebo sami zpracovatelem) podle článku 28 GDPR a používáte Forward Email ke zpracování pošty pro své zákazníky či uživatele, obvykle nás budete muset uvést ve své vlastní příloze subzpracovatelů. Níže uvedená položka je to, co bychom napsali my:
+
+| Pole | Hodnota |
+| --- | --- |
+| **Subzpracovatel** | Forward Email LLC |
+| **Registrován v** | State of Delaware, United States |
+| **Služba** | Přeposílání e‑mailů (příchozí MX) a, je‑li povoleno, šifrované úložiště schránky (IMAP/POP3/CalDAV/CardDAV) a odchozí SMTP |
+| **Zpracovávané osobní údaje** | E‑mailové adresy, metadata obálky a hlaviček a obsah zpráv při přenosu (pro přeposílání pouze v paměti; pro úložiště schránky šifrované v klidu) |
+| **Místo zpracování** | United States (Denver, Colorado) |
+| **Doba uchování** | Viz [Kde se zpracovává a ukládá příchozí e‑mail pro mou doménu a jak dlouho](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **Mechanismus předávání** | Jak je stanoveno na našich stránkách [Data Processing Agreement](/dpa) a [GDPR](/gdpr) |
+| **Naši subzpracovatelé** | Uvedeni na naší stránce [GDPR](/gdpr) a v [DPA](/dpa) (aktuálně Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe a PayPal) |
+| **Zástupce v EU (čl. 27)** | Osano International Compliance Services Limited, Dublin, Irsko – úplná adresa na naší stránce [GDPR](/gdpr) |
+| **Zástupce ve Spojeném království** | Osano UK Compliance LTD, Belfast – úplná adresa na naší stránce [GDPR](/gdpr) |
+| **Dohoda o zpracování údajů** | <https://forwardemail.net/dpa> (přijímá se spolu s našimi [Podmínkami](/terms); podepsaná kopie je poskytována v rámci Enterprise License) |
+| **Kontakt pro bezpečnost** | <security@forwardemail.net> |
+
+> [!WARNING]
+> Naše [Podmínky](/terms) nepovolují provozování služby, která umožňuje třetím stranám (komukoli jinému než vašim vlastním zaměstnancům a dodavatelům) přistupovat k Forward Email, používat jej nebo z něj těžit bez podnikové smlouvy. Pokud nás uvádíte jako subzpracovatele proto, že zpracováváte poštu svých zákazníků, potřebujete [Enterprise License](#what-is-included-in-the-enterprise-license) – tímto způsobem také získáte protistranou podepsanou DPA.
 
 ### Jak řešíte oznámení o narušení bezpečnosti dat {#how-do-you-handle-data-breach-notifications}
 
@@ -5695,6 +5761,34 @@ Ano, můžete, ale stále musíte dodržovat maximální limit. Pokud máte `hel
 ### Mohou lidé odregistrovat nebo zaregistrovat mé přeposílání e-mailů bez mého svolení {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 Používáme ověřování pomocí MX a <strong class="notranslate">TXT</strong> záznamů, takže pokud přidáte příslušné MX a <strong class="notranslate">TXT</strong> záznamy této služby, jste zaregistrováni. Pokud je odstraníte, jste odregistrováni. Vlastníte svou doménu a správu DNS, takže pokud má někdo přístup k tomu, je to problém.
+
+
+### Jak zvýším kapacitu úložiště nebo odchozí limit odesílání SMTP {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+Přejděte na <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Můj účet → Fakturace</a> a přejděte dolů do sekce **Doplňky**, která obsahuje dva formuláře žádosti:
+
+* **Navýšení úložiště** — zvolte množství k přidání (+10, +20, +30, +40 nebo +50 GB), nebo vyberte "Other" a požádejte o vlastní množství.
+* **Navýšení odchozího limitu SMTP** — zvolte množství k přidání (+1000, +2000 nebo +3000 e‑mailů denně), nebo vyberte "Other" a požádejte o vlastní množství.
+
+Odesláním kteréhokoli z formulářů odešlete žádost našemu týmu ke kontrole — okamžitě vám nic neúčtujeme. Po schválení vám e‑mailem pošleme zabezpečený odkaz na platbu k dokončení navýšení. V jeden okamžik můžete mít jednu nevyřízenou žádost na každý typ (úložiště nebo SMTP); nové podání do 3 dnů od předchozí žádosti stejného typu není povoleno, dokud tato lhůta neuplyne.
+
+
+### Co je součástí Enterprise License {#what-is-included-in-the-enterprise-license}
+
+Enterprise License stojí **$250/month**, je naceněna a fakturována přímo, nikoli zakoupena přes stránku s cenami. Zahrnuje vše z plánu Team a navíc:
+
+* **Výjimka z Podmínek používání pro třetí strany** – můžete provozovat službu nebo integraci, kde vaši zákazníci, studenti či klienti (nejen vaši vlastní zaměstnanci a dodavatelé) používají Forward Email nebo z něj mají prospěch. Naše standardní [Podmínky](/terms) to nepovolují.
+* **Oboustranně podepsaná podniková smlouva a DPA** – zasláno k revizi a podpisu přes DocuSign. Takto získáte podepsanou [Data Processing Agreement](/dpa) namísto kopie přijaté spolu s našimi Podmínkami.
+* **Vlastní smluvní ujednání**, kde je můžeme podpořit, například SLA pro oznámení o porušení zabezpečení (viz [Jak řešíte oznámení o porušení zabezpečení dat](#how-do-you-handle-data-breach-notifications)).
+* **Neomezené požadavky na API** bez omezování rychlosti.
+* **Vyhrazená místnost chatu zákaznické podpory** s naším inženýrským týmem.
+* **Asistence při nasazení a technická podpora v reálném čase.**
+
+Nemění to místo, kde jsou vaše data zpracovávána: viz [Mohu ponechat zpracování a ukládání e‑mailů v EU (umístění dat)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**Kdo ji potřebuje:** každý, jehož používání služby spadá mimo Podmínky (přístup třetích stran), a každý, kdo vyžaduje podepsanou DPA, vlastní ustanovení DPA nebo jmenovaný kontakt z inženýrského týmu pro potřeby souladu.
+
+**Jak začít:** [kontaktujte nás](/help) s vaším oficiálním názvem společnosti, registrovanou adresou, čísly registrace společnosti a DPH a jménem, funkcí a e‑mailovou adresou osoby, která bude podepisovat. Odpovíme dohodou DocuSign k posouzení.
 
 ### Jak je to zdarma {#how-is-it-free}
 

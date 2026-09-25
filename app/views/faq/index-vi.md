@@ -96,6 +96,9 @@
   * [Ai có quyền truy cập vào hạ tầng email của bạn](#who-has-access-to-your-email-infrastructure)
   * [Bạn sử dụng nhà cung cấp hạ tầng nào](#what-infrastructure-providers-do-you-use)
   * [Bạn có cung cấp Thỏa Thuận Xử Lý Dữ Liệu (DPA) không](#do-you-offer-a-data-processing-agreement-dpa)
+* [Tôi có thể giữ việc xử lý và lưu trữ email trong EU (cư trú dữ liệu) không](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [Email đến cho miền của tôi được xử lý và lưu trữ ở đâu, và trong bao lâu](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [Làm thế nào để tôi liệt kê Forward Email là một bên xử lý phụ trong DPA của riêng tôi](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Bạn xử lý thông báo vi phạm dữ liệu như thế nào](#how-do-you-handle-data-breach-notifications)
   * [Bạn có cung cấp môi trường thử nghiệm không](#do-you-offer-a-test-environment)
   * [Bạn có cung cấp công cụ giám sát và cảnh báo không](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [Có giới hạn tối đa số địa chỉ email tôi có thể chuyển tiếp cho mỗi bí danh không](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Tôi có thể chuyển tiếp email theo kiểu đệ quy không](#can-i-recursively-forward-emails)
   * [Mọi người có thể hủy đăng ký hoặc đăng ký chuyển tiếp email của tôi mà không có sự cho phép của tôi không](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [Làm cách nào để tăng dung lượng lưu trữ hoặc giới hạn gửi SMTP đi](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Những gì được bao gồm trong Enterprise License](#what-is-included-in-the-enterprise-license)
   * [Nó miễn phí như thế nào](#how-is-it-free)
   * [Giới hạn kích thước email tối đa là bao nhiêu](#what-is-the-max-email-size-limit)
   * [Bạn có lưu trữ nhật ký email không](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ Vui lòng xem phần [Bạn có hỗ trợ gửi email bằng SMTP không](#do-y
 ### Máy chủ của bạn đặt ở đâu {#where-are-your-servers-located}
 
 > \[!TIP]
-> Chúng tôi có thể sớm công bố vị trí trung tâm dữ liệu EU được lưu trữ tại [forwardemail.eu](https://forwardemail.eu). Đăng ký thảo luận tại <https://github.com/orgs/forwardemail/discussions/336> để cập nhật.
+> Chúng tôi có thể sớm công bố vị trí trung tâm dữ liệu EU được lưu trữ tại [forwardemail.eu](https://forwardemail.eu). Đăng ký thảo luận tại <https://github.com/orgs/forwardemail/discussions/336> để cập nhật.  Hiện chưa có triển khai hoặc tùy chọn tham gia chỉ dành cho EU – xem [Tôi có thể giữ việc xử lý và lưu trữ email trong EU (cư trú dữ liệu) không](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 Máy chủ của chúng tôi chủ yếu đặt tại Denver, Colorado – xem <https://forwardemail.net/ips> để biết danh sách đầy đủ các địa chỉ IP.
 
@@ -4066,12 +4071,73 @@ Có, Forward Email cung cấp Thỏa thuận Xử lý Dữ liệu (DPA) toàn di
 * Bao gồm tuân thủ GDPR và các khung bảo mật EU-Mỹ/Thụy Sĩ-Mỹ
 * Tự động được chấp nhận khi đồng ý với Điều khoản Dịch vụ của chúng tôi
 * Không cần chữ ký riêng cho DPA tiêu chuẩn
-* Có thể sắp xếp DPA tùy chỉnh qua Giấy phép Doanh nghiệp
+* Một bản sao đã ký đối ứng và các thỏa thuận DPA tùy chỉnh có sẵn thông qua [Enterprise License](#what-is-included-in-the-enterprise-license)
+* Để ghi tên chúng tôi trong phụ lục về bên xử lý phụ của riêng bạn, xem [Làm thế nào để tôi liệt kê Forward Email là một bên xử lý phụ trong DPA của riêng tôi](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **Khung Tuân thủ GDPR:**
 DPA của chúng tôi chi tiết việc tuân thủ GDPR cũng như các yêu cầu chuyển dữ liệu quốc tế. Thông tin đầy đủ có tại: <https://forwardemail.net/gdpr>
 
 Đối với khách hàng doanh nghiệp cần điều khoản DPA tùy chỉnh hoặc thỏa thuận hợp đồng cụ thể, có thể được xử lý qua chương trình **Giấy phép Doanh nghiệp (250$/tháng)** của chúng tôi.
+
+
+### Tôi có thể giữ việc xử lý và lưu trữ email của mình trong EU (cư trú dữ liệu) không {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> Chưa. Hiện chưa có triển khai chỉ EU hoặc tùy chọn chọn tham gia EU, và bạn không nên mô tả Forward Email là một đơn vị xử lý chỉ EU trong hồ sơ riêng của bạn hoặc trong thỏa thuận xử lý dữ liệu.
+
+**Nơi xử lý diễn ra hiện nay:** máy chủ của chúng tôi chủ yếu đặt tại Denver, Colorado, United States (xem [Máy chủ của bạn đặt ở đâu](#where-are-your-servers-located) và <https://forwardemail.net/ips>). Điều này áp dụng cho mọi tính năng: chuyển tiếp thư đến, nhật ký lỗi, lưu trữ hộp thư (IMAP/POP3/CalDAV/CardDAV), và SMTP gửi đi.
+
+**Kế hoạch:** một trung tâm dữ liệu EU tại Amsterdam, được lưu trữ dưới [forwardemail.eu](https://forwardemail.eu). Để giữ dữ liệu EU thực sự tách biệt – cả về pháp lý lẫn kỹ thuật – giải pháp cần hoạt động thông qua một công ty đặt tại EU riêng biệt, không chỉ thông qua máy chủ ở một vị trí EU. Chúng tôi chưa có ngày ra mắt, và việc tham gia danh sách chờ không thay đổi nơi thư của bạn được xử lý hiện nay. Theo dõi <https://github.com/orgs/forwardemail/discussions/336> để nhận thông báo; tại đó chúng tôi sẽ mô tả cách khách hàng hiện tại có thể chọn tham gia khi có sẵn.
+
+**Những gì bạn có thể tuyên bố chính xác vào thời điểm hiện tại:**
+
+* Bên xử lý: Forward Email LLC, một công ty đăng ký tại Delaware, United States
+* Địa điểm xử lý và lưu trữ: United States
+* Cơ chế chuyển dữ liệu và biện pháp bảo vệ: như mô tả trong các trang [DPA](/dpa) và [GDPR](/gdpr) của chúng tôi
+* Các nhà xử lý phụ của chính chúng tôi: được liệt kê trên trang [GDPR](/gdpr) của chúng tôi (tất cả đều là nhà cung cấp có trụ sở tại United States)
+
+Xem [Email đến cho miền của tôi được xử lý và lưu trữ ở đâu, và trong bao lâu](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) để biết phân tích theo từng tính năng, và [Làm thế nào để tôi liệt kê Forward Email là nhà xử lý phụ trong DPA của riêng tôi](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa) để có mục phụ lục sẵn sàng sao chép.
+
+### Email đến cho miền của tôi được xử lý và lưu trữ ở đâu, và trong bao lâu {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+Tất cả việc xử lý và lưu trữ diễn ra trên máy chủ của chúng tôi ở Denver, Colorado, United States. Những gì được giữ lại, và trong bao lâu, phụ thuộc vào tính năng:
+
+| Tính năng | Những gì được giữ lại | Thời hạn lưu giữ |
+| --- | --- | --- |
+| **Chuyển tiếp email** (một bí danh chuyển tiếp tới địa chỉ khác hoặc webhook) | Không có gì. Thư được xử lý hoàn toàn trong bộ nhớ và chuyển tiếp đến đích; nó không bao giờ được ghi xuống đĩa hoặc cơ sở dữ liệu. | Không – thư bị loại bỏ ngay khi cố gắng gửi |
+| **Nhật ký lỗi SMTP** (`4xx`/`5xx` responses) | Lỗi SMTP, phần phong bì, và tiêu đề email. **Không** gồm nội dung thư hoặc tệp đính kèm. | 7 ngày (xem [Bạn có lưu trữ nhật ký lỗi không](#do-you-store-error-logs)) |
+| **Bộ nhớ đệm chống lạm dụng** (greylist, denylist, giới hạn tốc độ) | Các khóa dẫn xuất từ dữ liệu người gửi và người nhận (địa chỉ, miền, băm), không có nội dung thư. | Tối đa 30 ngày (xem [Bạn có dùng greylist không](#do-you-have-a-greylist) và [Bạn có dùng denylist không](#do-you-have-a-denylist)) |
+| **Lưu trữ hộp thư** (IMAP/POP3/CalDAV/CardDAV, khi được bật trên một bí danh) | Thư, danh bạ và lịch, trong một hộp thư SQLite được mã hóa riêng lẻ mà chỉ mật khẩu của bạn có thể mở. | Cho đến khi bạn xóa thư, bí danh, miền hoặc tài khoản (xem [Làm thế nào để xuất và sao lưu hộp thư của tôi](#how-do-i-export-and-backup-my-mailbox)) |
+| **SMTP gửi đi** | Bản ghi hàng đợi phục vụ việc gửi và báo cáo lỗi. Nội dung thư mặc định được giữ 0 ngày sau khi gửi thành công hoặc xảy ra lỗi vĩnh viễn; bạn có thể tăng tối đa lên 30 ngày cho mỗi miền. | ~30 ngày đối với bản ghi hàng đợi (xem [Chính sách quyền riêng tư](/privacy) của chúng tôi) |
+
+Hai điều đáng nêu trong hồ sơ của bạn:
+
+* Một thư được chuyển tiếp sẽ được phát tới hộp thư đích mà bạn đã cấu hình (ví dụ Google Workspace hoặc Microsoft 365). Những gì nhà cung cấp đó lưu trữ được điều chỉnh bởi thỏa thuận giữa bạn và họ, không phải bởi chúng tôi.
+* Hồ sơ miền và tài khoản (địa chỉ email của bạn, tên miền, bí danh, chi tiết thanh toán) được lưu trữ bao lâu tài khoản của bạn còn tồn tại. Xem [Chính sách quyền riêng tư](/privacy) để biết danh sách đầy đủ.
+
+Nguồn: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf>, và trình xử lý MX tại <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### Làm thế nào để tôi liệt kê Forward Email là nhà xử lý phụ trong DPA của riêng tôi {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+Nếu bạn là bên kiểm soát (hoặc chính bạn là bên xử lý) theo Điều 28 của GDPR và bạn sử dụng Forward Email để xử lý thư cho khách hàng hoặc người dùng của mình, bạn thường sẽ cần nêu tên chúng tôi trong phụ lục nhà xử lý phụ của riêng bạn. Mục dưới đây là những gì chúng tôi sẽ viết:
+
+| Trường | Giá trị |
+| --- | --- |
+| **Nhà xử lý phụ** | Forward Email LLC |
+| **Đăng ký tại** | State of Delaware, United States |
+| **Dịch vụ** | Chuyển tiếp email (MX đầu vào) và, khi được bật, lưu trữ hộp thư được mã hóa (IMAP/POP3/CalDAV/CardDAV) và SMTP gửi đi |
+| **Dữ liệu cá nhân được xử lý** | Địa chỉ email, siêu dữ liệu phong bì và tiêu đề, và nội dung thư khi truyền (chỉ trong bộ nhớ đối với chuyển tiếp; được mã hóa khi lưu trữ đối với hộp thư) |
+| **Địa điểm xử lý** | United States (Denver, Colorado) |
+| **Thời hạn lưu giữ** | Xem [Email đến cho miền của tôi được xử lý và lưu trữ ở đâu, và trong bao lâu](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **Cơ chế chuyển dữ liệu** | Như được quy định tại các trang [Thỏa thuận xử lý dữ liệu](/dpa) và [GDPR](/gdpr) của chúng tôi |
+| **Các nhà xử lý phụ của chúng tôi** | Được liệt kê trên trang [GDPR](/gdpr) của chúng tôi và trong [DPA](/dpa) (hiện là Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe, và PayPal) |
+| **Đại diện tại EU (Điều 27)** | Osano International Compliance Services Limited, Dublin, Ireland – địa chỉ đầy đủ có trên trang [GDPR](/gdpr) của chúng tôi |
+| **Đại diện tại Vương quốc Anh** | Osano UK Compliance LTD, Belfast – địa chỉ đầy đủ có trên trang [GDPR](/gdpr) của chúng tôi |
+| **Thỏa thuận xử lý dữ liệu** | <https://forwardemail.net/dpa> (được chấp nhận cùng [Điều khoản](/terms); một bản có đối ký được cung cấp theo Enterprise License) |
+| **Liên hệ bảo mật** | <security@forwardemail.net> |
+
+> [!WARNING]
+> Các [Điều khoản](/terms) của chúng tôi không cho phép vận hành một dịch vụ cho phép bên thứ ba (bất kỳ ai ngoài nhân viên và nhà thầu của chính bạn) truy cập, sử dụng, hoặc hưởng lợi từ Forward Email nếu không có thỏa thuận doanh nghiệp. Nếu bạn nêu tên chúng tôi là nhà xử lý phụ vì bạn xử lý thư của khách hàng mình, bạn cần [Enterprise License](#what-is-included-in-the-enterprise-license) – đó cũng là cách bạn nhận được một DPA có đối ký.
 
 ### Bạn xử lý thông báo vi phạm dữ liệu như thế nào {#how-do-you-handle-data-breach-notifications}
 
@@ -5694,6 +5760,34 @@ Có, bạn có thể, tuy nhiên bạn vẫn phải tuân thủ giới hạn t�
 ### Người khác có thể hủy đăng ký hoặc đăng ký chuyển tiếp email của tôi mà không có sự cho phép không {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 Chúng tôi sử dụng xác minh bản ghi MX và <strong class="notranslate">TXT</strong>, do đó nếu bạn thêm các bản ghi MX và <strong class="notranslate">TXT</strong> tương ứng của dịch vụ này, thì bạn đã đăng ký. Nếu bạn xóa chúng, thì bạn đã hủy đăng ký. Bạn sở hữu tên miền và quản lý DNS của mình, nên nếu ai đó có quyền truy cập vào đó thì đó là một vấn đề.
+
+
+### Làm cách nào để tăng dung lượng lưu trữ hoặc giới hạn gửi SMTP đi {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+Truy cập <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Tài khoản của tôi → Thanh toán</a> và cuộn đến phần **Tiện ích bổ sung**, trong đó có hai biểu mẫu yêu cầu:
+
+* **Nâng cấp lưu trữ** — chọn một mức để thêm (+10, +20, +30, +40, hoặc +50 GB), hoặc chọn "Other" để yêu cầu một mức tùy chỉnh.
+* **Nâng cấp giới hạn SMTP gửi đi** — chọn một mức để thêm (+1000, +2000, hoặc +3000 email mỗi ngày), hoặc chọn "Other" để yêu cầu một mức tùy chỉnh.
+
+Nộp bất kỳ biểu mẫu nào sẽ gửi yêu cầu của bạn đến nhóm của chúng tôi để xem xét — điều này không tính phí bạn ngay lập tức. Khi được phê duyệt, chúng tôi sẽ gửi email cho bạn một liên kết thanh toán bảo mật để hoàn tất việc nâng cấp. Bạn có thể có một yêu cầu đang chờ xử lý cho mỗi loại (lưu trữ hoặc SMTP) tại mỗi thời điểm; gửi lại trong vòng 3 ngày kể từ một yêu cầu trước đó cho cùng loại sẽ không được phép cho đến khi khoảng thời gian đó kết thúc.
+
+
+### Có gì trong Enterprise License {#what-is-included-in-the-enterprise-license}
+
+Enterprise License có giá **$250/tháng**, được báo giá và lập hóa đơn trực tiếp thay vì mua qua trang giá. Nó bao gồm mọi thứ trong gói Nhóm cộng thêm:
+
+* **Ngoại lệ Điều khoản sử dụng cho bên thứ ba** – bạn có thể vận hành một dịch vụ hoặc tích hợp nơi khách hàng, sinh viên, hoặc khách hàng tư vấn của bạn (không chỉ nhân viên và nhà thầu của chính bạn) sử dụng hoặc hưởng lợi từ Forward Email. [Điều khoản](/terms) tiêu chuẩn của chúng tôi không cho phép điều này.
+* **Thỏa thuận doanh nghiệp và DPA có đối ký** – được gửi để xem xét và ký qua DocuSign. Đây là cách bạn nhận được [Thỏa thuận xử lý dữ liệu](/dpa) đã ký thay vì bản được chấp nhận kèm Điều khoản của chúng tôi.
+* **Các điều khoản hợp đồng tùy chỉnh** nếu chúng tôi có thể hỗ trợ, chẳng hạn SLA thông báo vi phạm (xem [Bạn xử lý thông báo vi phạm dữ liệu như thế nào](#how-do-you-handle-data-breach-notifications)).
+* **Yêu cầu API không giới hạn** không bị giới hạn tốc độ.
+* **Phòng chat hỗ trợ khách hàng chuyên biệt** với đội kỹ sư của chúng tôi.
+* **Hỗ trợ khởi tạo và hỗ trợ kỹ thuật theo thời gian thực.**
+
+Điều này không thay đổi nơi dữ liệu của bạn được xử lý: xem [Tôi có thể giữ việc xử lý và lưu trữ email của mình trong EU (cư trú dữ liệu) không](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**Ai cần:** bất kỳ ai có cách sử dụng dịch vụ nằm ngoài Điều khoản (truy cập của bên thứ ba), và bất kỳ ai yêu cầu DPA có đối ký, các điều khoản DPA tùy chỉnh, hoặc một đầu mối kỹ thuật được nêu tên cho mục đích tuân thủ.
+
+**Cách bắt đầu:** [liên hệ với chúng tôi](/help) với tên pháp lý của công ty bạn, địa chỉ đăng ký, số đăng ký công ty và số VAT, cùng họ tên, chức danh, và địa chỉ email của người sẽ ký. Chúng tôi sẽ phản hồi bằng một thỏa thuận DocuSign để bạn xem xét.
 
 ### Làm sao mà nó miễn phí {#how-is-it-free}
 

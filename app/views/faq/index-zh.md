@@ -96,6 +96,9 @@
   * [谁可以访问你们的邮件基础设施](#who-has-access-to-your-email-infrastructure)
   * [你们使用哪些基础设施提供商](#what-infrastructure-providers-do-you-use)
   * [你们提供数据处理协议（DPA）吗](#do-you-offer-a-data-processing-agreement-dpa)
+* [我可以将我的电子邮件处理和存储保留在欧盟内（数据驻留）吗](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [我的域名的入站电子邮件在哪里处理和存储，以及会保留多长时间](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [如何在我自己的 DPA 中将 Forward Email 列为次级处理者](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [你们如何处理数据泄露通知](#how-do-you-handle-data-breach-notifications)
   * [你们提供测试环境吗](#do-you-offer-a-test-environment)
   * [你们提供监控和告警工具吗](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [每个别名转发的邮件地址数量有限制吗](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [我可以递归转发邮件吗](#can-i-recursively-forward-emails)
   * [别人可以未经我允许注销或注册我的邮件转发吗](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [我如何提高存储或出站 SMTP 发送限制](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Enterprise License 包含哪些内容](#what-is-included-in-the-enterprise-license)
   * [这是如何免费的](#how-is-it-free)
   * [最大邮件大小限制是多少](#what-is-the-max-email-size-limit)
   * [你们存储邮件日志吗](#do-you-store-logs-of-emails)
@@ -1040,7 +1045,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### 您的服务器位于哪里 {#where-are-your-servers-located}
 
 > \[!TIP]
-> 我们可能很快会宣布位于 [forwardemail.eu](https://forwardemail.eu) 托管的欧盟数据中心位置。请订阅 <https://github.com/orgs/forwardemail/discussions/336> 的讨论以获取更新。
+> 我们可能很快会宣布位于 [forwardemail.eu](https://forwardemail.eu) 托管的欧盟数据中心位置。请订阅 <https://github.com/orgs/forwardemail/discussions/336> 的讨论以获取更新。  目前没有仅限欧盟的部署或选择加入——请参见 [我可以将我的电子邮件处理和存储保留在欧盟内（数据驻留）吗](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)。
 
 我们的服务器主要位于科罗拉多州丹佛——完整 IP 地址列表见 <https://forwardemail.net/ips>。
 
@@ -4064,12 +4069,73 @@ Forward Email 对其极少的 2-3 人工程团队访问实施了全面的访问�
 * 涵盖 GDPR 合规及欧盟-美国/瑞士-美国隐私保护框架
 * 同意我们的服务条款时自动接受
 * 标准 DPA 无需单独签署
-* 企业许可可提供定制 DPA 安排
+* 已对签的副本以及自定义的 DPA 安排可通过 [Enterprise License](#what-is-included-in-the-enterprise-license) 获取
+* 若要在您自己的次级处理者附录中列出我们，请参见 [如何在我自己的 DPA 中将 Forward Email 列为次级处理者](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **GDPR 合规框架：**
 我们的 DPA 详细说明了 GDPR 以及国际数据传输要求的合规情况。完整信息请访问：<https://forwardemail.net/gdpr>
 
 对于需要定制 DPA 条款或特定合同安排的企业客户，可通过我们的 **企业许可（每月 250 美元）** 计划进行处理。
+
+
+### 我能否将我的电子邮件处理和存储保留在欧盟（数据驻留） {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> 目前还不行。今天尚无仅限欧盟的部署或欧盟“选择加入”可用，你不应在你自己的记录或数据处理协议中将 Forward Email 描述为仅限欧盟的处理者。
+
+**当前的处理位置：**我们的服务器主要位于 Denver, Colorado, United States（参见[你们的服务器位于哪里](#where-are-your-servers-located)以及 <https://forwardemail.net/ips>）。这适用于所有功能：入站转发、错误日志、邮箱存储（IMAP/POP3/CalDAV/CardDAV）以及出站 SMTP。
+
+**计划内容：**在阿姆斯特丹设立一个欧盟数据中心，托管于 [forwardemail.eu](https://forwardemail.eu)。为了让欧盟数据在法律与技术上都实现真正隔离，需要通过一家独立的欧盟本地公司运营，而不仅仅是在欧盟地点放置服务器。我们尚无上线日期，加入候补名单不会改变你今天的邮件处理地点。订阅 <https://github.com/orgs/forwardemail/discussions/336> 以获取公告；一旦可用，我们会在那里说明现有客户如何选择加入。
+
+**你今天可以准确陈述的是：**
+
+* 处理者：Forward Email LLC，一家在 Delaware, United States 注册的公司
+* 处理与存储地点：United States
+* 传输机制与保障措施：如我们的 [DPA](/dpa) 和 [GDPR](/gdpr) 页面所述
+* 我们的分处理者：列于我们的 [GDPR](/gdpr) 页面（均为位于美国的提供商）
+
+参见[我的域名的入站邮件在哪里处理和存储，以及保留多久](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)以获取按功能的拆解，及[如何在我自己的 DPA 中将 Forward Email 列为分处理者](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)以获得可直接复制的附录条目。
+
+### 我的域名的入站邮件在哪里处理和存储，以及保留多久 {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+所有处理与存储均发生在我们位于 Denver, Colorado, United States 的服务器上。保留的内容及其期限取决于具体功能：
+
+| 功能 | 保留内容 | 保留期限 |
+| --- | --- | --- |
+| **电子邮件转发**（将别名转发到另一个地址或 webhook） | 无。消息完全在内存中处理并中继到目标；从不会写入磁盘或数据库。 | 无——一旦尝试投递，消息即被丢弃 |
+| **SMTP 错误日志**（`4xx`/`5xx` 响应） | SMTP 错误、信封以及电子邮件头。**不**包括消息正文或附件。 | 7 天（参见[你们是否存储错误日志](#do-you-store-error-logs)） |
+| **反滥用缓存**（灰名单、拒绝名单、速率限制） | 从发件人和收件人数据（地址、域名、哈希）派生的键，不含任何消息内容。 | 最长 30 天（参见[是否有灰名单](#do-you-have-a-greylist)和[是否有拒绝名单](#do-you-have-a-denylist)） |
+| **邮箱存储**（IMAP/POP3/CalDAV/CardDAV，当在别名上启用时） | 消息、联系人和日历，存放在仅能用你的密码打开的、单独加密的 SQLite 邮箱中。 | 直至你删除该消息、别名、域名或账户（参见[如何导出和备份我的邮箱](#how-do-i-export-and-backup-my-mailbox)） |
+| **出站 SMTP** | 用于投递与错误报告的队列记录。消息正文在成功投递或出现永久性错误后，默认保留 0 天；你可以按域将其最多提高到 30 天。 | 约 ~30 天用于队列记录（参见我们的[隐私政策](/privacy)） |
+
+有两点值得在你自己的记录中注明：
+
+* 被转发的邮件会投递到你配置的目标邮箱（例如 Google Workspace 或 Microsoft 365）。该提供商所存储的任何内容均受你与其之间的协议约束，而非受我们约束。
+* 域名与账户记录（你的电子邮件地址、域名、别名、账单信息）会在你的账户存在期间一直存储。完整清单参见我们的[隐私政策](/privacy)。
+
+来源：<https://forwardemail.net/privacy>、<https://forwardemail.net/technical-whitepaper.pdf>，以及位于 <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js> 的 MX 处理程序。
+
+### 如何在我自己的 DPA 中将 Forward Email 列为分处理者 {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+如果你在 GDPR 第 28 条下是控制者（或你自己也是处理者），并使用 Forward Email 为你的客户或用户处理邮件，通常需要在你自己的分处理者附录中注明我们。下面的条目是我们会写的内容：
+
+| 字段 | 值 |
+| --- | --- |
+| **分处理者** | Forward Email LLC |
+| **注册地** | State of Delaware, United States |
+| **服务** | 电子邮件转发（入站 MX），以及在启用时，加密的邮箱存储（IMAP/POP3/CalDAV/CardDAV）与出站 SMTP |
+| **处理的个人数据** | 电子邮件地址、信封和头部元数据，以及在传输中的消息内容（对于转发仅在内存中；对于邮箱存储静态加密） |
+| **处理地点** | United States (Denver, Colorado) |
+| **保留期限** | 参见[我的域名的入站邮件在哪里处理和存储，以及保留多久](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **传输机制** | 如我们的 [Data Processing Agreement](/dpa) 和 [GDPR](/gdpr) 页面所规定 |
+| **我们的分处理者** | 列于我们的 [GDPR](/gdpr) 页面和 [DPA](/dpa) 中（当前为 Cloudflare、DataPacket、DigitalOcean, GitHub, Vultr, Stripe 和 PayPal） |
+| **欧盟代表（第 27 条）** | Osano International Compliance Services Limited, Dublin, Ireland – 详址见我们的 [GDPR](/gdpr) 页面 |
+| **英国代表** | Osano UK Compliance LTD, Belfast – 详址见我们的 [GDPR](/gdpr) 页面 |
+| **数据处理协议** | <https://forwardemail.net/dpa>（随我们的[条款](/terms)一并接受；在 Enterprise License 下提供一份会签副本） |
+| **安全联系** | <security@forwardemail.net> |
+
+> [!WARNING]
+> 未签订企业协议，我们的[条款](/terms)不允许你运营一项使第三方（除你自己的员工和承包商之外的任何人）能够访问、使用或受益于 Forward Email 的服务。若你因处理客户邮件而将我们列为分处理者，你需要[Enterprise License](#what-is-included-in-the-enterprise-license)——这也是你获取会签版 DPA 的方式。
 
 ### 您如何处理数据泄露通知 {#how-do-you-handle-data-breach-notifications}
 
@@ -5692,6 +5758,34 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
 ### 人们可以在未经我允许的情况下注销或注册我的邮件转发吗 {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 我们使用 MX 和 <strong class="notranslate">TXT</strong> 记录验证，因此如果你添加了本服务相应的 MX 和 <strong class="notranslate">TXT</strong> 记录，那么你就是已注册状态。如果你移除它们，则为未注册状态。你拥有你的域名和 DNS 管理权限，所以如果有人能访问这些，那就是一个问题。
+
+
+### 我如何提高存储或出站 SMTP 发送限制 {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+前往 <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">我的账户 → 计费</a> 并滚动至 **附加组件** 部分，该部分包含两个请求表单：
+
+* **存储升级** — 选择要增加的数量 (+10, +20, +30, +40, 或 +50 GB)，或选择 "Other" 以请求自定义数量。
+* **出站 SMTP 限制升级** — 选择要增加的数量 (+1000, +2000, 或 +3000 封电子邮件/天)，或选择 "Other" 以请求自定义数量。
+
+提交任一表单都会将您的请求发送给我们的团队进行审核 — 不会立即向您收费。获批后，我们会通过电子邮件向您发送一个安全的付款链接以完成升级。您在任一时间每种类型（存储或 SMTP）只能有 1 个待处理请求；在同一类型的上一次请求后的 3 天 内再次提交不被允许，需等待该时间窗口结束。
+
+
+### Enterprise License 包含哪些内容 {#what-is-included-in-the-enterprise-license}
+
+Enterprise License 的价格为 **$250/month**，通过直接报价与开票收取，而不是在定价页面购买。它包含“团队计划”的全部内容，此外还有：
+
+* **面向第三方的使用条款例外**——你可以运营一项服务或集成，使你的客户、学生或委托人（不仅限于你自己的员工和承包商）使用或受益于 Forward Email。我们的标准[条款](/terms)不允许这样做。
+* **已会签的企业协议和 DPA**——通过 DocuSign 发送以供审阅与签署。你将由此获得一份已签署的[Data Processing Agreement](/dpa)，而不是随我们的条款接受的那份副本。
+* **定制合同条款**（在我们可支持的范围内），例如数据泄露通知 SLA（参见[你们如何处理数据泄露通知](#how-do-you-handle-data-breach-notifications)）。
+* **无限制的 API 请求**，无速率限制。
+* **专属客户支持聊天室**，由我们的工程团队提供服务。
+* **上线协助与实时工程支持。**
+
+这并不会改变你数据的处理地点：参见[我能否将我的电子邮件处理和存储保留在欧盟（数据驻留）](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)。
+
+**谁需要它：**任何对服务的使用超出条款（第三方访问）范围的人，以及任何需要会签版 DPA、自定义 DPA 条款，或为合规目的而指定工程联系人 的人。
+
+**如何开始：**[联系我们](/help)，提供你的法定公司名称、注册地址、公司注册号与 VAT 编号，以及签署人的姓名、职务和电子邮件地址。我们会回复一份 DocuSign 协议供你审阅。
 
 ### 这是如何免费的 {#how-is-it-free}
 

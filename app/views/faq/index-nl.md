@@ -96,6 +96,9 @@
   * [Wie heeft toegang tot uw e-mailinfrastructuur](#who-has-access-to-your-email-infrastructure)
   * [Welke infrastructuurproviders gebruikt u](#what-infrastructure-providers-do-you-use)
   * [Biedt u een gegevensverwerkingsovereenkomst (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+* [Kan ik mijn e-mailverwerking en -opslag in de EU houden (gegevensresidentie)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [Waar worden inkomende e-mail voor mijn domein verwerkt en opgeslagen, en hoe lang](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [Hoe vermeld ik Forward Email als subverwerker in mijn eigen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Hoe gaat u om met meldingen van datalekken](#how-do-you-handle-data-breach-notifications)
   * [Biedt u een testomgeving](#do-you-offer-a-test-environment)
   * [Biedt u monitoring- en waarschuwingshulpmiddelen](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [Is er een maximumlimiet voor het aantal e-mailadressen waar ik per alias naar kan doorsturen](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Kan ik e-mails recursief doorsturen](#can-i-recursively-forward-emails)
   * [Kunnen mensen mijn e-mail forwarding registreren of deregistreren zonder mijn toestemming](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [Hoe verhoog ik mijn opslag of uitgaande SMTP-verzendlimiet](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Wat is inbegrepen in de Enterprise License](#what-is-included-in-the-enterprise-license)
   * [Hoe is het gratis](#how-is-it-free)
   * [Wat is de maximale e-mailgrootte](#what-is-the-max-email-size-limit)
   * [Slaat u logs van e-mails op](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ Zie de sectie over [Ondersteunen jullie het verzenden van e-mail via SMTP](#do-y
 ### Waar bevinden zich jullie servers {#where-are-your-servers-located}
 
 > \[!TIP]
-> We zullen binnenkort onze EU-datacenterlocatie aankondigen die wordt gehost onder [forwardemail.eu](https://forwardemail.eu). Abonneer je op de discussie via <https://github.com/orgs/forwardemail/discussions/336> voor updates.
+> We zullen binnenkort onze EU-datacenterlocatie aankondigen die wordt gehost onder [forwardemail.eu](https://forwardemail.eu). Abonneer je op de discussie via <https://github.com/orgs/forwardemail/discussions/336> voor updates.  Er is momenteel geen uitsluitend EU-implementatie en ook geen optie om hiervoor te kiezen – zie [Kan ik mijn e-mailverwerking en -opslag in de EU houden (gegevensresidentie)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 Onze servers bevinden zich voornamelijk in Denver, Colorado – zie <https://forwardemail.net/ips> voor onze volledige lijst met IP-adressen.
 
@@ -4067,12 +4072,73 @@ Ja, Forward Email biedt een uitgebreide Data Processing Agreement (DPA) die kan 
 * Omvat GDPR-compliance en EU-VS/Zwitserland-VS Privacy Shield-kaders
 * Wordt automatisch geaccepteerd bij akkoord gaan met onze Servicevoorwaarden
 * Geen aparte handtekening vereist voor standaard DPA
-* Maatwerk DPA-regelingen beschikbaar via Enterprise License
+* Een medeondertekend exemplaar en maatwerk-DPA-regelingen zijn beschikbaar via de [Enterprise License](#what-is-included-in-the-enterprise-license)
+* Om ons te vermelden in uw eigen subverwerkersbijlage, zie [Hoe vermeld ik Forward Email als subverwerker in mijn eigen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **GDPR Compliance Framework:**
 Onze DPA beschrijft de naleving van GDPR evenals internationale vereisten voor gegevensoverdracht. Volledige informatie is beschikbaar op: <https://forwardemail.net/gdpr>
 
 Voor enterprise-klanten die maatwerk DPA-voorwaarden of specifieke contractuele regelingen nodig hebben, kunnen deze worden geregeld via ons **Enterprise License ($250/maand)** programma.
+
+
+### Kan ik mijn e-mailverwerking en -opslag in de EU houden (dataresidentie) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> Nog niet. Er is vandaag geen uitsluitend-EU-implementatie of EU-opt-in beschikbaar, en u moet Forward Email in uw eigen administratie of verwerkersovereenkomst niet als een uitsluitend EU-verwerker beschrijven.
+
+**Waar verwerking vandaag plaatsvindt:** onze servers bevinden zich voornamelijk in Denver, Colorado, Verenigde Staten (zie [Waar staan jullie servers](#where-are-your-servers-located) en <https://forwardemail.net/ips>). Dit geldt voor elke functie: inkomend doorsturen, foutlogboeken, mailboxopslag (IMAP/POP3/CalDAV/CardDAV) en uitgaande SMTP.
+
+**Wat gepland is:** een EU-datacenter in Amsterdam, gehost onder [forwardemail.eu](https://forwardemail.eu). Om EU-gegevens echt geïsoleerd te houden – juridisch én technisch – moet dit draaien via een apart in de EU gevestigd bedrijf, niet alleen via servers op een EU-locatie. We hebben nog geen lanceringsdatum, en op een wachtlijst komen verandert niet waar uw mail vandaag wordt verwerkt. Abonneer u op <https://github.com/orgs/forwardemail/discussions/336> voor aankondigingen; daar beschrijven we hoe bestaande klanten kunnen opt-in zodra het beschikbaar is.
+
+**Wat u vandaag nauwkeurig kunt vermelden:**
+
+* Verwerker: Forward Email LLC, een in Delaware, Verenigde Staten, geregistreerd bedrijf
+* Locatie van verwerking en opslag: Verenigde Staten
+* Overdrachtsmechanisme en waarborgen: zoals beschreven op onze pagina’s [DPA](/dpa) en [GDPR](/gdpr)
+* Onze eigen subverwerkers: vermeld op onze [GDPR](/gdpr)-pagina (allemaal in de VS gevestigde aanbieders)
+
+Zie [Waar wordt inkomende e-mail voor mijn domein verwerkt en opgeslagen, en hoe lang](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) voor een uitsplitsing per functie, en [Hoe vermeld ik Forward Email als subverwerker in mijn eigen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa) voor een kant-en-klare bijlage-invoer.
+
+### Waar wordt inkomende e-mail voor mijn domein verwerkt en opgeslagen, en hoe lang {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+Alle verwerking en opslag vindt plaats op onze servers in Denver, Colorado, Verenigde Staten. Wat bewaard wordt, en hoe lang, hangt af van de functie:
+
+| Functie | Wat wordt bewaard | Bewaartermijn |
+| --- | --- | --- |
+| **E-maildoorsturen** (een alias die doorstuurt naar een ander adres of een webhook) | Niets. Het bericht wordt volledig in het geheugen verwerkt en doorgestuurd naar de bestemming; het wordt nooit op schijf of in een database geschreven. | Geen – het bericht wordt weggegooid zodra een bezorgpoging is gedaan |
+| **SMTP-foutlogboeken** (`4xx`/`5xx`-antwoorden) | De SMTP-fout, de envelop en de e-mailheaders. **Niet** de berichttekst of bijlagen. | 7 dagen (zie [Slaan jullie foutlogboeken op](#do-you-store-error-logs)) |
+| **Anti-misbruikcaches** (grijslijst, blokkeerlijst, snelheidsbeperking) | Sleutels afgeleid van afzender- en geadresseerdetails (adressen, domeinen, hashes), geen berichtinhoud. | Tot 30 dagen (zie [Hebben jullie een grijslijst](#do-you-have-a-greylist) en [Hebben jullie een blokkeerlijst](#do-you-have-a-denylist)) |
+| **Mailboxopslag** (IMAP/POP3/CalDAV/CardDAV, wanneer ingeschakeld op een alias) | Berichten, contacten en agenda’s, in een individueel versleuteld SQLite-postvak dat alleen uw wachtwoord kan openen. | Totdat u het bericht, de alias, het domein of het account verwijdert (zie [Hoe exporteer en back-up ik mijn mailbox](#how-do-i-export-and-backup-my-mailbox)) |
+| **Uitgaande SMTP** | Wachtrijrecords voor bezorging en foutrapportage. Berichtteksten worden standaard 0 dagen bewaard na succesvolle bezorging of een permanente fout; u kunt dit per domein verhogen tot maximaal 30 dagen. | ~30 dagen voor wachtrijrecords (zie ons [Privacybeleid](/privacy)) |
+
+Twee zaken die het vermelden waard zijn in uw eigen administratie:
+
+* Een doorgestuurd bericht wordt bezorgd in het bestemmingspostvak dat u hebt geconfigureerd (bijvoorbeeld Google Workspace of Microsoft 365). Wat die aanbieder opslaat valt onder uw overeenkomst met hen, niet met ons.
+* Domein- en accountgegevens (uw e-mailadres, domeinnamen, aliassen, factureringsgegevens) worden bewaard zolang uw account bestaat. Zie ons [Privacybeleid](/privacy) voor de volledige lijst.
+
+Bronnen: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf>, en de MX-handler op <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### Hoe vermeld ik Forward Email als subverwerker in mijn eigen DPA {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+Als u verwerkingsverantwoordelijke bent (of zelf verwerker) onder GDPR Artikel 28 en u gebruikt Forward Email om mail voor uw klanten of gebruikers af te handelen, moet u ons doorgaans opnemen in uw eigen subverwerkersbijlage. De onderstaande invoer is wat wij zouden schrijven:
+
+| Veld | Waarde |
+| --- | --- |
+| **Subverwerker** | Forward Email LLC |
+| **Geregistreerd in** | Staat Delaware, Verenigde Staten |
+| **Dienst** | E-maildoorsturen (inkomende MX) en, waar ingeschakeld, versleutelde mailboxopslag (IMAP/POP3/CalDAV/CardDAV) en uitgaande SMTP |
+| **Verwerkte persoonsgegevens** | E-mailadressen, envelop- en header-metadata, en berichtinhoud tijdens transport (alleen in geheugen voor doorsturen; versleuteld in rust voor mailboxopslag) |
+| **Locatie van verwerking** | Verenigde Staten (Denver, Colorado) |
+| **Bewaartermijn** | Zie [Waar wordt inkomende e-mail voor mijn domein verwerkt en opgeslagen, en hoe lang](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **Overdrachtsmechanisme** | Zoals uiteengezet op onze pagina’s [Data Processing Agreement](/dpa) en [GDPR](/gdpr) |
+| **Onze subverwerkers** | Vermeld op onze [GDPR](/gdpr)-pagina en in de [DPA](/dpa) (momenteel Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe en PayPal) |
+| **EU-vertegenwoordiger (Art. 27)** | Osano International Compliance Services Limited, Dublin, Ierland – volledig adres op onze [GDPR](/gdpr)-pagina |
+| **VK-vertegenwoordiger** | Osano UK Compliance LTD, Belfast – volledig adres op onze [GDPR](/gdpr)-pagina |
+| **Verwerkersovereenkomst** | <https://forwardemail.net/dpa> (geaccepteerd met onze [Voorwaarden](/terms); een medeondertekend exemplaar wordt geleverd onder de Enterprise-licentie) |
+| **Beveiligingscontact** | <security@forwardemail.net> |
+
+> [!WARNING]
+> Onze [Voorwaarden](/terms) staan niet toe dat u een dienst exploiteert die derden (iedereen anders dan uw eigen werknemers en opdrachtnemers) laat toegang krijgen tot, gebruikmaken van of profiteren van Forward Email zonder een enterprise-overeenkomst. Als u ons als subverwerker noemt omdat u de mail van uw klanten verwerkt, hebt u de [Enterprise-licentie](#what-is-included-in-the-enterprise-license) nodig – dat is ook hoe u een medeondertekende DPA verkrijgt.
 
 ### Hoe gaat u om met meldingen van datalekken {#how-do-you-handle-data-breach-notifications}
 
@@ -5695,6 +5761,34 @@ Ja, dat kan, maar je moet nog steeds de maximumlimiet respecteren. Als je `hello
 ### Kunnen mensen mijn e-maildoorsturing registreren of afmelden zonder mijn toestemming {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 We gebruiken MX- en <strong class="notranslate">TXT</strong>-recordverificatie, dus als je de respectievelijke MX- en <strong class="notranslate">TXT</strong>-records van deze dienst toevoegt, ben je geregistreerd. Als je ze verwijdert, ben je afgemeld. Jij hebt het eigendom van je domein en DNS-beheer, dus als iemand daar toegang toe heeft, is dat een probleem.
+
+
+### Hoe verhoog ik mijn opslag of uitgaande SMTP-verzendlimiet {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+Ga naar <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mijn account → Facturering</a> en scroll naar de sectie **Uitbreidingen**, met twee aanvraagformulieren:
+
+* **Opslagupgrade** — kies een hoeveelheid om toe te voegen (+10, +20, +30, +40 of +50 GB), of selecteer "Other" om een aangepaste hoeveelheid aan te vragen.
+* **Upgrade van uitgaande SMTP-limiet** — kies een hoeveelheid om toe te voegen (+1000, +2000 of +3000 e-mails per dag), of selecteer "Other" om een aangepaste hoeveelheid aan te vragen.
+
+Het indienen van een van beide formulieren stuurt je aanvraag naar ons team ter beoordeling — er worden niet direct kosten in rekening gebracht. Zodra deze is goedgekeurd, sturen we je per e-mail een beveiligde betalingslink om de upgrade te voltooien. Je kunt één openstaande aanvraag per type (opslag of SMTP) tegelijk hebben; opnieuw indienen binnen 3 dagen na een eerdere aanvraag van hetzelfde type is niet toegestaan totdat die periode is verstreken.
+
+
+### Wat is inbegrepen in de Enterprise-licentie {#what-is-included-in-the-enterprise-license}
+
+De Enterprise-licentie kost **$250/maand**, wordt rechtstreeks geoffreerd en gefactureerd in plaats van via de prijspagina aangeschaft. Deze omvat alles uit het Team-abonnement plus:
+
+* **Uitzondering op de Gebruiksvoorwaarden voor derden** – u mag een dienst of integratie exploiteren waarbij uw klanten, studenten of cliënten (niet alleen uw eigen werknemers en opdrachtnemers) gebruikmaken van of profiteren van Forward Email. Onze standaard [Voorwaarden](/terms) staan dit niet toe.
+* **Medeondertekende enterprise-overeenkomst en DPA** – ter beoordeling en ondertekening verzonden via DocuSign. Dit is hoe u een ondertekende [Data Processing Agreement](/dpa) verkrijgt in plaats van het exemplaar dat met onze Voorwaarden wordt geaccepteerd.
+* **Aangepaste contractuele voorwaarden** waar we deze kunnen ondersteunen, zoals SLA's voor inbreukmeldingen (zie [Hoe gaan jullie om met datalekmeldingen](#how-do-you-handle-data-breach-notifications)).
+* **Onbeperkte API-aanvragen** zonder snelheidsbeperking.
+* **Eigen chatruimte voor klantenondersteuning** met ons engineeringteam.
+* **Ondersteuning bij onboarding en realtime technische ondersteuning.**
+
+Dit verandert niet waar uw gegevens worden verwerkt: zie [Kan ik mijn e-mailverwerking en -opslag in de EU houden (dataresidentie)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**Wie het nodig heeft:** iedereen wiens gebruik van de dienst buiten de Voorwaarden valt (toegang door derden), en iedereen die een medeondertekende DPA, aangepaste DPA-voorwaarden of een genoemde technische contactpersoon voor compliance-doeleinden vereist.
+
+**Hoe te beginnen:** [neem contact met ons op](/help) met uw juridische bedrijfsnaam, statutaire adres, bedrijfsregistratie- en btw-nummers, en de naam, functie en e-mailadres van de persoon die zal ondertekenen. We antwoorden met een DocuSign-overeenkomst ter beoordeling.
 
 ### Hoe is het gratis {#how-is-it-free}
 

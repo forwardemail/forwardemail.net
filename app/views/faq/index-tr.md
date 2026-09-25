@@ -96,6 +96,9 @@
   * [E-posta altyapınıza kimler erişebilir](#who-has-access-to-your-email-infrastructure)
   * [Hangi altyapı sağlayıcılarını kullanıyorsunuz](#what-infrastructure-providers-do-you-use)
   * [Bir Veri İşleme Sözleşmesi (DPA) sunuyor musunuz](#do-you-offer-a-data-processing-agreement-dpa)
+* [E-posta işleme ve depolamamı AB'de tutabilir miyim (veri yerleşimi)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [Alan adım için gelen e-postalar nerede işlenir ve depolanır, ve ne kadar süreyle](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [Kendi DPA'mda Forward Email'i bir alt işleyici olarak nasıl listelerim](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Veri ihlali bildirimlerini nasıl yönetiyorsunuz](#how-do-you-handle-data-breach-notifications)
   * [Bir test ortamı sunuyor musunuz](#do-you-offer-a-test-environment)
   * [İzleme ve uyarı araçları sağlıyor musunuz](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [Her takma ad için yönlendirebileceğim e-posta adresi sayısında maksimum sınır var mı](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [E-postaları yinelemeli olarak yönlendirebilir miyim](#can-i-recursively-forward-emails)
   * [İzinsiz olarak e-posta yönlendirmemi kaydettirebilir veya kaydını sildirebilirler mi](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [Depolama alanımı veya giden SMTP gönderim sınırını nasıl artırırım](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Enterprise License kapsamında neler dahildir](#what-is-included-in-the-enterprise-license)
   * [Bu hizmet nasıl ücretsiz](#how-is-it-free)
   * [Maksimum e-posta boyutu sınırı nedir](#what-is-the-max-email-size-limit)
   * [E-posta günlüklerini saklıyor musunuz](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ Yapılandırma talimatları için lütfen [SMTP ile e-posta göndermeyi destekli
 ### Sunucularınız nerede bulunuyor {#where-are-your-servers-located}
 
 > \[!TIP]
-> Yakında [forwardemail.eu](https://forwardemail.eu) altında barındırılan AB veri merkezi konumumuzu duyurabiliriz. Güncellemeler için <https://github.com/orgs/forwardemail/discussions/336> adresindeki tartışmaya abone olun.
+> Yakında [forwardemail.eu](https://forwardemail.eu) altında barındırılan AB veri merkezi konumumuzu duyurabiliriz. Güncellemeler için <https://github.com/orgs/forwardemail/discussions/336> adresindeki tartışmaya abone olun.  Bugün yalnızca AB'ye özel bir dağıtım veya isteğe bağlı katılım yok – bkz. [E-posta işleme ve depolamamı AB'de tutabilir miyim (veri yerleşimi)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
 
 Sunucularımız öncelikle Denver, Colorado'da bulunmaktadır – IP adreslerimizin tam listesi için <https://forwardemail.net/ips> adresine bakabilirsiniz.
 
@@ -4067,12 +4072,73 @@ Evet, Forward Email, kurumsal sözleşmemizle imzalanabilecek kapsamlı bir Veri
 * GDPR uyumluluğu ve AB-ABD/İsviçre-ABD Gizlilik Kalkanı çerçevelerini kapsar
 * Hizmet Şartlarımızı kabul ettiğinizde otomatik olarak kabul edilir
 * Standart DPA için ayrı imza gerekmez
-* Kurumsal Lisans aracılığıyla özel DPA düzenlemeleri mevcuttur
+* Karşı imzalı bir kopya ve özel DPA düzenlemeleri, [Enterprise License](#what-is-included-in-the-enterprise-license) aracılığıyla mevcuttur
+* Bizi kendi alt işleyici ekinizde adlandırmak için bkz. [Kendi DPA'mda Forward Email'i bir alt işleyici olarak nasıl listelerim](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
 
 **GDPR Uyumluluk Çerçevesi:**
 DPA’mız GDPR ve uluslararası veri transferi gereksinimlerine uyumu detaylandırır. Tam bilgi şurada mevcuttur: <https://forwardemail.net/gdpr>
 
 Özel DPA şartları veya belirli sözleşme düzenlemeleri isteyen kurumsal müşterilerimiz için bunlar **Kurumsal Lisans ($250/ay)** programımız aracılığıyla ele alınabilir.
+
+
+### E-postamın işlenmesini ve depolanmasını AB’de tutabilir miyim (veri yerleşimi) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> Henüz değil. Bugün yalnızca AB’ye özel bir dağıtım veya AB’ye özel katılım seçeneği yoktur ve kendi kayıtlarınızda veya veri işleme sözleşmenizde Forward Email’i yalnızca AB’ye özel bir işlemci olarak tanımlamamalısınız.
+
+**Bugün işlemenin gerçekleştiği yer:** sunucularımız ağırlıklı olarak Denver, Colorado, United States konumundadır (bkz. [Sunucularınız nerede konumlanıyor](#where-are-your-servers-located) ve <https://forwardemail.net/ips>). Bu durum her özellik için geçerlidir: gelen yönlendirme, hata günlükleri, posta kutusu depolaması (IMAP/POP3/CalDAV/CardDAV) ve giden SMTP.
+
+**Planlanan:** Amsterdam’da, [forwardemail.eu](https://forwardemail.eu) altında barındırılan bir AB veri merkezi. AB verilerini gerçekten izole tutmak için – hem hukuken hem de teknik olarak – yalnızca AB’deki bir konumda çalışan sunucularla değil, ayrı bir AB merkezli şirket üzerinden faaliyet göstermesi gerekir. Henüz bir lansman tarihimiz yok ve bir bekleme listesine katılmak, bugün e-postanızın nerede işlendiğini değiştirmez. Duyurular için <https://github.com/orgs/forwardemail/discussions/336> adresine abone olun; kullanıma sunulduğunda mevcut müşterilerin nasıl isteğe bağlı olarak katılabileceklerini orada açıklayacağız.
+
+**Bugün doğru biçimde belirtebilecekleriniz:**
+
+* İşleyen: Forward Email LLC, Delaware, United States’te kayıtlı bir şirket
+* İşleme ve depolama yeri: United States
+* Aktarım mekanizması ve güvenceler: [DPA](/dpa) ve [GDPR](/gdpr) sayfalarımızda açıklandığı şekilde
+* Kendi alt işleyenlerimiz: [GDPR](/gdpr) sayfamızda listelenmiştir (tamamı ABD merkezli sağlayıcılar)
+
+Özellik bazında döküm için bkz. [Alan adım için gelen e-postalar nerede işlenir ve depolanır, ve ne kadar süreyle](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) ve hazır kopyalanabilir bir ek girişi için bkz. [Kendi DPA’nızda Forward Email’i bir alt işleyen olarak nasıl listelerim](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa).
+
+### Alan adım için gelen e-postalar nerede işlenir ve depolanır, ve ne kadar süreyle {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+Tüm işleme ve depolama, Denver, Colorado, United States konumundaki sunucularımızda gerçekleşir. Nelerin tutulduğu ve ne kadar süreyle tutulduğu özelliğe bağlıdır:
+
+| Özellik | Ne saklanır | Saklama süresi |
+| --- | --- | --- |
+| **E-posta yönlendirme** (başka bir adrese veya webhook’a yönlendiren bir takma ad) | Hiçbir şey. İleti tamamen bellekte işlenir ve hedefe iletilir; asla diske veya bir veritabanına yazılmaz. | Yok – teslimat denenir denenmez ileti atılır |
+| **SMTP hata günlükleri** (`4xx`/`5xx` yanıtları) | SMTP hatası, zarf ve e‑posta başlıkları. **Değil** ileti gövdesi veya ekler. | 7 gün (bkz. [Hata günlüklerini depoluyor musunuz](#do-you-store-error-logs)) |
+| **Kötüye kullanım karşıtı önbellekler** (greylist, denylist, rate limiting) | Gönderen ve alıcı verilerinden türetilen anahtarlar (adresler, alan adları, hash’ler), ileti içeriği yok. | En fazla 30 gün (bkz. [Gri liste var mı](#do-you-have-a-greylist) ve [Reddetme listesi var mı](#do-you-have-a-denylist)) |
+| **Posta kutusu depolaması** (IMAP/POP3/CalDAV/CardDAV, bir takma ad üzerinde etkinleştirildiğinde) | İletiler, kişiler ve takvimler, yalnızca parolanızın açabileceği bireysel olarak şifrelenmiş bir SQLite posta kutusunda. | İletiyi, takma adı, alan adını veya hesabı silene kadar (bkz. [Posta kutumu nasıl dışa aktarır ve yedeklerim](#how-do-i-export-and-backup-my-mailbox)) |
+| **Giden SMTP** | Teslimat ve hata raporlaması için kuyruk kayıtları. İleti gövdeleri, başarılı teslimattan veya kalıcı bir hatadan sonra varsayılan olarak 0 gün tutulur; bunu alan adı başına en fazla 30 güne çıkarabilirsiniz. | ~30 gün kuyruk kayıtları için (bkz. [Gizlilik Politikamız](/privacy)) |
+
+Kendi kayıtlarınızda belirtmeye değer iki şey:
+
+* Yönlendirilen bir ileti, yapılandırdığınız hedef posta kutusuna teslim edilir (örneğin Google Workspace veya Microsoft 365). O sağlayıcının ne depoladığı sizin onlarla yaptığınız anlaşma tarafından belirlenir, bizim tarafımızdan değil.
+* Alan adı ve hesap kayıtları (e‑posta adresiniz, alan adları, takma adlar, fatura bilgileri) hesabınız mevcut olduğu sürece saklanır. Tam liste için [Gizlilik Politikamız](/privacy) sayfasına bakın.
+
+Kaynaklar: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf>, ve <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js> adresindeki MX işleyicisi.
+
+### Kendi DPA’nızda Forward Email’i bir alt işleyen olarak nasıl listelerim {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+Eğer GDPR Madde 28 kapsamında bir veri sorumlusuysanız (veya kendiniz bir veri işleyen iseniz) ve müşterilerinizin ya da kullanıcılarınızın e-postalarını işlemek için Forward Email kullanıyorsanız, genellikle bizi kendi alt işleyen ekinizde ad olarak belirtmeniz gerekir. Aşağıdaki giriş, bizim yazacağımız şekildedir:
+
+| Alan | Değer |
+| --- | --- |
+| **Alt işleyen** | Forward Email LLC |
+| **Kayıtlı olduğu yer** | State of Delaware, United States |
+| **Hizmet** | E-posta yönlendirme (gelen MX) ve, etkinleştirildiğinde, şifrelenmiş posta kutusu depolaması (IMAP/POP3/CalDAV/CardDAV) ve giden SMTP |
+| **İşlenen kişisel veriler** | E-posta adresleri, zarf ve başlık üst verileri ve aktarım halindeki ileti içeriği (yönlendirme için yalnızca bellekte; posta kutusu depolaması için saklanırken şifrelenmiş) |
+| **İşlemenin yeri** | United States (Denver, Colorado) |
+| **Saklama** | Bkz. [Alan adım için gelen e-postalar nerede işlenir ve depolanır, ve ne kadar süreyle](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
+| **Aktarım mekanizması** | [Data Processing Agreement](/dpa) ve [GDPR](/gdpr) sayfalarımızda belirtildiği şekilde |
+| **Kendi alt işleyenlerimiz** | [GDPR](/gdpr) sayfamızda ve [DPA](/dpa) içinde listelenmiştir (halen Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe ve PayPal) |
+| **AB temsilcisi (Mad. 27)** | Osano International Compliance Services Limited, Dublin, İrlanda – tam adres [GDPR](/gdpr) sayfamızda |
+| **Birleşik Krallık temsilcisi** | Osano UK Compliance LTD, Belfast – tam adres [GDPR](/gdpr) sayfamızda |
+| **Veri işleme sözleşmesi** | <https://forwardemail.net/dpa> ([Terms](/terms) ile kabul edilir; imzalı bir kopya Enterprise License kapsamında sağlanır) |
+| **Güvenlik iletişim adresi** | <security@forwardemail.net> |
+
+> [!WARNING]
+> [Terms](/terms) hükümlerimiz, üçüncü tarafların (kendi çalışanlarınız ve yüklenicileriniz dışındaki herkesin) Forward Email’e erişmesine, kullanmasına veya ondan faydalanmasına olanak veren bir hizmeti kurumsal bir anlaşma olmadan işletmeye izin vermez. Müşterilerinizin e‑postasını işlediğiniz için bizi bir alt işleyen olarak adlandırıyorsanız, [Enterprise License](#what-is-included-in-the-enterprise-license) gerekir – ayrıca imzalı bir DPA’yı da bu şekilde edinirsiniz.
 
 ### Veri ihlali bildirimlerini nasıl yönetiyorsunuz {#how-do-you-handle-data-breach-notifications}
 
@@ -5695,6 +5761,34 @@ Evet, iletebilirsiniz, ancak yine de maksimum sınıra uymanız gerekir. Eğer `
 ### İnsanlar iznim olmadan e-posta iletimimi kaydını silebilir veya kaydedebilir mi? {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 MX ve <strong class="notranslate">TXT</strong> kayıt doğrulaması kullanıyoruz, bu nedenle bu servisin ilgili MX ve <strong class="notranslate">TXT</strong> kayıtlarını eklerseniz kayıtlı olursunuz. Kayıtları kaldırırsanız kaydınız silinir. Alan adınızın ve DNS yönetiminizin sahibi sizsiniz, dolayısıyla birisi buna erişim sağlıyorsa bu bir sorundur.
+
+
+### Depolama alanımı veya giden SMTP gönderim sınırını nasıl artırırım {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+<a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Hesabım → Faturalandırma</a> bölümüne gidin ve iki istek formu bulunan **Eklentiler** bölümüne ilerleyin:
+
+* **Depolama Yükseltmesi** — eklenecek miktarı seçin (+10, +20, +30, +40 veya +50 GB) ya da özel bir miktar talep etmek için "Other" seçeneğini belirleyin.
+* **Giden SMTP Limit Yükseltmesi** — eklenecek miktarı seçin (+1000, +2000 veya +3000 günlük e-posta) ya da özel bir miktar talep etmek için "Other" seçeneğini belirleyin.
+
+Bu formlardan herhangi birini göndermek, talebinizi inceleme için ekibimize iletir — size hemen ücret tahsil etmez. Onaylandıktan sonra, yükseltmeyi tamamlamak için size güvenli bir ödeme bağlantısını e-posta ile göndereceğiz. Aynı anda her tür için (depolama veya SMTP) en fazla bir bekleyen talebiniz olabilir; aynı tür için önceki bir talepten itibaren 3 gün içinde yeniden gönderim, bu süre dolana kadar izin verilmez.
+
+
+### Enterprise License neleri içerir {#what-is-included-in-the-enterprise-license}
+
+Enterprise License **$250/month**’tır, fiyatlandırma sayfasından satın alınmak yerine doğrudan teklif edilir ve faturalandırılır. Team planındaki her şeyi ve bunlara ek olarak şunları içerir:
+
+* **Üçüncü taraflar için Kullanım Koşulları istisnası** – müşterilerinizin, öğrencilerinizin veya danışanlarınızın (yalnızca kendi çalışanlarınız ve yüklenicileriniz değil) Forward Email’i kullanabildiği veya ondan faydalandığı bir hizmet veya entegrasyon çalıştırabilirsiniz. Standart [Terms](/terms) buna izin vermez.
+* **Karşı imzalı kurumsal sözleşme ve DPA** – inceleme ve imza için DocuSign aracılığıyla gönderilir. Böylece, Şartlarımızla kabul edilen kopya yerine imzalı bir [Data Processing Agreement](/dpa) edinirsiniz.
+* **Destekleyebildiğimiz ölçüde özel sözleşme şartları**, örneğin ihlal bildirimi SLA’ları (bkz. [Veri ihlali bildirimlerini nasıl ele alıyorsunuz](#how-do-you-handle-data-breach-notifications)).
+* **Oran sınırlaması olmadan sınırsız API isteği.**
+* **Mühendislik ekibimizle özel müşteri destek sohbet odası.**
+* **Onboarding desteği ve gerçek zamanlı mühendislik desteği.**
+
+Bu, verilerinizin nerede işlendiğini değiştirmez: bkz. [E-postamın işlenmesini ve depolanmasını AB’de tutabilir miyim (veri yerleşimi)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency).
+
+**Kimin ihtiyacı var:** Hizmetin kullanımının Şartların dışında kaldığı (üçüncü taraf erişimi) herkes ve imzalı bir DPA, özel DPA hükümleri veya uyumluluk amaçlı isimlendirilmiş bir mühendislik irtibatı gerektiren herkes.
+
+**Nasıl başlanır:** yasal şirket adınız, kayıtlı adresiniz, şirket kayıt ve KDV numaralarınız ve imzalayacak kişinin adı, unvanı ve e‑posta adresiyle birlikte [bize ulaşın](/help). İnceleme için bir DocuSign sözleşmesiyle yanıt vereceğiz.
 
 ### Bu nasıl ücretsiz? {#how-is-it-free}
 

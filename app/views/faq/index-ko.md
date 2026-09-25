@@ -96,6 +96,9 @@
   * [누가 이메일 인프라에 접근할 수 있나요](#who-has-access-to-your-email-infrastructure)
   * [어떤 인프라 제공업체를 사용하나요](#what-infrastructure-providers-do-you-use)
   * [데이터 처리 계약서(DPA)를 제공하나요](#do-you-offer-a-data-processing-agreement-dpa)
+* [이메일 처리 및 저장을 EU 내에 유지할 수 있나요(데이터 레지던시)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)
+* [내 도메인으로 수신되는 이메일은 어디에서 처리되고 저장되며, 얼마나 오래 보관되나요](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
+* [내 DPA에서 하위 처리자로 Forward Email을 어떻게 기재하나요](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [데이터 유출 알림을 어떻게 처리하나요](#how-do-you-handle-data-breach-notifications)
   * [테스트 환경을 제공하나요](#do-you-offer-a-test-environment)
   * [모니터링 및 경고 도구를 제공하나요](#do-you-provide-monitoring-and-alerting-tools)
@@ -141,6 +144,8 @@
   * [별칭당 전달할 수 있는 이메일 주소 수에 최대 한도가 있나요](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [이메일을 재귀적으로 전달할 수 있나요](#can-i-recursively-forward-emails)
   * [내 허락 없이 내 이메일 전달을 등록하거나 등록 해제할 수 있나요](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+* [저장 공간 또는 발신 SMTP 전송 한도를 어떻게 늘리나요](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+* [Enterprise License에 포함된 내용은 무엇인가요](#what-is-included-in-the-enterprise-license)
   * [어떻게 무료인가요](#how-is-it-free)
   * [최대 이메일 크기 제한은 무엇인가요](#what-is-the-max-email-size-limit)
   * [이메일 로그를 저장하나요](#do-you-store-logs-of-emails)
@@ -1042,7 +1047,7 @@ Microsoft 365(이전 Office 365) 사용자가 메일박스와 일치하지 않�
 ### 서버 위치는 어디인가요 {#where-are-your-servers-located}
 
 > \[!TIP]
-> 곧 [forwardemail.eu](https://forwardemail.eu)에서 호스팅하는 EU 데이터센터 위치를 발표할 예정입니다. 업데이트를 원하시면 <https://github.com/orgs/forwardemail/discussions/336>에서 토론을 구독하세요.
+> 곧 [forwardemail.eu](https://forwardemail.eu)에서 호스팅하는 EU 데이터센터 위치를 발표할 예정입니다. 업데이트를 원하시면 <https://github.com/orgs/forwardemail/discussions/336>에서 토론을 구독하세요.  현재 EU 전용 배포 또는 옵트인 옵션은 없습니다 – [이메일 처리 및 저장을 EU 내에 유지할 수 있나요(데이터 레지던시)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)를 참조하세요.
 
 저희 서버는 주로 콜로라도 덴버에 위치해 있습니다 – 전체 IP 주소 목록은 <https://forwardemail.net/ips>에서 확인하세요.
 
@@ -4067,12 +4072,73 @@ Sources:
 * GDPR 준수 및 EU-US/Swiss-US 프라이버시 실드 프레임워크 포함
 * 서비스 약관 동의 시 자동 수락
 * 표준 DPA는 별도의 서명 필요 없음
-* 엔터프라이즈 라이선스를 통한 맞춤형 DPA 제공 가능
+* 상호 서명된 사본 및 맞춤형 DPA 약정은 [Enterprise License](#what-is-included-in-the-enterprise-license)를 통해 이용할 수 있습니다
+* 귀하의 하위 처리자 부속서에 저희를 기재하려면 [내 DPA에서 하위 처리자로 Forward Email을 어떻게 기재하나요](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)를 참조하세요
 
 **GDPR 준수 프레임워크:**
 당사의 DPA는 GDPR 및 국제 데이터 전송 요건 준수를 상세히 다룹니다. 자세한 정보는 다음에서 확인할 수 있습니다: <https://forwardemail.net/gdpr>
 
 맞춤형 DPA 조건이나 특정 계약 조항이 필요한 엔터프라이즈 고객은 **엔터프라이즈 라이선스(월 $250)** 프로그램을 통해 지원받을 수 있습니다.
+
+
+### EU에서 이메일 처리 및 저장을 유지할 수 있나요(데이터 레지던시) {#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency}
+
+> [!IMPORTANT]
+> 아직 아닙니다. 현재 EU 전용 배포 또는 EU 옵트인은 제공되지 않으며, 귀하의 기록이나 데이터 처리 계약서에서 Forward Email을 EU 전용 처리자로 설명해서는 안 됩니다.
+
+**현재 처리 위치:** 당사 서버는 주로 Denver, Colorado, United States에 위치해 있습니다(참고: [서버는 어디에 위치하나요](#where-are-your-servers-located) 및 <https://forwardemail.net/ips>). 이는 모든 기능에 적용됩니다: 인바운드 포워딩, 오류 로그, 메일박스 저장소(IMAP/POP3/CalDAV/CardDAV), 그리고 아웃바운드 SMTP.
+
+**계획:** Amsterdam의 EU 데이터센터로, [forwardemail.eu](https://forwardemail.eu) 하에서 호스팅됩니다. EU 데이터를 기술적으로뿐 아니라 법적으로도 진정으로 분리하려면 EU 지역의 서버만으로는 충분하지 않으며, 별도의 EU 기반 법인을 통해 운영되어야 합니다. 출시일은 아직 정해지지 않았고, 대기자 명단에 등록해도 오늘 귀하의 메일이 처리되는 위치는 변하지 않습니다. 공지 사항은 <https://github.com/orgs/forwardemail/discussions/336>에서 구독하세요; 제공이 시작되면 기존 고객이 옵트인하는 방법을 그곳에 안내하겠습니다.
+
+**현재 정확히 명시할 수 있는 내용:**
+
+* 프로세서: Forward Email LLC, United States의 Delaware에 등록된 회사
+* 처리 및 저장 위치: United States
+* 전송 메커니즘과 보호조치: 당사 [DPA](/dpa) 및 [GDPR](/gdpr) 페이지에 설명된 바와 같음
+* 당사의 하위 처리자: 당사 [GDPR](/gdpr) 페이지에 나열(모두 미국 기반 제공업체)
+
+기능별 상세 분류는 [내 도메인의 인바운드 이메일은 어디에서 처리 및 저장되며, 기간은 얼마나 되나요](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)와, 부속서에 그대로 복사해 넣을 수 있는 항목은 [내 DPA에서 Forward Email을 하위 처리자로 어떻게 기재하나요](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)를 참조하세요.
+
+### 내 도메인의 인바운드 이메일은 어디에서 처리·저장되며, 기간은 얼마나 되나요 {#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long}
+
+모든 처리와 저장은 United States의 Denver, Colorado에 있는 당사 서버에서 이루어집니다. 무엇을 얼마나 보관하는지는 기능에 따라 다릅니다:
+
+| 기능 | 보관되는 항목 | 보관 기간 |
+| --- | --- | --- |
+| **Email forwarding** (다른 주소 또는 웹훅으로 전달하는 별칭) | 없음. 메시지는 전적으로 메모리에서 처리되어 대상지로 릴레이되며, 디스크나 데이터베이스에 기록되지 않습니다. | 없음 – 전달 시도가 이뤄지는 즉시 메시지는 폐기됩니다 |
+| **SMTP 오류 로그** (`4xx`/`5xx` 응답) | SMTP 오류, 봉투, 그리고 이메일 헤더. **메시지 본문이나 첨부파일은 보관하지 않습니다.** | 7일(참고: [오류 로그를 저장하나요](#do-you-store-error-logs)) |
+| **악용 방지 캐시** (그레이리스트, 거부 목록, 요청 속도 제한) | 발신자와 수신자 데이터(주소, 도메인, 해시)에서 유도된 키만 저장하며, 메시지 콘텐츠는 포함되지 않습니다. | 최대 30일(참고: [그레이리스트가 있나요](#do-you-have-a-greylist) 및 [거부 목록이 있나요](#do-you-have-a-denylist)) |
+| **메일박스 저장소** (별칭에서 활성화된 경우의 IMAP/POP3/CalDAV/CardDAV) | 메시지, 연락처, 캘린더가 사용자의 비밀번호로만 열 수 있는 개별적으로 암호화된 SQLite 메일박스에 저장됩니다. | 메시지, 별칭, 도메인 또는 계정을 삭제할 때까지(참고: [메일박스를 내보내고 백업하려면 어떻게 하나요](#how-do-i-export-and-backup-my-mailbox)) |
+| **아웃바운드 SMTP** | 전달 및 오류 보고를 위한 대기열 레코드. 성공적인 전달 또는 영구 오류 후 메시지 본문은 기본적으로 0일 보관되며; 도메인별로 최대 30일까지 늘릴 수 있습니다. | ~30일(대기열 레코드에 대해, 당사 [Privacy Policy](/privacy) 참조) |
+
+귀하의 자체 기록에 기재할 가치가 있는 두 가지:
+
+* 전달된 메시지는 귀하가 구성한 대상 메일박스(예: Google Workspace 또는 Microsoft 365)로 배달됩니다. 해당 제공업체의 보관은 당사가 아니라 귀하와 해당 제공업체 간의 계약에 의해 규율됩니다.
+* 도메인 및 계정 기록(귀하의 이메일 주소, 도메인 이름, 별칭, 청구 정보)은 계정이 존재하는 동안 저장됩니다. 전체 목록은 당사 [Privacy Policy](/privacy)에서 확인하세요.
+
+출처: <https://forwardemail.net/privacy>, <https://forwardemail.net/technical-whitepaper.pdf>, 그리고 MX 핸들러 <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>.
+
+### 내 DPA에서 Forward Email을 하위 처리자로 어떻게 기재하나요 {#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa}
+
+귀하가 GDPR 제28조에 따른 컨트롤러(또는 자체적으로 프로세서)이고 고객 또는 사용자의 메일 처리를 위해 Forward Email을 사용하는 경우, 일반적으로 귀하의 하위 처리자 부속서에 당사를 명시해야 합니다. 아래 항목은 저희가 작성할 예시입니다:
+
+| 필드 | 값 |
+| --- | --- |
+| **하위 처리자** | Forward Email LLC |
+| **등록지** | State of Delaware, United States |
+| **서비스** | Email forwarding(인바운드 MX) 및, 활성화된 경우 암호화된 메일박스 저장소(IMAP/POP3/CalDAV/CardDAV)와 아웃바운드 SMTP |
+| **처리되는 개인 데이터** | 이메일 주소, 봉투 및 헤더 메타데이터, 그리고 전송 중의 메시지 콘텐츠(포워딩의 경우 메모리에서만; 메일박스 저장의 경우 저장 시 암호화) |
+| **처리 위치** | United States (Denver, Colorado) |
+| **보관 기간** | [내 도메인의 인바운드 이메일은 어디에서 처리·저장되며, 기간은 얼마나 되나요](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) 참조 |
+| **전송 메커니즘** | 당사 [Data Processing Agreement](/dpa) 및 [GDPR](/gdpr) 페이지에 규정된 바와 같음 |
+| **당사의 하위 처리자** | 당사 [GDPR](/gdpr) 페이지 및 [DPA](/dpa)에 기재(현재 Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe, PayPal) |
+| **EU 대표(제27조)** | Osano International Compliance Services Limited, Dublin, Ireland – 전체 주소는 당사 [GDPR](/gdpr) 페이지에 기재 |
+| **영국 대표** | Osano UK Compliance LTD, Belfast – 전체 주소는 당사 [GDPR](/gdpr) 페이지에 기재 |
+| **데이터 처리 계약(DPA)** | <https://forwardemail.net/dpa> (당사 [Terms](/terms)와 함께 수락됨; 카운터서명된 사본은 Enterprise License 하에서 제공) |
+| **보안 담당자 연락처** | <security@forwardemail.net> |
+
+> [!WARNING]
+> 당사 [Terms](/terms)에서는 제3자(자사 직원 및 계약자를 제외한 모든 사람)가 Forward Email을 액세스·사용·혜택을 누리도록 하는 서비스를 엔터프라이즈 계약 없이 운영하는 것을 허용하지 않습니다. 고객의 메일을 처리하기 때문에 당사를 하위 처리자로 기재하는 경우, [Enterprise License](#what-is-included-in-the-enterprise-license)가 필요합니다 — 또한 이를 통해 카운터서명된 DPA를 받게 됩니다.
 
 ### 데이터 유출 통지는 어떻게 처리하나요 {#how-do-you-handle-data-breach-notifications}
 
@@ -5695,6 +5761,34 @@ Backscatterer 목록에 오르는 일반적인 이유는 잘못된 반송 또는
 ### 내 허락 없이 누군가 내 이메일 전달을 등록하거나 해제할 수 있나요? {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 저희는 MX 및 <strong class="notranslate">TXT</strong> 레코드 검증을 사용합니다. 따라서 이 서비스의 해당 MX 및 <strong class="notranslate">TXT</strong> 레코드를 추가하면 등록된 것이고, 제거하면 등록 해제된 것입니다. 도메인과 DNS 관리는 본인이 소유하고 있으므로, 누군가가 그에 접근할 수 있다면 문제가 될 수 있습니다.
+
+
+### 저장 공간 또는 발신 SMTP 전송 한도를 어떻게 늘리나요 {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+
+<a href="/my-account/billing" target="_blank" rel="noopener noreferrer">내 계정 → 결제</a>로 이동하여 **애드온** 섹션까지 스크롤하세요. 이 섹션에는 다음과 같은 두 가지 요청 양식이 있습니다:
+
+* **저장 공간 업그레이드** — 추가할 용량을 선택하세요 (+10, +20, +30, +40, 또는 +50 GB), 또는 맞춤 용량을 요청하려면 "Other"를 선택하세요.
+* **발신 SMTP 한도 업그레이드** — 추가할 수량을 선택하세요 (+1000, +2000, 또는 +3000 이메일/일), 또는 맞춤 수량을 요청하려면 "Other"를 선택하세요.
+
+두 양식 중 어느 것을 제출하든 요청은 검토를 위해 저희 팀으로 전송되며 — 즉시 요금이 청구되지는 않습니다. 승인되면 업그레이드를 완료할 수 있도록 보안 결제 링크를 이메일로 보내드립니다. 유형별로(저장 공간 또는 SMTP) 한 번에 보류 중인 요청은 하나만 가질 수 있습니다; 동일한 유형에 대해 직전 요청 이후 3일 이내에는 다시 제출할 수 없으며, 해당 기간이 지나야 제출할 수 있습니다.
+
+
+### Enterprise License에 포함되는 내용은 무엇인가요 {#what-is-included-in-the-enterprise-license}
+
+Enterprise License는 **$250/month**이며, 요금제 페이지를 통해 구매하지 않고 직접 견적 산정 및 청구됩니다. Team 플랜의 모든 항목에 더해 다음이 포함됩니다:
+
+* **제3자에 대한 이용 약관 예외** – 고객, 학생, 의뢰인(자사 직원 및 계약자뿐 아니라)이 Forward Email을 사용하거나 혜택을 받는 서비스 또는 통합을 운영할 수 있습니다. 당사의 표준 [Terms](/terms)에서는 이를 허용하지 않습니다.
+* **카운터서명된 엔터프라이즈 계약과 DPA** – DocuSign을 통해 검토 및 서명을 위해 전송됩니다. 이는 당사 Terms에 동의할 때의 사본이 아니라, 서명된 [Data Processing Agreement](/dpa)를 받는 방식입니다.
+* **맞춤형 계약 조항**(지원 가능한 범위) – 예: 침해 통지 SLA(참고: [데이터 침해 통지를 어떻게 처리하나요](#how-do-you-handle-data-breach-notifications)).
+* **무제한 API 요청** – 속도 제한 없음.
+* **전담 고객 지원 채팅룸** – 당사 엔지니어링 팀과 직접 소통.
+* **온보딩 지원 및 실시간 엔지니어링 지원.**
+
+이는 데이터가 처리되는 위치를 변경하지 않습니다: [EU에서 이메일 처리 및 저장을 유지할 수 있나요(데이터 레지던시)](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)를 참조하세요.
+
+**필요한 대상:** 약관 범위를 벗어난 사용(제3자 액세스) 또는 카운터서명된 DPA, 맞춤형 DPA 조항, 컴플라이언스 목적의 명시적 엔지니어링 연락 창구가 필요한 모든 분.
+
+**시작 방법:** [contact us](/help)로 귀사의 법적 회사명, 등록 주소, 회사 등록번호와 VAT 번호, 그리고 서명할 담당자의 이름·직함·이메일 주소를 보내주세요. 검토용 DocuSign 계약서를 회신해 드립니다.
 
 ### 어떻게 무료인가요? {#how-is-it-free}
 
