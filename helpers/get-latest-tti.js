@@ -75,7 +75,67 @@ async function getLatestTti({ includeHistory = false } = {}) {
   return { tti, ttiChartData };
 }
 
+//
+// Summary embeds (home and pricing pages).
+//
+// The embed only shows a healthy sample, and the job writes a sample whenever
+// it runs, including runs where a provider timed out (0) or ran slow (>10s).
+// Showing only the *newest* sample made the section vanish from the home
+// page whenever the latest run had a single bad provider. The summary now
+// shows the most recent healthy sample from the past 24 hours; its "Last
+// updated" time is rendered from the sample, so it stays accurate.
+//
+// It is also served stale-while-revalidate: the home page never waits on the
+// logs database once a value is cached (a refresh runs in the background),
+// and the very first request waits at most SUMMARY_FIRST_WAIT.
+//
+const SUMMARY_WINDOW = ms('24h');
+const SUMMARY_FIRST_WAIT = ms('1s');
+
+let summaryTti;
+let summaryExpiresAt = 0;
+let summaryLoaded = false;
+let summaryRequest;
+
+function refreshSummaryTti() {
+  if (summaryRequest) return summaryRequest;
+  summaryRequest = Promise.race([
+    TTI.find({ created_at: { $gte: new Date(Date.now() - SUMMARY_WINDOW) } })
+      .sort({ created_at: -1 })
+      .limit(100)
+      .lean(),
+    setTimeout(TTI_TIMEOUT, null, { ref: false })
+  ])
+    .then((samples) => {
+      // a timed out query keeps the previous value
+      if (Array.isArray(samples)) {
+        summaryTti = samples.find((sample) => hasHealthyTti(sample)) || null;
+        summaryLoaded = true;
+        summaryExpiresAt = Date.now() + TTI_CACHE_MAX_AGE;
+      }
+
+      return summaryTti;
+    })
+    .finally(() => {
+      summaryRequest = undefined;
+    });
+  return summaryRequest;
+}
+
+async function getSummaryTti() {
+  if (summaryLoaded) {
+    if (summaryExpiresAt <= Date.now()) refreshSummaryTti().catch(() => {});
+    return summaryTti;
+  }
+
+  return Promise.race([
+    refreshSummaryTti(),
+    setTimeout(SUMMARY_FIRST_WAIT, null, { ref: false })
+  ]);
+}
+
 module.exports = {
   getLatestTti,
+  getSummaryTti,
   hasHealthyTti
 };

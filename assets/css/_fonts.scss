@@ -116,9 +116,13 @@
 // Arial (Windows, macOS, iOS; Liberation Sans/Arimo on Linux share its
 // metrics) and Roboto (Android) are separate families because their widths
 // differ; a family whose local() font is missing is skipped by the browser.
+// font-display: swap matters here too: without it these default to `auto`,
+// which hides text while the local() font is being resolved and could hold
+// the first paint.
 @font-face {
   font-family: 'Nunito Sans Fallback Arial';
   font-style: normal;
+  font-display: swap;
   font-weight: 400;
   src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('LiberationSans'), local('Arimo');
   size-adjust: 100.81%;
@@ -130,6 +134,7 @@
 @font-face {
   font-family: 'Nunito Sans Fallback Arial';
   font-style: normal;
+  font-display: swap;
   font-weight: 700;
   src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold');
   size-adjust: 97.47%;
@@ -141,6 +146,7 @@
 @font-face {
   font-family: 'Nunito Sans Fallback Roboto';
   font-style: normal;
+  font-display: swap;
   font-weight: 400;
   src: local('Roboto'), local('Roboto-Regular'), local('Roboto Regular');
   size-adjust: 101.34%;
@@ -152,6 +158,7 @@
 @font-face {
   font-family: 'Nunito Sans Fallback Roboto';
   font-style: normal;
+  font-display: swap;
   font-weight: 700;
   src: local('Roboto Bold'), local('Roboto-Bold');
   size-adjust: 102.92%;

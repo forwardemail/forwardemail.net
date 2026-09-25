@@ -25,6 +25,63 @@ function toArrayBuffer(buffer) {
   );
 }
 
+//
+// YouTube embeds (lazyframe)
+//
+// The site sends `Referrer-Policy: same-origin`, and YouTube refuses to play
+// an embed requested without a Referer ("Video player configuration error,
+// Error 153"). lazyframe builds the iframe with its src already set and
+// inserts it before calling onAppend, so setting referrerpolicy there was too
+// late: the player request had already gone out without a Referer. onAppend
+// now swaps in a clone carrying the attributes, and the clone's request is
+// the one that loads.
+//
+// lazyframe also puts `autoplay=1` in front of the query from data-src, and
+// every data-src carries `?autoplay=0` (templates and the translated FAQ
+// markdown), so the player got `?autoplay=1&autoplay=0` and needed a second
+// click. The autoplay parameter is removed from data-src before init (and
+// `rel=0` keeps related videos to the same channel).
+//
+const YOUTUBE_ALLOW =
+  'accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; gyroscope; picture-in-picture';
+
+function prepareLazyframes(elements) {
+  for (const element of elements) {
+    const { src } = element.dataset;
+    if (!src) continue;
+    let next = src.replace(/([?&])autoplay=[^&]*&?/, '$1').replace(/[?&]$/, '');
+    // keep a query: lazyframe appends `&${query}`, which is `&null` without one
+    if (!next.includes('?')) next += '?rel=0';
+    element.dataset.src = next;
+  }
+
+  return elements;
+}
+
+const LAZYFRAME_OPTIONS = {
+  autoplay: true,
+  initinview: false,
+  onAppend(iframe) {
+    // lazyframe calls onAppend on every click of the container, so a frame
+    // that was already swapped must not be swapped (and reloaded) again
+    if (!iframe || iframe.dataset.referrerFixed) return;
+    const frame = iframe.cloneNode(false);
+    frame.dataset.referrerFixed = 'true';
+    frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    frame.setAttribute('allow', YOUTUBE_ALLOW);
+    frame.setAttribute('allowfullscreen', '');
+    iframe.replaceWith(frame);
+  }
+};
+
+// Read a design token (CSS custom property) from the TTI section, which
+// defines the dark surface values, falling back to a fixed color.
+function getCssToken(name, fallback) {
+  const element = document.querySelector('#tti') || document.documentElement;
+  const value = getComputedStyle(element).getPropertyValue(name).trim();
+  return value || fallback;
+}
+
 function getRandomHexColor() {
   // Generate a random integer between 0 and 16777215 (which is 0xFFFFFF in decimal).
   // This represents all possible 24-bit RGB colors.
@@ -551,17 +608,7 @@ window.addEventListener(
       if ($lazyframe.length === 0) return;
       // Only this modal's frame: frames in other (closed) modals would each
       // fire a noembed.com request for a title and thumbnail nobody sees.
-      lazyframe($lazyframe.get(0), {
-        autoplay: true,
-        initinview: false,
-        onAppend(iframe) {
-          if (iframe)
-            iframe.setAttribute(
-              'referrerpolicy',
-              'strict-origin-when-cross-origin'
-            );
-        }
-      });
+      lazyframe(prepareLazyframes([$lazyframe.get(0)]), LAZYFRAME_OPTIONS);
       $lazyframe.click();
     });
     $body.on('hide.bs.modal', '.modal', function () {
@@ -589,17 +636,7 @@ window.addEventListener(
       (el) => !el.closest('.modal')
     );
     if (pageLazyframes.length > 0)
-      lazyframe(pageLazyframes, {
-        autoplay: true,
-        initinview: false,
-        onAppend(iframe) {
-          if (iframe)
-            iframe.setAttribute(
-              'referrerpolicy',
-              'strict-origin-when-cross-origin'
-            );
-        }
-      });
+      lazyframe(prepareLazyframes(pageLazyframes), LAZYFRAME_OPTIONS);
 
     //
     // TODO: replace this with loading lazy attribute
@@ -1075,6 +1112,7 @@ window.addEventListener(
           type: 'line',
           height: 500,
           background: 'transparent',
+          foreColor: getCssToken('--fe-fg-secondary', '#a3aec2'),
           toolbar: {
             show: true,
             tools: {
@@ -1177,7 +1215,7 @@ window.addEventListener(
           }
         },
         grid: {
-          borderColor: '#e7e7e7',
+          borderColor: getCssToken('--fe-border-subtle', '#2a3346'),
           strokeDashArray: 2,
           opacity: 0.4,
           xaxis: {
@@ -1191,13 +1229,11 @@ window.addEventListener(
             }
           }
         },
-        theme: {
-          mode:
-            window.matchMedia &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches
-              ? 'dark'
-              : 'light'
-        }
+        // The Time to Inbox section is always a dark surface
+        // (.fe-surface-dark), so the chart is always dark. It used to follow
+        // the OS color scheme, which drew dark axis labels on the dark card
+        // for anyone in light mode.
+        theme: { mode: 'dark' }
       };
     }
 
@@ -1295,33 +1331,6 @@ window.addEventListener(
           ttiIntervalId = setInterval(tti, 60000);
         }
       });
-
-      // Handle theme changes for TTI chart
-      const changeTTIChartTheme = () => {
-        if (ttiChart) {
-          // set theme to light or dark
-          if (
-            window.matchMedia &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches
-          ) {
-            ttiChart.updateOptions({
-              theme: { mode: 'dark' }
-            });
-          } else {
-            ttiChart.updateOptions({
-              theme: { mode: 'light' }
-            });
-          }
-        }
-      };
-
-      window
-        .matchMedia('(prefers-color-scheme: dark)')
-        .addEventListener('change', changeTTIChartTheme);
-
-      window
-        .matchMedia('(prefers-color-scheme: light)')
-        .addEventListener('change', changeTTIChartTheme);
     }
 
     // Avoid CSP issues with inline styling for widths on progress bars

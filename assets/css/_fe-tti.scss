@@ -26,7 +26,8 @@
 
 .fe-tti__header {
   max-width: 60rem;
-  margin-inline: auto;
+  // space between the intro and "Current Delivery Times"
+  margin: 0 auto calc(var(--fe-section-pad-sm) * 0.75);
   text-align: center;
 }
 
@@ -139,8 +140,10 @@
 }
 
 .fe-tti__history {
-  margin-top: var(--fe-section-pad-sm);
-  padding-top: var(--fe-section-pad-sm);
+  // A sibling of .fe-tti__summary (not inside it), so it carries its own
+  // bottom padding; the "Did you know?" note used to touch the footer.
+  // The summary's bottom padding already separates the two blocks.
+  padding-block: var(--fe-section-pad-sm);
   border-top: 1px solid var(--fe-border-subtle);
 }
 

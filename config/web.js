@@ -417,24 +417,35 @@ module.exports = (redis) => ({
       // Spec: <https://www.w3.org/TR/permissions-policy/>
       // Header registry: <https://github.com/w3c/webappsec-permissions-policy/blob/main/features.md>
       //
+      //
+      // The YouTube player (every video on the site is a youtube-nocookie
+      // embed via lazyframe) needs autoplay (so one click plays),
+      // fullscreen, picture-in-picture, encrypted-media and the motion
+      // sensors (360 video). A page cannot grant an iframe a feature it has
+      // disabled for itself, so these are allowed for our own origin and the
+      // two YouTube embed origins only; every other origin stays denied.
+      //
+      // Features Chrome does not recognize (ambient-light-sensor, battery,
+      // execution-while-not-rendered, execution-while-out-of-viewport,
+      // speaker-selection) were dropped: they disabled nothing and logged an
+      // "Unrecognized feature" warning on every page view.
+      //
+      const youtube =
+        'self "https://www.youtube-nocookie.com" "https://www.youtube.com"';
       ctx.set(
         'Permissions-Policy',
         [
-          'accelerometer=()',
-          'ambient-light-sensor=()',
-          'autoplay=()',
-          'battery=()',
+          `accelerometer=(${youtube})`,
+          `autoplay=(${youtube})`,
           'bluetooth=()',
           'browsing-topics=()',
           'camera=()',
           'display-capture=()',
-          'encrypted-media=()',
-          'execution-while-not-rendered=()',
-          'execution-while-out-of-viewport=()',
-          'fullscreen=(self)',
+          `encrypted-media=(${youtube})`,
+          `fullscreen=(${youtube})`,
           'gamepad=()',
           'geolocation=()',
-          'gyroscope=()',
+          `gyroscope=(${youtube})`,
           'hid=()',
           'identity-credentials-get=()',
           'idle-detection=()',
@@ -444,11 +455,10 @@ module.exports = (redis) => ({
           'midi=()',
           'otp-credentials=()',
           'payment=(self)',
-          'picture-in-picture=()',
+          `picture-in-picture=(${youtube})`,
           'publickey-credentials-get=(self)',
           'screen-wake-lock=()',
           'serial=()',
-          'speaker-selection=()',
           'storage-access=()',
           'usb=()',
           'web-share=()',

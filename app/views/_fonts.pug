@@ -1,29 +1,29 @@
-//- Preload only the fonts that paint above the fold.
-//-
-//- Every preload is fetched at high priority and competes with the document
-//- and with the font the LCP text is waiting for, so the list is kept to what
-//- first paint needs:
+//- Font preloads.
 //-
 //- - Nunito Sans 400/700 is the body and fe display face. The hero h1 (the
-//-   mobile LCP element) is Nunito Sans 700, and it re-renders when the font
-//-   arrives, so the font is on the LCP critical path.
-//- - Font Awesome (about 155KB for solid + brands) is an icon font: icons are
-//-   not LCP candidates, and since the stylesheet is inlined the browser
-//-   discovers these as soon as an icon is laid out anyway.
+//-   mobile LCP element) is Nunito Sans 700, so both load at high priority.
+//- - Font Awesome (solid + brands) is an icon font. Icons are laid out in the
+//-   navbar and hero, so without a preload the browser requests the fonts at
+//-   VeryHigh priority during first layout, where they compete with the text
+//-   fonts and Lighthouse counts them against First Contentful Paint. A low
+//-   priority preload starts them early without that cost.
 //-
-//- Bots get no preloads (their stylesheet is the lean app-bot.css).
+//- Bots get the icon fonts only (their stylesheet is the lean app-bot.css).
 //-
 //- https://caniuse.com/link-rel-preload
 //- integrity attribute not currently supported <https://crbug.com/981419>
 - const fonts = [];
 if !isBot(ctx.get('User-Agent'))
-  - fonts.push("nunito-sans-latin-700.woff2");
-  - fonts.push("nunito-sans-latin-400.woff2");
+  - fonts.push({ file: "nunito-sans-latin-700.woff2", priority: "high" });
+  - fonts.push({ file: "nunito-sans-latin-400.woff2", priority: "high" });
+- fonts.push({ file: "fa-solid-900.woff2", priority: "low" });
+- fonts.push({ file: "fa-brands-400.woff2", priority: "low" });
 each font in fonts
   link(
     rel="preload",
-    href=manifest(`fonts/${font}`),
+    href=manifest(`fonts/${font.file}`),
     type="font/woff2",
     as="font",
-    crossorigin="anonymous"
+    crossorigin="anonymous",
+    fetchpriority=font.priority
   )

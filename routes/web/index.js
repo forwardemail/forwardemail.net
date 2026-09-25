@@ -46,7 +46,7 @@ const {
 const { web } = require('#controllers');
 const getAppDownloads = require('#helpers/get-app-downloads');
 const getFaqIndex = require('#helpers/get-faq-index');
-const { getLatestTti, hasHealthyTti } = require('#helpers/get-latest-tti');
+const { getLatestTti, getSummaryTti } = require('#helpers/get-latest-tti');
 
 const { filterFaqIndex } = getFaqIndex;
 const getFaqSchema = require('#helpers/get-faq-schema');
@@ -66,8 +66,9 @@ function hasSidebar(ctx, next) {
 
 async function loadTtiSummary(ctx, next) {
   try {
-    const { tti } = await getLatestTti();
-    ctx.state.tti = hasHealthyTti(tti) ? tti : null;
+    // most recent healthy sample (never blocks on the logs database once
+    // cached; see helpers/get-latest-tti.js)
+    ctx.state.tti = await getSummaryTti();
   } catch (err) {
     ctx.logger.error(err);
     ctx.state.tti = null;
