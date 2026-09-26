@@ -115,8 +115,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       '@ladjs/web':
-        specifier: 21.1.3
-        version: 21.1.3(@babel/core@7.28.0)(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))(handlebars@4.7.9)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)
+        specifier: 21.1.4
+        version: 21.1.4(@babel/core@7.28.0)(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))(handlebars@4.7.9)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)
       '@lancedb/lancedb':
         specifier: 0.22.3
         version: 0.22.3(apache-arrow@18.1.0)
@@ -499,8 +499,8 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       koa-meta:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.1.1
+        version: 4.1.1
       koa-passport:
         specifier: 5.0.0
         version: 5.0.0
@@ -3004,8 +3004,8 @@ packages:
     resolution: {integrity: sha512-t3NvAN+ClirgAxvN0Gu28x/RXNhQ9jtn+owPvap3O0DrcaDXwuQFr/DfJVQYw8FMBCzcHwkwdmlQ5DN6yH+QYA==}
     engines: {node: '>=18'}
 
-  '@ladjs/koa-better-static@3.0.0':
-    resolution: {integrity: sha512-IOCHM7yXcXzFL9JlsZ/UsA8skpYvDp7bsdmmy9Qvvi/6sKkIJoDH+MKHQCbBx1OxTjkQhY+SE1xD6PCd3eyFqQ==}
+  '@ladjs/koa-better-static@3.0.1':
+    resolution: {integrity: sha512-g9vk8JsRiskxlRHu3i5X2/dmmpjr7ttequ6b5J9ligGL6zYAfTUKKalqMJJVGq7O3KOcgY53stpPBbcXDkEO2g==}
     engines: {node: '>=18'}
 
   '@ladjs/koa-cache-responses@1.0.0':
@@ -3108,8 +3108,8 @@ packages:
     resolution: {integrity: sha512-6r9bjFD/eUy175jFXgvnA/WmReGCrV77l/Xq/QCS+FGM+u0Y4jpdtMv6U4eqrZIuA3EZMOUQpJp08ca1QP4wiA==}
     engines: {node: '>=8.3'}
 
-  '@ladjs/web@21.1.3':
-    resolution: {integrity: sha512-O1UXC6Gh5n0hqVKUKP8HbK0V1wMmYJZmlltoVlXiZrT72w9KY8jgjl1mmY2wI8fvV1ORQgKLBW4k9HZEXfFsSQ==}
+  '@ladjs/web@21.1.4':
+    resolution: {integrity: sha512-wiJ2+pVEunMZrMEKxsd+KbPJwsLNromKTIXh/EJv5EXoq8hgpPG7FVNUm/RTh2LYBZzErJ6r2zKC/tbanAdinw==}
     engines: {node: '>=18'}
     peerDependencies:
       axe: '>= 11'
@@ -3166,7 +3166,6 @@ packages:
   '@lancedb/lancedb@0.22.3':
     resolution: {integrity: sha512-nRC0fkg+d7dzCtudKHT+VH7znk6KUXRZyuS6HJYNnIrbvXBxaT6wAPjEbf70KTuqvP2znj48Zg+kiwRqkRnAJw==}
     engines: {node: '>= 18'}
-    cpu: [x64, arm64]
     os: [darwin, linux, win32]
     peerDependencies:
       apache-arrow: '>=15.0.0 <=18.1.0'
@@ -11809,8 +11808,8 @@ packages:
   koa-json@2.0.2:
     resolution: {integrity: sha512-8+dz0T2ekDuNN1svYoKPCV2txotQ3Ufg8Fn5bft1T48MPJWiC/HKmkk+3xj9EC/iNZuFYeLRazN2h2o3RSUXuQ==}
 
-  koa-meta@4.1.0:
-    resolution: {integrity: sha512-cEN0P6W3HcHnLgpT1JLX6fGTgojNQyh0ho2sQCg5d9prGESeBBilNlTzGVnYojChdBBQN6qdvcJeRTz7tpO2nA==}
+  koa-meta@4.1.1:
+    resolution: {integrity: sha512-pOoaJpEx72iRoAk7e8iFsBxljCytiBc4Aru8TbkboxdTI3seXop4CjAKftfKxtEw4tEtRnq/uHIqEWJB2MtibA==}
     engines: {node: '>=14'}
 
   koa-methodoverride@2.0.0:
@@ -21753,7 +21752,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ladjs/koa-better-static@3.0.0':
+  '@ladjs/koa-better-static@3.0.1':
     dependencies:
       debug: 4.4.3(supports-color@5.5.0)
       mime-types: 2.1.35
@@ -21774,9 +21773,9 @@ snapshots:
       ms: 2.1.3
       multimatch: 5.0.0
 
-  '@ladjs/koa-views@9.0.0(@babel/core@7.28.0)(handlebars@4.7.9)(lodash@4.17.21)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)':
+  '@ladjs/koa-views@9.0.0(@babel/core@7.28.0)(handlebars@4.7.9)(lodash@4.18.1)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)':
     dependencies:
-      '@ladjs/consolidate': 1.0.4(@babel/core@7.28.0)(handlebars@4.7.9)(lodash@4.17.21)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)
+      '@ladjs/consolidate': 1.0.4(@babel/core@7.28.0)(handlebars@4.7.9)(lodash@4.18.1)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)
       debug: 4.4.3(supports-color@5.5.0)
       get-paths: 0.0.7
       koa-send: 5.0.1
@@ -21965,16 +21964,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ladjs/web@21.1.3(@babel/core@7.28.0)(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))(handlebars@4.7.9)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)':
+  '@ladjs/web@21.1.4(@babel/core@7.28.0)(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))(handlebars@4.7.9)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)':
     dependencies:
       '@koa/etag': 5.0.2(koa@3.1.1)
       '@koa/router': 13.1.1
       '@ladjs/i18n': 10.0.0
-      '@ladjs/koa-better-static': 3.0.0
+      '@ladjs/koa-better-static': 3.0.1
       '@ladjs/koa-cache-responses': 1.0.0
       '@ladjs/koa-isajax': 2.0.0
       '@ladjs/koa-simple-ratelimit': 4.1.1
-      '@ladjs/koa-views': 9.0.0(@babel/core@7.28.0)(handlebars@4.7.9)(lodash@4.17.21)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)
+      '@ladjs/koa-views': 9.0.0(@babel/core@7.28.0)(handlebars@4.7.9)(lodash@4.18.1)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)
       '@ladjs/passport': 5.1.5
       '@ladjs/redis': 1.1.1
       '@ladjs/shared-config': 9.1.4
@@ -22002,11 +22001,11 @@ snapshots:
       koa-generic-session: 2.3.1
       koa-helmet: 5.2.0
       koa-json: 2.0.2
-      koa-meta: 4.1.0
+      koa-meta: 4.1.1
       koa-methodoverride: 2.0.0
       koa-redirect-loop: 3.0.2
       koa-redis: 4.0.1
-      lodash: 4.17.21
+      lodash: 4.18.1
       ms: 2.1.3
       request-received: 0.0.3
       response-time: 2.3.4
@@ -28912,7 +28911,7 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
       '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
       eslint: 7.32.0
@@ -33043,7 +33042,7 @@ snapshots:
       koa-is-json: 1.0.0
       streaming-json-stringify: 3.1.0
 
-  koa-meta@4.1.0:
+  koa-meta@4.1.1:
     dependencies:
       is-string-and-not-blank: 0.0.2
       sanitize-html: 2.17.5
@@ -42258,7 +42257,7 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
       eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.106.2(cssnano@6.1.2(postcss@8.5.26))(postcss@8.5.26))
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)
