@@ -97,7 +97,7 @@
     "@zxcvbn-ts/language-fi": "3.0.2",
     "@zxcvbn-ts/language-fr": "3.0.2",
     "@zxcvbn-ts/language-id": "3.0.2",
-    "@zxcvbn-ts/language-it": "3.0.2",
+    "@zxcvbn-ts/language-it": "4.1.1",
     "@zxcvbn-ts/language-ja": "3.0.2",
     "@zxcvbn-ts/language-nl-be": "3.0.2",
     "@zxcvbn-ts/language-pl": "3.0.2",
