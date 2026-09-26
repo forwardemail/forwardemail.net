@@ -134,19 +134,26 @@
   display: none;
 }
 
+// A <button> (see _fe-console.pug), so the UA's button box is reset first
+// and the pill is drawn on top of a bare element.
 .fe-console__tab {
   padding: var(--fe-space-2) var(--fe-space-3);
   overflow: hidden;
+  font: inherit;
   font-size: var(--fe-text-body-sm);
   font-weight: var(--fe-weight-medium);
   color: var(--fe-fg-secondary);
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
+  background-color: transparent;
+  border: 0;
   border-radius: var(--fe-radius-md);
   transition:
     color var(--fe-motion-fast) var(--fe-ease),
     background-color var(--fe-motion-fast) var(--fe-ease);
+  appearance: none;
 }
 
 .fe-console__tab:hover,
@@ -310,10 +317,15 @@ html.no-js .fe-console__view + .fe-console__view {
   border-top: 1px solid var(--fe-border-subtle);
 }
 
-.fe-console--unrolled .fe-console__tab--active,
-html.no-js .fe-console__tab--active {
+.fe-console--unrolled .fe-console__tab--active {
   background-color: transparent;
   box-shadow: none;
+}
+
+// Without the script the tabs are buttons with nothing to do, and every view
+// is already on the page below them.
+html.no-js .fe-console__rail-wrap {
+  display: none;
 }
 
 // ============================================
@@ -673,6 +685,15 @@ html.no-js .fe-console__tab--active {
     scroll-behavior: smooth;
     scroll-snap-type: inline proximity;
     scrollbar-width: none;
+  }
+
+  // The script keeps the active tab inside the rail by scrolling the rail
+  // itself (never the page); this is what makes that jump instant for
+  // visitors who asked for less motion.
+  @media (prefers-reduced-motion: reduce) {
+    .fe-console__rail {
+      scroll-behavior: auto;
+    }
   }
 
   .fe-console__rail::-webkit-scrollbar {

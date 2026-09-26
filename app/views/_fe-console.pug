@@ -4,10 +4,11 @@
 //- _fe-hero.pug.
 //-
 //- Every panel ships in the DOM on every request. Without JavaScript they are
-//- all visible, stacked, and the rail is five ordinary jump links, so the page
-//- still says everything it has to say and every word stays crawlable. The
-//- collapse to one-at-a-time is done in CSS off `html.no-js`, which _meta.pug
-//- strips in the head, so there is no flash of five panels and no layout shift.
+//- all visible, stacked, and the rail (whose buttons would have nothing to
+//- do) is hidden, so the page still says everything it has to say and every
+//- word stays crawlable. The collapse to one-at-a-time is done in CSS off
+//- `html.no-js`, which _meta.pug strips in the head, so there is no flash of
+//- six panels and no layout shift.
 
 //- Content lives here rather than inside the mixins so the six views read as
 //- one table and the story arc (route, store, send, sync, observe, use) can be
@@ -129,11 +130,16 @@
 //- and four hidden ones, and four fifths of this copy would be discounted.
 mixin feConsole(bot)
   .fe-console(class=bot ? "fe-console--unrolled" : "", data-fe-console)
-    //- The rail is a plain <nav> of in-page links here. assets/js/hero-console.js
-    //- re-labels it as a tablist and takes over the arrow keys once it has
-    //- loaded: announcing tab semantics before anything can answer an arrow key
-    //- would promise a screen reader an interaction that does not exist yet.
-    //- The hrefs are what makes /#send deep-linkable from docs and support.
+    //- The rail is a row of buttons that name their view through `data-target`,
+    //- the same hook the modal and collapse triggers on the page use, rather
+    //- than `href="#view"` links: a link would put `#mailbox` into the address
+    //- bar on every click (and core.js scrolls the page for every `a[href^="#"]`
+    //- it sees). assets/js/hero-console.js labels the rail as a tablist and
+    //- takes over the arrow keys once it has loaded: announcing tab semantics
+    //- before anything can answer an arrow key would promise a screen reader an
+    //- interaction that does not exist yet. /#send stays deep-linkable from docs
+    //- and support because every view still carries its id and the script
+    //- opens on the view the hash names.
     .fe-console__rail-wrap(data-fe-console-rail-wrap)
       button.fe-console__rail-control.fe-console__rail-control--previous.no-js(
         type="button",
@@ -142,18 +148,19 @@ mixin feConsole(bot)
         aria-label=t("Show previous platform area")
       )
         i.fa.fa-chevron-left(aria-hidden="true")
-      nav.fe-console__rail(aria-label=t("Platform"), data-fe-console-rail)
+      .fe-console__rail(aria-label=t("Platform"), data-fe-console-rail)
         each view, i in feConsoleViews
           //- The pill is rendered here rather than left to JavaScript so the
           //- first view is not shown under a rail with nothing selected for the
           //- window between paint and DOMContentLoaded. aria-selected is not set
-          //- here on purpose: until hero-console.js runs these are links, not
+          //- here on purpose: until hero-console.js runs these are buttons, not
           //- tabs, and the attribute would be meaningless on them.
-          a.fe-console__tab(
+          button.fe-console__tab(
             id=`tab-${view.id}`,
-            href=`#${view.id}`,
+            type="button",
             class=i === 0 ? "fe-console__tab--active" : "",
-            data-fe-console-tab=view.id
+            data-target=`#${view.id}`,
+            data-fe-console-tab
           )= t(view.tab)
       button.fe-console__rail-control.fe-console__rail-control--next.no-js(
         type="button",

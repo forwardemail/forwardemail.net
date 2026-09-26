@@ -4,10 +4,17 @@
  */
 
 // Behaviour for the hero console in app/views/_fe-console.pug. Everything here
-// is additive: with this file blocked the rail is six real in-page links, all
-// six views are visible stacked (see the html.no-js rules in _fe-landing.scss),
-// and every deep link still lands on the right one. What this adds is showing
-// one view at a time, the arrow-key tablist, and the auto-advance.
+// is additive: with this file blocked the rail is hidden and all six views are
+// visible stacked (see the html.no-js rules in _fe-home.scss), and every deep
+// link still lands on the right one because the views keep their ids. What
+// this adds is showing one view at a time, the arrow-key tablist, and the
+// auto-advance.
+//
+// Two things this must never do, because both were reported as bugs: scroll
+// the page (the rail is scrolled, the document is not, so a view changing
+// under the fold cannot yank the visitor back up to the hero) and write to the
+// address bar (a tab names its view through `data-target`; the hash is only
+// ever read, for deep links).
 
 const CONSOLE = '[data-fe-console]';
 const RAIL = '[data-fe-console-rail]';
@@ -20,6 +27,17 @@ const ACTIVE_VIEW = 'fe-console__view--active';
 
 // Spec: advance every 5s until the visitor interacts, then stay put.
 const ADVANCE_MS = 5000;
+
+/**
+ * The id of the view a tab controls, from its `data-target="#view"`.
+ *
+ * @param {Element} tab
+ * @returns {string}
+ */
+function viewId(tab) {
+  const target = tab.dataset.target || '';
+  return target.charAt(0) === '#' ? target.slice(1) : target;
+}
 
 /**
  * Whether the visitor has asked for less motion. Checked at each tick rather
@@ -55,9 +73,8 @@ function setUpConsole(root) {
   rail.setAttribute('role', 'tablist');
 
   for (const tab of tabs) {
-    const id = tab.dataset.feConsoleTab;
     tab.setAttribute('role', 'tab');
-    tab.setAttribute('aria-controls', id);
+    tab.setAttribute('aria-controls', viewId(tab));
   }
 
   for (const [i, view] of views.entries()) {
@@ -97,6 +114,37 @@ function setUpConsole(root) {
   }
 
   /**
+   * Bring a tab inside the visible part of the rail, by scrolling the rail and
+   * nothing else. On phones the rail is a horizontal scroller; on wider
+   * viewports it does not overflow and this is a no-op.
+   *
+   * scrollIntoView is not used on purpose: it scrolls every scrollable
+   * ancestor, the document included, so the auto-advance used to drag the page
+   * back to the hero every five seconds once the visitor had scrolled past it.
+   *
+   * @param {Element} tab
+   */
+  function revealTab(tab) {
+    const railBox = rail.getBoundingClientRect();
+    const tabBox = tab.getBoundingClientRect();
+
+    // Nearest edge, like scrollIntoView's inline: 'nearest'. A delta along
+    // the x axis means the same thing under RTL: scrollBy moves the viewport,
+    // whichever end the content starts from.
+    let delta = 0;
+    if (tabBox.left < railBox.left) delta = tabBox.left - railBox.left;
+    else if (tabBox.right > railBox.right) delta = tabBox.right - railBox.right;
+    if (delta === 0) return;
+
+    // The rail's own scroll-behavior decides smooth or instant (it is auto
+    // under prefers-reduced-motion, see _fe-home.scss), so 'auto' here defers
+    // to the stylesheet rather than forcing a smooth scroll.
+    if (typeof rail.scrollBy === 'function')
+      rail.scrollBy({ left: delta, behavior: 'auto' });
+    else rail.scrollLeft += delta;
+  }
+
+  /**
    * Show one view by id. Inactive views keep their box (they are stacked in the
    * same grid cell) so the hero never changes height between tabs, and are
    * hidden with visibility rather than the hidden attribute, which is what takes
@@ -107,7 +155,7 @@ function setUpConsole(root) {
    * @returns {boolean} whether the id matched a view
    */
   function show(id, focusTab) {
-    const index = tabs.findIndex((tab) => tab.dataset.feConsoleTab === id);
+    const index = tabs.findIndex((tab) => viewId(tab) === id);
     if (index === -1) return false;
 
     for (const [i, tab] of tabs.entries()) {
@@ -119,14 +167,12 @@ function setUpConsole(root) {
       views[i].classList.toggle(ACTIVE_VIEW, on);
     }
 
-    tabs[index].scrollIntoView({
-      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-      block: 'nearest',
-      inline: 'nearest'
-    });
+    revealTab(tabs[index]);
 
     window.setTimeout(updateRailControls, 0);
-    if (focusTab) tabs[index].focus();
+    // The rail was just scrolled to the tab, so focus must not scroll the
+    // page as well.
+    if (focusTab) tabs[index].focus({ preventScroll: true });
     return true;
   }
 
@@ -144,6 +190,18 @@ function setUpConsole(root) {
     }
   }
 
+  // Whether the console is on screen. A visitor who has scrolled past the
+  // hero is reading something else: the views pause where they are (rather
+  // than cycling unseen, or being pulled back into view) and resume when the
+  // console scrolls back in. Without IntersectionObserver it is treated as
+  // always on screen, which is only ever the pre-fix cycling, never a scroll.
+  let onScreen = true;
+  if (typeof IntersectionObserver === 'function') {
+    new IntersectionObserver((entries) => {
+      for (const entry of entries) onScreen = entry.isIntersecting;
+    }).observe(root);
+  }
+
   function start() {
     if (stopped || timer !== null || prefersReducedMotion()) return;
     timer = setInterval(() => {
@@ -154,30 +212,20 @@ function setUpConsole(root) {
         return;
       }
 
-      if (document.hidden) return;
+      if (document.hidden || !onScreen) return;
 
       const current = tabs.findIndex((tab) =>
         tab.classList.contains(ACTIVE_TAB)
       );
-      show(tabs[(current + 1) % tabs.length].dataset.feConsoleTab);
+      show(viewId(tabs[(current + 1) % tabs.length]));
     }, ADVANCE_MS);
   }
 
   /**
-   * Activate from a click on the rail, without moving the page.
-   *
-   * preventDefault alone is not enough here. core.js delegates a handler off
-   * body for every `a[href^="#"]` on the site, and jQuery runs a delegated
-   * handler whether or not the event was already defaulted-prevented, so
-   * @ladjs/assets jumpTo() would still scroll the console to the top of the
-   * viewport on every tab click. stopPropagation keeps the event inside the
-   * rail so that handler never sees it. Note that `data-ignore-hash-change` is
-   * not the opt-out for this: only changeHashOnScroll reads that attribute,
-   * and core.js has it commented out.
-   *
-   * The URL is still updated, which is what keeps /#send shareable.
-   * replaceState rather than pushState: back should leave the page, not walk
-   * back through tabs one at a time.
+   * Activate from a click on the rail. The tabs are buttons, so there is no
+   * default to prevent, nothing for core.js's `a[href^="#"]` handler to scroll
+   * the page for, and no hash to keep out of the address bar: choosing a view
+   * leaves the URL exactly as it was.
    *
    * @param {Event} ev
    */
@@ -185,23 +233,15 @@ function setUpConsole(root) {
     const tab = ev.target.closest(TAB);
     if (!tab) return;
 
-    ev.preventDefault();
-    ev.stopPropagation();
     stop();
-
-    const id = tab.dataset.feConsoleTab;
-    if (!show(id)) return;
-
-    if (window.history && typeof window.history.replaceState === 'function')
-      window.history.replaceState(null, '', `#${id}`);
-    else window.location.hash = id;
+    show(viewId(tab));
   }
 
   /**
    * Arrow keys move between tabs and activate as they go, which is the expected
    * pattern for a tablist whose panels are already in the DOM. Home and End go
-   * to the ends. Enter and Space are left to the browser: these are anchors, so
-   * they already activate, and the click handler picks them up.
+   * to the ends. Enter and Space are left to the browser: these are buttons, so
+   * they already click, and the click handler picks them up.
    *
    * @param {KeyboardEvent} ev
    */
@@ -256,7 +296,7 @@ function setUpConsole(root) {
     stop();
 
     next = (next + tabs.length) % tabs.length;
-    show(tabs[next].dataset.feConsoleTab, true);
+    show(viewId(tabs[next]), true);
   }
 
   rail.addEventListener('click', onClick);
@@ -272,7 +312,7 @@ function setUpConsole(root) {
       const next = current + offset;
       if (next < 0 || next >= tabs.length) return;
       stop();
-      show(tabs[next].dataset.feConsoleTab, true);
+      show(viewId(tabs[next]), true);
     });
   }
 
@@ -285,9 +325,9 @@ function setUpConsole(root) {
   root.addEventListener('pointerenter', stop);
   root.addEventListener('focusin', stop);
 
-  // A link elsewhere on the page pointing at #send, or someone editing the
-  // hash by hand. Landing on a specific view is a deliberate choice, so it
-  // stops the rotation too.
+  // The hash is read, never written: a link elsewhere on the page pointing at
+  // #send, or someone editing the hash by hand. Landing on a specific view is
+  // a deliberate choice, so it stops the rotation too.
   window.addEventListener('hashchange', () => {
     const id = window.location.hash.slice(1);
     if (!id) return;
@@ -300,7 +340,7 @@ function setUpConsole(root) {
   const deepLink = window.location.hash.slice(1);
   if (deepLink && show(deepLink)) stop();
   else {
-    show(tabs[0].dataset.feConsoleTab);
+    show(viewId(tabs[0]));
     start();
   }
 
