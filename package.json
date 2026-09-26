@@ -343,7 +343,7 @@
     "babel-eslint": "10.1.0",
     "browserify": "17.0.0",
     "bundle-collapser": "1.4.0",
-    "cssnano": "6.1.2",
+    "cssnano": "9.0.2",
     "del": "6.1.1",
     "eslint": "8.39.0",
     "eslint-config-xo-lass": "2.0.1",
