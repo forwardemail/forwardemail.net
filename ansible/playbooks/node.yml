@@ -89,10 +89,12 @@
       stat:
         path: /home/deploy/n/bin/pm2
       register: pm2_result
+    # pinned: an unpinned install takes whatever is published that day
+    # (override with PM2_VERSION)
     - name: Install pm2
       become: true
       become_user: deploy
-      shell: source /home/deploy/.bashrc && npm install -g pm2
+      shell: source /home/deploy/.bashrc && npm install -g "pm2@{{ lookup('env', 'PM2_VERSION') | default('6.0.14', true) }}"
       args:
         executable: /bin/bash
       when: not pm2_result.stat.exists
@@ -308,7 +310,7 @@
     - name: Install pm2-logrotate
       become: true
       become_user: deploy
-      shell: source /home/deploy/.bashrc && pm2 install pm2-logrotate
+      shell: source /home/deploy/.bashrc && pm2 install "pm2-logrotate@{{ lookup('env', 'PM2_LOGROTATE_VERSION') | default('3.0.0', true) }}"
       args:
         executable: /bin/bash
 

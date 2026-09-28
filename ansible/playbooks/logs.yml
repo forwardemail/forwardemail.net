@@ -872,21 +872,37 @@
       changed_when: false
       failed_when: false
 
+    # An existing secured server refuses an unauthenticated getUser, which
+    # used to read as "no user": the play then wrote the open base config and
+    # restarted mongod without authentication.  Authenticate with the
+    # configured credentials (passed through the environment, never on the
+    # command line), and treat a mongod.conf that already enables
+    # authorization as set up.
+    - name: Check if mongod.conf already enables authorization
+      shell: grep -Eq '^[[:space:]]*authorization:[[:space:]]*enabled' /etc/mongod.conf
+      register: mongod_conf_auth
+      changed_when: false
+      failed_when: false
+
     - name: Check if admin user already exists
       shell: |
         # Try without TLS first (for base config), then with TLS (for existing secure config)
-        # This ensures accurate user detection regardless of current MongoDB configuration
-        /usr/local/bin/mongosh --quiet --eval "try { var u = db.getUser('{{ lookup('env', 'LOGS_USER') }}'); print(u !== null ? '1' : '0'); } catch(e) { print('0'); }" admin 2>/dev/null || \
-        /usr/local/bin/mongosh --quiet --tls --tlsAllowInvalidCertificates --eval "try { var u = db.getUser('{{ lookup('env', 'LOGS_USER') }}'); print(u !== null ? '1' : '0'); } catch(e) { print('0'); }" admin 2>/dev/null || \
+        SCRIPT='try { var a = db.getSiblingDB("admin"); try { a.auth(process.env.MONGO_USER, process.env.MONGO_PASS); } catch (e) {} var u = a.getUser(process.env.MONGO_USER); print(u !== null ? "1" : "0"); } catch (e) { print("0"); }'
+        /usr/local/bin/mongosh --quiet --eval "$SCRIPT" admin 2>/dev/null || \
+        /usr/local/bin/mongosh --quiet --tls --tlsAllowInvalidCertificates --eval "$SCRIPT" admin 2>/dev/null || \
         echo "0"
+      environment:
+        MONGO_USER: "{{ lookup('env', 'LOGS_USER') }}"
+        MONGO_PASS: "{{ lookup('env', 'LOGS_PASS') }}"
       register: admin_user_check
       changed_when: false
       failed_when: false
+      no_log: true
 
     - name: Set state facts
       set_fact:
         mongod_was_running: "{{ mongod_running.stdout == 'active' }}"
-        admin_user_exists: "{{ (admin_user_check.stdout | trim | int) > 0 }}"
+        admin_user_exists: "{{ ('1' in (admin_user_check.stdout_lines | default([]) | map('trim') | list)) or mongod_conf_auth.rc == 0 }}"
 
     - name: Display current MongoDB state
       debug:
@@ -975,7 +991,8 @@
           # Network interfaces
           net:
             port: {{ lookup('env', 'LOGS_PORT') | default('27017', true) }}
-            bindIp: ::,0.0.0.0
+            # localhost only: no authentication until the admin user exists
+            bindIp: 127.0.0.1,::1
             # Prevent connection storms from exhausting host memory
             maxIncomingConnections: 65536
 
@@ -992,6 +1009,7 @@
         owner: root
         group: root
         mode: '0644'
+      when: not admin_user_exists
 
     # Restart MongoDB with base config if it was already running and user doesn't exist
     # This ensures MongoDB is in "open" mode (no TLS, no auth) for user creation

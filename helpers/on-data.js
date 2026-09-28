@@ -26,10 +26,55 @@ const updateSession = require('#helpers/update-session');
 const ONE_SECOND_AFTER_UNIX_EPOCH = new Date(1000);
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
+// bytes read and discarded after the message was refused while it was still
+// being sent (e.g. over the size limit), before the connection is closed
+const MAX_DISCARD_BYTES = MAX_BYTES;
+
+//
+// smtp-server only answers DATA once the client has sent all of it (the
+// terminating dot), and stops reading the socket while the data stream is
+// not consumed.  When the message is refused before it was read to the end
+// (the splitter errors once the size limit is passed, or on bad headers),
+// the splitter is unpiped and nothing read the rest: the client blocked on
+// a full TCP window and the connection hung until the socket timeout (an
+// oversized message was never answered 552, and one client could hold
+// connections open this way).  The rest is read and discarded so the
+// refusal is sent at the end of DATA, as usual; a client that keeps sending
+// past MAX_DISCARD_BYTES is disconnected.
+//
+function discardRemainingData(stream, session) {
+  if (!stream || stream.readableEnded || stream.destroyed) return;
+
+  let discarded = 0;
+  const onChunk = (chunk) => {
+    discarded += chunk.length;
+    if (discarded <= MAX_DISCARD_BYTES) return;
+    stream.removeListener('data', onChunk);
+    stream.pause();
+    const connection = [...(this.server?.connections || [])].find(
+      (conn) => conn.id === session.id
+    );
+    if (!connection) return;
+    try {
+      connection.send(421, 'Message too large, closing connection');
+    } catch {}
+
+    connection.close();
+  };
+
+  stream.unpipe();
+  stream.on('data', onChunk);
+  // pipe() may have paused it (backpressure), which on('data') does not undo
+  stream.resume();
+}
+
 // TODO: check for `this.isClosing` before heavy/slow operations in onDataMX
 
 async function onData(stream, _session, fn) {
-  if (this.isClosing) return setImmediate(() => fn(new ServerShutdownError()));
+  if (this.isClosing) {
+    discardRemainingData.call(this, stream, _session);
+    return setImmediate(() => fn(new ServerShutdownError()));
+  }
 
   // store clone of session since it gets modified/destroyed
   const session = JSON.parse(safeStringify(_session));
@@ -202,6 +247,7 @@ async function onData(stream, _session, fn) {
     // safeguard in case unknown constructor
     throw new TypeError('Unknown constructor');
   } catch (err) {
+    discardRemainingData.call(this, stream, _session);
     // TODO: store counter here
     setImmediate(() => fn(refineAndLogError(err, session, false, this)));
   }

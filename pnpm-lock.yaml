@@ -7,6 +7,7 @@ settings:
 overrides:
   eslint-plugin-import: 2.26.0
   validator: npm:@forwardemail/validator@14.0.0
+  koa: 3.2.1
   undici: 7.12.0
 
 patchedDependencies:
@@ -2799,7 +2800,7 @@ packages:
   '@koa/etag@5.0.2':
     resolution: {integrity: sha512-V/ihQ2bjjBKHaR96fzDVZdF+s3Alsk0PZiCdT1MCahKPXo42jE63vBLZRcSjGZCrIkVIOkrEdKaJIjLU7mnenQ==}
     peerDependencies:
-      koa: '>= 2'
+      koa: 3.2.1
 
   '@koa/multer@3.0.2':
     resolution: {integrity: sha512-Q6WfPpE06mJWyZD1fzxM6zWywaoo+zocAn2YA9QYz4RsecoASr1h/kSzG0c5seDpFVKCMZM9raEfuM7XfqbRLw==}
@@ -11839,10 +11840,6 @@ packages:
   koa-views-render@0.0.1:
     resolution: {integrity: sha512-vryfNancX55BsfC0A4scAOXrLJxbalx7TeVaPcIF6/OSN6EDOTS55uvriIDGLT8A1bbDhmy1G6M+9SvKA39pdA==}
     engines: {node: '>=8.3'}
-
-  koa@3.1.1:
-    resolution: {integrity: sha512-KDDuvpfqSK0ZKEO2gCPedNjl5wYpfj+HNiuVRlbhd1A88S3M0ySkdf2V/EJ4NWt5dwh5PXCdcenrKK2IQJAxsg==}
-    engines: {node: '>= 18'}
 
   koa@3.2.1:
     resolution: {integrity: sha512-e7IpWJrnanNUroVK2taAgMxoEZvHLXdQiNjeExSu/DEIWm83jaKGBgb7tLmu2rMYpA027qFB3iLR/k3AVpFRnA==}
@@ -21623,11 +21620,11 @@ snapshots:
 
   '@kdf/salt@1.0.1': {}
 
-  '@koa/etag@5.0.2(koa@3.1.1)':
+  '@koa/etag@5.0.2(koa@3.2.1)':
     dependencies:
       '@types/etag': 1.8.4
       etag: 1.8.1
-      koa: 3.1.1
+      koa: 3.2.1
 
   '@koa/multer@3.0.2(multer@2.0.2)':
     dependencies:
@@ -21647,7 +21644,7 @@ snapshots:
 
   '@ladjs/api@14.2.2(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))':
     dependencies:
-      '@koa/etag': 5.0.2(koa@3.1.1)
+      '@koa/etag': 5.0.2(koa@3.2.1)
       '@koa/router': 13.1.1
       '@ladjs/i18n': 10.0.0
       '@ladjs/koa-simple-ratelimit': 4.1.1
@@ -21660,7 +21657,7 @@ snapshots:
       cabin: 14.0.0(axe@13.0.0)
       express-request-id: 1.4.1
       kcors: 2.2.2
-      koa: 3.1.1
+      koa: 3.2.1
       koa-404-handler: 0.1.0
       koa-basic-auth: 4.0.0
       koa-better-error-handler: 12.0.0
@@ -21966,7 +21963,7 @@ snapshots:
 
   '@ladjs/web@21.1.4(@babel/core@7.28.0)(axe@13.0.0)(cabin@14.0.0(axe@13.0.0))(handlebars@4.7.9)(mustache@4.2.0)(pug@3.0.4)(underscore@1.13.8)':
     dependencies:
-      '@koa/etag': 5.0.2(koa@3.1.1)
+      '@koa/etag': 5.0.2(koa@3.2.1)
       '@koa/router': 13.1.1
       '@ladjs/i18n': 10.0.0
       '@ladjs/koa-better-static': 3.0.1
@@ -21986,7 +21983,7 @@ snapshots:
       express-request-id: 1.4.1
       is-string-and-not-blank: 0.0.2
       kcors: 2.2.2
-      koa: 3.1.1
+      koa: 3.2.1
       koa-404-handler: 0.1.0
       koa-basic-auth: 4.0.0
       koa-better-error-handler: 12.0.0
@@ -33085,27 +33082,6 @@ snapshots:
       - supports-color
 
   koa-views-render@0.0.1: {}
-
-  koa@3.1.1:
-    dependencies:
-      accepts: 1.3.8
-      content-disposition: 0.5.4
-      content-type: 1.0.5
-      cookies: 0.9.1
-      delegates: 1.0.0
-      destroy: 1.2.0
-      encodeurl: 2.0.0
-      escape-html: 1.0.3
-      fresh: 0.5.2
-      http-assert: 1.5.0
-      http-errors: 2.0.1
-      koa-compose: 4.1.0
-      mime-types: 3.0.2
-      on-finished: 2.4.1
-      parseurl: 1.3.3
-      statuses: 2.0.2
-      type-is: 2.0.1
-      vary: 1.1.2
 
   koa@3.2.1:
     dependencies:

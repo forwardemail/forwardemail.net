@@ -8,51 +8,56 @@ const Router = require('@koa/router');
 const bodyParser = require('koa-bodyparser');
 const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
-const koaMulter = require('@koa/multer');
-const multer = require('multer');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
 
 const _ = require('#helpers/lodash');
 const api = require('#controllers/api');
 const config = require('#config');
+const createMultipart = require('#helpers/multipart');
 const ensureApiTokenOrAliasAuth = require('#helpers/ensure-api-token-or-alias-auth');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
 
-const upload = koaMulter();
+const upload = createMultipart();
 
-const fileUpload = koaMulter({
-  // storage: multer.memoryStorage() // this is the default
-  limits: {
-    //
-    // TODO: note this technically allows 102 MB total file uploads
-    //       but an alternative might be to use `koa-body` such as:
-    //
-    //       const { koaBody } = require('@koa/body');
-    //
-    //       koaBody({ // Add koaBody middleware here
-    //         multipart: true,
-    //         urlencoded: true,
-    //         json: true,
-    //         formLimit: '50mb', // Adjust as needed
-    //         jsonLimit: '50mb', // Adjust as needed
-    //         textLimit: '50mb', // Adjust as needed
-    //         formidable: {
-    //           maxFileSize: bytes('51MB'),
-    //           keepExtensions: true,
-    //         },
-    //       }),
-    //
-    fieldSize: bytes('51MB'),
-    fileSize: bytes('51MB')
-  }
-  // fileFilter(req, file, cb) {
-  //   console.log('Multer fileFilter triggered:', file.originalname); // Add this
-  //   cb(null, true);
-  // }
-});
+const fileUpload = createMultipart(
+  {
+    // storage: multer.memoryStorage() // this is the default
+    limits: {
+      //
+      // TODO: note this technically allows 102 MB total file uploads
+      //       but an alternative might be to use `koa-body` such as:
+      //
+      //       const { koaBody } = require('@koa/body');
+      //
+      //       koaBody({ // Add koaBody middleware here
+      //         multipart: true,
+      //         urlencoded: true,
+      //         json: true,
+      //         formLimit: '50mb', // Adjust as needed
+      //         jsonLimit: '50mb', // Adjust as needed
+      //         textLimit: '50mb', // Adjust as needed
+      //         formidable: {
+      //           maxFileSize: bytes('51MB'),
+      //           keepExtensions: true,
+      //         },
+      //       }),
+      //
+      fieldSize: bytes('51MB'),
+      fileSize: bytes('51MB'),
+      // one "attachment" plus up to 50 "attachments" (see `fields` below)
+      files: 51
+    }
+    // fileFilter(req, file, cb) {
+    //   console.log('Multer fileFilter triggered:', file.originalname); // Add this
+    //   cb(null, true);
+    // }
+  },
+  // the route below maps multer's error codes to its own messages
+  { rawErrors: true }
+);
 
 const router = new Router({
   prefix: '/v1'
@@ -81,7 +86,7 @@ router.post(
     try {
       await next();
     } catch (err) {
-      if (err instanceof multer.MulterError) {
+      if (err instanceof createMultipart.MulterError) {
         // Handle Multer-specific errors
         switch (err.code) {
           case 'LIMIT_PART_COUNT': {

@@ -16,14 +16,30 @@ async function resendEmailChange(ctx) {
   if (!ctx.state.user[config.userFields.changeEmailNewAddress])
     throw Boom.badRequest(ctx.translateError('EMAIL_CHANGE_DOES_NOT_EXIST'));
 
-  // reset the reset token and expiry
+  //
+  // Send the same link again while it is still valid (only its expiry is
+  // extended).  A new token on every resend made every link sent before it
+  // invalid, so the link in an earlier (or delayed) email failed and the
+  // change stayed pending.
+  //
+  const previous = {
+    token: ctx.state.user[config.userFields.changeEmailToken],
+    expiresAt: ctx.state.user[config.userFields.changeEmailTokenExpiresAt]
+  };
+  const isValid =
+    typeof previous.token === 'string' &&
+    previous.token.length > 0 &&
+    previous.expiresAt &&
+    new Date(previous.expiresAt).getTime() > Date.now();
+
   ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = dayjs()
     .add(config.changeEmailTokenTimeoutMs, 'milliseconds')
     .toDate();
-  ctx.state.user[config.userFields.changeEmailToken] =
-    await cryptoRandomString.async({
-      length: 32
-    });
+  if (!isValid)
+    ctx.state.user[config.userFields.changeEmailToken] =
+      await cryptoRandomString.async({
+        length: 32
+      });
 
   // save the user
   ctx.state.user = await ctx.state.user.save();
@@ -47,11 +63,16 @@ async function resendEmailChange(ctx) {
     });
   } catch (err) {
     ctx.logger.fatal(err);
-    // reset if there was an error
+    // put the pending change back as it was (a link already sent stays valid)
     try {
-      ctx.state.user[config.userFields.changeEmailToken] = undefined;
-      ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = undefined;
-      ctx.state.user[config.userFields.changeEmailNewAddress] = undefined;
+      ctx.state.user[config.userFields.changeEmailToken] = isValid
+        ? previous.token
+        : undefined;
+      ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = isValid
+        ? previous.expiresAt
+        : undefined;
+      if (!isValid)
+        ctx.state.user[config.userFields.changeEmailNewAddress] = undefined;
       ctx.state.user = await ctx.state.user.save();
     } catch (err) {
       ctx.logger.error(err);

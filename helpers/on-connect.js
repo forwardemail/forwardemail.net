@@ -18,6 +18,7 @@ const config = require('#config');
 const env = require('#config/env');
 const isAllowlisted = require('#helpers/is-allowlisted');
 const isForwardConfirmedRdns = require('#helpers/is-forward-confirmed-rdns');
+const getIpBucket = require('#helpers/get-ip-bucket');
 // const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -439,7 +440,19 @@ async function onConnect(session, fn) {
     const prefix = `concurrent_${this.constructor.name.toLowerCase()}_${
       config.env
     }`;
-    const key = `${prefix}:${session.remoteAddress}`;
+    //
+    // Counted per address, or per /64 for IPv6 so one client cannot take a
+    // fresh counter per source address (see helpers/get-ip-bucket.js).
+    // Allowlisted senders (forward-confirmed hostnames of large providers)
+    // keep a counter per address: they send from many addresses of one /64.
+    // The key is kept on the session so on-close.js decrements the same one.
+    //
+    const key = `${prefix}:${
+      session.isAllowlisted
+        ? session.remoteAddress
+        : getIpBucket(session.remoteAddress)
+    }`;
+    session.concurrencyKey = key;
     //
     // OPTIMIZATION: Redis pipelining
     // Batch incr and pexpire into one pipeline (reduces 2 round-trips to 1)

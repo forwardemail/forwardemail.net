@@ -41,9 +41,9 @@ const {
   HeadBucketCommand,
   HeadObjectCommand
 } = require('@aws-sdk/client-s3');
-const { Builder } = require('json-sql-enhanced');
 const { Upload } = require('@aws-sdk/lib-storage');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const { Builder } = require('#helpers/json-sql');
 
 const isEmail = require('#helpers/is-email');
 const _ = require('#helpers/lodash');
@@ -69,9 +69,10 @@ const isRetryableError = require('#helpers/is-retryable-error');
 const isStorageAvailable = require('#helpers/is-storage-available');
 const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
-const safeVacuum = require('#helpers/safe-vacuum');
+const compactDatabase = require('#helpers/compact-database');
 const setupMongoose = require('#helpers/setup-mongoose');
 const setupPragma = require('#helpers/setup-pragma');
+const updateStorageUsed = require('#helpers/update-storage-used');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const workerConfig = require('#helpers/sqlite-worker-config');
 const { assertRekeyDiskSpace } = require('#helpers/rekey-disk-space');
@@ -2202,10 +2203,12 @@ async function backup(payload) {
 }
 
 //
-// Offloaded VACUUM: runs in the sqlite-worker process so it never blocks
-// the IMAP/POP3 event loop.  Opens the database directly (bypassing
-// getDatabase to avoid re-triggering maintenance), performs VACUUM INTO
-// with atomic rename, and updates MongoDB/Redis on success.
+// Offloaded compaction: runs in the sqlite-worker process so it never blocks
+// the IMAP/POP3 event loop.  Opens its own handle to the live mailbox and
+// runs an in-place VACUUM when that gives space back or converts the
+// mailbox to auto_vacuum=FULL (see helpers/compact-database.js for the
+// safety conditions).  Nothing replaces the file, so other processes keep
+// their handles.
 //
 async function vacuum(payload) {
   if (isCancelled) throw new ServerShutdownError();
@@ -2231,29 +2234,13 @@ async function vacuum(payload) {
   let db;
   try {
     // Open database directly (NOT via getDatabase) to avoid re-triggering
-    // maintenance or VACUUM recursion, but still under the per-file mutex
-    // so the open can never interleave with a rekey/VACUUM file swap.
+    // maintenance, but still under the per-file mutex so the open can never
+    // interleave with a rekey file swap.
     db = await openDatabaseHandle(storagePath, payload.session);
 
-    // Check if auto_vacuum is already enabled (FULL=1)
-    const autoVacuumMode = db.pragma('auto_vacuum', { simple: true });
-    if (autoVacuumMode === 1) {
-      // Already FULL — nothing to do
-      db.close();
-      db = null;
-      await client.set(`vacuum_check:${aliasId}`, 'true', 'PX', ms('7d'));
-      return;
-    }
+    if (isCancelled) throw new ServerShutdownError();
 
-    //
-    // Perform the swap via the shared safe-swap implementation, which
-    // acquires vacuum_lock + db_swap_lock, broadcasts db_cache_evict to
-    // quiesce stale handles in the other PM2 workers, checkpoints the WAL
-    // fail-closed, verifies the new file, and only then atomically renames
-    // it over the live database.  It also handles lock release and tmp
-    // cleanup, and closes `db` when the swap succeeds.
-    //
-    const result = await safeVacuum({
+    const result = await compactDatabase({
       db,
       dbFilePath: storagePath,
       aliasId,
@@ -2261,26 +2248,87 @@ async function vacuum(payload) {
       session: payload.session
     });
 
-    if (!result.swapped) return;
+    //
+    // Check again tomorrow unless it could not run for a transient reason
+    // (another job held the mailbox, or it was busy): then the next open of
+    // the mailbox queues it again once the hour of `vacuum_queued` is over
+    // (see getDatabase, which also queues any mailbox still at NONE).
+    //
+    if (
+      result.compacted ||
+      ['not-needed', 'too-large', 'disabled', 'disk-space'].includes(
+        result.skipped
+      )
+    )
+      await client.set(`vacuum_check:${aliasId}`, 'true', 'PX', ms('1d'));
 
-    // safeVacuum closed the handle before the rename
+    // a mailbox still at NONE is queued on every open (see getDatabase);
+    // back off for a day when it cannot be converted for a lasting reason
+    if (['too-large', 'disk-space'].includes(result.skipped))
+      await client.set(`vacuum_queued:${aliasId}`, 'true', 'PX', ms('1d'));
+
+    //
+    // A mailbox at auto_vacuum=FULL gives space back on its own, so it is
+    // not checked again (getDatabase reads this flag when `vacuum_check`
+    // has expired).
+    //
+    const autoVacuum = (result.after || result.before)?.autoVacuum;
+    if (autoVacuum === compactDatabase.AUTO_VACUUM_FULL)
+      await Aliases.findByIdAndUpdate(aliasId, {
+        $set: { has_auto_vacuum_migration: true }
+      });
+
+    if (result.compacted) {
+      logger.info('mailbox compacted', {
+        alias_id: aliasId,
+        alias_name: payload.session.user.alias_name,
+        converted: result.converted,
+        duration: result.duration,
+        before: result.before.fileBytes,
+        after: result.after.fileBytes
+      });
+    } else if (
+      result.skipped === 'too-large' ||
+      result.skipped === 'disk-space'
+    ) {
+      logger.warn('mailbox compaction skipped', {
+        alias_id: aliasId,
+        alias_name: payload.session.user.alias_name,
+        reason: result.skipped,
+        free_bytes: result.before && result.before.freeBytes
+      });
+    }
+
+    // the file may be smaller now
+    db.close();
     db = null;
-
-    // Mark migration complete in MongoDB
-    await Aliases.findByIdAndUpdate(aliasId, {
-      $set: { has_auto_vacuum_migration: true }
-    });
-
-    // Set Redis TTL so we don't re-run for 7 days
-    await client.set(`vacuum_check:${aliasId}`, 'true', 'PX', ms('7d'));
-
-    logger.info('VACUUM completed', {
-      alias_id: aliasId,
-      alias_name: payload.session.user.alias_name
-    });
+    //
+    // (unless the WAL could not be emptied: after a VACUUM it holds a copy
+    // of every page and counts in storage used, so the mailbox would look
+    // up to twice its size until the next checkpoint resets it)
+    //
+    if (!result.compacted || result.walTruncated)
+      await updateStorageUsed(aliasId, client);
   } catch (err) {
+    //
+    // The job carries the password it was queued with; a rotation since
+    // then makes the open fail, and the next open of the mailbox (with the
+    // new password) queues it again.
+    //
+    if (
+      (err.code === 'SQLITE_NOTADB' && err.responseCode === 535) ||
+      isRetryableError(err)
+    ) {
+      logger.warn(err, { alias_id: aliasId });
+      return;
+    }
+
     err.isCodeBug = true;
     logger.fatal(err, { alias_id: aliasId });
+    // (and not again within the day, see above)
+    try {
+      await client.set(`vacuum_queued:${aliasId}`, 'true', 'PX', ms('1d'));
+    } catch {}
   } finally {
     if (db && db.open) db.close();
   }

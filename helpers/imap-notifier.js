@@ -19,7 +19,7 @@ const { boolean } = require('boolean');
 const Database = require('better-sqlite3-multiple-ciphers');
 const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
-const { Builder } = require('json-sql-enhanced');
+const { Builder } = require('#helpers/json-sql');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');

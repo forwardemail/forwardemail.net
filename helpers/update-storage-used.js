@@ -9,9 +9,9 @@ const path = require('node:path');
 const mongoose = require('mongoose');
 
 const Aliases = require('#models/aliases');
-const config = require('#config');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const logger = require('#helpers/logger');
+const { COMPANION_SUFFIXES } = require('#helpers/sqlite-file-utils');
 
 // OPTIMIZATION: Combined alias query to fetch all needed fields at once
 async function updateStorageUsed(id, client) {
@@ -42,29 +42,34 @@ async function updateStorageUsed(id, client) {
       const dirName = path.dirname(filePath);
       const ext = path.extname(filePath);
       const basename = path.basename(filePath, ext);
-      // $id.sqlite
-      const stats = await fs.promises.stat(filePath);
-      if (stats.isFile() && stats.size > 0) {
-        size += stats.size;
-        // $id-wal.sqlite
-        // $id-shm.sqlite
-        // $id-tmp.sqlite
-        // $id-tmp-wal.sqlite
-        // $id-tmp-shm.sqlite
-        for (const affix of config.env === 'test'
-          ? ['-wal', '-shm']
-          : ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm']) {
-          const affixFilePath = path.join(dirName, `${basename}${affix}${ext}`);
-          try {
-            const stats = await fs.promises.stat(affixFilePath);
-            if (stats.isFile() && stats.size > 0) {
-              size += stats.size;
-            }
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
+      //
+      // Storage used is every file of the mailbox on disk: the database
+      // ($id.sqlite), the temporary mailbox that holds mail received while
+      // the main one was unavailable ($id-tmp.sqlite), and the files SQLite
+      // keeps next to each (-wal, -shm, -journal).  The legacy names the
+      // previous code looked for ($id-wal.sqlite …) are counted too, should
+      // any exist.  (Quarantined and backup copies are ours, not counted.)
+      //
+      const files = [];
+      for (const database of [
+        filePath,
+        path.join(dirName, `${basename}-tmp${ext}`)
+      ])
+        files.push(
+          database,
+          ...COMPANION_SUFFIXES.map((suffix) => `${database}${suffix}`)
+        );
+      for (const legacy of ['-wal', '-shm', '-tmp-wal', '-tmp-shm'])
+        files.push(path.join(dirName, `${basename}${legacy}${ext}`));
+
+      for (const candidate of files) {
+        try {
+          const stats = await fs.promises.stat(candidate);
+          if (stats.isFile() && stats.size > 0) size += stats.size;
+        } catch (err) {
+          if (err.code !== 'ENOENT') {
+            err.isCodeBug = true;
+            throw err;
           }
         }
       }

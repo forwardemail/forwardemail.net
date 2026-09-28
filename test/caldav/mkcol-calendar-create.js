@@ -19,6 +19,7 @@
 const { Buffer } = require('node:buffer');
 const { randomUUID } = require('node:crypto');
 const fs = require('node:fs');
+const net = require('node:net');
 const path = require('node:path');
 
 const Redis = require('ioredis-mock');
@@ -341,6 +342,43 @@ test.serial('MKCOL with D: prefix XML body creates a calendar', async (t) => {
 
   t.is(response.statusCode, 201, 'MKCOL with D: prefix should return 201');
 });
+
+//
+// An MKCOL body is only read once the request is authenticated: an
+// unauthenticated one is answered at once, whatever body it announces.
+//
+test.serial(
+  'MKCOL without credentials is answered 401 before its body is read',
+  async (t) => {
+    t.timeout(ms('10s'));
+    const { hostname, port } = new URL(t.context.serverUrl);
+    const socket = net.connect(Number(port), hostname);
+    t.teardown(() => socket.destroy());
+
+    const response = await new Promise((resolve, reject) => {
+      let data = '';
+      socket.setEncoding('utf8');
+      socket.on('data', (chunk) => {
+        data += chunk;
+        if (data.includes('\r\n\r\n')) resolve(data);
+      });
+      socket.on('error', reject);
+      socket.on('close', () => resolve(data));
+      socket.write(
+        [
+          `MKCOL /dav/${t.context.username}/${randomUUID()}/ HTTP/1.1`,
+          `Host: ${hostname}:${port}`,
+          'Content-Type: application/xml',
+          `Content-Length: ${10 * 1024 * 1024}`,
+          '',
+          '<mkcol xmlns="DAV:">'
+        ].join('\r\n')
+      );
+    });
+
+    t.regex(response, /^HTTP\/1\.1 401 /);
+  }
+);
 
 test.serial(
   'MKCOL with empty body creates a calendar with defaults',

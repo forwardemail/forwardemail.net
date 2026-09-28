@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { Builder } = require('json-sql-enhanced');
 const dayjs = require('dayjs-with-plugins');
+const { Builder } = require('#helpers/json-sql');
 
 const logger = require('#helpers/logger');
 

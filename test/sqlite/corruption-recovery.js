@@ -184,9 +184,11 @@ async function dropCachedHandle(t) {
 // reads as corrupted the moment the page is read (a damaged first page
 // reads as "not a database", which is what a wrong password yields too; a
 // mailbox this young is never recovered from that, see the 7-day guard in
-// helpers/get-database.js, so a later page is damaged here).
+// helpers/get-database.js, so a later page is damaged here).  Mailboxes are
+// created with auto_vacuum=FULL, where page 2 is a pointer-map page that is
+// only read on writes, so page 3 (the first table's root) is damaged.
 //
-function damagePage(storagePath, page = 2) {
+function damagePage(storagePath, page = 3) {
   const fd = fs.openSync(storagePath, 'r+');
   try {
     const byte = Buffer.alloc(1);

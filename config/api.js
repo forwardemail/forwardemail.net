@@ -13,6 +13,7 @@ const env = require('./env');
 
 const config = require('.');
 const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
+const validateHostHeader = require('#helpers/validate-host-header');
 
 const createTangerine = require('#helpers/create-tangerine');
 const i18n = require('#helpers/i18n');
@@ -54,9 +55,16 @@ module.exports = {
   logger: cabin,
   i18n,
   hookBeforeSetup(app) {
+    // before anything reads ctx.hostname / ctx.origin
+    app.use(validateHostHeader());
     // Koa v3 polyfill for ctx.redirect('back')
     // @see https://github.com/koajs/koa/releases/tag/v3.0.0
-    app.use(koaRedirectBackPolyfill({ fallbackUrl: '/' }));
+    app.use(
+      koaRedirectBackPolyfill({
+        fallbackUrl: '/',
+        allowedOrigins: [config.urls.web, config.urls.api]
+      })
+    );
 
     app.context.resolver = createTangerine(
       app.context.client,

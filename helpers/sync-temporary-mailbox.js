@@ -5,7 +5,6 @@
 
 const bytes = require('@forwardemail/bytes');
 const pify = require('pify');
-const { Builder } = require('json-sql-enhanced');
 
 const checkDiskSpace = require('./check-disk-space');
 const getPathToDatabase = require('./get-path-to-database');
@@ -14,6 +13,7 @@ const logger = require('./logger');
 const onAppend = require('./imap/on-append');
 const updateStorageUsed = require('./update-storage-used');
 const { syncConvertResult } = require('./mongoose-to-sqlite');
+const { Builder } = require('#helpers/json-sql');
 const refreshSession = require('#helpers/refresh-session');
 
 const TemporaryMessages = require('#models/temporary-messages');

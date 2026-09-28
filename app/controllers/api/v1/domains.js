@@ -167,6 +167,24 @@ async function list(ctx) {
 async function retrieve(ctx) {
   // populate storage quota stuff
   const data = json(await populateDomainStorage(ctx.state.domain, ctx.locale));
+
+  //
+  // Only admins of the domain see its other members and pending invites
+  // (the invite tokens and invited addresses included), as in the web
+  // interface, where they are listed on admin-only pages.  Every user is a
+  // virtual member of a global domain, so without this any account could
+  // read the addresses and plans of that domain's real admins.
+  //
+  if (ctx.state.domain.group !== 'admin') {
+    const userId = ctx.state.user?.id;
+    data.members = Array.isArray(data.members)
+      ? data.members.filter(
+          (member) => userId && String(member?.user?.id) === String(userId)
+        )
+      : [];
+    data.invites = [];
+  }
+
   ctx.body = data;
 }
 

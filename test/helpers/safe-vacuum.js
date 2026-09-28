@@ -9,7 +9,9 @@ const path = require('node:path');
 const process = require('node:process');
 const { fork } = require('node:child_process');
 const { randomUUID } = require('node:crypto');
+const { Buffer } = require('node:buffer');
 
+const Database = require('better-sqlite3-multiple-ciphers');
 const Redis = require('@ladjs/redis');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
@@ -49,8 +51,16 @@ const session = {
   user: { password: encrypt(PASSWORD), domain_name: 'example.com' }
 };
 
+//
+// The migration only ever runs on a mailbox that is not auto_vacuum=FULL
+// yet (getDatabase checks first), i.e. one created before setupPragma set
+// auto_vacuum ahead of journal_mode=WAL: create it the way those were.
+//
 async function createMailbox(dbFilePath, rows = 500) {
-  const db = await openDatabaseHandle(dbFilePath, session);
+  const db = new Database(dbFilePath);
+  db.pragma("cipher='chacha20'");
+  db.key(Buffer.from(PASSWORD));
+  db.pragma('journal_mode=WAL');
   db.exec('CREATE TABLE t (id INTEGER PRIMARY KEY, value TEXT)');
   const insert = db.prepare('INSERT INTO t (value) VALUES (?)');
   db.transaction(() => {

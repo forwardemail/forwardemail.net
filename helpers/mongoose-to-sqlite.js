@@ -8,8 +8,8 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const pRetry = require('p-retry');
 const safeStringify = require('fast-safe-stringify');
-const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');
+const { Builder } = require('#helpers/json-sql');
 
 const _ = require('#helpers/lodash');
 const config = require('#config');

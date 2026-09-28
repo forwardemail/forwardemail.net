@@ -18,8 +18,8 @@ const pRetry = require('p-retry');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
-const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');
+const { Builder } = require('#helpers/json-sql');
 
 const AddressBooks = require('#models/address-books');
 const Aliases = require('#models/aliases');
@@ -35,6 +35,7 @@ const Threads = require('#models/threads');
 const config = require('#config');
 const email = require('#helpers/email');
 const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
+const getAttachments = require('#helpers/get-attachments');
 const env = require('#config/env');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const isRetryableError = require('#helpers/is-retryable-error');
@@ -43,6 +44,7 @@ const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
 const openDatabaseHandle = require('#helpers/open-database-handle');
 const quarantineReport = require('#helpers/quarantine-report');
+const recursivelyParse = require('#helpers/recursively-parse');
 const safeVacuum = require('#helpers/safe-vacuum');
 const setupPragma = require('#helpers/setup-pragma');
 const { withDbFileLock } = require('#helpers/db-file-lock');
@@ -50,6 +52,8 @@ const { leftoverCompanionFiles } = require('#helpers/sqlite-file-utils');
 const workerConfig = require('#helpers/sqlite-worker-config');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const { decodeMetadata } = require('#helpers/msgpack-helpers');
+const { deleteManySync } = require('#helpers/attachment-storage');
 const backfillCalendarDates = require('#helpers/backfill-calendar-dates');
 const { fixCalDAVHref } = require('#helpers/fix-caldav-href');
 
@@ -65,6 +69,51 @@ const LOCK_OWNER = `${HOSTNAME}:${process.pid}`;
 // Prevents releasing a lock that expired and was re-acquired by another worker.
 const RELEASE_LOCK_SCRIPT =
   "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+
+// Rows deleted per transaction by the Trash/Spam/Junk purge (see
+// `_runDeferredMaintenance`); each row's mimeTree is decoded to release its
+// attachments, so batches are kept small enough to yield often.
+const TRASH_PURGE_BATCH_SIZE = 200;
+
+//
+// Release the attachment references of messages the purge just deleted
+// (`DELETE ... RETURNING "_id", "magic", "mimeTree"`), inside the caller's
+// open transaction.  A message whose metadata cannot be decoded, or that
+// carries no valid magic, is logged and skipped rather than failing the
+// batch: the purge must keep making progress, and skipping leaves the
+// attachment rows exactly as they were before this fix (referenced).
+// A database error while updating Attachments is thrown so the caller
+// rolls the whole batch back and nothing is half-applied.
+//
+function releasePurgedAttachments(db, deleted, session) {
+  for (const row of deleted) {
+    let attachmentIds;
+    try {
+      attachmentIds = getAttachments(
+        decodeMetadata(row.mimeTree, recursivelyParse)
+      );
+    } catch (err) {
+      logger.warn(err, {
+        message: 'Unable to decode purged message attachments',
+        message_id: row._id,
+        session
+      });
+      continue;
+    }
+
+    if (attachmentIds.length === 0) continue;
+
+    if (typeof row.magic !== 'number' || Number.isNaN(row.magic)) {
+      logger.warn('Purged message has no valid magic; attachments kept', {
+        message_id: row._id,
+        session
+      });
+      continue;
+    }
+
+    deleteManySync(db, attachmentIds, row.magic);
+  }
+}
 
 // Guard to prevent concurrent maintenance for the same alias.
 // Once maintenance begins, the alias_id is added here;
@@ -906,46 +955,59 @@ async function getDatabase(
     // The _deferredMaintenanceRunning guard prevents concurrent runs for the same alias.
     //
 
-    // ── Part 1: VACUUM (offloaded to sqlite-worker process) ─────────────
-    // Instead of blocking the event loop for 10-14s, publish to Redis
-    // so the sqlite-worker handles VACUUM in a separate process.
-    if (
-      boolean(env.SQLITE_AUTO_VACUUM_MIGRATION_ENABLED) &&
-      !vacuumCheck &&
-      !customDbFilePath &&
-      instance.client &&
-      !_deferredMaintenanceRunning.has(session.user.alias_id)
-    ) {
-      // Mark as running so Part 2 deferred maintenance is skipped for this
-      // call (mirrors old behavior where inline VACUUM blocked Part 2).
-      // Release the guard after a short delay so subsequent getDatabase()
-      // calls can run Part 2 normally.
-      _deferredMaintenanceRunning.add(session.user.alias_id);
+    // ── Part 1: compaction (offloaded to sqlite-worker process) ─────────
+    // Publish to Redis so the sqlite-worker checks the mailbox's free pages
+    // and, when worthwhile, compacts it in place and converts it to
+    // auto_vacuum=FULL (helpers/compact-database.js).  It is queued when
+    // `vacuum_check` has expired, and whenever the open mailbox is still at
+    // auto_vacuum=NONE, whatever the cached state says (e.g. a mailbox
+    // restored from an older backup).  `vacuum_queued` is claimed first
+    // (NX, 1h) so each alias is queued at most once an hour from all
+    // processes; a job the worker drops (busy, low memory) is queued again
+    // after the hour.  This does not hold up Part 2: the compaction runs on
+    // its own handle in another process and SQLite serializes the two.
+    let isAutoVacuumNone = false;
+    if (boolean(env.SQLITE_VACUUM_ENABLED) && db && db.open) {
       try {
-        await instance.client.publish(
-          `sqlite_vacuum_queue:${config.env}`,
-          safeStringify({
-            action: 'vacuum',
-            session: {
-              user: {
-                alias_id: session.user.alias_id,
-                alias_name: session.user.alias_name,
-                domain_name: session.user.domain_name,
-                password: session.user.password,
-                storage_location: session.user.storage_location
-              }
-            }
-          })
-        );
+        isAutoVacuumNone = db.pragma('auto_vacuum', { simple: true }) === 0;
       } catch (err) {
         logger.debug(err);
       }
+    }
 
-      // Release the guard after 5s so future calls can run deferred maintenance
-      const _aliasIdVac = session.user.alias_id;
-      setTimeout(() => {
-        _deferredMaintenanceRunning.delete(_aliasIdVac);
-      }, 5000);
+    if (
+      boolean(env.SQLITE_VACUUM_ENABLED) &&
+      (!vacuumCheck || isAutoVacuumNone) &&
+      !customDbFilePath &&
+      instance.client
+    ) {
+      try {
+        const claimed = await instance.client.set(
+          `vacuum_queued:${session.user.alias_id}`,
+          'true',
+          'PX',
+          ms('1h'),
+          'NX'
+        );
+        if (claimed)
+          await instance.client.publish(
+            `sqlite_vacuum_queue:${config.env}`,
+            safeStringify({
+              action: 'vacuum',
+              session: {
+                user: {
+                  alias_id: session.user.alias_id,
+                  alias_name: session.user.alias_name,
+                  domain_name: session.user.domain_name,
+                  password: session.user.password,
+                  storage_location: session.user.storage_location
+                }
+              }
+            })
+          );
+      } catch (err) {
+        logger.debug(err);
+      }
     }
 
     // ── Part 2: Non-VACUUM maintenance (deferred / fire-and-forget) ─────
@@ -1239,8 +1301,9 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
         }
 
         {
-          // Batch the DELETE in chunks of 1000 rows to avoid blocking
-          // the event loop for seconds on large mailboxes.
+          // Batch the DELETE in chunks of TRASH_PURGE_BATCH_SIZE rows to
+          // avoid blocking the event loop for seconds on large mailboxes
+          // (each row's mimeTree is decoded to release its attachments).
           const selectSql = builder.build({
             type: 'select',
             table: 'Messages',
@@ -1280,7 +1343,7 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
                 }
               ]
             },
-            limit: 1000
+            limit: TRASH_PURGE_BATCH_SIZE
           });
           // eslint-disable-next-line no-constant-condition
           while (true) {
@@ -1298,9 +1361,21 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
               }
 
               const placeholders = ids.map(() => '?').join(',');
-              db.prepare(
-                `DELETE FROM "Messages" WHERE "_id" IN (${placeholders})`
-              ).run(...ids);
+              const deleted = db
+                .prepare(
+                  `DELETE FROM "Messages" WHERE "_id" IN (${placeholders}) RETURNING "_id", "magic", "mimeTree"`
+                )
+                .all(...ids);
+
+              //
+              // Release the attachments of the purged messages in the same
+              // transaction, like EXPUNGE does (helpers/imap/on-expunge.js).
+              // Previously the rows were deleted without decrementing the
+              // attachment reference counts, so their attachments could
+              // never be freed and the mailbox never shrank.
+              //
+              releasePurgedAttachments(db, deleted, session);
+
               db.exec('COMMIT');
             } catch (batchErr) {
               try {
@@ -1311,7 +1386,7 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
             }
 
             // Yield to event loop between batches
-            if (ids.length >= 1000) {
+            if (ids.length >= TRASH_PURGE_BATCH_SIZE) {
               await new Promise((resolve) => {
                 setImmediate(resolve);
               });

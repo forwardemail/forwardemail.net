@@ -10,10 +10,10 @@ const bytes = require('@forwardemail/bytes');
 const getStream = require('get-stream');
 const isSANB = require('is-string-and-not-blank');
 const pify = require('pify');
-const { Builder } = require('json-sql-enhanced');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 const { simpleParser } = require('mailparser');
+const { Builder } = require('#helpers/json-sql');
 
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');

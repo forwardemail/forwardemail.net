@@ -16,6 +16,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Buffer } = require('node:buffer');
+const net = require('node:net');
 const { createHash, randomUUID } = require('node:crypto');
 const { setTimeout } = require('node:timers/promises');
 
@@ -47,6 +48,9 @@ const config = require('#config');
 const env = require('#config/env');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const getDatabase = require('#helpers/get-database');
+const getPathToDatabase = require('#helpers/get-path-to-database');
+const openDatabaseHandle = require('#helpers/open-database-handle');
+const { vacuum } = require('#helpers/worker');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const createPassword = require('#helpers/create-password');
 const getTemporaryDatabase = require('#helpers/get-temporary-database');
@@ -60,6 +64,10 @@ const semaphore = new Semaphore(2);
 
 const logger = new Axe({ silent: true });
 const IP_ADDRESS = ip.address();
+
+// storage used of a new mailbox: the database file plus the WAL and shared
+// memory files SQLite keeps next to it (all counted in storage used)
+const FRESH_MAILBOX_MAX_SIZE = config.INITIAL_DB_SIZE + 4 * 1024 * 1024;
 const tls = { rejectUnauthorized: false };
 
 test.before(utils.setupMongoose);
@@ -1090,16 +1098,16 @@ test('onGetQuotaRoot', async (t) => {
 
     const storageUsed = await Aliases.getStorageUsed(alias);
     t.true(
-      storageUsed > 0 && storageUsed <= config.INITIAL_DB_SIZE,
-      `storageUsed ${storageUsed} should be > 0 and <= ${config.INITIAL_DB_SIZE}`
+      storageUsed > 0 && storageUsed <= FRESH_MAILBOX_MAX_SIZE,
+      `storageUsed ${storageUsed} should be > 0 and <= ${FRESH_MAILBOX_MAX_SIZE}`
     );
     const quota = await t.context.imapFlow.getQuota();
     t.is(quota.path, 'INBOX');
     t.is(quota.storage.limit, config.maxQuotaPerAlias);
     t.is(quota.storage.status, '0%');
     t.true(
-      quota.storage.usage > 0 && quota.storage.usage <= config.INITIAL_DB_SIZE,
-      `quota.storage.usage ${quota.storage.usage} should be > 0 and <= ${config.INITIAL_DB_SIZE}`
+      quota.storage.usage > 0 && quota.storage.usage <= FRESH_MAILBOX_MAX_SIZE,
+      `quota.storage.usage ${quota.storage.usage} should be > 0 and <= ${FRESH_MAILBOX_MAX_SIZE}`
     );
     // TODO: figure out why config.INITIAL_DB_SIZE is sometimes off here (e.g. its sometimes 200704)
     // t.deepEqual(quota, {
@@ -1125,16 +1133,16 @@ test('onGetQuotaRoot', async (t) => {
     );
     const storageUsed = await Aliases.getStorageUsed(alias);
     t.true(
-      storageUsed > 0 && storageUsed <= config.INITIAL_DB_SIZE,
-      `storageUsed ${storageUsed} should be > 0 and <= ${config.INITIAL_DB_SIZE}`
+      storageUsed > 0 && storageUsed <= FRESH_MAILBOX_MAX_SIZE,
+      `storageUsed ${storageUsed} should be > 0 and <= ${FRESH_MAILBOX_MAX_SIZE}`
     );
     const quota = await imapFlow.getQuota('boopboop');
     t.is(quota.path, 'boopboop');
     t.is(quota.storage.limit, config.maxQuotaPerAlias);
     t.is(quota.storage.status, '0%');
     t.true(
-      quota.storage.usage > 0 && quota.storage.usage <= config.INITIAL_DB_SIZE,
-      `quota.storage.usage ${quota.storage.usage} should be > 0 and <= ${config.INITIAL_DB_SIZE}`
+      quota.storage.usage > 0 && quota.storage.usage <= FRESH_MAILBOX_MAX_SIZE,
+      `quota.storage.usage ${quota.storage.usage} should be > 0 and <= ${FRESH_MAILBOX_MAX_SIZE}`
     );
   }
 
@@ -1194,16 +1202,16 @@ ZXhhbXBsZQo=
     // });
     const storageUsed = await Aliases.getStorageUsed(alias);
     t.true(
-      storageUsed > 0 && storageUsed <= config.INITIAL_DB_SIZE,
-      `storageUsed ${storageUsed} should be > 0 and <= ${config.INITIAL_DB_SIZE}`
+      storageUsed > 0 && storageUsed <= FRESH_MAILBOX_MAX_SIZE,
+      `storageUsed ${storageUsed} should be > 0 and <= ${FRESH_MAILBOX_MAX_SIZE}`
     );
     const quota = await imapFlow.getQuota('boopboop');
     t.is(quota.path, 'boopboop');
     t.is(quota.storage.limit, config.maxQuotaPerAlias);
     t.is(quota.storage.status, '0%');
     t.true(
-      quota.storage.usage > 0 && quota.storage.usage <= config.INITIAL_DB_SIZE,
-      `quota.storage.usage ${quota.storage.usage} should be > 0 and <= ${config.INITIAL_DB_SIZE}`
+      quota.storage.usage > 0 && quota.storage.usage <= FRESH_MAILBOX_MAX_SIZE,
+      `quota.storage.usage ${quota.storage.usage} should be > 0 and <= ${FRESH_MAILBOX_MAX_SIZE}`
     );
   }
 });
@@ -1222,8 +1230,8 @@ test('onGetQuota', async (t) => {
   t.is(quota.storage.limit, config.maxQuotaPerAlias);
   t.is(quota.storage.status, '0%');
   t.true(
-    quota.storage.usage > 0 && quota.storage.usage <= config.INITIAL_DB_SIZE,
-    `quota.storage.usage ${quota.storage.usage} should be > 0 and <= ${config.INITIAL_DB_SIZE}`
+    quota.storage.usage > 0 && quota.storage.usage <= FRESH_MAILBOX_MAX_SIZE,
+    `quota.storage.usage ${quota.storage.usage} should be > 0 and <= ${FRESH_MAILBOX_MAX_SIZE}`
   );
 });
 
@@ -2164,6 +2172,158 @@ ${encoded}
     hash: attachments[0].hash
   });
   t.is(stored, null);
+});
+
+//
+// The daily Trash/Spam/Junk purge (getDatabase deferred maintenance) used to
+// delete the Messages rows without releasing their attachments, so the
+// attachment rows (most of a mailbox's size) were never freed.
+//
+test('the Trash purge releases the attachments of purged messages', async (t) => {
+  const { imap, imapFlow, session, sqlite, alias, client } = t.context;
+
+  function message(label, encoded) {
+    return Buffer.from(
+      `
+MIME-Version: 1.0
+From: sender@example.com
+To: recipient@example.com
+Subject: ${label}
+Content-Type: multipart/mixed; boundary="purge-boundary"
+
+--purge-boundary
+Content-Type: text/plain; charset=UTF-8
+
+${label}
+--purge-boundary
+Content-Type: application/octet-stream; name="${label}.bin"
+Content-Disposition: attachment; filename="${label}.bin"
+Content-Transfer-Encoding: base64
+
+${encoded}
+--purge-boundary--
+`.trim()
+    );
+  }
+
+  const shared = Buffer.from(`shared ${randomUUID()}`).toString('base64');
+  const unique = Buffer.from(`unique ${randomUUID()}`).toString('base64');
+
+  // the shared attachment is also referenced by a message in INBOX
+  await imapFlow.append('INBOX', message('kept', shared), [], new Date());
+  await imapFlow.append('Trash', message('shared', shared), ['\\Deleted']);
+  await imapFlow.append('Trash', message('unique', unique), ['\\Deleted']);
+
+  const before = await Attachments.find(imap, session, {});
+  t.is(before.length, 2);
+  const sharedHash = before.find(
+    (a) => Buffer.from(a.body).toString() === shared
+  ).hash;
+  const uniqueHash = before.find(
+    (a) => Buffer.from(a.body).toString() === unique
+  ).hash;
+
+  // run the purge now rather than on the next day's first open
+  await client.del(`trash_check:${alias.id}`);
+  await getDatabase(sqlite, alias, session);
+
+  const trash = await Mailboxes.findOne(imap, session, { path: 'Trash' });
+  await pWaitFor(
+    async () =>
+      (await Messages.countDocuments(imap, session, {
+        mailbox: trash._id
+      })) === 0,
+    { timeout: ms('30s') }
+  );
+
+  await pWaitFor(
+    async () =>
+      (await Attachments.findOne(imap, session, { hash: uniqueHash })) === null,
+    { timeout: ms('10s') }
+  );
+
+  const kept = await Attachments.findOne(imap, session, { hash: sharedHash });
+  t.truthy(kept);
+  t.is(kept.counter, 1);
+
+  // the message that still references it is intact
+  await imapFlow.mailboxOpen('INBOX');
+  const download = await imapFlow.download('*');
+  const content = await getStream(download.content);
+  t.true(content.includes(shared));
+});
+
+//
+// Failed logins are only counted once verified, so parallel attempts used to
+// all pass the failed-attempt check: the number verified at once per client
+// is now bounded by the same limit.
+//
+test('bounds authentication attempts in progress from one client', async (t) => {
+  const { alias, domain, port, pass, client } = t.context;
+  const { smtpLimitAuth } = config;
+  config.smtpLimitAuth = 2;
+  t.teardown(() => {
+    config.smtpLimitAuth = smtpLimitAuth;
+  });
+
+  function login(password) {
+    return new Promise((resolve, reject) => {
+      const socket = net.connect(port, IP_ADDRESS);
+      let data = '';
+      let sent = false;
+      socket.setEncoding('utf8');
+      socket.on('data', (chunk) => {
+        data += chunk;
+        if (!sent && data.includes('\r\n')) {
+          sent = true;
+          socket.write(
+            `a LOGIN "${alias.name}@${domain.name}" "${password}"\r\n`
+          );
+        }
+
+        const line = data.split('\r\n').find((l) => l.startsWith('a '));
+        if (line) {
+          socket.end('b LOGOUT\r\n');
+          resolve(line);
+        }
+      });
+      socket.on('error', reject);
+    });
+  }
+
+  const responses = await Promise.all(
+    Array.from({ length: 8 }, () => login('wrong-password'))
+  );
+  t.true(responses.every((line) => line.startsWith('a NO')));
+  t.true(
+    responses.some((line) => /authentication attempts in progress/.test(line)),
+    `${responses.join('\n')}`
+  );
+
+  // every slot was given back
+  const { keyPrefix } = client.options;
+  await pWaitFor(
+    async () => {
+      const keys = await client.keys(
+        `${keyPrefix}auth_inflight_${config.env}:*`
+      );
+      const values = await Promise.all(
+        keys.map((key) => client.get(key.slice(keyPrefix.length)))
+      );
+      return values.every((value) => Number(value) === 0);
+    },
+    { timeout: ms('10s') }
+  );
+
+  // one distinct wrong password was counted, so the right one still works
+  t.regex(await login(pass), /^a OK/);
+
+  // and valid logins answered from the auth cache are never limited
+  const valid = await Promise.all(Array.from({ length: 8 }, () => login(pass)));
+  t.true(
+    valid.every((line) => line.startsWith('a OK')),
+    `${valid.join('\n')}`
+  );
 });
 
 test('promotes an attachment-bearing temporary message into IMAP', async (t) => {
@@ -5239,4 +5399,66 @@ test('interleaved single-message operations work correctly', async (t) => {
   for await (const message of imapFlow.fetch('1:*', { flags: true })) {
     t.true(message.flags.has('\\Seen'), 'All messages should be seen');
   }
+});
+
+//
+// Every existing mailbox is converted to auto_vacuum=FULL: opening one that
+// is still at NONE queues the compaction job even when the cached state
+// (Redis and the alias) says it was done, e.g. after a restore from an older
+// backup, and the job converts it in place.
+//
+test('an existing mailbox at auto_vacuum=NONE is converted on open', async (t) => {
+  const { sqlite, alias, session, client } = t.context;
+  const dbFilePath = getPathToDatabase(alias);
+
+  // close the cached handle (SQLite reads auto_vacuum when a handle opens)
+  const cached = sqlite.databaseMap.get(alias.id);
+  sqlite.databaseMap.delete(alias.id);
+  if (cached && cached.open) cached.close();
+  delete session.db;
+
+  // make the live mailbox a legacy one (auto_vacuum=NONE)
+  {
+    const db = await openDatabaseHandle(dbFilePath, session);
+    db.pragma('auto_vacuum=NONE');
+    db.exec('VACUUM');
+    t.is(db.pragma('auto_vacuum', { simple: true }), 0);
+    db.close();
+  }
+
+  // cached state that claims the conversion already happened
+  await client.set(`vacuum_check:${alias.id}`, 'true', 'PX', ms('30d'));
+  await Aliases.findByIdAndUpdate(alias._id, {
+    $set: { has_auto_vacuum_migration: true }
+  });
+  // (the setup's own open already queued this alias for the hour)
+  await client.del(`vacuum_queued:${alias.id}`);
+
+  const jobs = [];
+  const { publish } = client;
+  client.publish = function (channel, message) {
+    if (channel.startsWith('sqlite_vacuum_queue:'))
+      jobs.push(JSON.parse(message));
+    return publish.call(this, channel, message);
+  };
+
+  t.teardown(() => {
+    client.publish = publish;
+  });
+
+  await getDatabase(sqlite, alias, session);
+  await pWaitFor(() => jobs.length > 0, { timeout: ms('10s') });
+  t.is(jobs.length, 1);
+  t.is(jobs[0].session.user.alias_id, alias.id);
+
+  // a second open within the hour does not queue it again
+  await getDatabase(sqlite, alias, session);
+  t.is(jobs.length, 1);
+
+  // the sqlite-worker job converts it in place
+  await vacuum(jobs[0]);
+  const db = await openDatabaseHandle(dbFilePath, session);
+  t.teardown(() => db.open && db.close());
+  t.is(db.pragma('auto_vacuum', { simple: true }), 1);
+  t.is(db.pragma('integrity_check', { simple: true }), 'ok');
 });

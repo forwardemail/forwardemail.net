@@ -593,18 +593,35 @@ async function processEvent(ctx, event) {
             isSANB(productToPlan) &&
             ['team', 'enhanced_protection'].includes(productToPlan)
           ) {
-            if (user.plan !== productToPlan) {
-              user.plan = productToPlan;
-            }
-
+            //
+            // (whether the plan changes is read before it is set: the check
+            // below used to run after the assignment, so it never saw a
+            // change and the new plan kept the old plan's start date, which
+            // dropped the payment from the plan's expiry; and when this
+            // webhook ran before the checkout redirect, the redirect saw the
+            // plan already switched and did not fix it either)
+            //
+            // A payment for another plan made before the current plan
+            // started (e.g. a delayed bank debit for a checkout the user
+            // then abandoned for another plan) does not switch the plan back:
+            // the switch to the current plan came after it.
+            //
             const paymentCreatedAt = dayjs
               .unix(expandedPaymentIntent.created)
               .toDate();
+            const planSetAt = user[config.userFields.planSetAt];
+            const isSuperseded =
+              user.plan !== productToPlan &&
+              _.isDate(planSetAt) &&
+              paymentCreatedAt.getTime() < new Date(planSetAt).getTime();
+            const isPlanChange = user.plan !== productToPlan && !isSuperseded;
+            if (isPlanChange) user.plan = productToPlan;
+
             if (
-              !_.isDate(user[config.userFields.planSetAt]) ||
-              user.plan !== productToPlan ||
-              paymentCreatedAt.getTime() <
-                new Date(user[config.userFields.planSetAt]).getTime()
+              !isSuperseded &&
+              (!_.isDate(planSetAt) ||
+                isPlanChange ||
+                paymentCreatedAt.getTime() < new Date(planSetAt).getTime())
             ) {
               user[config.userFields.planSetAt] = paymentCreatedAt;
             }

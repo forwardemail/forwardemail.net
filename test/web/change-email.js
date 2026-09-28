@@ -101,3 +101,86 @@ test('confirms a pending change without a client-provided current email', async 
   t.is(updated[config.userFields.changeEmailTokenExpiresAt], undefined);
   t.is(updated[config.userFields.changeEmailNewAddress], undefined);
 });
+
+//
+// Resending the confirmation keeps the link already sent valid: a new token
+// on every resend made the link in an earlier (or delayed) email fail, and
+// the change stayed pending.
+//
+test('a resent confirmation keeps the earlier link working', async (t) => {
+  const { newEmail, password, token, user, web } = t.context;
+
+  const resent = await web
+    .put('/en/my-account/profile/resend-email-change')
+    .set('Accept', 'application/json')
+    .send({});
+  t.is(resent.status, 200);
+
+  let updated = await Users.findById(user._id);
+  t.is(updated[config.userFields.changeEmailToken], token);
+  t.true(
+    updated[config.userFields.changeEmailTokenExpiresAt].getTime() > Date.now()
+  );
+
+  // the link from the first email still confirms the change
+  const page = await web
+    .get(`/en/my-account/change-email/${token}`)
+    .set('Accept', 'text/html');
+  t.is(page.status, 200);
+
+  const confirmed = await web
+    .post(`/en/my-account/change-email/${token}`)
+    .set('Accept', 'application/json')
+    .send({ password });
+  t.is(confirmed.status, 200);
+
+  updated = await Users.findById(user._id);
+  t.is(updated.email, newEmail);
+  t.is(updated[config.userFields.changeEmailNewAddress], undefined);
+});
+
+test('a resend after the link expired sends a new link', async (t) => {
+  const { token, user, web } = t.context;
+  await Users.findByIdAndUpdate(user._id, {
+    $set: {
+      [config.userFields.changeEmailTokenExpiresAt]: new Date(Date.now() - 1000)
+    }
+  });
+
+  const resent = await web
+    .put('/en/my-account/profile/resend-email-change')
+    .set('Accept', 'application/json')
+    .send({});
+  t.is(resent.status, 200);
+
+  const updated = await Users.findById(user._id);
+  t.not(updated[config.userFields.changeEmailToken], token);
+  t.true(
+    updated[config.userFields.changeEmailTokenExpiresAt].getTime() > Date.now()
+  );
+});
+
+test('an expired link opened in the browser leads to the pending change', async (t) => {
+  const { token, user, web } = t.context;
+  await Users.findByIdAndUpdate(user._id, {
+    $set: {
+      [config.userFields.changeEmailTokenExpiresAt]: new Date(Date.now() - 1000)
+    }
+  });
+
+  const response = await web
+    .get(`/en/my-account/change-email/${token}`)
+    .set(
+      'Accept',
+      'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    );
+  t.is(response.status, 302);
+  t.is(response.headers.location, '/en/my-account/profile');
+
+  const profile = await web
+    .get('/en/my-account/profile')
+    .set('Accept', 'text/html');
+  t.is(profile.status, 200);
+  t.true(profile.text.includes(phrases.LINK_EXPIRED_OR_INVALID));
+  t.true(profile.text.includes('resend-email-change'));
+});

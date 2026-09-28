@@ -28,7 +28,12 @@ async function onClose(session) {
     (async () => {
       if (!session?.remoteAddress) return;
       try {
-        const key = `${prefix}:${session.remoteAddress}`;
+        // the key on-connect.js counted this connection under
+        const key =
+          typeof session.concurrencyKey === 'string' &&
+          session.concurrencyKey.startsWith(`${prefix}:`)
+            ? session.concurrencyKey
+            : `${prefix}:${session.remoteAddress}`;
         await this.client.eval(ATOMIC_DECR_FLOOR_SCRIPT, 1, key);
       } catch (err) {
         logger.fatal(err);

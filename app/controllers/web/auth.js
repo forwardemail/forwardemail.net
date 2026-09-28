@@ -647,7 +647,20 @@ async function getChangeEmailUser(ctx) {
 
 async function retrieveChangeEmail(ctx, next) {
   // Render only the current authenticated user's valid pending change.
-  ctx.state.user = await getChangeEmailUser(ctx);
+  try {
+    ctx.state.user = await getChangeEmailUser(ctx);
+  } catch (err) {
+    //
+    // An expired or replaced link opened in the browser leads to the
+    // profile, where the change shows as pending and can be sent again,
+    // rather than to a bare error page.
+    //
+    if (!err.isBoom || ctx.accepts('html', 'json') !== 'html') throw err;
+    ctx.flash('error', err.message);
+    ctx.redirect(ctx.state.l('/my-account/profile'));
+    return;
+  }
+
   return next();
 }
 

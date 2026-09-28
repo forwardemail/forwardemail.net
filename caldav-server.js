@@ -34,6 +34,7 @@ const config = require('#config');
 const env = require('#config/env');
 const isCodeBug = require('#helpers/is-code-bug');
 const isTimeoutError = require('#helpers/is-timeout-error');
+const { createRecurrenceBudget } = require('#helpers/recurrence-budget');
 const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
@@ -106,6 +107,32 @@ const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10 MB
 const MAX_ATTACHMENTS_PER_RESOURCE = 10;
 const DAV_HEADER_VALUE =
   '1, 3, calendar-access, calendar-schedule, calendar-auto-schedule, calendar-managed-attachments, calendar-managed-attachments-no-recurrence';
+
+// an Extended MKCOL body only carries a few collection properties
+const MKCOL_BODY_LIMIT = '1mb';
+
+//
+// RFC 5689: Extended MKCOL body -> RFC 4791 MKCALENDAR body.
+// tasks.org (via dav4jvm) sends MKCOL instead of MKCALENDAR to create new
+// task lists; the caldav-adapter only handles MKCALENDAR.
+//
+//   <D:mkcol><D:set><D:prop>...</D:prop></D:set></D:mkcol>
+//   <CAL:mkcalendar><D:set><D:prop>...</D:prop></D:set></CAL:mkcalendar>
+//
+// The <mkcol> tags (with any namespace prefix) become <C:mkcalendar>, with
+// the CalDAV namespace declared unless a prefix is already bound to it (so
+// the adapter's XPath /CAL:mkcalendar/D:set/D:prop matches).
+//
+function rewriteMkcolBody(body) {
+  const calNsMatch = body.match(
+    /xmlns:(\w+)=["']urn:ietf:params:xml:ns:caldav["']/
+  );
+  const calPrefix = calNsMatch ? calNsMatch[1] : 'C';
+  const nsDecl = calNsMatch ? '' : ' xmlns:C="urn:ietf:params:xml:ns:caldav"';
+  return body
+    .replace(/<([\w-]*:)?mkcol([\s>])/i, `<${calPrefix}:mkcalendar${nsDecl}$2`)
+    .replace(/<\/([\w-]*:)?mkcol\s*>/i, `</${calPrefix}:mkcalendar>`);
+}
 
 //
 // Reminders (DEFAULT_TASK_CALENDAR_NAME)
@@ -1192,70 +1219,47 @@ class CalDAV extends API {
       //   <CAL:mkcalendar><D:set><D:prop>...</D:prop></D:set></CAL:mkcalendar>
       //
       if (ctx.method === 'MKCOL') {
-        // Read the raw body before the adapter consumes the stream
-        let body = '';
-        try {
-          body = await rawBody(ctx.req, { encoding: 'utf8', limit: '10mb' });
-        } catch (err) {
-          ctx.logger.warn('MKCOL body read error', { err });
-        }
-
-        // Transform Extended MKCOL XML to MKCALENDAR XML
-        // Replace <mkcol> / </mkcol> tags (with any namespace prefix) with
-        // <C:mkcalendar> / </C:mkcalendar> and ensure the CalDAV namespace
-        // is declared so the adapter's XPath /CAL:mkcalendar/D:set/D:prop works.
-        if (body) {
-          // Check if the CalDAV namespace is already bound to a prefix
-          // to avoid duplicate xmlns:C declarations
-          const hasCalDAVNs =
-            /xmlns:(\w+)=["']urn:ietf:params:xml:ns:caldav["']/.test(body);
-          const nsDecl = hasCalDAVNs
-            ? ''
-            : ' xmlns:C="urn:ietf:params:xml:ns:caldav"';
-
-          // If the body already has a CalDAV prefix (e.g. xmlns:C or xmlns:CAL),
-          // find what prefix it uses so we can use the same one
-          let calPrefix = 'C';
-          const calNsMatch = body.match(
-            /xmlns:(\w+)=["']urn:ietf:params:xml:ns:caldav["']/
-          );
-          if (calNsMatch) calPrefix = calNsMatch[1];
-
-          // Replace opening tag: <mkcol or <D:mkcol or <ns0:mkcol etc.
-          body = body.replace(
-            /<([\w-]*:)?mkcol([\s>])/i,
-            `<${calPrefix}:mkcalendar${nsDecl}$2`
-          );
-          // Replace closing tag: </mkcol> or </D:mkcol> etc.
-          body = body.replace(
-            /<\/([\w-]*:)?mkcol\s*>/i,
-            `</${calPrefix}:mkcalendar>`
-          );
-        }
-
         // Rewrite the HTTP method so the adapter routes to MKCALENDAR handler
         ctx.method = 'MKCALENDAR';
         ctx.req.method = 'MKCALENDAR';
 
-        // Replace the request stream with the transformed body
-        // so the adapter's parseBody reads the MKCALENDAR XML
+        //
+        // Replace the request stream with one that yields the transformed
+        // body.  The original body is only read when the adapter reads the
+        // new stream, which it does after it has authenticated the request:
+        // an unauthenticated MKCOL is answered 401 without its body being
+        // read (it used to buffer up to 10 MB first).
+        //
+        const source = ctx.req;
+        const { logger } = ctx;
+        let started = false;
         const newReq = new Readable({
           read() {
-            this.push(body || null);
-            this.push(null);
+            if (started) return;
+            started = true;
+            rawBody(source, {
+              encoding: 'utf8',
+              limit: MKCOL_BODY_LIMIT
+            }).then(
+              (body) => {
+                if (body) this.push(rewriteMkcolBody(body));
+                this.push(null);
+              },
+              (err) => {
+                logger.warn('MKCOL body read error', { err });
+                this.destroy(err);
+              }
+            );
           }
         });
         // Copy essential properties from the original request
-        newReq.headers = ctx.req.headers;
+        newReq.headers = source.headers;
         newReq.method = 'MKCALENDAR';
-        newReq.url = ctx.req.url;
-        newReq.httpVersion = ctx.req.httpVersion;
+        newReq.url = source.url;
+        newReq.httpVersion = source.httpVersion;
         ctx.req = newReq;
 
-        ctx.logger.info('MKCOL rewritten to MKCALENDAR', {
-          url: ctx.url,
-          bodyLength: body.length
-        });
+        ctx.logger.info('MKCOL rewritten to MKCALENDAR', { url: ctx.url });
         // Fall through to caldavMiddleware below
       }
 
@@ -2556,6 +2560,7 @@ class CalDAV extends API {
     ctx,
     { calendarId, start, end, principalId, user, fullData, componentType }
   ) {
+    const recurrenceBudget = createRecurrenceBudget();
     ctx.logger.debug('getEventsByDate', {
       calendarId,
       start,
@@ -2813,9 +2818,9 @@ class CalDAV extends API {
         // header for the full list of producers we've observed).
         lines = sanitizeRruleLines(lines);
         if (lines.length === 0) continue;
-        let rruleSet;
         try {
-          rruleSet = rrulestr(lines.join('\n'));
+          // (parsed here to report malformed rules; expanded by recurrenceBudget)
+          rrulestr(lines.join('\n'));
         } catch (err) {
           if (isRecoverableRruleParseError(err)) {
             // The source resource is retained verbatim, but cannot be safely
@@ -2839,35 +2844,26 @@ class CalDAV extends API {
           }
         }
 
-        // check queried date range (if both start and end specified)
-        if (start && end) {
-          const dates = rruleSet.between(start, end, true);
-          if (dates.length > 0) {
-            match = true;
-            break;
-          }
+        if (!start && !end) continue;
 
-          continue;
+        // (bounded in time, see helpers/recurrence-budget.js)
+        const inRange = recurrenceBudget.matches(lines.join('\n'), {
+          start,
+          end
+        });
+        if (inRange === null) {
+          // too expensive to tell: include it rather than block or hide it
+          ctx.logger.warn('Event recurrence too expensive to expand', {
+            event: event._id,
+            calendar: calendar._id
+          });
+          match = true;
+          break;
         }
 
-        // if only start specified
-        if (start) {
-          const date = rruleSet.after(start, true);
-          if (date) {
-            match = true;
-            break;
-          }
-
-          continue;
-        }
-
-        // if only end specified
-        if (end) {
-          const date = rruleSet.before(end, true);
-          if (date) {
-            match = true;
-            break;
-          }
+        if (inRange) {
+          match = true;
+          break;
         }
       }
 
@@ -3018,9 +3014,9 @@ class CalDAV extends API {
           // recurrence-input property (see sanitizeRruleLines header).
           lines = sanitizeRruleLines(lines);
           if (lines.length === 0) continue;
-          let rruleSet;
           try {
-            rruleSet = rrulestr(lines.join('\n'));
+            // (parsed here to report malformed rules; expanded by recurrenceBudget)
+            rrulestr(lines.join('\n'));
           } catch (err) {
             if (isRecoverableRruleParseError(err)) {
               // The source resource is retained verbatim, but cannot be safely
@@ -3043,33 +3039,26 @@ class CalDAV extends API {
             }
           }
 
-          // Check queried date range for recurring tasks
-          if (start && end) {
-            const dates = rruleSet.between(start, end, true);
-            if (dates.length > 0) {
-              match = true;
-              break;
-            }
+          if (!start && !end) continue;
 
-            continue;
+          // (bounded in time, see helpers/recurrence-budget.js)
+          const inRange = recurrenceBudget.matches(lines.join('\n'), {
+            start,
+            end
+          });
+          if (inRange === null) {
+            // too expensive to tell: include it rather than block or hide it
+            ctx.logger.warn('Task recurrence too expensive to expand', {
+              event: event._id,
+              calendar: calendar._id
+            });
+            match = true;
+            break;
           }
 
-          if (start) {
-            const date = rruleSet.after(start, true);
-            if (date) {
-              match = true;
-              break;
-            }
-
-            continue;
-          }
-
-          if (end) {
-            const date = rruleSet.before(end, true);
-            if (date) {
-              match = true;
-              break;
-            }
+          if (inRange) {
+            match = true;
+            break;
           }
         }
       }

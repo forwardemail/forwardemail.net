@@ -738,6 +738,31 @@ Users.pre('validate', async function (next) {
   next();
 });
 
+//
+// Start of the current plan as told by the payments since the stored start
+// date (sorted by invoice_at), when that date is stale: only payments for
+// other plans come before the last payment for another plan, so the current
+// plan started with its first payment after that one.  Returns null when
+// the stored date is consistent (no other plan paid for since, or the
+// current plan was already paid for before the other plan's payment, e.g. a
+// leftover subscription renewal) or no payment for the current plan follows.
+//
+function getCurrentPlanSetAt(plan, payments) {
+  // (a refunded payment for another plan is no evidence of a switch)
+  let lastOther = -1;
+  for (const [i, payment] of payments.entries()) {
+    if (payment.plan !== plan && !(payment.amount_refunded > 0)) lastOther = i;
+  }
+
+  if (lastOther === -1) return null;
+  if (payments.slice(0, lastOther).some((payment) => payment.plan === plan))
+    return null;
+  const next = payments
+    .slice(lastOther + 1)
+    .find((payment) => payment.plan === plan);
+  return next ? new Date(next.invoice_at) : null;
+}
+
 // Plan expires at should get updated everytime the user is saved
 Users.pre('save', async function (next) {
   const user = this;
@@ -773,17 +798,48 @@ Users.pre('save', async function (next) {
     // NOTE: if a user did get a refund from changing plans,
     //       then their plan set at will change, so that takes care of that
     //
-    const payments = await Payments.find({
+    const allPayments = await Payments.find({
       user: user._id,
       invoice_at: {
         $gte: new Date(user[config.userFields.planSetAt])
-      },
-      // Payments must match the user's current plan
-      plan: user.plan
+      }
     })
-      .sort('invoice_at')
+      .sort({ invoice_at: 1, _id: 1 })
       .lean()
       .exec();
+
+    //
+    // A plan start date older than the switch to the current plan is
+    // stale: a payment for another plan after it means the plan changed
+    // later, and the current plan then started with its first payment after
+    // that one.  (A plan switch recorded by a path that did not also move
+    // the start date left it at the previous plan's start, so only the new
+    // plan's payments since then counted, and the plan showed as expired
+    // with months "outstanding" that were paid for under the old plan.)
+    // If no payment for the current plan follows, the date is left as is.
+    //
+    const planSetAt = getCurrentPlanSetAt(user.plan, allPayments);
+    if (
+      planSetAt &&
+      planSetAt.getTime() >
+        new Date(user[config.userFields.planSetAt]).getTime()
+    ) {
+      logger.warn('stale plan start date corrected', {
+        user: user._id,
+        plan: user.plan,
+        old_plan_set_at: user[config.userFields.planSetAt],
+        new_plan_set_at: planSetAt
+      });
+      user[config.userFields.planSetAt] = planSetAt;
+    }
+
+    // Payments must match the user's current plan
+    const payments = allPayments.filter(
+      (payment) =>
+        payment.plan === user.plan &&
+        new Date(payment.invoice_at).getTime() >=
+          new Date(user[config.userFields.planSetAt]).getTime()
+    );
 
     //
     // set the new expiry

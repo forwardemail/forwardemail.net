@@ -27,17 +27,28 @@ const HOSTNAME = os.hostname();
 
 const UBUNTU_DOMAINS = Object.keys(config.ubuntuTeamMapping);
 
-function hasMultipleFromHeaders(headers) {
-  if (!headers?.headers) return false;
+//
+// mailauth feeds every body chunk to one hasher per distinct DKIM-Signature
+// (canonicalization, algorithm and the signer's own `l=` length) before any
+// signature or DNS record is checked, so N signatures with distinct `l=`
+// values hash the whole body N times: one ~1 MB message with 1000 bogus
+// signatures pinned an MX process for over 20 seconds.  Legitimate mail
+// carries a handful (the author's domain, an ESP, a list or two).
+//
+const MAX_DKIM_SIGNATURES = 10;
 
-  // Only header field lines beginning at column zero count. Folded lines can
-  // contain arbitrary text and must not be interpreted as additional fields.
-  return (
-    headers.headers
-      .toString()
-      .split(/\r?\n/)
-      .filter((line) => /^from\s*:/i.test(line)).length > 1
-  );
+// Header field lines beginning at column zero with the given name. Folded
+// lines can contain arbitrary text and must not count as fields.
+function countHeaderFields(headers, re) {
+  if (!headers?.headers) return 0;
+  return headers.headers
+    .toString()
+    .split(/\r?\n/)
+    .filter((line) => re.test(line)).length;
+}
+
+function hasMultipleFromHeaders(headers) {
+  return countHeaderFields(headers, /^from\s*:/i) > 1;
 }
 
 async function isAuthenticatedMessage(headers, body, session, resolver) {
@@ -49,6 +60,16 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
       responseCode: 550,
       ignore_hook: true
     });
+
+  if (countHeaderFields(headers, /^dkim-signature\s*:/i) > MAX_DKIM_SIGNATURES)
+    throw new SMTPError(
+      `The email sent has more than ${MAX_DKIM_SIGNATURES} DKIM-Signature headers`,
+      {
+        // temporary on purpose, so this can be relaxed without bouncing mail
+        responseCode: 421,
+        ignore_hook: true
+      }
+    );
 
   const options = {
     ip: session.remoteAddress,
@@ -408,3 +429,4 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
 }
 
 module.exports = isAuthenticatedMessage;
+module.exports.MAX_DKIM_SIGNATURES = MAX_DKIM_SIGNATURES;

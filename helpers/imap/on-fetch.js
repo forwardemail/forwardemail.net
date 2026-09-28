@@ -15,11 +15,11 @@
 
 const getStream = require('get-stream');
 const tools = require('@zone-eu/wildduck/lib/tools');
-const { Builder } = require('json-sql-enhanced');
 const {
   IMAPConnection
 } = require('@zone-eu/wildduck/imap-core/lib/imap-connection');
 const { imapHandler } = require('@zone-eu/wildduck/imap-core');
+const { Builder } = require('#helpers/json-sql');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');

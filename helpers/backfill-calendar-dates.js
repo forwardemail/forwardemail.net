@@ -4,7 +4,7 @@
  */
 
 const ICAL = require('ical.js');
-const { Builder } = require('json-sql-enhanced');
+const { Builder } = require('#helpers/json-sql');
 const logger = require('#helpers/logger');
 
 const builder = new Builder({ bufferAsNative: true });

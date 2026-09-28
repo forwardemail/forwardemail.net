@@ -37,6 +37,7 @@ const payments = require('./payments');
 const metaConfig = require('./meta-config');
 const alternatives = require('./alternatives');
 const _ = require('#helpers/lodash');
+const getIpBucket = require('#helpers/get-ip-bucket');
 
 let zxcvbn;
 
@@ -877,8 +878,10 @@ const config = {
   rateLimit: {
     id(ctx) {
       if (ctx.allowlistValue) return false;
+      // anonymous clients are counted per address, or per /64 for IPv6
+      // (see helpers/get-ip-bucket.js)
       if (typeof ctx.isAuthenticated !== 'function' || !ctx.isAuthenticated())
-        return ctx.ip;
+        return getIpBucket(ctx.ip);
       // return `false` if the user is whitelisted
       if (ctx.state.user[config.userFields.isRateLimitWhitelisted])
         return false;

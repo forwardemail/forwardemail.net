@@ -19,7 +19,7 @@ const { Buffer } = require('node:buffer');
 const intoStream = require('into-stream');
 const ms = require('ms');
 const pRetry = require('p-retry');
-const { Builder } = require('json-sql-enhanced');
+const { Builder } = require('#helpers/json-sql');
 const _ = require('#helpers/lodash');
 
 //
@@ -83,40 +83,69 @@ async function execute(instance, session, sql, operation) {
   return session.db.prepare(sql.query)[operation](sql.values);
 }
 
-async function updateAttachments(attachmentIds, magic, session) {
+function countAttachments(attachmentIds) {
   const counts = new Map();
   for (const hash of attachmentIds)
     counts.set(hash, (counts.get(hash) || 0) + 1);
+  return counts;
+}
 
-  for (const [hash, count] of counts) {
-    const sql = builder.build({
-      type: 'update',
-      table: 'Attachments',
-      condition: { hash },
-      modifier: {
-        $inc: {
-          counter: -count,
-          magic: -(magic * count)
-        },
-        $set: {
-          counterUpdated: new Date().toISOString()
-        }
+// Release `count` references of message `magic` on the attachment `hash`.
+function buildDecrement(hash, count, magic) {
+  return builder.build({
+    type: 'update',
+    table: 'Attachments',
+    condition: { hash },
+    modifier: {
+      $inc: {
+        counter: -count,
+        magic: -(magic * count)
       },
-      returning: ['_id', 'counter', 'magic']
-    });
-    const attachment = await execute(this, session, sql, 'get');
+      $set: {
+        counterUpdated: new Date().toISOString()
+      }
+    },
+    returning: ['_id', 'counter', 'magic']
+  });
+}
 
-    if (!attachment || attachment.counter !== 0 || attachment.magic !== 0)
-      continue;
+// Delete only if the row is still unreferenced. A new append can revive it
+// after the decrement and before this statement acquires its write lock.
+function buildRemove(attachment) {
+  return builder.build({
+    type: 'remove',
+    table: 'Attachments',
+    condition: { _id: attachment._id, counter: 0, magic: 0 }
+  });
+}
 
-    // Delete only if the row is still unreferenced. A new append can revive it
-    // after the decrement and before this statement acquires its write lock.
-    const remove = builder.build({
-      type: 'remove',
-      table: 'Attachments',
-      condition: { _id: attachment._id, counter: 0, magic: 0 }
-    });
-    await execute(this, session, remove, 'run');
+function isUnreferenced(attachment) {
+  return Boolean(
+    attachment && attachment.counter === 0 && attachment.magic === 0
+  );
+}
+
+async function updateAttachments(attachmentIds, magic, session) {
+  for (const [hash, count] of countAttachments(attachmentIds)) {
+    const attachment = await execute(
+      this,
+      session,
+      buildDecrement(hash, count, magic),
+      'get'
+    );
+
+    if (!isUnreferenced(attachment)) continue;
+
+    await execute(this, session, buildRemove(attachment), 'run');
+  }
+}
+
+function assertMagic(attachmentIds, magic) {
+  if (Number.isNaN(magic) || typeof magic !== 'number') {
+    const err = new TypeError('Invalid magic');
+    err.attachmentIds = attachmentIds;
+    err.magic = magic;
+    throw err;
   }
 }
 
@@ -308,12 +337,7 @@ class AttachmentStorage {
   }
 
   async deleteMany(instance, session, attachmentIds, magic) {
-    if (Number.isNaN(magic) || typeof magic !== 'number') {
-      const err = new TypeError('Invalid magic');
-      err.attachmentIds = attachmentIds;
-      err.magic = magic;
-      throw err;
-    }
+    assertMagic(attachmentIds, magic);
 
     if (instance.wsp) throw new TypeError('WSP instance invalid');
 
@@ -329,4 +353,25 @@ class AttachmentStorage {
   }
 }
 
+//
+// Synchronous variant of `deleteMany` for a writable handle, for callers that
+// delete messages inside their own transaction (the Trash/Junk purge in
+// get-database.js) and must not yield to the event loop before COMMIT: the
+// handle is shared, so an `await` inside the transaction would let other
+// requests' statements run inside it.
+//
+function deleteManySync(db, attachmentIds, magic) {
+  assertMagic(attachmentIds, magic);
+  if (!db || db.readonly) throw new TypeError('Writable database required');
+
+  for (const [hash, count] of countAttachments(attachmentIds)) {
+    const decrement = buildDecrement(hash, count, magic);
+    const attachment = db.prepare(decrement.query).get(decrement.values);
+    if (!isUnreferenced(attachment)) continue;
+    const remove = buildRemove(attachment);
+    db.prepare(remove.query).run(remove.values);
+  }
+}
+
 module.exports = AttachmentStorage;
+module.exports.deleteManySync = deleteManySync;

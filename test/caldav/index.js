@@ -2581,6 +2581,87 @@ test('all-day recurring VTODO with DUE;VALUE=DATE only (no DTSTART): timeRange q
   await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
 });
 
+//
+// A stored recurrence that would take hours to expand (FREQ=SECONDLY since
+// 1970), or that never occurs (rrule then walks every day up to 9999), must
+// not stall a time-range REPORT; it is returned as matching rather than
+// hidden (see helpers/recurrence-budget.js).
+//
+test('time-range REPORT does not stall on an absurd recurrence', async (t) => {
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const calendar = calendars.find(
+    (cal) =>
+      !cal.displayName?.includes('Reminders') &&
+      !cal.displayName?.includes('Tasks')
+  );
+
+  const objects = [];
+  for (const [name, rrule] of [
+    ['secondly', 'RRULE:FREQ=SECONDLY'],
+    ['never', 'RRULE:FREQ=DAILY;BYMONTH=2;BYMONTHDAY=30']
+  ]) {
+    const uid = `${name}-${Date.now()}@test`;
+    const url = new URL(`${name}-${Date.now()}.ics`, calendar.url).href;
+
+    const response = await createObject({
+      url,
+      data: [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Test//Recurrence//EN',
+        'BEGIN:VEVENT',
+        `UID:${uid}`,
+        'DTSTAMP:20250101T000000Z',
+        'DTSTART:19700101T000000Z',
+        'DTEND:19700101T000001Z',
+        rrule,
+        `SUMMARY:${name}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n'),
+      headers: {
+        'content-type': 'text/calendar; charset=utf-8',
+        ...t.context.authHeaders
+      }
+    });
+    t.true(response.ok);
+    objects.push({ uid, url });
+  }
+
+  const started = Date.now();
+  const found = await fetchCalendarObjects({
+    calendar,
+    headers: t.context.authHeaders,
+    filters: [
+      {
+        'comp-filter': {
+          _attributes: { name: 'VCALENDAR' },
+          'comp-filter': {
+            _attributes: { name: 'VEVENT' },
+            'time-range': {
+              _attributes: {
+                start: '20260301T000000Z',
+                end: '20260308T000000Z'
+              }
+            }
+          }
+        }
+      }
+    ]
+  });
+  const elapsed = Date.now() - started;
+
+  t.true(elapsed < 10_000, `took ${elapsed}ms`);
+  for (const { uid } of objects)
+    t.true(found.some((object) => object.data.includes(uid)));
+
+  for (const { url } of objects)
+    await deleteObject({ url, headers: t.context.authHeaders });
+});
+
 // =============================================================================
 // RFC 4791 Section 9.9: Dateless VTODO time-range inclusion
 // A VTODO without DTSTART, DUE, COMPLETED, or CREATED MUST be reported

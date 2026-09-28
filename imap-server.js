@@ -33,6 +33,8 @@ const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const IMAPNotifier = require('#helpers/imap-notifier');
 const Indexer = require('#helpers/indexer');
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/harden-imap-core');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import

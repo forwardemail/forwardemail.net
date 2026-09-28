@@ -704,7 +704,8 @@ async function bundle() {
     ])
       .pipe(sourcemaps.init({ loadMaps: true }))
       .pipe(concat('build.js'))
-      .pipe(sourcemaps.write('./'))
+      // the maps are only served in development (helpers/block-source-maps.js)
+      .pipe(sourcemaps.write('./', { addComment: DEV }))
       .pipe(dest(path.join(config.buildBase, 'js')))
       .pipe(through2.obj((chunk, enc, cb) => cb()))
   );
@@ -717,7 +718,9 @@ async function bundle() {
 
   if (PROD) stream = stream.pipe(terser());
 
-  stream = stream.pipe(sourcemaps.write('./')).pipe(dest(config.buildBase));
+  stream = stream
+    .pipe(sourcemaps.write('./', { addComment: DEV }))
+    .pipe(dest(config.buildBase));
 
   if (DEV) stream = stream.pipe(lr(config.livereload));
 

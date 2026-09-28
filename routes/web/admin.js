@@ -4,15 +4,19 @@
  */
 
 const Router = require('@koa/router');
-const multer = require('@koa/multer');
+const bytes = require('@forwardemail/bytes');
 const paginate = require('koa-ctx-paginate');
 
+const createMultipart = require('#helpers/multipart');
 const policies = require('#helpers/policies');
 const web = require('#controllers/web');
 
 const router = new Router({ prefix: '/admin' });
 
-const upload = multer();
+// inquiry replies take up to 3 attachments (see the routes below)
+const upload = createMultipart({
+  limits: { files: 3, fileSize: bytes('51MB') }
+});
 
 router
   .use((ctx, next) => {

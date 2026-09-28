@@ -158,7 +158,12 @@ router
 
   // domain availability (protected by global rate limit)
   .post('/domain-availability', web.domainAvailability)
-  .post('/domain-availability/bulk', web.domainAvailabilityBulk)
+  // (each bulk check makes up to 50 outbound whois/RDAP lookups)
+  .post(
+    '/domain-availability/bulk',
+    rateLimit(60, 'domain availability bulk', ms('1h')),
+    web.domainAvailabilityBulk
+  )
 
   // domain suggestions (protected by global rate limit)
   .post('/domain-suggestions', web.domainSuggestions)
@@ -278,7 +283,12 @@ localeRouter
   .post('/encrypt', rateLimit(50, 'encrypt'), web.encryptTxt)
   // domain availability (protected by global rate limit)
   .post('/domain-availability', web.domainAvailability)
-  .post('/domain-availability/bulk', web.domainAvailabilityBulk)
+  // (each bulk check makes up to 50 outbound whois/RDAP lookups)
+  .post(
+    '/domain-availability/bulk',
+    rateLimit(60, 'domain availability bulk', ms('1h')),
+    web.domainAvailabilityBulk
+  )
   // domain suggestions (protected by global rate limit)
   .post('/domain-suggestions', web.domainSuggestions)
   // domain connect

@@ -39,6 +39,7 @@ const isValidPassword = require('#helpers/is-valid-password');
 const onConnect = require('#helpers/on-connect');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const logger = require('#helpers/logger');
+const getIpBucket = require('#helpers/get-ip-bucket');
 const { getRekeyLockKey } = require('#helpers/rekey-lock');
 const { checkAndSendAlerts } = require('#helpers/imap/send-imap-alert');
 
@@ -143,8 +144,39 @@ async function clearAuthCache(client, aliasId) {
   }
 }
 
+//
+// Decrement a counter without letting it go below zero or recreating it
+// (without a TTL) once it has expired.
+//
+const RELEASE_INFLIGHT_SCRIPT = `
+local value = tonumber(redis.call('GET', KEYS[1]) or '0')
+if value > 0 then return redis.call('DECR', KEYS[1]) end
+return 0
+`;
+
 async function onAuth(auth, session, fn) {
   this.logger.debug('AUTH', { auth, session });
+
+  //
+  // Attempts from one client (IP address, or /64 for IPv6) that are being
+  // verified right now.  Failures are only counted once verified, so without
+  // this bound a client could run any number of password guesses in parallel
+  // (each one also an argon2 verification) past the failed-attempt limit.
+  // The slot is released when onAuth answers, whatever the answer.
+  //
+  let inflightKey = null;
+  const callback = fn;
+  fn = (...args) => {
+    if (inflightKey) {
+      const key = inflightKey;
+      inflightKey = null;
+      this.client
+        .eval(RELEASE_INFLIGHT_SCRIPT, 1, key)
+        .catch((err) => this.logger.debug(err));
+    }
+
+    return callback(...args);
+  };
 
   // TODO: credit system + domain billing rules (assigned billing manager -> person who gets credits deducted)
   // TODO: salt/hash/deprecate legacy API token + remove from API docs page
@@ -161,8 +193,10 @@ async function onAuth(auth, session, fn) {
     const isIMAP = this?.constructor?.name === 'IMAP';
     const isPOP3 = this?.constructor?.name === 'POP3';
     const isManageSieve = this?.constructor?.name === 'ManageSieveServer';
-    const authLimitKey = `auth_limit_${config.env}:${session.remoteAddress}`;
-    const attemptsKey = `auth_attempts_${config.env}:${session.remoteAddress}`;
+    // (per address, or per /64 for IPv6, see helpers/get-ip-bucket.js)
+    const ipBucket = getIpBucket(session.remoteAddress);
+    const authLimitKey = `auth_limit_${config.env}:${ipBucket}`;
+    const attemptsKey = `auth_attempts_${config.env}:${ipBucket}`;
 
     //
     // NOTE: until onConnect is available for IMAP and POP3 servers
@@ -262,6 +296,7 @@ async function onAuth(auth, session, fn) {
     //
     let count = 0;
     let previousPasswordHashesRaw = null;
+    let isRateLimited = false;
 
     if (
       // do not rate limit IP addresses corresponding to our servers
@@ -280,6 +315,7 @@ async function onAuth(auth, session, fn) {
       // Pipeline returns [[err, result], [err, result], ...]
       count = results[0][1];
       previousPasswordHashesRaw = results[1][1];
+      isRateLimited = true;
 
       if (count >= config.smtpLimitAuth) {
         throw new SMTPError(
@@ -508,6 +544,27 @@ async function onAuth(auth, session, fn) {
           return;
         }
       }
+    }
+
+    //
+    // Only verifications count as in progress: a cached login above answers
+    // at once, so parallel clients (DAV sync, users behind one NAT) with
+    // valid credentials are never limited here.
+    // (the TTL only guards against a process dying mid-attempt)
+    //
+    if (isRateLimited) {
+      const key = `auth_inflight_${config.env}:${ipBucket}`;
+      const [[, inflight]] = await this.client
+        .pipeline()
+        .incr(key)
+        .pexpire(key, ms('2m'))
+        .exec();
+      inflightKey = key;
+      if (inflight > config.smtpLimitAuth)
+        throw new SMTPError(
+          `Too many authentication attempts in progress. Please try again later or contact us at ${config.supportEmail}`,
+          { responseCode: 421, imapResponse: 'UNAVAILABLE' }
+        );
     }
 
     // Verify DNS records

@@ -55,8 +55,23 @@ async function setupPragma(db, session, cipher = 'chacha20') {
     // WAL mode throws SQLITE_READONLY.  Querying the journal mode still reads
     // page 1, so an invalid password surfaces as SQLITE_NOTADB either way.
     //
-    if (db.readonly) db.pragma('journal_mode');
-    else db.pragma('journal_mode=WAL');
+    if (db.readonly) {
+      db.pragma('journal_mode');
+    } else {
+      //
+      // auto_vacuum must be set before anything writes the database header.
+      // On a new, empty file `journal_mode=WAL` writes page 1, after which
+      // auto_vacuum can only change through a full VACUUM; setting it
+      // afterwards (as this function used to) silently left every new
+      // mailbox at auto_vacuum=NONE, so deleted mail never gave its space
+      // back.  On an existing file this only records the mode for the next
+      // VACUUM (see helpers/compact-database.js).  It stays inside this try
+      // so a wrong key or legacy cipher reaches the fallback below.
+      // <https://www.sqlite.org/pragma.html#pragma_auto_vacuum>
+      //
+      db.pragma('auto_vacuum=FULL');
+      db.pragma('journal_mode=WAL');
+    }
   } catch (err) {
     // legacy fallback
     if (
@@ -89,19 +104,7 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   // <https://www.sqlite.org/pragma.html#pragma_secure_delete>
   db.pragma('secure_delete=ON');
 
-  //
-  // turn on auto vacuum (for large amounts of deleted content)
-  // <https://www.sqlite.org/pragma.html#pragma_auto_vacuum>
-  //
-  //
-  // NOTE: if you change this then uncomment `jobs/cleanup-sqlite`
-  //       and also optimize the 'vacuum' parse-payload switch/case
-  //       statement so that it checks for os.freemem() similar to 'backup'
-  //
-  // (a read-only handle cannot change auto_vacuum, and it only takes effect
-  //  on VACUUM anyways)
-  //
-  if (!db.readonly) db.pragma('auto_vacuum=FULL');
+  // (auto_vacuum=FULL is set above, before journal_mode=WAL)
 
   // <https://litestream.io/tips/#busy-timeout>
   db.pragma(`busy_timeout=${config.busyTimeout}`);

@@ -31,6 +31,8 @@ const koaCashConfig = require('./koa-cash');
 const config = require('.');
 const getSessionKeys = require('#helpers/get-session-keys');
 const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
+const validateHostHeader = require('#helpers/validate-host-header');
+const blockSourceMaps = require('#helpers/block-source-maps');
 const {
   createOtpRememberMeCookie,
   isValidOtpRememberMeCookie
@@ -342,9 +344,18 @@ module.exports = (redis) => ({
     }
   },
   hookBeforeSetup(app) {
+    // before anything reads ctx.hostname / ctx.origin
+    app.use(validateHostHeader());
+    // source maps are only served in development
+    if (config.env !== 'development') app.use(blockSourceMaps());
     // Koa v3 polyfill for ctx.redirect('back')
     // @see https://github.com/koajs/koa/releases/tag/v3.0.0
-    app.use(koaRedirectBackPolyfill({ fallbackUrl: '/' }));
+    app.use(
+      koaRedirectBackPolyfill({
+        fallbackUrl: '/',
+        allowedOrigins: [config.urls.web]
+      })
+    );
 
     app.context.resolver = createTangerine(
       app.context.client,

@@ -17,11 +17,11 @@ const { Buffer } = require('node:buffer');
 
 const mongoose = require('mongoose');
 const tools = require('@zone-eu/wildduck/lib/tools');
-const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');
 const {
   IMAPConnection
 } = require('@zone-eu/wildduck/imap-core/lib/imap-connection');
+const { Builder } = require('#helpers/json-sql');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');

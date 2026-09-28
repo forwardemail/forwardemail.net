@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const path = require('node:path');
 const { Buffer } = require('node:buffer');
 
 const ms = require('ms');
@@ -14,9 +15,27 @@ const logger = require('#helpers/logger');
 
 const MAX_AGE = ms('1y') / 1000;
 
+//
+// The cache key is the path the response was served for, in the form the
+// static file server resolves it to (@ladjs/koa-better-static decodes the
+// path and resolves `.`, `..` and repeated slashes).  Keying on the raw path
+// let `/img/a.png`, `/img//a.png`, `/img/./a.png` and `/img/%61.png` (and
+// unboundedly many more spellings of the same file) each store their own
+// copy of the file for a year, filling Redis and evicting sessions and
+// rate-limit counters with it.
+//
+function getCacheKey(ctx) {
+  let pathname = ctx.request.path;
+  try {
+    pathname = decodeURIComponent(pathname);
+  } catch {}
+
+  return `koa-cash:${path.posix.normalize(`/${pathname}`)}`;
+}
+
 module.exports = (client) => ({
   maxAge: MAX_AGE,
-  hash: (ctx) => `koa-cash:${ctx.request.path}`,
+  hash: getCacheKey,
   compression: true,
   setCachedHeader: true,
   async get(key) {
@@ -100,3 +119,5 @@ module.exports = (client) => ({
     }
   }
 });
+
+module.exports.getCacheKey = getCacheKey;

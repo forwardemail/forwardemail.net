@@ -5,7 +5,10 @@ SCRIPTLOCATION="/usr/local/sbin/portscan-protection.sh"
 WHITELISTLOCATION="/usr/local/sbin/portscan-protection-white.list"
 CRONLOCATION="/etc/cron.d/portscan-protection"
 GITHUBRAW="https://raw.githubusercontent.com/forwardemail/portscan-protection/master/portscan-protection.sh"
-AUTOUPDATE="YES" # Edit this variable to "NO" if you don't want to auto update this script (NOT RECOMMENDED)
+# The copy shipped by ansible is the one that runs: self-updating would run
+# unreviewed code from GitHub as root on every server (and a failed download
+# would overwrite this script with an error page).
+AUTOUPDATE="NO"
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 #

@@ -15,10 +15,10 @@
 
 const pMapSeries = require('p-map-series');
 const tools = require('@zone-eu/wildduck/lib/tools');
-const { Builder } = require('json-sql-enhanced');
 const {
   IMAPConnection
 } = require('@zone-eu/wildduck/imap-core/lib/imap-connection');
+const { Builder } = require('#helpers/json-sql');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');

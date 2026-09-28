@@ -16,8 +16,8 @@
 const mongoose = require('mongoose');
 const ms = require('ms');
 const tools = require('@zone-eu/wildduck/lib/tools');
-const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');
+const { Builder } = require('#helpers/json-sql');
 
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');

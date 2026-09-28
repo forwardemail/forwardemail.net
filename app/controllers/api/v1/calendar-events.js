@@ -16,6 +16,7 @@ const Aliases = require('#models/aliases');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
 const i18n = require('#helpers/i18n');
+const { createRecurrenceBudget } = require('#helpers/recurrence-budget');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const {
@@ -207,6 +208,7 @@ function json(calendarEvent, calendar) {
 }
 
 async function list(ctx) {
+  const recurrenceBudget = createRecurrenceBudget();
   const query = {};
 
   // Filter by calendar if specified
@@ -364,9 +366,9 @@ async function list(ctx) {
           // TZNAME, mis-folded continuations … see sanitizeRruleLines).
           lines = sanitizeRruleLines(lines);
           if (lines.length === 0) continue;
-          let rruleSet;
           try {
-            rruleSet = rrulestr(lines.join('\n'));
+            // (parsed here to report malformed rules; expanded by recurrenceBudget)
+            rrulestr(lines.join('\n'));
           } catch (err) {
             if (isRecoverableRruleParseError(err)) {
               // Preserve the stored resource, but do not let malformed client
@@ -384,35 +386,26 @@ async function list(ctx) {
             }
           }
 
-          // Check queried date range (if both start and end specified)
-          if (start && end) {
-            const dates = rruleSet.between(start, end, true);
-            if (dates.length > 0) {
-              match = true;
-              break;
-            }
+          if (!start && !end) continue;
 
-            continue;
+          // (bounded in time, see helpers/recurrence-budget.js)
+          const inRange = recurrenceBudget.matches(lines.join('\n'), {
+            start,
+            end
+          });
+          if (inRange === null) {
+            // too expensive to tell: include it rather than block or hide it
+            ctx.logger.warn('Event recurrence too expensive to expand', {
+              event: event._id,
+              calendar: calendar._id
+            });
+            match = true;
+            break;
           }
 
-          // if only start specified
-          if (start) {
-            const date = rruleSet.after(start, true);
-            if (date) {
-              match = true;
-              break;
-            }
-
-            continue;
-          }
-
-          // if only end specified
-          if (end) {
-            const date = rruleSet.before(end, true);
-            if (date) {
-              match = true;
-              break;
-            }
+          if (inRange) {
+            match = true;
+            break;
           }
         }
 
@@ -480,9 +473,9 @@ async function list(ctx) {
             // recurrence-input property (see sanitizeRruleLines header).
             lines = sanitizeRruleLines(lines);
             if (lines.length === 0) continue;
-            let rruleSet;
             try {
-              rruleSet = rrulestr(lines.join('\n'));
+              // (parsed here to report malformed rules; expanded by recurrenceBudget)
+              rrulestr(lines.join('\n'));
             } catch (err) {
               if (isRecoverableRruleParseError(err)) {
                 // Preserve the stored resource, but do not let malformed client
@@ -500,33 +493,26 @@ async function list(ctx) {
               }
             }
 
-            // Check queried date range for recurring tasks
-            if (start && end) {
-              const dates = rruleSet.between(start, end, true);
-              if (dates.length > 0) {
-                match = true;
-                break;
-              }
+            if (!start && !end) continue;
 
-              continue;
+            // (bounded in time, see helpers/recurrence-budget.js)
+            const inRange = recurrenceBudget.matches(lines.join('\n'), {
+              start,
+              end
+            });
+            if (inRange === null) {
+              // too expensive to tell: include it rather than block or hide it
+              ctx.logger.warn('Task recurrence too expensive to expand', {
+                event: event._id,
+                calendar: calendar._id
+              });
+              match = true;
+              break;
             }
 
-            if (start) {
-              const date = rruleSet.after(start, true);
-              if (date) {
-                match = true;
-                break;
-              }
-
-              continue;
-            }
-
-            if (end) {
-              const date = rruleSet.before(end, true);
-              if (date) {
-                match = true;
-                break;
-              }
+            if (inRange) {
+              match = true;
+              break;
             }
           }
         }
