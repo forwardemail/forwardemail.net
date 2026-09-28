@@ -32,6 +32,25 @@ const INTERNAL_MESSAGE_PATTERNS = [
 
 const env = require('#config/env');
 
+// an email address in angle brackets, e.g. <user@example.com>
+// (no whitespace, quotes or slashes, and a hostname after the "@", so what is
+// kept can never be parsed as an HTML tag with attributes, such as
+// <svg/onload=...@x>)
+const REGEX_BRACKETED_ADDRESS = /<([^<>\s"'/\\]+@[a-z\d.-]+)>/gi;
+
+function keepBracketedAddresses(message, fn) {
+  if (typeof message !== 'string') return fn(message);
+  const addresses = [];
+  const escaped = message.replace(REGEX_BRACKETED_ADDRESS, (match) => {
+    addresses.push(match);
+    return `\uE000${addresses.length - 1}\uE001`;
+  });
+  return fn(escaped).replace(
+    /\uE000(\d+)\uE001/g,
+    (match, index) => addresses[Number(index)] ?? match
+  );
+}
+
 // this is sourced from FE original codebase
 function refineAndLogError(err, session, isIMAP = false, instance) {
   // handle programmer mistakes
@@ -177,7 +196,12 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
   // NOTE: this was inspired from `koa-better-error-handler` response for API endpoints
   // (and it is used because some errors are translated with HTML tags, e.g. notranslate)
   //
-  err.message = striptags(err.message);
+  //
+  // SMTP responses put addresses in angle brackets
+  // (e.g. "550 5.1.1 <user@example.com>: Recipient address rejected")
+  // and striptags would remove them as if they were HTML tags
+  //
+  err.message = keepBracketedAddresses(err.message, striptags);
   /*
   err.message = convert(err.message, {
     wordwrap: false,

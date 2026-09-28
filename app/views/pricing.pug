@@ -1,14 +1,13 @@
 extends layout
 
 block append scripts
-  if !isBotUa
-    +script("js/domain-search.js")
+  +script("js/domain-search.js")
 
 block body
   include _modal-domain-search
   +modalDomainSearch
   include _modal-storage
-  if !user || isBotUa
+  if !user
     #modal-watch-video.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -33,25 +32,24 @@ block body
             )
 
   //-.
-    if !isBotUa
-      .fixed-bottom.text-center.d-print-none.d-lg-none
-        .bg-dark.p-2.border-top.border-themed
-          ul.list-inline.mb-0
-            li.list-inline-item
-              a.btn.btn-sm.btn-light(href="#free")
-                = t("Free")
-                = " "
-                i.fa.fa-search-plus
-            li.list-inline-item
-              a.btn.btn-sm.btn-success(href="#enhanced")
-                = t("Enhanced")
-                = " "
-                i.fa.fa-search-plus
-            li.list-inline-item
-              a.btn.btn-sm.btn-primary(href="#team")
-                = t("Team")
-                = " "
-                i.fa.fa-search-plus
+    .fixed-bottom.text-center.d-print-none.d-lg-none
+      .bg-dark.p-2.border-top.border-themed
+        ul.list-inline.mb-0
+          li.list-inline-item
+            a.btn.btn-sm.btn-light(href="#free")
+              = t("Free")
+              = " "
+              i.fa.fa-search-plus
+          li.list-inline-item
+            a.btn.btn-sm.btn-success(href="#enhanced")
+              = t("Enhanced")
+              = " "
+              i.fa.fa-search-plus
+          li.list-inline-item
+            a.btn.btn-sm.btn-primary(href="#team")
+              = t("Team")
+              = " "
+              i.fa.fa-search-plus
 
   //- Bots are included deliberately: the h1 carries the per-route useCases
   //- headline, which is the SEO content of all 7,252 programmatic pages.
@@ -59,7 +57,7 @@ block body
   //- so the "jump to pricing" nav link still lands the table in view while
   //- the page opens on the new surface (matches isFePricingPage in
   //- _fe-flags.pug).
-  if !user || isBotUa
+  if !user
     include _fe-pricing-hero
     //- .fe-landing is wrapped around the hero alone rather than the whole page,
     //- because everything below it is still the previous design. The flush
@@ -68,15 +66,14 @@ block body
     .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
       +fePricingHero
     //-.
-      if !isBotUa
-        a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto.bounce-animation(
-          href="#learn-more"
-        )
-          i.fa.fa-angle-double-down
-          = " "
-          = t("Learn more")
-          = " "
-          i.fa.fa-angle-double-down
+      a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto.bounce-animation(
+        href="#learn-more"
+      )
+        i.fa.fa-angle-double-down
+        = " "
+        = t("Learn more")
+        = " "
+        i.fa.fa-angle-double-down
   //- Everything below the hero. Was _marketing (with _pricing-table and
   //- _quick-start inside it) and then _testimonials, both on bootstrap and
   //- parallax images; now the fe marketing tail, which renders the same

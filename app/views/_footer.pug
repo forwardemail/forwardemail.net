@@ -1,368 +1,289 @@
-//- The link columns fork on isBot: crawlers keep the full expanded link set
-//- (identical hrefs to the previous footer, so nothing changes for SEO), while
-//- people get four curated columns per the footer consolidation plan. The
-//- human variant is what the phase-2 mobile accordion will collapse.
+//- Four curated link columns per the footer consolidation plan (the phase-2
+//- mobile accordion will collapse them).
 footer.fe-footer.mt-auto(aria-label=t("Footer"))
   div
     .container.py-3.py-md-4.py-lg-5.text-center.text-lg-left
-      //- Crawlers keep the FAQ banner; for people FAQ lives in the Product
-      //- column, so the banner would be a third entry point to the same page.
-      if isBotUa
-        .small.text-center.mb-3: strong= t("Have a question or confused?")
-        .text-center.mb-5
-          a.btn.btn-outline-light(href=l("/faq"))
-            i.fa.fas.fa-book
-            = " "
-            = t("Frequently Asked Questions")
-      if !isBotUa
-        if (domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu', '/kubuntu', '/lubuntu', '/edubuntu', '/ubuntu-studio'].includes(ctx.pathWithoutLocale)
-          //- Empty on purpose
-        else
-          - const isTrustpilotEligibleUser = user && user.created_at && dayjs(user.created_at).add(3, "month").isBefore(dayjs());
-          - const hasOnlyGoodDomains = typeof domains !== "undefined" && Array.isArray(domains) && domains.length > 0 && domains.every((userDomain) => typeof userDomain.name === "string" && config.goodDomains.some((ext) => userDomain.name.toLowerCase().endsWith(`.${ext}`)));
-          if isTrustpilotEligibleUser && hasOnlyGoodDomains
-            .text-center.mb-3
-              a(
-                href="https://www.trustpilot.com/review/forwardemail.net",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                noscript
-                  img(
-                    alt=t("Review us on Trustpilot"),
-                    src=manifest("img/trustpilot.png"),
-                    width="216.5",
-                    height="52"
-                  )
-                img.lazyload(
+      if (domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu', '/kubuntu', '/lubuntu', '/edubuntu', '/ubuntu-studio'].includes(ctx.pathWithoutLocale)
+        //- Empty on purpose
+      else
+        - const isTrustpilotEligibleUser = user && user.created_at && dayjs(user.created_at).add(3, "month").isBefore(dayjs());
+        - const hasOnlyGoodDomains = typeof domains !== "undefined" && Array.isArray(domains) && domains.length > 0 && domains.every((userDomain) => typeof userDomain.name === "string" && config.goodDomains.some((ext) => userDomain.name.toLowerCase().endsWith(`.${ext}`)));
+        if isTrustpilotEligibleUser && hasOnlyGoodDomains
+          .text-center.mb-3
+            a(
+              href="https://www.trustpilot.com/review/forwardemail.net",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              noscript
+                img(
                   alt=t("Review us on Trustpilot"),
-                  data-src=manifest("img/trustpilot.png"),
+                  src=manifest("img/trustpilot.png"),
                   width="216.5",
                   height="52"
                 )
-          //- Seven recognizable marks plus a link to the full list in the FAQ.
-          //- The 31-badge wall was human-only, so trimming it costs crawlers
-          //- nothing.
-          .small.text-center.mb-2: strong= t("Payment methods accepted:")
-          ul.list-inline.text-center.mb-5
-            li.list-inline-item
-              a.badge.small(
-                href=l("/blog/docs/crypto-payments-privacy-email-service")
+              img.lazyload(
+                alt=t("Review us on Trustpilot"),
+                data-src=manifest("img/trustpilot.png"),
+                width="216.5",
+                height="52"
               )
-                i.fab.fa-btc
-                = " Crypto"
-            li.list-inline-item.badge.small
-              i.fab.fa-paypal
-              = " PayPal"
-            li.list-inline-item.badge.small
-              i.fab.fa-cc-visa
-              = " Visa"
-            li.list-inline-item.badge.small
-              i.fab.fa-cc-mastercard
-              = " Mastercard"
-            li.list-inline-item.badge.small
-              i.fab.fa-cc-amex
-              = " American Express"
-            li.list-inline-item.badge.small
-              i.fab.fa-cc-apple-pay
-              = " Apple Pay"
-            li.list-inline-item.badge.small
-              i.fab.fa-google-pay
-              = " Google Pay"
-            li.list-inline-item
-              a.badge.badge-secondary.small(
-                href=l("/faq#which-payment-methods-do-you-accept")
-              )= t("30+ more")
+        //- Seven recognizable marks plus a link to the full list in the FAQ.
+        //- The 31-badge wall was human-only, so trimming it costs crawlers
+        //- nothing.
+        .small.text-center.mb-2: strong= t("Payment methods accepted:")
+        ul.list-inline.text-center.mb-5
+          li.list-inline-item
+            a.badge.small(
+              href=l("/blog/docs/crypto-payments-privacy-email-service")
+            )
+              i.fab.fa-btc
+              = " Crypto"
+          li.list-inline-item.badge.small
+            i.fab.fa-paypal
+            = " PayPal"
+          li.list-inline-item.badge.small
+            i.fab.fa-cc-visa
+            = " Visa"
+          li.list-inline-item.badge.small
+            i.fab.fa-cc-mastercard
+            = " Mastercard"
+          li.list-inline-item.badge.small
+            i.fab.fa-cc-amex
+            = " American Express"
+          li.list-inline-item.badge.small
+            i.fab.fa-cc-apple-pay
+            = " Apple Pay"
+          li.list-inline-item.badge.small
+            i.fab.fa-google-pay
+            = " Google Pay"
+          li.list-inline-item
+            a.badge.badge-secondary.small(
+              href=l("/faq#which-payment-methods-do-you-accept")
+            )= t("30+ more")
       .d-flex.flex-column.flex-lg-row
-        if isBotUa
-          //- ==================================================
-          //- CRAWLER COLUMNS — the full pre-consolidation link
-          //- set, hrefs unchanged. Human-only subtrees removed.
-          //- ==================================================
-          .flex-wrap.flex-fill.mr-lg-3
+        //- ==================================================
+        //- HUMAN COLUMNS — four curated groups per the footer
+        //- consolidation plan; ~40 links instead of 143.
+        //- ==================================================
+        .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1.mr-lg-3
+          .no-js
             hr.d-lg-none.w-100
-            h2.h5.mb-2: a(href=l("/blog/open-source"))= t("Apps")
-            ul.list-unstyled.mb-0.mb-lg-3
-              //- Apple
-              li: a.d-block.py-2.py-md-0(
-                href=l("/blog/open-source/apple-email-clients")
+            .dropdown.dropup
+              a#navbar-dropdown-language-btn.btn.btn-sm.btn-outline-light.dropdown-toggle(
+                href=ctx.url,
+                role="button",
+                data-toggle="dropdown",
+                data-boundary="window",
+                aria-haspopup="true",
+                aria-expanded="false"
               )
-                = "Apple"
-                != "&reg;"
-              //- Windows
-              li: a.d-block.py-2.py-md-0(
-                href=l("/blog/open-source/windows-email-clients")
+                = `${titleize(t(currentLanguage))} ${ctx.locale !== "en" && currentLanguage !== titleize(currentLanguage) ? `(${titleize(currentLanguage)})` : ""}`
+              ul#navbar-dropdown-language-ul.dropdown-menu(
+                role="menu",
+                aria-expanded="false",
+                aria-hidden="true",
+                aria-labelledby="navbar-dropdown-language-btn"
               )
-                = "Windows"
-                != "&reg;"
-              //- Android
-              li: a.d-block.py-2.py-md-0(
-                href=l("/blog/open-source/android-email-clients")
-              )
-                i.fa-fw.fab.fa-android
-                = " "
-                = "Android"
-                != "&trade;"
-              //- Linux
-              li: a.d-block.py-2.py-md-0(
-                href=l("/blog/open-source/linux-email-clients")
-              )
-                i.fa-fw.fab.fa-linux
-                = " "
-                = "Linux"
-                != "&reg;"
-              li: a.d-block.py-2.py-md-0(
-                href=l("/blog/open-source/desktop-email-clients")
-              )
-                i.fa-fw.fas.fa-desktop
-                = " "
-                = t("Desktop")
-              //- Web
-              li: a.d-block.py-2.py-md-0(
-                href=l("/blog/open-source/web-email-clients")
-              )
-                if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
-                  i.fab.fa-fw.fa-firefox-browser
-                  = " "
-                  = "Firefox"
-                  != "&reg;"
-                else if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Safari") && !ctx.get("User-Agent").includes("Chrome")
-                  = " "
-                  = "Safari"
-                  != "&reg;"
-                else
-                  i.fab.fa-fw.fa-chrome
-                  = " "
-                  = "Chrome"
-                  != "&reg;"
-              //- Terminal
-              li: a.d-block.py-2.py-md-0(
-                href=l("/blog/open-source/terminal-email-clients")
-              )
-                i.fa-fw.fas.fa-terminal
-                = " "
-                = "Terminal"
-
-            hr.d-lg-none.w-100
-            h2.h5.mb-2: a(href=l("/guides"))= t("Guides")
-            ul.list-unstyled.mb-0.mb-lg-3
-              li: a.d-block.py-2.py-md-0(href=l("/guides/smtp-integration"))
-                = t("SMTP Integration Examples")
-              li: a.d-block.py-2.py-md-0(
-                href=l("/guides/send-email-with-custom-domain-smtp")
-              )
-                = t("Send Email with Custom Domain")
-              li: a.d-block.py-2.py-md-0(
-                href=l("/guides/send-mail-as-gmail-custom-domain")
-              )
-                = t("Send Mail As with Gmail")
-              li: a.d-block.py-2.py-md-0(href=l("/guides/"))
-                = t("NAS Email Setup Guide")
-              li: a.d-block.py-2.py-md-0(
-                href=l("/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility")
-              )
-                = t("Printer, Scanner, Fax, & Camera Email Setup")
-              li: a.d-block.py-2.py-md-0(
-                href=l("/guides/raspberry-pi-ftp-server-email-relay-security-camera")
-              )
-                = t("Raspberry Pi FTP Server with Email Camera Relay")
-              each provider in nsProviders
-                li: a.d-block.py-2.py-md-0(
-                  title=striptags(t('How to Setup Email with <span class="notranslate">%s</span>', provider.name)),
-                  href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`)
-                )!= t('How to Setup Email with <span class="notranslate">%s</span>', provider.name)
-              li: a.d-block.py-2.py-md-0(
-                href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
-              )= t("Port 25 blocked by ISP")
-            hr.d-lg-none.w-100
-            h2.h5.mb-2: a(href=l("/resources"))= t("Resources")
-            ul.list-unstyled
-              li: a.d-block.py-2.py-md-0(
-                href=domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email")
-              )= t("Private Business Email")
-              li: a.d-block.py-2.py-md-0(
-                href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
-              )= t("Frequently Asked Questions")
-              li: a.d-block.py-2.py-md-0(href=l("/tti"))= t("Time to Inbox")
-              li: a.d-block.py-2.py-md-0(href=l("/disposable-addresses"))= t("Disposable Addresses")
-              li: a.d-block.py-2.py-md-0(href=l("/domain-registration"))= t("Domain Registration")
-              li: a.d-block.py-2.py-md-0(href=l("/encrypt"))
-                != t('Encrypt Plaintext <span class="notranslate">TXT</span> Record')
-              li: a.d-block.py-2.py-md-0(href=l("/reserved-email-addresses"))= t("Reserved Email Addresses")
-              li: a.d-block.py-2.py-md-0(
-                href="https://alumniemail.com",
-                target="_blank",
-                rel="noopener noreferrer"
-              ) AlumniEmail.com
-              li: a.d-block.py-2.py-md-0(
-                href="https://timetoinbox.com",
-                target="_blank",
-                rel="noopener noreferrer"
-              ) TimeToInbox.com
-              li: a.d-block.py-2.py-md-0(
-                href="https://serverauditing.com",
-                target="_blank",
-                rel="noopener noreferrer"
-              ) ServerAuditing.com
-              li: a.d-block.py-2.py-md-0(
-                href="https://sshmonitor.com",
-                target="_blank",
-                rel="noopener noreferrer"
-              ) SSHMonitor.com
-              li: a.d-block.py-2.py-md-0(
-                href="https://sslmonitor.com",
-                target="_blank",
-                rel="noopener noreferrer"
-              ) SSLMonitor.com
+                each language in availableLanguages
+                  if language.locale !== locale
+                    li: a.dropdown-item(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
           hr.d-lg-none.w-100
-          .flex-wrap.flex-fill.mr-lg-3
-            h2.h5.mb-2: a(href=l("/blog/docs"))= t("Developers")
-            ul.list-unstyled.mb-0.mb-lg-3
-              li: a.d-block.py-2.py-md-0(href="/technical-whitepaper.pdf")= t("Technical Whitepaper")
-              li: a.d-block.py-2.py-md-0(
-                href="/pentest-report_forward-email.pdf"
-              )= t("Security Audit")
-              li: a.d-block.py-2.py-md-0(href=l("/ips"))= t("IP Addresses")
-              li: a.d-block.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
-              li: a.d-block.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
-              li: a.d-block.py-2.py-md-0(href=l("/self-hosted"))
-                = t("Self Hosted Email")
-              li: a.d-block.py-2.py-md-0(
-                href=l("/faq#do-you-support-bounce-webhooks")
-              )= t("Bounce Webhooks")
-              li: a.d-block.py-2.py-md-0(
-                href=l("/email-forwarding-regex-pattern-filter")
-              )= t("Regex Email Forwarding")
-              if platforms.length > 0
-                li: a.d-block.py-2.py-md-0(href=l("/blog/open-source"))= t("Open Source")
-            if config.alternatives && config.alternatives.length > 0
-              hr.d-lg-none.w-100
-              h2.h5.mb-2= t("Email Service Comparison")
-              hr.d-none.d-md-none.d-lg-none.w-100
-              ul.list-unstyled.mb-0.mb-lg-3
-                each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service', 'best-email-spam-filtering-service']
-                  li
-                    a.d-block.py-2.py-md-0(href=l(`/blog/${str}`))
-                      - const title = config.meta[`/blog/${str}`][0];
-                      != striptags(t(title))
-            if developerDocs.length > 0
-              hr.d-lg-none.w-100
-              h2.h5.mb-2= t("Developer Articles")
-              hr.d-none.d-md-none.d-lg-none.w-100
-              ul.list-unstyled.mb-0.mb-lg-3
-                each doc in developerDocs
-                  li
-                    a.d-block.py-2.py-md-0(href=l(doc.slug))
-                      = t(doc.shortTitle || doc.title)
+          .mt-auto
+            a(href="#", aria-label=t("Go to top"))
+              img.d-inline-block.mx-lg-auto(
+                loading="lazy",
+                src=manifest("img/logo-square.svg"),
+                width=50,
+                height=50,
+                alt="Go to top"
+              )
+        //- Below lg each column collapses behind its heading (bootstrap
+        //- collapse, same machinery as the FAQ accordions); d-lg-block
+        //- neutralizes the collapse on desktop so nothing toggles there.
+        //- Script-less visitors get expanded lists via _custom.scss's
+        //- html.no-js `.collapse:not(.show)` rule, and crawlers never see
+        //- this markup at all (they render the bot branch above).
+        .flex-wrap.flex-fill.mr-lg-3
+          hr.d-lg-none.w-100
+          h2.h5.mb-2
+            span.d-none.d-lg-inline= t("Product")
+            a.d-lg-none.d-block.py-2(
+              href="#",
+              data-toggle="collapse",
+              data-target="#footer-col-product",
+              role="button",
+              aria-expanded="false",
+              aria-controls="footer-col-product"
+            )
+              = t("Product")
+              = " "
+              i.fa.fa-angle-down(aria-hidden="true")
+          ul#footer-col-product.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
+            - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
+            - pricingPageHref += "?pricing=true";
+            li: a.d-block.py-2.py-md-0(href=pricingPageHref)
+              != t("Features &amp; Pricing")
+            li: a.d-block.py-2.py-md-0(href=l("/download"))= t("Download")
+            li: a.d-block.py-2.py-md-0(
+              href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
+            )= t("Frequently Asked Questions")
+            li: a.d-block.py-2.py-md-0(href=l("/tti"))= t("Time to Inbox")
+            li: a.d-block.py-2.py-md-0(href=l("/disposable-addresses"))= t("Disposable Addresses")
+            li: a.d-block.py-2.py-md-0(href=l("/domain-registration"))= t("Domain Registration")
+            if config.env !== 'test'
+              li
+                a.d-block.py-2.py-md-0(
+                  href="https://status.forwardemail.net/",
+                  target="_blank",
+                  rel="noopener noreferrer",
+                  data-toggle="tooltip",
+                  data-title=statusOutage ? t("Issue Detected") : t("100% Systems Online"),
+                  data-placement="bottom"
+                )
+                  = t("Status Page")
+                  = " "
+                  if statusOutage
+                    span.badge.badge-pill.badge-warning.text-monospace= t("Issue")
+                  else
+                    span.badge.badge-pill.badge-success.text-monospace= t("100%")
+        .flex-wrap.flex-fill.mr-lg-3
+          hr.d-lg-none.w-100
+          h2.h5.mb-2
+            a.d-none.d-lg-inline(href=l("/email-api"))= t("Developers")
+            a.d-lg-none.d-block.py-2(
+              href="#",
+              data-toggle="collapse",
+              data-target="#footer-col-developers",
+              role="button",
+              aria-expanded="false",
+              aria-controls="footer-col-developers"
+            )
+              = t("Developers")
+              = " "
+              i.fa.fa-angle-down(aria-hidden="true")
+          ul#footer-col-developers.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
+            li: a.d-block.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
+            li: a.d-block.py-2.py-md-0(href="/technical-whitepaper.pdf")= t("Technical Whitepaper")
+            li: a.d-block.py-2.py-md-0(href="/pentest-report_forward-email.pdf")= t("Security Audit")
+            li: a.d-block.py-2.py-md-0(
+              href=l("/faq#do-you-support-self-hosting")
+            )
+              = t("Self Hosted Email")
+            li: a.d-block.py-2.py-md-0(href=l("/faq#do-you-support-webhooks"))= t("Email Webhooks")
+            li: a.d-block.py-2.py-md-0(href=l("/ips"))= t("IP Addresses")
             if platforms.length > 0
-              hr.d-lg-none.w-100
-              h2.h5.mb-2: a(href=l("/blog/open-source"))= t("Open Source Email Clients and Servers")
-              ul.list-unstyled.mb-0.mb-lg-3
-                - const tools = [];
-                - const list = Object.keys(config.meta).filter((key) => key !== "/blog/open-source" && key.startsWith("/blog/open-source"));
-                each item in list
-                  - const match = config.meta[item];
-                  if match
-                    - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item });
-                each tool in tools
-                  li
-                    a.d-block.py-2.py-md-0(
-                      href=l(tool.slug),
-                      title=striptags(t(tool.title))
-                    )!= t(tool.title)
+              li: a.d-block.py-2.py-md-0(href=l("/blog/open-source"))= t("Open Source")
+        .flex-wrap.flex-fill.mr-lg-3
           hr.d-lg-none.w-100
-          .flex-wrap.flex-fill.d-flex.flex-column
-            div
-              h2.h5.mb-2= t("Community")
-              ul.list-unstyled.mb-0.mb-lg-3
-                li
-                  a.d-block.py-2.py-md-0(
-                    href=l("/my-account/profile?newsletter=true")
-                  )
-                    i.fa.fa-fw.fas.fa-newspaper
-                    = " "
-                    = t("Newsletter")
-                li
-                  a.d-block.py-2.py-md-0(
-                    href="https://github.com/forwardemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fa.fa-fw.fa-github
-                    = " "
-                    = "GitHub"
-                li
-                  a.d-block.py-2.py-md-0(
-                    href="https://x.com/fwdemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fa.fa-fw.fa-twitter-x
-                    = " "
-                    = "@fwdemail"
-                li
-                  a.d-block.py-2.py-md-0(
-                    href="https://matrix.to/#/#forwardemail:matrix.org",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fa-fw.fa.fa-comment
-                    = " "
-                    = "Matrix"
-                li
-                  a.d-block.py-2.py-md-0(
-                    href="https://youtube.com/forwardemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fab.fa-fw.fa-youtube
-                    = " "
-                    = "YouTube"
-                li
-                  a.d-block.py-2.py-md-0(
-                    href=`${config.urls.web}/blog/feed/atom`,
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fa-fw.fas.fa-rss
-                    = " "
-                    = "RSS Feed"
-              hr.d-lg-none.w-100
-              h2.h5.mb-2= t("Company")
-              ul.list-unstyled.mb-0.mb-lg-3
-                li
-                  a.d-block.py-2.py-md-0(href=l("/event-feed"))
-                    = t("Event Feed")
-                    = " "
-                    if eventFeedBadgeCount && eventFeedBadgeCount > 0
-                      if eventFeedHasNew
-                        span.badge.badge-pill.badge-danger(
-                          data-toggle="tooltip",
-                          data-placement="right",
-                          title=eventFeedBadgeTooltip
-                        )= eventFeedBadgeCount
-                      else
-                        span.badge.badge-pill.badge-secondary(
-                          data-toggle="tooltip",
-                          data-placement="right",
-                          title=eventFeedBadgeTooltip
-                        )= eventFeedBadgeCount
-                li: a.d-block.py-2.py-md-0(href=l("/about"))= t("About")
-                li: a.d-block.py-2.py-md-0(href=l("/security"))= t("Security")
-                li: a.d-block.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
-                li: a.d-block.py-2.py-md-0(href=l("/terms"))= t("Terms")
-                li: a.d-block.py-2.py-md-0(href=l("/gdpr"))= t("GDPR")
-                li: a.d-block.py-2.py-md-0(href=l("/dpa"))= t("DPA")
-                li: a.d-block.py-2.py-md-0(href=l("/report-abuse"))= t("Report Abuse")
-                li: a.d-block.py-2.py-md-0(href=l("/press"))= t("Press")
-                li: a.d-block.py-2.py-md-0(
-                  href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
+          h2.h5.mb-2
+            a.d-none.d-lg-inline(href=l("/guides"))= t("Guides")
+            a.d-lg-none.d-block.py-2(
+              href="#",
+              data-toggle="collapse",
+              data-target="#footer-col-guides",
+              role="button",
+              aria-expanded="false",
+              aria-controls="footer-col-guides"
+            )
+              = t("Guides")
+              = " "
+              i.fa.fa-angle-down(aria-hidden="true")
+          ul#footer-col-guides.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
+            li: a.d-block.py-2.py-md-0(href=l("/guides"))= t("Email Setup Guides")
+            li: a.d-block.py-2.py-md-0(
+              href=l("/guides/send-email-with-custom-domain-smtp")
+            )
+              = t("Send Email with Custom Domain")
+            li: a.d-block.py-2.py-md-0(
+              href=l("/guides/send-mail-as-gmail-custom-domain")
+            )
+              = t("Send Mail As with Gmail")
+            li: a.d-block.py-2.py-md-0(href=l("/guides/smtp-integration"))
+              = t("SMTP Integration Examples")
+            li: a.d-block.py-2.py-md-0(
+              href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
+            )= t("Port 25 blocked by ISP")
+        .flex-wrap.flex-fill.d-flex.flex-column
+          div
+            hr.d-lg-none.w-100
+            h2.h5.mb-2
+              span.d-none.d-lg-inline= t("Company")
+              a.d-lg-none.d-block.py-2(
+                href="#",
+                data-toggle="collapse",
+                data-target="#footer-col-company",
+                role="button",
+                aria-expanded="false",
+                aria-controls="footer-col-company"
+              )
+                = t("Company")
+                = " "
+                i.fa.fa-angle-down(aria-hidden="true")
+            ul#footer-col-company.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
+              li: a.d-block.py-2.py-md-0(href=l("/about"))= t("About")
+              li: a.d-block.py-2.py-md-0(href=l("/press"))= t("Press")
+              li: a.d-block.py-2.py-md-0(
+                href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
+                target="_blank",
+                rel="noopener noreferrer",
+                data-toggle="tooltip",
+                data-title=t("Send us an email"),
+                data-placement="bottom"
+              )= t("Careers")
+              li: a.d-block.py-2.py-md-0(href=l("/security"))= t("Security")
+              li: a.d-block.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
+              li: a.d-block.py-2.py-md-0(href=l("/terms"))= t("Terms")
+              li: a.d-block.py-2.py-md-0(href=l("/gdpr"))= t("GDPR")
+              li: a.d-block.py-2.py-md-0(href=l("/dpa"))= t("DPA")
+              li: a.d-block.py-2.py-md-0(href=l("/report-abuse"))= t("Report Abuse")
+              li
+                a.d-block.py-2.py-md-0(href=l("/event-feed"))
+                  = t("Event Feed")
+                  = " "
+                  if eventFeedBadgeCount && eventFeedBadgeCount > 0
+                    if eventFeedHasNew
+                      span.badge.badge-pill.badge-danger(
+                        data-toggle="tooltip",
+                        data-placement="right",
+                        title=eventFeedBadgeTooltip
+                      )= eventFeedBadgeCount
+                    else
+                      span.badge.badge-pill.badge-secondary(
+                        data-toggle="tooltip",
+                        data-placement="right",
+                        title=eventFeedBadgeTooltip
+                      )= eventFeedBadgeCount
+              li.small
+                a.d-block.font-weight-bold.py-2.py-md-0.text-monospace.small.mt-3(
+                  href=`mailto:${config.supportEmail}`,
                   target="_blank",
                   rel="noopener noreferrer",
                   data-toggle="tooltip",
                   data-title=t("Send us an email"),
                   data-placement="bottom"
-                )= t("Careers")
+                )= config.supportEmail
+              li
+                a.badge.badge-success.font-weight-bold.p-2.mt-3(
+                  href=config.openPGPKey,
+                  target="_blank",
+                  data-toggle="tooltip",
+                  data-title=config.supportEmail
+                )
+                  i.fa.fa-lock
+                  = " "
+                  = t("GPG Key")
+                = " "
+                a.badge.badge-dark.font-weight-bold.p-2.mt-3(
+                  href=ctx.pathWithoutLocale === "/faq" ? "#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd" : l("/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd"),
+                  data-toggle=ctx.pathWithoutLocale === "/faq" ? "collapse" : "tooltip",
+                  aria-controls=ctx.pathWithoutLocale === "/faq" ? "collapse-do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd" : false,
+                  data-target=ctx.pathWithoutLocale === "/faq" ? "#collapse-do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd" : false,
+                  data-title=t("Learn more"),
+                  aria-label=t("We support OpenPGP and end-to-end encryption")
+                )
+                  i.fa.fa-info-circle
+        noscript
           hr.d-lg-none.w-100
           .flex-wrap.flex-fill.d-flex.flex-column.ml-lg-3
             div
@@ -370,323 +291,89 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
               ul.list-unstyled.mb-0.small
                 each language in availableLanguages
                   li: a.d-block.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
-        else
-          //- ==================================================
-          //- HUMAN COLUMNS — four curated groups per the footer
-          //- consolidation plan; ~40 links instead of 143.
-          //- ==================================================
-          .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1.mr-lg-3
-            .no-js
-              hr.d-lg-none.w-100
-              .dropdown.dropup
-                a#navbar-dropdown-language-btn.btn.btn-sm.btn-outline-light.dropdown-toggle(
-                  href=ctx.url,
-                  role="button",
-                  data-toggle="dropdown",
-                  data-boundary="window",
-                  aria-haspopup="true",
-                  aria-expanded="false"
-                )
-                  = `${titleize(t(currentLanguage))} ${ctx.locale !== "en" && currentLanguage !== titleize(currentLanguage) ? `(${titleize(currentLanguage)})` : ""}`
-                ul#navbar-dropdown-language-ul.dropdown-menu(
-                  role="menu",
-                  aria-expanded="false",
-                  aria-hidden="true",
-                  aria-labelledby="navbar-dropdown-language-btn"
-                )
-                  each language in availableLanguages
-                    if language.locale !== locale
-                      li: a.dropdown-item(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
-            hr.d-lg-none.w-100
-            .mt-auto
-              a(href="#", aria-label=t("Go to top"))
-                img.d-inline-block.mx-lg-auto(
-                  loading="lazy",
-                  src=manifest("img/logo-square.svg"),
-                  width=50,
-                  height=50,
-                  alt="Go to top"
-                )
-          //- Below lg each column collapses behind its heading (bootstrap
-          //- collapse, same machinery as the FAQ accordions); d-lg-block
-          //- neutralizes the collapse on desktop so nothing toggles there.
-          //- Script-less visitors get expanded lists via _custom.scss's
-          //- html.no-js `.collapse:not(.show)` rule, and crawlers never see
-          //- this markup at all (they render the bot branch above).
-          .flex-wrap.flex-fill.mr-lg-3
-            hr.d-lg-none.w-100
-            h2.h5.mb-2
-              span.d-none.d-lg-inline= t("Product")
-              a.d-lg-none.d-block.py-2(
-                href="#",
-                data-toggle="collapse",
-                data-target="#footer-col-product",
-                role="button",
-                aria-expanded="false",
-                aria-controls="footer-col-product"
-              )
-                = t("Product")
-                = " "
-                i.fa.fa-angle-down(aria-hidden="true")
-            ul#footer-col-product.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
-              - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
-              - pricingPageHref += "?pricing=true";
-              li: a.d-block.py-2.py-md-0(href=pricingPageHref)
-                != t("Features &amp; Pricing")
-              li: a.d-block.py-2.py-md-0(href=l("/download"))= t("Download")
-              li: a.d-block.py-2.py-md-0(
-                href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
-              )= t("Frequently Asked Questions")
-              li: a.d-block.py-2.py-md-0(href=l("/tti"))= t("Time to Inbox")
-              li: a.d-block.py-2.py-md-0(href=l("/disposable-addresses"))= t("Disposable Addresses")
-              li: a.d-block.py-2.py-md-0(href=l("/domain-registration"))= t("Domain Registration")
-              if config.env !== 'test'
-                li
-                  a.d-block.py-2.py-md-0(
-                    href="https://status.forwardemail.net/",
-                    target="_blank",
-                    rel="noopener noreferrer",
-                    data-toggle="tooltip",
-                    data-title=statusOutage ? t("Issue Detected") : t("100% Systems Online"),
-                    data-placement="bottom"
-                  )
-                    = t("Status Page")
-                    = " "
-                    if statusOutage
-                      span.badge.badge-pill.badge-warning.text-monospace= t("Issue")
-                    else
-                      span.badge.badge-pill.badge-success.text-monospace= t("100%")
-          .flex-wrap.flex-fill.mr-lg-3
-            hr.d-lg-none.w-100
-            h2.h5.mb-2
-              a.d-none.d-lg-inline(href=l("/email-api"))= t("Developers")
-              a.d-lg-none.d-block.py-2(
-                href="#",
-                data-toggle="collapse",
-                data-target="#footer-col-developers",
-                role="button",
-                aria-expanded="false",
-                aria-controls="footer-col-developers"
-              )
-                = t("Developers")
-                = " "
-                i.fa.fa-angle-down(aria-hidden="true")
-            ul#footer-col-developers.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
-              li: a.d-block.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
-              li: a.d-block.py-2.py-md-0(href="/technical-whitepaper.pdf")= t("Technical Whitepaper")
-              li: a.d-block.py-2.py-md-0(
-                href="/pentest-report_forward-email.pdf"
-              )= t("Security Audit")
-              li: a.d-block.py-2.py-md-0(
-                href=l("/faq#do-you-support-self-hosting")
-              )
-                = t("Self Hosted Email")
-              li: a.d-block.py-2.py-md-0(href=l("/faq#do-you-support-webhooks"))= t("Email Webhooks")
-              li: a.d-block.py-2.py-md-0(href=l("/ips"))= t("IP Addresses")
-              if platforms.length > 0
-                li: a.d-block.py-2.py-md-0(href=l("/blog/open-source"))= t("Open Source")
-          .flex-wrap.flex-fill.mr-lg-3
-            hr.d-lg-none.w-100
-            h2.h5.mb-2
-              a.d-none.d-lg-inline(href=l("/guides"))= t("Guides")
-              a.d-lg-none.d-block.py-2(
-                href="#",
-                data-toggle="collapse",
-                data-target="#footer-col-guides",
-                role="button",
-                aria-expanded="false",
-                aria-controls="footer-col-guides"
-              )
-                = t("Guides")
-                = " "
-                i.fa.fa-angle-down(aria-hidden="true")
-            ul#footer-col-guides.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
-              li: a.d-block.py-2.py-md-0(href=l("/guides"))= t("Email Setup Guides")
-              li: a.d-block.py-2.py-md-0(
-                href=l("/guides/send-email-with-custom-domain-smtp")
-              )
-                = t("Send Email with Custom Domain")
-              li: a.d-block.py-2.py-md-0(
-                href=l("/guides/send-mail-as-gmail-custom-domain")
-              )
-                = t("Send Mail As with Gmail")
-              li: a.d-block.py-2.py-md-0(href=l("/guides/smtp-integration"))
-                = t("SMTP Integration Examples")
-              li: a.d-block.py-2.py-md-0(
-                href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
-              )= t("Port 25 blocked by ISP")
-          .flex-wrap.flex-fill.d-flex.flex-column
-            div
-              hr.d-lg-none.w-100
-              h2.h5.mb-2
-                span.d-none.d-lg-inline= t("Company")
-                a.d-lg-none.d-block.py-2(
-                  href="#",
-                  data-toggle="collapse",
-                  data-target="#footer-col-company",
-                  role="button",
-                  aria-expanded="false",
-                  aria-controls="footer-col-company"
-                )
-                  = t("Company")
-                  = " "
-                  i.fa.fa-angle-down(aria-hidden="true")
-              ul#footer-col-company.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
-                li: a.d-block.py-2.py-md-0(href=l("/about"))= t("About")
-                li: a.d-block.py-2.py-md-0(href=l("/press"))= t("Press")
-                li: a.d-block.py-2.py-md-0(
-                  href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
-                  target="_blank",
-                  rel="noopener noreferrer",
-                  data-toggle="tooltip",
-                  data-title=t("Send us an email"),
-                  data-placement="bottom"
-                )= t("Careers")
-                li: a.d-block.py-2.py-md-0(href=l("/security"))= t("Security")
-                li: a.d-block.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
-                li: a.d-block.py-2.py-md-0(href=l("/terms"))= t("Terms")
-                li: a.d-block.py-2.py-md-0(href=l("/gdpr"))= t("GDPR")
-                li: a.d-block.py-2.py-md-0(href=l("/dpa"))= t("DPA")
-                li: a.d-block.py-2.py-md-0(href=l("/report-abuse"))= t("Report Abuse")
-                li
-                  a.d-block.py-2.py-md-0(href=l("/event-feed"))
-                    = t("Event Feed")
-                    = " "
-                    if eventFeedBadgeCount && eventFeedBadgeCount > 0
-                      if eventFeedHasNew
-                        span.badge.badge-pill.badge-danger(
-                          data-toggle="tooltip",
-                          data-placement="right",
-                          title=eventFeedBadgeTooltip
-                        )= eventFeedBadgeCount
-                      else
-                        span.badge.badge-pill.badge-secondary(
-                          data-toggle="tooltip",
-                          data-placement="right",
-                          title=eventFeedBadgeTooltip
-                        )= eventFeedBadgeCount
-                li.small
-                  a.d-block.font-weight-bold.py-2.py-md-0.text-monospace.small.mt-3(
-                    href=`mailto:${config.supportEmail}`,
-                    target="_blank",
-                    rel="noopener noreferrer",
-                    data-toggle="tooltip",
-                    data-title=t("Send us an email"),
-                    data-placement="bottom"
-                  )= config.supportEmail
-                li
-                  a.badge.badge-success.font-weight-bold.p-2.mt-3(
-                    href=config.openPGPKey,
-                    target="_blank",
-                    data-toggle="tooltip",
-                    data-title=config.supportEmail
-                  )
-                    i.fa.fa-lock
-                    = " "
-                    = t("GPG Key")
-                  = " "
-                  a.badge.badge-dark.font-weight-bold.p-2.mt-3(
-                    href=ctx.pathWithoutLocale === "/faq" ? "#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd" : l("/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd"),
-                    data-toggle=ctx.pathWithoutLocale === "/faq" ? "collapse" : "tooltip",
-                    aria-controls=ctx.pathWithoutLocale === "/faq" ? "collapse-do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd" : false,
-                    data-target=ctx.pathWithoutLocale === "/faq" ? "#collapse-do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd" : false,
-                    data-title=t("Learn more"),
-                    aria-label=t("We support OpenPGP and end-to-end encryption")
-                  )
-                    i.fa.fa-info-circle
-          noscript
-            hr.d-lg-none.w-100
-            .flex-wrap.flex-fill.d-flex.flex-column.ml-lg-3
-              div
-                h2.h5.mb-2= t("Languages")
-                ul.list-unstyled.mb-0.small
-                  each language in availableLanguages
-                    li: a.d-block.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
       //- Community as a single icon strip; it replaced the six-row Community
       //- column in the human variant (crawlers still get the full column).
-      if !isBotUa
-        ul.list-inline.mt-4.mb-0.text-center.text-lg-left
-          li.list-inline-item.mr-3
-            a(
-              href="https://github.com/forwardemail",
-              target="_blank",
-              rel="noopener noreferrer",
-              aria-label="GitHub",
-              data-toggle="tooltip",
-              data-title="GitHub",
-              data-placement="top"
-            )
-              i.fa.fa-fw.fa-github.fa-lg
-          li.list-inline-item.mr-3
-            a(
-              href="https://x.com/fwdemail",
-              target="_blank",
-              rel="noopener noreferrer",
-              aria-label="@fwdemail",
-              data-toggle="tooltip",
-              data-title="@fwdemail",
-              data-placement="top"
-            )
-              i.fa.fa-fw.fa-twitter-x.fa-lg
-          li.list-inline-item.mr-3
-            a(
-              href="https://matrix.to/#/#forwardemail:matrix.org",
-              target="_blank",
-              rel="noopener noreferrer",
-              aria-label="Matrix",
-              data-toggle="tooltip",
-              data-title="Matrix",
-              data-placement="top"
-            )
-              i.fa.fa-fw.fa-comment.fa-lg
-          li.list-inline-item.mr-3
-            a(
-              href="https://youtube.com/forwardemail",
-              target="_blank",
-              rel="noopener noreferrer",
-              aria-label="YouTube",
-              data-toggle="tooltip",
-              data-title="YouTube",
-              data-placement="top"
-            )
-              i.fab.fa-fw.fa-youtube.fa-lg
-          li.list-inline-item.mr-3
-            a(
-              href=`${config.urls.web}/blog/feed/atom`,
-              target="_blank",
-              rel="noopener noreferrer",
-              aria-label=t("RSS Feed"),
-              data-toggle="tooltip",
-              data-title=t("RSS Feed"),
-              data-placement="top"
-            )
-              i.fa-fw.fas.fa-rss.fa-lg
-          li.list-inline-item
-            a(
-              href=l("/my-account/profile?newsletter=true"),
-              aria-label=t("Newsletter"),
-              data-toggle="tooltip",
-              data-title=t("Newsletter"),
-              data-placement="top"
-            )
-              i.fa.fa-fw.fas.fa-newspaper.fa-lg
+      ul.list-inline.mt-4.mb-0.text-center.text-lg-left
+        li.list-inline-item.mr-3
+          a(
+            href="https://github.com/forwardemail",
+            target="_blank",
+            rel="noopener noreferrer",
+            aria-label="GitHub",
+            data-toggle="tooltip",
+            data-title="GitHub",
+            data-placement="top"
+          )
+            i.fa.fa-fw.fa-github.fa-lg
+        li.list-inline-item.mr-3
+          a(
+            href="https://x.com/fwdemail",
+            target="_blank",
+            rel="noopener noreferrer",
+            aria-label="@fwdemail",
+            data-toggle="tooltip",
+            data-title="@fwdemail",
+            data-placement="top"
+          )
+            i.fa.fa-fw.fa-twitter-x.fa-lg
+        li.list-inline-item.mr-3
+          a(
+            href="https://matrix.to/#/#forwardemail:matrix.org",
+            target="_blank",
+            rel="noopener noreferrer",
+            aria-label="Matrix",
+            data-toggle="tooltip",
+            data-title="Matrix",
+            data-placement="top"
+          )
+            i.fa.fa-fw.fa-comment.fa-lg
+        li.list-inline-item.mr-3
+          a(
+            href="https://youtube.com/forwardemail",
+            target="_blank",
+            rel="noopener noreferrer",
+            aria-label="YouTube",
+            data-toggle="tooltip",
+            data-title="YouTube",
+            data-placement="top"
+          )
+            i.fab.fa-fw.fa-youtube.fa-lg
+        li.list-inline-item.mr-3
+          a(
+            href=`${config.urls.web}/blog/feed/atom`,
+            target="_blank",
+            rel="noopener noreferrer",
+            aria-label=t("RSS Feed"),
+            data-toggle="tooltip",
+            data-title=t("RSS Feed"),
+            data-placement="top"
+          )
+            i.fa-fw.fas.fa-rss.fa-lg
+        li.list-inline-item
+          a(
+            href=l("/my-account/profile?newsletter=true"),
+            aria-label=t("Newsletter"),
+            data-toggle="tooltip",
+            data-title=t("Newsletter"),
+            data-placement="top"
+          )
+            i.fa.fa-fw.fas.fa-newspaper.fa-lg
       .mt-5.small
         ul.list-inline.mb-3
-          if !isBotUa
-            li.list-inline-item.mb-3.mr-3
-              a(
-                aria-label=t("GitHub Repo stars"),
-                href="https://github.com/forwardemail/forwardemail.net",
-                target="_blank",
-                rel="noopener noreferrer"
+          li.list-inline-item.mb-3.mr-3
+            a(
+              aria-label=t("GitHub Repo stars"),
+              href="https://github.com/forwardemail/forwardemail.net",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              img(
+                loading="lazy",
+                alt=t("GitHub Repo stars"),
+                width=90,
+                height=20,
+                src="https://img.shields.io/github/stars/forwardemail/forwardemail.net"
               )
-                img(
-                  loading="lazy",
-                  alt=t("GitHub Repo stars"),
-                  width=90,
-                  height=20,
-                  src="https://img.shields.io/github/stars/forwardemail/forwardemail.net"
-                )
           li.list-inline-item.mb-3.mr-3
             a(
               aria-label=t("Qualys SSL Labs SSL Server Test"),

@@ -8,14 +8,11 @@
 //-   fonts and Lighthouse counts them against First Contentful Paint. A low
 //-   priority preload starts them early without that cost.
 //-
-//- Bots get the icon fonts only (their stylesheet is the lean app-bot.css).
-//-
 //- https://caniuse.com/link-rel-preload
 //- integrity attribute not currently supported <https://crbug.com/981419>
 - const fonts = [];
-if !isBot(ctx.get('User-Agent'))
-  - fonts.push({ file: "nunito-sans-latin-700.woff2", priority: "high" });
-  - fonts.push({ file: "nunito-sans-latin-400.woff2", priority: "high" });
+- fonts.push({ file: "nunito-sans-latin-700.woff2", priority: "high" });
+- fonts.push({ file: "nunito-sans-latin-400.woff2", priority: "high" });
 - fonts.push({ file: "fa-solid-900.woff2", priority: "low" });
 - fonts.push({ file: "fa-brands-400.woff2", priority: "low" });
 each font in fonts

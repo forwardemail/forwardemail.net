@@ -658,6 +658,7 @@ const config = {
     'domain-restrictions-reminder',
     'domain-verified',
     'feature-reminder',
+    'forwarding-issue',
     'phishing-alert',
     'two-factor-reminder',
     'weekly-dmarc-report',
@@ -810,6 +811,21 @@ const config = {
 
   fingerprintPrefix: 'f',
   fingerprintTTL: ms('1d'),
+
+  //
+  // Once part of a message has been delivered, a destination that keeps
+  // deferring (4xx) is retried for at most this long, then the message is
+  // accepted and the alias owner is emailed. This keeps a single slow or
+  // full mailbox from making the sender give up on (and bounce) recipients
+  // that already have the message. It must stay well below `fingerprintTTL`,
+  // which is how long delivered destinations are skipped on retry.
+  //
+  partialDeliveryRetryWindow: ms('4h'),
+
+  // how often a forwarding issue email is sent for the same alias domain and destination
+  forwardingIssueEmailInterval: ms('7d'),
+  // the most forwarding issue emails one domain can trigger in a day
+  forwardingIssueEmailDailyLimit: 25,
 
   denylist: new Set(
     _.isArray(env.DENYLIST)

@@ -255,8 +255,15 @@ window.addEventListener(
       $('.min-vh-100').css('min-height: 100vh !important;');
     }
 
-    // Some pages have a navbar fixed to bottom (e.g. Step 1, Step 2)
-    const $navbarFixedBottom = $('.fixed-bottom');
+    // Some pages have a navbar fixed to bottom (e.g. Step 1, Step 2), and the
+    // page needs room for it. The floating chat button in the layout is also
+    // `.fixed-bottom` but covers no content, so it is not counted (it gave
+    // every page a strip of body background below the footer, and made pages
+    // with a real bar count two and get no room at all). A bar hidden at this
+    // width (e.g. `d-lg-none`) needs no room either.
+    const $navbarFixedBottom = $('.fixed-bottom')
+      .not('.btn')
+      .filter(':visible');
     if ($navbarFixedBottom.length === 1)
       $('body').css('padding-bottom', $navbarFixedBottom.outerHeight());
 

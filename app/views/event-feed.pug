@@ -7,7 +7,7 @@ block body
     .container
       .row
         .col-12
-          .text-center(class=isBot(ctx.get("User-Agent")) ? "" : "text-white")
+          .text-center.text-white
             h1= t("Event Feed")
             p!= t("Stay up to date with %s news, X posts, releases, status incidents, and developer articles.", config.appName)
             include _author
@@ -58,34 +58,18 @@ block body
       //- Feed subscription links
       .row.mt-3.no-search
         .col-12.text-center
-          .small(class=isBot(ctx.get("User-Agent")) ? "" : "text-white-50")
+          .small.text-white-50
             span.mr-2= t("Subscribe:")
-            a.mr-2(
-              href=l("/blog/feed/rss"),
-              title=t("RSS Feed"),
-              class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
-            )
+            a.mr-2.text-white(href=l("/blog/feed/rss"), title=t("RSS Feed"))
               i.fa.fa-rss.mr-1
               = "RSS"
-            a.mr-2(
-              href=l("/blog/feed/atom"),
-              title=t("Atom Feed"),
-              class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
-            )
+            a.mr-2.text-white(href=l("/blog/feed/atom"), title=t("Atom Feed"))
               i.fa.fa-rss-square.mr-1
               = "Atom"
-            a.mr-2(
-              href=l("/blog/feed/json"),
-              title=t("JSON Feed"),
-              class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
-            )
+            a.mr-2.text-white(href=l("/blog/feed/json"), title=t("JSON Feed"))
               i.fa.fa-code.mr-1
               = "JSON"
-            a(
-              href=l("/calendar.ics"),
-              title=t("Calendar"),
-              class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
-            )
+            a.text-white(href=l("/calendar.ics"), title=t("Calendar"))
               i.fa.fa-calendar.mr-1
               = "iCal"
 

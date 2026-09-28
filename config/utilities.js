@@ -20,7 +20,6 @@ const highlightPug = require('@forwardemail/highlight-pug');
 const highlightWords = require('highlight-words').default;
 const hljs = require('highlight.js');
 const humanize = require('humanize-string');
-const isBot = require('isbot');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -2910,7 +2909,6 @@ module.exports = {
   emoji,
   hljs,
   humanize,
-  isBot,
   isFQDN,
   isSANB,
   json,

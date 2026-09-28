@@ -1,0 +1,78 @@
+extends ../layout
+
+//- NOTE: `alias`, `destination`, `error`, `from`, and `subject` come from
+//-       user settings, the sender, or the receiving mail server, so they
+//-       are always output escaped (`=`) and never interpolated into `t()`.
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center= t("Email forwarding issue")
+          .card-body
+            p.card-text
+              if isMailbox
+                = t("A message sent to this alias could not be stored in its mailbox.")
+              else if isWebhook
+                = t("A message sent to this alias could not be delivered to one of its webhooks.")
+              else
+                = t("A message sent to this alias could not be forwarded to one of its recipients.")
+            ul.list-unstyled
+              li
+                strong= t("Alias")
+                = ": "
+                code= alias
+              if !isMailbox
+                li
+                  strong= t("Forwarding recipient")
+                  = ": "
+                  code= destination
+            p.card-text
+              if isRetryWindowExceeded
+                = t("The receiving server kept deferring the message for %s, so delivery to it was stopped.", retryWindow)
+                = " "
+              if status === 'delivered_to_others'
+                = t("The alias's other recipients received the message.")
+              else if status === 'not_delivered'
+                = t("This alias did not receive the message. Other recipients of the same email did, so the sender was not sent a bounce.")
+              else
+                = t("The message was not delivered, and the sender received a bounce.")
+            h2.h6= t("Error from the receiving server")
+            p.card-text.bg-light.border.rounded.p-2.small.text-monospace= error
+            h2.h6= t("Message")
+            ul.list-unstyled.small
+              if from
+                li
+                  strong= t("From")
+                  = ": "
+                  = from
+              if subject
+                li
+                  strong= t("Subject")
+                  = ": "
+                  = subject
+              if date
+                li
+                  strong= t("Date")
+                  = ": "
+                  = date
+              if messageId
+                li
+                  strong= t("Message-ID")
+                  = ": "
+                  = messageId
+            h2.h6= t("How to fix it")
+            p.card-text
+              if isMailbox
+                = t("Free up storage in this mailbox, or add storage to the account.")
+              else if isWebhook
+                = t("Make sure the webhook URL is correct and responds with a success status, or remove it from the alias.")
+              else
+                = t("Update or remove this forwarding recipient in the alias settings. If the address is correct, contact the provider that hosts it.")
+            a.btn.btn-lg.btn-block.btn-primary(
+              href=`${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domainName)}/aliases`,
+              role="button"
+            )= t("Edit aliases")
+          .card-footer.small.text-muted.text-center
+            = t("This email is sent at most once every %s for the same recipient.", interval)

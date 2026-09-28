@@ -31,16 +31,15 @@ mixin fePlanPriceWas(amount)
 //- plus the data-confirm-* attributes core.js reads); .no-js hides it when
 //- scripts are off, since it would do nothing.
 mixin feInfo(label, html)
-  if !isBotUa
-    button.fe-info.confirm-prompt.no-js(
-      type="button",
-      aria-label=label,
-      data-confirm-type="info",
-      data-confirm-show-cancel-button="false",
-      data-confirm-prompt-title=label,
-      data-confirm-prompt-html=html
-    )
-      i.fa.fa-info-circle(aria-hidden="true")
+  button.fe-info.confirm-prompt.no-js(
+    type="button",
+    aria-label=label,
+    data-confirm-type="info",
+    data-confirm-show-cancel-button="false",
+    data-confirm-prompt-title=label,
+    data-confirm-prompt-html=html
+  )
+    i.fa.fa-info-circle(aria-hidden="true")
 
 //- Signed in visitors with domains pick which one to upgrade. Bootstrap's
 //- dropdown, with only the trigger restyled.
@@ -77,7 +76,7 @@ mixin fePricingDetail
     //- Same rule the previous table used for its #features anchor: dropped
     //- for signed in visitors and for the ?pricing=true jump link, which
     //- lands here by other means.
-    const feFeaturesId = user || (!isBotUa && boolean(ctx.query.pricing) && ctx.pathWithoutLocale !== "/") ? false : "features";
+    const feFeaturesId = user || (boolean(ctx.query.pricing) && ctx.pathWithoutLocale !== "/") ? false : "features";
   section.fe-section.fe-surface-light.fe-section--pad.fe-section--tight.fe-plans-detail(
     id=feFeaturesId,
     aria-labelledby="fe-plans-detail-title"
@@ -188,14 +187,13 @@ mixin fePricingDetail
                 i.fa.fa-fw.fa-lock.fe-plan__icon(aria-hidden="true")
                 span
                   = t("10 GB pooled storage")
-                  if !isBotUa
-                    button.fe-info.no-js(
-                      type="button",
-                      aria-label=t("Email Storage"),
-                      data-toggle="modal",
-                      data-target="#modal-storage"
-                    )
-                      i.fa.fa-info-circle(aria-hidden="true")
+                  button.fe-info.no-js(
+                    type="button",
+                    aria-label=t("Email Storage"),
+                    data-toggle="modal",
+                    data-target="#modal-storage"
+                  )
+                    i.fa.fa-info-circle(aria-hidden="true")
               li.fe-plan__feature
                 i.fa.fa-fw.fa-lock.fe-plan__icon(aria-hidden="true")
                 span

@@ -11,10 +11,7 @@ mixin renderCard(platform, provider)
           span.badge.badge-success.mr-3.mt-3
             = emoji("star")
             = " "
-            if isBotUa
-              = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
-            else
-              = t("Recommended")
+            = t("Recommended")
         if provider.language
           span.badge.mr-3.mt-3(
             class=provider.language === "Proprietary" ? "badge-danger" : "badge-dark"
@@ -33,10 +30,7 @@ mixin renderCard(platform, provider)
             span.badge.badge-success.mr-3
               = emoji("star")
               = " "
-              if isBotUa
-                = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
-              else
-                = t("Recommended")
+              = t("Recommended")
           if provider.language
             span.badge.mr-3(
               class=provider.language === "Proprietary" ? "badge-danger" : "badge-dark"
@@ -97,8 +91,7 @@ mixin renderCard(platform, provider)
         i.fa.fa-external-link.align-middle
 
 block append scripts
-  if !isBotUa
-    +script("js/domain-search.js")
+  +script("js/domain-search.js")
   script(
     nonce=nonce,
     defer,
@@ -116,23 +109,22 @@ block body
     if !user
       +onboard(t('Setup email in minutes'), t('Simply enter your domain below to setup its email.'), l('/faq?redirect_to_domain=true'), '#top', 'border-top', true)
 
-  if !isBotUa
-    script(defer, nonce=nonce).
-      window.addEventListener(
-        "load",
-        function load() {
-          if (!window.jQuery) return setTimeout(load, 50);
-          $(function () {
-            $(document).on("click", '[data-toggle="lightbox"]', function (ev) {
-              ev.preventDefault();
-              $(this).ekkoLightbox();
-            });
+  script(defer, nonce=nonce).
+    window.addEventListener(
+      "load",
+      function load() {
+        if (!window.jQuery) return setTimeout(load, 50);
+        $(function () {
+          $(document).on("click", '[data-toggle="lightbox"]', function (ev) {
+            ev.preventDefault();
+            $(this).ekkoLightbox();
           });
-        },
-        false
-      );
+        });
+      },
+      false
+    );
 
-  if platform && !isBotUa
+  if platform
     - const isEmailClients = ctx.pathWithoutLocale.endsWith("-email-clients");
     .fixed-bottom.text-center.d-print-none
       .bg-dark.p-2.border-top.border-themed
@@ -175,7 +167,7 @@ block body
         //- The "compatible with all email clients" banner was replaced with a
         //- recommendation that leads with our own apps, since these pages are
         //- the site's biggest third-party client listings.
-        if isEmailClients && !isBotUa
+        if isEmailClients
           .row.mt-3
             .col-12
               .alert.alert-primary.small.text-center.mb-0
@@ -202,11 +194,10 @@ block body
             h2.text-center.py-3.py-md-5.mb-0(
               id=isEmailClients ? "email-client-comparison" : "email-server-comparison"
             )!= isEmailClients ? t("Email Client Comparison") : t("Email Server Comparison")
-            if !isBotUa
-              .d-block.d-md-none.my-3.text-muted.small.text-center
-                = "("
-                = t("Scroll to the right to see entire table")
-                = ")"
+            .d-block.d-md-none.my-3.text-muted.small.text-center
+              = "("
+              = t("Scroll to the right to see entire table")
+              = ")"
             .table-responsive.rounded-lg
               table.table.table-hover.table-bordered.table-sm.mb-0.bg-white.bg-themed
                 thead.thead-dark
@@ -249,10 +240,7 @@ block body
                           span.badge.badge-success
                             = emoji("star")
                             = " "
-                            if isBotUa
-                              = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
-                            else
-                              = t("Recommended")
+                            = t("Recommended")
                       td.align-middle= t(provider.description)
                       td.align-middle.text-center
                         a.btn.btn-primary.btn-sm.text-nowrap(
@@ -301,25 +289,13 @@ block body
                                       = titleize(platform)
                       else
                         td.align-middle.text-center
-                          if isBotUa
-                            = provider.imap ? t("Yes") : t("No")
-                          else
-                            = provider.imap ? emoji("white_check_mark") : emoji("x")
+                          = provider.imap ? emoji("white_check_mark") : emoji("x")
                         td.align-middle.text-center
-                          if isBotUa
-                            = provider.smtp ? t("Yes") : t("No")
-                          else
-                            = provider.smtp ? emoji("white_check_mark") : emoji("x")
+                          = provider.smtp ? emoji("white_check_mark") : emoji("x")
                         td.align-middle.text-center
-                          if isBotUa
-                            = provider.mx ? t("Yes") : t("No")
-                          else
-                            = provider.mx ? emoji("white_check_mark") : emoji("x")
+                          = provider.mx ? emoji("white_check_mark") : emoji("x")
                         td.align-middle.text-center
-                          if isBotUa
-                            = provider.name === "Forward Email" ? t("Yes") : t("No")
-                          else
-                            = provider.name === "Forward Email" ? emoji("white_check_mark") : emoji("x")
+                          = provider.name === "Forward Email" ? emoji("white_check_mark") : emoji("x")
                       if isEmailClients
                         td.align-middle.text-center.lead: span.badge(
                           class=provider.language === "Proprietary" ? "badge-danger" : "badge-dark"
@@ -343,20 +319,19 @@ block body
                             i.fab.fa-wikipedia-w
                             = " "
                             = t("Wikipedia")
-        if isEmailClients && !isBotUa
+        if isEmailClients
           .row.mt-3
             .col-12
               .text-center.text-muted.small!= t("P.S. Don't worry &ndash; we're coming out with our own desktop, mobile, and web apps soon!")
         //- Disclaimer
-        if !isBotUa
-          - const externalProviders = providers.filter((p) => p.name !== "Forward Email");
-          if externalProviders.length > 0
-            .row.mt-3
-              .col-12
-                .alert.alert-secondary.small.mb-0
-                  strong= t("Notice of Non-Affiliation and Disclaimer:")
-                  = " "
-                  != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(externalProviders.map((p) => p.name)), arrayJoinConjunction(externalProviders.map((p) => p.name)))
+        - const externalProviders = providers.filter((p) => p.name !== "Forward Email");
+        if externalProviders.length > 0
+          .row.mt-3
+            .col-12
+              .alert.alert-secondary.small.mb-0
+                strong= t("Notice of Non-Affiliation and Disclaimer:")
+                = " "
+                != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(externalProviders.map((p) => p.name)), arrayJoinConjunction(externalProviders.map((p) => p.name)))
       else
         .row.mt-3
           - const tools = [];
@@ -382,24 +357,19 @@ block body
                     href=l(tool.slug),
                     title=striptags(t(tool.title))
                   )
-                    if isBotUa
-                      != t(tool.title)
-                    else
-                      span.text-uppercase.font-weight-bold.align-middle= t("Learn more")
-                      = " "
-                      i.fa.fa-angle-double-right.align-middle
-          //- Disclaimer
-          if !isBotUa
-            .row
-              .col-12
-                .alert.alert-secondary.small.mt-3.mb-0
-                  strong= t("Notice of Non-Affiliation and Disclaimer:")
-                  = " "
-                  != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(platforms), arrayJoinConjunction(platforms))
+                    span.text-uppercase.font-weight-bold.align-middle= t("Learn more")
+                    = " "
+                    i.fa.fa-angle-double-right.align-middle
+          //- Disclaimer: a column of the row above (a nested .row widened the
+          //- page by its gutter on phones)
+          .col-12
+            .alert.alert-secondary.small.mt-3.mb-0
+              strong= t("Notice of Non-Affiliation and Disclaimer:")
+              = " "
+              != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(platforms), arrayJoinConjunction(platforms))
   //- The marketing tail: was _marketing and _testimonials on bootstrap and
   //- parallax images, now the same sections on the fe tokens (see
   //- _fe-marketing.pug). Wrapped in .fe-landing for its typography; the
   //- comparison content above it is unchanged.
-  if !isBotUa
-    .fe-landing.no-search(data-ignore-hash-change)
-      +feMarketing
+  .fe-landing.no-search(data-ignore-hash-change)
+    +feMarketing

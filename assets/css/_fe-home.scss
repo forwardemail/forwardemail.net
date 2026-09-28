@@ -150,8 +150,7 @@
   background-color: transparent;
   border: 0;
   border-radius: var(--fe-radius-md);
-  transition:
-    color var(--fe-motion-fast) var(--fe-ease),
+  transition: color var(--fe-motion-fast) var(--fe-ease),
     background-color var(--fe-motion-fast) var(--fe-ease);
   appearance: none;
 }
@@ -297,29 +296,21 @@
   color: var(--fe-state-success);
 }
 
-// Unrolled: all six views visible and stacked. html.no-js serves script-less
-// visitors (stripped by _meta.pug's inline script before paint, so no reflow);
-// .fe-console--unrolled is the server-rendered equivalent for crawlers.
-.fe-console--unrolled .fe-console__views,
+// Unrolled: all six views visible and stacked for script-less visitors
+// (html.no-js is stripped by _meta.pug's inline script before paint, so no
+// reflow).
 html.no-js .fe-console__views {
   display: block;
 }
 
-.fe-console--unrolled .fe-console__view,
 html.no-js .fe-console__view {
   visibility: visible;
 }
 
-.fe-console--unrolled .fe-console__view + .fe-console__view,
 html.no-js .fe-console__view + .fe-console__view {
   padding-top: var(--fe-space-6);
   margin-top: var(--fe-space-6);
   border-top: 1px solid var(--fe-border-subtle);
-}
-
-.fe-console--unrolled .fe-console__tab--active {
-  background-color: transparent;
-  box-shadow: none;
 }
 
 // Without the script the tabs are buttons with nothing to do, and every view
@@ -677,12 +668,25 @@ html.no-js .fe-console__rail-wrap {
   // The rail becomes a horizontal scroller: six equal columns at this width
   // would truncate every tab label. The hint, edge fade, and buttons make the
   // continuation obvious on devices that hide native overlay scrollbars.
+  // A grid so the scroll buttons can overlay the rail (same row) and be
+  // centred on it, whatever height the tabs end up with; the hint is row 2.
+  .fe-console__rail-wrap {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
   .fe-console__rail {
     display: flex;
+    grid-row: 1;
+    grid-column: 1 / -1;
     gap: var(--fe-space-2);
+    margin-bottom: 0;
     overflow-x: auto;
-    padding-inline: 2.75rem;
+    padding-inline: 2.25rem;
     scroll-behavior: smooth;
+    // snapping keeps tabs clear of the scroll buttons too
+    scroll-padding-inline: 2.25rem;
     scroll-snap-type: inline proximity;
     scrollbar-width: none;
   }
@@ -709,17 +713,18 @@ html.no-js .fe-console__rail-wrap {
   }
 
   .fe-console--rail-overflow .fe-console__rail-wrap::after {
+    // Placed in the rail's grid row, which is then its containing block, so
+    // the fade covers the rail and not the hint below it (both lines are
+    // given: an absolutely positioned item's auto end line is the grid's edge).
     position: absolute;
-    inset-block: 0 var(--fe-space-5);
+    grid-row: 1 / 2;
+    grid-column: 1 / -1;
+    inset-block: 0;
     inset-inline-end: 0;
     width: 3.25rem;
     pointer-events: none;
     content: '';
-    background: linear-gradient(
-      to right,
-      transparent,
-      var(--fe-bg-sunken) 80%
-    );
+    background: linear-gradient(to right, transparent, var(--fe-bg-sunken) 80%);
     border-radius: 0 var(--fe-radius-lg) var(--fe-radius-lg) 0;
     transition: opacity var(--fe-motion-fast) var(--fe-ease);
   }
@@ -731,29 +736,30 @@ html.no-js .fe-console__rail-wrap {
   [dir='rtl'] .fe-console--rail-overflow .fe-console__rail-wrap::after {
     inset-inline-end: auto;
     inset-inline-start: 0;
-    background: linear-gradient(
-      to left,
-      transparent,
-      var(--fe-bg-sunken) 80%
-    );
+    background: linear-gradient(to left, transparent, var(--fe-bg-sunken) 80%);
     border-radius: var(--fe-radius-lg) 0 0 var(--fe-radius-lg);
   }
 
+  // Small round buttons centred on the rail, over its edge fade, so they
+  // read as a hint to scroll rather than as another tab.
   .fe-console__rail-control {
-    position: absolute;
+    position: relative;
     z-index: 1;
-    inset-block-start: 4px;
     display: flex;
+    grid-row: 1;
     align-items: center;
     justify-content: center;
-    width: 2.25rem;
-    height: calc(100% - var(--fe-space-5) - 8px);
+    width: 1.75rem;
+    height: 1.75rem;
     padding: 0;
+    margin-inline: 4px;
+    font-size: 0.75rem;
+    line-height: 1;
     color: var(--fe-fg-primary);
     cursor: pointer;
     background-color: var(--fe-bg-raised);
     border: 1px solid var(--fe-border-default);
-    border-radius: var(--fe-radius-md);
+    border-radius: var(--fe-radius-full);
     box-shadow: var(--fe-elev-1);
   }
 
@@ -764,11 +770,11 @@ html.no-js .fe-console__rail-wrap {
   }
 
   .fe-console__rail-control--previous {
-    inset-inline-start: 4px;
+    grid-column: 1;
   }
 
   .fe-console__rail-control--next {
-    inset-inline-end: 4px;
+    grid-column: 3;
   }
 
   [dir='rtl'] .fe-console__rail-control i {
@@ -777,8 +783,10 @@ html.no-js .fe-console__rail-wrap {
 
   .fe-console__rail-hint {
     display: block;
+    grid-row: 2;
+    grid-column: 1 / -1;
     padding-inline: var(--fe-space-1);
-    margin: var(--fe-space-2) 0 0;
+    margin: var(--fe-space-5) 0 0;
     font-size: var(--fe-text-label);
     color: var(--fe-fg-secondary);
     text-align: center;

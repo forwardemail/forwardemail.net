@@ -42,12 +42,37 @@ x509.cryptoProvider.set(crypto);
 //
 // setup utilities
 //
+
+//
+// mongodb-memory-server checks that a random port is free by listening on it
+// (on "::"), then starts mongod on 127.0.0.1. On macOS the check passes when
+// something already listens on 127.0.0.1 with that port (a local mongod on
+// 27017, or another shard's in-memory mongod), and mongod then fails with
+// 'Port "..." already in use'. Start again on another port when that happens.
+//
+async function createMongoMemoryServer(dbName, attempts = 5) {
+  for (let attempt = 1; ; attempt++) {
+    // a new server each time, so the next port is random again
+    const mongod = new MongoMemoryServer({ instance: { dbName } });
+    try {
+      await mongod.start();
+      return mongod;
+    } catch (err) {
+      // (start() already stopped the process, this removes its data directory)
+      await mongod.cleanup({ doCleanup: true, force: true }).catch(() => {});
+      if (attempt >= attempts || !/already in use/i.test(err?.message || ''))
+        throw err;
+      logger.debug(err);
+    }
+  }
+}
+
 exports.setupMongoose = async () => {
   await Promise.all(
     mongoose.connections.map(async (connection) => {
       const index = connection._connectionString.lastIndexOf('/');
       const dbName = connection._connectionString.slice(index + 1);
-      const mongod = await MongoMemoryServer.create({ instance: { dbName } });
+      const mongod = await createMongoMemoryServer(dbName);
       const uri = mongod.getUri();
       connection._connectionString = uri;
       connection.mongod = mongod;

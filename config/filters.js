@@ -464,7 +464,7 @@ function fixTableOfContents(content, options) {
   if (!options.isDocs && !options.hasSidebar && lis.length <= MAX_SECTIONS)
     return `<div class="markdown-body">${root.toString()}</div>`;
 
-  const topPart = `<div class="fixed-bottom bg-dark border-top border-themed p-2 text-center is-bot no-js d-print-none">
+  const topPart = `<div class="fixed-bottom bg-dark border-top border-themed p-2 text-center no-js d-print-none">
       <ul class="list-inline mb-0">
         <li class="list-inline-item">
           <a data-toggle="modal-anchor" role="button" data-target="#modal-table-of-contents" class="btn btn-success">

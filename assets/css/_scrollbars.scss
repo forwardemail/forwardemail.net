@@ -1,0 +1,35 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Without these, every scrollbar was the browser's light default, so in dark
+// mode the page and panels showed a white track and a light grey thumb. The
+// page scrollbar sits on the canvas; scrollers inside the page get a
+// transparent track so they blend with whatever surface they are on. The
+// thumb is a token: light and dark schemes set it on :root (_app-tokens.scss,
+// app-dark.scss), and surfaces that are dark in both schemes (the navbar and
+// its menus, the footer, .fe-surface-dark) set the dark value for everything
+// inside them. Browsers without scrollbar-color keep their native scrollbars.
+
+html {
+  scrollbar-color: var(--app-scrollbar-thumb) var(--app-bg-canvas);
+}
+
+body.app * {
+  scrollbar-color: var(--app-scrollbar-thumb) transparent;
+}
+
+body.app nav.fe-nav,
+body.app .fe-footer,
+body.app .fe-surface-dark {
+  --app-scrollbar-thumb: #{$fe-n-400};
+}
+
+// Menus and the docs sidebar are small scrollers, so they get a thin bar (the
+// sidebar's own ::-webkit-scrollbar width is ignored where scrollbar-color
+// applies).
+body.app .dropdown-menu,
+body.app .sidebar-nav {
+  scrollbar-width: thin;
+}

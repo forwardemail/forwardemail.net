@@ -125,11 +125,10 @@
     }
   ];
 
-//- `bot` renders every view visible and stacked rather than one at a time. A
-//- crawler that does not run our JavaScript would otherwise be shown one view
-//- and four hidden ones, and four fifths of this copy would be discounted.
-mixin feConsole(bot)
-  .fe-console(class=bot ? "fe-console--unrolled" : "", data-fe-console)
+//- Visitors without JavaScript (including crawlers that do not run it) get
+//- every view visible and stacked through html.no-js (see _fe-home.scss).
+mixin feConsole
+  .fe-console(data-fe-console)
     //- The rail is a row of buttons that name their view through `data-target`,
     //- the same hook the modal and collapse triggers on the page use, rather
     //- than `href="#view"` links: a link would put `#mailbox` into the address

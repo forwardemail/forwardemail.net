@@ -1,8 +1,7 @@
 extends layout
 
 block append scripts
-  if !isBot(ctx.get('User-Agent'))
-    +script("js/download.js")
+  +script("js/download.js")
 
 block body
   //- Inlined by pug, so archLabels, formatLabels, formatNotes and

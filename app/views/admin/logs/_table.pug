@@ -1,96 +1,97 @@
 include ../../_sort-header
 include ../../_pagination
 
-table.table.table-hover.table-bordered.table-sm
-  thead.thead-dark
-    tr
-      th(scope="col")
-        +sortHeader('id', 'ID', '#table-logs')
-      th(scope="col")
-        +sortHeader('created_at', 'Created', '#table-logs')
-      th(scope="col")
-        +sortHeader('message', 'Message', '#table-logs')
-      th(scope="col")
-        +sortHeader('meta.level', 'Level', '#table-logs')
-      th(scope="col")
-        +sortHeader('user', 'User', '#table-logs')
-      th.align-middle(scope="col")= t("Request")
-      th.align-middle.text-center(scope="col")= t("Status")
-      th.text-center.align-middle(scope="col")= t("Actions")
-    tbody
-      if logs.length === 0
-        tr
-          td.alert.alert-info(colspan="8")
-            = t("No logs exist for that search.")
-      else
-        each log in logs
+.table-responsive
+  table.table.table-hover.table-bordered.table-sm
+    thead.thead-dark
+      tr
+        th(scope="col")
+          +sortHeader('id', 'ID', '#table-logs')
+        th(scope="col")
+          +sortHeader('created_at', 'Created', '#table-logs')
+        th(scope="col")
+          +sortHeader('message', 'Message', '#table-logs')
+        th(scope="col")
+          +sortHeader('meta.level', 'Level', '#table-logs')
+        th(scope="col")
+          +sortHeader('user', 'User', '#table-logs')
+        th.align-middle(scope="col")= t("Request")
+        th.align-middle.text-center(scope="col")= t("Status")
+        th.text-center.align-middle(scope="col")= t("Actions")
+      tbody
+        if logs.length === 0
           tr
-            td.align-middle
-              .markdown-body.ml-0.mr-0: code= log.id
-            td.align-middle.text-center.dayjs(
-              data-time=new Date(log.created_at).getTime()
-            )
-              = dayjs(log.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
-            td.align-middle.small
-              if !log.err && log.meta && log.meta.is_http
-                .markdown-body.ml-0.mb-0
-                  code!= safeAnsiHTML(log.message)
-              else
-                != log.err && log.err.message ? safeAnsiHTML(log.err.message) : safeAnsiHTML(log.message)
-            td.align-middle.text-center
-              if log.meta && log.meta.level
-                - let levelBadgeClass = "badge-success";
-                case log.meta.level
-                  when 'fatal'
-                  when 'error'
-                    span.badge.badge-danger= log.meta.level
-                  when 'warning'
-                    span.badge.badge-warning= log.meta.level
-                  when 'info'
-                    span.badge.badge-success= log.meta.level
-                  when 'debug'
-                    span.badge.badge-primary= log.meta.level
-                  default
-                    span.badge.badge-secondary= log.meta.level
-            td.align-middle
-              code
-                if log.user && log.user.email
-                  = log.user.email
-                else if log.meta && log.meta.user && log.meta.user.email
-                  = log.meta.user.email
-            td.align-middle
-              if log.meta.request
-                ul.list-inline.mb-0
-                  if log.meta.request.method
-                    li.list-inline-item.badge.badge-pill.badge-light= log.meta.request.method
-                  if log.meta.request.url
-                    li.list-inline-item.badge.badge-pill.badge-dark= log.meta.request.url
-            td.align-middle.text-center
-              if log.meta
-                - let badgeClass = "badge-success";
-                - let statusCode;
+            td.alert.alert-info(colspan="8")
+              = t("No logs exist for that search.")
+        else
+          each log in logs
+            tr
+              td.align-middle
+                .markdown-body.ml-0.mr-0: code= log.id
+              td.align-middle.text-center.dayjs(
+                data-time=new Date(log.created_at).getTime()
+              )
+                = dayjs(log.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+              td.align-middle.small
+                if !log.err && log.meta && log.meta.is_http
+                  .markdown-body.ml-0.mb-0
+                    code!= safeAnsiHTML(log.message)
+                else
+                  != log.err && log.err.message ? safeAnsiHTML(log.err.message) : safeAnsiHTML(log.message)
+              td.align-middle.text-center
+                if log.meta && log.meta.level
+                  - let levelBadgeClass = "badge-success";
+                  case log.meta.level
+                    when 'fatal'
+                    when 'error'
+                      span.badge.badge-danger= log.meta.level
+                    when 'warning'
+                      span.badge.badge-warning= log.meta.level
+                    when 'info'
+                      span.badge.badge-success= log.meta.level
+                    when 'debug'
+                      span.badge.badge-primary= log.meta.level
+                    default
+                      span.badge.badge-secondary= log.meta.level
+              td.align-middle
+                code
+                  if log.user && log.user.email
+                    = log.user.email
+                  else if log.meta && log.meta.user && log.meta.user.email
+                    = log.meta.user.email
+              td.align-middle
+                if log.meta.request
+                  ul.list-inline.mb-0
+                    if log.meta.request.method
+                      li.list-inline-item.badge.badge-pill.badge-light= log.meta.request.method
+                    if log.meta.request.url
+                      li.list-inline-item.badge.badge-pill.badge-dark= log.meta.request.url
+              td.align-middle.text-center
+                if log.meta
+                  - let badgeClass = "badge-success";
+                  - let statusCode;
 
-                if log.meta.is_http && log.meta.response && log.meta.response.status_code
-                  - statusCode = log.meta.response.status_code;
-                else if log.err && log.err.responseCode
-                  - statusCode = log.err.responseCode;
-                else if log.err && log.err.statusCode
-                  - statusCode = log.err.statusCode;
-                else if log.err && log.err.status
-                  - statusCode = log.err.status;
+                  if log.meta.is_http && log.meta.response && log.meta.response.status_code
+                    - statusCode = log.meta.response.status_code;
+                  else if log.err && log.err.responseCode
+                    - statusCode = log.err.responseCode;
+                  else if log.err && log.err.statusCode
+                    - statusCode = log.err.statusCode;
+                  else if log.err && log.err.status
+                    - statusCode = log.err.status;
 
-                if statusCode >= 500
-                  - badgeClass = "badge-danger";
-                else if statusCode >= 400
-                  - badgeClass = "badge-warning";
-                else if statusCode >= 300
-                  - badgeClass = "badge-primary";
+                  if statusCode >= 500
+                    - badgeClass = "badge-danger";
+                  else if statusCode >= 400
+                    - badgeClass = "badge-warning";
+                  else if statusCode >= 300
+                    - badgeClass = "badge-primary";
 
-                if statusCode
-                  span.badge.badge-pill(class=badgeClass)= statusCode
-            td.align-middle.text-center
-              a.btn.btn-dark.btn-sm(
-                href=l(`/admin/logs/${log.id}`),
-                target="_blank"
-              ): i.fa.fa-search
+                  if statusCode
+                    span.badge.badge-pill(class=badgeClass)= statusCode
+              td.align-middle.text-center
+                a.btn.btn-dark.btn-sm(
+                  href=l(`/admin/logs/${log.id}`),
+                  target="_blank"
+                ): i.fa.fa-search
 +paginate('#table-logs')

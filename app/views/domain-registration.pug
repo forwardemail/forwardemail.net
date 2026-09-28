@@ -4,8 +4,7 @@ include _onboard
 include _modal-domain-search
 
 block append scripts
-  if !isBot(ctx.get('User-Agent'))
-    +script("js/domain-search.js")
+  +script("js/domain-search.js")
 
 block body
   +modalDomainSearch

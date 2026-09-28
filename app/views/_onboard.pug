@@ -1,5 +1,5 @@
 mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKeepReading=false, onboardContainerClass='', isModalOnboard=false, isInsideModal=false)
-  if !isBot(ctx.get('User-Agent')) && !isInsideModal
+  if !isInsideModal
     #modal-onboard-pricing-video.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -23,7 +23,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
-  if !isBot(ctx.get('User-Agent')) && isModalOnboard
+  if isModalOnboard
     script(defer, nonce=nonce).
       window.addEventListener(
         "load",
@@ -56,7 +56,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
             if onboardText
               p.text-muted.text-center.mb-0!= onboardText
             +onboard(onboardHeader, onboardText, onboardFormAction, onboardKeepReading, onboardContainerClass, false, true)
-  else if !isBot(ctx.get('User-Agent'))
+  else
     div&attributes(attributes)
       div(
         class=isInsideModal ? ["px-3"].join(" ") : [onboardContainerClass, "bg-light", "bg-themed", "py-3", "py-md-4", "py-lg-5"].join(" ")

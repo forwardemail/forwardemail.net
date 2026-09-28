@@ -25,8 +25,23 @@ const logger = require('#helpers/logger');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 
+//
+// `domainName` is the host whose DNS published `verificationRecord`. When
+// given, the domain found must be that host or a parent of it: the value is
+// public (anyone can read it from the domain's DNS), so without this check
+// another domain could publish it and have its mail routed through this
+// domain's aliases (including into its IMAP mailboxes).
+//
+function isVerifiedHost(name, host) {
+  if (!isSANB(name) || !isSANB(host)) return false;
+  name = punycode.toUnicode(name).toLowerCase();
+  const hostname = punycode.toUnicode(host).toLowerCase().replace(/\.$/, '');
+  return hostname === name || hostname.endsWith(`.${name}`);
+}
+
 async function getForwardingConfiguration({
   verificationRecord,
+  domainName,
   username = false,
   ignoreBilling,
   client,
@@ -48,6 +63,10 @@ async function getForwardingConfiguration({
   ]);
 
   if (!domain || domain.plan === 'free') return {};
+
+  // the verification value must have come from this domain (or a subdomain)
+  if (domainName !== undefined && !isVerifiedHost(domain.name, domainName))
+    return {};
 
   let hasMultiplePGP = false;
   let hasMultipleSMIME = false;

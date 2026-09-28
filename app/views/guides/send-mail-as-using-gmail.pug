@@ -1,20 +1,19 @@
 extends ../layout
 
 block body
-  if !isBot(ctx.get('User-Agent'))
-    .fixed-bottom.text-center.d-print-none.d-lg-none
-      .bg-dark.p-2.border-top.border-themed
-        ul.list-inline.mb-0
-          li.list-inline-item
-            a.btn.btn-light.btn-sm(href="#step-by-step-instructions")
-              span.badge.badge-pill.mr-1.badge-success
-                i.fa.fa-list-ol
-              = t("For Paid Plans")
-          li.list-inline-item
-            a.btn.btn-light.btn-sm(href="#legacy-free-guide")
-              span.badge.badge-pill.mr-1.badge-danger
-                i.fa.fa-list-ol
-              = t("For Free Plan")
+  .fixed-bottom.text-center.d-print-none.d-lg-none
+    .bg-dark.p-2.border-top.border-themed
+      ul.list-inline.mb-0
+        li.list-inline-item
+          a.btn.btn-light.btn-sm(href="#step-by-step-instructions")
+            span.badge.badge-pill.mr-1.badge-success
+              i.fa.fa-list-ol
+            = t("For Paid Plans")
+        li.list-inline-item
+          a.btn.btn-light.btn-sm(href="#legacy-free-guide")
+            span.badge.badge-pill.mr-1.badge-danger
+              i.fa.fa-list-ol
+            = t("For Free Plan")
   .container.py-3.py-md-4.py-lg-5
     .row
       .col-12.text-center
@@ -29,26 +28,13 @@ block body
         //-.
           #quick-video-guide.card.mt-3
             h2.h5.card-header.text-center
-              if isBot(ctx.get('User-Agent'))
-                = t('How to use Gmail\'s "Send Mail As" with your Custom Domain video')
-              else
-                = t("Quick Video Guide")
+              = t("Quick Video Guide")
             .card-body.text-center
-              if isBot(ctx.get('User-Agent'))
-                a.btn.btn-outline-dark.btn-lg(
-                  href="https://www.youtube.com/watch?v=MEheS8gM4Xs",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                )
-                  i.fab.fa-youtube.text-danger
-                  = " "
-                  = t("Watch Video")
-              else
-                .lazyframe.border.border-themed.d-inline-block.lazyframe-bordered(
-                  data-vendor="youtube_nocookie",
-                  title=t("How to Send Mail As using Gmail"),
-                  data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"
-                )
+              .lazyframe.border.border-themed.d-inline-block.lazyframe-bordered(
+                data-vendor="youtube_nocookie",
+                title=t("How to Send Mail As using Gmail"),
+                data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"
+              )
     .row.mt-3
       #step-by-step-instructions.col-sm-12.col-md-12.col-lg-6
         .card.position-relative
@@ -56,10 +42,7 @@ block body
             span.badge.badge-pill.badge-success.mt-3.mr-3.text-uppercase
               != t("New")
           h2.h5.card-header.text-center
-            if isBot(ctx.get("User-Agent"))
-              = t("Step by Step Instructions")
-            else
-              = t("For Paid Plans")
+            = t("For Paid Plans")
           .card-body.markdown-body
             != sendMailAsContent
       #legacy-free-guide.col-sm-12.col-md-12.col-lg-6.mt-5.mt-lg-0
@@ -68,10 +51,7 @@ block body
             span.badge.badge-pill.badge-danger.mt-3.mr-3.text-uppercase
               != t("Deprecated")
           h2.h5.card-header.text-center
-            if isBot(ctx.get("User-Agent"))
-              != t("Legacy Free Guide")
-            else
-              != t("For Free Plan")
+            != t("For Free Plan")
           .card-body.markdown-body
             .alert.alert-danger
               i.fa.fa-stop-circle.font-weight-bold
@@ -86,10 +66,9 @@ block body
             )
             != legacyFreeGuide
     //- Disclaimer
-    if !isBot(ctx.get('User-Agent'))
-      .row
-        .col-12
-          .alert.alert-secondary.small.text-center.mt-3.mb-0
-            strong= t("Notice of Non-Affiliation and Disclaimer:")
-            = " "
-            != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', "Gmail", "Gmail")
+    .row
+      .col-12
+        .alert.alert-secondary.small.text-center.mt-3.mb-0
+          strong= t("Notice of Non-Affiliation and Disclaimer:")
+          = " "
+          != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', "Gmail", "Gmail")

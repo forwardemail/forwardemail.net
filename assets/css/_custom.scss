@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+// A table scroller must also be the containing block for what is absolutely
+// positioned inside it (e.g. the .sr-only labels on icon buttons). Otherwise
+// those escape its overflow clipping, keep the position they have at the far
+// end of a wide table, and widen the whole page (admin domains was 2x wide).
+.table-responsive {
+  position: relative;
+}
+
 // https://github.com/twbs/bootstrap/issues/24374
 .min-vh-80 {
   min-height: 80vh !important;
@@ -166,8 +174,6 @@ body.app {
 @media (prefers-color-scheme: dark) {
   @include media-breakpoint-up(md) {
     .bg-fixed {
-      // static rather than var(--app-bg-canvas): this block also ships in
-      // app-bot.css, which never gets the dark token re-point
       background-color: $fe-ink;
     }
   }
@@ -196,12 +202,8 @@ html {
     span.lazyload {
       display: none !important;
     }
-  }
 
-  &.no-js,
-  &.bot-detected {
-    // hide css for js that bots don't use
-    // (since we only support lazyload for bots)
+    // hide css for js that script-less visitors cannot use
     .dropdown-toggle:after {
       display: none !important;
     }

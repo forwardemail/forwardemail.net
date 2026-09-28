@@ -128,12 +128,19 @@ function setUpConsole(root) {
     const railBox = rail.getBoundingClientRect();
     const tabBox = tab.getBoundingClientRect();
 
+    // The rail's inline padding is where the scroll buttons sit on phones,
+    // so a tab is only visible between the padding edges (a tab aligned to
+    // the rail's outer edge would be under a button).
+    const style = window.getComputedStyle(rail);
+    const left = railBox.left + (Number.parseFloat(style.paddingLeft) || 0);
+    const right = railBox.right - (Number.parseFloat(style.paddingRight) || 0);
+
     // Nearest edge, like scrollIntoView's inline: 'nearest'. A delta along
     // the x axis means the same thing under RTL: scrollBy moves the viewport,
     // whichever end the content starts from.
     let delta = 0;
-    if (tabBox.left < railBox.left) delta = tabBox.left - railBox.left;
-    else if (tabBox.right > railBox.right) delta = tabBox.right - railBox.right;
+    if (tabBox.left < left) delta = tabBox.left - left;
+    else if (tabBox.right > right) delta = tabBox.right - right;
     if (delta === 0) return;
 
     // The rail's own scroll-behavior decides smooth or instant (it is auto

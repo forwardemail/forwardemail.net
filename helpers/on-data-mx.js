@@ -87,6 +87,7 @@ const parseTLSRequiredHeader = require('#helpers/parse-tls-required-header');
 const parseUsername = require('#helpers/parse-username');
 const retryRequest = require('#helpers/retry-request');
 const sendEmail = require('#helpers/send-email');
+const sendForwardingIssueEmails = require('#helpers/send-forwarding-issue-emails');
 const signMessage = require('#helpers/sign-message');
 const updateHeaders = require('#helpers/update-headers');
 const { Emails, Users, SelfTests } = require('#models');
@@ -435,6 +436,33 @@ function createVacationResponder(vacationResponder, headers, session) {
   return rootNode.createReadStream();
 }
 
+//
+// Replace forwarding destinations in an error message with the alias they
+// belong to, so a rejection from the destination's server never reveals the
+// forwarding configuration to the sender (`replacements` maps alias to
+// destination, e.g. `{ 'alias@example.com': 'private@gmail.com' }`).
+//
+// The destination is only replaced as a whole address or URL (not when it is
+// the tail of a longer address, e.g. "est@example.com" inside "test@example.com").
+//
+function maskDestinations(message, replacements) {
+  if (typeof message !== 'string' || !_.isObject(replacements)) return message;
+  for (const alias of Object.keys(replacements)) {
+    const destination = replacements[alias];
+    if (
+      !isSANB(destination) ||
+      destination.toLowerCase() === alias.toLowerCase()
+    )
+      continue;
+    message = message.replace(
+      new RE2(`(^|[^\\w.%+-])${escapeStringRegexp(destination)}`, 'gi'),
+      (match, prefix) => `${prefix}${alias}`
+    );
+  }
+
+  return message;
+}
+
 function getFingerprintKey(session, value) {
   if (!session?.fingerprint) throw new TypeError('Fingerprint missing');
   if (!value) throw new TypeError('Value missing');
@@ -554,11 +582,18 @@ async function imap(alias, headers, session, body) {
     const messageTime = Date.now() - startTime;
 
     if (response[alias.address]) {
+      // Nothing was appended (e.g. the mailbox is over quota), so release the
+      // claim: otherwise a retry of a deferred message would skip this
+      // mailbox as if it had the message, and the message would be lost.
+      this.client.del(fpKey).catch((err) => logger.fatal(err));
+
       // convert response object error into an Error
       const err = parseError(response[alias.address]);
       err.target = env.IMAP_HOST;
       bounces.push({
         address: alias.address,
+        destination: alias.address,
+        isMailbox: true,
         err,
         host: env.SQLITE_HOST
       });
@@ -617,6 +652,8 @@ async function imap(alias, headers, session, body) {
 
     bounces.push({
       address: alias.address,
+      destination: alias.address,
+      isMailbox: true,
       err,
       host: HOSTNAME
     });
@@ -1243,22 +1280,21 @@ async function forward(recipient, headers, session, body) {
         logger.fatal(err);
       }
 
+      // nothing was delivered, so release the claim (otherwise a retry would
+      // skip this webhook as if it had already received the message)
+      this.client.del(key).catch((err) => logger.fatal(err));
+
       // in case the response had sensitive email user information hide it too
-      for (const address of Object.keys(recipient.replacements)) {
-        try {
-          err_.message = err_.message.replace(
-            new RE2(new RegExp(escapeStringRegexp(address), 'gi')),
-            recipient.replacements[address]
-          );
-        } catch (err) {
-          // catch in case undici error
-          // (e.g. Cannot set property which only has a getter)
-          // TODO: we shouldn't call `.replace` on an instance of a ResponseStatusCodeError (?)
-          // new undici.errors.ResponseStatusCodeError(...)
-          err.orig_error = err_;
-          err.isCodeBug = true;
-          logger.fatal(err);
-        }
+      try {
+        err_.message = maskDestinations(err_.message, recipient.replacements);
+      } catch (err) {
+        // catch in case undici error
+        // (e.g. Cannot set property which only has a getter)
+        // TODO: we shouldn't call `.replace` on an instance of a ResponseStatusCodeError (?)
+        // new undici.errors.ResponseStatusCodeError(...)
+        err.orig_error = err_;
+        err.isCodeBug = true;
+        logger.fatal(err);
       }
 
       const obj = parseErr(err_);
@@ -1375,6 +1411,7 @@ async function forward(recipient, headers, session, body) {
 
         bounces.push({
           address,
+          destination: recipient.webhook,
           err,
           recipient
         });
@@ -1715,27 +1752,26 @@ async function forward(recipient, headers, session, body) {
         .catch((err) => logger.fatal(err));
     }
 
+    // nothing was accepted, so release the claim (otherwise a retry would
+    // skip this destination as if it had already received the message)
+    if (!info.accepted || info.accepted.length === 0)
+      this.client.del(key).catch((err) => logger.fatal(err));
+
     if (info.rejectedErrors && info.rejectedErrors.length > 0) {
       for (const err of info.rejectedErrors) {
         logger.warn(err, {
           session
         });
 
-        // here we do some magic so that we push an error message
-        // that has the end-recipient's email masked with the
-        // original to address that we were trying to send to
+        // mask the destination with the alias in the message sent to the sender
         err._message = err.message;
-        for (const address of Object.keys(recipient.replacements)) {
-          err.message = err.message.replace(
-            new RE2(new RegExp(escapeStringRegexp(address), 'gi')),
-            recipient.replacements[address]
-          );
-        }
+        err.message = maskDestinations(err.message, recipient.replacements);
 
         if (!err.target) err.target = recipient.host;
 
         bounces.push({
           address: recipient.recipient,
+          destination: recipient.to[0],
           host: recipient.host,
           err,
           recipient
@@ -1757,21 +1793,15 @@ async function forward(recipient, headers, session, body) {
     // re-delivery for the duration of fingerprintTTL.
     this.client.del(key).catch((err) => logger.fatal(err));
 
-    // here we do some magic so that we push an error message
-    // that has the end-recipient's email masked with the
-    // original to address that we were trying to send to
+    // mask the destination with the alias in the message sent to the sender
     err._message = err.message;
-    for (const address of Object.keys(recipient.replacements)) {
-      err.message = err.message.replace(
-        new RE2(new RegExp(escapeStringRegexp(address), 'gi')),
-        recipient.replacements[address]
-      );
-    }
+    err.message = maskDestinations(err.message, recipient.replacements);
 
     if (!err.target) err.target = recipient.host;
 
     bounces.push({
       address: recipient.recipient,
+      destination: recipient.webhook || recipient.to[0],
       host: recipient.host,
       err,
       recipient
@@ -2385,22 +2415,128 @@ async function onDataMX(session, headers, body) {
   if (bounces.length === 0) return;
 
   //
-  // prepare final combined error and message
+  // SMTP allows a single reply after DATA for every recipient in the
+  // transaction, so when some recipients received the message and others did
+  // not, one reply has to cover both. Rejecting would make the sender treat
+  // the recipients that already have the message as failed (and mailing
+  // lists would count bounces against, and unsubscribe, members who received
+  // it), so:
   //
+  //   - nothing delivered: reply with the lowest error code (as before)
+  //   - partially delivered, and a destination failed temporarily (4xx):
+  //     defer so the sender retries (destinations that already have the
+  //     message are skipped on retry, see `getFingerprintKey`), for at most
+  //     `config.partialDeliveryRetryWindow` since the first attempt
+  //   - partially delivered, and every failure was permanent (5xx), or the
+  //     retry window closed: accept, and email the alias owner and domain
+  //     admins about broken forwarding destinations
+  //
+  const outcome = getDeliveryOutcome(session, accepted, bounces);
+
+  //
+  // email about broken destinations once the outcome is final
+  // (not while the sender is still going to retry)
+  //
+  if (
+    outcome.action === 'accept' ||
+    (outcome.action === 'reject' && outcome.err.responseCode >= 500)
+  ) {
+    const message = {
+      from: session.originalFromAddress,
+      subject: getHeaders(headers, 'subject'),
+      messageId: getHeaders(headers, 'message-id'),
+      date: getHeaders(headers, 'date')
+    };
+    sendForwardingIssueEmails({
+      client: this.client,
+      resolver: this.resolver,
+      session,
+      message,
+      accepted,
+      bounces,
+      outcome: outcome.action === 'accept' ? 'accepted' : 'rejected'
+    })
+      .then()
+      .catch((err) => logger.fatal(err, { session }));
+  }
+
+  if (outcome.action === 'accept') {
+    logger.warn('message partially delivered', {
+      session,
+      accepted,
+      failed: _.uniq(bounces.map((bounce) => bounce.address)),
+      codes: bounces.map((bounce) => getErrorCode(bounce.err))
+    });
+    return;
+  }
+
+  throw outcome.err;
+}
+
+//
+// Decide the reply for a message that had at least one failed delivery (see
+// the notes in `onDataMX` above). Returns `{ action, err }` where action is
+// "accept", "defer" (4xx), or "reject" (nothing was delivered).
+//
+function getDeliveryOutcome(session, accepted, bounces) {
+  if (accepted.length === 0) {
+    return {
+      action: 'reject',
+      err: combineBounceErrors(bounces)
+    };
+  }
+
+  const firstArrivalTime = Number.isFinite(session.fingerprintFirstArrivalTime)
+    ? session.fingerprintFirstArrivalTime
+    : session.arrivalTime;
+  const isRetryWindowExceeded =
+    session.arrivalTime - firstArrivalTime >=
+    Math.min(config.partialDeliveryRetryWindow, config.fingerprintTTL / 2);
+
+  const deferred = [];
+  for (const bounce of bounces) {
+    if (getErrorCode(bounce.err) >= 500) continue;
+    if (isRetryWindowExceeded) bounce.isRetryWindowExceeded = true;
+    else deferred.push(bounce);
+  }
+
+  if (deferred.length === 0) return { action: 'accept' };
+
+  return {
+    action: 'defer',
+    err: combineBounceErrors(
+      deferred,
+      `Delivery to ${listAddresses(
+        deferred.map((bounce) => bounce.address)
+      )} was deferred and will complete when the message is retried (${listAddresses(
+        accepted
+      )} already received it and will not receive it twice)`
+    )
+  };
+}
+
+//
+// A short list of addresses for an SMTP reply, e.g. "a@x, b@x, c@x and 47 more"
+// (a mailing list can send dozens of recipients in one transaction, and SMTP
+// reply lines should stay under 512 characters)
+//
+const MAX_LISTED_ADDRESSES = 3;
+function listAddresses(addresses) {
+  const unique = _.uniq(addresses.map((a) => a.toLowerCase())).sort();
+  if (unique.length <= MAX_LISTED_ADDRESSES)
+    return arrayJoinConjunction(unique);
+  return `${unique.slice(0, MAX_LISTED_ADDRESSES).join(', ')} and ${
+    unique.length - MAX_LISTED_ADDRESSES
+  } more`;
+}
+
+function combineBounceErrors(bounces, summary) {
   const errors = [];
   const codes = [];
   let isDenylistError = false;
   let hasCodeBug = false;
 
-  //
-  // TODO: we may want to redo this in the future
-  //     (it's vague as to what email addresses specifically fail)
-  //     (although we do not want to expose destination addresses)
-  //
-  if (accepted.length > 0)
-    errors.push(
-      new Error(`Message delivered to ${arrayJoinConjunction(accepted.sort())}`)
-    );
+  if (summary) errors.push(new Error(summary));
 
   for (const bounce of bounces) {
     errors.push(bounce.err);
@@ -2414,13 +2550,12 @@ async function onDataMX(session, headers, body) {
   if (hasCodeBug) err.isCodeBug = true;
 
   // set SMTP response code equal to lowest error code
-  err.responseCode = codes.sort()[0];
+  err.responseCode = codes.sort((a, b) => a - b)[0];
 
   // preserve original bounce array
   err.bounces = bounces;
 
-  // throw the error so it bubbles up to connection
-  throw err;
+  return err;
 }
 
 module.exports = onDataMX;

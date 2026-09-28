@@ -60,8 +60,5 @@ mixin feCard(card)
         p.fe-card__subtitle!= card.subtitle
       p.fe-text.fe-card__text!= card.description
       a.fe-card__link(href=card.href, title=card.alt)
-        if isBotUa
-          != card.title
-        else
-          span= card.cta || t("Learn more")
-          i.fa.fa-angle-right(aria-hidden="true")
+        span= card.cta || t("Learn more")
+        i.fa.fa-angle-right(aria-hidden="true")

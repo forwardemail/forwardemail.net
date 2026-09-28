@@ -37,10 +37,7 @@
             = " "
           = t("Time to read")
         div
-          if isBot(ctx.get('User-Agent'))
+          span.d-none.d-md-inline
             = t("Less than 5 minutes")
-          else
-            span.d-none.d-md-inline
-              = t("Less than 5 minutes")
-            span.d-inline.d-md-none
-              = t("< 5 minutes")
+          span.d-inline.d-md-none
+            = t("< 5 minutes")

@@ -118,8 +118,8 @@ const developerDocsIcons = [
 
 // The two halves that concatenate into css/app.css. They are intermediate:
 // css() pulls them out of the stream before anything is written, so they
-// never land in build/ (nothing serves them; only app.css and app-bot.css
-// are referenced). Paths are relative to the assets base the stream carries.
+// never land in build/ (nothing serves them; only app.css is referenced).
+// Paths are relative to the assets base the stream carries.
 const CONCAT_CSS_ORDER = ['css/app-light.css', 'css/app-dark.css'];
 const CONCAT_CSS_GLOBS = CONCAT_CSS_ORDER.map(
   (p) => `${config.assetsBase}/${p}`
@@ -235,7 +235,6 @@ const purgeCssOptions = {
       'floating-label',
       'font-weight-bold',
       'h4',
-      'is-bot',
       'lazyframe',
       'list-inline',
       'list-inline-item',
@@ -434,7 +433,7 @@ function cssDev() {
 
 function css() {
   // Holds app-light.css and app-dark.css back while the rest of the stream
-  // (app-bot.css, codemirror.css) goes on; restored after they have been
+  // (codemirror.css) goes on; restored after they have been
   // concatenated into app.css and given their second pass, so the two halves
   // are never written to disk and the other bundles are not processed twice.
   const halves = filter(CONCAT_CSS_GLOBS, { restore: true });
@@ -635,11 +634,6 @@ async function bundle() {
       path.join(config.buildBase, 'js', 'scalar.js')
     ),
 
-    // lazyload
-    fs.promises.copyFile(
-      path.join(__dirname, 'node_modules', 'lazyload', 'lazyload.min.js'),
-      path.join(config.buildBase, 'js', 'lazyload.js')
-    ),
     // ekko-lightbox
     fs.promises.copyFile(
       path.join(

@@ -2,21 +2,20 @@ extends ../layout
 
 block body
   //-.
-    if !isBot(ctx.get('User-Agent'))
-      .fixed-bottom.text-center.d-print-none
-        .bg-dark.p-2.border-top.border-themed
-          ul.list-inline.mb-0
-            li.list-inline-item
-              a.btn.btn-lg.btn-light(href="#quick-video-guide")
-                i.fab.fa-youtube.text-danger
-                = " "
-                = t("Video")
-            li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
-            li.list-inline-item
-              a.btn.btn-lg.btn-light(href="#step-by-step-instructions")
-                span.badge.badge-pill.mr-1.badge-success
-                  i.fa.fa-list-ol
-                = t("Steps")
+    .fixed-bottom.text-center.d-print-none
+      .bg-dark.p-2.border-top.border-themed
+        ul.list-inline.mb-0
+          li.list-inline-item
+            a.btn.btn-lg.btn-light(href="#quick-video-guide")
+              i.fab.fa-youtube.text-danger
+              = " "
+              = t("Video")
+          li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
+          li.list-inline-item
+            a.btn.btn-lg.btn-light(href="#step-by-step-instructions")
+              span.badge.badge-pill.mr-1.badge-success
+                i.fa.fa-list-ol
+              = t("Steps")
   .container.py-3.py-md-4.py-lg-5
     .row
       .col-12.text-center
@@ -26,35 +25,19 @@ block body
         //-.
           #quick-video-guide.card.mt-3
             h2.h5.card-header.text-center
-              if isBot(ctx.get('User-Agent'))
-                = t('How to send email with your custom domain video')
-              else
-                = t("Quick Video Guide")
+              = t("Quick Video Guide")
             .card-body.text-center
-              if isBot(ctx.get('User-Agent'))
-                a.btn.btn-outline-dark.btn-lg(
-                  href="https://www.youtube.com/watch?v=MEheS8gM4Xs",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                )
-                  i.fab.fa-youtube.text-danger
-                  = " "
-                  = t("Watch Video")
-              else
-                .lazyframe.border.border-themed.d-inline-block,lazyframe-bordered(
-                  data-vendor="youtube_nocookie",
-                  title=t("How to send email with your custom domain video"),
-                  data-src="https://www.youtube-nocookie.com/embed/TODO?autoplay=0"
-                )
+              .lazyframe.border.border-themed.d-inline-block,lazyframe-bordered(
+                data-vendor="youtube_nocookie",
+                title=t("How to send email with your custom domain video"),
+                data-src="https://www.youtube-nocookie.com/embed/TODO?autoplay=0"
+              )
       #step-by-step-instructions.col-12.mt-3
         .card
           h2.h5.card-header.text-center
-            if isBot(ctx.get("User-Agent"))
+            span.d-none.d-md-inline
               = t("Step by Step Instructions")
-            else
-              span.d-none.d-md-inline
-                = t("Step by Step Instructions")
-              span.d-inline.d-md-none
-                = t("Steps")
+            span.d-inline.d-md-none
+              = t("Steps")
           .card-body.markdown-body
             != sendEmailWithCustomDomainSMTP

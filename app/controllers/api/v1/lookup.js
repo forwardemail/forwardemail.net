@@ -10,6 +10,9 @@ const getForwardingConfiguration = require('#helpers/get-forwarding-configuratio
 async function lookup(ctx) {
   ctx.body = await getForwardingConfiguration({
     verificationRecord: ctx.query.verification_record,
+    // the host that published the verification record (when given, the
+    // domain found must be that host or a parent of it)
+    domainName: isSANB(ctx.query.domain) ? ctx.query.domain : undefined,
     username: isSANB(ctx.query.username)
       ? ctx.query.username.toLowerCase()
       : false,

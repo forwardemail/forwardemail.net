@@ -1,22 +1,21 @@
 extends ../layout
 
 block append scripts
-  if !isBot(ctx.get('User-Agent'))
-    if config.env === 'test'
-      script(
-        nonce=nonce,
-        defer,
-        src=`${config.urls.web}/js/faq-search.js`,
-        crossorigin="anonymous"
-      )
-    else
-      script(
-        nonce=nonce,
-        defer,
-        src=manifest("js/faq-search.js"),
-        integrity=manifest("js/faq-search.js", "integrity"),
-        crossorigin="anonymous"
-      )
+  if config.env === 'test'
+    script(
+      nonce=nonce,
+      defer,
+      src=`${config.urls.web}/js/faq-search.js`,
+      crossorigin="anonymous"
+    )
+  else
+    script(
+      nonce=nonce,
+      defer,
+      src=manifest("js/faq-search.js"),
+      integrity=manifest("js/faq-search.js", "integrity"),
+      crossorigin="anonymous"
+    )
 
 block body
   include ../_fe-faq

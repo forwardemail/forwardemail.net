@@ -51,6 +51,15 @@ nav.fe-nav > .container {
   padding-inline: var(--fe-container-gutter);
 }
 
+// Bootstrap zeroes the gutter of `.navbar-expand-lg > .container-fluid` below
+// 992px, which put the wordmark on the screen edge and pushed the menu toggle
+// (pulled outward by its negative end margin, below) 12px past it, so the
+// full-width pages (admin, my account, the API reference) scrolled sideways
+// on phones. Keep bootstrap's own gutter there too.
+nav.fe-nav > .container-fluid {
+  padding-inline: calc(#{$grid-gutter-width} / 2);
+}
+
 // The last nav item carries its own end margin on top of the container gutter,
 // which would push the call to action back off the line.
 nav.fe-nav .navbar-nav > .nav-item:last-child {

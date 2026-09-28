@@ -20,6 +20,15 @@ async function hasFingerprintExpired(session, client) {
     if (!_.isDate(value)) value = null;
   }
 
+  //
+  // when this message was first seen (the first delivery attempt), used to
+  // bound retries of partially delivered messages (see `helpers/on-data-mx.js`)
+  //
+  session.fingerprintFirstArrivalTime =
+    value && Number.isFinite(value.getTime())
+      ? value.getTime()
+      : session.arrivalTime;
+
   if (value) {
     if (value.getTime() + config.maxRetryDuration <= session.arrivalTime) {
       throw new SMTPError(

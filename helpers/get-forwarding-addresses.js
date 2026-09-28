@@ -219,6 +219,10 @@ async function getForwardingAddresses(
   // verifications must start with `forward-email-site-verification=` prefix
   const verifications = [];
 
+  // the host whose DNS published the verification value (the recipient's own
+  // host, or its root domain when a subdomain inherits the root's forwarding)
+  let verificationHost = domain;
+
   // add support for multi-line TXT records
   for (let i = 0; i < records.length; i++) {
     records[i] = records[i].join('').trim(); // join and trim chunks together
@@ -356,7 +360,10 @@ async function getForwardingAddresses(
           .exec()
       : null;
 
-    if (verifiedOwner) verifications.push(rootVerification);
+    if (verifiedOwner) {
+      verifications.push(rootVerification);
+      verificationHost = rootDomain;
+    }
 
     //
     // if the EXACT host lookup had thrown a deferred "not configured" error and
@@ -412,6 +419,7 @@ async function getForwardingAddresses(
     // if there was a verification record then perform lookup
     const body = await getForwardingConfiguration({
       verificationRecord: verifications[0],
+      domainName: verificationHost,
       username,
       ignoreBilling,
       client: this.client

@@ -81,37 +81,12 @@ if (isSANB(env.GPG_SECURITY_KEY) && isSANB(env.GPG_SECURITY_PASSPHRASE)) {
 }
 
 let appCss;
-let botCss;
 
 //
-// The stylesheet is inlined on a visitor's first page view (no extra round
-// trip before first paint on a cold connection), and after the page loads a
-// small script fetches the revisioned app.<hash>.css into the HTTP cache and
-// sets the `fe_css` cookie to that revision. Later page views from that
-// browser get a <link> to the cached file instead of ~250KB of inline CSS in
-// every HTML response (~40KB compressed that could never be cached).
+// The stylesheet is inlined into every page (no extra round trip before first
+// paint), so there is nothing render-blocking to fetch for first contentful
+// paint on any page view.
 //
-// A stale or missing cookie simply means inlining again, and a cookie whose
-// cache entry was evicted costs one normal render-blocking stylesheet fetch.
-//
-const APP_CSS_COOKIE = 'fe_css';
-let appCssRev;
-
-function readAppCssRev() {
-  try {
-    const revManifest = JSON.parse(fs.readFileSync(config.manifest, 'utf8'));
-    const file = revManifest['css/app.css'];
-    const match =
-      typeof file === 'string' && file.match(/app\.([\da-f]{8,})\.css$/);
-    appCssRev = match ? match[1] : undefined;
-  } catch (err) {
-    appCssRev = undefined;
-    logger.error(err);
-  }
-}
-
-readAppCssRev();
-
 try {
   appCss = fs.readFileSync(
     path.join(config.buildDir, 'css', 'app.css'),
@@ -121,19 +96,10 @@ try {
   logger.error(err);
 }
 
-try {
-  botCss = fs.readFileSync(
-    path.join(config.buildDir, 'css', 'app-bot.css'),
-    'utf8'
-  );
-} catch (err) {
-  logger.error(err);
-}
-
 //
-// The bundles are read once above and inlined into every page. In
-// development they are rebuilt while this process runs (`gulp watch`), so
-// re-read them when they change rather than requiring a restart. Production
+// The bundle is read once above and inlined into every page. In
+// development it is rebuilt while this process runs (`gulp watch`), so
+// re-read it when it changes rather than requiring a restart. Production
 // keeps the single read at boot.
 //
 if (config.env === 'development') {
@@ -141,19 +107,14 @@ if (config.env === 'development') {
     const cssDir = path.join(config.buildDir, 'css');
     const timers = new Map();
     fs.watch(cssDir, (eventType, filename) => {
-      if (filename !== 'app.css' && filename !== 'app-bot.css') return;
+      if (filename !== 'app.css') return;
       clearTimeout(timers.get(filename));
       timers.set(
         filename,
         setTimeout(() => {
           try {
             const css = fs.readFileSync(path.join(cssDir, filename), 'utf8');
-            if (filename === 'app.css') {
-              appCss = css;
-              readAppCssRev();
-            } else {
-              botCss = css;
-            }
+            appCss = css;
 
             logger.info(`reloaded css/${filename}`);
           } catch (err) {
@@ -889,16 +850,8 @@ module.exports = (redis) => ({
   hookBeforePassport(app) {
     app.use(async (ctx, next) => {
       if (!ctx.api && ctx.method === 'GET' && ctx.accepts('html')) {
-        // inline on first view, cached <link> once the browser has it
-        // (see APP_CSS_COOKIE above)
+        // to avoid LCP lighthouse issues
         ctx.state.appCss = appCss;
-        ctx.state.botCss = botCss;
-        ctx.state.appCssRev = appCssRev;
-        ctx.state.appCssCookie = APP_CSS_COOKIE;
-        ctx.state.appCssCached = Boolean(
-          appCssRev &&
-            ctx.cookies.get(APP_CSS_COOKIE, { signed: false }) === appCssRev
-        );
 
         ctx.state.tti = false;
       }

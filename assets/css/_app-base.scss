@@ -102,39 +102,13 @@ $question: theme-color('light');
 @import 'responsive-borders';
 
 // responsive backgrounds
-@import'responsive-backgrounds';
+@import 'responsive-backgrounds';
 
 // responsive rounded
 @import 'responsive-rounded';
 
 // custom app styling
 @import 'custom';
-
-.bot-detected {
-  /*
-  @media (prefers-color-scheme: light) {
-    @include media-breakpoint-up(md) {
-      .bg-fixed {
-        background-color: transparent !important;
-        background-image: none !important;
-      }
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    @include media-breakpoint-up(md) {
-      .bg-fixed {
-        background-color: transparent !important;
-        background-image: none !important;
-      }
-    }
-  }
-  */
-
-  body.app {
-    padding-top: 0 !important;
-  }
-}
 
 // support for RTL
 // (languages like Farsi and Arabic)
@@ -156,3 +130,6 @@ $question: theme-color('light');
 
 // site-wide footer restyle, scoped under footer.fe-footer
 @import 'fe-footer';
+
+// scrollbars that follow the light and dark schemes
+@import 'scrollbars';

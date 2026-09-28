@@ -3,45 +3,44 @@ extends ../layout
 //-include ../_onboard
 
 block body
-  if !isBot(ctx.get('User-Agent'))
-    .fixed-bottom.text-center.d-print-none
-      .bg-dark.p-2.border-top.border-themed
-        ul.list-inline.mb-0
-          li.list-inline-item
-            a.btn.btn-sm.btn-light(href="#setup-step-1")
-              span.badge.badge-pill.mr-1.badge-primary
-                i.fa.fa-external-link
-              = t("Step 1")
-          li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
-          li.list-inline-item
-            a.btn.btn-sm.btn-light(href="#setup-step-2")
-              span.badge.badge-pill.mr-1.badge-danger
-                i.fa.fa-times
-              = t("Step 2")
-          li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
-          li.list-inline-item
-            if domain && domain.name
-              form.ajax-form(
-                action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`),
-                method="POST"
-              )
-                button.btn.btn-success.btn-sm(type="submit")
-                  i.fa.fa-refresh
-                  = " "
-                  = t("Verify")
-            else if user
-              a.btn.btn-success.btn-sm(href=l("/my-account/domains"))
+  .fixed-bottom.text-center.d-print-none
+    .bg-dark.p-2.border-top.border-themed
+      ul.list-inline.mb-0
+        li.list-inline-item
+          a.btn.btn-sm.btn-light(href="#setup-step-1")
+            span.badge.badge-pill.mr-1.badge-primary
+              i.fa.fa-external-link
+            = t("Step 1")
+        li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
+        li.list-inline-item
+          a.btn.btn-sm.btn-light(href="#setup-step-2")
+            span.badge.badge-pill.mr-1.badge-danger
+              i.fa.fa-times
+            = t("Step 2")
+        li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
+        li.list-inline-item
+          if domain && domain.name
+            form.ajax-form(
+              action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`),
+              method="POST"
+            )
+              button.btn.btn-success.btn-sm(type="submit")
                 i.fa.fa-refresh
                 = " "
                 = t("Verify")
-            else
-              a.btn.btn-success.btn-sm(
-                href=l(`/register?redirect_to=${encodeURIComponent("/my-account/domains")}`)
-              )
-                i.fa.fa-refresh
-                = " "
-                = t("Verify")
-  if !isBot(ctx.get('User-Agent')) && modalFAQTable
+          else if user
+            a.btn.btn-success.btn-sm(href=l("/my-account/domains"))
+              i.fa.fa-refresh
+              = " "
+              = t("Verify")
+          else
+            a.btn.btn-success.btn-sm(
+              href=l(`/register?redirect_to=${encodeURIComponent("/my-account/domains")}`)
+            )
+              i.fa.fa-refresh
+              = " "
+              = t("Verify")
+  if modalFAQTable
     #modal-faq-table.modal.fade(
       tabindex="-1",
       role="dialog",
@@ -78,21 +77,11 @@ block body
     if provider && provider.video
       .row
         .col-12.mt-3
-          if isBot(ctx.get('User-Agent'))
-            a.btn.btn-lg.btn-light(
-              href=provider.video,
-              target="_blank",
-              rel="noopener noreferrer"
-            )
-              i.fab.fa-youtube.text-danger
-              = " "
-              = t("Watch Video")
-          else
-            .lazyframe.border.d-block.mx-auto.lazyframe-bordered(
-              data-vendor="youtube_nocookie",
-              title=meta.title ? striptags(convert(meta.title)) : false,
-              data-src=`https://www.youtube-nocookie.com/embed/${provider.video.split('?v=')[1]}?autoplay=0`
-            )
+          .lazyframe.border.d-block.mx-auto.lazyframe-bordered(
+            data-vendor="youtube_nocookie",
+            title=meta.title ? striptags(convert(meta.title)) : false,
+            data-src=`https://www.youtube-nocookie.com/embed/${provider.video.split('?v=')[1]}?autoplay=0`
+          )
     .row
       .col-12
         .card.mt-3.position-relative.no-search
@@ -154,7 +143,7 @@ block body
                 i.fa.fa-external-link
                 = " "
                 != t('Go to <span class="notranslate">%s</span>', provider.name)
-            else if !isBot(ctx.get('User-Agent')) && modalFAQTable
+            else if modalFAQTable
               button.badge.badge-pill.badge-primary.mt-3.mr-3.border-0(
                 type="button",
                 data-toggle="modal",
@@ -163,7 +152,7 @@ block body
                 i.fa.fa-external-link
                 = " "
                 = t("Go to DNS settings")
-            else if !isBot(ctx.get('User-Agent'))
+            else
               a.badge.badge-pill.badge-primary.mt-3.mr-3.border-0(
                 href=l("/faq#table-dns-management-by-registrar"),
                 target="_blank"
@@ -215,7 +204,7 @@ block body
                   i.fa.fa-external-link
                   = " "
                   != t('Go to <span class="notranslate">%s</span>', provider.name)
-            else if !isBot(ctx.get('User-Agent')) && modalFAQTable
+            else if modalFAQTable
               .text-center.mt-3
                 button.btn.btn-primary(
                   type="button",
@@ -261,29 +250,20 @@ block body
                   i.fa.fa-refresh
                   = " "
                   = t("Verify")
-              if !isBot(ctx.get("User-Agent"))
-                .d-block.d-md-none.my-3.text-muted.small
-                  = "("
-                  = t("Scroll to the right to see entire table")
-                  = ")"
+              .d-block.d-md-none.my-3.text-muted.small
+                = "("
+                = t("Scroll to the right to see entire table")
+                = ")"
             .table-responsive.mb-3
               table.table.table-hover.table-sm.mb-0
                 thead
                   tr
                     th.border-0.align-middle
-                      if isBot(ctx.get("User-Agent"))
-                        = "Name"
-                      else
-                        = "Name/Host/Alias"
+                      = "Name/Host/Alias"
                     th.border-0.align-middle Type
                     th.border-0.align-middle Priority
-                    th.border-0.align-middle.text-left(
-                      class=isBot(ctx.get("User-Agent")) ? "" : "text-left"
-                    )
-                      if isBot(ctx.get("User-Agent"))
-                        = "Value"
-                      else
-                        = "Answer/Value"
+                    th.border-0.align-middle.text-left.text-left
+                      = "Answer/Value"
                 tbody
                   tr
                     td.align-middle.small
@@ -294,10 +274,7 @@ block body
                           else
                             = provider.host
                         else
-                          if isBot(ctx.get("User-Agent"))
-                            = "@"
-                          else
-                            | "@", ".", or leave empty/blank if allowed.
+                          | "@", ".", or leave empty/blank if allowed.
                       else
                         code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
                     td.align-middle: strong.px-2 MX
@@ -307,15 +284,14 @@ block body
                         | mx1.forwardemail.net
                         if provider && provider.trailingPeriod
                           = "."
-                      if !isBot(ctx.get("User-Agent"))
-                        button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
-                          type="button",
-                          data-toggle="clipboard",
-                          data-clipboard-target="#copy-mx1"
-                        )
-                          i.fa.fa-clipboard
-                          = " "
-                          = t("Copy")
+                      button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                        type="button",
+                        data-toggle="clipboard",
+                        data-clipboard-target="#copy-mx1"
+                      )
+                        i.fa.fa-clipboard
+                        = " "
+                        = t("Copy")
                   tr
                     td.align-middle.small
                       if !domain || !domain.root_name || !domain.name || domain.root_name === domain.name
@@ -325,10 +301,7 @@ block body
                           else
                             = provider.host
                         else
-                          if isBot(ctx.get("User-Agent"))
-                            = "@"
-                          else
-                            | "@", ".", or leave empty/blank if allowed.
+                          | "@", ".", or leave empty/blank if allowed.
                       else
                         code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
                     td.align-middle: strong.px-2 MX
@@ -338,15 +311,14 @@ block body
                         | mx2.forwardemail.net
                         if provider && provider.trailingPeriod
                           = "."
-                      if !isBot(ctx.get("User-Agent"))
-                        button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
-                          type="button",
-                          data-toggle="clipboard",
-                          data-clipboard-target="#copy-mx2"
-                        )
-                          i.fa.fa-clipboard
-                          = " "
-                          = t("Copy")
+                      button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                        type="button",
+                        data-toggle="clipboard",
+                        data-clipboard-target="#copy-mx2"
+                      )
+                        i.fa.fa-clipboard
+                        = " "
+                        = t("Copy")
                   tr
                     td.align-middle.small
                       if !domain || !domain.root_name || domain.root_name === domain.name
@@ -361,25 +333,21 @@ block body
                         code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
                     td.align-middle: strong.px-2 TXT
                     td.align-middle
-                      if isBot(ctx.get("User-Agent"))
-                        = "None"
                     td.align-middle.text-left.py-3
-                      if !isBot(ctx.get("User-Agent"))
-                        if !user
-                          span.badge.badge-danger.user-select-none!= t('Edit <span class="notranslate">user@gmail.com</span> to your email:')
+                      if !user
+                        span.badge.badge-danger.user-select-none!= t('Edit <span class="notranslate">user@gmail.com</span> to your email:')
                       code#copy-user-txt.d-block.text-themed.text-nowrap
                         = `${config.recordPrefix}=${user ? user.email : "user@gmail.com"}`
                       ul.list-inline
                         li.list-inline-item
-                          if !isBot(ctx.get("User-Agent"))
-                            button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
-                              type="button",
-                              data-toggle="clipboard",
-                              data-clipboard-target="#copy-user-txt"
-                            )
-                              i.fa.fa-clipboard
-                              = " "
-                              = t("Copy")
+                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                            type="button",
+                            data-toggle="clipboard",
+                            data-clipboard-target="#copy-user-txt"
+                          )
+                            i.fa.fa-clipboard
+                            = " "
+                            = t("Copy")
                         li.list-inline-item
                           form.ajax-form.confirm-prompt.d-block(
                             action=l("/encrypt"),
@@ -465,43 +433,41 @@ block body
             i.fa.fa-4x(class=domain.has_txt_record ? "fa-check" : "fa-times")
           .text-monospace.text-uppercase= "TXT"
     //- Disclaimer
-    if !isBot(ctx.get('User-Agent'))
-      .row
-        .col-12
-          .alert.alert-secondary.small.text-center.mt-3.mb-0
-            strong= t("Notice of Non-Affiliation and Disclaimer:")
-            = " "
-            != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', provider.name, provider.name)
-  if !isBot(ctx.get('User-Agent'))
-    .container.py-3.no-search
-      .position-relative
-        .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-          .col-12.d-flex
-            .p-3.p-md-5.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-              h2.display-5.font-weight-bold.mb-3!= t('Send emails with your <span class="notranslate">%s</span> domain', provider.name)
-              p.lead.mb-3!= t("Read our <span class='notranslate'>%s</span> email setup guide to send email with your custom domain name and alias.", provider.name)
-              a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-                href=l("/guides/send-email-with-custom-domain-smtp"),
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                != t("Send email with <span class='notranslate'>%s</span> domain", provider.name)
-                = " "
-                i.fa.fa-angle-double-right.align-middle
-          .col-12.d-flex
-            .p-3.p-md-5.mt-3.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-              h2.display-5.font-weight-bold.mb-3= t("Still need help with something?")
-              p.lead.mb-3!= t("We are here to answer your questions, but please be sure to read our FAQ section first.")
-              a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-                href=l("/help"),
-                role="button",
-                data-target="#modal-help"
-              )
-                = t("Ask us a question")
-                = " "
-                i.fa.fa-angle-double-right.align-middle
+    .row
+      .col-12
+        .alert.alert-secondary.small.text-center.mt-3.mb-0
+          strong= t("Notice of Non-Affiliation and Disclaimer:")
+          = " "
+          != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', provider.name, provider.name)
+  .container.py-3.no-search
+    .position-relative
+      .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
+        .col-12.d-flex
+          .p-3.p-md-5.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3!= t('Send emails with your <span class="notranslate">%s</span> domain', provider.name)
+            p.lead.mb-3!= t("Read our <span class='notranslate'>%s</span> email setup guide to send email with your custom domain name and alias.", provider.name)
+            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+              href=l("/guides/send-email-with-custom-domain-smtp"),
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              != t("Send email with <span class='notranslate'>%s</span> domain", provider.name)
+              = " "
+              i.fa.fa-angle-double-right.align-middle
+        .col-12.d-flex
+          .p-3.p-md-5.mt-3.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+            h2.display-5.font-weight-bold.mb-3= t("Still need help with something?")
+            p.lead.mb-3!= t("We are here to answer your questions, but please be sure to read our FAQ section first.")
+            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+              href=l("/help"),
+              role="button",
+              data-target="#modal-help"
+            )
+              = t("Ask us a question")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
   //- Domain Connect modal (shown when paid user clicks 1-Click Setup without a domain selected)
-  if !isBot(ctx.get('User-Agent')) && provider && provider.domainConnect
+  if provider && provider.domainConnect
     #modal-domain-connect.modal.fade(
       tabindex="-1",
       role="dialog",

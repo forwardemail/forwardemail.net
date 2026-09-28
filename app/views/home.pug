@@ -1,9 +1,8 @@
 extends layout
 
 block append scripts
-  if !isBotUa
-    +script("js/domain-search.js")
-    +script("js/hero-console.js")
+  +script("js/domain-search.js")
+  +script("js/hero-console.js")
 
 block body
   //- Inlined by pug, so feConsoleViews and the +feConsole mixin are in scope
@@ -17,101 +16,83 @@ block body
   include _modal-domain-search
   +modalDomainSearch
   //- modal watch video
-  if !isBotUa
-    #modal-watch-video.modal.fade(
-      tabindex="-1",
-      role="dialog",
-      aria-labelledby="modal-watch-video-title",
-      aria-hidden="true"
-    )
-      .modal-dialog.modal-lg(role="document")
-        .modal-content
-          .modal-header.text-center.d-block
-            #modal-watch-video-title.h4.d-inline-block.ml-4= t("See How It Works")
-            button.close(
-              type="button",
-              data-dismiss="modal",
-              aria-label="Close"
-            )
-              span(aria-hidden="true") &times;
-          .modal-body
-            .lazyframe(
-              title=t("Forward Email's Paid Plans"),
-              data-vendor="youtube_nocookie",
-              data-src="https://www.youtube-nocookie.com/embed/N6zjv40zuIY?autoplay=0"
-            )
-  if !isBotUa
-    #modal-for-creators.modal.fade(
-      tabindex="-1",
-      role="dialog",
-      aria-labelledby="modal-for-creators-title",
-      aria-hidden="true"
-    )
-      .modal-dialog.modal-lg(role="document")
-        .modal-content
-          .modal-header.text-center.d-block
-            #modal-for-creators-title.h4.d-inline-block.ml-4= t("Email for Content Creators")
-            button.close(
-              type="button",
-              data-dismiss="modal",
-              aria-label="Close"
-            )
-              span(aria-hidden="true") &times;
-          .modal-body
-            .lazyframe(
-              title=t("Email Forwarding for Creators"),
-              data-vendor="youtube_nocookie",
-              data-src="https://www.youtube-nocookie.com/embed/ql9rtNpTid4?autoplay=0"
-            )
-    #modal-for-developers.modal.fade(
-      tabindex="-1",
-      role="dialog",
-      aria-labelledby="modal-for-developers-title",
-      aria-hidden="true"
-    )
-      .modal-dialog.modal-lg(role="document")
-        .modal-content
-          .modal-header.text-center.d-block
-            #modal-for-developers-title.h4.d-inline-block.ml-4= t("Email for Tech People")
-            button.close(
-              type="button",
-              data-dismiss="modal",
-              aria-label="Close"
-            )
-              span(aria-hidden="true") &times;
-          .modal-body
-            .lazyframe(
-              title=t("Email Forwarding for Developers"),
-              data-vendor="youtube_nocookie",
-              data-src="https://www.youtube-nocookie.com/embed/1e9UyIoFu4Y?autoplay=0"
-            )
-    #modal-for-businesses.modal.fade(
-      tabindex="-1",
-      role="dialog",
-      aria-labelledby="modal-for-businesses-title",
-      aria-hidden="true"
-    )
-      .modal-dialog.modal-lg(role="document")
-        .modal-content
-          .modal-header.text-center.d-block
-            #modal-for-businesses-title.h4.d-inline-block.ml-4= t("Email for Your Business")
-            button.close(
-              type="button",
-              data-dismiss="modal",
-              aria-label="Close"
-            )
-              span(aria-hidden="true") &times;
-          .modal-body
-            .lazyframe(
-              title=t("Email Forwarding for Businesses"),
-              data-vendor="youtube_nocookie",
-              data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
-            )
+  #modal-watch-video.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-watch-video-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          #modal-watch-video-title.h4.d-inline-block.ml-4= t("See How It Works")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          .lazyframe(
+            title=t("Forward Email's Paid Plans"),
+            data-vendor="youtube_nocookie",
+            data-src="https://www.youtube-nocookie.com/embed/N6zjv40zuIY?autoplay=0"
+          )
+  #modal-for-creators.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-for-creators-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          #modal-for-creators-title.h4.d-inline-block.ml-4= t("Email for Content Creators")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          .lazyframe(
+            title=t("Email Forwarding for Creators"),
+            data-vendor="youtube_nocookie",
+            data-src="https://www.youtube-nocookie.com/embed/ql9rtNpTid4?autoplay=0"
+          )
+  #modal-for-developers.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-for-developers-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          #modal-for-developers-title.h4.d-inline-block.ml-4= t("Email for Tech People")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          .lazyframe(
+            title=t("Email Forwarding for Developers"),
+            data-vendor="youtube_nocookie",
+            data-src="https://www.youtube-nocookie.com/embed/1e9UyIoFu4Y?autoplay=0"
+          )
+  #modal-for-businesses.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-for-businesses-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          #modal-for-businesses-title.h4.d-inline-block.ml-4= t("Email for Your Business")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          .lazyframe(
+            title=t("Email Forwarding for Businesses"),
+            data-vendor="youtube_nocookie",
+            data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
+          )
   //- The flush modifier pulls the hero up under the transparent fixed navbar.
   //- It is a separate class from .fe-landing because /download shares that
   //- wrapper but must not pull up when a signed in visitor gets the opaque bar.
   .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
-    +feHero(isBotUa)
+    +feHero
     +feProduct
     +fePricing
     //- Replaces the legacy _testimonials parallax and its "Happy Customers"

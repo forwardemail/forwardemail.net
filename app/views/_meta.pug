@@ -231,6 +231,3 @@ script(nonce=nonce).
       document.documentElement.className = document.documentElement.className.replace("no-js", "").replace(/\s+/g, " ").trim();
     });
   })();
-
-if isBot(ctx.get('User-Agent'))
-  style(nonce=nonce)= ".is-bot { display: none !important; }"

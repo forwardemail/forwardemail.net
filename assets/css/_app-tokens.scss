@@ -30,4 +30,6 @@
   --app-input-border: #ced4da;
   --app-code-bg: #f8f9fa;
   --app-focus-ring: #{rgba($fe-primary, 0.25)};
+  // Scrollbar thumb (see "Scrollbars" in _custom.scss).
+  --app-scrollbar-thumb: #{$fe-l-400};
 }
