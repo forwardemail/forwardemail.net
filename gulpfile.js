@@ -5,6 +5,7 @@
 
 const process = require('node:process');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 
 // Disable watching and persistence of I18N files in build processes. Locale
@@ -64,6 +65,7 @@ const sass = require('gulp-sass')(require('node-sass'));
 const sourcemaps = require('gulp-sourcemaps');
 const stylelint = require('@ronilaukkarinen/gulp-stylelint');
 const terser = require('gulp-terser');
+const subsetFont = require('subset-font');
 const through2 = require('through2');
 const unassert = require('gulp-unassert');
 const { lastRun, watch, series, parallel, src, dest } = require('gulp');
@@ -400,6 +402,93 @@ function faFonts() {
 }
 
 //
+// Font Awesome ships every icon (about 1,600) in each font, 158 KB of woff2
+// for the solid and brand fonts that every page downloads before first
+// paint. The built stylesheets only keep the `.fa-*:before` rules that
+// PurgeCSS found in use, and an icon without its rule cannot render, so the
+// woff2 fonts are cut down to exactly the codepoints those rules reference.
+// The .woff/.ttf/.eot files (only for browsers without woff2) stay complete.
+//
+// /fonts/ is not revisioned and is cached for a year (by browsers, and in
+// production by koa-cash), so each subset gets its own content-hashed file
+// name and the built stylesheets are pointed at it (before sri() revisions
+// them). The original unhashed woff2 stays complete, for pages cached from an
+// earlier build and for the development stylesheet, which is not purged.
+//
+const FA_WOFF2_FONTS = [
+  'fa-solid-900.woff2',
+  'fa-regular-400.woff2',
+  'fa-brands-400.woff2'
+];
+
+// Font Awesome 5 icons are in the Private Use Area (U+E000 to U+F8FF)
+const REGEX_CSS_CONTENT_CODEPOINT = /content:\s*["']\\([\da-f]{4,5})\s*["']/gi;
+
+async function faSubset() {
+  const cssDir = path.join(config.buildBase, 'css');
+  const files = await globby('*.css', { cwd: cssDir });
+  const codepoints = new Set();
+  for (const file of files) {
+    const css = await fs.promises.readFile(path.join(cssDir, file), 'utf8');
+    for (const [, hex] of css.matchAll(REGEX_CSS_CONTENT_CODEPOINT)) {
+      const codepoint = Number.parseInt(hex, 16);
+      if (codepoint >= 0xe000 && codepoint <= 0xf8ff) codepoints.add(codepoint);
+    }
+  }
+
+  // a sanity floor: far fewer means the rules were not found (e.g. the CSS
+  // output format changed), and a subset would blank every icon
+  if (codepoints.size < 50)
+    throw new Error(
+      `Font Awesome subset: only ${codepoints.size} icon codepoints found in ${cssDir}`
+    );
+
+  const text = String.fromCodePoint(...codepoints);
+  const renames = await Promise.all(
+    FA_WOFF2_FONTS.map(async (name) => {
+      const fontsDir = path.join(config.buildBase, 'fonts');
+      const font = await fs.promises.readFile(path.join(fontsDir, name));
+      const subset = await subsetFont(font, text, { targetFormat: 'woff2' });
+      const hash = crypto
+        .createHash('sha256')
+        .update(subset)
+        .digest('hex')
+        .slice(0, 10);
+      const hashed = name.replace(/\.woff2$/, `-${hash}.woff2`);
+      await fs.promises.writeFile(path.join(fontsDir, hashed), subset);
+      logger.info(
+        `${hashed}: ${codepoints.size} icons, ${font.length} -> ${subset.length} bytes`
+      );
+      return [`/fonts/${name}`, `/fonts/${hashed}`];
+    })
+  );
+
+  for (const file of files) {
+    const cssPath = path.join(cssDir, file);
+
+    let css = await fs.promises.readFile(cssPath, 'utf8');
+    let changed = false;
+    for (const [from, to] of renames) {
+      if (!css.includes(from)) continue;
+      css = css.split(from).join(to);
+      changed = true;
+    }
+
+    if (changed) await fs.promises.writeFile(cssPath, css);
+  }
+
+  // a build that still loads the complete fonts would not be caught otherwise
+  const app = await fs.promises.readFile(path.join(cssDir, 'app.css'), 'utf8');
+  for (const [from, to] of renames) {
+    if (app.includes(from))
+      throw new Error(`Font Awesome subset: app.css still loads ${from}`);
+    // (the regular font is only referenced when an `far` icon is in use)
+    if (from.includes('fa-solid-900') && !app.includes(to))
+      throw new Error(`Font Awesome subset: app.css does not load ${to}`);
+  }
+}
+
+//
 // Development rebuild used by `watch`: everything css() does that changes how
 // a page renders (lint, sass, the postcss transforms, the concatenation) and
 // nothing that only shrinks the file (purge, cssnano, the email bundle). A
@@ -620,6 +709,20 @@ async function bundle() {
       path.join(config.buildBase, 'js', 'polyfill.js')
     ),
 
+    // ApexCharts, a standalone file (window.ApexCharts) loaded only where a
+    // chart is drawn: required from the page scripts it would be factored
+    // into build.js, about half of it, on every page
+    fs.promises.copyFile(
+      path.join(
+        __dirname,
+        'node_modules',
+        'apexcharts',
+        'dist',
+        'apexcharts.min.js'
+      ),
+      path.join(config.buildBase, 'js', 'apexcharts.js')
+    ),
+
     // scalar API reference
     fs.promises.copyFile(
       path.join(
@@ -695,9 +798,9 @@ async function bundle() {
   ]);
 
   // concatenate files
+  // (polyfill.js is its own nomodule script, see layout.pug)
   await getStream(
     src([
-      'build/js/polyfill.js',
       'build/js/factor-bundle.js',
       'build/js/uncaught.js',
       'build/js/core.js'
@@ -835,7 +938,7 @@ const build = series(
   parallel(
     ...(TEST ? [] : [xo, remark]),
     // series(parallel(img, static, markdown, bundle, fonts, faFonts, css), sri)
-    series(parallel(img, static, bundle, fonts, faFonts, css), sri)
+    series(parallel(img, static, bundle, fonts, faFonts, css), faSubset, sri)
   )
 );
 

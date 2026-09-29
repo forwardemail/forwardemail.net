@@ -531,6 +531,30 @@ module.exports = (redis) => ({
       }
     });
     //
+    // The Font Awesome woff2 fonts are cut down to the icons in use under a
+    // content-hashed name (see faSubset in gulpfile.js), so a page opened
+    // before a deploy that changed the icon set can ask for a subset this
+    // build no longer has (icons in sections rendered on scroll load their
+    // font late). Serve the complete font for any such name: it has every
+    // icon, so it is correct for every earlier subset.
+    //
+    const FA_SUBSET =
+      /^\/fonts\/(fa-(?:solid-900|regular-400|brands-400))-[\da-f]{10}\.woff2$/;
+    app.use(async (ctx, next) => {
+      const match =
+        (ctx.method === 'GET' || ctx.method === 'HEAD') &&
+        FA_SUBSET.exec(ctx.path);
+      if (match) {
+        try {
+          await fs.promises.access(path.join(config.buildDir, ctx.path));
+        } catch {
+          ctx.path = `/fonts/${match[1]}.woff2`;
+        }
+      }
+
+      return next();
+    });
+    //
     // Chrome DevTools automatic workspace discovery
     // <https://developer.chrome.com/docs/devtools/automatic-workspaces>
     // Chrome sends this request to localhost dev servers; return 204 to

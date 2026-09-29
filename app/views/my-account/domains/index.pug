@@ -1,6 +1,8 @@
 extends ../../layout
 
 block append scripts
+  //- charts (window.ApexCharts), before the page script that draws them
+  +script("js/apexcharts.js")
   script(
     nonce=nonce,
     defer,

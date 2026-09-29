@@ -55,7 +55,12 @@ if ttiData && (isTtiPage || canRenderTti)
             .fe-tti__chart-head
               h3.fe-tti__chart-title= t("24-Hour Performance by Provider")
               p.fe-tti__chart-description= t("Average delivery times for each email provider")
-            #tti-timeline-chart.fe-tti__chart(data-tti-chart)
+            //- core.js loads ApexCharts from here when it draws the chart
+            #tti-timeline-chart.fe-tti__chart(
+              data-tti-chart,
+              data-apexcharts-src=config.env === "test" ? `${config.urls.web}/js/apexcharts.js` : manifest("js/apexcharts.js"),
+              data-apexcharts-integrity=config.env === "test" ? false : manifest("js/apexcharts.js", "integrity")
+            )
           p.fe-tti__note
             strong= t("Did you know?")
             = " "

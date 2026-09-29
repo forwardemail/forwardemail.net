@@ -2,19 +2,16 @@
 //-
 //- - Nunito Sans 400/700 is the body and fe display face. The hero h1 (the
 //-   mobile LCP element) is Nunito Sans 700, so both load at high priority.
-//- - Font Awesome (solid + brands) is an icon font. Icons are laid out in the
-//-   navbar and hero, so without a preload the browser requests the fonts at
-//-   VeryHigh priority during first layout, where they compete with the text
-//-   fonts and Lighthouse counts them against First Contentful Paint. A low
-//-   priority preload starts them early without that cost.
+//- - Font Awesome is not preloaded: the build cuts it down to the icons the
+//-   site uses (about 17 KB for solid + brands, from 155 KB) under a
+//-   content-hashed name that only the stylesheet knows (see faSubset in
+//-   gulpfile.js), so there is nothing left for it to compete with.
 //-
 //- https://caniuse.com/link-rel-preload
 //- integrity attribute not currently supported <https://crbug.com/981419>
 - const fonts = [];
 - fonts.push({ file: "nunito-sans-latin-700.woff2", priority: "high" });
 - fonts.push({ file: "nunito-sans-latin-400.woff2", priority: "high" });
-- fonts.push({ file: "fa-solid-900.woff2", priority: "low" });
-- fonts.push({ file: "fa-brands-400.woff2", priority: "low" });
 each font in fonts
   link(
     rel="preload",

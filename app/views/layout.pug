@@ -179,6 +179,11 @@ html.h-100.no-js(
               id: "#{ctx.sessionId}",
             };
 
+      //- core-js/regenerator polyfill, only for browsers without ES module
+      //- support (every supported browser has these features natively and
+      //- skips a nomodule script, so it is not downloaded or run there)
+      +script("js/polyfill.js", { nomodule: true, fetchpriority: "low" })
+
       //- build
       +script("js/build.js", { fetchpriority: "low" })
 

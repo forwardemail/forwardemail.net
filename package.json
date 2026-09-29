@@ -409,6 +409,7 @@
     "stylelint-config-recommended-scss": "13.1.0",
     "stylelint-declaration-strict-value": "1.10.6",
     "stylelint-scss": "5.3.2",
+    "subset-font": "2.9.0",
     "supertest": "7.2.2",
     "through2": "4.0.2",
     "xo": "0.53.1"

@@ -826,3 +826,49 @@ html.no-js .fe-console__rail-wrap {
     display: none;
   }
 }
+
+// ============================================
+// BELOW-THE-FOLD RENDERING
+// ============================================
+// The homepage sections after the hero are laid out and painted only when
+// they come near the viewport: first layout on a phone otherwise spent most
+// of its time on content nobody could see yet, and delayed the page.
+// `auto` remembers each block's real height once it has rendered; 900px is
+// only the estimate before that. The Time to Inbox page itself
+// (data-tti-refresh) is excluded: its chart is the page. The footer is left
+// out: its dropdowns open outside it.
+
+// This implies paint containment, so it is set on each section's inner
+// container rather than the section (sections end on fractional pixels, and
+// clipping them left a 1px seam of page background between two sections),
+// and the container gets room to paint outside its box: the featured pricing
+// card's shadow and focus rings on the last row reach past it.
+// overflow-clip-margin covers every side where supported; the bottom padding
+// (cancelled by the negative margin, so nothing moves) covers the rest. Every
+// one of these sections has bottom padding, so the margin cannot collapse
+// through it.
+.fe-product > .fe-container,
+.fe-pricing > .fe-container,
+.fe-proof > .fe-container {
+  padding-bottom: 3rem;
+  margin-bottom: -3rem;
+  overflow-clip-margin: 3rem;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+.fe-tti:not([data-tti-refresh]) > .fe-tti__container {
+  overflow-clip-margin: 3rem;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+// Opened at (or navigated to) a #fragment: render everything, so the jump
+// lands on the target rather than where the estimated heights put it (the
+// class is set in _meta.pug and on hashchange in core.js)
+html.fe-render-all .fe-product > .fe-container,
+html.fe-render-all .fe-pricing > .fe-container,
+html.fe-render-all .fe-proof > .fe-container,
+html.fe-render-all .fe-tti > .fe-tti__container {
+  content-visibility: visible;
+}

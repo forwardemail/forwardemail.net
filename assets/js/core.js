@@ -4,7 +4,6 @@
  */
 
 const $ = require('jquery');
-const Apex = require('apexcharts');
 const Clipboard = require('clipboard');
 const Lazyload = require('lazyload');
 const Popper = require('popper.js');
@@ -208,6 +207,46 @@ window.onloadTurnstileCallback = function () {
     $(this).find('.cf-explicit-turnstile').each(handleExplicitTurnstile);
   });
 };
+
+//
+// Sections below the fold on the homepage are rendered as they near the
+// viewport (content-visibility in _fe-home.scss), with an estimated height
+// until then. A jump to a #fragment is placed using those estimates, so on
+// the first one render everything and jump again to the real position
+// (_meta.pug does the same for a page opened at a #fragment).
+//
+window.addEventListener('hashchange', () => {
+  const html = document.documentElement;
+  if (html.classList.contains('fe-render-all')) return;
+  let target;
+  try {
+    target = document.querySelector(
+      `#${CSS.escape(decodeURIComponent(location.hash.slice(1)))}`
+    );
+  } catch (err) {
+    // a malformed escape in the hash
+    logger.debug(err);
+  }
+
+  if (!target) return;
+  html.classList.add('fe-render-all');
+  target.scrollIntoView();
+});
+
+// In-page links are scrolled by the jump-to handler without a hashchange, so
+// render everything first (capture runs before its delegated handler)
+document.addEventListener(
+  'click',
+  (event) => {
+    const link =
+      event.target && typeof event.target.closest === 'function'
+        ? event.target.closest('a[href^="#"]')
+        : null;
+    if (link && link.getAttribute('href').length > 1)
+      document.documentElement.classList.add('fe-render-all');
+  },
+  true
+);
 
 window.addEventListener(
   'load',
@@ -1244,7 +1283,41 @@ window.addEventListener(
       };
     }
 
-    function initializeTTIChart($tti) {
+    //
+    // ApexCharts is a separate script (about half of what build.js used to
+    // be), fetched only when a chart is drawn. The chart element names the
+    // file (and its integrity hash) in data attributes.
+    //
+    let apexChartsPromise;
+    function loadApexCharts(element) {
+      if (window.ApexCharts) return Promise.resolve(window.ApexCharts);
+      if (!apexChartsPromise) {
+        apexChartsPromise = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = element.dataset.apexchartsSrc;
+          if (element.dataset.apexchartsIntegrity)
+            script.integrity = element.dataset.apexchartsIntegrity;
+          script.crossOrigin = 'anonymous';
+          script.async = true;
+          script.addEventListener('load', () => {
+            if (window.ApexCharts) resolve(window.ApexCharts);
+            else reject(new Error('ApexCharts did not load'));
+          });
+          script.addEventListener('error', () => {
+            reject(new Error('ApexCharts could not be loaded'));
+          });
+          document.head.append(script);
+        }).catch((err) => {
+          // allow a later chart (e.g. the next refresh) to try again
+          apexChartsPromise = null;
+          throw err;
+        });
+      }
+
+      return apexChartsPromise;
+    }
+
+    async function initializeTTIChart($tti) {
       const $chartElement = $tti.find('[data-tti-chart]');
       const $chartData = $tti.find('.fe-tti__chart-data');
 
@@ -1258,6 +1331,11 @@ window.addEventListener(
               average: labels.average || 'Average Delivery Time',
               unavailable: labels.unavailable || 'N/A'
             });
+
+            const Apex = await loadApexCharts($chartElement.get(0));
+
+            // the component may have been replaced by a refresh meanwhile
+            if (!document.body.contains($chartElement.get(0))) return;
 
             // Destroy previous chart instance to prevent memory leak
             if (ttiChart) {

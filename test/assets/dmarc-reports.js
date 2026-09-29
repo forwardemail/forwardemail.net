@@ -61,6 +61,8 @@ function createRenderer(
     document,
     setInterval() {},
     window: Object.assign(window, {
+      // loaded by its own script tag before dmarc-reports.js
+      ApexCharts: class Apex {},
       matchMedia() {
         return {
           addEventListener() {},
@@ -70,7 +72,6 @@ function createRenderer(
     }),
     require(id) {
       if (id === 'jquery') return jquery;
-      if (id === 'apexcharts') return class Apex {};
       if (id === 'dayjs') {
         return () => ({ format: () => 'Aug 12, 2026 02:00' });
       }

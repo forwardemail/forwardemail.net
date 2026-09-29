@@ -224,8 +224,12 @@ meta(
   )
 
 //- Inline critical JS with minimal impact on FCP
+//- (fe-render-all: a link to a #fragment lands on its target only if
+//- everything above it has its real height, so sections rendered on scroll,
+//- see content-visibility in _fe-home.scss, render up front then)
 script(nonce=nonce).
   (function () {
+    if (location.hash.length > 1) document.documentElement.classList.add("fe-render-all");
     // Execute after first paint using requestAnimationFrame
     requestAnimationFrame(function () {
       document.documentElement.className = document.documentElement.className.replace("no-js", "").replace(/\s+/g, " ").trim();

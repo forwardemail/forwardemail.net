@@ -4,7 +4,9 @@
  */
 
 const $ = require('jquery');
-const Apex = require('apexcharts');
+// loaded by its own script tag before this one (see the page view), so it
+// is not factored into build.js for every page
+const Apex = window.ApexCharts;
 const dayjs = require('dayjs');
 const ms = require('ms');
 const superagent = require('superagent');

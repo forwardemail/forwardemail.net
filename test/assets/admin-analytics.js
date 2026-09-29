@@ -78,6 +78,8 @@ test('one analytics chart failure does not block later widgets or polling', (t) 
   const sandbox = {
     document,
     window: {
+      // loaded by its own script tag before admin-analytics.js
+      ApexCharts: Apex,
       location: { pathname: '/admin/analytics' },
       matchMedia() {
         return {
@@ -92,7 +94,6 @@ test('one analytics chart failure does not block later widgets or polling', (t) 
     },
     require(id) {
       if (id === 'jquery') return jquery;
-      if (id === 'apexcharts') return Apex;
       if (id === 'ms') return () => 30_000;
       if (id === 'superagent') {
         return {
