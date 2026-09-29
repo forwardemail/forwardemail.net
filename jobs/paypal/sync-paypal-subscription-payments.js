@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const pReduce = require('p-reduce');
 const isSANB = require('is-string-and-not-blank');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
@@ -470,7 +469,9 @@ async function syncPayPalSubscriptionPayments() {
   try {
     logger.info('Phase 2: Running user-based sync for additional coverage');
 
-    const paypalCustomers = await Users.find({
+    // (read from a cursor one at a time; loading every customer's full user
+    // document first held all of them for the whole run)
+    const paypalCustomers = Users.find({
       $or: [
         {
           [config.userFields.paypalSubscriptionID]: { $exists: true, $ne: null }
@@ -483,24 +484,25 @@ async function syncPayPalSubscriptionPayments() {
       // sort by newest customers first
       .sort('-created_at')
       .lean()
-      .exec();
+      // small fetches so the cursor stays active between slow API calls
+      .cursor({ batchSize: 10 })
+      .addCursorFlag('noCursorTimeout', true);
+
+    let userErrorEmails = errorEmails;
+    let customerCount = 0;
+    for await (const user of paypalCustomers) {
+      customerCount++;
+      // Pass allSubscriptions from Phase 1 to avoid re-fetching
+      // If Phase 1 failed, allSubscriptions will be undefined and helper will fetch
+      userErrorEmails = await syncPayPalSubscriptionPaymentsByUser(
+        userErrorEmails,
+        user,
+        allSubscriptions
+      );
+    }
 
     await logger.info(
-      `Syncing payments for ${paypalCustomers.length} paypal customers (user-based)`
-    );
-
-    const userErrorEmails = await pReduce(
-      paypalCustomers,
-      async (errorEmails, user) => {
-        // Pass allSubscriptions from Phase 1 to avoid re-fetching
-        // If Phase 1 failed, allSubscriptions will be undefined and helper will fetch
-        return syncPayPalSubscriptionPaymentsByUser(
-          errorEmails,
-          user,
-          allSubscriptions
-        );
-      },
-      errorEmails
+      `Synced payments for ${customerCount} paypal customers (user-based)`
     );
 
     if (userErrorEmails.length > 0)

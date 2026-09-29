@@ -17,7 +17,6 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
-const pEvent = require('p-event');
 const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 
@@ -42,12 +41,17 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    // run in the background a scan to ensure redis database is aligned correctly
-    const stream = client.scanStream({
+    //
+    // scan to ensure redis database is aligned correctly, one page at a time
+    // (starting the work for every page as the scan went, without waiting,
+    // queued work for every session at once and posted "done" before it ran)
+    //
+    for await (const keys of client.scanStream({
       match: `koa:sess:*`,
-      type: 'string'
-    });
-    stream.on('data', (keys) => {
+      type: 'string',
+      // hold one page at a time (a readable stream buffers 16 by default)
+      highWaterMark: 1
+    })) {
       // `GET $key` returns JSON string
       // when `JSON.parse` is called it looks like this:
       // json = {
@@ -66,39 +70,41 @@ graceful.listen();
       //   maxRedirects: 0,
       //   passport: { user: 'some-mongodb-object-id' }
       // }
-      pMap(keys, async (key) => {
-        try {
-          const value = await client.get(key);
-          const json = JSON.parse(value);
-          const id = key.replace('koa:sess:', '');
-          //
-          // check if user exists, if not then delete the session
-          // if user does exist, then $addToSet the session ID
-          //
-          // NOTE: cookies only last a maximum of 30d right now (default set)
-          //
-          if (!json?.passport?.user) return; // return early if user is not logged in
-          const user = await Users.findOne({ id: json.passport.user })
-            .lean()
-            .exec();
-          if (!user) {
-            await client.del(key);
-            return;
-          }
-
-          await Users.findByIdAndUpdate(user._id, {
-            $addToSet: {
-              sessions: id
+      await pMap(
+        keys,
+        async (key) => {
+          try {
+            const value = await client.get(key);
+            const json = JSON.parse(value);
+            const id = key.replace('koa:sess:', '');
+            //
+            // check if user exists, if not then delete the session
+            // if user does exist, then $addToSet the session ID
+            //
+            // NOTE: cookies only last a maximum of 30d right now (default set)
+            //
+            if (!json?.passport?.user) return; // return early if user is not logged in
+            const user = await Users.findOne({ id: json.passport.user })
+              .select('_id')
+              .lean()
+              .exec();
+            if (!user) {
+              await client.del(key);
+              return;
             }
-          });
-        } catch (err) {
-          logger.fatal(err);
-        }
-      })
-        .then()
-        .catch((err) => logger.fatal(err));
-    });
-    await pEvent(stream, 'end');
+
+            await Users.findByIdAndUpdate(user._id, {
+              $addToSet: {
+                sessions: id
+              }
+            });
+          } catch (err) {
+            logger.fatal(err);
+          }
+        },
+        { concurrency: 10 }
+      );
+    }
   } catch (err) {
     await logger.error(err);
   }

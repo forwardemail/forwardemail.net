@@ -37,18 +37,22 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    // Find payments that haven't been captured yet
-    const expiredPayments = await Payments.find({
+    // Find payments that haven't been captured yet (read from a cursor one at
+    // a time: payments that keep failing stay in this set and are retried
+    // every run, and each one comes with its populated user document)
+    const expiredPayments = Payments.find({
       method: 'paypal',
       paypal_order_id: { $exists: true, $ne: null },
       paypal_transaction_id: { $exists: false } // Not captured yet
-    }).populate('user');
+    })
+      .populate('user')
+      // small fetches so the cursor stays active between slow API calls
+      .cursor({ batchSize: 10 })
+      .addCursorFlag('noCursorTimeout', true);
 
-    logger.info(
-      `Found ${expiredPayments.length} expired PayPal payments to process`
-    );
-
-    for (const payment of expiredPayments) {
+    let expiredPaymentCount = 0;
+    for await (const payment of expiredPayments) {
+      expiredPaymentCount++;
       try {
         logger.info('Processing expired PayPal payment', {
           payment_id: payment._id,
@@ -295,7 +299,9 @@ graceful.listen();
       }
     }
 
-    logger.info('Completed processing expired PayPal payments');
+    logger.info(
+      `Completed processing ${expiredPaymentCount} expired PayPal payments`
+    );
   } catch (err) {
     await logger.error(err);
     // send an email to admins of the error

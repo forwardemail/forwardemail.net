@@ -39,13 +39,13 @@ const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const ms = require('ms');
-const pMap = require('p-map');
 
 const Domains = require('#models/domains');
 const Logs = require('#models/logs');
 const Users = require('#models/users');
 const config = require('#config');
 const email = require('#helpers/email');
+const forEachInBatches = require('#helpers/for-each-in-batches');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
@@ -137,7 +137,16 @@ async function getLogStats(domainIds, startDate, endDate) {
 
   // Track response codes with unique error messages
   // Key: responseCode, Value: Map of message -> count
+  //
+  // Error messages often contain unique queue ids and addresses, so a busy
+  // sender's bounces over the period can each be a different message; only
+  // the first MAX_TRACKED_MESSAGES_PER_CODE distinct messages of a code are
+  // counted by message, and the logs with any other message are counted
+  // together (they are reported as additional messages below).
+  //
+  const MAX_TRACKED_MESSAGES_PER_CODE = 1000;
   const responseCodeMessages = new Map();
+  const untrackedMessageCounts = new Map();
 
   //
   // Use cursor with noCursorTimeout for better handling of large result sets
@@ -147,7 +156,8 @@ async function getLogStats(domainIds, startDate, endDate) {
   for await (const log of Logs.find(baseQuery)
     .hint(INDEX_HINTS.domainsCreatedAt)
     .maxTimeMS(MAX_TIME_MS)
-    .select('message bounce_category err')
+    // only the fields counted below (`err` can be large)
+    .select('message bounce_category err.responseCode err.message')
     .lean()
     .cursor()
     .addCursorFlag('noCursorTimeout', true)) {
@@ -180,7 +190,17 @@ async function getLogStats(domainIds, startDate, endDate) {
       const messageMap = responseCodeMessages.get(code);
       const errMessage = log.err?.message || null;
       const messageKey = errMessage || '__null__';
-      messageMap.set(messageKey, (messageMap.get(messageKey) || 0) + 1);
+      if (
+        messageMap.has(messageKey) ||
+        messageMap.size < MAX_TRACKED_MESSAGES_PER_CODE
+      ) {
+        messageMap.set(messageKey, (messageMap.get(messageKey) || 0) + 1);
+      } else {
+        untrackedMessageCounts.set(
+          code,
+          (untrackedMessageCounts.get(code) || 0) + 1
+        );
+      }
     }
   }
 
@@ -214,6 +234,13 @@ async function getLogStats(domainIds, startDate, endDate) {
         responseCodes[code].additionalMessagesLogCount += count;
       }
     }
+
+    // logs whose message was not tracked (each counted as its own message,
+    // so the number of additional messages is at most this)
+    const untracked = untrackedMessageCounts.get(code) || 0;
+    responseCodes[code].totalCount += untracked;
+    responseCodes[code].additionalMessagesCount += untracked;
+    responseCodes[code].additionalMessagesLogCount += untracked;
   }
 
   return {
@@ -537,24 +564,28 @@ async function processUser(user, endDate) {
         plan: { $in: ['enhanced_protection', 'team'] }
       };
 
-      // Get all eligible users
-      const users = await Users.find({ ...query })
-        .select(
-          `_id email plan ${config.lastLocaleField} ${config.userFields.dailyLogAlertSentAt}`
-        )
-        .lean();
-
-      logger.info('Processing log alerts', { userCount: users.length });
-
-      // Process users with concurrency for better performance
-      await pMap(
-        users,
+      // Process eligible users with concurrency for better performance,
+      // reading them from a cursor a batch at a time
+      const userCount = await forEachInBatches(
+        Users.find({ ...query })
+          .select(
+            `_id email plan ${config.lastLocaleField} ${config.userFields.dailyLogAlertSentAt}`
+          )
+          .lean()
+          .cursor({ batchSize: 100 })
+          .addCursorFlag('noCursorTimeout', true),
+        {
+          batchSize: 100,
+          concurrency: config.concurrency,
+          shouldStop: () => isCancelled
+        },
         async (user) => {
           if (isCancelled) return;
           await processUser(user, endDate);
-        },
-        { concurrency: config.concurrency }
+        }
       );
+
+      logger.info('Processed log alerts', { userCount });
     }
   } catch (err) {
     await logger.error(err);

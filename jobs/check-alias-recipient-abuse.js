@@ -17,7 +17,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const mongoose = require('mongoose');
 
-const _ = require('#helpers/lodash');
+const CappedList = require('#helpers/capped-list');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
@@ -446,8 +446,10 @@ const EMAIL_DOMAINS = [
   'zonnet.nl'
 ];
 
-// Create a Set for faster domain lookups (case-insensitive)
-const EMAIL_DOMAINS_SET = new Set(EMAIL_DOMAINS.map((d) => d.toLowerCase()));
+// Lowercased (and deduplicated) for matching in the aggregation
+const EMAIL_DOMAINS_LOWER = [
+  ...new Set(EMAIL_DOMAINS.map((d) => d.toLowerCase()))
+];
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -460,22 +462,28 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    const users = await Users.distinct('_id', {
+    // users listed in the alert (every flagged user is still counted)
+    const MAX_LISTED_USERS = 500;
+    const lis = new CappedList(MAX_LISTED_USERS);
+
+    // Process users in batches to avoid memory issues
+    // (read from a cursor instead of loading every user id first)
+    const BATCH_SIZE = 10;
+    const userBatch = [];
+    const cursor = Users.find({
       [config.userFields.isBanned]: false,
       plan: { $in: ['enhanced_protection', 'team'] },
       has_passed_kyc: false
-    });
+    })
+      .select('_id')
+      .lean()
+      .cursor({ batchSize: 100 })
+      .addCursorFlag('noCursorTimeout', true);
 
-    const lis = [];
-
-    // Process users in batches to avoid memory issues
-    const BATCH_SIZE = 10;
-    for (let i = 0; i < users.length; i += BATCH_SIZE) {
-      const userBatch = users.slice(i, i + BATCH_SIZE);
-
+    const processUsers = async (users) => {
       // Use Promise.all to process batch concurrently
       const results = await Promise.all(
-        userBatch.map(async (user) => {
+        users.map(async (user) => {
           try {
             // Optimized aggregation with timeout and better performance
             const arr = await Aliases.aggregate(
@@ -503,6 +511,23 @@ graceful.listen();
                       }
                     }
                   }
+                },
+                //
+                // Only recipients at free email providers, and only their
+                // count and a few examples are returned: returning every
+                // distinct recipient (100K+ for some users) to filter it here
+                // held all of them in memory for each user at once
+                //
+                {
+                  $match: {
+                    domain: { $in: EMAIL_DOMAINS_LOWER }
+                  }
+                },
+                {
+                  $facet: {
+                    count: [{ $count: 'count' }],
+                    examples: [{ $limit: 10 }]
+                  }
                 }
               ],
               {
@@ -511,25 +536,27 @@ graceful.listen();
               }
             ).exec();
 
-            // Filter recipients by checking domain against our set
-            // This is much faster than regex matching in the aggregation
-            const recipients = _.uniq(
-              arr
-                .filter((v) => v.domain && EMAIL_DOMAINS_SET.has(v.domain))
-                .map((v) => v._id)
-            );
+            const [{ count = [], examples = [] } = {}] = arr;
+            const recipientCount = count[0]?.count || 0;
 
             // If it had more than 25 distinct then alert admins
-            if (recipients.length >= 25) {
-              const [u, names] = await Promise.all([
-                Users.findById(user).lean().exec(),
-                Domains.distinct('name', { 'members.user': user })
+            if (recipientCount >= 25) {
+              const [u, names, domainCount] = await Promise.all([
+                Users.findById(user).select('email').lean().exec(),
+                Domains.find({ 'members.user': user })
+                  .select('name')
+                  .limit(10)
+                  .lean()
+                  .exec(),
+                Domains.countDocuments({ 'members.user': user })
               ]);
 
               return {
                 email: u.email,
-                names,
-                recipients
+                names: names.map((d) => d.name),
+                domainCount,
+                recipients: examples.map((v) => v._id),
+                recipientCount
               };
             }
 
@@ -557,30 +584,40 @@ graceful.listen();
             <a href="${config.urls.web}/admin/domains?name=${encodeURIComponent(
               result.email
             )}" target="_blank">${
-              result.names.length
-            } domains (e.g. ${result.names.slice(0, 10).join(', ')})</a>
+              result.domainCount
+            } domains (e.g. ${result.names.join(', ')})</a>
             <br />
             <small>Using ${
-              result.recipients.length
-            } free account emails (e.g. ${result.recipients
-              .slice(0, 10)
-              .join(', ')}</small>
+              result.recipientCount
+            } free account emails (e.g. ${result.recipients.join(', ')}</small>
           </li>
         `.trim()
           );
         }
       }
+    };
+
+    for await (const doc of cursor) {
+      userBatch.push(doc._id);
+      if (userBatch.length < BATCH_SIZE) continue;
+      await processUsers(userBatch.splice(0));
     }
 
-    if (lis.length > 0)
+    if (userBatch.length > 0) await processUsers(userBatch.splice(0));
+
+    if (lis.count > 0)
       await emailHelper({
         template: 'alert',
         message: {
           to: config.alertsEmail,
-          subject: `👀 Check Alias Recipient Abuse (${lis.length} users)`
+          subject: `👀 Check Alias Recipient Abuse (${lis.count} users)`
         },
         locals: {
-          message: `<ul>${lis.join('\n')}</ul>`
+          message: `<ul>${lis.items.join('\n')}</ul>${
+            lis.omitted > 0
+              ? `<p><em>${lis.omitted} more users are not listed.</em></p>`
+              : ''
+          }`
         }
       });
   } catch (err) {

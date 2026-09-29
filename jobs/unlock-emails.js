@@ -84,65 +84,68 @@ graceful.listen();
   // go through all pending emails and check if they belong back in queue
   // (or if they need deleted because the domain doesn't exist anymore)
   //
-  // Optimized: batch domain lookups with a single query + Map instead of
-  // N+1 per-email Domains.findById calls.
+  // This works per domain: pending emails are grouped by the (few) domains
+  // they belong to, and each group is deleted or re-queued with one query
+  // per chunk of domains. Loading every pending email id (emails of
+  // suspended domains stay pending until they expire, so there can be
+  // millions) held them all in memory and made `$in` lists larger than a
+  // query can be.
   //
   try {
-    const pendingEmails = await Emails.find({ status: 'pending' })
-      .select('_id domain')
-      .lean()
+    const domainIds = await Emails.distinct('domain', { status: 'pending' })
       .maxTimeMS(60000)
       .exec();
 
-    if (pendingEmails.length > 0) {
-      // Batch fetch all unique domains referenced by pending emails
-      const uniqueDomainIds = [
-        ...new Set(pendingEmails.map((e) => e.domain.toString()))
-      ];
+    let deleted = 0;
+    let requeued = 0;
+    const CHUNK_SIZE = 500;
+
+    for (let i = 0; i < domainIds.length; i += CHUNK_SIZE) {
+      const chunk = domainIds.slice(i, i + CHUNK_SIZE);
       const domains = await Domains.find({
-        _id: { $in: uniqueDomainIds }
+        _id: { $in: chunk.filter(Boolean) }
       })
         .select('_id smtp_suspended_sent_at')
         .lean()
         .exec();
 
-      // Build a Map for O(1) lookups
       const domainMap = new Map();
       for (const domain of domains) {
         domainMap.set(domain._id.toString(), domain);
       }
 
-      // Categorize emails into delete vs re-queue
-      const deleteIds = [];
-      const requeueIds = [];
-
-      for (const email of pendingEmails) {
-        const domain = domainMap.get(email.domain.toString());
+      // Categorize domains into delete vs re-queue
+      const deleteDomainIds = [];
+      const requeueDomainIds = [];
+      for (const id of chunk) {
+        if (!id) continue;
+        const domain = domainMap.get(id.toString());
         if (!domain) {
-          // Domain no longer exists - delete the email
-          deleteIds.push(email._id);
+          // Domain no longer exists - delete its emails
+          deleteDomainIds.push(id);
         } else if (
           !domain.smtp_suspended_sent_at ||
           !(domain.smtp_suspended_sent_at instanceof Date)
         ) {
-          // Domain is not suspended - re-queue the email
-          requeueIds.push(email._id);
+          // Domain is not suspended - re-queue its emails
+          requeueDomainIds.push(id);
         }
-        // else: domain is suspended - leave email as pending (no action)
+        // else: domain is suspended - leave emails as pending (no action)
       }
 
       // Batch delete orphaned emails
-      if (deleteIds.length > 0) {
-        await Emails.deleteMany(
-          { _id: { $in: deleteIds } },
+      if (deleteDomainIds.length > 0) {
+        const result = await Emails.deleteMany(
+          { status: 'pending', domain: { $in: deleteDomainIds } },
           { writeConcern: { w: 1 } }
         );
+        deleted += result?.deletedCount || 0;
       }
 
       // Batch re-queue emails whose domains are not suspended
-      if (requeueIds.length > 0) {
-        await Emails.updateMany(
-          { _id: { $in: requeueIds } },
+      if (requeueDomainIds.length > 0) {
+        const result = await Emails.updateMany(
+          { status: 'pending', domain: { $in: requeueDomainIds } },
           {
             $set: {
               is_locked: false,
@@ -155,15 +158,16 @@ graceful.listen();
           },
           { writeConcern: { w: 1 } }
         );
+        requeued += result?.modifiedCount || 0;
       }
+    }
 
-      if (deleteIds.length > 0 || requeueIds.length > 0) {
-        logger.info('processed pending emails', {
-          total: pendingEmails.length,
-          deleted: deleteIds.length,
-          requeued: requeueIds.length
-        });
-      }
+    if (deleted > 0 || requeued > 0) {
+      logger.info('processed pending emails', {
+        domains: domainIds.length,
+        deleted,
+        requeued
+      });
     }
   } catch (err) {
     console.error(

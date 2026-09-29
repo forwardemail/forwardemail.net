@@ -24,8 +24,8 @@ const Redis = require('@ladjs/redis');
 const isFQDN = require('is-fqdn');
 const mongoose = require('mongoose');
 const ms = require('ms');
+const pMap = require('p-map');
 const parseErr = require('parse-err');
-const pEvent = require('p-event');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 const sharedConfig = require('@ladjs/shared-config');
@@ -58,6 +58,13 @@ graceful.listen();
 // Configuration for batch processing
 const DOMAIN_BATCH_SIZE = 1000; // Tune this based on your needs
 const ALIAS_BATCH_SIZE = 5000; // Larger batch for aliases as they're simpler
+// Domains of a batch processed at once (each pages through its own aliases,
+// so running a whole batch of 1000 at once held up to 1000 alias pages)
+const DOMAIN_CONCURRENCY = 10;
+// Aliases of a page checked at once (each makes Redis lookups)
+const ALIAS_CONCURRENCY = 50;
+// Redis commands buffered before a pipeline is sent
+const PIPELINE_SIZE = 1000;
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 
@@ -206,8 +213,9 @@ async function processDomainsBatch(bannedUserIdsSet, set, denylistedEntries) {
     );
 
     // Process the batch in parallel with controlled concurrency
-    await Promise.all(
-      domains.map(async (domain) => {
+    await pMap(
+      domains,
+      async (domain) => {
         try {
           logger.debug('processing %s', domain.name);
 
@@ -240,7 +248,7 @@ async function processDomainsBatch(bannedUserIdsSet, set, denylistedEntries) {
               domainName,
               denylistCheck.reason
             );
-            denylistedEntries.push({
+            addDenylistedEntry(denylistedEntries, {
               value: domainName,
               type: 'domain',
               reason: denylistCheck.reason
@@ -286,7 +294,7 @@ async function processDomainsBatch(bannedUserIdsSet, set, denylistedEntries) {
                 rootDomainAscii,
                 rootDenylistCheck.reason
               );
-              denylistedEntries.push({
+              addDenylistedEntry(denylistedEntries, {
                 value: rootDomainAscii,
                 type: 'root_domain',
                 reason: rootDenylistCheck.reason
@@ -310,9 +318,53 @@ async function processDomainsBatch(bannedUserIdsSet, set, denylistedEntries) {
           logger.error(`Error processing domain ${domain.name}:`, err);
           // Continue processing other domains even if one fails
         }
-      })
+      },
+      { concurrency: DOMAIN_CONCURRENCY }
     );
   }
+}
+
+//
+// Denylisted values that were filtered out, one entry per value and type
+// (the same recipient domain is usually seen on many aliases)
+//
+function addDenylistedEntry(denylistedEntries, entry) {
+  const key = `${entry.type}:${entry.value}`;
+  if (!denylistedEntries.has(key)) denylistedEntries.set(key, entry);
+}
+
+//
+// Buffers Redis commands and sends them every PIPELINE_SIZE commands, where
+// a single pipeline for the whole run held every command (and then every
+// reply) in memory at once
+//
+function createPipelineWriter(client) {
+  let p = client.pipeline();
+  let size = 0;
+
+  async function flush() {
+    if (size === 0) return;
+    const pipeline = p;
+    p = client.pipeline();
+    size = 0;
+    await retryOperation(async () => {
+      await pipeline.exec();
+    });
+  }
+
+  return {
+    async set(...args) {
+      p.set(...args);
+      size++;
+      if (size >= PIPELINE_SIZE) await flush();
+    },
+    async del(key) {
+      p.del(key);
+      size++;
+      if (size >= PIPELINE_SIZE) await flush();
+    },
+    flush
+  };
 }
 
 // Optimized function to process aliases with pagination
@@ -326,12 +378,15 @@ async function processAliasesBatch(
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
+    //
+    // NOTE: aliases of banned users are skipped below; they are not excluded
+    //       in the query, where a `$nin` of every banned user id (tens of
+    //       thousands) was copied into every alias page query, for every
+    //       domain being processed at once
+    //
     const query = {
       domain: domain._id,
-      is_enabled: true,
-      user: {
-        $nin: [...bannedUserIdsSet]
-      }
+      is_enabled: true
     };
 
     if (lastId) {
@@ -378,8 +433,9 @@ async function processAliasesBatch(
     for (let i = 0; i < validAliases.length; i += chunkSize) {
       const chunk = validAliases.slice(i, i + chunkSize);
 
-      await Promise.all(
-        chunk.map(async (alias) => {
+      await pMap(
+        chunk,
+        async (alias) => {
           try {
             logger.debug(
               'alias %s@%s (%d recipients)',
@@ -402,7 +458,7 @@ async function processAliasesBatch(
                     recipientDomainAscii,
                     denylistCheck.reason
                   );
-                  denylistedEntries.push({
+                  addDenylistedEntry(denylistedEntries, {
                     value: recipientDomainAscii,
                     type: 'recipient_domain',
                     reason: denylistCheck.reason
@@ -450,7 +506,7 @@ async function processAliasesBatch(
                       rootDomainAscii,
                       rootDenylistCheck.reason
                     );
-                    denylistedEntries.push({
+                    addDenylistedEntry(denylistedEntries, {
                       value: rootDomainAscii,
                       type: 'recipient_root_domain',
                       reason: rootDenylistCheck.reason
@@ -476,7 +532,7 @@ async function processAliasesBatch(
                     recipientDomainAscii,
                     denylistCheck.reason
                   );
-                  denylistedEntries.push({
+                  addDenylistedEntry(denylistedEntries, {
                     value: recipientDomainAscii,
                     type: 'recipient_email_domain',
                     reason: denylistCheck.reason
@@ -524,7 +580,7 @@ async function processAliasesBatch(
                       rootDomainAscii,
                       rootDenylistCheck.reason
                     );
-                    denylistedEntries.push({
+                    addDenylistedEntry(denylistedEntries, {
                       value: rootDomainAscii,
                       type: 'recipient_email_root_domain',
                       reason: rootDenylistCheck.reason
@@ -547,7 +603,7 @@ async function processAliasesBatch(
                     recipient,
                     ipDenylistCheck.reason
                   );
-                  denylistedEntries.push({
+                  addDenylistedEntry(denylistedEntries, {
                     value: recipient,
                     type: 'recipient_ip',
                     reason: ipDenylistCheck.reason
@@ -568,7 +624,8 @@ async function processAliasesBatch(
             );
             // Continue processing other aliases even if one fails
           }
-        })
+        },
+        { concurrency: ALIAS_CONCURRENCY }
       );
     }
   }
@@ -578,20 +635,21 @@ async function processAliasesBatch(
 // eslint-disable-next-line max-params
 async function processRedisStream(client, pattern, set, targetSet, p) {
   try {
-    const stream = client.scanStream({
+    const prefix = pattern.replace('*', '');
+    for await (const keys of client.scanStream({
       match: pattern,
       count: 10000,
-      type: 'string'
-    });
-
-    const processKeys = (keys) => {
+      type: 'string',
+      // hold one page at a time (a readable stream buffers 16 by default)
+      highWaterMark: 1
+    })) {
+      const matched = new Set();
       for (const key of keys) {
         try {
-          const prefix = pattern.replace('*', '');
           const keyWithoutPrefix = key.replace(prefix, '');
 
           if (set.has(keyWithoutPrefix)) {
-            p.del(key);
+            matched.add(key);
             targetSet.add(keyWithoutPrefix);
           }
 
@@ -602,12 +660,12 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
             const root = parseRootDomain(host);
 
             if (set.has(host)) {
-              p.del(key);
+              matched.add(key);
               targetSet.add(keyWithoutPrefix);
             }
 
             if (host !== root && set.has(root)) {
-              p.del(key);
+              matched.add(key);
               targetSet.add(keyWithoutPrefix);
             }
           }
@@ -616,10 +674,11 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
           // Continue processing other keys even if one fails
         }
       }
-    };
 
-    stream.on('data', processKeys);
-    await pEvent(stream, 'end');
+      for (const key of matched) {
+        await p.del(key);
+      }
+    }
   } catch (err) {
     logger.error(`Error processing Redis stream ${pattern}:`, err);
     throw err;
@@ -634,24 +693,22 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
     logger.info(`Found ${bannedUserIdsSet.size} banned users`);
 
     const set = new Set();
-    const denylistedEntries = [];
+    const denylistedEntries = new Map();
 
     // Process domains with optimized pagination
     await processDomainsBatch(bannedUserIdsSet, set, denylistedEntries);
 
-    stats.entriesBeforeDenylistCheck = set.size + denylistedEntries.length;
+    stats.entriesBeforeDenylistCheck = set.size + denylistedEntries.size;
     stats.entriesAddedToAllowlist = set.size;
 
     logger.info(`Total unique entries in allowlist: ${set.size}`);
-    logger.info(
-      `Total denylisted entries filtered: ${denylistedEntries.length}`
-    );
+    logger.info(`Total denylisted entries filtered: ${denylistedEntries.size}`);
 
-    const p = client.pipeline();
+    const p = createPipelineWriter(client);
 
     // Set allowlist entries in Redis with 30-day expiration
     for (const key of set) {
-      p.set(`allowlist:${key}`, 'true', 'PX', THIRTY_DAYS_TO_MS);
+      await p.set(`allowlist:${key}`, 'true', 'PX', THIRTY_DAYS_TO_MS);
     }
 
     // Process Redis streams with error handling
@@ -667,9 +724,7 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
     await processRedisStream(client, 'backscatter:*', set, backscatterSet, p);
     stats.backscatterRemovals = backscatterSet.size;
 
-    await retryOperation(async () => {
-      await p.exec();
-    });
+    await p.flush();
 
     // Create CSV with all removals
     const removalsCsvContent = ['prefix,value']; // header row
@@ -694,7 +749,7 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
 
     // Create denylisted entries CSV
     const denylistedCsvContent = ['value,type,reason']; // header row
-    for (const entry of denylistedEntries) {
+    for (const entry of denylistedEntries.values()) {
       denylistedCsvContent.push(`${entry.value},${entry.type},${entry.reason}`);
     }
 

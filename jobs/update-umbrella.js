@@ -23,7 +23,6 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pFilter = require('p-filter');
-const pEvent = require('p-event');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
@@ -34,12 +33,19 @@ const { boolean } = require('boolean');
 const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const _ = require('#helpers/lodash');
 
+const BoundedMap = require('#helpers/bounded-map');
+const CappedList = require('#helpers/capped-list');
 const config = require('#config');
 const setupMongoose = require('#helpers/setup-mongoose');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 
 const concurrency = os.cpus().length;
+//
+// Daily lists downloaded and parsed at once: each one is held as the ZIP,
+// its text (tens of MB) and an array of its million lines while it is parsed
+//
+const LIST_CONCURRENCY = 2;
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const graceful = new Graceful({
@@ -66,10 +72,12 @@ for (let i = 1; i <= DAYS; i++) {
   dates.unshift(dayjs().subtract(i, 'days').format('YYYY-MM-DD'));
 }
 
-// this uses in-memory Map cache for optimization
+// this uses an in-memory cache for optimization, bounded so the answers for
+// every name the run resolves (several per domain) are not all kept
 const resolver = new Tangerine({
   logger,
-  servers: ['1.1.1.3', '1.1.0.3']
+  servers: ['1.1.1.3', '1.1.0.3'],
+  cache: new BoundedMap(10_000)
 });
 
 async function getSPFRecord(name, isRedirect = false) {
@@ -142,7 +150,7 @@ async function getSPFRecord(name, isRedirect = false) {
 //       OR have an SPF record with -all or ~all qualifier
 // - [X} if criteria met, then cached for 7 days (job runs daily)
 
-async function isBadDomain(name) {
+async function isBadDomain(name, remember = true) {
   // check if adult content or malware domain
   if (badDomains.has(name)) return badDomains.get(name);
   let isBad = false;
@@ -212,7 +220,7 @@ async function isBadDomain(name) {
   if (isBad) logger.debug(`${name} was bad`, { hide_meta: true });
 
   // cache value for future lookups
-  badDomains.set(name, isBad);
+  if (remember) badDomains.set(name, isBad);
 
   return isBad;
 }
@@ -305,7 +313,7 @@ async function checkDate(date) {
     await setupMongoose(logger);
 
     // <http://s3-us-west-1.amazonaws.com/umbrella-static/index.html>
-    await pMap(dates, checkDate, { concurrency });
+    await pMap(dates, checkDate, { concurrency: LIST_CONCURRENCY });
 
     logger.info(`domains over past ${DAYS} days`, {
       count: countByDomain.size
@@ -398,63 +406,71 @@ async function checkDate(date) {
   // this should be moved to its own job but we're leaving it here for now
   //
   try {
+    //
+    // Check the existing allowlist one page of the scan at a time. Collecting
+    // every allowlist key first (millions, written by sync-paid-alias-allowlist)
+    // kept all of them, plus a result for each, in memory at once.
+    //
     // <https://github.com/redis/ioredis?tab=readme-ov-file#streamify-scanning>
-    const allowlistKeys = new Set();
-    const domains = new Set();
-    const stream = client.scanStream({
+    let allowlistKeyCount = 0;
+    let domainCount = 0;
+    const MAX_LISTED_DOMAINS = 1000;
+    const badDomains = new CappedList(MAX_LISTED_DOMAINS);
+    let ttlSetCount = 0;
+    for await (const keys of client.scanStream({
       match: 'allowlist:*',
       count: 10000,
-      type: 'string'
-    });
-    stream.on('data', (keys) => {
+      type: 'string',
+      // hold one page at a time (a readable stream buffers 16 by default)
+      highWaterMark: 1
+    })) {
+      allowlistKeyCount += keys.length;
+      const domains = new Set();
       for (const key of keys) {
-        allowlistKeys.add(key);
         const domain = key.replace('allowlist:', '');
         if (isFQDN(domain)) domains.add(domain);
       }
-    });
-    await pEvent(stream, 'end');
-    logger.info('found existing allowlist keys', {
-      count: allowlistKeys.size
-    });
-    logger.info('found existing FQDN allowlist keys', {
-      count: domains.size
-    });
-    const badDomains = await pFilter([...domains], isBadDomain, {
-      concurrency
-    });
-    logger.info('found existing FQDN allowlist keys that were bad domains', {
-      count: badDomains.length
-    });
 
-    const p = client.pipeline();
-    for (const domain of badDomains) {
-      p.del(`allowlist:${domain}`);
+      domainCount += domains.size;
+
+      const p = client.pipeline();
+      await pMap(
+        domains,
+        async (domain) => {
+          // results of this check are not kept for the rest of the run
+          if (await isBadDomain(domain, false)) {
+            badDomains.push(domain);
+            p.del(`allowlist:${domain}`);
+            return;
+          }
+
+          // pttl
+          // <https://redis.io/commands/pttl/>
+          // >= redis v2.8 returns -2 if key does not exist or -1 if key exists but without expire
+          // <= redis v2.6 returns -1 if key does not exist or if no associated expire
+          const result = await client.pttl(`allowlist:${domain}`);
+          if (result < 0 || result > ALLOWLIST_PX_MS) {
+            ttlSetCount++;
+            p.set(`allowlist:${domain}`, 'true', 'PX', ALLOWLIST_PX_MS);
+          }
+        },
+        { concurrency }
+      );
+      await p.exec();
     }
 
-    const goodDomains = [...domains].filter(
-      (domain) => !badDomains.includes(domain)
-    );
-    const ttlSet = [];
-    await pMap(
-      goodDomains,
-      async (domain) => {
-        // pttl
-        // <https://redis.io/commands/pttl/>
-        // >= redis v2.8 returns -2 if key does not exist or -1 if key exists but without expire
-        // <= redis v2.6 returns -1 if key does not exist or if no associated expire
-        const result = await client.pttl(`allowlist:${domain}`);
-        if (result < 0 || result > ALLOWLIST_PX_MS) {
-          ttlSet.push(domain);
-          p.set(`allowlist:${domain}`, 'true', 'PX', ALLOWLIST_PX_MS);
-        }
-      },
-      { concurrency }
-    );
-    await p.exec();
+    logger.info('found existing allowlist keys', {
+      count: allowlistKeyCount
+    });
+    logger.info('found existing FQDN allowlist keys', {
+      count: domainCount
+    });
+    logger.info('found existing FQDN allowlist keys that were bad domains', {
+      count: badDomains.count
+    });
 
-    logger.info('removing previously allowlisted domains that were bad', {
-      count: badDomains.length
+    logger.info('removed previously allowlisted domains that were bad', {
+      count: badDomains.count
     });
 
     await emailHelper({
@@ -466,18 +482,21 @@ async function checkDate(date) {
       locals: {
         message: `
           <p class="text-center">The following (${
-            badDomains.length
+            badDomains.count
           }) domains were removed from the allowlist as they did not meet the criteria:</p>
           <ul class="list-inline">
             <li class="list-inline-item"><code>${
-              badDomains.length === 0
+              badDomains.count === 0
                 ? 'No domains were removed'
-                : badDomains.join('</code></li><li><code>')
+                : badDomains.items.join('</code></li><li><code>')
             }</code></li>
-          </ul>
-          <p class="text-center">(${
-            ttlSet.length
-          }) previously allowlisted domains had TTL set (as they were missing TTL value).</p>
+          </ul>${
+            badDomains.omitted > 0
+              ? `
+          <p class="text-center">(${badDomains.omitted} more are not listed.)</p>`
+              : ''
+          }
+          <p class="text-center">(${ttlSetCount}) previously allowlisted domains had TTL set (as they were missing TTL value).</p>
         `
       }
     });

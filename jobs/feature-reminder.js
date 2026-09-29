@@ -216,43 +216,59 @@ async function mapper(user) {
     )
       return;
 
-    // Get all domains where user is admin
-    const userDomains = await Domains.find({
+    //
+    // Determine feature usage with existence checks on the user's domains
+    // (where user is admin) and aliases, instead of loading all of them: a
+    // user can have hundreds of thousands of aliases
+    //
+    const adminDomains = {
       members: {
         $elemMatch: {
           user: user._id,
           group: 'admin'
         }
       }
-    })
-      .select('has_smtp smtp_verified_at has_catchall is_api')
-      .lean();
-
-    // Get all aliases for this user
-    const userAliases = await Aliases.find({
-      user: user._id
-    })
-      .select('has_imap has_pgp public_key vacation_responder is_api')
-      .lean();
-
-    // Determine feature usage
-    const featureUsage = {
+    };
+    const [
+      hasSmtp,
+      hasCatchall,
+      hasApiDomain,
+      hasImap,
+      hasPgp,
+      hasVacationResponder,
+      hasApiAlias
+    ] = await Promise.all([
       // SMTP: user has a domain with SMTP enabled and verified
-      hasSmtp: userDomains.some((d) => d.has_smtp && d.smtp_verified_at),
-
-      // IMAP: user has an alias with IMAP enabled
-      hasImap: userAliases.some((a) => a.has_imap),
-
+      Domains.exists({
+        ...adminDomains,
+        has_smtp: true,
+        smtp_verified_at: { $exists: true, $ne: null }
+      }),
       // Catchall: user has a domain with catchall enabled (has an alias named '*')
-      hasCatchall: userDomains.some((d) => d.has_catchall),
-
+      Domains.exists({ ...adminDomains, has_catchall: true }),
+      Domains.exists({ ...adminDomains, is_api: true }),
+      // IMAP: user has an alias with IMAP enabled
+      Aliases.exists({ user: user._id, has_imap: true }),
       // PGP: user has an alias with PGP enabled
-      hasPgp: userAliases.some((a) => a.has_pgp && a.public_key),
-
+      Aliases.exists({
+        user: user._id,
+        has_pgp: true,
+        public_key: { $exists: true, $nin: [null, ''] }
+      }),
       // Vacation Responder: user has an alias with vacation responder enabled
-      hasVacationResponder: userAliases.some(
-        (a) => a.vacation_responder && a.vacation_responder.is_enabled
-      ),
+      Aliases.exists({
+        user: user._id,
+        'vacation_responder.is_enabled': true
+      }),
+      Aliases.exists({ user: user._id, is_api: true })
+    ]);
+
+    const featureUsage = {
+      hasSmtp: Boolean(hasSmtp),
+      hasImap: Boolean(hasImap),
+      hasCatchall: Boolean(hasCatchall),
+      hasPgp: Boolean(hasPgp),
+      hasVacationResponder: Boolean(hasVacationResponder),
 
       // Calendar: check if user has any calendars (via alias with IMAP)
       // This is a proxy - if they have IMAP they can use CalDAV
@@ -263,8 +279,7 @@ async function mapper(user) {
       hasContacts: false, // Will be detected via separate query if needed
 
       // API: check if any domain or alias was created via API
-      hasApi:
-        userDomains.some((d) => d.is_api) || userAliases.some((a) => a.is_api)
+      hasApi: Boolean(hasApiDomain || hasApiAlias)
     };
 
     // If user is already using ALL features, we can skip sending the email

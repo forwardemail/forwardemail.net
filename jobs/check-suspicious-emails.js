@@ -19,11 +19,12 @@ const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const { distance } = require('fastest-levenshtein');
 const mongoose = require('mongoose');
-const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 
+const CappedList = require('#helpers/capped-list');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const forEachInBatches = require('#helpers/for-each-in-batches');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users } = require('#models');
@@ -89,12 +90,12 @@ function isEmailSuspicious(email, bannedEmails) {
 }
 
 async function sendAggregatedAlert(suspiciousUsers) {
-  if (suspiciousUsers.length === 0) return;
+  if (suspiciousUsers.count === 0) return;
 
   try {
-    const subject = `${suspiciousUsers.length} Suspicious Email Registration(s) Detected`;
+    const subject = `${suspiciousUsers.count} Suspicious Email Registration(s) Detected`;
 
-    const usersList = suspiciousUsers
+    const usersList = suspiciousUsers.items
       .map(
         ({ user, suspicionResult }) => `
         <li>
@@ -128,8 +129,14 @@ async function sendAggregatedAlert(suspiciousUsers) {
       .join('');
 
     const message = `
-      <p><strong>Found ${suspiciousUsers.length} suspicious email registration(s) among paid users:</strong></p>
-      <ul>${usersList}</ul>
+      <p><strong>Found ${
+        suspiciousUsers.count
+      } suspicious email registration(s) among paid users:</strong></p>
+      <ul>${usersList}</ul>${
+      suspiciousUsers.omitted > 0
+        ? `<p><em>${suspiciousUsers.omitted} more are not listed.</em></p>`
+        : ''
+    }
       <p><strong>Recommended Actions:</strong></p>
       <ul>
         <li>Review user account activity</li>
@@ -148,8 +155,8 @@ async function sendAggregatedAlert(suspiciousUsers) {
     });
 
     logger.warn('Aggregated admin alert sent for suspicious emails', {
-      count: suspiciousUsers.length,
-      emails: suspiciousUsers.map(({ user }) => user.email)
+      count: suspiciousUsers.count,
+      emails: suspiciousUsers.items.map(({ user }) => user.email)
     });
   } catch (err) {
     logger.error('Failed to send aggregated admin alert', err);
@@ -162,29 +169,27 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    const paidUsers = await Users.find({
-      plan: { $ne: 'free' },
-      [config.userFields.isBanned]: false,
-      email: {
-        $exists: true,
-        $ne: null,
-        $not: { $regex: `@${config.removedEmailDomain}$` }
-      }
-    })
-      .select('_id email created_at')
-      .lean()
-      .exec();
-
-    if (paidUsers.length === 0) {
-      logger.info('No paid users to check for suspicious emails');
-      return;
-    }
-
     const bannedEmails = await getBannedEmails();
-    const suspiciousUsers = [];
+    // users listed in the alert (every one found is still counted)
+    const suspiciousUsers = new CappedList(500);
 
-    await pMap(
-      paidUsers,
+    // check paid users read from a cursor a batch at a time (loading them
+    // all first held every paid user for the whole run)
+    const usersChecked = await forEachInBatches(
+      Users.find({
+        plan: { $ne: 'free' },
+        [config.userFields.isBanned]: false,
+        email: {
+          $exists: true,
+          $ne: null,
+          $not: { $regex: `@${config.removedEmailDomain}$` }
+        }
+      })
+        .select('_id email created_at')
+        .lean()
+        .cursor({ batchSize: 500 })
+        .addCursorFlag('noCursorTimeout', true),
+      { batchSize: 500, concurrency: 5 },
       async (user) => {
         try {
           const suspicionResult = isEmailSuspicious(user.email, bannedEmails);
@@ -205,20 +210,24 @@ graceful.listen();
             email: user.email
           });
         }
-      },
-      { concurrency: 5 }
+      }
     );
 
-    await sendAggregatedAlert(suspiciousUsers);
+    if (usersChecked === 0) {
+      logger.info('No paid users to check for suspicious emails');
+    } else {
+      await sendAggregatedAlert(suspiciousUsers);
 
-    logger.info('Suspicious email check completed', {
-      usersChecked: paidUsers.length,
-      suspiciousFound: suspiciousUsers.length,
-      bannedEmailsCount: bannedEmails.length
-    });
+      logger.info('Suspicious email check completed', {
+        usersChecked,
+        suspiciousFound: suspiciousUsers.count,
+        bannedEmailsCount: bannedEmails.length
+      });
+    }
   } catch (err) {
-    logger.error('Suspicious email check job failed', err);
-    throw err;
+    // (not rethrown: the job would never post "done" and its worker would
+    // keep running, holding one of bree's job slots)
+    await logger.error('Suspicious email check job failed', err);
   }
 
   if (parentPort) parentPort.postMessage('done');

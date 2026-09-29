@@ -14,6 +14,7 @@ const { parentPort } = require('node:worker_threads');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { createHash } = require('node:crypto');
 const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
@@ -33,6 +34,40 @@ const graceful = new Graceful({
 });
 
 graceful.listen();
+
+//
+// Summarize the ids of the emails a query matches: how many there are, an
+// order-independent digest of them and the first few. Two runs with the same
+// count and digest matched the same emails. Keeping every id (twice, then
+// joining both lists into strings to compare them) held the whole queue in
+// memory, and the queue is largest exactly when this check matters.
+//
+async function summarizeIds(query) {
+  let count = 0;
+  let sum = 0n;
+  let xor = 0n;
+  const sampleIds = [];
+  // eslint-disable-next-line unicorn/no-array-callback-reference
+  for await (const email of Emails.find(query)
+    .select('id')
+    .lean()
+    .cursor()
+    .addCursorFlag('noCursorTimeout', true)) {
+    count++;
+    if (sampleIds.length < 10) sampleIds.push(email.id);
+    const hash = createHash('sha256').update(String(email.id)).digest();
+    const value = hash.readBigUInt64BE(0);
+    sum = BigInt.asUintN(64, sum + value);
+    // eslint-disable-next-line no-bitwise
+    xor ^= hash.readBigUInt64BE(8);
+  }
+
+  return {
+    count,
+    digest: `${sum.toString(16)}:${xor.toString(16)}`,
+    sampleIds
+  };
+}
 
 (async () => {
   await setupMongoose(logger);
@@ -119,18 +154,10 @@ graceful.listen();
     // Optimized to use cursor-based iteration instead of aggregation
     // to avoid MongoDB MaxTimeMSExpired errors on large datasets
     //
-    const ids = [];
-    // eslint-disable-next-line unicorn/no-array-callback-reference
-    for await (const email of Emails.find(query)
-      .select('id')
-      .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      ids.push(email.id);
-    }
+    const ids = await summarizeIds(query);
 
     // if no ids then return early
-    if (ids.length === 0) {
+    if (ids.count === 0) {
       logger.info('No ids found');
       process.exit(0);
       return;
@@ -140,34 +167,27 @@ graceful.listen();
     await setTimeout(ms('1m'));
 
     // check if ids is the same
-    const newIds = [];
-    for await (const email of Emails.find({
+    const newIds = await summarizeIds({
       ...query,
       date: {
         $lte: new Date()
       }
-    })
-      .select('id')
-      .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      newIds.push(email.id);
-    }
+    });
 
     // if no ids then return early
-    if (newIds.length === 0) {
+    if (newIds.count === 0) {
       logger.info('No new ids found');
       process.exit(0);
       return;
     }
 
-    if (ids.sort().join(',') === newIds.sort().join(',')) {
+    if (ids.count === newIds.count && ids.digest === newIds.digest) {
       // TODO: remove debug instrumentation once queue issue is resolved
       console.error(
         '[DEBUG:check-smtp-frozen-queue] queue is frozen',
         JSON.stringify({
-          frozenCount: ids.length,
-          sampleIds: ids.slice(0, 10)
+          frozenCount: ids.count,
+          sampleIds: ids.sampleIds
         })
       );
       const err = new Error('Queue is frozen');

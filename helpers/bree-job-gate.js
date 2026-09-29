@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const v8 = require('node:v8');
+
 const ms = require('ms');
 
 //
@@ -234,4 +236,37 @@ function trackExitCodes(bree) {
   return exitCodes;
 }
 
-module.exports = { createJobGate, trackExitCodes, FREQUENT_INTERVAL };
+/**
+ * Cap the heap of every worker thread created after this call.
+ *
+ * Worker `resourceLimits.maxOldGenerationSizeMb` is ignored on Node 18: the
+ * worker keeps the process default heap limit (several gigabytes), so a job
+ * that runs away grows until the host is out of memory and V8 aborts the whole
+ * process, every other running job with it. V8 reads --max-old-space-size when
+ * it creates each isolate, so setting it here applies to every worker created
+ * afterwards and leaves this (already created) thread's own limit as it is. A
+ * worker that reaches it is stopped with ERR_WORKER_OUT_OF_MEMORY and exits on
+ * its own with a non-zero code.
+ *
+ * Call it before any worker is created. Node documents changing V8 flags
+ * after startup as unsupported; this is verified on Node 18 (see the test),
+ * so re-check it when upgrading Node.
+ *
+ * @param {number} mb - Old generation limit in megabytes
+ * @returns {number} The limit that was set
+ */
+function capWorkerHeap(mb) {
+  const limit = Number(mb);
+  if (!Number.isInteger(limit) || limit <= 0)
+    throw new TypeError('Worker heap limit must be a positive integer (MB)');
+
+  v8.setFlagsFromString(`--max-old-space-size=${limit}`);
+  return limit;
+}
+
+module.exports = {
+  createJobGate,
+  trackExitCodes,
+  capWorkerHeap,
+  FREQUENT_INTERVAL
+};

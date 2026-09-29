@@ -7,7 +7,6 @@ const os = require('node:os');
 const { setTimeout } = require('node:timers/promises');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const pMap = require('p-map');
 const pReduce = require('p-reduce');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
@@ -15,6 +14,7 @@ const { encode } = require('html-entities');
 const getAllStripePaymentIntents = require('./get-all-stripe-payment-intents');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const forEachInBatches = require('#helpers/for-each-in-batches');
 const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
 const stripe = require('#helpers/stripe');
 const logger = require('#helpers/logger');
@@ -34,16 +34,15 @@ async function syncStripePayments() {
   // are processed first, so even if the job times out before finishing all 33K+ customers,
   // the most critical ones are already handled.
   //
-  const stripeCustomers = await Users.find({
+  // (read from a cursor a batch at a time; loading every customer's full
+  // user document first held all of them for the whole run)
+  const stripeCustomers = Users.find({
     [config.userFields.stripeCustomerID]: { $exists: true, $ne: null }
   })
     .sort('-created_at')
     .lean()
-    .exec();
-
-  logger.info(
-    `Syncing payments for ${stripeCustomers.length} stripe customers.`
-  );
+    .cursor({ batchSize: concurrency * 10 })
+    .addCursorFlag('noCursorTimeout', true);
 
   async function mapper(user) {
     // wait 250ms to prevent rate limitation error
@@ -197,7 +196,13 @@ async function syncStripePayments() {
     }
   }
 
-  await pMap(stripeCustomers, mapper, { concurrency });
+  const customerCount = await forEachInBatches(
+    stripeCustomers,
+    { batchSize: concurrency * 10, concurrency },
+    mapper
+  );
+
+  logger.info(`Synced payments for ${customerCount} stripe customers.`);
 
   if (errorEmails.length > 0)
     await Promise.all(errorEmails.map((email) => emailHelper(email)));

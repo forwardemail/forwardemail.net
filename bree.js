@@ -20,27 +20,36 @@ const mongoose = require('mongoose');
 const jobs = require('./jobs');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
-const { createJobGate, trackExitCodes } = require('#helpers/bree-job-gate');
+const {
+  capWorkerHeap,
+  createJobGate,
+  trackExitCodes
+} = require('#helpers/bree-job-gate');
 
 function positiveInt(value, fallback) {
   const number = Number.parseInt(value, 10);
   return Number.isFinite(number) && number > 0 ? number : fallback;
 }
 
+//
+// Cap each job worker's heap. Without a cap a worker that runs away grows
+// until the host is out of memory and V8 aborts the whole bree process (every
+// other running job with it); with one, only that worker is stopped
+// (ERR_WORKER_OUT_OF_MEMORY) and it is reported as a failed run.
+//
+// Node 18 ignores `resourceLimits` for worker threads, so the cap is set with
+// the V8 flag (see helpers/bree-job-gate.js), before any worker exists. The
+// `resourceLimits` below applies the same cap on Node versions that honor it.
+//
+const workerHeapMb = capWorkerHeap(
+  positiveInt(process.env.BREE_WORKER_MAX_OLD_SPACE_MB, 10_240)
+);
+
 const bree = new Bree({
   logger,
   worker: {
-    //
-    // Cap each job worker's heap. Without a cap a worker that runs away grows
-    // until the host is out of memory and V8 aborts the whole bree process
-    // (every other running job with it); with one, only that worker is
-    // stopped (ERR_WORKER_OUT_OF_MEMORY) and it is reported as a failed run.
-    //
     resourceLimits: {
-      maxOldGenerationSizeMb: positiveInt(
-        process.env.BREE_WORKER_MAX_OLD_SPACE_MB,
-        2048
-      )
+      maxOldGenerationSizeMb: workerHeapMb
     }
   }
 });
@@ -63,7 +72,8 @@ const exitCodes = trackExitCodes(bree);
 logger.info('bree job concurrency', {
   hide_meta: true,
   maxConcurrent: gate.maxConcurrent,
-  reservedForFrequent: gate.reservedForFrequent
+  reservedForFrequent: gate.reservedForFrequent,
+  workerHeapMb
 });
 
 // Track job start times for duration calculation

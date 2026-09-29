@@ -123,8 +123,16 @@ function generateTableRow(options) {
     // We use a composite key of truthSource + affectedHostname + affectedIp + errorMessage
     // to ensure we capture distinct errors per server
     //
+    // Only the fields shown are kept for each distinct error, and only the
+    // first MAX_ROWS_PER_TRUTH_SOURCE of each truth source are listed
+    // (blocklist responses often contain unique ids, so an hour of bounces
+    // can be almost all distinct, and each row is HTML rendered in memory)
+    //
+    const MAX_ROWS_PER_TRUTH_SOURCE = 50;
     const groupedByTruthSource = new Map();
-    const uniqueErrors = new Map();
+    const distinctCounts = new Map();
+    const uniqueErrors = new Set();
+    const affectedServers = new Set();
     let totalLogs = 0;
 
     //
@@ -136,6 +144,9 @@ function generateTableRow(options) {
       .hint(BLOCKLIST_INDEX_HINT)
       .maxTimeMS(MAX_TIME_MS)
       .sort({ created_at: -1 })
+      .select(
+        'id message err.truthSource err.response err.message meta.app.hostname meta.app.ip'
+      )
       .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
@@ -159,9 +170,24 @@ function generateTableRow(options) {
 
       // Only keep first occurrence of each distinct error per truth source + server
       if (!uniqueErrors.has(compositeKey)) {
-        uniqueErrors.set(compositeKey, log);
+        uniqueErrors.add(compositeKey);
+        const hostname = log.meta?.app?.hostname;
+        const ip = log.meta?.app?.ip;
+        if (hostname && ip) {
+          affectedServers.add(`${hostname} (${ip})`);
+        } else if (hostname) {
+          affectedServers.add(hostname);
+        } else if (ip) {
+          affectedServers.add(ip);
+        }
+
+        distinctCounts.set(
+          truthSource,
+          (distinctCounts.get(truthSource) || 0) + 1
+        );
         const errorMap = groupedByTruthSource.get(truthSource);
-        errorMap.set(compositeKey, log);
+        if (errorMap.size < MAX_ROWS_PER_TRUTH_SOURCE)
+          errorMap.set(compositeKey, log);
       }
     }
 
@@ -176,11 +202,10 @@ function generateTableRow(options) {
     // Build HTML table
     //
     const tableRows = [];
-    let totalDistinctErrors = 0;
+    const totalDistinctErrors = uniqueErrors.size;
 
     for (const [truthSource, errorMap] of groupedByTruthSource.entries()) {
       for (const [, log] of errorMap.entries()) {
-        totalDistinctErrors++;
         const errorMessage =
           log.err?.response || log.err?.message || log.message;
         const parsedIp = parseIpFromError(errorMessage);
@@ -228,23 +253,16 @@ function generateTableRow(options) {
     // Build summary with affected servers
     //
     const truthSourceCounts = [];
-    const affectedServers = new Set();
 
     for (const [truthSource, errorMap] of groupedByTruthSource.entries()) {
+      const distinct = distinctCounts.get(truthSource) || 0;
       truthSourceCounts.push(
-        `<li><strong>${truthSource}:</strong> ${errorMap.size} distinct error(s)</li>`
+        `<li><strong>${truthSource}:</strong> ${distinct} distinct error(s)${
+          distinct > errorMap.size
+            ? ` (the first ${errorMap.size} are listed)`
+            : ''
+        }</li>`
       );
-      for (const [, log] of errorMap.entries()) {
-        const hostname = log.meta?.app?.hostname;
-        const ip = log.meta?.app?.ip;
-        if (hostname && ip) {
-          affectedServers.add(`${hostname} (${ip})`);
-        } else if (hostname) {
-          affectedServers.add(hostname);
-        } else if (ip) {
-          affectedServers.add(ip);
-        }
-      }
     }
 
     const affectedServersList = [...affectedServers]

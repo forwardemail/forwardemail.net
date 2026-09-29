@@ -14,13 +14,13 @@ const { parentPort } = require('node:worker_threads');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
-const pEvent = require('p-event');
 const pMap = require('p-map');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 
+const CappedList = require('#helpers/capped-list');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
@@ -56,7 +56,8 @@ const options = {
   scanCount: 10000, // Keys per SCAN iteration
   deleteChunkSize: 100, // Keys to delete before delay
   deleteDelay: 100, // Milliseconds to wait between chunks
-  deleteConcurrency: 10 // Parallel delete operations
+  deleteConcurrency: 10, // Parallel delete operations
+  maxReportRows: 1000 // Rows of each kind listed in the report email
 };
 
 //
@@ -190,133 +191,98 @@ function delay(ms) {
     logger.info(`Scanning for keys matching ${entries.length} entries`);
 
     //
-    // Phase 1: Scan all denylist keys
+    // Scan the denylist keys and handle each page of the scan as it
+    // arrives: filter it, delete what matched and keep only counts plus
+    // the first rows for the report. Collecting every key first held the
+    // whole denylist (millions of keys) in memory before anything was done.
     //
-    logger.info('Phase 1: Scanning all denylist keys');
-    const scanStartTime = Date.now();
+    logger.info('Scanning denylist keys');
 
-    const stream = client.scanStream({
+    let totalKeys = 0;
+    let keysToDeleteCount = 0;
+    let allowlistedCount = 0;
+    let deletedCount = 0;
+    let errorCount = 0;
+    let filterDuration = 0;
+    let deleteDuration = 0;
+    const deletedKeys = new CappedList(options.maxReportRows);
+    const truthSourceKeys = new CappedList(options.maxReportRows);
+    const errors = new CappedList(100);
+
+    for await (const keys of client.scanStream({
       match: 'denylist:*',
       count: options.scanCount,
-      type: 'string'
-    });
+      type: 'string',
+      // hold one page at a time (a readable stream buffers 16 by default)
+      highWaterMark: 1
+    })) {
+      if (!Array.isArray(keys) || keys.length === 0) continue;
+      totalKeys += keys.length;
 
-    const allKeys = [];
+      //
+      // Filter keys that match entries or are allowlisted
+      //
+      const filterStartTime = Date.now();
+      const keysToDelete = [];
 
-    stream.on('data', (keys) => {
-      if (!Array.isArray(keys) || keys.length === 0) return;
-      allKeys.push(...keys);
-      logger.debug(`Scanned ${allKeys.length} keys so far`);
-    });
+      await pMap(
+        keys,
+        async (key) => {
+          // Remove 'denylist:' prefix to get the value
+          const value = key.replace(/^denylist:/i, '');
 
-    stream.on('error', (err) => {
-      logger.error('Scan stream error:', err);
-    });
-
-    await pEvent(stream, 'end');
-
-    const scanDuration = Date.now() - scanStartTime;
-    logger.info(
-      `Phase 1 complete: Found ${allKeys.length} denylist keys in ${scanDuration}ms`
-    );
-
-    //
-    // Phase 2: Filter keys that match entries or are allowlisted
-    //
-    logger.info(
-      'Phase 2: Filtering keys that match entries or are allowlisted'
-    );
-    const filterStartTime = Date.now();
-
-    // Separate keys that match truth sources (don't delete these unless explicitly allowlisted)
-    // Now storing objects with reason information
-    const truthSourceKeys = [];
-    const keysToDelete = [];
-    const allowlistedKeys = [];
-
-    // Process all keys with concurrency
-    await pMap(
-      allKeys,
-      async (key) => {
-        // Remove 'denylist:' prefix to get the value
-        const value = key.replace(/^denylist:/i, '');
-
-        // Check if the value is allowlisted (this checks Redis allowlist:* keys,
-        // hard-coded config.allowlist, config.truthSources, and performs
-        // reverse DNS lookups for IPs)
-        // Now returns reason string or false
-        const allowlistedReason = await isAllowlisted(value, client, resolver);
-        if (allowlistedReason) {
-          // Explicitly allowlisted - always delete from denylist
-          // (explicit allowlist takes precedence over truth source matching)
-          const keyInfo = {
-            key,
-            reason: 'Explicitly allowlisted via isAllowlisted() check',
-            source: allowlistedReason
-          };
-          allowlistedKeys.push(keyInfo);
-          keysToDelete.push(keyInfo);
-          return;
-        }
-
-        // Check if key matches entries (config.allowlist or config.truthSources)
-        const entryMatch = keyMatchesEntries(key);
-        if (entryMatch.matched) {
-          const truthSourceMatch = await keyMatchesTruthSource(key);
-          if (truthSourceMatch.matched) {
-            // Matches truth source via MX but NOT explicitly allowlisted
-            // Preserve for manual review (could be legitimate spammer)
-            truthSourceKeys.push({
-              key,
-              reason: `Matches truth source - preserved for manual review`,
-              source: `${truthSourceMatch.source} (${truthSourceMatch.matchType})`
-            });
-          } else {
+          // Check if the value is allowlisted (this checks Redis allowlist:* keys,
+          // hard-coded config.allowlist, config.truthSources, and performs
+          // reverse DNS lookups for IPs)
+          // Now returns reason string or false
+          const allowlistedReason = await isAllowlisted(
+            value,
+            client,
+            resolver
+          );
+          if (allowlistedReason) {
+            // Explicitly allowlisted - always delete from denylist
+            // (explicit allowlist takes precedence over truth source matching)
+            allowlistedCount++;
             keysToDelete.push({
               key,
-              reason: `Key contains allowlist/truthSource entry`,
-              source: entryMatch.entry
+              reason: 'Explicitly allowlisted via isAllowlisted() check',
+              source: allowlistedReason
             });
+            return;
           }
-        }
-      },
-      { concurrency: 10 }
-    );
 
-    const filterDuration = Date.now() - filterStartTime;
-    logger.info(
-      `Phase 2 complete: Found ${keysToDelete.length} keys to delete (${allowlistedKeys.length} via allowlist lookup), ${truthSourceKeys.length} truth sources to preserve in ${filterDuration}ms`
-    );
-
-    if (truthSourceKeys.length > 0) {
-      logger.warn(
-        `Found ${truthSourceKeys.length} keys matching truth sources (not explicitly allowlisted) - these will NOT be deleted`
+          // Check if key matches entries (config.allowlist or config.truthSources)
+          const entryMatch = keyMatchesEntries(key);
+          if (entryMatch.matched) {
+            const truthSourceMatch = await keyMatchesTruthSource(key);
+            if (truthSourceMatch.matched) {
+              // Matches truth source via MX but NOT explicitly allowlisted
+              // Preserve for manual review (could be legitimate spammer)
+              truthSourceKeys.push({
+                key,
+                reason: `Matches truth source - preserved for manual review`,
+                source: `${truthSourceMatch.source} (${truthSourceMatch.matchType})`
+              });
+            } else {
+              keysToDelete.push({
+                key,
+                reason: `Key contains allowlist/truthSource entry`,
+                source: entryMatch.entry
+              });
+            }
+          }
+        },
+        { concurrency: 10 }
       );
-    }
 
-    if (allowlistedKeys.length > 0) {
-      logger.info(
-        `Found ${allowlistedKeys.length} keys via isAllowlisted() lookup that will be deleted`
-      );
-    }
+      filterDuration += Date.now() - filterStartTime;
+      keysToDeleteCount += keysToDelete.length;
 
-    //
-    // Phase 3: Delete keys in batches
-    //
-    if (keysToDelete.length === 0) {
-      logger.info('No keys to delete');
-    } else {
-      logger.info(
-        `Phase 3: Deleting ${keysToDelete.length} keys in batches of ${options.deleteChunkSize}`
-      );
+      //
+      // Delete this page's matches in chunks
+      //
       const deleteStartTime = Date.now();
-
-      let deletedCount = 0;
-      let errorCount = 0;
-      const errors = [];
-      const deletedKeys = [];
-
-      // Process in chunks
       for (let i = 0; i < keysToDelete.length; i += options.deleteChunkSize) {
         const chunk = keysToDelete.slice(i, i + options.deleteChunkSize);
 
@@ -336,42 +302,42 @@ function delay(ms) {
           { concurrency: options.deleteConcurrency }
         );
 
-        // Log progress
-        if (
-          deletedCount % 100 === 0 ||
-          i + chunk.length >= keysToDelete.length
-        ) {
-          logger.info(
-            `Progress: ${deletedCount}/${keysToDelete.length} (${Math.round(
-              (deletedCount / keysToDelete.length) * 100
-            )}%)`
-          );
-        }
-
         // Add delay between chunks to prevent blocking Redis
         if (i + options.deleteChunkSize < keysToDelete.length) {
           await delay(options.deleteDelay);
         }
       }
 
-      const deleteDuration = Date.now() - deleteStartTime;
-      logger.info(
-        `Phase 3 complete: Deleted ${deletedCount} keys in ${deleteDuration}ms`
+      deleteDuration += Date.now() - deleteStartTime;
+    }
+
+    const totalDuration = Date.now() - startTime;
+    const scanDuration = totalDuration - filterDuration - deleteDuration;
+
+    logger.info(
+      `Scanned ${totalKeys} denylist keys: ${keysToDeleteCount} to delete (${allowlistedCount} via allowlist lookup), ${deletedCount} deleted, ${truthSourceKeys.count} truth sources preserved`
+    );
+
+    if (truthSourceKeys.count > 0) {
+      logger.warn(
+        `Found ${truthSourceKeys.count} keys matching truth sources (not explicitly allowlisted) - these will NOT be deleted`
       );
+    }
 
-      if (errorCount > 0) {
-        logger.warn(`Encountered ${errorCount} errors during deletion`);
-      }
+    if (errorCount > 0) {
+      logger.warn(`Encountered ${errorCount} errors during deletion`);
+    }
 
+    if (keysToDeleteCount === 0) {
+      logger.info('No keys to delete');
+    } else {
       //
       // Summary
       //
-      const totalDuration = Date.now() - startTime;
-
       const summary = {
-        totalKeys: allKeys.length,
-        matchedKeys: keysToDelete.length,
-        allowlistedKeys: allowlistedKeys.length,
+        totalKeys,
+        matchedKeys: keysToDeleteCount,
+        allowlistedKeys: allowlistedCount,
         deletedKeys: deletedCount,
         errorCount,
         scanDuration: `${scanDuration}ms`,
@@ -382,14 +348,19 @@ function delay(ms) {
 
       logger.info('Denylist cleanup summary:', summary);
 
+      const omittedNote = (list) =>
+        list.omitted > 0
+          ? `\n<p><em>${list.omitted} more not shown (the first ${list.items.length} are listed).</em></p>`
+          : '';
+
       // Email report to security@forwardemail.net
       const deletedKeysHtml =
-        deletedKeys.length > 0
+        deletedKeys.count > 0
           ? `
-<h3>Deleted Keys (${deletedKeys.length})</h3>
+<h3>Deleted Keys (${deletedKeys.count})</h3>
 <table border="1" cellpadding="5" cellspacing="0">
   <tr><th>#</th><th>Key</th><th>Reason</th><th>Source</th></tr>
-  ${deletedKeys
+  ${deletedKeys.items
     .map(
       (item, index) =>
         `<tr><td>${index + 1}</td><td>${item.key}</td><td>${
@@ -397,19 +368,19 @@ function delay(ms) {
         }</td><td>${item.source}</td></tr>`
     )
     .join('\n  ')}
-</table>
+</table>${omittedNote(deletedKeys)}
         `.trim()
           : '';
 
       const truthSourceKeysHtml =
-        truthSourceKeys.length > 0
+        truthSourceKeys.count > 0
           ? `
-<h3>⚠️ Truth Source Matches - NOT DELETED (${truthSourceKeys.length})</h3>
+<h3>⚠️ Truth Source Matches - NOT DELETED (${truthSourceKeys.count})</h3>
 <p><strong>These keys match truth sources via MX lookup (e.g., gmail.com → google.com) and were preserved for manual review.</strong></p>
 <p>Truth sources may contain legitimate spammers that should remain on the denylist.</p>
 <table border="1" cellpadding="5" cellspacing="0">
   <tr><th>#</th><th>Key</th><th>Reason</th><th>Source</th></tr>
-  ${truthSourceKeys
+  ${truthSourceKeys.items
     .map(
       (item, index) =>
         `<tr><td>${index + 1}</td><td>${item.key}</td><td>${
@@ -417,17 +388,17 @@ function delay(ms) {
         }</td><td>${item.source}</td></tr>`
     )
     .join('\n  ')}
-</table>
+</table>${omittedNote(truthSourceKeys)}
         `.trim()
           : '';
 
       const errorsHtml =
-        errorCount > 0 && errors.length <= 100
+        errorCount > 0 && errorCount <= 100
           ? `
 <h3>Errors (${errorCount})</h3>
 <table border="1" cellpadding="5" cellspacing="0">
   <tr><th>#</th><th>Key</th><th>Error</th></tr>
-  ${errors
+  ${errors.items
     .map(
       (e, index) =>
         `<tr><td>${index + 1}</td><td>${e.key}</td><td>${e.error}</td></tr>`
@@ -443,11 +414,11 @@ function delay(ms) {
 <h2>Denylist Cleanup Report</h2>
 <table border="1" cellpadding="5" cellspacing="0">
   <tr><th>Metric</th><th>Value</th></tr>
-  <tr><td>Total denylist keys scanned</td><td>${allKeys.length}</td></tr>
-  <tr><td>Keys to delete (entries + allowlisted)</td><td>${keysToDelete.length}</td></tr>
-  <tr><td>Keys found via isAllowlisted()</td><td>${allowlistedKeys.length}</td></tr>
+  <tr><td>Total denylist keys scanned</td><td>${totalKeys}</td></tr>
+  <tr><td>Keys to delete (entries + allowlisted)</td><td>${keysToDeleteCount}</td></tr>
+  <tr><td>Keys found via isAllowlisted()</td><td>${allowlistedCount}</td></tr>
   <tr><td>Keys deleted</td><td>${deletedCount}</td></tr>
-  <tr><td>Truth source matches (preserved)</td><td>${truthSourceKeys.length}</td></tr>
+  <tr><td>Truth source matches (preserved)</td><td>${truthSourceKeys.count}</td></tr>
   <tr><td>Errors</td><td>${errorCount}</td></tr>
   <tr><td>Scan duration</td><td>${scanDuration}ms</td></tr>
   <tr><td>Filter duration</td><td>${filterDuration}ms</td></tr>
@@ -464,8 +435,8 @@ ${errorsHtml}
         message: {
           to: config.securityEmail,
           subject: `Denylist Cleanup: ${deletedCount} keys deleted${
-            truthSourceKeys.length > 0
-              ? `, ${truthSourceKeys.length} truth sources preserved`
+            truthSourceKeys.count > 0
+              ? `, ${truthSourceKeys.count} truth sources preserved`
               : ''
           }${errorCount > 0 ? ` (${errorCount} errors)` : ''}`
         },

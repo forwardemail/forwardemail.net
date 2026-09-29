@@ -185,7 +185,12 @@ async function mapper(alias) {
       has_txt_record: true
     });
 
-    let aliases = await Aliases.aggregate([
+    //
+    // read the aliases from a cursor and send a batch at a time (aliases of
+    // banned users are skipped and never marked, so they are found again on
+    // every run; loading the whole result each time held all of them)
+    //
+    const cursor = Aliases.aggregate([
       {
         $match: {
           has_recipient_verification: true,
@@ -237,22 +242,31 @@ async function mapper(alias) {
       {
         $match: { $expr: { $gt: [{ $size: '$emails' }, 0] } }
       }
-    ]).option({
-      maxTimeMS: 60000
-    });
+    ])
+      .option({
+        maxTimeMS: 60000
+      })
+      .cursor({ batchSize: 100 });
 
-    if (aliases.length > 0) {
-      aliases = aliases.filter((alias) => {
-        return alias.user && !bannedUserIdSet.has(alias.user.toString());
+    const batch = [];
+    const sendBatch = async () => {
+      const pendingRecipients = await pMap(batch.splice(0), mapper, {
+        concurrency
       });
-
-      if (aliases.length > 0) {
-        const pendingRecipients = await pMap(aliases, mapper, { concurrency });
+      const sent = pendingRecipients.flat().filter(Boolean);
+      if (sent.length > 0)
         logger.info('finished recipient verification emails', {
-          pendingRecipients: pendingRecipients.flat()
+          pendingRecipients: sent
         });
-      }
+    };
+
+    for await (const alias of cursor) {
+      if (!alias.user || bannedUserIdSet.has(alias.user.toString())) continue;
+      batch.push(alias);
+      if (batch.length >= 100) await sendBatch();
     }
+
+    if (batch.length > 0) await sendBatch();
   } catch (err) {
     err.isCodeBug = true;
     await logger.error(err);

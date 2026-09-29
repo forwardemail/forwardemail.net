@@ -8,7 +8,7 @@ const _ = require('#helpers/lodash');
 const stripe = require('#helpers/stripe');
 
 async function getAllStripeCustomers() {
-  let customers = [];
+  const customers = [];
   let has_more = true;
   let starting_after;
   do {
@@ -17,7 +17,9 @@ async function getAllStripeCustomers() {
       starting_after
     });
 
-    customers = [...customers, ...res.data];
+    // (push, where copying the whole list for every page of 100 was
+    // quadratic in the number of customers)
+    customers.push(...res.data);
     has_more = res.has_more;
     if (has_more && _.last(res.data)) {
       starting_after = _.last(res.data).id;

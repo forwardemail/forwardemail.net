@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const zlib = require('node:zlib');
-const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
 const Boom = require('@hapi/boom');
@@ -559,9 +557,7 @@ async function listLogs(ctx) {
                 ? [
                     {
                       filename: results.filename + '.gz',
-                      content: zlib.gzipSync(Buffer.from(results.csv, 'utf8'), {
-                        level: 9
-                      })
+                      content: results.gzip
                     }
                   ]
                 : []

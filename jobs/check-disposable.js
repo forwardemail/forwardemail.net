@@ -61,69 +61,95 @@ graceful.listen();
 
     const DISPOSABLE = new Set(json);
 
-    const users = await Users.find({ group: 'user', plan: 'free' })
+    //
+    // Read free users from a cursor and keep only the ids of those with a
+    // disposable address (loading every free user first held all of them)
+    //
+    const userIds = [];
+    for await (const user of Users.find({ group: 'user', plan: 'free' })
       .select('_id email')
       .lean()
-      .exec();
-    const userIds = [];
-
-    for (const user of users) {
+      .cursor({ batchSize: 1000 })
+      .addCursorFlag('noCursorTimeout', true)) {
       const domain = user.email.split('@')[1];
       if (DISPOSABLE.has(domain)) userIds.push(user._id);
     }
 
-    const partiallyVerifiedDomainUserIds = await Domains.distinct(
-      'members.user',
-      {
-        $or: [
-          {
-            is_global: false,
-            has_mx_record: true
-          },
-          {
-            is_global: false,
-            has_txt_record: true
-          },
-          {
-            is_global: false,
-            plan: {
-              $in: ['enhanced_protection', 'team']
-            }
-          }
-        ]
-      }
-    );
-
-    // TODO: we may want to ban or send upgrade notices to users using disposable addresses
-    //       that do not have fully verified domain names
-    const disposableCount = await Users.count({
-      $and: [
-        {
-          _id: { $in: userIds }
-        },
-        {
-          _id: { $nin: partiallyVerifiedDomainUserIds }
-        }
-      ]
-    });
-    logger.info('disposableCount', { disposableCount });
-
+    //
+    // Count in chunks of users: a `$nin` of every member of every partially
+    // verified domain (most of the domains) was larger than a query can be,
+    // and fetching those member ids held them all in memory
+    //
+    const CHUNK_SIZE = 1000;
     const globalDomainIds = await Domains.distinct('_id', { is_global: true });
+    let disposableCount = 0;
+    let aliasCount = 0;
+    // a domain can have members in more than one chunk, so count each once
+    const domainIds = new Set();
 
-    const aliasCount = await Aliases.count({
-      user: { $in: userIds },
-      domain: { $in: globalDomainIds }
-    });
+    for (let i = 0; i < userIds.length; i += CHUNK_SIZE) {
+      const chunk = userIds.slice(i, i + CHUNK_SIZE);
+
+      const partiallyVerifiedDomainUserIds = await Domains.distinct(
+        'members.user',
+        {
+          'members.user': { $in: chunk },
+          $or: [
+            {
+              is_global: false,
+              has_mx_record: true
+            },
+            {
+              is_global: false,
+              has_txt_record: true
+            },
+            {
+              is_global: false,
+              plan: {
+                $in: ['enhanced_protection', 'team']
+              }
+            }
+          ]
+        }
+      );
+
+      // TODO: we may want to ban or send upgrade notices to users using disposable addresses
+      //       that do not have fully verified domain names
+      const [chunkDisposableCount, chunkAliasCount, chunkDomainIds] =
+        await Promise.all([
+          Users.countDocuments({
+            $and: [
+              {
+                _id: { $in: chunk }
+              },
+              {
+                _id: { $nin: partiallyVerifiedDomainUserIds }
+              }
+            ]
+          }),
+          Aliases.countDocuments({
+            user: { $in: chunk },
+            domain: { $in: globalDomainIds }
+          }),
+          Domains.distinct('_id', {
+            is_global: false,
+            has_mx_record: false,
+            has_txt_record: false,
+            plan: 'free',
+            'members.user': { $in: chunk }
+          })
+        ]);
+
+      disposableCount += chunkDisposableCount;
+      aliasCount += chunkAliasCount;
+      for (const id of chunkDomainIds) domainIds.add(id.toString());
+    }
+
+    const domainCount = domainIds.size;
+
+    logger.info('disposableCount', { disposableCount });
     logger.info('# of aliases for users with disposable email addresses', {
       aliasCount
-    });
-
-    const domainCount = await Domains.count({
-      is_global: false,
-      has_mx_record: false,
-      has_txt_record: false,
-      plan: 'free',
-      'members.user': { $in: userIds }
     });
     logger.info('# of domains for users with disposable email addresses', {
       domainCount

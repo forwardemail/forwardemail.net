@@ -37,7 +37,6 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const pMap = require('p-map');
 const Redis = require('@ladjs/redis');
 const sharedConfig = require('@ladjs/shared-config');
 
@@ -46,6 +45,7 @@ const Logs = require('#models/logs');
 const Users = require('#models/users');
 const config = require('#config');
 const email = require('#helpers/email');
+const forEachInBatches = require('#helpers/for-each-in-batches');
 const hasDmarcIssues = require('#helpers/has-dmarc-issues');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -107,14 +107,22 @@ async function getDmarcStats(domainIds, startDate, endDate) {
   // Track top reporters (organizations sending DMARC reports)
   const reporterStats = new Map();
 
-  // Track source IPs with alignment issues
-  const sourceIpIssues = [];
+  // Track source IPs with alignment issues, aggregated by IP as they are
+  // found (a list of every issue grew by up to 10 entries per report)
+  const ipIssueMap = new Map();
 
   // Use cursor for efficient iteration
 
   for await (const log of Logs.find({ ...baseQuery })
     .hint({ is_dmarc_report: 1, domains: 1, created_at: -1 })
-    .select('meta domains')
+    // only what is aggregated below: a report's `records` can hold
+    // thousands of entries and only the first 10 are used
+    .select({
+      domains: 1,
+      'meta.dmarc_report.summary': 1,
+      'meta.dmarc_report.report_metadata.org_name': 1,
+      'meta.dmarc_report.records': { $slice: 10 }
+    })
     .lean()
     .cursor()
     .addCursorFlag('noCursorTimeout', true)) {
@@ -180,9 +188,15 @@ async function getDmarcStats(domainIds, startDate, endDate) {
       const dkimPass = policyEvaluated.dkim === 'pass';
 
       if (!spfPass || !dkimPass) {
-        sourceIpIssues.push({
+        const count = record.count || 1;
+        if (ipIssueMap.has(record.source_ip)) {
+          ipIssueMap.get(record.source_ip).count += count;
+          continue;
+        }
+
+        ipIssueMap.set(record.source_ip, {
           ip: record.source_ip,
-          count: record.count || 1,
+          count,
           // Store the actual policy_evaluated values for display
           spfResult: policyEvaluated.spf || 'fail',
           spfAligned: policyEvaluated.spf || 'fail',
@@ -207,16 +221,6 @@ async function getDmarcStats(domainIds, startDate, endDate) {
     .sort((a, b) => b[1].messages - a[1].messages)
     .slice(0, 10)
     .map(([name, stats]) => ({ name, ...stats }));
-
-  // Aggregate source IP issues by IP
-  const ipIssueMap = new Map();
-  for (const issue of sourceIpIssues) {
-    if (ipIssueMap.has(issue.ip)) {
-      ipIssueMap.get(issue.ip).count += issue.count;
-    } else {
-      ipIssueMap.set(issue.ip, { ...issue });
-    }
-  }
 
   const topIpIssues = [...ipIssueMap.values()]
     .sort((a, b) => b.count - a.count)
@@ -488,23 +492,26 @@ async function processUser(user, endDate) {
         plan: { $in: ['enhanced_protection', 'team'] }
       };
 
-      const users = await Users.find({ ...query })
-        .select(`_id email plan ${config.lastLocaleField}`)
-        .lean();
-
-      logger.info('Processing weekly DMARC reports', {
-        userCount: users.length
-      });
-
-      // Process users with concurrency
-      await pMap(
-        users,
+      // Process users with concurrency, reading them from a cursor a
+      // batch at a time
+      const userCount = await forEachInBatches(
+        Users.find({ ...query })
+          .select(`_id email plan ${config.lastLocaleField}`)
+          .lean()
+          .cursor({ batchSize: 100 })
+          .addCursorFlag('noCursorTimeout', true),
+        {
+          batchSize: 100,
+          concurrency: config.concurrency,
+          shouldStop: () => isCancelled
+        },
         async (user) => {
           if (isCancelled) return;
           await processUser(user, endDate);
-        },
-        { concurrency: config.concurrency }
+        }
       );
+
+      logger.info('Processed weekly DMARC reports', { userCount });
     }
   } catch (err) {
     await logger.error(err);

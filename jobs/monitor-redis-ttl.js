@@ -61,42 +61,31 @@ function delay(ms) {
   });
 }
 
-// Set TTL on keys without expiration (non-blocking, resource-friendly)
-async function setTTLOnKeys(keys, prefix) {
-  let setCount = 0;
-  let errorCount = 0;
+// prefixes whose keys without a TTL get one set (see setTTLOnKey)
+const REMEDIATED_PREFIXES = new Set(['f:', 'denylist:']);
 
-  // Process in small batches to avoid blocking Redis
-  for (let i = 0; i < keys.length; i += TTL_CONFIG.batchSize) {
-    const batch = keys.slice(i, i + TTL_CONFIG.batchSize);
-
-    // Process batch sequentially to avoid overwhelming Redis
-    for (const key of batch) {
-      try {
-        // Set TTL based on prefix
-        if (prefix === 'f:') {
-          // Fingerprint keys: use PX with config.fingerprintTTL
-          await client.pexpire(key, config.fingerprintTTL);
-          setCount++;
-        } else if (prefix === 'denylist:') {
-          // Denylist keys: use PX with 30 days
-          await client.pexpire(key, ms('30d'));
-          setCount++;
-        }
-        // Add more prefix-specific TTL logic here if needed
-      } catch (err) {
-        errorCount++;
-        logger.error(err, { key, prefix });
-      }
+// Set TTL on a key without expiration (non-blocking, resource-friendly)
+async function setTTLOnKey(key, prefix, result) {
+  try {
+    // Set TTL based on prefix
+    if (prefix === 'f:') {
+      // Fingerprint keys: use PX with config.fingerprintTTL
+      await client.pexpire(key, config.fingerprintTTL);
+      result.setCount++;
+    } else if (prefix === 'denylist:') {
+      // Denylist keys: use PX with 30 days
+      await client.pexpire(key, ms('30d'));
+      result.setCount++;
     }
-
-    // Add delay between batches to prevent resource hogging
-    if (i + TTL_CONFIG.batchSize < keys.length) {
-      await delay(TTL_CONFIG.batchDelay);
-    }
+    // Add more prefix-specific TTL logic here if needed
+  } catch (err) {
+    result.errorCount++;
+    logger.error(err, { key, prefix });
   }
 
-  return { setCount, errorCount };
+  // Add delay between batches to prevent resource hogging
+  if ((result.setCount + result.errorCount) % TTL_CONFIG.batchSize === 0)
+    await delay(TTL_CONFIG.batchDelay);
 }
 
 (async () => {
@@ -108,7 +97,11 @@ async function setTTLOnKeys(keys, prefix) {
 
     logger.info('starting Redis TTL monitoring');
 
-    // Phase 1: Scan and identify keys without TTL
+    //
+    // Scan and identify keys without TTL, and set one on fingerprint and
+    // denylist keys as they are found. Collecting every key without a TTL
+    // first (to remediate afterwards) held millions of keys in memory.
+    //
     for (const prefix of MONITORED_PREFIXES) {
       let cursor = '0';
 
@@ -130,20 +123,25 @@ async function setTTLOnKeys(keys, prefix) {
           if (ttl === -1) {
             totalWithoutTTL++;
 
-            // store keys without TTL
+            // count keys without TTL (and keep a few samples)
             if (!keysWithoutTTL[prefix]) {
               keysWithoutTTL[prefix] = {
                 count: 0,
-                samples: [],
-                allKeys: []
+                samples: []
               };
             }
 
             keysWithoutTTL[prefix].count++;
-            keysWithoutTTL[prefix].allKeys.push(key);
 
             if (keysWithoutTTL[prefix].samples.length < 5) {
               keysWithoutTTL[prefix].samples.push(key);
+            }
+
+            // set TTL on fingerprint and denylist keys
+            if (REMEDIATED_PREFIXES.has(prefix)) {
+              if (!ttlSetResults[prefix])
+                ttlSetResults[prefix] = { setCount: 0, errorCount: 0 };
+              await setTTLOnKey(key, prefix, ttlSetResults[prefix]);
             }
           }
         }
@@ -161,26 +159,6 @@ async function setTTLOnKeys(keys, prefix) {
         count: keysWithoutTTL[prefix].count
       }))
     });
-
-    // Phase 2: Set TTL on fingerprint and denylist keys
-    logger.info('starting TTL remediation for fingerprint and denylist keys');
-
-    for (const prefix of ['f:', 'denylist:']) {
-      if (keysWithoutTTL[prefix] && keysWithoutTTL[prefix].allKeys.length > 0) {
-        logger.info(
-          `setting TTL on ${keysWithoutTTL[prefix].allKeys.length} ${prefix} keys`
-        );
-
-        const result = await setTTLOnKeys(
-          keysWithoutTTL[prefix].allKeys,
-          prefix
-        );
-
-        ttlSetResults[prefix] = result;
-
-        logger.info(`completed TTL setting for ${prefix}`, result);
-      }
-    }
 
     logger.info('completed TTL remediation', ttlSetResults);
 

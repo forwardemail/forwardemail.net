@@ -3,15 +3,21 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { execFile } = require('node:child_process');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const process = require('node:process');
 const { setTimeout: delay } = require('node:timers/promises');
 
 const Bree = require('bree');
 const test = require('ava');
 
-const { createJobGate, trackExitCodes } = require('#helpers/bree-job-gate');
+const {
+  capWorkerHeap,
+  createJobGate,
+  trackExitCodes
+} = require('#helpers/bree-job-gate');
 
 // A real bree with real worker threads, running tiny jobs from a temp dir.
 function makeRoot(t, files) {
@@ -286,28 +292,117 @@ test('records the exit code of a failed job', async (t) => {
   t.is(deleted[0][1], 1);
 });
 
-test('a worker over its heap cap stops alone instead of aborting the process', async (t) => {
+//
+// The heap cap changes a process-wide V8 flag, so it runs in its own process:
+// a real bree with a job that allocates without end and a well-behaved job.
+//
+function runHeapCapProcess(t, { cap }) {
   const root = makeRoot(t, {
     hog: `
 const chunks = [];
-for (;;) chunks.push(Array.from({ length: 1e5 }, (_, i) => ({ i })));
+for (;;) chunks.push(Array.from({ length: 1e4 }, (_, i) => ({ i })));
+`,
+    ok: `
+const v8 = require('node:v8');
+const { parentPort } = require('node:worker_threads');
+parentPort.postMessage({ heapLimit: v8.getHeapStatistics().heap_size_limit });
+parentPort.postMessage('done');
 `
   });
-  const bree = new Bree({
-    root,
-    logger: quietLogger,
-    errorHandler() {},
-    worker: { resourceLimits: { maxOldGenerationSizeMb: 64 } },
-    jobs: [{ name: 'hog', interval: '1h', timeout: 0 }]
-  });
-  const exitCodes = trackExitCodes(bree);
-  const deleted = [];
-  bree.on('worker deleted', (name) => deleted.push(exitCodes.get(name)));
+  fs.writeFileSync(
+    path.join(root, 'runner.cjs'),
+    `
+const v8 = require('node:v8');
+const Bree = require(${JSON.stringify(require.resolve('bree'))});
+const {
+  capWorkerHeap,
+  createJobGate,
+  trackExitCodes
+} = require(${JSON.stringify(
+      path.join(__dirname, '..', '..', 'helpers', 'bree-job-gate.js')
+    )});
 
-  await bree.start();
-  t.true(await waitFor(() => deleted.length === 1, 60_000));
+const report = (result) => process.stdout.write(JSON.stringify(result) + '\\n');
+const mainHeapLimit = v8.getHeapStatistics().heap_size_limit;
+${cap ? `capWorkerHeap(${cap});` : ''}
+
+// without a working cap the hog grows until the host is out of memory;
+// stop long before that and say so
+setInterval(() => {
+  if (process.memoryUsage().rss > 1024 * 1024 * 1024) {
+    report({ runaway: true });
+    process.exit(3);
+  }
+}, 50).unref();
+
+const quiet = { info() {}, warn() {}, error() {}, debug() {} };
+const messages = {};
+const bree = new Bree({
+  root: ${JSON.stringify(root)},
+  logger: quiet,
+  errorHandler() {},
+  workerMessageHandler({ name, message }) {
+    if (message && typeof message === 'object') messages[name] = message;
+  },
+  jobs: [
+    { name: 'hog', interval: '1h', timeout: 0 },
+    { name: 'ok', interval: '1h', timeout: 0 }
+  ]
+});
+createJobGate(bree, { maxConcurrent: 2, reservedForFrequent: 0 });
+const exitCodes = trackExitCodes(bree);
+const exited = {};
+bree.on('worker deleted', async (name) => {
+  exited[name] = exitCodes.has(name) ? exitCodes.get(name) : 0;
+  if (Object.keys(exited).length < 2) return;
   await bree.stop();
+  report({
+    exited,
+    okHeapLimit: messages.ok && messages.ok.heapLimit,
+    mainHeapLimit,
+    mainHeapLimitAfter: v8.getHeapStatistics().heap_size_limit
+  });
+});
+bree.start();
+`
+  );
 
-  // this test process is still here, and the job is reported as failed
-  t.not(deleted[0], 0);
+  return new Promise((resolve) => {
+    execFile(
+      process.execPath,
+      [path.join(root, 'runner.cjs')],
+      { timeout: 120_000 },
+      (err, stdout, stderr) => {
+        const line = stdout.trim().split('\n').pop();
+        let result;
+        try {
+          result = JSON.parse(line);
+        } catch {}
+
+        resolve({ code: err ? err.code ?? err.signal : 0, result, stderr });
+      }
+    );
+  });
+}
+
+test('a job worker over the heap cap stops alone and the process keeps running', async (t) => {
+  const { code, result, stderr } = await runHeapCapProcess(t, { cap: 64 });
+
+  if (code !== 0) t.log(stderr);
+  t.is(code, 0);
+  t.truthy(result);
+  t.falsy(result.runaway);
+  // the runaway job is reported as failed, the other one ran normally
+  t.not(result.exited.hog, 0);
+  t.is(result.exited.ok, 0);
+  // workers get the cap (plus V8's young generation), not the default
+  t.true(result.okHeapLimit < 256 * 1024 * 1024);
+  // the process's own thread keeps its limit
+  t.is(result.mainHeapLimitAfter, result.mainHeapLimit);
+});
+
+test('capWorkerHeap only accepts a positive whole number of megabytes', (t) => {
+  for (const value of [0, -1, 1.5, Number.NaN, '2048mb', undefined]) {
+    t.throws(() => capWorkerHeap(value), { instanceOf: TypeError });
+  }
 });

@@ -58,7 +58,6 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const pMap = require('p-map');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
@@ -71,6 +70,7 @@ const checkDomainAndAct = require('#helpers/check-domain-and-act');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
+const forEachInBatches = require('#helpers/for-each-in-batches');
 const getCloudflareRadarFeedbackUrl = require('#helpers/get-cloudflare-radar-feedback-url');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -464,24 +464,18 @@ function buildDigestHtml(opts) {
     );
 
     //
-    // Collect domain IDs using cursor + noCursorTimeout
+    // Count the domains to check; they are then read from a cursor a batch
+    // at a time (collecting every id first held ~1.6M ids for the whole run)
     //
-    const ids = [];
-
-    for await (const domain of Domains.find({
+    const query = {
       is_global: { $ne: true },
       $or: [{ has_txt_record: true }, { has_mx_record: true }]
-    })
-      .select('_id')
-      .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      ids.push(domain._id);
-    }
+    };
+    const total = await Domains.countDocuments(query);
 
-    logger.info(`Found ${ids.length} domains with TXT or MX records to check`);
+    logger.info(`Found ${total} domains with TXT or MX records to check`);
 
-    if (ids.length === 0) {
+    if (total === 0) {
       logger.info('No domains to check – exiting');
       if (parentPort) parentPort.postMessage('done');
       else process.exit(0);
@@ -506,39 +500,45 @@ function buildDigestHtml(opts) {
 
     let processed = 0;
 
-    await pMap(
-      ids,
-      async (id) => {
+    await forEachInBatches(
+      // eslint-disable-next-line unicorn/no-array-callback-reference
+      Domains.find(query)
+        .select('name members has_txt_record has_mx_record')
+        // walk the _id index so a domain updated during the run is not
+        // returned twice (the hint keeps the sort from being done in memory)
+        .sort({ _id: 1 })
+        .hint({ _id: 1 })
+        .lean()
+        .cursor({ batchSize: 1000 })
+        .addCursorFlag('noCursorTimeout', true),
+      {
+        batchSize: CONCURRENCY * 10,
+        concurrency: CONCURRENCY,
+        shouldStop: () => isCancelled
+      },
+      async (domain) => {
         if (isCancelled) return;
 
         try {
-          const domain = await Domains.findById(id)
-            .select('name members has_txt_record has_mx_record')
-            .lean()
-            .exec();
-
-          if (!domain) return;
-
           await processDomain(domain, ctx);
         } catch (err) {
-          logger.error(`Error in mapper for domain ID ${id}:`, err);
+          logger.error(`Error in mapper for domain ID ${domain._id}:`, err);
         }
 
         processed++;
 
         // Log progress every 100 domains so operators can see the
         // job is making forward progress on large domain sets.
-        if (processed % 100 === 0 || processed === ids.length) {
+        if (processed % 100 === 0 || processed === total) {
           logger.info(
-            `${dryRun ? '[DRY RUN] ' : ''}Progress: ${processed}/${
-              ids.length
-            } domains checked (${
+            `${
+              dryRun ? '[DRY RUN] ' : ''
+            }Progress: ${processed}/${total} domains checked (${
               ctx.bannedResults.length
             } flagged for review, ${ctx.reviewResults.length} review)`
           );
         }
-      },
-      { concurrency: CONCURRENCY }
+      }
     );
 
     const totalDuration = Date.now() - startTime;
@@ -570,7 +570,7 @@ function buildDigestHtml(opts) {
         bannedResults: ctx.bannedResults,
         skippedResults: ctx.skippedResults,
         reviewResults: ctx.reviewResults,
-        totalChecked: ids.length,
+        totalChecked: processed,
         durationMs: totalDuration,
         dryRun
       });

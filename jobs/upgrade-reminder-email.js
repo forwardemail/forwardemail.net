@@ -17,12 +17,13 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 const { boolean } = require('boolean');
 const mongoose = require('mongoose');
 
+const config = require('#config');
 const email = require('#helpers/email');
+const forEachInBatches = require('#helpers/for-each-in-batches');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, UpgradeReminders } = require('#models');
@@ -128,15 +129,21 @@ async function mapper(upgradeReminder) {
   try {
     logger.info('starting upgrade reminder emails');
 
-    const bannedUserIdSet = await Users.getBannedUserIdSet(client);
+    //
+    // emails of banned users (one query, where loading each banned user
+    // document in turn held a full document per banned user)
+    //
+    const bannedUserEmails = new Set(
+      await Users.distinct('email', { [config.userFields.isBanned]: true })
+    );
 
-    const bannedUserEmails = [];
-    for (const id of bannedUserIdSet) {
-      const user = await Users.findById(id);
-      if (user && user.email) bannedUserEmails.push(user.email);
-    }
-
-    let upgradeReminders = await UpgradeReminders.aggregate([
+    //
+    // read the reminders from a cursor and send them a batch at a time
+    // (the whole result used to be loaded, and then logged, at once)
+    //
+    let found = 0;
+    let sent = 0;
+    const cursor = UpgradeReminders.aggregate([
       {
         $match: {
           // TODO: filter somehow?
@@ -167,28 +174,30 @@ async function mapper(upgradeReminder) {
       {
         $match: { $expr: { $gt: [{ $size: '$queue' }, 0] } }
       }
-    ]);
+    ])
+      .allowDiskUse(true)
+      .cursor({ batchSize: 100 });
 
-    logger.info(`found ${upgradeReminders.length} upgrade reminders`);
+    await forEachInBatches(
+      cursor,
+      { batchSize: 100, concurrency },
+      async (upgradeReminder) => {
+        found++;
 
-    // filter out from queue where email is not in banned list
-    for (const upgradeReminder of upgradeReminders) {
-      upgradeReminder.queue = upgradeReminder.queue.filter(
-        (email) => !bannedUserEmails.includes(email)
-      );
-    }
+        // filter out from queue where email is not in banned list
+        upgradeReminder.queue = upgradeReminder.queue.filter(
+          (email) => !bannedUserEmails.has(email)
+        );
 
-    // filter out queue where email has at least one
-    upgradeReminders = upgradeReminders.filter(
-      (upgradeReminder) => upgradeReminder.queue.length > 0
+        // skip if no email is left in the queue
+        if (upgradeReminder.queue.length === 0) return;
+
+        sent++;
+        await mapper(upgradeReminder);
+      }
     );
 
-    logger.info(`filtered ${upgradeReminders.length} upgrade reminders`);
-
-    if (upgradeReminders.length > 0) {
-      await pMap(upgradeReminders, mapper, { concurrency });
-      logger.info('sent upgrade reminders', { upgradeReminders });
-    }
+    logger.info('sent upgrade reminders', { found, filtered: sent });
   } catch (err) {
     await logger.error(err);
   }

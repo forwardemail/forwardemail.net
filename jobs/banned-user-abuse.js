@@ -18,14 +18,15 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const pMap = require('p-map');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 const sharedConfig = require('@ladjs/shared-config');
+const CappedList = require('#helpers/capped-list');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
+const forEachInBatches = require('#helpers/for-each-in-batches');
 const isAllowlisted = require('#helpers/is-allowlisted');
 const isDenylisted = require('#helpers/is-denylisted');
 const logger = require('#helpers/logger');
@@ -185,24 +186,37 @@ async function checkDomain(domain, bannedDomains, client, resolver) {
 }
 
 /**
- * Get all domains for a user
+ * Find the first of a user's domains that is flagged
+ *
+ * Reads the user's domains one at a time and stops at the first match, where
+ * loading every domain name first held all of them (100K+ for resellers) for
+ * each user being checked at once.
+ *
  * @param {string} userId - User ID
- * @returns {Array} Array of domain names
+ * @param {Set} bannedDomains - Set of domains from banned users
+ * @returns {Object|null} Check result of the first flagged domain
  */
-async function getUserDomains(userId) {
+async function findFlaggedUserDomain(userId, bannedDomains) {
   try {
-    const domains = await Domains.find({
+    for await (const domain of Domains.find({
       'members.user': userId
     })
       .select('name')
       .lean()
-      .exec();
-
-    return domains.map((domain) => domain.name);
+      .cursor()) {
+      const domainCheck = await checkDomain(
+        domain.name,
+        bannedDomains,
+        client,
+        resolver
+      );
+      if (domainCheck) return domainCheck;
+    }
   } catch (err) {
     logger.error(`Error getting domains for user ${userId}:`, err);
-    return [];
   }
+
+  return null;
 }
 
 /**
@@ -351,12 +365,39 @@ function generateAbuseReport(analysis) {
   };
 }
 
+// cases listed in each alert email (every case is still counted)
+const MAX_REPORTS_PER_EMAIL = 200;
+
+/**
+ * Reports of one severity: counts over all of them, and the first
+ * MAX_REPORTS_PER_EMAIL for the email (a run can flag thousands of users,
+ * and each case is a block of HTML that is rendered in memory)
+ * @returns {Object} Report group
+ */
+function createReportGroup() {
+  return {
+    reports: new CappedList(MAX_REPORTS_PER_EMAIL),
+    banned: 0,
+    denylist: 0,
+    riskSum: 0,
+    add(report) {
+      this.reports.push(report);
+      if (report.matchType === 'banned') this.banned++;
+      else if (report.matchType === 'denylist') this.denylist++;
+      this.riskSum += report.riskScore;
+    },
+    get count() {
+      return this.reports.count;
+    }
+  };
+}
+
 /**
  * Send abuse alert email
  * @param {string} severity - Alert severity level
- * @param {Array} reports - Array of abuse reports
+ * @param {Object} group - Report group (see createReportGroup)
  */
-async function sendAbuseAlert(severity, reports) {
+async function sendAbuseAlert(severity, group) {
   try {
     const severityConfig = {
       critical: {
@@ -379,13 +420,13 @@ async function sendAbuseAlert(severity, reports) {
     const configSeverity = severityConfig[severity];
 
     // Generate HTML report
-    const htmlReport = generateHTMLReport(reports, severity, configSeverity);
+    const htmlReport = generateHTMLReport(group, severity, configSeverity);
 
     await emailHelper({
       template: 'alert',
       message: {
         to: config.alertsEmail,
-        subject: `${configSeverity.subject} (${reports.length} users)`
+        subject: `${configSeverity.subject} (${group.count} users)`
       },
       locals: {
         message: htmlReport
@@ -394,7 +435,7 @@ async function sendAbuseAlert(severity, reports) {
 
     logger.info(
       `${severity.toUpperCase()} user domain abuse alert sent: ${
-        reports.length
+        group.count
       } users affected`
     );
   } catch (err) {
@@ -404,18 +445,14 @@ async function sendAbuseAlert(severity, reports) {
 
 /**
  * Generate HTML report for email
- * @param {Array} reports - Array of abuse reports
+ * @param {Object} group - Report group (see createReportGroup)
  * @param {string} severity - Alert severity
  * @param {Object} severityConfig - Severity configuration
  * @returns {string} HTML report
  */
-function generateHTMLReport(reports, severity, severityConfig) {
-  const avgRiskScore = Math.round(
-    reports.reduce((sum, r) => sum + r.riskScore, 0) / reports.length
-  );
-
-  const bannedDomainReports = reports.filter((r) => r.matchType === 'banned');
-  const denylistReports = reports.filter((r) => r.matchType === 'denylist');
+function generateHTMLReport(group, severity, severityConfig) {
+  const reports = group.reports.items;
+  const avgRiskScore = Math.round(group.riskSum / group.count);
 
   let html = `
     <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
@@ -428,11 +465,9 @@ function generateHTMLReport(reports, severity, severityConfig) {
       <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
         <h3>Summary</h3>
         <ul>
-          <li><strong>Total Suspicious Users:</strong> ${reports.length}</li>
-          <li><strong>Banned Domain Matches:</strong> ${
-            bannedDomainReports.length
-          }</li>
-          <li><strong>Denylist Matches:</strong> ${denylistReports.length}</li>
+          <li><strong>Total Suspicious Users:</strong> ${group.count}</li>
+          <li><strong>Banned Domain Matches:</strong> ${group.banned}</li>
+          <li><strong>Denylist Matches:</strong> ${group.denylist}</li>
           <li><strong>Average Risk Score:</strong> ${avgRiskScore}/100</li>
           <li><strong>Detection Time:</strong> ${new Date().toISOString()}</li>
         </ul>
@@ -518,6 +553,11 @@ function generateHTMLReport(reports, severity, severityConfig) {
     `;
   }
 
+  if (group.reports.omitted > 0)
+    html += `
+      <p><em>${group.reports.omitted} more cases are not shown (the first ${reports.length} are listed).</em></p>
+    `;
+
   html += `
       <div style="background: #e9ecef; padding: 15px; border-radius: 5px; margin: 20px 0; font-size: 12px;">
         <h4>Next Steps</h4>
@@ -544,88 +584,81 @@ function generateHTMLReport(reports, severity, severityConfig) {
   try {
     logger.info('Starting user domain abuse detection analysis...');
 
-    // Get all unbanned users (excluding KYC-verified and free plan users)
-    const unbannedUsers = await Users.find({
-      [config.userFields.isBanned]: false,
-      has_passed_kyc: { $ne: true },
-      plan: { $in: ['enhanced_protection', 'team'] }
-    })
-      .select(
-        `email created_at plan has_verified_email ${config.userFields.planExpiresAt} stripe_customer_id paypal_payer_id`
-      )
-      .lean()
-      .exec();
-
-    logger.info(
-      `Analyzing ${unbannedUsers.length} unbanned paid users (excluding KYC-verified and free plan) for suspicious domains`
-    );
-
     // Get domains from banned users
     const bannedDomains = await getBannedUserDomains();
     logger.info(
       `Will check against ${bannedDomains.size} banned domains and denylist`
     );
 
-    const suspiciousReports = [];
+    const groups = {
+      critical: createReportGroup(),
+      high: createReportGroup(),
+      medium: createReportGroup(),
+      low: createReportGroup()
+    };
     let totalAnalyzed = 0;
     let totalSuspicious = 0;
 
-    // Check each unbanned user
-    await pMap(
-      unbannedUsers,
+    // Check each unbanned user (excluding KYC-verified and free plan users),
+    // read from a cursor a batch at a time instead of all of them at once
+    await forEachInBatches(
+      Users.find({
+        [config.userFields.isBanned]: false,
+        has_passed_kyc: { $ne: true },
+        plan: { $in: ['enhanced_protection', 'team'] }
+      })
+        .select(
+          `email created_at plan has_verified_email ${config.userFields.planExpiresAt} stripe_customer_id paypal_payer_id`
+        )
+        .lean()
+        .cursor({ batchSize: 100 })
+        .addCursorFlag('noCursorTimeout', true),
+      { batchSize: 100, concurrency: config.concurrency || 10 },
       async (user) => {
         try {
           totalAnalyzed++;
-          const userDomains = await getUserDomains(user._id);
 
-          // Check each user domain using banned domains and allowlist/denylist helpers
-          for (const domain of userDomains) {
-            const domainCheck = await checkDomain(
-              domain,
-              bannedDomains,
-              client,
-              resolver
+          // Check the user's domains using banned domains and allowlist/denylist
+          // helpers, stopping at the first match to avoid duplicate reports
+          const domainCheck = await findFlaggedUserDomain(
+            user._id,
+            bannedDomains
+          );
+
+          if (domainCheck) {
+            // Domain is flagged (denylisted and not allowlisted)
+            const analysis = analyzeUserAccount(
+              user,
+              domainCheck.domain,
+              domainCheck.matchType
             );
+            const action = determineAction(analysis.riskScore);
 
-            if (domainCheck) {
-              // Domain is flagged (denylisted and not allowlisted)
-              const analysis = analyzeUserAccount(
+            // Only report if action is needed
+            if (action.action !== 'NO_ACTION') {
+              totalSuspicious++;
+
+              const fullAnalysis = {
                 user,
-                domainCheck.domain,
-                domainCheck.matchType
-              );
-              const action = determineAction(analysis.riskScore);
+                ...analysis,
+                action
+              };
 
-              // Only report if action is needed
-              if (action.action !== 'NO_ACTION') {
-                totalSuspicious++;
+              const report = generateAbuseReport(fullAnalysis);
+              if (groups[report.severity]) groups[report.severity].add(report);
 
-                const fullAnalysis = {
-                  user,
-                  ...analysis,
-                  action
-                };
-
-                const report = generateAbuseReport(fullAnalysis);
-                suspiciousReports.push(report);
-
-                logger.warn(`Suspicious user detected: ${user.email}`, {
-                  domain: domainCheck.domain,
-                  matchType: domainCheck.matchType,
-                  riskScore: analysis.riskScore,
-                  action: action.action
-                });
-              }
-
-              // Break after first match to avoid duplicate reports for the same user
-              break;
+              logger.warn(`Suspicious user detected: ${user.email}`, {
+                domain: domainCheck.domain,
+                matchType: domainCheck.matchType,
+                riskScore: analysis.riskScore,
+                action: action.action
+              });
             }
           }
         } catch (err) {
           logger.error(`Error analyzing user ${user.email}:`, err);
         }
-      },
-      { concurrency: config.concurrency || 10 }
+      }
     );
 
     logger.info(
@@ -633,46 +666,34 @@ function generateHTMLReport(reports, severity, severityConfig) {
     );
 
     // Send reports if suspicious activity found
-    if (suspiciousReports.length > 0) {
-      // Group reports by severity
-      const criticalReports = suspiciousReports.filter(
-        (r) => r.severity === 'critical'
-      );
-      const highReports = suspiciousReports.filter(
-        (r) => r.severity === 'high'
-      );
-      const mediumReports = suspiciousReports.filter(
-        (r) => r.severity === 'medium'
-      );
-      const lowReports = suspiciousReports.filter((r) => r.severity === 'low');
-
+    if (totalSuspicious > 0) {
       // Send critical alerts immediately
-      if (criticalReports.length > 0) {
-        await sendAbuseAlert('critical', criticalReports);
+      if (groups.critical.count > 0) {
+        await sendAbuseAlert('critical', groups.critical);
       }
 
       // Send high priority alerts
-      if (highReports.length > 0) {
-        await sendAbuseAlert('high', highReports);
+      if (groups.high.count > 0) {
+        await sendAbuseAlert('high', groups.high);
       }
 
       // Send medium priority summary
-      if (mediumReports.length > 0) {
-        await sendAbuseAlert('medium', mediumReports);
+      if (groups.medium.count > 0) {
+        await sendAbuseAlert('medium', groups.medium);
       }
 
       // Log low priority for monitoring
-      if (lowReports.length > 0) {
+      if (groups.low.count > 0) {
         logger.info(
-          `${lowReports.length} low-priority abuse indicators detected`,
+          `${groups.low.count} low-priority abuse indicators detected`,
           {
-            users: lowReports.map((r) => r.email)
+            users: groups.low.reports.items.map((r) => r.email)
           }
         );
       }
 
       logger.info(
-        `Banned user abuse detection complete: ${suspiciousReports.length} reports generated`
+        `Banned user abuse detection complete: ${totalSuspicious} reports generated`
       );
     } else {
       logger.info('No suspicious user domain abuse detected');

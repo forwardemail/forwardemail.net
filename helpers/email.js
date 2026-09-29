@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
+
 const Boom = require('@hapi/boom');
 const Email = require('email-templates');
 const humanize = require('humanize-string');
@@ -73,9 +75,47 @@ const email = new Email({
 
 let conn;
 
+// what is logged for an email: never the bodies or attachment contents
+// (logging the whole payload serialized every report and attachment into
+// the log and its database copy)
+function summarize(data) {
+  const message = _.isObject(data?.message) ? data.message : {};
+  const summary = {
+    template: data?.template,
+    message: {
+      to: message.to,
+      cc: message.cc,
+      bcc: message.bcc,
+      subject: message.subject
+    }
+  };
+
+  if (_.isArray(message.attachments))
+    summary.message.attachments = message.attachments.map((a) => ({
+      filename: a?.filename,
+      size:
+        typeof a?.content === 'string'
+          ? Buffer.byteLength(a.content)
+          : Buffer.isBuffer(a?.content)
+          ? a.content.length
+          : undefined
+    }));
+
+  if (_.isObject(data?.locals)) {
+    summary.locals = _.omit(data.locals, ['message']);
+    if (typeof data.locals.message === 'string')
+      summary.locals.message =
+        data.locals.message.length > 1000
+          ? `${data.locals.message.slice(0, 1000)}…`
+          : data.locals.message;
+  }
+
+  return summary;
+}
+
 module.exports = async (data) => {
   try {
-    logger.info('sending email', { data });
+    logger.info('sending email', { data: summarize(data) });
     if (!_.isObject(data.locals)) data.locals = {};
     const emailLocals = await getEmailLocals();
     Object.assign(data.locals, emailLocals);
@@ -230,7 +270,7 @@ module.exports = async (data) => {
     const info = await email.send(data);
     return { info };
   } catch (err) {
-    logger.error(err, { data });
+    logger.error(err, { data: summarize(data) });
     throw err;
   }
 };

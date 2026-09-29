@@ -9,8 +9,6 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
-const zlib = require('node:zlib');
-const { Buffer } = require('node:buffer');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -47,7 +45,7 @@ graceful.listen();
     //
     const now = new Date();
 
-    const { count, csv, message, subject, filename } = await getLogsCsv(
+    const { count, gzip, message, subject, filename } = await getLogsCsv(
       now,
       {
         created_at: {
@@ -69,9 +67,7 @@ graceful.listen();
         attachments: [
           {
             filename: filename + '.gz',
-            content: zlib.gzipSync(Buffer.from(csv, 'utf8'), {
-              level: 9
-            })
+            content: gzip
           }
         ]
       },

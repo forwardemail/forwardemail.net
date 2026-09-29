@@ -6,6 +6,9 @@
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const zlib = require('node:zlib');
+const { once } = require('node:events');
+const { pipeline } = require('node:stream/promises');
 
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
@@ -35,24 +38,41 @@ async function getLogsCsv(
   if (!_.isObject(query) || _.isEmpty(query)) throw new Error('Invalid query');
 
   //
-  // Write CSV to a temporary file to avoid memory issues with large datasets
-  // This streams data directly to disk instead of building in memory
+  // Write the CSV gzip-compressed to a temporary file to avoid memory issues
+  // with large datasets. This streams data to disk instead of building it in
+  // memory, and only the compressed file is read back (reading the whole CSV
+  // back as a string and compressing it held it in memory more than once).
   //
   const tmpFilePath = path.join(
     os.tmpdir(),
-    `logs-csv-${Date.now()}-${Math.random().toString(36).slice(2)}.csv`
+    `logs-csv-${Date.now()}-${Math.random().toString(36).slice(2)}.csv.gz`
   );
 
   const categories = [];
   const set = new Set();
   let count = 0;
-  let csv;
+  let gzip;
 
   try {
-    const writeStream = fs.createWriteStream(tmpFilePath, { encoding: 'utf8' });
+    const writeStream = zlib.createGzip({ level: 9 });
+    const written = pipeline(writeStream, fs.createWriteStream(tmpFilePath));
+    // don't treat an early failure as unhandled; it is awaited below
+    written.catch(() => {});
+
+    //
+    // Write a chunk, waiting whenever the stream is full (so rows read faster
+    // than they are compressed are not buffered in memory). If the file
+    // cannot be written the pipeline fails and destroys the gzip stream,
+    // which then never drains, so its failure is awaited instead.
+    //
+    const write = async (chunk) => {
+      if (writeStream.destroyed) await written;
+      if (!writeStream.write(chunk))
+        await Promise.race([once(writeStream, 'drain'), written]);
+    };
 
     // Write header row
-    writeStream.write(
+    await write(
       makeDelimitedString([
         'Log ID',
         'Session ID',
@@ -238,7 +258,7 @@ async function getLogsCsv(
       if (log?.meta?.is_webhook === true) smtpCode = 200;
 
       // Write row directly to disk
-      writeStream.write(
+      await write(
         makeDelimitedString([
           // ID
           log.id,
@@ -359,16 +379,12 @@ async function getLogsCsv(
         set.add(log.err.truthSource);
     }
 
-    // Close the write stream and wait for it to finish
-    await new Promise((resolve, reject) => {
-      writeStream.end((err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    // Close the write stream and wait for the file to be written
+    writeStream.end();
+    await written;
 
-    // Read the CSV content from the temp file
-    csv = await fs.promises.readFile(tmpFilePath, 'utf8');
+    // Read the compressed CSV from the temp file
+    gzip = await fs.promises.readFile(tmpFilePath);
   } finally {
     // Always clean up the temp file, even if an error occurred
     await fs.promises.rm(tmpFilePath, { force: true });
@@ -421,7 +437,8 @@ async function getLogsCsv(
     subject,
     filename,
     count,
-    csv,
+    // gzip-compressed CSV (Buffer)
+    gzip,
     set,
     message: message.join('\n')
   };
