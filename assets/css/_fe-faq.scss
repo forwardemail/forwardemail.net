@@ -109,8 +109,8 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-// The rail carries its own surface (not the grid) so the dark hero beside it
-// keeps its dark-surface components, such as the eyebrow.
+// The rail carries its own surface (not the grid), like the hero and answers
+// beside it, so each keeps the surface components it was built with.
 .fe-faq-page__rail {
   grid-area: rail;
   background-color: var(--fe-bg-canvas);

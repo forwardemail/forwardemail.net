@@ -1,0 +1,64 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// The API reference (/email-api) is drawn by Scalar, which ships its own grey
+// theme and puts `light-mode` or `dark-mode` on <body> following the system
+// setting. These map Scalar's variables onto the fe palette so the reference
+// reads as part of the site: white and Ink canvases, the same neutral ramps,
+// Primary for links and actions, and the site's type and radii. `body.`
+// outranks Scalar's `.light-mode` / `.dark-mode` theme rules, which it injects
+// after this stylesheet has loaded. Scalar also nests a `dark-mode` element
+// in either mode for the request example, so that is matched too.
+
+body.light-mode,
+body.dark-mode {
+  --scalar-font: var(--fe-font-body);
+  --scalar-font-code: var(--fe-font-mono);
+  --scalar-radius: var(--fe-radius-sm);
+  --scalar-radius-lg: var(--fe-radius-md);
+  --scalar-radius-xl: var(--fe-radius-lg);
+  --scalar-button-1: var(--fe-primary);
+  --scalar-button-1-hover: var(--fe-primary-deep);
+  --scalar-button-1-color: var(--fe-l-000);
+}
+
+body.light-mode,
+body .light-mode {
+  --scalar-background-1: var(--fe-l-000);
+  --scalar-background-2: var(--fe-l-100);
+  --scalar-background-3: var(--fe-l-200);
+  --scalar-background-accent: var(--fe-primary-a08);
+  --scalar-color-1: var(--fe-l-700);
+  --scalar-color-2: var(--fe-l-600);
+  --scalar-color-3: var(--fe-l-500);
+  --scalar-color-accent: var(--fe-primary);
+  --scalar-color-blue: var(--fe-primary);
+  --scalar-border-color: var(--fe-l-300);
+}
+
+body.dark-mode,
+body .dark-mode {
+  --scalar-background-1: var(--fe-ink);
+  --scalar-background-2: var(--fe-n-000);
+  --scalar-background-3: var(--fe-n-200);
+  --scalar-background-accent: var(--fe-primary-a16);
+  --scalar-color-1: var(--fe-n-700);
+  --scalar-color-2: var(--fe-n-600);
+  --scalar-color-3: var(--fe-n-500);
+  --scalar-color-accent: var(--fe-primary-lift);
+  --scalar-color-blue: var(--fe-primary-lift);
+  --scalar-border-color: var(--fe-n-300);
+}
+
+// Bootstrap paints every <kbd> as a black chip. Scalar draws its own chip
+// around the search shortcut, so the inner <kbd> is left to inherit it.
+.scalar-app-reset kbd {
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}

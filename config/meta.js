@@ -83,8 +83,7 @@ module.exports = function (config, isSitemap = false) {
     ],
     '/email-api': [
       `Email API for Developers - RESTful API with Webhooks & SMTP ${currentYear}`,
-      `Powerful RESTful email API for developers. Send transactional emails, manage domains, create aliases programmatically. Comprehensive documentation, SDKs, and code examples.`,
-      'img/articles/email-api.webp'
+      `Powerful RESTful email API for developers. Send transactional emails, manage domains, create aliases programmatically. Comprehensive documentation, SDKs, and code examples.`
     ],
     '/download': [
       `Download Forward Email - Desktop and Mobile Apps for macOS, Windows, Linux, Android and iOS`,

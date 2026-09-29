@@ -14,12 +14,7 @@ html.h-100.no-js(
     block fonts
       include _fonts
     block stylesheets
-      style(nonce=nonce).
-        :root {
-          --scalar-font: "Nunito Sans", "Helvetica Neue", Arial, sans-serif;
-          --scalar-font-code: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        }
-
+      //- Scalar is themed onto the fe palette in _scalar-theme.scss.
       link(
         rel="stylesheet",
         href=manifest("css/app.css"),
@@ -129,6 +124,13 @@ html.h-100.no-js(
       window.TITLE = "#{meta.title}";
       window.DESCRIPTION = "#{meta.description}";
 
+      // The site follows the system light/dark setting and has no toggle of
+      // its own, so the reference does too: drop a choice left by the toggle
+      // Scalar used to show, and hide that toggle.
+      try {
+        window.localStorage.removeItem("colorMode");
+      } catch {}
+
       Scalar.createApiReference("#app", {
         withDefaultFonts: false,
         servers: [
@@ -161,6 +163,7 @@ html.h-100.no-js(
           siteName: window.SITE_NAME,
         },
         hideClientButton: true,
+        hideDarkModeToggle: true,
       });
 
     include _wikipedia
