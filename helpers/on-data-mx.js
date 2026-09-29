@@ -78,6 +78,9 @@ const isEmail = require('#helpers/is-email');
 const isGreylisted = require('#helpers/is-greylisted');
 const isHighConfidenceGenericRdnsSpam = require('#helpers/is-high-confidence-generic-rdns-spam');
 const isHighConfidencePhpHostingSpam = require('#helpers/is-high-confidence-php-hosting-spam');
+const {
+  checkMicrosoftOutboundSpamExemptLimit
+} = require('#helpers/is-microsoft-outbound-spam-exempt');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
@@ -2098,6 +2101,38 @@ async function onDataMX(session, headers, body) {
 
   // return early if it was silent banned
   if (silentBanned) return;
+
+  //
+  // A fully authenticated custom domain message that Microsoft's outbound
+  // filter flagged with only a generic spam verdict was exempted in
+  // `isArbitrary`; cap how many distinct recipients a sender can reach per
+  // day through this exemption (since a compromised mailbox typically fans
+  // out to many recipients), which throws a 421 error if exceeded
+  //
+  if (session.isMicrosoftOutboundSpamExempt) {
+    try {
+      await checkMicrosoftOutboundSpamExemptLimit(session, this.client);
+    } catch (err) {
+      if (err.responseCode === 421)
+        this.client
+          .incr(
+            `microsoft_outbound_spam_exempt_limited:${session.arrivalDateFormatted}`
+          )
+          .then()
+          .catch((err) => logger.fatal(err));
+      throw err;
+    }
+
+    this.client
+      .incr(`microsoft_outbound_spam_exempted:${session.arrivalDateFormatted}`)
+      .then()
+      .catch((err) => logger.fatal(err));
+
+    logger.warn(
+      'Microsoft outbound spam verdict exempted for fully authenticated custom domain sender',
+      { session }
+    );
+  }
 
   // The individual traits below occur in legitimate messages. Reject only
   // unauthenticated blind PHP-origin mail after mailauth has populated trusted

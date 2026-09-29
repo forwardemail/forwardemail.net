@@ -19,6 +19,10 @@ const getHeaders = require('#helpers/get-headers');
 // const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const parseUsername = require('#helpers/parse-username');
+const {
+  isMicrosoftOutboundSpamExempt
+} = require('#helpers/is-microsoft-outbound-spam-exempt');
 
 const REGEX_BLOCKED_PHRASES = new RE2(
   /cheecck y0ur acc0untt|recorded you|you've been hacked|account is hacked|personal data has leaked|private information has been stolen/im
@@ -86,6 +90,42 @@ const REGEX_DOMAIN_WITHOUT_TLD = createLiteralRegex(domainWithoutTLD);
 const REGEX_APP_NAME = createLiteralRegex(env.APP_NAME);
 
 // function isArbitrary(session, headers, bodyStr) {
+
+//
+// Usernames that Microsoft 365 (and other MTAs) use to send bounces
+// (NOTE: this intentionally excludes the broader no-reply usernames in
+//        `config.POSTMASTER_USERNAMES`, since those are also used for
+//        legitimate transactional mail such as account statements)
+//
+const BOUNCE_USERNAMES = new Set([
+  'mail-daemon',
+  'mail.daemon',
+  'maildaemon',
+  'mailer-daemon',
+  'mailer.daemon',
+  'mailerdaemon',
+  'postmaster'
+]);
+
+//
+// Whether the message is a bounce based on an empty MAIL FROM, or a
+// bounce-type MAIL FROM or From username (e.g. "postmaster@", "mailer-daemon@")
+//
+function isBounceSender(session) {
+  const mailFrom = session?.envelope?.mailFrom?.address;
+  if (!isSANB(mailFrom)) return true;
+
+  for (const address of [mailFrom, session.originalFromAddress]) {
+    if (!isSANB(address)) continue;
+    try {
+      if (BOUNCE_USERNAMES.has(parseUsername(checkSRS(address)))) return true;
+    } catch {
+      // ignore unparseable addresses
+    }
+  }
+
+  return false;
+}
 
 function isArbitrary(session, headers) {
   let subject = getHeaders(headers, 'subject');
@@ -232,12 +272,20 @@ if (
   // This allows legitimate NDRs through while still blocking spam bounces.
   //
   // Check if this is a Microsoft bounce message
+  //
+  // NOTE: messages relayed by Microsoft's outbound infrastructure are only
+  //       treated as bounces here if they have an empty MAIL FROM or a
+  //       postmaster-type sender (e.g. "postmaster@" or "mailer-daemon@");
+  //       all other Microsoft 365 messages are evaluated by the Microsoft
+  //       Exchange spam detection section below
+  //
   const isMicrosoftBounce =
     session.originalFromAddress === 'postmaster@outlook.com' ||
     (session.resolvedClientHostname &&
       session.resolvedClientHostname.endsWith(
         '.outbound.protection.outlook.com'
-      )) ||
+      ) &&
+      isBounceSender(session)) ||
     (session.originalFromAddress.startsWith('postmaster@') &&
       session.originalFromAddress.endsWith('.onmicrosoft.com')); // &&
   // isAutoReplyOrMailingList(headers); // &&
@@ -812,6 +860,27 @@ if (
       // - Users can configure their own bulk mail thresholds
       // - Our focus is spam from compromised tenants, not bulk mail
       //
+      // EXCEPTION: Fully Authenticated Custom Domain Mailbox
+      // ----------------------------------------------------
+      // Microsoft's outbound filter also assigns these generic verdicts to
+      // legitimate messages sent by a signed-in mailbox of a hosted tenant
+      // (e.g. an account statement with an attachment). When the message uses
+      // the tenant's own custom domain, passes SPF, aligned DKIM, and DMARC
+      // with an enforced policy, and carries a trusted Microsoft ARC seal, a
+      // generic verdict (SFV:SPM, CAT:OSPM, CAT:SPM, or a high SCL) is not
+      // enough on its own to reject it. Anything more specific (phishing,
+      // malware, high-confidence spam, spoofing, impersonation, or a blocked
+      // sender) is still rejected by the checks above and below, and exempt
+      // messages are capped per sender and per sender domain each day in
+      // `helpers/on-data-mx.js`.
+      //
+      // See `helpers/is-microsoft-outbound-spam-exempt.js` for details.
+      //
+      const isExempt =
+        !lowerForefrontHeader.includes('sfv:skb') &&
+        !lowerForefrontHeader.includes('sfv:sks') &&
+        isMicrosoftOutboundSpamExempt(session, headers);
+
       if (
         lowerForefrontHeader.includes('sfv:spm') ||
         lowerForefrontHeader.includes('sfv:skb') ||
@@ -819,9 +888,11 @@ if (
         lowerForefrontHeader.includes('cat:ospm') ||
         lowerForefrontHeader.includes('cat:spm')
       ) {
-        throw new SMTPError(
-          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
-        );
+        if (!isExempt)
+          throw new SMTPError(
+            'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
+          );
+        session.isMicrosoftOutboundSpamExempt = true;
       }
 
       //
@@ -865,9 +936,11 @@ if (
       //
       const sclMatch = forefrontHeader.match(/scl:(\d+)/i);
       if (sclMatch && Number.parseInt(sclMatch[1], 10) >= 5) {
-        throw new SMTPError(
-          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
-        );
+        if (!isExempt)
+          throw new SMTPError(
+            'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
+          );
+        session.isMicrosoftOutboundSpamExempt = true;
       }
     }
   }
