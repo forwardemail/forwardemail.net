@@ -17,8 +17,8 @@
   * [2021 - Platform Modernizasyonu](#2021---platform-modernization)
   * [2023 - Altyapı ve Özellik Genişlemesi](#2023---infrastructure-and-feature-expansion)
   * [2024 - Hizmet Optimizasyonu ve Gelişmiş Özellikler](#2024---service-optimization-and-advanced-features)
-  * [2025 - Gizlilik İyileştirmeleri ve Protokol Desteği {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
-  * [2026 - RFC Uyumluluğu ve Gelişmiş Filtreleme ve Bağımsız Güvenlik Denetimi {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
+  * [2025 - Gizlilik İyileştirmeleri ve Protokol Desteği](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - RFC Uyumluluğu, Gelişmiş Filtreleme ve Bağımsız Güvenlik Denetimleri](#2026---rfc-compliance-advanced-filtering-and-independent-security-audits)
 * [Temel İlkeler](#core-principles)
 * [Mevcut Durum](#current-status)
 
@@ -103,7 +103,7 @@ Bu çözümün sadeliği ve etkinliği, Ruby on Rails'in yaratıcısı [David He
 
 **Ağustos 2024**: Forward Email, posta kutularını mevcut [SQLite](https://en.wikipedia.org/wiki/SQLite) dışa aktarma formatına ek olarak [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) ve [Mbox](https://en.wikipedia.org/wiki/Mbox) formatlarında dışa aktarma desteği ekledi. [Webhook imza desteği eklendi](https://forwardemail.net/faq#do-you-support-bounce-webhooks) ve kullanıcıların çıkış SMTP hizmeti üzerinden bülten, duyuru ve e-posta pazarlaması göndermesine izin verilmeye başlandı. IMAP/POP3/CalDAV için alan adı genelinde ve takma adlara özel depolama kotaları da uygulandı.
 
-### 2025 - Gizlilik İyileştirmeleri ve Protokol Desteği {#2025---privacy-enhancements-and-protocol-support} {#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support}
+### 2025 - Gizlilik İyileştirmeleri ve Protokol Desteği {#2025---privacy-enhancements-and-protocol-support}
 
 **Eylül 2024 - Ocak 2025**: Forward Email, zaten uygulanan şifreli posta kutusu depolama yeteneklerinin üzerine inşa ederek, çok talep edilen tatil yanıtlayıcı özelliği ve e-posta yönlendirme için OpenPGP/WKD şifrelemesi ekledi. ([detaylar](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254))
 
@@ -124,24 +124,30 @@ Bu çözümün sadeliği ve etkinliği, Ruby on Rails'in yaratıcısı [David He
 **Kasım 2025**: Platformun güvenliği, parola karma için PBKDF2'den [Argon2id](https://en.wikipedia.org/wiki/Argon2)'ye geçişle artırıldı ve altyapı Redis'ten [Valkey](https://github.com/valkey-io/valkey)'e taşındı.
 
 **Aralık 2025**: 2.0 sürümü yayınlandı, e-posta taşıma için zorunlu TLS şifrelemesini sağlayan [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) desteği getirildi ve [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) v6'ya yükseltildi.
-### 2026 - RFC Uyumluluğu ve Gelişmiş Filtreleme ve Bağımsız Güvenlik Denetimi {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - RFC Uyumluluğu, Gelişmiş Filtreleme ve Bağımsız Güvenlik Denetimleri {#2026---rfc-compliance-advanced-filtering-and-independent-security-audits}
 
 **Ocak 2026**: Forward Email kapsamlı bir [RFC protokol uyumluluk belgesi](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) yayınladı ve [S/MIME şifreleme (RFC 8551)](/faq#do-you-support-smime-encryption) ile kapsamlı [Sieve e-posta filtreleme (RFC 5228)](/faq#do-you-support-sieve-email-filtering) ve [ManageSieve protokolü (RFC 5804)](/faq#do-you-support-sieve-email-filtering) desteği ekledi. REST API ayrıca 39 uç noktaya genişletildi.
 
 **Şubat 2026**: Resmi, açık kaynaklı webmail istemcisi [mail.forwardemail.net](https://mail.forwardemail.net) adresinde kullanıma sunuldu ([GitHub’daki kaynak kodu](https://github.com/forwardemail/mail.forwardemail.net)). Platform ayrıca [CalDAV Planlama Uzantıları (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) ve 1 tıklamayla DNS kurulumu için [Domain Connect](https://domainconnect.org) desteği ekledi. IMAP, CalDAV ve CardDAV için gerçek zamanlı push bildirimleri WebSockets kullanılarak başlatıldı.
 
-**Mart 2026**: Alan bazında özel S3 uyumlu depolama desteği eklendi ve yönetim için bir komut satırı aracı sunuldu. Aynı açık kaynaklı webmail kod tabanı kullanılarak macOS, Windows, Linux, iOS ve Android için çapraz platform masaüstü ve mobil uygulamalar üzerinde çalışma başladı; bu uygulamalar [Tauri](https://tauri.app) ile geliştiriliyor.
+**Mart 2026**: Alan bazında özel S3 uyumlu depolama desteği eklendi ve yönetim için bir komut satırı aracı sunuldu. Aynı açık kaynaklı webmail kod tabanı kullanılarak macOS, Windows, Linux, iOS ve Android için çapraz platform masaüstü ve mobil uygulamalar üzerinde çalışma başladı; bu uygulamalar [Tauri](https://tauri.app) ile geliştiriliyor. Ayrıca yapay zekâ asistanlarının Forward Email API'si üzerinden e-postaları, alan adlarını, takma adları, kişileri ve takvimleri yönetmesini sağlayan açık kaynaklı bir [MCP sunucusu](/blog/docs/mcp) yayınlandı.
 
 **Mayıs 2026**: Apple Push Notification (APN) desteği ile gerçek zamanlı iOS/macOS posta teslimi, iOS senkronizasyon uyumluluğu için kapsamlı CalDAV düzeltmeleri (PRODID, LAST-MODIFIED, CREATED, SEQUENCE onarımı ve doğru href kodlaması), alias başına e-posta saklama politikaları, MIME başlık çözümleme ve List-* başlık koruma ile geliştirilmiş Sieve filtreleme, özel etiketlerle IMAP anahtar kelime senkronizasyonu ve yüksek hacimli gönderenler için BSON taşma koruması dahil önemli güvenilirlik ve uyumluluk iyileştirmeleri gönderildi. IMAP/POP3 istemcileri için eski TLS desteği eklendi ve push bildirim API'si token CRUD ve teslimat pipeline uç noktalarıyla genişletildi.
 
-**Haziran 2026**: Forward Email, sektördeki en saygın güvenlik araştırma firmalarından biri olan [Cure53](https://cure53.de/) tarafından gerçekleştirilen ilk bağımsız üçüncü taraf güvenlik denetimini yayınladı. Tam penetrasyon testi raporu [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf) adresinde mevcuttur. Denetim, tüm açık kaynak mimarisini ve sunucu altyapısını kapsadı ve tüm bulgular sürekli yeniden test yoluyla ele alındı ve doğrulandı. SSRF önleme için DNS pinning, davet token kimlik doğrulaması ve Domain Connect URL doğrulaması dahil ek güvenlik sertleştirmesi uygulandı.
+**Haziran 2026**: Forward Email, sektördeki en saygın güvenlik araştırma firmalarından biri olan [Cure53](https://cure53.de/) tarafından gerçekleştirilen ilk bağımsız üçüncü taraf güvenlik denetimini yayınladı. Tam penetrasyon testi raporu [pentest-report_forward-email.pdf](https://cure53.de/pentest-report_forward-email.pdf) adresinde mevcuttur. Denetim, tüm açık kaynak mimarisini ve sunucu altyapısını kapsadı ve tüm bulgular sürekli yeniden test yoluyla ele alındı ve doğrulandı. SSRF önleme için DNS pinning, davet token kimlik doğrulaması ve Domain Connect URL doğrulaması dahil ek güvenlik sertleştirmesi uygulandı.
+
+**Temmuz 2026**: Şifreli SQLite depolamadaki performans iyileştirmeleri bellek kullanımını azalttı ve IMAP'i hızlandırdı: veritabanı sıkıştırma işlemi ayrı bir çalışan sürece taşındı ve sık kullanılan komutlar hızlı bir yol kazandı. Giden kuyruk, yeni mesajları ve yeniden denemeleri paralel göndermeye başladı; böylece yeniden denemeler artık yeni postaların arkasında beklemiyor. Anlık bildirimler yeniden kuruldu: e-posta, takvim ve kişi güncellemeleri artık uygulama bağlı değilken bile hem WebSockets hem de push (APNs, FCM ve UnifiedPush) üzerinden gönderiliyor; Android uygulaması ise Firebase Cloud Messaging'in yanına UnifiedPush desteği ve yalnızca UnifiedPush kullanan, Google hizmetlerinden bağımsız bir sürüm ekledi. IMAP sunucusu ayrıca depolama alanı dolmak üzereyken, ödemeler geciktiğinde ve giden SMTP'si olmayan alan adları için e-posta uygulamalarını uyarmaya başladı.
+
+**Ağustos 2026**: [Cure53](https://cure53.de/) ikinci ve daha derin bir denetim için geri döndü: dört kıdemli test uzmanından oluşan bir ekibin 25 günlük testi, kod tabanını, Ansible yapılandırmasıyla birlikte sunucu altyapısını ve [Nodemailer](https://nodemailer.com)'ı kapsadı. Alan adı yöneticileri artık yeni takma adlar için varsayılan bir gönderim sınırı belirleyebiliyor ve MX sunucuları, Gmail adresinden geldiğini iddia eden ancak kimlik doğrulamasını geçemeyen e-postaları reddetmeye başladı.
+
+**Eylül 2026**: Forward Email [ikinci Cure53 raporunu](/pentest-report_forward-email.pdf) yayınladı; Cure53 bu raporda, test sırasındaki hızlı yanıtların "güvenliğe profesyonel ve ciddi bir yaklaşım" gösterdiğini yazdı. Ek sıkılaştırma çalışmaları forward-confirmed reverse DNS (FCrDNS) kontrolleri, OAuth state parametresi doğrulaması ve SSRF, Sieve, WKD ile XML için daha katı işleme ekledi. Ana sayfa, fiyatlandırma sayfası ve SSS yeniden tasarlandı ve yeni [indirme sayfası](/download) macOS, Windows, Linux, Android ve iOS için yerel uygulamaları bir araya getirdi; her yükleyici için sağlama toplamları ve derleme kaynağı kanıtları (build provenance) yayınlanıyor.
 
 
 ## Temel İlkeler {#core-principles}
 
 Kuruluşundan bu yana Forward Email, gizlilik ve güvenlik ilkelerine sıkı bir bağlılık göstermiştir:
 
-**%100 Açık Kaynak Felsefesi**: Sadece ön yüzlerini açık kaynak yapan ve arka uçlarını kapalı tutan rakiplerinin aksine, Forward Email tüm kod tabanını—hem ön yüz hem arka uç—[GitHub](https://github.com/forwardemail) üzerinde kamuya açık hale getirmiştir—artık Cure53'ten [bağımsız bir güvenlik denetimiyle](/pentest-report_forward-email.pdf) desteklenmektedir.
+**%100 Açık Kaynak Felsefesi**: Sadece ön yüzlerini açık kaynak yapan ve arka uçlarını kapalı tutan rakiplerinin aksine, Forward Email tüm kod tabanını—hem ön yüz hem arka uç—[GitHub](https://github.com/forwardemail) üzerinde kamuya açık hale getirmiştir—artık Cure53'ten [iki bağımsız güvenlik denetimiyle](/pentest-report_forward-email.pdf) desteklenmektedir.
 
 **Gizlilik Öncelikli Tasarım**: İlk günden itibaren, Forward Email e-postaları diske yazmayan benzersiz bir bellek içi işleme yaklaşımı uygulayarak, mesajları veritabanlarında veya dosya sistemlerinde depolayan geleneksel e-posta hizmetlerinden ayrışmıştır.
 
@@ -154,7 +160,7 @@ Kuruluşundan bu yana Forward Email, gizlilik ve güvenlik ilkelerine sıkı bir
 
 ## Mevcut Durum {#current-status}
 
-Mart 2026 itibarıyla Forward Email, dünya çapında 500.000’den fazla alan adına hizmet vermekte olup, aşağıdaki önemli kuruluşlar ve sektör liderleri arasında yer almaktadır:
+Eylül 2026 itibarıyla Forward Email, dünya çapında 1,6 milyondan fazla alan adına hizmet vermektedir; bunlar arasında aşağıdaki önemli kuruluşlar ve sektör liderleri de yer almaktadır:
 
 * **Teknoloji Şirketleri**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **Medya Kuruluşları**: Fox News Radio, Disney Ad Sales
@@ -163,6 +169,6 @@ Mart 2026 itibarıyla Forward Email, dünya çapında 500.000’den fazla alan a
 * **Diğer Kuruluşlar**: RCD Hotels, Fly<span>.</span>io
 * **Önemli Geliştiriciler**: Isaac Z. Schlueter (npm yaratıcısı), David Heinemeier Hansson (Ruby on Rails yaratıcısı)
 
-Platform, düzenli özellik güncellemeleri ve altyapı iyileştirmeleri ile gelişmeye devam etmekte olup, bugün mevcut olan tek %100 açık kaynak, şifreli, gizlilik odaklı, şeffaf ve kuantum dirençli e-posta hizmeti olarak konumunu korumaktadır—artık Cure53'ten [bağımsız bir güvenlik denetimiyle](/pentest-report_forward-email.pdf) desteklenmektedir.
+Platform, düzenli özellik güncellemeleri ve altyapı iyileştirmeleri ile gelişmeye devam etmekte olup, bugün mevcut olan tek %100 açık kaynak, şifreli, gizlilik odaklı, şeffaf ve kuantum dirençli e-posta hizmeti olarak konumunu korumaktadır—artık Cure53'ten [iki bağımsız güvenlik denetimiyle](/pentest-report_forward-email.pdf) desteklenmektedir.
 
 <!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email gizlilik odaklı e-posta hizmeti" class="rounded-lg" /> -->

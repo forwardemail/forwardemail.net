@@ -17,8 +17,8 @@
   * [2021年 - プラットフォームの近代化](#2021---platform-modernization)
   * [2023年 - インフラと機能拡張](#2023---infrastructure-and-feature-expansion)
   * [2024年 - サービス最適化と高度な機能](#2024---service-optimization-and-advanced-features)
-  * [2025年 - プライバシー強化とプロトコル対応 {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
-  * [2026年 - RFC準拠と高度なフィルタリングおよび独立セキュリティ監査 {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
+  * [2025年 - プライバシー強化とプロトコル対応](#2025---privacy-enhancements-and-protocol-support)
+  * [2026年 - RFC準拠、高度なフィルタリング、独立セキュリティ監査](#2026---rfc-compliance-advanced-filtering-and-independent-security-audits)
 * [基本原則](#core-principles)
 * [現状](#current-status)
 
@@ -103,7 +103,7 @@ Forward Emailのミッションは単なるメールサービスの提供を超�
 
 **2024年8月**: Forward Emailはメールボックスのエクスポートに[EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)および[Mbox](https://en.wikipedia.org/wiki/Mbox)形式のサポートを追加しました（既存の[SQLite](https://en.wikipedia.org/wiki/SQLite)エクスポート形式に加えて）。[Webhook署名サポートも追加され](https://forwardemail.net/faq#do-you-support-bounce-webhooks)、ユーザーがアウトバウンドSMTPサービスを通じてニュースレター、告知、メールマーケティングを送信できるようになりました。IMAP/POP3/CalDAVのドメイン全体およびエイリアス別のストレージクォータも実装されました。
 
-### 2025年 - プライバシー強化とプロトコルサポート {#2025---privacy-enhancements-and-protocol-support} {#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support}
+### 2025年 - プライバシー強化とプロトコルサポート {#2025---privacy-enhancements-and-protocol-support}
 
 **2024年9月から2025年1月**: Forward Emailは[多くの要望があったバケーションレスポンダー機能とOpenPGP/WKD暗号化によるメール転送機能を追加しました](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254)。これは既に実装されていた暗号化されたメールボックスストレージ機能を基盤としています。
 
@@ -124,24 +124,30 @@ Forward Emailのミッションは単なるメールサービスの提供を超�
 **2025年11月**: プラットフォームのセキュリティが強化され、パスワードハッシュ化にPBKDF2から[Argon2id](https://en.wikipedia.org/wiki/Argon2)へ移行し、インフラはRedisから[Valkey](https://github.com/valkey-io/valkey)へ移行しました。
 
 **2025年12月**: バージョン2.0がリリースされ、メール転送のTLS暗号化強制のための[REQUIRETLS (RFC 8689)](/rfc#requiretls-support)サポートが導入され、[OpenPGP.js](https://github.com/openpgpjs/openpgpjs) v6へアップグレードされました。
-### 2026 - RFC準拠と高度なフィルタリングおよび独立セキュリティ監査 {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026年 - RFC準拠、高度なフィルタリング、独立セキュリティ監査 {#2026---rfc-compliance-advanced-filtering-and-independent-security-audits}
 
 **2026年1月**: Forward Emailは包括的な[RFCプロトコル準拠ドキュメント](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison)を公開し、[S/MIME暗号化（RFC 8551）](/faq#do-you-support-smime-encryption)および包括的な[Sieveメールフィルタリング（RFC 5228）](/faq#do-you-support-sieve-email-filtering)を[ManageSieveプロトコル（RFC 5804）](/faq#do-you-support-sieve-email-filtering)のサポートとともに追加しました。REST APIも39エンドポイントに拡張されました。
 
 **2026年2月**: 公式のオープンソースWebメールクライアントが[mail.forwardemail.net](https://mail.forwardemail.net)でローンチされました（[GitHubのソースコード](https://github.com/forwardemail/mail.forwardemail.net)）。プラットフォームはまた、[CalDAVスケジューリング拡張（RFC 6638）](https://www.rfc-editor.org/rfc/rfc6638)、[DANE/TLSA（RFC 6698）](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities)、および1クリックDNS設定のための[Domain Connect](https://domainconnect.org)のサポートを追加しました。IMAP、CalDAV、CardDAVのリアルタイムプッシュ通知はWebSocketsを使用して開始されました。
 
-**2026年3月**: ドメインごとのカスタムS3互換ストレージのサポートが追加され、管理用のコマンドラインツールも提供されました。macOS、Windows、Linux、iOS、Android向けのクロスプラットフォームデスクトップおよびモバイルアプリケーションの開発が、同じオープンソースWebメールコードベースを使用して[Tauri](https://tauri.app)で開始されました。
+**2026年3月**: ドメインごとのカスタムS3互換ストレージのサポートが追加され、管理用のコマンドラインツールも提供されました。macOS、Windows、Linux、iOS、Android向けのクロスプラットフォームデスクトップおよびモバイルアプリケーションの開発が、同じオープンソースWebメールコードベースを使用して[Tauri](https://tauri.app)で開始されました。また、オープンソースの[MCPサーバー](/blog/docs/mcp)もリリースされ、AIアシスタントがForward Email APIを通じてメール、ドメイン、エイリアス、連絡先、カレンダーを管理できるようになりました。
 
 **2026年5月**: Apple Push Notification (APN)によるiOS/macOSリアルタイムメール配信サポート、iOS同期互換性のための包括的なCalDAV修正（PRODID、LAST-MODIFIED、CREATED、SEQUENCE修復および適切なhrefエンコーディング）、エイリアスごとのメール保持ポリシー、MIMEヘッダーデコードとList-*ヘッダー保持によるSieveフィルタリングの強化、カスタムラベルとのIMAPキーワード同期、大量送信者向けBSONオーバーフロー保護など、信頼性と互換性の大幅な改善が出荷されました。IMAP/POP3クライアント向けのレガシーTLSサポートが追加され、プッシュ通知APIがトークンCRUDおよび配信パイプラインエンドポイントで拡張されました。
 
-**2026年6月**: Forward Emailは、業界で最も尊敬されるセキュリティ研究企業の1つである[Cure53](https://cure53.de/)による初の独立第三者セキュリティ監査を公開しました。完全な侵入テストレポートは[pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf)で入手できます。監査はオープンソースアーキテクチャ全体とサーバーインフラストラクチャをカバーし、すべての発見事項は継続的な再テストを通じて対処・検証されました。SSRF防止のためのDNSピンニング、招待トークン認証、Domain Connect URL検証を含む追加のセキュリティ強化が適用されました。
+**2026年6月**: Forward Emailは、業界で最も尊敬されるセキュリティ研究企業の1つである[Cure53](https://cure53.de/)による初の独立第三者セキュリティ監査を公開しました。完全な侵入テストレポートは[pentest-report_forward-email.pdf](https://cure53.de/pentest-report_forward-email.pdf)で入手できます。監査はオープンソースアーキテクチャ全体とサーバーインフラストラクチャをカバーし、すべての発見事項は継続的な再テストを通じて対処・検証されました。SSRF防止のためのDNSピンニング、招待トークン認証、Domain Connect URL検証を含む追加のセキュリティ強化が適用されました。
+
+**2026年7月**: 暗号化されたSQLiteストレージのパフォーマンス改善により、メモリ使用量が削減され、IMAPが高速化しました。データベースのコンパクション（最適化）は専用のワーカープロセスに移され、よく使われるコマンドには高速パスが追加されました。送信キューは新規メッセージと再送メッセージを並列に送信するようになり、再送が新着メールの後ろで待たされることはなくなりました。プッシュ通知は再構築され、メール、カレンダー、連絡先の更新が、アプリが接続していないときでもWebSocketsとプッシュ（APNs、FCM、UnifiedPush）の両方で配信されるようになりました。AndroidアプリにはFirebase Cloud Messagingに加えてUnifiedPushが追加され、UnifiedPushのみを使うGoogle非依存のビルドも用意されました。さらに、IMAPサーバーは、ストレージの空き容量が少なくなったとき、支払いが期限を過ぎたとき、送信SMTPが有効になっていないドメインがあるときに、メールアプリへアラートを送るようになりました。
+
+**2026年8月**: [Cure53](https://cure53.de/)が2回目の、より踏み込んだ監査を実施しました。4名のシニアテスターのチームが25日間のテストを行い、コードベース、サーバーインフラとそのAnsible構成、そして[Nodemailer](https://nodemailer.com)を対象としました。ドメイン管理者は新しいエイリアスに適用されるデフォルトの送信上限を設定できるようになり、MXサーバーはGmailのアドレスからの送信を装いながら認証に失敗するメールを拒否するようになりました。
+
+**2026年9月**: Forward Emailは[Cure53の2回目のレポート](/pentest-report_forward-email.pdf)を公開しました。その中でCure53は、テスト中の迅速な対応が「セキュリティに対するプロフェッショナルで真摯な姿勢」を示していると記しています。さらなる強化として、正引きで確認する逆引きDNS（FCrDNS）のチェック、OAuthのstateパラメーターの検証、そしてSSRF、Sieve、WKD、XMLのより厳格な処理が追加されました。トップページ、料金ページ、よくある質問がリデザインされ、新しい[ダウンロードページ](/download)にmacOS、Windows、Linux、Android、iOS向けのネイティブアプリがまとめられ、すべてのインストーラーについてチェックサムとビルドの来歴（ビルドプロベナンス）が公開されています。
 
 
 ## コア原則 {#core-principles}
 
 Forward Emailは創設以来、プライバシーとセキュリティの原則に揺るぎないコミットメントを維持しています：
 
-**100%オープンソース哲学**: フロントエンドのみをオープンソースにし、バックエンドを非公開にする競合他社とは異なり、Forward Emailはフロントエンドとバックエンドの両方のコードベースを[GitHub](https://github.com/forwardemail)で公開し、誰でも検証可能にしています——Cure53による[独立セキュリティ監査](/pentest-report_forward-email.pdf)に裏付けられています。
+**100%オープンソース哲学**: フロントエンドのみをオープンソースにし、バックエンドを非公開にする競合他社とは異なり、Forward Emailはフロントエンドとバックエンドの両方のコードベースを[GitHub](https://github.com/forwardemail)で公開し、誰でも検証可能にしています——Cure53による2回の[独立セキュリティ監査](/pentest-report_forward-email.pdf)に裏付けられています。
 
 **プライバシーファースト設計**: 初日からForward Emailは、メールをディスクに書き込まない独自のインメモリ処理アプローチを実装し、メッセージをデータベースやファイルシステムに保存する従来のメールサービスと一線を画しています。
 
@@ -154,7 +160,7 @@ Forward Emailは創設以来、プライバシーとセキュリティの原則�
 
 ## 現状 {#current-status}
 
-2026年3月時点で、Forward Emailは世界中で50万以上のドメインにサービスを提供しており、以下のような著名な組織や業界リーダーも含まれています：
+2026年9月時点で、Forward Emailは世界中で160万以上のドメインにサービスを提供しており、以下のような著名な組織や業界リーダーも含まれています：
 
 * **テクノロジー企業**: Canonical (Ubuntu)、Netflix Games、The Linux Foundation、The PHP Foundation、jQuery、LineageOS
 * **メディア組織**: Fox News Radio、Disney Ad Sales
@@ -163,6 +169,6 @@ Forward Emailは創設以来、プライバシーとセキュリティの原則�
 * **その他の組織**: RCD Hotels、Fly<span>.</span>io
 * **著名な開発者**: Isaac Z. Schlueter (npm創設者)、David Heinemeier Hansson (Ruby on Rails創設者)
 
-プラットフォームは定期的な機能リリースとインフラ改善を続け、現在も唯一の100%オープンソース、暗号化、プライバシー重視、透明性、量子耐性を備えたメールサービスとしての地位を維持しています——Cure53による[独立セキュリティ監査](/pentest-report_forward-email.pdf)に裏付けられています。
+プラットフォームは定期的な機能リリースとインフラ改善を続け、現在も唯一の100%オープンソース、暗号化、プライバシー重視、透明性、量子耐性を備えたメールサービスとしての地位を維持しています——Cure53による2回の[独立セキュリティ監査](/pentest-report_forward-email.pdf)に裏付けられています。
 
 <!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

@@ -17,8 +17,8 @@
   * [2021 - מודרניזציה של הפלטפורמה](#2021---platform-modernization)
   * [2023 - הרחבת תשתית ותכונות](#2023---infrastructure-and-feature-expansion)
   * [2024 - אופטימיזציה של השירות ותכונות מתקדמות](#2024---service-optimization-and-advanced-features)
-  * [2025 - שיפורי פרטיות ותמיכה בפרוטוקולים {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
-  * [2026 - תאימות RFC וסינון מתקדם וביקורת אבטחה עצמאית {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
+  * [2025 - שיפורי פרטיות ותמיכה בפרוטוקולים](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - תאימות RFC, סינון מתקדם וביקורות אבטחה עצמאיות](#2026---rfc-compliance-advanced-filtering-and-independent-security-audits)
 * [עקרונות יסוד](#core-principles)
 * [מצב נוכחי](#current-status)
 
@@ -103,7 +103,7 @@ Forward Email נוסדה על ידי **ניקולאס באו** בשנת 2017. ל
 
 **אוגוסט 2024**: Forward Email הוסיפה תמיכה בייצוא תיבות דואר בפורמטים של [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) ו-[Mbox](https://en.wikipedia.org/wiki/Mbox) (בנוסף לפורמט הייצוא הקיים של [SQLite](https://en.wikipedia.org/wiki/SQLite)). [תמיכה בחתימת Webhook נוספה](https://forwardemail.net/faq#do-you-support-bounce-webhooks), והחברה החלה לאפשר למשתמשים לשלוח ניוזלטרים, הודעות ופרסום בדואר דרך שירות ה-SMTP היוצא שלהם. כמו כן, הוטמעו מכסות אחסון כלל-דומיין וספציפיות לשמות חלופיים עבור IMAP/POP3/CalDAV.
 
-### 2025 - שיפורי פרטיות ותמיכה בפרוטוקולים {#2025---privacy-enhancements-and-protocol-support} {#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support}
+### 2025 - שיפורי פרטיות ותמיכה בפרוטוקולים {#2025---privacy-enhancements-and-protocol-support}
 
 **ספטמבר 2024 עד ינואר 2025**: Forward Email [הוסיפה תכונת מענה חופשה מבוקשת מאוד והצפנת OpenPGP/WKD להעברת דואר](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254), בהתבסס על יכולות האחסון המוצפן של תיבות הדואר שכבר יושמו.
 
@@ -124,24 +124,30 @@ Forward Email נוסדה על ידי **ניקולאס באו** בשנת 2017. ל
 **נובמבר 2025**: אבטחת הפלטפורמה שודרגה עם מעבר מ-PBKDF2 ל-[Argon2id](https://en.wikipedia.org/wiki/Argon2) עבור גיבוב סיסמאות, והתשתית הועברה מ-Redis ל-[Valkey](https://github.com/valkey-io/valkey).
 
 **דצמבר 2025**: גרסה 2.0 שוחררה, שכללה תמיכה ב-[REQUIRETLS (RFC 8689)](/rfc#requiretls-support) לאכיפת הצפנת TLS בהעברת דואר ושדרוג ל-[OpenPGP.js](https://github.com/openpgpjs/openpgpjs) גרסה 6.
-### 2026 - תאימות RFC וסינון מתקדם וביקורת אבטחה עצמאית {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - תאימות RFC, סינון מתקדם וביקורות אבטחה עצמאיות {#2026---rfc-compliance-advanced-filtering-and-independent-security-audits}
 
 **ינואר 2026**: Forward Email פרסמה [מסמך תאימות פרוטוקול RFC מקיף](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) והוסיפה תמיכה ב-[הצפנת S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) ובסינון דואר מקיף באמצעות [Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) עם תמיכה בפרוטוקול [ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering). ממשק ה-REST API הורחב ל-39 נקודות קצה.
 
 **פברואר 2026**: לקוח הדואר האלקטרוני הרשמי בקוד פתוח הושק ב-[mail.forwardemail.net](https://mail.forwardemail.net) ([קוד מקור ב-GitHub](https://github.com/forwardemail/mail.forwardemail.net)). הפלטפורמה הוסיפה גם תמיכה ב-[הרחבות תזמון CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities), ו-[Domain Connect](https://domainconnect.org) להגדרת DNS בלחיצה אחת. הודעות דחיפה בזמן אמת ל-IMAP, CalDAV ו-CardDAV הושקו באמצעות WebSockets.
 
-**מרץ 2026**: נוספה תמיכה באחסון מותאם אישית תואם S3 לכל דומיין, יחד עם כלי שורת פקודה לניהול. התחילו עבודות על אפליקציות שולחן עבודה וניידות חוצות פלטפורמות ל-macOS, Windows, Linux, iOS ו-Android המשתמשות באותו בסיס קוד של דואר אלקטרוני בקוד פתוח, שנבנה עם [Tauri](https://tauri.app).
+**מרץ 2026**: נוספה תמיכה באחסון מותאם אישית תואם S3 לכל דומיין, יחד עם כלי שורת פקודה לניהול. התחילו עבודות על אפליקציות שולחן עבודה וניידות חוצות פלטפורמות ל-macOS, Windows, Linux, iOS ו-Android המשתמשות באותו בסיס קוד של דואר אלקטרוני בקוד פתוח, שנבנה עם [Tauri](https://tauri.app). כמו כן שוחרר [שרת MCP](/blog/docs/mcp) בקוד פתוח, שמאפשר לעוזרי בינה מלאכותית לנהל דוא״ל, דומיינים, כינויים, אנשי קשר ויומנים דרך ה-API של Forward Email.
 
 **מאי 2026**: שיפורים משמעותיים באמינות ובתאימות נשלחו, כולל תמיכה ב-Apple Push Notification (APN) למשלוח דואר בזמן אמת ב-iOS/macOS, תיקוני CalDAV מקיפים לתאימות סנכרון iOS (ריפוי PRODID, LAST-MODIFIED, CREATED, SEQUENCE וקידוד href נכון), מדיניות שמירת דואר אלקטרוני לכל כינוי, סינון Sieve משופר עם פענוח כותרות MIME ושימור כותרות List-*, סנכרון מילות מפתח IMAP עם תוויות מותאמות אישית, והגנה מפני גלישת BSON לשולחים בנפח גבוה. תמיכת TLS מדור קודם נוספה ללקוחות IMAP/POP3, ו-API ההתראות הורחב עם נקודות קצה CRUD לטוקנים וצינור משלוח.
 
-**יוני 2026**: Forward Email פרסמה את ביקורת האבטחה העצמאית הראשונה שלה מצד שלישי, שבוצעה על ידי [Cure53](https://cure53.de/), אחת מחברות מחקר האבטחה המוערכות ביותר בתעשייה. דוח בדיקת החדירה המלא זמין ב-[pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). הביקורת כיסתה את כל הארכיטקטורה בקוד פתוח ותשתית השרתים, כאשר כל הממצאים טופלו ואומתו באמצעות בדיקות חוזרות מתמשכות. הקשחת אבטחה נוספת הוחלה כולל DNS pinning למניעת SSRF, אימות טוקן הזמנה ואימות URL של Domain Connect.
+**יוני 2026**: Forward Email פרסמה את ביקורת האבטחה העצמאית הראשונה שלה מצד שלישי, שבוצעה על ידי [Cure53](https://cure53.de/), אחת מחברות מחקר האבטחה המוערכות ביותר בתעשייה. דוח בדיקת החדירה המלא זמין ב-[pentest-report_forward-email.pdf](https://cure53.de/pentest-report_forward-email.pdf). הביקורת כיסתה את כל הארכיטקטורה בקוד פתוח ותשתית השרתים, כאשר כל הממצאים טופלו ואומתו באמצעות בדיקות חוזרות מתמשכות. הקשחת אבטחה נוספת הוחלה כולל DNS pinning למניעת SSRF, אימות טוקן הזמנה ואימות URL של Domain Connect.
+
+**יולי 2026**: עבודה על שיפור הביצועים של אחסון ה-SQLite המוצפן הפחיתה את צריכת הזיכרון והאיצה את IMAP: דחיסת מסדי הנתונים הועברה לתהליך ייעודי, ופקודות נפוצות קיבלו מסלול מהיר. תור הדואר היוצא החל לשלוח הודעות חדשות וניסיונות חוזרים במקביל, כך שניסיונות חוזרים כבר לא ממתינים מאחורי דואר חדש. התראות ה-push נבנו מחדש כך שעדכונים בדואר, ביומנים ובאנשי הקשר נשלחים גם דרך WebSockets וגם דרך push (APNs, FCM ו-UnifiedPush), גם כשהאפליקציה אינה מחוברת, ואפליקציית Android הוסיפה את UnifiedPush לצד Firebase Cloud Messaging, וכן גרסה ללא שירותי Google שמשתמשת רק ב-UnifiedPush. שרת ה-IMAP גם החל להתריע לאפליקציות הדואר על אחסון שכמעט מלא, על תשלומים באיחור ועל דומיינים ללא SMTP יוצא.
+
+**אוגוסט 2026**: [Cure53](https://cure53.de/) חזרה לביקורת שנייה ומעמיקה יותר: 25 ימי בדיקות של צוות בן ארבעה בודקים בכירים, שכיסו את בסיס הקוד, את תשתית השרתים ואת תצורת ה-Ansible שלה, ואת [Nodemailer](https://nodemailer.com). מנהלי דומיינים יכולים כעת לקבוע מגבלת שליחה ברירת מחדל לכינויים חדשים, ושרתי ה-MX החלו לדחות דואר שמתחזה להודעה מכתובת Gmail אך נכשל באימות.
+
+**ספטמבר 2026**: Forward Email פרסמה את [הדוח השני של Cure53](/pentest-report_forward-email.pdf), שבו כתבה Cure53 שהתגובות המהירות במהלך הבדיקות הפגינו "גישה מקצועית ורצינית לאבטחה". הקשחה נוספת הוסיפה בדיקות forward-confirmed reverse DNS (FCrDNS), אימות של פרמטר ה-state ב-OAuth וטיפול מחמיר יותר ב-SSRF, Sieve, WKD ו-XML. דף הבית, דף התמחור והשאלות הנפוצות עוצבו מחדש, ו[דף הורדות](/download) חדש ריכז את האפליקציות המקוריות ל-macOS, Windows, Linux, Android ו-iOS, עם סכומי ביקורת (checksums) מפורסמים ומידע על מקור הבנייה (build provenance) לכל קובץ התקנה.
 
 
 ## עקרונות יסוד {#core-principles}
 
 מאז הקמתה, Forward Email שומרת על מחויבות איתנה לעקרונות פרטיות ואבטחה:
 
-**פילוסופיית קוד פתוח 100%**: בניגוד למתחרים הפותחים רק את הממשק הקדמי שלהם ושומרים את הצד האחורי סגור, Forward Email הפכה את כל בסיס הקוד שלה—גם קדמי וגם אחורי—זמין לבחינה ציבורית ב-[GitHub](https://github.com/forwardemail)—נתמך כעת ב[ביקורת אבטחה עצמאית](/pentest-report_forward-email.pdf) מ-Cure53.
+**פילוסופיית קוד פתוח 100%**: בניגוד למתחרים הפותחים רק את הממשק הקדמי שלהם ושומרים את הצד האחורי סגור, Forward Email הפכה את כל בסיס הקוד שלה—גם קדמי וגם אחורי—זמין לבחינה ציבורית ב-[GitHub](https://github.com/forwardemail)—נתמך כעת בשתי [ביקורות אבטחה עצמאיות](/pentest-report_forward-email.pdf) מ-Cure53.
 
 **עיצוב שמעדיף פרטיות**: מהיום הראשון, Forward Email יישמה גישה ייחודית של עיבוד בזיכרון שמונעת כתיבת מיילים לדיסק, מה שמבדיל אותה משירותי דואר אלקטרוני רגילים ששומרים הודעות במסדי נתונים או מערכות קבצים.
 
@@ -154,7 +160,7 @@ Forward Email נוסדה על ידי **ניקולאס באו** בשנת 2017. ל
 
 ## המצב הנוכחי {#current-status}
 
-נכון ליוני 2026, Forward Email משרתת מעל 1.6 מיליון דומיינים ברחבי העולם, כולל ארגונים מובילים בתעשייה כגון:
+נכון לספטמבר 2026, Forward Email משרתת מעל 1.6 מיליון דומיינים ברחבי העולם, כולל ארגונים מובילים בתעשייה כגון:
 
 * **חברות טכנולוגיה**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **ארגוני מדיה**: Fox News Radio, Disney Ad Sales
@@ -163,6 +169,6 @@ Forward Email נוסדה על ידי **ניקולאס באו** בשנת 2017. ל
 * **ארגונים נוספים**: RCD Hotels, Fly<span>.</span>io
 * **מפתחים בולטים**: Isaac Z. Schlueter (יוצר npm), David Heinemeier Hansson (יוצר Ruby on Rails)
 
-הפלטפורמה ממשיכה להתפתח עם שחרורי תכונות ושיפורי תשתית סדירים, ושומרת על מעמדה כשירות הדואר האלקטרוני היחיד שהוא 100% קוד פתוח, מוצפן, ממוקד פרטיות, שקוף ועמיד בפני מחשוב קוונטי הזמין כיום—נתמך כעת ב[ביקורת אבטחה עצמאית](/pentest-report_forward-email.pdf) מ-Cure53.
+הפלטפורמה ממשיכה להתפתח עם שחרורי תכונות ושיפורי תשתית סדירים, ושומרת על מעמדה כשירות הדואר האלקטרוני היחיד שהוא 100% קוד פתוח, מוצפן, ממוקד פרטיות, שקוף ועמיד בפני מחשוב קוונטי הזמין כיום—נתמך כעת בשתי [ביקורות אבטחה עצמאיות](/pentest-report_forward-email.pdf) מ-Cure53.
 
 <!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

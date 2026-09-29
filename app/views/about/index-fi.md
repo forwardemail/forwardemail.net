@@ -17,8 +17,8 @@
   * [2021 - Alustan modernisointi](#2021---platform-modernization)
   * [2023 - Infrastruktuurin ja ominaisuuksien laajennus](#2023---infrastructure-and-feature-expansion)
   * [2024 - Palvelun optimointi ja edistyneet ominaisuudet](#2024---service-optimization-and-advanced-features)
-  * [2025 - Yksityisyyden parannukset ja protokollatuki {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
-  * [2026 - RFC-yhteensopivuus ja edistynyt suodatus ja riippumaton turvallisuusauditointi {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
+  * [2025 - Yksityisyyden parannukset ja protokollatuki](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - RFC-yhteensopivuus, edistynyt suodatus ja riippumattomat turvallisuusauditoinnit](#2026---rfc-compliance-advanced-filtering-and-independent-security-audits)
 * [Keskeiset periaatteet](#core-principles)
 * [Nykytila](#current-status)
 
@@ -103,7 +103,7 @@ Ratkaisun yksinkertaisuus ja tehokkuus herättivät huomiota merkittävien kehit
 
 **Elokuu 2024**: Forward Email lisäsi tuen postilaatikoiden vientiin [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) ja [Mbox](https://en.wikipedia.org/wiki/Mbox) -muodoissa (olemassa olevan [SQLite](https://en.wikipedia.org/wiki/SQLite) vientimuodon lisäksi). [Webhook-allekirjoitustuki lisättiin](https://forwardemail.net/faq#do-you-support-bounce-webhooks), ja yritys alkoi sallia käyttäjien lähettää uutiskirjeitä, ilmoituksia ja sähköpostimarkkinointia ulospäin menevän SMTP-palvelunsa kautta. IMAP/POP3/CalDAV -palveluille toteutettiin myös koko verkkotunnuksen ja alias-kohtaiset tallennuskiintiöt.
 
-### 2025 - Yksityisyyden parannukset ja protokollatuki {#2025---privacy-enhancements-and-protocol-support} {#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support}
+### 2025 - Yksityisyyden parannukset ja protokollatuki {#2025---privacy-enhancements-and-protocol-support}
 
 **Syyskuusta 2024 tammikuuhun 2025**: Forward Email [lisäsi erittäin toivotun lomavastaajan ominaisuuden ja OpenPGP/WKD-salauksen sähköpostin edelleenlähetykseen](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254), rakentaen jo toteutettujen salattujen postilaatikoiden tallennusmahdollisuuksien päälle.
 
@@ -124,24 +124,30 @@ Ratkaisun yksinkertaisuus ja tehokkuus herättivät huomiota merkittävien kehit
 **Marraskuu 2025**: Alustan turvallisuutta parannettiin siirtymällä PBKDF2:sta [Argon2id](https://en.wikipedia.org/wiki/Argon2) -salasanahajautukseen, ja infrastruktuuri siirrettiin Redisistä [Valkeyhin](https://github.com/valkey-io/valkey).
 
 **Joulukuu 2025**: Versio 2.0 julkaistiin, tuoden mukanaan [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) -tuet pakotetulle TLS-salaukselle sähköpostin siirrossa sekä päivityksen [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) versioon 6.
-### 2026 - RFC-yhteensopivuus ja edistynyt suodatus ja riippumaton turvallisuusauditointi {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - RFC-yhteensopivuus, edistynyt suodatus ja riippumattomat turvallisuusauditoinnit {#2026---rfc-compliance-advanced-filtering-and-independent-security-audits}
 
 **Tammikuu 2026**: Forward Email julkaisi kattavan [RFC-protokollan yhteensopivuusasiakirjan](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) ja lisäsi tuen [S/MIME-salaukselle (RFC 8551)](/faq#do-you-support-smime-encryption) sekä kattavalle [Sieve-sähköpostisuodatukselle (RFC 5228)](/faq#do-you-support-sieve-email-filtering) [ManageSieve-protokollan (RFC 5804)](/faq#do-you-support-sieve-email-filtering) tuella. REST API laajeni myös 39 päätepisteeseen.
 
 **Helmikuu 2026**: Virallinen, avoimen lähdekoodin webmail-asiakas julkaistiin osoitteessa [mail.forwardemail.net](https://mail.forwardemail.net) ([lähdekoodi GitHubissa](https://github.com/forwardemail/mail.forwardemail.net)). Alusta lisäsi myös tuen [CalDAV-aikataululaajennuksille (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA:lle (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) ja [Domain Connectille](https://domainconnect.org) yhden klikkauksen DNS-asetuksissa. Reaaliaikaiset push-ilmoitukset IMAPille, CalDAVille ja CardDAVille otettiin käyttöön WebSocketien avulla.
 
-**Maaliskuu 2026**: Tuki verkkotunnaskohtaiselle mukautetulle S3-yhteensopivalle tallennustilalle lisättiin, samoin kuin komentorivityökalu hallintaan. Työ aloitettiin monialustaisiin työpöytä- ja mobiilisovelluksiin macOS:lle, Windowsille, Linuxille, iOS:lle ja Androidille käyttäen samaa avoimen lähdekoodin webmail-koodipohjaa, rakennettuna [Tauri](https://tauri.app) -työkalulla.
+**Maaliskuu 2026**: Tuki verkkotunnaskohtaiselle mukautetulle S3-yhteensopivalle tallennustilalle lisättiin, samoin kuin komentorivityökalu hallintaan. Työ aloitettiin monialustaisiin työpöytä- ja mobiilisovelluksiin macOS:lle, Windowsille, Linuxille, iOS:lle ja Androidille käyttäen samaa avoimen lähdekoodin webmail-koodipohjaa, rakennettuna [Tauri](https://tauri.app) -työkalulla. Lisäksi julkaistiin avoimen lähdekoodin [MCP-palvelin](/blog/docs/mcp), jonka avulla tekoälyavustajat voivat hallita sähköposteja, verkkotunnuksia, aliaksia, yhteystietoja ja kalentereita Forward Emailin API:n kautta.
 
 **Toukokuu 2026**: Merkittäviä luotettavuus- ja yhteensopivuusparannuksia toimitettiin, mukaan lukien Apple Push Notification (APN) -tuki reaaliaikaiseen iOS/macOS-postin toimitukseen, kattavat CalDAV-korjaukset iOS-synkronointiyhteensopivuuteen (PRODID, LAST-MODIFIED, CREATED, SEQUENCE-korjaus ja oikea href-koodaus), sähköpostin säilytyskäytännöt aliaskohtaisesti, parannettu Sieve-suodatus MIME-otsikon dekoodauksella ja List-*-otsikon säilyttämisellä, IMAP-avainsanojen synkronointi mukautetuilla tunnisteilla ja BSON-ylivuotosuojaus suurivolyymilähetyksille. Legacy TLS -tuki lisättiin IMAP/POP3-asiakkaille, ja push-ilmoitus-API:a laajennettiin token CRUD- ja toimitusputkipäätepisteillä.
 
-**Kesäkuu 2026**: Forward Email julkaisi ensimmäisen riippumattoman kolmannen osapuolen turvallisuusauditoinnin, jonka suoritti [Cure53](https://cure53.de/), yksi alan arvostetuimmista turvallisuustutkimusyrityksistä. Täydellinen penetraatiotestiraportti on saatavilla osoitteessa [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). Auditointi kattoi koko avoimen lähdekoodin arkkitehtuurin ja palvelininfrastruktuurin, ja kaikki löydökset käsiteltiin ja varmennettiin jatkuvan uudelleentestauksen avulla. Lisäturvallisuuskovennusta sovellettiin, mukaan lukien DNS-pinning SSRF-estoon, kutsutokenin todennus ja Domain Connect URL -validointi.
+**Kesäkuu 2026**: Forward Email julkaisi ensimmäisen riippumattoman kolmannen osapuolen turvallisuusauditoinnin, jonka suoritti [Cure53](https://cure53.de/), yksi alan arvostetuimmista turvallisuustutkimusyrityksistä. Täydellinen penetraatiotestiraportti on saatavilla osoitteessa [pentest-report_forward-email.pdf](https://cure53.de/pentest-report_forward-email.pdf). Auditointi kattoi koko avoimen lähdekoodin arkkitehtuurin ja palvelininfrastruktuurin, ja kaikki löydökset käsiteltiin ja varmennettiin jatkuvan uudelleentestauksen avulla. Lisäturvallisuuskovennusta sovellettiin, mukaan lukien DNS-pinning SSRF-estoon, kutsutokenin todennus ja Domain Connect URL -validointi.
+
+**Heinäkuu 2026**: Salatun SQLite-tallennuksen suorituskykyoptimoinnit pienensivät muistinkäyttöä ja nopeuttivat IMAPia: tietokantojen tiivistys siirrettiin omaan työprosessiinsa, ja yleisimmät komennot saivat nopean polun. Lähtevien viestien jono alkoi lähettää uusia ja uudelleen yritettäviä viestejä rinnakkain, joten uudelleenyritykset eivät enää odota uuden postin takana. Push-ilmoitukset rakennettiin uudelleen niin, että sähköpostin, kalenterien ja yhteystietojen muutokset lähtevät sekä WebSocketsin että pushin kautta (APNs, FCM ja UnifiedPush) silloinkin, kun sovellus ei ole yhteydessä, ja Android-sovellus sai UnifiedPushin Firebase Cloud Messagingin rinnalle sekä Googlesta riippumattoman version, joka käyttää vain UnifiedPushia. IMAP-palvelin alkoi myös varoittaa sähköpostisovelluksia lähes täydestä tallennustilasta, erääntyneistä maksuista ja verkkotunnuksista, joilla ei ole lähtevää SMTP:tä.
+
+**Elokuu 2026**: [Cure53](https://cure53.de/) palasi toiseen, syvällisempään auditointiin: 25 päivää testausta neljän kokeneen testaajan tiimiltä, ja kohteina olivat koodipohja, palvelininfrastruktuuri Ansible-määrityksineen sekä [Nodemailer](https://nodemailer.com). Verkkotunnusten ylläpitäjät voivat nyt asettaa uusille aliaksille oletusarvoisen lähetysrajan, ja MX-palvelimet alkoivat hylätä viestit, jotka väittävät tulevansa Gmail-osoitteesta mutta eivät läpäise todennusta.
+
+**Syyskuu 2026**: Forward Email julkaisi [toisen Cure53-raportin](/pentest-report_forward-email.pdf), jossa Cure53 kirjoitti, että nopeat reaktiot testauksen aikana osoittivat ”ammattimaista ja vakavaa suhtautumista tietoturvaan”. Lisäkovennukset toivat FCrDNS-tarkistukset (forward-confirmed reverse DNS), OAuthin state-parametrin validoinnin sekä tiukemman SSRF:n, Sieven, WKD:n ja XML:n käsittelyn. Etusivu, hinnoittelusivu ja UKK uudistettiin, ja uusi [lataussivu](/download) kokosi yhteen natiivisovellukset macOS:lle, Windowsille, Linuxille, Androidille ja iOS:lle, ja jokaiselle asennustiedostolle on julkaistu tarkistussummat ja käännöksen alkuperätiedot (build provenance).
 
 
 ## Perusperiaatteet {#core-principles}
 
 Perustamisestaan lähtien Forward Email on pitänyt tiukasti kiinni yksityisyyden ja turvallisuuden periaatteista:
 
-**100 % avoimen lähdekoodin filosofia**: Toisin kuin kilpailijat, jotka julkaisevat vain käyttöliittymänsä avoimena lähdekoodina ja pitävät taustajärjestelmän suljettuna, Forward Email on tehnyt koko koodikantansa—sekä käyttöliittymän että taustajärjestelmän—julkisesti tarkasteltavaksi [GitHubissa](https://github.com/forwardemail)—nyt tuettuna [riippumattomalla turvallisuusauditoinnilla](/pentest-report_forward-email.pdf) Cure53:lta.
+**100 % avoimen lähdekoodin filosofia**: Toisin kuin kilpailijat, jotka julkaisevat vain käyttöliittymänsä avoimena lähdekoodina ja pitävät taustajärjestelmän suljettuna, Forward Email on tehnyt koko koodikantansa—sekä käyttöliittymän että taustajärjestelmän—julkisesti tarkasteltavaksi [GitHubissa](https://github.com/forwardemail)—nyt tuettuna kahdella [riippumattomalla turvallisuusauditoinnilla](/pentest-report_forward-email.pdf) Cure53:lta.
 
 **Yksityisyys ensin -suunnittelu**: Alusta alkaen Forward Email on käyttänyt ainutlaatuista muistissa tapahtuvaa käsittelytapaa, joka välttää sähköpostien tallentamisen levylle, erottaen sen perinteisistä sähköpostipalveluista, jotka tallentavat viestit tietokantoihin tai tiedostojärjestelmiin.
 
@@ -154,7 +160,7 @@ Perustamisestaan lähtien Forward Email on pitänyt tiukasti kiinni yksityisyyde
 
 ## Nykytila {#current-status}
 
-Maaliskuuhun 2026 mennessä Forward Email palvelee yli 500 000 verkkotunnusta maailmanlaajuisesti, mukaan lukien merkittäviä organisaatioita ja alan johtajia kuten:
+Syyskuuhun 2026 mennessä Forward Email palvelee yli 1,6 miljoonaa verkkotunnusta maailmanlaajuisesti, mukaan lukien merkittäviä organisaatioita ja alan johtajia kuten:
 
 * **Teknologiayritykset**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **Mediayritykset**: Fox News Radio, Disney Ad Sales
@@ -163,6 +169,6 @@ Maaliskuuhun 2026 mennessä Forward Email palvelee yli 500 000 verkkotunnusta ma
 * **Muut organisaatiot**: RCD Hotels, Fly<span>.</span>io
 * **Merkittävät kehittäjät**: Isaac Z. Schlueter (npm:n luoja), David Heinemeier Hansson (Ruby on Railsin luoja)
 
-Alusta kehittyy jatkuvasti säännöllisten ominaisuusjulkaisujen ja infrastruktuurin parannusten myötä, säilyttäen asemansa ainoana 100 % avoimen lähdekoodin, salatun, yksityisyyteen keskittyvän, läpinäkyvän ja kvanttivarmuuden tarjoavan sähköpostipalveluna tänä päivänä—nyt tuettuna [riippumattomalla turvallisuusauditoinnilla](/pentest-report_forward-email.pdf) Cure53:lta.
+Alusta kehittyy jatkuvasti säännöllisten ominaisuusjulkaisujen ja infrastruktuurin parannusten myötä, säilyttäen asemansa ainoana 100 % avoimen lähdekoodin, salatun, yksityisyyteen keskittyvän, läpinäkyvän ja kvanttivarmuuden tarjoavan sähköpostipalveluna tänä päivänä—nyt tuettuna kahdella [riippumattomalla turvallisuusauditoinnilla](/pentest-report_forward-email.pdf) Cure53:lta.
 
 <!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email yksityisyyteen keskittyvä sähköpostipalvelu" class="rounded-lg" /> -->

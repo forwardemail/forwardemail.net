@@ -30,9 +30,11 @@
   // margin-right: 20px;
   font-family: $font-family-sans-serif !important;
 
+  // Bold at every level, the same weight as the headings on the redesigned
+  // pages (var(--fe-weight-bold) in _fe-base.scss)
   h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: $headings-font-family !important;
-    font-weight: 400 !important;
+    font-weight: $headings-font-weight !important;
   }
 
   @for $index from 1 through 6 {

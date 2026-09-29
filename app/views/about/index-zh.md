@@ -17,8 +17,8 @@
   * [2021 - 平台现代化](#2021---platform-modernization)
   * [2023 - 基础设施与功能扩展](#2023---infrastructure-and-feature-expansion)
   * [2024 - 服务优化与高级功能](#2024---service-optimization-and-advanced-features)
-  * [2025 - 隐私增强与协议支持 {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
-  * [2026 - RFC 合规与高级过滤及独立安全审计 {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
+  * [2025 - 隐私增强与协议支持](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - RFC 合规、高级过滤与独立安全审计](#2026---rfc-compliance-advanced-filtering-and-independent-security-audits)
 * [核心原则](#core-principles)
 * [当前状态](#current-status)
 
@@ -103,7 +103,7 @@ Forward Email 的使命不仅仅是提供邮件服务——它旨在改变行业
 
 **2024年8月**：Forward Email 新增支持将邮箱导出为[EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)和[Mbox](https://en.wikipedia.org/wiki/Mbox)格式（除了已有的[SQLite](https://en.wikipedia.org/wiki/SQLite)导出格式）。[Webhook 签名支持也被添加](https://forwardemail.net/faq#do-you-support-bounce-webhooks)，公司开始允许用户通过其外发 SMTP 服务发送新闻通讯、公告和电子邮件营销。还实施了针对 IMAP/POP3/CalDAV 的全域及别名特定存储配额。
 
-### 2025 - 隐私增强与协议支持 {#2025---privacy-enhancements-and-protocol-support} {#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support}
+### 2025 - 隐私增强与协议支持 {#2025---privacy-enhancements-and-protocol-support}
 
 **2024年9月至2025年1月**：Forward Email [新增了备受期待的假期自动回复功能和用于邮件转发的 OpenPGP/WKD 加密](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254)，在其已实现的加密邮箱存储功能基础上进一步扩展。
 
@@ -124,23 +124,29 @@ Forward Email 的使命不仅仅是提供邮件服务——它旨在改变行业
 **2025年11月**：平台安全性提升，密码哈希算法从 PBKDF2 迁移至[Argon2id](https://en.wikipedia.org/wiki/Argon2)，基础设施从 Redis 迁移至[Valkey](https://github.com/valkey-io/valkey)。
 
 **2025年12月**：发布 2.0 版本，引入了[REQUIRETLS (RFC 8689)](/rfc#requiretls-support) 支持，实现邮件传输的强制 TLS 加密，并升级至 [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) v6。
-### 2026 - RFC 合规性与高级过滤及独立安全审计 {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - RFC 合规、高级过滤与独立安全审计 {#2026---rfc-compliance-advanced-filtering-and-independent-security-audits}
 
 **2026 年 1 月**：Forward Email 发布了全面的 [RFC 协议合规文档](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison)，并新增支持 [S/MIME 加密 (RFC 8551)](/faq#do-you-support-smime-encryption) 以及全面的 [Sieve 邮件过滤 (RFC 5228)](/faq#do-you-support-sieve-email-filtering) 和 [ManageSieve 协议 (RFC 5804)](/faq#do-you-support-sieve-email-filtering) 支持。REST API 也扩展到了 39 个端点。
 
 **2026 年 2 月**：官方开源的网页邮件客户端在 [mail.forwardemail.net](https://mail.forwardemail.net) 上线（[GitHub 源代码](https://github.com/forwardemail/mail.forwardemail.net)）。平台还新增支持 [CalDAV 调度扩展 (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638)、[DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) 以及用于一键 DNS 设置的 [Domain Connect](https://domainconnect.org)。通过 WebSockets 推出了 IMAP、CalDAV 和 CardDAV 的实时推送通知。
 
-**2026 年 3 月**：新增对每个域名自定义 S3 兼容存储的支持，并提供了命令行管理工具。开始开发基于相同开源网页邮件代码库的跨平台桌面和移动应用，支持 macOS、Windows、Linux、iOS 和 Android，使用 [Tauri](https://tauri.app) 构建。
+**2026 年 3 月**：新增对每个域名自定义 S3 兼容存储的支持，并提供了命令行管理工具。开始开发基于相同开源网页邮件代码库的跨平台桌面和移动应用，支持 macOS、Windows、Linux、iOS 和 Android，使用 [Tauri](https://tauri.app) 构建。此外还发布了开源的 [MCP 服务器](/blog/docs/mcp)，让 AI 助手能够通过 Forward Email API 管理邮件、域名、别名、联系人和日历。
 
 **2026年5月**：交付了重大的可靠性和兼容性改进，包括Apple推送通知（APN）支持实时iOS/macOS邮件投递、全面的CalDAV修复以实现iOS同步兼容性（PRODID、LAST-MODIFIED、CREATED、SEQUENCE修复和正确的href编码）、按别名的电子邮件保留策略、增强的Sieve过滤（MIME头解码和List-*头保留）、IMAP关键字与自定义标签同步以及高流量发送者的BSON溢出保护。为IMAP/POP3客户端添加了旧版TLS支持，推送通知API扩展了令牌CRUD和投递管道端点。
 
-**2026年6月**：Forward Email发布了首次独立第三方安全审计，由业内最受尊敬的安全研究公司之一[Cure53](https://cure53.de/)执行。完整的渗透测试报告可在[pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf)获取。审计涵盖了整个开源架构和服务器基础设施，所有发现均通过持续重新测试得到解决和验证。应用了额外的安全加固，包括DNS固定以防止SSRF、邀请令牌认证和Domain Connect URL验证。
+**2026年6月**：Forward Email发布了首次独立第三方安全审计，由业内最受尊敬的安全研究公司之一[Cure53](https://cure53.de/)执行。完整的渗透测试报告可在[pentest-report_forward-email.pdf](https://cure53.de/pentest-report_forward-email.pdf)获取。审计涵盖了整个开源架构和服务器基础设施，所有发现均通过持续重新测试得到解决和验证。应用了额外的安全加固，包括DNS固定以防止SSRF、邀请令牌认证和Domain Connect URL验证。
+
+**2026年7月**：针对加密 SQLite 存储的性能优化降低了内存占用并加速了 IMAP：数据库压缩移至专用工作进程，常用命令获得了快速路径。外发队列开始并行发送新邮件和重试邮件，重试不再排在新邮件之后等待。推送通知经过重构，即使应用未连接，邮件、日历和联系人的更新也会同时通过 WebSockets 和推送（APNs、FCM 和 UnifiedPush）发送；Android 应用在 Firebase Cloud Messaging 之外新增了 UnifiedPush，并推出了仅使用 UnifiedPush、无需 Google 服务的版本。IMAP 服务器还开始在存储空间即将用满、付款逾期或域名未启用外发 SMTP 时向邮件应用发出提醒。
+
+**2026年8月**：[Cure53](https://cure53.de/) 进行了第二轮、更深入的审计：由四名资深测试人员组成的团队测试了 25 天，覆盖代码库、服务器基础设施及其 Ansible 配置，以及 [Nodemailer](https://nodemailer.com)。域名管理员现在可以为新别名设置默认发送上限，MX 服务器也开始拒收自称来自 Gmail 地址但未通过身份验证的邮件。
+
+**2026年9月**：Forward Email 发布了 [Cure53 的第二份报告](/pentest-report_forward-email.pdf)，Cure53 在报告中写道，测试期间的快速响应体现了“专业而严肃的安全态度”。进一步的加固增加了正向确认反向 DNS（FCrDNS）检查、OAuth state 参数校验，以及对 SSRF、Sieve、WKD 和 XML 更严格的处理。首页、价格页面和常见问题完成了重新设计，新的[下载页面](/download)汇集了适用于 macOS、Windows、Linux、Android 和 iOS 的原生应用，并为每个安装包公布校验和与构建来源证明（build provenance）。
 
 ## 核心原则 {#core-principles}
 
 自成立以来，Forward Email 始终坚持隐私和安全的核心原则：
 
-**100% 开源理念**：不同于只开源前端而后端闭源的竞争对手，Forward Email 将其完整代码库——包括前端和后端——公开托管在 [GitHub](https://github.com/forwardemail) 上，接受公众监督——现在由Cure53的[独立安全审计](/pentest-report_forward-email.pdf)支持。
+**100% 开源理念**：不同于只开源前端而后端闭源的竞争对手，Forward Email 将其完整代码库——包括前端和后端——公开托管在 [GitHub](https://github.com/forwardemail) 上，接受公众监督——现在由Cure53的[两次独立安全审计](/pentest-report_forward-email.pdf)支持。
 
 **隐私优先设计**：从一开始，Forward Email 就采用独特的内存处理方式，避免将邮件写入磁盘，这与传统邮件服务将邮件存储在数据库或文件系统中的做法截然不同。
 
@@ -152,7 +158,7 @@ Forward Email 的使命不仅仅是提供邮件服务——它旨在改变行业
 
 ## 当前状态 {#current-status}
 
-截至 2026 年 3 月，Forward Email 服务全球超过 50 万个域名，包括以下知名组织和行业领导者：
+截至 2026 年 9 月，Forward Email 服务全球超过 160 万个域名，包括以下知名组织和行业领导者：
 
 * **科技公司**：Canonical（Ubuntu）、Netflix Games、Linux 基金会、PHP 基金会、jQuery、LineageOS
 * **媒体机构**：Fox News Radio、Disney 广告销售
@@ -161,6 +167,6 @@ Forward Email 的使命不仅仅是提供邮件服务——它旨在改变行业
 * **其他组织**：RCD Hotels、Fly<span>.</span>io
 * **知名开发者**：Isaac Z. Schlueter（npm 创始人）、David Heinemeier Hansson（Ruby on Rails 创始人）
 
-该平台持续发展，定期发布新功能和基础设施改进，保持其作为目前唯一 100% 开源、加密、注重隐私、透明且抗量子攻击的邮件服务的地位——现在由Cure53的[独立安全审计](/pentest-report_forward-email.pdf)支持。
+该平台持续发展，定期发布新功能和基础设施改进，保持其作为目前唯一 100% 开源、加密、注重隐私、透明且抗量子攻击的邮件服务的地位——现在由Cure53的[两次独立安全审计](/pentest-report_forward-email.pdf)支持。
 
 <!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

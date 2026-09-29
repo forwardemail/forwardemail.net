@@ -17,8 +17,8 @@
   * [2021 - Modernização da Plataforma](#2021---platform-modernization)
   * [2023 - Expansão de Infraestrutura e Funcionalidades](#2023---infrastructure-and-feature-expansion)
   * [2024 - Otimização do Serviço e Funcionalidades Avançadas](#2024---service-optimization-and-advanced-features)
-  * [2025 - Melhorias de Privacidade e Suporte a Protocolos {#2025---privacy-enhancements-and-protocol-support}](#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support)
-  * [2026 - Conformidade com RFC e Filtragem Avançada e auditoria de segurança independente {#2026---rfc-compliance-and-advanced-filtering}](#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering)
+  * [2025 - Melhorias de Privacidade e Suporte a Protocolos](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - Conformidade com RFC, filtragem avançada e auditorias de segurança independentes](#2026---rfc-compliance-advanced-filtering-and-independent-security-audits)
 * [Princípios Fundamentais](#core-principles)
 * [Status Atual](#current-status)
 
@@ -103,7 +103,7 @@ A simplicidade e eficácia dessa solução atraíram a atenção de desenvolvedo
 
 **Agosto de 2024**: Forward Email adicionou suporte para exportação de caixas de correio nos formatos [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) e [Mbox](https://en.wikipedia.org/wiki/Mbox) (além do formato de exportação [SQLite](https://en.wikipedia.org/wiki/SQLite) já existente). [Suporte a assinatura de webhook foi adicionado](https://forwardemail.net/faq#do-you-support-bounce-webhooks), e a empresa começou a permitir que usuários enviassem newsletters, anúncios e marketing por e-mail através de seu serviço SMTP de saída. Cotas de armazenamento para IMAP/POP3/CalDAV específicas para domínio e alias também foram implementadas.
 
-### 2025 - Melhorias de Privacidade e Suporte a Protocolos {#2025---privacy-enhancements-and-protocol-support} {#2025---privacy-enhancements-and-protocol-support-2025---privacy-enhancements-and-protocol-support}
+### 2025 - Melhorias de Privacidade e Suporte a Protocolos {#2025---privacy-enhancements-and-protocol-support}
 
 **Setembro de 2024 a Janeiro de 2025**: Forward Email [adicionou um recurso muito solicitado de resposta automática de férias e criptografia OpenPGP/WKD para encaminhamento de e-mails](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254), ampliando suas capacidades já implementadas de armazenamento criptografado de caixas de correio.
 
@@ -124,24 +124,30 @@ A simplicidade e eficácia dessa solução atraíram a atenção de desenvolvedo
 **Novembro de 2025**: A segurança da plataforma foi aprimorada com a migração de PBKDF2 para [Argon2id](https://en.wikipedia.org/wiki/Argon2) para hashing de senhas, e a infraestrutura foi migrada de Redis para [Valkey](https://github.com/valkey-io/valkey).
 
 **Dezembro de 2025**: A versão 2.0 foi lançada, introduzindo suporte a [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) para criptografia TLS obrigatória no transporte de e-mails e atualizando para [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) v6.
-### 2026 - Conformidade com RFC e Filtragem Avançada e auditoria de segurança independente {#2026---rfc-compliance-and-advanced-filtering} {#2026---rfc-compliance-and-advanced-filtering-2026---rfc-compliance-and-advanced-filtering}
+### 2026 - Conformidade com RFC, filtragem avançada e auditorias de segurança independentes {#2026---rfc-compliance-advanced-filtering-and-independent-security-audits}
 
 **Janeiro de 2026**: Forward Email lançou um [documento abrangente de conformidade com protocolos RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) e adicionou suporte para [criptografia S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) e filtragem de email [Sieve abrangente (RFC 5228)](/faq#do-you-support-sieve-email-filtering) com suporte ao protocolo [ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering). A API REST também foi expandida para 39 endpoints.
 
 **Fevereiro de 2026**: O cliente webmail oficial e open-source foi lançado em [mail.forwardemail.net](https://mail.forwardemail.net) ([código-fonte no GitHub](https://github.com/forwardemail/mail.forwardemail.net)). A plataforma também adicionou suporte para [Extensões de Agendamento CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) e [Domain Connect](https://domainconnect.org) para configuração DNS com 1 clique. Notificações push em tempo real para IMAP, CalDAV e CardDAV foram lançadas usando WebSockets.
 
-**Março de 2026**: Foi adicionado suporte para armazenamento personalizado compatível com S3 por domínio, junto com uma ferramenta de linha de comando para gerenciamento. Começou o trabalho em aplicações desktop e móveis multiplataforma para macOS, Windows, Linux, iOS e Android usando a mesma base de código open-source do webmail, construídas com [Tauri](https://tauri.app).
+**Março de 2026**: Foi adicionado suporte para armazenamento personalizado compatível com S3 por domínio, junto com uma ferramenta de linha de comando para gerenciamento. Começou o trabalho em aplicações desktop e móveis multiplataforma para macOS, Windows, Linux, iOS e Android usando a mesma base de código open-source do webmail, construídas com [Tauri](https://tauri.app). Também foi lançado um [servidor MCP](/blog/docs/mcp) de código aberto, que permite que assistentes de IA gerenciem e-mails, domínios, aliases, contatos e calendários pela API do Forward Email.
 
-**Maio 2026**: Melhorias significativas de confiabilidade e compatibilidade foram entregues, incluindo suporte a Apple Push Notification (APN) para entrega de e-mail em tempo real no iOS/macOS, correções abrangentes de CalDAV para compatibilidade de sincronização iOS (reparo de PRODID, LAST-MODIFIED, CREATED, SEQUENCE e codificação href correta), políticas de retenção de e-mail por alias, filtragem Sieve aprimorada com decodificação de cabeçalhos MIME e preservação de cabeçalhos List-*, sincronização de palavras-chave IMAP com rótulos personalizados e proteção contra overflow BSON para remetentes de alto volume. Suporte TLS legado foi adicionado para clientes IMAP/POP3, e a API de notificações push foi expandida com endpoints CRUD de tokens e pipeline de entrega.
+**Maio de 2026**: Melhorias significativas de confiabilidade e compatibilidade foram entregues, incluindo suporte a Apple Push Notification (APN) para entrega de e-mail em tempo real no iOS/macOS, correções abrangentes de CalDAV para compatibilidade de sincronização iOS (reparo de PRODID, LAST-MODIFIED, CREATED, SEQUENCE e codificação href correta), políticas de retenção de e-mail por alias, filtragem Sieve aprimorada com decodificação de cabeçalhos MIME e preservação de cabeçalhos List-*, sincronização de palavras-chave IMAP com rótulos personalizados e proteção contra overflow BSON para remetentes de alto volume. Suporte TLS legado foi adicionado para clientes IMAP/POP3, e a API de notificações push foi expandida com endpoints CRUD de tokens e pipeline de entrega.
 
-**Junho 2026**: O Forward Email publicou sua primeira auditoria de segurança independente de terceiros, realizada pela [Cure53](https://cure53.de/), uma das firmas de pesquisa de segurança mais respeitadas da indústria. O relatório completo do teste de penetração está disponível em [pentest-report_forward-email.pdf](/pentest-report_forward-email.pdf). A auditoria cobriu toda a arquitetura de código aberto e infraestrutura de servidores, com todas as descobertas abordadas e verificadas através de retestes contínuos. Endurecimento de segurança adicional foi aplicado, incluindo DNS pinning para prevenção de SSRF, autenticação de token de convite e validação de URL do Domain Connect.
+**Junho de 2026**: O Forward Email publicou sua primeira auditoria de segurança independente de terceiros, realizada pela [Cure53](https://cure53.de/), uma das firmas de pesquisa de segurança mais respeitadas da indústria. O relatório completo do teste de penetração está disponível em [pentest-report_forward-email.pdf](https://cure53.de/pentest-report_forward-email.pdf). A auditoria cobriu toda a arquitetura de código aberto e infraestrutura de servidores, com todas as descobertas abordadas e verificadas através de retestes contínuos. Endurecimento de segurança adicional foi aplicado, incluindo DNS pinning para prevenção de SSRF, autenticação de token de convite e validação de URL do Domain Connect.
+
+**Julho de 2026**: As otimizações de desempenho no armazenamento SQLite criptografado reduziram o uso de memória e aceleraram o IMAP: a compactação dos bancos de dados passou para um processo dedicado e os comandos mais comuns ganharam um caminho rápido. A fila de saída passou a enviar mensagens novas e reenvios em paralelo, de modo que os reenvios não ficam mais esperando atrás do e-mail novo. As notificações push foram reconstruídas para que as atualizações de e-mail, calendários e contatos sejam enviadas tanto por WebSockets quanto por push (APNs, FCM e UnifiedPush), mesmo quando o aplicativo não está conectado, e o aplicativo Android adicionou o UnifiedPush ao lado do Firebase Cloud Messaging, além de uma versão sem serviços do Google que usa apenas o UnifiedPush. O servidor IMAP também passou a alertar os aplicativos de e-mail sobre armazenamento quase cheio, pagamentos em atraso e domínios sem SMTP de saída.
+
+**Agosto de 2026**: A [Cure53](https://cure53.de/) voltou para uma segunda auditoria, mais profunda: 25 dias de testes feitos por uma equipe de quatro testadores seniores, cobrindo o código, a infraestrutura de servidores e sua configuração Ansible, e o [Nodemailer](https://nodemailer.com). Os administradores de domínio agora podem definir um limite de envio padrão para novos aliases, e os servidores MX passaram a rejeitar e-mails que se dizem enviados de um endereço do Gmail mas falham na autenticação.
+
+**Setembro de 2026**: O Forward Email publicou o [segundo relatório da Cure53](/pentest-report_forward-email.pdf), no qual a Cure53 escreveu que as respostas rápidas durante os testes demonstraram "uma abordagem profissional e séria da segurança". Reforços de segurança adicionais trouxeram verificações de DNS reverso confirmado por consulta direta (FCrDNS), validação do parâmetro state do OAuth e um tratamento mais rigoroso de SSRF, Sieve, WKD e XML. A página inicial, a página de preços e as Perguntas frequentes foram redesenhadas, e uma nova [página de downloads](/download) reuniu os aplicativos nativos para macOS, Windows, Linux, Android e iOS, com checksums publicados e procedência de build (build provenance) para cada instalador.
 
 
 ## Princípios Fundamentais {#core-principles}
 
 Desde sua criação, o Forward Email manteve um compromisso firme com os princípios de privacidade e segurança:
 
-**Filosofia 100% Open-Source**: Diferente dos concorrentes que apenas liberam o frontend enquanto mantêm o backend fechado, o Forward Email disponibilizou todo seu código—tanto frontend quanto backend—para escrutínio público no [GitHub](https://github.com/forwardemail)—agora respaldado por uma [auditoria de segurança independente](/pentest-report_forward-email.pdf) da Cure53.
+**Filosofia 100% Open-Source**: Diferente dos concorrentes que apenas liberam o frontend enquanto mantêm o backend fechado, o Forward Email disponibilizou todo seu código—tanto frontend quanto backend—para escrutínio público no [GitHub](https://github.com/forwardemail)—agora respaldado por duas [auditorias de segurança independentes](/pentest-report_forward-email.pdf) da Cure53.
 
 **Design com Privacidade em Primeiro Lugar**: Desde o primeiro dia, o Forward Email implementou uma abordagem única de processamento em memória que evita gravar emails no disco, diferenciando-se dos serviços convencionais que armazenam mensagens em bancos de dados ou sistemas de arquivos.
 
@@ -154,7 +160,7 @@ Desde sua criação, o Forward Email manteve um compromisso firme com os princí
 
 ## Status Atual {#current-status}
 
-Em março de 2026, o Forward Email atende a mais de 500.000 domínios em todo o mundo, incluindo organizações notáveis e líderes do setor como:
+Em setembro de 2026, o Forward Email atende a mais de 1,6 milhão de domínios em todo o mundo, incluindo organizações notáveis e líderes do setor como:
 
 * **Empresas de Tecnologia**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **Organizações de Mídia**: Fox News Radio, Disney Ad Sales
@@ -163,6 +169,6 @@ Em março de 2026, o Forward Email atende a mais de 500.000 domínios em todo o 
 * **Outras Organizações**: RCD Hotels, Fly<span>.</span>io
 * **Desenvolvedores Notáveis**: Isaac Z. Schlueter (criador do npm), David Heinemeier Hansson (criador do Ruby on Rails)
 
-A plataforma continua a evoluir com lançamentos regulares de recursos e melhorias na infraestrutura, mantendo sua posição como o único serviço de email 100% open-source, criptografado, focado em privacidade, transparente e resistente à computação quântica disponível hoje—agora respaldado por uma [auditoria de segurança independente](/pentest-report_forward-email.pdf) da Cure53.
+A plataforma continua a evoluir com lançamentos regulares de recursos e melhorias na infraestrutura, mantendo sua posição como o único serviço de email 100% open-source, criptografado, focado em privacidade, transparente e resistente à computação quântica disponível hoje—agora respaldado por duas [auditorias de segurança independentes](/pentest-report_forward-email.pdf) da Cure53.
 
 <!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

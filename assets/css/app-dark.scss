@@ -149,8 +149,9 @@ $input-disabled-bg: $fe-n-100;
     .octicon-link {
       fill: white;
     }
+    // the same rule as under the FAQ topic headings (n-400), not a bright line
     h1, h2, hr {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.7) !important;
+      border-bottom: 1px solid var(--app-border-strong) !important;
     }
     table tr {
       border-top: 1px solid rgba(255, 255, 255, 0.7) !important;
