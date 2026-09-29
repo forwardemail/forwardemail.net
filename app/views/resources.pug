@@ -13,7 +13,7 @@ block body
     - const match = config.meta[item];
     if match
       - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item, image: match[2] });
-  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+  .fe-landing(class=isFeHeroUnderBar ? "fe-landing--flush" : "")
     +fePageHeader({ id: "fe-resources", icon: "fa fa-toolbox", eyebrow: t("Resources"), title: t("Free Startup and Developer Email Tools List"), body: t("Listed below are free email resources and tools for startups and developers.") })
       .fe-page-header__meta
         +feByline

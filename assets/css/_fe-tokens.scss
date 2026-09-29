@@ -208,8 +208,12 @@
   --fe-focus-ring: var(--fe-signal); // 10.9:1 on Ink
 }
 
+// White canvas, like the app-chrome pages (articles, guides, account), so a
+// light page is the same white everywhere and body text keeps full contrast.
+// Cards stay apart from it by their borders and elevation, and callouts and
+// wells by the l-200 sunken tone.
 .fe-surface-light {
-  --fe-bg-canvas: var(--fe-l-100);
+  --fe-bg-canvas: var(--fe-l-000);
   --fe-bg-raised: var(--fe-l-000);
   --fe-bg-sunken: var(--fe-l-200);
   --fe-bg-frame: var(--fe-light-a60);

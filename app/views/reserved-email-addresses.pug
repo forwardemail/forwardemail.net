@@ -9,7 +9,7 @@ block body
   //- the fe page header, a callout, the list in columns, and the onboarding
   //- form inline at the foot. #reserved-email-addresses stays as the anchor
   //- the previous "keep reading" link pointed at.
-  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+  .fe-landing(class=isFeHeroUnderBar ? "fe-landing--flush" : "")
     +fePageHeader({ id: "fe-reserved", icon: "fa fa-user-lock", eyebrow: t("Security-Focused List"), title: t("Reserved Email Addresses"), body: t("We compiled a list of 1250+ email addresses that should be reserved by admins for security concerns.") })
       .fe-actions.fe-page-header__actions
         a.fe-btn.fe-btn--hero.fe-btn--lg(

@@ -31,20 +31,19 @@ $input-disabled-bg: $fe-n-100;
 
 @media (prefers-color-scheme: dark) {
   // Re-point the app-chrome tokens (light set lives in _app-tokens.scss).
-  // The same surface ladder as mail.forwardemail.net's dark theme: the canvas
-  // sits one ramp step above Panel rather than on Ink, which reads well for a
-  // few seconds on a marketing page but is fatiguing for all-day reading.
-  // Cards take the next step up, and the sunken well below the canvas is
-  // where inputs and code go, so overlays still have somewhere darker. The
-  // marketing surfaces (.fe-*) keep Ink; the navbar and footer are Ink in
-  // both schemes.
+  // The canvas is Ink, the same ground as every redesigned (.fe-*) surface,
+  // the navbar and the footer, so an article, a guide or an account page reads
+  // as the same site as the FAQ or the home page. (It used to sit one ramp step
+  // up on navy, which left these pages visibly lighter and lower in contrast
+  // than the rest of the site.) Cards take n-200, two steps up, and the sunken
+  // well where inputs and code go is n-000, between the two.
   :root {
-    --app-bg-canvas: #{$fe-n-100};
+    --app-bg-canvas: #{$fe-ink};
     --app-bg-raised: #{$fe-n-200};
     --app-bg-sunken: #{$fe-n-000};
     --app-fg-primary: #{$fe-n-700};
     --app-fg-secondary: #{$fe-n-600};
-    // 5.09:1 on the canvas (AA for body text) and 4.35:1 on raised surfaces
+    // 6.3:1 on the canvas (AA for body text) and 4.35:1 on raised surfaces
     // (labels, timestamps and counts only; secondary body copy uses the tier
     // above).
     --app-fg-muted: #{$fe-n-500};
@@ -58,7 +57,7 @@ $input-disabled-bg: $fe-n-100;
     --app-stripe: rgba(255, 255, 255, 0.05);
     --app-input-bg: #{$fe-n-000};
     --app-input-fg: #{$fe-n-700};
-    // Field boundaries need 3:1 (WCAG 1.4.11); n-400 is 2.4:1 on the canvas.
+    // Field boundaries need 3:1 (WCAG 1.4.11); n-400 is 2.99:1 on Ink.
     --app-input-border: #{$fe-n-500};
     --app-code-bg: #{$fe-n-000};
     --app-focus-ring: #{rgba($fe-primary-lift, 0.35)};

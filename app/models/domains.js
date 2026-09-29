@@ -11,7 +11,7 @@ const { isIP } = require('node:net');
 const { promisify } = require('node:util');
 
 const { setTimeout } = require('node:timers/promises');
-const { S3Client, HeadBucketCommand } = require('@aws-sdk/client-s3');
+const { HeadBucketCommand } = require('@aws-sdk/client-s3');
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const bytes = require('@forwardemail/bytes');
@@ -37,8 +37,13 @@ const pkg = require('../../package.json');
 const _ = require('#helpers/lodash');
 
 const isEmail = require('#helpers/is-email');
+const isValidDomainLength = require('#helpers/is-valid-domain-length');
 const normalizeWildcardTLD = require('#helpers/normalize-wildcard-tld');
 const { isPrivateHostResolved } = require('#helpers/is-private-host');
+const {
+  isSameAuditValue,
+  normalizeAuditValue
+} = require('#helpers/audit-changes');
 const env = require('#config/env');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -51,6 +56,10 @@ const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const getCloudflareRadarFeedbackUrl = require('#helpers/get-cloudflare-radar-feedback-url');
 const getDomainNameRestrictions = require('#helpers/get-domain-name-restrictions');
+const {
+  createCustomS3Client,
+  getS3ErrorMessage
+} = require('#helpers/get-s3-client');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 const {
@@ -854,6 +863,35 @@ Domains.pre('validate', async function (next) {
     }
 
     //
+    // A client re-sending the credentials it already saved (e.g. an API PUT
+    // with the full settings) is not a change: keep the stored ciphertext so
+    // the domain admins are not emailed that the keys were updated and the
+    // bucket is not re-validated for nothing.
+    //
+    for (const field of ['s3_access_key_id', 's3_secret_access_key']) {
+      const stored = this[`__${field}`];
+      if (
+        !this.isNew &&
+        isSANB(stored) &&
+        isSANB(this[field]) &&
+        this.isModified(field) &&
+        this[field] !== stored
+      ) {
+        let plaintext;
+        try {
+          plaintext = decrypt(stored);
+        } catch {
+          plaintext = stored;
+        }
+
+        if (plaintext === this[field]) {
+          this[field] = stored;
+          this.unmarkModified(field);
+        }
+      }
+    }
+
+    //
     // Track whether credentials were modified so we know
     // whether to run the HeadBucket validation after encryption
     //
@@ -900,17 +938,15 @@ Domains.pre('validate', async function (next) {
         secretAccessKey = this.s3_secret_access_key;
       }
 
-      const testClient = new S3Client({
-        region: this.s3_region || 'auto',
+      const testClient = createCustomS3Client({
         endpoint: this.s3_endpoint,
-        credentials: {
-          accessKeyId,
-          secretAccessKey
-        },
-        // Disable automatic checksum headers (x-amz-checksum-crc32)
-        // for compatibility with S3-compatible providers like Backblaze B2
-        requestChecksumCalculation: 'WHEN_REQUIRED',
-        responseChecksumValidation: 'WHEN_REQUIRED'
+        region: this.s3_region,
+        accessKeyId,
+        secretAccessKey,
+        // a save waits on this, so fail fast rather than retry a dead endpoint
+        maxAttempts: 1,
+        connectionTimeout: 5000,
+        idleTimeout: 15_000
       });
 
       try {
@@ -920,9 +956,12 @@ Domains.pre('validate', async function (next) {
       } catch (err) {
         // Auto-disable custom S3 on credential/bucket validation failure
         this.has_custom_s3 = false;
-        const errMsg = err.message || err.Code || err.name || 'Unknown error';
         throw Boom.badRequest(
-          i18n.translateError('CUSTOM_S3_CREDENTIAL_ERROR', this.locale, errMsg)
+          i18n.translateError(
+            'CUSTOM_S3_CREDENTIAL_ERROR',
+            this.locale,
+            getS3ErrorMessage(err)
+          )
         );
       } finally {
         testClient.destroy();
@@ -1019,6 +1058,17 @@ Domains.pre('validate', async function (next) {
 
     // Domain.name must be IP or FQDN
     if (!isSANB(domain.name) || (!isFQDN(domain.name) && !isIP(domain.name))) {
+      throw Boom.badRequest(
+        i18n.translateError('INVALID_DOMAIN', domain.locale)
+      );
+    }
+
+    // and within DNS length limits (253 characters, 63 per label); checked
+    // only when the name is set so an existing document can still be saved
+    if (
+      (domain.isNew || domain.isModified('name')) &&
+      !isValidDomainLength(domain.name)
+    ) {
       throw Boom.badRequest(
         i18n.translateError('INVALID_DOMAIN', domain.locale)
       );
@@ -1622,8 +1672,14 @@ Domains.post('init', (doc) => {
   // Store original values for change detection
   for (const field of config.domainUpdateFields) {
     const value = doc[field];
-    // Deep clone arrays to detect changes properly
-    doc[`__${field}`] = Array.isArray(value) ? [...value] : value;
+    // Deep clone arrays to detect changes properly, and snapshot nested
+    // objects (e.g. custom_verification) as plain values; keeping the live
+    // object would mean later edits also mutate the "previous" value
+    doc[`__${field}`] = Array.isArray(value)
+      ? [...value]
+      : value && typeof value === 'object' && !(value instanceof Date)
+      ? normalizeAuditValue(value)
+      : value;
   }
 });
 
@@ -1647,7 +1703,9 @@ Domains.pre('save', function (next) {
         JSON.stringify([...currentValue].sort()) !==
         JSON.stringify([...previousValue].sort());
     } else {
-      hasChanged = previousValue !== currentValue;
+      // Compare by value; nested paths (e.g. custom_verification) and
+      // ObjectIds are new objects on every read, so `!==` always differed
+      hasChanged = !isSameAuditValue(previousValue, currentValue);
     }
 
     if (hasChanged) {
@@ -1714,6 +1772,10 @@ Domains.pre('save', function (next) {
       // Update stored value to prevent duplicate detection
       this[`__${field}`] = Array.isArray(currentValue)
         ? [...currentValue]
+        : currentValue &&
+          typeof currentValue === 'object' &&
+          !(currentValue instanceof Date)
+        ? normalizeAuditValue(currentValue)
         : currentValue;
     }
   }

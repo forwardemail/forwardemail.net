@@ -1,43 +1,27 @@
-.d-inline-block.mx-auto.text-left.small.align-middle.no-search
-  .d-flex.align-items-center
-    img(
-      width=92,
-      height=50,
-      src=manifest("img/art/group.svg"),
-      alt=config.appName + " " + t("Team")
-    )
-    .d-flex.flex-column.ml-2.font-weight-bold
-      div
-        .small= t("Written by")
-        div
-          = config.appName
-          span.d-none.d-md-inline
-            = " "
-            = t("Team")
-          img.ml-1.mb-1(
-            src=manifest("img/testimonials/twitter-verified.svg"),
-            width=20,
-            height=20,
-            alt="Verified"
-          )
-    .d-none.d-md-flex.flex-column.ml-3.ml-md-5.font-weight-bold.text-themed
-      div
-        .small
-          span.d-none.d-md-inline
-            i.fa.fa-calendar-day
-            = " "
-          = t("Published")
-        - const published = getPublishedDate(publishedISOString, user);
-        .dayjs(data-time=published.time, data-time-style="false")= published.formatted
-    .d-none.d-md-flex.flex-column.ml-3.ml-md-5.font-weight-bold.text-themed
-      div
-        .small
-          span.d-none.d-md-inline
-            i.fa.fa-clock
-            = " "
-          = t("Time to read")
-        div
-          span.d-none.d-md-inline
-            = t("Less than 5 minutes")
-          span.d-inline.d-md-none
-            = t("< 5 minutes")
+//- Byline: author, published date and time to read. One look everywhere it
+//- appears (articles, guides, docs, the index page headers), with no artwork.
+//-
+//- Included directly by pages, and by the feByline mixin in
+//- _fe-page-header.pug for the dark page headers. Set `bylineOnDark = true`
+//- before including it inside a dark fe surface; otherwise it carries
+//- .fe-surface-light for its colours, which re-points to the dark ramp in
+//- dark mode (the page around it may be outside any fe scope).
+- const published = getPublishedDate(publishedISOString, user);
+- const bylineSurface = typeof bylineOnDark !== "undefined" && bylineOnDark ? "" : "fe-surface-light";
+ul.fe-byline.no-search(class=bylineSurface)
+  li
+    span.fe-byline__label.fe-label= t("Written by")
+    span.fe-byline__value
+      i.fa.fa-check-circle(aria-hidden="true")
+      = config.appName
+      = " "
+      = t("Team")
+  li
+    span.fe-byline__label.fe-label= t("Published")
+    span.fe-byline__value.dayjs(
+      data-time=published.time,
+      data-time-style="false"
+    )= published.formatted
+  li
+    span.fe-byline__label.fe-label= t("Time to read")
+    span.fe-byline__value= t("Less than 5 minutes")

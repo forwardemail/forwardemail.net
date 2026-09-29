@@ -465,9 +465,12 @@ localeRouter
   )
   .get(
     '/faq',
-    // hasSidebar is gone: the page carries its own topic rail, and that flag
-    // switches the layout to container-fluid and turns on scrollspy.
+    // hasSidebar is gone: the page carries its own topic rail and scroll spy
+    // (faq-search.js), and that flag would also turn on bootstrap's scrollspy.
+    // The navbar still goes full width (isContainerFluid) so its wordmark
+    // lines up with the rail at the top left, as on articles.
     async (ctx, next) => {
+      ctx.state.isContainerFluid = true;
       // Load FAQ structured data (JSON-LD) from Redis cache or parse from markdown
       try {
         ctx.state.faqSchemaData = await getFaqSchema(

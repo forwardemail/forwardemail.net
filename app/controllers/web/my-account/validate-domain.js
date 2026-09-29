@@ -17,11 +17,14 @@ const splitByComma = require('#helpers/split-by-comma');
 
 const isDenylisted = require('#helpers/is-denylisted');
 const isEmail = require('#helpers/is-email');
+const isValidDomainLength = require('#helpers/is-valid-domain-length');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 async function validateDomain(ctx, next) {
+  // length first, so an oversized value is rejected before any other work
   if (
     !isSANB(ctx.request.body.domain) ||
+    !isValidDomainLength(ctx.request.body.domain) ||
     (!isFQDN(ctx.request.body.domain) && !isIP(ctx.request.body.domain))
   )
     throw Boom.badRequest(ctx.translateError('INVALID_DOMAIN'));

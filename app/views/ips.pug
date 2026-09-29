@@ -8,7 +8,7 @@ block body
   //- they sit outside the .fe-landing wrapper on purpose: app-dark.scss
   //- restyles .card and .markdown-body with !important, so inside an fe
   //- scope they would fight the tokens (see the note atop _fe-tokens.scss).
-  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+  .fe-landing(class=isFeHeroUnderBar ? "fe-landing--flush" : "")
     +fePageHeader({ id: "fe-ips", icon: "fa fa-server", eyebrow: t("We publish our server's IP addresses below."), title: t("IP Addresses"), body: t("This page is published mainly for email service providers and system administrators as the definitive source of our server infrastructure's addresses.") })
       .fe-actions.fe-page-header__actions
         a.fe-btn.fe-btn--subtle.fe-btn--md(

@@ -146,6 +146,7 @@ async function main(options = {}) {
   let totalEvents = 0;
   let totalSignups = 0;
   let totalSummaries = 0;
+  let skippedHours = 0;
   const failures = [];
 
   for (const hour of pendingHours) {
@@ -174,6 +175,18 @@ async function main(options = {}) {
         });
       }
     } catch (err) {
+      // Another run is aggregating this hour, or one that died mid-run (a
+      // crashed process) left its lock, which expires after an hour. Either
+      // way the next repair picks the hour up; failing the whole run for it
+      // reported every repair as failed while the lock was held.
+      if (err?.code === AnalyticsSummary.AGGREGATION_IN_PROGRESS) {
+        skippedHours++;
+        logger.warn('Skipped analytics hour held by another aggregation', {
+          hour: hour.toISOString()
+        });
+        continue;
+      }
+
       failures.push({ hour, err });
       logger.error('Error repairing analytics hour', {
         hour: hour.toISOString(),
@@ -200,6 +213,7 @@ async function main(options = {}) {
   const totals = {
     cancelled: isCancelled,
     processedHours,
+    skippedHours,
     pendingHours: pendingHours.length,
     events: totalEvents,
     signups: totalSignups,

@@ -37,6 +37,7 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const email = require('#helpers/email');
+const { isSameAuditValue } = require('#helpers/audit-changes');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const i18n = require('#helpers/i18n');
 const isDenylisted = require('#helpers/is-denylisted');
@@ -1280,18 +1281,28 @@ Users.pre('save', function (next) {
   }
 
   // Filter by allowed field updates (otp enabled, profile updates, etc)
+  //
+  // NOTE: values are compared by value rather than with `!==`; an ObjectId
+  //       field such as the default domain is cast to a new instance on every
+  //       assignment, which queued an "Account update" email saying the field
+  //       changed from X to X each time the profile form was saved.
+  //
+  // NOTE: a field that was never loaded or never set is skipped (as before),
+  //       but a falsy previous value is not, so turning on two-factor
+  //       authentication (false -> true) is reported just like turning it off.
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);
-    if (this[`__${fieldName}`] && this[`__${fieldName}`] !== this[fieldName]) {
-      this[config.userFields.accountUpdates].push({
-        fieldName,
-        current: this[fieldName],
-        previous: this[`__${fieldName}`]
-      });
-      this[config.userFields.hasPendingAccountUpdates] = true;
-      // Revert so we don't get into infinite loop
-      this[`__${fieldName}`] = this[fieldName];
-    }
+    const previous = this[`__${fieldName}`];
+    if (previous === null || previous === undefined) continue;
+    if (isSameAuditValue(previous, this[fieldName])) continue;
+    this[config.userFields.accountUpdates].push({
+      fieldName,
+      current: this[fieldName],
+      previous
+    });
+    this[config.userFields.hasPendingAccountUpdates] = true;
+    // Revert so we don't get into infinite loop
+    this[`__${fieldName}`] = this[fieldName];
   }
 
   next();

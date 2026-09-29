@@ -9,7 +9,7 @@ block body
   //- uppercase kicker and one button. Now the shared fe page header with
   //- the same button, and the onboarding form inline at the foot for a
   //- logged out visitor (see _fe-onboard.pug).
-  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+  .fe-landing(class=isFeHeroUnderBar ? "fe-landing--flush" : "")
     +fePageHeader({ id: "fe-webhooks", icon: "fa fa-plug", eyebrow: t("Setup an email webhook in minutes"), title: t("Email webhooks"), body: t("Easily set up webhooks for email delivery.") })
       .fe-actions.fe-page-header__actions
         a.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--glow(href=l(`/faq#${hash}`))

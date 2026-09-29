@@ -28,6 +28,16 @@
 //- app-dark.scss, matching the chrome around them.
 - const isFePage = !user || isFeAccountAgnosticPage;
 //- Whether the page opens on a dark fe hero that runs under a transparent
-//- navbar. _nav.pug keys the transparent bar on this same flag, and the page
-//- templates read it to add .fe-landing--flush, so the pair cannot drift.
-- const isFeFlushNav = isFeLandingPage || isFePricingPage || (isFeAccountAgnosticPage && !user);
+//- navbar. _nav.pug keys the transparent bar on this flag. The FAQ is left
+//- out: its topic rail starts at the top left, beside the hero, and in the
+//- light scheme that column is light, which would put the white wordmark of a
+//- transparent bar on a light ground. It keeps the opaque bar instead.
+- const isFeFlushNav = isFeLandingPage || isFePricingPage || (isFeAccountAgnosticPage && !user && ctx.pathWithoutLocale !== "/faq");
+//- Whether the page's dark fe hero starts at the top of the viewport, under
+//- the fixed bar (the hero's own top padding already clears the bar); the
+//- page templates read it to add .fe-landing--flush. True for every page with
+//- a transparent bar, and for the account agnostic pages with an opaque one
+//- (signed in, and the FAQ): a hero that did not pull up there sat below
+//- body.app's padding, which left a strip of body background between the bar
+//- and the hero that read as a thick second border, plus a doubled gap.
+- const isFeHeroUnderBar = isFeFlushNav || isFeAccountAgnosticPage;

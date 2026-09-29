@@ -20,8 +20,51 @@ const mongoose = require('mongoose');
 const jobs = require('./jobs');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
+const { createJobGate, trackExitCodes } = require('#helpers/bree-job-gate');
 
-const bree = new Bree({ logger });
+function positiveInt(value, fallback) {
+  const number = Number.parseInt(value, 10);
+  return Number.isFinite(number) && number > 0 ? number : fallback;
+}
+
+const bree = new Bree({
+  logger,
+  worker: {
+    //
+    // Cap each job worker's heap. Without a cap a worker that runs away grows
+    // until the host is out of memory and V8 aborts the whole bree process
+    // (every other running job with it); with one, only that worker is
+    // stopped (ERR_WORKER_OUT_OF_MEMORY) and it is reported as a failed run.
+    //
+    resourceLimits: {
+      maxOldGenerationSizeMb: positiveInt(
+        process.env.BREE_WORKER_MAX_OLD_SPACE_MB,
+        2048
+      )
+    }
+  }
+});
+
+//
+// Cap how many job workers run at once (see helpers/bree-job-gate.js): each
+// one loads the app first, about a quarter of a gigabyte, and ~50 jobs start
+// together on boot, which ran the host out of memory in a restart loop.
+//
+const gate = createJobGate(bree, {
+  maxConcurrent: positiveInt(process.env.BREE_MAX_CONCURRENT_JOBS, 10),
+  reservedForFrequent: 3,
+  logger
+});
+
+// exit code of each job's last run (bree removes the worker before
+// "worker deleted", so it cannot be read from there)
+const exitCodes = trackExitCodes(bree);
+
+logger.info('bree job concurrency', {
+  hide_meta: true,
+  maxConcurrent: gate.maxConcurrent,
+  reservedForFrequent: gate.reservedForFrequent
+});
 
 // Track job start times for duration calculation
 const jobStartTimes = new Map();
@@ -62,8 +105,9 @@ bree.on('worker deleted', async (name) => {
   const jobConfig = getJobConfig(name);
 
   // Get worker to check for errors
-  const worker = bree.workers.get(name);
-  const hasError = worker && worker.exitCode && worker.exitCode !== 0;
+  const exitCode = exitCodes.has(name) ? exitCodes.get(name) : 0;
+  exitCodes.delete(name);
+  const hasError = Number.isFinite(exitCode) && exitCode !== 0;
 
   if (hasError) {
     logger.error('job:error', {
@@ -74,14 +118,14 @@ bree.on('worker deleted', async (name) => {
         startedAt: startTime ? new Date(startTime).toISOString() : null,
         finishedAt: new Date(endTime).toISOString(),
         duration,
-        exitCode: worker.exitCode,
+        exitCode,
         interval: jobConfig.interval,
         cron: jobConfig.cron,
         timeout: jobConfig.timeout
       },
       err: {
-        message: `Job exited with code ${worker.exitCode}`,
-        code: worker.exitCode
+        message: `Job exited with code ${exitCode}`,
+        code: exitCode
       }
     });
   } else {
@@ -93,7 +137,7 @@ bree.on('worker deleted', async (name) => {
         startedAt: startTime ? new Date(startTime).toISOString() : null,
         finishedAt: new Date(endTime).toISOString(),
         duration,
-        exitCode: worker ? worker.exitCode : 0,
+        exitCode,
         interval: jobConfig.interval,
         cron: jobConfig.cron,
         timeout: jobConfig.timeout

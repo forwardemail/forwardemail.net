@@ -10,10 +10,12 @@
 // On the FAQ they meet directly, so scope a tighter seam here rather than
 // shrinking every landing-page hero or reading section.
 .fe-faq-hero {
+  grid-area: hero;
   padding-block-end: var(--fe-space-5);
 }
 
 .fe-faq-body {
+  grid-area: body;
   padding-block-start: var(--fe-space-5);
 }
 
@@ -92,72 +94,31 @@
 // ============================================
 // LAYOUT
 // ============================================
+// A grid with the topic rail down the left from just below the navbar (like
+// the table of contents on articles) and the hero and the answers to its
+// right. Phones stack hero, rail, answers. The rail itself is _fe-rail.scss.
 
-.fe-faq-layout {
+.fe-faq-page {
   display: grid;
-  gap: var(--fe-space-8);
+  grid-template-areas:
+    'hero'
+    'rail'
+    'body';
   // minmax(0, 1fr): answers hold long unbreakable strings, and the default
   // auto minimum would widen the track past the viewport.
   grid-template-columns: minmax(0, 1fr);
 }
 
+// The rail carries its own surface (not the grid) so the dark hero beside it
+// keeps its dark-surface components, such as the eyebrow.
+.fe-faq-page__rail {
+  grid-area: rail;
+  background-color: var(--fe-bg-canvas);
+  padding: var(--fe-space-5) var(--fe-container-gutter) 0;
+}
+
 .fe-faq-content {
   min-width: 0;
-}
-
-// ============================================
-// TOPIC RAIL
-// ============================================
-
-.fe-faq-nav__label {
-  display: block;
-  margin-bottom: var(--fe-space-3);
-  color: var(--fe-fg-secondary);
-}
-
-.fe-faq-nav__list {
-  display: flex;
-  gap: var(--fe-space-1);
-  flex-direction: column;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.fe-faq-nav__link {
-  display: flex;
-  gap: var(--fe-space-3);
-  align-items: baseline;
-  justify-content: space-between;
-  padding: var(--fe-space-2) var(--fe-space-3);
-  font-size: var(--fe-text-body-sm);
-  color: var(--fe-fg-secondary);
-  text-decoration: none;
-  border-radius: var(--fe-radius-sm);
-}
-
-.fe-faq-nav__link:hover,
-.fe-faq-nav__link:focus {
-  color: var(--fe-fg-primary);
-  text-decoration: none;
-  background-color: var(--fe-bg-sunken);
-}
-
-// The topic being read, set by the scroll spy in faq-search.js.
-.fe-faq-nav__link.is-active {
-  color: var(--fe-fg-primary);
-  background-color: var(--fe-bg-sunken);
-  box-shadow: inset 3px 0 0 var(--fe-primary);
-}
-
-.fe-faq-nav__count {
-  flex: none;
-  font-size: var(--fe-text-label);
-  color: var(--fe-fg-secondary);
-}
-
-.fe-faq-nav__link.is-active .fe-faq-nav__count {
-  color: var(--fe-fg-primary);
 }
 
 // ============================================
@@ -441,20 +402,20 @@
 }
 
 @include fe-up(md) {
-  // The topic rail belongs beside the answers on tablets and larger screens.
-  // On phones it remains above them in normal reading order.
-  .fe-faq-layout {
-    grid-template-columns: 15rem minmax(0, 1fr);
-    gap: 4rem;
+  .fe-faq-page {
+    grid-template-areas:
+      'rail hero'
+      'rail body';
+    grid-template-columns: 17rem minmax(0, 1fr);
     align-items: start;
   }
 
-  // The rail follows the reader down the page, so a topic is always one click
-  // away however deep into the answers they are.
-  .fe-faq-nav {
-    position: sticky;
-    top: calc(var(--fe-nav-offset) + var(--fe-space-4));
-    max-height: calc(100vh - var(--fe-nav-offset) - var(--fe-space-8));
-    overflow-y: auto;
+  // The page runs under the fixed navbar (.fe-landing--flush), so the rail
+  // starts one navbar height down, level with the top of the hero's content.
+  .fe-faq-page__rail {
+    align-self: stretch;
+    // 15px: bootstrap's container-fluid gutter, which the navbar uses here
+    padding: calc(var(--fe-nav-offset) + var(--fe-space-6))
+      var(--fe-space-2) var(--fe-space-8) 15px;
   }
 }

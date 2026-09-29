@@ -22,6 +22,7 @@ const mongoose = require('mongoose');
 
 const config = require('#config');
 const email = require('#helpers/email');
+const { isSameAuditValue } = require('#helpers/audit-changes');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -51,6 +52,22 @@ async function mapper(domain) {
     return;
   }
 
+  // Drop entries that did not change anything (queued by the old reference
+  // comparison for values such as ObjectIds and nested settings).  Each entry
+  // is an audit record with its own author and time, so entries are not merged.
+  const changes = domain.domain_updates.filter(
+    (update) =>
+      update &&
+      (update.redacted || !isSameAuditValue(update.previous, update.current))
+  );
+  if (changes.length === 0) {
+    await Domains.updateOne(
+      { _id: domain._id, domain_updates: domain.domain_updates },
+      { $set: { domain_updates: [], has_pending_domain_updates: false } }
+    );
+    return;
+  }
+
   // Use the same helper as other domain-related emails
   // This returns unique admin emails and the majority locale
   let to;
@@ -75,7 +92,7 @@ async function mapper(domain) {
   // Merge and map to actionable email format with localized field names
   // Include audit metadata (who made the change, IP, user-agent, timestamp)
   // Handle isAdmin and isSystem flags for privacy protection
-  const domainUpdates = domain.domain_updates.map((update) => {
+  const domainUpdates = changes.map((update) => {
     const {
       fieldName,
       current,

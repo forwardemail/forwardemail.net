@@ -21,69 +21,75 @@ mixin feFaq
     //- Set when the request carried ?q=, which is what the search form submits
     //- with JavaScript off. faq-search.js takes over from here on.
     const faqFiltered = typeof faqData.matched === "number" && faqData.query;
-  section.fe-section.fe-surface-dark.fe-section--hero.fe-faq-hero(
-    aria-labelledby="fe-faq-title"
-  )
-    .fe-container.fe-faq-hero__inner
-      p.fe-eyebrow.fe-label
-        i.fa.fa-life-ring(aria-hidden="true")
-        = t("Support")
+  //- The page is a grid: the topic rail runs down the left from just below
+  //- the navbar, like the table of contents on articles, and the hero and the
+  //- answers sit to its right. On phones the rail sits between the hero and
+  //- the answers in normal reading order.
+  .fe-faq-page
+    //- Topic rail. Plain anchors, so it works with the filter off and with
+    //- JavaScript off. Styled by _fe-rail.scss, shared with the table of
+    //- contents the md filter renders for articles.
+    aside.fe-faq-page__rail.fe-surface-light
+      nav.fe-rail.fe-rail--sticky.fe-faq-nav(aria-label=t("FAQ topics"))
+        p.fe-rail__label.fe-label= t("Topics")
+        ul.fe-rail__list
+          each category in faqData.categories
+            li
+              a.fe-rail__link.fe-faq-nav__link(
+                href=`#${category.slug}`,
+                data-fe-faq-nav=category.slug
+              )
+                span.fe-faq-nav__text= category.title
+                //- Quick Start and Additional Resources are prose, not
+                //- questions, so a "0" beside them would read as empty.
+                if category.questions.length
+                  span.fe-rail__count.fe-faq-nav__count.fe-numeral= category.questions.length
 
-      h1#fe-faq-title.fe-display-lg.fe-faq-hero__title= t("How can we help?")
+    section.fe-section.fe-surface-dark.fe-section--hero.fe-faq-hero(
+      aria-labelledby="fe-faq-title"
+    )
+      .fe-container.fe-faq-hero__inner
+        p.fe-eyebrow.fe-label
+          i.fa.fa-life-ring(aria-hidden="true")
+          = t("Support")
 
-      //- A real form, so submitting on a phone keyboard does something sane
-      //- rather than nothing. The filter is progressive enhancement on top.
-      form.fe-faq-search(role="search", action=l("/faq"), method="GET")
-        label.sr-only(for="fe-faq-q")= t("Search the FAQ")
-        span.fe-faq-search__icon(aria-hidden="true")
-          i.fa.fa-search
-        input#fe-faq-q.fe-field__input.fe-faq-search__input(
-          type="search",
-          name="q",
-          autocomplete="off",
-          value=ctx.query && ctx.query.q ? ctx.query.q : "",
-          placeholder=t("Search questions"),
-          aria-describedby="fe-faq-count"
-        )
-        button.fe-faq-search__clear(
-          type="button",
-          hidden,
-          aria-label=t("Clear search")
-        )
-          i.fa.fa-times(aria-hidden="true")
+        h1#fe-faq-title.fe-display-lg.fe-faq-hero__title= t("How can we help?")
 
-      //- Announced politely so a screen reader hears the count change as the
-      //- list narrows, without interrupting typing.
-      p#fe-faq-count.fe-faq-hero__count(aria-live="polite")
-        if faqFiltered
-          = `${faqData.matched} / ${faqData.total}`
-        else
-          //- One string with both numbers in it, not "n" + t("answers across")
-          //- + "n" + t("topics"). Those fragments cannot be translated on their
-          //- own, and the languages that put the count after the noun, or
-          //- inflect it, cannot be reached by concatenation at all.
-          != t('<span class="notranslate">%d</span> answers across <span class="notranslate">%d</span> topics', faqData.total, faqData.categories.length)
+        //- A real form, so submitting on a phone keyboard does something sane
+        //- rather than nothing. The filter is progressive enhancement on top.
+        form.fe-faq-search(role="search", action=l("/faq"), method="GET")
+          label.sr-only(for="fe-faq-q")= t("Search the FAQ")
+          span.fe-faq-search__icon(aria-hidden="true")
+            i.fa.fa-search
+          input#fe-faq-q.fe-field__input.fe-faq-search__input(
+            type="search",
+            name="q",
+            autocomplete="off",
+            value=ctx.query && ctx.query.q ? ctx.query.q : "",
+            placeholder=t("Search questions"),
+            aria-describedby="fe-faq-count"
+          )
+          button.fe-faq-search__clear(
+            type="button",
+            hidden,
+            aria-label=t("Clear search")
+          )
+            i.fa.fa-times(aria-hidden="true")
 
-  section.fe-section.fe-surface-light.fe-section--pad-sm.fe-faq-body
-    .fe-container
-      .fe-faq-layout
-        //- Topic rail. Plain anchors, so it works with the filter off and
-        //- with JavaScript off.
-        nav.fe-faq-nav(aria-label=t("FAQ topics"))
-          p.fe-faq-nav__label.fe-label= t("Topics")
-          ul.fe-faq-nav__list
-            each category in faqData.categories
-              li
-                a.fe-faq-nav__link(
-                  href=`#${category.slug}`,
-                  data-fe-faq-nav=category.slug
-                )
-                  span.fe-faq-nav__text= category.title
-                  //- Quick Start and Additional Resources are prose, not
-                  //- questions, so a "0" beside them would read as empty.
-                  if category.questions.length
-                    span.fe-faq-nav__count.fe-numeral= category.questions.length
+        //- Announced politely so a screen reader hears the count change as the
+        //- list narrows, without interrupting typing.
+        p#fe-faq-count.fe-faq-hero__count(aria-live="polite")
+          if faqFiltered
+            = `${faqData.matched} / ${faqData.total}`
+          else
+            //- One string with both numbers in it, not "n" + t("answers across")
+            //- + "n" + t("topics"). Those fragments cannot be translated on their
+            //- own, and the languages that put the count after the noun, or
+            //- inflect it, cannot be reached by concatenation at all.
+            != t('<span class="notranslate">%d</span> answers across <span class="notranslate">%d</span> topics', faqData.total, faqData.categories.length)
 
+    section.fe-section.fe-surface-light.fe-section--pad-sm.fe-faq-body
+      .fe-container
         .fe-faq-content
           //- Shown by the filter when nothing matches, so the page never goes
           //- silently blank.

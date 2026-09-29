@@ -15,7 +15,7 @@ block body
       - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item });
   each developerDoc in developerDocs
     - tools.push(developerDoc);
-  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+  .fe-landing(class=isFeHeroUnderBar ? "fe-landing--flush" : "")
     +fePageHeader({ id: "fe-docs", icon: "fa fa-code", eyebrow: t("Developers"), title: t("Free Email Developer Tools and Resources"), body: t("Developer-focused email API, tools, and resources to send email, trigger webhooks, forward messages, and more.") })
       .fe-page-header__meta
         +feByline

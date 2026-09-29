@@ -20,6 +20,7 @@ const mongoose = require('mongoose');
 
 const aggregateAnalyticsHour = require('#helpers/aggregate-analytics-hour');
 const logger = require('#helpers/logger');
+const AnalyticsSummary = require('#models/analytics-summary');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 let isCancelled = false;
@@ -77,6 +78,14 @@ async function main() {
     try {
       await aggregateHour(hour);
     } catch (err) {
+      // held by another run (see scripts/backfill-analytics.js)
+      if (err?.code === AnalyticsSummary.AGGREGATION_IN_PROGRESS) {
+        logger.warn('Skipped analytics hour held by another aggregation', {
+          hour: hour.toISOString()
+        });
+        continue;
+      }
+
       failures.push({ hour, err });
       logger.error('Error aggregating analytics hour', {
         hour: hour.toISOString(),

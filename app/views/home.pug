@@ -91,7 +91,7 @@ block body
   //- The flush modifier pulls the hero up under the transparent fixed navbar.
   //- It is a separate class from .fe-landing because /download shares that
   //- wrapper but must not pull up when a signed in visitor gets the opaque bar.
-  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+  .fe-landing(class=isFeHeroUnderBar ? "fe-landing--flush" : "")
     +feHero
     +feProduct
     +fePricing

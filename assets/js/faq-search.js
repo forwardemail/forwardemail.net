@@ -174,14 +174,31 @@ function setUpScrollSpy() {
 
   let active = null;
 
+  // The rail scrolls on its own when it is taller than the viewport; keep
+  // the current topic inside its visible part (without scrolling the page).
+  function keepInView(link) {
+    const rail = link.closest('.fe-rail');
+    if (!rail || rail.scrollHeight <= rail.clientHeight) return;
+    const top =
+      link.getBoundingClientRect().top -
+      rail.getBoundingClientRect().top +
+      rail.scrollTop;
+    const bottom = top + link.offsetHeight;
+    if (top < rail.scrollTop) rail.scrollTop = top;
+    else if (bottom > rail.scrollTop + rail.clientHeight)
+      rail.scrollTop = bottom - rail.clientHeight;
+  }
+
   function setActive(slug) {
     if (slug === active) return;
     active = slug;
     for (const [key, link] of links) {
       const on = key === slug;
       link.classList.toggle('is-active', on);
-      if (on) link.setAttribute('aria-current', 'true');
-      else link.removeAttribute('aria-current');
+      if (on) {
+        link.setAttribute('aria-current', 'true');
+        keepInView(link);
+      } else link.removeAttribute('aria-current');
     }
   }
 

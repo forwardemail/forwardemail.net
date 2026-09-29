@@ -9,6 +9,7 @@ const process = require('node:process');
 const apn = require('@parse/node-apn');
 const { GoogleAuth } = require('google-auth-library');
 const isSANB = require('is-string-and-not-blank');
+const libmime = require('libmime');
 const ms = require('ms');
 const pMap = require('p-map');
 const revHash = require('rev-hash');
@@ -421,14 +422,32 @@ async function fanOutToTokens(tokens, payload, resolver, dependencies = {}) {
  * @returns {string} "Name <addr>" string or '' if nothing usable
  */
 function formatSenderString(from) {
-  if (isSANB(from)) return from.trim();
+  if (isSANB(from)) return decodeHeaderValue(from);
   if (!Array.isArray(from)) return '';
 
   const addr = from.find((a) => a && (isSANB(a.name) || isSANB(a.address)));
   if (!addr) return '';
-  if (isSANB(addr.name) && isSANB(addr.address))
-    return `${addr.name.trim()} <${addr.address.trim()}>`;
-  return isSANB(addr.name) ? addr.name.trim() : addr.address.trim();
+  const name = isSANB(addr.name) ? decodeHeaderValue(addr.name) : '';
+  if (name && isSANB(addr.address)) return `${name} <${addr.address.trim()}>`;
+  return name || addr.address.trim();
+}
+
+/**
+ * Decode RFC 2047 encoded-words (e.g. "=?utf-8?Q?Mercury?=") in a header
+ * value. The IMAP append path sends WildDuck's parsedHeader, which leaves
+ * address names encoded, and a lock screen must never show the raw encoding.
+ * Values that are already decoded pass through unchanged.
+ * @param {string} value - Header value
+ * @returns {string} Decoded and trimmed value
+ */
+function decodeHeaderValue(value) {
+  if (typeof value !== 'string') return '';
+  if (!value.includes('=?')) return value.trim();
+  try {
+    return libmime.decodeWords(value).trim();
+  } catch {
+    return value.trim();
+  }
 }
 
 /**
@@ -521,11 +540,7 @@ function buildPayload(event, data) {
     title = senderName
       ? senderName.slice(0, MAX_TITLE_LENGTH)
       : TITLES.newMessage;
-    const subject =
-      typeof data.message.subject === 'string' &&
-      data.message.subject.length > 0
-        ? data.message.subject
-        : 'No subject';
+    const subject = decodeHeaderValue(data.message.subject) || 'No subject';
     // Include snippet/preview after subject (Gmail shows subject + body preview)
     const snippet =
       typeof data.message.snippet === 'string' &&
@@ -556,10 +571,18 @@ function buildPayload(event, data) {
     typeof data.aliasId === 'string' || typeof data.alias_id === 'string'
       ? String(data.aliasId || data.alias_id).slice(0, 64)
       : '';
-  const safeMessageId =
-    typeof data.message_id === 'string' || typeof data.id === 'string'
-      ? String(data.message_id || data.id).slice(0, 255)
-      : '';
+  //
+  // The id a tapped notification opens. newMessage events (helpers/imap/
+  // on-append.js) carry it only as message.id, never at the top level, so
+  // without the fallback every new-mail push went out with an empty
+  // message_id and tapping it could only open the inbox. Deliveries to
+  // temporary storage have no id yet and still open their mailbox.
+  //
+  const messageId =
+    [data.message_id, data.id, data.message && data.message.id].find(
+      (value) => typeof value === 'string' && value.length > 0
+    ) || '';
+  const safeMessageId = messageId.slice(0, 255);
   const safeMailbox =
     typeof data.mailbox === 'string' || typeof data.path === 'string'
       ? String(data.mailbox || data.path).slice(0, 255)
@@ -574,7 +597,7 @@ function buildPayload(event, data) {
   const safeFrom = senderString.slice(0, 255);
   const safeSubject =
     data.message && typeof data.message.subject === 'string'
-      ? data.message.subject.slice(0, 255)
+      ? decodeHeaderValue(data.message.subject).slice(0, 255)
       : '';
   const safeSnippet =
     data.message && typeof data.message.snippet === 'string'

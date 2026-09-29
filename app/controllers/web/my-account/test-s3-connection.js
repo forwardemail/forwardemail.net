@@ -185,6 +185,9 @@ async function testS3Connection(ctx) {
       secretAccessKey
     },
     requestHandler,
+    // Same addressing as saving and backups (helpers/get-s3-client.js), so a
+    // test that passes means the saved settings work too
+    forcePathStyle: true,
     // Disable automatic checksum headers (x-amz-checksum-crc32)
     // for compatibility with S3-compatible providers like Backblaze B2
     requestChecksumCalculation: 'WHEN_REQUIRED',

@@ -803,6 +803,28 @@ window.addEventListener(
     }
 
     //
+    // The table of contents rail (config/filters.js) scrolls on its own when
+    // it is taller than the viewport. Keep the section bootstrap's scrollspy
+    // marks as current inside the rail's visible part, without scrolling the
+    // page (scrollIntoView would move the window as well).
+    //
+    $(window).on('activate.bs.scrollspy', () => {
+      const rail = document.querySelector('#sidebar-scrollspy.fe-rail');
+      if (!rail || rail.scrollHeight <= rail.clientHeight) return;
+      const links = rail.querySelectorAll('.fe-rail__link.active');
+      const link = links[links.length - 1];
+      if (!link) return;
+      const top =
+        link.getBoundingClientRect().top -
+        rail.getBoundingClientRect().top +
+        rail.scrollTop;
+      const bottom = top + link.offsetHeight;
+      if (top < rail.scrollTop) rail.scrollTop = top;
+      else if (bottom > rail.scrollTop + rail.clientHeight)
+        rail.scrollTop = bottom - rail.clientHeight;
+    });
+
+    //
     // if user attempts to use CTRL+F or CMD+F then expand all collapsed sections
     // so that full text search will work on pages like the FAQ
     //

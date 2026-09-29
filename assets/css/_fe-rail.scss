@@ -1,0 +1,144 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// Side rail: the FAQ topic list and the table of contents on articles, guides
+// and docs (rendered by the md filter in config/filters.js). One look for
+// both: an uppercase label, plain links, the section being read marked with a
+// filled pill and a primary bar. The rail sits at the top left of the page,
+// just below the fixed navbar, and follows the reader down.
+
+// Imported after bootstrap so .nav-link (the table of contents keeps it for
+// bootstrap's scrollspy) does not win the order tie on padding and colour.
+// The page layout around the table of contents (bootstrap's grid columns)
+// lives in _sidebar.scss.
+
+// Colours come from the fe surface tokens. The table of contents can render
+// on pages outside any fe scope (signed in article pages), so config/filters.js
+// wraps it in .fe-surface-light, which re-points to the dark ramp in dark mode.
+
+.fe-rail {
+  // the marker on the current row: a primary bar on the leading edge
+  --fe-rail-marker: inset 3px 0 0 var(--fe-primary);
+
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-snug);
+}
+
+.fe-rail__label {
+  display: block;
+  margin: 0 0 var(--fe-space-3);
+  padding-inline: var(--fe-space-3);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-rail__list {
+  display: flex;
+  gap: var(--fe-space-1);
+  flex-direction: column;
+  flex-wrap: nowrap;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.fe-rail .fe-rail__link {
+  display: flex;
+  gap: var(--fe-space-3);
+  align-items: baseline;
+  justify-content: space-between;
+  padding: var(--fe-space-2) var(--fe-space-3);
+  font-size: inherit;
+  font-weight: normal;
+  line-height: inherit;
+  color: var(--fe-fg-secondary);
+  text-decoration: none;
+  background-color: transparent;
+  border-radius: var(--fe-radius-sm);
+}
+
+.fe-rail .fe-rail__link:hover,
+.fe-rail .fe-rail__link:focus {
+  color: var(--fe-fg-primary);
+  text-decoration: none;
+  background-color: var(--fe-bg-sunken);
+}
+
+// The section being read: .is-active from faq-search.js on the FAQ, .active
+// from bootstrap's scrollspy on the table of contents.
+// stylelint-disable selector-class-pattern -- bootstrap's scrollspy class
+.fe-rail .fe-rail__link.is-active,
+.fe-rail .fe-rail__link.active {
+  color: var(--fe-fg-primary);
+  background-color: var(--fe-bg-sunken);
+  box-shadow: var(--fe-rail-marker);
+}
+// stylelint-enable selector-class-pattern
+
+// Second level (h3 under an h2) in the table of contents.
+.fe-rail__sublist {
+  display: flex;
+  gap: 2px;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  margin: 2px 0 var(--fe-space-1);
+}
+
+.fe-rail .fe-rail__link--sub {
+  padding-block: var(--fe-space-1);
+  padding-inline-start: var(--fe-space-6);
+}
+
+// Bootstrap's scrollspy also marks the parent h2 link of an active h3; keep
+// the parent readable but without the pill so only one row reads as current.
+// stylelint-disable-next-line selector-class-pattern -- bootstrap's scrollspy class
+.fe-rail .fe-rail__link.active:has(+ .fe-rail__sublist .active) {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.fe-rail__count {
+  flex: none;
+  font-size: var(--fe-text-label);
+  color: var(--fe-fg-secondary);
+}
+
+// stylelint-disable selector-class-pattern -- bootstrap's scrollspy class
+.fe-rail__link.is-active .fe-rail__count,
+.fe-rail__link.active .fe-rail__count {
+  color: var(--fe-fg-primary);
+}
+// stylelint-enable selector-class-pattern
+
+// Pinned under the navbar on tablets and larger. The rail scrolls on its own
+// when it is taller than the viewport; faq-search.js and core.js keep the
+// current row in view inside it.
+@include fe-up(md) {
+  .fe-rail--sticky {
+    position: sticky;
+    top: calc(var(--fe-nav-offset) + var(--fe-space-4));
+    max-height: calc(100vh - var(--fe-nav-offset) - var(--fe-space-8));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  // The bar only shows while the reader is on the rail, so a long table of
+  // contents looks like the FAQ topics (which fit) until it is scrolled. The
+  // doubled class outranks the page-wide body.app * scrollbar colour.
+  .fe-rail.fe-rail--sticky {
+    scrollbar-color: transparent transparent;
+  }
+
+  .fe-rail.fe-rail--sticky:hover,
+  .fe-rail.fe-rail--sticky:focus-within {
+    scrollbar-color: var(--app-scrollbar-thumb) transparent;
+  }
+}
+
+@media print {
+  .fe-rail {
+    display: none;
+  }
+}

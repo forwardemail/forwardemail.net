@@ -10,6 +10,7 @@ const I18N = require('@ladjs/i18n');
 const manifestRev = require('manifest-rev');
 const { parse } = require('node-html-parser');
 
+const _ = require('#helpers/lodash');
 const phrases = require('#config/phrases');
 const i18nConfig = require('#config/i18n');
 const logger = require('#helpers/logger');
@@ -178,9 +179,10 @@ function fixTableOfContents(content, options) {
   //
   let sidebar;
   if (options.hasSidebar) {
-    const navPillsContainer = parse(
-      '<div class="nav nav-pills flex-column p-1"></div>'
-    );
+    // Same markup and classes as the FAQ topic rail (assets/css/_fe-rail.scss).
+    // `.nav` and `.nav-link` stay for bootstrap's scrollspy (body data-spy in
+    // layout.pug), which marks the section being read with `.active`.
+    const items = [];
 
     for (const h2 of root.querySelectorAll('h2')) {
       const a = h2.querySelector('a');
@@ -192,55 +194,50 @@ function fixTableOfContents(content, options) {
         continue;
       }
 
-      // eslint-disable-next-line unicorn/prefer-dom-node-append
-      navPillsContainer.appendChild(
-        // <a href="${a.getAttribute('href')}" class="nav-link compact">${
-        parse(`
-        <a href="${a.getAttribute(
-          'href'
-        )}" class="nav-link lead compact font-weight-bold">${h2.text}</a>
-      `)
+      items.push(
+        `<a class="nav-link fe-rail__link" href="${_.escape(
+          a.getAttribute('href')
+        )}">${_.escape(h2.text.trim())}</a>`
       );
-      const navPillsHTML = [];
-      let node = h2;
-      while (
-        node.nextElementSibling &&
-        node.nextElementSibling.rawTagName !== 'h2'
-      ) {
-        if (node.rawTagName === 'h3') {
-          const a = node.querySelector('a');
-          if (!a) continue;
-          navPillsHTML.push(
-            `<a class="nav-link compact sub" href="${a.getAttribute('href')}">${
-              node.text
-            }</a>`
-          );
-        }
 
-        node = node.nextElementSibling;
+      // every h3 up to the next h2 (the previous loop skipped the last one
+      // before the next h2, and never advanced past an h3 without an anchor)
+      const subItems = [];
+      for (
+        let node = h2.nextElementSibling;
+        node && node.rawTagName !== 'h2';
+        node = node.nextElementSibling
+      ) {
+        if (node.rawTagName !== 'h3') continue;
+        const subAnchor = node.querySelector('a');
+        if (!subAnchor) continue;
+        subItems.push(
+          `<a class="nav-link fe-rail__link fe-rail__link--sub" href="${_.escape(
+            subAnchor.getAttribute('href')
+          )}">${_.escape(node.text.trim())}</a>`
+        );
       }
 
-      if (navPillsHTML.length > 0) {
-        // eslint-disable-next-line unicorn/prefer-dom-node-append
-        navPillsContainer.appendChild(
-          parse(`
-          <div class="nav nav-pills flex-column ml-1">
-            ${navPillsHTML.join('\n')}
-          </div>
-        `)
+      if (subItems.length > 0) {
+        items.push(
+          `<div class="nav flex-column fe-rail__sublist">${subItems.join(
+            ''
+          )}</div>`
         );
       }
     }
 
+    const label = i18n.api.t({
+      phrase: 'Table of Contents',
+      locale: (options && options.locale) || i18n.config.defaultLocale
+    });
+
     sidebar = parse(`
-      <nav id="sidebar-scrollspy" class="sidebar-nav rounded-lg">
-        <div class="sidebar-header p-2 border-bottom">
-          <strong>${i18n.api.t({
-            phrase: 'Table of Contents',
-            locale: (options && options.locale) || i18n.config.defaultLocale
-          })}</strong>
-        </div>
-        ${navPillsContainer.toString()}
+      <nav id="sidebar-scrollspy" class="fe-rail fe-rail--sticky fe-surface-light" aria-label="${_.escape(
+        label
+      )}">
+        <p class="fe-rail__label fe-label">${label}</p>
+        <div class="nav flex-column fe-rail__list">${items.join('')}</div>
       </nav>
     `);
   }

@@ -23,6 +23,7 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const email = require('#helpers/email');
+const { collapseAuditChanges } = require('#helpers/audit-changes');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -55,6 +56,27 @@ async function mapper(user) {
     return;
   }
 
+  // one entry per field with its net change; a field changed and changed back
+  // (or queued by the old reference comparison with an unchanged value) is
+  // dropped, and if nothing is left no email is sent
+  const changes = collapseAuditChanges(user[config.userFields.accountUpdates]);
+  if (changes.length === 0) {
+    await Users.updateOne(
+      {
+        _id: user._id,
+        [config.userFields.accountUpdates]:
+          user[config.userFields.accountUpdates]
+      },
+      {
+        $set: {
+          [config.userFields.accountUpdates]: [],
+          [config.userFields.hasPendingAccountUpdates]: false
+        }
+      }
+    );
+    return;
+  }
+
   // Build set of redacted field names for quick lookup
   const redactedFieldNames = new Set(
     config.accountUpdateRedactedFields.map((field) => _.get(config, field))
@@ -66,33 +88,31 @@ async function mapper(user) {
   );
 
   // merge and map to actionable email
-  const accountUpdates = user[config.userFields.accountUpdates].map(
-    (update) => {
-      const { fieldName, current, previous } = update;
-      const isRedacted = redactedFieldNames.has(fieldName);
-      const isByteField = byteFieldNames.has(fieldName);
-      return {
-        name: fieldName,
-        text: i18n.api.t({
-          phrase: titleize(humanize(fieldName)),
-          locale: user[config.lastLocaleField]
-        }),
-        // Redact sensitive field values for security
-        // Format byte-valued fields with human-readable strings (e.g. "10 GB")
-        current: isRedacted
-          ? '[REDACTED]'
-          : isByteField && typeof current === 'number'
-          ? bytes(current)
-          : current,
-        previous: isRedacted
-          ? '[REDACTED]'
-          : isByteField && typeof previous === 'number'
-          ? bytes(previous)
-          : previous,
-        redacted: isRedacted
-      };
-    }
-  );
+  const accountUpdates = changes.map((update) => {
+    const { fieldName, current, previous } = update;
+    const isRedacted = redactedFieldNames.has(fieldName);
+    const isByteField = byteFieldNames.has(fieldName);
+    return {
+      name: fieldName,
+      text: i18n.api.t({
+        phrase: titleize(humanize(fieldName)),
+        locale: user[config.lastLocaleField]
+      }),
+      // Redact sensitive field values for security
+      // Format byte-valued fields with human-readable strings (e.g. "10 GB")
+      current: isRedacted
+        ? '[REDACTED]'
+        : isByteField && typeof current === 'number'
+        ? bytes(current)
+        : current,
+      previous: isRedacted
+        ? '[REDACTED]'
+        : isByteField && typeof previous === 'number'
+        ? bytes(previous)
+        : previous,
+      redacted: isRedacted
+    };
+  });
 
   // send account updates email
   try {

@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 //
 
+const { Buffer } = require('node:buffer');
+
 const test = require('ava');
 
 const { buildPayload, formatSenderString } =
@@ -154,4 +156,80 @@ test('buildPayload > absent suppressAlert keeps newMessage alert-worthy', (t) =>
   t.false(payload.silent);
   t.is(payload.title, 'John Smith');
   t.is(payload.data.suppressAlert, undefined);
+});
+
+test('buildPayload > decodes RFC 2047 sender and subject from an appended message', (t) => {
+  // Parse a real message the way the IMAP append path does, so the payload
+  // receives WildDuck's parsedHeader exactly as on-append.js forwards it.
+  const Indexer = require('@zone-eu/wildduck/imap-core/lib/indexer/indexer');
+  const { parsedHeader } = new Indexer().parseMimeTree(
+    Buffer.from(
+      [
+        'From: "=?utf-8?Q?Mercury?=" <hello@mercury.com>',
+        'To: user@example.com',
+        'Subject: =?utf-8?Q?We_processed_your_IO_credit_payment?=',
+        '',
+        'Hello',
+        ''
+      ].join('\r\n')
+    )
+  );
+
+  const payload = buildPayload('newMessage', {
+    message: {
+      from: parsedHeader.from,
+      subject: parsedHeader.subject,
+      snippet: 'Hello'
+    }
+  });
+
+  t.is(payload.title, 'Mercury');
+  t.is(payload.body, 'We processed your IO credit payment\nHello');
+  t.is(payload.data.sender, 'Mercury <hello@mercury.com>');
+  t.is(payload.data.subject, 'We processed your IO credit payment');
+});
+
+test('buildPayload > decodes an encoded sender from the MX header string', (t) => {
+  const payload = buildPayload('newMessage', {
+    message: {
+      from: '=?UTF-8?B?8J+OiSBCZWVw?= <beep@example.com>',
+      subject: 'Hi'
+    }
+  });
+  t.is(payload.title, '🎉 Beep');
+});
+
+test('buildPayload > newMessage carries the message id a tap opens', (t) => {
+  // The shape helpers/imap/on-append.js sends: the id is only on message.
+  const payload = buildPayload('newMessage', {
+    aliasId: 'alias-1',
+    mailbox: 'Work/Projects',
+    message: {
+      id: '6650f0c2a1b2c3d4e5f60718',
+      folder_path: 'Work/Projects',
+      from: [{ name: 'Jane', address: 'jane@example.com' }],
+      subject: 'Plan'
+    }
+  });
+  t.is(payload.data.message_id, '6650f0c2a1b2c3d4e5f60718');
+  t.is(payload.data.mailbox, 'Work/Projects');
+  t.is(payload.data.alias_id, 'alias-1');
+});
+
+test('buildPayload > an explicit message_id still wins, and none is fine', (t) => {
+  t.is(
+    buildPayload('newMessage', {
+      message_id: 'top-level',
+      message: { id: 'nested', from: 'a@example.com', subject: 's' }
+    }).data.message_id,
+    'top-level'
+  );
+  // tmp storage deliveries (helpers/parse-payload.js) have no id yet
+  t.is(
+    buildPayload('newMessage', {
+      mailbox: 'INBOX',
+      message: { from: 'a@example.com', subject: 's' }
+    }).data.message_id,
+    ''
+  );
 });

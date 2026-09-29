@@ -27,7 +27,20 @@ const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const pkg = require('../package');
 const env = require('./env');
 
-const filters = require('./filters');
+//
+// NOTE: the pug filters (config/filters.js) pull in the markdown renderer and
+//       its own i18n instance, about 170 MB of heap. Every process that reads
+//       #config paid for it, including each of the ~50 bree job workers that
+//       never render markdown, which is how starting the jobs together ran the
+//       host out of memory. Load it on first use instead.
+//
+let loadedFilters;
+const filters = {
+  md(...args) {
+    if (!loadedFilters) loadedFilters = require('./filters');
+    return loadedFilters.md(...args);
+  }
+};
 const i18n = require('./i18n');
 const loggerConfig = require('./logger');
 const meta = require('./meta');

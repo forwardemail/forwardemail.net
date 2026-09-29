@@ -8,7 +8,7 @@ block body
   //- numbered list of vanity domains with bootstrap buttons. Same content
   //- on the fe page header, a callout, one row per vanity domain, and the
   //- onboarding form inline at the foot.
-  .fe-landing(class=isFeFlushNav ? "fe-landing--flush" : "")
+  .fe-landing(class=isFeHeroUnderBar ? "fe-landing--flush" : "")
     +fePageHeader({ id: "fe-disposable", icon: "fa fa-mail-bulk", eyebrow: t("Short and Memorable Vanity Domains"), title: t("Disposable Addresses"), body: t("Use your own custom domain name or try one of our vanity domain names.") })
       .fe-actions.fe-page-header__actions
         a.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--glow(

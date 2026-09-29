@@ -9,6 +9,7 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const CURRENT_SCHEMA_VERSION = 3;
 const HOUR_MANIFEST_DIMENSION = 'hour';
 const HOUR_MANIFEST_VALUE = `v${CURRENT_SCHEMA_VERSION}`;
+const AGGREGATION_IN_PROGRESS = 'ANALYTICS_AGGREGATION_IN_PROGRESS';
 const OBSOLETE_UNIQUE_INDEX_NAME =
   'hour_1_service_1_browser_1_os_1_device_type_1_client_app_1_referrer_1_pathname_1';
 
@@ -221,10 +222,14 @@ AnalyticsSummary.statics.replaceHour = async function (hour, summaries) {
     );
   } catch (err) {
     if (err?.code === 11000) {
-      throw new Error(
+      const error = new Error(
         `Analytics aggregation already in progress for ${hour.toISOString()}`,
         { cause: err }
       );
+      // another run holds this hour (or held it when its process died; the
+      // lock goes stale after an hour): callers skip the hour, not fail
+      error.code = AGGREGATION_IN_PROGRESS;
+      throw error;
     }
 
     throw err;
@@ -767,5 +772,6 @@ const model = conn.model('AnalyticsSummary', AnalyticsSummary);
 model.CURRENT_SCHEMA_VERSION = CURRENT_SCHEMA_VERSION;
 model.HOUR_MANIFEST_DIMENSION = HOUR_MANIFEST_DIMENSION;
 model.HOUR_MANIFEST_VALUE = HOUR_MANIFEST_VALUE;
+model.AGGREGATION_IN_PROGRESS = AGGREGATION_IN_PROGRESS;
 
 module.exports = model;

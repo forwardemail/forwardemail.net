@@ -30,29 +30,11 @@ mixin fePageHeader(opts)
         p.fe-lede.fe-page-header__body!= opts.body
       block
 
-//- The three facts _author.pug shows (author, published, time to read),
-//- rebuilt on the tokens so they read on the dark header. The date comes
-//- from the same helper _author.pug uses (helpers/get-published-date.js),
-//- and core.js reformats the .dayjs element on the client.
+//- The byline (author, published, time to read) on the dark header. The
+//- markup lives in _author.pug so every page shows the same byline.
 mixin feByline
-  - const published = getPublishedDate(publishedISOString, user);
-  ul.fe-byline.no-search
-    li
-      span.fe-byline__label.fe-label= t("Written by")
-      span.fe-byline__value
-        i.fa.fa-check-circle(aria-hidden="true")
-        = config.appName
-        = " "
-        = t("Team")
-    li
-      span.fe-byline__label.fe-label= t("Published")
-      span.fe-byline__value.dayjs(
-        data-time=published.time,
-        data-time-style="false"
-      )= published.formatted
-    li
-      span.fe-byline__label.fe-label= t("Time to read")
-      span.fe-byline__value= t("Less than 5 minutes")
+  - const bylineOnDark = true;
+  include _author
 
 //- 404 and 500. Dark, centred, the one action each page has.
 //- `code` is the status shown as a label above the title.

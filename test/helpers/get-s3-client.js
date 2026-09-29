@@ -3,10 +3,19 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const http = require('node:http');
+const net = require('node:net');
 const test = require('ava');
 
+const { HeadBucketCommand } = require('@aws-sdk/client-s3');
+
 const { encrypt } = require('#helpers/encrypt-decrypt');
-const { getS3Client, defaultS3Client } = require('#helpers/get-s3-client');
+const {
+  getS3Client,
+  defaultS3Client,
+  createCustomS3Client,
+  getS3ErrorMessage
+} = require('#helpers/get-s3-client');
 
 test('returns default S3 client when no domain is provided', (t) => {
   const result = getS3Client();
@@ -225,4 +234,125 @@ test('decrypts both access key ID and secret access key from encrypted values', 
   const result = getS3Client(domain);
   t.not(result.client, defaultS3Client);
   t.is(result.bucket, 'test-bucket');
+});
+
+//
+// Custom S3 endpoints are customer supplied, so the client must connect only
+// to the validated endpoint host and never to a non-public address.
+//
+
+async function listen(handler) {
+  const server = http.createServer(handler);
+  await new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  return server;
+}
+
+test('custom S3 client uses path-style requests to the endpoint host itself', async (t) => {
+  const requests = [];
+  const server = await listen((req, res) => {
+    requests.push({ host: req.headers.host, url: req.url });
+    res.writeHead(200);
+    res.end();
+  });
+  const { port } = server.address();
+
+  const { client } = getS3Client({
+    has_custom_s3: true,
+    s3_endpoint: `http://127.0.0.1:${port}`,
+    s3_access_key_id: encrypt('AKID123'),
+    s3_secret_access_key: encrypt('secret123'),
+    s3_bucket: 'mybucket'
+  });
+
+  try {
+    await client.send(new HeadBucketCommand({ Bucket: 'mybucket' }));
+  } finally {
+    client.destroy();
+    server.close();
+  }
+
+  t.is(requests.length, 1);
+  // virtual-hosted style would have targeted mybucket.127.0.0.1
+  t.is(requests[0].host, `127.0.0.1:${port}`);
+  t.is(requests[0].url, '/mybucket/');
+});
+
+for (const address of ['169.254.169.254', '10.0.0.1', '192.168.1.1']) {
+  test(`custom S3 client refuses to connect to ${address}`, async (t) => {
+    const client = createCustomS3Client({
+      endpoint: `http://${address}`,
+      accessKeyId: 'AKID123',
+      secretAccessKey: 'secret123'
+    });
+    const err = await t.throwsAsync(
+      client.send(new HeadBucketCommand({ Bucket: 'mybucket' }))
+    );
+    client.destroy();
+    t.is(err.code, 'EPRIVATEADDRESS');
+    t.is(getS3ErrorMessage(err), 'Unable to connect to the S3 endpoint');
+  });
+}
+
+test('S3 validation errors do not reveal connection level details', async (t) => {
+  // a port nothing listens on
+  const server = await listen(() => {});
+  const { port } = server.address();
+  await new Promise((resolve) => {
+    server.close(resolve);
+  });
+
+  const client = createCustomS3Client({
+    endpoint: `http://127.0.0.1:${port}`,
+    accessKeyId: 'AKID123',
+    secretAccessKey: 'secret123'
+  });
+  const err = await t.throwsAsync(
+    client.send(new HeadBucketCommand({ Bucket: 'mybucket' }))
+  );
+  client.destroy();
+  t.is(err.code, 'ECONNREFUSED');
+  t.is(getS3ErrorMessage(err), 'Unable to connect to the S3 endpoint');
+});
+
+test('S3 errors returned by the endpoint are passed through', async (t) => {
+  const server = await listen((req, res) => {
+    res.writeHead(403);
+    res.end();
+  });
+  const { port } = server.address();
+  const client = createCustomS3Client({
+    endpoint: `http://127.0.0.1:${port}`,
+    accessKeyId: 'AKID123',
+    secretAccessKey: 'secret123'
+  });
+  const err = await t.throwsAsync(
+    client.send(new HeadBucketCommand({ Bucket: 'mybucket' }))
+  );
+  client.destroy();
+  server.close();
+  t.is(getS3ErrorMessage(err), '403');
+});
+
+test('an endpoint that accepts the connection and never answers times out', async (t) => {
+  const server = net.createServer(() => {});
+  await new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  const client = createCustomS3Client({
+    endpoint: `http://127.0.0.1:${server.address().port}`,
+    accessKeyId: 'AKID123',
+    secretAccessKey: 'secret123',
+    maxAttempts: 1,
+    idleTimeout: 1000
+  });
+  const started = Date.now();
+  const err = await t.throwsAsync(
+    client.send(new HeadBucketCommand({ Bucket: 'mybucket' }))
+  );
+  client.destroy();
+  server.close();
+  t.true(Date.now() - started < 10_000);
+  t.is(getS3ErrorMessage(err), 'Unable to connect to the S3 endpoint');
 });

@@ -325,9 +325,14 @@ const purgeCssOptions = {
       'fa-book',
       // added by assets/js/download.js when a checksum is copied
       'is-copied',
-      // sidebar
+      // side rail and table of contents (config/filters.js renders these
+      // outside the purge content, and core.js / faq-search.js toggle them)
       /^sidebar/,
+      /^fe-rail/,
+      'fe-surface-light',
+      'fe-label',
       'nav',
+      'nav-link',
       'nav-pills',
       'flex-column'
     ])
