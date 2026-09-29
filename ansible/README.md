@@ -483,6 +483,37 @@ Security audit procedures for service accounts:
 * 📝 Access logging
 * 🛡️ Security hardening
 
+### Shared SSH bans (fail2ban)
+
+An address the `sshd` jail bans on one server is banned on every server (`fail2ban-cluster.yml`, run by `security.yml`):
+
+* Bans go through a Redis stream (the application's Redis, TLS), so a server that was down catches up and a new server gets every earlier ban.
+* Each server applies them in its `sshd-cluster` jail: SSH only, permanent. IPv6 addresses are banned as their /64, and an IPv4 /24 is banned once 3 of its addresses have been.
+* Nothing overlapping loopback, private ranges, an inventory host or the operators' addresses is banned, in any jail. Adding an address later lifts its bans.
+
+It needs `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD` and the operators' addresses, so a mistyped login cannot lock you out of every server. Without them the play is skipped and an existing installation is left as it is. Keep the addresses in the inventory (`group_vars/all`):
+
+```yaml
+fail2ban_ignore_ips:
+  - 203.0.113.10
+  - 2001:db8:1234::/48
+```
+
+or set `FAIL2BAN_IGNORE_IPS="203.0.113.10, 2001:db8:1234::/48"` (`none` if there are none).
+
+On a server:
+
+```bash
+fail2ban-client status sshd-cluster     # bans applied here
+fail2ban-cluster target 198.51.100.7    # what an address is banned as (or "ignored")
+fail2ban-cluster unban 198.51.100.0/24  # lift overlapping bans on every server (/16 or narrower)
+journalctl -u fail2ban-cluster
+```
+
+To apply the whole stream again on a server: `systemctl stop fail2ban-cluster`, `rm -rf /var/lib/fail2ban-cluster`, `systemctl start fail2ban-cluster`.
+
+Test: `sudo ansible/scripts/test-fail2ban-cluster.sh`
+
 ---
 
 

@@ -2081,6 +2081,26 @@
   name: Sysctl
   become: true
   become_user: root
+  vars_files:
+    - vars/fail2ban.yml
+  pre_tasks:
+    # (written to jail.local by the fail2ban role below)
+    - name: Validate fail2ban ignore list
+      assert:
+        that:
+          - fail2ban_ignore_list | reject('match', fail2ban_ignore_entry_pattern) | list | length == 0
+        fail_msg: >-
+          Invalid FAIL2BAN_IGNORE_IPS entry: {{ fail2ban_ignore_list | reject('match', fail2ban_ignore_entry_pattern) | list }}
+          (use addresses, CIDR ranges or host names)
+        quiet: true
+
+    - name: Warn without the operators' addresses
+      debug:
+        msg: >-
+          WARNING: no operator addresses (inventory fail2ban_ignore_ips or
+          FAIL2BAN_IGNORE_IPS): fail2ban may ban them; fail2ban cluster bans
+          are not installed or updated without them
+      when: fail2ban_operator_ips | length == 0 and not (fail2ban_operator_ips_none | bool)
   vars:
     #
     # kernel tuning and performance optimizations
@@ -2455,6 +2475,8 @@
       # dbpurgeage is ignored if bantime is -1 (?)
       fail2ban_dbpurgeage: 365d
       fail2ban_findtime: 365d
+      # never ban our own servers or the operators (vars/fail2ban.yml)
+      fail2ban_ignoreips: "{{ fail2ban_ignore_list }}"
       # Email notifications for bans
       fail2ban_destemail: "{{ alert_email_recipients | default('security@forwardemail.net', true) }}"
       fail2ban_sendername: "{{ alert_email_sender | default('mailerdaemon@forwardemail.net', true) }}"
@@ -2479,3 +2501,9 @@
       unattended_mail_report: "on-change"
       tags:
         - forwardemail-alert-policy
+
+# share sshd bans between all servers (after the fail2ban role above)
+- name: Import fail2ban cluster bans playbook
+  import_playbook: fail2ban-cluster.yml
+  vars:
+    target_hosts: "{{ security_target_hosts | default('all') }}"

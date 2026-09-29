@@ -1,0 +1,300 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+# ============================================================================
+# fail2ban cluster bans
+# ============================================================================
+# An address the sshd jail bans on one server is banned on every server, so
+# an attacker does not get its failed logins again on each of them.
+#
+# - each sshd ban is queued locally and sent to a Redis stream (the
+#   application's Redis, over TLS) by the fail2ban-cluster service
+# - every server applies all bans to its `sshd-cluster` jail (SSH only,
+#   permanent, not published again): IPv4 addresses as they are, IPv6 as
+#   their /64, and a whole IPv4 /24 once 3 of its addresses were banned
+# - nothing overlapping the ignore list (loopback, private ranges, every
+#   inventory host, the operators: vars/fail2ban.yml) is ever banned; bans
+#   that overlap it are lifted when it changes
+# - `fail2ban-cluster unban <ip|cidr>` on any server lifts a ban everywhere
+# - a server that was down catches up; a new server receives earlier bans
+#
+# See files/fail2ban-cluster/fail2ban-cluster.sh and
+# scripts/test-fail2ban-cluster.sh (end-to-end test).
+#
+# Imported by security.yml after the fail2ban role.  Uses REDIS_HOST,
+# REDIS_PORT (the TLS port) and REDIS_PASSWORD, and needs the operators'
+# addresses (inventory `fail2ban_ignore_ips` or FAIL2BAN_IGNORE_IPS, or
+# FAIL2BAN_IGNORE_IPS=none): skipped without them, leaving an existing
+# installation (and its ignore list) as it is.
+#
+# Useful commands on a server:
+#   fail2ban-client status sshd-cluster
+#   fail2ban-cluster target <ip>     (what <ip> is banned as, or "ignored")
+#   fail2ban-cluster unban <ip|cidr> (on every server)
+#   journalctl -u fail2ban-cluster
+# ============================================================================
+
+- hosts: "{{ target_hosts }}"
+  name: Fail2ban cluster bans
+  become: true
+  become_user: root
+  vars_files:
+    - vars/fail2ban.yml
+  vars:
+    fail2ban_cluster_redis_host: "{{ lookup('env', 'REDIS_HOST') }}"
+    fail2ban_cluster_redis_port: "{{ lookup('env', 'REDIS_PORT') }}"
+    fail2ban_cluster_redis_password: "{{ lookup('env', 'REDIS_PASSWORD') }}"
+    # distinct banned IPv4 addresses of one /24 that ban the /24 (0: never)
+    fail2ban_cluster_subnet_threshold: 3
+    fail2ban_cluster_files: "{{ playbook_dir }}/files/fail2ban-cluster"
+
+  handlers:
+    - name: Restart fail2ban
+      service:
+        name: fail2ban
+        state: restarted
+
+    - name: Restart fail2ban-cluster
+      systemd:
+        name: fail2ban-cluster
+        state: restarted
+        daemon_reload: true
+
+  tasks:
+    - name: Check whether Redis is configured
+      set_fact:
+        fail2ban_cluster_redis_configured: >-
+          {{ fail2ban_cluster_redis_host | length > 0
+             and fail2ban_cluster_redis_port | length > 0
+             and fail2ban_cluster_redis_password | length > 0 }}
+        fail2ban_cluster_operators_configured: >-
+          {{ fail2ban_operator_ips | length > 0 or fail2ban_operator_ips_none | bool }}
+
+    - name: Check whether fail2ban cluster bans can be configured
+      set_fact:
+        fail2ban_cluster_enabled: >-
+          {{ fail2ban_cluster_redis_configured and fail2ban_cluster_operators_configured }}
+
+    - name: Skip fail2ban cluster bans without Redis
+      debug:
+        msg: >-
+          WARNING: REDIS_HOST, REDIS_PORT and REDIS_PASSWORD are not all set;
+          fail2ban cluster bans were not installed or updated on this host.
+      when: not fail2ban_cluster_redis_configured
+
+    # (one failed login too many would otherwise lock an operator out of
+    # every server at once)
+    - name: Skip fail2ban cluster bans without the operators' addresses
+      debug:
+        msg: >-
+          WARNING: set the operators' addresses (inventory fail2ban_ignore_ips
+          or FAIL2BAN_IGNORE_IPS, or FAIL2BAN_IGNORE_IPS=none); fail2ban
+          cluster bans were not installed or updated on this host.
+      when: not fail2ban_cluster_operators_configured
+
+    - name: End here
+      meta: end_host
+      when: not fail2ban_cluster_enabled
+
+    - name: Validate settings
+      assert:
+        that:
+          - fail2ban_cluster_redis_host is match('^[A-Za-z0-9][A-Za-z0-9.-]*$')
+          - fail2ban_cluster_redis_port is match('^[0-9]{1,5}$')
+          - "'\n' not in fail2ban_cluster_redis_password"
+          - fail2ban_cluster_subnet_threshold | string is match('^[0-9]+$')
+          - fail2ban_ignore_list | reject('match', fail2ban_ignore_entry_pattern) | list | length == 0
+        fail_msg: >-
+          Invalid REDIS_HOST, REDIS_PORT or REDIS_PASSWORD, or an invalid
+          FAIL2BAN_IGNORE_IPS entry (addresses, CIDR ranges or host names)
+        quiet: true
+
+    - name: Install ipset and sqlite3
+      apt:
+        name:
+          - ipset
+          - sqlite3
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    # Where Valkey is (or will be) installed, its valkey-cli is used: its
+    # make install owns /usr/bin/redis-cli, which redis-tools would replace.
+    - name: Check for valkey-cli
+      stat:
+        path: /usr/bin/valkey-cli
+      register: fail2ban_cluster_valkey_cli
+
+    - name: Install redis-cli
+      apt:
+        name: redis-tools
+        state: present
+      when:
+        - not fail2ban_cluster_valkey_cli.stat.exists
+        - "'redis' not in group_names"
+
+    # (while a name cannot be resolved the service applies no bans)
+    - name: Resolve the host names of the ignore list
+      command: getent ahosts {{ item }}
+      loop: "{{ fail2ban_ignore_list | reject('match', '^[0-9a-fA-F:./]+$') | list }}"
+      changed_when: false
+      failed_when: false
+      register: fail2ban_cluster_resolved
+
+    - name: Check the host names of the ignore list resolve
+      fail:
+        msg: >-
+          These ignore list host names do not resolve on this server (the
+          fail2ban-cluster service would apply no bans):
+          {{ fail2ban_cluster_resolved.results | selectattr('rc', 'ne', 0) | map(attribute='item') | list }}
+      when: fail2ban_cluster_resolved.results | selectattr('rc', 'ne', 0) | list | length > 0
+
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+      loop:
+        - /etc/fail2ban-cluster
+        - /var/lib/fail2ban-cluster
+        - /var/spool/fail2ban-cluster
+
+    - name: Install fail2ban-cluster
+      copy:
+        src: "{{ fail2ban_cluster_files }}/fail2ban-cluster.sh"
+        dest: /usr/local/sbin/fail2ban-cluster
+        owner: root
+        group: root
+        mode: '0755'
+      notify: Restart fail2ban-cluster
+
+    - name: Configure Redis for fail2ban-cluster
+      copy:
+        dest: /etc/fail2ban-cluster/env
+        owner: root
+        group: root
+        mode: '0600'
+        content: |
+          # Managed by Ansible (fail2ban-cluster.yml)
+          REDIS_HOST={{ fail2ban_cluster_redis_host }}
+          REDIS_PORT={{ fail2ban_cluster_redis_port }}
+          FAIL2BAN_CLUSTER_SUBNET_THRESHOLD={{ fail2ban_cluster_subnet_threshold }}
+      notify: Restart fail2ban-cluster
+
+    # (a file of its own, read as is: no quoting to get wrong)
+    - name: Configure the Redis password for fail2ban-cluster
+      copy:
+        dest: /etc/fail2ban-cluster/redis-password
+        owner: root
+        group: root
+        mode: '0600'
+        content: "{{ fail2ban_cluster_redis_password }}"
+      no_log: true
+      notify: Restart fail2ban-cluster
+
+    - name: Configure addresses never banned
+      copy:
+        dest: /etc/fail2ban-cluster/ignore
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          # Managed by Ansible (vars/fail2ban.yml): addresses, CIDR ranges and
+          # host names that are never banned
+          {% for entry in fail2ban_ignore_list %}
+          {{ entry }}
+          {% endfor %}
+      notify: Restart fail2ban-cluster
+
+    # A configuration fail2ban cannot load would stop every jail, sshd
+    # included, at its next restart: it is tested, and removed if it fails.
+    - name: Install fail2ban configuration
+      block:
+        - name: Install fail2ban actions
+          copy:
+            src: "{{ fail2ban_cluster_files }}/action.d/{{ item }}"
+            dest: "/etc/fail2ban/action.d/{{ item }}"
+            owner: root
+            group: root
+            mode: '0644'
+          loop:
+            - cluster-publish.conf
+            - iptables-ipset-net.conf
+          notify: Restart fail2ban
+
+        - name: Install fail2ban jails
+          copy:
+            src: "{{ fail2ban_cluster_files }}/jail.d/fail2ban-cluster.local"
+            dest: /etc/fail2ban/jail.d/fail2ban-cluster.local
+            owner: root
+            group: root
+            mode: '0644'
+          notify: Restart fail2ban
+
+        - name: Test the fail2ban configuration
+          command: fail2ban-client --test
+          changed_when: false
+
+      rescue:
+        - name: Remove the fail2ban cluster configuration
+          file:
+            path: "{{ item }}"
+            state: absent
+          loop:
+            - /etc/fail2ban/jail.d/fail2ban-cluster.local
+            - /etc/fail2ban/action.d/cluster-publish.conf
+            - /etc/fail2ban/action.d/iptables-ipset-net.conf
+
+        - name: Stop
+          fail:
+            msg: >-
+              fail2ban could not load the cluster configuration, which was
+              removed again; fail2ban itself was not restarted
+
+    - name: Install fail2ban-cluster service
+      copy:
+        dest: /etc/systemd/system/fail2ban-cluster.service
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Share fail2ban sshd bans with the other servers
+          Wants=network-online.target
+          After=network-online.target fail2ban.service
+
+          [Service]
+          Type=simple
+          EnvironmentFile=/etc/fail2ban-cluster/env
+          ExecStart=/usr/local/sbin/fail2ban-cluster run
+          Restart=always
+          RestartSec=10
+          NoNewPrivileges=true
+          PrivateTmp=true
+          ProtectHome=true
+          ProtectSystem=full
+
+          [Install]
+          WantedBy=multi-user.target
+      notify: Restart fail2ban-cluster
+
+    - name: Apply changes
+      meta: flush_handlers
+
+    - name: Enable and start fail2ban-cluster
+      systemd:
+        name: fail2ban-cluster
+        state: started
+        enabled: true
+        daemon_reload: true
+
+    - name: Check the sshd-cluster jail is running
+      command: fail2ban-client status sshd-cluster
+      register: fail2ban_cluster_jail
+      changed_when: false
+      retries: 10
+      delay: 3
+      until: fail2ban_cluster_jail.rc == 0

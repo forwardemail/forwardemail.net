@@ -1,0 +1,57 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+# The operators' addresses, never banned: IPv4/IPv6 addresses, CIDR ranges
+# or host names, from the inventory (`fail2ban_ignore_ips`, a list, e.g. in
+# group_vars/all) and/or FAIL2BAN_IGNORE_IPS (separated by commas or
+# spaces).  The inventory keeps them across runs; an environment variable
+# is easily forgotten.  FAIL2BAN_IGNORE_IPS=none states there are none.
+fail2ban_operator_ips: >-
+  {%- set entries = [] -%}
+  {%- set configured = fail2ban_ignore_ips | default([], true) -%}
+  {%- if configured is string -%}
+  {%- set configured = configured.replace(',', ' ').split() -%}
+  {%- endif -%}
+  {%- for entry in configured -%}
+  {%- set _ = entries.append(entry | string) -%}
+  {%- endfor -%}
+  {%- for entry in (lookup('env', 'FAIL2BAN_IGNORE_IPS') | default('', true)).replace(',', ' ').split() -%}
+  {%- if entry != 'none' -%}
+  {%- set _ = entries.append(entry) -%}
+  {%- endif -%}
+  {%- endfor -%}
+  {{ entries | unique | list }}
+
+fail2ban_operator_ips_none: "{{ lookup('env', 'FAIL2BAN_IGNORE_IPS') | trim == 'none' }}"
+
+# Addresses fail2ban never bans, in any jail and through the cluster bans
+# (fail2ban-cluster.yml): loopback, private and link-local ranges, every
+# inventory host (our own servers: their inventory address, their name when
+# it is a DNS name, their IPv6 address when facts were gathered, and the
+# public names of the services, *_HOST, so their IPv4 and IPv6 addresses)
+# and the operators' addresses.
+fail2ban_ignore_list: >-
+  {%- set entries = ['127.0.0.1/8', '::1', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16',
+                     '100.64.0.0/10', '169.254.0.0/16', 'fc00::/7', 'fe80::/10'] -%}
+  {%- for host in groups['all'] -%}
+  {%- set _ = entries.append(hostvars[host]['ansible_host'] | default(host, true) | string) -%}
+  {%- if '.' in host -%}
+  {%- set _ = entries.append(host) -%}
+  {%- endif -%}
+  {%- if hostvars[host]['ansible_default_ipv6']['address'] is defined -%}
+  {%- set _ = entries.append(hostvars[host]['ansible_default_ipv6']['address']) -%}
+  {%- endif -%}
+  {%- endfor -%}
+  {%- for name in ['API_HOST', 'BREE_HOST', 'CALDAV_HOST', 'CARDDAV_HOST', 'IMAP_HOST',
+                   'LOGS_HOST', 'MONGO_HOST', 'MX1_HOST', 'MX2_HOST', 'POP3_HOST',
+                   'REDIS_HOST', 'SMTP_HOST', 'SQLITE_HOST', 'WEB_HOST'] -%}
+  {%- if lookup('env', name) | length > 0 -%}
+  {%- set _ = entries.append(lookup('env', name)) -%}
+  {%- endif -%}
+  {%- endfor -%}
+  {{ (entries + fail2ban_operator_ips) | unique | list }}
+
+# an entry: an address, a CIDR range or a host name (nothing else may reach
+# jail.local or the ignore file)
+fail2ban_ignore_entry_pattern: '^[0-9A-Za-z:][0-9A-Za-z.:/-]*$'

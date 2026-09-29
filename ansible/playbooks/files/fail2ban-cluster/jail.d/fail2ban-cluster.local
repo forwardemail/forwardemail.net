@@ -1,0 +1,21 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+#
+# Share sshd bans with the other servers (see /usr/local/sbin/fail2ban-cluster).
+
+# ban as configured in jail.local, and also queue the ban for the others
+[sshd]
+action = %(known/action)s
+         cluster-publish
+
+# bans received from every server (this one included), applied here: SSH
+# only, permanent, never published again
+[sshd-cluster]
+enabled = true
+filter =
+backend = polling
+logpath = /dev/null
+port = ssh
+bantime = -1
+banaction = iptables-ipset-net
+action = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
