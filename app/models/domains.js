@@ -68,6 +68,7 @@ const {
 } = require('#helpers/check-domain-reputation');
 const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
 const { guardTokenPaths } = require('#helpers/token-guard');
+const { revokeFromModel } = require('#helpers/credential-revocation');
 
 const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
@@ -786,6 +787,50 @@ Domains.pre('remove', function (next) {
 
 // a catch-all token is only ever saved with its salt and hash (see the helper)
 guardTokenPaths(Domains, ['tokens']);
+
+//
+// A member who is removed or is no longer an admin loses API token access to
+// the domain's other aliases, so what their API token was granted is revoked
+// (their API token WebSockets reconnect if they still have access).
+//
+function getMemberGroups(members) {
+  const groups = new Map();
+  for (const member of Array.isArray(members) ? members : []) {
+    const user = member?.user?._id || member?.user;
+    if (user) groups.set(user.toString(), member.group);
+  }
+
+  return groups;
+}
+
+Domains.post('init', function (domain) {
+  if (domain.isSelected('members'))
+    domain.$locals.memberGroups = getMemberGroups(domain.members);
+});
+
+Domains.pre('save', function (next) {
+  this.$locals.revokeWebSocketUsers = [];
+  if (!this.isNew && this.isModified('members') && this.$locals.memberGroups) {
+    const current = getMemberGroups(this.members);
+    for (const [user, group] of this.$locals.memberGroups) {
+      if (
+        !current.has(user) ||
+        (group === 'admin' && current.get(user) !== 'admin')
+      )
+        this.$locals.revokeWebSocketUsers.push(user);
+    }
+  }
+
+  next();
+});
+
+Domains.post('save', async function (domain) {
+  const users = domain.$locals.revokeWebSocketUsers;
+  domain.$locals.revokeWebSocketUsers = [];
+  domain.$locals.memberGroups = getMemberGroups(domain.members);
+  if (Array.isArray(users) && users.length > 0)
+    await revokeFromModel({ tokenIds: users });
+});
 
 // generate webhook_key if one does not exist
 Domains.pre('validate', function (next) {

@@ -44,6 +44,10 @@ const isDenylisted = require('#helpers/is-denylisted');
 const isEmail = require('#helpers/is-email');
 const logger = require('#helpers/logger');
 const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
+const {
+  addRevocationQueryHooks,
+  revokeFromModel
+} = require('#helpers/credential-revocation');
 
 // TODO: use a global redis/resolver approach like global mongoose
 const breeSharedConfig = sharedConfig('BREE');
@@ -1337,6 +1341,49 @@ Users.pre('save', async function (next) {
 Users.pre('save', function (next) {
   this._isNew = this.isNew;
   next();
+});
+
+//
+// Revoke what was granted with the user's API token when it changes or is
+// disabled, and everything granted to the account (including through its
+// aliases' passwords) when it is banned or removed (see
+// helpers/credential-revocation.js).
+//
+Users.pre('save', function (next) {
+  const { apiToken, apiTokenDisabled, isBanned, isRemoved } = config.userFields;
+  const account =
+    !this.isNew &&
+    ((this.isModified(isBanned) && this[isBanned]) ||
+      (this.isModified(isRemoved) && this[isRemoved]));
+  const token =
+    !this.isNew &&
+    (account ||
+      this.isModified(apiToken) ||
+      (this.isModified(apiTokenDisabled) && this[apiTokenDisabled]));
+  this.$locals.revokeAccess = account || token ? { account, token } : null;
+  next();
+});
+
+addRevocationQueryHooks(Users, (paths) => {
+  const { apiToken, apiTokenDisabled, isBanned, isRemoved } = config.userFields;
+  const isTrue = (path) =>
+    paths.has(path) &&
+    paths.get(path).operator === '$set' &&
+    paths.get(path).value === true;
+  const account = isTrue(isBanned) || isTrue(isRemoved);
+  const token = account || paths.has(apiToken) || isTrue(apiTokenDisabled);
+  if (!token) return null;
+  return account ? { accountIds: true, tokenIds: true } : { tokenIds: true };
+});
+
+Users.post('save', async function (user) {
+  const revoke = user.$locals.revokeAccess;
+  if (!revoke) return;
+  user.$locals.revokeAccess = null;
+  await revokeFromModel({
+    accountIds: revoke.account ? [user._id] : [],
+    tokenIds: revoke.token ? [user._id] : []
+  });
 });
 
 Users.post('save', async (user, next) => {

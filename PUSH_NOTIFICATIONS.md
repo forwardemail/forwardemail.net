@@ -127,9 +127,9 @@ FCM_SERVICE_ACCOUNT_PATH=/var/www/production/firebase-service-account.json
 The JSON file is a production credential. Never commit it, paste it into an issue, include it in a client build, or expose it through a public environment variable. The mail repository separately needs `google-services.json`; that client configuration file is not a substitute for this backend service-account key.
 
 
-## UnifiedPush and VAPID
+## UnifiedPush, Web Push and VAPID
 
-UnifiedPush subscriptions use Web Push-compatible encryption. Generate one stable VAPID key pair from this repository with the [`web-push`](https://github.com/web-push-libs/web-push) CLI:
+UnifiedPush subscriptions (Android) and browser Web Push subscriptions (platform `web-push`, registered by the web app) use the same encryption (RFC 8291) and the same VAPID key pair. Browser subscriptions receive only user-visible alerts; silent events are not sent to them. Generate one stable VAPID key pair from this repository with the [`web-push`](https://github.com/web-push-libs/web-push) CLI:
 
 ```bash
 pnpm exec web-push generate-vapid-keys
@@ -151,7 +151,7 @@ VAPID_PUBLIC_KEY=BN...
 VAPID_PRIVATE_KEY=...
 ```
 
-Treat the VAPID pair as long-lived application identity. Rotating it requires Android clients to obtain new UnifiedPush subscriptions. The public key is intentionally embedded in Android artifacts; the private key remains backend-only.
+Treat the VAPID pair as long-lived application identity. Rotating it requires Android clients to obtain new UnifiedPush subscriptions and browsers to subscribe again (the web app does this on its next start). The public key is intentionally embedded in Android artifacts; the private key remains backend-only.
 
 
 ## Complete production example
@@ -205,7 +205,12 @@ Do not hand off `APPLE_KEY_PATH` contents, the APNs `.p8` file, `FCM_SERVICE_ACC
 | Client handoff             | Mail Actions variable `VAPID_PUBLIC_KEY` exactly equals backend `VAPID_PUBLIC_KEY`                                 |
 | Secret boundary            | No `.p8`, service-account JSON, VAPID private key, or base64 secret is tracked by Git                              |
 
-The delivery helper sends FCM and UnifiedPush requests through the repository's hardened fetch path with the caller-provided [Tangerine](https://github.com/forwardemail/tangerine) resolver. UnifiedPush endpoint validation rejects unsafe targets, and permanent provider responses participate in the normal token failure and pruning lifecycle.
+The delivery helper sends FCM, UnifiedPush and Web Push requests through the repository's hardened fetch path with the caller-provided [Tangerine](https://github.com/forwardemail/tangerine) resolver: DNS is resolved once, private and reserved addresses are refused, and the connection is pinned to the checked address. Subscription endpoints are supplied by clients, so they are limited further, both when a token is registered and again before each delivery (see `helpers/push-endpoint-policy.js`):
+
+* **Web Push** endpoints must belong to a browser push service on port 443: Firebase Cloud Messaging (Chromium browsers), Mozilla autopush (Firefox), Apple Push (Safari) or Windows Push Notification Services (Edge).
+* **UnifiedPush** distributors may be self-hosted, so any public HTTPS host is accepted, but only on port 443 or on port 1024 and above.
+
+Redirects are not followed, each request is bounded to 15 seconds, and only the first 4 KB of a response is read. Permanent provider responses participate in the normal token failure and pruning lifecycle.
 
 
 ## References

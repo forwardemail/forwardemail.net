@@ -15,6 +15,10 @@ const utils = require('../utils');
 const config = require('#config');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const sendNotification = require('#helpers/send-notification');
+const {
+  CLOSE_CODE_REVOKED,
+  revokeAccess
+} = require('#helpers/credential-revocation');
 
 const { VALID_EVENTS } = sendNotification;
 
@@ -241,6 +245,17 @@ test('fails WebSocket connection with invalid API token', async (t) => {
   );
 });
 
+test('refuses a non-Basic Authorization header instead of connecting as broadcast-only', async (t) => {
+  const { apiURL } = t.context;
+  await t.throwsAsync(
+    () =>
+      connectWebSocket(apiURL.replace(/^http/, 'ws') + '/v1/ws', {
+        Authorization: 'Bearer some-token'
+      }),
+    { message: /Unexpected server response: 401/ }
+  );
+});
+
 test('fails WebSocket connection with an explicitly disabled API token', async (t) => {
   const { apiURL } = t.context;
   const { user, alias } = await createTestAlias(t);
@@ -330,6 +345,701 @@ test('establishes WebSocket connection with API token auth', async (t) => {
   t.is(msg.aliasId, alias.id);
 
   ws.close();
+});
+
+function waitForClose(ws, timeoutMs = 10_000) {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(
+      () => reject(new Error('Timed out waiting for close')),
+      timeoutMs
+    );
+    ws.once('close', (code) => {
+      clearTimeout(timeout);
+      resolve(code);
+    });
+  });
+}
+
+// ─── First-Message Authentication (?auth=message) ─────────────────────────
+
+// Open a `?auth=message` connection and send `message` (an object is sent
+// as JSON, anything else as is) as soon as it opens.
+async function connectMessageAuth(t, message, query = '') {
+  const ws = await connectWebSocket(
+    t.context.apiURL.replace(/^http/, 'ws') + `/v1/ws?auth=message${query}`,
+    {}
+  );
+  t.context._openWebSockets.push(ws);
+  if (message !== undefined)
+    ws.send(
+      typeof message === 'object' && !Buffer.isBuffer(message)
+        ? JSON.stringify(message)
+        : message
+    );
+  return ws;
+}
+
+test('first message: alias credentials open an authenticated socket', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  const ws = await connectMessageAuth(t, {
+    event: 'auth',
+    username: `${alias.name}@${domain.name}`,
+    password: pass
+  });
+  const connected = await waitForMessage(ws);
+  t.deepEqual(connected, { event: 'connected', aliasId: alias.id });
+
+  // and it receives the alias's events
+  publishNotification(t.context.client, alias.id, 'newMessage', { uid: 1 });
+  const event = await waitForMessage(ws);
+  t.is(event.event, 'newMessage');
+});
+
+test('first message: an API token with alias_id opens an authenticated socket', async (t) => {
+  const { user, alias } = await createTestAlias(t);
+  const ws = await connectMessageAuth(t, {
+    event: 'auth',
+    username: user[config.userFields.apiToken],
+    password: '',
+    alias_id: alias.id
+  });
+  const connected = await waitForMessage(ws);
+  t.is(connected.aliasId, alias.id);
+});
+
+test('first message: nothing is sent before the connection is authenticated', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  const ws = await connectMessageAuth(t);
+
+  // no broadcast-only welcome, no broadcasts, no alias events
+  t.context.wsHandler._broadcast({ event: 'newRelease', release: {} });
+  publishNotification(t.context.client, alias.id, 'newMessage', { uid: 1 });
+  await new Promise((resolve) => {
+    setTimeout(resolve, 300);
+  });
+  t.deepEqual(ws._messageBuffer, []);
+
+  ws.send(
+    JSON.stringify({
+      event: 'auth',
+      username: `${alias.name}@${domain.name}`,
+      password: pass
+    })
+  );
+  const connected = await waitForMessage(ws);
+  t.is(connected.aliasId, alias.id);
+});
+
+test('first message: wrong credentials close the socket with 4401', async (t) => {
+  const { alias, domain } = await createTestAlias(t);
+  const ws = await connectMessageAuth(t, {
+    event: 'auth',
+    username: `${alias.name}@${domain.name}`,
+    password: 'wrong password'
+  });
+  t.is(await waitForClose(ws), 4401);
+  t.deepEqual(ws._messageBuffer, []);
+});
+
+test('first message: an alias the API token cannot reach closes with 4403', async (t) => {
+  const { user } = await createTestAlias(t);
+  const other = await createTestAlias(t);
+  const ws = await connectMessageAuth(t, {
+    event: 'auth',
+    username: user[config.userFields.apiToken],
+    password: '',
+    alias_id: other.alias.id
+  });
+  t.is(await waitForClose(ws), 4403);
+});
+
+test('first message: malformed messages close the socket with 4400', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  const username = `${alias.name}@${domain.name}`;
+  for (const message of [
+    'not json',
+    '[]',
+    'null',
+    JSON.stringify({ event: 'pong' }),
+    JSON.stringify({ event: 'auth' }),
+    JSON.stringify({ event: 'auth', username: { $ne: null }, password: pass }),
+    JSON.stringify({ event: 'auth', username, password: { $gt: '' } }),
+    JSON.stringify({ event: 'auth', username, password: 'x'.repeat(129) }),
+    JSON.stringify({
+      event: 'auth',
+      username: 'a'.repeat(321),
+      password: pass
+    }),
+    JSON.stringify({
+      event: 'auth',
+      username: `${username}\n`,
+      password: pass
+    }),
+    JSON.stringify({
+      event: 'auth',
+      username,
+      password: '',
+      alias_id: { $ne: null }
+    }),
+    JSON.stringify({ event: 'auth', username, password: '', alias_id: '1' }),
+    // binary frames are not accepted
+    Buffer.from(JSON.stringify({ event: 'auth', username, password: pass }))
+  ]) {
+    const ws = await connectMessageAuth(t, message);
+    const code = await waitForClose(ws);
+    t.is(code, 4400, `${String(message).slice(0, 60)}`);
+  }
+});
+
+test('first message: a frame over the size limit is refused', async (t) => {
+  const ws = await connectMessageAuth(
+    t,
+    JSON.stringify({ event: 'auth', username: 'a', password: 'x'.repeat(2048) })
+  );
+  // ws closes a connection whose frame exceeds maxPayload with 1009
+  t.is(await waitForClose(ws), 1009);
+});
+
+test('first message: only the first message is used', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  const other = await createTestAlias(t);
+  const ws = await connectMessageAuth(t, {
+    event: 'auth',
+    username: `${alias.name}@${domain.name}`,
+    password: pass
+  });
+  ws.send(
+    JSON.stringify({
+      event: 'auth',
+      username: `${other.alias.name}@${other.domain.name}`,
+      password: other.pass
+    })
+  );
+  const connected = await waitForMessage(ws);
+  t.is(connected.aliasId, alias.id);
+  await new Promise((resolve) => {
+    setTimeout(resolve, 300);
+  });
+  t.deepEqual(ws._messageBuffer, []);
+  t.is(ws.readyState, WebSocket.OPEN);
+});
+
+test('first message: a connection that sends nothing is closed with 4408', async (t) => {
+  t.context.wsHandler.authMessageTimeoutMs = 200;
+  const ws = await connectMessageAuth(t);
+  t.is(await waitForClose(ws), 4408);
+});
+
+test('first message: waiting connections are capped per address', async (t) => {
+  const sockets = [];
+  for (let i = 0; i < 5; i++) sockets.push(await connectMessageAuth(t));
+  await t.throwsAsync(() => connectMessageAuth(t), {
+    message: /Unexpected server response: 429/
+  });
+
+  // a slot frees up when one closes
+  const closed = waitForClose(sockets[0]);
+  sockets[0].close();
+  await closed;
+  await new Promise((resolve) => {
+    setTimeout(resolve, 100);
+  });
+  const ws = await connectMessageAuth(t);
+  t.is(ws.readyState, WebSocket.OPEN);
+});
+
+test('first message: the per-alias connection limit applies', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  for (let i = 0; i < 10; i++) {
+    const ws = await connectWebSocket(
+      t.context.apiURL.replace(/^http/, 'ws') + '/v1/ws',
+      { Authorization: auth }
+    );
+    t.context._openWebSockets.push(ws);
+    await waitForMessage(ws);
+  }
+
+  const ws = await connectMessageAuth(t, {
+    event: 'auth',
+    username: `${alias.name}@${domain.name}`,
+    password: pass
+  });
+  t.is(await waitForClose(ws), 4429);
+});
+
+test('repeated failed logins from one address are refused for a while', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  const username = `${alias.name}@${domain.name}`;
+  // (API token guesses: the shared login's own limits cover passwords)
+  for (let i = 0; i < 10; i++) {
+    const ws = await connectMessageAuth(t, {
+      event: 'auth',
+      username: `not-a-token-${i}`,
+      password: '',
+      alias_id: alias.id
+    });
+    t.is(await waitForClose(ws), 4401);
+  }
+
+  // even correct credentials, either way
+  const ws = await connectMessageAuth(t, {
+    event: 'auth',
+    username,
+    password: pass
+  });
+  t.is(await waitForClose(ws), 4429);
+  await t.throwsAsync(
+    () =>
+      connectWebSocket(t.context.apiURL.replace(/^http/, 'ws') + '/v1/ws', {
+        Authorization: createAliasAuth(username, pass)
+      }),
+    { message: /Unexpected server response: 429/ }
+  );
+});
+
+test('first message: auth=message cannot be combined with a header or other values', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  const baseURL = t.context.apiURL.replace(/^http/, 'ws') + '/v1/ws';
+  await t.throwsAsync(
+    () =>
+      connectWebSocket(`${baseURL}?auth=message`, {
+        Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass)
+      }),
+    { message: /Unexpected server response: 400/ }
+  );
+  await t.throwsAsync(() => connectWebSocket(`${baseURL}?auth=basic`, {}), {
+    message: /Unexpected server response: 400/
+  });
+  await t.throwsAsync(
+    () => connectWebSocket(`${baseURL}?auth=message&auth=message`, {}),
+    { message: /Unexpected server response: 400/ }
+  );
+});
+
+test('first message: a server outage closes with 1013 so clients retry', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  t.context._api.isClosing = true;
+  try {
+    const ws = await connectMessageAuth(t, {
+      event: 'auth',
+      username: `${alias.name}@${domain.name}`,
+      password: pass
+    });
+    t.is(await waitForClose(ws), 1013);
+  } finally {
+    t.context._api.isClosing = false;
+  }
+});
+
+test('first message: the shared login limit closes with 4429, not 4401', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  // the shared login (IMAP, SMTP, API) has refused this address
+  await t.context.client.set(
+    `auth_limit_${config.env}:127.0.0.1`,
+    config.smtpLimitAuth,
+    'PX',
+    60_000
+  );
+  const ws = await connectMessageAuth(t, {
+    event: 'auth',
+    username: `${alias.name}@${domain.name}`,
+    password: pass
+  });
+  t.is(await waitForClose(ws), 4429);
+  // (and it is not counted as a failed WebSocket login)
+  t.is(
+    await t.context.client.get(`ws_auth_fail:${config.env}:127.0.0.1`),
+    null
+  );
+});
+
+test.serial(
+  'first message: waiting connections are capped per IPv6 /48 too',
+  async (t) => {
+    const original = config.WS_TRUST_PROXY;
+    config.WS_TRUST_PROXY = true;
+    try {
+      const url =
+        t.context.apiURL.replace(/^http/, 'ws') + '/v1/ws?auth=message';
+      // a different /64 each time, all in one /48
+      for (let i = 0; i < 20; i++) {
+        const ws = await connectWebSocket(url, {
+          'X-Forwarded-For': `2001:db8:1:${i.toString(16)}::1`
+        });
+        t.context._openWebSockets.push(ws);
+      }
+
+      await t.throwsAsync(
+        () => connectWebSocket(url, { 'X-Forwarded-For': '2001:db8:1:ff::1' }),
+        { message: /Unexpected server response: 429/ }
+      );
+      // another /48 is not affected
+      const ws = await connectWebSocket(url, {
+        'X-Forwarded-For': '2001:db8:2::1'
+      });
+      t.context._openWebSockets.push(ws);
+      t.is(ws.readyState, WebSocket.OPEN);
+    } finally {
+      config.WS_TRUST_PROXY = original;
+    }
+  }
+);
+
+test.serial(
+  'only the X-Forwarded-For entry added by the proxy is used',
+  async (t) => {
+    const original = config.WS_TRUST_PROXY;
+    config.WS_TRUST_PROXY = true;
+    try {
+      const url =
+        t.context.apiURL.replace(/^http/, 'ws') + '/v1/ws?auth=message';
+      // the first entry is whatever the client sent
+      const ws = await connectWebSocket(url, {
+        'X-Forwarded-For': '203.0.113.9, 198.51.100.20'
+      });
+      t.context._openWebSockets.push(ws);
+      const { pendingClients } = t.context.wsHandler;
+      t.true(pendingClients.has('198.51.100.20'));
+      t.false(pendingClients.has('203.0.113.9'));
+
+      // not an address: the connection's own address
+      const other = await connectWebSocket(url, {
+        'X-Forwarded-For': '198.51.100.20, 1.2.3.4:1'
+      });
+      t.context._openWebSockets.push(other);
+      t.true(pendingClients.has('127.0.0.1'));
+    } finally {
+      config.WS_TRUST_PROXY = original;
+    }
+  }
+);
+
+test('first message: when every waiting slot is taken the oldest idle one is dropped', async (t) => {
+  t.context.wsHandler.maxPendingTotal = 2;
+  const first = await connectMessageAuth(t);
+  const second = await connectMessageAuth(t);
+  const firstClosed = waitForClose(first);
+  const third = await connectMessageAuth(t);
+  t.is(third.readyState, WebSocket.OPEN);
+  await firstClosed;
+  t.is(second.readyState, WebSocket.OPEN);
+  t.is(t.context.wsHandler.pendingCount, 2);
+});
+
+test('an API token member who is not an admin cannot connect to another alias', async (t) => {
+  const { domain, alias } = await createTestAlias(t);
+  const member = await t.context.userFactory
+    .withState({ plan: 'enhanced_protection' })
+    .create();
+  // (updateOne: the model hooks would reject members on this test plan)
+  const Domains = domain.constructor;
+  await Domains.updateOne(
+    { _id: domain._id },
+    { $push: { members: { user: member._id, group: 'user' } } }
+  );
+  const wsURL =
+    t.context.apiURL.replace(/^http/, 'ws') + `/v1/ws?alias_id=${alias.id}`;
+  const auth = createApiTokenAuth(member[config.userFields.apiToken]);
+
+  await t.throwsAsync(() => connectWebSocket(wsURL, { Authorization: auth }), {
+    message: /Unexpected server response: 404/
+  });
+
+  // the same user as a domain admin can
+  await Domains.updateOne(
+    { _id: domain._id, 'members.user': member._id },
+    { $set: { 'members.$.group': 'admin' } }
+  );
+  const ws = await connectWebSocket(wsURL, { Authorization: auth });
+  t.context._openWebSockets.push(ws);
+  const connected = await waitForMessage(ws);
+  t.is(connected.aliasId, alias.id);
+});
+
+// ─── Revocation Tests ──────────────────────────────────────────────────────
+// (serial: model hooks revoke through the client of the current test)
+
+test.serial('changing an alias password closes its sockets', async (t) => {
+  const { apiURL } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const ws = await connectWebSocket(apiURL.replace(/^http/, 'ws') + '/v1/ws', {
+    Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass)
+  });
+  t.context._openWebSockets.push(ws);
+  const connected = await waitForMessage(ws);
+  t.is(connected.aliasId, alias.id);
+
+  const closed = waitForClose(ws);
+  await alias.createToken();
+  await alias.save();
+  t.is(await closed, CLOSE_CODE_REVOKED);
+});
+
+test.serial(
+  'regenerating an API token closes the sockets it opened',
+  async (t) => {
+    const { apiURL } = t.context;
+    const { user, alias } = await createTestAlias(t);
+    const ws = await connectWebSocket(
+      apiURL.replace(/^http/, 'ws') + `/v1/ws?alias_id=${alias.id}`,
+      { Authorization: createApiTokenAuth(user[config.userFields.apiToken]) }
+    );
+    t.context._openWebSockets.push(ws);
+    const connected = await waitForMessage(ws);
+    t.is(connected.aliasId, alias.id);
+
+    const closed = waitForClose(ws);
+    user[config.userFields.apiToken] = undefined;
+    await user.save();
+    t.is(await closed, CLOSE_CODE_REVOKED);
+  }
+);
+
+test.serial(
+  'a member who is no longer an admin loses sockets for other aliases',
+  async (t) => {
+    const { apiURL } = t.context;
+    const { domain, alias } = await createTestAlias(t);
+    const member = await t.context.userFactory
+      .withState({ plan: 'team' })
+      .create();
+    const Domains = domain.constructor;
+    // (updateOne: set up a team domain without the plan checks)
+    await Domains.updateOne(
+      { _id: domain._id },
+      {
+        $set: { plan: 'team' },
+        $push: { members: { user: member._id, group: 'admin' } }
+      }
+    );
+
+    const ws = await connectWebSocket(
+      apiURL.replace(/^http/, 'ws') + `/v1/ws?alias_id=${alias.id}`,
+      { Authorization: createApiTokenAuth(member[config.userFields.apiToken]) }
+    );
+    t.context._openWebSockets.push(ws);
+    const connected = await waitForMessage(ws);
+    t.is(connected.aliasId, alias.id);
+
+    const closed = waitForClose(ws);
+    const doc = await Domains.findById(domain._id);
+    const entry = doc.members.find(
+      (m) => m.user.toString() === member._id.toString()
+    );
+    entry.group = 'user';
+    await doc.save();
+    t.is(await closed, CLOSE_CODE_REVOKED);
+
+    // and it cannot reconnect
+    await t.throwsAsync(
+      () =>
+        connectWebSocket(
+          apiURL.replace(/^http/, 'ws') + `/v1/ws?alias_id=${alias.id}`,
+          {
+            Authorization: createApiTokenAuth(
+              member[config.userFields.apiToken]
+            )
+          }
+        ),
+      { message: /Unexpected server response: 404/ }
+    );
+  }
+);
+
+test.serial(
+  'a cached login is not reused after the alias is disabled',
+  async (t) => {
+    const { alias, domain, pass } = await createTestAlias(t);
+    const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+    const wsURL = t.context.apiURL.replace(/^http/, 'ws') + '/v1/ws';
+
+    // the first connection checks the credentials and caches the login
+    const ws = await connectWebSocket(wsURL, { Authorization: auth });
+    t.context._openWebSockets.push(ws);
+    const connected = await waitForMessage(ws);
+    t.is(connected.aliasId, alias.id);
+
+    // a write that skips document middleware
+    await alias.constructor.updateOne(
+      { _id: alias._id },
+      { $set: { is_enabled: false } }
+    );
+
+    await t.throwsAsync(
+      () => connectWebSocket(wsURL, { Authorization: auth }),
+      { message: /Unexpected server response: 401/ }
+    );
+  }
+);
+
+test.serial(
+  'a ban written with an update closes the account sockets',
+  async (t) => {
+    const { apiURL } = t.context;
+    const { user, alias } = await createTestAlias(t);
+    const ws = await connectWebSocket(
+      apiURL.replace(/^http/, 'ws') + `/v1/ws?alias_id=${alias.id}`,
+      { Authorization: createApiTokenAuth(user[config.userFields.apiToken]) }
+    );
+    t.context._openWebSockets.push(ws);
+    const connected = await waitForMessage(ws);
+    t.is(connected.aliasId, alias.id);
+
+    const closed = waitForClose(ws);
+    await user.constructor.findByIdAndUpdate(user._id, {
+      $set: { [config.userFields.isBanned]: true }
+    });
+    t.is(await closed, CLOSE_CODE_REVOKED);
+  }
+);
+
+test.serial(
+  'regenerating the API token leaves alias password sockets open',
+  async (t) => {
+    const { apiURL } = t.context;
+    const { user, alias, domain, pass } = await createTestAlias(t);
+    const ws = await connectWebSocket(
+      apiURL.replace(/^http/, 'ws') + '/v1/ws',
+      {
+        Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass)
+      }
+    );
+    t.context._openWebSockets.push(ws);
+    const connected = await waitForMessage(ws);
+    t.is(connected.aliasId, alias.id);
+
+    user[config.userFields.apiToken] = undefined;
+    await user.save();
+    await new Promise((resolve) => {
+      setTimeout(resolve, 500);
+    });
+    t.is(ws.readyState, WebSocket.OPEN);
+  }
+);
+
+test('an API request during a server outage answers 503, not 401', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  t.context._api.isClosing = true;
+  try {
+    const res = await t.context.api
+      .get('/v1/account')
+      .set(
+        'Authorization',
+        createAliasAuth(`${alias.name}@${domain.name}`, pass)
+      );
+    t.is(res.status, 503);
+  } finally {
+    t.context._api.isClosing = false;
+  }
+});
+
+test('a password change while the handshake is checking credentials closes the socket', async (t) => {
+  const { apiURL, wsHandler, client } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // the change lands after the credentials were checked, before the socket
+  // is registered (the revocation is published to no one)
+  const original = wsHandler._authenticate.bind(wsHandler);
+  wsHandler._authenticate = async (...args) => {
+    const result = await original(...args);
+    await revokeAccess(client, { aliasIds: [alias.id] });
+    return result;
+  };
+
+  try {
+    const ws = await connectWebSocket(
+      apiURL.replace(/^http/, 'ws') + '/v1/ws',
+      { Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass) }
+    );
+    t.context._openWebSockets.push(ws);
+    t.is(await waitForClose(ws), CLOSE_CODE_REVOKED);
+    // no connected event (nor any other) was sent
+    t.deepEqual(ws._messageBuffer, []);
+  } finally {
+    wsHandler._authenticate = original;
+  }
+});
+
+test('a password change while a first message is being checked closes the socket', async (t) => {
+  const { wsHandler, client } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const original = wsHandler._checkCredentials.bind(wsHandler);
+  wsHandler._checkCredentials = async (...args) => {
+    const result = await original(...args);
+    await revokeAccess(client, { aliasIds: [alias.id] });
+    return result;
+  };
+
+  try {
+    const ws = await connectMessageAuth(t, {
+      event: 'auth',
+      username: `${alias.name}@${domain.name}`,
+      password: pass
+    });
+    t.is(await waitForClose(ws), CLOSE_CODE_REVOKED);
+    t.deepEqual(ws._messageBuffer, []);
+  } finally {
+    wsHandler._checkCredentials = original;
+  }
+});
+
+test('a banned account cannot connect with its API token', async (t) => {
+  const { apiURL } = t.context;
+  const { user, alias } = await createTestAlias(t);
+  await user.constructor.updateOne(
+    { _id: user._id },
+    { $set: { [config.userFields.isBanned]: true } }
+  );
+  const auth = createApiTokenAuth(user[config.userFields.apiToken]);
+
+  await t.throwsAsync(
+    () =>
+      connectWebSocket(
+        apiURL.replace(/^http/, 'ws') + `/v1/ws?alias_id=${alias.id}`,
+        { Authorization: auth }
+      ),
+    { message: /Unexpected server response: 403/ }
+  );
+  const ws = await connectMessageAuth(t, {
+    event: 'auth',
+    username: user[config.userFields.apiToken],
+    password: '',
+    alias_id: alias.id
+  });
+  t.is(await waitForClose(ws), 4403);
+});
+
+test('alias credentials go through the shared login (a disabled alias is refused)', async (t) => {
+  const { apiURL } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  await alias.constructor.updateOne(
+    { _id: alias._id },
+    { $set: { is_enabled: false } }
+  );
+
+  await t.throwsAsync(
+    () =>
+      connectWebSocket(apiURL.replace(/^http/, 'ws') + '/v1/ws', {
+        Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass)
+      }),
+    { message: /Unexpected server response: 401/ }
+  );
+});
+
+test('the connection rate limit window does not slide', async (t) => {
+  const { wsHandler, client } = t.context;
+  const ip = '198.51.100.7';
+  const key = `ws_rate:${config.env}:${ip}`;
+  t.true(await wsHandler._checkRateLimit(ip));
+  const first = await client.pttl(key);
+  await new Promise((resolve) => {
+    setTimeout(resolve, 50);
+  });
+  t.true(await wsHandler._checkRateLimit(ip));
+  t.true((await client.pttl(key)) < first);
 });
 
 test('API message creation emits identity metadata in newMessage', async (t) => {

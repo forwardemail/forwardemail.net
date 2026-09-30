@@ -32,6 +32,7 @@ const apiConfig = require('#config/api');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
 const setupMongooseHelper = require('#helpers/setup-mongoose');
+const { useRevocationClient } = require('#helpers/credential-revocation');
 const webConfig = require('#config/web');
 
 const { Users, Domains, Payments, Aliases } = require('#models');
@@ -103,6 +104,13 @@ exports.setupApiServer = async (t) => {
   const keyPrefix = randomUUID();
   const client = new Redis({ keyPrefix });
   client.setMaxListeners(0);
+  // ioredis-mock's TIME joins the wall-clock second with an unrelated
+  // sub-second value, so it is not monotonic; answer like Redis does
+  client.time = async () => {
+    const now = Math.floor((performance.timeOrigin + performance.now()) * 1000);
+    return [String(Math.floor(now / 1e6)), String(now % 1e6)];
+  };
+
   t.context.client = client;
 
   const subscriber = new Redis({ keyPrefix });
@@ -135,9 +143,13 @@ exports.setupApiServer = async (t) => {
   t.context._api = api;
   t.context.resolver = sqlite.resolver;
 
+  // credential changes saved by the models revoke through this client
+  useRevocationClient(client);
+
   // Set up WebSocket handler on the API server
   const wsHandler = new ApiWebSocketHandler({
     server: api.server,
+    instance: api,
     client,
     resolver: sqlite.resolver
   });

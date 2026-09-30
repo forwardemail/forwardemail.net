@@ -35,6 +35,10 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const { detectInvisibleUnicode } = require('#helpers/detect-invisible-unicode');
 const { guardTokenPaths } = require('#helpers/token-guard');
+const {
+  addRevocationQueryHooks,
+  revokeFromModel
+} = require('#helpers/credential-revocation');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 
@@ -1430,6 +1434,38 @@ async function updateDomainCatchallRegexBooleans(alias) {
 
 Aliases.post('deleteOne', updateDomainCatchallRegexBooleans);
 Aliases.post('save', updateDomainCatchallRegexBooleans);
+
+//
+// Revoke what was granted with the alias's passwords (WebSockets and
+// cached logins) when they change, it changes hands, or it is
+// disabled (see helpers/credential-revocation.js).
+//
+Aliases.pre('save', function (next) {
+  this.$locals.revokeAccess =
+    !this.isNew &&
+    (this.isModified('tokens') ||
+      this.isModified('user') ||
+      this.isModified('domain') ||
+      (this.isModified('is_enabled') && !this.is_enabled));
+  next();
+});
+
+Aliases.post('save', async function (alias) {
+  if (!alias.$locals.revokeAccess) return;
+  alias.$locals.revokeAccess = false;
+  await revokeFromModel({ aliasIds: [alias._id] });
+});
+
+// (only a write to `tokens` as a whole: the hash migration on login
+// updates `tokens.<n>.hash` in place and changes no password)
+addRevocationQueryHooks(Aliases, (paths) =>
+  paths.has('tokens') ||
+  paths.has('user') ||
+  paths.has('domain') ||
+  (paths.has('is_enabled') && paths.get('is_enabled').value !== true)
+    ? { aliasIds: true }
+    : null
+);
 
 //
 // NOTE: `Aliases.getStorageUsed` below still returns pooled storage

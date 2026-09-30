@@ -111,18 +111,23 @@ test('deliverUnifiedPush > encrypts and uses DNS-pinned fetch', async (t) => {
 
   t.deepEqual(result, { statusCode: 201 });
   t.true(generateRequestDetails.calledOnce);
-  t.true(
-    fetch.calledOnceWithExactly(ENDPOINT, {
-      method: 'POST',
-      headers: request.headers,
-      body: request.body,
-      bodyTimeout: 10_000,
-      headersTimeout: 10_000,
-      resolver
-    })
-  );
+  t.true(fetch.calledOnce);
+  const [url, options] = fetch.firstCall.args;
+  t.is(url, ENDPOINT);
+  const { signal, ...rest } = options;
+  t.deepEqual(rest, {
+    method: 'POST',
+    headers: request.headers,
+    body: request.body,
+    bodyTimeout: 10_000,
+    headersTimeout: 10_000,
+    resolver
+  });
+  // the whole request is bounded, including a body that trickles in
+  t.true(signal instanceof AbortSignal);
 
-  const [subscription, body, options] = generateRequestDetails.firstCall.args;
+  const [subscription, body, requestOptions] =
+    generateRequestDetails.firstCall.args;
   t.deepEqual(subscription, createSubscription());
   t.deepEqual(JSON.parse(body), {
     event: 'new-message',
@@ -130,7 +135,7 @@ test('deliverUnifiedPush > encrypts and uses DNS-pinned fetch', async (t) => {
     body: 'A message arrived',
     alias_id: 'alias-1'
   });
-  t.deepEqual(options, {
+  t.deepEqual(requestOptions, {
     TTL: 60,
     urgency: 'high',
     contentEncoding: 'aes128gcm',

@@ -12,6 +12,10 @@ const mongoose = require('mongoose');
 const Aliases = require('#models/aliases');
 const PushTokens = require('#models/push-tokens');
 const isPrivateHost = require('#helpers/is-private-host');
+const {
+  isAllowedUnifiedPushEndpoint,
+  isAllowedWebPushEndpoint
+} = require('#helpers/push-endpoint-policy');
 
 const { PLATFORMS } = PushTokens;
 
@@ -119,7 +123,32 @@ function normalizeUnifiedPushSubscription(ctx, token) {
     );
   }
 
-  const { p256dh, auth } = parsed.keys;
+  const canonical = canonicalizeSubscription(
+    ctx,
+    parsed,
+    'PUSH_TOKEN_UNIFIED_PUSH_INVALID'
+  );
+  // a public HTTPS host on port 443 or an unprivileged port
+  if (!isAllowedUnifiedPushEndpoint(JSON.parse(canonical).endpoint))
+    throw Boom.badRequest(ctx.translateError('PUSH_TOKEN_INVALID_URL'));
+  return canonical;
+}
+
+/**
+ * Validate the RFC 8291 keys of a push subscription and return deterministic
+ * JSON (used for both uniqueness and delivery).  Browsers emit the same
+ * unpadded base64url keys as the UnifiedPush connector; padding and standard
+ * base64 characters are accepted and normalized.
+ *
+ * @returns {string}
+ */
+function canonicalizeSubscription(ctx, parsed, errorKey) {
+  const normalize = (value) =>
+    typeof value === 'string'
+      ? value.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+      : value;
+  const p256dh = normalize(parsed.keys.p256dh);
+  const auth = normalize(parsed.keys.auth);
   const p256dhBytes =
     isSANB(p256dh) && UNIFIED_PUSH_P256DH_REGEX.test(p256dh)
       ? Buffer.from(p256dh, 'base64url')
@@ -135,9 +164,7 @@ function normalizeUnifiedPushSubscription(ctx, token) {
     !authBytes ||
     authBytes.length !== 16
   ) {
-    throw Boom.badRequest(
-      ctx.translateError('PUSH_TOKEN_UNIFIED_PUSH_INVALID')
-    );
+    throw Boom.badRequest(ctx.translateError(errorKey));
   }
 
   const endpoint = validateUrlNotPrivate(ctx, parsed.endpoint).href;
@@ -211,9 +238,20 @@ function validateToken(ctx, platform, token) {
         throw Boom.badRequest(ctx.translateError('PUSH_TOKEN_WEB_PUSH_KEYS'));
       }
 
-      // SSRF prevention on the endpoint URL
-      validateUrlNotPrivate(ctx, parsed.endpoint);
-      break;
+      // key validation, SSRF prevention on the endpoint URL, and canonical
+      // JSON (the same RFC 8291 subscription format UnifiedPush uses)
+      const canonical = canonicalizeSubscription(
+        ctx,
+        parsed,
+        'PUSH_TOKEN_WEB_PUSH_KEYS'
+      );
+      // only the push services browsers use (see
+      // helpers/push-endpoint-policy.js)
+      if (!isAllowedWebPushEndpoint(JSON.parse(canonical).endpoint))
+        throw Boom.badRequest(
+          ctx.translateError('PUSH_TOKEN_WEB_PUSH_ENDPOINT')
+        );
+      return canonical;
     }
 
     default: {
@@ -315,9 +353,9 @@ async function create(ctx) {
     );
   }
 
-  // Validate token. UnifiedPush returns canonical subscription JSON so the
-  // same endpoint/key tuple cannot be stored multiple times with different
-  // property ordering or ignored fields.
+  // Validate token. UnifiedPush and Web Push return canonical subscription
+  // JSON so the same endpoint/key tuple cannot be stored multiple times with
+  // different property ordering or ignored fields.
   const validatedToken = validateToken(ctx, platform, token);
 
   // Validate device_name: must be a string if provided
@@ -343,7 +381,7 @@ async function create(ctx) {
   const normalizedToken =
     platform === 'apns'
       ? token.toLowerCase()
-      : platform === 'unified-push'
+      : platform === 'unified-push' || platform === 'web-push'
       ? validatedToken
       : token;
 

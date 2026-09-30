@@ -11,7 +11,6 @@ const argon2 = require('@node-rs/argon2');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pify = require('pify');
-const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('@zone-eu/wildduck/imap-core');
 
@@ -38,6 +37,11 @@ const i18n = require('#helpers/i18n');
 const isValidPassword = require('#helpers/is-valid-password');
 const onConnect = require('#helpers/on-connect');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const {
+  getRedisTime,
+  getSubjects,
+  isRevokedSince
+} = require('#helpers/credential-revocation');
 const logger = require('#helpers/logger');
 const getIpBucket = require('#helpers/get-ip-bucket');
 const { getRekeyLockKey } = require('#helpers/rekey-lock');
@@ -124,6 +128,25 @@ async function equalizeAuthFailureTiming(password) {
 const AUTH_CACHE_PREFIX = 'auth_cache:';
 const AUTH_CACHE_ALIAS_PREFIX = 'auth_cache_alias:';
 const AUTH_CACHE_TTL = ms('1m');
+
+//
+// Digest of a password for Redis keys and values (the auth cache key, and
+// the failed attempts already counted).  Keyed with a server secret, so the
+// contents of Redis alone cannot be used to test password guesses offline.
+//
+function getPasswordDigest(password, length = 16) {
+  return crypto
+    .createHmac('sha256', env.HELPER_ENCRYPTION_KEY)
+    .update(password)
+    .digest('hex')
+    .slice(0, length);
+}
+
+function getAuthCacheKey(username, password) {
+  return `${AUTH_CACHE_PREFIX}${username
+    .trim()
+    .toLowerCase()}:${getPasswordDigest(password)}`;
+}
 
 //
 // Clear all cached auth entries for a given alias ID.
@@ -318,13 +341,16 @@ async function onAuth(auth, session, fn) {
       isRateLimited = true;
 
       if (count >= config.smtpLimitAuth) {
-        throw new SMTPError(
+        const err = new SMTPError(
           `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
           // { ignoreHook: true },
           {
             imapResponse: 'CONTACTADMIN'
           }
         );
+        // (a limit, not wrong credentials: HTTP callers answer 429)
+        err.isRateLimited = true;
+        throw err;
       }
     }
 
@@ -333,14 +359,7 @@ async function onAuth(auth, session, fn) {
     // username + password combination.  On hit we skip DNS, MongoDB,
     // and argon2 entirely.
     //
-    const pwHash = crypto
-      .createHash('sha256')
-      .update(auth.password)
-      .digest('hex')
-      .slice(0, 16);
-    const authCacheKey = `${AUTH_CACHE_PREFIX}${auth.username
-      .trim()
-      .toLowerCase()}:${pwHash}`;
+    const authCacheKey = getAuthCacheKey(auth.username, auth.password);
     {
       let cachedJson;
       try {
@@ -362,9 +381,21 @@ async function onAuth(auth, session, fn) {
           try {
             // Password rotations must invalidate cache hits for every service,
             // including HTTP DAV/API processes that do not use Redis Pub/Sub.
-            isRekeying = Boolean(
-              await this.client.get(getRekeyLockKey(user.alias_id))
-            );
+            // So must a change made after this login was checked: a new
+            // password, a disabled alias, a banned owner (the cache hit skips
+            // those checks; see helpers/credential-revocation.js).
+            const [rekeyLock, revoked] = await Promise.all([
+              this.client.get(getRekeyLockKey(user.alias_id)),
+              isRevokedSince(
+                this.client,
+                getSubjects({
+                  aliasIds: [user.alias_id],
+                  accountIds: [user.alias_user_id]
+                }),
+                user.auth_at
+              )
+            ]);
+            isRekeying = Boolean(rekeyLock) || revoked;
           } catch (err) {
             // A failed cache safeguard must not grant access. Continue through
             // the normal MongoDB authorization path, which checks is_rekey.
@@ -384,6 +415,11 @@ async function onAuth(auth, session, fn) {
           (!isIMAPorPOP3 || user.alias_id) &&
           !isRekeying
         ) {
+          // when the credentials were really checked (a revocation check
+          // by the caller must start from there, not from this cache hit)
+          const authAt = user.auth_at;
+          delete user.auth_at;
+
           // Re-encrypt the current request's password (same password since
           // the cache key includes the password hash) so the session has
           // the encrypted password available without storing it in Redis.
@@ -418,7 +454,7 @@ async function onAuth(auth, session, fn) {
             }).catch((err) => this.logger.debug('IMAP ALERT error', { err }));
           }
 
-          fn(null, { user });
+          fn(null, { user, authAt });
 
           //
           // Still run side effects (analytics, sync) on cache hit
@@ -546,6 +582,16 @@ async function onAuth(auth, session, fn) {
       }
     }
 
+    // When this login is checked (Redis time), so the cached result can be
+    // refused after a later credential change (see the cache hit above).
+    // Without it the result is not cached.
+    let authStartedAt = null;
+    try {
+      authStartedAt = await getRedisTime(this.client);
+    } catch (err) {
+      this.logger.debug('auth time read error', { err });
+    }
+
     //
     // Only verifications count as in progress: a cached login above answers
     // at once, so parallel clients (DAV sync, users behind one NAT) with
@@ -560,11 +606,14 @@ async function onAuth(auth, session, fn) {
         .pexpire(key, ms('2m'))
         .exec();
       inflightKey = key;
-      if (inflight > config.smtpLimitAuth)
-        throw new SMTPError(
+      if (inflight > config.smtpLimitAuth) {
+        const err = new SMTPError(
           `Too many authentication attempts in progress. Please try again later or contact us at ${config.supportEmail}`,
           { responseCode: 421, imapResponse: 'UNAVAILABLE' }
         );
+        err.isRateLimited = true;
+        throw err;
+      }
     }
 
     // Verify DNS records
@@ -755,7 +804,7 @@ async function onAuth(auth, session, fn) {
       if (!verified) await equalizeAuthFailureTiming(auth.password);
 
       // increase failed counter by 1 iff new password was used
-      const hash = revHash(auth.password);
+      const hash = getPasswordDigest(auth.password);
 
       // OPTIMIZATION: Use previousPasswordHashesRaw from earlier pipeline if available
       // This avoids a duplicate Redis call
@@ -1244,7 +1293,11 @@ async function onAuth(auth, session, fn) {
       // Strip the encrypted password before storing in Redis —
       // we re-encrypt from the request on cache hit instead.
       const { password: _pw, ...userWithoutPassword } = user;
-      const cacheValue = safeStringify(userWithoutPassword);
+      if (!authStartedAt) throw new Error('Authentication time missing');
+      const cacheValue = safeStringify({
+        ...userWithoutPassword,
+        auth_at: authStartedAt
+      });
       const pipeline = this.client.pipeline();
       pipeline.set(authCacheKey, cacheValue, 'PX', AUTH_CACHE_TTL);
       if (user.alias_id) {
@@ -1279,7 +1332,7 @@ async function onAuth(auth, session, fn) {
       }).catch((err) => this.logger.debug('IMAP ALERT error', { err }));
     }
 
-    fn(null, { user });
+    fn(null, { user, authAt: authStartedAt });
 
     // Track successful authentication for analytics (with deduplication)
     // Privacy-focused: IP used for session hash only, not stored
@@ -1457,3 +1510,4 @@ async function onAuth(auth, session, fn) {
 
 module.exports = onAuth;
 module.exports.clearAuthCache = clearAuthCache;
+module.exports.getAuthCacheKey = getAuthCacheKey;

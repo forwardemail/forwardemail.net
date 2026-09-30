@@ -2886,7 +2886,7 @@
           "token": {
             "type": "string",
             "maxLength": 4096,
-            "description": "设备令牌（APNs 十六进制）、注册令牌（FCM）、HTTPS 端点 URL（UnifiedPush）或 JSON PushSubscription（Web Push）"
+            "description": "设备令牌（APNs 十六进制）、注册令牌（FCM），或包含 `endpoint` 和 `keys` 的 JSON 推送订阅（UnifiedPush 和 Web Push）。Web Push 端点必须属于浏览器推送服务（Firebase Cloud Messaging、Mozilla、Apple 或 Windows）；UnifiedPush 端点必须在 443 端口或 1024 及以上端口使用 HTTPS。"
           },
           "device_name": {
             "type": "string",
@@ -7389,7 +7389,7 @@
           "WebSocket"
         ],
         "summary": "WebSocket 通知",
-        "description": "连接到 WebSocket 端点以接收实时推送通知。\n\n**连接 URL：** `wss://api.forwardemail.net/v1/ws`\n\n**身份验证（可选）：**\n\n- **已验证客户端：** 通过 `Authorization` 标头提供凭据，以接收按别名推送的事件（IMAP、CalDAV、CardDAV）和全局广播事件（`newRelease`）。\n\n- **未验证客户端：** 无需提供凭据即可连接，仅接收全局广播事件（`newRelease`）。这适用于仅需接收应用更新通知的客户端。\n\n**身份验证方法：**\n\n必须使用 HTTP 基本身份验证通过 `Authorization` 标头提供身份验证。**不支持**使用查询参数进行身份验证。\n\n**选项 1：别名密码认证（推荐）**\n\n使用您的别名邮箱地址和生成的密码：\n\n```javascript\n\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\", {\n\nheaders: {\n\nAuthorization: `Basic ${btoa(\"user@domain.com:alias-password\")}`\n\n}\n});\n\n```\n\n**选项 2：API 令牌认证**\n\n使用您的 API 令牌（需要 `?alias_id=` 查询参数）：\n\n```javascript\n\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID\", {\n\nheaders: {\n\nAuthorization: `Basic ${btoa(\"YOUR_API_TOKEN:\")}` // 注意：密码为空\n\n}\n});\n\n```\n\n**选项 3：未认证（仅广播）**\n\n无需认证即可连接，仅接收全局广播事件：\n\n```javascript\n\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\");\n\n```\n\n**连接响应：**\n\n连接成功后，服务器会发送一个 `connected` 事件：\n\n- **已认证：** `{\"event\":\"connected\",\"aliasId\":\"<您的别名 ID>\"}`\n\n- **未认证：** `{\"event\":\"connected\",\"broadcastOnly\":true}`\n\n如果您收到 `broadcastOnly: true`，则表示您的身份验证失败或未提供身份验证信息，您将仅接收全局广播事件。\n\n**msgpackr 编码：** 默认情况下，消息以 JSON 文本帧的形式发送。传递 `?msgpackr=true` 参数可接收二进制 msgpackr 编码帧，以降低带宽占用。\n\n**行为：**\n\n- 只读通道：客户端消息将被静默丢弃\n\n- 服务器在连接成功后发送 `connected` 事件\n\n- 服务器定期发送 `ping` 帧；客户端必须以 `pong` 帧响应\n\n- 每个 IP 的速率限制：30 个连接/分钟\n\n- 每个别名的连接限制（已认证）：10 个并发连接\n\n- 每个 IP 的未认证连接限制：3 个并发连接\n\n- 全局连接限制：10,000\n\n**事件有效负载：** 每个事件包含一个 `event` 字段，用于指示事件类型，以及一个资源对象（`message`、`contact`、`calendarEvent`、`calendar`、`addressBook` 或 `release`），其中包含与相应 REST API 响应相对应的完整资源数据。\n\n**按别名触发的事件（仅限已认证用户）：**\n\n- **IMAP：** `newMessage`、`messagesMoved`、`messagesCopied`、`flagsUpdated`、`messagesExpunged`、`mailboxCreated`、`mailboxDeleted`、`mailboxRenamed`\n\n- **CalDAV：** `calendarCreated`、`calendarUpdated`、`calendarDeleted`、`calendarEventCreated`、`calendarEventUpdated`、`calendarEventDeleted`\n\n- **CardDAV：** `contactCreated`、`contactUpdated`、`contactDeleted`、`addressBookCreated`、`addressBookDeleted`\n\n**广播事件（所有客户端）：**\n\n- `newRelease` — 当 Forward Email 邮件应用 (https://github.com/forwardemail/mail.forwardemail.net) 发布新版本时广播GitHub。服务器每 15 分钟轮询一次 GitHub，并使用基于内容的指纹来检测更改。**资源门控**：当检测到新版本发布但尚无资源时，广播将延迟，直到资源出现。\n\n**重要提示：**\n\n- 身份验证**不支持**查询参数 `?token=`、`?username=` 和 `?password=`\n\n- 身份验证**必须**通过 HTTP 基本身份验证的 `Authorization` 标头进行\n\n- 如果身份验证失败，您将收到 `broadcastOnly: true` 或 `401 Unauthorized` 错误\n\n- 对于 API 令牌身份验证，`?alias_id=` 查询参数是**必需的**",
+        "description": "连接到 WebSocket 端点以接收实时推送通知。\n\n**连接 URL：** `wss://api.forwardemail.net/v1/ws`\n\n**身份验证（可选）：**\n\n- **已验证客户端：** 通过 `Authorization` 标头提供凭据，以接收按别名推送的事件（IMAP、CalDAV、CardDAV）和全局广播事件（`newRelease`）。\n\n- **未验证客户端：** 无需提供凭据即可连接，仅接收全局广播事件（`newRelease`）。这适用于仅需接收应用更新通知的客户端。\n\n**身份验证方法：**\n\n身份验证**必须**通过使用 HTTP 基本身份验证的 `Authorization` 标头进行，或在浏览器中通过连接后的第一条消息进行（选项 3）。**不支持**携带凭据的查询参数。\n\n**选项 1：别名密码认证（推荐）**\n\n使用您的别名邮箱地址和生成的密码：\n\n```javascript\n\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\", {\n\nheaders: {\n\nAuthorization: `Basic ${btoa(\"user@domain.com:alias-password\")}`\n\n}\n});\n\n```\n\n**选项 2：API 令牌认证**\n\n使用您的 API 令牌（需要 `?alias_id=` 查询参数）：\n\n```javascript\n\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID\", {\n\nheaders: {\n\nAuthorization: `Basic ${btoa(\"YOUR_API_TOKEN:\")}` // 注意：密码为空\n\n}\n});\n\n```\n\n**选项 3：第一条消息（浏览器）**\n\n浏览器无法在 WebSocket 握手时设置标头。请使用 `?auth=message` 连接，并在 5 秒内将凭据作为第一条消息发送。凭据被接受之前不会发送任何内容；否则连接将以 `4400`（消息格式错误）、`4401`（凭据错误）或 `4403`（不允许）关闭。对于 API 令牌，请将其作为 `username` 发送，并附上空的 `password` 和 `alias_id`：\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?auth=message\");\nws.onopen = () => ws.send(JSON.stringify({\n  event: \"auth\",\n  username: \"user@domain.com\",\n  password: \"alias-password\"\n}));\n```\n\n**选项 4：未认证（仅广播）**\n\n无需认证即可连接，仅接收全局广播事件：\n\n```javascript\n\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\");\n\n```\n\n**连接响应：**\n\n连接成功后，服务器会发送一个 `connected` 事件：\n\n- **已认证：** `{\"event\":\"connected\",\"aliasId\":\"<您的别名 ID>\"}`\n\n- **未认证：** `{\"event\":\"connected\",\"broadcastOnly\":true}`\n\n如果您收到 `broadcastOnly: true`，则表示未提供任何凭据，您将只会收到全局广播事件。\n\n**msgpackr 编码：** 默认情况下，消息以 JSON 文本帧的形式发送。传递 `?msgpackr=true` 参数可接收二进制 msgpackr 编码帧，以降低带宽占用。\n\n**行为：**\n\n- 只读通道：客户端消息将被静默丢弃\n\n- 服务器在连接成功后发送 `connected` 事件\n\n- 服务器定期发送 `ping` 帧；客户端必须以 `pong` 帧响应\n\n- 每个 IP 的速率限制：30 个连接/分钟\n\n- 每个别名的连接限制（已认证）：10 个并发连接\n\n- 每个 IP 的未认证连接限制：3 个并发连接\n\n- 全局连接限制：10,000\n\n**事件有效负载：** 每个事件包含一个 `event` 字段，用于指示事件类型，以及一个资源对象（`message`、`contact`、`calendarEvent`、`calendar`、`addressBook` 或 `release`），其中包含与相应 REST API 响应相对应的完整资源数据。\n\n**按别名触发的事件（仅限已认证用户）：**\n\n- **IMAP：** `newMessage`、`messagesMoved`、`messagesCopied`、`flagsUpdated`、`messagesExpunged`、`mailboxCreated`、`mailboxDeleted`、`mailboxRenamed`\n\n- **CalDAV：** `calendarCreated`、`calendarUpdated`、`calendarDeleted`、`calendarEventCreated`、`calendarEventUpdated`、`calendarEventDeleted`\n\n- **CardDAV：** `contactCreated`、`contactUpdated`、`contactDeleted`、`addressBookCreated`、`addressBookDeleted`\n\n**广播事件（所有客户端）：**\n\n- `newRelease` — 当 Forward Email 邮件应用 (https://github.com/forwardemail/mail.forwardemail.net) 发布新版本时广播GitHub。服务器每 15 分钟轮询一次 GitHub，并使用基于内容的指纹来检测更改。**资源门控**：当检测到新版本发布但尚无资源时，广播将延迟，直到资源出现。\n\n**重要提示：**\n\n- 身份验证**不支持**查询参数 `?token=`、`?username=` 和 `?password=`\n\n- 身份验证**必须**通过使用 HTTP 基本身份验证的 `Authorization` 标头进行，或通过 `?auth=message` 连接的第一条消息进行\n\n- 如果提供的凭据验证失败，握手将以 `401 Unauthorized` 被拒绝（`?auth=message` 连接以 `4401` 关闭）；只有不带任何凭据的连接才会收到 `broadcastOnly: true`\n\n- 如果别名密码或 API 令牌发生变化（或账户被封禁），已打开的连接会以代码 `4001` 关闭；请使用新的凭据重新连接\n\n- 对于 API 令牌身份验证，`?alias_id=` 查询参数是**必需的**",
         "operationId": "websocketNotifications",
         "parameters": [
           {
@@ -7413,6 +7413,18 @@
                 "false"
               ],
               "default": "false"
+            }
+          },
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "设置为 `message` 可在第一条消息中发送凭据，而不是使用 `Authorization` 标头（适用于无法在 WebSocket 握手时设置标头的浏览器）。该消息必须在 5 秒内到达。",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "message"
+              ]
             }
           }
         ],

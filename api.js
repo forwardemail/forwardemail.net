@@ -21,6 +21,7 @@ const API = require('./api-server');
 
 const ApiWebSocketHandler = require('#helpers/api-websocket-handler');
 const Users = require('#models/users');
+const { useRevocationClient } = require('#helpers/credential-revocation');
 const apiConfig = require('#config/api');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
@@ -34,10 +35,15 @@ const api = new API(
   Users
 );
 
+// credential changes saved by this process revoke WebSockets through the
+// API server's Redis client
+useRevocationClient(api.client);
+
 // Attach WebSocket handler to the API server
 const wsHandler = new ApiWebSocketHandler({
   server: api.server,
   client: api.client,
+  instance: api,
   resolver: api.app.context.resolver
 });
 

@@ -26,16 +26,36 @@ async function setupAuthSession(ctx, username, password) {
   };
 
   try {
-    const { user } = await onAuthPromise.call(
-      this,
-      // auth
-      {
-        username,
-        password
-      },
-      // session
-      ctx.state.session
-    );
+    let user;
+    try {
+      ({ user } = await onAuthPromise.call(
+        this,
+        // auth
+        {
+          username,
+          password
+        },
+        // session
+        ctx.state.session
+      ));
+    } catch (err) {
+      // failed-attempt limits are not wrong credentials
+      if (err.isRateLimited) throw Boom.tooManyRequests(err.message);
+
+      // on-auth leaves `response` unset for transient failures (database,
+      // Redis, the server shutting down): answer 503 so clients retry
+      // instead of treating the credentials as wrong
+      if (!err.isBoom && err.response !== 'NO') {
+        ctx.logger.error(err);
+        throw Boom.serverUnavailable(
+          typeof ctx.translateError === 'function'
+            ? ctx.translateError('WEBSITE_OUTAGE')
+            : 'Service unavailable'
+        );
+      }
+
+      throw err;
+    }
 
     // set user in session and state
     ctx.state.user = user;

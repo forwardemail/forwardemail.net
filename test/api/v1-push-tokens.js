@@ -4,6 +4,7 @@
  */
 
 const { Buffer } = require('node:buffer');
+const crypto = require('node:crypto');
 
 const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
@@ -366,6 +367,53 @@ test('POST /v1/push-tokens > rejects invalid web-push subscription', async (t) =
   t.regex(res.body.message, /json/i);
 });
 
+test('POST /v1/push-tokens > registers a browser web-push subscription', async (t) => {
+  const { domain, alias, pass } = await createTestAlias(t);
+  const aliasEmail = `${alias.name}@${domain.name}`;
+  const ecdh = crypto.createECDH('prime256v1');
+  ecdh.generateKeys();
+  const p256dh = ecdh.getPublicKey().toString('base64url');
+  const auth = Buffer.alloc(16, 7).toString('base64url');
+
+  // PushSubscription.toJSON() also carries expirationTime; padding is tolerated
+  const res = await t.context.api
+    .post('/v1/push-tokens')
+    .set('Authorization', createAliasAuth(aliasEmail, pass))
+    .send({
+      platform: 'web-push',
+      token: JSON.stringify({
+        endpoint: 'https://fcm.googleapis.com/fcm/send/abc123',
+        expirationTime: null,
+        keys: { auth: `${auth}==`, p256dh }
+      })
+    });
+
+  t.is(res.status, 201);
+  t.is(res.body.platform, 'web-push');
+  t.deepEqual(JSON.parse(res.body.token), {
+    endpoint: 'https://fcm.googleapis.com/fcm/send/abc123',
+    keys: { p256dh, auth }
+  });
+});
+
+test('POST /v1/push-tokens > rejects web-push subscription with invalid keys', async (t) => {
+  const { domain, alias, pass } = await createTestAlias(t);
+  const aliasEmail = `${alias.name}@${domain.name}`;
+
+  const res = await t.context.api
+    .post('/v1/push-tokens')
+    .set('Authorization', createAliasAuth(aliasEmail, pass))
+    .send({
+      platform: 'web-push',
+      token: JSON.stringify({
+        endpoint: 'https://fcm.googleapis.com/fcm/send/abc123',
+        keys: { p256dh: 'short', auth: 'short' }
+      })
+    });
+
+  t.is(res.status, 400);
+});
+
 test('POST /v1/push-tokens > rejects token exceeding max length', async (t) => {
   const { domain, alias, pass } = await createTestAlias(t);
   const aliasEmail = `${alias.name}@${domain.name}`;
@@ -714,4 +762,63 @@ test('PushTokens.recordSuccess > resets failure count and extends expiry', async
   doc = await PushTokens.findById(tokenId);
   t.is(doc.failure_count, 0);
   t.truthy(doc.last_used_at);
+});
+
+test('POST /v1/push-tokens > rejects a web-push endpoint that is not a browser push service', async (t) => {
+  const { domain, alias, pass } = await createTestAlias(t);
+  const aliasEmail = `${alias.name}@${domain.name}`;
+  const ecdh = crypto.createECDH('prime256v1');
+  ecdh.generateKeys();
+  const keys = {
+    p256dh: ecdh.getPublicKey().toString('base64url'),
+    auth: Buffer.alloc(16, 7).toString('base64url')
+  };
+
+  for (const endpoint of [
+    // any other public host (the server would POST to it on every event)
+    'https://push.example.com/endpoint',
+    // a browser push service, but not on its HTTPS port
+    'https://fcm.googleapis.com:8443/fcm/send/abc123',
+    // a look-alike host
+    'https://fcm.googleapis.com.example.com/fcm/send/abc123'
+  ]) {
+    const res = await t.context.api
+      .post('/v1/push-tokens')
+      .set('Authorization', createAliasAuth(aliasEmail, pass))
+      .send({
+        platform: 'web-push',
+        token: JSON.stringify({ endpoint, keys })
+      });
+    t.is(res.status, 400, `${endpoint}`);
+  }
+
+  // Firefox, Safari and Edge push services are accepted
+  for (const endpoint of [
+    'https://updates.push.services.mozilla.com/wpush/v2/abc',
+    'https://web.push.apple.com/abc',
+    'https://wns2-par02p.notify.windows.com/w/?token=abc'
+  ]) {
+    const res = await t.context.api
+      .post('/v1/push-tokens')
+      .set('Authorization', createAliasAuth(aliasEmail, pass))
+      .send({
+        platform: 'web-push',
+        token: JSON.stringify({ endpoint, keys })
+      });
+    t.is(res.status, 201, `${endpoint}`);
+  }
+});
+
+test('POST /v1/push-tokens > rejects a UnifiedPush endpoint on a privileged port', async (t) => {
+  const { domain, alias, pass } = await createTestAlias(t);
+  const aliasEmail = `${alias.name}@${domain.name}`;
+
+  const res = await t.context.api
+    .post('/v1/push-tokens')
+    .set('Authorization', createAliasAuth(aliasEmail, pass))
+    .send({
+      platform: 'unified-push',
+      token: createUnifiedPushSubscription('https://mail.example.com:993/up')
+    });
+  t.is(res.status, 400);
 });

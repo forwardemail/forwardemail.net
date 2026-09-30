@@ -43,6 +43,7 @@ const utils = require('../utils');
 const Aliases = require('#models/aliases');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
+const { getAuthCacheKey } = require('#helpers/on-auth');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const isValidPassword = require('#helpers/is-valid-password');
 const openDatabaseHandle = require('#helpers/open-database-handle');
@@ -614,11 +615,7 @@ test('alias authentication follows the rotation: refused while it runs, cached o
   const { password } = first.body;
   // the entry of the authentication cache (helpers/on-auth.js) the second
   // request is served from
-  const cacheKey = `auth_cache:test@${ctx.domain.name}:${crypto
-    .createHash('sha256')
-    .update(password)
-    .digest('hex')
-    .slice(0, 16)}`;
+  const cacheKey = getAuthCacheKey(`test@${ctx.domain.name}`, password);
 
   t.is(await t.context.client.get(cacheKey), null);
   t.is(await statusAs(t, ctx, password), 200);

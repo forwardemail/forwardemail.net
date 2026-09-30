@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const { readFileSync } = require('node:fs');
 const process = require('node:process');
 
@@ -21,6 +22,10 @@ const createTangerine = require('#helpers/create-tangerine');
 const { isPrivateHostResolved } = require('#helpers/is-private-host');
 const logger = require('#helpers/logger');
 const safeFetch = require('#helpers/safe-fetch');
+const {
+  isAllowedUnifiedPushEndpoint,
+  isAllowedWebPushEndpoint
+} = require('#helpers/push-endpoint-policy');
 
 //
 // Push notification delivery helper for the Forward Email Mail App.
@@ -396,7 +401,10 @@ async function fanOutToTokens(tokens, payload, resolver, dependencies = {}) {
     tokens,
     async (tokenDoc) => {
       try {
-        await deliver(tokenDoc, payload, resolver);
+        const result = await deliver(tokenDoc, payload, resolver);
+        // nothing was sent (e.g. a silent event for a browser): neither a
+        // success nor a failure for this token
+        if (result?.skipped) return;
         await recordSuccess(tokenDoc._id);
       } catch (err) {
         logger.warn('Push delivery failed', {
@@ -647,7 +655,7 @@ async function deliverToToken(tokenDoc, payload, resolver) {
     }
 
     case 'web-push': {
-      return deliverWebPush(tokenDoc);
+      return deliverWebPush(tokenDoc, payload, resolver);
     }
 
     default: {
@@ -870,27 +878,84 @@ function parseUnifiedPushSubscription(token) {
   };
 }
 
+// Push services accept 4096 bytes of ciphertext (RFC 8030), about 3993 bytes
+// of plaintext after RFC 8291 overhead. Text fields are capped by characters
+// upstream, so multi-byte or escaped text can exceed that; a 413 would count
+// as a delivery failure and eventually remove the subscription.
+const MAX_ENCRYPTED_PUSH_BODY_BYTES = 3000;
+const SHRINKABLE_PUSH_FIELDS = [
+  'snippet',
+  'body',
+  'subject',
+  'sender',
+  'title'
+];
+
+function fitEncryptedPushBody(object) {
+  let json = JSON.stringify(object);
+  while (Buffer.byteLength(json) > MAX_ENCRYPTED_PUSH_BODY_BYTES) {
+    let longest = null;
+    for (const field of SHRINKABLE_PUSH_FIELDS) {
+      if (
+        typeof object[field] === 'string' &&
+        object[field].length > 0 &&
+        (!longest || object[field].length > object[longest].length)
+      )
+        longest = field;
+    }
+
+    if (!longest) break;
+    object[longest] = object[longest].slice(
+      0,
+      Math.floor(object[longest].length / 2)
+    );
+    json = JSON.stringify(object);
+  }
+
+  return json;
+}
+
+// A push service answers with a short status body; anything past this is
+// not read (an endpoint cannot make the server buffer an unbounded body).
+const MAX_PUSH_RESPONSE_BYTES = 4096;
+// whole request, including a body that trickles in
+const PUSH_REQUEST_TIMEOUT_MS = ms('15s');
+
+async function readResponseText(body, limit = MAX_PUSH_RESPONSE_BYTES) {
+  if (!body) return '';
+  if (typeof body[Symbol.asyncIterator] !== 'function')
+    return String(await body.text()).slice(0, limit);
+
+  const chunks = [];
+  let size = 0;
+  // leaving the loop early destroys the stream
+  for await (const chunk of body) {
+    const buffer = Buffer.from(chunk);
+    chunks.push(buffer);
+    size += buffer.length;
+    if (size >= limit) break;
+  }
+
+  return Buffer.concat(chunks).subarray(0, limit).toString('utf8');
+}
+
 /**
- * Deliver an RFC 8291 encrypted payload to a UnifiedPush distributor.
+ * Deliver an RFC 8291 encrypted payload to a push service with VAPID.
  *
- * Android's UnifiedPush connector decrypts the aes128gcm content before the
- * application callback receives it. VAPID binds delivery to the application
- * server key whose public half was supplied during connector registration.
- * The encrypted request is sent through safeFetch so DNS is resolved once,
- * validated, and pinned to the outbound connection.
+ * UnifiedPush distributors and browser push services (FCM for Chromium,
+ * Mozilla autopush, Apple Web Push) speak the same protocol (RFC 8030/8291/
+ * 8292).  The encrypted request is sent through safeFetch so DNS is resolved
+ * once, validated, and pinned to the outbound connection.
  */
-async function deliverUnifiedPush(
+async function deliverEncryptedPush(
   tokenDoc,
   payload,
   resolver,
-  {
-    generateRequestDetails = webPush.generateRequestDetails,
-    fetch = safeFetch
-  } = {}
+  { generateRequestDetails, fetch, label, ttl, isAllowedEndpoint }
 ) {
   if (!isVapidConfigured()) {
-    logger.debug('VAPID not configured, skipping UnifiedPush delivery');
-    return;
+    logger.debug(`VAPID not configured, skipping ${label} delivery`);
+    return { skipped: true };
   }
 
   const subscription = parseUnifiedPushSubscription(tokenDoc.token);
@@ -907,11 +972,16 @@ async function deliverUnifiedPush(
     );
   }
 
-  // The Android client displays whatever title/body it is handed when the app
-  // is backgrounded, so a silent event must not carry them. `silent` is sent
+  // (checked at registration too; this covers subscriptions stored earlier)
+  if (!isAllowedEndpoint(subscription.endpoint)) {
+    throw createPermanentPushError(`${label} endpoint is not allowed`);
+  }
+
+  // The client displays whatever title/body it is handed when the app is
+  // backgrounded, so a silent event must not carry them. `silent` is sent
   // explicitly as well so the client can distinguish a deliberately silent
   // event from an older server that simply omitted the strings.
-  const body = JSON.stringify({
+  const body = fitEncryptedPushBody({
     event: payload.event,
     ...(payload.silent === true
       ? { silent: true }
@@ -921,7 +991,7 @@ async function deliverUnifiedPush(
 
   try {
     const request = generateRequestDetails(subscription, body, {
-      TTL: 60,
+      TTL: ttl,
       urgency: 'high',
       contentEncoding: 'aes128gcm',
       vapidDetails: getVapidDetails()
@@ -932,12 +1002,13 @@ async function deliverUnifiedPush(
       body: request.body,
       bodyTimeout: 10_000,
       headersTimeout: 10_000,
+      signal: AbortSignal.timeout(PUSH_REQUEST_TIMEOUT_MS),
       resolver
     });
-    const responseBody = await response.body.text();
+    const responseBody = await readResponseText(response.body);
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      const error = new Error('UnifiedPush endpoint returned an error');
+      const error = new Error(`${label} endpoint returned an error`);
       error.statusCode = response.statusCode;
       error.body = responseBody;
       throw error;
@@ -946,11 +1017,14 @@ async function deliverUnifiedPush(
     return { statusCode: response.statusCode };
   } catch (err) {
     const statusCode = Number(err.statusCode);
+    // (the body comes from the endpoint: no control characters in logs)
     const details =
       typeof err.body === 'string' && err.body
-        ? `: ${err.body.slice(0, 200)}`
+        ? `: ${[...err.body.slice(0, 200)]
+            .map((char) => (char < ' ' || char === '\u007F' ? ' ' : char))
+            .join('')}`
         : '';
-    const message = `UnifiedPush delivery failed (${
+    const message = `${label} delivery failed (${
       statusCode || 'network'
     })${details}`;
 
@@ -965,14 +1039,55 @@ async function deliverUnifiedPush(
 }
 
 /**
- * Web Push delivery (placeholder for future implementation).
- * Silent no-op until web-push is integrated.
+ * Deliver to a UnifiedPush distributor.
+ *
+ * Android's UnifiedPush connector decrypts the aes128gcm content before the
+ * application callback receives it. VAPID binds delivery to the application
+ * server key whose public half was supplied during connector registration.
  */
+async function deliverUnifiedPush(
+  tokenDoc,
+  payload,
+  resolver,
+  {
+    generateRequestDetails = webPush.generateRequestDetails,
+    fetch = safeFetch
+  } = {}
+) {
+  return deliverEncryptedPush(tokenDoc, payload, resolver, {
+    generateRequestDetails,
+    fetch,
+    label: 'UnifiedPush',
+    ttl: 60,
+    isAllowedEndpoint: isAllowedUnifiedPushEndpoint
+  });
+}
 
-async function deliverWebPush(tokenDoc) {
-  // TODO: implement web-push delivery using the web-push npm package
-  logger.info('Web Push delivery not yet implemented', {
-    token_id: tokenDoc._id
+/**
+ * Deliver to a browser push subscription (the web app's service worker).
+ *
+ * Browsers require every push to show a notification (Chromium shows a
+ * generic "site updated in the background" notice otherwise, and Safari
+ * revokes the subscription), so silent events are not sent; the WebSocket
+ * carries those while the app is open.  A new-mail alert stays useful for a
+ * while, so it is queued for an hour when the browser is offline.
+ */
+async function deliverWebPush(
+  tokenDoc,
+  payload,
+  resolver,
+  {
+    generateRequestDetails = webPush.generateRequestDetails,
+    fetch = safeFetch
+  } = {}
+) {
+  if (payload.silent === true) return { skipped: true };
+  return deliverEncryptedPush(tokenDoc, payload, resolver, {
+    generateRequestDetails,
+    fetch,
+    label: 'Web Push',
+    ttl: 3600,
+    isAllowedEndpoint: isAllowedWebPushEndpoint
   });
 }
 
@@ -990,6 +1105,8 @@ module.exports._test = {
   deliverFcm,
   deliverUnifiedPush,
   deliverWebPush,
+  fitEncryptedPushBody,
+  readResponseText,
   parseUnifiedPushSubscription,
   isApnsConfigured,
   isFcmConfigured,

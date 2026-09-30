@@ -3,22 +3,29 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { randomUUID } = require('node:crypto');
 const http = require('node:http');
 const url = require('node:url');
 
 const WebSocket = require('ws');
 const basicAuth = require('basic-auth');
+const ipaddr = require('ipaddr.js');
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
 
-const Aliases = require('#models/aliases');
-const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
 const ensureApiTokenEnabled = require('#helpers/ensure-api-token-enabled');
-const isEmail = require('#helpers/is-email');
-const isValidPassword = require('#helpers/is-valid-password');
+const getAccessibleAliasId = require('#helpers/get-accessible-alias-id');
+const getIpBucket = require('#helpers/get-ip-bucket');
+const onAuth = require('#helpers/on-auth');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
+const {
+  CLOSE_CODE_REVOKED,
+  getRedisTime,
+  getSubjects,
+  isRevokedSince
+} = require('#helpers/credential-revocation');
 const logger = require('#helpers/logger');
 const {
   checkForNewMailAppRelease,
@@ -26,6 +33,92 @@ const {
 } = require('#helpers/get-mail-app-releases');
 
 const WS_PATH = '/v1/ws';
+
+// published by every alias password rotation (IMAP, POP3 and SMTP close
+// their sessions on it too)
+const AUTH_RESET_CHANNEL = 'sqlite_auth_reset';
+
+function httpError(message, statusCode) {
+  const err = new Error(message);
+  err.statusCode = statusCode;
+  return err;
+}
+
+const OBJECT_ID_REGEX = /^[\da-f]{24}$/i;
+
+// an email address, or an API token
+const MAX_USERNAME_LENGTH = 320;
+// the longest password the shared login accepts (helpers/on-auth.js)
+const MAX_PASSWORD_LENGTH = 128;
+
+function hasControlCharacters(value) {
+  for (const char of value) {
+    const code = char.codePointAt(0);
+    if (code < 0x20 || code === 0x7f) return true;
+  }
+
+  return false;
+}
+
+//
+// The first message of a `?auth=message` connection:
+//
+//   {"event":"auth","username":"alias@example.com","password":"..."}
+//   {"event":"auth","username":"<API token>","password":"","alias_id":"..."}
+//
+// Only a JSON text frame with exactly this shape is accepted (the frame size
+// is capped by MAX_INCOMING_PAYLOAD); anything else closes the connection.
+//
+function parseAuthMessage(data, isBinary) {
+  if (isBinary) return null;
+  let message;
+  try {
+    message = JSON.parse(data.toString('utf8'));
+  } catch {
+    return null;
+  }
+
+  if (
+    !message ||
+    typeof message !== 'object' ||
+    Array.isArray(message) ||
+    message.event !== 'auth'
+  )
+    return null;
+
+  const { username, password = '', alias_id: aliasId } = message;
+  if (
+    typeof username !== 'string' ||
+    username.length === 0 ||
+    username.length > MAX_USERNAME_LENGTH ||
+    hasControlCharacters(username)
+  )
+    return null;
+  if (typeof password !== 'string' || password.length > MAX_PASSWORD_LENGTH)
+    return null;
+  if (
+    aliasId !== undefined &&
+    (typeof aliasId !== 'string' || !OBJECT_ID_REGEX.test(aliasId))
+  )
+    return null;
+
+  return { name: username, pass: password, aliasId };
+}
+
+//
+// Close codes of a `?auth=message` connection (an HTTP status cannot be sent
+// once the connection is open).  Clients do not retry 4400, 4401 and 4403.
+//
+const CLOSE_CODES = {
+  400: 4400, // malformed first message
+  401: 4401, // wrong credentials
+  403: 4403, // the account or API token may not connect to this alias
+  404: 4403, // (an alias the API token cannot reach is not disclosed)
+  408: 4408, // no first message in time
+  429: 4429 // too many connections or failed attempts; retry later
+};
+// anything else (database, Redis, shutdown): try again later
+const CLOSE_CODE_TRY_AGAIN = 1013;
 
 //
 // Security constants
@@ -60,9 +153,50 @@ const MAX_SEND_BUFFER = 1024 * 1024;
 // Authentication timeout (prevents hanging auth from blocking resources)
 const AUTH_TIMEOUT_MS = ms('10s');
 
+// `?auth=message` connections: the first message must arrive this soon (a
+// client sends it as soon as the connection opens), and until it is checked
+// the connection is only counted, never sent anything
+const AUTH_MESSAGE_TIMEOUT_MS = ms('5s');
+// waiting connections per IPv4 address or IPv6 /64, and per IPv6 /48 (one
+// client can easily hold many /64s)
+const MAX_PENDING_PER_IP = 5;
+const MAX_PENDING_PER_IPV6_48 = 20;
+// when all are taken, the oldest one that has not sent its first message
+// yet is dropped for a new one
+const MAX_PENDING_TOTAL = 1000;
+
+// failed authentications (either way) per IP before further attempts are
+// refused for the rest of the window; alias passwords are also limited by
+// the shared login
+const MAX_AUTH_FAILURES_PER_IP = 10;
+const AUTH_FAILURE_WINDOW_MS = ms('10m');
+
+// a closed connection whose client does not finish the close handshake
+const CLOSE_GRACE_MS = ms('2s');
+// (a connection that never authenticated is dropped sooner)
+const PENDING_CLOSE_GRACE_MS = 500;
+
+// the IPv6 /48 a /64 bucket belongs to (null for IPv4)
+function getWideBucket(ip) {
+  if (typeof ip !== 'string' || !ip.endsWith('::/64')) return null;
+  return ip.split(':').slice(0, 3).join(':') + '::/48';
+}
+
+// With WS_TRUST_PROXY, the address the (one) trusted proxy in front of the
+// API saw: the last X-Forwarded-For entry, which that proxy appended.  The
+// first entries are whatever the client sent, so they are never used.
+function getRemoteAddress(request) {
+  const socketAddress = request.socket.remoteAddress;
+  if (!config.WS_TRUST_PROXY) return socketAddress;
+  const header = request.headers['x-forwarded-for'];
+  if (typeof header !== 'string') return socketAddress;
+  const last = header.split(',').at(-1).trim();
+  return ipaddr.isValid(last) ? last : socketAddress;
+}
+
 class ApiWebSocketHandler {
   constructor(options = {}) {
-    const { server, client, resolver } = options;
+    const { server, client, resolver, instance } = options;
 
     if (!server) throw new Error('HTTP server is required');
     if (!client) throw new Error('Redis client is required');
@@ -70,6 +204,10 @@ class ApiWebSocketHandler {
     this.server = server;
     this.client = client;
     this.resolver = resolver || null;
+    // API server instance: alias credentials are checked with the same
+    // login as the rest of the API (helpers/on-auth.js), which carries the
+    // brute-force limits and the banned/disabled/rekey checks
+    this.instance = instance || null;
 
     // Map<aliasId, Set<WebSocket>>
     this.clients = new Map();
@@ -80,6 +218,16 @@ class ApiWebSocketHandler {
     // Unauthenticated connection tracking: Map<ip, Set<WebSocket>>
     // These clients only receive broadcast events (e.g. newRelease)
     this.unauthClients = new Map();
+
+    // `?auth=message` connections waiting for their first message:
+    // Map<ip, Set<WebSocket>> and the total across addresses
+    this.pendingClients = new Map();
+    this.pendingCount = 0;
+    // Map<IPv6 /48, count> and all waiting connections, oldest first
+    this.pendingWide = new Map();
+    this.pendingQueue = new Set();
+    this.authMessageTimeoutMs = AUTH_MESSAGE_TIMEOUT_MS;
+    this.maxPendingTotal = MAX_PENDING_TOTAL;
 
     // Pre-serialize ping payloads to avoid re-encoding per client
     this._pingJsonFrame = safeStringify({ event: 'ping' });
@@ -108,7 +256,7 @@ class ApiWebSocketHandler {
     this.wss.on('connection', this._onConnection);
 
     // Subscribe to WebSocket notification channel
-    this.subscriber.subscribe(config.WS_REDIS_CHANNEL_NAME);
+    this.subscriber.subscribe(config.WS_REDIS_CHANNEL_NAME, AUTH_RESET_CHANNEL);
     // Use messageBuffer to receive binary msgpackr data from Redis
     this.subscriber.on('messageBuffer', this._onSubscriberMessage);
 
@@ -128,7 +276,8 @@ class ApiWebSocketHandler {
         // Protocol-level ping for server-side dead-connection detection
         ws.ping();
         // Application-level ping for browser clients using pre-serialized frames
-        if (ws.readyState === WebSocket.OPEN) {
+        // (not before a `?auth=message` connection is authenticated)
+        if (ws.readyState === WebSocket.OPEN && !ws.pendingAuth) {
           if (ws.bufferedAmount >= MAX_SEND_BUFFER) {
             logger.debug('WebSocket slow consumer on ping, terminating', {
               aliasId: ws.aliasId
@@ -165,7 +314,9 @@ class ApiWebSocketHandler {
 
   /**
    * Check rate limit for connection attempts using Redis.
-   * Uses pipeline().incr().pexpire().exec() for atomic, cross-worker counting.
+   * Fixed one-minute window shared across workers: the expiry is only set
+   * when the window starts (refreshing it on every attempt would keep a
+   * shared address that reconnects now and then locked out for good).
    *
    * @param {string} ip - Client IP address
    * @returns {Promise<boolean>} true if allowed, false if rate limited
@@ -174,13 +325,13 @@ class ApiWebSocketHandler {
     try {
       const key = `ws_rate:${config.env}:${ip}`;
       const results = await this.client
-        .pipeline()
+        .multi()
+        .set(key, 0, 'PX', RATE_LIMIT_TTL_MS, 'NX')
         .incr(key)
-        .pexpire(key, RATE_LIMIT_TTL_MS)
         .exec();
 
-      // results is [[err, count], [err, ok]]
-      const count = results?.[0]?.[1];
+      // results is [[err, ok], [err, count]]
+      const count = results?.[1]?.[1];
       if (typeof count !== 'number') return true;
       return count <= MAX_CONNECT_ATTEMPTS_PER_MINUTE;
     } catch (err) {
@@ -191,145 +342,385 @@ class ApiWebSocketHandler {
   }
 
   /**
+   * Failed authentications per IP (fixed window, shared across workers).
+   * Redis errors do not block authentication (the shared login keeps its
+   * own limits for alias passwords).
+   */
+  async _isAuthLocked(ip) {
+    try {
+      const count = await this.client.get(`ws_auth_fail:${config.env}:${ip}`);
+      return Number(count) >= MAX_AUTH_FAILURES_PER_IP;
+    } catch (err) {
+      logger.fatal(err);
+      return false;
+    }
+  }
+
+  async _recordAuthFailure(ip) {
+    try {
+      const key = `ws_auth_fail:${config.env}:${ip}`;
+      await this.client
+        .multi()
+        .set(key, 0, 'PX', AUTH_FAILURE_WINDOW_MS, 'NX')
+        .incr(key)
+        .exec();
+    } catch (err) {
+      logger.fatal(err);
+    }
+  }
+
+  /**
    * Authenticate the WebSocket upgrade request using Basic Auth.
    * Supports both:
    *   1. API token auth (username=token, password empty) — requires alias_id query param
    *   2. Alias auth (username=alias@domain.com, password=generated_password)
    *
-   * This mirrors the dual-auth pattern used across all API endpoints
-   * (see helpers/ensure-api-token-or-alias-auth.js).
+   * Both apply the same account checks as the rest of the API: API tokens
+   * must be enabled, the email verified and the account not banned; alias
+   * credentials go through the shared login (helpers/on-auth.js).
    *
    * @param {http.IncomingMessage} request
-   * @returns {Promise<Object>} - { aliasId } on success
+   * @param {string} remoteAddress
+   * @returns {Promise<Object>} - { aliasId, subjects } on success
    */
-  async _authenticate(request) {
+  async _authenticate(request, remoteAddress) {
     // Authentication material must be supplied only through Authorization.
     // URLs are routinely retained in access logs, browser history, proxies,
     // metrics, and referrer chains, so accepting token or password query
     // parameters would disclose reusable credentials.
     const creds = basicAuth(request);
+    if (!creds || !creds.name) throw httpError('Authentication required', 401);
 
-    if (!creds || !creds.name) {
-      const err = new Error('Authentication required');
-      err.statusCode = 401;
-      throw err;
-    }
+    // For API token auth, the client must specify which alias to subscribe to
+    const { query } = url.parse(request.url, true);
+    return this._checkCredentials(
+      { name: creds.name, pass: creds.pass, aliasId: query.alias_id },
+      remoteAddress
+    );
+  }
+
+  /**
+   * Check credentials from the Authorization header or the first message.
+   *
+   * @param {Object} creds - { name, pass, aliasId }
+   * @param {string} remoteAddress
+   * @returns {Promise<Object>} - { aliasId, subjects } on success
+   */
+  async _checkCredentials(
+    { name, pass, aliasId: requestedAliasId },
+    remoteAddress
+  ) {
+    if (
+      typeof name !== 'string' ||
+      !name ||
+      name.length > MAX_USERNAME_LENGTH ||
+      (pass !== undefined && typeof pass !== 'string')
+    )
+      throw httpError('Invalid credentials', 401);
 
     //
     // Mode 1: API token auth (password is empty)
     //
-    if (!creds.pass || creds.pass === '') {
+    if (!pass) {
       const user = await Users.findOne({
-        [config.userFields.apiToken]: creds.name
+        [config.userFields.apiToken]: name
       })
         .lean()
         .exec();
 
-      if (!user) {
-        const err = new Error('Invalid API token');
-        err.statusCode = 401;
-        throw err;
-      }
-
+      if (!user) throw httpError('Invalid API token', 401);
       ensureApiTokenEnabled(user);
+      if (!user[config.userFields.hasVerifiedEmail])
+        throw httpError('Email verification required', 403);
+      if (user[config.userFields.isBanned])
+        throw httpError('Account banned', 403);
 
-      // For API token auth, the client must specify which alias to subscribe to
-      const { query } = url.parse(request.url, true);
-      if (!query.alias_id) {
-        const err = new Error(
-          'alias_id query parameter is required for API token authentication'
+      if (
+        typeof requestedAliasId !== 'string' ||
+        !OBJECT_ID_REGEX.test(requestedAliasId)
+      )
+        throw httpError(
+          'alias_id is required for API token authentication',
+          400
         );
-        err.statusCode = 400;
-        throw err;
-      }
 
-      // Verify the alias belongs to this user (direct ownership)
-      const alias = await Aliases.findOne({
-        id: query.alias_id,
-        user: user._id
-      })
-        .lean()
-        .exec();
+      // the alias must belong to the user or to a domain they administer
+      const userId = user._id.toString();
+      const aliasId = await getAccessibleAliasId(userId, requestedAliasId);
+      if (!aliasId) throw httpError('Alias not found', 404);
 
-      if (alias) {
-        return { aliasId: alias.id.toString() };
-      }
-
-      // Fallback: check if user is a domain admin/member for this alias
-      const aliasById = await Aliases.findOne({
-        id: query.alias_id
-      })
-        .lean()
-        .exec();
-
-      if (!aliasById) {
-        const err = new Error('Alias not found');
-        err.statusCode = 404;
-        throw err;
-      }
-
-      const domain = await Domains.findOne({
-        _id: aliasById.domain,
-        'members.user': user._id
-      })
-        .lean()
-        .exec();
-
-      if (!domain) {
-        const err = new Error('Alias not found');
-        err.statusCode = 404;
-        throw err;
-      }
-
-      return { aliasId: aliasById.id.toString() };
+      return {
+        aliasId,
+        subjects: getSubjects({
+          aliasIds: [aliasId],
+          accountIds: [userId],
+          tokenIds: [userId]
+        })
+      };
     }
 
     //
     // Mode 2: Alias auth (username@domain.com:password)
     //
-    if (!isEmail(creds.name)) {
-      const err = new Error('Invalid alias email format');
-      err.statusCode = 401;
-      throw err;
+    if (!this.instance)
+      throw httpError('Alias authentication unavailable', 503);
+
+    let result;
+    try {
+      result = await new Promise((resolve, reject) => {
+        onAuth.call(
+          this.instance,
+          { username: name, password: pass },
+          { id: randomUUID(), remoteAddress },
+          (err, value) => {
+            if (err) reject(err);
+            else resolve(value);
+          }
+        );
+      });
+    } catch (err) {
+      // failed-attempt limits of the shared login are not wrong credentials
+      if (err.isRateLimited) throw httpError('Too many attempts', 429);
+      // on-auth leaves `response` unset for transient failures (database,
+      // Redis, shutdown) so clients retry instead of prompting
+      if (err.response !== 'NO') throw httpError('Service unavailable', 503);
+      throw httpError('Invalid credentials', 401);
     }
 
-    const [name, domainName] = creds.name.split('@');
+    const user = result?.user;
+    // credentials that do not name one alias (a domain-wide password)
+    if (!user?.alias_id) throw httpError('Invalid credentials', 401);
 
-    const domain = await Domains.findOne({
-      name: domainName,
-      has_smtp: true
-    })
-      .lean()
-      .exec();
+    const aliasId = user.alias_id.toString();
+    return {
+      aliasId,
+      subjects: getSubjects({
+        aliasIds: [aliasId],
+        accountIds: [user.alias_user_id]
+      }),
+      // when on-auth checked them (earlier than now for a cached login)
+      authAt: Number.isSafeInteger(result.authAt) ? result.authAt : null
+    };
+  }
 
-    if (!domain) {
-      const err = new Error('Domain not found');
-      err.statusCode = 401;
-      throw err;
+  // The earliest time the credentials behind a result were checked at.
+  static _checkedSince(authStartedAt, result) {
+    return Number.isSafeInteger(result?.authAt)
+      ? Math.min(authStartedAt, result.authAt)
+      : authStartedAt;
+  }
+
+  /**
+   * Close a socket, and drop it if the client does not finish the close
+   * handshake (so a closed connection cannot hold its slot).
+   */
+  _closeSocket(ws, code, reason) {
+    if (ws.readyState === WebSocket.OPEN) ws.close(code, reason);
+    const timer = setTimeout(
+      () => {
+        if (ws.readyState !== WebSocket.CLOSED) ws.terminate();
+      },
+      ws.pendingAuth ? PENDING_CLOSE_GRACE_MS : CLOSE_GRACE_MS
+    );
+    timer.unref?.();
+  }
+
+  /**
+   * The first message of a `?auth=message` connection.  Exactly one attempt
+   * per connection; nothing is sent to the client before it succeeds.
+   */
+  async _onAuthMessage(ws, data, isBinary) {
+    ws.authAttempted = true;
+    clearTimeout(ws.authTimer);
+
+    const creds = parseAuthMessage(data, isBinary);
+    if (!creds) {
+      this._closeSocket(ws, CLOSE_CODES[400], 'Invalid authentication message');
+      return;
     }
 
-    const alias = await Aliases.findOne({
-      name: name.toLowerCase(),
-      domain: domain._id
-    })
-      .select('+tokens.hash +tokens.salt')
-      .exec();
+    // the check is bounded too, so a slow dependency cannot hold the slot
+    ws.authTimer = setTimeout(() => {
+      this._closeSocket(ws, CLOSE_CODE_TRY_AGAIN, 'Please try again');
+    }, AUTH_TIMEOUT_MS);
 
-    if (!alias) {
-      const err = new Error('Alias not found');
-      err.statusCode = 401;
-      throw err;
+    let result;
+    let authStartedAt;
+    try {
+      if (await this._isAuthLocked(ws.ip))
+        throw httpError('Too many failed attempts', 429);
+
+      // the time the credentials are checked at (see _verifyNotRevoked)
+      try {
+        authStartedAt = await getRedisTime(this.client);
+      } catch (err) {
+        logger.error(err);
+        throw httpError('Service unavailable', 503);
+      }
+
+      result = await this._checkCredentials(creds, ws.remoteAddress);
+    } catch (err) {
+      const statusCode = err.statusCode || 401;
+      if ([401, 403, 404].includes(statusCode))
+        await this._recordAuthFailure(ws.ip);
+      logger.debug('WebSocket auth failed', { ip: ws.ip, error: err.message });
+      this._closeSocket(
+        ws,
+        CLOSE_CODES[statusCode] || CLOSE_CODE_TRY_AGAIN,
+        http.STATUS_CODES[statusCode] || 'Please try again'
+      );
+      return;
+    } finally {
+      clearTimeout(ws.authTimer);
     }
 
-    const isValid = await isValidPassword(alias.tokens, creds.pass);
+    // closed (by the client, a timeout or shutdown) while checking
+    if (ws.readyState !== WebSocket.OPEN) return;
 
-    if (!isValid) {
-      const err = new Error('Invalid password');
-      err.statusCode = 401;
-      throw err;
+    // from here to the socket being registered is synchronous
+    const existing = this.clients.get(result.aliasId);
+    if (existing && existing.size >= MAX_CONNECTIONS_PER_ALIAS) {
+      this._closeSocket(ws, CLOSE_CODES[429], 'Too many connections');
+      return;
     }
 
-    return { aliasId: alias.id.toString() };
+    this._untrack(ws);
+    ws.pendingAuth = false;
+    ws.aliasId = result.aliasId;
+    ws.subjects = result.subjects;
+    ws.authStartedAt = ApiWebSocketHandler._checkedSince(authStartedAt, result);
+    // no events until the revocation check passes
+    ws.verified = false;
+    this._track(ws);
+    this._verifyNotRevoked(ws);
+  }
+
+  /**
+   * Room for one more waiting connection: when all are taken, the oldest
+   * one that has not sent its first message is dropped (a client sends it
+   * as soon as the connection opens, so only an idle one is dropped).
+   *
+   * @returns {boolean} false when every waiting connection is being checked
+   */
+  _makePendingRoom() {
+    if (this.pendingCount < this.maxPendingTotal) return true;
+    for (const ws of this.pendingQueue) {
+      if (ws.authAttempted) continue;
+      clearTimeout(ws.authTimer);
+      // untracked now so the slot is free right away
+      this._untrack(ws);
+      ws.authAttempted = true;
+      ws.terminate();
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Track a socket under its current state (authenticated, waiting for its
+   * first message, or broadcast-only).
+   */
+  _track(ws) {
+    let map;
+    let key;
+    if (ws.aliasId) {
+      map = this.clients;
+      key = ws.aliasId;
+    } else if (ws.pendingAuth) {
+      map = this.pendingClients;
+      key = ws.ip;
+      this.pendingCount++;
+      this.pendingQueue.add(ws);
+      const wide = getWideBucket(ws.ip);
+      if (wide)
+        this.pendingWide.set(wide, (this.pendingWide.get(wide) || 0) + 1);
+    } else {
+      map = this.unauthClients;
+      key = ws.ip;
+    }
+
+    if (!map.has(key)) map.set(key, new Set());
+    map.get(key).add(ws);
+  }
+
+  _untrack(ws) {
+    let map;
+    let key;
+    if (ws.aliasId) {
+      map = this.clients;
+      key = ws.aliasId;
+    } else if (ws.pendingAuth) {
+      map = this.pendingClients;
+      key = ws.ip;
+    } else {
+      map = this.unauthClients;
+      key = ws.ip;
+    }
+
+    const set = map.get(key);
+    if (!set || !set.delete(ws)) return;
+    if (set.size === 0) map.delete(key);
+    if (map === this.pendingClients) {
+      this.pendingCount = Math.max(0, this.pendingCount - 1);
+      this.pendingQueue.delete(ws);
+      const wide = getWideBucket(ws.ip);
+      if (wide) {
+        const count = (this.pendingWide.get(wide) || 1) - 1;
+        if (count > 0) this.pendingWide.set(wide, count);
+        else this.pendingWide.delete(wide);
+      }
+    }
+  }
+
+  /**
+   * Close the sockets whose credentials changed (a password or API token
+   * change on this or another API server; see
+   * helpers/credential-revocation.js).
+   */
+  _revoke({ subjects } = {}) {
+    const revoked = new Set(Array.isArray(subjects) ? subjects : []);
+    if (revoked.size === 0) return;
+
+    for (const ws of this.wss.clients) {
+      if (!ws.aliasId) continue;
+      if (!(ws.subjects || []).some((subject) => revoked.has(subject)))
+        continue;
+
+      // stop delivery right away (the close handshake takes a moment)
+      ws.verified = false;
+      this._closeSocket(ws, CLOSE_CODE_REVOKED, 'Credentials changed');
+    }
+  }
+
+  /**
+   * A socket is registered before this runs, so a revocation published from
+   * now on closes it (see _revoke); this closes it if the credentials were
+   * changed after they were checked but before it was registered.  Events
+   * and the `connected` event are only sent once it passes.
+   */
+  async _verifyNotRevoked(ws) {
+    let revoked;
+    try {
+      revoked = await isRevokedSince(
+        this.client,
+        ws.subjects,
+        ws.authStartedAt
+      );
+    } catch (err) {
+      logger.error(err, { extra: { message: 'WebSocket revocation check' } });
+      this._closeSocket(ws, 1011, 'Please reconnect');
+      return;
+    }
+
+    if (ws.readyState !== WebSocket.OPEN) return;
+    if (revoked) {
+      this._closeSocket(ws, CLOSE_CODE_REVOKED, 'Credentials changed');
+      return;
+    }
+
+    ws.verified = true;
+    this._send(ws, { event: 'connected', aliasId: ws.aliasId });
   }
 
   /**
@@ -366,10 +757,9 @@ class ApiWebSocketHandler {
     });
 
     // Get client IP — only trust X-Forwarded-For when WS_TRUST_PROXY is enabled
-    const ip = config.WS_TRUST_PROXY
-      ? request.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-        request.socket.remoteAddress
-      : request.socket.remoteAddress;
+    const remoteAddress = getRemoteAddress(request);
+    // per address, or per /64 for IPv6 (one client can hold a whole /64)
+    const ip = getIpBucket(remoteAddress);
 
     // Check global connection limit
     if (this.totalConnections >= MAX_TOTAL_CONNECTIONS) {
@@ -392,36 +782,112 @@ class ApiWebSocketHandler {
     }
 
     // Query-string credentials are deliberately unsupported.  They leak into
-    // routine request logging and browser history.  `alias_id` and `msgpackr`
-    // remain non-secret routing/format parameters.
+    // routine request logging and browser history.  `alias_id`, `msgpackr`
+    // and `auth` remain non-secret routing/format parameters.
     if (query.token || query.username || query.password) {
       socket.write('HTTP/1.1 400 Bad Request\r\n\r\n');
       socket.destroy();
       return;
     }
 
-    // If an Authorization header is supplied, authentication must succeed; it
-    // must never fall through to the unauthenticated broadcast-only path.
-    const creds = basicAuth(request);
-    const hasCredentials = Boolean(creds && creds.name);
+    // If an Authorization header is supplied, authentication must succeed;
+    // it must never fall through to the unauthenticated broadcast-only path.
+    // (any Authorization header counts, so a malformed or non-Basic header
+    // is refused with 401 instead of quietly connecting as broadcast-only)
+    const hasCredentials = Boolean(request.headers.authorization);
+
+    // `?auth=message`: browsers cannot set headers on a WebSocket handshake,
+    // so they send the credentials as the first message instead
+    const wantsMessageAuth = query.auth !== undefined;
+    if (
+      (wantsMessageAuth && query.auth !== 'message') ||
+      (wantsMessageAuth && hasCredentials)
+    ) {
+      socket.write('HTTP/1.1 400 Bad Request\r\n\r\n');
+      socket.destroy();
+      return;
+    }
+
+    if (wantsMessageAuth) {
+      const pending = this.pendingClients.get(ip);
+      const wide = getWideBucket(ip);
+      if (
+        (pending && pending.size >= MAX_PENDING_PER_IP) ||
+        (wide &&
+          (this.pendingWide.get(wide) || 0) >= MAX_PENDING_PER_IPV6_48) ||
+        !this._makePendingRoom()
+      ) {
+        socket.write(
+          'HTTP/1.1 429 Too Many Requests\r\nRetry-After: 60\r\n\r\n'
+        );
+        socket.destroy();
+        return;
+      }
+
+      this.wss.handleUpgrade(request, socket, head, (ws) => {
+        ws.aliasId = null;
+        ws.pendingAuth = true;
+        ws.authAttempted = false;
+        ws.ip = ip;
+        ws.remoteAddress = remoteAddress;
+        ws.connectedAt = Date.now();
+        ws.isAlive = true;
+        ws.useMsgpackr = query.msgpackr === 'true';
+        this.wss.emit('connection', ws, request);
+      });
+      return;
+    }
 
     if (hasCredentials) {
       // --- Authenticated path ---
       try {
+        if (await this._isAuthLocked(ip))
+          throw httpError('Too many failed attempts', 429);
+
+        // the time the credentials are checked at (see _verifyNotRevoked)
+        let authStartedAt;
+        try {
+          authStartedAt = await getRedisTime(this.client);
+        } catch (err) {
+          logger.error(err);
+          throw httpError('Service unavailable', 503);
+        }
+
         // Wrap authentication in a timeout to prevent hanging auth
         let authTimer;
-        const { aliasId } = await Promise.race([
-          this._authenticate(request),
-          new Promise((_, reject) => {
-            authTimer = setTimeout(() => {
-              const err = new Error('Authentication timed out');
-              err.statusCode = 504;
-              reject(err);
-            }, AUTH_TIMEOUT_MS);
-          })
-        ]).finally(() => {
+        let result;
+        try {
+          result = await Promise.race([
+            this._authenticate(request, remoteAddress),
+            new Promise((_, reject) => {
+              authTimer = setTimeout(() => {
+                reject(httpError('Authentication timed out', 504));
+              }, AUTH_TIMEOUT_MS);
+            })
+          ]);
+        } catch (err) {
+          if ([401, 403, 404].includes(err.statusCode || 401))
+            await this._recordAuthFailure(ip);
+          throw err;
+        } finally {
           clearTimeout(authTimer);
-        });
+        }
+
+        const { aliasId, subjects } = result;
+
+        // the client went away while authenticating
+        if (socket.destroyed) return;
+
+        // limits are checked again now that authentication is done (other
+        // handshakes may have completed in the meantime); from here to the
+        // socket being registered is synchronous
+        if (this.totalConnections >= MAX_TOTAL_CONNECTIONS) {
+          socket.write(
+            'HTTP/1.1 503 Service Unavailable\r\nRetry-After: 60\r\n\r\n'
+          );
+          socket.destroy();
+          return;
+        }
 
         // Check max connections per alias
         const existing = this.clients.get(aliasId);
@@ -439,22 +905,31 @@ class ApiWebSocketHandler {
 
         this.wss.handleUpgrade(request, socket, head, (ws) => {
           ws.aliasId = aliasId;
+          ws.subjects = subjects;
+          ws.authStartedAt = ApiWebSocketHandler._checkedSince(
+            authStartedAt,
+            result
+          );
+          // no events until the revocation check passes
+          ws.verified = false;
           ws.ip = ip;
           ws.connectedAt = Date.now();
           ws.isAlive = true;
           ws.useMsgpackr = query.msgpackr === 'true';
           this.wss.emit('connection', ws, request);
+          this._verifyNotRevoked(ws);
         });
       } catch (err) {
         const statusCode = err.statusCode || 401;
-        const message = err.message || 'Unauthorized';
-        logger.debug('WebSocket auth failed', { ip, error: message });
-        socket.write(
-          `HTTP/1.1 ${statusCode} ${
-            http.STATUS_CODES[statusCode] || message
-          }\r\n\r\n`
-        );
-        socket.destroy();
+        logger.debug('WebSocket auth failed', { ip, error: err.message });
+        if (!socket.destroyed) {
+          socket.write(
+            `HTTP/1.1 ${statusCode} ${
+              http.STATUS_CODES[statusCode] || 'Unauthorized'
+            }\r\n\r\n`
+          );
+          socket.destroy();
+        }
       }
     } else {
       // --- Unauthenticated path (broadcast-only) ---
@@ -523,25 +998,16 @@ class ApiWebSocketHandler {
    *   - Keep-alive pong handling prevents stale connections
    */
   _onConnection(ws) {
-    const { aliasId, ip } = ws;
-
-    if (aliasId) {
-      // Authenticated client — track per alias
-      if (!this.clients.has(aliasId)) {
-        this.clients.set(aliasId, new Set());
-      }
-
-      this.clients.get(aliasId).add(ws);
-    } else {
-      // Unauthenticated client — track per IP
-      if (!this.unauthClients.has(ip)) {
-        this.unauthClients.set(ip, new Set());
-      }
-
-      this.unauthClients.get(ip).add(ws);
-    }
-
+    this._track(ws);
     this.totalConnections++;
+
+    // a `?auth=message` connection has this long to send its first message
+    if (ws.pendingAuth) {
+      ws.authTimer = setTimeout(() => {
+        if (ws.pendingAuth && !ws.authAttempted)
+          this._closeSocket(ws, CLOSE_CODES[408], 'Authentication timed out');
+      }, this.authMessageTimeoutMs);
+    }
 
     // Handle pong for keep-alive
     ws.on('pong', () => {
@@ -549,53 +1015,40 @@ class ApiWebSocketHandler {
     });
 
     //
-    // Ignore all incoming data messages from clients.
+    // Ignore all incoming data messages from clients, except the first
+    // message of a `?auth=message` connection (its credentials).
     // This is a read-only notification channel — clients cannot publish,
     // send commands, or interact with the server beyond maintaining
-    // the connection. Any data frames received are silently discarded.
+    // the connection. Any other data frames are silently discarded.
     //
-    ws.on('message', () => {
-      // Intentionally ignored — this is a server-to-client push channel only.
-      // Logging is omitted to prevent log flooding from malicious clients.
+    ws.on('message', (data, isBinary) => {
+      if (ws.pendingAuth && !ws.authAttempted)
+        this._onAuthMessage(ws, data, isBinary).catch((err) => {
+          logger.error(err, { extra: { message: 'WebSocket auth message' } });
+          this._closeSocket(ws, CLOSE_CODE_TRY_AGAIN, 'Please try again');
+        });
+      // Anything else is intentionally ignored (and not logged, to prevent
+      // log flooding from malicious clients).
     });
 
-    // Handle close — clean up tracking
+    // Handle close — clean up tracking (whatever state it is in by then)
     ws.on('close', () => {
-      if (aliasId) {
-        const aliasConnections = this.clients.get(aliasId);
-        if (aliasConnections) {
-          aliasConnections.delete(ws);
-          if (aliasConnections.size === 0) {
-            this.clients.delete(aliasId);
-          }
-        }
-      } else if (ip) {
-        const ipConnections = this.unauthClients.get(ip);
-        if (ipConnections) {
-          ipConnections.delete(ws);
-          if (ipConnections.size === 0) {
-            this.unauthClients.delete(ip);
-          }
-        }
-      }
-
+      clearTimeout(ws.authTimer);
+      this._untrack(ws);
       this.totalConnections = Math.max(0, this.totalConnections - 1);
     });
 
     // Handle errors
     ws.on('error', (err) => {
-      logger.debug('WebSocket client error', { aliasId, error: err.message });
+      logger.debug('WebSocket client error', {
+        aliasId: ws.aliasId,
+        error: err.message
+      });
     });
 
-    // Send a welcome event
-    // Authenticated clients receive their aliasId; unauthenticated clients
-    // receive a confirmation that they are connected in broadcast-only mode
-    if (aliasId) {
-      this._send(ws, {
-        event: 'connected',
-        aliasId
-      });
-    } else {
+    // Send a welcome event to broadcast-only clients; authenticated clients
+    // get theirs (with their aliasId) from _verifyNotRevoked
+    if (!ws.aliasId && !ws.pendingAuth) {
       this._send(ws, {
         event: 'connected',
         broadcastOnly: true
@@ -628,16 +1081,35 @@ class ApiWebSocketHandler {
    * @param {Buffer} message - msgpackr-encoded message Buffer
    */
   _onSubscriberMessage(channel, message) {
-    if (channel.toString() !== config.WS_REDIS_CHANNEL_NAME) return;
+    const name = channel.toString();
+
+    // an alias password was rotated
+    if (name === AUTH_RESET_CHANNEL) {
+      const aliasId = message.toString();
+      if (!/^[\da-f]{24}$/i.test(aliasId)) return;
+      this._revoke({ subjects: getSubjects({ aliasIds: [aliasId] }) });
+      onAuth.clearAuthCache(this.client, aliasId).catch((err) => {
+        logger.debug('clearAuthCache error', { err });
+      });
+      return;
+    }
+
+    if (name !== config.WS_REDIS_CHANNEL_NAME) return;
 
     try {
       const decoded = decoder.unpack(message);
+      if (decoded?.revoke) {
+        this._revoke(decoded.revoke);
+        return;
+      }
+
       const { aliasId, payload, broadcast } = decoded;
       if (!payload) return;
 
       // Broadcast mode — send to every connected client
       if (broadcast) {
         for (const ws of this.wss.clients) {
+          if (ws.pendingAuth || (ws.aliasId && !ws.verified)) continue;
           this._send(ws, payload);
         }
 
@@ -651,6 +1123,7 @@ class ApiWebSocketHandler {
       if (!aliasConnections || aliasConnections.size === 0) return;
 
       for (const ws of aliasConnections) {
+        if (!ws.verified) continue;
         this._send(ws, payload);
       }
     } catch (err) {
@@ -733,7 +1206,10 @@ class ApiWebSocketHandler {
 
     // Unsubscribe and disconnect the Redis subscriber
     try {
-      await this.subscriber.unsubscribe(config.WS_REDIS_CHANNEL_NAME);
+      await this.subscriber.unsubscribe(
+        config.WS_REDIS_CHANNEL_NAME,
+        AUTH_RESET_CHANNEL
+      );
       this.subscriber.disconnect();
     } catch (err) {
       logger.debug('Error closing WebSocket subscriber', err);
@@ -750,6 +1226,8 @@ class ApiWebSocketHandler {
     this.totalConnections = 0;
     this.clients.clear();
     this.unauthClients.clear();
+    this.pendingClients.clear();
+    this.pendingCount = 0;
   }
 }
 
