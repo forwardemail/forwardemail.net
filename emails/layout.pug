@@ -10,6 +10,12 @@ html(lang=locale)
       title= subject
       style
         include ../build/css/app-email.css
+      //- the site's font, for clients that load web fonts (others fall back
+      //- to Helvetica or Arial); data-embed keeps juice from inlining or
+      //- removing it
+      style(data-embed)
+        each weight in [400, 700]
+          | @font-face{font-family:'Nunito Sans';font-style:normal;font-weight:#{ weight };font-display:swap;src:url('#{ config.urls.web }/fonts/nunito-sans-latin-#{ weight }.woff2') format('woff2'),url('#{ config.urls.web }/fonts/nunito-sans-latin-#{ weight }.woff') format('woff')}
   body.email
     block body
       block messages

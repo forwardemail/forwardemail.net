@@ -49,11 +49,11 @@ body.email {
   .email-header {
     padding: 24px 0 8px;
   }
+  // same size and weight as the wordmark in the site navigation
   .email-brand {
     color: $fe-ink;
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
+    font-size: 17px;
+    font-weight: 700;
   }
   .email-brand-mark {
     margin-right: 8px;

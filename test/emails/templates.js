@@ -214,3 +214,19 @@ test('footer links webmail and downloads', async (t) => {
   t.regex(footer, /href="https:\/\/mail\.forwardemail\.net"/);
   t.regex(footer, /\/en\/download"/);
 });
+
+test('the wordmark uses the site font and weight', async (t) => {
+  const html = await render('welcome');
+  // the site's Nunito Sans is loaded where the client allows web fonts
+  for (const weight of [400, 700])
+    t.true(
+      html.includes(
+        `url('${config.urls.web}/fonts/nunito-sans-latin-${weight}.woff2')`
+      )
+    );
+  // same size and weight as the wordmark in the site navigation
+  const brand = html.match(/class="email-brand"[^>]*style="([^"]*)"/);
+  t.truthy(brand);
+  t.regex(brand[1], /font-size: 17px/);
+  t.regex(brand[1], /font-weight: 700/);
+});
