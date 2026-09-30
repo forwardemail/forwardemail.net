@@ -47,6 +47,79 @@ function parseFilter(address) {
 // <https://github.com/pdl/regexp-capture-interpolation/blob/fbe04423b37699c2d653d9bc57b085c24dfe1c75/lib/index.js#L92>
 const REGEX_INTERPOLATED_DOLLAR = new RE2(/(\$)([1-9]\d*|[$&`'])/);
 
+//
+// Domains whose DNS is re-checked before their mail is refused as "does not
+// exist". The Ubuntu team domains have intermittently been answered without
+// their site verification TXT record or MX (their nameservers are not
+// consistent), which refused mail to existing members with a permanent 550 and
+// had mailing lists count bounces for them. For these domains an incomplete
+// answer is looked up again without our DNS cache, and if it is still
+// incomplete the sender is told to retry later (421) instead.
+//
+const DNS_RECHECK_DOMAINS = new Set(Object.keys(config.ubuntuTeamMapping));
+
+//
+// Read the `forward-email=` values and `forward-email-site-verification=`
+// values from TXT records (each record an array of chunks, as resolveTxt
+// returns them).
+//
+function parseTxtRecords(records, validRecords, verifications) {
+  for (let i = 0; i < records.length; i++) {
+    records[i] = records[i].join('').trim(); // join and trim chunks together
+    if (records[i].indexOf(`${config.recordPrefix}=`) === 0) {
+      let value = records[i].replace(`${config.recordPrefix}=`, '');
+      if (isBase64(value)) {
+        try {
+          value = decrypt(
+            Buffer.from(value, 'base64').toString('utf8'),
+            env.TXT_ENCRYPTION_KEY
+          );
+        } catch (err) {
+          logger.debug(err);
+          try {
+            value = decrypt(
+              Buffer.from(value, 'base64').toString('hex'),
+              env.TXT_ENCRYPTION_KEY
+            );
+          } catch (err) {
+            logger.debug(err);
+          }
+        }
+      }
+
+      validRecords.push(value);
+    }
+
+    if (records[i].indexOf(`${config.recordPrefix}-site-verification=`) === 0)
+      verifications.push(
+        records[i].replace(`${config.recordPrefix}-site-verification=`, '')
+      );
+  }
+}
+
+//
+// Look up a domain's TXT and MX records again, bypassing our DNS cache.
+// Returns the TXT records (empty when there is no MX, as in the first
+// lookup), or null when the lookup itself failed.
+//
+async function lookupRecordsWithoutCache(resolver, domain, answers) {
+  try {
+    const [txt, mx] = await Promise.all([
+      resolver.resolveTxt(domain, { purgeCache: true }),
+      resolver.resolveMx(domain, { purgeCache: true })
+    ]);
+    answers.txt = (txt || []).map((r) =>
+      Array.isArray(r) ? r.join('') : String(r)
+    );
+    answers.mx = (mx || []).map((r) => `${r.priority} ${r.exchange}`);
+    if (!mx || mx.length === 0) return [];
+    return txt || [];
+  } catch (err) {
+    answers.error = `${err.code || err.name}: ${err.message}`;
+    return null;
+  }
+}
+
 // Recursive IMAP/address expansion remains compatible with legitimate
 // multi-hop forwarding, but cannot be unlimited: user-controlled regex
 // substitutions can otherwise grow a new local-part exponentially.  Combined
@@ -173,6 +246,9 @@ async function getForwardingAddresses(
       if (isSubdomain && allowSubdomainForwarding && err.notConfigured) {
         exactHostError = err;
         records = [];
+      } else if (DNS_RECHECK_DOMAINS.has(domain) && err.notConfigured) {
+        // looked up again below, without our DNS cache
+        records = [];
       } else {
         throw err;
       }
@@ -224,37 +300,7 @@ async function getForwardingAddresses(
   let verificationHost = domain;
 
   // add support for multi-line TXT records
-  for (let i = 0; i < records.length; i++) {
-    records[i] = records[i].join('').trim(); // join and trim chunks together
-    if (records[i].indexOf(`${config.recordPrefix}=`) === 0) {
-      let value = records[i].replace(`${config.recordPrefix}=`, '');
-      if (isBase64(value)) {
-        try {
-          value = decrypt(
-            Buffer.from(value, 'base64').toString('utf8'),
-            env.TXT_ENCRYPTION_KEY
-          );
-        } catch (err) {
-          logger.debug(err);
-          try {
-            value = decrypt(
-              Buffer.from(value, 'base64').toString('hex'),
-              env.TXT_ENCRYPTION_KEY
-            );
-          } catch (err) {
-            logger.debug(err);
-          }
-        }
-      }
-
-      validRecords.push(value);
-    }
-
-    if (records[i].indexOf(`${config.recordPrefix}-site-verification=`) === 0)
-      verifications.push(
-        records[i].replace(`${config.recordPrefix}-site-verification=`, '')
-      );
-  }
+  parseTxtRecords(records, validRecords, verifications);
 
   //
   // wildcard subdomain fallback (opt-in by virtue of being a subdomain):
@@ -377,6 +423,45 @@ async function getForwardingAddresses(
       verifications.length === 0
     )
       throw exactHostError;
+  }
+
+  //
+  // an incomplete answer for a domain that is re-checked (see
+  // DNS_RECHECK_DOMAINS): look it up again without our DNS cache, and if it is
+  // still missing its records, have the sender retry later instead of
+  // refusing the address as if it did not exist
+  //
+  if (
+    DNS_RECHECK_DOMAINS.has(domain) &&
+    validRecords.length === 0 &&
+    verifications.length === 0
+  ) {
+    const answers = {};
+    const freshRecords = await lookupRecordsWithoutCache(
+      this.resolver,
+      domain,
+      answers
+    );
+    if (freshRecords)
+      parseTxtRecords(freshRecords, validRecords, verifications);
+
+    logger.warn(
+      new Error(
+        `DNS for ${domain} was missing its forwarding records${
+          verifications.length > 0 || validRecords.length > 0
+            ? ' (found on a fresh lookup)'
+            : ' (still missing on a fresh lookup)'
+        }`
+      ),
+      { address, dns: answers }
+    );
+
+    if (validRecords.length === 0 && verifications.length === 0)
+      throw new SMTPError(
+        `DNS for ${domain} did not return its forwarding records, please try again later`,
+        // (already logged above; a recursive lookup does not log it again)
+        { responseCode: 421, isDnsRecheck: true }
+      );
   }
 
   // check if we have a specific redirect and store global redirects (if any)
@@ -1154,7 +1239,7 @@ async function getForwardingAddresses(
         forwardingAddresses.push(element);
       }
     } catch (err) {
-      if (!err.notConfigured)
+      if (!err.notConfigured && !err.isDnsRecheck)
         logger.error(err, { session, resolver: this.resolver });
     }
   }
