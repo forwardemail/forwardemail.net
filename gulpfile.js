@@ -965,6 +965,10 @@ module.exports = {
     watch('assets/css/**/*.scss', cssDev);
     watch('assets/js/**/*.js', series(xo, bundle));
     watch(['app/views/**/*.pug', 'emails/**/*.pug'], pug);
+    // The startup build purges app.css against the views, so a class a view
+    // starts using (a new icon, say) has no rule until the next build. Rebuild
+    // the unpurged development bundle when a view changes, as for a .scss one.
+    watch('app/views/**/*.pug', cssDev);
     watch(staticAssets, static);
   },
   pug,

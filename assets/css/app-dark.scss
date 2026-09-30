@@ -230,6 +230,41 @@ $input-disabled-bg: $fe-n-100;
     border-color: var(--app-border-strong, #{$fe-l-400});
   }
 
+  // $dark is Ink, the same as the dark canvas, so a .btn-dark (and the save
+  // button next to an input) had no visible edge. Raise it one step off the
+  // canvas, with the same border as the fields it sits next to.
+  .btn-dark {
+    color: $fe-n-700;
+    background-color: $fe-n-200;
+    border-color: var(--app-input-border, #{$fe-n-500});
+  }
+
+  .btn-dark:disabled,
+  .btn-dark.disabled {
+    color: $fe-n-500;
+    border-color: $fe-n-350;
+  }
+
+  .btn-dark:not(:disabled):not(.disabled):hover,
+  .btn-dark:not(:disabled):not(.disabled):focus,
+  .btn-dark:not(:disabled):not(.disabled):active,
+  .btn-dark:not(:disabled):not(.disabled).active,
+  .show > .btn-dark.dropdown-toggle {
+    color: $fe-n-700;
+    background-color: $fe-n-300;
+    border-color: $fe-n-600;
+  }
+
+  // the same Ink-on-Ink problem for the dark badge and border utilities
+  .badge-dark {
+    color: $fe-n-700;
+    background-color: $fe-n-300;
+  }
+
+  .border-dark {
+    border-color: var(--app-border-strong, #{$fe-n-400}) !important;
+  }
+
   .navbar-dark .navbar-toggler {
     color: white !important;
   }

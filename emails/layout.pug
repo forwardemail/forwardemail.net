@@ -17,12 +17,15 @@ html(lang=locale)
         each weight in [400, 700]
           | @font-face{font-family:'Nunito Sans';font-style:normal;font-weight:#{ weight };font-display:swap;src:url('#{ config.urls.web }/fonts/nunito-sans-latin-#{ weight }.woff2') format('woff2'),url('#{ config.urls.web }/fonts/nunito-sans-latin-#{ weight }.woff') format('woff')}
   body.email
-    block body
-      block messages
-        include _messages
-      block nav
-        include _nav
-      block content
-        include _content
-      block footer
-        include _footer
+    //- readers that show the message inside their own page (webmail, Gmail)
+    //- drop <body> and its styles, so the width is set here as well
+    .email-wrapper
+      block body
+        block messages
+          include _messages
+        block nav
+          include _nav
+        block content
+          include _content
+        block footer
+          include _footer

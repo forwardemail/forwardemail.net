@@ -44,6 +44,11 @@ body.email {
   * {
     box-sizing: border-box;
   }
+  .email-wrapper {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
 
   // brand header
   .email-header {
@@ -51,9 +56,13 @@ body.email {
   }
   // same size and weight as the wordmark in the site navigation
   .email-brand {
+    vertical-align: middle;
     color: $fe-ink;
     font-size: 17px;
     font-weight: 700;
+  }
+  .email-brand-link {
+    text-decoration: none;
   }
   .email-brand-mark {
     margin-right: 8px;
