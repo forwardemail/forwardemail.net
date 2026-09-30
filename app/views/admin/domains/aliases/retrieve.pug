@@ -27,6 +27,13 @@ block body
                 i.fa.fa-angle-double-left
                 = " "
                 = t("Back to Aliases")
+              //- (a catch-all or regex alias has no single address: its domain)
+              a.btn.btn-outline-dark(
+                href=alias.name === "*" || alias.name.startsWith("/") ? l(`/admin/logs?domain=${domain._id}`) : l(`/admin/logs?alias=${encodeURIComponent(`${alias.name}@${domain.name}`)}`)
+              )
+                i.fa.fa-fw.fa-list-alt
+                = " "
+                = t("View Logs")
               button.btn.btn-secondary(type="reset")= t("Reset")
       .col-lg-4
         .card.border-themed.mb-3

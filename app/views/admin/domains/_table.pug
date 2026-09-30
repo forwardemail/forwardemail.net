@@ -242,6 +242,14 @@ include ../../_pagination
                   i.fa.fa-fw.fa-at
                   = " "
                   = t("Aliases")
+                a.btn.btn-sm.btn-dark.mr-1(
+                  href=l(`/admin/logs?domain=${domain.id}`),
+                  data-toggle="tooltip",
+                  data-title=t("View Logs")
+                )
+                  i.fa.fa-fw.fa-list-alt
+                  = " "
+                  = t("Logs")
                 button.btn.btn-sm.btn-outline-danger.mr-1(
                   type="button",
                   data-toggle="modal",

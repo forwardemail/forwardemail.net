@@ -4,14 +4,17 @@
  */
 
 const Boom = require('@hapi/boom');
+const mongoose = require('mongoose');
 const ms = require('ms');
 const paginate = require('koa-ctx-paginate');
+const revHash = require('rev-hash');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const env = require('#config/env');
 const getMongoQuery = require('#helpers/get-mongo-query');
 const getAllowedSort = require('#helpers/get-allowed-sort');
+const isEmail = require('#helpers/is-email');
 const { Logs } = require('#models');
 
 const LOG_SORT_FIELDS = new Set([
@@ -125,8 +128,57 @@ async function getJobNames() {
   return cachedJobNames;
 }
 
+const OBJECT_ID_REGEX = /^[\da-f]{24}$/i;
+
+//
+// Quick filters linked from Admin > Users, Admin > Domains and a domain's
+// aliases (`?user=`, `?domain=`, `?alias=`).  Each is one indexed field:
+//
+//   user    the log's `user`
+//   domain  the log's `domains`
+//   alias   the log's `keywords`, which hold a hash of every address the
+//           log mentions (see the Logs model; "+" suffixes are dropped)
+//
+// They combine with each other and with the search form.  Anything that is
+// not a single, valid value is refused.
+//
+function getQuickFilters(ctx) {
+  const filters = [];
+  const labels = [];
+
+  for (const name of ['user', 'domain']) {
+    const value = ctx.query[name];
+    if (value === undefined) continue;
+    if (typeof value !== 'string' || !OBJECT_ID_REGEX.test(value))
+      throw Boom.badRequest(`Invalid ${name} ID`);
+    const id = new mongoose.Types.ObjectId(value);
+    filters.push(name === 'user' ? { user: id } : { domains: id });
+    labels.push({ name, value: value.toLowerCase() });
+  }
+
+  const { alias } = ctx.query;
+  if (alias !== undefined) {
+    if (typeof alias !== 'string' || alias.length > 320 || !isEmail(alias))
+      throw Boom.badRequest('Invalid alias');
+    const [local, domain] = alias.toLowerCase().split('@');
+    const address = `${local.split('+')[0]}@${domain}`;
+    filters.push({ keywords: revHash(address) });
+    labels.push({ name: 'alias', value: address });
+  }
+
+  return { filters, labels };
+}
+
 async function list(ctx) {
-  const query = getMongoQuery(ctx);
+  const { filters, labels } = getQuickFilters(ctx);
+  let query = getMongoQuery(ctx);
+  if (filters.length > 0)
+    query = _.isEmpty(query)
+      ? filters.length === 1
+        ? filters[0]
+        : { $and: filters }
+      : { $and: [...filters, query] };
+
   const isEmptyQuery = _.isEmpty(query);
 
   //
@@ -249,6 +301,7 @@ async function list(ctx) {
       itemCount: cappedItemCount,
       uniqueHosts: HOSTNAMES,
       jobNames,
+      quickFilters: labels,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
   }

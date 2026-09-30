@@ -96,11 +96,18 @@ include ../../../_pagination
               data-time=new Date(alias.created_at).getTime()
             )
               = dayjs(alias.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
-            td.align-middle.text-center
-              a.btn.btn-sm.btn-primary(
+            td.align-middle.text-center.text-nowrap
+              a.btn.btn-sm.btn-primary.mr-1(
                 href=l(`/admin/domains/${domain._id}/aliases/${alias._id}`)
               )
                 i.fa.fa-fw.fa-pencil
                 = " "
                 = t("Edit")
+              //- (a catch-all or regex alias has no single address: its domain)
+              a.btn.btn-sm.btn-dark(
+                href=alias.name === "*" || alias.name.startsWith("/") ? l(`/admin/logs?domain=${domain._id}`) : l(`/admin/logs?alias=${encodeURIComponent(`${alias.name}@${domain.name}`)}`)
+              )
+                i.fa.fa-fw.fa-list-alt
+                = " "
+                = t("Logs")
 +paginate('#table-aliases')

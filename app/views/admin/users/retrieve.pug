@@ -8,7 +8,12 @@ block body
         form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
           input(type="hidden", name="_method", value="PUT")
           .card.border-themed
-            h4.card-header.bg-dark.text-white= result.id
+            .card-header.bg-dark.text-white.d-flex.justify-content-between.align-items-center
+              h4.mb-0= result.id
+              a.btn.btn-sm.btn-light(href=l(`/admin/logs?user=${result.id}`))
+                i.fa.fa-fw.fa-list-alt
+                = " "
+                = t("View Logs")
             .card-body
               .form-group.floating-label
                 input#input-first-name.form-control(

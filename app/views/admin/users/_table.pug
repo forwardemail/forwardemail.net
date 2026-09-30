@@ -134,6 +134,11 @@ include ../../_pagination
                   data-toggle="tooltip",
                   data-title=t("Edit")
                 ): i.fa.fa-fw.fa-edit
+                a.btn.btn-secondary(
+                  href=l(`/admin/logs?user=${user.id}`),
+                  data-toggle="tooltip",
+                  data-title=t("View Logs")
+                ): i.fa.fa-fw.fa-list-alt
                 form.ajax-form.confirm-prompt.btn-group(
                   action=l(`/admin/users/${user.id}/login`),
                   method="POST",

@@ -5,6 +5,20 @@ block body
     .row.mt-1
       .col
         include ../../_breadcrumbs
+        if quickFilters && quickFilters.length > 0
+          .alert.alert-info.d-flex.flex-wrap.justify-content-between.align-items-center
+            div
+              strong= t("Showing logs for")
+              each filter in quickFilters
+                = " "
+                span.badge.badge-dark.text-monospace.mr-1
+                  = filter.name === "user" ? t("User") : filter.name === "domain" ? t("Domain") : t("Alias")
+                  = ": "
+                  = filter.value
+            a.btn.btn-sm.btn-outline-dark(href=ctx.path)
+              i.fa.fa-fw.fa-times
+              = " "
+              = t("Clear")
         form.ajax-form.table-ajax-form.card.mb-3(
           action=ctx.path,
           method="POST",
