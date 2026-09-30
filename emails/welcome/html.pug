@@ -7,155 +7,44 @@ block content
         .card.border-dark.d-block.text-center
           h1.h5.card-header= t("Thank you for joining us")
           .card-body.text-center.p-0
-            a(href=`${config.urls.web}/${locale}/my-account`)
-              img.img-fluid.d-block.align-top(
-                src=manifest("img/emails/welcome.gif"),
-                alt=""
-              )
             .p-3
-              h1.h3= t("Features")
-              ul.list-unstyled.text-left.mb-0.d-inline-block.mx-auto
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Unlimited domains and aliases")
-                  = " "
-                  span.badge.badge-success
-                    = t("100% Free")
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("10 GB encrypted email storage")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/${locale}/blog/docs/best-quantum-safe-encrypted-email-service`
-                  )
-                    = t("Learn more")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Privacy-focused email")
-                  = " "
-                  a.badge.badge-dark.align-middle(
-                    href=`${config.urls.web}/${locale}/privacy`
-                  )
-                    = t("Privacy Policy")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Send outbound SMTP email")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/${locale}/guides/send-email-with-custom-domain-smtp`
-                  )
-                    = t("SMTP Guide")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Works with Apple, Outlook, Gmail, Thunderbird, Android")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/${locale}/faq#do-you-support-receiving-email-with-imap`
-                  )
-                    = t("Apps")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Support for E2EE/OpenPGP/WKD")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/${locale}/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd`
-                  )
-                    = t("Learn more")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Easily migrate from any provider")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/${locale}/faq#how-do-i-import-and-migrate-my-existing-mailbox`
-                  )
-                    = t("Learn more")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Enterprise-grade 99.99% uptime SLA")
-                  = " "
-                  a.badge.badge-dark(href=`${config.urls.web}/${locale}/faq`)
-                    = t("View FAQ")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Powered by bare metal servers")
-                  = " "
-                  a.badge.badge-dark(
-                    href="https://status.forwardemail.net",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    = t("Status Page")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("100% open-source software")
-                  = " "
-                  a.badge.badge-dark(
-                    href="https://github.com/forwardemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    = t("View")
-                    = " "
-                    = t("GitHub")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Email API designed for developers")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/${locale}/email-api`
-                  )
-                    = t("Email API")
-                    = " "
-                    != "&rarr;"
+              h2.h4= t("Get started")
+              p.card-text= t("Add your domain, update its DNS records, and your email starts working with Forward Email.")
+              ul.list-inline.mb-0
+                li.list-inline-item.mb-2
+                  a.btn.btn-lg.btn-primary(
+                    href=`${config.urls.web}/${locale}/my-account/domains/new`
+                  )= t("Add New Domain")
+                if user.plan !== "free"
+                  li.list-inline-item.mb-2
+                    a.btn.btn-lg.btn-outline-dark(
+                      href="https://mail.forwardemail.net",
+                      target="_blank",
+                      rel="noopener noreferrer"
+                    )= t("Open the web app")
+            .p-3.bg-light
+              h2.h4= t("Features")
+              include ../_features
             if user.plan === 'free'
               include ../_upgrade
             .p-3
-              h1.h3!= t("Your Account")
+              h2.h4!= t("Your Account")
               p.card-text!= t("Manage your aliases, domains, settings, and security.")
               a.btn.btn-lg.btn-dark(
                 href=`${config.urls.web}/${locale}/my-account`
               )
                 = t("My Account")
             .p-3
-              h1.h3!= t("Customer Support")
+              h2.h4= t("Need Help?")
               p.card-text!= t("Read our FAQ, submit a help request, or reply to this email.")
               ul.list-inline.mb-0
-                li.list-inline-item
-                  a.btn.btn-lg.btn-primary(
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
                     href=`${config.urls.web}/${locale}/faq`
                   )
                     = t("Read FAQ")
-                li.list-inline-item
-                  a.btn.btn-lg.btn-dark(
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
                     href=`${config.urls.web}/${locale}/help`
                   )
                     = t("Help Request")

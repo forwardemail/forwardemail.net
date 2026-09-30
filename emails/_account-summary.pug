@@ -1,11 +1,11 @@
 if domains.length > 0
   .p-3
     h2.h5.text-center.mb-3= t("Account Summary")
-    table.table.table-bordered.small
+    //- domain and plan share a column so the table fits a phone screen
+    table.table.table-bordered.small.email-status-table
       thead.thead-dark
         tr
           th= t("Domain Name")
-          th= t("Plan")
           th.text-center= t("MX")
           th.text-center!= t('<span class="notranslate">TXT</span>')
           th.text-center!= t('<span class="notranslate">DKIM</span>')
@@ -18,7 +18,7 @@ if domains.length > 0
           tr
             td.align-middle
               .markdown-body.ml-0.mr-0: code= domain.name
-            td.align-middle!= t(titleize(humanize(domain.plan)))
+              .text-muted!= t(titleize(humanize(domain.plan)))
             td.text-center.align-middle
               if domain.has_mx_record
                 = emoji("white_check_mark")
@@ -51,7 +51,7 @@ if domains.length > 0
                 = "-"
         if domains.length > 10
           tr
-            td.align-middle.text-center.text-muted(colspan=7)!= t('... and <span class="notranslate">%d</span> more domain names.', domains.length - 10)
+            td.align-middle.text-center.text-muted(colspan=6)!= t('... and <span class="notranslate">%d</span> more domain names.', domains.length - 10)
     .text-muted.small.text-center
       .small!= t('Please note that MX and <span class="notranslate">TXT</span> statuses may be inaccurate.')
       if domains.some(d => d.ignore_mx_check)

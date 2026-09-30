@@ -11,13 +11,6 @@ block content
             else
               = t("Welcoming your new domain!")
           .card-body.text-center.p-0
-            a(
-              href=`${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domain.name)}`
-            )
-              img.img-fluid.d-block.align-top(
-                src=manifest("img/emails/domain-onboard.gif"),
-                alt=""
-              )
             .p-3
               h1.h3
                 if errorMessage

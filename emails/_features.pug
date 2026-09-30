@@ -1,0 +1,83 @@
+//- What Forward Email offers, shared by the welcome and courtesy emails so the
+//- list stays the same (and current) everywhere it appears. Rows that need a
+//- mailbox are marked with the plan that includes one (free is forwarding).
+- const featuresLocale = typeof locale !== "undefined" && locale ? locale : "en";
+-
+  const featureRows = [
+    {
+      title: t("Unlimited domains and aliases"),
+      badge: t("100% Free")
+    },
+    {
+      title: t("Webmail"),
+      paid: true,
+      text: t("Read and send mail from any browser."),
+      href: "https://mail.forwardemail.net",
+      link: t("Open the web app"),
+      external: true
+    },
+    {
+      title: t("Desktop and mobile apps"),
+      paid: true,
+      text: t("Native apps for macOS, Windows, Linux, Android, and iOS."),
+      href: `${config.urls.web}/${featuresLocale}/download`,
+      link: t("See all downloads")
+    },
+    {
+      title: t("Independent security audits"),
+      text: t("Tested by Cure53, with the full report published."),
+      href: `${config.urls.web}/pentest-report_forward-email.pdf`,
+      link: t("Read the security audit"),
+      external: true
+    },
+    {
+      title: t("Quantum-Resistant Encryption"),
+      paid: true,
+      text: t("Every mailbox is individually encrypted and sandboxed."),
+      href: `${config.urls.web}/${featuresLocale}/blog/docs/best-quantum-safe-encrypted-email-service`,
+      link: t("Learn more")
+    },
+    {
+      title: t("Any Email Client"),
+      paid: true,
+      text: t("IMAP, POP3, SMTP, CalDAV, and CardDAV."),
+      href: `${config.urls.web}/${featuresLocale}/faq#do-you-support-receiving-email-with-imap`,
+      link: t("Email client setup")
+    },
+    {
+      title: t("100% open-source software"),
+      href: "https://github.com/forwardemail",
+      link: t("GitHub"),
+      external: true
+    },
+    {
+      title: t("Email API designed for developers"),
+      href: `${config.urls.web}/${featuresLocale}/email-api`,
+      link: t("Email API")
+    }
+  ];
+.text-left
+  each row in featureRows
+    .email-feature
+      span.email-check.text-success!= "&#10003;"
+      = " "
+      span.email-feature-title= row.title
+      if row.badge
+        = " "
+        span.badge.badge-success= row.badge
+      if row.paid
+        = " "
+        span.badge.badge-primary= t("Enhanced Protection")
+      if row.text
+        br
+        span.small= row.text
+      if row.href
+        = " "
+        a.small.font-weight-bold.text-nowrap(
+          href=row.href,
+          target=row.external ? "_blank" : undefined,
+          rel=row.external ? "noopener noreferrer" : undefined
+        )
+          = row.link
+          = " "
+          != "&rarr;"

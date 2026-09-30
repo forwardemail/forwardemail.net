@@ -331,6 +331,9 @@ const purgeCssOptions = {
       /^fe-rail/,
       'fe-surface-light',
       'fe-label',
+      // email-only classes (assets/css/_email.scss) are used in emails/**/*.pug
+      // which the app purge does not scan, the email purge then trims them
+      /^email-/,
       'nav',
       'nav-link',
       'nav-pills',

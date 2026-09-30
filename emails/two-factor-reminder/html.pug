@@ -5,16 +5,8 @@ block content
     .row
       .col-12
         .card.border-dark.d-block.text-center
-          h1.h5.card-header
-            = emoji("lock")
-            = " "
-            = t("Two-factor auth")
+          h1.h5.card-header= t("Two-factor auth")
           .card-body.p-0
-            a(href=`${config.urls.web}/${locale}/my-account/security`)
-              img.img-fluid.d-block.align-top(
-                src=manifest("img/emails/self-test.gif"),
-                alt=""
-              )
             .p-3
               p.card-text
                 strong= t("Don't worry! Your account is secure.")

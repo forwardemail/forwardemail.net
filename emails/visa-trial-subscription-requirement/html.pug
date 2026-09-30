@@ -8,11 +8,6 @@ block content
           h1.h5.card-header.text-center
             != t("Your first auto-renewal charge")
           .card-body.p-0
-            a(href=`${config.urls.web}/${locale}/my-account/billing`)
-              img.img-fluid.d-block.align-top(
-                src=manifest(`img/emails/${_.sample(["domain-onboard", "domain-verified", "self-test", "welcome"])}.gif`),
-                alt=""
-              )
             .p-3.text-center
               p.card-text: strong= t("Thank you for enabling auto-renew.")
               p.card-text.mb-0

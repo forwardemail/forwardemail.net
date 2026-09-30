@@ -6,11 +6,7 @@ block content
       .col-12
         .card.border-dark.d-block
           h1.h5.card-header.text-center
-            = emoji("shield")
-            = " "
             = t("Weekly DMARC Report")
-            = " "
-            = emoji("shield")
           .card-body.p-0
             //- Hero section with date range
             .p-3.bg-light.text-center
@@ -32,11 +28,7 @@ block content
             //- Summary stats section
             .p-3
               h2.h4.text-center.mb-4
-                = emoji("bar_chart")
-                = " "
                 = t("DMARC Summary")
-                = " "
-                = emoji("bar_chart")
 
               //- Stats table - simple and clean like daily-log-alert
               table.table.table-bordered.text-center.mb-0
@@ -65,11 +57,7 @@ block content
             if stats.totalMessages > 0
               .p-3.bg-light
                 h2.h4.text-center
-                  = emoji("inbox_tray")
-                  = " "
                   = t("Message Disposition")
-                  = " "
-                  = emoji("inbox_tray")
                 table.table.table-sm.table-bordered.mb-0
                   thead.thead-light
                     tr
@@ -111,11 +99,7 @@ block content
             if domains && domains.length > 0
               .p-3
                 h2.h4.text-center
-                  = emoji("globe_with_meridians")
-                  = " "
                   = t("Your Domains")
-                  = " "
-                  = emoji("globe_with_meridians")
                 table.table.table-sm.table-bordered.mb-0
                   thead.thead-light
                     tr
@@ -150,11 +134,7 @@ block content
             if topReporters && topReporters.length > 0
               .p-3.bg-light
                 h2.h4.text-center
-                  = emoji("office")
-                  = " "
                   = t("Top Reporters")
-                  = " "
-                  = emoji("office")
                 p.text-center.text-muted.small.mb-3
                   = t("Organizations that sent DMARC reports about your domains")
                 table.table.table-sm.table-bordered.mb-0
@@ -174,11 +154,7 @@ block content
             if topIpIssues && topIpIssues.length > 0
               .p-3
                 h2.h4.text-center
-                  = emoji("mag")
-                  = " "
                   = t("IPs with Alignment Issues")
-                  = " "
-                  = emoji("mag")
                 p.text-center.text-muted.small.mb-3
                   = t("These IP addresses sent emails that failed SPF or DKIM alignment")
                 table.table.table-sm.table-bordered.mb-0
@@ -222,11 +198,7 @@ block content
             //- Actionable tips
             .p-3.bg-light
               h2.h4.text-center
-                = emoji("bulb")
-                = " "
                 = t("Tips for Better Deliverability")
-                = " "
-                = emoji("bulb")
               ul.mb-0
                 li
                   strong= t("SPF Alignment")
@@ -244,11 +216,7 @@ block content
             //- Quick actions
             .p-3
               h2.h4.text-center
-                = emoji("zap")
-                = " "
                 = t("Quick Actions")
-                = " "
-                = emoji("zap")
               ul.list-inline.text-center.mb-0
                 li.list-inline-item.mb-2
                   a.btn.btn-dark(
@@ -282,11 +250,7 @@ block content
             //- Help section
             .p-3.bg-light
               h2.h4.text-center
-                = emoji("raising_hand")
-                = " "
                 = t("Need Help?")
-                = " "
-                = emoji("raising_hand")
               p.card-text.text-center
                 = t("Read our FAQ, submit a help request, or reply to this email.")
               ul.list-inline.text-center.mb-0

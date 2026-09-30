@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+// Email styles. Everything is scoped to `body.email` and inlined by juice,
+// so only plain selectors work here (no custom properties, pseudos, or
+// attribute selectors survive the email CSS build). Colors come from the
+// fe palette so emails match the redesigned site.
+
 // <https://github.com/Automattic/juice/pull/442>
 // <https://github.com/Automattic/juice/issues/439>
 html {
@@ -13,8 +18,12 @@ html {
 }
 body.email {
   max-width: 600px !important;
-  padding: 0 !important;
+  padding: 0 0 8px !important;
   margin: 0 auto !important;
+  color: $fe-l-600;
+  font-size: 15px;
+  line-height: 1.6;
+  background-color: $fe-l-100;
   .container {
     padding-left: 0px !important;
     padding-right: 0px !important;
@@ -22,8 +31,8 @@ body.email {
       margin-left: 0 !important;
       margin-right: 0 !important;
       .col-12 {
-        padding-left: 5px !important;
-        padding-right: 5px !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
       }
     }
   }
@@ -35,10 +44,232 @@ body.email {
   * {
     box-sizing: border-box;
   }
+
+  // brand header
+  .email-header {
+    padding: 24px 0 8px;
+  }
+  .email-brand {
+    color: $fe-ink;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .email-brand-mark {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  // typography
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    color: $fe-l-700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  h1, .h1 {
+    font-size: 28px;
+  }
+  h2, .h2 {
+    font-size: 24px;
+  }
+  h3, .h3 {
+    font-size: 22px;
+  }
+  h4, .h4 {
+    font-size: 19px;
+  }
+  h5, .h5 {
+    font-size: 17px;
+  }
+  h6, .h6 {
+    font-size: 15px;
+  }
+  .lead {
+    font-size: 17px;
+  }
+  .text-muted {
+    color: $fe-l-500 !important;
+  }
+  .text-danger {
+    color: $fe-danger-deep !important;
+  }
+  .text-success {
+    color: $fe-mint-deep !important;
+  }
+
+  // cards
+  .card {
+    overflow: hidden;
+    background-color: $fe-l-000;
+    border: 1px solid $fe-l-300 !important;
+    border-radius: $fe-radius-lg;
+  }
+  // Horizontal padding is a percentage of the card, so it is 24px at the
+  // 600px desktop width and shrinks on phones (media queries cannot
+  // override the inlined !important rules).
   .card-header {
     margin-bottom: 0 !important;
+    padding: 18px 4%;
+    color: $fe-l-700;
+    font-size: 17px;
+    background-color: $fe-l-000;
+    border-bottom: 1px solid $fe-l-200;
   }
-  .btn, li {
+  .card-body .p-3 {
+    padding: 20px 4% !important;
+  }
+  .card-footer {
+    padding: 14px 4%;
+    color: $fe-l-500 !important;
+    background-color: $fe-l-100;
+    border-top: 1px solid $fe-l-200;
+  }
+  .card-text {
+    color: $fe-l-600;
+  }
+  .bg-light {
+    background-color: $fe-l-100 !important;
+  }
+  .bg-dark {
+    background-color: $fe-ink !important;
+  }
+  .border-dark {
+    border-color: $fe-l-300 !important;
+  }
+
+  // buttons
+  .btn {
+    max-width: 100%;
     margin-right: 1rem;
+    padding: 10px 18px;
+    font-weight: 700;
+    white-space: normal;
+    border-radius: $fe-radius-md;
+  }
+  .btn-lg {
+    padding: 13px 24px;
+    font-size: 16px;
+  }
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  .btn-block {
+    margin-right: 0;
+  }
+  .btn-primary {
+    color: $fe-l-000;
+    background-color: $fe-primary;
+    border-color: $fe-primary;
+  }
+  .btn-dark {
+    color: $fe-l-000;
+    background-color: $fe-ink;
+    border-color: $fe-ink;
+  }
+  .btn-outline-dark {
+    color: $fe-l-700;
+    background-color: $fe-l-000;
+    border-color: $fe-l-300;
+  }
+
+  // badges
+  // badges wrap instead of running past a narrow screen
+  .badge {
+    max-width: 100%;
+    line-height: 1.4;
+    white-space: normal;
+    padding: 4px 10px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    border-radius: 999px;
+  }
+  .badge-dark {
+    color: $fe-l-700;
+    background-color: $fe-l-200;
+  }
+  .badge-primary {
+    color: $fe-primary-deep;
+    background-color: #e9effd; // 10% primary on white
+  }
+  .badge-success {
+    color: $fe-mint-deep;
+    background-color: #e1efeb; // 12% mint-deep on white
+  }
+  .badge-danger {
+    color: $fe-danger-deep;
+    background-color: #fce9e9; // 10% danger-deep on white
+  }
+  .badge-warning {
+    color: $fe-caution-deep;
+    background-color: #fdeed3; // 18% caution on white
+  }
+
+  // code and tables
+  // wrap long lines (a long address in a dig example) instead of scrolling
+  pre {
+    max-width: 100%;
+    white-space: pre-wrap !important;
+    word-break: break-all;
+    background-color: $fe-ink !important;
+    border-radius: $fe-radius-md !important;
+  }
+  code {
+    word-break: break-all;
+  }
+  .table {
+    color: $fe-l-600;
+  }
+  .table td, .table th, .table-bordered, .table-bordered td, .table-bordered th {
+    border-color: $fe-l-300;
+  }
+  // tables shrink to the screen: long values (addresses, setting names,
+  // dates) wrap inside their cell
+  .table td, .table th {
+    padding: 8px 6px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  // headers only wrap between words
+  .table th {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  .table-sm td, .table-sm th {
+    padding: 4px 5px;
+  }
+  .email-status-table td, .email-status-table th {
+    padding: 6px 3px;
+    font-size: 11px;
+  }
+  .email-status-table th {
+    font-size: 10px;
+  }
+  .table .thead-dark th {
+    background-color: $fe-l-700;
+    border-color: $fe-l-700;
+  }
+  .alert {
+    border-radius: $fe-radius-md;
+  }
+  li {
+    margin-right: 1rem;
+  }
+
+  // feature list rows (welcome, feature reminder)
+  .email-feature {
+    margin-bottom: 12px;
+  }
+  .email-feature-title {
+    color: $fe-l-700;
+    font-weight: 700;
+  }
+  .email-check {
+    font-weight: 700;
+  }
+
+  // footer
+  .email-footer a {
+    color: $fe-l-500;
   }
 }

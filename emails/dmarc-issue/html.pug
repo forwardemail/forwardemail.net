@@ -8,11 +8,6 @@ block content
           h1.h5.card-header.text-center
             != t("DMARC Issue Detected")
           .card-body.text-center.p-0
-            a(href=config.urls.web)
-              img.img-fluid.d-block.align-top(
-                src=manifest("img/emails/dmarc-issue.png"),
-                alt=""
-              )
             .p-3
               h1.h3.text-danger= t("DMARC Issue Detected")
               p.card-text.mb-0= t("Resolve this issue to improve your deliverability.")
@@ -67,113 +62,14 @@ block content
                 = " "
                 = t("Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.")
             .p-3
-              h2= t("What is Forward Email?")
+              h2.h4= t("What is Forward Email?")
               p.card-text
-                != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
+                = t("Forward Email is private, open-source email for your own domain.")
                 = " "
                 != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.')
-              ul.list-unstyled.text-left.mb-3.d-inline-block.mx-auto
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Unlimited domains and aliases")
-                  = " "
-                  span.badge.badge-success
-                    = t("100% Free")
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("10 GB encrypted email storage")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/${locale}/blog/docs/best-quantum-safe-encrypted-email-service`
-                  )
-                    = t("Learn more")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Privacy-focused email")
-                  = " "
-                  a.badge.badge-dark.align-middle(
-                    href=`${config.urls.web}/privacy`
-                  )
-                    = t("Privacy Policy")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Send outbound SMTP email")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/guides/send-email-with-custom-domain-smtp`
-                  )
-                    = t("SMTP Guide")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Works with Apple, Outlook, Gmail, Thunderbird, Android")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/${locale}/faq#do-you-support-receiving-email-with-imap`
-                  )
-                    = t("Apps")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Enterprise-grade 99.99% uptime SLA")
-                  = " "
-                  a.badge.badge-dark(href=`${config.urls.web}/faq`)
-                    = t("View FAQ")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Powered by bare metal servers")
-                  = " "
-                  a.badge.badge-dark(
-                    href="https://status.forwardemail.net",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    = t("Status Page")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("100% open-source software")
-                  = " "
-                  a.badge.badge-dark(
-                    href="https://github.com/forwardemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    = t("View")
-                    = " "
-                    = t("GitHub")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Email API designed for developers")
-                  = " "
-                  a.badge.badge-dark(href=`${config.urls.web}/email-api`)
-                    = t("Email API")
-                    = " "
-                    != "&rarr;"
-              .d-block
-                a.btn.btn-lg.btn-success.text-uppercase.font-weight-bold(
-                  href=config.urls.web
-                )
-                  = t("Sign up free")
+              include ../_features
+              .d-block.mt-3
+                a.btn.btn-lg.btn-primary(href=config.urls.web)
+                  = t("Start free")
           .card-footer.text-center.small.text-muted
             = t("This automated email is sent conditionally once a month.")

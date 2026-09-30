@@ -8,11 +8,6 @@ block content
           h1.h5.card-header.text-center
             != t('Your plan <span class="notranslate">%s</span> <span class="notranslate">%s</span>', new Date(user[config.userFields.planExpiresAt]).getTime() > Date.now() ? t("expires") : t("expired"), dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow())
           .card-body.p-0
-            a(href=`${config.urls.web}/${locale}/my-account/billing`)
-              img.img-fluid.d-block.align-top(
-                src=manifest(`img/emails/${_.sample(["domain-onboard", "domain-verified", "self-test", "welcome"])}.gif`),
-                alt=""
-              )
             .p-3.text-center
               if _.isDate(user[config.userFields.paymentReminderFollowUpSentAt]) && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
                 p.card-text: strong.text-danger= t("Email forwarding is currently paused.")

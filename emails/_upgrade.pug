@@ -10,7 +10,7 @@
     = " "
     != t("Outbound SMTP support means you can send email using any alias with your custom domain name.")
   .d-block.mb-1
-    a.btn.btn-lg.btn-success(
+    a.btn.btn-lg.btn-primary(
       href=typeof domain !== "undefined" && domain && domain.name ? `${config.urls.web}/${emailLocale}/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection` : `${config.urls.web}/my-account/billing/upgrade?plan=enhanced_protection`,
       role="button"
     )
@@ -22,7 +22,7 @@
     = " "
     != "&rarr;"
   if isEncrypted
-    p.card-text.font-weight-bold.text-decoration-underline.lead= t("Your email is already securely encrypted:")
+    p.card-text.font-weight-bold.lead= t("Your email is already securely encrypted:")
     span.badge.badge-success!= t("Your domain is already using encrypted DNS TXT records.")
     .d-block.mb-1
       pre.d-inline-block.mx-auto.bg-dark.p-3.rounded.text-white.mb-0
@@ -32,7 +32,7 @@
     p.card-text.mt-3
       != t('You can manage your domain in <a href="%s" target="_blank">account settings</a> or learn more in our <a href="%s" target="_blank">encryption guide</a>.', `${config.urls.web}/${emailLocale}/my-account`, `${config.urls.web}/${emailLocale}/encrypt`)
   else if hasEncryptionStatus
-    p.card-text.font-weight-bold.text-decoration-underline.lead= t("Upgrading keeps your email private:")
+    p.card-text.font-weight-bold.lead= t("Upgrading keeps your email private:")
     span.badge.badge-dark!= t("Right now anyone can run this computer command:")
     .d-block.mb-1
       pre.d-inline-block.mx-auto.bg-dark.p-3.rounded.text-white.mb-0
@@ -47,7 +47,7 @@
       pre.d-inline-block.mx-auto.bg-dark.p-3.rounded.text-white.mb-0
         code.d-block
           = "forward-email="
-          span.font-weight-bold(style="color: red")= targetEmail
+          span.font-weight-bold(style="color: #f87171")= targetEmail
     span.badge.badge-success!= t("Upgrading will encrypt and hide your email:")
     .d-block.mb-1
       pre.d-inline-block.mx-auto.bg-dark.p-3.rounded.text-white.mb-0
@@ -57,7 +57,7 @@
     p.card-text.mt-2
       != t('You can also use our free <a href="%s" target="_blank">TXT Record Encryptor</a> tool.', `${config.urls.web}/${emailLocale}/encrypt`)
   else
-    p.card-text.font-weight-bold.text-decoration-underline.lead= t("Protect your email address with encrypted DNS TXT records:")
+    p.card-text.font-weight-bold.lead= t("Protect your email address with encrypted DNS TXT records:")
     p.card-text
       != t('We could not confirm your current DNS encryption status when this email was prepared. You can use our free <a href="%s" target="_blank">TXT Record Encryptor</a> tool or review your <a href="%s" target="_blank">account settings</a>.', `${config.urls.web}/${emailLocale}/encrypt`, `${config.urls.web}/${emailLocale}/my-account`)
   p.card-text
@@ -67,7 +67,7 @@
   p.card-text.font-weight-bold
     = t("Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.")
   .d-block.mb-1
-    a.btn.btn-lg.btn-success(
+    a.btn.btn-lg.btn-primary(
       href=typeof domain !== "undefined" && domain && domain.name ? `${config.urls.web}/${emailLocale}/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection` : `${config.urls.web}/my-account/billing/upgrade?plan=enhanced_protection`,
       role="button"
     )

@@ -7,8 +7,6 @@ block content
         .card.border-dark.d-block
           h1.h5.card-header.text-center
             if payment.method === 'free_beta_program'
-              = emoji("tada")
-              = " "
               = t("You earned free credit!")
             else
               if payment.amount_refunded > 0
@@ -16,11 +14,6 @@ block content
               else
                 = t("Thank you!")
           .card-body.p-0
-            a(href=config.urls.web)
-              img.img-fluid.d-block.align-top(
-                src=manifest(`img/emails/${_.sample(["domain-onboard", "domain-verified", "self-test", "welcome"])}.gif`),
-                alt=""
-              )
             h1.h3.text-center.mt-3.mb-0= t("Receipt")
             .small!= prefixHTMLPathBasedAnchors(receiptHTML, config.urls.web)
             ul.list-inline.text-center

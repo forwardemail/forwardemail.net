@@ -6,11 +6,7 @@ block content
       .col-12
         .card.border-dark.d-block
           h1.h5.card-header.text-center
-            = emoji("bar_chart")
-            = " "
             = t("Email Activity Report")
-            = " "
-            = emoji("bar_chart")
           .card-body.p-0
             //- Hero section with date range
             .p-3.bg-light.text-center
@@ -22,11 +18,7 @@ block content
             //- Summary stats section
             .p-3
               h2.h4.text-center.mb-4
-                = emoji("mailbox_with_mail")
-                = " "
                 = t("Activity Summary")
-                = " "
-                = emoji("mailbox_with_mail")
 
               //- Stats grid - responsive with proper spacing
               .row.text-center.justify-content-center
@@ -70,11 +62,7 @@ block content
             if stats.bounceCategories && Object.keys(stats.bounceCategories).length > 0
               .p-3.bg-light
                 h2.h4.text-center
-                  = emoji("mag")
-                  = " "
                   = t("Bounce Categories")
-                  = " "
-                  = emoji("mag")
                 table.table.table-sm.table-bordered.mb-0
                   thead.thead-light
                     tr
@@ -119,11 +107,7 @@ block content
             if stats.responseCodes && Object.keys(stats.responseCodes).length > 0
               .p-3
                 h2.h4.text-center
-                  = emoji("1234")
-                  = " "
                   = t("Response Codes")
-                  = " "
-                  = emoji("1234")
                 table.table.table-sm.table-bordered.mb-0
                   thead.thead-light
                     tr
@@ -210,11 +194,7 @@ block content
             if domains && domains.length > 0
               .p-3.bg-light
                 h2.h4.text-center
-                  = emoji("globe_with_meridians")
-                  = " "
                   = t("Your Domains")
-                  = " "
-                  = emoji("globe_with_meridians")
                 ul.list-unstyled.mb-0
                   each domain in domains
                     li.mb-2.d-flex.align-items-center.justify-content-between
@@ -239,11 +219,7 @@ block content
             //- Quick actions
             .p-3
               h2.h4.text-center
-                = emoji("zap")
-                = " "
                 = t("Quick Actions")
-                = " "
-                = emoji("zap")
               ul.list-inline.text-center.mb-0
                 li.list-inline-item.mb-2
                   a.btn.btn-dark(
@@ -271,11 +247,7 @@ block content
             //- Protection summary
             .p-3.bg-light
               h2.h4.text-center
-                = emoji("shield")
-                = " "
                 = t("Your Protection Summary")
-                = " "
-                = emoji("shield")
               p.card-text.text-center
                 if stats.spam > 0 || stats.virus > 0
                   = t("Forward Email protected you from")
@@ -299,11 +271,7 @@ block content
             if frequencyInfo
               .p-3
                 h2.h4.text-center
-                  = emoji("clock")
-                  = " "
                   = t("Why am I getting this report?")
-                  = " "
-                  = emoji("clock")
                 .card.bg-light.border-0
                   .card-body.py-2
                     p.card-text.small.mb-0
@@ -312,11 +280,7 @@ block content
             //- Help section
             .p-3.bg-light
               h2.h4.text-center
-                = emoji("raising_hand")
-                = " "
                 = t("Need Help?")
-                = " "
-                = emoji("raising_hand")
               p.card-text.text-center
                 = t("Read our FAQ, submit a help request, or reply to this email.")
               ul.list-inline.text-center.mb-0

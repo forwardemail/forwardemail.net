@@ -1,6 +1,95 @@
 extends ../layout
 
 block content
+  -
+    const mailboxSections = [
+      {
+        title: t("Get Started"),
+        links: [
+          {
+            href: "https://mail.forwardemail.net",
+            text: t("Open the web app"),
+            external: true
+          },
+          {
+            href: `${config.urls.web}/${locale}/download`,
+            text: t("Desktop and mobile apps")
+          },
+          {
+            href: `${config.urls.web}/${locale}/faq#do-you-support-receiving-email-with-imap`,
+            text: t("Email Client Setup")
+          },
+          {
+            href: `${config.urls.web}/${locale}/faq#how-do-i-import-and-migrate-my-existing-mailbox`,
+            text: t("Import & Migrate Your Mailbox")
+          }
+        ]
+      },
+      {
+        title: t("Manage Your Account"),
+        links: [
+          {
+            href: `${config.urls.web}/${locale}/my-account/domains`,
+            text: t("Create Aliases & Mailboxes")
+          },
+          {
+            href: `${config.urls.web}/${locale}/my-account/security`,
+            text: t("Account Security & Profile")
+          },
+          {
+            href: `${config.urls.web}/${locale}/my-account/billing`,
+            text: t("Billing & Plans")
+          }
+        ]
+      },
+      {
+        title: t("Learn More"),
+        links: [
+          {
+            href: `${config.urls.web}/${locale}/faq`,
+            text: t("FAQ")
+          },
+          {
+            href: `${config.urls.web}/pentest-report_forward-email.pdf`,
+            text: t("Security Audit"),
+            external: true
+          },
+          {
+            href: `${config.urls.web}/technical-whitepaper.pdf`,
+            text: t("Technical Whitepaper (PDF)"),
+            external: true
+          },
+          {
+            href: `${config.urls.web}/${locale}/faq#do-you-support-self-hosting`,
+            text: t("Self-Hosting Guide")
+          }
+        ]
+      },
+      {
+        title: t("Connect With Us"),
+        links: [
+          {
+            href: `${config.urls.web}/${locale}/help`,
+            text: t("Support & Help")
+          },
+          {
+            href: "https://matrix.to/#/#forwardemail:matrix.org",
+            text: t("Matrix Chat Room"),
+            external: true
+          },
+          {
+            href: "https://x.com/fwdemail",
+            text: t("@fwdemail on X (Twitter)"),
+            external: true
+          },
+          {
+            href: "https://github.com/forwardemail",
+            text: t("GitHub"),
+            external: true
+          }
+        ]
+      }
+    ];
   .container.mt-3
     .row
       .col-12
@@ -8,101 +97,19 @@ block content
           h1.h5.card-header= t("Welcome to Forward Email")
           .card-body.text-center.p-0
             .p-3
-              p.card-text
-                = emoji("lock")
-                = " "
-                = t("Your encrypted mailbox is ready.")
+              p.card-text.mb-0= t("Your encrypted mailbox is ready.")
               if aliasAddress
-                p.card-text
+                p.card-text.mt-2.mb-0
                   strong= aliasAddress
-            .p-3
-              h1.h3
-                = emoji("rocket")
-                = " "
-                = t("Get Started")
-              ul.list-unstyled.text-left.mb-0.d-inline-block.mx-auto
-                li
-                  = emoji("book")
-                  = " "
-                  a(href=`${config.urls.web}/${locale}/faq`)= t("FAQ")
-                li
-                  = emoji("inbox_tray")
-                  = " "
-                  a(
-                    href=`${config.urls.web}/${locale}/faq#how-do-i-import-and-migrate-my-existing-mailbox`
-                  )= t("Import & Migrate Your Mailbox")
-                li
-                  = emoji("computer")
-                  = " "
-                  a(
-                    href=`${config.urls.web}/${locale}/faq#do-you-support-receiving-email-with-imap`
-                  )= t("Email Client Setup")
-            .p-3
-              h1.h3
-                = emoji("gear")
-                = " "
-                = t("Manage Your Account")
-              ul.list-unstyled.text-left.mb-0.d-inline-block.mx-auto
-                li
-                  = emoji("mailbox_with_mail")
-                  = " "
-                  a(href=`${config.urls.web}/${locale}/my-account/domains`)= t("Create Aliases & Mailboxes")
-                li
-                  = emoji("shield")
-                  = " "
-                  a(href=`${config.urls.web}/${locale}/my-account/security`)= t("Account Security & Profile")
-                li
-                  = emoji("credit_card")
-                  = " "
-                  a(href=`${config.urls.web}/${locale}/my-account/billing`)= t("Billing & Plans")
-            .p-3
-              h1.h3
-                = emoji("bulb")
-                = " "
-                = t("Learn More")
-              ul.list-unstyled.text-left.mb-0.d-inline-block.mx-auto
-                li
-                  = emoji("page_facing_up")
-                  = " "
-                  a(href=`${config.urls.web}/technical-whitepaper.pdf`)= t("Technical Whitepaper (PDF)")
-                li
-                  = emoji("wrench")
-                  = " "
-                  a(
-                    href=`${config.urls.web}/${locale}/faq#do-you-support-self-hosting`
-                  )= t("Self-Hosting Guide")
-            .p-3
-              h1.h3
-                = emoji("speech_balloon")
-                = " "
-                = t("Connect With Us")
-              ul.list-unstyled.text-left.mb-0.d-inline-block.mx-auto
-                li
-                  = emoji("raising_hand")
-                  = " "
-                  a(href=`${config.urls.web}/${locale}/help`)= t("Support & Help")
-                li
-                  = emoji("speech_balloon")
-                  = " "
-                  a(
-                    href="https://matrix.to/#/#forwardemail:matrix.org",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )= t("Matrix Chat Room")
-                li
-                  = emoji("bird")
-                  = " "
-                  a(
-                    href="https://x.com/fwdemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )= t("@fwdemail on X (Twitter)")
-                li
-                  = emoji("hammer_and_wrench")
-                  = " "
-                  a(
-                    href="https://github.com/forwardemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )= t("GitHub")
+            each section, index in mailboxSections
+              .p-3(class=index % 2 === 0 ? "bg-light" : undefined)
+                h2.h4= section.title
+                ul.list-inline.mb-0
+                  each link in section.links
+                    li.list-inline-item.mb-2
+                      a.btn.btn-sm.btn-outline-dark(
+                        href=link.href,
+                        target=link.external ? "_blank" : undefined,
+                        rel=link.external ? "noopener noreferrer" : undefined
+                      )= link.text
           .card-footer.small.text-muted= t("If you have any questions, simply reply to this email.")
