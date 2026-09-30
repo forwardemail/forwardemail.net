@@ -23215,5 +23215,6 @@
   "Showing logs for": "Viser logger for",
   "Show": "Vis",
   "Hide": "Skjul",
-  "Show your token to use it in the examples below.": "Vis tokenet ditt for å bruke det i eksemplene nedenfor."
+  "Use my API token": "Bruk API-tokenet mitt",
+  "Clear my API token": "Fjern API-tokenet mitt"
 }

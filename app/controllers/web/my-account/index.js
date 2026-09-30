@@ -31,7 +31,10 @@ const removeInvite = require('./remove-invite');
 const removeMember = require('./remove-member');
 const resendEmailChange = require('./resend-email-change');
 const resetAPIToken = require('./reset-api-token');
-const retrieveAPIToken = require('./retrieve-api-token');
+const {
+  ensureAPITokenRequest,
+  retrieveAPIToken
+} = require('./retrieve-api-token');
 const retrieveAlias = require('./retrieve-alias');
 const retrieveAliases = require('./retrieve-aliases');
 const retrieveBilling = require('./retrieve-billing');
@@ -88,6 +91,7 @@ module.exports = {
   disconnectOAuthProvider,
   disableAPIToken,
   createInvite,
+  ensureAPITokenRequest,
   ensureAliasAdmin,
   ensureDomainAdmin,
   ensureNotBanned,

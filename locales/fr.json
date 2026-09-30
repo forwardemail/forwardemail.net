@@ -23215,5 +23215,6 @@
   "Showing logs for": "Journaux pour",
   "Show": "Afficher",
   "Hide": "Masquer",
-  "Show your token to use it in the examples below.": "Affichez votre jeton pour l'utiliser dans les exemples ci-dessous."
+  "Use my API token": "Utiliser mon jeton d'API",
+  "Clear my API token": "Effacer mon jeton d'API"
 }

@@ -64,7 +64,9 @@ function securityPage(t) {
 function fetchToken(t) {
   return t.context.web
     .get('/en/my-account/security/api-token')
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json')
+    .set('X-Requested-With', 'XMLHttpRequest')
+    .set('Sec-Fetch-Site', 'same-origin');
 }
 
 function account(t, token) {
@@ -150,6 +152,40 @@ test('disabling the API token refuses it at the API until it is reset', async (t
   t.true(page.text.includes('Disable API Token'));
   tokenRes = await fetchToken(t);
   t.deepEqual(tokenRes.body, { api_token: fresh });
+});
+
+test("the token is only given to this site's own script", async (t) => {
+  const { user, web } = t.context;
+  const token = user[config.userFields.apiToken];
+
+  for (const headers of [
+    // a link or redirect from another site, opened in the user's tab
+    {
+      Accept: 'text/html',
+      'Sec-Fetch-Site': 'cross-site',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Dest': 'document'
+    },
+    // the address typed in or bookmarked
+    { Accept: 'text/html', 'Sec-Fetch-Site': 'none' },
+    // a script without the header
+    { Accept: 'application/json', 'Sec-Fetch-Site': 'same-origin' },
+    // another site's script (its preflight would fail; checked anyway)
+    {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      'Sec-Fetch-Site': 'cross-site'
+    }
+  ]) {
+    const label = JSON.stringify(headers);
+    const res = await web.get('/en/my-account/security/api-token').set(headers);
+    t.is(res.status, 403, `${label}`);
+    t.false((res.text || '').includes(token), `${label}`);
+  }
+
+  const res = await fetchToken(t);
+  t.is(res.status, 200);
+  t.deepEqual(res.body, { api_token: token });
 });
 
 test('the Email API page never includes the token and hides the control when it is disabled', async (t) => {

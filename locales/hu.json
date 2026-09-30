@@ -23215,5 +23215,6 @@
   "Showing logs for": "Naplók megjelenítése:",
   "Show": "Megjelenítés",
   "Hide": "Elrejtés",
-  "Show your token to use it in the examples below.": "Jelenítse meg a tokent, hogy használhassa az alábbi példákban."
+  "Use my API token": "API-tokenem használata",
+  "Clear my API token": "API-tokenem törlése"
 }

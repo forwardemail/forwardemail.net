@@ -23215,5 +23215,6 @@
   "Showing logs for": "Zobrazení protokolů pro",
   "Show": "Zobrazit",
   "Hide": "Skrýt",
-  "Show your token to use it in the examples below.": "Zobrazte token, abyste jej mohli použít v příkladech níže."
+  "Use my API token": "Použít můj API token",
+  "Clear my API token": "Vymazat můj API token"
 }

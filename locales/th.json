@@ -23215,5 +23215,6 @@
   "Showing logs for": "แสดงบันทึกสำหรับ",
   "Show": "แสดง",
   "Hide": "ซ่อน",
-  "Show your token to use it in the examples below.": "แสดงโทเค็นของคุณเพื่อใช้ในตัวอย่างด้านล่าง"
+  "Use my API token": "ใช้โทเค็น API ของฉัน",
+  "Clear my API token": "ล้างโทเค็น API ของฉัน"
 }

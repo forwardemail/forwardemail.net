@@ -23215,5 +23215,6 @@
   "Showing logs for": "عرض السجلات لـ",
   "Show": "إظهار",
   "Hide": "إخفاء",
-  "Show your token to use it in the examples below.": "أظهر الرمز المميز لاستخدامه في الأمثلة أدناه."
+  "Use my API token": "استخدام رمز API الخاص بي",
+  "Clear my API token": "مسح رمز API الخاص بي"
 }

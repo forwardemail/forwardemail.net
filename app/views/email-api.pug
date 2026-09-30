@@ -1,5 +1,3 @@
-include _api-token
-
 //- Pug makes it DOCTYPE if we do this:
 //- `doctype html`
 != "<!doctype html>"
@@ -35,17 +33,23 @@ html.h-100.no-js(
     //- has no h1 for crawlers or assistive technology. This sr-only
     //- heading provides one without affecting the visual layout.
     h1.sr-only= t("Email API for Developers")
-    //- The token is not in the page: Show and Copy fetch it when used, and
-    //- showing it fills it into the examples below (and hiding clears it).
-    //- Nothing is shown for a disabled token.
+    //- "Use my API token", placed in the reference's Authentication card by the
+    //- script below. The token is not in the page: the button fetches it when
+    //- used and fills it into the card (and the examples); it is cleared again
+    //- when clicked, after a while, or when the tab goes to the background
+    //- (see assets/js/api-token.js). Nothing for a disabled token.
     if user && !user[config.userFields.apiTokenDisabled]
-      .container.pt-4.pb-2
-        label.small.font-weight-bold(for="email-api-token")= t("API token")
-        +apiToken("email-api-token")
-        small.form-text.text-muted
-          = t("Show your token to use it in the examples below.")
+      #api-token-use.fe-api-token-use(
+        hidden,
+        data-api-token,
+        data-api-token-url=l("/my-account/security/api-token"),
+        data-show-label=t("Use my API token"),
+        data-hide-label=t("Clear my API token")
+      )
+        button(type="button", aria-pressed="false", data-api-token-toggle)
+          i.fa.fa-key
           = " "
-          = t("Keep your token secure and never share it publicly")
+          span(data-api-token-toggle-label)= t("Use my API token")
     .scalar-app-reset
       #app
     include _footer
@@ -140,7 +144,7 @@ html.h-100.no-js(
         window.localStorage.removeItem("colorMode");
       } catch {}
 
-      // The token is filled in only while it is shown (see _api-token.pug)
+      // The token is filled in only while "Use my API token" is on
       function authentication(token) {
         return {
           preferredSecurityScheme: "ApiKeyAuth",
@@ -177,6 +181,8 @@ html.h-100.no-js(
         },
         hideClientButton: true,
         hideDarkModeToggle: true,
+        // never save the token in browser storage (the default today)
+        persistAuth: false,
       };
 
       const apiReference = Scalar.createApiReference("#app", {
@@ -190,5 +196,26 @@ html.h-100.no-js(
           authentication: authentication(event.detail.token),
         });
       });
+
+      // Put "Use my API token" at the foot of the Authentication card, and
+      // back again whenever the reference redraws the card. It stays hidden
+      // if the card is never found.
+      (function () {
+        const control = document.getElementById("api-token-use");
+        const app = document.getElementById("app");
+        if (!control || !app) return;
+        function place() {
+          const card = app.querySelector(".scalar-reference-intro-auth");
+          if (!card || control.parentElement === card) return;
+          card.append(control);
+          control.hidden = false;
+        }
+
+        new MutationObserver(place).observe(app, {
+          childList: true,
+          subtree: true,
+        });
+        place();
+      })();
 
     include _wikipedia

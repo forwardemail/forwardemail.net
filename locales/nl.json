@@ -23215,5 +23215,6 @@
   "Showing logs for": "Logboeken voor",
   "Show": "Tonen",
   "Hide": "Verbergen",
-  "Show your token to use it in the examples below.": "Toon je token om het in de voorbeelden hieronder te gebruiken."
+  "Use my API token": "Mijn API-token gebruiken",
+  "Clear my API token": "Mijn API-token wissen"
 }

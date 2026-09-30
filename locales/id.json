@@ -23215,5 +23215,6 @@
   "Showing logs for": "Menampilkan log untuk",
   "Show": "Tampilkan",
   "Hide": "Sembunyikan",
-  "Show your token to use it in the examples below.": "Tampilkan token Anda untuk menggunakannya dalam contoh di bawah."
+  "Use my API token": "Gunakan token API saya",
+  "Clear my API token": "Hapus token API saya"
 }

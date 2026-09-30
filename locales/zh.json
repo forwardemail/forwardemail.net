@@ -23215,5 +23215,6 @@
   "Showing logs for": "显示以下对象的日志：",
   "Show": "显示",
   "Hide": "隐藏",
-  "Show your token to use it in the examples below.": "显示您的令牌以在下面的示例中使用。"
+  "Use my API token": "使用我的 API 令牌",
+  "Clear my API token": "清除我的 API 令牌"
 }

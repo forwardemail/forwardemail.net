@@ -23215,5 +23215,6 @@
   "Showing logs for": "次のログを表示中:",
   "Show": "表示",
   "Hide": "非表示",
-  "Show your token to use it in the examples below.": "トークンを表示すると、下の例で使用できます。"
+  "Use my API token": "自分のAPIトークンを使用",
+  "Clear my API token": "自分のAPIトークンを消去"
 }

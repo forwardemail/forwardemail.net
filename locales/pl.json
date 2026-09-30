@@ -23215,5 +23215,6 @@
   "Showing logs for": "Dzienniki dla",
   "Show": "Pokaż",
   "Hide": "Ukryj",
-  "Show your token to use it in the examples below.": "Pokaż swój token, aby użyć go w poniższych przykładach."
+  "Use my API token": "Użyj mojego tokena API",
+  "Clear my API token": "Wyczyść mój token API"
 }

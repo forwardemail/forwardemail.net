@@ -23215,5 +23215,6 @@
   "Showing logs for": "Mostrando registros de",
   "Show": "Mostrar",
   "Hide": "Ocultar",
-  "Show your token to use it in the examples below.": "Muestra tu token para usarlo en los ejemplos de abajo."
+  "Use my API token": "Usar mi token de API",
+  "Clear my API token": "Borrar mi token de API"
 }

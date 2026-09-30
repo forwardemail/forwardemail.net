@@ -23215,5 +23215,6 @@
   "Showing logs for": "מציג יומנים עבור",
   "Show": "הצג",
   "Hide": "הסתר",
-  "Show your token to use it in the examples below.": "הצג את האסימון שלך כדי להשתמש בו בדוגמאות שלהלן."
+  "Use my API token": "השתמש באסימון ה-API שלי",
+  "Clear my API token": "נקה את אסימון ה-API שלי"
 }

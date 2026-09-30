@@ -23215,5 +23215,6 @@
   "Showing logs for": "Şunun için günlükler:",
   "Show": "Göster",
   "Hide": "Gizle",
-  "Show your token to use it in the examples below.": "Aşağıdaki örneklerde kullanmak için belirtecinizi gösterin."
+  "Use my API token": "API belirtecimi kullan",
+  "Clear my API token": "API belirtecimi temizle"
 }

@@ -584,6 +584,7 @@ router
   .delete('/security', web.myAccount.resetAPIToken)
   .get(
     '/security/api-token',
+    web.myAccount.ensureAPITokenRequest,
     rateLimit(100, 'retrieve api token', ms('1h')),
     web.myAccount.retrieveAPIToken
   )

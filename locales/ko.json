@@ -23215,5 +23215,6 @@
   "Showing logs for": "다음에 대한 로그 표시:",
   "Show": "표시",
   "Hide": "숨기기",
-  "Show your token to use it in the examples below.": "토큰을 표시하면 아래 예제에서 사용할 수 있습니다."
+  "Use my API token": "내 API 토큰 사용",
+  "Clear my API token": "내 API 토큰 지우기"
 }

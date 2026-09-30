@@ -62,3 +62,39 @@ body .dark-mode {
   border-radius: 0;
   box-shadow: none;
 }
+
+// "Use my API token" (app/views/email-api.pug), moved to the foot of the
+// reference's Authentication card: a quiet link-style action in the card's
+// own colors, rather than a panel above the reference
+.scalar-reference-intro-auth .fe-api-token-use {
+  padding: 6px 12px;
+  font-size: var(--scalar-mini, 13px);
+  line-height: 1.5;
+  background-color: var(--scalar-background-2);
+  border: var(--scalar-border-width, 1px) solid var(--scalar-border-color);
+  border-top: 0;
+  border-radius: 0 0 var(--scalar-radius-lg) var(--scalar-radius-lg);
+
+  button {
+    padding: 0;
+    font: inherit;
+    color: var(--scalar-color-accent);
+    cursor: pointer;
+    background: none;
+    border: 0;
+  }
+
+  button:hover,
+  button:focus-visible {
+    text-decoration: underline;
+  }
+
+  button:disabled {
+    cursor: progress;
+    opacity: 0.6;
+  }
+
+  .fa {
+    margin-right: 2px;
+  }
+}

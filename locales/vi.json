@@ -23215,5 +23215,6 @@
   "Showing logs for": "Đang hiển thị nhật ký cho",
   "Show": "Hiện",
   "Hide": "Ẩn",
-  "Show your token to use it in the examples below.": "Hiện token của bạn để dùng trong các ví dụ bên dưới."
+  "Use my API token": "Dùng token API của tôi",
+  "Clear my API token": "Xóa token API của tôi"
 }

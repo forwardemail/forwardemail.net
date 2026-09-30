@@ -23215,5 +23215,6 @@
   "Showing logs for": "Журналы для",
   "Show": "Показать",
   "Hide": "Скрыть",
-  "Show your token to use it in the examples below.": "Покажите токен, чтобы использовать его в примерах ниже."
+  "Use my API token": "Использовать мой API-токен",
+  "Clear my API token": "Очистить мой API-токен"
 }

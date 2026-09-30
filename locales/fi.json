@@ -23215,5 +23215,6 @@
   "Showing logs for": "Näytetään lokit kohteelle",
   "Show": "Näytä",
   "Hide": "Piilota",
-  "Show your token to use it in the examples below.": "Näytä tunnuksesi, niin voit käyttää sitä alla olevissa esimerkeissä."
+  "Use my API token": "Käytä API-tunnustani",
+  "Clear my API token": "Tyhjennä API-tunnukseni"
 }
