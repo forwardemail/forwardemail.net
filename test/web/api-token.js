@@ -7,6 +7,8 @@
 // The API token controls of the Security page, through the web server and
 // the API: disabling the token keeps its value but refuses it at the API
 // until it is reset, and a reset re-enables API access with a fresh token.
+// The token itself is never in a page; Show and Copy fetch it from
+// /my-account/security/api-token.
 //
 
 const dayjs = require('dayjs-with-plugins');
@@ -59,6 +61,12 @@ function securityPage(t) {
   return t.context.web.get('/en/my-account/security');
 }
 
+function fetchToken(t) {
+  return t.context.web
+    .get('/en/my-account/security/api-token')
+    .set('Accept', 'application/json');
+}
+
 function account(t, token) {
   return t.context.api.get('/v1/account').auth(token);
 }
@@ -67,11 +75,20 @@ test('disabling the API token refuses it at the API until it is reset', async (t
   const { user, web } = t.context;
   const token = user[config.userFields.apiToken];
 
-  // the page shows the token and offers to disable it
+  // the page offers the masked token and to disable it, without the token
   let page = await securityPage(t);
   t.is(page.status, 200);
-  t.true(page.text.includes(token));
+  t.false(page.text.includes(token));
+  t.true(
+    page.text.includes('data-api-token-url="/en/my-account/security/api-token"')
+  );
   t.true(page.text.includes('Disable API Token'));
+
+  // Show and Copy fetch it
+  let tokenRes = await fetchToken(t);
+  t.is(tokenRes.status, 200);
+  t.deepEqual(tokenRes.body, { api_token: token });
+  t.regex(tokenRes.headers['cache-control'], /no-store/);
   t.true(page.text.includes('action="/en/my-account/security/api-token"'));
   t.false(page.text.includes('Enable and Create New API Token'));
 
@@ -101,7 +118,13 @@ test('disabling the API token refuses it at the API until it is reset', async (t
   t.true(page.text.includes('API token disabled'));
   t.true(page.text.includes('Enable and Create New API Token'));
   t.false(page.text.includes('Disable API Token'));
+  t.false(page.text.includes('data-api-token'));
   t.false(page.text.includes(token));
+
+  // and the stored token cannot be fetched
+  tokenRes = await fetchToken(t);
+  t.is(tokenRes.status, 404);
+  t.false(JSON.stringify(tokenRes.body).includes(token));
 
   // reset: a fresh token that works, the old one is gone for good
   res = await web
@@ -123,8 +146,32 @@ test('disabling the API token refuses it at the API until it is reset', async (t
   t.not(res.body.message, phrases.API_TOKEN_DISABLED);
 
   page = await securityPage(t);
-  t.true(page.text.includes(fresh));
+  t.false(page.text.includes(fresh));
   t.true(page.text.includes('Disable API Token'));
+  tokenRes = await fetchToken(t);
+  t.deepEqual(tokenRes.body, { api_token: fresh });
+});
+
+test('the Email API page never includes the token and hides the control when it is disabled', async (t) => {
+  const { user, web } = t.context;
+  const token = user[config.userFields.apiToken];
+
+  let page = await web.get('/en/email-api');
+  t.is(page.status, 200);
+  t.false(page.text.includes(token));
+  t.false(page.text.includes('API_TOKEN'));
+  t.true(
+    page.text.includes('data-api-token-url="/en/my-account/security/api-token"')
+  );
+
+  await web
+    .delete('/en/my-account/security/api-token')
+    .set('Accept', 'application/json');
+
+  page = await web.get('/en/email-api');
+  t.is(page.status, 200);
+  t.false(page.text.includes(token));
+  t.false(page.text.includes('data-api-token'));
 });
 
 test('resetting an enabled token replaces it without disabling anything', async (t) => {
@@ -159,6 +206,13 @@ test('the controls are not reachable without a session', async (t) => {
     t.is(res.status, 200);
     t.regex(res.body.redirectTo, /^\/en\/login\?return_to=/);
   }
+
+  // nor can the token be fetched
+  const res = await anonymous
+    .get('/en/my-account/security/api-token')
+    .set('Accept', 'application/json');
+  t.false(JSON.stringify(res.body).includes(token));
+  t.false((res.text || '').includes(token));
 
   const same = await Users.findById(user._id).lean().exec();
   t.false(same[config.userFields.apiTokenDisabled]);

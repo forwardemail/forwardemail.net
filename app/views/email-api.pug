@@ -1,3 +1,5 @@
+include _api-token
+
 //- Pug makes it DOCTYPE if we do this:
 //- `doctype html`
 != "<!doctype html>"
@@ -33,6 +35,17 @@ html.h-100.no-js(
     //- has no h1 for crawlers or assistive technology. This sr-only
     //- heading provides one without affecting the visual layout.
     h1.sr-only= t("Email API for Developers")
+    //- The token is not in the page: Show and Copy fetch it when used, and
+    //- showing it fills it into the examples below (and hiding clears it).
+    //- Nothing is shown for a disabled token.
+    if user && !user[config.userFields.apiTokenDisabled]
+      .container.pt-4.pb-2
+        label.small.font-weight-bold(for="email-api-token")= t("API token")
+        +apiToken("email-api-token")
+        small.form-text.text-muted
+          = t("Show your token to use it in the examples below.")
+          = " "
+          = t("Keep your token secure and never share it publicly")
     .scalar-app-reset
       #app
     include _footer
@@ -73,7 +86,7 @@ html.h-100.no-js(
     script(defer, nonce=nonce).
       window.API_URL = "#{config.urls.api}";
 
-    //- set the user and API key to be used by CabinJS
+    //- set the user to be used by CabinJS
     if config.env !== 'test'
       if user
         script(defer, nonce=nonce).
@@ -82,7 +95,6 @@ html.h-100.no-js(
             name: !{json(user[config.passport.fields.displayName])},
             email: !{json(user.email)},
           };
-          window.API_TOKEN = !{json(user[config.userFields.apiToken])};
       else if ctx.sessionId
         script(defer, nonce=nonce).
           window.USER = {
@@ -112,9 +124,6 @@ html.h-100.no-js(
 
     //- scalar API reference
     script(nonce=nonce, src="/js/scalar.js", crossorigin="anonymous")
-    if user
-      script(nonce=nonce).
-        window.API_TOKEN = !{json(user[config.userFields.apiToken])};
     - const API_SPEC = `${config.urls.web}/api-spec${locale === "en" ? "" : "-" + locale}.json`;
     script(nonce=nonce).
       window.API_URL = "#{config.urls.api}";
@@ -131,7 +140,25 @@ html.h-100.no-js(
         window.localStorage.removeItem("colorMode");
       } catch {}
 
-      Scalar.createApiReference("#app", {
+      // The token is filled in only while it is shown (see _api-token.pug)
+      function authentication(token) {
+        return {
+          preferredSecurityScheme: "ApiKeyAuth",
+          securitySchemes: {
+            ApiKeyAuth: {
+              username: token,
+              password: "",
+            },
+            AliasAuth: {
+              name: "Authorization",
+              in: "header",
+              value: token,
+            },
+          },
+        };
+      }
+
+      const referenceOptions = {
         withDefaultFonts: false,
         servers: [
           {
@@ -139,20 +166,6 @@ html.h-100.no-js(
           },
         ],
         url: "#{API_SPEC}",
-        authentication: {
-          preferredSecurityScheme: "ApiKeyAuth",
-          securitySchemes: {
-            ApiKeyAuth: {
-              username: window.API_TOKEN || "",
-              password: "",
-            },
-            AliasAuth: {
-              name: "Authorization",
-              in: "header",
-              value: window.API_TOKEN || "",
-            },
-          },
-        },
         favicon: "/img/favicon.svg",
         metaData: {
           title: window.TITLE,
@@ -164,6 +177,18 @@ html.h-100.no-js(
         },
         hideClientButton: true,
         hideDarkModeToggle: true,
+      };
+
+      const apiReference = Scalar.createApiReference("#app", {
+        ...referenceOptions,
+        authentication: authentication(""),
+      });
+
+      document.addEventListener("api-token:change", function (event) {
+        apiReference.updateConfiguration({
+          ...referenceOptions,
+          authentication: authentication(event.detail.token),
+        });
       });
 
     include _wikipedia

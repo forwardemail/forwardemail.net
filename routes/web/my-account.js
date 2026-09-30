@@ -15,6 +15,7 @@ const base64url = require('base64url');
 const cose2jwk = require('cose-to-jwk');
 const isSANB = require('is-string-and-not-blank');
 const jwk2pem = require('jwk-to-pem');
+const ms = require('ms');
 const paginate = require('koa-ctx-paginate');
 const pify = require('pify');
 const render = require('koa-views-render');
@@ -581,6 +582,11 @@ router
   })
   .post('/timezone', web.myAccount.updateTimezone)
   .delete('/security', web.myAccount.resetAPIToken)
+  .get(
+    '/security/api-token',
+    rateLimit(100, 'retrieve api token', ms('1h')),
+    web.myAccount.retrieveAPIToken
+  )
   .delete('/security/api-token', web.myAccount.disableAPIToken)
   .post('/invalidate-other-sessions', async (ctx) => {
     await invalidateOtherSessions(ctx);

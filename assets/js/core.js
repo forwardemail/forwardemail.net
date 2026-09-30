@@ -129,6 +129,7 @@ const {
 } = require('@ladjs/assets');
 
 const debounce = require('./debounce');
+const { initApiTokens } = require('./api-token');
 const logger = require('./logger');
 const sendRequest = require('./send-request');
 const { createAjaxFormWithTurnstile } = require('./turnstile');
@@ -387,6 +388,21 @@ window.addEventListener(
 
     // Handle clipboard copy event
     clipboard();
+
+    // Show and Copy for the masked API token (fetched only when used)
+    initApiTokens({
+      onError(err) {
+        Swal.fire(window._types.error, err.message, 'error');
+      },
+      onCopied(button) {
+        const $button = $(button);
+        $button
+          .tooltip('dispose')
+          .tooltip({ title: 'Copied!', placement: 'bottom' })
+          .tooltip('show');
+        setTimeout(() => $button.tooltip('dispose'), 1500);
+      }
+    });
 
     // Toggle generated password visibility (show/hide)
     $body.on(

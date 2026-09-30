@@ -23212,5 +23212,8 @@
   "Add your domain, update its DNS records, and your email starts working with Forward Email.": "Add your domain, update its DNS records, and your email starts working with Forward Email.",
   "Every mailbox is individually encrypted and sandboxed.": "Every mailbox is individually encrypted and sandboxed.",
   "IMAP, POP3, SMTP, CalDAV, and CardDAV.": "IMAP, POP3, SMTP, CalDAV, and CardDAV.",
-  "Showing logs for": "Dzienniki dla"
+  "Showing logs for": "Dzienniki dla",
+  "Show": "Pokaż",
+  "Hide": "Ukryj",
+  "Show your token to use it in the examples below.": "Pokaż swój token, aby użyć go w poniższych przykładach."
 }

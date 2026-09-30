@@ -23212,5 +23212,8 @@
   "Add your domain, update its DNS records, and your email starts working with Forward Email.": "Add your domain, update its DNS records, and your email starts working with Forward Email.",
   "Every mailbox is individually encrypted and sandboxed.": "Every mailbox is individually encrypted and sandboxed.",
   "IMAP, POP3, SMTP, CalDAV, and CardDAV.": "IMAP, POP3, SMTP, CalDAV, and CardDAV.",
-  "Showing logs for": "次のログを表示中:"
+  "Showing logs for": "次のログを表示中:",
+  "Show": "表示",
+  "Hide": "非表示",
+  "Show your token to use it in the examples below.": "トークンを表示すると、下の例で使用できます。"
 }

@@ -466,9 +466,6 @@ async function hook(err, message, meta) {
       .set('X-Axe-Version', logger.config.version)
       .timeout(5000);
 
-    // eslint-disable-next-line no-undef
-    if (typeof window.API_TOKEN === 'string') request.auth(window.API_TOKEN);
-
     return request
       .type('application/json')
       .retry(3)

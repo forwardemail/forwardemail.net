@@ -160,9 +160,9 @@ html.h-100.no-js(
       script(defer, nonce=nonce).
         window.API_URL = "#{config.urls.api}";
 
-      //- set the user and API key to be used by CabinJS
+      //- set the user to be used by CabinJS (the API token is never put in a
+      //- page: Show and Copy fetch it when used, see _api-token.pug)
       if config.env !== 'test'
-        //- set the user and API key to be used by CabinJS
         //- FWD-01-007: Use json() helper for safe JS interpolation to prevent
         //- XSS via user-controlled displayName or email breaking out of string context
         if user
@@ -172,7 +172,6 @@ html.h-100.no-js(
               name: !{json(user[config.passport.fields.displayName])},
               email: !{json(user.email)},
             };
-            window.API_TOKEN = !{json(user[config.userFields.apiToken])};
         else if ctx.sessionId
           script(defer, nonce=nonce).
             window.USER = {

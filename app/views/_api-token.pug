@@ -1,0 +1,33 @@
+//- The API token, masked. It is not in the page: Show and Copy fetch it from
+//- /my-account/security/api-token when used (see assets/js/api-token.js).
+//- Only include this for a signed-in user whose token is enabled.
+mixin apiToken(id)
+  .input-group(
+    data-api-token,
+    data-api-token-url=l("/my-account/security/api-token"),
+    data-show-label=t("Show"),
+    data-hide-label=t("Hide")
+  )
+    input.form-control.text-monospace(
+      id=id,
+      type="text",
+      readonly,
+      autocomplete="off",
+      spellcheck="false",
+      value="••••••••••••••••••••••••",
+      data-api-token-input
+    )
+    .input-group-append
+      button.btn.btn-outline-secondary(
+        type="button",
+        aria-controls=id,
+        aria-pressed="false",
+        data-api-token-toggle
+      )
+        i.fa.fa-eye
+        = " "
+        span(data-api-token-toggle-label)= t("Show")
+      button.btn.btn-primary(type="button", data-api-token-copy)
+        i.fa.fa-clipboard
+        = " "
+        = t("Copy")
