@@ -28,6 +28,41 @@ const REGEX_BLOCKED_PHRASES = new RE2(
   /cheecck y0ur acc0untt|recorded you|you've been hacked|account is hacked|personal data has leaked|private information has been stolen/im
 );
 
+// PayPal sends from one domain per country: paypal.com, paypal.com.au,
+// paypal.co.uk, paypal.de, and so on
+const REGEX_PAYPAL_DOMAIN = new RE2(/^paypal\.(?:[a-z]{2,3}|com?\.[a-z]{2})$/i);
+
+//
+// PayPal notification templates (X-Email-Type-Id) seen carrying invoice and
+// money request spam, since anyone can send these through PayPal:
+//
+//   RT000238
+//   PPC001017
+//   RT000542 = gift message hack
+//              <https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/>
+//   RT002947 = paypal invoice spam
+//   RTI003384 = paypal invoice spam (from paypal.com.au)
+//
+const PAYPAL_SPAM_TYPE_IDS = new Set([
+  'PPC001017',
+  'RT000238',
+  'RT000542',
+  'RT002947',
+  'RTI003384'
+]);
+
+//
+// Subjects of invoices and money requests sent through PayPal, so a new
+// template ID does not get through: "Invoice from Billing Department
+// (2026-2755)", "X sent you an invoice", "Reminder: invoice from X",
+// "X requested $25.00 USD", "You've got a money request", and the same in
+// PayPal's main languages. Receipts and "invoice paid" notices to merchants
+// are not matched.
+//
+const REGEX_PAYPAL_INVOICE_OR_REQUEST_SUBJECT = new RE2(
+  /\binvoice from\b|\bsent you an invoice\b|\b(?:money|payment) request\b|\brequest(?:ed)? (?:money|a payment|for (?:money|payment))\b|\brequested [$€£¥]|\brequested \d|\brechnung von\b|\bzahlungsaufforderung\b|\bgeldanforderung\b|\bfacture de\b|\bdemande d['’]argent\b|\bdemande de paiement\b|\bfactura de\b|\bsolicitud de (?:dinero|pago)\b|\bfattura da\b|\brichiesta di (?:denaro|pagamento)\b|\bfactuur van\b|\bbetaalverzoek\b|\bfatura de\b|\bpedido de (?:dinheiro|pagamento)\b/i
+);
+
 // const REGEX_BITCOIN = new RE2(/bitcoin|btc/im);
 // const REGEX_PASSWORD_MALWARE_INFECTED_VIDEO = new RE2(
 //   /hacked|malware|infected|trojan|recorded you/im
@@ -210,20 +245,16 @@ function isArbitrary(session, headers) {
 
   //
   // check for paypal scam (very strict until PayPal resolves phishing on their side)
-  // (seems to only come from "outlook.com" and "paypal.com" hosts)
-  //
-  // X-Email-Type-Id = RT000238
-  //                   PPC001017
-  //                   RT000542 = gift message hack
-  //                              <https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/>
-  //                   RT002947 = paypal invoice spam
+  // (from any PayPal country domain, by known template or by an invoice or
+  // money request subject; see PAYPAL_SPAM_TYPE_IDS above)
   //
   if (
-    session.originalFromAddressRootDomain === 'paypal.com' &&
-    headers.hasHeader('x-email-type-id') &&
-    ['PPC001017', 'RT000238', 'RT000542', 'RT002947'].includes(
-      headers.getFirst('x-email-type-id')
-    )
+    REGEX_PAYPAL_DOMAIN.test(session.originalFromAddressRootDomain || '') &&
+    ((headers.hasHeader('x-email-type-id') &&
+      PAYPAL_SPAM_TYPE_IDS.has(
+        headers.getFirst('x-email-type-id').trim().toUpperCase()
+      )) ||
+      (subject && REGEX_PAYPAL_INVOICE_OR_REQUEST_SUBJECT.test(subject)))
   ) {
     const error = new SMTPError(
       'Due to ongoing PayPal invoice spam, you must manually send an invoice link; See https://forwardemail.net/en/blog/docs/paypal-api-disaster-11-years-missing-features-broken-promises#the-11-year-capture-bug-disaster-1899-and-counting ;'
