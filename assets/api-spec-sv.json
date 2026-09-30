@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "När den är satt till \"true\" returneras endast metadata, utan fälten nodemailer eller raw. Hoppar över återuppbyggnaden av hela meddelandet, så att ändringar av flaggor och etiketter svarar snabbt."
           }
         ],
         "requestBody": {

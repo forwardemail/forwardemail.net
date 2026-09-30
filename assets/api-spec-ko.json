@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "\"true\"로 설정하면 nodemailer 또는 raw 필드 없이 메타데이터만 반환합니다. 전체 메시지 재구성을 건너뛰므로 플래그와 라벨 변경이 빠르게 응답합니다."
           }
         ],
         "requestBody": {

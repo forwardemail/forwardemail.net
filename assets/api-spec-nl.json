@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "Indien ingesteld op \"true\", worden alleen metagegevens geretourneerd, zonder de velden nodemailer of raw. Het volledige bericht wordt niet opnieuw opgebouwd, zodat wijzigingen in vlaggen en labels snel reageren."
           }
         ],
         "requestBody": {

@@ -1115,39 +1115,77 @@ async function update(ctx) {
       path: body.folder
     });
 
-    // create mailbox if it does not exist
-    if (mailbox) {
-      //
-      // NOTE: onCreatePromise below will check alias quota
-      //       so this is why we only have it here
-      //
+    // The folder the message is already in is not a move. Clients send the
+    // current folder along with flag and label changes; treating that as a
+    // move ran a quota check and a MOVE (write lock, new UID lookups) on
+    // every "mark as read".
+    const isCurrentMailbox =
+      mailbox &&
+      mailbox._id.toString() ===
+        (message.mailbox?._id || message.mailbox).toString();
 
-      // check if over quota
-      const { isOverQuota } = await Aliases.isOverQuota(
-        {
-          id: ctx.state.session.user.alias_id,
-          domain: ctx.state.session.user.domain_id,
-          locale: ctx.locale
-        },
-        0,
-        ctx.client
-      );
-      if (isOverQuota)
-        throw Boom.forbidden(
-          i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale)
+    if (!isCurrentMailbox) {
+      // create mailbox if it does not exist
+      if (mailbox) {
+        //
+        // NOTE: onCreatePromise below will check alias quota
+        //       so this is why we only have it here
+        //
+
+        // check if over quota
+        const { isOverQuota } = await Aliases.isOverQuota(
+          {
+            id: ctx.state.session.user.alias_id,
+            domain: ctx.state.session.user.domain_id,
+            locale: ctx.locale
+          },
+          0,
+          ctx.client
         );
-    } else {
+        if (isOverQuota)
+          throw Boom.forbidden(
+            i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale)
+          );
+      } else {
+        try {
+          const [, mailboxId] = await onCreatePromise.call(
+            ctx.instance,
+            body.folder,
+            ctx.state.session
+          );
+          mailbox = await Mailboxes.findById(
+            ctx.instance,
+            ctx.state.session,
+            mailboxId
+          );
+        } catch (_err) {
+          // since we use multiArgs from pify
+          // if a promise that was wrapped with multiArgs: true
+          // throws, then the error will be an array so we need to get first key
+          let err = _err;
+          if (Array.isArray(err)) err = _err[0];
+          throw err;
+        }
+      }
+
       try {
-        const [, mailboxId] = await onCreatePromise.call(
+        await onMovePromise.call(
           ctx.instance,
-          body.folder,
+          message.mailbox,
+          {
+            destination: mailbox.path,
+            _id: message._id,
+            silent: true
+          },
           ctx.state.session
         );
-        mailbox = await Mailboxes.findById(
-          ctx.instance,
-          ctx.state.session,
-          mailboxId
-        );
+
+        message = await Messages.findOne(ctx.instance, ctx.state.session, {
+          _id: message._id
+        });
+
+        if (!message)
+          throw Boom.notFound(ctx.translateError('MESSAGE_DOES_NOT_EXIST'));
       } catch (_err) {
         // since we use multiArgs from pify
         // if a promise that was wrapped with multiArgs: true
@@ -1156,33 +1194,6 @@ async function update(ctx) {
         if (Array.isArray(err)) err = _err[0];
         throw err;
       }
-    }
-
-    try {
-      await onMovePromise.call(
-        ctx.instance,
-        message.mailbox,
-        {
-          destination: mailbox.path,
-          _id: message._id,
-          silent: true
-        },
-        ctx.state.session
-      );
-
-      message = await Messages.findOne(ctx.instance, ctx.state.session, {
-        _id: message._id
-      });
-
-      if (!message)
-        throw Boom.notFound(ctx.translateError('MESSAGE_DOES_NOT_EXIST'));
-    } catch (_err) {
-      // since we use multiArgs from pify
-      // if a promise that was wrapped with multiArgs: true
-      // throws, then the error will be an array so we need to get first key
-      let err = _err;
-      if (Array.isArray(err)) err = _err[0];
-      throw err;
     }
   }
 
@@ -1290,7 +1301,12 @@ async function update(ctx) {
     return;
   }
 
-  ctx.body = await json(ctx, message);
+  // `?lightweight=true` returns metadata only (no nodemailer or raw fields),
+  // skipping the rebuild and parse of the whole message: clients that only
+  // change flags or labels do not need the body back
+  ctx.body = await json(ctx, message, {
+    lightweight: ctx.query.lightweight === 'true'
+  });
 }
 
 //

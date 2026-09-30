@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "Quando definido como \"true\", retorna apenas metadados, sem os campos nodemailer ou raw. Ignora a reconstrução da mensagem completa, para que alterações de sinalizadores e rótulos respondam rapidamente."
           }
         ],
         "requestBody": {

@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "عند تعيينه إلى \"true\"، يُرجع البيانات الوصفية فقط، بدون حقول nodemailer أو raw. يتخطى إعادة بناء الرسالة كاملة، لذا تستجيب تغييرات العلامات والتسميات بسرعة."
           }
         ],
         "requestBody": {

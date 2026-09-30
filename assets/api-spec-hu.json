@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "Ha az értéke \"true\", csak metaadatokat ad vissza, nodemailer és raw mezők nélkül. Kihagyja a teljes üzenet újraépítését, így a jelzők és címkék módosítása gyorsan válaszol."
           }
         ],
         "requestBody": {

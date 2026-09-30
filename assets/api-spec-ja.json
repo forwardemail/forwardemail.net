@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "\"true\"に設定すると、nodemailerやrawフィールドを含まないメタデータのみを返します。メッセージ全体の再構築を省略するため、フラグやラベルの変更がすばやく応答します。"
           }
         ],
         "requestBody": {

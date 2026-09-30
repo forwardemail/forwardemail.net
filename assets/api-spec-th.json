@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "เมื่อตั้งค่าเป็น \"true\" จะส่งคืนเฉพาะข้อมูลเมตา โดยไม่มีฟิลด์ nodemailer หรือ raw ข้ามการสร้างข้อความทั้งหมดใหม่ ทำให้การเปลี่ยนแปลงแฟล็กและป้ายกำกับตอบสนองได้รวดเร็ว"
           }
         ],
         "requestBody": {

@@ -6,6 +6,7 @@
 const { Buffer } = require('node:buffer');
 
 const ObjectID = require('bson-objectid');
+const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const falso = require('@ngneat/falso');
 const libmime = require('libmime');
@@ -14,6 +15,7 @@ const test = require('ava');
 
 const utils = require('../utils');
 const config = require('#config');
+const { Aliases } = require('#models');
 
 const { emoji } = config.views.locals;
 
@@ -2224,6 +2226,64 @@ test('clears message labels with empty array', async (t) => {
 
   t.is(updateRes.status, 200);
   t.is(updateRes.body.labels.length, 0);
+});
+
+test('updates flags with the current folder without moving the message', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  const createRes = await api
+    .post('/v1/messages')
+    .set('Authorization', auth)
+    .send({
+      to: [falso.randEmail()],
+      subject: 'Flag with folder',
+      text: 'Test'
+    });
+  t.is(createRes.status, 200);
+
+  // over quota: a move would be refused, a flag change must not be
+  await Aliases.findByIdAndUpdate(alias._id, {
+    $set: { storage_used: bytes('1TB') }
+  });
+
+  const updateRes = await api
+    .put(`/v1/messages/${createRes.body.id}`)
+    .set('Authorization', auth)
+    .send({ flags: ['\\Seen'], folder: createRes.body.folder_path });
+
+  t.is(updateRes.status, 200);
+  t.deepEqual(updateRes.body.flags, ['\\Seen']);
+  t.is(updateRes.body.folder_path, createRes.body.folder_path);
+  t.is(updateRes.body.uid, createRes.body.uid);
+});
+
+test('update with ?lightweight=true returns metadata only', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  const createRes = await api
+    .post('/v1/messages')
+    .set('Authorization', auth)
+    .send({
+      to: [falso.randEmail()],
+      subject: 'Lightweight update',
+      text: 'Test'
+    });
+  t.is(createRes.status, 200);
+
+  const updateRes = await api
+    .put(`/v1/messages/${createRes.body.id}?lightweight=true`)
+    .set('Authorization', auth)
+    .send({ flags: ['\\Flagged'] });
+
+  t.is(updateRes.status, 200);
+  t.deepEqual(updateRes.body.flags, ['\\Flagged']);
+  t.is(updateRes.body.subject, 'Lightweight update');
+  t.is(updateRes.body.nodemailer, undefined);
+  t.is(updateRes.body.raw, undefined);
 });
 
 test('calendars create validates required fields', async (t) => {

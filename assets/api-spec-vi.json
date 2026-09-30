@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "Khi đặt thành \"true\", chỉ trả về siêu dữ liệu, không có các trường nodemailer hoặc raw. Bỏ qua việc dựng lại toàn bộ thư, nhờ đó thay đổi cờ và nhãn phản hồi nhanh chóng."
           }
         ],
         "requestBody": {

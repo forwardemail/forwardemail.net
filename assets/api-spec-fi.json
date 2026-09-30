@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "Kun arvoksi asetetaan \"true\", palauttaa vain metatiedot ilman nodemailer- ja raw-kenttiä. Koko viestiä ei rakenneta uudelleen, joten merkintöjen ja tunnisteiden muutokset vastaavat nopeasti."
           }
         ],
         "requestBody": {

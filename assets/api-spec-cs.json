@@ -4993,6 +4993,20 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "lightweight",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "default": "false"
+            },
+            "description": "Při nastavení na \"true\" vrací pouze metadata, bez polí nodemailer a raw. Přeskočí sestavení celé zprávy, takže změny příznaků a štítků odpoví rychle."
           }
         ],
         "requestBody": {
