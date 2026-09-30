@@ -72,6 +72,7 @@ const { lastRun, watch, series, parallel, src, dest } = require('gulp');
 
 const env = require('#config/env');
 const config = require('#config');
+const findIconFontOverrides = require('#helpers/find-icon-font-overrides');
 const logger = require('#helpers/logger');
 // const i18n = require('#helpers/i18n');
 const { developerDocs } = require('#config/utilities');
@@ -344,7 +345,16 @@ const purgeCssOptions = {
 
 const PURGE_APP = {
   ...purgeCssOptions,
-  content: ['build/**/*.js', 'app/views/**/*.md', 'app/views/**/*.pug']
+  // assets/js is read from source as well as from build/: css() runs in
+  // parallel with bundle(), so build/js can still be missing or stale when
+  // the purge reads it, which dropped classes only scripts add (the
+  // show-password toggle's fa-eye-slash, for one) from some builds
+  content: [
+    'assets/js/**/*.js',
+    'build/**/*.js',
+    'app/views/**/*.md',
+    'app/views/**/*.pug'
+  ]
 };
 
 //
@@ -487,6 +497,17 @@ async function faSubset() {
 
   // a build that still loads the complete fonts would not be caught otherwise
   const app = await fs.promises.readFile(path.join(cssDir, 'app.css'), 'utf8');
+
+  // a rule that sets a font on the icon elements below some class outranks
+  // `.fa`, so every icon inside draws as a missing-glyph box
+  const overrides = findIconFontOverrides(app);
+  if (overrides.length > 0)
+    throw new Error(
+      `Font Awesome icons would lose their font to: ${overrides.join(
+        ', '
+      )} (leave icons out of such rules, e.g. i:not(.fa):not(.fas):not(.far):not(.fab))`
+    );
+
   for (const [from, to] of renames) {
     if (app.includes(from))
       throw new Error(`Font Awesome subset: app.css still loads ${from}`);

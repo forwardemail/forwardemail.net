@@ -1,10 +1,20 @@
+// Reset for the Scalar API reference container (/email-api).
+@mixin scalar-app-reset-box {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
 .scalar-app-reset {
-  div, span, applet, object, iframe,
+  div, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
   a, abbr, acronym, address, big, cite, code,
   del, dfn, em, img, ins, kbd, q, s, samp,
   small, strike, strong, sub, sup, tt, var,
-  b, u, i, center,
+  b, u, center,
   dl, dt, dd, ol, ul, li,
   fieldset, form, label, legend,
   table, caption, tbody, tfoot, thead, tr, th, td,
@@ -12,12 +22,15 @@
   figure, figcaption, footer, header, hgroup,
   menu, nav, output, ruby, section, summary,
   time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font: inherit;
-    font-size: 100%;
-    vertical-align: baseline;
+    @include scalar-app-reset-box;
+  }
+  // <i> and <span> are also Font Awesome icons ("i.fa.fa-key"), and
+  // `font: inherit` here outranks `.fa`, replacing the icon font with the
+  // text font (a missing-glyph box), so icons are left out (the build checks
+  // for this, see helpers/find-icon-font-overrides.js)
+  i:not(.fa):not(.fas):not(.far):not(.fab),
+  span:not(.fa):not(.fas):not(.far):not(.fab) {
+    @include scalar-app-reset-box;
   }
   /* HTML5 display-role reset for older browsers */
   article, aside, details, figcaption, figure,
