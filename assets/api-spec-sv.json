@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "Sant för ett leveransstatusmeddelande (till exempel en studs) om ett e-postmeddelande du har skickat"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Nuvarande antal skickade e-postmeddelanden"
+            "description": "Utgående SMTP-meddelanden du har skickat idag (UTC), exklusive studsmeddelanden och autosvar"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximalt antal tillåtna e-postadresser"
+            "description": "Dagens ryktesbaserade tröskel (högst det som återstår idag av domänens och kontots trösklar; 0 när du inte kan skicka från domänen)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Hämta gräns för utgående SMTP-e-post",
-        "description": "Detta är en enkel slutpunkt som returnerar ett JSON-objekt som innehåller `count` och `limit` för antalet dagliga utgående SMTP-meddelanden per konto.",
+        "description": "Returnerar ett JSON-objekt med `count` för utgående SMTP-meddelanden du har skickat idag och dagens `limit`. Utgående SMTP är obegränsat, och `limit` är din nuvarande ryktesbaserade tröskel (se <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), som växer över tid. Studsmeddelanden och autosvar räknas inte.",
         "tags": [
           "E-postmeddelanden"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Skapa domäninbjudan",
-        "description": ">[!IMPORTANT]\n>Om den inbjudna användaren redan är en accepterad medlem i andra domäner som administratören som bjuder in dem är medlem i, kommer inbjudan att accepteras automatiskt och inget e-postmeddelande skickas.",
+        "description": ">[!IMPORTANT]\n>Om den inbjudna användaren redan är en accepterad medlem i andra domäner som administratören som bjuder in dem är medlem i, kommer inbjudan att accepteras automatiskt och inget e-postmeddelande skickas (endast för en `group` av `user`: vi skickar en inbjudan som `admin` via e-post så att den inbjudna kan acceptera den, och utelämnar dess länk från domänens väntande inbjudningar).",
         "tags": [
           "Inbjudningar"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Uppdatera domänmedlem",
-        "description": "Uppdatera en domänmedlem.",
+        "description": "Uppdatera en domänmedlem.\n\n>[!IMPORTANT]\n>Att uppdatera en annan medlem till `admin` skickar istället en inbjudan som administratör via e-post, och de förblir `user` tills de accepterar den (domänens väntande inbjudningar listar den). Att uppdatera dem tillbaka till `user` eller ta bort dem drar tillbaka den.",
         "tags": [
           "Medlemmar"
         ],

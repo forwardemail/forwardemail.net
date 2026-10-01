@@ -10,7 +10,6 @@
 //- what a customer is actually charged. Figures are emitted as literals
 //- outside t(), so the translation job never rewrites a number.
 -
-  const feOutbound = Math.round(config.smtpLimitMessages * Math.round(config.smtpLimitDuration / ms("1d")) * 30);
   const fePlans = {
     free: {
       key: "free",
@@ -43,7 +42,7 @@
           t("Everything in Free"),
           t("Unlimited aliases ($0/user)"),
           t("10 GB pooled storage"),
-          t("%d+ outbound / month", feOutbound),
+          t("Unlimited outbound (reputation-based)"),
           t("API + DMARC reporting")
         ]
       }
@@ -59,6 +58,10 @@
         cta: t("Create team"),
         features: [
           t("Everything in Enhanced"),
+          t(
+            "Outbound starts at %s/day",
+            config.smtpTeamLimitMessages.toLocaleString("en")
+          ),
           t("Unlimited team members"),
           t("Permission management"),
           t("Priority support")

@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True para uma notificação de status de entrega (como um bounce) sobre um e-mail que você enviou"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Contagem atual de e-mails enviados"
+            "description": "Mensagens SMTP de saída que você enviou hoje (UTC), sem contar notificações de bounce e respostas automáticas"
           },
           "limit": {
             "type": "integer",
-            "description": "Número máximo de emails permitidos"
+            "description": "Limite baseado em reputação de hoje (no máximo o que resta hoje dos limites do domínio e da conta; 0 quando você não pode enviar a partir do domínio)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Obtenha o limite de e-mails SMTP de saída.",
-        "description": "Este é um endpoint simples que retorna um objeto JSON contendo a `contagem` e o `limite` do número de mensagens SMTP de saída diárias por conta.",
+        "description": "Retorna um objeto JSON com o `count` de mensagens SMTP de saída que você enviou hoje e o `limit` de hoje. O SMTP de saída é ilimitado, e o `limit` é o seu limite atual baseado em reputação (consulte <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), que cresce com o tempo. Notificações de bounce e respostas automáticas não são contadas.",
         "tags": [
           "E-mails"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Criar convite de domínio",
-        "description": ">[!IMPORTANT]\n>Se o usuário convidado já for membro de algum outro domínio do qual o administrador que o está convidando também seja membro, o convite será aceito automaticamente e nenhum e-mail será enviado.",
+        "description": ">[!IMPORTANT]\n>Se o usuário convidado já for membro de algum outro domínio do qual o administrador que o está convidando também seja membro, o convite será aceito automaticamente e nenhum e-mail será enviado (somente para um `group` de `user`: um convite como `admin` enviamos por e-mail para que o convidado o aceite, e deixamos o link dele fora dos convites pendentes do domínio).",
         "tags": [
           "Convites"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Atualizar membro do domínio",
-        "description": "Atualizar um membro do domínio.",
+        "description": "Atualizar um membro do domínio.\n\n>[!IMPORTANT]\n>Atualizar outro membro para `admin` envia a ele, em vez disso, um convite por e-mail como administrador, e ele permanece `user` até aceitá-lo (os convites pendentes do domínio o listam). Atualizá-lo de volta para `user` ou removê-lo retira o convite.",
         "tags": [
           "Membros"
         ],

@@ -80,6 +80,8 @@
   * [Herhangi bir alt alan adı için e-posta yönlendirebilir miyim (joker alt alan adları)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Giden SMTP limitleriniz nelerdir](#what-are-your-outbound-smtp-limits)
   * [SMTP'yi etkinleştirmek için onay gerekiyor mu](#do-i-need-approval-to-enable-smtp)
+  * [Giden SMTP'mi onaylamak veya yeniden etkinleştirmek için hangi bilgilere ihtiyacınız var](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [Yeni kaydedilen veya yakın zamanda süresi dolan alan adları neden ücretli plan gerektirir](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [SMTP sunucu yapılandırma ayarlarınız nelerdir](#what-are-your-smtp-server-configuration-settings)
   * [IMAP sunucu yapılandırma ayarlarınız nelerdir](#what-are-your-imap-server-configuration-settings)
   * [POP3 sunucu yapılandırma ayarlarınız nelerdir](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Bununla Outlook'ta "mail gönderme" yapabilir miyim](#can-i-send-mail-as-in-outlook-with-this)
   * [Bununla Apple Mail ve iCloud Mail'de "mail gönderme" yapabilir miyim](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Bununla sınırsız e-posta yönlendirebilir miyim](#can-i-forward-unlimited-emails-with-this)
+  * [Sınırsız e-posta gönderebilir miyim](#can-i-send-unlimited-emails-with-this)
   * [Tek fiyatla sınırsız alan adı sunuyor musunuz](#do-you-offer-unlimited-domains-for-one-price)
   * [Hangi ödeme yöntemlerini kabul ediyorsunuz](#which-payment-methods-do-you-accept)
 * [Ek Kaynaklar](#additional-resources)
@@ -1035,7 +1038,7 @@ Ancak bu mesajı görürlerse, bunun nedeni genellikle e-postalarınızı <john@
 
 Bu konu, [Gmail'de gönderen adının yanında ekstra bilgi görünmesiyle ilgili yaygın bir sorunla](https://support.google.com/mail/answer/1311182) ilgilidir.
 
-Mayıs 2023 itibarıyla tüm ücretli kullanıcılar için SMTP ile e-posta gönderimini bir eklenti olarak destekliyoruz – bu da Gmail'de <span class="notranslate">via forwardemail dot net</span> ifadesini kaldırabileceğiniz anlamına gelir.
+Giden SMTP tüm ücretli planlarla birlikte gelir (sınırsız ve [itibara dayalı](#what-are-your-outbound-smtp-limits)), bu nedenle Gmail'de <span class="notranslate">via forwardemail dot net</span> ifadesini kaldırabilirsiniz.
 
 Bu SSS konusu, [Gmail kullanarak posta gönderme nasıl yapılır](#how-to-send-mail-as-using-gmail) özelliğini kullananlar için özeldir.
 
@@ -2038,6 +2041,12 @@ Başlangıç tarihi, bitiş tarihi, konu ve mesaj yapılandırma yeteneğiniz va
 
 8. MAIL FROM adresi bir ARF geri bildirim gönderici deseniyle eşleşiyorsa (örn. `feedback@arf.mail.yahoo.com`) göndermeyiz.
 
+9. Yalnızca kimliği doğrulanmış göndericilere yanıt veririz: From adresinin DMARC'tan geçmesi veya hizalı ve geçerli bir DKIM imzası taşıması gerekir. Paylaşılan posta sunucuları herkes için SPF'ten geçtiğinden tek başına SPF sayılmaz. Sahte bir gönderici, tatil yanıtlarınızı başka birini hedef alan [backscatter](https://www.backscatterer.org/?target=autoresponders) mesajlarına dönüştüremez.
+
+10. Yalnızca takma adınız veya onun alan adındaki başka bir adres (ona yönlendiren bir takma ad gibi) `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` veya `Resent-Bcc` başlığında yer aldığında, [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) önerdiği gibi, yanıt veririz. Gizli bir alıcı listesine gönderilen e-postalar yanıt almaz. Sieve tatil yanıtları için takma adınızın veya `:addresses` içindeki bir adresin bu başlıklarda yer alması gerekir.
+
+11. Kullanıcı başına günde en fazla 300 tatil yanıtı (giden SMTP eşiğinizi bunun altına kısıtladıysak daha az) ve tüm kullanıcılarımız genelinde alıcı adresi başına günde en fazla 20 tatil yanıtı göndeririz.
+
 ### Forward Email için SPF nasıl kurulur {#how-do-i-set-up-spf-for-forward-email}
 
 Kayıt şirketinizin DNS yönetim sayfasını kullanarak aşağıdaki <strong class="notranslate">TXT</strong> kaydını ayarlayın:
@@ -2339,9 +2348,11 @@ Evet, daha fazlasını <https://forwardemail.net/guides/newsletter-with-listmonk
 
 Lütfen IP itibarını korumak ve teslim edilebilirliği sağlamak için Forward Email'in **bülten onayı** için alan bazında manuel bir inceleme süreci olduğunu unutmayın. Onay için <support@forwardemail.net> adresine e-posta gönderin veya bir [yardım talebi](https://forwardemail.net/help) açın. Bu genellikle 24 saatten kısa sürer ve çoğu talep 1-2 saat içinde karşılanır. Yakın gelecekte bu süreci ek spam kontrolleri ve uyarılarla anlık hale getirmeyi hedefliyoruz. Bu süreç, e-postalarınızın gelen kutusuna ulaşmasını ve mesajlarınızın spam olarak işaretlenmemesini sağlar.
 
+Bültenler ve posta listeleri, sınırsız olan ve [gönderici itibarınızla](#what-are-your-outbound-smtp-limits) birlikte artan günlük giden eşiğinize sayılır. Listelerinizi temiz tutun: yüksek geri dönme oranı eşiğinizi düşürür ve hacimdeki ani artışları yavaşlatırız.
+
 ### API ile e-posta göndermeyi destekliyor musunuz? {#do-you-support-sending-email-with-api}
 
-Evet, Mayıs 2023 itibarıyla tüm ücretli kullanıcılar için bir eklenti olarak API ile e-posta göndermeyi destekliyoruz.
+Evet. Tüm ücretli planlar API'miz ile e-posta göndermeyi içerir. Giden SMTP gibi bu da **sınırsızdır** ve [itibara dayalıdır](#what-are-your-outbound-smtp-limits): API ile ve SMTP ile gönderdiğiniz mesajlar tek bir günlük eşiği paylaşır.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2547,7 +2558,7 @@ Kişi desteğini kullanmak için, **kullanıcı** <a href="/my-account/domains" 
 
 ### SMTP ile e-posta göndermeyi destekliyor musunuz {#do-you-support-sending-email-with-smtp}
 
-Evet, Mayıs 2023 itibarıyla tüm ücretli kullanıcılar için bir eklenti olarak SMTP ile e-posta göndermeyi destekliyoruz.
+Evet. Tüm ücretli planlar giden SMTP içerir ve bu **sınırsızdır**: günlük gönderim eşiğiniz [gönderici itibarınızla](#what-are-your-outbound-smtp-limits) birlikte artar.
 
 <div id="smtp-instructions">
 
@@ -3676,32 +3687,101 @@ Alıcıda (değiştirme) <a href="#do-you-support-regular-expressions-or-regex" 
 
 ### Giden SMTP limitleriniz nelerdir {#what-are-your-outbound-smtp-limits}
 
-Kötüye kullanımı önlemek ve meşru kullanımlara esneklik sağlamak için çıkış SMTP oran sınırlamalarını birden fazla seviyede uyguluyoruz. Her seviye sırayla kontrol edilir — ilk ulaşan limit, mesajı geçici olarak `421` hatasıyla reddeder (anlamı: "daha sonra tekrar deneyin").
+Giden SMTP **sınırsızdır** ve **itibara dayalıdır**. Sabit bir aylık üst sınır yerine günlük bir eşik alırsınız ve bu eşik, iyi bir gönderim itibarı oluşturdukça artar.
 
-**Oran sınırı hiyerarşisi:**
+Yeni göndericiler günde 300 mesajla, Takım planında ise 900 ile başlar (Takım planındaki göndericiler 900'ün altındaki seviyeleri atlar ve bir sonraki seviyeleri 1,000'dir). Günde bir kez son gönderimlerinizi inceler ve eşiğinizi yukarı veya aşağı taşırız. Her günü iki gün sonra, o günkü mesajların teslim sonuçlarını öğrendiğimizde değerlendiririz. Bu sistem hesabınız için başladığında gönderim geçmişinizin en fazla son 30 gününe bakarız ve kaçırdığımız günleri telafi ederiz.
 
-| Seviye | Kapsam | Varsayılan Limit | Açıklama |
-| :---- | :---- | :-----------: | :---------- |
-| Takma ad başına | Bireysel takma ad | Yok (alan adı limitini kullanır) | İsteğe bağlı. Bir takma ada özel bir `smtp_limit` ayarlanmışsa, önce o kontrol edilir. |
-| Alan adı başına | Bir günde bir alan adından gönderilen tüm e-postalar | 300/day | Alan adı altındaki her takma ad için gönderilen tüm çıkış e-postalarını sayar. |
-| Kullanıcı başına | Bir günde bir kullanıcı hesabı tarafından gönderilen tüm e-postalar | 300/day | Takma adları veya alan adlarını silip yeniden oluşturarak atlatmayı önler. |
+Yalnızca gerçek gönderim itibar oluşturur. Bir e-posta, onu **kendi alan adlarınız dışındaki benzersiz alıcılara** **teslim ettiğimizde** yukarı çıkmaya sayılır. Kendinize, kendi alan adlarınıza (veya bunların alt alan adlarına), gönderim yaptığınız alan adlarına veya aynı alıcıya tekrar tekrar gönderilen e-postalar sayılmaz. Bir adresin varyasyonları (bir `+tag` veya bir Gmail adresindeki noktalar) bir kez sayılır. Her alıcı alan adı (alt alan adlarıyla birlikte) günde en fazla 50 alıcı için sayılır; büyük posta kutusu sağlayıcılarının kendi alan adları (gmail.com gibi) bunun dışındadır. Sayılan alıcıların en az beşte biri büyük posta kutusu sağlayıcılarına gitmelidir ve daha yüksek seviyeler ayrıca tek bir günde minimum sayıda farklı alıcı alan adı gerektirir.
 
-**Etkili limitin nasıl belirlendiği:**
+* **Yukarı çıkma**: yeterince uzun süre ara vermeden ödeme yaptığınızda, mevcut seviyenizde yeterli sayıda temiz gönderim gününüz olduğunda ve son 7 gündeki en yoğun gününüzde kendi alan adlarınız dışındaki teslim edilen alıcı sayısı (yeterince farklı alıcı alan adına yayılmış olarak) mevcut eşiğinizin en az yarısına ulaştığında eşiğiniz bir seviye yükselir. Yalnızca kesintisiz ödeme süresi sayılır, bu nedenle ödeme yapmamış (veya ödemeyi bırakmış) daha eski bir hesap sıfırdan başlar. En fazla 14 gün gecikmeli bir yenileme yine kesintisiz sayılır ve yalnızca kendi ödemeleriniz sayılır.
+* **Temiz gün**: en az 5 mesajınızı kendi alan adlarınız dışındaki alıcılara teslim ettiğimiz, bu alıcıların %5'inden azının postanızı geri çevirdiği veya reddettiği, kötü bir gün için yeterli spam ya da virüs bildirimi almadığınız (aşağıya bakın) ve olağan dışı bir düzen nedeniyle gönderiminizi yavaşlatmadığımız bir gün.
+* **Aşağı inme**: yüksek geri dönme veya reddedilme oranına sahip bir gün (kendi alan adlarınız dışındaki en az 20 alıcının %5'i veya daha fazlası) ya da büyük posta kutusu sağlayıcılarından gelen çok fazla spam veya virüs bildirimi (aşağıya bakın), eşiğinizi bir seviye düşürür (planınızın başlangıç eşiğinin altına değil) ve temiz gün sayınızı sıfırlar. Bunların %15'i veya daha fazlasının postanızı geri çevirdiği ya da reddettiği bir gün ise bunun yerine eşiğinizi planınızın başlangıç eşiğine sıfırlar ve yukarı çıkmayı 30 gün boyunca duraklatır (ekibimizin onayladığı bir eşik geçerli olmaya devam eder). Yalnızca postanızın reddedilmesi sayılır; örneğin paylaşılan IP adreslerimizin bir engel listesinde olması veya ulaşamadığımız bir alıcı sunucusu sayılmaz. Her alıcı, ona kaç mesaj gönderdiğinizden bağımsız olarak bir kez sayılır ve zamanlanmış bir mesaj, onu zamanladığınız gün sayılır. Gönderim yapmadığınız günler lehinize veya aleyhinize sayılmaz.
+* **Spam ve virüs bildirimleri**: büyük posta kutusu sağlayıcıları (Gmail, Outlook ve Yahoo gibi) neyin kötüye kullanım sayılacağına karar verir ve biz yalnızca onların kalıcı reddetmelerini sayarız. Bir sağlayıcının kendi alan adlarındaki (gmail.com gibi) her alıcı sayılırken, bir sağlayıcının barındırdığı diğer alan adları (bir şirketin Google Workspace'i gibi) alan adı başına bir kez sayılır ve her biri günde bir kez sayılır. Bildirimleri, büyük sağlayıcıların yaptığı gibi gönderdiğiniz alıcıların oranı olarak sayarız (Gmail, göndericilerden %0.1'in altında kalmalarını ve asla %0.3'e ulaşmamalarını ister), bu nedenle tek bir bildirim sizi aşağı indirmez ve bir sağlayıcının barındırdığı diğer alan adları hakkındaki bildirimler gereken bildirimlerin en fazla yarısını oluşturur. Kendi alan adlarınız dışındaki bir günlük alıcıların veya daha fazlaysa bir önceki günün alıcılarının %0.1'i veya daha fazlası için gelen bildirimler kötü bir gün sayılır (en az 2 ve en fazla 25 bildirim gerekir). Takma adlarınızdan birinin otomatik olarak askıya alınması tek başına itibarınızın aleyhine sayılmaz, ancak buna yol açan bildirimler sayılır. Son 24 saatte gönderdiğiniz alan adı dışındaki alıcıların, o süreye zamanlanmış mesajlar dahil, %0.3'ü veya daha fazlası için gelen bildirimler eşiğinizi hemen planınızın başlangıç eşiğine (300 veya Takım planında 900) sıfırlar (en az 3 ve en fazla 50 bildirim gerekir). Ardından yukarı çıkma 30 gün boyunca duraklar ve ekibimizin onayladığı bir eşik bu süre boyunca geçerli olmaz. Takım planı alan adlarında bildirimler, alan adının eşiğini kullandığı yönetici için de kötü güne sayılır (kendi eşiğiniz de aynı yükseklikte değilse), ilgili oldukları üyelerin alıcılarına göre aynı oranda, ve o yöneticiyi sıfırlamaz. Bu üyeler hakkındaki bildirimler 24 saat içinde sıfırlama oranına ulaştığında, yöneticinin alan adlarındaki üyeler 30 gün boyunca yöneticinin eşiğini kullanamaz. Yöneticinin kendi gönderimi aynı kalır ve üyelerin gönderimi yine de yöneticinin eşiğine sayılır. Bir üyeyi yönetici yapmak ona bir davet gönderir ve üye daveti kabul ettiğinde yönetici olur. Otomatik yanıtlar ve size gönderilen postaların geri dönmeleri hakkındaki bildirimler aleyhinize sayılmaz, gönderdiğiniz postaların teslim bildirimleri hakkındaki bildirimler ise sayılır.
 
-* **Team plan domains** — etkili günlük limit, alan adı üzerindeki tüm yönetici üyeler arasındaki en yüksek `smtp_limit`'tir. Örneğin, bir yönetici 300 limiti, bir diğeri 500 ise, alan adının etkili limiti 500'dür.
-* **Enhanced Protection ve diğer planlar** — etkili günlük limit, gönderen kullanıcının kendi `smtp_limit`'idir (varsayılan olarak günde 300 mesaj).
-* **Takma ad bazlı geçersiz kılma** — alan adı yöneticileri isteğe bağlı olarak bireysel takma adlara özel bir `smtp_limit` belirleyebilir. Ayarlanmışsa, önce bu kontrol edilir (alan adı ve kullanıcı limitlerinden önce). Bu, belirli takma adları daha düşük bir gönderim hacmiyle sınırlamak için faydalıdır.
-* **Yeni takma adlar için alan varsayılanı** — alan yöneticileri, alan için bir `alias_default_smtp_limit` belirleyebilir (API üzerinden veya kontrol panelindeki **Gelişmiş Ayarlar** aracılığıyla). Ayarlandığında, o alanda yeni oluşturulan tüm takma adlar bu değeri otomatik olarak kendi `smtp_limit` değerleri olarak devralır. Bu değer, alanın yürürlükteki SMTP limitini aşamaz. Mevcut takma adları etkilenmez. Devre dışı bırakmak için `0` olarak ayarlayın.
+**İtibar seviyeleri:**
 
-**Sistem yöneticileri** (Forward Email personeli) tüm oran sınırlamalarından muaftır.
+| Günlük eşik | Minimum kesintisiz ödeme süresi | Önceki seviyedeki temiz gönderim günleri | Bir gündeki farklı alıcı alan adları |
+| --------------: | ---------------------------: | ----------------------------------: | -----------------------------------: |
+|             300 |                            – |                                   – |                                    – |
+|             500 |                        7 gün |                                   5 |                                   10 |
+|           1,000 |                       14 gün |                                   7 |                                   20 |
+|           2,000 |                       30 gün |                                  10 |                                   40 |
+|           5,000 |                       60 gün |                                  14 |                                   75 |
+|          10,000 |                      120 gün |                                  21 |                                  150 |
 
-Tüm oran sınırlamaları, mevcut günün başlangıcından (UTC gece yarısı) itibaren oluşturulan e-postalara karşı veritabanı sayımları (`Emails.countDocuments`) kullanılarak uygulanır. Bu, limitinizin her gün UTC gece yarısında sıfırlandığı anlamına gelir.
+Günde 10,000 mesajın ötesinde ekibimiz hesabınızı inceler ve eşiğinizi elle yükseltir; sizin bir şey yapmanıza gerek yoktur. Daha erken daha yüksek bir eşiğe ihtiyacınız varsa (örneğin mevcut bir gönderim hacmini taşımak için), [bize ulaşın](/help). Ekibimizin onayladığı bir eşik minimum değer olarak işlev görür ve sizi kapsadığı seviyeye yerleştirir; itibarınız onu günde 10,000 mesaja kadar artırmaya devam edebilir.
 
-Daha yüksek bir limite ihtiyacınız varsa lütfen [bize ulaşın](https://forwardemail.net/help). Çoğu talep 1-2 saat içinde karşılanır.
+**Olağan dışı gönderim düzenleri:**
+
+Etkinliğiniz olağan dışı göründüğünde, eşiğiniz ne olursa olsun gönderimi `421` hatasıyla yavaşlatırız. Bu, biri bir hesabı ele geçirir veya kötüye kullanırsa, yıllardır var olan veya uzun süre kullanılmayan hesaplar dahil, kuyruğumuzu ve IP itibarımızı korur.
+
+* **Ani artışlar**: bir günde son normal hacminizin (son 45 gündeki en yoğun gününüz) 2 katına kadar veya başlangıç eşiğinize (300 mesaj ya da Takım planında ve Takım planı alan adlarında 900) veya onaylanmış bir eşiğe kadar, hangisi daha yüksekse, gönderebilirsiniz. Normal hacminizi her gün son gönderimlerinize göre güncelleriz; bu nedenle istikrarlı büyüme etkilenmez ve yeni göndericiler başlangıç eşiklerinden başlayarak artar.
+* **Alıcılar**: bir mesajın çok sayıda alıcısı olabilir; bu nedenle bir gündeki tüm mesajlarınızda toplamda bugünkü kotanızın 2 katına kadar alıcıya ulaşabilirsiniz, bir hesabın göndericileri ise toplamda hesabın eşiğinin 2 katına kadar. Bundan daha fazla alıcısı olan tek bir mesajı `550` hatasıyla reddederiz.
+* **Patlamalar**: herhangi bir saat içinde bugünkü kotanızın dörtte birine veya son 45 gündeki en yoğun saatinizin 2 katına kadar (ancak bugünkü kotanızın yarısından fazla değil), hangisi daha yüksekse, ve en az başlangıç eşiğiniz veya onaylanmış bir eşik kadar gönderebilirsiniz. Haftalık bülten gibi düzenli bir örüntü, normal hacminizin bir parçasıdır.
+* **Geri dönmeler**: alıcılar son 6 saatteki mesajlarınızın %10'unu veya daha fazlasını geri çevirdiyse ya da reddettiyse (en az 50 mesajla ve paylaşılan IP adreslerimizin reddedilmesi sayılmadan), yeni mesajlar geri dönme oranınız düzelene kadar bekler.
+* **Kuyruk birikmesi**: son 24 saatteki mesajlarınızın çok fazlası hâlâ kuyrukta bekliyorsa (bugünkü kotanızın %10'u, en az başlangıç eşiğiniz kadar), yeni mesajlar kuyruk normale dönene kadar bekler. Zamanlanmış mesajlar, bir alıcı erteledikten sonra yeniden denediğimiz mesajlar ve onay bekleyen mesajlar sayılmaz ve bir birikme itibarınızın aleyhine sayılmaz.
+* **Zamanlanmış mesajlar**: mesajları en fazla 27 gün sonrasına zamanlayabilir ve aynı anda en fazla bir günlük kotanız kadar zamanlanmış mesaj tutabilirsiniz.
+
+Yavaşlatmalar etkinliğiniz normale döndükçe sona erer ve yavaşlatma yaşanan bir gün temiz gönderim günü olarak sayılmaz. E-posta istemcileri ertelenen mesajları kendileri yeniden dener; API istekleri ise `429` hatası alır, bu yüzden bunları daha sonra yeniden deneyin.
+
+Günlük eşiğinize ulaştığınızda, eşiğiniz UTC gece yarısında sıfırlanana kadar sonraki mesajları `421` hatasıyla (anlamı: "daha sonra tekrar deneyin") reddederiz. Spam ve virüslere karşı [kötüye kullanım korumalarımız](#why-was-my-outbound-smtp-suspended) eşiğiniz ne olursa olsun geçerlidir.
+
+Bugün kaç mesaj gönderdiğinizi ve mevcut eşiğinizi [Hesabım → E-postalar](/my-account/emails) bölümünden veya [API](/email-api#get-outbound-smtp-email-limit) ile görebilirsiniz.
+
+**Eşikler nasıl uygulanır:**
+
+| Seviye | Kapsam | Varsayılan eşik | Açıklama |
+| :--------- | :----------------------------------------- | :-------------------------: | :------------------------------------------------------------------------ |
+| Takma ad başına | Bireysel takma ad | Yok (alan adı limitini kullanır) | İsteğe bağlı. Bir takma adın özel `smtp_limit` değeri varsa önce onu kontrol ederiz. |
+| Hesap başına | Bir hesabın yönetici olduğu alan adlarından bir günde gönderilen tüm e-postalar | İtibara dayalı (300+/gün, Takım planında 900+) | Eşiğiniz hesap genelindedir; bu yüzden alan adı veya üye eklemek eşiği katlamaz. |
+| Alan adı başına | Bir günde bir alan adından gönderilen tüm e-postalar | Hesabın eşiği dahilinde kademeli artar (300+/gün, Takım planında 900+) | Alan adındaki takma adlardan gönderilen tüm giden e-postaları sayar. |
+| Kullanıcı başına | Bir günde bir kullanıcı hesabı tarafından gönderilen tüm e-postalar | İtibara dayalı (300+/gün, Takım planında 900+) | Takma adları veya alan adlarını silip yeniden oluşturmak bunu sıfırlamaz. |
+
+* **Takım planı alan adları**: alan adının eşiği, ödeme yapan yönetici üyeleri arasındaki en yüksek eşiktir. Örneğin, bir yöneticinin eşiği 1,000, diğerininki 5,000 ise alan adının eşiği 5,000'dir. Takım planındaki göndericiler günde 300 yerine 900 mesajla başlar.
+* **Hesap geneli**: bir alan adının hesabı, en yüksek eşiğe sahip ödeme yapan yöneticisidir. O hesabın yönetici olduğu alan adlarından gönderilen bütün e-postalar, kim gönderirse göndersin (üyeler dahil) bu tek eşiğe sayılır; bu nedenle alan adı veya üye eklemek eşiği artırmaz.
+* **Yeni alan adları kademeli artar**: hesabın eşiği dahilinde bir alan adı, son 45 günde teslim edilen e-postaların en yoğun gününün 2 katına kadar ve en az başlangıç eşiği (300 mesaj veya Takım planında 900) ya da onaylanmış bir eşik kadar gönderebilir. Yerleşik bir hesaptaki yeni bir alan adı başlangıç eşiğiyle başlar ve e-postalarını teslim ettikçe büyür.
+* **Geri dönenler ve otomatik yanıtlar**: sizin adınıza gönderdiğimiz geri dönen e-posta bildirimleri ve tatil yanıtlayıcı (otomatik yanıt) mesajları eşiğinize sayılmaz. Kullanıcı başına günde en fazla 300 otomatik yanıt (eşiğinizi bunun altına kısıtladıysak daha az) ve tüm kullanıcılarımız genelinde alıcı adresi başına günde en fazla 20 otomatik yanıt göndeririz, ve yalnızca kimlik doğrulamasını geçen göndericilere (bkz. [tatil yanıtlayıcıları](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Gönderdiğiniz alan adı (veya yöneticisi olduğunuz diğer alan adları) dışındaki bir dönüş adresine giden geri dönen e-posta bildirimlerini, hangisi daha yüksekse, bu sayı veya günlük eşiğinizin %15'i ile sınırlarız ve bu bildirimler yalnızca orijinal iletinin tanımlayıcı üst bilgilerini (`From`, `To` ve `Subject` gibi) içerir.
+* **Enhanced Protection ve diğer planlar**: alan adının eşiği, gönderen kullanıcının kendi eşiğidir.
+* **Takma ad bazlı geçersiz kılma**: alan adı yöneticileri bireysel takma adlara özel bir `smtp_limit` belirleyebilir. Bunu önce kontrol ederiz (alan adı ve kullanıcı eşiklerinden önce), böylece belirli takma adları daha düşük bir gönderim hacmiyle sınırlayabilirsiniz.
+* **Yeni takma adlar için alan adı varsayılanı**: alan adı yöneticileri, alan adı için bir `alias_default_smtp_limit` belirleyebilir (API ile veya kontrol panelindeki Gelişmiş Ayarlar ile). O alan adındaki yeni takma adlar bu değeri kendi `smtp_limit` değeri olarak devralır. Bu değer alan adının mevcut eşiğini aşamaz ve mevcut takma adlar kendi değerlerini korur. Kapatmak için `0` olarak ayarlayın.
 
 ### SMTP'yi etkinleştirmek için onay gerekiyor mu {#do-i-need-approval-to-enable-smtp}
 
 Evet, IP itibarını korumak ve teslim edilebilirliği sağlamak için Forward Email, giden SMTP onayı için alan adı bazında manuel bir inceleme sürecine sahiptir. Onay için <support@forwardemail.net> adresine e-posta gönderin veya bir [yardım talebi](https://forwardemail.net/help) açın. Bu genellikle 24 saatten kısa sürer ve çoğu talep 1-2 saat içinde karşılanır. Yakın gelecekte bu süreci ek spam kontrolleri ve uyarılarla anlık hale getirmeyi hedefliyoruz. Bu süreç, e-postalarınızın gelen kutusuna ulaşmasını ve mesajlarınızın spam olarak işaretlenmemesini sağlar.
+
+Onaylandıktan sonra giden SMTP sınırsızdır ve günlük eşiğiniz [gönderici itibarınızla](#what-are-your-outbound-smtp-limits) birlikte artar.
+
+### Giden SMTP'mi onaylamak veya yeniden etkinleştirmek için hangi bilgilere ihtiyacınız var {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+Giden SMTP onayı talep ettiğinizde (veya bir [askıya alma](#why-was-my-outbound-smtp-suspended) sonrasında yeniden etkinleştirmemizi istediğinizde) şunları sağlamaya hazır olun:
+
+* [Şartlarımızı](/terms) okuduğunuzu ve kabul ettiğinizi onaylamanız; şartlarımız hizmetin [Stripe'ın Yasaklı İşletmeler](https://stripe.com/legal/restricted-businesses) veya [PayPal'ın Yasaklı Faaliyetler](https://www.paypal.com/us/legalhub/acceptableuse-full) listelerindeki herhangi bir amaçla kullanılmasını açıkça yasaklar.
+* Giden SMTP'yi ne için kullanmayı planladığınız.
+* Gerçek ve meşru bir gönderici olduğunuzu doğrulamamızı sağlayan web sitenizin, işletme bilgilerinizin veya bir profilinizin (ör. LinkedIn, GitHub) bağlantısı — boş bir web sitesine yönlendiren bir alan adı, onayın gecikmesinin yaygın bir nedenidir.
+* Hizmeti spam veya toplu/istenmeyen pazarlama için kullanmayacağınızın onayı.
+
+İster ilk onay ister askıya alma sonrasında bir alan adının yeniden etkinleştirilmesi olsun, her iki durumda da istediğimiz bilgiler aynıdır.
+
+### Giden SMTP'm neden askıya alındı {#why-was-my-outbound-smtp-suspended}
+
+Daha önce onaylanmış giden SMTP, bir kötüye kullanım örüntüsü tespit edersek yine de duraklatılabilir. Bu, yukarıdaki [onay sürecinden](#do-i-need-approval-to-enable-smtp) ve [itibara dayalı giden eşiklerimizden](#what-are-your-outbound-smtp-limits) ayrıdır. Güvenilir bir kaynak (ör. büyük bir posta kutusu sağlayıcısı) giden e-postanızı virüs veya spam olarak bildirdiğinde devreye girer.
+
+İki aşama vardır:
+
+1. **Tek bir tespit**, yalnızca o mesaj için size bir "Message prevented" bildirimi gönderir — bu bilgilendirme amaçlıdır ve giden kuyruğunuz çalışmaya devam eder.
+2. **Kısa bir kayan zaman aralığında birden fazla tespit**, kötüye kullanım tespit eşiğimizi aşar ve tam bir "Giden SMTP askıya alındı" bildirimini tetikler. Bu noktada giden SMTP kuyruğunuzun tamamı duraklatılır — sorun çözülene kadar o alan adı için başka hiçbir giden mesaj gönderilmeye çalışılmaz.
+
+Her iki bildirim de işaretlenen mesajı (`MAIL FROM`, `RCPT TO`, `Message-ID`, konu ve tarih), onu hangi güvenilir kaynağın ve içerik kategorisinin işaretlediğini, eşiğe göre kaç tespitiniz olduğunu, kaç benzersiz alıcının ve güvenilir kaynağın dahil olduğunu ve SMTP durum kodunu ve yanıtını içerir.
+
+Bu bildirimlerden birini alırsanız lütfen <support@forwardemail.net> adresinden bize ulaşın veya bir [yardım talebi](https://forwardemail.net/help) açın — askıya alma otomatik olarak kaldırılmaz, bu nedenle sorunu çözmek için bizimle iletişime geçmeniz gerekir.
+
+### Yeni kaydedilen veya yakın zamanda süresi dolan alan adları neden ücretli plan gerektirir {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+Bir alan adı eklediğinizde (ve ücretsiz plandaki alan adları için sürekli olarak) alan adı için bir WHOIS/RDAP sorgusu yaparız. Alan adı **son 90 gün içinde oluşturulmuşsa**, **son 90 gün içinde süresi dolmuşsa** veya şu anda kayıt şirketinde **bekleyen bir transfer, güncelleme ya da silme** durumundaysa, onunla e-posta gönderebilmeniz veya alabilmeniz için ücretli bir planda olmasını şart koşarız.
+
+Bu, kişisel olarak sizinle ilgili bir değerlendirme değil, bir kötüye kullanım önleme tedbiridir — GoDaddy, Namecheap ve Hostgator dahil büyük kayıt şirketleri, yakın zamanda süresi dolan alan adlarının ele geçirilmesi ve sahte şekilde kaydedilen yeni alan adlarıyla ilgili kötüye kullanım örüntüleri nedeniyle daha önce altyapımızı tamamen engellemiştir. Bu alan adları için ücretli plan şart koşmak, kayıt şirketlerinin güvenini kaybetmeden ücretsiz plan sunmaya devam edebilmemizi sağlar.
+
+WHOIS/RDAP sonuçları 24 saat boyunca önbelleğe alınır; bu nedenle 90 günlük sınırı yeni geçmiş bir alan adının buna yansıması bir güne kadar sürebilir. Alan adını hemen kullanmak için ücretli bir plana yükseltin (sınırsız alan adı, takma ad ve itibara dayalı giden SMTP içeren planlar aylık $3 ile başlar).
 
 ### SMTP sunucu yapılandırma ayarlarınız nelerdir {#what-are-your-smtp-server-configuration-settings}
 
@@ -5294,6 +5374,8 @@ Spam veya virüs içeriği gönderen göndericiler aşağıdaki yaklaşımla eng
 
 ### Oran sınırlamanız var mı {#do-you-have-rate-limiting}
 
+Bu bölüm gelen e-postaları kapsar. Gönderim için [Giden SMTP limitleriniz nelerdir](#what-are-your-outbound-smtp-limits) bölümüne bakın.
+
 Gönderen oran sınırlaması, gönderenin IP adresi üzerinde ters PTR sorgulamasıyla ayrıştırılan kök alan adına göre yapılır – ya da bu sonuç vermezse, doğrudan gönderenin IP adresi kullanılır. Aşağıda buna `Gönderen` olarak atıfta bulunuyoruz.
 
 MX sunucularımız, [şifreli IMAP depolama](/blog/docs/best-quantum-safe-encrypted-email-service) için alınan gelen postalar için günlük limitlere sahiptir:
@@ -5339,6 +5421,8 @@ Günlük limit, tüm protokollerde paylaşılan tek bir bütçedir — IMAP üze
 Bu limitler kullanıcı hesabı başına uygulanır (alias veya alan adı başına değil) ve günlük olarak sıfırlanır.  Bu, ek alias oluşturmanın bant genişliği kotanızı artırmadığı anlamına gelir.  Redis kullanılamıyorsa, hız sınırlaması tamamen atlanır (fail-open) böylece hizmetiniz asla kesintiye uğramaz.
 
 Belirli bir kullanım durumu için daha yüksek limitlere ihtiyacınız varsa (örn. çok büyük bir arşivin taşınması), lütfen [bizimle iletişime geçin](https://forwardemail.net/help).
+
+Bu limitler aktarılan veriyi kapsar. Gönderebileceğiniz mesaj sayısını [itibara dayalı giden eşiklerimiz](#what-are-your-outbound-smtp-limits) kapsar.
 
 ### Backscatter'a karşı nasıl koruma sağlıyorsunuz {#how-do-you-protect-against-backscatter}
 
@@ -5765,13 +5849,9 @@ MX ve <strong class="notranslate">TXT</strong> kayıt doğrulaması kullanıyoru
 
 ### Depolama alanımı veya giden SMTP gönderim sınırını nasıl artırırım {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-<a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Hesabım → Faturalandırma</a> bölümüne gidin ve iki istek formu bulunan **Eklentiler** bölümüne ilerleyin:
+**Depolama**: <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Hesabım → Faturalandırma</a> bölümüne gidin ve **Eklentiler** bölümüne ilerleyin. Eklenecek miktarı seçin (+10, +20, +30, +40 veya +50 GB) ya da özel bir miktar talep etmek için "Other" seçeneğini belirleyin. Formu göndermek talebinizi inceleme için ekibimize iletir ve henüz sizden ücret almaz. Talebi onayladığımızda, yükseltmeyi tamamlamanız için size güvenli bir ödeme bağlantısını e-posta ile göndeririz. Aynı anda bir bekleyen depolama talebiniz olabilir ve önceki bir talepten sonraki 3 gün içinde yeni bir talep gönderemezsiniz.
 
-* **Depolama Yükseltmesi** — eklenecek miktarı seçin (+10, +20, +30, +40 veya +50 GB) ya da özel bir miktar talep etmek için "Other" seçeneğini belirleyin.
-* **Giden SMTP Limit Yükseltmesi** — eklenecek miktarı seçin (+1000, +2000 veya +3000 günlük e-posta) ya da özel bir miktar talep etmek için "Other" seçeneğini belirleyin.
-
-Bu formlardan herhangi birini göndermek, talebinizi inceleme için ekibimize iletir — size hemen ücret tahsil etmez. Onaylandıktan sonra, yükseltmeyi tamamlamak için size güvenli bir ödeme bağlantısını e-posta ile göndereceğiz. Aynı anda her tür için (depolama veya SMTP) en fazla bir bekleyen talebiniz olabilir; aynı tür için önceki bir talepten itibaren 3 gün içinde yeniden gönderim, bu süre dolana kadar izin verilmez.
-
+**Giden SMTP**: satın alınacak bir şey yoktur. Giden SMTP sınırsızdır ve günlük eşiğiniz [gönderici itibarınızla](#what-are-your-outbound-smtp-limits) birlikte artar. <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Hesabım → Faturalandırma</a> ve <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Hesabım → E-postalar</a> mevcut eşiğinizi, itibar seviyenizi ve sonraki seviyenin gereksinimlerini gösterir.
 
 ### Enterprise License neleri içerir {#what-is-included-in-the-enterprise-license}
 
@@ -5893,6 +5973,12 @@ Evet, ancak "nispeten bilinmeyen" gönderenler için saat başına hostname veya
 "Nispeten bilinmeyen" ile [izin verilenler listesinde](#do-you-have-an-allowlist) olmayan gönderenleri kastediyoruz.
 
 Bu limit aşılırsa, gönderenin posta sunucusuna daha sonra tekrar denemesi için 421 yanıt kodu gönderilir.
+
+### Sınırsız e-posta gönderebilir miyim {#can-i-send-unlimited-emails-with-this}
+
+Evet. Giden SMTP ve e-posta API'miz tüm ücretli planlarda sınırsızdır ($3/mo'dan başlayan fiyatlarla). Sabit bir aylık üst sınır yerine günlük bir eşik alırsınız ve bu eşik, ödeme yapmaya devam ettikçe ve temiz bir gönderim geçmişi oluşturdukça artar: yeni göndericiler için günde 300 mesajdan (Takım planında 900'den) günde 10,000 mesaja kadar, bunun ötesinde ise ekibimiz hesabınızı inceledikten sonra.
+
+Yalnızca kendi alan adlarınız dışındaki gerçek alıcılara teslim edilen e-postalar itibar oluşturur. Teslim edilebilirliği korumak için yüksek geri dönme oranı eşiğinizi düşürür, büyük posta kutusu sağlayıcılarından gelen spam ve virüs bildirimleri eşiğinizi sıfırlar ve olağan dışı düzenleri (uzun süre kullanılmayan bir hesaptan gelen ani bir artış gibi) yavaşlatırız. Ayrıntılar için [Giden SMTP limitleriniz nelerdir](#what-are-your-outbound-smtp-limits) bölümüne, mevcut eşiğiniz için [Hesabım → E-postalar](/my-account/emails) bölümüne bakın.
 
 ### Tek bir fiyatla sınırsız alan adı sunuyor musunuz? {#do-you-offer-unlimited-domains-for-one-price}
 

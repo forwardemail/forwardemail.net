@@ -466,7 +466,7 @@ Vänligen säkerställ att du har följt installationsinstruktionerna för din d
 Dessa instruktioner finns på [Mitt konto → Domäner → Inställningar → Utgående SMTP-konfiguration](/my-account/domains). Du behöver säkerställa att DKIM, Return-Path och DMARC är korrekt inställda för att skicka utgående SMTP med din domän.
 ### Hämta gräns för utgående SMTP-e-post {#get-outbound-smtp-email-limit}
 
-Detta är en enkel endpoint som returnerar ett JSON-objekt innehållande `count` och `limit` för antalet dagliga utgående SMTP-meddelanden per konto.
+Returnerar ett JSON-objekt med `count` för utgående SMTP-meddelanden du har skickat i dag och dagens `limit`. Utgående SMTP är obegränsad, och `limit` är din nuvarande [ryktesbaserade tröskel](/faq#what-are-your-outbound-smtp-limits), som växer över tid.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Denna API-endpoint kodar automatiskt emojis åt dig om de finns i headers (t.ex.
 | `priority`       | Nej          | Sträng           | Prioritetsnivå för e-postmeddelandet (kan vara `"high"`, `"normal"` (standard) eller `"low"`). Observera att värdet `"normal"` inte sätter någon prioritet-header (detta är standardbeteendet). Om värdet `"high"` eller `"low"` sätts, kommer `X-Priority`, `X-MSMail-Priority` och `Importance` headers [att sättas därefter](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | Nej          | Objekt eller Array | Ett Objekt eller en Array med ytterligare headerfält att sätta (se [Nodemailers anpassade headers](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                           |
 | `messageId`      | Nej          | Sträng           | Ett valfritt Message-ID-värde för "Message-ID"-headern (ett standardvärde skapas automatiskt om det inte sätts – observera att värdet bör [följa RFC2822-specifikationen](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                                |
-| `date`           | Nej          | Sträng eller Datum | Ett valfritt datumvärde som används om Date-header saknas efter parsning, annars används aktuell UTC-sträng om ej satt. Datumheadern får inte vara mer än 30 dagar framåt i tiden.                                                                                                                                                                                                                                                                             |
+| `date`           | Nej          | Sträng eller Datum | Ett valfritt datumvärde som används om Date-header saknas efter parsning, annars används aktuell UTC-sträng om ej satt. Datumheadern får inte vara mer än 27 dagar framåt i tiden.                                                                                                                                                                                                                                                                             |
 | `list`           | Nej          | Objekt           | Ett valfritt Objekt med `List-*` headers (se [Nodemailers list headers](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                         |
 > Exempelbegäran (API-token):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Om användaren som bjuds in redan är en accepterad medlem i någon annan domän som administratören som bjuder in är medlem i, så kommer inbjudan automatiskt accepteras och inget e-postmeddelande skickas.
+> Om du bjuder in någon som `"user"` som redan är en accepterad medlem i en annan domän som du är medlem i, accepterar vi inbjudan åt personen och skickar inget e-postmeddelande. Vi skickar en inbjudan som `"admin"` via e-post så att den inbjudna kan acceptera den, och utelämnar dess länk från domänens väntande inbjudningar.
 
 ### Ta bort domäninbjudan {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Body Parameter | Obligatorisk | Typ                 | Beskrivning                                                                                 |
 | -------------- | ------------ | ------------------- | ------------------------------------------------------------------------------------------- |
 | `group`        | Ja           | Sträng (uppräknelig) | Grupp att uppdatera användaren till i domänmedlemskapet med (kan vara `"admin"` eller `"user"`) |
+
+> \[!IMPORTANT]
+> Att uppdatera en annan medlem till `"admin"` skickar i stället en inbjudan som administratör via e-post, och medlemmen förblir `"user"` tills inbjudan accepteras (domänens väntande inbjudningar listar den). Att uppdatera medlemmen tillbaka till `"user"` eller ta bort medlemmen drar tillbaka den.
 
 > Example Request:
 

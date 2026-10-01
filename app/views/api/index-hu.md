@@ -466,7 +466,7 @@ Kérjük, győződjön meg róla, hogy követte a domain beállítási utasítá
 Ezek az utasítások megtalálhatók a [Saját fiók → Domain-ek → Beállítások → Kimenő SMTP konfiguráció](/my-account/domains) menüpont alatt. Biztosítania kell a DKIM, Return-Path és DMARC beállítását a domainhez tartozó kimenő SMTP küldéshez.
 ### Kimenő SMTP e-mail limit lekérése {#get-outbound-smtp-email-limit}
 
-Ez egy egyszerű végpont, amely egy JSON objektumot ad vissza, amely tartalmazza a napi kimenő SMTP üzenetek `count` és `limit` értékeit fiókonként.
+Egy JSON objektumot ad vissza a ma Ön által elküldött kimenő SMTP üzenetek számával (`count`) és a mai korláttal (`limit`). A kimenő SMTP korlátlan, a `limit` pedig az Ön jelenlegi [hírnévalapú küszöbe](/faq#what-are-your-outbound-smtp-limits), amely idővel nő.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Ez az API végpont automatikusan kódolja az emojikat, ha azok a fejlécben tal�
 | `priority`        | Nem      | String            | Az e-mail prioritási szintje (lehet `"high"`, `"normal"` (alapértelmezett) vagy `"low"`). Megjegyzés: a `"normal"` érték nem állít be prioritás fejlécet (ez az alapértelmezett viselkedés). Ha `"high"` vagy `"low"` érték van megadva, akkor az `X-Priority`, `X-MSMail-Priority` és `Importance` fejléc [megfelelően beállításra kerül](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`         | Nem      | Objektum vagy Tömb | Egy objektum vagy tömb további fejlécmezők beállításához (lásd a [Nodemailer egyedi fejléceit](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                              |
 | `messageId`       | Nem      | String            | Opcionális Message-ID érték a "Message-ID" fejléchez (ha nincs megadva, automatikusan létrejön egy alapértelmezett érték – megjegyzés: az értéknek [meg kell felelnie az RFC2822 szabványnak](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                               |
-| `date`            | Nem      | String vagy Dátum  | Opcionális dátumérték, amelyet akkor használnak, ha a Date fejléc hiányzik az elemzés után, különben az aktuális UTC időpontot használja, ha nincs megadva. A dátum fejléc nem lehet több mint 30 nappal a jelenlegi időpont előtt.                                                                                                                                                                                                                           |
+| `date`            | Nem      | String vagy Dátum  | Opcionális dátumérték, amelyet akkor használnak, ha a Date fejléc hiányzik az elemzés után, különben az aktuális UTC időpontot használja, ha nincs megadva. A dátum fejléc nem lehet több mint 27 nappal a jelenlegi időpont előtt.                                                                                                                                                                                                                           |
 | `list`            | Nem      | Objektum          | Opcionális `List-*` fejléc objektum (lásd a [Nodemailer listafejléceit](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                           |
 > Példa kérés (API tokennel):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Ha a meghívott felhasználó már elfogadott tagja bármely más domainnek, amelynek az őt meghívó adminisztrátor is tagja, akkor a meghívó automatikusan elfogadásra kerül, és nem küld e-mailt.
+> Ha `"user"` szerepkörrel olyan személyt hív meg, aki már elfogadott tagja egy másik domainnek, amelynek Ön is tagja, a meghívót elfogadjuk helyette, és nem küldünk e-mailt. Az `"admin"` szerepkörű meghívót e-mailben küldjük el, hogy a meghívott elfogadja, és a hivatkozását kihagyjuk a domain függőben lévő meghívói közül.
 
 ### Domain meghívó eltávolítása {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Body Parameter | Kötelező | Típus               | Leírás                                                                                   |
 | -------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------- |
 | `group`        | Igen     | String (felsorolható) | Csoport, amelyre a felhasználó frissítve lesz a domain tagságban (lehet `"admin"` vagy `"user"`) |
+
+> \[!IMPORTANT]
+> Ha egy másik tagot `"admin"` szerepkörre frissít, ehelyett adminisztrátori meghívót kap e-mailben, és `"user"` marad, amíg el nem fogadja (a domain függőben lévő meghívói között megjelenik). Ha visszafrissíti `"user"` szerepkörre vagy eltávolítja, a meghívó visszavonásra kerül.
 
 > Példa kérés:
 

@@ -661,6 +661,11 @@ const POSTMASTER_USERNAMES = new Set([
   ...noReplyList
 ]);
 
+// daily outbound SMTP threshold for new senders (first reputation tier)
+const SMTP_LIMIT_MESSAGES = env.NODE_ENV === 'test' ? 100 : 300;
+// first tier for senders on the Team plan (see `smtpTeamLimitMessages`)
+const SMTP_TEAM_LIMIT_MESSAGES = env.NODE_ENV === 'test' ? 300 : 900;
+
 const config = {
   ...metaConfig,
 
@@ -744,7 +749,8 @@ const config = {
   srs: {
     separator: '=',
     secret: env.SRS_SECRET,
-    maxAge: 24 * 60 * 10 // 10 days
+    // (in days, as `sender-rewriting-scheme` counts them)
+    maxAge: 10
   },
   twilio: {
     accountSid: env.TWILIO_ACCOUNT_SID,
@@ -761,11 +767,234 @@ const config = {
   // PQueue slots too long. Most legitimate servers respond within 30s.
   // Emails to very slow servers will retry on the next queue cycle.
   smtpQueueTimeout: ms('60s'),
-  smtpLimitMessages: env.NODE_ENV === 'test' ? 100 : 300,
+  smtpLimitMessages: SMTP_LIMIT_MESSAGES,
+  // senders on the Team plan start (and are never reset below) this daily
+  // threshold instead of the first tier's, and move up from the first tier
+  // above it (see `helpers/get-user-smtp-limit.js`)
+  smtpTeamLimitMessages: SMTP_TEAM_LIMIT_MESSAGES,
   smtpLimitAuth: env.NODE_ENV === 'test' ? Number.MAX_VALUE : 10,
   smtpLimitAuthDuration: ms('1d'),
   smtpLimitDuration: ms('1d'),
   smtpLimitNamespace: `smtp_auth_limit_${env.NODE_ENV.toLowerCase()}`,
+
+  //
+  // Outbound SMTP is unlimited and reputation-based.
+  //
+  // Each sender has a daily threshold that grows with reputation.
+  // New senders start on the first tier (`smtpLimitMessages`) and move up one
+  // tier at a time once they have been paying without a break long enough, they
+  // have enough clean sending days on the current tier, and they use
+  // their threshold.
+  // A bad sending day (high bounce/reject rate, or spam/virus verdicts from
+  // truth sources at a rate of the recipients sent to) steps the sender down
+  // one tier, and verdicts at a higher rate or a severe bounce/reject rate
+  // reset them to the first tier (see below).  The
+  // last tier is a soft ceiling: growth past it requires an admin to raise
+  // the user's manual `smtp_limit`.
+  //
+  // (see `helpers/get-user-smtp-limit.js` and `helpers/update-smtp-reputation.js`)
+  //
+  // Only mail delivered to unique recipients outside the sender's own domains
+  // counts toward moving up (so sending to yourself or test blasts earn
+  // nothing), each recipient domain only counts up to a cap per day, and the
+  // busiest day must also reach enough distinct recipient domains
+  // (`minRecipientDomains`, so a catch-all on a throwaway domain cannot be
+  // used to build reputation).
+  //
+  smtpReputationTiers: [
+    {
+      limit: SMTP_LIMIT_MESSAGES,
+      minPaidDays: 0,
+      minCleanDays: 0,
+      minRecipientDomains: 0
+    },
+    { limit: 500, minPaidDays: 7, minCleanDays: 5, minRecipientDomains: 10 },
+    { limit: 1000, minPaidDays: 14, minCleanDays: 7, minRecipientDomains: 20 },
+    { limit: 2000, minPaidDays: 30, minCleanDays: 10, minRecipientDomains: 40 },
+    { limit: 5000, minPaidDays: 60, minCleanDays: 14, minRecipientDomains: 75 },
+    {
+      limit: 10000,
+      minPaidDays: 120,
+      minCleanDays: 21,
+      minRecipientDomains: 150
+    }
+  ],
+  // minimum external messages sent in a day before its bounce/reject rate counts
+  smtpReputationMinSample: 20,
+  // bounce + reject rate at or above which a day counts against reputation
+  smtpReputationMaxBadRate: 0.05,
+  // busiest day in the lookback must reach this share of the threshold (in
+  // qualifying recipients) to move up
+  smtpReputationMinUtilization: 0.5,
+  // most unique recipients one recipient root domain counts for in a day
+  // (except mailbox providers' consumer domains, see below)
+  smtpReputationMaxRecipientsPerDomain: 50,
+  // qualifying recipients a day needs to count as a clean sending day
+  smtpReputationMinCleanDayRecipients: 5,
+  // (recipient domains are grouped by root domain, so subdomains of one
+  // domain count as one, and mail to the sending domain or the sender's own
+  // domains does not count)
+  //
+  // Mail accepted by truth sources is mail a large mailbox provider could
+  // have reported, so at least this share of qualifying recipients must be
+  // delivered to truth source mail servers (an attacker's own mail servers
+  // cannot build reputation on their own)
+  // (only applies when `TRUTH_SOURCES` is configured)
+  smtpReputationMinTruthSourceShare: 0.2,
+  //
+  // Spam and virus verdicts from truth sources (large mailbox providers whose
+  // mail servers are listed in `TRUTH_SOURCES`) are the authority on abuse,
+  // and count as a rate of the recipients the sender sent to, like major
+  // providers and ESPs do (Gmail asks senders to stay below 0.1% and never
+  // reach 0.3%, Amazon SES reviews senders at 0.1% and pauses them at 0.5%,
+  // Postmark allows 0.1%), with a minimum count, so a single detection (or a
+  // rare false positive for a large sender) never demotes or resets anyone:
+  // (only permanent 5xx verdicts about the message count)
+  // - verdicts (for different recipients) in a day at or above
+  //   `smtpReputationBadDayReportRate` of that day's recipients (and at
+  //   least `smtpReputationBadDayReports`) make the day a bad day (down one
+  //   tier), as do verdicts about members who borrowed a Team plan admin's
+  //   threshold at that rate of the members' recipients (for the admin)
+  // - verdicts at or above `smtpReputationTruthSourceStrikeRate` (and at
+  //   least `smtpReputationTruthSourceStrikes`, one of them on a mailbox
+  //   provider's own domain) reset the sender to the first tier and pause
+  //   moving up for `smtpReputationHoldDays` (a minimum an admin approved
+  //   does not apply while paused)
+  // - the same verdicts within 24 hours (as a rate of the recipients outside
+  //   the domain sent from in the last 24 hours) also do so at once while
+  //   sending
+  // (the counts needed are capped, so they stay reachable with the reports
+  // kept on a user)
+  //
+  smtpReputationBadDayReports: 2,
+  smtpReputationBadDayReportRate: 0.001,
+  smtpReputationBadDayReportsMax: 25,
+  smtpReputationTruthSourceStrikes: 3,
+  smtpReputationTruthSourceStrikeRate: 0.003,
+  smtpReputationTruthSourceStrikesMax: 50,
+  smtpReputationHoldDays: 30,
+  // a day where at least this multiple of the bad rate bounced or was
+  // rejected (with enough external recipients) also resets the sender
+  smtpReputationSevereBadRateMultiplier: 3,
+  //
+  // Mailbox providers' own consumer domains: reports and recipients there are
+  // decided by the provider (a spam verdict cannot be configured by someone
+  // else, and addresses cannot be created in bulk).  Mail to other domains
+  // hosted by a truth source (e.g. a company's Google Workspace or Microsoft
+  // 365 tenant, whose admins can reject mail as they like and create
+  // addresses at will) counts once per root domain for reports, and is capped
+  // per root domain for reputation.
+  //
+  smtpReputationConsumerDomains: new Set([
+    'gmail.com',
+    'googlemail.com',
+    'outlook.com',
+    'hotmail.com',
+    'hotmail.co.uk',
+    'hotmail.fr',
+    'hotmail.de',
+    'hotmail.it',
+    'hotmail.es',
+    'live.com',
+    'live.co.uk',
+    'live.fr',
+    'msn.com',
+    'yahoo.com',
+    'yahoo.co.uk',
+    'yahoo.fr',
+    'yahoo.de',
+    'yahoo.it',
+    'yahoo.es',
+    'yahoo.co.jp',
+    'yahoo.com.br',
+    'ymail.com',
+    'rocketmail.com',
+    'aol.com',
+    'icloud.com',
+    'me.com',
+    'mac.com',
+    'proton.me',
+    'protonmail.com',
+    'pm.me',
+    'gmx.com',
+    'gmx.de',
+    'gmx.net',
+    'web.de',
+    'mail.com',
+    'zoho.com',
+    'yandex.ru',
+    'yandex.com',
+    'mail.ru',
+    'qq.com',
+    '163.com',
+    '126.com',
+    'naver.com',
+    'daum.net',
+    'orange.fr',
+    'free.fr',
+    'comcast.net',
+    'att.net',
+    'verizon.net'
+  ]),
+  smtpReputationLookbackDays: 7,
+  // days to wait before evaluating a day (so delivery outcomes are known)
+  smtpReputationEvaluationDelayDays: 2,
+  // days of history the job evaluates for a user it has not evaluated yet
+  // (or catches up on after missed runs); matches how long sent mail is kept
+  smtpReputationBackfillDays: 30,
+  // how often admins are alerted about a sender at the soft ceiling
+  smtpReputationCeilingAlertInterval: ms('30d'),
+  // gap between paid periods that still counts as paying without a break
+  smtpReputationPaidGap: ms('14d'),
+
+  //
+  // Unusual sending pattern slowdown (see `helpers/check-smtp-velocity.js`)
+  //
+  // Regardless of threshold, a sender is slowed down (421) when:
+  // - today's volume exceeds a multiple of their recent normal volume
+  //   (busiest day in the baseline window), so dormant or long-standing
+  //   senders cannot send far more than usual
+  // - they send too much within an hour, compared to both today's allowance
+  //   and their own busiest hour in the baseline window
+  // - too many of their recent messages are waiting in the queue
+  //
+  // (the baseline window is long enough to include monthly newsletters)
+  //
+  smtpVelocityBaselineDays: 45,
+  smtpVelocitySpikeMultiplier: 2,
+  smtpVelocityHourlyShare: 0.25,
+  // most of a day's allowance that can be sent within an hour, even for a
+  // sender whose busiest hour was larger
+  smtpVelocityMaxHourlyShare: 0.5,
+  smtpVelocityBacklogShare: 0.1,
+  // recipients (across all messages) a sender can reach in a day, as a
+  // multiple of the day's allowance (a message can have many recipients)
+  smtpVelocityRecipientsMultiplier: 2,
+  // hard bounce/reject rate over recent hours at which sending is slowed down
+  smtpVelocityBounceWindow: ms('6h'),
+  smtpVelocityBounceMinSample: 50,
+  smtpVelocityMaxBounceRate: 0.1,
+  // days with a slowdown remembered (so they are not clean sending days)
+  smtpVelocityThrottledDaysKept: 60,
+
+  //
+  // Account-wide threshold and domain ramp-up
+  // (see `helpers/get-smtp-sending-limits.js`)
+  //
+  // A threshold covers all mail sent from every domain its account is an
+  // admin of (so adding domains or members does not multiply it), and each
+  // domain ramps up within it: a domain sends at most a multiple of its
+  // busiest day of delivered mail in the baseline window (at least the
+  // starting threshold), so a new domain cannot use an established account's
+  // threshold at once
+  //
+  smtpDomainRampMultiplier: 2,
+  // vacation and other auto-replies per user per day (they are sent on
+  // behalf of the user but do not count toward their threshold)
+  smtpAutoReplyDailyLimit: 300,
+  // auto-replies any one address can get per day, across all users (so a
+  // victim cannot be flooded through many aliases)
+  smtpAutoReplyDailyLimitPerRecipient: 20,
   supportEmail: env.EMAIL_DEFAULT_FROM_EMAIL,
   alertsEmail: env.EMAIL_ALERTS_FROM_EMAIL,
   maxRecipients: env.MAX_RECIPIENTS,
@@ -1294,6 +1523,25 @@ const config = {
     hasDenylistRequests: 'has_denylist_requests',
     approvedDomains: 'approved_domains',
     smtpLimit: 'smtp_limit',
+    smtpReputationTier: 'smtp_reputation_tier',
+    smtpReputationCleanDays: 'smtp_reputation_clean_days',
+    smtpReputationEvaluatedAt: 'smtp_reputation_evaluated_at',
+    smtpReputationCeilingAlertedAt: 'smtp_reputation_ceiling_alerted_at',
+    smtpReputationPaidSince: 'smtp_reputation_paid_since',
+    smtpReputationPeak: 'smtp_reputation_peak',
+    smtpReputationPeakDomains: 'smtp_reputation_peak_domains',
+    smtpReputationNextPeak: 'smtp_reputation_next_peak',
+    smtpReputationHoldUntil: 'smtp_reputation_hold_until',
+    smtpReputationReports: 'smtp_reputation_reports',
+    smtpReputationResetAt: 'smtp_reputation_reset_at',
+    smtpReputationHoldReason: 'smtp_reputation_hold_reason',
+    smtpReputationLendHoldUntil: 'smtp_reputation_lend_hold_until',
+    smtpReputationReviewedAt: 'smtp_reputation_reviewed_at',
+    smtpBaselineDaily: 'smtp_baseline_daily',
+    smtpBaselineAt: 'smtp_baseline_at',
+    smtpBaselineHourly: 'smtp_baseline_hourly',
+    smtpThrottledAt: 'smtp_throttled_at',
+    smtpThrottledDays: 'smtp_throttled_days',
     maxQuotaPerAlias: 'max_quota_per_alias',
     dailyLogAlertSentAt: 'daily_log_alert_sent_at'
   },
@@ -1950,6 +2198,8 @@ config.views.locals.config = _.pick(config, [
   'argon2',
   'smtpLimitMessages',
   'smtpLimitDuration',
+  'smtpReputationTiers',
+  'smtpTeamLimitMessages',
   'smtpDomainSuspensionAliasThreshold',
   'smtpRateLimitAlertTTL',
   'supportEmail',

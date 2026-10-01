@@ -63,6 +63,9 @@ const isCodeBug = require('#helpers/is-code-bug');
 const isForwardConfirmedRdns = require('#helpers/is-forward-confirmed-rdns');
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
+const reserveAutoReply = require('#helpers/reserve-auto-reply');
+
+const { isAddressedTo, reserveAutoReplyFor } = reserveAutoReply;
 const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
 const sendApn = require('#helpers/send-apn');
@@ -1563,6 +1566,10 @@ async function parsePayload(data, ws) {
                     (r) => !r.copy
                   );
                   if (forwardOnly.length > 0 && sieveResult.action !== 'keep') {
+                    // (if no redirect could be queued, e.g. the sender reached
+                    // their sending threshold, the message is stored instead
+                    // of being lost)
+                    let redirected = 0;
                     for (const redirect of forwardOnly) {
                       try {
                         // Queue the redirect email using Emails.queue
@@ -1577,6 +1584,7 @@ async function parsePayload(data, ws) {
                           user: { id: session.user.alias_user_id },
                           is_bounce: false
                         });
+                        redirected++;
                       } catch (err) {
                         logger.error('sieve redirect failed', {
                           user: { id: session.user.alias_user_id },
@@ -1592,7 +1600,11 @@ async function parsePayload(data, ws) {
                     }
 
                     // If only forwarding (no keep), skip local storage
-                    if (sieveResult.action !== 'keep' && !sieveResult.folder) {
+                    if (
+                      redirected > 0 &&
+                      sieveResult.action !== 'keep' &&
+                      !sieveResult.folder
+                    ) {
                       return;
                     }
                   }
@@ -1601,15 +1613,58 @@ async function parsePayload(data, ws) {
                 // Handle vacation auto-reply (similar to on-data-mx.js sendVacationResponder)
                 if (sieveResult.vacation) {
                   try {
+                    //
+                    // Vacation auto-replies (RFC 5230) are addressed to the human
+                    // sender (From header), not the envelope return-path (MAIL FROM),
+                    // which can be any address: the MX sends the From address it
+                    // authenticated (see `isAuthenticatedSender`), and whether the
+                    // message can get an auto-reply at all (the same rules as
+                    // vacation responders, see `shouldSendVacationOrBounce`)
+                    //
+                    const vacationTo =
+                      typeof payload.autoReplyTo === 'string'
+                        ? payload.autoReplyTo
+                        : '';
+
                     // Check cache if we've already sent this vacation reply
                     const vacationKey = `${
                       config.fingerprintPrefix
                     }:vacation:${revHash(
-                      encoder.pack([session.user.alias_id, payload.sender])
+                      encoder.pack([session.user.alias_id, vacationTo])
                     )}`;
 
                     const vacationCache = await this.client.get(vacationKey);
-                    if (!vacationCache) {
+                    // (only for mail with the alias, or one of the script's
+                    // `:addresses`, as a recipient in its headers, RFC 5230)
+                    const isEligible =
+                      payload.canAutoReply === true &&
+                      vacationTo !== '' &&
+                      [
+                        session.user.username,
+                        ...(Array.isArray(sieveResult.vacation.addresses)
+                          ? sieveResult.vacation.addresses
+                          : [])
+                      ].some((address) => isAddressedTo(headers, address));
+                    if (!isEligible) {
+                      logger.debug('sieve vacation not sent', {
+                        user: { id: session.user.alias_user_id },
+                        ignore_hook: true
+                      });
+                    } else if (
+                      !vacationCache &&
+                      // (auto-replies are capped per user and per recipient
+                      // per day)
+                      !(await reserveAutoReplyFor({
+                        client: this.client,
+                        userId: session.user.alias_user_id,
+                        to: vacationTo
+                      }))
+                    ) {
+                      logger.warn('sieve vacation daily limit reached', {
+                        user: { id: session.user.alias_user_id },
+                        ignore_hook: true
+                      });
+                    } else if (!vacationCache) {
                       // Calculate vacation TTL from :seconds or :days (vacation-seconds extension RFC 6131)
                       // Default is 4 days if not specified
                       let vacationTtlMs;
@@ -1644,15 +1699,6 @@ async function parsePayload(data, ws) {
                       const rootNode = new MimeNode(
                         'text/plain; charset=utf-8'
                       );
-                      //
-                      // Vacation auto-replies (RFC 5230) should be addressed to the human
-                      // sender (From header), not the envelope return-path (MAIL FROM).
-                      // sieveResult.vacation.to is resolved from the From header by the
-                      // sieve filter handler, so prefer it over payload.sender which is
-                      // the envelope MAIL FROM (may be a bounce-processing address).
-                      //
-                      const vacationTo =
-                        sieveResult.vacation.to || payload.sender;
                       rootNode.setHeader('To', vacationTo);
                       rootNode.setHeader('From', session.user.username);
 
@@ -1699,7 +1745,11 @@ async function parsePayload(data, ws) {
                         ].join(', ')}`
                       );
 
-                      rootNode.setContent(sieveResult.vacation.body || '');
+                      rootNode.setContent(
+                        sieveResult.vacation.message ||
+                          sieveResult.vacation.body ||
+                          ''
+                      );
 
                       // Queue the email using Emails.queue like on-data-mx.js
                       const vacationEmail = await Emails.queue({

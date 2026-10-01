@@ -7,7 +7,7 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
 const emailHelper = require('#helpers/email');
-const { Aliases, Domains } = require('#models');
+const { Aliases, Domains, Users } = require('#models');
 
 async function removeMember(ctx, next) {
   // ctx.params.member_id
@@ -97,6 +97,18 @@ async function removeMember(ctx, next) {
   ctx.state.domain.members = ctx.state.domain.members.filter(
     (member) => member.user.toString() !== ctx.params.member_id
   );
+  // (and their pending invites are withdrawn, e.g. an invite as an admin, so
+  // they cannot rejoin with it)
+  let { email } = member.user;
+  if (typeof email !== 'string') {
+    const user = await Users.findById(member.user.id).select('email').lean();
+    email = user ? user.email : null;
+  }
+
+  if (isSANB(email) && Array.isArray(ctx.state.domain.invites))
+    ctx.state.domain.invites = ctx.state.domain.invites.filter(
+      (invite) => invite.email.toLowerCase() !== email.toLowerCase()
+    );
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain.resolver = ctx.resolver;
 

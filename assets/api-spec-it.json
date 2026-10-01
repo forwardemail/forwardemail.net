@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True per una notifica dello stato di consegna (come un rimbalzo) relativa a un'email che hai inviato"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Conteggio attuale delle email inviate"
+            "description": "Messaggi SMTP in uscita che hai inviato oggi (UTC), escluse le notifiche di rimbalzo e le risposte automatiche"
           },
           "limit": {
             "type": "integer",
-            "description": "Numero massimo di email consentite"
+            "description": "Soglia odierna basata sulla reputazione (al massimo quanto resta oggi delle soglie del dominio e dell'account; 0 quando non puoi inviare dal dominio)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Ottieni il limite di posta elettronica SMTP in uscita",
-        "description": "Si tratta di un semplice endpoint che restituisce un oggetto JSON contenente `count` e `limit` per il numero di messaggi SMTP in uscita giornalieri per account.",
+        "description": "Restituisce un oggetto JSON con il `count` dei messaggi SMTP in uscita che hai inviato oggi e il `limit` di oggi. L'SMTP in uscita è illimitato, e il `limit` è la tua attuale soglia basata sulla reputazione (vedi <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), che cresce nel tempo. Le notifiche di rimbalzo e le risposte automatiche non vengono conteggiate.",
         "tags": [
           "E-mail"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Crea invito di dominio",
-        "description": ">[!IMPORTANT]\n>Se l'utente invitato è già un membro accettato di uno qualsiasi degli altri domini di cui è membro l'amministratore che lo invita, l'invito verrà accettato automaticamente e non verrà inviata alcuna email.",
+        "description": ">[!IMPORTANT]\n>Se l'utente invitato è già un membro accettato di uno qualsiasi degli altri domini di cui è membro l'amministratore che lo invita, l'invito verrà accettato automaticamente e non verrà inviata alcuna email (solo per un `group` di `user`: inviamo via email un invito come `admin` perché l'invitato lo accetti, e lasciamo il suo link fuori dagli inviti in sospeso del dominio).",
         "tags": [
           "Inviti"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Aggiorna membro del dominio",
-        "description": "Aggiorna un membro del dominio.",
+        "description": "Aggiorna un membro del dominio.\n\n>[!IMPORTANT]\n>Aggiornare un altro membro a `admin` gli invia invece un invito via email come amministratore, e rimane `user` finché non lo accetta (gli inviti in sospeso del dominio lo elencano). Riportarlo a `user` o rimuoverlo ritira l'invito.",
         "tags": [
           "Membri"
         ],

@@ -466,7 +466,7 @@ Vui lòng đảm bảo bạn đã làm theo hướng dẫn thiết lập cho tê
 Các hướng dẫn này có thể được tìm thấy tại [Tài khoản của tôi → Tên miền → Cài đặt → Cấu hình SMTP gửi đi](/my-account/domains). Bạn cần đảm bảo thiết lập DKIM, Return-Path và DMARC để gửi SMTP đi với tên miền của bạn.
 ### Lấy giới hạn email SMTP gửi đi {#get-outbound-smtp-email-limit}
 
-Đây là một endpoint đơn giản trả về một đối tượng JSON chứa `count` và `limit` cho số lượng tin nhắn SMTP gửi đi hàng ngày trên cơ sở từng tài khoản.
+Trả về một đối tượng JSON chứa `count` số tin nhắn SMTP gửi đi mà bạn đã gửi hôm nay và `limit` của hôm nay. SMTP gửi đi không giới hạn, và `limit` là [ngưỡng dựa trên uy tín](/faq#what-are-your-outbound-smtp-limits) hiện tại của bạn, ngưỡng này tăng theo thời gian.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Endpoint API này sẽ tự động mã hóa emoji cho bạn nếu chúng đư�
 | `priority`       | Không    | Chuỗi            | Mức độ ưu tiên cho email (có thể là `"high"`, `"normal"` (mặc định), hoặc `"low"`). Lưu ý rằng giá trị `"normal"` không đặt header ưu tiên (đây là hành vi mặc định). Nếu đặt giá trị `"high"` hoặc `"low"` thì các header `X-Priority`, `X-MSMail-Priority`, và `Importance` [sẽ được thiết lập tương ứng](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | Không    | Đối tượng hoặc Mảng | Một đối tượng hoặc một mảng các trường header bổ sung để thiết lập (xem [header tùy chỉnh của Nodemailer](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                |
 | `messageId`      | Không    | Chuỗi            | Giá trị Message-ID tùy chọn cho header "Message-ID" (một giá trị mặc định sẽ được tạo tự động nếu không đặt – lưu ý rằng giá trị này nên [tuân thủ theo chuẩn RFC2822](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                               |
-| `date`           | Không    | Chuỗi hoặc Ngày  | Giá trị Date tùy chọn sẽ được sử dụng nếu header Date bị thiếu sau khi phân tích, nếu không sẽ sử dụng chuỗi UTC hiện tại nếu không đặt. Header ngày không được vượt quá 30 ngày so với thời gian hiện tại.                                                                                                                                                                                                                                               |
+| `date`           | Không    | Chuỗi hoặc Ngày  | Giá trị Date tùy chọn sẽ được sử dụng nếu header Date bị thiếu sau khi phân tích, nếu không sẽ sử dụng chuỗi UTC hiện tại nếu không đặt. Header ngày không được vượt quá 27 ngày so với thời gian hiện tại.                                                                                                                                                                                                                                               |
 | `list`           | Không    | Đối tượng        | Một đối tượng tùy chọn của các header `List-*` (xem [header danh sách của Nodemailer](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                        |
 > Yêu cầu ví dụ (API Token):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Nếu người dùng được mời đã là thành viên được chấp nhận của bất kỳ domain nào khác mà admin mời họ cũng là thành viên, thì lời mời sẽ tự động được chấp nhận và không gửi email.
+> Nếu bạn mời một người với vai trò `"user"` mà người đó đã là thành viên được chấp nhận của một domain khác mà bạn là thành viên, chúng tôi chấp nhận lời mời thay cho họ và không gửi email. Chúng tôi gửi lời mời với vai trò `"admin"` qua email để người được mời chấp nhận, và không đưa liên kết của lời mời vào danh sách lời mời đang chờ của domain.
 
 ### Xóa lời mời domain {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Tham số Body  | Bắt buộc | Loại                | Mô tả                                                                                     |
 | ------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------- |
 | `group`       | Có       | Chuỗi (liệt kê)     | Nhóm để cập nhật người dùng vào thành viên domain (có thể là `"admin"` hoặc `"user"`)    |
+
+> \[!IMPORTANT]
+> Cập nhật một thành viên khác thành `"admin"` sẽ gửi cho họ lời mời làm admin qua email thay vì cập nhật ngay, và họ vẫn là `"user"` cho đến khi chấp nhận lời mời (danh sách lời mời đang chờ của domain liệt kê lời mời này). Cập nhật họ trở lại `"user"` hoặc xóa họ sẽ thu hồi lời mời.
 
 > Ví dụ Yêu cầu:
 

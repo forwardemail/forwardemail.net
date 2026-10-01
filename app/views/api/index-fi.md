@@ -466,7 +466,7 @@ Varmista, että olet noudattanut verkkotunnuksesi asennusohjeita.
 Nämä ohjeet löytyvät kohdasta [Oma tili → Verkkotunnukset → Asetukset → Lähtevän SMTP:n asetukset](/my-account/domains). Sinun tulee varmistaa DKIM:n, Return-Pathin ja DMARCin asennus lähtevän SMTP:n lähettämistä varten verkkotunnuksellasi.
 ### Hanki lähtevän SMTP-sähköpostin raja {#get-outbound-smtp-email-limit}
 
-Tämä on yksinkertainen päätepiste, joka palauttaa JSON-objektin, joka sisältää `count` ja `limit` päivittäisten SMTP-lähtevien viestien määrälle tilikohtaisesti.
+Palauttaa JSON-objektin, joka sisältää tänään lähettämiesi lähtevien SMTP-viestien määrän (`count`) sekä tämän päivän rajan (`limit`). Lähtevä SMTP on rajoittamaton, ja `limit` on nykyinen [maineeseen perustuva kynnyksesi](/faq#what-are-your-outbound-smtp-limits), joka kasvaa ajan myötä.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Tämä API-päätepiste koodaa automaattisesti emojit, jos niitä löytyy otsiko
 | `priority`       | Ei         | Merkkijono         | Sähköpostin prioriteettitaso (voi olla `"high"`, `"normal"` (oletus) tai `"low"`). Huomaa, että arvo `"normal"` ei aseta prioriteettiotsikkoa (tämä on oletuskäyttäytyminen). Jos asetetaan `"high"` tai `"low"`, niin `X-Priority`, `X-MSMail-Priority` ja `Importance` otsikot [asetetaan vastaavasti](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | Ei         | Objekti tai Taulukko | Lisäotsikkokentät objektina tai taulukkona (katso [Nodemailerin räätälöidyt otsikot](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                                        |
 | `messageId`      | Ei         | Merkkijono         | Valinnainen Message-ID-arvo "Message-ID"-otsikolle (oletusarvo luodaan automaattisesti, jos ei asetettu – huomaa, että arvon tulee [noudattaa RFC2822-spesifikaatiota](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                                   |
-| `date`           | Ei         | Merkkijono tai Päivämäärä | Valinnainen päivämääräarvo, jota käytetään, jos Date-otsikko puuttuu jäsentämisen jälkeen, muuten käytetään nykyistä UTC-aikaa, jos ei asetettu. Päivämääräotsikko ei voi olla yli 30 päivää tulevaisuudessa nykyhetkestä.                                                                                                                                                                                                                                     |
+| `date`           | Ei         | Merkkijono tai Päivämäärä | Valinnainen päivämääräarvo, jota käytetään, jos Date-otsikko puuttuu jäsentämisen jälkeen, muuten käytetään nykyistä UTC-aikaa, jos ei asetettu. Päivämääräotsikko ei voi olla yli 27 päivää tulevaisuudessa nykyhetkestä.                                                                                                                                                                                                                                     |
 | `list`           | Ei         | Objekti            | Valinnainen `List-*` otsikoiden objekti (katso [Nodemailerin list-otsikot](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                      |
 > Esimerkkipyyntö (API-tunnus):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Jos kutsuttava käyttäjä on jo hyväksytty jäsen jossain muussa domainissa, jonka ylläpitäjä on jäsenenä, kutsu hyväksytään automaattisesti eikä sähköpostia lähetetä.
+> Jos kutsut `"user"`-roolilla henkilön, joka on jo hyväksytty jäsen jossain muussa domainissa, jonka jäsen olet, hyväksymme kutsun hänen puolestaan emmekä lähetä sähköpostia. `"admin"`-roolilla tehdyn kutsun lähetämme sähköpostilla kutsutun hyväksyttäväksi, emmekä sisällytä sen linkkiä domainin odottaviin kutsuihin.
 
 ### Poista domain-kutsu {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Body Parameter | Pakollinen | Tyyppi              | Kuvaus                                                                                   |
 | -------------- | ---------- | ------------------- | --------------------------------------------------------------------------------------- |
 | `group`        | Kyllä      | Merkkijono (luettelo) | Ryhmä, johon käyttäjä päivitetään domainin jäsenyyteen (voi olla joko `"admin"` tai `"user"`) |
+
+> \[!IMPORTANT]
+> Toisen jäsenen päivittäminen `"admin"`-rooliin lähettää hänelle sen sijaan sähköpostilla kutsun ylläpitäjäksi, ja hän pysyy `"user"`-roolissa, kunnes hyväksyy sen (domainin odottavat kutsut näyttävät sen). Hänen päivittämisensä takaisin `"user"`-rooliin tai poistamisensa peruu kutsun.
 
 > Esimerkkipyyntö:
 

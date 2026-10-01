@@ -466,7 +466,7 @@ Zorg ervoor dat je de installatie-instructies voor je domein hebt gevolgd.
 Deze instructies zijn te vinden bij [Mijn Account → Domeinen → Instellingen → Uitgaande SMTP Configuratie](/my-account/domains). Je moet de setup van DKIM, Return-Path en DMARC voor het verzenden van uitgaande SMTP met je domein zekerstellen.
 ### Verkrijg limiet voor uitgaande SMTP e-mail {#get-outbound-smtp-email-limit}
 
-Dit is een eenvoudige endpoint die een JSON-object retourneert met de `count` en `limit` voor het aantal dagelijkse uitgaande SMTP-berichten per account.
+Retourneert een JSON-object met het `count` van de uitgaande SMTP-berichten die je vandaag hebt verzonden en de `limit` van vandaag. Uitgaande SMTP is onbeperkt, en de `limit` is je huidige [drempel op basis van reputatie](/faq#what-are-your-outbound-smtp-limits), die na verloop van tijd groeit.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Deze API endpoint codeert automatisch emoji's voor je als ze in de headers worde
 | `priority`       | Nee     | String           | Prioriteitsniveau voor de e-mail (kan `"high"`, `"normal"` (standaard) of `"low"` zijn). Let op dat een waarde van `"normal"` geen prioriteitsheader zet (dit is het standaardgedrag). Als een waarde van `"high"` of `"low"` wordt ingesteld, worden de headers `X-Priority`, `X-MSMail-Priority` en `Importance` [overeenkomstig ingesteld](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | Nee     | Object of Array  | Een Object of een Array van extra headervelden om in te stellen (zie [Nodemailer's custom headers](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                            |
 | `messageId`      | Nee     | String           | Een optionele Message-ID waarde voor de "Message-ID" header (een standaardwaarde wordt automatisch aangemaakt als deze niet is ingesteld – let op dat de waarde [moet voldoen aan de RFC2822 specificatie](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                             |
-| `date`           | Nee     | String of Date   | Een optionele datumwaarde die wordt gebruikt als de Date-header ontbreekt na het parsen, anders wordt de huidige UTC-string gebruikt als deze niet is ingesteld. De datumheader mag niet meer dan 30 dagen vooruit liggen ten opzichte van de huidige tijd.                                                                                                                                                                                                     |
+| `date`           | Nee     | String of Date   | Een optionele datumwaarde die wordt gebruikt als de Date-header ontbreekt na het parsen, anders wordt de huidige UTC-string gebruikt als deze niet is ingesteld. De datumheader mag niet meer dan 27 dagen vooruit liggen ten opzichte van de huidige tijd.                                                                                                                                                                                                     |
 | `list`           | Nee     | Object           | Een optioneel Object van `List-*` headers (zie [Nodemailer's list headers](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                      |
 > Voorbeeldverzoek (API-token):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Als de uitgenodigde gebruiker al een geaccepteerd lid is van een ander domein waarvan de uitnodigende beheerder ook lid is, wordt de uitnodiging automatisch geaccepteerd en wordt er geen e-mail verzonden.
+> Als je iemand als `"user"` uitnodigt die al een geaccepteerd lid is van een ander domein waarvan jij lid bent, accepteren we de uitnodiging namens die persoon en sturen we geen e-mail. Een uitnodiging als `"admin"` mailen we zodat de genodigde deze kan accepteren, en de link ervan laten we weg uit de openstaande uitnodigingen van het domein.
 
 ### Domeinuitnodiging verwijderen {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Body Parameter | Verplicht | Type                | Beschrijving                                                                                 |
 | -------------- | --------- | ------------------- | ------------------------------------------------------------------------------------------- |
 | `group`        | Ja        | String (enumerable) | Groep waaraan de gebruiker wordt bijgewerkt binnen het domeinlidmaatschap (kan `"admin"` of `"user"` zijn) |
+
+> \[!IMPORTANT]
+> Een ander lid bijwerken naar `"admin"` stuurt dat lid in plaats daarvan per e-mail een uitnodiging als beheerder, en het blijft `"user"` totdat het de uitnodiging accepteert (de openstaande uitnodigingen van het domein tonen deze). Het lid terugzetten naar `"user"` of verwijderen trekt de uitnodiging in.
 
 > Voorbeeldverzoek:
 

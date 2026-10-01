@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True pro oznámení o stavu doručení (například nedoručitelnosti) k e-mailu, který jste odeslali"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Aktuální počet odeslaných e-mailů"
+            "description": "Odchozí zprávy SMTP, které jste dnes (UTC) odeslali, bez započítání oznámení o nedoručitelnosti a automatických odpovědí"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximální povolený počet e-mailů"
+            "description": "Dnešní limit založený na reputaci (nejvýše to, co dnes zbývá z limitů domény a účtu; 0, když z domény nemůžete odesílat)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Získat limit odchozích e-mailů SMTP",
-        "description": "Toto je jednoduchý koncový bod, který vrací objekt JSON obsahující hodnoty `count` a `limit` pro počet denních odchozích zpráv SMTP pro každý účet.",
+        "description": "Vrací objekt JSON s `count` odchozích zpráv SMTP, které jste dnes odeslali, a dnešním `limit`. Odchozí SMTP je neomezené a `limit` je váš aktuální limit založený na reputaci (viz <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), který s časem roste. Oznámení o nedoručitelnosti a automatické odpovědi se nezapočítávají.",
         "tags": [
           "E-maily"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Vytvořit pozvánku do domény",
-        "description": ">[!IMPORTANT]\n>Pokud je pozvaný uživatel již přijatým členem jakékoli jiné domény, jejímž členem je i administrátor, který ho pozvánku posílá, pozvánka bude automaticky přijata a e-mail nebude odeslán.",
+        "description": ">[!IMPORTANT]\n>Pokud je pozvaný uživatel již přijatým členem jakékoli jiné domény, jejímž členem je i administrátor, který ho pozvánku posílá, pozvánka bude automaticky přijata a e-mail nebude odeslán (pouze pro `group` s hodnotou `user`: pozvánku jako `admin` pošleme e-mailem, aby ji pozvaný přijal, a její odkaz do čekajících pozvánek domény nezařadíme).",
         "tags": [
           "Pozvánky"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Aktualizovat člena domény",
-        "description": "Aktualizace člena domény.",
+        "description": "Aktualizace člena domény.\n\n>[!IMPORTANT]\n>Změna jiného člena na `admin` mu místo toho pošle e-mailem pozvánku jako administrátor a zůstane `user`, dokud ji nepřijme (čekající pozvánky domény ji uvádějí). Změna zpět na `user` nebo jeho odebrání pozvánku stáhne.",
         "tags": [
           "Členové"
         ],

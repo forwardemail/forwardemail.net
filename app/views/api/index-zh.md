@@ -466,7 +466,7 @@ curl -X PUT BASE_URI/v1/account \
 这些说明可在[我的账户 → 域名 → 设置 → 外发SMTP配置](/my-account/domains)中找到。您需要确保为您的域名设置了DKIM、Return-Path和DMARC，以便发送外发SMTP邮件。
 ### 获取出站 SMTP 邮件限制 {#get-outbound-smtp-email-limit}
 
-这是一个简单的端点，返回一个 JSON 对象，包含每个账户每日 SMTP 出站邮件的 `count` 和 `limit`。
+返回一个 JSON 对象，其中包含您今天发送的出站 SMTP 邮件的 `count` 以及今天的 `limit`。出站 SMTP 不设上限，`limit` 是您当前的[基于信誉的阈值](/faq#what-are-your-outbound-smtp-limits)，会随时间提高。
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ curl BASE_URI/v1/emails?limit=1 \
 | `priority`        | 否     | 字符串            | 邮件优先级（可为 `"high"`、`"normal"`（默认）或 `"low"`）。注意，`"normal"` 不会设置优先级头部（这是默认行为）。如果设置为 `"high"` 或 `"low"`，则会相应设置 `X-Priority`、`X-MSMail-Priority` 和 `Importance` 头部，[具体见此处](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240)。 |
 | `headers`         | 否     | 对象或数组        | 额外头部字段的对象或数组（参见 [Nodemailer 的自定义头部](https://nodemailer.com/message/custom-headers/)）。                                                                                                                                                                                                                                                                                                                                                |
 | `messageId`       | 否     | 字符串            | “Message-ID” 头部的可选 Message-ID 值（如果未设置，将自动创建默认值 – 注意该值应符合 [RFC2822 规范](https://stackoverflow.com/a/4031705)）。                                                                                                                                                                                                                                                                                                             |
-| `date`            | 否     | 字符串或日期      | 如果解析后缺少 Date 头部，将使用此可选日期值，否则使用当前 UTC 字符串。日期头部不能比当前时间提前超过 30 天。                                                                                                                                                                                                                                                                                                                                             |
+| `date`            | 否     | 字符串或日期      | 如果解析后缺少 Date 头部，将使用此可选日期值，否则使用当前 UTC 字符串。日期头部不能比当前时间提前超过 27 天。                                                                                                                                                                                                                                                                                                                                             |
 | `list`            | 否     | 对象              | 可选的 `List-*` 头部对象（参见 [Nodemailer 的列表头部](https://nodemailer.com/message/list-headers/)）。                                                                                                                                                                                                                                                                                                                                                      |
 > 示例请求（API 令牌）：
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> 如果被邀请的用户已经是邀请管理员所在的其他域的已接受成员，则会自动接受邀请且不会发送邮件。
+> 如果您以 `"user"` 身份邀请的人已经是您所在的另一个域的已接受成员，我们会代其接受邀请且不发送邮件。我们通过邮件发送以 `"admin"` 身份的邀请，由被邀请者接受，并且不将其链接放入该域的待处理邀请中。
 
 ### 移除域邀请 {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | 请求体参数     | 必填   | 类型                | 描述                                                                                      |
 | -------------- | ------ | ------------------- | ----------------------------------------------------------------------------------------- |
 | `group`        | 是     | 字符串（枚举）      | 更新用户在域成员中的组（可以是 `"admin"` 或 `"user"` 之一）                             |
+
+> \[!IMPORTANT]
+> 将其他成员更新为 `"admin"` 时，会改为通过邮件向其发送管理员邀请，在其接受之前仍为 `"user"`（该域的待处理邀请会列出该邀请）。将其改回 `"user"` 或将其移除会撤回该邀请。
 
 > 示例请求：
 

@@ -55,10 +55,12 @@ async function retrieveInvite(ctx) {
 
   // if the user already has a domain with the same name
   // inform them to delete it first before accepting the invite
+  // (not the domain itself, which a member already has)
   const match = ctx.state.domains.find(
     (d) =>
-      d.name === domain.name ||
-      punycode.toASCII(d.name) === punycode.toASCII(domain.name)
+      d.id !== domain.id &&
+      (d.name === domain.name ||
+        punycode.toASCII(d.name) === punycode.toASCII(domain.name))
   );
   if (match)
     throw Boom.badRequest(
@@ -71,6 +73,29 @@ async function retrieveInvite(ctx) {
   );
 
   if (existingMember) {
+    // an admin invite for a member (see `update-member.js`) makes them an
+    // admin once they accept it
+    if (invite.group === 'admin' && existingMember.group !== 'admin') {
+      // (on the website only from the confirmation page, see below)
+      if (!ctx.api && ctx.method === 'GET') {
+        ctx.state.inviteDomainName = domain.name;
+        return ctx.render('my-account/accept-invite');
+      }
+
+      existingMember.group = 'admin';
+      domain.invites = domain.invites.filter(
+        (inv) => inv.token !== inviteToken
+      );
+      domain.locale = ctx.locale;
+      domain.skip_verification = true;
+      domain.__audit_metadata = {
+        user: ctx.state.user,
+        ip: ctx.ip,
+        userAgent: ctx.get('User-Agent')
+      };
+      await domain.save();
+    }
+
     // user is already a member, just redirect them
     const { group } = existingMember;
     const message =

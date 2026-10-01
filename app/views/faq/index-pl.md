@@ -80,6 +80,8 @@
   * [Czy mogę przekazywać e-maile dla dowolnej subdomeny (subdomeny typu wildcard)?](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Jakie są wasze limity SMTP wychodzącego](#what-are-your-outbound-smtp-limits)
   * [Czy potrzebuję zgody, aby włączyć SMTP](#do-i-need-approval-to-enable-smtp)
+  * [Jakie informacje są potrzebne do zatwierdzenia lub przywrócenia mojego wychodzącego SMTP](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [Dlaczego nowo zarejestrowane lub niedawno wygasłe domeny wymagają płatnego planu](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Jakie są ustawienia konfiguracji serwera SMTP](#what-are-your-smtp-server-configuration-settings)
   * [Jakie są ustawienia konfiguracji serwera IMAP](#what-are-your-imap-server-configuration-settings)
   * [Jakie są ustawienia konfiguracji serwera POP3](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Czy mogę "wysyłać mail jako" w Outlook z tym](#can-i-send-mail-as-in-outlook-with-this)
   * [Czy mogę "wysyłać mail jako" w Apple Mail i iCloud Mail z tym](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Czy mogę przekazywać nieograniczoną liczbę maili z tym](#can-i-forward-unlimited-emails-with-this)
+  * [Czy mogę wysyłać nieograniczoną liczbę e-maili z tym](#can-i-send-unlimited-emails-with-this)
   * [Czy oferujecie nieograniczoną liczbę domen za jedną cenę](#do-you-offer-unlimited-domains-for-one-price)
   * [Jakie metody płatności akceptujecie](#which-payment-methods-do-you-accept)
 * [Dodatkowe zasoby](#additional-resources)
@@ -1035,7 +1038,7 @@ Jeśli jednak zobaczy, to dlatego, że zwykle widziała Twoje e-maile pochodząc
 
 Ten temat dotyczy [powszechnie znanego problemu w Gmailu, gdzie obok nazwy nadawcy pojawiają się dodatkowe informacje](https://support.google.com/mail/answer/1311182).
 
-Od maja 2023 roku wspieramy wysyłanie e-maili przez SMTP jako dodatek dla wszystkich płatnych użytkowników – co oznacza, że możesz usunąć <span class="notranslate">via forwardemail dot net</span> w Gmailu.
+Wychodzący SMTP jest dostępny we wszystkich płatnych planach (nielimitowany i [oparty na reputacji](#what-are-your-outbound-smtp-limits)), więc możesz usunąć <span class="notranslate">via forwardemail dot net</span> w Gmailu.
 
 Zwróć uwagę, że ten temat FAQ jest specyficzny dla osób korzystających z funkcji [Jak wysyłać pocztę jako w Gmailu](#how-to-send-mail-as-using-gmail).
 
@@ -2037,6 +2040,12 @@ W przeciwieństwie do systemów pocztowych takich jak `postfix` (np. używający
 
 8. Nie wysyłamy, jeśli adres MAIL FROM pasuje do wzorca nadawcy raportów ARF (np. `feedback@arf.mail.yahoo.com`).
 
+9. Odpowiadamy tylko uwierzytelnionym nadawcom: adres From musi przejść DMARC albo mieć wyrównany, prawidłowy podpis DKIM. Samo SPF się nie liczy, bo współdzielone serwery pocztowe przechodzą je dla każdego. Sfałszowany nadawca nie może zamienić Twoich odpowiedzi urlopowych w [backscatter](https://www.backscatterer.org/?target=autoresponders) skierowany do kogoś innego.
+
+10. Odpowiadamy tylko wtedy, gdy Twój alias lub inny adres w jego domenie (na przykład alias przekazujący do niego) występuje w nagłówku `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` lub `Resent-Bcc`, zgodnie z zaleceniem [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834). Poczta wysłana do ukrytej listy odbiorców nie dostaje odpowiedzi. Odpowiedzi urlopowe Sieve wymagają, aby Twój alias lub adres z `:addresses` występował w tych nagłówkach.
+
+11. Wysyłamy maksymalnie 300 odpowiedzi urlopowych na użytkownika dziennie (mniej, jeśli ograniczyliśmy Twój próg wychodzącego SMTP poniżej tej wartości) i maksymalnie 20 na adres odbiorcy dziennie łącznie dla wszystkich naszych użytkowników.
+
 ### Jak skonfigurować SPF dla Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
 Korzystając ze strony zarządzania DNS u swojego rejestratora, ustaw następujący rekord <strong class="notranslate">TXT</strong>:
@@ -2338,9 +2347,11 @@ Tak, więcej informacji znajdziesz na <https://forwardemail.net/guides/newslette
 
 Należy pamiętać, że aby utrzymać reputację IP i zapewnić dostarczalność, Forward Email posiada ręczny proces weryfikacji na poziomie domeny dla **zatwierdzania newsletterów**. Napisz na <support@forwardemail.net> lub otwórz [zgłoszenie pomocy](https://forwardemail.net/help) w celu zatwierdzenia. Zazwyczaj zajmuje to mniej niż 24 godziny, a większość zgłoszeń jest rozpatrywana w ciągu 1-2 godzin. W niedalekiej przyszłości planujemy uczynić ten proces natychmiastowym dzięki dodatkowym kontrolom antyspamowym i powiadomieniom. Proces ten zapewnia, że Twoje e-maile trafiają do skrzynki odbiorczej i nie są oznaczane jako spam.
 
+Newslettery i listy mailingowe wliczają się do Twojego dziennego progu poczty wychodzącej, który jest nielimitowany i rośnie wraz z [reputacją nadawcy](#what-are-your-outbound-smtp-limits). Dbaj o czystość list: wysoki wskaźnik odbić obniża Twój próg, a nagłe skoki wolumenu spowalniamy.
+
 ### Czy obsługujecie wysyłanie e-maili przez API {#do-you-support-sending-email-with-api}
 
-Tak, od maja 2023 roku obsługujemy wysyłanie e-maili przez API jako dodatek dla wszystkich płatnych użytkowników.
+Tak. Wszystkie płatne plany obejmują wysyłanie e-maili przez nasze API. Podobnie jak wychodzący SMTP jest ono **nielimitowane** i [oparte na reputacji](#what-are-your-outbound-smtp-limits): wiadomości wysyłane przez Ciebie przez API i przez SMTP korzystają z jednego dziennego progu.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2546,7 +2557,7 @@ Aby korzystać z obsługi kontaktów, **użytkownik** musi być adresem e-mail a
 
 ### Czy obsługujecie wysyłanie e-maili przez SMTP {#do-you-support-sending-email-with-smtp}
 
-Tak, od maja 2023 wspieramy wysyłanie e-maili przez SMTP jako dodatek dla wszystkich płatnych użytkowników.
+Tak. Wszystkie płatne plany obejmują wychodzący SMTP i jest on **nielimitowany**: Twój dzienny próg wysyłki rośnie wraz z [reputacją nadawcy](#what-are-your-outbound-smtp-limits).
 
 <div id="smtp-instructions">
 
@@ -3675,32 +3686,101 @@ Kiedy używasz <a href="#do-you-support-regular-expressions-or-regex" class="ale
 
 ### Jakie są Twoje limity wychodzącej poczty SMTP {#what-are-your-outbound-smtp-limits}
 
-Stosujemy limity wysyłki SMTP wychodzącej na wielu poziomach, aby zapobiegać nadużyciom, jednocześnie zachowując elastyczność dla legalnego użycia. Każdy poziom jest sprawdzany kolejno — którykolwiek limit zostanie osiągnięty jako pierwszy, tymczasowo odrzuci wiadomość z błędem `421` (oznaczającym „spróbuj ponownie później”).
+Wychodzący SMTP jest **nielimitowany** i **oparty na reputacji**. Zamiast stałego miesięcznego limitu masz dzienny próg, który rośnie w miarę budowania dobrej reputacji wysyłki.
 
-**Rate limit hierarchy:**
+Nowi nadawcy zaczynają od 300 wiadomości dziennie, a w planie Team od 900 (nadawcy w planie Team pomijają poziomy poniżej 900, a ich kolejny poziom to 1,000). Raz dziennie analizujemy Twoją ostatnią wysyłkę i podnosimy lub obniżamy Twój próg. Każdy dzień oceniamy dwa dni później, gdy znamy już wyniki dostarczenia wysłanych w nim wiadomości. Gdy mechanizm ten zostanie uruchomiony dla Twojego konta, sprawdzamy do 30 dni wstecz Twojej historii wysyłki i nadrabiamy wszystkie pominięte dni.
 
-| Level | Scope | Default Limit | Description |
-| :---- | :---- | :-----------: | :---------- |
-| Na alias | Pojedynczy alias | Brak (używa limitu domeny) | Opcjonalne. Jeśli alias ma ustawiony niestandardowy `smtp_limit`, jest on sprawdzany jako pierwszy. |
-| Na domenę | Wszystkie e-maile wysłane z domeny w ciągu dnia | 300/day | Zlicza wszystkie e-maile wychodzące ze wszystkich aliasów na domenie. |
-| Na użytkownika | Wszystkie e-maile wysłane przez konto użytkownika w ciągu dnia | 300/day | Zapobiega obejściu ograniczeń poprzez usuwanie i ponowne tworzenie aliasów lub domen. |
+Reputację buduje tylko rzeczywista wysyłka. Poczta liczy się do awansu, gdy **dostarczymy** ją do **unikalnych odbiorców spoza Twoich własnych domen**. Poczta wysłana do siebie, do własnych domen (lub ich subdomen), do domen, z których wysyłasz, lub wielokrotnie do tego samego odbiorcy nie jest liczona. Warianty jednego adresu (`+tag` lub kropki w adresie Gmail) liczą się raz. Każda domena odbiorcy (wraz z jej subdomenami) liczy się maksymalnie dla 50 odbiorców dziennie, z wyjątkiem własnych domen dużych dostawców skrzynek pocztowych (takich jak gmail.com). Co najmniej jedna piąta liczonych odbiorców musi trafić do dużych dostawców skrzynek pocztowych, a wyższe poziomy wymagają również minimalnej liczby różnych domen odbiorców w ciągu jednego dnia.
 
-**Jak określany jest efektywny limit:**
+* **Awans**: Twój próg wzrasta o jeden poziom, gdy płacisz bez przerwy wystarczająco długo, masz wystarczająco dużo czystych dni wysyłki na obecnym poziomie, a w Twoim najbardziej intensywnym dniu w ciągu ostatnich 7 dni liczba dostarczonych odbiorców spoza Twoich własnych domen osiągnęła co najmniej połowę obecnego progu (w wystarczającej liczbie różnych domen odbiorców). Liczy się tylko płatny okres bez przerwy, więc starsze konto, które nie było opłacane (lub przestało być opłacane), zaczyna od początku. Odnowienie opóźnione maksymalnie o 14 dni nadal liczy się jako okres bez przerwy, a liczą się tylko Twoje własne płatności.
+* **Czysty dzień**: dzień, w którym dostarczyliśmy co najmniej 5 Twoich wiadomości do odbiorców spoza Twoich własnych domen, mniej niż 5% tych odbiorców odbiło lub odrzuciło Twoją pocztę, nie otrzymałeś wystarczająco wielu zgłoszeń spamu lub wirusów na zły dzień (patrz niżej), a my nie spowolniliśmy Twojej wysyłki z powodu nietypowego wzorca.
+* **Spadek**: dzień z wysokim wskaźnikiem odbić lub odrzuceń (5% lub więcej spośród co najmniej 20 odbiorców spoza Twoich własnych domen) albo zbyt wiele zgłoszeń spamu lub wirusów od dużych dostawców skrzynek pocztowych (patrz niżej) obniża Twój próg o jeden poziom (nie poniżej progu początkowego Twojego planu) i zeruje licznik czystych dni. Dzień, w którym 15% lub więcej z nich odbiło lub odrzuciło Twoją pocztę, zamiast tego resetuje Twój próg do progu początkowego Twojego planu i wstrzymuje awans na 30 dni (próg zatwierdzony przez nasz zespół nadal obowiązuje). Liczą się tylko odrzucenia Twojej poczty, czyli na przykład nie obecność naszych współdzielonych adresów IP na liście blokad ani serwer odbiorcy, z którym nie mogliśmy się połączyć. Każdy odbiorca liczy się raz, niezależnie od liczby wysłanych do niego wiadomości, a zaplanowana wiadomość liczy się w dniu, na który ją zaplanowałeś. Dni bez wysyłki nie liczą się ani na Twoją korzyść, ani na niekorzyść.
+* **Zgłoszenia spamu i wirusów**: duzi dostawcy skrzynek pocztowych (tacy jak Gmail, Outlook i Yahoo) decydują, co jest nadużyciem, a my liczymy tylko ich trwałe odrzucenia. Każdy odbiorca w domenach własnych dostawcy (takich jak gmail.com) liczy się osobno, a inne domeny hostowane przez dostawcę (takie jak Google Workspace firmy) liczą się raz na domenę, a każdy liczy się raz dziennie. Liczymy zgłoszenia jako odsetek odbiorców Twoich wiadomości, tak jak robią to duzi dostawcy (Gmail prosi nadawców, by utrzymywali się poniżej 0.1% i nigdy nie osiągali 0.3%), więc pojedyncze zgłoszenie nie obniża Twojego poziomu, a zgłoszenia dotyczące innych domen hostowanych przez dostawcę stanowią co najwyżej połowę potrzebnych zgłoszeń. Zgłoszenia dotyczące 0.1% lub więcej odbiorców z danego dnia spoza Twoich własnych domen, lub z dnia poprzedniego, jeśli było ich więcej, oznaczają zły dzień (potrzeba co najmniej 2 i maksymalnie 25 zgłoszeń). Automatyczne zawieszenie jednego z Twoich aliasów samo w sobie nie liczy się na niekorzyść Twojej reputacji, ale zgłoszenia, które do niego doprowadziły, już tak. Zgłoszenia dotyczące 0.3% lub więcej odbiorców spoza domeny, z której wysyłałeś w ciągu ostatnich 24 godzin, w tym wiadomości zaplanowanych na ten czas, od razu resetują Twój próg do progu początkowego Twojego planu (300 lub 900 w planie Team) (potrzeba co najmniej 3 i maksymalnie 50 zgłoszeń). Awans zostaje wtedy wstrzymany na 30 dni, a próg zatwierdzony przez nasz zespół w tym czasie nie obowiązuje. W domenach w planie Team zgłoszenia liczą się również do złego dnia administratora, którego próg domena wykorzystuje (chyba że Twój własny próg jest równie wysoki), w tej samej proporcji do odbiorców członków, których dotyczą, i nie resetują progu tego administratora. Gdy zgłoszenia dotyczące tych członków osiągną w ciągu 24 godzin wskaźnik resetu, członkowie domen administratora nie mogą przez 30 dni korzystać z jego progu. Wysyłka samego administratora pozostaje bez zmian, a wysyłka członków nadal liczy się do progu administratora. Nadanie członkowi roli administratora wysyła mu zaproszenie, a administratorem staje się po jego przyjęciu. Zgłoszenia dotyczące autoodpowiedzi i odbić poczty wysłanej do Ciebie nie liczą się na Twoją niekorzyść, natomiast zgłoszenia dotyczące powiadomień o doręczeniu wysłanej przez Ciebie poczty się liczą.
 
-* **Team plan domains** — efektywny dzienny limit to najwyższy `smtp_limit` spośród wszystkich administratorów domeny. Na przykład, jeśli jeden administrator ma limit 300, a inny 500, efektywny limit domeny wynosi 500.
-* **Enhanced Protection and other plans** — efektywny dzienny limit to własny `smtp_limit` użytkownika wysyłającego (który domyślnie wynosi 300 wiadomości na dzień).
-* **Nadpisanie na aliasie** — administratorzy domeny mogą opcjonalnie ustawić niestandardowy `smtp_limit` dla pojedynczych aliasów. Gdy jest ustawiony, jest on sprawdzany jako pierwszy (przed limitami domeny i użytkownika). To przydatne do ograniczania konkretnych aliasów do niższej liczby wysyłek.
-* **Domyślne ustawienie domeny dla nowych aliasów** — administratorzy domeny mogą ustawić `alias_default_smtp_limit` dla domeny (za pomocą API lub w ustawieniach zaawansowanych w panelu). Gdy jest ustawione, wszystkie nowo utworzone aliasy w tej domenie automatycznie odziedziczą tę wartość jako swoje `smtp_limit`. Nie może to przekraczać efektywnego limitu SMTP domeny. Nie dotyczy istniejących aliasów. Ustaw na `0`, aby wyłączyć.
+**Poziomy reputacji:**
 
-**Administratorzy systemu** (pracownicy Forward Email) są zwolnieni ze wszystkich limitów.
+| Dzienny próg | Minimalny nieprzerwany okres płatny | Czyste dni wysyłki na poprzednim poziomie | Różne domeny odbiorców w ciągu dnia |
+| -----------: | ----------------------------------: | ----------------------------------------: | ----------------------------------: |
+|          300 |                                   – |                                         – |                                   – |
+|          500 |                               7 dni |                                         5 |                                  10 |
+|        1,000 |                              14 dni |                                         7 |                                  20 |
+|        2,000 |                              30 dni |                                        10 |                                  40 |
+|        5,000 |                              60 dni |                                        14 |                                  75 |
+|       10,000 |                             120 dni |                                        21 |                                 150 |
 
-Wszystkie ograniczenia prędkości są egzekwowane za pomocą zliczeń w bazie danych (`Emails.countDocuments`) w odniesieniu do wiadomości utworzonych od początku bieżącego dnia (północ UTC). Oznacza to, że Twój limit resetuje się codziennie o północy UTC.
+Powyżej 10,000 wiadomości dziennie nasz zespół weryfikuje Twoje konto i sam podnosi próg, bez żadnych działań z Twojej strony. Jeśli potrzebujesz wyższego progu wcześniej (na przykład, aby przenieść istniejący wolumen wysyłki), [skontaktuj się z nami](/help). Próg zatwierdzony przez nasz zespół działa jako minimum i umieszcza Cię na odpowiadającym mu poziomie, a Twoja reputacja nadal może go podnosić aż do 10,000 wiadomości dziennie.
 
-Jeśli potrzebujesz wyższego limitu, prosimy o [kontakt z nami](https://forwardemail.net/help). Większość próśb jest honorowana w ciągu 1–2 godzin.
+**Nietypowe wzorce wysyłania:**
+
+Spowalniamy wysyłkę z błędem `421`, gdy Twoja aktywność wygląda nietypowo, przy każdym progu. Chroni to naszą kolejkę i reputację IP, gdy ktoś przejmie lub nadużyje konta, w tym kont istniejących od lat lub nieaktywnych.
+
+* **Nagłe skoki**: w ciągu dnia możesz wysłać do 2 razy więcej niż Twój ostatni normalny wolumen (Twój najbardziej intensywny dzień w ciągu ostatnich 45 dni) lub Twój próg początkowy (300 wiadomości lub 900 w planie Team i w domenach w planie Team) albo zatwierdzony próg, w zależności od tego, która wartość jest wyższa. Codziennie aktualizujemy Twój normalny wolumen na podstawie Twojej ostatniej wysyłki, więc stały wzrost pozostaje bez ograniczeń, a nowi nadawcy zwiększają wysyłkę od swojego progu początkowego.
+* **Odbiorcy**: wiadomość może mieć wielu odbiorców, więc łącznie we wszystkich wiadomościach w ciągu dnia możesz dotrzeć do maksymalnie 2 razy większej liczby odbiorców niż dzisiejszy limit, a nadawcy jednego konta łącznie do 2 razy progu konta. Pojedynczą wiadomość z większą liczbą odbiorców odrzucamy z błędem `550`.
+* **Serie**: w ciągu dowolnej godziny możesz wysłać do jednej czwartej dzisiejszego limitu lub do 2 razy więcej niż w Twojej najbardziej intensywnej godzinie w ciągu ostatnich 45 dni (ale nie więcej niż połowę dzisiejszego limitu), w zależności od tego, która wartość jest wyższa, i co najmniej Twój próg początkowy lub zatwierdzony próg. Regularny wzorzec, taki jak cotygodniowy newsletter, jest częścią Twojego normalnego wolumenu.
+* **Odbicia**: jeśli odbiorcy odbili lub odrzucili 10% lub więcej Twoich wiadomości z ostatnich 6 godzin (przy co najmniej 50 wiadomościach i bez liczenia odrzuceń naszych współdzielonych adresów IP), nowe wiadomości czekają, aż wskaźnik odbić wróci do normy.
+* **Zaległości w kolejce**: jeśli zbyt wiele Twoich wiadomości z ostatnich 24 godzin nadal czeka w kolejce (10% dzisiejszego limitu, co najmniej Twój próg początkowy), nowe wiadomości czekają, aż kolejka nadrobi zaległości. Nie są wliczane zaplanowane wiadomości, wiadomości, które ponawiamy po odroczeniu przez odbiorcę, ani wiadomości oczekujące na zatwierdzenie, a zaległości nie liczą się na niekorzyść Twojej reputacji.
+* **Zaplanowane wiadomości**: możesz zaplanować wiadomości maksymalnie 27 dni naprzód i mieć jednocześnie zaplanowanych maksymalnie tyle wiadomości, ile wynosi dzienny limit.
+
+Spowolnienia kończą się, gdy aktywność wraca do normy, a dzień ze spowolnieniem nie liczy się jako czysty dzień wysyłki. Klienty poczty same ponawiają wysłanie odroczonych wiadomości, a żądania API otrzymują błąd `429`, więc ponów je później.
+
+Po osiągnięciu dziennego progu odrzucamy kolejne wiadomości z błędem `421` (oznaczającym „spróbuj ponownie później”), aż próg zresetuje się o północy UTC. Nasze [zabezpieczenia przed nadużyciami](#why-was-my-outbound-smtp-suspended) chroniące przed spamem i wirusami obowiązują przy każdym progu.
+
+Liczbę wiadomości wysłanych dzisiaj oraz obecny próg możesz sprawdzić w [Moje konto → E-maile](/my-account/emails) lub za pomocą [API](/email-api#get-outbound-smtp-email-limit).
+
+**Jak stosowane są progi:**
+
+| Poziom | Zakres | Domyślny próg | Opis |
+| :----- | :----- | :-----------: | :--- |
+| Na alias | Pojedynczy alias | Brak (używa limitu domeny) | Opcjonalne. Jeśli alias ma niestandardowy `smtp_limit`, sprawdzamy go jako pierwszy. |
+| Na konto | Wszystkie e-maile wysłane w ciągu dnia z domen, których konto jest administratorem | Na podstawie reputacji (300+/dzień, 900+ w planie Team) | Twój próg obowiązuje dla całego konta, więc dodawanie domen lub członków go nie zwiększa. |
+| Na domenę | Wszystkie e-maile wysłane z domeny w ciągu dnia | Stopniowo rośnie w ramach progu konta (300+/dzień, 900+ w planie Team) | Zlicza wszystkie e-maile wychodzące z aliasów w domenie. |
+| Na użytkownika | Wszystkie e-maile wysłane przez konto użytkownika w ciągu dnia | Na podstawie reputacji (300+/dzień, 900+ w planie Team) | Usunięcie i ponowne utworzenie aliasów lub domen go nie resetuje. |
+
+* **Domeny w planie Team**: próg domeny to najwyższy próg spośród jej płacących administratorów. Na przykład, jeśli jeden administrator ma próg 1,000, a inny 5,000, próg domeny wynosi 5,000. Nadawcy w planie Team zaczynają od 900 wiadomości dziennie zamiast 300.
+* **Obowiązuje dla całego konta**: kontem domeny jest jej płacący administrator o najwyższym progu. Wszystkie e-maile wysłane z domen, których to konto jest administratorem, wliczają się do tego jednego progu, niezależnie od tego, kto je wysyła (łącznie z członkami), więc dodanie domen lub członków go nie zwiększa.
+* **Nowe domeny stopniowo zwiększają limit**: w ramach progu konta domena może wysłać do 2 razy tyle, ile wynosi jej najbardziej intensywny dzień dostarczonych e-maili w ciągu ostatnich 45 dni, i co najmniej tyle, ile wynosi jej próg początkowy (300 wiadomości, lub 900 w planie Team) albo zatwierdzony próg. Nowa domena na istniejącym koncie zaczyna od progu początkowego i rośnie w miarę, jak dostarczamy jej e-maile.
+* **Zwroty i autoodpowiedzi**: powiadomienia o zwrotach (bounce) oraz wiadomości automatycznej odpowiedzi urlopowej (autoodpowiedzi), które wysyłamy w Twoim imieniu, nie wliczają się do Twojego progu. Wysyłamy maksymalnie 300 autoodpowiedzi na użytkownika dziennie (mniej, jeśli ograniczyliśmy Twój próg poniżej tej wartości) i maksymalnie 20 na adres odbiorcy dziennie łącznie dla wszystkich naszych użytkowników, i tylko do nadawców, którzy przeszli uwierzytelnianie (patrz [autoodpowiedzi urlopowe](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Powiadomienia o zwrotach wysyłane na adres zwrotny spoza domeny, z której wysłano wiadomość (lub innych domen, których jesteś administratorem), ograniczamy do tej liczby lub 15% Twojego dziennego progu, w zależności od tego, która wartość jest wyższa, i zawierają one tylko nagłówki identyfikujące oryginalną wiadomość (takie jak `From`, `To` i `Subject`).
+* **Enhanced Protection i inne plany**: próg domeny to własny próg użytkownika wysyłającego.
+* **Nadpisanie na aliasie**: administratorzy domeny mogą ustawić niestandardowy `smtp_limit` dla pojedynczych aliasów. Sprawdzamy go jako pierwszy (przed progami domeny i użytkownika), dzięki czemu możesz ograniczyć konkretne aliasy do niższego wolumenu wysyłki.
+* **Domyślne ustawienie domeny dla nowych aliasów**: administratorzy domeny mogą ustawić `alias_default_smtp_limit` dla domeny (za pomocą API lub w ustawieniach zaawansowanych w panelu). Nowe aliasy w tej domenie dziedziczą wtedy tę wartość jako swój `smtp_limit`. Nie może ona przekraczać obecnego progu domeny, a istniejące aliasy zachowują własną wartość. Ustaw ją na `0`, aby ją wyłączyć.
 
 ### Czy potrzebuję zgody, aby włączyć SMTP {#do-i-need-approval-to-enable-smtp}
 
 Tak, prosimy pamiętać, że aby utrzymać reputację IP i zapewnić dostarczalność, Forward Email ma ręczny proces weryfikacji na poziomie domeny dla zatwierdzenia wychodzącego SMTP. Napisz na <support@forwardemail.net> lub otwórz [zgłoszenie pomocy](https://forwardemail.net/help) w celu uzyskania zgody. Zazwyczaj zajmuje to mniej niż 24 godziny, a większość zgłoszeń jest rozpatrywana w ciągu 1-2 godzin. W niedalekiej przyszłości planujemy uczynić ten proces natychmiastowym z dodatkowymi kontrolami antyspamowymi i alertami. Proces ten zapewnia, że Twoje e-maile trafiają do skrzynki odbiorczej i nie są oznaczane jako spam.
+
+Po zatwierdzeniu wychodzący SMTP jest nielimitowany, a Twój dzienny próg rośnie wraz z [reputacją nadawcy](#what-are-your-outbound-smtp-limits).
+
+### Jakie informacje są potrzebne do zatwierdzenia lub przywrócenia mojego wychodzącego SMTP {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+Prosząc o zatwierdzenie wychodzącego SMTP (lub o jego przywrócenie po [zawieszeniu](#why-was-my-outbound-smtp-suspended)), przygotuj:
+
+* Potwierdzenie zapoznania się z naszymi [warunkami](/terms) i ich akceptacji. Warunki wyraźnie zabraniają korzystania z usługi w jakichkolwiek celach z list [zabronionych działalności Stripe](https://stripe.com/legal/restricted-businesses) lub [zabronionych działań PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).
+* Cel, w jakim zamierzasz używać wychodzącego SMTP.
+* Link do Twojej strony internetowej, informacje o firmie lub profil (np. LinkedIn, GitHub), dzięki którym możemy zweryfikować, że jesteś prawdziwym, uczciwym nadawcą — domena wskazująca na pustą stronę internetową to częsty powód opóźnień w zatwierdzeniu.
+* Potwierdzenie, że usługa nie będzie używana do spamu ani masowego/niezamówionego marketingu.
+
+W obu przypadkach prosimy o te same informacje — zarówno przy pierwszym zatwierdzeniu, jak i przy przywracaniu domeny po zawieszeniu.
+
+### Dlaczego mój wychodzący SMTP został zawieszony {#why-was-my-outbound-smtp-suspended}
+
+Już zatwierdzony wychodzący SMTP może zostać wstrzymany, jeśli wykryjemy wzorzec nadużyć. Jest to niezależne od opisanego wyżej [procesu zatwierdzania](#do-i-need-approval-to-enable-smtp) oraz od naszych [progów wychodzących opartych na reputacji](#what-are-your-outbound-smtp-limits). Mechanizm uruchamia się, gdy zaufane źródło (np. duży dostawca skrzynek pocztowych) zgłosi Twoją wychodzącą pocztę jako wirusa lub spam.
+
+Są dwa etapy:
+
+1. **Pojedyncze wykrycie** powoduje wysłanie powiadomienia „Message prevented” dotyczącego tej jednej wiadomości — ma ono charakter informacyjny, a Twoja kolejka wychodząca nadal działa.
+2. **Wiele wykryć w krótkim, przesuwnym oknie czasowym** przekracza nasz próg wykrywania nadużyć i powoduje pełne powiadomienie „Wychodzący SMTP jest zawieszony”. Wtedy cała Twoja kolejka wychodzącego SMTP zostaje wstrzymana — do czasu rozwiązania problemu nie są podejmowane żadne kolejne próby wysłania wiadomości wychodzących z tej domeny.
+
+Każde z tych powiadomień zawiera konkretną oznaczoną wiadomość (`MAIL FROM`, `RCPT TO`, `Message-ID`, temat i datę), informację, które zaufane źródło i jaka kategoria treści ją oznaczyły, liczbę wykryć w odniesieniu do progu, liczbę unikalnych odbiorców i zaufanych źródeł, których to dotyczyło, oraz kod statusu SMTP i odpowiedź.
+
+Jeśli otrzymasz jedno z tych powiadomień, skontaktuj się z nami pod adresem <support@forwardemail.net> lub otwórz [zgłoszenie pomocy](https://forwardemail.net/help) — zawieszenie nie jest znoszone automatycznie, więc aby je rozwiązać, trzeba się z nami skontaktować.
+
+### Dlaczego nowo zarejestrowane lub niedawno wygasłe domeny wymagają płatnego planu {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+Gdy dodajesz domenę (a w przypadku domen w darmowym planie również na bieżąco), sprawdzamy ją w WHOIS/RDAP. Jeśli domena została **utworzona w ciągu ostatnich 90 dni**, **wygasła w ciągu ostatnich 90 dni** lub ma obecnie u rejestratora status **oczekującego transferu, aktualizacji lub usunięcia**, przed wysyłaniem lub odbieraniem z niej poczty musi mieć płatny plan.
+
+To środek zapobiegający nadużyciom, a nie ocena Ciebie osobiście — główni rejestratorzy, w tym GoDaddy, Namecheap i Hostgator, w przeszłości całkowicie blokowali naszą infrastrukturę z powodu nadużyć związanych z przejmowaniem niedawno wygasłych domen i nieuczciwie rejestrowanymi nowymi domenami. Wymaganie płatnego planu dla takich domen pozwala nam w ogóle nadal oferować darmowy plan bez utraty zaufania rejestratorów.
+
+Wyniki WHOIS/RDAP są przechowywane w pamięci podręcznej przez 24 godziny, więc w przypadku domeny, która właśnie przekroczyła granicę 90 dni, uwzględnienie tego może potrwać do jednego dnia. Aby od razu korzystać z domeny, przejdź na płatny plan (od $3/mies. za nielimitowane domeny, aliasy i wychodzący SMTP oparty na reputacji).
 
 ### Jakie są ustawienia konfiguracyjne Twojego serwera SMTP {#what-are-your-smtp-server-configuration-settings}
 
@@ -5293,6 +5373,8 @@ Nadawcy wykryci jako wysyłający spam lub zawartość wirusową będą dodawani
 
 ### Czy masz ograniczenia szybkości {#do-you-have-rate-limiting}
 
+Ta sekcja dotyczy poczty przychodzącej. Informacje o wysyłce znajdziesz w sekcji [Jakie są Twoje limity wychodzącej poczty SMTP](#what-are-your-outbound-smtp-limits).
+
 Ograniczenia szybkości nadawcy dotyczą albo domeny głównej wyciągniętej z odwrotnego wyszukiwania PTR na adresie IP nadawcy – albo jeśli to nie daje wyniku, to po prostu używa adresu IP nadawcy.  Zwróć uwagę, że poniżej odnosimy się do tego jako `Nadawca`.
 
 Nasze serwery MX mają dzienne limity na przychodzącą pocztę otrzymywaną dla [zaszyfrowanego przechowywania IMAP](/blog/docs/best-quantum-safe-encrypted-email-service):
@@ -5338,6 +5420,8 @@ Limit dzienny to jeden wspólny budżet dla wszystkich protokołów — czy pobi
 Te limity dotyczą każdego konta użytkownika (nie aliasu ani domeny) i resetują się codziennie.  Oznacza to, że tworzenie dodatkowych aliasów nie zwiększa Twojego limitu przepustowości.  Jeśli Redis jest niedostępny, ograniczanie szybkości jest całkowicie pomijane (fail-open), więc Twoja usługa nigdy nie zostanie przerwana.
 
 Jeśli potrzebujesz wyższych limitów dla konkretnego przypadku użycia (np. migracja bardzo dużego archiwum), proszę [skontaktuj się z nami](https://forwardemail.net/help).
+
+Te limity dotyczą przesyłanych danych. Liczbę wiadomości, które możesz wysłać, określają nasze [progi poczty wychodzącej oparte na reputacji](#what-are-your-outbound-smtp-limits).
 
 ### Jak chronicie się przed backscatter {#how-do-you-protect-against-backscatter}
 
@@ -5764,13 +5848,9 @@ Używamy weryfikacji rekordów MX i <strong class="notranslate">TXT</strong>, wi
 
 ### Jak zwiększyć limit przestrzeni dyskowej lub limit wysyłania wychodzącego SMTP {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Przejdź do <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Moje konto → Rozliczenia</a> i przewiń do sekcji **Dodatki**, która zawiera dwa formularze zgłoszeniowe:
+**Przestrzeń dyskowa**: przejdź do <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Moje konto → Rozliczenia</a> i przewiń do sekcji **Dodatki**. Wybierz wielkość do dodania (+10, +20, +30, +40 lub +50 GB) lub wybierz "Other", aby poprosić o niestandardową wielkość. Wysłanie formularza przekazuje Twoją prośbę do naszego zespołu do weryfikacji i jeszcze Cię nie obciąża. Gdy ją zatwierdzimy, wyślemy Ci e-mailem bezpieczny link do płatności, aby sfinalizować zwiększenie. Możesz mieć jednocześnie jedno oczekujące zgłoszenie dotyczące przestrzeni dyskowej i nie możesz złożyć kolejnego w ciągu 3 dni od wcześniejszego zgłoszenia.
 
-* **Zwiększenie przestrzeni dyskowej** — wybierz wielkość do dodania (+10, +20, +30, +40 lub +50 GB), lub wybierz "Other", aby poprosić o niestandardową wielkość.
-* **Zwiększenie limitu wychodzącego SMTP** — wybierz wielkość do dodania (+1000, +2000 lub +3000 emaili dziennie), lub wybierz "Other", aby poprosić o niestandardową wielkość.
-
-Złożenie któregokolwiek z formularzy wysyła Twoją prośbę do naszego zespołu do weryfikacji — nie powoduje to natychmiastowego obciążenia. Po zatwierdzeniu wyślemy Ci e-mailem bezpieczny link do płatności, aby sfinalizować zwiększenie. Możesz mieć jedno oczekujące zgłoszenie na dany typ (przestrzeń dyskowa lub SMTP) jednocześnie; ponowne złożenie w ciągu 3 dni od wcześniejszego zgłoszenia tego samego typu nie jest dozwolone, dopóki ten okres nie minie.
-
+**Wychodzący SMTP**: nie trzeba niczego kupować. Wychodzący SMTP jest nielimitowany, a Twój dzienny próg rośnie wraz z [reputacją nadawcy](#what-are-your-outbound-smtp-limits). <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Moje konto → Rozliczenia</a> i <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Moje konto → E-maile</a> pokazują Twój obecny próg, Twój poziom reputacji i wymagania dla następnego poziomu.
 
 ### Co obejmuje Enterprise License {#what-is-included-in-the-enterprise-license}
 
@@ -5892,6 +5972,12 @@ Tak, jednak "stosunkowo nieznani" nadawcy są ograniczeni do 100 połączeń na 
 Przez "stosunkowo nieznanych" rozumiemy nadawców, którzy nie znajdują się na [liście dozwolonych](#do-you-have-an-allowlist).
 
 Jeśli limit zostanie przekroczony, wysyłamy kod odpowiedzi 421, który mówi serwerowi nadawcy, aby spróbował ponownie później.
+
+### Czy mogę wysyłać nieograniczoną liczbę e-maili z tym {#can-i-send-unlimited-emails-with-this}
+
+Tak. Wychodzący SMTP i nasze API poczty e-mail są nielimitowane we wszystkich płatnych planach (od $3/mo). Zamiast stałego miesięcznego limitu masz dzienny próg, który rośnie, dopóki płacisz i budujesz czystą historię wysyłki: od 300 wiadomości dziennie dla nowych nadawców (900 w planie Team) do 10,000 dziennie, a powyżej tego po weryfikacji Twojego konta przez nasz zespół.
+
+Reputację buduje tylko poczta dostarczona do rzeczywistych odbiorców spoza Twoich własnych domen. Aby chronić dostarczalność, wysoki wskaźnik odbić obniża Twój próg, zgłoszenia spamu i wirusów od dużych dostawców skrzynek pocztowych go resetują, a nietypowe wzorce (np. nagły skok z nieaktywnego konta) spowalniamy. Szczegóły znajdziesz w sekcji [Jakie są Twoje limity wychodzącej poczty SMTP](#what-are-your-outbound-smtp-limits), a obecny próg w [Moje konto → E-maile](/my-account/emails).
 
 ### Czy oferujecie nieograniczoną liczbę domen za jedną cenę {#do-you-offer-unlimited-domains-for-one-price}
 

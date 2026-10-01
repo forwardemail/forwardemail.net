@@ -14,6 +14,7 @@ const WKD = require('./wkd');
 const _ = require('./lodash');
 const checkSRS = require('./check-srs');
 const createDSNSuccess = require('./create-dsn-success');
+const { canSendBounceTo } = require('./reserve-auto-reply');
 const createSession = require('./create-session');
 const encryptMessage = require('./encrypt-message');
 const encryptMessageSMIME = require('./encrypt-message-smime');
@@ -195,13 +196,29 @@ async function getPGPResults({
 }
 
 // eslint-disable-next-line max-params
-async function sendSuccessDSN(email, domain, info, raw, envelope, session) {
+async function sendSuccessDSN(
+  email,
+  domain,
+  info,
+  raw,
+  envelope,
+  session,
+  client
+) {
+  // (bounces to a return address outside the domain are capped, and only
+  // include the original message's headers)
+  const bounceTo = await canSendBounceTo({ client, email, domain });
+  if (!bounceTo) return;
+
   // TODO: improve the accuracy of this date
   const deliveryTime = new Date();
 
   const dsnStream = await createDSNSuccess(
     {
       ...(typeof email.toObject === 'function' ? email.toObject() : email),
+      ...(bounceTo === 'external'
+        ? { dsn: { ...email.dsn, return: 'headers', minimal: true } }
+        : {}),
       envelope: {
         from: punycode.toASCII(`mailer-daemon@${domain.name}`),
         to: email.envelope.from
@@ -237,6 +254,7 @@ async function sendSuccessDSN(email, domain, info, raw, envelope, session) {
     domain: email.domain,
     user: email.user,
     is_bounce: true,
+    is_dsn: true,
     date: deliveryTime
   });
 
@@ -460,7 +478,8 @@ async function sendEmail(
         info,
         pgpResults.finalRaw,
         envelope,
-        session
+        session,
+        client
       )
         .then()
         .catch((err) => logger.fatal(err, { session, resolver }));
@@ -662,7 +681,8 @@ async function sendEmail(
             info,
             pgpResults.finalRaw,
             envelope,
-            session
+            session,
+            client
           )
             .then()
             .catch((err) => logger.fatal(err, { session, resolver }));

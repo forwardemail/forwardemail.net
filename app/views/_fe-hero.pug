@@ -33,6 +33,13 @@ mixin feHero
               i.fa.fa-search(aria-hidden="true")
               = t("Check a domain")
 
+          //- Outbound SMTP is unlimited and reputation-based on paid plans
+          a.fe-chip.fe-hero__offer(
+            href=l("/faq#can-i-send-unlimited-emails-with-this")
+          )
+            i.fa.fa-paper-plane.fe-chip__icon--success(aria-hidden="true")
+            = t("Unlimited outbound email from $%d/mo", planPricing.enhanced)
+
           .fe-hero__trust
             p.fe-hero__trust-label.fe-label= t("Trusted by 1.6M+ domains")
             ul.fe-hero__logos

@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True dla powiadomienia o stanie dostarczenia (takiego jak odbicie) dotyczącego wysłanej przez Ciebie wiadomości e-mail"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Aktualna liczba wysłanych wiadomości e-mail"
+            "description": "Wychodzące wiadomości SMTP wysłane przez Ciebie dzisiaj (UTC), bez uwzględnienia powiadomień o odbiciu i automatycznych odpowiedzi"
           },
           "limit": {
             "type": "integer",
-            "description": "Maksymalna liczba dozwolonych wiadomości e-mail"
+            "description": "Dzisiejszy próg oparty na reputacji (co najwyżej to, co dzisiaj pozostało z progów domeny i konta; 0, gdy nie możesz wysyłać z domeny)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Uzyskaj limit poczty wychodzącej SMTP",
-        "description": "Jest to prosty punkt końcowy, który zwraca obiekt JSON zawierający wartości `count` i `limit` określające liczbę dziennych wiadomości wychodzących SMTP dla każdego konta.",
+        "description": "Zwraca obiekt JSON zawierający `count` wychodzących wiadomości SMTP wysłanych przez Ciebie dzisiaj oraz dzisiejszy `limit`. Wychodzący SMTP jest nieograniczony, a `limit` to Twój bieżący próg oparty na reputacji (zobacz <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), który z czasem rośnie. Powiadomienia o odbiciu i automatyczne odpowiedzi nie są liczone.",
         "tags": [
           "E-maile"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Utwórz zaproszenie do domeny",
-        "description": ">[!IMPORTANT]\n>Jeśli zapraszany użytkownik jest już zaakceptowanym członkiem jakiejkolwiek innej domeny, do której należy zapraszający go administrator, zaproszenie zostanie automatycznie zaakceptowane i wiadomość e-mail nie zostanie wysłana.",
+        "description": ">[!IMPORTANT]\n>Jeśli zapraszany użytkownik jest już zaakceptowanym członkiem jakiejkolwiek innej domeny, do której należy zapraszający go administrator, zaproszenie zostanie automatycznie zaakceptowane i wiadomość e-mail nie zostanie wysłana (tylko dla `group` o wartości `user`: zaproszenie jako `admin` wysyłamy e-mailem do akceptacji przez zaproszonego, a jego link pomijamy w oczekujących zaproszeniach domeny).",
         "tags": [
           "Zaproszenia"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Aktualizacja członka domeny",
-        "description": "Zaktualizuj członka domeny.",
+        "description": "Zaktualizuj członka domeny.\n\n>[!IMPORTANT]\n>Zaktualizowanie innego członka do `admin` wysyła mu zamiast tego e-mailem zaproszenie jako administrator, a pozostaje on `user`, dopóki go nie zaakceptuje (oczekujące zaproszenia domeny je pokazują). Zaktualizowanie go z powrotem do `user` lub usunięcie go wycofuje zaproszenie.",
         "tags": [
           "Członkowie"
         ],

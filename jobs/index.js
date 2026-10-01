@@ -299,6 +299,13 @@ let jobs = [
     interval: '1d',
     timeout: 0
   },
+  // move outbound SMTP reputation thresholds up or down based on yesterday's sending
+  // (runs hourly but each day is only evaluated once per user)
+  {
+    name: 'update-smtp-reputation',
+    interval: '1h',
+    timeout: 0
+  },
   // session management
   {
     name: 'session-management',

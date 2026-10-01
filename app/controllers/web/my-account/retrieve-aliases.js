@@ -22,6 +22,7 @@ const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const getAllowedSort = require('#helpers/get-allowed-sort');
 
 const config = require('#config');
+const { getSmtpDayStart } = require('#helpers/get-smtp-day');
 
 const ALIAS_SORT_FIELDS = new Set([
   'name',
@@ -325,7 +326,7 @@ async function retrieveAliases(ctx, next) {
     !ctx.state.domain.is_global &&
     ctx.state.domain.aliases.length > 0
   ) {
-    const startOfDay = dayjs().startOf('day').toDate();
+    const startOfDay = getSmtpDayStart();
     const aliasIds = ctx.state.domain.aliases.map((a) => a._id);
     // Find the catch-all alias to also count emails with alias=null
     const catchAllAlias = ctx.state.domain.aliases.find((a) => a.name === '*');
@@ -334,6 +335,7 @@ async function retrieveAliases(ctx, next) {
         {
           $match: {
             alias: { $in: aliasIds },
+            is_bounce: { $ne: true },
             created_at: { $gte: startOfDay }
           }
         },
@@ -344,6 +346,7 @@ async function retrieveAliases(ctx, next) {
         ? Emails.countDocuments({
             domain: ctx.state.domain._id,
             alias: { $in: [null, undefined] },
+            is_bounce: { $ne: true },
             created_at: { $gte: startOfDay }
           })
         : Promise.resolve(0),

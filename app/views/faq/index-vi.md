@@ -80,6 +80,8 @@
   * [Tôi có thể chuyển tiếp email cho bất kỳ tên miền phụ nào không (tên miền phụ ký tự đại diện)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Giới hạn SMTP gửi đi của bạn là gì](#what-are-your-outbound-smtp-limits)
   * [Tôi có cần phê duyệt để bật SMTP không](#do-i-need-approval-to-enable-smtp)
+  * [Bạn cần những thông tin gì để phê duyệt hoặc khôi phục SMTP gửi đi của tôi](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [Tại sao các tên miền mới đăng ký hoặc mới hết hạn cần gói trả phí](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Cài đặt cấu hình máy chủ SMTP của bạn là gì](#what-are-your-smtp-server-configuration-settings)
   * [Cài đặt cấu hình máy chủ IMAP của bạn là gì](#what-are-your-imap-server-configuration-settings)
   * [Cài đặt cấu hình máy chủ POP3 của bạn là gì](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Tôi có thể "gửi mail as" trong Outlook với cái này không](#can-i-send-mail-as-in-outlook-with-this)
   * [Tôi có thể "gửi mail as" trong Apple Mail và iCloud Mail với cái này không](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Tôi có thể chuyển tiếp email không giới hạn với cái này không](#can-i-forward-unlimited-emails-with-this)
+  * [Tôi có thể gửi email không giới hạn với cái này không](#can-i-send-unlimited-emails-with-this)
   * [Bạn có cung cấp tên miền không giới hạn với một mức giá không](#do-you-offer-unlimited-domains-for-one-price)
   * [Bạn chấp nhận các phương thức thanh toán nào](#which-payment-methods-do-you-accept)
 * [Tài Nguyên Bổ Sung](#additional-resources)
@@ -1035,7 +1038,7 @@ Tuy nhiên nếu họ thấy thông báo này, đó là vì họ thường quen 
 
 Chủ đề này liên quan đến [vấn đề phổ biến trong Gmail khi thông tin bổ sung xuất hiện bên cạnh tên người gửi](https://support.google.com/mail/answer/1311182).
 
-Từ tháng 5 năm 2023, chúng tôi hỗ trợ gửi email bằng SMTP như một tiện ích bổ sung cho tất cả người dùng trả phí – điều này có nghĩa là bạn có thể loại bỏ <span class="notranslate">via forwardemail dot net</span> trong Gmail.
+SMTP gửi đi đi kèm với tất cả các gói trả phí (không giới hạn và [dựa trên uy tín](#what-are-your-outbound-smtp-limits)), nên bạn có thể loại bỏ <span class="notranslate">via forwardemail dot net</span> trong Gmail.
 
 Lưu ý rằng chủ đề FAQ này dành riêng cho những người sử dụng tính năng [Cách gửi mail như sử dụng Gmail](#how-to-send-mail-as-using-gmail).
 
@@ -2037,6 +2040,12 @@ Không giống như các hệ thống mail như `postfix` (ví dụ: sử dụng
 
 8. Chúng tôi không gửi nếu địa chỉ MAIL FROM khớp với mẫu người gửi phản hồi ARF (ví dụ: `feedback@arf.mail.yahoo.com`).
 
+9. Chúng tôi chỉ trả lời người gửi đã được xác thực: địa chỉ From phải vượt qua DMARC hoặc mang chữ ký DKIM được căn chỉnh và hợp lệ. Chỉ SPF thì không được tính, vì các máy chủ thư dùng chung vượt qua SPF cho bất kỳ ai. Người gửi giả mạo không thể biến thư trả lời vắng mặt của bạn thành [backscatter](https://www.backscatterer.org/?target=autoresponders) nhắm vào người khác.
+
+10. Chúng tôi chỉ trả lời khi bí danh của bạn, hoặc một địa chỉ khác trên tên miền của bí danh đó (chẳng hạn một bí danh chuyển tiếp đến bí danh đó), xuất hiện trong tiêu đề `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` hoặc `Resent-Bcc`, theo khuyến nghị của [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834). Thư gửi đến danh sách người nhận ẩn không nhận được thư trả lời. Thư trả lời vắng mặt của Sieve cần bí danh của bạn hoặc một địa chỉ trong `:addresses` của nó xuất hiện trong các tiêu đề đó.
+
+11. Chúng tôi gửi tối đa 300 thư trả lời vắng mặt cho mỗi người dùng mỗi ngày (ít hơn nếu chúng tôi đã giới hạn ngưỡng SMTP gửi đi của bạn thấp hơn mức đó), và tối đa 20 cho mỗi địa chỉ người nhận mỗi ngày trên toàn bộ người dùng của chúng tôi.
+
 ### Làm thế nào để tôi thiết lập SPF cho Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
 Sử dụng trang quản lý DNS của nhà đăng ký của bạn, thiết lập bản ghi <strong class="notranslate">TXT</strong> sau:
@@ -2338,9 +2347,11 @@ Vâng, bạn có thể đọc thêm tại <https://forwardemail.net/guides/newsl
 
 Xin lưu ý rằng để duy trì uy tín IP và đảm bảo khả năng gửi thành công, Forward Email có quy trình xem xét thủ công theo từng tên miền cho **phê duyệt bản tin**. Gửi email tới <support@forwardemail.net> hoặc mở một [yêu cầu trợ giúp](https://forwardemail.net/help) để được phê duyệt. Thông thường quá trình này mất chưa đến 24 giờ, với hầu hết các yêu cầu được chấp thuận trong vòng 1-2 giờ. Trong tương lai gần, chúng tôi dự định làm cho quy trình này trở nên tức thì với các kiểm soát spam bổ sung và cảnh báo. Quy trình này đảm bảo email của bạn đến được hộp thư đến và tin nhắn của bạn không bị đánh dấu là spam.
 
+Bản tin và danh sách gửi thư được tính vào ngưỡng gửi đi hàng ngày của bạn, vốn không giới hạn và tăng theo [uy tín người gửi](#what-are-your-outbound-smtp-limits). Hãy giữ danh sách của bạn sạch: tỷ lệ thư bị trả lại cao sẽ làm giảm ngưỡng của bạn, và chúng tôi làm chậm những lần tăng đột ngột về khối lượng.
+
 ### Bạn có hỗ trợ gửi email bằng API không {#do-you-support-sending-email-with-api}
 
-Vâng, kể từ tháng 5 năm 2023, chúng tôi hỗ trợ gửi email bằng API như một tiện ích bổ sung cho tất cả người dùng trả phí.
+Có. Tất cả các gói trả phí đều bao gồm việc gửi email bằng API của chúng tôi. Giống như SMTP gửi đi, việc gửi bằng API **không giới hạn** và [dựa trên uy tín](#what-are-your-outbound-smtp-limits): tin nhắn bạn gửi bằng API và bằng SMTP dùng chung một ngưỡng hàng ngày.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2546,7 +2557,7 @@ Nó hỗ trợ cả IPv4 và IPv6 và có thể truy cập qua cổng `443` (HTT
 
 ### Bạn có hỗ trợ gửi email bằng SMTP không {#do-you-support-sending-email-with-smtp}
 
-Vâng, kể từ tháng 5 năm 2023 chúng tôi hỗ trợ gửi email bằng SMTP như một tiện ích bổ sung cho tất cả người dùng trả phí.
+Có. Tất cả các gói trả phí đều bao gồm SMTP gửi đi, và SMTP gửi đi **không giới hạn**: ngưỡng gửi hàng ngày của bạn tăng theo [uy tín người gửi](#what-are-your-outbound-smtp-limits).
 
 <div id="smtp-instructions">
 
@@ -3675,32 +3686,101 @@ Khi bạn sử dụng <a href="#do-you-support-regular-expressions-or-regex" cla
 
 ### Giới hạn SMTP gửi đi của bạn là gì {#what-are-your-outbound-smtp-limits}
 
-Chúng tôi thực thi giới hạn tốc độ SMTP đầu ra ở nhiều mức để ngăn lạm dụng đồng thời giữ tính linh hoạt cho việc sử dụng hợp pháp. Mỗi mức được kiểm tra theo thứ tự, và mức nào bị chạm đến trước sẽ tạm thời từ chối tin nhắn với lỗi `421` (nghĩa là "thử lại sau").
+SMTP gửi đi là **không giới hạn** và **dựa trên uy tín**. Bạn nhận được một ngưỡng hàng ngày thay vì mức trần cố định hàng tháng, và ngưỡng này tăng khi bạn xây dựng uy tín gửi tốt.
 
-**Phân cấp giới hạn tốc độ:**
+Người gửi mới bắt đầu ở mức 300 tin nhắn mỗi ngày, hoặc 900 với gói Nhóm (người gửi dùng gói Nhóm bỏ qua các cấp dưới 900, và cấp tiếp theo của họ là 1,000). Mỗi ngày một lần, chúng tôi xem xét hoạt động gửi gần đây của bạn và điều chỉnh ngưỡng của bạn lên hoặc xuống. Chúng tôi đánh giá mỗi ngày sau đó hai ngày, khi chúng tôi biết kết quả gửi của các tin nhắn trong ngày đó. Khi cơ chế này bắt đầu áp dụng cho tài khoản của bạn, chúng tôi xem lại tối đa 30 ngày lịch sử gửi của bạn, và chúng tôi đánh giá bù những ngày đã bỏ lỡ.
 
-| Level | Scope | Default Limit | Description |
-| :---- | :---- | :-----------: | :---------- |
-| Per-alias | Individual alias | None (uses domain limit) | Optional. If an alias has a custom `smtp_limit` set, it is checked first. |
-| Per-domain | All emails sent from a domain in a day | 300/day | Counts all outbound emails across every alias on the domain. |
-| Per-user | All emails sent by a user account in a day | 300/day | Prevents circumvention by deleting and re-creating aliases or domains. |
+Chỉ hoạt động gửi thực sự mới xây dựng uy tín. Thư được tính vào việc tăng cấp khi chúng tôi **gửi thành công** thư đến **những người nhận riêng biệt bên ngoài các tên miền của chính bạn**. Thư gửi cho chính bạn, đến các tên miền của chính bạn (hoặc các tên miền phụ của chúng), đến các tên miền mà bạn dùng để gửi, hoặc gửi lặp lại cho cùng một người nhận không được tính. Các biến thể của một địa chỉ (một `+tag`, hoặc dấu chấm trong địa chỉ Gmail) chỉ được tính một lần. Mỗi tên miền người nhận (cùng các tên miền phụ của nó) chỉ được tính cho tối đa 50 người nhận mỗi ngày, trừ các tên miền riêng của các nhà cung cấp hộp thư lớn (như gmail.com). Ít nhất một phần năm số người nhận được tính phải là người nhận tại các nhà cung cấp hộp thư lớn, và các cấp cao hơn cũng cần một số lượng tối thiểu các tên miền người nhận khác nhau trong một ngày.
 
-**Cách xác định giới hạn hiệu quả:**
+* **Tăng cấp**: ngưỡng của bạn tăng một cấp khi bạn đã thanh toán không gián đoạn đủ lâu, bạn có đủ số ngày gửi sạch ở cấp hiện tại, và ngày gửi nhiều nhất của bạn trong 7 ngày qua đã đạt ít nhất một nửa ngưỡng hiện tại tính theo số người nhận bên ngoài các tên miền của chính bạn đã nhận được thư (trên đủ số tên miền người nhận khác nhau). Chỉ thời gian trả phí không gián đoạn mới được tính, nên một tài khoản cũ hơn chưa trả phí (hoặc đã ngừng trả phí) sẽ bắt đầu lại từ đầu. Việc gia hạn trễ tối đa 14 ngày vẫn được tính là không gián đoạn, và chỉ các khoản thanh toán của chính bạn mới được tính.
+* **Ngày sạch**: một ngày mà chúng tôi gửi thành công ít nhất 5 tin nhắn của bạn đến người nhận bên ngoài các tên miền của chính bạn, dưới 5% số người nhận đó trả lại hoặc từ chối thư của bạn, bạn không nhận đủ báo cáo spam hoặc virus để thành một ngày xấu (xem bên dưới), và chúng tôi không làm chậm hoạt động gửi của bạn do mẫu gửi bất thường.
+* **Giảm cấp**: một ngày có tỷ lệ trả lại hoặc từ chối cao (5% trở lên trên ít nhất 20 người nhận bên ngoài các tên miền của chính bạn), hoặc quá nhiều báo cáo spam hoặc virus từ các nhà cung cấp hộp thư lớn (xem bên dưới), sẽ giảm ngưỡng của bạn một cấp (không thấp hơn ngưỡng khởi đầu của gói bạn dùng) và đặt lại số ngày sạch. Một ngày có từ 15% số người nhận đó trở lên trả lại hoặc từ chối thư của bạn thì thay vào đó sẽ đặt lại ngưỡng của bạn về ngưỡng khởi đầu của gói bạn dùng, và tạm dừng việc tăng cấp trong 30 ngày (ngưỡng do nhóm của chúng tôi phê duyệt vẫn được áp dụng). Chỉ các lần từ chối thư của bạn mới được tính, ví dụ không tính việc các địa chỉ IP dùng chung của chúng tôi nằm trong danh sách chặn, hoặc máy chủ của người nhận mà chúng tôi không thể kết nối tới. Mỗi người nhận chỉ được tính một lần bất kể bạn đã gửi cho họ bao nhiêu tin nhắn, và tin nhắn đã lên lịch được tính vào ngày mà bạn lên lịch gửi. Những ngày không gửi không được tính có lợi hay bất lợi cho bạn.
+* **Báo cáo spam và virus**: các nhà cung cấp hộp thư lớn (như Gmail, Outlook và Yahoo) quyết định điều gì được coi là lạm dụng, và chúng tôi chỉ tính các lần từ chối vĩnh viễn của họ. Mỗi người nhận trên các tên miền riêng của nhà cung cấp (như gmail.com) đều được tính, trong khi các tên miền khác do nhà cung cấp lưu trữ (như Google Workspace của một công ty) được tính một lần cho mỗi tên miền, và mỗi mục chỉ được tính một lần mỗi ngày. Chúng tôi tính báo cáo theo tỷ lệ trên số người nhận mà bạn đã gửi, giống như cách các nhà cung cấp lớn làm (Gmail yêu cầu người gửi giữ dưới 0.1% và không bao giờ chạm tới 0.3%), vì vậy một báo cáo đơn lẻ không khiến bạn bị giảm cấp, và báo cáo về các tên miền khác do nhà cung cấp lưu trữ chỉ chiếm tối đa một nửa số báo cáo cần thiết. Báo cáo cho từ 0.1% trở lên số người nhận trong một ngày bên ngoài các tên miền của chính bạn, hoặc của ngày hôm trước nếu nhiều hơn, tạo thành một ngày xấu (cần ít nhất 2 và tối đa 25 báo cáo). Việc một trong các bí danh của bạn bị tạm ngưng tự động tự nó không bị tính bất lợi cho uy tín của bạn, nhưng các báo cáo dẫn đến việc đó thì có. Báo cáo cho từ 0.3% trở lên số người nhận bên ngoài tên miền bạn đã gửi trong 24 giờ qua, bao gồm cả các thư đã được lên lịch cho thời gian đó, sẽ đặt lại ngưỡng của bạn về ngưỡng khởi đầu của gói bạn dùng (300, hoặc 900 với gói Nhóm) ngay lập tức (cần ít nhất 3 và tối đa 50 báo cáo). Sau đó việc tăng cấp tạm dừng trong 30 ngày, và ngưỡng do nhóm của chúng tôi phê duyệt không được áp dụng trong thời gian này. Trên các tên miền gói Nhóm, báo cáo cũng được tính vào ngày xấu của quản trị viên có ngưỡng được tên miền sử dụng (trừ khi ngưỡng của chính bạn cũng cao như vậy), theo cùng tỷ lệ trên số người nhận của các thành viên liên quan, và không đặt lại quản trị viên đó. Khi báo cáo về các thành viên đó đạt tỷ lệ đặt lại trong vòng 24 giờ, các thành viên trên tên miền của quản trị viên không thể dùng ngưỡng của quản trị viên trong 30 ngày. Việc gửi của chính quản trị viên vẫn giữ nguyên, và việc gửi của các thành viên vẫn được tính vào ngưỡng của quản trị viên. Việc đặt một thành viên làm quản trị viên sẽ gửi cho họ một lời mời, và họ trở thành quản trị viên khi chấp nhận lời mời đó. Các báo cáo về tự động trả lời và thư bị trả lại của thư gửi đến bạn không bị tính bất lợi cho bạn, còn các báo cáo về thông báo gửi thư cho thư bạn đã gửi thì có.
 
-* **Team plan domains**: giới hạn hàng ngày hiệu quả là `smtp_limit` cao nhất trong số tất cả thành viên quản trị của tên miền. Ví dụ, nếu một quản trị viên có giới hạn 300 và một quản trị viên khác có 500, thì giới hạn hiệu quả của tên miền là 500.
-* **Enhanced Protection and other plans**: giới hạn hàng ngày hiệu quả là `smtp_limit` của người dùng gửi (mặc định là 300 tin nhắn mỗi ngày).
-* **Per-alias override**: quản trị viên tên miền có thể tùy chọn đặt `smtp_limit` tùy chỉnh trên từng bí danh. Khi được đặt, giới hạn này được kiểm tra trước (trước giới hạn tên miền và người dùng). Điều này hữu ích để hạn chế một số bí danh cụ thể ở khối lượng gửi thấp hơn.
-* **Mặc định tên miền cho các bí danh mới**: quản trị viên tên miền có thể đặt một `alias_default_smtp_limit` cho tên miền (qua API hoặc Cài đặt nâng cao trên bảng điều khiển). Khi được đặt, tất cả bí danh mới được tạo trên tên miền đó sẽ tự động kế thừa giá trị này làm `smtp_limit` của chúng. Giá trị này không được vượt quá giới hạn SMTP hiệu lực của tên miền. Các bí danh hiện có sẽ không bị ảnh hưởng. Đặt thành `0` để vô hiệu hóa.
+**Các cấp độ uy tín:**
 
-**System administrators** (Forward Email staff) được miễn mọi giới hạn tốc độ.
+| Ngưỡng hàng ngày | Thời gian trả phí liên tục tối thiểu | Số ngày gửi sạch ở cấp trước | Số tên miền người nhận khác nhau trong một ngày |
+| --------------: | ---------------------------: | ----------------------------------: | -----------------------------------: |
+|             300 |                            – |                                   – |                                    – |
+|             500 |                       7 ngày |                                   5 |                                   10 |
+|           1,000 |                      14 ngày |                                   7 |                                   20 |
+|           2,000 |                      30 ngày |                                  10 |                                   40 |
+|           5,000 |                      60 ngày |                                  14 |                                   75 |
+|          10,000 |                     120 ngày |                                  21 |                                  150 |
 
-Tất cả việc giới hạn tốc độ được thi hành bằng cách sử dụng đếm trong cơ sở dữ liệu (`Emails.countDocuments`) đối với các email được tạo kể từ đầu ngày hiện tại (nửa đêm UTC). Điều này có nghĩa là giới hạn của bạn được đặt lại hàng ngày vào nửa đêm UTC.
+Trên 10,000 tin nhắn mỗi ngày, nhóm của chúng tôi xem xét tài khoản của bạn và nâng ngưỡng bằng tay, bạn không cần làm gì. Nếu bạn cần ngưỡng cao hơn sớm hơn (ví dụ, để chuyển một khối lượng gửi hiện có sang), [liên hệ với chúng tôi](/help). Ngưỡng do nhóm của chúng tôi phê duyệt đóng vai trò là mức tối thiểu và đưa bạn vào cấp tương ứng với ngưỡng đó, và uy tín của bạn vẫn có thể nâng nó lên tới 10,000 tin nhắn mỗi ngày.
 
-Nếu bạn cần giới hạn cao hơn, vui lòng [liên hệ với chúng tôi](https://forwardemail.net/help). Hầu hết yêu cầu được chấp thuận trong vòng 1-2 giờ.
+**Mẫu gửi bất thường:**
+
+Chúng tôi làm chậm hoạt động gửi với lỗi `421` khi hoạt động của bạn có dấu hiệu bất thường, ở bất kỳ ngưỡng nào. Điều này bảo vệ hàng đợi và uy tín IP của chúng tôi nếu ai đó xâm phạm hoặc lạm dụng một tài khoản, kể cả các tài khoản đã tồn tại nhiều năm hoặc từng không hoạt động.
+
+* **Tăng đột biến**: trong một ngày, bạn có thể gửi tối đa gấp 2 lần khối lượng bình thường gần đây (ngày gửi nhiều nhất của bạn trong 45 ngày qua), hoặc ngưỡng khởi đầu của bạn (300 tin nhắn, hoặc 900 với gói Nhóm và trên các tên miền gói Nhóm) hoặc một ngưỡng đã được phê duyệt, tùy theo giá trị nào cao hơn. Chúng tôi cập nhật khối lượng bình thường của bạn mỗi ngày dựa trên hoạt động gửi gần đây, nên tăng trưởng ổn định không bị ảnh hưởng, và người gửi mới tăng dần từ ngưỡng khởi đầu của họ.
+* **Người nhận**: một tin nhắn có thể có nhiều người nhận, vì vậy tính trên tất cả tin nhắn của bạn trong một ngày, bạn có thể gửi đến số người nhận tối đa gấp 2 lần hạn mức hôm nay, và tổng cộng các người gửi của một tài khoản tối đa gấp 2 lần ngưỡng của tài khoản. Chúng tôi từ chối một tin nhắn đơn lẻ có nhiều người nhận hơn mức đó với lỗi `550`.
+* **Gửi dồn dập**: trong bất kỳ giờ nào, bạn có thể gửi tối đa một phần tư hạn mức hôm nay hoặc gấp 2 lần giờ gửi nhiều nhất của bạn trong 45 ngày qua (nhưng không vượt quá một nửa hạn mức hôm nay), tùy theo giá trị nào cao hơn, và ít nhất bằng ngưỡng khởi đầu của bạn hoặc một ngưỡng đã được phê duyệt. Một mẫu gửi đều đặn, chẳng hạn như bản tin hằng tuần, là một phần của khối lượng bình thường của bạn.
+* **Thư bị trả lại**: nếu người nhận trả lại hoặc từ chối từ 10% tin nhắn của bạn trở lên trong 6 giờ qua (với ít nhất 50 tin nhắn, và không tính các lần từ chối địa chỉ IP dùng chung của chúng tôi), các tin nhắn mới sẽ chờ cho đến khi tỷ lệ trả lại của bạn phục hồi.
+* **Tồn đọng hàng đợi**: nếu có quá nhiều tin nhắn của bạn từ 24 giờ qua vẫn đang chờ trong hàng đợi (10% hạn mức hôm nay, ít nhất bằng ngưỡng khởi đầu của bạn), các tin nhắn mới sẽ chờ cho đến khi hàng đợi bắt kịp. Tin nhắn đã lên lịch, tin nhắn chúng tôi thử gửi lại sau khi người nhận trì hoãn và tin nhắn đang chờ phê duyệt không được tính, và tình trạng tồn đọng không bị tính là bất lợi cho uy tín của bạn.
+* **Tin nhắn đã lên lịch**: bạn có thể lên lịch tin nhắn trước tối đa 27 ngày, và có cùng lúc số tin nhắn đã lên lịch tối đa bằng hạn mức của một ngày.
+
+Việc làm chậm kết thúc khi hoạt động của bạn trở lại bình thường, và một ngày bị làm chậm không được tính là ngày gửi sạch. Các ứng dụng email tự thử gửi lại các tin nhắn bị hoãn, còn các yêu cầu API nhận lỗi `429`, vì vậy hãy thử lại các yêu cầu đó sau.
+
+Khi bạn đạt ngưỡng trong ngày, chúng tôi từ chối các tin nhắn tiếp theo với lỗi `421` (nghĩa là "thử lại sau") cho đến khi ngưỡng của bạn được đặt lại vào nửa đêm UTC. Các [biện pháp chống lạm dụng](#why-was-my-outbound-smtp-suspended) đối với spam và virus của chúng tôi được áp dụng ở bất kỳ ngưỡng nào.
+
+Bạn có thể xem số tin nhắn bạn đã gửi hôm nay và ngưỡng hiện tại tại [Tài khoản của tôi → Email](/my-account/emails), hoặc qua [API](/email-api#get-outbound-smtp-email-limit).
+
+**Cách áp dụng ngưỡng:**
+
+| Cấp | Phạm vi | Ngưỡng mặc định | Mô tả |
+| :--------- | :----------------------------------------- | :-------------------------: | :------------------------------------------------------------------------ |
+| Theo bí danh | Từng bí danh | Không có (dùng giới hạn tên miền) | Tùy chọn. Chúng tôi kiểm tra `smtp_limit` tùy chỉnh của bí danh trước, nếu có. |
+| Theo tài khoản | Tất cả email gửi từ các tên miền mà một tài khoản là quản trị viên trong một ngày | Dựa trên uy tín (300+/ngày, 900+ với gói Nhóm) | Ngưỡng của bạn áp dụng cho toàn tài khoản, nên việc thêm tên miền hoặc thành viên không làm ngưỡng tăng gấp bội. |
+| Theo tên miền | Tất cả email gửi từ một tên miền trong một ngày | Tăng dần trong phạm vi ngưỡng của tài khoản (300+/ngày, 900+ với gói Nhóm) | Tính tất cả email gửi đi từ các bí danh trên tên miền. |
+| Theo người dùng | Tất cả email gửi bởi một tài khoản người dùng trong một ngày | Dựa trên uy tín (300+/ngày, 900+ với gói Nhóm) | Xóa và tạo lại bí danh hoặc tên miền không đặt lại ngưỡng này. |
+
+* **Tên miền gói Nhóm**: ngưỡng của tên miền là ngưỡng cao nhất trong số các thành viên quản trị trả phí của tên miền đó. Ví dụ, nếu một quản trị viên có ngưỡng 1,000 và một người khác có 5,000, thì ngưỡng của tên miền là 5,000. Người gửi dùng gói Nhóm bắt đầu ở mức 900 tin nhắn mỗi ngày thay vì 300.
+* **Áp dụng toàn tài khoản**: tài khoản của một tên miền là quản trị viên trả phí có ngưỡng cao nhất của tên miền đó. Toàn bộ thư gửi từ các tên miền mà tài khoản đó là quản trị viên đều được tính vào một ngưỡng duy nhất này, bất kể ai gửi (kể cả thành viên), nên việc thêm tên miền hoặc thành viên không làm tăng ngưỡng.
+* **Tên miền mới tăng dần**: trong phạm vi ngưỡng của tài khoản, một tên miền có thể gửi tối đa gấp 2 lần ngày có nhiều thư được gửi thành công nhất trong 45 ngày qua, và tối thiểu bằng ngưỡng khởi đầu của nó (300 tin nhắn, hoặc 900 với gói Nhóm) hoặc một ngưỡng đã được phê duyệt. Một tên miền mới trên tài khoản đã hoạt động lâu bắt đầu ở ngưỡng khởi đầu và tăng dần khi chúng tôi gửi thành công thư của nó.
+* **Thư bị trả lại và tự động trả lời**: thông báo thư bị trả lại và tin nhắn tự động trả lời khi vắng mặt (tự động trả lời) mà chúng tôi gửi thay bạn không được tính vào ngưỡng của bạn. Chúng tôi gửi tối đa 300 tự động trả lời cho mỗi người dùng mỗi ngày (ít hơn nếu chúng tôi đã giới hạn ngưỡng của bạn thấp hơn mức đó) và tối đa 20 cho mỗi địa chỉ người nhận mỗi ngày trên toàn bộ người dùng của chúng tôi, và chỉ gửi cho những người gửi đã vượt qua xác thực (xem [tự động trả lời khi vắng mặt](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Chúng tôi giới hạn thông báo thư bị trả lại gửi đến địa chỉ trả về nằm ngoài tên miền bạn đã gửi (hoặc các tên miền khác mà bạn là quản trị viên) ở mức đó hoặc 15% ngưỡng hằng ngày của bạn, tùy theo giá trị nào cao hơn, và các thông báo này chỉ bao gồm các tiêu đề nhận dạng của thư gốc (chẳng hạn như `From`, `To` và `Subject`).
+* **Enhanced Protection và các gói khác**: ngưỡng của tên miền là ngưỡng riêng của người dùng gửi.
+* **Ghi đè theo bí danh**: quản trị viên tên miền có thể đặt `smtp_limit` tùy chỉnh trên từng bí danh. Chúng tôi kiểm tra giá trị này trước (trước ngưỡng của tên miền và người dùng), giúp bạn hạn chế một số bí danh cụ thể ở khối lượng gửi thấp hơn.
+* **Mặc định tên miền cho các bí danh mới**: quản trị viên tên miền có thể đặt một `alias_default_smtp_limit` cho tên miền (bằng API hoặc Cài đặt nâng cao trên bảng điều khiển). Khi đó, các bí danh mới trên tên miền đó kế thừa giá trị này làm `smtp_limit` của chúng. Giá trị này không được vượt quá ngưỡng hiện tại của tên miền, và các bí danh hiện có giữ nguyên giá trị của mình. Đặt thành `0` để tắt.
 
 ### Tôi có cần phê duyệt để bật SMTP không {#do-i-need-approval-to-enable-smtp}
 
 Có, xin lưu ý rằng để duy trì uy tín IP và đảm bảo khả năng gửi thư, Forward Email có quy trình xem xét thủ công trên cơ sở từng tên miền để phê duyệt SMTP gửi đi. Gửi email tới <support@forwardemail.net> hoặc mở một [yêu cầu trợ giúp](https://forwardemail.net/help) để được phê duyệt. Thông thường mất chưa đến 24 giờ, với hầu hết yêu cầu được chấp nhận trong vòng 1-2 giờ. Trong tương lai gần, chúng tôi dự định làm cho quy trình này trở nên tức thì với các kiểm soát spam bổ sung và cảnh báo. Quy trình này đảm bảo email của bạn đến hộp thư đến và tin nhắn của bạn không bị đánh dấu là spam.
+
+Sau khi được phê duyệt, SMTP gửi đi không giới hạn và ngưỡng hàng ngày của bạn tăng theo [uy tín người gửi](#what-are-your-outbound-smtp-limits).
+
+### Bạn cần những thông tin gì để phê duyệt hoặc khôi phục SMTP gửi đi của tôi {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+Khi bạn yêu cầu phê duyệt SMTP gửi đi (hoặc đề nghị chúng tôi khôi phục sau khi bị [tạm ngưng](#why-was-my-outbound-smtp-suspended)), hãy chuẩn bị cung cấp:
+
+* Xác nhận rằng bạn đã đọc và đồng ý với [điều khoản](/terms) của chúng tôi, trong đó nghiêm cấm cụ thể việc sử dụng dịch vụ cho bất kỳ mục nào thuộc danh sách [Doanh nghiệp bị cấm của Stripe](https://stripe.com/legal/restricted-businesses) hoặc [Hoạt động bị cấm của PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).
+* Mục đích bạn định sử dụng SMTP gửi đi.
+* Liên kết đến trang web, thông tin doanh nghiệp hoặc hồ sơ của bạn (ví dụ: LinkedIn, GitHub) để chúng tôi xác minh bạn là người gửi thật và hợp pháp — một tên miền trỏ đến trang web trống là lý do phổ biến khiến việc phê duyệt bị chậm trễ.
+* Xác nhận rằng bạn sẽ không sử dụng dịch vụ để gửi spam hoặc tiếp thị hàng loạt/không được yêu cầu.
+
+Chúng tôi yêu cầu cùng một bộ thông tin trong cả hai trường hợp, dù là phê duyệt lần đầu hay khôi phục tên miền sau khi bị tạm ngưng.
+
+### Tại sao SMTP gửi đi của tôi bị tạm ngưng {#why-was-my-outbound-smtp-suspended}
+
+SMTP gửi đi đã được phê duyệt vẫn có thể bị tạm dừng nếu chúng tôi phát hiện dấu hiệu lạm dụng. Điều này tách biệt với [quy trình phê duyệt](#do-i-need-approval-to-enable-smtp) ở trên và với [ngưỡng gửi đi dựa trên uy tín](#what-are-your-outbound-smtp-limits) của chúng tôi. Nó được kích hoạt khi một nguồn đáng tin cậy (ví dụ: một nhà cung cấp hộp thư lớn) báo cáo thư gửi đi của bạn là virus hoặc spam.
+
+Có hai giai đoạn:
+
+1. **Một lần phát hiện** sẽ gửi cho bạn thông báo "Message prevented" cho riêng tin nhắn đó — chỉ mang tính thông tin, và hàng đợi gửi đi của bạn vẫn tiếp tục hoạt động.
+2. **Nhiều lần phát hiện trong một khoảng thời gian trượt ngắn** sẽ vượt ngưỡng phát hiện lạm dụng của chúng tôi và kích hoạt thông báo đầy đủ "SMTP gửi đi bị tạm dừng". Khi đó, toàn bộ hàng đợi SMTP gửi đi của bạn bị tạm dừng — không có tin nhắn gửi đi nào khác được thử gửi cho tên miền đó cho đến khi vấn đề được giải quyết.
+
+Cả hai thông báo đều bao gồm tin nhắn cụ thể bị gắn cờ (`MAIL FROM`, `RCPT TO`, `Message-ID`, tiêu đề và ngày), nguồn đáng tin cậy và danh mục nội dung đã gắn cờ tin nhắn đó, số lần phát hiện của bạn so với ngưỡng, số người nhận và nguồn đáng tin cậy riêng biệt có liên quan, cùng mã trạng thái SMTP và phản hồi.
+
+Nếu bạn nhận được một trong các thông báo này, vui lòng liên hệ với chúng tôi tại <support@forwardemail.net> hoặc mở một [yêu cầu trợ giúp](https://forwardemail.net/help) — việc tạm ngưng không được gỡ bỏ tự động, vì vậy bạn cần liên hệ để giải quyết.
+
+### Tại sao các tên miền mới đăng ký hoặc mới hết hạn cần gói trả phí {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+Khi bạn thêm một tên miền (và định kỳ đối với các tên miền dùng gói miễn phí), chúng tôi thực hiện tra cứu WHOIS/RDAP cho tên miền đó. Nếu tên miền **được tạo trong vòng 90 ngày qua**, **hết hạn trong vòng 90 ngày qua**, hoặc đang ở trạng thái **chờ chuyển nhượng, cập nhật hoặc xóa** tại nhà đăng ký, chúng tôi yêu cầu tên miền đó phải dùng gói trả phí trước khi bạn có thể gửi hoặc nhận thư với nó.
+
+Đây là biện pháp phòng chống lạm dụng, không phải đánh giá về cá nhân bạn — các nhà đăng ký lớn như GoDaddy, Namecheap và Hostgator trước đây đã chặn hoàn toàn hạ tầng của chúng tôi do các hành vi lạm dụng liên quan đến việc chiếm đoạt tên miền vừa hết hạn và đăng ký gian lận tên miền mới. Việc yêu cầu gói trả phí cho các tên miền này là điều giúp chúng tôi có thể tiếp tục cung cấp gói miễn phí mà không đánh mất sự tin tưởng của các nhà đăng ký.
+
+Kết quả WHOIS/RDAP được lưu vào bộ nhớ đệm trong 24 giờ, vì vậy một tên miền vừa vượt mốc 90 ngày có thể mất đến một ngày để được cập nhật. Để sử dụng tên miền ngay lập tức, hãy nâng cấp lên gói trả phí (chỉ từ $3/tháng cho tên miền, bí danh và SMTP gửi đi dựa trên uy tín không giới hạn).
 
 ### Cài đặt cấu hình máy chủ SMTP của bạn là gì {#what-are-your-smtp-server-configuration-settings}
 
@@ -5293,7 +5373,9 @@ Người gửi bị phát hiện gửi spam hoặc nội dung virus sẽ đượ
 
 ### Bạn có giới hạn tốc độ {#do-you-have-rate-limiting}
 
-Giới hạn tốc độ người gửi được thực hiện theo tên miền gốc phân tích từ tra cứu PTR ngược trên địa chỉ IP của người gửi – hoặc nếu không có kết quả, thì sử dụng địa chỉ IP của người gửi. Lưu ý rằng chúng tôi gọi đây là `Sender` bên dưới.
+Phần này đề cập đến thư đến. Về việc gửi, xem [Giới hạn SMTP gửi đi của bạn là gì](#what-are-your-outbound-smtp-limits).
+
+Giới hạn tốc độ người gửi được thực hiện theo tên miền gốc phân tích từ tra cứu PTR ngược trên địa chỉ IP của người gửi – hoặc nếu không có kết quả, thì đơn giản sử dụng địa chỉ IP của người gửi. Lưu ý rằng chúng tôi gọi đây là `Sender` bên dưới.
 
 Máy chủ MX của chúng tôi có giới hạn hàng ngày cho thư đến nhận được cho [lưu trữ IMAP được mã hóa](/blog/docs/best-quantum-safe-encrypted-email-service):
 
@@ -5338,6 +5420,8 @@ Giới hạn hàng ngày là một ngân sách chung duy nhất trên tất cả
 Các giới hạn này áp dụng cho mỗi tài khoản người dùng (không phải mỗi alias hoặc tên miền) và được đặt lại hàng ngày.  Điều này có nghĩa là việc tạo thêm alias không tăng hạn mức băng thông của bạn.  Nếu Redis không khả dụng, giới hạn tốc độ sẽ được bỏ qua hoàn toàn (fail-open) để dịch vụ của bạn không bao giờ bị gián đoạn.
 
 Nếu bạn cần giới hạn cao hơn cho trường hợp sử dụng cụ thể (ví dụ: di chuyển kho lưu trữ rất lớn), vui lòng [liên hệ với chúng tôi](https://forwardemail.net/help).
+
+Các giới hạn này áp dụng cho dữ liệu được truyền tải. [Ngưỡng gửi đi dựa trên uy tín](#what-are-your-outbound-smtp-limits) của chúng tôi quy định số lượng tin nhắn bạn có thể gửi.
 
 ### Làm thế nào bạn bảo vệ chống lại backscatter {#how-do-you-protect-against-backscatter}
 
@@ -5764,13 +5848,9 @@ Chúng tôi sử dụng xác minh bản ghi MX và <strong class="notranslate">T
 
 ### Làm cách nào để tăng dung lượng lưu trữ hoặc giới hạn gửi SMTP đi {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Truy cập <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Tài khoản của tôi → Thanh toán</a> và cuộn đến phần **Tiện ích bổ sung**, trong đó có hai biểu mẫu yêu cầu:
+**Lưu trữ**: truy cập <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Tài khoản của tôi → Thanh toán</a> và cuộn đến phần **Tiện ích bổ sung**. Chọn một mức để thêm (+10, +20, +30, +40, hoặc +50 GB), hoặc chọn "Other" để yêu cầu một mức tùy chỉnh. Việc gửi biểu mẫu sẽ chuyển yêu cầu của bạn đến nhóm của chúng tôi để xem xét và chưa tính phí bạn. Khi chúng tôi phê duyệt, chúng tôi gửi email cho bạn một liên kết thanh toán bảo mật để hoàn tất việc nâng cấp. Bạn có thể có một yêu cầu lưu trữ đang chờ xử lý tại một thời điểm, và bạn không thể gửi yêu cầu khác trong vòng 3 ngày kể từ yêu cầu trước đó.
 
-* **Nâng cấp lưu trữ**: chọn một mức để thêm (+10, +20, +30, +40, hoặc +50 GB), hoặc chọn "Other" để yêu cầu một mức tùy chỉnh.
-* **Nâng cấp giới hạn SMTP gửi đi**: chọn một mức để thêm (+1000, +2000, hoặc +3000 email mỗi ngày), hoặc chọn "Other" để yêu cầu một mức tùy chỉnh.
-
-Nộp bất kỳ biểu mẫu nào sẽ gửi yêu cầu của bạn đến nhóm của chúng tôi để xem xét và không tính phí bạn ngay lập tức. Khi được phê duyệt, chúng tôi sẽ gửi email cho bạn một liên kết thanh toán bảo mật để hoàn tất việc nâng cấp. Bạn có thể có một yêu cầu đang chờ xử lý cho mỗi loại (lưu trữ hoặc SMTP) tại mỗi thời điểm; gửi lại trong vòng 3 ngày kể từ một yêu cầu trước đó cho cùng loại sẽ không được phép cho đến khi khoảng thời gian đó kết thúc.
-
+**SMTP gửi đi**: không có gì cần mua. SMTP gửi đi không giới hạn và ngưỡng hàng ngày của bạn tăng theo [uy tín người gửi](#what-are-your-outbound-smtp-limits). <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Tài khoản của tôi → Thanh toán</a> và <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Tài khoản của tôi → Email</a> hiển thị ngưỡng hiện tại, cấp độ uy tín của bạn và các yêu cầu cho cấp tiếp theo.
 
 ### Có gì trong Enterprise License {#what-is-included-in-the-enterprise-license}
 
@@ -5892,6 +5972,12 @@ Có, tuy nhiên các người gửi "tương đối chưa biết" bị giới h�
 Bằng "tương đối chưa biết", chúng tôi ám chỉ các người gửi không xuất hiện trong [danh sách cho phép](#do-you-have-an-allowlist).
 
 Nếu vượt quá giới hạn này, chúng tôi sẽ gửi mã phản hồi 421, yêu cầu máy chủ gửi thư thử lại sau.
+
+### Tôi có thể gửi email không giới hạn với cái này không {#can-i-send-unlimited-emails-with-this}
+
+Có. SMTP gửi đi và API email của chúng tôi không giới hạn trên tất cả các gói trả phí (từ $3/mo). Bạn nhận được một ngưỡng hàng ngày thay vì mức trần cố định hàng tháng, và ngưỡng này tăng khi bạn tiếp tục thanh toán và xây dựng lịch sử gửi sạch: từ 300 tin nhắn mỗi ngày cho người gửi mới (900 với gói Nhóm) lên đến 10,000 mỗi ngày, và cao hơn nữa sau khi nhóm của chúng tôi xem xét tài khoản của bạn.
+
+Chỉ thư được gửi thành công đến người nhận thực sự bên ngoài các tên miền của chính bạn mới xây dựng uy tín. Để bảo vệ khả năng gửi thư thành công, tỷ lệ thư bị trả lại cao sẽ hạ ngưỡng của bạn xuống, báo cáo spam và virus từ các nhà cung cấp hộp thư lớn sẽ đặt lại ngưỡng, và chúng tôi làm chậm các mẫu bất thường (chẳng hạn như lượng gửi tăng đột biến từ một tài khoản không hoạt động). Xem [Giới hạn SMTP gửi đi của bạn là gì](#what-are-your-outbound-smtp-limits) để biết chi tiết, và xem ngưỡng hiện tại của bạn tại [Tài khoản của tôi → Email](/my-account/emails).
 
 ### Bạn có cung cấp tên miền không giới hạn với một mức giá không {#do-you-offer-unlimited-domains-for-one-price}
 

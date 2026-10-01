@@ -131,7 +131,9 @@ async function retrieveDomain(ctx, next) {
     // set invite link from the stored random token (FWD-01-001)
     if (Array.isArray(domain.invites)) {
       for (const invite of domain.invites) {
-        invite.link = invite.token || '';
+        // (not for an invite as an admin, whose link is only sent to the
+        // invitee, see `app/controllers/api/v1/domains.js`)
+        invite.link = invite.group === 'admin' ? '' : invite.token || '';
       }
     }
 

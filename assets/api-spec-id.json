@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True untuk notifikasi status pengiriman (seperti bounce) tentang email yang Anda kirim"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Jumlah email terkirim saat ini"
+            "description": "Pesan SMTP keluar yang Anda kirim hari ini (UTC), tidak termasuk notifikasi bounce dan balasan otomatis"
           },
           "limit": {
             "type": "integer",
-            "description": "Jumlah maksimum email yang diizinkan"
+            "description": "Ambang batas berbasis reputasi hari ini (paling banyak sisa ambang batas domain dan akun hari ini; 0 jika Anda tidak dapat mengirim dari domain)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Dapatkan batas email SMTP keluar",
-        "description": "Ini adalah titik akhir sederhana yang mengembalikan objek JSON berisi `jumlah` dan `batas` untuk jumlah pesan keluar SMTP harian per akun.",
+        "description": "Mengembalikan objek JSON berisi `count` pesan SMTP keluar yang Anda kirim hari ini dan `limit` hari ini. SMTP keluar tidak terbatas, dan `limit` adalah ambang batas berbasis reputasi Anda saat ini (lihat <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), yang bertambah seiring waktu. Notifikasi bounce dan balasan otomatis tidak dihitung.",
         "tags": [
           "Email"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Buat undangan domain",
-        "description": ">[!IMPORTANT]\n>Jika pengguna yang diundang sudah menjadi anggota yang diterima di domain lain tempat admin yang mengundang mereka menjadi anggota, maka undangan akan diterima secara otomatis dan tidak akan ada email yang dikirim.",
+        "description": ">[!IMPORTANT]\n>Jika pengguna yang diundang sudah menjadi anggota yang diterima di domain lain tempat admin yang mengundang mereka menjadi anggota, maka undangan akan diterima secara otomatis dan tidak akan ada email yang dikirim (hanya untuk `group` berupa `user`: kami mengirim undangan sebagai `admin` melalui email agar diterima oleh yang diundang, dan tidak menyertakan tautannya dalam undangan tertunda domain).",
         "tags": [
           "Undangan"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Perbarui anggota domain",
-        "description": "Perbarui anggota domain.",
+        "description": "Perbarui anggota domain.\n\n>[!IMPORTANT]\n>Memperbarui anggota lain menjadi `admin` akan mengirimkan undangan sebagai admin melalui email, dan mereka tetap menjadi `user` hingga menerimanya (undangan tertunda domain mencantumkannya). Memperbarui mereka kembali menjadi `user` atau menghapus mereka akan menarik undangan tersebut.",
         "tags": [
           "Anggota"
         ],

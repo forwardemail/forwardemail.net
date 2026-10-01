@@ -164,6 +164,7 @@
   * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
   * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
+  * [Can I send unlimited emails with this](#can-i-send-unlimited-emails-with-this)
   * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
   * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
 * [Additional Resources](#additional-resources)
@@ -1077,7 +1078,7 @@ However if they do see this message, it's because they were normally used to see
 
 This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
 
-As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
+Outbound SMTP comes with all paid plans (unlimited and [reputation-based](#what-are-your-outbound-smtp-limits)), so you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
 
 Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
 
@@ -2091,6 +2092,12 @@ Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter
 
 8. We don't send if the MAIL FROM address matches an ARF feedback sender pattern (e.g. `feedback@arf.mail.yahoo.com`).
 
+9. We only reply to authenticated senders: the From address must pass DMARC or carry an aligned, passing DKIM signature. SPF alone does not count, since shared mail servers pass it for anyone. A forged sender can't turn your vacation responses into [backscatter](https://www.backscatterer.org/?target=autoresponders) aimed at someone else.
+
+10. We only reply when your alias, or another address on its domain (such as an alias that forwards to it), appears in the `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc`, or `Resent-Bcc` header, as [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) recommends. Mail sent to a hidden list of recipients gets no reply. Sieve vacation responses need your alias or an address in its `:addresses` in those headers.
+
+11. We send up to 300 vacation responses per user per day (fewer if we restricted your outbound SMTP threshold below that), and at most 20 per recipient address per day across all of our users.
+
 ### How do I set up SPF for Forward Email
 
 Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
@@ -2397,9 +2404,11 @@ Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listm
 
 Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
 
+Newsletters and mailing lists count toward your daily outbound threshold, which is unlimited and grows with your [sender reputation](#what-are-your-outbound-smtp-limits). Keep your lists clean: a high bounce rate moves your threshold down, and we slow down sudden jumps in volume.
+
 ### Do you support sending email with API
 
-Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
+Yes. All paid plans include sending email with our API. Like outbound SMTP, it is **unlimited** and [reputation-based](#what-are-your-outbound-smtp-limits): messages you send with the API and with SMTP share one daily threshold.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2608,7 +2617,7 @@ In order to use contacts support, the **user** must be the email address of an a
 
 ### Do you support sending email with SMTP
 
-Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+Yes. All paid plans include outbound SMTP, and it is **unlimited**: your daily sending threshold grows with your [sender reputation](#what-are-your-outbound-smtp-limits).
 
 <div id="smtp-instructions">
 
@@ -3752,32 +3761,69 @@ When you use <a href="#do-you-support-regular-expressions-or-regex" class="alert
 
 ### What are your outbound SMTP limits
 
-We enforce outbound SMTP rate limits at multiple levels to prevent abuse while keeping things flexible for legitimate use. Each level is checked in order, and whichever limit is reached first will temporarily reject the message with a `421` error (meaning "try again later").
+Outbound SMTP is **unlimited** and **reputation-based**. You get a daily threshold instead of a fixed monthly cap, and it grows as you build a good sending reputation.
 
-**Rate limit hierarchy:**
+New senders start at 300 messages per day, or 900 on the Team plan (Team plan senders skip the tiers below 900, and their next tier is 1,000). Once a day, we review your recent sending and move your threshold up or down. We evaluate each day two days later, once we know the delivery results of its messages. When this starts for your account, we look back at up to 30 days of your sending history, and we catch up on any days we missed.
 
-| Level      | Scope                                      |       Default Limit      | Description                                                               |
-| :--------- | :----------------------------------------- | :----------------------: | :------------------------------------------------------------------------ |
-| Per-alias  | Individual alias                           | None (uses domain limit) | Optional. If an alias has a custom `smtp_limit` set, it is checked first. |
-| Per-domain | All emails sent from a domain in a day     |          300/day         | Counts all outbound emails across every alias on the domain.              |
-| Per-user   | All emails sent by a user account in a day |          300/day         | Prevents circumvention by deleting and re-creating aliases or domains.    |
+Only real sending builds reputation. Mail counts toward moving up once we **deliver** it to **unique recipients outside your own domains**. Mail to yourself, to your own domains (or their subdomains), to the domains you send from, or repeated to the same recipient does not count. Variations of one address (a `+tag`, or dots in a Gmail address) count once. Each recipient domain (with its subdomains) counts for up to 50 recipients a day, except the major mailbox providers' own domains (such as gmail.com). At least a fifth of the recipients that count must go to major mailbox providers, and higher tiers also need a minimum number of different recipient domains in a single day.
 
-**How the effective limit is determined:**
+* **Moving up**: your threshold moves up one tier once you have paid for long enough without a break, you have enough clean sending days on your current tier, and your busiest day in the last 7 days reached at least half of your current threshold in delivered recipients outside your own domains (across enough different recipient domains). Only unbroken paid time counts, so an older account that has not paid (or stopped paying) starts over. A renewal up to 14 days late still counts as unbroken, and only your own payments count.
+* **Clean day**: a day where we delivered at least 5 of your messages to recipients outside your own domains, fewer than 5% of those recipients bounced or rejected your mail, you did not get enough spam or virus reports for a bad day (see below), and we did not slow down your sending for an unusual pattern.
+* **Moving down**: a day with a high bounce or reject rate (5% or more of at least 20 recipients outside your own domains), or too many spam or virus reports from major mailbox providers (see below), moves your threshold down one tier (not below your plan's starting threshold) and resets your clean-day count. A day where 15% or more of them bounced or rejected your mail resets your threshold to your plan's starting threshold instead, and pauses moving up for 30 days (a threshold our team approved still applies). Only rejections of your mail count, for example not our shared IP addresses being on a blocklist, or a recipient's server we could not reach. Each recipient counts once however many messages you sent them, and a scheduled message counts on the day you scheduled it for. Days without sending do not count for or against you.
+* **Spam and virus reports**: major mailbox providers (such as Gmail, Outlook, and Yahoo) decide what counts as abuse, and we only count their permanent rejections. Each recipient on a provider's own domains (such as gmail.com) counts, while other domains a provider hosts (such as a company's Google Workspace) count once per domain, and each counts once a day. We count reports as a share of the recipients you sent to, as major providers do (Gmail asks senders to stay below 0.1% and never reach 0.3%), so a single report does not move you down, and reports about other domains a provider hosts make up at most half of the reports needed. Reports for 0.1% or more of a day's recipients outside your own domains, or of the day before's if that is more, make a bad day (at least 2 reports, and at most 25 needed). An automatic suspension of one of your aliases does not count against your reputation on its own, though the reports behind it do. Reports for 0.3% or more of the recipients outside the domain you sent from in the last 24 hours, including messages scheduled for then, reset your threshold to your plan's starting threshold (300, or 900 on the Team plan) at once (at least 3 reports, and at most 50 needed). Moving up then pauses for 30 days, and a threshold our team approved does not apply meanwhile. On Team plan domains, reports also count toward a bad day for the admin whose threshold the domain uses (unless your own threshold is as high), at the same rate of the recipients of the members they were about, and they do not reset that admin. Once reports about those members reach the reset rate within 24 hours, the members of the admin's domains cannot use the admin's threshold for 30 days. The admin's own sending stays the same, and the members' sending still counts toward the admin's threshold. Making a member an admin sends them an invite, and they become an admin once they accept it. Reports about auto-replies and bounces of mail sent to you do not count against you, while reports about delivery notifications for mail you sent do.
 
-* **Team plan domains**: the effective daily limit is the highest `smtp_limit` among all admin members of the domain. For example, if one admin has a limit of 300 and another has 500, the domain's effective limit is 500.
-* **Enhanced Protection and other plans**: the effective daily limit is the sending user's own `smtp_limit` (which defaults to 300 messages per day).
-* **Per-alias override**: domain administrators can optionally set a custom `smtp_limit` on individual aliases. When set, this is checked first (before the domain and user limits). This is useful for restricting specific aliases to a lower sending volume.
-* **Domain default for new aliases**: domain administrators can set an `alias_default_smtp_limit` on the domain (via the API or Advanced Settings in the dashboard). When set, all newly created aliases on that domain will automatically inherit this value as their `smtp_limit`. This cannot exceed the domain’s effective SMTP limit. Existing aliases are not affected. Set to `0` to disable.
+**Reputation tiers:**
 
-**System administrators** (Forward Email staff) are exempt from all rate limits.
+| Daily threshold | Minimum continuous paid time | Clean sending days on previous tier | Different recipient domains in a day |
+| --------------: | ---------------------------: | ----------------------------------: | -----------------------------------: |
+|             300 |                            – |                                   – |                                    – |
+|             500 |                       7 days |                                   5 |                                   10 |
+|           1,000 |                      14 days |                                   7 |                                   20 |
+|           2,000 |                      30 days |                                  10 |                                   40 |
+|           5,000 |                      60 days |                                  14 |                                   75 |
+|          10,000 |                     120 days |                                  21 |                                  150 |
 
-All rate limiting is enforced using database counts (`Emails.countDocuments`) against emails created since the start of the current day (midnight UTC). This means your limit resets daily at midnight UTC.
+Beyond 10,000 messages per day, our team reviews your account and raises your threshold by hand, with no action needed from you. If you need a higher threshold sooner (for example, to move an existing sending volume), [contact us](/help). A threshold our team approves acts as a minimum and places you on the tier it covers, and your reputation can still grow it up to 10,000 messages per day.
 
-If you need a higher limit, please [contact us](https://forwardemail.net/help). Most requests are honored within 1-2 hours.
+**Unusual sending patterns:**
+
+We slow down sending with a `421` error when your activity looks unusual, at any threshold. This protects our queue and IP reputation if someone compromises or misuses an account, including accounts that have been around for years or were dormant.
+
+* **Sudden spikes**: in a day, you can send up to 2 times your recent normal volume (your busiest day in the last 45 days), or your starting threshold (300 messages, or 900 on the Team plan and on Team plan domains) or an approved threshold, whichever is higher. We update your normal volume each day from your recent sending, so steady growth stays unaffected, and new senders ramp up from their starting threshold.
+* **Recipients**: a message can have many recipients, so across all of your messages in a day you can reach up to 2 times today's allowance in recipients, and an account's senders together up to 2 times the account's threshold. We refuse a single message with more recipients than that with a `550` error.
+* **Bursts**: within any hour, you can send up to a quarter of today's allowance or 2 times your busiest hour in the last 45 days (but not more than half of today's allowance), whichever is higher, and at least your starting threshold or an approved threshold. A regular pattern, such as a weekly newsletter, is part of your normal volume.
+* **Bounces**: if recipients bounced or rejected 10% or more of your messages from the last 6 hours (with at least 50 messages, and not counting rejections of our shared IP addresses), new messages wait until your bounce rate recovers.
+* **Queue backlog**: if too many of your messages from the last 24 hours still wait in the queue (10% of today's allowance, at least your starting threshold), new messages wait until the queue catches up. Scheduled messages, messages we retry after a recipient deferred them, and messages awaiting approval do not count, and a backlog does not count against your reputation.
+* **Scheduled messages**: you can schedule messages up to 27 days ahead, and have up to a day's allowance of messages scheduled at once.
+
+Slowdowns end as your activity returns to normal, and a day with a slowdown does not count as a clean sending day. Mail clients retry deferred messages on their own, and API requests get a `429` error, so retry those later.
+
+Once you reach your threshold for the day, we reject further messages with a `421` error (meaning "try again later") until your threshold resets at midnight UTC. Our [abuse protections](#why-was-my-outbound-smtp-suspended) against spam and viruses apply at any threshold.
+
+You can see how many messages you sent today and your current threshold at [My Account → Emails](/my-account/emails), or with the [API](/email-api#get-outbound-smtp-email-limit).
+
+**How thresholds apply:**
+
+| Level       | Scope                                                                 |                    Default threshold                     | Description                                                                         |
+| :---------- | :-------------------------------------------------------------------- | :------------------------------------------------------: | :---------------------------------------------------------------------------------- |
+| Per-alias   | Individual alias                                                      |                 None (uses domain limit)                 | Optional. We check an alias's custom `smtp_limit` first, if it has one.             |
+| Per-account | All emails sent from the domains an account is an admin of in a day   |        Reputation-based (300+/day, 900+ on Team)         | Your threshold is account-wide, so adding domains or members does not multiply it. |
+| Per-domain  | All emails sent from a domain in a day                                | Ramps up within the account's threshold (300+/day, 900+ on Team) | Counts all outbound emails across the aliases on the domain.               |
+| Per-user    | All emails sent by a user account in a day                            |        Reputation-based (300+/day, 900+ on Team)         | Deleting and re-creating aliases or domains does not reset it.                      |
+
+* **Team plan domains**: the domain's threshold is the highest threshold among its paying admin members. For example, if one admin has a threshold of 1,000 and another has 5,000, the domain's threshold is 5,000. Senders on the Team plan start at 900 messages per day instead of 300.
+* **Account-wide**: a domain's account is its paying admin with the highest threshold. All mail sent from the domains that account is an admin of counts toward that one threshold, whoever sends it (members included), so adding domains or members does not add to it.
+* **New domains ramp up**: within the account's threshold, a domain can send up to 2 times its busiest day of delivered mail in the last 45 days, and at least its starting threshold (300 messages, or 900 on the Team plan) or an approved threshold. A new domain on an established account starts at its starting threshold and grows as we deliver its mail.
+* **Bounces and auto-replies**: bounce notifications and vacation responder (auto-reply) messages we send for you do not count toward your threshold. We send up to 300 auto-replies per user per day (fewer if we restricted your threshold below that) and at most 20 per recipient address per day across all of our users, and only to senders who passed authentication (see [vacation responders](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). We limit bounce notifications to a return address outside the domain you sent from (or other domains you are an admin of) to that number or 15% of your daily threshold, whichever is higher, and they only include the original message's identifying headers (such as `From`, `To`, and `Subject`).
+* **Enhanced Protection and other plans**: the domain's threshold is the sending user's own threshold.
+* **Per-alias override**: domain administrators can set a custom `smtp_limit` on individual aliases. We check it first (before the domain and user thresholds), which lets you restrict specific aliases to a lower sending volume.
+* **Domain default for new aliases**: domain administrators can set an `alias_default_smtp_limit` on the domain (with the API or Advanced Settings in the dashboard). New aliases on that domain then inherit this value as their `smtp_limit`. It cannot exceed the domain's current threshold, and existing aliases keep their own. Set it to `0` to turn it off.
 
 ### Do I need approval to enable SMTP
 
 Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+
+Once approved, outbound SMTP is unlimited and your daily threshold grows with your [sender reputation](#what-are-your-outbound-smtp-limits).
 
 ### What information do you need to approve or reinstate my outbound SMTP
 
@@ -3792,7 +3838,7 @@ This is the same information we ask for either way, whether it's a first-time ap
 
 ### Why was my outbound SMTP suspended
 
-Outbound SMTP that has already been approved can still be paused if we detect a pattern of abuse. This is separate from the [approval process](#do-i-need-approval-to-enable-smtp) above and from our [outbound rate limits](#what-are-your-outbound-smtp-limits).  It triggers when a trusted source (e.g. a major mailbox provider) reports your outgoing mail as a virus or spam.
+Outbound SMTP that has already been approved can still be paused if we detect a pattern of abuse. This is separate from the [approval process](#do-i-need-approval-to-enable-smtp) above and from our [reputation-based outbound thresholds](#what-are-your-outbound-smtp-limits). It triggers when a trusted source (e.g. a major mailbox provider) reports your outgoing mail as a virus or spam.
 
 There are two stages:
 
@@ -3809,7 +3855,7 @@ When you add a domain (and on an ongoing basis for domains on the free plan), we
 
 This is an abuse-prevention measure.  Major registrars including GoDaddy, Namecheap, and Hostgator have previously blocked our infrastructure entirely because of abuse patterns involving recently expired domain takeovers and fraudulently registered new domains. Requiring a paid plan for these domains is what lets us keep offering a free plan at all without losing registrar trust.
 
-WHOIS/RDAP results are cached for 24 hours, so a domain that just crossed the 90-day mark may take up to a day to reflect that. To use the domain immediately, upgrade to a paid plan (starting at $3/mo for unlimited domains and aliases).
+WHOIS/RDAP results are cached for 24 hours, so a domain that just crossed the 90-day mark may take up to a day to reflect that. To use the domain immediately, upgrade to a paid plan (starting at $3/mo for unlimited domains, aliases, and reputation-based outbound SMTP).
 
 ### What are your SMTP server configuration settings
 
@@ -5450,6 +5496,8 @@ Senders that are detected to be sending spam or virus content will be added to t
 
 ### Do you have rate limiting
 
+This section covers inbound mail. For sending, see [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits).
+
 Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it uses the sender's IP address.  Note that we refer to this as `Sender` below.
 
 Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
@@ -5494,6 +5542,8 @@ The daily limit is a single shared budget across all protocols.  Whether you dow
 These limits are per user account (not per alias or domain) and reset daily.  This means creating additional aliases does not increase your bandwidth allowance.  If Redis is unavailable, rate limiting is skipped entirely (fail-open) so your service is never interrupted.
 
 If you need higher limits for a specific use case (e.g. migrating a very large archive), please [contact us](https://forwardemail.net/help).
+
+These limits cover data transferred. Our [reputation-based outbound thresholds](#what-are-your-outbound-smtp-limits) cover the number of messages you can send.
 
 ### How do you protect against backscatter
 
@@ -5954,12 +6004,9 @@ We use MX and <strong class="notranslate">TXT</strong> record verification, ther
 
 ### How do I increase my storage or outbound SMTP sending limit {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Go to <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">My Account → Billing</a> and scroll to the **Add-ons** section, which has two request forms:
+**Storage**: go to <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">My Account → Billing</a> and scroll to the **Add-ons** section. Choose an amount to add (+10, +20, +30, +40, or +50 GB), or select "Other" to request a custom amount. Submitting the form sends your request to our team for review and does not charge you yet. Once we approve it, we email you a secure payment link to complete the upgrade. You can have one pending storage request at a time, and you can't submit another within 3 days of a prior request.
 
-* **Storage Upgrade**: choose an amount to add (+10, +20, +30, +40, or +50 GB), or select "Other" to request a custom amount.
-* **Outbound SMTP Limit Upgrade**: choose an amount to add (+1000, +2000, or +3000 emails daily), or select "Other" to request a custom amount.
-
-Submitting either form sends your request to our team for review and does not charge you immediately. Once approved, we'll email you a secure payment link to complete the upgrade. You can have one pending request per type (storage or SMTP) at a time; submitting again within 3 days of a prior request for the same type isn't allowed until that window passes.
+**Outbound SMTP**: there is nothing to purchase. Outbound SMTP is unlimited and your daily threshold grows with your [sender reputation](#what-are-your-outbound-smtp-limits). <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">My Account → Billing</a> and <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">My Account → Emails</a> show your current threshold, your reputation tier, and the requirements for the next tier.
 
 ### What is included in the Enterprise License
 
@@ -6082,6 +6129,12 @@ Yes, however "relatively unknown" senders are rate limited to 100 connections pe
 By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
 
 If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
+
+### Can I send unlimited emails with this
+
+Yes. Outbound SMTP and our email API are unlimited on all paid plans (from $3/mo). You get a daily threshold instead of a fixed monthly cap, and it grows as you keep paying and build a clean sending history: from 300 messages per day for new senders (900 on the Team plan) up to 10,000 per day, and beyond that after our team reviews your account.
+
+Only mail delivered to real recipients outside your own domains builds reputation. To protect deliverability, a high bounce rate moves your threshold down, spam and virus reports from major mailbox providers reset it, and we slow down unusual patterns (such as a sudden spike from a dormant account). See [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits) for details, and your current threshold at [My Account → Emails](/my-account/emails).
 
 ### Do you offer unlimited domains for one price
 

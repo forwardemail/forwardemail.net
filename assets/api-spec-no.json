@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True for en leveringsstatusvarsling (som en bounce) om en e-post du har sendt"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Gjeldende antall sendte e-poster"
+            "description": "Utgående SMTP-meldinger du har sendt i dag (UTC), unntatt bounce-varsler og autosvar"
           },
           "limit": {
             "type": "integer",
-            "description": "Maksimalt antall tillatte e-poster"
+            "description": "Dagens omdømmebaserte terskel (maksimalt det som gjenstår av domenets og kontoens terskler i dag; 0 når du ikke kan sende fra domenet)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Få grense for utgående SMTP-e-post",
-        "description": "Dette er et enkelt endepunkt som returnerer et JSON-objekt som inneholder `count` og `limit` for antall daglige utgående SMTP-meldinger per konto.",
+        "description": "Returnerer et JSON-objekt med `count` for utgående SMTP-meldinger du har sendt i dag og dagens `limit`. Utgående SMTP er ubegrenset, og `limit` er din nåværende omdømmebaserte terskel (se <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), som øker over tid. Bounce-varsler og autosvar telles ikke.",
         "tags": [
           "E-poster"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Opprett domeneinvitasjon",
-        "description": ">[!IMPORTANT]\n>Hvis brukeren som inviteres allerede er et akseptert medlem av andre domener som administratoren som inviterer dem er medlem av, vil invitasjonen automatisk godtas og det sendes ikke en e-post.",
+        "description": ">[!IMPORTANT]\n>Hvis brukeren som inviteres allerede er et akseptert medlem av andre domener som administratoren som inviterer dem er medlem av, vil invitasjonen automatisk godtas og det sendes ikke en e-post (kun for en `group` av `user`: en invitasjon som `admin` sender vi på e-post slik at den inviterte kan godta den, og vi holder lenken utenfor domenets ventende invitasjoner).",
         "tags": [
           "Invitasjoner"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Oppdater domenemedlem",
-        "description": "Oppdater et domenemedlem.",
+        "description": "Oppdater et domenemedlem.\n\n>[!IMPORTANT]\n>Oppdatering av et annet medlem til `admin` sender dem i stedet en invitasjon som administrator på e-post, og de forblir `user` til de godtar den (domenets ventende invitasjoner viser den). Oppdatering tilbake til `user` eller fjerning av dem trekker den tilbake.",
         "tags": [
           "Medlemmer"
         ],

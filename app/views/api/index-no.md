@@ -466,7 +466,7 @@ Vennligst sørg for at du har fulgt oppsettsinstruksjonene for ditt domene.
 Disse instruksjonene finnes under [Min konto → Domener → Innstillinger → Utgående SMTP-konfigurasjon](/my-account/domains). Du må sikre oppsett av DKIM, Return-Path og DMARC for å sende utgående SMTP med ditt domene.
 ### Hent grense for utgående SMTP-e-post {#get-outbound-smtp-email-limit}
 
-Dette er et enkelt endepunkt som returnerer et JSON-objekt som inneholder `count` og `limit` for antall daglige utgående SMTP-meldinger per konto.
+Returnerer et JSON-objekt med `count` for utgående SMTP-meldinger du har sendt i dag og dagens `limit`. Utgående SMTP er ubegrenset, og `limit` er din nåværende [omdømmebaserte terskel](/faq#what-are-your-outbound-smtp-limits), som øker over tid.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Dette API-endepunktet vil automatisk kode emojis for deg hvis de finnes i header
 | `priority`       | Nei     | String           | Prioritetsnivå for e-posten (kan være `"high"`, `"normal"` (standard), eller `"low"`). Merk at en verdi på `"normal"` ikke setter en prioritetsheader (dette er standard oppførsel). Hvis en verdi på `"high"` eller `"low"` settes, vil `X-Priority`, `X-MSMail-Priority` og `Importance` headerne [settes tilsvarende](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | Nei     | Object eller Array| Et objekt eller en array av ekstra headerfelt som skal settes (se [Nodemailers custom headers](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                                  |
 | `messageId`      | Nei     | String           | En valgfri Message-ID-verdi for "Message-ID"-headeren (en standardverdi vil automatisk opprettes hvis ikke satt – merk at verdien bør [følge RFC2822-spesifikasjonen](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                                     |
-| `date`           | Nei     | String eller Date| En valgfri dato som brukes hvis Date-header mangler etter parsing, ellers brukes gjeldende UTC-streng hvis ikke satt. Dato-headeren kan ikke være mer enn 30 dager frem i tid fra nåværende tidspunkt.                                                                                                                                                                                                                                                           |
+| `date`           | Nei     | String eller Date| En valgfri dato som brukes hvis Date-header mangler etter parsing, ellers brukes gjeldende UTC-streng hvis ikke satt. Dato-headeren kan ikke være mer enn 27 dager frem i tid fra nåværende tidspunkt.                                                                                                                                                                                                                                                           |
 | `list`           | Nei     | Object           | Et valgfritt objekt med `List-*`-headere (se [Nodemailers list headers](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                            |
 > Eksempel Forespørsel (API-token):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Hvis brukeren som inviteres allerede er et akseptert medlem av andre domener som administratoren som inviterer dem er medlem av, vil invitasjonen automatisk godtas og det sendes ikke e-post.
+> Hvis du inviterer noen som `"user"` som allerede er et akseptert medlem av et annet domene du er medlem av, godtar vi invitasjonen for dem og sender ikke e-post. En invitasjon som `"admin"` sender vi på e-post slik at den inviterte kan godta den, og vi holder lenken utenfor domenets ventende invitasjoner.
 
 ### Fjern domeneinvitasjon {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Body Parameter | Obligatorisk | Type                | Beskrivelse                                                                                  |
 | -------------- | ------------ | ------------------- | -------------------------------------------------------------------------------------------- |
 | `group`        | Ja           | String (enumerable) | Gruppe for å oppdatere brukeren til domenemedlemskapet med (kan være en av `"admin"` eller `"user"`) |
+
+> \[!IMPORTANT]
+> Å oppdatere et annet medlem til `"admin"` sender i stedet vedkommende en invitasjon som administrator på e-post, og vedkommende forblir `"user"` til invitasjonen er godtatt (domenets ventende invitasjoner viser den). Å oppdatere vedkommende tilbake til `"user"` eller fjerne vedkommende trekker den tilbake.
 
 > Eksempel Forespørsel:
 

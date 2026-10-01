@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "Gönderdiğiniz bir e-posta hakkındaki teslim durumu bildirimi (örneğin bir geri dönme) için true"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Gönderilen e-postaların güncel sayısı"
+            "description": "Bugün (UTC) gönderdiğiniz giden SMTP mesajları; geri dönme bildirimleri ve otomatik yanıtlar hariç"
           },
           "limit": {
             "type": "integer",
-            "description": "İzin verilen maksimum e-posta sayısı"
+            "description": "Bugünkü itibara dayalı eşik (en fazla alan adının ve hesabın bugünkü eşiklerinden kalan miktar; alan adından gönderemediğinizde 0)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Giden SMTP e-posta sınırını alın",
-        "description": "Bu, hesap bazında günlük SMTP giden mesajlarının sayısını içeren `count` ve `limit` değerlerini içeren bir JSON nesnesi döndüren basit bir uç noktadır.",
+        "description": "Bugün gönderdiğiniz giden SMTP mesajlarının `count` değerini ve bugünkü `limit` değerini içeren bir JSON nesnesi döndürür. Giden SMTP sınırsızdır ve `limit`, zamanla artan mevcut itibara dayalı eşiğinizdir (bkz. <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>). Geri dönme bildirimleri ve otomatik yanıtlar sayılmaz.",
         "tags": [
           "E-postalar"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Alan adı daveti oluştur",
-        "description": ">[!IMPORTANT]\n>Davet edilen kullanıcı, davet eden yöneticinin üyesi olduğu başka bir alan adının kabul edilmiş bir üyesiyse, daveti otomatik olarak kabul edecek ve e-posta göndermeyecektir.",
+        "description": ">[!IMPORTANT]\n>Davet edilen kullanıcı, davet eden yöneticinin üyesi olduğu başka bir alan adının kabul edilmiş bir üyesiyse, daveti otomatik olarak kabul edecek ve e-posta göndermeyecektir (yalnızca `user` değerindeki bir `group` için: `admin` olarak yapılan bir daveti, davet edilenin kabul etmesi için e-postayla göndeririz ve bağlantısını alan adının bekleyen davetlerine eklemeyiz).",
         "tags": [
           "Davetler"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Etki alanı üyesini güncelle",
-        "description": "Bir etki alanı üyesini güncelleyin.",
+        "description": "Bir etki alanı üyesini güncelleyin.\n\n>[!IMPORTANT]\n>Başka bir üyeyi `admin` olarak güncellemek, bunun yerine ona yönetici olarak bir davet e-postası gönderir ve daveti kabul edene kadar `user` olarak kalır (alan adının bekleyen davetleri onu listeler). Üyeyi tekrar `user` olarak güncellemek veya kaldırmak daveti geri çeker.",
         "tags": [
           "Üyeler"
         ],

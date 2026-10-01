@@ -56,8 +56,11 @@ async function createInvite(ctx, next) {
   //      from any of this user's domains, and if so then auto-accept
   //      (and notify the user without making them have to click)
   //      (this feature was requested by the Linux Foundation)
+  //      (only as a member: an admin of a domain can lend it their outbound
+  //      SMTP threshold and answers for its sending, so becoming one always
+  //      takes the invitee accepting the invite)
   //
-  if (user) {
+  if (user && ctx.request.body.group !== 'admin') {
     const match = ctx.state.domains.find((d) => {
       if (d.plan !== 'team') return false; // return if not team plan
       if (d.group !== 'admin') return false; // if user logged in is not an admin ignore

@@ -40,12 +40,17 @@ function json(domain, isList = false) {
         return member;
       });
     // invites
+    // (the token of an invite as an admin is only sent to the invitee, so
+    // another admin cannot accept it on their behalf, e.g. by getting them to
+    // open the link while logged in)
     if (Array.isArray(domain.invites))
-      object.invites = domain.invites.map((i) =>
-        _.isFunction(i.toObject)
+      object.invites = domain.invites.map((i) => {
+        const invite = _.isFunction(i.toObject)
           ? i.toObject()
-          : new Domains().invites.create(i).toObject()
-      );
+          : new Domains().invites.create(i).toObject();
+        if (invite.group === 'admin') delete invite.token;
+        return invite;
+      });
     // aliases
     if (Array.isArray(domain.aliases))
       object.aliases = domain.aliases.map((a) => {

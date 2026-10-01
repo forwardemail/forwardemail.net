@@ -17,6 +17,7 @@ const { Domains, Users } = require('#models');
 // Const { removeUserAliasBackups } = require('#helpers/remove-alias-backup');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 const config = require('#config');
+const getUserSmtpLimit = require('#helpers/get-user-smtp-limit');
 const stripe = require('#helpers/stripe');
 
 const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
@@ -33,6 +34,7 @@ const USER_SORT_FIELDS = new Set([
   'has_passed_kyc',
   'max_quota_per_alias',
   'smtp_limit',
+  'smtp_reputation_tier',
   'created_at',
   'updated_at'
 ]);
@@ -105,6 +107,11 @@ async function list(ctx) {
       .exec(),
     Users.countDocuments(query)
   ]);
+
+  // effective outbound SMTP threshold (earned tier, manual floor or restriction)
+  for (const user of users) {
+    user.smtp_effective_limit = getUserSmtpLimit(user);
+  }
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
@@ -201,8 +208,45 @@ async function update(ctx) {
     }
   }
 
-  if (body.smtp_limit) {
-    user.smtp_limit = body.smtp_limit;
+  //
+  // manual SMTP limit (a floor at or above the first reputation tier,
+  // a restriction below it, and an empty value resets it to the default)
+  //
+  if (typeof body.smtp_limit !== 'undefined') {
+    const previous = user[config.userFields.smtpLimit];
+    if (body.smtp_limit === '') {
+      user[config.userFields.smtpLimit] = config.smtpLimitMessages;
+    } else {
+      const limit = /^\d+$/.test(String(body.smtp_limit))
+        ? Number.parseInt(body.smtp_limit, 10)
+        : Number.NaN;
+      // (the same range the user model allows)
+      if (!Number.isSafeInteger(limit) || limit < 10 || limit > 10_000_000)
+        throw Boom.badRequest(ctx.translateError('SMTP_LIMIT_RANGE_INVALID'));
+      user[config.userFields.smtpLimit] = limit;
+    }
+
+    // a new floor or restriction starts a new clean-day streak
+    if (user[config.userFields.smtpLimit] !== previous)
+      user[config.userFields.smtpReputationCleanDays] = 0;
+  }
+
+  // move a sender to a reputation tier (resets their clean-day
+  // streak, and lifts a hold after spam or virus reports since an admin
+  // reviewed the sender)
+  if (typeof body.smtp_reputation_tier !== 'undefined') {
+    if (!/^\d+$/.test(String(body.smtp_reputation_tier)))
+      throw Boom.badRequest(ctx.translateError('INVALID_SMTP_REPUTATION_TIER'));
+    const tier = Number.parseInt(body.smtp_reputation_tier, 10);
+    if (tier >= config.smtpReputationTiers.length)
+      throw Boom.badRequest(ctx.translateError('INVALID_SMTP_REPUTATION_TIER'));
+    user[config.userFields.smtpReputationTier] = tier;
+    user[config.userFields.smtpReputationCleanDays] = 0;
+    user[config.userFields.smtpReputationHoldUntil] = undefined;
+    user[config.userFields.smtpReputationHoldReason] = undefined;
+    user[config.userFields.smtpReputationLendHoldUntil] = undefined;
+    // (reports and suspensions from before the review no longer count)
+    user[config.userFields.smtpReputationReviewedAt] = new Date();
   }
 
   await user.save();

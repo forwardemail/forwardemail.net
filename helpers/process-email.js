@@ -39,6 +39,9 @@ const createSession = require('./create-session');
 const emailHelper = require('./email');
 const getBlockedHashes = require('./get-blocked-hashes');
 const getBounceInfo = require('./get-bounce-info');
+const recordSmtpReputationReport = require('./record-smtp-reputation-report');
+
+const { isSenderVerdict } = recordSmtpReputationReport;
 const getErrorCode = require('./get-error-code');
 const i18n = require('./i18n');
 const isCodeBug = require('./is-code-bug');
@@ -53,6 +56,7 @@ const { encoder } = require('./encoder-decoder');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
 const shouldSendDSN = require('./should-send-dsn');
 const { isWithinGracePeriod } = require('./is-within-grace-period');
+const { canSendBounceTo } = require('./reserve-auto-reply');
 
 const config = require('#config');
 const env = require('#config/env');
@@ -133,6 +137,34 @@ async function getTruthSourceSuspensionState({
       parsedCount >= threshold &&
       (parsedUniqueRecipients >= config.smtpSpamSuspensionMinUniqueRecipients ||
         parsedUniqueTruthSources >= 2)
+  };
+}
+
+//
+// Whether a message is one we sent in response to inbound mail (an
+// auto-reply, or a bounce of inbound mail), whose recipient and content
+// whoever sent that mail chose (these are capped on their own, see
+// `helpers/reserve-auto-reply.js`), and not a delivery status notification
+// for mail the user submitted (whose return address the user chose)
+//
+function isInboundTriggered(email) {
+  return Boolean(email && email.is_bounce && !email.is_dsn);
+}
+
+//
+// A delivery status notification to a return address outside the sender's
+// domains only includes the original message's identifying headers and a
+// truncated response (so it cannot carry content of the sender's choosing to
+// an address the sender chose, see `helpers/create-bounce.js`)
+//
+function getBounceDsn(email, bounceTo) {
+  if (bounceTo !== 'external') return {};
+  return {
+    dsn: {
+      ...(email && typeof email.dsn === 'object' ? email.dsn : {}),
+      return: 'headers',
+      minimal: true
+    }
   };
 }
 
@@ -422,6 +454,21 @@ async function processEmail({ email, port = 25, resolver, client }) {
               // check for DSN here
               if (!shouldSendDSN(email, error.recipient, 'FAILURE')) return;
 
+              // (bounces to a return address outside the domain are capped,
+              // and one not sent for that is handled, so it is not retried)
+              const bounceTo = await canSendBounceTo({ client, email, domain });
+              if (!bounceTo) {
+                client
+                  .pipeline()
+                  .incr(key)
+                  .pexpire(key, config.fingerprintTTL)
+                  .exec()
+                  .then()
+                  .catch((err) => logger.fatal(err));
+                hardBounces.push(error.recipient);
+                return;
+              }
+
               const envelope = {
                 from: punycode.toASCII(`mailer-daemon@${domain.name}`),
                 to: email.envelope.from
@@ -432,6 +479,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   ...(typeof email.toObject === 'function'
                     ? email.toObject()
                     : email),
+                  ...getBounceDsn(email, bounceTo),
                   envelope
                 },
                 error,
@@ -447,7 +495,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 domain,
                 user,
                 date: new Date(),
-                is_bounce: true
+                is_bounce: true,
+                is_dsn: true
               });
 
               // store that we sent this so we don't again
@@ -1186,6 +1235,53 @@ async function processEmail({ email, port = 25, resolver, client }) {
             });
 
             //
+            // spam and virus verdicts from truth sources count against the
+            // sender's reputation (for every sender, including catch-all
+            // passwords that do not resolve to an alias)
+            //
+            if (
+              user.group !== 'admin' &&
+              domain.name !== env.WEB_HOST &&
+              err.truthSource &&
+              // (not for bounces and auto-replies we send in response to other
+              // mail, whose recipients whoever sent that mail chose)
+              !isInboundTriggered(email) &&
+              // (only permanent verdicts about the message, not deferrals or
+              // verdicts about our shared IP addresses)
+              isSenderVerdict(err)
+            ) {
+              try {
+                // (not for domains an internal admin owns)
+                const isInternal = await Users.exists({
+                  _id: {
+                    $in: domain.members
+                      .filter((m) => m.user && m.group === 'admin')
+                      .map((m) =>
+                        typeof m.user === 'object' &&
+                        typeof m?.user?._id === 'object'
+                          ? m.user._id
+                          : m.user
+                      )
+                  },
+                  group: 'admin'
+                });
+                if (!isInternal)
+                  await recordSmtpReputationReport({
+                    Users,
+                    client,
+                    user,
+                    domain,
+                    email,
+                    recipient: to,
+                    truthSource: err.truthSource,
+                    category: err.bounceInfo.category
+                  });
+              } catch (_err) {
+                logger.fatal(_err, { ...meta, ignore_hook: true });
+              }
+            }
+
+            //
             // if the SMTP response was from trusted root host and it was rejected for spam/virus
             // then denylist the sender (probably a low-reputation domain name spammer)
             //
@@ -1193,6 +1289,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
               user.group !== 'admin' &&
               domain.name !== env.WEB_HOST &&
               err.truthSource &&
+              // (not for mail sent in response to inbound mail, see above)
+              !isInboundTriggered(email) &&
               // Catch-all passwords and stale queued emails may not resolve to
               // an Alias document. Only persisted aliases can be suspended or
               // generate a suspension notification.
@@ -1785,6 +1883,15 @@ async function processEmail({ email, port = 25, resolver, client }) {
             )
               return;
 
+            // (bounces to a return address outside the domain are capped,
+            // and one not sent for that is handled, so it is not retried)
+            const bounceTo = await canSendBounceTo({ client, email, domain });
+            if (!bounceTo) {
+              if (code < 500) softBounces.push(error.recipient);
+              else hardBounces.push(error.recipient);
+              return;
+            }
+
             const envelope = {
               from: punycode.toASCII(`mailer-daemon@${domain.name}`),
               to: email.envelope.from
@@ -1795,6 +1902,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 ...(typeof email.toObject === 'function'
                   ? email.toObject()
                   : email),
+                ...getBounceDsn(email, bounceTo),
                 envelope
               },
               error,
@@ -1810,7 +1918,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
               domain,
               user,
               date: new Date(),
-              is_bounce: true
+              is_bounce: true,
+              is_dsn: true
             });
 
             if (code < 500) softBounces.push(error.recipient);

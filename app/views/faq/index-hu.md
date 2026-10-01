@@ -80,6 +80,8 @@
   * [Továbbíthatok e-mailt bármely aldomainre (helyettesítő aldomainek)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Mik az SMTP kimenő korlátaitok](#what-are-your-outbound-smtp-limits)
   * [Szükséges engedély az SMTP engedélyezéséhez](#do-i-need-approval-to-enable-smtp)
+  * [Milyen információkra van szükségük a kimenő SMTP-m jóváhagyásához vagy visszaállításához](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [Miért igényelnek fizetős csomagot az újonnan regisztrált vagy nemrég lejárt domainek](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Mik az SMTP szerver beállításai](#what-are-your-smtp-server-configuration-settings)
   * [Mik az IMAP szerver beállításai](#what-are-your-imap-server-configuration-settings)
   * [Mik a POP3 szerver beállításai](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Tudok "küldeni levélként" Outlookban ezzel](#can-i-send-mail-as-in-outlook-with-this)
   * [Tudok "küldeni levélként" Apple Mailben és iCloud Mailben ezzel](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Továbbíthatok korlátlan emailt ezzel](#can-i-forward-unlimited-emails-with-this)
+  * [Tudok korlátlan e-maileket küldeni ezzel](#can-i-send-unlimited-emails-with-this)
   * [Kínáltok korlátlan domaineket egy áron](#do-you-offer-unlimited-domains-for-one-price)
   * [Milyen fizetési módokat fogadtok el](#which-payment-methods-do-you-accept)
 * [További Források](#additional-resources)
@@ -1035,7 +1038,7 @@ Ha mégis látják ezt az üzenetet, az azért van, mert általában az <john@gm
 
 Ez a téma kapcsolódik egy [széles körben ismert Gmail problémához, ahol extra információ jelenik meg a feladó neve mellett](https://support.google.com/mail/answer/1311182).
 
-2023 májusa óta támogatjuk az SMTP-vel történő e-mail küldést kiegészítőként minden fizetős felhasználó számára – ami azt jelenti, hogy eltávolíthatja a <span class="notranslate">via forwardemail dot net</span> megjelenést a Gmailben.
+A kimenő SMTP minden fizetős csomagban benne van (korlátlan és [hírnévalapú](#what-are-your-outbound-smtp-limits)), így eltávolíthatja a <span class="notranslate">via forwardemail dot net</span> megjelenést a Gmailben.
 
 Vegye figyelembe, hogy ez a GYIK téma kifejezetten azoknak szól, akik a [Hogyan küldjünk levelet Gmail használatával](#how-to-send-mail-as-using-gmail) funkciót használják.
 
@@ -2038,6 +2041,12 @@ Ellentétben olyan levelezőrendszerekkel, mint a `postfix` (pl. amelyek a `siev
 
 8. Nem küldünk, ha a MAIL FROM cím megfelel egy ARF visszajelző feladó mintának (pl. `feedback@arf.mail.yahoo.com`).
 
+9. Csak hitelesített feladóknak válaszolunk: a From címnek meg kell felelnie a DMARC-nak, vagy igazított és érvényes DKIM-aláírást kell hordoznia. Az SPF önmagában nem számít, mert a megosztott levelezőszerverek bárkinek megfelelnek neki. Egy hamisított feladó nem tudja az Ön szabadság-válaszait valaki más ellen irányuló [backscatterré](https://www.backscatterer.org/?target=autoresponders) alakítani.
+
+10. Csak akkor válaszolunk, ha az alias vagy a domainjén lévő másik cím (például egy rá továbbító alias) szerepel a `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` vagy `Resent-Bcc` fejlécben, ahogy az [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) javasolja. A rejtett címzettlistára küldött levelek nem kapnak választ. A Sieve szabadság-válaszaihoz az aliasnak vagy a `:addresses` egyik címének szerepelnie kell ezekben a fejlécekben.
+
+11. Felhasználónként naponta legfeljebb 300 szabadság-választ küldünk (kevesebbet, ha a kimenő SMTP-küszöbét ez alá korlátoztuk), és címzettcímenként naponta legfeljebb 20-at az összes felhasználónkra együttesen.
+
 ### Hogyan állítsam be az SPF-et a Forward Emailhez {#how-do-i-set-up-spf-for-forward-email}
 
 A regisztrátorod DNS kezelő oldalán állítsd be a következő <strong class="notranslate">TXT</strong> rekordot:
@@ -2339,9 +2348,11 @@ Igen, bővebben olvashatsz róla a <https://forwardemail.net/guides/newsletter-w
 
 Kérjük, vedd figyelembe, hogy az IP-hírnév megőrzése és a kézbesíthetőség biztosítása érdekében a Forward Email kézi felülvizsgálati folyamatot alkalmaz domainenként a **hírlevél jóváhagyásához**. Küldj e-mailt a <support@forwardemail.net> címre vagy nyiss egy [segítségkérést](https://forwardemail.net/help) a jóváhagyáshoz. Ez általában kevesebb, mint 24 órát vesz igénybe, a legtöbb kérés 1-2 órán belül teljesül. A közeljövőben célunk, hogy ezt a folyamatot azonnalivá tegyük további spam-ellenőrzésekkel és riasztásokkal. Ez a folyamat biztosítja, hogy az e-mailek eljussanak a beérkező levelek közé, és az üzenetek ne kerüljenek spamként megjelölésre.
 
+A hírlevelek és levelezőlisták beleszámítanak a napi kimenő küszöbébe, amely korlátlan, és a [feladói hírnevével](#what-are-your-outbound-smtp-limits) együtt nő. Tartsa tisztán a listáit: a magas visszapattanási arány csökkenti a küszöbét, a hirtelen megugró forgalmat pedig lelassítjuk.
+
 ### Támogatjátok az e-mailek küldését API-n keresztül? {#do-you-support-sending-email-with-api}
 
-Igen, 2023 májusa óta támogatjuk az e-mailek küldését API-n keresztül, mint kiegészítő szolgáltatást minden fizetős felhasználó számára.
+Igen. Minden fizetős csomag tartalmazza az e-mail-küldést az API-nkkal. A kimenő SMTP-hez hasonlóan ez is **korlátlan** és [hírnévalapú](#what-are-your-outbound-smtp-limits): az API-val és az SMTP-vel küldött üzenetei egy közös napi küszöbön osztoznak.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2547,7 +2558,7 @@ A névjegyek támogatásának használatához a **felhasználónévnek** az alia
 
 ### Támogatjátok az e-mailek küldését SMTP-vel? {#do-you-support-sending-email-with-smtp}
 
-Igen, 2023 májusa óta támogatjuk az SMTP-vel történő e-mail küldést kiegészítőként minden fizetős felhasználó számára.
+Igen. Minden fizetős csomag tartalmazza a kimenő SMTP-t, és ez **korlátlan**: a napi küldési küszöbe a [feladói hírnevével](#what-are-your-outbound-smtp-limits) együtt nő.
 
 <div id="smtp-instructions">
 
@@ -3676,32 +3687,101 @@ Amikor <a href="#do-you-support-regular-expressions-or-regex" class="alert-link"
 
 ### Mik az Önök kimenő SMTP korlátai {#what-are-your-outbound-smtp-limits}
 
-Kimenő SMTP-korlátozásokat több szinten alkalmazunk a visszaélések megelőzése érdekében, miközben rugalmasak maradunk a jogosult használat számára. Minden szintet sorrendben ellenőrzünk — amelyik korlátot érik el először, az ideiglenesen elutasítja az üzenetet `421` hibával (vagyis „próbálja újra később”).
+A kimenő SMTP **korlátlan** és **hírnévalapú**. Rögzített havi felső határ helyett napi küszöböt kap, amely nő, ahogy jó küldési hírnevet épít.
 
-**A korlátozási hierarchia:**
+Az új feladók napi 300 üzenettel kezdenek, a Team csomagban pedig 900-zal (a Team csomag feladói átugorják a 900 alatti szinteket, és a következő szintjük 1,000). Naponta egyszer áttekintjük a legutóbbi küldéseit, és feljebb vagy lejjebb visszük a küszöbét. Minden napot két nappal később értékelünk, amikor már ismerjük az aznapi üzenetek kézbesítési eredményeit. Amikor ez a fiókjánál elindul, legfeljebb 30 napra visszamenőleg megnézzük a küldési előzményeit, és pótoljuk a kimaradt napokat.
 
-| Level | Scope | Default Limit | Description |
-| :---- | :---- | :-----------: | :---------- |
-| Per-alias | Egyedi alias | Nincs (a domain korlátját használja) | Opcionális. Ha egy aliasra egyedi `smtp_limit` van beállítva, azt ellenőrizzük először. |
-| Per-domain | Egy domainről egy nap alatt kiküldött összes e-mail | 300/day | Számolja a domain minden aliasáról küldött összes kimenő e-mailt. |
-| Per-user | Egy felhasználói fiók által egy nap alatt küldött összes e-mail | 300/day | Megakadályozza a megkerülést aliasok vagy domainek törlésével és újbóli létrehozásával. |
+Csak a valódi küldés épít hírnevet. A levelek akkor számítanak bele a szintlépésbe, amikor **kézbesítjük** őket **a saját domainjein kívüli egyedi címzetteknek**. Nem számít a saját magának, a saját domainjeinek (vagy azok aldomainjeinek), a küldő domainjeinek küldött, illetve ugyanannak a címzettnek ismételten küldött levél. Egy cím változatai (egy `+tag`, vagy pontok egy Gmail-címben) egyszer számítanak. Minden címzett-domain (az aldomainjeivel együtt) naponta legfeljebb 50 címzettig számít, kivéve a nagy levelezési szolgáltatók saját domainjeit (például gmail.com). A beszámított címzettek legalább egyötödének nagy levelezési szolgáltatókhoz kell mennie, a magasabb szintekhez pedig egyetlen napon belül egy minimális számú különböző címzett-domain is kell.
 
-**Hogyan határozzuk meg a tényleges korlátot:**
+* **Szintlépés felfelé**: a küszöbe egy szinttel feljebb lép, ha már elég ideje megszakítás nélkül fizet, elegendő tiszta küldési napja van a jelenlegi szintjén, és az elmúlt 7 nap legforgalmasabb napján a saját domainjein kívüli, kézbesített címzettek száma elérte a jelenlegi küszöbe legalább felét (elegendő számú különböző címzett-domainen). Csak a megszakítás nélküli fizetős idő számít, így egy régebbi fiók, amely nem fizetett (vagy abbahagyta a fizetést), elölről kezdi. A legfeljebb 14 napot késő megújítás is megszakítás nélkülinek számít, és csak a saját befizetései számítanak.
+* **Tiszta nap**: olyan nap, amelyen legalább 5 üzenetét kézbesítettük a saját domainjein kívüli címzetteknek, e címzettek kevesebb mint 5%-a pattintotta vissza vagy utasította el a levelét, nem kapott elég spam- vagy vírusbejelentést egy rossz naphoz (lásd lent), és nem lassítottuk le a küldését szokatlan minta miatt.
+* **Szintlépés lefelé**: egy magas visszapattanási vagy elutasítási arányú nap (legalább 20, a saját domainjein kívüli címzett 5%-a vagy több), vagy túl sok spam- vagy vírusbejelentés a nagy levelezési szolgáltatóktól (lásd lent) egy szinttel lejjebb viszi a küszöbét (a csomagja kezdő küszöbe alá nem), és nullázza a tiszta napjainak számát. Ha egy napon 15% vagy több címzett pattintotta vissza vagy utasította el a levelét, az ehelyett a csomagja kezdő küszöbére állítja vissza a küszöbét, és 30 napra szünetelteti a szintlépést felfelé (a csapatunk által jóváhagyott küszöb továbbra is érvényes). Csak a levelei elutasításai számítanak, például nem az, ha a megosztott IP-címeink tiltólistán vannak, vagy ha nem értük el egy címzett szerverét. Minden címzett egyszer számít, akárhány üzenetet küldött neki, és az ütemezett üzenet azon a napon számít, amelyre ütemezte. A küldés nélküli napok sem Ön mellett, sem Ön ellen nem számítanak.
+* **Spam- és vírusbejelentések**: a nagy levelezési szolgáltatók (például a Gmail, az Outlook és a Yahoo) döntik el, mi számít visszaélésnek, és csak az ő végleges elutasításaikat számoljuk. A szolgáltató saját domainjein (például gmail.com) minden címzett számít, míg a szolgáltató által üzemeltetett egyéb domainek (például egy cég Google Workspace-e) domainenként egyszer számítanak, és mindegyik naponta egyszer számít. A bejelentéseket a címzettjei arányaként számoljuk, ahogy a nagy szolgáltatók is (a Gmail azt kéri a feladóktól, hogy maradjanak 0.1% alatt, és soha ne érjék el a 0.3%-ot), így egyetlen bejelentés nem visz lejjebb, és a szolgáltató által üzemeltetett egyéb domainekre vonatkozó bejelentések legfeljebb a szükséges bejelentések felét adják. Egy nap saját domainjein kívüli címzettjeinek (vagy az előző napéinak, ha az több) 0.1%-át vagy többet érintő bejelentések rossz napot jelentenek (legalább 2 bejelentés, és legfeljebb 25 szükséges). Valamelyik aliasa automatikus felfüggesztése önmagában nem rontja a hírnevét, az azt kiváltó bejelentések viszont igen. Ha a bejelentések az elmúlt 24 órában a küldő domainen kívüli címzettjei 0.3%-át vagy többet érintik, az akkorra ütemezett üzeneteket is beleértve, azonnal visszaállítják a küszöbét a csomagja kezdő küszöbére (300, vagy a Team csomagban 900) (legalább 3 bejelentés, és legfeljebb 50 szükséges). A szintlépés felfelé ezután 30 napig szünetel, és a csapatunk által jóváhagyott küszöb addig nem érvényes. A Team csomag domainjein a bejelentések annak az adminnak a rossz napjába is beleszámítanak, akinek a küszöbét a domain használja (kivéve, ha az Ön saját küszöbe ugyanolyan magas), az érintett tagok címzettjeihez viszonyított azonos arányban, és nem állítják vissza az admin küszöbét. Ha az ezekről a tagokról szóló bejelentések 24 órán belül elérik a visszaállítási arányt, az admin domainjeinek tagjai 30 napig nem használhatják az admin küszöbét. Az admin saját küldése változatlan marad, és a tagok küldése továbbra is beleszámít az admin küszöbébe. Ha egy tagot adminná tesz, az meghívót kap, és akkor válik adminná, amikor elfogadja. A saját magának küldött levelekre adott automatikus válaszokról és visszapattanásokról szóló bejelentések nem rontják a hírnevét, az Ön által küldött levelek kézbesítési értesítéseiről szóló bejelentések viszont igen.
 
-* **Team terv domainjai** — a tényleges napi korlát a domain összes admin tagja közül a legmagasabb `smtp_limit`. Például, ha az egyik admin korlátja 300 és a másiké 500, a domain tényleges korlátja 500.
-* **Enhanced Protection és egyéb tervek** — a tényleges napi korlát a küldő felhasználó saját `smtp_limit` értéke (amely alapértelmezés szerint 300 üzenet naponta).
-* **Aliasonkénti felülírás** — a domain adminisztrátorok opcionálisan beállíthatnak egyedi `smtp_limit`-et egyes aliasokra. Ha be van állítva, ezt ellenőrizzük először (mielőtt a domain és felhasználói korlátokat). Ez hasznos, ha egyes aliasokat alacsonyabb küldési mennyiségre szeretnénk korlátozni.
-* **Új aliasok alapértelmezett beállítása a domainen** — a domain adminisztrátorok beállíthatják az `alias_default_smtp_limit` értéket a domainre (az API-n keresztül vagy a műszerfalon a Speciális beállításoknál). Ha be van állítva, az adott domainen létrehozott minden új alias automatikusan örökli ezt az értéket `smtp_limit`-ként. Ez nem haladhatja meg a domain tényleges SMTP-korlátját. A meglévő aliasokat ez nem érinti. A letiltáshoz állítsa `0`-ra.
+**Hírnévszintek:**
 
-**Rendszeradminisztrátorok** (Forward Email személyzete) mentesülnek minden korlátozás alól.
+| Napi küszöb | Minimális folyamatos fizetős időszak | Tiszta küldési napok az előző szinten | Különböző címzett-domainek egy napon |
+| --------------: | ---------------------------: | ----------------------------------: | -----------------------------------: |
+| 300 | – | – | – |
+| 500 | 7 nap | 5 | 10 |
+| 1,000 | 14 nap | 7 | 20 |
+| 2,000 | 30 nap | 10 | 40 |
+| 5,000 | 60 nap | 14 | 75 |
+| 10,000 | 120 nap | 21 | 150 |
 
-Minden korlátozást az adatbázis számlálásaival (`Emails.countDocuments`) hajtunk végre az aktuális nap kezdete óta létrehozott e-mailekre (UTC éjfél). Ez azt jelenti, hogy a korlátod naponta UTC éjfélkor nullázódik.
+Napi 10,000 üzenet felett csapatunk felülvizsgálja a fiókját, és kézzel emeli a küszöbét, ehhez Önnek nem kell semmit tennie. Ha hamarabb van szüksége magasabb küszöbre (például egy meglévő küldési mennyiség átköltöztetéséhez), [lépjen kapcsolatba velünk](/help). A csapatunk által jóváhagyott küszöb minimumként működik, és az általa lefedett szintre sorolja Önt, a hírneve pedig ezt napi 10,000 üzenetig még növelheti.
 
-Ha magasabb korlátra van szükséged, kérjük, [lépj kapcsolatba velünk](https://forwardemail.net/help). A legtöbb kérelmet 1-2 órán belül teljesítjük.
+**Szokatlan küldési minták:**
+
+A küldést `421` hibával lelassítjuk, ha a tevékenysége szokatlannak tűnik, bármekkora is a küszöbe. Ez védi a sorunkat és az IP-hírnevünket, ha valaki feltör egy fiókot vagy visszaél vele, ideértve az évek óta létező vagy inaktív fiókokat is.
+
+* **Hirtelen kiugrások**: egy nap alatt legfeljebb a legutóbbi szokásos mennyiség (az elmúlt 45 nap legforgalmasabb napja) 2-szeresét vagy a kezdő küszöbét (300 üzenet, vagy a Team csomagban és a Team csomag domainjein 900) vagy egy jóváhagyott küszöböt küldhet, attól függően, melyik a magasabb. A szokásos mennyiségét naponta frissítjük a legutóbbi küldései alapján, így az egyenletes növekedést ez nem érinti, az új feladók pedig a kezdő küszöbükről indulva növelhetik a küldést.
+* **Címzettek**: egy üzenetnek sok címzettje lehet, így egy nap összes üzenetével együtt legfeljebb a mai keret 2-szeresének megfelelő címzettet érhet el, egy fiók feladói pedig együtt legfeljebb a fiók küszöbének 2-szeresét. Az ennél több címzettel rendelkező egyetlen üzenetet `550` hibával utasítjuk el.
+* **Csúcsok**: bármely órán belül a mai keret negyedét vagy az elmúlt 45 nap legforgalmasabb órájának 2-szeresét küldheti (de nem többet a mai keret felénél), attól függően, melyik a magasabb, és legalább a kezdő küszöbét vagy egy jóváhagyott küszöböt. Egy rendszeres minta, például egy heti hírlevél, a szokásos mennyiségének része.
+* **Visszapattanások**: ha a címzettek az elmúlt 6 óra üzeneteinek 10%-át vagy többet visszapattintották vagy elutasították (legalább 50 üzenet esetén, a megosztott IP-címeink elutasításait nem számítva), az új üzenetek várnak, amíg a visszapattanási aránya helyre nem áll.
+* **Sorban álló üzenetek**: ha az elmúlt 24 óra üzenetei közül túl sok még mindig a sorban vár (a mai keret 10%-a, legalább a kezdő küszöbe), az új üzenetek várnak, amíg a sor fel nem dolgozódik. Az ütemezett üzenetek, az általunk újrapróbált üzenetek, miután egy címzett késleltette őket, és a jóváhagyásra váró üzenetek nem számítanak, és a sorban állás nem rontja a hírnevét.
+* **Ütemezett üzenetek**: üzeneteket legfeljebb 27 nappal előre ütemezhet, és egyszerre legfeljebb egy napi keretnyi ütemezett üzenete lehet.
+
+A lassítások megszűnnek, amint a tevékenysége visszatér a megszokott szintre, és egy lassítással érintett nap nem számít tiszta küldési napnak. A levelezőprogramok maguktól újrapróbálják a késleltetett üzenetek küldését, az API-kérések pedig `429` hibát kapnak, ezért ezeket próbálja újra később.
+
+Amint eléri a napi küszöbét, a további üzeneteket `421` hibával (vagyis „próbálja újra később”) elutasítjuk, amíg a küszöbe UTC éjfélkor nem nullázódik. A spam és vírusok elleni [visszaélés elleni védelmeink](#why-was-my-outbound-smtp-suspended) bármekkora küszöb mellett érvényesek.
+
+Azt, hogy ma hány üzenetet küldött el, és mekkora a jelenlegi küszöbe, a [Fiókom → E-mailek](/my-account/emails) oldalon vagy az [API](/email-api#get-outbound-smtp-email-limit) segítségével tekintheti meg.
+
+**A küszöbök alkalmazása:**
+
+| Szint | Hatókör | Alapértelmezett küszöb | Leírás |
+| :--------- | :----------------------------------------- | :-------------------------: | :------------------------------------------------------------------------ |
+| Aliasonként | Egyedi alias | Nincs (a domain korlátját használja) | Opcionális. Egy alias egyedi `smtp_limit` értékét ellenőrizzük először, ha van neki. |
+| Fiókonként | Egy nap alatt azokról a domainekről küldött összes e-mail, amelyeknek a fiók adminja | Hírnévalapú (300+/nap, Team esetén 900+) | A küszöb a teljes fiókra vonatkozik, ezért domainek vagy tagok hozzáadása nem szorozza meg. |
+| Domainenként | Egy domainről egy nap alatt küldött összes e-mail | A fiók küszöbén belül fokozatosan emelkedik (300+/nap, Team esetén 900+) | Számolja a domain aliasairól küldött összes kimenő e-mailt. |
+| Felhasználónként | Egy felhasználói fiók által egy nap alatt küldött összes e-mail | Hírnévalapú (300+/nap, Team esetén 900+) | Aliasok vagy domainek törlése és újbóli létrehozása nem nullázza. |
+
+* **Team csomag domainjei**: a domain küszöbe a fizető admin tagjai közül a legmagasabb küszöb. Például ha az egyik admin küszöbe 1,000, a másiké pedig 5,000, a domain küszöbe 5,000. A Team csomag feladói napi 900 üzenettel kezdenek 300 helyett.
+* **Fiókszintű**: egy domain fiókja a legmagasabb küszöbbel rendelkező fizető adminja. Azokról a domainekről küldött összes levél, amelyeknek ez a fiók az adminja, ebbe az egy küszöbbe számít, bárki küldi (a tagokat is beleértve), ezért domainek vagy tagok hozzáadása nem növeli.
+* **Az új domainek fokozatosan emelkednek**: a fiók küszöbén belül egy domain legfeljebb az elmúlt 45 nap legforgalmasabb, kézbesített levelekben mért napjának 2-szeresét küldheti, és legalább a kezdő küszöbét (300 üzenet, vagy a Team csomagban 900) vagy egy jóváhagyott küszöböt. Egy meglévő fiók új domainje a kezdő küszöbén indul, és ahogy kézbesítjük a leveleit, úgy nő.
+* **Visszapattanók és automatikus válaszok**: az Ön nevében küldött visszapattanási értesítések és szabadság-automatikus válaszok (automatikus válasz) nem számítanak bele a küszöbébe. Felhasználónként naponta legfeljebb 300 automatikus választ küldünk (kevesebbet, ha a küszöbét ez alá korlátoztuk), és címzettcímenként naponta legfeljebb 20-at az összes felhasználónkra együttesen, és csak a hitelesítésen átment feladóknak (lásd [szabadság-automatikus válaszok](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). A küldő domainen (vagy más, Ön által adminisztrált domaineken) kívüli visszatérési címre küldött visszapattanási értesítéseket erre a számra vagy a napi küszöbe 15%-ára korlátozzuk, attól függően, melyik a magasabb, és ezek csak az eredeti üzenet azonosító fejléceit tartalmazzák (például `From`, `To` és `Subject`).
+* **Enhanced Protection és egyéb csomagok**: a domain küszöbe a küldő felhasználó saját küszöbe.
+* **Aliasonkénti felülírás**: a domain adminisztrátorai egyedi `smtp_limit` értéket állíthatnak be egyes aliasokra. Ezt ellenőrizzük először (a domain és a felhasználó küszöbe előtt), így bizonyos aliasokat alacsonyabb küldési mennyiségre korlátozhat.
+* **Új aliasok alapértelmezett értéke a domainen**: a domain adminisztrátorai beállíthatnak egy `alias_default_smtp_limit` értéket a domainre (az API-val vagy a műszerfal Speciális beállításainál). Az adott domain új aliasai ezután ezt az értéket öröklik `smtp_limit`-ként. Ez nem haladhatja meg a domain jelenlegi küszöbét, és a meglévő aliasok megtartják a sajátjukat. A kikapcsoláshoz állítsa `0`-ra.
 
 ### Szükséges engedély az SMTP engedélyezéséhez? {#do-i-need-approval-to-enable-smtp}
 
 Igen, kérjük, vegye figyelembe, hogy az IP-hírnév megőrzése és a kézbesíthetőség biztosítása érdekében a Forward Email manuális felülvizsgálati folyamatot alkalmaz domainenként a kimenő SMTP engedélyezéséhez. Küldjön e-mailt a <support@forwardemail.net> címre vagy nyisson egy [segítségkérést](https://forwardemail.net/help) az engedélyezéshez. Ez általában kevesebb, mint 24 órát vesz igénybe, a legtöbb kérés 1-2 órán belül teljesül. A közeljövőben célunk, hogy ezt a folyamatot azonnalivá tegyük további spam-ellenőrzésekkel és riasztásokkal. Ez a folyamat biztosítja, hogy az Ön e-mailjei eljussanak a beérkező levelek közé, és az üzenetek ne kerüljenek spam mappába.
+
+A jóváhagyás után a kimenő SMTP korlátlan, és a napi küszöbe a [feladói hírnevével](#what-are-your-outbound-smtp-limits) együtt nő.
+
+### Milyen információkra van szükségük a kimenő SMTP-m jóváhagyásához vagy visszaállításához {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+Amikor kimenő SMTP jóváhagyást kér (vagy azt kéri, hogy egy [felfüggesztés](#why-was-my-outbound-smtp-suspended) után állítsuk vissza), készüljön fel a következők megadására:
+
+* Megerősítés arról, hogy elolvasta és elfogadja [feltételeinket](/terms), amelyek kifejezetten tiltják a szolgáltatás használatát bármire, ami szerepel a [Stripe tiltott vállalkozásainak](https://stripe.com/legal/restricted-businesses) vagy a [PayPal tiltott tevékenységeinek](https://www.paypal.com/us/legalhub/acceptableuse-full) listáján.
+* Mire kívánja használni a kimenő SMTP-t.
+* Egy link a weboldalára, vállalkozási információkra vagy egy profilra (pl. LinkedIn, GitHub), amely alapján ellenőrizhetjük, hogy valódi, legitim feladó — az üres weboldalra mutató domain gyakori oka a jóváhagyás késésének.
+* Megerősítés arról, hogy nem használja a szolgáltatást spamre vagy tömeges/kéretlen marketingre.
+
+Ugyanezeket az információkat kérjük mindkét esetben, akár első jóváhagyásról, akár egy domain felfüggesztés utáni visszaállításáról van szó.
+
+### Miért lett felfüggesztve a kimenő SMTP-m {#why-was-my-outbound-smtp-suspended}
+
+A már jóváhagyott kimenő SMTP is szüneteltethető, ha visszaélésre utaló mintát észlelünk. Ez független a fenti [jóváhagyási folyamattól](#do-i-need-approval-to-enable-smtp) és a [hírnévalapú kimenő küszöbeinktől](#what-are-your-outbound-smtp-limits). Akkor lép életbe, amikor egy megbízható forrás (pl. egy nagy postafiók-szolgáltató) vírusként vagy spamként jelenti a kimenő leveleit.
+
+Két szakasz van:
+
+1. **Egyetlen észlelés** esetén az adott üzenetről egy „Message prevented” értesítést küldünk — ez tájékoztató jellegű, és a kimenő sora tovább működik.
+2. **Több észlelés egy rövid, gördülő időablakon belül** átlépi a visszaélés-észlelési küszöbünket, és egy teljes „Kimenő SMTP fel van függesztve” értesítést vált ki. Ekkor a teljes kimenő SMTP sora szünetel — a probléma megoldásáig az adott domainről nem próbálunk további kimenő üzeneteket küldeni.
+
+Mindkét értesítés tartalmazza a megjelölt konkrét üzenetet (`MAIL FROM`, `RCPT TO`, `Message-ID`, tárgy és dátum), hogy melyik megbízható forrás és milyen tartalomkategória jelölte meg, hány észlelése volt a küszöbhöz képest, hány egyedi címzett és megbízható forrás volt érintett, valamint az SMTP állapotkódot és választ.
+
+Ha ilyen értesítést kap, kérjük, lépjen kapcsolatba velünk a <support@forwardemail.net> címen, vagy nyisson egy [segítségkérést](https://forwardemail.net/help) — a felfüggesztés nem szűnik meg automatikusan, ezért a megoldáshoz fel kell vennie velünk a kapcsolatot.
+
+### Miért igényelnek fizetős csomagot az újonnan regisztrált vagy nemrég lejárt domainek {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+Amikor hozzáad egy domaint (a díjmentes csomagban lévő domainek esetén pedig folyamatosan), WHOIS/RDAP lekérdezést futtatunk rá. Ha a domaint **az elmúlt 90 napon belül hozták létre**, **az elmúlt 90 napon belül járt le**, vagy jelenleg **függőben lévő átruházás, frissítés vagy törlés** állapotban van a regisztrátoránál, fizetős csomagot írunk elő, mielőtt levelet küldhetne vagy fogadhatna vele.
+
+Ez visszaélés-megelőzési intézkedés, nem önről alkotott vélemény — nagy regisztrátorok, köztük a GoDaddy, a Namecheap és a Hostgator, korábban teljesen letiltották az infrastruktúránkat a nemrég lejárt domainek átvételével és a csalárd módon regisztrált új domainekkel kapcsolatos visszaélések miatt. Az, hogy ezekhez a domainekhez fizetős csomagot írunk elő, teszi lehetővé, hogy egyáltalán díjmentes csomagot kínálhassunk a regisztrátorok bizalmának elvesztése nélkül.
+
+A WHOIS/RDAP eredményeket 24 órán át gyorsítótárazzuk, így egy olyan domainnél, amely épp most lépte át a 90 napos határt, akár egy napig is eltarthat, mire ez érvényesül. Ha azonnal használni szeretné a domaint, váltson fizetős csomagra (havi $3-tól korlátlan domainekkel, aliasokkal és hírnévalapú kimenő SMTP-vel).
 
 ### Mik az SMTP szerver konfigurációs beállításai? {#what-are-your-smtp-server-configuration-settings}
 
@@ -5294,6 +5374,8 @@ Azokat a feladókat, akik spameket vagy vírusos tartalmat küldenek, a követke
 
 ### Van korlátozás a küldési sebességre {#do-you-have-rate-limiting}
 
+Ez a szakasz a bejövő levelekre vonatkozik. A küldésről lásd: [Mik az Önök kimenő SMTP korlátai](#what-are-your-outbound-smtp-limits).
+
 A küldői sebességkorlátozás vagy a küldő IP-címének visszafelé PTR lekérdezéséből kinyert gyökérdomain alapján történik – vagy ha ez nem ad eredményt, akkor egyszerűen a küldő IP-címét használja. Megjegyezzük, hogy ezt alább `Sender`-ként említjük.
 
 MX szervereink napi korlátokat állítanak be a bejövő levelekre, amelyeket [titkosított IMAP tárolásra](/blog/docs/best-quantum-safe-encrypted-email-service) fogadnak:
@@ -5339,6 +5421,8 @@ A napi korlát egyetlen megosztott keret az összes protokollon — akár IMAP-o
 Ezek a korlátok felhasználói fiókonként érvényesek (nem aliasonként vagy domainenként) és naponta visszaállnak.  Ez azt jelenti, hogy további aliasok létrehozása nem növeli a sávszélesség-keretét.  Ha a Redis nem elérhető, a sebességkorlátozás teljesen kimarad (fail-open), így a szolgáltatás soha nem szakad meg.
 
 Ha magasabb korlátokra van szüksége egy adott felhasználási esethez (pl. nagyon nagy archívum migrálása), kérjük [lépjen kapcsolatba velünk](https://forwardemail.net/help).
+
+Ezek a korlátok az átvitt adatmennyiségre vonatkoznak. Az elküldhető üzenetek számára a [hírnévalapú kimenő küszöbeink](#what-are-your-outbound-smtp-limits) vonatkoznak.
 
 ### Hogyan védekeztek a visszapattanó levelek ellen {#how-do-you-protect-against-backscatter}
 
@@ -5765,13 +5849,9 @@ MX és <strong class="notranslate">TXT</strong> rekord ellenőrzést használunk
 
 ### Hogyan növelhetem a tárhelyemet vagy a kimenő SMTP küldési limitet {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Nyisd meg a <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Fiókom → Számlázás</a> oldalt, és görgess le a **Kiegészítők** szakaszig, ahol két igénylőűrlap található:
+**Tárhely**: nyissa meg a <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Fiókom → Számlázás</a> oldalt, és görgessen le a **Kiegészítők** szakaszig. Válassza ki a hozzáadandó mennyiséget (+10, +20, +30, +40 vagy +50 GB), vagy válassza az "Other" lehetőséget egyedi mennyiség kéréséhez. Az űrlap beküldése felülvizsgálatra elküldi a kérését csapatunknak, és még nem terheli meg Önt. Ha jóváhagyjuk, e-mailben küldünk egy biztonságos fizetési linket a bővítés befejezéséhez. Egyszerre egy függőben lévő tárhelykérése lehet, és egy korábbi kérést követő 3 napon belül nem küldhet be újabbat.
 
-* **Tárhelybővítés** — válassz hozzáadandó mennyiséget (+10, +20, +30, +40 vagy +50 GB), vagy válaszd az "Other" opciót egyedi mennyiség kéréséhez.
-* **Kimenő SMTP limit bővítése** — válassz hozzáadandó mennyiséget (+1000, +2000 vagy +3000 e-mail naponta), vagy válaszd az "Other" opciót egyedi mennyiség kéréséhez.
-
-Az űrlapok bármelyikének beküldése elküldi a kérésedet a csapatunknak felülvizsgálatra — ez nem jár azonnali terheléssel. Jóváhagyás után e-mailben küldünk egy biztonságos fizetési linket a frissítés befejezéséhez. Egyszerre típusonként (tárhely vagy SMTP) egy függőben lévő kérésed lehet; ugyanarra a típusra 3 napon belül újabb beküldés nem engedélyezett, amíg ez az időablak le nem telik.
-
+**Kimenő SMTP**: nincs mit megvásárolni. A kimenő SMTP korlátlan, és a napi küszöbe a [feladói hírnevével](#what-are-your-outbound-smtp-limits) együtt nő. A <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Fiókom → Számlázás</a> és a <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Fiókom → E-mailek</a> oldal mutatja a jelenlegi küszöbét, a hírnévszintjét és a következő szint feltételeit.
 
 ### Mit tartalmaz a Vállalati licenc {#what-is-included-in-the-enterprise-license}
 
@@ -5893,6 +5973,12 @@ Igen, azonban a "viszonylag ismeretlen" küldőket óránként 100 kapcsolatban 
 A "viszonylag ismeretlen" alatt azokat a küldőket értjük, akik nem szerepelnek az [engedélyező listán] (#do-you-have-an-allowlist).
 
 Ha ezt a korlátot túllépik, 421-es válaszkódot küldünk, amely azt jelzi a küldő levelezőszerverének, hogy próbálkozzon később újra.
+
+### Tudok korlátlan e-maileket küldeni ezzel {#can-i-send-unlimited-emails-with-this}
+
+Igen. A kimenő SMTP és az e-mail API-nk korlátlan minden fizetős csomagban ($3/mo-tól). Rögzített havi felső határ helyett napi küszöböt kap, amely nő, amíg továbbra is fizet és tiszta küldési előzményeket épít: az új feladók napi 300 üzenetétől (a Team csomagban 900) egészen napi 10,000-ig, ezen felül pedig azután, hogy csapatunk felülvizsgálta a fiókját.
+
+Csak a saját domainjein kívüli valódi címzetteknek kézbesített levelek építenek hírnevet. A kézbesíthetőség védelme érdekében a magas visszapattanási arány csökkenti a küszöbét, a nagy levelezési szolgáltatóktól érkező spam- és vírusbejelentések visszaállítják azt, a szokatlan mintákat (például egy inaktív fiók hirtelen kiugró forgalmát) pedig lelassítjuk. A részletekért lásd: [Mik az Önök kimenő SMTP korlátai](#what-are-your-outbound-smtp-limits); a jelenlegi küszöbét a [Fiókom → E-mailek](/my-account/emails) oldalon találja.
 
 ### Kínálnak korlátlan domaineket egy áron? {#do-you-offer-unlimited-domains-for-one-price}
 

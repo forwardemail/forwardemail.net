@@ -16,6 +16,9 @@ const Aliases = require('#models/aliases');
 const Emails = require('#models/emails');
 const createTangerine = require('#helpers/create-tangerine');
 
+// new senders start on the first reputation tier (100 in test env)
+const FIRST_TIER_LIMIT = config.smtpReputationTiers[0].limit;
+
 const client = new Redis();
 client.setMaxListeners(0);
 const resolver = createTangerine(client);
@@ -248,9 +251,7 @@ test('admin can list aliases for a domain', async (t) => {
 test('admin can update alias smtp_limit', async (t) => {
   const { user, domain, alias } = await createTestSetup(t);
   // Must be within domain's effective limit
-  const domainLimit =
-    user[config.userFields.smtpLimit] || config.smtpLimitMessages;
-  const newLimit = Math.min(75, domainLimit);
+  const newLimit = Math.min(75, FIRST_TIER_LIMIT);
   const res = await t.context.api
     .put(`/v1/domains/${domain.name}/aliases/${alias.id}`)
     .auth(user[config.userFields.apiToken])
@@ -533,30 +534,25 @@ test('multiple aliases can have different smtp_limits', async (t) => {
 test('smtp_limit cannot exceed domain effective SMTP limit via API', async (t) => {
   const { user, domain, alias } = await createTestSetup(t);
 
-  // config.smtpLimitMessages is 100 in test env (or user's custom limit)
+  // first reputation tier is 100 in test env (or user's custom limit)
   // Try to set alias limit above the domain's effective limit
-  const domainLimit =
-    user[config.userFields.smtpLimit] || config.smtpLimitMessages;
   const res = await t.context.api
     .put(`/v1/domains/${domain.name}/aliases/${alias.id}`)
     .auth(user[config.userFields.apiToken])
-    .send({ smtp_limit: domainLimit + 1 });
+    .send({ smtp_limit: FIRST_TIER_LIMIT + 1 });
 
   t.is(res.status, 400);
 });
 
 test('smtp_limit at exactly domain limit is accepted', async (t) => {
   const { user, domain, alias } = await createTestSetup(t);
-
-  const domainLimit =
-    user[config.userFields.smtpLimit] || config.smtpLimitMessages;
   const res = await t.context.api
     .put(`/v1/domains/${domain.name}/aliases/${alias.id}`)
     .auth(user[config.userFields.apiToken])
-    .send({ smtp_limit: domainLimit });
+    .send({ smtp_limit: FIRST_TIER_LIMIT });
 
   t.is(res.status, 200);
-  t.is(res.body.smtp_limit, domainLimit);
+  t.is(res.body.smtp_limit, FIRST_TIER_LIMIT);
 });
 
 test('changing smtp_limit does NOT clear smtp_suspended_sent_at', async (t) => {
@@ -574,9 +570,7 @@ test('changing smtp_limit does NOT clear smtp_suspended_sent_at', async (t) => {
   t.is(suspended.is_smtp_suspended, true);
 
   // Change smtp_limit via API (must be within domain limit)
-  const domainLimit =
-    user[config.userFields.smtpLimit] || config.smtpLimitMessages;
-  const newLimit = Math.min(50, domainLimit);
+  const newLimit = Math.min(50, FIRST_TIER_LIMIT);
   const res = await t.context.api
     .put(`/v1/domains/${domain.name}/aliases/${alias.id}`)
     .auth(user[config.userFields.apiToken])
@@ -615,9 +609,7 @@ test('changing smtp_limit does NOT reset daily email count', async (t) => {
   }
 
   // Change smtp_limit to a higher value (within domain limit)
-  const domainLimit =
-    user[config.userFields.smtpLimit] || config.smtpLimitMessages;
-  const newLimit = Math.min(80, domainLimit);
+  const newLimit = Math.min(80, FIRST_TIER_LIMIT);
   const res = await t.context.api
     .put(`/v1/domains/${domain.name}/aliases/${alias.id}`)
     .auth(user[config.userFields.apiToken])
@@ -809,18 +801,16 @@ test('alias smtp_limit cannot exceed highest admin member limit', async (t) => {
 });
 
 test('domain effective limit increases when higher-limit admin is added', async (t) => {
-  // Start with one admin with default limit (config.smtpLimitMessages)
+  // Start with one admin on the first reputation tier
   const { user, domain, alias } = await createTestSetup(t, {
     domain: { plan: 'team' }
   });
 
-  const defaultLimit = config.smtpLimitMessages; // 100 in test env
-
-  // Verify we cannot exceed the default limit
+  // Verify we cannot exceed the team plan's starting threshold
   const res1 = await t.context.api
     .put(`/v1/domains/${domain.name}/aliases/${alias.id}`)
     .auth(user[config.userFields.apiToken])
-    .send({ smtp_limit: defaultLimit + 1 });
+    .send({ smtp_limit: config.smtpTeamLimitMessages + 1 });
 
   t.is(res1.status, 400);
 
@@ -896,15 +886,12 @@ test('non-admin members do not affect domain effective SMTP limit', async (t) =>
   domain.skip_payment_check = true;
   await domain.save();
 
-  const defaultLimit =
-    user[config.userFields.smtpLimit] || config.smtpLimitMessages;
-
   // Non-admin's high limit should NOT affect the domain's effective limit
   // So setting alias limit above the admin's limit should still fail
   const res = await t.context.api
     .put(`/v1/domains/${domain.name}/aliases/${alias.id}`)
     .auth(user[config.userFields.apiToken])
-    .send({ smtp_limit: defaultLimit + 1 });
+    .send({ smtp_limit: config.smtpTeamLimitMessages + 1 });
 
   t.is(res.status, 400);
 });
@@ -913,22 +900,22 @@ test('getDomainSmtpLimitAsync resolves correctly with multiple admins', async (t
   const Users = require('#models/users');
   const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
 
-  // Create admin1 with limit 150
+  // Create admin1 with a limit above the team starting threshold
   let admin1 = await t.context.userFactory
     .withState({
       plan: 'team',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate(),
-      [config.userFields.smtpLimit]: 150
+      [config.userFields.smtpLimit]: config.smtpTeamLimitMessages + 50
     })
     .create();
   admin1 = await admin1.save();
 
-  // Create admin2 with limit 250
+  // Create admin2 with a higher limit
   let admin2 = await t.context.userFactory
     .withState({
       plan: 'team',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate(),
-      [config.userFields.smtpLimit]: 250
+      [config.userFields.smtpLimit]: config.smtpTeamLimitMessages + 150
     })
     .create();
   admin2 = await admin2.save();
@@ -956,9 +943,9 @@ test('getDomainSmtpLimitAsync resolves correctly with multiple admins', async (t
     })
     .create();
 
-  // The highest admin limit should be 250
+  // The highest admin limit wins (above the team plan's starting threshold)
   const effectiveLimit = await getDomainSmtpLimitAsync(domain, Users);
-  t.is(effectiveLimit, 250);
+  t.is(effectiveLimit, config.smtpTeamLimitMessages + 150);
 });
 
 //

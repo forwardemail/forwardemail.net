@@ -245,6 +245,7 @@ router
     web.myAccount.ensureTeamPlan,
     web.myAccount.ensureUpgradedPlan,
     web.myAccount.retrieveAliases,
+    rateLimit(100, 'update member'),
     web.myAccount.updateMember
   )
 

@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True für eine Zustellstatusbenachrichtigung (z. B. ein Bounce) zu einer von Ihnen gesendeten E-Mail"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Aktuelle Anzahl der versendeten E-Mails"
+            "description": "Ausgehende SMTP-Nachrichten, die Sie heute (UTC) gesendet haben, ohne Bounce-Benachrichtigungen und automatische Antworten"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximale Anzahl zulässiger E-Mails"
+            "description": "Heutiger reputationsbasierter Schwellenwert (höchstens der heute verbleibende Rest der Schwellenwerte der Domäne und des Kontos; 0, wenn Sie nicht von der Domäne senden können)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Limit für ausgehende SMTP-E-Mails festlegen",
-        "description": "Dies ist ein einfacher Endpunkt, der ein JSON-Objekt zurückgibt, das die Werte `count` und `limit` für die Anzahl der täglich ausgehenden SMTP-Nachrichten pro Konto enthält.",
+        "description": "Gibt ein JSON-Objekt mit dem `count` der ausgehenden SMTP-Nachrichten, die Sie heute gesendet haben, und dem heutigen `limit` zurück. Ausgehendes SMTP ist unbegrenzt, und das `limit` ist Ihr aktueller reputationsbasierter Schwellenwert (siehe <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), der mit der Zeit steigt. Bounce-Benachrichtigungen und automatische Antworten zählen nicht.",
         "tags": [
           "E-Mails"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Domain-Einladung erstellen",
-        "description": ">[!IMPORTANT]\n\nWenn der eingeladene Benutzer bereits Mitglied einer anderen Domäne ist, der der einladende Administrator angehört, wird die Einladung automatisch angenommen und es wird keine E-Mail versendet.",
+        "description": ">[!IMPORTANT]\n>Wenn der eingeladene Benutzer bereits Mitglied einer anderen Domäne ist, der der einladende Administrator angehört, wird die Einladung automatisch angenommen und es wird keine E-Mail versendet (nur für eine `group` von `user`: Eine Einladung als `admin` senden wir per E-Mail, damit der Eingeladene sie annimmt, und ihr Link erscheint nicht in den ausstehenden Einladungen der Domäne).",
         "tags": [
           "Einladungen"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Domänenmitglied aktualisieren",
-        "description": "Ein Domänenmitglied aktualisieren.",
+        "description": "Ein Domänenmitglied aktualisieren.\n\n>[!IMPORTANT]\n>Wenn Sie ein anderes Mitglied auf `admin` aktualisieren, erhält es stattdessen eine Einladung als Administrator per E-Mail und bleibt `user`, bis es diese annimmt (die ausstehenden Einladungen der Domäne führen sie auf). Wird es wieder auf `user` aktualisiert oder entfernt, wird die Einladung zurückgezogen.",
         "tags": [
           "Mitglieder"
         ],

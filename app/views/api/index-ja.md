@@ -466,7 +466,7 @@ curl -X PUT BASE_URI/v1/account \
 これらの手順は[マイアカウント → ドメイン → 設定 → 送信SMTP設定](/my-account/domains)に記載されています。送信SMTPでドメインを使用するには、DKIM、Return-Path、DMARCの設定が必要です。
 ### アウトバウンドSMTPメールの制限取得 {#get-outbound-smtp-email-limit}
 
-これは、アカウントごとの1日あたりのSMTPアウトバウンドメッセージ数の `count` と `limit` を含むJSONオブジェクトを返すシンプルなエンドポイントです。
+本日送信したアウトバウンドSMTPメッセージの `count` と本日の `limit` を含む JSON オブジェクトを返します。アウトバウンドSMTPは無制限で、`limit` は現在の[レピュテーションベースのしきい値](/faq#what-are-your-outbound-smtp-limits)であり、時間の経過とともに引き上げられます。
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ curl BASE_URI/v1/emails?limit=1 \
 | `priority`           | いいえ | 文字列            | メールの優先度（`"high"`、`"normal"`（デフォルト）、または `"low"`）。`"normal"` は優先度ヘッダーを設定しません（デフォルト動作）。`"high"` または `"low"` の場合は `X-Priority`、`X-MSMail-Priority`、`Importance` ヘッダーが[適切に設定されます](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240)。 |
 | `headers`            | いいえ | オブジェクトまたは配列 | 追加のヘッダーフィールドのオブジェクトまたは配列（[Nodemailerのカスタムヘッダー](https://nodemailer.com/message/custom-headers/)を参照）。                                                                                                                                                                                                                                                                                                                |
 | `messageId`          | いいえ | 文字列            | "Message-ID" ヘッダーのオプションのMessage-ID値（未設定の場合は自動生成されます。値は[RFC2822仕様](https://stackoverflow.com/a/4031705)に準拠する必要があります）。                                                                                                                                                                                                                                                                                         |
-| `date`               | いいえ | 文字列または日付  | 解析後にDateヘッダーがない場合に使用されるオプションの日時値。未設定の場合は現在のUTC日時文字列が使用されます。日付ヘッダーは現在時刻より30日以上先であってはなりません。                                                                                                                                                                                                                                                                               |
+| `date`               | いいえ | 文字列または日付  | 解析後にDateヘッダーがない場合に使用されるオプションの日時値。未設定の場合は現在のUTC日時文字列が使用されます。日付ヘッダーは現在時刻より27日以上先であってはなりません。                                                                                                                                                                                                                                                                               |
 | `list`               | いいえ | オブジェクト      | `List-*` ヘッダーのオプションオブジェクト（[Nodemailerのリストヘッダー](https://nodemailer.com/message/list-headers/)を参照）。                                                                                                                                                                                                                                                                                                                              |
 > 例リクエスト（APIトークン）:
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> 招待されるユーザーがすでに管理者が所属する他のドメインの承認済みメンバーである場合、招待は自動承認され、メールは送信されません。
+> すでにご自身が所属する他のドメインの承認済みメンバーである人を `"user"` として招待した場合、当社がその人に代わって招待を承認し、メールは送信しません。`"admin"` としての招待は、招待された人が承認できるよう当社がメールで送信し、そのリンクはドメインの保留中の招待には含めません。
 
 ### ドメイン招待を削除 {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Body Parameter | 必須 | タイプ               | 説明                                                                                      |
 | -------------- | ---- | -------------------- | ----------------------------------------------------------------------------------------- |
 | `group`        | はい | 文字列 (列挙可能)    | ユーザーをドメインメンバーシップに更新するグループ（`"admin"` または `"user"` のいずれか） |
+
+> \[!IMPORTANT]
+> 他のメンバーを `"admin"` に更新すると、代わりに管理者としての招待がメールで送信され、承認するまでは `"user"` のままです（ドメインの保留中の招待に表示されます）。`"user"` に戻すか、メンバーを削除すると、招待は取り消されます。
 
 > 例のリクエスト:
 

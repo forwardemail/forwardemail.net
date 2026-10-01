@@ -466,7 +466,7 @@ Por favor, certifique-se de que você seguiu as instruções de configuração p
 Estas instruções podem ser encontradas em [Minha Conta → Domínios → Configurações → Configuração SMTP de Saída](/my-account/domains).  Você precisa garantir a configuração de DKIM, Return-Path e DMARC para enviar SMTP de saída com seu domínio.
 ### Obter limite de email SMTP de saída {#get-outbound-smtp-email-limit}
 
-Este é um endpoint simples que retorna um objeto JSON contendo o `count` e o `limit` para o número diário de mensagens SMTP de saída por conta.
+Retorna um objeto JSON com o `count` de mensagens SMTP de saída que você enviou hoje e o `limit` de hoje. O SMTP de saída é ilimitado, e o `limit` é o seu atual [limite baseado em reputação](/faq#what-are-your-outbound-smtp-limits), que aumenta com o tempo.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Este endpoint da API codificará automaticamente emojis para você se forem enco
 | `priority`         | Não         | String           | Nível de prioridade para o email (pode ser `"high"`, `"normal"` (padrão) ou `"low"`). Note que um valor `"normal"` não define um cabeçalho de prioridade (este é o comportamento padrão). Se um valor `"high"` ou `"low"` for definido, os cabeçalhos `X-Priority`, `X-MSMail-Priority` e `Importance` [serão definidos conforme](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`          | Não         | Object ou Array  | Um Objeto ou um Array de campos de cabeçalho adicionais para definir (veja os [cabeçalhos customizados do Nodemailer](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                         |
 | `messageId`        | Não         | String           | Um valor opcional de Message-ID para o cabeçalho "Message-ID" (um valor padrão será criado automaticamente se não definido – note que o valor deve [aderir à especificação RFC2822](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                        |
-| `date`             | Não         | String ou Date   | Um valor opcional de Data que será usado se o cabeçalho Date estiver ausente após o parsing, caso contrário a string UTC atual será usada se não definido. O cabeçalho de data não pode ser mais de 30 dias à frente do tempo atual.                                                                                                                                                                                                                           |
+| `date`             | Não         | String ou Date   | Um valor opcional de Data que será usado se o cabeçalho Date estiver ausente após o parsing, caso contrário a string UTC atual será usada se não definido. O cabeçalho de data não pode ser mais de 27 dias à frente do tempo atual.                                                                                                                                                                                                                           |
 | `list`             | Não         | Object           | Um Objeto opcional de cabeçalhos `List-*` (veja os [cabeçalhos de lista do Nodemailer](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                         |
 > Exemplo de Requisição (Token API):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Se o usuário convidado já for um membro aceito de qualquer outro domínio do qual o administrador que o convida seja membro, o convite será aceito automaticamente e nenhum email será enviado.
+> Se você convidar como `"user"` alguém que já é membro aceito de outro domínio do qual você é membro, aceitamos o convite por essa pessoa e não enviamos email. Um convite como `"admin"` enviamos por email para que o convidado o aceite, e deixamos o link dele fora dos convites pendentes do domínio.
 
 ### Remover convite de domínio {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Parâmetro do Corpo | Obrigatório | Tipo                | Descrição                                                                                  |
 | ------------------ | ----------- | ------------------- | ------------------------------------------------------------------------------------------ |
 | `group`            | Sim         | String (enumerável) | Grupo para atualizar o usuário na associação do domínio (pode ser um dos valores `"admin"` ou `"user"`) |
+
+> \[!IMPORTANT]
+> Atualizar outro membro para `"admin"` envia a ele, em vez disso, um convite por email como administrador, e ele continua como `"user"` até aceitá-lo (os convites pendentes do domínio o listam). Atualizá-lo de volta para `"user"` ou removê-lo retira o convite.
 
 > Exemplo de Requisição:
 

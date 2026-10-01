@@ -78,10 +78,13 @@ async function validateAlias(ctx, next) {
       throw Boom.badRequest(ctx.translateError('ALIAS_SMTP_LIMIT_INVALID'));
 
     // Cap: alias smtp_limit cannot exceed the domain's effective SMTP limit.
-    // The domain's effective limit is the HIGHEST smtp_limit among ALL admin
-    // members of the domain (since the domain benefits from the highest-tier
-    // admin). Falls back to config.smtpLimitMessages if no admin has a custom limit.
-    if (smtpLimit > 0) {
+    // The domain's effective limit is the HIGHEST reputation-based threshold
+    // among ALL admin members of the domain (since the domain benefits from the
+    // highest-tier admin).
+    // (an unchanged value is not re-checked, since the domain's threshold
+    //  can move down with reputation after the alias limit was set)
+    const existing = ctx.state.alias?.smtp_limit;
+    if (smtpLimit > 0 && smtpLimit !== existing) {
       const domain =
         ctx.state.domain ||
         ctx.state.domains?.find(
@@ -89,7 +92,7 @@ async function validateAlias(ctx, next) {
         );
       if (domain) {
         // Use async version because domain.members.user may not be
-        // populated with smtpLimit field in this context
+        // populated with the SMTP limit fields in this context
         const domainSmtpLimit = await getDomainSmtpLimitAsync(domain, Users);
         if (smtpLimit > domainSmtpLimit)
           throw Boom.badRequest(

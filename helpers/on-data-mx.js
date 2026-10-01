@@ -83,6 +83,10 @@ const {
 } = require('#helpers/is-microsoft-outbound-spam-exempt');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const logger = require('#helpers/logger');
+const reserveAutoReply = require('#helpers/reserve-auto-reply');
+
+const { isAddressedToDomain, isAuthenticatedSender, reserveAutoReplyFor } =
+  reserveAutoReply;
 const parseError = require('#helpers/parse-error');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
@@ -339,6 +343,20 @@ function shouldSendVacationOrBounce(headers, session) {
 }
 
 async function sendVacationResponder(vacationResponder, headers, session) {
+  // only to authentic senders (so a forged sender cannot turn auto-replies
+  // into backscatter to a victim), and only for mail with an address on the
+  // alias's domain as a recipient in its headers (RFC 3834, so e.g. mail to a
+  // hidden list does not get one, while mail to another alias on the domain
+  // that forwards to it does)
+  if (
+    !isAuthenticatedSender(session) ||
+    !isAddressedToDomain(
+      headers,
+      vacationResponder.from.slice(vacationResponder.from.lastIndexOf('@') + 1)
+    )
+  )
+    return;
+
   // check cache if we've already sent this
   const key = `${config.fingerprintPrefix}:${revHash(
     encoder.pack([
@@ -351,6 +369,21 @@ async function sendVacationResponder(vacationResponder, headers, session) {
 
   const cache = await this.client.get(key);
   if (cache) return;
+
+  // (auto-replies are capped per user and per recipient per day)
+  if (
+    !(await reserveAutoReplyFor({
+      client: this.client,
+      userId: vacationResponder.user,
+      to: session.originalFromAddress
+    }))
+  ) {
+    logger.warn('vacation responder daily limit reached', {
+      user: { id: vacationResponder.user },
+      ignore_hook: true
+    });
+    return;
+  }
 
   await this.client.set(key, true, 'PX', ms('4d'));
 
@@ -570,6 +603,12 @@ async function imap(alias, headers, session, body) {
       resolvedRootClientHostname: session.resolvedRootClientHostname,
       resolvedClientHostname: session.resolvedClientHostname,
       allowlistValue: session.allowlistValue,
+      // (sieve vacation auto-replies follow the same rules as vacation
+      // responders, and go to the authenticated From address)
+      canAutoReply:
+        shouldSendVacationOrBounce(headers, session) &&
+        isAuthenticatedSender(session),
+      autoReplyTo: session.originalFromAddress,
       // Pass sender for iMIP REPLY processing (sender/attendee match validation)
       // Use checkSRS to unwrap SRS-rewritten addresses for proper sender/attendee matching
       sender: session.envelope?.mailFrom?.address

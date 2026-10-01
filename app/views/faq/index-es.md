@@ -80,6 +80,8 @@
   * [¿Puedo reenviar correos electrónicos para cualquier subdominio (subdominios comodín)?](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Cuáles son sus límites SMTP de salida](#what-are-your-outbound-smtp-limits)
   * [Necesito aprobación para habilitar SMTP](#do-i-need-approval-to-enable-smtp)
+  * [¿Qué información necesitan para aprobar o restablecer mi SMTP saliente?](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [¿Por qué los dominios recién registrados o caducados recientemente requieren un plan de pago?](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Cuáles son las configuraciones de servidor SMTP](#what-are-your-smtp-server-configuration-settings)
   * [Cuáles son las configuraciones de servidor IMAP](#what-are-your-imap-server-configuration-settings)
   * [Cuáles son las configuraciones de servidor POP3](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Puedo "enviar correo como" en Outlook con esto](#can-i-send-mail-as-in-outlook-with-this)
   * [Puedo "enviar correo como" en Apple Mail y iCloud Mail con esto](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Puedo reenviar correos ilimitados con esto](#can-i-forward-unlimited-emails-with-this)
+  * [¿Puedo enviar correos ilimitados con esto?](#can-i-send-unlimited-emails-with-this)
   * [Ofrecen dominios ilimitados por un precio](#do-you-offer-unlimited-domains-for-one-price)
   * [Qué métodos de pago aceptan](#which-payment-methods-do-you-accept)
 * [Recursos Adicionales](#additional-resources)
@@ -1035,7 +1038,7 @@ Sin embargo, si lo ven, es porque normalmente estaban acostumbrados a ver sus co
 
 Este tema está relacionado con un [problema ampliamente conocido en Gmail donde aparece información adicional junto al nombre del remitente](https://support.google.com/mail/answer/1311182).
 
-Desde mayo de 2023, ofrecemos soporte para enviar correo con SMTP como complemento para todos los usuarios de pago – lo que significa que puede eliminar el <span class="notranslate">via forwardemail dot net</span> en Gmail.
+El SMTP saliente viene con todos los planes de pago (ilimitado y [basado en la reputación](#what-are-your-outbound-smtp-limits)), así que puede eliminar el <span class="notranslate">via forwardemail dot net</span> en Gmail.
 
 Tenga en cuenta que este tema de preguntas frecuentes es específico para quienes usan la función [Cómo enviar correo como usando Gmail](#how-to-send-mail-as-using-gmail).
 
@@ -2039,6 +2042,12 @@ A diferencia de sistemas de correo como `postfix` (por ejemplo, que usan la exte
 
 8. No enviamos si la dirección MAIL FROM coincide con un patrón de remitente de ARF (p. ej., `feedback@arf.mail.yahoo.com`).
 
+9. Solo respondemos a remitentes autenticados: la dirección From debe superar DMARC o llevar una firma DKIM alineada y válida. SPF por sí solo no cuenta, ya que los servidores de correo compartidos lo superan para cualquiera. Un remitente falsificado no puede convertir sus respuestas de vacaciones en [backscatter](https://www.backscatterer.org/?target=autoresponders) dirigido a otra persona.
+
+10. Solo respondemos cuando su alias, u otra dirección de su dominio (como un alias que reenvía a él), aparece en el encabezado `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` o `Resent-Bcc`, como recomienda [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834). El correo enviado a una lista oculta de destinatarios no recibe respuesta. Las respuestas de vacaciones de Sieve necesitan su alias o una dirección de su `:addresses` en esos encabezados.
+
+11. Enviamos hasta 300 respuestas de vacaciones por usuario al día (menos si restringimos su umbral de SMTP saliente por debajo de esa cifra), y como máximo 20 por dirección de destinatario al día entre todos nuestros usuarios.
+
 ### ¿Cómo configuro SPF para Forward Email? {#how-do-i-set-up-spf-for-forward-email}
 
 Usando la página de gestión DNS de tu registrador, configura el siguiente registro <strong class="notranslate">TXT</strong>:
@@ -2340,9 +2349,11 @@ Sí, puedes leer más en <https://forwardemail.net/guides/newsletter-with-listmo
 
 Ten en cuenta que para mantener la reputación de IP y asegurar la entregabilidad, Forward Email tiene un proceso de revisión manual por dominio para la **aprobación de boletines**. Envía un correo a <support@forwardemail.net> o abre una [solicitud de ayuda](https://forwardemail.net/help) para la aprobación. Esto normalmente toma menos de 24 horas, con la mayoría de las solicitudes siendo aprobadas en 1-2 horas. En un futuro cercano, planeamos hacer este proceso instantáneo con controles adicionales de spam y alertas. Este proceso asegura que tus correos lleguen a la bandeja de entrada y que tus mensajes no sean marcados como spam.
 
+Los boletines y las listas de correo cuentan para su umbral diario de salida, que es ilimitado y aumenta con su [reputación como remitente](#what-are-your-outbound-smtp-limits). Mantenga sus listas limpias: una tasa alta de rebotes baja su umbral, y ralentizamos los aumentos repentinos de volumen.
+
 ### ¿Soportan el envío de correos electrónicos mediante API? {#do-you-support-sending-email-with-api}
 
-Sí, desde mayo de 2023 soportamos el envío de correos electrónicos mediante API como complemento para todos los usuarios de pago.
+Sí. Todos los planes de pago incluyen el envío de correo electrónico con nuestra API. Al igual que el SMTP saliente, es **ilimitado** y [basado en la reputación](#what-are-your-outbound-smtp-limits): los mensajes que envía con la API y con SMTP comparten un mismo umbral diario.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2548,7 +2559,7 @@ Para usar el soporte de contactos, el **usuario** debe ser la dirección de corr
 
 ### ¿Soportan el envío de correo electrónico con SMTP {#do-you-support-sending-email-with-smtp}
 
-Sí, desde mayo de 2023 soportamos el envío de correo electrónico con SMTP como un complemento para todos los usuarios de pago.
+Sí. Todos los planes de pago incluyen SMTP saliente, y es **ilimitado**: su umbral de envío diario aumenta con su [reputación como remitente](#what-are-your-outbound-smtp-limits).
 
 <div id="smtp-instructions">
 
@@ -3677,32 +3688,101 @@ Cuando usas <a href="#do-you-support-regular-expressions-or-regex" class="alert-
 
 ### ¿Cuáles son sus límites de SMTP saliente? {#what-are-your-outbound-smtp-limits}
 
-Aplicamos límites de tasa SMTP saliente en varios niveles para prevenir abusos y mantener la flexibilidad para usos legítimos. Cada nivel se verifica en orden — el límite que se alcance primero rechazará temporalmente el mensaje con un error `421` (que significa "inténtalo de nuevo más tarde").
+El SMTP saliente es **ilimitado** y está **basado en la reputación**. Usted recibe un umbral diario en lugar de un tope mensual fijo, y aumenta a medida que construye una buena reputación de envío.
 
-**Jerarquía de límites de tasa:**
+Los nuevos remitentes comienzan con 300 mensajes por día, o 900 en el plan Team (los remitentes del plan Team se saltan los niveles inferiores a 900, y su siguiente nivel es 1,000). Una vez al día, revisamos sus envíos recientes y subimos o bajamos su umbral. Evaluamos cada día dos días después, cuando ya conocemos los resultados de entrega de sus mensajes. Cuando esto comienza para su cuenta, revisamos hasta 30 días de su historial de envíos y recuperamos los días que no evaluamos.
 
-| Nivel | Alcance | Límite predeterminado | Descripción |
-| :---- | :---- | :-----------: | :---------- |
-| Por alias | Alias individual | Ninguno (usa el límite del dominio) | Opcional. Si un alias tiene un `smtp_limit` personalizado, se comprueba primero. |
-| Por dominio | Todos los correos enviados desde un dominio en un día | 300/día | Cuenta todos los correos salientes de todos los alias del dominio. |
-| Por usuario | Todos los correos enviados por una cuenta de usuario en un día | 300/día | Evita la elusión borrando y volviendo a crear alias o dominios. |
+Solo los envíos reales construyen reputación. El correo cuenta para subir de nivel cuando lo **entregamos** a **destinatarios únicos fuera de sus propios dominios**. El correo enviado a usted mismo, a sus propios dominios (o sus subdominios), a los dominios desde los que envía o repetido al mismo destinatario no cuenta. Las variantes de una misma dirección (un `+tag` o los puntos en una dirección de Gmail) cuentan una sola vez. Cada dominio de destinatario (con sus subdominios) cuenta para hasta 50 destinatarios al día, salvo los propios dominios de los principales proveedores de buzones (como gmail.com). Al menos una quinta parte de los destinatarios que cuentan debe ir a los principales proveedores de buzones, y los niveles superiores también necesitan un número mínimo de dominios de destinatario diferentes en un solo día.
 
-**Cómo se determina el límite efectivo:**
+* **Subida de nivel**: su umbral sube un nivel cuando ha pagado sin interrupción durante el tiempo suficiente, tiene suficientes días de envío limpios en su nivel actual y su día de mayor actividad en los últimos 7 días alcanzó al menos la mitad de su umbral actual en destinatarios entregados fuera de sus propios dominios (en suficientes dominios de destinatario diferentes). Solo cuenta el tiempo de pago sin interrupción, así que una cuenta antigua que no ha pagado (o que dejó de pagar) empieza de cero. Una renovación con hasta 14 días de retraso sigue contando como sin interrupción, y solo cuentan sus propios pagos.
+* **Día limpio**: un día en el que entregamos al menos 5 de sus mensajes a destinatarios fuera de sus propios dominios, menos del 5% de esos destinatarios rebotaron o rechazaron su correo, usted no recibió suficientes denuncias de spam o virus para un mal día (vea más abajo), y no ralentizamos sus envíos por un patrón inusual.
+* **Bajada de nivel**: un día con una tasa alta de rebotes o rechazos (5% o más de al menos 20 destinatarios fuera de sus propios dominios), o demasiadas denuncias de spam o virus de proveedores de buzones importantes (vea más abajo), baja su umbral un nivel (no por debajo del umbral inicial de su plan) y reinicia su recuento de días limpios. Un día en el que el 15% o más de ellos rebotaron o rechazaron su correo restablece en cambio su umbral al umbral inicial de su plan, y pausa la subida de nivel durante 30 días (un umbral que aprobó nuestro equipo sigue aplicándose). Solo cuentan los rechazos de su correo; por ejemplo, no cuenta que nuestras direcciones IP compartidas estén en una lista de bloqueo, ni un servidor de destinatario al que no pudimos llegar. Cada destinatario cuenta una vez sin importar cuántos mensajes le haya enviado, y un mensaje programado cuenta el día para el que lo programó. Los días sin envíos no cuentan ni a favor ni en contra.
+* **Denuncias de spam y virus**: los principales proveedores de buzones (como Gmail, Outlook y Yahoo) deciden qué cuenta como abuso, y solo contamos sus rechazos permanentes. Cada destinatario en los propios dominios de un proveedor (como gmail.com) cuenta, mientras que otros dominios que aloja un proveedor (como el Google Workspace de una empresa) cuentan una vez por dominio, y cada uno cuenta una vez al día. Contamos las denuncias como una proporción de los destinatarios a los que envió, como hacen los principales proveedores (Gmail pide a los remitentes mantenerse por debajo del 0.1% y no llegar nunca al 0.3%), así que una sola denuncia no le baja de nivel, y las denuncias sobre otros dominios que aloja un proveedor son como máximo la mitad de las denuncias necesarias. Las denuncias del 0.1% o más de los destinatarios de un día fuera de sus propios dominios, o de los del día anterior si son más, hacen un mal día (se necesitan al menos 2 denuncias y como máximo 25). Una suspensión automática de uno de sus alias no cuenta por sí sola en contra de su reputación, aunque las denuncias que la causaron sí cuentan. Las denuncias del 0.3% o más de los destinatarios fuera del dominio desde el que envió en las últimas 24 horas, incluidos los mensajes programados para ese período, restablecen su umbral al umbral inicial de su plan (300, o 900 en el plan Team) de inmediato (se necesitan al menos 3 denuncias y como máximo 50). La subida de nivel se pausa entonces durante 30 días, y un umbral que aprobó nuestro equipo no se aplica mientras tanto. En los dominios del plan Team, las denuncias también cuentan para un mal día del administrador cuyo umbral utiliza el dominio (a menos que su propio umbral sea igual de alto), con la misma proporción sobre los destinatarios de los miembros a los que se refieren, y no restablecen a ese administrador. Cuando las denuncias sobre esos miembros alcanzan la tasa de restablecimiento en 24 horas, los miembros de los dominios del administrador no pueden usar el umbral del administrador durante 30 días. Los envíos propios del administrador siguen igual, y los envíos de los miembros siguen contando para el umbral del administrador. Hacer administrador a un miembro le envía una invitación, y se convierte en administrador cuando la acepta. Las denuncias sobre respuestas automáticas y rebotes de correo enviado a usted no cuentan en su contra, mientras que las denuncias sobre notificaciones de entrega de correo que usted envió sí cuentan.
 
-* **Dominios del plan Team** — el límite diario efectivo es el mayor `smtp_limit` entre todos los administradores del dominio. Por ejemplo, si un administrador tiene un límite de 300 y otro de 500, el límite efectivo del dominio es 500.
-* **Enhanced Protection y otros planes** — el límite diario efectivo es el propio `smtp_limit` del usuario que envía (que por defecto es de 300 mensajes por día).
-* **Anulación por alias** — los administradores de dominio pueden, opcionalmente, establecer un `smtp_limit` personalizado en alias individuales. Cuando está establecido, esto se comprueba primero (antes que los límites de dominio y usuario). Esto es útil para restringir alias específicos a un volumen de envío menor.
-* **Valor predeterminado del dominio para nuevos alias** — los administradores del dominio pueden establecer un `alias_default_smtp_limit` en el dominio (a través de la API o Advanced Settings en el panel de control). Cuando se establece, todos los alias recién creados en ese dominio heredarán automáticamente este valor como su `smtp_limit`. Esto no puede exceder el límite SMTP efectivo del dominio. Los alias existentes no se ven afectados. Establecer en `0` para desactivar.
+**Niveles de reputación:**
 
-**Los administradores del sistema** (personal de Forward Email) están exentos de todos los límites de tasa.
+| Umbral diario | Tiempo mínimo de pago continuo | Días de envío limpios en el nivel anterior | Dominios de destinatario diferentes en un día |
+| --------------: | ---------------------------: | ----------------------------------: | -----------------------------------: |
+|             300 |                            – |                                   – |                                    – |
+|             500 |                       7 días |                                   5 |                                   10 |
+|           1,000 |                      14 días |                                   7 |                                   20 |
+|           2,000 |                      30 días |                                  10 |                                   40 |
+|           5,000 |                      60 días |                                  14 |                                   75 |
+|          10,000 |                     120 días |                                  21 |                                  150 |
 
-Todos los límites se aplican usando recuentos de base de datos (`Emails.countDocuments`) sobre los correos creados desde el inicio del día actual (medianoche UTC). Esto significa que su límite se restablece diariamente a la medianoche UTC.
+A partir de 10,000 mensajes por día, nuestro equipo revisa su cuenta y aumenta su umbral a mano, sin que usted tenga que hacer nada. Si necesita un umbral más alto antes (por ejemplo, para trasladar un volumen de envío existente), [contáctenos](/help). Un umbral que aprueba nuestro equipo actúa como mínimo y lo sitúa en el nivel que cubre, y su reputación aún puede aumentarlo hasta 10,000 mensajes por día.
 
-Si necesita un límite más alto, por favor [contáctenos](https://forwardemail.net/help). La mayoría de las solicitudes se atienden en 1-2 horas.
+**Patrones de envío inusuales:**
+
+Ralentizamos los envíos con un error `421` cuando su actividad parece inusual, con cualquier umbral. Esto protege nuestra cola y la reputación de nuestras IP si alguien compromete o usa indebidamente una cuenta, incluidas las cuentas que existen desde hace años o que estaban inactivas.
+
+* **Picos repentinos**: puede enviar en un día hasta 2 veces su volumen normal reciente (su día de mayor actividad en los últimos 45 días), o su umbral inicial (300 mensajes, o 900 en el plan Team y en los dominios del plan Team) o un umbral aprobado, lo que sea mayor. Actualizamos su volumen normal cada día a partir de sus envíos recientes, así que el crecimiento constante no se ve afectado, y los nuevos remitentes aumentan progresivamente a partir de su umbral inicial.
+* **Destinatarios**: un mensaje puede tener muchos destinatarios, por lo que, sumando todos sus mensajes de un día, puede llegar a hasta 2 veces el cupo de hoy en destinatarios, y los remitentes de una cuenta, en conjunto, hasta 2 veces el umbral de la cuenta. Rechazamos un solo mensaje con más destinatarios que eso con un error `550`.
+* **Ráfagas**: en cualquier hora puede enviar hasta una cuarta parte de su cupo de hoy o 2 veces su hora de mayor actividad en los últimos 45 días (pero no más de la mitad de su cupo de hoy), lo que sea mayor, y al menos su umbral inicial o un umbral aprobado. Un patrón regular, como un boletín semanal, forma parte de su volumen normal.
+* **Rebotes**: si los destinatarios rebotaron o rechazaron el 10% o más de sus mensajes de las últimas 6 horas (con al menos 50 mensajes, y sin contar los rechazos de nuestras direcciones IP compartidas), los mensajes nuevos esperan hasta que su tasa de rebotes se recupere.
+* **Acumulación en la cola**: si demasiados de sus mensajes de las últimas 24 horas siguen esperando en la cola (10% del cupo de hoy, al menos su umbral inicial), los mensajes nuevos esperan hasta que la cola se ponga al día. No cuentan los mensajes programados, los mensajes que reintentamos después de que un destinatario los aplazara ni los mensajes pendientes de aprobación, y una acumulación no cuenta en contra de su reputación.
+* **Mensajes programados**: puede programar mensajes con hasta 27 días de antelación, y tener programado hasta el cupo de un día de mensajes a la vez.
+
+Las ralentizaciones terminan cuando su actividad vuelve a la normalidad, y un día con una ralentización no cuenta como día de envío limpio. Los clientes de correo reintentan por su cuenta los mensajes aplazados, y las solicitudes a la API reciben un error `429`, así que reinténtelas más tarde.
+
+Cuando alcanza su umbral del día, rechazamos los demás mensajes con un error `421` (que significa "inténtelo de nuevo más tarde") hasta que su umbral se restablece a la medianoche UTC. Nuestras [protecciones contra abusos](#why-was-my-outbound-smtp-suspended) de spam y virus se aplican con cualquier umbral.
+
+Puede ver cuántos mensajes envió hoy y su umbral actual en [Mi cuenta → Correos electrónicos](/my-account/emails), o con la [API](/email-api#get-outbound-smtp-email-limit).
+
+**Cómo se aplican los umbrales:**
+
+| Nivel      | Alcance                                      |      Umbral predeterminado      | Descripción                                                               |
+| :--------- | :----------------------------------------- | :-------------------------: | :------------------------------------------------------------------------ |
+| Por alias | Alias individual | Ninguno (usa el límite del dominio) | Opcional. Comprobamos primero el `smtp_limit` personalizado de un alias, si lo tiene. |
+| Por cuenta | Todos los correos enviados en un día desde los dominios de los que una cuenta es administradora | Basado en la reputación (300+/día, 900+ en el plan Team) | Su umbral es válido para toda la cuenta, por lo que añadir dominios o miembros no lo multiplica. |
+| Por dominio | Todos los correos enviados desde un dominio en un día | Aumenta gradualmente dentro del umbral de la cuenta (300+/día, 900+ en el plan Team) | Cuenta todos los correos salientes de los alias del dominio. |
+| Por usuario | Todos los correos enviados por una cuenta de usuario en un día | Basado en la reputación (300+/día, 900+ en el plan Team) | Borrar y volver a crear alias o dominios no lo restablece. |
+
+* **Dominios del plan Team**: el umbral del dominio es el umbral más alto entre sus administradores de pago. Por ejemplo, si un administrador tiene un umbral de 1,000 y otro de 5,000, el umbral del dominio es 5,000. Los remitentes del plan Team comienzan con 900 mensajes por día en lugar de 300.
+* **A nivel de cuenta**: la cuenta de un dominio es su administrador de pago con el umbral más alto. Todo el correo enviado desde los dominios de los que esa cuenta es administradora cuenta para ese único umbral, sin importar quién lo envíe (miembros incluidos), así que añadir dominios o miembros no lo aumenta.
+* **Los dominios nuevos aumentan gradualmente**: dentro del umbral de la cuenta, un dominio puede enviar hasta 2 veces su día de mayor volumen de correo entregado en los últimos 45 días, y como mínimo su umbral inicial (300 mensajes, o 900 en el plan Team) o un umbral aprobado. Un dominio nuevo en una cuenta consolidada comienza en su umbral inicial y crece a medida que entregamos su correo.
+* **Rebotes y respuestas automáticas**: las notificaciones de rebote y los mensajes del contestador de vacaciones (respuesta automática) que enviamos en su nombre no cuentan para su umbral. Enviamos hasta 300 respuestas automáticas por usuario al día (menos si restringimos su umbral por debajo de esa cifra) y como máximo 20 por dirección de destinatario al día entre todos nuestros usuarios, y solo a remitentes que superaron la autenticación (consulte [respuestas de vacaciones](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Limitamos las notificaciones de rebote a una dirección de retorno fuera del dominio desde el que envió (u otros dominios de los que es administrador) a esa cifra o al 15% de su umbral diario, lo que sea mayor, y solo incluyen los encabezados identificativos del mensaje original (como `From`, `To` y `Subject`).
+* **Enhanced Protection y otros planes**: el umbral del dominio es el propio umbral del usuario que envía.
+* **Anulación por alias**: los administradores de dominio pueden establecer un `smtp_limit` personalizado en alias individuales. Lo comprobamos primero (antes que los umbrales de dominio y de usuario), lo que le permite restringir alias específicos a un volumen de envío menor.
+* **Valor predeterminado del dominio para nuevos alias**: los administradores del dominio pueden establecer un `alias_default_smtp_limit` en el dominio (con la API o con Advanced Settings en el panel de control). Los alias nuevos en ese dominio heredan entonces este valor como su `smtp_limit`. No puede superar el umbral actual del dominio, y los alias existentes conservan el suyo. Establézcalo en `0` para desactivarlo.
 
 ### ¿Necesito aprobación para habilitar SMTP? {#do-i-need-approval-to-enable-smtp}
 
 Sí, tenga en cuenta que para mantener la reputación de IP y asegurar la entregabilidad, Forward Email tiene un proceso de revisión manual por dominio para la aprobación de SMTP saliente. Envíe un correo a <support@forwardemail.net> o abra una [solicitud de ayuda](https://forwardemail.net/help) para la aprobación. Esto típicamente toma menos de 24 horas, con la mayoría de las solicitudes siendo aprobadas en 1-2 horas. En un futuro cercano, planeamos hacer este proceso instantáneo con controles adicionales de spam y alertas. Este proceso asegura que sus correos lleguen a la bandeja de entrada y que sus mensajes no sean marcados como spam.
+
+Una vez aprobado, el SMTP saliente es ilimitado y su umbral diario aumenta con su [reputación como remitente](#what-are-your-outbound-smtp-limits).
+
+### ¿Qué información necesitan para aprobar o restablecer mi SMTP saliente? {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+Cuando solicite la aprobación de SMTP saliente (o nos pida restablecerlo tras una [suspensión](#why-was-my-outbound-smtp-suspended)), tenga preparado lo siguiente:
+
+* Confirmación de que ha leído y acepta nuestros [términos](/terms), que prohíben específicamente usar el servicio para cualquier actividad incluida en las listas de [negocios prohibidos de Stripe](https://stripe.com/legal/restricted-businesses) o de [actividades prohibidas de PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).
+* Para qué tiene previsto usar el SMTP saliente.
+* Un enlace a su sitio web, información de su empresa o un perfil (p. ej., LinkedIn, GitHub) que nos permita verificar que es un remitente real y legítimo — un dominio que apunta a un sitio web en blanco o vacío es un motivo habitual de retraso en la aprobación.
+* Confirmación de que no usará el servicio para spam ni para marketing masivo o no solicitado.
+
+Es la misma información que pedimos en ambos casos, tanto si se trata de una primera aprobación como de restablecer un dominio después de una suspensión.
+
+### ¿Por qué se suspendió mi SMTP saliente? {#why-was-my-outbound-smtp-suspended}
+
+El SMTP saliente que ya ha sido aprobado puede pausarse igualmente si detectamos un patrón de abuso. Esto es independiente del [proceso de aprobación](#do-i-need-approval-to-enable-smtp) descrito arriba y de nuestros [umbrales salientes basados en la reputación](#what-are-your-outbound-smtp-limits). Se activa cuando una fuente de confianza (p. ej., un proveedor de buzones importante) denuncia su correo saliente como virus o spam.
+
+Hay dos etapas:
+
+1. **Una sola detección** le envía un aviso de "Mensaje bloqueado" sobre ese mensaje concreto — es informativo, y su cola saliente sigue funcionando.
+2. **Varias detecciones dentro de una ventana móvil corta** superan nuestro umbral de detección de abusos y generan un aviso completo de "El SMTP saliente está suspendido". En ese momento se pausa toda su cola de SMTP saliente — no se intenta enviar ningún otro mensaje saliente de ese dominio hasta que se resuelva el problema.
+
+Cualquiera de los dos avisos incluye el mensaje concreto que se marcó (`MAIL FROM`, `RCPT TO`, `Message-ID`, asunto y fecha), qué fuente de confianza y qué categoría de contenido lo marcaron, cuántas detecciones acumula respecto al umbral, cuántos destinatarios únicos y fuentes de confianza estuvieron implicados, y el código de estado y la respuesta SMTP.
+
+Si recibe uno de estos avisos, contáctenos en <support@forwardemail.net> o abra una [solicitud de ayuda](https://forwardemail.net/help) — la suspensión no se levanta automáticamente, así que tendrá que ponerse en contacto con nosotros para resolverla.
+
+### ¿Por qué los dominios recién registrados o caducados recientemente requieren un plan de pago? {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+Cuando añade un dominio (y de forma continua para los dominios del plan gratuito), realizamos una consulta WHOIS/RDAP sobre él. Si el dominio se **creó en los últimos 90 días**, **caducó en los últimos 90 días** o se encuentra actualmente en estado de **transferencia, actualización o eliminación pendiente** con su registrador, exigimos que esté en un plan de pago antes de que pueda enviar o recibir correo con él.
+
+Es una medida de prevención de abusos, no una valoración sobre usted — grandes registradores como GoDaddy, Namecheap y Hostgator han bloqueado anteriormente toda nuestra infraestructura por patrones de abuso relacionados con la apropiación de dominios caducados recientemente y con nuevos dominios registrados de forma fraudulenta. Exigir un plan de pago para estos dominios es lo que nos permite seguir ofreciendo un plan gratuito sin perder la confianza de los registradores.
+
+Los resultados de WHOIS/RDAP se almacenan en caché durante 24 horas, por lo que un dominio que acaba de superar la marca de 90 días puede tardar hasta un día en reflejarlo. Para usar el dominio de inmediato, cambie a un plan de pago (desde $3/mes con dominios, alias y SMTP saliente basado en la reputación ilimitados).
 
 ### ¿Cuáles son los ajustes de configuración de su servidor SMTP? {#what-are-your-smtp-server-configuration-settings}
 
@@ -5295,6 +5375,8 @@ Los remitentes detectados enviando spam o contenido de virus serán añadidos a 
 
 ### ¿Tienes limitación de tasa {#do-you-have-rate-limiting}
 
+Esta sección trata sobre el correo entrante. Para los envíos, consulte [Cuáles son sus límites de SMTP saliente](#what-are-your-outbound-smtp-limits).
+
 La limitación de tasa del remitente es ya sea por el dominio raíz obtenido de una búsqueda PTR inversa en la dirección IP del remitente – o si eso no da resultado, entonces simplemente usa la dirección IP del remitente. Nota que nos referimos a esto como `Sender` a continuación.
 
 Nuestros servidores MX tienen límites diarios para el correo entrante recibido para [almacenamiento IMAP cifrado](/blog/docs/best-quantum-safe-encrypted-email-service):
@@ -5340,6 +5422,8 @@ El límite diario es un presupuesto único compartido entre todos los protocolos
 Estos límites son por cuenta de usuario (no por alias o dominio) y se restablecen diariamente.  Esto significa que crear alias adicionales no aumenta su asignación de ancho de banda.  Si Redis no está disponible, la limitación de velocidad se omite por completo (fail-open) para que su servicio nunca se interrumpa.
 
 Si necesita límites más altos para un caso de uso específico (por ejemplo, migrar un archivo muy grande), por favor [contáctenos](https://forwardemail.net/help).
+
+Estos límites cubren los datos transferidos. Nuestros [umbrales de salida basados en la reputación](#what-are-your-outbound-smtp-limits) cubren la cantidad de mensajes que puede enviar.
 
 ### ¿Cómo protegen contra el backscatter {#how-do-you-protect-against-backscatter}
 
@@ -5766,13 +5850,9 @@ Usamos verificación de registros MX y <strong class="notranslate">TXT</strong>,
 
 ### ¿Cómo aumento mi almacenamiento o el límite de envío de SMTP saliente {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Ve a <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mi cuenta → Facturación</a> y desplázate hasta la sección **Complementos**, que tiene dos formularios de solicitud:
+**Almacenamiento**: vaya a <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mi cuenta → Facturación</a> y desplácese hasta la sección **Complementos**. Elija una cantidad para añadir (+10, +20, +30, +40, o +50 GB), o seleccione "Other" para solicitar una cantidad personalizada. Al enviar el formulario, su solicitud llega a nuestro equipo para su revisión y todavía no se le cobra nada. Cuando la aprobemos, le enviaremos por correo electrónico un enlace de pago seguro para completar la mejora. Puede tener una solicitud de almacenamiento pendiente a la vez, y no puede enviar otra dentro de los 3 días posteriores a una solicitud anterior.
 
-* **Mejora de almacenamiento** — elige una cantidad para añadir (+10, +20, +30, +40, o +50 GB), o selecciona "Other" para solicitar una cantidad personalizada.
-* **Mejora del límite de SMTP saliente** — elige una cantidad para añadir (+1000, +2000, o +3000 correos electrónicos diarios), o selecciona "Other" para solicitar una cantidad personalizada.
-
-Al enviar cualquiera de los formularios, tu solicitud se envía a nuestro equipo para su revisión — no se te cobrará de inmediato. Una vez aprobada, te enviaremos por correo electrónico un enlace de pago seguro para completar la mejora. Puedes tener una solicitud pendiente por tipo (almacenamiento o SMTP) a la vez; enviar otra dentro de los 3 días posteriores a una solicitud anterior del mismo tipo no está permitido hasta que pase ese período.
-
+**SMTP saliente**: no hay nada que comprar. El SMTP saliente es ilimitado y su umbral diario aumenta con su [reputación como remitente](#what-are-your-outbound-smtp-limits). <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mi cuenta → Facturación</a> y <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Mi cuenta → Correos electrónicos</a> muestran su umbral actual, su nivel de reputación y los requisitos para el siguiente nivel.
 
 ### ¿Qué incluye la Enterprise License {#what-is-included-in-the-enterprise-license}
 
@@ -5894,6 +5974,12 @@ Sí, sin embargo, los remitentes "relativamente desconocidos" tienen un límite 
 Por "relativamente desconocidos" nos referimos a remitentes que no aparecen en la [lista blanca](#do-you-have-an-allowlist).
 
 Si se excede este límite, enviamos un código de respuesta 421 que indica al servidor de correo del remitente que intente nuevamente más tarde.
+
+### ¿Puedo enviar correos ilimitados con esto? {#can-i-send-unlimited-emails-with-this}
+
+Sí. El SMTP saliente y nuestra API de correo electrónico son ilimitados en todos los planes de pago (desde $3/mo). Usted recibe un umbral diario en lugar de un tope mensual fijo, y aumenta mientras siga pagando y construya un historial de envío limpio: desde 300 mensajes por día para los nuevos remitentes (900 en el plan Team) hasta 10,000 por día, y más allá cuando nuestro equipo revise su cuenta.
+
+Solo el correo entregado a destinatarios reales fuera de sus propios dominios construye reputación. Para proteger la entregabilidad, una tasa alta de rebotes baja su umbral, las denuncias de spam y de virus de los principales proveedores de buzones lo restablecen, y ralentizamos los patrones inusuales (como un pico repentino desde una cuenta inactiva). Consulte [Cuáles son sus límites de SMTP saliente](#what-are-your-outbound-smtp-limits) para más detalles, y su umbral actual en [Mi cuenta → Correos electrónicos](/my-account/emails).
 
 ### ¿Ofrecen dominios ilimitados por un solo precio? {#do-you-offer-unlimited-domains-for-one-price}
 

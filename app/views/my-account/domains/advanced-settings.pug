@@ -1108,17 +1108,19 @@ block body
                               td.align-middle
                                 ul.list-inline.mb-0
                                   //- copy invite link
-                                  li.list-inline-item
-                                    button.btn.btn-primary.copy-invite-btn(
-                                      type="button",
-                                      data-toggle="modal",
-                                      data-target="#modal-copy-invite",
-                                      data-invite-link=`${config.urls.web}/my-account/domains/${domain.id}/invites/${invite.token}`,
-                                      disabled=isTeamDisabled
-                                    )
-                                      i.fa.fa-clipboard
-                                      = " "
-                                      = t("Copy Invite Link")
+                                  //- (not for an invite as an admin, whose link is only sent to the invitee)
+                                  if invite.group !== "admin"
+                                    li.list-inline-item
+                                      button.btn.btn-primary.copy-invite-btn(
+                                        type="button",
+                                        data-toggle="modal",
+                                        data-target="#modal-copy-invite",
+                                        data-invite-link=`${config.urls.web}/my-account/domains/${domain.id}/invites/${invite.token}`,
+                                        disabled=isTeamDisabled
+                                      )
+                                        i.fa.fa-clipboard
+                                        = " "
+                                        = t("Copy Invite Link")
                                   //- delete invite
                                   li.list-inline-item
                                     form.ajax-form.confirm-prompt.d-inline-block(

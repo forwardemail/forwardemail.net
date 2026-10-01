@@ -86,6 +86,27 @@ mixin feProduct
             li.fe-chip.fe-chip--code CardDAV
             li.fe-chip.fe-chip--code= t("Webhooks")
 
+      //- Unlimited, reputation-based sending (see config.smtpReputationTiers)
+      - const feSendingTiers = config.smtpReputationTiers;
+      .fe-panel.fe-sending
+        div
+          p.fe-eyebrow.fe-label
+            i.fa.fa-paper-plane(aria-hidden="true")
+            = t("Unlimited sending")
+          h3.fe-display-sm.fe-sending__title= t("Unlimited outbound email, earned by reputation.")
+          p.fe-text.fe-sending__body= t("Send with SMTP or the API on any paid plan from $%d/mo. New senders start at %d messages per day (%d on the Team plan), and the daily threshold grows as you keep paying and send clean mail.", planPricing.enhanced, feSendingTiers[0].limit, config.smtpTeamLimitMessages)
+          a.fe-feature__link(href=l("/faq#what-are-your-outbound-smtp-limits"))= t("How sending thresholds work")
+        div
+          ol.fe-sending__tiers(aria-label=t("Daily sending thresholds"))
+            each tier, index in feSendingTiers
+              li.fe-chip.fe-numeral(
+                class=index === feSendingTiers.length - 1 ? "fe-sending__tier--top" : ""
+              )
+                = tier.limit.toLocaleString("en")
+                if index === feSendingTiers.length - 1
+                  | +
+          p.fe-sending__unit= t("messages per day, unlocked as your reputation grows")
+
 mixin feStep(num, dot, title, desc)
   li.fe-stepper__step
     span.fe-stepper__num.fe-code= num

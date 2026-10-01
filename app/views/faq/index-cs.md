@@ -80,6 +80,8 @@
   * [Mohu přeposílat e-maily pro jakoukoli subdoménu (zástupné subdomény)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Jaké jsou vaše limity pro odchozí SMTP](#what-are-your-outbound-smtp-limits)
   * [Potřebuji schválení pro povolení SMTP](#do-i-need-approval-to-enable-smtp)
+  * [Jaké informace potřebujete ke schválení nebo obnovení mého odchozího SMTP](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [Proč nově registrované nebo nedávno expirované domény vyžadují placený plán](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Jaká jsou nastavení konfigurace vašeho SMTP serveru](#what-are-your-smtp-server-configuration-settings)
   * [Jaká jsou nastavení konfigurace vašeho IMAP serveru](#what-are-your-imap-server-configuration-settings)
   * [Jaká jsou nastavení konfigurace vašeho POP3 serveru](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Mohu "odesílat poštu jako" v Outlook s tímto](#can-i-send-mail-as-in-outlook-with-this)
   * [Mohu "odesílat poštu jako" v Apple Mail a iCloud Mail s tímto](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Mohu přeposílat neomezené množství emailů s tímto](#can-i-forward-unlimited-emails-with-this)
+  * [Mohu s tímto odesílat neomezené množství e-mailů](#can-i-send-unlimited-emails-with-this)
   * [Nabízíte neomezené domény za jednu cenu](#do-you-offer-unlimited-domains-for-one-price)
   * [Jaké způsoby platby přijímáte](#which-payment-methods-do-you-accept)
 * [Další zdroje](#additional-resources)
@@ -1035,7 +1038,7 @@ Pokud se jim však tato zpráva zobrazí, je to proto, že byli zvyklí vidět v
 
 Toto téma souvisí s [dobře známým problémem v Gmailu, kdy se vedle jména odesílatele zobrazují další informace](https://support.google.com/mail/answer/1311182).
 
-Od května 2023 podporujeme odesílání e-mailů přes SMTP jako doplněk pro všechny placené uživatele – což znamená, že můžete odstranit <span class="notranslate">via forwardemail dot net</span> v Gmailu.
+Odchozí SMTP je součástí všech placených plánů (neomezené a [založené na reputaci](#what-are-your-outbound-smtp-limits)), takže můžete odstranit <span class="notranslate">via forwardemail dot net</span> v Gmailu.
 
 Upozorňujeme, že toto FAQ je specifické pro ty, kteří používají funkci [Jak odesílat poštu jako pomocí Gmailu](#how-to-send-mail-as-using-gmail).
 
@@ -2038,6 +2041,12 @@ Na rozdíl od poštovních systémů jako `postfix` (např. které používají 
 
 8. Neodesíláme, pokud adresa MAIL FROM odpovídá vzoru odesílatele ARF zpětné vazby (např. `feedback@arf.mail.yahoo.com`).
 
+9. Odpovídáme pouze ověřeným odesílatelům: adresa From musí projít DMARC nebo nést zarovnaný a platný podpis DKIM. Samotné SPF se nepočítá, protože sdílené poštovní servery ho projdou pro kohokoli. Podvržený odesílatel nemůže z vašich odpovědí při nepřítomnosti udělat [backscatter](https://www.backscatterer.org/?target=autoresponders) mířený na někoho jiného.
+
+10. Odpovídáme pouze tehdy, když se váš alias nebo jiná adresa na jeho doméně (například alias, který na něj přeposílá) objeví v hlavičce `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` nebo `Resent-Bcc`, jak doporučuje [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834). Pošta odeslaná skrytému seznamu příjemců odpověď nedostane. Odpovědi při nepřítomnosti v Sieve vyžadují váš alias nebo adresu z jejich `:addresses` v těchto hlavičkách.
+
+11. Odesíláme nejvýše 300 odpovědí při nepřítomnosti na uživatele za den (méně, pokud jsme váš práh odchozího SMTP omezili pod tuto hodnotu) a nejvýše 20 na adresu příjemce za den napříč všemi našimi uživateli.
+
 ### Jak nastavit SPF pro Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
 Pomocí stránky pro správu DNS u vašeho registrátora nastavte následující <strong class="notranslate">TXT</strong> záznam:
@@ -2339,9 +2348,11 @@ Ano, více si můžete přečíst na <https://forwardemail.net/guides/newsletter
 
 Vezměte prosím na vědomí, že pro udržení reputace IP a zajištění doručitelnosti má Forward Email manuální proces schvalování na úrovni jednotlivých domén pro **schválení newsletteru**. Napište na <support@forwardemail.net> nebo otevřete [žádost o pomoc](https://forwardemail.net/help) pro schválení. Tento proces obvykle trvá méně než 24 hodin, většina žádostí je vyřízena během 1-2 hodin. V blízké budoucnosti plánujeme tento proces zautomatizovat s dalšími kontrolami spamu a upozorněními. Tento proces zajišťuje, že vaše e-maily dorazí do schránky a vaše zprávy nebudou označeny jako spam.
 
+Newslettery a mailing listy se započítávají do vašeho denního odchozího prahu, který je neomezený a zvyšuje se s vaší [reputací odesílatele](#what-are-your-outbound-smtp-limits). Udržujte své seznamy čisté: vysoká míra nedoručitelnosti váš práh sníží a náhlé skoky v objemu zpomalujeme.
+
 ### Podporujete odesílání e-mailů přes API {#do-you-support-sending-email-with-api}
 
-Ano, od května 2023 podporujeme odesílání e-mailů přes API jako doplněk pro všechny placené uživatele.
+Ano. Všechny placené plány zahrnují odesílání e-mailů přes naše API. Stejně jako odchozí SMTP je **neomezené** a [založené na reputaci](#what-are-your-outbound-smtp-limits): zprávy, které odešlete přes API a přes SMTP, sdílejí jeden denní práh.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2547,7 +2558,7 @@ Pro použití podpory kontaktů musí být **uživatel** emailová adresa aliasu
 
 ### Podporujete odesílání emailů přes SMTP {#do-you-support-sending-email-with-smtp}
 
-Ano, od května 2023 podporujeme odesílání emailů přes SMTP jako doplněk pro všechny placené uživatele.
+Ano. Všechny placené plány zahrnují odchozí SMTP a je **neomezené**: váš denní práh odesílání se zvyšuje s vaší [reputací odesílatele](#what-are-your-outbound-smtp-limits).
 
 <div id="smtp-instructions">
 
@@ -3676,32 +3687,101 @@ Když v příjemci (nahrazení) použijete <a href="#do-you-support-regular-expr
 
 ### Jaké jsou vaše limity pro odchozí SMTP {#what-are-your-outbound-smtp-limits}
 
-Uplatňujeme limity odchozích SMTP rychlostí na několika úrovních, abychom zabránili zneužití a zároveň zachovali flexibilitu pro legitimní použití. Každá úroveň je kontrolována postupně — kterákoliv limit dosažený jako první dočasně odmítne zprávu s chybou `421` (což znamená „zkuste to později“).
+Odchozí SMTP je **neomezené** a **založené na reputaci**. Místo pevného měsíčního stropu máte denní práh, který roste, jak si budujete dobrou reputaci odesílání.
 
-**Hierarchie omezení rychlosti:**
+Noví odesílatelé začínají na 300 zprávách denně, v plánu Team na 900 (odesílatelé v plánu Team přeskakují úrovně pod 900 a jejich další úrovní je 1,000). Jednou denně projdeme vaše nedávné odesílání a váš práh zvýšíme nebo snížíme. Každý den vyhodnocujeme o dva dny později, jakmile známe výsledky doručení jeho zpráv. Když se to pro váš účet spustí, podíváme se až 30 dní zpět do vaší historie odesílání a doženeme dny, které jsme vynechali.
 
-| Úroveň | Rozsah | Výchozí limit | Popis |
-| :---- | :---- | :-----------: | :---------- |
-| Pro alias | Jednotlivý alias | Žádný (použije se limit domény) | Volitelné. Pokud má alias nastavený vlastní `smtp_limit`, kontroluje se jako první. |
-| Pro doménu | Všechny e-maily odeslané z domény za den | 300/day | Započítává všechny odchozí e-maily napříč všemi aliasy na doméně. |
-| Pro uživatele | Všechny e-maily odeslané uživatelským účtem za den | 300/day | Zabraňuje obejití odstraněním a znovuvytvořením aliasů nebo domén. |
+Reputaci buduje pouze skutečné odesílání. Pošta se započítává do postupu výše, jakmile ji **doručíme** **unikátním příjemcům mimo vaše vlastní domény**. Pošta sobě, na vaše vlastní domény (nebo jejich subdomény), na domény, ze kterých odesíláte, nebo opakovaně stejnému příjemci se nezapočítává. Varianty jedné adresy (`+tag` nebo tečky v adrese Gmail) se započítávají jednou. Každá doména příjemce (s jejími subdoménami) se započítává nejvýše pro 50 příjemců denně, kromě vlastních domén velkých poskytovatelů poštovních schránek (například gmail.com). Alespoň pětina započítaných příjemců musí směřovat k velkým poskytovatelům poštovních schránek a vyšší úrovně navíc vyžadují minimální počet různých domén příjemců během jediného dne.
 
-**Jak se určí efektivní limit:**
+* **Postup výše**: váš práh se zvýší o jednu úroveň, jakmile platíte dostatečně dlouho bez přerušení, máte na aktuální úrovni dostatek čistých dnů odesílání a váš nejvytíženější den za posledních 7 dní dosáhl alespoň poloviny vašeho aktuálního prahu v počtu doručených příjemců mimo vaše vlastní domény (napříč dostatečným počtem různých domén příjemců). Započítává se pouze placená doba bez přerušení, takže starší účet, který neplatil (nebo platit přestal), začíná znovu od začátku. Obnovení opožděné až o 14 dní se stále počítá jako bez přerušení a započítávají se pouze vaše vlastní platby.
+* **Čistý den**: den, kdy jsme alespoň 5 vašich zpráv doručili příjemcům mimo vaše vlastní domény, méně než 5% těchto příjemců vaši poštu vrátilo jako nedoručitelnou nebo odmítlo, nedostali jste dost hlášení spamu či virů na špatný den (viz níže) a nezpomalili jsme vaše odesílání kvůli neobvyklému vzorci.
+* **Posun níže**: den s vysokou mírou nedoručitelnosti nebo odmítnutí (5% nebo více z alespoň 20 příjemců mimo vaše vlastní domény) nebo s příliš mnoha hlášeními spamu či virů od velkých poskytovatelů poštovních schránek (viz níže) sníží váš práh o jednu úroveň (ne pod počáteční práh vašeho plánu) a vynuluje počet čistých dnů. Den, kdy 15% nebo více z nich vaši poštu vrátilo jako nedoručitelnou nebo odmítlo, místo toho vrátí váš práh na počáteční práh vašeho plánu a na 30 dní pozastaví postup výše (práh schválený naším týmem stále platí). Počítají se pouze odmítnutí vaší pošty, tedy například ne to, že jsou naše sdílené IP adresy na blocklistu, ani server příjemce, na který jsme se nedostali. Každý příjemce se počítá jednou bez ohledu na to, kolik zpráv jste mu poslali, a naplánovaná zpráva se počítá v den, na který jste ji naplánovali. Dny bez odesílání se nezapočítávají ve váš prospěch ani neprospěch.
+* **Hlášení spamu a virů**: velcí poskytovatelé poštovních schránek (například Gmail, Outlook a Yahoo) rozhodují, co se počítá jako zneužití, a my započítáváme pouze jejich trvalá odmítnutí. Každý příjemce na vlastních doménách poskytovatele (například gmail.com) se započítává zvlášť, zatímco ostatní domény, které poskytovatel hostuje (například Google Workspace nějaké firmy), se započítávají jednou za doménu, a každý se započítává jednou denně. Hlášení počítáme jako podíl příjemců, kterým jste odesílali, stejně jako to dělají velcí poskytovatelé (Gmail žádá odesílatele, aby zůstali pod 0.1% a nikdy nedosáhli 0.3%), takže jediné hlášení vás neposune níže, a hlášení o ostatních doménách, které poskytovatel hostuje, tvoří nejvýše polovinu potřebných hlášení. Hlášení u 0.1% nebo více denních příjemců mimo vaše vlastní domény, nebo příjemců předchozího dne, pokud jich bylo více, znamenají špatný den (je potřeba alespoň 2 a nejvýše 25 hlášení). Automatické pozastavení některého z vašich aliasů se samo o sobě do vaší reputace nezapočítává, hlášení za ním však ano. Hlášení u 0.3% nebo více příjemců mimo doménu, ze které jste odesílali, za posledních 24 hodin, včetně zpráv naplánovaných na tuto dobu, okamžitě vrátí váš práh na počáteční práh vašeho plánu (300, nebo 900 v plánu Team) (je potřeba alespoň 3 a nejvýše 50 hlášení). Postup výše se pak na 30 dní pozastaví a práh schválený naším týmem mezitím neplatí. U domén v plánu Team se hlášení započítávají také do špatného dne administrátora, jehož práh doména používá (pokud váš vlastní práh není stejně vysoký), a to ve stejném poměru k příjemcům členů, kterých se týkají, a tohoto administrátora neresetují. Jakmile hlášení o těchto členech dosáhnou během 24 hodin míry pro reset, členové domén administrátora nemohou 30 dní používat jeho práh. Vlastní odesílání administrátora zůstává stejné a odesílání členů se do prahu administrátora stále započítává. Když člena uděláte administrátorem, dostane pozvánku a administrátorem se stane, jakmile ji přijme. Hlášení týkající se automatických odpovědí a nedoručitelnosti pošty zaslané vám se vám nezapočítávají, hlášení týkající se oznámení o doručení pošty, kterou jste odeslali, ano.
 
-* **Domény v plánu Team** — efektivní denní limit je nejvyšší `smtp_limit` mezi všemi administrátory domény. Například, pokud jeden administrátor má limit 300 a jiný 500, efektivní limit domény bude 500.
-* **Enhanced Protection a další plány** — efektivní denní limit je vlastní `smtp_limit` odesílajícího uživatele (ve výchozím nastavení 300 zpráv za den).
-* **Přepsání pro alias** — správci domény mohou volitelně nastavit vlastní `smtp_limit` na jednotlivých aliasech. Když je nastaven, kontroluje se jako první (před limity domény a uživatele). To je užitečné pro omezení konkrétních aliasů na nižší objem odeslaných zpráv.
-* **Výchozí nastavení domény pro nové aliasy** — správci domény mohou pro doménu nastavit `alias_default_smtp_limit` (přes API nebo v pokročilých nastaveních na ovládacím panelu). Pokud je nastaveno, všechny nově vytvořené aliasy na této doméně automaticky převezmou tuto hodnotu jako svůj `smtp_limit`. Tato hodnota nesmí překročit efektivní SMTP limit domény. Existující aliasy nejsou tímto ovlivněny. Nastavte na `0` pro deaktivaci.
+**Úrovně reputace:**
 
-* **Systémoví administrátoři** (zaměstnanci Forward Email) jsou osvobozeni od všech omezení rychlosti.
+| Denní práh | Minimální doba nepřetržitého placení | Čisté dny odesílání na předchozí úrovni | Různé domény příjemců za den |
+| --------------: | ---------------------------: | ----------------------------------: | -----------------------------------: |
+|             300 |                            – |                                   – |                                    – |
+|             500 |                        7 dní |                                   5 |                                   10 |
+|           1,000 |                       14 dní |                                   7 |                                   20 |
+|           2,000 |                       30 dní |                                  10 |                                   40 |
+|           5,000 |                       60 dní |                                  14 |                                   75 |
+|          10,000 |                      120 dní |                                  21 |                                  150 |
 
-Veškeré omezování rychlosti se uplatňuje pomocí počtů v databázi (`Emails.countDocuments`) vůči e-mailům vytvořeným od začátku aktuálního dne (půlnoc UTC). To znamená, že váš limit se obnovuje každý den o půlnoci UTC.
+Nad 10,000 zpráv denně náš tým posoudí váš účet a zvýší váš práh ručně, aniž byste museli cokoli dělat. Pokud potřebujete vyšší práh dříve (například kvůli přesunu stávajícího objemu odesílání), [kontaktujte nás](/help). Práh schválený naším týmem slouží jako minimum a zařadí vás na úroveň, které odpovídá, a vaše reputace jej může dále zvyšovat až na 10,000 zpráv denně.
 
-Pokud potřebujete vyšší limit, prosím [kontaktujte nás](https://forwardemail.net/help). Většina požadavků je uspokojena během 1–2 hodin.
+**Neobvyklé vzorce odesílání:**
+
+Při jakémkoli prahu zpomalujeme odesílání s chybou `421`, když vaše aktivita vypadá neobvykle. To chrání naši frontu a reputaci IP adres, pokud někdo účet kompromituje nebo zneužije, včetně účtů, které existují roky nebo byly neaktivní.
+
+* **Náhlé špičky**: za den můžete odeslat až 2násobek svého nedávného běžného objemu (vašeho nejvytíženějšího dne za posledních 45 dní), nebo váš počáteční práh (300 zpráv, nebo 900 v plánu Team a u domén v plánu Team) či schválený práh, podle toho, co je vyšší. Váš běžný objem aktualizujeme každý den podle vašeho nedávného odesílání, takže plynulý růst není ovlivněn, a noví odesílatelé postupně navyšují objem od svého počátečního prahu.
+* **Příjemci**: zpráva může mít mnoho příjemců, takže napříč všemi svými zprávami za den můžete oslovit až 2násobek dnešního povoleného objemu v počtu příjemců, a odesílatelé jednoho účtu dohromady až 2násobek prahu účtu. Jednotlivou zprávu s větším počtem příjemců odmítneme s chybou `550`.
+* **Nárazy**: během kterékoli hodiny můžete odeslat až čtvrtinu dnešního povoleného objemu, nebo 2násobek své nejvytíženější hodiny za posledních 45 dní (ale ne více než polovinu dnešního povoleného objemu), podle toho, co je vyšší, a alespoň váš počáteční práh nebo schválený práh. Pravidelný vzorec, například týdenní newsletter, je součástí vašeho běžného objemu.
+* **Nedoručitelnost**: pokud příjemci vrátili jako nedoručitelné nebo odmítli 10% nebo více vašich zpráv z posledních 6 hodin (při alespoň 50 zprávách a bez započítání odmítnutí našich sdílených IP adres), nové zprávy počkají, dokud se vaše míra nedoručitelnosti nezlepší.
+* **Nevyřízená fronta**: pokud ve frontě stále čeká příliš mnoho vašich zpráv z posledních 24 hodin (10% dnešního povoleného objemu, alespoň váš počáteční práh), nové zprávy počkají, dokud fronta nedožene zpoždění. Nezapočítávají se naplánované zprávy, zprávy, které znovu odesíláme poté, co je příjemce odložil, ani zprávy čekající na schválení, a nevyřízená fronta se nezapočítává v neprospěch vaší reputace.
+* **Naplánované zprávy**: zprávy můžete naplánovat až 27 dní dopředu a najednou mít naplánováno až tolik zpráv, kolik činí denní povolený objem.
+
+Zpomalení skončí, jakmile se vaše aktivita vrátí do normálu, a den se zpomalením se nepočítá jako čistý den odesílání. Poštovní klienti odložené zprávy odešlou znovu sami a požadavky přes API dostanou chybu `429`, takže je zopakujte později.
+
+Jakmile dosáhnete svého prahu pro daný den, další zprávy odmítáme s chybou `421` (což znamená „zkuste to později“), dokud se váš práh o půlnoci UTC neobnoví. Naše [ochrana proti zneužití](#why-was-my-outbound-smtp-suspended) spamem a viry platí při jakémkoli prahu.
+
+Kolik zpráv jste dnes odeslali a jaký je váš aktuální práh, zjistíte v sekci [Můj účet → E-maily](/my-account/emails) nebo pomocí [API](/email-api#get-outbound-smtp-email-limit).
+
+**Jak se prahy uplatňují:**
+
+| Úroveň      | Rozsah                                      |      Výchozí práh      | Popis                                                               |
+| :--------- | :----------------------------------------- | :-------------------------: | :------------------------------------------------------------------------ |
+| Pro alias | Jednotlivý alias | Žádný (použije se limit domény) | Volitelné. Vlastní `smtp_limit` aliasu kontrolujeme jako první, pokud ho alias má. |
+| Pro účet | Všechny e-maily odeslané za den z domén, jejichž je účet administrátorem | Na základě reputace (300+/den, 900+ v plánu Team) | Váš práh platí pro celý účet, takže přidáním domén nebo členů se nenásobí. |
+| Pro doménu | Všechny e-maily odeslané z domény za den | Postupně roste v rámci prahu účtu (300+/den, 900+ v plánu Team) | Započítává všechny odchozí e-maily napříč aliasy na doméně. |
+| Pro uživatele | Všechny e-maily odeslané uživatelským účtem za den | Na základě reputace (300+/den, 900+ v plánu Team) | Odstranění a znovuvytvoření aliasů nebo domén ho nevynuluje. |
+
+* **Domény v plánu Team**: práh domény je nejvyšší práh mezi jejími platícími administrátory. Pokud má například jeden administrátor práh 1,000 a jiný 5,000, práh domény je 5,000. Odesílatelé v plánu Team začínají na 900 zprávách denně místo 300.
+* **Celý účet**: účtem domény je její platící administrátor s nejvyšším prahem. Veškerá pošta odeslaná z domén, jejichž je tento účet administrátorem, se počítá do tohoto jediného prahu bez ohledu na odesílatele (včetně členů), takže přidáním domén nebo členů se práh nezvyšuje.
+* **Nové domény postupně rostou**: v rámci prahu účtu může doména odeslat až 2násobek svého nejvytíženějšího dne doručené pošty za posledních 45 dní, a nejméně svůj počáteční práh (300 zpráv, nebo 900 v plánu Team) či schválený práh. Nová doména na zavedeném účtu začíná na svém počátečním prahu a roste, jak doručujeme její poštu.
+* **Nedoručitelky a automatické odpovědi**: oznámení o nedoručení a zprávy automatické odpovědi při nepřítomnosti (auto-reply), které za vás odesíláme, se do vašeho prahu nepočítají. Odesíláme nejvýše 300 automatických odpovědí na uživatele za den (méně, pokud jsme váš práh omezili pod tuto hodnotu) a nejvýše 20 na adresu příjemce za den napříč všemi našimi uživateli, a to pouze odesílatelům, kteří prošli ověřením (viz [automatické odpovědi při nepřítomnosti](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Oznámení o nedoručení na návratovou adresu mimo doménu, ze které jste odesílali (nebo jiné domény, jejichž jste administrátorem), omezujeme na tento počet nebo 15% vašeho denního prahu, podle toho, co je vyšší, a obsahují pouze identifikační hlavičky původní zprávy (například `From`, `To` a `Subject`).
+* **Enhanced Protection a další plány**: práh domény je vlastní práh odesílajícího uživatele.
+* **Přepsání pro alias**: správci domény mohou nastavit vlastní `smtp_limit` na jednotlivých aliasech. Kontrolujeme ho jako první (před prahy domény a uživatele), takže můžete omezit konkrétní aliasy na nižší objem odesílání.
+* **Výchozí nastavení domény pro nové aliasy**: správci domény mohou pro doménu nastavit `alias_default_smtp_limit` (přes API nebo v pokročilých nastaveních na ovládacím panelu). Nové aliasy na této doméně pak převezmou tuto hodnotu jako svůj `smtp_limit`. Nesmí překročit aktuální práh domény a stávající aliasy si ponechají svůj vlastní. Nastavením na `0` funkci vypnete.
 
 ### Potřebuji schválení pro povolení SMTP {#do-i-need-approval-to-enable-smtp}
 
 Ano, mějte prosím na paměti, že pro udržení reputace IP a zajištění doručitelnosti má Forward Email manuální proces schvalování odchozího SMTP na základě jednotlivých domén. Napište na <support@forwardemail.net> nebo otevřete [žádost o pomoc](https://forwardemail.net/help) pro schválení. Tento proces obvykle trvá méně než 24 hodin, většina žádostí je vyřízena během 1-2 hodin. V blízké budoucnosti plánujeme tento proces zautomatizovat s dalšími kontrolami spamu a upozorněními. Tento proces zajišťuje, že vaše e-maily dorazí do schránky a vaše zprávy nebudou označeny jako spam.
+
+Po schválení je odchozí SMTP neomezené a váš denní práh se zvyšuje s vaší [reputací odesílatele](#what-are-your-outbound-smtp-limits).
+
+### Jaké informace potřebujete ke schválení nebo obnovení mého odchozího SMTP {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+Když žádáte o schválení odchozího SMTP (nebo nás žádáte o jeho obnovení po [pozastavení](#why-was-my-outbound-smtp-suspended)), připravte si:
+
+* Potvrzení, že jste si přečetli naše [podmínky](/terms) a souhlasíte s nimi – ty výslovně zakazují používat službu k čemukoli ze seznamů [zakázaných podniků Stripe](https://stripe.com/legal/restricted-businesses) nebo [zakázaných činností PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).
+* K čemu hodláte odchozí SMTP používat.
+* Odkaz na váš web, informace o vaší firmě nebo profil (např. LinkedIn, GitHub), podle kterého můžeme ověřit, že jste skutečný a legitimní odesílatel — doména odkazující na prázdný web je častým důvodem, proč se schválení zdrží.
+* Potvrzení, že službu nebudete používat ke spamu ani k hromadnému či nevyžádanému marketingu.
+
+Jde o stejné informace v obou případech, ať už jde o první schválení, nebo o obnovení domény po pozastavení.
+
+### Proč bylo mé odchozí SMTP pozastaveno {#why-was-my-outbound-smtp-suspended}
+
+I již schválené odchozí SMTP může být pozastaveno, pokud zjistíme vzorec zneužívání. To je oddělené od [procesu schvalování](#do-i-need-approval-to-enable-smtp) výše i od našich [odchozích prahů založených na reputaci](#what-are-your-outbound-smtp-limits). Spustí se, když důvěryhodný zdroj (např. velký poskytovatel e-mailových schránek) nahlásí vaši odchozí poštu jako virus nebo spam.
+
+Existují dvě fáze:
+
+1. **Jedna detekce** vám pošle oznámení „Zpráva zablokována“ pro tuto jednu zprávu — jde pouze o informaci a vaše odchozí fronta běží dál.
+2. **Více detekcí v krátkém klouzavém okně** překročí náš práh detekce zneužití a spustí úplné oznámení „Odchozí SMTP je pozastaveno“. V tu chvíli se pozastaví celá vaše odchozí fronta SMTP — pro danou doménu se až do vyřešení problému nebudou odesílat žádné další odchozí zprávy.
+
+Každé z oznámení obsahuje konkrétní označenou zprávu (`MAIL FROM`, `RCPT TO`, `Message-ID`, předmět a datum), který důvěryhodný zdroj a jaká kategorie obsahu ji označily, kolik detekcí máte vzhledem k prahu, kolik jedinečných příjemců a důvěryhodných zdrojů bylo zapojeno a stavový kód a odpověď SMTP.
+
+Pokud obdržíte jedno z těchto oznámení, kontaktujte nás na <support@forwardemail.net> nebo otevřete [žádost o pomoc](https://forwardemail.net/help) — pozastavení se neruší automaticky, takže je k jeho vyřešení nutné se nám ozvat.
+
+### Proč nově registrované nebo nedávno expirované domény vyžadují placený plán {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+Když přidáte doménu (a průběžně u domén v bezplatném plánu), provedeme pro ni dotaz WHOIS/RDAP. Pokud byla doména **vytvořena v posledních 90 dnech**, **expirovala v posledních 90 dnech** nebo je u svého registrátora aktuálně ve stavu **čekajícího převodu, aktualizace nebo smazání**, vyžadujeme, aby byla v placeném plánu, než s ní budete moci odesílat nebo přijímat poštu.
+
+Jde o opatření proti zneužití, nikoli o hodnocení vás osobně — velcí registrátoři včetně GoDaddy, Namecheap a Hostgator v minulosti zcela zablokovali naši infrastrukturu kvůli vzorcům zneužívání spojeným s převzetím nedávno expirovaných domén a podvodně registrovanými novými doménami. Právě požadavek placeného plánu pro tyto domény nám vůbec umožňuje dál nabízet bezplatný plán, aniž bychom ztratili důvěru registrátorů.
+
+Výsledky WHOIS/RDAP se ukládají do mezipaměti na 24 hodin, takže u domény, která právě překročila hranici 90 dní, se to může projevit až do jednoho dne. Chcete-li doménu používat ihned, přejděte na placený plán (od $3/měsíc za neomezené domény, aliasy a odchozí SMTP založené na reputaci).
 
 ### Jaká jsou nastavení vašeho SMTP serveru {#what-are-your-smtp-server-configuration-settings}
 
@@ -5294,6 +5374,8 @@ Odesílatelé, u kterých je detekováno odesílání spamu nebo virů, budou p�
 
 ### Máte omezení rychlosti {#do-you-have-rate-limiting}
 
+Tato sekce se týká příchozí pošty. Informace o odesílání najdete v sekci [Jaké jsou vaše limity pro odchozí SMTP](#what-are-your-outbound-smtp-limits).
+
 Omezení rychlosti odesílatele je buď podle kořenové domény získané z reverzního PTR záznamu na IP adrese odesílatele – nebo pokud to nepřinese výsledek, pak se jednoduše použije IP adresa odesílatele. Všimněte si, že níže se na to odkazujeme jako na `Sender`.
 
 Naše MX servery mají denní limity pro příchozí poštu přijatou pro [šifrované IMAP úložiště](/blog/docs/best-quantum-safe-encrypted-email-service):
@@ -5339,6 +5421,8 @@ Denní limit je jeden sdílený rozpočet napříč všemi protokoly — ať sta
 Tyto limity jsou na uživatelský účet (nikoli na alias nebo doménu) a obnovují se denně.  To znamená, že vytváření dalších aliasů nezvyšuje váš limit šířky pásma.  Pokud je Redis nedostupný, omezování rychlosti se zcela přeskočí (fail-open), takže vaše služba nebude nikdy přerušena.
 
 Pokud potřebujete vyšší limity pro konkrétní případ použití (např. migrace velmi velkého archivu), prosím [kontaktujte nás](https://forwardemail.net/help).
+
+Tyto limity se týkají přenesených dat. Počet zpráv, které můžete odeslat, určují naše [odchozí prahy založené na reputaci](#what-are-your-outbound-smtp-limits).
 
 ### Jak chráníte proti backscatteru {#how-do-you-protect-against-backscatter}
 
@@ -5765,13 +5849,9 @@ Používáme ověřování pomocí MX a <strong class="notranslate">TXT</strong>
 
 ### Jak zvýším kapacitu úložiště nebo odchozí limit odesílání SMTP {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Přejděte na <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Můj účet → Fakturace</a> a přejděte dolů do sekce **Doplňky**, která obsahuje dva formuláře žádosti:
+**Úložiště**: přejděte na <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Můj účet → Fakturace</a> a sjeďte do sekce **Doplňky**. Zvolte množství k přidání (+10, +20, +30, +40 nebo +50 GB), nebo vyberte "Other" a požádejte o vlastní množství. Odesláním formuláře pošlete žádost našemu týmu ke kontrole a zatím vám nic neúčtujeme. Jakmile ji schválíme, pošleme vám e‑mailem zabezpečený odkaz na platbu k dokončení navýšení. Najednou můžete mít jednu nevyřízenou žádost o úložiště a do 3 dnů od předchozí žádosti nemůžete podat další.
 
-* **Navýšení úložiště** — zvolte množství k přidání (+10, +20, +30, +40 nebo +50 GB), nebo vyberte "Other" a požádejte o vlastní množství.
-* **Navýšení odchozího limitu SMTP** — zvolte množství k přidání (+1000, +2000 nebo +3000 e‑mailů denně), nebo vyberte "Other" a požádejte o vlastní množství.
-
-Odesláním kteréhokoli z formulářů odešlete žádost našemu týmu ke kontrole — okamžitě vám nic neúčtujeme. Po schválení vám e‑mailem pošleme zabezpečený odkaz na platbu k dokončení navýšení. V jeden okamžik můžete mít jednu nevyřízenou žádost na každý typ (úložiště nebo SMTP); nové podání do 3 dnů od předchozí žádosti stejného typu není povoleno, dokud tato lhůta neuplyne.
-
+**Odchozí SMTP**: není co kupovat. Odchozí SMTP je neomezené a váš denní práh se zvyšuje s vaší [reputací odesílatele](#what-are-your-outbound-smtp-limits). <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Můj účet → Fakturace</a> a <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Můj účet → E-maily</a> zobrazují váš aktuální práh, vaši úroveň reputace a požadavky pro další úroveň.
 
 ### Co je součástí Enterprise License {#what-is-included-in-the-enterprise-license}
 
@@ -5893,6 +5973,12 @@ Ano, nicméně „relativně neznámí“ odesílatelé jsou omezeni na 100 při
 „Relativně neznámí“ znamená odesílatele, kteří se neobjevují v [povolovacím seznamu](#do-you-have-an-allowlist).
 
 Pokud je tento limit překročen, odesíláme kód odpovědi 421, který říká odesílajícímu mail serveru, aby to zkusil později znovu.
+
+### Mohu s tímto odesílat neomezené množství e-mailů {#can-i-send-unlimited-emails-with-this}
+
+Ano. Odchozí SMTP a naše e-mailové API jsou neomezené ve všech placených plánech (od $3/mo). Místo pevného měsíčního stropu máte denní práh, který roste, dokud platíte a budujete čistou historii odesílání: od 300 zpráv denně pro nové odesílatele (900 v plánu Team) až po 10,000 denně a nad tuto hranici poté, co váš účet posoudí náš tým.
+
+Reputaci buduje pouze pošta doručená skutečným příjemcům mimo vaše vlastní domény. Kvůli ochraně doručitelnosti vysoká míra nedoručitelnosti váš práh sníží, hlášení spamu a virů od velkých poskytovatelů poštovních schránek jej vrátí na první úroveň a neobvyklé vzorce (například náhlou špičku z neaktivního účtu) zpomalujeme. Podrobnosti najdete v sekci [Jaké jsou vaše limity pro odchozí SMTP](#what-are-your-outbound-smtp-limits) a svůj aktuální práh v sekci [Můj účet → E-maily](/my-account/emails).
 
 ### Nabízíte neomezený počet domén za jednu cenu {#do-you-offer-unlimited-domains-for-one-price}
 

@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True voor een melding van de bezorgstatus (zoals een bounce) over een e-mail die u hebt verzonden"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Huidig aantal verzonden e-mails"
+            "description": "Uitgaande SMTP-berichten die u vandaag (UTC) hebt verzonden, exclusief bouncemeldingen en automatische antwoorden"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximaal aantal toegestane e-mails"
+            "description": "De op reputatie gebaseerde drempel van vandaag (maximaal wat er vandaag nog over is van de drempels van het domein en het account; 0 als u niet vanaf het domein kunt verzenden)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Haal de limiet voor uitgaande SMTP-e-mail op",
-        "description": "Dit is een eenvoudig eindpunt dat een JSON-object retourneert met de `count` en `limit` voor het aantal dagelijkse uitgaande SMTP-berichten per account.",
+        "description": "Retourneert een JSON-object met de `count` van uitgaande SMTP-berichten die u vandaag hebt verzonden en de `limit` van vandaag. Uitgaande SMTP is onbeperkt, en de `limit` is uw huidige op reputatie gebaseerde drempel (zie <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), die na verloop van tijd groeit. Bouncemeldingen en automatische antwoorden tellen niet mee.",
         "tags": [
           "E-mails"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Domeinuitnodiging maken",
-        "description": ">[!IMPORTANT]\n>Als de uitgenodigde gebruiker al een geaccepteerd lid is van een ander domein waarvan de beheerder die hem uitnodigt lid is, wordt de uitnodiging automatisch geaccepteerd en wordt er geen e-mail verzonden.",
+        "description": ">[!IMPORTANT]\n>Als de uitgenodigde gebruiker al een geaccepteerd lid is van een ander domein waarvan de beheerder die hem uitnodigt lid is, wordt de uitnodiging automatisch geaccepteerd en wordt er geen e-mail verzonden (alleen voor een `group` van `user`: een uitnodiging als `admin` mailen we zodat de genodigde deze kan accepteren, en de link ervan laten we weg uit de openstaande uitnodigingen van het domein).",
         "tags": [
           "Uitnodigingen"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Domeinlid bijwerken",
-        "description": "Een domeinlid bijwerken.",
+        "description": "Een domeinlid bijwerken.\n\n>[!IMPORTANT]\n>Als u een ander lid bijwerkt naar `admin`, ontvangt deze in plaats daarvan een uitnodiging als beheerder per e-mail en blijft deze `user` totdat de uitnodiging is geaccepteerd (de openstaande uitnodigingen van het domein tonen deze). Het lid terugzetten naar `user` of verwijderen trekt de uitnodiging in.",
         "tags": [
           "Leden"
         ],

@@ -80,6 +80,8 @@
   * [Voinko edelleenlähettää sähköposteja mille tahansa aliverkkotunnukselle (jokerimerkkialiverkkotunnukset)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Mitkä ovat lähtevän SMTP:n rajoitukset](#what-are-your-outbound-smtp-limits)
   * [Tarvitsenko hyväksynnän SMTP:n käyttöönottoon](#do-i-need-approval-to-enable-smtp)
+  * [Mitä tietoja tarvitsette lähtevän SMTP:ni hyväksymiseen tai palauttamiseen](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [Miksi äskettäin rekisteröidyt tai hiljattain vanhentuneet verkkotunnukset vaativat maksullisen paketin](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Mitkä ovat SMTP-palvelimen asetukset](#what-are-your-smtp-server-configuration-settings)
   * [Mitkä ovat IMAP-palvelimen asetukset](#what-are-your-imap-server-configuration-settings)
   * [Mitkä ovat POP3-palvelimen asetukset](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Voinko lähettää sähköpostia Outlookissa tämän avulla](#can-i-send-mail-as-in-outlook-with-this)
   * [Voinko lähettää sähköpostia Apple Mailissa ja iCloud Mailissa tämän avulla](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Voinko edelleenlähettää rajattomasti sähköposteja tämän avulla](#can-i-forward-unlimited-emails-with-this)
+  * [Voinko lähettää rajattomasti sähköposteja tämän avulla](#can-i-send-unlimited-emails-with-this)
   * [Tarjoatteko rajattomasti domaineja yhdellä hinnalla](#do-you-offer-unlimited-domains-for-one-price)
   * [Mitkä maksutavat hyväksytte](#which-payment-methods-do-you-accept)
 * [Lisäresurssit](#additional-resources)
@@ -1035,7 +1038,7 @@ Jos he kuitenkin näkevät tämän viestin, se johtuu siitä, että he ovat tott
 
 Tämä aihe liittyy [laajalti tunnettuun ongelmaan Gmailissa, jossa lähettäjän nimen viereen ilmestyy lisätietoja](https://support.google.com/mail/answer/1311182).
 
-Toukokuusta 2023 lähtien tuemme sähköpostin lähettämistä SMTP:n kautta lisäominaisuutena kaikille maksaville käyttäjille – mikä tarkoittaa, että voit poistaa <span class="notranslate">via forwardemail dot net</span> Gmailissa.
+Lähtevä SMTP kuuluu kaikkiin maksullisiin paketteihin (rajoittamaton ja [maineeseen perustuva](#what-are-your-outbound-smtp-limits)), joten voit poistaa <span class="notranslate">via forwardemail dot net</span> Gmailissa.
 
 Huomaa, että tämä UKK-aihe koskee erityisesti niitä, jotka käyttävät [Miten lähettää sähköpostia Gmailin kautta](#how-to-send-mail-as-using-gmail) -toimintoa.
 
@@ -2037,6 +2040,12 @@ Toisin kuin postijärjestelmät kuten `postfix` (esim. jotka käyttävät `sieve
 
 8. Emme lähetä, jos MAIL FROM -osoite vastaa ARF-palauteraporttien lähettäjäkuviota (esim. `feedback@arf.mail.yahoo.com`).
 
+9. Vastaamme vain todennetuille lähettäjille: From-osoitteen on läpäistävä DMARC tai sillä on oltava kohdistettu, hyväksytty DKIM-allekirjoitus. Pelkkä SPF ei riitä, koska jaetut postipalvelimet läpäisevät sen kenelle tahansa. Väärennetty lähettäjä ei voi muuttaa lomavastauksiasi jollekulle muulle kohdistetuksi [backscatteriksi](https://www.backscatterer.org/?target=autoresponders).
+
+10. Vastaamme vain, kun aliaksesi tai muu sen verkkotunnuksen osoite (kuten alias, joka välittää siihen) näkyy `To`-, `Cc`-, `Bcc`-, `Resent-To`-, `Resent-Cc`- tai `Resent-Bcc`-otsakkeessa, kuten [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) suosittelee. Piilotetulle vastaanottajaluettelolle lähetetty posti ei saa vastausta. Sieven lomavastaukset edellyttävät, että aliaksesi tai sen `:addresses`-osoite näkyy näissä otsakkeissa.
+
+11. Lähetämme enintään 300 lomavastausta käyttäjää kohden päivässä (vähemmän, jos olemme rajoittaneet lähtevän SMTP:n kynnystäsi sen alle), ja enintään 20 vastaanottajaosoitetta kohden päivässä kaikkien käyttäjiemme kesken.
+
 ### Kuinka määritän SPF:n Forward Emailille {#how-do-i-set-up-spf-for-forward-email}
 
 Käytä rekisteröijäsi DNS-hallintasivua ja lisää seuraava <strong class="notranslate">TXT</strong>-tietue:
@@ -2338,9 +2347,11 @@ Kyllä, voit lukea lisää osoitteesta <https://forwardemail.net/guides/newslett
 
 Huomioithan, että IP-maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi Forward Emailillä on manuaalinen tarkistusprosessi kunkin verkkotunnuksen osalta **uutiskirjeiden hyväksyntää** varten. Lähetä sähköpostia osoitteeseen <support@forwardemail.net> tai avaa [tukipyyntö](https://forwardemail.net/help) hyväksyntää varten. Tämä kestää tyypillisesti alle 24 tuntia, ja useimmat pyynnöt käsitellään 1–2 tunnin sisällä. Lähitulevaisuudessa pyrimme tekemään tämän prosessin välittömäksi lisättyjen roskapostin valvontojen ja hälytysten avulla. Tämä prosessi varmistaa, että sähköpostisi saavuttavat vastaanottajan postilaatikon eivätkä viestisi merkitseydy roskapostiksi.
 
+Uutiskirjeet ja postituslistat lasketaan päivittäiseen lähtevään kynnykseesi, joka on rajoittamaton ja kasvaa [lähettäjämaineesi](#what-are-your-outbound-smtp-limits) mukana. Pidä listasi puhtaina: korkea palautusaste laskee kynnystäsi, ja hidastamme äkillisiä volyymin hyppäyksiä.
+
 ### Tuetteko sähköpostin lähettämistä API:n kautta {#do-you-support-sending-email-with-api}
 
-Kyllä, toukokuusta 2023 lähtien tuemme sähköpostin lähettämistä API:n kautta lisäominaisuutena kaikille maksaville käyttäjille.
+Kyllä. Kaikki maksulliset paketit sisältävät sähköpostin lähettämisen API:mme kautta. Lähtevän SMTP:n tavoin se on **rajoittamaton** ja [maineeseen perustuva](#what-are-your-outbound-smtp-limits): API:n ja SMTP:n kautta lähettämäsi viestit jakavat yhden päivittäisen kynnyksen.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2546,7 +2557,7 @@ Jotta voit käyttää yhteystukitoimintoa, **käyttäjän** on oltava sähköpos
 
 ### Tuetko sähköpostin lähettämistä SMTP:llä {#do-you-support-sending-email-with-smtp}
 
-Kyllä, toukokuusta 2023 alkaen tuemme sähköpostin lähettämistä SMTP:n kautta lisäominaisuutena kaikille maksaville käyttäjille.
+Kyllä. Kaikki maksulliset paketit sisältävät lähtevän SMTP:n, ja se on **rajoittamaton**: päivittäinen lähetyskynnyksesi kasvaa [lähettäjämaineesi](#what-are-your-outbound-smtp-limits) mukana.
 
 <div id="smtp-instructions">
 
@@ -3675,32 +3686,101 @@ Kun käytät <a href="#do-you-support-regular-expressions-or-regex" class="alert
 
 ### Mitkä ovat lähtevän SMTP:n rajasi {#what-are-your-outbound-smtp-limits}
 
-Sovellamme lähtevän SMTP-liikenteen rajoituksia useilla tasoilla estääksemme väärinkäytön samalla kun säilytämme joustavuuden lailliseen käyttöön. Jokaista tasoa tarkistetaan järjestyksessä — mikä tahansa raja saavutetaan ensin, hylätään viesti tilapäisesti `421`-virheellä (tarkoittaa "yritä myöhemmin uudelleen").
+Lähtevä SMTP on **rajoittamaton** ja **maineeseen perustuva**. Saat kiinteän kuukausittaisen ylärajan sijaan päivittäisen kynnyksen, ja se kasvaa, kun kerrytät hyvää lähetysmainetta.
 
-**Rajoitushierarkia:**
+Uudet lähettäjät aloittavat 300 viestillä päivässä, tai Team-paketissa 900:lla (Team-paketin lähettäjät ohittavat 900:aa alemmat tasot, ja heidän seuraava tasonsa on 1,000). Kerran päivässä tarkastelemme viimeaikaisia lähetyksiäsi ja nostamme tai laskemme kynnystäsi. Arvioimme jokaisen päivän kaksi päivää myöhemmin, kun tiedämme sen viestien toimitustulokset. Kun tämä alkaa tililläsi, katsomme enintään 30 päivää taaksepäin lähetyshistoriaasi ja käsittelemme väliin jääneet päivät jälkikäteen.
 
-| Taso | Alue | Oletusraja | Kuvaus |
-| :---- | :---- | :-----------: | :---------- |
-| Aliaskohtainen | Yksittäinen alias | None (uses domain limit) | Valinnainen. Jos aliasille on asetettu mukautettu `smtp_limit`, se tarkistetaan ensin. |
-| Verkkotunnuskohtainen | Kaikki yhdeltä verkkotunnukselta päivän aikana lähetetyt sähköpostit | 300/day | Laskee kaikki lähtevät sähköpostit kaikilta verkkotunnuksen aliaksilta. |
-| Käyttäjäkohtainen | Kaikki käyttäjätilin yhden päivän aikana lähettämät sähköpostit | 300/day | Estää kiertämisen poistamalla ja uudelleenluomalla aliaksia tai verkkotunnuksia. |
+Vain todellinen lähettäminen kerryttää mainetta. Posti lasketaan mukaan nousuun, kun **toimitamme** sen **yksilöllisille vastaanottajille omien verkkotunnustesi ulkopuolella**. Itsellesi, omiin verkkotunnuksiisi (tai niiden aliverkkotunnuksiin), verkkotunnuksiin, joista lähetät, tai toistuvasti samalle vastaanottajalle lähetettyä postia ei lasketa. Saman osoitteen muunnelmat (`+tag` tai pisteet Gmail-osoitteessa) lasketaan kerran. Kukin vastaanottajan verkkotunnus (aliverkkotunnuksineen) lasketaan enintään 50 vastaanottajan osalta päivässä, paitsi suurten postilaatikkopalvelujen omat verkkotunnukset (kuten gmail.com). Vähintään viidenneksen laskettavista vastaanottajista on oltava suurilla postilaatikkopalveluilla, ja korkeammat tasot edellyttävät lisäksi vähimmäismäärää eri vastaanottajaverkkotunnuksia yhden päivän aikana.
 
-**Kuinka käytännön raja määräytyy:**
+* **Nousu**: kynnyksesi nousee yhden tason, kun olet maksanut riittävän kauan ilman taukoa, sinulla on riittävästi puhtaita lähetyspäiviä nykyisellä tasollasi ja vilkkaimpana päivänäsi viimeisten 7 päivän aikana toimitettujen vastaanottajien määrä omien verkkotunnustesi ulkopuolella oli vähintään puolet nykyisestä kynnyksestäsi (riittävän monessa eri vastaanottajaverkkotunnuksessa). Vain ilman taukoa maksettu aika lasketaan, joten vanhempi tili, joka ei ole maksanut (tai lopetti maksamisen), aloittaa alusta. Enintään 14 päivää myöhässä tehty uusinta lasketaan edelleen tauottomaksi, ja vain omat maksusi lasketaan.
+* **Puhdas päivä**: päivä, jolloin toimitimme vähintään 5 viestiäsi vastaanottajille omien verkkotunnustesi ulkopuolella, alle 5% näistä vastaanottajista palautti tai hylkäsi postisi, et saanut huonoon päivään riittävästi roskaposti- tai virusilmoituksia (katso alla), emmekä hidastaneet lähetyksiäsi epätavallisen kuvion vuoksi.
+* **Lasku**: päivä, jolloin palautus- tai hylkäysaste oli korkea (5% tai enemmän, kun vastaanottajia omien verkkotunnustesi ulkopuolella oli vähintään 20), tai liian monta suurten postilaatikkopalvelujen roskaposti- tai virusilmoitusta (katso alla) laskee kynnystäsi yhden tason (ei alle pakettisi aloituskynnyksen) ja nollaa puhtaiden päivien laskurisi. Päivä, jolloin 15% tai enemmän vastaanottajista palautti tai hylkäsi postisi, palauttaa sen sijaan kynnyksesi pakettisi aloituskynnykseen ja keskeyttää nousun 30 päiväksi (tiimimme hyväksymä kynnys on edelleen voimassa). Vain postisi hylkäykset lasketaan, eli esimerkiksi ei jaettujen IP-osoitteidemme joutumista estolistalle eikä vastaanottajan palvelinta, jota emme tavoittaneet. Jokainen vastaanottaja lasketaan kerran riippumatta siitä, montako viestiä lähetit hänelle, ja ajastettu viesti lasketaan sille päivälle, jolle sen ajastit. Päivät ilman lähetyksiä eivät vaikuta puoleen eikä toiseen.
+* **Roskaposti- ja virusilmoitukset**: suuret postilaatikkopalvelut (kuten Gmail, Outlook ja Yahoo) päättävät, mikä lasketaan väärinkäytöksi, ja laskemme vain niiden pysyvät hylkäykset. Jokainen vastaanottaja palvelun omilla verkkotunnuksilla (kuten gmail.com) lasketaan, kun taas muut palvelun isännöimät verkkotunnukset (kuten yrityksen Google Workspace) lasketaan kerran verkkotunnusta kohden, ja kukin lasketaan kerran päivässä. Laskemme ilmoitukset osuutena vastaanottajista, joille lähetit, kuten suuret palvelut tekevät (Gmail pyytää lähettäjiä pysymään alle 0.1%:n eikä koskaan saavuttamaan 0.3%:a), joten yksittäinen ilmoitus ei laske tasoasi, ja ilmoitukset muista palvelun isännöimistä verkkotunnuksista muodostavat enintään puolet tarvittavista ilmoituksista. Ilmoitukset vähintään 0.1%:sta päivän vastaanottajista omien verkkotunnustesi ulkopuolella, tai edellisen päivän vastaanottajista, jos heitä on enemmän, tekevät päivästä huonon (tarvitaan vähintään 2 ja enintään 25 ilmoitusta). Jonkin aliaksesi automaattinen jäädytys ei yksinään heikennä mainettasi, mutta sen taustalla olevat ilmoitukset heikentävät. Ilmoitukset vähintään 0.3%:sta vastaanottajista sen verkkotunnuksen ulkopuolella, josta lähetit viimeisten 24 tunnin aikana, mukaan lukien tuolle ajalle ajastetut viestit, palauttavat kynnyksesi heti pakettisi aloituskynnykseen (300, tai Team-paketissa 900) (tarvitaan vähintään 3 ja enintään 50 ilmoitusta). Nousu keskeytyy silloin 30 päiväksi, eikä tiimimme hyväksymää kynnystä sovelleta sillä välin. Team-paketin verkkotunnuksilla ilmoitukset lasketaan myös huonoon päivään sille ylläpitäjälle, jonka kynnystä verkkotunnus käyttää (ellei oma kynnyksesi ole yhtä korkea), samalla osuudella niiden jäsenten vastaanottajista, joita ne koskevat, eivätkä ne palauta tämän ylläpitäjän kynnystä alkuun. Kun näitä jäseniä koskevat ilmoitukset saavuttavat 24 tunnin sisällä palautusrajan, ylläpitäjän verkkotunnusten jäsenet eivät voi käyttää ylläpitäjän kynnystä 30 päivään. Ylläpitäjän oma lähettäminen pysyy ennallaan, ja jäsenten lähettäminen lasketaan edelleen ylläpitäjän kynnykseen. Kun teet jäsenestä ylläpitäjän, hän saa kutsun ja hänestä tulee ylläpitäjä, kun hän hyväksyy sen. Ilmoituksia automaattivastauksista ja sinulle lähetettyjen viestien palautuksista ei lasketa sinua vastaan, mutta ilmoitukset lähettämiesi viestien toimitusilmoituksista lasketaan.
 
-* **Team plan domains** — käytännön päivittäinen raja on korkein `smtp_limit` kaikkien verkkotunnuksen ylläpitäjäjäsenten keskuudessa. Esimerkiksi, jos yhdellä ylläpitäjällä on raja 300 ja toisella 500, verkkotunnuksen käytännön raja on 500.
-* **Enhanced Protection and other plans** — käytännön päivittäinen raja on lähettävän käyttäjän oma `smtp_limit` (oletusarvoisesti 300 viestiä päivässä).
-* **Aliaskohtainen yliajo** — verkkotunnuksen ylläpitäjät voivat valinnaisesti asettaa mukautetun `smtp_limit`-arvon yksittäisille aliaksille. Kun tämä on asetettu, se tarkistetaan ensin (ennen verkkotunnuksen ja käyttäjän rajoja). Tämä on hyödyllistä, kun halutaan rajoittaa tiettyjen aliaksien lähetysvolyymia pienemmäksi.
-* **Verkkotunnuksen oletusarvo uusille aliaksille** — Verkkotunnuksen ylläpitäjät voivat asettaa verkkotunnukselle `alias_default_smtp_limit` (API:n kautta tai kojelaudan Lisäasetuksissa). Kun tämä on asetettu, kyseisen verkkotunnuksen kaikki uudet aliakset perivät automaattisesti tämän arvon `smtp_limit`-arvokseen. Tämä ei voi ylittää verkkotunnuksen voimassa olevaa SMTP-rajaa. Olemassa oleviin aliaksiin tämä ei vaikuta. Aseta arvoksi `0` poistaaksesi käytöstä.
+**Mainetasot:**
 
-**Järjestelmänvalvojat** (Forward Email staff) ovat vapautettuja kaikista rajoituksista.
+| Päivittäinen kynnys | Yhtäjaksoisen maksamisen vähimmäisaika | Puhtaat lähetyspäivät edellisellä tasolla | Eri vastaanottajaverkkotunnukset päivässä |
+| --------------: | ---------------------------: | ----------------------------------: | -----------------------------------: |
+|             300 |                            – |                                   – |                                    – |
+|             500 |                     7 päivää |                                   5 |                                   10 |
+|           1,000 |                    14 päivää |                                   7 |                                   20 |
+|           2,000 |                    30 päivää |                                  10 |                                   40 |
+|           5,000 |                    60 päivää |                                  14 |                                   75 |
+|          10,000 |                   120 päivää |                                  21 |                                  150 |
 
-Kaikki rajoitukset toteutetaan käyttämällä tietokantalaskentaa (`Emails.countDocuments`) niistä sähköposteista, jotka on luotu kuluvan päivän alusta (keskiyö UTC). Tämä tarkoittaa, että rajasi nollaantuu päivittäin UTC-keskiyöllä.
+Yli 10,000 viestin päivävolyymeissa tiimimme tarkastaa tilisi ja nostaa kynnystäsi käsin, eikä sinun tarvitse tehdä mitään. Jos tarvitset korkeamman kynnyksen aiemmin (esimerkiksi siirtääksesi olemassa olevaa lähetysvolyymia), [ota meihin yhteyttä](/help). Tiimimme hyväksymä kynnys toimii vähimmäistasona ja sijoittaa sinut sen kattamalle tasolle, ja maineesi voi yhä kasvattaa sitä enintään 10,000 viestiin päivässä.
 
-Jos tarvitset korkeamman rajan, ota [yhteyttä](https://forwardemail.net/help). Useimmat pyynnöt käsitellään 1–2 tunnin kuluessa.
+**Epätavalliset lähetyskuviot:**
+
+Hidastamme lähetyksiä `421`-virheellä, kun toimintasi näyttää epätavalliselta, kynnyksestä riippumatta. Tämä suojaa jonoamme ja IP-mainettamme, jos joku murtautuu tiliin tai käyttää sitä väärin, myös tilejä, jotka ovat olleet olemassa vuosia tai olleet käyttämättä.
+
+* **Äkilliset piikit**: voit lähettää päivässä enintään 2 kertaa viimeaikaisen normaalin volyymisi (vilkkaimman päiväsi viimeisten 45 päivän ajalta) tai aloituskynnyksesi (300 viestiä, tai 900 Team-paketissa ja Team-paketin verkkotunnuksilla) tai hyväksytyn kynnyksen, sen mukaan kumpi on suurempi. Päivitämme normaalin volyymisi joka päivä viimeaikaisten lähetystesi perusteella, joten tasainen kasvu ei kärsi, ja uudet lähettäjät kasvattavat määrää asteittain aloituskynnyksestään alkaen.
+* **Vastaanottajat**: viestillä voi olla monta vastaanottajaa, joten kaikkien päivän viestiesi kautta voit tavoittaa enintään 2 kertaa tämän päivän kiintiösi verran vastaanottajia, ja tilin lähettäjät yhteensä enintään 2 kertaa tilin kynnyksen verran. Hylkäämme yksittäisen viestin, jolla on tätä enemmän vastaanottajia, `550`-virheellä.
+* **Purskeet**: voit lähettää minkä tahansa tunnin aikana enintään neljänneksen tämän päivän kiintiöstäsi tai 2 kertaa vilkkaimman tuntisi määrän viimeisten 45 päivän ajalta (mutta ei enempää kuin puolet tämän päivän kiintiöstäsi), sen mukaan kumpi on suurempi, ja vähintään aloituskynnyksesi tai hyväksytyn kynnyksen verran. Säännöllinen kuvio, kuten viikoittainen uutiskirje, kuuluu normaaliin volyymiisi.
+* **Palautukset**: jos vastaanottajat palauttivat tai hylkäsivät 10% tai enemmän viimeisten 6 tunnin viesteistäsi (kun viestejä oli vähintään 50, eikä jaettujen IP-osoitteidemme hylkäyksiä lasketa), uudet viestit odottavat, kunnes palautusasteesi on palautunut normaaliksi.
+* **Jonon ruuhka**: jos liian moni viimeisten 24 tunnin aikana lähettämäsi viesti odottaa yhä jonossa (10% tämän päivän kiintiöstä, vähintään aloituskynnyksesi verran), uudet viestit odottavat, kunnes jono on purettu. Ajastettuja viestejä, viestejä, joita yritämme uudelleen vastaanottajan lykkäyksen jälkeen, ja hyväksyntää odottavia viestejä ei lasketa mukaan, eikä ruuhka heikennä mainettasi.
+* **Ajastetut viestit**: voit ajastaa viestejä enintään 27 päivää eteenpäin, ja sinulla voi olla kerralla ajastettuna enintään päivän kiintiön verran viestejä.
+
+Hidastukset päättyvät, kun toimintasi palaa normaaliksi, eikä päivää, jona hidastusta käytettiin, lasketa puhtaaksi lähetyspäiväksi. Sähköpostiohjelmat yrittävät lykättyjä viestejä itse uudelleen, ja API-pyynnöt saavat `429`-virheen, joten yritä niitä myöhemmin uudelleen.
+
+Kun saavutat päivän kynnyksesi, hylkäämme muut viestit `421`-virheellä (tarkoittaa "yritä myöhemmin uudelleen"), kunnes kynnyksesi nollautuu keskiyöllä UTC. [Väärinkäytön estotoimemme](#why-was-my-outbound-smtp-suspended) roskapostia ja viruksia vastaan ovat voimassa kynnyksestä riippumatta.
+
+Näet, kuinka monta viestiä lähetit tänään ja mikä nykyinen kynnyksesi on, kohdassa [Oma tili → Sähköpostit](/my-account/emails) tai [API](/email-api#get-outbound-smtp-email-limit):n kautta.
+
+**Miten kynnyksiä sovelletaan:**
+
+| Taso      | Alue                                      |      Oletuskynnys      | Kuvaus                                                               |
+| :--------- | :----------------------------------------- | :-------------------------: | :------------------------------------------------------------------------ |
+| Aliaskohtainen | Yksittäinen alias | Ei mitään (käyttää verkkotunnuksen rajaa) | Valinnainen. Tarkistamme aliaksen mukautetun `smtp_limit`-arvon ensin, jos sillä on sellainen. |
+| Tilikohtainen | Kaikki sähköpostit, jotka lähetetään päivän aikana niiltä verkkotunnuksilta, joiden ylläpitäjä tili on | Maineeseen perustuva (300+/päivä, Team-paketissa 900+) | Kynnys koskee koko tiliä, joten verkkotunnusten tai jäsenten lisääminen ei kerro sitä. |
+| Verkkotunnuskohtainen | Kaikki yhdeltä verkkotunnukselta päivän aikana lähetetyt sähköpostit | Nousee vähitellen tilin kynnyksen rajoissa (300+/päivä, Team-paketissa 900+) | Laskee kaikki lähtevät sähköpostit verkkotunnuksen aliaksilta. |
+| Käyttäjäkohtainen | Kaikki käyttäjätilin yhden päivän aikana lähettämät sähköpostit | Maineeseen perustuva (300+/päivä, Team-paketissa 900+) | Aliasten tai verkkotunnusten poistaminen ja uudelleenluominen ei nollaa sitä. |
+
+* **Team-paketin verkkotunnukset**: verkkotunnuksen kynnys on korkein kynnys sen maksavien ylläpitäjäjäsenten keskuudessa. Esimerkiksi, jos yhdellä ylläpitäjällä on kynnys 1,000 ja toisella 5,000, verkkotunnuksen kynnys on 5,000. Team-paketin lähettäjät aloittavat 900 viestillä päivässä 300:n sijaan.
+* **Koko tili**: verkkotunnuksen tili on sen maksava ylläpitäjä, jolla on korkein kynnys. Kaikki sähköpostit, jotka lähetetään niiltä verkkotunnuksilta, joiden ylläpitäjä kyseinen tili on, lasketaan tähän yhteen kynnykseen lähettäjästä riippumatta (jäsenet mukaan lukien), joten verkkotunnusten tai jäsenten lisääminen ei kasvata sitä.
+* **Uudet verkkotunnukset nousevat vähitellen**: tilin kynnyksen rajoissa verkkotunnus voi lähettää enintään 2 kertaa vilkkaimman päivänsä toimitetun postin määrän viimeisten 45 päivän ajalta, ja vähintään aloituskynnyksensä (300 viestiä tai Team-paketissa 900) tai hyväksytyn kynnyksen. Vakiintuneen tilin uusi verkkotunnus aloittaa aloituskynnyksestään ja kasvaa, kun toimitamme sen postia.
+* **Palautuneet viestit ja automaattivastaukset**: palautusilmoitukset ja lomavastaajaviestit (automaattivastaukset), jotka lähetämme puolestasi, eivät lasketa kynnykseesi. Lähetämme enintään 300 automaattivastausta käyttäjää kohden päivässä (vähemmän, jos olemme rajoittaneet kynnyksesi sen alle) ja enintään 20 vastaanottajaosoitetta kohden päivässä kaikkien käyttäjiemme kesken, ja vain lähettäjille, jotka läpäisivät todennuksen (katso [lomavastaajat](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Rajoitamme palautusilmoitukset paluuosoitteeseen, joka on sen verkkotunnuksen (tai muiden ylläpitämiesi verkkotunnusten) ulkopuolella, josta lähetit, tähän määrään tai 15%:iin päivittäisestä kynnyksestäsi, sen mukaan kumpi on suurempi, ja ne sisältävät vain alkuperäisen viestin tunnistavat otsakkeet (kuten `From`, `To` ja `Subject`).
+* **Enhanced Protection ja muut paketit**: verkkotunnuksen kynnys on lähettävän käyttäjän oma kynnys.
+* **Aliaskohtainen yliajo**: verkkotunnuksen ylläpitäjät voivat asettaa mukautetun `smtp_limit`-arvon yksittäisille aliaksille. Tarkistamme sen ensin (ennen verkkotunnuksen ja käyttäjän kynnyksiä), joten voit rajoittaa tiettyjen aliaksien lähetysvolyymia pienemmäksi.
+* **Verkkotunnuksen oletusarvo uusille aliaksille**: verkkotunnuksen ylläpitäjät voivat asettaa verkkotunnukselle `alias_default_smtp_limit`-arvon (API:n kautta tai kojelaudan Lisäasetuksissa). Kyseisen verkkotunnuksen uudet aliakset perivät sitten tämän arvon `smtp_limit`-arvokseen. Arvo ei voi ylittää verkkotunnuksen nykyistä kynnystä, ja olemassa olevat aliakset säilyttävät omansa. Aseta arvoksi `0` poistaaksesi sen käytöstä.
 
 ### Tarvitsenko hyväksynnän SMTP:n käyttöönottoon {#do-i-need-approval-to-enable-smtp}
 
 Kyllä, huomioithan, että IP-maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi Forward Emailillä on manuaalinen tarkastusprosessi domainikohtaisesti lähtevän SMTP:n hyväksyntää varten. Lähetä sähköpostia osoitteeseen <support@forwardemail.net> tai avaa [tukipyyntö](https://forwardemail.net/help) hyväksyntää varten. Tämä kestää tyypillisesti alle 24 tuntia, ja useimmat pyynnöt käsitellään 1-2 tunnin sisällä. Lähitulevaisuudessa pyrimme tekemään tämän prosessin välittömäksi lisättyjen roskapostin valvontojen ja hälytysten avulla. Tämä prosessi varmistaa, että sähköpostisi saavuttavat postilaatikon eivätkä viestisi päädy roskapostiksi.
+
+Hyväksynnän jälkeen lähtevä SMTP on rajoittamaton, ja päivittäinen kynnyksesi kasvaa [lähettäjämaineesi](#what-are-your-outbound-smtp-limits) mukana.
+
+### Mitä tietoja tarvitsette lähtevän SMTP:ni hyväksymiseen tai palauttamiseen {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+Kun pyydät lähtevän SMTP:n hyväksyntää (tai pyydät meitä palauttamaan sen [jäädytyksen](#why-was-my-outbound-smtp-suspended) jälkeen), valmistaudu antamaan:
+
+* Vahvistus siitä, että olet lukenut [ehtomme](/terms) ja hyväksyt ne. Ehdot kieltävät nimenomaisesti palvelun käytön mihin tahansa, mikä on [Stripen kiellettyjen liiketoimintojen](https://stripe.com/legal/restricted-businesses) tai [PayPalin kiellettyjen toimintojen](https://www.paypal.com/us/legalhub/acceptableuse-full) luettelossa.
+* Mihin aiot käyttää lähtevää SMTP:tä.
+* Linkki verkkosivustoosi, yritystietoihisi tai profiiliin (esim. LinkedIn, GitHub), jonka avulla voimme varmistaa, että olet todellinen ja luotettava lähettäjä — tyhjään verkkosivustoon osoittava verkkotunnus on yleinen syy hyväksynnän viivästymiseen.
+* Vahvistus siitä, ettet käytä palvelua roskapostiin tai joukko- tai ei-toivottuun markkinointiin.
+
+Pyydämme samat tiedot kummassakin tapauksessa, olipa kyse ensimmäisestä hyväksynnästä tai verkkotunnuksen palauttamisesta jäädytyksen jälkeen.
+
+### Miksi lähtevä SMTP:ni jäädytettiin {#why-was-my-outbound-smtp-suspended}
+
+Jo hyväksytty lähtevä SMTP voidaan silti keskeyttää, jos havaitsemme väärinkäyttöön viittaavan kuvion. Tämä on erillinen yllä kuvatusta [hyväksyntäprosessista](#do-i-need-approval-to-enable-smtp) ja [maineeseen perustuvista lähtevistä kynnyksistämme](#what-are-your-outbound-smtp-limits). Se käynnistyy, kun luotettava lähde (esim. suuri postilaatikkopalvelu) ilmoittaa lähtevän postisi virukseksi tai roskapostiksi.
+
+Vaiheita on kaksi:
+
+1. **Yksittäinen havainto** lähettää sinulle "Viesti estetty" -ilmoituksen kyseisestä viestistä — ilmoitus on tiedoksi, ja lähtevä jonosi jatkaa toimintaansa.
+2. **Useat havainnot lyhyen liukuvan aikaikkunan sisällä** ylittävät väärinkäytön havaitsemiskynnyksemme ja käynnistävät täyden "Lähtevä SMTP on keskeytetty" -ilmoituksen. Tällöin koko lähtevä SMTP-jonosi keskeytetään — kyseiselle verkkotunnukselle ei yritetä lähettää uusia lähteviä viestejä ennen kuin ongelma on ratkaistu.
+
+Kumpikin ilmoitus sisältää merkityn viestin tiedot (`MAIL FROM`, `RCPT TO`, `Message-ID`, aihe ja päivämäärä), sen, mikä luotettava lähde ja sisältöluokka viestin merkitsi, kuinka monta havaintoa sinulla on suhteessa kynnykseen, kuinka monta yksilöllistä vastaanottajaa ja luotettavaa lähdettä oli osallisena sekä SMTP-tilakoodin ja -vastauksen.
+
+Jos saat jonkin näistä ilmoituksista, ota meihin yhteyttä osoitteessa <support@forwardemail.net> tai avaa [tukipyyntö](https://forwardemail.net/help) — jäädytystä ei poisteta automaattisesti, joten sinun on otettava meihin yhteyttä sen ratkaisemiseksi.
+
+### Miksi äskettäin rekisteröidyt tai hiljattain vanhentuneet verkkotunnukset vaativat maksullisen paketin {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+Kun lisäät verkkotunnuksen (ja jatkuvasti ilmaisen paketin verkkotunnuksille), teemme sille WHOIS/RDAP-haun. Jos verkkotunnus on **luotu viimeisten 90 päivän aikana**, **vanhentunut viimeisten 90 päivän aikana** tai on rekisteröijällään parhaillaan tilassa **odottava siirto, päivitys tai poisto**, edellytämme, että se on maksullisessa paketissa, ennen kuin voit lähettää tai vastaanottaa sillä postia.
+
+Tämä on väärinkäytön estotoimi eikä kerro mitään sinusta henkilökohtaisesti — suuret rekisteröijät, kuten GoDaddy, Namecheap ja Hostgator, ovat aiemmin estäneet koko infrastruktuurimme väärinkäyttökuvioiden vuoksi, joihin liittyi hiljattain vanhentuneiden verkkotunnusten kaappauksia ja vilpillisesti rekisteröityjä uusia verkkotunnuksia. Maksullisen paketin vaatiminen näille verkkotunnuksille on se, minkä ansiosta voimme ylipäätään tarjota ilmaista pakettia menettämättä rekisteröijien luottamusta.
+
+WHOIS/RDAP-tulokset tallennetaan välimuistiin 24 tunniksi, joten juuri 90 päivän rajan ylittäneen verkkotunnuksen muutos voi näkyä vasta vuorokauden kuluttua. Jos haluat käyttää verkkotunnusta heti, päivitä maksulliseen pakettiin (alkaen $3/kk, sisältää rajoittamattomat verkkotunnukset, aliakset ja maineeseen perustuvan lähtevän SMTP:n).
 
 ### Mitkä ovat SMTP-palvelimen asetukset {#what-are-your-smtp-server-configuration-settings}
 
@@ -5293,6 +5373,8 @@ Lähettäjät, joiden havaitaan lähettävän roskapostia tai virusmateriaalia, 
 
 ### Onko teillä nopeusrajoituksia {#do-you-have-rate-limiting}
 
+Tämä kohta koskee saapuvaa postia. Lähettämisestä kerrotaan kohdassa [Mitkä ovat lähtevän SMTP:n rajasi](#what-are-your-outbound-smtp-limits).
+
 Lähettäjän nopeusrajoitus perustuu joko lähettäjän IP-osoitteen käänteisen PTR-haun perusteella saatavaan juuriverkkotunnukseen – tai jos sitä ei saada, käytetään yksinkertaisesti lähettäjän IP-osoitetta. Huomaa, että viittaamme tähän alla nimellä `Sender`.
 
 MX-palvelimillamme on päivittäiset rajat saapuville sähköposteille, jotka vastaanotetaan [salattuun IMAP-tallennukseen](/blog/docs/best-quantum-safe-encrypted-email-service):
@@ -5338,6 +5420,8 @@ Päiväraja on yksi jaettu budjetti kaikkien protokollien välillä — lataatpa
 Nämä rajat ovat käyttäjätilikohtaisia (eivät alias- tai verkkotunnuskohtaisia) ja nollautuvat päivittäin.  Tämä tarkoittaa, että lisäaliaksien luominen ei kasvata kaistanleveysrajaasi.  Jos Redis ei ole käytettävissä, nopeuden rajoitus ohitetaan kokonaan (fail-open), joten palvelusi ei koskaan keskeydy.
 
 Jos tarvitset korkeampia rajoja tiettyyn käyttötapaukseen (esim. erittäin suuren arkiston siirto), ota [yhteyttä meihin](https://forwardemail.net/help).
+
+Nämä rajat koskevat siirrettyä datamäärää. Lähetettävien viestien määrää säätelevät [maineeseen perustuvat lähtevät kynnyksemme](#what-are-your-outbound-smtp-limits).
 
 ### Kuinka suojaudutte backscatterilta {#how-do-you-protect-against-backscatter}
 
@@ -5764,13 +5848,9 @@ Käytämme MX- ja <strong class="notranslate">TXT</strong>-tietueiden vahvistust
 
 ### Miten lisään tallennustilaa tai lähtevän SMTP:n lähetysrajaa {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Siirry kohtaan <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Oma tili → Laskutus</a> ja selaa kohtaan **Lisäosat**, jossa on kaksi pyyntölomaketta:
+**Tallennustila**: siirry kohtaan <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Oma tili → Laskutus</a> ja selaa kohtaan **Lisäosat**. Valitse lisättävä määrä (+10, +20, +30, +40 tai +50 GB), tai valitse "Other" pyytääksesi mukautetun määrän. Kun lähetät lomakkeen, pyyntösi menee tiimillemme tarkistettavaksi, emmekä veloita sinua vielä. Kun hyväksymme pyynnön, lähetämme sinulle sähköpostitse suojatun maksulinkin päivityksen viimeistelemiseksi. Sinulla voi olla kerrallaan yksi odottava tallennustilapyyntö, etkä voi lähettää uutta pyyntöä 3 päivän sisällä edellisestä.
 
-* **Tallennustilan nosto** — valitse lisättävä määrä (+10, +20, +30, +40 tai +50 GB), tai valitse "Other" pyytääksesi mukautetun määrän.
-* **Lähtevän SMTP-lähetysrajan nosto** — valitse lisättävä määrä (+1000, +2000 tai +3000 sähköpostia päivässä), tai valitse "Other" pyytääksesi mukautetun määrän.
-
-Jommankumman lomakkeen lähettäminen välittää pyyntösi tiimillemme tarkistettavaksi — sinua ei veloiteta heti. Kun pyyntö on hyväksytty, lähetämme sinulle sähköpostitse suojatun maksulinkin päivityksen viimeistelemiseksi. Voit pitää kerrallaan yhden odottavan pyynnön tyyppiä kohden (tallennus tai SMTP); saman tyyppisen aiemman pyynnön jälkeen uuden lähettäminen 3 päivän sisällä ei ole sallittua ennen kuin tuo aikaikkuna on kulunut.
-
+**Lähtevä SMTP**: mitään ei tarvitse ostaa. Lähtevä SMTP on rajoittamaton, ja päivittäinen kynnyksesi kasvaa [lähettäjämaineesi](#what-are-your-outbound-smtp-limits) mukana. <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Oma tili → Laskutus</a> ja <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Oma tili → Sähköpostit</a> näyttävät nykyisen kynnyksesi, mainetasosi ja seuraavan tason vaatimukset.
 
 ### Mitä Enterprise License sisältää {#what-is-included-in-the-enterprise-license}
 
@@ -5892,6 +5972,12 @@ Kyllä, mutta "suhteellisen tuntemattomat" lähettäjät rajoitetaan 100 yhteyte
 "Suhteellisen tuntemattomilla" tarkoitetaan lähettäjiä, jotka eivät ole [sallittujen listalla](#do-you-have-an-allowlist).
 
 Jos tämä raja ylittyy, lähetämme 421-vastauskoodin, joka kertoo lähettäjän sähköpostipalvelimelle yrittää uudelleen myöhemmin.
+
+### Voinko lähettää rajattomasti sähköposteja tämän avulla {#can-i-send-unlimited-emails-with-this}
+
+Kyllä. Lähtevä SMTP ja sähköposti-API:mme ovat rajoittamattomia kaikissa maksullisissa paketeissa (alkaen $3/mo). Saat kiinteän kuukausittaisen ylärajan sijaan päivittäisen kynnyksen, ja se kasvaa, kun jatkat maksamista ja kerrytät puhdasta lähetyshistoriaa: 300 viestistä päivässä uusille lähettäjille (Team-paketissa 900) aina 10,000 viestiin päivässä ja sen yli, kun tiimimme on tarkastanut tilisi.
+
+Vain omien verkkotunnustesi ulkopuolisille todellisille vastaanottajille toimitettu posti kerryttää mainetta. Toimitettavuuden suojaamiseksi korkea palautusaste laskee kynnystäsi, suurten postilaatikkopalveluiden roskaposti- ja virusilmoitukset nollaavat sen, ja hidastamme epätavallisia kuvioita (kuten äkillistä piikkiä käyttämättömältä tililtä). Katso lisätiedot kohdasta [Mitkä ovat lähtevän SMTP:n rajasi](#what-are-your-outbound-smtp-limits) ja nykyinen kynnyksesi kohdasta [Oma tili → Sähköpostit](/my-account/emails).
 
 ### Tarjoatteko rajattomasti domaineja yhdellä hinnalla {#do-you-offer-unlimited-domains-for-one-price}
 

@@ -1,5 +1,7 @@
 extends ../../layout
 
+include ../_smtp-reputation
+
 block body
   #modal-change-plan.modal.fade(
     tabindex="-1",
@@ -192,38 +194,9 @@ block body
               .card-footer
                 button.btn.btn-success.btn-lg.btn-block(type="submit")
                   = t("Request Upgrade")
-        .col-md-6
-          form.ajax-form.confirm-prompt(
-            method="POST",
-            action=l("/my-account/billing/upgrade-request"),
-            data-confirm-prompt-title=t("Upgrade Request: Outbound SMTP Limit"),
-            data-confirm-prompt-html=t("We will review your request and reach out shortly via email. Once approved, we’ll send you a secure payment link to complete your upgrade. Ready to proceed?")
-          )
-            input(type="hidden", name="kind", value="smtp_limit")
-            .card.border-themed
-              h2.h6.card-header= t("Outbound SMTP Limit Upgrade")
-              .card-body.pb-0
-                p
-                  strong= t("Current:")
-                  = " "
-                  = user[config.userFields.smtpLimit] || config.smtpLimitMessages
-                  = " "
-                  = "("
-                  = t("per day")
-                  = ")"
-                .form-group
-                  label(for="smtp-upgrade-option")= t("SMTP Upgrade Amount:")
-                  select#smtp-upgrade-option.form-control(
-                    name="upgrade_option",
-                    required
-                  )
-                    option(value="", disabled, selected)= t("Choose your SMTP upgrade...")
-                    each amount in [1000,2000,3000]
-                      option(value=`+${amount} emails daily`)= `+${amount} emails daily`
-                    option(value="Other")= t("Other")
-              .card-footer
-                button.btn.btn-success.btn-lg.btn-block(type="submit")
-                  = t("Request Upgrade")
+        if smtpReputation
+          .col-md-6.mt-3.mt-md-0
+            +smtpReputationCard(smtpReputation)
 
     if payments.length > 0
       .container

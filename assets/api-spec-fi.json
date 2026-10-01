@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True, kun kyseessä on toimitustilailmoitus (kuten palautusviesti) lähettämästäsi sähköpostista"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Lähetettyjen sähköpostien nykyinen määrä"
+            "description": "Tänään (UTC) lähettämäsi lähtevät SMTP-viestit, pois lukien palautusilmoitukset ja automaattiset vastaukset"
           },
           "limit": {
             "type": "integer",
-            "description": "Sähköpostien enimmäismäärä"
+            "description": "Tämän päivän maineeseen perustuva raja (enintään se, mitä verkkotunnuksen ja tilin rajoista on tänään jäljellä; 0, kun et voi lähettää verkkotunnuksesta)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Hanki lähtevän SMTP-sähköpostin rajoitus",
-        "description": "Tämä on yksinkertainen päätepiste, joka palauttaa JSON-objektin, joka sisältää tilikohtaisesti päivittäisten SMTP-lähtevien viestien lukumäärän `count`- ja `limit`-arvot.",
+        "description": "Palauttaa JSON-objektin, joka sisältää tänään lähettämiesi lähtevien SMTP-viestien `count`-arvon ja tämän päivän `limit`-arvon. Lähtevä SMTP on rajoittamaton, ja `limit` on nykyinen maineeseesi perustuva raja (katso <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), joka kasvaa ajan myötä. Palautusilmoituksia ja automaattisia vastauksia ei lasketa.",
         "tags": [
           "Sähköpostit"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Luo verkkotunnuskutsu",
-        "description": ">[!IMPORTANT]\n>Jos kutsuttava käyttäjä on jo hyväksytty jäsen jollakin muulla verkkotunnuksella, johon kutsun lähettänyt ylläpitäjä kuuluu, kutsu hyväksytään automaattisesti eikä sähköpostia lähetetä.",
+        "description": ">[!IMPORTANT]\n>Jos kutsuttava käyttäjä on jo hyväksytty jäsen jollakin muulla verkkotunnuksella, johon kutsun lähettänyt ylläpitäjä kuuluu, kutsu hyväksytään automaattisesti eikä sähköpostia lähetetä (vain kun `group` on `user`: kutsun `admin`-roolissa lähetämme sähköpostitse kutsutun hyväksyttäväksi, emmekä sisällytä sen linkkiä verkkotunnuksen odottaviin kutsuihin).",
         "tags": [
           "Kutsut"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Päivitä verkkotunnuksen jäsen",
-        "description": "Päivitä verkkotunnuksen jäsen.",
+        "description": "Päivitä verkkotunnuksen jäsen.\n\n>[!IMPORTANT]\n>Toisen jäsenen päivittäminen `admin`-rooliin lähettää hänelle sen sijaan sähköpostitse kutsun ylläpitäjäksi, ja hän pysyy `user`-roolissa, kunnes hyväksyy sen (verkkotunnuksen odottavat kutsut näyttävät sen). Päivittäminen takaisin `user`-rooliin tai jäsenen poistaminen peruuttaa kutsun.",
         "tags": [
           "Jäsenet"
         ],

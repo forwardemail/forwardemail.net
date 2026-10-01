@@ -71,6 +71,7 @@ async function list(ctx) {
         {
           $match: {
             alias: { $in: aliasIds },
+            is_bounce: { $ne: true },
             created_at: { $gte: startOfDay }
           }
         },
@@ -80,6 +81,7 @@ async function list(ctx) {
         ? Emails.countDocuments({
             domain: domain._id,
             alias: { $in: [null, undefined] },
+            is_bounce: { $ne: true },
             created_at: { $gte: startOfDay }
           })
         : Promise.resolve(0)
@@ -144,11 +146,13 @@ async function retrieve(ctx) {
     const [taggedCount, untaggedCount] = await Promise.all([
       Emails.countDocuments({
         alias: alias._id,
+        is_bounce: { $ne: true },
         created_at: { $gte: startOfDay }
       }),
       Emails.countDocuments({
         domain: domain._id,
         alias: { $in: [null, undefined] },
+        is_bounce: { $ne: true },
         created_at: { $gte: startOfDay }
       })
     ]);
@@ -156,6 +160,7 @@ async function retrieve(ctx) {
   } else {
     smtpCount = await Emails.countDocuments({
       alias: alias._id,
+      is_bounce: { $ne: true },
       created_at: { $gte: startOfDay }
     });
   }
@@ -212,9 +217,11 @@ async function update(ctx) {
     }
 
     // Cap: alias smtp_limit cannot exceed the domain's effective SMTP limit.
-    // The effective limit is the HIGHEST smtp_limit among ALL admin members
+    // The effective limit is the HIGHEST threshold among ALL admin members
     // of the domain (since the domain benefits from the highest-tier admin).
-    if (smtpLimit > 0) {
+    // (an unchanged value is not re-checked, since the domain's threshold
+    //  can move down with reputation after the alias limit was set)
+    if (smtpLimit > 0 && smtpLimit !== alias.smtp_limit) {
       const domainSmtpLimit = await getDomainSmtpLimitAsync(domain, Users);
       if (smtpLimit > domainSmtpLimit) {
         throw Boom.badRequest(

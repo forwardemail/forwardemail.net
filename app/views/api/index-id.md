@@ -466,7 +466,7 @@ Pastikan Anda telah mengikuti instruksi pengaturan untuk domain Anda.
 Instruksi ini dapat ditemukan di [Akun Saya → Domain → Pengaturan → Konfigurasi SMTP Keluar](/my-account/domains). Anda perlu memastikan pengaturan DKIM, Return-Path, dan DMARC untuk pengiriman SMTP keluar dengan domain Anda.
 ### Dapatkan batas email SMTP keluar {#get-outbound-smtp-email-limit}
 
-Ini adalah endpoint sederhana yang mengembalikan objek JSON yang berisi `count` dan `limit` untuk jumlah pesan SMTP keluar harian berdasarkan per akun.
+Mengembalikan objek JSON berisi `count` pesan SMTP keluar yang Anda kirim hari ini dan `limit` hari ini. SMTP keluar tidak terbatas, dan `limit` adalah [ambang berbasis reputasi](/faq#what-are-your-outbound-smtp-limits) Anda saat ini, yang meningkat seiring waktu.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Endpoint API ini akan secara otomatis mengkodekan emoji untuk Anda jika ditemuka
 | `priority`       | Tidak  | String           | Tingkat prioritas untuk email (bisa `"high"`, `"normal"` (default), atau `"low"`). Perlu dicatat bahwa nilai `"normal"` tidak mengatur header prioritas (ini adalah perilaku default). Jika nilai `"high"` atau `"low"` diatur, maka header `X-Priority`, `X-MSMail-Priority`, dan `Importance` [akan diatur sesuai](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | Tidak  | Object atau Array| Object atau Array dari field header tambahan yang akan diatur (lihat [header khusus Nodemailer](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                              |
 | `messageId`      | Tidak  | String           | Nilai Message-ID opsional untuk header "Message-ID" (nilai default akan dibuat secara otomatis jika tidak diatur – catatan bahwa nilai harus [mematuhi spesifikasi RFC2822](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                             |
-| `date`           | Tidak  | String atau Date | Nilai Date opsional yang akan digunakan jika header Date hilang setelah parsing, jika tidak diatur maka string UTC saat ini akan digunakan. Header tanggal tidak boleh lebih dari 30 hari di masa depan dari waktu saat ini.                                                                                                                                                                                                                                   |
+| `date`           | Tidak  | String atau Date | Nilai Date opsional yang akan digunakan jika header Date hilang setelah parsing, jika tidak diatur maka string UTC saat ini akan digunakan. Header tanggal tidak boleh lebih dari 27 hari di masa depan dari waktu saat ini.                                                                                                                                                                                                                                   |
 | `list`           | Tidak  | Object           | Object opsional dari header `List-*` (lihat [header list Nodemailer](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                            |
 > Contoh Permintaan (Token API):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Jika pengguna yang diundang sudah menjadi anggota yang diterima dari domain lain yang juga menjadi anggota admin yang mengundang, maka undangan akan otomatis diterima dan tidak mengirim email.
+> Jika Anda mengundang seseorang sebagai `"user"` yang sudah menjadi anggota yang diterima di domain lain tempat Anda menjadi anggota, kami menerima undangan tersebut untuknya dan tidak mengirim email. Kami mengirim undangan sebagai `"admin"` melalui email agar diterima oleh yang diundang, dan tidak menyertakan tautannya dalam undangan tertunda domain.
 
 ### Hapus undangan domain {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Parameter Body | Wajib | Tipe                | Deskripsi                                                                                  |
 | -------------- | ------ | ------------------- | ------------------------------------------------------------------------------------------ |
 | `group`        | Ya     | String (enumerable) | Grup untuk memperbarui pengguna ke keanggotaan domain (bisa salah satu dari `"admin"` atau `"user"`) |
+
+> \[!IMPORTANT]
+> Memperbarui anggota lain menjadi `"admin"` akan mengirimkan undangan sebagai admin melalui email kepadanya, dan ia tetap menjadi `"user"` sampai menerimanya (undangan tertunda domain mencantumkannya). Memperbaruinya kembali menjadi `"user"` atau menghapusnya akan menarik undangan tersebut.
 
 > Contoh Permintaan:
 

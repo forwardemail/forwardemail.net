@@ -16,7 +16,7 @@ const test = require('ava');
 const utils = require('../utils');
 const config = require('#config');
 const createPassword = require('#helpers/create-password');
-const { Aliases } = require('#models');
+const { Aliases, Users } = require('#models');
 
 const { emoji } = config.views.locals;
 
@@ -1539,6 +1539,26 @@ test('gets email limit with alias auth', async (t) => {
   t.is(res.status, 200);
   t.true(Number.isFinite(res.body.count));
   t.true(Number.isFinite(res.body.limit));
+});
+
+test('email limit with alias auth includes the domain ramp-up', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass, user } = await createTestAlias(t);
+
+  // an established sender, on a new domain
+  await Users.collection.updateOne(
+    { _id: user._id },
+    { $set: { [config.userFields.smtpReputationTier]: 2 } }
+  );
+
+  const res = await api
+    .get('/v1/emails/limit')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .set('Accept', 'application/json');
+
+  t.is(res.status, 200);
+  t.is(res.body.count, 0);
+  t.is(res.body.limit, config.smtpReputationTiers[0].limit);
 });
 
 //

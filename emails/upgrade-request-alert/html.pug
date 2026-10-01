@@ -14,7 +14,7 @@ block content
                 ul.list-unstyled.mb-0
                   li
                     strong= t("Type: ")
-                    | #{ kind === 'storage_limit' ? t('Storage Upgrade') : t('SMTP Upgrade') }
+                    | #{ t('Storage Upgrade') }
                   li
                     strong= t("Requested: ")
                     | #{ upgrade_option }

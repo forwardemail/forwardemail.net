@@ -201,6 +201,10 @@ module.exports = {
   RATE_LIMITED: 'You have been rate limited, please try again later.',
   SMTP_RATE_LIMIT_EXCEEDED:
     'You have exceeded your daily SMTP outbound rate limit.',
+  SMTP_THRESHOLD_REACHED_SUBJECT:
+    'You have reached your daily outbound SMTP threshold.',
+  SMTP_THRESHOLD_REACHED_MESSAGE:
+    'You have reached your daily outbound SMTP threshold. We defer further messages today with a 421 error until your threshold resets at midnight UTC. Outbound SMTP is unlimited, and your daily threshold grows as you build a clean sending history. <a href="%s">Learn more</a>.',
 
   ALIAS_MUST_NOT_MATCH_RECIPIENT:
     'Alias forwarding recipients cannot be equal to <strong class="notranslate">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class="notranslate">%s</strong> to continue.',
@@ -892,7 +896,6 @@ module.exports = {
   INVALID_UPGRADE_KIND: 'Invalid upgrade type specified',
   INVALID_UPGRADE_OPTION: 'Invalid upgrade option specified',
   INVALID_STORAGE_OPTION: 'Invalid storage upgrade option',
-  INVALID_SMTP_OPTION: 'Invalid SMTP upgrade option',
   UPGRADE_REQUEST_ERROR:
     'An error occurred while processing your upgrade request. Please try again.',
   EMAIL_FORWARDING_PAUSED: 'Email forwarding is paused',
@@ -1197,6 +1200,8 @@ module.exports = {
   ALIAS_IS_ADMIN_SUSPENDED:
     '<p class="text-center text-danger">Your alias <span class="notranslate">%s</span> has been suspended from outbound SMTP access by an admin.</p>',
   ALIAS_SMTP_LIMIT_INVALID: 'SMTP limit must be a non-negative integer.',
+  SMTP_LIMIT_RANGE_INVALID: 'SMTP limit must be between 10 and 10,000,000.',
+  INVALID_SMTP_REPUTATION_TIER: 'Invalid SMTP reputation tier.',
   ALIAS_SMTP_LIMIT_EXCEEDS_DOMAIN:
     "SMTP limit cannot exceed the domain's limit of %d messages per day.",
   ALIAS_DEFAULT_SMTP_LIMIT_EXCEEDS_DOMAIN:

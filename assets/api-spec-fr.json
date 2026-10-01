@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "Vrai pour une notification d'état de remise (comme un rebond) concernant un e-mail que vous avez envoyé"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Nombre actuel d'e-mails envoyés"
+            "description": "Messages SMTP sortants que vous avez envoyés aujourd'hui (UTC), sans compter les notifications de rebond et les réponses automatiques"
           },
           "limit": {
             "type": "integer",
-            "description": "Nombre maximal d'e-mails autorisés"
+            "description": "Seuil du jour basé sur la réputation (au plus ce qui reste aujourd'hui des seuils du domaine et du compte ; 0 lorsque vous ne pouvez pas envoyer depuis le domaine)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Limite d'envoi d'e-mails SMTP sortants",
-        "description": "Il s'agit d'un point de terminaison simple qui renvoie un objet JSON contenant les valeurs `count` et `limit` du nombre de messages SMTP sortants quotidiens par compte.",
+        "description": "Renvoie un objet JSON avec le `count` des messages SMTP sortants que vous avez envoyés aujourd'hui et la `limit` du jour. Le SMTP sortant est illimité, et la `limit` est votre seuil actuel basé sur la réputation (voir <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), qui augmente avec le temps. Les notifications de rebond et les réponses automatiques ne comptent pas.",
         "tags": [
           "Courriels"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Créer une invitation de domaine",
-        "description": ">[!IMPORTANT]\n\n>Si l'utilisateur invité est déjà membre accepté d'un autre domaine dont l'administrateur qui l'invite est membre, l'invitation sera automatiquement acceptée et aucun e-mail ne sera envoyé.",
+        "description": ">[!IMPORTANT]\n>Si l'utilisateur invité est déjà membre accepté d'un autre domaine dont l'administrateur qui l'invite est membre, l'invitation sera automatiquement acceptée et aucun e-mail ne sera envoyé (uniquement pour un `group` de `user` : nous envoyons par e-mail une invitation en tant qu'`admin` pour que l'invité l'accepte, et nous n'incluons pas son lien dans les invitations en attente du domaine).",
         "tags": [
           "Invitations"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Mettre à jour le membre du domaine",
-        "description": "Mettre à jour un membre du domaine.",
+        "description": "Mettre à jour un membre du domaine.\n\n>[!IMPORTANT]\n>Mettre à jour un autre membre vers `admin` lui envoie à la place une invitation par e-mail en tant qu'administrateur, et il reste `user` jusqu'à ce qu'il l'accepte (les invitations en attente du domaine l'affichent). Le remettre à `user` ou le supprimer retire l'invitation.",
         "tags": [
           "Membres"
         ],

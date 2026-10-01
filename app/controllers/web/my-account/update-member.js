@@ -3,13 +3,18 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
+
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 
 const emailHelper = require('#helpers/email');
-const { Aliases, Domains } = require('#models');
+const { Aliases, Domains, Users } = require('#models');
+
+// admin invites for existing members expire after 7 days (as other invites)
+const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 async function updateMember(ctx, next) {
   // ctx.params.member_id
@@ -47,6 +52,111 @@ async function updateMember(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)
     throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+
+  //
+  // becoming an admin of a domain takes the member accepting it (an admin can
+  // lend the domain their outbound SMTP threshold and answers for its
+  // sending), so promoting another member sends them an admin invite
+  // (see `retrieve-invite.js`) instead
+  //
+  if (
+    ctx.request.body.group === 'admin' &&
+    member.group !== 'admin' &&
+    !isCurrentUserBeingUpdated
+  ) {
+    const user = await Users.findById(member.user.id).select('email').lean();
+    if (!user || !isSANB(user.email))
+      throw Boom.notFound(ctx.translateError('INVALID_USER'));
+    const email = user.email.toLowerCase();
+    // (an invite still pending is not sent again, so the invite email cannot
+    // be sent over and over to the member's address)
+    const isPending = (ctx.state.domain.invites || []).some(
+      (invite) =>
+        invite.group === 'admin' &&
+        invite.email.toLowerCase() === email &&
+        (!invite.expires_at || new Date(invite.expires_at) > new Date())
+    );
+    if (isPending) {
+      if (ctx.api) return next();
+      ctx.flash('custom', {
+        title: ctx.request.t('Success'),
+        text: ctx.translate('INVITE_ALREADY_SENT'),
+        type: 'success',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        position: 'top'
+      });
+      if (ctx.accepts('html')) ctx.redirect('back');
+      else ctx.body = { reloadPage: true };
+      return;
+    }
+
+    const inviteToken = crypto.randomBytes(32).toString('base64url');
+    ctx.state.domain.invites = [
+      ...(ctx.state.domain.invites || []).filter(
+        (invite) => invite.email.toLowerCase() !== email
+      ),
+      {
+        email,
+        group: 'admin',
+        token: inviteToken,
+        expires_at: new Date(Date.now() + INVITE_TTL_MS)
+      }
+    ];
+    ctx.state.domain.locale = ctx.locale;
+    ctx.state.domain.skip_verification = true;
+    ctx.state.domain.__audit_metadata = {
+      user: ctx.state.user,
+      ip: ctx.ip,
+      userAgent: ctx.get('User-Agent')
+    };
+    ctx.state.domain = await ctx.state.domain.save();
+
+    try {
+      await emailHelper({
+        template: 'invite',
+        message: { to: email },
+        locals: {
+          domain: { name: ctx.state.domain.name, id: ctx.state.domain.id },
+          inviteToken
+        }
+      });
+    } catch (err) {
+      if (!ctx.api) ctx.flash('error', ctx.translate('INVITE_EMAIL_ERROR'));
+      ctx.logger.error(err);
+    }
+
+    if (ctx.api) return next();
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate('REQUEST_OK'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
+    if (ctx.accepts('html')) ctx.redirect('back');
+    else ctx.body = { reloadPage: true };
+    return;
+  }
+
+  // (a pending invite as an admin for the member, see above, is withdrawn
+  // when they are set back to a user)
+  if (
+    ctx.request.body.group === 'user' &&
+    Array.isArray(ctx.state.domain.invites) &&
+    ctx.state.domain.invites.length > 0
+  ) {
+    const user = await Users.findById(member.user.id).select('email').lean();
+    if (user && isSANB(user.email))
+      ctx.state.domain.invites = ctx.state.domain.invites.filter(
+        (invite) =>
+          invite.group !== 'admin' ||
+          invite.email.toLowerCase() !== user.email.toLowerCase()
+      );
+  }
 
   // swap the user group based off ctx.request.body.group
   // <https://github.com/Automattic/mongoose/issues/11522>

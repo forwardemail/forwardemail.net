@@ -470,6 +470,56 @@ html.no-js .fe-console__rail-wrap {
 }
 
 // ============================================
+// SENDING (unlimited, reputation-based)
+// ============================================
+
+.fe-hero__offer {
+  margin-top: var(--fe-space-5);
+  text-decoration: none;
+}
+
+.fe-hero__offer:hover,
+.fe-hero__offer:focus {
+  border-color: var(--fe-border-strong);
+}
+
+.fe-sending {
+  display: grid;
+  gap: var(--fe-space-6);
+  align-items: center;
+  padding: 1.75rem;
+  margin-top: var(--fe-grid-gap);
+}
+
+.fe-sending__title {
+  margin-bottom: var(--fe-space-3);
+}
+
+.fe-sending__body {
+  margin-bottom: var(--fe-space-4);
+}
+
+.fe-sending__tiers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fe-space-2);
+  padding: 0;
+  margin: 0 0 var(--fe-space-3);
+  list-style: none;
+}
+
+.fe-sending__tier--top {
+  font-weight: var(--fe-weight-medium);
+  border-color: var(--fe-border-strong);
+}
+
+.fe-sending__unit {
+  margin: 0;
+  font-size: var(--fe-text-body-sm);
+  color: var(--fe-fg-secondary);
+}
+
+// ============================================
 // PRICING GRID (landing)
 // ============================================
 
@@ -652,6 +702,10 @@ html.no-js .fe-console__rail-wrap {
   // 45/55 split, equal height via grid stretch.
   .fe-features {
     grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+  }
+
+  .fe-sending {
+    grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
   }
 
   // Featured quote holds the left column; the two short ones stack right.

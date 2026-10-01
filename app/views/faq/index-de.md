@@ -80,6 +80,8 @@
   * [Kann ich E-Mails für jede Subdomain weiterleiten (Wildcard-Subdomains)?](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Wie sind Ihre ausgehenden SMTP-Limits](#what-are-your-outbound-smtp-limits)
   * [Brauche ich eine Genehmigung, um SMTP zu aktivieren](#do-i-need-approval-to-enable-smtp)
+  * [Welche Informationen benötigen Sie, um mein ausgehendes SMTP zu genehmigen oder wiederherzustellen](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [Warum benötigen neu registrierte oder kürzlich abgelaufene Domains einen kostenpflichtigen Plan](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Wie lauten Ihre SMTP-Server-Konfigurationseinstellungen](#what-are-your-smtp-server-configuration-settings)
   * [Wie lauten Ihre IMAP-Server-Konfigurationseinstellungen](#what-are-your-imap-server-configuration-settings)
   * [Wie lauten Ihre POP3-Server-Konfigurationseinstellungen](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Kann ich mit Outlook "Senden als" verwenden](#can-i-send-mail-as-in-outlook-with-this)
   * [Kann ich mit Apple Mail und iCloud Mail "Senden als" verwenden](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Kann ich unbegrenzt E-Mails weiterleiten](#can-i-forward-unlimited-emails-with-this)
+  * [Kann ich mit diesem Dienst unbegrenzt E-Mails senden](#can-i-send-unlimited-emails-with-this)
   * [Bieten Sie unbegrenzte Domains zu einem Preis an](#do-you-offer-unlimited-domains-for-one-price)
   * [Welche Zahlungsmethoden akzeptieren Sie](#which-payment-methods-do-you-accept)
 * [Zusätzliche Ressourcen](#additional-resources)
@@ -1035,7 +1038,7 @@ Wenn sie diese Meldung jedoch sehen, liegt das daran, dass sie normalerweise Ihr
 
 Dieses Thema hängt mit einem [bekannten Problem in Gmail zusammen, bei dem zusätzliche Informationen neben dem Namen des Absenders angezeigt werden](https://support.google.com/mail/answer/1311182).
 
-Seit Mai 2023 unterstützen wir das Versenden von E-Mails per SMTP als Add-on für alle zahlenden Nutzer – was bedeutet, dass Sie das <span class="notranslate">via forwardemail dot net</span> in Gmail entfernen können.
+Ausgehendes SMTP ist in allen kostenpflichtigen Plänen enthalten (unbegrenzt und [reputationsbasiert](#what-are-your-outbound-smtp-limits)), sodass Sie das <span class="notranslate">via forwardemail dot net</span> in Gmail entfernen können.
 
 Beachten Sie, dass dieses FAQ-Thema speziell für diejenigen gilt, die die Funktion [Wie man E-Mails mit Gmail als Absender sendet](#how-to-send-mail-as-using-gmail) verwenden.
 
@@ -2038,6 +2041,12 @@ Im Gegensatz zu Mailsystemen wie `postfix` (z. B. die die `sieve`-Vacation-Filte
 
 8. Wir senden nicht, wenn die MAIL FROM-Adresse einem ARF-Feedback-Absendermuster entspricht (z. B. `feedback@arf.mail.yahoo.com`).
 
+9. Wir antworten nur authentifizierten Absendern: Die From-Adresse muss DMARC bestehen oder eine ausgerichtete, gültige DKIM-Signatur tragen. SPF allein zählt nicht, da gemeinsam genutzte Mailserver es für jeden bestehen. Ein gefälschter Absender kann Ihre Urlaubsantworten nicht in [Backscatter](https://www.backscatterer.org/?target=autoresponders) gegen jemand anderen verwandeln.
+
+10. Wir antworten nur, wenn Ihr Alias oder eine andere Adresse auf seiner Domain (etwa ein Alias, der an ihn weiterleitet) im `To`-, `Cc`-, `Bcc`-, `Resent-To`-, `Resent-Cc`- oder `Resent-Bcc`-Header steht, wie es [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) empfiehlt. E-Mails an eine verdeckte Empfängerliste erhalten keine Antwort. Sieve-Urlaubsantworten setzen voraus, dass Ihr Alias oder eine Adresse in `:addresses` in diesen Headern steht.
+
+11. Wir senden bis zu 300 Urlaubsantworten pro Benutzer pro Tag (weniger, wenn wir Ihren Schwellenwert für ausgehendes SMTP darunter eingeschränkt haben) und höchstens 20 pro Empfängeradresse pro Tag über alle unsere Benutzer hinweg.
+
 ### Wie richte ich SPF für Forward Email ein {#how-do-i-set-up-spf-for-forward-email}
 
 Verwenden Sie die DNS-Verwaltungsseite Ihres Registrars und legen Sie den folgenden <strong class="notranslate">TXT</strong>-Eintrag fest:
@@ -2339,9 +2348,11 @@ Ja, Sie können mehr lesen unter <https://forwardemail.net/guides/newsletter-wit
 
 Bitte beachten Sie, dass Forward Email zur Wahrung der IP-Reputation und Sicherstellung der Zustellbarkeit einen manuellen Überprüfungsprozess pro Domain für die **Newsletter-Freigabe** hat. Senden Sie eine E-Mail an <support@forwardemail.net> oder eröffnen Sie eine [Hilfeanfrage](https://forwardemail.net/help) zur Freigabe. Dies dauert in der Regel weniger als 24 Stunden, wobei die meisten Anfragen innerhalb von 1-2 Stunden bearbeitet werden. In naher Zukunft wollen wir diesen Prozess mit zusätzlichen Spam-Kontrollen und Benachrichtigungen sofortig machen. Dieser Prozess stellt sicher, dass Ihre E-Mails den Posteingang erreichen und Ihre Nachrichten nicht als Spam markiert werden.
 
+Newsletter und Mailinglisten zählen zu Ihrem täglichen ausgehenden Schwellenwert, der unbegrenzt ist und mit Ihrer [Absenderreputation](#what-are-your-outbound-smtp-limits) steigt. Halten Sie Ihre Listen sauber: Eine hohe Bounce-Rate senkt Ihren Schwellenwert, und plötzliche Volumensprünge bremsen wir ab.
+
 ### Unterstützen Sie das Versenden von E-Mails per API {#do-you-support-sending-email-with-api}
 
-Ja, seit Mai 2023 unterstützen wir das Versenden von E-Mails per API als Zusatzfunktion für alle zahlenden Nutzer.
+Ja. Alle kostenpflichtigen Pläne enthalten das Versenden von E-Mails über unsere API. Wie ausgehendes SMTP ist es **unbegrenzt** und [reputationsbasiert](#what-are-your-outbound-smtp-limits): Nachrichten, die Sie über die API und über SMTP senden, teilen sich einen Tagesschwellenwert.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2547,7 +2558,7 @@ Um die Kontaktunterstützung zu nutzen, muss der **Benutzer** die E-Mail-Adresse
 
 ### Unterstützen Sie das Senden von E-Mails mit SMTP {#do-you-support-sending-email-with-smtp}
 
-Ja, seit Mai 2023 unterstützen wir das Senden von E-Mails mit SMTP als Add-on für alle zahlenden Nutzer.
+Ja. Alle kostenpflichtigen Pläne enthalten ausgehendes SMTP, und es ist **unbegrenzt**: Ihr täglicher Versandschwellenwert steigt mit Ihrer [Absenderreputation](#what-are-your-outbound-smtp-limits).
 
 <div id="smtp-instructions">
 
@@ -3676,32 +3687,101 @@ Wenn Sie <a href="#do-you-support-regular-expressions-or-regex" class="alert-lin
 
 ### Was sind Ihre ausgehenden SMTP-Limits {#what-are-your-outbound-smtp-limits}
 
-Wir setzen ausgehende SMTP-Ratenbegrenzungen auf mehreren Ebenen durch, um Missbrauch zu verhindern und gleichzeitig legitime Nutzung flexibel zu ermöglichen. Jede Ebene wird der Reihe nach geprüft — welche Grenze zuerst erreicht wird, lehnt die Nachricht vorübergehend mit einem `421` Fehler ab (was "versuchen Sie es später erneut" bedeutet).
+Ausgehendes SMTP ist **unbegrenzt** und **reputationsbasiert**. Sie erhalten statt einer festen monatlichen Obergrenze einen Tagesschwellenwert, und er steigt, während Sie eine gute Versandreputation aufbauen.
 
-**Hierarchie der Ratenbegrenzungen:**
+Neue Absender starten mit 300 Nachrichten pro Tag, im Team-Plan mit 900 (Absender im Team-Plan überspringen die Stufen unter 900, und ihre nächste Stufe ist 1,000). Einmal täglich prüfen wir Ihren jüngsten Versand und stufen Ihren Schwellenwert hoch oder herab. Wir werten jeden Tag zwei Tage später aus, sobald wir die Zustellergebnisse seiner Nachrichten kennen. Wenn dies für Ihr Konto startet, blicken wir auf bis zu 30 Tage Ihres Versandverlaufs zurück und holen verpasste Tage nach.
 
-| Ebene | Geltungsbereich | Standardlimit | Beschreibung |
-| :---- | :---- | :-----------: | :---------- |
-| Pro-Alias | Einzelnes Alias | Keine (verwendet das Domain-Limit) | Optional. Wenn ein Alias ein benutzerdefiniertes `smtp_limit` hat, wird es zuerst geprüft. |
-| Pro-Domain | Alle E-Mails, die an einem Tag von einer Domain gesendet werden | 300/Tag | Zählt alle ausgehenden E-Mails über alle Aliase der Domain. |
-| Pro-Benutzer | Alle E-Mails, die von einem Benutzerkonto an einem Tag gesendet werden | 300/Tag | Verhindert Umgehungen durch Löschen und erneutes Erstellen von Aliassen oder Domains. |
+Nur echter Versand baut Reputation auf. E-Mails zählen für eine Hochstufung, sobald wir sie an **eindeutige Empfänger außerhalb Ihrer eigenen Domains** **zustellen**. E-Mails an Sie selbst, an Ihre eigenen Domains (oder deren Subdomains), an die Domains, von denen Sie senden, oder wiederholt an denselben Empfänger zählen nicht. Varianten einer Adresse (ein `+tag` oder Punkte in einer Gmail-Adresse) zählen einmal. Jede Empfängerdomain (mit ihren Subdomains) zählt für bis zu 50 Empfänger pro Tag, außer den eigenen Domains der großen Postfachanbieter (wie gmail.com). Mindestens ein Fünftel der zählenden Empfänger muss bei großen Postfachanbietern liegen, und höhere Stufen erfordern außerdem eine Mindestanzahl unterschiedlicher Empfängerdomains an einem einzigen Tag.
 
-**Wie das effektive Limit bestimmt wird:**
+* **Hochstufung**: Ihr Schwellenwert steigt um eine Stufe, sobald Sie lange genug ohne Unterbrechung gezahlt haben, Sie genügend saubere Versandtage auf Ihrer aktuellen Stufe haben und Ihr versandstärkster Tag der letzten 7 Tage mindestens die Hälfte Ihres aktuellen Schwellenwerts an zugestellten Empfängern außerhalb Ihrer eigenen Domains erreicht hat (verteilt auf genügend unterschiedliche Empfängerdomains). Nur ununterbrochen bezahlte Zeit zählt, daher beginnt ein älteres Konto, das nicht gezahlt hat (oder die Zahlung eingestellt hat), von vorn. Eine bis zu 14 Tage verspätete Verlängerung gilt weiterhin als ununterbrochen, und nur Ihre eigenen Zahlungen zählen.
+* **Sauberer Tag**: ein Tag, an dem wir mindestens 5 Ihrer Nachrichten an Empfänger außerhalb Ihrer eigenen Domains zugestellt haben, weniger als 5% dieser Empfänger Ihre E-Mails gebounct oder abgelehnt haben, Sie nicht genug Spam- oder Virenmeldungen für einen schlechten Tag erhalten haben (siehe unten) und wir Ihren Versand nicht wegen eines ungewöhnlichen Musters gebremst haben.
+* **Herabstufung**: Ein Tag mit hoher Bounce- oder Ablehnungsrate (5% oder mehr von mindestens 20 Empfängern außerhalb Ihrer eigenen Domains) oder zu vielen Spam- oder Virenmeldungen von großen Postfachanbietern (siehe unten) senkt Ihren Schwellenwert um eine Stufe (nicht unter den Startschwellenwert Ihres Plans) und setzt Ihre Anzahl sauberer Tage zurück. Ein Tag, an dem 15% oder mehr davon Ihre E-Mails gebounct oder abgelehnt haben, setzt Ihren Schwellenwert stattdessen auf den Startschwellenwert Ihres Plans zurück und pausiert Hochstufungen für 30 Tage (ein von unserem Team genehmigter Schwellenwert gilt weiterhin). Nur Ablehnungen Ihrer E-Mails zählen, also zum Beispiel nicht, wenn unsere gemeinsam genutzten IP-Adressen auf einer Blocklist stehen oder wir den Server eines Empfängers nicht erreichen konnten. Jeder Empfänger zählt einmal, egal wie viele Nachrichten Sie ihm gesendet haben, und eine geplante Nachricht zählt an dem Tag, für den Sie sie geplant haben. Tage ohne Versand zählen weder für noch gegen Sie.
+* **Spam- und Virenmeldungen**: Große Postfachanbieter (wie Gmail, Outlook und Yahoo) entscheiden, was als Missbrauch gilt, und wir zählen nur ihre dauerhaften Ablehnungen. Jeder Empfänger auf den eigenen Domains eines Anbieters (wie gmail.com) zählt, während andere Domains, die ein Anbieter hostet (wie das Google Workspace eines Unternehmens), einmal pro Domain zählen, und jeder zählt einmal pro Tag. Wir zählen Meldungen als Anteil der Empfänger, an die Sie gesendet haben, wie es große Anbieter tun (Gmail verlangt von Absendern, unter 0.1% zu bleiben und nie 0.3% zu erreichen), sodass eine einzelne Meldung Sie nicht herabstuft, und Meldungen zu anderen Domains, die ein Anbieter hostet, machen höchstens die Hälfte der nötigen Meldungen aus. Meldungen für 0.1% oder mehr der Empfänger eines Tages außerhalb Ihrer eigenen Domains, oder der Empfänger des Vortages, falls das mehr sind, ergeben einen schlechten Tag (nötig sind mindestens 2 und höchstens 25 Meldungen). Eine automatische Sperrung eines Ihrer Aliase zählt für sich allein nicht gegen Ihre Reputation, die Meldungen dahinter aber schon. Meldungen für 0.3% oder mehr der Empfänger außerhalb der Domain, von der Sie in den letzten 24 Stunden gesendet haben, einschließlich der für diesen Zeitraum geplanten Nachrichten, setzen Ihren Schwellenwert sofort auf den Startschwellenwert Ihres Plans zurück (300 bzw. 900 im Team-Plan) (nötig sind mindestens 3 und höchstens 50 Meldungen). Hochstufungen pausieren dann für 30 Tage, und ein von unserem Team genehmigter Schwellenwert gilt in dieser Zeit nicht. Bei Domains mit Team-Plan zählen Meldungen auch für einen schlechten Tag des Administrators, dessen Schwellenwert die Domain verwendet (sofern Ihr eigener Schwellenwert nicht genauso hoch ist), mit demselben Anteil an den Empfängern der Mitglieder, die sie betreffen, und sie setzen diesen Administrator nicht zurück. Sobald Meldungen zu diesen Mitgliedern innerhalb von 24 Stunden den Anteil für ein Zurücksetzen erreichen, können die Mitglieder der Domains des Administrators dessen Schwellenwert 30 Tage lang nicht verwenden. Das eigene Senden des Administrators bleibt gleich, und das Senden der Mitglieder zählt weiterhin für den Schwellenwert des Administrators. Wenn Sie ein Mitglied zum Administrator machen, erhält es eine Einladung und wird Administrator, sobald es diese annimmt. Meldungen zu automatischen Antworten und Bounces von an Sie gesendeten E-Mails zählen nicht gegen Sie, Meldungen zu Zustellbenachrichtigungen für von Ihnen gesendete E-Mails dagegen schon.
 
-* **Domains mit Team-Plan** — das effektive Tageslimit ist das höchste `smtp_limit` unter allen Administratoren der Domain. Wenn ein Administrator zum Beispiel ein Limit von 300 und ein anderer eines von 500 hat, beträgt das effektive Domain-Limit 500.
-* **Enhanced Protection und andere Pläne** — das effektive Tageslimit ist das eigene `smtp_limit` des sendenden Benutzers (standardmäßig 300 Nachrichten pro Tag).
-* **Pro-Alias-Override** — Domain-Administratoren können optional ein benutzerdefiniertes `smtp_limit` für einzelne Aliase setzen. Wenn gesetzt, wird dieses zuerst geprüft (vor Domain- und Benutzerlimits). Dies ist nützlich, um bestimmte Aliase auf ein geringeres Sendevolumen zu beschränken.
-* **Domainstandard für neue Aliase** — Domain-Administratoren können einen `alias_default_smtp_limit` für die Domain festlegen (über die API oder die erweiterten Einstellungen im Dashboard). Wenn gesetzt, erben alle neu erstellten Aliase auf dieser Domain automatisch diesen Wert als ihr `smtp_limit`. Dieser Wert darf das effektive SMTP-Limit der Domain nicht überschreiten. Bestehende Aliase sind nicht betroffen. Auf `0` setzen, um zu deaktivieren.
+**Reputationsstufen:**
 
-**Systemadministratoren** (Forward Email staff) sind von allen Ratenbegrenzungen ausgenommen.
+| Tagesschwellenwert | Mindestdauer ununterbrochener Zahlung | Saubere Versandtage auf vorheriger Stufe | Unterschiedliche Empfängerdomains an einem Tag |
+| --------------: | ---------------------------: | ----------------------------------: | -----------------------------------: |
+|             300 |                            – |                                   – |                                    – |
+|             500 |                       7 Tage |                                   5 |                                   10 |
+|           1,000 |                      14 Tage |                                   7 |                                   20 |
+|           2,000 |                      30 Tage |                                  10 |                                   40 |
+|           5,000 |                      60 Tage |                                  14 |                                   75 |
+|          10,000 |                     120 Tage |                                  21 |                                  150 |
 
-Alle Ratenbegrenzungen werden mithilfe von Datenbankzählungen (`Emails.countDocuments`) gegen E-Mails durchgesetzt, die seit Beginn des aktuellen Tages (Mitternacht UTC) erstellt wurden. Das bedeutet, dass Ihr Limit täglich um Mitternacht UTC zurückgesetzt wird.
+Ab 10,000 Nachrichten pro Tag prüft unser Team Ihr Konto und erhöht Ihren Schwellenwert von Hand, ohne dass Sie etwas tun müssen. Wenn Sie früher einen höheren Schwellenwert benötigen (zum Beispiel, um ein bestehendes Versandvolumen umzuziehen), [kontaktieren Sie uns](/help). Ein von unserem Team genehmigter Schwellenwert gilt als Minimum und stuft Sie auf die Stufe ein, die er abdeckt, und Ihre Reputation kann ihn noch bis auf 10,000 Nachrichten pro Tag erhöhen.
 
-Wenn Sie ein höheres Limit benötigen, kontaktieren Sie bitte [uns](https://forwardemail.net/help). Die meisten Anfragen werden innerhalb von 1–2 Stunden bearbeitet.
+**Ungewöhnliche Versandmuster:**
+
+Wir bremsen den Versand mit einem `421` Fehler ab, wenn Ihre Aktivität ungewöhnlich wirkt, bei jedem Schwellenwert. Dies schützt unsere Warteschlange und IP-Reputation, wenn jemand ein Konto kompromittiert oder missbraucht, auch bei Konten, die seit Jahren bestehen oder inaktiv waren.
+
+* **Plötzliche Spitzen**: Sie können an einem Tag bis zum 2-Fachen Ihres zuletzt normalen Volumens (Ihres versandstärksten Tages der letzten 45 Tage) oder Ihren Startschwellenwert (300 Nachrichten bzw. 900 im Team-Plan und bei Domains mit Team-Plan) oder einen genehmigten Schwellenwert senden, je nachdem, welcher Wert höher ist. Wir aktualisieren Ihr normales Volumen jeden Tag anhand Ihres jüngsten Versands, sodass stetiges Wachstum nicht betroffen ist, und neue Absender steigern sich ab ihrem Startschwellenwert.
+* **Empfänger**: Eine Nachricht kann viele Empfänger haben, daher können Sie über alle Ihre Nachrichten eines Tages hinweg bis zum 2-Fachen Ihres heutigen Kontingents an Empfängern erreichen, und die Absender eines Kontos zusammen bis zum 2-Fachen des Schwellenwerts des Kontos. Eine einzelne Nachricht mit mehr Empfängern lehnen wir mit einem `550` Fehler ab.
+* **Schübe**: Sie können innerhalb einer beliebigen Stunde bis zu einem Viertel Ihres heutigen Kontingents oder das 2-Fache Ihrer versandstärksten Stunde der letzten 45 Tage (aber nicht mehr als die Hälfte Ihres heutigen Kontingents) senden, je nachdem, welcher Wert höher ist, und mindestens Ihren Startschwellenwert oder einen genehmigten Schwellenwert. Ein regelmäßiges Muster, etwa ein wöchentlicher Newsletter, gehört zu Ihrem normalen Volumen.
+* **Bounces**: Wenn Empfänger 10% oder mehr Ihrer Nachrichten aus den letzten 6 Stunden gebounct oder abgelehnt haben (bei mindestens 50 Nachrichten und ohne Ablehnungen unserer gemeinsam genutzten IP-Adressen), warten neue Nachrichten, bis sich Ihre Bounce-Rate erholt hat.
+* **Rückstau in der Warteschlange**: Wenn zu viele Ihrer Nachrichten aus den letzten 24 Stunden noch in der Warteschlange warten (10% Ihres heutigen Kontingents, mindestens Ihr Startschwellenwert), warten neue Nachrichten, bis die Warteschlange aufgeholt hat. Geplante Nachrichten, Nachrichten, die wir nach einer Zurückstellung durch einen Empfänger erneut versuchen, und Nachrichten, die auf eine Genehmigung warten, zählen nicht, und ein Rückstau zählt nicht gegen Ihre Reputation.
+* **Geplante Nachrichten**: Sie können Nachrichten bis zu 27 Tage im Voraus planen und bis zu einem Tageskontingent an Nachrichten gleichzeitig geplant haben.
+
+Verlangsamungen enden, sobald sich Ihre Aktivität normalisiert, und ein Tag mit einer Verlangsamung zählt nicht als sauberer Versandtag. E-Mail-Clients versuchen zurückgestellte Nachrichten selbst erneut zu senden, und API-Anfragen erhalten einen `429` Fehler, versuchen Sie diese also später erneut.
+
+Sobald Sie Ihren Schwellenwert für den Tag erreichen, lehnen wir weitere Nachrichten mit einem `421` Fehler ab (was "versuchen Sie es später erneut" bedeutet), bis Ihr Schwellenwert um Mitternacht UTC zurückgesetzt wird. Unsere [Schutzmaßnahmen gegen Missbrauch](#why-was-my-outbound-smtp-suspended) durch Spam und Viren gelten bei jedem Schwellenwert.
+
+Wie viele Nachrichten Sie heute gesendet haben und wie hoch Ihr aktueller Schwellenwert ist, sehen Sie unter [Mein Konto → E-Mails](/my-account/emails) oder über die [API](/email-api#get-outbound-smtp-email-limit).
+
+**Wie Schwellenwerte angewendet werden:**
+
+| Ebene      | Geltungsbereich                                      |      Standardschwellenwert      | Beschreibung                                                               |
+| :--------- | :----------------------------------------- | :-------------------------: | :------------------------------------------------------------------------ |
+| Pro-Alias | Einzelnes Alias | Keiner (verwendet das Domain-Limit) | Optional. Wir prüfen zuerst das benutzerdefinierte `smtp_limit` eines Alias, falls es eines hat. |
+| Pro-Konto | Alle E-Mails, die an einem Tag von den Domains gesendet werden, für die ein Konto Administrator ist | Reputationsbasiert (300+/Tag, 900+ im Team-Plan) | Ihr Schwellenwert gilt kontoweit, sodass das Hinzufügen von Domains oder Mitgliedern ihn nicht vervielfacht. |
+| Pro-Domain | Alle E-Mails, die an einem Tag von einer Domain gesendet werden | Steigt schrittweise innerhalb des Schwellenwerts des Kontos (300+/Tag, 900+ im Team-Plan) | Zählt alle ausgehenden E-Mails über die Aliase der Domain. |
+| Pro-Benutzer | Alle E-Mails, die von einem Benutzerkonto an einem Tag gesendet werden | Reputationsbasiert (300+/Tag, 900+ im Team-Plan) | Das Löschen und erneute Erstellen von Aliassen oder Domains setzt ihn nicht zurück. |
+
+* **Domains mit Team-Plan**: Der Schwellenwert der Domain ist der höchste Schwellenwert unter ihren zahlenden Administratoren. Hat zum Beispiel ein Administrator einen Schwellenwert von 1,000 und ein anderer von 5,000, beträgt der Schwellenwert der Domain 5,000. Absender im Team-Plan starten mit 900 statt 300 Nachrichten pro Tag.
+* **Kontoweit**: Das Konto einer Domain ist ihr zahlender Administrator mit dem höchsten Schwellenwert. Alle E-Mails, die von den Domains gesendet werden, für die dieses Konto Administrator ist, zählen auf diesen einen Schwellenwert, unabhängig davon, wer sie sendet (einschließlich Mitglieder), sodass weitere Domains oder Mitglieder ihn nicht erhöhen.
+* **Neue Domains werden schrittweise hochgefahren**: Innerhalb des Schwellenwerts des Kontos kann eine Domain bis zum 2-Fachen ihres versandstärksten Tages zugestellter E-Mails der letzten 45 Tage senden, mindestens aber ihren Startschwellenwert (300 Nachrichten bzw. 900 im Team-Plan) oder einen genehmigten Schwellenwert. Eine neue Domain in einem etablierten Konto beginnt mit ihrem Startschwellenwert und wächst, während wir ihre E-Mails zustellen.
+* **Bounces und automatische Antworten**: Bounce-Benachrichtigungen und Urlaubsantworten (automatische Antworten), die wir für Sie senden, zählen nicht auf Ihren Schwellenwert. Wir senden bis zu 300 automatische Antworten pro Benutzer pro Tag (weniger, wenn wir Ihren Schwellenwert darunter eingeschränkt haben) und höchstens 20 pro Empfängeradresse pro Tag über alle unsere Benutzer hinweg, und nur an Absender, die die Authentifizierung bestanden haben (siehe [Urlaubsantworten](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Bounce-Benachrichtigungen an eine Rücksendeadresse außerhalb der Domain, von der Sie gesendet haben (oder anderer Domains, deren Administrator Sie sind), begrenzen wir auf diese Zahl oder 15% Ihres täglichen Schwellenwerts, je nachdem, welcher Wert höher ist, und sie enthalten nur die identifizierenden Header der ursprünglichen Nachricht (wie `From`, `To` und `Subject`).
+* **Enhanced Protection und andere Pläne**: Der Schwellenwert der Domain ist der eigene Schwellenwert des sendenden Benutzers.
+* **Pro-Alias-Override**: Domain-Administratoren können ein benutzerdefiniertes `smtp_limit` für einzelne Aliase setzen. Wir prüfen es zuerst (vor den Domain- und Benutzerschwellenwerten), sodass Sie bestimmte Aliase auf ein geringeres Sendevolumen beschränken können.
+* **Domainstandard für neue Aliase**: Domain-Administratoren können einen `alias_default_smtp_limit` für die Domain festlegen (über die API oder die erweiterten Einstellungen im Dashboard). Neue Aliase auf dieser Domain erben diesen Wert dann als ihr `smtp_limit`. Er darf den aktuellen Schwellenwert der Domain nicht überschreiten, und bestehende Aliase behalten ihren eigenen. Setzen Sie ihn auf `0`, um ihn zu deaktivieren.
 
 ### Benötige ich eine Genehmigung, um SMTP zu aktivieren {#do-i-need-approval-to-enable-smtp}
 
 Ja, bitte beachten Sie, dass Forward Email zur Wahrung des IP-Rufs und zur Sicherstellung der Zustellbarkeit einen manuellen Überprüfungsprozess pro Domain für die Genehmigung des ausgehenden SMTP hat. Senden Sie eine E-Mail an <support@forwardemail.net> oder eröffnen Sie eine [Hilfsanfrage](https://forwardemail.net/help) zur Genehmigung. Dies dauert in der Regel weniger als 24 Stunden, wobei die meisten Anfragen innerhalb von 1-2 Stunden bearbeitet werden. In naher Zukunft wollen wir diesen Prozess mit zusätzlichen Spam-Kontrollen und Benachrichtigungen sofortig machen. Dieser Prozess stellt sicher, dass Ihre E-Mails im Posteingang ankommen und Ihre Nachrichten nicht als Spam markiert werden.
+
+Nach der Genehmigung ist ausgehendes SMTP unbegrenzt, und Ihr Tagesschwellenwert steigt mit Ihrer [Absenderreputation](#what-are-your-outbound-smtp-limits).
+
+### Welche Informationen benötigen Sie, um mein ausgehendes SMTP zu genehmigen oder wiederherzustellen {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+Wenn Sie die Genehmigung für ausgehendes SMTP beantragen (oder uns bitten, es nach einer [Sperrung](#why-was-my-outbound-smtp-suspended) wiederherzustellen), halten Sie Folgendes bereit:
+
+* Die Bestätigung, dass Sie unsere [Bedingungen](/terms) gelesen haben und ihnen zustimmen. Diese verbieten ausdrücklich, den Dienst für etwas zu nutzen, das auf der Liste der [verbotenen Geschäftsbereiche von Stripe](https://stripe.com/legal/restricted-businesses) oder der [verbotenen Aktivitäten von PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full) steht.
+* Wofür Sie ausgehendes SMTP nutzen möchten.
+* Einen Link zu Ihrer Website, Unternehmensinformationen oder ein Profil (z. B. LinkedIn, GitHub), mit dem wir überprüfen können, dass Sie ein echter, seriöser Absender sind — eine Domain, die auf eine leere Website verweist, ist ein häufiger Grund für eine verzögerte Genehmigung.
+* Die Bestätigung, dass Sie den Dienst nicht für Spam oder Massen- bzw. unerwünschtes Marketing nutzen.
+
+Dies sind in beiden Fällen dieselben Informationen, egal ob es sich um eine erstmalige Genehmigung oder die Wiederherstellung einer Domain nach einer Sperrung handelt.
+
+### Warum wurde mein ausgehendes SMTP gesperrt {#why-was-my-outbound-smtp-suspended}
+
+Bereits genehmigtes ausgehendes SMTP kann trotzdem pausiert werden, wenn wir ein Missbrauchsmuster erkennen. Dies ist unabhängig vom [Genehmigungsprozess](#do-i-need-approval-to-enable-smtp) oben und von unseren [reputationsbasierten ausgehenden Schwellenwerten](#what-are-your-outbound-smtp-limits). Es greift, wenn eine vertrauenswürdige Quelle (z. B. ein großer Postfachanbieter) Ihre ausgehende E-Mail als Virus oder Spam meldet.
+
+Es gibt zwei Stufen:
+
+1. **Eine einzelne Erkennung** sendet Ihnen für diese eine Nachricht einen Hinweis „Nachricht verhindert“ — rein informativ, und Ihre ausgehende Warteschlange läuft weiter.
+2. **Mehrere Erkennungen innerhalb eines kurzen, fortlaufenden Zeitfensters** überschreiten unseren Schwellenwert für die Missbrauchserkennung und lösen einen vollständigen Hinweis „Ausgehendes SMTP ist ausgesetzt“ aus. Ab diesem Zeitpunkt wird Ihre gesamte ausgehende SMTP-Warteschlange pausiert — für diese Domain werden keine weiteren ausgehenden Nachrichten versucht, bis das Problem gelöst ist.
+
+Beide Hinweise enthalten die konkret gemeldete Nachricht (`MAIL FROM`, `RCPT TO`, `Message-ID`, Betreff und Datum), welche vertrauenswürdige Quelle und Inhaltskategorie sie gemeldet hat, wie viele Erkennungen Sie im Verhältnis zum Schwellenwert hatten, wie viele eindeutige Empfänger und vertrauenswürdige Quellen beteiligt waren sowie den SMTP-Statuscode und die Antwort.
+
+Wenn Sie einen dieser Hinweise erhalten, kontaktieren Sie uns bitte unter <support@forwardemail.net> oder eröffnen Sie eine [Hilfeanfrage](https://forwardemail.net/help) — die Sperrung wird nicht automatisch aufgehoben, daher müssen Sie sich zur Klärung bei uns melden.
+
+### Warum benötigen neu registrierte oder kürzlich abgelaufene Domains einen kostenpflichtigen Plan {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+Wenn Sie eine Domain hinzufügen (und fortlaufend bei Domains im kostenlosen Plan), führen wir dafür eine WHOIS/RDAP-Abfrage durch. Wenn die Domain **innerhalb der letzten 90 Tage erstellt** wurde, **innerhalb der letzten 90 Tage abgelaufen** ist oder sich bei ihrem Registrar derzeit im Status **ausstehende Übertragung, Aktualisierung oder Löschung** befindet, muss sie einen kostenpflichtigen Plan haben, bevor Sie damit E-Mails senden oder empfangen können.
+
+Dies ist eine Maßnahme gegen Missbrauch und keine Bewertung Ihrer Person — große Registrare wie GoDaddy, Namecheap und Hostgator haben unsere Infrastruktur in der Vergangenheit vollständig blockiert, und zwar wegen Missbrauchsmustern mit der Übernahme kürzlich abgelaufener Domains und betrügerisch registrierten neuen Domains. Dass wir für diese Domains einen kostenpflichtigen Plan verlangen, ermöglicht es uns überhaupt erst, weiterhin einen kostenlosen Plan anzubieten, ohne das Vertrauen der Registrare zu verlieren.
+
+WHOIS/RDAP-Ergebnisse werden 24 Stunden zwischengespeichert, daher kann es bei einer Domain, die gerade die 90-Tage-Grenze überschritten hat, bis zu einem Tag dauern, bis dies berücksichtigt wird. Um die Domain sofort zu nutzen, wechseln Sie zu einem kostenpflichtigen Plan (ab $3/Monat für unbegrenzte Domains, Aliase und reputationsbasiertes ausgehendes SMTP).
 
 ### Was sind Ihre SMTP-Server-Konfigurationseinstellungen {#what-are-your-smtp-server-configuration-settings}
 
@@ -5294,6 +5374,8 @@ Absender, die beim Versand von Spam- oder Vireninhalten erkannt werden, werden n
 
 ### Haben Sie eine Ratenbegrenzung {#do-you-have-rate-limiting}
 
+Dieser Abschnitt behandelt eingehende E-Mails. Informationen zum Versand finden Sie unter [Was sind Ihre ausgehenden SMTP-Limits](#what-are-your-outbound-smtp-limits).
+
 Die Ratenbegrenzung für Absender erfolgt entweder über die Root-Domain, die aus einer Reverse-PTR-Abfrage der IP-Adresse des Absenders ermittelt wird – oder falls dies kein Ergebnis liefert, wird einfach die IP-Adresse des Absenders verwendet. Beachten Sie, dass wir dies unten als `Sender` bezeichnen.
 
 Unsere MX-Server haben tägliche Limits für eingehende E-Mails, die für [verschlüsselten IMAP-Speicher](/blog/docs/best-quantum-safe-encrypted-email-service) empfangen werden:
@@ -5339,6 +5421,8 @@ Das Tageslimit ist ein einziges gemeinsames Budget über alle Protokolle — ob 
 Diese Limits gelten pro Benutzerkonto (nicht pro Alias oder Domain) und werden täglich zurückgesetzt.  Das bedeutet, dass das Erstellen zusätzlicher Aliasse Ihr Bandbreitenlimit nicht erhöht.  Wenn Redis nicht verfügbar ist, wird die Ratenbegrenzung vollständig übersprungen (Fail-Open), sodass Ihr Dienst niemals unterbrochen wird.
 
 Wenn Sie höhere Limits für einen bestimmten Anwendungsfall benötigen (z.B. Migration eines sehr großen Archivs), [kontaktieren Sie uns](https://forwardemail.net/help) bitte.
+
+Diese Limits gelten für die übertragene Datenmenge. Wie viele Nachrichten Sie senden können, regeln unsere [reputationsbasierten ausgehenden Schwellenwerte](#what-are-your-outbound-smtp-limits).
 
 ### Wie schützen Sie vor Backscatter {#how-do-you-protect-against-backscatter}
 
@@ -5765,13 +5849,9 @@ Wir verwenden MX- und <strong class="notranslate">TXT</strong>-Record-Verifizier
 
 ### Wie erhöhe ich meinen Speicher oder das ausgehende SMTP-Sendelimit {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Wechsle zu <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mein Konto → Abrechnung</a> und scrolle zum Abschnitt **Erweiterungen**, der zwei Antragsformulare enthält:
+**Speicher**: Gehen Sie zu <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mein Konto → Abrechnung</a> und scrollen Sie zum Abschnitt **Erweiterungen**. Wählen Sie eine Menge (+10, +20, +30, +40 oder +50 GB) oder wählen Sie "Other", um eine eigene Menge anzufragen. Mit dem Absenden des Formulars geht Ihre Anfrage zur Prüfung an unser Team, und wir belasten Sie noch nicht. Sobald wir sie genehmigen, senden wir Ihnen per E-Mail einen sicheren Zahlungslink, um das Upgrade abzuschließen. Sie können jeweils eine offene Speicheranfrage haben und innerhalb von 3 Tagen nach einer früheren Anfrage keine weitere senden.
 
-* **Speicher-Upgrade** — wähle eine hinzuzufügende Menge (+10, +20, +30, +40 oder +50 GB), oder wähle "Other", um eine benutzerdefinierte Menge anzufordern.
-* **Upgrade des ausgehenden SMTP-Limits** — wähle eine hinzuzufügende Menge (+1000, +2000 oder +3000 E-Mails täglich), oder wähle "Other", um eine benutzerdefinierte Menge anzufordern.
-
-Das Absenden eines der Formulare sendet deine Anfrage an unser Team zur Prüfung — es belastet dich nicht sofort. Nach der Genehmigung senden wir dir per E-Mail einen sicheren Zahlungslink, um das Upgrade abzuschließen. Du kannst jeweils eine ausstehende Anfrage pro Typ (Speicher oder SMTP) haben; eine erneute Einreichung innerhalb von 3 Tagen nach einer vorherigen Anfrage desselben Typs ist erst zulässig, wenn dieses Zeitfenster abgelaufen ist.
-
+**Ausgehendes SMTP**: Es gibt nichts zu kaufen. Ausgehendes SMTP ist unbegrenzt, und Ihr Tagesschwellenwert steigt mit Ihrer [Absenderreputation](#what-are-your-outbound-smtp-limits). <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mein Konto → Abrechnung</a> und <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Mein Konto → E-Mails</a> zeigen Ihren aktuellen Schwellenwert, Ihre Reputationsstufe und die Voraussetzungen für die nächste Stufe.
 
 ### Was ist in der Enterprise License enthalten {#what-is-included-in-the-enterprise-license}
 
@@ -5893,6 +5973,12 @@ Ja, jedoch sind "relativ unbekannte" Absender auf 100 Verbindungen pro Stunde pr
 Mit "relativ unbekannt" meinen wir Absender, die nicht in der [Allowlist](#do-you-have-an-allowlist) erscheinen.
 
 Wenn dieses Limit überschritten wird, senden wir einen 421-Antwortcode, der dem Mailserver des Absenders mitteilt, es später erneut zu versuchen.
+
+### Kann ich mit diesem Dienst unbegrenzt E-Mails senden {#can-i-send-unlimited-emails-with-this}
+
+Ja. Ausgehendes SMTP und unsere E-Mail-API sind in allen kostenpflichtigen Plänen unbegrenzt (ab $3/mo). Sie erhalten statt einer festen monatlichen Obergrenze einen Tagesschwellenwert, und er steigt, solange Sie weiter zahlen und einen sauberen Versandverlauf aufbauen: von 300 Nachrichten pro Tag für neue Absender (900 im Team-Plan) bis zu 10,000 pro Tag und darüber hinaus, nachdem unser Team Ihr Konto geprüft hat.
+
+Nur E-Mails, die an echte Empfänger außerhalb Ihrer eigenen Domains zugestellt werden, bauen Reputation auf. Zum Schutz der Zustellbarkeit senkt eine hohe Bounce-Rate Ihren Schwellenwert, Spam- und Virenmeldungen großer Postfachanbieter setzen ihn zurück, und ungewöhnliche Muster (etwa einen plötzlichen Anstieg bei einem inaktiven Konto) bremsen wir ab. Details finden Sie unter [Was sind Ihre ausgehenden SMTP-Limits](#what-are-your-outbound-smtp-limits), Ihren aktuellen Schwellenwert unter [Mein Konto → E-Mails](/my-account/emails).
 
 ### Bieten Sie unbegrenzte Domains zu einem Preis an {#do-you-offer-unlimited-domains-for-one-price}
 

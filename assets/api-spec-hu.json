@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "Igaz egy Ön által küldött e-mailről szóló kézbesítési állapotértesítés (például visszapattanás) esetén"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Az elküldött e-mailek jelenlegi száma"
+            "description": "Ma (UTC) Ön által elküldött kimenő SMTP üzenetek, a visszapattanási értesítések és automatikus válaszok nélkül"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximálisan engedélyezett e-mailek száma"
+            "description": "A mai, hírnéven alapuló küszöbérték (legfeljebb a domain és a fiók mai küszöbértékeiből fennmaradó rész; 0, ha nem küldhet a domainről)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Kimenő SMTP e-mail korlát lekérése",
-        "description": "Ez egy egyszerű végpont, amely egy JSON objektumot ad vissza, amely fiókonként tartalmazza a napi SMTP kimenő üzenetek számának `count` és `limit` értékeit.",
+        "description": "Egy JSON objektumot ad vissza a ma Ön által elküldött kimenő SMTP üzenetek `count` értékével és a mai `limit` értékkel. A kimenő SMTP korlátlan, a `limit` pedig az Ön jelenlegi, hírnéven alapuló küszöbértéke (lásd <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), amely idővel nő. A visszapattanási értesítések és az automatikus válaszok nem számítanak bele.",
         "tags": [
           "E-mailek"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Domain meghívó létrehozása",
-        "description": ">[!IMPORTANT]\n>Ha a meghívott felhasználó már elfogadott tagja bármely más olyan domainnek, amelynek a meghívót küldő adminisztrátor is tagja, akkor a rendszer automatikusan elfogadja a meghívást, és nem küld e-mailt.",
+        "description": ">[!IMPORTANT]\n>Ha a meghívott felhasználó már elfogadott tagja bármely más olyan domainnek, amelynek a meghívót küldő adminisztrátor is tagja, akkor a rendszer automatikusan elfogadja a meghívást, és nem küld e-mailt (csak `user` értékű `group` esetén: az `admin` szerepkörű meghívót e-mailben küldjük el, hogy a meghívott elfogadja, és a hivatkozását kihagyjuk a domain függőben lévő meghívói közül).",
         "tags": [
           "Meghívók"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Tartományi tag frissítése",
-        "description": "Tartományi tag frissítése.",
+        "description": "Tartományi tag frissítése.\n\n>[!IMPORTANT]\n>Egy másik tag `admin` szerepkörre frissítése helyette egy adminisztrátori meghívót küld neki e-mailben, és `user` marad, amíg el nem fogadja (a domain függőben lévő meghívói között megjelenik). Visszafrissítése `user` szerepkörre vagy eltávolítása visszavonja a meghívót.",
         "tags": [
           "Tagok"
         ],

@@ -4,18 +4,25 @@
  */
 
 const Boom = require('@hapi/boom');
-const dayjs = require('dayjs-with-plugins');
 const pickOriginal = require('@ladjs/pick-original');
 
 const Aliases = require('#models/aliases');
 const Emails = require('#models/emails');
 const _ = require('#helpers/lodash');
 const config = require('#config');
+const { getSmtpDayStart } = require('#helpers/get-smtp-day');
 const createSession = require('#helpers/create-session');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
 const smtpCodeToHttpError = require('#helpers/smtp-code-to-http-error');
 const toObject = require('#helpers/to-object');
-const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
+const {
+  getSenderSmtpLimitAsync,
+  getUserSmtpLimitAcrossDomainsAsync
+} = require('#helpers/get-domain-smtp-limit');
+const {
+  getSmtpEffectiveLimit,
+  getSmtpSendingLimits
+} = require('#helpers/get-smtp-sending-limits');
 const { Domains, Users } = require('#models');
 
 const REJECTED_ERROR_KEYS = [
@@ -92,7 +99,7 @@ async function retrieve(ctx) {
 
 async function limit(ctx) {
   const isAliasAuth = Boolean(ctx.state?.session?.db);
-  const startOfDay = dayjs().startOf('day').toDate();
+  const startOfDay = getSmtpDayStart();
 
   if (isAliasAuth) {
     // Alias auth: ctx.state.user has alias_id, alias_user_id, domain_id
@@ -102,12 +109,17 @@ async function limit(ctx) {
         .lean()
         .exec(),
       Users.findById(ctx.state.user.alias_user_id)
-        .select(`id ${config.userFields.smtpLimit}`)
+        .select(
+          `id plan group ${config.userFields.smtpLimit} ${config.userFields.smtpReputationTier} ${config.userFields.smtpReputationHoldUntil} ${config.userFields.smtpReputationHoldReason} ${config.userFields.smtpReputationLendHoldUntil} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+        )
         .lean()
         .exec(),
       Domains.findById(ctx.state.user.domain_id)
-        .populate('members.user', `id ${config.userFields.smtpLimit}`)
-        .select('id plan members')
+        .populate(
+          'members.user',
+          `id plan group ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.userFields.smtpReputationTier} ${config.userFields.smtpReputationHoldUntil} ${config.userFields.smtpReputationHoldReason} ${config.userFields.smtpReputationLendHoldUntil} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+        )
+        .select('id plan members smtp_daily_counts smtp_daily_counts_at')
         .lean()
         .exec()
     ]);
@@ -124,10 +136,12 @@ async function limit(ctx) {
                 { alias: { $exists: false } },
                 { alias: null }
               ],
+              is_bounce: { $ne: true },
               created_at: { $gte: startOfDay }
             }
           : {
               alias: aliasDoc._id,
+              is_bounce: { $ne: true },
               created_at: { $gte: startOfDay }
             };
       const count = await Emails.countDocuments(aliasCountQuery);
@@ -135,15 +149,40 @@ async function limit(ctx) {
       return;
     }
 
-    // Domain-wide limit (team plan: highest admin smtp_limit; otherwise: user's limit)
-    const max =
-      domain && domain.plan === 'team'
-        ? await getDomainSmtpLimitAsync(domain, Users)
-        : user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+    // what is enforced when sending from this domain: the sender's threshold,
+    // and what is left of the domain's and the account's
+    // (see `helpers/get-smtp-sending-limits.js`)
+    if (domain) {
+      const limits = await getSmtpSendingLimits({
+        user,
+        domain,
+        Users,
+        Domains,
+        Emails,
+        // (so a domain's history is computed once, under the same lock)
+        client: ctx.client
+      });
+      if (limits.isBlocked) {
+        ctx.body = { count: 0, limit: 0 };
+        return;
+      }
+
+      if (!limits.isExempt) {
+        ctx.body = {
+          count: limits.userCount,
+          limit: getSmtpEffectiveLimit(limits)
+        };
+        return;
+      }
+    }
+
+    // Domain-wide limit (team plan: highest admin threshold; otherwise: user's threshold)
+    const max = await getSenderSmtpLimitAsync(domain, user, Users);
 
     // Count is per-user (prevents bypass via alias/domain deletion)
     const count = await Emails.countDocuments({
       user: user._id,
+      is_bounce: { $ne: true },
       created_at: { $gte: startOfDay }
     });
     ctx.body = { count, limit: max };
@@ -151,23 +190,17 @@ async function limit(ctx) {
   }
 
   // Standard user auth
-  // Look up domains where this user is an admin to determine effective limit
-  const domain = await Domains.findOne({
-    'members.user': ctx.state.user._id,
-    'members.group': 'admin'
-  })
-    .populate('members.user', `id ${config.userFields.smtpLimit}`)
-    .select('id plan members')
-    .lean()
-    .exec();
-
-  const max =
-    domain && domain.plan === 'team'
-      ? await getDomainSmtpLimitAsync(domain, Users)
-      : ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+  // (the user's own threshold, or the highest threshold of a Team plan domain
+  // they are a member of, the same as enforced when sending)
+  const max = await getUserSmtpLimitAcrossDomainsAsync(
+    ctx.state.user,
+    Domains,
+    Users
+  );
 
   const count = await Emails.countDocuments({
     user: ctx.state.user._id,
+    is_bounce: { $ne: true },
     created_at: { $gte: startOfDay }
   });
   ctx.body = { count, limit: max };
@@ -229,7 +262,11 @@ async function create(ctx) {
         email = await Emails.queue(
           {
             message,
-            alias: ctx.state.user.alias_id,
+            // (as an object, so the alias itself is sent as, and its limit
+            // applies, see `Emails.queue`)
+            alias: ctx.state.user.alias_id
+              ? { _id: ctx.state.user.alias_id }
+              : undefined,
             domain: ctx.state.user.domain_id,
             user: ctx.state.user.alias_user_id
           },

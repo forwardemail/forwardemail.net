@@ -492,6 +492,7 @@ router
     web.myAccount.ensureUpgradedPlan,
     api.v1.enforcePaidPlan,
     web.myAccount.retrieveAliases,
+    rateLimit(100, 'update member'),
     web.myAccount.updateMember,
     web.myAccount.retrieveDomains,
     web.myAccount.retrieveDomain,

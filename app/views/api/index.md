@@ -472,7 +472,7 @@ These instructions can be found at [My Account → Domains → Settings → Outb
 
 ### Get outbound SMTP email limit
 
-This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.
+Returns a JSON object with the `count` of outbound SMTP messages you sent today and today's `limit`. Outbound SMTP is unlimited, and the `limit` is your current [reputation-based threshold](/faq#what-are-your-outbound-smtp-limits), which grows over time.
 
 > `GET /v1/emails/limit`
 
@@ -545,7 +545,7 @@ This API endpoint will automatically encode emojis for you if they are found in 
 | `priority`       | No       | String           | Priority level for the email (can either be `"high"`, `"normal"` (default), or `"low"`).  Note that a value of `"normal"` does not set a priority header (this is the default behavior).  If a value of `"high"` or `"low"` is set, then the `X-Priority`, `X-MSMail-Priority`, and `Importance` headers [will be set accordingly](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | No       | Object or Array  | An Object or an Array of additional header fields to set (see [Nodemailer's custom headers](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                                    |
 | `messageId`      | No       | String           | An optional Message-ID value for the "Message-ID" header (a default value will be automatically created if not set – note that the value should [adhere to the RFC2822 specification](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                     |
-| `date`           | No       | String or Date   | An optional Date value that will be used if the Date header is missing after parsing, otherwise the current UTC string will be used if not set.  The date header cannot be more than 30 days in advance of the current time.                                                                                                                                                                                                                                     |
+| `date`           | No       | String or Date   | An optional Date value that will be used if the Date header is missing after parsing, otherwise the current UTC string will be used if not set.  The date header cannot be more than 27 days in advance of the current time.                                                                                                                                                                                                                                     |
 | `list`           | No       | Object           | An optional Object of `List-*` headers (see [Nodemailer's list headers](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                          |
 
 > Example Request (API Token):
@@ -798,7 +798,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> If you invite someone as a `"user"` who is already an accepted member of another domain you are a member of, we accept the invite for them and do not send an email. We email an invite as an `"admin"` for the invitee to accept, and leave its link out of the domain's pending invites.
 
 ### Remove domain invite
 
@@ -825,6 +825,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Body Parameter | Required | Type                | Description                                                                                  |
 | -------------- | -------- | ------------------- | -------------------------------------------------------------------------------------------- |
 | `group`        | Yes      | String (enumerable) | Group to update the user to the domain membership with (can be one of `"admin"` or `"user"`) |
+
+> \[!IMPORTANT]
+> Updating another member to `"admin"` emails them an invite as an admin instead, and they stay a `"user"` until they accept it (the domain's pending invites list it). Updating them back to `"user"` or removing them withdraws it.
 
 > Example Request:
 

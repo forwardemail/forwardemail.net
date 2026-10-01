@@ -17,9 +17,14 @@ const config = require('#config');
 const getDiagnosticCode = require('#helpers/get-diagnostic-code');
 const getErrorCode = require('#helpers/get-error-code');
 const getRawHeaders = require('#helpers/get-raw-headers');
+
+const { getMinimalHeaders } = getRawHeaders;
 const parseEnhancedStatusCode = require('#helpers/parse-enhanced-status-code');
 
 const HOSTNAME = os.hostname();
+
+// most of a remote server's response included in a minimal notification
+const MAX_MINIMAL_RESPONSE_LENGTH = 200;
 const IP_ADDRESS = ip.address();
 
 const HTML_TO_TEXT_OPTIONS = {
@@ -88,14 +93,21 @@ async function createBounce(email, error, message) {
   // This resolves the TODO: "rewrite this with Enhanced Status Codes"
   const enhancedStatus = parseEnhancedStatusCode(error, code);
 
+  // (a notification to an address outside the sender's domains only
+  // includes a minimum of what the recipient's server or the sender chose,
+  // see `getBounceDsn` in `helpers/process-email.js`)
+  const isMinimal = email?.dsn?.minimal === true;
+
   // The full SMTP diagnostic code (uses existing getDiagnosticCode helper)
-  const diagnosticCode = getDiagnosticCode(error);
+  const diagnosticCode = isMinimal
+    ? getDiagnosticCode(error).slice(0, MAX_MINIMAL_RESPONSE_LENGTH)
+    : getDiagnosticCode(error);
 
   // The response text for human-readable display (convert HTML to text)
   const responseText = convert(
     error.response || error.message,
     HTML_TO_TEXT_OPTIONS
-  );
+  ).slice(0, isMinimal ? MAX_MINIMAL_RESPONSE_LENGTH : undefined);
 
   //
   // Build formatted dates per RFC 2822 (required by RFC 3464)
@@ -343,7 +355,10 @@ async function createBounce(email, error, message) {
     .setContent(deliveryStatusBody);
 
   // Part 3: Original message or headers (respects RET parameter from RFC 3461)
-  if (typeof email.dsn === 'object' && email.dsn.return === 'full') {
+  if (isMinimal) {
+    const headers = await getMinimalHeaders(message);
+    rootNode.createChild('text/rfc822-headers').setContent(headers);
+  } else if (typeof email.dsn === 'object' && email.dsn.return === 'full') {
     rootNode.createChild('message/rfc822').setContent(message);
   } else {
     // Default to headers only when RET=HDRS or not specified

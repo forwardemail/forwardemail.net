@@ -205,8 +205,8 @@ mixin fePricingDetail
                   a(
                     href=l("/faq#do-you-support-sending-email-with-smtp"),
                     target="_blank"
-                  )= t("%d+ outbound / month", feOutbound)
-                  +feInfo(t("Outbound SMTP Limits"), t("We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.", config.smtpLimitMessages, prettyMilliseconds(config.smtpLimitDuration, { verbose: true, secondsDecimalDigits: 0 }), feOutbound))
+                  )= t("Unlimited outbound (reputation-based)")
+                  +feInfo(t("Reputation-based sending"), t("Outbound SMTP is unlimited and based on your sender reputation. New senders start at %d messages per day, and this daily threshold grows as you keep paying and build a clean sending history (low bounces, no spam or virus reports). If your reputation drops, your threshold moves back down, and we slow down unusual sending patterns.", config.smtpReputationTiers[0].limit))
               li.fe-plan__feature
                 i.fa.fa-fw.fa-chart-area.fe-plan__icon(aria-hidden="true")
                 span!= t("Email analytics &amp; insights")
@@ -251,6 +251,14 @@ mixin fePricingDetail
               li.fe-plan__more.fe-label
                 i.fa.fa-fw.fa-arrow-up(aria-hidden="true")
                 = t("Everything in Enhanced plus:")
+              li.fe-plan__feature
+                i.fa.fa-fw.fa-envelope.fe-plan__icon(aria-hidden="true")
+                span
+                  a(
+                    href=l("/faq#what-are-your-outbound-smtp-limits"),
+                    target="_blank"
+                  )= t("Outbound starts at %s/day", config.smtpTeamLimitMessages.toLocaleString("en"))
+                  +feInfo(t("Reputation-based sending"), t("On the Team plan, new senders start at %d outbound messages per day instead of %d, and this daily threshold grows from there as you keep paying and build a clean sending history.", config.smtpTeamLimitMessages, config.smtpReputationTiers[0].limit))
               li.fe-plan__feature
                 i.fa.fa-fw.fa-infinity.fe-plan__icon(aria-hidden="true")
                 span= t("Unlimited team members")

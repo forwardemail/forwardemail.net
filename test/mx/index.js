@@ -3,12 +3,15 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { randomUUID } = require('node:crypto');
+const crypto = require('node:crypto');
+
+const { randomUUID } = crypto;
 const net = require('node:net');
 const util = require('node:util');
 const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
 
+const { setTimeout: delay } = require('node:timers/promises');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const dayjs = require('dayjs-with-plugins');
@@ -19,6 +22,7 @@ const mxConnect = require('@forwardemail/mx-connect');
 const nodemailer = require('nodemailer');
 const openpgp = require('openpgp');
 const pWaitFor = require('p-wait-for');
+const revHash = require('rev-hash');
 const pify = require('pify');
 const safeStringify = require('fast-safe-stringify');
 const test = require('ava');
@@ -40,6 +44,7 @@ const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised
 const env = require('#config/env');
 const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 const logger = require('#helpers/logger');
+const { getSmtpDayKey } = require('#helpers/get-smtp-day');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const processEmail = require('#helpers/process-email');
 
@@ -53,6 +58,32 @@ const asyncMxConnect = pify(mxConnect);
 const IP_ADDRESS = ip.address();
 const tls = { rejectUnauthorized: false };
 const srs = new SRS(config.srs);
+
+//
+// DKIM-sign a sender's mail (returns nodemailer's `dkim` option, and adds the
+// public key to the spoofed DNS records in `map`)
+//
+function useDkim(resolver, map, domainName, keySelector = 'test') {
+  const keys = crypto.generateKeyPairSync('rsa', { modulusLength: 2048 });
+  map.set(
+    `txt:${keySelector}._domainkey.${domainName}`,
+    resolver.spoofPacket(
+      `${keySelector}._domainkey.${domainName}`,
+      'TXT',
+      [
+        `v=DKIM1; k=rsa; p=${keys.publicKey
+          .export({ type: 'spki', format: 'der' })
+          .toString('base64')}`
+      ],
+      true
+    )
+  );
+  return {
+    domainName,
+    keySelector,
+    privateKey: keys.privateKey.export({ type: 'pkcs8', format: 'pem' })
+  };
+}
 
 test.before(utils.setupMongoose);
 test.before(utils.setupRedisClient);
@@ -366,6 +397,29 @@ test('imap/forward/webhook', async (t) => {
     )
   );
 
+  // the sender is authentic (vacation responders only reply to authentic
+  // senders)
+  map.set(
+    'txt:test.com',
+    resolver.spoofPacket(
+      'test.com',
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    'txt:_dmarc.test.com',
+    resolver.spoofPacket(
+      '_dmarc.test.com',
+      'TXT',
+      ['v=DMARC1; p=none;'],
+      true,
+      ms('5m')
+    )
+  );
+
   // store spoofed dns cache
   await resolver.options.cache.mset(map);
 
@@ -464,13 +518,16 @@ Test`.trim()
 
   await smtp.close();
 
-  await pWaitFor(async () => {
-    const exists = await Emails.exists({
-      user: user._id,
-      is_bounce: true
-    });
-    return Boolean(exists?._id);
-  });
+  await pWaitFor(
+    async () => {
+      const exists = await Emails.exists({
+        user: user._id,
+        is_bounce: true
+      });
+      return Boolean(exists?._id);
+    },
+    { timeout: ms('30s') }
+  );
 
   let email = await Emails.findOne({
     user: user._id,
@@ -3495,6 +3552,245 @@ This is a test email using header :contains matching.
 // Reference: https://tools.ietf.org/html/rfc3834
 // =============================================================================
 
+test('vacation responder auto-replies are capped per user per day', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'vaccap',
+      has_imap: true,
+      user: user._id,
+      domain: domain._id,
+      recipients: [],
+      vacation_responder: {
+        is_enabled: true,
+        start_date: new Date(),
+        subject: 'Out of Office',
+        message: 'I am currently out of the office.'
+      }
+    })
+    .create();
+
+  // spoof dns records
+  const map = new Map();
+
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // spoof sender MX records
+  map.set(
+    'mx:sender.example.com',
+    resolver.spoofPacket(
+      'sender.example.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof sender SPF so the message passes SPF check
+  map.set(
+    'txt:sender.example.com',
+    resolver.spoofPacket(
+      'sender.example.com',
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // spoof sender DMARC with p=none so the message is not rejected
+  map.set(
+    'txt:_dmarc.sender.example.com',
+    resolver.spoofPacket(
+      '_dmarc.sender.example.com',
+      'TXT',
+      ['v=DMARC1; p=none;'],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // the user already sent today's allowance of auto-replies
+  const autoReplyKey = `${config.smtpLimitNamespace}:auto_reply:${
+    user._id
+  }:${getSmtpDayKey()}`;
+  await t.context.client.set(autoReplyKey, config.smtpAutoReplyDailyLimit);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Send a message to the alias with vacation responder enabled
+  // The From header is 'Sender User <sender@sender.example.com>' — the vacation
+  // responder should be addressed to this human sender per RFC 5230
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        // This is the envelope MAIL FROM — the return address that the DSN
+        // must be addressed to per RFC 3464
+        from: 'sender@sender.example.com',
+        to: [`vaccap@${domain.name}`]
+      },
+      raw: `
+To: vaccap@${domain.name}
+From: Sender User <sender@sender.example.com>
+Subject: Hello from sender
+Message-ID: <vacation-cap-test@sender.example.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hello, this is a test message.`.trim()
+    })
+  );
+
+  // the auto-reply is not sent (and the cap is not exceeded)
+  await delay(5000);
+  t.is(await Emails.countDocuments({ user: user._id, is_bounce: true }), 0);
+  t.is(
+    Number(await t.context.client.get(autoReplyKey)),
+    config.smtpAutoReplyDailyLimit
+  );
+});
+
 test('RFC 5230 - vacation responder addresses To header and envelope to original From header sender', async (t) => {
   const smtp = new MX({
     client: t.context.client,
@@ -4072,6 +4368,23 @@ test('RFC 5230 - vacation responder with SRS-rewritten MAIL FROM addresses To he
     )
   );
 
+  // the original sender DKIM-signs their mail (forwarded mail keeps its
+  // signature, while SPF does not survive forwarding)
+  const dkimKeys = crypto.generateKeyPairSync('rsa', { modulusLength: 2048 });
+  map.set(
+    'txt:srs._domainkey.sender.example.com',
+    resolver.spoofPacket(
+      'srs._domainkey.sender.example.com',
+      'TXT',
+      [
+        `v=DKIM1; k=rsa; p=${dkimKeys.publicKey
+          .export({ type: 'spki', format: 'der' })
+          .toString('base64')}`
+      ],
+      true
+    )
+  );
+
   await resolver.options.cache.mset(map);
 
   await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
@@ -4092,7 +4405,12 @@ test('RFC 5230 - vacation responder with SRS-rewritten MAIL FROM addresses To he
     connection: mx.socket,
     ignoreTLS: true,
     secure: false,
-    tls
+    tls,
+    dkim: {
+      domainName: 'sender.example.com',
+      keySelector: 'srs',
+      privateKey: dkimKeys.privateKey.export({ type: 'pkcs8', format: 'pem' })
+    }
   });
 
   await t.notThrowsAsync(
@@ -4368,6 +4686,8 @@ test('RFC 5230 - vacation responder addresses To header to From header sender wh
     )
   );
 
+  // (the sender DKIM-signs their mail, as with Amazon SES)
+  const dkim = useDkim(resolver, map, 'sender.example.com');
   await resolver.options.cache.mset(map);
 
   // set our local IP to allowlist so message does not get greylisted
@@ -4390,7 +4710,8 @@ test('RFC 5230 - vacation responder addresses To header to From header sender wh
     connection: mx.socket,
     ignoreTLS: true,
     secure: false,
-    tls
+    tls,
+    dkim
   });
 
   await t.notThrowsAsync(
@@ -4772,4 +5093,511 @@ test('reverse hostname is only trusted when it forward-confirms (FCrDNS)', async
 
   await server.close();
   await smtp.close();
+});
+
+test('vacation responders only reply to authentic senders who addressed the alias', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+  await t.context.aliasFactory
+    .withState({
+      name: 'away',
+      has_imap: true,
+      user: user._id,
+      domain: domain._id,
+      recipients: [],
+      vacation_responder: {
+        is_enabled: true,
+        start_date: new Date(),
+        subject: 'Out of Office',
+        message: 'I am currently out of the office.'
+      }
+    })
+    .create();
+
+  const map = new Map();
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  // senders: one whose SPF does not allow our IP (e.g. a forged address),
+  // and others whose SPF does
+  const senders = {
+    forged: 'victim-sender.net',
+    hidden: 'hidden-sender.net',
+    flooded: 'flooded-sender.net',
+    // (a From address in SRS form, which unwraps to a victim elsewhere)
+    srs: 'srs-attacker.net',
+    real: 'real-sender.net'
+  };
+  for (const [kind, name] of Object.entries(senders)) {
+    map.set(
+      `mx:${name}`,
+      resolver.spoofPacket(
+        name,
+        'MX',
+        [{ exchange: IP_ADDRESS, priority: 0 }],
+        true
+      )
+    );
+    map.set(
+      `txt:${name}`,
+      resolver.spoofPacket(
+        name,
+        'TXT',
+        [
+          kind === 'forged'
+            ? 'v=spf1 ip4:192.0.2.123 ?all'
+            : `v=spf1 ip4:${IP_ADDRESS} -all`
+        ],
+        true
+      )
+    );
+    map.set(
+      `txt:_dmarc.${name}`,
+      resolver.spoofPacket(`_dmarc.${name}`, 'TXT', ['v=DMARC1; p=none;'], true)
+    );
+  }
+
+  await resolver.options.cache.mset(map);
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // (the flooded sender already got today's auto-replies from other users)
+  await t.context.client.set(
+    `${config.smtpLimitNamespace}:auto_reply_to:${revHash(
+      `sender@${senders.flooded}`
+    )}:${getSmtpDayKey()}`,
+    config.smtpAutoReplyDailyLimitPerRecipient
+  );
+
+  async function sendFrom(
+    name,
+    to = `away@${domain.name}`,
+    from = `sender@${name}`
+  ) {
+    const mx = await asyncMxConnect({
+      target: IP_ADDRESS,
+      port: smtp.server.address().port,
+      dnsOptions: {
+        resolve: util.callbackify(resolver.resolve.bind(resolver))
+      }
+    });
+    const transporter = nodemailer.createTransport({
+      logger,
+      debug: true,
+      host: mx.host,
+      port: mx.port,
+      connection: mx.socket,
+      ignoreTLS: true,
+      secure: false,
+      tls
+    });
+    await transporter.sendMail({
+      envelope: {
+        from: `sender@${name}`,
+        to: [`away@${domain.name}`]
+      },
+      raw: `
+To: ${to}
+From: Sender <${from}>
+Subject: Hello
+Message-ID: <vacation-${name}@${name}>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hello.`.trim()
+    });
+  }
+
+  await sendFrom(senders.forged);
+  // (sent to a hidden list, with the alias only in the envelope)
+  await sendFrom(senders.hidden, 'undisclosed-recipients:;');
+  await sendFrom(senders.flooded);
+  const srsFrom = srs
+    .forward('victim@srs-victim.net', env.WEB_HOST)
+    .replace(/@[^@]+$/, `@${senders.srs}`);
+  await sendFrom(senders.srs, `away@${domain.name}`, srsFrom);
+  await sendFrom(senders.real);
+
+  const repliedTo = async (name) =>
+    Emails.exists({
+      user: user._id,
+      is_bounce: true,
+      'envelope.to': `sender@${name}`
+    });
+  await pWaitFor(async () => Boolean(await repliedTo(senders.real)), {
+    timeout: ms('15s')
+  });
+  await delay(1000);
+  t.falsy(await repliedTo(senders.forged));
+  t.falsy(await repliedTo(senders.hidden));
+  t.falsy(await repliedTo(senders.flooded));
+  t.falsy(
+    await Emails.exists({
+      user: user._id,
+      is_bounce: true,
+      'envelope.to': 'victim@srs-victim.net'
+    })
+  );
+});
+
+test('sieve vacation only replies to authentic senders who addressed the alias', async (t) => {
+  const sqlitePort = await getPort();
+  const sqlite = new SQLite({
+    client: t.context.client,
+    subscriber: t.context.subscriber
+  });
+  await sqlite.listen(sqlitePort);
+  const wsp = createWebSocketAsPromised({ port: sqlitePort });
+  await wsp.open();
+  const imapPort = await getPort();
+  const imap = new IMAP(
+    { client: t.context.client, subscriber: t.context.subscriber, wsp },
+    false
+  );
+  await imap.listen(imapPort);
+  const mxPort = await getPort();
+  const mx = new MX({ client: t.context.client, wsp });
+  mx.databaseMap = sqlite.databaseMap;
+  await mx.listen(mxPort);
+  const { resolver } = mx;
+  t.teardown(async () => {
+    await wsp.close();
+    await sqlite.close();
+    await imap.close();
+    await mx.close();
+  });
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_mx_record: true,
+      has_txt_record: true,
+      has_smtp: true
+    })
+    .create();
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [],
+      has_imap: true,
+      imap_backup_at: null
+    })
+    .create();
+  const password = await alias.createToken();
+  await alias.save();
+  await SieveScripts.create({
+    user: user._id,
+    domain: domain._id,
+    alias: alias._id,
+    name: 'Vacation',
+    content: `require ["vacation"];
+vacation :days 1 :subject "Away" "I am away.";`,
+    is_active: true
+  });
+
+  const map = new Map();
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+  const senders = {
+    forged: 'sieve-victim.net',
+    hidden: 'sieve-hidden.net',
+    real: 'sieve-real.net',
+    // (a return path service the real sender uses as MAIL FROM)
+    esp: 'sieve-esp.net'
+  };
+  for (const [kind, name] of Object.entries(senders)) {
+    map.set(
+      `txt:${name}`,
+      resolver.spoofPacket(
+        name,
+        'TXT',
+        [
+          kind === 'forged'
+            ? 'v=spf1 ip4:192.0.2.123 ?all'
+            : `v=spf1 ip4:${IP_ADDRESS} -all`
+        ],
+        true,
+        ms('5m')
+      )
+    );
+    map.set(
+      `txt:_dmarc.${name}`,
+      resolver.spoofPacket(
+        `_dmarc.${name}`,
+        'TXT',
+        ['v=DMARC1; p=none;'],
+        true,
+        ms('5m')
+      )
+    );
+  }
+
+  // (the real sender DKIM-signs their mail, with a return path elsewhere)
+  const dkim = useDkim(resolver, map, senders.real);
+  await resolver.options.cache.mset(map);
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // (initialize the alias's database)
+  const imapClient = new ImapFlow({
+    host: IP_ADDRESS,
+    port: imapPort,
+    secure: false,
+    auth: { user: `${alias.name}@${domain.name}`, pass: password },
+    tls: { rejectUnauthorized: false },
+    logger: false
+  });
+  await imapClient.connect();
+  await imapClient.getMailboxLock('INBOX');
+  await imapClient.logout();
+
+  async function sendFrom(
+    name,
+    to = `${alias.name}@${domain.name}`,
+    mailFrom = `sender@${name}`
+  ) {
+    const connection = await asyncMxConnect({
+      target: IP_ADDRESS,
+      port: mx.server.address().port,
+      dnsOptions: {
+        resolve: util.callbackify(resolver.resolve.bind(resolver))
+      }
+    });
+    const transporter = nodemailer.createTransport({
+      logger,
+      host: connection.host,
+      port: connection.port,
+      connection: connection.socket,
+      ignoreTLS: true,
+      secure: false,
+      tls,
+      ...(name === senders.real ? { dkim } : {})
+    });
+    await transporter.sendMail({
+      envelope: {
+        from: mailFrom,
+        to: [`${alias.name}@${domain.name}`]
+      },
+      raw: `
+To: ${to}
+From: Sender <sender@${name}>
+Subject: Hello ${name}
+Message-ID: <sieve-vacation-${name}@${name}>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hello.`.trim()
+    });
+  }
+
+  await sendFrom(senders.forged);
+  await sendFrom(senders.hidden, 'undisclosed-recipients:;');
+  // (replies go to the From address, not the MAIL FROM)
+  await sendFrom(
+    senders.real,
+    `${alias.name}@${domain.name}`,
+    `return-path-1@${senders.esp}`
+  );
+
+  const repliedTo = async (name) =>
+    Emails.exists({
+      user: user._id,
+      is_bounce: true,
+      'envelope.to': `sender@${name}`
+    });
+  await pWaitFor(async () => Boolean(await repliedTo(senders.real)), {
+    timeout: ms('30s')
+  });
+  await delay(1000);
+  t.falsy(await repliedTo(senders.forged));
+  t.falsy(await repliedTo(senders.hidden));
+  t.falsy(
+    await Emails.exists({
+      user: user._id,
+      is_bounce: true,
+      'envelope.to': `return-path-1@${senders.esp}`
+    })
+  );
 });

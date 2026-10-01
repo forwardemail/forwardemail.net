@@ -60,13 +60,33 @@ const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseUsername = require('#helpers/parse-username');
 const SMTPError = require('#helpers/smtp-error');
-const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
+const checkSmtpVelocity = require('#helpers/check-smtp-velocity');
+
+const { reserveAliasMessage } = checkSmtpVelocity;
+const {
+  enforceSmtpSendingLimits
+} = require('#helpers/get-smtp-sending-limits');
+const { getSmtpDayStart } = require('#helpers/get-smtp-day');
 const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
 
 const IP_ADDRESS = ip.address();
 const NO_REPLY_USERNAMES = new Set(noReplyList);
 const ONE_SECOND_AFTER_UNIX_EPOCH = new Date(1000);
-const HUMAN_MAX_DAYS_IN_ADVANCE = '30d';
+// (a message can be scheduled up to the days messages are kept, less the days
+// until the reputation job evaluates its outcomes on the day it was due, see
+// `helpers/update-smtp-reputation.js`, so its bounces are never deleted
+// before they count)
+const MAX_DAYS_IN_ADVANCE = Math.max(
+  1,
+  Math.floor(
+    (typeof config.emailRetention === 'number'
+      ? config.emailRetention * 1000
+      : ms(config.emailRetention)) / ms('1d')
+  ) -
+    config.smtpReputationEvaluationDelayDays -
+    1
+);
+const HUMAN_MAX_DAYS_IN_ADVANCE = `${MAX_DAYS_IN_ADVANCE}d`;
 const MAX_DAYS_IN_ADVANCE_TO_MS = ms(HUMAN_MAX_DAYS_IN_ADVANCE);
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 const BYTES_15MB = bytes('15MB');
@@ -138,6 +158,12 @@ const Emails = new mongoose.Schema(
       type: Boolean,
       default: false,
       index: true
+    },
+    // a delivery status notification for mail the user submitted (a bounce,
+    // but not in response to inbound mail, see `helpers/process-email.js`)
+    is_dsn: {
+      type: Boolean,
+      default: false
     },
     priority: {
       type: Number,
@@ -460,6 +486,16 @@ Emails.index({ domain: 1, status: 1, created_at: -1 });
 Emails.index({ alias: 1, status: 1, created_at: -1 });
 Emails.index({ user: 1, status: 1, created_at: -1 });
 
+// For the daily outbound SMTP thresholds, which count every message but
+// bounces and auto-replies (see `helpers/get-smtp-sending-limits.js`)
+// (so the per-message counts are answered from the index alone)
+Emails.index({ user: 1, is_bounce: 1, created_at: -1 });
+Emails.index({ domain: 1, is_bounce: 1, created_at: -1 });
+// (and for per-alias limits)
+Emails.index({ alias: 1, is_bounce: 1, created_at: -1 });
+// (and for the reputation job, messages scheduled for a day)
+Emails.index({ user: 1, date: 1 });
+
 // Indexes for envelope.from and envelope.to queries (admin emails page)
 // These support queries like { 'envelope.from': 'support@forwardemail.net' }
 Emails.index({ 'envelope.from': 1, created_at: -1 });
@@ -728,10 +764,13 @@ Emails.pre('save', function (next) {
         'Date header must be valid date that is at least 1s after Unix epoch.'
       );
 
-    // ensure date is not more than 30d+ in advance of `this.created_at`
+    // ensure date is not more than MAX_DAYS_IN_ADVANCE in advance of
+    // `this.created_at` (only when the date is set, so messages scheduled
+    // under an earlier, longer horizon can still be updated, e.g. delivered)
     if (
+      (this.isNew || this.isModified('date')) &&
       this.date.getTime() >
-      this.created_at.getTime() + MAX_DAYS_IN_ADVANCE_TO_MS
+        this.created_at.getTime() + MAX_DAYS_IN_ADVANCE_TO_MS
     )
       throw Boom.badRequest(
         `Date header must not be more than ${HUMAN_MAX_DAYS_IN_ADVANCE} in the future.`
@@ -1194,6 +1233,22 @@ Emails.pre('save', async function (next) {
   next();
 });
 
+// once saved, the message counts (see below)
+Emails.post('save', function () {
+  if (this.$locals) this.$locals.releaseRecipients = null;
+});
+
+// a message that failed to save does not count toward the sender's daily
+// threshold and recipients (see `helpers/check-smtp-velocity.js`)
+Emails.post('save', function (err, doc, next) {
+  if (typeof this.$locals?.releaseRecipients === 'function') {
+    this.$locals.releaseRecipients();
+    this.$locals.releaseRecipients = null;
+  }
+
+  next(err);
+});
+
 //
 // Rate limiting pre-save hook for the API path.
 // The SMTP path checks limits in helpers/on-data-smtp.js before queueing.
@@ -1204,19 +1259,26 @@ Emails.pre('save', async function (next) {
   if (!this._isNew) return next();
   // Skip rate limiting for bounce/DSN emails
   if (this.is_bounce === true) return next();
+  // Skip if already enforced before queueing (SMTP path)
+  if (this.$locals.rateLimitChecked === true) return next();
 
+  // (undoes counting this message toward its alias's limit if it is refused)
+  let releaseAlias = () => {};
   try {
     const EmailModel = this.constructor;
     const [user, domain] = await Promise.all([
       Users.findById(this.user)
         .select(
-          `id email ${config.userFields.smtpLimit} ${config.userFields.isBanned} ${config.lastLocaleField}`
+          `id email plan group ${config.userFields.smtpLimit} ${config.userFields.smtpReputationTier} ${config.userFields.smtpBaselineDaily} ${config.userFields.smtpBaselineAt} ${config.userFields.smtpBaselineHourly} ${config.userFields.smtpReputationHoldUntil} ${config.userFields.smtpReputationHoldReason} ${config.userFields.smtpReputationLendHoldUntil} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID} ${config.userFields.isBanned} ${config.lastLocaleField}`
         )
         .lean()
         .exec(),
       Domains.findById(this.domain)
-        .populate('members.user', `id ${config.userFields.smtpLimit}`)
-        .select('id plan members name')
+        .populate(
+          'members.user',
+          `id plan group ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.userFields.smtpReputationTier} ${config.userFields.smtpReputationHoldUntil} ${config.userFields.smtpReputationHoldReason} ${config.userFields.smtpReputationLendHoldUntil} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+        )
+        .select('id plan members name smtp_daily_counts smtp_daily_counts_at')
         .lean()
         .exec()
     ]);
@@ -1225,111 +1287,104 @@ Emails.pre('save', async function (next) {
     if (!domain)
       throw new SMTPError('Domain does not exist', { ignoreHook: true });
 
-    // Determine effective rate limit
-    const max =
-      domain.plan === 'team'
-        ? await getDomainSmtpLimitAsync(domain, Users)
-        : user[config.userFields.smtpLimit] || config.smtpLimitMessages;
-
-    // Skip if any domain admin is a system-level admin
-    // NOTE: After populate, m.user can be `null` if the referenced user was deleted.
-    // Since `typeof null === 'object'`, we must explicitly guard against null.
-    const adminExists = await Users.exists({
-      _id: {
-        $in: domain.members
-          .filter(
-            (m) =>
-              m.group === 'admin' &&
-              m.user !== null &&
-              typeof m.user === 'object'
-          )
-          .map((m) => (typeof m?.user?._id === 'object' ? m.user._id : m.user))
-      },
-      group: 'admin'
-    });
-
-    if (!adminExists) {
-      const startOfDay = dayjs().startOf('day').toDate();
-
-      // Per-domain rate limit
-      const domainCount = await EmailModel.countDocuments({
-        domain: domain._id,
-        created_at: { $gte: startOfDay }
-      });
-
-      if (domainCount >= max) {
-        // Fire-and-forget rate limit alert (deduplicated via Redis)
-        const alertKey = `${config.smtpLimitNamespace}:rate_alert:${domain.id}`;
-        redis
-          .set(alertKey, '1', 'PX', config.smtpRateLimitAlertTTL, 'NX')
-          .then((wasSet) => {
-            if (wasSet !== 'OK') return;
-            return Domains.getToAndMajorityLocaleByDomain(domain).then(
-              ({ to, locale }) =>
-                emailHelper({
-                  template: 'alert',
-                  message: {
-                    to,
-                    bcc: config.alertsEmail,
-                    locale,
-                    subject: i18n.translate('SMTP_RATE_LIMIT_EXCEEDED', locale)
-                  },
-                  locals: {
-                    locale,
-                    message: i18n.translate('SMTP_RATE_LIMIT_EXCEEDED', locale)
-                  }
-                })
-            );
-          })
-          .catch((err) => logger.fatal(err));
-
-        throw new SMTPError('Rate limit exceeded', {
-          responseCode: 421,
-          ignoreHook: true
-        });
-      }
-
-      // Per-user rate limit
-      const userCount = await EmailModel.countDocuments({
-        user: user._id,
-        created_at: { $gte: startOfDay }
-      });
-
-      if (userCount >= max) {
-        // Fire-and-forget rate limit alert (deduplicated via Redis)
-        const alertKey = `${config.smtpLimitNamespace}:rate_alert:${domain.id}`;
-        redis
-          .set(alertKey, '1', 'PX', config.smtpRateLimitAlertTTL, 'NX')
-          .then((wasSet) => {
-            if (wasSet !== 'OK') return;
-            return Domains.getToAndMajorityLocaleByDomain(domain).then(
-              ({ to, locale }) =>
-                emailHelper({
-                  template: 'alert',
-                  message: {
-                    to,
-                    bcc: config.alertsEmail,
-                    locale,
-                    subject: i18n.translate('SMTP_RATE_LIMIT_EXCEEDED', locale)
-                  },
-                  locals: {
-                    locale,
-                    message: i18n.translate('SMTP_RATE_LIMIT_EXCEEDED', locale)
-                  }
-                })
-            );
-          })
-          .catch((err) => logger.fatal(err));
-
-        throw new SMTPError('Rate limit exceeded', {
-          responseCode: 421,
-          ignoreHook: true
+    //
+    // Per-alias limit (the same as over SMTP, see `helpers/on-data-smtp.js`):
+    // an alias with a custom `smtp_limit` is checked first, and mail sent
+    // without an alias uses the catch-all ('*') alias's limit
+    //
+    {
+      const rateLimitAlias = this.alias
+        ? await Aliases.findById(this.alias)
+            .select('_id name smtp_limit')
+            .lean()
+            .exec()
+        : await Aliases.findOne({ domain: domain._id, name: '*' })
+            .select('_id name smtp_limit')
+            .lean()
+            .exec();
+      if (rateLimitAlias && rateLimitAlias.smtp_limit > 0) {
+        // (one time for the count and the reservation's day)
+        const aliasNow = new Date();
+        const startOfDay = getSmtpDayStart(aliasNow);
+        const aliasCount = await EmailModel.countDocuments(
+          rateLimitAlias.name === '*'
+            ? {
+                domain: domain._id,
+                $or: [
+                  { alias: rateLimitAlias._id },
+                  { alias: { $exists: false } },
+                  { alias: null }
+                ],
+                // (bounces and auto-replies do not count)
+                is_bounce: { $ne: true },
+                created_at: { $gte: startOfDay }
+              }
+            : {
+                alias: rateLimitAlias._id,
+                is_bounce: { $ne: true },
+                created_at: { $gte: startOfDay }
+              }
+        );
+        // (reserved atomically, so concurrent submissions cannot pass it, and
+        // released if the message is refused below or fails to save)
+        releaseAlias = await reserveAliasMessage({
+          client: redis,
+          alias: rateLimitAlias,
+          count: aliasCount,
+          now: aliasNow
         });
       }
     }
 
+    //
+    // Daily thresholds (see `helpers/get-smtp-sending-limits.js`)
+    //
+    // (one time for the counts and the reservations, see `checkSmtpVelocity`)
+    const now = new Date();
+    const limits = await enforceSmtpSendingLimits({
+      user,
+      domain,
+      Users,
+      Domains,
+      Emails: EmailModel,
+      client: redis,
+      now
+    });
+
+    this.$locals.releaseRecipients = releaseAlias;
+    if (!limits.isExempt) {
+      // slow down unusual sending patterns (regardless of threshold)
+      // (recipients of a message that fails to save do not count)
+      const releaseVelocity = await checkSmtpVelocity({
+        user,
+        domain,
+        dailyLimit: limits.userLimit,
+        todayCount: limits.userCount,
+        domainLimit: limits.domainLimit,
+        domainCount: limits.domainCount,
+        accountId: limits.accountId,
+        accountLimit: limits.accountLimit,
+        accountCount: limits.accountCount,
+        date: this.date,
+        recipients: Array.isArray(this.envelope?.to)
+          ? this.envelope.to.length
+          : 1,
+        to: this.envelope?.to,
+        Emails: EmailModel,
+        Users,
+        client: redis,
+        now
+      });
+      this.$locals.releaseRecipients = () => {
+        releaseAlias();
+        releaseVelocity();
+      };
+    }
+
     next();
   } catch (err) {
+    releaseAlias();
+    this.$locals.releaseRecipients = null;
     next(err);
   }
 });
@@ -1772,6 +1827,32 @@ Emails.statics.queue = async function (
       )
     );
 
+  // (a member who is not an admin can only send as their own aliases, e.g.
+  // with a "+" tag, or with a catch-all password)
+  if (
+    !options.catchall &&
+    !alias &&
+    !isBounce &&
+    member.group !== 'admin' &&
+    userId &&
+    aliasName.includes('+')
+  ) {
+    alias = await Aliases.findOne({
+      user: new mongoose.Types.ObjectId(userId),
+      domain: domain._id,
+      name: aliasName.split('+')[0]
+    }).populate('user', `id ${config.userFields.isBanned}`);
+    if (alias && alias.user[config.userFields.isBanned])
+      throw Boom.forbidden(i18n.translateError('ALIAS_ACCOUNT_BANNED', locale));
+    if (alias && !alias.is_enabled)
+      throw Boom.badRequest(
+        i18n.translateError('ALIAS_IS_NOT_ENABLED', locale)
+      );
+  }
+
+  if (!options.catchall && !alias && !isBounce && member.group !== 'admin')
+    throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
+
   // if we're a catch-all then validate from ends with @domain
   if (
     (options.catchall || !alias) &&
@@ -1899,7 +1980,7 @@ Emails.statics.queue = async function (
     status = 'pending';
   }
 
-  const email = await this.create({
+  const email = new this({
     alias: !options.catchall && alias ? alias._id : undefined,
     domain: domain._id,
     user: userId ? new mongoose.Types.ObjectId(userId) : undefined,
@@ -1911,10 +1992,16 @@ Emails.statics.queue = async function (
     subject,
     status,
     is_bounce: isBounce,
+    is_dsn: isBounce && boolean(options?.is_dsn),
     dsn: options?.dsn,
     rcptTo: options?.rcptTo,
     requireTLS: boolean(options?.requireTLS)
   });
+
+  // the SMTP path already enforced sending limits before queueing
+  if (options?.rateLimitChecked === true) email.$locals.rateLimitChecked = true;
+
+  await email.save();
 
   return email;
 };

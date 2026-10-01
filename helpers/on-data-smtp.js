@@ -9,8 +9,6 @@ const { Buffer } = require('node:buffer');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 
-const dayjs = require('dayjs-with-plugins');
-
 const _ = require('#helpers/lodash');
 const checkAndAutoApproveSMTP = require('#helpers/check-and-auto-approve-smtp');
 const isEmail = require('#helpers/is-email');
@@ -29,7 +27,13 @@ const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
 const i18n = require('#helpers/i18n');
 const { decrypt } = require('#helpers/encrypt-decrypt');
-const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
+const checkSmtpVelocity = require('#helpers/check-smtp-velocity');
+
+const { reserveAliasMessage } = checkSmtpVelocity;
+const {
+  enforceSmtpSendingLimits
+} = require('#helpers/get-smtp-sending-limits');
+const { getSmtpDayStart } = require('#helpers/get-smtp-day');
 
 async function onDataSMTP(session, date, headers, body) {
   //
@@ -64,7 +68,7 @@ async function onDataSMTP(session, date, headers, body) {
     })
       .populate(
         'user',
-        `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
+        `id email plan group ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.userFields.smtpReputationTier} ${config.userFields.smtpBaselineDaily} ${config.userFields.smtpBaselineAt} ${config.userFields.smtpBaselineHourly} ${config.userFields.smtpReputationHoldUntil} ${config.userFields.smtpReputationHoldReason} ${config.userFields.smtpReputationLendHoldUntil} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
       )
       .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
       .lean()
@@ -91,7 +95,7 @@ async function onDataSMTP(session, date, headers, body) {
   })
     .populate(
       'members.user',
-      `id plan email ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.smtpLimit} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
+      `id plan email group ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.smtpLimit} ${config.userFields.smtpReputationTier} ${config.userFields.smtpBaselineDaily} ${config.userFields.smtpBaselineAt} ${config.userFields.smtpBaselineHourly} ${config.userFields.smtpReputationHoldUntil} ${config.userFields.smtpReputationHoldReason} ${config.userFields.smtpReputationLendHoldUntil} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
     )
     .select('+tokens +tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
     .exec();
@@ -303,7 +307,7 @@ async function onDataSMTP(session, date, headers, body) {
     // now that we have `tokenUsed` we can perform a lookup on `tokenUsed.user`
     user = await Users.findById(tokenUsed.user)
       .select(
-        `id email ${config.userFields.isBanned} ${config.userFields.smtpLimit} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
+        `id email plan group ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.userFields.smtpReputationTier} ${config.userFields.smtpBaselineDaily} ${config.userFields.smtpBaselineAt} ${config.userFields.smtpBaselineHourly} ${config.userFields.smtpReputationHoldUntil} ${config.userFields.smtpReputationHoldReason} ${config.userFields.smtpReputationLendHoldUntil} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
       )
       .lean()
       .exec();
@@ -321,6 +325,19 @@ async function onDataSMTP(session, date, headers, body) {
         )
       )
         reassign = true;
+      // system admins cannot send from customer domains (e.g. a password a
+      // system admin generated while helping a customer)
+      else if (
+        user.group === 'admin' &&
+        domain.members.some(
+          (m) =>
+            m.group === 'admin' &&
+            m.user &&
+            !m.user[config.userFields.isBanned] &&
+            m.user.group !== 'admin'
+        )
+      )
+        reassign = true;
     } else {
       reassign = true;
     }
@@ -331,10 +348,12 @@ async function onDataSMTP(session, date, headers, body) {
     // alert admins of the token reassignment (if user then share email otherwise don't)
     //
     if (reassign) {
-      const admin = domain.members.find(
+      // (the customer rather than a system admin, if the domain has one)
+      const admins = domain.members.filter(
         (m) =>
           m.group === 'admin' && m.user && !m.user[config.userFields.isBanned]
       );
+      const admin = admins.find((m) => m.user.group !== 'admin') || admins[0];
       // if no admin exists then purge token as a safeguard and alert system admins
       if (admin) {
         const token = domain.tokens.id(tokenUsed._id);
@@ -362,8 +381,8 @@ async function onDataSMTP(session, date, headers, body) {
             message: `Domain catch-all generated password has been re-assigned from ${
               user ? user.email : '<unknown user>'
             } to ${
-              admin.email
-            } since the user no longer existed or is no longer an admin of the domain.`
+              admin.user.email
+            } since the user no longer existed, is no longer an admin of the domain, or is a system administrator.`
           }
         })
           .then()
@@ -374,8 +393,9 @@ async function onDataSMTP(session, date, headers, body) {
         //
         // reassign user to the admin
         // (after we send email to keep preservation of variables for message/subject)
+        // (`admin` is the domain member, `admin.user` is the populated user)
         //
-        user = admin;
+        user = admin.user;
       } else {
         domain.tokens.id(tokenUsed._id).remove();
         domain.skip_verification = true;
@@ -407,7 +427,7 @@ async function onDataSMTP(session, date, headers, body) {
   //
   // NOTE: Alias sends also count toward the domain's overall SMTP limit.
   // The domain-level rate limiting (in Emails model pre-save/post-save hooks)
-  // uses getDomainSmtpLimitAsync to find the HIGHEST smtp_limit among ALL
+  // uses getDomainSmtpLimitAsync to find the HIGHEST threshold among ALL
   // admin members of the domain. Every email queued here will also be checked
   // against and deducted from the domain's quota.
   // The per-alias limit is an additional, more restrictive check.
@@ -418,6 +438,9 @@ async function onDataSMTP(session, date, headers, body) {
   //       alias will be null and we look up the '*' alias below.
   //
   let rateLimitAlias = alias;
+  // (undoes counting this message toward the alias's limit if it ends up not
+  // queued)
+  let releaseAlias = () => {};
   if (!rateLimitAlias && domain) {
     // Catch-all: look up the '*' alias for this domain to apply its smtp_limit
     rateLimitAlias = await Aliases.findOne({
@@ -430,7 +453,9 @@ async function onDataSMTP(session, date, headers, body) {
   }
 
   if (rateLimitAlias && rateLimitAlias.smtp_limit > 0) {
-    const startOfDay = dayjs().startOf('day').toDate();
+    // (one time for the count and the reservation's day)
+    const aliasNow = new Date();
+    const startOfDay = getSmtpDayStart(aliasNow);
     // For catch-all aliases, emails may not have alias field set (catchall=true),
     // so we count by both alias._id and by domain with no alias set
     const aliasCountQuery =
@@ -442,14 +467,25 @@ async function onDataSMTP(session, date, headers, body) {
               { alias: { $exists: false } },
               { alias: null }
             ],
+            // (bounces and auto-replies do not count)
+            is_bounce: { $ne: true },
             created_at: { $gte: startOfDay }
           }
         : {
             alias: rateLimitAlias._id,
+            is_bounce: { $ne: true },
             created_at: { $gte: startOfDay }
           };
     const aliasEmailCount = await Emails.countDocuments(aliasCountQuery);
-    if (aliasEmailCount >= rateLimitAlias.smtp_limit) {
+    // (reserved atomically, so concurrent sessions cannot pass the limit)
+    try {
+      releaseAlias = await reserveAliasMessage({
+        client: this.client,
+        alias: rateLimitAlias,
+        count: aliasEmailCount,
+        now: aliasNow
+      });
+    } catch (err) {
       // Fire-and-forget rate limit alert (deduplicated via Redis)
       if (this.client) {
         const alertKey = `${config.smtpLimitNamespace}:rate_alert:alias:${rateLimitAlias._id}`;
@@ -478,145 +514,70 @@ async function onDataSMTP(session, date, headers, body) {
       }
 
       // return 421 error code (temporary failure, try again later)
-      throw new SMTPError('Rate limit exceeded', {
-        responseCode: 421,
-        ignoreHook: true
-      });
+      throw err;
     }
   }
 
-  //
-  // Domain-wide and per-user SMTP rate limiting checks
-  // Uses Emails.countDocuments() against the database directly.
-  // For team plan domains: max = highest smtp_limit among domain admin members
-  // For other plans: max = sending user's own smtp_limit (or config default)
-  // Whichever limit is hit first triggers a 421 rejection.
-  //
-  {
-    const startOfDay = dayjs().startOf('day').toDate();
+  // (undoes counting this message's recipients if it ends up not queued)
+  let releaseRecipients = releaseAlias;
 
-    // Determine the effective rate limit max
-    const max =
-      domain.plan === 'team'
-        ? await getDomainSmtpLimitAsync(domain, Users)
-        : user[config.userFields.smtpLimit] || config.smtpLimitMessages;
-
-    // Skip rate limiting if any domain admin is a system-level admin
-    // NOTE: After populate, m.user can be `null` if the referenced user was deleted.
-    // Since `typeof null === 'object'`, we must explicitly guard against null.
-    const adminExists = await Users.exists({
-      _id: {
-        $in: domain.members
-          .filter(
-            (m) =>
-              m.group === 'admin' &&
-              m.user !== null &&
-              typeof m.user === 'object'
-          )
-          .map((m) => (typeof m?.user?._id === 'object' ? m.user._id : m.user))
-      },
-      group: 'admin'
+  //
+  // Daily thresholds (see helpers/get-smtp-sending-limits.js):
+  // the account-wide threshold (all mail from every domain of the account),
+  // the sender's own count, and the domain's ramp-up within the account's
+  // threshold; whichever is hit first triggers a 421 rejection.
+  // System admins cannot send from customer domains (550), and domains whose
+  // admins are all system admins are exempt.
+  //
+  try {
+    // (one time for the counts and the reservations, see `checkSmtpVelocity`)
+    const now = new Date();
+    const limits = await enforceSmtpSendingLimits({
+      user,
+      domain,
+      Users,
+      Domains,
+      Emails,
+      client: this.client,
+      now
     });
 
-    if (!adminExists) {
-      // Per-user rate limit (prevents abuse via alias/domain deletion and re-creation)
-      {
-        const userEmailCount = await Emails.countDocuments({
-          user: user._id,
-          created_at: { $gte: startOfDay }
-        });
-        if (userEmailCount >= max) {
-          // Fire-and-forget rate limit alert (deduplicated via Redis)
-          if (this.client) {
-            const alertKey = `${config.smtpLimitNamespace}:rate_alert:${domain.id}`;
-            this.client
-              .set(alertKey, '1', 'PX', config.smtpRateLimitAlertTTL, 'NX')
-              .then((wasSet) => {
-                if (wasSet !== 'OK') return;
-                return Domains.getToAndMajorityLocaleByDomain(domain).then(
-                  ({ to, locale }) =>
-                    emailHelper({
-                      template: 'alert',
-                      message: {
-                        to,
-                        bcc: config.alertsEmail,
-                        locale,
-                        subject: i18n.translate(
-                          'SMTP_RATE_LIMIT_EXCEEDED',
-                          locale
-                        )
-                      },
-                      locals: {
-                        locale,
-                        message: i18n.translate(
-                          'SMTP_RATE_LIMIT_EXCEEDED',
-                          locale
-                        )
-                      }
-                    })
-                );
-              })
-              .catch((err) => logger.fatal(err));
-          }
-
-          throw new SMTPError('Rate limit exceeded', {
-            responseCode: 421,
-            ignoreHook: true
-          });
-        }
-      }
-
-      // Per-domain rate limit
-      {
-        const domainEmailCount = await Emails.countDocuments({
-          domain: domain._id,
-          created_at: { $gte: startOfDay }
-        });
-        if (domainEmailCount >= max) {
-          // Fire-and-forget rate limit alert (deduplicated via Redis)
-          if (this.client) {
-            const alertKey = `${config.smtpLimitNamespace}:rate_alert:${domain.id}`;
-            this.client
-              .set(alertKey, '1', 'PX', config.smtpRateLimitAlertTTL, 'NX')
-              .then((wasSet) => {
-                if (wasSet !== 'OK') return;
-                return Domains.getToAndMajorityLocaleByDomain(domain).then(
-                  ({ to, locale }) =>
-                    emailHelper({
-                      template: 'alert',
-                      message: {
-                        to,
-                        bcc: config.alertsEmail,
-                        locale,
-                        subject: i18n.translate(
-                          'SMTP_RATE_LIMIT_EXCEEDED',
-                          locale
-                        )
-                      },
-                      locals: {
-                        locale,
-                        message: i18n.translate(
-                          'SMTP_RATE_LIMIT_EXCEEDED',
-                          locale
-                        )
-                      }
-                    })
-                );
-              })
-              .catch((err) => logger.fatal(err));
-          }
-
-          throw new SMTPError('Rate limit exceeded', {
-            responseCode: 421,
-            ignoreHook: true
-          });
-        }
-      }
+    if (!limits.isExempt) {
+      // slow down unusual sending patterns (regardless of threshold)
+      const releaseVelocity = await checkSmtpVelocity({
+        user,
+        domain,
+        dailyLimit: limits.userLimit,
+        todayCount: limits.userCount,
+        domainLimit: limits.domainLimit,
+        domainCount: limits.domainCount,
+        accountId: limits.accountId,
+        accountLimit: limits.accountLimit,
+        accountCount: limits.accountCount,
+        date,
+        recipients: Array.isArray(session?.envelope?.rcptTo)
+          ? session.envelope.rcptTo.length
+          : 1,
+        to: session?.envelope?.rcptTo,
+        Emails,
+        Users,
+        client: this.client,
+        now
+      });
+      releaseRecipients = () => {
+        releaseAlias();
+        releaseVelocity();
+      };
     }
+  } catch (err) {
+    // (a message refused here does not count toward the alias's limit)
+    releaseAlias();
+    throw err;
   }
 
   // queue the email
   let email;
+  let isQueued = false;
   try {
     //
     // normalize/map DSN object similar to one provided via API
@@ -646,11 +607,15 @@ async function onDataSMTP(session, date, headers, body) {
       date,
       catchall: typeof session?.user?.alias_id !== 'string',
       isPending: true,
+      rateLimitChecked: true,
       rcptTo: session.envelope.rcptTo,
       dsn,
       requireTLS: session.envelope.requireTLS,
       tlsOptional
     });
+
+    // (the message exists now, so it counts even if queueing it fails below)
+    isQueued = true;
 
     if (!_.isDate(domain.smtp_suspended_sent_at)) {
       email.status = 'queued';
@@ -659,6 +624,9 @@ async function onDataSMTP(session, date, headers, body) {
   } catch (err) {
     logger.fatal(err, { session, resolver: this.resolver });
     if (!err.emailAlreadyExists) throw err;
+  } finally {
+    // recipients of a message that was not queued do not count
+    if (!isQueued) releaseRecipients();
   }
 
   if (email)

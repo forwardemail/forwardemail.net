@@ -80,6 +80,8 @@
   * [Kan ik e-mail doorsturen voor elk subdomein (wildcard-subdomeinen)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Wat zijn uw uitgaande SMTP-limieten](#what-are-your-outbound-smtp-limits)
   * [Heb ik goedkeuring nodig om SMTP in te schakelen](#do-i-need-approval-to-enable-smtp)
+  * [Welke informatie hebben jullie nodig om mijn uitgaande SMTP goed te keuren of te herstellen](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [Waarom hebben nieuw geregistreerde of recent verlopen domeinen een betaald abonnement nodig](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Wat zijn uw SMTP-serverconfiguratie-instellingen](#what-are-your-smtp-server-configuration-settings)
   * [Wat zijn uw IMAP-serverconfiguratie-instellingen](#what-are-your-imap-server-configuration-settings)
   * [Wat zijn uw POP3-serverconfiguratie-instellingen](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Kan ik "send mail as" gebruiken in Outlook hiermee](#can-i-send-mail-as-in-outlook-with-this)
   * [Kan ik "send mail as" gebruiken in Apple Mail en iCloud Mail hiermee](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Kan ik hiermee onbeperkt e-mails doorsturen](#can-i-forward-unlimited-emails-with-this)
+  * [Kan ik onbeperkt e-mails verzenden met dit](#can-i-send-unlimited-emails-with-this)
   * [Biedt u onbeperkte domeinen voor één prijs](#do-you-offer-unlimited-domains-for-one-price)
   * [Welke betaalmethoden accepteert u](#which-payment-methods-do-you-accept)
 * [Aanvullende bronnen](#additional-resources)
@@ -1035,7 +1038,7 @@ Als zij dit bericht wel zien, komt dat omdat ze normaal gesproken gewend zijn je
 
 Dit onderwerp heeft betrekking op een [breed bekend probleem in Gmail waarbij extra info naast de naam van de afzender verschijnt](https://support.google.com/mail/answer/1311182).
 
-Vanaf mei 2023 ondersteunen we het verzenden van e-mail via SMTP als add-on voor alle betaalde gebruikers – wat betekent dat je de <span class="notranslate">via forwardemail dot net</span> in Gmail kunt verwijderen.
+Uitgaande SMTP zit bij alle betaalde abonnementen (onbeperkt en [gebaseerd op reputatie](#what-are-your-outbound-smtp-limits)), dus je kunt de <span class="notranslate">via forwardemail dot net</span> in Gmail verwijderen.
 
 Let op dat deze FAQ specifiek is voor degenen die de [Hoe mail verzenden als met Gmail](#how-to-send-mail-as-using-gmail) functie gebruiken.
 
@@ -2038,6 +2041,12 @@ In tegenstelling tot mailsystemen zoals `postfix` (bijv. die de `sieve` vacation
 
 8. We verzenden niet als het MAIL FROM-adres overeenkomt met een ARF feedback afzenderpatroon (bijv. `feedback@arf.mail.yahoo.com`).
 
+9. We antwoorden alleen aan geauthenticeerde afzenders: het From-adres moet slagen voor DMARC of een uitgelijnde, geldige DKIM-handtekening hebben. SPF alleen telt niet, omdat gedeelde mailservers daar voor iedereen voor slagen. Een vervalste afzender kan je afwezigheidsberichten niet omzetten in [backscatter](https://www.backscatterer.org/?target=autoresponders) gericht op iemand anders.
+
+10. We antwoorden alleen als je alias, of een ander adres op het domein ervan (zoals een alias dat ernaar doorstuurt), in de header `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` of `Resent-Bcc` staat, zoals [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) aanbeveelt. E-mail naar een verborgen lijst van ontvangers krijgt geen antwoord. Sieve-afwezigheidsberichten hebben je alias of een adres uit `:addresses` in die headers nodig.
+
+11. We verzenden maximaal 300 afwezigheidsberichten per gebruiker per dag (minder als we je uitgaande SMTP-drempel daaronder hebben beperkt), en maximaal 20 per ontvangeradres per dag over al onze gebruikers samen.
+
 ### Hoe stel ik SPF in voor Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
 Gebruik de DNS-beheerpagina van je registrar en stel het volgende <strong class="notranslate">TXT</strong> record in:
@@ -2339,9 +2348,11 @@ Ja, u kunt meer lezen op <https://forwardemail.net/guides/newsletter-with-listmo
 
 Houd er rekening mee dat om de IP-reputatie te behouden en de afleverbaarheid te waarborgen, Forward Email een handmatig beoordelingsproces per domein heeft voor **goedkeuring van nieuwsbrieven**. Stuur een e-mail naar <support@forwardemail.net> of open een [hulpverzoek](https://forwardemail.net/help) voor goedkeuring. Dit duurt meestal minder dan 24 uur, waarbij de meeste verzoeken binnen 1-2 uur worden gehonoreerd. In de nabije toekomst streven we ernaar dit proces direct te maken met extra spamcontroles en waarschuwingen. Dit proces zorgt ervoor dat uw e-mails de inbox bereiken en uw berichten niet als spam worden gemarkeerd.
 
+Nieuwsbrieven en mailinglijsten tellen mee voor je dagelijkse uitgaande drempel, die onbeperkt is en meegroeit met je [afzenderreputatie](#what-are-your-outbound-smtp-limits). Houd je lijsten schoon: een hoog bouncepercentage verlaagt je drempel, en we vertragen plotselinge sprongen in volume.
+
 ### Ondersteunt u het verzenden van e-mail via API {#do-you-support-sending-email-with-api}
 
-Ja, sinds mei 2023 ondersteunen we het verzenden van e-mail via API als een add-on voor alle betaalde gebruikers.
+Ja. Alle betaalde abonnementen bevatten e-mail verzenden met onze API. Net als uitgaande SMTP is het **onbeperkt** en [gebaseerd op reputatie](#what-are-your-outbound-smtp-limits): berichten die je met de API en met SMTP verzendt, delen één dagelijkse drempel.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2547,7 +2558,7 @@ Om contactondersteuning te gebruiken, moet de **gebruiker** het e-mailadres zijn
 
 ### Ondersteunt u het verzenden van e-mail met SMTP {#do-you-support-sending-email-with-smtp}
 
-Ja, vanaf mei 2023 ondersteunen we het verzenden van e-mail met SMTP als een add-on voor alle betaalde gebruikers.
+Ja. Alle betaalde abonnementen bevatten uitgaande SMTP, en het is **onbeperkt**: je dagelijkse verzenddrempel groeit mee met je [afzenderreputatie](#what-are-your-outbound-smtp-limits).
 
 <div id="smtp-instructions">
 
@@ -3676,32 +3687,101 @@ Wanneer je <a href="#do-you-support-regular-expressions-or-regex" class="alert-l
 
 ### Wat zijn jullie limieten voor uitgaande SMTP {#what-are-your-outbound-smtp-limits}
 
-We handhaven uitgaande SMTP-snelheidslimieten op meerdere niveaus om misbruik te voorkomen en toch flexibiliteit voor legitiem gebruik te behouden. Elk niveau wordt achtereenvolgens gecontroleerd — welk limiet ook het eerst wordt bereikt zal het bericht tijdelijk afwijzen met een `421`-fout (wat "probeer het later opnieuw" betekent).
+Uitgaande SMTP is **onbeperkt** en **gebaseerd op reputatie**. Je krijgt een dagelijkse drempel in plaats van een vaste maandelijkse limiet, en die groeit naarmate je een goede verzendreputatie opbouwt.
 
-**Hiërarchie van snelheidslimieten:**
+Nieuwe afzenders beginnen met 300 berichten per dag, of 900 bij het Team-plan (afzenders met het Team-plan slaan de niveaus onder 900 over, en hun volgende niveau is 1,000). Eén keer per dag bekijken we je recente verzending en verhogen of verlagen we je drempel. We beoordelen elke dag twee dagen later, zodra we de afleverresultaten van de berichten van die dag kennen. Wanneer dit voor je account start, kijken we terug naar maximaal 30 dagen van je verzendgeschiedenis, en we halen dagen in die we hebben gemist.
 
-| Level | Scope | Default Limit | Description |
-| :---- | :---- | :-----------: | :---------- |
-| Per-alias | Individuele alias | None (uses domain limit) | Optioneel. Als een alias een aangepaste `smtp_limit` heeft, wordt deze eerst gecontroleerd. |
-| Per-domain | Alle e-mails die op een dag vanaf een domein worden verzonden | 300/day | Telt alle uitgaande e-mails over alle aliassen op het domein. |
-| Per-user | Alle e-mails die door een gebruikersaccount op een dag worden verzonden | 300/day | Voorkomt omzeiling door aliassen of domeinen te verwijderen en opnieuw aan te maken. |
+Alleen echte verzending bouwt reputatie op. E-mail telt mee voor het omhooggaan zodra we deze **afleveren** aan **unieke ontvangers buiten je eigen domeinen**. E-mail aan jezelf, aan je eigen domeinen (of hun subdomeinen), aan de domeinen waarvandaan je verzendt of herhaaldelijk aan dezelfde ontvanger telt niet mee. Varianten van één adres (een `+tag`, of punten in een Gmail-adres) tellen één keer. Elk ontvangersdomein (met zijn subdomeinen) telt mee voor maximaal 50 ontvangers per dag, behalve de eigen domeinen van de grote mailboxproviders (zoals gmail.com). Minstens een vijfde van de ontvangers die meetellen moet naar grote mailboxproviders gaan, en hogere niveaus vereisen ook een minimumaantal verschillende ontvangersdomeinen op één dag.
 
-**Hoe de effectieve limiet wordt bepaald:**
+* **Omhoog**: je drempel gaat één niveau omhoog zodra je lang genoeg zonder onderbreking hebt betaald, je genoeg schone verzenddagen op je huidige niveau hebt, en je drukste dag in de afgelopen 7 dagen minstens de helft van je huidige drempel bereikte aan afgeleverde ontvangers buiten je eigen domeinen (verspreid over genoeg verschillende ontvangersdomeinen). Alleen betaalde tijd zonder onderbreking telt, dus een ouder account dat niet heeft betaald (of is gestopt met betalen) begint opnieuw. Een verlenging die tot 14 dagen te laat is, telt nog steeds als zonder onderbreking, en alleen je eigen betalingen tellen mee.
+* **Schone dag**: een dag waarop we minstens 5 van je berichten hebben afgeleverd aan ontvangers buiten je eigen domeinen, minder dan 5% van die ontvangers je e-mail heeft gebounced of geweigerd, je niet genoeg spam- of virusmeldingen voor een slechte dag hebt gekregen (zie hieronder), en we je verzending niet hebben vertraagd vanwege een ongebruikelijk patroon.
+* **Omlaag**: een dag met een hoog bounce- of weigeringspercentage (5% of meer van minstens 20 ontvangers buiten je eigen domeinen), of te veel spam- of virusmeldingen van grote mailboxproviders (zie hieronder), verlaagt je drempel met één niveau (niet onder de startdrempel van je abonnement) en zet je aantal schone dagen terug op nul. Een dag waarop 15% of meer daarvan je e-mail heeft gebounced of geweigerd, zet in plaats daarvan je drempel terug naar de startdrempel van je abonnement en pauzeert het omhooggaan 30 dagen (een drempel die ons team heeft goedgekeurd blijft gelden). Alleen weigeringen van je e-mail tellen mee, dus bijvoorbeeld niet onze gedeelde IP-adressen die op een blokkeerlijst staan, of een server van een ontvanger die we niet konden bereiken. Elke ontvanger telt één keer mee, ongeacht hoeveel berichten je naar die ontvanger hebt verzonden, en een ingepland bericht telt mee op de dag waarvoor je het hebt ingepland. Dagen zonder verzending tellen niet mee, in positieve noch negatieve zin.
+* **Spam- en virusmeldingen**: grote mailboxproviders (zoals Gmail, Outlook en Yahoo) bepalen wat als misbruik telt, en we tellen alleen hun permanente weigeringen mee. Elke ontvanger op de eigen domeinen van een provider (zoals gmail.com) telt mee, terwijl andere domeinen die een provider host (zoals de Google Workspace van een bedrijf) één keer per domein meetellen, en elk telt één keer per dag mee. We tellen meldingen als aandeel van de ontvangers naar wie je hebt verzonden, zoals grote providers dat doen (Gmail vraagt afzenders onder 0.1% te blijven en nooit 0.3% te bereiken), dus één melding zet je niet een niveau lager, en meldingen over andere domeinen die een provider host, vormen hooguit de helft van de benodigde meldingen. Meldingen voor 0.1% of meer van de ontvangers van een dag buiten je eigen domeinen, of van de dag ervoor als dat er meer zijn, maken er een slechte dag van (minstens 2 en maximaal 25 meldingen nodig). Een automatische schorsing van een van je aliassen telt op zichzelf niet mee tegen je reputatie, maar de meldingen die ertoe leidden wel. Meldingen voor 0.3% of meer van de ontvangers buiten het domein waarvandaan je hebt verzonden in de afgelopen 24 uur, inclusief berichten die voor die periode zijn ingepland, zetten je drempel meteen terug naar de startdrempel van je abonnement (300, of 900 bij het Team-plan) (minstens 3 en maximaal 50 meldingen nodig). Omhooggaan pauzeert dan 30 dagen, en een drempel die ons team heeft goedgekeurd geldt in de tussentijd niet. Bij domeinen van het Team-plan tellen meldingen ook mee voor een slechte dag van de admin van wie het domein de drempel gebruikt (tenzij je eigen drempel even hoog is), naar hetzelfde aandeel van de ontvangers van de leden waarover ze gingen, en ze zetten die admin niet terug. Zodra meldingen over die leden binnen 24 uur het terugzetpercentage bereiken, kunnen de leden van de domeinen van de admin de drempel van de admin 30 dagen niet gebruiken. Het eigen verzenden van de admin blijft gelijk, en het verzenden van de leden telt nog steeds mee voor de drempel van de admin. Als je een lid admin maakt, krijgt dat lid een uitnodiging en wordt het admin zodra het die accepteert. Meldingen over automatische antwoorden en bounces van mail die naar jou is verzonden, tellen niet tegen je mee, meldingen over afleveringsberichten voor mail die jij hebt verzonden wel.
 
-* **Domeinen van het Team-plan** — het effectieve dagelijkse limiet is de hoogste `smtp_limit` onder alle admin-leden van het domein. Bijvoorbeeld, als de ene admin een limiet van 300 heeft en een andere 500, is het effectieve domeinlimiet 500.
-* **Enhanced Protection en andere plannen** — het effectieve dagelijkse limiet is de `smtp_limit` van de verzendende gebruiker (wat standaard 300 berichten per dag is).
-* **Per-alias override** — domeinbeheerders kunnen optioneel een aangepaste `smtp_limit` instellen op individuele aliassen. Wanneer ingesteld, wordt deze eerst gecontroleerd (voorafgaand aan de domein- en gebruikerslimieten). Dit is nuttig om specifieke aliassen te beperken tot een lager verzendvolume.
-* **Domeinstandaard voor nieuwe aliassen** — domeinbeheerders kunnen een `alias_default_smtp_limit` voor het domein instellen (via de API of Geavanceerde instellingen in het dashboard). Wanneer ingesteld zullen alle nieuw aangemaakte aliassen op dat domein deze waarde automatisch erven als hun `smtp_limit`. Dit mag de effectieve SMTP-limiet van het domein niet overschrijden. Bestaande aliassen worden niet beïnvloed. Stel in op `0` om uit te schakelen.
+**Reputatieniveaus:**
 
-**Systeembeheerders** (Forward Email-medewerkers) zijn vrijgesteld van alle snelheidslimieten.
+| Dagelijkse drempel | Minimale doorlopende betaalde tijd | Schone verzenddagen op vorig niveau | Verschillende ontvangersdomeinen op één dag |
+| -----------------: | ---------------------------------: | ----------------------------------: | ------------------------------------------: |
+|                300 |                                  – |                                   – |                                           – |
+|                500 |                            7 dagen |                                   5 |                                          10 |
+|              1,000 |                           14 dagen |                                   7 |                                          20 |
+|              2,000 |                           30 dagen |                                  10 |                                          40 |
+|              5,000 |                           60 dagen |                                  14 |                                          75 |
+|             10,000 |                          120 dagen |                                  21 |                                         150 |
 
-Alle limieten worden afgedwongen met database-aantallen (`Emails.countDocuments`) voor e-mails die zijn gemaakt sinds het begin van de huidige dag (middernacht UTC). Dit betekent dat je limiet dagelijks om middernacht UTC wordt gereset.
+Boven 10,000 berichten per dag beoordeelt ons team je account en verhoogt het je drempel met de hand, zonder dat je zelf iets hoeft te doen. Heb je eerder een hogere drempel nodig (bijvoorbeeld om een bestaand verzendvolume over te zetten), [neem dan contact met ons op](/help). Een drempel die ons team goedkeurt, geldt als minimum en plaatst je op het niveau dat daarbij hoort, en je reputatie kan deze laten groeien tot 10,000 berichten per dag.
 
-Als je een hogere limiet nodig hebt, neem dan [contact met ons op](https://forwardemail.net/help). De meeste verzoeken worden binnen 1-2 uur gehonoreerd.
+**Ongebruikelijke verzendpatronen:**
+
+We vertragen de verzending met een `421`-fout wanneer je activiteit ongebruikelijk lijkt, bij elke drempel. Dit beschermt onze wachtrij en IP-reputatie als iemand een account compromitteert of misbruikt, ook bij accounts die al jaren bestaan of inactief waren.
+
+* **Plotselinge pieken**: je kunt op een dag tot 2 keer je recente normale volume (je drukste dag in de afgelopen 45 dagen) verzenden, of je startdrempel (300 berichten, of 900 bij het Team-plan en op domeinen van het Team-plan) of een goedgekeurde drempel, afhankelijk van wat hoger is. We werken je normale volume elke dag bij op basis van je recente verzending, dus gestage groei blijft onaangetast, en nieuwe afzenders bouwen op vanaf hun startdrempel.
+* **Ontvangers**: een bericht kan veel ontvangers hebben, dus met al je berichten op een dag samen kun je tot 2 keer de toegestane hoeveelheid van vandaag aan ontvangers bereiken, en de afzenders van een account samen tot 2 keer de drempel van het account. We weigeren één bericht met meer ontvangers dan dat met een `550`-fout.
+* **Uitbarstingen**: je kunt binnen elk uur tot een kwart van de toegestane hoeveelheid van vandaag verzenden of 2 keer je drukste uur in de afgelopen 45 dagen (maar niet meer dan de helft van de toegestane hoeveelheid van vandaag), afhankelijk van wat hoger is, en minstens je startdrempel of een goedgekeurde drempel. Een regelmatig patroon, zoals een wekelijkse nieuwsbrief, hoort bij je normale volume.
+* **Bounces**: als ontvangers 10% of meer van je berichten uit de afgelopen 6 uur hebben gebounced of geweigerd (bij minstens 50 berichten, en zonder weigeringen van onze gedeelde IP-adressen mee te tellen), wachten nieuwe berichten totdat je bouncepercentage is hersteld.
+* **Achterstand in de wachtrij**: als te veel van je berichten uit de afgelopen 24 uur nog in de wachtrij wachten (10% van de toegestane hoeveelheid van vandaag, minstens je startdrempel), wachten nieuwe berichten totdat de wachtrij is bijgewerkt. Ingeplande berichten, berichten die we opnieuw proberen nadat een ontvanger ze heeft uitgesteld, en berichten die op goedkeuring wachten, tellen niet mee, en een achterstand telt niet mee tegen je reputatie.
+* **Ingeplande berichten**: je kunt berichten tot 27 dagen vooruit inplannen, en tot de toegestane hoeveelheid van één dag aan berichten tegelijk ingepland hebben.
+
+Vertragingen stoppen zodra je activiteit weer normaal is, en een dag met een vertraging telt niet als schone verzenddag. E-mailclients proberen uitgestelde berichten zelf opnieuw, en API-verzoeken krijgen een `429`-fout, dus probeer die later opnieuw.
+
+Zodra je je drempel voor die dag bereikt, weigeren we verdere berichten met een `421`-fout (wat "probeer het later opnieuw" betekent) totdat je drempel om middernacht UTC wordt gereset. Onze [bescherming tegen misbruik](#why-was-my-outbound-smtp-suspended) tegen spam en virussen geldt bij elke drempel.
+
+Je kunt zien hoeveel berichten je vandaag hebt verzonden en wat je huidige drempel is via [Mijn account → E-mails](/my-account/emails), of met de [API](/email-api#get-outbound-smtp-email-limit).
+
+**Hoe drempels worden toegepast:**
+
+| Niveau | Bereik | Standaarddrempel | Beschrijving |
+| :----- | :----- | :--------------: | :----------- |
+| Per alias | Individuele alias | Geen (gebruikt domeinlimiet) | Optioneel. We controleren de aangepaste `smtp_limit` van een alias eerst, als die er een heeft. |
+| Per account | Alle e-mails die op een dag worden verzonden vanaf de domeinen waarvan een account admin is | Op basis van reputatie (300+/dag, 900+ bij Team) | Je drempel geldt voor het hele account, dus het toevoegen van domeinen of leden vermenigvuldigt de drempel niet. |
+| Per domein | Alle e-mails die op een dag vanaf een domein worden verzonden | Groeit geleidelijk binnen de drempel van het account (300+/dag, 900+ bij Team) | Telt alle uitgaande e-mails over de aliassen op het domein. |
+| Per gebruiker | Alle e-mails die op een dag door een gebruikersaccount worden verzonden | Op basis van reputatie (300+/dag, 900+ bij Team) | Aliassen of domeinen verwijderen en opnieuw aanmaken zet deze drempel niet terug. |
+
+* **Domeinen van het Team-plan**: de drempel van het domein is de hoogste drempel onder de betalende admin-leden ervan. Als de ene admin bijvoorbeeld een drempel van 1,000 heeft en een andere 5,000, is de drempel van het domein 5,000. Afzenders met het Team-plan beginnen met 900 berichten per dag in plaats van 300.
+* **Geldt voor het hele account**: het account van een domein is de betalende admin met de hoogste drempel. Alle e-mail die wordt verzonden vanaf de domeinen waarvan dat account admin is, telt mee voor die ene drempel, ongeacht wie de e-mail verzendt (leden inbegrepen), dus het toevoegen van domeinen of leden verhoogt die drempel niet.
+* **Nieuwe domeinen groeien geleidelijk**: binnen de drempel van het account kan een domein tot 2 keer zijn drukste dag aan afgeleverde e-mail van de afgelopen 45 dagen verzenden, en minimaal de startdrempel (300 berichten, of 900 bij het Team-plan) of een goedgekeurde drempel. Een nieuw domein op een gevestigd account begint op de startdrempel en groeit naarmate we de e-mail ervan afleveren.
+* **Bounces en automatische antwoorden**: bouncemeldingen en afwezigheidsberichten (automatische antwoorden) die we namens je verzenden, tellen niet mee voor je drempel. We verzenden maximaal 300 automatische antwoorden per gebruiker per dag (minder als we je drempel daaronder hebben beperkt) en maximaal 20 per ontvangeradres per dag over al onze gebruikers samen, en alleen naar afzenders die de authenticatie hebben doorstaan (zie [afwezigheidsberichten](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). We beperken bouncemeldingen naar een retouradres buiten het domein waarvandaan je hebt verzonden (of andere domeinen waarvan je admin bent) tot dat aantal of 15% van je dagelijkse drempel, afhankelijk van wat hoger is, en ze bevatten alleen de identificerende headers van het oorspronkelijke bericht (zoals `From`, `To` en `Subject`).
+* **Enhanced Protection en andere plannen**: de drempel van het domein is de eigen drempel van de verzendende gebruiker.
+* **Override per alias**: domeinbeheerders kunnen een aangepaste `smtp_limit` instellen op individuele aliassen. We controleren deze eerst (vóór de domein- en gebruikersdrempels), zodat je specifieke aliassen kunt beperken tot een lager verzendvolume.
+* **Domeinstandaard voor nieuwe aliassen**: domeinbeheerders kunnen een `alias_default_smtp_limit` voor het domein instellen (met de API of Geavanceerde instellingen in het dashboard). Nieuwe aliassen op dat domein erven deze waarde dan als hun `smtp_limit`. Deze mag de huidige drempel van het domein niet overschrijden, en bestaande aliassen houden hun eigen waarde. Stel deze in op `0` om hem uit te schakelen.
 
 ### Heb ik goedkeuring nodig om SMTP in te schakelen {#do-i-need-approval-to-enable-smtp}
 
 Ja, houd er rekening mee dat Forward Email een handmatig beoordelingsproces per domein hanteert voor goedkeuring van uitgaande SMTP om de IP-reputatie te behouden en de afleverbaarheid te waarborgen. Stuur een e-mail naar <support@forwardemail.net> of open een [hulpverzoek](https://forwardemail.net/help) voor goedkeuring. Dit duurt meestal minder dan 24 uur, waarbij de meeste verzoeken binnen 1-2 uur worden gehonoreerd. In de nabije toekomst streven we ernaar dit proces direct te maken met extra spamcontroles en waarschuwingen. Dit proces zorgt ervoor dat je e-mails de inbox bereiken en je berichten niet als spam worden gemarkeerd.
+
+Na goedkeuring is uitgaande SMTP onbeperkt en groeit je dagelijkse drempel mee met je [afzenderreputatie](#what-are-your-outbound-smtp-limits).
+
+### Welke informatie hebben jullie nodig om mijn uitgaande SMTP goed te keuren of te herstellen {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+Wanneer je goedkeuring voor uitgaande SMTP aanvraagt (of ons vraagt deze te herstellen na een [schorsing](#why-was-my-outbound-smtp-suspended)), houd dan het volgende bij de hand:
+
+* Bevestiging dat je onze [voorwaarden](/terms) hebt gelezen en ermee akkoord gaat. Deze verbieden uitdrukkelijk het gebruik van de dienst voor alles wat op de lijsten [Verboden bedrijven van Stripe](https://stripe.com/legal/restricted-businesses) of [Verboden activiteiten van PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full) staat.
+* Waarvoor je uitgaande SMTP wilt gebruiken.
+* Een link naar je website, bedrijfsgegevens of een profiel (bijv. LinkedIn, GitHub) waarmee we kunnen verifiëren dat je een echte, legitieme afzender bent — een domein dat naar een lege website verwijst, is een veelvoorkomende reden dat goedkeuring vertraging oploopt.
+* Bevestiging dat je de dienst niet gebruikt voor spam of bulk-/ongevraagde marketing.
+
+We vragen in beide gevallen om dezelfde informatie, of het nu om een eerste goedkeuring gaat of om het herstellen van een domein na een schorsing.
+
+### Waarom is mijn uitgaande SMTP opgeschort {#why-was-my-outbound-smtp-suspended}
+
+Uitgaande SMTP die al is goedgekeurd, kan alsnog worden gepauzeerd als we een patroon van misbruik detecteren. Dit staat los van het [goedkeuringsproces](#do-i-need-approval-to-enable-smtp) hierboven en van onze [op reputatie gebaseerde uitgaande drempels](#what-are-your-outbound-smtp-limits). Het treedt in werking wanneer een vertrouwde bron (bijv. een grote mailboxprovider) je uitgaande e-mail meldt als virus of spam.
+
+Er zijn twee fasen:
+
+1. **Eén detectie** levert een melding "Message prevented" op voor dat ene bericht — ter informatie, en je uitgaande wachtrij blijft gewoon werken.
+2. **Meerdere detecties binnen een kort, voortschrijdend tijdvenster** overschrijden onze drempel voor misbruikdetectie en leiden tot een volledige melding "Uitgaande SMTP is opgeschort". Op dat moment wordt je volledige uitgaande SMTP-wachtrij gepauzeerd — er worden voor dat domein geen uitgaande berichten meer verzonden totdat het probleem is opgelost.
+
+Beide meldingen bevatten het specifieke bericht dat is gemarkeerd (`MAIL FROM`, `RCPT TO`, `Message-ID`, onderwerp en datum), welke vertrouwde bron en inhoudscategorie het heeft gemarkeerd, hoeveel detecties je hebt gehad ten opzichte van de drempel, hoeveel unieke ontvangers en vertrouwde bronnen erbij betrokken waren, en de SMTP-statuscode en het antwoord.
+
+Als je een van deze meldingen ontvangt, neem dan contact met ons op via <support@forwardemail.net> of open een [hulpverzoek](https://forwardemail.net/help) — een schorsing wordt niet automatisch opgeheven, dus je moet zelf contact opnemen om dit op te lossen.
+
+### Waarom hebben nieuw geregistreerde of recent verlopen domeinen een betaald abonnement nodig {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+Wanneer je een domein toevoegt (en doorlopend voor domeinen met het gratis abonnement), voeren we er een WHOIS/RDAP-lookup op uit. Als het domein **in de afgelopen 90 dagen is aangemaakt**, **in de afgelopen 90 dagen is verlopen**, of momenteel bij de registrar de status **transfer, update of verwijdering in behandeling** heeft, moet het een betaald abonnement hebben voordat je er e-mail mee kunt verzenden of ontvangen.
+
+Dit is een maatregel tegen misbruik en zegt niets over jou persoonlijk — grote registrars, waaronder GoDaddy, Namecheap en Hostgator, hebben onze infrastructuur eerder volledig geblokkeerd vanwege misbruikpatronen met overnames van recent verlopen domeinen en frauduleus geregistreerde nieuwe domeinen. Doordat we voor deze domeinen een betaald abonnement vereisen, kunnen we überhaupt een gratis abonnement blijven aanbieden zonder het vertrouwen van registrars te verliezen.
+
+WHOIS/RDAP-resultaten worden 24 uur in de cache bewaard, dus bij een domein dat net de grens van 90 dagen is gepasseerd, kan het tot een dag duren voordat dit zichtbaar is. Upgrade naar een betaald abonnement om het domein direct te gebruiken (vanaf $3/maand voor onbeperkte domeinen, aliassen en op reputatie gebaseerde uitgaande SMTP).
 
 ### Wat zijn jullie SMTP-serverconfiguratie-instellingen {#what-are-your-smtp-server-configuration-settings}
 
@@ -5294,6 +5374,8 @@ Afzenders die worden gedetecteerd als het verzenden van spam of virusinhoud word
 
 ### Heeft u rate limiting {#do-you-have-rate-limiting}
 
+Deze sectie gaat over inkomende mail. Zie voor verzenden [Wat zijn jullie limieten voor uitgaande SMTP](#what-are-your-outbound-smtp-limits).
+
 Sender rate limiting gebeurt ofwel op basis van het rootdomein dat wordt geparseerd uit een reverse PTR lookup op het IP-adres van de afzender – of als dat geen resultaat oplevert, dan wordt gewoon het IP-adres van de afzender gebruikt.  Merk op dat we hieronder naar dit verwijzen als `Sender`.
 
 Onze MX-servers hebben dagelijkse limieten voor binnenkomende mail die wordt ontvangen voor [versleutelde IMAP-opslag](/blog/docs/best-quantum-safe-encrypted-email-service):
@@ -5339,6 +5421,8 @@ De dagelijkse limiet is één gedeeld budget over alle protocollen — of u nu d
 Deze limieten gelden per gebruikersaccount (niet per alias of domein) en worden dagelijks gereset.  Dit betekent dat het aanmaken van extra aliassen uw bandbreedtequotum niet verhoogt.  Als Redis niet beschikbaar is, wordt snelheidsbeperking volledig overgeslagen (fail-open) zodat uw dienst nooit wordt onderbroken.
 
 Als u hogere limieten nodig heeft voor een specifiek gebruik (bijv. migratie van een zeer groot archief), neem dan [contact met ons op](https://forwardemail.net/help).
+
+Deze limieten gelden voor overgedragen data. Onze [op reputatie gebaseerde uitgaande drempels](#what-are-your-outbound-smtp-limits) bepalen het aantal berichten dat je kunt verzenden.
 
 ### Hoe beschermt u tegen backscatter {#how-do-you-protect-against-backscatter}
 
@@ -5765,13 +5849,9 @@ We gebruiken MX- en <strong class="notranslate">TXT</strong>-recordverificatie, 
 
 ### Hoe verhoog ik mijn opslag of uitgaande SMTP-verzendlimiet {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Ga naar <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mijn account → Facturering</a> en scroll naar de sectie **Uitbreidingen**, met twee aanvraagformulieren:
+**Opslag**: ga naar <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mijn account → Facturering</a> en scroll naar de sectie **Uitbreidingen**. Kies een hoeveelheid om toe te voegen (+10, +20, +30, +40 of +50 GB), of selecteer "Other" om een aangepaste hoeveelheid aan te vragen. Als je het formulier indient, gaat je aanvraag naar ons team ter beoordeling en betaal je nog niets. Zodra we de aanvraag goedkeuren, mailen we je een beveiligde betalingslink om de upgrade te voltooien. Je kunt één openstaande opslagaanvraag tegelijk hebben, en je kunt binnen 3 dagen na een eerdere aanvraag geen nieuwe indienen.
 
-* **Opslagupgrade** — kies een hoeveelheid om toe te voegen (+10, +20, +30, +40 of +50 GB), of selecteer "Other" om een aangepaste hoeveelheid aan te vragen.
-* **Upgrade van uitgaande SMTP-limiet** — kies een hoeveelheid om toe te voegen (+1000, +2000 of +3000 e-mails per dag), of selecteer "Other" om een aangepaste hoeveelheid aan te vragen.
-
-Het indienen van een van beide formulieren stuurt je aanvraag naar ons team ter beoordeling — er worden niet direct kosten in rekening gebracht. Zodra deze is goedgekeurd, sturen we je per e-mail een beveiligde betalingslink om de upgrade te voltooien. Je kunt één openstaande aanvraag per type (opslag of SMTP) tegelijk hebben; opnieuw indienen binnen 3 dagen na een eerdere aanvraag van hetzelfde type is niet toegestaan totdat die periode is verstreken.
-
+**Uitgaande SMTP**: er valt niets te kopen. Uitgaande SMTP is onbeperkt en je dagelijkse drempel groeit mee met je [afzenderreputatie](#what-are-your-outbound-smtp-limits). <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mijn account → Facturering</a> en <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Mijn account → E-mails</a> tonen je huidige drempel, je reputatieniveau en de vereisten voor het volgende niveau.
 
 ### Wat is inbegrepen in de Enterprise-licentie {#what-is-included-in-the-enterprise-license}
 
@@ -5893,6 +5973,12 @@ Ja, echter worden "relatief onbekende" afzenders beperkt tot 100 verbindingen pe
 Met "relatief onbekend" bedoelen we afzenders die niet voorkomen in de [whitelist](#do-you-have-an-allowlist).
 
 Als deze limiet wordt overschreden, sturen we een 421-responscode die de mailserver van de afzender vertelt om het later opnieuw te proberen.
+
+### Kan ik onbeperkt e-mails verzenden met dit {#can-i-send-unlimited-emails-with-this}
+
+Ja. Uitgaande SMTP en onze e-mail-API zijn onbeperkt bij alle betaalde abonnementen (vanaf $3/mo). Je krijgt een dagelijkse drempel in plaats van een vaste maandelijkse limiet, en die groeit zolang je blijft betalen en een schone verzendgeschiedenis opbouwt: van 300 berichten per dag voor nieuwe afzenders (900 bij het Team-plan) tot 10,000 per dag, en daarboven nadat ons team je account heeft beoordeeld.
+
+Alleen e-mail die is afgeleverd aan echte ontvangers buiten je eigen domeinen bouwt reputatie op. Om de bezorgbaarheid te beschermen, verlaagt een hoog bouncepercentage je drempel, zetten spam- en virusmeldingen van grote mailboxproviders deze terug, en vertragen we ongebruikelijke patronen (zoals een plotselinge piek vanuit een inactief account). Zie [Wat zijn jullie limieten voor uitgaande SMTP](#what-are-your-outbound-smtp-limits) voor details, en je huidige drempel via [Mijn account → E-mails](/my-account/emails).
 
 ### Biedt u onbeperkte domeinen voor één prijs aan {#do-you-offer-unlimited-domains-for-one-price}
 

@@ -419,6 +419,20 @@ const Domains = new mongoose.Schema({
     default: false,
     index: true
   },
+  // delivered outbound messages per (UTC) day in the baseline window, used to
+  // ramp up new domains (see `helpers/get-smtp-sending-limits.js`)
+  smtp_daily_counts: {
+    type: [
+      {
+        _id: false,
+        day: Date,
+        count: Number
+      }
+    ],
+    default: undefined
+  },
+  // when `smtp_daily_counts` was first computed (unset until then)
+  smtp_daily_counts_at: Date,
 
   // When the txt/mx was last checked at
   last_checked_at: Date,
@@ -2000,6 +2014,8 @@ Domains.plugin(mongooseCommonPlugin, {
     'onboard_email_sent_at',
     'verified_email_sent_at',
     'smtp_last_checked_at',
+    'smtp_daily_counts',
+    'smtp_daily_counts_at',
     // 'smtp_verified_at',
     // 'smtp_suspended_sent_at',
     // 'is_smtp_suspended',

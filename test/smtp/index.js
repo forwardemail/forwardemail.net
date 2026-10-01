@@ -2406,8 +2406,9 @@ test('smtp rate limiting', async (t) => {
     await resolver.options.cache.mset(map);
   }
 
-  // from n to limit, it should not error
-  for (let i = 1; i <= config.smtpLimitMessages + 10; i++) {
+  // new senders start on the first reputation tier
+  // (from n to that threshold, it should not error)
+  for (let i = 1; i <= config.smtpReputationTiers[0].limit + 10; i++) {
     const mx = await asyncMxConnect({
       target: IP_ADDRESS,
       port: smtp.server.address().port,
@@ -2435,7 +2436,7 @@ test('smtp rate limiting', async (t) => {
       }
     });
 
-    if (i > config.smtpLimitMessages) {
+    if (i > config.smtpReputationTiers[0].limit) {
       const err = await t.throwsAsync(
         transporter.sendMail({
           envelope: {

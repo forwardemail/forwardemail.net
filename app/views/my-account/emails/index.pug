@@ -1,5 +1,7 @@
 extends ../../layout
 
+include ../_smtp-reputation
+
 block body
   .container-fluid.py-3
     .row.mt-1
@@ -7,9 +9,13 @@ block body
         include ../../_breadcrumbs
         if typeof dailySMTPMessages === 'number'
           .alert.alert-primary
-            != t('You have used <strong class="notranslate">%d</strong> out of your daily limit of <strong class="notranslate">%d</strong> outbound SMTP messages.', dailySMTPMessages, dailySMTPLimit)
+            != t('You have sent <strong class="notranslate">%d</strong> of the <strong class="notranslate">%d</strong> outbound SMTP messages allowed today.', dailySMTPMessages, dailySMTPLimit)
             = " "
             != t('Counter resets <span class="dayjs notranslate" data-time="%d" data-date-style="short" data-time-style="short">%s</span>.', dailySMTPResetAt.getTime(), dayjs(dailySMTPResetAt).format("M/D/YY h:mm A"))
+        if smtpReputation
+          .row.mb-3
+            .col-lg-6
+              +smtpReputationCard(smtpReputation)
         .alert.alert-warning!= t('Outbound SMTP emails are shown below &ndash; <a href="%s" class="alert-link">click here</a> to setup your email client to receive email.', l("/faq#do-you-support-receiving-email-with-imap"))
         if isSANB(ctx.query.domain)
           h4

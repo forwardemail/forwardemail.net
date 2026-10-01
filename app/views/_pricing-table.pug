@@ -216,15 +216,15 @@ mixin planPriceWas(amount)
                 href=l("/faq#do-you-support-sending-email-with-smtp"),
                 target="_blank"
               )
-                = t("%d+ outbound / month", Math.round(config.smtpLimitMessages * Math.round(config.smtpLimitDuration / ms("1d")) * 30))
+                = t("Unlimited outbound (reputation-based)")
               = " "
               button.confirm-prompt.btn.btn-link.text-themed.py-0.no-js(
                 type="button",
-                aria-label=t("Outbound SMTP Limits"),
+                aria-label=t("Reputation-based sending"),
                 data-confirm-type="info",
                 data-confirm-show-cancel-button="false",
-                data-confirm-prompt-title=t("Outbound SMTP Limits"),
-                data-confirm-prompt-html=t("We rate limit users and domains to %d outbound SMTP messages per %s. This averages %d+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.", config.smtpLimitMessages, prettyMilliseconds(config.smtpLimitDuration, { verbose: true, secondsDecimalDigits: 0 }), Math.round(config.smtpLimitMessages * Math.round(config.smtpLimitDuration / ms("1d")) * 30))
+                data-confirm-prompt-title=t("Reputation-based sending"),
+                data-confirm-prompt-html=t("Outbound SMTP is unlimited and based on your sender reputation. New senders start at %d messages per day, and this daily threshold grows as you keep paying and build a clean sending history (low bounces, no spam or virus reports). If your reputation drops, your threshold moves back down, and we slow down unusual sending patterns.", config.smtpReputationTiers[0].limit)
               )
                 i.fa.fa-info-circle
             li.list-group-item.d-flex.align-items-center.font-weight-bold
@@ -320,6 +320,23 @@ mixin planPriceWas(amount)
               i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
               = " "
               = t("Everything in Enhanced plus:")
+            li.list-group-item.d-flex.align-items-center.font-weight-bold
+              i.fa.fa-fw.fa-envelope.text-themed.mr-3
+              = " "
+              a.font-weight-bold.text-themed(
+                href=l("/faq#what-are-your-outbound-smtp-limits"),
+                target="_blank"
+              )= t("Outbound starts at %s/day", config.smtpTeamLimitMessages.toLocaleString("en"))
+              = " "
+              button.confirm-prompt.btn.btn-link.text-themed.py-0.no-js(
+                type="button",
+                aria-label=t("Reputation-based sending"),
+                data-confirm-type="info",
+                data-confirm-show-cancel-button="false",
+                data-confirm-prompt-title=t("Reputation-based sending"),
+                data-confirm-prompt-html=t("On the Team plan, new senders start at %d outbound messages per day instead of %d, and this daily threshold grows from there as you keep paying and build a clean sending history.", config.smtpTeamLimitMessages, config.smtpReputationTiers[0].limit)
+              )
+                i.fa.fa-info-circle
             li.list-group-item.d-flex.align-items-center.font-weight-bold
               i.fa.fa-fw.fa-infinity.text-themed.mr-3
               = " "

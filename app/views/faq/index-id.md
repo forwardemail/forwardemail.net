@@ -80,6 +80,8 @@
   * [Bisakah saya meneruskan email untuk subdomain apa pun (subdomain wildcard)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Apa batas SMTP keluar Anda](#what-are-your-outbound-smtp-limits)
   * [Apakah saya perlu persetujuan untuk mengaktifkan SMTP](#do-i-need-approval-to-enable-smtp)
+  * [Informasi apa yang Anda perlukan untuk menyetujui atau memulihkan SMTP keluar saya](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [Mengapa domain yang baru didaftarkan atau baru kedaluwarsa memerlukan paket berbayar](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Apa pengaturan konfigurasi server SMTP Anda](#what-are-your-smtp-server-configuration-settings)
   * [Apa pengaturan konfigurasi server IMAP Anda](#what-are-your-imap-server-configuration-settings)
   * [Apa pengaturan konfigurasi server POP3 Anda](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Bisakah saya "mengirim email sebagai" di Outlook dengan ini](#can-i-send-mail-as-in-outlook-with-this)
   * [Bisakah saya "mengirim email sebagai" di Apple Mail dan iCloud Mail dengan ini](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Bisakah saya meneruskan email tanpa batas dengan ini](#can-i-forward-unlimited-emails-with-this)
+  * [Bisakah saya mengirim email tanpa batas dengan ini](#can-i-send-unlimited-emails-with-this)
   * [Apakah Anda menawarkan domain tanpa batas dengan satu harga](#do-you-offer-unlimited-domains-for-one-price)
   * [Metode pembayaran apa yang Anda terima](#which-payment-methods-do-you-accept)
 * [Sumber Daya Tambahan](#additional-resources)
@@ -1035,7 +1038,7 @@ Namun jika mereka melihat pesan ini, itu karena mereka biasanya terbiasa melihat
 
 Topik ini terkait dengan [masalah yang dikenal luas di Gmail di mana info tambahan muncul di samping nama pengirim](https://support.google.com/mail/answer/1311182).
 
-Per Mei 2023 kami mendukung pengiriman email dengan SMTP sebagai tambahan untuk semua pengguna berbayar – yang berarti Anda dapat menghapus <span class="notranslate">via forwardemail dot net</span> di Gmail.
+SMTP keluar termasuk dalam semua paket berbayar (tidak terbatas dan [berbasis reputasi](#what-are-your-outbound-smtp-limits)), sehingga Anda dapat menghapus <span class="notranslate">via forwardemail dot net</span> di Gmail.
 
 Perlu dicatat bahwa topik FAQ ini khusus untuk mereka yang menggunakan fitur [Cara Mengirim Email Sebagai menggunakan Gmail](#how-to-send-mail-as-using-gmail).
 
@@ -2038,6 +2041,12 @@ Berbeda dengan sistem mail seperti `postfix` (misalnya yang menggunakan ekstensi
 
 8. Kami tidak mengirim jika alamat MAIL FROM cocok dengan pola pengirim umpan balik ARF (mis. `feedback@arf.mail.yahoo.com`).
 
+9. Kami hanya membalas pengirim yang terautentikasi: alamat From harus lolos DMARC atau membawa tanda tangan DKIM yang selaras dan valid. SPF saja tidak dihitung, karena server email bersama meloloskannya untuk siapa pun. Pengirim palsu tidak dapat mengubah balasan liburan Anda menjadi [backscatter](https://www.backscatterer.org/?target=autoresponders) yang ditujukan kepada orang lain.
+
+10. Kami hanya membalas jika alias Anda, atau alamat lain di domainnya (seperti alias yang meneruskan ke alias tersebut), muncul di header `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc`, atau `Resent-Bcc`, seperti yang direkomendasikan [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834). Email yang dikirim ke daftar penerima tersembunyi tidak mendapat balasan. Balasan liburan Sieve memerlukan alias Anda atau alamat dalam `:addresses`-nya muncul di header tersebut.
+
+11. Kami mengirim hingga 300 balasan liburan per pengguna per hari (lebih sedikit jika kami membatasi ambang SMTP keluar Anda di bawah itu), dan paling banyak 20 per alamat penerima per hari di seluruh pengguna kami.
+
 ### Bagaimana cara mengatur SPF untuk Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
 Menggunakan halaman manajemen DNS registrar Anda, atur catatan <strong class="notranslate">TXT</strong> berikut:
@@ -2339,9 +2348,11 @@ Ya, Anda dapat membaca lebih lanjut di <https://forwardemail.net/guides/newslett
 
 Harap dicatat bahwa untuk menjaga reputasi IP dan memastikan keterkiriman, Forward Email memiliki proses tinjauan manual berdasarkan domain untuk **persetujuan newsletter**. Kirim email ke <support@forwardemail.net> atau buka [permintaan bantuan](https://forwardemail.net/help) untuk persetujuan. Biasanya ini memakan waktu kurang dari 24 jam, dengan sebagian besar permintaan diproses dalam 1-2 jam. Dalam waktu dekat kami berencana membuat proses ini instan dengan kontrol spam tambahan dan pemberitahuan. Proses ini memastikan email Anda sampai ke kotak masuk dan pesan Anda tidak ditandai sebagai spam.
 
+Newsletter dan daftar mailing dihitung dalam ambang keluar harian Anda, yang tidak terbatas dan meningkat seiring [reputasi pengirim](#what-are-your-outbound-smtp-limits) Anda. Jaga daftar Anda tetap bersih: tingkat pentalan yang tinggi menurunkan ambang Anda, dan kami memperlambat lonjakan volume yang tiba-tiba.
+
 ### Apakah Anda mendukung pengiriman email dengan API {#do-you-support-sending-email-with-api}
 
-Ya, sejak Mei 2023 kami mendukung pengiriman email dengan API sebagai tambahan untuk semua pengguna berbayar.
+Ya. Semua paket berbayar mencakup pengiriman email dengan API kami. Seperti SMTP keluar, pengiriman ini **tidak terbatas** dan [berbasis reputasi](#what-are-your-outbound-smtp-limits): pesan yang Anda kirim dengan API dan dengan SMTP berbagi satu ambang harian.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2547,7 +2558,7 @@ Untuk menggunakan dukungan kontak, **user** harus berupa alamat email dari alias
 
 ### Apakah Anda mendukung pengiriman email dengan SMTP {#do-you-support-sending-email-with-smtp}
 
-Ya, sejak Mei 2023 kami mendukung pengiriman email dengan SMTP sebagai tambahan untuk semua pengguna berbayar.
+Ya. Semua paket berbayar mencakup SMTP keluar, dan SMTP keluar **tidak terbatas**: ambang pengiriman harian Anda meningkat seiring [reputasi pengirim](#what-are-your-outbound-smtp-limits) Anda.
 
 <div id="smtp-instructions">
 
@@ -3676,32 +3687,101 @@ Saat Anda menggunakan <a href="#do-you-support-regular-expressions-or-regex" cla
 
 ### Apa batasan SMTP keluar Anda {#what-are-your-outbound-smtp-limits}
 
-Kami menerapkan batas laju SMTP keluar pada beberapa tingkat untuk mencegah penyalahgunaan sambil tetap memberikan fleksibilitas bagi penggunaan yang sah. Setiap tingkat diperiksa berurutan — batas yang tercapai terlebih dahulu akan menolak pesan sementara dengan kesalahan `421` (yang berarti "coba lagi nanti").
+SMTP keluar bersifat **tidak terbatas** dan **berbasis reputasi**. Anda mendapatkan ambang harian sebagai pengganti batas bulanan yang tetap, dan ambang ini meningkat seiring Anda membangun reputasi pengiriman yang baik.
 
-**Hierarki batas laju:**
+Pengirim baru dimulai dari 300 pesan per hari, atau 900 pada paket Team (pengirim paket Team melewati tingkat di bawah 900, dan tingkat berikutnya adalah 1,000). Sekali sehari, kami meninjau pengiriman terbaru Anda dan menaikkan atau menurunkan ambang Anda. Kami mengevaluasi setiap hari dua hari kemudian, setelah kami mengetahui hasil pengiriman pesan-pesannya. Saat mekanisme ini dimulai untuk akun Anda, kami melihat kembali hingga 30 hari riwayat pengiriman Anda, dan kami mengejar hari-hari yang terlewat.
 
-| Level | Scope | Default Limit | Description |
-| :---- | :---- | :-----------: | :---------- |
-| Per-alias | Individual alias | None (uses domain limit) | Opsional. Jika sebuah alias memiliki `smtp_limit` kustom yang disetel, itu diperiksa terlebih dahulu. |
-| Per-domain | All emails sent from a domain in a day | 300/day | Menghitung semua email keluar dari setiap alias di domain tersebut. |
-| Per-user | All emails sent by a user account in a day | 300/day | Mencegah pengelakan dengan menghapus dan membuat ulang alias atau domain. |
+Hanya pengiriman nyata yang membangun reputasi. Email dihitung untuk naik tingkat setelah kami **mengirimkannya** ke **penerima unik di luar domain Anda sendiri**. Email ke diri sendiri, ke domain Anda sendiri (atau subdomainnya), ke domain tempat Anda mengirim, atau yang dikirim berulang ke penerima yang sama tidak dihitung. Variasi dari satu alamat (sebuah `+tag`, atau titik dalam alamat Gmail) dihitung satu kali. Setiap domain penerima (beserta subdomainnya) dihitung untuk paling banyak 50 penerima per hari, kecuali domain milik penyedia kotak surat besar itu sendiri (seperti gmail.com). Setidaknya seperlima dari penerima yang dihitung harus berada di penyedia kotak surat besar, dan tingkat yang lebih tinggi juga memerlukan jumlah minimum domain penerima yang berbeda dalam satu hari.
 
-**Bagaimana batas efektif ditentukan:**
+* **Naik tingkat**: ambang Anda naik satu tingkat setelah Anda membayar cukup lama tanpa henti, Anda memiliki cukup hari pengiriman bersih pada tingkat saat ini, dan hari tersibuk Anda dalam 7 hari terakhir mencapai setidaknya setengah dari ambang Anda saat ini dalam jumlah penerima terkirim di luar domain Anda sendiri (di cukup banyak domain penerima yang berbeda). Hanya waktu berbayar tanpa henti yang dihitung, sehingga akun lama yang belum membayar (atau berhenti membayar) mulai dari awal. Perpanjangan yang terlambat hingga 14 hari tetap dihitung sebagai tanpa henti, dan hanya pembayaran Anda sendiri yang dihitung.
+* **Hari bersih**: hari di mana kami mengirimkan setidaknya 5 pesan Anda ke penerima di luar domain Anda sendiri, kurang dari 5% penerima tersebut memantulkan atau menolak email Anda, Anda tidak menerima cukup laporan spam atau virus untuk hari buruk (lihat di bawah), dan kami tidak memperlambat pengiriman Anda karena pola yang tidak biasa.
+* **Turun tingkat**: hari dengan tingkat pentalan atau penolakan yang tinggi (5% atau lebih dari setidaknya 20 penerima di luar domain Anda sendiri), atau terlalu banyak laporan spam atau virus dari penyedia kotak surat besar (lihat di bawah), menurunkan ambang Anda satu tingkat (tidak di bawah ambang awal paket Anda) dan mereset hitungan hari bersih Anda. Hari di mana 15% atau lebih dari mereka memantulkan atau menolak email Anda justru mereset ambang Anda ke ambang awal paket Anda, dan menjeda kenaikan tingkat selama 30 hari (ambang yang disetujui tim kami tetap berlaku). Hanya penolakan terhadap email Anda yang dihitung, misalnya bukan alamat IP bersama kami yang masuk daftar blokir, atau server penerima yang tidak dapat kami jangkau. Setiap penerima dihitung satu kali berapa pun jumlah pesan yang Anda kirim kepadanya, dan pesan terjadwal dihitung pada hari yang Anda jadwalkan. Hari tanpa pengiriman tidak dihitung untuk maupun melawan Anda.
+* **Laporan spam dan virus**: penyedia kotak surat besar (seperti Gmail, Outlook, dan Yahoo) menentukan apa yang dianggap penyalahgunaan, dan kami hanya menghitung penolakan permanen dari mereka. Setiap penerima pada domain milik penyedia itu sendiri (seperti gmail.com) dihitung, sedangkan domain lain yang di-hosting oleh penyedia (seperti Google Workspace milik sebuah perusahaan) dihitung satu kali per domain, dan masing-masing dihitung satu kali per hari. Kami menghitung laporan sebagai proporsi dari penerima yang Anda kirimi, seperti yang dilakukan penyedia besar (Gmail meminta pengirim tetap di bawah 0.1% dan tidak pernah mencapai 0.3%), sehingga satu laporan tidak menurunkan tingkat Anda, dan laporan tentang domain lain yang di-hosting penyedia mencakup paling banyak setengah dari laporan yang diperlukan. Laporan untuk 0.1% atau lebih dari penerima dalam sehari di luar domain Anda sendiri, atau dari penerima hari sebelumnya jika lebih banyak, membuat hari buruk (setidaknya 2 laporan, dan paling banyak 25 yang diperlukan). Penangguhan otomatis salah satu alias Anda tidak dihitung melawan reputasi Anda dengan sendirinya, tetapi laporan di baliknya dihitung. Laporan untuk 0.3% atau lebih dari penerima di luar domain tempat Anda mengirim dalam 24 jam terakhir, termasuk pesan yang dijadwalkan untuk waktu itu, langsung mereset ambang Anda ke ambang awal paket Anda (300, atau 900 pada paket Team) (setidaknya 3 laporan, dan paling banyak 50 yang diperlukan). Kenaikan tingkat lalu berhenti selama 30 hari, dan ambang yang disetujui tim kami tidak berlaku selama itu. Pada domain paket Team, laporan juga dihitung untuk hari buruk admin yang ambangnya digunakan domain tersebut (kecuali ambang Anda sendiri sama tingginya), dengan proporsi yang sama dari penerima anggota yang dilaporkan, dan laporan tersebut tidak mereset admin itu. Setelah laporan tentang anggota tersebut mencapai tingkat reset dalam 24 jam, anggota domain admin tidak dapat menggunakan ambang admin selama 30 hari. Pengiriman admin sendiri tetap sama, dan pengiriman anggota tetap dihitung dalam ambang admin. Menjadikan anggota sebagai admin mengirimkan undangan kepadanya, dan ia menjadi admin setelah menerimanya. Laporan tentang balasan otomatis dan pentalan dari email yang dikirim kepada Anda tidak dihitung melawan Anda, sedangkan laporan tentang notifikasi pengiriman untuk email yang Anda kirim dihitung.
 
-* **Team plan domains** — batas harian efektif adalah `smtp_limit` tertinggi di antara semua admin pada domain tersebut. Misalnya, jika satu admin memiliki batas 300 dan admin lain 500, maka batas efektif domain adalah 500.
-* **Enhanced Protection and other plans** — batas harian efektif adalah `smtp_limit` milik pengguna pengirim itu sendiri (yang secara default adalah 300 pesan per hari).
-* **Per-alias override** — administrator domain dapat secara opsional menetapkan `smtp_limit` kustom pada alias individual. Ketika disetel, ini diperiksa terlebih dahulu (sebelum batas domain dan pengguna). Ini berguna untuk membatasi alias tertentu ke volume pengiriman yang lebih rendah.
-* **Pengaturan default domain untuk alias baru** — administrator domain dapat menetapkan `alias_default_smtp_limit` pada domain (melalui API atau Pengaturan Lanjutan di dasbor). Jika ditetapkan, semua alias yang baru dibuat pada domain tersebut akan otomatis mewarisi nilai ini sebagai `smtp_limit` mereka. Nilai ini tidak boleh melebihi batas SMTP efektif domain. Alias yang sudah ada tidak terpengaruh. Atur ke `0` untuk menonaktifkan.
+**Tingkat reputasi:**
 
-**System administrators** (staf Forward Email) dibebaskan dari semua batas laju.
+| Ambang harian | Waktu berbayar tanpa henti minimum | Hari pengiriman bersih pada tingkat sebelumnya | Domain penerima berbeda dalam sehari |
+| --------------: | ---------------------------: | ----------------------------------: | -----------------------------------: |
+| 300 | – | – | – |
+| 500 | 7 hari | 5 | 10 |
+| 1,000 | 14 hari | 7 | 20 |
+| 2,000 | 30 hari | 10 | 40 |
+| 5,000 | 60 hari | 14 | 75 |
+| 10,000 | 120 hari | 21 | 150 |
 
-Semua pembatasan laju ditegakkan menggunakan penghitungan basis data (`Emails.countDocuments`) terhadap email yang dibuat sejak awal hari saat ini (tengah malam UTC). Ini berarti batas Anda direset setiap hari pada tengah malam UTC.
+Di atas 10,000 pesan per hari, tim kami meninjau akun Anda dan menaikkan sendiri ambang Anda, tanpa tindakan apa pun dari Anda. Jika Anda membutuhkan ambang yang lebih tinggi lebih cepat (misalnya, untuk memindahkan volume pengiriman yang sudah ada), [hubungi kami](/help). Ambang yang disetujui tim kami berlaku sebagai nilai minimum dan menempatkan Anda pada tingkat yang dicakupnya, dan reputasi Anda tetap dapat meningkatkannya hingga 10,000 pesan per hari.
 
-Jika Anda membutuhkan batas yang lebih tinggi, silakan [contact us](https://forwardemail.net/help). Sebagian besar permintaan dipenuhi dalam 1-2 jam.
+**Pola pengiriman yang tidak biasa:**
+
+Kami memperlambat pengiriman dengan kesalahan `421` ketika aktivitas Anda terlihat tidak biasa, pada ambang berapa pun. Ini melindungi antrean dan reputasi IP kami jika seseorang menyusupi atau menyalahgunakan sebuah akun, termasuk akun yang sudah ada selama bertahun-tahun atau yang sebelumnya tidak aktif.
+
+* **Lonjakan mendadak**: dalam sehari, Anda dapat mengirim hingga 2 kali volume normal terbaru Anda (hari tersibuk Anda dalam 45 hari terakhir), atau ambang awal Anda (300 pesan, atau 900 pada paket Team dan pada domain paket Team) atau ambang yang disetujui, mana saja yang lebih tinggi. Kami memperbarui volume normal Anda setiap hari dari pengiriman terbaru Anda, sehingga pertumbuhan yang stabil tidak terpengaruh, dan pengirim baru naik bertahap mulai dari ambang awal mereka.
+* **Penerima**: sebuah pesan dapat memiliki banyak penerima, sehingga di seluruh pesan Anda dalam sehari Anda dapat menjangkau hingga 2 kali jatah hari ini dalam jumlah penerima, dan pengirim dari satu akun bersama-sama hingga 2 kali ambang akun. Kami menolak satu pesan dengan lebih banyak penerima dari itu dengan kesalahan `550`.
+* **Ledakan pengiriman**: dalam satu jam mana pun, Anda dapat mengirim hingga seperempat jatah hari ini atau 2 kali jam tersibuk Anda dalam 45 hari terakhir (tetapi tidak lebih dari setengah jatah hari ini), mana saja yang lebih tinggi, dan setidaknya ambang awal Anda atau ambang yang disetujui. Pola yang teratur, seperti newsletter mingguan, adalah bagian dari volume normal Anda.
+* **Pentalan**: jika penerima memantulkan atau menolak 10% atau lebih pesan Anda dari 6 jam terakhir (dengan setidaknya 50 pesan, dan tidak termasuk penolakan terhadap alamat IP bersama kami), pesan baru menunggu hingga tingkat pentalan Anda pulih.
+* **Antrean menumpuk**: jika terlalu banyak pesan Anda dari 24 jam terakhir masih menunggu di antrean (10% dari jatah hari ini, setidaknya ambang awal Anda), pesan baru menunggu hingga antrean terkejar. Pesan terjadwal, pesan yang kami coba ulang setelah penerima menundanya, dan pesan yang menunggu persetujuan tidak dihitung, dan antrean yang menumpuk tidak dihitung melawan reputasi Anda.
+* **Pesan terjadwal**: Anda dapat menjadwalkan pesan hingga 27 hari ke depan, dan memiliki hingga jatah satu hari pesan terjadwal sekaligus.
+
+Perlambatan berakhir setelah aktivitas Anda kembali normal, dan hari dengan perlambatan tidak dihitung sebagai hari pengiriman bersih. Klien email mencoba ulang pesan yang ditunda dengan sendirinya, dan permintaan API mendapat kesalahan `429`, jadi coba ulang permintaan tersebut nanti.
+
+Setelah Anda mencapai ambang untuk hari tersebut, kami menolak pesan berikutnya dengan kesalahan `421` (yang berarti "coba lagi nanti") hingga ambang Anda direset pada tengah malam UTC. [Perlindungan penyalahgunaan](#why-was-my-outbound-smtp-suspended) kami terhadap spam dan virus berlaku pada ambang berapa pun.
+
+Anda dapat melihat berapa banyak pesan yang Anda kirim hari ini dan ambang Anda saat ini di [Akun Saya → Email](/my-account/emails), atau melalui [API](/email-api#get-outbound-smtp-email-limit).
+
+**Cara ambang diterapkan:**
+
+| Level | Cakupan | Ambang default | Deskripsi |
+| :--------- | :----------------------------------------- | :-------------------------: | :------------------------------------------------------------------------ |
+| Per alias | Alias individual | Tidak ada (menggunakan batas domain) | Opsional. Kami memeriksa `smtp_limit` kustom sebuah alias terlebih dahulu, jika ada. |
+| Per akun | Semua email yang dikirim dalam sehari dari domain-domain yang diadmini sebuah akun | Berbasis reputasi (300+/hari, 900+ pada Team) | Ambang Anda berlaku untuk seluruh akun, sehingga menambah domain atau anggota tidak melipatgandakannya. |
+| Per domain | Semua email yang dikirim dari sebuah domain dalam sehari | Naik bertahap dalam ambang akun (300+/hari, 900+ pada Team) | Menghitung semua email keluar dari alias-alias di domain tersebut. |
+| Per pengguna | Semua email yang dikirim oleh sebuah akun pengguna dalam sehari | Berbasis reputasi (300+/hari, 900+ pada Team) | Menghapus dan membuat ulang alias atau domain tidak meresetnya. |
+
+* **Domain paket Team**: ambang domain adalah ambang tertinggi di antara anggota admin berbayarnya. Misalnya, jika satu admin memiliki ambang 1,000 dan admin lain 5,000, maka ambang domain adalah 5,000. Pengirim pada paket Team dimulai dari 900 pesan per hari, bukan 300.
+* **Berlaku untuk seluruh akun**: akun sebuah domain adalah admin berbayarnya dengan ambang tertinggi. Semua email yang dikirim dari domain-domain yang diadmini akun tersebut dihitung dalam satu ambang itu, siapa pun pengirimnya (termasuk anggota), sehingga menambah domain atau anggota tidak menambahnya.
+* **Domain baru naik bertahap**: dalam ambang akun, sebuah domain dapat mengirim hingga 2 kali hari tersibuknya dalam email terkirim selama 45 hari terakhir, dan setidaknya ambang awalnya (300 pesan, atau 900 pada paket Team) atau ambang yang disetujui. Domain baru pada akun yang sudah mapan dimulai dari ambang awalnya dan meningkat seiring kami mengirimkan emailnya.
+* **Bounce dan balasan otomatis**: notifikasi bounce dan pesan vacation responder (balasan otomatis) yang kami kirimkan atas nama Anda tidak dihitung dalam ambang Anda. Kami mengirim hingga 300 balasan otomatis per pengguna per hari (lebih sedikit jika kami membatasi ambang Anda di bawah itu) dan paling banyak 20 per alamat penerima per hari di seluruh pengguna kami, dan hanya kepada pengirim yang lolos autentikasi (lihat [penjawab liburan](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Kami membatasi notifikasi bounce ke alamat pengembalian di luar domain tempat Anda mengirim (atau domain lain yang Anda admini) pada jumlah tersebut atau 15% dari ambang harian Anda, mana saja yang lebih tinggi, dan notifikasi tersebut hanya menyertakan header pengenal pesan asli (seperti `From`, `To`, dan `Subject`).
+* **Enhanced Protection dan paket lainnya**: ambang domain adalah ambang milik pengguna pengirim itu sendiri.
+* **Penggantian per alias**: administrator domain dapat menetapkan `smtp_limit` kustom pada alias individual. Kami memeriksanya terlebih dahulu (sebelum ambang domain dan pengguna), sehingga Anda dapat membatasi alias tertentu ke volume pengiriman yang lebih rendah.
+* **Pengaturan default domain untuk alias baru**: administrator domain dapat menetapkan `alias_default_smtp_limit` pada domain (dengan API atau Pengaturan Lanjutan di dasbor). Alias baru pada domain tersebut lalu mewarisi nilai ini sebagai `smtp_limit` mereka. Nilai ini tidak dapat melebihi ambang domain saat ini, dan alias yang sudah ada mempertahankan nilainya sendiri. Atur ke `0` untuk mematikannya.
 
 ### Apakah saya perlu persetujuan untuk mengaktifkan SMTP {#do-i-need-approval-to-enable-smtp}
 
 Ya, harap dicatat bahwa untuk menjaga reputasi IP dan memastikan keterkiriman, Forward Email memiliki proses tinjauan manual berdasarkan domain untuk persetujuan SMTP keluar. Kirim email ke <support@forwardemail.net> atau buka [permintaan bantuan](https://forwardemail.net/help) untuk persetujuan. Biasanya ini memakan waktu kurang dari 24 jam, dengan sebagian besar permintaan diproses dalam 1-2 jam. Dalam waktu dekat kami berencana membuat proses ini instan dengan kontrol spam tambahan dan pemberitahuan. Proses ini memastikan email Anda sampai ke kotak masuk dan pesan Anda tidak ditandai sebagai spam.
+
+Setelah disetujui, SMTP keluar tidak terbatas dan ambang harian Anda meningkat seiring [reputasi pengirim](#what-are-your-outbound-smtp-limits) Anda.
+
+### Informasi apa yang Anda perlukan untuk menyetujui atau memulihkan SMTP keluar saya {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+Saat Anda meminta persetujuan SMTP keluar (atau meminta kami memulihkannya setelah [penangguhan](#why-was-my-outbound-smtp-suspended)), siapkan hal-hal berikut:
+
+* Konfirmasi bahwa Anda telah membaca dan menyetujui [ketentuan](/terms) kami, yang secara khusus melarang penggunaan layanan untuk apa pun yang tercantum dalam daftar [Bisnis Terlarang Stripe](https://stripe.com/legal/restricted-businesses) atau [Aktivitas Terlarang PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).
+* Untuk apa Anda berencana menggunakan SMTP keluar.
+* Tautan ke situs web Anda, informasi bisnis, atau profil (misalnya LinkedIn, GitHub) yang memungkinkan kami memverifikasi bahwa Anda adalah pengirim yang nyata dan sah — domain yang mengarah ke situs web kosong adalah alasan umum persetujuan tertunda.
+* Konfirmasi bahwa Anda tidak akan menggunakan layanan untuk spam atau pemasaran massal/tidak diminta.
+
+Informasi ini sama untuk kedua kasus, baik untuk persetujuan pertama kali maupun pemulihan domain setelah penangguhan.
+
+### Mengapa SMTP keluar saya ditangguhkan {#why-was-my-outbound-smtp-suspended}
+
+SMTP keluar yang sudah disetujui tetap dapat dijeda jika kami mendeteksi pola penyalahgunaan. Hal ini terpisah dari [proses persetujuan](#do-i-need-approval-to-enable-smtp) di atas dan dari [ambang keluar berbasis reputasi](#what-are-your-outbound-smtp-limits) kami. Penjedaan ini dipicu ketika sumber tepercaya (misalnya penyedia kotak surat besar) melaporkan email keluar Anda sebagai virus atau spam.
+
+Ada dua tahap:
+
+1. **Satu kali deteksi** akan mengirimkan pemberitahuan "Message prevented" kepada Anda untuk pesan tersebut — hanya bersifat informasi, dan antrean keluar Anda tetap berjalan.
+2. **Beberapa deteksi dalam rentang waktu bergulir yang singkat** melewati ambang deteksi penyalahgunaan kami dan memicu pemberitahuan lengkap "SMTP keluar ditangguhkan". Pada saat itu, seluruh antrean SMTP keluar Anda dijeda — tidak ada pesan keluar lebih lanjut yang dicoba untuk domain tersebut hingga masalahnya terselesaikan.
+
+Setiap pemberitahuan mencantumkan pesan spesifik yang ditandai (`MAIL FROM`, `RCPT TO`, `Message-ID`, subjek, dan tanggal), sumber tepercaya dan kategori konten yang menandainya, berapa banyak deteksi yang Anda miliki dibandingkan ambang, berapa banyak penerima unik dan sumber tepercaya yang terlibat, serta kode status dan respons SMTP.
+
+Jika Anda menerima salah satu pemberitahuan ini, silakan hubungi kami di <support@forwardemail.net> atau buka [permintaan bantuan](https://forwardemail.net/help) — penangguhan tidak dicabut secara otomatis, jadi Anda perlu menghubungi kami untuk menyelesaikannya.
+
+### Mengapa domain yang baru didaftarkan atau baru kedaluwarsa memerlukan paket berbayar {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+Saat Anda menambahkan domain (dan secara berkala untuk domain pada paket gratis), kami menjalankan pencarian WHOIS/RDAP terhadap domain tersebut. Jika domain **dibuat dalam 90 hari terakhir**, **kedaluwarsa dalam 90 hari terakhir**, atau saat ini berada dalam status **transfer, pembaruan, atau penghapusan tertunda** di registrarnya, kami mewajibkan domain tersebut menggunakan paket berbayar sebelum Anda dapat mengirim atau menerima email dengannya.
+
+Ini adalah langkah pencegahan penyalahgunaan, bukan penilaian terhadap Anda secara pribadi — registrar besar termasuk GoDaddy, Namecheap, dan Hostgator sebelumnya pernah memblokir infrastruktur kami sepenuhnya karena pola penyalahgunaan yang melibatkan pengambilalihan domain yang baru kedaluwarsa dan domain baru yang didaftarkan secara curang. Mewajibkan paket berbayar untuk domain-domain ini memungkinkan kami tetap menawarkan paket gratis tanpa kehilangan kepercayaan registrar.
+
+Hasil WHOIS/RDAP disimpan dalam cache selama 24 jam, sehingga domain yang baru saja melewati batas 90 hari mungkin memerlukan waktu hingga satu hari untuk tercermin. Untuk menggunakan domain segera, tingkatkan ke paket berbayar (mulai dari $3/bulan untuk domain, alias, dan SMTP keluar berbasis reputasi tanpa batas).
 
 ### Apa pengaturan konfigurasi server SMTP Anda {#what-are-your-smtp-server-configuration-settings}
 
@@ -5294,6 +5374,8 @@ Pengirim yang terdeteksi mengirim spam atau konten virus akan ditambahkan ke den
 
 ### Apakah Anda memiliki pembatasan laju {#do-you-have-rate-limiting}
 
+Bagian ini membahas email masuk. Untuk pengiriman, lihat [Apa batasan SMTP keluar Anda](#what-are-your-outbound-smtp-limits).
+
 Pembatasan laju pengirim dilakukan berdasarkan domain root yang diurai dari pencarian PTR terbalik pada alamat IP pengirim – atau jika itu tidak menghasilkan hasil, maka hanya menggunakan alamat IP pengirim. Perlu dicatat bahwa kami menyebut ini sebagai `Sender` di bawah ini.
 
 Server MX kami memiliki batas harian untuk email masuk yang diterima untuk [penyimpanan IMAP terenkripsi](/blog/docs/best-quantum-safe-encrypted-email-service):
@@ -5339,6 +5421,8 @@ Batas harian adalah satu anggaran bersama di semua protokol — baik Anda mengun
 Batas-batas ini per akun pengguna (bukan per alias atau domain) dan direset setiap hari.  Ini berarti membuat alias tambahan tidak meningkatkan kuota bandwidth Anda.  Jika Redis tidak tersedia, pembatasan laju dilewati sepenuhnya (fail-open) sehingga layanan Anda tidak pernah terganggu.
 
 Jika Anda memerlukan batas yang lebih tinggi untuk kasus penggunaan tertentu (misalnya migrasi arsip yang sangat besar), silakan [hubungi kami](https://forwardemail.net/help).
+
+Batasan ini mencakup data yang ditransfer. [Ambang keluar berbasis reputasi](#what-are-your-outbound-smtp-limits) kami mencakup jumlah pesan yang dapat Anda kirim.
 
 ### Bagaimana Anda melindungi dari backscatter {#how-do-you-protect-against-backscatter}
 
@@ -5765,13 +5849,9 @@ Kami menggunakan verifikasi MX dan <strong class="notranslate">TXT</strong> reco
 
 ### Bagaimana cara meningkatkan penyimpanan saya atau batas pengiriman SMTP keluar {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Buka <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Akun Saya → Penagihan</a> dan gulir ke bagian **Add-on**, yang memiliki dua formulir permintaan:
+**Penyimpanan**: buka <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Akun Saya → Penagihan</a> dan gulir ke bagian **Add-on**. Pilih jumlah untuk ditambahkan (+10, +20, +30, +40, atau +50 GB), atau pilih "Other" untuk meminta jumlah khusus. Mengirim formulir meneruskan permintaan Anda kepada tim kami untuk ditinjau dan belum membebankan biaya kepada Anda. Setelah kami menyetujuinya, kami mengirim email berisi tautan pembayaran yang aman untuk menyelesaikan peningkatan. Anda dapat memiliki satu permintaan penyimpanan yang tertunda pada satu waktu, dan Anda tidak dapat mengirim permintaan lain dalam 3 hari sejak permintaan sebelumnya.
 
-* **Peningkatan Penyimpanan** — pilih jumlah untuk ditambahkan (+10, +20, +30, +40, atau +50 GB), atau pilih "Other" untuk meminta jumlah khusus.
-* **Peningkatan Batas SMTP Keluar** — pilih jumlah untuk ditambahkan (+1000, +2000, atau +3000 email per hari), atau pilih "Other" untuk meminta jumlah khusus.
-
-Mengirim salah satu formulir akan mengirim permintaan Anda kepada tim kami untuk peninjauan — ini tidak langsung membebankan biaya kepada Anda. Setelah disetujui, kami akan mengirim email berisi tautan pembayaran yang aman untuk menyelesaikan peningkatan. Anda dapat memiliki satu permintaan tertunda per tipe (penyimpanan atau SMTP) pada satu waktu; mengajukan lagi dalam 3 hari sejak permintaan sebelumnya untuk tipe yang sama tidak diizinkan hingga jangka waktu tersebut berlalu.
-
+**SMTP keluar**: tidak ada yang perlu dibeli. SMTP keluar tidak terbatas dan ambang harian Anda meningkat seiring [reputasi pengirim](#what-are-your-outbound-smtp-limits) Anda. <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Akun Saya → Penagihan</a> dan <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Akun Saya → Email</a> menampilkan ambang Anda saat ini, tingkat reputasi Anda, dan persyaratan untuk tingkat berikutnya.
 
 ### Apa saja yang termasuk dalam Enterprise License {#what-is-included-in-the-enterprise-license}
 
@@ -5893,6 +5973,12 @@ Ya, namun pengirim yang "relatif tidak dikenal" dibatasi hingga 100 koneksi per 
 Dengan "relatif tidak dikenal", kami maksudkan pengirim yang tidak muncul dalam [daftar putih](#do-you-have-an-allowlist).
 
 Jika batas ini terlampaui, kami mengirim kode respons 421 yang memberitahu server email pengirim untuk mencoba lagi nanti.
+
+### Bisakah saya mengirim email tanpa batas dengan ini {#can-i-send-unlimited-emails-with-this}
+
+Ya. SMTP keluar dan API email kami tidak terbatas pada semua paket berbayar (mulai $3/mo). Anda mendapatkan ambang harian sebagai pengganti batas bulanan yang tetap, dan ambang ini meningkat selama Anda terus membayar dan membangun riwayat pengiriman yang bersih: dari 300 pesan per hari untuk pengirim baru (900 pada paket Team) hingga 10,000 per hari, dan lebih dari itu setelah tim kami meninjau akun Anda.
+
+Hanya email yang terkirim ke penerima nyata di luar domain Anda sendiri yang membangun reputasi. Untuk melindungi keterkiriman, tingkat pentalan yang tinggi menurunkan ambang Anda, laporan spam dan virus dari penyedia kotak surat besar meresetnya, dan kami memperlambat pola yang tidak biasa (seperti lonjakan tiba-tiba dari akun yang tidak aktif). Lihat [Apa batasan SMTP keluar Anda](#what-are-your-outbound-smtp-limits) untuk detailnya, dan ambang Anda saat ini di [Akun Saya → Email](/my-account/emails).
 
 ### Apakah Anda menawarkan domain tanpa batas dengan satu harga {#do-you-offer-unlimited-domains-for-one-price}
 

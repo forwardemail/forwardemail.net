@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True đối với thông báo trạng thái gửi (chẳng hạn thư bị trả lại) về một email bạn đã gửi"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Số lượng email hiện tại đã gửi"
+            "description": "Số tin nhắn SMTP gửi đi bạn đã gửi hôm nay (UTC), không tính thông báo thư bị trả lại và thư trả lời tự động"
           },
           "limit": {
             "type": "integer",
-            "description": "Số lượng email tối đa được phép"
+            "description": "Ngưỡng dựa trên uy tín của hôm nay (tối đa bằng phần còn lại hôm nay của ngưỡng tên miền và ngưỡng tài khoản; 0 khi bạn không thể gửi từ tên miền)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Nhận giới hạn email SMTP gửi đi",
-        "description": "Đây là điểm cuối đơn giản trả về một đối tượng JSON chứa `count` và `limit` cho số lượng tin nhắn SMTP gửi đi hàng ngày trên mỗi tài khoản.",
+        "description": "Trả về một đối tượng JSON chứa `count` tin nhắn SMTP gửi đi bạn đã gửi hôm nay và `limit` của hôm nay. SMTP gửi đi là không giới hạn, và `limit` là ngưỡng dựa trên uy tín hiện tại của bạn (xem <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), ngưỡng này tăng theo thời gian. Thông báo thư bị trả lại và thư trả lời tự động không được tính.",
         "tags": [
           "Email"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Tạo lời mời tên miền",
-        "description": ">[!IMPORTANT]\n>Nếu người dùng được mời đã là thành viên được chấp nhận của bất kỳ miền nào khác mà quản trị viên mời họ là thành viên, thì lời mời sẽ tự động được chấp nhận và không gửi email.",
+        "description": ">[!IMPORTANT]\n>Nếu người dùng được mời đã là thành viên được chấp nhận của bất kỳ miền nào khác mà quản trị viên mời họ là thành viên, thì lời mời sẽ tự động được chấp nhận và không gửi email (chỉ áp dụng cho `group` là `user`: chúng tôi gửi lời mời với vai trò `admin` qua email để người được mời chấp nhận, và không đưa liên kết của nó vào danh sách lời mời đang chờ của miền).",
         "tags": [
           "Lời mời"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Cập nhật thành viên miền",
-        "description": "Cập nhật thành viên miền.",
+        "description": "Cập nhật thành viên miền.\n\n>[!IMPORTANT]\n>Cập nhật một thành viên khác thành `admin` sẽ gửi cho họ lời mời làm quản trị viên qua email, và họ vẫn là `user` cho đến khi chấp nhận (danh sách lời mời đang chờ của miền liệt kê lời mời này). Cập nhật họ trở lại thành `user` hoặc xóa họ sẽ thu hồi lời mời.",
         "tags": [
           "Thành viên"
         ],

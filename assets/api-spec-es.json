@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True para una notificación de estado de entrega (como un rebote) sobre un correo electrónico que usted envió"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Recuento actual de correos electrónicos enviados"
+            "description": "Mensajes SMTP salientes que envió hoy (UTC), sin contar las notificaciones de rebote ni las respuestas automáticas"
           },
           "limit": {
             "type": "integer",
-            "description": "Número máximo de correos electrónicos permitidos"
+            "description": "Umbral basado en la reputación para hoy (como máximo lo que queda hoy de los umbrales del dominio y de la cuenta; 0 cuando no puede enviar desde el dominio)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Obtener el límite de correo electrónico SMTP saliente",
-        "description": "Este es un punto final simple que devuelve un objeto JSON que contiene el `count` y el `limit` para la cantidad de mensajes SMTP salientes diarios por cuenta.",
+        "description": "Devuelve un objeto JSON con el `count` de mensajes SMTP salientes que envió hoy y el `limit` de hoy. El SMTP saliente es ilimitado, y el `limit` es su umbral actual basado en la reputación (consulte <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), que crece con el tiempo. Las notificaciones de rebote y las respuestas automáticas no cuentan.",
         "tags": [
           "Correos electrónicos"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Crear invitación de dominio",
-        "description": ">[!IMPORTANT]\n>Si el usuario invitado ya es miembro aceptado de algún otro dominio del que es miembro el administrador que lo invita, se aceptará automáticamente la invitación y no se enviará un correo electrónico.",
+        "description": ">[!IMPORTANT]\n>Si el usuario invitado ya es miembro aceptado de algún otro dominio del que es miembro el administrador que lo invita, se aceptará automáticamente la invitación y no se enviará un correo electrónico (solo para un `group` de `user`: enviamos por correo electrónico una invitación como `admin` para que el invitado la acepte, y dejamos su enlace fuera de las invitaciones pendientes del dominio).",
         "tags": [
           "Invitaciones"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Actualizar miembro del dominio",
-        "description": "Actualizar un miembro del dominio.",
+        "description": "Actualizar un miembro del dominio.\n\n>[!IMPORTANT]\n>Actualizar a otro miembro a `admin` le envía en su lugar una invitación como administrador por correo electrónico, y sigue siendo `user` hasta que la acepte (las invitaciones pendientes del dominio la incluyen). Volver a actualizarlo a `user` o eliminarlo la retira.",
         "tags": [
           "Miembros"
         ],

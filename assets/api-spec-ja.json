@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "送信したメールに関する配信ステータス通知（バウンスなど）の場合は true"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "現在送信されたメールの数"
+            "description": "本日（UTC）送信した SMTP 送信メッセージ数（バウンス通知と自動返信は含まない）"
           },
           "limit": {
             "type": "integer",
-            "description": "許可されるメールの最大数"
+            "description": "本日のレピュテーションに基づくしきい値（本日のドメインとアカウントのしきい値の残りのうち小さい方以下。ドメインから送信できない場合は 0）"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "送信SMTPメールの制限を取得する",
-        "description": "これは、アカウントごとに毎日の SMTP 送信メッセージの数の `count` と `limit` を含む JSON オブジェクトを返すシンプルなエンドポイントです。",
+        "description": "本日送信した SMTP 送信メッセージの `count` と本日の `limit` を含む JSON オブジェクトを返します。SMTP 送信は無制限で、`limit` は現在のレピュテーションに基づくしきい値であり（<https://forwardemail.net/faq#what-are-your-outbound-smtp-limits> を参照）、時間の経過とともに増加します。バウンス通知と自動返信はカウントされません。",
         "tags": [
           "メール"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "ドメイン招待を作成",
-        "description": ">[!IMPORTANT]\n>招待されたユーザーが、招待元の管理者が所属する他のドメインで既に承認済みのメンバーである場合、招待は自動的に承認され、メールは送信されません。",
+        "description": ">[!IMPORTANT]\n>招待されたユーザーが、招待元の管理者が所属する他のドメインで既に承認済みのメンバーである場合、招待は自動的に承認され、メールは送信されません（`group` が `user` の場合のみ。`admin` としての招待は招待者が承認できるよう当社がメールで送信し、そのリンクはドメインの保留中の招待には含めません）。",
         "tags": [
           "招待"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "ドメインメンバーの更新",
-        "description": "ドメイン メンバーを更新します。",
+        "description": "ドメイン メンバーを更新します。\n\n>[!IMPORTANT]\n>他のメンバーを `admin` に更新すると、代わりに管理者としての招待がメールで送信され、承認するまでは `user` のままです（ドメインの保留中の招待に表示されます）。`user` に戻すか、メンバーを削除すると招待は取り消されます。",
         "tags": [
           "メンバー"
         ],

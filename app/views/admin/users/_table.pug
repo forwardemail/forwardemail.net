@@ -24,7 +24,9 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('max_quota_per_alias', 'Max Quota', '#table-users')
         th(scope="col")
-          +sortHeader('smtp_limit', 'SMTP Limit', '#table-users')
+          +sortHeader('smtp_limit', 'SMTP Limit (Manual)', '#table-users')
+        th(scope="col")
+          +sortHeader('smtp_reputation_tier', 'SMTP Reputation', '#table-users')
         th(scope="col")
           +sortHeader('created_at', 'Created', '#table-users')
         th(scope="col")
@@ -37,7 +39,7 @@ include ../../_pagination
         th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if users.length === 0
-        td.alert.alert-info(colspan=passport && passport.otp ? "14" : "13")= t("No users exist for that search.")
+        td.alert.alert-info(colspan=passport && passport.otp ? "15" : "14")= t("No users exist for that search.")
       else
         each user in users
           tr
@@ -105,8 +107,8 @@ include ../../_pagination
                 .input-group
                   input.form-control(
                     type="number",
-                    min=300,
-                    step=100,
+                    min=10,
+                    step=1,
                     name="smtp_limit",
                     value=user.smtp_limit
                   )
@@ -116,6 +118,33 @@ include ../../_pagination
                       data-toggle="tooltip",
                       data-title=t("Update")
                     ): i.fa.fa-fw.fa-save
+            td.align-middle.text-center
+              form.ajax-form.confirm-prompt.d-inline-block(
+                action=l(`/admin/users/${user.id}`),
+                method="PUT"
+              )
+                input(type="hidden", name="_method", value="PUT")
+                .input-group
+                  select.form-control(name="smtp_reputation_tier")
+                    each tier, index in config.smtpReputationTiers
+                      option(
+                        value=index,
+                        selected=index === (user.smtp_reputation_tier || 0)
+                      )= `${tier.limit.toLocaleString("en")}/day`
+                  .input-group-append
+                    button.btn.btn-sm.btn-dark(
+                      type="submit",
+                      data-toggle="tooltip",
+                      data-title=t("Update")
+                    ): i.fa.fa-fw.fa-save
+                small.d-block.text-muted.mt-1
+                  = `${user.smtp_reputation_clean_days || 0} clean day(s)`
+                  if user.smtp_reputation_hold_until && new Date(user.smtp_reputation_hold_until).getTime() > Date.now()
+                    br
+                    span.text-danger= `on hold until ${dayjs(user.smtp_reputation_hold_until).format("M/D/YY")}`
+                  if typeof user.smtp_effective_limit === "number"
+                    br
+                    = `effective: ${user.smtp_effective_limit.toLocaleString("en")}/day`
             td.align-middle.dayjs(
               data-time=new Date(user.created_at).getTime()
             )= dayjs(user.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")

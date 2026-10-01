@@ -466,7 +466,7 @@ Veuillez vous assurer d’avoir suivi les instructions de configuration pour vot
 Ces instructions se trouvent à [Mon Compte → Domaines → Paramètres → Configuration SMTP sortant](/my-account/domains). Vous devez vous assurer de la configuration de DKIM, Return-Path, et DMARC pour l’envoi SMTP sortant avec votre domaine.
 ### Obtenir la limite d'emails SMTP sortants {#get-outbound-smtp-email-limit}
 
-Ceci est un point de terminaison simple qui renvoie un objet JSON contenant le `count` et la `limit` pour le nombre de messages SMTP sortants quotidiens par compte.
+Renvoie un objet JSON avec le `count` des messages SMTP sortants que vous avez envoyés aujourd'hui et la `limit` du jour. Le SMTP sortant est illimité, et la `limit` correspond à votre [seuil actuel basé sur la réputation](/faq#what-are-your-outbound-smtp-limits), qui augmente avec le temps.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Ce point de terminaison API encodera automatiquement les emojis pour vous s'ils 
 | `priority`        | Non         | Chaîne           | Niveau de priorité pour l'email (peut être `"high"`, `"normal"` (par défaut), ou `"low"`). Notez qu'une valeur `"normal"` ne définit pas d'en-tête de priorité (c'est le comportement par défaut). Si une valeur `"high"` ou `"low"` est définie, alors les en-têtes `X-Priority`, `X-MSMail-Priority` et `Importance` [seront définis en conséquence](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`         | Non         | Objet ou Tableau | Un objet ou un tableau de champs d'en-tête supplémentaires à définir (voir [les en-têtes personnalisés Nodemailer](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                            |
 | `messageId`       | Non         | Chaîne           | Une valeur Message-ID optionnelle pour l'en-tête "Message-ID" (une valeur par défaut sera automatiquement créée si non définie – notez que la valeur doit [respecter la spécification RFC2822](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                             |
-| `date`            | Non         | Chaîne ou Date   | Une valeur Date optionnelle qui sera utilisée si l'en-tête Date est manquant après analyse, sinon la chaîne UTC actuelle sera utilisée si non définie. L'en-tête date ne peut pas être plus de 30 jours en avance par rapport à l'heure actuelle.                                                                                                                                                                                                             |
+| `date`            | Non         | Chaîne ou Date   | Une valeur Date optionnelle qui sera utilisée si l'en-tête Date est manquant après analyse, sinon la chaîne UTC actuelle sera utilisée si non définie. L'en-tête date ne peut pas être plus de 27 jours en avance par rapport à l'heure actuelle.                                                                                                                                                                                                             |
 | `list`            | Non         | Objet            | Un objet optionnel des en-têtes `List-*` (voir [les en-têtes de liste Nodemailer](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                |
 > Exemple de requête (jeton API) :
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Si l'utilisateur invité est déjà un membre accepté d'autres domaines dont l'administrateur qui l'invite est membre, alors l'invitation sera automatiquement acceptée et aucun email ne sera envoyé.
+> Si vous invitez en tant que `"user"` une personne qui est déjà membre accepté d'un autre domaine dont vous êtes membre, nous acceptons l'invitation pour elle et n'envoyons pas d'email. Nous envoyons par email une invitation en tant que `"admin"` pour que la personne invitée l'accepte, et nous n'incluons pas son lien dans les invitations en attente du domaine.
 
 ### Supprimer une invitation de domaine {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Paramètre du corps | Obligatoire | Type                | Description                                                                                  |
 | ------------------ | ----------- | ------------------- | -------------------------------------------------------------------------------------------- |
 | `group`            | Oui         | Chaîne (énumérable) | Groupe auquel mettre à jour l'utilisateur dans l'appartenance au domaine (peut être `"admin"` ou `"user"`) |
+
+> \[!IMPORTANT]
+> Mettre à jour un autre membre en `"admin"` lui envoie à la place une invitation par email en tant qu'administrateur, et il reste `"user"` jusqu'à ce qu'il l'accepte (les invitations en attente du domaine l'affichent). Le remettre en `"user"` ou le retirer annule l'invitation.
 
 > Exemple de requête :
 

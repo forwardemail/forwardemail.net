@@ -466,7 +466,7 @@ Si prega di assicurarsi di aver seguito le istruzioni di configurazione per il p
 Queste istruzioni si trovano in [Il mio account → Domini → Impostazioni → Configurazione SMTP in uscita](/my-account/domains). Devi assicurarti della configurazione di DKIM, Return-Path e DMARC per l'invio SMTP in uscita con il tuo dominio.
 ### Ottieni limite email SMTP in uscita {#get-outbound-smtp-email-limit}
 
-Questo è un endpoint semplice che restituisce un oggetto JSON contenente il `count` e il `limit` per il numero di messaggi SMTP in uscita giornalieri su base per account.
+Restituisce un oggetto JSON con il `count` dei messaggi SMTP in uscita che hai inviato oggi e il `limit` di oggi. L'SMTP in uscita è illimitato, e il `limit` è la tua attuale [soglia basata sulla reputazione](/faq#what-are-your-outbound-smtp-limits), che cresce nel tempo.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Questo endpoint API codificherà automaticamente le emoji per te se sono present
 | `priority`       | No           | Stringa          | Livello di priorità per l'email (può essere `"high"`, `"normal"` (default), o `"low"`). Nota che un valore `"normal"` non imposta un header di priorità (questo è il comportamento predefinito). Se viene impostato un valore `"high"` o `"low"`, allora gli header `X-Priority`, `X-MSMail-Priority` e `Importance` [verranno impostati di conseguenza](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | No           | Oggetto o Array  | Un Oggetto o un Array di campi header aggiuntivi da impostare (vedi [header personalizzati di Nodemailer](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                      |
 | `messageId`      | No           | Stringa          | Un valore opzionale Message-ID per l'header "Message-ID" (verrà creato automaticamente un valore di default se non impostato – nota che il valore dovrebbe [aderire alla specifica RFC2822](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                               |
-| `date`           | No           | Stringa o Data   | Un valore Date opzionale che verrà usato se l'header Date manca dopo il parsing, altrimenti verrà usata la stringa UTC corrente se non impostato. L'header date non può essere più di 30 giorni avanti rispetto all'ora corrente.                                                                                                                                                                                                                                |
+| `date`           | No           | Stringa o Data   | Un valore Date opzionale che verrà usato se l'header Date manca dopo il parsing, altrimenti verrà usata la stringa UTC corrente se non impostato. L'header date non può essere più di 27 giorni avanti rispetto all'ora corrente.                                                                                                                                                                                                                                |
 | `list`           | No           | Oggetto          | Un Oggetto opzionale di header `List-*` (vedi [header lista di Nodemailer](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                        |
 > Richiesta di esempio (Token API):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Se l'utente invitato è già un membro accettato di altri domini di cui l'amministratore che lo invita è membro, allora l'invito sarà accettato automaticamente e non verrà inviata alcuna email.
+> Se inviti come `"user"` qualcuno che è già un membro accettato di un altro dominio di cui sei membro, accettiamo l'invito per lui e non inviamo alcuna email. Inviamo via email un invito come `"admin"` perché l'invitato lo accetti, e lasciamo il suo link fuori dagli inviti in sospeso del dominio.
 
 ### Rimuovi invito dominio {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Parametro nel corpo | Obbligatorio | Tipo                | Descrizione                                                                                  |
 | ------------------- | ------------ | ------------------- | -------------------------------------------------------------------------------------------- |
 | `group`             | Sì           | Stringa (enumerabile) | Gruppo a cui aggiornare l'utente nella membership del dominio (può essere `"admin"` o `"user"`) |
+
+> \[!IMPORTANT]
+> Aggiornare un altro membro a `"admin"` gli invia invece via email un invito come amministratore, e resta `"user"` finché non lo accetta (gli inviti in sospeso del dominio lo elencano). Riportarlo a `"user"` o rimuoverlo ritira l'invito.
 
 > Esempio di richiesta:
 

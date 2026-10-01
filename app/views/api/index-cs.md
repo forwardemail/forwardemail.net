@@ -466,7 +466,7 @@ Prosím ujistěte se, že jste dodrželi pokyny pro nastavení vaší domény.
 Tyto pokyny naleznete na [Můj účet → Domény → Nastavení → Konfigurace odchozího SMTP](/my-account/domains). Musíte zajistit nastavení DKIM, Return-Path a DMARC pro odesílání odchozího SMTP s vaší doménou.
 ### Získat limit odchozích SMTP emailů {#get-outbound-smtp-email-limit}
 
-Toto je jednoduchý endpoint, který vrací JSON objekt obsahující `count` a `limit` pro počet denních odchozích SMTP zpráv na základě jednotlivého účtu.
+Vrací objekt JSON s počtem (`count`) odchozích zpráv SMTP, které jste dnes odeslali, a dnešním limitem (`limit`). Odchozí SMTP je neomezené a `limit` je váš aktuální [práh založený na reputaci](/faq#what-are-your-outbound-smtp-limits), který s časem roste.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Tento API endpoint automaticky zakóduje emoji, pokud jsou nalezeny v hlavičká
 | `priority`       | Ne      | String           | Priorita emailu (může být `"high"`, `"normal"` (výchozí) nebo `"low"`). Hodnota `"normal"` nenastavuje hlavičku priority (to je výchozí chování). Pokud je nastavena hodnota `"high"` nebo `"low"`, hlavičky `X-Priority`, `X-MSMail-Priority` a `Importance` [budou nastaveny odpovídajícím způsobem](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | Ne      | Objekt nebo Pole  | Objekt nebo pole dalších hlaviček k nastavení (viz [vlastní hlavičky Nodemailer](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                                             |
 | `messageId`      | Ne      | String           | Volitelná hodnota Message-ID pro hlavičku "Message-ID" (výchozí hodnota bude automaticky vytvořena, pokud není nastavena – hodnota by měla [odpovídat specifikaci RFC2822](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                                |
-| `date`           | Ne      | String nebo Date | Volitelná hodnota data, která se použije, pokud po parsování chybí hlavička Date, jinak se použije aktuální UTC čas, pokud není nastavena. Hlavička data nesmí být více než 30 dní v budoucnosti oproti aktuálnímu času.                                                                                                                                                                                                                                        |
+| `date`           | Ne      | String nebo Date | Volitelná hodnota data, která se použije, pokud po parsování chybí hlavička Date, jinak se použije aktuální UTC čas, pokud není nastavena. Hlavička data nesmí být více než 27 dní v budoucnosti oproti aktuálnímu času.                                                                                                                                                                                                                                        |
 | `list`           | Ne      | Objekt           | Volitelný objekt hlaviček `List-*` (viz [listové hlavičky Nodemailer](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                           |
 > Příklad požadavku (API token):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Pokud uživatel, kterého zvete, je již přijatým členem jiné domény, jejímž je členem i administrátor, který ho zve, pozvánka bude automaticky přijata a email nebude odeslán.
+> Pokud pozvete jako `"user"` někoho, kdo je již přijatým členem jiné domény, jejímž jste členem i vy, pozvánku za něj přijmeme a email neodešleme. Pozvánku jako `"admin"` pošleme emailem, aby ji pozvaný přijal, a její odkaz do čekajících pozvánek domény nezařadíme.
 
 ### Odebrat pozvánku do domény {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Body Parameter | Povinné | Typ                 | Popis                                                                                      |
 | -------------- | ------- | ------------------- | ----------------------------------------------------------------------------------------- |
 | `group`        | Ano     | String (vyčíslitelné) | Skupina, do které bude uživatel aktualizován v rámci členství domény (může být `"admin"` nebo `"user"`) |
+
+> \[!IMPORTANT]
+> Změna jiného člena na `"admin"` mu místo toho pošle emailem pozvánku jako administrátor a zůstane `"user"`, dokud ji nepřijme (čekající pozvánky domény ji uvádějí). Změna zpět na `"user"` nebo jeho odebrání ji zruší.
 
 > Example Request:
 

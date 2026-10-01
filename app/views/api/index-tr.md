@@ -466,7 +466,7 @@ Lütfen alan adınız için kurulum talimatlarını takip ettiğinizden emin olu
 Bu talimatlar [Hesabım → Alan Adları → Ayarlar → Giden SMTP Yapılandırması](/my-account/domains) bölümünde bulunabilir. Giden SMTP ile alan adınızdan e-posta göndermek için DKIM, Return-Path ve DMARC yapılandırmalarını sağlamanız gerekmektedir.
 ### Giden SMTP e-posta limiti al {#get-outbound-smtp-email-limit}
 
-Bu, günlük SMTP giden mesaj sayısı için hesap bazında `count` ve `limit` içeren bir JSON nesnesi döndüren basit bir uç noktadır.
+Bugün gönderdiğiniz giden SMTP mesajlarının `count` değerini ve bugünkü `limit` değerini içeren bir JSON nesnesi döndürür. Giden SMTP sınırsızdır ve `limit`, zamanla artan mevcut [itibara dayalı eşiğinizdir](/faq#what-are-your-outbound-smtp-limits).
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Bu API uç noktası, başlıklarda emoji bulunursa bunları otomatik olarak kodl
 | `priority`        | Hayır   | String           | E-postanın öncelik seviyesi (ya `"high"`, `"normal"` (varsayılan) ya da `"low"` olabilir). `"normal"` değeri öncelik başlığı ayarlamaz (varsayılan davranış budur). `"high"` veya `"low"` ayarlanırsa, `X-Priority`, `X-MSMail-Priority` ve `Importance` başlıkları [uygun şekilde ayarlanır](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`         | Hayır   | Nesne veya Dizi   | Ek başlık alanları ayarlamak için Nesne veya Dizi (bakınız [Nodemailer'ın özel başlıkları](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                                  |
 | `messageId`       | Hayır   | String           | "Message-ID" başlığı için isteğe bağlı Message-ID değeri (ayarlanmazsa otomatik varsayılan oluşturulur – değerin [RFC2822 spesifikasyonuna uygun olması gerekir](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                                        |
-| `date`            | Hayır   | String veya Tarih | Tarih başlığı eksikse kullanılacak isteğe bağlı Tarih değeri, ayarlanmazsa geçerli UTC zamanı kullanılır. Tarih başlığı mevcut zamandan 30 günden fazla ileri olamaz.                                                                                                                                                                                                                                                                                          |
+| `date`            | Hayır   | String veya Tarih | Tarih başlığı eksikse kullanılacak isteğe bağlı Tarih değeri, ayarlanmazsa geçerli UTC zamanı kullanılır. Tarih başlığı mevcut zamandan 27 günden fazla ileri olamaz.                                                                                                                                                                                                                                                                                          |
 | `list`            | Hayır   | Nesne            | İsteğe bağlı `List-*` başlıkları nesnesi (bakınız [Nodemailer'ın liste başlıkları](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                               |
 > Örnek İstek (API Token):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Davet edilen kullanıcı, davet eden yöneticinin üye olduğu diğer herhangi bir alan adının zaten kabul edilmiş bir üyesiyse, davet otomatik olarak kabul edilir ve e-posta gönderilmez.
+> Üyesi olduğunuz başka bir alan adının zaten kabul edilmiş üyesi olan birini `"user"` olarak davet ederseniz, daveti onun adına kabul ederiz ve e-posta göndermeyiz. `"admin"` olarak yapılan bir daveti, davet edilenin kabul etmesi için e-postayla göndeririz ve bağlantısını alan adının bekleyen davetlerine eklemeyiz.
 
 ### Alan adı davetini kaldır {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Gövde Parametresi | Zorunlu | Tür                 | Açıklama                                                                                  |
 | ----------------- | ------- | ------------------- | ------------------------------------------------------------------------------------------ |
 | `group`           | Evet    | String (enumerable) | Kullanıcıyı alan adı üyeliğinde güncellemek için grup ( `"admin"` veya `"user"` olabilir)  |
+
+> \[!IMPORTANT]
+> Başka bir üyeyi `"admin"` olarak güncellemek, bunun yerine ona yönetici olarak bir davet e-postası gönderir ve üye daveti kabul edene kadar `"user"` olarak kalır (alan adının bekleyen davetleri onu listeler). Üyeyi yeniden `"user"` olarak güncellemek veya kaldırmak daveti geri çeker.
 
 > Örnek İstek:
 

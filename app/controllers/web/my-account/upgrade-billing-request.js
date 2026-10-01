@@ -13,7 +13,11 @@ const emailHelper = require('#helpers/email');
 async function upgradeBillingRequest(ctx) {
   const { kind, upgrade_option } = ctx.request.body;
 
-  const validKinds = ['storage_limit', 'smtp_limit'];
+  //
+  // NOTE: outbound SMTP is unlimited and reputation-based
+  //       (thresholds grow with reputation, so there is no SMTP upgrade)
+  //
+  const validKinds = ['storage_limit'];
   if (!kind || typeof kind !== 'string' || !validKinds.includes(kind))
     throw Boom.badRequest(ctx.translateError('INVALID_UPGRADE_KIND'));
 
@@ -21,13 +25,7 @@ async function upgradeBillingRequest(ctx) {
   // from and also validate against. Possible billing changes would remove
   // this need completely though.
   const validOptions = {
-    storage_limit: ['+10 GB', '+20 GB', '+30 GB', '+40 GB', '+50 GB', 'Other'],
-    smtp_limit: [
-      '+1000 emails daily',
-      '+2000 emails daily',
-      '+3000 emails daily',
-      'Other'
-    ]
+    storage_limit: ['+10 GB', '+20 GB', '+30 GB', '+40 GB', '+50 GB', 'Other']
   };
 
   if (
@@ -35,19 +33,12 @@ async function upgradeBillingRequest(ctx) {
     typeof upgrade_option !== 'string' ||
     !validOptions[kind].includes(upgrade_option)
   )
-    throw Boom.badRequest(
-      ctx.translateError(
-        kind === 'storage_limit'
-          ? 'INVALID_STORAGE_OPTION'
-          : 'INVALID_SMTP_OPTION'
-      )
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_STORAGE_OPTION'));
 
   const { user } = ctx.state;
   const currentQuota = user.max_quota_per_alias;
   const currentQuotaFormatted = bytes(currentQuota);
-  const kindLabel =
-    kind === 'storage_limit' ? ctx.translate('STORAGE') : ctx.translate('SMTP');
+  const kindLabel = ctx.translate('STORAGE');
   const subject = `${ctx.translate('UPGRADE_REQUEST')}: ${kindLabel} - ${
     user.email
   }`;

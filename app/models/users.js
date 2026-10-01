@@ -110,6 +110,25 @@ const omitExtraFields = [
   config.userFields.approvedDomains,
   config.userFields.isRemoved,
   config.userFields.smtpLimit,
+  config.userFields.smtpReputationTier,
+  config.userFields.smtpReputationCleanDays,
+  config.userFields.smtpReputationEvaluatedAt,
+  config.userFields.smtpReputationCeilingAlertedAt,
+  config.userFields.smtpReputationPaidSince,
+  config.userFields.smtpReputationPeak,
+  config.userFields.smtpReputationPeakDomains,
+  config.userFields.smtpReputationNextPeak,
+  config.userFields.smtpReputationHoldUntil,
+  config.userFields.smtpReputationHoldReason,
+  config.userFields.smtpReputationLendHoldUntil,
+  config.userFields.smtpReputationReports,
+  config.userFields.smtpReputationResetAt,
+  config.userFields.smtpReputationReviewedAt,
+  config.userFields.smtpBaselineDaily,
+  config.userFields.smtpBaselineAt,
+  config.userFields.smtpBaselineHourly,
+  config.userFields.smtpThrottledAt,
+  config.userFields.smtpThrottledDays,
 
   config.userFields.apiPastDueSentAt,
   config.userFields.apiRestrictedSentAt,
@@ -320,11 +339,137 @@ object[config.userFields.maxQuotaPerAlias] = {
   max: bytes('100GB')
 };
 
+//
+// Daily SMTP limit an admin set.
+// Values at or above the first reputation tier act as a floor
+// (the sender gets whichever is higher: this or their reputation threshold).
+// Values below the first reputation tier act as a restriction.
+// (see `helpers/get-user-smtp-limit.js`)
+//
 object[config.userFields.smtpLimit] = {
   type: Number,
   default: config.smtpLimitMessages,
   min: 10,
-  max: 100000
+  max: 10000000
+};
+
+//
+// Reputation-based outbound SMTP threshold
+// (updated daily by `jobs/update-smtp-reputation.js`)
+//
+// NOTE: these fields have no defaults on purpose, so saving a user loaded
+//       before the job first evaluated them cannot overwrite the job's values
+//
+object[config.userFields.smtpReputationTier] = {
+  type: Number,
+  min: 0
+};
+
+// consecutive clean sending days on the current tier
+object[config.userFields.smtpReputationCleanDays] = {
+  type: Number,
+  min: 0
+};
+
+// start of the last day evaluated (prevents double counting a day)
+object[config.userFields.smtpReputationEvaluatedAt] = Date;
+
+// last time admins were alerted that this sender reached the soft ceiling
+object[config.userFields.smtpReputationCeilingAlertedAt] = Date;
+
+// start of the user's current unbroken paid period (null if not paying)
+object[config.userFields.smtpReputationPaidSince] = Date;
+
+// busiest day in the utilization lookback, in qualifying recipients (unique,
+// delivered, outside the sender's own domains) as of the last evaluation
+object[config.userFields.smtpReputationPeak] = {
+  type: Number,
+  min: 0
+};
+
+// most distinct recipient domains on a day in the lookback
+object[config.userFields.smtpReputationPeakDomains] = {
+  type: Number,
+  min: 0
+};
+
+// busiest day in the lookback among the days with the recipient domains the
+// next tier requires (what moving up looks at, see
+// `helpers/update-smtp-reputation.js`)
+object[config.userFields.smtpReputationNextPeak] = {
+  type: Number,
+  min: 0
+};
+
+// moving up is paused until this time (after spam/virus reports or a severe
+// bounce rate)
+object[config.userFields.smtpReputationHoldUntil] = Date;
+
+// why moving up is paused: `reports` (spam/virus reports, a admin-approved
+// minimum does not apply meanwhile) or `bounces` (a severe bounce rate)
+object[config.userFields.smtpReputationHoldReason] = {
+  type: String,
+  enum: ['reports', 'bounces', null]
+};
+
+// until this time this user does not lend their threshold to Team plan
+// domains they are an admin of (after spam/virus reports about members who
+// borrowed it reached the reset rate)
+object[config.userFields.smtpReputationLendHoldUntil] = Date;
+
+// last time this sender was reset while sending (for admins reviewing them)
+object[config.userFields.smtpReputationResetAt] = Date;
+
+// last time an admin reviewed this sender's reputation (reports and
+// suspensions from before then no longer count)
+object[config.userFields.smtpReputationReviewedAt] = Date;
+
+// recent spam/virus verdicts from truth sources against this sender's mail
+// (see `helpers/record-smtp-reputation-report.js`)
+object[config.userFields.smtpReputationReports] = {
+  type: [
+    {
+      _id: false,
+      date: Date,
+      email: mongoose.Schema.Types.ObjectId,
+      recipient: String,
+      truth_source: String,
+      category: String,
+      // (what the report counts under, see `getReportKey`)
+      key: String,
+      // (about a member who borrowed this user's threshold, which only
+      // counts toward a bad day, as a rate of the recipients the member sent
+      // to in the last 24 hours)
+      borrowed: Boolean,
+      sender: mongoose.Schema.Types.ObjectId,
+      sender_recipients: Number
+    }
+  ],
+  default: undefined
+};
+
+// busiest day of sending in the recent baseline window (unusual pattern slowdown)
+object[config.userFields.smtpBaselineDaily] = {
+  type: Number,
+  min: 0
+};
+
+// busiest hour of sending in the recent baseline window
+object[config.userFields.smtpBaselineHourly] = {
+  type: Number,
+  min: 0
+};
+
+// day of the busiest day in the baseline window (a stale baseline no longer counts)
+object[config.userFields.smtpBaselineAt] = Date;
+
+// last time this sender was slowed down for an unusual sending pattern
+object[config.userFields.smtpThrottledAt] = Date;
+
+// days this sender was slowed down (not clean sending days)
+object[config.userFields.smtpThrottledDays] = {
+  type: [Date],
+  default: undefined
 };
 
 // Custom receipt email
@@ -1545,6 +1690,9 @@ Users.index(
 
 // Text search index for email field to enable efficient email searching
 Users.index({ email: 'text' });
+
+// the reputation job finds users not yet evaluated through a day
+Users.index({ [config.userFields.smtpReputationEvaluatedAt]: 1 });
 
 // Compound indexes for Admin > Analytics signup attribution queries.
 // Without these, the aggregation pipelines do full collection scans on

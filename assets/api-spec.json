@@ -1493,6 +1493,10 @@
           "is_bounce": {
             "type": "boolean"
           },
+          "is_dsn": {
+            "type": "boolean",
+            "description": "True for a delivery status notification (such as a bounce) about an email you sent"
+          },
           "alias": {
             "type": "string"
           },
@@ -1582,6 +1586,7 @@
           "hard_bounces": [],
           "soft_bounces": [],
           "is_bounce": false,
+          "is_dsn": false,
           "alias": "67a180fxxxxxxxe46a3f0edf",
           "domain": "5efae85dxxxxxxxf4bb53c7a",
           "user": "5efabd3907xxxxxxx12890b8",
@@ -2705,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Current count of emails sent"
+            "description": "Outbound SMTP messages you sent today (UTC), not counting bounce notifications and auto-replies"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum number of emails allowed"
+            "description": "Today's reputation-based threshold (at most what is left of the domain's and the account's thresholds today; 0 when you cannot send from the domain)"
           }
         }
       },
@@ -5373,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Get outbound SMTP email limit",
-        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
+        "description": "Returns a JSON object with the `count` of outbound SMTP messages you sent today and today's `limit`. Outbound SMTP is unlimited, and the `limit` is your current reputation-based threshold (see <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), which grows over time. Bounce notifications and auto-replies do not count.",
         "tags": [
           "Emails"
         ],
@@ -6132,7 +6137,7 @@
       },
       "post": {
         "summary": "Create domain invite",
-        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email (only for a `group` of `user`: we email an invite as an `admin` for the invitee to accept, and leave its link out of the domain's pending invites).",
         "tags": [
           "Invites"
         ],
@@ -6266,7 +6271,7 @@
       ],
       "put": {
         "summary": "Update domain member",
-        "description": "Update a domain member.",
+        "description": "Update a domain member.\n\n>[!IMPORTANT]\n>Updating another member to `admin` emails them an invite as an admin instead, and they stay a `user` until they accept it (the domain's pending invites list it). Updating them back to `user` or removing them withdraws it.",
         "tags": [
           "Members"
         ],

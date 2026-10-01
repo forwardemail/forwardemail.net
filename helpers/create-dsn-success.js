@@ -13,6 +13,8 @@ const isSANB = require('is-string-and-not-blank');
 
 const config = require('#config');
 const getRawHeaders = require('#helpers/get-raw-headers');
+
+const { getMinimalHeaders } = getRawHeaders;
 const parseEnhancedStatusCode = require('#helpers/parse-enhanced-status-code');
 
 const HOSTNAME = os.hostname();
@@ -60,7 +62,13 @@ async function createDSNSuccess(email, recipient, deliveryTime, options = {}) {
   //
 
   // The SMTP response from the remote server (e.g. "250 2.0.0 Ok: queued as 12345")
-  const smtpResponse = isSANB(info?.response) ? info.response : '';
+  // (a notification to an address outside the sender's domains only
+  // includes a minimum of what the recipient's server or the sender chose,
+  // see `helpers/send-email.js`)
+  const isMinimal = email?.dsn?.minimal === true;
+  const smtpResponse = isSANB(info?.response)
+    ? info.response.slice(0, isMinimal ? 200 : undefined)
+    : '';
 
   // The remote MX hostname (e.g. "mx.example.com")
   const remoteMtaHostname = resolveRemoteMta(session);
@@ -249,7 +257,10 @@ async function createDSNSuccess(email, recipient, deliveryTime, options = {}) {
     .setContent(deliveryStatusBody);
 
   // Part 3: Original message or headers (respects RET parameter from RFC 3461)
-  if (typeof email.dsn === 'object' && email.dsn.return === 'full') {
+  if (isMinimal) {
+    const headers = await getMinimalHeaders(email.raw || '');
+    rootNode.createChild('text/rfc822-headers').setContent(headers);
+  } else if (typeof email.dsn === 'object' && email.dsn.return === 'full') {
     rootNode.createChild('message/rfc822').setContent(email.raw || '');
   } else {
     // Default to headers only when RET=HDRS or not specified

@@ -466,7 +466,7 @@ Bitte stellen Sie sicher, dass Sie die Einrichtungshinweise für Ihre Domain bef
 Diese Anweisungen finden Sie unter [Mein Konto → Domains → Einstellungen → Ausgehende SMTP-Konfiguration](/my-account/domains). Sie müssen die Einrichtung von DKIM, Return-Path und DMARC für das Senden von ausgehenden SMTP-E-Mails mit Ihrer Domain sicherstellen.
 ### Abrufen des Limits für ausgehende SMTP-E-Mails {#get-outbound-smtp-email-limit}
 
-Dies ist ein einfacher Endpunkt, der ein JSON-Objekt mit der `count` und dem `limit` für die Anzahl der täglichen ausgehenden SMTP-Nachrichten pro Konto zurückgibt.
+Gibt ein JSON-Objekt mit der Anzahl (`count`) der ausgehenden SMTP-Nachrichten, die Sie heute gesendet haben, und dem heutigen Limit (`limit`) zurück. Ausgehendes SMTP ist unbegrenzt, und das `limit` ist Ihr aktueller [reputationsbasierter Schwellenwert](/faq#what-are-your-outbound-smtp-limits), der mit der Zeit steigt.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Dieser API-Endpunkt kodiert Emojis automatisch für Sie, wenn sie in den Headern
 | `priority`       | Nein         | String          | Prioritätsstufe für die E-Mail (kann `"high"`, `"normal"` (Standard) oder `"low"` sein). Beachten Sie, dass ein Wert von `"normal"` keinen Prioritätsheader setzt (dies ist das Standardverhalten). Wenn `"high"` oder `"low"` gesetzt wird, werden die Header `X-Priority`, `X-MSMail-Priority` und `Importance` [entsprechend gesetzt](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | Nein         | Objekt oder Array | Ein Objekt oder ein Array zusätzlicher Header-Felder zum Setzen (siehe [Nodemailers benutzerdefinierte Header](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                  |
 | `messageId`      | Nein         | String          | Ein optionaler Message-ID-Wert für den "Message-ID"-Header (ein Standardwert wird automatisch erstellt, falls nicht gesetzt – beachten Sie, dass der Wert [der RFC2822-Spezifikation entsprechen sollte](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                   |
-| `date`           | Nein         | String oder Datum | Ein optionaler Datumswert, der verwendet wird, wenn der Date-Header nach dem Parsen fehlt, andernfalls wird die aktuelle UTC-Zeit verwendet, falls nicht gesetzt. Der Date-Header darf nicht mehr als 30 Tage in der Zukunft liegen.                                                                                                                                                                                                                             |
+| `date`           | Nein         | String oder Datum | Ein optionaler Datumswert, der verwendet wird, wenn der Date-Header nach dem Parsen fehlt, andernfalls wird die aktuelle UTC-Zeit verwendet, falls nicht gesetzt. Der Date-Header darf nicht mehr als 27 Tage in der Zukunft liegen.                                                                                                                                                                                                                             |
 | `list`           | Nein         | Objekt          | Ein optionales Objekt von `List-*`-Headern (siehe [Nodemailers List-Header](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                        |
 > Beispielanfrage (API-Token):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Wenn der eingeladene Benutzer bereits ein akzeptiertes Mitglied einer anderen Domain ist, deren Administrator der einladende Admin ebenfalls ist, wird die Einladung automatisch angenommen und keine E-Mail versendet.
+> Wenn Sie jemanden als `"user"` einladen, der bereits ein akzeptiertes Mitglied einer anderen Domain ist, deren Mitglied Sie sind, nehmen wir die Einladung für diese Person an und senden keine E-Mail. Eine Einladung als `"admin"` senden wir per E-Mail, damit die eingeladene Person sie annimmt, und ihr Link erscheint nicht in den ausstehenden Einladungen der Domain.
 
 ### Domain-Einladung entfernen {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Body-Parameter | Erforderlich | Typ                 | Beschreibung                                                                                  |
 | -------------- | ------------ | ------------------- | -------------------------------------------------------------------------------------------- |
 | `group`        | Ja           | String (enumerierbar) | Gruppe, in die der Benutzer in der Domain-Mitgliedschaft aktualisiert wird (kann `"admin"` oder `"user"` sein) |
+
+> \[!IMPORTANT]
+> Wenn Sie ein anderes Mitglied auf `"admin"` aktualisieren, erhält es stattdessen eine Einladung als Admin per E-Mail und bleibt `"user"`, bis es sie annimmt (die ausstehenden Einladungen der Domain führen sie auf). Wenn Sie es zurück auf `"user"` aktualisieren oder entfernen, wird die Einladung zurückgezogen.
 
 > Beispielanfrage:
 

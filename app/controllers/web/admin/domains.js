@@ -11,11 +11,11 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
-const dayjs = require('dayjs-with-plugins');
 const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const config = require('#config');
+const { getSmtpDayStart } = require('#helpers/get-smtp-day');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
@@ -111,11 +111,12 @@ async function list(ctx) {
   ]);
 
   // Attach today's SMTP sent count to each domain for display
-  const startOfDay = dayjs().startOf('day').toDate();
+  const startOfDay = getSmtpDayStart();
   await Promise.all(
     domains.map(async (domain) => {
       domain.smtp_count = await Emails.countDocuments({
         domain: domain._id,
+        is_bounce: { $ne: true },
         created_at: { $gte: startOfDay }
       });
     })

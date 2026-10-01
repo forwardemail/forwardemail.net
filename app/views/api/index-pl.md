@@ -466,7 +466,7 @@ Proszę upewnić się, że wykonałeś instrukcje konfiguracji dla swojej domeny
 Instrukcje te można znaleźć pod adresem [Moje konto → Domeny → Ustawienia → Konfiguracja wychodzącego SMTP](/my-account/domains). Musisz zapewnić konfigurację DKIM, Return-Path oraz DMARC dla wysyłania wychodzących wiadomości SMTP z Twojej domeny.
 ### Pobierz limit wychodzących wiadomości SMTP {#get-outbound-smtp-email-limit}
 
-Jest to proste endpoint, który zwraca obiekt JSON zawierający `count` i `limit` dla liczby dziennych wychodzących wiadomości SMTP na konto.
+Zwraca obiekt JSON zawierający `count` wiadomości wysłanych przez Ciebie dziś przez wychodzący SMTP oraz dzisiejszy `limit`. Wychodzący SMTP jest nielimitowany, a `limit` to Twój obecny [próg oparty na reputacji](/faq#what-are-your-outbound-smtp-limits), który z czasem rośnie.
 
 > `GET /v1/emails/limit`
 
@@ -539,7 +539,7 @@ Ten endpoint API automatycznie zakoduje emoji, jeśli zostaną znalezione w nag�
 | `priority`        | Nie      | String           | Poziom priorytetu wiadomości (może być `"high"`, `"normal"` (domyślnie) lub `"low"`). Wartość `"normal"` nie ustawia nagłówka priorytetu (to domyślne zachowanie). Jeśli ustawiono `"high"` lub `"low"`, nagłówki `X-Priority`, `X-MSMail-Priority` i `Importance` [zostaną ustawione odpowiednio](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`         | Nie      | Object lub Array | Obiekt lub tablica dodatkowych nagłówków do ustawienia (zobacz [niestandardowe nagłówki Nodemailera](https://nodemailer.com/message/custom-headers/)).                                                                                                                                                                                                                                                                                                         |
 | `messageId`       | Nie      | String           | Opcjonalna wartość Message-ID dla nagłówka "Message-ID" (domyślna wartość zostanie automatycznie wygenerowana, jeśli nie ustawiono – wartość powinna [spełniać specyfikację RFC2822](https://stackoverflow.com/a/4031705)).                                                                                                                                                                                                                                        |
-| `date`            | Nie      | String lub Date  | Opcjonalna wartość daty, która zostanie użyta, jeśli nagłówek Date będzie brakował po parsowaniu, w przeciwnym razie zostanie użyty aktualny czas UTC, jeśli nie ustawiono. Nagłówek daty nie może być więcej niż 30 dni do przodu względem aktualnego czasu.                                                                                                                                                                                               |
+| `date`            | Nie      | String lub Date  | Opcjonalna wartość daty, która zostanie użyta, jeśli nagłówek Date będzie brakował po parsowaniu, w przeciwnym razie zostanie użyty aktualny czas UTC, jeśli nie ustawiono. Nagłówek daty nie może być więcej niż 27 dni do przodu względem aktualnego czasu.                                                                                                                                                                                               |
 | `list`            | Nie      | Object           | Opcjonalny obiekt nagłówków `List-*` (zobacz [nagłówki list Nodemailera](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                         |
 > Przykładowe żądanie (token API):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Jeśli użytkownik zapraszany jest już zaakceptowanym członkiem innych domen, których członkiem jest administrator zapraszający, zaproszenie zostanie automatycznie zaakceptowane i nie zostanie wysłany e-mail.
+> Jeśli zapraszasz jako `"user"` osobę, która jest już zaakceptowanym członkiem innej domeny, do której należysz, akceptujemy zaproszenie w jej imieniu i nie wysyłamy e-maila. Zaproszenie jako `"admin"` wysyłamy e-mailem do zaakceptowania przez zaproszonego, a jego link pomijamy w oczekujących zaproszeniach domeny.
 
 ### Usuń zaproszenie do domeny {#remove-domain-invite}
 
@@ -816,6 +816,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | Parametr w ciele | Wymagany | Typ                 | Opis                                                                                     |
 | ---------------- | -------- | ------------------- | ---------------------------------------------------------------------------------------- |
 | `group`          | Tak      | String (enumerowalny) | Grupa, do której zostanie zaktualizowany użytkownik w członkostwie domeny (może to być `"admin"` lub `"user"`) |
+
+> \[!IMPORTANT]
+> Zmiana innego członka na `"admin"` wysyła mu zamiast tego e-mailem zaproszenie jako administrator, a pozostaje on `"user"`, dopóki go nie zaakceptuje (oczekujące zaproszenia domeny je pokazują). Zmiana z powrotem na `"user"` lub usunięcie członka wycofuje zaproszenie.
 
 > Przykładowe żądanie:
 

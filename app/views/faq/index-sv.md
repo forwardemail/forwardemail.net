@@ -80,6 +80,8 @@
   * [Kan jag vidarebefordra e-post för vilken underdomän som helst (wildcard-underdomäner)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [Vilka är era gränser för utgående SMTP](#what-are-your-outbound-smtp-limits)
   * [Behöver jag godkännande för att aktivera SMTP](#do-i-need-approval-to-enable-smtp)
+  * [Vilken information behöver ni för att godkänna eller återaktivera min utgående SMTP](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
+  * [Varför kräver nyregistrerade eller nyligen utgångna domäner en betald plan](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Vilka är era SMTP-serverkonfigurationsinställningar](#what-are-your-smtp-server-configuration-settings)
   * [Vilka är era IMAP-serverkonfigurationsinställningar](#what-are-your-imap-server-configuration-settings)
   * [Vilka är era POP3-serverkonfigurationsinställningar](#what-are-your-pop3-server-configuration-settings)
@@ -155,6 +157,7 @@
   * [Kan jag "skicka mail som" i Outlook med detta](#can-i-send-mail-as-in-outlook-with-this)
   * [Kan jag "skicka mail som" i Apple Mail och iCloud Mail med detta](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [Kan jag vidarebefordra obegränsat med mail med detta](#can-i-forward-unlimited-emails-with-this)
+  * [Kan jag skicka obegränsat med e-post med detta](#can-i-send-unlimited-emails-with-this)
   * [Erbjuder ni obegränsade domäner för ett pris](#do-you-offer-unlimited-domains-for-one-price)
   * [Vilka betalningsmetoder accepterar ni](#which-payment-methods-do-you-accept)
 * [Ytterligare resurser](#additional-resources)
@@ -1035,7 +1038,7 @@ Om de däremot ser detta meddelande beror det på att de vanligtvis är vana vid
 
 Detta ämne är relaterat till ett [välkänt problem i Gmail där extra information visas bredvid avsändarens namn](https://support.google.com/mail/answer/1311182).
 
-Från och med maj 2023 stödjer vi att skicka e-post med SMTP som ett tillägg för alla betalande användare – vilket innebär att du kan ta bort <span class="notranslate">via forwardemail dot net</span> i Gmail.
+Utgående SMTP ingår i alla betalda planer (obegränsad och [ryktesbaserad](#what-are-your-outbound-smtp-limits)), så du kan ta bort <span class="notranslate">via forwardemail dot net</span> i Gmail.
 
 Observera att denna FAQ är specifik för de som använder funktionen [Hur man skickar e-post som med Gmail](#how-to-send-mail-as-using-gmail).
 
@@ -2038,6 +2041,12 @@ Till skillnad från mailsystem som `postfix` (t.ex. som använder `sieve`-semest
 
 8. Vi skickar inte om MAIL FROM-adressen matchar ett mönster för en ARF-feedbackavsändare (t.ex. `feedback@arf.mail.yahoo.com`).
 
+9. Vi svarar bara autentiserade avsändare: From-adressen måste klara DMARC eller ha en justerad, giltig DKIM-signatur. Enbart SPF räknas inte, eftersom delade e-postservrar klarar det för vem som helst. En förfalskad avsändare kan inte förvandla dina semesterautosvar till [backscatter](https://www.backscatterer.org/?target=autoresponders) riktad mot någon annan.
+
+10. Vi svarar bara när ditt alias, eller en annan adress på dess domän (som ett alias som vidarebefordrar till det), finns i huvudet `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` eller `Resent-Bcc`, som [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) rekommenderar. E-post som skickas till en dold lista med mottagare får inget svar. Sieve-semesterautosvar kräver att ditt alias eller en adress i dess `:addresses` finns i de huvudena.
+
+11. Vi skickar upp till 300 semesterautosvar per användare och dag (färre om vi har begränsat din utgående SMTP-tröskel under det), och högst 20 per mottagaradress och dag för alla våra användare sammanlagt.
+
 ### Hur ställer jag in SPF för Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
 Använd din registrators DNS-hanteringssida och skapa följande <strong class="notranslate">TXT</strong>-post:
@@ -2339,9 +2348,11 @@ Ja, du kan läsa mer på <https://forwardemail.net/guides/newsletter-with-listmo
 
 Observera att för att upprätthålla IP-rykte och säkerställa leveransbarhet har Forward Email en manuell granskningsprocess per domän för **godkännande av nyhetsbrev**. Mejla <support@forwardemail.net> eller öppna en [hjälpförfrågan](https://forwardemail.net/help) för godkännande. Detta tar vanligtvis mindre än 24 timmar, där de flesta förfrågningar behandlas inom 1-2 timmar. Inom en snar framtid siktar vi på att göra denna process omedelbar med ytterligare spamkontroller och varningar. Denna process säkerställer att dina mejl når inkorgen och att dina meddelanden inte markeras som skräppost.
 
+Nyhetsbrev och e-postlistor räknas mot din dagliga utgående tröskel, som är obegränsad och växer med ditt [avsändarrykte](#what-are-your-outbound-smtp-limits). Håll dina listor rena: en hög andel studsar flyttar ner din tröskel, och vi saktar ned plötsliga ökningar i volym.
+
 ### Stöder ni att skicka e-post med API {#do-you-support-sending-email-with-api}
 
-Ja, från och med maj 2023 stödjer vi att skicka e-post med API som ett tillägg för alla betalande användare.
+Ja. Alla betalda planer inkluderar att skicka e-post med vårt API. Precis som utgående SMTP är det **obegränsat** och [ryktesbaserat](#what-are-your-outbound-smtp-limits): meddelanden du skickar med API och med SMTP delar en och samma dagliga tröskel.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -2547,7 +2558,7 @@ För att använda kontaktsupporten måste **användaren** vara e-postadressen f�
 
 ### Stöder ni att skicka e-post med SMTP {#do-you-support-sending-email-with-smtp}
 
-Ja, från och med maj 2023 stödjer vi att skicka e-post med SMTP som ett tillägg för alla betalande användare.
+Ja. Alla betalda planer inkluderar utgående SMTP, och den är **obegränsad**: din dagliga sändningströskel växer med ditt [avsändarrykte](#what-are-your-outbound-smtp-limits).
 
 <div id="smtp-instructions">
 
@@ -3676,32 +3687,101 @@ När du använder <a href="#do-you-support-regular-expressions-or-regex" class="
 
 ### Vad är era gränser för utgående SMTP {#what-are-your-outbound-smtp-limits}
 
-Vi upprätthåller utgående SMTP-hastighetsbegränsningar på flera nivåer för att förhindra missbruk samtidigt som vi behåller flexibilitet för legitim användning. Varje nivå kontrolleras i ordning — vilken begränsning som nås först kommer tillfälligt att avvisa meddelandet med ett `421`-fel (vilket betyder "försök igen senare").
+Utgående SMTP är **obegränsad** och **ryktesbaserad**. Du får en daglig tröskel i stället för ett fast månadstak, och den växer i takt med att du bygger upp ett gott avsändarrykte.
 
-**Hierarki för hastighetsbegränsningar:**
+Nya avsändare börjar på 300 meddelanden per dag, eller 900 med teamplan (avsändare med teamplan hoppar över nivåerna under 900, och deras nästa nivå är 1,000). En gång per dag granskar vi din senaste sändning och flyttar din tröskel uppåt eller nedåt. Vi utvärderar varje dag två dagar senare, när vi känner till leveransresultaten för dess meddelanden. När detta börjar gälla för ditt konto går vi tillbaka upp till 30 dagar i din sändningshistorik, och vi tar igen de dagar vi har missat.
 
-| Level | Scope | Default Limit | Description |
-| :---- | :---- | :-----------: | :---------- |
-| Per-alias | Enskilt alias | Ingen (använder domängränsen) | Valfritt. Om ett alias har en anpassad `smtp_limit` inställd kontrolleras den först. |
-| Per-domain | Alla e-postmeddelanden skickade från en domän under en dag | 300/dag | Räknar alla utgående e-postmeddelanden från varje alias på domänen. |
-| Per-user | Alla e-postmeddelanden skickade av ett användarkonto under en dag | 300/dag | Förhindrar kringgående genom att radera och återskapa alias eller domäner. |
+Endast verklig sändning bygger rykte. E-post räknas mot uppflyttning när vi **levererar** den till **unika mottagare utanför dina egna domäner**. E-post till dig själv, till dina egna domäner (eller deras underdomäner), till de domäner du skickar från eller upprepad till samma mottagare räknas inte. Varianter av en adress (en `+tag` eller punkter i en Gmail-adress) räknas en gång. Varje mottagardomän (med dess underdomäner) räknas för upp till 50 mottagare per dag, utom de stora e-postleverantörernas egna domäner (som gmail.com). Minst en femtedel av de mottagare som räknas måste gå till stora e-postleverantörer, och högre nivåer kräver också ett minsta antal olika mottagardomäner under en och samma dag.
 
-**Hur den effektiva gränsen bestäms:**
+* **Uppflyttning**: din tröskel flyttas upp en nivå när du har betalat tillräckligt länge utan avbrott, du har tillräckligt många rena sändningsdagar på din nuvarande nivå och din mest aktiva dag under de senaste 7 dagarna nådde minst hälften av din nuvarande tröskel i levererade mottagare utanför dina egna domäner (fördelat på tillräckligt många olika mottagardomäner). Endast betald tid utan avbrott räknas, så ett äldre konto som inte har betalat (eller har slutat betala) börjar om. En förnyelse upp till 14 dagar för sent räknas fortfarande som utan avbrott, och endast dina egna betalningar räknas.
+* **Ren dag**: en dag då vi levererade minst 5 av dina meddelanden till mottagare utanför dina egna domäner, färre än 5% av dessa mottagare studsade eller avvisade din e-post, du inte fick tillräckligt många rapporter om spam eller virus för en dålig dag (se nedan) och vi inte saktade ned din sändning på grund av ett ovanligt mönster.
+* **Nedflyttning**: en dag med hög andel studsar eller avvisningar (5% eller mer av minst 20 mottagare utanför dina egna domäner), eller för många rapporter om spam eller virus från stora e-postleverantörer (se nedan), flyttar ner din tröskel en nivå (inte under din plans starttröskel) och nollställer antalet rena dagar. En dag där 15% eller mer av dem studsade eller avvisade din e-post återställer i stället din tröskel till din plans starttröskel och pausar uppflyttning i 30 dagar (en tröskel som vårt team har godkänt gäller fortfarande). Endast avvisningar av din e-post räknas, till exempel inte att våra delade IP-adresser finns på en blockeringslista eller en mottagares server som vi inte kunde nå. Varje mottagare räknas en gång oavsett hur många meddelanden du skickade till den, och ett schemalagt meddelande räknas den dag du schemalade det till. Dagar utan sändning räknas varken för eller emot dig.
+* **Rapporter om spam och virus**: stora e-postleverantörer (som Gmail, Outlook och Yahoo) avgör vad som räknas som missbruk, och vi räknar bara deras permanenta avvisningar. Varje mottagare på en leverantörs egna domäner (som gmail.com) räknas, medan andra domäner som en leverantör är värd för (som ett företags Google Workspace) räknas en gång per domän, och var och en räknas en gång per dag. Vi räknar rapporter som en andel av mottagarna du har skickat till, precis som stora leverantörer gör (Gmail ber avsändare att hålla sig under 0.1% och aldrig nå 0.3%), så en enstaka rapport flyttar dig inte ner, och rapporter om andra domäner som en leverantör är värd för utgör högst hälften av de rapporter som krävs. Rapporter för 0.1% eller mer av en dags mottagare utanför dina egna domäner, eller av dagen innans om de är fler, ger en dålig dag (minst 2 rapporter, och högst 25 krävs). En automatisk avstängning av ett av dina alias räknas inte i sig mot ditt rykte, men rapporterna bakom den gör det. Rapporter för 0.3% eller mer av mottagarna utanför domänen du skickade från under de senaste 24 timmarna, inklusive meddelanden som är schemalagda till den tiden, återställer din tröskel till din plans starttröskel (300, eller 900 med teamplan) direkt (minst 3 rapporter, och högst 50 krävs). Uppflyttning pausas sedan i 30 dagar, och en tröskel som vårt team har godkänt gäller inte under tiden. På domäner med teamplan räknas rapporter också mot en dålig dag för den administratör vars tröskel domänen använder (om inte din egen tröskel är lika hög), med samma andel av mottagarna hos de medlemmar de gällde, och de återställer inte den administratören. När rapporter om dessa medlemmar når återställningsandelen inom 24 timmar kan medlemmarna på administratörens domäner inte använda administratörens tröskel i 30 dagar. Administratörens egna utskick förblir desamma, och medlemmarnas utskick räknas fortfarande mot administratörens tröskel. Att göra en medlem till administratör skickar en inbjudan till medlemmen, som blir administratör när inbjudan accepteras. Rapporter om autosvar och studsar av e-post som skickats till dig räknas inte mot dig, medan rapporter om leveransmeddelanden för e-post du har skickat gör det.
 
-* **Domäner på teamplan** — den effektiva dagliga gränsen är den högsta `smtp_limit` bland alla administratörer för domänen. Till exempel, om en administratör har en gräns på 300 och en annan 500, blir domänens effektiva gräns 500.
-* **Enhanced Protection och andra planer** — den effektiva dagliga gränsen är den skickande användarens egna `smtp_limit` (som standard är 300 meddelanden per dag).
-* **Per-alias-överskrivning** — domänadministratörer kan valfritt sätta en anpassad `smtp_limit` på enskilda alias. När den är satt kontrolleras den först (före domän- och användargränserna). Detta är användbart för att begränsa specifika alias till en lägre sändvolym.
-* **Domänstandard för nya alias** — domänadministratörer kan ställa in ett `alias_default_smtp_limit` på domänen (via API eller Avancerade inställningar i instrumentpanelen). När det är inställt kommer alla nyligen skapade alias på den domänen automatiskt att ärva detta värde som sin `smtp_limit`. Detta får inte överstiga domänens effektiva SMTP-gräns. Befintliga alias påverkas inte. Sätt till `0` för att inaktivera.
+**Ryktesnivåer:**
 
-**Systemadministratörer** (Forward Email-personal) är undantagna från alla hastighetsbegränsningar.
+| Daglig tröskel | Lägsta sammanhängande betalda tid | Rena sändningsdagar på föregående nivå | Olika mottagardomäner under en dag |
+| --------------: | ---------------------------: | ----------------------------------: | -----------------------------------: |
+|             300 |                            – |                                   – |                                    – |
+|             500 |                      7 dagar |                                   5 |                                   10 |
+|           1,000 |                     14 dagar |                                   7 |                                   20 |
+|           2,000 |                     30 dagar |                                  10 |                                   40 |
+|           5,000 |                     60 dagar |                                  14 |                                   75 |
+|          10,000 |                    120 dagar |                                  21 |                                  150 |
 
-All begränsning av hastighet tillämpas genom databasräkningar (`Emails.countDocuments`) mot e-postmeddelanden skapade sedan början av den aktuella dagen (midnatt UTC). Det betyder att din gräns återställs dagligen vid midnatt UTC.
+Över 10,000 meddelanden per dag granskar vårt team ditt konto och höjer din tröskel för hand, utan att du behöver göra något. Om du behöver en högre tröskel tidigare (till exempel för att flytta en befintlig sändningsvolym), [kontakta oss](/help). En tröskel som vårt team godkänner fungerar som ett minimum och placerar dig på den nivå den motsvarar, och ditt rykte kan fortfarande höja den upp till 10,000 meddelanden per dag.
 
-Om du behöver en högre gräns, vänligen [kontakta oss](https://forwardemail.net/help). De flesta förfrågningar behandlas inom 1–2 timmar.
+**Ovanliga sändningsmönster:**
+
+Vi saktar ned sändningen med ett `421`-fel när din aktivitet ser ovanlig ut, oavsett tröskel. Detta skyddar vår kö och vårt IP-rykte om någon komprometterar eller missbrukar ett konto, även konton som har funnits i flera år eller har varit vilande.
+
+* **Plötsliga toppar**: under en dag kan du skicka upp till 2 gånger din senaste normala volym (din mest aktiva dag under de senaste 45 dagarna), eller din starttröskel (300 meddelanden, eller 900 med teamplan och på domäner med teamplan) eller en godkänd tröskel, beroende på vilket som är högst. Vi uppdaterar din normala volym varje dag utifrån din senaste sändning, så jämn tillväxt påverkas inte, och nya avsändare ökar gradvis från sin starttröskel.
+* **Mottagare**: ett meddelande kan ha många mottagare, så sammanlagt över alla dina meddelanden under en dag kan du nå upp till 2 gånger dagens tilldelning i antal mottagare, och ett kontos avsändare tillsammans upp till 2 gånger kontots tröskel. Vi avvisar ett enskilt meddelande med fler mottagare än så med ett `550`-fel.
+* **Skurar**: inom en och samma timme kan du skicka upp till en fjärdedel av dagens tilldelning eller 2 gånger din mest aktiva timme under de senaste 45 dagarna (men inte mer än hälften av dagens tilldelning), beroende på vilket som är högst, och minst din starttröskel eller en godkänd tröskel. Ett regelbundet mönster, till exempel ett veckovis nyhetsbrev, är en del av din normala volym.
+* **Studsar**: om mottagare studsade eller avvisade 10% eller mer av dina meddelanden från de senaste 6 timmarna (med minst 50 meddelanden, och utan att räkna avvisningar av våra delade IP-adresser) får nya meddelanden vänta tills andelen studsar har återhämtat sig.
+* **Köeftersläpning**: om för många av dina meddelanden från de senaste 24 timmarna fortfarande väntar i kön (10% av dagens tilldelning, minst din starttröskel) får nya meddelanden vänta tills kön har kommit ikapp. Schemalagda meddelanden, meddelanden som vi försöker skicka igen efter att en mottagare har skjutit upp dem och meddelanden som väntar på godkännande räknas inte, och en eftersläpning räknas inte mot ditt rykte.
+* **Schemalagda meddelanden**: du kan schemalägga meddelanden upp till 27 dagar i förväg och ha upp till en dags tilldelning av meddelanden schemalagda samtidigt.
+
+Nedsaktningar upphör när din aktivitet återgår till det normala, och en dag med nedsaktning räknas inte som en ren sändningsdag. E-postklienter försöker skicka uppskjutna meddelanden igen på egen hand, och API-förfrågningar får ett `429`-fel, så skicka dem igen senare.
+
+När du når din tröskel för dagen avvisar vi ytterligare meddelanden med ett `421`-fel (vilket betyder "försök igen senare") tills din tröskel återställs vid midnatt UTC. Våra [skydd mot missbruk](#why-was-my-outbound-smtp-suspended) av spam och virus gäller oavsett tröskel.
+
+Du kan se hur många meddelanden du skickade i dag och din nuvarande tröskel under [Mitt konto → E-post](/my-account/emails), eller via [API](/email-api#get-outbound-smtp-email-limit).
+
+**Hur trösklar tillämpas:**
+
+| Nivå | Omfattning | Standardtröskel | Beskrivning |
+| :--------- | :----------------------------------------- | :-------------------------: | :------------------------------------------------------------------------ |
+| Per alias | Enskilt alias | Ingen (använder domängränsen) | Valfritt. Vi kontrollerar ett alias anpassade `smtp_limit` först, om det har en. |
+| Per konto | Alla e-postmeddelanden skickade från de domäner som ett konto är administratör för under en dag | Ryktesbaserad (300+/dag, 900+ med teamplan) | Din tröskel gäller för hela kontot, så att lägga till domäner eller medlemmar multiplicerar den inte. |
+| Per domän | Alla e-postmeddelanden skickade från en domän under en dag | Ökar gradvis inom kontots tröskel (300+/dag, 900+ med teamplan) | Räknar alla utgående e-postmeddelanden från aliasen på domänen. |
+| Per användare | Alla e-postmeddelanden skickade av ett användarkonto under en dag | Ryktesbaserad (300+/dag, 900+ med teamplan) | Att radera och återskapa alias eller domäner återställer den inte. |
+
+* **Domäner på teamplan**: domänens tröskel är den högsta tröskeln bland dess betalande administratörer. Om till exempel en administratör har en tröskel på 1,000 och en annan 5,000, är domänens tröskel 5,000. Avsändare med teamplan börjar på 900 meddelanden per dag i stället för 300.
+* **Kontoomfattande**: en domäns konto är dess betalande administratör med den högsta tröskeln. All e-post som skickas från de domäner som det kontot är administratör för räknas mot den enda tröskeln, oavsett vem som skickar den (medlemmar inkluderade), så att lägga till domäner eller medlemmar ökar den inte.
+* **Nya domäner ökar gradvis**: inom kontots tröskel kan en domän skicka upp till 2 gånger sin mest aktiva dag av levererad e-post under de senaste 45 dagarna, och minst sin starttröskel (300 meddelanden, eller 900 med teamplan) eller en godkänd tröskel. En ny domän på ett etablerat konto börjar på sin starttröskel och växer i takt med att vi levererar dess e-post.
+* **Studsar och autosvar**: studsmeddelanden och semesterautosvar (automatiska svar) som vi skickar åt dig räknas inte mot din tröskel. Vi skickar upp till 300 autosvar per användare och dag (färre om vi har begränsat din tröskel under det) och högst 20 per mottagaradress och dag för alla våra användare sammanlagt, och bara till avsändare som klarade autentiseringen (se [semesterautosvar](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Vi begränsar studsmeddelanden till en returadress utanför domänen du skickade från (eller andra domäner du är administratör för) till det antalet eller 15% av din dagliga tröskel, beroende på vilket som är högst, och de innehåller bara det ursprungliga meddelandets identifierande rubriker (som `From`, `To` och `Subject`).
+* **Enhanced Protection och andra planer**: domänens tröskel är den skickande användarens egen tröskel.
+* **Per-alias-överskrivning**: domänadministratörer kan sätta en anpassad `smtp_limit` på enskilda alias. Vi kontrollerar den först (före domän- och användartrösklarna), vilket låter dig begränsa specifika alias till en lägre sändvolym.
+* **Domänstandard för nya alias**: domänadministratörer kan ställa in ett `alias_default_smtp_limit` på domänen (med API eller Avancerade inställningar i instrumentpanelen). Nya alias på den domänen ärver då detta värde som sin `smtp_limit`. Värdet får inte överstiga domänens nuvarande tröskel, och befintliga alias behåller sina egna. Sätt det till `0` för att stänga av det.
 
 ### Behöver jag godkännande för att aktivera SMTP {#do-i-need-approval-to-enable-smtp}
 
 Ja, observera att för att upprätthålla IP-rykte och säkerställa leveransbarhet har Forward Email en manuell granskningsprocess per domän för godkännande av utgående SMTP. Skicka e-post till <support@forwardemail.net> eller öppna en [hjälpförfrågan](https://forwardemail.net/help) för godkännande. Detta tar vanligtvis mindre än 24 timmar, där de flesta förfrågningar behandlas inom 1-2 timmar. Inom en snar framtid siktar vi på att göra denna process omedelbar med ytterligare spamkontroller och varningar. Denna process säkerställer att dina e-postmeddelanden når inkorgen och att dina meddelanden inte markeras som skräppost.
+
+När det har godkänts är utgående SMTP obegränsad och din dagliga tröskel växer med ditt [avsändarrykte](#what-are-your-outbound-smtp-limits).
+
+### Vilken information behöver ni för att godkänna eller återaktivera min utgående SMTP {#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp}
+
+När du begär godkännande för utgående SMTP (eller ber oss att återaktivera den efter en [avstängning](#why-was-my-outbound-smtp-suspended)), var beredd att lämna:
+
+* Bekräftelse på att du har läst och godkänner våra [villkor](/terms), som uttryckligen förbjuder användning av tjänsten för allt som finns på listorna [Stripes förbjudna verksamheter](https://stripe.com/legal/restricted-businesses) eller [PayPals förbjudna aktiviteter](https://www.paypal.com/us/legalhub/acceptableuse-full).
+* Vad du tänker använda utgående SMTP till.
+* En länk till din webbplats, företagsinformation eller en profil (t.ex. LinkedIn, GitHub) som låter oss verifiera att du är en verklig, legitim avsändare — en domän som pekar på en tom webbplats är en vanlig anledning till att godkännandet dröjer.
+* Bekräftelse på att du inte kommer att använda tjänsten för spam eller massutskick/oönskad marknadsföring.
+
+Vi ber om samma information i båda fallen, oavsett om det gäller ett första godkännande eller återaktivering av en domän efter en avstängning.
+
+### Varför stängdes min utgående SMTP av {#why-was-my-outbound-smtp-suspended}
+
+Utgående SMTP som redan har godkänts kan ändå pausas om vi upptäcker ett mönster av missbruk. Detta är skilt från [godkännandeprocessen](#do-i-need-approval-to-enable-smtp) ovan och från våra [ryktesbaserade trösklar för utgående e-post](#what-are-your-outbound-smtp-limits). Det utlöses när en betrodd källa (t.ex. en stor e-postleverantör) rapporterar din utgående e-post som virus eller spam.
+
+Det finns två steg:
+
+1. **En enskild upptäckt** skickar dig en avisering om "Message prevented" för just det meddelandet — den är informativ, och din utgående kö fortsätter att köras.
+2. **Flera upptäckter inom ett kort rullande tidsfönster** överskrider vår tröskel för missbruksdetektering och utlöser en fullständig avisering om "Utgående SMTP är pausad". Då pausas hela din utgående SMTP-kö — inga fler utgående meddelanden försöker skickas för den domänen förrän problemet är löst.
+
+Båda aviseringarna innehåller det specifika meddelande som flaggades (`MAIL FROM`, `RCPT TO`, `Message-ID`, ämne och datum), vilken betrodd källa och innehållskategori som flaggade det, hur många upptäckter du har haft i förhållande till tröskeln, hur många unika mottagare och betrodda källor som berördes samt SMTP-statuskoden och svaret.
+
+Om du får någon av dessa aviseringar, kontakta oss på <support@forwardemail.net> eller öppna en [hjälpförfrågan](https://forwardemail.net/help) — avstängningen hävs inte automatiskt, så du behöver höra av dig för att lösa det.
+
+### Varför kräver nyregistrerade eller nyligen utgångna domäner en betald plan {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
+
+När du lägger till en domän (och löpande för domäner på gratisplanen) gör vi en WHOIS/RDAP-uppslagning för den. Om domänen **skapades under de senaste 90 dagarna**, **gick ut under de senaste 90 dagarna** eller för närvarande har statusen **väntande överföring, uppdatering eller radering** hos sin registrar, kräver vi att den har en betald plan innan du kan skicka eller ta emot e-post med den.
+
+Detta är en åtgärd för att förhindra missbruk, inte ett omdöme om dig personligen — stora registrarer som GoDaddy, Namecheap och Hostgator har tidigare blockerat hela vår infrastruktur på grund av missbruksmönster med övertagande av nyligen utgångna domäner och bedrägligt registrerade nya domäner. Att kräva en betald plan för dessa domäner är det som gör att vi alls kan fortsätta erbjuda en gratisplan utan att förlora registrarernas förtroende.
+
+WHOIS/RDAP-resultat cachelagras i 24 timmar, så det kan ta upp till en dag innan en domän som precis har passerat 90-dagarsgränsen återspeglar detta. För att använda domänen direkt, uppgradera till en betald plan (från $3/mån för obegränsade domäner, alias och ryktesbaserad utgående SMTP).
 
 ### Vilka är era SMTP-serverinställningar {#what-are-your-smtp-server-configuration-settings}
 
@@ -5294,6 +5374,8 @@ Avsändare som upptäcks skicka spam eller virusinnehåll kommer att läggas til
 
 ### Har ni hastighetsbegränsning {#do-you-have-rate-limiting}
 
+Det här avsnittet gäller inkommande e-post. För sändning, se [Vad är era gränser för utgående SMTP](#what-are-your-outbound-smtp-limits).
+
 Avsändarens hastighetsbegränsning sker antingen via rot-domänen som tolkas från en omvänd PTR-uppslagning på avsändarens IP-adress – eller om detta inte ger något resultat, används helt enkelt avsändarens IP-adress. Observera att vi nedan refererar till detta som `Sender`.
 
 Våra MX-servrar har dagliga gränser för inkommande e-post mottagen för [krypterad IMAP-lagring](/blog/docs/best-quantum-safe-encrypted-email-service):
@@ -5339,6 +5421,8 @@ Den dagliga gränsen är en enda delad budget över alla protokoll — oavsett o
 Dessa gränser gäller per användarkonto (inte per alias eller domän) och återställs dagligen.  Det innebär att skapande av ytterligare alias inte ökar din bandbreddskvot.  Om Redis är otillgänglig hoppas hastighetsbegränsningen helt över (fail-open) så att din tjänst aldrig avbryts.
 
 Om du behöver högre gränser för ett specifikt användningsfall (t.ex. migrering av ett mycket stort arkiv), vänligen [kontakta oss](https://forwardemail.net/help).
+
+Dessa gränser gäller överförd data. Våra [ryktesbaserade utgående trösklar](#what-are-your-outbound-smtp-limits) styr antalet meddelanden du kan skicka.
 
 ### Hur skyddar ni mot backscatter {#how-do-you-protect-against-backscatter}
 
@@ -5765,13 +5849,9 @@ Vi använder MX- och <strong class="notranslate">TXT</strong>-postverifiering, s
 
 ### Hur ökar jag mitt lagringsutrymme eller gränsen för utgående SMTP-sändning {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-Gå till <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mitt konto → Fakturering</a> och skrolla till avsnittet **Tillägg**, som har två formulär för förfrågningar:
+**Lagring**: gå till <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mitt konto → Fakturering</a> och skrolla till avsnittet **Tillägg**. Välj en mängd att lägga till (+10, +20, +30, +40 eller +50 GB), eller välj "Other" för att begära en anpassad mängd. När du skickar in formuläret går din begäran till vårt team för granskning, och du debiteras inte än. När vi har godkänt den skickar vi dig en säker betalningslänk via e-post för att slutföra uppgraderingen. Du kan ha en väntande lagringsbegäran åt gången, och du kan inte skicka in en ny inom 3 dagar efter en tidigare begäran.
 
-* **Lagringsuppgradering** — välj en mängd att lägga till (+10, +20, +30, +40 eller +50 GB), eller välj "Other" för att begära en anpassad mängd.
-* **Uppgradering av gräns för utgående SMTP** — välj en mängd att lägga till (+1000, +2000 eller +3000 e-postmeddelanden per dag), eller välj "Other" för att begära en anpassad mängd.
-
-Att skicka in något av formulären skickar din begäran till vårt team för granskning — du debiteras inte omedelbart. När den har godkänts skickar vi dig en säker betalningslänk via e-post för att slutföra uppgraderingen. Du kan ha en väntande begäran per typ (lagring eller SMTP) åt gången; att skicka in igen inom 3 dagar efter en tidigare begäran av samma typ är inte tillåtet förrän det tidsfönstret har passerat.
-
+**Utgående SMTP**: det finns inget att köpa. Utgående SMTP är obegränsad och din dagliga tröskel växer med ditt [avsändarrykte](#what-are-your-outbound-smtp-limits). <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mitt konto → Fakturering</a> och <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Mitt konto → E-post</a> visar din nuvarande tröskel, din ryktesnivå och kraven för nästa nivå.
 
 ### Vad ingår i Enterprise License {#what-is-included-in-the-enterprise-license}
 
@@ -5893,6 +5973,12 @@ Ja, men "relativt okända" avsändare är begränsade till 100 anslutningar per 
 Med "relativt okända" menar vi avsändare som inte finns i [vitlistan](#do-you-have-an-allowlist).
 
 Om denna gräns överskrids skickar vi en 421-svarskod som talar om för avsändarens mailserver att försöka igen senare.
+
+### Kan jag skicka obegränsat med e-post med detta {#can-i-send-unlimited-emails-with-this}
+
+Ja. Utgående SMTP och vårt e-post-API är obegränsade på alla betalda planer (från $3/mo). Du får en daglig tröskel i stället för ett fast månadstak, och den växer i takt med att du fortsätter att betala och bygger upp en ren sändningshistorik: från 300 meddelanden per dag för nya avsändare (900 med teamplan) upp till 10,000 per dag, och därutöver efter att vårt team har granskat ditt konto.
+
+Endast e-post som levereras till verkliga mottagare utanför dina egna domäner bygger rykte. För att skydda leveransbarheten flyttar en hög andel studsar ner din tröskel, rapporter om spam och virus från stora e-postleverantörer återställer den, och vi saktar ned ovanliga mönster (till exempel en plötslig topp från ett vilande konto). Se [Vad är era gränser för utgående SMTP](#what-are-your-outbound-smtp-limits) för mer information, och din nuvarande tröskel under [Mitt konto → E-post](/my-account/emails).
 
 ### Erbjuder ni obegränsade domäner för ett pris {#do-you-offer-unlimited-domains-for-one-price}
 

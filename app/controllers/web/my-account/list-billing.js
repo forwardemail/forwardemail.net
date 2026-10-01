@@ -10,6 +10,9 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const { getPaymentNetAmount } = require('#helpers/format-payment-amount');
+const getSmtpReputationSummary = require('#helpers/get-smtp-reputation-summary');
+
+const { canSendSmtp } = getSmtpReputationSummary;
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 
 async function listBilling(ctx) {
@@ -62,6 +65,10 @@ async function listBilling(ctx) {
 
   if (ctx.accepts('html'))
     return ctx.render('my-account/billing', {
+      // outbound SMTP is only available on paid plans (or paid domains)
+      smtpReputation: (await canSendSmtp(ctx.state.user))
+        ? await getSmtpReputationSummary(ctx.state.user)
+        : null,
       payments,
       pageCount,
       itemCount,
