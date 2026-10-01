@@ -388,7 +388,7 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
                 width=164,
                 height=20
               )
-          li.list-inline-item.mb-3
+          li.list-inline-item.mb-3.mr-3
             a(
               href="https://observatory.mozilla.org/analyze/forwardemail.net",
               aria-label=t("Mozilla HTTP Observatory Grade"),
@@ -400,6 +400,20 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
                 alt=t("Mozilla HTTP Observatory Grade"),
                 src="https://img.shields.io/mozilla-observatory/grade-score/forwardemail.net",
                 width=162,
+                height=20
+              )
+          li.list-inline-item.mb-3
+            a(
+              aria-label="Privacy Ratings",
+              href="https://privacyratings.com/email-providers/forward-email/",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              img(
+                loading="lazy",
+                alt="Privacy Ratings",
+                src="https://img.shields.io/endpoint?url=https%3A%2F%2Fprivacyratings.com%2Fbadge%2Femail-providers%2Fforward-email.json",
+                width=164,
                 height=20
               )
         ul.list-inline.mb-3
