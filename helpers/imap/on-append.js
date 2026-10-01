@@ -29,6 +29,7 @@ const { readKey } = require('openpgp');
 const ms = require('ms');
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
+const deriveLabelsFromFlags = require('#helpers/derive-labels-from-flags');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const Threads = require('#models/threads');
@@ -798,6 +799,10 @@ async function onAppend(path, flags, date, raw, session, fn) {
       idate,
       hdate,
       flags,
+      // Keywords from APPEND (an IMAP client, or a Sieve addflag on delivery)
+      // become labels the same way they do on STORE. Without this a message
+      // tagged by a webmail filter had the keyword in flags but no label.
+      labels: deriveLabelsFromFlags(flags),
       size,
       headers,
       mimeTree,
