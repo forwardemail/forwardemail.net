@@ -6271,7 +6271,7 @@
       ],
       "put": {
         "summary": "Cập nhật thành viên miền",
-        "description": "Cập nhật thành viên miền.\n\n>[!IMPORTANT]\n>Cập nhật một thành viên khác thành `admin` sẽ gửi cho họ lời mời làm quản trị viên qua email, và họ vẫn là `user` cho đến khi chấp nhận (danh sách lời mời đang chờ của miền liệt kê lời mời này). Cập nhật họ trở lại thành `user` hoặc xóa họ sẽ thu hồi lời mời.",
+        "description": "Cập nhật thành viên miền.\n\n>[!IMPORTANT]\n>Cập nhật một thành viên khác thành `admin` sẽ gửi cho họ lời mời làm quản trị viên qua email thay vì đổi vai trò, và họ vẫn là `user` cho đến khi chấp nhận (danh sách lời mời đang chờ của miền liệt kê lời mời này). Cập nhật họ trở lại thành `user` hoặc xóa họ sẽ thu hồi lời mời.",
         "tags": [
           "Thành viên"
         ],

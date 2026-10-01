@@ -154,7 +154,7 @@
   * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Can I recursively forward emails](#can-i-recursively-forward-emails)
   * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How do I increase my storage or outbound SMTP sending limit {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit-how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+  * [How do I increase my storage or outbound SMTP sending limit](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
   * [What is included in the Enterprise License](#what-is-included-in-the-enterprise-license)
   * [How is it free](#how-is-it-free)
   * [What is the max email size limit](#what-is-the-max-email-size-limit)
@@ -2432,7 +2432,7 @@ If you're using Gmail, then follow these steps below:
 
 Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+Our team reviews each domain before it can send newsletters, to protect our IP reputation and your deliverability. Messages with a `List-Id` or `List-Unsubscribe` header need this **newsletter approval**, and we email your domain's admins the first time one arrives without it. To ask for approval, email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help). We usually reply within 24 hours, and often within 1 to 2 hours.
 
 Newsletters and mailing lists count toward your daily outbound threshold, which is unlimited and grows with your [sender reputation](#what-are-your-outbound-smtp-limits). Keep your lists clean: a high bounce rate moves your threshold down, and we slow down sudden jumps in volume.
 
@@ -2647,7 +2647,7 @@ In order to use contacts support, the **user** must be the email address of an a
 
 ### Do you support sending email with SMTP
 
-Yes. All paid plans include outbound SMTP, and it is **unlimited**: your daily sending threshold grows with your [sender reputation](#what-are-your-outbound-smtp-limits).
+Yes. All paid plans include outbound SMTP, and it is **unlimited**: your daily sending threshold grows with your [sender reputation](#what-are-your-outbound-smtp-limits). Each domain needs [approval](#do-i-need-approval-to-enable-smtp) first, and many domains get it on the spot once their DNS records verify.
 
 <div id="smtp-instructions">
 
@@ -2707,7 +2707,7 @@ Yes. All paid plans include outbound SMTP, and it is **unlimited**: your daily s
     Important:
   </strong>
   <span>
-    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+    We approve outbound SMTP for each domain to protect our IP reputation and your deliverability. Many domains get approved on the spot once their DNS records verify, and our team reviews the rest, usually within 24 hours. See [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp).
   </span>
 </div>
 
@@ -3791,7 +3791,7 @@ When you use <a href="#do-you-support-regular-expressions-or-regex" class="alert
 
 ### What are your outbound SMTP limits
 
-Outbound SMTP is **unlimited** and **reputation-based**. You get a daily threshold instead of a fixed monthly cap, and it grows as you build a good sending reputation.
+Outbound SMTP is **unlimited** and **reputation-based**. You get a daily threshold instead of a fixed monthly cap, and it grows as you build a good sending reputation. Each domain needs [approval](#do-i-need-approval-to-enable-smtp) before it can send, and many domains get it on the spot once their DNS records verify.
 
 New senders start at 300 messages per day, or 900 on the Team plan (Team plan senders skip the tiers below 900, and their next tier is 1,000). Once a day, we review your recent sending and move your threshold up or down. We evaluate each day two days later, once we know the delivery results of its messages. When this starts for your account, we look back at up to 30 days of your sending history, and we catch up on any days we missed.
 
@@ -3851,7 +3851,13 @@ You can see how many messages you sent today and your current threshold at [My A
 
 ### Do I need approval to enable SMTP
 
-Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+Yes. We approve outbound SMTP for each domain, which protects our IP reputation and keeps your mail out of spam folders. Once the domain's DKIM, Return-Path, and DMARC records verify (when you click Verify in My Account → Domains → Settings → Outbound SMTP Configuration, or send your first message), we approve it on the spot if none of your domains has outbound SMTP suspended and one of these applies:
+
+* You passed our identity verification (KYC).
+* The domain uses a common top-level domain (such as `.com` or `.org`) and has a live website on reputable hosting.
+* The domain uses a common top-level domain and you already have another domain approved for outbound SMTP.
+
+Our team reviews any other domain and emails you once we decide, usually within 24 hours and often within 1 to 2 hours. To speed up a review, email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) with the [information we need](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp).
 
 Once approved, outbound SMTP is unlimited and your daily threshold grows with your [sender reputation](#what-are-your-outbound-smtp-limits).
 
@@ -6162,7 +6168,7 @@ If this limit is exceeded we send a 421 response code which tells the senders ma
 
 ### Can I send unlimited emails with this
 
-Yes. Outbound SMTP and our email API are unlimited on all paid plans (from $3/mo). You get a daily threshold instead of a fixed monthly cap, and it grows as you keep paying and build a clean sending history: from 300 messages per day for new senders (900 on the Team plan) up to 10,000 per day, and beyond that after our team reviews your account.
+Yes. Outbound SMTP and our email API are unlimited on all paid plans (from $3/mo). You get a daily threshold instead of a fixed monthly cap, and it grows as you keep paying and build a clean sending history: from 300 messages per day for new senders (900 on the Team plan) up to 10,000 per day, and beyond that after our team reviews your account. Each domain needs [approval](#do-i-need-approval-to-enable-smtp) before it can send.
 
 Only mail delivered to real recipients outside your own domains builds reputation. To protect deliverability, a high bounce rate moves your threshold down, spam and virus reports from major mailbox providers reset it, and we slow down unusual patterns (such as a sudden spike from a dormant account). See [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits) for details, and your current threshold at [My Account → Emails](/my-account/emails).
 

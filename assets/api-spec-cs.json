@@ -2714,7 +2714,7 @@
           },
           "limit": {
             "type": "integer",
-            "description": "Dnešní limit založený na reputaci (nejvýše to, co dnes zbývá z limitů domény a účtu; 0, když z domény nemůžete odesílat)"
+            "description": "Dnešní práh založený na reputaci (nejvýše to, co dnes zbývá z prahů domény a účtu; 0, když z domény nemůžete odesílat)"
           }
         }
       },
@@ -5378,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Získat limit odchozích e-mailů SMTP",
-        "description": "Vrací objekt JSON s `count` odchozích zpráv SMTP, které jste dnes odeslali, a dnešním `limit`. Odchozí SMTP je neomezené a `limit` je váš aktuální limit založený na reputaci (viz <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), který s časem roste. Oznámení o nedoručitelnosti a automatické odpovědi se nezapočítávají.",
+        "description": "Vrací objekt JSON s `count` odchozích zpráv SMTP, které jste dnes odeslali, a dnešním `limit`. Odchozí SMTP je neomezené a `limit` je váš aktuální práh založený na reputaci (viz <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), který s časem roste. Oznámení o nedoručitelnosti a automatické odpovědi se nezapočítávají.",
         "tags": [
           "E-maily"
         ],
@@ -6137,7 +6137,7 @@
       },
       "post": {
         "summary": "Vytvořit pozvánku do domény",
-        "description": ">[!IMPORTANT]\n>Pokud je pozvaný uživatel již přijatým členem jakékoli jiné domény, jejímž členem je i administrátor, který ho pozvánku posílá, pozvánka bude automaticky přijata a e-mail nebude odeslán (pouze pro `group` s hodnotou `user`: pozvánku jako `admin` pošleme e-mailem, aby ji pozvaný přijal, a její odkaz do čekajících pozvánek domény nezařadíme).",
+        "description": ">[!IMPORTANT]\n>Pokud je pozvaný uživatel již přijatým členem jakékoli jiné domény, jejímž členem je i administrátor, který ho zve, pozvánka bude automaticky přijata a e-mail nebude odeslán (pouze pro `group` s hodnotou `user`: pozvánku jako `admin` pošleme e-mailem, aby ji pozvaný přijal, a její odkaz do čekajících pozvánek domény nezařadíme).",
         "tags": [
           "Pozvánky"
         ],
@@ -6271,7 +6271,7 @@
       ],
       "put": {
         "summary": "Aktualizovat člena domény",
-        "description": "Aktualizace člena domény.\n\n>[!IMPORTANT]\n>Změna jiného člena na `admin` mu místo toho pošle e-mailem pozvánku jako administrátor a zůstane `user`, dokud ji nepřijme (čekající pozvánky domény ji uvádějí). Změna zpět na `user` nebo jeho odebrání pozvánku stáhne.",
+        "description": "Aktualizace člena domény.\n\n>[!IMPORTANT]\n>Změna jiného člena na `admin` mu místo toho pošle e-mailem pozvánku do role administrátora a zůstane `user`, dokud ji nepřijme (čekající pozvánky domény ji uvádějí). Změna zpět na `user` nebo jeho odebrání pozvánku stáhne.",
         "tags": [
           "Členové"
         ],

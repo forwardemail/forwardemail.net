@@ -2714,7 +2714,7 @@
           },
           "limit": {
             "type": "integer",
-            "description": "Dagens omdømmebaserede grænse (højst hvad der er tilbage af domænets og kontoens grænser i dag; 0 når du ikke kan sende fra domænet)"
+            "description": "Dagens omdømmebaserede tærskel (højst hvad der er tilbage af domænets og kontoens tærskler i dag; 0 når du ikke kan sende fra domænet)"
           }
         }
       },
@@ -5378,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Få grænsen for udgående SMTP-e-mails",
-        "description": "Returnerer et JSON-objekt med `count` for udgående SMTP-beskeder, du har sendt i dag, og dagens `limit`. Udgående SMTP er ubegrænset, og `limit` er din nuværende omdømmebaserede grænse (se <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), som vokser over tid. Bounce-meddelelser og autosvar tæller ikke med.",
+        "description": "Returnerer et JSON-objekt med `count` for udgående SMTP-beskeder, du har sendt i dag, og dagens `limit`. Udgående SMTP er ubegrænset, og `limit` er din nuværende omdømmebaserede tærskel (se <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), som stiger over tid. Bounce-meddelelser og autosvar tæller ikke med.",
         "tags": [
           "E-mails"
         ],
@@ -6137,7 +6137,7 @@
       },
       "post": {
         "summary": "Opret domæneinvitation",
-        "description": ">[!IMPORTANT]\n>Hvis den inviterede bruger allerede er et accepteret medlem af andre domæner, som administratoren, der inviterer dem, er medlem af, accepterer invitationen automatisk og sender ikke en e-mail (kun for en `group` af `user`: vi sender en invitation som `admin` via e-mail, så den inviterede kan acceptere den, og udelader dens link fra domænets afventende invitationer).",
+        "description": ">[!IMPORTANT]\n>Hvis den inviterede bruger allerede er et accepteret medlem af andre domæner, som administratoren, der inviterer vedkommende, er medlem af, accepteres invitationen automatisk, og der sendes ikke en e-mail (kun når `group` er `user`: vi sender en invitation som `admin` via e-mail, så den inviterede kan acceptere den, og udelader dens link fra domænets afventende invitationer).",
         "tags": [
           "Invitationer"
         ],
@@ -6271,7 +6271,7 @@
       ],
       "put": {
         "summary": "Opdater domænemedlem",
-        "description": "Opdater et domænemedlem.\n\n>[!IMPORTANT]\n>Opdatering af et andet medlem til `admin` sender dem i stedet en invitation som administrator via e-mail, og de forbliver `user`, indtil de accepterer den (domænets afventende invitationer viser den). Opdatering tilbage til `user` eller fjernelse af dem trækker den tilbage.",
+        "description": "Opdater et domænemedlem.\n\n>[!IMPORTANT]\n>Opdaterer du et andet medlem til `admin`, får vedkommende i stedet en invitation som administrator via e-mail og forbliver `user`, indtil invitationen er accepteret (domænets afventende invitationer viser den). Opdaterer du vedkommende tilbage til `user` eller fjerner vedkommende, trækkes den tilbage.",
         "tags": [
           "Medlemmer"
         ],

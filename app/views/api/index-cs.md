@@ -818,7 +818,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | `group`        | Ano     | String (vyčíslitelné) | Skupina, do které bude uživatel aktualizován v rámci členství domény (může být `"admin"` nebo `"user"`) |
 
 > \[!IMPORTANT]
-> Změna jiného člena na `"admin"` mu místo toho pošle emailem pozvánku jako administrátor a zůstane `"user"`, dokud ji nepřijme (čekající pozvánky domény ji uvádějí). Změna zpět na `"user"` nebo jeho odebrání ji zruší.
+> Změna jiného člena na `"admin"` mu místo toho pošle emailem pozvánku do role administrátora a zůstane `"user"`, dokud ji nepřijme (čekající pozvánky domény ji uvádějí). Změna zpět na `"user"` nebo jeho odebrání ji zruší.
 
 > Example Request:
 

@@ -2710,11 +2710,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "您今天（UTC）发送的出站 SMTP 消息数，不包括退信通知和自动回复"
+            "description": "您今天（UTC）发送的出站 SMTP 邮件数，不包括退信通知和自动回复"
           },
           "limit": {
             "type": "integer",
-            "description": "今天基于信誉的阈值（最多为今天域和帐户阈值的剩余量；当您无法从该域发送时为 0）"
+            "description": "今天基于信誉的阈值（最多为今天域和账户阈值的剩余量；当您无法从该域发送时为 0）"
           }
         }
       },
@@ -5378,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "获取出站 SMTP 电子邮件限制",
-        "description": "返回一个 JSON 对象，其中包含您今天发送的出站 SMTP 消息的 `count` 和今天的 `limit`。出站 SMTP 不受限制，`limit` 是您当前基于信誉的阈值（参见 <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>），它会随时间增长。退信通知和自动回复不计入。",
+        "description": "返回一个 JSON 对象，其中包含您今天发送的出站 SMTP 邮件的 `count` 和今天的 `limit`。出站 SMTP 不设上限，`limit` 是您当前基于信誉的阈值（参见 <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>），它会随时间提高。退信通知和自动回复不计入。",
         "tags": [
           "电子邮件"
         ],
@@ -6137,7 +6137,7 @@
       },
       "post": {
         "summary": "创建域名邀请",
-        "description": ">[!IMPORTANT]\n>如果被邀请的用户已经是邀请该用户的管理员所属的其他域的已接受成员，则系统将自动接受邀请，而不会发送电子邮件（仅适用于 `group` 为 `user` 的情况：我们通过电子邮件发送以 `admin` 身份发出的邀请，由被邀请者接受，并且不将其链接放入该域的待处理邀请中）。",
+        "description": ">[!IMPORTANT]\n>如果被邀请的用户已经是邀请该用户的管理员所属的其他域的已接受成员，则系统将自动接受邀请，而不会发送电子邮件（仅适用于 `group` 为 `user` 的情况：以 `admin` 身份发出的邀请会通过电子邮件发送给被邀请者来接受，并且我们不会将其链接放入该域的待处理邀请中）。",
         "tags": [
           "邀请"
         ],

@@ -539,7 +539,7 @@ curl BASE_URI/v1/emails?limit=1 \
 | `priority`       | 아니요   | 문자열           | 이메일 우선순위 (`"high"`, `"normal"` (기본값), `"low"` 중 하나). `"normal"` 값은 우선순위 헤더를 설정하지 않음 (기본 동작). `"high"` 또는 `"low"` 설정 시 `X-Priority`, `X-MSMail-Priority`, `Importance` 헤더가 [적절히 설정됨](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers`        | 아니요   | 객체 또는 배열   | 추가로 설정할 헤더 필드 객체 또는 배열 ([Nodemailer 맞춤 헤더](https://nodemailer.com/message/custom-headers/) 참고).                                                                                                                                                                                                                                                                                                                                           |
 | `messageId`      | 아니요   | 문자열           | "Message-ID" 헤더에 사용할 선택적 Message-ID 값 (설정하지 않으면 기본값이 자동 생성됨 – 값은 [RFC2822 규격](https://stackoverflow.com/a/4031705)을 준수해야 함).                                                                                                                                                                                                                                                                                                |
-| `date`           | 아니요   | 문자열 또는 날짜 | 파싱 후 Date 헤더가 없으면 사용할 선택적 날짜 값, 설정하지 않으면 현재 UTC 문자열 사용. 날짜 헤더는 현재 시간보다 27일 이상 미래일 수 없음.                                                                                                                                                                                                                                                                                                               |
+| `date`           | 아니요   | 문자열 또는 날짜 | 파싱 후 Date 헤더가 없으면 사용할 선택적 날짜 값, 설정하지 않으면 현재 UTC 문자열 사용. 날짜 헤더는 현재 시간보다 27일을 초과하여 앞설 수 없음.                                                                                                                                                                                                                                                                                                               |
 | `list`           | 아니요   | 객체             | 선택적 `List-*` 헤더 객체 ([Nodemailer 리스트 헤더](https://nodemailer.com/message/list-headers/) 참고).                                                                                                                                                                                                                                                                                                                                                         |
 > 예제 요청 (API 토큰):
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> `"user"`로 초대하는 사람이 이미 귀하가 속한 다른 도메인의 승인된 멤버인 경우, 저희가 대신 초대를 수락하며 이메일을 보내지 않습니다. `"admin"`으로의 초대는 초대받은 사람이 수락하도록 이메일로 보내며, 그 링크는 도메인의 대기 중인 초대에서 제외합니다.
+> `"user"`로 초대하는 사람이 이미 본인이 속한 다른 도메인의 승인된 멤버인 경우, 저희가 대신 초대를 수락하며 이메일을 보내지 않습니다. `"admin"`으로의 초대는 초대받은 사람이 수락하도록 이메일로 보내며, 그 링크는 도메인의 대기 중인 초대에서 제외합니다.
 
 ### 도메인 초대 제거 {#remove-domain-invite}
 

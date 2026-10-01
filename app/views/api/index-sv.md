@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> Om du bjuder in någon som `"user"` som redan är en accepterad medlem i en annan domän som du är medlem i, accepterar vi inbjudan åt personen och skickar inget e-postmeddelande. Vi skickar en inbjudan som `"admin"` via e-post så att den inbjudna kan acceptera den, och utelämnar dess länk från domänens väntande inbjudningar.
+> Om du bjuder in någon som `"user"` som redan är en accepterad medlem i en annan domän som du är medlem i, accepterar vi inbjudan åt personen och skickar inget e-postmeddelande. Vi skickar en inbjudan som `"admin"` via e-post så att den inbjudna kan acceptera den, och visar inte dess länk bland domänens väntande inbjudningar.
 
 ### Ta bort domäninbjudan {#remove-domain-invite}
 

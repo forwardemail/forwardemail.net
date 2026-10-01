@@ -6137,7 +6137,7 @@
       },
       "post": {
         "summary": "Crear invitación de dominio",
-        "description": ">[!IMPORTANT]\n>Si el usuario invitado ya es miembro aceptado de algún otro dominio del que es miembro el administrador que lo invita, se aceptará automáticamente la invitación y no se enviará un correo electrónico (solo para un `group` de `user`: enviamos por correo electrónico una invitación como `admin` para que el invitado la acepte, y dejamos su enlace fuera de las invitaciones pendientes del dominio).",
+        "description": ">[!IMPORTANT]\n>Si el usuario invitado ya es miembro aceptado de algún otro dominio del que es miembro el administrador que lo invita, se aceptará automáticamente la invitación y no se enviará un correo electrónico (solo cuando `group` es `user`: enviamos por correo electrónico una invitación como `admin` para que el invitado la acepte, y dejamos su enlace fuera de las invitaciones pendientes del dominio).",
         "tags": [
           "Invitaciones"
         ],

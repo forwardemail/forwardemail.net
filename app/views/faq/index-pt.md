@@ -2375,7 +2375,7 @@ Se você usa Gmail, siga os passos abaixo:
 
 Sim, você pode ler mais em <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Por favor, note que para manter a reputação do IP e garantir a entregabilidade, o Forward Email possui um processo de revisão manual por domínio para **aprovação de newsletter**. Envie um e-mail para <support@forwardemail.net> ou abra uma [solicitação de ajuda](https://forwardemail.net/help) para aprovação. Isso normalmente leva menos de 24 horas, com a maioria das solicitações sendo atendidas em 1-2 horas. Em breve, pretendemos tornar esse processo instantâneo com controles adicionais de spam e alertas. Esse processo garante que seus e-mails cheguem à caixa de entrada e que suas mensagens não sejam marcadas como spam.
+Nossa equipe analisa cada domínio antes que ele possa enviar newsletters, para proteger a reputação dos nossos IPs e a sua entregabilidade. Mensagens com um cabeçalho `List-Id` ou `List-Unsubscribe` precisam dessa **aprovação de newsletter**, e enviamos um e-mail aos administradores do seu domínio na primeira vez que uma delas chega sem essa aprovação. Para solicitar a aprovação, envie um e-mail para <support@forwardemail.net> ou abra uma [solicitação de ajuda](https://forwardemail.net/help). Normalmente respondemos em até 24 horas, e muitas vezes em 1 a 2 horas.
 
 Newsletters e listas de e-mail contam para o seu limite diário de saída, que é ilimitado e aumenta com sua [reputação de remetente](#what-are-your-outbound-smtp-limits). Mantenha suas listas limpas: uma alta taxa de devolução baixa seu limite, e nós desaceleramos aumentos repentinos de volume.
 
@@ -2587,7 +2587,7 @@ Para usar o suporte a contatos, o **usuário** deve ser o endereço de email de 
 
 ### Você suporta envio de email com SMTP {#do-you-support-sending-email-with-smtp}
 
-Sim. Todos os planos pagos incluem SMTP de saída, e ele é **ilimitado**: seu limite diário de envio aumenta com sua [reputação de remetente](#what-are-your-outbound-smtp-limits).
+Sim. Todos os planos pagos incluem SMTP de saída, e ele é **ilimitado**: seu limite diário de envio aumenta com sua [reputação de remetente](#what-are-your-outbound-smtp-limits). Cada domínio precisa de [aprovação](#do-i-need-approval-to-enable-smtp) primeiro, e muitos domínios a recebem na hora, assim que seus registros DNS são verificados.
 
 <div id="smtp-instructions">
 
@@ -2646,7 +2646,7 @@ Sim. Todos os planos pagos incluem SMTP de saída, e ele é **ilimitado**: seu l
     Importante:
   </strong>
   <span>
-    Por favor, note que para manter a reputação do IP e garantir a entregabilidade, temos um processo de revisão manual por domínio para aprovação do SMTP de saída. Isso normalmente leva menos de 24 horas, com a maioria dos pedidos sendo atendidos em 1-2 horas. Em um futuro próximo, pretendemos tornar esse processo instantâneo com controles adicionais de spam e alertas. Esse processo garante que seus e-mails cheguem à caixa de entrada e que suas mensagens não sejam marcadas como spam.
+    Aprovamos o SMTP de saída para cada domínio para proteger a reputação dos nossos IPs e a sua entregabilidade. Muitos domínios são aprovados na hora, assim que seus registros DNS são verificados, e nossa equipe analisa os demais, geralmente em até 24 horas. Veja [Preciso de aprovação para ativar o SMTP](#do-i-need-approval-to-enable-smtp).
   </span>
 </div>
 
@@ -3716,7 +3716,7 @@ Ao usar <a href="#do-you-support-regular-expressions-or-regex" class="alert-link
 
 ### Quais são os seus limites de SMTP de saída {#what-are-your-outbound-smtp-limits}
 
-O SMTP de saída é **ilimitado** e **baseado em reputação**. Você tem um limite diário em vez de um teto mensal fixo, e ele aumenta à medida que você constrói uma boa reputação de envio.
+O SMTP de saída é **ilimitado** e **baseado em reputação**. Você tem um limite diário em vez de um teto mensal fixo, e ele aumenta à medida que você constrói uma boa reputação de envio. Cada domínio precisa de [aprovação](#do-i-need-approval-to-enable-smtp) antes de poder enviar, e muitos domínios a recebem na hora, assim que seus registros DNS são verificados.
 
 Novos remetentes começam com 300 mensagens por dia, ou 900 no plano Team (remetentes do plano Team pulam os níveis abaixo de 900, e o próximo nível deles é 1,000). Uma vez por dia, analisamos seus envios recentes e movemos seu limite para cima ou para baixo. Avaliamos cada dia dois dias depois, quando já conhecemos os resultados de entrega das mensagens desse dia. Quando isso começa para sua conta, olhamos até 30 dias do seu histórico de envios, e processamos os dias que deixamos de avaliar.
 
@@ -3769,14 +3769,20 @@ Você pode ver quantas mensagens enviou hoje e seu limite atual em [Minha conta 
 * **Domínios no plano Team**: o limite do domínio é o maior limite entre os seus membros administradores pagantes. Por exemplo, se um administrador tem limite de 1,000 e outro de 5,000, o limite do domínio é 5,000. Remetentes no plano Team começam com 900 mensagens por dia em vez de 300.
 * **Vale para toda a conta**: a conta de um domínio é o administrador pagante com o maior limite. Todos os e-mails enviados dos domínios dos quais essa conta é administradora contam para esse único limite, independentemente de quem os envia (inclusive membros), então adicionar domínios ou membros não o aumenta.
 * **Novos domínios aumentam gradualmente**: dentro do limite da conta, um domínio pode enviar até 2 vezes o seu dia de maior volume de e-mails entregues nos últimos 45 dias, e no mínimo o seu limite inicial (300 mensagens, ou 900 no plano Team) ou um limite aprovado. Um novo domínio em uma conta já estabelecida começa no limite inicial e cresce conforme entregamos seus e-mails.
-* **Bounces e respostas automáticas**: notificações de bounce e mensagens de resposta automática de férias que enviamos em seu nome não contam para o seu limite. Enviamos até 300 respostas automáticas por usuário por dia (menos se restringimos seu limite abaixo disso) e no máximo 20 por endereço de destinatário por dia entre todos os nossos usuários, e somente para remetentes que passaram na autenticação (veja [respostas automáticas de férias](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Limitamos as notificações de bounce para um endereço de retorno fora do domínio de onde você enviou (ou de outros domínios dos quais você é administrador) a esse número ou a 15% do seu limite diário, o que for maior, e elas incluem apenas os cabeçalhos de identificação da mensagem original (como `From`, `To` e `Subject`).
+* **Devoluções e respostas automáticas**: notificações de devolução (bounce) e mensagens de resposta automática de férias que enviamos em seu nome não contam para o seu limite. Enviamos até 300 respostas automáticas por usuário por dia (menos se restringimos seu limite abaixo disso) e no máximo 20 por endereço de destinatário por dia entre todos os nossos usuários, e somente para remetentes que passaram na autenticação (veja [respostas automáticas de férias](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Limitamos as notificações de devolução para um endereço de retorno fora do domínio de onde você enviou (ou de outros domínios dos quais você é administrador) a esse número ou a 15% do seu limite diário, o que for maior, e elas incluem apenas os cabeçalhos de identificação da mensagem original (como `From`, `To` e `Subject`).
 * **Enhanced Protection e outros planos**: o limite do domínio é o próprio limite do usuário remetente.
 * **Substituição por alias**: os administradores do domínio podem definir um `smtp_limit` personalizado em aliases individuais. Verificamos esse valor primeiro (antes dos limites do domínio e do usuário), o que permite restringir aliases específicos a um volume de envio menor.
 * **Padrão do domínio para novos aliases**: os administradores do domínio podem definir um `alias_default_smtp_limit` no domínio (com a API ou Configurações Avançadas no painel). Os novos aliases nesse domínio então herdam esse valor como seu `smtp_limit`. Ele não pode exceder o limite atual do domínio, e os aliases existentes mantêm o seu próprio valor. Defina-o como `0` para desativá-lo.
 
 ### Preciso de aprovação para ativar o SMTP {#do-i-need-approval-to-enable-smtp}
 
-Sim, por favor, note que para manter a reputação do IP e garantir a entregabilidade, o Forward Email possui um processo de revisão manual por domínio para aprovação do SMTP de saída. Envie um e-mail para <support@forwardemail.net> ou abra uma [solicitação de ajuda](https://forwardemail.net/help) para aprovação. Isso normalmente leva menos de 24 horas, com a maioria dos pedidos sendo atendidos em 1-2 horas. Em breve, pretendemos tornar esse processo instantâneo com controles adicionais de spam e alertas. Esse processo garante que seus e-mails cheguem à caixa de entrada e que suas mensagens não sejam marcadas como spam.
+Sim. Aprovamos o SMTP de saída para cada domínio, o que protege a reputação dos nossos IPs e mantém seus e-mails fora da pasta de spam. Assim que os registros DKIM, Return-Path e DMARC do domínio são verificados (quando você clica em Verificar em Minha conta → Domínios → Configurações → Configuração SMTP de saída, ou envia sua primeira mensagem), nós o aprovamos na hora se nenhum dos seus domínios estiver com o SMTP de saída suspenso e uma destas condições se aplicar:
+
+* Você passou na nossa verificação de identidade (KYC).
+* O domínio usa um domínio de nível superior comum (como `.com` ou `.org`) e tem um site ativo em uma hospedagem confiável.
+* O domínio usa um domínio de nível superior comum e você já tem outro domínio aprovado para SMTP de saída.
+
+Nossa equipe analisa qualquer outro domínio e avisa você por e-mail quando tomarmos uma decisão, geralmente em até 24 horas e muitas vezes em 1 a 2 horas. Para agilizar uma análise, envie um e-mail para <support@forwardemail.net> ou abra uma [solicitação de ajuda](https://forwardemail.net/help) com as [informações de que precisamos](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp).
 
 Após a aprovação, o SMTP de saída é ilimitado e seu limite diário aumenta com sua [reputação de remetente](#what-are-your-outbound-smtp-limits).
 
@@ -5878,7 +5884,7 @@ Usamos verificação de registros MX e <strong class="notranslate">TXT</strong>,
 
 ### Como aumento meu armazenamento ou o limite de envio SMTP de saída {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-**Armazenamento**: acesse <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Minha conta → Cobrança</a> e role até a seção **Complementos**. Escolha um valor para adicionar (+10, +20, +30, +40 ou +50 GB), ou selecione "Other" para solicitar um valor personalizado. Ao enviar o formulário, sua solicitação vai para nossa equipe para revisão e você ainda não é cobrado. Assim que aprovarmos, enviamos por e-mail um link de pagamento seguro para concluir a atualização. Você pode ter uma solicitação de armazenamento pendente por vez, e não pode enviar outra dentro de 3 dias de uma solicitação anterior.
+**Armazenamento**: acesse <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Minha conta → Cobrança</a> e role até a seção **Complementos**. Escolha um valor para adicionar (+10, +20, +30, +40 ou +50 GB), ou selecione "Outro" para solicitar um valor personalizado. Ao enviar o formulário, sua solicitação vai para nossa equipe para revisão e você ainda não é cobrado. Assim que aprovarmos, enviamos por e-mail um link de pagamento seguro para concluir a atualização. Você pode ter uma solicitação de armazenamento pendente por vez, e não pode enviar outra dentro de 3 dias de uma solicitação anterior.
 
 **SMTP de saída**: não há nada para comprar. O SMTP de saída é ilimitado e seu limite diário aumenta com sua [reputação de remetente](#what-are-your-outbound-smtp-limits). <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Minha conta → Cobrança</a> e <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Minha conta → E-mails</a> mostram seu limite atual, seu nível de reputação e os requisitos para o próximo nível.
 
@@ -6005,7 +6011,7 @@ Se esse limite for excedido, enviamos um código de resposta 421 que informa ao 
 
 ### Posso enviar e-mails ilimitados com isso {#can-i-send-unlimited-emails-with-this}
 
-Sim. O SMTP de saída e a nossa API de e-mail são ilimitados em todos os planos pagos (a partir de $3/mo). Você tem um limite diário em vez de um teto mensal fixo, e ele aumenta enquanto você continua pagando e constrói um histórico de envio limpo: de 300 mensagens por dia para novos remetentes (900 no plano Team) até 10,000 por dia, e acima disso depois que nossa equipe analisa sua conta.
+Sim. O SMTP de saída e a nossa API de e-mail são ilimitados em todos os planos pagos (a partir de $3/mês). Você tem um limite diário em vez de um teto mensal fixo, e ele aumenta enquanto você continua pagando e constrói um histórico de envio limpo: de 300 mensagens por dia para novos remetentes (900 no plano Team) até 10,000 por dia, e acima disso depois que nossa equipe analisa sua conta. Cada domínio precisa de [aprovação](#do-i-need-approval-to-enable-smtp) antes de poder enviar.
 
 Somente e-mails entregues a destinatários reais fora dos seus próprios domínios constroem reputação. Para proteger a entregabilidade, uma alta taxa de devolução baixa seu limite, denúncias de spam e vírus de grandes provedores de caixas de correio o redefinem, e nós desaceleramos padrões incomuns (como um pico repentino em uma conta inativa). Veja [Quais são os seus limites de SMTP de saída](#what-are-your-outbound-smtp-limits) para mais detalhes, e seu limite atual em [Minha conta → E-mails](/my-account/emails).
 

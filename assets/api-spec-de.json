@@ -6137,7 +6137,7 @@
       },
       "post": {
         "summary": "Domain-Einladung erstellen",
-        "description": ">[!IMPORTANT]\n>Wenn der eingeladene Benutzer bereits Mitglied einer anderen Domäne ist, der der einladende Administrator angehört, wird die Einladung automatisch angenommen und es wird keine E-Mail versendet (nur für eine `group` von `user`: Eine Einladung als `admin` senden wir per E-Mail, damit der Eingeladene sie annimmt, und ihr Link erscheint nicht in den ausstehenden Einladungen der Domäne).",
+        "description": ">[!IMPORTANT]\n>Wenn der eingeladene Benutzer bereits akzeptiertes Mitglied einer anderen Domäne ist, der der einladende Administrator angehört, wird die Einladung automatisch angenommen und es wird keine E-Mail versendet (nur wenn `group` den Wert `user` hat: Eine Einladung als `admin` senden wir per E-Mail, damit der Eingeladene sie annimmt, und ihr Link erscheint nicht in den ausstehenden Einladungen der Domäne).",
         "tags": [
           "Einladungen"
         ],

@@ -2374,7 +2374,7 @@ Jos käytät Gmailia, noudata alla olevia ohjeita:
 
 Kyllä, voit lukea lisää osoitteesta <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Huomioithan, että IP-maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi Forward Emailillä on manuaalinen tarkistusprosessi kunkin verkkotunnuksen osalta **uutiskirjeiden hyväksyntää** varten. Lähetä sähköpostia osoitteeseen <support@forwardemail.net> tai avaa [tukipyyntö](https://forwardemail.net/help) hyväksyntää varten. Tämä kestää tyypillisesti alle 24 tuntia, ja useimmat pyynnöt käsitellään 1–2 tunnin sisällä. Lähitulevaisuudessa pyrimme tekemään tämän prosessin välittömäksi lisättyjen roskapostin valvontojen ja hälytysten avulla. Tämä prosessi varmistaa, että sähköpostisi saavuttavat vastaanottajan postilaatikon eivätkä viestisi merkitseydy roskapostiksi.
+Tiimimme tarkistaa jokaisen verkkotunnuksen ennen kuin se voi lähettää uutiskirjeitä, jotta voimme suojata IP-mainettamme ja sähköpostiesi toimitettavuutta. Viestit, joissa on `List-Id`- tai `List-Unsubscribe`-otsikko, tarvitsevat tämän **uutiskirjeiden hyväksynnän**, ja lähetämme sähköpostia verkkotunnuksesi ylläpitäjille, kun ensimmäinen tällainen viesti saapuu ilman sitä. Pyydä hyväksyntää lähettämällä sähköpostia osoitteeseen <support@forwardemail.net> tai avaamalla [tukipyyntö](https://forwardemail.net/help). Vastaamme yleensä 24 tunnin sisällä ja usein 1 tai 2 tunnin sisällä.
 
 Uutiskirjeet ja postituslistat lasketaan päivittäiseen lähtevään kynnykseesi, joka on rajoittamaton ja kasvaa [lähettäjämaineesi](#what-are-your-outbound-smtp-limits) mukana. Pidä listasi puhtaina: korkea palautusaste laskee kynnystäsi, ja hidastamme äkillisiä volyymin hyppäyksiä.
 
@@ -2586,7 +2586,7 @@ Jotta voit käyttää yhteystukitoimintoa, **käyttäjän** on oltava sähköpos
 
 ### Tuetko sähköpostin lähettämistä SMTP:llä {#do-you-support-sending-email-with-smtp}
 
-Kyllä. Kaikki maksulliset paketit sisältävät lähtevän SMTP:n, ja se on **rajoittamaton**: päivittäinen lähetyskynnyksesi kasvaa [lähettäjämaineesi](#what-are-your-outbound-smtp-limits) mukana.
+Kyllä. Kaikki maksulliset paketit sisältävät lähtevän SMTP:n, ja se on **rajoittamaton**: päivittäinen lähetyskynnyksesi kasvaa [lähettäjämaineesi](#what-are-your-outbound-smtp-limits) mukana. Jokainen verkkotunnus tarvitsee ensin [hyväksynnän](#do-i-need-approval-to-enable-smtp), ja moni verkkotunnus saa sen ilman odotusta, kun sen DNS-tietueet on vahvistettu.
 
 <div id="smtp-instructions">
 
@@ -2645,7 +2645,7 @@ Kyllä. Kaikki maksulliset paketit sisältävät lähtevän SMTP:n, ja se on **r
     Tärkeää:
   </strong>
   <span>
-    Huomioithan, että IP-maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi meillä on manuaalinen tarkastusprosessi lähtö-SMTP:n hyväksynnälle domain-kohtaisesti. Tämä kestää tyypillisesti alle 24 tuntia, ja useimmat pyynnöt käsitellään 1–2 tunnin sisällä. Lähitulevaisuudessa pyrimme tekemään tämän prosessin välittömäksi lisättyjen roskapostin valvontojen ja hälytysten avulla. Tämä prosessi varmistaa, että sähköpostisi saavuttavat vastaanottajan postilaatikon eivätkä viestisi merkitseydy roskapostiksi.
+    Hyväksymme lähtevän SMTP:n verkkotunnuskohtaisesti suojataksemme IP-mainettamme ja viestiesi toimitettavuutta. Hyväksymme monet verkkotunnukset ilman odotusta, kun niiden DNS-tietueet on vahvistettu, ja tiimimme tarkastaa loput, yleensä 24 tunnin kuluessa. Katso [Tarvitsenko hyväksynnän SMTP:n käyttöönottoon](#do-i-need-approval-to-enable-smtp).
   </span>
 </div>
 
@@ -3715,7 +3715,7 @@ Kun käytät <a href="#do-you-support-regular-expressions-or-regex" class="alert
 
 ### Mitkä ovat lähtevän SMTP:n rajasi {#what-are-your-outbound-smtp-limits}
 
-Lähtevä SMTP on **rajoittamaton** ja **maineeseen perustuva**. Saat kiinteän kuukausittaisen ylärajan sijaan päivittäisen kynnyksen, ja se kasvaa, kun kerrytät hyvää lähetysmainetta.
+Lähtevä SMTP on **rajoittamaton** ja **maineeseen perustuva**. Saat kiinteän kuukausittaisen ylärajan sijaan päivittäisen kynnyksen, ja se kasvaa, kun kerrytät hyvää lähetysmainetta. Jokainen verkkotunnus tarvitsee [hyväksynnän](#do-i-need-approval-to-enable-smtp), ennen kuin se voi lähettää, ja moni verkkotunnus saa sen ilman odotusta, kun sen DNS-tietueet on vahvistettu.
 
 Uudet lähettäjät aloittavat 300 viestillä päivässä, tai Team-paketissa 900:lla (Team-paketin lähettäjät ohittavat 900:aa alemmat tasot, ja heidän seuraava tasonsa on 1,000). Kerran päivässä tarkastelemme viimeaikaisia lähetyksiäsi ja nostamme tai laskemme kynnystäsi. Arvioimme jokaisen päivän kaksi päivää myöhemmin, kun tiedämme sen viestien toimitustulokset. Kun tämä alkaa tililläsi, katsomme enintään 30 päivää taaksepäin lähetyshistoriaasi ja käsittelemme väliin jääneet päivät jälkikäteen.
 
@@ -3754,7 +3754,7 @@ Hidastukset päättyvät, kun toimintasi palaa normaaliksi, eikä päivää, jon
 
 Kun saavutat päivän kynnyksesi, hylkäämme muut viestit `421`-virheellä (tarkoittaa "yritä myöhemmin uudelleen"), kunnes kynnyksesi nollautuu keskiyöllä UTC. [Väärinkäytön estotoimemme](#why-was-my-outbound-smtp-suspended) roskapostia ja viruksia vastaan ovat voimassa kynnyksestä riippumatta.
 
-Näet, kuinka monta viestiä lähetit tänään ja mikä nykyinen kynnyksesi on, kohdassa [Oma tili → Sähköpostit](/my-account/emails) tai [API](/email-api#get-outbound-smtp-email-limit):n kautta.
+Näet, kuinka monta viestiä lähetit tänään ja mikä nykyinen kynnyksesi on, kohdassa [Oma tili → Sähköpostit](/my-account/emails) tai [API:n](/email-api#get-outbound-smtp-email-limit) kautta.
 
 **Miten kynnyksiä sovelletaan:**
 
@@ -3775,7 +3775,13 @@ Näet, kuinka monta viestiä lähetit tänään ja mikä nykyinen kynnyksesi on,
 
 ### Tarvitsenko hyväksynnän SMTP:n käyttöönottoon {#do-i-need-approval-to-enable-smtp}
 
-Kyllä, huomioithan, että IP-maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi Forward Emailillä on manuaalinen tarkastusprosessi domainikohtaisesti lähtevän SMTP:n hyväksyntää varten. Lähetä sähköpostia osoitteeseen <support@forwardemail.net> tai avaa [tukipyyntö](https://forwardemail.net/help) hyväksyntää varten. Tämä kestää tyypillisesti alle 24 tuntia, ja useimmat pyynnöt käsitellään 1-2 tunnin sisällä. Lähitulevaisuudessa pyrimme tekemään tämän prosessin välittömäksi lisättyjen roskapostin valvontojen ja hälytysten avulla. Tämä prosessi varmistaa, että sähköpostisi saavuttavat postilaatikon eivätkä viestisi päädy roskapostiksi.
+Kyllä. Hyväksymme lähtevän SMTP:n verkkotunnuskohtaisesti, mikä suojaa IP-mainettamme ja pitää postisi poissa roskapostikansioista. Kun verkkotunnuksen DKIM-, Return-Path- ja DMARC-tietueet on vahvistettu (kun napsautat Vahvista kohdassa Oma tili → Verkkotunnukset → Asetukset → Lähtevän SMTP:n konfigurointi tai lähetät ensimmäisen viestisi), hyväksymme sen ilman odotusta, jos minkään verkkotunnuksesi lähtevää SMTP:tä ei ole jäädytetty ja jokin seuraavista pätee:
+
+* Olet läpäissyt henkilöllisyyden vahvistuksemme (KYC).
+* Verkkotunnus käyttää yleistä ylätason verkkotunnusta (kuten `.com` tai `.org`), ja sillä on toimiva verkkosivusto luotettavalla hostingilla.
+* Verkkotunnus käyttää yleistä ylätason verkkotunnusta, ja sinulla on jo toinen lähtevää SMTP:tä varten hyväksytty verkkotunnus.
+
+Tiimimme tarkastaa kaikki muut verkkotunnukset ja ilmoittaa sinulle sähköpostitse, kun olemme tehneet päätöksen, yleensä 24 tunnin kuluessa ja usein 1–2 tunnissa. Voit nopeuttaa tarkastusta lähettämällä sähköpostia osoitteeseen <support@forwardemail.net> tai avaamalla [tukipyynnön](https://forwardemail.net/help), jossa on [tarvitsemamme tiedot](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp).
 
 Hyväksynnän jälkeen lähtevä SMTP on rajoittamaton, ja päivittäinen kynnyksesi kasvaa [lähettäjämaineesi](#what-are-your-outbound-smtp-limits) mukana.
 
@@ -6004,7 +6010,7 @@ Jos tämä raja ylittyy, lähetämme 421-vastauskoodin, joka kertoo lähettäjä
 
 ### Voinko lähettää rajattomasti sähköposteja tämän avulla {#can-i-send-unlimited-emails-with-this}
 
-Kyllä. Lähtevä SMTP ja sähköposti-API:mme ovat rajoittamattomia kaikissa maksullisissa paketeissa (alkaen $3/mo). Saat kiinteän kuukausittaisen ylärajan sijaan päivittäisen kynnyksen, ja se kasvaa, kun jatkat maksamista ja kerrytät puhdasta lähetyshistoriaa: 300 viestistä päivässä uusille lähettäjille (Team-paketissa 900) aina 10,000 viestiin päivässä ja sen yli, kun tiimimme on tarkastanut tilisi.
+Kyllä. Lähtevä SMTP ja sähköposti-API:mme ovat rajoittamattomia kaikissa maksullisissa paketeissa (alkaen $3/kk). Saat kiinteän kuukausittaisen ylärajan sijaan päivittäisen kynnyksen, ja se kasvaa, kun jatkat maksamista ja kerrytät puhdasta lähetyshistoriaa: 300 viestistä päivässä uusille lähettäjille (Team-paketissa 900) aina 10,000 viestiin päivässä ja sen yli, kun tiimimme on tarkastanut tilisi. Jokainen verkkotunnus tarvitsee [hyväksynnän](#do-i-need-approval-to-enable-smtp), ennen kuin se voi lähettää.
 
 Vain omien verkkotunnustesi ulkopuolisille todellisille vastaanottajille toimitettu posti kerryttää mainetta. Toimitettavuuden suojaamiseksi korkea palautusaste laskee kynnystäsi, suurten postilaatikkopalveluiden roskaposti- ja virusilmoitukset nollaavat sen, ja hidastamme epätavallisia kuvioita (kuten äkillistä piikkiä käyttämättömältä tililtä). Katso lisätiedot kohdasta [Mitkä ovat lähtevän SMTP:n rajasi](#what-are-your-outbound-smtp-limits) ja nykyinen kynnyksesi kohdasta [Oma tili → Sähköpostit](/my-account/emails).
 

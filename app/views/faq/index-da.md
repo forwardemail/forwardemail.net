@@ -2071,9 +2071,9 @@ I modsætning til mailsystemer som `postfix` (f.eks. der bruger `sieve` feriefil
 
 8. Vi sender ikke, hvis MAIL FROM-adressen matcher et ARF feedback-afsendermønster (f.eks. `feedback@arf.mail.yahoo.com`).
 
-9. Vi svarer kun godkendte afsendere: From-adressen skal bestå DMARC eller have en justeret, gyldig DKIM-signatur. SPF alene tæller ikke, da delte mailservere består det for alle. En forfalsket afsender kan ikke gøre dine ferie-autosvar til [backscatter](https://www.backscatterer.org/?target=autoresponders) rettet mod en anden.
+9. Vi svarer kun autentificerede afsendere: From-adressen skal bestå DMARC eller have en justeret, gyldig DKIM-signatur. SPF alene tæller ikke, da delte mailservere består det for alle. En forfalsket afsender kan ikke gøre dine ferie-autosvar til [backscatter](https://www.backscatterer.org/?target=autoresponders) rettet mod en anden.
 
-10. Vi svarer kun, når dit alias eller en anden adresse på dets domæne (såsom et alias, der videresender til det) står i headeren `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` eller `Resent-Bcc`, som [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) anbefaler. Post sendt til en skjult liste af modtagere får intet svar. Sieve-ferie-autosvar kræver, at dit alias eller en adresse i dens `:addresses` står i de headere.
+10. Vi svarer kun, når dit alias eller en anden adresse på dets domæne (såsom et alias, der videresender til det) står i headeren `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` eller `Resent-Bcc`, som [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) anbefaler. Post sendt til en skjult liste af modtagere får intet svar. Sieve-ferie-autosvar kræver, at dit alias eller en adresse i dets `:addresses` står i de headere.
 
 11. Vi sender op til 300 ferie-autosvar pr. bruger pr. dag (færre, hvis vi har begrænset din udgående SMTP-tærskel til under det), og højst 20 pr. modtageradresse pr. dag på tværs af alle vores brugere.
 
@@ -2376,7 +2376,7 @@ Hvis du bruger Gmail, så følg disse trin nedenfor:
 
 Ja, du kan læse mere på <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Bemærk venligst, at for at opretholde IP-omdømme og sikre leveringsdygtighed, har Forward Email en manuel gennemgangsproces pr. domæne for **godkendelse af nyhedsbreve**. Send en email til <support@forwardemail.net> eller åbn en [hjælpeanmodning](https://forwardemail.net/help) for godkendelse. Dette tager typisk mindre end 24 timer, hvor de fleste anmodninger bliver godkendt inden for 1-2 timer. I den nærmeste fremtid sigter vi mod at gøre denne proces øjeblikkelig med yderligere spamkontroller og alarmering. Denne proces sikrer, at dine emails når indbakken, og at dine beskeder ikke bliver markeret som spam.
+Vores team gennemgår hvert domæne, før det kan sende nyhedsbreve, for at beskytte vores IP-omdømme og din leveringsdygtighed. Beskeder med en `List-Id`- eller `List-Unsubscribe`-header kræver denne **godkendelse af nyhedsbreve**, og vi sender en email til dit domænes administratorer, første gang en sådan besked ankommer uden godkendelse. For at bede om godkendelse skal du sende en email til <support@forwardemail.net> eller åbne en [hjælpeanmodning](https://forwardemail.net/help). Vi svarer normalt inden for 24 timer og ofte inden for 1 til 2 timer.
 
 Nyhedsbreve og mailinglister tæller med i din daglige udgående tærskel, som er ubegrænset og stiger med dit [afsenderomdømme](#what-are-your-outbound-smtp-limits). Hold dine lister rene: en høj bounce-rate flytter din tærskel ned, og vi bremser pludselige spring i volumen.
 
@@ -2588,7 +2588,7 @@ For at bruge kontaktunderstøttelse skal **brugeren** være e-mailadressen på e
 
 ### Understøtter I afsendelse af e-mail med SMTP {#do-you-support-sending-email-with-smtp}
 
-Ja. Alle betalte abonnementer inkluderer udgående SMTP, og det er **ubegrænset**: din daglige afsendelsestærskel stiger med dit [afsenderomdømme](#what-are-your-outbound-smtp-limits).
+Ja. Alle betalte abonnementer inkluderer udgående SMTP, og det er **ubegrænset**: din daglige afsendelsestærskel stiger med dit [afsenderomdømme](#what-are-your-outbound-smtp-limits). Hvert domæne skal først have [godkendelse](#do-i-need-approval-to-enable-smtp), og mange domæner får den uden ventetid, så snart deres DNS-poster er verificeret.
 
 <div id="smtp-instructions">
 
@@ -2647,7 +2647,7 @@ Ja. Alle betalte abonnementer inkluderer udgående SMTP, og det er **ubegrænset
     Vigtigt:
   </strong>
   <span>
-    Bemærk venligst, at for at opretholde IP-ry og sikre leveringsdygtighed har vi en manuel gennemgangsproces på domæneniveau for godkendelse af udgående SMTP. Dette tager typisk mindre end 24 timer, hvor de fleste anmodninger bliver godkendt inden for 1-2 timer. I den nærmeste fremtid sigter vi mod at gøre denne proces øjeblikkelig med yderligere spamkontroller og alarmering. Denne proces sikrer, at dine e-mails når indbakken, og at dine beskeder ikke bliver markeret som spam.
+    Vi godkender udgående SMTP for hvert domæne for at beskytte vores IP-omdømme og din leveringsevne. Vi godkender mange domæner uden ventetid, så snart deres DNS-poster er verificeret, og vores team gennemgår resten, som regel inden for 24 timer. Se [Skal jeg have godkendelse for at aktivere SMTP](#do-i-need-approval-to-enable-smtp).
   </span>
 </div>
 
@@ -3717,9 +3717,9 @@ Når du bruger <a href="#do-you-support-regular-expressions-or-regex" class="ale
 
 ### Hvad er dine grænser for udgående SMTP {#what-are-your-outbound-smtp-limits}
 
-Udgående SMTP er **ubegrænset** og **omdømmebaseret**. Du får en daglig tærskel i stedet for et fast månedligt loft, og den stiger, efterhånden som du opbygger et godt afsendelsesomdømme.
+Udgående SMTP er **ubegrænset** og **omdømmebaseret**. Du får en daglig tærskel i stedet for et fast månedligt loft, og den stiger, efterhånden som du opbygger et godt afsendelsesomdømme. Hvert domæne skal have [godkendelse](#do-i-need-approval-to-enable-smtp), før det kan sende, og mange domæner får den uden ventetid, så snart deres DNS-poster er verificeret.
 
-Nye afsendere starter med 300 beskeder pr. dag, eller 900 på Team-planen (afsendere på Team-planen springer niveauerne under 900 over, og deres næste niveau er 1,000). En gang om dagen gennemgår vi din seneste afsendelse og flytter din tærskel op eller ned. Vi evaluerer hver dag to dage senere, når vi kender leveringsresultaterne for dens beskeder. Når dette starter for din konto, ser vi op til 30 dage tilbage i din afsendelseshistorik, og vi indhenter de dage, vi mangler.
+Nye afsendere starter med 300 beskeder pr. dag, eller 900 på Team-planen (afsendere på Team-planen springer niveauerne under 900 over, og deres næste niveau er 1,000). En gang om dagen gennemgår vi din seneste afsendelse og flytter din tærskel op eller ned. Vi evaluerer hver dag to dage senere, når vi kender leveringsresultaterne for dens beskeder. Når dette starter for din konto, ser vi op til 30 dage tilbage i din afsendelseshistorik, og vi indhenter de dage, vi er gået glip af.
 
 Kun reel afsendelse opbygger omdømme. Mail tæller med til at rykke op i niveau, når vi **leverer** den til **unikke modtagere uden for dine egne domæner**. Mail til dig selv, til dine egne domæner (eller deres underdomæner), til de domæner, du sender fra, eller gentaget til den samme modtager tæller ikke. Varianter af én adresse (et `+tag` eller punktummer i en Gmail-adresse) tæller én gang. Hvert modtagerdomæne (med dets underdomæner) tæller for op til 50 modtagere pr. dag, undtagen de store postkasseudbyderes egne domæner (såsom gmail.com). Mindst en femtedel af de modtagere, der tæller, skal gå til store postkasseudbydere, og højere niveauer kræver også et minimumsantal forskellige modtagerdomæner på en enkelt dag.
 
@@ -3739,7 +3739,7 @@ Kun reel afsendelse opbygger omdømme. Mail tæller med til at rykke op i niveau
 |           5,000 |                      60 dage |                                  14 |                                   75 |
 |          10,000 |                     120 dage |                                  21 |                                  150 |
 
-Ud over 10,000 beskeder pr. dag gennemgår vores team din konto og hæver din tærskel i hånden, uden at du skal gøre noget. Hvis du har brug for en højere tærskel hurtigere (for eksempel for at flytte en eksisterende afsendelsesvolumen), så [kontakt os](/help). En tærskel, som vores team godkender, fungerer som et minimum og placerer dig på det niveau, den dækker, og dit omdømme kan stadig hæve den op til 10,000 beskeder pr. dag.
+Ud over 10,000 beskeder pr. dag gennemgår vores team din konto og hæver selv din tærskel, uden at du skal gøre noget. Hvis du har brug for en højere tærskel hurtigere (for eksempel for at flytte en eksisterende afsendelsesvolumen), så [kontakt os](/help). En tærskel, som vores team godkender, fungerer som et minimum og placerer dig på det niveau, den dækker, og dit omdømme kan stadig hæve den op til 10,000 beskeder pr. dag.
 
 **Usædvanlige afsendelsesmønstre:**
 
@@ -3752,7 +3752,7 @@ Vi bremser afsendelsen med en `421`-fejl, når din aktivitet ser usædvanlig ud,
 * **Kø-efterslæb**: hvis for mange af dine beskeder fra de seneste 24 timer stadig venter i køen (10% af dagens kvote, mindst din starttærskel), venter nye beskeder, indtil køen har indhentet efterslæbet. Planlagte beskeder, beskeder, vi forsøger igen, efter at en modtager har udskudt dem, og beskeder, der afventer godkendelse, tæller ikke med, og et efterslæb tæller ikke imod dit omdømme.
 * **Planlagte beskeder**: du kan planlægge beskeder op til 27 dage frem og have op til en dags kvote af beskeder planlagt ad gangen.
 
-Sænkninger stopper, når din aktivitet vender tilbage til normalen, og en dag med en sænkning tæller ikke som en ren afsendelsesdag. Mailklienter forsøger selv at sende udskudte beskeder igen, og API-anmodninger får en `429`-fejl, så prøv dem igen senere.
+Opbremsninger ophører, når din aktivitet vender tilbage til normalen, og en dag med en opbremsning tæller ikke som en ren afsendelsesdag. Mailklienter forsøger selv at sende udskudte beskeder igen, og API-anmodninger får en `429`-fejl, så prøv dem igen senere.
 
 Når du når din tærskel for dagen, afviser vi yderligere beskeder med en `421`-fejl (som betyder "prøv igen senere"), indtil din tærskel nulstilles ved midnat UTC. Vores [beskyttelse mod misbrug](#why-was-my-outbound-smtp-suspended) i form af spam og virus gælder uanset tærskel.
 
@@ -3770,14 +3770,20 @@ Du kan se, hvor mange beskeder du sendte i dag, og din nuværende tærskel under
 * **Domæner på Team-planen**: domænets tærskel er den højeste tærskel blandt dets betalende adminmedlemmer. Hvis en admin for eksempel har en tærskel på 1,000 og en anden har 5,000, er domænets tærskel 5,000. Afsendere på Team-planen starter med 900 beskeder pr. dag i stedet for 300.
 * **Kontobred**: et domænes konto er dets betalende admin med den højeste tærskel. Al post sendt fra de domæner, som den konto er admin for, tæller med i den ene tærskel, uanset hvem der sender den (medlemmer inkluderet), så flere domæner eller medlemmer øger den ikke.
 * **Nye domæner trappes op**: inden for kontoens tærskel kan et domæne sende op til 2 gange sin travleste dag med leveret post inden for de seneste 45 dage, og mindst sin starttærskel (300 beskeder, eller 900 på Team-planen) eller en godkendt tærskel. Et nyt domæne på en etableret konto starter på sin starttærskel og vokser, efterhånden som vi leverer dets post.
-* **Bounces og autosvar**: bounce-notifikationer og ferie-autosvar (auto-reply), som vi sender på dine vegne, tæller ikke med i din tærskel. Vi sender op til 300 autosvar pr. bruger pr. dag (færre, hvis vi har begrænset din tærskel til under det) og højst 20 pr. modtageradresse pr. dag på tværs af alle vores brugere, og kun til afsendere, der har bestået godkendelse (se [ferie-autosvar](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Vi begrænser bounce-notifikationer til en returadresse uden for det domæne, du sendte fra (eller andre domæner, du er admin for), til det antal eller 15% af din daglige tærskel, alt efter hvad der er højest, og de indeholder kun den oprindelige beskeds identificerende headers (såsom `From`, `To` og `Subject`).
+* **Bounces og autosvar**: bounce-notifikationer og ferie-autosvar (auto-reply), som vi sender på dine vegne, tæller ikke med i din tærskel. Vi sender op til 300 autosvar pr. bruger pr. dag (færre, hvis vi har begrænset din tærskel til under det) og højst 20 pr. modtageradresse pr. dag på tværs af alle vores brugere, og kun til afsendere, der har bestået autentificering (se [ferie-autosvar](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Vi begrænser bounce-notifikationer til en returadresse uden for det domæne, du sendte fra (eller andre domæner, du er admin for), til det antal eller 15% af din daglige tærskel, alt efter hvad der er højest, og de indeholder kun den oprindelige beskeds identificerende headers (såsom `From`, `To` og `Subject`).
 * **Forbedret beskyttelse og andre planer**: domænets tærskel er den afsendende brugers egen tærskel.
 * **Tilsidesættelse pr. alias**: domæneadministratorer kan sætte en brugerdefineret `smtp_limit` på individuelle aliaser. Vi kontrollerer den først (før domæne- og brugertærsklerne), så du kan begrænse bestemte aliaser til et lavere afsendelsesvolumen.
 * **Domænestandard for nye aliaser**: domæneadministratorer kan angive en `alias_default_smtp_limit` på domænet (med API'en eller Avancerede indstillinger i dashboardet). Nye aliaser på det domæne arver så denne værdi som deres `smtp_limit`. Den kan ikke overstige domænets nuværende tærskel, og eksisterende aliaser beholder deres egen. Angiv `0` for at slå den fra.
 
 ### Skal jeg have godkendelse for at aktivere SMTP {#do-i-need-approval-to-enable-smtp}
 
-Ja, bemærk venligst, at for at opretholde IP-ry og sikre leveringsdygtighed har Forward Email en manuel gennemgangsproces pr. domæne for godkendelse af udgående SMTP. Send en e-mail til <support@forwardemail.net> eller åbn en [hjælpeanmodning](https://forwardemail.net/help) for godkendelse. Dette tager typisk mindre end 24 timer, hvor de fleste anmodninger bliver godkendt inden for 1-2 timer. I den nærmeste fremtid sigter vi mod at gøre denne proces øjeblikkelig med yderligere spamkontroller og alarmering. Denne proces sikrer, at dine e-mails når indbakken, og at dine beskeder ikke bliver markeret som spam.
+Ja. Vi godkender udgående SMTP for hvert domæne, hvilket beskytter vores IP-omdømme og holder din post ude af spammapper. Når domænets DKIM-, Return-Path- og DMARC-poster er verificeret (når du klikker på Verificer under Min konto → Domæner → Indstillinger → Udgående SMTP-konfiguration eller sender din første besked), godkender vi det uden ventetid, hvis ingen af dine domæner har udgående SMTP suspenderet, og et af disse punkter gælder:
+
+* Du har bestået vores identitetsverifikation (KYC).
+* Domænet bruger et almindeligt topdomæne (såsom `.com` eller `.org`) og har et aktivt website hos en velrenommeret hostingudbyder.
+* Domænet bruger et almindeligt topdomæne, og du har allerede et andet domæne, der er godkendt til udgående SMTP.
+
+Vores team gennemgår alle andre domæner og sender dig en e-mail, når vi har truffet en beslutning, som regel inden for 24 timer og ofte inden for 1 til 2 timer. Hvis du vil fremskynde en gennemgang, så skriv til <support@forwardemail.net> eller åbn en [hjælpeanmodning](https://forwardemail.net/help) med de [oplysninger, vi har brug for](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp).
 
 Når det er godkendt, er udgående SMTP ubegrænset, og din daglige tærskel stiger med dit [afsenderomdømme](#what-are-your-outbound-smtp-limits).
 
@@ -6006,7 +6012,7 @@ Hvis denne grænse overskrides, sender vi en 421 svar kode, som fortæller afsen
 
 ### Kan jeg sende ubegrænsede e-mails med dette {#can-i-send-unlimited-emails-with-this}
 
-Ja. Udgående SMTP og vores e-mail-API er ubegrænsede på alle betalte abonnementer (fra $3/mo). Du får en daglig tærskel i stedet for et fast månedligt loft, og den stiger, så længe du bliver ved med at betale og opbygger en ren afsendelseshistorik: fra 300 beskeder pr. dag for nye afsendere (900 på Team-planen) op til 10,000 pr. dag og derudover, når vores team har gennemgået din konto.
+Ja. Udgående SMTP og vores e-mail-API er ubegrænsede på alle betalte abonnementer (fra $3/md.). Du får en daglig tærskel i stedet for et fast månedligt loft, og den stiger, så længe du bliver ved med at betale og opbygger en ren afsendelseshistorik: fra 300 beskeder pr. dag for nye afsendere (900 på Team-planen) op til 10,000 pr. dag og derudover, når vores team har gennemgået din konto. Hvert domæne skal have [godkendelse](#do-i-need-approval-to-enable-smtp), før det kan sende.
 
 Kun mail, der leveres til rigtige modtagere uden for dine egne domæner, opbygger omdømme. For at beskytte leveringsevnen flytter en høj bounce-rate din tærskel ned, spam- og virusrapporter fra store postkasseudbydere nulstiller den, og vi bremser usædvanlige mønstre (såsom en pludselig spids fra en inaktiv konto). Se [Hvad er dine grænser for udgående SMTP](#what-are-your-outbound-smtp-limits) for detaljer, og din nuværende tærskel under [Min konto → E-mails](/my-account/emails).
 

@@ -6137,7 +6137,7 @@
       },
       "post": {
         "summary": "Alan adı daveti oluştur",
-        "description": ">[!IMPORTANT]\n>Davet edilen kullanıcı, davet eden yöneticinin üyesi olduğu başka bir alan adının kabul edilmiş bir üyesiyse, daveti otomatik olarak kabul edecek ve e-posta göndermeyecektir (yalnızca `user` değerindeki bir `group` için: `admin` olarak yapılan bir daveti, davet edilenin kabul etmesi için e-postayla göndeririz ve bağlantısını alan adının bekleyen davetlerine eklemeyiz).",
+        "description": ">[!IMPORTANT]\n>Davet edilen kullanıcı, davet eden yöneticinin üyesi olduğu başka bir alan adının kabul edilmiş bir üyesiyse, davet otomatik olarak kabul edilir ve e-posta gönderilmez (yalnızca `user` değerindeki bir `group` için: `admin` olarak yapılan bir daveti, davet edilenin kabul etmesi için e-postayla göndeririz ve bağlantısını alan adının bekleyen davetlerine eklemeyiz).",
         "tags": [
           "Davetler"
         ],
@@ -6271,7 +6271,7 @@
       ],
       "put": {
         "summary": "Etki alanı üyesini güncelle",
-        "description": "Bir etki alanı üyesini güncelleyin.\n\n>[!IMPORTANT]\n>Başka bir üyeyi `admin` olarak güncellemek, bunun yerine ona yönetici olarak bir davet e-postası gönderir ve daveti kabul edene kadar `user` olarak kalır (alan adının bekleyen davetleri onu listeler). Üyeyi tekrar `user` olarak güncellemek veya kaldırmak daveti geri çeker.",
+        "description": "Bir alan adı üyesini güncelleyin.\n\n>[!IMPORTANT]\n>Başka bir üyeyi `admin` olarak güncellemek, bunun yerine ona yönetici olarak bir davet e-postası gönderir ve daveti kabul edene kadar `user` olarak kalır (alan adının bekleyen davetleri onu listeler). Üyeyi tekrar `user` olarak güncellemek veya kaldırmak daveti geri çeker.",
         "tags": [
           "Üyeler"
         ],

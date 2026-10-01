@@ -2376,7 +2376,7 @@ Se usi Gmail, segui questi passaggi:
 
 Sì, puoi leggere di più su <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Si prega di notare che, per mantenere la reputazione IP e garantire la consegnabilità, Forward Email ha un processo di revisione manuale per dominio per l'**approvazione delle newsletter**. Invia un'email a <support@forwardemail.net> o apri una [richiesta di assistenza](https://forwardemail.net/help) per l'approvazione. Questo processo di solito richiede meno di 24 ore, con la maggior parte delle richieste evase entro 1-2 ore. Nel prossimo futuro puntiamo a rendere questo processo istantaneo con controlli antispam aggiuntivi e notifiche. Questo processo garantisce che le tue email raggiungano la casella di posta e che i tuoi messaggi non vengano contrassegnati come spam.
+Il nostro team esamina ogni dominio prima che possa inviare newsletter, per proteggere la reputazione dei nostri IP e la consegnabilità delle tue email. I messaggi con un'intestazione `List-Id` o `List-Unsubscribe` richiedono questa **approvazione delle newsletter**, e inviamo un'email agli amministratori del tuo dominio la prima volta che ne arriva uno senza approvazione. Per richiedere l'approvazione, invia un'email a <support@forwardemail.net> o apri una [richiesta di assistenza](https://forwardemail.net/help). Di solito rispondiamo entro 24 ore, e spesso entro 1 o 2 ore.
 
 Newsletter e mailing list rientrano nella tua soglia giornaliera in uscita, che è illimitata e cresce con la tua [reputazione di mittente](#what-are-your-outbound-smtp-limits). Mantieni pulite le tue liste: un tasso di rimbalzo elevato abbassa la tua soglia, e rallentiamo gli aumenti improvvisi di volume.
 
@@ -2588,7 +2588,7 @@ Per utilizzare il supporto ai contatti, l'**utente** deve essere l'indirizzo ema
 
 ### Supportate l'invio di email con SMTP {#do-you-support-sending-email-with-smtp}
 
-Sì. Tutti i piani a pagamento includono l'SMTP in uscita, ed è **illimitato**: la tua soglia di invio giornaliera cresce con la tua [reputazione di mittente](#what-are-your-outbound-smtp-limits).
+Sì. Tutti i piani a pagamento includono l'SMTP in uscita, ed è **illimitato**: la tua soglia di invio giornaliera cresce con la tua [reputazione di mittente](#what-are-your-outbound-smtp-limits). Ogni dominio deve prima ottenere la nostra [approvazione](#do-i-need-approval-to-enable-smtp), e approviamo molti domini all'istante non appena i loro record DNS risultano verificati.
 
 <div id="smtp-instructions">
 
@@ -2647,7 +2647,7 @@ Sì. Tutti i piani a pagamento includono l'SMTP in uscita, ed è **illimitato**:
     Importante:
   </strong>
   <span>
-    Nota che per mantenere la reputazione IP e garantire la consegna, abbiamo un processo di revisione manuale per dominio per l'approvazione SMTP in uscita. Questo processo di solito richiede meno di 24 ore, con la maggior parte delle richieste evase entro 1-2 ore. Nel prossimo futuro puntiamo a rendere questo processo istantaneo con controlli antispam aggiuntivi e notifiche. Questo processo garantisce che le tue email raggiungano la casella di posta e che i tuoi messaggi non vengano contrassegnati come spam.
+    Approviamo l'SMTP in uscita per ogni dominio per proteggere la reputazione dei nostri IP e la tua consegnabilità. Approviamo molti domini all'istante non appena i loro record DNS risultano verificati, e il nostro team esamina gli altri, di solito entro 24 ore. Vedi [Ho bisogno di approvazione per abilitare SMTP](#do-i-need-approval-to-enable-smtp).
   </span>
 </div>
 
@@ -3717,7 +3717,7 @@ Quando utilizzi le <a href="#do-you-support-regular-expressions-or-regex" class=
 
 ### Quali sono i tuoi limiti SMTP in uscita {#what-are-your-outbound-smtp-limits}
 
-L'SMTP in uscita è **illimitato** e **basato sulla reputazione**. Hai una soglia giornaliera invece di un tetto mensile fisso, e cresce man mano che costruisci una buona reputazione di invio.
+L'SMTP in uscita è **illimitato** e **basato sulla reputazione**. Hai una soglia giornaliera invece di un tetto mensile fisso, e cresce man mano che costruisci una buona reputazione di invio. Ogni dominio deve ottenere la nostra [approvazione](#do-i-need-approval-to-enable-smtp) prima di poter inviare, e approviamo molti domini all'istante non appena i loro record DNS risultano verificati.
 
 I nuovi mittenti partono da 300 messaggi al giorno, o 900 con il piano Team (i mittenti del piano Team saltano i livelli inferiori a 900, e il loro livello successivo è 1,000). Una volta al giorno esaminiamo i tuoi invii recenti e alziamo o abbassiamo la tua soglia. Valutiamo ogni giorno due giorni dopo, quando conosciamo i risultati di consegna dei suoi messaggi. Quando questo meccanismo parte per il tuo account, consideriamo fino a 30 giorni della tua cronologia di invio, e recuperiamo i giorni mancati.
 
@@ -3770,14 +3770,20 @@ Puoi vedere quanti messaggi hai inviato oggi e la tua soglia attuale in [Il mio 
 * **Domini del piano Team**: la soglia del dominio è la soglia più alta tra i suoi membri amministratori paganti. Ad esempio, se un amministratore ha una soglia di 1,000 e un altro di 5,000, la soglia del dominio è 5,000. I mittenti del piano Team partono da 900 messaggi al giorno invece di 300.
 * **A livello di account**: l'account di un dominio è il suo amministratore pagante con la soglia più alta. Tutta la posta inviata dai domini di cui quell'account è amministratore conta per quell'unica soglia, chiunque la invii (membri inclusi), quindi aggiungere domini o membri non la aumenta.
 * **I nuovi domini aumentano gradualmente**: entro la soglia dell'account, un dominio può inviare fino a 2 volte il suo giorno più attivo di posta consegnata negli ultimi 45 giorni, e almeno la sua soglia iniziale (300 messaggi, o 900 con il piano Team) o una soglia approvata. Un nuovo dominio su un account consolidato parte dalla sua soglia iniziale e cresce man mano che consegniamo la sua posta.
-* **Bounce e risposte automatiche**: le notifiche di bounce e i messaggi del risponditore di assenza (risposta automatica) che inviamo per te non contano ai fini della soglia. Inviamo fino a 300 risposte automatiche per utente al giorno (meno se abbiamo limitato la tua soglia al di sotto di tale valore) e al massimo 20 per indirizzo destinatario al giorno tra tutti i nostri utenti, e solo ai mittenti che hanno superato l'autenticazione (vedi [risponditori di assenza](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Limitiamo le notifiche di bounce verso un indirizzo di ritorno al di fuori del dominio da cui hai inviato (o di altri domini di cui sei amministratore) a quel numero o al 15% della tua soglia giornaliera, a seconda di quale valore sia più alto, e includono solo le intestazioni identificative del messaggio originale (come `From`, `To` e `Subject`).
+* **Rimbalzi e risposte automatiche**: le notifiche di rimbalzo e i messaggi del risponditore di assenza (risposta automatica) che inviamo per te non contano ai fini della soglia. Inviamo fino a 300 risposte automatiche per utente al giorno (meno se abbiamo limitato la tua soglia al di sotto di tale valore) e al massimo 20 per indirizzo destinatario al giorno tra tutti i nostri utenti, e solo ai mittenti che hanno superato l'autenticazione (vedi [risponditori di assenza](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Limitiamo le notifiche di rimbalzo verso un indirizzo di ritorno al di fuori del dominio da cui hai inviato (o di altri domini di cui sei amministratore) a quel numero o al 15% della tua soglia giornaliera, a seconda di quale valore sia più alto, e includono solo le intestazioni identificative del messaggio originale (come `From`, `To` e `Subject`).
 * **Enhanced Protection e altri piani**: la soglia del dominio è la soglia dell'utente mittente.
 * **Override per alias**: gli amministratori del dominio possono impostare uno `smtp_limit` personalizzato su singoli alias. Lo controlliamo per primo (prima delle soglie del dominio e dell'utente), il che ti permette di limitare alias specifici a un volume di invio inferiore.
 * **Predefinito del dominio per i nuovi alias**: gli amministratori del dominio possono impostare un `alias_default_smtp_limit` sul dominio (con l'API o le Impostazioni avanzate nella dashboard). I nuovi alias su quel dominio ereditano poi questo valore come loro `smtp_limit`. Non può superare la soglia attuale del dominio, e gli alias esistenti mantengono il proprio. Impostalo a `0` per disattivarlo.
 
 ### Ho bisogno di approvazione per abilitare SMTP {#do-i-need-approval-to-enable-smtp}
 
-Sì, tieni presente che per mantenere la reputazione IP e garantire la consegnabilità, Forward Email ha un processo di revisione manuale per dominio per l'approvazione SMTP in uscita. Invia una email a <support@forwardemail.net> o apri una [richiesta di assistenza](https://forwardemail.net/help) per l'approvazione. Questo processo di solito richiede meno di 24 ore, con la maggior parte delle richieste evase entro 1-2 ore. Nel prossimo futuro puntiamo a rendere questo processo istantaneo con controlli antispam aggiuntivi e notifiche. Questo processo garantisce che le tue email raggiungano la casella di posta e che i tuoi messaggi non vengano contrassegnati come spam.
+Sì. Approviamo l'SMTP in uscita per ogni dominio, il che protegge la reputazione dei nostri IP e tiene la tua posta fuori dalle cartelle spam. Quando i record DKIM, Return-Path e DMARC del dominio risultano verificati (quando fai clic su Verificare in Il mio account → Domini → Impostazioni → Configurazione SMTP in uscita, o invii il tuo primo messaggio), lo approviamo all'istante se nessuno dei tuoi domini ha l'SMTP in uscita sospeso e se vale una di queste condizioni:
+
+* Hai superato la nostra verifica dell'identità (KYC).
+* Il dominio usa un dominio di primo livello comune (come `.com` o `.org`) e ha un sito web attivo su un hosting affidabile.
+* Il dominio usa un dominio di primo livello comune e hai già un altro dominio approvato per l'SMTP in uscita.
+
+Il nostro team esamina qualsiasi altro dominio e ti invia un'email quando ha preso una decisione, di solito entro 24 ore e spesso entro 1 o 2 ore. Per velocizzare la revisione, invia un'email a <support@forwardemail.net> o apri una [richiesta di assistenza](https://forwardemail.net/help) con le [informazioni di cui abbiamo bisogno](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp).
 
 Una volta approvato, l'SMTP in uscita è illimitato e la tua soglia giornaliera cresce con la tua [reputazione di mittente](#what-are-your-outbound-smtp-limits).
 
@@ -6006,7 +6012,7 @@ Se questo limite viene superato, inviamo un codice di risposta 421 che indica al
 
 ### Posso inviare email illimitate con questo {#can-i-send-unlimited-emails-with-this}
 
-Sì. L'SMTP in uscita e la nostra API email sono illimitati su tutti i piani a pagamento (da $3/mo). Hai una soglia giornaliera invece di un tetto mensile fisso, e cresce man mano che continui a pagare e costruisci una cronologia di invio pulita: da 300 messaggi al giorno per i nuovi mittenti (900 con il piano Team) fino a 10,000 al giorno, e oltre dopo che il nostro team ha esaminato il tuo account.
+Sì. L'SMTP in uscita e la nostra API email sono illimitati su tutti i piani a pagamento (da $3/mo). Hai una soglia giornaliera invece di un tetto mensile fisso, e cresce man mano che continui a pagare e costruisci una cronologia di invio pulita: da 300 messaggi al giorno per i nuovi mittenti (900 con il piano Team) fino a 10,000 al giorno, e oltre dopo che il nostro team ha esaminato il tuo account. Ogni dominio deve ottenere la nostra [approvazione](#do-i-need-approval-to-enable-smtp) prima di poter inviare.
 
 Solo la posta consegnata a destinatari reali al di fuori dei tuoi domini costruisce la reputazione. Per proteggere la consegna, un tasso di rimbalzo elevato abbassa la tua soglia, le segnalazioni di spam e virus dai grandi provider di posta la azzerano, e rallentiamo gli schemi insoliti (come un picco improvviso da un account inattivo). Vedi [Quali sono i tuoi limiti SMTP in uscita](#what-are-your-outbound-smtp-limits) per i dettagli, e la tua soglia attuale in [Il mio account → Email](/my-account/emails).
 

@@ -2374,9 +2374,9 @@ Si usas Gmail, sigue estos pasos:
 
 ### ¿Soportan boletines o listas de correo para correos electrónicos relacionados con marketing? {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-Sí, puedes leer más en <https://forwardemail.net/guides/newsletter-with-listmonk>.
+Sí, puede leer más en <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Ten en cuenta que para mantener la reputación de IP y asegurar la entregabilidad, Forward Email tiene un proceso de revisión manual por dominio para la **aprobación de boletines**. Envía un correo a <support@forwardemail.net> o abre una [solicitud de ayuda](https://forwardemail.net/help) para la aprobación. Esto normalmente toma menos de 24 horas, con la mayoría de las solicitudes siendo aprobadas en 1-2 horas. En un futuro cercano, planeamos hacer este proceso instantáneo con controles adicionales de spam y alertas. Este proceso asegura que tus correos lleguen a la bandeja de entrada y que tus mensajes no sean marcados como spam.
+Nuestro equipo revisa cada dominio antes de que pueda enviar boletines, para proteger nuestra reputación de IP y su entregabilidad. Los mensajes con un encabezado `List-Id` o `List-Unsubscribe` necesitan esta **aprobación de boletines**, y enviamos un correo a los administradores de su dominio la primera vez que llega uno sin ella. Para solicitar la aprobación, envíe un correo a <support@forwardemail.net> o abra una [solicitud de ayuda](https://forwardemail.net/help). Normalmente respondemos en menos de 24 horas, y a menudo en 1 a 2 horas.
 
 Los boletines y las listas de correo cuentan para su umbral diario de salida, que es ilimitado y aumenta con su [reputación como remitente](#what-are-your-outbound-smtp-limits). Mantenga sus listas limpias: una tasa alta de rebotes baja su umbral, y ralentizamos los aumentos repentinos de volumen.
 
@@ -2588,7 +2588,7 @@ Para usar el soporte de contactos, el **usuario** debe ser la dirección de corr
 
 ### ¿Soportan el envío de correo electrónico con SMTP {#do-you-support-sending-email-with-smtp}
 
-Sí. Todos los planes de pago incluyen SMTP saliente, y es **ilimitado**: su umbral de envío diario aumenta con su [reputación como remitente](#what-are-your-outbound-smtp-limits).
+Sí. Todos los planes de pago incluyen SMTP saliente, y es **ilimitado**: su umbral de envío diario aumenta con su [reputación como remitente](#what-are-your-outbound-smtp-limits). Cada dominio necesita [aprobación](#do-i-need-approval-to-enable-smtp) primero, y muchos dominios la obtienen sin esperas en cuanto se verifican sus registros DNS.
 
 <div id="smtp-instructions">
 
@@ -2647,7 +2647,7 @@ Sí. Todos los planes de pago incluyen SMTP saliente, y es **ilimitado**: su umb
     Importante:
   </strong>
   <span>
-    Tenga en cuenta que para mantener la reputación de IP y asegurar la entregabilidad, tenemos un proceso de revisión manual por dominio para la aprobación de SMTP saliente. Esto generalmente toma menos de 24 horas, con la mayoría de las solicitudes siendo aprobadas en 1-2 horas. En un futuro cercano, nuestro objetivo es hacer este proceso instantáneo con controles adicionales de spam y alertas. Este proceso garantiza que sus correos lleguen a la bandeja de entrada y que sus mensajes no sean marcados como spam.
+    Aprobamos el SMTP saliente de cada dominio para proteger la reputación de nuestras IP y su entregabilidad. Aprobamos muchos dominios sin esperas en cuanto se verifican sus registros DNS, y nuestro equipo revisa el resto, normalmente en un plazo de 24 horas. Consulte [¿Necesito aprobación para habilitar SMTP?](#do-i-need-approval-to-enable-smtp).
   </span>
 </div>
 
@@ -3717,7 +3717,7 @@ Cuando usas <a href="#do-you-support-regular-expressions-or-regex" class="alert-
 
 ### ¿Cuáles son sus límites de SMTP saliente? {#what-are-your-outbound-smtp-limits}
 
-El SMTP saliente es **ilimitado** y está **basado en la reputación**. Usted recibe un umbral diario en lugar de un tope mensual fijo, y aumenta a medida que construye una buena reputación de envío.
+El SMTP saliente es **ilimitado** y está **basado en la reputación**. Usted recibe un umbral diario en lugar de un tope mensual fijo, y aumenta a medida que construye una buena reputación de envío. Cada dominio necesita [aprobación](#do-i-need-approval-to-enable-smtp) antes de poder enviar, y muchos dominios la obtienen sin esperas en cuanto se verifican sus registros DNS.
 
 Los nuevos remitentes comienzan con 300 mensajes por día, o 900 en el plan Team (los remitentes del plan Team se saltan los niveles inferiores a 900, y su siguiente nivel es 1,000). Una vez al día, revisamos sus envíos recientes y subimos o bajamos su umbral. Evaluamos cada día dos días después, cuando ya conocemos los resultados de entrega de sus mensajes. Cuando esto comienza para su cuenta, revisamos hasta 30 días de su historial de envíos y recuperamos los días que no evaluamos.
 
@@ -3773,11 +3773,17 @@ Puede ver cuántos mensajes envió hoy y su umbral actual en [Mi cuenta → Corr
 * **Rebotes y respuestas automáticas**: las notificaciones de rebote y los mensajes del contestador de vacaciones (respuesta automática) que enviamos en su nombre no cuentan para su umbral. Enviamos hasta 300 respuestas automáticas por usuario al día (menos si restringimos su umbral por debajo de esa cifra) y como máximo 20 por dirección de destinatario al día entre todos nuestros usuarios, y solo a remitentes que superaron la autenticación (consulte [respuestas de vacaciones](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Limitamos las notificaciones de rebote a una dirección de retorno fuera del dominio desde el que envió (u otros dominios de los que es administrador) a esa cifra o al 15% de su umbral diario, lo que sea mayor, y solo incluyen los encabezados identificativos del mensaje original (como `From`, `To` y `Subject`).
 * **Enhanced Protection y otros planes**: el umbral del dominio es el propio umbral del usuario que envía.
 * **Anulación por alias**: los administradores de dominio pueden establecer un `smtp_limit` personalizado en alias individuales. Lo comprobamos primero (antes que los umbrales de dominio y de usuario), lo que le permite restringir alias específicos a un volumen de envío menor.
-* **Valor predeterminado del dominio para nuevos alias**: los administradores del dominio pueden establecer un `alias_default_smtp_limit` en el dominio (con la API o con Advanced Settings en el panel de control). Los alias nuevos en ese dominio heredan entonces este valor como su `smtp_limit`. No puede superar el umbral actual del dominio, y los alias existentes conservan el suyo. Establézcalo en `0` para desactivarlo.
+* **Valor predeterminado del dominio para nuevos alias**: los administradores del dominio pueden establecer un `alias_default_smtp_limit` en el dominio (con la API o con la Configuración avanzada del panel de control). Los alias nuevos en ese dominio heredan entonces este valor como su `smtp_limit`. No puede superar el umbral actual del dominio, y los alias existentes conservan el suyo. Establézcalo en `0` para desactivarlo.
 
 ### ¿Necesito aprobación para habilitar SMTP? {#do-i-need-approval-to-enable-smtp}
 
-Sí, tenga en cuenta que para mantener la reputación de IP y asegurar la entregabilidad, Forward Email tiene un proceso de revisión manual por dominio para la aprobación de SMTP saliente. Envíe un correo a <support@forwardemail.net> o abra una [solicitud de ayuda](https://forwardemail.net/help) para la aprobación. Esto típicamente toma menos de 24 horas, con la mayoría de las solicitudes siendo aprobadas en 1-2 horas. En un futuro cercano, planeamos hacer este proceso instantáneo con controles adicionales de spam y alertas. Este proceso asegura que sus correos lleguen a la bandeja de entrada y que sus mensajes no sean marcados como spam.
+Sí. Aprobamos el SMTP saliente de cada dominio, lo que protege la reputación de nuestras IP y mantiene su correo fuera de las carpetas de spam. Cuando se verifican los registros DKIM, Return-Path y DMARC del dominio (al hacer clic en Verificar en Mi cuenta → Dominios → Configuración → Configuración de SMTP saliente, o al enviar su primer mensaje), lo aprobamos sin esperas si ninguno de sus dominios tiene el SMTP saliente suspendido y se cumple una de estas condiciones:
+
+* Usted superó nuestra verificación de identidad (KYC).
+* El dominio usa un dominio de nivel superior común (como `.com` o `.org`) y tiene un sitio web activo en un alojamiento de buena reputación.
+* El dominio usa un dominio de nivel superior común y usted ya tiene otro dominio aprobado para SMTP saliente.
+
+Nuestro equipo revisa cualquier otro dominio y le envía un correo electrónico cuando tomamos una decisión, normalmente en un plazo de 24 horas y a menudo en 1 a 2 horas. Para agilizar una revisión, escriba a <support@forwardemail.net> o abra una [solicitud de ayuda](https://forwardemail.net/help) con la [información que necesitamos](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp).
 
 Una vez aprobado, el SMTP saliente es ilimitado y su umbral diario aumenta con su [reputación como remitente](#what-are-your-outbound-smtp-limits).
 
@@ -6006,7 +6012,7 @@ Si se excede este límite, enviamos un código de respuesta 421 que indica al se
 
 ### ¿Puedo enviar correos ilimitados con esto? {#can-i-send-unlimited-emails-with-this}
 
-Sí. El SMTP saliente y nuestra API de correo electrónico son ilimitados en todos los planes de pago (desde $3/mo). Usted recibe un umbral diario en lugar de un tope mensual fijo, y aumenta mientras siga pagando y construya un historial de envío limpio: desde 300 mensajes por día para los nuevos remitentes (900 en el plan Team) hasta 10,000 por día, y más allá cuando nuestro equipo revise su cuenta.
+Sí. El SMTP saliente y nuestra API de correo electrónico son ilimitados en todos los planes de pago (desde $3/mes). Usted recibe un umbral diario en lugar de un tope mensual fijo, y aumenta mientras siga pagando y construya un historial de envío limpio: desde 300 mensajes por día para los nuevos remitentes (900 en el plan Team) hasta 10,000 por día, y más allá cuando nuestro equipo revise su cuenta. Cada dominio necesita [aprobación](#do-i-need-approval-to-enable-smtp) antes de poder enviar.
 
 Solo el correo entregado a destinatarios reales fuera de sus propios dominios construye reputación. Para proteger la entregabilidad, una tasa alta de rebotes baja su umbral, las denuncias de spam y de virus de los principales proveedores de buzones lo restablecen, y ralentizamos los patrones inusuales (como un pico repentino desde una cuenta inactiva). Consulte [Cuáles son sus límites de SMTP saliente](#what-are-your-outbound-smtp-limits) para más detalles, y su umbral actual en [Mi cuenta → Correos electrónicos](/my-account/emails).
 

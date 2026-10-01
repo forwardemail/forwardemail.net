@@ -539,7 +539,7 @@ curl BASE_URI/v1/emails?limit=1 \
 | `priority`           | いいえ | 文字列            | メールの優先度（`"high"`、`"normal"`（デフォルト）、または `"low"`）。`"normal"` は優先度ヘッダーを設定しません（デフォルト動作）。`"high"` または `"low"` の場合は `X-Priority`、`X-MSMail-Priority`、`Importance` ヘッダーが[適切に設定されます](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240)。 |
 | `headers`            | いいえ | オブジェクトまたは配列 | 追加のヘッダーフィールドのオブジェクトまたは配列（[Nodemailerのカスタムヘッダー](https://nodemailer.com/message/custom-headers/)を参照）。                                                                                                                                                                                                                                                                                                                |
 | `messageId`          | いいえ | 文字列            | "Message-ID" ヘッダーのオプションのMessage-ID値（未設定の場合は自動生成されます。値は[RFC2822仕様](https://stackoverflow.com/a/4031705)に準拠する必要があります）。                                                                                                                                                                                                                                                                                         |
-| `date`               | いいえ | 文字列または日付  | 解析後にDateヘッダーがない場合に使用されるオプションの日時値。未設定の場合は現在のUTC日時文字列が使用されます。日付ヘッダーは現在時刻より27日以上先であってはなりません。                                                                                                                                                                                                                                                                               |
+| `date`               | いいえ | 文字列または日付  | 解析後にDateヘッダーがない場合に当社が使用するオプションの日時値です。未設定の場合、当社は現在のUTC日時文字列を使用します。Dateヘッダーには、現在時刻から27日を超えて先の日時を指定できません。 |
 | `list`               | いいえ | オブジェクト      | `List-*` ヘッダーのオプションオブジェクト（[Nodemailerのリストヘッダー](https://nodemailer.com/message/list-headers/)を参照）。                                                                                                                                                                                                                                                                                                                              |
 > 例リクエスト（APIトークン）:
 
@@ -818,7 +818,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | `group`        | はい | 文字列 (列挙可能)    | ユーザーをドメインメンバーシップに更新するグループ（`"admin"` または `"user"` のいずれか） |
 
 > \[!IMPORTANT]
-> 他のメンバーを `"admin"` に更新すると、代わりに管理者としての招待がメールで送信され、承認するまでは `"user"` のままです（ドメインの保留中の招待に表示されます）。`"user"` に戻すか、メンバーを削除すると、招待は取り消されます。
+> 他のメンバーを `"admin"` に更新すると、当社が代わりに管理者としての招待をメールで送信し、そのメンバーは承認するまで `"user"` のままです（ドメインの保留中の招待に表示されます）。`"user"` に戻すか、メンバーを削除すると、招待は取り消されます。
 
 > 例のリクエスト:
 

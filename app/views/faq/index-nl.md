@@ -2375,7 +2375,7 @@ Als je Gmail gebruikt, volg dan onderstaande stappen:
 
 Ja, u kunt meer lezen op <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Houd er rekening mee dat om de IP-reputatie te behouden en de afleverbaarheid te waarborgen, Forward Email een handmatig beoordelingsproces per domein heeft voor **goedkeuring van nieuwsbrieven**. Stuur een e-mail naar <support@forwardemail.net> of open een [hulpverzoek](https://forwardemail.net/help) voor goedkeuring. Dit duurt meestal minder dan 24 uur, waarbij de meeste verzoeken binnen 1-2 uur worden gehonoreerd. In de nabije toekomst streven we ernaar dit proces direct te maken met extra spamcontroles en waarschuwingen. Dit proces zorgt ervoor dat uw e-mails de inbox bereiken en uw berichten niet als spam worden gemarkeerd.
+Ons team beoordeelt elk domein voordat het nieuwsbrieven kan versturen, om onze IP-reputatie en je afleverbaarheid te beschermen. Berichten met een `List-Id`- of `List-Unsubscribe`-header hebben deze **goedkeuring van nieuwsbrieven** nodig, en we mailen de beheerders van je domein de eerste keer dat zo'n bericht zonder goedkeuring binnenkomt. Om goedkeuring te vragen, stuur je een e-mail naar <support@forwardemail.net> of open je een [hulpverzoek](https://forwardemail.net/help). We reageren meestal binnen 24 uur, en vaak binnen 1 tot 2 uur.
 
 Nieuwsbrieven en mailinglijsten tellen mee voor je dagelijkse uitgaande drempel, die onbeperkt is en meegroeit met je [afzenderreputatie](#what-are-your-outbound-smtp-limits). Houd je lijsten schoon: een hoog bouncepercentage verlaagt je drempel, en we vertragen plotselinge sprongen in volume.
 
@@ -2587,7 +2587,7 @@ Om contactondersteuning te gebruiken, moet de **gebruiker** het e-mailadres zijn
 
 ### Ondersteunt u het verzenden van e-mail met SMTP {#do-you-support-sending-email-with-smtp}
 
-Ja. Alle betaalde abonnementen bevatten uitgaande SMTP, en het is **onbeperkt**: je dagelijkse verzenddrempel groeit mee met je [afzenderreputatie](#what-are-your-outbound-smtp-limits).
+Ja. Alle betaalde abonnementen bevatten uitgaande SMTP, en het is **onbeperkt**: je dagelijkse verzenddrempel groeit mee met je [afzenderreputatie](#what-are-your-outbound-smtp-limits). Elk domein heeft eerst [goedkeuring](#do-i-need-approval-to-enable-smtp) nodig, en veel domeinen krijgen die direct zodra hun DNS-records zijn geverifieerd.
 
 <div id="smtp-instructions">
 
@@ -2646,7 +2646,7 @@ Ja. Alle betaalde abonnementen bevatten uitgaande SMTP, en het is **onbeperkt**:
     Belangrijk:
   </strong>
   <span>
-    Houd er rekening mee dat we om de IP-reputatie te behouden en de afleverbaarheid te waarborgen, een handmatig beoordelingsproces per domein hebben voor goedkeuring van uitgaande SMTP. Dit duurt meestal minder dan 24 uur, waarbij de meeste verzoeken binnen 1-2 uur worden gehonoreerd. In de nabije toekomst streven we ernaar dit proces direct te maken met extra spamcontroles en waarschuwingen. Dit proces zorgt ervoor dat uw e-mails de inbox bereiken en uw berichten niet als spam worden gemarkeerd.
+    We keuren uitgaande SMTP per domein goed om onze IP-reputatie en je afleverbaarheid te beschermen. Veel domeinen worden direct goedgekeurd zodra hun DNS-records zijn geverifieerd, en ons team beoordeelt de rest, meestal binnen 24 uur. Zie [Heb ik goedkeuring nodig om SMTP in te schakelen](#do-i-need-approval-to-enable-smtp).
   </span>
 </div>
 
@@ -3716,7 +3716,7 @@ Wanneer je <a href="#do-you-support-regular-expressions-or-regex" class="alert-l
 
 ### Wat zijn jullie limieten voor uitgaande SMTP {#what-are-your-outbound-smtp-limits}
 
-Uitgaande SMTP is **onbeperkt** en **gebaseerd op reputatie**. Je krijgt een dagelijkse drempel in plaats van een vaste maandelijkse limiet, en die groeit naarmate je een goede verzendreputatie opbouwt.
+Uitgaande SMTP is **onbeperkt** en **gebaseerd op reputatie**. Je krijgt een dagelijkse drempel in plaats van een vaste maandelijkse limiet, en die groeit naarmate je een goede verzendreputatie opbouwt. Elk domein heeft [goedkeuring](#do-i-need-approval-to-enable-smtp) nodig voordat het kan verzenden, en veel domeinen krijgen die direct zodra hun DNS-records zijn geverifieerd.
 
 Nieuwe afzenders beginnen met 300 berichten per dag, of 900 bij het Team-plan (afzenders met het Team-plan slaan de niveaus onder 900 over, en hun volgende niveau is 1,000). Eén keer per dag bekijken we je recente verzending en verhogen of verlagen we je drempel. We beoordelen elke dag twee dagen later, zodra we de afleverresultaten van de berichten van die dag kennen. Wanneer dit voor je account start, kijken we terug naar maximaal 30 dagen van je verzendgeschiedenis, en we halen dagen in die we hebben gemist.
 
@@ -3776,7 +3776,13 @@ Je kunt zien hoeveel berichten je vandaag hebt verzonden en wat je huidige dremp
 
 ### Heb ik goedkeuring nodig om SMTP in te schakelen {#do-i-need-approval-to-enable-smtp}
 
-Ja, houd er rekening mee dat Forward Email een handmatig beoordelingsproces per domein hanteert voor goedkeuring van uitgaande SMTP om de IP-reputatie te behouden en de afleverbaarheid te waarborgen. Stuur een e-mail naar <support@forwardemail.net> of open een [hulpverzoek](https://forwardemail.net/help) voor goedkeuring. Dit duurt meestal minder dan 24 uur, waarbij de meeste verzoeken binnen 1-2 uur worden gehonoreerd. In de nabije toekomst streven we ernaar dit proces direct te maken met extra spamcontroles en waarschuwingen. Dit proces zorgt ervoor dat je e-mails de inbox bereiken en je berichten niet als spam worden gemarkeerd.
+Ja. We keuren uitgaande SMTP per domein goed. Dat beschermt onze IP-reputatie en houdt je e-mail uit de spammap. Zodra de DKIM-, Return-Path- en DMARC-records van het domein zijn geverifieerd (wanneer je op Verifiëren klikt in Mijn account → Domeinen → Instellingen → Uitgaande SMTP-configuratie, of je eerste bericht verzendt), keuren we het direct goed als uitgaande SMTP bij geen van je domeinen is geschorst en een van deze punten geldt:
+
+* Je hebt onze identiteitsverificatie (KYC) doorlopen.
+* Het domein gebruikt een gangbaar topleveldomein (zoals `.com` of `.org`) en heeft een actieve website bij een betrouwbare hostingprovider.
+* Het domein gebruikt een gangbaar topleveldomein en je hebt al een ander domein dat is goedgekeurd voor uitgaande SMTP.
+
+Ons team beoordeelt elk ander domein en mailt je zodra we een besluit hebben genomen, meestal binnen 24 uur en vaak binnen 1 tot 2 uur. Wil je een beoordeling versnellen, stuur dan een e-mail naar <support@forwardemail.net> of open een [hulpverzoek](https://forwardemail.net/help) met de [informatie die we nodig hebben](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp).
 
 Na goedkeuring is uitgaande SMTP onbeperkt en groeit je dagelijkse drempel mee met je [afzenderreputatie](#what-are-your-outbound-smtp-limits).
 
@@ -5878,7 +5884,7 @@ We gebruiken MX- en <strong class="notranslate">TXT</strong>-recordverificatie, 
 
 ### Hoe verhoog ik mijn opslag of uitgaande SMTP-verzendlimiet {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-**Opslag**: ga naar <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mijn account → Facturering</a> en scroll naar de sectie **Uitbreidingen**. Kies een hoeveelheid om toe te voegen (+10, +20, +30, +40 of +50 GB), of selecteer "Other" om een aangepaste hoeveelheid aan te vragen. Als je het formulier indient, gaat je aanvraag naar ons team ter beoordeling en betaal je nog niets. Zodra we de aanvraag goedkeuren, mailen we je een beveiligde betalingslink om de upgrade te voltooien. Je kunt één openstaande opslagaanvraag tegelijk hebben, en je kunt binnen 3 dagen na een eerdere aanvraag geen nieuwe indienen.
+**Opslag**: ga naar <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mijn account → Facturering</a> en scroll naar de sectie **Uitbreidingen**. Kies een hoeveelheid om toe te voegen (+10, +20, +30, +40 of +50 GB), of selecteer "Ander" om een aangepaste hoeveelheid aan te vragen. Als je het formulier indient, gaat je aanvraag naar ons team ter beoordeling en betaal je nog niets. Zodra we de aanvraag goedkeuren, mailen we je een beveiligde betalingslink om de upgrade te voltooien. Je kunt één openstaande opslagaanvraag tegelijk hebben, en je kunt binnen 3 dagen na een eerdere aanvraag geen nieuwe indienen.
 
 **Uitgaande SMTP**: er valt niets te kopen. Uitgaande SMTP is onbeperkt en je dagelijkse drempel groeit mee met je [afzenderreputatie](#what-are-your-outbound-smtp-limits). <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Mijn account → Facturering</a> en <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Mijn account → E-mails</a> tonen je huidige drempel, je reputatieniveau en de vereisten voor het volgende niveau.
 
@@ -6005,7 +6011,7 @@ Als deze limiet wordt overschreden, sturen we een 421-responscode die de mailser
 
 ### Kan ik onbeperkt e-mails verzenden met dit {#can-i-send-unlimited-emails-with-this}
 
-Ja. Uitgaande SMTP en onze e-mail-API zijn onbeperkt bij alle betaalde abonnementen (vanaf $3/mo). Je krijgt een dagelijkse drempel in plaats van een vaste maandelijkse limiet, en die groeit zolang je blijft betalen en een schone verzendgeschiedenis opbouwt: van 300 berichten per dag voor nieuwe afzenders (900 bij het Team-plan) tot 10,000 per dag, en daarboven nadat ons team je account heeft beoordeeld.
+Ja. Uitgaande SMTP en onze e-mail-API zijn onbeperkt bij alle betaalde abonnementen (vanaf $3 per maand). Je krijgt een dagelijkse drempel in plaats van een vaste maandelijkse limiet, en die groeit zolang je blijft betalen en een schone verzendgeschiedenis opbouwt: van 300 berichten per dag voor nieuwe afzenders (900 bij het Team-plan) tot 10,000 per dag, en daarboven nadat ons team je account heeft beoordeeld. Elk domein heeft [goedkeuring](#do-i-need-approval-to-enable-smtp) nodig voordat het kan verzenden.
 
 Alleen e-mail die is afgeleverd aan echte ontvangers buiten je eigen domeinen bouwt reputatie op. Om de bezorgbaarheid te beschermen, verlaagt een hoog bouncepercentage je drempel, zetten spam- en virusmeldingen van grote mailboxproviders deze terug, en vertragen we ongebruikelijke patronen (zoals een plotselinge piek vanuit een inactief account). Zie [Wat zijn jullie limieten voor uitgaande SMTP](#what-are-your-outbound-smtp-limits) voor details, en je huidige drempel via [Mijn account → E-mails](/my-account/emails).
 

@@ -2376,7 +2376,7 @@ Si vous utilisez Gmail, suivez les étapes ci-dessous :
 
 Oui, vous pouvez en savoir plus sur <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Veuillez noter que afin de maintenir la réputation IP et d'assurer la délivrabilité, Forward Email dispose d'un processus de révision manuel par domaine pour **l'approbation des newsletters**. Envoyez un email à <support@forwardemail.net> ou ouvrez une [demande d'aide](https://forwardemail.net/help) pour obtenir l'approbation. Cela prend généralement moins de 24 heures, la plupart des demandes étant traitées en 1 à 2 heures. Dans un avenir proche, nous visons à rendre ce processus instantané avec des contrôles anti-spam supplémentaires et des alertes. Ce processus garantit que vos emails atteignent la boîte de réception et que vos messages ne sont pas marqués comme spam.
+Notre équipe examine chaque domaine avant qu'il puisse envoyer des newsletters, afin de protéger la réputation de nos IP et votre délivrabilité. Les messages avec un en-tête `List-Id` ou `List-Unsubscribe` nécessitent cette **approbation des newsletters**, et nous envoyons un email aux administrateurs de votre domaine la première fois qu'un tel message arrive sans elle. Pour demander l'approbation, envoyez un email à <support@forwardemail.net> ou ouvrez une [demande d'aide](https://forwardemail.net/help). Nous répondons généralement en moins de 24 heures, et souvent en 1 à 2 heures.
 
 Les newsletters et listes de diffusion comptent dans votre seuil sortant journalier, qui est illimité et augmente avec votre [réputation d'expéditeur](#what-are-your-outbound-smtp-limits). Gardez vos listes propres : un taux de rebond élevé fait descendre votre seuil, et nous ralentissons les hausses soudaines de volume.
 
@@ -2588,7 +2588,7 @@ Pour utiliser la prise en charge des contacts, le **utilisateur** doit être l'a
 
 ### Supportez-vous l'envoi d'e-mails avec SMTP {#do-you-support-sending-email-with-smtp}
 
-Oui. Tous les forfaits payants incluent le SMTP sortant, et il est **illimité** : votre seuil d'envoi journalier augmente avec votre [réputation d'expéditeur](#what-are-your-outbound-smtp-limits).
+Oui. Tous les forfaits payants incluent le SMTP sortant, et il est **illimité** : votre seuil d'envoi journalier augmente avec votre [réputation d'expéditeur](#what-are-your-outbound-smtp-limits). Nous devons d'abord [approuver](#do-i-need-approval-to-enable-smtp) chaque domaine, et nous approuvons de nombreux domaines sur-le-champ dès que leurs enregistrements DNS sont vérifiés.
 
 <div id="smtp-instructions">
 
@@ -2647,7 +2647,7 @@ Oui. Tous les forfaits payants incluent le SMTP sortant, et il est **illimité**
     Important :
   </strong>
   <span>
-    Veuillez noter que pour maintenir la réputation IP et assurer la délivrabilité, nous avons un processus de révision manuelle par domaine pour l'approbation SMTP sortante. Cela prend généralement moins de 24 heures, la plupart des demandes étant traitées en 1 à 2 heures. Dans un avenir proche, nous visons à rendre ce processus instantané avec des contrôles anti-spam supplémentaires et des alertes. Ce processus garantit que vos emails atteignent la boîte de réception et que vos messages ne sont pas marqués comme spam.
+    Nous approuvons le SMTP sortant pour chaque domaine afin de protéger la réputation de nos adresses IP et votre délivrabilité. Nous approuvons de nombreux domaines sur-le-champ dès que leurs enregistrements DNS sont vérifiés, et notre équipe examine les autres, généralement sous 24 heures. Voir [Ai-je besoin d'une approbation pour activer SMTP](#do-i-need-approval-to-enable-smtp).
   </span>
 </div>
 
@@ -3717,7 +3717,7 @@ Lorsque vous utilisez des <a href="#do-you-support-regular-expressions-or-regex"
 
 ### Quelles sont vos limites SMTP sortantes {#what-are-your-outbound-smtp-limits}
 
-Le SMTP sortant est **illimité** et **basé sur la réputation**. Vous disposez d'un seuil journalier au lieu d'un plafond mensuel fixe, et ce seuil augmente à mesure que vous construisez une bonne réputation d'envoi.
+Le SMTP sortant est **illimité** et **basé sur la réputation**. Vous disposez d'un seuil journalier au lieu d'un plafond mensuel fixe, et ce seuil augmente à mesure que vous construisez une bonne réputation d'envoi. Nous devons [approuver](#do-i-need-approval-to-enable-smtp) chaque domaine avant qu'il puisse envoyer, et nous approuvons de nombreux domaines sur-le-champ dès que leurs enregistrements DNS sont vérifiés.
 
 Les nouveaux expéditeurs commencent à 300 messages par jour, ou à 900 avec le plan Team (les expéditeurs du plan Team sautent les niveaux inférieurs à 900, et leur niveau suivant est 1,000). Une fois par jour, nous examinons vos envois récents et faisons monter ou descendre votre seuil. Nous évaluons chaque journée deux jours plus tard, une fois que nous connaissons les résultats de livraison de ses messages. Lorsque ce mécanisme démarre pour votre compte, nous remontons jusqu'à 30 jours de votre historique d'envoi, et nous rattrapons les jours manqués.
 
@@ -3777,7 +3777,13 @@ Vous pouvez consulter le nombre de messages que vous avez envoyés aujourd'hui e
 
 ### Ai-je besoin d'une approbation pour activer SMTP {#do-i-need-approval-to-enable-smtp}
 
-Oui, veuillez noter que pour maintenir la réputation IP et garantir la délivrabilité, Forward Email dispose d'un processus de révision manuelle par domaine pour l'approbation SMTP sortante. Envoyez un e-mail à <support@forwardemail.net> ou ouvrez une [demande d'aide](https://forwardemail.net/help) pour obtenir l'approbation. Cela prend généralement moins de 24 heures, la plupart des demandes étant traitées en 1 à 2 heures. Dans un avenir proche, nous visons à rendre ce processus instantané avec des contrôles anti-spam supplémentaires et des alertes. Ce processus garantit que vos e-mails atteignent la boîte de réception et que vos messages ne sont pas marqués comme spam.
+Oui. Nous approuvons le SMTP sortant pour chaque domaine, ce qui protège la réputation de nos adresses IP et évite que vos e-mails finissent dans les dossiers de spam. Une fois les enregistrements DKIM, Return-Path et DMARC du domaine vérifiés (lorsque vous cliquez sur Vérifier dans Mon compte → Domaines → Paramètres → Configuration SMTP sortante, ou que vous envoyez votre premier message), nous l'approuvons sur-le-champ si aucun de vos domaines n'a son SMTP sortant suspendu et si l'une des conditions suivantes s'applique :
+
+* Vous avez réussi notre vérification d'identité (KYC).
+* Le domaine utilise un domaine de premier niveau courant (comme `.com` ou `.org`) et possède un site web actif chez un hébergeur réputé.
+* Le domaine utilise un domaine de premier niveau courant et vous avez déjà un autre domaine approuvé pour le SMTP sortant.
+
+Notre équipe examine tout autre domaine et vous envoie un e-mail une fois sa décision prise, généralement sous 24 heures et souvent en 1 à 2 heures. Pour accélérer l'examen, envoyez un e-mail à <support@forwardemail.net> ou ouvrez une [demande d'aide](https://forwardemail.net/help) avec les [informations dont nous avons besoin](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp).
 
 Une fois approuvé, le SMTP sortant est illimité et votre seuil journalier augmente avec votre [réputation d'expéditeur](#what-are-your-outbound-smtp-limits).
 
@@ -6006,7 +6012,7 @@ Si cette limite est dépassée, nous envoyons un code de réponse 421 qui indiqu
 
 ### Puis-je envoyer un nombre illimité d'emails avec ceci {#can-i-send-unlimited-emails-with-this}
 
-Oui. Le SMTP sortant et notre API d'e-mail sont illimités avec tous les forfaits payants (à partir de $3/mo). Vous disposez d'un seuil journalier au lieu d'un plafond mensuel fixe, et ce seuil augmente tant que vous continuez à payer et construisez un historique d'envoi sain : de 300 messages par jour pour les nouveaux expéditeurs (900 avec le plan Team) jusqu'à 10,000 par jour, et au-delà après un examen de votre compte par notre équipe.
+Oui. Le SMTP sortant et notre API d'e-mail sont illimités avec tous les forfaits payants (à partir de $3/mo). Vous disposez d'un seuil journalier au lieu d'un plafond mensuel fixe, et ce seuil augmente tant que vous continuez à payer et construisez un historique d'envoi sain : de 300 messages par jour pour les nouveaux expéditeurs (900 avec le plan Team) jusqu'à 10,000 par jour, et au-delà après un examen de votre compte par notre équipe. Nous devons [approuver](#do-i-need-approval-to-enable-smtp) chaque domaine avant qu'il puisse envoyer.
 
 Seuls les e-mails livrés à de vrais destinataires en dehors de vos propres domaines construisent la réputation. Pour protéger la délivrabilité, un taux de rebond élevé fait descendre votre seuil, les signalements de spam et de virus provenant des grands fournisseurs de messagerie le réinitialisent, et nous ralentissons les comportements inhabituels (comme un pic soudain depuis un compte inactif). Voir [Quelles sont vos limites SMTP sortantes](#what-are-your-outbound-smtp-limits) pour plus de détails, et votre seuil actuel dans [Mon compte → E-mails](/my-account/emails).
 

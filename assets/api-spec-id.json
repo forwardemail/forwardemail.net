@@ -6271,7 +6271,7 @@
       ],
       "put": {
         "summary": "Perbarui anggota domain",
-        "description": "Perbarui anggota domain.\n\n>[!IMPORTANT]\n>Memperbarui anggota lain menjadi `admin` akan mengirimkan undangan sebagai admin melalui email, dan mereka tetap menjadi `user` hingga menerimanya (undangan tertunda domain mencantumkannya). Memperbarui mereka kembali menjadi `user` atau menghapus mereka akan menarik undangan tersebut.",
+        "description": "Perbarui anggota domain.\n\n>[!IMPORTANT]\n>Memperbarui anggota lain menjadi `admin` akan mengirimkan undangan sebagai admin kepada anggota tersebut melalui email, dan mereka tetap menjadi `user` hingga menerimanya (undangan tertunda domain mencantumkannya). Memperbarui mereka kembali menjadi `user` atau menghapus mereka akan menarik undangan tersebut.",
         "tags": [
           "Anggota"
         ],

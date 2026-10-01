@@ -2714,7 +2714,7 @@
           },
           "limit": {
             "type": "integer",
-            "description": "Tämän päivän maineeseen perustuva raja (enintään se, mitä verkkotunnuksen ja tilin rajoista on tänään jäljellä; 0, kun et voi lähettää verkkotunnuksesta)"
+            "description": "Tämän päivän maineeseen perustuva kynnys (enintään se, mitä verkkotunnuksen ja tilin kynnyksistä on tänään jäljellä; 0, kun et voi lähettää verkkotunnuksesta)"
           }
         }
       },
@@ -5378,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Hanki lähtevän SMTP-sähköpostin rajoitus",
-        "description": "Palauttaa JSON-objektin, joka sisältää tänään lähettämiesi lähtevien SMTP-viestien `count`-arvon ja tämän päivän `limit`-arvon. Lähtevä SMTP on rajoittamaton, ja `limit` on nykyinen maineeseesi perustuva raja (katso <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), joka kasvaa ajan myötä. Palautusilmoituksia ja automaattisia vastauksia ei lasketa.",
+        "description": "Palauttaa JSON-objektin, joka sisältää tänään lähettämiesi lähtevien SMTP-viestien `count`-arvon ja tämän päivän `limit`-arvon. Lähtevä SMTP on rajoittamaton, ja `limit` on nykyinen maineeseesi perustuva kynnyksesi (katso <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), joka kasvaa ajan myötä. Palautusilmoituksia ja automaattisia vastauksia ei lasketa.",
         "tags": [
           "Sähköpostit"
         ],
@@ -6137,7 +6137,7 @@
       },
       "post": {
         "summary": "Luo verkkotunnuskutsu",
-        "description": ">[!IMPORTANT]\n>Jos kutsuttava käyttäjä on jo hyväksytty jäsen jollakin muulla verkkotunnuksella, johon kutsun lähettänyt ylläpitäjä kuuluu, kutsu hyväksytään automaattisesti eikä sähköpostia lähetetä (vain kun `group` on `user`: kutsun `admin`-roolissa lähetämme sähköpostitse kutsutun hyväksyttäväksi, emmekä sisällytä sen linkkiä verkkotunnuksen odottaviin kutsuihin).",
+        "description": ">[!IMPORTANT]\n>Jos kutsuttava käyttäjä on jo hyväksytty jäsen jollakin muulla verkkotunnuksella, johon kutsun lähettänyt ylläpitäjä kuuluu, kutsu hyväksytään automaattisesti eikä sähköpostia lähetetä (vain kun `group` on `user`: `admin`-roolin kutsun lähetämme sähköpostitse kutsutun hyväksyttäväksi, emmekä sisällytä sen linkkiä verkkotunnuksen odottaviin kutsuihin).",
         "tags": [
           "Kutsut"
         ],

@@ -539,7 +539,7 @@ curl BASE_URI/v1/emails?limit=1 \
 | `priority`        | 否     | 字符串            | 邮件优先级（可为 `"high"`、`"normal"`（默认）或 `"low"`）。注意，`"normal"` 不会设置优先级头部（这是默认行为）。如果设置为 `"high"` 或 `"low"`，则会相应设置 `X-Priority`、`X-MSMail-Priority` 和 `Importance` 头部，[具体见此处](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240)。 |
 | `headers`         | 否     | 对象或数组        | 额外头部字段的对象或数组（参见 [Nodemailer 的自定义头部](https://nodemailer.com/message/custom-headers/)）。                                                                                                                                                                                                                                                                                                                                                |
 | `messageId`       | 否     | 字符串            | “Message-ID” 头部的可选 Message-ID 值（如果未设置，将自动创建默认值 – 注意该值应符合 [RFC2822 规范](https://stackoverflow.com/a/4031705)）。                                                                                                                                                                                                                                                                                                             |
-| `date`            | 否     | 字符串或日期      | 如果解析后缺少 Date 头部，将使用此可选日期值，否则使用当前 UTC 字符串。日期头部不能比当前时间提前超过 27 天。                                                                                                                                                                                                                                                                                                                                             |
+| `date`            | 否     | 字符串或日期      | 如果解析后缺少 Date 头部，将使用此可选日期值，否则使用当前 UTC 字符串。日期头部不能晚于当前时间超过 27 天。                                                                                                                                                                                                                                                                                                                                             |
 | `list`            | 否     | 对象              | 可选的 `List-*` 头部对象（参见 [Nodemailer 的列表头部](https://nodemailer.com/message/list-headers/)）。                                                                                                                                                                                                                                                                                                                                                      |
 > 示例请求（API 令牌）：
 
@@ -789,7 +789,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> 如果您以 `"user"` 身份邀请的人已经是您所在的另一个域的已接受成员，我们会代其接受邀请且不发送邮件。我们通过邮件发送以 `"admin"` 身份的邀请，由被邀请者接受，并且不将其链接放入该域的待处理邀请中。
+> 如果您以 `"user"` 身份邀请的人已经是您所在的另一个域的已接受成员，我们会代其接受邀请且不发送邮件。以 `"admin"` 身份发出的邀请会通过邮件发送给被邀请者来接受，并且我们不会将其链接放入该域的待处理邀请中。
 
 ### 移除域邀请 {#remove-domain-invite}
 

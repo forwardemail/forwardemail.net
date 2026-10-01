@@ -5378,7 +5378,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Hämta gräns för utgående SMTP-e-post",
-        "description": "Returnerar ett JSON-objekt med `count` för utgående SMTP-meddelanden du har skickat idag och dagens `limit`. Utgående SMTP är obegränsat, och `limit` är din nuvarande ryktesbaserade tröskel (se <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), som växer över tid. Studsmeddelanden och autosvar räknas inte.",
+        "description": "Returnerar ett JSON-objekt med `count` för utgående SMTP-meddelanden du har skickat idag och dagens `limit`. Utgående SMTP är obegränsad, och `limit` är din nuvarande ryktesbaserade tröskel (se <https://forwardemail.net/faq#what-are-your-outbound-smtp-limits>), som växer över tid. Studsmeddelanden och autosvar räknas inte.",
         "tags": [
           "E-postmeddelanden"
         ],
@@ -6137,7 +6137,7 @@
       },
       "post": {
         "summary": "Skapa domäninbjudan",
-        "description": ">[!IMPORTANT]\n>Om den inbjudna användaren redan är en accepterad medlem i andra domäner som administratören som bjuder in dem är medlem i, kommer inbjudan att accepteras automatiskt och inget e-postmeddelande skickas (endast för en `group` av `user`: vi skickar en inbjudan som `admin` via e-post så att den inbjudna kan acceptera den, och utelämnar dess länk från domänens väntande inbjudningar).",
+        "description": ">[!IMPORTANT]\n>Om den inbjudna användaren redan är en accepterad medlem i andra domäner som administratören som bjuder in dem är medlem i, kommer inbjudan att accepteras automatiskt och inget e-postmeddelande skickas (endast för en `group` av `user`: vi skickar en inbjudan som `admin` via e-post så att den inbjudna kan acceptera den, och visar inte dess länk bland domänens väntande inbjudningar).",
         "tags": [
           "Inbjudningar"
         ],

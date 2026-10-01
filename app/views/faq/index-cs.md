@@ -2375,7 +2375,7 @@ Pokud používáte Gmail, postupujte podle těchto kroků:
 
 Ano, více si můžete přečíst na <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Vezměte prosím na vědomí, že pro udržení reputace IP a zajištění doručitelnosti má Forward Email manuální proces schvalování na úrovni jednotlivých domén pro **schválení newsletteru**. Napište na <support@forwardemail.net> nebo otevřete [žádost o pomoc](https://forwardemail.net/help) pro schválení. Tento proces obvykle trvá méně než 24 hodin, většina žádostí je vyřízena během 1-2 hodin. V blízké budoucnosti plánujeme tento proces zautomatizovat s dalšími kontrolami spamu a upozorněními. Tento proces zajišťuje, že vaše e-maily dorazí do schránky a vaše zprávy nebudou označeny jako spam.
+Náš tým kontroluje každou doménu, než z ní bude možné odesílat newslettery, abychom chránili reputaci našich IP adres a doručitelnost vašich e-mailů. Zprávy s hlavičkou `List-Id` nebo `List-Unsubscribe` vyžadují toto **schválení newsletteru** a když taková zpráva poprvé dorazí bez něj, pošleme e-mail administrátorům vaší domény. Chcete-li o schválení požádat, napište na <support@forwardemail.net> nebo otevřete [žádost o pomoc](https://forwardemail.net/help). Obvykle odpovídáme do 24 hodin a často do 1 až 2 hodin.
 
 Newslettery a mailing listy se započítávají do vašeho denního odchozího prahu, který je neomezený a zvyšuje se s vaší [reputací odesílatele](#what-are-your-outbound-smtp-limits). Udržujte své seznamy čisté: vysoká míra nedoručitelnosti váš práh sníží a náhlé skoky v objemu zpomalujeme.
 
@@ -2587,7 +2587,7 @@ Pro použití podpory kontaktů musí být **uživatel** emailová adresa aliasu
 
 ### Podporujete odesílání emailů přes SMTP {#do-you-support-sending-email-with-smtp}
 
-Ano. Všechny placené plány zahrnují odchozí SMTP a je **neomezené**: váš denní práh odesílání se zvyšuje s vaší [reputací odesílatele](#what-are-your-outbound-smtp-limits).
+Ano. Všechny placené plány zahrnují odchozí SMTP a je **neomezené**: váš denní práh odesílání se zvyšuje s vaší [reputací odesílatele](#what-are-your-outbound-smtp-limits). Každá doména nejdříve potřebuje [schválení](#do-i-need-approval-to-enable-smtp) a mnoho domén ho získá bez čekání, jakmile se ověří jejich DNS záznamy.
 
 <div id="smtp-instructions">
 
@@ -2646,7 +2646,7 @@ Ano. Všechny placené plány zahrnují odchozí SMTP a je **neomezené**: váš
     Důležité:
   </strong>
   <span>
-    Vezměte prosím na vědomí, že pro udržení reputace IP a zajištění doručitelnosti máme manuální proces kontroly na základě jednotlivých domén pro schválení odchozího SMTP. Tento proces obvykle trvá méně než 24 hodin, přičemž většina žádostí je vyřízena během 1-2 hodin. V blízké budoucnosti plánujeme tento proces zrychlit na okamžitý s dalšími kontrolami spamu a upozorněními. Tento proces zajišťuje, že vaše e-maily dorazí do schránky a vaše zprávy nebudou označeny jako spam.
+    Odchozí SMTP schvalujeme pro každou doménu, abychom chránili reputaci našich IP adres i doručitelnost vaší pošty. Mnoho domén schválíme bez čekání, jakmile se ověří jejich DNS záznamy, a ostatní posoudí náš tým, obvykle do 24 hodin. Viz [Potřebuji schválení pro povolení SMTP](#do-i-need-approval-to-enable-smtp).
   </span>
 </div>
 
@@ -3716,7 +3716,7 @@ Když v příjemci (nahrazení) použijete <a href="#do-you-support-regular-expr
 
 ### Jaké jsou vaše limity pro odchozí SMTP {#what-are-your-outbound-smtp-limits}
 
-Odchozí SMTP je **neomezené** a **založené na reputaci**. Místo pevného měsíčního stropu máte denní práh, který roste, jak si budujete dobrou reputaci odesílání.
+Odchozí SMTP je **neomezené** a **založené na reputaci**. Místo pevného měsíčního stropu máte denní práh, který roste, jak si budujete dobrou reputaci odesílání. Každá doména potřebuje [schválení](#do-i-need-approval-to-enable-smtp), než může začít odesílat, a mnoho domén ho získá bez čekání, jakmile se ověří jejich DNS záznamy.
 
 Noví odesílatelé začínají na 300 zprávách denně, v plánu Team na 900 (odesílatelé v plánu Team přeskakují úrovně pod 900 a jejich další úrovní je 1,000). Jednou denně projdeme vaše nedávné odesílání a váš práh zvýšíme nebo snížíme. Každý den vyhodnocujeme o dva dny později, jakmile známe výsledky doručení jeho zpráv. Když se to pro váš účet spustí, podíváme se až 30 dní zpět do vaší historie odesílání a doženeme dny, které jsme vynechali.
 
@@ -3776,7 +3776,13 @@ Kolik zpráv jste dnes odeslali a jaký je váš aktuální práh, zjistíte v s
 
 ### Potřebuji schválení pro povolení SMTP {#do-i-need-approval-to-enable-smtp}
 
-Ano, mějte prosím na paměti, že pro udržení reputace IP a zajištění doručitelnosti má Forward Email manuální proces schvalování odchozího SMTP na základě jednotlivých domén. Napište na <support@forwardemail.net> nebo otevřete [žádost o pomoc](https://forwardemail.net/help) pro schválení. Tento proces obvykle trvá méně než 24 hodin, většina žádostí je vyřízena během 1-2 hodin. V blízké budoucnosti plánujeme tento proces zautomatizovat s dalšími kontrolami spamu a upozorněními. Tento proces zajišťuje, že vaše e-maily dorazí do schránky a vaše zprávy nebudou označeny jako spam.
+Ano. Odchozí SMTP schvalujeme pro každou doménu, což chrání reputaci našich IP adres a udržuje vaši poštu mimo složky se spamem. Jakmile se ověří záznamy DKIM, Return-Path a DMARC domény (když kliknete na Ověřit v Můj účet → Domény → Nastavení → Konfigurace odchozího SMTP nebo odešlete první zprávu), schválíme ji bez čekání, pokud žádná z vašich domén nemá pozastavené odchozí SMTP a platí jedna z těchto podmínek:
+
+* Prošli jste naším ověřením totožnosti (KYC).
+* Doména používá běžnou doménu nejvyšší úrovně (například `.com` nebo `.org`) a má funkční web na důvěryhodném hostingu.
+* Doména používá běžnou doménu nejvyšší úrovně a už máte jinou doménu schválenou pro odchozí SMTP.
+
+Každou jinou doménu posoudí náš tým a po rozhodnutí vám pošleme e-mail, obvykle do 24 hodin a často do 1 až 2 hodin. Pokud chcete posouzení urychlit, napište na <support@forwardemail.net> nebo otevřete [žádost o pomoc](https://forwardemail.net/help) s [informacemi, které potřebujeme](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp).
 
 Po schválení je odchozí SMTP neomezené a váš denní práh se zvyšuje s vaší [reputací odesílatele](#what-are-your-outbound-smtp-limits).
 
@@ -6005,9 +6011,9 @@ Pokud je tento limit překročen, odesíláme kód odpovědi 421, který říká
 
 ### Mohu s tímto odesílat neomezené množství e-mailů {#can-i-send-unlimited-emails-with-this}
 
-Ano. Odchozí SMTP a naše e-mailové API jsou neomezené ve všech placených plánech (od $3/mo). Místo pevného měsíčního stropu máte denní práh, který roste, dokud platíte a budujete čistou historii odesílání: od 300 zpráv denně pro nové odesílatele (900 v plánu Team) až po 10,000 denně a nad tuto hranici poté, co váš účet posoudí náš tým.
+Ano. Odchozí SMTP a naše e-mailové API jsou neomezené ve všech placených plánech (od $3/měsíc). Místo pevného měsíčního stropu máte denní práh, který roste, dokud platíte a budujete čistou historii odesílání: od 300 zpráv denně pro nové odesílatele (900 v plánu Team) až po 10,000 denně a nad tuto hranici poté, co váš účet posoudí náš tým. Každá doména potřebuje [schválení](#do-i-need-approval-to-enable-smtp), než může začít odesílat.
 
-Reputaci buduje pouze pošta doručená skutečným příjemcům mimo vaše vlastní domény. Kvůli ochraně doručitelnosti vysoká míra nedoručitelnosti váš práh sníží, hlášení spamu a virů od velkých poskytovatelů poštovních schránek jej vrátí na první úroveň a neobvyklé vzorce (například náhlou špičku z neaktivního účtu) zpomalujeme. Podrobnosti najdete v sekci [Jaké jsou vaše limity pro odchozí SMTP](#what-are-your-outbound-smtp-limits) a svůj aktuální práh v sekci [Můj účet → E-maily](/my-account/emails).
+Reputaci buduje pouze pošta doručená skutečným příjemcům mimo vaše vlastní domény. Kvůli ochraně doručitelnosti vysoká míra nedoručitelnosti váš práh sníží, hlášení spamu a virů od velkých poskytovatelů poštovních schránek jej vrátí na počáteční práh a neobvyklé vzorce (například náhlou špičku z neaktivního účtu) zpomalujeme. Podrobnosti najdete v sekci [Jaké jsou vaše limity pro odchozí SMTP](#what-are-your-outbound-smtp-limits) a svůj aktuální práh v sekci [Můj účet → E-maily](/my-account/emails).
 
 ### Nabízíte neomezený počet domén za jednu cenu {#do-you-offer-unlimited-domains-for-one-price}
 

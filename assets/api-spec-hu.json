@@ -6271,7 +6271,7 @@
       ],
       "put": {
         "summary": "Tartományi tag frissítése",
-        "description": "Tartományi tag frissítése.\n\n>[!IMPORTANT]\n>Egy másik tag `admin` szerepkörre frissítése helyette egy adminisztrátori meghívót küld neki e-mailben, és `user` marad, amíg el nem fogadja (a domain függőben lévő meghívói között megjelenik). Visszafrissítése `user` szerepkörre vagy eltávolítása visszavonja a meghívót.",
+        "description": "Domain tag frissítése.\n\n>[!IMPORTANT]\n>Ha egy másik tagot `admin` szerepkörre frissít, ehelyett adminisztrátori meghívót kap e-mailben, és `user` marad, amíg el nem fogadja (a domain függőben lévő meghívói között megjelenik). Ha visszaállítja `user` szerepkörre vagy eltávolítja, azzal visszavonja a meghívót.",
         "tags": [
           "Tagok"
         ],

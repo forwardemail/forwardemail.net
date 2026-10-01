@@ -6137,7 +6137,7 @@
       },
       "post": {
         "summary": "Criar convite de domínio",
-        "description": ">[!IMPORTANT]\n>Se o usuário convidado já for membro de algum outro domínio do qual o administrador que o está convidando também seja membro, o convite será aceito automaticamente e nenhum e-mail será enviado (somente para um `group` de `user`: um convite como `admin` enviamos por e-mail para que o convidado o aceite, e deixamos o link dele fora dos convites pendentes do domínio).",
+        "description": ">[!IMPORTANT]\n>Se o usuário convidado já for membro aceito de algum outro domínio do qual o administrador que o está convidando também seja membro, o convite será aceito automaticamente e nenhum e-mail será enviado (somente para um `group` de `user`: um convite como `admin` enviamos por e-mail para que o convidado o aceite, e deixamos o link dele fora dos convites pendentes do domínio).",
         "tags": [
           "Convites"
         ],

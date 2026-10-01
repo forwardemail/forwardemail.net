@@ -2073,7 +2073,7 @@ I motsetning til e-postsystemer som `postfix` (f.eks. som bruker `sieve` feriefi
 
 9. Vi svarer bare autentiserte avsendere: From-adressen må bestå DMARC eller ha en justert og gyldig DKIM-signatur. SPF alene teller ikke, siden delte e-postservere består det for hvem som helst. En forfalsket avsender kan ikke gjøre ferieautosvarene dine om til [backscatter](https://www.backscatterer.org/?target=autoresponders) rettet mot noen andre.
 
-10. Vi svarer bare når aliaset ditt eller en annen adresse på domenet til aliaset (som et alias som videresender til det) står i headeren `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` eller `Resent-Bcc`, slik [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) anbefaler. E-post sendt til en skjult mottakerliste får ikke svar. Sieve-ferieautosvar krever at aliaset ditt eller en adresse i dens `:addresses` står i disse headerne.
+10. Vi svarer bare når aliaset ditt eller en annen adresse på domenet til aliaset (som et alias som videresender til det) står i headeren `To`, `Cc`, `Bcc`, `Resent-To`, `Resent-Cc` eller `Resent-Bcc`, slik [RFC 3834](https://www.rfc-editor.org/rfc/rfc3834) anbefaler. E-post sendt til en skjult mottakerliste får ikke svar. Sieve-ferieautosvar krever at aliaset ditt eller en adresse i dets `:addresses` står i disse headerne.
 
 11. Vi sender opptil 300 ferieautosvar per bruker per dag (færre hvis vi har begrenset den utgående SMTP-terskelen din til under det), og høyst 20 per mottakeradresse per dag på tvers av alle brukerne våre.
 
@@ -2376,7 +2376,7 @@ Hvis du bruker Gmail, følg disse trinnene nedenfor:
 
 Ja, du kan lese mer på <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Vennligst merk at for å opprettholde IP-omdømme og sikre leveringsdyktighet, har Forward Email en manuell gjennomgangsprosess per domene for **godkjenning av nyhetsbrev**. Send e-post til <support@forwardemail.net> eller åpne en [hjelpeforespørsel](https://forwardemail.net/help) for godkjenning. Dette tar vanligvis mindre enn 24 timer, med de fleste forespørsler behandlet innen 1-2 timer. I nær fremtid har vi som mål å gjøre denne prosessen umiddelbar med ekstra spamkontroller og varsling. Denne prosessen sikrer at e-postene dine når innboksen og at meldingene dine ikke blir merket som spam.
+Teamet vårt gjennomgår hvert domene før det kan sende nyhetsbrev, for å beskytte IP-omdømmet vårt og leveringsdyktigheten din. Meldinger med en `List-Id`- eller `List-Unsubscribe`-header trenger denne **godkjenningen av nyhetsbrev**, og vi sender e-post til administratorene av domenet ditt første gang en slik melding kommer inn uten godkjenning. For å be om godkjenning, send e-post til <support@forwardemail.net> eller åpne en [hjelpeforespørsel](https://forwardemail.net/help). Vi svarer vanligvis innen 24 timer, og ofte innen 1 til 2 timer.
 
 Nyhetsbrev og e-postlister teller mot den daglige utgående terskelen din, som er ubegrenset og øker med [avsenderomdømmet](#what-are-your-outbound-smtp-limits) ditt. Hold listene dine rene: en høy returrate flytter terskelen din ned, og vi bremser plutselige hopp i volum.
 
@@ -2588,7 +2588,7 @@ For å bruke støtte for kontakter må **brukeren** være e-postadressen til et 
 
 ### Støtter dere sending av e-post med SMTP {#do-you-support-sending-email-with-smtp}
 
-Ja. Alle betalte planer inkluderer utgående SMTP, og det er **ubegrenset**: den daglige sendeterskelen din øker med [avsenderomdømmet](#what-are-your-outbound-smtp-limits) ditt.
+Ja. Alle betalte planer inkluderer utgående SMTP, og det er **ubegrenset**: den daglige sendeterskelen din øker med [avsenderomdømmet](#what-are-your-outbound-smtp-limits) ditt. Hvert domene trenger [godkjenning](#do-i-need-approval-to-enable-smtp) først, og mange domener får det med en gang DNS-oppføringene deres er verifisert.
 
 <div id="smtp-instructions">
 
@@ -2647,7 +2647,7 @@ Ja. Alle betalte planer inkluderer utgående SMTP, og det er **ubegrenset**: den
     Viktig:
   </strong>
   <span>
-    Vennligst merk at for å opprettholde IP-omdømme og sikre leveringsdyktighet, har vi en manuell gjennomgangsprosess per domene for godkjenning av utgående SMTP. Dette tar vanligvis mindre enn 24 timer, med de fleste forespørsler behandlet innen 1-2 timer. I nær fremtid har vi som mål å gjøre denne prosessen umiddelbar med ekstra spamkontroller og varsling. Denne prosessen sikrer at e-postene dine når innboksen og at meldingene dine ikke blir merket som spam.
+    Vi godkjenner utgående SMTP for hvert domene for å beskytte IP-omdømmet vårt og leveringsevnen din. Mange domener blir godkjent med en gang DNS-oppføringene deres er verifisert, og teamet vårt gjennomgår resten, vanligvis innen 24 timer. Se [Trenger jeg godkjenning for å aktivere SMTP](#do-i-need-approval-to-enable-smtp).
   </span>
 </div>
 
@@ -3717,7 +3717,7 @@ Når du bruker <a href="#do-you-support-regular-expressions-or-regex" class="ale
 
 ### Hva er dine utgående SMTP-begrensninger {#what-are-your-outbound-smtp-limits}
 
-Utgående SMTP er **ubegrenset** og **basert på omdømme**. Du får en daglig terskel i stedet for en fast månedlig grense, og den øker etter hvert som du bygger opp et godt sendeomdømme.
+Utgående SMTP er **ubegrenset** og **basert på omdømme**. Du får en daglig terskel i stedet for en fast månedlig grense, og den øker etter hvert som du bygger opp et godt sendeomdømme. Hvert domene trenger [godkjenning](#do-i-need-approval-to-enable-smtp) før det kan sende, og mange domener får det med en gang DNS-oppføringene deres er verifisert.
 
 Nye avsendere starter på 300 meldinger per dag, eller 900 med Team-plan (avsendere med Team-plan hopper over nivåene under 900, og deres neste nivå er 1,000). Én gang om dagen går vi gjennom den nylige sendingen din og flytter terskelen din opp eller ned. Vi vurderer hver dag to dager senere, når vi kjenner leveringsresultatene for meldingene den dagen. Når dette starter for kontoen din, ser vi tilbake på opptil 30 dager av sendehistorikken din, og vi tar igjen dager vi har gått glipp av.
 
@@ -3772,12 +3772,18 @@ Du kan se hvor mange meldinger du sendte i dag og din nåværende terskel under 
 * **Nye domener øker gradvis**: innenfor kontoens terskel kan et domene sende opptil 2 ganger så mye som sin travleste dag med leverte e-poster de siste 45 dagene, og minst startterskelen (300 meldinger, eller 900 med Team-plan) eller en godkjent terskel. Et nytt domene på en etablert konto starter på startterskelen og vokser etter hvert som vi leverer e-posten.
 * **Returmeldinger og autosvar**: returmeldinger (bounces) og ferieautosvar (automatiske svar) som vi sender på dine vegne, teller ikke mot terskelen din. Vi sender opptil 300 autosvar per bruker per dag (færre hvis vi har begrenset terskelen din til under det) og høyst 20 per mottakeradresse per dag på tvers av alle brukerne våre, og bare til avsendere som besto autentisering (se [ferieautosvar](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)). Vi begrenser returmeldinger til en returadresse utenfor domenet du sendte fra (eller andre domener du er administrator for) til dette antallet eller 15% av den daglige terskelen din, avhengig av hva som er høyest, og de inneholder bare de identifiserende hodene til den opprinnelige meldingen (som `From`, `To` og `Subject`).
 * **Enhanced Protection og andre planer**: domenets terskel er den sendende brukerens egen terskel.
-* **Overstyring per alias**: domeneadministratorer kan sette en egendefinert `smtp_limit` på individuelle alias. Vi sjekker den først (før domene- og brukertersklene), slik at du kan begrense bestemte aliaser til et lavere sendevolum.
+* **Overstyring per alias**: domeneadministratorer kan sette en egendefinert `smtp_limit` på individuelle aliaser. Vi sjekker den først (før domene- og brukertersklene), slik at du kan begrense bestemte aliaser til et lavere sendevolum.
 * **Domene-standard for nye aliaser**: domeneadministratorer kan angi en `alias_default_smtp_limit` på domenet (med API eller Avanserte innstillinger i dashbordet). Nye aliaser på det domenet arver da denne verdien som sin `smtp_limit`. Den kan ikke overstige domenets nåværende terskel, og eksisterende aliaser beholder sin egen. Sett den til `0` for å slå den av.
 
 ### Trenger jeg godkjenning for å aktivere SMTP {#do-i-need-approval-to-enable-smtp}
 
-Ja, vær oppmerksom på at for å opprettholde IP-omdømme og sikre leveringsdyktighet, har Forward Email en manuell gjennomgangsprosess per domene for godkjenning av utgående SMTP. Send e-post til <support@forwardemail.net> eller åpne en [hjelpeforespørsel](https://forwardemail.net/help) for godkjenning. Dette tar vanligvis mindre enn 24 timer, med de fleste forespørsler behandlet innen 1-2 timer. I nær fremtid har vi som mål å gjøre denne prosessen umiddelbar med ekstra spamkontroller og varsling. Denne prosessen sikrer at e-postene dine når innboksen og at meldingene dine ikke blir merket som spam.
+Ja. Vi godkjenner utgående SMTP for hvert domene, noe som beskytter IP-omdømmet vårt og holder e-posten din unna spam-mappen. Når domenets DKIM-, Return-Path- og DMARC-oppføringer er verifisert (når du klikker på Verifiser under Min konto → Domener → Innstillinger → Konfigurasjon for utgående SMTP, eller sender den første meldingen din), godkjenner vi det med en gang hvis ingen av domenene dine har utgående SMTP suspendert og ett av disse punktene gjelder:
+
+* Du har bestått identitetsverifiseringen vår (KYC).
+* Domenet bruker et vanlig toppnivådomene (som `.com` eller `.org`) og har et aktivt nettsted hos en anerkjent vertstjeneste.
+* Domenet bruker et vanlig toppnivådomene, og du har allerede et annet domene som er godkjent for utgående SMTP.
+
+Teamet vårt gjennomgår alle andre domener og sender deg en e-post når vi har bestemt oss, vanligvis innen 24 timer og ofte innen 1 til 2 timer. For å få en raskere gjennomgang kan du sende e-post til <support@forwardemail.net> eller åpne en [hjelpeforespørsel](https://forwardemail.net/help) med [informasjonen vi trenger](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp).
 
 Når du er godkjent, er utgående SMTP ubegrenset, og den daglige terskelen din øker med [avsenderomdømmet](#what-are-your-outbound-smtp-limits) ditt.
 
@@ -5879,7 +5885,7 @@ Vi bruker MX- og <strong class="notranslate">TXT</strong>-postverifisering, så 
 
 ### Hvordan øker jeg lagringsplassen min eller grensen for utgående SMTP-sending {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
 
-**Lagring**: gå til <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Min konto → Fakturering</a> og rull ned til delen **Tillegg**. Velg en mengde å legge til (+10, +20, +30, +40, eller +50 GB), eller velg "Other" for å be om en egendefinert mengde. Når du sender inn skjemaet, går forespørselen din til teamet vårt for gjennomgang, og du blir ikke belastet ennå. Når vi godkjenner den, sender vi deg en sikker betalingslenke på e-post for å fullføre oppgraderingen. Du kan ha én ventende lagringsforespørsel om gangen, og du kan ikke sende inn en ny innen 3 dager etter en tidligere forespørsel.
+**Lagring**: gå til <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Min konto → Fakturering</a> og rull ned til delen **Tillegg**. Velg en mengde å legge til (+10, +20, +30, +40, eller +50 GB), eller velg «Annen» for å be om en egendefinert mengde. Når du sender inn skjemaet, går forespørselen din til teamet vårt for gjennomgang, og du blir ikke belastet ennå. Når vi godkjenner den, sender vi deg en sikker betalingslenke på e-post for å fullføre oppgraderingen. Du kan ha én ventende lagringsforespørsel om gangen, og du kan ikke sende inn en ny innen 3 dager etter en tidligere forespørsel.
 
 **Utgående SMTP**: det er ingenting å kjøpe. Utgående SMTP er ubegrenset, og den daglige terskelen din øker med [avsenderomdømmet](#what-are-your-outbound-smtp-limits) ditt. <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Min konto → Fakturering</a> og <a href="/my-account/emails" target="_blank" rel="noopener noreferrer">Min konto → E-poster</a> viser din nåværende terskel, ditt omdømmenivå og kravene for neste nivå.
 
@@ -6006,7 +6012,7 @@ Hvis denne grensen overskrides, sender vi en 421-responskode som forteller avsen
 
 ### Kan jeg sende ubegrenset med dette {#can-i-send-unlimited-emails-with-this}
 
-Ja. Utgående SMTP og e-post-API-et vårt er ubegrenset på alle betalte planer (fra $3/mo). Du får en daglig terskel i stedet for en fast månedlig grense, og den øker så lenge du fortsetter å betale og bygger opp en ren sendehistorikk: fra 300 meldinger per dag for nye avsendere (900 med Team-plan) opptil 10,000 per dag, og mer etter at teamet vårt har gjennomgått kontoen din.
+Ja. Utgående SMTP og e-post-API-et vårt er ubegrenset på alle betalte planer (fra $3/mnd.). Du får en daglig terskel i stedet for en fast månedlig grense, og den øker så lenge du fortsetter å betale og bygger opp en ren sendehistorikk: fra 300 meldinger per dag for nye avsendere (900 med Team-plan) opptil 10,000 per dag, og mer etter at teamet vårt har gjennomgått kontoen din. Hvert domene trenger [godkjenning](#do-i-need-approval-to-enable-smtp) før det kan sende.
 
 Bare e-post levert til ekte mottakere utenfor dine egne domener bygger omdømme. For å beskytte leveringsevnen flytter en høy returrate terskelen din ned, spam- og virusrapporter fra store e-postleverandører tilbakestiller den, og vi bremser uvanlige mønstre (for eksempel en plutselig topp fra en inaktiv konto). Se [Hva er dine utgående SMTP-begrensninger](#what-are-your-outbound-smtp-limits) for detaljer, og din nåværende terskel under [Min konto → E-poster](/my-account/emails).
 
