@@ -308,6 +308,72 @@ test.serial(
 );
 
 test.serial(
+  'replaces a mailbox whose -wal/-shm files were left behind by a process that crashed',
+  async (t) => {
+    t.timeout(ms('2m'));
+    const { client } = t.context;
+    const { storagePath, aliasId, dir } = tmpDatabasePath(t);
+    const before = await createMailbox(storagePath, aliasId);
+    const rekeyId = await insertRotatingAlias(aliasId);
+
+    // a process killed while its connection was open never removes them
+    const holder = startHolder(t, storagePath);
+    await pWaitFor(() => holder.open, { timeout: ms('30s') });
+    holder.child.kill('SIGKILL');
+    await pWaitFor(() => holder.child.signalCode !== null, {
+      timeout: ms('30s')
+    });
+    t.true(fs.existsSync(`${storagePath}-wal`));
+    t.true(fs.existsSync(`${storagePath}-shm`));
+
+    const result = await resetMailbox({
+      client,
+      storagePath,
+      session: session(aliasId, NEW_PASSWORD),
+      rekeyId
+    });
+    t.true(result.swapped);
+    t.not(fs.statSync(storagePath, { bigint: true }).ino, before.ino);
+    t.is(await opensWith(storagePath, aliasId, NEW_PASSWORD), 0);
+    t.false(await opensWith(storagePath, aliasId, OLD_PASSWORD));
+    assertNothingLeftBehind(t, dir, storagePath);
+  }
+);
+
+test.serial(
+  'replaces a mailbox whose last connection was read-only',
+  async (t) => {
+    const { client } = t.context;
+    const { storagePath, aliasId, dir } = tmpDatabasePath(t);
+    const before = await createMailbox(storagePath, aliasId);
+    const rekeyId = await insertRotatingAlias(aliasId);
+
+    // a read-only connection cannot checkpoint, so closing it as the last
+    // connection leaves the -wal/-shm files in place
+    const db = await openDatabaseHandle(
+      storagePath,
+      session(aliasId, OLD_PASSWORD),
+      { readonly: true }
+    );
+    t.true(db.prepare('SELECT count(*) AS c FROM t').get().c > 0);
+    db.close();
+    t.true(fs.existsSync(`${storagePath}-wal`));
+    t.true(fs.existsSync(`${storagePath}-shm`));
+
+    const result = await resetMailbox({
+      client,
+      storagePath,
+      session: session(aliasId, NEW_PASSWORD),
+      rekeyId
+    });
+    t.true(result.swapped);
+    t.not(fs.statSync(storagePath, { bigint: true }).ino, before.ino);
+    t.is(await opensWith(storagePath, aliasId, NEW_PASSWORD), 0);
+    assertNothingLeftBehind(t, dir, storagePath);
+  }
+);
+
+test.serial(
   'aborts before the swap when the rotation was rolled back meanwhile',
   async (t) => {
     const { client } = t.context;

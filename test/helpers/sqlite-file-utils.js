@@ -8,6 +8,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { randomUUID } = require('node:crypto');
 
+const Database = require('better-sqlite3-multiple-ciphers');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const test = require('ava');
@@ -15,6 +16,7 @@ const test = require('ava');
 const workerConfig = require('#helpers/sqlite-worker-config');
 const {
   leftoverCompanionFiles,
+  openConnectionCompanionFiles,
   removeStaleSwapArtifact
 } = require('#helpers/sqlite-file-utils');
 
@@ -47,6 +49,29 @@ test('leftoverCompanionFiles ignores an empty rollback journal', (t) => {
   fs.writeFileSync(`${live}-wal`, '');
   fs.writeFileSync(`${live}-shm`, '');
   t.deepEqual(leftoverCompanionFiles(live), ['-wal', '-shm', '-journal']);
+});
+
+test('openConnectionCompanionFiles only counts -wal/-shm files of an open connection', (t) => {
+  const live = path.join(t.context.dir, `${t.context.id}.sqlite`);
+  const writer = new Database(live);
+  writer.pragma('journal_mode=WAL');
+  writer.exec('CREATE TABLE t (x)');
+  t.deepEqual(openConnectionCompanionFiles(live), ['-wal', '-shm']);
+
+  const reader = new Database(live, { readonly: true });
+  reader.prepare('SELECT * FROM t').all();
+  writer.close();
+  // the read-only connection is still open
+  t.deepEqual(openConnectionCompanionFiles(live), ['-wal', '-shm']);
+
+  // closing it as the last connection leaves its files behind
+  reader.close();
+  t.deepEqual(leftoverCompanionFiles(live), ['-wal', '-shm']);
+  t.deepEqual(openConnectionCompanionFiles(live), []);
+
+  // a rollback journal always counts
+  fs.writeFileSync(`${live}-journal`, 'x');
+  t.deepEqual(openConnectionCompanionFiles(live), ['-wal', '-shm', '-journal']);
 });
 
 test('a quarantined mailbox is removed once its retention is over', async (t) => {

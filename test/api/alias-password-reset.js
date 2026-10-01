@@ -372,6 +372,40 @@ test('a reset that cannot prove exclusivity leaves the mailbox and the previous 
   t.deepEqual(filesOf(storagePath), [path.basename(storagePath)]);
 });
 
+test('a reset replaces a mailbox whose -wal/-shm files outlived their connection', async (t) => {
+  t.timeout(ms('2m'));
+  const ctx = await createUserDomainAlias(t);
+  const { aliasId, storagePath } = ctx;
+
+  const first = await generatePassword(t, ctx, {});
+  t.is(first.status, 200);
+  const firstPassword = first.body.password;
+  const before = fs.statSync(storagePath, { bigint: true });
+
+  // a process killed while connected leaves its -wal/-shm files behind,
+  // and nothing removes them on a mailbox that is never opened again
+  const holder = startHolder(t, storagePath, firstPassword);
+  await pWaitFor(() => holder.open, { timeout: ms('30s') });
+  holder.child.kill('SIGKILL');
+  await pWaitFor(() => holder.child.signalCode !== null, {
+    timeout: ms('30s')
+  });
+  t.true(fs.existsSync(`${storagePath}-wal`));
+  t.true(fs.existsSync(`${storagePath}-shm`));
+
+  const second = await generatePassword(t, ctx, { is_override: true });
+  t.is(second.status, 200);
+  assertSettled(t, await getRotationState(aliasId));
+  t.is(await t.context.client.get(getRekeyLockKey(aliasId)), null);
+
+  t.not(fs.statSync(storagePath, { bigint: true }).ino, before.ino);
+  t.false(await opensWith(storagePath, aliasId, firstPassword));
+  const tables = await opensWith(storagePath, aliasId, second.body.password);
+  t.true(Array.isArray(tables) && tables.includes('Mailboxes'));
+  t.false(tables.includes('holder'));
+  t.deepEqual(filesOf(storagePath), [path.basename(storagePath)]);
+});
+
 test('a reset is refused while another rotation is in progress', async (t) => {
   const ctx = await createUserDomainAlias(t);
   const { aliasId, storagePath } = ctx;

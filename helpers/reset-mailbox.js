@@ -24,6 +24,7 @@ const { withDbFileLock } = require('#helpers/db-file-lock');
 const {
   fsyncDirectory,
   leftoverCompanionFiles,
+  openConnectionCompanionFiles,
   removeCompanionFiles
 } = require('#helpers/sqlite-file-utils');
 
@@ -41,7 +42,9 @@ const {
 //  2. under the mutex, cached handles are evicted fleet-wide and the swap
 //     only proceeds once no -wal/-shm (or hot -journal) file proves a
 //     connection: a stale connection that closes later would otherwise
-//     unlink the NEW mailbox's -wal/-shm files by name
+//     unlink the NEW mailbox's -wal/-shm files by name.  -wal/-shm files
+//     that no connection holds a lock on are left over from one that is
+//     gone (a read-only last connection, a killed process) and are removed
 //  3. when the reset is part of a password rotation (`rekeyId`, set by the
 //     controller together with `is_rekey`), the inode of the fresh mailbox
 //     is recorded in MongoDB right before the rename, so that a process
@@ -177,7 +180,8 @@ async function resetMailbox({
 
             await setTimeout(ms('1s'));
 
-            const leftover = leftoverCompanionFiles(storagePath);
+            // (-wal/-shm files of a connection that is gone do not count)
+            const leftover = openConnectionCompanionFiles(storagePath);
             if (leftover.length === 0) {
               cleanChecks++;
               if (cleanChecks >= cleanChecksRequired) break;

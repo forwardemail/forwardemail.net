@@ -60,6 +60,60 @@ function leftoverCompanionFiles(storagePath) {
 }
 
 //
+// Whether a process on this host holds a lock on the database file or on its
+// -wal/-shm files.  Every connection to a WAL-mode database, read-only or
+// not, holds a shared lock on the database file and on the -shm file for as
+// long as it is open, and the kernel drops both when the connection closes
+// or its process dies.  Resolves with `true` when the locks cannot be read
+// (no /proc/locks), so callers stay on the safe side.
+//
+// Inodes are compared without their device, which can only report a lock
+// that is not there (never miss one).
+//
+function isDatabaseLocked(storagePath) {
+  const inodes = new Set();
+  for (const suffix of ['', '-wal', '-shm']) {
+    try {
+      inodes.add(fs.statSync(`${storagePath}${suffix}`).ino.toString());
+    } catch (err) {
+      if (err.code !== 'ENOENT') return true;
+    }
+  }
+
+  if (inodes.size === 0) return false;
+
+  let locks;
+  try {
+    locks = fs.readFileSync('/proc/locks', 'utf8');
+  } catch {
+    return true;
+  }
+
+  for (const line of locks.split('\n')) {
+    const match = line.match(/\s(?:[\da-f]+:){2}(\d+)\s/i);
+    if (match && inodes.has(match[1])) return true;
+  }
+
+  return false;
+}
+
+//
+// The companion files that prove a connection to the database is open.
+//
+// -wal/-shm files that no lock refers to belong to no connection: the last
+// connection was read-only (it cannot checkpoint, so closing it leaves them
+// behind) or its process was killed.  Nothing ever removes them, so treating
+// them as a connection would block every file swap of that mailbox for good.
+// A rollback journal is still always trusted (an idle connection in rollback
+// mode holds no lock).
+//
+function openConnectionCompanionFiles(storagePath) {
+  const leftover = leftoverCompanionFiles(storagePath);
+  if (leftover.length === 0 || leftover.includes('-journal')) return leftover;
+  return isDatabaseLocked(storagePath) ? leftover : [];
+}
+
+//
 // Make the directory entry written by `rename` durable (the file contents
 // were already fsync'd by SQLite with synchronous=FULL).
 //
@@ -182,6 +236,7 @@ module.exports = {
   companionFileExists,
   fsyncDirectory,
   leftoverCompanionFiles,
+  openConnectionCompanionFiles,
   removeCompanionFiles,
   removeStaleSwapArtifact
 };
