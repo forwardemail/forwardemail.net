@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [האם יש לכם יישום לטרמינל](#do-you-have-a-terminal-app)
   * [מכשירים ניידים](#mobile-devices)
   * [הגדרת Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
   * [הגדרת Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Forward Email מספק הודעות עם עיכוב מינימלי, בדרך כ�
 8. הזן את שמך ובחר שם לחשבון.
 9. לחץ על **Finish**.
 
+### האם יש לכם יישום לטרמינל {#do-you-have-a-terminal-app}
+
+כן. הפקודה `forwardemail` מריצה את לקוח הדואר המקוון שלנו בטרמינל, עם אותה כניסה, הצפנה, דואר, לוח שנה, אנשי קשר והגדרות. משתמשים בו עם המקלדת או העכבר, והשורה התחתונה מציגה את המקשים של המסך הנוכחי (הקש `?` לכל קיצורי המקלדת).
+
+התקן אותו ב-macOS או ב-Linux עם:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+ב-Windows, ב-PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+לחלופין, עם Node.js 22 ומעלה בכל מערכת, הרץ `npm install -g forwardemail`.
+
+לאחר מכן הרץ `forwardemail` והתחבר עם כתובת כינוי והסיסמה שנוצרה עבורה, או הרץ `forwardemail --demo` כדי להסתכל מסביב בלי חשבון. תוכניות ההתקנה בודקות כל הורדה מול קובץ `SHA256SUMS.txt` של הגרסה, והגרסאות העצמאיות מתעדכנות מעצמן. דואר חדש מוצג כהתראת שולחן עבודה כשהטרמינל ברקע, ואפשר להפעיל או לכבות זאת תחת **Settings → Account → Notifications**.
+
+הסשן וההגדרות שלך נשמרים במחשב שלך, ב-`~/.config/forwardemail` ב-Linux, ב-`~/Library/Application Support/forwardemail` ב-macOS וב-`%APPDATA%\forwardemail` ב-Windows. הרץ `forwardemail --data-dir <path>` כדי לשמור אותם במקום אחר, ו-`forwardemail logout` כדי להתנתק ולמחוק אותם.
+
+הורדות לכל מערכת זמינות גם ב<a href="/download" target="_blank" rel="noopener noreferrer">דף ההורדות</a> שלנו, והמדריך המלא נמצא בכתובת <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### מכשירים ניידים {#mobile-devices}
+
+היישום הרשמי שלנו ל-iOS ול-Android מגדיר את עצמו מקוד QR: כשאתה יוצר סיסמה עבור כינוי, בחר **Scan a setup code** במסך הכניסה של היישום וסרוק את אחד הקודים המוצגים עם הסיסמה. <a href="/download" target="_blank" rel="noopener noreferrer">הורד את היישום</a>, או הגדר במקום זאת את יישום הדואר המובנה:
 
 עבור iOS:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### לקוחות דואר שורת פקודה {#command-line-email-clients}
+
+כדי לקרוא ולשלוח דואר בטרמינל בלי להגדיר IMAP או SMTP, השתמש ב[יישום הטרמינל](#do-you-have-a-terminal-app) שלנו.
 
 לקוחות דואר פופולריים בשורת הפקודה כמו [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), ו-[Alpine](https://alpine.x10.mx/alpine/release/) יכולים להיות מוגדרים להשתמש בשרתי ה-SMTP של Forward Email לשליחת דואר. התצורה תהיה דומה להגדרת `msmtp`, שבה תספק את פרטי שרת ה-SMTP ואת האישורים שלך בקבצי התצורה המתאימים (`.muttrc`, `.neomuttrc`, או `.pinerc`).
 

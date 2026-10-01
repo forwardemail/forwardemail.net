@@ -131,6 +131,35 @@ const channels = [
     name: 'App Store',
     state: 'soon',
     url: null
+  },
+  // ---- Terminal ----
+  // The `forwardemail` command (docs/CLI.md in the app repository). The two
+  // installers are assets of every release from the first one that carries
+  // the terminal client; the terminal card only renders once a release has
+  // its executables, so these never point at a release without them.
+  {
+    key: 'cli-install-sh',
+    platform: 'terminal',
+    name: 'install.sh',
+    state: 'live',
+    url: `${REPO_URL}/releases/latest/download/install.sh`,
+    command: `curl -fsSL ${REPO_URL}/releases/latest/download/install.sh | sh`
+  },
+  {
+    key: 'cli-install-ps1',
+    platform: 'terminal',
+    name: 'install.ps1',
+    state: 'live',
+    url: `${REPO_URL}/releases/latest/download/install.ps1`,
+    command: `irm ${REPO_URL}/releases/latest/download/install.ps1 | iex`
+  },
+  {
+    key: 'cli-npm',
+    platform: 'terminal',
+    name: 'npm',
+    state: 'live',
+    url: 'https://www.npmjs.com/package/forwardemail',
+    command: 'npm install -g forwardemail'
   }
 ];
 
@@ -142,6 +171,9 @@ const signing = {
   // provisioned and WINDOWS_SIGNING_REQUIRED is set in the release workflow.
   windows: false
 };
+// The terminal client's Windows executables are signed in the same release
+// with the same certificate (release-cli.yml), so they follow the installers.
+signing.terminal = signing.windows;
 
 // Verification material a visitor can check a download against, beyond the
 // per-file checksums that come from the release itself.

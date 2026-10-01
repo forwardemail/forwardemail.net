@@ -27,6 +27,9 @@ mixin feDownloadHero
     // button could not be pointed at.
     const switchPlatforms = [];
     for (const group of downloads.groups) {
+      // The terminal client is not what the main button offers: it has its
+      // own section and the link beside the button.
+      if (group.key === "terminal") continue;
       for (const platform of group.platforms) {
         if (!platform.recommended) continue;
         switchPlatforms.push(platform.key);
@@ -62,7 +65,7 @@ mixin feDownloadHero
 
       h1#fe-download-title.fe-display-xl.fe-download-hero__title= t("Your domain. Your inbox. Every device.")
 
-      p.fe-lede.fe-download-hero__body= t("Native apps for macOS, Windows, Linux, Android, and iOS. Encrypted storage, IMAP, POP3, CalDAV, and CardDAV, all against your own domain.")
+      p.fe-lede.fe-download-hero__body= t("Native apps for macOS, Windows, Linux, Android, and iOS, and the same app in your terminal. Encrypted storage, IMAP, POP3, CalDAV, and CardDAV, all against your own domain.")
 
       .fe-actions
         //- The map is a data attribute rather than an inline script so the
@@ -77,6 +80,11 @@ mixin feDownloadHero
         a.fe-btn.fe-btn--ghost.fe-btn--lg(href="https://mail.forwardemail.net")
           i.fa.fa-globe(aria-hidden="true")
           = t("Open the web app")
+
+        if downloads.groups.some((group) => group.key === "terminal")
+          a.fe-btn.fe-btn--ghost.fe-btn--lg(href="#fe-download-terminal")
+            i.fa.fa-terminal(aria-hidden="true")
+            = t("Install in the terminal")
 
       //- Hidden until the detector fills them, so no empty lines flash.
       p#fe-download-primary-meta.fe-download-hero__meta.fe-numeral(hidden)

@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Apakah Anda punya aplikasi terminal](#do-you-have-a-terminal-app)
   * [Perangkat Mobile](#mobile-devices)
   * [Konfigurasi Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
   * [Konfigurasi Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Semua dilakukan di memori dan [kode sumber kami ada di GitHub](https://github.co
 8. Masukkan nama Anda dan pilih nama akun.
 9. Klik **Selesai**.
 
+### Apakah Anda punya aplikasi terminal {#do-you-have-a-terminal-app}
+
+Ya. Perintah `forwardemail` menjalankan klien webmail kami di terminal, dengan proses masuk, enkripsi, email, kalender, kontak, dan pengaturan yang sama. Anda dapat menggunakannya dengan keyboard atau mouse, dan baris paling bawah menampilkan tombol untuk layar saat ini (tekan `?` untuk melihat semua pintasan).
+
+Pasang di macOS atau Linux dengan:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+Di Windows, di PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+Atau, dengan Node.js 22 atau yang lebih baru di sistem apa pun, jalankan `npm install -g forwardemail`.
+
+Lalu jalankan `forwardemail` dan masuk dengan alamat alias serta kata sandi yang dibuat untuknya, atau jalankan `forwardemail --demo` untuk mencoba tanpa akun. Penginstal memeriksa setiap unduhan terhadap `SHA256SUMS.txt` dari rilis tersebut, dan build mandiri memperbarui dirinya sendiri. Email baru muncul sebagai notifikasi desktop saat terminal berjalan di latar belakang, yang dapat Anda aktifkan atau nonaktifkan di **Settings → Account → Notifications**.
+
+Sesi dan pengaturan Anda tetap tersimpan di komputer Anda, di `~/.config/forwardemail` pada Linux, `~/Library/Application Support/forwardemail` pada macOS, dan `%APPDATA%\forwardemail` pada Windows. Jalankan `forwardemail --data-dir <path>` untuk menyimpannya di tempat lain, dan `forwardemail logout` untuk keluar dan menghapusnya.
+
+Unduhan untuk setiap sistem juga tersedia di <a href="/download" target="_blank" rel="noopener noreferrer">halaman unduhan</a> kami, dan panduan lengkapnya ada di <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### Perangkat Mobile {#mobile-devices}
+
+Aplikasi resmi kami untuk iOS dan Android mengatur dirinya sendiri dari kode QR: saat Anda membuat kata sandi untuk alias, pilih **Scan a setup code** di layar masuk aplikasi dan pindai salah satu kode yang ditampilkan bersama kata sandi tersebut. <a href="/download" target="_blank" rel="noopener noreferrer">Unduh aplikasinya</a>, atau atur aplikasi email bawaan sebagai gantinya:
 
 Untuk iOS:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### Klien Email Baris Perintah {#command-line-email-clients}
+
+Untuk membaca dan mengirim email di terminal tanpa mengonfigurasi IMAP atau SMTP, gunakan [aplikasi terminal](#do-you-have-a-terminal-app) kami.
 
 Klien email baris perintah populer seperti [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), dan [Alpine](https://alpine.x10.mx/alpine/release/) dapat dikonfigurasi untuk menggunakan server SMTP Forward Email untuk mengirim email. Konfigurasinya akan mirip dengan pengaturan `msmtp`, di mana Anda menyediakan detail server SMTP dan kredensial Anda di file konfigurasi masing-masing (`.muttrc`, `.neomuttrc`, atau `.pinerc`).
 

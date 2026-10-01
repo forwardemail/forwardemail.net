@@ -364,6 +364,8 @@ p.text-center.d-lg-none
                         )
                           p.alert.alert-primary.small
                             = t("Enter the alias' password to get a scannable QR code for provisioning your Apple and Android devices.")
+                            = " "
+                            != t('The <a href="%s" class="alert-link" target="_blank">official Forward Email app</a> for iOS and Android scans these codes too: choose Scan a setup code on its sign-in screen.', l("/download"))
                           p.font-weight-bold.lead= t("Enter current password")
                           .form-group.floating-label
                             input.form-control.form-control-lg(

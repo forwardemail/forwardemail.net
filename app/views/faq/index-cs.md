@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Máte terminálovou aplikaci](#do-you-have-a-terminal-app)
   * [Mobilní zařízení](#mobile-devices)
   * [Konfigurace Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
   * [Konfigurace Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Vše probíhá v paměti a [náš zdrojový kód je na GitHubu](https://github.c
 8. Zadejte své jméno a vyberte název účtu.
 9. Klikněte na **Dokončit**.
 
+### Máte terminálovou aplikaci {#do-you-have-a-terminal-app}
+
+Ano. Příkaz `forwardemail` spouští našeho webmailového klienta v terminálu, se stejným přihlášením, šifrováním, poštou, kalendářem, kontakty a nastavením. Ovládáte ho klávesnicí nebo myší a spodní řádek ukazuje klávesy pro aktuální obrazovku (stiskněte `?` pro zobrazení všech zkratek).
+
+V systému macOS nebo Linux ho nainstalujte příkazem:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+Ve Windows, v prostředí PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+Nebo s Node.js 22 či novějším v jakémkoli systému spusťte `npm install -g forwardemail`.
+
+Poté spusťte `forwardemail` a přihlaste se adresou aliasu a jeho vygenerovaným heslem, nebo spusťte `forwardemail --demo` a rozhlédněte se bez účtu. Instalátory ověřují každé stažení podle souboru `SHA256SUMS.txt` daného vydání a samostatná sestavení se aktualizují sama. Nová pošta se zobrazí jako oznámení na ploše, když je terminál na pozadí; to můžete zapnout nebo vypnout v **Settings → Account → Notifications**.
+
+Vaše relace a nastavení zůstávají ve vašem počítači: v `~/.config/forwardemail` v systému Linux, `~/Library/Application Support/forwardemail` v macOS a `%APPDATA%\forwardemail` ve Windows. Spusťte `forwardemail --data-dir <path>`, chcete-li je mít jinde, a `forwardemail logout` pro odhlášení a jejich smazání.
+
+Soubory ke stažení pro každý systém najdete také na naší <a href="/download" target="_blank" rel="noopener noreferrer">stránce ke stažení</a> a úplný návod je v <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### Mobilní zařízení {#mobile-devices}
+
+Naše oficiální aplikace pro iOS a Android se nastaví z QR kódu: když vygenerujete heslo pro alias, zvolte na přihlašovací obrazovce aplikace **Scan a setup code** a naskenujte kterýkoli z kódů zobrazených s heslem. <a href="/download" target="_blank" rel="noopener noreferrer">Stáhněte si aplikaci</a>, nebo místo toho nastavte vestavěnou poštovní aplikaci:
 
 Pro iOS:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### E-mailoví klienti příkazové řádky {#command-line-email-clients}
+
+Chcete-li číst a odesílat poštu v terminálu bez nastavování IMAP nebo SMTP, použijte naši [terminálovou aplikaci](#do-you-have-a-terminal-app).
 
 Populární e-mailoví klienti příkazové řádky jako [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) a [Alpine](https://alpine.x10.mx/alpine/release/) lze nakonfigurovat pro použití SMTP serverů Forward Email pro odesílání pošty. Konfigurace bude podobná nastavení `msmtp`, kde zadáte údaje o SMTP serveru a své přihlašovací údaje do příslušných konfiguračních souborů (`.muttrc`, `.neomuttrc` nebo `.pinerc`).
 

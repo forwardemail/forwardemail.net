@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [คุณมีแอปสำหรับเทอร์มินัลไหม](#do-you-have-a-terminal-app)
   * [อุปกรณ์มือถือ](#mobile-devices)
   * [การตั้งค่า Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
   * [การตั้งค่า Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Forward Email ส่งข้อความด้วยความล่าช
 8. กรอกชื่อของคุณและเลือกชื่อบัญชี
 9. คลิก **เสร็จสิ้น**
 
+### คุณมีแอปสำหรับเทอร์มินัลไหม {#do-you-have-a-terminal-app}
+
+มี คำสั่ง `forwardemail` จะรันเว็บเมลไคลเอนต์ของเราในเทอร์มินัล โดยใช้การลงชื่อเข้าใช้ การเข้ารหัส อีเมล ปฏิทิน รายชื่อติดต่อ และการตั้งค่าเดียวกัน คุณใช้งานได้ทั้งด้วยคีย์บอร์ดหรือเมาส์ และแถวล่างสุดจะแสดงปุ่มลัดสำหรับหน้าจอปัจจุบัน (กด `?` เพื่อดูปุ่มลัดทั้งหมด)
+
+ติดตั้งบน macOS หรือ Linux ด้วยคำสั่ง:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+บน Windows ใน PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+หรือหากมี Node.js 22 ขึ้นไปในระบบใดก็ได้ ให้รัน `npm install -g forwardemail`
+
+จากนั้นรัน `forwardemail` และลงชื่อเข้าใช้ด้วยที่อยู่นามแฝงและรหัสผ่านที่สร้างไว้ หรือรัน `forwardemail --demo` เพื่อลองใช้งานโดยไม่ต้องมีบัญชี ตัวติดตั้งจะตรวจสอบไฟล์ที่ดาวน์โหลดแต่ละไฟล์กับ `SHA256SUMS.txt` ของรีลีสนั้น และบิลด์แบบสแตนด์อโลนจะอัปเดตตัวเองโดยอัตโนมัติ อีเมลใหม่จะแสดงเป็นการแจ้งเตือนบนเดสก์ท็อปขณะที่เทอร์มินัลทำงานอยู่เบื้องหลัง ซึ่งคุณเปิดหรือปิดได้ที่ **Settings → Account → Notifications**
+
+เซสชันและการตั้งค่าของคุณจะเก็บไว้ในคอมพิวเตอร์ของคุณ ที่ `~/.config/forwardemail` บน Linux, `~/Library/Application Support/forwardemail` บน macOS และ `%APPDATA%\forwardemail` บน Windows รัน `forwardemail --data-dir <path>` เพื่อเก็บไว้ที่อื่น และรัน `forwardemail logout` เพื่อออกจากระบบและลบข้อมูลเหล่านั้น
+
+ไฟล์ดาวน์โหลดสำหรับแต่ละระบบมีอยู่ใน<a href="/download" target="_blank" rel="noopener noreferrer">หน้าดาวน์โหลด</a>ของเราด้วย และคู่มือฉบับเต็มอยู่ที่ <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>
+
 ### อุปกรณ์มือถือ {#mobile-devices}
+
+แอปอย่างเป็นทางการของเราสำหรับ iOS และ Android ตั้งค่าตัวเองได้จาก QR code: เมื่อคุณสร้างรหัสผ่านสำหรับนามแฝง ให้เลือก **Scan a setup code** ที่หน้าจอลงชื่อเข้าใช้ของแอป แล้วสแกนรหัสใดรหัสหนึ่งที่แสดงพร้อมกับรหัสผ่าน <a href="/download" target="_blank" rel="noopener noreferrer">ดาวน์โหลดแอป</a> หรือตั้งค่าแอปเมลในตัวเครื่องแทน:
 
 สำหรับ iOS:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### โปรแกรมอีเมลบนบรรทัดคำสั่ง {#command-line-email-clients}
+
+หากต้องการอ่านและส่งอีเมลในเทอร์มินัลโดยไม่ต้องตั้งค่า IMAP หรือ SMTP ให้ใช้[แอปสำหรับเทอร์มินัล](#do-you-have-a-terminal-app)ของเรา
 
 โปรแกรมอีเมลบนบรรทัดคำสั่งยอดนิยม เช่น [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), และ [Alpine](https://alpine.x10.mx/alpine/release/) สามารถตั้งค่าให้ใช้เซิร์ฟเวอร์ SMTP ของ Forward Email สำหรับส่งอีเมลได้ การตั้งค่าจะคล้ายกับการตั้งค่า `msmtp` โดยที่คุณต้องระบุรายละเอียดเซิร์ฟเวอร์ SMTP และข้อมูลรับรองของคุณในไฟล์การตั้งค่าที่เกี่ยวข้อง (`.muttrc`, `.neomuttrc`, หรือ `.pinerc`)
 

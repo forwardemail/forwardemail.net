@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Чи є у вас термінальний застосунок](#do-you-have-a-terminal-app)
   * [Мобільні пристрої](#mobile-devices)
   * [Конфігурація Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
   * [Конфігурація Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Forward Email доставляє повідомлення з мінімальн�
 8. Введіть ваше ім’я та оберіть назву облікового запису.
 9. Натисніть **Завершити**.
 
+### Чи є у вас термінальний застосунок {#do-you-have-a-terminal-app}
+
+Так. Команда `forwardemail` запускає наш вебпоштовий клієнт у терміналі, з тим самим входом, шифруванням, поштою, календарем, контактами й налаштуваннями. Ним можна керувати з клавіатури або мишею, а нижній рядок показує клавіші для поточного екрана (натисніть `?`, щоб побачити всі сполучення клавіш).
+
+Встановіть його на macOS або Linux командою:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+У Windows, у PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+Або, якщо на будь-якій системі є Node.js 22 чи новіший, виконайте `npm install -g forwardemail`.
+
+Потім запустіть `forwardemail` і увійдіть з адресою псевдоніма та його згенерованим паролем, або запустіть `forwardemail --demo`, щоб роздивитися без облікового запису. Інсталятори перевіряють кожне завантаження за файлом `SHA256SUMS.txt` релізу, а автономні збірки оновлюються самі. Нова пошта з’являється як сповіщення на робочому столі, коли термінал працює у фоні; це можна ввімкнути або вимкнути в **Settings → Account → Notifications**.
+
+Ваш сеанс і налаштування зберігаються на вашому комп’ютері: у `~/.config/forwardemail` на Linux, `~/Library/Application Support/forwardemail` на macOS і `%APPDATA%\forwardemail` на Windows. Запустіть `forwardemail --data-dir <path>`, щоб зберігати їх деінде, і `forwardemail logout`, щоб вийти та видалити їх.
+
+Завантаження для кожної системи також є на нашій <a href="/download" target="_blank" rel="noopener noreferrer">сторінці завантаження</a>, а повний посібник доступний у <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### Мобільні пристрої {#mobile-devices}
+
+Наш офіційний застосунок для iOS і Android налаштовується за QR-кодом: коли ви генеруєте пароль для псевдоніма, виберіть **Scan a setup code** на екрані входу в застосунок і відскануйте будь-який із кодів, показаних разом із паролем. <a href="/download" target="_blank" rel="noopener noreferrer">Завантажте застосунок</a> або натомість налаштуйте вбудований поштовий застосунок:
 
 Для iOS:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### Клієнти електронної пошти з командного рядка {#command-line-email-clients}
+
+Щоб читати й надсилати пошту в терміналі без налаштування IMAP або SMTP, скористайтеся нашим [термінальним застосунком](#do-you-have-a-terminal-app).
 
 Популярні клієнти електронної пошти з командного рядка, такі як [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) та [Alpine](https://alpine.x10.mx/alpine/release/), можна налаштувати для використання SMTP-серверів Forward Email для надсилання пошти. Конфігурація буде схожа на налаштування `msmtp`, де ви вказуєте деталі SMTP-сервера та свої облікові дані у відповідних файлах конфігурації (`.muttrc`, `.neomuttrc` або `.pinerc`).
 

@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Terminal uygulamanız var mı](#do-you-have-a-terminal-app)
   * [Mobil Cihazlar](#mobile-devices)
   * [Sendmail SMTP Relay Yapılandırması](#sendmail-smtp-relay-configuration)
   * [Exim4 SMTP Relay Yapılandırması](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Her şey bellekte yapılır ve [kaynak kodumuz GitHub'da mevcuttur](https://gith
 8. Adınızı girin ve bir hesap adı seçin.
 9. **Bitir** butonuna tıklayın.
 
+### Terminal uygulamanız var mı? {#do-you-have-a-terminal-app}
+
+Evet. `forwardemail` komutu, web posta istemcimizi aynı oturum açma, şifreleme, posta, takvim, kişiler ve ayarlarla bir terminalde çalıştırır. Klavye veya fareyle kullanırsınız; alt satır geçerli ekranın tuşlarını gösterir (tüm kısayollar için `?` tuşuna basın).
+
+macOS veya Linux'ta şu komutla yükleyin:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+Windows'ta, PowerShell içinde:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+Ya da herhangi bir sistemde Node.js 22 veya üzeri ile `npm install -g forwardemail` komutunu çalıştırın.
+
+Ardından `forwardemail` komutunu çalıştırın ve bir takma ad adresi ile onun için oluşturulan şifreyle oturum açın ya da hesap olmadan göz atmak için `forwardemail --demo` komutunu çalıştırın. Yükleyiciler her indirmeyi sürümün `SHA256SUMS.txt` dosyasıyla karşılaştırarak kontrol eder ve bağımsız sürümler kendini günceller. Terminal arka plandayken yeni posta masaüstü bildirimi olarak görünür; bunu **Settings → Account → Notifications** bölümünden açıp kapatabilirsiniz.
+
+Oturumunuz ve ayarlarınız bilgisayarınızda kalır: Linux'ta `~/.config/forwardemail`, macOS'ta `~/Library/Application Support/forwardemail` ve Windows'ta `%APPDATA%\forwardemail` içinde. Bunları başka bir yerde tutmak için `forwardemail --data-dir <path>`, oturumu kapatıp silmek için `forwardemail logout` komutunu çalıştırın.
+
+Her sistem için indirmeler ayrıca <a href="/download" target="_blank" rel="noopener noreferrer">indirme sayfamızda</a> bulunur ve tam kılavuz <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a> adresindedir.
+
 ### Mobil Cihazlar {#mobile-devices}
+
+iOS ve Android için resmi uygulamamız kendini bir QR kodundan kurar: bir takma ad için şifre oluşturduğunuzda, uygulamanın oturum açma ekranında **Scan a setup code** seçeneğini seçin ve şifreyle birlikte gösterilen kodlardan birini tarayın. <a href="/download" target="_blank" rel="noopener noreferrer">Uygulamayı indirin</a> ya da bunun yerine yerleşik posta uygulamasını kurun:
 
 iOS için:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### Komut Satırı E-posta İstemcileri {#command-line-email-clients}
+
+IMAP veya SMTP yapılandırmadan bir terminalde posta okumak ve göndermek için [terminal uygulamamızı](#do-you-have-a-terminal-app) kullanın.
 
 [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) ve [Alpine](https://alpine.x10.mx/alpine/release/) gibi popüler komut satırı e-posta istemcileri, Forward Email'in SMTP sunucularını kullanacak şekilde yapılandırılabilir. Yapılandırma, SMTP sunucu bilgilerini ve kimlik bilgilerinizi ilgili yapılandırma dosyalarına (`.muttrc`, `.neomuttrc` veya `.pinerc`) girmeniz gereken `msmtp` ayarlarına benzer olacaktır.
 

@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [هل لديكم تطبيق للطرفية](#do-you-have-a-terminal-app)
   * [الأجهزة المحمولة](#mobile-devices)
   * [تكوين Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
   * [تكوين Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Forward Email هو **مزود خدمة بريد إلكتروني متكامل ا
 8. أدخل اسمك واختر اسم الحساب.
 9. انقر على **إنهاء**.
 
+### هل لديكم تطبيق للطرفية {#do-you-have-a-terminal-app}
+
+نعم. يشغّل الأمر `forwardemail` عميل بريد الويب الخاص بنا في الطرفية، مع تسجيل الدخول والتشفير والبريد والتقويم وجهات الاتصال والإعدادات نفسها. تستخدمه بلوحة المفاتيح أو الفأرة، ويعرض الصف السفلي مفاتيح الشاشة الحالية (اضغط `?` لعرض جميع الاختصارات).
+
+ثبّته على macOS أو Linux باستخدام:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+على Windows، في PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+أو، مع Node.js 22 أو أحدث على أي نظام، شغّل `npm install -g forwardemail`.
+
+ثم شغّل `forwardemail` وسجّل الدخول باستخدام عنوان اسم مستعار وكلمة المرور التي تم إنشاؤها له، أو شغّل `forwardemail --demo` لاستكشاف التطبيق دون حساب. تتحقق برامج التثبيت من كل تنزيل مقابل ملف `SHA256SUMS.txt` الخاص بالإصدار، وتحدّث الإصدارات المستقلة نفسها تلقائياً. يظهر البريد الجديد كإشعار على سطح المكتب أثناء وجود الطرفية في الخلفية، ويمكنك تشغيل ذلك أو إيقافه من **Settings → Account → Notifications**.
+
+تبقى جلستك وإعداداتك على حاسوبك، في `~/.config/forwardemail` على Linux، و`~/Library/Application Support/forwardemail` على macOS، و`%APPDATA%\forwardemail` على Windows. شغّل `forwardemail --data-dir <path>` لحفظها في مكان آخر، و`forwardemail logout` لتسجيل الخروج وحذفها.
+
+تتوفر التنزيلات لكل نظام أيضاً في <a href="/download" target="_blank" rel="noopener noreferrer">صفحة التنزيل</a> لدينا، والدليل الكامل متاح في <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### الأجهزة المحمولة {#mobile-devices}
+
+يُعِدّ تطبيقنا الرسمي لنظامي iOS وAndroid نفسه من رمز QR: عند إنشاء كلمة مرور لاسم مستعار، اختر **Scan a setup code** في شاشة تسجيل الدخول في التطبيق وامسح أياً من الرمزين المعروضين مع كلمة المرور. <a href="/download" target="_blank" rel="noopener noreferrer">نزّل التطبيق</a>، أو أعدّ تطبيق البريد المدمج بدلاً من ذلك:
 
 لنظام iOS:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### عملاء البريد الإلكتروني عبر سطر الأوامر {#command-line-email-clients}
+
+لقراءة البريد وإرساله في الطرفية دون تهيئة IMAP أو SMTP، استخدم [تطبيق الطرفية](#do-you-have-a-terminal-app) الخاص بنا.
 
 يمكن تكوين عملاء البريد الإلكتروني الشائعين عبر سطر الأوامر مثل [Mutt](https://gitlab.com/muttmua/mutt)، [NeoMutt](https://neomutt.org)، و [Alpine](https://alpine.x10.mx/alpine/release/) لاستخدام خوادم SMTP الخاصة بـ Forward Email لإرسال البريد. ستكون التهيئة مشابهة لإعداد `msmtp`، حيث تقدم تفاصيل خادم SMTP وبيانات اعتمادك في ملفات التهيئة الخاصة بكل منهم (`.muttrc`، `.neomuttrc`، أو `.pinerc`).
 

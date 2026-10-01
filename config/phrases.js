@@ -57,6 +57,10 @@ const ALIAS_GENERATED_PASSWORD = `
     Scan the QR codes below and open them to easily set up your account.
   </div>
 
+  <div class="small mb-4">
+    The <a href="/download" target="_blank">official Forward Email app</a> for iOS and Android scans these codes too: choose <strong>Scan a setup code</strong> on its sign-in screen.
+  </div>
+
   <div class="row mt-3 mb-0">
     <div class="col-12 col-md-6">
       <strong>Apple Mail (macOS/iOS)</strong>

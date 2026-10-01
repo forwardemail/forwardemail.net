@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Bạn có ứng dụng terminal không](#do-you-have-a-terminal-app)
   * [Thiết Bị Di Động](#mobile-devices)
   * [Cấu Hình Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
   * [Cấu Hình Exim4 SMTP Relay](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Mọi thứ được thực hiện trong bộ nhớ và [mã nguồn của chún
 8. Nhập tên của bạn và chọn tên tài khoản.
 9. Nhấn **Hoàn tất**.
 
+### Bạn có ứng dụng terminal không {#do-you-have-a-terminal-app}
+
+Có. Lệnh `forwardemail` chạy trình khách webmail của chúng tôi trong terminal, với cùng cách đăng nhập, mã hóa, thư, lịch, danh bạ và cài đặt. Bạn có thể dùng bàn phím hoặc chuột, và hàng dưới cùng hiển thị các phím cho màn hình hiện tại (nhấn `?` để xem mọi phím tắt).
+
+Cài đặt trên macOS hoặc Linux bằng lệnh:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+Trên Windows, trong PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+Hoặc, với Node.js 22 trở lên trên bất kỳ hệ thống nào, chạy `npm install -g forwardemail`.
+
+Sau đó chạy `forwardemail` và đăng nhập bằng địa chỉ bí danh cùng mật khẩu đã tạo của nó, hoặc chạy `forwardemail --demo` để xem thử mà không cần tài khoản. Trình cài đặt kiểm tra từng tệp tải xuống với `SHA256SUMS.txt` của bản phát hành, và các bản dựng độc lập tự cập nhật. Thư mới hiển thị dưới dạng thông báo trên máy tính khi terminal chạy ở chế độ nền, và bạn có thể bật hoặc tắt trong **Settings → Account → Notifications**.
+
+Phiên và cài đặt của bạn được lưu trên máy tính của bạn, tại `~/.config/forwardemail` trên Linux, `~/Library/Application Support/forwardemail` trên macOS và `%APPDATA%\forwardemail` trên Windows. Chạy `forwardemail --data-dir <path>` để lưu chúng ở nơi khác, và `forwardemail logout` để đăng xuất và xóa chúng.
+
+Bản tải xuống cho từng hệ thống cũng có trên <a href="/download" target="_blank" rel="noopener noreferrer">trang tải xuống</a> của chúng tôi, và hướng dẫn đầy đủ có tại <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### Thiết bị di động {#mobile-devices}
+
+Ứng dụng chính thức của chúng tôi cho iOS và Android tự thiết lập từ mã QR: khi bạn tạo mật khẩu cho một bí danh, hãy chọn **Scan a setup code** trên màn hình đăng nhập của ứng dụng và quét một trong các mã hiển thị cùng mật khẩu. <a href="/download" target="_blank" rel="noopener noreferrer">Tải xuống ứng dụng</a>, hoặc thiết lập ứng dụng thư tích hợp sẵn:
 
 Đối với iOS:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### Các trình khách email dòng lệnh {#command-line-email-clients}
+
+Để đọc và gửi thư trong terminal mà không cần cấu hình IMAP hay SMTP, hãy dùng [ứng dụng terminal](#do-you-have-a-terminal-app) của chúng tôi.
 
 Các trình khách email dòng lệnh phổ biến như [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), và [Alpine](https://alpine.x10.mx/alpine/release/) có thể được cấu hình để sử dụng máy chủ SMTP của Forward Email để gửi thư. Cấu hình sẽ tương tự như thiết lập `msmtp`, nơi bạn cung cấp chi tiết máy chủ SMTP và thông tin đăng nhập của bạn trong các tệp cấu hình tương ứng (`.muttrc`, `.neomuttrc`, hoặc `.pinerc`).
 

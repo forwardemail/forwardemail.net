@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Haben Sie eine Terminal-App](#do-you-have-a-terminal-app)
   * [Mobile Geräte](#mobile-devices)
   * [Sendmail SMTP Relay Konfiguration](#sendmail-smtp-relay-configuration)
   * [Exim4 SMTP Relay Konfiguration](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Alles wird im Arbeitsspeicher erledigt und [unser Quellcode ist auf GitHub](http
 8. Geben Sie Ihren Namen ein und wählen Sie einen Kontonamen.
 9. Klicken Sie auf **Fertigstellen**.
 
+### Haben Sie eine Terminal-App {#do-you-have-a-terminal-app}
+
+Ja. Der Befehl `forwardemail` führt unseren Webmail-Client in einem Terminal aus, mit derselben Anmeldung, Verschlüsselung, E-Mail, Kalender, Kontakten und Einstellungen. Sie bedienen ihn mit Tastatur oder Maus, und die unterste Zeile zeigt die Tasten für den aktuellen Bildschirm (drücken Sie `?` für alle Tastenkürzel).
+
+Installieren Sie ihn unter macOS oder Linux mit:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+Unter Windows, in PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+Oder führen Sie mit Node.js 22 oder neuer auf jedem System `npm install -g forwardemail` aus.
+
+Führen Sie dann `forwardemail` aus und melden Sie sich mit einer Alias-Adresse und deren generiertem Passwort an, oder führen Sie `forwardemail --demo` aus, um sich ohne Konto umzusehen. Die Installer prüfen jeden Download anhand der `SHA256SUMS.txt` des Releases, und die eigenständigen Builds aktualisieren sich selbst. Neue E-Mails erscheinen als Desktop-Benachrichtigung, während das Terminal im Hintergrund ist. Sie können dies unter **Settings → Account → Notifications** ein- oder ausschalten.
+
+Ihre Sitzung und Einstellungen bleiben auf Ihrem Computer, in `~/.config/forwardemail` unter Linux, `~/Library/Application Support/forwardemail` unter macOS und `%APPDATA%\forwardemail` unter Windows. Führen Sie `forwardemail --data-dir <path>` aus, um sie an einem anderen Ort zu speichern, und `forwardemail logout`, um sich abzumelden und sie zu löschen.
+
+Downloads für jedes System finden Sie auch auf unserer <a href="/download" target="_blank" rel="noopener noreferrer">Download-Seite</a>, und die vollständige Anleitung unter <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### Mobile Geräte {#mobile-devices}
+
+Unsere offizielle App für iOS und Android richtet sich über einen QR-Code selbst ein: Wenn Sie ein Passwort für einen Alias generieren, wählen Sie **Scan a setup code** auf dem Anmeldebildschirm der App und scannen Sie einen der beiden Codes, die zusammen mit dem Passwort angezeigt werden. <a href="/download" target="_blank" rel="noopener noreferrer">Laden Sie die App herunter</a> oder richten Sie stattdessen die integrierte Mail-App ein:
 
 Für iOS:
 
@@ -527,6 +554,8 @@ echo "Dies ist eine Test-E-Mail von msmtp" | msmtp -a default recipient@example.
 ```
 
 ### Kommandozeilen-E-Mail-Clients {#command-line-email-clients}
+
+Um E-Mails im Terminal zu lesen und zu senden, ohne IMAP oder SMTP zu konfigurieren, verwenden Sie unsere [Terminal-App](#do-you-have-a-terminal-app).
 
 Beliebte Kommandozeilen-E-Mail-Clients wie [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) und [Alpine](https://alpine.x10.mx/alpine/release/) können so konfiguriert werden, dass sie die SMTP-Server von Forward Email zum Senden von E-Mails verwenden. Die Konfiguration ähnelt der `msmtp`-Einrichtung, bei der Sie die SMTP-Serverdetails und Ihre Zugangsdaten in den jeweiligen Konfigurationsdateien (`.muttrc`, `.neomuttrc` oder `.pinerc`) angeben.
 

@@ -6,7 +6,33 @@
 const test = require('ava');
 
 const channelConfig = require('../../config/mail-app-channels');
+const fallbackRelease = require('../../config/mail-app-release-fallback.json');
 const getAppDownloads = require('#helpers/get-app-downloads');
+
+// A release that also carries the terminal client (its six gzipped
+// executables and its two installers), built from the checked-in snapshot.
+const TERMINAL_FILES = [
+  'forwardemail-darwin-arm64.gz',
+  'forwardemail-darwin-x64.gz',
+  'forwardemail-linux-x64.gz',
+  'forwardemail-linux-arm64.gz',
+  'forwardemail-win-x64.exe.gz',
+  'forwardemail-win-arm64.exe.gz',
+  'install.sh',
+  'install.ps1'
+];
+const releaseWithTerminal = {
+  ...fallbackRelease,
+  assets: [
+    ...fallbackRelease.assets,
+    ...TERMINAL_FILES.map((name) => ({
+      name,
+      size: 40 * 1024 * 1024,
+      digest: `sha256:${'a'.repeat(64)}`,
+      browserDownloadUrl: `${channelConfig.REPO_URL}/releases/download/${fallbackRelease.tagName}/${name}`
+    }))
+  ]
+};
 
 // The /download page renders from this helper, and the feedback that led to
 // the checked-in fallback was every button and the checksum link degrading to
@@ -60,7 +86,7 @@ test('offers a recommended default for every platform', (t) => {
 // edit. These pin the contract the page renders against.
 
 test('every configured channel names a rendered platform and a known state', (t) => {
-  const downloads = getAppDownloads(null);
+  const downloads = getAppDownloads(releaseWithTerminal);
   const platforms = new Set(
     downloads.groups.flatMap((group) =>
       group.platforms.map((platform) => platform.key)
@@ -85,7 +111,7 @@ test('every configured channel names a rendered platform and a known state', (t)
 });
 
 test('attaches each platform its channels and hides the na ones', (t) => {
-  const downloads = getAppDownloads(null);
+  const downloads = getAppDownloads(releaseWithTerminal);
 
   for (const group of downloads.groups) {
     for (const platform of group.platforms) {
@@ -122,4 +148,54 @@ test('exposes the updater key, provenance and F-Droid facts to the page', (t) =>
   } else {
     t.is(downloads.verify.fdroid, null);
   }
+});
+
+test('renders the terminal client once a release carries its executables', (t) => {
+  // The snapshot predates the terminal client: no card for it, rather than
+  // install commands for files that release does not have.
+  t.false(
+    getAppDownloads(null).groups.some((group) => group.key === 'terminal')
+  );
+
+  const downloads = getAppDownloads(releaseWithTerminal);
+  const group = downloads.groups.find((group) => group.key === 'terminal');
+  t.truthy(group);
+  const [platform] = group.platforms;
+  t.is(platform.key, 'terminal');
+  t.deepEqual(
+    platform.options.map((option) => option.arch),
+    [
+      'macosAppleSilicon',
+      'macosIntel',
+      'linuxX64',
+      'linuxArm64',
+      'windowsX64',
+      'windowsArm64'
+    ]
+  );
+  for (const option of platform.options) {
+    t.is(option.format, 'cli');
+    t.true(option.isDirect);
+    t.regex(option.fileName, /^forwardemail-.+\.gz$/);
+    t.is(option.sha256, 'a'.repeat(64));
+  }
+
+  // The installers are offered as commands, not as files to download.
+  t.false(
+    downloads.options.some((option) => /^install\./.test(option.fileName))
+  );
+  t.deepEqual(
+    platform.channels.map((channel) => channel.command),
+    [
+      `curl -fsSL ${channelConfig.REPO_URL}/releases/latest/download/install.sh | sh`,
+      `irm ${channelConfig.REPO_URL}/releases/latest/download/install.ps1 | iex`,
+      'npm install -g forwardemail'
+    ]
+  );
+
+  // The desktop and mobile platforms are unchanged by it.
+  t.deepEqual(
+    downloads.groups.map((group) => group.key),
+    ['desktop', 'mobile', 'terminal']
+  );
 });

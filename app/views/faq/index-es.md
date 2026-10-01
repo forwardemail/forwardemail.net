@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [¿Tienen una aplicación para terminal?](#do-you-have-a-terminal-app)
   * [Dispositivos Móviles](#mobile-devices)
   * [Configuración de Relay SMTP Sendmail](#sendmail-smtp-relay-configuration)
   * [Configuración de Relay SMTP Exim4](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Todo se realiza en memoria y [nuestro código fuente está en GitHub](https://gi
 8. Ingresa tu nombre y elige un nombre para la cuenta.
 9. Haz clic en **Finalizar**.
 
+### ¿Tienen una aplicación para terminal? {#do-you-have-a-terminal-app}
+
+Sí. El comando `forwardemail` ejecuta nuestro cliente de webmail en una terminal, con el mismo inicio de sesión, cifrado, correo, calendario, contactos y configuración. Puedes usarlo con el teclado o el ratón, y la fila inferior muestra las teclas de la pantalla actual (pulsa `?` para ver todos los atajos).
+
+Instálalo en macOS o Linux con:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+En Windows, en PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+O, con Node.js 22 o posterior en cualquier sistema, ejecuta `npm install -g forwardemail`.
+
+Después ejecuta `forwardemail` e inicia sesión con una dirección de alias y su contraseña generada, o ejecuta `forwardemail --demo` para explorar sin una cuenta. Los instaladores verifican cada descarga con el archivo `SHA256SUMS.txt` de la versión, y las versiones independientes se actualizan solas. El correo nuevo aparece como notificación de escritorio mientras la terminal está en segundo plano. Puedes activarlo o desactivarlo en **Settings → Account → Notifications**.
+
+Tu sesión y tu configuración se guardan en tu ordenador, en `~/.config/forwardemail` en Linux, `~/Library/Application Support/forwardemail` en macOS y `%APPDATA%\forwardemail` en Windows. Ejecuta `forwardemail --data-dir <path>` para guardarlas en otro lugar, y `forwardemail logout` para cerrar sesión y eliminarlas.
+
+Las descargas para cada sistema también están en nuestra <a href="/download" target="_blank" rel="noopener noreferrer">página de descargas</a>, y la guía completa está en <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### Dispositivos Móviles {#mobile-devices}
+
+Nuestra aplicación oficial para iOS y Android se configura sola a partir de un código QR: cuando generes una contraseña para un alias, elige **Scan a setup code** en la pantalla de inicio de sesión de la aplicación y escanea cualquiera de los códigos que se muestran con la contraseña. <a href="/download" target="_blank" rel="noopener noreferrer">Descarga la aplicación</a> o configura la aplicación de correo integrada:
 
 Para iOS:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### Clientes de correo en línea de comandos {#command-line-email-clients}
+
+Para leer y enviar correo en una terminal sin configurar IMAP ni SMTP, usa nuestra [aplicación para terminal](#do-you-have-a-terminal-app).
 
 Clientes de correo populares en línea de comandos como [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) y [Alpine](https://alpine.x10.mx/alpine/release/) pueden configurarse para usar los servidores SMTP de Forward Email para enviar correos. La configuración será similar a la de `msmtp`, donde proporciona los detalles del servidor SMTP y sus credenciales en los archivos de configuración respectivos (`.muttrc`, `.neomuttrc` o `.pinerc`).
 

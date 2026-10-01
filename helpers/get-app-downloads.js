@@ -31,12 +31,15 @@ const ALL_RELEASES_URL = `${REPO_URL}/releases`;
 //   *.aab             an Android App Bundle, only Google Play can install one
 //   latest.json       the Tauri updater manifest
 //   SHA256SUMS.txt    linked on its own from the verification section
+//   install.sh/.ps1   the terminal client's installers, shown as commands
+//                     (the cli-install-* channels) rather than as files
 const HIDDEN_ASSET = [
   /\.sig$/i,
   /\.app\.tar\.gz$/i,
   /\.aab$/i,
   /^latest\.json$/i,
-  /^sha256sums\.txt$/i
+  /^sha256sums\.txt$/i,
+  /^install\.(sh|ps1)$/i
 ];
 
 // The download matrix. Order within a group is the order it renders in, and
@@ -157,13 +160,59 @@ const MATRIX = [
     format: 'ipa',
     arch: 'universal',
     match: /_ios\.ipa$/i
+  },
+  // ---- terminal ----
+  // The `forwardemail` command's standalone executables, one per system and
+  // CPU, gzipped. The arch keys name both, since they share one card.
+  {
+    group: 'terminal',
+    platform: 'terminal',
+    format: 'cli',
+    arch: 'macosAppleSilicon',
+    match: /^forwardemail-darwin-arm64\.gz$/i
+  },
+  {
+    group: 'terminal',
+    platform: 'terminal',
+    format: 'cli',
+    arch: 'macosIntel',
+    match: /^forwardemail-darwin-x64\.gz$/i
+  },
+  {
+    group: 'terminal',
+    platform: 'terminal',
+    format: 'cli',
+    arch: 'linuxX64',
+    match: /^forwardemail-linux-x64\.gz$/i
+  },
+  {
+    group: 'terminal',
+    platform: 'terminal',
+    format: 'cli',
+    arch: 'linuxArm64',
+    match: /^forwardemail-linux-arm64\.gz$/i
+  },
+  {
+    group: 'terminal',
+    platform: 'terminal',
+    format: 'cli',
+    arch: 'windowsX64',
+    match: /^forwardemail-win-x64\.exe\.gz$/i
+  },
+  {
+    group: 'terminal',
+    platform: 'terminal',
+    format: 'cli',
+    arch: 'windowsArm64',
+    match: /^forwardemail-win-arm64\.exe\.gz$/i
   }
 ];
 
 // Rendering order, and which platforms sit under which heading.
 const GROUPS = [
   { key: 'desktop', platforms: ['macos', 'windows', 'linux'] },
-  { key: 'mobile', platforms: ['android', 'ios'] }
+  { key: 'mobile', platforms: ['android', 'ios'] },
+  { key: 'terminal', platforms: ['terminal'] }
 ];
 
 const CHANNEL_STATES = new Set(['live', 'soon', 'na']);

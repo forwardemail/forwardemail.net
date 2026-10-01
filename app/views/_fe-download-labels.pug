@@ -10,7 +10,15 @@
     intel: t("Intel"),
     x64: t("64-bit"),
     arm64: t("ARM64"),
-    universal: t("Universal")
+    universal: t("Universal"),
+    // The terminal client lists every system on one card, so its builds
+    // name the system as well as the CPU.
+    macosAppleSilicon: t("macOS, Apple Silicon"),
+    macosIntel: t("macOS, Intel"),
+    linuxX64: t("Linux, 64-bit"),
+    linuxArm64: t("Linux, ARM64"),
+    windowsX64: t("Windows, 64-bit"),
+    windowsArm64: t("Windows, ARM64")
   };
 
   //- File extensions and package-format names are product names, so they are
@@ -25,7 +33,8 @@
     snap: "Snap",
     apk: ".apk",
     fdroid: "F-Droid",
-    ipa: ".ipa"
+    ipa: ".ipa",
+    cli: ".gz"
   };
 
   //- The second line on each row, explaining what the format is for. Without
@@ -41,7 +50,8 @@
     snap: t("Snap store package"),
     apk: t("Installs straight from your browser"),
     fdroid: t("Reproducible, for the F-Droid client"),
-    ipa: t("Requires a sideloading tool")
+    ipa: t("Requires a sideloading tool"),
+    cli: t("Standalone executable, gzipped")
   };
 
   //- On desktop the arch is what tells two builds apart, so it is the row
@@ -81,6 +91,11 @@
       name: "iOS",
       icon: "fab fa-apple",
       requires: t("iOS 15 or later")
+    },
+    terminal: {
+      name: t("Terminal"),
+      icon: "fa fa-terminal",
+      requires: t("macOS, Linux or Windows")
     }
   };
 
@@ -97,7 +112,10 @@
     "google-play": t("Updates through Google Play"),
     obtainium: t("Paste as the app source in Obtainium and it tracks every release"),
     "fdroid-repo": t("Add the repository to your F-Droid client"),
-    "app-store": t("Updates through the App Store")
+    "app-store": t("Updates through the App Store"),
+    "cli-install-sh": t("macOS and Linux: installs the build for your system after checking its SHA-256"),
+    "cli-install-ps1": t("Windows PowerShell: installs the build and adds it to your PATH"),
+    "cli-npm": t("Any system with Node.js 22 or later")
   };
 
 //- A copy-to-clipboard control for a checksum, key, command or fingerprint.

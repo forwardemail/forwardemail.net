@@ -18,6 +18,7 @@
   * [eM Client](#em-client)
   * [Do you offer a webmail client](#do-you-offer-a-webmail-client)
   * [Do you have desktop and mobile apps](#do-you-have-desktop-and-mobile-apps)
+  * [Do you have a terminal app](#do-you-have-a-terminal-app)
   * [Mobile Devices](#mobile-devices)
   * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
   * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
@@ -275,7 +276,7 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
 ## Email Clients
 
 > \[!TIP]
-> The easiest way to use Forward Email is with our official apps for macOS, Windows, Linux, Android, and iOS. They come pre-configured for your encrypted mailboxes, calendars (CalDAV), and contacts (CardDAV) with no manual IMAP or SMTP setup, and desktop builds keep themselves current with signed automatic updates. [Download Forward Email](/download) or use any standard client below.
+> The easiest way to use Forward Email is with our official apps for macOS, Windows, Linux, Android, iOS, and the terminal. They come pre-configured for your encrypted mailboxes, calendars (CalDAV), and contacts (CardDAV) with no manual IMAP or SMTP setup, and desktop builds keep themselves current with signed automatic updates. [Download Forward Email](/download) or use any standard client below.
 
 ### Thunderbird
 
@@ -341,10 +342,37 @@ Yes.  Native apps are available for desktop and mobile, built from the same open
 
 * **Desktop**: macOS (Apple Silicon and Intel), Windows (x64 and ARM64, as either an `.exe` or `.msi` installer), and Linux (AppImage, `.deb`, `.rpm`, and Snap, each for x64 and ARM64).
 * **Mobile**: Android (APK, with an alternate F-Droid build) and iOS.
+* **Terminal**: the `forwardemail` command for macOS, Linux, and Windows (x64 and ARM64). See [Do you have a terminal app](#do-you-have-a-terminal-app).
 
 All release builds are published on GitHub at <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, and the download page lets you verify release checksums against `SHA256SUMS.txt`.
 
+### Do you have a terminal app
+
+Yes.  The `forwardemail` command runs our webmail client in a terminal, with the same sign-in, encryption, mail, calendar, contacts, and settings.  You use it with the keyboard or the mouse, and the bottom row shows the keys for the current screen (press `?` for every shortcut).
+
+Install it on macOS or Linux with:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+On Windows, in PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+Or, with Node.js 22 or later on any system, run `npm install -g forwardemail`.
+
+Then run `forwardemail` and sign in with an alias address and its generated password, or run `forwardemail --demo` to look around without an account.  The installers check each download against the release's `SHA256SUMS.txt`, and the standalone builds update themselves.  New mail shows as a desktop notification while the terminal is in the background, which you can turn on or off in **Settings → Account → Notifications**.
+
+Your session and settings stay on your computer, in `~/.config/forwardemail` on Linux, `~/Library/Application Support/forwardemail` on macOS, and `%APPDATA%\forwardemail` on Windows.  Run `forwardemail --data-dir <path>` to keep them somewhere else, and `forwardemail logout` to sign out and delete them.
+
+Downloads for each system are also on our <a href="/download" target="_blank" rel="noopener noreferrer">download page</a>, and the full guide is at <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### Mobile Devices
+
+Our official app for iOS and Android sets itself up from a QR code: when you generate a password for an alias, choose **Scan a setup code** on the app's sign-in screen and scan either code shown with the password.  <a href="/download" target="_blank" rel="noopener noreferrer">Download the app</a>, or set up the built-in mail app instead:
 
 For iOS:
 
@@ -559,6 +587,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### Command-line Email Clients
+
+To read and send mail in a terminal without configuring IMAP or SMTP, use our [terminal app](#do-you-have-a-terminal-app).
 
 Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
 
@@ -2452,7 +2482,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, and iOS; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, iOS, and the terminal; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 4. When prompted for IMAP server name, enter `imap.forwardemail.net`
@@ -2510,7 +2540,7 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, and iOS; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, iOS, and the terminal; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
@@ -2653,7 +2683,7 @@ Yes. All paid plans include outbound SMTP, and it is **unlimited**: your daily s
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, and iOS; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, iOS, and the terminal; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 5. When prompted for SMTP server name, enter `smtp.forwardemail.net`

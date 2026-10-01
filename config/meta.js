@@ -86,8 +86,8 @@ module.exports = function (config, isSitemap = false) {
       `Powerful RESTful email API for developers. Send transactional emails, manage domains, create aliases programmatically. Comprehensive documentation, SDKs, and code examples.`
     ],
     '/download': [
-      `Download Forward Email - Desktop and Mobile Apps for macOS, Windows, Linux, Android and iOS`,
-      `Download the open-source Forward Email app. Native builds for macOS, Windows and Linux, plus Android and iOS. Every release is signed and published with SHA-256 checksums.`
+      `Download Forward Email - Desktop, Mobile and Terminal Apps for macOS, Windows, Linux, Android and iOS`,
+      `Download the open-source Forward Email app. Native builds for macOS, Windows and Linux, plus Android, iOS and the terminal. Every release is signed and published with SHA-256 checksums.`
     ],
     '/free-email-webhooks': [
       `Free Email Webhooks - HTTP Callbacks for Incoming Email ${currentYear}`,

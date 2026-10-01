@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Har I en terminalapp](#do-you-have-a-terminal-app)
   * [Mobile Enheder](#mobile-devices)
   * [Sendmail SMTP Relay Konfiguration](#sendmail-smtp-relay-configuration)
   * [Exim4 SMTP Relay Konfiguration](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Alt sker i hukommelsen, og [vores kildekode er på GitHub](https://github.com/fo
 8. Indtast dit navn og vælg et kontonavn.
 9. Klik på **Afslut**.
 
+### Har I en terminalapp {#do-you-have-a-terminal-app}
+
+Ja. Kommandoen `forwardemail` kører vores webmailklient i en terminal, med samme login, kryptering, mail, kalender, kontakter og indstillinger. Du bruger den med tastaturet eller musen, og den nederste linje viser tasterne for den aktuelle skærm (tryk på `?` for at se alle genveje).
+
+Installer den på macOS eller Linux med:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+På Windows, i PowerShell:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+Eller, med Node.js 22 eller nyere på ethvert system, kør `npm install -g forwardemail`.
+
+Kør derefter `forwardemail` og log ind med en aliasadresse og dens genererede adgangskode, eller kør `forwardemail --demo` for at se dig omkring uden en konto. Installationsprogrammerne kontrollerer hver download mod udgivelsens `SHA256SUMS.txt`, og de selvstændige versioner opdaterer sig selv. Ny mail vises som en skrivebordsnotifikation, mens terminalen er i baggrunden, og det kan du slå til eller fra under **Settings → Account → Notifications**.
+
+Din session og dine indstillinger bliver på din computer, i `~/.config/forwardemail` på Linux, `~/Library/Application Support/forwardemail` på macOS og `%APPDATA%\forwardemail` på Windows. Kør `forwardemail --data-dir <path>` for at gemme dem et andet sted, og `forwardemail logout` for at logge ud og slette dem.
+
+Downloads til hvert system findes også på vores <a href="/download" target="_blank" rel="noopener noreferrer">downloadside</a>, og den fulde vejledning findes på <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### Mobile enheder {#mobile-devices}
+
+Vores officielle app til iOS og Android sætter sig selv op ud fra en QR-kode: når du genererer en adgangskode til et alias, skal du vælge **Scan a setup code** på appens loginskærm og scanne en af de koder, der vises sammen med adgangskoden. <a href="/download" target="_blank" rel="noopener noreferrer">Download appen</a>, eller opsæt den indbyggede mailapp i stedet:
 
 For iOS:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### Kommandolinje Email-klienter {#command-line-email-clients}
+
+For at læse og sende mail i en terminal uden at konfigurere IMAP eller SMTP kan du bruge vores [terminalapp](#do-you-have-a-terminal-app).
 
 Populære kommandolinje email-klienter som [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), og [Alpine](https://alpine.x10.mx/alpine/release/) kan konfigureres til at bruge Forward Emails SMTP-servere til at sende mail. Konfigurationen vil være lignende `msmtp` opsætningen, hvor du angiver SMTP-server detaljer og dine legitimationsoplysninger i de respektive konfigurationsfiler (`.muttrc`, `.neomuttrc`, eller `.pinerc`).
 

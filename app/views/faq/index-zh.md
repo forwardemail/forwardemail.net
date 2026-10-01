@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [你们有终端应用吗](#do-you-have-a-terminal-app)
   * [移动设备](#mobile-devices)
   * [Sendmail SMTP 中继配置](#sendmail-smtp-relay-configuration)
   * [Exim4 SMTP 中继配置](#exim4-smtp-relay-configuration)
@@ -313,7 +314,33 @@ Forward Email 以极短的延迟传递邮件，通常在收到邮件后几秒内
 8. 输入您的姓名并选择账户名称
 9. 点击 **完成**
 
+### 你们有终端应用吗 {#do-you-have-a-terminal-app}
+
+有。`forwardemail` 命令可在终端中运行我们的网页邮件客户端，登录、加密、邮件、日历、联系人和设置都与之相同。您可以使用键盘或鼠标操作，底部一行会显示当前界面可用的按键（按 `?` 查看所有快捷键）。
+
+在 macOS 或 Linux 上，使用以下命令安装：
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+在 Windows 上，于 PowerShell 中运行：
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+或者，在任何安装了 Node.js 22 或更高版本的系统上，运行 `npm install -g forwardemail`。
+
+然后运行 `forwardemail`，使用别名地址及其生成的密码登录，或运行 `forwardemail --demo` 无需账户即可体验。安装程序会根据该版本的 `SHA256SUMS.txt` 校验每个下载文件，独立版本会自动更新。当终端在后台运行时，新邮件会以桌面通知的形式显示，您可以在 **Settings → Account → Notifications** 中开启或关闭。
+
+您的会话和设置保存在您的计算机上：Linux 上为 `~/.config/forwardemail`，macOS 上为 `~/Library/Application Support/forwardemail`，Windows 上为 `%APPDATA%\forwardemail`。运行 `forwardemail --data-dir <path>` 可将其保存到其他位置，运行 `forwardemail logout` 可退出登录并删除这些数据。
+
+各系统的下载文件也可在我们的<a href="/download" target="_blank" rel="noopener noreferrer">下载页面</a>获取，完整指南请参阅 <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>。
+
 ### 移动设备 {#mobile-devices}
+
+我们适用于 iOS 和 Android 的官方应用可通过二维码自动完成设置：为别名生成密码时，在应用的登录界面选择 **Scan a setup code**，然后扫描与密码一同显示的任一二维码。<a href="/download" target="_blank" rel="noopener noreferrer">下载应用</a>，或改为设置系统自带的邮件应用：
 
 iOS：
 
@@ -526,6 +553,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### 命令行邮件客户端 {#command-line-email-clients}
+
+如需在终端中收发邮件而无需配置 IMAP 或 SMTP，请使用我们的[终端应用](#do-you-have-a-terminal-app)。
 
 流行的命令行邮件客户端如 [Mutt](https://gitlab.com/muttmua/mutt)、[NeoMutt](https://neomutt.org) 和 [Alpine](https://alpine.x10.mx/alpine/release/) 可以配置使用 Forward Email 的 SMTP 服务器发送邮件。配置方式与 `msmtp` 类似，在相应的配置文件（`.muttrc`、`.neomuttrc` 或 `.pinerc`）中填写 SMTP 服务器详情和凭据。
 

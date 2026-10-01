@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Van terminálos alkalmazásotok](#do-you-have-a-terminal-app)
   * [Mobil Eszközök](#mobile-devices)
   * [Sendmail SMTP Relay Beállítás](#sendmail-smtp-relay-configuration)
   * [Exim4 SMTP Relay Beállítás](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Minden memóriában történik, és [a forráskódunk elérhető a GitHubon](htt
 8. Írd be a neved és válassz fióknevet.
 9. Kattints a **Befejezés** gombra.
 
+### Van terminálos alkalmazásotok {#do-you-have-a-terminal-app}
+
+Igen. A `forwardemail` parancs a webmail kliensünket futtatja a terminálban, ugyanazzal a bejelentkezéssel, titkosítással, levelezéssel, naptárral, névjegyekkel és beállításokkal. Billentyűzettel vagy egérrel használhatod, az alsó sor pedig az aktuális képernyő billentyűit mutatja (nyomd meg a `?` billentyűt az összes billentyűparancsért).
+
+Telepítsd macOS-en vagy Linuxon ezzel a paranccsal:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+Windowson, PowerShellben:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+Vagy bármely rendszeren, Node.js 22 vagy újabb verzióval, futtasd ezt: `npm install -g forwardemail`.
+
+Ezután futtasd a `forwardemail` parancsot, és jelentkezz be egy alias címével és a hozzá generált jelszóval, vagy futtasd a `forwardemail --demo` parancsot, hogy fiók nélkül körülnézz. A telepítők minden letöltést ellenőriznek a kiadás `SHA256SUMS.txt` fájlja alapján, az önálló verziók pedig maguktól frissülnek. Az új levelek asztali értesítésként jelennek meg, amíg a terminál a háttérben van; ezt a **Settings → Account → Notifications** menüben kapcsolhatod be vagy ki.
+
+A munkameneted és a beállításaid a számítógépeden maradnak: Linuxon a `~/.config/forwardemail`, macOS-en a `~/Library/Application Support/forwardemail`, Windowson a `%APPDATA%\forwardemail` mappában. Futtasd a `forwardemail --data-dir <path>` parancsot, ha máshol szeretnéd tárolni őket, és a `forwardemail logout` parancsot a kijelentkezéshez és a törlésükhöz.
+
+Az egyes rendszerek letöltései a <a href="/download" target="_blank" rel="noopener noreferrer">letöltési oldalunkon</a> is elérhetők, a teljes útmutató pedig itt található: <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### Mobil eszközök {#mobile-devices}
+
+Hivatalos iOS- és Android-alkalmazásunk QR-kódból állítja be magát: amikor jelszót generálsz egy aliashoz, válaszd a **Scan a setup code** lehetőséget az alkalmazás bejelentkezési képernyőjén, és olvasd be a jelszóval együtt megjelenő kódok bármelyikét. <a href="/download" target="_blank" rel="noopener noreferrer">Töltsd le az alkalmazást</a>, vagy állítsd be helyette a beépített levelezőalkalmazást:
 
 iOS esetén:
 
@@ -527,6 +554,8 @@ echo "Ez egy teszt e-mail az msmtp-től" | msmtp -a default recipient@example.co
 ```
 
 ### Parancssoros e-mail kliensek {#command-line-email-clients}
+
+Ha IMAP vagy SMTP beállítása nélkül szeretnél leveleket olvasni és küldeni a terminálban, használd a [terminálos alkalmazásunkat](#do-you-have-a-terminal-app).
 
 Népszerű parancssoros e-mail kliensek, mint a [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) és az [Alpine](https://alpine.x10.mx/alpine/release/) konfigurálhatók a Forward Email SMTP szervereinek használatára az e-mailek küldéséhez. A konfiguráció hasonló lesz az `msmtp` beállításhoz, ahol megadja az SMTP szerver adatait és hitelesítő adatait a megfelelő konfigurációs fájlokban (`.muttrc`, `.neomuttrc` vagy `.pinerc`).
 

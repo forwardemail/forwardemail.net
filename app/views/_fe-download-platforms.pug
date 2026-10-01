@@ -68,6 +68,8 @@ mixin feDownloadCard(platform)
     if (platform.key === "linux" && hasBuild("deb", "arm64") && !hasBuild("appimage", "arm64")) notes.push(t("No AppImage for ARM64. The .deb and .rpm builds update themselves through the in-app updater; the Snap updates through snapd."));
     if (platform.key === "android") notes.push(t("Android asks you to allow installs from your browser the first time."));
     if (platform.key === "ios") notes.push(t("The iOS build is not signed for direct install. Sideload it with AltStore, Sideloadly, or Xcode."));
+    if (platform.key === "terminal") notes.push(t("The standalone builds update themselves. The Linux builds need glibc; on Alpine and other musl systems, use npm."));
+    if (platform.key === "terminal" && !platform.signed) notes.push(t("The Windows executables are not code-signed yet, so SmartScreen may warn on first run: choose More info, then Run anyway."));
 
     const liveChannels = platform.channels.filter((channel) => channel.state === "live");
     const soonChannels = platform.channels.filter((channel) => channel.state === "soon");
@@ -109,11 +111,11 @@ mixin feDownloadCard(platform)
 
 //- Desktop cards end where their own list does (Linux ships seven packages,
 //- macOS two), so that grid does not stretch its items; the mobile grid
-//- keeps the default stretch. The mobile section follows the desktop one on
-//- the same light surface, so it drops its top padding.
+//- keeps the default stretch. The mobile and terminal sections follow the
+//- desktop one on the same light surface, so they drop their top padding.
 mixin feDownloadGroup(group, id, eyebrow, title, lede)
   section.fe-section.fe-surface-light.fe-section--pad(
-    class=group.key === "mobile" ? "fe-section--tight" : "",
+    class=group.key === "desktop" ? "" : "fe-section--tight",
     aria-labelledby=`${id}-title`
   )
     .fe-container
@@ -123,8 +125,9 @@ mixin feDownloadGroup(group, id, eyebrow, title, lede)
       .fe-download-group__head
         h2.fe-display-lg.fe-download-group__title(id=`${id}-title`)= title
         p.fe-lede.fe-download-group__lede= lede
+      //- The terminal group is one card, as wide as the section.
       ul.fe-grid(
-        class=group.key === "desktop" ? "fe-grid--lg-3 fe-grid--start" : "fe-grid--md-2"
+        class=group.key === "desktop" ? "fe-grid--lg-3 fe-grid--start" : group.key === "terminal" ? "" : "fe-grid--md-2"
       )
         each platform in group.platforms
           +feDownloadCard(platform)
@@ -137,6 +140,8 @@ mixin feDownloadPlatforms
       //- is true on every desktop platform, installer signing is not yet
       //- (see the Windows card's note).
       +feDownloadGroup(group, "fe-download-desktop", t("Desktop"), t("Built for the machine you work on."), t("Every desktop build carries a signed auto updater, so you stay current without coming back here."))
-    else
+    else if group.key === "mobile"
       span#fe-download-mobile.fe-download-anchor
       +feDownloadGroup(group, "fe-download-mobile", t("Mobile"), t("The same mailbox in your pocket."), t("Installed directly rather than through a store, so you get the build exactly as it left CI."))
+    else if group.key === "terminal"
+      +feDownloadGroup(group, "fe-download-terminal-group", t("Terminal"), t("Your inbox in a terminal."), t("The same app in any terminal, with the mouse, keyboard shortcuts, and desktop notifications. Install it with one command, or download the executable for your system."))

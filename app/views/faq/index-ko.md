@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [터미널 앱이 있나요](#do-you-have-a-terminal-app)
   * [모바일 기기](#mobile-devices)
   * [Sendmail SMTP 릴레이 구성](#sendmail-smtp-relay-configuration)
   * [Exim4 SMTP 릴레이 구성](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Forward Email은 메시지를 거의 지연 없이, 일반적으로 수신 후 �
 8. 이름을 입력하고 계정 이름을 선택하세요.
 9. **완료**를 클릭하세요.
 
+### 터미널 앱이 있나요 {#do-you-have-a-terminal-app}
+
+네. `forwardemail` 명령은 웹메일 클라이언트를 터미널에서 실행하며, 로그인, 암호화, 메일, 캘린더, 연락처, 설정이 모두 동일합니다. 키보드나 마우스로 사용할 수 있고, 맨 아래 줄에 현재 화면에서 쓸 수 있는 키가 표시됩니다(모든 단축키를 보려면 `?`를 누르세요).
+
+macOS 또는 Linux에서는 다음 명령으로 설치하세요:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+Windows에서는 PowerShell에서 실행하세요:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+또는 Node.js 22 이상이 설치된 시스템이라면 어디서든 `npm install -g forwardemail`을 실행하세요.
+
+그런 다음 `forwardemail`을 실행하고 별칭 주소와 생성된 비밀번호로 로그인하거나, 계정 없이 둘러보려면 `forwardemail --demo`를 실행하세요. 설치 프로그램은 각 다운로드를 릴리스의 `SHA256SUMS.txt`와 대조해 확인하며, 독립 실행 빌드는 자동으로 업데이트됩니다. 터미널이 백그라운드에 있을 때 새 메일은 데스크탑 알림으로 표시되며, **Settings → Account → Notifications**에서 켜거나 끌 수 있습니다.
+
+세션과 설정은 컴퓨터에 저장됩니다. Linux에서는 `~/.config/forwardemail`, macOS에서는 `~/Library/Application Support/forwardemail`, Windows에서는 `%APPDATA%\forwardemail`에 저장됩니다. 다른 위치에 저장하려면 `forwardemail --data-dir <path>`를, 로그아웃하고 이 데이터를 삭제하려면 `forwardemail logout`을 실행하세요.
+
+각 시스템용 다운로드는 <a href="/download" target="_blank" rel="noopener noreferrer">다운로드 페이지</a>에도 있으며, 전체 가이드는 <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>에서 확인할 수 있습니다.
+
 ### 모바일 기기 {#mobile-devices}
+
+iOS 및 Android용 공식 앱은 QR 코드로 자동 설정됩니다. 별칭의 비밀번호를 생성할 때 앱의 로그인 화면에서 **Scan a setup code**를 선택하고, 비밀번호와 함께 표시되는 코드 중 하나를 스캔하세요. <a href="/download" target="_blank" rel="noopener noreferrer">앱을 다운로드</a>하거나, 대신 기본 메일 앱을 설정하세요:
 
 iOS의 경우:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### 커맨드라인 이메일 클라이언트 {#command-line-email-clients}
+
+IMAP이나 SMTP를 설정하지 않고 터미널에서 메일을 읽고 보내려면 [터미널 앱](#do-you-have-a-terminal-app)을 사용하세요.
 
 [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), [Alpine](https://alpine.x10.mx/alpine/release/) 같은 인기 있는 커맨드라인 이메일 클라이언트는 Forward Email의 SMTP 서버를 사용하도록 구성할 수 있습니다. 구성은 `msmtp` 설정과 유사하며, 각 클라이언트의 구성 파일(`.muttrc`, `.neomuttrc`, 또는 `.pinerc`)에 SMTP 서버 정보와 자격 증명을 입력하면 됩니다.
 

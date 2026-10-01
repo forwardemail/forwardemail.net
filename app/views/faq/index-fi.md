@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Onko teillä terminaalisovellusta](#do-you-have-a-terminal-app)
   * [Mobiililaitteet](#mobile-devices)
   * [Sendmail SMTP -välityspalvelimen asetukset](#sendmail-smtp-relay-configuration)
   * [Exim4 SMTP -välityspalvelimen asetukset](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/
 8. Syötä nimesi ja valitse tilin nimi.
 9. Klikkaa **Valmis**.
 
+### Onko teillä terminaalisovellusta {#do-you-have-a-terminal-app}
+
+Kyllä. `forwardemail`-komento ajaa webmail-asiakasohjelmaamme terminaalissa, samalla kirjautumisella, salauksella, postilla, kalenterilla, yhteystiedoilla ja asetuksilla. Käytät sitä näppäimistöllä tai hiirellä, ja alin rivi näyttää nykyisen näkymän näppäimet (paina `?` nähdäksesi kaikki pikanäppäimet).
+
+Asenna se macOS:ssä tai Linuxissa komennolla:
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+Windowsissa, PowerShellissä:
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+Tai, jos missä tahansa järjestelmässä on Node.js 22 tai uudempi, suorita `npm install -g forwardemail`.
+
+Suorita sitten `forwardemail` ja kirjaudu aliaksen osoitteella ja sen luodulla salasanalla, tai suorita `forwardemail --demo` tutustuaksesi ilman tiliä. Asennusohjelmat tarkistavat jokaisen latauksen julkaisun `SHA256SUMS.txt`-tiedostoa vasten, ja itsenäiset versiot päivittävät itsensä. Uusi posti näkyy työpöytäilmoituksena, kun terminaali on taustalla; voit kytkeä tämän päälle tai pois kohdassa **Settings → Account → Notifications**.
+
+Istuntosi ja asetuksesi pysyvät tietokoneellasi: Linuxissa hakemistossa `~/.config/forwardemail`, macOS:ssä `~/Library/Application Support/forwardemail` ja Windowsissa `%APPDATA%\forwardemail`. Suorita `forwardemail --data-dir <path>` säilyttääksesi ne muualla ja `forwardemail logout` kirjautuaksesi ulos ja poistaaksesi ne.
+
+Kunkin järjestelmän lataukset löytyvät myös <a href="/download" target="_blank" rel="noopener noreferrer">lataussivultamme</a>, ja koko opas on osoitteessa <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a>.
+
 ### Mobiililaitteet {#mobile-devices}
+
+Virallinen iOS- ja Android-sovelluksemme määrittää itsensä QR-koodista: kun luot aliakselle salasanan, valitse sovelluksen kirjautumisnäytöltä **Scan a setup code** ja skannaa jompikumpi salasanan kanssa näytetyistä koodeista. <a href="/download" target="_blank" rel="noopener noreferrer">Lataa sovellus</a> tai määritä sen sijaan sisäänrakennettu sähköpostisovellus:
 
 iOS:lle:
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### Komentorivipohjaiset sähköpostiohjelmat {#command-line-email-clients}
+
+Jos haluat lukea ja lähettää postia terminaalissa ilman IMAP- tai SMTP-määrityksiä, käytä [terminaalisovellustamme](#do-you-have-a-terminal-app).
 
 Suositut komentorivipohjaiset sähköpostiohjelmat kuten [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org) ja [Alpine](https://alpine.x10.mx/alpine/release/) voidaan konfiguroida käyttämään Forward Emailin SMTP-palvelimia sähköpostin lähettämiseen. Konfiguraatio on samanlainen kuin `msmtp`-asetuksessa, jossa annat SMTP-palvelimen tiedot ja tunnistetietosi vastaaviin konfiguraatiotiedostoihin (`.muttrc`, `.neomuttrc` tai `.pinerc`).
 

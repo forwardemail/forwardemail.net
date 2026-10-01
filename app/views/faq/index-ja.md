@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [ターミナルアプリはありますか](#do-you-have-a-terminal-app)
   * [モバイルデバイス](#mobile-devices)
   * [Sendmail SMTPリレー設定](#sendmail-smtp-relay-configuration)
   * [Exim4 SMTPリレー設定](#exim4-smtp-relay-configuration)
@@ -314,7 +315,33 @@ Forward Emailは受信後数秒以内にメッセージをほぼ遅延なく配�
 8. 名前を入力し、アカウント名を選択します
 9. **完了**をクリックします
 
+### ターミナルアプリはありますか {#do-you-have-a-terminal-app}
+
+はい。`forwardemail` コマンドは私たちのウェブメールクライアントをターミナルで実行し、サインイン、暗号化、メール、カレンダー、連絡先、設定はすべて同じです。キーボードでもマウスでも操作でき、最下行には現在の画面で使えるキーが表示されます（すべてのショートカットは `?` を押すと確認できます）。
+
+macOS または Linux では次のコマンドでインストールします：
+
+```sh
+curl -fsSL https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.sh | sh
+```
+
+Windows では PowerShell で次を実行します：
+
+```powershell
+irm https://github.com/forwardemail/mail.forwardemail.net/releases/latest/download/install.ps1 | iex
+```
+
+または、Node.js 22 以降があればどのシステムでも `npm install -g forwardemail` を実行できます。
+
+その後 `forwardemail` を実行し、エイリアスのアドレスとその生成済みパスワードでサインインします。アカウントなしで試すには `forwardemail --demo` を実行します。インストーラーは各ダウンロードをリリースの `SHA256SUMS.txt` と照合し、スタンドアロンビルドは自動で更新されます。ターミナルがバックグラウンドにあるときは新着メールがデスクトップ通知として表示され、**Settings → Account → Notifications** でオン・オフを切り替えられます。
+
+セッションと設定はお使いのコンピューターに保存されます。保存先は Linux では `~/.config/forwardemail`、macOS では `~/Library/Application Support/forwardemail`、Windows では `%APPDATA%\forwardemail` です。別の場所に保存するには `forwardemail --data-dir <path>` を、サインアウトしてデータを削除するには `forwardemail logout` を実行します。
+
+各システム用のダウンロードは<a href="/download" target="_blank" rel="noopener noreferrer">ダウンロードページ</a>にもあり、詳しいガイドは <a href="https://github.com/forwardemail/mail.forwardemail.net/blob/main/docs/CLI.md" target="_blank" rel="noopener noreferrer">docs/CLI.md</a> にあります。
+
 ### モバイルデバイス {#mobile-devices}
+
+iOS と Android 向けの公式アプリは QR コードから自動で設定できます。エイリアスのパスワードを生成したら、アプリのサインイン画面で **Scan a setup code** を選択し、パスワードと一緒に表示されるいずれかのコードをスキャンしてください。<a href="/download" target="_blank" rel="noopener noreferrer">アプリをダウンロード</a>するか、代わりに標準のメールアプリを設定します：
 
 iOSの場合：
 
@@ -527,6 +554,8 @@ echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
 ```
 
 ### コマンドラインメールクライアント {#command-line-email-clients}
+
+IMAP や SMTP を設定せずにターミナルでメールを読み書きするには、[ターミナルアプリ](#do-you-have-a-terminal-app)を使用してください。
 
 [Mutt](https://gitlab.com/muttmua/mutt)、[NeoMutt](https://neomutt.org)、[Alpine](https://alpine.x10.mx/alpine/release/) のような人気のコマンドラインメールクライアントは、Forward Email のSMTPサーバーを使ってメール送信を設定できます。設定は `msmtp` のセットアップに似ており、それぞれの設定ファイル（`.muttrc`、`.neomuttrc`、または `.pinerc`）にSMTPサーバーの詳細と認証情報を記述します。
 
