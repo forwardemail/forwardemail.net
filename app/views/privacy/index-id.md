@@ -33,7 +33,7 @@ Silakan merujuk pada [Ketentuan](/terms) kami karena berlaku di seluruh situs.
 
 ## Informasi yang Tidak Dikumpulkan {#information-not-collected}
 
-**Kecuali untuk informasi yang secara tegas dijelaskan dalam kebijakan ini — termasuk [log kesalahan](#error-logs), [email SMTP keluar](#outbound-smtp-emails), [informasi akun](#account-information), [pemrosesan data sementara](#temporary-data-processing), [log audit](#audit-logs), dan [kuki dan sesi](#cookies-and-sessions):**
+**Kecuali untuk informasi yang secara tegas dijelaskan dalam kebijakan ini (termasuk [log kesalahan](#error-logs), [email SMTP keluar](#outbound-smtp-emails), [informasi akun](#account-information), [pemrosesan data sementara](#temporary-data-processing), [log audit](#audit-logs), dan [kuki dan sesi](#cookies-and-sessions)):**
 
 * Kami tidak menyimpan email yang diteruskan ke penyimpanan disk maupun basis data.
 * Kami tidak menyimpan metadata apa pun tentang email yang diteruskan ke penyimpanan disk maupun basis data.

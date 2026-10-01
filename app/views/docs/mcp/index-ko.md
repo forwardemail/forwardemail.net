@@ -24,12 +24,12 @@
   * [계정 (API 키 또는 별칭 인증)](#account-api-key-or-alias-auth)
   * [도메인 (API 키)](#domains-api-key)
   * [별칭 (API 키)](#aliases-api-key)
-  * [이메일 — 발신 SMTP (API 키; Send는 둘 다 지원)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [메시지 — IMAP (별칭 인증)](#messages--imap-alias-auth)
-  * [폴더 — IMAP (별칭 인증)](#folders--imap-alias-auth)
-  * [연락처 — CardDAV (별칭 인증)](#contacts--carddav-alias-auth)
-  * [캘린더 — CalDAV (별칭 인증)](#calendars--caldav-alias-auth)
-  * [캘린더 이벤트 — CalDAV (별칭 인증)](#calendar-events--caldav-alias-auth)
+  * [이메일：발신 SMTP (API 키; Send는 둘 다 지원)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [메시지：IMAP (별칭 인증)](#messages-imap-alias-auth)
+  * [폴더：IMAP (별칭 인증)](#folders-imap-alias-auth)
+  * [연락처：CardDAV (별칭 인증)](#contacts-carddav-alias-auth)
+  * [캘린더：CalDAV (별칭 인증)](#calendars-caldav-alias-auth)
+  * [캘린더 이벤트：CalDAV (별칭 인증)](#calendar-events-caldav-alias-auth)
   * [Sieve 스크립트 (API 키)](#sieve-scripts-api-key)
   * [Sieve 스크립트 (별칭 인증)](#sieve-scripts-alias-auth)
   * [도메인 멤버 및 초대 (API 키)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ API 키 인증 시, 사용자 계정 정보를 반환합니다. 별칭 인증 �
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | 별칭을 삭제합니다                   |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | 별칭 인증용 IMAP/SMTP 비밀번호를 생성합니다 |
 
-### 이메일 — 발신 SMTP (API 키; Send는 둘 다 지원) {#emails--outbound-smtp-api-key-send-supports-both}
+### 이메일：발신 SMTP (API 키; Send는 둘 다 지원) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | 도구            | API 엔드포인트            | 인증                  | 설명                         |
 | --------------- | ------------------------- | --------------------- | ---------------------------- |
@@ -242,7 +242,7 @@ API 키 인증 시, 사용자 계정 정보를 반환합니다. 별칭 인증 �
 
 `sendEmail` 도구는 `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html`, `attachments`를 받습니다. 이는 `POST /v1/emails` 엔드포인트와 동일합니다.
 
-### 메시지 — IMAP (별칭 인증) {#messages--imap-alias-auth}
+### 메시지：IMAP (별칭 인증) {#messages-imap-alias-auth}
 
 > **별칭 자격 증명이 필요합니다.** `alias_username`과 `alias_password`를 전달하거나 `FORWARD_EMAIL_ALIAS_USER` 및 `FORWARD_EMAIL_ALIAS_PASSWORD` 환경 변수를 설정하세요.
 | 도구             | API 엔드포인트              | 설명                              |
@@ -255,7 +255,7 @@ API 키 인증 시, 사용자 계정 정보를 반환합니다. 별칭 인증 �
 
 `listMessages` 도구는 `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread`, `has_attachment` 등 15개 이상의 검색 매개변수를 지원합니다. 전체 목록은 [API docs](/email-api)를 참조하세요.
 
-### 폴더 — IMAP (별칭 인증) {#folders--imap-alias-auth}
+### 폴더：IMAP (별칭 인증) {#folders-imap-alias-auth}
 
 > **별칭 자격 증명이 필요합니다.** `alias_username`과 `alias_password`를 전달하거나 `FORWARD_EMAIL_ALIAS_USER` 및 `FORWARD_EMAIL_ALIAS_PASSWORD` 환경 변수를 설정하세요.
 
@@ -267,7 +267,7 @@ API 키 인증 시, 사용자 계정 정보를 반환합니다. 별칭 인증 �
 | `updateFolder` | `PUT /v1/folders/:id`    | 폴더 이름 변경      |
 | `deleteFolder` | `DELETE /v1/folders/:id` | 폴더 삭제          |
 
-### 연락처 — CardDAV (별칭 인증) {#contacts--carddav-alias-auth}
+### 연락처：CardDAV (별칭 인증) {#contacts-carddav-alias-auth}
 
 > **별칭 자격 증명이 필요합니다.** `alias_username`과 `alias_password`를 전달하거나 `FORWARD_EMAIL_ALIAS_USER` 및 `FORWARD_EMAIL_ALIAS_PASSWORD` 환경 변수를 설정하세요.
 
@@ -279,7 +279,7 @@ API 키 인증 시, 사용자 계정 정보를 반환합니다. 별칭 인증 �
 | `updateContact` | `PUT /v1/contacts/:id`    | 연락처 업데이트    |
 | `deleteContact` | `DELETE /v1/contacts/:id` | 연락처 삭제        |
 
-### 캘린더 — CalDAV (별칭 인증) {#calendars--caldav-alias-auth}
+### 캘린더：CalDAV (별칭 인증) {#calendars-caldav-alias-auth}
 
 > **별칭 자격 증명이 필요합니다.** `alias_username`과 `alias_password`를 전달하거나 `FORWARD_EMAIL_ALIAS_USER` 및 `FORWARD_EMAIL_ALIAS_PASSWORD` 환경 변수를 설정하세요.
 
@@ -291,7 +291,7 @@ API 키 인증 시, 사용자 계정 정보를 반환합니다. 별칭 인증 �
 | `updateCalendar` | `PUT /v1/calendars/:id`    | 캘린더 업데이트    |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | 캘린더 삭제        |
 
-### 캘린더 이벤트 — CalDAV (별칭 인증) {#calendar-events--caldav-alias-auth}
+### 캘린더 이벤트：CalDAV (별칭 인증) {#calendar-events-caldav-alias-auth}
 
 > **별칭 자격 증명이 필요합니다.** `alias_username`과 `alias_password`를 전달하거나 `FORWARD_EMAIL_ALIAS_USER` 및 `FORWARD_EMAIL_ALIAS_PASSWORD` 환경 변수를 설정하세요.
 
@@ -491,9 +491,9 @@ AI 어시스턴트와 바로 사용할 수 있는 프롬프트 예시입니다:
 
 | 변수                            | 필수     | 기본값                         | 설명                                                                           |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | 예       | —                              | Forward Email API 키 (API 키 엔드포인트용 Basic 인증 사용자 이름으로 사용)      |
-| `FORWARD_EMAIL_ALIAS_USER`     | 아니요   | —                              | 메일박스 엔드포인트용 별칭 이메일 주소 (예: `user@example.com`)                |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | 아니요   | —                              | 메일박스 엔드포인트용 생성된 별칭 비밀번호                                    |
+| `FORWARD_EMAIL_API_KEY`        | 예       |                                | Forward Email API 키 (API 키 엔드포인트용 Basic 인증 사용자 이름으로 사용)      |
+| `FORWARD_EMAIL_ALIAS_USER`     | 아니요   |                                | 메일박스 엔드포인트용 별칭 이메일 주소 (예: `user@example.com`)                |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | 아니요   |                                | 메일박스 엔드포인트용 생성된 별칭 비밀번호                                    |
 | `FORWARD_EMAIL_API_URL`        | 아니요   | `https://api.forwardemail.net` | API 기본 URL (셀프 호스팅 또는 테스트용)                                       |
 
 

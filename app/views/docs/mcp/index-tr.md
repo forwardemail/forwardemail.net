@@ -24,12 +24,12 @@
   * [Hesap (API Anahtarı veya Takma Ad Doğrulaması)](#account-api-key-or-alias-auth)
   * [Alan Adları (API Anahtarı)](#domains-api-key)
   * [Takma Adlar (API Anahtarı)](#aliases-api-key)
-  * [E-postalar — Giden SMTP (API Anahtarı; Gönderme her ikisini destekler)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Mesajlar — IMAP (Takma Ad Doğrulaması)](#messages--imap-alias-auth)
-  * [Klasörler — IMAP (Takma Ad Doğrulaması)](#folders--imap-alias-auth)
-  * [Kişiler — CardDAV (Takma Ad Doğrulaması)](#contacts--carddav-alias-auth)
-  * [Takvimler — CalDAV (Takma Ad Doğrulaması)](#calendars--caldav-alias-auth)
-  * [Takvim Etkinlikleri — CalDAV (Takma Ad Doğrulaması)](#calendar-events--caldav-alias-auth)
+  * [E-postalar: Giden SMTP (API Anahtarı; Gönderme her ikisini destekler)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Mesajlar: IMAP (Takma Ad Doğrulaması)](#messages-imap-alias-auth)
+  * [Klasörler: IMAP (Takma Ad Doğrulaması)](#folders-imap-alias-auth)
+  * [Kişiler: CardDAV (Takma Ad Doğrulaması)](#contacts-carddav-alias-auth)
+  * [Takvimler: CalDAV (Takma Ad Doğrulaması)](#calendars-caldav-alias-auth)
+  * [Takvim Etkinlikleri: CalDAV (Takma Ad Doğrulaması)](#calendar-events-caldav-alias-auth)
   * [Sieve Betikleri (API Anahtarı)](#sieve-scripts-api-key)
   * [Sieve Betikleri (Takma Ad Doğrulaması)](#sieve-scripts-alias-auth)
   * [Alan Adı Üyeleri ve Davetler (API Anahtarı)](#domain-members-and-invites-api-key)
@@ -229,7 +229,7 @@ API anahtarı yetkilendirmesi ile, bunlar kullanıcı hesap bilgilerinizi döner
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Bir takma adı silin                     |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Takma ad yetkilendirmesi için IMAP/SMTP şifresi oluşturun |
 
-### E-postalar — Giden SMTP (API Anahtarı; Gönderme her ikisini de destekler) {#emails--outbound-smtp-api-key-send-supports-both}
+### E-postalar: Giden SMTP (API Anahtarı; Gönderme her ikisini de destekler) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Araç            | API Uç Noktası            | Yetkilendirme          | Açıklama                     |
 | --------------- | ------------------------- | ---------------------- | ---------------------------- |
@@ -241,7 +241,7 @@ API anahtarı yetkilendirmesi ile, bunlar kullanıcı hesap bilgilerinizi döner
 
 `sendEmail` aracı `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` ve `attachments` parametrelerini kabul eder. Bu, `POST /v1/emails` uç noktası ile aynıdır.
 
-### Mesajlar — IMAP (Takma Ad Yetkilendirmesi) {#messages--imap-alias-auth}
+### Mesajlar: IMAP (Takma Ad Yetkilendirmesi) {#messages-imap-alias-auth}
 
 > **Takma ad kimlik bilgileri gerektirir.** `alias_username` ve `alias_password` geçirin veya `FORWARD_EMAIL_ALIAS_USER` ve `FORWARD_EMAIL_ALIAS_PASSWORD` ortam değişkenlerini ayarlayın.
 | Araç            | API Uç Noktası              | Açıklama                           |
@@ -254,7 +254,7 @@ API anahtarı yetkilendirmesi ile, bunlar kullanıcı hesap bilgilerinizi döner
 
 `listMessages` aracı, `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` ve `has_attachment` dahil 15'ten fazla arama parametresini destekler. Tam liste için [API docs](/email-api) sayfasına bakınız.
 
-### Klasörler — IMAP (Alias Yetkilendirmesi) {#folders--imap-alias-auth}
+### Klasörler: IMAP (Alias Yetkilendirmesi) {#folders-imap-alias-auth}
 
 > **Alias kimlik bilgileri gerektirir.** `alias_username` ve `alias_password` geçin veya `FORWARD_EMAIL_ALIAS_USER` ve `FORWARD_EMAIL_ALIAS_PASSWORD` ortam değişkenlerini ayarlayın.
 
@@ -266,7 +266,7 @@ API anahtarı yetkilendirmesi ile, bunlar kullanıcı hesap bilgilerinizi döner
 | `updateFolder` | `PUT /v1/folders/:id`      | Klasör adını değiştir  |
 | `deleteFolder` | `DELETE /v1/folders/:id`   | Klasör sil            |
 
-### Kişiler — CardDAV (Alias Yetkilendirmesi) {#contacts--carddav-alias-auth}
+### Kişiler: CardDAV (Alias Yetkilendirmesi) {#contacts-carddav-alias-auth}
 
 > **Alias kimlik bilgileri gerektirir.** `alias_username` ve `alias_password` geçin veya `FORWARD_EMAIL_ALIAS_USER` ve `FORWARD_EMAIL_ALIAS_PASSWORD` ortam değişkenlerini ayarlayın.
 
@@ -278,7 +278,7 @@ API anahtarı yetkilendirmesi ile, bunlar kullanıcı hesap bilgilerinizi döner
 | `updateContact` | `PUT /v1/contacts/:id`      | Kişiyi güncelle    |
 | `deleteContact` | `DELETE /v1/contacts/:id`   | Kişiyi sil        |
 
-### Takvimler — CalDAV (Alias Yetkilendirmesi) {#calendars--caldav-alias-auth}
+### Takvimler: CalDAV (Alias Yetkilendirmesi) {#calendars-caldav-alias-auth}
 
 > **Alias kimlik bilgileri gerektirir.** `alias_username` ve `alias_password` geçin veya `FORWARD_EMAIL_ALIAS_USER` ve `FORWARD_EMAIL_ALIAS_PASSWORD` ortam değişkenlerini ayarlayın.
 
@@ -290,7 +290,7 @@ API anahtarı yetkilendirmesi ile, bunlar kullanıcı hesap bilgilerinizi döner
 | `updateCalendar` | `PUT /v1/calendars/:id`    | Takvimi güncelle    |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | Takvimi sil        |
 
-### Takvim Etkinlikleri — CalDAV (Alias Yetkilendirmesi) {#calendar-events--caldav-alias-auth}
+### Takvim Etkinlikleri: CalDAV (Alias Yetkilendirmesi) {#calendar-events-caldav-alias-auth}
 
 > **Alias kimlik bilgileri gerektirir.** `alias_username` ve `alias_password` geçin veya `FORWARD_EMAIL_ALIAS_USER` ve `FORWARD_EMAIL_ALIAS_PASSWORD` ortam değişkenlerini ayarlayın.
 
@@ -490,9 +490,9 @@ AI asistanınızla doğrudan kullanabileceğiniz komutlar:
 
 | Variable                       | Required | Default                        | Description                                                                    |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Yes      | —                              | Your Forward Email API key (used as Basic auth username for API-key endpoints) |
-| `FORWARD_EMAIL_ALIAS_USER`     | No       | —                              | Alias email address for mailbox endpoints (e.g. `user@example.com`)            |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | No       | —                              | Generated alias password for mailbox endpoints                                 |
+| `FORWARD_EMAIL_API_KEY`        | Yes      |                                | Your Forward Email API key (used as Basic auth username for API-key endpoints) |
+| `FORWARD_EMAIL_ALIAS_USER`     | No       |                                | Alias email address for mailbox endpoints (e.g. `user@example.com`)            |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | No       |                                | Generated alias password for mailbox endpoints                                 |
 | `FORWARD_EMAIL_API_URL`        | No       | `https://api.forwardemail.net` | API base URL (for self-hosted or testing)                                      |
 
 

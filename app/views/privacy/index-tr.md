@@ -33,7 +33,7 @@ Lütfen site genelinde geçerli olan [Şartlarımıza](/terms) bakınız.
 
 ## Toplanmayan Bilgiler {#information-not-collected}
 
-**Bu politikada açıkça belirtilen bilgiler — [hata günlükleri](#error-logs), [giden SMTP e-postaları](#outbound-smtp-emails), [hesap bilgileri](#account-information), [geçici veri işleme](#temporary-data-processing), [denetim günlükleri](#audit-logs) ve [çerezler ve oturumlar](#cookies-and-sessions) dahil olmak üzere — haricinde:**
+**Bu politikada açıkça belirtilen bilgiler ([hata günlükleri](#error-logs), [giden SMTP e-postaları](#outbound-smtp-emails), [hesap bilgileri](#account-information), [geçici veri işleme](#temporary-data-processing), [denetim günlükleri](#audit-logs) ve [çerezler ve oturumlar](#cookies-and-sessions) dahil olmak üzere) haricinde:**
 
 * Yönlendirilen hiçbir e-postayı disk depolama alanında veya veritabanlarında saklamıyoruz.
 * Yönlendirilen e-postalar hakkındaki hiçbir meta veriyi disk depolama alanında veya veritabanlarında saklamıyoruz.

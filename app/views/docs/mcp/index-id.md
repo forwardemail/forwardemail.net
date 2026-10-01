@@ -24,12 +24,12 @@
   * [Akun (API Key atau Alias Auth)](#account-api-key-or-alias-auth)
   * [Domain (API Key)](#domains-api-key)
   * [Alias (API Key)](#aliases-api-key)
-  * [Email — Outbound SMTP (API Key; Send mendukung keduanya)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Pesan — IMAP (Alias Auth)](#messages--imap-alias-auth)
-  * [Folder — IMAP (Alias Auth)](#folders--imap-alias-auth)
-  * [Kontak — CardDAV (Alias Auth)](#contacts--carddav-alias-auth)
-  * [Kalender — CalDAV (Alias Auth)](#calendars--caldav-alias-auth)
-  * [Acara Kalender — CalDAV (Alias Auth)](#calendar-events--caldav-alias-auth)
+  * [Email: Outbound SMTP (API Key; Send mendukung keduanya)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Pesan: IMAP (Alias Auth)](#messages-imap-alias-auth)
+  * [Folder: IMAP (Alias Auth)](#folders-imap-alias-auth)
+  * [Kontak: CardDAV (Alias Auth)](#contacts-carddav-alias-auth)
+  * [Kalender: CalDAV (Alias Auth)](#calendars-caldav-alias-auth)
+  * [Acara Kalender: CalDAV (Alias Auth)](#calendar-events-caldav-alias-auth)
   * [Skrip Sieve (API Key)](#sieve-scripts-api-key)
   * [Skrip Sieve (Alias Auth)](#sieve-scripts-alias-auth)
   * [Anggota dan Undangan Domain (API Key)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ Dengan otentikasi API key, ini mengembalikan info akun pengguna Anda. Dengan ote
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Hapus alias                            |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Buat password IMAP/SMTP untuk otentikasi alias |
 
-### Email — SMTP Keluar (API Key; Send mendukung keduanya) {#emails--outbound-smtp-api-key-send-supports-both}
+### Email: SMTP Keluar (API Key; Send mendukung keduanya) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Alat            | API Endpoint            | Auth                  | Deskripsi                  |
 | --------------- | ----------------------- | --------------------- | -------------------------- |
@@ -242,7 +242,7 @@ Dengan otentikasi API key, ini mengembalikan info akun pengguna Anda. Dengan ote
 
 Alat `sendEmail` menerima `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html`, dan `attachments`. Ini sama dengan endpoint `POST /v1/emails`.
 
-### Pesan — IMAP (Alias Auth) {#messages--imap-alias-auth}
+### Pesan: IMAP (Alias Auth) {#messages-imap-alias-auth}
 
 > **Memerlukan kredensial alias.** Kirim `alias_username` dan `alias_password` atau setel variabel lingkungan `FORWARD_EMAIL_ALIAS_USER` dan `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | Alat             | Endpoint API              | Deskripsi                            |
@@ -255,7 +255,7 @@ Alat `sendEmail` menerima `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html`, 
 
 Alat `listMessages` mendukung lebih dari 15 parameter pencarian termasuk `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread`, dan `has_attachment`. Lihat [dokumentasi API](/email-api) untuk daftar lengkap.
 
-### Folder — IMAP (Alias Auth) {#folders--imap-alias-auth}
+### Folder: IMAP (Alias Auth) {#folders-imap-alias-auth}
 
 > **Memerlukan kredensial alias.** Kirim `alias_username` dan `alias_password` atau setel variabel lingkungan `FORWARD_EMAIL_ALIAS_USER` dan `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ Alat `listMessages` mendukung lebih dari 15 parameter pencarian termasuk `subjec
 | `updateFolder`  | `PUT /v1/folders/:id`    | Ganti nama folder       |
 | `deleteFolder`  | `DELETE /v1/folders/:id` | Hapus folder            |
 
-### Kontak — CardDAV (Alias Auth) {#contacts--carddav-alias-auth}
+### Kontak: CardDAV (Alias Auth) {#contacts-carddav-alias-auth}
 
 > **Memerlukan kredensial alias.** Kirim `alias_username` dan `alias_password` atau setel variabel lingkungan `FORWARD_EMAIL_ALIAS_USER` dan `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ Alat `listMessages` mendukung lebih dari 15 parameter pencarian termasuk `subjec
 | `updateContact`  | `PUT /v1/contacts/:id`    | Perbarui kontak     |
 | `deleteContact`  | `DELETE /v1/contacts/:id` | Hapus kontak        |
 
-### Kalender — CalDAV (Alias Auth) {#calendars--caldav-alias-auth}
+### Kalender: CalDAV (Alias Auth) {#calendars-caldav-alias-auth}
 
 > **Memerlukan kredensial alias.** Kirim `alias_username` dan `alias_password` atau setel variabel lingkungan `FORWARD_EMAIL_ALIAS_USER` dan `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ Alat `listMessages` mendukung lebih dari 15 parameter pencarian termasuk `subjec
 | `updateCalendar`  | `PUT /v1/calendars/:id`    | Perbarui kalender    |
 | `deleteCalendar`  | `DELETE /v1/calendars/:id` | Hapus kalender       |
 
-### Acara Kalender — CalDAV (Alias Auth) {#calendar-events--caldav-alias-auth}
+### Acara Kalender: CalDAV (Alias Auth) {#calendar-events-caldav-alias-auth}
 
 > **Memerlukan kredensial alias.** Kirim `alias_username` dan `alias_password` atau setel variabel lingkungan `FORWARD_EMAIL_ALIAS_USER` dan `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ Berikut adalah prompt yang dapat Anda gunakan langsung dengan asisten AI Anda:
 
 | Variable                       | Required | Default                        | Description                                                                    |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Ya       | —                              | Kunci API Forward Email Anda (digunakan sebagai username Basic auth untuk endpoint API-key) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Tidak    | —                              | Alamat email alias untuk endpoint kotak surat (misal `user@example.com`)       |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Tidak    | —                              | Kata sandi alias yang dihasilkan untuk endpoint kotak surat                    |
+| `FORWARD_EMAIL_API_KEY`        | Ya       |                                | Kunci API Forward Email Anda (digunakan sebagai username Basic auth untuk endpoint API-key) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Tidak    |                                | Alamat email alias untuk endpoint kotak surat (misal `user@example.com`)       |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Tidak    |                                | Kata sandi alias yang dihasilkan untuk endpoint kotak surat                    |
 | `FORWARD_EMAIL_API_URL`        | Tidak    | `https://api.forwardemail.net` | URL dasar API (untuk self-hosted atau pengujian)                              |
 
 

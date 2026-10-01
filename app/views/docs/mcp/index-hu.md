@@ -24,12 +24,12 @@
   * [Fiók (API kulcs vagy alias hitelesítés)](#account-api-key-or-alias-auth)
   * [Domainek (API kulcs)](#domains-api-key)
   * [Aliasok (API kulcs)](#aliases-api-key)
-  * [E-mailek — Kimenő SMTP (API kulcs; a küldés mindkettőt támogatja)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Üzenetek — IMAP (Alias hitelesítés)](#messages--imap-alias-auth)
-  * [Mappák — IMAP (Alias hitelesítés)](#folders--imap-alias-auth)
-  * [Kapcsolatok — CardDAV (Alias hitelesítés)](#contacts--carddav-alias-auth)
-  * [Naptárak — CalDAV (Alias hitelesítés)](#calendars--caldav-alias-auth)
-  * [Naptári események — CalDAV (Alias hitelesítés)](#calendar-events--caldav-alias-auth)
+  * [E-mailek: Kimenő SMTP (API kulcs; a küldés mindkettőt támogatja)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Üzenetek: IMAP (Alias hitelesítés)](#messages-imap-alias-auth)
+  * [Mappák: IMAP (Alias hitelesítés)](#folders-imap-alias-auth)
+  * [Kapcsolatok: CardDAV (Alias hitelesítés)](#contacts-carddav-alias-auth)
+  * [Naptárak: CalDAV (Alias hitelesítés)](#calendars-caldav-alias-auth)
+  * [Naptári események: CalDAV (Alias hitelesítés)](#calendar-events-caldav-alias-auth)
   * [Sieve szkriptek (API kulcs)](#sieve-scripts-api-key)
   * [Sieve szkriptek (Alias hitelesítés)](#sieve-scripts-alias-auth)
   * [Domain tagok és meghívók (API kulcs)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ API kulcs hitelesítéssel ezek visszaadják a felhasználói fiók adatait. Ali
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Alias törlése                           |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | IMAP/SMTP jelszó generálása alias hitelesítéshez |
 
-### E-mailek — Kimenő SMTP (API kulcs; Küldés mindkettőt támogatja) {#emails--outbound-smtp-api-key-send-supports-both}
+### E-mailek: Kimenő SMTP (API kulcs; Küldés mindkettőt támogatja) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Eszköz           | API végpont           | Hitelesítés           | Leírás                      |
 | ---------------- | --------------------- | --------------------- | --------------------------- |
@@ -242,7 +242,7 @@ API kulcs hitelesítéssel ezek visszaadják a felhasználói fiók adatait. Ali
 
 A `sendEmail` eszköz elfogadja a `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` és `attachments` paramétereket. Ez megegyezik a `POST /v1/emails` végponttal.
 
-### Üzenetek — IMAP (Alias hitelesítés) {#messages--imap-alias-auth}
+### Üzenetek: IMAP (Alias hitelesítés) {#messages-imap-alias-auth}
 
 > **Alias hitelesítő adatok szükségesek.** Add át az `alias_username` és `alias_password` értékeket, vagy állítsd be a `FORWARD_EMAIL_ALIAS_USER` és `FORWARD_EMAIL_ALIAS_PASSWORD` környezeti változókat.
 | Eszköz           | API végpont                | Leírás                              |
@@ -255,7 +255,7 @@ A `sendEmail` eszköz elfogadja a `from`, `to`, `cc`, `bcc`, `subject`, `text`, 
 
 A `listMessages` eszköz több mint 15 keresési paramétert támogat, beleértve a `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` és `has_attachment` paramétereket. A teljes listáért lásd a [API docs](/email-api) dokumentációt.
 
-### Mappák — IMAP (Alias hitelesítés) {#folders--imap-alias-auth}
+### Mappák: IMAP (Alias hitelesítés) {#folders-imap-alias-auth}
 
 > **Alias hitelesítő adatok szükségesek.** Add át az `alias_username` és `alias_password` értékeket, vagy állítsd be a `FORWARD_EMAIL_ALIAS_USER` és `FORWARD_EMAIL_ALIAS_PASSWORD` környezeti változókat.
 
@@ -267,7 +267,7 @@ A `listMessages` eszköz több mint 15 keresési paramétert támogat, beleértv
 | `updateFolder`  | `PUT /v1/folders/:id`    | Mappa átnevezése         |
 | `deleteFolder`  | `DELETE /v1/folders/:id` | Mappa törlése            |
 
-### Kapcsolatok — CardDAV (Alias hitelesítés) {#contacts--carddav-alias-auth}
+### Kapcsolatok: CardDAV (Alias hitelesítés) {#contacts-carddav-alias-auth}
 
 > **Alias hitelesítő adatok szükségesek.** Add át az `alias_username` és `alias_password` értékeket, vagy állítsd be a `FORWARD_EMAIL_ALIAS_USER` és `FORWARD_EMAIL_ALIAS_PASSWORD` környezeti változókat.
 
@@ -279,7 +279,7 @@ A `listMessages` eszköz több mint 15 keresési paramétert támogat, beleértv
 | `updateContact`  | `PUT /v1/contacts/:id`   | Kapcsolat frissítése  |
 | `deleteContact`  | `DELETE /v1/contacts/:id`| Kapcsolat törlése     |
 
-### Naptárak — CalDAV (Alias hitelesítés) {#calendars--caldav-alias-auth}
+### Naptárak: CalDAV (Alias hitelesítés) {#calendars-caldav-alias-auth}
 
 > **Alias hitelesítő adatok szükségesek.** Add át az `alias_username` és `alias_password` értékeket, vagy állítsd be a `FORWARD_EMAIL_ALIAS_USER` és `FORWARD_EMAIL_ALIAS_PASSWORD` környezeti változókat.
 
@@ -291,7 +291,7 @@ A `listMessages` eszköz több mint 15 keresési paramétert támogat, beleértv
 | `updateCalendar`  | `PUT /v1/calendars/:id`  | Naptár frissítése     |
 | `deleteCalendar`  | `DELETE /v1/calendars/:id`| Naptár törlése        |
 
-### Naptári események — CalDAV (Alias hitelesítés) {#calendar-events--caldav-alias-auth}
+### Naptári események: CalDAV (Alias hitelesítés) {#calendar-events-caldav-alias-auth}
 
 > **Alias hitelesítő adatok szükségesek.** Add át az `alias_username` és `alias_password` értékeket, vagy állítsd be a `FORWARD_EMAIL_ALIAS_USER` és `FORWARD_EMAIL_ALIAS_PASSWORD` környezeti változókat.
 
@@ -491,9 +491,9 @@ Hozz létre vázlat e-maileket a postaládádban anélkül, hogy elküldenéd ő
 
 | Változó                        | Kötelező | Alapértelmezett                 | Leírás                                                                        |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Igen     | —                              | A Forward Email API kulcsod (Basic auth felhasználónévként használatos az API-kulcs végpontokhoz) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Nem      | —                              | Álnév e-mail cím a postaláda végpontokhoz (pl. `user@example.com`)             |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nem      | —                              | Generált álneves jelszó a postaláda végpontokhoz                              |
+| `FORWARD_EMAIL_API_KEY`        | Igen     |                                | A Forward Email API kulcsod (Basic auth felhasználónévként használatos az API-kulcs végpontokhoz) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Nem      |                                | Álnév e-mail cím a postaláda végpontokhoz (pl. `user@example.com`)             |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nem      |                                | Generált álneves jelszó a postaláda végpontokhoz                              |
 | `FORWARD_EMAIL_API_URL`        | Nem      | `https://api.forwardemail.net` | API alap URL (önálló hosztoláshoz vagy teszteléshez)                          |
 
 

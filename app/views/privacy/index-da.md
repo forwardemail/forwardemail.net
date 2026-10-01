@@ -33,7 +33,7 @@ Se venligst vores [Vilkår](/terms), da de gælder på hele siden.
 
 ## Information Ikke Indsamlet {#information-not-collected}
 
-**Med undtagelse af de oplysninger, der udtrykkeligt er beskrevet i denne politik — herunder [fejllogs](#error-logs), [udgående SMTP-e-mails](#outbound-smtp-emails), [kontoinformation](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisionslogs](#audit-logs) og [cookies og sessioner](#cookies-og-sessions):**
+**Med undtagelse af de oplysninger, der udtrykkeligt er beskrevet i denne politik (herunder [fejllogs](#error-logs), [udgående SMTP-e-mails](#outbound-smtp-emails), [kontoinformation](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisionslogs](#audit-logs) og [cookies og sessioner](#cookies-and-sessions)):**
 
 * Vi gemmer ikke videresendte e-mails på disk eller i databaser.
 * Vi gemmer ikke metadata om videresendte e-mails på disk eller i databaser.

@@ -5,14 +5,14 @@
 
 ## Features
 
-* **Interactive CLI** — prompts for file path, password, and output location
-* **Non-interactive mode** — pass arguments via command-line flags for scripting
-* **Cross-platform** — works on Windows, Linux, and macOS
-* **Encrypted database support** — handles both chacha20 and aes256cbc ciphers
-* **Brotli decompression** — transparently decompresses modern compressed metadata and attachments
-* **Password-protected ZIP** — output archive is encrypted with AES-256
-* **Organized output** — EML files are organized by mailbox folder, VCF contacts by address book under `Contacts`, and ICS events or tasks by calendar under `Calendars`
-* **Pre-built binaries** — download from [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases) (no Node.js required)
+* **Interactive CLI**: prompts for file path, password, and output location
+* **Non-interactive mode**: pass arguments as command-line flags for scripting
+* **Cross-platform**: works on Windows, Linux, and macOS
+* **Encrypted database support**: handles both chacha20 and aes256cbc ciphers
+* **Brotli decompression**: decompresses Brotli-compressed metadata and attachments
+* **Password-protected ZIP**: the output archive is encrypted with AES-256
+* **Organized output**: EML files are sorted by mailbox folder, VCF contacts by address book under `Contacts`, and ICS events or tasks by calendar under `Calendars`
+* **Pre-built binaries**: download from [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases) (no Node.js required)
 
 
 ## Installation

@@ -24,12 +24,12 @@
   * [Обліковий запис (API ключ або аутентифікація псевдонімом)](#account-api-key-or-alias-auth)
   * [Домени (API ключ)](#domains-api-key)
   * [Псевдоніми (API ключ)](#aliases-api-key)
-  * [Електронна пошта — вихідний SMTP (API ключ; Send підтримує обидва)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Повідомлення — IMAP (аутентифікація псевдонімом)](#messages--imap-alias-auth)
-  * [Папки — IMAP (аутентифікація псевдонімом)](#folders--imap-alias-auth)
-  * [Контакти — CardDAV (аутентифікація псевдонімом)](#contacts--carddav-alias-auth)
-  * [Календарі — CalDAV (аутентифікація псевдонімом)](#calendars--caldav-alias-auth)
-  * [Події календаря — CalDAV (аутентифікація псевдонімом)](#calendar-events--caldav-alias-auth)
+  * [Електронна пошта: вихідний SMTP (API ключ; Send підтримує обидва)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Повідомлення: IMAP (аутентифікація псевдонімом)](#messages-imap-alias-auth)
+  * [Папки: IMAP (аутентифікація псевдонімом)](#folders-imap-alias-auth)
+  * [Контакти: CardDAV (аутентифікація псевдонімом)](#contacts-carddav-alias-auth)
+  * [Календарі: CalDAV (аутентифікація псевдонімом)](#calendars-caldav-alias-auth)
+  * [Події календаря: CalDAV (аутентифікація псевдонімом)](#calendar-events-caldav-alias-auth)
   * [Скрипти Sieve (API ключ)](#sieve-scripts-api-key)
   * [Скрипти Sieve (аутентифікація псевдонімом)](#sieve-scripts-alias-auth)
   * [Учасники домену та запрошення (API ключ)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ curl -u "YOUR_API_KEY:" \
 | `deleteAlias`            | `DELETE /v1/domains/:domain_id/aliases/:alias_id`              | Видалити псевдонім                     |
 | `generateAliasPassword`  | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Згенерувати пароль IMAP/SMTP для автентифікації псевдоніма |
 
-### Електронні листи — Вихідний SMTP (API Key; Send підтримує обидва) {#emails--outbound-smtp-api-key-send-supports-both}
+### Електронні листи: Вихідний SMTP (API Key; Send підтримує обидва) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Інструмент       | Кінцева точка API       | Автентифікація          | Опис                          |
 | ---------------- | ----------------------- | ----------------------- | ----------------------------- |
@@ -242,7 +242,7 @@ curl -u "YOUR_API_KEY:" \
 
 Інструмент `sendEmail` приймає `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` та `attachments`. Це те саме, що й кінцева точка `POST /v1/emails`.
 
-### Повідомлення — IMAP (Alias Auth) {#messages--imap-alias-auth}
+### Повідомлення: IMAP (Alias Auth) {#messages-imap-alias-auth}
 
 > **Потрібні облікові дані псевдоніма.** Передайте `alias_username` та `alias_password` або встановіть змінні середовища `FORWARD_EMAIL_ALIAS_USER` та `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | Інструмент      | API Endpoint              | Опис                                  |
@@ -255,7 +255,7 @@ curl -u "YOUR_API_KEY:" \
 
 Інструмент `listMessages` підтримує понад 15 параметрів пошуку, включно з `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` та `has_attachment`. Дивіться [документацію API](/email-api) для повного списку.
 
-### Папки — IMAP (авторизація через псевдонім) {#folders--imap-alias-auth}
+### Папки: IMAP (авторизація через псевдонім) {#folders-imap-alias-auth}
 
 > **Потрібні облікові дані псевдоніма.** Передайте `alias_username` та `alias_password` або встановіть змінні середовища `FORWARD_EMAIL_ALIAS_USER` та `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateFolder` | `PUT /v1/folders/:id`    | Перейменувати папку      |
 | `deleteFolder` | `DELETE /v1/folders/:id` | Видалити папку           |
 
-### Контакти — CardDAV (авторизація через псевдонім) {#contacts--carddav-alias-auth}
+### Контакти: CardDAV (авторизація через псевдонім) {#contacts-carddav-alias-auth}
 
 > **Потрібні облікові дані псевдоніма.** Передайте `alias_username` та `alias_password` або встановіть змінні середовища `FORWARD_EMAIL_ALIAS_USER` та `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateContact` | `PUT /v1/contacts/:id`    | Оновити контакт        |
 | `deleteContact` | `DELETE /v1/contacts/:id` | Видалити контакт       |
 
-### Календарі — CalDAV (авторизація через псевдонім) {#calendars--caldav-alias-auth}
+### Календарі: CalDAV (авторизація через псевдонім) {#calendars-caldav-alias-auth}
 
 > **Потрібні облікові дані псевдоніма.** Передайте `alias_username` та `alias_password` або встановіть змінні середовища `FORWARD_EMAIL_ALIAS_USER` та `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateCalendar` | `PUT /v1/calendars/:id`    | Оновити календар       |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | Видалити календар      |
 
-### Події календаря — CalDAV (авторизація через псевдонім) {#calendar-events--caldav-alias-auth}
+### Події календаря: CalDAV (авторизація через псевдонім) {#calendar-events-caldav-alias-auth}
 
 > **Потрібні облікові дані псевдоніма.** Передайте `alias_username` та `alias_password` або встановіть змінні середовища `FORWARD_EMAIL_ALIAS_USER` та `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ Sieve скрипти потужні, але синтаксис складний.
 
 | Змінна                         | Обов’язково | За замовчуванням               | Опис                                                                           |
 | ------------------------------ | ----------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Так         | —                              | Ваш ключ API Forward Email (використовується як ім’я користувача Basic auth для кінцевих точок API) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Ні          | —                              | Адреса електронної пошти псевдоніма для кінцевих точок поштової скриньки (наприклад, `user@example.com`) |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Ні          | —                              | Згенерований пароль псевдоніма для кінцевих точок поштової скриньки             |
+| `FORWARD_EMAIL_API_KEY`        | Так         |                                | Ваш ключ API Forward Email (використовується як ім’я користувача Basic auth для кінцевих точок API) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Ні          |                                | Адреса електронної пошти псевдоніма для кінцевих точок поштової скриньки (наприклад, `user@example.com`) |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Ні          |                                | Згенерований пароль псевдоніма для кінцевих точок поштової скриньки             |
 | `FORWARD_EMAIL_API_URL`        | Ні          | `https://api.forwardemail.net` | Базова URL API (для самохостингу або тестування)                               |
 
 

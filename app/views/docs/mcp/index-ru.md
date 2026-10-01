@@ -24,12 +24,12 @@
   * [Аккаунт (API ключ или аутентификация псевдонимом)](#account-api-key-or-alias-auth)
   * [Домены (API ключ)](#domains-api-key)
   * [Псевдонимы (API ключ)](#aliases-api-key)
-  * [Почта — исходящий SMTP (API ключ; Send поддерживает оба)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Сообщения — IMAP (аутентификация псевдонимом)](#messages--imap-alias-auth)
-  * [Папки — IMAP (аутентификация псевдонимом)](#folders--imap-alias-auth)
-  * [Контакты — CardDAV (аутентификация псевдонимом)](#contacts--carddav-alias-auth)
-  * [Календари — CalDAV (аутентификация псевдонимом)](#calendars--caldav-alias-auth)
-  * [События календаря — CalDAV (аутентификация псевдонимом)](#calendar-events--caldav-alias-auth)
+  * [Почта: исходящий SMTP (API ключ; Send поддерживает оба)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Сообщения: IMAP (аутентификация псевдонимом)](#messages-imap-alias-auth)
+  * [Папки: IMAP (аутентификация псевдонимом)](#folders-imap-alias-auth)
+  * [Контакты: CardDAV (аутентификация псевдонимом)](#contacts-carddav-alias-auth)
+  * [Календари: CalDAV (аутентификация псевдонимом)](#calendars-caldav-alias-auth)
+  * [События календаря: CalDAV (аутентификация псевдонимом)](#calendar-events-caldav-alias-auth)
   * [Sieve скрипты (API ключ)](#sieve-scripts-api-key)
   * [Sieve скрипты (аутентификация псевдонимом)](#sieve-scripts-alias-auth)
   * [Участники домена и приглашения (API ключ)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ curl -u "YOUR_API_KEY:" \
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`          | Удалить алиас                      |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Сгенерировать пароль IMAP/SMTP для аутентификации алиаса |
 
-### Электронные письма — исходящий SMTP (API Key; Send поддерживает оба) {#emails--outbound-smtp-api-key-send-supports-both}
+### Электронные письма: исходящий SMTP (API Key; Send поддерживает оба) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Инструмент       | Конечная точка API       | Аутентификация         | Описание                      |
 | ---------------- | ------------------------| ---------------------- | ----------------------------- |
@@ -242,7 +242,7 @@ curl -u "YOUR_API_KEY:" \
 
 Инструмент `sendEmail` принимает параметры `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` и `attachments`. Это то же самое, что и конечная точка `POST /v1/emails`.
 
-### Сообщения — IMAP (Alias Auth) {#messages--imap-alias-auth}
+### Сообщения: IMAP (Alias Auth) {#messages-imap-alias-auth}
 
 > **Требуются учетные данные алиаса.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | Инструмент       | API Endpoint              | Описание                             |
@@ -255,7 +255,7 @@ curl -u "YOUR_API_KEY:" \
 
 Инструмент `listMessages` поддерживает более 15 параметров поиска, включая `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` и `has_attachment`. См. [документацию API](/email-api) для полного списка.
 
-### Папки — IMAP (Alias Auth) {#folders--imap-alias-auth}
+### Папки: IMAP (Alias Auth) {#folders-imap-alias-auth}
 
 > **Требуются учетные данные алиаса.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateFolder`  | `PUT /v1/folders/:id`    | Переименовать папку      |
 | `deleteFolder`  | `DELETE /v1/folders/:id` | Удалить папку            |
 
-### Контакты — CardDAV (Alias Auth) {#contacts--carddav-alias-auth}
+### Контакты: CardDAV (Alias Auth) {#contacts-carddav-alias-auth}
 
 > **Требуются учетные данные алиаса.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateContact`  | `PUT /v1/contacts/:id`   | Обновить контакт      |
 | `deleteContact`  | `DELETE /v1/contacts/:id`| Удалить контакт       |
 
-### Календарь — CalDAV (Alias Auth) {#calendars--caldav-alias-auth}
+### Календарь: CalDAV (Alias Auth) {#calendars-caldav-alias-auth}
 
 > **Требуются учетные данные алиаса.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateCalendar`  | `PUT /v1/calendars/:id`   | Обновить календарь    |
 | `deleteCalendar`  | `DELETE /v1/calendars/:id`| Удалить календарь     |
 
-### События календаря — CalDAV (Alias Auth) {#calendar-events--caldav-alias-auth}
+### События календаря: CalDAV (Alias Auth) {#calendar-events-caldav-alias-auth}
 
 > **Требуются учетные данные алиаса.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ curl -u "YOUR_API_KEY:" \
 
 | Переменная                     | Обязательно | Значение по умолчанию          | Описание                                                                       |
 | ------------------------------ | ----------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Да          | —                              | Ваш API-ключ Forward Email (используется как имя пользователя Basic auth для API) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Нет         | —                              | Адрес электронной почты алиаса для почтовых эндпоинтов (например, `user@example.com`) |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Нет         | —                              | Сгенерированный пароль алиаса для почтовых эндпоинтов                          |
+| `FORWARD_EMAIL_API_KEY`        | Да          |                                | Ваш API-ключ Forward Email (используется как имя пользователя Basic auth для API) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Нет         |                                | Адрес электронной почты алиаса для почтовых эндпоинтов (например, `user@example.com`) |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Нет         |                                | Сгенерированный пароль алиаса для почтовых эндпоинтов                          |
 | `FORWARD_EMAIL_API_URL`        | Нет         | `https://api.forwardemail.net` | Базовый URL API (для самостоятельного хостинга или тестирования)               |
 
 

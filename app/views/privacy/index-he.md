@@ -33,7 +33,7 @@
 
 ## מידע שלא נאסף {#information-not-collected}
 
-**למעט המידע המתואר במפורש במדיניות זו — לרבות [error logs](#error-logs), [outbound SMTP emails](#outbound-smtp-emails), [account information](#account-information), [temporary data processing](#temporary-data-processing), [audit logs](#audit-logs), ו-[cookies and sessions](#cookies-and-sessions):**
+**למעט המידע המתואר במפורש במדיניות זו (לרבות [error logs](#error-logs), [outbound SMTP emails](#outbound-smtp-emails), [account information](#account-information), [temporary data processing](#temporary-data-processing), [audit logs](#audit-logs), ו-[cookies and sessions](#cookies-and-sessions)):**
 
 * איננו שומרים כל הודעות דוא"ל שהועברו באחסון דיסק או במסדי נתונים.
 * איננו שומרים כל מטא-נתונים אודות הודעות דוא"ל שהועברו באחסון דיסק או במסדי נתונים.

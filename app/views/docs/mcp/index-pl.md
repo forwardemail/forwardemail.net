@@ -24,12 +24,12 @@
   * [Konto (uwierzytelnianie kluczem API lub aliasem)](#account-api-key-or-alias-auth)
   * [Domeny (klucz API)](#domains-api-key)
   * [Aliasy (klucz API)](#aliases-api-key)
-  * [E-maile — SMTP wychodzący (klucz API; Send obsługuje oba)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Wiadomości — IMAP (uwierzytelnianie aliasem)](#messages--imap-alias-auth)
-  * [Foldery — IMAP (uwierzytelnianie aliasem)](#folders--imap-alias-auth)
-  * [Kontakty — CardDAV (uwierzytelnianie aliasem)](#contacts--carddav-alias-auth)
-  * [Kalendarze — CalDAV (uwierzytelnianie aliasem)](#calendars--caldav-alias-auth)
-  * [Wydarzenia kalendarza — CalDAV (uwierzytelnianie aliasem)](#calendar-events--caldav-alias-auth)
+  * [E-maile: SMTP wychodzący (klucz API; Send obsługuje oba)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Wiadomości: IMAP (uwierzytelnianie aliasem)](#messages-imap-alias-auth)
+  * [Foldery: IMAP (uwierzytelnianie aliasem)](#folders-imap-alias-auth)
+  * [Kontakty: CardDAV (uwierzytelnianie aliasem)](#contacts-carddav-alias-auth)
+  * [Kalendarze: CalDAV (uwierzytelnianie aliasem)](#calendars-caldav-alias-auth)
+  * [Wydarzenia kalendarza: CalDAV (uwierzytelnianie aliasem)](#calendar-events-caldav-alias-auth)
   * [Skrypty Sieve (klucz API)](#sieve-scripts-api-key)
   * [Skrypty Sieve (uwierzytelnianie aliasem)](#sieve-scripts-alias-auth)
   * [Członkowie domeny i zaproszenia (klucz API)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ Przy uwierzytelnianiu kluczem API zwracają informacje o Twoim koncie użytkowni
 | `deleteAlias`            | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                  | Usuń alias                                   |
 | `generateAliasPassword`  | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password`  | Wygeneruj hasło IMAP/SMTP dla uwierzytelniania aliasu |
 
-### E-maile — SMTP wychodzący (klucz API; Send obsługuje oba) {#emails--outbound-smtp-api-key-send-supports-both}
+### E-maile: SMTP wychodzący (klucz API; Send obsługuje oba) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Narzędzie       | Punkt końcowy API       | Uwierzytelnianie         | Opis                          |
 | --------------- | ----------------------- | ------------------------ | ----------------------------- |
@@ -242,7 +242,7 @@ Przy uwierzytelnianiu kluczem API zwracają informacje o Twoim koncie użytkowni
 
 Narzędzie `sendEmail` akceptuje `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` oraz `attachments`. Jest to to samo co punkt końcowy `POST /v1/emails`.
 
-### Wiadomości — IMAP (uwierzytelnianie aliasem) {#messages--imap-alias-auth}
+### Wiadomości: IMAP (uwierzytelnianie aliasem) {#messages-imap-alias-auth}
 
 > **Wymaga danych uwierzytelniających aliasu.** Przekaż `alias_username` i `alias_password` lub ustaw zmienne środowiskowe `FORWARD_EMAIL_ALIAS_USER` i `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | Narzędzie       | Punkt końcowy API          | Opis                                |
@@ -255,7 +255,7 @@ Narzędzie `sendEmail` akceptuje `from`, `to`, `cc`, `bcc`, `subject`, `text`, `
 
 Narzędzie `listMessages` obsługuje ponad 15 parametrów wyszukiwania, w tym `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` oraz `has_attachment`. Zobacz [dokumentację API](/email-api) dla pełnej listy.
 
-### Foldery — IMAP (uwierzytelnianie aliasem) {#folders--imap-alias-auth}
+### Foldery: IMAP (uwierzytelnianie aliasem) {#folders-imap-alias-auth}
 
 > **Wymaga danych uwierzytelniających aliasu.** Przekaż `alias_username` i `alias_password` lub ustaw zmienne środowiskowe `FORWARD_EMAIL_ALIAS_USER` i `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ Narzędzie `listMessages` obsługuje ponad 15 parametrów wyszukiwania, w tym `s
 | `updateFolder` | `PUT /v1/folders/:id`     | Zmień nazwę folderu      |
 | `deleteFolder` | `DELETE /v1/folders/:id`  | Usuń folder              |
 
-### Kontakty — CardDAV (uwierzytelnianie aliasem) {#contacts--carddav-alias-auth}
+### Kontakty: CardDAV (uwierzytelnianie aliasem) {#contacts-carddav-alias-auth}
 
 > **Wymaga danych uwierzytelniających aliasu.** Przekaż `alias_username` i `alias_password` lub ustaw zmienne środowiskowe `FORWARD_EMAIL_ALIAS_USER` i `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ Narzędzie `listMessages` obsługuje ponad 15 parametrów wyszukiwania, w tym `s
 | `updateContact` | `PUT /v1/contacts/:id`    | Aktualizuj kontakt      |
 | `deleteContact` | `DELETE /v1/contacts/:id` | Usuń kontakt            |
 
-### Kalendarze — CalDAV (uwierzytelnianie aliasem) {#calendars--caldav-alias-auth}
+### Kalendarze: CalDAV (uwierzytelnianie aliasem) {#calendars-caldav-alias-auth}
 
 > **Wymaga danych uwierzytelniających aliasu.** Przekaż `alias_username` i `alias_password` lub ustaw zmienne środowiskowe `FORWARD_EMAIL_ALIAS_USER` i `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ Narzędzie `listMessages` obsługuje ponad 15 parametrów wyszukiwania, w tym `s
 | `updateCalendar` | `PUT /v1/calendars/:id`    | Aktualizuj kalendarz    |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | Usuń kalendarz          |
 
-### Wydarzenia kalendarza — CalDAV (uwierzytelnianie aliasem) {#calendar-events--caldav-alias-auth}
+### Wydarzenia kalendarza: CalDAV (uwierzytelnianie aliasem) {#calendar-events-caldav-alias-auth}
 
 > **Wymaga danych uwierzytelniających aliasu.** Przekaż `alias_username` i `alias_password` lub ustaw zmienne środowiskowe `FORWARD_EMAIL_ALIAS_USER` i `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ Oto prompt-y, których możesz użyć bezpośrednio z asystentem AI:
 
 | Zmienna                       | Wymagana | Domyślna                      | Opis                                                                          |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Tak      | —                              | Twój klucz API Forward Email (używany jako nazwa użytkownika Basic auth dla punktów końcowych API) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Nie      | —                              | Adres e-mail aliasu dla punktów końcowych skrzynki (np. `user@example.com`)    |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nie      | —                              | Wygenerowane hasło aliasu dla punktów końcowych skrzynki                       |
+| `FORWARD_EMAIL_API_KEY`        | Tak      |                                | Twój klucz API Forward Email (używany jako nazwa użytkownika Basic auth dla punktów końcowych API) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Nie      |                                | Adres e-mail aliasu dla punktów końcowych skrzynki (np. `user@example.com`)    |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nie      |                                | Wygenerowane hasło aliasu dla punktów końcowych skrzynki                       |
 | `FORWARD_EMAIL_API_URL`        | Nie      | `https://api.forwardemail.net` | Podstawowy URL API (dla self-hostingu lub testów)                             |
 
 

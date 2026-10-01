@@ -33,7 +33,7 @@ Vänligen hänvisa till våra [Villkor](/terms) eftersom de gäller för hela we
 
 ## Information som inte samlas in {#information-not-collected}
 
-**Med undantag för den information som uttryckligen beskrivs i denna policy — inklusive [felloggar](#error-logs), [utgående SMTP-e-postmeddelanden](#outbound-smtp-emails), [kontoinformation](#account-information), [tillfällig databehandling](#temporary-data-processing), [granskningsloggar](#audit-logs) och [cookies och sessioner](#cookies-and-sessions):**
+**Med undantag för den information som uttryckligen beskrivs i denna policy (inklusive [felloggar](#error-logs), [utgående SMTP-e-postmeddelanden](#outbound-smtp-emails), [kontoinformation](#account-information), [tillfällig databehandling](#temporary-data-processing), [granskningsloggar](#audit-logs) och [cookies och sessioner](#cookies-and-sessions)):**
 
 * Vi lagrar inte några vidarebefordrade e-postmeddelanden på disk eller i databaser.
 * Vi lagrar inte någon metadata om vidarebefordrade e-postmeddelanden på disk eller i databaser.

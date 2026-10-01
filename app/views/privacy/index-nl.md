@@ -33,7 +33,7 @@ Raadpleeg onze [Voorwaarden](/terms) aangezien deze sitebreed van toepassing zij
 
 ## Informatie Niet Verzameld {#information-not-collected}
 
-**Met uitzondering van de informatie die uitdrukkelijk in dit beleid wordt beschreven — waaronder [foutenlogboeken](#error-logs), [uitgaande SMTP-e-mails](#outbound-smtp-emails), [accountinformatie](#account-information), [tijdelijke gegevensverwerking](#temporary-data-processing), [auditlogboeken](#audit-logs) en [cookies en sessies](#cookies-and-sessions):**
+**Met uitzondering van de informatie die uitdrukkelijk in dit beleid wordt beschreven (waaronder [foutenlogboeken](#error-logs), [uitgaande SMTP-e-mails](#outbound-smtp-emails), [accountinformatie](#account-information), [tijdelijke gegevensverwerking](#temporary-data-processing), [auditlogboeken](#audit-logs) en [cookies en sessies](#cookies-and-sessions)):**
 
 * Wij slaan geen doorgestuurde e-mails op op schijfopslag of in databases.
 * Wij slaan geen metagegevens over doorgestuurde e-mails op op schijfopslag of in databases.

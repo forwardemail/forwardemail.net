@@ -24,12 +24,12 @@
   * [Account (API-sleutel of alias authenticatie)](#account-api-key-or-alias-auth)
   * [Domeinen (API-sleutel)](#domains-api-key)
   * [Aliassen (API-sleutel)](#aliases-api-key)
-  * [E-mails — Uitgaande SMTP (API-sleutel; Send ondersteunt beide)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Berichten — IMAP (Alias authenticatie)](#messages--imap-alias-auth)
-  * [Mappen — IMAP (Alias authenticatie)](#folders--imap-alias-auth)
-  * [Contacten — CardDAV (Alias authenticatie)](#contacts--carddav-alias-auth)
-  * [Agenda's — CalDAV (Alias authenticatie)](#calendars--caldav-alias-auth)
-  * [Agenda-items — CalDAV (Alias authenticatie)](#calendar-events--caldav-alias-auth)
+  * [E-mails: Uitgaande SMTP (API-sleutel; Send ondersteunt beide)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Berichten: IMAP (Alias authenticatie)](#messages-imap-alias-auth)
+  * [Mappen: IMAP (Alias authenticatie)](#folders-imap-alias-auth)
+  * [Contacten: CardDAV (Alias authenticatie)](#contacts-carddav-alias-auth)
+  * [Agenda's: CalDAV (Alias authenticatie)](#calendars-caldav-alias-auth)
+  * [Agenda-items: CalDAV (Alias authenticatie)](#calendar-events-caldav-alias-auth)
   * [Sieve-scripts (API-sleutel)](#sieve-scripts-api-key)
   * [Sieve-scripts (Alias authenticatie)](#sieve-scripts-alias-auth)
   * [Domeinleden en uitnodigingen (API-sleutel)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ Met API key authenticatie retourneren deze je gebruikersaccountinformatie. Met a
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Verwijder een alias                         |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Genereer IMAP/SMTP-wachtwoord voor alias authenticatie |
 
-### E-mails — Uitgaande SMTP (API Key; Send ondersteunt beide) {#emails--outbound-smtp-api-key-send-supports-both}
+### E-mails: Uitgaande SMTP (API Key; Send ondersteunt beide) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Tool            | API Endpoint            | Auth                  | Beschrijving                  |
 | --------------- | ----------------------- | --------------------- | ---------------------------- |
@@ -242,7 +242,7 @@ Met API key authenticatie retourneren deze je gebruikersaccountinformatie. Met a
 
 De `sendEmail` tool accepteert `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html`, en `attachments`. Dit is hetzelfde als het `POST /v1/emails` endpoint.
 
-### Berichten — IMAP (Alias Auth) {#messages--imap-alias-auth}
+### Berichten: IMAP (Alias Auth) {#messages-imap-alias-auth}
 
 > **Vereist alias-gegevens.** Geef `alias_username` en `alias_password` door of stel de omgevingsvariabelen `FORWARD_EMAIL_ALIAS_USER` en `FORWARD_EMAIL_ALIAS_PASSWORD` in.
 | Tool            | API Endpoint              | Beschrijving                           |
@@ -255,7 +255,7 @@ De `sendEmail` tool accepteert `from`, `to`, `cc`, `bcc`, `subject`, `text`, `ht
 
 De `listMessages` tool ondersteunt meer dan 15 zoekparameters waaronder `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` en `has_attachment`. Zie de [API docs](/email-api) voor de volledige lijst.
 
-### Mappen — IMAP (Alias Auth) {#folders--imap-alias-auth}
+### Mappen: IMAP (Alias Auth) {#folders-imap-alias-auth}
 
 > **Vereist alias-gegevens.** Geef `alias_username` en `alias_password` door of stel de omgevingsvariabelen `FORWARD_EMAIL_ALIAS_USER` en `FORWARD_EMAIL_ALIAS_PASSWORD` in.
 
@@ -267,7 +267,7 @@ De `listMessages` tool ondersteunt meer dan 15 zoekparameters waaronder `subject
 | `updateFolder` | `PUT /v1/folders/:id`    | Een map hernoemen          |
 | `deleteFolder` | `DELETE /v1/folders/:id` | Een map verwijderen          |
 
-### Contacten — CardDAV (Alias Auth) {#contacts--carddav-alias-auth}
+### Contacten: CardDAV (Alias Auth) {#contacts-carddav-alias-auth}
 
 > **Vereist alias-gegevens.** Geef `alias_username` en `alias_password` door of stel de omgevingsvariabelen `FORWARD_EMAIL_ALIAS_USER` en `FORWARD_EMAIL_ALIAS_PASSWORD` in.
 
@@ -279,7 +279,7 @@ De `listMessages` tool ondersteunt meer dan 15 zoekparameters waaronder `subject
 | `updateContact` | `PUT /v1/contacts/:id`    | Een contact bijwerken     |
 | `deleteContact` | `DELETE /v1/contacts/:id` | Een contact verwijderen     |
 
-### Kalenders — CalDAV (Alias Auth) {#calendars--caldav-alias-auth}
+### Kalenders: CalDAV (Alias Auth) {#calendars-caldav-alias-auth}
 
 > **Vereist alias-gegevens.** Geef `alias_username` en `alias_password` door of stel de omgevingsvariabelen `FORWARD_EMAIL_ALIAS_USER` en `FORWARD_EMAIL_ALIAS_PASSWORD` in.
 
@@ -291,7 +291,7 @@ De `listMessages` tool ondersteunt meer dan 15 zoekparameters waaronder `subject
 | `updateCalendar` | `PUT /v1/calendars/:id`    | Een kalender bijwerken     |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | Een kalender verwijderen     |
 
-### Kalendergebeurtenissen — CalDAV (Alias Auth) {#calendar-events--caldav-alias-auth}
+### Kalendergebeurtenissen: CalDAV (Alias Auth) {#calendar-events-caldav-alias-auth}
 
 > **Vereist alias-gegevens.** Geef `alias_username` en `alias_password` door of stel de omgevingsvariabelen `FORWARD_EMAIL_ALIAS_USER` en `FORWARD_EMAIL_ALIAS_PASSWORD` in.
 
@@ -491,9 +491,9 @@ Hier zijn prompts die je direct met je AI-assistent kunt gebruiken:
 
 | Variable                       | Required | Default                        | Description                                                                    |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Ja       | —                              | Je Forward Email API-sleutel (gebruikt als Basic auth gebruikersnaam voor API-key endpoints) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Nee      | —                              | Alias e-mailadres voor mailbox endpoints (bijv. `user@example.com`)            |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nee      | —                              | Gegeneerd alias-wachtwoord voor mailbox endpoints                             |
+| `FORWARD_EMAIL_API_KEY`        | Ja       |                                | Je Forward Email API-sleutel (gebruikt als Basic auth gebruikersnaam voor API-key endpoints) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Nee      |                                | Alias e-mailadres voor mailbox endpoints (bijv. `user@example.com`)            |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nee      |                                | Gegeneerd alias-wachtwoord voor mailbox endpoints                             |
 | `FORWARD_EMAIL_API_URL`        | Nee      | `https://api.forwardemail.net` | API basis-URL (voor zelf-gehoste of testomgevingen)                           |
 
 

@@ -24,12 +24,12 @@
   * [アカウント（APIキーまたはエイリアス認証）](#account-api-key-or-alias-auth)
   * [ドメイン（APIキー）](#domains-api-key)
   * [エイリアス（APIキー）](#aliases-api-key)
-  * [メール — 送信SMTP（APIキー；Sendは両方対応）](#emails--outbound-smtp-api-key-send-supports-both)
-  * [メッセージ — IMAP（エイリアス認証）](#messages--imap-alias-auth)
-  * [フォルダ — IMAP（エイリアス認証）](#folders--imap-alias-auth)
-  * [連絡先 — CardDAV（エイリアス認証）](#contacts--carddav-alias-auth)
-  * [カレンダー — CalDAV（エイリアス認証）](#calendars--caldav-alias-auth)
-  * [カレンダーイベント — CalDAV（エイリアス認証）](#calendar-events--caldav-alias-auth)
+  * [メール：送信SMTP（APIキー；Sendは両方対応）](#emails-outbound-smtp-api-key-send-supports-both)
+  * [メッセージ：IMAP（エイリアス認証）](#messages-imap-alias-auth)
+  * [フォルダ：IMAP（エイリアス認証）](#folders-imap-alias-auth)
+  * [連絡先：CardDAV（エイリアス認証）](#contacts-carddav-alias-auth)
+  * [カレンダー：CalDAV（エイリアス認証）](#calendars-caldav-alias-auth)
+  * [カレンダーイベント：CalDAV（エイリアス認証）](#calendar-events-caldav-alias-auth)
   * [Sieveスクリプト（APIキー）](#sieve-scripts-api-key)
   * [Sieveスクリプト（エイリアス認証）](#sieve-scripts-alias-auth)
   * [ドメインメンバーと招待（APIキー）](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ APIキー認証では、これらはユーザーアカウント情報を返し�
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | エイリアスを削除                            |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | エイリアス認証用のIMAP/SMTPパスワードを生成  |
 
-### メール — 送信SMTP（APIキー；Sendは両方対応） {#emails--outbound-smtp-api-key-send-supports-both}
+### メール：送信SMTP（APIキー；Sendは両方対応） {#emails-outbound-smtp-api-key-send-supports-both}
 
 | ツール            | APIエンドポイント            | 認証                  | 説明                         |
 | --------------- | ----------------------- | --------------------- | ---------------------------- |
@@ -242,7 +242,7 @@ APIキー認証では、これらはユーザーアカウント情報を返し�
 
 `sendEmail`ツールは`from`、`to`、`cc`、`bcc`、`subject`、`text`、`html`、`attachments`を受け付けます。これは`POST /v1/emails`エンドポイントと同じです。
 
-### メッセージ — IMAP（エイリアス認証） {#messages--imap-alias-auth}
+### メッセージ：IMAP（エイリアス認証） {#messages-imap-alias-auth}
 
 > **エイリアス認証情報が必要です。** `alias_username`と`alias_password`を渡すか、環境変数`FORWARD_EMAIL_ALIAS_USER`と`FORWARD_EMAIL_ALIAS_PASSWORD`を設定してください。
 | ツール            | API エンドポイント              | 説明                           |
@@ -255,7 +255,7 @@ APIキー認証では、これらはユーザーアカウント情報を返し�
 
 `listMessages` ツールは `subject`、`from`、`to`、`text`、`since`、`before`、`is_unread`、`has_attachment` を含む15以上の検索パラメータをサポートしています。完全なリストは[API docs](/email-api)をご覧ください。
 
-### フォルダ — IMAP（エイリアス認証） {#folders--imap-alias-auth}
+### フォルダ：IMAP（エイリアス認証） {#folders-imap-alias-auth}
 
 > **エイリアス認証情報が必要です。** `alias_username` と `alias_password` を渡すか、環境変数 `FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` を設定してください。
 
@@ -267,7 +267,7 @@ APIキー認証では、これらはユーザーアカウント情報を返し�
 | `updateFolder` | `PUT /v1/folders/:id`    | フォルダ名を変更          |
 | `deleteFolder` | `DELETE /v1/folders/:id` | フォルダを削除            |
 
-### 連絡先 — CardDAV（エイリアス認証） {#contacts--carddav-alias-auth}
+### 連絡先：CardDAV（エイリアス認証） {#contacts-carddav-alias-auth}
 
 > **エイリアス認証情報が必要です。** `alias_username` と `alias_password` を渡すか、環境変数 `FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` を設定してください。
 
@@ -279,7 +279,7 @@ APIキー認証では、これらはユーザーアカウント情報を返し�
 | `updateContact` | `PUT /v1/contacts/:id`    | 連絡先を更新     |
 | `deleteContact` | `DELETE /v1/contacts/:id` | 連絡先を削除     |
 
-### カレンダー — CalDAV（エイリアス認証） {#calendars--caldav-alias-auth}
+### カレンダー：CalDAV（エイリアス認証） {#calendars-caldav-alias-auth}
 
 > **エイリアス認証情報が必要です。** `alias_username` と `alias_password` を渡すか、環境変数 `FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` を設定してください。
 
@@ -291,7 +291,7 @@ APIキー認証では、これらはユーザーアカウント情報を返し�
 | `updateCalendar` | `PUT /v1/calendars/:id`    | カレンダーを更新     |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | カレンダーを削除     |
 
-### カレンダーイベント — CalDAV（エイリアス認証） {#calendar-events--caldav-alias-auth}
+### カレンダーイベント：CalDAV（エイリアス認証） {#calendar-events-caldav-alias-auth}
 
 > **エイリアス認証情報が必要です。** `alias_username` と `alias_password` を渡すか、環境変数 `FORWARD_EMAIL_ALIAS_USER` と `FORWARD_EMAIL_ALIAS_PASSWORD` を設定してください。
 
@@ -491,9 +491,9 @@ AIアシスタントに直接使えるプロンプト例はこちらです：
 
 | 変数名                         | 必須     | デフォルト                      | 説明                                                                           |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | はい     | —                              | Forward Email APIキー（APIキーエンドポイントのBasic認証ユーザー名として使用） |
-| `FORWARD_EMAIL_ALIAS_USER`     | いいえ   | —                              | メールボックスエンドポイント用のエイリアスメールアドレス（例: `user@example.com`） |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | いいえ   | —                              | メールボックスエンドポイント用に生成されたエイリアスパスワード               |
+| `FORWARD_EMAIL_API_KEY`        | はい     |                                | Forward Email APIキー（APIキーエンドポイントのBasic認証ユーザー名として使用） |
+| `FORWARD_EMAIL_ALIAS_USER`     | いいえ   |                                | メールボックスエンドポイント用のエイリアスメールアドレス（例: `user@example.com`） |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | いいえ   |                                | メールボックスエンドポイント用に生成されたエイリアスパスワード               |
 | `FORWARD_EMAIL_API_URL`        | いいえ   | `https://api.forwardemail.net` | APIのベースURL（セルフホストやテスト用）                                      |
 
 

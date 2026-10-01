@@ -24,12 +24,12 @@
   * [Konto (API-Schlüssel oder Alias Auth)](#account-api-key-or-alias-auth)
   * [Domains (API-Schlüssel)](#domains-api-key)
   * [Aliase (API-Schlüssel)](#aliases-api-key)
-  * [E-Mails — Ausgehender SMTP (API-Schlüssel; Senden unterstützt beides)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Nachrichten — IMAP (Alias Auth)](#messages--imap-alias-auth)
-  * [Ordner — IMAP (Alias Auth)](#folders--imap-alias-auth)
-  * [Kontakte — CardDAV (Alias Auth)](#contacts--carddav-alias-auth)
-  * [Kalender — CalDAV (Alias Auth)](#calendars--caldav-alias-auth)
-  * [Kalenderereignisse — CalDAV (Alias Auth)](#calendar-events--caldav-alias-auth)
+  * [E-Mails: Ausgehender SMTP (API-Schlüssel; Senden unterstützt beides)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Nachrichten: IMAP (Alias Auth)](#messages-imap-alias-auth)
+  * [Ordner: IMAP (Alias Auth)](#folders-imap-alias-auth)
+  * [Kontakte: CardDAV (Alias Auth)](#contacts-carddav-alias-auth)
+  * [Kalender: CalDAV (Alias Auth)](#calendars-caldav-alias-auth)
+  * [Kalenderereignisse: CalDAV (Alias Auth)](#calendar-events-caldav-alias-auth)
   * [Sieve-Skripte (API-Schlüssel)](#sieve-scripts-api-key)
   * [Sieve-Skripte (Alias Auth)](#sieve-scripts-alias-auth)
   * [Domain-Mitglieder und Einladungen (API-Schlüssel)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ Bei API-Schlüssel-Authentifizierung geben diese Ihre Benutzerkontoinformationen
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Einen Alias löschen                          |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | IMAP/SMTP-Passwort für Alias-Authentifizierung generieren |
 
-### E-Mails — Ausgehendes SMTP (API-Schlüssel; Senden unterstützt beide) {#emails--outbound-smtp-api-key-send-supports-both}
+### E-Mails: Ausgehendes SMTP (API-Schlüssel; Senden unterstützt beide) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Werkzeug          | API-Endpunkt          | Authentifizierung     | Beschreibung                  |
 | ----------------- | ---------------------| ---------------------| ---------------------------- |
@@ -242,7 +242,7 @@ Bei API-Schlüssel-Authentifizierung geben diese Ihre Benutzerkontoinformationen
 
 Das Werkzeug `sendEmail` akzeptiert `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` und `attachments`. Dies entspricht dem Endpunkt `POST /v1/emails`.
 
-### Nachrichten — IMAP (Alias-Authentifizierung) {#messages--imap-alias-auth}
+### Nachrichten: IMAP (Alias-Authentifizierung) {#messages-imap-alias-auth}
 
 > **Erfordert Alias-Zugangsdaten.** Übergeben Sie `alias_username` und `alias_password` oder setzen Sie die Umgebungsvariablen `FORWARD_EMAIL_ALIAS_USER` und `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | Tool            | API-Endpunkt              | Beschreibung                           |
@@ -255,7 +255,7 @@ Das Werkzeug `sendEmail` akzeptiert `from`, `to`, `cc`, `bcc`, `subject`, `text`
 
 Das Tool `listMessages` unterstützt über 15 Suchparameter, darunter `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` und `has_attachment`. Siehe die [API docs](/email-api) für die vollständige Liste.
 
-### Ordner — IMAP (Alias-Authentifizierung) {#folders--imap-alias-auth}
+### Ordner: IMAP (Alias-Authentifizierung) {#folders-imap-alias-auth}
 
 > **Erfordert Alias-Zugangsdaten.** Übergeben Sie `alias_username` und `alias_password` oder setzen Sie die Umgebungsvariablen `FORWARD_EMAIL_ALIAS_USER` und `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ Das Tool `listMessages` unterstützt über 15 Suchparameter, darunter `subject`,
 | `updateFolder` | `PUT /v1/folders/:id`    | Einen Ordner umbenennen          |
 | `deleteFolder` | `DELETE /v1/folders/:id` | Einen Ordner löschen          |
 
-### Kontakte — CardDAV (Alias-Authentifizierung) {#contacts--carddav-alias-auth}
+### Kontakte: CardDAV (Alias-Authentifizierung) {#contacts-carddav-alias-auth}
 
 > **Erfordert Alias-Zugangsdaten.** Übergeben Sie `alias_username` und `alias_password` oder setzen Sie die Umgebungsvariablen `FORWARD_EMAIL_ALIAS_USER` und `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ Das Tool `listMessages` unterstützt über 15 Suchparameter, darunter `subject`,
 | `updateContact` | `PUT /v1/contacts/:id`    | Einen Kontakt aktualisieren     |
 | `deleteContact` | `DELETE /v1/contacts/:id` | Einen Kontakt löschen     |
 
-### Kalender — CalDAV (Alias-Authentifizierung) {#calendars--caldav-alias-auth}
+### Kalender: CalDAV (Alias-Authentifizierung) {#calendars-caldav-alias-auth}
 
 > **Erfordert Alias-Zugangsdaten.** Übergeben Sie `alias_username` und `alias_password` oder setzen Sie die Umgebungsvariablen `FORWARD_EMAIL_ALIAS_USER` und `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ Das Tool `listMessages` unterstützt über 15 Suchparameter, darunter `subject`,
 | `updateCalendar` | `PUT /v1/calendars/:id`    | Einen Kalender aktualisieren     |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | Einen Kalender löschen     |
 
-### Kalenderereignisse — CalDAV (Alias-Authentifizierung) {#calendar-events--caldav-alias-auth}
+### Kalenderereignisse: CalDAV (Alias-Authentifizierung) {#calendar-events-caldav-alias-auth}
 
 > **Erfordert Alias-Zugangsdaten.** Übergeben Sie `alias_username` und `alias_password` oder setzen Sie die Umgebungsvariablen `FORWARD_EMAIL_ALIAS_USER` und `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ Hier sind Prompts, die Sie direkt mit Ihrem KI-Assistenten verwenden können:
 
 | Variable                       | Erforderlich | Standard                       | Beschreibung                                                                   |
 | ------------------------------ | ------------ | ------------------------------ | ----------------------------------------------------------------------------- |
-| `FORWARD_EMAIL_API_KEY`        | Ja           | —                              | Dein Forward Email API-Schlüssel (wird als Basic-Auth-Benutzername für API-Key-Endpunkte verwendet) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Nein         | —                              | Alias-E-Mail-Adresse für Postfach-Endpunkte (z.B. `user@example.com`)         |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nein         | —                              | Generiertes Alias-Passwort für Postfach-Endpunkte                             |
+| `FORWARD_EMAIL_API_KEY`        | Ja           |                                | Dein Forward Email API-Schlüssel (wird als Basic-Auth-Benutzername für API-Key-Endpunkte verwendet) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Nein         |                                | Alias-E-Mail-Adresse für Postfach-Endpunkte (z.B. `user@example.com`)         |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nein         |                                | Generiertes Alias-Passwort für Postfach-Endpunkte                             |
 | `FORWARD_EMAIL_API_URL`        | Nein         | `https://api.forwardemail.net` | API-Basis-URL (für Self-Hosting oder Tests)                                  |
 
 

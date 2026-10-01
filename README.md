@@ -429,9 +429,9 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-mx.json production setup
     ```
 
-19. Create a SSL certificate at [Namecheap][] (we recommend a 5 year wildcard certificate), set up the certificate, and download and extract the ZIP file with the certificate (emailed to you) to your computer. We do not recommend using tools like [LetsEncrypt][] and `certbot` due to complexity when you have (or scale to) a cluster of servers set up behind load balancers. In other words, we've tried approaches like `lsyncd` in combination with `crontab` for `certbot` renewals and automatic checking. Furthermore, using this exposes the server(s) to downtime as ports `80` and `443` may need to be shut down so that `certbot` can use them for certificate generation. This is not a reliable approach, and simply renewing certificates once a year is vastly simpler and also makes using load balancers trivial. Instead you can use a provider like [Namecheap][] to get a cheap SSL certificate, then run a few commands as we've documented below. This command will prompt you for an absolute file path to the certificates you downloaded. Renewed your certificate after 1 year? Simply follow this step again. Do not set a password on the certificate files. When using the `openssl` command (see Namecheap instructions), you need to use `*.example.com` with an asterisk followed by a period if you are registering a wildcard certificate.
+19. Create an SSL certificate at [Namecheap][] (we recommend a 5 year wildcard certificate), set up the certificate, and download and extract the ZIP file with the certificate (emailed to you) to your computer. We do not recommend using tools like [LetsEncrypt][] and `certbot` due to complexity when you have (or scale to) a cluster of servers set up behind load balancers. We tried `lsyncd` with `crontab` for `certbot` renewals and checks, and it was not reliable. `certbot` also causes downtime, since ports `80` and `443` may need to be shut down so that `certbot` can use them to generate certificates. Renewing certificates once a year is simpler and works behind load balancers. Get an inexpensive SSL certificate from a provider like [Namecheap][], then run the commands below. This command will prompt you for an absolute file path to the certificates you downloaded. To renew your certificate after a year, follow this step again. Do not set a password on the certificate files. When using the `openssl` command (see Namecheap instructions), you need to use `*.example.com` with an asterisk followed by a period if you are registering a wildcard certificate.
 
-    > **CRITICAL — Update DANE/TLSA DNS records BEFORE deploying new certificates:**
+    > **CRITICAL: update DANE/TLSA DNS records BEFORE deploying new certificates:**
     >
     > If your MX servers publish TLSA records (DANE), you **must** update the TLSA DNS records
     > to include the new certificate's public key hash **before** deploying the new certificate
@@ -1071,12 +1071,12 @@ The simplest approach is to add two CNAME records that delegate autodiscovery to
 | CNAME | `autoconfig`   | `autoconfig.forwardemail.net`   |
 | CNAME | `autodiscover` | `autodiscover.forwardemail.net` |
 
-These CNAME records enable:
+These CNAME records set up:
 
-* **`autoconfig`** — Mozilla autoconfig protocol used by Thunderbird, GNOME, and KDE email clients
-* **`autodiscover`** — Microsoft Autodiscover (POX) protocol used by Outlook and other Microsoft clients
+* **`autoconfig`**: the Mozilla autoconfig protocol used by Thunderbird, GNOME, and KDE email clients
+* **`autodiscover`**: the Microsoft Autodiscover (POX) protocol used by Outlook and other Microsoft clients
 
-Both endpoints automatically return the correct IMAP, POP3, SMTP, CalDAV, and CardDAV server settings for Forward Email.
+Both endpoints return the IMAP, POP3, SMTP, CalDAV, and CardDAV server settings for Forward Email.
 
 ### Option B: SRV Records
 
@@ -1117,13 +1117,13 @@ Forward Email supports the [Domain Connect](https://domainconnect.org/) standard
 2. Forward Email discovers the domain's DNS provider by querying the `_domainconnect.<domain>` TXT record.
 3. If the provider supports Domain Connect, the user is redirected to the provider's interface to apply the Forward Email template.
 4. The template configures all required DNS records in one step:
-   * **MX records** — `mx1.forwardemail.net` (priority 0) and `mx2.forwardemail.net` (priority 0)
-   * **SPF** — `include:spf.forwardemail.net` (via SPFM merge)
-   * **DKIM** — `{selector}._domainkey` TXT record with the user's public key
-   * **Return-Path** — `fe-bounces` CNAME pointing to `forwardemail.net`
-   * **DMARC** — `_dmarc` TXT record with `p=reject`
-   * **Site verification** — `forward-email-site-verification={token}` TXT record
-   * **Autodiscovery** — `autoconfig` and `autodiscover` CNAMEs for email client autoconfiguration
+   * **MX records**: `mx1.forwardemail.net` (priority 0) and `mx2.forwardemail.net` (priority 0)
+   * **SPF**: `include:spf.forwardemail.net` (via SPFM merge)
+   * **DKIM**: `{selector}._domainkey` TXT record with the user's public key
+   * **Return-Path**: `fe-bounces` CNAME pointing to `forwardemail.net`
+   * **DMARC**: `_dmarc` TXT record with `p=reject`
+   * **Site verification**: `forward-email-site-verification={token}` TXT record
+   * **Autodiscovery**: `autoconfig` and `autodiscover` CNAMEs for email client autoconfiguration
 
 ### Template File
 
@@ -1137,12 +1137,12 @@ This file is served at `/.well-known/domain-connect/forwardemail.net.email.json`
 
 ### Template Variables
 
-| Variable                 | Description                                                                                                                                                                             |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `%domainId%`             | Your domain's MongoDB ObjectId (found in the domain settings URL at `/my-account/domains/{domainId}/settings`) — used in the DMARC `rua` address as `dmarc-{domainId}@forwardemail.net` |
-| `%fwdEmailVerification%` | Forward Email site verification token (found in domain settings)                                                                                                                        |
-| `%fwdEmailDkimSelector%` | DKIM key selector (e.g. `fe-xxxxxxxx`)                                                                                                                                                  |
-| `%fwdEmailDkimValue%`    | Full DKIM TXT record value (e.g. `v=DKIM1; p=...`)                                                                                                                                      |
+| Variable                 | Description                                                                                                                                                                            |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `%domainId%`             | Your domain's MongoDB ObjectId (found in the domain settings URL at `/my-account/domains/{domainId}/settings`), used in the DMARC `rua` address as `dmarc-{domainId}@forwardemail.net` |
+| `%fwdEmailVerification%` | Forward Email site verification token (found in domain settings)                                                                                                                       |
+| `%fwdEmailDkimSelector%` | DKIM key selector (e.g. `fe-xxxxxxxx`)                                                                                                                                                 |
+| `%fwdEmailDkimValue%`    | Full DKIM TXT record value (e.g. `v=DKIM1; p=...`)                                                                                                                                     |
 
 ### Environment Variables
 
@@ -1156,7 +1156,7 @@ This file is served at `/.well-known/domain-connect/forwardemail.net.email.json`
 | `DOMAIN_CONNECT_DESCRIPTION`         | Short description of the service                                                    | *(see `.env.defaults`)*                        |
 | `DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN` | Domain where the public key TXT record is published (for signed sync requests)      | `forwardemail.net`                             |
 | `DOMAIN_CONNECT_SYNC_KEY_ID`         | DNS host prefix for the public key TXT record (the `key=` parameter in signed URLs) | `_dck1`                                        |
-| `DOMAIN_CONNECT_PRIVATE_KEY`         | RSA private key (PEM) used to sign synchronous Domain Connect apply requests        | *(empty — signing disabled)*                   |
+| `DOMAIN_CONNECT_PRIVATE_KEY`         | RSA private key (PEM) used to sign synchronous Domain Connect apply requests        | *(empty: signing off)*                         |
 
 ### Generating and Publishing the Signing Key
 
@@ -1186,9 +1186,9 @@ The full DNS name is `_dck1.forwardemail.net`. The DNS provider resolves `{key}.
 
 The TXT record value follows the [Domain Connect specification](https://github.com/Domain-Connect/spec/blob/master/Domain%20Connect%20Spec%20Draft.adoc#digitally-sign-requests) format:
 
-* `p` — part number (starting at 1; used to split large keys across multiple TXT records)
-* `a` — signing algorithm (`RS256` for RSA-SHA256, the default)
-* `d` — base64-encoded public key data (DER format, no PEM headers, no line breaks)
+* `p`: part number (starting at 1; used to split large keys across multiple TXT records)
+* `a`: signing algorithm (`RS256` for RSA-SHA256, the default)
+* `d`: base64-encoded public key data (DER format, no PEM headers, no line breaks)
 
 For a key that fits in a single TXT record, use `p=1`. If the base64 string exceeds your DNS provider's TXT record size limit, split it across multiple records (`p=1`, `p=2`, etc.).
 

@@ -33,7 +33,7 @@ Si prega di fare riferimento ai nostri [Termini](/terms) come applicabili a tutt
 
 ## Informazioni Non Raccoglite {#information-not-collected}
 
-**Ad eccezione delle informazioni espressamente descritte in questa policy — inclusi [log degli errori](#error-logs), [email SMTP in uscita](#outbound-smtp-emails), [informazioni sull'account](#account-information), [elaborazione temporanea dei dati](#temporary-data-processing), [log di audit](#audit-logs), e [cookie e sessioni](#cookies-and-sessions):**
+**Ad eccezione delle informazioni espressamente descritte in questa policy (inclusi [log degli errori](#error-logs), [email SMTP in uscita](#outbound-smtp-emails), [informazioni sull'account](#account-information), [elaborazione temporanea dei dati](#temporary-data-processing), [log di audit](#audit-logs), e [cookie e sessioni](#cookies-and-sessions)):**
 
 * Non memorizziamo alcuna email inoltrata su disco o database.
 * Non memorizziamo alcun metadato relativo alle email inoltrate su disco o database.

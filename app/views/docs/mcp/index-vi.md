@@ -24,12 +24,12 @@
   * [Tài khoản (Xác thực khóa API hoặc bí danh)](#account-api-key-or-alias-auth)
   * [Tên miền (Khóa API)](#domains-api-key)
   * [Bí danh (Khóa API)](#aliases-api-key)
-  * [Email — SMTP gửi đi (Khóa API; Gửi hỗ trợ cả hai)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Tin nhắn — IMAP (Xác thực bí danh)](#messages--imap-alias-auth)
-  * [Thư mục — IMAP (Xác thực bí danh)](#folders--imap-alias-auth)
-  * [Danh bạ — CardDAV (Xác thực bí danh)](#contacts--carddav-alias-auth)
-  * [Lịch — CalDAV (Xác thực bí danh)](#calendars--caldav-alias-auth)
-  * [Sự kiện lịch — CalDAV (Xác thực bí danh)](#calendar-events--caldav-alias-auth)
+  * [Email: SMTP gửi đi (Khóa API; Gửi hỗ trợ cả hai)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Tin nhắn: IMAP (Xác thực bí danh)](#messages-imap-alias-auth)
+  * [Thư mục: IMAP (Xác thực bí danh)](#folders-imap-alias-auth)
+  * [Danh bạ: CardDAV (Xác thực bí danh)](#contacts-carddav-alias-auth)
+  * [Lịch: CalDAV (Xác thực bí danh)](#calendars-caldav-alias-auth)
+  * [Sự kiện lịch: CalDAV (Xác thực bí danh)](#calendar-events-caldav-alias-auth)
   * [Kịch bản Sieve (Khóa API)](#sieve-scripts-api-key)
   * [Kịch bản Sieve (Xác thực bí danh)](#sieve-scripts-alias-auth)
   * [Thành viên và lời mời tên miền (Khóa API)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ Với xác thực API key, các công cụ này trả về thông tin tài kho�
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Xóa alias                            |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Tạo mật khẩu IMAP/SMTP cho xác thực alias |
 
-### Email — SMTP gửi đi (API Key; Send hỗ trợ cả hai) {#emails--outbound-smtp-api-key-send-supports-both}
+### Email: SMTP gửi đi (API Key; Send hỗ trợ cả hai) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Công cụ          | Điểm cuối API          | Xác thực               | Mô tả                         |
 | --------------- | ---------------------- | ---------------------- | ----------------------------- |
@@ -242,7 +242,7 @@ Với xác thực API key, các công cụ này trả về thông tin tài kho�
 
 Công cụ `sendEmail` chấp nhận các tham số `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html`, và `attachments`. Đây là cùng điểm cuối với `POST /v1/emails`.
 
-### Tin nhắn — IMAP (Xác thực Alias) {#messages--imap-alias-auth}
+### Tin nhắn: IMAP (Xác thực Alias) {#messages-imap-alias-auth}
 
 > **Yêu cầu thông tin đăng nhập alias.** Truyền `alias_username` và `alias_password` hoặc đặt biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | Công cụ          | API Endpoint              | Mô tả                                |
@@ -255,7 +255,7 @@ Công cụ `sendEmail` chấp nhận các tham số `from`, `to`, `cc`, `bcc`, `
 
 Công cụ `listMessages` hỗ trợ hơn 15 tham số tìm kiếm bao gồm `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread`, và `has_attachment`. Xem [API docs](/email-api) để biết danh sách đầy đủ.
 
-### Thư mục — IMAP (Xác thực bí danh) {#folders--imap-alias-auth}
+### Thư mục: IMAP (Xác thực bí danh) {#folders-imap-alias-auth}
 
 > **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc thiết lập biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ Công cụ `listMessages` hỗ trợ hơn 15 tham số tìm kiếm bao gồm `su
 | `updateFolder` | `PUT /v1/folders/:id`    | Đổi tên thư mục          |
 | `deleteFolder` | `DELETE /v1/folders/:id` | Xóa thư mục              |
 
-### Danh bạ — CardDAV (Xác thực bí danh) {#contacts--carddav-alias-auth}
+### Danh bạ: CardDAV (Xác thực bí danh) {#contacts-carddav-alias-auth}
 
 > **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc thiết lập biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ Công cụ `listMessages` hỗ trợ hơn 15 tham số tìm kiếm bao gồm `su
 | `updateContact` | `PUT /v1/contacts/:id`    | Cập nhật danh bạ      |
 | `deleteContact` | `DELETE /v1/contacts/:id` | Xóa danh bạ           |
 
-### Lịch — CalDAV (Xác thực bí danh) {#calendars--caldav-alias-auth}
+### Lịch: CalDAV (Xác thực bí danh) {#calendars-caldav-alias-auth}
 
 > **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc thiết lập biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ Công cụ `listMessages` hỗ trợ hơn 15 tham số tìm kiếm bao gồm `su
 | `updateCalendar` | `PUT /v1/calendars/:id`    | Cập nhật lịch           |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | Xóa lịch               |
 
-### Sự kiện lịch — CalDAV (Xác thực bí danh) {#calendar-events--caldav-alias-auth}
+### Sự kiện lịch: CalDAV (Xác thực bí danh) {#calendar-events-caldav-alias-auth}
 
 > **Yêu cầu thông tin đăng nhập bí danh.** Truyền `alias_username` và `alias_password` hoặc thiết lập biến môi trường `FORWARD_EMAIL_ALIAS_USER` và `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ Các lệnh bạn có thể sử dụng với trợ lý AI của mình:
 
 | Biến                          | Bắt buộc | Mặc định                      | Mô tả                                                                          |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Có       | —                              | Khóa API Forward Email của bạn (dùng làm tên đăng nhập Basic auth cho các điểm cuối API-key) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Không    | —                              | Địa chỉ email bí danh cho các điểm cuối hộp thư (ví dụ `user@example.com`)     |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Không    | —                              | Mật khẩu bí danh được tạo cho các điểm cuối hộp thư                            |
+| `FORWARD_EMAIL_API_KEY`        | Có       |                                | Khóa API Forward Email của bạn (dùng làm tên đăng nhập Basic auth cho các điểm cuối API-key) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Không    |                                | Địa chỉ email bí danh cho các điểm cuối hộp thư (ví dụ `user@example.com`)     |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Không    |                                | Mật khẩu bí danh được tạo cho các điểm cuối hộp thư                            |
 | `FORWARD_EMAIL_API_URL`        | Không    | `https://api.forwardemail.net` | URL cơ sở API (cho tự lưu trữ hoặc thử nghiệm)                                |
 
 

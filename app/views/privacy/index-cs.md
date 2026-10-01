@@ -33,7 +33,7 @@ Prosím, řiďte se našimi [Podmínkami](/terms), které platí pro celý web.
 
 ## Informace, které nejsou shromažďovány {#information-not-collected}
 
-**S výjimkou informací výslovně popsaných v těchto zásadách — včetně [chybových protokolů](#error-logs), [odchozích e-mailů SMTP](#outbound-smtp-emails), [informací o účtu](#account-information), [dočasného zpracování dat](#temporary-data-processing), [protokolů auditu](#audit-logs) a [souborů cookie a relací](#cookies-and-sessions):**
+**S výjimkou informací výslovně popsaných v těchto zásadách (včetně [chybových protokolů](#error-logs), [odchozích e-mailů SMTP](#outbound-smtp-emails), [informací o účtu](#account-information), [dočasného zpracování dat](#temporary-data-processing), [protokolů auditu](#audit-logs) a [souborů cookie a relací](#cookies-and-sessions)):**
 
 * Neukládáme žádné přeposílané e-maily na disková úložiště ani do databází.
 * Neukládáme žádná metadata o přeposílaných e-mailech na disková úložiště ani do databází.

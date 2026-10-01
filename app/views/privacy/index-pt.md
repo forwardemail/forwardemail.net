@@ -33,7 +33,7 @@ Por favor, consulte nossos [Termos](/terms) conforme aplicável em todo o site.
 
 ## Informações Não Coletadas {#information-not-collected}
 
-**Com exceção das informações expressamente descritas nesta política — incluindo [logs de erro](#error-logs), [e-mails SMTP de saída](#outbound-smtp-emails), [informações da conta](#account-information), [processamento temporário de dados](#temporary-data-processing), [logs de auditoria](#audit-logs) e [cookies e sessões](#cookies-and-sessions):**
+**Com exceção das informações expressamente descritas nesta política (incluindo [logs de erro](#error-logs), [e-mails SMTP de saída](#outbound-smtp-emails), [informações da conta](#account-information), [processamento temporário de dados](#temporary-data-processing), [logs de auditoria](#audit-logs) e [cookies e sessões](#cookies-and-sessions)):**
 
 * Não armazenamos nenhum e-mail encaminhado em armazenamento em disco nem em bancos de dados.
 * Não armazenamos nenhum metadado sobre e-mails encaminhados em armazenamento em disco nem em bancos de dados.

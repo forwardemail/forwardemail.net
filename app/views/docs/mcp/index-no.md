@@ -24,12 +24,12 @@
   * [Konto (API-nøkkel eller alias autentisering)](#account-api-key-or-alias-auth)
   * [Domener (API-nøkkel)](#domains-api-key)
   * [Alias (API-nøkkel)](#aliases-api-key)
-  * [E-poster — Utgående SMTP (API-nøkkel; Send støtter begge)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Meldinger — IMAP (Alias autentisering)](#messages--imap-alias-auth)
-  * [Mapper — IMAP (Alias autentisering)](#folders--imap-alias-auth)
-  * [Kontakter — CardDAV (Alias autentisering)](#contacts--carddav-alias-auth)
-  * [Kalendere — CalDAV (Alias autentisering)](#calendars--caldav-alias-auth)
-  * [Kalenderhendelser — CalDAV (Alias autentisering)](#calendar-events--caldav-alias-auth)
+  * [E-poster: Utgående SMTP (API-nøkkel; Send støtter begge)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Meldinger: IMAP (Alias autentisering)](#messages-imap-alias-auth)
+  * [Mapper: IMAP (Alias autentisering)](#folders-imap-alias-auth)
+  * [Kontakter: CardDAV (Alias autentisering)](#contacts-carddav-alias-auth)
+  * [Kalendere: CalDAV (Alias autentisering)](#calendars-caldav-alias-auth)
+  * [Kalenderhendelser: CalDAV (Alias autentisering)](#calendar-events-caldav-alias-auth)
   * [Sieve-skript (API-nøkkel)](#sieve-scripts-api-key)
   * [Sieve-skript (Alias autentisering)](#sieve-scripts-alias-auth)
   * [Domene-medlemmer og invitasjoner (API-nøkkel)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ Med API-nøkkel-autentisering returnerer disse brukerens kontoinformasjon. Med a
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Slett et alias                             |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Generer IMAP/SMTP-passord for alias-autentisering |
 
-### E-poster — Utgående SMTP (API-nøkkel; Send støtter begge) {#emails--outbound-smtp-api-key-send-supports-both}
+### E-poster: Utgående SMTP (API-nøkkel; Send støtter begge) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Verktøy          | API-endepunkt            | Autentisering          | Beskrivelse                  |
 | --------------- | ----------------------- | --------------------- | ---------------------------- |
@@ -242,7 +242,7 @@ Med API-nøkkel-autentisering returnerer disse brukerens kontoinformasjon. Med a
 
 `sendEmail`-verktøyet godtar `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` og `attachments`. Dette er det samme som `POST /v1/emails`-endepunktet.
 
-### Meldinger — IMAP (Alias-autentisering) {#messages--imap-alias-auth}
+### Meldinger: IMAP (Alias-autentisering) {#messages-imap-alias-auth}
 
 > **Krever alias-legitimasjon.** Send med `alias_username` og `alias_password` eller sett miljøvariablene `FORWARD_EMAIL_ALIAS_USER` og `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | Verktøy          | API-endepunkt             | Beskrivelse                          |
@@ -255,7 +255,7 @@ Med API-nøkkel-autentisering returnerer disse brukerens kontoinformasjon. Med a
 
 `listMessages`-verktøyet støtter 15+ søkeparametere inkludert `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` og `has_attachment`. Se [API docs](/email-api) for fullstendig liste.
 
-### Mapper — IMAP (Alias Auth) {#folders--imap-alias-auth}
+### Mapper: IMAP (Alias Auth) {#folders-imap-alias-auth}
 
 > **Krever alias-legitimasjon.** Send med `alias_username` og `alias_password` eller sett miljøvariablene `FORWARD_EMAIL_ALIAS_USER` og `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ Med API-nøkkel-autentisering returnerer disse brukerens kontoinformasjon. Med a
 | `updateFolder`   | `PUT /v1/folders/:id`     | Gi nytt navn til en mappe |
 | `deleteFolder`   | `DELETE /v1/folders/:id`  | Slett en mappe           |
 
-### Kontakter — CardDAV (Alias Auth) {#contacts--carddav-alias-auth}
+### Kontakter: CardDAV (Alias Auth) {#contacts-carddav-alias-auth}
 
 > **Krever alias-legitimasjon.** Send med `alias_username` og `alias_password` eller sett miljøvariablene `FORWARD_EMAIL_ALIAS_USER` og `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ Med API-nøkkel-autentisering returnerer disse brukerens kontoinformasjon. Med a
 | `updateContact`  | `PUT /v1/contacts/:id`    | Oppdater en kontakt   |
 | `deleteContact`  | `DELETE /v1/contacts/:id` | Slett en kontakt      |
 
-### Kalendere — CalDAV (Alias Auth) {#calendars--caldav-alias-auth}
+### Kalendere: CalDAV (Alias Auth) {#calendars-caldav-alias-auth}
 
 > **Krever alias-legitimasjon.** Send med `alias_username` og `alias_password` eller sett miljøvariablene `FORWARD_EMAIL_ALIAS_USER` og `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ Med API-nøkkel-autentisering returnerer disse brukerens kontoinformasjon. Med a
 | `updateCalendar`  | `PUT /v1/calendars/:id`   | Oppdater en kalender  |
 | `deleteCalendar`  | `DELETE /v1/calendars/:id`| Slett en kalender     |
 
-### Kalenderhendelser — CalDAV (Alias Auth) {#calendar-events--caldav-alias-auth}
+### Kalenderhendelser: CalDAV (Alias Auth) {#calendar-events-caldav-alias-auth}
 
 > **Krever alias-legitimasjon.** Send med `alias_username` og `alias_password` eller sett miljøvariablene `FORWARD_EMAIL_ALIAS_USER` og `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ Her er prompt du kan bruke direkte med AI-assistenten din:
 
 | Variable                       | Required | Default                        | Description                                                                    |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Ja       | —                              | Din Forward Email API-nøkkel (brukes som Basic auth-brukernavn for API-nøkkel-endepunkter) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Nei      | —                              | Alias e-postadresse for postkasse-endepunkter (f.eks. `user@example.com`)      |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nei      | —                              | Generert alias-passord for postkasse-endepunkter                              |
+| `FORWARD_EMAIL_API_KEY`        | Ja       |                                | Din Forward Email API-nøkkel (brukes som Basic auth-brukernavn for API-nøkkel-endepunkter) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Nei      |                                | Alias e-postadresse for postkasse-endepunkter (f.eks. `user@example.com`)      |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nei      |                                | Generert alias-passord for postkasse-endepunkter                              |
 | `FORWARD_EMAIL_API_URL`        | Nei      | `https://api.forwardemail.net` | API-basert URL (for selvhostet eller testing)                                 |
 
 

@@ -33,7 +33,7 @@ Please defer to our [Terms](/terms) as it applies sitewide.
 
 ## Information Not Collected
 
-**With the exception of the information expressly described in this policy — including [error logs](#error-logs), [outbound SMTP emails](#outbound-smtp-emails), [account information](#account-information), [temporary data processing](#temporary-data-processing), [audit logs](#audit-logs), and [cookies and sessions](#cookies-and-sessions):**
+**With the exception of the information expressly described in this policy (including [error logs](#error-logs), [outbound SMTP emails](#outbound-smtp-emails), [account information](#account-information), [temporary data processing](#temporary-data-processing), [audit logs](#audit-logs), and [cookies and sessions](#cookies-and-sessions)):**
 
 * We do not store any forwarded emails to disk storage nor databases.
 * We do not store any metadata about forwarded emails to disk storage nor databases.

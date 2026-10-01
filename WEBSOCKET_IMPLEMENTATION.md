@@ -343,7 +343,7 @@ This confirms you are connected but will only receive global broadcast events (e
 ### Important Notes
 
 * **No credentials in query parameters**: `?username=`, `?password=` and `?token=` are rejected with `400 Bad Request`. Use the `Authorization` header, or the first message of a `?auth=message` connection in browsers.
-* **Failed authentication**: If credentials are provided but invalid, the server responds with a `401 Unauthorized` error (a `?auth=message` connection is closed with `4401`). It does NOT fall back to broadcast-only mode — only connections with no credentials at all are treated as unauthenticated.
+* **Failed authentication**: If credentials are provided but invalid, the server responds with a `401 Unauthorized` error (a `?auth=message` connection is closed with `4401`). It does NOT fall back to broadcast-only mode. Only connections with no credentials at all count as unauthenticated.
 * **Credential changes**: If the alias password or API token changes (or the account is banned), open connections are closed with code `4001`; reconnect with the new credentials.
 * **msgpackr encoding**: Add `?msgpackr=true` to the connection URL to receive binary msgpackr-encoded frames instead of JSON text frames for reduced bandwidth.
 

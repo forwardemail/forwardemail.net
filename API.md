@@ -21,7 +21,7 @@ The API specification is maintained as a structured OpenAPI v3 JSON file:
 When updating the API, follow these steps to maintain the specification:
 
 1. **Edit the Specification**: Update `assets/api-spec.json` with new endpoints, schemas, or descriptions
-2. **Use Markdown**: Leverage rich markdown in descriptions for better rendering in Scalar
+2. **Use Markdown**: write descriptions in Markdown so Scalar renders them
 3. **Follow Best Practices**:
    * Keep the main API description concise and high-level
    * Place error details in the Error schema component

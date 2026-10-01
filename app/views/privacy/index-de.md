@@ -33,7 +33,7 @@ Bitte beachten Sie unsere [Nutzungsbedingungen](/terms), da diese für die gesam
 
 ## Nicht gesammelte Informationen {#information-not-collected}
 
-**Mit Ausnahme der in dieser Richtlinie ausdrücklich beschriebenen Informationen – einschließlich [Fehlerprotokolle](#error-logs), [ausgehende SMTP-E-Mails](#outbound-smtp-emails), [Kontoinformationen](#account-information), [temporäre Datenverarbeitung](#temporary-data-processing), [Audit-Protokolle](#audit-logs) und [Cookies und Sitzungen](#cookies-and-sessions):**
+**Mit Ausnahme der in dieser Richtlinie ausdrücklich beschriebenen Informationen (einschließlich [Fehlerprotokolle](#error-logs), [ausgehende SMTP-E-Mails](#outbound-smtp-emails), [Kontoinformationen](#account-information), [temporäre Datenverarbeitung](#temporary-data-processing), [Audit-Protokolle](#audit-logs) und [Cookies und Sitzungen](#cookies-and-sessions)):**
 
 * Wir speichern keine weitergeleiteten E-Mails auf Festplatten oder in Datenbanken.
 * Wir speichern keine Metadaten über weitergeleitete E-Mails auf Festplatten oder in Datenbanken.

@@ -33,7 +33,7 @@ Kérjük, tekintse meg a [Felhasználási feltételeinket](/terms), mivel azok a
 
 ## Nem gyűjtött információk {#information-not-collected}
 
-**A jelen szabályzatban kifejezetten leírt információk kivételével — beleértve a [hibanaplókat](#error-logs), a [kimenő SMTP e-maileket](#outbound-smtp-emails), a [fiókinformációkat](#account-information), az [ideiglenes adatfeldolgozást](#temporary-data-processing), az [ellenőrzési naplókat](#audit-logs), valamint a [sütiket és munkameneteket](#cookies-and-sessions):**
+**A jelen szabályzatban kifejezetten leírt információk kivételével (beleértve a [hibanaplókat](#error-logs), a [kimenő SMTP e-maileket](#outbound-smtp-emails), a [fiókinformációkat](#account-information), az [ideiglenes adatfeldolgozást](#temporary-data-processing), az [ellenőrzési naplókat](#audit-logs), valamint a [sütiket és munkameneteket](#cookies-and-sessions)):**
 
 * Nem tárolunk semmilyen továbbított e-mailt sem lemezes tárolókon, sem adatbázisokban.
 * Nem tárolunk semmilyen metaadatot a továbbított e-mailekről sem lemezes tárolókon, sem adatbázisokban.

@@ -33,7 +33,7 @@ Veuillez vous référer à nos [Conditions](/terms) qui s'appliquent à l'ensemb
 
 ## Informations non collectées {#information-not-collected}
 
-**À l'exception des informations expressément décrites dans cette politique — y compris les [journaux d'erreurs](#error-logs), les [e-mails SMTP sortants](#outbound-smtp-emails), les [informations de compte](#account-information), le [traitement temporaire des données](#temporary-data-processing), les [journaux d'audit](#audit-logs), et les [cookies et sessions](#cookies-and-sessions) :**
+**À l'exception des informations expressément décrites dans cette politique (y compris les [journaux d'erreurs](#error-logs), les [e-mails SMTP sortants](#outbound-smtp-emails), les [informations de compte](#account-information), le [traitement temporaire des données](#temporary-data-processing), les [journaux d'audit](#audit-logs), et les [cookies et sessions](#cookies-and-sessions) ):**
 
 * Nous ne stockons aucun e-mail transféré sur un stockage disque ni dans des bases de données.
 * Nous ne stockons aucune métadonnée concernant les e-mails transférés sur un stockage disque ni dans des bases de données.

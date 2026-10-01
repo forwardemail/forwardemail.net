@@ -33,7 +33,7 @@ Por favor, consulte nuestros [Términos](/terms) ya que se aplican en todo el si
 
 ## Información No Recopilada {#information-not-collected}
 
-**Con la excepción de la información descrita expresamente en esta política — incluyendo [registros de errores](#error-logs), [correos electrónicos SMTP salientes](#outbound-smtp-emails), [información de la cuenta](#account-information), [procesamiento temporal de datos](#temporary-data-processing), [registros de auditoría](#audit-logs), y [cookies y sesiones](#cookies-and-sessions):**
+**Con la excepción de la información descrita expresamente en esta política (incluyendo [registros de errores](#error-logs), [correos electrónicos SMTP salientes](#outbound-smtp-emails), [información de la cuenta](#account-information), [procesamiento temporal de datos](#temporary-data-processing), [registros de auditoría](#audit-logs), y [cookies y sesiones](#cookies-and-sessions)):**
 
 * No almacenamos ningún correo electrónico reenviado en almacenamiento en disco ni en bases de datos.
 * No almacenamos ningún metadato sobre correos electrónicos reenviados en almacenamiento en disco ni en bases de datos.

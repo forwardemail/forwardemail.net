@@ -24,12 +24,12 @@
   * [Account (API Key or Alias Auth)](#account-api-key-or-alias-auth)
   * [Domains (API Key)](#domains-api-key)
   * [Aliases (API Key)](#aliases-api-key)
-  * [Emails — Outbound SMTP (API Key; Send supports both)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Messages — IMAP (Alias Auth)](#messages--imap-alias-auth)
-  * [Folders — IMAP (Alias Auth)](#folders--imap-alias-auth)
-  * [Contacts — CardDAV (Alias Auth)](#contacts--carddav-alias-auth)
-  * [Calendars — CalDAV (Alias Auth)](#calendars--caldav-alias-auth)
-  * [Calendar Events — CalDAV (Alias Auth)](#calendar-events--caldav-alias-auth)
+  * [Emails: Outbound SMTP (API Key; Send supports both)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Messages: IMAP (Alias Auth)](#messages-imap-alias-auth)
+  * [Folders: IMAP (Alias Auth)](#folders-imap-alias-auth)
+  * [Contacts: CardDAV (Alias Auth)](#contacts-carddav-alias-auth)
+  * [Calendars: CalDAV (Alias Auth)](#calendars-caldav-alias-auth)
+  * [Calendar Events: CalDAV (Alias Auth)](#calendar-events-caldav-alias-auth)
   * [Sieve Scripts (API Key)](#sieve-scripts-api-key)
   * [Sieve Scripts (Alias Auth)](#sieve-scripts-alias-auth)
   * [Domain Members and Invites (API Key)](#domain-members-and-invites-api-key)
@@ -233,7 +233,7 @@ With API key auth, these return your user account info. With alias auth, they re
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Delete an alias                            |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Generate IMAP/SMTP password for alias auth |
 
-### Emails — Outbound SMTP (API Key; Send supports both)
+### Emails: Outbound SMTP (API Key; Send supports both)
 
 | Tool            | API Endpoint            | Auth                  | Description                  |
 | --------------- | ----------------------- | --------------------- | ---------------------------- |
@@ -245,7 +245,7 @@ With API key auth, these return your user account info. With alias auth, they re
 
 The `sendEmail` tool accepts `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html`, and `attachments`. This is the same as the `POST /v1/emails` endpoint.
 
-### Messages — IMAP (Alias Auth)
+### Messages: IMAP (Alias Auth)
 
 > **Requires alias credentials.** Pass `alias_username` and `alias_password` or set `FORWARD_EMAIL_ALIAS_USER` and `FORWARD_EMAIL_ALIAS_PASSWORD` environment variables.
 
@@ -259,7 +259,7 @@ The `sendEmail` tool accepts `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html
 
 The `listMessages` tool supports 15+ search parameters including `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread`, and `has_attachment`. See the [API docs](/email-api) for the full list.
 
-### Folders — IMAP (Alias Auth)
+### Folders: IMAP (Alias Auth)
 
 > **Requires alias credentials.** Pass `alias_username` and `alias_password` or set `FORWARD_EMAIL_ALIAS_USER` and `FORWARD_EMAIL_ALIAS_PASSWORD` environment variables.
 
@@ -271,7 +271,7 @@ The `listMessages` tool supports 15+ search parameters including `subject`, `fro
 | `updateFolder` | `PUT /v1/folders/:id`    | Rename a folder          |
 | `deleteFolder` | `DELETE /v1/folders/:id` | Delete a folder          |
 
-### Contacts — CardDAV (Alias Auth)
+### Contacts: CardDAV (Alias Auth)
 
 > **Requires alias credentials.** Pass `alias_username` and `alias_password` or set `FORWARD_EMAIL_ALIAS_USER` and `FORWARD_EMAIL_ALIAS_PASSWORD` environment variables.
 
@@ -283,7 +283,7 @@ The `listMessages` tool supports 15+ search parameters including `subject`, `fro
 | `updateContact` | `PUT /v1/contacts/:id`    | Update a contact     |
 | `deleteContact` | `DELETE /v1/contacts/:id` | Delete a contact     |
 
-### Calendars — CalDAV (Alias Auth)
+### Calendars: CalDAV (Alias Auth)
 
 > **Requires alias credentials.** Pass `alias_username` and `alias_password` or set `FORWARD_EMAIL_ALIAS_USER` and `FORWARD_EMAIL_ALIAS_PASSWORD` environment variables.
 
@@ -295,7 +295,7 @@ The `listMessages` tool supports 15+ search parameters including `subject`, `fro
 | `updateCalendar` | `PUT /v1/calendars/:id`    | Update a calendar     |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | Delete a calendar     |
 
-### Calendar Events — CalDAV (Alias Auth)
+### Calendar Events: CalDAV (Alias Auth)
 
 > **Requires alias credentials.** Pass `alias_username` and `alias_password` or set `FORWARD_EMAIL_ALIAS_USER` and `FORWARD_EMAIL_ALIAS_PASSWORD` environment variables.
 
@@ -498,9 +498,9 @@ Prompts you can use with your AI assistant:
 
 | Variable                       | Required | Default                        | Description                                                                    |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Yes      | —                              | Your Forward Email API key (used as Basic auth username for API-key endpoints) |
-| `FORWARD_EMAIL_ALIAS_USER`     | No       | —                              | Alias email address for mailbox endpoints (e.g. `user@example.com`)            |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | No       | —                              | Generated alias password for mailbox endpoints                                 |
+| `FORWARD_EMAIL_API_KEY`        | Yes      |                                | Your Forward Email API key (used as Basic auth username for API-key endpoints) |
+| `FORWARD_EMAIL_ALIAS_USER`     | No       |                                | Alias email address for mailbox endpoints (e.g. `user@example.com`)            |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | No       |                                | Generated alias password for mailbox endpoints                                 |
 | `FORWARD_EMAIL_API_URL`        | No       | `https://api.forwardemail.net` | API base URL (for self-hosted or testing)                                      |
 
 

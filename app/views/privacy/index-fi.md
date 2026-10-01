@@ -33,7 +33,7 @@ Ole hyvä ja tutustu [käyttöehtoihimme](/terms), sillä ne koskevat koko sivus
 
 ## Tietoja, joita ei kerätä {#information-not-collected}
 
-**Lukuun ottamatta tässä käytännössä nimenomaisesti kuvattuja tietoja — mukaan lukien [virhelokit](#error-logs), [lähtevät SMTP-sähköpostit](#outbound-smtp-emails), [tilitiedot](#account-information), [väliaikainen tietojenkäsittely](#temporary-data-processing), [tarkastuslokit](#audit-logs) sekä [evästeet ja istunnot](#cookies-and-sessions):**
+**Lukuun ottamatta tässä käytännössä nimenomaisesti kuvattuja tietoja (mukaan lukien [virhelokit](#error-logs), [lähtevät SMTP-sähköpostit](#outbound-smtp-emails), [tilitiedot](#account-information), [väliaikainen tietojenkäsittely](#temporary-data-processing), [tarkastuslokit](#audit-logs) sekä [evästeet ja istunnot](#cookies-and-sessions)):**
 
 * Emme tallenna mitään edelleenlähetettyjä sähköposteja levytilaan tai tietokantoihin.
 * Emme tallenna mitään metatietoja edelleenlähetetyistä sähköposteista levytilaan tai tietokantoihin.

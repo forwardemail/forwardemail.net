@@ -24,12 +24,12 @@
   * [Tili (API-avain tai alias-todennus)](#account-api-key-or-alias-auth)
   * [Domainit (API-avain)](#domains-api-key)
   * [Aliasit (API-avain)](#aliases-api-key)
-  * [Sähköpostit — Lähtö-SMTP (API-avain; Lähetys tukee molempia)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Viestit — IMAP (Alias-todennus)](#messages--imap-alias-auth)
-  * [Kansiot — IMAP (Alias-todennus)](#folders--imap-alias-auth)
-  * [Yhteystiedot — CardDAV (Alias-todennus)](#contacts--carddav-alias-auth)
-  * [Kalenterit — CalDAV (Alias-todennus)](#calendars--caldav-alias-auth)
-  * [Kalenteritapahtumat — CalDAV (Alias-todennus)](#calendar-events--caldav-alias-auth)
+  * [Sähköpostit: Lähtö-SMTP (API-avain; Lähetys tukee molempia)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Viestit: IMAP (Alias-todennus)](#messages-imap-alias-auth)
+  * [Kansiot: IMAP (Alias-todennus)](#folders-imap-alias-auth)
+  * [Yhteystiedot: CardDAV (Alias-todennus)](#contacts-carddav-alias-auth)
+  * [Kalenterit: CalDAV (Alias-todennus)](#calendars-caldav-alias-auth)
+  * [Kalenteritapahtumat: CalDAV (Alias-todennus)](#calendar-events-caldav-alias-auth)
   * [Sieve-skriptit (API-avain)](#sieve-scripts-api-key)
   * [Sieve-skriptit (Alias-todennus)](#sieve-scripts-alias-auth)
   * [Domainin jäsenet ja kutsut (API-avain)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ API-avaimen todennuksella nämä palauttavat käyttäjätilisi tiedot. Alias-tod
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Poista alias                          |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Luo IMAP/SMTP-salasana alias-todennukseen |
 
-### Sähköpostit — Lähtö-SMTP (API-avain; Lähetys tukee molempia) {#emails--outbound-smtp-api-key-send-supports-both}
+### Sähköpostit: Lähtö-SMTP (API-avain; Lähetys tukee molempia) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Työkalu          | API-päätepiste          | Todennus               | Kuvaus                      |
 | --------------- | ----------------------- | ---------------------- | ---------------------------- |
@@ -242,7 +242,7 @@ API-avaimen todennuksella nämä palauttavat käyttäjätilisi tiedot. Alias-tod
 
 `sendEmail`-työkalu hyväksyy `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` ja `attachments`. Tämä vastaa `POST /v1/emails` -päätepistettä.
 
-### Viestit — IMAP (Alias-todennus) {#messages--imap-alias-auth}
+### Viestit: IMAP (Alias-todennus) {#messages-imap-alias-auth}
 
 > **Vaatii alias-tunnukset.** Anna `alias_username` ja `alias_password` tai aseta ympäristömuuttujat `FORWARD_EMAIL_ALIAS_USER` ja `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | Työkalu          | API-päätepiste             | Kuvaus                              |
@@ -255,7 +255,7 @@ API-avaimen todennuksella nämä palauttavat käyttäjätilisi tiedot. Alias-tod
 
 `listMessages`-työkalu tukee yli 15 hakuehtoa, mukaan lukien `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` ja `has_attachment`. Katso täydellinen lista [API-dokumentaatiosta](/email-api).
 
-### Kansiot — IMAP (Alias Auth) {#folders--imap-alias-auth}
+### Kansiot: IMAP (Alias Auth) {#folders-imap-alias-auth}
 
 > **Vaatii alias-tunnistetiedot.** Anna `alias_username` ja `alias_password` tai aseta ympäristömuuttujat `FORWARD_EMAIL_ALIAS_USER` ja `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ API-avaimen todennuksella nämä palauttavat käyttäjätilisi tiedot. Alias-tod
 | `updateFolder` | `PUT /v1/folders/:id`     | Nimeä kansio uudelleen   |
 | `deleteFolder` | `DELETE /v1/folders/:id`  | Poista kansio            |
 
-### Yhteystiedot — CardDAV (Alias Auth) {#contacts--carddav-alias-auth}
+### Yhteystiedot: CardDAV (Alias Auth) {#contacts-carddav-alias-auth}
 
 > **Vaatii alias-tunnistetiedot.** Anna `alias_username` ja `alias_password` tai aseta ympäristömuuttujat `FORWARD_EMAIL_ALIAS_USER` ja `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ API-avaimen todennuksella nämä palauttavat käyttäjätilisi tiedot. Alias-tod
 | `updateContact` | `PUT /v1/contacts/:id`    | Päivitä yhteystieto     |
 | `deleteContact` | `DELETE /v1/contacts/:id` | Poista yhteystieto      |
 
-### Kalenterit — CalDAV (Alias Auth) {#calendars--caldav-alias-auth}
+### Kalenterit: CalDAV (Alias Auth) {#calendars-caldav-alias-auth}
 
 > **Vaatii alias-tunnistetiedot.** Anna `alias_username` ja `alias_password` tai aseta ympäristömuuttujat `FORWARD_EMAIL_ALIAS_USER` ja `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ API-avaimen todennuksella nämä palauttavat käyttäjätilisi tiedot. Alias-tod
 | `updateCalendar` | `PUT /v1/calendars/:id`   | Päivitä kalenteri      |
 | `deleteCalendar` | `DELETE /v1/calendars/:id`| Poista kalenteri       |
 
-### Kalenteritapahtumat — CalDAV (Alias Auth) {#calendar-events--caldav-alias-auth}
+### Kalenteritapahtumat: CalDAV (Alias Auth) {#calendar-events-caldav-alias-auth}
 
 > **Vaatii alias-tunnistetiedot.** Anna `alias_username` ja `alias_password` tai aseta ympäristömuuttujat `FORWARD_EMAIL_ALIAS_USER` ja `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ Tässä on pyyntöjä, joita voit käyttää suoraan tekoälyavustajasi kanssa:
 
 | Muuttuja                       | Pakollinen | Oletus                         | Kuvaus                                                                         |
 | ------------------------------ | ---------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Kyllä      | —                              | Forward Email API -avain (käytetään Basic auth -käyttäjänimenä API-avaimen päätepisteissä) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Ei         | —                              | Alias-sähköpostiosoite postilaatikon päätepisteille (esim. `user@example.com`)  |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Ei         | —                              | Luotu alias-salasana postilaatikon päätepisteille                              |
+| `FORWARD_EMAIL_API_KEY`        | Kyllä      |                                | Forward Email API -avain (käytetään Basic auth -käyttäjänimenä API-avaimen päätepisteissä) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Ei         |                                | Alias-sähköpostiosoite postilaatikon päätepisteille (esim. `user@example.com`)  |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Ei         |                                | Luotu alias-salasana postilaatikon päätepisteille                              |
 | `FORWARD_EMAIL_API_URL`        | Ei         | `https://api.forwardemail.net` | API:n perus-URL (itseisännöityyn tai testaukseen)                              |
 
 

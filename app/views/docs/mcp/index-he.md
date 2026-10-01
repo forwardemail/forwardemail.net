@@ -24,12 +24,12 @@
   * [חשבון (אימות מפתח API או כינוי)](#account-api-key-or-alias-auth)
   * [דומיינים (מפתח API)](#domains-api-key)
   * [כינויים (מפתח API)](#aliases-api-key)
-  * [דוא"ל — SMTP יוצא (מפתח API; Send תומך בשניהם)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [הודעות — IMAP (אימות כינוי)](#messages--imap-alias-auth)
-  * [תיקיות — IMAP (אימות כינוי)](#folders--imap-alias-auth)
-  * [אנשי קשר — CardDAV (אימות כינוי)](#contacts--carddav-alias-auth)
-  * [לוחות שנה — CalDAV (אימות כינוי)](#calendars--caldav-alias-auth)
-  * [אירועי לוח שנה — CalDAV (אימות כינוי)](#calendar-events--caldav-alias-auth)
+  * [דוא"ל: SMTP יוצא (מפתח API; Send תומך בשניהם)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [הודעות: IMAP (אימות כינוי)](#messages-imap-alias-auth)
+  * [תיקיות: IMAP (אימות כינוי)](#folders-imap-alias-auth)
+  * [אנשי קשר: CardDAV (אימות כינוי)](#contacts-carddav-alias-auth)
+  * [לוחות שנה: CalDAV (אימות כינוי)](#calendars-caldav-alias-auth)
+  * [אירועי לוח שנה: CalDAV (אימות כינוי)](#calendar-events-caldav-alias-auth)
   * [סקריפטים של Sieve (מפתח API)](#sieve-scripts-api-key)
   * [סקריפטים של Sieve (אימות כינוי)](#sieve-scripts-alias-auth)
   * [חברי דומיין והזמנות (מפתח API)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ curl -u "YOUR_API_KEY:" \
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | מחק כינוי                           |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | צור סיסמת IMAP/SMTP לאימות כינוי     |
 
-### אימיילים — SMTP יוצא (מפתח API; Send תומך בשניהם) {#emails--outbound-smtp-api-key-send-supports-both}
+### אימיילים: SMTP יוצא (מפתח API; Send תומך בשניהם) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | כלי            | נקודת קצה API          | אימות                  | תיאור                        |
 | --------------- | ----------------------- | --------------------- | ---------------------------- |
@@ -242,7 +242,7 @@ curl -u "YOUR_API_KEY:" \
 
 כלי `sendEmail` מקבל את הפרמטרים `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html`, ו-`attachments`. זהה לנקודת הקצה `POST /v1/emails`.
 
-### הודעות — IMAP (אימות כינוי) {#messages--imap-alias-auth}
+### הודעות: IMAP (אימות כינוי) {#messages-imap-alias-auth}
 
 > **דורש אישורי כינוי.** העבר `alias_username` ו-`alias_password` או הגדר את משתני הסביבה `FORWARD_EMAIL_ALIAS_USER` ו-`FORWARD_EMAIL_ALIAS_PASSWORD`.
 | כלי             | נקודת קצה API             | תיאור                              |
@@ -255,7 +255,7 @@ curl -u "YOUR_API_KEY:" \
 
 כלי `listMessages` תומך ב-15+ פרמטרי חיפוש כולל `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread`, ו-`has_attachment`. ראה את [תיעוד ה-API](/email-api) לרשימה המלאה.
 
-### תיקיות — IMAP (אימות על ידי כינוי) {#folders--imap-alias-auth}
+### תיקיות: IMAP (אימות על ידי כינוי) {#folders-imap-alias-auth}
 
 > **דורש אישורי כינוי.** העבר `alias_username` ו-`alias_password` או הגדר את משתני הסביבה `FORWARD_EMAIL_ALIAS_USER` ו-`FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateFolder` | `PUT /v1/folders/:id`    | שינוי שם תיקיה            |
 | `deleteFolder` | `DELETE /v1/folders/:id` | מחיקת תיקיה              |
 
-### אנשי קשר — CardDAV (אימות על ידי כינוי) {#contacts--carddav-alias-auth}
+### אנשי קשר: CardDAV (אימות על ידי כינוי) {#contacts-carddav-alias-auth}
 
 > **דורש אישורי כינוי.** העבר `alias_username` ו-`alias_password` או הגדר את משתני הסביבה `FORWARD_EMAIL_ALIAS_USER` ו-`FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateContact` | `PUT /v1/contacts/:id`    | עדכון איש קשר           |
 | `deleteContact` | `DELETE /v1/contacts/:id` | מחיקת איש קשר           |
 
-### לוחות שנה — CalDAV (אימות על ידי כינוי) {#calendars--caldav-alias-auth}
+### לוחות שנה: CalDAV (אימות על ידי כינוי) {#calendars-caldav-alias-auth}
 
 > **דורש אישורי כינוי.** העבר `alias_username` ו-`alias_password` או הגדר את משתני הסביבה `FORWARD_EMAIL_ALIAS_USER` ו-`FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateCalendar` | `PUT /v1/calendars/:id`    | עדכון לוח שנה          |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | מחיקת לוח שנה          |
 
-### אירועי לוח שנה — CalDAV (אימות על ידי כינוי) {#calendar-events--caldav-alias-auth}
+### אירועי לוח שנה: CalDAV (אימות על ידי כינוי) {#calendar-events-caldav-alias-auth}
 
 > **דורש אישורי כינוי.** העבר `alias_username` ו-`alias_password` או הגדר את משתני הסביבה `FORWARD_EMAIL_ALIAS_USER` ו-`FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ curl -u "YOUR_API_KEY:" \
 
 | משתנה                         | דרוש    | ברירת מחדל                   | תיאור                                                                          |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | כן       | —                              | מפתח ה-API של Forward Email שלך (משמש כמשתמש Basic auth לנקודות קצה של API)  |
-| `FORWARD_EMAIL_ALIAS_USER`     | לא       | —                              | כתובת מייל של כינוי לנקודות קצה של תיבת דואר (למשל `user@example.com`)        |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | לא       | —                              | סיסמת כינוי שנוצרה לנקודות קצה של תיבת דואר                                   |
+| `FORWARD_EMAIL_API_KEY`        | כן       |                                | מפתח ה-API של Forward Email שלך (משמש כמשתמש Basic auth לנקודות קצה של API)  |
+| `FORWARD_EMAIL_ALIAS_USER`     | לא       |                                | כתובת מייל של כינוי לנקודות קצה של תיבת דואר (למשל `user@example.com`)        |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | לא       |                                | סיסמת כינוי שנוצרה לנקודות קצה של תיבת דואר                                   |
 | `FORWARD_EMAIL_API_URL`        | לא       | `https://api.forwardemail.net` | כתובת בסיס API (לשימוש עצמי או לבדיקות)                                      |
 
 

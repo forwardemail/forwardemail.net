@@ -24,12 +24,12 @@
   * [Účet (API klíč nebo alias autentizace)](#account-api-key-or-alias-auth)
   * [Domény (API klíč)](#domains-api-key)
   * [Alias (API klíč)](#aliases-api-key)
-  * [E-maily — odchozí SMTP (API klíč; Send podporuje obojí)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Zprávy — IMAP (alias autentizace)](#messages--imap-alias-auth)
-  * [Složky — IMAP (alias autentizace)](#folders--imap-alias-auth)
-  * [Kontakty — CardDAV (alias autentizace)](#contacts--carddav-alias-auth)
-  * [Kalendáře — CalDAV (alias autentizace)](#calendars--caldav-alias-auth)
-  * [Události kalendáře — CalDAV (alias autentizace)](#calendar-events--caldav-alias-auth)
+  * [E-maily: odchozí SMTP (API klíč; Send podporuje obojí)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Zprávy: IMAP (alias autentizace)](#messages-imap-alias-auth)
+  * [Složky: IMAP (alias autentizace)](#folders-imap-alias-auth)
+  * [Kontakty: CardDAV (alias autentizace)](#contacts-carddav-alias-auth)
+  * [Kalendáře: CalDAV (alias autentizace)](#calendars-caldav-alias-auth)
+  * [Události kalendáře: CalDAV (alias autentizace)](#calendar-events-caldav-alias-auth)
   * [Skripty Sieve (API klíč)](#sieve-scripts-api-key)
   * [Skripty Sieve (alias autentizace)](#sieve-scripts-alias-auth)
   * [Členové domény a pozvánky (API klíč)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ Při autentizaci pomocí API klíče tyto nástroje vrací informace o vašem u�
 | `deleteAlias`            | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Smazat alias                           |
 | `generateAliasPassword`  | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Vygenerovat IMAP/SMTP heslo pro autentizaci aliasem |
 
-### E-maily — odchozí SMTP (API klíč; Send podporuje obojí) {#emails--outbound-smtp-api-key-send-supports-both}
+### E-maily: odchozí SMTP (API klíč; Send podporuje obojí) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Nástroj          | API Endpoint            | Autentizace           | Popis                         |
 | ---------------- | ----------------------- | --------------------- | ----------------------------- |
@@ -242,7 +242,7 @@ Při autentizaci pomocí API klíče tyto nástroje vrací informace o vašem u�
 
 Nástroj `sendEmail` přijímá `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` a `attachments`. Je to stejné jako endpoint `POST /v1/emails`.
 
-### Zprávy — IMAP (autentizace aliasem) {#messages--imap-alias-auth}
+### Zprávy: IMAP (autentizace aliasem) {#messages-imap-alias-auth}
 
 > **Vyžaduje přihlašovací údaje aliasu.** Předávejte `alias_username` a `alias_password` nebo nastavte proměnné prostředí `FORWARD_EMAIL_ALIAS_USER` a `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | Nástroj          | API Endpoint              | Popis                                |
@@ -255,7 +255,7 @@ Nástroj `sendEmail` přijímá `from`, `to`, `cc`, `bcc`, `subject`, `text`, `h
 
 Nástroj `listMessages` podporuje více než 15 vyhledávacích parametrů včetně `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` a `has_attachment`. Kompletní seznam najdete v [API docs](/email-api).
 
-### Složky — IMAP (Alias Auth) {#folders--imap-alias-auth}
+### Složky: IMAP (Alias Auth) {#folders-imap-alias-auth}
 
 > **Vyžaduje přihlašovací údaje aliasu.** Předávejte `alias_username` a `alias_password` nebo nastavte proměnné prostředí `FORWARD_EMAIL_ALIAS_USER` a `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ Nástroj `listMessages` podporuje více než 15 vyhledávacích parametrů včet
 | `updateFolder` | `PUT /v1/folders/:id`    | Přejmenovat složku       |
 | `deleteFolder` | `DELETE /v1/folders/:id` | Smazat složku            |
 
-### Kontakty — CardDAV (Alias Auth) {#contacts--carddav-alias-auth}
+### Kontakty: CardDAV (Alias Auth) {#contacts-carddav-alias-auth}
 
 > **Vyžaduje přihlašovací údaje aliasu.** Předávejte `alias_username` a `alias_password` nebo nastavte proměnné prostředí `FORWARD_EMAIL_ALIAS_USER` a `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ Nástroj `listMessages` podporuje více než 15 vyhledávacích parametrů včet
 | `updateContact` | `PUT /v1/contacts/:id`    | Aktualizovat kontakt   |
 | `deleteContact` | `DELETE /v1/contacts/:id` | Smazat kontakt         |
 
-### Kalendáře — CalDAV (Alias Auth) {#calendars--caldav-alias-auth}
+### Kalendáře: CalDAV (Alias Auth) {#calendars-caldav-alias-auth}
 
 > **Vyžaduje přihlašovací údaje aliasu.** Předávejte `alias_username` a `alias_password` nebo nastavte proměnné prostředí `FORWARD_EMAIL_ALIAS_USER` a `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ Nástroj `listMessages` podporuje více než 15 vyhledávacích parametrů včet
 | `updateCalendar` | `PUT /v1/calendars/:id`    | Aktualizovat kalendář   |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | Smazat kalendář         |
 
-### Události kalendáře — CalDAV (Alias Auth) {#calendar-events--caldav-alias-auth}
+### Události kalendáře: CalDAV (Alias Auth) {#calendar-events-caldav-alias-auth}
 
 > **Vyžaduje přihlašovací údaje aliasu.** Předávejte `alias_username` a `alias_password` nebo nastavte proměnné prostředí `FORWARD_EMAIL_ALIAS_USER` a `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ Zde jsou příkazy, které můžete použít přímo se svým AI asistentem:
 
 | Proměnná                      | Povinná | Výchozí hodnota                | Popis                                                                          |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Ano      | —                              | Tvůj Forward Email API klíč (používá se jako uživatelské jméno pro Basic auth) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Ne       | —                              | E-mailová adresa aliasu pro mailbox endpointy (např. `user@example.com`)       |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Ne       | —                              | Vygenerované heslo aliasu pro mailbox endpointy                                |
+| `FORWARD_EMAIL_API_KEY`        | Ano      |                                | Tvůj Forward Email API klíč (používá se jako uživatelské jméno pro Basic auth) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Ne       |                                | E-mailová adresa aliasu pro mailbox endpointy (např. `user@example.com`)       |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Ne       |                                | Vygenerované heslo aliasu pro mailbox endpointy                                |
 | `FORWARD_EMAIL_API_URL`        | Ne       | `https://api.forwardemail.net` | Základní URL API (pro self-hosting nebo testování)                             |
 
 

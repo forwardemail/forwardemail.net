@@ -14,7 +14,7 @@ Event producers call the transport-neutral `sendNotification` helper. It assigns
 
 ## User-visible versus silent events
 
-Only the events listed in `USER_VISIBLE_PUSH_EVENTS` (`helpers/send-push-notification.js`) are delivered as user-visible alerts. Today that set is `newMessage` alone. Every other event is still delivered to every active token — clients depend on it for badge counts and cache invalidation — but as a silent message that displays nothing until the app decides to act on it.
+Only the events listed in `USER_VISIBLE_PUSH_EVENTS` (`helpers/send-push-notification.js`) are delivered as user-visible alerts. Today that set is `newMessage` alone. Every other event still goes to every active token, since clients use it for badge counts and cache invalidation, but as a silent message that shows nothing unless the app acts on it.
 
 This split has to be decided on the server. A push carrying an FCM `notification` block or an APNs `alert` is drawn by the operating system **before** the app is handed the payload, so a client cannot suppress an alert it did not want. Sending an alert for every event type meant one user action fanned out into a screenful of notifications: marking a thread read emits one `flagsUpdated` per message, and each arrived on the device as "Flags Updated / You have a new flagsUpdated event".
 
@@ -22,7 +22,7 @@ Being a `newMessage` is not on its own enough to raise an alert. The event fires
 
 * the mailbox is one of `SILENT_MAILBOX_PATHS` (Drafts, Sent, Archive, All Mail, Junk, Spam, Trash and their common aliases), matched case-insensitively against `data.mailbox` or `data.message.folder_path`;
 * the message carries `\Draft`, whatever folder it landed in;
-* the message arrives already `\Seen`, which a real delivery never is — that is another client copying or migrating existing mail.
+* the message arrives already `\Seen`, which a real delivery never is. That is another client copying or migrating existing mail.
 
 A payload that says nothing about its folder stays visible: a stray alert is better than a swallowed delivery. This list is kept in step with `SILENT_FOLDERS` in the mail app's `utils/notification-manager.js`, which applies the same rules to the WebSocket path.
 
@@ -34,7 +34,7 @@ A payload that says nothing about its folder stays visible: a stray alert is bet
 | APNs        | `pushType` `alert`, `priority` 10, `alert`, `sound` | `pushType` `background`, `priority` 5, `content-available` 1    |
 | UnifiedPush | `title` and `body` in the encrypted body            | `silent: true`, no `title` or `body`                            |
 
-Silent events carry no `title` or `body` at all, rather than unused strings. A transport that forwards whatever it is given — the UnifiedPush body reaches an Android client that renders it directly — will otherwise display them.
+Silent events carry no `title` or `body` at all, rather than unused strings. Otherwise a transport that forwards whatever it gets would display them (the UnifiedPush body reaches an Android client that renders it directly).
 
 > **APNs background pushes are best effort.** Apple throttles them and only delivers them to an app that declares the `remote-notification` background mode. Treat the WebSocket as the reliable path for state a client needs promptly, and silent push as an optimization.
 

@@ -24,12 +24,12 @@
   * [บัญชี (API Key หรือ Alias Auth)](#account-api-key-or-alias-auth)
   * [โดเมน (API Key)](#domains-api-key)
   * [อลิอาส (API Key)](#aliases-api-key)
-  * [อีเมล — SMTP ขาออก (API Key; Send รองรับทั้งสอง)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [ข้อความ — IMAP (Alias Auth)](#messages--imap-alias-auth)
-  * [โฟลเดอร์ — IMAP (Alias Auth)](#folders--imap-alias-auth)
-  * [รายชื่อผู้ติดต่อ — CardDAV (Alias Auth)](#contacts--carddav-alias-auth)
-  * [ปฏิทิน — CalDAV (Alias Auth)](#calendars--caldav-alias-auth)
-  * [กิจกรรมปฏิทิน — CalDAV (Alias Auth)](#calendar-events--caldav-alias-auth)
+  * [อีเมล: SMTP ขาออก (API Key; Send รองรับทั้งสอง)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [ข้อความ: IMAP (Alias Auth)](#messages-imap-alias-auth)
+  * [โฟลเดอร์: IMAP (Alias Auth)](#folders-imap-alias-auth)
+  * [รายชื่อผู้ติดต่อ: CardDAV (Alias Auth)](#contacts-carddav-alias-auth)
+  * [ปฏิทิน: CalDAV (Alias Auth)](#calendars-caldav-alias-auth)
+  * [กิจกรรมปฏิทิน: CalDAV (Alias Auth)](#calendar-events-caldav-alias-auth)
   * [สคริปต์ Sieve (API Key)](#sieve-scripts-api-key)
   * [สคริปต์ Sieve (Alias Auth)](#sieve-scripts-alias-auth)
   * [สมาชิกโดเมนและคำเชิญ (API Key)](#domain-members-and-invites-api-key)
@@ -229,7 +229,7 @@ curl -u "YOUR_API_KEY:" \
 | `deleteAlias`             | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | ลบอาลิอาส                       |
 | `generateAliasPassword`   | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | สร้างรหัสผ่าน IMAP/SMTP สำหรับการยืนยันตัวตนแบบอาลิอาส |
 
-### อีเมล — SMTP ขาออก (API Key; Send รองรับทั้งสองแบบ) {#emails--outbound-smtp-api-key-send-supports-both}
+### อีเมล: SMTP ขาออก (API Key; Send รองรับทั้งสองแบบ) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | เครื่องมือ         | API Endpoint            | การยืนยันตัวตน          | คำอธิบาย                     |
 | ----------------- | ----------------------- | ----------------------- | ---------------------------- |
@@ -241,7 +241,7 @@ curl -u "YOUR_API_KEY:" \
 
 เครื่องมือ `sendEmail` รองรับพารามิเตอร์ `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` และ `attachments` เหมือนกับ endpoint `POST /v1/emails`
 
-### ข้อความ — IMAP (Alias Auth) {#messages--imap-alias-auth}
+### ข้อความ: IMAP (Alias Auth) {#messages-imap-alias-auth}
 
 > **ต้องใช้ข้อมูลรับรองอาลิอาส** ส่งค่า `alias_username` และ `alias_password` หรือกำหนดตัวแปรสภาพแวดล้อม `FORWARD_EMAIL_ALIAS_USER` และ `FORWARD_EMAIL_ALIAS_PASSWORD`
 | เครื่องมือ         | API Endpoint              | คำอธิบาย                           |
@@ -254,7 +254,7 @@ curl -u "YOUR_API_KEY:" \
 
 เครื่องมือ `listMessages` รองรับพารามิเตอร์ค้นหามากกว่า 15 รายการ รวมถึง `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread`, และ `has_attachment` ดู [API docs](/email-api) สำหรับรายการทั้งหมด
 
-### โฟลเดอร์ — IMAP (Alias Auth) {#folders--imap-alias-auth}
+### โฟลเดอร์: IMAP (Alias Auth) {#folders-imap-alias-auth}
 
 > **ต้องใช้ข้อมูลรับรอง alias** ส่ง `alias_username` และ `alias_password` หรือกำหนดตัวแปรสภาพแวดล้อม `FORWARD_EMAIL_ALIAS_USER` และ `FORWARD_EMAIL_ALIAS_PASSWORD`
 
@@ -266,7 +266,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateFolder` | `PUT /v1/folders/:id`    | เปลี่ยนชื่อโฟลเดอร์          |
 | `deleteFolder` | `DELETE /v1/folders/:id` | ลบโฟลเดอร์          |
 
-### รายชื่อผู้ติดต่อ — CardDAV (Alias Auth) {#contacts--carddav-alias-auth}
+### รายชื่อผู้ติดต่อ: CardDAV (Alias Auth) {#contacts-carddav-alias-auth}
 
 > **ต้องใช้ข้อมูลรับรอง alias** ส่ง `alias_username` และ `alias_password` หรือกำหนดตัวแปรสภาพแวดล้อม `FORWARD_EMAIL_ALIAS_USER` และ `FORWARD_EMAIL_ALIAS_PASSWORD`
 
@@ -278,7 +278,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateContact` | `PUT /v1/contacts/:id`    | อัปเดตรายชื่อผู้ติดต่อ     |
 | `deleteContact` | `DELETE /v1/contacts/:id` | ลบรายชื่อผู้ติดต่อ     |
 
-### ปฏิทิน — CalDAV (Alias Auth) {#calendars--caldav-alias-auth}
+### ปฏิทิน: CalDAV (Alias Auth) {#calendars-caldav-alias-auth}
 
 > **ต้องใช้ข้อมูลรับรอง alias** ส่ง `alias_username` และ `alias_password` หรือกำหนดตัวแปรสภาพแวดล้อม `FORWARD_EMAIL_ALIAS_USER` และ `FORWARD_EMAIL_ALIAS_PASSWORD`
 
@@ -290,7 +290,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateCalendar` | `PUT /v1/calendars/:id`    | อัปเดตปฏิทิน     |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | ลบปฏิทิน     |
 
-### เหตุการณ์ปฏิทิน — CalDAV (Alias Auth) {#calendar-events--caldav-alias-auth}
+### เหตุการณ์ปฏิทิน: CalDAV (Alias Auth) {#calendar-events-caldav-alias-auth}
 
 > **ต้องใช้ข้อมูลรับรอง alias** ส่ง `alias_username` และ `alias_password` หรือกำหนดตัวแปรสภาพแวดล้อม `FORWARD_EMAIL_ALIAS_USER` และ `FORWARD_EMAIL_ALIAS_PASSWORD`
 
@@ -490,9 +490,9 @@ curl -u "YOUR_API_KEY:" \
 
 | ตัวแปร                         | จำเป็น   | ค่าเริ่มต้น                     | คำอธิบาย                                                                      |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | ใช่      | —                              | คีย์ API ของ Forward Email ของคุณ (ใช้เป็นชื่อผู้ใช้ Basic auth สำหรับจุดสิ้นสุด API-key) |
-| `FORWARD_EMAIL_ALIAS_USER`     | ไม่ใช่   | —                              | ที่อยู่อีเมลนามแฝงสำหรับจุดสิ้นสุดกล่องจดหมาย (เช่น `user@example.com`)       |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | ไม่ใช่   | —                              | รหัสผ่านนามแฝงที่สร้างขึ้นสำหรับจุดสิ้นสุดกล่องจดหมาย                       |
+| `FORWARD_EMAIL_API_KEY`        | ใช่      |                                | คีย์ API ของ Forward Email ของคุณ (ใช้เป็นชื่อผู้ใช้ Basic auth สำหรับจุดสิ้นสุด API-key) |
+| `FORWARD_EMAIL_ALIAS_USER`     | ไม่ใช่   |                                | ที่อยู่อีเมลนามแฝงสำหรับจุดสิ้นสุดกล่องจดหมาย (เช่น `user@example.com`)       |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | ไม่ใช่   |                                | รหัสผ่านนามแฝงที่สร้างขึ้นสำหรับจุดสิ้นสุดกล่องจดหมาย                       |
 | `FORWARD_EMAIL_API_URL`        | ไม่ใช่   | `https://api.forwardemail.net` | URL พื้นฐานของ API (สำหรับการโฮสต์เองหรือทดสอบ)                              |
 
 

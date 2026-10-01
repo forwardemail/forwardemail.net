@@ -24,12 +24,12 @@
   * [الحساب (مصادقة مفتاح API أو الاسم المستعار)](#account-api-key-or-alias-auth)
   * [النطاقات (مصادقة مفتاح API)](#domains-api-key)
   * [الأسماء المستعارة (مصادقة مفتاح API)](#aliases-api-key)
-  * [البريد الإلكتروني — SMTP الصادر (مصادقة مفتاح API؛ Send يدعم كلاهما)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [الرسائل — IMAP (مصادقة الاسم المستعار)](#messages--imap-alias-auth)
-  * [المجلدات — IMAP (مصادقة الاسم المستعار)](#folders--imap-alias-auth)
-  * [جهات الاتصال — CardDAV (مصادقة الاسم المستعار)](#contacts--carddav-alias-auth)
-  * [التقاويم — CalDAV (مصادقة الاسم المستعار)](#calendars--caldav-alias-auth)
-  * [أحداث التقويم — CalDAV (مصادقة الاسم المستعار)](#calendar-events--caldav-alias-auth)
+  * [البريد الإلكتروني: SMTP الصادر (مصادقة مفتاح API؛ Send يدعم كلاهما)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [الرسائل: IMAP (مصادقة الاسم المستعار)](#messages-imap-alias-auth)
+  * [المجلدات: IMAP (مصادقة الاسم المستعار)](#folders-imap-alias-auth)
+  * [جهات الاتصال: CardDAV (مصادقة الاسم المستعار)](#contacts-carddav-alias-auth)
+  * [التقاويم: CalDAV (مصادقة الاسم المستعار)](#calendars-caldav-alias-auth)
+  * [أحداث التقويم: CalDAV (مصادقة الاسم المستعار)](#calendar-events-caldav-alias-auth)
   * [سكريبتات Sieve (مصادقة مفتاح API)](#sieve-scripts-api-key)
   * [سكريبتات Sieve (مصادقة الاسم المستعار)](#sieve-scripts-alias-auth)
   * [أعضاء النطاق والدعوات (مصادقة مفتاح API)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ curl -u "YOUR_API_KEY:" \
 | `deleteAlias`             | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                   | حذف اسم مستعار                       |
 | `generateAliasPassword`   | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password`   | إنشاء كلمة مرور IMAP/SMTP لمصادقة الاسم المستعار |
 
-### الرسائل الإلكترونية — SMTP الصادر (مفتاح API؛ Send يدعم كلاهما) {#emails--outbound-smtp-api-key-send-supports-both}
+### الرسائل الإلكترونية: SMTP الصادر (مفتاح API؛ Send يدعم كلاهما) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | الأداة           | نقطة نهاية API          | المصادقة               | الوصف                         |
 | ---------------- | ----------------------- | ---------------------- | ----------------------------- |
@@ -242,7 +242,7 @@ curl -u "YOUR_API_KEY:" \
 
 تقبل أداة `sendEmail` المعلمات `from`، `to`، `cc`، `bcc`، `subject`، `text`، `html`، و `attachments`. هذا هو نفس نقطة نهاية `POST /v1/emails`.
 
-### الرسائل — IMAP (مصادقة الاسم المستعار) {#messages--imap-alias-auth}
+### الرسائل: IMAP (مصادقة الاسم المستعار) {#messages-imap-alias-auth}
 
 > **يتطلب بيانات اعتماد الاسم المستعار.** قم بتمرير `alias_username` و `alias_password` أو تعيين متغيرات البيئة `FORWARD_EMAIL_ALIAS_USER` و `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | الأداة           | نقطة نهاية API             | الوصف                              |
@@ -255,7 +255,7 @@ curl -u "YOUR_API_KEY:" \
 
 أداة `listMessages` تدعم أكثر من 15 معلمة بحث بما في ذلك `subject`، `from`، `to`، `text`، `since`، `before`، `is_unread`، و `has_attachment`. راجع [توثيق API](/email-api) للقائمة الكاملة.
 
-### المجلدات — IMAP (مصادقة الاسم المستعار) {#folders--imap-alias-auth}
+### المجلدات: IMAP (مصادقة الاسم المستعار) {#folders-imap-alias-auth}
 
 > **يتطلب بيانات اعتماد الاسم المستعار.** مرر `alias_username` و `alias_password` أو قم بتعيين متغيرات البيئة `FORWARD_EMAIL_ALIAS_USER` و `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateFolder` | `PUT /v1/folders/:id`     | إعادة تسمية مجلد          |
 | `deleteFolder` | `DELETE /v1/folders/:id`  | حذف مجلد                 |
 
-### جهات الاتصال — CardDAV (مصادقة الاسم المستعار) {#contacts--carddav-alias-auth}
+### جهات الاتصال: CardDAV (مصادقة الاسم المستعار) {#contacts-carddav-alias-auth}
 
 > **يتطلب بيانات اعتماد الاسم المستعار.** مرر `alias_username` و `alias_password` أو قم بتعيين متغيرات البيئة `FORWARD_EMAIL_ALIAS_USER` و `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateContact` | `PUT /v1/contacts/:id`    | تحديث جهة اتصال        |
 | `deleteContact` | `DELETE /v1/contacts/:id` | حذف جهة اتصال          |
 
-### التقويمات — CalDAV (مصادقة الاسم المستعار) {#calendars--caldav-alias-auth}
+### التقويمات: CalDAV (مصادقة الاسم المستعار) {#calendars-caldav-alias-auth}
 
 > **يتطلب بيانات اعتماد الاسم المستعار.** مرر `alias_username` و `alias_password` أو قم بتعيين متغيرات البيئة `FORWARD_EMAIL_ALIAS_USER` و `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateCalendar` | `PUT /v1/calendars/:id`    | تحديث تقويم            |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | حذف تقويم              |
 
-### أحداث التقويم — CalDAV (مصادقة الاسم المستعار) {#calendar-events--caldav-alias-auth}
+### أحداث التقويم: CalDAV (مصادقة الاسم المستعار) {#calendar-events-caldav-alias-auth}
 
 > **يتطلب بيانات اعتماد الاسم المستعار.** مرر `alias_username` و `alias_password` أو قم بتعيين متغيرات البيئة `FORWARD_EMAIL_ALIAS_USER` و `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ curl -u "YOUR_API_KEY:" \
 
 | المتغير                        | مطلوب   | الافتراضي                      | الوصف                                                                          |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | نعم      | —                              | مفتاح API الخاص بـ Forward Email (يستخدم كاسم مستخدم للمصادقة الأساسية لنقاط نهاية API) |
-| `FORWARD_EMAIL_ALIAS_USER`     | لا       | —                              | عنوان البريد الإلكتروني للاسم المستعار لنقاط نهاية صندوق البريد (مثل `user@example.com`) |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | لا       | —                              | كلمة مرور الاسم المستعار المولدة لنقاط نهاية صندوق البريد                     |
+| `FORWARD_EMAIL_API_KEY`        | نعم      |                                | مفتاح API الخاص بـ Forward Email (يستخدم كاسم مستخدم للمصادقة الأساسية لنقاط نهاية API) |
+| `FORWARD_EMAIL_ALIAS_USER`     | لا       |                                | عنوان البريد الإلكتروني للاسم المستعار لنقاط نهاية صندوق البريد (مثل `user@example.com`) |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | لا       |                                | كلمة مرور الاسم المستعار المولدة لنقاط نهاية صندوق البريد                     |
 | `FORWARD_EMAIL_API_URL`        | لا       | `https://api.forwardemail.net` | عنوان URL الأساسي لـ API (للاستضافة الذاتية أو الاختبار)                      |
 
 

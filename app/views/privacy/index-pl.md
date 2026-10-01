@@ -33,7 +33,7 @@ Prosimy o zapoznanie się z naszymi [Warunkami](/terms), które mają zastosowan
 
 ## Informacje, których nie zbieramy {#information-not-collected}
 
-**Z wyjątkiem informacji wyraźnie opisanych w niniejszej polityce — w tym [dzienników błędów](#error-logs), [wychodzących wiadomości e-mail SMTP](#outbound-smtp-emails), [informacji o koncie](#account-information), [tymczasowego przetwarzania danych](#temporary-data-processing), [dzienników audytu](#audit-logs) oraz [plików cookie i sesji](#cookies-and-sessions):**
+**Z wyjątkiem informacji wyraźnie opisanych w niniejszej polityce (w tym [dzienników błędów](#error-logs), [wychodzących wiadomości e-mail SMTP](#outbound-smtp-emails), [informacji o koncie](#account-information), [tymczasowego przetwarzania danych](#temporary-data-processing), [dzienników audytu](#audit-logs) oraz [plików cookie i sesji](#cookies-and-sessions)):**
 
 * Nie przechowujemy żadnych przekazywanych wiadomości e-mail w pamięci dyskowej ani w bazach danych.
 * Nie przechowujemy żadnych metadanych dotyczących przekazywanych wiadomości e-mail w pamięci dyskowej ani w bazach danych.

@@ -33,7 +33,7 @@
 
 ## 未收集的信息 {#information-not-collected}
 
-**除本政策明确描述的信息外——包括[错误日志](#error-logs)、[出站 SMTP 电子邮件](#outbound-smtp-emails)、[账户信息](#account-information)、[临时数据处理](#temporary-data-processing)、[审计日志](#audit-logs)以及[Cookie 和会话](#cookies-and-sessions)：**
+**除本政策明确描述的信息外（包括[错误日志](#error-logs)、[出站 SMTP 电子邮件](#outbound-smtp-emails)、[账户信息](#account-information)、[临时数据处理](#temporary-data-processing)、[审计日志](#audit-logs)以及[Cookie 和会话](#cookies-and-sessions)）：**
 
 * 我们不会将任何转发的电子邮件存储到磁盘存储或数据库中。
 * 我们不会将关于转发的电子邮件的任何元数据存储到磁盘存储或数据库中。

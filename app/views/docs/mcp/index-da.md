@@ -24,12 +24,12 @@
   * [Konto (API-nøgle eller alias-godkendelse)](#account-api-key-or-alias-auth)
   * [Domæner (API-nøgle)](#domains-api-key)
   * [Aliaser (API-nøgle)](#aliases-api-key)
-  * [E-mails — Udgående SMTP (API-nøgle; Send understøtter begge)](#emails--outbound-smtp-api-key-send-supports-both)
-  * [Beskeder — IMAP (Alias-godkendelse)](#messages--imap-alias-auth)
-  * [Mapper — IMAP (Alias-godkendelse)](#folders--imap-alias-auth)
-  * [Kontakter — CardDAV (Alias-godkendelse)](#contacts--carddav-alias-auth)
-  * [Kalendere — CalDAV (Alias-godkendelse)](#calendars--caldav-alias-auth)
-  * [Kalenderbegivenheder — CalDAV (Alias-godkendelse)](#calendar-events--caldav-alias-auth)
+  * [E-mails: Udgående SMTP (API-nøgle; Send understøtter begge)](#emails-outbound-smtp-api-key-send-supports-both)
+  * [Beskeder: IMAP (Alias-godkendelse)](#messages-imap-alias-auth)
+  * [Mapper: IMAP (Alias-godkendelse)](#folders-imap-alias-auth)
+  * [Kontakter: CardDAV (Alias-godkendelse)](#contacts-carddav-alias-auth)
+  * [Kalendere: CalDAV (Alias-godkendelse)](#calendars-caldav-alias-auth)
+  * [Kalenderbegivenheder: CalDAV (Alias-godkendelse)](#calendar-events-caldav-alias-auth)
   * [Sieve-scripts (API-nøgle)](#sieve-scripts-api-key)
   * [Sieve-scripts (Alias-godkendelse)](#sieve-scripts-alias-auth)
   * [Domænemedlemmer og invitationer (API-nøgle)](#domain-members-and-invites-api-key)
@@ -230,7 +230,7 @@ Med API-nøgle-godkendelse returnerer disse din brugerkonto-info. Med alias-godk
 | `deleteAlias`           | `DELETE /v1/domains/:domain_id/aliases/:alias_id`                 | Slet et alias                              |
 | `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Generer IMAP/SMTP-adgangskode til alias-godkendelse |
 
-### Emails — Udgående SMTP (API-nøgle; Send understøtter begge) {#emails--outbound-smtp-api-key-send-supports-both}
+### Emails: Udgående SMTP (API-nøgle; Send understøtter begge) {#emails-outbound-smtp-api-key-send-supports-both}
 
 | Værktøj          | API Endpoint            | Godkendelse           | Beskrivelse                  |
 | --------------- | ----------------------- | --------------------- | ---------------------------- |
@@ -242,7 +242,7 @@ Med API-nøgle-godkendelse returnerer disse din brugerkonto-info. Med alias-godk
 
 `sendEmail`-værktøjet accepterer `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` og `attachments`. Dette er det samme som `POST /v1/emails` endpointet.
 
-### Beskeder — IMAP (Alias-godkendelse) {#messages--imap-alias-auth}
+### Beskeder: IMAP (Alias-godkendelse) {#messages-imap-alias-auth}
 
 > **Kræver alias-legitimationsoplysninger.** Angiv `alias_username` og `alias_password` eller sæt miljøvariablerne `FORWARD_EMAIL_ALIAS_USER` og `FORWARD_EMAIL_ALIAS_PASSWORD`.
 | Værktøj          | API-endpoint              | Beskrivelse                          |
@@ -255,7 +255,7 @@ Med API-nøgle-godkendelse returnerer disse din brugerkonto-info. Med alias-godk
 
 `listMessages`-værktøjet understøtter 15+ søgeparametre inklusive `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` og `has_attachment`. Se [API docs](/email-api) for den fulde liste.
 
-### Mapper — IMAP (Alias Auth) {#folders--imap-alias-auth}
+### Mapper: IMAP (Alias Auth) {#folders-imap-alias-auth}
 
 > **Kræver alias-legitimationsoplysninger.** Angiv `alias_username` og `alias_password` eller sæt miljøvariablerne `FORWARD_EMAIL_ALIAS_USER` og `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -267,7 +267,7 @@ Med API-nøgle-godkendelse returnerer disse din brugerkonto-info. Med alias-godk
 | `updateFolder` | `PUT /v1/folders/:id`    | Omdøb en mappe          |
 | `deleteFolder` | `DELETE /v1/folders/:id` | Slet en mappe           |
 
-### Kontakter — CardDAV (Alias Auth) {#contacts--carddav-alias-auth}
+### Kontakter: CardDAV (Alias Auth) {#contacts-carddav-alias-auth}
 
 > **Kræver alias-legitimationsoplysninger.** Angiv `alias_username` og `alias_password` eller sæt miljøvariablerne `FORWARD_EMAIL_ALIAS_USER` og `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -279,7 +279,7 @@ Med API-nøgle-godkendelse returnerer disse din brugerkonto-info. Med alias-godk
 | `updateContact` | `PUT /v1/contacts/:id`    | Opdater en kontakt    |
 | `deleteContact` | `DELETE /v1/contacts/:id` | Slet en kontakt       |
 
-### Kalendere — CalDAV (Alias Auth) {#calendars--caldav-alias-auth}
+### Kalendere: CalDAV (Alias Auth) {#calendars-caldav-alias-auth}
 
 > **Kræver alias-legitimationsoplysninger.** Angiv `alias_username` og `alias_password` eller sæt miljøvariablerne `FORWARD_EMAIL_ALIAS_USER` og `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -291,7 +291,7 @@ Med API-nøgle-godkendelse returnerer disse din brugerkonto-info. Med alias-godk
 | `updateCalendar` | `PUT /v1/calendars/:id`    | Opdater en kalender   |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | Slet en kalender      |
 
-### Kalenderbegivenheder — CalDAV (Alias Auth) {#calendar-events--caldav-alias-auth}
+### Kalenderbegivenheder: CalDAV (Alias Auth) {#calendar-events-caldav-alias-auth}
 
 > **Kræver alias-legitimationsoplysninger.** Angiv `alias_username` og `alias_password` eller sæt miljøvariablerne `FORWARD_EMAIL_ALIAS_USER` og `FORWARD_EMAIL_ALIAS_PASSWORD`.
 
@@ -491,9 +491,9 @@ Her er prompter, du kan bruge direkte med din AI-assistent:
 
 | Variabel                       | Påkrævet | Standard                       | Beskrivelse                                                                    |
 | ------------------------------ | -------- | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | Ja       | —                              | Din Forward Email API-nøgle (bruges som Basic auth brugernavn til API-nøgle-endpoints) |
-| `FORWARD_EMAIL_ALIAS_USER`     | Nej      | —                              | Alias e-mailadresse til postkasse-endpoints (f.eks. `user@example.com`)        |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nej      | —                              | Genereret alias-adgangskode til postkasse-endpoints                            |
+| `FORWARD_EMAIL_API_KEY`        | Ja       |                                | Din Forward Email API-nøgle (bruges som Basic auth brugernavn til API-nøgle-endpoints) |
+| `FORWARD_EMAIL_ALIAS_USER`     | Nej      |                                | Alias e-mailadresse til postkasse-endpoints (f.eks. `user@example.com`)        |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Nej      |                                | Genereret alias-adgangskode til postkasse-endpoints                            |
 | `FORWARD_EMAIL_API_URL`        | Nej      | `https://api.forwardemail.net` | API base-URL (til selvhostet eller test)                                       |
 
 

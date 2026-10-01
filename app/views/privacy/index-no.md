@@ -33,7 +33,7 @@ Vennligst se våre [Vilkår](/terms) da disse gjelder for hele nettstedet.
 
 ## Informasjon som ikke samles inn {#information-not-collected}
 
-**Med unntak av informasjonen som uttrykkelig er beskrevet i denne personvernerklæringen — inkludert [feillogger](#error-logs), [utgående SMTP-e-poster](#outbound-smtp-emails), [kontoinformasjon](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisjonslogger](#audit-logs), og [informasjonskapsler og økter](#cookies-and-sessions):**
+**Med unntak av informasjonen som uttrykkelig er beskrevet i denne personvernerklæringen (inkludert [feillogger](#error-logs), [utgående SMTP-e-poster](#outbound-smtp-emails), [kontoinformasjon](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisjonslogger](#audit-logs), og [informasjonskapsler og økter](#cookies-and-sessions)):**
 
 * Vi lagrer ingen videresendte e-poster på disk eller i databaser.
 * Vi lagrer ingen metadata om videresendte e-poster på disk eller i databaser.

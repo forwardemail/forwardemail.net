@@ -24,12 +24,12 @@
   * [账户（API 密钥或别名认证）](#account-api-key-or-alias-auth)
   * [域名（API 密钥）](#domains-api-key)
   * [别名（API 密钥）](#aliases-api-key)
-  * [邮件 — 出站 SMTP（API 密钥；发送支持两者）](#emails--outbound-smtp-api-key-send-supports-both)
-  * [消息 — IMAP（别名认证）](#messages--imap-alias-auth)
-  * [文件夹 — IMAP（别名认证）](#folders--imap-alias-auth)
-  * [联系人 — CardDAV（别名认证）](#contacts--carddav-alias-auth)
-  * [日历 — CalDAV（别名认证）](#calendars--caldav-alias-auth)
-  * [日历事件 — CalDAV（别名认证）](#calendar-events--caldav-alias-auth)
+  * [邮件：出站 SMTP（API 密钥；发送支持两者）](#emails-outbound-smtp-api-key-send-supports-both)
+  * [消息：IMAP（别名认证）](#messages-imap-alias-auth)
+  * [文件夹：IMAP（别名认证）](#folders-imap-alias-auth)
+  * [联系人：CardDAV（别名认证）](#contacts-carddav-alias-auth)
+  * [日历：CalDAV（别名认证）](#calendars-caldav-alias-auth)
+  * [日历事件：CalDAV（别名认证）](#calendar-events-caldav-alias-auth)
   * [Sieve 脚本（API 密钥）](#sieve-scripts-api-key)
   * [Sieve 脚本（别名认证）](#sieve-scripts-alias-auth)
   * [域成员和邀请（API 密钥）](#domain-members-and-invites-api-key)
@@ -229,7 +229,7 @@ curl -u "YOUR_API_KEY:" \
 | `deleteAlias`            | `DELETE /v1/domains/:domain_id/aliases/:alias_id`             | 删除别名                       |
 | `generateAliasPassword`  | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | 为别名认证生成 IMAP/SMTP 密码 |
 
-### 邮件 — 外发 SMTP（API 密钥；发送支持两者） {#emails--outbound-smtp-api-key-send-supports-both}
+### 邮件：外发 SMTP（API 密钥；发送支持两者） {#emails-outbound-smtp-api-key-send-supports-both}
 
 | 工具            | API 端点               | 认证方式               | 描述                         |
 | --------------- | ---------------------- | ---------------------- | ---------------------------- |
@@ -241,7 +241,7 @@ curl -u "YOUR_API_KEY:" \
 
 `sendEmail` 工具接受 `from`、`to`、`cc`、`bcc`、`subject`、`text`、`html` 和 `attachments` 参数。这与 `POST /v1/emails` 端点相同。
 
-### 消息 — IMAP（别名认证） {#messages--imap-alias-auth}
+### 消息：IMAP（别名认证） {#messages-imap-alias-auth}
 
 > **需要别名凭证。** 传递 `alias_username` 和 `alias_password`，或设置环境变量 `FORWARD_EMAIL_ALIAS_USER` 和 `FORWARD_EMAIL_ALIAS_PASSWORD`。
 | 工具             | API 端点                   | 描述                           |
@@ -254,7 +254,7 @@ curl -u "YOUR_API_KEY:" \
 
 `listMessages` 工具支持 15+ 搜索参数，包括 `subject`、`from`、`to`、`text`、`since`、`before`、`is_unread` 和 `has_attachment`。完整列表请参见 [API docs](/email-api)。
 
-### 文件夹 — IMAP（别名认证）{#folders--imap-alias-auth}
+### 文件夹：IMAP（别名认证）{#folders-imap-alias-auth}
 
 > **需要别名凭据。** 传递 `alias_username` 和 `alias_password`，或设置环境变量 `FORWARD_EMAIL_ALIAS_USER` 和 `FORWARD_EMAIL_ALIAS_PASSWORD`。
 
@@ -266,7 +266,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateFolder` | `PUT /v1/folders/:id`    | 重命名文件夹        |
 | `deleteFolder` | `DELETE /v1/folders/:id` | 删除文件夹          |
 
-### 联系人 — CardDAV（别名认证）{#contacts--carddav-alias-auth}
+### 联系人：CardDAV（别名认证）{#contacts-carddav-alias-auth}
 
 > **需要别名凭据。** 传递 `alias_username` 和 `alias_password`，或设置环境变量 `FORWARD_EMAIL_ALIAS_USER` 和 `FORWARD_EMAIL_ALIAS_PASSWORD`。
 
@@ -278,7 +278,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateContact` | `PUT /v1/contacts/:id`    | 更新联系人          |
 | `deleteContact` | `DELETE /v1/contacts/:id` | 删除联系人          |
 
-### 日历 — CalDAV（别名认证）{#calendars--caldav-alias-auth}
+### 日历：CalDAV（别名认证）{#calendars-caldav-alias-auth}
 
 > **需要别名凭据。** 传递 `alias_username` 和 `alias_password`，或设置环境变量 `FORWARD_EMAIL_ALIAS_USER` 和 `FORWARD_EMAIL_ALIAS_PASSWORD`。
 
@@ -290,7 +290,7 @@ curl -u "YOUR_API_KEY:" \
 | `updateCalendar` | `PUT /v1/calendars/:id`    | 更新日历            |
 | `deleteCalendar` | `DELETE /v1/calendars/:id` | 删除日历            |
 
-### 日历事件 — CalDAV（别名认证）{#calendar-events--caldav-alias-auth}
+### 日历事件：CalDAV（别名认证）{#calendar-events-caldav-alias-auth}
 
 > **需要别名凭据。** 传递 `alias_username` 和 `alias_password`，或设置环境变量 `FORWARD_EMAIL_ALIAS_USER` 和 `FORWARD_EMAIL_ALIAS_PASSWORD`。
 
@@ -489,9 +489,9 @@ Sieve 脚本功能强大但语法晦涩。让你的 AI 为你编写 Sieve 脚本
 
 | 变量                           | 必填   | 默认值                         | 描述                                                                           |
 | ------------------------------ | ------ | ------------------------------ | ------------------------------------------------------------------------------ |
-| `FORWARD_EMAIL_API_KEY`        | 是     | —                              | 您的 Forward Email API 密钥（用于 API 密钥端点的 Basic 认证用户名）             |
-| `FORWARD_EMAIL_ALIAS_USER`     | 否     | —                              | 邮箱端点的别名邮箱地址（例如 `user@example.com`）                              |
-| `FORWARD_EMAIL_ALIAS_PASSWORD` | 否     | —                              | 邮箱端点的生成别名密码                                                          |
+| `FORWARD_EMAIL_API_KEY`        | 是     |                                | 您的 Forward Email API 密钥（用于 API 密钥端点的 Basic 认证用户名）             |
+| `FORWARD_EMAIL_ALIAS_USER`     | 否     |                                | 邮箱端点的别名邮箱地址（例如 `user@example.com`）                              |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | 否     |                                | 邮箱端点的生成别名密码                                                          |
 | `FORWARD_EMAIL_API_URL`        | 否     | `https://api.forwardemail.net` | API 基础 URL（用于自托管或测试）                                               |
 
 

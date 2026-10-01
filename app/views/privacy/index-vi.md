@@ -33,7 +33,7 @@ Vui lòng tham khảo [Điều khoản](/terms) của chúng tôi vì nó áp d�
 
 ## Thông tin không được thu thập {#information-not-collected}
 
-**Ngoại trừ các thông tin được mô tả rõ ràng trong chính sách này — bao gồm [nhật ký lỗi](#error-logs), [email SMTP gửi đi](#outbound-smtp-emails), [thông tin tài khoản](#account-information), [xử lý dữ liệu tạm thời](#temporary-data-processing), [nhật ký kiểm toán](#audit-logs), và [cookie và phiên](#cookies-and-sessions):**
+**Ngoại trừ các thông tin được mô tả rõ ràng trong chính sách này (bao gồm [nhật ký lỗi](#error-logs), [email SMTP gửi đi](#outbound-smtp-emails), [thông tin tài khoản](#account-information), [xử lý dữ liệu tạm thời](#temporary-data-processing), [nhật ký kiểm toán](#audit-logs), và [cookie và phiên](#cookies-and-sessions)):**
 
 * Chúng tôi không lưu trữ bất kỳ email được chuyển tiếp nào vào bộ nhớ đĩa hoặc cơ sở dữ liệu.
 * Chúng tôi không lưu trữ bất kỳ siêu dữ liệu nào về các email được chuyển tiếp vào bộ nhớ đĩa hoặc cơ sở dữ liệu.
