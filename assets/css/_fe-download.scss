@@ -131,6 +131,15 @@
   margin-bottom: 0;
 }
 
+// The Terminal section's lede and the card that plays the terminal app's
+// video (app/views/_fe-video.pug), laid out like .fe-product__intro on the
+// home page
+.fe-download-group__intro {
+  display: grid;
+  gap: var(--fe-space-6);
+  align-items: start;
+}
+
 // ============================================
 // PLATFORM CARDS
 // ============================================
@@ -549,6 +558,11 @@
 // ============================================
 
 @include fe-up(lg) {
+  // The lede and the video card, on the home page's 7/5 split
+  .fe-download-group__intro {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+
   .fe-download-verify__grid {
     // minmax(0, …), not bare fr: the checksum/code column's intrinsic width
     // must not widen its track past the split (bare fr means minmax(auto, …)).

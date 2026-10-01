@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-// The landing page (hero, console, product, pricing grid, proof) and the
-// pricing template's hero. Builds on _fe-base.scss and _fe-primitives.scss;
-// only what those do not cover lives here.
+// The landing page (hero, console, product, pricing grid, proof), the
+// pricing template's hero, and the video button, card and modal that
+// /download uses too. Builds on _fe-base.scss and _fe-primitives.scss; only
+// what those do not cover lives here.
 
 // ============================================
 // HERO
@@ -361,10 +362,11 @@ html.no-js .fe-console__rail-wrap {
 }
 
 // ============================================
-// TOUR VIDEO
+// VIDEO
 // ============================================
-// The hero's Watch button, the card beside the product lede, and the modal
-// that plays the video (app/views/_fe-video.pug).
+// The hero's Watch button, the video cards (beside the product lede here and
+// in the Terminal section of /download), and the modal that plays a video
+// (app/views/_fe-video.pug).
 
 .fe-video-time {
   font-family: var(--fe-font-mono);
@@ -382,8 +384,7 @@ html.no-js .fe-console__rail-wrap {
   border-radius: var(--fe-radius-full);
 }
 
-// A play link rather than a third bordered button: at most widths it wraps
-// to a row of its own under "Start free" and "Check a domain"
+// A play link rather than another bordered button
 .fe-video-button {
   padding-inline: 0;
   border-color: transparent;

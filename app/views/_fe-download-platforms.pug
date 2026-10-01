@@ -113,7 +113,10 @@ mixin feDownloadCard(platform)
 //- macOS two), so that grid does not stretch its items; the mobile grid
 //- keeps the default stretch. The mobile and terminal sections follow the
 //- desktop one on the same light surface, so they drop their top padding.
-mixin feDownloadGroup(group, id, eyebrow, title, lede)
+//- `video` names a video in _fe-video.pug to show as a card beside the lede,
+//- so a page that renders these sections includes _fe-video before calling
+//- +feDownloadPlatforms, as download.pug does.
+mixin feDownloadGroup(group, id, eyebrow, title, lede, video)
   section.fe-section.fe-surface-light.fe-section--pad(
     class=group.key === "desktop" ? "" : "fe-section--tight",
     aria-labelledby=`${id}-title`
@@ -124,7 +127,12 @@ mixin feDownloadGroup(group, id, eyebrow, title, lede)
         = eyebrow
       .fe-download-group__head
         h2.fe-display-lg.fe-download-group__title(id=`${id}-title`)= title
-        p.fe-lede.fe-download-group__lede= lede
+        if video
+          .fe-download-group__intro
+            p.fe-lede.fe-download-group__lede= lede
+            +feVideoCard(video)
+        else
+          p.fe-lede.fe-download-group__lede= lede
       //- The terminal group is one card, as wide as the section.
       ul.fe-grid(
         class=group.key === "desktop" ? "fe-grid--lg-3 fe-grid--start" : group.key === "terminal" ? "" : "fe-grid--md-2"
@@ -144,4 +152,5 @@ mixin feDownloadPlatforms
       span#fe-download-mobile.fe-download-anchor
       +feDownloadGroup(group, "fe-download-mobile", t("Mobile"), t("The same mailbox in your pocket."), t("Installed directly rather than through a store, so you get the build exactly as it left CI."))
     else if group.key === "terminal"
-      +feDownloadGroup(group, "fe-download-terminal-group", t("Terminal"), t("Your inbox in a terminal."), t("The same app in any terminal, with the mouse, keyboard shortcuts, and desktop notifications. Install it with one command, or download the executable for your system."))
+      //- With the terminal app's video beside the lede (see _fe-video.pug)
+      +feDownloadGroup(group, "fe-download-terminal-group", t("Terminal"), t("Your inbox in a terminal."), t("The same app in any terminal, with the mouse, keyboard shortcuts, and desktop notifications. Install it with one command, or download the executable for your system."), "terminal")

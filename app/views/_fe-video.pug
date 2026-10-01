@@ -1,46 +1,94 @@
-//- The two-minute tour video: the modal that plays it, the hero's Watch
-//- button and the card beside the product lede that open it.
+//- The site's videos, and the modals, buttons and cards that play them: the
+//- two-minute tour on the home page (the hero's Watch button and the card
+//- beside the product lede), and on /download the apps video (the hero's
+//- Watch button) and the terminal app's video (the card in the Terminal
+//- section). Each video has its own modal, so a page can carry more than
+//- one. Each button and card is described by its modal's title, so a screen
+//- reader can tell them apart.
 //-
-//- Nothing about the video loads with the page. The <video> has
-//- preload="none" and js/home-video.js sets its poster when the modal opens;
-//- the card's image is lazy. MP4 (H.264 + AAC) is the first source and plays
-//- in every current browser, and WebM (VP9 + Opus) covers builds without
-//- H.264. The captions are part of the picture. Without JavaScript, the
-//- button and the card are plain links to the MP4.
+//- Nothing about a video loads with the page. The <video> has
+//- preload="none" and js/video-modal.js sets its poster when the modal
+//- opens; the card's image is lazy. MP4 (H.264 + AAC) is the first source
+//- and plays in every current browser, and WebM (VP9 + Opus) covers builds
+//- without H.264. The captions are part of the picture. Without JavaScript,
+//- the button and the card are plain links to the MP4.
 //-
 //- Safari plays a video only from a server that answers byte ranges, which
 //- helpers/static-byte-ranges.js adds for static audio and video.
 
+//- Each video's files under img/video/ (an MP4, a WebM and a 1280x720
+//- poster), the title of its modal, its length, the id of its modal, and the
+//- hash that opens it from a link (/#video, /download#video-terminal). The
+//- tour and the apps video are each the main video of their page, so both
+//- open from #video.
+-
+  const feVideos = {
+    tour: {
+      file: "forward-email",
+      title: t("Forward Email in two minutes"),
+      length: "1:58",
+      duration: "PT1M58S",
+      modal: "modal-video",
+      hash: "video"
+    },
+    apps: {
+      file: "forward-email-apps",
+      title: t("Forward Email on every device"),
+      length: "1:49",
+      duration: "PT1M49S",
+      modal: "modal-video-apps",
+      hash: "video"
+    },
+    terminal: {
+      file: "forward-email-terminal",
+      title: t("Forward Email in your terminal"),
+      length: "1:44",
+      duration: "PT1M44S",
+      modal: "modal-video-terminal",
+      hash: "video-terminal"
+    }
+  };
+  // The video a mixin names, or the tour when it names none
+  const feVideo = (key = "tour") => {
+    if (!Object.hasOwn(feVideos, key))
+      throw new Error(`_fe-video.pug has no video "${key}"`);
+    return feVideos[key];
+  };
+
 //- The length of the video, shown on the button and the card
-mixin feVideoTime
-  time.fe-video-time(datetime="PT1M58S") 1:58
+mixin feVideoTime(video)
+  time.fe-video-time(datetime=video.duration)= video.length
 
 mixin feVideoPlayGlyph
   svg(viewBox="0 0 24 24", aria-hidden="true", focusable="false")
     path(d="M8 5.5v13l11-6.5z")
 
-mixin feVideoButton
+mixin feVideoButton(key)
+  - const video = feVideo(key);
   a.fe-btn.fe-btn--ghost.fe-btn--lg.fe-video-button(
-    href=manifest("img/video/forward-email.mp4"),
+    href=manifest(`img/video/${video.file}.mp4`),
     data-toggle="modal",
-    data-target="#modal-video",
-    aria-haspopup="dialog"
+    data-target=`#${video.modal}`,
+    aria-haspopup="dialog",
+    aria-describedby=`${video.modal}-title`
   )
     span.fe-video-button__icon
       +feVideoPlayGlyph
     = t("Watch the video")
     = " "
-    +feVideoTime
+    +feVideoTime(video)
 
-mixin feVideoCard
+mixin feVideoCard(key)
+  - const video = feVideo(key);
   a.fe-video-card(
-    href=manifest("img/video/forward-email.mp4"),
+    href=manifest(`img/video/${video.file}.mp4`),
     data-toggle="modal",
-    data-target="#modal-video",
-    aria-haspopup="dialog"
+    data-target=`#${video.modal}`,
+    aria-haspopup="dialog",
+    aria-describedby=`${video.modal}-title`
   )
     img.fe-video-card__poster(
-      src=manifest("img/video/forward-email.jpg"),
+      src=manifest(`img/video/${video.file}.jpg`),
       alt="",
       width="1280",
       height="720",
@@ -52,19 +100,22 @@ mixin feVideoCard
     span.fe-video-card__label
       = t("Watch the video")
       = " "
-      +feVideoTime
+      +feVideoTime(video)
 
-mixin feVideoModal
-  #modal-video.modal.fade(
+mixin feVideoModal(key)
+  - const video = feVideo(key);
+  .modal.fade.fe-video-modal(
+    id=video.modal,
     tabindex="-1",
     role="dialog",
-    aria-labelledby="modal-video-title",
-    aria-hidden="true"
+    aria-labelledby=`${video.modal}-title`,
+    aria-hidden="true",
+    data-video-hash=video.hash
   )
     .modal-dialog.modal-dialog-centered.modal-xl(role="document")
       .modal-content
         .modal-header
-          h2#modal-video-title.modal-title.h5= t("Forward Email in two minutes")
+          h2.modal-title.h5(id=`${video.modal}-title`)= video.title
           button.close(
             type="button",
             data-dismiss="modal",
@@ -78,21 +129,21 @@ mixin feVideoModal
             preload="none",
             width="1920",
             height="1080",
-            data-poster=manifest("img/video/forward-email.jpg")
+            data-poster=manifest(`img/video/${video.file}.jpg`)
           )
             source(
-              src=manifest("img/video/forward-email.mp4"),
+              src=manifest(`img/video/${video.file}.mp4`),
               type="video/mp4; codecs=\"avc1.640028, mp4a.40.2\""
             )
             source(
-              src=manifest("img/video/forward-email.webm"),
+              src=manifest(`img/video/${video.file}.webm`),
               type="video/webm; codecs=\"vp9, opus\""
             )
-            a(href=manifest("img/video/forward-email.mp4"))= t("Download the video (MP4)")
+            a(href=manifest(`img/video/${video.file}.mp4`))= t("Download the video (MP4)")
         .modal-footer
           a.fe-video__download(
-            href=manifest("img/video/forward-email.mp4"),
-            download="forward-email.mp4"
+            href=manifest(`img/video/${video.file}.mp4`),
+            download=`${video.file}.mp4`
           )
             i.fa.fa-download(aria-hidden="true")
             = t("Download the video (MP4)")

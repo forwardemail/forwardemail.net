@@ -2,6 +2,7 @@ extends layout
 
 block append scripts
   +script("js/download.js")
+  +script("js/video-modal.js")
 
 block body
   //- Inlined by pug, so archLabels, formatLabels, formatNotes and
@@ -10,6 +11,15 @@ block body
   include _fe-download-hero
   include _fe-download-platforms
   include _fe-download-verify
+  //- The videos: the apps video, opened from the hero, and the terminal app's,
+  //- opened from the card in the Terminal section. Inlined like the partials
+  //- above, so the hero and the sections can use its mixins. The terminal
+  //- card and its modal render only when the release has the terminal app's
+  //- builds.
+  include _fe-video
+  +feVideoModal("apps")
+  if downloads.groups.some((group) => group.key === "terminal")
+    +feVideoModal("terminal")
 
   //- fe-landing carries the page's typography and token scoping. The flush
   //- modifier pulls the first section up under the fixed navbar; the hero's

@@ -4,6 +4,8 @@
 //- anchor down to the full matrix, which is why the server-rendered label is
 //- the neutral one. js/download.js rewrites the href, the label and the meta
 //- line from the map in data-fe-download-map.
+//- The Watch link opens the apps video, so the page includes _fe-video
+//- before calling +feDownloadHero, as download.pug does.
 mixin feDownloadHero
   -
     // Built here rather than in the helper because the labels go through t(),
@@ -85,6 +87,9 @@ mixin feDownloadHero
           a.fe-btn.fe-btn--ghost.fe-btn--lg(href="#fe-download-terminal")
             i.fa.fa-terminal(aria-hidden="true")
             = t("Install in the terminal")
+
+        //- Opens the apps video (see _fe-video.pug)
+        +feVideoButton("apps")
 
       //- Hidden until the detector fills them, so no empty lines flash.
       p#fe-download-primary-meta.fe-download-hero__meta.fe-numeral(hidden)

@@ -13,7 +13,7 @@ const { JSDOM } = require('jsdom');
 
 const root = path.join(__dirname, '../..');
 const source = fs.readFileSync(
-  path.join(root, 'assets/js/home-video.js'),
+  path.join(root, 'assets/js/video-modal.js'),
   'utf8'
 );
 const jquerySource = fs.readFileSync(
@@ -70,7 +70,7 @@ function createPage({ url = 'http://localhost/en', refusePlay = false } = {}) {
       },
       window
     },
-    { filename: 'assets/js/home-video.js' }
+    { filename: 'assets/js/video-modal.js' }
   );
 
   return { dom, window, video, calls };
