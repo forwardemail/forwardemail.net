@@ -23216,5 +23216,8 @@
   "Show": "Visa",
   "Hide": "Dölj",
   "Use my API token": "Använd min API-token",
-  "Clear my API token": "Rensa min API-token"
+  "Clear my API token": "Rensa min API-token",
+  "Two-factor authentication is already enabled.": "Tvåfaktorsautentisering är redan aktiverad.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "Din e-postadress kan inte ändras via API:et. Ändra den under Mitt konto > Profil, vilket kräver ditt lösenord och bekräftelse av den nya adressen.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "Bucketnamnet måste vara 3 till 63 tecken långt, bara innehålla gemener, siffror, punkter och bindestreck samt börja och sluta med en bokstav eller siffra."
 }

@@ -49,11 +49,12 @@ async function list(ctx) {
   if (ctx.query.q) {
     query = { $or: [] };
 
+    // literal substring search; the input is escaped so it can not be used
+    // as a (slow or invalid) regular expression
     for (const field of USER_SEARCH_PATHS) {
-      query.$or.push(
-        { [field]: { $regex: ctx.query.q, $options: 'i' } },
-        { [field]: { $regex: _.escapeRegExp(ctx.query.q), $options: 'i' } }
-      );
+      query.$or.push({
+        [field]: { $regex: _.escapeRegExp(ctx.query.q), $options: 'i' }
+      });
     }
 
     // Filter for non-banned and verified users

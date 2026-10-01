@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "Tên bucket S3 dùng để lưu trữ bản sao lưu. Bucket này phải đã tồn tại và không được phép truy cập công khai."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Địa chỉ email đã được cập nhật (chỉ dành cho xác thực người dùng)"
+                    "description": "Địa chỉ email hiện tại (chỉ dành cho xác thực người dùng). Không thể thay đổi email đăng nhập qua API; gửi một giá trị khác sẽ trả về lỗi 400. Thay vào đó, hãy thay đổi tại Tài khoản của tôi > Hồ sơ."
                   },
                   "avatar_url": {
                     "type": "string",

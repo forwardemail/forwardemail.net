@@ -4,6 +4,7 @@
  */
 
 const Users = require('#models/users');
+const { rotateOtpRememberMeEpoch } = require('#helpers/otp-remember-me');
 
 async function invalidateOtherSessions(ctx) {
   if (!ctx?.state?.user?.id || !ctx?.sessionId)
@@ -29,6 +30,15 @@ async function invalidateOtherSessions(ctx) {
       sessions: [ctx.sessionId]
     }
   });
+
+  // other devices must not skip OTP with a remember-me cookie issued before
+  // (the current session receives a fresh cookie on its next request)
+  try {
+    await rotateOtpRememberMeEpoch(ctx.client, user.id);
+    if (ctx.session) ctx.session.otp_remember_me_issued = false;
+  } catch (err) {
+    ctx.logger.fatal(err);
+  }
 
   // Fire-and-forget: scan Redis in the background to catch any orphaned
   // sessions not tracked in the user model.  This is NOT awaited so the

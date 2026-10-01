@@ -40,6 +40,7 @@ const isEmail = require('#helpers/is-email');
 const isValidDomainLength = require('#helpers/is-valid-domain-length');
 const normalizeWildcardTLD = require('#helpers/normalize-wildcard-tld');
 const { isPrivateHostResolved } = require('#helpers/is-private-host');
+const isValidS3BucketName = require('#helpers/is-valid-s3-bucket-name');
 const {
   isSameAuditValue,
   normalizeAuditValue
@@ -885,6 +886,23 @@ Domains.pre('validate', async function (next) {
       // Even without credentials loaded, validate the non-secret fields
       throw Boom.badRequest(
         i18n.translateError('CUSTOM_S3_REQUIRED_FIELDS', this.locale)
+      );
+    }
+
+    //
+    // The bucket name is interpolated into request URLs (bucket probes,
+    // backups, and backup downloads), so it must follow the S3 bucket naming
+    // rules.  Only checked when it is set or custom S3 is turned on, so a
+    // previously saved name does not block saving unrelated settings.
+    //
+    if (
+      (this.isNew ||
+        this.isModified('s3_bucket') ||
+        this.isModified('has_custom_s3')) &&
+      !isValidS3BucketName(this.s3_bucket)
+    ) {
+      throw Boom.badRequest(
+        i18n.translateError('CUSTOM_S3_INVALID_BUCKET', this.locale)
       );
     }
 
@@ -2222,7 +2240,7 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
     //
     (async function () {
       try {
-        httpResponds = await respondsToHTTP(domain.name);
+        httpResponds = await respondsToHTTP(domain.name, resolver);
       } catch (err) {
         logger.debug(err);
       }
@@ -3111,7 +3129,12 @@ async function getTxtAddresses(
         errors.push(
           Boom.badRequest(
             // TODO: we may want to replace this with "Invalid Recipients"
-            `Domain has an invalid "${config.recordPrefix}" TXT record due to an invalid email address of "${element}".`
+            // (the value comes from DNS and the message is shown as HTML)
+            `Domain has an invalid "${
+              config.recordPrefix
+            }" TXT record due to an invalid email address of "${_.escape(
+              element
+            )}".`
           )
         );
       }

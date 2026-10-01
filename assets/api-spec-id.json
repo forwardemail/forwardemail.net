@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "Nama bucket S3 untuk menyimpan cadangan. Bucket tersebut harus sudah ada dan tidak boleh dapat diakses secara publik."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Alamat email diperbarui (hanya untuk otentikasi pengguna)"
+                    "description": "Alamat email saat ini (hanya untuk otentikasi pengguna). Email login tidak dapat diubah melalui API; mengirim nilai yang berbeda akan menghasilkan error 400. Ubah email tersebut melalui Akun Saya > Profil."
                   },
                   "avatar_url": {
                     "type": "string",

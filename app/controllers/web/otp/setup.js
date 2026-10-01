@@ -31,6 +31,25 @@ async function setup(ctx, next) {
     return;
   }
 
+  //
+  // once two-factor is enabled there is nothing left to set up, and the
+  // existing secret and recovery keys must never be shown again here: a
+  // session that has only passed the password step could otherwise read
+  // them and use them to pass the second factor
+  //
+  if (
+    ctx.method !== 'DELETE' &&
+    ctx.state.user[config.passport.fields.otpEnabled]
+  ) {
+    if (ctx.accepts('html')) {
+      ctx.flash('warning', ctx.translate('OTP_ALREADY_ENABLED'));
+      ctx.redirect(ctx.state.l('/my-account/security'));
+      return;
+    }
+
+    throw Boom.badRequest(ctx.translateError('OTP_ALREADY_ENABLED'));
+  }
+
   if (ctx.method === 'GET') return next();
 
   const { body } = ctx.request;

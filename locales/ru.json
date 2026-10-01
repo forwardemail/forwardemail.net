@@ -23216,5 +23216,8 @@
   "Show": "Показать",
   "Hide": "Скрыть",
   "Use my API token": "Использовать мой API-токен",
-  "Clear my API token": "Очистить мой API-токен"
+  "Clear my API token": "Очистить мой API-токен",
+  "Two-factor authentication is already enabled.": "Двухфакторная аутентификация уже включена.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "Адрес электронной почты нельзя изменить через API. Измените его в разделе «Мой аккаунт > Профиль» — для этого потребуется пароль и подтверждение нового адреса.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "Имя бакета должно содержать от 3 до 63 символов, только строчные буквы, цифры, точки и дефисы, а также начинаться и заканчиваться буквой или цифрой."
 }

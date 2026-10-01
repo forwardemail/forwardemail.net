@@ -59,14 +59,9 @@ async function list(ctx) {
         }
       };
     } else {
-      query.$or = [
-        {
-          name: { $regex: ctx.query.name, $options: 'i' }
-        },
-        {
-          name: { $regex: _.escapeRegExp(ctx.query.name), $options: 'i' }
-        }
-      ];
+      // literal substring search; the input is escaped so it can not be
+      // used as a (slow or invalid) regular expression
+      query.name = { $regex: _.escapeRegExp(ctx.query.name), $options: 'i' };
     }
   }
 

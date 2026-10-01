@@ -126,6 +126,23 @@ class ManageSieveServer {
       };
     }
 
+    //
+    // RFC 5804 Section 2.1: credentials must not be sent in the clear, so
+    // on the STARTTLS listener AUTHENTICATE is refused (and no SASL
+    // mechanisms are advertised) until STARTTLS has completed.
+    //
+    // Outside of production, a server without any certificate cannot
+    // offer STARTTLS at all, so it allows plaintext authentication for
+    // local development and tests (like `SMTP_ALLOW_INSECURE_AUTH`),
+    // unless `allowInsecureAuth` is set explicitly.
+    //
+    this.allowInsecureAuth =
+      config.env === 'production'
+        ? false
+        : typeof options.allowInsecureAuth === 'boolean'
+        ? options.allowInsecureAuth
+        : !this.tlsOptions;
+
     // Create server
     if (this.secure && this.tlsOptions) {
       this.server = tls.createServer(this.tlsOptions, (socket) =>
@@ -206,7 +223,8 @@ class ManageSieveServer {
       user: null,
       alias: null,
       domain: null,
-      tlsStarted: this.secure,
+      // (a "secure" server without a certificate is plain TCP)
+      tlsStarted: this.secure && Boolean(this.tlsOptions),
       buffer: '',
       pendingAuthMechanism: null, // Track pending SASL authentication continuation
       // Properties for onConnect/onAuth compatibility
@@ -526,7 +544,11 @@ class ManageSieveServer {
   sendCapabilities(session) {
     const capabilities = [
       '"IMPLEMENTATION" "Forward Email ManageSieve v1.0.0"',
-      `"SASL" "${SASL_MECHANISMS.join(' ')}"`,
+      // RFC 5804 Section 1.7: the SASL list is empty until STARTTLS
+      // has completed when authentication requires TLS
+      `"SASL" "${
+        this.isAuthAllowed(session) ? SASL_MECHANISMS.join(' ') : ''
+      }"`,
       `"SIEVE" "${SIEVE_CAPABILITIES.join(' ')}"`,
       `"MAXREDIRECTS" "${config.sieve.maxRedirects}"`,
       '"NOTIFY" "mailto"',
@@ -554,11 +576,40 @@ class ManageSieveServer {
   }
 
   //
+  // Whether credentials may be sent on this connection
+  // (only over TLS, see `allowInsecureAuth` in the constructor)
+  //
+  isAuthAllowed(session) {
+    return session.tlsStarted === true || this.allowInsecureAuth === true;
+  }
+
+  //
   // Handle AUTHENTICATE command
   //
   async handleAuthenticate(session, args) {
     if (session.authenticated) {
       this.send(session, `${RESPONSE.NO} "Already authenticated"`);
+      return;
+    }
+
+    // RFC 5804 Section 1.3: ENCRYPT-NEEDED tells the client to use STARTTLS
+    // (checked before the arguments, which may already carry the password)
+    if (!this.isAuthAllowed(session)) {
+      const encryptNeeded = () =>
+        this.send(
+          session,
+          `${RESPONSE.NO} (ENCRYPT-NEEDED) "Issue STARTTLS before authenticating"`
+        );
+      // a literal initial response follows this line: read and discard it
+      // so that it is not parsed as a command
+      const literalMatch = args.match(/{(\d+)\+?}\s*$/);
+      const size = literalMatch ? Number.parseInt(literalMatch[1], 10) : 0;
+      if (size > 0 && size <= 8192) {
+        session.pendingLiteral = { size, callback: encryptNeeded };
+        return;
+      }
+
+      encryptNeeded();
       return;
     }
 

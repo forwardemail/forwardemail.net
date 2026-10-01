@@ -748,6 +748,102 @@ test.serial(
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// Only the organizer may change or cancel an event (RFC 6047 section 3)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+test.serial(
+  'Lifecycle: REQUEST and CANCEL from someone other than the organizer do not change the event',
+  async (t) => {
+    const uid = `lifecycle-forged-${Date.now()}@example.com`;
+    const organizer = 'boss@gmail.com';
+    const attendee = t.context.username;
+
+    const storedIcs = makeStoredEventIcs({
+      uid,
+      organizer,
+      attendees: [{ email: attendee, partstat: 'ACCEPTED' }]
+    });
+    await createEventViaCalDAV(t, uid, storedIcs);
+    const before = await fetchEventIcs(t, uid);
+
+    // another attendee (who knows the UID) claims to be the organizer, from
+    // their own domain (which passes DMARC)
+    for (const [method, icsContent] of [
+      [
+        'REQUEST',
+        makeRequestIcs({
+          uid,
+          organizer,
+          attendees: [attendee],
+          summary: 'Moved, join at https://evil.example/login',
+          sequence: 5
+        })
+      ],
+      ['CANCEL', makeCancelIcs({ uid, organizer, attendees: [attendee] })]
+    ]) {
+      const parsedEmail = buildParsedEmail({
+        from: 'mallory@attacker.example',
+        to: attendee,
+        icsContent
+      });
+      parsedEmail.attachments[0].contentType = `text/calendar; method=${method}; charset=UTF-8`;
+
+      await checkAndProcessImipMessage(parsedEmail, {
+        messageId: `<forged-${method}@attacker.example>`,
+        fromEmail: 'mallory@attacker.example',
+        authenticatedFromEmail: 'mallory@attacker.example',
+        toEmail: attendee
+      });
+
+      await runProcessInvites(t);
+    }
+
+    const after = await fetchEventIcs(t, uid);
+    t.is(after, before, 'the event must not change');
+    t.not(getStatusFromIcs(after), 'CANCELLED');
+    t.false(after.includes('evil.example'));
+  }
+);
+
+test.serial(
+  'Lifecycle: a REQUEST cannot change an event the user organizes',
+  async (t) => {
+    const uid = `lifecycle-own-${Date.now()}@example.com`;
+    const organizer = t.context.username;
+    const attendee = 'guest@gmail.com';
+
+    const storedIcs = makeStoredEventIcs({
+      uid,
+      organizer,
+      attendees: [{ email: attendee, partstat: 'ACCEPTED' }]
+    });
+    await createEventViaCalDAV(t, uid, storedIcs);
+    const before = await fetchEventIcs(t, uid);
+
+    const parsedEmail = buildParsedEmail({
+      from: attendee,
+      to: organizer,
+      icsContent: makeRequestIcs({
+        uid,
+        organizer,
+        attendees: [attendee],
+        summary: 'Changed by a guest',
+        sequence: 5
+      })
+    });
+    await checkAndProcessImipMessage(parsedEmail, {
+      messageId: '<own-request@gmail.com>',
+      fromEmail: attendee,
+      authenticatedFromEmail: attendee,
+      toEmail: organizer
+    });
+    await runProcessInvites(t);
+
+    t.is(await fetchEventIcs(t, uid), before);
+  }
+);
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // LIFECYCLE 4: CANCEL → Event STATUS:CANCELLED
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -788,6 +884,8 @@ test.serial(
     const result = await checkAndProcessImipMessage(parsedEmail, {
       messageId: '<cancel-1@google.com>',
       fromEmail: 'calendar-notification@google.com',
+      // (the From header, authenticated by DMARC, is the organizer)
+      authenticatedFromEmail: organizer,
       toEmail: attendee
     });
 

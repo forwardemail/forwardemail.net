@@ -19,7 +19,18 @@ function rateLimit(max = 10, context, duration = ms('1d')) {
       'Duration must be a string to be parsed with ms() or a finite Number'
     );
   return (ctx, next) => {
-    if (ctx.isAuthenticated() && ctx.state.user.group === 'admin')
+    //
+    // admins skip limits only once fully signed in; a web session that has
+    // only passed the password step is not trusted yet, otherwise the
+    // second factor (e.g. the OTP login route) could be brute-forced
+    //
+    if (
+      ctx.isAuthenticated() &&
+      ctx.state.user.group === 'admin' &&
+      (ctx.api ||
+        !ctx.state.user[config.passport.fields.otpEnabled] ||
+        (ctx.session && ctx.session.otp))
+    )
       return next();
 
     const affix = isSANB(context)

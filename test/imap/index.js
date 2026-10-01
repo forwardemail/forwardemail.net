@@ -27,6 +27,7 @@ const getStream = require('get-stream');
 const ip = require('ip');
 // const isCI = require('is-ci');
 const ms = require('ms');
+const nodemailer = require('nodemailer');
 const openpgp = require('openpgp');
 const pWaitFor = require('p-wait-for');
 const splitLines = require('split-lines');
@@ -37,6 +38,7 @@ const { Semaphore } = require('@shopify/semaphore');
 const utils = require('../utils');
 const SQLite = require('../../sqlite-server');
 const IMAP = require('../../imap-server');
+const SMTP = require('../../smtp-server');
 const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
@@ -54,6 +56,7 @@ const { vacuum } = require('#helpers/worker');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const createPassword = require('#helpers/create-password');
 const getTemporaryDatabase = require('#helpers/get-temporary-database');
+const { getAuthCacheKey } = require('#helpers/on-auth');
 // dynamically import get-port
 let getPort;
 import('get-port').then((obj) => {
@@ -299,6 +302,63 @@ test('prevents domain-wide passwords', async (t) => {
   // pre-auth responses must not reveal whether the alias exists
   t.regex(err.response, /Invalid username or password/);
   t.notRegex(err.response, /Alias does not exist/);
+});
+
+test('prevents domain-wide passwords cached by a prior SMTP login', async (t) => {
+  const { domain, alias } = t.context;
+  const { password, salt, hash } = await createPassword();
+  domain.tokens.push({
+    description: 'test',
+    salt,
+    hash,
+    user: t.context.user._id
+  });
+  domain.locale = 'en';
+  domain.resolver = t.context.imap.resolver;
+  domain.skip_verification = true;
+  await domain.save();
+
+  const username = `${alias.name}@${domain.name}`;
+
+  // SMTP (outbound mail) accepts the catch-all password for the alias
+  const smtp = new SMTP({ client: t.context.client }, true);
+  const smtpPort = await getPort();
+  await smtp.listen(smtpPort);
+  t.teardown(() => smtp.close());
+  const smtpLogin = () =>
+    nodemailer
+      .createTransport({
+        host: IP_ADDRESS,
+        port: smtpPort,
+        secure: true,
+        tls,
+        auth: { user: username, pass: password }
+      })
+      .verify();
+  t.true(await smtpLogin());
+
+  // that login is now in the auth cache shared by every server
+  await pWaitFor(
+    async () =>
+      Boolean(await t.context.client.get(getAuthCacheKey(username, password))),
+    { timeout: ms('5s') }
+  );
+
+  // IMAP must not reuse it: the catch-all password never opens the mailbox
+  const imapFlow = new ImapFlow({
+    host: IP_ADDRESS,
+    port: t.context.port,
+    secure: t.context.secure,
+    logger,
+    tls,
+    auth: { user: username, pass: password }
+  });
+  const err = await t.throwsAsync(imapFlow.connect());
+  t.true(err.authenticationFailed);
+  t.regex(err.response, /Invalid username or password/);
+
+  // (SMTP with the catch-all password keeps working)
+  t.true(await smtpLogin());
 });
 
 test('does not reveal alias existence or state on failed login', async (t) => {

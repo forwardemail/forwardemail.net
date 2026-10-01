@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "De naam van de S3-bucket voor het opslaan van back-ups. De bucket moet al bestaan en mag niet openbaar toegankelijk zijn."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Bijgewerkt e-mailadres (alleen voor gebruikersauthenticatie)"
+                    "description": "Huidig e-mailadres (alleen voor gebruikersauthenticatie). Het inlog-e-mailadres kan niet via de API worden gewijzigd; het verzenden van een andere waarde geeft een 400-fout. Wijzig het in plaats daarvan onder Mijn account > Profiel."
                   },
                   "avatar_url": {
                     "type": "string",

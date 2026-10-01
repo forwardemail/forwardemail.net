@@ -6,12 +6,14 @@
 const zlib = require('node:zlib');
 const { Buffer } = require('node:buffer');
 
+const AdmZip = require('adm-zip');
 const test = require('ava');
 
 const {
   parseDmarcReport,
   parseXmlReport
 } = require('#helpers/parse-dmarc-report');
+const { assertSafeXml, isSafeXml } = require('#helpers/assert-safe-xml');
 const {
   DMARC_MAX_REPORT_SIZE_BYTES,
   DMARC_MAX_RECORDS_PER_REPORT
@@ -125,6 +127,34 @@ test('still rejects DOCTYPE/ENTITY declarations', (t) => {
   t.is(parseXmlReport(xml), null);
 });
 
+test('rejects a DOCTYPE hidden between overlapping comment and CDATA markers', (t) => {
+  const body = report(1).replace('<?xml version="1.0" encoding="UTF-8"?>', '');
+  const payload = `<?xml version="1.0"?><!-- <![CDATA[ --><!DOCTYPE feedback [<!ENTITY a "AAAA">]><!-- ]]> -->${body.replace(
+    '<org_name>Example Reporter</org_name>',
+    '<org_name>&a;</org_name>'
+  )}`;
+  t.false(isSafeXml(payload));
+  t.throws(() => assertSafeXml(payload), { message: /not allowed/ });
+  t.is(parseXmlReport(payload), null);
+
+  // same trick with a lowercase keyword and the markers the other way round
+  t.false(
+    isSafeXml(
+      `<a><![CDATA[ <!-- ]]><!doctype a [<!entity b "c">]><![CDATA[ --> ]]></a>`
+    )
+  );
+});
+
+test('still accepts ordinary comments and CDATA sections', (t) => {
+  const xml = report(1).replace(
+    '<org_name>Example Reporter</org_name>',
+    '<!-- reporter <!-- name --><org_name><![CDATA[Example <b>Reporter</b> <!--x-->]]></org_name>'
+  );
+  t.true(isSafeXml(xml));
+  const parsed = parseXmlReport(xml);
+  t.truthy(parsed);
+});
+
 test('applies the size cap to the decompressed content of a gzip attachment', async (t) => {
   // a small gzip attachment that inflates past the report size cap
   const filler = 'A'.repeat(DMARC_MAX_REPORT_SIZE_BYTES + 1024);
@@ -149,4 +179,68 @@ test('applies the size cap to the decompressed content of a gzip attachment', as
   });
   t.truthy(parsed);
   t.is(parsed.records.length, 2);
+});
+
+// build a ZIP archive with a single entry, optionally rewriting the declared
+// uncompressed size in both the local and central directory headers
+function zipOf(name, data, { declaredSize, stored = false } = {}) {
+  const zip = new AdmZip();
+  zip.addFile(name, data);
+  if (stored) zip.getEntries()[0].header.method = 0;
+  const buf = zip.toBuffer();
+  if (typeof declaredSize === 'number') {
+    const local = buf.indexOf(Buffer.from([0x50, 0x4b, 0x03, 0x04]));
+    buf.writeUInt32LE(declaredSize, local + 22);
+    const central = buf.indexOf(Buffer.from([0x50, 0x4b, 0x01, 0x02]));
+    buf.writeUInt32LE(declaredSize, central + 24);
+  }
+
+  return buf;
+}
+
+test.serial(
+  'bounds inflation of a ZIP entry that declares an uncompressed size of 0',
+  async (t) => {
+    // ~40 MB of filler that compresses to a few dozen KB
+    const bomb = Buffer.alloc(40 * 1024 * 1024, 0x41);
+    const content = zipOf('report.xml', bomb, { declaredSize: 0 });
+    t.true(content.length < 256 * 1024);
+
+    // observe every raw inflate so we can tell how much was decompressed
+    const { inflateRawSync } = zlib;
+    let largest = 0;
+    zlib.inflateRawSync = function (...args) {
+      const out = Reflect.apply(inflateRawSync, this, args);
+      largest = Math.max(largest, out.length);
+      return out;
+    };
+
+    let parsed;
+    try {
+      parsed = await parseDmarcReport({
+        content,
+        contentType: 'application/zip',
+        filename: 'report.zip'
+      });
+    } finally {
+      zlib.inflateRawSync = inflateRawSync;
+    }
+
+    t.is(parsed, null);
+    // the 25 MB cap must stop inflation well before the full 40 MB
+    t.true(largest < bomb.length, `inflated ${largest} bytes`);
+  }
+);
+
+test('parses an ordinary DMARC report inside a ZIP attachment', async (t) => {
+  for (const stored of [false, true]) {
+    const content = zipOf('report.xml', Buffer.from(report(2)), { stored });
+    const parsed = await parseDmarcReport({
+      content,
+      contentType: 'application/zip',
+      filename: 'report.zip'
+    });
+    t.truthy(parsed, `${stored ? 'stored' : 'deflated'}`);
+    t.is(parsed.records.length, 2);
+  }
 });

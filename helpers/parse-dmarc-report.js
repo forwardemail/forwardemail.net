@@ -299,6 +299,72 @@ async function extractGzip(buffer) {
   });
 }
 
+// ZIP compression methods (APPNOTE 4.4.5)
+const ZIP_METHOD_STORED = 0;
+const ZIP_METHOD_DEFLATED = 8;
+
+/**
+ * Decompress a single ZIP entry with a hard output cap
+ *
+ * NOTE: the declared uncompressed size in the ZIP headers is attacker
+ *       controlled; adm-zip only bounds inflation when that size is > 0,
+ *       so an entry declaring 0 would inflate without limit (e.g. ~300 MB
+ *       from a ~300 KB archive). We inflate the raw data ourselves and let
+ *       zlib enforce the cap regardless of what the headers claim.
+ *
+ * @param {Object} entry - adm-zip entry
+ * @returns {string|null} entry content or null if too large/unsupported
+ */
+function readZipEntry(entry) {
+  const log = { entryName: entry.entryName, maxSize: MAX_DECOMPRESSED_SIZE };
+
+  // cheap early rejection when the declared size is already too large
+  if (entry.header.size > MAX_DECOMPRESSED_SIZE) {
+    logger.debug('ZIP entry exceeds maximum decompressed size', {
+      ...log,
+      size: entry.header.size
+    });
+    return null;
+  }
+
+  if (entry.header.encrypted) {
+    logger.debug('ZIP entry is encrypted', log);
+    return null;
+  }
+
+  const compressed = entry.getCompressedData();
+
+  if (entry.header.method === ZIP_METHOD_STORED) {
+    if (compressed.length > MAX_DECOMPRESSED_SIZE) {
+      logger.debug('ZIP entry exceeds maximum decompressed size', {
+        ...log,
+        size: compressed.length
+      });
+      return null;
+    }
+
+    return compressed.toString('utf8');
+  }
+
+  if (entry.header.method !== ZIP_METHOD_DEFLATED) {
+    logger.debug('ZIP entry uses unsupported compression method', {
+      ...log,
+      method: entry.header.method
+    });
+    return null;
+  }
+
+  try {
+    return zlib
+      .inflateRawSync(compressed, { maxOutputLength: MAX_DECOMPRESSED_SIZE })
+      .toString('utf8');
+  } catch (err) {
+    // ERR_BUFFER_TOO_LARGE when the cap is hit, or a zlib error
+    logger.debug('Failed to decompress ZIP entry', { ...log, err });
+    return null;
+  }
+}
+
 /**
  * Extract XML content from a ZIP archive
  * @param {Buffer} buffer - ZIP archive buffer
@@ -311,35 +377,12 @@ function extractZip(buffer) {
 
     // Find the first XML file in the archive
     for (const entry of entries) {
-      if (entry.entryName.toLowerCase().endsWith('.xml')) {
-        // Prevent decompression bombs: check uncompressed size before extracting
-        if (entry.header.size > MAX_DECOMPRESSED_SIZE) {
-          logger.debug('ZIP entry exceeds maximum decompressed size', {
-            entryName: entry.entryName,
-            size: entry.header.size,
-            maxSize: MAX_DECOMPRESSED_SIZE
-          });
-          return null;
-        }
-
-        return entry.getData().toString('utf8');
-      }
+      if (entry.entryName.toLowerCase().endsWith('.xml'))
+        return readZipEntry(entry);
     }
 
     // If no XML found, try the first entry
-    if (entries.length > 0) {
-      // Prevent decompression bombs: check uncompressed size before extracting
-      if (entries[0].header.size > MAX_DECOMPRESSED_SIZE) {
-        logger.debug('ZIP entry exceeds maximum decompressed size', {
-          entryName: entries[0].entryName,
-          size: entries[0].header.size,
-          maxSize: MAX_DECOMPRESSED_SIZE
-        });
-        return null;
-      }
-
-      return entries[0].getData().toString('utf8');
-    }
+    if (entries.length > 0) return readZipEntry(entries[0]);
 
     return null;
   } catch (err) {

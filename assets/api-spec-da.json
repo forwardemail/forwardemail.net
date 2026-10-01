@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "S3-bucketnavn til lagring af sikkerhedskopier. Bucketen skal allerede eksistere og må ikke være offentligt tilgængelig."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Opdateret e-mailadresse (kun brugergodkendelse)"
+                    "description": "Nuværende e-mailadresse (kun brugergodkendelse). Login-e-mailen kan ikke ændres via API'et; afsendes en anden værdi, returneres en 400-fejl. Skift den i stedet under Min konto > Profil."
                   },
                   "avatar_url": {
                     "type": "string",

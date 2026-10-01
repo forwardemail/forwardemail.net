@@ -21,15 +21,24 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const stripe = require('#helpers/stripe');
+const claimPayPalSubscription = require('#helpers/claim-paypal-subscription');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const refundHelper = require('#helpers/refund');
-const { Aliases, Domains, Payments } = require('#models');
+const { Aliases, Domains, Payments, Users } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
 const retryPayPalRequest = require('#helpers/retry-paypal-request');
+const getPayPalOrderCapture = require('#helpers/get-paypal-order-capture');
 
 const { STRIPE_MAPPING, STRIPE_PRODUCTS, PAYPAL_PLAN_MAPPING } =
   config.payments;
+
+// (marked so the error is told apart from failures that are only reported)
+function invalidPaymentIntent(ctx) {
+  const err = ctx.translateError('INVALID_PAYMENT_INTENT');
+  err.code = 'INVALID_PAYMENT_INTENT';
+  return err;
+}
 
 async function retrieveDomainBilling(ctx) {
   const isAccountUpgrade =
@@ -445,6 +454,15 @@ async function retrieveDomainBilling(ctx) {
       // validate session exists
       if (!session) throw ctx.translateError('UNKNOWN_ERROR');
 
+      // checkout sessions are always created for the user's own Stripe
+      // customer, so a session of any other customer (e.g. one paid by
+      // another account) is refused and nothing on the user is changed
+      if (
+        !isSANB(ctx.state.user[config.userFields.stripeCustomerID]) ||
+        session.customer !== ctx.state.user[config.userFields.stripeCustomerID]
+      )
+        throw ctx.translateError('UNKNOWN_ERROR');
+
       // <https://github.com/stripe/stripe-node/issues/1796>
       // ctx.logger.info('stripe.checkout.sessions.retrieve', { session });
 
@@ -466,9 +484,6 @@ async function retrieveDomainBilling(ctx) {
         err.is_success = true;
         throw err;
       }
-
-      // store customer
-      ctx.state.user[config.userFields.stripeCustomerID] = session.customer;
 
       // if they upgraded their plan then store it on the user object
       if (!isMakePayment && !isEnableAutoRenew)
@@ -543,7 +558,7 @@ async function retrieveDomainBilling(ctx) {
               await ctx.state.user.save();
             }
 
-            throw ctx.translateError('INVALID_PAYMENT_INTENT');
+            throw invalidPaymentIntent(ctx);
           }
 
           if (paymentIntent.invoice) invoiceId = paymentIntent.invoice;
@@ -633,7 +648,7 @@ async function retrieveDomainBilling(ctx) {
                   await ctx.state.user.save();
                 }
 
-                throw ctx.translateError('INVALID_PAYMENT_INTENT');
+                throw invalidPaymentIntent(ctx);
               }
 
               const paymentMethod = await stripe.paymentMethods.retrieve(
@@ -662,6 +677,9 @@ async function retrieveDomainBilling(ctx) {
           }
         }
       } catch (err) {
+        // a payment that did not succeed is refused (not only reported to
+        // admins), otherwise the plan below would still be credited
+        if (err.code === 'INVALID_PAYMENT_INTENT') throw err;
         ctx.logger.fatal(err);
         // email admins here
         emailHelper({
@@ -975,6 +993,11 @@ async function retrieveDomainBilling(ctx) {
       )
         throw ctx.translateError('UNKNOWN_ERROR');
 
+      // orders are created with the user's id as `reference_id`,
+      // so an order placed by another account cannot be redeemed here
+      if (body.purchase_units[0].reference_id !== ctx.state.user.id)
+        throw ctx.translateError('UNKNOWN_ERROR');
+
       // store customer
       ctx.state.user[config.userFields.paypalPayerID] = body.payer.payer_id;
 
@@ -1019,11 +1042,7 @@ async function retrieveDomainBilling(ctx) {
         ctx.state.user[config.userFields.planSetAt] = now;
       }
 
-      let transactionId;
-
-      // parse the transaction id
-      if (body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
-        transactionId = body.purchase_units[0].payments.captures[0].id;
+      let captured;
 
       // capture the user's payment (towards the end in case something else went wrong)
       // Use retry logic for PayPal capture operations due to infrastructure delays
@@ -1034,10 +1053,7 @@ async function retrieveDomainBilling(ctx) {
             const response = await agent1.post(
               `/v2/checkout/orders/${body.id}/capture`
             );
-            // parse the transaction id
-            if (response.body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
-              transactionId =
-                response.body.purchase_units[0].payments.captures[0].id;
+            captured = response.body;
           },
           {
             retries: 3,
@@ -1079,6 +1095,15 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
             .catch((err) => ctx.logger.fatal(err));
         }
       }
+
+      // only credit the plan once the order was paid (a declined capture
+      // leaves the order APPROVED, and one already captured by the webhook
+      // is COMPLETED when looked up again)
+      const capture = await getPayPalOrderCapture(body.id, captured);
+      if (!capture) throw ctx.translateError('INVALID_PAYMENT_INTENT');
+
+      // parse the transaction id
+      const transactionId = capture.id;
 
       try {
         //
@@ -1216,13 +1241,35 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
       );
 
       // validate subscription is active
+      // (only an approved or active subscription was paid for or will be)
       if (
         !_.isObject(body) ||
-        ['SUSPENDED', 'CANCELLED', 'EXPIRED'].includes(body.status) ||
+        !['ACTIVE', 'APPROVED'].includes(body.status) ||
         !isSANB(body.id) ||
+        body.id !== ctx.query.paypal_subscription_id ||
         !isSANB(body.plan_id) ||
         !_.isObject(body.subscriber) ||
         !isSANB(body.subscriber.payer_id)
+      )
+        throw ctx.translateError('UNKNOWN_ERROR');
+
+      // subscriptions are created with the user's id as `custom_id`
+      // (older ones have none), so one created by another account is refused
+      if (isSANB(body.custom_id) && body.custom_id !== ctx.state.user.id)
+        throw ctx.translateError('UNKNOWN_ERROR');
+
+      // a subscription can only ever be credited to one account
+      if (
+        await Users.exists({
+          _id: { $ne: ctx.state.user._id },
+          [config.userFields.paypalSubscriptionID]: body.id
+        })
+      )
+        throw ctx.translateError('UNKNOWN_ERROR');
+
+      // (and the check above is not atomic with saving the user below)
+      if (
+        !(await claimPayPalSubscription(ctx.client, body.id, ctx.state.user.id))
       )
         throw ctx.translateError('UNKNOWN_ERROR');
 

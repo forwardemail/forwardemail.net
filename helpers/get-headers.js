@@ -101,10 +101,16 @@ function getHeaders(headers, specificKey = null) {
     // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L395-L413>
     if (_headers[key] && SINGLE_KEYS.has(lc)) continue;
 
+    // unfold the header: every whitespace run that contains a line break
+    // becomes a single space (runs without a line break are kept as-is)
+    //
+    // NOTE: a pattern like `/\s*\r?\n\s*/g` backtracks quadratically on long
+    //       whitespace runs without a newline (e.g. 100k spaces took ~12s),
+    //       so we match each maximal run once and decide in the callback
     _headers[key] = line
       .slice(index + 1)
       .trim()
-      .replace(/\s*\r?\n\s*/g, ' ');
+      .replace(/\s+/g, (ws) => (ws.includes('\n') ? ' ' : ws));
 
     //
     // NOTE: it's recommended but we don't decode certain keys, we decode all

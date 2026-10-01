@@ -8,6 +8,8 @@ const isFQDN = require('is-fqdn');
 const ms = require('ms');
 const pTimeout = require('p-timeout');
 
+const rdapFetch = require('#helpers/rdap-fetch');
+
 // dynamically import @forwardemail/whois-rdap (ESM package)
 // <https://github.com/cleandns-inc/tool-whois>
 let whois;
@@ -98,7 +100,10 @@ module.exports = async (ctx) => {
     throw Boom.serverUnavailable(ctx.translateError('WHOIS_UNAVAILABLE'));
 
   try {
-    const result = await pTimeout(whois(name), WHOIS_TIMEOUT);
+    const result = await pTimeout(
+      whois(name, { fetch: rdapFetch }),
+      WHOIS_TIMEOUT
+    );
 
     // 1. Server errors (5xx) → conservatively treat as registered.
     //    Note: 404 is the normal RDAP response for an available domain.

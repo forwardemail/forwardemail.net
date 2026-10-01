@@ -22,6 +22,7 @@ const emailHelper = require('#helpers/email');
 const getActiveStripeSubscriptions = require('#helpers/get-active-stripe-subscriptions');
 
 const { ACTIVE_STRIPE_SUBSCRIPTION_STATUSES } = getActiveStripeSubscriptions;
+const acquireStripeWebhookEvent = require('#helpers/acquire-stripe-webhook-event');
 const logger = require('#helpers/logger');
 const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
 const stripe = require('#helpers/stripe');
@@ -912,6 +913,12 @@ async function webhook(ctx) {
   }
 
   ctx.logger.info('stripe webhook', { event });
+
+  // a duplicate or replayed delivery is acknowledged but not processed again
+  if (!(await acquireStripeWebhookEvent(ctx.client, event.id))) {
+    ctx.body = { received: true };
+    return;
+  }
 
   // Return a response to acknowledge receipt of the event
   ctx.body = { received: true };

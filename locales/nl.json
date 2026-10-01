@@ -23216,5 +23216,8 @@
   "Show": "Tonen",
   "Hide": "Verbergen",
   "Use my API token": "Mijn API-token gebruiken",
-  "Clear my API token": "Mijn API-token wissen"
+  "Clear my API token": "Mijn API-token wissen",
+  "Two-factor authentication is already enabled.": "Tweefactorauthenticatie is al ingeschakeld.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "Je e-mailadres kan niet via de API worden gewijzigd. Wijzig het onder Mijn account > Profiel; daarvoor zijn je wachtwoord en bevestiging van het nieuwe adres nodig.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "De bucketnaam moet 3 tot 63 tekens lang zijn, mag alleen kleine letters, cijfers, punten en koppeltekens bevatten en moet beginnen en eindigen met een letter of cijfer."
 }

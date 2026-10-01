@@ -1027,6 +1027,9 @@ async function sendCalendarEmail(
                     rawIcs: localIcs,
                     processed: false,
                     processAttempts: 0,
+                    // (sent by the organizer: the event's ORGANIZER is the
+                    // signed-in user, checked above)
+                    organizerVerified: true,
                     sequence: v.getFirstPropertyValue('sequence') || 0
                   });
 

@@ -23216,5 +23216,8 @@
   "Show": "표시",
   "Hide": "숨기기",
   "Use my API token": "내 API 토큰 사용",
-  "Clear my API token": "내 API 토큰 지우기"
+  "Clear my API token": "내 API 토큰 지우기",
+  "Two-factor authentication is already enabled.": "2단계 인증이 이미 활성화되어 있습니다.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "이메일 주소는 API를 통해 변경할 수 없습니다. 내 계정 > 프로필에서 변경해 주세요. 비밀번호와 새 주소 확인이 필요합니다.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "버킷 이름은 3~63자여야 하며 소문자, 숫자, 점, 하이픈만 포함할 수 있고 문자나 숫자로 시작하고 끝나야 합니다."
 }

@@ -23216,5 +23216,8 @@
   "Show": "显示",
   "Hide": "隐藏",
   "Use my API token": "使用我的 API 令牌",
-  "Clear my API token": "清除我的 API 令牌"
+  "Clear my API token": "清除我的 API 令牌",
+  "Two-factor authentication is already enabled.": "双因素身份验证已启用。",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "无法通过 API 更改您的电子邮件地址。请在“我的帐户 > 个人资料”中更改，这需要您的密码并确认新地址。",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "存储桶名称必须为 3 到 63 个字符，只能包含小写字母、数字、点和连字符，并且必须以字母或数字开头和结尾。"
 }

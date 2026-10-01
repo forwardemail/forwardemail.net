@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "S3 vödör neve a biztonsági mentések tárolására. A vödörnek már léteznie kell, és nem lehet nyilvánosan elérhető."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Frissített e-mail cím (csak felhasználói hitelesítés)"
+                    "description": "Jelenlegi e-mail cím (csak felhasználói hitelesítés). A bejelentkezési e-mail cím nem módosítható az API-n keresztül; eltérő érték küldése 400-as hibát ad vissza. Módosítsa inkább a Fiókom > Profil menüpontban."
                   },
                   "avatar_url": {
                     "type": "string",

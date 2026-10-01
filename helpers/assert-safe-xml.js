@@ -58,16 +58,48 @@ function assertSafeXml(
 function isSafeXml(xml) {
   const xmlString =
     typeof xml === 'string' ? xml : Buffer.from(xml).toString('utf8');
-  // Strip comments and CDATA sections first so legitimate content that
-  // merely mentions "<!DOCTYPE"/"<!ENTITY" as data (inside <![CDATA[ ]]> or
-  // <!-- -->) is not misflagged. Anything left is real markup.
-  const scannable = xmlString
-    .replace(/<!\[CDATA\[[\s\S]*?]]>/g, '')
-    .replace(/<!--[\s\S]*?-->/g, '');
-  return (
-    !REGEX_MARKUP_DECLARATION.test(scannable) &&
-    !REGEX_SUSPICIOUS_BANG.test(scannable)
-  );
+
+  // A DOCTYPE/ENTITY (or other DTD) declaration is never legitimate in
+  // DMARC reports or CardDAV/WebDAV bodies, so reject the keywords anywhere
+  // in the raw input, even inside comments or CDATA. Deciding what is "inside"
+  // a comment or CDATA is exactly what attackers play with, e.g.
+  //   <!-- <![CDATA[ --><!DOCTYPE x [...]><!-- ]]> -->
+  // hid a DOCTYPE from the previous strip-CDATA-then-comments approach.
+  if (REGEX_MARKUP_DECLARATION.test(xmlString)) return false;
+
+  return !REGEX_SUSPICIOUS_BANG.test(stripCommentsAndCdata(xmlString));
+}
+
+/**
+ * Remove comments and CDATA sections in document order (a single linear
+ * pass), so a `<!--` inside CDATA or a `<![CDATA[` inside a comment is
+ * treated as data, the same way an XML parser treats it.
+ * An unterminated comment/CDATA is left in place so it is still scanned.
+ * @param {string} str
+ * @returns {string}
+ */
+function stripCommentsAndCdata(str) {
+  let out = '';
+  let i = 0;
+  for (;;) {
+    const start = str.indexOf('<!', i);
+    if (start === -1) return out + str.slice(i);
+
+    let close;
+    if (str.startsWith('<!--', start)) close = '-->';
+    else if (str.startsWith('<![CDATA[', start)) close = ']]>';
+
+    if (!close) {
+      out += str.slice(i, start + 2);
+      i = start + 2;
+      continue;
+    }
+
+    const end = str.indexOf(close, start + (close === '-->' ? 4 : 9));
+    if (end === -1) return out + str.slice(i);
+    out += str.slice(i, start);
+    i = end + close.length;
+  }
 }
 
 module.exports = assertSafeXml;

@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "S3-säiliön nimi varmuuskopioiden tallentamista varten. Säiliön on oltava jo olemassa, eikä se saa olla julkisesti saatavilla."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Päivitetty sähköpostiosoite (vain käyttäjän todennus)"
+                    "description": "Nykyinen sähköpostiosoite (vain käyttäjän todennus). Kirjautumissähköpostia ei voi vaihtaa API:n kautta; eri arvon lähettäminen palauttaa 400-virheen. Vaihda se sen sijaan kohdassa Oma tili > Profiili."
                   },
                   "avatar_url": {
                     "type": "string",

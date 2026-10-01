@@ -32,7 +32,9 @@ async function retrieveDomains(ctx, next) {
     const redirectTo = ctx.state.l(config.loginOtpRoute);
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
-    return next();
+    // (the rest of the route does not run, otherwise e.g. POST / would still
+    // add a domain to the account without the second factor)
+    return;
   }
 
   const query = {

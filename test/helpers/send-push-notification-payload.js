@@ -7,8 +7,44 @@ const { Buffer } = require('node:buffer');
 
 const test = require('ava');
 
-const { buildPayload, formatSenderString } =
+const { buildPayload, formatSenderString, extractSenderName } =
   require('#helpers/send-push-notification')._test;
+
+test('extractSenderName > display names, quotes and bare addresses', (t) => {
+  for (const [from, expected] of [
+    ['John Smith <john@example.com>', 'John Smith'],
+    ['"John Smith" <john@example.com>', 'John Smith'],
+    ['  " John Smith "   <john@example.com>', 'John Smith'],
+    ['John Smith<john@example.com>', 'John Smith'],
+    ['<john@example.com>', 'john@example.com'],
+    ['"" <john@example.com>', 'john@example.com'],
+    ['"Jo"hn" <john@example.com>', 'john@example.com'],
+    ['   <><x@example.com>', 'x@example.com'],
+    ['john@example.com', 'john@example.com'],
+    ['  John  ', 'John'],
+    ['John <', 'John'],
+    ['', '']
+  ]) {
+    t.is(extractSenderName(from), expected, `${from}`);
+  }
+});
+
+test('buildPayload > a From header with a long whitespace run is handled in linear time', (t) => {
+  for (const from of [
+    'a' + ' '.repeat(100_000) + 'b',
+    ' '.repeat(100_000) + '<',
+    '<'.repeat(50_000)
+  ]) {
+    const start = Date.now();
+    const payload = buildPayload('newMessage', {
+      aliasId: 'alias-1',
+      message: { from, subject: 'Hi' }
+    });
+    const elapsed = Date.now() - start;
+    t.is(typeof payload.title, 'string');
+    t.true(elapsed < 500, `took ${elapsed}ms`);
+  }
+});
 
 test('formatSenderString > passes through raw header strings', (t) => {
   t.is(

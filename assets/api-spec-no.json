@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "S3-bøttenavn for lagring av sikkerhetskopier. Bøtten må allerede eksistere og kan ikke være offentlig tilgjengelig."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Oppdatert e-postadresse (kun brukergodkjenning)"
+                    "description": "Nåværende e-postadresse (kun brukergodkjenning). Innloggings-e-posten kan ikke endres via API-et; sendes en annen verdi, returneres en 400-feil. Endre den i stedet under Min konto > Profil."
                   },
                   "avatar_url": {
                     "type": "string",

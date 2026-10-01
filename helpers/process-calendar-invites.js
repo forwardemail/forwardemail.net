@@ -418,6 +418,62 @@ async function processReply(instance, ctx, invite, calendars) {
   });
 }
 
+// ─── Organizer checks ────────────────────────────────────────────────────────
+
+/**
+ * Get the ORGANIZER email of the first VEVENT/VTODO of an iCal string
+ *
+ * @param {string} icalStr - The iCal string
+ * @returns {string|null} Lowercase email or null
+ */
+function getOrganizerFromIcal(icalStr) {
+  try {
+    const comp = new ICAL.Component(ICAL.parse(icalStr));
+    const component =
+      comp.getFirstSubcomponent('vevent') || comp.getFirstSubcomponent('vtodo');
+    const organizer = component?.getFirstProperty('organizer');
+    if (!organizer) return null;
+    let email = String(organizer.getFirstValue() || '')
+      .replace(/^mailto:/i, '')
+      .trim()
+      .toLowerCase();
+    if (!email.includes('@'))
+      email = String(organizer.getParameter('email') || '')
+        .trim()
+        .toLowerCase();
+    return email.includes('@') ? email : null;
+  } catch {
+    return null;
+  }
+}
+
+//
+// RFC 6047 section 3: a REQUEST, CANCEL or ADD may only change an event in
+// the calendar when it comes from that event's organizer.  The message is
+// from the organizer when its authenticated From address is the ORGANIZER
+// (`invite.organizerVerified`, see process-imip-reply.js), and its ORGANIZER
+// must be the one of the stored event.  Events the user organizes, and
+// events with no organizer (the user's own), are never changed by email.
+//
+// Returns the reason the change is refused, or null when it is allowed.
+//
+function getOrganizerRefusal(ctx, invite, existingIcal) {
+  const userEmails = getUserEmails(ctx);
+  const existingOrganizer = getOrganizerFromIcal(existingIcal);
+  if (!existingOrganizer)
+    return 'Existing event has no organizer, it cannot be changed by email';
+  if (userEmails.includes(existingOrganizer))
+    return 'Existing event is organized by this user, it cannot be changed by email';
+  const incomingOrganizer = invite.rawIcs
+    ? getOrganizerFromIcal(invite.rawIcs)
+    : null;
+  if (incomingOrganizer !== existingOrganizer)
+    return 'ORGANIZER does not match the existing event';
+  if (invite.organizerVerified !== true)
+    return 'Message was not sent by the organizer of the existing event';
+  return null;
+}
+
 // ─── REQUEST Processing ──────────────────────────────────────────────────────
 
 /**
@@ -448,6 +504,17 @@ async function processRequest(instance, ctx, invite, calendars) {
   );
 
   if (calendarEvent) {
+    const refusal = getOrganizerRefusal(ctx, invite, calendarEvent.ical);
+    if (refusal) {
+      await markProcessed(invite._id, refusal);
+      ctx.logger.warn('REQUEST refused', {
+        inviteId: invite._id,
+        eventUid: invite.eventUid,
+        reason: refusal
+      });
+      return;
+    }
+
     // Event exists - check SEQUENCE to avoid stale updates
     const existingSequence = getSequenceFromIcal(calendarEvent.ical);
     const incomingSequence = invite.sequence || 0;
@@ -524,6 +591,16 @@ async function processRequest(instance, ctx, invite, calendars) {
       eventUid: invite.eventUid
     });
   } else {
+    // (an event the user organizes is only created by the user)
+    const incomingOrganizer = getOrganizerFromIcal(invite.rawIcs);
+    if (incomingOrganizer && getUserEmails(ctx).includes(incomingOrganizer)) {
+      await markProcessed(
+        invite._id,
+        'REQUEST is organized by this user, it cannot be added by email'
+      );
+      return;
+    }
+
     // Event doesn't exist - create it in the default calendar
     const targetCalendar =
       calendar || (await getDefaultCalendar(instance, ctx, calendars));
@@ -557,6 +634,13 @@ async function processRequest(instance, ctx, invite, calendars) {
       // Deduplicate: keep the latest by updated_at
       const deduped = deduplicateCalendarEvents(existingAll);
       const keeper = deduped[0];
+
+      // (the same checks as for an event found by UID above)
+      const refusal = getOrganizerRefusal(ctx, invite, keeper.ical);
+      if (refusal) {
+        await markProcessed(invite._id, refusal);
+        return;
+      }
 
       ctx.logger.debug(
         'processRequest: found existing event by eventId, updating instead of creating',
@@ -660,6 +744,17 @@ async function processCancel(instance, ctx, invite, calendars) {
     ctx.logger.debug('Event not found for CANCEL - already deleted?', {
       inviteId: invite._id,
       eventUid: invite.eventUid
+    });
+    return;
+  }
+
+  const refusal = getOrganizerRefusal(ctx, invite, calendarEvent.ical);
+  if (refusal) {
+    await markProcessed(invite._id, refusal);
+    ctx.logger.warn('CANCEL refused', {
+      inviteId: invite._id,
+      eventUid: invite.eventUid,
+      reason: refusal
     });
     return;
   }
@@ -773,6 +868,17 @@ async function processAdd(instance, ctx, invite, calendars) {
       },
       calendars
     );
+    return;
+  }
+
+  const refusal = getOrganizerRefusal(ctx, invite, calendarEvent.ical);
+  if (refusal) {
+    await markProcessed(invite._id, refusal);
+    ctx.logger.warn('ADD refused', {
+      inviteId: invite._id,
+      eventUid: invite.eventUid,
+      reason: refusal
+    });
     return;
   }
 

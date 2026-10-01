@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "Nazwa kontenera S3 do przechowywania kopii zapasowych. Kontener musi już istnieć i nie może być publicznie dostępny."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Zaktualizowany adres e-mail (tylko uwierzytelnianie użytkownika)"
+                    "description": "Bieżący adres e-mail (tylko uwierzytelnianie użytkownika). Adresu e-mail logowania nie można zmienić przez API; wysłanie innej wartości zwraca błąd 400. Zmień go zamiast tego w sekcji Moje konto > Profil."
                   },
                   "avatar_url": {
                     "type": "string",

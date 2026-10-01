@@ -55,3 +55,35 @@ test('correctly parses TXT records', async (t) => {
     t.is(records.hasRegex, false);
   }
 });
+
+test('escapes TXT record values in error messages shown as HTML', async (t) => {
+  const map = new Map();
+  map.set(
+    'txt:html-in-txt.com',
+    resolver.spoofPacket(
+      'html-in-txt.com',
+      'TXT',
+      [
+        'forward-email=x:<meta http-equiv=refresh content=0;url=https://evil.example>'
+      ],
+      true,
+      ms('5m')
+    )
+  );
+  await resolver.options.cache.mset(map);
+
+  const { errors } = await Domains.getTxtAddresses(
+    'html-in-txt.com',
+    'en',
+    false,
+    resolver,
+    false
+  );
+  t.is(errors.length, 1);
+  t.false(errors[0].message.includes('<meta'));
+  t.true(
+    errors[0].message.includes(
+      '&lt;meta http-equiv=refresh content=0;url=https://evil.example&gt;'
+    )
+  );
+});

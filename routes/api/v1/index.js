@@ -391,13 +391,16 @@ router
   .get(
     '/domains/:domain_id/verify-records',
     web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
     api.v1.enforcePaidPlan,
     web.myAccount.verifyRecords
   )
   .get(
     '/domains/:domain_id/verify-smtp',
     web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
     api.v1.enforcePaidPlan,
+    web.myAccount.ensureSMTPAccess,
     web.myAccount.verifySMTP
   )
   .post(

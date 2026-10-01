@@ -23216,5 +23216,8 @@
   "Show": "Mostra",
   "Hide": "Nascondi",
   "Use my API token": "Usa il mio token API",
-  "Clear my API token": "Cancella il mio token API"
+  "Clear my API token": "Cancella il mio token API",
+  "Two-factor authentication is already enabled.": "L'autenticazione a due fattori è già abilitata.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "Il tuo indirizzo email non può essere modificato tramite l’API. Modificalo in Il mio account > Profilo, che richiede la tua password e la conferma del nuovo indirizzo.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "Il nome del bucket deve essere lungo da 3 a 63 caratteri, contenere solo lettere minuscole, numeri, punti e trattini, e iniziare e terminare con una lettera o un numero."
 }

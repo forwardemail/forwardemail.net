@@ -23216,5 +23216,8 @@
   "Show": "แสดง",
   "Hide": "ซ่อน",
   "Use my API token": "ใช้โทเค็น API ของฉัน",
-  "Clear my API token": "ล้างโทเค็น API ของฉัน"
+  "Clear my API token": "ล้างโทเค็น API ของฉัน",
+  "Two-factor authentication is already enabled.": "เปิดใช้งานการยืนยันตัวตนแบบสองปัจจัยอยู่แล้ว",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "ไม่สามารถเปลี่ยนที่อยู่อีเมลของคุณผ่าน API ได้ โปรดเปลี่ยนที่ บัญชีของฉัน > โปรไฟล์ ซึ่งต้องใช้รหัสผ่านและการยืนยันที่อยู่ใหม่",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "ชื่อบักเก็ตต้องมีความยาว 3 ถึง 63 อักขระ ประกอบด้วยตัวพิมพ์เล็ก ตัวเลข จุด และขีดกลางเท่านั้น และต้องขึ้นต้นและลงท้ายด้วยตัวอักษรหรือตัวเลข"
 }

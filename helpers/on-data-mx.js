@@ -575,6 +575,14 @@ async function imap(alias, headers, session, body) {
       sender: session.envelope?.mailFrom?.address
         ? checkSRS(session.envelope.mailFrom.address)
         : undefined,
+      // the From header address only when it is authenticated (DMARC passed
+      // or DKIM aligned with it), for iMIP organizer checks
+      authenticatedFrom:
+        isSANB(session.originalFromAddress) &&
+        (session.dmarc?.status?.result === 'pass' ||
+          session.hadAlignedAndPassingDKIM === true)
+          ? session.originalFromAddress.toLowerCase()
+          : undefined,
       date:
         typeof session.arrivalDate === 'string'
           ? session.arrivalDate

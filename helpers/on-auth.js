@@ -129,6 +129,10 @@ const AUTH_CACHE_PREFIX = 'auth_cache:';
 const AUTH_CACHE_ALIAS_PREFIX = 'auth_cache_alias:';
 const AUTH_CACHE_TTL = ms('1m');
 
+// How a cached login was verified (`auth_via` in the cached value)
+const AUTH_VIA_ALIAS_TOKEN = 'alias_token';
+const AUTH_VIA_DOMAIN_TOKEN = 'domain_token';
+
 //
 // Digest of a password for Redis keys and values (the auth cache key, and
 // the failed attempts already counted).  Keyed with a server secret, so the
@@ -216,6 +220,9 @@ async function onAuth(auth, session, fn) {
     const isIMAP = this?.constructor?.name === 'IMAP';
     const isPOP3 = this?.constructor?.name === 'POP3';
     const isManageSieve = this?.constructor?.name === 'ManageSieveServer';
+    // the SMTP submission server (outbound mail), the only server that
+    // accepts a domain-wide catch-all password (see `domain.tokens` below)
+    const isSMTP = this?.constructor?.name === 'SMTP';
     // (per address, or per /64 for IPv6, see helpers/get-ip-bucket.js)
     const ipBucket = getIpBucket(session.remoteAddress);
     const authLimitKey = `auth_limit_${config.env}:${ipBucket}`;
@@ -413,12 +420,19 @@ async function onAuth(auth, session, fn) {
           // IMAP/POP3 sessions require alias_id; SMTP catch-all logins
           // cache a user object without one — skip cache for those.
           (!isIMAPorPOP3 || user.alias_id) &&
+          // A login that only a domain-wide catch-all password verified is
+          // valid for SMTP only; every other server must check the alias
+          // password itself, so it treats anything but a verified alias
+          // password (including entries written without this field) as a miss.
+          (isSMTP ||
+            (user.alias_id && user.auth_via === AUTH_VIA_ALIAS_TOKEN)) &&
           !isRekeying
         ) {
           // when the credentials were really checked (a revocation check
           // by the caller must start from there, not from this cache hit)
           const authAt = user.auth_at;
           delete user.auth_at;
+          delete user.auth_via;
 
           // Re-encrypt the current request's password (same password since
           // the cache key includes the password hash) so the session has
@@ -930,23 +944,30 @@ async function onAuth(auth, session, fn) {
     //  uniform failure only spends the dummy argon2 cost when none did)
     let isValid = false;
     let verified = false;
+    let authVia = null;
     if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0) {
       verified = true;
       isValid = await isValidPassword(alias.tokens, auth.password, alias);
+      if (isValid) authVia = AUTH_VIA_ALIAS_TOKEN;
     }
 
     //
     // NOTE: this is only applicable to SMTP servers (outbound mail)
     //       we allow users to use a generated token for the domain
     //
+    //       Any other server (IMAP, POP3, ManageSieve, CalDAV, CardDAV, API)
+    //       opens the alias mailbox, which a domain-wide password must never
+    //       unlock, so it only accepts the alias's own password.
+    //
     if (
-      !isIMAPorPOP3 &&
+      isSMTP &&
       !isValid &&
       Array.isArray(domain.tokens) &&
       domain.tokens.length > 0
     ) {
       verified = true;
       isValid = await isValidPassword(domain.tokens, auth.password, domain);
+      if (isValid) authVia = AUTH_VIA_DOMAIN_TOKEN;
     }
 
     if (!isValid) throw await uniformAuthFailure('Invalid password', verified);
@@ -1296,7 +1317,9 @@ async function onAuth(auth, session, fn) {
       if (!authStartedAt) throw new Error('Authentication time missing');
       const cacheValue = safeStringify({
         ...userWithoutPassword,
-        auth_at: authStartedAt
+        auth_at: authStartedAt,
+        // which password verified this login (see the cache hit above)
+        auth_via: authVia
       });
       const pipeline = this.client.pipeline();
       pipeline.set(authCacheKey, cacheValue, 'PX', AUTH_CACHE_TTL);

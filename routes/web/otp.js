@@ -26,8 +26,26 @@ router
     return ctx.render('otp/login');
   })
   .post(config.otpRouteLoginPath, rateLimit(30, 'otp login'), web.auth.loginOtp)
-  .get('/setup', web.otp.setup, render('otp/setup'))
-  .post('/setup', rateLimit(10, 'otp setup'), web.otp.setup)
+  //
+  // NOTE: login, recovery, and keys are the second factor itself so they must
+  //       stay reachable after only the password step, but setup shows the
+  //       recovery keys and the OTP secret, so it requires the second factor
+  //
+  // (and only once the email is verified, see ensure-verified-email.js)
+  .get(
+    '/setup',
+    policies.ensureOtp,
+    web.myAccount.ensureVerifiedEmail,
+    web.otp.setup,
+    render('otp/setup')
+  )
+  .post(
+    '/setup',
+    policies.ensureOtp,
+    web.myAccount.ensureVerifiedEmail,
+    rateLimit(10, 'otp setup'),
+    web.otp.setup
+  )
   .post('/disable', rateLimit(10, 'otp disable'), web.otp.disable)
   .post('/recovery', rateLimit(10, 'otp recovery'), web.otp.recovery)
   .get('/keys', render('otp/keys'))

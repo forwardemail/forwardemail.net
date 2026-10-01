@@ -34,6 +34,7 @@ const SQLite = require('../../sqlite-server');
 const Users = require('#models/users');
 const calDAVConfig = require('#config/caldav');
 const config = require('#config');
+const createPassword = require('#helpers/create-password');
 const createTangerine = require('#helpers/create-tangerine');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const env = require('#config/env');
@@ -570,6 +571,35 @@ test('Depth:1 PROPFIND on user principal lists calendars', async (t) => {
   });
   // Should get multiple responses (the principal + at least one calendar)
   t.true(results.length >= 2, 'Depth:1 should return principal + calendars');
+});
+
+test('Basic auth with a domain-wide catch-all password is refused', async (t) => {
+  const { domain, alias, user } = t.context;
+  // the catch-all password is for outbound SMTP only
+  const { password, salt, hash } = await createPassword();
+  domain.tokens.push({ description: 'test', salt, hash, user: user._id });
+  domain.skip_verification = true;
+  await domain.save();
+
+  const { homeUrl } = t.context.account;
+  const propfind = (headers) =>
+    rawRequest(homeUrl, {
+      method: 'PROPFIND',
+      headers: { Depth: '0', 'Content-Type': 'application/xml', ...headers },
+      body: '<?xml version="1.0"?><d:propfind xmlns:d="DAV:"><d:prop><d:displayname/></d:prop></d:propfind>'
+    });
+
+  const res = await propfind(
+    getBasicAuthHeaders({
+      username: `${alias.name}@${domain.name}`,
+      password
+    })
+  );
+  t.is(res.status, 401);
+
+  // (the alias password itself still works)
+  const ok = await propfind(t.context.authHeaders);
+  t.is(ok.status, 207);
 });
 
 // ============================================

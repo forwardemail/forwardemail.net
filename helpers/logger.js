@@ -123,6 +123,16 @@ const REDACTED_FIELDS = new Set([
   // redis object specific
   'auth',
 
+  // http specific
+  //
+  // NOTE: request logging only masks the `authorization` header, but the
+  //       `cookie` header (and the `cookies` object parsed from it) carry the
+  //       session cookie and its signature, which would otherwise be stored
+  //       in plain text with every error/fatal log of a signed-in request
+  'cookie',
+  'cookies',
+  'set-cookie',
+
   // oauth specific
   'google_access_token',
   'google_refresh_token',

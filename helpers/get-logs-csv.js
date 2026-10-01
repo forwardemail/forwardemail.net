@@ -14,6 +14,7 @@ const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const titleize = require('titleize');
 const _ = require('#helpers/lodash');
+const csvEscape = require('#helpers/csv-escape');
 
 const Logs = require('#models/logs');
 
@@ -22,9 +23,8 @@ const CREATED_AT_INDEX_HINT = { created_at: 1 };
 
 function makeDelimitedString(arr) {
   // <https://stackoverflow.com/a/17808731>
-  return `"${arr
-    .map((a) => (a || '').toString().trim().replaceAll('"', '""'))
-    .join('","')}"`;
+  // (values such as the subject and SMTP response come from external senders)
+  return arr.map((a) => csvEscape((a || '').toString().trim())).join(',');
 }
 
 // eslint-disable-next-line max-params

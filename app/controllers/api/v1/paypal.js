@@ -16,6 +16,7 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const acquirePayPalWebhookEvent = require('#helpers/acquire-paypal-webhook-event');
+const claimPayPalSubscription = require('#helpers/claim-paypal-subscription');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const { Users, Payments } = require('#models');
@@ -23,6 +24,7 @@ const { paypalAgent, paypal } = require('#helpers/paypal');
 const syncPayPalSubscriptionPaymentsByUser = require('#helpers/sync-paypal-subscription-payments-by-user');
 const syncPayPalOrderPaymentByPaymentId = require('#helpers/sync-paypal-order-payment-by-payment-id');
 const retryPayPalRequest = require('#helpers/retry-paypal-request');
+const getPayPalOrderCapture = require('#helpers/get-paypal-order-capture');
 
 const { PAYPAL_PLAN_MAPPING } = config.payments;
 
@@ -248,13 +250,42 @@ async function processEvent(ctx) {
       // NOTE: if there is no user then we can assume that they didn't
       //       get redirected post-checkout and so their subscription isn't assigned to them yet
       //
-      if (!user) {
-        // attempt to find the user by their email address
+      //       subscriptions are created with the user's id as `custom_id`,
+      //       which is only used for an account without a subscription:
+      //       anyone can create a subscription with any `custom_id`, so it
+      //       must not replace (and cancel) the account's current one.
+      //       A user switching plans is assigned the new subscription by the
+      //       redirect, which checks the subscription belongs to them.
+      //
+      if (!user && isSANB(res.body.custom_id)) {
+        user = await Users.findOne({
+          id: res.body.custom_id,
+          [config.userFields.paypalSubscriptionID]: { $exists: false }
+        });
+        // (unless the redirect of another account claimed it meanwhile)
+        if (
+          user &&
+          !(await claimPayPalSubscription(ctx.client, res.body.id, user.id))
+        )
+          user = null;
+        if (user) {
+          user[config.userFields.paypalSubscriptionID] = res.body.id;
+          user[config.userFields.paypalPayerID] = res.body.subscriber.payer_id;
+          await user.save();
+        }
+      } else if (!user) {
+        // older subscriptions have no `custom_id`,
+        // so attempt to find the user by their email address
         user = await Users.findOne({
           email: res.body.subscriber.email_address.toLowerCase(),
           [config.userFields.paypalSubscriptionID]: { $exists: false },
           [config.userFields.paypalPayerID]: { $exists: false }
         });
+        if (
+          user &&
+          !(await claimPayPalSubscription(ctx.client, res.body.id, user.id))
+        )
+          user = null;
         // save user's subscription ID and payer ID to their account
         if (user) {
           user[config.userFields.paypalSubscriptionID] = res.body.id;
@@ -517,23 +548,7 @@ async function processEvent(ctx) {
 
       if (!_.isDate(now)) now = new Date();
 
-      // if the user's plan doesn't match up or if they never had a plan set date
-      // then adjust the plan set date to the current time or date parsed
-      const plan = res.body.purchase_units[0].custom_id.toLowerCase();
-      if (user.plan !== plan) {
-        user.plan = plan;
-        user[config.userFields.planSetAt] = now;
-        await user.save();
-      } else if (!_.isDate(user[config.userFields.planSetAt])) {
-        user[config.userFields.planSetAt] = now;
-        await user.save();
-      }
-
-      let transactionId;
-
-      // parse the transaction id
-      if (res?.body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
-        transactionId = res?.body.purchase_units[0].payments.captures[0].id;
+      let captured;
 
       // capture payment with retry logic for PayPal infrastructure delays
       try {
@@ -543,10 +558,7 @@ async function processEvent(ctx) {
             const response = await agent.post(
               `/v2/checkout/orders/${res.body.id}/capture`
             );
-            // parse the transaction id
-            if (response.body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
-              transactionId =
-                response.body.purchase_units[0].payments.captures[0].id;
+            captured = response.body;
           },
           {
             retries: 3,
@@ -587,6 +599,32 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
             .then()
             .catch((err) => ctx.logger.fatal(err));
         }
+      }
+
+      // only credit the plan once the order was paid (a declined capture
+      // leaves the order APPROVED, and one already captured by the redirect
+      // is COMPLETED when looked up again)
+      const capture = await getPayPalOrderCapture(res.body.id, captured);
+      if (!capture) {
+        ctx.logger.warn('paypal order was not captured', {
+          paypal_order_id: res.body.id,
+          user_email: user.email
+        });
+        break;
+      }
+
+      const transactionId = capture.id;
+
+      // if the user's plan doesn't match up or if they never had a plan set date
+      // then adjust the plan set date to the current time or date parsed
+      const plan = res.body.purchase_units[0].custom_id.toLowerCase();
+      if (user.plan !== plan) {
+        user.plan = plan;
+        user[config.userFields.planSetAt] = now;
+        await user.save();
+      } else if (!_.isDate(user[config.userFields.planSetAt])) {
+        user[config.userFields.planSetAt] = now;
+        await user.save();
       }
 
       // NOTE: we don't want to re-create the payment if the redirect after paypal checkout already did

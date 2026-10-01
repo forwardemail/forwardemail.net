@@ -12,6 +12,7 @@ const test = require('ava');
 const utils = require('../utils');
 
 const config = require('#config');
+const phrases = require('#config/phrases');
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
@@ -85,4 +86,36 @@ test('only admins of a domain see its members and pending invites', async (t) =>
   t.deepEqual(res.body.invites, []);
   t.false(JSON.stringify(res.body).includes(token));
   t.false(JSON.stringify(res.body).includes(admin.email));
+});
+
+test('only admins of a domain can verify its records and SMTP', async (t) => {
+  const { api } = t.context;
+  const admin = await createUser(t);
+  const member = await createUser(t);
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: admin._id, group: 'admin' }],
+      plan: admin.plan,
+      resolver: t.context.resolver,
+      ignore_mx_check: true
+    })
+    .create();
+  domain.members.push({ user: member._id, group: 'user' });
+  await domain.save();
+
+  for (const path of ['verify-records', 'verify-smtp']) {
+    // a member cannot run the checks (or trigger SMTP auto-approval)
+    let res = await api
+      .get(`/v1/domains/${domain.name}/${path}`)
+      .auth(member[config.userFields.apiToken]);
+    t.is(res.status, 400);
+    t.is(res.body.message, phrases.IS_NOT_ADMIN);
+
+    // the admin still gets the verification result
+    res = await api
+      .get(`/v1/domains/${domain.name}/${path}`)
+      .auth(admin[config.userFields.apiToken]);
+    t.not(res.body.message, phrases.IS_NOT_ADMIN);
+  }
 });

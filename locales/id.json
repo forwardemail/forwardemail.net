@@ -23216,5 +23216,8 @@
   "Show": "Tampilkan",
   "Hide": "Sembunyikan",
   "Use my API token": "Gunakan token API saya",
-  "Clear my API token": "Hapus token API saya"
+  "Clear my API token": "Hapus token API saya",
+  "Two-factor authentication is already enabled.": "Autentikasi dua faktor sudah diaktifkan.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "Alamat email Anda tidak dapat diubah melalui API. Silakan ubah di Akun Saya > Profil, yang memerlukan kata sandi Anda dan konfirmasi alamat baru.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "Nama bucket harus terdiri dari 3 hingga 63 karakter, hanya berisi huruf kecil, angka, titik, dan tanda hubung, serta diawali dan diakhiri dengan huruf atau angka."
 }

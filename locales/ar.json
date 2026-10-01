@@ -23216,5 +23216,8 @@
   "Show": "إظهار",
   "Hide": "إخفاء",
   "Use my API token": "استخدام رمز API الخاص بي",
-  "Clear my API token": "مسح رمز API الخاص بي"
+  "Clear my API token": "مسح رمز API الخاص بي",
+  "Two-factor authentication is already enabled.": "المصادقة الثنائية مفعّلة بالفعل.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "لا يمكن تغيير عنوان بريدك الإلكتروني عبر واجهة برمجة التطبيقات. يرجى تغييره من حسابي > الملف الشخصي، حيث يتطلب ذلك كلمة المرور وتأكيد العنوان الجديد.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "يجب أن يتراوح طول اسم الحاوية بين 3 و63 حرفًا، وأن يحتوي فقط على أحرف صغيرة وأرقام ونقاط وشرطات، وأن يبدأ وينتهي بحرف أو رقم."
 }

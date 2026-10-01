@@ -8,6 +8,7 @@ const https = require('node:https');
 const { lookup: dnsLookup } = require('node:dns/promises');
 
 const isPrivateHost = require('#helpers/is-private-host');
+const isValidS3BucketName = require('#helpers/is-valid-s3-bucket-name');
 
 /**
  * Check if an S3-compatible bucket is publicly accessible.
@@ -50,6 +51,16 @@ async function checkS3BucketAccess(
     return false;
   }
 
+  if (endpointUrl.protocol !== 'https:' && endpointUrl.protocol !== 'http:')
+    return false;
+
+  //
+  // The bucket name is interpolated into both URLs below; a name containing
+  // "/", "#", "?", "@" or ":" would change the host that is requested
+  // (e.g. "127.0.0.1/.s3.example.com" as a virtual-hosted-style label).
+  //
+  if (!isValidS3BucketName(bucket)) return false;
+
   // Path-style URL: https://endpoint/bucket
   const pathStyleUrl = new URL(`/${bucket}`, endpointUrl).href;
 
@@ -90,7 +101,21 @@ async function checkS3BucketAccess(
  * @returns {Promise<boolean>} true if response is 200, false otherwise
  * @private
  */
-function _anonymousRequest(url, timeout, resolver) {
+async function _anonymousRequest(url, timeout, resolver) {
+  //
+  // Validate the target before any request is made.  The connect-time lookup
+  // below is only invoked for hostnames; IP-literal hosts
+  // (e.g. http://169.254.169.254) are connected to directly, so they (and
+  // every address a hostname resolves to) are checked here first.
+  //
+  try {
+    const { hostname } = new URL(url);
+    if (await checkS3BucketAccess.isPrivateTarget(hostname, resolver))
+      return false;
+  } catch {
+    return false;
+  }
+
   return new Promise((resolve) => {
     try {
       const parsedUrl = new URL(url);
@@ -150,5 +175,8 @@ function _anonymousRequest(url, timeout, resolver) {
     }
   });
 }
+
+// (exposed so tests against local servers can allow loopback targets)
+checkS3BucketAccess.isPrivateTarget = isPrivateHost.isPrivateHostResolved;
 
 module.exports = checkS3BucketAccess;

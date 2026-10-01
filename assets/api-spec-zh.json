@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "用于存储备份的 S3 存储桶名称。该存储桶必须已存在，且不得公开访问。"
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "已更新电子邮件地址（仅供用户身份验证）"
+                    "description": "当前电子邮件地址（仅限用户身份验证）。无法通过 API 更改登录电子邮件；发送不同的值将返回 400 错误。请改为在“我的帐户 > 个人资料”中更改。"
                   },
                   "avatar_url": {
                     "type": "string",

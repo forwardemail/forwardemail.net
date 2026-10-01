@@ -448,6 +448,7 @@ module.exports = {
   CONSENT_REQUIRED:
     'Offline access consent required to generate a new refresh token.',
   OTP_NOT_ENABLED: 'OTP authentication is not enabled.',
+  OTP_ALREADY_ENABLED: 'Two-factor authentication is already enabled.',
   OTP_TOKEN_DOES_NOT_EXIST: 'OTP token does not exist for validation.',
   INVALID_CHALLENGE: 'Invalid challenge.',
   INVALID_ORIGIN_MISMATCH: 'Origin mismatch.',
@@ -558,6 +559,8 @@ module.exports = {
   CUSTOM_S3_TEST_FAILED: 'Failed to connect to your custom S3 storage: %s',
   CUSTOM_S3_INVALID_ENDPOINT:
     'Endpoint URL must start with https:// (e.g. https://s3.us-east-1.amazonaws.com). Please include the full URL with protocol.',
+  CUSTOM_S3_INVALID_BUCKET:
+    'Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.',
   CUSTOM_S3_NOT_ENABLED:
     'Custom S3 storage is not enabled for this domain. Please enable it and save your credentials first.',
   INVALID_STRING: '<span class="notranslate">%s</span> was missing or blank.',
@@ -844,6 +847,8 @@ module.exports = {
     'The email address <span class="notranslate">%s</span> already exists.',
   EMAIL_CHANGE_DOES_NOT_EXIST: 'Email change request does not exist.',
   EMAIL_CHANGE_CANCELLED: 'Email change request has been cancelled.',
+  EMAIL_CHANGE_NOT_ALLOWED_VIA_API:
+    'Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.',
   CANCELLED: 'Cancelled',
   ACCEPTED: 'Accepted',
   DECLINED: 'Declined',

@@ -15,6 +15,7 @@ const test = require('ava');
 
 const utils = require('../utils');
 const config = require('#config');
+const createPassword = require('#helpers/create-password');
 const { Aliases } = require('#models');
 
 const { emoji } = config.views.locals;
@@ -1421,6 +1422,66 @@ Test`.trim()
   t.is(res.body.subject, `${emoji('blush')} testing this`);
 });
 
+test('alias auth cannot send email as another alias or a non-existent address', async (t) => {
+  const { api } = t.context;
+  // the alias owner is a domain admin, which must not widen what the alias can send as
+  const { user, alias, domain, pass } = await createTestAlias(t);
+
+  const otherAlias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const send = (body) =>
+    api
+      .post('/v1/emails')
+      .set(
+        'Authorization',
+        createAliasAuth(`${alias.name}@${domain.name}`, pass)
+      )
+      .set('Accept', 'application/json')
+      .send(body);
+
+  // another alias on the same domain
+  let res = await send({
+    from: `${otherAlias.name}@${domain.name}`,
+    to: 'foo@bar.com',
+    subject: 'test',
+    text: 'test'
+  });
+  t.is(res.status, 403);
+  t.true(res.body.message.includes(`${alias.name}@${domain.name}`));
+
+  // an address that is not an alias
+  res = await send({
+    from: `does-not-exist@${domain.name}`,
+    to: 'foo@bar.com',
+    subject: 'test',
+    text: 'test'
+  });
+  t.is(res.status, 403);
+  t.true(res.body.message.includes(`${alias.name}@${domain.name}`));
+
+  // another alias using a raw message
+  res = await send({
+    raw: `From: ${otherAlias.name}@${domain.name}\r\nTo: foo@bar.com\r\nSubject: test\r\n\r\ntest`
+  });
+  t.is(res.status, 403);
+  t.true(res.body.message.includes(`${alias.name}@${domain.name}`));
+
+  // the authenticated alias itself still works
+  res = await send({
+    from: `${alias.name}@${domain.name}`,
+    to: 'foo@bar.com',
+    subject: 'test',
+    text: 'test'
+  });
+  t.is(res.status, 200);
+});
+
 test('lists, retrieves, and deletes emails with alias auth', async (t) => {
   const { api } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);
@@ -1504,6 +1565,33 @@ test('lists messages with alias auth', async (t) => {
   // Should return 200 with empty array initially
   t.is(res.status, 200);
   t.true(Array.isArray(res.body));
+});
+
+test('refuses alias auth with a domain-wide catch-all password', async (t) => {
+  const { api } = t.context;
+  const { user, domain, alias, pass } = await createTestAlias(t);
+
+  // the catch-all password is for outbound SMTP only
+  const { password, salt, hash } = await createPassword();
+  domain.tokens.push({ description: 'test', salt, hash, user: user._id });
+  domain.skip_verification = true;
+  await domain.save();
+
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, password);
+  for (const path of ['/v1/messages', '/v1/folders', '/v1/account']) {
+    const res = await api.get(path).set('Authorization', auth);
+    t.is(res.status, 401, `GET ${path}`);
+    t.regex(res.body.message, /Invalid username or password/, `GET ${path}`);
+  }
+
+  // (the alias password itself still works)
+  const res = await api
+    .get('/v1/messages')
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+  t.is(res.status, 200);
 });
 
 test('creates, retrieves, and deletes message with alias auth', async (t) => {

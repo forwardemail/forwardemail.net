@@ -36,6 +36,7 @@ const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
+const csvEscape = require('#helpers/csv-escape');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
@@ -727,30 +728,35 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
     await p.flush();
 
     // Create CSV with all removals
+    // (recipients are user-supplied, so cells are quoted and formula-safe)
     const removalsCsvContent = ['prefix,value']; // header row
 
     for (const key of denylistSet) {
-      removalsCsvContent.push(`denylist,${key}`);
+      removalsCsvContent.push(`denylist,${csvEscape(key)}`);
     }
 
     for (const key of backscatterSet) {
-      removalsCsvContent.push(`backscatter,${key}`);
+      removalsCsvContent.push(`backscatter,${csvEscape(key)}`);
     }
 
     for (const key of silentSet) {
-      removalsCsvContent.push(`silent,${key}`);
+      removalsCsvContent.push(`silent,${csvEscape(key)}`);
     }
 
     // Create full allowlist CSV
     const allowlistCsvContent = ['domain_or_email']; // header row
     for (const key of set) {
-      allowlistCsvContent.push(key);
+      allowlistCsvContent.push(csvEscape(key));
     }
 
     // Create denylisted entries CSV
     const denylistedCsvContent = ['value,type,reason']; // header row
     for (const entry of denylistedEntries.values()) {
-      denylistedCsvContent.push(`${entry.value},${entry.type},${entry.reason}`);
+      denylistedCsvContent.push(
+        [entry.value, entry.type, entry.reason]
+          .map((v) => csvEscape(v))
+          .join(',')
+      );
     }
 
     // Calculate statistics

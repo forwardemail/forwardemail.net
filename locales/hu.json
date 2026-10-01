@@ -23216,5 +23216,8 @@
   "Show": "Megjelenítés",
   "Hide": "Elrejtés",
   "Use my API token": "API-tokenem használata",
-  "Clear my API token": "API-tokenem törlése"
+  "Clear my API token": "API-tokenem törlése",
+  "Two-factor authentication is already enabled.": "A kétfaktoros hitelesítés már engedélyezve van.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "Az e-mail-címe nem módosítható az API-n keresztül. Kérjük, módosítsa a Fiókom > Profil menüpontban, ami a jelszavát és az új cím megerősítését igényli.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "A bucket nevének 3–63 karakter hosszúnak kell lennie, csak kisbetűket, számokat, pontokat és kötőjeleket tartalmazhat, és betűvel vagy számmal kell kezdődnie és végződnie."
 }

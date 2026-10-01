@@ -20,6 +20,7 @@ const completeWebauthnAuthentication = require('#helpers/complete-webauthn-authe
 const emailHelper = require('#helpers/email');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
+const clearUnverifiedSignIns = require('#helpers/clear-unverified-sign-ins');
 const logger = require('#helpers/logger');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const rateLimit = require('#helpers/rate-limit');
@@ -107,6 +108,8 @@ async function callbackRedirect(ctx, next) {
   ) {
     const user = await Users.findById(ctx.state.user._id);
     if (user) {
+      // (passkeys, two-factor and the API token, see clear-unverified-sign-ins.js)
+      clearUnverifiedSignIns(user);
       user[config.userFields.hasVerifiedEmail] = true;
       user[config.userFields.resetToken] = undefined;
       user[config.userFields.resetTokenExpiresAt] = undefined;

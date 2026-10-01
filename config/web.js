@@ -35,9 +35,11 @@ const validateHostHeader = require('#helpers/validate-host-header');
 const blockSourceMaps = require('#helpers/block-source-maps');
 const {
   createOtpRememberMeCookie,
-  isValidOtpRememberMeCookie
+  isValidOtpRememberMeCookie,
+  getOtpRememberMeState
 } = require('#helpers/otp-remember-me');
 const _ = require('#helpers/lodash');
+const regenerateSessionOnLogin = require('#helpers/regenerate-session-on-login');
 
 const Users = require('#models/users');
 const createTangerine = require('#helpers/create-tangerine');
@@ -656,6 +658,9 @@ module.exports = (redis) => ({
     });
   },
   hookBeforeRoutes(app) {
+    // issue a new session id whenever a user logs in (session fixation)
+    regenerateSessionOnLogin(app.context.passport);
+
     // Denylist middleware: checks referer, IP, user email, and resolved hostname.
     // Placed here (after i18n.middleware) so that when a denylisted request
     // triggers the error handler, ctx.pathWithoutLocale, ctx.locale and t()
@@ -749,7 +754,7 @@ module.exports = (redis) => ({
     // if user has OTP remember me then set on session
     // and/or
     // if user is logged in then ensure their current session ID is stored
-    app.use((ctx, next) => {
+    app.use(async (ctx, next) => {
       if (ctx.session && ctx.isAuthenticated()) {
         // Skip session tracking for admin impersonation sessions
         if (!ctx.session._admin_impersonation) {
@@ -805,23 +810,45 @@ module.exports = (redis) => ({
         if (ctx.state.user[config.passport.fields.otpEnabled]) {
           if (ctx.session.otp) {
             if (ctx.session.otp_remember_me) {
-              ctx.cookies.set(
-                'otp_remember_me',
-                createOtpRememberMeCookie(ctx.state.user.id),
-                cookieOptions
-              );
+              // bound to the current password, OTP secret, and session epoch
+              // (issued once per session: it needs the account state, which
+              // is not worth reading on every request)
+              if (!ctx.session.otp_remember_me_issued) {
+                let state;
+                try {
+                  state = await getOtpRememberMeState(ctx, Users);
+                } catch (err) {
+                  ctx.logger.error(err);
+                }
+
+                if (state) {
+                  ctx.cookies.set(
+                    'otp_remember_me',
+                    createOtpRememberMeCookie(state),
+                    cookieOptions
+                  );
+                  ctx.session.otp_remember_me_issued = true;
+                }
+              }
             } else {
               ctx.cookies.set('otp_remember_me', null);
             }
-          } else if (
-            isValidOtpRememberMeCookie(
-              ctx.cookies.get('otp_remember_me'),
-              ctx.state.user.id
-            )
-          ) {
-            ctx.session.otp = 'remember_me';
           } else {
-            ctx.cookies.set('otp_remember_me', null, cookieOptions);
+            const value = ctx.cookies.get('otp_remember_me');
+            let isValid = false;
+            if (value) {
+              try {
+                isValid = isValidOtpRememberMeCookie(
+                  value,
+                  await getOtpRememberMeState(ctx, Users)
+                );
+              } catch (err) {
+                ctx.logger.error(err);
+              }
+            }
+
+            if (isValid) ctx.session.otp = 'remember_me';
+            else ctx.cookies.set('otp_remember_me', null, cookieOptions);
           }
         }
       }

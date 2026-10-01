@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "Nome do bucket S3 para armazenamento de backups. O bucket deve existir previamente e não deve ser acessível publicamente."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Endereço de e-mail atualizado (somente para autenticação do usuário)"
+                    "description": "Endereço de e-mail atual (somente para autenticação do usuário). O e-mail de login não pode ser alterado pela API; enviar um valor diferente retorna um erro 400. Altere-o em Minha conta > Perfil."
                   },
                   "avatar_url": {
                     "type": "string",

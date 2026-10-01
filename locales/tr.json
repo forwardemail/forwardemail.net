@@ -23216,5 +23216,8 @@
   "Show": "Göster",
   "Hide": "Gizle",
   "Use my API token": "API belirtecimi kullan",
-  "Clear my API token": "API belirtecimi temizle"
+  "Clear my API token": "API belirtecimi temizle",
+  "Two-factor authentication is already enabled.": "İki faktörlü kimlik doğrulama zaten etkin.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "E-posta adresiniz API üzerinden değiştirilemez. Lütfen Hesabım > Profil bölümünden değiştirin; bunun için parolanız ve yeni adresin onaylanması gerekir.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "Bucket adı 3 ile 63 karakter arasında olmalı, yalnızca küçük harf, rakam, nokta ve kısa çizgi içermeli ve bir harf veya rakamla başlayıp bitmelidir."
 }

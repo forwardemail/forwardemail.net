@@ -144,6 +144,14 @@ const CalendarInvites = new mongoose.Schema(
       default: 0
     },
 
+    // Whether the message came from the event's organizer (its authenticated
+    // From address is the ORGANIZER); only then may a REQUEST, CANCEL or ADD
+    // change an event already in the calendar
+    organizerVerified: {
+      type: Boolean,
+      default: false
+    },
+
     //
     // Processing status
     //

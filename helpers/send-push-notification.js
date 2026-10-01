@@ -466,15 +466,34 @@ function decodeHeaderValue(value) {
  */
 function extractSenderName(from) {
   if (typeof from !== 'string' || from.length === 0) return '';
-  // Match "Display Name <email>" format
-  const match = from.match(/^\s*"?([^"<]+?)"?\s*</);
-  if (match && match[1] && match[1].trim().length > 0) {
-    return match[1].trim();
+
+  //
+  // NOTE: this used to be `/^\s*"?([^"<]+?)"?\s*</` and `/<([^>]+)>/`, whose
+  //       overlapping quantifiers backtrack quadratically on a From header
+  //       with a long whitespace run (100k spaces took ~11s), so the same
+  //       matching is done here with plain string scans
+  //
+
+  // "Display Name <email>" format: everything before the first "<", with
+  // surrounding whitespace and one optional pair of quotes removed; the
+  // name itself must not contain a quote
+  const lt = from.indexOf('<');
+  if (lt !== -1) {
+    let name = from.slice(0, lt).trim();
+    if (name.startsWith('"')) name = name.slice(1);
+    if (name.endsWith('"')) name = name.slice(0, -1);
+    name = name.trim();
+    if (name.length > 0 && !name.includes('"')) return name;
   }
 
-  // Match bare "<email>" format
-  const emailMatch = from.match(/<([^>]+)>/);
-  if (emailMatch) return emailMatch[1];
+  // bare "<email>" format: the first "<" followed by one or more non-">"
+  // characters and a ">"
+  for (let i = lt; i !== -1; i = from.indexOf('<', i + 1)) {
+    const gt = from.indexOf('>', i + 1);
+    if (gt === -1) break;
+    if (gt > i + 1) return from.slice(i + 1, gt);
+  }
+
   // Bare email or name without angle brackets
   return from.trim();
 }

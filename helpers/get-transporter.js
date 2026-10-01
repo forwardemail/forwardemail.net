@@ -23,6 +23,7 @@ const isTLSError = require('./is-tls-error');
 const isPrivateHost = require('./is-private-host');
 const parseRootDomain = require('./parse-root-domain');
 const { prepareDaneTlsOptions } = require('./dane-tls-wrapper');
+const { createPublicResolve, publicConnectHook } = require('./public-mx-guard');
 
 const env = require('#config/env');
 const config = require('#config');
@@ -270,8 +271,19 @@ async function getTransporter(options = {}, err) {
         // NOTE: if we merge code then this will need adjusted
         blockLocalAddresses: env.NODE_ENV !== 'test',
         // <https://github.com/zone-eu/mx-connect/pull/4>
-        resolve: callbackify(resolver.resolve.bind(resolver))
+        // (A/AAAA answers are limited to public unicast addresses since
+        // `blockLocalAddresses` only covers the loopback and private ranges)
+        // (this resolver is also the one used to look up and connect to the
+        // MTA-STS policy host, so the policy is never fetched from an
+        // internal address either)
+        resolve:
+          env.NODE_ENV === 'test'
+            ? callbackify(resolver.resolve.bind(resolver))
+            : createPublicResolve(callbackify(resolver.resolve.bind(resolver)))
       },
+      // refuse to connect to any address that is not public unicast
+      // (also covers IP address targets and MX exchanges that skip DNS)
+      ...(env.NODE_ENV === 'test' ? {} : { connectHook: publicConnectHook }),
       mtaSts: {
         enabled: config.env !== 'test',
         logger(results) {

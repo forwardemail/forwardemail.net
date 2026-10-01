@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const http = require('node:http');
 const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
 const { setTimeout } = require('node:timers/promises');
@@ -19,6 +20,7 @@ const libmime = require('libmime');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
+const sinon = require('sinon');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
 
@@ -43,6 +45,7 @@ function findKeyDifferences(object1, object2) {
 */
 
 const _ = require('#helpers/lodash');
+const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
 const config = require('#config');
 const createSession = require('#helpers/create-session');
 const createTangerine = require('#helpers/create-tangerine');
@@ -50,7 +53,7 @@ const env = require('#config/env');
 const logger = require('#helpers/logger');
 const phrases = require('#config/phrases');
 const processEmail = require('#helpers/process-email');
-const { Logs, Domains, Emails } = require('#models');
+const { Logs, Domains, Emails, Users } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
 // dynamically import get-port
@@ -1072,6 +1075,118 @@ Test`.trim()
 
   // cleanup: close the test smtp server
   await pify(server.close.bind(server))();
+});
+
+// creates a user on a paid plan (so it passes the API paid plan checks)
+async function createPaidUser(t, plan = 'enhanced_protection') {
+  const user = await t.context.userFactory
+    .withState({
+      plan,
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  return user.save();
+}
+
+// creates a domain with an admin and a `user` group member (each with an alias)
+async function createDomainWithMember(t) {
+  // domains with more than one member require the team plan
+  const admin = await createPaidUser(t, 'team');
+  const member = await createPaidUser(t, 'team');
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: admin._id, group: 'admin' }],
+      plan: admin.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+  domain.members.push({ user: member._id, group: 'user' });
+  await domain.save();
+
+  const adminAlias = await t.context.aliasFactory
+    .withState({
+      user: admin._id,
+      domain: domain._id,
+      recipients: [admin.email]
+    })
+    .create();
+
+  const memberAlias = await t.context.aliasFactory
+    .withState({
+      user: member._id,
+      domain: domain._id,
+      recipients: [member.email]
+    })
+    .create();
+
+  return { admin, member, domain, adminAlias, memberAlias };
+}
+
+test('user member API token cannot send email as another alias or a non-existent address', async (t) => {
+  const { admin, member, domain, adminAlias, memberAlias } =
+    await createDomainWithMember(t);
+
+  const send = (user, from) =>
+    t.context.api
+      .post('/v1/emails')
+      .auth(user[config.userFields.apiToken])
+      .set('Accept', 'application/json')
+      .send({
+        from,
+        to: 'foo@bar.com',
+        subject: 'test',
+        text: 'test'
+      });
+
+  // cannot send as the admin's alias
+  let res = await send(member, `${adminAlias.name}@${domain.name}`);
+  t.is(res.status, 403);
+  t.is(res.body.message, phrases.ALIAS_DOES_NOT_EXIST);
+
+  // cannot send as an address that is not an alias
+  res = await send(member, `does-not-exist@${domain.name}`);
+  t.is(res.status, 403);
+  t.is(res.body.message, phrases.ALIAS_DOES_NOT_EXIST);
+
+  // cannot send as another alias by using a raw message either
+  res = await t.context.api
+    .post('/v1/emails')
+    .auth(member[config.userFields.apiToken])
+    .set('Accept', 'application/json')
+    .send({
+      raw: `From: ${adminAlias.name}@${domain.name}\r\nTo: foo@bar.com\r\nSubject: test\r\n\r\ntest`
+    });
+  t.is(res.status, 403);
+  t.is(res.body.message, phrases.ALIAS_DOES_NOT_EXIST);
+
+  // can send as their own alias (including with "+" address filtering)
+  res = await send(member, `${memberAlias.name}@${domain.name}`);
+  t.is(res.status, 200);
+  res = await send(member, `${memberAlias.name}+tag@${domain.name}`);
+  t.is(res.status, 200);
+
+  // admins can still send as any alias or address on the domain
+  res = await send(admin, `${memberAlias.name}@${domain.name}`);
+  t.is(res.status, 200);
+  res = await send(admin, `does-not-exist@${domain.name}`);
+  t.is(res.status, 200);
+
+  t.is(await Emails.countDocuments({ domain: domain._id }), 4);
 });
 
 // multipart/form-data
@@ -3736,6 +3851,38 @@ test('sets default forwarding address via API account update', async (t) => {
   t.is(res.body[config.userFields.defaultForwardingAddress], undefined);
 });
 
+test('cannot change the account email via API', async (t) => {
+  const user = await createPaidUser(t);
+  const { email } = user;
+
+  let res = await t.context.api
+    .put('/v1/account')
+    .auth(user[config.userFields.apiToken])
+    .set('Accept', 'application/json')
+    .send({ email: 'attacker@example.com' });
+
+  t.is(res.status, 400);
+  t.is(res.body.message, phrases.EMAIL_CHANGE_NOT_ALLOWED_VIA_API);
+
+  const fresh = await Users.findById(user._id).lean().exec();
+  t.is(fresh.email, email);
+  t.true(fresh[config.userFields.hasVerifiedEmail]);
+
+  // sending the current email back (e.g. from GET /v1/account) is a no-op
+  res = await t.context.api
+    .put('/v1/account')
+    .auth(user[config.userFields.apiToken])
+    .set('Accept', 'application/json')
+    .send({
+      email: ` ${email.toUpperCase()} `,
+      [config.passport.fields.givenName]: 'Test'
+    });
+
+  t.is(res.status, 200);
+  t.is(res.body.email, email);
+  t.is(res.body[config.passport.fields.givenName], 'Test');
+});
+
 test('default forwarding address accepts FQDN and IP', async (t) => {
   const user = await t.context.userFactory
     .withState({
@@ -3955,3 +4102,80 @@ test('alias_default_smtp_limit - cannot exceed domain effective limit', async (t
     t.is(res.status, 400);
   }
 });
+
+test.serial(
+  'custom S3 - private endpoint is refused before the bucket is probed',
+  async (t) => {
+    const user = await t.context.userFactory
+      .withState({
+        plan: 'enhanced_protection',
+        [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+      })
+      .create();
+    await t.context.paymentFactory
+      .withState({
+        user: user._id,
+        amount: 300,
+        invoice_at: dayjs().startOf('day').toDate(),
+        method: 'free_beta_program',
+        duration: ms('30d'),
+        plan: user.plan,
+        kind: 'one-time'
+      })
+      .create();
+    await user.save();
+
+    const hits = [];
+    const server = http.createServer((req, res) => {
+      hits.push(req.url);
+      res.writeHead(200);
+      res.end();
+    });
+    await new Promise((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+
+    // let the probe itself through so only the controller's own validation
+    // can keep the request from being made
+    const stub = sinon
+      .stub(checkS3BucketAccess, 'isPrivateTarget')
+      .resolves(false);
+
+    try {
+      {
+        const res = await t.context.api
+          .post('/v1/domains')
+          .auth(user[config.userFields.apiToken])
+          .set('Accept', 'application/json')
+          .send({ domain: 'testdomain-custom-s3.com', catchall: 'false' });
+        t.is(res.status, 200);
+      }
+
+      for (const s3Endpoint of [
+        `http://127.0.0.1:${server.address().port}`,
+        'http://169.254.169.254',
+        'http://[::ffff:127.0.0.1]'
+      ]) {
+        const res = await t.context.api
+          .put('/v1/domains/testdomain-custom-s3.com')
+          .auth(user[config.userFields.apiToken])
+          .set('Accept', 'application/json')
+          .send({
+            has_custom_s3: true,
+            s3_endpoint: s3Endpoint,
+            s3_access_key_id: 'access-key',
+            s3_secret_access_key: 'secret-key',
+            s3_bucket: 'test-bucket'
+          });
+        t.is(res.status, 400, `endpoint ${s3Endpoint}`);
+        t.is(res.body.message, phrases.INVALID_LOCALHOST_URL);
+      }
+
+      t.is(hits.length, 0, 'the private endpoint must not be requested');
+      t.false(stub.called);
+    } finally {
+      stub.restore();
+      server.close();
+    }
+  }
+);

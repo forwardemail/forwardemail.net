@@ -5,6 +5,10 @@
 
 const { Buffer } = require('node:buffer');
 
+// undici.fetch needs String.prototype.toWellFormed (not in Node 18)
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
+
 const Boom = require('@hapi/boom');
 const WKDClient = require('@openpgp/wkd-client');
 const isHTML = require('is-html');
@@ -21,6 +25,39 @@ const config = require('#config');
 const env = require('#config/env');
 
 const DURATION = config.env === 'test' ? '5s' : '2s';
+
+// WKD servers may redirect (e.g. openpgpkey.example.com -> keys host), but a
+// long chain is never legitimate.
+const MAX_REDIRECTS = 3;
+const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
+
+//
+// Returns true when a hostname must not be fetched.  Test mode bypasses the
+// check so tests can use local WKD servers; it is exposed on the exported
+// function so tests can exercise the per-hop validation.
+//
+async function isPrivateTarget(hostname, resolver) {
+  if (env.NODE_ENV === 'test') return false;
+  return isPrivateHostResolved(hostname, resolver);
+}
+
+async function assertSafeTarget(url, resolver) {
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    throw Boom.badRequest(i18n.translateError('INVALID_LOCALHOST_URL', 'en'));
+  }
+
+  // Only plain web URLs are valid WKD locations.
+  if (parsedUrl.protocol !== 'https:' && parsedUrl.protocol !== 'http:')
+    throw Boom.badRequest(i18n.translateError('INVALID_LOCALHOST_URL', 'en'));
+
+  // Uses async DNS resolution (and canonical IP-literal checks) to prevent
+  // requests to private/internal hosts.
+  if (await WKD.isPrivateTarget(parsedUrl.hostname, resolver))
+    throw Boom.badRequest(i18n.translateError('INVALID_LOCALHOST_URL', 'en'));
+}
 
 //
 // NOTE: this uses `fetch` which is OK because
@@ -42,19 +79,11 @@ const DURATION = config.env === 'test' ? '5s' : '2s';
 function WKD(resolver, client) {
   const _wkd = new WKDClient();
   _wkd._fetch = async (url) => {
-    // Block requests to private/internal hosts (SSRF prevention)
-    // Uses async DNS resolution to prevent DNS rebinding attacks
-    // (bypassed in test mode so tests can use local WKD lookups)
-    {
-      const parsedUrl = new URL(url);
-      if (
-        env.NODE_ENV !== 'test' &&
-        (await isPrivateHostResolved(parsedUrl.hostname, resolver))
-      )
-        throw Boom.badRequest(
-          i18n.translateError('INVALID_LOCALHOST_URL', 'en')
-        );
-    }
+    // Block requests to private/internal hosts (SSRF prevention).
+    // Every hop of a redirect chain is validated here before any connection
+    // is made, including in self-hosted mode where the validating
+    // connect-time lookup below is not installed.
+    await assertSafeTarget(url, resolver);
 
     const abortController = new AbortController();
     const t = setTimeout(() => {
@@ -89,9 +118,8 @@ function WKD(resolver, client) {
                     // FWD-01-006: Validate resolved IP at connection time
                     // to prevent TOCTOU DNS rebinding attacks
                     if (
-                      env.NODE_ENV !== 'test' &&
                       result?.address &&
-                      (await isPrivateHostResolved(result.address, resolver))
+                      (await WKD.isPrivateTarget(result.address, resolver))
                     ) {
                       fn(
                         new Error(
@@ -117,13 +145,51 @@ function WKD(resolver, client) {
           })
     });
     try {
-      const response = await undici.fetch(url, {
-        signal: abortController.signal,
-        dispatcher,
-        // WKD keys are served as raw binary (application/octet-stream); ask
-        // well-behaved servers not to compress at all.
-        headers: { 'accept-encoding': 'identity' }
-      });
+      //
+      // Redirects are followed manually so that each target is validated
+      // before it is fetched.  The automatic redirect handling in fetch would
+      // connect to any location a remote server returns, and the validating
+      // connect-time lookup is never invoked for IP-literal hosts
+      // (e.g. a redirect to http://169.254.169.254/).
+      //
+      let currentUrl = url;
+      let response;
+      for (let redirects = 0; ; redirects++) {
+        response = await undici.fetch(currentUrl, {
+          signal: abortController.signal,
+          dispatcher,
+          redirect: 'manual',
+          // WKD keys are served as raw binary (application/octet-stream); ask
+          // well-behaved servers not to compress at all.
+          headers: { 'accept-encoding': 'identity' }
+        });
+
+        if (!REDIRECT_STATUSES.has(response.status)) break;
+
+        const location = response.headers.get('location');
+
+        try {
+          await response.body?.cancel();
+        } catch {}
+
+        if (!location) {
+          const err = new Error('WKD redirect without a location header');
+          err.code = 'EWKDREDIRECT';
+          throw err;
+        }
+
+        if (redirects >= MAX_REDIRECTS) {
+          const err = new Error(
+            `WKD lookup exceeded ${MAX_REDIRECTS} redirects`
+          );
+          err.code = 'EWKDREDIRECT';
+          throw err;
+        }
+
+        currentUrl = new URL(location, currentUrl).href;
+        await assertSafeTarget(currentUrl, resolver);
+      }
+
       clearTimeout(t);
 
       //
@@ -240,5 +306,7 @@ function WKD(resolver, client) {
 
   return _wkd;
 }
+
+WKD.isPrivateTarget = isPrivateTarget;
 
 module.exports = WKD;

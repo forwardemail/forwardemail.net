@@ -69,6 +69,7 @@ const Users = require('#models/users');
 const checkDomainAndAct = require('#helpers/check-domain-and-act');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
+const csvEscape = require('#helpers/csv-escape');
 const emailHelper = require('#helpers/email');
 const forEachInBatches = require('#helpers/for-each-in-batches');
 const getCloudflareRadarFeedbackUrl = require('#helpers/get-cloudflare-radar-feedback-url');
@@ -134,20 +135,6 @@ async function processDomain(domainDoc, ctx) {
   } catch (err) {
     logger.error(`Error processing domain ${domainDoc.name}:`, err);
   }
-}
-
-/**
- * Escape a value for safe inclusion in a CSV cell.
- * Wraps in double-quotes and escapes internal double-quotes.
- *
- * @param   {*}       val
- * @returns {string}
- */
-function csvEscape(val) {
-  if (val === null || val === undefined) return '';
-  const str = String(val);
-  // Always quote to handle commas, newlines, and quotes in values
-  return `"${str.replace(/"/g, '""')}"`;
 }
 
 /**

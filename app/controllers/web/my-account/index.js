@@ -70,6 +70,7 @@ const createCatchAllPassword = require('./create-catch-all-password');
 const removeCatchAllPassword = require('./remove-catch-all-password');
 const changeModulusLength = require('./change-modulus-length');
 const checkVerifiedEmail = require('./check-verified-email');
+const ensureVerifiedEmail = require('./ensure-verified-email');
 const updateAllowlistAndDenylist = require('./update-allowlist-and-denylist');
 const updateRestrictedAliasNames = require('./update-restricted-alias-names');
 const updateTimezone = require('./update-timezone');
@@ -145,6 +146,7 @@ module.exports = {
   removeCatchAllPassword,
   changeModulusLength,
   checkVerifiedEmail,
+  ensureVerifiedEmail,
   updateAllowlistAndDenylist,
   updateTimezone,
   updateRestrictedAliasNames,

@@ -4,15 +4,17 @@
  */
 
 const crypto = require('node:crypto');
+const process = require('node:process');
 
 const falso = require('@ngneat/falso');
+const request = require('supertest');
 const test = require('ava');
 const { authenticator } = require('otplib');
 
 const utils = require('../utils');
 const config = require('#config');
 const phrases = require('#config/phrases');
-const { Users } = require('#models');
+const { Domains, Users } = require('#models');
 
 // if default authenticator options in #ladjs/passport or
 // config sets authenticator options for otp
@@ -35,6 +37,8 @@ test.beforeEach(async (t) => {
   user = await Users.register(user, t.context.password);
   // setup user for otp
   user[config.userFields.hasSetPassword] = true;
+  // (two-factor can only be set up with a verified email)
+  user[config.userFields.hasVerifiedEmail] = true;
   user[config.passport.fields.otpEnabled] = true;
   t.context.user = await user.save();
   t.context.webConfig = {
@@ -96,7 +100,11 @@ test('POST otp/login > invalid OTP passcode', async (t) => {
 
 test('GET otp/setup > successful', async (t) => {
   // get test server
-  const { web } = t.context;
+  const { web, user } = t.context;
+
+  // setup is only for users that have not enabled OTP yet
+  user[config.passport.fields.otpEnabled] = false;
+  await user.save();
 
   // GET setup page
   const res = await web.get(`/en${config.otpRoutePrefix}/setup`);
@@ -160,7 +168,10 @@ test('POST otp/setup > successful with token', async (t) => {
 
 test('POST otp/setup > invalid token', async (t) => {
   // get test server
-  const { web, password } = t.context;
+  const { web, user, password } = t.context;
+
+  user[config.passport.fields.otpEnabled] = false;
+  await user.save();
 
   // POST setup page
   const res = await web.post(`/en${config.otpRoutePrefix}/setup`).send({
@@ -174,7 +185,10 @@ test('POST otp/setup > invalid token', async (t) => {
 
 test('POST otp/setup > invalid blank password', async (t) => {
   // get test server
-  const { web } = t.context;
+  const { web, user } = t.context;
+
+  user[config.passport.fields.otpEnabled] = false;
+  await user.save();
 
   // POST setup page
   const res = await web.post(`/en${config.otpRoutePrefix}/setup`).send({
@@ -188,7 +202,10 @@ test('POST otp/setup > invalid blank password', async (t) => {
 
 test('POST otp/setup > incorrect password', async (t) => {
   // get test server
-  const { web } = t.context;
+  const { web, user } = t.context;
+
+  user[config.passport.fields.otpEnabled] = false;
+  await user.save();
 
   // POST setup page
   const res = await web.post(`/en${config.otpRoutePrefix}/setup`).send({
@@ -385,4 +402,247 @@ test('POST otp/keys > recovery keys reset', async (t) => {
 
   const query = await Users.findOne({ email: user.email });
   t.true(query[config.userFields.otpRecoveryKeys] !== null);
+});
+
+//
+// helpers for requests outside of the supertest agent (so that cookies such as
+// a remember-me cookie can be carried between separate log ins explicitly)
+//
+function getSetCookies(res) {
+  const cookies = {};
+  for (const header of res.headers['set-cookie'] || []) {
+    const [pair] = header.split(';');
+    const index = pair.indexOf('=');
+    cookies[pair.slice(0, index)] = pair.slice(index + 1);
+  }
+
+  return cookies;
+}
+
+function toCookieHeader(cookies) {
+  return Object.entries(cookies)
+    .filter(([, value]) => value)
+    .map(([name, value]) => `${name}=${value}`)
+    .join('; ');
+}
+
+function enableOtpPolicy(t) {
+  const original = process.env.AUTH_OTP_ENABLED;
+  process.env.AUTH_OTP_ENABLED = 'true';
+  t.teardown(() => {
+    if (original === undefined) delete process.env.AUTH_OTP_ENABLED;
+    else process.env.AUTH_OTP_ENABLED = original;
+  });
+}
+
+async function getRememberMeCookies(t) {
+  const { web, user } = t.context;
+  const passcode = authenticator.generate(
+    user[config.passport.fields.otpToken]
+  );
+  const login = await web
+    .post(`/en${config.loginOtpRoute}`)
+    .send({ passcode, otp_remember_me: 'true' });
+  t.is(login.status, 200);
+
+  // the remember-me cookie is issued on the next request of the session
+  const res = await web.get('/en/my-account/security');
+  const cookies = getSetCookies(res);
+  t.truthy(cookies.otp_remember_me);
+  t.truthy(cookies['otp_remember_me.sig']);
+  return {
+    otp_remember_me: cookies.otp_remember_me,
+    'otp_remember_me.sig': cookies['otp_remember_me.sig']
+  };
+}
+
+// log in with only a password on a fresh client that presents the cookie
+async function passwordLoginWithRememberMe(t, rememberMe, password) {
+  const { _web, user } = t.context;
+  const login = await request(_web.server)
+    .post('/en/login')
+    .set('Accept', 'application/json')
+    .send({ email: user.email, password });
+  t.is(login.status, 200);
+  return request(_web.server)
+    .get('/en/my-account/security')
+    .set('Cookie', toCookieHeader({ ...getSetCookies(login), ...rememberMe }));
+}
+
+test.serial(
+  'GET and POST otp/setup > password-only session cannot read the OTP secret or recovery keys',
+  async (t) => {
+    enableOtpPolicy(t);
+    const { web, user, password } = t.context;
+    const secret = user[config.passport.fields.otpToken];
+    const recoveryKeys = user[config.userFields.otpRecoveryKeys];
+    t.true(typeof secret === 'string' && secret.length > 0);
+    t.true(Array.isArray(recoveryKeys) && recoveryKeys.length > 0);
+
+    const getRes = await web.get(`/en${config.otpRoutePrefix}/setup`);
+    t.is(getRes.status, 302);
+    t.is(getRes.header.location, `/en${config.loginOtpRoute}`);
+    t.false(getRes.text.includes(secret));
+    for (const key of recoveryKeys) t.false(getRes.text.includes(key));
+
+    const postRes = await web
+      .post(`/en${config.otpRoutePrefix}/setup`)
+      .send({ password });
+    t.is(postRes.status, 302);
+    t.is(postRes.header.location, `/en${config.loginOtpRoute}`);
+    t.false(postRes.text.includes(secret));
+
+    const jsonRes = await web
+      .post(`/en${config.otpRoutePrefix}/setup`)
+      .set('Accept', 'application/json')
+      .send({ password });
+    t.false(jsonRes.text.includes(secret));
+    t.is(jsonRes.body.redirectTo, `/en${config.loginOtpRoute}`);
+
+    // two-factor was not touched
+    const query = await Users.findById(user._id);
+    t.true(query[config.passport.fields.otpEnabled]);
+    t.is(query[config.passport.fields.otpToken], secret);
+  }
+);
+
+test.serial(
+  'GET otp/setup > a user without OTP can still start setup',
+  async (t) => {
+    enableOtpPolicy(t);
+    const { web, user, password } = t.context;
+    user[config.passport.fields.otpEnabled] = false;
+    await user.save();
+
+    const getRes = await web.get(`/en${config.otpRoutePrefix}/setup`);
+    t.is(getRes.status, 200);
+    t.true(getRes.text.includes('id="otp-recovery-keys"'));
+
+    const postRes = await web
+      .post(`/en${config.otpRoutePrefix}/setup`)
+      .send({ password });
+    t.is(postRes.status, 200);
+    t.true(postRes.text.includes('Scan this QR code'));
+  }
+);
+
+test('POST otp/setup > never returns the existing secret once OTP is enabled', async (t) => {
+  const { web, user, password } = t.context;
+  const secret = user[config.passport.fields.otpToken];
+
+  const res = await web
+    .post(`/en${config.otpRoutePrefix}/setup`)
+    .send({ password });
+  t.is(res.status, 302);
+  t.is(res.header.location, '/en/my-account/security');
+  t.false(res.text.includes(secret));
+
+  const jsonRes = await web
+    .post(`/en${config.otpRoutePrefix}/setup`)
+    .set('Accept', 'application/json')
+    .send({ password });
+  t.is(jsonRes.status, 400);
+  t.is(jsonRes.body.message, phrases.OTP_ALREADY_ENABLED);
+  t.false(jsonRes.text.includes(secret));
+});
+
+test('POST otp/login > admin who only passed the password step is rate limited', async (t) => {
+  const { web, user } = t.context;
+  user.group = 'admin';
+  await user.save();
+
+  // the route allows 30 attempts, and an admin that has not passed the
+  // second factor gets no exemption from that limit
+  for (let i = 0; i < 30; i++) {
+    const res = await web
+      .post(`/en${config.loginOtpRoute}`)
+      .set('Accept', 'application/json')
+      .send({ passcode: '000000' });
+    t.is(res.status, 401);
+  }
+
+  const res = await web
+    .post(`/en${config.loginOtpRoute}`)
+    .set('Accept', 'application/json')
+    .send({ passcode: '000000' });
+  t.is(res.status, 429);
+});
+
+test.serial(
+  'OTP remember-me cookie skips OTP until the password changes',
+  async (t) => {
+    enableOtpPolicy(t);
+    const rememberMe = await getRememberMeCookies(t);
+
+    let res = await passwordLoginWithRememberMe(
+      t,
+      rememberMe,
+      t.context.password
+    );
+    t.is(res.status, 200);
+
+    const password = falso.randPassword();
+    const user = await Users.findById(t.context.user._id);
+    await user.setPassword(password);
+    await user.save();
+
+    res = await passwordLoginWithRememberMe(t, rememberMe, password);
+    t.is(res.status, 302);
+    t.is(res.header.location, `/en${config.loginOtpRoute}`);
+  }
+);
+
+test.serial(
+  'OTP remember-me cookie stops working after the OTP secret changes',
+  async (t) => {
+    enableOtpPolicy(t);
+    const rememberMe = await getRememberMeCookies(t);
+
+    const user = await Users.findById(t.context.user._id);
+    user[config.passport.fields.otpToken] = authenticator.generateSecret();
+    await user.save();
+
+    const res = await passwordLoginWithRememberMe(
+      t,
+      rememberMe,
+      t.context.password
+    );
+    t.is(res.status, 302);
+    t.is(res.header.location, `/en${config.loginOtpRoute}`);
+  }
+);
+
+test.serial(
+  'OTP remember-me cookie stops working after logging out other sessions',
+  async (t) => {
+    enableOtpPolicy(t);
+    const { web } = t.context;
+    const rememberMe = await getRememberMeCookies(t);
+
+    const invalidate = await web
+      .post('/en/my-account/invalidate-other-sessions')
+      .set('Accept', 'application/json');
+    t.is(invalidate.status, 200);
+
+    const res = await passwordLoginWithRememberMe(
+      t,
+      rememberMe,
+      t.context.password
+    );
+    t.is(res.status, 302);
+    t.is(res.header.location, `/en${config.loginOtpRoute}`);
+  }
+);
+
+test('a session that has not passed two-factor cannot add a domain', async (t) => {
+  // (signed in with the password only, see beforeEach)
+  const { web, user } = t.context;
+  const name = `otp-pending-${crypto.randomBytes(6).toString('hex')}.com`;
+
+  const res = await web
+    .post('/en')
+    .set('Accept', 'application/json')
+    .send({ email: user.email, domain: name });
+  t.is(res.body.redirectTo, `/en${config.loginOtpRoute}`);
+  t.false(Boolean(await Domains.exists({ name })));
 });

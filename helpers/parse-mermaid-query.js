@@ -6,7 +6,7 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
-const { decrypt } = require('#helpers/encrypt-decrypt');
+const { decryptMermaidCode } = require('#helpers/mermaid-code');
 
 function parseMermaidQuery(ctx) {
   if (!isSANB(ctx.query.code))
@@ -15,7 +15,10 @@ function parseMermaidQuery(ctx) {
     throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
 
   try {
-    return { code: decrypt(ctx.query.code), theme: ctx.query.theme };
+    return {
+      code: decryptMermaidCode(ctx.query.code),
+      theme: ctx.query.theme
+    };
   } catch {
     throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
   }

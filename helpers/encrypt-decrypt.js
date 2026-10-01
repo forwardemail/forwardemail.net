@@ -429,4 +429,32 @@ function decrypt(
   }
 }
 
-module.exports = { encrypt, decrypt };
+//
+// Decrypt only the current (v2) format with exactly the given key.
+//
+// Unlike `decrypt()` there is no fallback to legacy formats or to the legacy
+// key, so a value is only accepted when it was produced by `encrypt()` with
+// this same key.  Use this with a purpose-specific key where ciphertexts made
+// for other features must never be accepted.
+//
+function decryptStrict(text, encryptionKey) {
+  if (typeof text !== 'string' || !text)
+    throw new TypeError('Text value missing');
+  if (!encryptionKey) throw new TypeError('Encryption key missing');
+
+  // `encryptV2()` only ever outputs unpadded base64url
+  if (!/^[\w-]+$/.test(text)) throw new Error('Unsupported format');
+
+  let base64Text = text.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64Text.length % 4) {
+    base64Text += '=';
+  }
+
+  const data = Buffer.from(base64Text, 'base64');
+  if (data.length < 30 || data[0] !== VERSION_V2)
+    throw new Error('Unsupported format');
+
+  return decryptV2(data.slice(1), encryptionKey);
+}
+
+module.exports = { encrypt, decrypt, decryptStrict };

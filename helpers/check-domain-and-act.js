@@ -33,6 +33,7 @@ const emailHelper = require('#helpers/email');
 const getCloudflareRadarFeedbackUrl = require('#helpers/get-cloudflare-radar-feedback-url');
 const getDomainCategorization = require('#helpers/get-domain-categorization');
 const logger = require('#helpers/logger');
+const _ = require('#helpers/lodash');
 
 // Denylist entries expire after 30 days (consistent with on-data-mx.js)
 const DENYLIST_TTL_MS = ms('30d');
@@ -242,14 +243,23 @@ async function checkDomainAndAct(domainDoc, ctx, opts) {
         // Send a single review email to support@ with all flagged users
         // for this domain so an admin can manually decide whether to ban.
         //
+        //
+        // NOTE: the page title comes from the (attacker controlled) web page
+        //       and is entity-decoded by the HTML parser, and the alert
+        //       template renders `message` unescaped, so every interpolated
+        //       value below is HTML escaped
+        //
+        const safeName = _.escape(name);
         const userListHtml = flaggedUsers
           .map(
             (u) =>
-              `<li><a href="${
-                config.urls.web
-              }/admin/users?q=${encodeURIComponent(u.email)}">${
-                u.email
-              }</a> (ID: ${u._id})</li>`
+              `<li><a href="${_.escape(
+                `${config.urls.web}/admin/users?q=${encodeURIComponent(
+                  u.email
+                )}`
+              )}">${_.escape(u.email)}</a> (ID: ${_.escape(
+                String(u._id)
+              )})</li>`
           )
           .join('\n');
 
@@ -265,27 +275,27 @@ async function checkDomainAndAct(domainDoc, ctx, opts) {
             message: `
               <h3>Domain Flagged for Review</h3>
               <p>The following domain was flagged by the Cloudflare Family DNS &amp; content categorisation check and requires manual review before any ban action is taken.</p>
-              <p><a href="${getCloudflareRadarFeedbackUrl(
-                name
-              )}" target="_blank" rel="noopener noreferrer">Submit a Cloudflare Radar classification change request for ${name}</a>.</p>
+              <p><a href="${_.escape(
+                getCloudflareRadarFeedbackUrl(name)
+              )}" target="_blank" rel="noopener noreferrer">Submit a Cloudflare Radar classification change request for ${safeName}</a>.</p>
               <table border="1" cellpadding="5" cellspacing="0">
                 <tr><th>Field</th><th>Value</th></tr>
-                <tr><td><strong>Domain</strong></td><td>${name}</td></tr>
-                <tr><td><strong>Categories</strong></td><td>${cat.categories.join(
-                  ', '
+                <tr><td><strong>Domain</strong></td><td>${safeName}</td></tr>
+                <tr><td><strong>Categories</strong></td><td>${_.escape(
+                  cat.categories.join(', ')
                 )}</td></tr>
-                <tr><td><strong>Actionable Categories</strong></td><td>${bannableHits.join(
-                  ', '
+                <tr><td><strong>Actionable Categories</strong></td><td>${_.escape(
+                  bannableHits.join(', ')
                 )}</td></tr>
-                <tr><td><strong>Page Title</strong></td><td>${
+                <tr><td><strong>Page Title</strong></td><td>${_.escape(
                   cat.title || '(none)'
-                }</td></tr>
-                <tr><td><strong>HTTP Status</strong></td><td>${
-                  cat.statusCode === null ? 'N/A' : cat.statusCode
-                }</td></tr>
-                <tr><td><strong>Content Length</strong></td><td>${
-                  cat.contentLength
-                } bytes</td></tr>
+                )}</td></tr>
+                <tr><td><strong>HTTP Status</strong></td><td>${_.escape(
+                  cat.statusCode === null ? 'N/A' : String(cat.statusCode)
+                )}</td></tr>
+                <tr><td><strong>Content Length</strong></td><td>${_.escape(
+                  String(cat.contentLength)
+                )} bytes</td></tr>
                 <tr><td><strong>Is Parked</strong></td><td>${
                   cat.isParked ? 'Yes' : 'No'
                 }</td></tr>

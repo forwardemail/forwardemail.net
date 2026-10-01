@@ -9,6 +9,7 @@ const ms = require('ms');
 const pkg = require('../package.json');
 
 const REGEX_LOCALHOST = require('./regex-localhost');
+const { isPrivateHostResolved } = require('./is-private-host');
 const logger = require('./logger');
 const retryRequest = require('./retry-request');
 
@@ -39,9 +40,14 @@ function hasLegitimateHosting(aRecords) {
   return aRecords.some((ip) => isValidPublicIP(ip));
 }
 
-async function respondsToHTTP(domain, timeout = ms('5s')) {
+async function respondsToHTTP(domain, resolver, timeout = ms('5s')) {
   // Check if domain resolves to localhost/private IP and return false if so
   if (isIP(domain) && REGEX_LOCALHOST.test(domain)) return false;
+
+  // The domain is user-supplied: every A/AAAA answer must be public before a
+  // request is made, otherwise a domain pointed at e.g. 169.254.169.254 or
+  // 10.0.0.0/8 would be requested from our network.
+  if (await isPrivateHostResolved(domain, resolver)) return false;
 
   const urls = [`https://${domain}`, `http://${domain}`];
 
@@ -51,6 +57,8 @@ async function respondsToHTTP(domain, timeout = ms('5s')) {
         method: 'GET',
         timeout,
         retries: 0,
+        // validates the resolved address again at connect time (DNS rebinding)
+        resolver,
         headers: {
           'User-Agent': `Mozilla/5.0 (compatible; ${pkg.name}/${pkg.version}; +${config.urls.web})`
         }

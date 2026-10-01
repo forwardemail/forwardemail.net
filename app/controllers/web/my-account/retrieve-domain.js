@@ -267,7 +267,10 @@ async function retrieveDomain(ctx, next) {
   // we need to import existing aliases
   // if there were existingTXT found
   //
-  if (ctx.state.hasExistingTXT) {
+  // NOTE: this runs before `ensureDomainAdmin`, and imported aliases are owned
+  //       by the current user, so only a domain admin may trigger the import
+  //
+  if (ctx.state.hasExistingTXT && ctx.state.domain.group === 'admin') {
     try {
       await importAliases(ctx);
     } catch (err) {

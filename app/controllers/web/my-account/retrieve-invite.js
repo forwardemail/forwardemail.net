@@ -97,6 +97,17 @@ async function retrieveInvite(ctx) {
     return;
   }
 
+  //
+  // On the website the invite link only shows what is being accepted, and
+  // the invite is accepted with a POST from that page.  Session cookies are
+  // sent with a GET from another site (SameSite=Lax), so a link or redirect
+  // elsewhere could otherwise add the user to a domain without them knowing.
+  //
+  if (!ctx.api && ctx.method === 'GET') {
+    ctx.state.inviteDomainName = domain.name;
+    return ctx.render('my-account/accept-invite');
+  }
+
   // convert invitee to a member with the same group as invite had
   const { group } = invite;
   domain.members.push({

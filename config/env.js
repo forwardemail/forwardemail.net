@@ -20,22 +20,31 @@ const env = require('@ladjs/env')({
   schema: path.join(__dirname, '..', '.env.schema')
 });
 
+//
+// NOTE: every configured secret is accepted by `helpers/api-secrets` (e.g. for
+//       the restricted internal endpoints), so one strong secret is not
+//       enough: a leftover weak value (such as the "secret" default) next to
+//       it would stay valid; in production every non-empty secret must be at
+//       least 32 bytes (empty entries are ignored the same way they are there)
+//
 if (env.NODE_ENV === 'production') {
-  const apiSecrets = Array.isArray(env.API_SECRETS)
-    ? env.API_SECRETS
-    : typeof env.API_SECRETS === 'string'
-    ? env.API_SECRETS.split(',')
-    : [];
+  const apiSecrets = (
+    Array.isArray(env.API_SECRETS)
+      ? env.API_SECRETS
+      : typeof env.API_SECRETS === 'string'
+      ? env.API_SECRETS.split(',')
+      : []
+  ).filter((secret) => typeof secret === 'string' && secret);
 
   if (
-    !apiSecrets.some(
-      (secret) =>
-        // eslint-disable-next-line n/prefer-global/buffer
-        typeof secret === 'string' && Buffer.byteLength(secret) >= 32
+    apiSecrets.length === 0 ||
+    !apiSecrets.every(
+      // eslint-disable-next-line n/prefer-global/buffer
+      (secret) => Buffer.byteLength(secret) >= 32
     )
   ) {
     throw new TypeError(
-      'API_SECRETS must contain at least one 32-byte secret in production'
+      'API_SECRETS must contain only 32-byte (or longer) secrets in production'
     );
   }
 }

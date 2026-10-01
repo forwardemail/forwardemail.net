@@ -13,7 +13,7 @@ const markdownItFootnote = require('markdown-it-footnote');
 const markdownItAttrs = require('markdown-it-attrs');
 const markdownItAnchor = require('markdown-it-anchor');
 
-const { encrypt } = require('#helpers/encrypt-decrypt');
+const { encryptMermaidCode } = require('#helpers/mermaid-code');
 
 // <https://github.com/markdown-it/markdown-it>
 // <https://github.com/valeriangalliat/markdown-it-highlightjs>
@@ -80,7 +80,7 @@ const markdownItMermaid = (md) => {
   md.renderer.rules.fence = (tokens, idx, options, env, self) => {
     const token = tokens[idx];
     if (token.info === 'mermaid') {
-      const code = encrypt(token.content.trim());
+      const code = encryptMermaidCode(token.content.trim());
       // TODO: alt could be closest header token (?)
       const alt = '';
       return `<div class="text-center">

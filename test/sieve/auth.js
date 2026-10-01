@@ -8,7 +8,14 @@
  */
 
 const { Buffer } = require('node:buffer');
+const { execFileSync } = require('node:child_process');
+const { once } = require('node:events');
+const fs = require('node:fs');
 const net = require('node:net');
+const os = require('node:os');
+const path = require('node:path');
+const { setTimeout: delay } = require('node:timers/promises');
+const tls = require('node:tls');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
@@ -18,6 +25,7 @@ const utils = require('../utils');
 const SQLite = require('../../sqlite-server');
 const ManageSieveServer = require('../../managesieve-server');
 const config = require('#config');
+const env = require('#config/env');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const createPassword = require('#helpers/create-password');
 const { encrypt } = require('#helpers/encrypt-decrypt');
@@ -295,6 +303,46 @@ test('should prevent domain-wide alias authentication', async (t) => {
 
   // Should be rejected (either because catch-all can't auth or invalid credentials)
   t.true(response.some((line) => line.startsWith('NO')));
+
+  client.end();
+});
+
+test('should reject a domain-wide catch-all password for an existing alias', async (t) => {
+  const { domain, alias } = t.context;
+  const { password, salt, hash } = await createPassword();
+  domain.tokens.push({
+    description: 'test',
+    salt,
+    hash,
+    user: t.context.user._id
+  });
+  domain.locale = 'en';
+  domain.resolver = t.context.managesieve.resolver;
+  domain.skip_verification = true;
+  await domain.save();
+
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+
+  // the catch-all password is for outbound SMTP only and must never open
+  // the alias (its SQLite mailbox and Sieve scripts)
+  const credentials = Buffer.from(
+    `\0${alias.name}@${domain.name}\0${password}`
+  ).toString('base64');
+  const response = await client.sendCommand(
+    `AUTHENTICATE "PLAIN" "${credentials}"`
+  );
+
+  t.true(response.some((line) => line.startsWith('NO')));
+  t.false(response.some((line) => line.startsWith('OK')));
+  // the same uniform failure as any wrong password
+  t.true(
+    response.some((line) => line.includes('Invalid username or password'))
+  );
+
+  // and the session stays unauthenticated
+  const list = await client.sendCommand('LISTSCRIPTS');
+  t.true(list.some((line) => line.includes('Not authenticated')));
 
   client.end();
 });
@@ -690,4 +738,176 @@ test('should handle malformed command', async (t) => {
   t.pass();
 
   client.end();
+});
+
+//
+// STARTTLS listener (RFC 5804 Section 2.1): credentials are only accepted
+// once STARTTLS has completed
+//
+
+// a self-signed certificate for a ManageSieve server with TLS available
+function createCertificate() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'managesieve-tls-'));
+  const keyPath = path.join(dir, 'key.pem');
+  const certPath = path.join(dir, 'cert.pem');
+  execFileSync(
+    'openssl',
+    [
+      'req',
+      '-new',
+      '-newkey',
+      'rsa:2048',
+      '-days',
+      '1',
+      '-nodes',
+      '-x509',
+      '-keyout',
+      keyPath,
+      '-out',
+      certPath,
+      '-subj',
+      '/CN=localhost'
+    ],
+    { stdio: 'ignore' }
+  );
+  return { dir, keyPath, certPath };
+}
+
+// the STARTTLS listener as run by `managesieve-starttls.js` (secure: false)
+async function createStartTLSServer(t) {
+  const certificate = createCertificate();
+  const previous = {
+    WEB_SSL_KEY_PATH: env.WEB_SSL_KEY_PATH,
+    WEB_SSL_CERT_PATH: env.WEB_SSL_CERT_PATH,
+    WEB_SSL_CA_PATH: env.WEB_SSL_CA_PATH
+  };
+  env.WEB_SSL_KEY_PATH = certificate.keyPath;
+  env.WEB_SSL_CERT_PATH = certificate.certPath;
+  env.WEB_SSL_CA_PATH = '';
+  let server;
+  try {
+    server = new ManageSieveServer({
+      client: t.context.client,
+      subscriber: t.context.subscriber,
+      wsp: t.context.wsp,
+      secure: false
+    });
+  } finally {
+    Object.assign(env, previous);
+    fs.rmSync(certificate.dir, { recursive: true, force: true });
+  }
+
+  // share the spoofed DNS records of the domain
+  server.resolver = t.context.managesieve.resolver;
+  const port = await getPort();
+  await server.listen(port);
+  t.teardown(() => server.close());
+  return port;
+}
+
+// line-based reader over a plain or TLS socket
+function readLines(socket) {
+  const lines = [];
+  let buffer = '';
+  socket.on('data', (data) => {
+    buffer += data.toString();
+    const parts = buffer.split('\r\n');
+    buffer = parts.pop();
+    lines.push(...parts.filter(Boolean));
+  });
+  return {
+    async send(cmd) {
+      lines.length = 0;
+      socket.write(cmd + '\r\n');
+      await delay(1000);
+      return [...lines];
+    },
+    async wait() {
+      await delay(1000);
+      const result = [...lines];
+      lines.length = 0;
+      return result;
+    }
+  };
+}
+
+test('STARTTLS listener advertises no SASL mechanisms before TLS', async (t) => {
+  const port = await createStartTLSServer(t);
+  const socket = net.createConnection({ port, host: '127.0.0.1' });
+  t.teardown(() => socket.destroy());
+  const reader = readLines(socket);
+
+  const greeting = await reader.wait();
+  t.true(greeting.includes('"STARTTLS"'));
+  t.true(greeting.includes('"SASL" ""'));
+  t.false(greeting.some((line) => line.includes('PLAIN')));
+
+  const capability = await reader.send('CAPABILITY');
+  t.true(capability.includes('"SASL" ""'));
+  t.false(capability.some((line) => line.includes('PLAIN')));
+});
+
+test('STARTTLS listener refuses AUTHENTICATE before STARTTLS', async (t) => {
+  const port = await createStartTLSServer(t);
+  const socket = net.createConnection({ port, host: '127.0.0.1' });
+  t.teardown(() => socket.destroy());
+  const reader = readLines(socket);
+  await reader.wait();
+
+  // valid credentials are still refused in the clear
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  const response = await reader.send(`AUTHENTICATE "PLAIN" "${credentials}"`);
+  t.true(response.some((line) => line.startsWith('NO (ENCRYPT-NEEDED)')));
+  t.false(response.some((line) => line.startsWith('OK')));
+
+  // (also without an initial response: no SASL continuation is offered)
+  const continuation = await reader.send('AUTHENTICATE "PLAIN"');
+  t.true(continuation.some((line) => line.startsWith('NO (ENCRYPT-NEEDED)')));
+  t.false(continuation.includes('""'));
+
+  // (and a literal initial response is consumed, not run as a command)
+  const literal = await reader.send(
+    `AUTHENTICATE "PLAIN" {${credentials.length}+}\r\n${credentials}`
+  );
+  t.deepEqual(literal, [
+    'NO (ENCRYPT-NEEDED) "Issue STARTTLS before authenticating"'
+  ]);
+
+  const list = await reader.send('LISTSCRIPTS');
+  t.true(list.some((line) => line.includes('Not authenticated')));
+});
+
+test('STARTTLS listener accepts AUTHENTICATE after STARTTLS', async (t) => {
+  const port = await createStartTLSServer(t);
+  const socket = net.createConnection({ port, host: '127.0.0.1' });
+  t.teardown(() => socket.destroy());
+  const reader = readLines(socket);
+  await reader.wait();
+
+  const starttls = await reader.send('STARTTLS');
+  t.true(starttls.some((line) => line.startsWith('OK')));
+  socket.removeAllListeners('data');
+
+  const secureSocket = tls.connect({ socket, rejectUnauthorized: false });
+  t.teardown(() => secureSocket.destroy());
+  await once(secureSocket, 'secureConnect');
+  const secureReader = readLines(secureSocket);
+
+  // capabilities are re-issued over TLS, now with the SASL mechanisms
+  const capabilities = await secureReader.wait();
+  t.true(capabilities.includes('"SASL" "PLAIN"'));
+  t.false(capabilities.includes('"STARTTLS"'));
+
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  const response = await secureReader.send(
+    `AUTHENTICATE "PLAIN" "${credentials}"`
+  );
+  t.true(response.some((line) => line.startsWith('OK')));
+
+  const list = await secureReader.send('LISTSCRIPTS');
+  t.true(list.some((line) => line.startsWith('OK')));
 });

@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "S3-bucketnamn för lagring av säkerhetskopior. Bucketen måste redan finnas och får inte vara offentligt tillgänglig."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Uppdaterad e-postadress (endast användarautentisering)"
+                    "description": "Nuvarande e-postadress (endast användarautentisering). Inloggningsadressen kan inte ändras via API:et; om ett annat värde skickas returneras ett 400-fel. Ändra den i stället under Mitt konto > Profil."
                   },
                   "avatar_url": {
                     "type": "string",

@@ -21,6 +21,7 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const email = require('#helpers/email');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
+const clearUnverifiedSignIns = require('#helpers/clear-unverified-sign-ins');
 const isSafeReturnTo = require('#helpers/is-safe-return-to');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const sendVerificationEmail = require('#helpers/send-verification-email');
@@ -469,66 +470,24 @@ async function register(ctx, next) {
   else ctx.body = { redirectTo };
 }
 
-async function forgotPassword(ctx) {
-  const { body } = ctx.request;
-
-  if (!_.isString(body.email) || !validator.isEmail(body.email))
-    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
-
-  // lookup the user
-  let user = await Users.findOne({
-    email: body.email,
-    [config.userFields.isBanned]: false
-  });
-
-  // to prevent people from being able to find out valid email accounts
-  // we always say "a password reset request has been sent to your email"
-  // and if the email didn't exist in our system then we simply don't send it
-  if (!user) {
-    if (ctx.accepts('html')) {
-      ctx.flash('success', ctx.translate('PASSWORD_RESET_SENT'));
-      ctx.redirect('back');
-    } else {
-      ctx.body = {
-        message: ctx.translate('PASSWORD_RESET_SENT')
-      };
-    }
-
-    return;
+//
+// The response is the same whether or not the email has an account, and
+// whether or not a reset was already requested, so the form cannot be used
+// to find out which addresses have an account.  The email is sent in the
+// background so the response time does not tell either.
+//
+function respondPasswordResetSent(ctx) {
+  if (ctx.accepts('html')) {
+    ctx.flash('success', ctx.translate('PASSWORD_RESET_SENT'));
+    ctx.redirect('back');
+  } else {
+    ctx.body = {
+      message: ctx.translate('PASSWORD_RESET_SENT')
+    };
   }
+}
 
-  // if there is already an outstanding (non-expired) reset token then we do
-  // not issue another one. note that `resetTokenExpiresAt` stores the token's
-  // future expiry (issued time + timeout), so an unexpired token simply means
-  // its expiry is still in the future. comparing it against the issued time
-  // (which is why we previously subtracted the timeout) double-counted the
-  // window and left a dead zone where the token had already expired but a new
-  // one still could not be requested
-  if (
-    user[config.userFields.resetToken] &&
-    user[config.userFields.resetTokenExpiresAt] &&
-    dayjs(user[config.userFields.resetTokenExpiresAt]).isAfter(dayjs())
-  )
-    throw Boom.badRequest(
-      ctx.translateError(
-        'PASSWORD_RESET_LIMIT',
-        dayjs(user[config.userFields.resetTokenExpiresAt])
-          .locale(ctx.locale)
-          .fromNow()
-      )
-    );
-
-  // set the reset token and expiry
-  user[config.userFields.resetTokenExpiresAt] = new Date(
-    Date.now() + config.resetTokenTimeoutMs
-  );
-  user[config.userFields.resetToken] = await cryptoRandomString.async({
-    length: 32
-  });
-
-  user = await user.save();
-
-  // queue password reset email
+async function sendPasswordResetEmail(ctx, user) {
   try {
     await email({
       template: 'reset-password',
@@ -542,28 +501,67 @@ async function forgotPassword(ctx) {
         }`
       }
     });
-
-    if (ctx.accepts('html')) {
-      ctx.flash('success', ctx.translate('PASSWORD_RESET_SENT'));
-      ctx.redirect('back');
-    } else {
-      ctx.body = {
-        message: ctx.translate('PASSWORD_RESET_SENT')
-      };
-    }
   } catch (err) {
     ctx.logger.fatal(err);
-    // reset if there was an error
+    // reset if there was an error (so it can be requested again right away)
     try {
       user[config.userFields.resetToken] = undefined;
       user[config.userFields.resetTokenExpiresAt] = undefined;
-      user = await user.save();
+      await user.save();
     } catch (err) {
       ctx.logger.error(err);
     }
-
-    throw Boom.badRequest(ctx.translateError('EMAIL_FAILED_TO_SEND'));
   }
+}
+
+async function forgotPassword(ctx) {
+  const { body } = ctx.request;
+
+  if (!_.isString(body.email) || !validator.isEmail(body.email))
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
+
+  // lookup the user
+  let user = await Users.findOne({
+    email: body.email,
+    [config.userFields.isBanned]: false
+  });
+
+  // if the email didn't exist in our system then we simply don't send it
+  if (!user) {
+    respondPasswordResetSent(ctx);
+    return;
+  }
+
+  // if there is already an outstanding (non-expired) reset token then we do
+  // not issue another one (nor send another email). note that
+  // `resetTokenExpiresAt` stores the token's future expiry (issued time +
+  // timeout), so an unexpired token simply means its expiry is still in the
+  // future
+  if (
+    user[config.userFields.resetToken] &&
+    user[config.userFields.resetTokenExpiresAt] &&
+    dayjs(user[config.userFields.resetTokenExpiresAt]).isAfter(dayjs())
+  ) {
+    respondPasswordResetSent(ctx);
+    return;
+  }
+
+  // set the reset token and expiry
+  user[config.userFields.resetTokenExpiresAt] = new Date(
+    Date.now() + config.resetTokenTimeoutMs
+  );
+  user[config.userFields.resetToken] = await cryptoRandomString.async({
+    length: 32
+  });
+
+  user = await user.save();
+
+  // queue password reset email
+  sendPasswordResetEmail(ctx, user)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  respondPasswordResetSent(ctx);
 }
 
 async function resetPassword(ctx) {
@@ -599,6 +597,11 @@ async function resetPassword(ctx) {
   // and cannot be replayed after the password has been changed
   user[config.userFields.resetToken] = undefined;
   user[config.userFields.resetTokenExpiresAt] = undefined;
+
+  // the reset proves control of the email address, so an account that was
+  // never verified (possibly created by someone else) loses every other way
+  // in (see clear-unverified-sign-ins.js)
+  clearUnverifiedSignIns(user);
 
   await user.setPassword(body.password);
   user = await user.save();

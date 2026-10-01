@@ -1,0 +1,15 @@
+extends ../layout
+
+block append meta
+  //- Prevent the invite token from leaking via Referer header
+  meta(name="referrer", content="no-referrer")
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .text-center: h1.my-3.py-3= t("Accept domain invite")
+      .row
+        .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+          p.lead.text-center: strong.notranslate= inviteDomainName
+          form.ajax-form(action=ctx.path, method="POST")
+            button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Accept")

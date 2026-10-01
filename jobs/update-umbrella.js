@@ -226,7 +226,8 @@ async function isBadDomain(name, remember = true) {
 }
 
 async function checkDate(date) {
-  const list = `http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m-${date}.csv.zip`;
+  // (over HTTPS, since the domains in the list are added to the allowlist)
+  const list = `https://s3-us-west-1.amazonaws.com/umbrella-static/top-1m-${date}.csv.zip`;
   logger.info('updating list', { list });
   const res = await got(list, {
     responseType: 'buffer',

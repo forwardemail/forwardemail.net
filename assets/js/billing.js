@@ -62,6 +62,8 @@ function createPayPalSubscription(data, actions) {
   const options = {
     intent: 'subscription',
     plan_id: PAYPAL_MAPPING[window.USER_PLAN][duration],
+    // the account the subscription is for (checked on redirect and webhook)
+    custom_id: window.USER.id,
     subscriber: {
       email_address: window.USER.email
     },

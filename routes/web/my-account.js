@@ -215,7 +215,9 @@ router
     web.myAccount.removeCatchAllPassword
   )
 
+  // (GET shows the invite, POST accepts it)
   .get('/domains/:domain_id/invites/:token', web.myAccount.retrieveInvite)
+  .post('/domains/:domain_id/invites/:token', web.myAccount.retrieveInvite)
 
   .post(
     '/domains/:domain_id/invites',
@@ -540,7 +542,15 @@ router
     '/profile',
     web.myAccount.checkVerifiedEmail,
     async (ctx, next) => {
-      if (ctx.query.newsletter === 'true') {
+      //
+      // the subscribe links are in our own navigation and footer, so only a
+      // click on this site subscribes (session cookies are also sent with a
+      // GET from another site, which must not subscribe the user)
+      //
+      if (
+        ctx.query.newsletter === 'true' &&
+        ctx.get('Sec-Fetch-Site') === 'same-origin'
+      ) {
         try {
           if (ctx.state.user.has_newsletter === true) {
             ctx.flash(
@@ -645,7 +655,8 @@ router
     render('my-account/security')
   )
   .post('/recovery-keys', web.myAccount.recoveryKeys)
-  .post('/passkeys', async (ctx) => {
+  // (only once the email is verified, see ensure-verified-email.js)
+  .post('/passkeys', web.myAccount.ensureVerifiedEmail, async (ctx) => {
     //
     // TODO: note that the passport-fido2-webauthn codebase has a LOT of TODO statements
     //       <https://github.com/search?q=repo%3Ajaredhanson%2Fpassport-webauthn%20TODO&type=code>

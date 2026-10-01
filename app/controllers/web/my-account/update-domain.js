@@ -16,13 +16,44 @@ const _ = require('#helpers/lodash');
 const { Domains, Users } = require('#models');
 const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
+const isValidS3BucketName = require('#helpers/is-valid-s3-bucket-name');
 const { getDomainSmtpLimitAsync } = require('#helpers/get-domain-smtp-limit');
+const { isPrivateHostResolved } = require('#helpers/is-private-host');
 
 //
 // NOTE: this regex is not safe according to `safe-regex2` so we use `re2` to wrap it
 //       https://github.com/visionmedia/bytes.js/blob/9ddc13b6c66e0cb293616fba246e05db4b6cef4d/index.js#L37C5-L37C16
 //
 const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
+
+//
+// Validate the custom S3 endpoint and bucket before the public bucket probe.
+// The probe runs before the model's own validation, so without this a
+// private endpoint (e.g. http://169.254.169.254) would be requested first.
+//
+async function validateCustomS3Target(ctx) {
+  const { domain } = ctx.state;
+
+  let url;
+  try {
+    url = new URL(domain.s3_endpoint);
+  } catch {
+    throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
+  }
+
+  if (url.protocol !== 'https:' && url.protocol !== 'http:')
+    throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
+
+  if (await isPrivateHostResolved(url.hostname, ctx.resolver))
+    throw Boom.badRequest(ctx.translateError('INVALID_LOCALHOST_URL'));
+
+  // (same condition as the model so a previously saved name is not re-checked)
+  if (
+    (domain.isModified('s3_bucket') || domain.isModified('has_custom_s3')) &&
+    !isValidS3BucketName(domain.s3_bucket)
+  )
+    throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_BUCKET'));
+}
 
 async function updateDomain(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id).select(
@@ -160,6 +191,7 @@ async function updateDomain(ctx, next) {
         isSANB(ctx.state.domain.s3_endpoint) &&
         isSANB(ctx.state.domain.s3_bucket)
       ) {
+        await validateCustomS3Target(ctx);
         try {
           const isPublic = await checkS3BucketAccess(
             ctx.state.domain.s3_endpoint,
@@ -409,6 +441,7 @@ async function updateDomain(ctx, next) {
             isSANB(ctx.state.domain.s3_endpoint) &&
             isSANB(ctx.state.domain.s3_bucket)
           ) {
+            await validateCustomS3Target(ctx);
             try {
               const isPublic = await checkS3BucketAccess(
                 ctx.state.domain.s3_endpoint,

@@ -101,6 +101,21 @@ const RECURRING_ICS = [
   'END:VCALENDAR'
 ].join('\r\n');
 
+// a stored copy of request-event-uid (as an attendee has it)
+const PREVIOUS_REQUEST_ICS = [
+  'BEGIN:VCALENDAR',
+  'VERSION:2.0',
+  'BEGIN:VEVENT',
+  'UID:request-event-uid',
+  'DTSTAMP:20250101T100000Z',
+  'DTSTART:20250101T100000Z',
+  'ORGANIZER:mailto:organizer@example.com',
+  'SUMMARY:Previous',
+  'SEQUENCE:0',
+  'END:VEVENT',
+  'END:VCALENDAR'
+].join('\r\n');
+
 const ADD_ICS = [
   'BEGIN:VCALENDAR',
   'VERSION:2.0',
@@ -108,6 +123,7 @@ const ADD_ICS = [
   'METHOD:ADD',
   'BEGIN:VEVENT',
   'UID:recurring-event-uid',
+  'ORGANIZER:mailto:organizer@example.com',
   'RECURRENCE-ID:20250108T100000Z',
   'DTSTART:20250108T140000Z',
   'DTEND:20250108T150000Z',
@@ -238,7 +254,9 @@ async function seedInvite(overrides = {}) {
     method: 'REPLY',
     source: 'imip',
     processed: false,
-    processAttempts: 0
+    processAttempts: 0,
+    // (as for a message from the event's organizer, see process-imip-reply.js)
+    organizerVerified: true
   };
 
   return CalendarInvites.create({ ...defaults, ...overrides });
@@ -421,6 +439,7 @@ test('REQUEST - updates existing event when found', async (t) => {
     'VERSION:2.0',
     'BEGIN:VEVENT',
     'UID:request-event-uid',
+    'ORGANIZER:mailto:organizer@example.com',
     'DTSTAMP:20250101T100000Z',
     'DTSTART:20250101T100000Z',
     'SUMMARY:Old Event',
@@ -467,6 +486,7 @@ test('REQUEST - skips stale update (lower sequence)', async (t) => {
     'VERSION:2.0',
     'BEGIN:VEVENT',
     'UID:request-event-uid',
+    'ORGANIZER:mailto:organizer@example.com',
     'DTSTAMP:20250101T100000Z',
     'DTSTART:20250101T100000Z',
     'SUMMARY:Current Event',
@@ -521,6 +541,7 @@ test('CANCEL - sets STATUS:CANCELLED on existing event', async (t) => {
     'VERSION:2.0',
     'BEGIN:VEVENT',
     'UID:cancel-event-uid',
+    'ORGANIZER:mailto:organizer@example.com',
     'DTSTAMP:20250101T100000Z',
     'DTSTART:20250101T100000Z',
     'SUMMARY:Active Event',
@@ -1147,7 +1168,7 @@ test('REQUEST - resurrects soft-deleted event instead of creating duplicate', as
             _id: softDeletedEventId,
             eventId: 'request-event-uid.ics',
             calendar: t.context.defaultCalendar._id,
-            ical: 'old-ics-data',
+            ical: PREVIOUS_REQUEST_ICS,
             updated_at: new Date('2025-01-28T10:00:00Z'),
             deleted_at: new Date('2025-01-29T00:00:00Z')
           }
@@ -1215,7 +1236,7 @@ test('REQUEST - deduplicates multiple existing events and updates keeper', async
             _id: dupId,
             eventId: 'request-event-uid.ics',
             calendar: t.context.defaultCalendar._id,
-            ical: 'older-ics',
+            ical: PREVIOUS_REQUEST_ICS,
             updated_at: new Date('2025-01-28T10:00:00Z'),
             deleted_at: null
           },
@@ -1223,7 +1244,7 @@ test('REQUEST - deduplicates multiple existing events and updates keeper', async
             _id: keeperId,
             eventId: 'request-event-uid.ics',
             calendar: t.context.defaultCalendar._id,
-            ical: 'newer-ics',
+            ical: PREVIOUS_REQUEST_ICS,
             updated_at: new Date('2025-01-30T10:00:00Z'),
             deleted_at: null
           }
@@ -1278,6 +1299,7 @@ test('REQUEST - updates existing event and resurrects if soft-deleted', async (t
     'VERSION:2.0',
     'BEGIN:VEVENT',
     'UID:request-event-uid',
+    'ORGANIZER:mailto:organizer@example.com',
     'DTSTAMP:20250101T100000Z',
     'DTSTART:20250101T100000Z',
     'SUMMARY:Old Event',

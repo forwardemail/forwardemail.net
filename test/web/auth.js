@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const util = require('node:util');
-
 const cryptoRandomString = require('crypto-random-string');
 const falso = require('@ngneat/falso');
+const request = require('supertest');
 const test = require('ava');
 // const { request, errors } = require('undici');
 
@@ -14,6 +13,7 @@ const utils = require('../utils');
 
 const config = require('#config');
 const phrases = require('#config/phrases');
+const { Users } = require('#models');
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
@@ -310,20 +310,53 @@ test('fails resetting password if new password is too weak', async (t) => {
   );
 });
 
-test('fails resetting password if reset was already tried in the last 30 mins', async (t) => {
+test('a repeated reset request is answered the same and keeps the first token', async (t) => {
   const { web } = t.context;
   const user = await t.context.userFactory.create();
   const { email } = user;
 
   await web.post('/en/forgot-password').send({ email });
+  const first = await Users.findById(user._id).lean().exec();
+  t.truthy(first[config.userFields.resetToken]);
 
-  const res = await web.post('/en/forgot-password').send({ email });
+  const res = await web
+    .post('/en/forgot-password')
+    .set('Accept', 'application/json')
+    .send({ email });
+  t.is(res.status, 200);
+  t.deepEqual(res.body, { message: phrases.PASSWORD_RESET_SENT });
 
-  t.is(res.status, 400);
+  // no new token (or email) is issued until the first one expires
+  const second = await Users.findById(user._id).lean().exec();
   t.is(
-    JSON.parse(res.text).message,
-    util.format(phrases.PASSWORD_RESET_LIMIT, 'in 30 minutes')
+    second[config.userFields.resetToken],
+    first[config.userFields.resetToken]
   );
+});
+
+test('the reset form answers the same whether or not an account exists', async (t) => {
+  const { web } = t.context;
+  // an account with an outstanding reset, one without, and no account
+  const pending = await t.context.userFactory
+    .withState({
+      [config.userFields.resetToken]: 'outstanding',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 60_000)
+    })
+    .create();
+  const existing = await t.context.userFactory.create();
+  const unknown = await t.context.userFactory.make();
+
+  const responses = [];
+  for (const { email } of [pending, existing, unknown]) {
+    const res = await web
+      .post('/en/forgot-password')
+      .set('Accept', 'application/json')
+      .send({ email });
+    responses.push({ status: res.status, body: res.body });
+  }
+
+  t.deepEqual(responses[0], responses[2]);
+  t.deepEqual(responses[1], responses[2]);
 });
 
 test('allows a new reset request once the prior token has expired', async (t) => {
@@ -349,4 +382,174 @@ test('allows a new reset request once the prior token has expired', async (t) =>
 
   t.is(res.status, 302);
   t.is(res.header.location, '/en');
+});
+
+function getSetCookies(res) {
+  const cookies = {};
+  for (const header of res.headers['set-cookie'] || []) {
+    const [pair] = header.split(';');
+    const index = pair.indexOf('=');
+    cookies[pair.slice(0, index)] = pair.slice(index + 1);
+  }
+
+  return cookies;
+}
+
+function toCookieHeader(cookies) {
+  return Object.entries(cookies)
+    .filter(([, value]) => value)
+    .map(([name, value]) => `${name}=${value}`)
+    .join('; ');
+}
+
+test('logging in issues a new session id and the previous one does not authenticate', async (t) => {
+  const { _web } = t.context;
+  const key = _web.config.cookiesKey;
+  const password = falso.randPassword();
+  let user = await t.context.userFactory.make();
+  user = await Users.register(user, password);
+  user[config.userFields.hasSetPassword] = true;
+  user[config.userFields.hasVerifiedEmail] = true;
+  await user.save();
+
+  // an anonymous visit creates a session (it stores where to return to)
+  const anonymous = await request(_web.server).get('/en/my-account/security');
+  t.is(anonymous.status, 302);
+  const before = getSetCookies(anonymous);
+  t.truthy(before[key]);
+  const beforeSession = {
+    [key]: before[key],
+    [`${key}.sig`]: before[`${key}.sig`]
+  };
+
+  const login = await request(_web.server)
+    .post('/en/login')
+    .set('Accept', 'application/json')
+    .set('Cookie', toCookieHeader(beforeSession))
+    .send({ email: user.email, password });
+  t.is(login.status, 200);
+  // session state such as the return path survives the new session id
+  t.is(login.body.redirectTo, '/en/my-account/security');
+
+  const after = { ...beforeSession, ...getSetCookies(login) };
+  t.truthy(after[key]);
+  t.not(after[key], before[key]);
+
+  const current = await request(_web.server)
+    .get('/en/my-account/security')
+    .set('Cookie', toCookieHeader(after));
+  t.is(current.status, 200);
+
+  const previous = await request(_web.server)
+    .get('/en/my-account/security')
+    .set('Cookie', toCookieHeader(beforeSession));
+  t.is(previous.status, 302);
+  t.true(previous.header.location.startsWith('/en/login'));
+});
+
+test('a password reset of a never-verified account removes sign-ins someone else added', async (t) => {
+  const { web } = t.context;
+  const password = falso.randPassword();
+  // e.g. an account created through the API for someone else's address,
+  // with a passkey and two-factor added before the owner recovered it
+  const user = await t.context.userFactory
+    .withState({
+      [config.userFields.hasVerifiedEmail]: false,
+      [config.userFields.apiToken]: 'token-of-whoever-created-it',
+      [config.passport.fields.otpEnabled]: true,
+      [config.passport.fields.otpToken]: 'JBSWY3DPEHPK3PXP',
+      [config.userFields.otpRecoveryKeys]: ['a-recovery-key'],
+      passkeys: [
+        {
+          nickname: 'not yours',
+          credentialId: 'credential-id',
+          publicKey: 'public-key',
+          sha256: 'sha256'
+        }
+      ],
+      [config.userFields.resetToken]: 'unverified-reset-token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
+    })
+    .create();
+
+  const res = await web
+    .post('/en/reset-password/unverified-reset-token')
+    .set({ Accept: 'text/html' })
+    .send({ email: user.email, password });
+  t.is(res.status, 302);
+
+  const fresh = await Users.findById(user._id)
+    .select(`+${config.passport.fields.otpToken}`)
+    .lean()
+    .exec();
+  t.deepEqual(fresh.passkeys, []);
+  t.false(fresh[config.passport.fields.otpEnabled]);
+  t.not(fresh[config.passport.fields.otpToken], 'JBSWY3DPEHPK3PXP');
+  t.false(fresh[config.userFields.otpRecoveryKeys].includes('a-recovery-key'));
+  t.truthy(fresh[config.userFields.apiToken]);
+  t.not(fresh[config.userFields.apiToken], 'token-of-whoever-created-it');
+});
+
+test('a password reset of a verified account keeps its passkeys and API token', async (t) => {
+  const { web } = t.context;
+  const password = falso.randPassword();
+  const user = await t.context.userFactory
+    .withState({
+      [config.userFields.hasVerifiedEmail]: true,
+      [config.userFields.apiToken]: 'the-owners-token',
+      passkeys: [
+        {
+          nickname: 'mine',
+          credentialId: 'credential-id-2',
+          publicKey: 'public-key',
+          sha256: 'sha256'
+        }
+      ],
+      [config.userFields.resetToken]: 'verified-reset-token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
+    })
+    .create();
+
+  const res = await web
+    .post('/en/reset-password/verified-reset-token')
+    .set({ Accept: 'text/html' })
+    .send({ email: user.email, password });
+  t.is(res.status, 302);
+
+  const fresh = await Users.findById(user._id).lean().exec();
+  t.is(fresh.passkeys.length, 1);
+  t.is(fresh[config.userFields.apiToken], 'the-owners-token');
+});
+
+test('passkeys and two-factor cannot be added before the email is verified', async (t) => {
+  const password = falso.randPassword();
+  let user = await t.context.userFactory.make();
+  user = await Users.register(user, password);
+  user[config.userFields.hasSetPassword] = true;
+  user[config.userFields.hasVerifiedEmail] = false;
+  await user.save();
+  const web = request.agent(t.context._web.server);
+  await web.post('/en/login').send({ email: user.email, password });
+
+  let res = await web
+    .post('/en/my-account/passkeys')
+    .set('Accept', 'application/json')
+    .send({ response: {} });
+  t.is(res.status, 403);
+  t.is(res.body.message, phrases.EMAIL_VERIFICATION_REQUIRED);
+
+  res = await web
+    .post('/en/otp/setup')
+    .set('Accept', 'application/json')
+    .send({ password });
+  t.is(res.status, 403);
+  t.is(res.body.message, phrases.EMAIL_VERIFICATION_REQUIRED);
+
+  res = await web.get('/en/otp/setup').set('Accept', 'text/html');
+  t.is(res.status, 302);
+  t.is(res.header.location, `/en${config.verifyRoute}`);
+
+  const fresh = await Users.findById(user._id).lean().exec();
+  t.deepEqual(fresh.passkeys, []);
+  t.false(fresh[config.passport.fields.otpEnabled]);
 });

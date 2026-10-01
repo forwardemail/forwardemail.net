@@ -99,6 +99,25 @@ function normalizeEmail(email) {
 }
 
 /**
+ * Whether a message comes from the organizer of its event.
+ *
+ * The authenticated From address (DMARC passed or DKIM aligned with it, see
+ * on-data-mx.js) must be the ORGANIZER (calendar services such as Google,
+ * Microsoft and Apple send invites and updates from the organizer's address).
+ * The envelope sender is not used, since anyone can set it, and another
+ * address on the same domain is not enough (e.g. two Gmail users).
+ *
+ * @param {string} organizerEmail - ORGANIZER of the iMIP message
+ * @param {string} authenticatedFromEmail - Authenticated From address
+ * @returns {boolean}
+ */
+function isFromOrganizer(organizerEmail, authenticatedFromEmail) {
+  const organizer = normalizeEmail(organizerEmail);
+  const from = normalizeEmail(authenticatedFromEmail);
+  return Boolean(organizer) && organizer === from;
+}
+
+/**
  * Validate that the email sender matches the attendee in the REPLY
  *
  * This prevents spoofing where someone sends a REPLY claiming to be another attendee.
@@ -634,9 +653,20 @@ async function processImipMessage(imipData, options = {}) {
   const existingInvite = await CalendarInvites.findOne(query);
 
   if (existingInvite) {
+    // a pending message from the organizer is not replaced by one that is not
+    if (existingInvite.organizerVerified && !options.organizerVerified) {
+      logger.warn('iMIP message not from the organizer ignored', {
+        inviteId: existingInvite._id,
+        uid,
+        method
+      });
+      return existingInvite;
+    }
+
     // Update existing invite
     const updateFields = {
       source: 'imip',
+      organizerVerified: options.organizerVerified === true,
       sourceMessageId: options.messageId,
       ip: options.remoteAddress,
       updated_at: new Date()
@@ -691,7 +721,8 @@ async function processImipMessage(imipData, options = {}) {
     sourceMessageId: options.messageId,
     ip: options.remoteAddress,
     processed: false,
-    processAttempts: 0
+    processAttempts: 0,
+    organizerVerified: options.organizerVerified === true
   };
 
   // Store raw ICS for methods that need the full data
@@ -841,6 +872,12 @@ async function checkAndProcessImipMessage(parsedEmail, options = {}) {
     return null;
   }
 
+  // (checked before the fallback below, which is not from the message)
+  const organizerVerified = isFromOrganizer(
+    imipData.organizerEmail,
+    options.authenticatedFromEmail
+  );
+
   // If organizer email not in the message, use the recipient email
   if (!imipData.organizerEmail && options.toEmail) {
     imipData.organizerEmail = options.toEmail.toLowerCase();
@@ -943,6 +980,7 @@ async function checkAndProcessImipMessage(parsedEmail, options = {}) {
     const invite = await processImipMessage(imipData, {
       messageId: options.messageId,
       fromEmail: options.fromEmail,
+      organizerVerified,
       toEmail: options.toEmail,
       remoteAddress: options.remoteAddress
     });
@@ -976,5 +1014,6 @@ async function checkAndProcessImipMessage(parsedEmail, options = {}) {
 }
 
 module.exports = {
-  checkAndProcessImipMessage
+  checkAndProcessImipMessage,
+  isFromOrganizer
 };

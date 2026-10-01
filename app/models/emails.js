@@ -1663,20 +1663,35 @@ Emails.statics.queue = async function (
   let alias;
 
   if (!options.catchall) {
+    //
+    // an explicit alias (e.g. the alias that authenticated) may be passed
+    // as a document, an ObjectId, or a string id (API alias auth passes
+    // a string), and it must always resolve to exactly that alias,
+    // otherwise the From address would be looked up by name instead
+    //
+    let aliasId;
+    if (mongoose.isObjectIdOrHexString(options.alias)) aliasId = options.alias;
+    else if (
+      _.isObject(options.alias) &&
+      mongoose.isObjectIdOrHexString(options.alias._id)
+    )
+      aliasId = options.alias._id;
+
     // TODO: this is a double lookup on the alias
     //       (but we keep it here because we rely on `populate`)
-    if (_.isObject(options.alias)) {
-      if (mongoose.isObjectIdOrHexString(options.alias)) {
-        alias = await Aliases.findById(options.alias).populate(
-          'user',
-          `id ${config.userFields.isBanned}`
+    if (aliasId) {
+      alias = await Aliases.findOne({
+        _id: aliasId,
+        domain: domain._id
+      }).populate('user', `id ${config.userFields.isBanned}`);
+
+      // bounces keep their old behavior (the alias may since be removed)
+      if (!alias && !isBounce)
+        throw Boom.forbidden(
+          i18n.translateError('ALIAS_DOES_NOT_EXIST', locale)
         );
-      } else if (options.alias._id) {
-        alias = await Aliases.findById(options.alias._id).populate(
-          'user',
-          `id ${config.userFields.isBanned}`
-        );
-      }
+    } else if (options.alias && !isBounce) {
+      throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
     } else if (userId) {
       alias = await Aliases.findOne(
         member.group === 'admin'
@@ -1688,10 +1703,19 @@ Emails.statics.queue = async function (
               // users that are not admins must be an owner of the alias to send as it
               user: new mongoose.Types.ObjectId(userId),
               domain: domain._id,
-              name: aliasName
+              // alias names are stored lowercase and without a "+" tag
+              // (so "+" address filtering keeps working for members)
+              name: aliasName.split('+')[0].toLowerCase()
             }
       ).populate('user', `id ${config.userFields.isBanned}`);
     }
+
+    //
+    // without a matching alias only domain admins may send from any
+    // address on the domain (a `user` member must own the alias)
+    //
+    if (!alias && !isBounce && member.group !== 'admin')
+      throw Boom.forbidden(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
   }
 
   if (alias) {

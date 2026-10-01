@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "Nombre del bucket de S3 para almacenar las copias de seguridad. El bucket debe existir previamente y no debe ser de acceso público."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Dirección de correo electrónico actualizada (solo autenticación de usuario)"
+                    "description": "Dirección de correo electrónico actual (solo autenticación de usuario). El correo electrónico de inicio de sesión no se puede cambiar a través de la API; enviar un valor diferente devuelve un error 400. Cámbielo en Mi cuenta > Perfil."
                   },
                   "avatar_url": {
                     "type": "string",

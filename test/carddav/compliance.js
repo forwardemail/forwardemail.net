@@ -27,6 +27,7 @@ const Users = require('#models/users');
 const AddressBooks = require('#models/address-books');
 const carddavConfig = require('#config/carddav');
 const config = require('#config');
+const createPassword = require('#helpers/create-password');
 const createTangerine = require('#helpers/create-tangerine');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const env = require('#config/env');
@@ -295,6 +296,39 @@ test('should respond to OPTIONS request with correct headers', async (t) => {
   } catch (err) {
     t.fail(`OPTIONS request failed: ${err.message}`);
   }
+});
+
+test('Basic auth with a domain-wide catch-all password is refused', async (t) => {
+  const { domain, alias, user } = t.context;
+  // the catch-all password is for outbound SMTP only
+  const { password, salt, hash } = await createPassword();
+  domain.tokens.push({ description: 'test', salt, hash, user: user._id });
+  domain.skip_verification = true;
+  await domain.save();
+
+  const propfind = (authorization) =>
+    axios({
+      method: 'PROPFIND',
+      url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/default`,
+      headers: {
+        'Content-Type': 'application/xml',
+        Depth: '0',
+        Authorization: authorization
+      },
+      data: '<?xml version="1.0"?><d:propfind xmlns:d="DAV:"><d:prop><d:displayname/></d:prop></d:propfind>',
+      validateStatus: () => true
+    });
+
+  const res = await propfind(
+    `Basic ${Buffer.from(`${alias.name}@${domain.name}:${password}`).toString(
+      'base64'
+    )}`
+  );
+  t.is(res.status, 401);
+
+  // (the alias password itself still works)
+  const ok = await propfind(t.context.authHeaders.Authorization);
+  t.is(ok.status, 207);
 });
 
 // TODO: should respond with <A:multistatus> and <A:sync-token>

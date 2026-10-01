@@ -9,7 +9,6 @@ const isFQDN = require('is-fqdn');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const safeStringify = require('fast-safe-stringify');
-const undici = require('undici');
 
 const SMTPError = require('#helpers/smtp-error');
 const _ = require('#helpers/lodash');
@@ -17,6 +16,7 @@ const config = require('#config');
 const logger = require('#helpers/logger');
 const isRdapRenewalGracePeriod = require('#helpers/is-rdap-renewal-grace-period');
 const normalizeRdapUrl = require('#helpers/normalize-rdap-url');
+const rdapFetch = require('#helpers/rdap-fetch');
 
 // dynamically import @forwardemail/whois-rdap
 let whois;
@@ -44,7 +44,8 @@ import('@forwardemail/whois-rdap').then((obj) => {
 //
 async function wrappedFetch(url, options) {
   try {
-    return await undici.fetch(normalizeRdapUrl(url), options);
+    // (redirects and every target are checked to be public)
+    return await rdapFetch(url, options);
   } catch (err) {
     // Enhanced error logging for fetch failures
     if (err.cause) {

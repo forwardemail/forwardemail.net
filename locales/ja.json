@@ -23216,5 +23216,8 @@
   "Show": "表示",
   "Hide": "非表示",
   "Use my API token": "自分のAPIトークンを使用",
-  "Clear my API token": "自分のAPIトークンを消去"
+  "Clear my API token": "自分のAPIトークンを消去",
+  "Two-factor authentication is already enabled.": "2要素認証はすでに有効になっています。",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "メールアドレスは API から変更できません。マイアカウント > プロフィールから変更してください。変更にはパスワードと新しいアドレスの確認が必要です。",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "バケット名は 3〜63 文字で、小文字、数字、ドット、ハイフンのみを使用し、英字または数字で始まり英字または数字で終わる必要があります。"
 }

@@ -23216,5 +23216,8 @@
   "Show": "Hiện",
   "Hide": "Ẩn",
   "Use my API token": "Dùng token API của tôi",
-  "Clear my API token": "Xóa token API của tôi"
+  "Clear my API token": "Xóa token API của tôi",
+  "Two-factor authentication is already enabled.": "Xác thực hai yếu tố đã được bật.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "Không thể thay đổi địa chỉ email của bạn qua API. Vui lòng thay đổi tại Tài khoản của tôi > Hồ sơ, việc này yêu cầu mật khẩu và xác nhận địa chỉ mới.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "Tên bucket phải dài từ 3 đến 63 ký tự, chỉ chứa chữ thường, chữ số, dấu chấm và dấu gạch nối, đồng thời bắt đầu và kết thúc bằng chữ cái hoặc chữ số."
 }

@@ -180,7 +180,22 @@ async function update(ctx) {
     return;
   }
 
-  if (_.isString(body.email)) ctx.state.user.email = body.email;
+  //
+  // the login email is only changed through the web flow (which requires
+  // the password and a confirmation link sent to the new address), since
+  // otherwise a leaked API token could be used to take over the account
+  // (the current value is accepted as a no-op for clients that echo it back)
+  //
+  if (
+    _.isString(body.email) &&
+    body.email.trim().toLowerCase() !==
+      String(ctx.state.user.email || '')
+        .trim()
+        .toLowerCase()
+  )
+    throw Boom.badRequest(
+      ctx.translateError('EMAIL_CHANGE_NOT_ALLOWED_VIA_API')
+    );
 
   if (_.isString(body[config.passport.fields.givenName]))
     ctx.state.user[config.passport.fields.givenName] =

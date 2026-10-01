@@ -23216,5 +23216,8 @@
   "Show": "Показати",
   "Hide": "Приховати",
   "Use my API token": "Використати мій API-токен",
-  "Clear my API token": "Очистити мій API-токен"
+  "Clear my API token": "Очистити мій API-токен",
+  "Two-factor authentication is already enabled.": "Двофакторну автентифікацію вже ввімкнено.",
+  "Your email address cannot be changed through the API. Please change it under My Account > Profile, which requires your password and confirmation of the new address.": "Адресу електронної пошти не можна змінити через API. Змініть її в розділі «Мій обліковий запис > Профіль» — для цього потрібні пароль і підтвердження нової адреси.",
+  "Bucket name must be 3 to 63 characters long, contain only lowercase letters, numbers, dots, and hyphens, and start and end with a letter or number.": "Назва бакета має містити від 3 до 63 символів, лише малі літери, цифри, крапки та дефіси, а також починатися й закінчуватися літерою або цифрою."
 }

@@ -2204,6 +2204,9 @@
           },
           "s3_bucket": {
             "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$",
             "description": "Nom du compartiment S3 destiné au stockage des sauvegardes. Ce compartiment doit déjà exister et ne doit pas être accessible publiquement."
           },
           "allowlist": {
@@ -3341,7 +3344,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Adresse e-mail mise à jour (authentification utilisateur uniquement)"
+                    "description": "Adresse e-mail actuelle (authentification utilisateur uniquement). L'adresse e-mail de connexion ne peut pas être modifiée via l'API ; l'envoi d'une valeur différente renvoie une erreur 400. Modifiez-la plutôt dans Mon compte > Profil."
                   },
                   "avatar_url": {
                     "type": "string",
