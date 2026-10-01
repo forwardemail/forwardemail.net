@@ -33,6 +33,7 @@ const getSessionKeys = require('#helpers/get-session-keys');
 const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
 const validateHostHeader = require('#helpers/validate-host-header');
 const blockSourceMaps = require('#helpers/block-source-maps');
+const staticByteRanges = require('#helpers/static-byte-ranges');
 const {
   createOtpRememberMeCookie,
   isValidOtpRememberMeCookie,
@@ -205,7 +206,11 @@ module.exports = (redis) => ({
         routes: [
           '/.well-known/(.*)',
           '/css/(.*)',
-          '/img/(.*)',
+          // everything under /img except audio and video, which stream from
+          // disk instead: koa-cash keeps whole responses in Redis, so a video
+          // would be read into memory, gzipped and stored for a year, and
+          // then fetched whole again for every range a player asks for
+          '/img/((?!.+\\.(?:mp3|mp4|m4a|ogg|wav|webm)$).*)',
           '/js/(.*)',
           '/fonts/(.*)',
           '/browserconfig.xml',
@@ -350,6 +355,11 @@ module.exports = (redis) => ({
     app.use(validateHostHeader());
     // source maps are only served in development
     if (config.env !== 'development') app.use(blockSourceMaps());
+    // 206 Partial Content for static audio and video (Safari plays no video
+    // without it, and seeking needs it everywhere). Registered before the
+    // browser cache policy below, so that one still sees the 200 it looks for
+    // and a range of a revisioned video is cached like the whole file.
+    app.use(staticByteRanges());
     // Koa v3 polyfill for ctx.redirect('back')
     // @see https://github.com/koajs/koa/releases/tag/v3.0.0
     app.use(

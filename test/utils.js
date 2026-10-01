@@ -390,7 +390,7 @@ exports.generateSmtpKeys = generateSmtpKeys;
 exports.normalizeBuildHashes = (html) =>
   html
     .replace(
-      /-[\da-f]{10}(\.(?:png|svg|jpe?g|ico|webp|css|js|woff2?))/g,
+      /-[\da-f]{10}(\.(?:png|svg|jpe?g|ico|webp|css|js|woff2?|mp4|webm))/g,
       '-HASH$1'
     )
     .replace(/(integrity="sha\d{3}-)[^"]+"/g, '$1HASH"');

@@ -1,0 +1,98 @@
+//- The two-minute tour video: the modal that plays it, the hero's Watch
+//- button and the card beside the product lede that open it.
+//-
+//- Nothing about the video loads with the page. The <video> has
+//- preload="none" and js/home-video.js sets its poster when the modal opens;
+//- the card's image is lazy. MP4 (H.264 + AAC) is the first source and plays
+//- in every current browser, and WebM (VP9 + Opus) covers builds without
+//- H.264. The captions are part of the picture. Without JavaScript, the
+//- button and the card are plain links to the MP4.
+//-
+//- Safari plays a video only from a server that answers byte ranges, which
+//- helpers/static-byte-ranges.js adds for static audio and video.
+
+//- The length of the video, shown on the button and the card
+mixin feVideoTime
+  time.fe-video-time(datetime="PT1M58S") 1:58
+
+mixin feVideoPlayGlyph
+  svg(viewBox="0 0 24 24", aria-hidden="true", focusable="false")
+    path(d="M8 5.5v13l11-6.5z")
+
+mixin feVideoButton
+  a.fe-btn.fe-btn--ghost.fe-btn--lg.fe-video-button(
+    href=manifest("img/video/forward-email.mp4"),
+    data-toggle="modal",
+    data-target="#modal-video",
+    aria-haspopup="dialog"
+  )
+    span.fe-video-button__icon
+      +feVideoPlayGlyph
+    = t("Watch the video")
+    = " "
+    +feVideoTime
+
+mixin feVideoCard
+  a.fe-video-card(
+    href=manifest("img/video/forward-email.mp4"),
+    data-toggle="modal",
+    data-target="#modal-video",
+    aria-haspopup="dialog"
+  )
+    img.fe-video-card__poster(
+      src=manifest("img/video/forward-email.jpg"),
+      alt="",
+      width="1280",
+      height="720",
+      loading="lazy",
+      decoding="async"
+    )
+    span.fe-video-card__play
+      +feVideoPlayGlyph
+    span.fe-video-card__label
+      = t("Watch the video")
+      = " "
+      +feVideoTime
+
+mixin feVideoModal
+  #modal-video.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-video-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-dialog-centered.modal-xl(role="document")
+      .modal-content
+        .modal-header
+          h2#modal-video-title.modal-title.h5= t("Forward Email in two minutes")
+          button.close(
+            type="button",
+            data-dismiss="modal",
+            aria-label=t("Close")
+          )
+            span(aria-hidden="true") &times;
+        .modal-body
+          video.fe-video__player(
+            controls,
+            playsinline,
+            preload="none",
+            width="1920",
+            height="1080",
+            data-poster=manifest("img/video/forward-email.jpg")
+          )
+            source(
+              src=manifest("img/video/forward-email.mp4"),
+              type="video/mp4; codecs=\"avc1.640028, mp4a.40.2\""
+            )
+            source(
+              src=manifest("img/video/forward-email.webm"),
+              type="video/webm; codecs=\"vp9, opus\""
+            )
+            a(href=manifest("img/video/forward-email.mp4"))= t("Download the video (MP4)")
+        .modal-footer
+          a.fe-video__download(
+            href=manifest("img/video/forward-email.mp4"),
+            download="forward-email.mp4"
+          )
+            i.fa.fa-download(aria-hidden="true")
+            = t("Download the video (MP4)")

@@ -361,6 +361,181 @@ html.no-js .fe-console__rail-wrap {
 }
 
 // ============================================
+// TOUR VIDEO
+// ============================================
+// The hero's Watch button, the card beside the product lede, and the modal
+// that plays the video (app/views/_fe-video.pug).
+
+.fe-video-time {
+  font-family: var(--fe-font-mono);
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-secondary);
+}
+
+// The play glyph sits in a brand-blue disc on the button and on the card
+.fe-video-button__icon,
+.fe-video-card__play {
+  display: inline-grid;
+  place-items: center;
+  background-color: var(--fe-primary);
+  border-radius: var(--fe-radius-full);
+}
+
+// A play link rather than a third bordered button: at most widths it wraps
+// to a row of its own under "Start free" and "Check a domain"
+.fe-video-button {
+  padding-inline: 0;
+  border-color: transparent;
+}
+
+.fe-video-button:hover {
+  border-color: transparent;
+}
+
+.fe-video-button__icon {
+  width: 28px;
+  height: 28px;
+  box-shadow: var(--fe-glow-primary);
+  transition: transform var(--fe-motion-base) var(--fe-ease);
+}
+
+.fe-video-button:hover .fe-video-button__icon {
+  transform: scale(1.1);
+}
+
+// The triangle is nudged right to look centred in its disc. Physical, not
+// logical: a play glyph points right in every script.
+.fe-video-button__icon svg,
+.fe-video-card__play svg {
+  width: 56%;
+  height: 56%;
+  margin-left: 8%;
+  fill: var(--fe-l-000);
+}
+
+.fe-product__intro {
+  display: grid;
+  gap: var(--fe-space-6);
+  align-items: start;
+  margin-bottom: 3rem;
+}
+
+// the row carries the space below, not the lede
+.fe-product__intro .fe-lede {
+  margin-bottom: 0;
+}
+
+.fe-video-card {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background-color: var(--fe-ink);
+  border: 1px solid var(--fe-border-default);
+  border-radius: var(--fe-radius-xl);
+  box-shadow: var(--fe-elev-3);
+}
+
+.fe-video-card__poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--fe-motion-base) var(--fe-ease),
+    filter var(--fe-motion-base) var(--fe-ease);
+}
+
+// Centred with physical offsets for the same reason as the glyph above
+.fe-video-card__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 76px;
+  height: 76px;
+  box-shadow: var(--fe-glow-primary);
+  transform: translate(-50%, -50%);
+  transition: transform var(--fe-motion-base) var(--fe-ease);
+}
+
+// A slow ring out of the play button, twice (under five seconds, so it needs
+// no control to stop it), and not at all for visitors who asked for less motion
+.fe-video-card__play::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  border: 2px solid var(--fe-primary-lift);
+  border-radius: inherit;
+  opacity: 0;
+  animation: fe-video-ring 2.4s var(--fe-ease) 2;
+}
+
+@keyframes fe-video-ring {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fe-video-card__play::after {
+    display: none;
+  }
+}
+
+.fe-video-card:hover .fe-video-card__poster,
+.fe-video-card:focus-visible .fe-video-card__poster {
+  filter: brightness(1.12);
+  transform: scale(1.02);
+}
+
+.fe-video-card:hover .fe-video-card__play,
+.fe-video-card:focus-visible .fe-video-card__play {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.fe-video-card__label {
+  position: absolute;
+  inset-block-end: var(--fe-space-3);
+  inset-inline-start: var(--fe-space-3);
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  padding: var(--fe-space-1) var(--fe-space-3);
+  font-size: var(--fe-text-body-sm);
+  font-weight: var(--fe-weight-semibold);
+  color: var(--fe-l-000);
+  background-color: var(--fe-ink-a92);
+  border-radius: var(--fe-radius-full);
+}
+
+// the label is dark on both surfaces and in both schemes
+.fe-video-card__label .fe-video-time {
+  color: var(--fe-n-600);
+}
+
+// The modal: the video fills its body, and holds 16:9 before it loads
+.fe-video__player {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background-color: var(--fe-ink);
+}
+
+.fe-video__download {
+  display: inline-flex;
+  gap: var(--fe-space-2);
+  align-items: center;
+  font-size: var(--fe-text-body-sm);
+}
+
+// ============================================
 // ROUTE STEPPER
 // ============================================
 
@@ -688,6 +863,11 @@ html.no-js .fe-console__rail-wrap {
   .fe-product__head {
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     align-items: end;
+  }
+
+  // The lede and the video card, on the same 7/5 split as the heading row
+  .fe-product__intro {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   }
 
   .fe-product__stats {

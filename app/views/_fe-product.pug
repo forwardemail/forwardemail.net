@@ -25,8 +25,11 @@ mixin feProduct
             span.fe-stats__label.fe-label= t("Per alias")
 
       //- Section 7 replacement copy. The mockup line here described the
-      //- redesign rather than the product.
-      p.fe-lede= t("Connect a domain, prove ownership, route mail securely, and observe everything, from one place.")
+      //- redesign rather than the product. The tour video sits beside it
+      //- (see _fe-video.pug).
+      .fe-product__intro
+        p.fe-lede= t("Connect a domain, prove ownership, route mail securely, and observe everything, from one place.")
+        +feVideoCard
 
       hr.fe-divider
 

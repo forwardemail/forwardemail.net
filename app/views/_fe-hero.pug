@@ -32,6 +32,8 @@ mixin feHero
             )
               i.fa.fa-search(aria-hidden="true")
               = t("Check a domain")
+            //- Opens the tour video (see _fe-video.pug)
+            +feVideoButton
 
           //- Outbound SMTP is unlimited and reputation-based on paid plans
           a.fe-chip.fe-hero__offer(
