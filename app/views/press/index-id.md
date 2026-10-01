@@ -19,11 +19,11 @@
 
 Forward Email adalah satu-satunya layanan hosting email 100% open-source yang fokus pada keamanan dan privasi. Pelajari lebih lanjut tentang sejarah kami di [halaman Tentang kami](/about).
 
-Layanan kami didirikan pada tahun 2017 dan mendukung email untuk lebih dari 500.000 domain – termasuk pengguna terkenal seperti [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [beberapa universitas](/blog/docs/alumni-email-forwarding-university-case-study) dan pemerintah, dan lainnya.
+Layanan kami didirikan pada tahun 2017 dan mendukung email untuk lebih dari 500.000 domain, termasuk pengguna terkenal seperti [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [beberapa universitas](/blog/docs/alumni-email-forwarding-university-case-study) dan pemerintah, dan lainnya.
 
-Tujuan kami adalah menjadi platform infrastruktur email dan keamanan kelas perusahaan – dan kami mematuhi [beberapa prinsip](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Tujuan kami adalah menjadi platform infrastruktur email dan keamanan kelas perusahaan, dan kami mematuhi [beberapa prinsip](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Jika Anda adalah anggota pers, jurnalis, atau perwakilan media dan ingin berbicara dengan kami, mengajukan pertanyaan, atau mempelajari lebih lanjut – silakan hubungi kami di `press@forwardemail.net`.
+Jika Anda adalah anggota pers, jurnalis, atau perwakilan media dan ingin berbicara dengan kami, mengajukan pertanyaan, atau mempelajari lebih lanjut, silakan hubungi kami di `press@forwardemail.net`.
 
 
 ## Key Facts & Statistics {#key-facts--statistics}

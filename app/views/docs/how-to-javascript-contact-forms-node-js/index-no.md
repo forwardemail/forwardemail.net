@@ -20,7 +20,7 @@ npm install nodemailer
 
 Dette eksempelet bruker **[Nodemailer](https://github.com/nodemailer/nodemailer)** biblioteket og dets offisielle sponsor **[Forward Email](https://forwardemail.net)** for å sende og forhåndsvise utgående e-post.
 
-Du må <strong class="text-success"><i class="fa fa-key"></i> Generere Passord</strong> for å sende utgående e-post – vennligst følg vår **[Send E-post med Egendefinert Domene SMTP Guide](/guides/send-email-with-custom-domain-smtp)**.
+Du må <strong class="text-success"><i class="fa fa-key"></i> Generere Passord</strong> for å sende utgående e-post. Vennligst følg vår **[Send E-post med Egendefinert Domene SMTP Guide](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

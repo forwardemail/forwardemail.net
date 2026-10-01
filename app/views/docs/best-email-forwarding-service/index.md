@@ -29,26 +29,26 @@
 
 ## Foreword
 
-In today's digital landscape, email privacy has become more critical than ever. With data breaches, surveillance concerns, and targeted advertising based on email content, users are increasingly seeking solutions that prioritize their privacy. At Forward Email, we've built our service from the ground up with privacy as the cornerstone of our architecture. This blog post explores the technical implementations that make our service one of the most privacy-focused email forwarding solutions available.
+Data breaches, surveillance, and targeted advertising based on email content push more users toward services that prioritize privacy. At Forward Email, we built our service from the ground up with privacy as the basis of our architecture. This post covers the technical implementations that make our service one of the most privacy-focused email forwarding solutions available.
 
 
 ## The Forward Email Privacy Philosophy
 
-Before diving into the technical details, it's important to understand our fundamental privacy philosophy: **your emails belong to you and only you**. This principle guides every technical decision we make, from how we handle email forwarding to how we implement encryption.
+Our privacy philosophy: **your emails belong to you and only you**. This principle guides every technical decision we make, from how we handle email forwarding to how we implement encryption.
 
-Unlike many email providers who scan your messages for advertising purposes or store them indefinitely on their servers, Forward Email operates with a radically different approach:
+Unlike many email providers who scan your messages for advertising purposes or store them indefinitely on their servers, Forward Email works differently:
 
-1. **In-memory processing only** - We don't store your forwarded emails to disk
-2. **No metadata storage** - We don't keep records of who's emailing whom
-3. **100% open-source** - Our entire codebase is transparent and auditable
-4. **End-to-end encryption** - We support OpenPGP for truly private communications
+1. **In-memory processing only**: We don't store your forwarded emails to disk
+2. **No metadata storage**: We don't keep records of who's emailing whom
+3. **100% open-source**: Our entire codebase is transparent and auditable
+4. **End-to-end encryption**: We support OpenPGP for private communications
 
 
 ## SQLite Implementation: Durability and Portability for Your Data
 
-One of the most significant privacy advantages of Forward Email is our carefully engineered [SQLite](https://en.wikipedia.org/wiki/SQLite) implementation. We've fine-tuned SQLite with specific PRAGMA settings and [Write-Ahead Logging (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) to ensure both durability and portability of your data, while maintaining the highest standards of privacy and security.
+One of Forward Email's main privacy advantages is our [SQLite](https://en.wikipedia.org/wiki/SQLite) implementation. We've fine-tuned SQLite with specific PRAGMA settings and [Write-Ahead Logging (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) to keep your data durable, portable, private, and secure.
 
-Here's a look at how we've implemented SQLite with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) as the cipher for quantum-resistant encryption:
+How we've implemented SQLite with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) as the cipher for quantum-resistant encryption:
 
 ```javascript
 // Initialize the database with better-sqlite3-multiple-ciphers
@@ -85,14 +85,14 @@ db.pragma('optimize=0x10002;');
 db.pragma('temp_store=1;');
 ```
 
-This implementation ensures that your data is not only secure but also portable. You can take your email and go at any time by exporting in [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage), or SQLite formats. And when you want to delete your data, it's truly gone – we simply delete the files from disk storage rather than running SQL DELETE ROW commands, which can leave traces in the database.
+This implementation keeps your data secure and portable. You can take your email and go at any time by exporting in [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage), or SQLite formats. When you delete your data, we delete the files from disk storage rather than running SQL DELETE ROW commands, which can leave traces in the database.
 
 The quantum-encryption aspect of our implementation uses ChaCha20-Poly1305 as the cipher when we initialize the database, providing strong protection against both current and future threats to your data privacy.
 
 
 ## Smart Queue and Retry Mechanism: Ensuring Email Delivery
 
-Instead of focusing solely on header handling, we've implemented a sophisticated smart queue and retry mechanism with our `getBounceInfo` method. This system ensures that your emails have the best chance of being delivered, even when temporary issues arise.
+Beyond header handling, we've implemented a smart queue and retry mechanism with our `getBounceInfo` method. It gives your emails the best chance of delivery when temporary issues arise.
 
 ```javascript
 function getBounceInfo(err) {
@@ -128,7 +128,7 @@ function getBounceInfo(err) {
 > \[!NOTE]
 > This is an excerpt of the `getBounceInfo` method and not the actual extensive implementation. For the complete code, you can review it on [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
 
-We retry mail delivery for 5 days, similar to industry standards like [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), giving temporary issues time to resolve themselves. This approach significantly improves delivery rates while maintaining privacy.
+We retry mail delivery for 5 days, similar to industry standards like [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), giving temporary issues time to resolve themselves. This improves delivery rates while maintaining privacy.
 
 On a similar note, we also redact the message content of outbound SMTP emails after successful delivery. This is configured in our storage system with a default retention period of 30 days, which you can adjust in your domain's Advanced Settings. After this period, the email content is automatically redacted and purged, with only a placeholder message remaining:
 
@@ -141,7 +141,7 @@ This approach ensures that your sent emails don't remain stored indefinitely, re
 
 ## Unlimited Resources with Intelligent Rate Limiting
 
-While Forward Email offers unlimited domains and aliases, we've implemented intelligent rate limiting to protect our system from abuse and ensure fair usage for all users. For example, non-enterprise customers can create up to 50+ aliases per day, which prevents our database from being spammed and flooded, and allows our real-time abuse and protection features to function effectively.
+While Forward Email offers unlimited domains and aliases, we've implemented rate limiting to protect our system from abuse and ensure fair usage for all users. For example, non-enterprise customers can create up to 50+ aliases per day, which prevents our database from being spammed and flooded, and allows our real-time abuse and protection features to function effectively.
 
 ```javascript
 // Rate limiter implementation
@@ -161,30 +161,30 @@ if (limit.remaining <= 0) {
 }
 ```
 
-This balanced approach provides you with the flexibility to create as many email addresses as you need for comprehensive privacy management, while still maintaining the integrity and performance of our service for all users.
+You can create as many email addresses as you need for privacy management, and our service stays fast and stable for all users.
 
 
 ## Sandboxed Encryption for Enhanced Security
 
-Our unique sandboxed encryption approach provides a critical security advantage that many users overlook when choosing an email service. Let's explore why sandboxing data, especially email, is so important.
+Our sandboxed encryption approach provides a security advantage that many users overlook when choosing an email service.
 
-Services like Gmail and Proton most likely use shared [relational databases](https://en.wikipedia.org/wiki/Relational_database), which creates a fundamental security vulnerability. In a shared database environment, if someone gains access to one user's data, they potentially have a pathway to access other users' data as well. This is because all user data resides in the same database tables, separated only by user IDs or similar identifiers.
+Services like Gmail and Proton most likely use shared [relational databases](https://en.wikipedia.org/wiki/Relational_database), which creates a structural security weakness. In a shared database environment, if someone gains access to one user's data, they potentially have a pathway to access other users' data as well. This is because all user data resides in the same database tables, separated only by user IDs or similar identifiers.
 
-Forward Email takes a fundamentally different approach with our sandboxed encryption:
+Forward Email uses sandboxed encryption instead:
 
 1. **Complete isolation**: Each user's data is stored in its own encrypted SQLite database file, completely isolated from other users
 2. **Independent encryption keys**: Each database is encrypted with its own unique key derived from the user's password
 3. **No shared storage**: Unlike relational databases where all users' emails might be in a single "emails" table, our approach ensures no commingling of data
 4. **Defense in depth**: Even if one user's database were somehow compromised, it would not provide access to any other user's data
 
-This sandboxed approach is similar to having your email in a separate physical vault rather than in a shared storage facility with internal dividers. It's a fundamental architectural difference that significantly enhances your privacy and security.
+This sandboxed approach is similar to having your email in a separate physical vault rather than in a shared storage facility with internal dividers. This architecture strengthens your privacy and security.
 
 
 ## In-Memory Email Processing: No Disk Storage for Maximum Privacy
 
-For our email forwarding service, we process emails entirely in RAM and never write them to disk storage or databases. This approach provides unparalleled protection against email surveillance and metadata collection.
+For our email forwarding service, we process emails entirely in RAM and never write them to disk storage or databases. This protects you against email surveillance and metadata collection.
 
-Here's a simplified look at how our email processing works:
+A simplified view of our email processing:
 
 ```javascript
 async function onData(stream, _session, fn) {
@@ -216,14 +216,14 @@ async function onData(stream, _session, fn) {
 }
 ```
 
-This approach means that even if our servers were compromised, there would be no historical email data for attackers to access. Your emails simply pass through our system and are immediately forwarded to their destination without leaving a trace. This no-logging email forwarding approach is fundamental to protecting your communications from surveillance.
+This approach means that even if our servers were compromised, there would be no historical email data for attackers to access. Your emails pass through our system and go straight to their destination without leaving a trace. This no-logging email forwarding approach protects your communications from surveillance.
 
 
 ## End-to-End Encryption with OpenPGP for Complete Privacy
 
 For users who require the highest level of privacy protection from email surveillance, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) for end-to-end encryption. Unlike many email providers that require proprietary bridges or apps, our implementation works with standard email clients, making secure communication accessible to everyone.
 
-Here's how we implement OpenPGP encryption:
+How we implement OpenPGP encryption:
 
 ```javascript
 async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
@@ -256,19 +256,19 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
 }
 ```
 
-This implementation ensures that your emails are encrypted before they leave your device and can only be decrypted by the intended recipient, keeping your communications private even from us. This is essential for protecting sensitive communications from unauthorized access and surveillance.
+This implementation ensures that your emails are encrypted before they leave your device and can only be decrypted by the intended recipient, keeping your communications private even from us.
 
 
 ## Multi-Layered Content Protection for Comprehensive Security
 
-Forward Email offers multiple layers of content protection that are enabled by default to provide comprehensive security against various threats:
+Forward Email enables multiple layers of content protection by default:
 
-1. **Adult content protection** - Filters out inappropriate content without compromising privacy
-2. **[Phishing](https://en.wikipedia.org/wiki/Phishing) protection** - Blocks attempts to steal your information while preserving anonymity
-3. **Executable protection** - Prevents potentially harmful attachments without scanning content
-4. **[Virus](https://en.wikipedia.org/wiki/Computer_virus) protection** - Scans for malware using privacy-preserving techniques
+1. **Adult content protection**: Filters out inappropriate content without compromising privacy
+2. **[Phishing](https://en.wikipedia.org/wiki/Phishing) protection**: Blocks attempts to steal your information while preserving anonymity
+3. **Executable protection**: Prevents potentially harmful attachments without scanning content
+4. **[Virus](https://en.wikipedia.org/wiki/Computer_virus) protection**: Scans for malware using privacy-preserving techniques
 
-Unlike many providers who make these features opt-in, we've made them opt-out, ensuring that all users benefit from these protections by default. This approach reflects our commitment to both privacy and security, providing a balance that many email services fail to achieve.
+Many providers make these features opt-in. We made them opt-out, so all users get these protections by default.
 
 
 ## How We Differ from Other Email Services: The Technical Privacy Advantage
@@ -285,47 +285,47 @@ Many privacy-focused email providers require you to use their proprietary apps o
 
 ### Sandboxed Data for True Isolation
 
-Unlike services that use shared databases where all users' data is commingled, our sandboxed approach ensures that each user's data is completely isolated. This fundamental architectural difference provides significantly stronger privacy guarantees than what most email services offer.
+Unlike services that use shared databases where all users' data is commingled, our sandboxed approach ensures that each user's data is completely isolated. This architecture provides stronger privacy guarantees than most email services offer.
 
 ### Data Portability and Control
 
-We believe that your data belongs to you, which is why we make it easy to export your emails in standard formats (MBOX, EML, SQLite) and truly delete your data when you want to. This level of control is rare among email providers but essential for true privacy.
+We believe that your data belongs to you, which is why we make it easy to export your emails in standard formats (MBOX, EML, SQLite) and fully delete your data when you want to. Few email providers offer this level of control.
 
 
 ## The Technical Challenges of Privacy-First Email Forwarding
 
-Building a privacy-first email service comes with significant technical challenges. Here are some of the obstacles we've overcome:
+Building a privacy-first email service comes with technical challenges. Obstacles we've overcome:
 
 ### Memory Management for No-Logging Email Processing
 
-Processing emails in-memory without disk storage requires careful memory management to handle high volumes of email traffic efficiently. We've implemented advanced memory optimization techniques to ensure reliable performance without compromising on our no-storage policy, a critical component of our privacy protection strategy.
+Processing emails in-memory without disk storage requires careful memory management to handle high volumes of email traffic efficiently. Our memory optimizations keep performance reliable without breaking our no-storage policy.
 
 ### Spam Detection Without Content Analysis for Privacy-Preserving Filtering
 
-Most [spam](https://en.wikipedia.org/wiki/Email_spam) detection systems rely on analyzing email content, which conflicts with our privacy principles. We've developed techniques to identify spam patterns without reading the content of your emails, striking a balance between privacy and usability that preserves the confidentiality of your communications.
+Most [spam](https://en.wikipedia.org/wiki/Email_spam) detection systems rely on analyzing email content, which conflicts with our privacy principles. We've developed techniques to identify spam patterns without reading the content of your emails.
 
 ### Maintaining Compatibility with Privacy-First Design
 
-Ensuring compatibility with all email clients while implementing advanced privacy features has required creative engineering solutions. Our team has worked tirelessly to make privacy seamless, so you don't have to choose between convenience and security when protecting your email communications.
+Ensuring compatibility with all email clients while implementing advanced privacy features has required creative engineering solutions. Our team has worked to make privacy features easy to use, so you don't have to choose between convenience and security.
 
 
 ## Privacy Best Practices for Forward Email Users
 
 To maximize your protection against email surveillance and maximize your privacy when using Forward Email, we recommend the following best practices:
 
-1. **Use unique aliases for different services** - Create a different email alias for each service you sign up for to prevent cross-service tracking
-2. **Enable OpenPGP encryption** - For sensitive communications, use end-to-end encryption to ensure complete privacy
-3. **Regularly rotate your email aliases** - Periodically update aliases for important services to minimize long-term data collection
-4. **Use strong, unique passwords** - Protect your Forward Email account with a strong password to prevent unauthorized access
-5. **Implement [IP address](https://en.wikipedia.org/wiki/IP_address) anonymization** - Consider using a [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) in conjunction with Forward Email for complete anonymity
+1. **Use unique aliases for different services**: Create a different email alias for each service you sign up for to prevent cross-service tracking
+2. **Enable OpenPGP encryption**: For sensitive communications, use end-to-end encryption to ensure complete privacy
+3. **Regularly rotate your email aliases**: Periodically update aliases for important services to minimize long-term data collection
+4. **Use strong, unique passwords**: Protect your Forward Email account with a strong password to prevent unauthorized access
+5. **Implement [IP address](https://en.wikipedia.org/wiki/IP_address) anonymization**: Consider using a [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) in conjunction with Forward Email for complete anonymity
 
 
 ## Conclusion: The Future of Private Email Forwarding
 
-At Forward Email, we believe that privacy isn't just a feature—it's a fundamental right. Our technical implementations reflect this belief, providing you with email forwarding that respects your privacy at every level and protects you from email surveillance and metadata collection.
+At Forward Email, we treat privacy as a fundamental right. Our technical implementations reflect this belief, providing you with email forwarding that respects your privacy at every level and protects you from email surveillance and metadata collection.
 
-As we continue to develop and improve our service, our commitment to privacy remains unwavering. We're constantly researching new encryption methods, exploring additional privacy protections, and refining our codebase to provide the most secure email experience possible.
+As we develop our service, we keep researching new encryption methods, exploring additional privacy protections, and refining our codebase to provide the most secure email experience possible.
 
-By choosing Forward Email, you're not just selecting an email service—you're supporting a vision of the internet where privacy is the default, not the exception. Join us in building a more private digital future, one email at a time.
+By choosing Forward Email, you support an internet where privacy is the default.
 
 <!-- *Keywords: private email forwarding, email privacy protection, secure email service, open-source email, quantum-safe encryption, OpenPGP email, in-memory email processing, no-log email service, email metadata protection, email header privacy, end-to-end encrypted email, privacy-first email, anonymous email forwarding, email security best practices, email content protection, phishing protection, email virus scanning, privacy-focused email provider, secure email headers, email privacy implementation, protection from email surveillance, no-logging email forwarding, prevent email metadata leakage, email privacy techniques, IP address anonymization for email, private email aliases, email forwarding security, email privacy from advertisers, quantum-resistant email encryption, email privacy without compromise, SQLite email storage, sandboxed email encryption, data portability for email* -->

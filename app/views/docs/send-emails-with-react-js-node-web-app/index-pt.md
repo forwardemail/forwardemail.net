@@ -39,7 +39,7 @@ export function Email(props) {
 
 Neste exemplo, usamos a biblioteca **[Nodemailer](https://github.com/nodemailer/nodemailer)** e seu patrocinador oficial **[Forward Email](https://forwardemail.net)** para enviar e pré-visualizar emails enviados.
 
-Você precisará <strong class="text-success"><i class="fa fa-key"></i> Gerar Senha</strong> para enviar emails – por favor, siga nosso **[Guia para Enviar Email com SMTP de Domínio Personalizado](/guides/send-email-with-custom-domain-smtp)**.
+Você precisará <strong class="text-success"><i class="fa fa-key"></i> Gerar Senha</strong> para enviar emails. Por favor, siga nosso **[Guia para Enviar Email com SMTP de Domínio Personalizado](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

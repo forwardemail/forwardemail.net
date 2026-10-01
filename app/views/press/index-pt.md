@@ -19,11 +19,11 @@
 
 Forward Email é o único serviço de hospedagem de e-mail 100% open-source focado em segurança e privacidade. Saiba mais sobre nossa história em [nossa página Sobre](/about).
 
-Nosso serviço foi fundado em 2017 e alimenta e-mails para mais de 500.000 domínios – incluindo usuários notáveis como [A Academia Naval dos EUA](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [A Fundação Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [várias universidades](/blog/docs/alumni-email-forwarding-university-case-study) e governos, entre outros.
+Nosso serviço foi fundado em 2017 e alimenta e-mails para mais de 500.000 domínios, incluindo usuários notáveis como [A Academia Naval dos EUA](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [A Fundação Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [várias universidades](/blog/docs/alumni-email-forwarding-university-case-study) e governos, entre outros.
 
-Nosso objetivo é ser a plataforma de infraestrutura de e-mail e segurança de nível empresarial – e seguimos [vários princípios](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Nosso objetivo é ser a plataforma de infraestrutura de e-mail e segurança de nível empresarial, e seguimos [vários princípios](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Se você é membro da imprensa, jornalista ou representante da mídia e gostaria de falar conosco, fazer perguntas ou saber mais – por favor, entre em contato pelo e-mail `press@forwardemail.net`.
+Se você é membro da imprensa, jornalista ou representante da mídia e gostaria de falar conosco, fazer perguntas ou saber mais, por favor, entre em contato pelo e-mail `press@forwardemail.net`.
 
 
 ## Fatos e Estatísticas Principais {#key-facts--statistics}

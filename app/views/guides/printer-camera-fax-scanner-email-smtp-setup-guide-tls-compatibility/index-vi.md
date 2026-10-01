@@ -52,7 +52,7 @@ Forward Email khắc phục điều này bằng cách hỗ trợ cả thiết b�
 * [Kết Luận](#conclusion)
 ## Vấn Đề TLS Được Giải Thích {#the-tls-problem-explained}
 
-Chuyện đã xảy ra như sau: bảo mật email trở nên nghiêm ngặt hơn, nhưng thiết bị của bạn thì không nhận được thông báo. Thiết bị hiện đại hỗ trợ TLS 1.2+, nhưng các thiết bị cũ vẫn chỉ dùng TLS 1.0. Hầu hết nhà cung cấp email đã ngừng hỗ trợ TLS 1.0, nên thiết bị của bạn không thể kết nối được.
+Bảo mật email trở nên nghiêm ngặt hơn, nhưng thiết bị của bạn thì không nhận được thông báo. Thiết bị hiện đại hỗ trợ TLS 1.2+, nhưng các thiết bị cũ vẫn chỉ dùng TLS 1.0. Hầu hết nhà cung cấp email đã ngừng hỗ trợ TLS 1.0, nên thiết bị của bạn không thể kết nối được.
 
 Điều này ảnh hưởng đến hoạt động thực tế - camera an ninh không thể gửi cảnh báo khi có sự cố, máy in không thể cảnh báo về vấn đề bảo trì, và các xác nhận fax bị thất lạc. Cấu hình [máy chủ SMTP của Forward Email](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) cung cấp nhiều cổng để giữ mọi thứ hoạt động.
 
@@ -68,7 +68,7 @@ Forward Email cung cấp dịch vụ SMTP toàn diện được thiết kế đ�
 
 Các thiết bị cũ chỉ hỗ trợ TLS 1.0 có thể sử dụng các cổng tương thích chuyên biệt của chúng tôi. Cổng 2455 cung cấp kết nối SSL/TLS với hỗ trợ TLS 1.0, trong khi cổng 2555 cung cấp STARTTLS với khả năng tương thích giao thức cũ. Các cổng này duy trì mức bảo mật cao nhất có thể trong khi đảm bảo thiết bị cũ vẫn hoạt động bình thường.
 
-Tất cả kết nối đều yêu cầu xác thực bằng bí danh Forward Email của bạn làm tên đăng nhập và mật khẩu được tạo từ [Tài Khoản Của Tôi -> Tên Miền -> Bí Danh](https://forwardemail.net/my-account/domains). Cách làm này cung cấp bảo mật mạnh mẽ đồng thời duy trì khả năng tương thích rộng rãi với các hệ thống xác thực thiết bị khác nhau.
+Tất cả kết nối đều yêu cầu xác thực bằng bí danh Forward Email của bạn làm tên đăng nhập và mật khẩu được tạo từ [Tài Khoản Của Tôi -> Tên Miền -> Bí Danh](https://forwardemail.net/my-account/domains). Cách làm này giữ kết nối an toàn đồng thời duy trì khả năng tương thích rộng rãi với các hệ thống xác thực thiết bị khác nhau.
 
 > \[!CAUTION]
 > Không bao giờ sử dụng mật khẩu đăng nhập tài khoản của bạn để xác thực SMTP. Luôn sử dụng mật khẩu được tạo từ [Tài Khoản Của Tôi -> Tên Miền -> Bí Danh](https://forwardemail.net/my-account/domains) để cấu hình thiết bị.
@@ -132,7 +132,7 @@ Các máy in HP cũ hơn, bao gồm LaserJet Pro MFP M277 và các mẫu tương
 
 2. **Đi đến cài đặt Mạng hoặc Hệ thống** và tìm phần cấu hình "Email" hoặc "SMTP." Vị trí chính xác thay đổi tùy theo mẫu máy và phiên bản firmware.
 
-3. **Cấu hình các thiết lập SMTP cũ của Forward Email** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ. Điều này rất quan trọng - sử dụng cổng 2455 cho kết nối SSL/TLS hoặc cổng 2555 cho kết nối STARTTLS thay vì các cổng tiêu chuẩn.
+3. **Cấu hình các thiết lập SMTP cũ của Forward Email** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ. Sử dụng cổng 2455 cho kết nối SSL/TLS hoặc cổng 2555 cho kết nối STARTTLS thay vì các cổng tiêu chuẩn.
 
 4. **Thiết lập xác thực** bằng cách bật xác thực SMTP và nhập bí danh Forward Email của bạn làm tên người dùng. Sử dụng mật khẩu Forward Email đã tạo để xác thực.
 
@@ -147,7 +147,7 @@ Các máy in HP cũ hơn, bao gồm LaserJet Pro MFP M277 và các mẫu tương
 
 ## Cấu hình Email Máy In Canon {#canon-printer-email-configuration}
 
-Máy in Canon cung cấp khả năng thông báo email mạnh mẽ trên các dòng sản phẩm imageRUNNER, PIXMA và MAXIFY của họ. Các thiết bị Canon hiện đại hỗ trợ cấu hình TLS toàn diện, trong khi các mẫu kế thừa có thể yêu cầu các thiết lập tương thích cụ thể để hoạt động với các nhà cung cấp email hiện nay.
+Máy in Canon cung cấp khả năng thông báo email trên các dòng sản phẩm imageRUNNER, PIXMA và MAXIFY của họ. Các thiết bị Canon hiện đại hỗ trợ cấu hình TLS toàn diện, trong khi các mẫu kế thừa có thể yêu cầu các thiết lập tương thích cụ thể để hoạt động với các nhà cung cấp email hiện nay.
 
 ### Máy In Canon Hiện Đại {#current-canon-printers}
 
@@ -159,7 +159,7 @@ Máy in Canon hiện đại cung cấp các tính năng thông báo email rộng
 
 3. **Cấu hình máy chủ SMTP** bằng cách nhấp vào "Add Destination" và nhập smtp.forwardemail.net làm địa chỉ máy chủ. Chọn "SSL" hoặc "TLS" làm phương thức mã hóa.
 
-4. **Đặt số cổng** là 465 cho kết nối SSL/TLS (khuyến nghị) hoặc 587 cho kết nối STARTTLS. Máy in Canon phân biệt rõ ràng giữa các phương thức mã hóa này trong giao diện của họ.
+4. **Đặt số cổng** là 465 cho kết nối SSL/TLS (khuyến nghị) hoặc 587 cho kết nối STARTTLS. Máy in Canon phân biệt giữa các phương thức mã hóa này trong giao diện của họ.
 
 5. **Cấu hình xác thực** bằng cách bật xác thực SMTP và nhập bí danh Forward Email của bạn làm tên đăng nhập. Sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
@@ -205,7 +205,7 @@ Máy in đa chức năng Brother cung cấp nhiều khả năng email, nhưng vi
 
 3. **Cấu hình cài đặt máy chủ SMTP** bằng cách nhập smtp.forwardemail.net làm địa chỉ máy chủ. Máy in Brother hỗ trợ cả hai phương thức mã hóa SSL/TLS và STARTTLS.
 
-4. **Chọn cổng và mã hóa phù hợp** bằng cách chọn cổng 465 với mã hóa SSL/TLS (khuyến nghị) hoặc cổng 587 với mã hóa STARTTLS. Máy in Brother ghi rõ các tùy chọn này trong giao diện của họ.
+4. **Chọn cổng và mã hóa phù hợp** bằng cách chọn cổng 465 với mã hóa SSL/TLS (khuyến nghị) hoặc cổng 587 với mã hóa STARTTLS. Máy in Brother ghi các tùy chọn này trong giao diện của họ.
 
 5. **Cấu hình xác thực SMTP** bằng cách bật xác thực và nhập bí danh Forward Email của bạn làm tên đăng nhập. Sử dụng mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
@@ -325,7 +325,7 @@ Các camera Hikvision cũ có thể hỗ trợ TLS hạn chế và yêu cầu c�
 > Camera Hikvision cũ có thể có các lỗ hổng bảo mật đã biết. Đảm bảo các thiết bị này được cách ly đúng cách trên mạng của bạn và cân nhắc nâng cấp lên các mẫu hiện đại khi có thể.
 ## Cấu Hình Email Camera An Ninh Dahua {#dahua-security-camera-email-configuration}
 
-Camera Dahua cung cấp khả năng thông báo email mạnh mẽ trên toàn bộ dòng sản phẩm của họ, từ các camera IP cơ bản đến các hệ thống giám sát tiên tiến sử dụng AI. Quá trình cấu hình thường khá đơn giản đối với các thiết bị hiện đại, với hỗ trợ đầy đủ cho các tiêu chuẩn TLS hiện nay.
+Camera Dahua cung cấp khả năng thông báo email trên toàn bộ dòng sản phẩm của họ, từ các camera IP cơ bản đến các hệ thống giám sát tiên tiến sử dụng AI. Quá trình cấu hình thường khá đơn giản đối với các thiết bị hiện đại, với hỗ trợ đầy đủ cho các tiêu chuẩn TLS hiện nay.
 
 ### Cài Đặt Email Camera Dahua {#dahua-camera-email-setup}
 
@@ -401,7 +401,7 @@ Thiết bị đa chức năng Xerox cung cấp cấu hình email tinh vi thông 
 
 ## Cấu hình Email cho Thiết bị Đa chức năng Ricoh {#ricoh-multifunction-device-email-configuration}
 
-Các thiết bị đa chức năng Ricoh cung cấp khả năng email mạnh mẽ trên toàn bộ dòng sản phẩm của họ, từ máy in văn phòng cơ bản đến hệ thống sản xuất tiên tiến. Tuy nhiên, [Ricoh đã thông báo những thay đổi quan trọng](https://www.ricoh.com/info/2025/0526_1) liên quan đến việc Microsoft ngừng hỗ trợ xác thực cơ bản ảnh hưởng đến chức năng email.
+Các thiết bị đa chức năng Ricoh cung cấp khả năng email trên toàn bộ dòng sản phẩm của họ, từ máy in văn phòng cơ bản đến hệ thống sản xuất tiên tiến. Tuy nhiên, [Ricoh đã thông báo những thay đổi quan trọng](https://www.ricoh.com/info/2025/0526_1) liên quan đến việc Microsoft ngừng hỗ trợ xác thực cơ bản ảnh hưởng đến chức năng email.
 
 ### Cấu hình Ricoh MFD hiện đại {#modern-ricoh-mfd-configuration}
 
@@ -545,7 +545,7 @@ Triển khai các phương pháp thông báo dự phòng cho các cảnh báo qu
 
 ## Kết luận {#conclusion}
 
-Cấu hình thông báo email đáng tin cậy trên các hệ sinh thái thiết bị đa dạng đòi hỏi hiểu biết về bối cảnh phức tạp của khả năng tương thích TLS, các phương thức xác thực và yêu cầu riêng của nhà sản xuất. Dịch vụ SMTP toàn diện của Forward Email giải quyết những thách thức này bằng cách cung cấp cả tiêu chuẩn bảo mật hiện đại cho các thiết bị hiện tại và khả năng tương thích với thiết bị cũ không thể cập nhật.
+Cấu hình thông báo email đáng tin cậy trên các hệ sinh thái thiết bị đa dạng đòi hỏi hiểu biết về khả năng tương thích TLS, các phương thức xác thực và yêu cầu riêng của nhà sản xuất. Dịch vụ SMTP toàn diện của Forward Email giải quyết những thách thức này bằng cách cung cấp cả tiêu chuẩn bảo mật hiện đại cho các thiết bị hiện tại và khả năng tương thích với thiết bị cũ không thể cập nhật.
 
 Quy trình cấu hình được trình bày trong hướng dẫn này cung cấp các chỉ dẫn chi tiết, từng bước cho các loại thiết bị chính, đảm bảo quản trị viên có thể thiết lập thông báo email đáng tin cậy bất kể sự đa dạng thiết bị của họ. Chiến lược hai cổng của Forward Email đặc biệt giải quyết cuộc khủng hoảng tương thích TLS ảnh hưởng đến hàng triệu thiết bị đã triển khai, cung cấp giải pháp thực tiễn duy trì bảo mật đồng thời đảm bảo chức năng liên tục.
 

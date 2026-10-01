@@ -28,7 +28,7 @@
 
 ## Başlarken {#getting-started}
 
-Kendi sunucunuzda barındırılan e-posta çözümümüz, tüm ürünlerimiz gibi, %100 açık kaynaklıdır—hem ön yüz hem de arka uç. Bu şu anlama gelir:
+Kendi sunucunuzda barındırılan e-posta çözümümüz, tüm ürünlerimiz gibi, %100 açık kaynaklıdır: ön yüz ve arka uç. Bu şu anlama gelir:
 
 1. **Tam Şeffaflık**: E-postalarınızı işleyen her kod satırı kamuya açıktır
 2. **Topluluk Katkıları**: Herkes iyileştirmeler yapabilir veya sorunları düzeltebilir
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Başlamak için `1. İlk kurulum` seçeneğini seçin.
 
-Tamamlandığında, bir başarı mesajı görmelisiniz. Hatta `docker ps` komutunu çalıştırarak **başlatılan** bileşenleri görebilirsiniz. Bileşenler hakkında daha fazla bilgi aşağıdadır.
+Tamamlandığında, bir başarı mesajı görmelisiniz. `docker ps` komutunu çalıştırarak **başlatılan** bileşenleri görebilirsiniz. Bileşenler hakkında daha fazla bilgi aşağıdadır.
 
 
 ## Servisler {#services}

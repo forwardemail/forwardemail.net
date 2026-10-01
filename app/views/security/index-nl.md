@@ -32,7 +32,7 @@
 
 ## Voorwoord {#foreword}
 
-Bij Forward Email is beveiliging onze hoogste prioriteit. We hebben uitgebreide beveiligingsmaatregelen geïmplementeerd om uw e-mailcommunicatie en persoonlijke gegevens te beschermen. Dit document beschrijft onze beveiligingspraktijken en de stappen die we nemen om de vertrouwelijkheid, integriteit en beschikbaarheid van uw e-mail te waarborgen.
+Bij Forward Email is beveiliging onze hoogste prioriteit. Dit document beschrijft de werkwijzen die we gebruiken om uw e-mailcommunicatie en persoonlijke gegevens te beschermen en uw e-mail vertrouwelijk, intact en beschikbaar te houden.
 
 
 ## Infrastructuurbeveiliging {#infrastructure-security}
@@ -110,7 +110,7 @@ We volgen het principe van dataminimalisatie:
 
 ## Dienstverleners {#service-providers}
 
-We selecteren onze dienstverleners zorgvuldig om te garanderen dat zij voldoen aan onze hoge beveiligingsnormen. Hieronder staan de providers die we gebruiken voor internationale gegevensoverdracht en hun GDPR-nalevingsstatus:
+We selecteren dienstverleners die voldoen aan onze beveiligingsnormen. Hieronder staan de providers die we gebruiken voor internationale gegevensoverdracht en hun GDPR-nalevingsstatus:
 
 | Provider                                      | Doel                       | DPF Gecertificeerd | GDPR Nalevingspagina                                                                                   |
 | --------------------------------------------- | -------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ We gebruiken deze providers om betrouwbare, veilige dienstverlening te garandere
 
 ### Regelmatige Beveiligingsbeoordelingen {#regular-security-assessments}
 
-Ons team monitort, beoordeelt en evalueert regelmatig de codebase, servers, infrastructuur en werkwijzen. We implementeren een uitgebreid beveiligingsprogramma dat omvat:
+Ons team monitort, beoordeelt en evalueert regelmatig de codebase, servers, infrastructuur en werkwijzen. Ons beveiligingsprogramma omvat:
 
 * Regelmatige rotatie van SSH-sleutels
 * Continue monitoring van toegangslogboeken
@@ -209,7 +209,7 @@ Onze [Ansible-configuratie](https://github.com/forwardemail/forwardemail.net/tre
 
 ## Service Level Agreement {#service-level-agreement}
 
-We handhaven een hoog niveau van servicebeschikbaarheid en betrouwbaarheid. Onze infrastructuur is ontworpen voor redundantie en fouttolerantie om ervoor te zorgen dat uw e-mailservice operationeel blijft. Hoewel we geen formeel SLA-document publiceren, zijn we toegewijd aan:
+We ontwerpen onze infrastructuur voor redundantie en fouttolerantie om uw e-mailservice beschikbaar te houden. Hoewel we geen formeel SLA-document publiceren, zijn we toegewijd aan:
 
 * 99,9%+ uptime voor alle diensten
 * Snelle reactie op serviceonderbrekingen
@@ -237,7 +237,7 @@ Als een [open-source dienst](https://github.com/forwardemail/forwardemail.net) p
 
 ## Continue Verbetering {#continuous-improvement}
 
-We verbeteren continu onze beveiligingshouding door:
+We verbeteren onze beveiliging door:
 
 * Monitoring van beveiligingstrends en opkomende bedreigingen
 * Regelmatige herziening en updates van beveiligingsbeleid

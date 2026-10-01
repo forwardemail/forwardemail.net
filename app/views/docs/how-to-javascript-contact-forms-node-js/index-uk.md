@@ -20,7 +20,7 @@ npm install nodemailer
 
 Цей приклад використовує бібліотеку **[Nodemailer](https://github.com/nodemailer/nodemailer)** та її офіційного спонсора **[Forward Email](https://forwardemail.net)** для відправки та перегляду вихідної пошти.
 
-Вам потрібно <strong class="text-success"><i class="fa fa-key"></i> Згенерувати Пароль</strong> для відправки вихідної пошти – будь ласка, дотримуйтесь нашого **[Посібника з Відправки Листів через SMTP з Користувацьким Доменом](/guides/send-email-with-custom-domain-smtp)**.
+Вам потрібно <strong class="text-success"><i class="fa fa-key"></i> Згенерувати Пароль</strong> для відправки вихідної пошти. Будь ласка, дотримуйтесь нашого **[Посібника з Відправки Листів через SMTP з Користувацьким Доменом](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

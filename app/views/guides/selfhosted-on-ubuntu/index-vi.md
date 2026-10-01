@@ -43,7 +43,7 @@
 
 ## Tổng Quan {#overview}
 
-Hướng dẫn này cung cấp các bước chi tiết để cài đặt giải pháp tự lưu trữ Forward Email trên hệ thống Ubuntu. Hướng dẫn này được thiết kế đặc biệt cho các phiên bản Ubuntu 20.04, 22.04 và 24.04 LTS.
+Hướng dẫn này trình bày từng bước cài đặt giải pháp tự lưu trữ Forward Email trên Ubuntu 20.04, 22.04 và 24.04 LTS.
 
 
 ## Yêu Cầu Trước Khi Bắt Đầu {#prerequisites}
@@ -339,7 +339,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Quan trọng**: Khi được yêu cầu, bạn sẽ cần tạo các bản ghi TXT trong DNS của mình. Bạn có thể thấy nhiều thử thách cho cùng một tên miền - **tạo TẤT CẢ chúng**. Không xóa bản ghi TXT đầu tiên khi thêm bản ghi thứ hai.
+**Quan trọng**: Khi được yêu cầu, bạn sẽ cần tạo các bản ghi TXT trong DNS của mình. Bạn có thể thấy nhiều thử thách cho cùng một tên miền: **tạo TẤT CẢ chúng**. Không xóa bản ghi TXT đầu tiên khi thêm bản ghi thứ hai.
 
 #### Tùy chọn B: DNS Cloudflare (Nếu bạn sử dụng Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 

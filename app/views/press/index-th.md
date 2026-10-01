@@ -19,11 +19,11 @@
 
 Forward Email คือบริการโฮสต์อีเมลแบบโอเพนซอร์ส 100% ที่เน้นความปลอดภัยและความเป็นส่วนตัว เรียนรู้เพิ่มเติมเกี่ยวกับประวัติของเราได้ที่ [หน้าข้อมูลของเรา](/about)
 
-บริการของเราก่อตั้งขึ้นในปี 2017 และให้บริการอีเมลสำหรับโดเมนมากกว่า 1.6 ล้านโดเมน – รวมถึงผู้ใช้ที่โดดเด่นเช่น [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [หลายมหาวิทยาลัย](/blog/docs/alumni-email-forwarding-university-case-study) และรัฐบาลต่างๆ และอื่นๆ
+บริการของเราก่อตั้งขึ้นในปี 2017 และให้บริการอีเมลสำหรับโดเมนมากกว่า 1.6 ล้านโดเมน รวมถึงผู้ใช้ที่โดดเด่นเช่น [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [หลายมหาวิทยาลัย](/blog/docs/alumni-email-forwarding-university-case-study) และรัฐบาลต่างๆ และอื่นๆ
 
-เป้าหมายของเราคือการเป็นแพลตฟอร์มโครงสร้างพื้นฐานอีเมลและความปลอดภัยระดับองค์กร – และเราปฏิบัติตาม [หลักการหลายประการ](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)
+เป้าหมายของเราคือการเป็นแพลตฟอร์มโครงสร้างพื้นฐานอีเมลและความปลอดภัยระดับองค์กร และเราปฏิบัติตาม [หลักการหลายประการ](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)
 
-หากคุณเป็นสมาชิกสื่อ นักข่าว หรือผู้แทนสื่อ และต้องการพูดคุยกับเรา สอบถาม หรือเรียนรู้เพิ่มเติม – กรุณาติดต่อเราที่ `press@forwardemail.net`
+หากคุณเป็นสมาชิกสื่อ นักข่าว หรือผู้แทนสื่อ และต้องการพูดคุยกับเรา สอบถาม หรือเรียนรู้เพิ่มเติม กรุณาติดต่อเราที่ `press@forwardemail.net`
 
 
 ## ข้อเท็จจริงและสถิติสำคัญ {#key-facts--statistics}

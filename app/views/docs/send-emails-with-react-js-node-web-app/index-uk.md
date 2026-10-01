@@ -39,7 +39,7 @@ export function Email(props) {
 
 У цьому прикладі ми використовуємо бібліотеку **[Nodemailer](https://github.com/nodemailer/nodemailer)** та її офіційного спонсора **[Forward Email](https://forwardemail.net)** для надсилання та попереднього перегляду вихідної пошти.
 
-Вам потрібно <strong class="text-success"><i class="fa fa-key"></i> Згенерувати пароль</strong> для надсилання вихідної пошти – будь ласка, дотримуйтесь нашого **[Посібника з надсилання електронної пошти через SMTP з власним доменом](/guides/send-email-with-custom-domain-smtp)**.
+Вам потрібно <strong class="text-success"><i class="fa fa-key"></i> Згенерувати пароль</strong> для надсилання вихідної пошти. Будь ласка, дотримуйтесь нашого **[Посібника з надсилання електронної пошти через SMTP з власним доменом](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

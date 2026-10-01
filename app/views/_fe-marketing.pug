@@ -45,13 +45,13 @@ mixin feMarketingFeatures
         h2#fe-marketing-features-title.fe-display-lg.fe-marketing__title= t("Free email forwarding and custom domain hosting that works everywhere.")
       ul.fe-grid.fe-grid--md-2
         +feTile(t("Custom Domain Email Address"))
-          = t("Establish credibility with you@yourdomain.com – professional email addresses that build trust.")
+          = t("Establish credibility with professional email addresses like you@yourdomain.com.")
         +feTile(t("Unlimited Email Accounts"))
           = t("Create as many domain names and email addresses as your team needs, without extra costs.")
         +feTile(t("Generous 10 GB Email Storage"))
           = t("Ample space for all your important communications and attachments. Pay as you go.")
-        +feTile(t("Seamless Compatibility & Deliverability"))
-          != t("Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all <span class='notranslate'>%d</span> email standards for optimal deliverability.", dayjs().format("YYYY"))
+        +feTile(t("Compatibility & Deliverability"))
+          != t("Works with Gmail, Yahoo, Outlook, and adheres to all <span class='notranslate'>%d</span> email standards for optimal deliverability.", dayjs().format("YYYY"))
 
 //- "Access your email anywhere": the four device tiles.
 mixin feMarketingDevices
@@ -64,7 +64,7 @@ mixin feMarketingDevices
         = t("Any device")
       .fe-marketing__head
         h2#fe-marketing-devices-title.fe-display-lg.fe-marketing__title= t("Access your email anywhere")
-      p.fe-lede= t("Our professional email solution offers universal compatibility, ensuring you stay connected from anywhere.")
+      p.fe-lede= t("Our email service works with any device and email client, so you can read your mail from anywhere.")
       ul.fe-grid.fe-grid--2.fe-grid--lg-4.fe-devices
         li.fe-panel.fe-panel--frame
           i.fab.fa-apple.fe-devices__icon(aria-hidden="true")
@@ -128,7 +128,7 @@ mixin feMarketingFaq
           p.fe-text.fe-questions__a= t("The Team plan is perfect for families sharing a domain (like @smithfamily.com), small businesses with multiple employees, organizations needing shared email management, or any group that requires collaborative access to email accounts with proper permission controls.")
         li.fe-panel.fe-questions__item
           h3.fe-questions__q= t("What does 'unlimited domains' mean?")
-          p.fe-text.fe-questions__a= t("All plans include unlimited domains at no extra cost. Whether you have 1 domain or 100 domains, you pay the same price. This makes our service extremely cost-effective for users managing multiple websites or businesses.")
+          p.fe-text.fe-questions__a= t("All plans include unlimited domains at no extra cost. Whether you have 1 domain or 100 domains, you pay the same price. This makes our service cost-effective for users managing multiple websites or businesses.")
         li.fe-panel.fe-questions__item
           h3.fe-questions__q= t("Do you charge per user/alias like other services?")
           p.fe-text.fe-questions__a= t("No! Unlike other email services that charge per user or alias, we include unlimited aliases in our Enhanced Protection and Team plans. Create as many email addresses as you need (info@, sales@, support@, etc.) without additional fees.")

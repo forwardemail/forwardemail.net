@@ -19,14 +19,14 @@
 
 ## Foreword
 
-At Forward Email, we believe in simple, secure, and private email forwarding for everyone. We know that for many organizations, especially those working with the US government, compliance isn't just a buzzword – it's a necessity. Ensuring adherence to **federal regulations for email** is crucial. That's why we're proud to confirm our **secure email forwarding** service is built to meet stringent federal requirements, including [Section 889](https://www.acquisition.gov/Section-889-Policies) of the [National Defense Authorization Act (NDAA)](https://en.wikipedia.org/wiki/National_Defense_Authorization_Act).
+At Forward Email, we believe in simple, secure, and private email forwarding for everyone. Many organizations, especially those working with the US government, must comply with **federal regulations for email**. Our **secure email forwarding** service is built to meet stringent federal requirements, including [Section 889](https://www.acquisition.gov/Section-889-Policies) of the [National Defense Authorization Act (NDAA)](https://en.wikipedia.org/wiki/National_Defense_Authorization_Act).
 
-Our commitment to **government email compliance** was recently put into practice when the **US Naval Academy** approached **Forward Email**. They required **secure email forwarding** services and needed documentation confirming our adherence to federal regulations, including **Section 889 compliance**. This experience serves as a valuable case study, demonstrating our readiness and capability to support government-funded organizations and meet their stringent requirements. This dedication extends to all our users seeking a reliable, **privacy-focused email** solution.
+Our commitment to **government email compliance** was recently put into practice when the **US Naval Academy** approached **Forward Email**. They required **secure email forwarding** services and needed documentation confirming our adherence to federal regulations, including **Section 889 compliance**. We provided that documentation, and the same infrastructure serves all our users seeking a reliable, **privacy-focused email** solution.
 
 
 ## Understanding Section 889 Compliance
 
-What is Section 889? Simply put, it's a US federal law that prohibits government agencies from using or contracting with entities that use certain telecommunications and video surveillance equipment or services from specific companies (like Huawei, ZTE, Hikvision, Dahua, and Hytera). This rule, often associated with the **Huawei ban** and **ZTE ban**, helps protect national security.
+Section 889 is a US federal law that prohibits government agencies from using or contracting with entities that use certain telecommunications and video surveillance equipment or services from specific companies (like Huawei, ZTE, Hikvision, Dahua, and Hytera). This rule, often associated with the **Huawei ban** and **ZTE ban**, helps protect national security.
 
 > \[!NOTE]
 > Section 889 specifically targets equipment and services from Huawei, ZTE, Hytera, Hikvision, and Dahua, including their subsidiaries and affiliates.
@@ -36,15 +36,15 @@ For an **email forwarding service for government contracts** like **Forward Emai
 
 ## How Forward Email Achieves Section 889 Compliance
 
-So, **how is Forward Email Section 889 compliant?** We achieve this through careful selection of our infrastructure partners. **Forward Email** relies exclusively on two key providers for its **Section 889 compliant infrastructure**:
+**How is Forward Email Section 889 compliant?** We selected our infrastructure partners carefully. **Forward Email** relies exclusively on two key providers for its **Section 889 compliant infrastructure**:
 
 1. **[Cloudflare](https://www.cloudflare.com/):** Our primary partner for network services and **Cloudflare email security**.
-2. **[DataPacket](https://datapacket.com/):** Our primary provider for server infrastructure (we use [Digital Ocean](https://www.digitalocean.com/) and/or [Vultr](https://www.vultr.com/) for failover and will soon transition to solely use DataPacket – of course we did confirm Section 889 compliance in writing from both of these failover providers).
+2. **[DataPacket](https://datapacket.com/):** Our primary provider for server infrastructure (we use [Digital Ocean](https://www.digitalocean.com/) and/or [Vultr](https://www.vultr.com/) for failover and will soon transition to solely use DataPacket; we confirmed Section 889 compliance in writing from both of these failover providers).
 
 > \[!IMPORTANT]
 > Our exclusive reliance on Cloudflare and DataPacket, neither of which uses Section 889 prohibited equipment, is the cornerstone of our compliance.
 
-Both [Cloudflare](https://www.cloudflare.com/) and [DataPacket](https://datapacket.com/) are committed to high security standards and do not use equipment prohibited under Section 889. **Using Cloudflare and DataPacket for Section 889 compliance** is fundamental to our service.
+Neither [Cloudflare](https://www.cloudflare.com/) nor [DataPacket](https://datapacket.com/) uses equipment prohibited under Section 889. **Using Cloudflare and DataPacket for Section 889 compliance** is the basis of our service.
 
 ### Cloudflare's Commitment
 
@@ -54,11 +54,11 @@ Both [Cloudflare](https://www.cloudflare.com/) and [DataPacket](https://datapack
 
 *(Source: Cloudflare Third Party Code of Conduct, retrieved April 29, 2025)*
 
-This clear statement confirms that [Cloudflare's](https://www.cloudflare.com/) infrastructure, which **Forward Email** leverages, meets Section 889 requirements.
+This statement confirms that [Cloudflare's](https://www.cloudflare.com/) infrastructure, which **Forward Email** uses, meets Section 889 requirements.
 
 ### DataPacket's Infrastructure
 
-[DataPacket](https://datapacket.com/), our server provider, utilizes networking equipment exclusively from **Arista Networks** and **Cisco**. Neither Arista nor Cisco are among the companies prohibited under Section 889. Both are established vendors widely used in secure enterprise and government environments, known for adhering to stringent security and compliance standards.
+[DataPacket](https://datapacket.com/), our server provider, uses networking equipment exclusively from **Arista Networks** and **Cisco**. Neither Arista nor Cisco are among the companies prohibited under Section 889. Both are established vendors widely used in secure enterprise and government environments, known for adhering to stringent security and compliance standards.
 
 By using only [Cloudflare](https://www.cloudflare.com/) and [DataPacket](https://datapacket.com/), **Forward Email** ensures its entire service delivery chain is free from Section 889 prohibited equipment, providing **secure email forwarding for federal agencies** and other security-conscious users.
 
@@ -77,7 +77,7 @@ Our commitment to **government email security** and compliance extends beyond Se
 
 ## Our Path Forward: Expanding Compliance Horizons
 
-While our Section 889 compliance provides a crucial foundation, especially for federal contractors, we understand that different organizations and government agencies have diverse and evolving regulatory needs. At **Forward Email**, transparency is key, and we want to share our perspective on the broader compliance landscape and our future direction.
+Section 889 compliance matters most to federal contractors, but organizations and government agencies have other regulatory needs too. At **Forward Email**, we want to be open about where we stand on broader compliance and where we're headed.
 
 We recognize the importance of frameworks and regulations such as:
 
@@ -94,12 +94,12 @@ We recognize the importance of frameworks and regulations such as:
 
 **Our Current Position and Future Goals:**
 
-**Forward Email's** core design – being **privacy-focused**, **open-source**, and minimizing data handling (especially in our basic **email forwarding** service) – aligns well with the *principles* behind many of these regulations. Our existing security practices (encryption, support for modern email standards) and Section 889 compliance provide a strong starting point.
+**Forward Email's** core design (**privacy-focused**, **open-source**, and minimizing data handling, especially in our basic **email forwarding** service) aligns with the *principles* behind many of these regulations. Our existing security practices (encryption, support for modern email standards) and Section 889 compliance provide a strong starting point.
 
 However, achieving formal certification or authorization for frameworks like **FedRAMP** or **CMMC** is a significant undertaking. It involves rigorous documentation, implementation of specific technical and procedural controls (often hundreds of them), independent assessments (like [3PAO](https://www.fedramp.gov/glossary/#3pao) for FedRAMP - Third-Party Assessment Organization), and continuous monitoring.
 
 > \[!IMPORTANT]
-> Compliance isn't just about technology; it's about documented processes, policies, and ongoing vigilance. Achieving certifications like FedRAMP or CMMC requires substantial investment and time.
+> Compliance requires documented processes, policies, and ongoing vigilance in addition to technology. Achieving certifications like FedRAMP or CMMC requires substantial investment and time.
 
 **Our Commitment:**
 
@@ -107,15 +107,15 @@ As **Forward Email** grows and as our customers' needs evolve, we are committed 
 
 1. **SAM Registration:** To facilitate direct engagement with US federal agencies.
 2. **Formalizing Processes:** Enhancing our internal documentation and procedures to align with standards like NIST SP 800-171, which forms the basis for CMMC.
-3. **Evaluating FedRAMP Pathways:** Assessing the requirements and feasibility of pursuing FedRAMP authorization, likely starting with a Low or Moderate baseline, potentially leveraging the [LI-SaaS](https://www.fedramp.gov/blog/fedramp-releases-low-impact-saas-baseline/) model where applicable.
+3. **Evaluating FedRAMP Pathways:** Assessing the requirements and feasibility of pursuing FedRAMP authorization, likely starting with a Low or Moderate baseline, potentially using the [LI-SaaS](https://www.fedramp.gov/blog/fedramp-releases-low-impact-saas-baseline/) model where applicable.
 4. **Supporting Specific Needs:** Addressing requirements like HIPAA (potentially through BAAs and specific configurations for stored data) and FERPA (through appropriate contractual terms and controls) as we engage more with healthcare and educational institutions.
 
-This journey requires careful planning and investment. While we don't have immediate timelines for all certifications, strengthening our compliance posture to meet the needs of government and regulated industries is a key part of our roadmap.
+This work requires careful planning and investment. While we don't have immediate timelines for all certifications, strengthening our compliance posture to meet the needs of government and regulated industries is a key part of our roadmap.
 
 > \[!NOTE]
-> We believe our **open-source** nature provides unique transparency throughout this process, allowing our community and customers to see our commitment firsthand.
+> Because we're **open-source**, our community and customers can follow this work in our code.
 
-We will continue to update our community as we reach significant milestones on our compliance journey.
+We will update our community as we reach compliance milestones.
 
 
 ## Why This Matters for You
@@ -124,16 +124,16 @@ Choosing a **Section 889 compliant email forwarding** service like **Forward Ema
 
 * **Peace of Mind:** Especially for government agencies, contractors, and security-conscious organizations.
 * **Reduced Risk:** Avoids potential conflicts with **federal regulations for email**.
-* **Trust:** Demonstrates a commitment to security and supply chain integrity.
+* **Trust:** Shows attention to security and supply chain integrity.
 
 **Forward Email** provides a simple, reliable, and *compliant* way to manage your custom domain **email forwarding** needs.
 
 
 ## Secure, Compliant Email Forwarding Starts Here
 
-**Forward Email** is dedicated to providing a **secure, private, and open-source email forwarding** service. Our **compliance with Section 889**, achieved through our partnership with [Cloudflare](https://www.cloudflare.com/) and [DataPacket](https://datapacket.com/) (reflecting our **Forward Email compliance for US Naval Academy** work), is a testament to this commitment. Whether you're a government entity, a contractor, or simply value **government email security**, **Forward Email** is built for you.
+**Forward Email** is dedicated to providing a **secure, private, and open-source email forwarding** service. Our **compliance with Section 889**, achieved through our partnership with [Cloudflare](https://www.cloudflare.com/) and [DataPacket](https://datapacket.com/) (reflecting our **Forward Email compliance for US Naval Academy** work), backs this up. **Forward Email** is built for government entities, contractors, and anyone who values **government email security**.
 
-Ready for **secure, compliant email forwarding**? [Sign up free today!](https://forwardemail.net)
+[Sign up free today!](https://forwardemail.net) for **secure, compliant email forwarding**.
 
 
 ## References

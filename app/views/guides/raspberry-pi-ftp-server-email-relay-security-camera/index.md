@@ -1,6 +1,6 @@
 # Turn Your Raspberry Pi into a Secure FTP Server with Email Relay
 
-Got a Raspberry Pi collecting dust? Whether it's the latest Pi 5, a Pi 4, Pi Zero, or even an older model, this guide will show you how to turn it into a powerful, automated file server with email relay capabilities. Perfect for security cameras, IoT devices, and more.
+Got a Raspberry Pi collecting dust? Whether it's the latest Pi 5, a Pi 4, Pi Zero, or even an older model, this guide shows you how to turn it into an automated file server with email relay capabilities for security cameras, IoT devices, and more.
 
 **Compatible with:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W, and Raspberry Pi Zero.
 
@@ -36,7 +36,7 @@ Got a Raspberry Pi collecting dust? Whether it's the latest Pi 5, a Pi 4, Pi Zer
 
 This guide will walk you through setting up a complete system that includes:
 
-* **Ubuntu Server 22.04 LTS:** A rock-solid, lightweight OS for the Pi.
+* **Ubuntu Server 22.04 LTS:** A stable, lightweight OS for the Pi.
 * **A Secure FTP Server (vsftpd):** For dropping off files securely.
 * **A Firewall (UFW) & Fail2ban:** To keep the bad guys out.
 * **An Automated File Processor:** A script that grabs new files, emails them as attachments, and then cleans up after itself.
@@ -44,12 +44,10 @@ This guide will walk you through setting up a complete system that includes:
   * Use Forward Email's legacy TLS 1.0 ports (easiest)
   * Set up a Postfix SMTP relay (works with any email provider)
 
-Ready? Let's dive in.
-
 
 ## Part 1: Getting Ubuntu Server on Your Pi
 
-First things first, get Ubuntu Server running on the Raspberry Pi. This is surprisingly easy thanks to the Raspberry Pi Imager.
+Start by getting Ubuntu Server running on the Raspberry Pi. The Raspberry Pi Imager makes this easy.
 
 ### What You'll Need
 
@@ -91,7 +89,7 @@ Once the imager is done, pop the microSD card into the Pi and plug it in. Give i
 ssh your_username@your_pi_ip_address
 ```
 
-You're in! The Raspberry Pi is now ready for configuration.
+The Raspberry Pi is now ready for configuration.
 
 
 ## Part 2: Setting Up a Secure FTP Server
@@ -173,8 +171,8 @@ Create a dedicated, restricted user for FTP access.
    sudo mkdir -p /home/ftpuser/ftp/uploads
    ```
 
-   * `/home/ftpuser/ftp` - Main FTP directory
-   * `/home/ftpuser/ftp/uploads` - Where files will be uploaded
+   * `/home/ftpuser/ftp`: Main FTP directory
+   * `/home/ftpuser/ftp/uploads`: Where files will be uploaded
 
 3. **Set permissions:**
 
@@ -272,7 +270,7 @@ Fail2ban automatically blocks IP addresses after repeated failed login attempts.
 
 ## Part 4: Automated File Processing with Email Notifications
 
-Now for the magic: a script that monitors the FTP folder, emails new files as attachments, and deletes them. There are two approaches depending on your email provider:
+Next, add a script that monitors the FTP folder, emails new files as attachments, and deletes them. There are two approaches depending on your email provider:
 
 ### Option 1: Using Forward Email API (Recommended)
 
@@ -514,7 +512,7 @@ Devices like FOSSCAM cameras often don't support modern TLS versions. There are 
 
 ### Option 1: Use Forward Email's Legacy TLS 1.0 Ports (Recommended)
 
-If you're using Forward Email, this is the easiest solution. Forward Email provides dedicated legacy TLS 1.0 ports specifically for older devices like cameras, printers, scanners, and fax machines.
+If you're using Forward Email, this is the easiest solution. Forward Email provides dedicated legacy TLS 1.0 ports for older devices like cameras, printers, scanners, and fax machines.
 
 #### Pricing
 
@@ -540,7 +538,7 @@ Before configuring your device, generate a password in Forward Email:
 2. Navigate to **My Account → Domains → \[Your Domain] → Aliases**
 3. Create or select an alias (e.g., `camera@yourdomain.com`)
 4. Click **"Generate Password"** next to the alias
-5. Copy the generated password - you'll use this for SMTP authentication
+5. Copy the generated password; you'll use this for SMTP authentication
 
 > \[!TIP]
 > Each alias can have its own password. This is useful for tracking which device sent which email.
@@ -562,7 +560,7 @@ Use these settings in your camera, printer, scanner, or other legacy device:
 > \[!WARNING]
 > These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Use only if your device cannot support modern TLS 1.2+.
 
-Simply configure your device with these settings and it will send emails directly through Forward Email without needing a local relay server.
+Configure your device with these settings and it will send emails directly through Forward Email without a local relay server.
 
 For more details, see the [Forward Email FAQ on Legacy TLS Support](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
 
@@ -697,7 +695,7 @@ mynetworks = 127.0.0.0/8 [::1]/128 192.168.1.0/24
 > For Gmail (port 587), set `smtp_tls_wrappermode = no` instead of `yes`.
 
 > \[!WARNING]
-> Update `mynetworks` with your actual network range. Only add trusted networks - any device on these networks can relay mail without authentication.
+> Update `mynetworks` with your actual network range. Only add trusted networks, because any device on these networks can relay mail without authentication.
 
 **Common network ranges:**
 

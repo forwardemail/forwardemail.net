@@ -19,11 +19,11 @@
 
 Forward Email es el único servicio de alojamiento de correo electrónico 100% de código abierto enfocado en la seguridad y privacidad. Aprende más sobre nuestra historia en [nuestra página Acerca de](/about).
 
-Nuestro servicio fue fundado en 2017 y provee correo electrónico para más de 1,6 millones de dominios – incluyendo usuarios notables como [La Academia Naval de EE.UU.](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [La Fundación Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [varias universidades](/blog/docs/alumni-email-forwarding-university-case-study) y gobiernos, entre otros.
+Nuestro servicio fue fundado en 2017 y provee correo electrónico para más de 1,6 millones de dominios, incluyendo usuarios notables como [La Academia Naval de EE.UU.](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [La Fundación Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [varias universidades](/blog/docs/alumni-email-forwarding-university-case-study) y gobiernos, entre otros.
 
-Nuestro objetivo es ser la plataforma de infraestructura de correo electrónico y seguridad de nivel empresarial – y nos adherimos a [varios principios](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Nuestro objetivo es ser la plataforma de infraestructura de correo electrónico y seguridad de nivel empresarial, y nos adherimos a [varios principios](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Si eres miembro de la prensa, periodista o representante de medios y deseas hablar con nosotros, hacer preguntas o aprender más – por favor contáctanos en `press@forwardemail.net`.
+Si eres miembro de la prensa, periodista o representante de medios y deseas hablar con nosotros, hacer preguntas o aprender más, por favor contáctanos en `press@forwardemail.net`.
 
 
 ## Datos Clave y Estadísticas {#key-facts--statistics}

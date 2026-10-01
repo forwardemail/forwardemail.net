@@ -183,7 +183,7 @@ Các giao thức email cốt lõi rất vững chắc, nhưng chất lượng tr
 Hiệu ứng mạng của email là tuyệt đối:
 
 * **Ai cũng có email**: [4,37 tỷ người dùng email trên toàn thế giới](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) tính đến năm 2023
-* **Đa nền tảng**: Hoạt động liền mạch giữa tất cả các nhà cung cấp
+* **Đa nền tảng**: Hoạt động giữa tất cả các nhà cung cấp
 * **Quan trọng với doanh nghiệp**: [99% doanh nghiệp sử dụng email hàng ngày](https://blog.hubspot.com/marketing/email-marketing-stats) cho hoạt động
 * **Chi phí chuyển đổi**: Thay đổi địa chỉ email phá vỡ mọi thứ liên quan đến nó
 
@@ -244,7 +244,7 @@ Skiff là ví dụ điển hình cho mọi vấn đề của các startup email.
 
 #### Y Combinator: Nhà Máy Ứng Dụng Email {#y-combinator-the-email-app-factory}
 
-[Y Combinator](https://www.ycombinator.com/) đã tài trợ cho hàng chục startup email. Đây là mô hình:
+[Y Combinator](https://www.ycombinator.com/) đã tài trợ cho hàng chục startup email. Chúng đi theo một mô hình:
 
 * **[Emailio](https://www.ycdb.co/company/emailio)** (2014): Ứng dụng email di động → chuyển hướng sang "sức khỏe"
 * **[MailTime](https://www.ycdb.co/company/mailtime)** (2016): Email kiểu chat → chuyển hướng sang phân tích
@@ -269,7 +269,7 @@ Skiff là ví dụ điển hình cho mọi vấn đề của các startup email.
 > \[!CAUTION]
 > **Nghịch lý Tài trợ VC**: Các nhà đầu tư mạo hiểm thích các startup email vì chúng nghe có vẻ đơn giản nhưng thực tế là không thể. Những giả định cơ bản thu hút đầu tư chính là điều đảm bảo thất bại.
 
-Các nhà đầu tư mạo hiểm thích các startup email vì chúng nghe có vẻ đơn giản nhưng thực tế là không thể:
+Các nhà đầu tư mạo hiểm thích các startup email vì chúng nghe có vẻ đơn giản nhưng gần như không thể:
 
 ```mermaid
 graph TD
@@ -296,7 +296,7 @@ graph TD
 
 ### Điều Thực Sự Vận Hành "Các Startup Email" {#what-actually-powers-email-startups}
 
-Hãy xem những công ty này thực sự vận hành gì:
+Hầu hết các công ty này vận hành trên nền tảng sau:
 
 ```mermaid
 graph LR
@@ -429,7 +429,7 @@ Năm 2024 mang đến làn sóng mới của các startup "email được hỗ t
 
 * **[Superhuman](https://superhuman.com/)**: [Gây quỹ 33 triệu đô](https://superhuman.com/), [được Grammarly mua lại thành công](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - một thương vụ thoát ra ứng dụng khách hiếm hoi thành công
 * **[Shortwave](https://www.shortwave.com/)**: Giao diện Gmail với tóm tắt AI
-* **[SaneBox](https://www.sanebox.com/)**: Lọc email bằng AI (thực sự hiệu quả, nhưng không mang tính cách mạng)
+* **[SaneBox](https://www.sanebox.com/)**: Lọc email bằng AI (hiệu quả, nhưng không mang tính cách mạng)
 
 ### Những vấn đề cũ vẫn vậy {#the-same-old-problems}
 
@@ -470,7 +470,7 @@ Thêm "AI" không giải quyết được các thách thức cơ bản:
 
 ### Ngoại lệ: Câu chuyện thành công của Xobni {#the-exception-xobnis-success-story}
 
-[Xobni](https://en.wikipedia.org/wiki/Xobni) nổi bật là một trong số ít các startup liên quan đến email thực sự thành công bằng cách đi đúng hướng.
+[Xobni](https://en.wikipedia.org/wiki/Xobni) nổi bật là một trong số ít các startup liên quan đến email thành công bằng cách đi đúng hướng.
 
 **Điều Xobni làm đúng**:
 
@@ -484,7 +484,7 @@ Thêm "AI" không giải quyết được các thách thức cơ bản:
 #### Tại sao Xobni thành công trong khi những người khác thất bại {#why-xobni-succeeded-where-others-failed}
 
 1. **Xây dựng trên hạ tầng đã được chứng minh**: Sử dụng khả năng xử lý email hiện có của Outlook
-2. **Giải quyết vấn đề thực tế**: Quản lý liên hệ thực sự bị lỗi
+2. **Giải quyết vấn đề thực tế**: Quản lý liên hệ bị lỗi
 3. **Thị trường doanh nghiệp**: Doanh nghiệp trả tiền cho các công cụ năng suất
 4. **Phương pháp tích hợp**: Cải tiến thay vì thay thế các quy trình hiện có
 
@@ -508,7 +508,7 @@ Các công ty thành công trong email khi họ:
 
 ## Có Ai Đã Thành Công Trong Việc Tái Định Nghĩa Email? {#has-anyone-successfully-reinvented-email}
 
-Đây là câu hỏi quan trọng đi thẳng vào cốt lõi của đổi mới email. Câu trả lời ngắn gọn là: **chưa ai thành công thay thế email, nhưng một số đã thành công trong việc cải tiến nó**.
+Câu trả lời ngắn gọn là: **chưa ai thành công thay thế email, nhưng một số đã thành công trong việc cải tiến nó**.
 
 ### Những gì thực sự được giữ lại {#what-actually-stuck}
 
@@ -553,7 +553,7 @@ Các đổi mới email thành công nhất là:
 
 ## Xây Dựng Hạ Tầng Hiện Đại Cho Các Giao Thức Email Hiện Có: Cách Tiếp Cận Của Chúng Tôi {#building-modern-infrastructure-for-existing-email-protocols-our-approach}
 
-Trước khi đi vào các thất bại, điều quan trọng là hiểu điều gì thực sự hiệu quả trong email. Thách thức không phải là email bị hỏng - mà là hầu hết các công ty cố gắng "sửa chữa" thứ đã hoạt động hoàn hảo.
+Trước khi đi vào các thất bại, hãy xem điều gì hiệu quả trong email. Hầu hết các công ty cố gắng "sửa chữa" thứ đã hoạt động tốt.
 
 ### Phổ Đổi Mới Email {#the-email-innovation-spectrum}
 
@@ -596,7 +596,7 @@ Mẫu thành công rất đơn giản: **nâng cao quy trình email hiện có t
 * **Xây dựng hạ tầng thực sự**: Máy chủ SMTP/IMAP tùy chỉnh từ đầu
 * **Tập trung vào độ tin cậy**: [99.99% thời gian hoạt động](https://status.forwardemail.net), xử lý lỗi đúng cách
 * **Nâng cao quy trình hiện có**: Hỗ trợ tất cả các client email
-* **Phục vụ nhà phát triển**: API và công cụ thực sự hiệu quả
+* **Phục vụ nhà phát triển**: API và công cụ hiệu quả
 * **Duy trì tương thích**: Tuân thủ đầy đủ [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
 ### Những Điều Chúng Tôi Không Làm {#what-we-dont-do}
 
@@ -614,7 +614,7 @@ Trong khi các công ty khác đốt hàng triệu đô la để cố gắng tá
 
 * **Không đổi hướng**: Chúng tôi đã xây dựng hạ tầng email hơn 7 năm
 * **Không chiến lược mua lại**: Chúng tôi xây dựng cho dài hạn
-* **Không tuyên bố "cách mạng"**: Chúng tôi chỉ làm cho email hoạt động tốt hơn
+* **Không tuyên bố "cách mạng"**: Chúng tôi làm cho email hoạt động tốt hơn
 
 ### Điều Gì Làm Chúng Tôi Khác Biệt {#what-makes-us-different}
 
@@ -683,7 +683,7 @@ graph TD
 
 ### Lịch Trình Kỹ Thuật {#the-technical-timeline}
 
-Dựa trên [lịch trình chính thức của công ty](https://forwardemail.net/en/about), đây là cách chúng tôi xây dựng cơ sở hạ tầng email thực sự hoạt động:
+Dựa trên [lịch trình chính thức của công ty](https://forwardemail.net/en/about), đây là cách chúng tôi xây dựng cơ sở hạ tầng email của mình:
 
 ```mermaid
 timeline
@@ -703,7 +703,7 @@ timeline
 2. **Chúng tôi nâng cao, không thay thế**: Làm việc với các ứng dụng email hiện có
 3. **Chúng tôi có lợi nhuận**: Không chịu áp lực từ VC để "tăng trưởng nhanh và phá vỡ mọi thứ"
 4. **Chúng tôi hiểu email**: Hơn 7 năm kinh nghiệm kỹ thuật sâu sắc
-5. **Chúng tôi phục vụ nhà phát triển**: API và công cụ thực sự giải quyết vấn đề
+5. **Chúng tôi phục vụ nhà phát triển**: API và công cụ giải quyết vấn đề
 
 ### Kiểm Tra Thực Tế Chi Phí {#the-cost-reality-check}
 
@@ -788,7 +788,7 @@ Email đã bị cho là "chết" hơn 20 năm theo các startup:
 
 ### Bài Học Thực Sự {#the-real-lesson}
 
-Bài học không phải là email không thể cải thiện. Mà là chọn cách tiếp cận đúng:
+Email có thể được cải thiện, nhưng cần cách tiếp cận đúng:
 
 1. **Giao thức email hoạt động**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), [POP3](https://tools.ietf.org/html/rfc1939) đã được thử thách qua thời gian
 2. **Hạ tầng quan trọng**: Độ tin cậy và hiệu suất quan trọng hơn tính năng hào nhoáng
@@ -888,7 +888,7 @@ Các startup email AI năm 2024:
 
 * **[Superhuman](https://superhuman.com/)**: [Gây quỹ 33 triệu đô](https://superhuman.com/), [được Grammarly mua lại](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025)  
 * **[Shortwave](https://www.shortwave.com/)**: Y Combinator, Gmail + AI  
-* **[SaneBox](https://www.sanebox.com/)**: Lọc email bằng AI (thực sự có lợi nhuận)  
+* **[SaneBox](https://www.sanebox.com/)**: Lọc email bằng AI (có lợi nhuận)  
 * **[Boomerang](https://www.boomeranggmail.com/)**: Lên lịch và trả lời email bằng AI  
 * **[Mail-0/Zero](https://github.com/Mail-0/Zero)**: Startup ứng dụng email dùng AI xây dựng giao diện email mới  
 * **[Inbox Zero](https://github.com/elie222/inbox-zero)**: Trợ lý email AI mã nguồn mở cố gắng tự động hóa quản lý email  
@@ -967,7 +967,7 @@ Sau [việc mua lại của ActiveCampaign](https://postmarkapp.com/blog/postmar
 
 ### Những Người Tồn Tại: Các Công Ty Email Thực Sự Hoạt Động {#the-survivors-email-companies-that-actually-work}
 
-Không phải tất cả các công ty email đều thất bại. Dưới đây là những công ty thực sự hoạt động:
+Một số công ty email vẫn thành công:
 
 **[Mailmodo](https://www.mailmodo.com/)**: [Câu chuyện thành công của Y Combinator](https://www.ycombinator.com/companies/mailmodo), [$2M từ Sequoia's Surge](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) tập trung vào các chiến dịch email tương tác.
 

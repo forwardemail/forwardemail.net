@@ -56,7 +56,7 @@
 
 ## Foreword
 
-In the [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [Node.js](https://en.wikipedia.org/wiki/Node.js) world, some packages are essential—downloaded millions of times daily and powering apps worldwide. Behind these tools are developers focused on open source quality. Today, we're showing how our team helps build and maintain npm packages that have become key parts of the JavaScript ecosystem.
+In the [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [Node.js](https://en.wikipedia.org/wiki/Node.js) world, some packages are essential: downloaded millions of times daily and powering apps worldwide. Behind these tools are developers focused on open source quality. Our team helps build and maintain npm packages that have become key parts of the JavaScript ecosystem.
 
 
 ## The Pioneers Who Trust Us: Isaac Z. Schlueter and Forward Email
@@ -94,13 +94,13 @@ As a member of the [Express Technical Committee](https://expressjs.com/en/resour
 
 ### Koa Framework Contributions
 
-Nick's work with the [Koa framework](https://github.com/koajs/koa)—a modern, lighter alternative to Express also created by TJ Holowaychuk—further shows his commitment to better web development tools. His Koa contributions include both issues and code through pull requests, addressing error handling, content type management, and documentation improvements.
+Nick's work with the [Koa framework](https://github.com/koajs/koa) (a modern, lighter alternative to Express also created by TJ Holowaychuk) further shows his commitment to better web development tools. His Koa contributions include both issues and code through pull requests, addressing error handling, content type management, and documentation improvements.
 
 His work across both Express and Koa gives him a unique view of Node.js web development, helping our team create packages that work well with multiple framework ecosystems.
 
 ### From Individual Contributor to Organization Leader
 
-What started as helping existing projects grew into creating and maintaining whole package ecosystems. Nick founded multiple GitHub organizations—including [Cabin](https://github.com/cabinjs), [Spam Scanner](https://github.com/spamscanner), [Forward Email](https://github.com/forwardemail), [Lad](https://github.com/ladjs), and [Bree](https://github.com/breejs)—each solving specific needs in the JavaScript community.
+What started as helping existing projects grew into creating and maintaining whole package ecosystems. Nick founded multiple GitHub organizations, including [Cabin](https://github.com/cabinjs), [Spam Scanner](https://github.com/spamscanner), [Forward Email](https://github.com/forwardemail), [Lad](https://github.com/ladjs), and [Bree](https://github.com/breejs), each solving specific needs in the JavaScript community.
 
 This shift from contributor to leader shows Nick's vision for well-designed software that solves real problems. By organizing related packages under focused GitHub organizations, he's built tool ecosystems that work together while staying modular and flexible for the wider developer community.
 
@@ -115,7 +115,7 @@ The [Cabin organization](https://github.com/cabinjs) is our take on simple, powe
 
 What makes Cabin special is its thoughtful API and plugin system. Supporting packages like [`axe`](https://github.com/cabinjs/axe) for Express middleware and [`parse-request`](https://github.com/cabinjs/parse-request) for HTTP request parsing show our commitment to complete solutions rather than isolated tools.
 
-The [`bson-objectid`](https://github.com/cabinjs/bson-objectid) package deserves special mention, with over 1.7 million downloads in just two months\[^2]. This light MongoDB ObjectID implementation has become the go-to for developers needing IDs without full MongoDB dependencies.
+The [`bson-objectid`](https://github.com/cabinjs/bson-objectid) package deserves special mention, with over 1.7 million downloads in two months\[^2]. This light MongoDB ObjectID implementation has become the go-to for developers needing IDs without full MongoDB dependencies.
 
 ### Spam Scanner: Fighting Email Abuse
 
@@ -149,7 +149,7 @@ The [`preview-email`](https://github.com/forwardemail/preview-email) package fro
 
 ### Lad: Essential Koa Utilities and Tools
 
-The [Lad organization](https://github.com/ladjs) provides a collection of essential utilities and tools primarily focused on enhancing the Koa framework ecosystem. These packages solve common challenges in web development and are designed to work seamlessly together while remaining independently useful.
+The [Lad organization](https://github.com/ladjs) provides a collection of essential utilities and tools primarily focused on enhancing the Koa framework ecosystem. These packages solve common challenges in web development and are designed to work together while remaining independently useful.
 
 #### koa-better-error-handler: Improved Error Handling for Koa
 
@@ -175,7 +175,7 @@ This package is particularly valuable when used alongside [`koa-404-handler`](ht
 * Google authentication
 * One-time password (OTP) authentication
 
-The package is highly customizable, allowing developers to adjust field names and phrases to match their application's requirements. It's designed to integrate seamlessly with Mongoose for user management, making it an ideal solution for Koa-based applications that need robust authentication.
+The package is highly customizable, allowing developers to adjust field names and phrases to match their application's requirements. It's designed to integrate with Mongoose for user management, making it a good fit for Koa-based applications that need authentication.
 
 #### graceful: Elegant Application Shutdown
 
@@ -207,14 +207,14 @@ What makes Upptime special is its architecture:
 
 To enhance our users' experience, we've integrated [@octokit/core](https://github.com/octokit/core.js/) into the forwardemail.net codebase to render real-time status updates and incidents directly on our website. This integration provides clear transparency to our users in case of any issues across our entire stack (Website, API, MongoDB, Redis, SQLite, SMTP, POP3, IMAP, Bree, etc.) with instant toast notifications, badge icon changes, warning colors, and more.
 
-The @octokit/core library allows us to fetch real-time data from our Upptime GitHub repository, process it, and display it in a user-friendly manner. When any service has an outage or degraded performance, users are immediately notified through visual indicators without having to leave the main application. This seamless integration ensures that our users always have up-to-date information about our system status, enhancing transparency and trust.
+The @octokit/core library allows us to fetch real-time data from our Upptime GitHub repository, process it, and display it in a user-friendly manner. When any service has an outage or degraded performance, users are immediately notified through visual indicators without having to leave the main application. This integration gives our users up-to-date information about our system status.
 
-Upptime has been adopted by hundreds of organizations looking for a transparent, reliable way to monitor their services and communicate status to users. The project's success shows the power of building tools that leverage existing infrastructure (in this case, GitHub) to solve common problems in new ways.
+Upptime has been adopted by hundreds of organizations looking for a transparent, reliable way to monitor their services and communicate status to users. The project's success shows the power of building tools on existing infrastructure (in this case, GitHub) to solve common problems in new ways.
 
 
 ## Our Contributions to the Forward Email Ecosystem
 
-While our open source packages are used by developers worldwide, they also form the foundation of our own Forward Email service. This dual role—as both creators and users of these tools—gives us a unique perspective on their real-world application and drives continuous improvement.
+While our open source packages are used by developers worldwide, they also form the foundation of our own Forward Email service. This dual role, as both creators and users of these tools, gives us a unique perspective on their real-world application and drives continuous improvement.
 
 ### From Packages to Production
 
@@ -225,11 +225,11 @@ The journey from individual packages to a cohesive production system involves ca
 * **Performance Optimizations**: Identifying and addressing performance bottlenecks that only emerge at scale.
 * **Security Hardening**: Adding additional security layers specific to email handling and user data protection.
 
-This work represents thousands of hours of development beyond the core packages themselves, resulting in a robust, secure email service that leverages the best of our open source contributions.
+This work represents thousands of hours of development beyond the core packages themselves, resulting in a secure email service built on our open source contributions.
 
 ### The Feedback Loop
 
-Perhaps the most valuable aspect of using our own packages in production is the feedback loop it creates. When we encounter limitations or edge cases in Forward Email, we don't just patch them locally—we improve the underlying packages, benefiting both our service and the broader community.
+Perhaps the most valuable aspect of using our own packages in production is the feedback loop it creates. When we encounter limitations or edge cases in Forward Email, we improve the underlying packages instead of patching them locally, benefiting both our service and the broader community.
 
 This approach has led to numerous improvements:
 
@@ -263,7 +263,7 @@ We follow several established software development principles that have proven t
 * **[Occam's razor](https://en.wikipedia.org/wiki/Occam%27s_razor)**: Choosing the simplest solution that meets requirements
 * **[Dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)**: Using our own products extensively
 
-These principles aren't just theoretical concepts—they're embedded in our daily development practices. For example, our adherence to the Unix philosophy is evident in how we've structured our npm packages: small, focused modules that can be composed together to solve complex problems.
+We apply these principles in our daily development practices. For example, our adherence to the Unix philosophy is evident in how we've structured our npm packages: small, focused modules that can be composed together to solve complex problems.
 
 ### Targeting the Scrappy, Bootstrapped Developer
 
@@ -273,17 +273,17 @@ This principle is particularly important in how we approach open source. We crea
 
 ### Principles in Practice: The Forward Email Codebase
 
-These principles are clearly visible in the Forward Email codebase. Our package.json file reveals a thoughtful selection of dependencies, each chosen to align with our core values:
+These principles are visible in the Forward Email codebase. Our package.json file reveals a thoughtful selection of dependencies, each chosen to align with our core values:
 
 * Security-focused packages like `mailauth` for email authentication
 * Developer-friendly tools like `preview-email` for easier debugging
 * Modular components like the various `p-*` utilities from Sindre Sorhus
 
-By following these principles consistently over time, we've built a service that developers can trust with their email infrastructure—secure, reliable, and aligned with the values of the open source community.
+By following these principles consistently over time, we've built a service that developers can trust with their email infrastructure: secure, reliable, and aligned with the values of the open source community.
 
 ### Privacy by Design
 
-Privacy isn't an afterthought or marketing feature for Forward Email—it's a fundamental design principle that informs every aspect of our service and code:
+Privacy is a design principle at Forward Email that informs every part of our service and code:
 
 * **Zero-Access Encryption**: We've implemented systems that make it technically impossible for us to read users' emails.
 * **Minimal Data Collection**: We collect only the data necessary to provide our service, nothing more.
@@ -315,7 +315,7 @@ When we talk about the impact of open source software, download statistics provi
 
 ### A Bird's-Eye View of Our Impact
 
-In just the two-month period from February to March 2025, the top packages we contribute to and help maintain recorded staggering download numbers:
+In the two-month period from February to March 2025, the top packages we contribute to and help maintain recorded these download numbers:
 
 * **[superagent](https://www.npmjs.com/package/superagent)**: 84,575,829 downloads\[^7] (originally created by TJ Holowaychuk)
 * **[supertest](https://www.npmjs.com/package/supertest)**: 76,432,591 downloads\[^8] (originally created by TJ Holowaychuk)
@@ -337,13 +337,13 @@ In just the two-month period from February to March 2025, the top packages we co
 > \[!NOTE]
 > Several other packages we help maintain but didn't create have even higher download counts, including `form-data` (738M+ downloads), `toidentifier` (309M+ downloads), `stackframe` (116M+ downloads), and `error-stack-parser` (113M+ downloads). We're honored to contribute to these packages while respecting the work of their original authors.
 
-These aren't just impressive numbers—they represent real developers solving real problems with code that we help maintain. Every download is an instance where these packages have helped someone build something meaningful, from hobbyist projects to enterprise applications used by millions.
+These numbers represent developers solving problems with code that we help maintain, from hobbyist projects to enterprise applications used by millions.
 
 ![Package Categories Distribution](/img/art/category_pie_chart.svg)
 
 ### Daily Impact at Scale
 
-The daily download patterns reveal consistent, high-volume usage, with peaks reaching millions of downloads per day\[^13]. This consistency speaks to the stability and reliability of these packages—developers don't just try them; they integrate them into their core workflows and depend on them day after day.
+The daily download patterns reveal consistent, high-volume usage, with peaks reaching millions of downloads per day\[^13]. This consistency speaks to the stability and reliability of these packages: developers integrate them into their core workflows and depend on them daily.
 
 Weekly download patterns show even more impressive numbers, consistently hovering around tens of millions of downloads per week\[^14]. This represents a massive footprint in the JavaScript ecosystem, with these packages running in production environments across the globe.
 
@@ -362,7 +362,7 @@ The consistent growth in download numbers over time reflects the success in meet
 ## Supporting the Ecosystem: Our Open Source Sponsorships
 
 > \[!TIP]
-> Open source sustainability isn't just about contributing code—it's also about supporting the developers who maintain critical infrastructure.
+> Open source sustainability means supporting the developers who maintain critical infrastructure, in addition to contributing code.
 
 Beyond our direct contributions to the JavaScript ecosystem, we're proud to sponsor prominent Node.js contributors whose work forms the foundation of many modern applications. Our sponsorships include:
 
@@ -398,9 +398,9 @@ In response, Nick created [@koa/router](https://github.com/koajs/router) and hel
 
 In 2020, Nick identified and addressed a critical [Regular Expression Denial of Service (ReDoS)](https://en.wikipedia.org/wiki/ReDoS) vulnerability in the widely-used `url-regex` package. This vulnerability ([SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)) could allow attackers to cause denial of service by providing specially crafted input that caused catastrophic backtracking in the regular expression.
 
-Rather than simply patching the existing package, Nick created [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), a completely rewritten implementation that addresses the vulnerability while maintaining compatibility with the original API. He also published a [comprehensive blog post](/blog/docs/url-regex-javascript-node-js) explaining the vulnerability and how to mitigate it.
+Rather than patching the existing package, Nick created [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), a completely rewritten implementation that addresses the vulnerability while maintaining compatibility with the original API. He also published a [comprehensive blog post](/blog/docs/url-regex-javascript-node-js) explaining the vulnerability and how to mitigate it.
 
-This work shows our approach to security: not just fixing issues but educating the community and providing robust alternatives that prevent similar problems in the future.
+This work shows our approach to security: fix the issue, educate the community, and provide safer alternatives that prevent similar problems.
 
 ### Advocating for Node.js and Chromium Security
 
@@ -421,7 +421,7 @@ Forward Email is built on top of several critical open source projects, includin
 
 ### Enhancing Nodemailer's Core Functionality
 
-[Nodemailer](https://github.com/nodemailer/nodemailer) is the backbone of email sending in Node.js, and our contributions have helped make it more robust:
+[Nodemailer](https://github.com/nodemailer/nodemailer) is the backbone of email sending in Node.js, and our contributions have helped make it more reliable:
 
 * **SMTP Server Improvements**: We've fixed parsing bugs, stream handling issues, and TLS configuration problems in the SMTP server component\[^16]\[^17].
 * **Mail Parser Enhancements**: We've addressed character sequence decoding errors and address parser issues that could cause email processing failures\[^18]\[^19].
@@ -453,7 +453,7 @@ These improvements not only benefit Forward Email's status monitoring but are av
 
 ## The Glue That Holds It All Together: Custom Code at Scale
 
-While our npm packages and contributions to existing projects are significant, it's the custom code that integrates these components that truly showcases our technical expertise. The Forward Email codebase represents a decade of development effort, dating back to 2017 when the project began as [free-email-forwarding](https://github.com/forwardemail/free-email-forwarding) before being merged into a monorepo.
+While our npm packages and contributions to existing projects are significant, the custom code that integrates these components best shows our technical expertise. The Forward Email codebase represents a decade of development effort, dating back to 2017 when the project began as [free-email-forwarding](https://github.com/forwardemail/free-email-forwarding) before being merged into a monorepo.
 
 ### A Massive Development Effort
 
@@ -466,17 +466,17 @@ This represents thousands of hours of development work, debugging sessions, and 
 
 ### Core Dependencies Integration
 
-The Forward Email codebase integrates numerous dependencies into a seamless whole:
+The Forward Email codebase integrates numerous dependencies into a single system:
 
 * **Email Processing**: Integrates Nodemailer for sending, SMTP Server for receiving, and Mailparser for parsing
 * **Authentication**: Uses Mailauth for DKIM, SPF, DMARC, and ARC verification
-* **DNS Resolution**: Leverages Tangerine for DNS-over-HTTPS with global caching
+* **DNS Resolution**: Uses Tangerine for DNS-over-HTTPS with global caching
 * **MX Connection**: Utilizes mx-connect with Tangerine integration for reliable mail server connections
 * **Job Scheduling**: Employs Bree for reliable background task processing with worker threads
 * **Templating**: Employs email-templates to reuse stylesheets from the website in customer communications
 * **Email Storage**: Implements individually encrypted SQLite mailboxes using better-sqlite3-multiple-ciphers with ChaCha20-Poly1305 encryption for quantum-safe privacy, ensuring complete isolation between users and that only the user has access to their mailbox
 
-Each of these integrations requires careful consideration of edge cases, performance implications, and security concerns. The result is a robust system that handles millions of email transactions reliably. Our SQLite implementation also leverages msgpackr for efficient binary serialization and WebSockets (via ws) for real-time status updates across our infrastructure.
+Each of these integrations requires careful consideration of edge cases, performance implications, and security concerns. The result is a system that handles millions of email transactions reliably. Our SQLite implementation also uses msgpackr for efficient binary serialization and WebSockets (via ws) for real-time status updates across our infrastructure.
 
 ### DNS Infrastructure with Tangerine and mx-connect
 
@@ -486,12 +486,12 @@ A critical component of Forward Email's infrastructure is our DNS resolution sys
 
 * **[mx-connect](https://github.com/zone-eu/mx-connect)**: This package establishes TCP connections to MX servers, taking a target domain or email address, resolving appropriate MX servers, and connecting to them in priority order.
 
-We've integrated Tangerine with mx-connect through [pull request #4](https://github.com/zone-eu/mx-connect/pull/4), ensuring application-layer DNS over HTTP requests throughout Forward Email. This provides global caching for DNS at scale with 1:1 consistency across any region, app, or process—critical for reliable email delivery in a distributed system.
+We've integrated Tangerine with mx-connect through [pull request #4](https://github.com/zone-eu/mx-connect/pull/4), ensuring application-layer DNS over HTTP requests throughout Forward Email. This provides global caching for DNS at scale with 1:1 consistency across any region, app, or process, which reliable email delivery in a distributed system depends on.
 
 
 ## Enterprise Impact: From Open Source to Mission-Critical Solutions
 
-The culmination of our decade-long journey in open source development has enabled Forward Email to serve not just individual developers but also major enterprises and educational institutions that form the backbone of the open source movement itself.
+The culmination of our decade-long journey in open source development has enabled Forward Email to serve individual developers as well as major enterprises and educational institutions that form the backbone of the open source movement itself.
 
 ### Case Studies in Mission-Critical Email Infrastructure
 
@@ -503,7 +503,7 @@ Our commitment to reliability, privacy, and open source principles has made Forw
 
 * **Open Source Foundations**: Perhaps most validating is our partnership with the Linux Foundation, as documented in the [Linux Foundation email enterprise case study](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study), where our service powers communication for the very organization that stewards Linux development.
 
-There's a beautiful symmetry in how our open source packages, maintained with care over many years, have enabled us to build an email service that now supports the very communities and organizations that champion open source software. This full-circle journey—from contributing individual packages to powering enterprise-grade email infrastructure for open source leaders—represents the ultimate validation of our approach to software development.
+Our open source packages, maintained with care over many years, have enabled us to build an email service that now supports the very communities and organizations that champion open source software. We went from contributing individual packages to powering enterprise-grade email infrastructure for open source leaders.
 
 
 ## A Decade of Open Source: Looking Forward
@@ -521,7 +521,7 @@ In the coming years, we're committed to:
 
 We believe that the future of software development is open, collaborative, and built on a foundation of trust. By continuing to contribute high-quality, security-focused packages to the JavaScript ecosystem, we hope to play a small part in building that future.
 
-Thank you to everyone who has used our packages, contributed to our projects, reported issues, or simply spread the word about our work. Your support has made this decade of impact possible, and we're excited to see what we can accomplish together in the next ten years.
+Thank you to everyone who has used our packages, contributed to our projects, reported issues, or spread the word about our work. Your support has made this decade of impact possible, and we're excited to see what we can accomplish together in the next ten years.
 
 \[^1]: npm download statistics for cabin, April 2025
 \[^2]: npm download statistics for bson-objectid, February-March 2025

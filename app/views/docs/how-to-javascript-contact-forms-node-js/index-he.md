@@ -20,7 +20,7 @@ npm install nodemailer
 
 דוגמא זו משתמשת בספריית **[Nodemailer](https://github.com/nodemailer/nodemailer)** ובספונסר הרשמי שלה **[Forward Email](https://forwardemail.net)** כדי לשלוח ולתצוגה מקדימה של דואר יוצא.
 
-תצטרכו <strong class="text-success"><i class="fa fa-key"></i> ליצור סיסמה</strong> כדי לשלוח דואר יוצא – אנא עקבו אחר **[המדריך שלנו לשליחת דואר עם SMTP של דומיין מותאם אישית](/guides/send-email-with-custom-domain-smtp)**.
+תצטרכו <strong class="text-success"><i class="fa fa-key"></i> ליצור סיסמה</strong> כדי לשלוח דואר יוצא. אנא עקבו אחר **[המדריך שלנו לשליחת דואר עם SMTP של דומיין מותאם אישית](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

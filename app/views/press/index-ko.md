@@ -19,9 +19,9 @@
 
 Forward Email은 보안과 개인정보 보호에 중점을 둔 유일한 100% 오픈 소스 이메일 호스팅 서비스입니다. [소개 페이지](/about)에서 우리의 역사에 대해 더 알아보세요.
 
-우리 서비스는 2017년에 설립되었으며, 160만 개 이상의 도메인에서 이메일을 지원합니다 – 여기에는 [미 해군사관학교](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [리눅스 재단](/blog/docs/linux-foundation-email-enterprise-case-study), [여러 대학](/blog/docs/alumni-email-forwarding-university-case-study) 및 정부 기관 등 주목할 만한 사용자들이 포함되어 있습니다.
+우리 서비스는 2017년에 설립되었으며, 160만 개 이상의 도메인에서 이메일을 지원하며, 여기에는 [미 해군사관학교](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [리눅스 재단](/blog/docs/linux-foundation-email-enterprise-case-study), [여러 대학](/blog/docs/alumni-email-forwarding-university-case-study) 및 정부 기관 등 주목할 만한 사용자들이 포함되어 있습니다.
 
-우리의 목표는 엔터프라이즈급 이메일 및 보안 인프라 플랫폼이 되는 것이며 – [여러 원칙](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)을 준수합니다.
+우리의 목표는 엔터프라이즈급 이메일 및 보안 인프라 플랫폼이 되는 것이며, [여러 원칙](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)을 준수합니다.
 
 언론인, 기자 또는 미디어 관계자이시며 저희와 대화하거나 질문이 있거나 더 알고 싶으시면 `press@forwardemail.net`으로 연락해 주세요.
 

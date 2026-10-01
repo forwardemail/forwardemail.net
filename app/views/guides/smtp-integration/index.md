@@ -33,20 +33,20 @@
 
 ## Foreword
 
-This guide provides detailed examples of how to integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.
+This guide shows how to integrate with Forward Email's SMTP service from various programming languages, frameworks, and email clients.
 
 
 ## How Forward Email's SMTP Processing Works
 
-Before diving into the integration examples, it's important to understand how our SMTP service processes emails:
+Our SMTP service processes emails as follows:
 
 ### Email Queue and Retry System
 
 When you submit an email via SMTP to our servers:
 
 1. **Initial Processing**: The email is validated, scanned for malware, and checked against spam filters
-2. **Smart Queuing**: Emails are placed in a sophisticated queue system for delivery
-3. **Intelligent Retry Mechanism**: If delivery fails temporarily, our system will:
+2. **Queuing**: Our system places emails in a delivery queue
+3. **Retry Mechanism**: If delivery fails temporarily, our system will:
    * Analyze the error response using our `getBounceInfo` function
    * Determine if the issue is temporary (e.g., "try again later", "temporarily deferred") or permanent (e.g., "user unknown")
    * For temporary issues, mark the email for retry
@@ -59,14 +59,14 @@ When you submit an email via SMTP to our servers:
 
 ### Dummy-Proofed for Reliability
 
-Our system is designed to handle various edge cases:
+Our system handles these edge cases:
 
 * If a blocklist is detected, the email will be automatically retried
 * If network issues occur, delivery will be reattempted
 * If the recipient's mailbox is full, the system will retry later
 * If the receiving server is temporarily unavailable, we'll keep trying
 
-This approach significantly improves delivery rates while maintaining privacy and security.
+This approach improves delivery rates while maintaining privacy and security.
 
 
 ## Node.js Integration
@@ -531,6 +531,6 @@ If you encounter issues not covered here, please:
 
 ## Conclusion
 
-Forward Email's SMTP service provides a reliable, secure, and privacy-focused way to send emails from your applications and email clients. With our intelligent queue system, 5-day retry mechanism, and comprehensive delivery status notifications, you can be confident that your emails will reach their destination.
+Forward Email's SMTP service provides a reliable, secure, and privacy-focused way to send emails from your applications and email clients. It includes a queue system, a 5-day retry mechanism, and delivery status notifications.
 
 For more advanced use cases or custom integrations, please contact our support team.

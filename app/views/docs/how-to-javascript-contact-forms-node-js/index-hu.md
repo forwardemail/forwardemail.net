@@ -20,7 +20,7 @@ npm install nodemailer
 
 Ez a példa a **[Nodemailer](https://github.com/nodemailer/nodemailer)** könyvtárat és annak hivatalos támogatóját, a **[Forward Email](https://forwardemail.net)** szolgáltatást használja a kimenő levelek küldésére és előnézetére.
 
-Kimenő levelek küldéséhez <strong class="text-success"><i class="fa fa-key"></i> Jelszót kell generálnod</strong> – kérjük, kövesd a **[Egyedi domain SMTP-vel történő e-mail küldés útmutatónkat](/guides/send-email-with-custom-domain-smtp)**.
+Kimenő levelek küldéséhez <strong class="text-success"><i class="fa fa-key"></i> Jelszót kell generálnod</strong>. Kérjük, kövesd a **[Egyedi domain SMTP-vel történő e-mail küldés útmutatónkat](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

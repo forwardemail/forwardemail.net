@@ -252,7 +252,7 @@ sequenceDiagram
 > \[!NOTE]
 > Forward Email unterstützt IMAP4rev1 (RFC 3501) mit teilweiser Unterstützung für IMAP4rev2 (RFC 9051) Funktionen.
 
-Forward Email bietet robuste IMAP4-Unterstützung durch die WildDuck-Mailserver-Implementierung. Der Server implementiert IMAP4rev1 (RFC 3501) mit teilweiser Unterstützung für IMAP4rev2 (RFC 9051) Erweiterungen.
+Forward Email bietet IMAP4-Unterstützung durch die WildDuck-Mailserver-Implementierung. Der Server implementiert IMAP4rev1 (RFC 3501) mit teilweiser Unterstützung für IMAP4rev2 (RFC 9051) Erweiterungen.
 
 Die IMAP-Funktionalität von Forward Email wird durch die [WildDuck](https://github.com/nodemailer/wildduck)-Abhängigkeit bereitgestellt. Die folgenden E-Mail-RFCs werden unterstützt:
 
@@ -604,7 +604,7 @@ Forward Email verwendet die [mailauth](https://github.com/postalsys/mailauth)-Bi
 | [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Domain-basierte Nachrichten-Authentifizierung, Berichterstattung und Konformität (DMARC) | Durchsetzung der DMARC-Richtlinie                              |
 | [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Authenticated Received Chain (ARC)                                   | ARC-Versiegelung und -Validierung                              |
 
-E-Mail-Authentifizierungsprotokolle prüfen, ob Nachrichten tatsächlich vom angegebenen Absender stammen und während der Übertragung nicht manipuliert wurden.
+E-Mail-Authentifizierungsprotokolle prüfen, ob Nachrichten vom angegebenen Absender stammen und während der Übertragung nicht manipuliert wurden.
 
 ### Unterstützung der Authentifizierungsprotokolle {#authentication-protocol-support}
 
@@ -839,7 +839,7 @@ Nachrichtenverschlüsselungsprotokolle schützen den E-Mail-Inhalt davor, von je
 1. Erstellen Sie ein PGP-Schlüsselpaar in Ihrem E-Mail-Client
 2. Laden Sie Ihren öffentlichen Schlüssel in Forward Emails WKD hoch
 3. Ihr Schlüssel ist für andere Benutzer automatisch auffindbar
-4. Senden und empfangen Sie verschlüsselte E-Mails nahtlos
+4. Senden und empfangen Sie verschlüsselte E-Mails
 
 ### S/MIME (Secure/Multipurpose Internet Mail Extensions) {#smime-securemultipurpose-internet-mail-extensions}
 

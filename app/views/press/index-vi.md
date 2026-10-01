@@ -19,11 +19,11 @@
 
 Forward Email là dịch vụ lưu trữ email mã nguồn mở 100% duy nhất tập trung vào bảo mật và quyền riêng tư. Tìm hiểu thêm về lịch sử của chúng tôi trên [trang Giới thiệu của chúng tôi](/about).
 
-Dịch vụ của chúng tôi được thành lập vào năm 2017 và cung cấp email cho hơn 500.000 tên miền – bao gồm các người dùng nổi bật như [Học Viện Hải Quân Hoa Kỳ](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Quỹ Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [một số trường đại học](/blog/docs/alumni-email-forwarding-university-case-study) và các chính phủ, và nhiều hơn nữa.
+Dịch vụ của chúng tôi được thành lập vào năm 2017 và cung cấp email cho hơn 500.000 tên miền, bao gồm các người dùng nổi bật như [Học Viện Hải Quân Hoa Kỳ](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Quỹ Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [một số trường đại học](/blog/docs/alumni-email-forwarding-university-case-study) và các chính phủ, và nhiều hơn nữa.
 
-Mục tiêu của chúng tôi là trở thành nền tảng hạ tầng email và bảo mật cấp doanh nghiệp – và chúng tôi tuân thủ [một số nguyên tắc](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Mục tiêu của chúng tôi là trở thành nền tảng hạ tầng email và bảo mật cấp doanh nghiệp, và chúng tôi tuân thủ [một số nguyên tắc](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Nếu bạn là thành viên báo chí, nhà báo hoặc đại diện truyền thông và muốn nói chuyện với chúng tôi, đặt câu hỏi hoặc tìm hiểu thêm – vui lòng liên hệ với chúng tôi tại `press@forwardemail.net`.
+Nếu bạn là thành viên báo chí, nhà báo hoặc đại diện truyền thông và muốn nói chuyện với chúng tôi, đặt câu hỏi hoặc tìm hiểu thêm, vui lòng liên hệ với chúng tôi tại `press@forwardemail.net`.
 
 
 ## Số Liệu & Thống Kê Chính {#key-facts--statistics}

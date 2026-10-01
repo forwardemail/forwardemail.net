@@ -38,20 +38,20 @@
 
 ## 前言 {#foreword}
 
-为生产邮件系统配置 SQLite 不仅仅是让它能工作——更重要的是让它在高负载下快速、安全且可靠。经过在 Forward Email 处理数百万封邮件的实践，我们总结出了真正影响 SQLite 性能的关键因素。
+用于邮件的生产 SQLite 配置需要在高负载下快速、安全且可靠。经过在 Forward Email 处理数百万封邮件的实践，我们了解了哪些设置会影响 SQLite 性能。
 
-本指南涵盖了我们的真实生产配置、跨 Node.js 版本的基准测试结果，以及在处理大量邮件时真正有效的具体优化措施。
+本指南涵盖了我们的生产配置、跨 Node.js 版本的基准测试结果，以及在大邮件量下有效的具体优化措施。
 
 > \[!WARNING] Node.js v22 和 v24 的性能回退
 > 我们发现 Node.js v22 和 v24 版本中存在显著的性能回退，特别影响 SQLite 的 `SELECT` 语句性能。我们的基准测试显示，Node.js v24 中 `SELECT` 操作每秒执行次数相比 v20 下降了约 57%。我们已在 [nodejs/node#60719](https://github.com/nodejs/node/issues/60719) 向 Node.js 团队报告了此问题。
 
-鉴于此性能回退，我们对 Node.js 升级采取了谨慎态度。以下是我们的当前计划：
+鉴于此性能回退，我们对 Node.js 升级采取了谨慎态度。我们的当前计划：
 
-* **当前版本：** 我们目前使用的是 Node.js v18，该版本已进入长期支持（LTS）生命周期末期（“EOL”）。你可以查看官方的 [Node.js LTS 计划](https://github.com/nodejs/release#release-schedule)。
+* **当前版本：** 我们使用的是 Node.js v18，该版本已进入长期支持（LTS）生命周期末期（“EOL”）。你可以查看官方的 [Node.js LTS 计划](https://github.com/nodejs/release#release-schedule)。
 * **计划升级：** 我们将升级到 **Node.js v20**，根据我们的基准测试，这是最快的版本，且未受此回退影响。
 * **避免使用 v22 和 v24：** 在性能问题解决之前，我们不会在生产环境使用 Node.js v22 或 v24。
 
-以下时间线展示了 Node.js LTS 计划及我们的升级路径：
+Node.js LTS 计划及我们的升级路径时间线：
 
 ```mermaid
 gantt
@@ -74,7 +74,7 @@ gantt
 ```
 ## Forward Email 的生产环境 SQLite 架构 {#forward-emails-production-sqlite-architecture}
 
-以下是我们在生产环境中实际使用 SQLite 的方式：
+我们在生产环境中使用 SQLite 的方式：
 
 ```mermaid
 graph TB
@@ -103,7 +103,7 @@ graph TB
 
 ## 我们实际的 PRAGMA 配置 {#our-actual-pragma-configuration}
 
-这是我们在生产环境中实际使用的配置，直接来自我们的 [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js)：
+我们的生产配置，来自 [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js)：
 
 ```javascript
 // Forward Email 实际生产环境的 PRAGMA 设置
@@ -133,12 +133,12 @@ async function setupPragma(db, session, cipher = 'chacha20') {
 ```
 
 > \[!IMPORTANT]
-> 我们使用 `temp_store=1`（磁盘）而非 `temp_store=2`（内存），因为大型邮件数据库在执行如 VACUUM 等操作时，内存消耗可能轻松超过 10+ GB。
+> 我们使用 `temp_store=1`（磁盘）而非 `temp_store=2`（内存），因为大型邮件数据库在执行如 VACUUM 等操作时，内存消耗可能超过 10+ GB。
 
 
 ## 性能基准测试结果 {#performance-benchmark-results}
 
-我们在不同 Node.js 版本下测试了我们的配置与各种替代方案。以下是真实数据：
+我们在不同 Node.js 版本下测试了我们的配置与各种替代方案：
 
 ### Node.js v20.19.5 性能结果 {#nodejs-v20195-performance-results}
 
@@ -240,7 +240,7 @@ process.env.SQLITE_TMPDIR = tempStoreDirectory;
 
 ## WAL 模式优化 {#wal-mode-optimization}
 
-写前日志对支持并发访问的邮件系统至关重要：
+写前日志对支持并发访问的邮件系统很重要：
 
 ```mermaid
 sequenceDiagram
@@ -320,9 +320,9 @@ CREATE INDEX idx_messages_flags ON messages(mailbox_id, flags) WHERE flags IS NO
 
 ## 连接管理 {#connection-management}
 
-我们不使用 SQLite 的连接池——每个用户拥有自己的加密数据库。这种方式为用户之间提供了完美的隔离，类似于沙箱。不同于其他使用 MySQL、PostgreSQL 或 MongoDB 的服务架构，可能存在恶意员工访问你的邮件，Forward Email 的每用户 SQLite 数据库确保你的数据完全独立且被沙箱隔离。
+我们不使用 SQLite 的连接池；每个用户拥有自己的加密数据库。这使用户彼此隔离，类似于沙箱。不同于其他使用 MySQL、PostgreSQL 或 MongoDB 的服务架构，可能存在恶意员工访问你的邮件，Forward Email 的每用户 SQLite 数据库使你的数据保持独立并被沙箱隔离。
 
-我们从不存储你的 IMAP 密码，因此永远无法访问你的数据——所有操作均在内存中完成。了解更多关于我们[量子抗性加密方案](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security)的详细信息，介绍了我们的系统工作原理。
+我们从不存储你的 IMAP 密码，因此永远无法访问你的数据；所有操作均在内存中完成。了解更多关于我们[量子抗性加密方案](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security)的详细信息，介绍了我们的系统工作原理。
 
 ```javascript
 // 每用户数据库方案
@@ -345,7 +345,7 @@ async function getDatabase(session) {
 
 此方案提供：
 
-* 用户之间的完美隔离
+* 用户之间的完全隔离
 
 * 无连接池复杂性
 
@@ -398,7 +398,7 @@ const fragmentationPct = (stats.freelist_count / stats.page_count) * 100;
 
 ## Node.js 版本性能 {#nodejs-version-performance}
 
-我们针对不同 Node.js 版本的全面基准测试揭示了显著的性能差异：
+我们针对不同 Node.js 版本的基准测试显示了巨大的性能差异：
 
 ### 完整跨版本结果 {#complete-cross-version-results}
 
@@ -525,12 +525,12 @@ console.log(plan);
 
 我们将 SQLite 优化经验贡献给社区：
 
-* [Litestream 文档改进](https://github.com/benbjohnson/litestream/issues/516) - 我们对更好 SQLite 性能建议的贡献
+* [Litestream 文档改进](https://github.com/benbjohnson/litestream/issues/516)：我们对更好 SQLite 性能建议的贡献
 
-* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - 支持 ChaCha20 加密
+* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers)：支持 ChaCha20 加密
 
-* [SQLite 性能调优研究](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - 我们实现中参考的资料
-* [下载量达十亿的 npm 包如何塑造 JavaScript 生态系统](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - 我们对 npm 和 JavaScript 开发的更广泛贡献
+* [SQLite 性能调优研究](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/)：我们实现中参考的资料
+* [下载量达十亿的 npm 包如何塑造 JavaScript 生态系统](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)：我们对 npm 和 JavaScript 开发的更广泛贡献
 
 
 ## 基准测试源代码 {#benchmark-source-code}
@@ -560,7 +560,7 @@ npm run benchmark
 
 ## Forward Email 中 SQLite 的下一步 {#whats-next-for-sqlite-at-forward-email}
 
-我们正在积极测试以下优化：
+我们正在测试以下优化：
 
 1. **WAL 自动检查点调优**：基于基准测试结果添加 `wal_autocheckpoint=1000`
 
@@ -573,6 +573,6 @@ npm run benchmark
 
 ## 获取帮助 {#getting-help}
 
-遇到 SQLite 性能问题？针对 SQLite 的问题，[SQLite 论坛](https://sqlite.org/forum/forumpost) 是极好的资源，[性能调优指南](https://www.sqlite.org/optoverview.html) 涵盖了我们尚未使用的其他优化。
+针对 SQLite 的问题，[SQLite 论坛](https://sqlite.org/forum/forumpost) 是极好的资源，[性能调优指南](https://www.sqlite.org/optoverview.html) 涵盖了我们尚未使用的其他优化。
 
 通过阅读我们的 [常见问题解答](/faq) 了解更多关于 Forward Email 的信息。

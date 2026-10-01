@@ -32,7 +32,7 @@
 
 ## Lời nói đầu {#foreword}
 
-Tại Forward Email, bảo mật là ưu tiên hàng đầu của chúng tôi. Chúng tôi đã triển khai các biện pháp bảo mật toàn diện để bảo vệ giao tiếp email và dữ liệu cá nhân của bạn. Tài liệu này trình bày các thực hành bảo mật của chúng tôi và các bước chúng tôi thực hiện để đảm bảo tính bảo mật, toàn vẹn và khả dụng của email của bạn.
+Tại Forward Email, bảo mật là ưu tiên hàng đầu của chúng tôi. Tài liệu này trình bày các thực hành chúng tôi sử dụng để bảo vệ giao tiếp email và dữ liệu cá nhân của bạn, và để đảm bảo tính bảo mật, toàn vẹn và khả dụng của email của bạn.
 
 
 ## Bảo mật Hạ tầng {#infrastructure-security}
@@ -110,7 +110,7 @@ Chúng tôi tuân theo nguyên tắc giảm thiểu dữ liệu:
 
 ## Nhà cung cấp dịch vụ {#service-providers}
 
-Chúng tôi lựa chọn kỹ lưỡng các nhà cung cấp dịch vụ để đảm bảo họ đáp ứng các tiêu chuẩn bảo mật cao của chúng tôi. Dưới đây là các nhà cung cấp mà chúng tôi sử dụng cho việc chuyển dữ liệu quốc tế và trạng thái tuân thủ GDPR của họ:
+Chúng tôi lựa chọn các nhà cung cấp dịch vụ đáp ứng các tiêu chuẩn bảo mật của chúng tôi. Dưới đây là các nhà cung cấp mà chúng tôi sử dụng cho việc chuyển dữ liệu quốc tế và trạng thái tuân thủ GDPR của họ:
 
 | Nhà cung cấp                                  | Mục đích                   | Được chứng nhận DPF | Trang tuân thủ GDPR                                                                                     |
 | --------------------------------------------- | -------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ Chúng tôi sử dụng các nhà cung cấp này để đảm bảo cung cấp 
 
 ### Đánh giá An ninh Định kỳ {#regular-security-assessments}
 
-Đội ngũ của chúng tôi thường xuyên giám sát, xem xét và đánh giá mã nguồn, máy chủ, hạ tầng và các thực hành. Chúng tôi triển khai một chương trình bảo mật toàn diện bao gồm:
+Đội ngũ của chúng tôi thường xuyên giám sát, xem xét và đánh giá mã nguồn, máy chủ, hạ tầng và các thực hành. Chương trình bảo mật của chúng tôi bao gồm:
 
 * Thay đổi định kỳ khóa SSH
 * Giám sát liên tục các nhật ký truy cập
@@ -209,7 +209,7 @@ Tất cả mã nguồn trải qua:
 
 ## Thỏa thuận cấp độ dịch vụ {#service-level-agreement}
 
-Chúng tôi duy trì mức độ sẵn sàng và độ tin cậy dịch vụ cao. Hạ tầng của chúng tôi được thiết kế để có tính dự phòng và chịu lỗi nhằm đảm bảo dịch vụ email của bạn luôn hoạt động. Mặc dù chúng tôi không công bố tài liệu SLA chính thức, chúng tôi cam kết:
+Chúng tôi thiết kế hạ tầng có tính dự phòng và chịu lỗi để dịch vụ email của bạn luôn sẵn sàng. Mặc dù chúng tôi không công bố tài liệu SLA chính thức, chúng tôi cam kết:
 
 * Thời gian hoạt động 99,9%+ cho tất cả dịch vụ
 * Phản hồi nhanh chóng khi có gián đoạn dịch vụ
@@ -237,7 +237,7 @@ Là một [dịch vụ mã nguồn mở](https://github.com/forwardemail/forward
 
 ## Cải tiến liên tục {#continuous-improvement}
 
-Chúng tôi liên tục cải thiện vị thế bảo mật thông qua:
+Chúng tôi cải thiện bảo mật thông qua:
 
 * Giám sát xu hướng bảo mật và các mối đe dọa mới nổi
 * Đánh giá và cập nhật chính sách bảo mật định kỳ

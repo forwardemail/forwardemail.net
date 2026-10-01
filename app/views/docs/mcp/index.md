@@ -3,7 +3,7 @@
 <!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
-  <strong>TL;DR:</strong> Our <a href="https://github.com/forwardemail/mcp-server">open-source MCP server</a> lets AI assistants like Claude, ChatGPT, Cursor, and Windsurf manage your email, domains, aliases, contacts, and calendars through natural language. All 68 API endpoints are exposed as MCP tools. It runs locally via <code>npx @forwardemail/mcp-server</code> — your credentials never leave your machine.
+  <strong>TL;DR:</strong> Our <a href="https://github.com/forwardemail/mcp-server">open-source MCP server</a> lets AI assistants like Claude, ChatGPT, Cursor, and Windsurf manage your email, domains, aliases, contacts, and calendars through natural language. All 68 API endpoints are exposed as MCP tools. It runs locally via <code>npx @forwardemail/mcp-server</code>, so your credentials never leave your machine.
 </p>
 
 
@@ -68,7 +68,7 @@
 
 [Model Context Protocol](https://modelcontextprotocol.io) (MCP) is an open standard created by Anthropic that lets AI models securely call external tools. Instead of copy-pasting API responses into a chat window, MCP gives the model direct, structured access to your services.
 
-Our MCP server wraps the entire [Forward Email API](/email-api) — every endpoint, every parameter — and exposes them as tools that any MCP-compatible client can use. The server runs locally on your machine using stdio transport. Your credentials stay in your environment variables and are never sent to the AI model.
+Our MCP server wraps every endpoint and parameter of the [Forward Email API](/email-api) and exposes them as tools that any MCP-compatible client can use. The server runs locally on your machine using stdio transport. Your credentials stay in your environment variables and are never sent to the AI model.
 
 
 ## Quick Start
@@ -144,7 +144,7 @@ FORWARD_EMAIL_API_KEY=your-api-key \
 
 ## Authentication
 
-The Forward Email API uses **HTTP Basic authentication** with two different credential types depending on the endpoint. The MCP server handles this automatically — you just need to provide the right credentials.
+The Forward Email API uses **HTTP Basic authentication** with two different credential types depending on the endpoint. The MCP server handles this automatically; you provide the right credentials.
 
 ### API Key Auth
 
@@ -154,7 +154,7 @@ This is the same API key you use for the REST API. Set it via the `FORWARD_EMAIL
 
 ### Alias Auth
 
-Mailbox endpoints (messages, folders, contacts, calendars, alias-scoped sieve scripts) use **alias credentials** — the alias email address as the username and a generated password as the password.
+Mailbox endpoints (messages, folders, contacts, calendars, alias-scoped sieve scripts) use **alias credentials**: the alias email address as the username and a generated password as the password.
 
 These endpoints access per-alias data via IMAP, CalDAV, and CardDAV protocols. They require the alias email and a generated password, not the API key.
 
@@ -175,7 +175,7 @@ curl -u "YOUR_API_KEY:" \
 
 The response includes the `username` (alias email) and `password` fields. Use these as your alias credentials.
 
-> **Tip:** You can also ask your AI assistant: *"Generate a password for the alias <user@example.com> on domain example.com"* — it will call the `generateAliasPassword` tool and return the credentials.
+> **Tip:** You can also ask your AI assistant: *"Generate a password for the alias <user@example.com> on domain example.com"*, and it will call the `generateAliasPassword` tool and return the credentials.
 
 The table below summarizes which auth method each tool group requires:
 
@@ -370,15 +370,15 @@ This tool does not require authentication. It encrypts forwarding records like `
 
 ## 20 Real-World Use Cases
 
-Here are practical ways to use the MCP server with your AI assistant:
+Practical ways to use the MCP server with your AI assistant:
 
 ### 1. Email Triage
 
-Ask your AI to scan your inbox and summarize unread messages. It can flag urgent emails, categorize by sender, and draft replies — all through natural language. *(Requires alias credentials for inbox access.)*
+Ask your AI to scan your inbox and summarize unread messages. It can flag urgent emails, categorize by sender, and draft replies through natural language. *(Requires alias credentials for inbox access.)*
 
 ### 2. Domain Setup Automation
 
-Setting up a new domain? Ask the AI to create the domain, add your aliases, verify DNS records, and test SMTP configuration. What normally takes 10 minutes of clicking through dashboards becomes one conversation.
+Setting up a new domain? Ask the AI to create the domain, add your aliases, verify DNS records, and test SMTP configuration. This replaces 10 minutes of clicking through dashboards with one conversation.
 
 ### 3. Bulk Alias Management
 
@@ -394,7 +394,7 @@ Use the CardDAV tools to list all contacts, find duplicates, update outdated inf
 
 ### 6. Calendar Management
 
-Create calendars, add events, update meeting times, and delete cancelled events — all through conversation. The CalDAV tools support full CRUD on both calendars and events. *(Requires alias credentials.)*
+Create calendars, add events, update meeting times, and delete cancelled events through conversation. The CalDAV tools support full CRUD on both calendars and events. *(Requires alias credentials.)*
 
 ### 7. Sieve Script Automation
 
@@ -402,11 +402,11 @@ Sieve scripts are powerful but the syntax is arcane. Ask your AI to write Sieve 
 
 ### 8. Team Onboarding
 
-When a new team member joins, ask the AI to create their alias, generate a password, send them a welcome email with their credentials, and add them as a domain member. One prompt, four API calls.
+When a new team member joins, ask the AI to create their alias, generate a password, send them a welcome email with their credentials, and add them as a domain member. The AI makes four API calls from one prompt.
 
 ### 9. Security Auditing
 
-Ask your AI to list all domains, check DNS verification status, review alias configurations, and identify any domains with unverified records. A quick security sweep in natural language.
+Ask your AI to list all domains, check DNS verification status, review alias configurations, and identify any domains with unverified records. This gives you a quick security sweep in natural language.
 
 ### 10. Email Forwarding Setup
 
@@ -426,7 +426,7 @@ Generate new alias passwords on a schedule. Ask your AI to generate a new passwo
 
 ### 14. DNS Record Encryption
 
-Encrypt your forwarding records before adding them to DNS. The `encryptRecord` tool handles this without authentication — useful for quick one-off encryptions.
+Encrypt your forwarding records before adding them to DNS. The `encryptRecord` tool handles this without authentication, which helps for quick one-off encryptions.
 
 ### 15. Delivery Log Analysis
 
@@ -455,7 +455,7 @@ Create draft emails in your mailbox without sending them. Useful for preparing e
 
 ## Example Prompts
 
-Here are prompts you can use directly with your AI assistant:
+Prompts you can use with your AI assistant:
 
 **Sending email:**
 
@@ -506,7 +506,7 @@ Here are prompts you can use directly with your AI assistant:
 
 ## Security
 
-The MCP server runs locally on your machine. Here's how security works:
+The MCP server runs locally on your machine. Security details:
 
 * **Your credentials stay local.** Both your API key and alias credentials are read from environment variables and used to authenticate API requests via HTTP Basic auth. They are never sent to the AI model.
 * **stdio transport.** The server communicates with the AI client over stdin/stdout. No network ports are opened.
@@ -533,4 +533,4 @@ server.listen();
 
 ## Open Source
 
-The Forward Email MCP Server is [open-source on GitHub](https://github.com/forwardemail/mcp-server) under the BUSL-1.1 license. We believe in transparency. If you find a bug or want a feature, [open an issue](https://github.com/forwardemail/mcp-server/issues).
+The Forward Email MCP Server is [open-source on GitHub](https://github.com/forwardemail/mcp-server) under the BUSL-1.1 license. If you find a bug or want a feature, [open an issue](https://github.com/forwardemail/mcp-server/issues).

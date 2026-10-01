@@ -252,7 +252,7 @@ sequenceDiagram
 > \[!NOTE]
 > Forward Email obsługuje IMAP4rev1 (RFC 3501) z częściowym wsparciem funkcji IMAP4rev2 (RFC 9051).
 
-Forward Email zapewnia solidne wsparcie IMAP4 dzięki implementacji serwera pocztowego WildDuck. Serwer implementuje IMAP4rev1 (RFC 3501) z częściowym wsparciem rozszerzeń IMAP4rev2 (RFC 9051).
+Forward Email zapewnia wsparcie IMAP4 dzięki implementacji serwera pocztowego WildDuck. Serwer implementuje IMAP4rev1 (RFC 3501) z częściowym wsparciem rozszerzeń IMAP4rev2 (RFC 9051).
 
 Funkcjonalność IMAP w Forward Email jest zapewniana przez zależność [WildDuck](https://github.com/nodemailer/wildduck). Obsługiwane są następujące RFC dotyczące poczty e-mail:
 
@@ -604,7 +604,7 @@ Forward Email korzysta z biblioteki [mailauth](https://github.com/postalsys/mail
 | [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Domain-based Message Authentication, Reporting, and Conformance (DMARC) | Egzekwowanie polityki DMARC                                   |
 | [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Authenticated Received Chain (ARC)                                      | Uszczelnianie i weryfikacja ARC                               |
 
-Protokoły uwierzytelniania poczty elektronicznej weryfikują, czy wiadomości rzeczywiście pochodzą od deklarowanego nadawcy i nie zostały zmienione podczas przesyłania.
+Protokoły uwierzytelniania poczty elektronicznej weryfikują, czy wiadomości pochodzą od deklarowanego nadawcy i nie zostały zmienione podczas przesyłania.
 
 ### Wsparcie protokołów uwierzytelniania {#authentication-protocol-support}
 
@@ -839,7 +839,7 @@ Protokoły szyfrowania wiadomości chronią zawartość e-maila przed odczytanie
 1. Wygeneruj parę kluczy PGP w swoim kliencie poczty
 2. Prześlij swój klucz publiczny do WKD Forward Email
 3. Twój klucz jest automatycznie wykrywalny przez innych użytkowników
-4. Wysyłaj i odbieraj zaszyfrowane e-maile bezproblemowo
+4. Wysyłaj i odbieraj zaszyfrowane e-maile
 
 ### S/MIME (Secure/Multipurpose Internet Mail Extensions) {#smime-securemultipurpose-internet-mail-extensions}
 
@@ -2457,7 +2457,7 @@ Połączenie nie zwróciło odpowiedzi CAPA bez uwierzytelnienia.
 > \[!NOTE]
 > Ważne obserwacje i ograniczenia wynikające z testów.
 
-1. **Timeouty Fastmail**: Połączenia z Fastmail przekroczyły limit czasu podczas testów, prawdopodobnie z powodu ograniczeń szybkości lub zapór sieciowych na IP serwera testowego. Fastmail jest znany z solidnego wsparcia IMAP/POP3/SMTP na podstawie ich dokumentacji.
+1. **Timeouty Fastmail**: Połączenia z Fastmail przekroczyły limit czasu podczas testów, prawdopodobnie z powodu ograniczeń szybkości lub zapór sieciowych na IP serwera testowego. Fastmail w swojej dokumentacji opisuje pełne wsparcie IMAP/POP3/SMTP.
 
 2. **Odpowiedzi CAPA POP3**: Kilku dostawców (Gmail, Outlook.com, Forward Email) nie zwróciło odpowiedzi CAPA bez uwierzytelnienia. Jest to powszechna praktyka bezpieczeństwa dla serwerów POP3.
 

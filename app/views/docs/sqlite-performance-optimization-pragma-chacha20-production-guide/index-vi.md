@@ -38,20 +38,20 @@
 
 ## Lời nói đầu {#foreword}
 
-Thiết lập SQLite cho hệ thống email sản xuất không chỉ là làm cho nó hoạt động — mà còn phải làm cho nó nhanh, an toàn và đáng tin cậy dưới tải nặng. Sau khi xử lý hàng triệu email tại Forward Email, chúng tôi đã học được điều gì thực sự quan trọng đối với hiệu suất SQLite.
+Thiết lập SQLite sản xuất cho email cần nhanh, an toàn và đáng tin cậy dưới tải nặng. Sau khi xử lý hàng triệu email tại Forward Email, chúng tôi đã học được những thiết lập nào quan trọng đối với hiệu suất SQLite.
 
-Hướng dẫn này bao gồm cấu hình sản xuất thực tế của chúng tôi, kết quả đánh giá hiệu suất qua các phiên bản Node.js, và các tối ưu cụ thể tạo ra sự khác biệt khi bạn xử lý khối lượng email lớn.
+Hướng dẫn này bao gồm cấu hình sản xuất của chúng tôi, kết quả đánh giá hiệu suất qua các phiên bản Node.js, và các tối ưu cụ thể tạo ra sự khác biệt ở khối lượng email lớn.
 
 > \[!WARNING] Suy giảm hiệu suất Node.js trong v22 và v24
 > Chúng tôi phát hiện một suy giảm hiệu suất đáng kể trong các phiên bản Node.js v22 và v24 ảnh hưởng đến hiệu suất SQLite, đặc biệt với các câu lệnh `SELECT`. Các bài đánh giá của chúng tôi cho thấy giảm khoảng 57% số lượng thao tác `SELECT` mỗi giây trên Node.js v24 so với v20. Chúng tôi đã báo cáo vấn đề này với nhóm Node.js tại [nodejs/node#60719](https://github.com/nodejs/node/issues/60719).
 
-Do suy giảm này, chúng tôi đang áp dụng cách tiếp cận thận trọng trong việc nâng cấp Node.js. Kế hoạch hiện tại của chúng tôi như sau:
+Do suy giảm này, chúng tôi đang áp dụng cách tiếp cận thận trọng trong việc nâng cấp Node.js. Kế hoạch hiện tại của chúng tôi:
 
 * **Phiên bản hiện tại:** Chúng tôi đang dùng Node.js v18, phiên bản đã hết vòng đời ("EOL") cho Hỗ trợ Dài hạn ("LTS"). Bạn có thể xem lịch trình chính thức [Node.js LTS tại đây](https://github.com/nodejs/release#release-schedule).
 * **Nâng cấp dự kiến:** Chúng tôi sẽ nâng cấp lên **Node.js v20**, phiên bản nhanh nhất theo đánh giá của chúng tôi và không bị ảnh hưởng bởi suy giảm này.
 * **Tránh dùng v22 và v24:** Chúng tôi sẽ không sử dụng Node.js v22 hoặc v24 trong môi trường sản xuất cho đến khi vấn đề hiệu suất được giải quyết.
 
-Dưới đây là dòng thời gian minh họa lịch trình Node.js LTS và lộ trình nâng cấp của chúng tôi:
+Dòng thời gian lịch trình Node.js LTS và lộ trình nâng cấp của chúng tôi:
 
 ```mermaid
 gantt
@@ -74,7 +74,7 @@ gantt
 ```
 ## Kiến trúc SQLite trong Sản xuất của Forward Email {#forward-emails-production-sqlite-architecture}
 
-Dưới đây là cách chúng tôi thực sự sử dụng SQLite trong môi trường sản xuất:
+Cách chúng tôi sử dụng SQLite trong môi trường sản xuất:
 
 ```mermaid
 graph TB
@@ -102,7 +102,7 @@ graph TB
 
 ## Cấu hình PRAGMA Thực tế của Chúng tôi {#our-actual-pragma-configuration}
 
-Đây là những gì chúng tôi thực sự sử dụng trong sản xuất, trực tiếp từ [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
+Cấu hình sản xuất của chúng tôi, từ [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
 
 ```javascript
 // Forward Email's actual production PRAGMA settings
@@ -132,11 +132,11 @@ async function setupPragma(db, session, cipher = 'chacha20') {
 ```
 
 > \[!IMPORTANT]
-> Chúng tôi sử dụng `temp_store=1` (đĩa) thay vì `temp_store=2` (bộ nhớ) vì các cơ sở dữ liệu email lớn có thể dễ dàng tiêu thụ hơn 10 GB bộ nhớ trong các thao tác như VACUUM.
+> Chúng tôi sử dụng `temp_store=1` (đĩa) thay vì `temp_store=2` (bộ nhớ) vì các cơ sở dữ liệu email lớn có thể tiêu thụ hơn 10 GB bộ nhớ trong các thao tác như VACUUM.
 
 ## Kết quả Đo hiệu năng {#performance-benchmark-results}
 
-Chúng tôi đã thử nghiệm cấu hình của mình với nhiều lựa chọn khác nhau trên các phiên bản Node.js. Dưới đây là các con số thực tế:
+Chúng tôi đã thử nghiệm cấu hình của mình với nhiều lựa chọn khác nhau trên các phiên bản Node.js:
 
 ### Kết quả Hiệu năng Node.js v20.19.5 {#nodejs-v20195-performance-results}
 
@@ -237,7 +237,7 @@ process.env.SQLITE_TMPDIR = tempStoreDirectory;
 
 ## Tối Ưu Chế Độ WAL {#wal-mode-optimization}
 
-Ghi nhật ký trước (Write-Ahead Logging) rất quan trọng cho hệ thống email với truy cập đồng thời:
+Ghi nhật ký trước (Write-Ahead Logging) quan trọng đối với hệ thống email với truy cập đồng thời:
 
 ```mermaid
 sequenceDiagram
@@ -317,9 +317,9 @@ Chúng tôi đã triển khai tối ưu hóa này trong [schema Đính kèm](htt
 
 ## Quản lý Kết nối {#connection-management}
 
-Chúng tôi không sử dụng connection pooling với SQLite — mỗi người dùng có cơ sở dữ liệu được mã hóa riêng. Cách tiếp cận này cung cấp sự cô lập hoàn hảo giữa các người dùng, tương tự như sandboxing. Khác với kiến trúc của các dịch vụ khác sử dụng MySQL, PostgreSQL hoặc MongoDB, nơi email của bạn có thể bị truy cập bởi nhân viên không đáng tin cậy, các cơ sở dữ liệu SQLite riêng biệt theo người dùng của Forward Email đảm bảo dữ liệu của bạn hoàn toàn độc lập và được sandbox.
+Chúng tôi không sử dụng connection pooling với SQLite; mỗi người dùng có cơ sở dữ liệu được mã hóa riêng. Điều này cô lập người dùng với nhau, tương tự như sandboxing. Khác với kiến trúc của các dịch vụ khác sử dụng MySQL, PostgreSQL hoặc MongoDB, nơi email của bạn có thể bị truy cập bởi nhân viên không đáng tin cậy, các cơ sở dữ liệu SQLite riêng biệt theo người dùng của Forward Email giữ dữ liệu của bạn độc lập và được sandbox.
 
-Chúng tôi không bao giờ lưu mật khẩu IMAP của bạn, vì vậy chúng tôi không bao giờ có quyền truy cập vào dữ liệu của bạn — tất cả đều được xử lý trong bộ nhớ. Tìm hiểu thêm về [phương pháp mã hóa chống lượng tử](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security) của chúng tôi mô tả cách hệ thống hoạt động.
+Chúng tôi không bao giờ lưu mật khẩu IMAP của bạn, vì vậy chúng tôi không bao giờ có quyền truy cập vào dữ liệu của bạn; tất cả đều được xử lý trong bộ nhớ. Tìm hiểu thêm về [phương pháp mã hóa chống lượng tử](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security) của chúng tôi mô tả cách hệ thống hoạt động.
 
 ```javascript
 // Cách tiếp cận cơ sở dữ liệu theo người dùng
@@ -342,7 +342,7 @@ async function getDatabase(session) {
 
 Cách tiếp cận này cung cấp:
 
-* Cô lập hoàn hảo giữa các người dùng
+* Cô lập hoàn toàn giữa các người dùng
 
 * Không có sự phức tạp của connection pool
 
@@ -395,7 +395,7 @@ const fragmentationPct = (stats.freelist_count / stats.page_count) * 100;
 
 ## Hiệu suất Phiên bản Node.js {#nodejs-version-performance}
 
-Các benchmark toàn diện của chúng tôi trên các phiên bản Node.js cho thấy sự khác biệt hiệu suất đáng kể:
+Các benchmark của chúng tôi trên các phiên bản Node.js cho thấy sự khác biệt hiệu suất lớn:
 
 ### Kết quả Đầy đủ Qua Các Phiên bản {#complete-cross-version-results}
 
@@ -522,12 +522,12 @@ console.log(plan);
 
 Chúng tôi đã đóng góp kiến thức tối ưu SQLite trở lại cộng đồng:
 
-* [Cải tiến tài liệu Litestream](https://github.com/benbjohnson/litestream/issues/516) - Các đề xuất của chúng tôi cho mẹo hiệu suất SQLite tốt hơn
+* [Cải tiến tài liệu Litestream](https://github.com/benbjohnson/litestream/issues/516): Các đề xuất của chúng tôi cho mẹo hiệu suất SQLite tốt hơn
 
-* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - Hỗ trợ mã hóa ChaCha20
+* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers): Hỗ trợ mã hóa ChaCha20
 
-* [Nghiên cứu tối ưu hiệu suất SQLite](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - Tham khảo trong triển khai của chúng tôi
-* [Cách các gói npm với hàng tỷ lượt tải đã định hình hệ sinh thái JavaScript](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - Những đóng góp rộng lớn hơn của chúng tôi cho npm và phát triển JavaScript
+* [Nghiên cứu tối ưu hiệu suất SQLite](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/): Tham khảo trong triển khai của chúng tôi
+* [Cách các gói npm với hàng tỷ lượt tải đã định hình hệ sinh thái JavaScript](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem): Những đóng góp rộng lớn hơn của chúng tôi cho npm và phát triển JavaScript
 
 
 ## Mã nguồn Benchmark {#benchmark-source-code}
@@ -557,7 +557,7 @@ Các benchmark kiểm tra:
 
 ## Điều gì tiếp theo cho SQLite tại Forward Email {#whats-next-for-sqlite-at-forward-email}
 
-Chúng tôi đang tích cực thử nghiệm các tối ưu hóa sau:
+Chúng tôi đang thử nghiệm các tối ưu hóa sau:
 
 1. **Điều chỉnh WAL Autocheckpoint**: Thêm `wal_autocheckpoint=1000` dựa trên kết quả benchmark
 
@@ -570,6 +570,6 @@ Chúng tôi đang tích cực thử nghiệm các tối ưu hóa sau:
 
 ## Nhận trợ giúp {#getting-help}
 
-Gặp vấn đề về hiệu năng SQLite? Đối với các câu hỏi cụ thể về SQLite, [Diễn đàn SQLite](https://sqlite.org/forum/forumpost) là nguồn tài nguyên tuyệt vời, và [hướng dẫn điều chỉnh hiệu năng](https://www.sqlite.org/optoverview.html) bao gồm các tối ưu hóa bổ sung mà chúng tôi chưa cần dùng đến.
+Đối với các câu hỏi cụ thể về SQLite, [Diễn đàn SQLite](https://sqlite.org/forum/forumpost) là nguồn tài nguyên tuyệt vời, và [hướng dẫn điều chỉnh hiệu năng](https://www.sqlite.org/optoverview.html) bao gồm các tối ưu hóa bổ sung mà chúng tôi chưa cần dùng đến.
 
 Tìm hiểu thêm về Forward Email bằng cách đọc [Câu hỏi thường gặp](/faq).

@@ -54,7 +54,7 @@
 * [十年开源：展望未来](#a-decade-of-open-source-looking-forward)
 ## 前言 {#foreword}
 
-在 [JavaScript](https://en.wikipedia.org/wiki/JavaScript) 和 [Node.js](https://en.wikipedia.org/wiki/Node.js) 世界中，有些包是必不可少的——每天被下载数百万次，驱动着全球的应用程序。这些工具背后是专注于开源质量的开发者团队。今天，我们展示我们的团队如何帮助构建和维护已成为 JavaScript 生态系统关键部分的 npm 包。
+在 [JavaScript](https://en.wikipedia.org/wiki/JavaScript) 和 [Node.js](https://en.wikipedia.org/wiki/Node.js) 世界中，有些包是必不可少的：每天被下载数百万次，驱动着全球的应用程序。这些工具背后是专注于开源质量的开发者团队。我们的团队帮助构建和维护已成为 JavaScript 生态系统关键部分的 npm 包。
 
 ## 信任我们的先驱者：Isaac Z. Schlueter 和 Forward Email {#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email}
 
@@ -95,7 +95,7 @@ Nick 在[TJ Holowaychuk 创建的现代轻量级 Express 替代品 Koa 框架](h
 
 ### 从个人贡献者到组织领导者 {#from-individual-contributor-to-organization-leader}
 
-从帮助现有项目开始，发展到创建和维护完整的包生态系统。Nick 创立了多个 GitHub 组织——包括 [Cabin](https://github.com/cabinjs)、[Spam Scanner](https://github.com/spamscanner)、[Forward Email](https://github.com/forwardemail)、[Lad](https://github.com/ladjs) 和 [Bree](https://github.com/breejs)——每个组织都解决 JavaScript 社区的特定需求。
+从帮助现有项目开始，发展到创建和维护完整的包生态系统。Nick 创立了多个 GitHub 组织，包括 [Cabin](https://github.com/cabinjs)、[Spam Scanner](https://github.com/spamscanner)、[Forward Email](https://github.com/forwardemail)、[Lad](https://github.com/ladjs) 和 [Bree](https://github.com/breejs)，每个组织都解决 JavaScript 社区的特定需求。
 
 这种从贡献者到领导者的转变体现了 Nick 对设计良好、解决实际问题的软件的愿景。通过将相关包组织在专注的 GitHub 组织下，他构建了协同工作的工具生态，同时保持模块化和灵活性，惠及更广泛的开发者社区。
 
@@ -142,7 +142,7 @@ Bree 是 [forwardemail.net](https://github.com/forwardemail/forwardemail.net) �
 
 ### Lad：Koa 必备实用工具和工具集 {#lad-essential-koa-utilities-and-tools}
 
-[Lad 组织](https://github.com/ladjs) 提供了一系列主要聚焦于增强 Koa 框架生态的必备实用工具和工具包。这些包解决了 Web 开发中的常见挑战，设计上既能无缝协作，也能独立使用。
+[Lad 组织](https://github.com/ladjs) 提供了一系列主要聚焦于增强 Koa 框架生态的必备实用工具和工具包。这些包解决了 Web 开发中的常见挑战，设计上既能协同工作，也能独立使用。
 
 #### koa-better-error-handler：改进的 Koa 错误处理 {#koa-better-error-handler-improved-error-handling-for-koa}
 
@@ -167,7 +167,7 @@ Bree 是 [forwardemail.net](https://github.com/forwardemail/forwardemail.net) �
 * Google 身份验证
 * 一次性密码（OTP）身份验证
 
-该包高度可定制，允许开发者调整字段名称和短语以匹配其应用需求。它设计为与 Mongoose 无缝集成进行用户管理，是需要强大身份验证的基于 Koa 应用的理想解决方案。
+该包高度可定制，允许开发者调整字段名称和短语以匹配其应用需求。它设计为与 Mongoose 集成进行用户管理，适合需要身份验证的基于 Koa 的应用。
 
 #### graceful: 优雅的应用关闭 {#graceful-elegant-application-shutdown}
 
@@ -199,9 +199,9 @@ Upptime 的特别之处在于其架构：
 
 为了提升用户体验，我们将 [@octokit/core](https://github.com/octokit/core.js/) 集成到 forwardemail.net 代码库中，实时渲染状态更新和事件，直接在我们的网站上展示。此集成为用户提供了清晰透明的服务状态信息，涵盖整个技术栈（网站、API、MongoDB、Redis、SQLite、SMTP、POP3、IMAP、Bree 等），并通过即时弹出通知、徽章图标变化、警告颜色等方式提醒用户。
 
-@octokit/core 库使我们能够从 Upptime GitHub 仓库获取实时数据，处理后以用户友好的方式展示。当任何服务出现故障或性能下降时，用户会通过视觉指示立即收到通知，无需离开主应用。这种无缝集成确保用户始终掌握系统状态的最新信息，增强透明度和信任感。
+@octokit/core 库使我们能够从 Upptime GitHub 仓库获取实时数据，处理后以用户友好的方式展示。当任何服务出现故障或性能下降时，用户会通过视觉指示立即收到通知，无需离开主应用。这种集成为用户提供系统状态的最新信息。
 
-Upptime 已被数百个组织采用，作为一种透明、可靠的服务监控和状态沟通方式。该项目的成功展示了利用现有基础设施（此处为 GitHub）以新方式解决常见问题的强大能力。
+Upptime 已被数百个组织采用，作为一种透明、可靠的服务监控和状态沟通方式。该项目的成功展示了基于现有基础设施（此处为 GitHub）构建工具、以新方式解决常见问题的能力。
 ## 我们对 Forward Email 生态系统的贡献 {#our-contributions-to-the-forward-email-ecosystem}
 
 虽然我们的开源包被全球开发者使用，但它们也构成了我们自身 Forward Email 服务的基础。作为这些工具的创造者和用户，这种双重身份让我们对其实际应用有独特的视角，并推动持续改进。
@@ -215,11 +215,11 @@ Upptime 已被数百个组织采用，作为一种透明、可靠的服务监控
 * **性能优化**：识别并解决仅在大规模下出现的性能瓶颈。
 * **安全加固**：增加针对邮件处理和用户数据保护的额外安全层。
 
-这项工作代表了在核心包之外数千小时的开发，最终打造出一个稳健、安全的邮件服务，充分利用了我们开源贡献的优势。
+这项工作代表了在核心包之外数千小时的开发，最终打造出一个基于我们开源贡献的安全邮件服务。
 
 ### 反馈循环 {#the-feedback-loop}
 
-也许在生产环境中使用我们自己的包最有价值的方面是它所创造的反馈循环。当我们在 Forward Email 中遇到限制或边缘情况时，我们不仅仅是本地修补——我们改进底层包，惠及我们的服务和更广泛的社区。
+也许在生产环境中使用我们自己的包最有价值的方面是它所创造的反馈循环。当我们在 Forward Email 中遇到限制或边缘情况时，我们改进底层包，而不是在本地修补，惠及我们的服务和更广泛的社区。
 
 这种方法带来了许多改进：
 
@@ -251,7 +251,7 @@ Forward Email 的设计遵循一套核心原则，指导我们所有的开发决
 * **[Twelve Factor](https://12factor.net/)**：遵循构建现代可扩展应用的最佳实践
 * **[Occam's razor](https://en.wikipedia.org/wiki/Occam%27s_razor)**：选择满足需求的最简单方案
 * **[Dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)**：广泛使用我们自己的产品
-这些原则不仅仅是理论概念——它们已经融入到我们的日常开发实践中。例如，我们对 Unix 哲学的坚持体现在我们如何构建 npm 包：小而专注的模块，可以组合在一起解决复杂问题。
+我们在日常开发实践中应用这些原则。例如，我们对 Unix 哲学的坚持体现在我们如何构建 npm 包：小而专注的模块，可以组合在一起解决复杂问题。
 
 ### 面向坚韧、自力更生的开发者 {#targeting-the-scrappy-bootstrapped-developer}
 
@@ -261,17 +261,17 @@ Forward Email 的设计遵循一套核心原则，指导我们所有的开发决
 
 ### 原则的实践：Forward Email 代码库 {#principles-in-practice-the-forward-email-codebase}
 
-这些原则在 Forward Email 代码库中清晰可见。我们的 package.json 文件展示了经过深思熟虑的依赖选择，每个依赖都与我们的核心价值观相契合：
+这些原则在 Forward Email 代码库中可见。我们的 package.json 文件展示了经过深思熟虑的依赖选择，每个依赖都与我们的核心价值观相契合：
 
 * 以安全为中心的包，如用于邮件认证的 `mailauth`
 * 方便开发者调试的工具，如 `preview-email`
 * 模块化组件，如 Sindre Sorhus 的各种 `p-*` 工具
 
-通过长期坚持这些原则，我们构建了一个开发者可以信赖的邮件基础设施服务——安全、可靠，并且符合开源社区的价值观。
+通过长期坚持这些原则，我们构建了一个开发者可以信赖的邮件基础设施服务：安全、可靠，并且符合开源社区的价值观。
 
 ### 隐私设计 {#privacy-by-design}
 
-隐私对 Forward Email 来说不是事后考虑或营销噱头——它是指导我们服务和代码每个方面的基本设计原则：
+隐私是 Forward Email 的一项设计原则，指导着我们服务和代码的每个部分：
 
 * **零访问加密**：我们实现了技术上不可能读取用户邮件的系统。
 * **最小数据收集**：我们只收集提供服务所必需的数据，绝不多收。
@@ -301,7 +301,7 @@ Forward Email 的设计遵循一套核心原则，指导我们所有的开发决
 > 虽然我们很自豪能帮助维护 JavaScript 生态中多个高下载量的包，但我们也要承认，许多这些包最初是由其他才华横溢的开发者创建的。像 superagent 和 supertest 这样的包最初由 TJ Holowaychuk 创建，他对开源的丰富贡献对塑造 Node.js 生态系统起到了关键作用。
 ### 我们影响力的鸟瞰图 {#a-birds-eye-view-of-our-impact}
 
-仅在2025年2月至3月这两个月期间，我们贡献并协助维护的顶级包记录了惊人的下载量：
+在2025年2月至3月这两个月期间，我们贡献并协助维护的顶级包记录了以下下载量：
 
 * **[superagent](https://www.npmjs.com/package/superagent)**：84,575,829 次下载\[^7]（最初由 TJ Holowaychuk 创建）
 * **[supertest](https://www.npmjs.com/package/supertest)**：76,432,591 次下载\[^8]（最初由 TJ Holowaychuk 创建）
@@ -323,13 +323,13 @@ Forward Email 的设计遵循一套核心原则，指导我们所有的开发决
 > \[!NOTE]
 > 我们协助维护但未创建的其他几个包的下载量甚至更高，包括 `form-data`（超过7.38亿次下载）、`toidentifier`（超过3.09亿次下载）、`stackframe`（超过1.16亿次下载）和 `error-stack-parser`（超过1.13亿次下载）。我们很荣幸能为这些包做出贡献，同时尊重其原作者的工作。
 
-这些不仅仅是令人印象深刻的数字——它们代表了真实的开发者通过我们协助维护的代码解决真实问题的实例。每一次下载都是这些包帮助某人构建有意义项目的体现，从业余爱好项目到数百万用户使用的企业应用。
+这些数字代表了开发者通过我们协助维护的代码解决问题，从业余爱好项目到数百万用户使用的企业应用。
 
 ![Package Categories Distribution](/img/art/category_pie_chart.svg)
 
 ### 大规模的每日影响 {#daily-impact-at-scale}
 
-每日下载模式显示出持续的高使用量，峰值达到每天数百万次下载\[^13]。这种持续性体现了这些包的稳定性和可靠性——开发者不仅仅是尝试它们，而是将它们集成到核心工作流程中，并日复一日地依赖它们。
+每日下载模式显示出持续的高使用量，峰值达到每天数百万次下载\[^13]。这种持续性体现了这些包的稳定性和可靠性：开发者将它们集成到核心工作流程中，并每天依赖它们。
 
 每周下载模式显示出更为惊人的数字，持续稳定在每周数千万次下载\[^14]。这代表了在 JavaScript 生态系统中的巨大影响力，这些包在全球的生产环境中运行。
 
@@ -346,7 +346,7 @@ Forward Email 的设计遵循一套核心原则，指导我们所有的开发决
 ## 支持生态系统：我们的开源赞助计划 {#supporting-the-ecosystem-our-open-source-sponsorships}
 
 > \[!TIP]
-> 开源的可持续发展不仅仅是贡献代码——还包括支持维护关键基础设施的开发者。
+> 开源的可持续发展意味着在贡献代码之外，还要支持维护关键基础设施的开发者。
 
 除了我们对 JavaScript 生态系统的直接贡献外，我们还自豪地赞助了许多杰出的 Node.js 贡献者，他们的工作构成了许多现代应用的基础。我们的赞助包括：
 
@@ -382,8 +382,8 @@ Forward Email 的设计遵循一套核心原则，指导我们所有的开发决
 
 2020 年，Nick 发现并修复了广泛使用的 `url-regex` 包中的一个关键 [正则表达式拒绝服务（ReDoS）](https://en.wikipedia.org/wiki/ReDoS) 漏洞。该漏洞（[SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)）允许攻击者通过提供特制输入，导致正则表达式发生灾难性回溯，从而引发拒绝服务。
 
-Nick 没有简单地修补现有包，而是创建了 [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe)，这是一个完全重写的实现，解决了漏洞，同时保持与原始 API 的兼容性。他还发布了一篇[全面的博客文章](/blog/docs/url-regex-javascript-node-js)，解释该漏洞及其缓解方法。
-这项工作展示了我们的安全方法：不仅仅是修复问题，还包括教育社区并提供强大的替代方案，以防止未来出现类似问题。
+Nick 没有修补现有包，而是创建了 [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe)，这是一个完全重写的实现，解决了漏洞，同时保持与原始 API 的兼容性。他还发布了一篇[全面的博客文章](/blog/docs/url-regex-javascript-node-js)，解释该漏洞及其缓解方法。
+这项工作展示了我们的安全方法：修复问题、教育社区，并提供更安全的替代方案以防止类似问题。
 
 ### 倡导 Node.js 和 Chromium 安全 {#advocating-for-nodejs-and-chromium-security}
 
@@ -403,7 +403,7 @@ Forward Email 构建于多个关键开源项目之上，包括 Nodemailer、Wild
 
 ### 增强 Nodemailer 的核心功能 {#enhancing-nodemailers-core-functionality}
 
-[Nodemailer](https://github.com/nodemailer/nodemailer) 是 Node.js 中邮件发送的骨干，我们的贡献帮助其变得更加稳健：
+[Nodemailer](https://github.com/nodemailer/nodemailer) 是 Node.js 中邮件发送的骨干，我们的贡献帮助其变得更加可靠：
 
 * **SMTP 服务器改进**：我们修复了 SMTP 服务器组件中的解析错误、流处理问题和 TLS 配置问题\[^16]\[^17]。
 * **邮件解析器增强**：我们解决了字符序列解码错误和地址解析器问题，这些问题可能导致邮件处理失败\[^18]\[^19]。
@@ -434,7 +434,7 @@ Forward Email 构建于多个关键开源项目之上，包括 Nodemailer、Wild
 
 ## 将一切紧密结合的纽带：大规模定制代码 {#the-glue-that-holds-it-all-together-custom-code-at-scale}
 
-虽然我们的 npm 包和对现有项目的贡献非常重要，但真正展示我们技术专长的是将这些组件集成在一起的定制代码。Forward Email 代码库代表了十年的开发努力，始于 2017 年，当时该项目作为 [free-email-forwarding](https://github.com/forwardemail/free-email-forwarding) 启动，后来合并到一个 monorepo 中。
+虽然我们的 npm 包和对现有项目的贡献非常重要，但最能展示我们技术专长的是将这些组件集成在一起的定制代码。Forward Email 代码库代表了十年的开发努力，始于 2017 年，当时该项目作为 [free-email-forwarding](https://github.com/forwardemail/free-email-forwarding) 启动，后来合并到一个 monorepo 中。
 
 ### 巨大的开发投入 {#a-massive-development-effort}
 
@@ -447,17 +447,17 @@ Forward Email 构建于多个关键开源项目之上，包括 Nodemailer、Wild
 
 ### 核心依赖集成 {#core-dependencies-integration}
 
-Forward Email 代码库将众多依赖集成成一个无缝整体：
+Forward Email 代码库将众多依赖集成为一个统一系统：
 
 * **邮件处理**：集成 Nodemailer 用于发送，SMTP Server 用于接收，Mailparser 用于解析
 * **身份验证**：使用 Mailauth 进行 DKIM、SPF、DMARC 和 ARC 验证
-* **DNS 解析**：利用 Tangerine 实现带有全局缓存的 DNS-over-HTTPS
+* **DNS 解析**：使用 Tangerine 实现带有全局缓存的 DNS-over-HTTPS
 * **MX 连接**：使用集成了 Tangerine 的 mx-connect 实现可靠的邮件服务器连接
 * **任务调度**：采用 Bree 通过工作线程实现可靠的后台任务处理
 * **模板引擎**：使用 email-templates 在客户通信中重用网站样式表
 * **邮件存储**：采用 better-sqlite3-multiple-ciphers 实现单独加密的 SQLite 邮箱，使用 ChaCha20-Poly1305 加密确保量子安全隐私，保证用户之间完全隔离，且只有用户本人能访问其邮箱
 
-每项集成都需要仔细考虑边缘情况、性能影响和安全问题。最终形成了一个强健的系统，能够可靠地处理数百万封邮件交易。我们的 SQLite 实现还利用 msgpackr 进行高效的二进制序列化，并通过 WebSockets（使用 ws）实现基础设施中的实时状态更新。
+每项集成都需要仔细考虑边缘情况、性能影响和安全问题。最终形成了一个系统，能够可靠地处理数百万封邮件交易。我们的 SQLite 实现还使用 msgpackr 进行高效的二进制序列化，并通过 WebSockets（使用 ws）实现基础设施中的实时状态更新。
 
 ### 使用 Tangerine 和 mx-connect 的 DNS 基础设施 {#dns-infrastructure-with-tangerine-and-mx-connect}
 
@@ -467,12 +467,12 @@ Forward Email 基础设施的关键组成部分是我们的 DNS 解析系统，�
 
 * **[mx-connect](https://github.com/zone-eu/mx-connect)**：该包建立与 MX 服务器的 TCP 连接，接受目标域名或电子邮件地址，解析合适的 MX 服务器，并按优先级顺序连接。
 
-我们通过 [pull request #4](https://github.com/zone-eu/mx-connect/pull/4) 将 Tangerine 与 mx-connect 集成，确保 Forward Email 全程使用应用层的 DNS over HTTP 请求。这为大规模 DNS 提供了全球缓存和 1:1 一致性，覆盖任何区域、应用或进程——这是分布式系统中实现可靠邮件投递的关键。
+我们通过 [pull request #4](https://github.com/zone-eu/mx-connect/pull/4) 将 Tangerine 与 mx-connect 集成，确保 Forward Email 全程使用应用层的 DNS over HTTP 请求。这为大规模 DNS 提供了全球缓存和 1:1 一致性，覆盖任何区域、应用或进程，分布式系统中可靠的邮件投递依赖于此。
 
 
 ## 企业影响力：从开源到关键任务解决方案 {#enterprise-impact-from-open-source-to-mission-critical-solutions}
 
-我们十年开源开发历程的结晶，使 Forward Email 不仅服务于个人开发者，也服务于构成开源运动支柱的主要企业和教育机构。
+我们十年开源开发历程的结晶，使 Forward Email 既服务于个人开发者，也服务于构成开源运动支柱的主要企业和教育机构。
 ### 关键任务电子邮件基础设施案例研究 {#case-studies-in-mission-critical-email-infrastructure}
 
 我们对可靠性、隐私和开源原则的承诺，使 Forward Email 成为具有严格电子邮件需求的组织的可信选择：
@@ -483,7 +483,7 @@ Forward Email 基础设施的关键组成部分是我们的 DNS 解析系统，�
 
 * **开源基金会**：也许最具认可意义的是我们与 Linux 基金会的合作，详见[Linux 基金会企业电子邮件案例研究](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)，我们的服务为这个负责 Linux 开发的组织提供通信支持。
 
-我们的开源软件包经过多年精心维护，正是这些软件包让我们能够构建一个电子邮件服务，支持那些倡导开源软件的社区和组织。这一完整的循环——从贡献单个软件包到为开源领导者提供企业级电子邮件基础设施——代表了我们软件开发方法的终极验证。
+我们的开源软件包经过多年精心维护，正是这些软件包让我们能够构建一个电子邮件服务，支持那些倡导开源软件的社区和组织。我们从贡献单个软件包走到了为开源领导者提供企业级电子邮件基础设施。
 
 ## 十年开源历程：展望未来 {#a-decade-of-open-source-looking-forward}
 
@@ -500,7 +500,7 @@ Forward Email 基础设施的关键组成部分是我们的 DNS 解析系统，�
 
 我们相信软件开发的未来是开放的、协作的，并建立在信任的基础上。通过持续向 JavaScript 生态系统贡献高质量、注重安全的软件包，我们希望为构建这一未来贡献一份力量。
 
-感谢所有使用我们软件包、贡献项目、报告问题或仅仅传播我们工作的朋友。正是有了你们的支持，这十年的影响才成为可能，我们期待未来十年能共同取得更多成就。
+感谢所有使用我们软件包、贡献项目、报告问题或传播我们工作的朋友。正是有了你们的支持，这十年的影响才成为可能，我们期待未来十年能共同取得更多成就。
 
 \[^1]: cabin 的 npm 下载统计，2025 年 4 月  
 \[^2]: bson-objectid 的 npm 下载统计，2025 年 2-3 月  

@@ -43,7 +43,7 @@
 
 ## Genel Bakış {#overview}
 
-Bu rehber, Forward Email'in kendi kendine barındırılan çözümünün Ubuntu sistemlerine adım adım kurulum talimatlarını sağlar. Bu rehber özellikle Ubuntu 20.04, 22.04 ve 24.04 LTS sürümleri için hazırlanmıştır.
+Bu rehber, Forward Email'in kendi kendine barındırılan çözümünün Ubuntu 20.04, 22.04 ve 24.04 LTS üzerine kurulumunu adım adım anlatır.
 
 
 ## Ön Koşullar {#prerequisites}
@@ -339,7 +339,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Önemli**: İstendiğinde, DNS'inizde TXT kayıtları oluşturmanız gerekecek. Aynı alan adı için birden fazla challenge görebilirsiniz - **HEPSİNİ oluşturun**. İkinci TXT kaydını eklerken ilk TXT kaydını kaldırmayın.
+**Önemli**: İstendiğinde, DNS'inizde TXT kayıtları oluşturmanız gerekecek. Aynı alan adı için birden fazla challenge görebilirsiniz: **HEPSİNİ oluşturun**. İkinci TXT kaydını eklerken ilk TXT kaydını kaldırmayın.
 
 #### Seçenek B: Cloudflare DNS (Cloudflare kullanıyorsanız) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 

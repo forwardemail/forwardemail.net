@@ -255,7 +255,7 @@ sequenceDiagram
 > \[!NOTE]
 > Forward Email supports IMAP4rev1 (RFC 3501) with partial support for IMAP4rev2 (RFC 9051) features.
 
-Forward Email provides robust IMAP4 support through the WildDuck mail server implementation. The server implements IMAP4rev1 (RFC 3501) with partial support for IMAP4rev2 (RFC 9051) extensions.
+Forward Email provides IMAP4 support through the WildDuck mail server implementation. The server implements IMAP4rev1 (RFC 3501) with partial support for IMAP4rev2 (RFC 9051) extensions.
 
 Forward Email's IMAP functionality is provided by the [WildDuck](https://github.com/nodemailer/wildduck) dependency. The following email RFCs are supported:
 
@@ -616,7 +616,7 @@ Forward Email uses the [mailauth](https://github.com/postalsys/mailauth) library
 | [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Domain-based Message Authentication, Reporting, and Conformance (DMARC) | DMARC policy enforcement                                       |
 | [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Authenticated Received Chain (ARC)                                      | ARC sealing and validation                                     |
 
-Email authentication protocols verify that messages are genuinely from the claimed sender and haven't been tampered with during transit.
+Email authentication protocols verify that messages come from the claimed sender and haven't been tampered with during transit.
 
 ### Authentication Protocol Support
 
@@ -857,7 +857,7 @@ Message encryption protocols protect email content from being read by anyone exc
 1. Generate a PGP key pair in your email client
 2. Upload your public key to Forward Email's WKD
 3. Your key is automatically discoverable by other users
-4. Send and receive encrypted emails seamlessly
+4. Send and receive encrypted emails
 
 ### S/MIME (Secure/Multipurpose Internet Mail Extensions)
 
@@ -2489,7 +2489,7 @@ Connection did not return CAPA response without authentication.
 > \[!NOTE]
 > Important observations and limitations from the test results.
 
-1. **Fastmail Timeouts**: Fastmail connections timed out during testing, likely due to rate limiting or firewall restrictions from the test server IP. Fastmail is known to have robust IMAP/POP3/SMTP support based on their documentation.
+1. **Fastmail Timeouts**: Fastmail connections timed out during testing, likely due to rate limiting or firewall restrictions from the test server IP. Fastmail documents full IMAP/POP3/SMTP support.
 
 2. **POP3 CAPA Responses**: Several providers (Gmail, Outlook.com, Forward Email) did not return CAPA responses without authentication. This is common security practice for POP3 servers.
 

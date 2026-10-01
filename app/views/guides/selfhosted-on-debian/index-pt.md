@@ -49,7 +49,7 @@
 
 ## Visão Geral {#overview}
 
-Este guia fornece instruções passo a passo para instalar a solução auto-hospedada do Forward Email em sistemas Debian. Este guia é especificamente direcionado para Debian 11 (Bullseye) e Debian 12 (Bookworm).
+Este guia fornece instruções passo a passo para instalar a solução auto-hospedada do Forward Email em sistemas Debian. Ele se destina ao Debian 11 (Bullseye) e Debian 12 (Bookworm).
 
 
 ## Pré-requisitos {#prerequisites}
@@ -383,7 +383,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Importante**: Quando solicitado, você precisará criar registros TXT no seu DNS. Você pode ver múltiplos desafios para o mesmo domínio - **crie TODOS eles**. Não remova o primeiro registro TXT ao adicionar o segundo.
+**Importante**: Quando solicitado, você precisará criar registros TXT no seu DNS. Você pode ver múltiplos desafios para o mesmo domínio; **crie TODOS eles**. Não remova o primeiro registro TXT ao adicionar o segundo.
 
 #### Opção B: DNS Cloudflare (Se você usa Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -858,6 +858,6 @@ Sua instalação self-hosted do Forward Email deve agora estar completa e rodand
 5. Manter sua instalação atualizada
 6. Monitorar o snapd e os pacotes snap
 
-As principais diferenças em relação ao Ubuntu são a instalação do snapd e a configuração do repositório Docker. Uma vez que estes estejam configurados corretamente, o aplicativo Forward Email se comporta de forma idêntica em ambos os sistemas.
+As principais diferenças em relação ao Ubuntu são a instalação do snapd e a configuração do repositório Docker. Depois de configurá-los, o aplicativo Forward Email se comporta de forma idêntica em ambos os sistemas.
 
 Para opções adicionais de configuração e recursos avançados, consulte a documentação oficial do Forward Email em <https://forwardemail.net/self-hosted#configuration>.

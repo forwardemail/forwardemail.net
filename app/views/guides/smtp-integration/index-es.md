@@ -33,20 +33,20 @@
 
 ## Prólogo {#foreword}
 
-Esta guía proporciona ejemplos detallados de cómo integrarse con el servicio SMTP de Forward Email usando varios lenguajes de programación, frameworks y clientes de correo. Nuestro servicio SMTP está diseñado para ser confiable, seguro y fácil de integrar con tus aplicaciones existentes.
+Esta guía muestra cómo integrarse con el servicio SMTP de Forward Email desde varios lenguajes de programación, frameworks y clientes de correo.
 
 
 ## Cómo Funciona el Procesamiento SMTP de Forward Email {#how-forward-emails-smtp-processing-works}
 
-Antes de profundizar en los ejemplos de integración, es importante entender cómo nuestro servicio SMTP procesa los correos electrónicos:
+Nuestro servicio SMTP procesa los correos electrónicos de la siguiente manera:
 
 ### Cola de Correos y Sistema de Reintentos {#email-queue-and-retry-system}
 
 Cuando envías un correo vía SMTP a nuestros servidores:
 
 1. **Procesamiento Inicial**: El correo es validado, escaneado en busca de malware y revisado contra filtros de spam
-2. **Cola Inteligente**: Los correos se colocan en un sistema sofisticado de colas para su entrega
-3. **Mecanismo Inteligente de Reintentos**: Si la entrega falla temporalmente, nuestro sistema:
+2. **Cola**: Nuestro sistema coloca los correos en una cola de entrega
+3. **Mecanismo de Reintentos**: Si la entrega falla temporalmente, nuestro sistema:
    * Analiza la respuesta de error usando nuestra función `getBounceInfo`
    * Determina si el problema es temporal (por ejemplo, "intenta más tarde", "temporalmente diferido") o permanente (por ejemplo, "usuario desconocido")
    * Para problemas temporales, marca el correo para reintento
@@ -59,14 +59,14 @@ Cuando envías un correo vía SMTP a nuestros servidores:
 
 ### A Prueba de Errores para Mayor Confiabilidad {#dummy-proofed-for-reliability}
 
-Nuestro sistema está diseñado para manejar varios casos límite:
+Nuestro sistema maneja estos casos límite:
 
 * Si se detecta una lista negra, el correo será reintentado automáticamente
 * Si ocurren problemas de red, la entrega será reintentada
 * Si el buzón del destinatario está lleno, el sistema reintentará más tarde
 * Si el servidor receptor está temporalmente no disponible, seguiremos intentando
 
-Este enfoque mejora significativamente las tasas de entrega mientras mantiene la privacidad y seguridad.
+Este enfoque mejora las tasas de entrega mientras mantiene la privacidad y seguridad.
 
 
 ## Integración con Node.js {#nodejs-integration}
@@ -525,6 +525,6 @@ Si encuentra problemas no cubiertos aquí, por favor:
 
 ## Conclusión {#conclusion}
 
-El servicio SMTP de Forward Email ofrece una forma confiable, segura y enfocada en la privacidad para enviar correos electrónicos desde sus aplicaciones y clientes de correo. Con nuestro sistema inteligente de colas, mecanismo de reintentos de 5 días y notificaciones completas del estado de entrega, puede estar seguro de que sus correos llegarán a su destino.  
+El servicio SMTP de Forward Email ofrece una forma confiable, segura y enfocada en la privacidad para enviar correos electrónicos desde sus aplicaciones y clientes de correo. Incluye un sistema de colas, un mecanismo de reintentos de 5 días y notificaciones del estado de entrega.  
 
 Para casos de uso más avanzados o integraciones personalizadas, por favor contacte a nuestro equipo de soporte.

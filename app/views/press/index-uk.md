@@ -19,11 +19,11 @@
 
 Forward Email — єдиний 100% відкритий сервіс хостингу електронної пошти, орієнтований на безпеку та конфіденційність. Дізнайтеся більше про нашу історію на [нашій сторінці "Про нас"](/about).
 
-Наш сервіс заснований у 2017 році і обслуговує електронну пошту для понад 500 000 доменів – серед яких відомі користувачі, такі як [Військово-морська академія США](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Фонд Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [кілька університетів](/blog/docs/alumni-email-forwarding-university-case-study) та уряди, і багато інших.
+Наш сервіс заснований у 2017 році і обслуговує електронну пошту для понад 500 000 доменів, серед яких відомі користувачі, такі як [Військово-морська академія США](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Фонд Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [кілька університетів](/blog/docs/alumni-email-forwarding-university-case-study) та уряди, і багато інших.
 
-Наша мета — бути платформою корпоративного рівня для електронної пошти та інфраструктури безпеки – і ми дотримуємося [кількох принципів](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Наша мета — бути платформою корпоративного рівня для електронної пошти та інфраструктури безпеки, і ми дотримуємося [кількох принципів](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Якщо ви є представником преси, журналістом або медіа-представником і хочете поспілкуватися з нами, поставити запитання або дізнатися більше – будь ласка, зв’яжіться з нами за адресою `press@forwardemail.net`.
+Якщо ви є представником преси, журналістом або медіа-представником і хочете поспілкуватися з нами, поставити запитання або дізнатися більше, будь ласка, зв’яжіться з нами за адресою `press@forwardemail.net`.
 
 
 ## Основні факти та статистика {#key-facts--statistics}

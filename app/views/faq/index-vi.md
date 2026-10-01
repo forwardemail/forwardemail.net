@@ -182,7 +182,7 @@
 ### Forward Email là gì {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email rất phù hợp cho cá nhân, doanh nghiệp nhỏ và nhà phát triển muốn có địa chỉ email chuyên nghiệp mà không phải chịu chi phí và bảo trì của một giải pháp lưu trữ email đầy đủ.
+> Forward Email phù hợp cho cá nhân, doanh nghiệp nhỏ và nhà phát triển muốn có địa chỉ email chuyên nghiệp mà không phải chịu chi phí và bảo trì của một giải pháp lưu trữ email đầy đủ.
 
 Forward Email là một **nhà cung cấp dịch vụ email đầy đủ tính năng** và **nhà cung cấp lưu trữ email cho tên miền tùy chỉnh**.
 
@@ -775,7 +775,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 10. Khi được yêu cầu nhập "Máy chủ SMTP", nhập <code>smtp.gmail.com</code> và giữ nguyên cổng là <code>587</code>
 
-11. Khi được yêu cầu nhập "Tên đăng nhập", nhập phần địa chỉ Gmail của bạn không bao gồm phần <span>gmail.com</span> (ví dụ chỉ nhập "user" nếu email của tôi là <span><user@gmail.com></span>)
+11. Khi được yêu cầu nhập "Tên đăng nhập", nhập phần địa chỉ Gmail của bạn không bao gồm phần <span>gmail.com</span> (ví dụ "user" nếu email của bạn là <span><user@gmail.com></span>)
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
@@ -1027,9 +1027,9 @@ Vui lòng không báo cáo tin nhắn là spam, thay vào đó hãy chuyển ti�
 
 Nếu bạn thấy thông báo lỗi này trong Gmail khi gửi thử cho chính mình, hoặc khi người bạn gửi email với bí danh của bạn lần đầu tiên nhận được email từ bạn, thì **xin đừng lo lắng** – vì đây là tính năng bảo mật tích hợp của Gmail.
 
-Bạn chỉ cần nhấn "Looks safe". Ví dụ, nếu bạn gửi tin nhắn thử nghiệm sử dụng tính năng gửi mail như (send mail as) cho người khác, họ sẽ không thấy thông báo này.
+Bạn có thể nhấn "Looks safe". Ví dụ, nếu bạn gửi tin nhắn thử nghiệm sử dụng tính năng gửi mail như (send mail as) cho người khác, họ sẽ không thấy thông báo này.
 
-Tuy nhiên nếu họ thấy thông báo này, đó là vì họ thường quen nhận email từ <john@gmail.com> thay vì <john@customdomain.com> (chỉ là ví dụ). Gmail cảnh báo người dùng để đảm bảo an toàn, không có cách nào bỏ qua.
+Tuy nhiên nếu họ thấy thông báo này, đó là vì họ thường quen nhận email từ <john@gmail.com> thay vì <john@customdomain.com> (làm ví dụ). Gmail hiển thị cảnh báo này như một biện pháp phòng ngừa, và không có cách nào bỏ qua.
 
 ### Tôi có thể loại bỏ phần via forwardemail dot net trong Gmail không {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
@@ -1100,7 +1100,7 @@ Bạn có thể dễ dàng nhập email của mình vào Forward Email (ví dụ
    | Tutanota           | EML                                          | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
    | Gandi              | EML                                          | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
    | Zoho               | EML                                          | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-   | Khác               | [Sử dụng Thunderbird](https://www.thunderbird.net) | Thiết lập tài khoản email hiện có của bạn trong Thunderbird rồi sử dụng plugin [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) để xuất và nhập email.  **Bạn cũng có thể đơn giản sao chép/dán hoặc kéo/thả email giữa các tài khoản với nhau.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Khác               | [Sử dụng Thunderbird](https://www.thunderbird.net) | Thiết lập tài khoản email hiện có của bạn trong Thunderbird rồi sử dụng plugin [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) để xuất và nhập email.  **Bạn cũng có thể sao chép/dán hoặc kéo/thả email giữa các tài khoản với nhau.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 2. Tải xuống, cài đặt và mở [Thunderbird](https://www.thunderbird.net).
 
 3. Tạo một tài khoản mới sử dụng địa chỉ email đầy đủ của bí danh của bạn (ví dụ <code><you@yourdomain.com></code>) và mật khẩu đã tạo của bạn.  <strong>Nếu bạn chưa có mật khẩu được tạo, thì <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">tham khảo hướng dẫn thiết lập của chúng tôi</a></strong>.
@@ -1211,13 +1211,13 @@ Khi sử dụng **lưu trữ mặc định (hệ thống)**, khóa là phẳng (
 
 #### Data Ownership and Deletion Policy {#data-ownership-and-deletion-policy}
 
-Bucket S3 tùy chỉnh của bạn hoàn toàn do bạn kiểm soát. Chúng tôi **không bao giờ xóa hoặc sửa đổi** các tệp trong bucket S3 tùy chỉnh của bạn — không khi nào xóa bí danh, không khi nào xóa tên miền, và không trong bất kỳ hoạt động dọn dẹp nào. Chúng tôi chỉ ghi các tệp sao lưu mới vào bucket của bạn.
+Bucket S3 tùy chỉnh của bạn hoàn toàn do bạn kiểm soát. Chúng tôi **không bao giờ xóa hoặc sửa đổi** các tệp trong bucket S3 tùy chỉnh của bạn, kể cả khi bạn xóa bí danh, xóa tên miền, hoặc khi chúng tôi chạy các hoạt động dọn dẹp. Chúng tôi chỉ ghi các tệp sao lưu mới vào bucket của bạn.
 
 Điều này có nghĩa:
 
-* **Xóa bí danh** — Khi bạn xóa một bí danh, chúng tôi chỉ xóa bản sao lưu khỏi lưu trữ hệ thống mặc định của chúng tôi. Bất kỳ bản sao lưu nào đã ghi vào bucket S3 tùy chỉnh của bạn vẫn không bị ảnh hưởng.
-* **Xóa tên miền** — Việc xóa tên miền không ảnh hưởng đến các tệp trong bucket tùy chỉnh của bạn.
-* **Quản lý lưu giữ** — Bạn chịu trách nhiệm quản lý bộ nhớ trong bucket của riêng bạn, bao gồm cấu hình quy tắc vòng đời để hết hạn các bản sao lưu cũ.
+* **Xóa bí danh**: Khi bạn xóa một bí danh, chúng tôi chỉ xóa bản sao lưu khỏi lưu trữ hệ thống mặc định của chúng tôi. Bất kỳ bản sao lưu nào đã ghi vào bucket S3 tùy chỉnh của bạn vẫn không bị ảnh hưởng.
+* **Xóa tên miền**: Việc xóa tên miền không ảnh hưởng đến các tệp trong bucket tùy chỉnh của bạn.
+* **Quản lý lưu giữ**: Bạn chịu trách nhiệm quản lý bộ nhớ trong bucket của riêng bạn, bao gồm cấu hình quy tắc vòng đời để hết hạn các bản sao lưu cũ.
 
 Nếu bạn tắt lưu trữ S3 tùy chỉnh hoặc chuyển về lưu trữ mặc định của chúng tôi, các tệp hiện có trong bucket của bạn vẫn được giữ nguyên. Các bản sao lưu trong tương lai sẽ được ghi vào lưu trữ mặc định của chúng tôi.
 
@@ -1261,7 +1261,7 @@ Nếu bạn tải xuống hoặc lưu trữ các bản sao lưu SQLite (dù từ
 
 Bạn có thể tải xuống bản nhị phân đã được biên dịch sẵn (không cần [Node.js](https://github.com/nodejs/node)) hoặc chạy trực tiếp với [Node.js](https://github.com/nodejs/node):
 
-**Bản nhị phân đã biên dịch sẵn** — Tải bản phát hành mới nhất cho nền tảng của bạn từ [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
+**Bản nhị phân đã biên dịch sẵn**: Tải bản phát hành mới nhất cho nền tảng của bạn từ [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
 
 | Nền tảng | Kiến trúc     | File                                  |
 | -------- | ------------- | ------------------------------------ |
@@ -1298,7 +1298,7 @@ node index.js
 
 Công cụ hỗ trợ cả chế độ tương tác và không tương tác.
 
-**Chế độ tương tác** — chạy mà không có tham số và bạn sẽ được hỏi nhập tất cả thông tin:
+**Chế độ tương tác**: chạy mà không có tham số và bạn sẽ được hỏi nhập tất cả thông tin:
 
 ```bash
 ./convert-sqlite-to-eml
@@ -1313,7 +1313,7 @@ Công cụ hỗ trợ cả chế độ tương tác và không tương tác.
   Đường dẫn ZIP đầu ra [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
 ```
 
-**Chế độ không tương tác** — truyền tham số qua các cờ dòng lệnh để lập trình và tự động hóa:
+**Chế độ không tương tác**: truyền tham số qua các cờ dòng lệnh để lập trình và tự động hóa:
 
 ```bash
 ./convert-sqlite-to-eml \
@@ -1523,7 +1523,7 @@ Cài đặt nâng cao <i class="fa fa-angle-right"></i> Bản ghi tùy chỉnh</
     <tr>
       <td>Khác</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Quan trọng:</strong> Không thấy tên nhà đăng ký của bạn trong danh sách? Chỉ cần tìm kiếm trên Internet với từ khóa "cách thay đổi bản ghi DNS trên $REGISTRAR" (thay $REGISTRAR bằng tên nhà đăng ký của bạn – ví dụ "cách thay đổi bản ghi DNS trên GoDaddy" nếu bạn dùng GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Quan trọng:</strong> Nếu nhà đăng ký của bạn không có trong danh sách, hãy tìm kiếm trên Internet với từ khóa "cách thay đổi bản ghi DNS trên $REGISTRAR" (thay $REGISTRAR bằng tên nhà đăng ký của bạn – ví dụ "cách thay đổi bản ghi DNS trên GoDaddy" nếu bạn dùng GoDaddy).</div>
       </td>
     </tr>
   </tbody>
@@ -1632,7 +1632,7 @@ Cài đặt nâng cao <i class="fa fa-angle-right"></i> Bản ghi tùy chỉnh</
     Tùy chọn B:
   </strong>
   <span>
-    Nếu bạn chỉ cần chuyển tiếp một địa chỉ email duy nhất (ví dụ <code>hello@example.com</code> đến <code>user@gmail.com</code>; điều này cũng sẽ tự động chuyển tiếp "hello+test@example.com" đến "user+test@gmail.com"):
+    Nếu bạn cần chuyển tiếp một địa chỉ email duy nhất (ví dụ <code>hello@example.com</code> đến <code>user@gmail.com</code>; điều này cũng sẽ tự động chuyển tiếp "hello+test@example.com" đến "user+test@gmail.com"):
   </span>
 </div>
 <table class="table table-striped table-hover my-3">
@@ -1697,7 +1697,7 @@ Cài đặt nâng cao <i class="fa fa-angle-right"></i> Bản ghi tùy chỉnh</
     Tùy chọn D:
   </strong>
   <span>
-    Bạn có thể thiết lập vô số email chuyển tiếp – chỉ cần đảm bảo không vượt quá 255 ký tự trong một dòng và bắt đầu mỗi dòng bằng "forward-email=". Ví dụ được cung cấp bên dưới:
+    Bạn có thể thiết lập vô số email chuyển tiếp. Hãy đảm bảo không vượt quá 255 ký tự trong một dòng và bắt đầu mỗi dòng bằng "forward-email=". Ví dụ được cung cấp bên dưới:
   </span>
 </div>
 
@@ -1966,7 +1966,7 @@ Cài đặt nâng cao <i class="fa fa-angle-right"></i> Bản ghi tùy chỉnh</
     Mẹo:
   </strong>
   <span>
-    Các tiện ích bổ sung tùy chọn được liệt kê bên dưới. Lưu ý rằng các tiện ích bổ sung này hoàn toàn tùy chọn và có thể không cần thiết. Chúng tôi muốn ít nhất cung cấp cho bạn thông tin bổ sung nếu cần thiết.
+    Các tiện ích bổ sung tùy chọn được liệt kê bên dưới. Lưu ý rằng các tiện ích bổ sung này là tùy chọn và có thể không cần thiết.
   </span>
 </div>
 
@@ -2109,7 +2109,7 @@ Sử dụng trang quản lý DNS của nhà đăng ký của bạn, thiết lậ
 
 ### Làm thế nào để xem Báo Cáo DMARC {#how-do-i-view-dmarc-reports}
 
-Forward Email cung cấp một bảng điều khiển Báo Cáo DMARC toàn diện cho phép bạn theo dõi hiệu suất xác thực email của mình trên tất cả các tên miền từ một giao diện duy nhất.
+Forward Email cung cấp một bảng điều khiển Báo Cáo DMARC cho phép bạn theo dõi hiệu suất xác thực email của mình trên tất cả các tên miền từ một giao diện duy nhất.
 
 **Báo Cáo DMARC là gì?**
 
@@ -2166,15 +2166,15 @@ Báo cáo hàng tuần được gửi tự động và không thể tắt riêng
 
 ### Tại sao báo cáo DMARC của tôi hiển thị lỗi từ các địa chỉ IP không xác định {#why-do-my-dmarc-reports-show-failures-from-unknown-ip-addresses}
 
-Nếu báo cáo DMARC của bạn chứa các địa chỉ IP lạ không vượt qua được SPF và DKIM, **xin đừng lo lắng** – điều này là bình thường và thực sự có nghĩa là thiết lập của bạn đang hoạt động chính xác.
+Nếu báo cáo DMARC của bạn chứa các địa chỉ IP lạ không vượt qua được SPF và DKIM, **xin đừng lo lắng** – điều này là bình thường và có nghĩa là thiết lập của bạn đang hoạt động chính xác.
 
-Báo cáo DMARC liệt kê **mọi** máy chủ đã cố gắng gửi thư mạo danh miền của bạn, bao gồm cả những máy chủ không được ủy quyền. Trong hầu hết các trường hợp, những IP không xác định này chỉ đơn giản là những kẻ gửi thư rác hoặc bot đang cố gắng mạo danh miền của bạn. Đây là những gì xảy ra khi chúng cố gắng:
+Báo cáo DMARC liệt kê **mọi** máy chủ đã cố gắng gửi thư mạo danh miền của bạn, bao gồm cả những máy chủ không được ủy quyền. Trong hầu hết các trường hợp, những IP không xác định này là những kẻ gửi thư rác hoặc bot đang cố gắng mạo danh miền của bạn. Khi chúng cố gắng:
 
 * **SPF thất bại** vì IP gửi không được liệt kê trong bản ghi SPF của bạn.
 * **DKIM thất bại** vì chúng không thể tạo ra chữ ký hợp lệ cho miền của bạn.
 * Với chính sách DMARC là `p=reject`, tin nhắn bị **từ chối hoàn toàn** và không bao giờ đến được hộp thư đến của bất kỳ ai.
 
-Nói cách khác, những thất bại này là bằng chứng cho thấy DMARC đang làm đúng công việc của mình – ngăn chặn các nỗ lực mạo danh trước khi chúng gây hại. Bạn không cần phải thực hiện bất kỳ hành động nào.
+Những thất bại này cho thấy DMARC đang ngăn chặn các nỗ lực mạo danh trước khi chúng gây hại. Bạn không cần phải thực hiện bất kỳ hành động nào.
 
 **Cách phân biệt người gửi hợp pháp với kẻ mạo danh**
 
@@ -2189,23 +2189,23 @@ Nếu bạn cũng sử dụng các dịch vụ khác để gửi thư thay mặt
 
 ### Làm thế nào để kết nối và cấu hình danh bạ của tôi {#how-do-i-connect-and-configure-my-contacts}
 
-**Để cấu hình danh bạ, sử dụng URL CardDAV:** `https://carddav.forwardemail.net` (hoặc đơn giản là `carddav.forwardemail.net` nếu ứng dụng của bạn cho phép)
+**Để cấu hình danh bạ, sử dụng URL CardDAV:** `https://carddav.forwardemail.net` (hoặc `carddav.forwardemail.net` nếu ứng dụng của bạn cho phép)
 
 ### Làm thế nào để kết nối và cấu hình lịch của tôi {#how-do-i-connect-and-configure-my-calendars}
 
-**Để cấu hình lịch, sử dụng URL CalDAV:** `https://caldav.forwardemail.net` (hoặc đơn giản là `caldav.forwardemail.net` nếu ứng dụng của bạn cho phép)
+**Để cấu hình lịch, sử dụng URL CalDAV:** `https://caldav.forwardemail.net` (hoặc `caldav.forwardemail.net` nếu ứng dụng của bạn cho phép)
 
 <!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### Làm thế nào để thêm nhiều lịch hơn và quản lý các lịch hiện có {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-Nếu bạn muốn thêm lịch bổ sung, chỉ cần thêm URL lịch mới: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**hãy chắc chắn thay thế `calendar-name` bằng tên lịch bạn muốn**)
+Nếu bạn muốn thêm lịch bổ sung, hãy thêm URL lịch mới: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**hãy chắc chắn thay thế `calendar-name` bằng tên lịch bạn muốn**)
 
-Bạn có thể thay đổi tên và màu của lịch sau khi tạo – chỉ cần sử dụng ứng dụng lịch bạn thích (ví dụ Apple Mail hoặc [Thunderbird](https://thunderbird.net)).
+Bạn có thể thay đổi tên và màu của lịch sau khi tạo trong ứng dụng lịch bạn thích (ví dụ Apple Mail hoặc [Thunderbird](https://thunderbird.net)).
 
 ### Làm thế nào để kết nối và cấu hình tác vụ và nhắc nhở {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-**Để cấu hình tác vụ và nhắc nhở, sử dụng cùng URL CalDAV với lịch:** `https://caldav.forwardemail.net` (hoặc đơn giản là `caldav.forwardemail.net` nếu ứng dụng của bạn cho phép)
+**Để cấu hình tác vụ và nhắc nhở, sử dụng cùng URL CalDAV với lịch:** `https://caldav.forwardemail.net` (hoặc `caldav.forwardemail.net` nếu ứng dụng của bạn cho phép)
 
 Tác vụ và nhắc nhở sẽ tự động được tách riêng khỏi sự kiện lịch thành bộ sưu tập lịch "Reminders" hoặc "Tasks".
 
@@ -2360,7 +2360,7 @@ Bạn có thể vô hiệu hóa token này ngay lập tức qua điểm cuối `
 
 ### Bạn có hỗ trợ nhận email bằng IMAP không {#do-you-support-receiving-email-with-imap}
 
-Vâng, kể từ ngày 16 tháng 10 năm 2023, chúng tôi hỗ trợ nhận email qua IMAP như một tiện ích bổ sung cho tất cả người dùng trả phí.  **Vui lòng đọc bài viết chuyên sâu của chúng tôi** về [cách tính năng lưu trữ hộp thư SQLite được mã hóa hoạt động](/blog/docs/best-quantum-safe-encrypted-email-service).
+Vâng, kể từ ngày 16 tháng 10 năm 2023, chúng tôi hỗ trợ nhận email qua IMAP như một tiện ích bổ sung cho tất cả người dùng trả phí.  **Vui lòng đọc bài viết chi tiết của chúng tôi** về [cách tính năng lưu trữ hộp thư SQLite được mã hóa hoạt động](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
@@ -2417,7 +2417,7 @@ Vâng, kể từ ngày 16 tháng 10 năm 2023, chúng tôi hỗ trợ nhận ema
 
 ### Bạn có hỗ trợ POP3 {#do-you-support-pop3}
 
-Có, kể từ ngày 4 tháng 12 năm 2023, chúng tôi hỗ trợ [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) như một tiện ích bổ sung cho tất cả người dùng trả phí.  **Vui lòng đọc bài viết chuyên sâu của chúng tôi** về [cách tính năng lưu trữ hộp thư SQLite được mã hóa hoạt động](/blog/docs/best-quantum-safe-encrypted-email-service).
+Có, kể từ ngày 4 tháng 12 năm 2023, chúng tôi hỗ trợ [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) như một tiện ích bổ sung cho tất cả người dùng trả phí.  **Vui lòng đọc bài viết chi tiết của chúng tôi** về [cách tính năng lưu trữ hộp thư SQLite được mã hóa hoạt động](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
@@ -2489,14 +2489,14 @@ Nó hỗ trợ cả IPv4 và IPv6 và có sẵn qua cổng `443` (HTTPS).
 
 Có, kể từ ngày 14 tháng 10 năm 2025, chúng tôi đã thêm hỗ trợ CalDAV VTODO cho tác vụ và nhắc nhở. Điều này sử dụng cùng máy chủ với hỗ trợ lịch của chúng tôi: `caldav.forwardemail.net`.
 
-Máy chủ CalDAV của chúng tôi hỗ trợ cả sự kiện lịch (VEVENT) và thành phần tác vụ (VTODO) sử dụng **lịch hợp nhất**. Điều này có nghĩa là mỗi lịch có thể chứa cả sự kiện và tác vụ, cung cấp sự linh hoạt tối đa và tương thích trên tất cả các khách hàng CalDAV.
+Máy chủ CalDAV của chúng tôi hỗ trợ cả sự kiện lịch (VEVENT) và thành phần tác vụ (VTODO) sử dụng **lịch hợp nhất**. Điều này có nghĩa là mỗi lịch có thể chứa cả sự kiện và tác vụ.
 
 **Cách hoạt động của lịch và danh sách:**
 
 * **Mỗi lịch hỗ trợ cả sự kiện và tác vụ** - Bạn có thể thêm sự kiện, tác vụ hoặc cả hai vào bất kỳ lịch nào
 * **Danh sách Apple Reminders** - Mỗi danh sách bạn tạo trong Apple Reminders trở thành một lịch riêng biệt trên máy chủ
 * **Nhiều lịch** - Bạn có thể tạo bao nhiêu lịch tùy ý, mỗi lịch có tên, màu sắc và tổ chức riêng
-* **Đồng bộ chéo khách hàng** - Tác vụ và sự kiện đồng bộ liền mạch giữa tất cả các khách hàng tương thích
+* **Đồng bộ chéo khách hàng** - Tác vụ và sự kiện đồng bộ giữa tất cả các khách hàng tương thích
 
 **Các khách hàng tác vụ được hỗ trợ:**
 
@@ -2931,7 +2931,7 @@ Tìm hiểu thêm về passkeys tại các liên kết sau:
 * [Bài viết Wikipedia về Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
 ### Bạn có hỗ trợ các thực hành tốt nhất về email không {#do-you-support-email-best-practices}
 
-Có. Chúng tôi có hỗ trợ tích hợp cho SPF, DKIM, DMARC, ARC và SRS trên tất cả các gói. Chúng tôi cũng đã làm việc rộng rãi với các tác giả gốc của các đặc tả này và các chuyên gia email khác để đảm bảo sự hoàn hảo và khả năng gửi thư cao.
+Có. Chúng tôi có hỗ trợ tích hợp cho SPF, DKIM, DMARC, ARC và SRS trên tất cả các gói. Chúng tôi cũng đã làm việc rộng rãi với các tác giả gốc của các đặc tả này và các chuyên gia email khác để đảm bảo khả năng gửi thư cao.
 
 ### Bạn có hỗ trợ webhook bounce không {#do-you-support-bounce-webhooks}
 
@@ -2940,7 +2940,7 @@ Có. Chúng tôi có hỗ trợ tích hợp cho SPF, DKIM, DMARC, ARC và SRS tr
   <strong class="font-weight-bold">
     Mẹo:
   </strong>
-    Bạn đang tìm tài liệu về webhook email? Xem <a href="/faq#do-you-support-webhooks" class="alert-link">Bạn có hỗ trợ webhook không?</a> để biết thêm thông tin.
+    Để xem tài liệu về webhook email, hãy xem <a href="/faq#do-you-support-webhooks" class="alert-link">Bạn có hỗ trợ webhook không?</a> để biết thêm thông tin.
   <span>
   </span>
 </div>
@@ -3012,12 +3012,12 @@ Dưới đây là một vài lưu ý bổ sung về webhook bounce:
   <strong class="font-weight-bold">
     Mẹo:
   </strong>
-    Bạn đang tìm tài liệu về bounce webhooks? Xem <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Bạn có hỗ trợ bounce webhooks không?</a> để biết thêm thông tin.
+    Để xem tài liệu về bounce webhooks, hãy xem <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Bạn có hỗ trợ bounce webhooks không?</a> để biết thêm thông tin.
   <span>
   </span>
 </div>
 
-Vâng, kể từ ngày 15 tháng 5 năm 2020 chúng tôi đã thêm tính năng này. Bạn có thể đơn giản thêm webhook(s) giống như bạn làm với bất kỳ người nhận nào! Vui lòng đảm bảo rằng bạn đã thêm tiền tố "http" hoặc "https" trong URL của webhook.
+Vâng, kể từ ngày 15 tháng 5 năm 2020 chúng tôi đã thêm tính năng này. Bạn có thể thêm webhook(s) giống như bạn làm với bất kỳ người nhận nào. Vui lòng đảm bảo rằng bạn đã thêm tiền tố "http" hoặc "https" trong URL của webhook.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
@@ -3029,9 +3029,9 @@ Vâng, kể từ ngày 15 tháng 5 năm 2020 chúng tôi đã thêm tính năng 
   </span>
 </div>
 
-Nếu bạn đang sử dụng gói miễn phí, thì chỉ cần thêm một bản ghi DNS <strong class="notranslate">TXT</strong> mới như dưới đây:
+Nếu bạn đang sử dụng gói miễn phí, thì hãy thêm một bản ghi DNS <strong class="notranslate">TXT</strong> mới như dưới đây:
 
-Ví dụ, nếu tôi muốn tất cả email gửi đến `alias@example.com` được chuyển tiếp đến một điểm kiểm tra [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) mới:
+Ví dụ, nếu bạn muốn tất cả email gửi đến `alias@example.com` được chuyển tiếp đến một điểm kiểm tra [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) mới:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -3082,7 +3082,7 @@ Hoặc có thể bạn muốn tất cả email gửi đến `example.com` đư�
     * Tính toán và so sánh giá trị `X-Webhook-Signature` từ yêu cầu webhook của chúng tôi với giá trị thân đã tính toán sử dụng khóa này. Ví dụ về cách làm điều này có tại [bài đăng Stack Overflow này](https://stackoverflow.com/a/68885281).
   * Xem thảo luận tại <https://github.com/forwardemail/free-email-forwarding/issues/235> để biết thêm thông tin.
 * Nếu webhook không phản hồi với mã trạng thái `200`, thì chúng tôi sẽ lưu phản hồi đó vào [nhật ký lỗi được tạo](#do-you-store-error-logs) – điều này hữu ích cho việc gỡ lỗi.
-* Các yêu cầu HTTP webhook sẽ thử lại tối đa 3 lần trong mỗi lần kết nối SMTP, với thời gian chờ tối đa 60 giây cho mỗi yêu cầu POST đến điểm cuối. **Lưu ý rằng điều này không có nghĩa là nó chỉ thử lại 3 lần**, thực tế nó sẽ thử lại liên tục theo thời gian bằng cách gửi mã SMTP 421 (báo cho người gửi thử lại sau) sau lần thử POST HTTP thứ 3 thất bại. Điều này có nghĩa email sẽ thử lại liên tục trong nhiều ngày cho đến khi đạt mã trạng thái 200.
+* Các yêu cầu HTTP webhook sẽ thử lại tối đa 3 lần trong mỗi lần kết nối SMTP, với thời gian chờ tối đa 60 giây cho mỗi yêu cầu POST đến điểm cuối. **Lưu ý rằng điều này không có nghĩa là nó chỉ thử lại 3 lần**, nó sẽ thử lại liên tục theo thời gian bằng cách gửi mã SMTP 421 (báo cho người gửi thử lại sau) sau lần thử POST HTTP thứ 3 thất bại. Điều này có nghĩa email sẽ thử lại liên tục trong nhiều ngày cho đến khi đạt mã trạng thái 200.
 * Chúng tôi sẽ tự động thử lại dựa trên các mã trạng thái và lỗi mặc định được sử dụng trong [phương thức retry của superagent](https://ladjs.github.io/superagent/#retrying-requests) (chúng tôi là người duy trì).
 * Chúng tôi gom nhóm các yêu cầu HTTP webhook đến cùng một điểm cuối thành một yêu cầu thay vì nhiều yêu cầu để tiết kiệm tài nguyên và tăng tốc độ phản hồi. Ví dụ, nếu bạn gửi email đến <webhook1@example.com>, <webhook2@example.com>, và <webhook3@example.com>, và tất cả đều được cấu hình để gọi cùng một URL điểm cuối *chính xác*, thì chỉ có một yêu cầu được gửi. Chúng tôi gom nhóm dựa trên sự trùng khớp chính xác của điểm cuối với so sánh nghiêm ngặt.
 * Lưu ý rằng chúng tôi sử dụng phương thức "simpleParser" của thư viện [mailparser](https://nodemailer.com/extras/mailparser/) để phân tích thông điệp thành đối tượng thân thiện với JSON.
@@ -3092,7 +3092,7 @@ Hoặc có thể bạn muốn tất cả email gửi đến `example.com` đư�
 * Các người nhận được nhóm cho webhook này được gom lại và cung cấp dưới thuộc tính "recipients".
 * Thông tin phiên SMTP được cung cấp dưới thuộc tính "session". Điều này chứa thông tin về người gửi tin nhắn, thời gian đến của tin nhắn, HELO, và hostname của máy khách. Giá trị hostname máy khách dưới `session.clientHostname` là FQDN (từ tra cứu PTR ngược) hoặc là `session.remoteAddress` được bao trong dấu ngoặc (ví dụ `"[127.0.0.1]"`).
 * Nếu bạn cần cách nhanh để lấy giá trị của `X-Original-To`, thì bạn có thể dùng giá trị của `session.recipient` (xem ví dụ bên dưới). Tiêu đề `X-Original-To` là tiêu đề chúng tôi thêm vào tin nhắn để gỡ lỗi với người nhận gốc (trước khi chuyển tiếp ẩn danh) của tin nhắn.
-* Nếu bạn cần loại bỏ thuộc tính `attachments` và/hoặc `raw` khỏi payload thân, chỉ cần thêm `?attachments=false`, `?raw=false`, hoặc `?attachments=false&raw=false` vào điểm cuối webhook của bạn dưới dạng tham số truy vấn (ví dụ `https://example.com/webhook?attachments=false&raw=false`).
+* Nếu bạn cần loại bỏ thuộc tính `attachments` và/hoặc `raw` khỏi payload thân, hãy thêm `?attachments=false`, `?raw=false`, hoặc `?attachments=false&raw=false` vào điểm cuối webhook của bạn dưới dạng tham số truy vấn (ví dụ `https://example.com/webhook?attachments=false&raw=false`).
 * Nếu có tệp đính kèm, chúng sẽ được thêm vào mảng `attachments` với giá trị Buffer. Bạn có thể phân tích lại nội dung bằng cách sử dụng phương pháp với JavaScript như:
   ```js
   const data = [
@@ -3122,7 +3122,7 @@ Hoặc có thể bạn muốn tất cả email gửi đến `example.com` đư�
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Curious what the webhook request looks like from forwarded emails?  We've included an example below for you!
+    An example webhook request from a forwarded email is shown below.
   <span>
   </span>
 </div>
@@ -3309,7 +3309,7 @@ Hoặc có thể bạn muốn tất cả email gửi đến `example.com` đư�
 
 ### Bạn có hỗ trợ biểu thức chính quy hay regex không {#do-you-support-regular-expressions-or-regex}
 
-Vâng, kể từ ngày 27 tháng 9 năm 2021, chúng tôi đã thêm tính năng này. Bạn có thể đơn giản viết các biểu thức chính quy ("regex") để khớp các bí danh và thực hiện thay thế.
+Vâng, kể từ ngày 27 tháng 9 năm 2021, chúng tôi đã thêm tính năng này. Bạn có thể viết các biểu thức chính quy ("regex") để khớp các bí danh và thực hiện thay thế.
 
 Các bí danh hỗ trợ biểu thức chính quy là những bí danh bắt đầu bằng `/` và kết thúc bằng `/` và người nhận của chúng là địa chỉ email hoặc webhook. Người nhận cũng có thể bao gồm hỗ trợ thay thế regex (ví dụ: `$1`, `$2`).
 
@@ -3365,7 +3365,7 @@ Biểu thức chính quy không được hỗ trợ trên <a href="/disposable-a
 
 #### Ví dụ cho gói miễn phí {#examples-for-the-free-plan}
 
-Nếu bạn đang sử dụng gói miễn phí, chỉ cần thêm một bản ghi DNS <strong class="notranslate">TXT</strong> mới sử dụng một hoặc nhiều ví dụ được cung cấp dưới đây:
+Nếu bạn đang sử dụng gói miễn phí, hãy thêm một bản ghi DNS <strong class="notranslate">TXT</strong> mới sử dụng một hoặc nhiều ví dụ được cung cấp dưới đây:
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3464,7 +3464,7 @@ Nếu bạn đang sử dụng gói miễn phí, chỉ cần thêm một bản gh
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Ví dụ từ chối im lặng:</strong> Nếu bạn muốn tất cả email khớp với một mẫu nhất định bị vô hiệu hóa và từ chối im lặng (người gửi sẽ thấy như thể tin nhắn đã gửi thành công, nhưng thực tế không đi đến đâu) với mã trạng thái `250` (xem <a href="#can-i-disable-specific-aliases" class="alert-link">Tôi có thể vô hiệu hóa các bí danh cụ thể không</a>), thì chỉ cần sử dụng cách tương tự với một dấu chấm than "!". Điều này báo cho người gửi rằng tin nhắn đã được gửi thành công, nhưng thực tế không đi đến đâu (ví dụ như hố đen hoặc `/dev/null`).
+  <strong>Ví dụ từ chối im lặng:</strong> Nếu bạn muốn tất cả email khớp với một mẫu nhất định bị vô hiệu hóa và từ chối im lặng (người gửi sẽ thấy như thể tin nhắn đã gửi thành công, nhưng thực tế không đi đến đâu) với mã trạng thái `250` (xem <a href="#can-i-disable-specific-aliases" class="alert-link">Tôi có thể vô hiệu hóa các bí danh cụ thể không</a>), thì sử dụng cách tương tự với một dấu chấm than "!". Điều này báo cho người gửi rằng tin nhắn đã được gửi thành công, nhưng thực tế không đi đến đâu (ví dụ như hố đen hoặc `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -3488,7 +3488,7 @@ Nếu bạn đang sử dụng gói miễn phí, chỉ cần thêm một bản gh
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Ví dụ từ chối mềm:</strong> Nếu bạn muốn tất cả email khớp với một mẫu nhất định bị vô hiệu hóa và từ chối mềm với mã trạng thái `421` (xem <a href="#can-i-disable-specific-aliases" class="alert-link">Tôi có thể vô hiệu hóa các bí danh cụ thể không</a>), thì chỉ cần sử dụng cách tương tự với hai dấu chấm than "!!". Điều này báo cho người gửi thử lại email của họ, và email đến bí danh này sẽ được thử lại trong khoảng 5 ngày rồi mới từ chối vĩnh viễn.
+  <strong>Ví dụ từ chối mềm:</strong> Nếu bạn muốn tất cả email khớp với một mẫu nhất định bị vô hiệu hóa và từ chối mềm với mã trạng thái `421` (xem <a href="#can-i-disable-specific-aliases" class="alert-link">Tôi có thể vô hiệu hóa các bí danh cụ thể không</a>), thì sử dụng cách tương tự với hai dấu chấm than "!!". Điều này báo cho người gửi thử lại email của họ, và email đến bí danh này sẽ được thử lại trong khoảng 5 ngày rồi mới từ chối vĩnh viễn.
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -3511,7 +3511,7 @@ Nếu bạn đang sử dụng gói miễn phí, chỉ cần thêm một bản gh
 </table>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Ví dụ từ chối cứng:</strong> Nếu bạn muốn tất cả email khớp với một mẫu nhất định bị vô hiệu hóa và từ chối cứng với mã trạng thái `550` (xem <a href="#can-i-disable-specific-aliases" class="alert-link">Tôi có thể vô hiệu hóa các bí danh cụ thể không</a>), thì chỉ cần sử dụng cùng cách tiếp cận với ba dấu chấm than "!!!". Điều này báo cho người gửi biết lỗi vĩnh viễn và email sẽ không được thử lại, chúng sẽ bị từ chối cho bí danh này.
+  <strong>Ví dụ từ chối cứng:</strong> Nếu bạn muốn tất cả email khớp với một mẫu nhất định bị vô hiệu hóa và từ chối cứng với mã trạng thái `550` (xem <a href="#can-i-disable-specific-aliases" class="alert-link">Tôi có thể vô hiệu hóa các bí danh cụ thể không</a>), thì sử dụng cùng cách tiếp cận với ba dấu chấm than "!!!". Điều này báo cho người gửi biết lỗi vĩnh viễn và email sẽ không được thử lại, chúng sẽ bị từ chối cho bí danh này.
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -3538,7 +3538,7 @@ Nếu bạn đang sử dụng gói miễn phí, chỉ cần thêm một bản gh
   <strong class="font-weight-bold">
     Mẹo:
   </strong>
-    Bạn tò mò cách viết biểu thức chính quy hoặc cần kiểm tra thay thế của mình? Bạn có thể truy cập trang web kiểm tra biểu thức chính quy miễn phí <a href="https://regexr.com" class="alert-link">RegExr</a> tại <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    Để viết biểu thức chính quy hoặc kiểm tra thay thế của mình, hãy truy cập trang web kiểm tra biểu thức chính quy miễn phí <a href="https://regexr.com" class="alert-link">RegExr</a> tại <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
   <span>
   </span>
 </div>
@@ -3623,7 +3623,7 @@ Một số nhà cung cấp DNS cũng hỗ trợ <strong class="notranslate">CNAM
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Quan trọng:</strong> Không thêm bản ghi <strong class="notranslate">CNAME</strong> trên chính gốc/đỉnh (`@`), vì nó xung đột với các bản ghi <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> và các bản ghi khác của bạn. Giữ bản ghi <strong class="notranslate">TXT</strong> `forward-email-site-verification=` được xuất bản tại tên miền gốc của bạn &mdash; các tên miền phụ sẽ tự động kế thừa nó.
+  <strong>Quan trọng:</strong> Không thêm bản ghi <strong class="notranslate">CNAME</strong> trên chính gốc/đỉnh (`@`), vì nó xung đột với các bản ghi <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong> và các bản ghi khác của bạn. Giữ bản ghi <strong class="notranslate">TXT</strong> `forward-email-site-verification=` được xuất bản tại tên miền gốc của bạn; các tên miền phụ sẽ tự động kế thừa nó.
 </div>
 
 #### Các mã thông báo thay thế tên miền phụ {#subdomain-substitution-tokens}
@@ -3675,7 +3675,7 @@ Khi bạn sử dụng <a href="#do-you-support-regular-expressions-or-regex" cla
 
 ### Giới hạn SMTP gửi đi của bạn là gì {#what-are-your-outbound-smtp-limits}
 
-Chúng tôi thực thi giới hạn tốc độ SMTP đầu ra ở nhiều mức để ngăn lạm dụng đồng thời giữ tính linh hoạt cho việc sử dụng hợp pháp. Mỗi mức được kiểm tra theo thứ tự — mức nào bị chạm đến trước sẽ tạm thời từ chối tin nhắn với lỗi `421` (nghĩa là "thử lại sau").
+Chúng tôi thực thi giới hạn tốc độ SMTP đầu ra ở nhiều mức để ngăn lạm dụng đồng thời giữ tính linh hoạt cho việc sử dụng hợp pháp. Mỗi mức được kiểm tra theo thứ tự, và mức nào bị chạm đến trước sẽ tạm thời từ chối tin nhắn với lỗi `421` (nghĩa là "thử lại sau").
 
 **Phân cấp giới hạn tốc độ:**
 
@@ -3687,10 +3687,10 @@ Chúng tôi thực thi giới hạn tốc độ SMTP đầu ra ở nhiều mức
 
 **Cách xác định giới hạn hiệu quả:**
 
-* **Team plan domains** — giới hạn hàng ngày hiệu quả là `smtp_limit` cao nhất trong số tất cả thành viên quản trị của tên miền. Ví dụ, nếu một quản trị viên có giới hạn 300 và một quản trị viên khác có 500, thì giới hạn hiệu quả của tên miền là 500.
-* **Enhanced Protection and other plans** — giới hạn hàng ngày hiệu quả là `smtp_limit` của người dùng gửi (mặc định là 300 tin nhắn mỗi ngày).
-* **Per-alias override** — quản trị viên tên miền có thể tùy chọn đặt `smtp_limit` tùy chỉnh trên từng bí danh. Khi được đặt, giới hạn này được kiểm tra trước (trước giới hạn tên miền và người dùng). Điều này hữu ích để hạn chế một số bí danh cụ thể ở khối lượng gửi thấp hơn.
-* **Mặc định tên miền cho các bí danh mới** — quản trị viên tên miền có thể đặt một `alias_default_smtp_limit` cho tên miền (qua API hoặc Cài đặt nâng cao trên bảng điều khiển). Khi được đặt, tất cả bí danh mới được tạo trên tên miền đó sẽ tự động kế thừa giá trị này làm `smtp_limit` của chúng. Giá trị này không được vượt quá giới hạn SMTP hiệu lực của tên miền. Các bí danh hiện có sẽ không bị ảnh hưởng. Đặt thành `0` để vô hiệu hóa.
+* **Team plan domains**: giới hạn hàng ngày hiệu quả là `smtp_limit` cao nhất trong số tất cả thành viên quản trị của tên miền. Ví dụ, nếu một quản trị viên có giới hạn 300 và một quản trị viên khác có 500, thì giới hạn hiệu quả của tên miền là 500.
+* **Enhanced Protection and other plans**: giới hạn hàng ngày hiệu quả là `smtp_limit` của người dùng gửi (mặc định là 300 tin nhắn mỗi ngày).
+* **Per-alias override**: quản trị viên tên miền có thể tùy chọn đặt `smtp_limit` tùy chỉnh trên từng bí danh. Khi được đặt, giới hạn này được kiểm tra trước (trước giới hạn tên miền và người dùng). Điều này hữu ích để hạn chế một số bí danh cụ thể ở khối lượng gửi thấp hơn.
+* **Mặc định tên miền cho các bí danh mới**: quản trị viên tên miền có thể đặt một `alias_default_smtp_limit` cho tên miền (qua API hoặc Cài đặt nâng cao trên bảng điều khiển). Khi được đặt, tất cả bí danh mới được tạo trên tên miền đó sẽ tự động kế thừa giá trị này làm `smtp_limit` của chúng. Giá trị này không được vượt quá giới hạn SMTP hiệu lực của tên miền. Các bí danh hiện có sẽ không bị ảnh hưởng. Đặt thành `0` để vô hiệu hóa.
 
 **System administrators** (Forward Email staff) được miễn mọi giới hạn tốc độ.
 
@@ -3900,7 +3900,7 @@ Xác thực bên thứ ba: <https://www.hardenize.com/report/forwardemail.net/17
 
 ### Bạn có giữ nguyên các header xác thực email không {#do-you-preserve-email-authentication-headers}
 
-Có. Forward Email triển khai đầy đủ và giữ nguyên các header xác thực email:
+Có. Forward Email triển khai và giữ nguyên các header xác thực email:
 
 * **SPF (Sender Policy Framework)**: Triển khai và giữ nguyên đúng cách
 * **DKIM (DomainKeys Identified Mail)**: Hỗ trợ đầy đủ với quản lý khóa đúng chuẩn
@@ -3914,9 +3914,9 @@ Xác thực: Bài kiểm tra Mail Test của Internet.nl cho điểm 100/100 ri�
 ### Bạn có giữ nguyên các header email gốc và ngăn chặn giả mạo không {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email triển khai bảo vệ chống giả mạo tinh vi để ngăn chặn việc lạm dụng email.
+> Forward Email triển khai bảo vệ chống giả mạo để ngăn chặn việc lạm dụng email.
 
-Forward Email giữ nguyên các header email gốc đồng thời thực thi bảo vệ chống giả mạo toàn diện thông qua mã nguồn MX:
+Forward Email giữ nguyên các header email gốc đồng thời thực thi bảo vệ chống giả mạo thông qua mã nguồn MX:
 
 * **Giữ nguyên Header**: Các header xác thực gốc được duy trì trong quá trình chuyển tiếp
 * **Chống giả mạo**: Thực thi chính sách DMARC ngăn chặn giả mạo header bằng cách từ chối các email không đạt xác thực SPF hoặc DKIM
@@ -3931,7 +3931,7 @@ Forward Email giữ nguyên các header email gốc đồng thời thực thi b�
 Helper `isArbitrary` triển khai các quy tắc chống giả mạo tinh vi bao gồm phát hiện mạo danh tên miền, các cụm từ bị chặn và nhiều mẫu phishing khác nhau.
 ### Làm thế nào bạn bảo vệ chống lại spam và lạm dụng {#how-do-you-protect-against-spam-and-abuse}
 
-Forward Email triển khai bảo vệ đa lớp toàn diện:
+Forward Email triển khai bảo vệ đa lớp:
 
 * **Giới hạn Tốc độ**: Áp dụng cho các lần thử xác thực, các điểm cuối API và kết nối SMTP
 * **Cách ly Tài nguyên**: Giữa các người dùng để ngăn ảnh hưởng từ người dùng có lưu lượng cao
@@ -3967,7 +3967,7 @@ Nguồn:
 
 ### Nội dung email có thể bị lộ khi hệ thống bị sự cố không {#can-email-content-be-exposed-during-system-crashes}
 
-Không. Forward Email triển khai các biện pháp bảo vệ toàn diện chống lộ dữ liệu do sự cố hệ thống:
+Không. Forward Email triển khai các biện pháp bảo vệ chống lộ dữ liệu do sự cố hệ thống:
 
 * **Tắt Core Dumps**: Ngăn lộ bộ nhớ khi sự cố xảy ra
 * **Sử dụng Swap có kiểm soát**: Các máy chủ ứng dụng và máy chủ không phải cơ sở dữ liệu khác vẫn không sử dụng swap và được định cỡ cũng như giám sát để các khối lượng công việc bình thường luôn nằm trong RAM. Các máy chủ MongoDB và Redis sử dụng một tệp swap chỉ dành cho `root` với `vm.swappiness=1` hoàn toàn như một biện pháp an toàn khi hết bộ nhớ, không phải là dung lượng bình thường. Việc vô hiệu hóa swap ở mọi nơi có thể biến áp lực bộ nhớ cơ sở dữ liệu thoáng qua thành một sự cố OOM kill ngay lập tức. Hoạt động swap của cơ sở dữ liệu được giám sát và điều tra.
@@ -3987,7 +3987,7 @@ Nguồn: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
 ### Ai có quyền truy cập vào hạ tầng email của bạn {#who-has-access-to-your-email-infrastructure}
 
-Forward Email triển khai kiểm soát truy cập toàn diện cho nhóm kỹ sư tối thiểu 2-3 người với yêu cầu 2FA nghiêm ngặt:
+Forward Email triển khai kiểm soát truy cập cho nhóm kỹ sư tối thiểu 2-3 người với yêu cầu 2FA nghiêm ngặt:
 
 * **Kiểm soát Truy cập Theo Vai trò**: Cho các tài khoản nhóm với quyền dựa trên tài nguyên
 * **Nguyên tắc Quyền Ít Nhất**: Áp dụng trên tất cả hệ thống
@@ -4008,7 +4008,7 @@ Nguồn:
 ### Bạn sử dụng nhà cung cấp hạ tầng nào {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email sử dụng nhiều nhà xử lý phụ hạ tầng với các chứng nhận tuân thủ toàn diện.
+> Forward Email sử dụng nhiều nhà xử lý phụ hạ tầng với các chứng nhận tuân thủ.
 
 Chi tiết đầy đủ có trên trang tuân thủ GDPR của chúng tôi: <https://forwardemail.net/gdpr>
 
@@ -4064,7 +4064,7 @@ Chi tiết đầy đủ có trên trang tuân thủ GDPR của chúng tôi: <htt
 
 ### Bạn có cung cấp Thỏa thuận Xử lý Dữ liệu (DPA) không {#do-you-offer-a-data-processing-agreement-dpa}
 
-Có, Forward Email cung cấp Thỏa thuận Xử lý Dữ liệu (DPA) toàn diện có thể ký kết cùng với hợp đồng doanh nghiệp của chúng tôi. Bản sao DPA có tại: <https://forwardemail.net/dpa>
+Có, Forward Email cung cấp Thỏa thuận Xử lý Dữ liệu (DPA) có thể ký kết cùng với hợp đồng doanh nghiệp của chúng tôi. Bản sao DPA có tại: <https://forwardemail.net/dpa>
 
 **Chi tiết DPA:**
 
@@ -4087,7 +4087,7 @@ DPA của chúng tôi chi tiết việc tuân thủ GDPR cũng như các yêu c�
 
 **Nơi xử lý diễn ra hiện nay:** máy chủ của chúng tôi chủ yếu đặt tại Denver, Colorado, United States (xem [Máy chủ của bạn đặt ở đâu](#where-are-your-servers-located) và <https://forwardemail.net/ips>). Điều này áp dụng cho mọi tính năng: chuyển tiếp thư đến, nhật ký lỗi, lưu trữ hộp thư (IMAP/POP3/CalDAV/CardDAV), và SMTP gửi đi.
 
-**Kế hoạch:** một trung tâm dữ liệu EU tại Amsterdam, được lưu trữ dưới [forwardemail.eu](https://forwardemail.eu). Để giữ dữ liệu EU thực sự tách biệt – cả về pháp lý lẫn kỹ thuật – giải pháp cần hoạt động thông qua một công ty đặt tại EU riêng biệt, không chỉ thông qua máy chủ ở một vị trí EU. Chúng tôi chưa có ngày ra mắt, và việc tham gia danh sách chờ không thay đổi nơi thư của bạn được xử lý hiện nay. Theo dõi <https://github.com/orgs/forwardemail/discussions/336> để nhận thông báo; tại đó chúng tôi sẽ mô tả cách khách hàng hiện tại có thể chọn tham gia khi có sẵn.
+**Kế hoạch:** một trung tâm dữ liệu EU tại Amsterdam, được lưu trữ dưới [forwardemail.eu](https://forwardemail.eu). Để giữ dữ liệu EU tách biệt – cả về pháp lý lẫn kỹ thuật – giải pháp cần hoạt động thông qua một công ty đặt tại EU riêng biệt, không chỉ thông qua máy chủ ở một vị trí EU. Chúng tôi chưa có ngày ra mắt, và việc tham gia danh sách chờ không thay đổi nơi thư của bạn được xử lý hiện nay. Theo dõi <https://github.com/orgs/forwardemail/discussions/336> để nhận thông báo; tại đó chúng tôi sẽ mô tả cách khách hàng hiện tại có thể chọn tham gia khi có sẵn.
 
 **Những gì bạn có thể tuyên bố chính xác vào thời điểm hiện tại:**
 
@@ -4142,7 +4142,7 @@ Nếu bạn là bên kiểm soát (hoặc chính bạn là bên xử lý) theo �
 ### Bạn xử lý thông báo vi phạm dữ liệu như thế nào {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Kiến trúc không kiến thức của Forward Email hạn chế đáng kể tác động của vi phạm.
+> Kiến trúc không kiến thức của Forward Email hạn chế tác động của vi phạm.
 * **Tiếp xúc dữ liệu hạn chế**: Không thể truy cập nội dung email được mã hóa do kiến trúc không biết gì (zero-knowledge)
 * **Thu thập dữ liệu tối thiểu**: Chỉ thông tin cơ bản của người đăng ký và nhật ký IP giới hạn cho mục đích bảo mật
 * **Khung xử lý phụ**: DigitalOcean, GitHub và Vultr duy trì quy trình phản ứng sự cố tuân thủ GDPR
@@ -4207,7 +4207,7 @@ Nguồn:
 ### Làm thế nào bạn đảm bảo tính khả dụng cao {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email triển khai dự phòng toàn diện trên nhiều nhà cung cấp hạ tầng.
+> Forward Email triển khai dự phòng trên nhiều nhà cung cấp hạ tầng.
 
 * **Hạ tầng phân tán**: Nhiều nhà cung cấp (DigitalOcean, Vultr, DataPacket) trên các vùng địa lý khác nhau
 * **Cân bằng tải theo địa lý**: Cân bằng tải định vị địa lý dựa trên Cloudflare với chuyển đổi dự phòng tự động
@@ -4242,7 +4242,7 @@ Forward Email hoàn toàn dựa vào hai nhà cung cấp hạ tầng chính, kh�
 
 **Trường hợp sử dụng của Chính phủ**: Việc tuân thủ Mục 889 của chúng tôi đã được xác nhận khi **Học viện Hải quân Hoa Kỳ** chọn Forward Email cho nhu cầu chuyển tiếp email an toàn của họ, yêu cầu tài liệu về các tiêu chuẩn tuân thủ liên bang của chúng tôi.
 
-Để biết chi tiết đầy đủ về khung tuân thủ của chính phủ, bao gồm các quy định liên bang rộng hơn, hãy đọc nghiên cứu trường hợp toàn diện của chúng tôi: [Dịch vụ Email Chính phủ Liên bang Tuân thủ Mục 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+Để biết chi tiết đầy đủ về khung tuân thủ của chính phủ, bao gồm các quy định liên bang rộng hơn, hãy đọc nghiên cứu trường hợp của chúng tôi: [Dịch vụ Email Chính phủ Liên bang Tuân thủ Mục 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
 
 ## Chi tiết Hệ thống và Kỹ thuật {#system-and-technical-details}
@@ -5109,7 +5109,7 @@ Nếu tiêu chí này được đáp ứng, thì tên miền gốc của ngườ
 
 Công việc tự động của chúng tôi sẽ tải xuống 7 ngày trước của UPL trong bộ nhớ, giải nén chúng, và sau đó phân tích trong bộ nhớ theo các tiêu chí nghiêm ngặt ở trên.
 
-Các tên miền phổ biến tại thời điểm viết bài như Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, và nhiều hơn nữa – tất nhiên đều được bao gồm.
+Các tên miền phổ biến tại thời điểm viết bài như Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, và nhiều hơn nữa – đều được bao gồm.
 Nếu bạn là người gửi không có trong danh sách cho phép của chúng tôi, thì lần đầu tiên tên miền gốc FQDN hoặc địa chỉ IP của bạn gửi email, bạn sẽ bị [giới hạn tần suất](#do-you-have-rate-limiting) và [đưa vào danh sách xám](#do-you-have-a-greylist).  Lưu ý rằng đây là thực tiễn tiêu chuẩn được áp dụng như một tiêu chuẩn email.  Hầu hết các máy chủ email sẽ cố gắng gửi lại nếu họ nhận được lỗi giới hạn tần suất hoặc danh sách xám (ví dụ: mã trạng thái lỗi cấp 421 hoặc 4xx).
 
 **Lưu ý rằng các người gửi cụ thể như `a@gmail.com`, `b@xyz.edu`, và `c@gov.au` vẫn có thể bị [đưa vào danh sách chặn](#do-you-have-a-denylist)** (ví dụ: nếu chúng tôi tự động phát hiện spam, lừa đảo, hoặc phần mềm độc hại từ những người gửi đó).
@@ -5293,7 +5293,7 @@ Người gửi bị phát hiện gửi spam hoặc nội dung virus sẽ đượ
 
 ### Bạn có giới hạn tốc độ {#do-you-have-rate-limiting}
 
-Giới hạn tốc độ người gửi được thực hiện theo tên miền gốc phân tích từ tra cứu PTR ngược trên địa chỉ IP của người gửi – hoặc nếu không có kết quả, thì đơn giản sử dụng địa chỉ IP của người gửi. Lưu ý rằng chúng tôi gọi đây là `Sender` bên dưới.
+Giới hạn tốc độ người gửi được thực hiện theo tên miền gốc phân tích từ tra cứu PTR ngược trên địa chỉ IP của người gửi – hoặc nếu không có kết quả, thì sử dụng địa chỉ IP của người gửi. Lưu ý rằng chúng tôi gọi đây là `Sender` bên dưới.
 
 Máy chủ MX của chúng tôi có giới hạn hàng ngày cho thư đến nhận được cho [lưu trữ IMAP được mã hóa](/blog/docs/best-quantum-safe-encrypted-email-service):
 
@@ -5302,10 +5302,10 @@ Máy chủ MX của chúng tôi có giới hạn hàng ngày cho thư đến nh�
   * **Cấp 1 – Nguồn thông tin chính xác** (ví dụ `gmail.com`, `microsoft.com`, `apple.com`): giới hạn ở mức 100 GB mỗi ngày trên toàn cầu. Được miễn các giới hạn theo tên miền và giới hạn burst.
   * **Cấp 2 – Người gửi được [cho phép trong danh sách trắng](#do-you-have-an-allowlist)**: giới hạn ở mức 10 GB mỗi ngày trên toàn cầu. Được miễn các giới hạn theo tên miền và giới hạn burst.
   * **Cấp 3 – Tất cả các người gửi khác**: giới hạn ở mức 1 GB và/hoặc 1000 tin nhắn mỗi ngày trên toàn cầu, 1 GB và/hoặc 1000 tin nhắn cho mỗi `Sender`+tên miền hàng ngày, và giới hạn burst là 50 tin nhắn cho mỗi `Sender`+tên miền mỗi phút.
-* Giới hạn burst sử dụng bộ đếm cửa sổ cố định (60 giây). Cửa sổ bắt đầu khi tin nhắn đầu tiên đến và hết hạn sau 60 giây bất kể các tin nhắn tiếp theo — nó không trượt hoặc đặt lại trên mỗi tin nhắn.
+* Giới hạn burst sử dụng bộ đếm cửa sổ cố định (60 giây). Cửa sổ bắt đầu khi tin nhắn đầu tiên đến và hết hạn sau 60 giây bất kể các tin nhắn tiếp theo. Nó không trượt hoặc đặt lại trên mỗi tin nhắn.
 * Chúng tôi có giới hạn hàng ngày cho mỗi hộp thư người nhận là 100,000 tin nhắn. Điều này áp dụng cho tất cả các cấp và ngăn chặn bất kỳ hộp thư đơn lẻ nào bị tràn ngập bất kể mức độ tin cậy của người gửi.
 
-Tất cả giới hạn tốc độ được thực thi một cách nguyên tử — bộ đếm được tăng trước khi tin nhắn được lưu trữ, loại bỏ các điều kiện đua nơi các yêu cầu đồng thời có thể vượt qua giới hạn. Các thao tác giảm (được sử dụng khi lưu trữ thất bại sau khi tăng) sử dụng các tập lệnh Lua an toàn để ngăn bộ đếm trở thành số âm.
+Tất cả giới hạn tốc độ được thực thi một cách nguyên tử: bộ đếm được tăng trước khi tin nhắn được lưu trữ, loại bỏ các điều kiện đua nơi các yêu cầu đồng thời có thể vượt qua giới hạn. Các thao tác giảm (được sử dụng khi lưu trữ thất bại sau khi tăng) sử dụng các tập lệnh Lua an toàn để ngăn bộ đếm trở thành số âm.
 
 Máy chủ MX cũng giới hạn tin nhắn được chuyển tiếp đến một hoặc nhiều người nhận thông qua giới hạn tốc độ – nhưng điều này chỉ áp dụng cho `Senders` không có trong [danh sách trắng](#do-you-have-an-allowlist):
 
@@ -5326,14 +5326,14 @@ Máy chủ MX của chúng tôi giới hạn các người gửi [không có tro
 
 ### Giới hạn băng thông của bạn là gì {#what-are-your-bandwidth-limits}
 
-Chúng tôi áp dụng giới hạn băng thông cho mỗi người dùng trên tất cả các dịch vụ để ngăn chặn các cuộc tấn công flooding trong khi vẫn đủ rộng rãi cho việc sử dụng hợp pháp.  Các giới hạn này được cố ý đặt cao hơn nhiều so với Gmail — bạn có thể nhập các bản sao lưu lớn, đồng bộ toàn bộ hộp thư sang thiết bị mới, hoặc sử dụng nhiều ứng dụng khách cùng lúc mà không gặp bất kỳ rào cản nào.
+Chúng tôi áp dụng giới hạn băng thông cho mỗi người dùng trên tất cả các dịch vụ để ngăn chặn các cuộc tấn công flooding trong khi vẫn đủ rộng rãi cho việc sử dụng hợp pháp.  Các giới hạn này được cố ý đặt cao hơn nhiều so với Gmail, nên bạn có thể nhập các bản sao lưu lớn, đồng bộ toàn bộ hộp thư sang thiết bị mới, hoặc sử dụng nhiều ứng dụng khách cùng lúc mà không gặp bất kỳ rào cản nào.
 
 | Giới hạn | Phạm vi | Số lượng |
 | :--- | :--- | :---: |
 | Tổng hàng ngày | Tất cả dịch vụ kết hợp (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Hàng giờ mỗi dịch vụ | Mỗi dịch vụ riêng lẻ (ví dụ: tải xuống IMAP, tải lên SMTP) | **10 GB** |
 
-Giới hạn hàng ngày là một ngân sách chung duy nhất trên tất cả các giao thức — dù bạn tải xuống qua IMAP, tải lên qua SMTP, hay đồng bộ lịch qua CalDAV, tất cả đều tính vào cùng 50 GB/ngày.  Giới hạn hàng giờ mỗi dịch vụ là mạng lưới an toàn chống lại các script mất kiểm soát hoặc tài khoản bị xâm phạm trên một giao thức duy nhất — không phải thứ mà người dùng hợp pháp nên bao giờ đạt tới.
+Giới hạn hàng ngày là một ngân sách chung duy nhất trên tất cả các giao thức. Dù bạn tải xuống qua IMAP, tải lên qua SMTP, hay đồng bộ lịch qua CalDAV, tất cả đều tính vào cùng 50 GB/ngày.  Giới hạn hàng giờ mỗi dịch vụ là mạng lưới an toàn chống lại các script mất kiểm soát hoặc tài khoản bị xâm phạm trên một giao thức duy nhất, và người dùng hợp pháp không nên chạm tới nó.
 
 Các giới hạn này áp dụng cho mỗi tài khoản người dùng (không phải mỗi alias hoặc tên miền) và được đặt lại hàng ngày.  Điều này có nghĩa là việc tạo thêm alias không tăng hạn mức băng thông của bạn.  Nếu Redis không khả dụng, giới hạn tốc độ sẽ được bỏ qua hoàn toàn (fail-open) để dịch vụ của bạn không bao giờ bị gián đoạn.
 
@@ -5411,9 +5411,9 @@ Có, kể từ ngày 5 tháng 5 năm 2020 chúng tôi đã thêm tính năng nà
     Nếu bạn đang sử dụng gói trả phí (có tính năng bảo vệ quyền riêng tư nâng cao), vui lòng truy cập <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a>, nhấp vào "Thiết lập" bên cạnh tên miền của bạn, sau đó nhấp vào "Cài đặt".  Nếu bạn muốn tìm hiểu thêm về các gói trả phí, xem trang <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Bảng giá</a> của chúng tôi.  Nếu không, bạn có thể tiếp tục theo các hướng dẫn bên dưới.
   </span>
 </div>
-Nếu bạn đang sử dụng gói miễn phí, thì chỉ cần thêm một bản ghi DNS <strong class="notranslate">TXT</strong> mới như hình dưới đây, nhưng thay đổi cổng từ 25 sang cổng bạn chọn.
+Nếu bạn đang sử dụng gói miễn phí, thì hãy thêm một bản ghi DNS <strong class="notranslate">TXT</strong> mới như hình dưới đây, nhưng thay đổi cổng từ 25 sang cổng bạn chọn.
 
-Ví dụ, nếu tôi muốn tất cả email gửi đến `example.com` được chuyển tiếp đến cổng SMTP của người nhận bí danh là 1337 thay vì 25:
+Ví dụ, nếu bạn muốn tất cả email gửi đến `example.com` được chuyển tiếp đến cổng SMTP của người nhận bí danh là 1337 thay vì 25:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5439,7 +5439,7 @@ Ví dụ, nếu tôi muốn tất cả email gửi đến `example.com` được
   <strong class="font-weight-bold">
     Mẹo:
   </strong>
-    Kịch bản phổ biến nhất cho thiết lập chuyển tiếp cổng tùy chỉnh là khi bạn muốn chuyển tiếp tất cả email gửi đến example.com đến một cổng khác tại example.com, không phải cổng SMTP chuẩn là 25. Để thiết lập điều này, chỉ cần thêm bản ghi <strong class="notranslate">TXT</strong> catch-all sau.
+    Kịch bản phổ biến nhất cho thiết lập chuyển tiếp cổng tùy chỉnh là khi bạn muốn chuyển tiếp tất cả email gửi đến example.com đến một cổng khác tại example.com, không phải cổng SMTP chuẩn là 25. Để thiết lập điều này, hãy thêm bản ghi <strong class="notranslate">TXT</strong> catch-all sau.
   <span>
   </span>
 </div>
@@ -5469,7 +5469,7 @@ Có, hoàn toàn có.
 
 ### Có hỗ trợ các tên miền phụ không {#does-it-support-sub-domains}
 
-Có, hoàn toàn có. Thay vì sử dụng "@", ".", hoặc để trống làm tên/máy chủ/bí danh, bạn chỉ cần sử dụng tên miền phụ làm giá trị thay thế.
+Có. Thay vì sử dụng "@", ".", hoặc để trống làm tên/máy chủ/bí danh, hãy sử dụng tên miền phụ làm giá trị.
 
 Nếu bạn muốn `foo.example.com` chuyển tiếp email, thì nhập `foo` làm giá trị tên/máy chủ/bí danh trong cài đặt DNS của bạn (cho cả bản ghi MX và <strong class="notranslate">TXT</strong>).
 
@@ -5544,7 +5544,7 @@ Không, điều này không được khuyến nghị, vì bạn chỉ có thể 
   </span>
 </div>
 
-Có, chỉ cần chỉnh sửa bản ghi DNS <strong class="notranslate">TXT</strong> của bạn và thêm tiền tố cho bí danh bằng một, hai hoặc ba dấu chấm than (xem bên dưới).
+Có, hãy chỉnh sửa bản ghi DNS <strong class="notranslate">TXT</strong> của bạn và thêm tiền tố cho bí danh bằng một, hai hoặc ba dấu chấm than (xem bên dưới).
 
 Lưu ý rằng bạn *nên* giữ nguyên dấu ":" trong ánh xạ, vì điều này cần thiết nếu bạn quyết định bật lại (và nó cũng được sử dụng để nhập nếu bạn nâng cấp lên một trong các gói trả phí của chúng tôi).
 
@@ -5554,7 +5554,7 @@ Lưu ý rằng bạn *nên* giữ nguyên dấu ":" trong ánh xạ, vì điều
 
 **Đối với từ chối cứng (mã trạng thái `550`):** Nếu bạn thêm tiền tố cho bí danh bằng "!!!" (ba dấu chấm than) thì nó sẽ trả về mã lỗi vĩnh viễn `550` cho người gửi cố gắng gửi đến địa chỉ này và email sẽ bị từ chối và trả lại.
 
-Ví dụ, nếu tôi muốn tất cả email gửi đến `alias@example.com` ngừng chuyển tiếp đến `user@gmail.com` và bị từ chối và trả lại (ví dụ sử dụng ba dấu chấm than):
+Ví dụ, nếu bạn muốn tất cả email gửi đến `alias@example.com` ngừng chuyển tiếp đến `user@gmail.com` và bị từ chối và trả lại (ví dụ sử dụng ba dấu chấm than):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5634,9 +5634,9 @@ Ví dụ, nếu tôi muốn tất cả email gửi đến `alias@example.com` ng
 
 ### Tôi có thể chuyển tiếp email đến nhiều người nhận không {#can-i-forward-emails-to-multiple-recipients}
 
-Có, hoàn toàn có thể. Chỉ cần chỉ định nhiều người nhận trong các bản ghi <strong class="notranslate">TXT</strong> của bạn.
+Có. Hãy chỉ định nhiều người nhận trong các bản ghi <strong class="notranslate">TXT</strong> của bạn.
 
-Ví dụ, nếu tôi muốn một email gửi đến `hello@example.com` được chuyển tiếp đến `user+a@gmail.com` và `user+b@gmail.com`, thì bản ghi <strong class="notranslate">TXT</strong> của tôi sẽ trông như sau:
+Ví dụ, nếu bạn muốn một email gửi đến `hello@example.com` được chuyển tiếp đến `user+a@gmail.com` và `user+b@gmail.com`, thì bản ghi <strong class="notranslate">TXT</strong> của bạn sẽ trông như sau:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5688,9 +5688,9 @@ Tùy bạn quyết định!
 
 ### Tôi có thể có nhiều người nhận toàn cục bắt tất cả không {#can-i-have-multiple-global-catch-all-recipients}
 
-Có, bạn có thể. Chỉ cần chỉ định nhiều người nhận toàn cục bắt tất cả trong các bản ghi <strong class="notranslate">TXT</strong> của bạn.
+Có, bạn có thể. Hãy chỉ định nhiều người nhận toàn cục bắt tất cả trong các bản ghi <strong class="notranslate">TXT</strong> của bạn.
 
-Ví dụ, nếu tôi muốn mọi email gửi đến `*@example.com` (dấu hoa thị có nghĩa là ký tự đại diện hay bắt tất cả) được chuyển tiếp đến `user+a@gmail.com` và `user+b@gmail.com`, thì bản ghi <strong class="notranslate">TXT</strong> của tôi sẽ trông như sau:
+Ví dụ, nếu bạn muốn mọi email gửi đến `*@example.com` (dấu hoa thị có nghĩa là ký tự đại diện hay bắt tất cả) được chuyển tiếp đến `user+a@gmail.com` và `user+b@gmail.com`, thì bản ghi <strong class="notranslate">TXT</strong> của bạn sẽ trông như sau:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5749,7 +5749,7 @@ Có, giới hạn mặc định là 10. Điều này KHÔNG có nghĩa là bạn
     Mẹo:
   </strong>
   <span>
-    Cần nhiều hơn 10 người nhận cho mỗi bí danh? Gửi email cho chúng tôi và chúng tôi sẽ vui lòng tăng giới hạn tài khoản của bạn.
+    Nếu bạn cần nhiều hơn 10 người nhận cho mỗi bí danh, hãy gửi email cho chúng tôi và chúng tôi có thể tăng giới hạn tài khoản của bạn.
   </span>
 </div>
 
@@ -5766,10 +5766,10 @@ Chúng tôi sử dụng xác minh bản ghi MX và <strong class="notranslate">T
 
 Truy cập <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">Tài khoản của tôi → Thanh toán</a> và cuộn đến phần **Tiện ích bổ sung**, trong đó có hai biểu mẫu yêu cầu:
 
-* **Nâng cấp lưu trữ** — chọn một mức để thêm (+10, +20, +30, +40, hoặc +50 GB), hoặc chọn "Other" để yêu cầu một mức tùy chỉnh.
-* **Nâng cấp giới hạn SMTP gửi đi** — chọn một mức để thêm (+1000, +2000, hoặc +3000 email mỗi ngày), hoặc chọn "Other" để yêu cầu một mức tùy chỉnh.
+* **Nâng cấp lưu trữ**: chọn một mức để thêm (+10, +20, +30, +40, hoặc +50 GB), hoặc chọn "Other" để yêu cầu một mức tùy chỉnh.
+* **Nâng cấp giới hạn SMTP gửi đi**: chọn một mức để thêm (+1000, +2000, hoặc +3000 email mỗi ngày), hoặc chọn "Other" để yêu cầu một mức tùy chỉnh.
 
-Nộp bất kỳ biểu mẫu nào sẽ gửi yêu cầu của bạn đến nhóm của chúng tôi để xem xét — điều này không tính phí bạn ngay lập tức. Khi được phê duyệt, chúng tôi sẽ gửi email cho bạn một liên kết thanh toán bảo mật để hoàn tất việc nâng cấp. Bạn có thể có một yêu cầu đang chờ xử lý cho mỗi loại (lưu trữ hoặc SMTP) tại mỗi thời điểm; gửi lại trong vòng 3 ngày kể từ một yêu cầu trước đó cho cùng loại sẽ không được phép cho đến khi khoảng thời gian đó kết thúc.
+Nộp bất kỳ biểu mẫu nào sẽ gửi yêu cầu của bạn đến nhóm của chúng tôi để xem xét và không tính phí bạn ngay lập tức. Khi được phê duyệt, chúng tôi sẽ gửi email cho bạn một liên kết thanh toán bảo mật để hoàn tất việc nâng cấp. Bạn có thể có một yêu cầu đang chờ xử lý cho mỗi loại (lưu trữ hoặc SMTP) tại mỗi thời điểm; gửi lại trong vòng 3 ngày kể từ một yêu cầu trước đó cho cùng loại sẽ không được phép cho đến khi khoảng thời gian đó kết thúc.
 
 
 ### Có gì trong Enterprise License {#what-is-included-in-the-enterprise-license}
@@ -5860,7 +5860,7 @@ Bạn cũng nên thiết lập bản ghi SPF cho Gmail trong cấu hình DNS c�
 
 ### Tôi có thể "gửi thư như" trong Outlook với cái này không {#can-i-send-mail-as-in-outlook-with-this}
 
-Có! Từ ngày 2 tháng 10 năm 2018, chúng tôi đã thêm tính năng này. Chỉ cần xem hai liên kết từ Microsoft dưới đây:
+Có! Từ ngày 2 tháng 10 năm 2018, chúng tôi đã thêm tính năng này. Hãy xem hai liên kết từ Microsoft dưới đây:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>

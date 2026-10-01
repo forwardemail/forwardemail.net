@@ -39,7 +39,7 @@ export function Email(props) {
 
 Trong ví dụ này, chúng tôi sử dụng thư viện **[Nodemailer](https://github.com/nodemailer/nodemailer)** và nhà tài trợ chính thức của nó **[Forward Email](https://forwardemail.net)** để gửi và xem trước thư gửi đi.
 
-Bạn sẽ cần <strong class="text-success"><i class="fa fa-key"></i> Tạo Mật Khẩu</strong> để gửi thư đi – vui lòng làm theo hướng dẫn **[Gửi Email với SMTP Tên Miền Tùy Chỉnh](/guides/send-email-with-custom-domain-smtp)** của chúng tôi.
+Bạn sẽ cần <strong class="text-success"><i class="fa fa-key"></i> Tạo Mật Khẩu</strong> để gửi thư đi. Vui lòng làm theo hướng dẫn **[Gửi Email với SMTP Tên Miền Tùy Chỉnh](/guides/send-email-with-custom-domain-smtp)** của chúng tôi.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

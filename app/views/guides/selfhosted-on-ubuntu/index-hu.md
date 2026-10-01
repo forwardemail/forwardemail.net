@@ -43,7 +43,7 @@
 
 ## Áttekintés {#overview}
 
-Ez az útmutató lépésről lépésre ad utasításokat a Forward Email önmagad által üzemeltetett megoldásának telepítéséhez Ubuntu rendszereken. Az útmutató kifejezetten az Ubuntu 20.04, 22.04 és 24.04 LTS verziókra készült.
+Ez az útmutató lépésről lépésre bemutatja a Forward Email önmagad által üzemeltetett megoldásának telepítését Ubuntu 20.04, 22.04 és 24.04 LTS rendszereken.
 
 
 ## Előfeltételek {#prerequisites}
@@ -339,7 +339,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Fontos**: Amikor kéri, létre kell hoznod TXT rekordokat a DNS-edben. Több kihívást is láthatsz ugyanarra a domainre - **mindet hozd létre**. Ne távolítsd el az első TXT rekordot, amikor a másodikat hozzáadod.
+**Fontos**: Amikor kéri, létre kell hoznod TXT rekordokat a DNS-edben. Több kihívást is láthatsz ugyanarra a domainre: **mindet hozd létre**. Ne távolítsd el az első TXT rekordot, amikor a másodikat hozzáadod.
 
 #### B lehetőség: Cloudflare DNS (ha Cloudflare-t használsz) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 

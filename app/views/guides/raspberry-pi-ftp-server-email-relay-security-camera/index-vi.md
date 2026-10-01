@@ -1,6 +1,6 @@
 # Biến Raspberry Pi của Bạn Thành Máy Chủ FTP An Toàn với Chuyển Tiếp Email {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
 
-Bạn có một chiếc Raspberry Pi đang để không? Dù đó là Pi 5 mới nhất, Pi 4, Pi Zero, hay thậm chí là một mẫu cũ hơn, hướng dẫn này sẽ chỉ cho bạn cách biến nó thành một máy chủ tập tin mạnh mẽ, tự động với khả năng chuyển tiếp email. Hoàn hảo cho camera an ninh, thiết bị IoT, và nhiều hơn nữa.
+Bạn có một chiếc Raspberry Pi đang để không? Dù đó là Pi 5 mới nhất, Pi 4, Pi Zero, hay thậm chí là một mẫu cũ hơn, hướng dẫn này chỉ cho bạn cách biến nó thành một máy chủ tập tin tự động với khả năng chuyển tiếp email cho camera an ninh, thiết bị IoT, và nhiều hơn nữa.
 
 **Tương thích với:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W, và Raspberry Pi Zero.
 
@@ -44,12 +44,10 @@ Hướng dẫn này sẽ dẫn bạn qua việc thiết lập một hệ thống
   * Dùng cổng TLS 1.0 cũ của Forward Email (dễ nhất)
   * Thiết lập relay SMTP Postfix (hoạt động với mọi nhà cung cấp email)
 
-Sẵn sàng chưa? Bắt đầu thôi.
-
 
 ## Phần 1: Cài Đặt Ubuntu Server trên Pi của Bạn {#part-1-getting-ubuntu-server-on-your-pi}
 
-Trước tiên, hãy cài Ubuntu Server chạy trên Raspberry Pi. Việc này khá dễ dàng nhờ Raspberry Pi Imager.
+Hãy bắt đầu bằng việc cài Ubuntu Server chạy trên Raspberry Pi. Raspberry Pi Imager giúp việc này trở nên dễ dàng.
 
 ### Những Gì Bạn Cần {#what-youll-need}
 
@@ -90,7 +88,7 @@ Khi trình tạo ảnh hoàn tất, hãy cắm thẻ microSD vào Pi và cắm n
 ssh your_username@your_pi_ip_address
 ```
 
-Bạn đã vào! Raspberry Pi bây giờ đã sẵn sàng để cấu hình.
+Raspberry Pi bây giờ đã sẵn sàng để cấu hình.
 
 
 ## Phần 2: Thiết lập Máy chủ FTP An toàn {#part-2-setting-up-a-secure-ftp-server}
@@ -172,8 +170,8 @@ Tạo một người dùng riêng biệt, bị giới hạn cho truy cập FTP.
    sudo mkdir -p /home/ftpuser/ftp/uploads
    ```
 
-   * `/home/ftpuser/ftp` - Thư mục FTP chính  
-   * `/home/ftpuser/ftp/uploads` - Nơi các tập tin sẽ được tải lên
+   * `/home/ftpuser/ftp`: Thư mục FTP chính  
+   * `/home/ftpuser/ftp/uploads`: Nơi các tập tin sẽ được tải lên
 
 3. **Đặt quyền:**
 
@@ -270,7 +268,7 @@ Fail2ban tự động chặn các địa chỉ IP sau nhiều lần đăng nhậ
 
 ## Part 4: Automated File Processing with Email Notifications {#part-4-automated-file-processing-with-email-notifications}
 
-Now for the magic: a script that monitors the FTP folder, emails new files as attachments, and deletes them. There are two approaches depending on your email provider:
+Next, add a script that monitors the FTP folder, emails new files as attachments, and deletes them. There are two approaches depending on your email provider:
 
 ### Option 1: Using Forward Email API (Recommended) {#option-1-using-forward-email-api-recommended}
 
@@ -538,7 +536,7 @@ Trước khi cấu hình thiết bị, tạo mật khẩu trong Forward Email:
 2. Điều hướng đến **Tài khoản của tôi → Tên miền → \[Tên miền của bạn] → Bí danh**
 3. Tạo hoặc chọn một bí danh (ví dụ: `camera@yourdomain.com`)
 4. Nhấn **"Generate Password"** bên cạnh bí danh
-5. Sao chép mật khẩu được tạo - bạn sẽ dùng nó để xác thực SMTP
+5. Sao chép mật khẩu được tạo; bạn sẽ dùng nó để xác thực SMTP
 
 > \[!TIP]
 > Mỗi bí danh có thể có mật khẩu riêng. Điều này hữu ích để theo dõi thiết bị nào đã gửi email nào.
@@ -560,7 +558,7 @@ Sử dụng các thiết lập này trong camera, máy in, máy quét hoặc thi
 > \[!WARNING]
 > Các cổng này sử dụng giao thức TLS 1.0 đã lỗi thời và có các lỗ hổng bảo mật đã biết (BEAST, POODLE). Chỉ sử dụng nếu thiết bị của bạn không hỗ trợ TLS 1.2+ hiện đại.
 
-Chỉ cần cấu hình thiết bị với các thiết lập này và nó sẽ gửi email trực tiếp qua Forward Email mà không cần máy chủ chuyển tiếp cục bộ.
+Cấu hình thiết bị với các thiết lập này và nó sẽ gửi email trực tiếp qua Forward Email mà không cần máy chủ chuyển tiếp cục bộ.
 
 Để biết thêm chi tiết, xem [Câu hỏi thường gặp về Hỗ trợ TLS Cũ của Forward Email](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
 
@@ -694,7 +692,7 @@ mynetworks = 127.0.0.0/8 [::1]/128 192.168.1.0/24
 > Với Gmail (cổng 587), đặt `smtp_tls_wrappermode = no` thay vì `yes`.
 
 > \[!WARNING]
-> Cập nhật `mynetworks` với phạm vi mạng thực tế của bạn. Chỉ thêm các mạng tin cậy - bất kỳ thiết bị nào trong các mạng này có thể chuyển tiếp mail mà không cần xác thực.
+> Cập nhật `mynetworks` với phạm vi mạng thực tế của bạn. Chỉ thêm các mạng tin cậy, vì bất kỳ thiết bị nào trong các mạng này có thể chuyển tiếp mail mà không cần xác thực.
 
 **Các phạm vi mạng phổ biến:**
 

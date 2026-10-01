@@ -19,11 +19,11 @@
 
 Forward Email è l'unico servizio di hosting email 100% open-source focalizzato su sicurezza e privacy. Scopri di più sulla nostra storia nella [nostra pagina Informazioni](/about).
 
-Il nostro servizio è stato fondato nel 2017 e gestisce email per oltre 500.000 domini – inclusi utenti noti come [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [diverse università](/blog/docs/alumni-email-forwarding-university-case-study) e governi, e altri ancora.
+Il nostro servizio è stato fondato nel 2017 e gestisce email per oltre 500.000 domini, inclusi utenti noti come [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [diverse università](/blog/docs/alumni-email-forwarding-university-case-study) e governi, e altri ancora.
 
-Il nostro obiettivo è essere la piattaforma infrastrutturale di email e sicurezza di livello enterprise – e aderiamo a [diversi principi](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Il nostro obiettivo è essere la piattaforma infrastrutturale di email e sicurezza di livello enterprise, e aderiamo a [diversi principi](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Se sei un membro della stampa, un giornalista o un rappresentante dei media e desideri parlare con noi, fare domande o saperne di più – ti preghiamo di contattarci a `press@forwardemail.net`.
+Se sei un membro della stampa, un giornalista o un rappresentante dei media e desideri parlare con noi, fare domande o saperne di più, ti preghiamo di contattarci a `press@forwardemail.net`.
 
 
 ## Key Facts & Statistics {#key-facts--statistics}

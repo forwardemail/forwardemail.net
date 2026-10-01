@@ -32,7 +32,7 @@
 
 ## Prólogo {#foreword}
 
-En Forward Email, la seguridad es nuestra máxima prioridad. Hemos implementado medidas de seguridad integrales para proteger tus comunicaciones por correo electrónico y datos personales. Este documento describe nuestras prácticas de seguridad y los pasos que tomamos para garantizar la confidencialidad, integridad y disponibilidad de tu correo electrónico.
+En Forward Email, la seguridad es nuestra máxima prioridad. Este documento describe las prácticas que usamos para proteger tus comunicaciones por correo electrónico y datos personales, y para mantener tu correo electrónico confidencial, íntegro y disponible.
 
 
 ## Seguridad de Infraestructura {#infrastructure-security}
@@ -110,7 +110,7 @@ Seguimos el principio de minimización de datos:
 
 ## Proveedores de Servicios {#service-providers}
 
-Seleccionamos cuidadosamente a nuestros proveedores de servicios para asegurar que cumplan con nuestros altos estándares de seguridad. A continuación se muestran los proveedores que usamos para la transferencia internacional de datos y su estado de cumplimiento con el GDPR:
+Seleccionamos proveedores de servicios que cumplen con nuestros estándares de seguridad. A continuación se muestran los proveedores que usamos para la transferencia internacional de datos y su estado de cumplimiento con el GDPR:
 
 | Proveedor                                     | Propósito                  | Certificado DPF | Página de Cumplimiento GDPR                                                                             |
 | --------------------------------------------- | -------------------------- | -------------- | ------------------------------------------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ Usamos estos proveedores para garantizar una entrega de servicio confiable y seg
 
 ### Evaluaciones Regulares de Seguridad {#regular-security-assessments}
 
-Nuestro equipo monitorea, revisa y evalúa regularmente la base de código, servidores, infraestructura y prácticas. Implementamos un programa de seguridad integral que incluye:
+Nuestro equipo monitorea, revisa y evalúa regularmente la base de código, servidores, infraestructura y prácticas. Nuestro programa de seguridad incluye:
 
 * Rotación regular de claves SSH
 * Monitoreo continuo de registros de acceso
@@ -209,7 +209,7 @@ Nuestra [configuración de Ansible](https://github.com/forwardemail/forwardemail
 
 ## Acuerdo de Nivel de Servicio {#service-level-agreement}
 
-Mantenemos un alto nivel de disponibilidad y confiabilidad del servicio. Nuestra infraestructura está diseñada para redundancia y tolerancia a fallos para asegurar que su servicio de correo electrónico permanezca operativo. Aunque no publicamos un documento formal de SLA, estamos comprometidos con:
+Diseñamos nuestra infraestructura para redundancia y tolerancia a fallos para que su servicio de correo electrónico siga disponible. Aunque no publicamos un documento formal de SLA, estamos comprometidos con:
 
 * 99.9%+ de tiempo activo para todos los servicios
 * Respuesta rápida a interrupciones del servicio
@@ -237,7 +237,7 @@ Como un [servicio de código abierto](https://github.com/forwardemail/forwardema
 
 ## Mejora Continua {#continuous-improvement}
 
-Mejoramos continuamente nuestra postura de seguridad mediante:
+Mejoramos nuestra seguridad mediante:
 
 * Monitoreo de tendencias de seguridad y amenazas emergentes
 * Revisión y actualización regular de políticas de seguridad

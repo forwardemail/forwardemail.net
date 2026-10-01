@@ -21,12 +21,12 @@
 
 ## 前言 {#foreword}
 
-在 [Forward Email](https://forwardemail.net)，我们不断寻找提升您的[隐私](https://en.wikipedia.org/wiki/Privacy)和安全性的方式，同时让我们的服务更易于访问。今天，我们很高兴地宣布，我们现在通过 [Stripe](https://stripe.com) 的加密支付集成接受[加密货币](https://en.wikipedia.org/wiki/Cryptocurrency)支付。
+在 [Forward Email](https://forwardemail.net)，我们寻找提升您的[隐私](https://en.wikipedia.org/wiki/Privacy)和安全性、并让我们的服务更易于访问的方式。我们现在通过 [Stripe](https://stripe.com) 的加密支付集成接受[加密货币](https://en.wikipedia.org/wiki/Cryptocurrency)支付。
 
 
 ## 为什么加密支付很重要 {#why-crypto-payments-matter}
 
-[隐私](https://en.wikipedia.org/wiki/Internet_privacy)一直是我们服务的核心。虽然我们过去提供了多种支付方式，但加密货币支付为隐私提供了额外的保护层，这与我们的使命完美契合。通过使用加密货币支付，您可以：
+[隐私](https://en.wikipedia.org/wiki/Internet_privacy)一直是我们服务的核心。除了我们的其他支付方式外，加密货币支付为隐私提供了额外的保护层。通过使用加密货币支付，您可以：
 
 * 在购买我们的电子邮件服务时保持更高的匿名性
 * 减少与您的电子邮件账户相关的个人信息
@@ -36,7 +36,7 @@
 
 ## 工作原理 {#how-it-works}
 
-我们集成了 [Stripe](https://docs.stripe.com/crypto) 的加密支付系统，使流程尽可能顺畅。以下是您如何使用加密货币支付 Forward Email 服务：
+我们集成了 [Stripe](https://docs.stripe.com/crypto) 的加密支付系统。使用加密货币支付 Forward Email 服务的步骤如下：
 
 ```mermaid
 flowchart LR
@@ -58,12 +58,12 @@ flowchart LR
    * [Coinbase Wallet](https://www.coinbase.com/wallet)
    * [WalletConnect](https://walletconnect.com)（兼容许多其他钱包）
 
-4. **完成支付**：在您的钱包中确认交易，完成支付！支付将被处理，您的 Forward Email 服务将立即激活。
+4. **完成支付**：在您的钱包中确认交易。我们会处理付款并立即激活您的 Forward Email 服务。
 
 
 ## 隐私优势 {#privacy-benefits}
 
-使用加密货币订阅 Forward Email 可在多个方面增强您的隐私：
+使用加密货币支付 Forward Email 订阅可在多个方面改善您的隐私：
 
 ```mermaid
 graph TD
@@ -148,7 +148,7 @@ flowchart LR
 
 ## 入门指南 {#getting-started}
 
-准备好通过加密支付提升您的隐私了吗？下次续订订阅或升级套餐时，只需选择结账时的“加密货币”选项即可。
+如需使用加密货币支付，下次续订订阅或升级套餐时，请选择结账时的“加密货币”选项即可。
 
 想了解更多关于加密货币和区块链技术的信息，请查看以下资源：
 
@@ -158,7 +158,7 @@ flowchart LR
 
 ## 展望未来 {#looking-forward}
 
-添加加密货币支付只是我们持续致力于[隐私](https://en.wikipedia.org/wiki/Privacy)、[安全](https://en.wikipedia.org/wiki/Computer_security)和用户选择的又一步。我们相信您的电子邮件服务应在每个层面尊重您的隐私——从您发送的邮件到您支付服务的方式。
+加密货币支付是对我们在[隐私](https://en.wikipedia.org/wiki/Privacy)、[安全](https://en.wikipedia.org/wiki/Computer_security)和用户选择方面工作的补充。我们相信您的电子邮件服务应在每个层面尊重您的隐私，从您发送的邮件到您支付服务的方式。
 
 一如既往，我们欢迎您对这一新支付选项的反馈。如果您对使用 Forward Email 的加密货币有任何疑问，请联系我们的[支持团队](/help)。
 

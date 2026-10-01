@@ -32,7 +32,7 @@
 
 ## Förord {#foreword}
 
-På Forward Email är säkerhet vår högsta prioritet. Vi har implementerat omfattande säkerhetsåtgärder för att skydda dina e-postkommunikationer och personuppgifter. Detta dokument beskriver våra säkerhetspraxis och de steg vi tar för att säkerställa konfidentialitet, integritet och tillgänglighet för din e-post.
+På Forward Email är säkerhet vår högsta prioritet. Detta dokument beskriver de rutiner vi använder för att skydda dina e-postkommunikationer och personuppgifter och för att hålla din e-post konfidentiell, intakt och tillgänglig.
 
 
 ## Infrastruktursäkerhet {#infrastructure-security}
@@ -110,7 +110,7 @@ Vi följer principen om dataminimering:
 
 ## Tjänsteleverantörer {#service-providers}
 
-Vi väljer noggrant våra tjänsteleverantörer för att säkerställa att de uppfyller våra höga säkerhetsstandarder. Nedan är de leverantörer vi använder för internationell dataöverföring och deras GDPR-efterlevnadsstatus:
+Vi väljer tjänsteleverantörer som uppfyller våra säkerhetsstandarder. Nedan är de leverantörer vi använder för internationell dataöverföring och deras GDPR-efterlevnadsstatus:
 
 | Leverantör                                    | Syfte                      | DPF Certifierad | GDPR-efterlevnadssida                                                                                   |
 | --------------------------------------------- | -------------------------- | --------------- | ------------------------------------------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ Vi använder dessa leverantörer för att säkerställa pålitlig och säker tj�
 
 ### Regelbundna Säkerhetsbedömningar {#regular-security-assessments}
 
-Vårt team övervakar, granskar och bedömer regelbundet kodbasen, servrar, infrastruktur och rutiner. Vi implementerar ett omfattande säkerhetsprogram som inkluderar:
+Vårt team övervakar, granskar och bedömer regelbundet kodbasen, servrar, infrastruktur och rutiner. Vårt säkerhetsprogram inkluderar:
 
 * Regelbunden rotation av SSH-nycklar
 * Kontinuerlig övervakning av åtkomstloggar
@@ -209,7 +209,7 @@ Vår [Ansible-konfiguration](https://github.com/forwardemail/forwardemail.net/tr
 
 ## Servicenivåavtal {#service-level-agreement}
 
-Vi upprätthåller en hög nivå av tjänstetillgänglighet och tillförlitlighet. Vår infrastruktur är designad för redundans och feltolerans för att säkerställa att din e-posttjänst förblir operativ. Även om vi inte publicerar ett formellt SLA-dokument är vi engagerade i:
+Vi designar vår infrastruktur för redundans och feltolerans för att hålla din e-posttjänst tillgänglig. Även om vi inte publicerar ett formellt SLA-dokument är vi engagerade i:
 
 * 99,9 %+ drifttid för alla tjänster
 * Snabb respons vid tjänsteavbrott
@@ -237,7 +237,7 @@ Som en [öppen källkodstjänst](https://github.com/forwardemail/forwardemail.ne
 
 ## Kontinuerlig förbättring {#continuous-improvement}
 
-Vi förbättrar kontinuerligt vår säkerhetsställning genom:
+Vi förbättrar vår säkerhet genom:
 
 * Övervakning av säkerhetstrender och nya hot
 * Regelbunden granskning och uppdatering av säkerhetspolicys

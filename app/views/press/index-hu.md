@@ -19,11 +19,11 @@
 
 A Forward Email az egyetlen 100%-ban nyílt forráskódú e-mail szolgáltatás, amely a biztonságra és adatvédelemre fókuszál. Tudjon meg többet történetünkről a [Rólunk oldalon](/about).
 
-Szolgáltatásunkat 2017-ben alapítottuk, és több mint 500 000 domain e-mailjeit működtetjük – köztük jelentős felhasználók, mint például a [U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [több egyetem](/blog/docs/alumni-email-forwarding-university-case-study) és kormányok, valamint még sokan mások.
+Szolgáltatásunkat 2017-ben alapítottuk, és több mint 500 000 domain e-mailjeit működtetjük, köztük jelentős felhasználók, mint például a [U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [több egyetem](/blog/docs/alumni-email-forwarding-university-case-study) és kormányok, valamint még sokan mások.
 
-Célunk, hogy vállalati szintű e-mail és biztonsági infrastruktúra platform legyünk – és betartunk [számos alapelvet](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Célunk, hogy vállalati szintű e-mail és biztonsági infrastruktúra platform legyünk, és betartunk [számos alapelvet](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Ha Ön sajtótag, újságíró vagy média képviselő, és szeretne velünk beszélni, kérdéseket feltenni vagy többet megtudni – kérjük, lépjen kapcsolatba velünk a `press@forwardemail.net` címen.
+Ha Ön sajtótag, újságíró vagy média képviselő, és szeretne velünk beszélni, kérdéseket feltenni vagy többet megtudni, kérjük, lépjen kapcsolatba velünk a `press@forwardemail.net` címen.
 
 
 ## Főbb tények és statisztikák {#key-facts--statistics}

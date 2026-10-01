@@ -49,7 +49,7 @@
 
 ## Übersicht {#overview}
 
-Diese Anleitung bietet Schritt-für-Schritt-Anweisungen zur Installation der selbstgehosteten Lösung von Forward Email auf Debian-Systemen. Diese Anleitung ist speziell auf Debian 11 (Bullseye) und Debian 12 (Bookworm) zugeschnitten.
+Diese Anleitung bietet Schritt-für-Schritt-Anweisungen zur Installation der selbstgehosteten Lösung von Forward Email auf Debian-Systemen. Sie richtet sich an Debian 11 (Bullseye) und Debian 12 (Bookworm).
 
 
 ## Voraussetzungen {#prerequisites}
@@ -383,7 +383,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Wichtig**: Wenn Sie dazu aufgefordert werden, müssen Sie TXT-Einträge in Ihrem DNS erstellen. Möglicherweise sehen Sie mehrere Challenges für dieselbe Domain – **erstellen Sie ALLE davon**. Entfernen Sie den ersten TXT-Eintrag nicht, wenn Sie den zweiten hinzufügen.
+**Wichtig**: Wenn Sie dazu aufgefordert werden, müssen Sie TXT-Einträge in Ihrem DNS erstellen. Möglicherweise sehen Sie mehrere Challenges für dieselbe Domain; **erstellen Sie ALLE davon**. Entfernen Sie den ersten TXT-Eintrag nicht, wenn Sie den zweiten hinzufügen.
 
 #### Option B: Cloudflare DNS (Wenn Sie Cloudflare verwenden) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -858,6 +858,6 @@ Ihre Forward Email Self-Hosted-Installation sollte nun abgeschlossen sein und un
 5. Ihre Installation aktuell zu halten
 6. Snapd und Snap-Pakete zu überwachen
 
-Die Hauptunterschiede zu Ubuntu sind die Installation von snapd und die Konfiguration des Docker-Repositories. Sobald diese korrekt eingerichtet sind, verhält sich die Forward Email-Anwendung auf beiden Systemen identisch.
+Die Hauptunterschiede zu Ubuntu sind die Installation von snapd und die Konfiguration des Docker-Repositories. Sobald Sie diese eingerichtet haben, verhält sich die Forward Email-Anwendung auf beiden Systemen identisch.
 
 Für zusätzliche Konfigurationsoptionen und erweiterte Funktionen konsultieren Sie bitte die offizielle Forward Email-Dokumentation unter <https://forwardemail.net/self-hosted#configuration>.

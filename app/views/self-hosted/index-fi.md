@@ -28,7 +28,7 @@
 
 ## Aloittaminen {#getting-started}
 
-Itse isännöity sähköpostiratkaisumme, kuten kaikki tuotteemme, on 100 % avoimen lähdekoodin – sekä käyttöliittymä että taustajärjestelmä. Tämä tarkoittaa:
+Itse isännöity sähköpostiratkaisumme, kuten kaikki tuotteemme, on 100 % avoimen lähdekoodin, käyttöliittymä ja taustajärjestelmä. Tämä tarkoittaa:
 
 1. **Täydellinen läpinäkyvyys**: Jokainen koodirivi, joka käsittelee sähköpostejasi, on julkisesti tarkasteltavissa
 2. **Yhteisön panokset**: Kuka tahansa voi tehdä parannuksia tai korjata ongelmia
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Valitse vaihtoehto `1. Alkuasetukset` aloittaaksesi.
 
-Kun prosessi on valmis, näet onnistumisviestin. Voit myös suorittaa `docker ps` nähdäksesi **käynnistetyt** komponentit. Lisätietoja komponenteista alla.
+Kun prosessi on valmis, näet onnistumisviestin. Voit suorittaa `docker ps` nähdäksesi **käynnistetyt** komponentit. Lisätietoja komponenteista alla.
 
 
 ## Palvelut {#services}

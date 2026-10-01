@@ -85,7 +85,7 @@
 * [Điều Này Có Ý Nghĩa Gì Với Các Nhà Phát Triển](#what-this-means-for-developers)
 ## Mảnh Ghép Thiếu: Không Có Cách Nào Để Liệt Kê Các Đăng Ký {#the-missing-piece-no-way-to-list-subscriptions}
 
-Đây là điều khiến chúng tôi kinh ngạc: PayPal đã có tính năng thanh toán đăng ký từ năm 2014, nhưng họ chưa bao giờ cung cấp cách để các thương nhân liệt kê các đăng ký của chính họ.
+PayPal đã có tính năng thanh toán đăng ký từ năm 2014, nhưng họ chưa bao giờ cung cấp cách để các thương nhân liệt kê các đăng ký của chính họ.
 
 Hãy nghĩ về điều đó một chút. Bạn có thể tạo đăng ký, bạn có thể hủy chúng nếu bạn có ID, nhưng bạn không thể lấy danh sách tất cả các đăng ký đang hoạt động cho tài khoản của mình. Nó giống như có một cơ sở dữ liệu mà không có câu lệnh SELECT.
 
@@ -96,7 +96,7 @@ Chúng tôi cần điều này cho các hoạt động kinh doanh cơ bản:
 * Quản lý thanh toán tự động
 * Tuân thủ và kiểm toán
 
-Nhưng PayPal? Họ chỉ... chưa bao giờ xây dựng nó.
+PayPal chưa bao giờ xây dựng nó.
 
 
 ## 2014-2017: Vấn Đề Xuất Hiện {#2014-2017-the-problem-emerges}
@@ -163,7 +163,7 @@ vấn đề, tuyệt đối không có gì được sửa chữa.
 
 ## Cuộc Ra Đi Của Ban Lãnh Đạo: PayPal Đã Mất Toàn Bộ Bộ Nhớ Tổ Chức Như Thế Nào {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
 
-Đây là phần trở nên thực sự thú vị. Mọi người từng nhận phản hồi của chúng tôi năm 2020 đều đã rời PayPal:
+Mọi người từng nhận phản hồi của chúng tôi năm 2020 đều đã rời PayPal:
 
 **Thay Đổi Lãnh Đạo:**
 
@@ -178,7 +178,7 @@ vấn đề, tuyệt đối không có gì được sửa chữa.
 
 PayPal đã trở thành một cánh cửa quay nơi các giám đốc thu thập phản hồi từ nhà phát triển, đưa ra lời hứa, rồi rời đi đến các công ty tốt hơn như JPMorgan, Ripple và các công ty fintech khác.
 
-Điều này giải thích tại sao phản hồi về vấn đề GitHub năm 2025 dường như hoàn toàn không liên quan đến phản hồi của chúng tôi từ năm 2020 - thực sự mọi người nhận được phản hồi đó đều đã rời PayPal.
+Điều này giải thích tại sao phản hồi về vấn đề GitHub năm 2025 dường như hoàn toàn không liên quan đến phản hồi của chúng tôi từ năm 2020: mọi người nhận được phản hồi đó đều đã rời PayPal.
 
 
 ## 2025: Lãnh Đạo Mới, Vấn Đề Cũ {#2025-new-leadership-same-problems}
@@ -226,7 +226,7 @@ Khi chúng tôi chỉ ra đây là chức năng CRUD cơ bản lẽ ra phải c�
 
 > Các thao tác CRUD đơn giản là một phần của API cốt lõi bạn tôi ạ, nên sẽ không mất nhiều tháng phát triển
 
-SDK TypeScript của PayPal, hiện chỉ hỗ trợ ba endpoint sau nhiều tháng phát triển, cùng với dòng thời gian lịch sử của nó, rõ ràng cho thấy các dự án như vậy cần nhiều hơn vài tháng để hoàn thành.
+SDK TypeScript của PayPal, hiện chỉ hỗ trợ ba endpoint sau nhiều tháng phát triển, cùng với dòng thời gian lịch sử của nó, cho thấy các dự án như vậy cần nhiều hơn vài tháng để hoàn thành.
 Phản hồi này cho thấy anh ta không hiểu API của chính mình. Nếu "các thao tác CRUD đơn giản là một phần của API cốt lõi," thì điểm cuối danh sách đăng ký ở đâu? Chúng tôi đã trả lời:
 
 > Nếu 'các thao tác CRUD đơn giản là một phần của API cốt lõi' thì điểm cuối danh sách đăng ký ở đâu? Các nhà phát triển đã yêu cầu 'thao tác CRUD đơn giản' này từ năm 2014. Đã 11 năm rồi. Mọi bộ xử lý thanh toán khác đều có chức năng cơ bản này từ ngày đầu tiên.
@@ -238,14 +238,14 @@ Các trao đổi năm 2025 với Alex Chriss, Michelle Gill và Marty Brodbeck c
 1. **Lãnh đạo mới không biết về các phiên phản hồi trước đó**
 2. **Họ đề xuất các giải pháp quá phức tạp giống nhau**
 3. **Họ không hiểu các giới hạn của chính API của họ**
-4. **Họ muốn nhiều cuộc họp hơn thay vì chỉ sửa vấn đề**
+4. **Họ muốn nhiều cuộc họp hơn thay vì sửa vấn đề**
 
 Mô hình này giải thích tại sao các nhóm PayPal năm 2025 dường như hoàn toàn mất kết nối với các phản hồi rộng rãi được cung cấp vào năm 2020 - những người nhận phản hồi đó đã rời đi, và lãnh đạo mới đang lặp lại những sai lầm tương tự.
 
 
 ## Nhiều Năm Báo Cáo Lỗi Họ Phớt Lờ {#years-of-bug-reports-they-ignored}
 
-Chúng tôi không chỉ phàn nàn về các tính năng thiếu sót. Chúng tôi đã chủ động báo cáo lỗi và cố gắng giúp họ cải thiện. Dưới đây là dòng thời gian toàn diện các vấn đề chúng tôi đã ghi nhận:
+Chúng tôi cũng đã báo cáo lỗi và cố gắng giúp họ cải thiện. Dòng thời gian này liệt kê các vấn đề chúng tôi đã ghi nhận:
 
 ### 2016: Phàn Nàn Sớm Về UI/UX {#2016-early-uiux-complaints}
 
@@ -259,11 +259,11 @@ Mark Stuart đã thừa nhận vấn đề:
 
 > Cảm ơn Nick! Đang chuyển sang BCC. @Prasy, đội của bạn có chịu trách nhiệm email này không hoặc biết ai chịu trách nhiệm? "Niftylettuce, LLC, chúng tôi sẽ không còn tính phí bạn nữa" khiến tôi nghĩ có sự nhầm lẫn về người nhận và nội dung email.
 
-**Kết quả**: Họ thực sự đã sửa lỗi này! Mark Stuart xác nhận:
+**Kết quả**: Họ đã sửa lỗi này. Mark Stuart xác nhận:
 
 > Vừa nhận được thông tin từ đội thông báo rằng mẫu email đã được sửa và triển khai. Cảm ơn bạn đã liên hệ báo cáo. Xin cảm ơn!
 
-Điều này cho thấy họ CÓ THỂ sửa lỗi khi họ muốn - họ chỉ chọn không làm vậy với hầu hết các vấn đề khác.
+Điều này cho thấy họ CÓ THỂ sửa lỗi khi họ muốn; họ chọn không làm vậy với hầu hết các vấn đề khác.
 
 ### 2021: Gợi Ý Cải Thiện Giao Diện {#2021-ui-improvement-suggestions}
 
@@ -336,7 +336,7 @@ Làm việc với API của PayPal giống như quay ngược thời gian 10 nă
 
 ### Giao Diện Người Dùng Bị Hỏng {#broken-user-interface}
 
-Bảng điều khiển nhà phát triển PayPal là một thảm họa. Đây là những gì chúng tôi phải đối mặt hàng ngày:
+Bảng điều khiển nhà phát triển PayPal là một thảm họa. Chúng tôi phải đối mặt với những vấn đề này hàng ngày:
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
@@ -350,7 +350,7 @@ Bảng điều khiển nhà phát triển PayPal là một thảm họa. Đây l
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
-  Bảng điều khiển nhà phát triển thực sự bắt bạn kéo thanh trượt rồi đăng xuất bạn sau 60 giây
+  Bảng điều khiển nhà phát triển bắt bạn kéo thanh trượt rồi đăng xuất bạn sau 60 giây
   </div></figcaption>
   <video class="lazyframe-bordered" loading="lazy" controls>
     <source src="/img/articles/pypl-kapture-1.mp4" type="video/mp4">
@@ -477,7 +477,7 @@ Mặc dù có tất cả những vấn đề này, chúng ta không thể hoàn 
 
 Vì PayPal không cung cấp chức năng liệt kê đăng ký cơ bản, cộng đồng nhà phát triển đã xây dựng các giải pháp thay thế. Chúng tôi đã tạo một script giúp quản lý các đăng ký PayPal: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-Script này tham chiếu đến một [gist cộng đồng](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) nơi các nhà phát triển chia sẻ giải pháp. Người dùng thực sự đang [cảm ơn chúng tôi](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) vì đã cung cấp những gì PayPal đáng lẽ phải xây dựng từ nhiều năm trước.
+Script này tham chiếu đến một [gist cộng đồng](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) nơi các nhà phát triển chia sẻ giải pháp. Người dùng đang [cảm ơn chúng tôi](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) vì đã cung cấp những gì PayPal đáng lẽ phải xây dựng từ nhiều năm trước.
 
 
 ## Chặn Mẫu Email PayPal Do Lừa Đảo {#blocking-paypal-templates-due-to-phishing}
@@ -490,7 +490,7 @@ Chúng tôi thường xuyên nhận được báo cáo về các email PayPal tr
 
 **Chủ đề:** `[Sandbox] TEST - Hóa đơn mới từ PaypalBilling434567 sandbox #A4D369E8-0001`
 
-Email này đã được chuyển tiếp đến `abuse@microsoft.com` vì nó có vẻ là một nỗ lực lừa đảo. Vấn đề? Thực ra nó đến từ môi trường sandbox của PayPal, nhưng thiết kế mẫu của họ kém đến mức kích hoạt hệ thống phát hiện lừa đảo.
+Email này đã được chuyển tiếp đến `abuse@microsoft.com` vì nó có vẻ là một nỗ lực lừa đảo. Nó đến từ môi trường sandbox của PayPal, nhưng thiết kế mẫu của họ kém đến mức kích hoạt hệ thống phát hiện lừa đảo.
 
 ### Triển Khai Của Chúng Tôi {#our-implementation}
 
@@ -561,7 +561,7 @@ Vấn đề không chỉ nằm ở thiết kế mẫu kém. Hệ thống hóa đ
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
-  Ảnh chụp màn hình cho thấy nhiều hóa đơn PayPal giả mạo tràn vào hộp thư, tất cả đều trông hợp pháp vì thực sự đến từ hệ thống của PayPal
+  Ảnh chụp màn hình cho thấy nhiều hóa đơn PayPal giả mạo tràn vào hộp thư, tất cả đều trông hợp pháp vì đến từ hệ thống của PayPal
   </div></figcaption>
   <!-- <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="Ảnh cảnh báo lừa đảo PayPal" class="rounded-lg" /> -->
 </figure>
@@ -625,11 +625,11 @@ Quy trình ngược này là biểu hiện của các vấn đề tổ chức r�
 
 ## Cách Mọi Bộ Xử Lý Thanh Toán Khác Làm Đúng {#how-every-other-payment-processor-does-it-right}
 
-Chức năng liệt kê đăng ký mà PayPal từ chối triển khai đã là tiêu chuẩn trong ngành hơn một thập kỷ. Đây là cách các bộ xử lý thanh toán khác xử lý yêu cầu cơ bản này:
+Chức năng liệt kê đăng ký mà PayPal từ chối triển khai đã là tiêu chuẩn trong ngành hơn một thập kỷ. Các bộ xử lý thanh toán khác xử lý yêu cầu cơ bản này:
 
 ### Stripe {#stripe}
 
-Stripe đã có chức năng liệt kê đăng ký kể từ khi API của họ ra mắt. Tài liệu của họ rõ ràng cho thấy cách lấy tất cả các đăng ký cho một khách hàng hoặc tài khoản người bán. Đây được coi là chức năng CRUD cơ bản.
+Stripe đã có chức năng liệt kê đăng ký kể từ khi API của họ ra mắt. Tài liệu của họ cho thấy cách lấy tất cả các đăng ký cho một khách hàng hoặc tài khoản người bán. Đây được coi là chức năng CRUD cơ bản.
 
 ### Paddle {#paddle}
 
@@ -745,7 +745,7 @@ Việc đóng diễn đàn là nỗ lực táo bạo nhất cho đến nay nhằ
 
 ## Thảm Họa Lỗi Capture Kéo Dài 11 Năm: $1,899 và Còn Tăng {#the-11-year-capture-bug-disaster-1899-and-counting}
 
-Trong khi PayPal bận tổ chức các phiên phản hồi và đưa ra lời hứa, hệ thống xử lý thanh toán cốt lõi của họ đã bị hỏng cơ bản hơn 11 năm. Bằng chứng thật thảm khốc.
+Trong khi PayPal bận tổ chức các phiên phản hồi và đưa ra lời hứa, hệ thống xử lý thanh toán cốt lõi của họ đã bị hỏng hơn 11 năm.
 
 ### Mất Mát $1,899 của Forward Email {#forward-emails-1899-loss}
 
@@ -757,11 +757,11 @@ Trong hệ thống sản xuất của chúng tôi, chúng tôi phát hiện 108 
 
 Không thể xác định liệu khách hàng có bị tính phí hay không vì PayPal hoàn toàn ẩn nhật ký gỡ lỗi sau 14 ngày và xóa tất cả dữ liệu từ bảng điều khiển cho các ID đơn hàng không được capture.
 
-Điều này chỉ đại diện cho một doanh nghiệp. **Tổng thiệt hại của hàng ngàn thương nhân trong hơn 11 năm có thể lên đến hàng triệu đô la.**
+Đây là một doanh nghiệp. **Tổng thiệt hại của hàng ngàn thương nhân trong hơn 11 năm có thể lên đến hàng triệu đô la.**
 
 **Chúng tôi sẽ nói lại: tổng thiệt hại của hàng ngàn thương nhân trong hơn 11 năm có thể lên đến hàng triệu đô la.**
 
-Lý do duy nhất chúng tôi phát hiện ra điều này là vì chúng tôi cực kỳ tỉ mỉ và dựa trên dữ liệu.
+Lý do duy nhất chúng tôi phát hiện ra điều này là vì chúng tôi tỉ mỉ và dựa trên dữ liệu.
 
 ### Báo Cáo Gốc Năm 2013: Hơn 11 Năm Bỏ Qua {#the-2013-original-report-11-years-of-negligence}
 
@@ -812,7 +812,7 @@ Ngay cả sau khi "sửa" lỗi, các thương nhân vẫn báo cáo:
 
 ### Tình trạng leo thang năm 2024: Vẫn Bị Hỏng {#the-2024-escalation-still-broken}
 
-Các báo cáo gần đây từ cộng đồng PayPal được lưu giữ cho thấy vấn đề thực sự đã trở nên tồi tệ hơn. Một [thảo luận tháng 9 năm 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([lưu trữ](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) ghi lại chính xác các vấn đề tương tự:
+Các báo cáo gần đây từ cộng đồng PayPal được lưu giữ cho thấy vấn đề đã trở nên tồi tệ hơn. Một [thảo luận tháng 9 năm 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([lưu trữ](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) ghi lại chính xác các vấn đề tương tự:
 
 > "Vấn đề chỉ bắt đầu xuất hiện khoảng 2 tuần trước và không ảnh hưởng đến tất cả các đơn hàng. **Lỗi phổ biến hơn dường như là 404 khi capture.**"
 
@@ -822,7 +822,7 @@ Thương nhân mô tả cùng một mô hình mà Forward Email đã trải qua:
 
 ### Thảm Họa Độ Tin Cậy của Webhook {#the-webhook-reliability-disaster}
 
-Một [thảo luận cộng đồng được lưu giữ khác](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) tiết lộ hệ thống webhook của PayPal về cơ bản là không đáng tin cậy:
+Một [thảo luận cộng đồng được lưu giữ khác](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) tiết lộ hệ thống webhook của PayPal không đáng tin cậy:
 
 > "Về lý thuyết, nó nên có hai sự kiện (CHECKOUT.ORDER.APPROVED và PAYMENT.CAPTURE.COMPLETED) từ sự kiện Webhook. Thực tế, **hai sự kiện đó hiếm khi được nhận ngay lập tức, PAYMENT.CAPTURE.COMPLETED thường không được nhận hoặc phải chờ vài giờ.**"
 
@@ -832,7 +832,7 @@ Một [thảo luận cộng đồng được lưu giữ khác](https://ppl.lithi
 
 Các câu hỏi của thương nhân cho thấy mức độ nghiêm trọng của vấn đề độ tin cậy PayPal:
 
-1. **"Tại sao điều này xảy ra?"** - Hệ thống webhook của PayPal về cơ bản bị hỏng
+1. **"Tại sao điều này xảy ra?"** - Hệ thống webhook của PayPal bị hỏng
 2. **"Nếu trạng thái đơn hàng là 'COMPLETED', tôi có thể coi là đã nhận được tiền không?"** - Thương nhân không thể tin tưởng phản hồi API của PayPal
 3. **"Tại sao 'Event Logs->Webhook Events' không tìm thấy bất kỳ bản ghi nào?"** - Ngay cả hệ thống ghi nhật ký của PayPal cũng không hoạt động
 
@@ -867,13 +867,13 @@ Trong tài liệu chính thức của PayPal không hề đề cập rằng các
 
 ## Mô hình lừa dối rộng hơn của PayPal {#paypals-broader-pattern-of-deception}
 
-Thảm họa lỗi capture chỉ là một ví dụ trong cách tiếp cận có hệ thống của PayPal nhằm lừa dối khách hàng và che giấu thất bại của họ.
+Thảm họa lỗi capture là một ví dụ trong cách tiếp cận có hệ thống của PayPal nhằm lừa dối khách hàng và che giấu thất bại của họ.
 
 ### Hành động của Sở Dịch vụ Tài chính New York {#the-new-york-department-of-financial-services-action}
 
 Vào tháng 1 năm 2025, Sở Dịch vụ Tài chính New York đã ban hành một [hành động cưỡng chế đối với PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) vì các hành vi lừa dối, cho thấy mô hình lừa dối của PayPal không chỉ giới hạn ở API của họ.
 
-Hành động quản lý này cho thấy PayPal sẵn sàng tham gia vào các hành vi lừa dối trên toàn bộ hoạt động kinh doanh của họ, không chỉ riêng các công cụ dành cho nhà phát triển.
+Hành động quản lý này cho thấy PayPal sẵn sàng tham gia vào các hành vi lừa dối trên toàn bộ hoạt động kinh doanh của họ, vượt ra ngoài các công cụ dành cho nhà phát triển.
 
 ### Vụ kiện Honey: Viết lại liên kết tiếp thị {#the-honey-lawsuit-rewriting-affiliate-links}
 
@@ -888,7 +888,7 @@ Mô hình rõ ràng:
 
 ### Chi phí của sự cẩu thả của PayPal {#the-cost-of-paypals-negligence}
 
-Mức thiệt hại 1.899 đô la của Forward Email chỉ là phần nổi của tảng băng chìm. Hãy xem xét tác động rộng hơn:
+Mức thiệt hại 1.899 đô la của Forward Email chỉ là một phần nhỏ trong tổng thiệt hại. Hãy xem xét tác động rộng hơn:
 
 * **Thương nhân cá nhân**: Hàng ngàn người mất hàng trăm đến hàng nghìn đô la mỗi người
 * **Khách hàng doanh nghiệp**: Có thể mất hàng triệu đô la doanh thu
@@ -911,7 +911,7 @@ Việc bỏ sót có hệ thống các thông tin quan trọng này buộc thư�
 
 ## Điều này có ý nghĩa gì với nhà phát triển {#what-this-means-for-developers}
 
-Việc PayPal liên tục thất bại trong việc đáp ứng các nhu cầu cơ bản của nhà phát triển trong khi thu thập phản hồi rộng rãi cho thấy một vấn đề tổ chức căn bản. Họ coi việc thu thập phản hồi như một sự thay thế cho việc thực sự sửa lỗi.
+Việc PayPal liên tục thất bại trong việc đáp ứng các nhu cầu cơ bản của nhà phát triển trong khi thu thập phản hồi rộng rãi cho thấy một vấn đề tổ chức: họ coi việc thu thập phản hồi như một sự thay thế cho việc sửa lỗi.
 Mô hình rất rõ ràng:
 
 1. Các nhà phát triển báo cáo các vấn đề
@@ -923,7 +923,7 @@ Mô hình rất rõ ràng:
 7. Các nhóm mới yêu cầu cùng một phản hồi
 8. Chu trình lặp lại
 
-Trong khi đó, các nhà phát triển buộc phải xây dựng các giải pháp tạm thời, thỏa hiệp về bảo mật và xử lý các giao diện người dùng bị hỏng chỉ để chấp nhận thanh toán.
+Trong khi đó, các nhà phát triển buộc phải xây dựng các giải pháp tạm thời, thỏa hiệp về bảo mật và xử lý các giao diện người dùng bị hỏng để chấp nhận thanh toán.
 
 Nếu bạn đang xây dựng một hệ thống thanh toán, hãy học hỏi từ kinh nghiệm của chúng tôi: xây dựng [phương pháp ba mũi nhọn của bạn](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) với nhiều bộ xử lý, nhưng đừng mong PayPal cung cấp các chức năng cơ bản bạn cần. Hãy lên kế hoạch xây dựng các giải pháp tạm thời ngay từ ngày đầu tiên.
 

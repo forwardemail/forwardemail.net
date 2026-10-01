@@ -32,7 +32,7 @@
 
 ## Előszó {#foreword}
 
-A Forward Email-nél a biztonság a legfontosabb számunkra. Átfogó biztonsági intézkedéseket vezettünk be, hogy megvédjük e-mail kommunikációdat és személyes adataidat. Ez a dokumentum ismerteti biztonsági gyakorlatainkat és azokat a lépéseket, amelyeket a leveleid titkosságának, sértetlenségének és rendelkezésre állásának biztosítása érdekében teszünk.
+A Forward Email-nél a biztonság a legfontosabb számunkra. Ez a dokumentum ismerteti azokat a gyakorlatokat, amelyekkel megvédjük e-mail kommunikációdat és személyes adataidat, és megőrizzük leveleid titkosságát, sértetlenségét és rendelkezésre állását.
 
 
 ## Infrastruktúra Biztonság {#infrastructure-security}
@@ -110,7 +110,7 @@ Az adatminimalizálás elvét követjük:
 
 ## Szolgáltatók {#service-providers}
 
-Gondosan választjuk ki szolgáltatóinkat, hogy megfeleljenek magas biztonsági követelményeinknek. Az alábbiakban a nemzetközi adatátvitelhez használt szolgáltatóink és GDPR megfelelőségi státuszuk található:
+Olyan szolgáltatókat választunk, amelyek megfelelnek biztonsági követelményeinknek. Az alábbiakban a nemzetközi adatátvitelhez használt szolgáltatóink és GDPR megfelelőségi státuszuk található:
 
 | Szolgáltató                                   | Cél                        | DPF Tanúsított | GDPR Megfelelőségi oldal                                                                                 |
 | --------------------------------------------- | -------------------------- | -------------- | ------------------------------------------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ Ezeket a szolgáltatókat használjuk a megbízható, biztonságos szolgáltatá
 
 ### Rendszeres biztonsági értékelések {#regular-security-assessments}
 
-Csapatunk rendszeresen figyelemmel kíséri, felülvizsgálja és értékeli a kódbázist, szervereket, infrastruktúrát és gyakorlatokat. Átfogó biztonsági programot valósítunk meg, amely magában foglalja:
+Csapatunk rendszeresen figyelemmel kíséri, felülvizsgálja és értékeli a kódbázist, szervereket, infrastruktúrát és gyakorlatokat. Biztonsági programunk magában foglalja:
 
 * SSH kulcsok rendszeres cseréje
 * Hozzáférési naplók folyamatos figyelése
@@ -209,7 +209,7 @@ A mi [Ansible konfigurációnk](https://github.com/forwardemail/forwardemail.net
 
 ## Szolgáltatási szint megállapodás {#service-level-agreement}
 
-Magas szintű szolgáltatás elérhetőséget és megbízhatóságot tartunk fenn. Infrastruktúránk redundanciára és hibabiztosságra van tervezve, hogy az e-mail szolgáltatásod folyamatosan működjön. Bár nem teszünk közzé hivatalos SLA dokumentumot, elkötelezettek vagyunk a következők iránt:
+Infrastruktúránkat redundanciára és hibabiztosságra tervezzük, hogy az e-mail szolgáltatásod elérhető maradjon. Bár nem teszünk közzé hivatalos SLA dokumentumot, elkötelezettek vagyunk a következők iránt:
 
 * 99,9%+ rendelkezésre állás minden szolgáltatás esetén
 * Gyors reagálás szolgáltatáskimaradások esetén
@@ -237,7 +237,7 @@ Mint egy [nyílt forráskódú szolgáltatás](https://github.com/forwardemail/f
 
 ## Folyamatos fejlesztés {#continuous-improvement}
 
-Folyamatosan javítjuk biztonsági helyzetünket a következők révén:
+Biztonságunkat a következők révén javítjuk:
 
 * Biztonsági trendek és új fenyegetések figyelése
 * Biztonsági irányelvek rendszeres felülvizsgálata és frissítése

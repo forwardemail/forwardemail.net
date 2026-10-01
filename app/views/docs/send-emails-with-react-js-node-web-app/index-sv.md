@@ -39,7 +39,7 @@ export function Email(props) {
 
 I detta exempel använder vi **[Nodemailer](https://github.com/nodemailer/nodemailer)**-biblioteket och dess officiella sponsor **[Forward Email](https://forwardemail.net)** för att skicka och förhandsgranska utgående e-post.
 
-Du behöver <strong class="text-success"><i class="fa fa-key"></i> generera lösenord</strong> för att skicka utgående e-post – följ gärna vår **[Skicka e-post med anpassad domän SMTP-guide](/guides/send-email-with-custom-domain-smtp)**.
+Du behöver <strong class="text-success"><i class="fa fa-key"></i> generera lösenord</strong> för att skicka utgående e-post. Följ gärna vår **[Skicka e-post med anpassad domän SMTP-guide](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

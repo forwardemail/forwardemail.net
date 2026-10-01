@@ -252,7 +252,7 @@ sequenceDiagram
 > \[!NOTE]
 > Forward Email 支持 IMAP4rev1 (RFC 3501)，并部分支持 IMAP4rev2 (RFC 9051) 功能。
 
-Forward Email 通过 WildDuck 邮件服务器实现提供了强大的 IMAP4 支持。该服务器实现了 IMAP4rev1 (RFC 3501)，并部分支持 IMAP4rev2 (RFC 9051) 扩展。
+Forward Email 通过 WildDuck 邮件服务器实现提供了 IMAP4 支持。该服务器实现了 IMAP4rev1 (RFC 3501)，并部分支持 IMAP4rev2 (RFC 9051) 扩展。
 
 Forward Email 的 IMAP 功能由 [WildDuck](https://github.com/nodemailer/wildduck) 依赖提供。支持以下电子邮件 RFC：
 
@@ -604,7 +604,7 @@ Forward Email 使用 [mailauth](https://github.com/postalsys/mailauth) 库进行
 | [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | 基于域的消息认证、报告和一致性 (DMARC)                                 | DMARC 策略执行                                                 |
 | [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | 认证接收链 (ARC)                                                       | ARC 封装和验证                                                 |
 
-邮件认证协议验证消息确实来自声明的发送者，且在传输过程中未被篡改。
+邮件认证协议验证消息来自声明的发送者，且在传输过程中未被篡改。
 
 ### 认证协议支持 {#authentication-protocol-support}
 
@@ -839,7 +839,7 @@ Forward Email 支持 OpenPGP 和 S/MIME 加密：
 1. 在邮件客户端生成 PGP 密钥对
 2. 将公钥上传至 Forward Email 的 WKD
 3. 你的密钥可被其他用户自动发现
-4. 无缝发送和接收加密邮件
+4. 发送和接收加密邮件
 
 ### S/MIME（安全/多用途互联网邮件扩展）{#smime-securemultipurpose-internet-mail-extensions}
 
@@ -2457,7 +2457,7 @@ IMPLEMENTATION Cyrus
 > \[!NOTE]
 > 测试结果中的重要观察和限制。
 
-1. **Fastmail 超时**：测试过程中 Fastmail 连接超时，可能是由于测试服务器 IP 的速率限制或防火墙限制。根据其文档，Fastmail 在 IMAP/POP3/SMTP 支持方面表现强大。
+1. **Fastmail 超时**：测试过程中 Fastmail 连接超时，可能是由于测试服务器 IP 的速率限制或防火墙限制。Fastmail 的文档记载了对 IMAP/POP3/SMTP 的完整支持。
 
 2. **POP3 CAPA 响应**：多个提供商（Gmail、Outlook.com、Forward Email）在未认证时未返回 CAPA 响应。这是 POP3 服务器常见的安全措施。
 

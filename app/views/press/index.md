@@ -19,11 +19,11 @@
 
 Forward Email is the only 100% open-source email hosting service focused on security and privacy.  Learn more about our history on [our About page](/about).
 
-Our service was founded in 2017 and powers email for over 1.6+ million domains – including notable users such as [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [several universities](/blog/docs/alumni-email-forwarding-university-case-study) and governments, and more.
+Our service was founded in 2017 and powers email for over 1.6+ million domains, including notable users such as [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [several universities](/blog/docs/alumni-email-forwarding-university-case-study) and governments, and more.
 
-Our goal is to be the enterprise-grade email and security infrastructure platform – and we adhere to [several principles](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Our goal is to be the enterprise-grade email and security infrastructure platform, and we adhere to [several principles](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-If you are a member of the press, a journalist, or a media representative and would like to speak with us, ask questions, or learn more – then please contact us at `press@forwardemail.net`.
+If you are a member of the press, a journalist, or a media representative and would like to speak with us, ask questions, or learn more, please contact us at `press@forwardemail.net`.
 
 
 ## Key Facts & Statistics

@@ -43,7 +43,7 @@
 
 ## Overview
 
-This guide provides step-by-step instructions for installing Forward Email's self-hosted solution on Ubuntu systems. This guide is specifically tailored for Ubuntu 20.04, 22.04, and 24.04 LTS versions.
+This guide covers installing Forward Email's self-hosted solution on Ubuntu 20.04, 22.04, and 24.04 LTS, step by step.
 
 
 ## Prerequisites
@@ -341,7 +341,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Important**: When prompted, you'll need to create TXT records in your DNS. You may see multiple challenges for the same domain - **create ALL of them**. Do not remove the first TXT record when adding the second one.
+**Important**: When prompted, you'll need to create TXT records in your DNS. You may see multiple challenges for the same domain: **create ALL of them**. Do not remove the first TXT record when adding the second one.
 
 #### Option B: Cloudflare DNS (If you use Cloudflare)
 

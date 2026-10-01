@@ -23,7 +23,7 @@ block body
       .fe-container.fe-body__inner
         .fe-panel.fe-panel--md.fe-callout
           i.fa.fa-lightbulb(aria-hidden="true")
-          div!= t('<strong>Did you know?</strong> You can use your own custom domain name as a disposable email address.  Just <a href="/my-account/domains/new" class="alert-link">add a new domain</a> today to get started.')
+          div!= t('<strong>Did you know?</strong> You can use your own custom domain name as a disposable email address.  <a href="/my-account/domains/new" class="alert-link">Add a new domain</a> today to get started.')
         h2#fe-disposable-list-title.fe-display-sm.fe-body__title= t("Short and Memorable Vanity Domains")
         ol.fe-vanity
           each vanityDomain in config.vanityDomains

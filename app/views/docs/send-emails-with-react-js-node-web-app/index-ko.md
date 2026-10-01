@@ -39,7 +39,7 @@ export function Email(props) {
 
 이 예제에서는 **[Nodemailer](https://github.com/nodemailer/nodemailer)** 라이브러리와 공식 후원사인 **[Forward Email](https://forwardemail.net)** 을 사용하여 발신 메일을 보내고 미리보기 합니다.
 
-발신 메일을 보내려면 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>이 필요합니다 – **[사용자 도메인 SMTP로 이메일 보내기 가이드](/guides/send-email-with-custom-domain-smtp)** 를 따라주세요.
+발신 메일을 보내려면 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>이 필요합니다. **[사용자 도메인 SMTP로 이메일 보내기 가이드](/guides/send-email-with-custom-domain-smtp)** 를 따라주세요.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

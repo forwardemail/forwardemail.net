@@ -43,7 +43,7 @@
 
 ## 개요 {#overview}
 
-이 가이드는 Ubuntu 시스템에서 Forward Email의 셀프 호스팅 솔루션을 설치하는 단계별 지침을 제공합니다. 이 가이드는 특히 Ubuntu 20.04, 22.04, 24.04 LTS 버전에 맞춰져 있습니다.
+이 가이드는 Ubuntu 20.04, 22.04, 24.04 LTS에 Forward Email의 셀프 호스팅 솔루션을 설치하는 방법을 단계별로 다룹니다.
 
 
 ## 사전 준비 사항 {#prerequisites}
@@ -339,7 +339,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**중요**: 요청 시 DNS에 TXT 레코드를 생성해야 합니다. 동일 도메인에 대해 여러 챌린지가 표시될 수 있으니 - **모두 생성하세요**. 두 번째 TXT 레코드를 추가할 때 첫 번째 TXT 레코드를 제거하지 마세요.
+**중요**: 요청 시 DNS에 TXT 레코드를 생성해야 합니다. 동일 도메인에 대해 여러 챌린지가 표시될 수 있으니 **모두 생성하세요**. 두 번째 TXT 레코드를 추가할 때 첫 번째 TXT 레코드를 제거하지 마세요.
 
 #### 옵션 B: Cloudflare DNS (Cloudflare를 사용하는 경우) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 

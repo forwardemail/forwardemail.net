@@ -29,14 +29,14 @@
 
 ## Lời Nói Đầu {#foreword}
 
-Trong thời đại mà mối quan tâm về quyền riêng tư kỹ thuật số đang ở mức cao nhất từ trước đến nay, dịch vụ email mà chúng ta chọn càng trở nên quan trọng hơn bao giờ hết. Trong khi nhiều nhà cung cấp tuyên bố ưu tiên quyền riêng tư của bạn, có một sự khác biệt cơ bản giữa những người chỉ nói về quyền riêng tư và những người thực sự hành động. Tại Forward Email, chúng tôi xây dựng dịch vụ của mình trên nền tảng minh bạch hoàn toàn thông qua phát triển mã nguồn mở — không chỉ trong các ứng dụng frontend mà còn trong toàn bộ hạ tầng của chúng tôi.
+Nhiều nhà cung cấp email tuyên bố ưu tiên quyền riêng tư của bạn, nhưng ít ai cho phép bạn kiểm chứng điều đó. Tại Forward Email, chúng tôi xây dựng dịch vụ của mình dựa trên phát triển mã nguồn mở trên toàn bộ hạ tầng, cả frontend và backend.
 
-Bài viết này khám phá lý do tại sao các giải pháp email mã nguồn mở vượt trội hơn các lựa chọn mã nguồn đóng, cách tiếp cận của chúng tôi khác biệt so với các đối thủ như Proton Mail và Tutanota, và tại sao — mặc dù cam kết hỗ trợ tùy chọn tự lưu trữ — dịch vụ trả phí của chúng tôi lại mang lại giá trị tốt nhất cho hầu hết người dùng.
+Bài viết này khám phá lý do tại sao các giải pháp email mã nguồn mở vượt trội hơn các lựa chọn mã nguồn đóng, cách tiếp cận của chúng tôi khác biệt so với các đối thủ như Proton Mail và Tutanota, và tại sao dịch vụ trả phí của chúng tôi mang lại giá trị tốt nhất cho hầu hết người dùng, dù bạn có thể tự lưu trữ.
 
 
 ## Lợi Thế Mã Nguồn Mở: Không Chỉ Là Chiêu Thị Trường {#the-open-source-advantage-more-than-just-marketing}
 
-Thuật ngữ "mã nguồn mở" đã trở thành một từ khóa tiếp thị phổ biến trong những năm gần đây, với thị trường dịch vụ mã nguồn mở toàn cầu dự kiến tăng trưởng với tốc độ CAGR trên 16% từ 2024 đến 2032\[^1]. Nhưng thực sự thì mã nguồn mở có nghĩa là gì, và tại sao nó lại quan trọng đối với quyền riêng tư email của bạn?
+Thuật ngữ "mã nguồn mở" đã trở thành một từ khóa tiếp thị phổ biến trong những năm gần đây, với thị trường dịch vụ mã nguồn mở toàn cầu dự kiến tăng trưởng với tốc độ CAGR trên 16% từ 2024 đến 2032\[^1].
 
 ### Mã Nguồn Mở Thực Sự Có Nghĩa Là Gì {#what-true-open-source-means}
 
@@ -47,35 +47,35 @@ Phần mềm mã nguồn mở cung cấp toàn bộ mã nguồn của nó miễn
 * Người dùng không bị khóa vào các hệ sinh thái độc quyền
 * Đổi mới diễn ra nhanh hơn thông qua sự cải tiến hợp tác
 
-Khi nói đến email — xương sống của danh tính trực tuyến của bạn — sự minh bạch này không chỉ là điều tốt đẹp để có; nó là điều thiết yếu cho quyền riêng tư và bảo mật thực sự.
+Email là xương sống của danh tính trực tuyến của bạn, vì vậy sự minh bạch này là điều thiết yếu cho quyền riêng tư và bảo mật.
 
 ### Vấn Đề Phía Backend: Nơi Hầu Hết Các Dịch Vụ Email "Mã Nguồn Mở" Thất Bại {#the-backend-problem-where-most-open-source-email-services-fall-short}
 
-Đây là phần thú vị. Nhiều nhà cung cấp email "tập trung vào quyền riêng tư" phổ biến quảng cáo mình là mã nguồn mở, nhưng có một sự khác biệt quan trọng mà họ hy vọng bạn sẽ không nhận ra: **họ chỉ mở mã nguồn frontend trong khi giữ backend của họ đóng**.
-Điều này có ý nghĩa gì? Frontend là những gì bạn nhìn thấy và tương tác—giao diện web hoặc ứng dụng di động. Backend là nơi xử lý email thực sự diễn ra—nơi các tin nhắn của bạn được lưu trữ, mã hóa và truyền tải. Khi một nhà cung cấp giữ backend của họ là mã nguồn đóng:
+Nhiều nhà cung cấp email "tập trung vào quyền riêng tư" phổ biến quảng cáo mình là mã nguồn mở, nhưng có một sự khác biệt quan trọng mà họ hy vọng bạn sẽ không nhận ra: **họ chỉ mở mã nguồn frontend trong khi giữ backend của họ đóng**.
+Frontend là những gì bạn nhìn thấy và tương tác: giao diện web hoặc ứng dụng di động. Backend xử lý email của bạn: nó lưu trữ, mã hóa và truyền tải các tin nhắn của bạn. Khi một nhà cung cấp giữ backend của họ là mã nguồn đóng:
 
-1. Bạn không thể xác minh cách email của bạn thực sự được xử lý
+1. Bạn không thể xác minh cách họ xử lý email của bạn
 2. Bạn không thể xác nhận liệu các tuyên bố về quyền riêng tư của họ có hợp pháp hay không
 3. Bạn đang tin tưởng vào các tuyên bố tiếp thị thay vì mã có thể kiểm chứng
 4. Các lỗ hổng bảo mật có thể vẫn bị ẩn khỏi sự kiểm tra công khai
 
-Như các cuộc thảo luận trên diễn đàn Privacy Guides đã nêu bật, cả Proton Mail và Tutanota đều tuyên bố là mã nguồn mở, nhưng backend của họ vẫn đóng và độc quyền\[^2]. Điều này tạo ra một khoảng cách tin tưởng đáng kể—bạn được yêu cầu tin vào các lời hứa về quyền riêng tư của họ mà không có khả năng xác minh chúng.
+Như các cuộc thảo luận trên diễn đàn Privacy Guides đã nêu bật, cả Proton Mail và Tutanota đều tuyên bố là mã nguồn mở, nhưng backend của họ vẫn đóng và độc quyền\[^2]. Bạn được yêu cầu tin vào các lời hứa về quyền riêng tư của họ mà không có khả năng xác minh chúng.
 
 
 ## Forward Email: 100% Mã Nguồn Mở, Frontend VÀ Backend {#forward-email-100-open-source-frontend-and-backend}
 
-Tại Forward Email, chúng tôi đã áp dụng một cách tiếp cận hoàn toàn khác biệt. Toàn bộ mã nguồn của chúng tôi—cả frontend và backend—đều là mã nguồn mở và có sẵn cho bất kỳ ai kiểm tra tại <https://github.com/forwardemail/forwardemail.net>.
+Tại Forward Email, toàn bộ mã nguồn của chúng tôi (cả frontend và backend) đều là mã nguồn mở và có sẵn cho bất kỳ ai kiểm tra tại <https://github.com/forwardemail/forwardemail.net>.
 
 Điều này có nghĩa là:
 
 1. **Minh bạch hoàn toàn**: Mỗi dòng mã xử lý email của bạn đều có thể được kiểm tra công khai.
-2. **Quyền riêng tư có thể kiểm chứng**: Các tuyên bố về quyền riêng tư của chúng tôi không phải là lời quảng cáo—mà là sự thật có thể xác minh mà bất kỳ ai cũng có thể kiểm tra bằng cách xem mã nguồn của chúng tôi.
+2. **Quyền riêng tư có thể kiểm chứng**: Bất kỳ ai cũng có thể xác nhận các tuyên bố về quyền riêng tư của chúng tôi bằng cách xem mã nguồn của chúng tôi.
 3. **Bảo mật dựa trên cộng đồng**: Bảo mật của chúng tôi được củng cố bởi chuyên môn tập thể của cộng đồng nhà phát triển toàn cầu.
-4. **Không có chức năng ẩn**: Những gì bạn thấy là những gì bạn nhận được—không có theo dõi ẩn, không có cửa hậu bí mật.
+4. **Không có chức năng ẩn**: Mã được công bố chính là mã chúng tôi chạy, không có theo dõi ẩn hay cửa hậu bí mật.
 
 ### Cách Tiếp Cận Kỹ Thuật Độc Đáo Của Chúng Tôi {#our-unique-technical-approach}
 
-Cam kết của chúng tôi với quyền riêng tư không chỉ dừng lại ở việc mã nguồn mở. Chúng tôi đã triển khai một số đổi mới kỹ thuật giúp chúng tôi khác biệt:
+Ngoài việc công bố mã nguồn, chúng tôi đã xây dựng một số tính năng kỹ thuật giúp chúng tôi khác biệt:
 
 #### Hộp Thư SQLite Mã Hóa Riêng Biệt {#individually-encrypted-sqlite-mailboxes}
 
@@ -83,7 +83,7 @@ Không giống như các nhà cung cấp email truyền thống sử dụng cơ 
 
 * Mỗi hộp thư là một tệp mã hóa riêng biệt
 * Truy cập dữ liệu của một người dùng không đồng nghĩa với việc truy cập được dữ liệu của người khác
-* Ngay cả nhân viên của chúng tôi cũng không thể truy cập dữ liệu của bạn—đây là một quyết định thiết kế cốt lõi
+* Ngay cả nhân viên của chúng tôi cũng không thể truy cập dữ liệu của bạn, theo thiết kế
 
 Như chúng tôi đã giải thích trong các cuộc thảo luận trên Privacy Guides:
 
@@ -95,16 +95,16 @@ Trong khi các nhà cung cấp khác vẫn đang theo kịp, chúng tôi đã tr
 
 #### Không Phụ Thuộc Bên Thứ Ba {#no-third-party-dependencies}
 
-Không giống như các đối thủ dựa vào các dịch vụ như Amazon SES để gửi email, chúng tôi xây dựng toàn bộ hạ tầng của mình nội bộ. Điều này loại bỏ khả năng rò rỉ quyền riêng tư qua các dịch vụ bên thứ ba và cho phép chúng tôi kiểm soát hoàn toàn toàn bộ quy trình email.
+Một số đối thủ dựa vào các dịch vụ như Amazon SES để gửi email. Chúng tôi xây dựng toàn bộ hạ tầng của mình nội bộ. Điều này loại bỏ khả năng rò rỉ quyền riêng tư qua các dịch vụ bên thứ ba và cho phép chúng tôi kiểm soát hoàn toàn toàn bộ quy trình email.
 
 
 ## Tùy Chọn Tự Lưu Trữ: Tự Do Lựa Chọn {#the-self-hosting-option-freedom-of-choice}
 
-Một trong những điểm mạnh nhất của phần mềm mã nguồn mở là sự tự do mà nó mang lại. Với Forward Email, bạn không bao giờ bị ràng buộc—bạn có thể tự lưu trữ toàn bộ nền tảng của chúng tôi nếu bạn muốn.
+Phần mềm mã nguồn mở có nghĩa là bạn không bao giờ bị ràng buộc. Bạn có thể tự lưu trữ toàn bộ nền tảng Forward Email nếu bạn muốn.
 
 ### Tại Sao Chúng Tôi Hỗ Trợ Tự Lưu Trữ {#why-we-support-self-hosting}
 
-Chúng tôi tin tưởng vào việc trao quyền kiểm soát hoàn toàn dữ liệu cho người dùng. Đó là lý do tại sao chúng tôi đã làm cho toàn bộ nền tảng của mình có thể tự lưu trữ với tài liệu và hướng dẫn thiết lập đầy đủ. Cách tiếp cận này:
+Chúng tôi đã làm cho toàn bộ nền tảng của mình có thể tự lưu trữ, kèm tài liệu và hướng dẫn thiết lập, để bạn giữ quyền kiểm soát dữ liệu của mình. Cách tiếp cận này:
 
 * Cung cấp quyền kiểm soát tối đa cho người dùng có kỹ thuật
 * Loại bỏ mọi nhu cầu phải tin tưởng chúng tôi như một nhà cung cấp dịch vụ
@@ -112,7 +112,7 @@ Chúng tôi tin tưởng vào việc trao quyền kiểm soát hoàn toàn dữ 
 * Đảm bảo dịch vụ có thể tiếp tục ngay cả khi công ty chúng tôi không còn hoạt động nữa
 ### Thực Tế Về Việc Tự Lưu Trữ Email {#the-reality-of-self-hosting-email}
 
-Mặc dù tự lưu trữ là một lựa chọn mạnh mẽ, nhưng điều quan trọng là phải hiểu các chi phí thực sự liên quan:
+Tự lưu trữ có những chi phí thực sự:
 
 #### Chi Phí Tài Chính {#financial-costs}
 
@@ -139,11 +139,11 @@ Như một người tự lưu trữ có kinh nghiệm đã nói: "Email là mộ
 
 ## Tại Sao Dịch Vụ Trả Phí Của Chúng Tôi Có Ý Nghĩa (Mặc Dù Chúng Tôi Mã Nguồn Mở) {#why-our-paid-service-makes-sense-even-though-were-open-source}
 
-Trước những thách thức của việc tự lưu trữ, dịch vụ trả phí của chúng tôi mang lại sự kết hợp tốt nhất: sự minh bạch và bảo mật của mã nguồn mở cùng với sự tiện lợi và độ tin cậy của dịch vụ được quản lý.
+Dịch vụ trả phí của chúng tôi kết hợp sự minh bạch và bảo mật của mã nguồn mở với sự tiện lợi và độ tin cậy của dịch vụ được quản lý.
 
 ### So Sánh Chi Phí {#cost-comparison}
 
-Khi bạn tính cả chi phí tài chính và thời gian, dịch vụ trả phí của chúng tôi mang lại giá trị vượt trội:
+Khi bạn tính cả chi phí tài chính và thời gian, dịch vụ trả phí của chúng tôi tốn ít chi phí hơn:
 
 * **Tổng chi phí tự lưu trữ**: $56-$252/tháng (bao gồm chi phí máy chủ và định giá thời gian)
 * **Các gói trả phí của Forward Email**: $3-$9/tháng
@@ -168,11 +168,11 @@ Khi chọn Forward Email, bạn nhận được:
 
 ## Sự Lừa Dối Mã Nguồn Đóng: Những Gì Proton và Tutanota Không Nói Với Bạn {#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you}
 
-Hãy xem xét kỹ hơn cách tiếp cận của chúng tôi khác với các nhà cung cấp email "tập trung vào quyền riêng tư" phổ biến.
+Đây là cách tiếp cận của chúng tôi so với các nhà cung cấp email "tập trung vào quyền riêng tư" phổ biến.
 
 ### Các Tuyên Bố Mã Nguồn Mở Của Proton Mail {#proton-mails-open-source-claims}
 
-Proton Mail quảng cáo mình là mã nguồn mở, nhưng điều này chỉ áp dụng cho các ứng dụng frontend của họ. Backend của họ — nơi email của bạn thực sự được xử lý và lưu trữ — vẫn là mã nguồn đóng\[^7]. Điều này có nghĩa:
+Proton Mail quảng cáo mình là mã nguồn mở, nhưng điều này chỉ áp dụng cho các ứng dụng frontend của họ. Backend của họ, nơi xử lý và lưu trữ email của bạn, vẫn là mã nguồn đóng\[^7]. Điều này có nghĩa:
 
 * Bạn không thể xác minh cách email của bạn được xử lý
 * Bạn phải tin tưởng các tuyên bố về quyền riêng tư của họ mà không có sự xác minh
@@ -197,23 +197,23 @@ Những hạn chế này không bị cộng đồng quyền riêng tư bỏ qua.
 Chúng tôi cũng đã nói:
 
 > "Chưa có cuộc kiểm toán công khai nào được chia sẻ về bất kỳ hạ tầng backend của nhà cung cấp dịch vụ email nào hiện được liệt kê trên PG cũng như không có đoạn mã nguồn mở nào được chia sẻ về cách họ xử lý email đến."\[^10]
-Sự thiếu minh bạch này tạo ra một vấn đề cơ bản về niềm tin. Không có các backend mã nguồn mở, người dùng buộc phải tin tưởng vào các tuyên bố về quyền riêng tư thay vì kiểm chứng.
+Không có các backend mã nguồn mở, người dùng phải tin vào các tuyên bố về quyền riêng tư.
 
 ## Tương Lai Là Mã Nguồn Mở {#the-future-is-open-source}
 
-Xu hướng hướng tới các giải pháp mã nguồn mở đang tăng tốc trên toàn ngành phần mềm. Theo nghiên cứu gần đây:
+Việc áp dụng mã nguồn mở đang tăng trên toàn ngành phần mềm. Theo nghiên cứu gần đây:
 
 * Thị trường phần mềm mã nguồn mở đang tăng từ 41,83 tỷ USD năm 2024 lên 48,92 tỷ USD năm 2025\[^11]
 * 80% các công ty báo cáo tăng sử dụng mã nguồn mở trong năm qua\[^12]
 * Việc áp dụng mã nguồn mở dự kiến sẽ tiếp tục mở rộng nhanh chóng
 
-Sự tăng trưởng này phản ánh một sự chuyển đổi cơ bản trong cách chúng ta nghĩ về bảo mật và quyền riêng tư phần mềm. Khi người dùng ngày càng quan tâm đến quyền riêng tư, nhu cầu về quyền riêng tư có thể kiểm chứng thông qua các giải pháp mã nguồn mở sẽ chỉ tăng lên.
+Khi người dùng ngày càng quan tâm đến quyền riêng tư, chúng tôi kỳ vọng nhu cầu về quyền riêng tư có thể kiểm chứng thông qua các giải pháp mã nguồn mở sẽ tăng lên.
 
 ### Tại Sao Mã Nguồn Mở Đang Chiếm Ưu Thế {#why-open-source-is-winning}
 
-Những lợi thế của mã nguồn mở ngày càng rõ ràng:
+Mã nguồn mở mang lại những lợi thế sau:
 
-1. **Bảo mật thông qua minh bạch**: Mã nguồn mở có thể được hàng ngàn chuyên gia xem xét, không chỉ một nhóm nội bộ
+1. **Bảo mật thông qua minh bạch**: Mã nguồn mở có thể được hàng ngàn chuyên gia bên ngoài xem xét, bên cạnh một nhóm nội bộ
 2. **Đổi mới nhanh hơn**: Phát triển hợp tác thúc đẩy cải tiến nhanh chóng
 3. **Niềm tin thông qua kiểm chứng**: Các tuyên bố có thể được xác minh thay vì chỉ tin tưởng
 4. **Tự do khỏi ràng buộc nhà cung cấp**: Người dùng duy trì quyền kiểm soát dữ liệu và dịch vụ của mình
@@ -227,19 +227,17 @@ Dịch vụ của chúng tôi cung cấp:
 
 * Miền và bí danh không giới hạn
 * Hỗ trợ giao thức tiêu chuẩn (SMTP, IMAP, POP3) mà không cần cầu nối độc quyền
-* Tích hợp liền mạch với các ứng dụng email hiện có
-* Quy trình thiết lập đơn giản với tài liệu đầy đủ
-* Các gói giá cả phải chăng bắt đầu chỉ từ 3 USD/tháng
+* Tích hợp với các ứng dụng email hiện có
+* Quy trình thiết lập đơn giản với tài liệu
+* Các gói giá cả phải chăng bắt đầu từ 3 USD/tháng
 
 ## Kết Luận: Email Mã Nguồn Mở Cho Tương Lai Riêng Tư {#conclusion-open-source-email-for-a-private-future}
 
-Trong một thế giới mà quyền riêng tư kỹ thuật số ngày càng bị đe dọa, sự minh bạch của các giải pháp mã nguồn mở cung cấp một biện pháp bảo vệ quan trọng. Tại Forward Email, chúng tôi tự hào dẫn đầu với cách tiếp cận hoàn toàn mã nguồn mở về quyền riêng tư email.
+Mã nguồn mở cho phép bạn kiểm tra các tuyên bố về quyền riêng tư của nhà cung cấp. Forward Email áp dụng cách tiếp cận hoàn toàn mã nguồn mở về quyền riêng tư email.
 
-Không giống như các đối thủ chỉ áp dụng mã nguồn mở một phần, chúng tôi đã công khai toàn bộ nền tảng—giao diện người dùng và backend—cho công chúng xem xét. Cam kết minh bạch này, kết hợp với phương pháp kỹ thuật sáng tạo của chúng tôi, mang lại mức độ quyền riêng tư có thể kiểm chứng mà các giải pháp đóng mã không thể sánh kịp.
+Một số đối thủ chỉ mở mã nguồn một phần hệ thống của họ. Chúng tôi đã công khai toàn bộ nền tảng, giao diện người dùng và backend, cho công chúng xem xét, để bạn có thể kiểm chứng các tuyên bố về quyền riêng tư của chúng tôi theo cách mà các giải pháp đóng mã không cho phép.
 
-Dù bạn chọn sử dụng dịch vụ quản lý của chúng tôi hay tự lưu trữ nền tảng, bạn sẽ được hưởng lợi từ bảo mật, quyền riêng tư và sự an tâm đến từ email thực sự mã nguồn mở.
-
-Tương lai của email là mở, minh bạch và tập trung vào quyền riêng tư. Tương lai là Forward Email.
+Bạn có thể sử dụng dịch vụ quản lý của chúng tôi hoặc tự lưu trữ nền tảng và nhận được cùng mức bảo mật và quyền riêng tư của mã nguồn mở trong cả hai trường hợp.
 
 \[^1]: SNS Insider. "Thị trường Dịch vụ Mã Nguồn Mở được định giá 28,6 tỷ USD năm 2023 và sẽ đạt 114,8 tỷ USD vào năm 2032, tăng trưởng với tốc độ CAGR 16,70% đến năm 2032." [Open Source Services Market Size & Analysis Report 2032](https://www.snsinsider.com/reports/open-source-services-market-3322)
 

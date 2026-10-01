@@ -49,7 +49,7 @@
 
 ## Tổng Quan {#overview}
 
-Hướng dẫn này cung cấp các bước chi tiết để cài đặt giải pháp tự lưu trữ Forward Email trên hệ thống Debian. Hướng dẫn này được thiết kế riêng cho Debian 11 (Bullseye) và Debian 12 (Bookworm).
+Hướng dẫn này cung cấp các bước chi tiết để cài đặt giải pháp tự lưu trữ Forward Email trên hệ thống Debian. Hướng dẫn nhắm đến Debian 11 (Bullseye) và Debian 12 (Bookworm).
 
 
 ## Yêu Cầu Trước Khi Bắt Đầu {#prerequisites}
@@ -383,7 +383,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Quan trọng**: Khi được yêu cầu, bạn cần tạo các bản ghi TXT trong DNS của bạn. Bạn có thể thấy nhiều thử thách cho cùng một tên miền - **hãy tạo TẤT CẢ chúng**. Không xóa bản ghi TXT đầu tiên khi thêm bản ghi thứ hai.
+**Quan trọng**: Khi được yêu cầu, bạn cần tạo các bản ghi TXT trong DNS của bạn. Bạn có thể thấy nhiều thử thách cho cùng một tên miền; **hãy tạo TẤT CẢ chúng**. Không xóa bản ghi TXT đầu tiên khi thêm bản ghi thứ hai.
 
 #### Lựa chọn B: DNS Cloudflare (Nếu bạn sử dụng Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -858,6 +858,6 @@ Cài đặt Forward Email tự lưu trữ của bạn hiện đã hoàn tất v�
 5. Giữ cho cài đặt luôn được cập nhật
 6. Giám sát snapd và các gói snap
 
-Sự khác biệt chính so với Ubuntu là việc cài đặt snapd và cấu hình kho Docker. Khi những phần này được thiết lập đúng, ứng dụng Forward Email hoạt động giống hệt trên cả hai hệ thống.
+Sự khác biệt chính so với Ubuntu là việc cài đặt snapd và cấu hình kho Docker. Khi bạn thiết lập xong những phần này, ứng dụng Forward Email hoạt động giống hệt trên cả hai hệ thống.
 
 Để biết thêm các tùy chọn cấu hình và tính năng nâng cao, tham khảo tài liệu chính thức của Forward Email tại <https://forwardemail.net/self-hosted#configuration>.

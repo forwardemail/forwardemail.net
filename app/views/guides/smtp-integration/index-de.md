@@ -33,20 +33,20 @@
 
 ## Vorwort {#foreword}
 
-Dieser Leitfaden bietet detaillierte Beispiele, wie man den SMTP-Dienst von Forward Email mit verschiedenen Programmiersprachen, Frameworks und E-Mail-Clients integriert. Unser SMTP-Dienst ist darauf ausgelegt, zuverlässig, sicher und einfach in Ihre bestehenden Anwendungen integrierbar zu sein.
+Dieser Leitfaden zeigt, wie man den SMTP-Dienst von Forward Email aus verschiedenen Programmiersprachen, Frameworks und E-Mail-Clients integriert.
 
 
 ## Wie die SMTP-Verarbeitung von Forward Email funktioniert {#how-forward-emails-smtp-processing-works}
 
-Bevor wir zu den Integrationsbeispielen kommen, ist es wichtig zu verstehen, wie unser SMTP-Dienst E-Mails verarbeitet:
+Unser SMTP-Dienst verarbeitet E-Mails wie folgt:
 
 ### E-Mail-Warteschlange und Wiederholsystem {#email-queue-and-retry-system}
 
 Wenn Sie eine E-Mail per SMTP an unsere Server senden:
 
 1. **Erstverarbeitung**: Die E-Mail wird validiert, auf Malware gescannt und gegen Spamfilter geprüft
-2. **Intelligente Warteschlange**: E-Mails werden in ein ausgeklügeltes Warteschlangensystem zur Zustellung eingereiht
-3. **Intelligenter Wiederholmechanismus**: Falls die Zustellung vorübergehend fehlschlägt, wird unser System:
+2. **Warteschlange**: Unser System reiht E-Mails in eine Zustellwarteschlange ein
+3. **Wiederholmechanismus**: Falls die Zustellung vorübergehend fehlschlägt, wird unser System:
    * Die Fehlermeldung mit unserer Funktion `getBounceInfo` analysieren
    * Bestimmen, ob das Problem temporär (z. B. „später erneut versuchen“, „vorübergehend zurückgestellt“) oder dauerhaft (z. B. „Benutzer unbekannt“) ist
    * Bei temporären Problemen die E-Mail für einen erneuten Zustellversuch markieren
@@ -59,14 +59,14 @@ Wenn Sie eine E-Mail per SMTP an unsere Server senden:
 
 ### Einfach und zuverlässig gestaltet {#dummy-proofed-for-reliability}
 
-Unser System ist darauf ausgelegt, verschiedene Randfälle zu bewältigen:
+Unser System behandelt diese Randfälle:
 
 * Wird eine Blockliste erkannt, wird die E-Mail automatisch erneut zugestellt
 * Bei Netzwerkproblemen erfolgt ein erneuter Zustellversuch
 * Ist das Postfach des Empfängers voll, wird das System später erneut versuchen
 * Ist der empfangende Server vorübergehend nicht erreichbar, versuchen wir es weiter
 
-Dieser Ansatz verbessert die Zustellraten erheblich und gewährleistet gleichzeitig Datenschutz und Sicherheit.
+Dieser Ansatz verbessert die Zustellraten und gewährleistet gleichzeitig Datenschutz und Sicherheit.
 
 
 ## Node.js-Integration {#nodejs-integration}
@@ -525,6 +525,6 @@ Wenn Sie auf Probleme stoßen, die hier nicht behandelt werden, bitte:
 
 ## Fazit {#conclusion}
 
-Der SMTP-Dienst von Forward Email bietet eine zuverlässige, sichere und datenschutzorientierte Möglichkeit, E-Mails von Ihren Anwendungen und E-Mail-Clients zu senden. Mit unserem intelligenten Warteschlangensystem, dem 5-Tage-Wiederholungsmechanismus und umfassenden Zustellstatusbenachrichtigungen können Sie sicher sein, dass Ihre E-Mails ihr Ziel erreichen.  
+Der SMTP-Dienst von Forward Email bietet eine zuverlässige, sichere und datenschutzorientierte Möglichkeit, E-Mails von Ihren Anwendungen und E-Mail-Clients zu senden. Er umfasst ein Warteschlangensystem, einen 5-Tage-Wiederholungsmechanismus und Zustellstatusbenachrichtigungen.  
 
 Für fortgeschrittene Anwendungsfälle oder individuelle Integrationen kontaktieren Sie bitte unser Support-Team.

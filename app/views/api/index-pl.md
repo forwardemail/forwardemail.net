@@ -124,7 +124,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=Test email"
 ```
 
-Ta metoda jest przydatna podczas wysyłania e-maili z aplikacji, które już używają poświadczeń SMTP i umożliwia płynne przejście z SMTP na nasze API.
+Ta metoda jest przydatna podczas wysyłania e-maili z aplikacji, które już używają poświadczeń SMTP i ułatwia przejście z SMTP na nasze API.
 
 ### Punkty końcowe tylko dla aliasów {#alias-only-endpoints}
 
@@ -167,7 +167,7 @@ Nasza usługa jest przetłumaczona na ponad 25 różnych języków. Wszystkie ko
 
 Paginacja jest obsługiwana przez wszystkie punkty końcowe API, które zwracają listy wyników.
 
-Wystarczy podać właściwości zapytania `page` (oraz opcjonalnie `limit`).
+Podaj właściwości zapytania `page` (oraz opcjonalnie `limit`).
 
 Właściwość `page` powinna być liczbą większą lub równą `1`. Jeśli podasz `limit` (również liczbę), minimalna wartość to `10`, a maksymalna `50` (chyba że zaznaczono inaczej).
 
@@ -389,7 +389,7 @@ Instrukcje te można znaleźć w naszej sekcji FAQ [Czy obsługujecie odbieranie
 ### Utwórz wiadomość {#create-message}
 
 > \[!NOTE]
-> To **NIE** wyśle e-maila – po prostu doda wiadomość do folderu Twojej skrzynki pocztowej (np. jest to podobne do polecenia IMAP `APPEND`). Jeśli chcesz wysłać e-mail, zobacz [Utwórz wychodzący e-mail SMTP](#create-outbound-smtp-email) poniżej. Po utworzeniu wychodzącego e-maila SMTP możesz dołączyć jego kopię za pomocą tego endpointu do skrzynki aliasu w celach przechowywania.
+> To **NIE** wyśle e-maila, tylko doda wiadomość do folderu Twojej skrzynki pocztowej (np. jest to podobne do polecenia IMAP `APPEND`). Jeśli chcesz wysłać e-mail, zobacz [Utwórz wychodzący e-mail SMTP](#create-outbound-smtp-email) poniżej. Po utworzeniu wychodzącego e-maila SMTP możesz dołączyć jego kopię za pomocą tego endpointu do skrzynki aliasu w celach przechowywania.
 
 > `POST /v1/messages`
 
@@ -508,7 +508,7 @@ Z wyjątkiem `envelope` i `dkim` (które ustawiamy automatycznie za Ciebie), obs
 
 Powinieneś przekazać albo pojedynczą opcję `raw` z surową pełną wiadomością email wraz z nagłówkami **lub** przekazać poszczególne opcje parametrów ciała poniżej.
 
-Ten endpoint API automatycznie zakoduje emoji, jeśli zostaną znalezione w nagłówkach (np. temat `Subject: 🤓 Hello` zostanie automatycznie przekonwertowany na `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Naszym celem było stworzenie bardzo przyjaznego dla programistów i odpornego na błędy API email.
+Ten endpoint API automatycznie zakoduje emoji, jeśli zostaną znalezione w nagłówkach (np. temat `Subject: 🤓 Hello` zostanie automatycznie przekonwertowany na `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Naszym celem było stworzenie przyjaznego dla programistów i odpornego na błędy API email.
 
 **Uwierzytelnianie:** Ten endpoint obsługuje zarówno [uwierzytelnianie tokenem API](#api-token-authentication-recommended-for-most-endpoints), jak i [uwierzytelnianie poświadczeniami aliasu](#alias-credentials-authentication-for-outbound-email). Szczegóły znajdziesz w sekcji [Uwierzytelnianie](#authentication) powyżej.
 
@@ -974,7 +974,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Szyfruj {#encrypt}
 
-Pozwalamy na szyfrowanie rekordów nawet w darmowym planie bez dodatkowych kosztów. Prywatność nie powinna być funkcją, powinna być wbudowana we wszystkie aspekty produktu. Na prośbę wielu użytkowników w [dyskusji Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) oraz na [naszych zgłoszeniach GitHub](https://github.com/forwardemail/forwardemail.net/issues/254) dodaliśmy tę funkcję.
+Pozwalamy na szyfrowanie rekordów nawet w darmowym planie bez dodatkowych kosztów. Prywatność powinna być wbudowana we wszystkie aspekty produktu. Na prośbę wielu użytkowników w [dyskusji Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) oraz na [naszych zgłoszeniach GitHub](https://github.com/forwardemail/forwardemail.net/issues/254) dodaliśmy tę funkcję.
 
 ### Szyfruj rekord TXT {#encrypt-txt-record}
 

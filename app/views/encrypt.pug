@@ -7,7 +7,7 @@ block body
       .row
         .col-sm-12.col-md-10.offset-md-1.col-lg-8.offset-lg-2
           .alert.alert-primary.text-center.mb-4.small
-            != t("Enter your plaintext TXT record below to encrypt it &ndash; which will effectively hide and mask your forwarding configuration from being publicly searchable.")
+            != t("Enter your plaintext TXT record below to encrypt it, which hides your forwarding configuration from public search.")
           //- WebMCP declarative tool; the visitor confirms before it runs.
           form.ajax-form.confirm-prompt(
             action=ctx.path,

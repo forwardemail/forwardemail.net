@@ -44,16 +44,16 @@
 
 ## Overview
 
-Amazon Web Services (AWS) has announced that **Amazon WorkMail will be discontinued on March 31, 2027**. After that date, you will no longer be able to access the Amazon WorkMail console, web client, or any WorkMail resources. This guide provides a complete, step-by-step walkthrough for migrating your email, contacts, and calendars from Amazon WorkMail to [Forward Email](https://forwardemail.net) — a privacy-focused, open-source email service that supports custom domains, IMAP, SMTP, CalDAV, and CardDAV.
+Amazon Web Services (AWS) has announced that **Amazon WorkMail will be discontinued on March 31, 2027**. After that date, you will no longer be able to access the Amazon WorkMail console, web client, or any WorkMail resources. This guide provides a complete, step-by-step walkthrough for migrating your email, contacts, and calendars from Amazon WorkMail to [Forward Email](https://forwardemail.net), a privacy-focused, open-source email service that supports custom domains, IMAP, SMTP, CalDAV, and CardDAV.
 
-Whether you are an individual user, a small business, or an organization with multiple mailboxes, this guide covers everything you need to ensure a smooth transition with zero data loss.
+Whether you are an individual user, a small business, or an organization with multiple mailboxes, this guide covers what you need for a smooth transition with zero data loss.
 
 
 ## Why Migrate from Amazon WorkMail
 
-AWS officially confirmed the end of support for Amazon WorkMail in their [administrator documentation](https://docs.aws.amazon.com/workmail/latest/adminguide/workmail-end-of-support.html). The key facts are straightforward:
+AWS officially confirmed the end of support for Amazon WorkMail in their [administrator documentation](https://docs.aws.amazon.com/workmail/latest/adminguide/workmail-end-of-support.html). The key facts:
 
-Amazon WorkMail will no longer accept new customers beginning April 30, 2026. Existing customers can continue using the service until March 31, 2027. After that date, all access to WorkMail — including the web client, APIs, IMAP/SMTP endpoints, and the AWS console — will be permanently shut down.
+Amazon WorkMail will no longer accept new customers beginning April 30, 2026. Existing customers can continue using the service until March 31, 2027. After that date, AWS will permanently shut down all access to WorkMail, including the web client, APIs, IMAP/SMTP endpoints, and the AWS console.
 
 This means every Amazon WorkMail user must migrate to another email provider before the deadline. Waiting until the last minute risks data loss, service interruption, and the inability to receive email on your custom domain.
 
@@ -63,7 +63,7 @@ This means every Amazon WorkMail user must migrate to another email provider bef
 | Date                 | Event                                                                                   |
 | -------------------- | --------------------------------------------------------------------------------------- |
 | April 30, 2026       | Amazon WorkMail stops accepting new customers                                           |
-| March 31, 2027       | Full shutdown — no access to WorkMail console, web client, IMAP, SMTP, or any resources |
+| March 31, 2027       | Full shutdown: no access to WorkMail console, web client, IMAP, SMTP, or any resources  |
 | After March 31, 2027 | All WorkMail data becomes permanently inaccessible                                      |
 
 > **Recommendation**: Begin your migration as soon as possible. DNS propagation, email client reconfiguration, and data transfer all take time. Starting early ensures you can test everything thoroughly before the shutdown date.
@@ -80,13 +80,13 @@ AWS recommends migrating to third-party solutions. [Forward Email](https://forwa
 | CalDAV (calendars)                  | No (Exchange ActiveSync only) | Yes                                                                 |
 | CardDAV (contacts)                  | No (Exchange ActiveSync only) | Yes                                                                 |
 | End-to-end encryption (OpenPGP)     | No                            | Yes                                                                 |
-| Open source                         | No                            | Yes — [100% open source on GitHub](https://github.com/forwardemail) |
-| Privacy-focused (no email scanning) | Partial                       | Yes — no ads, no tracking, no email scanning                        |
+| Open source                         | No                            | Yes: [100% open source on GitHub](https://github.com/forwardemail)  |
+| Privacy-focused (no email scanning) | Partial                       | Yes: no ads, no tracking, no email scanning                         |
 | Quantum-safe encrypted storage      | No                            | Yes                                                                 |
 | Unlimited aliases                   | No                            | Yes                                                                 |
 | Email forwarding                    | No                            | Yes                                                                 |
 | Pricing                             | $4.00/user/month              | Starting at $3.00/month for unlimited domains                       |
-| Vendor lock-in                      | AWS ecosystem                 | None — standard IMAP/SMTP, export anytime                           |
+| Vendor lock-in                      | AWS ecosystem                 | None: standard IMAP/SMTP, export anytime                            |
 
 Forward Email is trusted by over 1.6+ million domains including the U.S. Naval Academy, Canonical (Ubuntu), Netflix Games, The Linux Foundation, and many universities and government organizations. You can read more on our [about page](https://forwardemail.net/en/about).
 
@@ -99,7 +99,7 @@ Before starting the migration, gather the following information and complete the
 
 1. Your Amazon WorkMail email address (e.g., `user@yourdomain.com`)
 2. Your Amazon WorkMail password
-3. Your WorkMail IMAP server endpoint (based on your AWS region — see table below)
+3. Your WorkMail IMAP server endpoint (based on your AWS region; see table below)
 4. Access to your domain's DNS management (Route 53, Cloudflare, or wherever your domain is hosted)
 5. A list of all users/mailboxes if migrating an organization
 
@@ -167,7 +167,7 @@ There are three methods to export your email from Amazon WorkMail. We recommend 
 
    Alternatively, you can right-click on the top-level account and select **ImportExportTools NG → Export all folders as MBOX files** to export everything at once.
 
-> **Tip**: Keep Thunderbird open with your Amazon WorkMail account connected — you will use it again in Step 6 to import your email into Forward Email. You can also skip the export step entirely and simply drag-and-drop emails between accounts in Thunderbird (see Step 6).
+> **Tip**: Keep Thunderbird open with your Amazon WorkMail account connected. You will use it again in Step 6 to import your email into Forward Email. You can also skip the export step and drag-and-drop emails between accounts in Thunderbird (see Step 6).
 
 ### Option B: Export via AWS Mailbox Export API
 
@@ -284,7 +284,7 @@ If you are comfortable with the AWS CLI and prefer an automated approach, you ca
 
 ### Option C: Export via imapsync Command-Line Tool
 
-[imapsync](https://github.com/imapsync/imapsync) is an open-source IMAP transfer and migration tool that can copy emails directly from one IMAP server to another. This is particularly useful for large mailboxes or automated migrations of multiple users.
+[imapsync](https://github.com/imapsync/imapsync) is an open-source IMAP transfer and migration tool that can copy emails directly from one IMAP server to another. This helps with large mailboxes or automated migrations of multiple users.
 
 1. **Install imapsync** on a Linux machine (Debian/Ubuntu):
 
@@ -338,7 +338,7 @@ If you are comfortable with the AWS CLI and prefer an automated approach, you ca
 3. Follow the on-screen setup guide. Forward Email's onboarding will walk you through every DNS record you need to add, with exact values tailored to your domain.
 
 > \[!TIP]
-> Forward Email supports **1-click DNS setup** via [Domain Connect](https://forwardemail.net/en/domain-connect) for major DNS providers including **Cloudflare, GoDaddy, IONOS, WordPress.com, NameSilo**, and others. If your domain is hosted with one of these providers, you can configure all DNS records automatically in a single click — no manual record entry required. Simply enter your domain name and Forward Email will auto-detect your DNS provider.
+> Forward Email supports **1-click DNS setup** via [Domain Connect](https://forwardemail.net/en/domain-connect) for major DNS providers including **Cloudflare, GoDaddy, IONOS, WordPress.com, NameSilo**, and others. If your domain is hosted with one of these providers, you can configure all DNS records automatically in a single click, with no manual record entry. Enter your domain name and Forward Email will auto-detect your DNS provider.
 
 4. Wait for DNS propagation (typically a few minutes, but can take up to 48 hours) and click **Verify** in your Forward Email dashboard.
 
@@ -401,7 +401,7 @@ After adding all DNS records, return to your Forward Email dashboard and click *
    * `user@yourdomain.com` → Create as a mailbox alias (for IMAP/SMTP access)
    * `info@yourdomain.com` → Create as a forwarding alias (if you just want forwarding)
 
-3. For each alias that needs IMAP/SMTP access (i.e., a full mailbox), click on the alias and **generate a password**. Save this password — you will need it to configure your email clients and to import your email.
+3. For each alias that needs IMAP/SMTP access (i.e., a full mailbox), click on the alias and **generate a password**. Save this password. You will need it to configure your email clients and to import your email.
 
 > **Important**: Each user who had an Amazon WorkMail mailbox should have a corresponding alias with a generated password in Forward Email. This password is used for IMAP, SMTP, POP3, CalDAV, and CardDAV authentication.
 
@@ -472,7 +472,7 @@ After importing your email, configure your email clients to connect to Forward E
 
 ### Thunderbird
 
-If you already added your Forward Email account in Step 6, you are done. Simply remove the Amazon WorkMail account from Thunderbird:
+If you already added your Forward Email account in Step 6, you are done. Remove the Amazon WorkMail account from Thunderbird:
 
 1. Go to **Account Settings**
 2. Select your Amazon WorkMail account
@@ -537,9 +537,9 @@ Before decommissioning Amazon WorkMail, verify that everything is working correc
 
 2. **Send a test email** from your Forward Email account to an external address. Confirm it is delivered and check that SPF, DKIM, and DMARC pass. You can use [mail-tester.com](https://www.mail-tester.com/) to verify your email authentication.
 
-3. **Check your imported email** — browse through your Inbox, Sent, and other folders to confirm all messages were transferred successfully.
+3. **Check your imported email**: browse through your Inbox, Sent, and other folders to confirm all messages were transferred successfully.
 
-4. **Test calendar and contacts** (if applicable) — see the section below on migrating contacts and calendars.
+4. **Test calendar and contacts** (if applicable): see the section below on migrating contacts and calendars.
 
 5. **Verify DNS records** by running:
 
@@ -632,7 +632,7 @@ If you are migrating an entire organization with multiple WorkMail users, follow
    bob@yourdomain.com:wmpass2:bob@yourdomain.com:fepass2
    ```
 
-4. **Update DNS records once** (as described in Step 4) — this applies to the entire domain.
+4. **Update DNS records once** (as described in Step 4). This applies to the entire domain.
 
 5. **Distribute new passwords** to each user and provide them with the email client configuration settings from Step 7.
 
@@ -641,7 +641,7 @@ If you are migrating an entire organization with multiple WorkMail users, follow
 
 **"Authentication failed" when connecting to Amazon WorkMail via IMAP:**
 
-* Double-check your password. Amazon WorkMail does not use app passwords like Gmail — use your regular WorkMail password.
+* Double-check your password. Amazon WorkMail does not use app passwords like Gmail; use your regular WorkMail password.
 * Ensure you are using the correct IMAP server endpoint for your AWS region.
 * Verify that IMAP access has not been disabled for your WorkMail organization.
 
@@ -655,7 +655,7 @@ If you are migrating an entire organization with multiple WorkMail users, follow
 
 * IMAP folder names may differ between providers. Check for folders with different names (e.g., "Sent Items" in WorkMail vs. "Sent" in Forward Email).
 * Run imapsync with the `--subscribed` flag to include subscribed folders only, or without it to include all folders.
-* For very large mailboxes, the transfer may have timed out. Re-run imapsync — it will only transfer messages that were not already copied.
+* For very large mailboxes, the transfer may have timed out. Re-run imapsync; it will only transfer messages that were not already copied.
 
 **Email client shows "certificate error" or "connection refused":**
 
@@ -671,7 +671,7 @@ If you are migrating an entire organization with multiple WorkMail users, follow
 
 **Q: Can I migrate from Amazon WorkMail to Forward Email without any downtime?**
 
-Yes. The recommended approach is to set up Forward Email and import your email while keeping Amazon WorkMail active. Only switch the MX records once everything is verified. During DNS propagation, some emails may still arrive at WorkMail — keep both accounts monitored for a few days.
+Yes. The recommended approach is to set up Forward Email and import your email while keeping Amazon WorkMail active. Only switch the MX records once everything is verified. During DNS propagation, some emails may still arrive at WorkMail, so monitor both accounts for a few days.
 
 **Q: Will my email addresses stay the same?**
 
@@ -702,6 +702,6 @@ Yes. Forward Email is [100% open source on GitHub](https://github.com/forwardema
 
 Migrating from Amazon WorkMail to Forward Email is a straightforward process that can be completed in an afternoon for individual users, or over a few days for organizations with multiple mailboxes. By following this guide, you ensure that your email, contacts, and calendars are safely transferred, your DNS records are properly configured, and your email clients are set up to work with Forward Email.
 
-Forward Email provides a privacy-focused, open-source, and cost-effective alternative to Amazon WorkMail — with additional features like end-to-end encryption, unlimited aliases, email forwarding, and quantum-safe encrypted storage. Start your migration today at [forwardemail.net/register](https://forwardemail.net/register).
+Forward Email provides a privacy-focused, open-source, and cost-effective alternative to Amazon WorkMail, with additional features like end-to-end encryption, unlimited aliases, email forwarding, and quantum-safe encrypted storage. Start your migration today at [forwardemail.net/register](https://forwardemail.net/register).
 
 For additional help, visit our [FAQ page](https://forwardemail.net/en/faq) or contact our support team. You can also compare Forward Email with other providers on our [email comparison page](https://forwardemail.net/en/blog/best-amazon-workmail-alternative).

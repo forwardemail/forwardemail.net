@@ -32,7 +32,7 @@
 
 ## Önsöz {#foreword}
 
-Forward Email'de güvenlik en öncelikli konumuzdur. E-posta iletişimlerinizi ve kişisel verilerinizi korumak için kapsamlı güvenlik önlemleri uyguladık. Bu belge, güvenlik uygulamalarımızı ve e-postalarınızın gizliliği, bütünlüğü ve erişilebilirliğini sağlamak için attığımız adımları özetlemektedir.
+Forward Email'de güvenlik en öncelikli konumuzdur. Bu belge, e-posta iletişimlerinizi ve kişisel verilerinizi korumak, e-postalarınızın gizliliğini, bütünlüğünü ve erişilebilirliğini sürdürmek için kullandığımız uygulamaları özetlemektedir.
 
 
 ## Altyapı Güvenliği {#infrastructure-security}
@@ -110,7 +110,7 @@ Veri azaltma ilkesini takip ediyoruz:
 
 ## Hizmet Sağlayıcılar {#service-providers}
 
-Yüksek güvenlik standartlarımızı karşılamalarını sağlamak için hizmet sağlayıcılarımızı dikkatle seçiyoruz. Aşağıda uluslararası veri transferi için kullandığımız sağlayıcılar ve GDPR uyumluluk durumları yer almaktadır:
+Güvenlik standartlarımızı karşılayan hizmet sağlayıcıları seçiyoruz. Aşağıda uluslararası veri transferi için kullandığımız sağlayıcılar ve GDPR uyumluluk durumları yer almaktadır:
 
 | Sağlayıcı                                     | Amaç                       | DPF Sertifikalı | GDPR Uyumluluk Sayfası                                                                                 |
 | --------------------------------------------- | -------------------------- | --------------- | ------------------------------------------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ Bu sağlayıcıları, uluslararası veri koruma düzenlemelerine uyum sağlarken
 
 ### Düzenli Güvenlik Değerlendirmeleri {#regular-security-assessments}
 
-Ekibimiz kod tabanını, sunucuları, altyapıyı ve uygulamaları düzenli olarak izler, gözden geçirir ve değerlendirir. Kapsamlı bir güvenlik programı uygularız:
+Ekibimiz kod tabanını, sunucuları, altyapıyı ve uygulamaları düzenli olarak izler, gözden geçirir ve değerlendirir. Güvenlik programımız şunları içerir:
 
 * SSH anahtarlarının düzenli rotasyonu  
 * Erişim kayıtlarının sürekli izlenmesi  
@@ -209,7 +209,7 @@ Tüm kodlar şunlardan geçer:
 
 ## Hizmet Seviyesi Anlaşması {#service-level-agreement}
 
-Yüksek hizmet kullanılabilirliği ve güvenilirliği sağlıyoruz. Altyapımız, e-posta hizmetinizin kesintisiz çalışmasını sağlamak için yedeklilik ve hata toleransı için tasarlanmıştır. Resmi bir SLA belgesi yayınlamasak da, taahhütlerimiz şunlardır:
+Altyapımızı, e-posta hizmetinizi erişilebilir tutmak için yedeklilik ve hata toleransına göre tasarlıyoruz. Resmi bir SLA belgesi yayınlamasak da, taahhütlerimiz şunlardır:
 
 * Tüm hizmetlerde %99,9+ çalışma süresi
 * Hizmet kesintilerine hızlı müdahale
@@ -237,7 +237,7 @@ Bir [açık kaynak hizmeti](https://github.com/forwardemail/forwardemail.net) ol
 
 ## Sürekli İyileştirme {#continuous-improvement}
 
-Güvenlik duruşumuzu sürekli iyileştiriyoruz:
+Güvenliğimizi şunlarla iyileştiriyoruz:
 
 * Güvenlik trendleri ve ortaya çıkan tehditlerin izlenmesi
 * Güvenlik politikalarının düzenli gözden geçirilmesi ve güncellenmesi

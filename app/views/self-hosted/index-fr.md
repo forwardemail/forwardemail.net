@@ -28,7 +28,7 @@
 
 ## Commencer {#getting-started}
 
-Notre solution d'email auto-hébergée, comme tous nos produits, est 100 % open-source — à la fois frontend et backend. Cela signifie :
+Notre solution d'email auto-hébergée, comme tous nos produits, est 100 % open-source, frontend et backend. Cela signifie :
 
 1. **Transparence complète** : Chaque ligne de code qui traite vos emails est disponible pour examen public
 2. **Contributions communautaires** : Tout le monde peut contribuer à des améliorations ou corriger des problèmes
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Choisissez l'option `1. Configuration initiale` pour commencer.
 
-Une fois terminé, vous devriez voir un message de succès. Vous pouvez même exécuter `docker ps` pour voir **les** composants démarrés. Plus d'informations sur les composants ci-dessous.
+Une fois terminé, vous devriez voir un message de succès. Vous pouvez exécuter `docker ps` pour voir **les** composants démarrés. Plus d'informations sur les composants ci-dessous.
 
 
 ## Services {#services}

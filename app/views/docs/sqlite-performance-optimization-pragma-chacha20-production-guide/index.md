@@ -38,20 +38,20 @@
 
 ## Foreword
 
-Setting up SQLite for production email systems isn't just about getting it working—it's about making it fast, secure, and reliable under heavy load. After processing millions of emails at Forward Email, we've learned what actually matters for SQLite performance.
+A production SQLite setup for email needs to be fast, secure, and reliable under heavy load. After processing millions of emails at Forward Email, we've learned which settings matter for SQLite performance.
 
-This guide covers our real production configuration, benchmark results across Node.js versions, and the specific optimizations that make a difference when you're handling serious email volume.
+This guide covers our production configuration, benchmark results across Node.js versions, and the specific optimizations that make a difference at high email volume.
 
 > \[!WARNING] Node.js Performance Regressions in v22 and v24
 > We discovered a significant performance regression in Node.js versions v22 and v24 that impacts SQLite performance, particularly for `SELECT` statements. Our benchmarks show a \~57% drop in `SELECT` operations per second in Node.js v24 compared to v20. We have reported this issue to the Node.js team in [nodejs/node#60719](https://github.com/nodejs/node/issues/60719).
 
-Due to this regression, we are taking a cautious approach to our Node.js upgrades. Here is our current plan:
+Due to this regression, we are taking a cautious approach to our Node.js upgrades. Our current plan:
 
-* **Current Version:** We are currently on Node.js v18, which has reached its end-of-life ("EOL") for Long-Term Support ("LTS"). You can view the official [Node.js LTS schedule here](https://github.com/nodejs/release#release-schedule).
+* **Current Version:** We are on Node.js v18, which has reached its end-of-life ("EOL") for Long-Term Support ("LTS"). You can view the official [Node.js LTS schedule here](https://github.com/nodejs/release#release-schedule).
 * **Planned Upgrade:** We will be upgrading to **Node.js v20**, which is the fastest version according to our benchmarks and is not affected by this regression.
 * **Avoiding v22 and v24:** We will not be using Node.js v22 or v24 in production until this performance issue is resolved.
 
-Here is a timeline illustrating the Node.js LTS schedule and our upgrade path:
+Timeline of the Node.js LTS schedule and our upgrade path:
 
 ```mermaid
 gantt
@@ -76,7 +76,7 @@ gantt
 
 ## Forward Email's Production SQLite Architecture
 
-Here's how we actually use SQLite in production:
+How we use SQLite in production:
 
 ```mermaid
 graph TB
@@ -105,7 +105,7 @@ graph TB
 
 ## Our Actual PRAGMA Configuration
 
-This is what we actually use in production, straight from our [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
+Our production configuration, from our [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
 
 ```javascript
 // Forward Email's actual production PRAGMA settings
@@ -135,12 +135,12 @@ async function setupPragma(db, session, cipher = 'chacha20') {
 ```
 
 > \[!IMPORTANT]
-> We use `temp_store=1` (disk) instead of `temp_store=2` (memory) because large email databases can easily consume 10+ GB of memory during operations like VACUUM.
+> We use `temp_store=1` (disk) instead of `temp_store=2` (memory) because large email databases can consume 10+ GB of memory during operations like VACUUM.
 
 
 ## Performance Benchmark Results
 
-We tested our configuration against various alternatives across Node.js versions. Here are the real numbers:
+We tested our configuration against various alternatives across Node.js versions:
 
 ### Node.js v20.19.5 Performance Results
 
@@ -243,7 +243,7 @@ process.env.SQLITE_TMPDIR = tempStoreDirectory;
 
 ## WAL Mode Optimization
 
-Write-Ahead Logging is crucial for email systems with concurrent access:
+Write-Ahead Logging matters for email systems with concurrent access:
 
 ```mermaid
 sequenceDiagram
@@ -324,9 +324,9 @@ We implemented this optimization in our [Attachments schema](https://github.com/
 
 ## Connection Management
 
-We don't use connection pooling with SQLite—each user gets their own encrypted database. This approach provides perfect isolation between users, similar to sandboxing. Unlike architectures from other services that use MySQL, PostgreSQL, or MongoDB where your email could potentially be accessed by a rogue employee, Forward Email's per-user SQLite databases ensure your data is completely independent and sandboxed.
+We don't use connection pooling with SQLite; each user gets their own encrypted database. This isolates users from each other, similar to sandboxing. Unlike architectures from other services that use MySQL, PostgreSQL, or MongoDB where your email could potentially be accessed by a rogue employee, Forward Email's per-user SQLite databases keep your data independent and sandboxed.
 
-We never store your IMAP password, so we never have access to your data—it's all done in-memory. Learn more about our [quantum-resistant encryption approach](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security) that details how our system works.
+We never store your IMAP password, so we never have access to your data; it's all done in-memory. Learn more about our [quantum-resistant encryption approach](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security) that details how our system works.
 
 ```javascript
 // Per-user database approach
@@ -349,7 +349,7 @@ async function getDatabase(session) {
 
 This approach provides:
 
-* Perfect isolation between users
+* Full isolation between users
 
 * No connection pool complexity
 
@@ -402,7 +402,7 @@ const fragmentationPct = (stats.freelist_count / stats.page_count) * 100;
 
 ## Node.js Version Performance
 
-Our comprehensive benchmarks across Node.js versions reveal significant performance differences:
+Our benchmarks across Node.js versions show large performance differences:
 
 ### Complete Cross-Version Results
 
@@ -530,13 +530,13 @@ console.log(plan);
 
 We've contributed our SQLite optimization knowledge back to the community:
 
-* [Litestream documentation improvements](https://github.com/benbjohnson/litestream/issues/516) - Our suggestions for better SQLite performance tips
+* [Litestream documentation improvements](https://github.com/benbjohnson/litestream/issues/516): Our suggestions for better SQLite performance tips
 
-* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - ChaCha20 encryption support
+* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers): ChaCha20 encryption support
 
-* [SQLite performance tuning research](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - Referenced in our implementation
+* [SQLite performance tuning research](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/): Referenced in our implementation
 
-* [How npm packages with billion downloads shaped JavaScript ecosystem](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - Our broader contributions to npm and JavaScript development
+* [How npm packages with billion downloads shaped JavaScript ecosystem](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem): Our broader contributions to npm and JavaScript development
 
 
 ## Benchmark Source Code
@@ -566,7 +566,7 @@ The benchmarks test:
 
 ## What's Next for SQLite at Forward Email
 
-We're actively testing these optimizations:
+We're testing these optimizations:
 
 1. **WAL Autocheckpoint Tuning**: Adding `wal_autocheckpoint=1000` based on benchmark results
 
@@ -579,6 +579,6 @@ We're actively testing these optimizations:
 
 ## Getting Help
 
-Having SQLite performance issues? For SQLite-specific questions, the [SQLite Forum](https://sqlite.org/forum/forumpost) is an excellent resource, and the [performance tuning guide](https://www.sqlite.org/optoverview.html) covers additional optimizations we haven't needed yet.
+For SQLite-specific questions, the [SQLite Forum](https://sqlite.org/forum/forumpost) is an excellent resource, and the [performance tuning guide](https://www.sqlite.org/optoverview.html) covers additional optimizations we haven't needed yet.
 
 Learn more about Forward Email by reading our [FAQ](/faq).

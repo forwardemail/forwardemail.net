@@ -28,7 +28,7 @@
 
 ## Getting started
 
-Our self-hosted email solution, like all our products, is 100% open-source—both frontend and backend. This means:
+Our self-hosted email solution, like all our products, is 100% open-source, frontend and backend. This means:
 
 1. **Complete Transparency**: Every line of code that processes your emails is available for public scrutiny
 2. **Community Contributions**: Anyone can contribute improvements or fix issues
@@ -138,7 +138,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Choose option `1. Initial setup` to begin.
 
-Once complete, you should see a success message. You can even run `docker ps` to see **the** components spun up. More information on componets below.
+Once complete, you should see a success message. You can run `docker ps` to see **the** components spun up. More information on componets below.
 
 
 ## Services
@@ -295,7 +295,7 @@ Another option is to use the automated cerbot DNS changes by setting the `/root/
 
 ### What is the basic auth username and password
 
-For self hosting, we add a first time browser native authentication pop up with a simple username (`admin`) and password (randomly generated on initial setup). We just add this as a protection in case automation / scrapers somehow beat you to first sign up on the web experience. You can find this password after initial setup in your `.env` file under `AUTH_BASIC_USERNAME` and `AUTH_BASIC_PASSWORD`.
+For self hosting, we add a first time browser native authentication pop up with a simple username (`admin`) and password (randomly generated on initial setup). We add this as a protection in case automation / scrapers somehow beat you to first sign up on the web experience. You can find this password after initial setup in your `.env` file under `AUTH_BASIC_USERNAME` and `AUTH_BASIC_PASSWORD`.
 
 ### How do I know what is running
 

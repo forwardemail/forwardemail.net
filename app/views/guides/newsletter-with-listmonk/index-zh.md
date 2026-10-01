@@ -26,21 +26,21 @@
 
 ## 概述 {#overview}
 
-本指南为开发者提供了使用 [Listmonk](https://listmonk.app/)（一个强大的开源新闻通讯和邮件列表管理器）结合 [Forward Email](https://forwardemail.net/) 作为 SMTP 提供商的逐步设置说明。此组合让您能够有效管理活动，同时确保邮件发送的安全、私密和可靠。
+本指南为开发者提供了使用 [Listmonk](https://listmonk.app/)（一个开源新闻通讯和邮件列表管理器）结合 [Forward Email](https://forwardemail.net/) 作为 SMTP 提供商的逐步设置说明。Listmonk 管理您的活动，Forward Email 安全、私密、可靠地投递邮件。
 
 * **Listmonk**：负责订阅者管理、列表组织、活动创建和性能跟踪。
-* **Forward Email**：作为安全的 SMTP 服务器，处理邮件的实际发送，内置 SPF、DKIM、DMARC 和 TLS 加密等安全功能。
+* **Forward Email**：作为安全的 SMTP 服务器，处理邮件的发送，内置 SPF、DKIM、DMARC 和 TLS 加密等安全功能。
 
-通过整合这两者，您可以完全控制自己的数据和基础设施，同时利用 Forward Email 强大的投递系统。
+通过这种设置，您可以完全控制自己的数据和基础设施，由 Forward Email 负责投递。
 
 
 ## 为什么选择 Listmonk 和 Forward Email {#why-listmonk-and-forward-email}
 
 * **开源**：Listmonk 和 Forward Email 背后的理念都强调透明和控制。您自行托管 Listmonk，拥有自己的数据。
-* **注重隐私**：Forward Email 以隐私为核心，最小化数据保留，专注于安全传输。
+* **注重隐私**：Forward Email 为隐私而构建，最小化数据保留，专注于安全传输。
 * **成本效益**：Listmonk 免费，Forward Email 提供慷慨的免费额度和实惠的付费计划，是经济实惠的解决方案。
 * **可扩展性**：Listmonk 性能优异，Forward Email 的基础设施设计用于大规模可靠投递。
-* **开发者友好**：Listmonk 提供强大的 API，Forward Email 提供简洁的 SMTP 集成和 Webhook 支持。
+* **开发者友好**：Listmonk 提供完整的 API，Forward Email 提供简洁的 SMTP 集成和 Webhook 支持。
 
 
 ## 先决条件 {#prerequisites}
@@ -100,11 +100,11 @@ sudo ufw enable
 
 ### 5. 配置 HTTPS 访问 {#5-configure-https-access}
 
-通过 HTTPS 运行 Listmonk 对安全性至关重要。你有两个主要选项：
+为安全起见，请通过 HTTPS 运行 Listmonk。你有两个主要选项：
 
 #### 选项 A：使用 Cloudflare 代理（推荐，简单易用） {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
-如果你的域名 DNS 由 Cloudflare 管理，可以利用他们的代理功能轻松实现 HTTPS。
+如果你的域名 DNS 由 Cloudflare 管理，可以使用他们的代理功能轻松实现 HTTPS。
 
 1. **指向 DNS**：在 Cloudflare 中为你的 Listmonk 子域（例如 `listmonk.yourdomain.com`）创建一个 `A` 记录，指向你的 VPS IP 地址。确保 **代理状态** 设置为 **已代理**（橙色云朵）。
 2. **修改 Docker Compose**：编辑你下载的 `docker-compose.yml` 文件：
@@ -185,7 +185,7 @@ Docker 会下载所需镜像并启动 Listmonk 应用和数据库容器。首次
 5. 启用 **Forward Email**。
 6. 将您从 Forward Email 控制面板复制的 **Webhook Signature Payload Verification Key** 粘贴到 **Forward Email Key** 字段。
 7. 点击页面底部的 **保存**。
-8. 退信处理现已配置完成！当 Forward Email 检测到 Listmonk 发送的邮件退信时，会通过 webhook 通知您的 Listmonk 实例，Listmonk 会相应地标记订阅者。
+8. 退信处理现已配置完成。当 Forward Email 检测到 Listmonk 发送的邮件退信时，会通过 webhook 通知您的 Listmonk 实例，Listmonk 会相应地标记订阅者。
 9. 按照下面的 [测试](#testing) 步骤完成，确保一切正常。
 
 ## 测试 {#testing}
@@ -226,14 +226,12 @@ Docker 会下载所需镜像并启动 Listmonk 应用和数据库容器。首次
 ## 开发者说明 {#developer-notes}
 
 * **模板引擎**：Listmonk 使用 Go 的模板引擎。探索其文档以实现高级个性化：`{{ .Subscriber.Attribs.your_custom_field }}`。
-* **API**：Listmonk 提供了全面的 REST API，用于管理列表、订阅者、活动、模板等。API 文档链接位于您的 Listmonk 实例页脚。
+* **API**：Listmonk 提供了 REST API，用于管理列表、订阅者、活动、模板等。API 文档链接位于您的 Listmonk 实例页脚。
 * **自定义字段**：在 **设置 -> 订阅者字段** 下定义自定义订阅者字段以存储额外数据。
 * **Webhook**：除了退信，Listmonk 还可以为其他事件（例如订阅）发送 webhook，便于与其他系统集成。
 
 ## 结论 {#conclusion}
 
-通过将自托管的 Listmonk 强大功能与 Forward Email 安全且尊重隐私的投递相结合，您打造了一个强大且合乎道德的电子邮件营销平台。您完全拥有受众数据的所有权，同时享受高投递率和自动化安全功能。
+自托管的 Listmonk 配合 Forward Email 安全且尊重隐私的投递，为您提供一个合乎道德的电子邮件营销平台。您完全拥有受众数据的所有权，并获得高投递率和自动化安全功能。
 
-此方案提供了一个可扩展、经济高效且开发者友好的替代专有电子邮件服务的选择，完美契合开源软件和用户隐私的理念。
-
-祝发送愉快！🚀
+此方案是专有电子邮件服务的一个可扩展、经济高效且开发者友好的替代方案，基于开源软件和用户隐私构建。

@@ -3,7 +3,7 @@
 <!-- <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
-  <strong>TL;DR:</strong> We built the world's first complete REST API for email management with advanced search capabilities that no other service offers. While Gmail, Outlook, and Apple force developers into IMAP hell or rate-limited APIs, Forward Email delivers blazing-fast CRUD operations for messages, folders, contacts, and calendars through a unified REST interface with 15+ search parameters. This is the email API developers have been waiting for.
+  <strong>TL;DR:</strong> We built the world's first complete REST API for email management with advanced search capabilities that no other service offers. While Gmail, Outlook, and Apple force developers into IMAP hell or rate-limited APIs, Forward Email provides fast CRUD operations for messages, folders, contacts, and calendars through a unified REST interface with 15+ search parameters.
 </p>
 
 
@@ -75,22 +75,22 @@
 
 ## The Email API Problem
 
-Email APIs are fundamentally broken. Period.
+Most email APIs are broken.
 
 Every major email provider forces developers into one of two terrible choices:
 
 1. **IMAP Hell**: Wrestling with a 30-year-old protocol designed for desktop clients, not modern applications
 2. **Crippled APIs**: Rate-limited, read-only, OAuth-complex APIs that can't manage your actual email data
 
-The result? Developers either abandon email integration entirely or waste weeks building fragile IMAP wrappers that break constantly.
+As a result, developers either abandon email integration or spend weeks building fragile IMAP wrappers that break often.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **The Dirty Secret**: Most "email APIs" are sending APIs. Other providers don't let you organize folders, sync contacts, or manage calendars through a simple REST interface.
 
 
 ## What Developers Are Actually Saying
 
-The frustration is real and documented everywhere:
+Developers have documented the frustration in many places:
 
 > "I recently tried to integrate Gmail in my app, and I poured too much time on it. I decided it is not worth to support Gmail."
 >
@@ -108,7 +108,7 @@ The frustration is real and documented everywhere:
 >
 > *- [Stack Overflow question](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) with 47 upvotes*
 
-The evidence is everywhere:
+More evidence:
 
 * **WordPress SMTP issues**: [631 GitHub issues](https://github.com/awesomemotive/WP-Mail-SMTP/issues) about email delivery failures
 * **Zapier limitations**: [Community complaints](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) about 10 emails/hour limits and IMAP detection failures
@@ -120,7 +120,7 @@ The evidence is everywhere:
 
 **We are the first email service to offer complete CRUD operations for all email data through a unified REST API.**
 
-This isn't just another sending API. This is complete programmatic control over:
+The API gives you complete programmatic control over:
 
 * **Messages**: Create, read, update, delete, search, move, flag
 * **Folders**: Full IMAP folder management via REST endpoints
@@ -129,15 +129,15 @@ This isn't just another sending API. This is complete programmatic control over:
 
 ### Why We Built This
 
-**The Problem**: Every email provider treats email as a black box. You can send emails, maybe read them with complex OAuth, but you can't truly *manage* your email data programmatically.
+**The Problem**: Every email provider treats email as a black box. You can send emails, maybe read them with complex OAuth, but you can't *manage* your email data programmatically.
 
-**Our Vision**: Email should be as easy to integrate as any modern API. No IMAP libraries. No OAuth complexity. No rate limit nightmares. Just simple REST endpoints that work.
+**Our Vision**: Email should be as easy to integrate as any modern API, with simple REST endpoints instead of IMAP libraries, OAuth complexity, and rate limit nightmares.
 
 **The Result**: The first email service where you can build a complete email client, CRM integration, or automation system using nothing but HTTP requests.
 
 ### Simple Authentication
 
-No [OAuth complexity](https://oauth.net/2/). No [app-specific passwords](https://support.google.com/accounts/answer/185833). Just your alias credentials:
+Authenticate with your alias credentials, without [OAuth complexity](https://oauth.net/2/) or [app-specific passwords](https://support.google.com/accounts/answer/185833):
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
@@ -182,9 +182,9 @@ curl -u "alias@yourdomain.com:password" \
 
 ## Advanced Search: No Other Service Compares
 
-**Forward Email is the only email service that offers comprehensive, programmatic search across all message fields through a REST API.**
+**Forward Email is the only email service that offers programmatic search across all message fields through a REST API.**
 
-While other providers offer basic filtering at best, we've built the most advanced email search API ever created. No Gmail API, Outlook API, or any other service comes close to our search capabilities.
+Other providers offer basic filtering at best. The Gmail API, Outlook API, and other services don't match our search capabilities.
 
 ### The Search API Landscape is Broken
 
@@ -340,7 +340,7 @@ Our search API uses:
 * **Regex optimization** with proper indexing strategies
 * **Parallel execution** for performance
 * **Input validation** for security
-* **Comprehensive error handling** for reliability
+* **Error handling** for reliability
 
 ```javascript
 // Example: Complex search implementation
@@ -405,7 +405,7 @@ graph LR
 
 ### Privacy-First Architecture
 
-**Zero-Knowledge Design**: Only you have access with your IMAP password - we can't read your emails. Our [zero-knowledge architecture](https://forwardemail.net/en/security) ensures complete privacy while delivering blazing performance.
+**Zero-Knowledge Design**: Only you have access with your IMAP password, so we can't read your emails. Our [zero-knowledge architecture](https://forwardemail.net/en/security) keeps your data private without slowing it down.
 
 
 ## Why We're Different: The Complete Comparison
@@ -443,14 +443,14 @@ graph LR
 **ProtonMail's Deception:**
 
 * **Claims**: ["We are open source"](https://proton.me/blog/open-source) prominently featured in marketing
-* **Reality**: [Server code is completely proprietary](https://github.com/ProtonMail) - only client apps are open source
+* **Reality**: [Server code is completely proprietary](https://github.com/ProtonMail); only client apps are open source
 * **Impact**: Users cannot verify server-side encryption, data handling, or privacy claims
 * **Transparency Violation**: No way to audit the actual email processing and storage systems
 
 **Tuta's Misleading Marketing:**
 
 * **Claims**: ["Open source email"](https://tuta.com/blog/posts/open-source-email) as a core selling point
-* **Reality**: [Backend infrastructure is closed source](https://github.com/tutao/tutanota) - only frontend is available
+* **Reality**: [Backend infrastructure is closed source](https://github.com/tutao/tutanota); only frontend is available
 * **Impact**: Proprietary encryption prevents standard email protocols (IMAP/SMTP)
 * **Lock-in Strategy**: Custom encryption forces vendor dependency
 
@@ -458,21 +458,21 @@ graph LR
 
 In 2025, true privacy requires **complete transparency**. When email providers claim "open source" but hide their server code:
 
-1. **Unverifiable Encryption**: You can't audit how your data is actually encrypted
+1. **Unverifiable Encryption**: You can't audit how your data is encrypted
 2. **Hidden Data Practices**: Server-side data handling remains a black box
 3. **Trust-Based Security**: You must trust their claims without verification
 4. **Vendor Lock-in**: Proprietary systems prevent data portability
 
 **Forward Email's True Transparency:**
 
-* ✅ **[Complete open source](https://github.com/forwardemail/forwardemail.net)** - server and client code
-* ✅ **[Self-hosting available](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - run your own instance
-* ✅ **Standard protocols** - IMAP, SMTP, CardDAV, CalDAV compatibility
-* ✅ **Auditable security** - every line of code can be inspected
-* ✅ **No vendor lock-in** - your data, your control
+* ✅ **[Complete open source](https://github.com/forwardemail/forwardemail.net)**: server and client code
+* ✅ **[Self-hosting available](https://forwardemail.net/en/blog/docs/self-hosted-solution)**: run your own instance
+* ✅ **Standard protocols**: IMAP, SMTP, CardDAV, CalDAV compatibility
+* ✅ **Auditable security**: you can inspect every line of code
+* ✅ **No vendor lock-in**: you control your data
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and run your own instance.
 
 
 ## 30+ Real-World Integration Examples
@@ -1274,7 +1274,7 @@ Sign up at [forwardemail.net](https://forwardemail.net) and verify your domain.
 
 ### 2. Generate API Credentials
 
-Your alias email and password serve as API credentials - no additional setup required.
+Your alias email and password serve as API credentials, with no additional setup required.
 
 ### 3. Make Your First API Call
 
@@ -1298,14 +1298,14 @@ Visit [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) for
 
 ## Technical Resources
 
-* **[Complete API Documentation](https://forwardemail.net/en/email-api)** - Interactive OpenAPI 3.0 specification
-* **[Self-Hosting Guide](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Deploy Forward Email on your infrastructure
-* **[Security Whitepaper](https://forwardemail.net/technical-whitepaper.pdf)** - Technical architecture and security details
-* **[GitHub Repository](https://github.com/forwardemail/forwardemail.net)** - Open source codebase
-* **[Developer Support](mailto:api@forwardemail.net)** - Direct access to our engineering team
+* **[Complete API Documentation](https://forwardemail.net/en/email-api)**: Interactive OpenAPI 3.0 specification
+* **[Self-Hosting Guide](https://forwardemail.net/en/blog/docs/self-hosted-solution)**: Deploy Forward Email on your infrastructure
+* **[Security Whitepaper](https://forwardemail.net/technical-whitepaper.pdf)**: Technical architecture and security details
+* **[GitHub Repository](https://github.com/forwardemail/forwardemail.net)**: Open source codebase
+* **[Developer Support](mailto:api@forwardemail.net)**: Direct access to our engineering team
 
 ---
 
-**Ready to revolutionize your email integration?** [Start building with Forward Email's API today](https://forwardemail.net/en/email-api) and experience the first complete email management platform designed for developers.
+[Start building with Forward Email's API today](https://forwardemail.net/en/email-api), the first complete email management platform designed for developers.
 
-*Forward Email: The email service that finally gets APIs right.*
+*Forward Email: email with a complete REST API.*

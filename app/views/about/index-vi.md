@@ -28,7 +28,7 @@
 > \[!TIP]
 > Để biết chi tiết kỹ thuật về kiến trúc, các triển khai bảo mật và lộ trình phát triển, xem [Bản trắng Kỹ thuật](https://forwardemail.net/technical-whitepaper.pdf) và [kiểm toán bảo mật](https://forwardemail.net/pentest-report_forward-email.pdf) độc lập từ Cure53.
 
-Forward Email là một dịch vụ [chuyển tiếp email miễn phí và mã nguồn mở](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") tập trung vào [quyền riêng tư của người dùng](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy"). Bắt đầu như một giải pháp chuyển tiếp email đơn giản vào năm 2017, dịch vụ đã phát triển thành một nền tảng email toàn diện cung cấp tên miền tùy chỉnh không giới hạn, địa chỉ email và bí danh không giới hạn, địa chỉ email dùng một lần không giới hạn, bảo vệ chống spam và lừa đảo, lưu trữ hộp thư được mã hóa, cùng nhiều tính năng nâng cao khác.
+Forward Email là một dịch vụ [chuyển tiếp email miễn phí và mã nguồn mở](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") tập trung vào [quyền riêng tư của người dùng](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy"). Forward Email bắt đầu là một dịch vụ chuyển tiếp email vào năm 2017 và hiện cung cấp tên miền tùy chỉnh không giới hạn, địa chỉ email và bí danh không giới hạn, địa chỉ email dùng một lần không giới hạn, bảo vệ chống spam và lừa đảo, lưu trữ hộp thư được mã hóa, cùng nhiều tính năng nâng cao khác.
 
 Dịch vụ được duy trì và sở hữu bởi đội ngũ sáng lập ban đầu gồm các nhà thiết kế và phát triển. Nó được xây dựng hoàn toàn bằng phần mềm mã nguồn mở sử dụng [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript"), [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js"), [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), [HTTPS](https://en.wikipedia.org/wiki/HTTPS "HTTPS"), [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security "TLS"), và [SMTP](https://en.wikipedia.org/wiki/SMTP "SMTP").
 
@@ -37,7 +37,7 @@ Dịch vụ được duy trì và sở hữu bởi đội ngũ sáng lập ban �
 
 Forward Email được thành lập bởi **Nicholas Baugh** vào năm 2017. Theo [Bản trắng Kỹ thuật Forward Email](https://forwardemail.net/technical-whitepaper.pdf), Baugh ban đầu đang tìm kiếm một giải pháp tiết kiệm chi phí và đơn giản để kích hoạt email trên các tên miền cho các dự án phụ của mình. Sau khi nghiên cứu các lựa chọn có sẵn, anh bắt đầu tự viết mã giải pháp của riêng mình và mua tên miền `forwardemail.net` vào ngày 2 tháng 10 năm 2017.
 
-Sứ mệnh của Forward Email vượt ra ngoài việc cung cấp dịch vụ email—nó nhằm mục đích thay đổi cách ngành công nghiệp tiếp cận quyền riêng tư và bảo mật email. Các giá trị cốt lõi của công ty bao gồm minh bạch, kiểm soát của người dùng và bảo vệ quyền riêng tư thông qua triển khai kỹ thuật thay vì chỉ là các cam kết chính sách.
+Sứ mệnh của Forward Email là thay đổi cách ngành công nghiệp tiếp cận quyền riêng tư và bảo mật email. Các giá trị cốt lõi của công ty bao gồm minh bạch, kiểm soát của người dùng và bảo vệ quyền riêng tư thông qua triển khai kỹ thuật thay vì các cam kết chính sách.
 
 
 ## Dòng thời gian {#timeline}
@@ -47,13 +47,13 @@ Sứ mệnh của Forward Email vượt ra ngoài việc cung cấp dịch vụ 
 **Ngày 2 tháng 10 năm 2017**: Nicholas Baugh đã mua tên miền `forwardemail.net` sau khi nghiên cứu các giải pháp email tiết kiệm chi phí cho các dự án phụ của mình.
 
 **Ngày 5 tháng 11 năm 2017**: Baugh đã tạo một tệp JavaScript dài 634 dòng sử dụng [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") để chuyển tiếp email cho bất kỳ tên miền tùy chỉnh nào. Triển khai ban đầu này được công bố mã nguồn mở trên [GitHub](https://github.com/forwardemail) và dịch vụ được ra mắt sử dụng GitHub Pages.
-**Tháng 11 năm 2017**: Forward Email chính thức ra mắt sau một phiên bản phát hành ban đầu. Phiên bản đầu tiên hoàn toàn dựa trên DNS mà không cần đăng ký tài khoản hay quy trình đăng ký—chỉ đơn giản là một tệp README được viết bằng Markdown với hướng dẫn. Người dùng có thể thiết lập chuyển tiếp email bằng cách cấu hình các bản ghi MX trỏ đến `mx1.forwardemail.net` và `mx2.forwardemail.net`, đồng thời thêm một bản ghi TXT với `forward-email=user@gmail.com`.
+**Tháng 11 năm 2017**: Forward Email chính thức ra mắt sau một phiên bản phát hành ban đầu. Phiên bản đầu tiên hoàn toàn dựa trên DNS mà không cần đăng ký tài khoản hay quy trình đăng ký, chỉ là một tệp README được viết bằng Markdown với hướng dẫn. Người dùng có thể thiết lập chuyển tiếp email bằng cách cấu hình các bản ghi MX trỏ đến `mx1.forwardemail.net` và `mx2.forwardemail.net`, đồng thời thêm một bản ghi TXT với `forward-email=user@gmail.com`.
 
-Sự đơn giản và hiệu quả của giải pháp này đã thu hút sự chú ý từ các nhà phát triển nổi tiếng, bao gồm [David Heinemeier Hansson](https://dhh.dk) (người tạo ra Ruby on Rails), người vẫn tiếp tục sử dụng Forward Email trên tên miền `dhh.dk` của mình cho đến ngày nay.
+Dịch vụ đã thu hút các nhà phát triển nổi tiếng, bao gồm [David Heinemeier Hansson](https://dhh.dk) (người tạo ra Ruby on Rails), người vẫn tiếp tục sử dụng Forward Email trên tên miền `dhh.dk` của mình cho đến ngày nay.
 
 ### 2018 - Cơ sở hạ tầng và Tích hợp {#2018---infrastructure-and-integration}
 
-**Tháng 4 năm 2018**: Khi [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") ra mắt [dịch vụ DNS tiêu dùng ưu tiên quyền riêng tư](https://blog.cloudflare.com/announcing-1111/), Forward Email đã chuyển từ sử dụng [OpenDNS](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS") sang [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") để xử lý các tra cứu [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), thể hiện cam kết của công ty đối với các lựa chọn cơ sở hạ tầng tập trung vào quyền riêng tư.
+**Tháng 4 năm 2018**: Khi [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") ra mắt [dịch vụ DNS tiêu dùng ưu tiên quyền riêng tư](https://blog.cloudflare.com/announcing-1111/), Forward Email đã chuyển từ sử dụng [OpenDNS](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS") sang [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") để xử lý các tra cứu [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System").
 
 **Tháng 10 năm 2018**: Forward Email cho phép người dùng "Gửi thư như" với [Gmail](https://en.wikipedia.org/wiki/Gmail "Gmail") và [Outlook](https://en.wikipedia.org/wiki/Outlook "Outlook"), mở rộng khả năng tích hợp với các nhà cung cấp email phổ biến.
 
@@ -65,16 +65,16 @@ Sự đơn giản và hiệu quả của giải pháp này đã thu hút sự ch
 
 **Tháng 2 năm 2020**: Forward Email phát hành kế hoạch Bảo vệ Quyền riêng tư Nâng cao, cho phép người dùng tắt việc thiết lập các bản ghi DNS công khai với các bí danh cấu hình chuyển tiếp email của họ. Thông qua kế hoạch này, thông tin bí danh email của người dùng được ẩn khỏi việc tìm kiếm công khai trên Internet. Công ty cũng phát hành tính năng cho phép bật hoặc tắt các bí danh cụ thể trong khi vẫn cho phép chúng xuất hiện như các địa chỉ email hợp lệ và trả về các [mã trạng thái SMTP](https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes "List of SMTP server return codes") thành công, với email được loại bỏ ngay lập tức (tương tự như việc chuyển đầu ra sang [/dev/null](https://en.wikipedia.org/wiki/Null_device "Null device")).
 
-**Tháng 4 năm 2020**: Sau khi gặp phải vô số trở ngại với các giải pháp phát hiện thư rác hiện có không tuân thủ chính sách quyền riêng tư của Forward Email, công ty đã phát hành phiên bản alpha ban đầu của Trình Quét Thư Rác. Giải pháp [lọc thư rác](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") hoàn toàn miễn phí và mã nguồn mở này sử dụng phương pháp lọc thư rác [Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") kết hợp với bảo vệ chống [lừa đảo](https://en.wikipedia.org/wiki/Phishing "Phishing") và tấn công [IDN homograph](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email cũng phát hành [xác thực hai yếu tố](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) sử dụng [mật khẩu dùng một lần](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) để tăng cường bảo mật tài khoản.
+**Tháng 4 năm 2020**: Sau khi gặp phải vô số trở ngại với các giải pháp phát hiện thư rác hiện có không tuân thủ chính sách quyền riêng tư của Forward Email, công ty đã phát hành phiên bản alpha ban đầu của Trình Quét Thư Rác. Giải pháp [lọc thư rác](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") miễn phí và mã nguồn mở này sử dụng phương pháp lọc thư rác [Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") kết hợp với bảo vệ chống [lừa đảo](https://en.wikipedia.org/wiki/Phishing "Phishing") và tấn công [IDN homograph](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email cũng phát hành [xác thực hai yếu tố](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) sử dụng [mật khẩu dùng một lần](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) để tăng cường bảo mật tài khoản.
 
 **Tháng 5 năm 2020**: Forward Email cho phép [chuyển tiếp cổng tùy chỉnh](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") như một giải pháp cho người dùng để vượt qua việc chặn cổng bởi [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). Công ty cũng phát hành [API RESTful Chuyển tiếp Email Miễn phí](email-api) với tài liệu đầy đủ và các ví dụ yêu cầu và phản hồi theo thời gian thực, cùng với hỗ trợ webhook.
 **Tháng 8 năm 2020**: Forward Email đã thêm hỗ trợ cho hệ thống xác thực email [Authenticated Received Chain](arc) ("ARC"), tăng cường bảo mật và khả năng gửi email thành công.
 
-**Ngày 23 tháng 11 năm 2020**: Forward Email chính thức ra mắt công khai sau chương trình beta, đánh dấu một cột mốc quan trọng trong sự phát triển của nền tảng.
+**Ngày 23 tháng 11 năm 2020**: Forward Email chính thức ra mắt công khai sau chương trình beta.
 
 ### 2021 - Hiện đại hóa nền tảng {#2021---platform-modernization}
 
-**Tháng 2 năm 2021**: Forward Email đã tái cấu trúc mã nguồn để loại bỏ tất cả các phụ thuộc vào [Python](https://en.wikipedia.org/wiki/Python_\(programming_language\) "Python (programming language)"), cho phép hệ thống của họ trở thành 100% [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript") và [Node.js](https://en.wikipedia.org/wiki/Node.js). Quyết định kiến trúc này phù hợp với cam kết của công ty trong việc duy trì một ngăn xếp công nghệ mã nguồn mở nhất quán.
+**Tháng 2 năm 2021**: Forward Email đã tái cấu trúc mã nguồn để loại bỏ tất cả các phụ thuộc vào [Python](https://en.wikipedia.org/wiki/Python_\(programming_language\) "Python (programming language)"), cho phép hệ thống của họ trở thành 100% [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript") và [Node.js](https://en.wikipedia.org/wiki/Node.js).
 
 **Ngày 27 tháng 9 năm 2021**: Forward Email [thêm hỗ trợ](email-forwarding-regex-pattern-filter) cho các bí danh chuyển tiếp email để khớp với [biểu thức chính quy](https://en.wikipedia.org/wiki/Regular_expression "Regular expression"), cung cấp cho người dùng khả năng định tuyến email tinh vi hơn.
 
@@ -88,9 +88,9 @@ Sự đơn giản và hiệu quả của giải pháp này đã thu hút sự ch
 
 **Tháng 4 năm 2023**: Forward Email đã triển khai và tự động hóa hoàn toàn hạ tầng mới. Toàn bộ dịch vụ bắt đầu chạy trên DNS cân bằng tải toàn cầu và dựa trên vị trí gần nhất với kiểm tra sức khỏe và chuyển đổi dự phòng sử dụng [Cloudflare](https://cloudflare.com), thay thế phương pháp DNS vòng tròn trước đây. Công ty chuyển sang sử dụng **máy chủ vật lý** tại nhiều nhà cung cấp, bao gồm [Vultr](https://www.vultr.com/?ref=429848) và [Digital Ocean](https://m.do.co/c/a7cecd27e071), cả hai đều là nhà cung cấp tuân thủ SOC 2 Loại 1. Cơ sở dữ liệu MongoDB và Redis được chuyển sang cấu hình cụm với các nút chính và dự phòng để đảm bảo tính khả dụng cao, mã hóa SSL đầu-cuối, mã hóa khi lưu trữ và phục hồi điểm thời gian (PITR).
 
-**Tháng 5 năm 2023**: Forward Email ra mắt tính năng **SMTP gửi đi** cho các yêu cầu [gửi email bằng SMTP](/faq#do-you-support-sending-email-with-smtp) và [gửi email bằng API](/faq#do-you-support-sending-email-with-api). Tính năng này bao gồm các biện pháp bảo vệ tích hợp để đảm bảo khả năng gửi thành công cao, hệ thống hàng đợi và thử lại hiện đại và mạnh mẽ, và [hỗ trợ nhật ký lỗi theo thời gian thực](/faq#do-you-store-error-logs).
+**Tháng 5 năm 2023**: Forward Email ra mắt tính năng **SMTP gửi đi** cho các yêu cầu [gửi email bằng SMTP](/faq#do-you-support-sending-email-with-smtp) và [gửi email bằng API](/faq#do-you-support-sending-email-with-api). Tính năng này bao gồm các biện pháp bảo vệ tích hợp để đảm bảo khả năng gửi thành công cao, hệ thống hàng đợi và thử lại hiện đại, và [hỗ trợ nhật ký lỗi theo thời gian thực](/faq#do-you-store-error-logs).
 
-**Tháng 11 năm 2023**: Forward Email ra mắt tính năng [**lưu trữ hộp thư mã hóa**](/blog/docs/best-quantum-safe-encrypted-email-service) cho [hỗ trợ IMAP](/faq#do-you-support-receiving-email-with-imap), đại diện cho bước tiến lớn trong bảo mật và riêng tư email.
+**Tháng 11 năm 2023**: Forward Email ra mắt tính năng [**lưu trữ hộp thư mã hóa**](/blog/docs/best-quantum-safe-encrypted-email-service) cho [hỗ trợ IMAP](/faq#do-you-support-receiving-email-with-imap).
 
 **Tháng 12 năm 2023**: Công ty [thêm hỗ trợ](/faq#do-you-support-pop3) cho [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys và WebAuthn](/faq#do-you-support-passkeys-and-webauthn), giám sát [thời gian đến hộp thư](/faq#i), và [OpenPGP cho lưu trữ IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
@@ -126,13 +126,13 @@ Sự đơn giản và hiệu quả của giải pháp này đã thu hút sự ch
 **Tháng 12 năm 2025**: Phiên bản 2.0 được phát hành, giới thiệu hỗ trợ [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) để bắt buộc mã hóa TLS trên truyền tải email và nâng cấp lên [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) phiên bản 6.
 ### 2026 - Tuân thủ RFC, lọc nâng cao và các cuộc kiểm toán bảo mật độc lập {#2026---rfc-compliance-advanced-filtering-and-independent-security-audits}
 
-**Tháng 1 năm 2026**: Forward Email đã phát hành một [tài liệu tuân thủ giao thức RFC toàn diện](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) và thêm hỗ trợ cho [mã hóa S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) cùng với [lọc email Sieve toàn diện (RFC 5228)](/faq#do-you-support-sieve-email-filtering) với hỗ trợ [giao thức ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering). REST API cũng được mở rộng lên 39 điểm cuối.
+**Tháng 1 năm 2026**: Forward Email đã phát hành một [tài liệu tuân thủ giao thức RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) và thêm hỗ trợ cho [mã hóa S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) cùng với [lọc email Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) với hỗ trợ [giao thức ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering). REST API cũng được mở rộng lên 39 điểm cuối.
 
 **Tháng 2 năm 2026**: Ứng dụng webmail mã nguồn mở chính thức được ra mắt tại [mail.forwardemail.net](https://mail.forwardemail.net) ([mã nguồn trên GitHub](https://github.com/forwardemail/mail.forwardemail.net)). Nền tảng cũng bổ sung hỗ trợ cho [Tiện ích Lên lịch CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities), và [Domain Connect](https://domainconnect.org) cho thiết lập DNS chỉ với 1 cú nhấp. Thông báo đẩy thời gian thực cho IMAP, CalDAV, và CardDAV được triển khai sử dụng WebSockets.
 
 **Tháng 3 năm 2026**: Hỗ trợ lưu trữ tùy chỉnh tương thích S3 theo từng tên miền được thêm vào, cùng với công cụ dòng lệnh để quản lý. Công việc bắt đầu phát triển ứng dụng desktop và di động đa nền tảng cho macOS, Windows, Linux, iOS, và Android sử dụng cùng mã nguồn webmail mã nguồn mở, được xây dựng với [Tauri](https://tauri.app). Một [máy chủ MCP](/blog/docs/mcp) mã nguồn mở cũng được phát hành, cho phép các trợ lý AI quản lý email, tên miền, bí danh, danh bạ và lịch thông qua API của Forward Email.
 
-**Tháng 5 năm 2026**: Các cải thiện đáng kể về độ tin cậy và khả năng tương thích đã được triển khai, bao gồm hỗ trợ Apple Push Notification (APN) cho giao nhận thư thời gian thực trên iOS/macOS, sửa lỗi CalDAV toàn diện cho khả năng tương thích đồng bộ iOS (sửa chữa PRODID, LAST-MODIFIED, CREATED, SEQUENCE và mã hóa href đúng), chính sách lưu giữ email theo alias, lọc Sieve nâng cao với giải mã tiêu đề MIME và bảo tồn tiêu đề List-*, đồng bộ từ khóa IMAP với nhãn tùy chỉnh và bảo vệ tràn BSON cho người gửi khối lượng lớn. Hỗ trợ TLS cũ được thêm cho các máy khách IMAP/POP3, và API thông báo đẩy được mở rộng với các endpoint CRUD token và pipeline giao hàng.
+**Tháng 5 năm 2026**: Forward Email đã triển khai các cải thiện về độ tin cậy và khả năng tương thích, bao gồm hỗ trợ Apple Push Notification (APN) cho giao nhận thư thời gian thực trên iOS/macOS, sửa lỗi CalDAV cho khả năng tương thích đồng bộ iOS (sửa chữa PRODID, LAST-MODIFIED, CREATED, SEQUENCE và mã hóa href đúng), chính sách lưu giữ email theo alias, lọc Sieve nâng cao với giải mã tiêu đề MIME và bảo tồn tiêu đề List-*, đồng bộ từ khóa IMAP với nhãn tùy chỉnh và bảo vệ tràn BSON cho người gửi khối lượng lớn. Hỗ trợ TLS cũ được thêm cho các máy khách IMAP/POP3, và API thông báo đẩy được mở rộng với các endpoint CRUD token và pipeline giao hàng.
 
 **Tháng 6 năm 2026**: Forward Email công bố kiểm toán bảo mật độc lập bên thứ ba đầu tiên, được thực hiện bởi [Cure53](https://cure53.de/), một trong những công ty nghiên cứu bảo mật được tôn trọng nhất trong ngành. Báo cáo kiểm tra xâm nhập đầy đủ có sẵn tại [pentest-report_forward-email.pdf](https://cure53.de/pentest-report_forward-email.pdf). Kiểm toán bao gồm toàn bộ kiến trúc mã nguồn mở và cơ sở hạ tầng máy chủ, với tất cả các phát hiện được xử lý và xác minh thông qua kiểm tra lại liên tục. Tăng cường bảo mật bổ sung được áp dụng bao gồm DNS pinning để ngăn chặn SSRF, xác thực token mời và xác thực URL Domain Connect.
 
@@ -145,17 +145,17 @@ Sự đơn giản và hiệu quả của giải pháp này đã thu hút sự ch
 
 ## Nguyên Tắc Cốt Lõi {#core-principles}
 
-Kể từ khi thành lập, Forward Email đã duy trì cam kết vững chắc với các nguyên tắc về quyền riêng tư và bảo mật:
+Kể từ khi thành lập, Forward Email đã tuân theo các nguyên tắc về quyền riêng tư và bảo mật sau:
 
-**Triết lý Mã nguồn mở 100%**: Khác với các đối thủ chỉ mở mã nguồn frontend trong khi backend vẫn đóng, Forward Email đã công khai toàn bộ mã nguồn—cả frontend và backend—cho công chúng kiểm tra trên [GitHub](https://github.com/forwardemail)—giờ đây được hỗ trợ bởi [hai cuộc kiểm toán bảo mật độc lập](/pentest-report_forward-email.pdf) từ Cure53.
+**Triết lý Mã nguồn mở 100%**: Khác với các đối thủ chỉ mở mã nguồn frontend trong khi backend vẫn đóng, Forward Email đã công khai toàn bộ mã nguồn (cả frontend và backend) cho công chúng kiểm tra trên [GitHub](https://github.com/forwardemail), giờ đây được hỗ trợ bởi [hai cuộc kiểm toán bảo mật độc lập](/pentest-report_forward-email.pdf) từ Cure53.
 
 **Thiết kế Ưu tiên Quyền riêng tư**: Ngay từ ngày đầu, Forward Email đã triển khai phương pháp xử lý trong bộ nhớ độc đáo, tránh ghi email ra đĩa, khác biệt với các dịch vụ email truyền thống lưu trữ tin nhắn trong cơ sở dữ liệu hoặc hệ thống tập tin.
 
-**Đổi mới Liên tục**: Dịch vụ đã phát triển từ một giải pháp chuyển tiếp email đơn giản thành một nền tảng email toàn diện với các tính năng như hộp thư mã hóa, mã hóa chống lượng tử, và hỗ trợ các giao thức chuẩn bao gồm SMTP, IMAP, POP3, và CalDAV.
+**Đổi mới Liên tục**: Dịch vụ đã phát triển từ chuyển tiếp email thành một nền tảng email với các tính năng như hộp thư mã hóa, mã hóa chống lượng tử, và hỗ trợ các giao thức chuẩn bao gồm SMTP, IMAP, POP3, và CalDAV.
 
-**Minh bạch**: Công khai toàn bộ mã nguồn để người dùng có thể kiểm tra các tuyên bố về quyền riêng tư thay vì chỉ tin vào các quảng cáo tiếp thị.
+**Minh bạch**: Công khai toàn bộ mã nguồn để người dùng có thể kiểm tra các tuyên bố về quyền riêng tư thay vì tin vào các quảng cáo tiếp thị.
 
-**Kiểm soát của Người dùng**: Trao quyền cho người dùng với các tùy chọn, bao gồm khả năng tự lưu trữ toàn bộ nền tảng nếu muốn.
+**Kiểm soát của Người dùng**: Cung cấp cho người dùng các tùy chọn, bao gồm khả năng tự lưu trữ toàn bộ nền tảng nếu muốn.
 
 
 ## Tình Trạng Hiện Tại {#current-status}
@@ -169,6 +169,6 @@ Tính đến tháng 9 năm 2026, Forward Email phục vụ hơn 1,6 triệu tên
 * **Tổ chức Khác**: RCD Hotels, Fly<span>.</span>io
 * **Nhà phát triển Nổi bật**: Isaac Z. Schlueter (người tạo npm), David Heinemeier Hansson (người tạo Ruby on Rails)
 
-Nền tảng tiếp tục phát triển với các bản phát hành tính năng và cải tiến hạ tầng thường xuyên, duy trì vị thế là dịch vụ email duy nhất 100% mã nguồn mở, mã hóa, tập trung vào quyền riêng tư, minh bạch và chống lượng tử có sẵn hiện nay—giờ đây được hỗ trợ bởi [hai cuộc kiểm toán bảo mật độc lập](/pentest-report_forward-email.pdf) từ Cure53.
+Forward Email thường xuyên phát hành tính năng mới và cải tiến hạ tầng, và vẫn là dịch vụ email duy nhất 100% mã nguồn mở, mã hóa, tập trung vào quyền riêng tư, minh bạch và chống lượng tử có sẵn hiện nay, giờ đây được hỗ trợ bởi [hai cuộc kiểm toán bảo mật độc lập](/pentest-report_forward-email.pdf) từ Cure53.
 
 <!-- <img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" /> -->

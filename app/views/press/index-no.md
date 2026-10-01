@@ -19,11 +19,11 @@
 
 Forward Email er den eneste 100 % åpen kildekode e-posttjenesten med fokus på sikkerhet og personvern. Lær mer om vår historie på [vår Om-side](/about).
 
-Vår tjeneste ble grunnlagt i 2017 og driver e-post for over 500 000 domener – inkludert merkbare brukere som [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [flere universiteter](/blog/docs/alumni-email-forwarding-university-case-study) og regjeringer, og mer.
+Vår tjeneste ble grunnlagt i 2017 og driver e-post for over 500 000 domener, inkludert merkbare brukere som [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [flere universiteter](/blog/docs/alumni-email-forwarding-university-case-study) og regjeringer, og mer.
 
-Vårt mål er å være e-post- og sikkerhetsinfrastrukturplattformen på bedriftsnivå – og vi følger [flere prinsipper](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Vårt mål er å være e-post- og sikkerhetsinfrastrukturplattformen på bedriftsnivå, og vi følger [flere prinsipper](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Hvis du er medlem av pressen, journalist eller medierepresentant og ønsker å snakke med oss, stille spørsmål eller lære mer – vennligst kontakt oss på `press@forwardemail.net`.
+Hvis du er medlem av pressen, journalist eller medierepresentant og ønsker å snakke med oss, stille spørsmål eller lære mer, vennligst kontakt oss på `press@forwardemail.net`.
 
 
 ## Nøkkelfakta og statistikk {#key-facts--statistics}

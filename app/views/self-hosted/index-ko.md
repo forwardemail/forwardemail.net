@@ -136,7 +136,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 `1. 초기 설정` 옵션을 선택하여 시작하세요.
 
-완료되면 성공 메시지가 표시됩니다. `docker ps` 명령어를 실행하여 실행 중인 구성 요소를 확인할 수도 있습니다. 구성 요소에 대한 자세한 내용은 아래를 참조하세요.
+완료되면 성공 메시지가 표시됩니다. `docker ps` 명령어를 실행하여 실행 중인 구성 요소를 확인할 수 있습니다. 구성 요소에 대한 자세한 내용은 아래를 참조하세요.
 
 
 ## 서비스 {#services}

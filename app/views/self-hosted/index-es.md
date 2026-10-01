@@ -28,7 +28,7 @@
 
 ## Primeros pasos {#getting-started}
 
-Nuestra solución de correo electrónico autoalojada, como todos nuestros productos, es 100% de código abierto—tanto frontend como backend. Esto significa:
+Nuestra solución de correo electrónico autoalojada, como todos nuestros productos, es 100% de código abierto, frontend y backend. Esto significa:
 
 1. **Transparencia completa**: Cada línea de código que procesa tus correos electrónicos está disponible para escrutinio público
 2. **Contribuciones de la comunidad**: Cualquiera puede contribuir con mejoras o corregir problemas
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Elija la opción `1. Configuración inicial` para comenzar.
 
-Una vez completado, deberías ver un mensaje de éxito. Incluso puedes ejecutar `docker ps` para ver **los** componentes iniciados. Más información sobre los componentes a continuación.
+Una vez completado, deberías ver un mensaje de éxito. Puedes ejecutar `docker ps` para ver **los** componentes iniciados. Más información sobre los componentes a continuación.
 
 
 ## Servicios {#services}

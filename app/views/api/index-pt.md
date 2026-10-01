@@ -124,7 +124,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=Test email"
 ```
 
-Este método é útil ao enviar emails de aplicações que já usam credenciais SMTP e torna a migração do SMTP para nossa API transparente.
+Este método é útil ao enviar emails de aplicações que já usam credenciais SMTP e torna a migração do SMTP para nossa API simples.
 
 ### Endpoints Somente para Alias {#alias-only-endpoints}
 
@@ -167,7 +167,7 @@ Nosso serviço está traduzido para mais de 25 idiomas diferentes. Todas as mens
 
 A paginação é suportada por todos os endpoints da API que listam resultados.
 
-Basta fornecer as propriedades da querystring `page` (e opcionalmente `limit`).
+Forneça as propriedades da querystring `page` (e opcionalmente `limit`).
 
 A propriedade `page` deve ser um número maior ou igual a `1`. Se você fornecer `limit` (também um número), o valor mínimo é `10` e o máximo é `50` (a menos que indicado de outra forma).
 
@@ -389,7 +389,7 @@ Estas instruções podem ser encontradas na seção FAQ [Você suporta receber e
 ### Criar mensagem {#create-message}
 
 > \[!NOTE]
-> Isto **NÃO** enviará um email – apenas adicionará a mensagem à sua pasta de caixa de correio (por exemplo, isso é similar ao comando IMAP `APPEND`).  Se você deseja enviar um email, veja [Criar email SMTP de saída](#create-outbound-smtp-email) abaixo.  Após criar o email SMTP de saída, você pode anexar uma cópia dele usando este endpoint à caixa de correio do seu alias para fins de armazenamento.
+> Isto **NÃO** enviará um email, apenas adicionará a mensagem à sua pasta de caixa de correio (por exemplo, isso é similar ao comando IMAP `APPEND`).  Se você deseja enviar um email, veja [Criar email SMTP de saída](#create-outbound-smtp-email) abaixo.  Após criar o email SMTP de saída, você pode anexar uma cópia dele usando este endpoint à caixa de correio do seu alias para fins de armazenamento.
 
 > `POST /v1/messages`
 
@@ -508,7 +508,7 @@ Observe que, com exceção de `envelope` e `dkim` (já que configuramos automati
 
 Você deve passar ou a única opção `raw` com seu email completo bruto incluindo cabeçalhos **ou** passar as opções individuais de parâmetros do corpo abaixo.
 
-Este endpoint da API codificará automaticamente emojis para você se forem encontrados nos cabeçalhos (por exemplo, uma linha de assunto `Subject: 🤓 Hello` é convertida automaticamente para `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Nosso objetivo foi criar uma API de email extremamente amigável para desenvolvedores e à prova de erros.
+Este endpoint da API codificará automaticamente emojis para você se forem encontrados nos cabeçalhos (por exemplo, uma linha de assunto `Subject: 🤓 Hello` é convertida automaticamente para `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Nosso objetivo foi criar uma API de email amigável para desenvolvedores e à prova de erros.
 
 **Autenticação:** Este endpoint suporta tanto [autenticação por token de API](#api-token-authentication-recommended-for-most-endpoints) quanto [autenticação por credenciais de alias](#alias-credentials-authentication-for-outbound-email). Veja a seção [Autenticação](#authentication) acima para detalhes.
 
@@ -974,7 +974,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Criptografar {#encrypt}
 
-Permitimos que você criptografe registros mesmo no plano gratuito sem custo. Privacidade não deve ser um recurso, deve ser inerentemente incorporada a todos os aspectos de um produto. Conforme muito solicitado em uma [discussão do Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) e em [nossos issues no GitHub](https://github.com/forwardemail/forwardemail.net/issues/254), adicionamos isso.
+Permitimos que você criptografe registros mesmo no plano gratuito sem custo. A privacidade deve ser incorporada a todos os aspectos de um produto. Conforme muito solicitado em uma [discussão do Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) e em [nossos issues no GitHub](https://github.com/forwardemail/forwardemail.net/issues/254), adicionamos isso.
 
 ### Criptografar Registro TXT {#encrypt-txt-record}
 

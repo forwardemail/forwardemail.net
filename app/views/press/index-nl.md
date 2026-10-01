@@ -19,11 +19,11 @@
 
 Forward Email is de enige 100% open-source e-mailhostingdienst die zich richt op beveiliging en privacy. Lees meer over onze geschiedenis op [onze Over-pagina](/about).
 
-Onze dienst is opgericht in 2017 en verzorgt e-mail voor meer dan 500.000 domeinen – waaronder opvallende gebruikers zoals [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [verschillende universiteiten](/blog/docs/alumni-email-forwarding-university-case-study) en overheden, en meer.
+Onze dienst is opgericht in 2017 en verzorgt e-mail voor meer dan 500.000 domeinen, waaronder opvallende gebruikers zoals [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [verschillende universiteiten](/blog/docs/alumni-email-forwarding-university-case-study) en overheden, en meer.
 
-Ons doel is om het e-mail- en beveiligingsinfrastructuurplatform op ondernemingsniveau te zijn – en we houden ons aan [verschillende principes](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Ons doel is om het e-mail- en beveiligingsinfrastructuurplatform op ondernemingsniveau te zijn, en we houden ons aan [verschillende principes](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Als u lid bent van de pers, een journalist of een mediavertegenwoordiger en met ons wilt spreken, vragen wilt stellen of meer wilt weten – neem dan contact met ons op via `press@forwardemail.net`.
+Als u lid bent van de pers, een journalist of een mediavertegenwoordiger en met ons wilt spreken, vragen wilt stellen of meer wilt weten, neem dan contact met ons op via `press@forwardemail.net`.
 
 
 ## Belangrijke Feiten & Statistieken {#key-facts--statistics}

@@ -33,20 +33,20 @@
 
 ## Esipuhe {#foreword}
 
-Tämä opas tarjoaa yksityiskohtaisia esimerkkejä siitä, miten integroit Forward Emailin SMTP-palveluun eri ohjelmointikielillä, kehyksillä ja sähköpostiohjelmilla. SMTP-palvelumme on suunniteltu olemaan luotettava, turvallinen ja helppo integroida olemassa oleviin sovelluksiisi.
+Tämä opas näyttää, miten integroit Forward Emailin SMTP-palveluun eri ohjelmointikielistä, kehyksistä ja sähköpostiohjelmista.
 
 
 ## Miten Forward Emailin SMTP-käsittely toimii {#how-forward-emails-smtp-processing-works}
 
-Ennen kuin siirryt integrointiesimerkkeihin, on tärkeää ymmärtää, miten SMTP-palvelumme käsittelee sähköposteja:
+SMTP-palvelumme käsittelee sähköpostit seuraavasti:
 
 ### Sähköpostijono ja uudelleenyritysjärjestelmä {#email-queue-and-retry-system}
 
 Kun lähetät sähköpostin SMTP:n kautta palvelimillemme:
 
 1. **Alkukäsittely**: Sähköposti validoidaan, tarkistetaan haittaohjelmien varalta ja suodatetaan roskapostisuodattimilla
-2. **Älykäs jonotus**: Sähköpostit asetetaan kehittyneeseen jonotusjärjestelmään toimitusta varten
-3. **Älykäs uudelleenyritysmekanismi**: Jos toimitus epäonnistuu väliaikaisesti, järjestelmämme:
+2. **Jonotus**: Järjestelmämme asettaa sähköpostit toimitusjonoon
+3. **Uudelleenyritysmekanismi**: Jos toimitus epäonnistuu väliaikaisesti, järjestelmämme:
    * Analysoi virhevastauksen `getBounceInfo`-funktiollamme
    * Määrittää, onko ongelma väliaikainen (esim. "yritä myöhemmin uudelleen", "väliaikaisesti lykätty") vai pysyvä (esim. "käyttäjää ei tunnistettu")
    * Väliaikaisissa ongelmissa merkitsee sähköpostin uudelleenyritystä varten
@@ -59,14 +59,14 @@ Kun lähetät sähköpostin SMTP:n kautta palvelimillemme:
 
 ### Luotettavuus varmistettu yksinkertaisuudella {#dummy-proofed-for-reliability}
 
-Järjestelmämme on suunniteltu käsittelemään erilaisia reunatapauksia:
+Järjestelmämme käsittelee nämä reunatapaukset:
 
 * Jos estolista havaitaan, sähköpostia yritetään automaattisesti uudelleen
 * Jos verkko-ongelmia ilmenee, toimitusta yritetään uudelleen
 * Jos vastaanottajan postilaatikko on täynnä, järjestelmä yrittää myöhemmin uudelleen
 * Jos vastaanottava palvelin on väliaikaisesti poissa käytöstä, yritämme uudelleen
 
-Tämä lähestymistapa parantaa merkittävästi toimitusprosentteja samalla kun säilyttää yksityisyyden ja turvallisuuden.
+Tämä lähestymistapa parantaa toimitusprosentteja samalla kun säilyttää yksityisyyden ja turvallisuuden.
 
 
 ## Node.js-integrointi {#nodejs-integration}
@@ -528,6 +528,6 @@ Jos kohtaat tässä käsiteltyjä ongelmia, tee seuraavat:
 
 ## Yhteenveto {#conclusion}
 
-Forward Emailin SMTP-palvelu tarjoaa luotettavan, turvallisen ja yksityisyyttä kunnioittavan tavan lähettää sähköposteja sovelluksistasi ja sähköpostiohjelmistasi. Älykkään jonojärjestelmämme, 5 päivän uudelleenyritysmekanismin ja kattavien toimitusilmoitusten ansiosta voit olla varma, että sähköpostisi saavuttavat määränpäänsä.
+Forward Emailin SMTP-palvelu tarjoaa luotettavan, turvallisen ja yksityisyyttä kunnioittavan tavan lähettää sähköposteja sovelluksistasi ja sähköpostiohjelmistasi. Se sisältää jonojärjestelmän, 5 päivän uudelleenyritysmekanismin ja toimitusilmoitukset.
 
 Edistyneempiä käyttötapauksia tai räätälöityjä integraatioita varten ota yhteyttä tukitiimiimme.

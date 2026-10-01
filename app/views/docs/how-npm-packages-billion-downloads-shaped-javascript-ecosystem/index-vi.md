@@ -54,7 +54,7 @@
 * [Một Thập Kỷ Mã Nguồn Mở: Nhìn Về Tương Lai](#a-decade-of-open-source-looking-forward)
 ## Lời Nói Đầu {#foreword}
 
-Trong thế giới [JavaScript](https://en.wikipedia.org/wiki/JavaScript) và [Node.js](https://en.wikipedia.org/wiki/Node.js), có những gói phần mềm thiết yếu—được tải xuống hàng triệu lần mỗi ngày và hỗ trợ các ứng dụng trên toàn thế giới. Đằng sau những công cụ này là các nhà phát triển tập trung vào chất lượng mã nguồn mở. Hôm nay, chúng tôi sẽ giới thiệu cách đội ngũ của chúng tôi giúp xây dựng và duy trì các gói npm đã trở thành phần quan trọng của hệ sinh thái JavaScript.
+Trong thế giới [JavaScript](https://en.wikipedia.org/wiki/JavaScript) và [Node.js](https://en.wikipedia.org/wiki/Node.js), có những gói phần mềm thiết yếu: được tải xuống hàng triệu lần mỗi ngày và hỗ trợ các ứng dụng trên toàn thế giới. Đằng sau những công cụ này là các nhà phát triển tập trung vào chất lượng mã nguồn mở. Đội ngũ của chúng tôi giúp xây dựng và duy trì các gói npm đã trở thành phần quan trọng của hệ sinh thái JavaScript.
 
 
 ## Những Người Tiên Phong Tin Tưởng Chúng Tôi: Isaac Z. Schlueter và Forward Email {#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email}
@@ -91,13 +91,13 @@ Là thành viên của [Ủy ban Kỹ thuật Express](https://expressjs.com/en/
 
 ### Đóng góp cho Framework Koa {#koa-framework-contributions}
 
-Công việc của Nick với [framework Koa](https://github.com/koajs/koa)—một lựa chọn hiện đại, nhẹ hơn Express cũng do TJ Holowaychuk tạo ra—càng cho thấy cam kết của anh với các công cụ phát triển web tốt hơn. Các đóng góp của anh cho Koa bao gồm cả các vấn đề và mã thông qua các pull request, giải quyết xử lý lỗi, quản lý loại nội dung và cải tiến tài liệu.
+Công việc của Nick với [framework Koa](https://github.com/koajs/koa) (một lựa chọn hiện đại, nhẹ hơn Express cũng do TJ Holowaychuk tạo ra) càng cho thấy cam kết của anh với các công cụ phát triển web tốt hơn. Các đóng góp của anh cho Koa bao gồm cả các vấn đề và mã thông qua các pull request, giải quyết xử lý lỗi, quản lý loại nội dung và cải tiến tài liệu.
 
 Công việc của anh trên cả Express và Koa mang lại cho anh cái nhìn độc đáo về phát triển web Node.js, giúp đội ngũ chúng tôi tạo ra các gói làm việc tốt với nhiều hệ sinh thái framework khác nhau.
 
 ### Từ Người Đóng Góp Cá Nhân đến Nhà Lãnh Đạo Tổ Chức {#from-individual-contributor-to-organization-leader}
 
-Những gì bắt đầu là giúp đỡ các dự án hiện có đã phát triển thành việc tạo và duy trì cả hệ sinh thái gói. Nick đã thành lập nhiều tổ chức GitHub—bao gồm [Cabin](https://github.com/cabinjs), [Spam Scanner](https://github.com/spamscanner), [Forward Email](https://github.com/forwardemail), [Lad](https://github.com/ladjs), và [Bree](https://github.com/breejs)—mỗi tổ chức giải quyết các nhu cầu cụ thể trong cộng đồng JavaScript.
+Những gì bắt đầu là giúp đỡ các dự án hiện có đã phát triển thành việc tạo và duy trì cả hệ sinh thái gói. Nick đã thành lập nhiều tổ chức GitHub, bao gồm [Cabin](https://github.com/cabinjs), [Spam Scanner](https://github.com/spamscanner), [Forward Email](https://github.com/forwardemail), [Lad](https://github.com/ladjs), và [Bree](https://github.com/breejs), mỗi tổ chức giải quyết các nhu cầu cụ thể trong cộng đồng JavaScript.
 
 Sự chuyển đổi từ người đóng góp thành nhà lãnh đạo này cho thấy tầm nhìn của Nick về phần mềm được thiết kế tốt để giải quyết các vấn đề thực tế. Bằng cách tổ chức các gói liên quan dưới các tổ chức GitHub tập trung, anh đã xây dựng các hệ sinh thái công cụ làm việc cùng nhau trong khi vẫn giữ được tính mô-đun và linh hoạt cho cộng đồng nhà phát triển rộng lớn hơn.
 
@@ -112,7 +112,7 @@ Chúng tôi tổ chức công việc mã nguồn mở của mình quanh các t�
 
 Điều làm Cabin đặc biệt là API và hệ thống plugin được thiết kế kỹ lưỡng. Các gói hỗ trợ như [`axe`](https://github.com/cabinjs/axe) cho middleware Express và [`parse-request`](https://github.com/cabinjs/parse-request) cho phân tích yêu cầu HTTP thể hiện cam kết của chúng tôi với các giải pháp hoàn chỉnh thay vì các công cụ riêng lẻ.
 
-Gói [`bson-objectid`](https://github.com/cabinjs/bson-objectid) xứng đáng được nhắc đến đặc biệt, với hơn 1.7 triệu lượt tải xuống chỉ trong hai tháng\[^2]. Triển khai nhẹ ObjectID MongoDB này đã trở thành lựa chọn hàng đầu cho các nhà phát triển cần ID mà không phụ thuộc đầy đủ vào MongoDB.
+Gói [`bson-objectid`](https://github.com/cabinjs/bson-objectid) xứng đáng được nhắc đến đặc biệt, với hơn 1.7 triệu lượt tải xuống trong hai tháng\[^2]. Triển khai nhẹ ObjectID MongoDB này đã trở thành lựa chọn hàng đầu cho các nhà phát triển cần ID mà không phụ thuộc đầy đủ vào MongoDB.
 
 ### Spam Scanner: Chống Lại Lạm Dụng Email {#spam-scanner-fighting-email-abuse}
 
@@ -145,7 +145,7 @@ Gói [`preview-email`](https://github.com/forwardemail/preview-email) từ tổ 
 
 ### Lad: Bộ công cụ và tiện ích thiết yếu cho Koa {#lad-essential-koa-utilities-and-tools}
 
-[Tổ chức Lad](https://github.com/ladjs) cung cấp một bộ sưu tập các tiện ích và công cụ thiết yếu chủ yếu tập trung vào việc nâng cao hệ sinh thái framework Koa. Các gói này giải quyết các thách thức phổ biến trong phát triển web và được thiết kế để hoạt động liền mạch cùng nhau trong khi vẫn hữu ích độc lập.
+[Tổ chức Lad](https://github.com/ladjs) cung cấp một bộ sưu tập các tiện ích và công cụ thiết yếu chủ yếu tập trung vào việc nâng cao hệ sinh thái framework Koa. Các gói này giải quyết các thách thức phổ biến trong phát triển web và được thiết kế để hoạt động cùng nhau trong khi vẫn hữu ích độc lập.
 
 #### koa-better-error-handler: Cải thiện xử lý lỗi cho Koa {#koa-better-error-handler-improved-error-handling-for-koa}
 
@@ -170,7 +170,7 @@ Gói này đặc biệt có giá trị khi được sử dụng cùng với [`ko
 * Xác thực Google
 * Xác thực mật khẩu dùng một lần (OTP)
 
-Gói này rất dễ tùy chỉnh, cho phép các nhà phát triển điều chỉnh tên trường và cụm từ để phù hợp với yêu cầu của ứng dụng. Nó được thiết kế để tích hợp liền mạch với Mongoose cho quản lý người dùng, làm cho nó trở thành giải pháp lý tưởng cho các ứng dụng dựa trên Koa cần xác thực mạnh mẽ.
+Gói này rất dễ tùy chỉnh, cho phép các nhà phát triển điều chỉnh tên trường và cụm từ để phù hợp với yêu cầu của ứng dụng. Nó được thiết kế để tích hợp với Mongoose cho quản lý người dùng, làm cho nó phù hợp với các ứng dụng dựa trên Koa cần xác thực.
 
 #### graceful: Tắt Ứng dụng Thanh lịch {#graceful-elegant-application-shutdown}
 
@@ -202,12 +202,12 @@ Chúng tôi sử dụng Upptime cho trang trạng thái của riêng mình tại
 
 Để nâng cao trải nghiệm người dùng, chúng tôi đã tích hợp [@octokit/core](https://github.com/octokit/core.js/) vào mã nguồn forwardemail.net để hiển thị các cập nhật trạng thái và sự cố theo thời gian thực trực tiếp trên trang web của chúng tôi. Việc tích hợp này cung cấp sự minh bạch rõ ràng cho người dùng trong trường hợp có bất kỳ sự cố nào trên toàn bộ hệ thống của chúng tôi (Website, API, MongoDB, Redis, SQLite, SMTP, POP3, IMAP, Bree, v.v.) với các thông báo toast tức thì, thay đổi biểu tượng huy hiệu, màu cảnh báo và nhiều hơn nữa.
 
-Thư viện @octokit/core cho phép chúng tôi lấy dữ liệu thời gian thực từ kho Upptime trên GitHub, xử lý và hiển thị nó theo cách thân thiện với người dùng. Khi bất kỳ dịch vụ nào gặp sự cố hoặc hiệu suất giảm, người dùng sẽ được thông báo ngay lập tức qua các chỉ báo trực quan mà không cần rời khỏi ứng dụng chính. Việc tích hợp liền mạch này đảm bảo người dùng luôn có thông tin cập nhật về trạng thái hệ thống của chúng tôi, tăng cường tính minh bạch và sự tin tưởng.
+Thư viện @octokit/core cho phép chúng tôi lấy dữ liệu thời gian thực từ kho Upptime trên GitHub, xử lý và hiển thị nó theo cách thân thiện với người dùng. Khi bất kỳ dịch vụ nào gặp sự cố hoặc hiệu suất giảm, người dùng sẽ được thông báo ngay lập tức qua các chỉ báo trực quan mà không cần rời khỏi ứng dụng chính. Việc tích hợp này cung cấp cho người dùng thông tin cập nhật về trạng thái hệ thống của chúng tôi.
 
-Upptime đã được hàng trăm tổ chức áp dụng nhằm tìm kiếm một cách giám sát minh bạch, đáng tin cậy và truyền đạt trạng thái đến người dùng. Thành công của dự án cho thấy sức mạnh của việc xây dựng các công cụ tận dụng hạ tầng hiện có (trong trường hợp này là GitHub) để giải quyết các vấn đề phổ biến theo những cách mới.
+Upptime đã được hàng trăm tổ chức áp dụng nhằm tìm kiếm một cách giám sát minh bạch, đáng tin cậy và truyền đạt trạng thái đến người dùng. Thành công của dự án cho thấy sức mạnh của việc xây dựng các công cụ trên hạ tầng hiện có (trong trường hợp này là GitHub) để giải quyết các vấn đề phổ biến theo những cách mới.
 ## Những Đóng Góp của Chúng Tôi cho Hệ Sinh Thái Forward Email {#our-contributions-to-the-forward-email-ecosystem}
 
-Trong khi các gói mã nguồn mở của chúng tôi được các nhà phát triển trên toàn thế giới sử dụng, chúng cũng tạo thành nền tảng cho dịch vụ Forward Email của chính chúng tôi. Vai trò kép này — vừa là người tạo ra vừa là người sử dụng các công cụ này — mang lại cho chúng tôi một góc nhìn độc đáo về ứng dụng thực tế của chúng và thúc đẩy sự cải tiến liên tục.
+Trong khi các gói mã nguồn mở của chúng tôi được các nhà phát triển trên toàn thế giới sử dụng, chúng cũng tạo thành nền tảng cho dịch vụ Forward Email của chính chúng tôi. Vai trò kép này, vừa là người tạo ra vừa là người sử dụng các công cụ này, mang lại cho chúng tôi một góc nhìn độc đáo về ứng dụng thực tế của chúng và thúc đẩy sự cải tiến liên tục.
 
 ### Từ Các Gói Đến Sản Xuất {#from-packages-to-production}
 
@@ -218,11 +218,11 @@ Hành trình từ các gói riêng lẻ đến một hệ thống sản xuất t
 * **Tối Ưu Hiệu Suất**: Xác định và giải quyết các nút thắt hiệu suất chỉ xuất hiện ở quy mô lớn.
 * **Tăng Cường Bảo Mật**: Thêm các lớp bảo mật bổ sung đặc thù cho việc xử lý email và bảo vệ dữ liệu người dùng.
 
-Công việc này đại diện cho hàng ngàn giờ phát triển vượt ra ngoài các gói lõi, tạo ra một dịch vụ email mạnh mẽ, an toàn tận dụng tối đa những đóng góp mã nguồn mở của chúng tôi.
+Công việc này đại diện cho hàng ngàn giờ phát triển vượt ra ngoài các gói lõi, tạo ra một dịch vụ email an toàn được xây dựng trên những đóng góp mã nguồn mở của chúng tôi.
 
 ### Vòng Phản Hồi {#the-feedback-loop}
 
-Có lẽ khía cạnh giá trị nhất của việc sử dụng các gói của chính chúng tôi trong sản xuất là vòng phản hồi mà nó tạo ra. Khi chúng tôi gặp phải các giới hạn hoặc trường hợp đặc biệt trong Forward Email, chúng tôi không chỉ vá lỗi cục bộ — mà còn cải thiện các gói nền tảng, mang lại lợi ích cho cả dịch vụ của chúng tôi và cộng đồng rộng lớn hơn.
+Có lẽ khía cạnh giá trị nhất của việc sử dụng các gói của chính chúng tôi trong sản xuất là vòng phản hồi mà nó tạo ra. Khi chúng tôi gặp phải các giới hạn hoặc trường hợp đặc biệt trong Forward Email, chúng tôi cải thiện các gói nền tảng thay vì vá lỗi cục bộ, mang lại lợi ích cho cả dịch vụ của chúng tôi và cộng đồng rộng lớn hơn.
 
 Cách tiếp cận này đã dẫn đến nhiều cải tiến:
 
@@ -255,7 +255,7 @@ Chúng tôi tuân theo một số nguyên tắc phát triển phần mềm đã 
 * **[Twelve Factor](https://12factor.net/)**: Tuân theo các thực hành tốt nhất để xây dựng ứng dụng hiện đại, có khả năng mở rộng
 * **[Dao cạo Occam](https://en.wikipedia.org/wiki/Occam%27s_razor)**: Chọn giải pháp đơn giản nhất đáp ứng yêu cầu
 * **[Dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)**: Sử dụng sản phẩm của chính chúng tôi một cách rộng rãi
-Những nguyên tắc này không chỉ là các khái niệm lý thuyết—chúng được tích hợp trong các thực hành phát triển hàng ngày của chúng tôi. Ví dụ, việc tuân thủ triết lý Unix của chúng tôi thể hiện rõ trong cách chúng tôi cấu trúc các gói npm: các mô-đun nhỏ, tập trung có thể kết hợp với nhau để giải quyết các vấn đề phức tạp.
+Chúng tôi áp dụng những nguyên tắc này trong các thực hành phát triển hàng ngày. Ví dụ, việc tuân thủ triết lý Unix của chúng tôi thể hiện rõ trong cách chúng tôi cấu trúc các gói npm: các mô-đun nhỏ, tập trung có thể kết hợp với nhau để giải quyết các vấn đề phức tạp.
 
 ### Nhắm tới Nhà Phát Triển Tự Lập, Tự Vốn {#targeting-the-scrappy-bootstrapped-developer}
 
@@ -271,11 +271,11 @@ Những nguyên tắc này thể hiện rõ trong mã nguồn Forward Email. T�
 * Công cụ thân thiện với nhà phát triển như `preview-email` giúp gỡ lỗi dễ dàng hơn
 * Các thành phần mô-đun như các tiện ích `p-*` khác nhau từ Sindre Sorhus
 
-Bằng cách tuân thủ những nguyên tắc này một cách nhất quán theo thời gian, chúng tôi đã xây dựng một dịch vụ mà các nhà phát triển có thể tin tưởng cho hạ tầng email của họ—an toàn, đáng tin cậy và phù hợp với các giá trị của cộng đồng mã nguồn mở.
+Bằng cách tuân thủ những nguyên tắc này một cách nhất quán theo thời gian, chúng tôi đã xây dựng một dịch vụ mà các nhà phát triển có thể tin tưởng cho hạ tầng email của họ: an toàn, đáng tin cậy và phù hợp với các giá trị của cộng đồng mã nguồn mở.
 
 ### Bảo Mật Theo Thiết Kế {#privacy-by-design}
 
-Bảo mật không phải là suy nghĩ muộn hay tính năng marketing đối với Forward Email—đó là một nguyên tắc thiết kế cơ bản định hướng mọi khía cạnh của dịch vụ và mã nguồn của chúng tôi:
+Quyền riêng tư là một nguyên tắc thiết kế tại Forward Email, định hướng mọi phần của dịch vụ và mã nguồn của chúng tôi:
 
 * **Mã hóa Không Truy Cập**: Chúng tôi đã triển khai các hệ thống khiến chúng tôi không thể đọc email của người dùng về mặt kỹ thuật.
 * **Thu Thập Dữ Liệu Tối Thiểu**: Chúng tôi chỉ thu thập dữ liệu cần thiết để cung cấp dịch vụ, không hơn.
@@ -305,7 +305,7 @@ Khi nói về tác động của phần mềm mã nguồn mở, thống kê tả
 > Mặc dù chúng tôi tự hào giúp duy trì một số gói được tải về nhiều trong hệ sinh thái JavaScript, chúng tôi muốn ghi nhận rằng nhiều gói này ban đầu được tạo ra bởi các nhà phát triển tài năng khác. Các gói như superagent và supertest ban đầu được tạo bởi TJ Holowaychuk, người có những đóng góp phong phú cho mã nguồn mở đã đóng vai trò quan trọng trong việc hình thành hệ sinh thái Node.js.
 ### Tổng Quan Về Tác Động Của Chúng Tôi {#a-birds-eye-view-of-our-impact}
 
-Chỉ trong khoảng thời gian hai tháng từ tháng Hai đến tháng Ba năm 2025, các gói hàng đầu mà chúng tôi đóng góp và hỗ trợ duy trì đã ghi nhận số lượt tải xuống đáng kinh ngạc:
+Trong khoảng thời gian hai tháng từ tháng Hai đến tháng Ba năm 2025, các gói hàng đầu mà chúng tôi đóng góp và hỗ trợ duy trì đã ghi nhận số lượt tải xuống sau:
 
 * **[superagent](https://www.npmjs.com/package/superagent)**: 84,575,829 lượt tải xuống\[^7] (ban đầu được tạo bởi TJ Holowaychuk)
 * **[supertest](https://www.npmjs.com/package/supertest)**: 76,432,591 lượt tải xuống\[^8] (ban đầu được tạo bởi TJ Holowaychuk)
@@ -327,13 +327,13 @@ Chỉ trong khoảng thời gian hai tháng từ tháng Hai đến tháng Ba nă
 > \[!NOTE]
 > Một số gói khác mà chúng tôi hỗ trợ duy trì nhưng không tạo ra có số lượt tải xuống còn cao hơn, bao gồm `form-data` (hơn 738 triệu lượt tải xuống), `toidentifier` (hơn 309 triệu lượt tải xuống), `stackframe` (hơn 116 triệu lượt tải xuống), và `error-stack-parser` (hơn 113 triệu lượt tải xuống). Chúng tôi rất vinh dự được đóng góp cho các gói này trong khi tôn trọng công sức của các tác giả gốc.
 
-Những con số này không chỉ ấn tượng mà còn đại diện cho các nhà phát triển thực sự đang giải quyết các vấn đề thực tế với mã nguồn mà chúng tôi giúp duy trì. Mỗi lượt tải xuống là một trường hợp mà các gói này đã giúp ai đó xây dựng điều gì đó có ý nghĩa, từ các dự án sở thích đến các ứng dụng doanh nghiệp được hàng triệu người sử dụng.
+Những con số này đại diện cho các nhà phát triển đang giải quyết vấn đề với mã nguồn mà chúng tôi giúp duy trì, từ các dự án sở thích đến các ứng dụng doanh nghiệp được hàng triệu người sử dụng.
 
 ![Package Categories Distribution](/img/art/category_pie_chart.svg)
 
 ### Tác Động Hàng Ngày Ở Quy Mô Lớn {#daily-impact-at-scale}
 
-Mô hình tải xuống hàng ngày cho thấy mức sử dụng ổn định và khối lượng lớn, với các đỉnh điểm đạt đến hàng triệu lượt tải xuống mỗi ngày\[^13]. Sự ổn định này cho thấy tính ổn định và độ tin cậy của các gói này—các nhà phát triển không chỉ thử nghiệm chúng; họ tích hợp chúng vào quy trình làm việc cốt lõi và phụ thuộc vào chúng ngày này qua ngày khác.
+Mô hình tải xuống hàng ngày cho thấy mức sử dụng ổn định và khối lượng lớn, với các đỉnh điểm đạt đến hàng triệu lượt tải xuống mỗi ngày\[^13]. Sự ổn định này cho thấy tính ổn định và độ tin cậy của các gói này: các nhà phát triển tích hợp chúng vào quy trình làm việc cốt lõi và phụ thuộc vào chúng hàng ngày.
 
 Mô hình tải xuống hàng tuần còn ấn tượng hơn, luôn duy trì ở mức hàng chục triệu lượt tải xuống mỗi tuần\[^14]. Điều này thể hiện dấu chân khổng lồ trong hệ sinh thái JavaScript, với các gói này chạy trong các môi trường sản xuất trên toàn cầu.
 
@@ -350,7 +350,7 @@ Sự tăng trưởng ổn định trong số lượt tải xuống theo thời g
 ## Hỗ Trợ Hệ Sinh Thái: Các Tài Trợ Mã Nguồn Mở Của Chúng Tôi {#supporting-the-ecosystem-our-open-source-sponsorships}
 
 > \[!TIP]
-> Tính bền vững của mã nguồn mở không chỉ là đóng góp mã—mà còn là hỗ trợ các nhà phát triển duy trì hạ tầng quan trọng.
+> Tính bền vững của mã nguồn mở có nghĩa là hỗ trợ các nhà phát triển duy trì hạ tầng quan trọng, bên cạnh việc đóng góp mã.
 
 Ngoài các đóng góp trực tiếp cho hệ sinh thái JavaScript, chúng tôi tự hào tài trợ cho các đóng góp viên nổi bật của Node.js, những người có công tạo nền tảng cho nhiều ứng dụng hiện đại. Các khoản tài trợ của chúng tôi bao gồm:
 
@@ -386,8 +386,8 @@ Vào tháng 2 năm 2019, Nick đã phát hiện một vấn đề nghiêm trọn
 
 Năm 2020, Nick đã phát hiện và xử lý một lỗ hổng nghiêm trọng [Tấn công Từ chối Dịch vụ Biểu thức Chính quy (ReDoS)](https://en.wikipedia.org/wiki/ReDoS) trong gói `url-regex` được sử dụng rộng rãi. Lỗ hổng này ([SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)) có thể cho phép kẻ tấn công gây ra tấn công từ chối dịch vụ bằng cách cung cấp đầu vào được tạo đặc biệt khiến biểu thức chính quy bị truy vết ngược thảm họa.
 
-Thay vì chỉ vá gói hiện có, Nick đã tạo ra [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), một triển khai hoàn toàn viết lại nhằm xử lý lỗ hổng trong khi vẫn giữ tương thích với API gốc. Anh cũng đã xuất bản một [bài đăng blog toàn diện](/blog/docs/url-regex-javascript-node-js) giải thích về lỗ hổng và cách giảm thiểu nó.
-Công trình này thể hiện cách tiếp cận của chúng tôi đối với bảo mật: không chỉ sửa các vấn đề mà còn giáo dục cộng đồng và cung cấp các giải pháp thay thế mạnh mẽ nhằm ngăn ngừa các vấn đề tương tự trong tương lai.
+Thay vì vá gói hiện có, Nick đã tạo ra [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), một triển khai hoàn toàn viết lại nhằm xử lý lỗ hổng trong khi vẫn giữ tương thích với API gốc. Anh cũng đã xuất bản một [bài đăng blog toàn diện](/blog/docs/url-regex-javascript-node-js) giải thích về lỗ hổng và cách giảm thiểu nó.
+Công trình này thể hiện cách tiếp cận của chúng tôi đối với bảo mật: sửa vấn đề, giáo dục cộng đồng và cung cấp các giải pháp thay thế an toàn hơn nhằm ngăn ngừa các vấn đề tương tự.
 
 ### Vận động cho Bảo mật Node.js và Chromium {#advocating-for-nodejs-and-chromium-security}
 
@@ -408,7 +408,7 @@ Forward Email được xây dựng dựa trên một số dự án mã nguồn m
 
 ### Nâng cao Chức Năng Cốt Lõi của Nodemailer {#enhancing-nodemailers-core-functionality}
 
-[Nodemailer](https://github.com/nodemailer/nodemailer) là nền tảng gửi email trong Node.js, và các đóng góp của chúng tôi đã giúp nó trở nên vững chắc hơn:
+[Nodemailer](https://github.com/nodemailer/nodemailer) là nền tảng gửi email trong Node.js, và các đóng góp của chúng tôi đã giúp nó trở nên đáng tin cậy hơn:
 
 * **Cải tiến Máy chủ SMTP**: Chúng tôi đã sửa các lỗi phân tích cú pháp, vấn đề xử lý luồng và cấu hình TLS trong thành phần máy chủ SMTP\[^16]\[^17].
 * **Cải tiến Bộ phân tích Mail**: Chúng tôi đã khắc phục lỗi giải mã chuỗi ký tự và các vấn đề bộ phân tích địa chỉ có thể gây lỗi xử lý email\[^18]\[^19].
@@ -438,7 +438,7 @@ Những cải tiến này không chỉ có lợi cho việc giám sát trạng t
 
 ## Chất Kết Nối Giữ Mọi Thứ Lại Với Nhau: Mã Tùy Chỉnh Quy Mô Lớn {#the-glue-that-holds-it-all-together-custom-code-at-scale}
 
-Trong khi các gói npm và đóng góp của chúng tôi cho các dự án hiện có là quan trọng, thì chính mã tùy chỉnh tích hợp các thành phần này mới thực sự thể hiện chuyên môn kỹ thuật của chúng tôi. Mã nguồn Forward Email đại diện cho một thập kỷ nỗ lực phát triển, bắt đầu từ năm 2017 khi dự án khởi đầu dưới tên [free-email-forwarding](https://github.com/forwardemail/free-email-forwarding) trước khi được hợp nhất vào một monorepo.
+Trong khi các gói npm và đóng góp của chúng tôi cho các dự án hiện có là quan trọng, thì mã tùy chỉnh tích hợp các thành phần này thể hiện rõ nhất chuyên môn kỹ thuật của chúng tôi. Mã nguồn Forward Email đại diện cho một thập kỷ nỗ lực phát triển, bắt đầu từ năm 2017 khi dự án khởi đầu dưới tên [free-email-forwarding](https://github.com/forwardemail/free-email-forwarding) trước khi được hợp nhất vào một monorepo.
 
 ### Nỗ Lực Phát Triển Khổng Lồ {#a-massive-development-effort}
 
@@ -451,17 +451,17 @@ Quy mô của mã tích hợp tùy chỉnh này thật ấn tượng:
 
 ### Tích Hợp Các Phụ Thuộc Cốt Lõi {#core-dependencies-integration}
 
-Mã nguồn Forward Email tích hợp nhiều phụ thuộc thành một tổng thể liền mạch:
+Mã nguồn Forward Email tích hợp nhiều phụ thuộc thành một hệ thống thống nhất:
 
 * **Xử lý Email**: Tích hợp Nodemailer để gửi, SMTP Server để nhận, và Mailparser để phân tích
 * **Xác thực**: Sử dụng Mailauth cho xác minh DKIM, SPF, DMARC và ARC
-* **Phân giải DNS**: Tận dụng Tangerine cho DNS-over-HTTPS với bộ nhớ đệm toàn cầu
+* **Phân giải DNS**: Sử dụng Tangerine cho DNS-over-HTTPS với bộ nhớ đệm toàn cầu
 * **Kết nối MX**: Sử dụng mx-connect với tích hợp Tangerine để kết nối máy chủ thư đáng tin cậy
 * **Lập lịch công việc**: Dùng Bree để xử lý tác vụ nền đáng tin cậy với các luồng công nhân
 * **Mẫu thư**: Dùng email-templates để tái sử dụng các bảng kiểu từ trang web trong giao tiếp với khách hàng
 * **Lưu trữ Email**: Triển khai hộp thư SQLite được mã hóa riêng biệt sử dụng better-sqlite3-multiple-ciphers với mã hóa ChaCha20-Poly1305 để bảo mật an toàn trước máy tính lượng tử, đảm bảo cách ly hoàn toàn giữa người dùng và chỉ người dùng mới có quyền truy cập vào hộp thư của họ
 
-Mỗi tích hợp này đòi hỏi phải xem xét kỹ lưỡng các trường hợp biên, tác động hiệu suất và các mối quan tâm về bảo mật. Kết quả là một hệ thống vững chắc xử lý hàng triệu giao dịch email một cách đáng tin cậy. Triển khai SQLite của chúng tôi cũng tận dụng msgpackr để tuần tự hóa nhị phân hiệu quả và WebSockets (qua ws) để cập nhật trạng thái thời gian thực trên toàn bộ hạ tầng.
+Mỗi tích hợp này đòi hỏi phải xem xét kỹ lưỡng các trường hợp biên, tác động hiệu suất và các mối quan tâm về bảo mật. Kết quả là một hệ thống xử lý hàng triệu giao dịch email một cách đáng tin cậy. Triển khai SQLite của chúng tôi cũng sử dụng msgpackr để tuần tự hóa nhị phân hiệu quả và WebSockets (qua ws) để cập nhật trạng thái thời gian thực trên toàn bộ hạ tầng.
 
 ### Hạ Tầng DNS với Tangerine và mx-connect {#dns-infrastructure-with-tangerine-and-mx-connect}
 
@@ -471,11 +471,11 @@ Một thành phần quan trọng trong hạ tầng Forward Email là hệ thốn
 
 * **[mx-connect](https://github.com/zone-eu/mx-connect)**: Gói này thiết lập kết nối TCP đến các máy chủ MX, nhận một tên miền mục tiêu hoặc địa chỉ email, phân giải các máy chủ MX phù hợp và kết nối theo thứ tự ưu tiên.
 
-Chúng tôi đã tích hợp Tangerine với mx-connect thông qua [pull request #4](https://github.com/zone-eu/mx-connect/pull/4), đảm bảo các yêu cầu DNS qua HTTP ở tầng ứng dụng trong toàn bộ Forward Email. Điều này cung cấp bộ nhớ đệm DNS toàn cầu ở quy mô lớn với tính nhất quán 1:1 trên bất kỳ vùng, ứng dụng hoặc tiến trình nào — điều quan trọng để đảm bảo giao thư đáng tin cậy trong một hệ thống phân tán.
+Chúng tôi đã tích hợp Tangerine với mx-connect thông qua [pull request #4](https://github.com/zone-eu/mx-connect/pull/4), đảm bảo các yêu cầu DNS qua HTTP ở tầng ứng dụng trong toàn bộ Forward Email. Điều này cung cấp bộ nhớ đệm DNS toàn cầu ở quy mô lớn với tính nhất quán 1:1 trên bất kỳ vùng, ứng dụng hoặc tiến trình nào, điều mà việc giao thư đáng tin cậy trong một hệ thống phân tán phụ thuộc vào.
 
 ## Tác Động Doanh Nghiệp: Từ Mã Nguồn Mở Đến Giải Pháp Quan Trọng {#enterprise-impact-from-open-source-to-mission-critical-solutions}
 
-Sự kết tinh của hành trình phát triển mã nguồn mở kéo dài một thập kỷ đã giúp Forward Email phục vụ không chỉ các nhà phát triển cá nhân mà còn cả các doanh nghiệp lớn và các tổ chức giáo dục, những thành phần tạo nên nền tảng của phong trào mã nguồn mở.
+Sự kết tinh của hành trình phát triển mã nguồn mở kéo dài một thập kỷ đã giúp Forward Email phục vụ các nhà phát triển cá nhân cũng như các doanh nghiệp lớn và các tổ chức giáo dục, những thành phần tạo nên nền tảng của phong trào mã nguồn mở.
 ### Các Nghiên Cứu Trường Hợp về Hạ Tầng Email Quan Trọng {#case-studies-in-mission-critical-email-infrastructure}
 
 Cam kết của chúng tôi về độ tin cậy, quyền riêng tư và các nguyên tắc mã nguồn mở đã biến Forward Email trở thành lựa chọn đáng tin cậy cho các tổ chức có yêu cầu email khắt khe:
@@ -486,7 +486,7 @@ Cam kết của chúng tôi về độ tin cậy, quyền riêng tư và các ng
 
 * **Các Quỹ Mã Nguồn Mở**: Có lẽ điều xác thực nhất là sự hợp tác của chúng tôi với Linux Foundation, được ghi lại trong [nghiên cứu trường hợp email doanh nghiệp Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study), nơi dịch vụ của chúng tôi hỗ trợ giao tiếp cho chính tổ chức quản lý phát triển Linux.
 
-Có một sự đối xứng đẹp đẽ trong cách các gói mã nguồn mở của chúng tôi, được duy trì cẩn thận trong nhiều năm, đã cho phép chúng tôi xây dựng một dịch vụ email hiện nay hỗ trợ chính các cộng đồng và tổ chức ủng hộ phần mềm mã nguồn mở. Hành trình trọn vẹn này — từ việc đóng góp các gói riêng lẻ đến cung cấp hạ tầng email cấp doanh nghiệp cho các nhà lãnh đạo mã nguồn mở — đại diện cho sự xác thực tối thượng của cách tiếp cận phát triển phần mềm của chúng tôi.
+Các gói mã nguồn mở của chúng tôi, được duy trì cẩn thận trong nhiều năm, đã cho phép chúng tôi xây dựng một dịch vụ email hiện nay hỗ trợ chính các cộng đồng và tổ chức ủng hộ phần mềm mã nguồn mở. Chúng tôi đã đi từ việc đóng góp các gói riêng lẻ đến cung cấp hạ tầng email cấp doanh nghiệp cho các nhà lãnh đạo mã nguồn mở.
 
 
 ## Một Thập Kỷ Mã Nguồn Mở: Hướng Tới Tương Lai {#a-decade-of-open-source-looking-forward}
@@ -504,7 +504,7 @@ Trong những năm tới, chúng tôi cam kết:
 
 Chúng tôi tin rằng tương lai của phát triển phần mềm là mở, hợp tác và xây dựng trên nền tảng của sự tin tưởng. Bằng cách tiếp tục đóng góp các gói chất lượng cao, tập trung vào bảo mật cho hệ sinh thái JavaScript, chúng tôi hy vọng đóng một phần nhỏ trong việc xây dựng tương lai đó.
 
-Cảm ơn tất cả mọi người đã sử dụng các gói của chúng tôi, đóng góp cho các dự án, báo cáo sự cố hoặc đơn giản là lan tỏa về công việc của chúng tôi. Sự hỗ trợ của các bạn đã làm cho thập kỷ ảnh hưởng này trở nên khả thi, và chúng tôi rất háo hức xem chúng ta có thể đạt được gì cùng nhau trong mười năm tới.
+Cảm ơn tất cả mọi người đã sử dụng các gói của chúng tôi, đóng góp cho các dự án, báo cáo sự cố hoặc lan tỏa về công việc của chúng tôi. Sự hỗ trợ của các bạn đã làm cho thập kỷ ảnh hưởng này trở nên khả thi, và chúng tôi rất háo hức xem chúng ta có thể đạt được gì cùng nhau trong mười năm tới.
 
 \[^1]: thống kê tải xuống npm cho cabin, tháng 4 năm 2025  
 \[^2]: thống kê tải xuống npm cho bson-objectid, tháng 2-3 năm 2025  

@@ -124,7 +124,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=Correo de prueba"
 ```
 
-Este método es útil cuando se envían correos desde aplicaciones que ya usan credenciales SMTP y facilita la migración de SMTP a nuestra API sin problemas.
+Este método es útil cuando se envían correos desde aplicaciones que ya usan credenciales SMTP y facilita la migración de SMTP a nuestra API.
 
 ### Endpoints Solo para Alias {#alias-only-endpoints}
 
@@ -167,7 +167,7 @@ Nuestro servicio está traducido a más de 25 idiomas diferentes. Todos los mens
 
 La paginación es soportada por todos los endpoints de API que listan resultados.
 
-Simplemente proporciona las propiedades en la cadena de consulta `page` (y opcionalmente `limit`).
+Proporciona las propiedades en la cadena de consulta `page` (y opcionalmente `limit`).
 
 La propiedad `page` debe ser un número mayor o igual a `1`. Si proporcionas `limit` (también un número), el valor mínimo es `10` y el máximo es `50` (a menos que se indique lo contrario).
 
@@ -502,13 +502,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Crear correo SMTP saliente {#create-outbound-smtp-email}
 
-Nuestra API para crear un correo está inspirada y aprovecha la configuración de opciones de mensaje de Nodemailer. Por favor, consulte la [configuración de mensaje de Nodemailer](https://nodemailer.com/message/) para todos los parámetros del cuerpo a continuación.
+Nuestra API para crear un correo está inspirada en y usa la configuración de opciones de mensaje de Nodemailer. Por favor, consulte la [configuración de mensaje de Nodemailer](https://nodemailer.com/message/) para todos los parámetros del cuerpo a continuación.
 
 Tenga en cuenta que, con la excepción de `envelope` y `dkim` (ya que los configuramos automáticamente por usted), soportamos todas las opciones de Nodemailer. Automáticamente configuramos las opciones `disableFileAccess` y `disableUrlAccess` a `true` por razones de seguridad.
 
 Debe pasar la opción única `raw` con su correo completo en bruto incluyendo encabezados **o** pasar las opciones individuales de parámetros del cuerpo a continuación.
 
-Este endpoint de la API codificará automáticamente los emojis si se encuentran en los encabezados (por ejemplo, una línea de asunto `Subject: 🤓 Hello` se convierte automáticamente en `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Nuestro objetivo fue crear una API de correo extremadamente amigable para desarrolladores y a prueba de errores.
+Este endpoint de la API codificará automáticamente los emojis si se encuentran en los encabezados (por ejemplo, una línea de asunto `Subject: 🤓 Hello` se convierte automáticamente en `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Nuestro objetivo fue crear una API de correo amigable para desarrolladores y a prueba de errores.
 
 **Autenticación:** Este endpoint soporta tanto [autenticación con token API](#api-token-authentication-recommended-for-most-endpoints) como [autenticación con credenciales de alias](#alias-credentials-authentication-for-outbound-email). Consulte la sección [Autenticación](#authentication) arriba para más detalles.
 
@@ -974,7 +974,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Encriptar {#encrypt}
 
-Permitimos que encripte registros incluso en el plan gratuito sin costo alguno. La privacidad no debería ser una característica, debería estar inherentemente integrada en todos los aspectos de un producto. Como se solicitó mucho en una [discusión de Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) y en [nuestros issues de GitHub](https://github.com/forwardemail/forwardemail.net/issues/254) lo hemos añadido.
+Permitimos que encripte registros incluso en el plan gratuito sin costo alguno. La privacidad debería estar integrada en todos los aspectos de un producto. Como se solicitó mucho en una [discusión de Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) y en [nuestros issues de GitHub](https://github.com/forwardemail/forwardemail.net/issues/254) lo hemos añadido.
 
 ### Encriptar registro TXT {#encrypt-txt-record}
 

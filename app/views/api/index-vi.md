@@ -124,7 +124,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=Test email"
 ```
 
-Phương thức này hữu ích khi gửi email từ các ứng dụng đã sử dụng thông tin đăng nhập SMTP và giúp việc chuyển đổi từ SMTP sang API của chúng tôi trở nên liền mạch.
+Phương thức này hữu ích khi gửi email từ các ứng dụng đã sử dụng thông tin đăng nhập SMTP và giúp việc chuyển đổi từ SMTP sang API của chúng tôi trở nên đơn giản.
 
 ### Các điểm cuối chỉ dùng Alias {#alias-only-endpoints}
 
@@ -167,7 +167,7 @@ Dịch vụ của chúng tôi được dịch sang hơn 25 ngôn ngữ khác nha
 
 Phân trang được hỗ trợ bởi tất cả các điểm cuối API liệt kê kết quả.
 
-Chỉ cần cung cấp các thuộc tính truy vấn `page` (và tùy chọn `limit`).
+Cung cấp các thuộc tính truy vấn `page` (và tùy chọn `limit`).
 
 Thuộc tính `page` phải là số lớn hơn hoặc bằng `1`. Nếu bạn cung cấp `limit` (cũng là số), thì giá trị tối thiểu là `10` và tối đa là `50` (trừ khi có ghi chú khác).
 
@@ -389,7 +389,7 @@ Các hướng dẫn này có thể được tìm thấy trong phần Câu hỏi 
 ### Tạo tin nhắn {#create-message}
 
 > \[!NOTE]
-> Điều này sẽ **KHÔNG** gửi email – nó chỉ đơn giản thêm tin nhắn vào thư mục hộp thư của bạn (ví dụ tương tự lệnh IMAP `APPEND`). Nếu bạn muốn gửi email, hãy xem [Tạo email SMTP gửi đi](#create-outbound-smtp-email) bên dưới. Sau khi tạo email SMTP gửi đi, bạn có thể thêm một bản sao của nó vào hộp thư alias của bạn để lưu trữ bằng endpoint này.
+> Điều này sẽ **KHÔNG** gửi email – nó chỉ thêm tin nhắn vào thư mục hộp thư của bạn (ví dụ tương tự lệnh IMAP `APPEND`). Nếu bạn muốn gửi email, hãy xem [Tạo email SMTP gửi đi](#create-outbound-smtp-email) bên dưới. Sau khi tạo email SMTP gửi đi, bạn có thể thêm một bản sao của nó vào hộp thư alias của bạn để lưu trữ bằng endpoint này.
 
 > `POST /v1/messages`
 
@@ -502,13 +502,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Tạo email SMTP gửi đi {#create-outbound-smtp-email}
 
-API của chúng tôi để tạo email được lấy cảm hứng và tận dụng cấu hình tùy chọn message của Nodemailer. Vui lòng tham khảo [Cấu hình message của Nodemailer](https://nodemailer.com/message/) cho tất cả các tham số thân dưới đây.
+API của chúng tôi để tạo email được lấy cảm hứng và sử dụng cấu hình tùy chọn message của Nodemailer. Vui lòng tham khảo [Cấu hình message của Nodemailer](https://nodemailer.com/message/) cho tất cả các tham số thân dưới đây.
 
 Lưu ý rằng ngoại trừ `envelope` và `dkim` (vì chúng tôi tự động thiết lập cho bạn), chúng tôi hỗ trợ tất cả các tùy chọn của Nodemailer. Chúng tôi tự động đặt các tùy chọn `disableFileAccess` và `disableUrlAccess` thành `true` vì lý do bảo mật.
 
 Bạn nên truyền một tùy chọn duy nhất `raw` với email thô đầy đủ của bạn bao gồm cả headers **hoặc** truyền các tùy chọn tham số thân riêng lẻ dưới đây.
 
-Endpoint API này sẽ tự động mã hóa emoji cho bạn nếu chúng được tìm thấy trong headers (ví dụ: dòng chủ đề `Subject: 🤓 Hello` sẽ được chuyển thành `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` một cách tự động). Mục tiêu của chúng tôi là tạo ra một API email cực kỳ thân thiện với nhà phát triển và dễ sử dụng.
+Endpoint API này sẽ tự động mã hóa emoji cho bạn nếu chúng được tìm thấy trong headers (ví dụ: dòng chủ đề `Subject: 🤓 Hello` sẽ được chuyển thành `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` một cách tự động). Mục tiêu của chúng tôi là tạo ra một API email thân thiện với nhà phát triển và dễ sử dụng.
 
 **Xác thực:** Endpoint này hỗ trợ cả [xác thực token API](#api-token-authentication-recommended-for-most-endpoints) và [xác thực thông tin đăng nhập bí danh](#alias-credentials-authentication-for-outbound-email). Xem phần [Xác thực](#authentication) phía trên để biết chi tiết.
 
@@ -974,7 +974,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Mã hóa {#encrypt}
 
-Chúng tôi cho phép bạn mã hóa các bản ghi ngay cả trên gói miễn phí mà không mất phí. Quyền riêng tư không nên là một tính năng, mà nên được tích hợp sẵn trong tất cả các khía cạnh của sản phẩm. Như đã được yêu cầu nhiều trong một [thảo luận Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) và trên [các vấn đề GitHub của chúng tôi](https://github.com/forwardemail/forwardemail.net/issues/254), chúng tôi đã thêm tính năng này.
+Chúng tôi cho phép bạn mã hóa các bản ghi ngay cả trên gói miễn phí mà không mất phí. Quyền riêng tư nên được tích hợp sẵn trong tất cả các khía cạnh của sản phẩm. Như đã được yêu cầu nhiều trong một [thảo luận Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) và trên [các vấn đề GitHub của chúng tôi](https://github.com/forwardemail/forwardemail.net/issues/254), chúng tôi đã thêm tính năng này.
 
 ### Mã hóa bản ghi TXT {#encrypt-txt-record}
 

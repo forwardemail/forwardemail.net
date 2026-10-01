@@ -1,10 +1,10 @@
 # 使用 Forward Email 完整设置 NAS 邮件指南 {#complete-guide-to-nas-email-setup-with-forward-email}
 
-在您的 NAS 上设置邮件通知不应该是一件麻烦事。无论您使用的是 Synology、QNAP，还是 Raspberry Pi，本指南都将帮助您的设备与 Forward Email 连接，让您真正知道何时出现问题。
+在您的 NAS 上设置邮件通知不应该是一件麻烦事。无论您使用的是 Synology、QNAP，还是 Raspberry Pi，本指南都将帮助您的设备与 Forward Email 连接，让您知道何时出现问题。
 
-大多数 NAS 设备可以发送驱动器故障、温度警告、备份完成和安全事件的邮件提醒。问题是？许多邮件服务提供商对安全要求越来越严格，而旧设备往往跟不上。这就是 Forward Email 的用武之地——我们支持现代和传统设备。
+大多数 NAS 设备可以发送驱动器故障、温度警告、备份完成和安全事件的邮件提醒。许多邮件服务提供商对安全要求越来越严格，而旧设备往往跟不上。Forward Email 同时支持现代和传统设备。
 
-本指南涵盖了 75+ NAS 供应商的邮件设置，提供逐步说明、兼容性信息和故障排除技巧。无论您使用什么设备，我们都能帮您让通知正常工作。
+本指南涵盖了 75+ NAS 供应商的邮件设置，提供逐步说明、兼容性信息和故障排除技巧。它同时涵盖现代和传统设备。
 
 
 ## 目录 {#table-of-contents}
@@ -40,14 +40,14 @@
 
 ## 为什么您需要 NAS 邮件通知 {#why-you-need-nas-email-notifications}
 
-您的 NAS 监控大量内容——驱动器健康、温度、网络问题、安全事件。没有邮件提醒，问题可能会被忽视数周，可能导致数据丢失或安全漏洞。
+您的 NAS 监控驱动器健康、温度、网络问题和安全事件。没有邮件提醒，问题可能会被忽视数周，可能导致数据丢失或安全漏洞。
 
-邮件通知能在驱动器开始故障时立即提醒您，警告未经授权的访问尝试，确认备份成功，并让您随时了解系统健康状况。Forward Email 确保这些关键通知真正送达您手中。
+邮件通知能在驱动器开始故障时立即提醒您，警告未经授权的访问尝试，确认备份成功，并让您随时了解系统健康状况。Forward Email 将这些通知送达您的收件箱。
 
 
 ## TLS 问题（以及我们的解决方案） {#the-tls-problem-and-how-we-fix-it}
 
-情况是这样的：如果您的 NAS 是 2020 年之前制造的，它很可能只支持 TLS 1.0。Gmail、Outlook 以及大多数服务提供商多年前就停止支持该协议。您的设备尝试发送邮件时被拒绝，您却一无所知。
+如果您的 NAS 是 2020 年之前制造的，它很可能只支持 TLS 1.0。Gmail、Outlook 以及大多数服务提供商多年前就停止支持该协议。您的设备尝试发送邮件时被拒绝，您却一无所知。
 
 Forward Email 通过双端口支持解决了这个问题。现代设备使用我们的标准端口（`465` 和 `587`），而旧设备可以使用我们的传统端口（`2455` 和 `2555`），这些端口仍支持 TLS 1.0。
 
@@ -56,7 +56,7 @@ Forward Email 通过双端口支持解决了这个问题。现代设备使用我
 
 
 ## Forward Email SMTP 设置 {#forward-email-smtp-settings}
-以下是您需要了解的 SMTP 设置：
+我们的 SMTP 设置：
 
 **对于现代 NAS 设备（2020 年及以后）：** 使用 `smtp.forwardemail.net`，端口为 `465`（SSL/TLS）或 `587`（STARTTLS）。这些端口适用于支持 TLS 1.2+ 的当前固件。
 
@@ -88,15 +88,15 @@ Forward Email 通过双端口支持解决了这个问题。现代设备使用我
 | OpenMediaVault   | OMV 7.x         | TLS 1.2+     | 活跃            | `465`, `587`      | [插件依赖](https://forum.openmediavault.org/index.php?thread/42156-email-notifications-not-working/)                                                | [OMV 通知设置](https://docs.openmediavault.org/en/latest/administration/general/notifications.html)                                              |
 | Netgear ReadyNAS | OS 6.x          | 仅 TLS 1.0   | 已停产          | `2455`, `2555`    | [旧版 TLS 支持](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)                              | [ReadyNAS 邮件警报设置](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)                   |
 | Drobo            | Dashboard       | TLS 1.2      | 已停产          | `465`, `587`      | [支持有限](https://myprojects.drobo.com/support/)                                                                                                   | [Drobo 邮件通知](https://www.drobo.com/support/)                                                                                                |
-此矩阵展示了现代、积极维护的 NAS 系统与需要特殊兼容性考虑的传统设备之间的明确区分。大多数当前的 NAS 设备支持现代 TLS 标准，并且可以在无需特殊配置的情况下使用 Forward Email 的主要 SMTP 端口。
+大多数当前积极维护的 NAS 设备支持现代 TLS，可以在无需特殊配置的情况下使用 Forward Email 的主要 SMTP 端口。传统设备需要使用兼容端口。
 
 
 ## Synology NAS 邮件配置 {#synology-nas-email-configuration}
 
-带有 DSM 的 Synology 设备设置相当简单。它们支持现代 TLS，因此您可以无忧使用我们的标准端口。
+带有 DSM 的 Synology 设备设置简单。它们支持现代 TLS，因此您可以无忧使用我们的标准端口。
 
 > \[!NOTE]
-> Synology DSM 7.x 提供了最全面的邮件通知功能。较旧的 DSM 版本可能配置选项有限。
+> Synology DSM 7.x 提供了最完整的邮件通知功能。较旧的 DSM 版本可能配置选项有限。
 
 ### 配置步骤 {#configuration-steps}
 
@@ -141,9 +141,9 @@ Forward Email 通过双端口支持解决了这个问题。现代设备使用我
 
 4. **配置 SMTP 服务器**，输入 `smtp.forwardemail.net` 作为 SMTP 服务器地址。
 
-5. **选择合适的安全协议** — 选择“SSL/TLS”并使用端口 `465`（推荐）。端口 `587` 及 STARTTLS 也支持。
+5. **选择合适的安全协议**：选择“SSL/TLS”并使用端口 `465`（推荐）。端口 `587` 及 STARTTLS 也支持。
 
-6. **配置端口号** — 推荐使用端口 `465` 的 SSL/TLS。若需要，也可使用端口 `587` 的 STARTTLS。
+6. **配置端口号**：推荐使用端口 `465` 的 SSL/TLS。若需要，也可使用端口 `587` 的 STARTTLS。
 
 7. **输入身份验证凭据**，用户名使用您的 Forward Email 别名，密码使用从 [我的账户 -> 域名 -> 别名](https://forwardemail.net/my-account/domains) 生成的密码。
 
@@ -156,7 +156,7 @@ Forward Email 通过双端口支持解决了这个问题。现代设备使用我
 > \[!TIP]
 > 如果遇到 [Gmail SMTP 配置问题](https://forum.qnap.com/viewtopic.php?t=152466)，同样的故障排除步骤适用于 Forward Email。确保身份验证已正确启用且凭据无误。
 > \[!NOTE]
-> QNAP 设备支持高级通知调度，允许您配置静默时间段，在此期间非关键通知将被抑制。这在商业环境中特别有用。
+> QNAP 设备支持高级通知调度，允许您配置静默时间段，在此期间非关键通知将被抑制。这在商业环境中很有帮助。
 
 ### 常见 QNAP 故障排除问题 {#common-qnap-troubleshooting-issues}
 
@@ -170,7 +170,7 @@ Forward Email 通过双端口支持解决了这个问题。现代设备使用我
 
 ## ReadyNAS 旧版配置 {#readynas-legacy-configuration}
 
-Netgear ReadyNAS 设备由于其固件已停止支持且依赖旧版 TLS 1.0 协议，存在独特的挑战。然而，Forward Email 的旧版端口支持确保这些设备能够继续可靠地发送邮件通知。
+Netgear ReadyNAS 设备由于其固件已停止支持且依赖旧版 TLS 1.0 协议，存在独特的挑战。Forward Email 的旧版端口让这些设备能够继续发送邮件通知。
 
 > \[!CAUTION]
 > ReadyNAS OS 6.x 仅支持 TLS 1.0，这需要使用 Forward Email 的旧版兼容端口 `2455` 和 `2555`。现代端口 `465` 和 `587` 无法与这些设备配合使用。
@@ -183,7 +183,7 @@ Netgear ReadyNAS 设备由于其固件已停止支持且依赖旧版 TLS 1.0 协
 
 3. **配置 SMTP 服务器，输入 `smtp.forwardemail.net` 作为服务器地址。**
 
-4. **设置端口配置，选择 `2455` 用于 SSL/TLS 连接，或 `2555` 用于 STARTTLS 连接——这些是 Forward Email 的旧版兼容端口。**
+4. **设置端口配置，选择 `2455` 用于 SSL/TLS 连接，或 `2555` 用于 STARTTLS 连接。这些是 Forward Email 的旧版兼容端口。**
 
 5. **启用身份验证，输入您的 Forward Email 别名作为用户名，以及您在 [我的账户 -> 域名 -> 别名](https://forwardemail.net/my-account/domains) 生成的密码。**
 
@@ -205,11 +205,11 @@ ReadyNAS 邮件配置的常见问题包括：
 * **网络连接问题**：检查 ReadyNAS 是否能访问 `smtp.forwardemail.net`
 * **固件限制**：某些较旧的 ReadyNAS 型号可能有额外的[HTTPS 配置要求](https://kb.netgear.com/23100/How-do-I-configure-HTTPS-HTTP-with-SSL-encryption-settings-on-my-ReadyNAS-OS-6-storage-system)
 
-运行 OS 6.x 及更早版本的 ReadyNAS 设备仅支持 TLS 1.0 连接，而大多数现代邮件服务提供商已不再接受此协议。Forward Email 专用的旧版端口（2455 和 2555）专门支持这些旧协议，确保 ReadyNAS 用户的持续功能。
+运行 OS 6.x 及更早版本的 ReadyNAS 设备仅支持 TLS 1.0 连接，而大多数现代邮件服务提供商已不再接受此协议。Forward Email 专用的旧版端口（2455 和 2555）支持这些旧协议，使 ReadyNAS 设备能够继续工作。
 
 要在 ReadyNAS 设备上配置邮件，请通过其 IP 地址访问设备的网页界面。导航至系统部分，选择“通知”以进入邮件配置选项。
 
-在邮件配置部分，启用邮件通知并输入 smtp.forwardemail.net 作为 SMTP 服务器。这一点至关重要——请使用 Forward Email 的旧版兼容端口，而非标准 SMTP 端口。
+在邮件配置部分，启用邮件通知并输入 smtp.forwardemail.net 作为 SMTP 服务器。请使用 Forward Email 的旧版兼容端口，而非标准 SMTP 端口。
 
 对于 SSL/TLS 连接，配置端口为 2455，而非标准的 465（推荐）。对于 STARTTLS 连接，使用端口 2555，而非 587。这些特殊端口保持了 TLS 1.0 的兼容性，同时为旧设备提供了最佳可用的安全性。
 输入您的 Forward Email 别名作为用户名，以及您生成的密码进行身份验证。ReadyNAS 设备支持 SMTP 身份验证，这是 Forward Email 连接所必需的。
@@ -226,7 +226,7 @@ ReadyNAS 邮件配置的常见问题包括：
 运行 TOS 6.x 的 TerraMaster 设备支持现代 TLS，并且与 Forward Email 的标准端口兼容良好。
 
 > \[!NOTE]
-> TerraMaster TOS 6.x 提供全面的邮件通知功能。请确保您的固件是最新版本，以获得最佳兼容性。
+> TerraMaster TOS 6.x 提供完整的邮件通知功能。请确保您的固件是最新版本，以获得最佳兼容性。
 
 1. **访问系统设置**
    * 登录您的 TerraMaster 网页界面
@@ -248,7 +248,7 @@ ReadyNAS 邮件配置的常见问题包括：
 
 ## ASUSTOR NAS 配置 {#asustor-nas-configuration}
 
-搭载 ADM 4.x 的 ASUSTOR 设备具备完善的邮件通知支持，并能与 Forward Email 无缝配合。
+搭载 ADM 4.x 的 ASUSTOR 设备具备完善的邮件通知支持，并能与 Forward Email 配合使用。
 
 > \[!NOTE]
 > ASUSTOR ADM 4.x 包含高级通知过滤选项。您可以自定义哪些事件触发邮件提醒。
@@ -330,7 +330,7 @@ Buffalo TeraStation 设备的邮件通知功能有限但可用。了解配置位
 TrueNAS（包括 SCALE 和 CORE）具有出色的电子邮件通知支持和详细的配置选项。
 
 > \[!NOTE]
-> TrueNAS 提供了 NAS 系统中最全面的电子邮件通知功能之一。您可以配置详细的警报规则和多个收件人。
+> TrueNAS 提供了 NAS 系统中最详细的电子邮件通知功能之一。您可以配置详细的警报规则和多个收件人。
 
 1. **访问系统设置**
    * 登录 TrueNAS 网络界面
@@ -355,7 +355,7 @@ TrueNAS（包括 SCALE 和 CORE）具有出色的电子邮件通知支持和详�
 
 ## OpenMediaVault 配置 {#openmediavault-configuration}
 
-OpenMediaVault 通过其网络界面提供了稳健的电子邮件通知功能。设置过程简洁明了。
+OpenMediaVault 通过其网络界面提供了稳健的电子邮件通知功能。设置只需几个步骤。
 
 > \[!NOTE]
 > OpenMediaVault 的通知系统基于插件。请确保已安装并启用电子邮件通知插件。
@@ -383,10 +383,10 @@ OpenMediaVault 通过其网络界面提供了稳健的电子邮件通知功能�
 
 ## Raspberry Pi NAS 配置 {#raspberry-pi-nas-configuration}
 
-Raspberry Pi 是进入 NAS 功能的极佳入门选择，为家庭和小型办公环境提供了经济实惠的解决方案。将 Raspberry Pi 设置为 NAS 设备涉及配置文件共享协议、电子邮件通知和基本网络服务。
+Raspberry Pi 是家庭和小型办公环境进入 NAS 功能的低成本入门选择。将 Raspberry Pi 设置为 NAS 设备涉及配置文件共享协议、电子邮件通知和基本网络服务。
 
 > \[!TIP]
-> 对于 Raspberry Pi 爱好者，我们强烈推荐配合使用 [PiKVM](https://pikvm.org/) 进行远程服务器管理，以及 [Pi-hole](https://pi-hole.net/) 实现全网广告拦截和 DNS 管理。这些工具共同打造了一个全面的家庭实验室环境。
+> 对于 Raspberry Pi 爱好者，我们推荐配合使用 [PiKVM](https://pikvm.org/) 进行远程服务器管理，以及 [Pi-hole](https://pi-hole.net/) 实现全网广告拦截和 DNS 管理。它们共同组成一个完整的家庭实验室。
 ### 初始 Raspberry Pi 设置 {#initial-raspberry-pi-setup}
 
 在配置 NAS 服务之前，确保您的 Raspberry Pi 运行的是最新的 Raspberry Pi OS，并且具有足够的存储空间。高质量的 microSD 卡（Class 10 或更高）或 USB 3.0 SSD 可为 NAS 操作提供更好的性能和可靠性。
@@ -412,7 +412,7 @@ Samba 提供与 Windows 兼容的文件共享，使您的 Raspberry Pi 可从网
 
 ### FTP 服务器设置 {#ftp-server-setup}
 
-FTP 提供另一种文件访问方式，特别适用于自动备份和远程文件管理。安装并配置 vsftpd（非常安全的 FTP 守护进程）以获得可靠的 FTP 服务。
+FTP 提供另一种文件访问方式，适用于自动备份和远程文件管理。安装并配置 vsftpd（非常安全的 FTP 守护进程）以获得可靠的 FTP 服务。
 
 使用 `sudo apt install vsftpd` 安装 vsftpd，并通过编辑 `/etc/vsftpd.conf` 配置服务。启用本地用户访问，配置被动模式设置，并设置适当的安全限制。
 
@@ -447,7 +447,7 @@ password       your-generated-password
 
 ### 高级 Raspberry Pi NAS 功能 {#advanced-raspberry-pi-nas-features}
 
-通过额外的服务和监控功能增强您的 Raspberry Pi NAS。安装并配置网络监控工具、自动备份解决方案和远程访问服务。
+为您的 Raspberry Pi NAS 添加服务和监控。安装并配置网络监控工具、自动备份解决方案和远程访问服务。
 
 设置 [Nextcloud](https://nextcloud.com/) 实现类似云的功能，支持基于网页的文件访问、日历同步和协作功能。可通过 Docker 或官方 Raspberry Pi Nextcloud 安装指南进行安装。
 使用 `rsync` 和 `cron` 配置自动备份，以创建关键数据的定时备份。使用您的 Forward Email 配置设置备份完成和失败警报的电子邮件通知。
@@ -487,4 +487,4 @@ Raspberry Pi 邮件配置的常见问题包括 DNS 解析问题、防火墙限�
 
 定期备份您的 Raspberry Pi 配置和数据，以防止因硬件故障或安全事件导致的数据丢失。测试备份恢复流程，确保具备数据恢复能力。
 
-Raspberry Pi NAS 配置为学习网络存储概念提供了极佳基础，同时为家庭和小型办公环境提供实用功能。与 Forward Email 结合确保系统监控和维护警报的可靠通知传递。
+Raspberry Pi NAS 是在家庭和小型办公环境中学习网络存储的实用方式。配合 Forward Email，其监控和维护警报会送达您的收件箱。

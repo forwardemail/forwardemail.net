@@ -49,7 +49,7 @@
 
 ## Genel Bakış {#overview}
 
-Bu rehber, Forward Email’in kendi kendine barındırılan çözümünün Debian sistemlerine kurulumu için adım adım talimatlar sağlar. Bu rehber özellikle Debian 11 (Bullseye) ve Debian 12 (Bookworm) için hazırlanmıştır.
+Bu rehber, Forward Email’in kendi kendine barındırılan çözümünün Debian sistemlerine kurulumu için adım adım talimatlar sağlar. Debian 11 (Bullseye) ve Debian 12 (Bookworm) hedeflenmektedir.
 
 
 ## Ön Koşullar {#prerequisites}
@@ -383,7 +383,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Önemli**: İstendiğinde DNS'inize TXT kayıtları oluşturmanız gerekecek. Aynı alan adı için birden fazla doğrulama görebilirsiniz - **HEPSİNİ oluşturun**. İkinci TXT kaydını eklerken ilk TXT kaydını silmeyin.
+**Önemli**: İstendiğinde DNS'inize TXT kayıtları oluşturmanız gerekecek. Aynı alan adı için birden fazla doğrulama görebilirsiniz; **HEPSİNİ oluşturun**. İkinci TXT kaydını eklerken ilk TXT kaydını silmeyin.
 
 #### Seçenek B: Cloudflare DNS (Cloudflare kullanıyorsanız) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -858,6 +858,6 @@ Forward Email kendi kendine barındırma kurulumunuz artık tamamlanmış ve Deb
 5. Kurulumunuzu güncel tutun
 6. Snapd ve snap paketlerini izleyin
 
-Ubuntu’dan temel farklar snapd kurulumu ve Docker depo yapılandırmasıdır. Bunlar doğru şekilde ayarlandığında, Forward Email uygulaması her iki sistemde de aynı şekilde çalışır.
+Ubuntu’dan temel farklar snapd kurulumu ve Docker depo yapılandırmasıdır. Bunları ayarladığınızda, Forward Email uygulaması her iki sistemde de aynı şekilde çalışır.
 
 Ek yapılandırma seçenekleri ve gelişmiş özellikler için resmi Forward Email dokümantasyonuna <https://forwardemail.net/self-hosted#configuration> adresinden bakabilirsiniz.

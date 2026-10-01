@@ -27,12 +27,12 @@
 
 ## Lời Nói Đầu {#foreword}
 
-Trong thế giới phần mềm mã nguồn mở, ít cái tên nào có sức ảnh hưởng như [Canonical](https://en.wikipedia.org/wiki/Canonical_\(company\)), công ty đứng sau [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), một trong những bản phân phối Linux phổ biến nhất toàn cầu. Với một hệ sinh thái rộng lớn bao gồm nhiều bản phân phối như Ubuntu, [Kubuntu](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu), và nhiều hơn nữa, Canonical đã đối mặt với những thách thức đặc biệt trong việc quản lý các địa chỉ email trên nhiều tên miền khác nhau. Nghiên cứu tình huống này khám phá cách Canonical hợp tác với Forward Email để tạo ra một giải pháp quản lý email doanh nghiệp liền mạch, an toàn và tập trung vào quyền riêng tư, phù hợp hoàn hảo với các giá trị mã nguồn mở của họ.
+[Canonical](https://en.wikipedia.org/wiki/Canonical_\(company\)) là công ty đứng sau [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), một trong những bản phân phối Linux phổ biến nhất toàn cầu. Với một hệ sinh thái bao gồm nhiều bản phân phối như Ubuntu, [Kubuntu](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu), và nhiều hơn nữa, Canonical cần quản lý các địa chỉ email trên nhiều tên miền. Nghiên cứu tình huống này trình bày cách Canonical hợp tác với Forward Email để xây dựng một giải pháp quản lý email doanh nghiệp an toàn và tập trung vào quyền riêng tư, phù hợp với các giá trị mã nguồn mở của họ.
 
 
 ## Thách Thức: Quản Lý Hệ Sinh Thái Email Phức Tạp {#the-challenge-managing-a-complex-email-ecosystem}
 
-Hệ sinh thái của Canonical rất đa dạng và rộng lớn. Với hàng triệu người dùng trên toàn thế giới và hàng nghìn cộng tác viên trong nhiều dự án khác nhau, việc quản lý các địa chỉ email trên nhiều tên miền đã đặt ra những thách thức lớn. Các cộng tác viên cốt lõi cần các địa chỉ email chính thức (@ubuntu.com, @kubuntu.org, v.v.) phản ánh sự tham gia của họ với dự án đồng thời duy trì bảo mật và dễ sử dụng thông qua một hệ thống quản lý tên miền Ubuntu mạnh mẽ.
+Với hàng triệu người dùng trên toàn thế giới và hàng nghìn cộng tác viên trong nhiều dự án khác nhau, Canonical phải quản lý các địa chỉ email trên nhiều tên miền. Các cộng tác viên cốt lõi cần các địa chỉ email chính thức (@ubuntu.com, @kubuntu.org, v.v.) phản ánh sự tham gia của họ với dự án đồng thời duy trì bảo mật và dễ sử dụng thông qua một hệ thống quản lý tên miền Ubuntu.
 
 Trước khi triển khai Forward Email, Canonical gặp khó khăn với:
 
@@ -46,20 +46,20 @@ Trước khi triển khai Forward Email, Canonical gặp khó khăn với:
 ## Những Điểm Chính Rút Ra {#key-takeaways}
 
 * Canonical đã triển khai thành công giải pháp quản lý email thống nhất trên nhiều tên miền Ubuntu
-* Phương pháp 100% mã nguồn mở của Forward Email hoàn toàn phù hợp với giá trị của Canonical
-* Tích hợp SSO với Ubuntu One cung cấp xác thực liền mạch cho các cộng tác viên
+* Phương pháp 100% mã nguồn mở của Forward Email phù hợp với giá trị của Canonical
+* Tích hợp SSO với Ubuntu One cho phép các cộng tác viên đăng nhập bằng tài khoản hiện có
 * Mã hóa chống lượng tử đảm bảo bảo mật lâu dài cho tất cả các giao tiếp email
 * Giải pháp mở rộng hiệu quả về chi phí để hỗ trợ cơ sở cộng tác viên ngày càng tăng của Canonical
 
 
 ## Tại Sao Chọn Forward Email {#why-forward-email}
-Là nhà cung cấp dịch vụ email mã nguồn mở 100% duy nhất tập trung vào quyền riêng tư và bảo mật, Forward Email là lựa chọn tự nhiên cho nhu cầu chuyển tiếp email doanh nghiệp của Canonical. Giá trị của chúng tôi hoàn toàn phù hợp với cam kết của Canonical về phần mềm mã nguồn mở và quyền riêng tư.
+Là nhà cung cấp dịch vụ email mã nguồn mở 100% duy nhất tập trung vào quyền riêng tư và bảo mật, Forward Email là lựa chọn tự nhiên cho nhu cầu chuyển tiếp email doanh nghiệp của Canonical. Giá trị của chúng tôi phù hợp với cam kết của Canonical về phần mềm mã nguồn mở và quyền riêng tư.
 
 Các yếu tố chính khiến Forward Email trở thành lựa chọn lý tưởng bao gồm:
 
-1. **Mã nguồn mở hoàn chỉnh**: Toàn bộ nền tảng của chúng tôi là mã nguồn mở và có sẵn trên [GitHub](https://en.wikipedia.org/wiki/GitHub), cho phép minh bạch và đóng góp từ cộng đồng. Khác với nhiều nhà cung cấp email "tập trung vào quyền riêng tư" chỉ mở mã nguồn giao diện người dùng trong khi giữ mã nguồn backend đóng, chúng tôi đã công khai toàn bộ mã nguồn—cả frontend và backend—cho bất kỳ ai kiểm tra tại [GitHub](https://github.com/forwardemail/forwardemail.net).
+1. **Mã nguồn mở hoàn chỉnh**: Toàn bộ nền tảng của chúng tôi là mã nguồn mở và có sẵn trên [GitHub](https://en.wikipedia.org/wiki/GitHub), cho phép minh bạch và đóng góp từ cộng đồng. Nhiều nhà cung cấp email "tập trung vào quyền riêng tư" chỉ mở mã nguồn giao diện người dùng và giữ mã nguồn backend đóng. Chúng tôi đã công khai toàn bộ mã nguồn, cả frontend và backend, cho bất kỳ ai kiểm tra tại [GitHub](https://github.com/forwardemail/forwardemail.net).
 
-2. **Phương pháp tập trung vào quyền riêng tư**: Khác với các nhà cung cấp khác, chúng tôi không lưu trữ email trong cơ sở dữ liệu dùng chung, và sử dụng mã hóa mạnh với TLS. Triết lý quyền riêng tư cơ bản của chúng tôi rất đơn giản: **email của bạn thuộc về bạn và chỉ bạn mà thôi**. Nguyên tắc này hướng dẫn mọi quyết định kỹ thuật chúng tôi thực hiện, từ cách xử lý chuyển tiếp email đến cách triển khai mã hóa.
+2. **Phương pháp tập trung vào quyền riêng tư**: Khác với các nhà cung cấp khác, chúng tôi không lưu trữ email trong cơ sở dữ liệu dùng chung, và sử dụng mã hóa TLS. Triết lý quyền riêng tư của chúng tôi: **email của bạn thuộc về bạn và chỉ bạn mà thôi**. Nguyên tắc này hướng dẫn các quyết định kỹ thuật của chúng tôi, từ cách xử lý chuyển tiếp email đến cách triển khai mã hóa.
 
 3. **Không phụ thuộc bên thứ ba**: Chúng tôi không sử dụng Amazon SES hay các dịch vụ bên thứ ba khác, giúp chúng tôi kiểm soát hoàn toàn hạ tầng email và loại bỏ khả năng rò rỉ quyền riêng tư qua các dịch vụ bên thứ ba.
 
@@ -70,7 +70,7 @@ Các yếu tố chính khiến Forward Email trở thành lựa chọn lý tư�
 
 ## Việc Triển Khai: Tích Hợp SSO Mượt Mà {#the-implementation-seamless-sso-integration}
 
-Một trong những khía cạnh quan trọng nhất của việc triển khai là tích hợp với hệ thống Ubuntu One SSO hiện có của Canonical. Việc tích hợp này sẽ cho phép các cộng tác viên cốt lõi quản lý địa chỉ email @ubuntu.com của họ bằng thông tin đăng nhập Ubuntu One hiện có.
+Một phần chính của việc triển khai là tích hợp với hệ thống Ubuntu One SSO hiện có của Canonical. Việc tích hợp này sẽ cho phép các cộng tác viên cốt lõi quản lý địa chỉ email @ubuntu.com của họ bằng thông tin đăng nhập Ubuntu One hiện có.
 
 ### Minh Họa Luồng Xác Thực {#authentication-flow-visualization}
 
@@ -118,7 +118,7 @@ flowchart TD
 
 ### Chi Tiết Triển Khai Kỹ Thuật {#technical-implementation-details}
 
-Việc tích hợp giữa Forward Email và Ubuntu One SSO được thực hiện thông qua một triển khai tùy chỉnh của chiến lược xác thực passport-ubuntu. Điều này cho phép luồng xác thực liền mạch giữa Ubuntu One và hệ thống của Forward Email.
+Việc tích hợp giữa Forward Email và Ubuntu One SSO được thực hiện thông qua một triển khai tùy chỉnh của chiến lược xác thực passport-ubuntu. Điều này cho phép người dùng xác thực bằng Ubuntu One và chuyển thẳng vào hệ thống của Forward Email.
 #### Luồng Xác Thực {#the-authentication-flow}
 
 Quá trình xác thực hoạt động như sau:
@@ -142,7 +142,7 @@ passport.use(new UbuntuStrategy({
 
 #### Tích Hợp và Xác Thực API Launchpad {#launchpad-api-integration-and-validation}
 
-Một thành phần quan trọng trong việc triển khai của chúng tôi là tích hợp với API của [Launchpad](https://en.wikipedia.org/wiki/Launchpad_\(website\)) để xác thực người dùng Ubuntu và thành viên nhóm của họ. Chúng tôi đã tạo các hàm trợ giúp tái sử dụng để xử lý tích hợp này một cách hiệu quả và đáng tin cậy.
+Một thành phần cốt lõi trong việc triển khai của chúng tôi là tích hợp với API của [Launchpad](https://en.wikipedia.org/wiki/Launchpad_\(website\)) để xác thực người dùng Ubuntu và thành viên nhóm của họ. Chúng tôi đã tạo các hàm trợ giúp tái sử dụng để xử lý tích hợp này.
 
 Hàm trợ giúp `sync-ubuntu-user.js` chịu trách nhiệm xác thực người dùng qua API Launchpad và quản lý địa chỉ email của họ. Dưới đây là phiên bản đơn giản hóa cách hoạt động:
 
@@ -242,18 +242,18 @@ ubuntuTeamMapping: {
 },
 ```
 
-Bảng ánh xạ đơn giản này cho phép chúng tôi tự động hóa quá trình kiểm tra thành viên nhóm và cấp phát địa chỉ email, giúp hệ thống dễ dàng bảo trì và mở rộng khi thêm các miền mới.
+Bảng ánh xạ này cho phép chúng tôi tự động hóa việc kiểm tra thành viên nhóm và cấp phát địa chỉ email, giúp hệ thống dễ dàng bảo trì và mở rộng khi thêm các miền mới.
 
 #### Xử lý lỗi và Thông báo {#error-handling-and-notifications}
 
-Chúng tôi đã triển khai một hệ thống xử lý lỗi mạnh mẽ mà:
+Chúng tôi đã triển khai một hệ thống xử lý lỗi mà:
 
 1. Ghi lại tất cả các lỗi với thông tin người dùng chi tiết
 2. Gửi email cho nhóm Ubuntu khi phát hiện sự cố
 3. Thông báo cho quản trị viên khi có người đóng góp mới đăng ký và được tạo địa chỉ email
 4. Xử lý các trường hợp đặc biệt như người dùng chưa ký Bộ Quy Tắc Ứng Xử của Ubuntu
 
-Điều này đảm bảo rằng mọi sự cố được phát hiện và xử lý nhanh chóng, duy trì tính toàn vẹn của hệ thống email.
+Nhờ vậy, nhóm có thể phát hiện và xử lý sự cố nhanh chóng.
 
 
 ## Cấu hình DNS và Định tuyến Email {#dns-configuration-and-email-routing}
@@ -270,7 +270,7 @@ Bản ghi xác thực này xác nhận quyền sở hữu miền và cho phép h
 
 ## Kết quả: Quản lý Email Tinh gọn và Tăng cường Bảo mật {#results-streamlined-email-management-and-enhanced-security}
 
-Việc triển khai giải pháp doanh nghiệp của Forward Email đã mang lại lợi ích đáng kể cho việc quản lý email của Canonical trên tất cả các miền của họ:
+Giải pháp doanh nghiệp của Forward Email đã mang lại các lợi ích sau cho việc quản lý email của Canonical trên tất cả các miền của họ:
 
 ### Hiệu quả Vận hành {#operational-efficiency}
 
@@ -281,7 +281,7 @@ Việc triển khai giải pháp doanh nghiệp của Forward Email đã mang l�
 ### Tăng cường Bảo mật và Quyền riêng tư {#enhanced-security-and-privacy}
 
 * **Mã hóa đầu cuối**: Tất cả email được mã hóa bằng các tiêu chuẩn tiên tiến
-* **Không dùng cơ sở dữ liệu chia sẻ**: Email của từng người dùng được lưu trữ trong các cơ sở dữ liệu SQLite mã hóa riêng biệt, cung cấp phương pháp mã hóa cách ly an toàn hơn nhiều so với các cơ sở dữ liệu quan hệ chia sẻ truyền thống
+* **Không dùng cơ sở dữ liệu chia sẻ**: Email của từng người dùng được lưu trữ trong các cơ sở dữ liệu SQLite mã hóa riêng biệt, cung cấp phương pháp mã hóa cách ly an toàn hơn so với các cơ sở dữ liệu quan hệ chia sẻ truyền thống
 * **Bảo mật mã nguồn mở**: Mã nguồn minh bạch cho phép cộng đồng đánh giá bảo mật
 * **Xử lý trong bộ nhớ**: Chúng tôi không lưu email chuyển tiếp trên đĩa, tăng cường bảo vệ quyền riêng tư
 * **Không lưu trữ siêu dữ liệu**: Chúng tôi không giữ hồ sơ ai gửi email cho ai, khác với nhiều nhà cung cấp email
@@ -294,41 +294,39 @@ Việc triển khai giải pháp doanh nghiệp của Forward Email đã mang l�
 
 ### Cải thiện Trải nghiệm Người đóng góp {#improved-contributor-experience}
 
-* **Xác thực liền mạch**: Đăng nhập một lần với thông tin đăng nhập Ubuntu One hiện có
+* **Đăng nhập một lần**: Xác thực với thông tin đăng nhập Ubuntu One hiện có
 * **Thương hiệu nhất quán**: Trải nghiệm đồng nhất trên tất cả dịch vụ liên quan đến Ubuntu
 * **Giao nhận email đáng tin cậy**: Danh tiếng IP chất lượng cao đảm bảo email đến nơi nhận
 
-Việc tích hợp với Forward Email đã giúp Canonical tinh gọn đáng kể quy trình quản lý email. Người đóng góp giờ đây có trải nghiệm liền mạch khi quản lý địa chỉ email @ubuntu.com của họ, với giảm tải quản trị và tăng cường bảo mật.
+Việc tích hợp với Forward Email đã đơn giản hóa việc quản lý email của Canonical. Người đóng góp giờ đây tự quản lý địa chỉ email @ubuntu.com của họ, với ít gánh nặng quản trị hơn và bảo mật mạnh hơn.
 
 
 ## Hướng tới tương lai: Hợp tác tiếp tục {#looking-forward-continued-collaboration}
 
-Quan hệ đối tác giữa Canonical và Forward Email tiếp tục phát triển. Chúng tôi đang cùng nhau thực hiện một số sáng kiến:
+Canonical và Forward Email đang cùng nhau thực hiện một số sáng kiến:
 * Mở rộng dịch vụ email đến các tên miền liên quan đến Ubuntu khác
 * Cải thiện giao diện người dùng dựa trên phản hồi của cộng tác viên
 * Triển khai các tính năng bảo mật bổ sung
-* Khám phá các cách mới để tận dụng sự hợp tác mã nguồn mở của chúng tôi
+* Khám phá các cách mới để sử dụng sự hợp tác mã nguồn mở của chúng tôi
 
 
 ## Kết luận: Một Quan Hệ Đối Tác Mã Nguồn Mở Hoàn Hảo {#conclusion-a-perfect-open-source-partnership}
 
-Sự hợp tác giữa Canonical và Forward Email thể hiện sức mạnh của các quan hệ đối tác được xây dựng trên các giá trị chung. Bằng cách chọn Forward Email làm nhà cung cấp dịch vụ email, Canonical đã tìm thấy một giải pháp không chỉ đáp ứng các yêu cầu kỹ thuật mà còn hoàn toàn phù hợp với cam kết của họ đối với phần mềm mã nguồn mở, quyền riêng tư và bảo mật.
+Bằng cách chọn Forward Email làm nhà cung cấp dịch vụ email, Canonical đã tìm thấy một giải pháp đáp ứng các yêu cầu kỹ thuật và phù hợp với cam kết của họ đối với phần mềm mã nguồn mở, quyền riêng tư và bảo mật.
 
-Đối với các tổ chức quản lý nhiều tên miền và yêu cầu xác thực liền mạch với các hệ thống hiện có, Forward Email cung cấp một giải pháp linh hoạt, an toàn và tập trung vào quyền riêng tư. [Phương pháp mã nguồn mở](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) của chúng tôi đảm bảo tính minh bạch và cho phép sự đóng góp của cộng đồng, làm cho nó trở thành lựa chọn lý tưởng cho các tổ chức coi trọng những nguyên tắc này.
+Đối với các tổ chức quản lý nhiều tên miền và yêu cầu xác thực với các hệ thống hiện có, Forward Email cung cấp một giải pháp linh hoạt, an toàn và tập trung vào quyền riêng tư. [Phương pháp mã nguồn mở](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) của chúng tôi mang lại tính minh bạch và cho phép sự đóng góp của cộng đồng.
 
-Khi cả Canonical và Forward Email tiếp tục đổi mới trong các lĩnh vực tương ứng của mình, quan hệ đối tác này là minh chứng cho sức mạnh của sự hợp tác mã nguồn mở và các giá trị chung trong việc tạo ra các giải pháp hiệu quả.
-
-Bạn có thể kiểm tra [tình trạng dịch vụ theo thời gian thực](https://status.forwardemail.net) của chúng tôi để xem hiệu suất gửi email hiện tại, mà chúng tôi liên tục giám sát nhằm đảm bảo uy tín IP và khả năng gửi email chất lượng cao.
+Bạn có thể kiểm tra [tình trạng dịch vụ theo thời gian thực](https://status.forwardemail.net) của chúng tôi để xem hiệu suất gửi email hiện tại, mà chúng tôi liên tục giám sát nhằm duy trì uy tín IP và khả năng gửi email.
 
 
 ## Hỗ Trợ Khách Hàng Doanh Nghiệp {#supporting-enterprise-clients}
 
-Mặc dù nghiên cứu trường hợp này tập trung vào quan hệ đối tác với Canonical, Forward Email tự hào hỗ trợ nhiều khách hàng doanh nghiệp trong các ngành khác nhau, những người đánh giá cao cam kết của chúng tôi về quyền riêng tư, bảo mật và các nguyên tắc mã nguồn mở.
+Mặc dù nghiên cứu trường hợp này tập trung vào quan hệ đối tác với Canonical, Forward Email hỗ trợ các khách hàng doanh nghiệp trong nhiều ngành, những người đánh giá cao cam kết của chúng tôi về quyền riêng tư, bảo mật và các nguyên tắc mã nguồn mở.
 
 Các giải pháp doanh nghiệp của chúng tôi được thiết kế để đáp ứng các nhu cầu cụ thể của các tổ chức ở mọi quy mô, cung cấp:
 
 * [Quản lý email](/) tên miền tùy chỉnh trên nhiều tên miền
-* Tích hợp liền mạch với các hệ thống xác thực hiện có
+* Tích hợp với các hệ thống xác thực hiện có
 * Kênh hỗ trợ chat Matrix chuyên dụng
 * Các tính năng bảo mật nâng cao bao gồm [mã hóa chống lượng tử](/blog/docs/best-quantum-safe-encrypted-email-service)
 * Toàn quyền di chuyển và sở hữu dữ liệu
@@ -336,7 +334,7 @@ Các giải pháp doanh nghiệp của chúng tôi được thiết kế để �
 
 ### Liên Hệ {#get-in-touch}
 
-Nếu tổ chức của bạn có nhu cầu email doanh nghiệp hoặc bạn quan tâm tìm hiểu thêm về cách Forward Email có thể giúp đơn giản hóa quản lý email đồng thời nâng cao quyền riêng tư và bảo mật, chúng tôi rất mong được nghe từ bạn:
+Nếu tổ chức của bạn có nhu cầu email doanh nghiệp hoặc bạn muốn tìm hiểu cách Forward Email có thể đơn giản hóa quản lý email và cải thiện quyền riêng tư và bảo mật, hãy liên hệ với chúng tôi:
 
 * Gửi email trực tiếp cho chúng tôi tại `support@forwardemail.net`
 * Gửi yêu cầu trợ giúp tại [trang trợ giúp](https://forwardemail.net/help)

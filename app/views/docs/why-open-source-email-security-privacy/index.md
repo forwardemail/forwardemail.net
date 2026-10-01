@@ -29,14 +29,14 @@
 
 ## Foreword
 
-In an era where digital privacy concerns are at an all-time high, the email services we choose matter more than ever. While many providers claim to prioritize your privacy, there's a fundamental difference between those who merely talk about privacy and those who truly walk the walk. At Forward Email, we've built our service on a foundation of complete transparency through open-source development—not just in our frontend applications, but in our entire infrastructure.
+Many email providers claim to prioritize your privacy, but few let you verify it. At Forward Email, we've built our service on open-source development across our entire infrastructure, frontend and backend.
 
-This blog post explores why open-source email solutions are superior to closed-source alternatives, how our approach differs from competitors like Proton Mail and Tutanota, and why—despite our commitment to self-hosting options—our paid service offers the best value for most users.
+This blog post explores why open-source email solutions are superior to closed-source alternatives, how our approach differs from competitors like Proton Mail and Tutanota, and why our paid service offers the best value for most users, even though you can self-host.
 
 
 ## The Open-Source Advantage: More Than Just Marketing
 
-The term "open-source" has become a popular marketing buzzword in recent years, with the global open-source services market projected to grow at a CAGR of over 16% between 2024 and 2032\[^1]. But what does being truly open-source mean, and why does it matter for your email privacy?
+The term "open-source" has become a popular marketing buzzword in recent years, with the global open-source services market projected to grow at a CAGR of over 16% between 2024 and 2032\[^1].
 
 ### What True Open-Source Means
 
@@ -47,36 +47,36 @@ Open-source software makes its entire source code freely available for anyone to
 * Users aren't locked into proprietary ecosystems
 * Innovation happens faster through collaborative improvement
 
-When it comes to email—the backbone of your online identity—this transparency isn't just nice to have; it's essential for genuine privacy and security.
+Email is the backbone of your online identity, so this transparency is essential for privacy and security.
 
 ### The Backend Problem: Where Most "Open-Source" Email Services Fall Short
 
-Here's where things get interesting. Many popular "privacy-focused" email providers advertise themselves as open-source, but there's a critical distinction they hope you won't notice: **they only open-source their frontends while keeping their backends closed**.
+Many popular "privacy-focused" email providers advertise themselves as open-source, but there's a critical distinction they hope you won't notice: **they only open-source their frontends while keeping their backends closed**.
 
-What does this mean? The frontend is what you see and interact with—the web interface or mobile app. The backend is where the actual email processing happens—where your messages are stored, encrypted, and transmitted. When a provider keeps their backend closed-source:
+The frontend is what you see and interact with: the web interface or mobile app. The backend processes your email: it stores, encrypts, and transmits your messages. When a provider keeps their backend closed-source:
 
-1. You can't verify how your emails are actually being processed
+1. You can't verify how they process your emails
 2. You can't confirm if their privacy claims are legitimate
 3. You're trusting marketing claims rather than verifiable code
 4. Security vulnerabilities may remain hidden from public scrutiny
 
-As discussions on Privacy Guides forums have highlighted, both Proton Mail and Tutanota claim to be open-source, but their backends remain closed and proprietary\[^2]. This creates a significant trust gap—you're asked to believe their privacy promises without the ability to verify them.
+As discussions on Privacy Guides forums have highlighted, both Proton Mail and Tutanota claim to be open-source, but their backends remain closed and proprietary\[^2]. You're asked to believe their privacy promises without the ability to verify them.
 
 
 ## Forward Email: 100% Open-Source, Frontend AND Backend
 
-At Forward Email, we've taken a fundamentally different approach. Our entire codebase—both frontend and backend—is open-source and available for anyone to inspect at <https://github.com/forwardemail/forwardemail.net>.
+At Forward Email, our entire codebase (frontend and backend) is open-source and available for anyone to inspect at <https://github.com/forwardemail/forwardemail.net>.
 
 This means:
 
 1. **Complete Transparency**: Every line of code that processes your emails is available for public scrutiny.
-2. **Verifiable Privacy**: Our privacy claims aren't marketing speak—they're verifiable facts that anyone can confirm by examining our code.
+2. **Verifiable Privacy**: Anyone can confirm our privacy claims by examining our code.
 3. **Community-Driven Security**: Our security is strengthened by the collective expertise of the global developer community.
-4. **No Hidden Functionality**: What you see is what you get—no hidden tracking, no secret backdoors.
+4. **No Hidden Functionality**: The published code is the code we run, with no hidden tracking or secret backdoors.
 
 ### Our Unique Technical Approach
 
-Our commitment to privacy goes beyond just being open-source. We've implemented several technical innovations that set us apart:
+Beyond publishing our code, we've built several technical features that set us apart:
 
 #### Individually Encrypted SQLite Mailboxes
 
@@ -84,7 +84,7 @@ Unlike traditional email providers that use shared relational databases (where a
 
 * Each mailbox is a separate encrypted file
 * Access to one user's data doesn't grant access to others
-* Even our own employees cannot access your data—it's a core design decision
+* Even our own employees cannot access your data, by design
 
 As we explained in Privacy Guides discussions:
 
@@ -96,16 +96,16 @@ While other providers are still catching up, we've already implemented quantum-r
 
 #### No Third-Party Dependencies
 
-Unlike competitors who rely on services like Amazon SES for email delivery, we've built our entire infrastructure in-house. This eliminates potential privacy leaks through third-party services and gives us complete control over the entire email pipeline.
+Some competitors rely on services like Amazon SES for email delivery. We built our entire infrastructure in-house. This eliminates potential privacy leaks through third-party services and gives us complete control over the entire email pipeline.
 
 
 ## The Self-Hosting Option: Freedom of Choice
 
-One of the most powerful aspects of open-source software is the freedom it provides. With Forward Email, you're never locked in—you can self-host our entire platform if you choose to.
+Open-source software means you're never locked in. You can self-host the entire Forward Email platform if you choose to.
 
 ### Why We Support Self-Hosting
 
-We believe in giving users complete control over their data. That's why we've made our entire platform self-hostable with comprehensive documentation and setup guides. This approach:
+We made our entire platform self-hostable, with documentation and setup guides, so you keep control of your data. This approach:
 
 * Provides maximum control for technically-inclined users
 * Eliminates any need to trust us as a service provider
@@ -114,7 +114,7 @@ We believe in giving users complete control over their data. That's why we've ma
 
 ### The Reality of Self-Hosting Email
 
-While self-hosting is a powerful option, it's important to understand the real costs involved:
+Self-hosting has real costs:
 
 #### Financial Costs
 
@@ -141,11 +141,11 @@ As one experienced self-hoster put it: "Email is a commodity service... It is ch
 
 ## Why Our Paid Service Makes Sense (Even Though We're Open-Source)
 
-Given the challenges of self-hosting, our paid service offers the best of both worlds: the transparency and security of open-source with the convenience and reliability of a managed service.
+Our paid service combines the transparency and security of open-source with the convenience and reliability of a managed service.
 
 ### Cost Comparison
 
-When you factor in both financial and time costs, our paid service offers exceptional value:
+When you factor in both financial and time costs, our paid service costs less:
 
 * **Self-hosting total cost**: $56-$252/month (including server costs and time valuation)
 * **Forward Email paid plans**: $3-$9/month
@@ -170,11 +170,11 @@ By choosing Forward Email, you get:
 
 ## The Closed-Source Deception: What Proton and Tutanota Don't Tell You
 
-Let's take a closer look at how our approach differs from popular "privacy-focused" email providers.
+Here is how our approach compares with popular "privacy-focused" email providers.
 
 ### Proton Mail's Open-Source Claims
 
-Proton Mail advertises itself as open-source, but this only applies to their frontend applications. Their backend—where your emails are actually processed and stored—remains closed-source\[^7]. This means:
+Proton Mail advertises itself as open-source, but this only applies to their frontend applications. Their backend, which processes and stores your emails, remains closed-source\[^7]. This means:
 
 * You can't verify how your emails are being handled
 * You must trust their privacy claims without verification
@@ -200,24 +200,24 @@ We also stated:
 
 > "There have been zero publicly shared audits of any currently listed PG email service provider's backend infrastructures nor open source code snippets shared of how they process inbound email."\[^10]
 
-This lack of transparency creates a fundamental trust problem. Without open-source backends, users are forced to take privacy claims on faith rather than verification.
+Without open-source backends, users have to take privacy claims on faith.
 
 
 ## The Future is Open-Source
 
-The trend toward open-source solutions is accelerating across the software industry. According to recent research:
+Open-source adoption is growing across the software industry. According to recent research:
 
 * Open-source software market is growing from $41.83 billion in 2024 to $48.92 billion in 2025\[^11]
 * 80% of companies report increased use of open-source over the past year\[^12]
 * The adoption of open-source is projected to continue its rapid expansion
 
-This growth reflects a fundamental shift in how we think about software security and privacy. As users become more privacy-conscious, the demand for verifiable privacy through open-source solutions will only increase.
+As users become more privacy-conscious, we expect demand for verifiable privacy through open-source solutions to grow.
 
 ### Why Open-Source is Winning
 
-The advantages of open-source are becoming increasingly clear:
+Open-source offers these advantages:
 
-1. **Security Through Transparency**: Open-source code can be reviewed by thousands of experts, not just an internal team
+1. **Security Through Transparency**: Thousands of outside experts can review open-source code, in addition to an internal team
 2. **Faster Innovation**: Collaborative development accelerates improvement
 3. **Trust Through Verification**: Claims can be verified rather than taken on faith
 4. **Freedom from Vendor Lock-in**: Users maintain control over their data and services
@@ -232,20 +232,18 @@ Our service offers:
 
 * Unlimited domains and aliases
 * Standard protocol support (SMTP, IMAP, POP3) without proprietary bridges
-* Seamless integration with existing email clients
-* Simple setup process with comprehensive documentation
-* Affordable pricing plans starting at just $3/month
+* Integration with existing email clients
+* Simple setup process with documentation
+* Affordable pricing plans starting at $3/month
 
 
 ## Conclusion: Open-Source Email for a Private Future
 
-In a world where digital privacy is increasingly under threat, the transparency of open-source solutions provides a crucial safeguard. At Forward Email, we're proud to be leading the way with our fully open-source approach to email privacy.
+Open-source code lets you check a provider's privacy claims. Forward Email takes a fully open-source approach to email privacy.
 
-Unlike competitors who only partially embrace open-source, we've made our entire platform—frontend and backend—available for public scrutiny. This commitment to transparency, combined with our innovative technical approach, provides a level of verifiable privacy that closed-source alternatives simply cannot match.
+Some competitors open-source only part of their stack. We've made our entire platform, frontend and backend, available for public scrutiny, so you can verify our privacy claims in a way closed-source alternatives don't allow.
 
-Whether you choose to use our managed service or self-host our platform, you benefit from the security, privacy, and peace of mind that comes from truly open-source email.
-
-The future of email is open, transparent, and privacy-focused. The future is Forward Email.
+You can use our managed service or self-host our platform and get the same open-source security and privacy either way.
 
 \[^1]: SNS Insider. "The Open Source Services Market was valued at USD 28.6 billion in 2023 and will reach to USD 114.8 Billion by 2032, growing at a CAGR of 16.70% by 2032." [Open Source Services Market Size & Analysis Report 2032](https://www.snsinsider.com/reports/open-source-services-market-3322)
 

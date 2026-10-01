@@ -1,6 +1,6 @@
 # Перетворіть свій Raspberry Pi на безпечний FTP-сервер з пересиланням електронної пошти {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
 
-У вас є Raspberry Pi, який припадає пилом? Незалежно від того, чи це останній Pi 5, Pi 4, Pi Zero або навіть старіша модель, цей посібник покаже вам, як перетворити його на потужний автоматизований файловий сервер з можливістю пересилання електронної пошти. Ідеально підходить для камер спостереження, IoT-пристроїв та іншого.
+У вас є Raspberry Pi, який припадає пилом? Незалежно від того, чи це останній Pi 5, Pi 4, Pi Zero або навіть старіша модель, цей посібник показує, як перетворити його на автоматизований файловий сервер з можливістю пересилання електронної пошти для камер спостереження, IoT-пристроїв та іншого.
 
 **Сумісно з:** Raspberry Pi 5, Raspberry Pi 4 Model B, Raspberry Pi 3 Model B+, Raspberry Pi 3 Model B, Raspberry Pi 2 Model B, Raspberry Pi Zero 2 W, Raspberry Pi Zero W та Raspberry Pi Zero.
 
@@ -36,7 +36,7 @@
 
 Цей посібник проведе вас через налаштування повної системи, яка включає:
 
-* **Ubuntu Server 22.04 LTS:** Надійна, легка ОС для Pi.
+* **Ubuntu Server 22.04 LTS:** Стабільна, легка ОС для Pi.
 * **Безпечний FTP-сервер (vsftpd):** Для безпечного завантаження файлів.
 * **Брандмауер (UFW) та Fail2ban:** Щоб тримати зловмисників поза доступом.
 * **Автоматизований обробник файлів:** Скрипт, який забирає нові файли, надсилає їх як вкладення електронною поштою, а потім очищує після себе.
@@ -44,12 +44,10 @@
   * Використання застарілих портів TLS 1.0 Forward Email (найпростіший)
   * Налаштування Postfix SMTP Relay (працює з будь-яким поштовим провайдером)
 
-Готові? Почнемо.
-
 
 ## Частина 1: Встановлення Ubuntu Server на ваш Pi {#part-1-getting-ubuntu-server-on-your-pi}
 
-Перш за все, встановіть Ubuntu Server на Raspberry Pi. Це дивовижно просто завдяки Raspberry Pi Imager.
+Почніть із встановлення Ubuntu Server на Raspberry Pi. Raspberry Pi Imager робить це простим.
 
 ### Що вам знадобиться {#what-youll-need}
 
@@ -90,7 +88,7 @@
 ssh your_username@your_pi_ip_address
 ```
 
-Ви в системі! Raspberry Pi тепер готовий до налаштування.
+Raspberry Pi тепер готовий до налаштування.
 
 
 ## Частина 2: Налаштування безпечного FTP-сервера {#part-2-setting-up-a-secure-ftp-server}
@@ -172,8 +170,8 @@ ssh your_username@your_pi_ip_address
    sudo mkdir -p /home/ftpuser/ftp/uploads
    ```
 
-   * `/home/ftpuser/ftp` - основна FTP директорія
-   * `/home/ftpuser/ftp/uploads` - місце для завантаження файлів
+   * `/home/ftpuser/ftp`: основна FTP директорія
+   * `/home/ftpuser/ftp/uploads`: місце для завантаження файлів
 
 3. **Встановіть права доступу:**
 
@@ -270,7 +268,7 @@ Fail2ban автоматично блокує IP-адреси після повт
 
 ## Part 4: Automated File Processing with Email Notifications {#part-4-automated-file-processing-with-email-notifications}
 
-Now for the magic: a script that monitors the FTP folder, emails new files as attachments, and deletes them. There are two approaches depending on your email provider:
+Next, add a script that monitors the FTP folder, emails new files as attachments, and deletes them. There are two approaches depending on your email provider:
 
 ### Option 1: Using Forward Email API (Recommended) {#option-1-using-forward-email-api-recommended}
 
@@ -512,7 +510,7 @@ sudo systemctl status ftp-monitor.service
 
 ### Варіант 1: Використання застарілих портів TLS 1.0 Forward Email (Рекомендовано) {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
 
-Якщо ви користуєтесь Forward Email, це найпростіше рішення. Forward Email надає спеціальні застарілі порти TLS 1.0 саме для старих пристроїв, таких як камери, принтери, сканери та факси.
+Якщо ви користуєтесь Forward Email, це найпростіше рішення. Forward Email надає спеціальні застарілі порти TLS 1.0 для старих пристроїв, таких як камери, принтери, сканери та факси.
 
 #### Ціни {#pricing}
 
@@ -538,7 +536,7 @@ Forward Email пропонує кілька планів:
 2. Перейдіть у **Мій акаунт → Домени → \[Ваш домен] → Псевдоніми**
 3. Створіть або виберіть псевдонім (наприклад, `camera@yourdomain.com`)
 4. Натисніть **"Generate Password"** поруч із псевдонімом
-5. Скопіюйте згенерований пароль — він знадобиться для SMTP-автентифікації
+5. Скопіюйте згенерований пароль; він знадобиться для SMTP-автентифікації
 
 > \[!TIP]
 > Кожен псевдонім може мати власний пароль. Це корисно для відстеження, який пристрій надіслав який лист.
@@ -560,7 +558,7 @@ Forward Email пропонує кілька планів:
 > \[!WARNING]
 > Ці порти використовують застарілий протокол TLS 1.0, який має відомі вразливості безпеки (BEAST, POODLE). Використовуйте лише якщо ваш пристрій не підтримує сучасний TLS 1.2+.
 
-Просто налаштуйте пристрій із цими параметрами, і він надсилатиме листи безпосередньо через Forward Email без потреби в локальному релейному сервері.
+Налаштуйте пристрій із цими параметрами, і він надсилатиме листи безпосередньо через Forward Email без локального релейного сервера.
 
 Для детальнішої інформації дивіться [Forward Email FAQ про підтримку застарілого TLS](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
 
@@ -694,7 +692,7 @@ mynetworks = 127.0.0.0/8 [::1]/128 192.168.1.0/24
 > Для Gmail (порт 587) встановіть `smtp_tls_wrappermode = no` замість `yes`.
 
 > \[!WARNING]
-> Оновіть `mynetworks` відповідно до вашого фактичного діапазону мережі. Додавайте лише довірені мережі — будь-який пристрій у цих мережах може надсилати пошту без автентифікації.
+> Оновіть `mynetworks` відповідно до вашого фактичного діапазону мережі. Додавайте лише довірені мережі, оскільки будь-який пристрій у цих мережах може надсилати пошту без автентифікації.
 
 **Поширені діапазони мереж:**
 

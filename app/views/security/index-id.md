@@ -32,7 +32,7 @@
 
 ## Kata Pengantar {#foreword}
 
-Di Forward Email, keamanan adalah prioritas utama kami. Kami telah menerapkan langkah-langkah keamanan yang komprehensif untuk melindungi komunikasi email dan data pribadi Anda. Dokumen ini menjelaskan praktik keamanan kami dan langkah-langkah yang kami ambil untuk memastikan kerahasiaan, integritas, dan ketersediaan email Anda.
+Di Forward Email, keamanan adalah prioritas utama kami. Dokumen ini menjelaskan praktik yang kami gunakan untuk melindungi komunikasi email dan data pribadi Anda, serta menjaga email Anda tetap rahasia, utuh, dan tersedia.
 
 
 ## Keamanan Infrastruktur {#infrastructure-security}
@@ -110,7 +110,7 @@ Kami mengikuti prinsip minimisasi data:
 
 ## Penyedia Layanan {#service-providers}
 
-Kami memilih penyedia layanan dengan cermat untuk memastikan mereka memenuhi standar keamanan tinggi kami. Berikut adalah penyedia yang kami gunakan untuk transfer data internasional dan status kepatuhan GDPR mereka:
+Kami memilih penyedia layanan yang memenuhi standar keamanan kami. Berikut adalah penyedia yang kami gunakan untuk transfer data internasional dan status kepatuhan GDPR mereka:
 
 | Penyedia                                      | Tujuan                     | Bersertifikat DPF | Halaman Kepatuhan GDPR                                                                                   |
 | --------------------------------------------- | -------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ Kami menggunakan penyedia ini untuk memastikan pengiriman layanan yang andal dan
 
 ### Penilaian Keamanan Berkala {#regular-security-assessments}
 
-Tim kami secara rutin memantau, meninjau, dan menilai basis kode, server, infrastruktur, dan praktik. Kami menerapkan program keamanan komprehensif yang mencakup:
+Tim kami secara rutin memantau, meninjau, dan menilai basis kode, server, infrastruktur, dan praktik. Program keamanan kami mencakup:
 
 * Rotasi kunci SSH secara berkala
 * Pemantauan terus-menerus terhadap log akses
@@ -209,7 +209,7 @@ Semua kode menjalani:
 
 ## Perjanjian Tingkat Layanan {#service-level-agreement}
 
-Kami menjaga tingkat ketersediaan dan keandalan layanan yang tinggi. Infrastruktur kami dirancang untuk redundansi dan toleransi kesalahan guna memastikan layanan email Anda tetap beroperasi. Meskipun kami tidak menerbitkan dokumen SLA formal, kami berkomitmen untuk:
+Kami merancang infrastruktur kami untuk redundansi dan toleransi kesalahan agar layanan email Anda tetap tersedia. Meskipun kami tidak menerbitkan dokumen SLA formal, kami berkomitmen untuk:
 
 * Waktu aktif 99,9%+ untuk semua layanan
 * Respon cepat terhadap gangguan layanan
@@ -237,7 +237,7 @@ Sebagai [layanan open-source](https://github.com/forwardemail/forwardemail.net),
 
 ## Perbaikan Berkelanjutan {#continuous-improvement}
 
-Kami terus meningkatkan postur keamanan kami melalui:
+Kami meningkatkan keamanan kami melalui:
 
 * Pemantauan tren keamanan dan ancaman yang muncul
 * Tinjauan dan pembaruan rutin kebijakan keamanan

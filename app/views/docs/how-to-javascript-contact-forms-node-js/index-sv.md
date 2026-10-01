@@ -20,7 +20,7 @@ npm install nodemailer
 
 Detta exempel använder **[Nodemailer](https://github.com/nodemailer/nodemailer)**-biblioteket och dess officiella sponsor **[Forward Email](https://forwardemail.net)** för att skicka och förhandsgranska utgående mail.
 
-Du behöver <strong class="text-success"><i class="fa fa-key"></i> Generera Lösenord</strong> för att skicka utgående mail – följ gärna vår **[Skicka E-post med Egen Domän SMTP-guide](/guides/send-email-with-custom-domain-smtp)**.
+Du behöver <strong class="text-success"><i class="fa fa-key"></i> Generera Lösenord</strong> för att skicka utgående mail. Följ gärna vår **[Skicka E-post med Egen Domän SMTP-guide](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

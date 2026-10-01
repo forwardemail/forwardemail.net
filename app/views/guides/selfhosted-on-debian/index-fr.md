@@ -49,7 +49,7 @@
 
 ## Aperçu {#overview}
 
-Ce guide fournit des instructions étape par étape pour installer la solution auto-hébergée de Forward Email sur des systèmes Debian. Ce guide est spécialement conçu pour Debian 11 (Bullseye) et Debian 12 (Bookworm).
+Ce guide fournit des instructions étape par étape pour installer la solution auto-hébergée de Forward Email sur des systèmes Debian. Il cible Debian 11 (Bullseye) et Debian 12 (Bookworm).
 
 
 ## Prérequis {#prerequisites}
@@ -383,7 +383,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Important** : Lorsque vous y êtes invité, vous devrez créer des enregistrements TXT dans votre DNS. Vous pouvez voir plusieurs challenges pour le même domaine - **créez TOUS ces enregistrements**. Ne supprimez pas le premier enregistrement TXT lorsque vous ajoutez le second.
+**Important** : Lorsque vous y êtes invité, vous devrez créer des enregistrements TXT dans votre DNS. Vous pouvez voir plusieurs challenges pour le même domaine ; **créez TOUS ces enregistrements**. Ne supprimez pas le premier enregistrement TXT lorsque vous ajoutez le second.
 
 #### Option B : DNS Cloudflare (si vous utilisez Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -858,6 +858,6 @@ Votre installation auto-hébergée de Forward Email devrait maintenant être com
 5. Maintenir votre installation à jour
 6. Surveiller snapd et les paquets snap
 
-Les principales différences avec Ubuntu concernent l’installation de snapd et la configuration du dépôt Docker. Une fois ces éléments correctement configurés, l’application Forward Email se comporte de manière identique sur les deux systèmes.
+Les principales différences avec Ubuntu concernent l’installation de snapd et la configuration du dépôt Docker. Une fois ces éléments configurés, l’application Forward Email se comporte de manière identique sur les deux systèmes.
 
 Pour des options de configuration supplémentaires et des fonctionnalités avancées, consultez la documentation officielle de Forward Email à <https://forwardemail.net/self-hosted#configuration>.

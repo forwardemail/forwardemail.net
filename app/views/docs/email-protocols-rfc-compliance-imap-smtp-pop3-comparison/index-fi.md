@@ -252,7 +252,7 @@ sequenceDiagram
 > \[!NOTE]
 > Forward Email tukee IMAP4rev1:stä (RFC 3501) ja osittaista tukea IMAP4rev2:n (RFC 9051) ominaisuuksille.
 
-Forward Email tarjoaa vankan IMAP4-tuen WildDuck-sähköpostipalvelimen toteutuksen kautta. Palvelin toteuttaa IMAP4rev1:n (RFC 3501) ja osittaisen tuen IMAP4rev2:n (RFC 9051) laajennuksille.
+Forward Email tarjoaa IMAP4-tuen WildDuck-sähköpostipalvelimen toteutuksen kautta. Palvelin toteuttaa IMAP4rev1:n (RFC 3501) ja osittaisen tuen IMAP4rev2:n (RFC 9051) laajennuksille.
 
 Forward Emailin IMAP-toiminnallisuus toteutetaan [WildDuck](https://github.com/nodemailer/wildduck) -riippuvuuden avulla. Seuraavat sähköpostin RFC:t ovat tuettuja:
 
@@ -604,7 +604,7 @@ Forward Email käyttää sähköpostin todennukseen [mailauth](https://github.co
 | [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Domain-based Message Authentication, Reporting, and Conformance (DMARC) | DMARC-käytännön noudattaminen                                |
 | [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Authenticated Received Chain (ARC)                                    | ARC-sinetöinti ja validointi                                 |
 
-Sähköpostin todennusprotokollat varmistavat, että viestit ovat aidosti ilmoitetulta lähettäjältä eivätkä ole muuttuneet siirron aikana.
+Sähköpostin todennusprotokollat varmistavat, että viestit ovat ilmoitetulta lähettäjältä eivätkä ole muuttuneet siirron aikana.
 
 ### Todennusprotokollien tuki {#authentication-protocol-support}
 
@@ -839,7 +839,7 @@ Viestin salausprotokollat suojaavat sähköpostin sisällön niin, että vain va
 1. Luo PGP-avainpari sähköpostiohjelmassasi
 2. Lataa julkinen avain Forward Emailin WKD:hen
 3. Avaimesi löytyy automaattisesti muille käyttäjille
-4. Lähetä ja vastaanota salattuja sähköposteja vaivattomasti
+4. Lähetä ja vastaanota salattuja sähköposteja
 
 ### S/MIME (Secure/Multipurpose Internet Mail Extensions) {#smime-securemultipurpose-internet-mail-extensions}
 

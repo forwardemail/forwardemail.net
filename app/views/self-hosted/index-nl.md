@@ -28,7 +28,7 @@
 
 ## Aan de slag {#getting-started}
 
-Onze zelfgehoste e-mailoplossing, net als al onze producten, is 100% open-source—zowel frontend als backend. Dit betekent:
+Onze zelfgehoste e-mailoplossing, net als al onze producten, is 100% open-source, frontend en backend. Dit betekent:
 
 1. **Volledige Transparantie**: Elke regel code die je e-mails verwerkt is beschikbaar voor publieke controle
 2. **Community Bijdragen**: Iedereen kan verbeteringen aanbrengen of problemen oplossen
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Kies optie `1. Initial setup` om te beginnen.
 
-Na voltooiing zou u een succesbericht moeten zien. U kunt zelfs `docker ps` uitvoeren om **de** opgestarte componenten te zien. Meer informatie over componenten hieronder.
+Na voltooiing zou u een succesbericht moeten zien. U kunt `docker ps` uitvoeren om **de** opgestarte componenten te zien. Meer informatie over componenten hieronder.
 
 
 ## Diensten {#services}

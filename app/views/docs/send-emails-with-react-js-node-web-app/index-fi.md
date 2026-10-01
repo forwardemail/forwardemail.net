@@ -39,7 +39,7 @@ export function Email(props) {
 
 Tässä esimerkissä käytämme **[Nodemailer](https://github.com/nodemailer/nodemailer)**-kirjastoa ja sen virallista sponsoria **[Forward Email](https://forwardemail.net)** lähettämään ja esikatsomaan lähtevää sähköpostia.
 
-Sinun tulee <strong class="text-success"><i class="fa fa-key"></i> luoda salasana</strong> lähtevän sähköpostin lähettämistä varten – seuraa ohjeitamme **[Lähetä sähköposti mukautetulla SMTP-domainilla -opas](/guides/send-email-with-custom-domain-smtp)**.
+Sinun tulee <strong class="text-success"><i class="fa fa-key"></i> luoda salasana</strong> lähtevän sähköpostin lähettämistä varten. Seuraa ohjeitamme **[Lähetä sähköposti mukautetulla SMTP-domainilla -opas](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

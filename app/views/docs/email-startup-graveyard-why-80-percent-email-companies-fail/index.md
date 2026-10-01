@@ -187,7 +187,7 @@ The core email protocols are solid, but implementation quality varies widely:
 Email's network effect is absolute:
 
 * **Everyone has email**: [4.37 billion email users worldwide](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) as of 2023
-* **Cross-platform**: Works between all providers seamlessly
+* **Cross-platform**: Works between all providers
 * **Business critical**: [99% of businesses use email daily](https://blog.hubspot.com/marketing/email-marketing-stats) for operations
 * **Switching cost**: Changing email addresses breaks everything connected to it
 
@@ -249,7 +249,7 @@ Skiff perfectly exemplifies everything wrong with email startups.
 
 #### Y Combinator: The Email App Factory
 
-[Y Combinator](https://www.ycombinator.com/) has funded dozens of email startups. Here's the pattern:
+[Y Combinator](https://www.ycombinator.com/) has funded dozens of email startups. They follow a pattern:
 
 * **[Emailio](https://www.ycdb.co/company/emailio)** (2014): Mobile email client → pivoted to "wellness"
 * **[MailTime](https://www.ycdb.co/company/mailtime)** (2016): Chat-style email → pivoted to analytics
@@ -275,7 +275,7 @@ Skiff perfectly exemplifies everything wrong with email startups.
 > \[!CAUTION]
 > **VC Funding Paradox**: VCs love email startups because they sound simple but are actually impossible. The fundamental assumptions that attract investment are exactly what guarantee failure.
 
-VCs love email startups because they sound simple but are actually impossible:
+VCs love email startups because they sound simple but are close to impossible:
 
 ```mermaid
 graph TD
@@ -302,7 +302,7 @@ graph TD
 
 ### What Actually Powers "Email Startups"
 
-Let's look at what these companies actually run:
+Most of these companies run on this stack:
 
 ```mermaid
 graph LR
@@ -436,7 +436,7 @@ Every email startup gets the same comments on [Hacker News](https://news.ycombin
 
 * **[Superhuman](https://superhuman.com/)**: [$33M raised](https://superhuman.com/), [successfully acquired by Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - a rare successful client app exit
 * **[Shortwave](https://www.shortwave.com/)**: Gmail wrapper with AI summaries
-* **[SaneBox](https://www.sanebox.com/)**: AI email filtering (actually works, but not revolutionary)
+* **[SaneBox](https://www.sanebox.com/)**: AI email filtering (works, but not revolutionary)
 
 ### The Same Old Problems
 
@@ -478,7 +478,7 @@ Adding "AI" doesn't solve the fundamental challenges:
 
 ### The Exception: Xobni's Success Story
 
-[Xobni](https://en.wikipedia.org/wiki/Xobni) stands out as one of the few email-related startups that actually succeeded by taking the right approach.
+[Xobni](https://en.wikipedia.org/wiki/Xobni) stands out as one of the few email-related startups that succeeded by taking the right approach.
 
 **What Xobni Did Right**:
 
@@ -492,7 +492,7 @@ Adding "AI" doesn't solve the fundamental challenges:
 #### Why Xobni Succeeded Where Others Failed
 
 1. **Built on proven infrastructure**: Used Outlook's existing email handling
-2. **Solved actual problems**: Contact management was genuinely broken
+2. **Solved actual problems**: Contact management was broken
 3. **Enterprise market**: Businesses pay for productivity tools
 4. **Integration approach**: Enhanced rather than replaced existing workflows
 
@@ -516,7 +516,7 @@ Companies succeed in email when they:
 
 ## Has Anyone Successfully Reinvented Email?
 
-This is a crucial question that gets to the heart of email innovation. The short answer is: **no one has successfully replaced email, but some have successfully enhanced it**.
+The short answer is: **no one has successfully replaced email, but some have successfully enhanced it**.
 
 ### What Actually Stuck
 
@@ -562,7 +562,7 @@ The most successful email innovations have been:
 
 ## Building Modern Infrastructure for Existing Email Protocols: Our Approach
 
-Before diving into the failures, it's important to understand what actually works in email. The challenge isn't that email is broken - it's that most companies try to "fix" something that already works perfectly.
+Before the failures, consider what works in email. Most companies try to "fix" something that already works.
 
 ### The Email Innovation Spectrum
 
@@ -605,7 +605,7 @@ The successful pattern is simple: **enhance existing email workflows instead of 
 * **Build actual infrastructure**: Custom SMTP/IMAP servers from scratch
 * **Focus on reliability**: [99.99% uptime](https://status.forwardemail.net), proper error handling
 * **Enhance existing workflows**: Work with all email clients
-* **Serve developers**: APIs and tools that actually work
+* **Serve developers**: APIs and tools that work
 * **Maintain compatibility**: Full [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) compliance
 
 ### What We Don't Do
@@ -624,7 +624,7 @@ While other companies burn millions trying to reinvent email, we focus on buildi
 
 * **No pivots**: We've been building email infrastructure for 7+ years
 * **No acquisition strategy**: We're building for the long term
-* **No "revolutionary" claims**: We just make email work better
+* **No "revolutionary" claims**: We make email work better
 
 ### What Makes Us Different
 
@@ -694,7 +694,7 @@ graph TD
 
 ### The Technical Timeline
 
-Based on our [official company timeline](https://forwardemail.net/en/about), here's how we've built email infrastructure that actually works:
+Based on our [official company timeline](https://forwardemail.net/en/about), this is how we built our email infrastructure:
 
 ```mermaid
 timeline
@@ -714,7 +714,7 @@ timeline
 2. **We enhance, don't replace**: Work with existing email clients
 3. **We're profitable**: No VC pressure to "grow fast and break things"
 4. **We understand email**: 7+ years of deep technical experience
-5. **We serve developers**: APIs and tools that actually solve problems
+5. **We serve developers**: APIs and tools that solve problems
 
 ### The Cost Reality Check
 
@@ -802,7 +802,7 @@ Email has been "dying" for 20+ years according to startups:
 
 ### The Real Lesson
 
-The lesson isn't that email can't be improved. It's about choosing the right approach:
+Email can be improved, but it takes the right approach:
 
 1. **Email protocols work**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), [POP3](https://tools.ietf.org/html/rfc1939) are battle-tested
 2. **Infrastructure matters**: Reliability and performance beat flashy features
@@ -907,7 +907,7 @@ Open-source email projects fail because:
 
 * **[Superhuman](https://superhuman.com/)**: [$33M raised](https://superhuman.com/), [acquired by Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025)
 * **[Shortwave](https://www.shortwave.com/)**: Y Combinator, Gmail + AI
-* **[SaneBox](https://www.sanebox.com/)**: AI email filtering (actually profitable)
+* **[SaneBox](https://www.sanebox.com/)**: AI email filtering (profitable)
 * **[Boomerang](https://www.boomeranggmail.com/)**: AI scheduling and responses
 * **[Mail-0/Zero](https://github.com/Mail-0/Zero)**: AI-powered email client startup building yet another email interface
 * **[Inbox Zero](https://github.com/elie222/inbox-zero)**: Open-source AI email assistant attempting to automate email management
@@ -988,7 +988,7 @@ After [ActiveCampaign's acquisition](https://postmarkapp.com/blog/postmark-and-d
 
 ### The Survivors: Email Companies That Actually Work
 
-Not all email companies fail. Here are the ones that actually work:
+Some email companies do succeed:
 
 **[Mailmodo](https://www.mailmodo.com/)**: [Y Combinator success story](https://www.ycombinator.com/companies/mailmodo), [$2M from Sequoia's Surge](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) by focusing on interactive email campaigns.
 

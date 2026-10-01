@@ -43,7 +43,7 @@
 
 ## 概述 {#overview}
 
-本指南提供了在 Ubuntu 系统上安装 Forward Email 自托管解决方案的逐步说明。该指南专门针对 Ubuntu 20.04、22.04 和 24.04 LTS 版本。
+本指南逐步介绍如何在 Ubuntu 20.04、22.04 和 24.04 LTS 上安装 Forward Email 自托管解决方案。
 
 
 ## 先决条件 {#prerequisites}
@@ -338,7 +338,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**重要**：当提示时，您需要在 DNS 中创建 TXT 记录。您可能会看到同一域名的多个挑战 - **请全部创建**。添加第二个 TXT 记录时不要删除第一个。
+**重要**：当提示时，您需要在 DNS 中创建 TXT 记录。您可能会看到同一域名的多个挑战：**请全部创建**。添加第二个 TXT 记录时不要删除第一个。
 
 #### 选项 B：Cloudflare DNS（如果您使用 Cloudflare） {#option-b-cloudflare-dns-if-you-use-cloudflare}
 

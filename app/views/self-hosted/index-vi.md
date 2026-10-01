@@ -28,7 +28,7 @@
 
 ## Bắt đầu {#getting-started}
 
-Giải pháp email tự lưu trữ của chúng tôi, giống như tất cả các sản phẩm của chúng tôi, hoàn toàn mã nguồn mở — cả frontend và backend. Điều này có nghĩa:
+Giải pháp email tự lưu trữ của chúng tôi, giống như tất cả các sản phẩm của chúng tôi, hoàn toàn mã nguồn mở, cả frontend và backend. Điều này có nghĩa:
 
 1. **Minh bạch hoàn toàn**: Mọi dòng mã xử lý email của bạn đều có sẵn để công khai xem xét
 2. **Đóng góp từ cộng đồng**: Bất kỳ ai cũng có thể đóng góp cải tiến hoặc sửa lỗi
@@ -136,7 +136,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Chọn lựa chọn `1. Initial setup` để bắt đầu.
 
-Khi hoàn tất, bạn sẽ thấy thông báo thành công. Bạn thậm chí có thể chạy `docker ps` để xem **các** thành phần đã được khởi động. Thông tin thêm về các thành phần bên dưới.
+Khi hoàn tất, bạn sẽ thấy thông báo thành công. Bạn có thể chạy `docker ps` để xem **các** thành phần đã được khởi động. Thông tin thêm về các thành phần bên dưới.
 
 ## Dịch vụ {#services}
 
@@ -289,7 +289,7 @@ Một lựa chọn khác là sử dụng các thay đổi DNS tự động của
 
 ### Tên đăng nhập và mật khẩu xác thực cơ bản là gì {#what-is-the-basic-auth-username-and-password}
 
-Đối với tự lưu trữ, chúng tôi thêm một cửa sổ xác thực gốc trình duyệt lần đầu với tên đăng nhập đơn giản (`admin`) và mật khẩu (được tạo ngẫu nhiên khi thiết lập ban đầu). Chúng tôi chỉ thêm điều này như một biện pháp bảo vệ trong trường hợp tự động hóa / trình thu thập dữ liệu nào đó đăng ký trước bạn trên trải nghiệm web. Bạn có thể tìm mật khẩu này sau khi thiết lập ban đầu trong tệp `.env` dưới `AUTH_BASIC_USERNAME` và `AUTH_BASIC_PASSWORD`.
+Đối với tự lưu trữ, chúng tôi thêm một cửa sổ xác thực gốc trình duyệt lần đầu với tên đăng nhập đơn giản (`admin`) và mật khẩu (được tạo ngẫu nhiên khi thiết lập ban đầu). Chúng tôi thêm điều này như một biện pháp bảo vệ trong trường hợp tự động hóa / trình thu thập dữ liệu nào đó đăng ký trước bạn trên trải nghiệm web. Bạn có thể tìm mật khẩu này sau khi thiết lập ban đầu trong tệp `.env` dưới `AUTH_BASIC_USERNAME` và `AUTH_BASIC_PASSWORD`.
 
 ### Làm sao tôi biết cái gì đang chạy {#how-do-i-know-what-is-running}
 

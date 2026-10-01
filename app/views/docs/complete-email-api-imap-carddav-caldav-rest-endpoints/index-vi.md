@@ -3,7 +3,7 @@
 <!-- <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
-  <strong>Tóm tắt nhanh:</strong> Chúng tôi đã xây dựng API REST hoàn chỉnh đầu tiên trên thế giới cho quản lý email với khả năng tìm kiếm nâng cao mà không dịch vụ nào khác có. Trong khi Gmail, Outlook và Apple bắt các nhà phát triển phải chịu cảnh địa ngục IMAP hoặc API giới hạn tốc độ, Forward Email cung cấp các thao tác CRUD cực nhanh cho tin nhắn, thư mục, danh bạ và lịch qua giao diện REST thống nhất với hơn 15 tham số tìm kiếm. Đây chính là API email mà các nhà phát triển đã chờ đợi.
+  <strong>Tóm tắt nhanh:</strong> Chúng tôi đã xây dựng API REST hoàn chỉnh đầu tiên trên thế giới cho quản lý email với khả năng tìm kiếm nâng cao mà không dịch vụ nào khác có. Trong khi Gmail, Outlook và Apple bắt các nhà phát triển phải chịu cảnh địa ngục IMAP hoặc API giới hạn tốc độ, Forward Email cung cấp các thao tác CRUD nhanh cho tin nhắn, thư mục, danh bạ và lịch qua giao diện REST thống nhất với hơn 15 tham số tìm kiếm.
 </p>
 
 
@@ -73,22 +73,22 @@
 * [Tài Nguyên Kỹ Thuật](#technical-resources)
 ## Vấn Đề API Email {#the-email-api-problem}
 
-API email về cơ bản là hỏng. Chấm hết.
+Hầu hết các API email đều hỏng.
 
 Mỗi nhà cung cấp email lớn đều bắt các nhà phát triển phải chọn một trong hai lựa chọn tồi tệ:
 
 1. **Địa ngục IMAP**: Vật lộn với giao thức 30 năm tuổi được thiết kế cho các ứng dụng máy tính để bàn, không phải ứng dụng hiện đại
 2. **API bị hạn chế**: API chỉ đọc, giới hạn tần suất, phức tạp với OAuth không thể quản lý dữ liệu email thực tế của bạn
 
-Kết quả? Các nhà phát triển hoặc từ bỏ hoàn toàn việc tích hợp email hoặc tốn hàng tuần xây dựng các lớp bao IMAP mong manh liên tục bị lỗi.
+Kết quả là các nhà phát triển hoặc từ bỏ việc tích hợp email hoặc tốn hàng tuần xây dựng các lớp bao IMAP mong manh thường xuyên bị lỗi.
 
 > \[!WARNING]
-> **Bí mật bẩn thỉu**: Hầu hết "API email" chỉ là API gửi thư. Bạn không thể lập trình để tổ chức thư mục, đồng bộ danh bạ, hoặc quản lý lịch qua một giao diện REST đơn giản. Cho đến bây giờ.
+> **Bí mật bẩn thỉu**: Hầu hết "API email" là API gửi thư. Các nhà cung cấp khác không cho phép bạn tổ chức thư mục, đồng bộ danh bạ, hoặc quản lý lịch qua một giao diện REST đơn giản.
 
 
 ## Những Gì Các Nhà Phát Triển Thực Sự Nói {#what-developers-are-actually-saying}
 
-Sự thất vọng là có thật và được ghi nhận khắp nơi:
+Các nhà phát triển đã ghi nhận sự thất vọng này ở nhiều nơi:
 
 > "Gần đây tôi đã cố gắng tích hợp Gmail vào ứng dụng của mình, và tôi đã dành quá nhiều thời gian cho nó. Tôi quyết định không đáng để hỗ trợ Gmail."
 >
@@ -106,7 +106,7 @@ Sự thất vọng là có thật và được ghi nhận khắp nơi:
 >
 > *- [Câu hỏi Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) với 47 lượt thích*
 
-Bằng chứng có ở khắp nơi:
+Thêm bằng chứng:
 
 * **Vấn đề SMTP WordPress**: [631 vấn đề GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) về thất bại trong việc gửi email
 * **Hạn chế Zapier**: [Phàn nàn cộng đồng](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) về giới hạn 10 email/giờ và lỗi phát hiện IMAP
@@ -118,7 +118,7 @@ Bằng chứng có ở khắp nơi:
 
 **Chúng tôi là dịch vụ email đầu tiên cung cấp đầy đủ các thao tác CRUD cho tất cả dữ liệu email qua một API REST thống nhất.**
 
-Đây không chỉ là một API gửi thư nữa. Đây là quyền kiểm soát lập trình hoàn chỉnh đối với:
+API mang đến cho bạn quyền kiểm soát lập trình hoàn chỉnh đối với:
 
 * **Tin nhắn**: Tạo, đọc, cập nhật, xóa, tìm kiếm, di chuyển, đánh dấu
 * **Thư mục**: Quản lý thư mục IMAP đầy đủ qua các điểm cuối REST
@@ -127,15 +127,15 @@ Bằng chứng có ở khắp nơi:
 
 ### Tại Sao Chúng Tôi Xây Dựng Điều Này {#why-we-built-this}
 
-**Vấn đề**: Mỗi nhà cung cấp email đều coi email như một hộp đen. Bạn có thể gửi email, có thể đọc chúng với OAuth phức tạp, nhưng bạn không thể thực sự *quản lý* dữ liệu email của mình một cách lập trình.
+**Vấn đề**: Mỗi nhà cung cấp email đều coi email như một hộp đen. Bạn có thể gửi email, có thể đọc chúng với OAuth phức tạp, nhưng bạn không thể *quản lý* dữ liệu email của mình một cách lập trình.
 
-**Tầm nhìn của chúng tôi**: Email nên dễ tích hợp như bất kỳ API hiện đại nào. Không thư viện IMAP. Không phức tạp OAuth. Không ác mộng giới hạn tần suất. Chỉ đơn giản là các điểm cuối REST hoạt động.
+**Tầm nhìn của chúng tôi**: Email nên dễ tích hợp như bất kỳ API hiện đại nào, với các điểm cuối REST đơn giản thay vì thư viện IMAP, sự phức tạp của OAuth và ác mộng giới hạn tần suất.
 
 **Kết quả**: Dịch vụ email đầu tiên nơi bạn có thể xây dựng một ứng dụng email hoàn chỉnh, tích hợp CRM, hoặc hệ thống tự động hóa chỉ bằng các yêu cầu HTTP.
 
 ### Xác Thực Đơn Giản {#simple-authentication}
 
-Không [phức tạp OAuth](https://oauth.net/2/). Không [mật khẩu ứng dụng riêng biệt](https://support.google.com/accounts/answer/185833). Chỉ cần thông tin đăng nhập bí danh của bạn:
+Xác thực bằng thông tin đăng nhập bí danh của bạn, không cần [phức tạp OAuth](https://oauth.net/2/) hay [mật khẩu ứng dụng riêng biệt](https://support.google.com/accounts/answer/185833):
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
@@ -178,9 +178,9 @@ curl -u "alias@yourdomain.com:password" \
 
 ## Tìm kiếm Nâng cao: Không Dịch Vụ Nào Sánh Kịp {#advanced-search-no-other-service-compares}
 
-**Forward Email là dịch vụ email duy nhất cung cấp tìm kiếm toàn diện, có thể lập trình trên tất cả các trường tin nhắn thông qua REST API.**
+**Forward Email là dịch vụ email duy nhất cung cấp tìm kiếm có thể lập trình trên tất cả các trường tin nhắn thông qua REST API.**
 
-Trong khi các nhà cung cấp khác chỉ cung cấp bộ lọc cơ bản, chúng tôi đã xây dựng API tìm kiếm email tiên tiến nhất từng được tạo ra. Không API Gmail, API Outlook hay bất kỳ dịch vụ nào khác có thể sánh kịp khả năng tìm kiếm của chúng tôi.
+Các nhà cung cấp khác chỉ cung cấp bộ lọc cơ bản. API Gmail, API Outlook và các dịch vụ khác không sánh kịp khả năng tìm kiếm của chúng tôi.
 
 ### Cảnh Quan API Tìm Kiếm Đang Bị Phá Vỡ {#the-search-api-landscape-is-broken}
 
@@ -335,7 +335,7 @@ API tìm kiếm của chúng tôi sử dụng:
 * **Tối ưu Regex** với chiến lược lập chỉ mục đúng
 * **Thực thi song song** để tăng hiệu suất
 * **Xác thực đầu vào** để bảo mật
-* **Xử lý lỗi toàn diện** để đảm bảo độ tin cậy
+* **Xử lý lỗi** để đảm bảo độ tin cậy
 
 ```javascript
 // Ví dụ: Triển khai tìm kiếm phức tạp
@@ -398,7 +398,7 @@ graph LR
 
 ### Kiến Trúc Ưu Tiên Bảo Mật {#privacy-first-architecture}
 
-**Thiết Kế Không Kiến Thức**: Chỉ bạn mới có quyền truy cập với mật khẩu IMAP của bạn - chúng tôi không thể đọc email của bạn. [Kiến trúc không kiến thức](https://forwardemail.net/en/security) của chúng tôi đảm bảo sự riêng tư tuyệt đối đồng thời mang lại hiệu suất vượt trội.
+**Thiết Kế Không Kiến Thức**: Chỉ bạn mới có quyền truy cập với mật khẩu IMAP của bạn, nên chúng tôi không thể đọc email của bạn. [Kiến trúc không kiến thức](https://forwardemail.net/en/security) của chúng tôi giữ dữ liệu của bạn riêng tư mà không làm chậm hệ thống.
 
 
 ## Tại Sao Chúng Tôi Khác Biệt: So Sánh Toàn Diện {#why-were-different-the-complete-comparison}
@@ -435,14 +435,14 @@ graph LR
 **Sự Lừa Dối Của ProtonMail:**
 
 * **Tuyên bố**: ["Chúng tôi là mã nguồn mở"](https://proton.me/blog/open-source) được quảng cáo nổi bật
-* **Thực tế**: [Mã máy chủ hoàn toàn độc quyền](https://github.com/ProtonMail) - chỉ ứng dụng khách là mã nguồn mở
+* **Thực tế**: [Mã máy chủ hoàn toàn độc quyền](https://github.com/ProtonMail); chỉ ứng dụng khách là mã nguồn mở
 * **Ảnh hưởng**: Người dùng không thể xác minh mã hóa máy chủ, xử lý dữ liệu hay tuyên bố bảo mật
 * **Vi phạm Minh bạch**: Không có cách nào kiểm tra hệ thống xử lý và lưu trữ email thực tế
 
 **Chiêu Tiếp Thị Gây Hiểu Lầm Của Tuta:**
 
 * **Tuyên bố**: ["Email mã nguồn mở"](https://tuta.com/blog/posts/open-source-email) là điểm bán hàng chính
-* **Thực tế**: [Hạ tầng backend là mã đóng](https://github.com/tutao/tutanota) - chỉ frontend được công khai
+* **Thực tế**: [Hạ tầng backend là mã đóng](https://github.com/tutao/tutanota); chỉ frontend được công khai
 * **Ảnh hưởng**: Mã hóa độc quyền ngăn cản các giao thức email chuẩn (IMAP/SMTP)
 * **Chiến lược Khóa Nhà Cung Cấp**: Mã hóa tùy chỉnh buộc phụ thuộc nhà cung cấp
 
@@ -450,21 +450,21 @@ graph LR
 
 Năm 2025, bảo mật thực sự đòi hỏi **minh bạch hoàn toàn**. Khi nhà cung cấp email tuyên bố "mã nguồn mở" nhưng giấu mã máy chủ:
 
-1. **Mã hóa không thể kiểm chứng**: Bạn không thể kiểm tra cách dữ liệu được mã hóa thực sự
+1. **Mã hóa không thể kiểm chứng**: Bạn không thể kiểm tra cách dữ liệu được mã hóa
 2. **Thao tác dữ liệu ẩn**: Xử lý dữ liệu máy chủ vẫn là hộp đen
 3. **Bảo mật dựa trên niềm tin**: Bạn phải tin tưởng mà không có xác minh
 4. **Khóa nhà cung cấp**: Hệ thống độc quyền ngăn cản chuyển đổi dữ liệu
 
 **Minh Bạch Thực Sự Của Forward Email:**
 
-* ✅ **[Mã nguồn mở hoàn chỉnh](https://github.com/forwardemail/forwardemail.net)** - mã máy chủ và khách
-* ✅ **[Có thể tự lưu trữ](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - chạy phiên bản riêng của bạn
-* ✅ **Giao thức chuẩn** - tương thích IMAP, SMTP, CardDAV, CalDAV
-* ✅ **Bảo mật có thể kiểm tra** - từng dòng mã đều có thể xem xét
-* ✅ **Không khóa nhà cung cấp** - dữ liệu của bạn, bạn kiểm soát
+* ✅ **[Mã nguồn mở hoàn chỉnh](https://github.com/forwardemail/forwardemail.net)**: mã máy chủ và khách
+* ✅ **[Có thể tự lưu trữ](https://forwardemail.net/en/blog/docs/self-hosted-solution)**: chạy phiên bản riêng của bạn
+* ✅ **Giao thức chuẩn**: tương thích IMAP, SMTP, CardDAV, CalDAV
+* ✅ **Bảo mật có thể kiểm tra**: bạn có thể xem xét từng dòng mã
+* ✅ **Không khóa nhà cung cấp**: bạn kiểm soát dữ liệu của mình
 
 > \[!TIP]
-> **Mã nguồn mở thực sự nghĩa là bạn có thể kiểm chứng mọi tuyên bố.** Với Forward Email, bạn có thể kiểm tra mã hóa, xem xét xử lý dữ liệu, và thậm chí tự chạy phiên bản riêng. Đó mới là minh bạch thật sự.
+> **Mã nguồn mở thực sự nghĩa là bạn có thể kiểm chứng mọi tuyên bố.** Với Forward Email, bạn có thể kiểm tra mã hóa, xem xét xử lý dữ liệu, và tự chạy phiên bản riêng.
 
 
 ## Hơn 30 Ví Dụ Tích Hợp Thực Tế {#30-real-world-integration-examples}
@@ -1261,7 +1261,7 @@ for (const alert of socialAlerts) {
 
 ### 2. Tạo Thông Tin Đăng Nhập API {#2-generate-api-credentials}
 
-Email bí danh và mật khẩu của bạn đóng vai trò là thông tin đăng nhập API - không cần thiết lập thêm.
+Email bí danh và mật khẩu của bạn đóng vai trò là thông tin đăng nhập API, không cần thiết lập thêm.
 ### 3. Thực Hiện Cuộc Gọi API Đầu Tiên Của Bạn {#3-make-your-first-api-call}
 
 ```bash
@@ -1284,14 +1284,14 @@ Truy cập [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api
 
 ## Tài Nguyên Kỹ Thuật {#technical-resources}
 
-* **[Tài Liệu API Đầy Đủ](https://forwardemail.net/en/email-api)** - Đặc tả OpenAPI 3.0 tương tác
-* **[Hướng Dẫn Tự Lưu Trữ](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Triển khai Forward Email trên hạ tầng của bạn
-* **[Sách Trắng Bảo Mật](https://forwardemail.net/technical-whitepaper.pdf)** - Kiến trúc kỹ thuật và chi tiết bảo mật
-* **[Kho Mã Nguồn GitHub](https://github.com/forwardemail/forwardemail.net)** - Mã nguồn mở
-* **[Hỗ Trợ Nhà Phát Triển](mailto:api@forwardemail.net)** - Truy cập trực tiếp đội ngũ kỹ sư của chúng tôi
+* **[Tài Liệu API Đầy Đủ](https://forwardemail.net/en/email-api)**: Đặc tả OpenAPI 3.0 tương tác
+* **[Hướng Dẫn Tự Lưu Trữ](https://forwardemail.net/en/blog/docs/self-hosted-solution)**: Triển khai Forward Email trên hạ tầng của bạn
+* **[Sách Trắng Bảo Mật](https://forwardemail.net/technical-whitepaper.pdf)**: Kiến trúc kỹ thuật và chi tiết bảo mật
+* **[Kho Mã Nguồn GitHub](https://github.com/forwardemail/forwardemail.net)**: Mã nguồn mở
+* **[Hỗ Trợ Nhà Phát Triển](mailto:api@forwardemail.net)**: Truy cập trực tiếp đội ngũ kỹ sư của chúng tôi
 
 ---
 
-**Sẵn sàng cách mạng hóa tích hợp email của bạn?** [Bắt đầu xây dựng với API của Forward Email ngay hôm nay](https://forwardemail.net/en/email-api) và trải nghiệm nền tảng quản lý email hoàn chỉnh đầu tiên được thiết kế dành cho nhà phát triển.
+[Bắt đầu xây dựng với API của Forward Email ngay hôm nay](https://forwardemail.net/en/email-api), nền tảng quản lý email hoàn chỉnh đầu tiên được thiết kế dành cho nhà phát triển.
 
-*Forward Email: Dịch vụ email cuối cùng hiểu đúng về API.*
+*Forward Email: email với REST API hoàn chỉnh.*

@@ -28,7 +28,7 @@
 
 ## Első lépések {#getting-started}
 
-Az önállóan hosztolt email megoldásunk, mint minden termékünk, 100%-ban nyílt forráskódú — mind frontend, mind backend tekintetében. Ez azt jelenti:
+Az önállóan hosztolt email megoldásunk, mint minden termékünk, 100%-ban nyílt forráskódú, mind frontend, mind backend tekintetében. Ez azt jelenti:
 
 1. **Teljes átláthatóság**: Minden egyes kódsor, amely az emailjeidet feldolgozza, nyilvánosan megtekinthető
 2. **Közösségi hozzájárulások**: Bárki hozzájárulhat fejlesztésekkel vagy hibajavításokkal

@@ -107,7 +107,7 @@ block body
   include _modal-storage
   //-.
     if !user
-      +onboard(t('Setup email in minutes'), t('Simply enter your domain below to setup its email.'), l('/faq?redirect_to_domain=true'), '#top', 'border-top', true)
+      +onboard(t('Setup email in minutes'), t('Enter your domain below to setup its email.'), l('/faq?redirect_to_domain=true'), '#top', 'border-top', true)
 
   script(defer, nonce=nonce).
     window.addEventListener(

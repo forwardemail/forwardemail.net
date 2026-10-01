@@ -33,20 +33,20 @@
 
 ## Prefácio {#foreword}
 
-Este guia fornece exemplos detalhados de como integrar com o serviço SMTP do Forward Email usando várias linguagens de programação, frameworks e clientes de email. Nosso serviço SMTP é projetado para ser confiável, seguro e fácil de integrar com suas aplicações existentes.
+Este guia mostra como integrar com o serviço SMTP do Forward Email usando várias linguagens de programação, frameworks e clientes de email.
 
 
 ## Como o Processamento SMTP do Forward Email Funciona {#how-forward-emails-smtp-processing-works}
 
-Antes de mergulhar nos exemplos de integração, é importante entender como nosso serviço SMTP processa os emails:
+Nosso serviço SMTP processa os emails da seguinte forma:
 
 ### Fila de Emails e Sistema de Retentativa {#email-queue-and-retry-system}
 
 Quando você envia um email via SMTP para nossos servidores:
 
 1. **Processamento Inicial**: O email é validado, escaneado para malware e verificado contra filtros de spam
-2. **Fila Inteligente**: Os emails são colocados em um sistema sofisticado de fila para entrega
-3. **Mecanismo Inteligente de Retentativa**: Se a entrega falhar temporariamente, nosso sistema irá:
+2. **Enfileiramento**: Nosso sistema coloca os emails em uma fila de entrega
+3. **Mecanismo de Retentativa**: Se a entrega falhar temporariamente, nosso sistema irá:
    * Analisar a resposta de erro usando nossa função `getBounceInfo`
    * Determinar se o problema é temporário (ex: "tente novamente mais tarde", "temporariamente adiado") ou permanente (ex: "usuário desconhecido")
    * Para problemas temporários, marcar o email para retentativa
@@ -59,14 +59,14 @@ Quando você envia um email via SMTP para nossos servidores:
 
 ### À Prova de Erros para Confiabilidade {#dummy-proofed-for-reliability}
 
-Nosso sistema é projetado para lidar com vários casos extremos:
+Nosso sistema lida com estes casos extremos:
 
 * Se uma lista de bloqueio for detectada, o email será automaticamente reenviado
 * Se ocorrerem problemas de rede, a entrega será tentada novamente
 * Se a caixa de correio do destinatário estiver cheia, o sistema tentará novamente mais tarde
 * Se o servidor receptor estiver temporariamente indisponível, continuaremos tentando
 
-Essa abordagem melhora significativamente as taxas de entrega enquanto mantém a privacidade e segurança.
+Essa abordagem melhora as taxas de entrega enquanto mantém a privacidade e segurança.
 
 
 ## Integração Node.js {#nodejs-integration}
@@ -525,6 +525,6 @@ Se você encontrar problemas não abordados aqui, por favor:
 
 ## Conclusão {#conclusion}
 
-O serviço SMTP do Forward Email oferece uma forma confiável, segura e focada na privacidade para enviar emails de suas aplicações e clientes de email. Com nosso sistema inteligente de fila, mecanismo de reenvio de 5 dias e notificações abrangentes de status de entrega, você pode ter confiança de que seus emails chegarão ao destino.
+O serviço SMTP do Forward Email oferece uma forma confiável, segura e focada na privacidade para enviar emails de suas aplicações e clientes de email. Ele inclui um sistema de fila, um mecanismo de reenvio de 5 dias e notificações de status de entrega.
 
 Para casos de uso mais avançados ou integrações personalizadas, por favor, contate nossa equipe de suporte.

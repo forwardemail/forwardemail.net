@@ -30,7 +30,7 @@
 
 ## Foreword
 
-At Forward Email, we've always prioritized creating systems that are reliable, accurate, and user-friendly. When it came to implementing our payment processing system, we knew we needed a solution that could handle multiple payment processors while maintaining perfect data consistency. This blog post details how our development team integrated both Stripe and PayPal using a trifecta approach that ensures 1:1 real-time accuracy across our entire system.
+At Forward Email, we prioritize systems that are reliable, accurate, and user-friendly. Our payment processing system needed to handle multiple payment processors while keeping data consistent. Our development team integrated both Stripe and PayPal using a trifecta approach that ensures 1:1 real-time accuracy across our entire system.
 
 
 ## The Challenge: Multiple Payment Processors, One Source of Truth
@@ -41,18 +41,16 @@ As a privacy-focused email service, we wanted to give our users payment options.
 2. How do we handle edge cases like disputes, refunds, or failed payments?
 3. How do we maintain a single source of truth in our database?
 
-Our solution was to implement what we call the "trifecta approach" - a three-layered system that provides redundancy and ensures data consistency no matter what happens.
+Our solution was to implement what we call the "trifecta approach": a three-layered system that provides redundancy and keeps data consistent.
 
 
 ## The Trifecta Approach: Three Layers of Reliability
 
-Our payment system consists of three critical components that work together to ensure perfect data synchronization:
+Our payment system consists of three components that work together to keep data in sync:
 
-1. **Post-checkout redirects** - Capturing payment information immediately after checkout
-2. **Webhook handlers** - Processing real-time events from payment processors
-3. **Automated jobs** - Periodically verifying and reconciling payment data
-
-Let's dive into each component and see how they work together.
+1. **Post-checkout redirects**: Capturing payment information immediately after checkout
+2. **Webhook handlers**: Processing real-time events from payment processors
+3. **Automated jobs**: Periodically verifying and reconciling payment data
 
 ```mermaid
 flowchart TD
@@ -121,7 +119,7 @@ The first layer of our trifecta approach happens immediately after a user comple
 
 ### Stripe Checkout Implementation
 
-For Stripe, we use their Checkout Sessions API to create a seamless payment experience. When a user selects a plan and chooses to pay with a credit card, we create a Checkout Session with specific success and cancel URLs:
+For Stripe, we use their Checkout Sessions API for the payment flow. When a user selects a plan and chooses to pay with a credit card, we create a Checkout Session with specific success and cancel URLs:
 
 ```javascript
 const options = {
@@ -159,7 +157,7 @@ if (ctx.accepts('html')) {
 }
 ```
 
-The critical part here is the `success_url` parameter, which includes the `session_id` as a query parameter. When Stripe redirects the user back to our site after a successful payment, we can use this session ID to verify the transaction and update our database accordingly.
+The key part is the `success_url` parameter, which includes the `session_id` as a query parameter. When Stripe redirects the user back to our site after a successful payment, we can use this session ID to verify the transaction and update our database accordingly.
 
 ### PayPal Payment Flow
 
@@ -289,9 +287,9 @@ sequenceDiagram
 
 ## Layer 2: Webhook Handlers with Signature Verification
 
-While post-checkout redirects work well for most scenarios, they're not foolproof. Users might close their browser before being redirected, or network issues might prevent the redirect from completing. That's where webhooks come in.
+Post-checkout redirects work well for most scenarios, but users might close their browser before being redirected, or network issues might prevent the redirect from completing. Webhooks cover those cases.
 
-Both Stripe and PayPal provide webhook systems that send real-time notifications about payment events. We've implemented robust webhook handlers that verify the authenticity of these notifications and process them accordingly.
+Both Stripe and PayPal provide webhook systems that send real-time notifications about payment events. Our webhook handlers verify the authenticity of these notifications and process them accordingly.
 
 ### Stripe Webhook Implementation
 
@@ -383,7 +381,7 @@ async function webhook(ctx) {
 }
 ```
 
-Both webhook handlers follow the same pattern: verify the signature, acknowledge receipt, and process the event asynchronously. This ensures that we never miss a payment event, even if the post-checkout redirect fails.
+Both webhook handlers follow the same pattern: verify the signature, acknowledge receipt, and process the event asynchronously. This way we still receive the payment event if the post-checkout redirect fails.
 
 
 ## Layer 3: Automated Jobs with Bree
@@ -494,16 +492,16 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-These automated jobs serve as our final safety net, ensuring that our database always reflects the true state of subscriptions and payments in both Stripe and PayPal.
+These automated jobs serve as our final safety net, keeping our database in line with the true state of subscriptions and payments in both Stripe and PayPal.
 
 
 ## Handling Edge Cases
 
-A robust payment system must handle edge cases gracefully. Let's look at how we handle some common scenarios.
+A payment system must handle edge cases. Below is how we handle some common scenarios.
 
 ### Fraud Detection and Prevention
 
-We've implemented sophisticated fraud detection mechanisms that automatically identify and handle suspicious payment activities:
+Our fraud detection automatically identifies and handles suspicious payment activities:
 
 ```javascript
 case 'charge.failed': {
@@ -592,7 +590,7 @@ This approach minimizes the impact of disputes on our business while ensuring a 
 
 ## Code Reuse: KISS and DRY Principles
 
-Throughout our payment system, we've adhered to the KISS (Keep It Simple, Stupid) and DRY (Don't Repeat Yourself) principles. Here are some examples:
+Throughout our payment system, we've adhered to the KISS (Keep It Simple, Stupid) and DRY (Don't Repeat Yourself) principles. Examples:
 
 1. **Shared Helper Functions**: We've created reusable helper functions for common tasks like syncing payments and sending emails.
 
@@ -703,9 +701,9 @@ In addition to our trifecta approach, we've implemented specific features to com
 
 ### Automated Pre-Renewal Email Notifications
 
-We've built an automated system that identifies users with active trial subscriptions and sends them a notification email before their first charge occurs. This not only keeps us compliant with VISA requirements but also reduces chargebacks and improves customer satisfaction.
+We've built an automated system that identifies users with active trial subscriptions and sends them a notification email before their first charge occurs. This keeps us compliant with VISA requirements, reduces chargebacks, and improves customer satisfaction.
 
-Here's how we implemented this feature:
+Our implementation:
 
 ```javascript
 // Find users with trial subscriptions who haven't received a notification yet
@@ -786,18 +784,18 @@ for (const user of users) {
 }
 ```
 
-This implementation ensures that users are always informed about upcoming charges, with clear details about:
+Users receive notice of upcoming charges, with details about:
 
 1. When the first charge will occur
 2. The frequency of future charges (monthly, yearly, etc.)
 3. The exact amount they'll be charged
 4. Which domains are covered by their subscription
 
-By automating this process, we maintain perfect compliance with VISA's requirements (which mandate notification at least 7 days before charging) while reducing support inquiries and improving the overall user experience.
+By automating this process, we comply with VISA's requirements (which mandate notification at least 7 days before charging) while reducing support inquiries and improving the overall user experience.
 
 ### Handling Edge Cases
 
-Our implementation also includes robust error handling. If anything goes wrong during the notification process, our system automatically alerts our team:
+Our implementation also includes error handling. If anything goes wrong during the notification process, our system automatically alerts our team:
 
 ```javascript
 try {
@@ -861,7 +859,7 @@ Our trifecta approach to payment processing has provided several key benefits:
 
 4. **Robustness**: Our system handles edge cases gracefully, from network failures to fraudulent activities.
 
-If you're implementing a payment system that supports multiple processors, we highly recommend this trifecta approach. It requires more upfront development effort, but the long-term benefits in terms of reliability and accuracy are well worth it.
+If you're implementing a payment system that supports multiple processors, we recommend this trifecta approach. It takes more upfront development effort and pays off in reliability and accuracy.
 
 For more information about Forward Email and our privacy-focused email services, visit our [website](https://forwardemail.net).
 

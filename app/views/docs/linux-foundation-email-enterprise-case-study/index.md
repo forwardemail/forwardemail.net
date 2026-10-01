@@ -25,7 +25,7 @@
 
 ## Introduction
 
-The [Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) manages over 900 open-source projects across 250+ domains, including [linux.com](https://www.linux.com/) and [jQuery.com](https://jquery.com/). This case study explores how they partnered with [Forward Email](https://forwardemail.net) to streamline email management while maintaining alignment with open-source principles.
+The [Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) manages over 900 open-source projects across 250+ domains, including [linux.com](https://www.linux.com/) and [jQuery.com](https://jquery.com/). This case study covers how they partnered with [Forward Email](https://forwardemail.net) to simplify email management while staying true to open-source principles.
 
 
 ## The Challenge
@@ -43,7 +43,7 @@ Similar to challenges faced by [Canonical/Ubuntu](https://forwardemail.net/blog/
 
 ## The Solution
 
-Forward Email provided a comprehensive solution with key features:
+Forward Email provided a solution with these features:
 
 ```mermaid
 graph TD
@@ -57,11 +57,11 @@ graph TD
 
 ### 100% Open-Source Architecture
 
-As the only email service with a completely open-source platform (both frontend and backend), Forward Email aligned perfectly with the Linux Foundation's commitment to open-source principles. Similar to our implementation with [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), this transparency allowed their technical team to verify security implementations and even contribute improvements.
+As the only email service with a completely open-source platform (both frontend and backend), Forward Email matched the Linux Foundation's commitment to open-source principles. Similar to our implementation with [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), this transparency allowed their technical team to verify security implementations and even contribute improvements.
 
 ### Privacy-Focused Design
 
-Forward Email's strict [privacy policies](https://forwardemail.net/privacy) provided the security the Linux Foundation required. Our [email privacy protection technical implementation](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) ensures that all communications remain secure by design, with no logging or scanning of email content.
+Forward Email's strict [privacy policies](https://forwardemail.net/privacy) provided the security the Linux Foundation required. Our [email privacy protection technical implementation](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) keeps all communications secure by design, with no logging or scanning of email content.
 
 As detailed in our technical implementation documentation:
 
@@ -69,15 +69,15 @@ As detailed in our technical implementation documentation:
 
 ### Enterprise-Grade Security
 
-Implementation of [quantum-resistant encryption](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) using ChaCha20-Poly1305 provided state-of-the-art security, with each mailbox being a separate encrypted file. This approach ensures that even if quantum computers become capable of breaking current encryption standards, the Linux Foundation's communications will remain secure.
+Implementation of [quantum-resistant encryption](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) uses ChaCha20-Poly1305, with each mailbox stored as a separate encrypted file. This approach is designed to keep the Linux Foundation's communications secure even if quantum computers become capable of breaking current encryption standards.
 
 ### Fixed-Price Enterprise Model
 
-Forward Email's [enterprise pricing](https://forwardemail.net/pricing) provided a fixed monthly cost regardless of domains or users. This approach has delivered significant cost savings for other large organizations, as demonstrated in our [university alumni email case study](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), where institutions saved up to 99% compared to traditional per-user email solutions.
+Forward Email's [enterprise pricing](https://forwardemail.net/pricing) provided a fixed monthly cost regardless of domains or users. This approach has saved other large organizations money, as demonstrated in our [university alumni email case study](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), where institutions saved up to 99% compared to traditional per-user email solutions.
 
 ### Developer-Friendly API
 
-Following a [README-first approach](https://tom.preston-werner.com/2010/08/23/readme-driven-development) and inspired by [Stripe's RESTful API design](https://amberonrails.com/building-stripes-api), Forward Email's [API](https://forwardemail.net/api) enabled deep integration with the Linux Foundation's Project Control Center. This integration was crucial for automating email management across their diverse project portfolio.
+Following a [README-first approach](https://tom.preston-werner.com/2010/08/23/readme-driven-development) and inspired by [Stripe's RESTful API design](https://amberonrails.com/building-stripes-api), Forward Email's [API](https://forwardemail.net/api) integrated with the Linux Foundation's Project Control Center, which they needed to automate email management across their project portfolio.
 
 
 ## Implementation Process
@@ -109,7 +109,7 @@ flowchart LR
 
 ## Results and Benefits
 
-The implementation delivered significant benefits:
+The implementation delivered these benefits:
 
 ### Efficiency Improvements
 
@@ -134,14 +134,14 @@ The implementation delivered significant benefits:
 
 * Self-service email management for project administrators
 * Consistent experience across all Linux Foundation domains
-* Reliable email delivery with robust authentication
+* Reliable email delivery with strong authentication
 
 
 ## Conclusion
 
-The Linux Foundation's partnership with Forward Email demonstrates how organizations can address complex email management challenges while maintaining alignment with their core values. By selecting a solution that prioritizes open-source principles, privacy, and security, the Linux Foundation has transformed email management from an administrative burden into a strategic advantage.
+By selecting a solution that prioritizes open-source principles, privacy, and security, the Linux Foundation reduced the administrative burden of managing email across 250+ domains without compromising its values.
 
-As seen in our work with both [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) and [major universities](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), organizations with complex domain portfolios can achieve significant improvements in efficiency, security, and cost management through Forward Email's enterprise solution.
+As seen in our work with both [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) and [major universities](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), organizations with complex domain portfolios can improve efficiency, security, and cost management with Forward Email's enterprise solution.
 
 For more information on how Forward Email can help your organization manage email across multiple domains, visit [forwardemail.net](https://forwardemail.net) or explore our detailed [documentation](https://forwardemail.net/email-api) and [guides](https://forwardemail.net/guides).
 

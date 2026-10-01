@@ -62,14 +62,14 @@
   * [我们的企业案例研究](#our-enterprise-case-studies)
 ## 前言 {#foreword}
 
-在 Forward Email，我们花费多年时间完善我们的 Node.js 生产环境设置。本综合指南分享了我们经过实战验证的 Node.js 生产部署最佳实践，重点关注性能优化、监控，以及我们在扩展 Node.js 应用以处理每日数百万交易时所学到的经验教训。
+在 Forward Email，我们花费多年时间改进我们的 Node.js 生产环境设置。本指南分享了我们的 Node.js 生产部署最佳实践，重点关注性能优化、监控，以及我们在扩展 Node.js 应用以处理每日数百万交易时学到的东西。
 
 ## 我们的 573% 单核性能优化革命 {#our-573-single-core-performance-optimization-revolution}
 
-当我们从 Intel 迁移到 AMD Ryzen 处理器时，我们的 Node.js 应用实现了 **573% 的性能提升**。这不仅仅是一次小幅优化——它从根本上改变了我们 Node.js 应用在生产环境中的表现，并展示了单核性能优化对任何 Node.js 应用的重要性。
+当我们从 Intel 迁移到 AMD Ryzen 处理器时，我们的 Node.js 应用实现了 **573% 的性能提升**。这一变化表明了单核性能对生产环境中任何 Node.js 应用的重要性。
 
 > \[!TIP]
-> 对于 Node.js 生产部署最佳实践，硬件选择至关重要。我们特别选择了 DataPacket 托管服务，因为他们提供 AMD Ryzen 处理器，单核性能对 Node.js 应用至关重要，因为 JavaScript 执行是单线程的。
+> 对于 Node.js 生产部署最佳实践，硬件选择很重要。我们选择了 DataPacket 托管服务，因为他们提供 AMD Ryzen 处理器；JavaScript 执行是单线程的，因此单核性能决定了 Node.js 应用的速度。
 
 ### 为什么单核性能优化对 Node.js 很重要 {#why-single-core-performance-optimization-matters-for-nodejs}
 
@@ -80,18 +80,18 @@
 * Node.js 生产环境的性价比更高
 * 我们所有应用端点的响应时间均有所改善
 
-性能提升如此显著，以至于我们现在认为 AMD Ryzen 处理器是任何严肃的 Node.js 生产部署的必备，无论你运行的是 Web 应用、API、微服务还是任何其他 Node.js 工作负载。
+基于这些结果，我们现在认为 AMD Ryzen 处理器是任何严肃的 Node.js 生产部署的必备，无论你运行的是 Web 应用、API、微服务还是任何其他 Node.js 工作负载。
 
 ### 相关内容 {#related-content}
 
 有关我们基础设施选择的更多细节，请查看：
 
-* [最佳邮件转发服务](https://forwardemail.net/blog/docs/best-email-forwarding-service) - 性能对比
-* [自托管解决方案](https://forwardemail.net/blog/docs/self-hosted-solution) - 硬件推荐
+* [最佳邮件转发服务](https://forwardemail.net/blog/docs/best-email-forwarding-service)：性能对比
+* [自托管解决方案](https://forwardemail.net/blog/docs/self-hosted-solution)：硬件推荐
 
 ## Node.js 生产环境设置：我们的技术栈 {#nodejs-production-environment-setup-our-technology-stack}
 
-我们的 Node.js 生产部署最佳实践包括基于多年生产经验的深思熟虑的技术选择。以下是我们使用的技术及其适用于任何 Node.js 应用的原因：
+我们的 Node.js 生产部署最佳实践包括基于多年生产经验的深思熟虑的技术选择。我们使用的技术及其适用于任何 Node.js 应用的原因：
 
 ### 包管理器：pnpm 提升生产效率 {#package-manager-pnpm-for-production-efficiency}
 
@@ -184,10 +184,10 @@
 * **用户错误**，属于预期行为
 * **外部服务故障**，我们无法控制
 
-该模式适用于任何 Node.js 应用——Web 应用、API、微服务或后台服务。
+该模式适用于任何 Node.js 应用：Web 应用、API、微服务或后台服务。
 **我们的日志实现：** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-我们在 Node.js 生产环境中实现了全面的字段脱敏，以保护敏感信息，同时保持有用的调试能力。
+我们在 Node.js 生产环境中实现了字段脱敏，以保护敏感信息，同时保持有用的调试能力。
 
 ### 应用特定监控 {#application-specific-monitoring}
 
@@ -201,7 +201,7 @@
 
 ## 使用 PM2 健康检查的 Node.js 生产监控 {#nodejs-production-monitoring-with-pm2-health-checks}
 
-经过多年生产经验，我们完善了基于 PM2 的 Node.js 生产环境设置。我们的 PM2 健康检查对于维护任何 Node.js 应用的可靠性至关重要。
+经过多年生产经验，我们完善了基于 PM2 的 Node.js 生产环境设置。我们的 PM2 健康检查保持进程可靠，同样的方法适用于任何 Node.js 应用。
 
 ### 我们的 PM2 健康检查系统 {#our-pm2-health-check-system}
 
@@ -213,7 +213,7 @@
 * **要求至少 15 分钟的正常运行时间**，才视为进程健康
 * **验证进程状态和内存使用情况**
 * **自动重启失败的进程**
-* **通过智能健康检查防止重启循环**
+* **通过感知运行时间的健康检查防止重启循环**
 
 > \[!CAUTION]
 > 关于 Node.js 生产部署最佳实践，我们要求进程至少运行 15 分钟后才视为健康，以避免重启循环。这防止了当进程因内存或其他问题挣扎时发生级联故障。
@@ -237,20 +237,20 @@
 
 ## 生产错误处理与分类系统 {#production-error-handling-and-classification-system}
 
-我们最有价值的 Node.js 生产部署最佳实践之一是智能错误分类，适用于任何 Node.js 应用：
+我们最有价值的 Node.js 生产部署最佳实践之一是错误分类，适用于任何 Node.js 应用：
 
 ### 我们的生产环境 isCodeBug 实现 {#our-iscodebug-implementation-for-production}
 
 **源码：** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
-该辅助工具为生产环境中的 Node.js 应用提供智能错误分类，以：
+该辅助工具为生产环境中的 Node.js 应用进行错误分类，以：
 
 * **优先处理真正的代码缺陷**，而非用户错误
 * **通过聚焦真实问题提升事件响应**
 * **减少因预期用户错误产生的警报疲劳**
 * **更好地理解** 应用问题与用户产生的问题
 
-该模式适用于任何 Node.js 应用——无论您是在构建电商网站、SaaS 平台、API 还是微服务。
+该模式适用于任何 Node.js 应用，无论您是在构建电商网站、SaaS 平台、API 还是微服务。
 
 ### 与我们的生产日志集成 {#integration-with-our-production-logging}
 
@@ -267,14 +267,14 @@
 
 ## 使用 v8-profiler-next 和 cpupro 进行高级性能调试 {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
-我们使用高级分析工具来分析堆快照并调试 OOM（内存溢出）问题、性能瓶颈以及 Node.js 内存问题，这些工具对于任何遇到内存泄漏或性能问题的 Node.js 应用都至关重要。
+我们使用分析工具来分析堆快照并调试 OOM（内存溢出）问题、性能瓶颈以及 Node.js 内存问题，这些工具对于任何遇到内存泄漏或性能问题的 Node.js 应用都至关重要。
 
 ### 我们的 Node.js 生产环境分析方法 {#our-profiling-approach-for-nodejs-production}
 
 **我们推荐的工具：**
 
-* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - 用于生成堆快照和 CPU 分析
-* [`cpupro`](https://github.com/discoveryjs/cpupro) - 用于分析 CPU 分析和堆快照
+* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next)：用于生成堆快照和 CPU 分析
+* [`cpupro`](https://github.com/discoveryjs/cpupro)：用于分析 CPU 分析和堆快照
 
 > \[!TIP]
 > 我们将 v8-profiler-next 和 cpupro 结合使用，为我们的 Node.js 应用创建完整的性能调试工作流程。此组合帮助我们识别内存泄漏、性能瓶颈，并优化生产代码。
@@ -296,9 +296,9 @@
 
 **研究我们的实际实现：**
 
-* [监控服务器实现](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - 堆监控和快照生成
-* [清理任务](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - 快照保留和清理
-* [日志集成](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - 性能日志记录
+* [监控服务器实现](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)：堆监控和快照生成
+* [清理任务](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)：快照保留和清理
+* [日志集成](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)：性能日志记录
 
 ### 推荐给您的 Node.js 应用的实现方案 {#recommended-implementation-for-your-nodejs-application}
 
@@ -327,13 +327,13 @@
 * 基于内存/CPU 阈值的 **自动触发**
 * 发现性能问题时的 **警报集成**
 * 用于跟踪性能趋势的 **历史分析**
-* 与应用指标的 **关联分析**，实现全面调试
+* 与应用指标的 **关联分析**，实现更完整的调试
 这种方法帮助我们识别和解决内存泄漏，优化热点代码路径，并在我们的 Node.js 生产环境中保持稳定的性能。
 
 
 ## Node.js 生产基础设施安全 {#nodejs-production-infrastructure-security}
 
-我们通过 Ansible 自动化为 Node.js 生产基础设施实施全面的安全措施。这些做法适用于任何 Node.js 应用：
+我们通过 Ansible 自动化 Node.js 生产基础设施的安全措施。这些做法适用于任何 Node.js 应用：
 
 ### Node.js 生产的系统级安全 {#system-level-security-for-nodejs-production}
 
@@ -525,17 +525,17 @@
 
 ## 结论：Node.js 生产部署最佳实践 {#conclusion-nodejs-production-deployment-best-practices}
 
-我们的 Node.js 生产基础设施展示了 Node.js 应用如何通过以下方式实现企业级可靠性：
+我们的 Node.js 生产基础设施通过以下方式实现企业级可靠性：
 
 * **经过验证的硬件选择**（AMD Ryzen 实现 573% 单核性能优化）
-* **经过实战考验的 Node.js 生产监控**，具备特定阈值和自动响应
+* **Node.js 生产监控**，具备特定阈值和自动响应
 * **智能错误分类**，提升生产环境的事件响应能力
-* **先进的性能调试**，使用 v8-profiler-next 和 cpupro 预防 OOM
-* **通过 Ansible 自动化实现全面安全加固**
+* **性能调试**，使用 v8-profiler-next 和 cpupro 预防 OOM
+* **通过 Ansible 自动化实现安全加固**
 * **针对应用需求优化的混合数据库架构**
 * **自动化维护**，防止常见的 Node.js 生产问题
 
-**关键要点：** 学习我们的实际实现文件和博客文章，而非仅仅遵循通用最佳实践。我们的代码库提供了适用于任何 Node.js 应用——无论是 Web 应用、API、微服务还是后台服务——的真实生产部署模式。
+**关键要点：** 学习我们的实际实现文件和博客文章，而非仅仅遵循通用最佳实践。我们的代码库提供了真实的生产部署模式，您可以将其应用于任何 Node.js 应用：Web 应用、API、微服务或后台服务。
 
 
 ## Node.js 生产环境完整资源列表 {#complete-resource-list-for-nodejs-production}

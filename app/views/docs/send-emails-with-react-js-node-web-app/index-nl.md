@@ -39,7 +39,7 @@ export function Email(props) {
 
 In dit voorbeeld gebruiken we de **[Nodemailer](https://github.com/nodemailer/nodemailer)** bibliotheek en zijn officiële sponsor **[Forward Email](https://forwardemail.net)** om uitgaande e-mail te verzenden en te bekijken.
 
-Je moet <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord Genereren</strong> om uitgaande e-mail te verzenden – volg hiervoor onze **[Handleiding E-mail Verzenden met Custom Domain SMTP](/guides/send-email-with-custom-domain-smtp)**.
+Je moet <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord Genereren</strong> om uitgaande e-mail te verzenden. Volg hiervoor onze **[Handleiding E-mail Verzenden met Custom Domain SMTP](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

@@ -126,7 +126,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=Test email"
 ```
 
-This method is useful when sending emails from applications that already use SMTP credentials and makes migration from SMTP to our API seamless.
+This method is useful when sending emails from applications that already use SMTP credentials and makes migration from SMTP to our API straightforward.
 
 ### Alias-Only Endpoints
 
@@ -169,7 +169,7 @@ Our service is translated to over 25 different languages. All API response messa
 
 Pagination is supported by all API endpoints that list results.
 
-Simply provide the querystring properties `page` (and optionally `limit`).
+Provide the querystring properties `page` (and optionally `limit`).
 
 The property `page` should be a number greater than or equal to `1`.  If you provide `limit` (also a number), then the minimum value is `10` and maximum is `50` (unless otherwise noted).
 
@@ -394,7 +394,7 @@ These instructions can be found in our FAQ section [Do you support receiving ema
 ### Create message
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> This will **NOT** send an email – it will only add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
 
 > `POST /v1/messages`
 
@@ -508,13 +508,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Create outbound SMTP email
 
-Our API for creating an email is inspired by and leverages Nodemailer's message option configuration.  Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.
+Our API for creating an email is inspired by and uses Nodemailer's message option configuration.  Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.
 
 Note that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options.  We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.
 
 You should either pass the single option of `raw` with your raw full email including headers **or** pass individual body parameter options below.
 
-This API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically).  Our goal was to make an extremely developer-friendly and dummy-proof email API.
+This API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically).  Our goal was to make a developer-friendly and dummy-proof email API.
 
 **Authentication:** This endpoint supports both [API token authentication](#api-token-authentication-recommended-for-most-endpoints) and [alias credentials authentication](#alias-credentials-authentication-for-outbound-email). See the [Authentication](#authentication) section above for details.
 
@@ -986,7 +986,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Encrypt
 
-We allow you to encrypt records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product.  As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on [our GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.
+We allow you to encrypt records even on the free plan at no cost.  Privacy should be built in to all aspects of a product.  As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on [our GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.
 
 ### Encrypt TXT Record
 

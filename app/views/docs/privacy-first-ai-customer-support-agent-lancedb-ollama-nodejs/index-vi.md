@@ -5,9 +5,9 @@
 > \[!NOTE]
 > Tài liệu này trình bày hành trình xây dựng đại lý hỗ trợ AI tự lưu trữ của chúng tôi. Chúng tôi đã viết về những thách thức tương tự trong bài đăng blog [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail). Thật lòng chúng tôi đã nghĩ đến việc viết tiếp theo có tên "AI Startup Graveyard" nhưng có lẽ phải đợi thêm một năm nữa cho đến khi bong bóng AI có thể vỡ(?). Hiện tại, đây là bản tổng hợp suy nghĩ của chúng tôi về những gì hiệu quả, những gì không, và lý do chúng tôi làm theo cách này.
 
-Đây là cách chúng tôi xây dựng đại lý hỗ trợ khách hàng AI của riêng mình. Chúng tôi làm theo cách khó khăn: tự lưu trữ, ưu tiên quyền riêng tư, và hoàn toàn kiểm soát. Tại sao? Bởi vì chúng tôi không tin tưởng dịch vụ bên thứ ba với dữ liệu khách hàng của mình. Đây là yêu cầu của GDPR và DPA, và cũng là điều đúng đắn cần làm.
+Đây là cách chúng tôi xây dựng đại lý hỗ trợ khách hàng AI của riêng mình. Chúng tôi làm theo cách khó khăn: tự lưu trữ, ưu tiên quyền riêng tư, và hoàn toàn kiểm soát. Chúng tôi không tin tưởng dịch vụ bên thứ ba với dữ liệu khách hàng của mình. Đây là yêu cầu của GDPR và DPA, và cũng là điều đúng đắn cần làm.
 
-Đây không phải là một dự án cuối tuần vui vẻ. Đó là hành trình kéo dài một tháng vượt qua các phụ thuộc hỏng, tài liệu gây hiểu lầm, và sự hỗn loạn chung của hệ sinh thái AI mã nguồn mở năm 2025. Tài liệu này ghi lại những gì chúng tôi xây dựng, lý do xây dựng, và những trở ngại gặp phải trên đường đi.
+Việc này mất một tháng làm việc vượt qua các phụ thuộc hỏng, tài liệu gây hiểu lầm, và sự hỗn loạn chung của hệ sinh thái AI mã nguồn mở năm 2025. Tài liệu này ghi lại những gì chúng tôi xây dựng, lý do xây dựng, và những trở ngại gặp phải trên đường đi.
 
 
 ## Mục lục {#table-of-contents}
@@ -71,7 +71,7 @@
 * [Những điểm chính cần nhớ](#key-takeaways)
 ## Lợi Ích Khách Hàng: Hỗ Trợ Con Người Được Tăng Cường Bởi AI {#customer-benefits-ai-augmented-human-support}
 
-Hệ thống AI của chúng tôi không thay thế đội ngũ hỗ trợ mà làm cho họ tốt hơn. Điều này có nghĩa gì với bạn:
+Hệ thống AI của chúng tôi hỗ trợ đội ngũ hỗ trợ thay vì thay thế họ. Với bạn, điều này có nghĩa là:
 
 ### Phản Hồi Nhanh Hơn, Chính Xác Hơn {#faster-more-accurate-responses}
 
@@ -84,7 +84,7 @@ Hệ thống AI của chúng tôi không thay thế đội ngũ hỗ trợ mà l
 * FAQ toàn diện của chúng tôi (do con người viết)
 * Các cuộc trò chuyện với khách hàng trước đây (tất cả đều do con người xử lý)
 
-Bạn nhận được phản hồi dựa trên nhiều năm kinh nghiệm con người, chỉ là được gửi nhanh hơn.
+Bạn nhận được phản hồi dựa trên nhiều năm kinh nghiệm con người, được gửi nhanh hơn.
 
 ### Tính Nhất Quán Mà Không Bị Kiệt Sức {#consistency-without-burnout}
 
@@ -122,18 +122,18 @@ Không có sự trợ giúp của AI, việc chuyển đổi ngữ cảnh liên 
 ✅ **Không ảo tưởng**: AI chỉ sử dụng cơ sở kiến thức đã được xác minh của chúng tôi, không phải dữ liệu chung trên internet
 
 > \[!NOTE]
-> **Bạn luôn nói chuyện với con người**. AI là trợ lý nghiên cứu giúp đội ngũ tìm câu trả lời đúng nhanh hơn. Hãy nghĩ nó như một thủ thư tìm ngay cuốn sách liên quan — nhưng vẫn có con người đọc và giải thích cho bạn.
+> **Bạn luôn nói chuyện với con người**. AI là trợ lý nghiên cứu giúp đội ngũ tìm câu trả lời đúng nhanh hơn. Hãy nghĩ nó như một thủ thư tìm ngay cuốn sách liên quan, nhưng vẫn có con người đọc và giải thích cho bạn.
 
 
 ## Một Suy Ngẫm Cá Nhân: Hai Thập Kỷ Nỗ Lực {#a-personal-reflection-the-two-decade-grind}
 
 Trước khi đi sâu vào kỹ thuật, một lời nhắn cá nhân. Tôi đã làm việc này gần hai thập kỷ. Những giờ đồng hồ không ngừng bên bàn phím, sự theo đuổi không ngừng của một giải pháp, sự mài giũa sâu sắc và tập trung – đó là thực tế của việc xây dựng bất cứ điều gì có ý nghĩa. Đây là thực tế thường bị bỏ qua trong các chu kỳ thổi phồng công nghệ mới.
 
-Sự bùng nổ gần đây của AI thật sự gây thất vọng. Chúng ta được bán một giấc mơ về tự động hóa, về các trợ lý AI sẽ viết mã và giải quyết vấn đề cho chúng ta. Thực tế? Kết quả thường là mã rác cần nhiều thời gian sửa hơn là viết lại từ đầu. Lời hứa làm cuộc sống dễ dàng hơn là giả tạo. Nó là sự phân tâm khỏi công việc khó khăn và cần thiết của việc xây dựng.
+Sự bùng nổ gần đây của AI thật sự gây thất vọng. Chúng ta được bán một giấc mơ về tự động hóa, về các trợ lý AI sẽ viết mã và giải quyết vấn đề cho chúng ta. Trên thực tế, kết quả thường là mã rác cần nhiều thời gian sửa hơn là viết lại từ đầu. Lời hứa làm cuộc sống dễ dàng hơn là giả tạo. Nó là sự phân tâm khỏi công việc khó khăn và cần thiết của việc xây dựng.
 
-Và rồi có cái vòng luẩn quẩn khi đóng góp cho mã nguồn mở. Bạn đã quá tải, kiệt sức vì công việc. Bạn dùng AI để giúp viết báo cáo lỗi chi tiết, có cấu trúc tốt, hy vọng giúp người duy trì dễ hiểu và sửa lỗi hơn. Và chuyện gì xảy ra? Bạn bị mắng. Đóng góp của bạn bị bác bỏ là "ngoài chủ đề" hoặc ít nỗ lực, như chúng ta đã thấy trong một [vấn đề GitHub của Node.js](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). Đó là một cái tát vào mặt các nhà phát triển kỳ cựu chỉ đang cố gắng giúp đỡ.
+Và rồi có cái vòng luẩn quẩn khi đóng góp cho mã nguồn mở. Bạn đã quá tải, kiệt sức vì công việc. Bạn dùng AI để giúp viết báo cáo lỗi chi tiết, có cấu trúc tốt, hy vọng giúp người duy trì dễ hiểu và sửa lỗi hơn. Rồi bạn bị mắng. Đóng góp của bạn bị bác bỏ là "ngoài chủ đề" hoặc ít nỗ lực, như chúng ta đã thấy trong một [vấn đề GitHub của Node.js](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). Đó là một cái tát vào mặt các nhà phát triển kỳ cựu đang cố gắng giúp đỡ.
 
-Đây là thực tế của hệ sinh thái mà chúng ta đang làm việc. Không chỉ là các công cụ hỏng hóc; đó là một văn hóa thường không tôn trọng thời gian và [nỗ lực của những người đóng góp](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). Bài viết này là một ghi chép về thực tế đó. Nó là câu chuyện về công cụ, đúng vậy, nhưng cũng là về cái giá con người phải trả khi xây dựng trong một hệ sinh thái hỏng hóc mà dù có nhiều hứa hẹn, vẫn cơ bản là hỏng hóc.
+Đây là hệ sinh thái mà chúng ta đang làm việc: các công cụ hỏng hóc và một văn hóa thường không tôn trọng thời gian và [nỗ lực của những người đóng góp](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). Bài viết này nói về các công cụ và cái giá con người phải trả khi xây dựng trong một hệ sinh thái mà dù có nhiều hứa hẹn, vẫn hỏng hóc.
 ## Tại sao Quyền Riêng Tư Quan Trọng {#why-privacy-matters}
 
 [Whitepaper kỹ thuật](https://forwardemail.net/technical-whitepaper.pdf) của chúng tôi trình bày sâu về triết lý quyền riêng tư. Phiên bản ngắn gọn: chúng tôi không gửi dữ liệu khách hàng cho bên thứ ba. Tuyệt đối không. Điều đó có nghĩa là không có OpenAI, không có Anthropic, không có cơ sở dữ liệu vector lưu trữ trên đám mây. Mọi thứ đều chạy cục bộ trên hạ tầng của chúng tôi. Đây là điều không thể thương lượng để tuân thủ GDPR và các cam kết DPA của chúng tôi.
@@ -141,7 +141,7 @@ Và rồi có cái vòng luẩn quẩn khi đóng góp cho mã nguồn mở. B�
 
 ## Phân Tích Chi Phí: AI Đám Mây so với Tự Lưu Trữ {#cost-analysis-cloud-ai-vs-self-hosted}
 
-Trước khi đi vào triển khai kỹ thuật, hãy nói về lý do tại sao tự lưu trữ lại quan trọng từ góc độ chi phí. Mô hình giá của các dịch vụ AI đám mây khiến chúng trở nên quá đắt đỏ cho các trường hợp sử dụng có khối lượng lớn như hỗ trợ khách hàng.
+Tự lưu trữ cũng quan trọng về mặt chi phí. Mô hình giá của các dịch vụ AI đám mây khiến chúng trở nên quá đắt đỏ cho các trường hợp sử dụng có khối lượng lớn như hỗ trợ khách hàng.
 
 ### So Sánh Dịch Vụ AI Đám Mây {#cloud-ai-service-comparison}
 
@@ -159,7 +159,7 @@ Trước khi đi vào triển khai kỹ thuật, hãy nói về lý do tại sao
 
 ### Phân Tích Chi Phí: Cơ Sở Kiến Thức 5GB {#cost-breakdown-5gb-knowledge-base}
 
-Hãy tính chi phí xử lý một cơ sở kiến thức 5GB (điển hình cho một công ty vừa với tài liệu, email và lịch sử hỗ trợ).
+Hãy xem xét chi phí xử lý một cơ sở kiến thức 5GB (điển hình cho một công ty vừa với tài liệu, email và lịch sử hỗ trợ).
 
 **Giả định:**
 
@@ -197,7 +197,7 @@ Cấu hình của chúng tôi chạy trên phần cứng hiện có mà chúng t
 
 ## Sử Dụng API Của Chính Mình {#dogfooding-our-own-api}
 
-Một trong những quyết định kiến trúc quan trọng nhất mà chúng tôi thực hiện là để tất cả các công việc AI sử dụng trực tiếp [Forward Email API](https://forwardemail.net/email-api). Điều này không chỉ là thực hành tốt—mà còn là một cơ chế thúc đẩy tối ưu hóa hiệu suất.
+Một trong những quyết định kiến trúc quan trọng nhất mà chúng tôi thực hiện là để tất cả các công việc AI sử dụng trực tiếp [Forward Email API](https://forwardemail.net/email-api). Điều này cũng đóng vai trò là một cơ chế thúc đẩy tối ưu hóa hiệu suất.
 
 ### Tại Sao Việc Sử Dụng API Của Chính Mình Lại Quan Trọng {#why-dogfooding-matters}
 
@@ -287,7 +287,7 @@ Bởi vì các công việc AI của chúng tôi chạy trên cùng một hạ t
 * **Truy vấn cơ sở dữ liệu** được tối ưu cho cả hai trường hợp sử dụng
 * **Tối ưu băng thông** - Loại trừ `eml`, `raw`, `nodemailer` khi liệt kê giảm kích thước phản hồi khoảng \~90%
 
-Khi `train-from-history.js` xử lý 1.000 email, nó thực hiện hơn 1.000 cuộc gọi API. Bất kỳ sự không hiệu quả nào trong API sẽ ngay lập tức lộ ra. Điều này buộc chúng tôi phải tối ưu truy cập IMAP, truy vấn cơ sở dữ liệu và tuần tự hóa phản hồi — những cải tiến trực tiếp mang lại lợi ích cho khách hàng của chúng tôi.
+Khi `train-from-history.js` xử lý 1.000 email, nó thực hiện hơn 1.000 cuộc gọi API. Bất kỳ sự không hiệu quả nào trong API sẽ ngay lập tức lộ ra. Điều này buộc chúng tôi phải tối ưu truy cập IMAP, truy vấn cơ sở dữ liệu và tuần tự hóa phản hồi, và những cải tiến đó trực tiếp mang lại lợi ích cho khách hàng của chúng tôi.
 
 **Ví dụ tối ưu hóa**: Liệt kê 100 tin nhắn với nội dung đầy đủ = khoảng \~10MB phản hồi. Liệt kê với `eml: false, raw: false, nodemailer: false` = khoảng \~100KB phản hồi (nhỏ hơn 100 lần).
 
@@ -419,7 +419,7 @@ Nếu việc nhóm chúng tôi sử dụng Thunderbird hoặc webmail trên các
 
 ## Kiến trúc {#the-architecture}
 
-Dưới đây là luồng cơ bản. Nó có vẻ đơn giản. Nhưng không phải vậy.
+Luồng cơ bản có vẻ đơn giản, nhưng việc xây dựng nó thì không.
 
 > \[!NOTE]
 > Tất cả các công việc đều sử dụng trực tiếp API Forward Email, đảm bảo các tối ưu hóa hiệu suất mang lại lợi ích cho cả hệ thống AI của chúng tôi và khách hàng.
@@ -584,7 +584,7 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Mật khẩu khóa (tùy chọn)
 
 1. **Tự động Inbox Zero**: Sau khi tạo bản nháp thành công, tin nhắn gốc sẽ tự động được chuyển vào thư mục Lưu trữ. Điều này giữ cho hộp thư đến của bạn sạch sẽ và giúp đạt được inbox zero mà không cần can thiệp thủ công.
 
-2. **Bỏ qua xử lý AI**: Chỉ cần thêm nhãn `skip-ai` (không phân biệt chữ hoa thường) vào bất kỳ tin nhắn nào để ngăn AI xử lý. Tin nhắn sẽ vẫn ở trong hộp thư đến của bạn mà không bị động chạm, cho phép bạn xử lý thủ công. Điều này hữu ích cho các tin nhắn nhạy cảm hoặc trường hợp phức tạp cần đánh giá của con người.
+2. **Bỏ qua xử lý AI**: Thêm nhãn `skip-ai` (không phân biệt chữ hoa thường) vào bất kỳ tin nhắn nào để ngăn AI xử lý. Tin nhắn sẽ vẫn ở trong hộp thư đến của bạn mà không bị động chạm, cho phép bạn xử lý thủ công. Điều này hữu ích cho các tin nhắn nhạy cảm hoặc trường hợp phức tạp cần đánh giá của con người.
 
 3. **Luồng hội thoại email đúng chuẩn**: Tất cả các phản hồi bản nháp bao gồm trích dẫn tin nhắn gốc bên dưới (sử dụng tiền tố chuẩn ` >  `), theo quy ước trả lời email với định dạng "Vào ngày \[date], \[sender] đã viết:". Điều này đảm bảo ngữ cảnh hội thoại và luồng hội thoại đúng trong các ứng dụng email.
 
@@ -634,7 +634,7 @@ Biến môi trường `LANCEDB_PATH` trỏ đến thư mục cơ sở dữ liệ
 
 ## Nghĩa trang Cơ sở dữ liệu Vector {#the-vector-database-graveyard}
 
-Đây là trở ngại lớn đầu tiên. Chúng tôi đã thử nhiều cơ sở dữ liệu vector trước khi chọn LanceDB. Dưới đây là những gì đã xảy ra với từng cái.
+Đây là trở ngại lớn đầu tiên. Chúng tôi đã thử nhiều cơ sở dữ liệu vector trước khi chọn LanceDB. Bảng dưới đây cho thấy những gì đã xảy ra với từng cái.
 
 | Cơ sở dữ liệu | GitHub                                                      | Những Vấn đề Gặp Phải                                                                                                                                                                                                | Vấn đề Cụ thể                                                                                                                                                                                                                                                                                                                                                             | Mối Quan Tâm về Bảo mật                                                                                                                                                                                        |
 | ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -664,7 +664,7 @@ Biến môi trường `LANCEDB_PATH` trỏ đến thư mục cơ sở dữ liệ
 
 ## Cấu Hình Cron Job {#cron-job-configuration}
 
-Tất cả các công việc AI chạy qua cron trên MacBook M5. Dưới đây là cách thiết lập các cron job chạy vào nửa đêm trên nhiều hộp thư.
+Tất cả các công việc AI chạy qua cron trên MacBook M5. Các bước dưới đây thiết lập các cron job chạy vào nửa đêm trên nhiều hộp thư.
 
 ### Biến Môi Trường {#environment-variables}
 
@@ -775,7 +775,7 @@ node jobs/customer-support-ai/train-from-sitemap.js
 2. Lọc chỉ các URL không có địa phương hóa hoặc URL /en/ (tránh nội dung trùng lặp)
 3. Loại bỏ tiền tố ngôn ngữ (/en/faq → /faq)
 4. Lưu một file JSON đơn giản với danh sách URL vào `$LANCEDB_PATH/valid-urls.json`
-5. Không thu thập dữ liệu, không lấy metadata - chỉ là danh sách phẳng các URL hợp lệ
+5. Không thu thập dữ liệu hay lấy metadata, chỉ là danh sách phẳng các URL hợp lệ
 
 **Tại sao điều này quan trọng:**
 
@@ -950,7 +950,7 @@ const response = await responseGenerator.generate(email, rankedContext);
 
 ## Tương lai: Nghiên cứu & Phát triển Bộ lọc Spam {#the-future-spam-scanner-rd}
 
-Toàn bộ dự án này không chỉ dành cho hỗ trợ khách hàng. Đây là R&D. Giờ đây chúng ta có thể áp dụng tất cả những gì đã học về embeddings cục bộ, kho vector và truy xuất ngữ cảnh vào dự án lớn tiếp theo của chúng ta: lớp LLM cho [Spam Scanner](https://spamscanner.net). Các nguyên tắc về quyền riêng tư, tự lưu trữ và hiểu ngữ nghĩa sẽ là chìa khóa.
+Ngoài hỗ trợ khách hàng, dự án này còn là R&D. Giờ đây chúng ta có thể áp dụng tất cả những gì đã học về embeddings cục bộ, kho vector và truy xuất ngữ cảnh vào dự án lớn tiếp theo của chúng ta: lớp LLM cho [Spam Scanner](https://spamscanner.net). Các nguyên tắc về quyền riêng tư, tự lưu trữ và hiểu ngữ nghĩa sẽ là chìa khóa.
 
 
 ## Khắc phục sự cố {#troubleshooting}
@@ -1058,7 +1058,7 @@ Hệ thống được thiết kế để giúp bạn đạt inbox zero tự đ�
 
 2. **Xem lại bản nháp**: Kiểm tra thư mục Bản nháp thường xuyên để xem lại các phản hồi do AI tạo. Chỉnh sửa nếu cần trước khi gửi.
 
-3. **Ghi đè thủ công**: Đối với các tin nhắn cần chú ý đặc biệt, chỉ cần thêm nhãn `skip-ai` trước khi công việc chạy.
+3. **Ghi đè thủ công**: Đối với các tin nhắn cần chú ý đặc biệt, hãy thêm nhãn `skip-ai` trước khi công việc chạy.
 
 ### Sử dụng nhãn skip-ai {#using-the-skip-ai-label}
 

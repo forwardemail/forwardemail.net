@@ -38,20 +38,20 @@
 
 ## Передмова {#foreword}
 
-Налаштування SQLite для продакшн-систем електронної пошти — це не просто змусити його працювати, а зробити його швидким, безпечним і надійним під великим навантаженням. Після обробки мільйонів листів у Forward Email ми дізналися, що насправді важливо для продуктивності SQLite.
+Продакшн-налаштування SQLite для електронної пошти має бути швидким, безпечним і надійним під великим навантаженням. Після обробки мільйонів листів у Forward Email ми дізналися, які налаштування важливі для продуктивності SQLite.
 
-Цей посібник охоплює нашу реальну продакшн-конфігурацію, результати тестів продуктивності на різних версіях Node.js та конкретні оптимізації, які мають значення при обробці великого обсягу пошти.
+Цей посібник охоплює нашу продакшн-конфігурацію, результати тестів продуктивності на різних версіях Node.js та конкретні оптимізації, які мають значення при великому обсязі пошти.
 
 > \[!WARNING] Регресії продуктивності Node.js у версіях v22 та v24  
 > Ми виявили суттєву регресію продуктивності у версіях Node.js v22 та v24, яка впливає на продуктивність SQLite, особливо для операторів `SELECT`. Наші тести показали приблизно 57% падіння кількості операцій `SELECT` за секунду у Node.js v24 порівняно з v20. Ми повідомили про цю проблему команді Node.js у [nodejs/node#60719](https://github.com/nodejs/node/issues/60719).
 
-Через цю регресію ми обираємо обережний підхід до оновлення Node.js. Ось наш поточний план:
+Через цю регресію ми обираємо обережний підхід до оновлення Node.js. Наш поточний план:
 
-* **Поточна версія:** Зараз ми використовуємо Node.js v18, який досяг кінця життєвого циклу ("EOL") для довгострокової підтримки ("LTS"). Ви можете переглянути офіційний [графік LTS Node.js тут](https://github.com/nodejs/release#release-schedule).
+* **Поточна версія:** Ми використовуємо Node.js v18, який досяг кінця життєвого циклу ("EOL") для довгострокової підтримки ("LTS"). Ви можете переглянути офіційний [графік LTS Node.js тут](https://github.com/nodejs/release#release-schedule).
 * **Планове оновлення:** Ми оновимося до **Node.js v20**, який є найшвидшою версією за нашими тестами і не має цієї регресії.
 * **Уникнення v22 та v24:** Ми не будемо використовувати Node.js v22 або v24 у продакшні, доки ця проблема з продуктивністю не буде вирішена.
 
-Ось графік, що ілюструє розклад LTS Node.js та наш план оновлення:
+Графік розкладу LTS Node.js та наш план оновлення:
 
 ```mermaid
 gantt
@@ -74,7 +74,7 @@ gantt
 ```
 ## Архітектура Production SQLite у Forward Email {#forward-emails-production-sqlite-architecture}
 
-Ось як ми фактично використовуємо SQLite у продакшені:
+Як ми використовуємо SQLite у продакшені:
 
 ```mermaid
 graph TB
@@ -103,7 +103,7 @@ graph TB
 
 ## Наша фактична конфігурація PRAGMA {#our-actual-pragma-configuration}
 
-Ось що ми фактично використовуємо у продакшені, прямо з нашого [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
+Наша продакшн-конфігурація з нашого [`setup-pragma.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-pragma.js):
 
 ```javascript
 // Forward Email's actual production PRAGMA settings
@@ -133,12 +133,12 @@ async function setupPragma(db, session, cipher = 'chacha20') {
 ```
 
 > \[!IMPORTANT]
-> Ми використовуємо `temp_store=1` (диск) замість `temp_store=2` (пам’ять), тому що великі бази даних електронної пошти можуть легко споживати понад 10 ГБ пам’яті під час операцій, таких як VACUUM.
+> Ми використовуємо `temp_store=1` (диск) замість `temp_store=2` (пам’ять), тому що великі бази даних електронної пошти можуть споживати понад 10 ГБ пам’яті під час операцій, таких як VACUUM.
 
 
 ## Результати тестування продуктивності {#performance-benchmark-results}
 
-Ми протестували нашу конфігурацію проти різних альтернатив на різних версіях Node.js. Ось реальні цифри:
+Ми протестували нашу конфігурацію проти різних альтернатив на різних версіях Node.js:
 
 ### Результати продуктивності Node.js v20.19.5 {#nodejs-v20195-performance-results}
 
@@ -240,7 +240,7 @@ process.env.SQLITE_TMPDIR = tempStoreDirectory;
 
 ## Оптимізація Режиму WAL {#wal-mode-optimization}
 
-Write-Ahead Logging є критично важливим для поштових систем з одночасним доступом:
+Write-Ahead Logging важливий для поштових систем з одночасним доступом:
 
 ```mermaid
 sequenceDiagram
@@ -320,9 +320,9 @@ CREATE INDEX idx_messages_flags ON messages(mailbox_id, flags) WHERE flags IS NO
 
 ## Керування з’єднаннями {#connection-management}
 
-Ми не використовуємо пул з’єднань з SQLite — кожен користувач отримує власну зашифровану базу даних. Такий підхід забезпечує ідеальну ізоляцію між користувачами, подібно до sandboxing. На відміну від архітектур інших сервісів, які використовують MySQL, PostgreSQL або MongoDB, де ваші листи потенційно можуть бути доступні недобросовісному працівнику, SQLite бази даних Forward Email для кожного користувача гарантують повну незалежність і ізоляцію ваших даних.
+Ми не використовуємо пул з’єднань з SQLite; кожен користувач отримує власну зашифровану базу даних. Це ізолює користувачів один від одного, подібно до sandboxing. На відміну від архітектур інших сервісів, які використовують MySQL, PostgreSQL або MongoDB, де ваші листи потенційно можуть бути доступні недобросовісному працівнику, SQLite бази даних Forward Email для кожного користувача забезпечують незалежність і ізоляцію ваших даних.
 
-Ми ніколи не зберігаємо ваш пароль IMAP, тому ніколи не маємо доступу до ваших даних — все виконується в пам’яті. Дізнайтеся більше про наш [підхід до квантово-стійкого шифрування](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security), який детально описує, як працює наша система.
+Ми ніколи не зберігаємо ваш пароль IMAP, тому ніколи не маємо доступу до ваших даних; все виконується в пам’яті. Дізнайтеся більше про наш [підхід до квантово-стійкого шифрування](https://forwardemail.net/blog/docs/quantum-resistant-encryption-email-security), який детально описує, як працює наша система.
 
 ```javascript
 // Підхід з базою даних для кожного користувача
@@ -345,7 +345,7 @@ async function getDatabase(session) {
 
 Цей підхід забезпечує:
 
-* Ідеальну ізоляцію між користувачами
+* Повну ізоляцію між користувачами
 
 * Відсутність складності з пулом з’єднань
 
@@ -398,7 +398,7 @@ const fragmentationPct = (stats.freelist_count / stats.page_count) * 100;
 
 ## Продуктивність версій Node.js {#nodejs-version-performance}
 
-Наші комплексні бенчмарки по версіях Node.js показують значні відмінності в продуктивності:
+Наші бенчмарки по версіях Node.js показують великі відмінності в продуктивності:
 
 ### Повні результати по версіях {#complete-cross-version-results}
 
@@ -525,12 +525,12 @@ console.log(plan);
 
 Ми поділилися нашими знаннями з оптимізації SQLite з спільнотою:
 
-* [Покращення документації Litestream](https://github.com/benbjohnson/litestream/issues/516) - Наші пропозиції щодо покращення продуктивності SQLite
+* [Покращення документації Litestream](https://github.com/benbjohnson/litestream/issues/516): Наші пропозиції щодо покращення продуктивності SQLite
 
-* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) - Підтримка шифрування ChaCha20
+* [Better SQLite3 Multiple Ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers): Підтримка шифрування ChaCha20
 
-* [Дослідження налаштування продуктивності SQLite](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/) - Посилання у нашій реалізації
-* [Як npm-пакети з мільярдами завантажень сформували екосистему JavaScript](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) - Наші ширші внески у розвиток npm та JavaScript
+* [Дослідження налаштування продуктивності SQLite](https://phiresky.github.io/blog/2020/sqlite-performance-tuning/): Посилання у нашій реалізації
+* [Як npm-пакети з мільярдами завантажень сформували екосистему JavaScript](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem): Наші ширші внески у розвиток npm та JavaScript
 
 
 ## Вихідний код бенчмарку {#benchmark-source-code}
@@ -560,7 +560,7 @@ npm run benchmark
 
 ## Що далі для SQLite у Forward Email {#whats-next-for-sqlite-at-forward-email}
 
-Ми активно тестуємо ці оптимізації:
+Ми тестуємо ці оптимізації:
 
 1. **Налаштування автоматичної контрольної точки WAL**: Додавання `wal_autocheckpoint=1000` на основі результатів бенчмарку
 
@@ -573,6 +573,6 @@ npm run benchmark
 
 ## Отримання допомоги {#getting-help}
 
-Маєте проблеми з продуктивністю SQLite? Для питань, пов’язаних зі SQLite, [SQLite Forum](https://sqlite.org/forum/forumpost) є відмінним ресурсом, а [керівництво з налаштування продуктивності](https://www.sqlite.org/optoverview.html) охоплює додаткові оптимізації, які нам поки не знадобилися.
+Для питань, пов’язаних зі SQLite, [SQLite Forum](https://sqlite.org/forum/forumpost) є відмінним ресурсом, а [керівництво з налаштування продуктивності](https://www.sqlite.org/optoverview.html) охоплює додаткові оптимізації, які нам поки не знадобилися.
 
 Дізнайтеся більше про Forward Email, прочитавши наш [FAQ](/faq).

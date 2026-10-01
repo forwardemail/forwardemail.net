@@ -182,7 +182,7 @@
 ### 什么是 Forward Email {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email 非常适合个人、小型企业和开发者，他们希望拥有专业的邮箱地址，但又不想承担完整邮件托管解决方案的成本和维护。
+> Forward Email 适合个人、小型企业和开发者，他们希望拥有专业的邮箱地址，但又不想承担完整邮件托管解决方案的成本和维护。
 
 Forward Email 是一个**功能齐全的邮件服务提供商**和**自定义域名的邮件托管提供商**。
 
@@ -774,7 +774,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 10. 当提示输入“SMTP Server”时，输入<code>smtp.gmail.com</code>，端口保持为<code>587</code>
 
-11. 当提示输入“Username”时，输入你的 Gmail 地址中不包含<span>gmail.com</span>部分的用户名（例如，如果我的邮箱是<span><user@gmail.com></span>，则只输入“user”）
+11. 当提示输入“Username”时，输入你的 Gmail 地址中不包含<span>gmail.com</span>部分的用户名（例如，如果您的邮箱是<span><user@gmail.com></span>，则输入“user”）
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
@@ -1026,9 +1026,9 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 如果您在 Gmail 发送测试邮件给自己时，或您用别名发送邮件给某人时，对方第一次收到您的邮件出现此错误提示，**请不要担心**——这是 Gmail 内置的安全功能。
 
-您只需点击“看起来安全”。例如，如果您使用“以此身份发送邮件”功能发送测试邮件（给别人），他们就不会看到此提示。
+您可以点击“看起来安全”。例如，如果您使用“以此身份发送邮件”功能发送测试邮件（给别人），他们就不会看到此提示。
 
-但如果他们看到此提示，是因为他们习惯了您的邮件来自 <john@gmail.com>，而不是 <john@customdomain.com>（仅举例）。Gmail 会提醒用户以确保安全，目前没有解决方法。
+但如果他们看到此提示，是因为他们习惯了您的邮件来自 <john@gmail.com>，而不是 <john@customdomain.com>（作为示例）。Gmail 出于预防显示此提醒，目前没有解决方法。
 
 ### 我能否在 Gmail 中去掉 via forwardemail dot net {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
@@ -1098,7 +1098,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
    | Tutanota       | EML                                            | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
    | Gandi          | EML                                            | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
    | Zoho           | EML                                            | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-   | 其他           | [使用 Thunderbird](https://www.thunderbird.net) | 在 Thunderbird 中设置您现有的电子邮件账户，然后使用 [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) 插件导出和导入您的电子邮件。**您也可以尝试简单地复制/粘贴或拖放电子邮件在账户之间。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | 其他           | [使用 Thunderbird](https://www.thunderbird.net) | 在 Thunderbird 中设置您现有的电子邮件账户，然后使用 [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) 插件导出和导入您的电子邮件。**您也可以尝试复制/粘贴或拖放电子邮件在账户之间。**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 2. 下载、安装并打开 [Thunderbird](https://www.thunderbird.net)。
 
 3. 使用您的别名完整电子邮件地址（例如 <code><you@yourdomain.com></code>）和生成的密码创建新账户。  <strong>如果您还没有生成的密码，请<a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">参阅我们的设置说明</a></strong>。
@@ -1209,15 +1209,15 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 #### 数据所有权和删除政策 {#data-ownership-and-deletion-policy}
 
-您的自定义 S3 存储桶完全由您控制。我们**绝不会删除或修改**您自定义 S3 存储桶中的文件——无论是删除别名、移除域名，还是任何清理操作。我们只会向您的存储桶写入新的备份文件。
+您的自定义 S3 存储桶完全由您控制。我们**绝不会删除或修改**您自定义 S3 存储桶中的文件，包括您删除别名、移除域名或我们运行清理操作时。我们只会向您的存储桶写入新的备份文件。
 
 这意味着：
 
-* **别名删除** — 删除别名时，我们仅从默认系统存储中移除备份。之前写入您自定义 S3 存储桶的备份保持不变。
-* **域名移除** — 移除域名不会影响您自定义存储桶中的文件。
-* **保留管理** — 您负责管理自己存储桶中的存储，包括配置生命周期规则以过期旧备份。
+* **别名删除**：删除别名时，我们仅从默认系统存储中移除备份。之前写入您自定义 S3 存储桶的备份保持不变。
+* **域名移除**：移除域名不会影响您自定义存储桶中的文件。
+* **保留管理**：您负责管理自己存储桶中的存储，包括配置生命周期规则以过期旧备份。
 
-如果您禁用自定义 S3 存储或切换回我们的默认存储，存储桶中的现有文件将被保留。未来的备份将直接写入我们的默认存储。
+如果您禁用自定义 S3 存储或切换回我们的默认存储，存储桶中的现有文件将被保留。未来的备份将写入我们的默认存储。
 
 #### 安全性 {#security}
 
@@ -1259,7 +1259,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 您可以下载预编译的二进制文件（无需安装 [Node.js](https://github.com/nodejs/node)）或直接使用 [Node.js](https://github.com/nodejs/node) 运行：
 
-**预编译二进制文件** — 从 [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases) 下载适用于您平台的最新版本：
+**预编译二进制文件**：从 [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases) 下载适用于您平台的最新版本：
 
 | 平台     | 架构          | 文件                                  |
 | -------- | ------------- | ------------------------------------ |
@@ -1296,7 +1296,7 @@ node index.js
 
 该工具支持交互式和非交互式两种模式。
 
-**交互式模式** — 不带参数运行，程序会提示输入所有信息：
+**交互式模式**：不带参数运行，程序会提示输入所有信息：
 
 ```bash
 ./convert-sqlite-to-eml
@@ -1311,7 +1311,7 @@ node index.js
   输出 ZIP 路径 [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
 ```
 
-**非交互式模式** — 通过命令行参数传递，用于脚本和自动化：
+**非交互式模式**：通过命令行参数传递，用于脚本和自动化：
 
 ```bash
 ./convert-sqlite-to-eml \
@@ -1521,7 +1521,7 @@ EML 文件按邮箱文件夹组织。ZIP 密码与您的 IMAP/别名密码相同
     <tr>
       <td>其他</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">重要：</strong> 没有看到您的注册商名称？只需在网上搜索“如何更改 $REGISTRAR 的 DNS 记录”（将 $REGISTRAR 替换为您的注册商名称，例如如果您使用 GoDaddy，则搜索“如何更改 GoDaddy 的 DNS 记录”）。</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">重要：</strong> 如果这里没有列出您的注册商，请在网上搜索“如何更改 $REGISTRAR 的 DNS 记录”（将 $REGISTRAR 替换为您的注册商名称，例如如果您使用 GoDaddy，则搜索“如何更改 GoDaddy 的 DNS 记录”）。</div>
       </td>
     </tr>
   </tbody>
@@ -1630,7 +1630,7 @@ EML 文件按邮箱文件夹组织。ZIP 密码与您的 IMAP/别名密码相同
     选项 B：
   </strong>
   <span>
-    如果您只需要转发单个电子邮件地址（例如 <code>hello@example.com</code> 到 <code>user@gmail.com</code>；这也会自动将 "hello+test@example.com" 转发到 "user+test@gmail.com"）：
+    如果您需要转发单个电子邮件地址（例如 <code>hello@example.com</code> 到 <code>user@gmail.com</code>；这也会自动将 "hello+test@example.com" 转发到 "user+test@gmail.com"）：
   </span>
 </div>
 <table class="table table-striped table-hover my-3">
@@ -1695,7 +1695,7 @@ EML 文件按邮箱文件夹组织。ZIP 密码与您的 IMAP/别名密码相同
     选项 D:
   </strong>
   <span>
-    您可以设置无限数量的转发邮箱——只需确保单行不超过 255 个字符，并且每行都以 "forward-email=" 开头。下面提供了一个示例：
+    您可以设置无限数量的转发邮箱。请确保单行不超过 255 个字符，并且每行都以 "forward-email=" 开头。下面提供了一个示例：
   </span>
 </div>
 
@@ -1964,7 +1964,7 @@ EML 文件按邮箱文件夹组织。ZIP 密码与您的 IMAP/别名密码相同
     提示：
   </strong>
   <span>
-    以下列出了可选的附加功能。请注意，这些附加功能完全是可选的，可能并非必需。我们至少希望在必要时为您提供额外的信息。
+    以下列出了可选的附加功能。请注意，这些附加功能是可选的，可能并非必需。
   </span>
 </div>
 
@@ -2107,7 +2107,7 @@ EML 文件按邮箱文件夹组织。ZIP 密码与您的 IMAP/别名密码相同
 
 ### 我如何查看 DMARC 报告 {#how-do-i-view-dmarc-reports}
 
-Forward Email 提供了一个全面的 DMARC 报告仪表盘，允许您从单一界面监控所有域的邮件身份验证表现。
+Forward Email 提供了一个 DMARC 报告仪表盘，允许您从单一界面监控所有域的邮件身份验证表现。
 
 **什么是 DMARC 报告？**
 
@@ -2164,15 +2164,15 @@ DMARC 报告仪表盘提供：
 
 ### 为什么我的 DMARC 报告显示来自未知 IP 地址的失败 {#why-do-my-dmarc-reports-show-failures-from-unknown-ip-addresses}
 
-如果您的 DMARC 报告包含未能通过 SPF 和 DKIM 的陌生 IP 地址，**请不要担心** —— 这是正常现象，实际上意味着您的设置工作正常。
+如果您的 DMARC 报告包含未能通过 SPF 和 DKIM 的陌生 IP 地址，**请不要担心** —— 这是正常现象，意味着您的设置工作正常。
 
-DMARC 报告列出了**所有**试图发送声称来自您域名的邮件的服务器，包括未经授权的服务器。在几乎所有情况下，这些未知的 IP 只是试图冒充您域名的垃圾邮件发送者或机器人。当他们尝试时，会发生以下情况：
+DMARC 报告列出了**所有**试图发送声称来自您域名的邮件的服务器，包括未经授权的服务器。在几乎所有情况下，这些未知的 IP 是试图冒充您域名的垃圾邮件发送者或机器人。当他们尝试时：
 
 * **SPF 失败**，因为发送 IP 未列在您的 SPF 记录中。
 * **DKIM 失败**，因为他们无法为您的域名生成有效的签名。
 * 在 DMARC 策略为 `p=reject` 的情况下，该消息被**直接拒绝**，永远不会到达任何人的收件箱。
 
-换句话说，这些失败证明 DMARC 正在发挥作用 —— 在冒充尝试造成危害之前将其拦截。您无需采取任何行动。
+这些失败表明 DMARC 正在冒充尝试造成危害之前将其拦截。您无需采取任何行动。
 
 **如何区分合法发件人和冒充者**
 
@@ -2187,23 +2187,23 @@ DMARC 报告列出了**所有**试图发送声称来自您域名的邮件的服�
 
 ### 如何连接和配置我的联系人 {#how-do-i-connect-and-configure-my-contacts}
 
-**配置联系人时，请使用 CardDAV URL：** `https://carddav.forwardemail.net`（如果您的客户端允许，也可以直接使用 `carddav.forwardemail.net`）
+**配置联系人时，请使用 CardDAV URL：** `https://carddav.forwardemail.net`（如果您的客户端允许，也可以使用 `carddav.forwardemail.net`）
 
 ### 如何连接和配置我的日历 {#how-do-i-connect-and-configure-my-calendars}
 
-**配置日历时，请使用 CalDAV URL：** `https://caldav.forwardemail.net`（如果您的客户端允许，也可以直接使用 `caldav.forwardemail.net`）
+**配置日历时，请使用 CalDAV URL：** `https://caldav.forwardemail.net`（如果您的客户端允许，也可以使用 `caldav.forwardemail.net`）
 
 <!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### 如何添加更多日历及管理现有日历 {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-如果您想添加额外的日历，只需添加新的日历 URL：`https://caldav.forwardemail.net/dav/principals/calendar-name`（**请务必将 `calendar-name` 替换为您想要的日历名称**）
+如果您想添加额外的日历，请添加新的日历 URL：`https://caldav.forwardemail.net/dav/principals/calendar-name`（**请务必将 `calendar-name` 替换为您想要的日历名称**）
 
 创建后，您可以通过您喜欢的日历应用（例如 Apple Mail 或 [Thunderbird](https://thunderbird.net)）更改日历名称和颜色。
 
 ### 如何连接和配置任务和提醒 {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-**配置任务和提醒时，请使用与日历相同的 CalDAV URL：** `https://caldav.forwardemail.net`（如果您的客户端允许，也可以直接使用 `caldav.forwardemail.net`）
+**配置任务和提醒时，请使用与日历相同的 CalDAV URL：** `https://caldav.forwardemail.net`（如果您的客户端允许，也可以使用 `caldav.forwardemail.net`）
 
 任务和提醒会自动从日历事件中分离，形成独立的“提醒”或“任务”日历集合。
 
@@ -2358,7 +2358,7 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
 
 ### 您支持通过 IMAP 接收邮件吗 {#do-you-support-receiving-email-with-imap}
 
-是的，自 2023 年 10 月 16 日起，我们支持作为所有付费用户的附加功能通过 IMAP 接收邮件。**请阅读我们关于[加密 SQLite 邮箱存储功能工作原理](/blog/docs/best-quantum-safe-encrypted-email-service)的深度文章**。
+是的，自 2023 年 10 月 16 日起，我们支持作为所有付费用户的附加功能通过 IMAP 接收邮件。**请阅读我们关于[加密 SQLite 邮箱存储功能工作原理](/blog/docs/best-quantum-safe-encrypted-email-service)的详细文章**。
 
 <div id="imap-instructions">
 
@@ -2415,7 +2415,7 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
 
 ### 您支持 POP3 吗 {#do-you-support-pop3}
 
-是的，自 2023 年 12 月 4 日起，我们为所有付费用户提供 [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) 作为附加功能。**请阅读我们深入的文章**，了解[我们的加密 SQLite 邮箱存储功能如何工作](/blog/docs/best-quantum-safe-encrypted-email-service)。
+是的，自 2023 年 12 月 4 日起，我们为所有付费用户提供 [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) 作为附加功能。**请阅读我们的详细文章**，了解[我们的加密 SQLite 邮箱存储功能如何工作](/blog/docs/best-quantum-safe-encrypted-email-service)。
 
 <div id="pop3-instructions">
 
@@ -2487,14 +2487,14 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
 
 是的，自 2025 年 10 月 14 日起，我们已添加对任务和提醒的 CalDAV VTODO 支持。该服务使用与我们的日历支持相同的服务器：`caldav.forwardemail.net`。
 
-我们的 CalDAV 服务器支持使用 **统一日历** 的日历事件（VEVENT）和任务（VTODO）组件。这意味着每个日历都可以包含事件和任务，提供最大灵活性和所有 CalDAV 客户端的兼容性。
+我们的 CalDAV 服务器支持使用 **统一日历** 的日历事件（VEVENT）和任务（VTODO）组件。这意味着每个日历都可以包含事件和任务。
 
 **日历和列表的工作方式：**
 
 * **每个日历支持事件和任务** - 你可以向任何日历添加事件、任务或两者
 * **Apple 提醒事项列表** - 你在 Apple 提醒事项中创建的每个列表都会成为服务器上的一个独立日历
 * **多个日历** - 你可以创建任意数量的日历，每个日历都有自己的名称、颜色和组织方式
-* **跨客户端同步** - 任务和事件在所有兼容客户端之间无缝同步
+* **跨客户端同步** - 任务和事件在所有兼容客户端之间同步
 
 **支持的任务客户端：**
 
@@ -2929,7 +2929,7 @@ if header :contains "Subject" "invoice" {
 * [维基百科关于通行密钥的条目](https://en.wikipedia.org/wiki/Passkey_\(credential\))
 ### 你支持电子邮件最佳实践吗 {#do-you-support-email-best-practices}
 
-是的。我们在所有计划中内置支持 SPF、DKIM、DMARC、ARC 和 SRS。我们还与这些规范的原始作者及其他电子邮件专家进行了广泛合作，以确保完美和高送达率。
+是的。我们在所有计划中内置支持 SPF、DKIM、DMARC、ARC 和 SRS。我们还与这些规范的原始作者及其他电子邮件专家进行了广泛合作，以确保高送达率。
 
 ### 你支持退信 webhook 吗 {#do-you-support-bounce-webhooks}
 
@@ -2938,7 +2938,7 @@ if header :contains "Subject" "invoice" {
   <strong class="font-weight-bold">
     提示：
   </strong>
-    想了解电子邮件 webhook 的文档？请参见 <a href="/faq#do-you-support-webhooks" class="alert-link">你支持 webhook 吗？</a> 获取更多信息。
+    有关电子邮件 webhook 的文档，请参见 <a href="/faq#do-you-support-webhooks" class="alert-link">你支持 webhook 吗？</a> 获取更多信息。
   <span>
   </span>
 </div>
@@ -3010,12 +3010,12 @@ if header :contains "Subject" "invoice" {
   <strong class="font-weight-bold">
     提示：
   </strong>
-    想了解有关退信 Webhooks 的文档？请参见 <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">你支持退信 Webhooks 吗？</a> 获取更多信息。
+    有关退信 Webhooks 的文档，请参见 <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">你支持退信 Webhooks 吗？</a> 获取更多信息。
   <span>
   </span>
 </div>
 
-是的，自 2020 年 5 月 15 日起我们已添加此功能。您可以像添加任何收件人一样简单地添加 webhook！请确保 webhook 的 URL 以 “http” 或 “https” 协议开头。
+是的，自 2020 年 5 月 15 日起我们已添加此功能。您可以像添加任何收件人一样添加 webhook。请确保 webhook 的 URL 以 “http” 或 “https” 协议开头。
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
@@ -3027,9 +3027,9 @@ if header :contains "Subject" "invoice" {
   </span>
 </div>
 
-如果您使用的是免费计划，只需添加一个新的 DNS <strong class="notranslate">TXT</strong> 记录，如下所示：
+如果您使用的是免费计划，请添加一个新的 DNS <strong class="notranslate">TXT</strong> 记录，如下所示：
 
-例如，如果我想让所有发送到 `alias@example.com` 的邮件转发到一个新的 [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) 测试端点：
+例如，如果你想让所有发送到 `alias@example.com` 的邮件转发到一个新的 [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) 测试端点：
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -3080,7 +3080,7 @@ if header :contains "Subject" "invoice" {
     * 使用此密钥计算并比较我们 webhook 请求中的 `X-Webhook-Signature` 值与计算出的正文值。如何操作的示例请参见[此 Stack Overflow 帖子](https://stackoverflow.com/a/68885281)。
   * 更多信息请参见 <https://github.com/forwardemail/free-email-forwarding/issues/235> 的讨论。
 * 如果 webhook 未返回 `200` 状态码，我们会将其响应存储在[错误日志中](#do-you-store-error-logs) — 这对调试非常有用。
-* Webhook HTTP 请求将在每次 SMTP 连接尝试时最多重试 3 次，每次端点 POST 请求最大超时为 60 秒。**注意这并不意味着只重试 3 次**，实际上它会通过在第 3 次 HTTP POST 请求失败后发送 SMTP 代码 421（表示稍后重试）持续重试。这意味着邮件会持续重试数天，直到收到 200 状态码。
+* Webhook HTTP 请求将在每次 SMTP 连接尝试时最多重试 3 次，每次端点 POST 请求最大超时为 60 秒。**注意这并不意味着只重试 3 次**，它会通过在第 3 次 HTTP POST 请求失败后发送 SMTP 代码 421（表示稍后重试）持续重试。这意味着邮件会持续重试数天，直到收到 200 状态码。
 * 我们会根据 [superagent 的 retry 方法](https://ladjs.github.io/superagent/#retrying-requests) 中使用的默认状态和错误代码自动重试（我们是维护者）。
 * 我们会将发送到同一端点的 webhook HTTP 请求合并为一次请求（而非多次），以节省资源并加快响应速度。例如，如果您发送邮件到 <webhook1@example.com>、<webhook2@example.com> 和 <webhook3@example.com>，且这些都配置为指向完全相同的端点 URL，则只会发出一次请求。我们通过严格相等匹配端点 URL 来合并请求。
 * 请注意，我们使用 [mailparser](https://nodemailer.com/extras/mailparser/) 库的 "simpleParser" 方法将邮件解析为 JSON 友好的对象。
@@ -3090,7 +3090,7 @@ if header :contains "Subject" "invoice" {
 * 此 webhook 的分组收件人以属性 "recipients" 提供。
 * SMTP 会话信息以属性 "session" 提供。包含发件人信息、邮件到达时间、HELO 和客户端主机名。客户端主机名 `session.clientHostname` 是 FQDN（通过反向 PTR 查找获得）或用方括号括起的 `session.remoteAddress`（例如 `"[127.0.0.1]"`）。
 * 如果您需要快速获取 `X-Original-To` 的值，可以使用 `session.recipient` 的值（见下例）。`X-Original-To` 是我们为调试添加的邮件头，表示邮件的原始收件人（掩码转发前）。
-* 如果您需要从负载正文中移除 `attachments` 和/或 `raw` 属性，只需在 webhook 端点 URL 添加查询参数 `?attachments=false`、`?raw=false` 或 `?attachments=false&raw=false`（例如 `https://example.com/webhook?attachments=false&raw=false`）。
+* 如果您需要从负载正文中移除 `attachments` 和/或 `raw` 属性，请在 webhook 端点 URL 添加查询参数 `?attachments=false`、`?raw=false` 或 `?attachments=false&raw=false`（例如 `https://example.com/webhook?attachments=false&raw=false`）。
 * 如果有附件，它们会以 Buffer 值追加到 `attachments` 数组中。您可以使用 JavaScript 方式将其解析回内容，例如：
   ```js
   const data = [
@@ -3120,7 +3120,7 @@ if header :contains "Subject" "invoice" {
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Curious what the webhook request looks like from forwarded emails?  We've included an example below for you!
+    An example webhook request from a forwarded email is shown below.
   <span>
   </span>
 </div>
@@ -3307,7 +3307,7 @@ if header :contains "Subject" "invoice" {
 
 ### 你支持正则表达式或 regex 吗 {#do-you-support-regular-expressions-or-regex}
 
-是的，自 2021 年 9 月 27 日起我们已添加此功能。你可以直接编写用于匹配别名和执行替换的正则表达式（“regex”）。
+是的，自 2021 年 9 月 27 日起我们已添加此功能。你可以编写用于匹配别名和执行替换的正则表达式（“regex”）。
 
 支持正则表达式的别名是以 `/` 开头并以 `/` 结尾的，且其收件人是电子邮件地址或 webhook。收件人也可以包含正则替换支持（例如 `$1`，`$2`）。
 
@@ -3363,7 +3363,7 @@ if header :contains "Subject" "invoice" {
 
 #### 免费计划示例 {#examples-for-the-free-plan}
 
-如果你使用的是免费计划，只需使用以下提供的一个或多个示例添加新的 DNS <strong class="notranslate">TXT</strong> 记录：
+如果你使用的是免费计划，请使用以下提供的一个或多个示例添加新的 DNS <strong class="notranslate">TXT</strong> 记录：
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3462,7 +3462,7 @@ if header :contains "Subject" "invoice" {
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>静默拒绝示例：</strong> 如果你想让所有匹配某个模式的邮件被禁用并静默拒绝（对发送者表现为邮件发送成功，但实际上邮件未送达）且状态码为 `250`（参见 <a href="#can-i-disable-specific-aliases" class="alert-link">我可以禁用特定别名吗</a>），只需使用单个感叹号 "!" 的相同方法。这表示邮件对发送者来说已成功送达，但实际上邮件未被处理（例如黑洞或 `/dev/null`）。
+  <strong>静默拒绝示例：</strong> 如果你想让所有匹配某个模式的邮件被禁用并静默拒绝（对发送者表现为邮件发送成功，但实际上邮件未送达）且状态码为 `250`（参见 <a href="#can-i-disable-specific-aliases" class="alert-link">我可以禁用特定别名吗</a>），请使用单个感叹号 "!" 的相同方法。这表示邮件对发送者来说已成功送达，但实际上邮件未被处理（例如黑洞或 `/dev/null`）。
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -3486,7 +3486,7 @@ if header :contains "Subject" "invoice" {
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>软拒绝示例：</strong> 如果你想让所有匹配某个模式的邮件被禁用并软拒绝，状态码为 `421`（参见 <a href="#can-i-disable-specific-aliases" class="alert-link">我可以禁用特定别名吗</a>），只需使用双感叹号 "!!" 的相同方法。这表示发送者应重试发送邮件，且该别名的邮件将被重试约 5 天，之后永久拒绝。
+  <strong>软拒绝示例：</strong> 如果你想让所有匹配某个模式的邮件被禁用并软拒绝，状态码为 `421`（参见 <a href="#can-i-disable-specific-aliases" class="alert-link">我可以禁用特定别名吗</a>），请使用双感叹号 "!!" 的相同方法。这表示发送者应重试发送邮件，且该别名的邮件将被重试约 5 天，之后永久拒绝。
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -3509,7 +3509,7 @@ if header :contains "Subject" "invoice" {
 </table>
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>硬拒绝示例：</strong> 如果您希望禁用所有匹配某个特定模式的邮件并以状态码 `550` 硬拒绝（参见 <a href="#can-i-disable-specific-aliases" class="alert-link">我可以禁用特定别名吗</a>），只需使用三个感叹号 "!!!" 的相同方法。这向发件人表示永久错误，邮件不会重试，将被拒绝该别名的邮件。
+  <strong>硬拒绝示例：</strong> 如果您希望禁用所有匹配某个特定模式的邮件并以状态码 `550` 硬拒绝（参见 <a href="#can-i-disable-specific-aliases" class="alert-link">我可以禁用特定别名吗</a>），请使用三个感叹号 "!!!" 的相同方法。这向发件人表示永久错误，邮件不会重试，将被拒绝该别名的邮件。
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -3536,7 +3536,7 @@ if header :contains "Subject" "invoice" {
   <strong class="font-weight-bold">
     小贴士：
   </strong>
-    想知道如何编写正则表达式或需要测试您的替换内容？您可以访问免费的正则表达式测试网站 <a href="https://regexr.com" class="alert-link">RegExr</a>，网址为 <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>。
+    要编写正则表达式或测试您的替换内容，请访问免费的正则表达式测试网站 <a href="https://regexr.com" class="alert-link">RegExr</a>，网址为 <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>。
   <span>
   </span>
 </div>
@@ -3621,7 +3621,7 @@ if header :contains "Subject" "invoice" {
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>重要提示：</strong> 不要直接在根/顶级域名（`@`）上添加 <strong class="notranslate">CNAME</strong> 记录，因为它会与您的 <strong class="notranslate">MX</strong>、<strong class="notranslate">TXT</strong> 和其他记录冲突。将 `forward-email-site-verification=` <strong class="notranslate">TXT</strong> 记录保留在您的根域名上发布 &mdash; 子域名会自动继承它。
+  <strong>重要提示：</strong> 不要直接在根/顶级域名（`@`）上添加 <strong class="notranslate">CNAME</strong> 记录，因为它会与您的 <strong class="notranslate">MX</strong>、<strong class="notranslate">TXT</strong> 和其他记录冲突。将 `forward-email-site-verification=` <strong class="notranslate">TXT</strong> 记录保留在您的根域名上发布；子域名会自动继承它。
 </div>
 
 #### 子域名替换令牌 {#subdomain-substitution-tokens}
@@ -3673,7 +3673,7 @@ if header :contains "Subject" "invoice" {
 
 ### 您的出站 SMTP 限制是多少 {#what-are-your-outbound-smtp-limits}
 
-我们在多个层级实施出站 SMTP 速率限制，以防止滥用，同时为合法使用保持灵活性。每个层级按顺序检查——先达到的限制将会暂时以 `421` 错误拒绝该邮件（意为“请稍后再试”）。
+我们在多个层级实施出站 SMTP 速率限制，以防止滥用，同时为合法使用保持灵活性。每个层级按顺序检查，先达到的限制将会暂时以 `421` 错误拒绝该邮件（意为“请稍后再试”）。
 
 **速率限制层级：**
 
@@ -3685,10 +3685,10 @@ if header :contains "Subject" "invoice" {
 
 **如何确定实际限额：**
 
-* **团队计划域** — 域的实际每日限额为该域所有管理员成员中最高的 `smtp_limit`。例如，如果一个管理员的限额是 300，而另一个是 500，则该域的实际限额为 500。
-* **增强保护和其他计划** — 实际每日限额为发送用户自身的 `smtp_limit`（默认每天 300 封邮件）。
-* **按别名覆盖** — 域管理员可以选择在单个别名上设置自定义 `smtp_limit`。设置后，该限制会首先被检查（在域和用户限制之前）。这对于将特定别名限制为较低发送量很有用。
-* **新别名的域默认值** — 域管理员可以在域上设置一个 `alias_default_smtp_limit`（通过 API 或仪表板的高级设置）。设置后，该域上所有新创建的别名将自动继承该值作为它们的 `smtp_limit`。该值不得超过域的生效 SMTP 限制。已存在的别名不会受到影响。设置为 `0` 可禁用。
+* **团队计划域**：域的实际每日限额为该域所有管理员成员中最高的 `smtp_limit`。例如，如果一个管理员的限额是 300，而另一个是 500，则该域的实际限额为 500。
+* **增强保护和其他计划**：实际每日限额为发送用户自身的 `smtp_limit`（默认每天 300 封邮件）。
+* **按别名覆盖**：域管理员可以选择在单个别名上设置自定义 `smtp_limit`。设置后，该限制会首先被检查（在域和用户限制之前）。这对于将特定别名限制为较低发送量很有用。
+* **新别名的域默认值**：域管理员可以在域上设置一个 `alias_default_smtp_limit`（通过 API 或仪表板的高级设置）。设置后，该域上所有新创建的别名将自动继承该值作为它们的 `smtp_limit`。该值不得超过域的生效 SMTP 限制。已存在的别名不会受到影响。设置为 `0` 可禁用。
 
 **系统管理员**（Forward Email 员工）免于所有速率限制。
 
@@ -3898,7 +3898,7 @@ Forward Email 遵循行业最佳安全审计实践，并定期与独立安全研
 
 ### 您是否保留邮件认证头 {#do-you-preserve-email-authentication-headers}
 
-是的。Forward Email 全面实现并保留邮件认证头：
+是的。Forward Email 实现并保留邮件认证头：
 
 * **SPF（发件人策略框架）**：正确实现并保留
 * **DKIM（域密钥识别邮件）**：全面支持并妥善管理密钥
@@ -3912,9 +3912,9 @@ Forward Email 遵循行业最佳安全审计实践，并定期与独立安全研
 ### 您是否保留原始邮件头并防止伪造 {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email 实施了复杂的反伪造保护以防止邮件滥用。
+> Forward Email 实施了反伪造保护以防止邮件滥用。
 
-Forward Email 在转发过程中保留原始邮件头，同时通过 MX 代码库实现全面的反伪造保护：
+Forward Email 在转发过程中保留原始邮件头，同时通过 MX 代码库实现反伪造保护：
 
 * **邮件头保留**：转发时保留原始认证邮件头
 * **电子邮件认证强制执行**：来自非白名单发送者的邮件必须通过 SPF 或 DKIM 中的至少一项（类似于 Gmail、Outlook 和 Yahoo 自 2024 年以来的要求）。没有任何通过认证的邮件将被拒绝，返回 550 错误代码。DMARC 策略 `p=reject` 和 `p=quarantine` 将被强制执行。
@@ -3930,7 +3930,7 @@ Forward Email 在转发过程中保留原始邮件头，同时通过 MX 代码�
 `isArbitrary` 辅助函数实现了复杂的反伪造规则，包括域名冒充检测、禁止短语和各种钓鱼模式检测。
 ### 你如何防范垃圾邮件和滥用 {#how-do-you-protect-against-spam-and-abuse}
 
-Forward Email 实施了全面的多层保护：
+Forward Email 实施了多层保护：
 
 * **速率限制**：应用于身份验证尝试、API 端点和 SMTP 连接
 * **资源隔离**：用户之间隔离，防止高流量用户影响其他用户
@@ -3965,7 +3965,7 @@ Forward Email 实施了全面的多层保护：
 
 ### 系统崩溃时邮件内容会被泄露吗 {#can-email-content-be-exposed-during-system-crashes}
 
-不会。Forward Email 实施了全面的防护措施，防止崩溃时数据泄露：
+不会。Forward Email 实施了防护措施，防止崩溃时数据泄露：
 
 * **禁用核心转储**：防止崩溃时内存泄露
 * **受控的 Swap 使用**: 应用程序和其他非数据库主机保持无 Swap 状态，并对其进行规模调整和监控，以确保正常工作负载保留在 RAM 中。MongoDB 和 Redis 主机使用仅限 root 访问的 Swap 文件，并设置 `vm.swappiness=1`，严格作为内存不足时的安全网，而非正常容量。在所有地方禁用 Swap 可能会将短暂的数据库内存压力转化为立即的 OOM 终止。数据库的 Swap 活动会受到监控和调查。
@@ -3985,7 +3985,7 @@ Forward Email 实施了全面的多层保护：
 
 ### 谁可以访问你们的邮件基础设施 {#who-has-access-to-your-email-infrastructure}
 
-Forward Email 对其极少的 2-3 人工程团队访问实施了全面的访问控制，并严格要求双因素认证：
+Forward Email 对其极少的 2-3 人工程团队访问实施了访问控制，并严格要求双因素认证：
 
 * **基于角色的访问控制**：团队账户具备基于资源的权限
 * **最小权限原则**：贯穿所有系统
@@ -4006,7 +4006,7 @@ Forward Email 对其极少的 2-3 人工程团队访问实施了全面的访问�
 ### 您使用哪些基础设施提供商 {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email 使用多个具有全面合规认证的基础设施子处理器。
+> Forward Email 使用多个具有合规认证的基础设施子处理器。
 
 完整详情请参阅我们的 GDPR 合规页面：<https://forwardemail.net/gdpr>
 
@@ -4062,7 +4062,7 @@ Forward Email 对其极少的 2-3 人工程团队访问实施了全面的访问�
 
 ### 您是否提供数据处理协议（DPA） {#do-you-offer-a-data-processing-agreement-dpa}
 
-是的，Forward Email 提供全面的数据处理协议（DPA），可与我们的企业协议一同签署。我们的 DPA 副本可在此获取：<https://forwardemail.net/dpa>
+是的，Forward Email 提供数据处理协议（DPA），可与我们的企业协议一同签署。我们的 DPA 副本可在此获取：<https://forwardemail.net/dpa>
 
 **DPA 详情：**
 
@@ -4085,7 +4085,7 @@ Forward Email 对其极少的 2-3 人工程团队访问实施了全面的访问�
 
 **当前的处理位置：**我们的服务器主要位于 Denver, Colorado, United States（参见[你们的服务器位于哪里](#where-are-your-servers-located)以及 <https://forwardemail.net/ips>）。这适用于所有功能：入站转发、错误日志、邮箱存储（IMAP/POP3/CalDAV/CardDAV）以及出站 SMTP。
 
-**计划内容：**在阿姆斯特丹设立一个欧盟数据中心，托管于 [forwardemail.eu](https://forwardemail.eu)。为了让欧盟数据在法律与技术上都实现真正隔离，需要通过一家独立的欧盟本地公司运营，而不仅仅是在欧盟地点放置服务器。我们尚无上线日期，加入候补名单不会改变你今天的邮件处理地点。订阅 <https://github.com/orgs/forwardemail/discussions/336> 以获取公告；一旦可用，我们会在那里说明现有客户如何选择加入。
+**计划内容：**在阿姆斯特丹设立一个欧盟数据中心，托管于 [forwardemail.eu](https://forwardemail.eu)。为了让欧盟数据在法律与技术上都实现隔离，需要通过一家独立的欧盟本地公司运营，而不仅仅是在欧盟地点放置服务器。我们尚无上线日期，加入候补名单不会改变你今天的邮件处理地点。订阅 <https://github.com/orgs/forwardemail/discussions/336> 以获取公告；一旦可用，我们会在那里说明现有客户如何选择加入。
 
 **你今天可以准确陈述的是：**
 
@@ -4140,7 +4140,7 @@ Forward Email 对其极少的 2-3 人工程团队访问实施了全面的访问�
 ### 您如何处理数据泄露通知 {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email 的零知识架构显著限制了泄露影响。
+> Forward Email 的零知识架构限制了泄露影响。
 * **有限的数据暴露**：由于零知识架构，无法访问加密的电子邮件内容
 * **最少的数据收集**：仅收集基本的订阅者信息和有限的IP日志以保障安全
 * **子处理器框架**：DigitalOcean、GitHub 和 Vultr 维护符合 GDPR 的事件响应程序
@@ -4205,7 +4205,7 @@ Forward Email 提供实时监控，但存在一些限制：
 ### 您如何确保高可用性 {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email 在多个基础设施提供商之间实施了全面的冗余。
+> Forward Email 在多个基础设施提供商之间实施了冗余。
 
 * **分布式基础设施**：多个提供商（DigitalOcean、Vultr、DataPacket）跨地理区域部署
 * **地理负载均衡**：基于 Cloudflare 的地理位置负载均衡及自动故障切换
@@ -4240,7 +4240,7 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
 
 **政府使用案例**：当 **美国海军学院** 选择 Forward Email 作为其安全邮件转发需求时，我们的第 889 条款合规性得到了验证，并提供了我们的联邦合规标准文档。
 
-有关我们政府合规框架的完整详情，包括更广泛的联邦法规，请阅读我们的综合案例研究：[联邦政府电子邮件服务第 889 条款合规](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+有关我们政府合规框架的完整详情，包括更广泛的联邦法规，请阅读我们的案例研究：[联邦政府电子邮件服务第 889 条款合规](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
 
 ## 系统和技术细节 {#system-and-technical-details}
@@ -5107,7 +5107,7 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
 
 我们的自动任务会下载过去7天的UPL数据到内存，解压后根据上述严格标准进行内存解析。
 
-在撰写本文时，诸如Google、Yahoo、Microsoft、Amazon、Meta、Twitter、Netflix、Spotify等流行域名当然包含在内。
+在撰写本文时，诸如Google、Yahoo、Microsoft、Amazon、Meta、Twitter、Netflix、Spotify等流行域名都包含在内。
 如果您是未在我们的允许列表中的发件人，那么当您的 FQDN 根域名或 IP 地址首次发送电子邮件时，您将被[限速](#do-you-have-rate-limiting)和[灰名单](#do-you-have-a-greylist)。请注意，这是作为电子邮件标准采用的常规做法。大多数电子邮件服务器客户端在收到限速或灰名单错误（例如 421 或 4xx 级别错误状态码）时会尝试重试。
 
 **请注意，特定发件人如 `a@gmail.com`、`b@xyz.edu` 和 `c@gov.au` 仍然可能被[拒绝列表](#do-you-have-a-denylist)**（例如，如果我们自动检测到这些发件人发送垃圾邮件、网络钓鱼或恶意软件）。
@@ -5291,7 +5291,7 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
 
 ### 你们有速率限制吗 {#do-you-have-rate-limiting}
 
-发件人速率限制是通过对发件人 IP 地址进行反向 PTR 查找解析出的根域名来实现的——如果没有结果，则直接使用发件人的 IP 地址。请注意，下面我们将其称为 `Sender`。
+发件人速率限制是通过对发件人 IP 地址进行反向 PTR 查找解析出的根域名来实现的——如果没有结果，则使用发件人的 IP 地址。请注意，下面我们将其称为 `Sender`。
 
 我们的 MX 服务器对接收的[加密 IMAP 存储](/blog/docs/best-quantum-safe-encrypted-email-service)的入站邮件有每日限制：
 
@@ -5300,10 +5300,10 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
   * **Tier 1 – 真实来源**（例如 `gmail.com`、`microsoft.com`、`apple.com`）：全局每天限制发送 100 GB。免除每个域名和突发限制。
   * **Tier 2 – [允许列表](#do-you-have-an-allowlist)中的发件人**：全局每天限制发送 10 GB。免除每个域名和突发限制。
   * **Tier 3 – 所有其他发件人**：全局每天限制发送 1 GB 和/或 1000 条消息，每个 `Sender`+域名每天限制发送 1 GB 和/或 1000 条消息，并且每个 `Sender`+域名每分钟有 50 条消息的突发限制。
-* 突发限制使用固定窗口计数器（60 秒）。窗口在第一条消息到达时开始，并在 60 秒后过期，无论后续消息如何——它不会在每条消息上滑动或重置。
+* 突发限制使用固定窗口计数器（60 秒）。窗口在第一条消息到达时开始，并在 60 秒后过期，无论后续消息如何。它不会在每条消息上滑动或重置。
 * 我们有每个收件人邮箱每天 100,000 条消息的上限。这适用于所有层级，并防止任何单个邮箱被大量邮件淹没，无论发件人信任级别如何。
 
-所有速率限制都以原子方式执行 — 计数器在消息存储之前递增，消除了并发请求可能绕过限制的竞态条件。递减操作（在递增后存储失败时使用）使用安全的 Lua 脚本，防止计数器变为负数。
+所有速率限制都以原子方式执行：计数器在消息存储之前递增，消除了并发请求可能绕过限制的竞态条件。递减操作（在递增后存储失败时使用）使用安全的 Lua 脚本，防止计数器变为负数。
 
 MX 服务器还通过速率限制限制转发给一个或多个收件人的邮件——但这只适用于不在[允许列表](#do-you-have-an-allowlist)中的 `Senders`：
 
@@ -5324,14 +5324,14 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
 
 ### 你们的带宽限制是什么 {#what-are-your-bandwidth-limits}
 
-我们在所有服务中对每个用户实施带宽限制，以防止洪水攻击，同时对合法使用保持足够的宽容。这些限制有意设置为远高于Gmail — 您可以导入大型备份、将整个邮箱同步到新设备，或同时使用多个客户端而不会遇到任何障碍。
+我们在所有服务中对每个用户实施带宽限制，以防止洪水攻击，同时对合法使用保持足够的宽容。这些限制有意设置为远高于Gmail，因此您可以导入大型备份、将整个邮箱同步到新设备，或同时使用多个客户端而不会遇到任何障碍。
 
 | 限制 | 范围 | 数量 |
 | :--- | :--- | :---: |
 | 每日总量 | 所有服务合计（IMAP、POP3、SMTP、CalDAV、CardDAV） | **50 GB** |
 | 每小时每服务 | 每个单独服务（如IMAP下载、SMTP上传） | **10 GB** |
 
-每日限制是跨所有协议的单一共享预算 — 无论您通过IMAP下载、通过SMTP上传还是通过CalDAV同步日历，都计入相同的50 GB/天。每服务每小时限制是针对单一协议上失控脚本或被入侵账户的安全网 — 不是合法用户应该达到的。
+每日限制是跨所有协议的单一共享预算。无论您通过IMAP下载、通过SMTP上传还是通过CalDAV同步日历，都计入相同的50 GB/天。每服务每小时限制是针对单一协议上失控脚本或被入侵账户的安全网，合法用户不应触及。
 
 这些限制按用户账户计算（不是按别名或域名），每天重置。这意味着创建额外的别名不会增加您的带宽配额。如果Redis不可用，速率限制将完全跳过（fail-open），因此您的服务永远不会中断。
 
@@ -5409,9 +5409,9 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
     如果您使用的是付费计划（该计划具备增强隐私保护功能），请前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a>，点击您的域名旁的“设置”，然后点击“设置”选项。如果您想了解更多关于付费计划的信息，请参阅我们的 <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">价格</a> 页面。否则，您可以继续按照以下说明操作。
   </span>
 </div>
-如果您使用的是免费计划，只需添加一个新的 DNS <strong class="notranslate">TXT</strong> 记录，如下所示，但将端口从 25 更改为您选择的端口。
+如果您使用的是免费计划，请添加一个新的 DNS <strong class="notranslate">TXT</strong> 记录，如下所示，但将端口从 25 更改为您选择的端口。
 
-例如，如果我想让所有发送到 `example.com` 的邮件转发到别名收件人的 SMTP 端口 1337，而不是 25：
+例如，如果你想让所有发送到 `example.com` 的邮件转发到别名收件人的 SMTP 端口 1337，而不是 25：
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5437,7 +5437,7 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
   <strong class="font-weight-bold">
     提示：
   </strong>
-    自定义端口转发设置最常见的场景是您想将所有发送到 example.com 的邮件转发到 example.com 上的不同端口，而不是 SMTP 标准端口 25。要设置此功能，只需添加以下 <strong class="notranslate">TXT</strong> 通配符记录。
+    自定义端口转发设置最常见的场景是您想将所有发送到 example.com 的邮件转发到 example.com 上的不同端口，而不是 SMTP 标准端口 25。要设置此功能，请添加以下 <strong class="notranslate">TXT</strong> 通配符记录。
   <span>
   </span>
 </div>
@@ -5467,7 +5467,7 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
 
 ### 是否支持子域名 {#does-it-support-sub-domains}
 
-是的，完全支持。您只需将名称/主机/别名从 "@", ".", 或空白改为子域名名称即可。
+是的。请将名称/主机/别名从 "@", ".", 或空白改为子域名名称即可。
 
 如果您想让 `foo.example.com` 转发邮件，则在 DNS 设置中（MX 和 <strong class="notranslate">TXT</strong> 记录）将名称/主机/别名值设置为 `foo`。
 
@@ -5542,7 +5542,7 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
   </span>
 </div>
 
-是的，只需编辑您的DNS <strong class="notranslate">TXT</strong> 记录，并在别名前加上一个、两个或三个感叹号（见下文）。
+是的，请编辑您的DNS <strong class="notranslate">TXT</strong> 记录，并在别名前加上一个、两个或三个感叹号（见下文）。
 
 请注意，您*应该*保留“:”映射，因为如果您以后决定关闭此功能，这个是必需的（如果您升级到我们的付费套餐，也用于导入）。
 
@@ -5552,7 +5552,7 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
 
 **硬拒绝（状态码 `550`）：** 如果您在别名前加上“!!!”（三感叹号），则向尝试发送到该地址的发送者返回永久错误状态码 `550`，邮件将被拒绝并退回。
 
-例如，如果我想让所有发送到 `alias@example.com` 的邮件停止转发到 `user@gmail.com` 并被拒绝退回（例如使用三个感叹号）：
+例如，如果你想让所有发送到 `alias@example.com` 的邮件停止转发到 `user@gmail.com` 并被拒绝退回（例如使用三个感叹号）：
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5579,7 +5579,7 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
     提示：
   </strong>
   <span>
-    您也可以将转发的收件人地址重写为简单的 "nobody@forwardemail.net"，这会将邮件路由到 nobody，如下面的示例所示。
+    您也可以将转发的收件人地址重写为 "nobody@forwardemail.net"，这会将邮件路由到 nobody，如下面的示例所示。
   </span>
 </div>
 
@@ -5632,9 +5632,9 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
 
 ### 我可以将邮件转发给多个收件人吗 {#can-i-forward-emails-to-multiple-recipients}
 
-当然可以。只需在您的 <strong class="notranslate">TXT</strong> 记录中指定多个收件人。
+可以。请在您的 <strong class="notranslate">TXT</strong> 记录中指定多个收件人。
 
-例如，如果我想将发送到 `hello@example.com` 的邮件转发到 `user+a@gmail.com` 和 `user+b@gmail.com`，那么我的 <strong class="notranslate">TXT</strong> 记录如下：
+例如，如果你想将发送到 `hello@example.com` 的邮件转发到 `user+a@gmail.com` 和 `user+b@gmail.com`，那么你的 <strong class="notranslate">TXT</strong> 记录如下：
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5686,9 +5686,9 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
 
 ### 我可以有多个全局通配收件人吗 {#can-i-have-multiple-global-catch-all-recipients}
 
-可以。只需在您的 <strong class="notranslate">TXT</strong> 记录中指定多个全局通配收件人。
+可以。请在您的 <strong class="notranslate">TXT</strong> 记录中指定多个全局通配收件人。
 
-例如，如果我想将发送到 `*@example.com`（星号表示通配符，即全局通配） 的所有邮件转发到 `user+a@gmail.com` 和 `user+b@gmail.com`，那么我的 <strong class="notranslate">TXT</strong> 记录如下：
+例如，如果你想将发送到 `*@example.com`（星号表示通配符，即全局通配） 的所有邮件转发到 `user+a@gmail.com` 和 `user+b@gmail.com`，那么你的 <strong class="notranslate">TXT</strong> 记录如下：
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5747,7 +5747,7 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
     提示：
   </strong>
   <span>
-    需要每个别名超过10个收件人？给我们发送电子邮件，我们很乐意为你的账户提高限制。
+    如果每个别名需要超过10个收件人，请给我们发送电子邮件，我们可以为你的账户提高限制。
   </span>
 </div>
 
@@ -5764,10 +5764,10 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
 
 前往 <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">我的账户 → 计费</a> 并滚动至 **附加组件** 部分，该部分包含两个请求表单：
 
-* **存储升级** — 选择要增加的数量 (+10, +20, +30, +40, 或 +50 GB)，或选择 "Other" 以请求自定义数量。
-* **出站 SMTP 限制升级** — 选择要增加的数量 (+1000, +2000, 或 +3000 封电子邮件/天)，或选择 "Other" 以请求自定义数量。
+* **存储升级**：选择要增加的数量 (+10, +20, +30, +40, 或 +50 GB)，或选择 "Other" 以请求自定义数量。
+* **出站 SMTP 限制升级**：选择要增加的数量 (+1000, +2000, 或 +3000 封电子邮件/天)，或选择 "Other" 以请求自定义数量。
 
-提交任一表单都会将您的请求发送给我们的团队进行审核 — 不会立即向您收费。获批后，我们会通过电子邮件向您发送一个安全的付款链接以完成升级。您在任一时间每种类型（存储或 SMTP）只能有 1 个待处理请求；在同一类型的上一次请求后的 3 天 内再次提交不被允许，需等待该时间窗口结束。
+提交任一表单都会将您的请求发送给我们的团队进行审核，不会立即向您收费。获批后，我们会通过电子邮件向您发送一个安全的付款链接以完成升级。您在任一时间每种类型（存储或 SMTP）只能有 1 个待处理请求；在同一类型的上一次请求后的 3 天 内再次提交不被允许，需等待该时间窗口结束。
 
 
 ### Enterprise License 包含哪些内容 {#what-is-included-in-the-enterprise-license}

@@ -28,7 +28,7 @@
 
 ## Memulai {#getting-started}
 
-Solusi email self-hosted kami, seperti semua produk kami, 100% open-source—baik frontend maupun backend. Ini berarti:
+Solusi email self-hosted kami, seperti semua produk kami, 100% open-source, baik frontend maupun backend. Ini berarti:
 
 1. **Transparansi Lengkap**: Setiap baris kode yang memproses email Anda tersedia untuk pemeriksaan publik
 2. **Kontribusi Komunitas**: Siapa saja dapat berkontribusi memperbaiki atau meningkatkan
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Pilih opsi `1. Pengaturan awal` untuk memulai.
 
-Setelah selesai, Anda harus melihat pesan sukses. Anda bahkan dapat menjalankan `docker ps` untuk melihat **komponen** yang dijalankan. Informasi lebih lanjut tentang komponen di bawah.
+Setelah selesai, Anda harus melihat pesan sukses. Anda dapat menjalankan `docker ps` untuk melihat **komponen** yang dijalankan. Informasi lebih lanjut tentang komponen di bawah.
 
 
 ## Layanan {#services}

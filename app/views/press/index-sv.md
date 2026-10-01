@@ -19,11 +19,11 @@
 
 Forward Email är den enda 100 % open-source e-posttjänsten med fokus på säkerhet och integritet. Läs mer om vår historia på [vår Om-sida](/about).
 
-Vår tjänst grundades 2017 och driver e-post för över 500 000 domäner – inklusive anmärkningsvärda användare som [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [flera universitet](/blog/docs/alumni-email-forwarding-university-case-study) och regeringar, och fler.
+Vår tjänst grundades 2017 och driver e-post för över 500 000 domäner, inklusive anmärkningsvärda användare som [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [flera universitet](/blog/docs/alumni-email-forwarding-university-case-study) och regeringar, och fler.
 
-Vårt mål är att vara den företagsklassade e-post- och säkerhetsinfrastrukturplattformen – och vi följer [flera principer](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Vårt mål är att vara den företagsklassade e-post- och säkerhetsinfrastrukturplattformen, och vi följer [flera principer](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Om du är medlem av pressen, journalist eller medierepresentant och vill prata med oss, ställa frågor eller lära dig mer – vänligen kontakta oss på `press@forwardemail.net`.
+Om du är medlem av pressen, journalist eller medierepresentant och vill prata med oss, ställa frågor eller lära dig mer, vänligen kontakta oss på `press@forwardemail.net`.
 
 
 ## Viktiga fakta & statistik {#key-facts--statistics}

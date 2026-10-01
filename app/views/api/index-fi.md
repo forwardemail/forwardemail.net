@@ -124,7 +124,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=Test email"
 ```
 
-Tämä menetelmä on hyödyllinen, kun lähetät sähköposteja sovelluksista, jotka jo käyttävät SMTP-tunnuksia, ja tekee siirtymisen SMTP:stä API:imme saumattomaksi.
+Tämä menetelmä on hyödyllinen, kun lähetät sähköposteja sovelluksista, jotka jo käyttävät SMTP-tunnuksia, ja tekee siirtymisen SMTP:stä API:imme suoraviivaiseksi.
 
 ### Alias-Only Endpoints {#alias-only-endpoints}
 
@@ -167,7 +167,7 @@ Palvelumme on käännetty yli 25 eri kielelle. Kaikki API-vastausviestit käänn
 
 Sivutus on tuettu kaikissa API-päätepisteissä, jotka listaavat tuloksia.
 
-Anna yksinkertaisesti kyselymerkkijonon ominaisuudet `page` (ja valinnaisesti `limit`).
+Anna kyselymerkkijonon ominaisuudet `page` (ja valinnaisesti `limit`).
 
 Ominaisuuden `page` tulee olla luku, joka on suurempi tai yhtä suuri kuin `1`. Jos annat `limit`-arvon (myös luku), sen vähimmäisarvo on `10` ja enimmäisarvo `50` (ellei toisin mainita).
 
@@ -502,13 +502,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Luo lähtevä SMTP-sähköposti {#create-outbound-smtp-email}
 
-Sähköpostin luomisen API on inspiroitunut ja hyödyntää Nodemailerin viestivaihtoehtojen konfiguraatiota. Katso kaikki alla olevat runkoparametrit [Nodemailerin viestikonfiguraatiosta](https://nodemailer.com/message/).
+Sähköpostin luomisen API on inspiroitunut ja käyttää Nodemailerin viestivaihtoehtojen konfiguraatiota. Katso kaikki alla olevat runkoparametrit [Nodemailerin viestikonfiguraatiosta](https://nodemailer.com/message/).
 
 Huomaa, että lukuun ottamatta `envelope` ja `dkim` (koska asetamme ne automaattisesti puolestasi), tuemme kaikkia Nodemailerin vaihtoehtoja. Asetamme automaattisesti `disableFileAccess` ja `disableUrlAccess` arvoksi `true` turvallisuussyistä.
 
 Sinun tulee joko antaa yksittäinen `raw`-vaihtoehto, joka sisältää koko raakadatan sähköpostista otsikoineen **tai** antaa yksittäiset runkoparametrit alla.
 
-Tämä API-päätepiste koodaa automaattisesti emojit, jos niitä löytyy otsikoista (esim. otsikkorivi `Subject: 🤓 Hello` muunnetaan automaattisesti muotoon `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Tavoitteemme oli tehdä erittäin kehittäjäystävällinen ja virheenkestävä sähköpostin API.
+Tämä API-päätepiste koodaa automaattisesti emojit, jos niitä löytyy otsikoista (esim. otsikkorivi `Subject: 🤓 Hello` muunnetaan automaattisesti muotoon `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Tavoitteemme oli tehdä kehittäjäystävällinen ja virheenkestävä sähköpostin API.
 
 **Autentikointi:** Tämä päätepiste tukee sekä [API-tunnisteautentikointia](#api-token-authentication-recommended-for-most-endpoints) että [alias-tunnistetietojen autentikointia](#alias-credentials-authentication-for-outbound-email). Katso yllä oleva [Autentikointi](#authentication) -osio yksityiskohtia varten.
 
@@ -974,7 +974,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Salaa {#encrypt}
 
-Sallimme tietueiden salaamisen myös ilmaisella suunnitelmalla ilman kustannuksia. Yksityisyys ei saisi olla ominaisuus, vaan sen tulisi olla sisäänrakennettuna kaikissa tuotteen osa-alueissa. Kuten erittäin toivottu [Privacy Guides -keskustelussa](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) ja [GitHub-ongelmissamme](https://github.com/forwardemail/forwardemail.net/issues/254), olemme lisänneet tämän.
+Sallimme tietueiden salaamisen myös ilmaisella suunnitelmalla ilman kustannuksia. Yksityisyyden tulisi olla sisäänrakennettuna kaikissa tuotteen osa-alueissa. Kuten erittäin toivottu [Privacy Guides -keskustelussa](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) ja [GitHub-ongelmissamme](https://github.com/forwardemail/forwardemail.net/issues/254), olemme lisänneet tämän.
 
 ### Salaa TXT-tietue {#encrypt-txt-record}
 

@@ -25,7 +25,7 @@
 
 ## Giới Thiệu {#introduction}
 
-[Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) quản lý hơn 900 dự án mã nguồn mở trên hơn 250 miền, bao gồm [linux.com](https://www.linux.com/) và [jQuery.com](https://jquery.com/). Nghiên cứu tình huống này khám phá cách họ hợp tác với [Forward Email](https://forwardemail.net) để đơn giản hóa quản lý email đồng thời duy trì sự phù hợp với các nguyên tắc mã nguồn mở.
+[Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) quản lý hơn 900 dự án mã nguồn mở trên hơn 250 miền, bao gồm [linux.com](https://www.linux.com/) và [jQuery.com](https://jquery.com/). Nghiên cứu tình huống này trình bày cách họ hợp tác với [Forward Email](https://forwardemail.net) để đơn giản hóa quản lý email trong khi vẫn trung thành với các nguyên tắc mã nguồn mở.
 
 
 ## Thách Thức {#the-challenge}
@@ -43,7 +43,7 @@ Tương tự như các thách thức mà [Canonical/Ubuntu](https://forwardemail
 
 ## Giải Pháp {#the-solution}
 
-Forward Email cung cấp một giải pháp toàn diện với các tính năng chính:
+Forward Email cung cấp một giải pháp với các tính năng sau:
 
 ```mermaid
 graph TD
@@ -57,26 +57,26 @@ graph TD
 
 ### Kiến Trúc 100% Mã Nguồn Mở {#100-open-source-architecture}
 
-Là dịch vụ email duy nhất với nền tảng hoàn toàn mã nguồn mở (cả frontend và backend), Forward Email hoàn toàn phù hợp với cam kết của Linux Foundation về các nguyên tắc mã nguồn mở. Tương tự như triển khai của chúng tôi với [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), sự minh bạch này cho phép đội ngũ kỹ thuật của họ xác minh các triển khai bảo mật và thậm chí đóng góp các cải tiến.
+Là dịch vụ email duy nhất với nền tảng hoàn toàn mã nguồn mở (cả frontend và backend), Forward Email phù hợp với cam kết của Linux Foundation về các nguyên tắc mã nguồn mở. Tương tự như triển khai của chúng tôi với [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), sự minh bạch này cho phép đội ngũ kỹ thuật của họ xác minh các triển khai bảo mật và thậm chí đóng góp các cải tiến.
 
 ### Thiết Kế Tập Trung Vào Quyền Riêng Tư {#privacy-focused-design}
 
-Chính sách [quyền riêng tư](https://forwardemail.net/privacy) nghiêm ngặt của Forward Email cung cấp sự bảo mật mà Linux Foundation yêu cầu. [Triển khai kỹ thuật bảo vệ quyền riêng tư email](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) của chúng tôi đảm bảo tất cả các liên lạc được bảo mật theo thiết kế, không ghi nhật ký hay quét nội dung email.
+Chính sách [quyền riêng tư](https://forwardemail.net/privacy) nghiêm ngặt của Forward Email cung cấp sự bảo mật mà Linux Foundation yêu cầu. [Triển khai kỹ thuật bảo vệ quyền riêng tư email](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) của chúng tôi giữ cho tất cả các liên lạc được bảo mật theo thiết kế, không ghi nhật ký hay quét nội dung email.
 
 Như được trình bày chi tiết trong tài liệu triển khai kỹ thuật của chúng tôi:
 
 > "Chúng tôi đã xây dựng toàn bộ hệ thống dựa trên nguyên tắc rằng email của bạn thuộc về bạn và chỉ bạn mà thôi. Khác với các nhà cung cấp khác quét nội dung email để quảng cáo hoặc đào tạo AI, chúng tôi duy trì chính sách không ghi nhật ký, không quét nghiêm ngặt nhằm bảo vệ tính bảo mật của tất cả các liên lạc."
 ### Bảo Mật Cấp Doanh Nghiệp {#enterprise-grade-security}
 
-Việc triển khai [mã hóa chống lượng tử](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) sử dụng ChaCha20-Poly1305 cung cấp bảo mật tiên tiến nhất, với mỗi hộp thư là một tệp mã hóa riêng biệt. Cách tiếp cận này đảm bảo rằng ngay cả khi máy tính lượng tử trở nên có khả năng phá vỡ các tiêu chuẩn mã hóa hiện tại, các liên lạc của Linux Foundation vẫn sẽ được bảo mật.
+Việc triển khai [mã hóa chống lượng tử](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) sử dụng ChaCha20-Poly1305, với mỗi hộp thư được lưu trữ dưới dạng một tệp mã hóa riêng biệt. Cách tiếp cận này được thiết kế để giữ các liên lạc của Linux Foundation an toàn ngay cả khi máy tính lượng tử trở nên có khả năng phá vỡ các tiêu chuẩn mã hóa hiện tại.
 
 ### Mô Hình Doanh Nghiệp Giá Cố Định {#fixed-price-enterprise-model}
 
-[Giá doanh nghiệp](https://forwardemail.net/pricing) của Forward Email cung cấp chi phí hàng tháng cố định bất kể số lượng tên miền hoặc người dùng. Cách tiếp cận này đã mang lại tiết kiệm chi phí đáng kể cho các tổ chức lớn khác, như được chứng minh trong [nghiên cứu trường hợp email cựu sinh viên đại học](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), nơi các tổ chức tiết kiệm tới 99% so với các giải pháp email truyền thống tính theo người dùng.
+[Giá doanh nghiệp](https://forwardemail.net/pricing) của Forward Email cung cấp chi phí hàng tháng cố định bất kể số lượng tên miền hoặc người dùng. Cách tiếp cận này đã giúp các tổ chức lớn khác tiết kiệm chi phí, như được chứng minh trong [nghiên cứu trường hợp email cựu sinh viên đại học](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), nơi các tổ chức tiết kiệm tới 99% so với các giải pháp email truyền thống tính theo người dùng.
 
 ### API Thân Thiện Với Nhà Phát Triển {#developer-friendly-api}
 
-Theo [phương pháp README-first](https://tom.preston-werner.com/2010/08/23/readme-driven-development) và lấy cảm hứng từ [thiết kế API RESTful của Stripe](https://amberonrails.com/building-stripes-api), [API](https://forwardemail.net/api) của Forward Email cho phép tích hợp sâu với Trung Tâm Kiểm Soát Dự Án của Linux Foundation. Sự tích hợp này rất quan trọng để tự động hóa quản lý email trên danh mục dự án đa dạng của họ.
+Theo [phương pháp README-first](https://tom.preston-werner.com/2010/08/23/readme-driven-development) và lấy cảm hứng từ [thiết kế API RESTful của Stripe](https://amberonrails.com/building-stripes-api), [API](https://forwardemail.net/api) của Forward Email tích hợp với Trung Tâm Kiểm Soát Dự Án của Linux Foundation, điều họ cần để tự động hóa quản lý email trên danh mục dự án của họ.
 
 
 ## Quá Trình Triển Khai {#implementation-process}
@@ -108,7 +108,7 @@ flowchart LR
 
 ## Kết Quả và Lợi Ích {#results-and-benefits}
 
-Việc triển khai đã mang lại các lợi ích đáng kể:
+Việc triển khai đã mang lại các lợi ích sau:
 
 ### Cải Thiện Hiệu Suất {#efficiency-improvements}
 
@@ -133,13 +133,13 @@ Việc triển khai đã mang lại các lợi ích đáng kể:
 
 * Quản lý email tự phục vụ cho quản trị viên dự án
 * Trải nghiệm nhất quán trên tất cả các tên miền của Linux Foundation
-* Giao nhận email đáng tin cậy với xác thực mạnh mẽ
+* Giao nhận email đáng tin cậy với xác thực mạnh
 
 
 ## Kết Luận {#conclusion}
 
-Sự hợp tác giữa Linux Foundation và Forward Email cho thấy cách các tổ chức có thể giải quyết các thách thức quản lý email phức tạp trong khi vẫn duy trì sự phù hợp với các giá trị cốt lõi của họ. Bằng cách lựa chọn một giải pháp ưu tiên các nguyên tắc mã nguồn mở, quyền riêng tư và bảo mật, Linux Foundation đã biến việc quản lý email từ gánh nặng hành chính thành lợi thế chiến lược.
-Như đã thấy trong công việc của chúng tôi với cả [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) và [các trường đại học lớn](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), các tổ chức có danh mục tên miền phức tạp có thể đạt được những cải tiến đáng kể về hiệu quả, bảo mật và quản lý chi phí thông qua giải pháp doanh nghiệp của Forward Email.
+Bằng cách lựa chọn một giải pháp ưu tiên các nguyên tắc mã nguồn mở, quyền riêng tư và bảo mật, Linux Foundation đã giảm gánh nặng hành chính của việc quản lý email trên hơn 250 tên miền mà không phải đánh đổi các giá trị của mình.
+Như đã thấy trong công việc của chúng tôi với cả [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) và [các trường đại học lớn](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), các tổ chức có danh mục tên miền phức tạp có thể cải thiện hiệu quả, bảo mật và quản lý chi phí với giải pháp doanh nghiệp của Forward Email.
 
 Để biết thêm thông tin về cách Forward Email có thể giúp tổ chức của bạn quản lý email trên nhiều tên miền, hãy truy cập [forwardemail.net](https://forwardemail.net) hoặc khám phá [tài liệu](https://forwardemail.net/email-api) và [hướng dẫn](https://forwardemail.net/guides) chi tiết của chúng tôi.
 

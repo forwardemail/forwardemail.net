@@ -183,7 +183,7 @@ graph LR
 邮件的网络效应是绝对的：
 
 * **人人都有邮件**：截至2023年[全球43.7亿邮件用户](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/)
-* **跨平台**：所有提供商间无缝工作
+* **跨平台**：所有提供商间均可工作
 * **业务关键**：[99%的企业每天使用邮件](https://blog.hubspot.com/marketing/email-marketing-stats)进行运营
 * **切换成本**：更换邮件地址会破坏所有相关连接
 
@@ -244,7 +244,7 @@ Skiff 完美体现了电子邮件创业公司的所有问题。
 
 #### Y Combinator：电子邮件应用工厂 {#y-combinator-the-email-app-factory}
 
-[Y Combinator](https://www.ycombinator.com/) 资助了数十家电子邮件创业公司。模式如下：
+[Y Combinator](https://www.ycombinator.com/) 资助了数十家电子邮件创业公司。它们遵循一个模式：
 
 * **[Emailio](https://www.ycdb.co/company/emailio)**（2014）：移动邮件客户端 → 转型为“健康”
 * **[MailTime](https://www.ycdb.co/company/mailtime)**（2016）：聊天风格邮件 → 转型为分析
@@ -269,7 +269,7 @@ Skiff 完美体现了电子邮件创业公司的所有问题。
 > \[!CAUTION]
 > **风险投资资金悖论**：风险投资喜欢电子邮件创业公司，因为它们听起来简单，但实际上不可能实现。吸引投资的基本假设恰恰保证了失败。
 
-风险投资喜欢电子邮件创业公司，因为它们听起来简单，但实际上不可能实现：
+风险投资喜欢电子邮件创业公司，因为它们听起来简单，但几乎不可能实现：
 
 ```mermaid
 graph TD
@@ -296,7 +296,7 @@ graph TD
 
 ### “电子邮件创业公司”实际运行的是什么 {#what-actually-powers-email-startups}
 
-让我们看看这些公司实际运行的内容：
+这些公司大多运行在以下技术栈上：
 
 ```mermaid
 graph LR
@@ -429,7 +429,7 @@ flowchart TD
 
 * **[Superhuman](https://superhuman.com/)**：[筹集3300万美元](https://superhuman.com/)，[被 Grammarly 成功收购](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/)（2025）——罕见的成功客户端应用退出
 * **[Shortwave](https://www.shortwave.com/)**：带 AI 摘要的 Gmail 包装器
-* **[SaneBox](https://www.sanebox.com/)**：AI 邮件过滤（确实有效，但不革命性）
+* **[SaneBox](https://www.sanebox.com/)**：AI 邮件过滤（有效，但不革命性）
 
 ### 老问题依旧 {#the-same-old-problems}
 
@@ -470,7 +470,7 @@ flowchart TD
 
 ### 例外：Xobni 的成功故事 {#the-exception-xobnis-success-story}
 
-[Xobni](https://en.wikipedia.org/wiki/Xobni) 是少数通过正确方法真正成功的邮件相关初创公司之一。
+[Xobni](https://en.wikipedia.org/wiki/Xobni) 是少数通过正确方法成功的邮件相关初创公司之一。
 
 **Xobni 做对了什么**：
 
@@ -484,7 +484,7 @@ flowchart TD
 #### 为什么 Xobni 成功而其他失败 {#why-xobni-succeeded-where-others-failed}
 
 1. **基于成熟基础设施**：利用 Outlook 现有的邮件处理能力
-2. **解决实际问题**：联系人管理确实存在问题
+2. **解决实际问题**：联系人管理存在问题
 3. **企业市场**：企业愿意为生产力工具买单
 4. **集成方法**：增强而非替代现有工作流程
 
@@ -507,7 +507,7 @@ flowchart TD
 
 ## 有人成功重新发明邮件吗？ {#has-anyone-successfully-reinvented-email}
 
-这是一个直击邮件创新核心的重要问题。简短回答是：**没有人成功替代邮件，但有人成功增强了邮件**。
+简短回答是：**没有人成功替代邮件，但有人成功增强了邮件**。
 
 ### 实际被接受的创新 {#what-actually-stuck}
 
@@ -552,7 +552,7 @@ flowchart TD
 
 ## 为现有电子邮件协议构建现代基础设施：我们的做法 {#building-modern-infrastructure-for-existing-email-protocols-our-approach}
 
-在深入失败案例之前，理解电子邮件中真正有效的东西非常重要。挑战不在于电子邮件本身有问题——而是大多数公司试图“修复”一个已经完美运行的东西。
+在讨论失败案例之前，先看看电子邮件中哪些东西是有效的。大多数公司试图“修复”一个已经正常运行的东西。
 
 ### 电子邮件创新光谱 {#the-email-innovation-spectrum}
 
@@ -595,7 +595,7 @@ graph TD
 * **构建实际基础设施**：从零开始定制 SMTP/IMAP 服务器
 * **专注于可靠性**：[99.99% 正常运行时间](https://status.forwardemail.net)，完善的错误处理
 * **增强现有工作流程**：兼容所有电子邮件客户端
-* **服务开发者**：真正可用的 API 和工具
+* **服务开发者**：可用的 API 和工具
 * **保持兼容性**：完全符合 [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) 标准
 ### 我们不做什么 {#what-we-dont-do}
 
@@ -613,7 +613,7 @@ graph TD
 
 * **不转型**：我们已经构建邮件基础设施超过7年
 * **无收购策略**：我们着眼于长期发展
-* **无“革命性”宣称**：我们只是让邮件工作得更好
+* **无“革命性”宣称**：我们让邮件工作得更好
 
 ### 我们的不同之处 {#what-makes-us-different}
 
@@ -682,7 +682,7 @@ graph TD
 
 ### 技术时间线 {#the-technical-timeline}
 
-基于我们的[官方公司时间线](https://forwardemail.net/en/about)，以下是我们如何构建真正有效的邮件基础设施：
+基于我们的[官方公司时间线](https://forwardemail.net/en/about)，以下是我们构建邮件基础设施的方式：
 
 ```mermaid
 timeline
@@ -702,7 +702,7 @@ timeline
 2. **我们是增强，而非替代**：与现有邮件客户端协作
 3. **我们盈利**：无风险投资压力，不需“快速增长并破坏”
 4. **我们理解邮件**：7 年以上深厚技术经验
-5. **我们服务开发者**：提供真正解决问题的 API 和工具
+5. **我们服务开发者**：提供解决问题的 API 和工具
 
 ### 成本现实检验 {#the-cost-reality-check}
 
@@ -787,7 +787,7 @@ graph TD
 
 ### 真正的教训 {#the-real-lesson}
 
-教训不是电子邮件无法改进，而是选择正确的方法：
+电子邮件可以改进，但需要正确的方法：
 
 1. **电子邮件协议有效**：[SMTP](https://tools.ietf.org/html/rfc5321)、[IMAP](https://tools.ietf.org/html/rfc3501)、[POP3](https://tools.ietf.org/html/rfc1939) 经受住了考验
 2. **基础设施重要**：可靠性和性能胜过花哨的功能
@@ -889,7 +889,7 @@ graph TD
 
 * **[Superhuman](https://superhuman.com/)**：筹集了 [$3300 万](https://superhuman.com/)，被 [Grammarly 收购](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/)（2025 年）  
 * **[Shortwave](https://www.shortwave.com/)**：Y Combinator，Gmail + AI  
-* **[SaneBox](https://www.sanebox.com/)**：AI 邮件过滤（实际上盈利）  
+* **[SaneBox](https://www.sanebox.com/)**：AI 邮件过滤（盈利）  
 * **[Boomerang](https://www.boomeranggmail.com/)**：AI 日程安排和回复  
 * **[Mail-0/Zero](https://github.com/Mail-0/Zero)**：AI 驱动的邮件客户端创业公司，打造另一种邮件界面  
 * **[Inbox Zero](https://github.com/elie222/inbox-zero)**：开源 AI 邮件助手，试图自动化邮件管理  
@@ -968,7 +968,7 @@ graph TD
 
 ### 幸存者：真正有效的邮件公司 {#the-survivors-email-companies-that-actually-work}
 
-并非所有邮件公司都失败。以下是那些真正有效的公司：
+有些邮件公司确实成功了：
 
 **[Mailmodo](https://www.mailmodo.com/)**：[Y Combinator 成功案例](https://www.ycombinator.com/companies/mailmodo)，通过专注于互动邮件活动获得了 [Sequoia Surge 的 200 万美元投资](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge)。
 

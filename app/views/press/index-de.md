@@ -19,11 +19,11 @@
 
 Forward Email ist der einzige 100% Open-Source E-Mail-Hosting-Dienst, der sich auf Sicherheit und Datenschutz konzentriert. Erfahren Sie mehr über unsere Geschichte auf [unserer Über-Seite](/about).
 
-Unser Dienst wurde 2017 gegründet und betreibt E-Mail für über 500.000 Domains – darunter namhafte Nutzer wie [die U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [mehrere Universitäten](/blog/docs/alumni-email-forwarding-university-case-study) und Regierungen sowie weitere.
+Unser Dienst wurde 2017 gegründet und betreibt E-Mail für über 500.000 Domains, darunter namhafte Nutzer wie [die U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [mehrere Universitäten](/blog/docs/alumni-email-forwarding-university-case-study) und Regierungen sowie weitere.
 
-Unser Ziel ist es, die E-Mail- und Sicherheitsinfrastrukturplattform auf Unternehmensniveau zu sein – und wir halten uns an [mehrere Prinzipien](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Unser Ziel ist es, die E-Mail- und Sicherheitsinfrastrukturplattform auf Unternehmensniveau zu sein, und wir halten uns an [mehrere Prinzipien](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Wenn Sie Mitglied der Presse, Journalist oder Medienvertreter sind und mit uns sprechen, Fragen stellen oder mehr erfahren möchten – kontaktieren Sie uns bitte unter `press@forwardemail.net`.
+Wenn Sie Mitglied der Presse, Journalist oder Medienvertreter sind und mit uns sprechen, Fragen stellen oder mehr erfahren möchten, kontaktieren Sie uns bitte unter `press@forwardemail.net`.
 
 
 ## Wichtige Fakten & Statistiken {#key-facts--statistics}

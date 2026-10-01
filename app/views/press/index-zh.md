@@ -19,9 +19,9 @@
 
 Forward Email 是唯一专注于安全和隐私的 100% 开源电子邮件托管服务。了解更多我们的历史，请访问[关于页面](/about)。
 
-我们的服务成立于 2017 年，目前为超过 160 万个域名提供电子邮件服务——包括知名用户如[美国海军学院](/blog/docs/federal-government-email-service-section-889-compliant)、[Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study)、Netflix Games、[Linux 基金会](/blog/docs/linux-foundation-email-enterprise-case-study)、[多所大学](/blog/docs/alumni-email-forwarding-university-case-study)及政府机构等。
+我们的服务成立于 2017 年，目前为超过 160 万个域名提供电子邮件服务，包括知名用户如[美国海军学院](/blog/docs/federal-government-email-service-section-889-compliant)、[Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study)、Netflix Games、[Linux 基金会](/blog/docs/linux-foundation-email-enterprise-case-study)、[多所大学](/blog/docs/alumni-email-forwarding-university-case-study)及政府机构等。
 
-我们的目标是成为企业级电子邮件和安全基础设施平台——并且我们遵循[多项原则](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)。
+我们的目标是成为企业级电子邮件和安全基础设施平台，并且我们遵循[多项原则](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)。
 
 如果您是媒体成员、记者或媒体代表，想与我们联系、提问或了解更多信息，请通过 `press@forwardemail.net` 与我们联系。
 

@@ -28,7 +28,7 @@
 
 ## Komma igång {#getting-started}
 
-Vår självhostade e-postlösning, liksom alla våra produkter, är 100 % öppen källkod—både frontend och backend. Det innebär:
+Vår självhostade e-postlösning, liksom alla våra produkter, är 100 % öppen källkod, frontend och backend. Det innebär:
 
 1. **Fullständig transparens**: Varje kodrad som hanterar dina e-postmeddelanden är tillgänglig för allmän granskning
 2. **Gemenskapsbidrag**: Vem som helst kan bidra med förbättringar eller åtgärda problem
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Välj alternativ `1. Initial setup` för att börja.
 
-När det är klart bör du se ett lyckat meddelande. Du kan även köra `docker ps` för att se **de** komponenter som startats. Mer information om komponenter nedan.
+När det är klart bör du se ett lyckat meddelande. Du kan köra `docker ps` för att se **de** komponenter som startats. Mer information om komponenter nedan.
 
 
 ## Tjänster {#services}

@@ -28,7 +28,7 @@
 
 ## Pierwsze kroki {#getting-started}
 
-Nasze rozwiązanie do samodzielnego hostingu poczty e-mail, podobnie jak wszystkie nasze produkty, jest w 100% open-source — zarówno frontend, jak i backend. Oznacza to:
+Nasze rozwiązanie do samodzielnego hostingu poczty e-mail, podobnie jak wszystkie nasze produkty, jest w 100% open-source: frontend i backend. Oznacza to:
 
 1. **Pełna przejrzystość**: Każda linijka kodu przetwarzająca Twoje e-maile jest dostępna do publicznej weryfikacji
 2. **Wkład społeczności**: Każdy może wnieść ulepszenia lub naprawić problemy
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Wybierz opcję `1. Initial setup`, aby rozpocząć.
 
-Po zakończeniu powinieneś zobaczyć komunikat o sukcesie. Możesz nawet uruchomić `docker ps`, aby zobaczyć **uruchomione** komponenty. Więcej informacji o komponentach poniżej.
+Po zakończeniu powinieneś zobaczyć komunikat o sukcesie. Możesz uruchomić `docker ps`, aby zobaczyć **uruchomione** komponenty. Więcej informacji o komponentach poniżej.
 
 
 ## Usługi {#services}

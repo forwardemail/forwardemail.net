@@ -64,15 +64,15 @@
 
 ## Foreword
 
-At Forward Email, we've spent years perfecting our Node.js production environment setup. This comprehensive guide shares our battle-tested Node.js production deployment best practices, focusing on performance optimization, monitoring, and the lessons we've learned scaling Node.js applications to handle millions of daily transactions.
+At Forward Email, we've spent years refining our Node.js production environment setup. This guide shares our Node.js production deployment best practices, focusing on performance optimization, monitoring, and what we learned scaling Node.js applications to handle millions of daily transactions.
 
 
 ## Our 573% Single Core Performance Optimization Revolution
 
-When we migrated from Intel to AMD Ryzen processors, we achieved a **573% performance improvement** in our Node.js applications. This wasn't just a minor optimization—it fundamentally changed how our Node.js applications perform in production and demonstrates the importance of single core performance optimization for any Node.js application.
+When we migrated from Intel to AMD Ryzen processors, we achieved a **573% performance improvement** in our Node.js applications. The change shows how much single core performance matters for any Node.js application in production.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> For Node.js production deployment best practices, hardware choice matters. We chose DataPacket hosting for their AMD Ryzen availability because JavaScript execution is single-threaded, so single-core performance drives Node.js application speed.
 
 ### Why Single Core Performance Optimization Matters for Node.js
 
@@ -83,19 +83,19 @@ Our migration from Intel to AMD Ryzen resulted in:
 * **Better price-to-performance ratio** for Node.js production environments
 * **Improved response times** across all our application endpoints
 
-The performance boost was so significant that we now consider AMD Ryzen processors essential for any serious Node.js production deployment, whether you're running web applications, APIs, microservices, or any other Node.js workload.
+Based on these results, we now consider AMD Ryzen processors essential for any serious Node.js production deployment, whether you're running web applications, APIs, microservices, or any other Node.js workload.
 
 ### Related Content
 
 For more details on our infrastructure choices, check out:
 
-* [Best Email Forwarding Service](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Performance comparisons
-* [Self-Hosted Solution](https://forwardemail.net/blog/docs/self-hosted-solution) - Hardware recommendations
+* [Best Email Forwarding Service](https://forwardemail.net/blog/docs/best-email-forwarding-service): Performance comparisons
+* [Self-Hosted Solution](https://forwardemail.net/blog/docs/self-hosted-solution): Hardware recommendations
 
 
 ## Node.js Production Environment Setup: Our Technology Stack
 
-Our Node.js production deployment best practices include deliberate technology choices based on years of production experience. Here's what we use and why these choices apply to any Node.js application:
+Our Node.js production deployment best practices include deliberate technology choices based on years of production experience. What we use, and why these choices apply to any Node.js application:
 
 ### Package Manager: pnpm for Production Efficiency
 
@@ -189,11 +189,11 @@ This helper distinguishes between:
 * **User errors** that are expected behavior
 * **External service failures** that we can't control
 
-This pattern applies to any Node.js application - web apps, APIs, microservices, or background services.
+This pattern applies to any Node.js application: web apps, APIs, microservices, or background services.
 
 **Our logging implementation:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-We implement comprehensive field redaction to protect sensitive information while maintaining useful debugging capabilities in our Node.js production environment.
+We redact fields to protect sensitive information while maintaining useful debugging capabilities in our Node.js production environment.
 
 ### Application-Specific Monitoring
 
@@ -208,7 +208,7 @@ We implement comprehensive field redaction to protect sensitive information whil
 
 ## Node.js Production Monitoring with PM2 Health Checks
 
-We've refined our Node.js production environment setup with PM2 over years of production experience. Our PM2 health checks are essential for maintaining reliability in any Node.js application.
+We've refined our Node.js production environment setup with PM2 over years of production experience. Our PM2 health checks keep processes reliable, and the same approach works for any Node.js application.
 
 ### Our PM2 Health Check System
 
@@ -220,7 +220,7 @@ Our Node.js production monitoring with PM2 health checks includes:
 * **Requires minimum 15 minutes uptime** before considering a process healthy
 * **Validates process status and memory usage**
 * **Automatically restarts failed processes**
-* **Prevents restart loops** through intelligent health checking
+* **Prevents restart loops** through uptime-aware health checking
 
 > \[!CAUTION]
 > For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
@@ -245,20 +245,20 @@ We automate our entire PM2 setup through Ansible to ensure consistent Node.js pr
 
 ## Production Error Handling and Classification System
 
-One of our most valuable Node.js production deployment best practices is intelligent error classification that applies to any Node.js application:
+One of our most valuable Node.js production deployment best practices is error classification, which applies to any Node.js application:
 
 ### Our isCodeBug Implementation for Production
 
 **Source:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
-This helper provides intelligent error classification for Node.js applications in production to:
+This helper classifies errors for Node.js applications in production to:
 
 * **Prioritize actual bugs** over user errors
 * **Improve our incident response** by focusing on real issues
 * **Reduce alert fatigue** from expected user errors
 * **Better understand** application vs user-generated issues
 
-This pattern works for any Node.js application - whether you're building e-commerce sites, SaaS platforms, APIs, or microservices.
+This pattern works for any Node.js application, whether you're building e-commerce sites, SaaS platforms, APIs, or microservices.
 
 ### Integration with Our Production Logging
 
@@ -276,14 +276,14 @@ Learn more about our error handling patterns:
 
 ## Advanced Performance Debugging with v8-profiler-next and cpupro
 
-We use advanced profiling tools to analyze heap snapshots and debug OOM (Out of Memory) issues, performance bottlenecks, and Node.js memory problems in our production environment. These tools are essential for any Node.js application experiencing memory leaks or performance issues.
+We use profiling tools to analyze heap snapshots and debug OOM (Out of Memory) issues, performance bottlenecks, and Node.js memory problems in our production environment. These tools are essential for any Node.js application experiencing memory leaks or performance issues.
 
 ### Our Profiling Approach for Node.js Production
 
 **Tools we recommend:**
 
-* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - For generating heap snapshots and CPU profiles
-* [`cpupro`](https://github.com/discoveryjs/cpupro) - For analyzing CPU profiles and heap snapshots
+* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next): For generating heap snapshots and CPU profiles
+* [`cpupro`](https://github.com/discoveryjs/cpupro): For analyzing CPU profiles and heap snapshots
 
 > \[!TIP]
 > We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
@@ -305,9 +305,9 @@ Our production monitoring includes automatic heap snapshot generation when memor
 
 **Study our actual implementation:**
 
-* [Monitor server implementation](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Heap monitoring and snapshot generation
-* [Cleanup job](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Snapshot retention and cleanup
-* [Logger integration](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Performance logging
+* [Monitor server implementation](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js): Heap monitoring and snapshot generation
+* [Cleanup job](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js): Snapshot retention and cleanup
+* [Logger integration](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js): Performance logging
 
 ### Recommended Implementation for Your Node.js Application
 
@@ -336,14 +336,14 @@ Our profiling tools integrate with our broader monitoring strategy:
 * **Automatic triggering** based on memory/CPU thresholds
 * **Alert integration** when performance issues are detected
 * **Historical analysis** to track performance trends over time
-* **Correlation with application metrics** for comprehensive debugging
+* **Correlation with application metrics** for fuller debugging
 
 This approach has helped us identify and resolve memory leaks, optimize hot code paths, and maintain stable performance in our Node.js production environment.
 
 
 ## Node.js Production Infrastructure Security
 
-We implement comprehensive security for our Node.js production infrastructure through Ansible automation. These practices apply to any Node.js application:
+We automate security for our Node.js production infrastructure through Ansible. These practices apply to any Node.js application:
 
 ### System-Level Security for Node.js Production
 
@@ -537,17 +537,17 @@ These patterns apply to any Node.js application that generates temporary files, 
 
 ## Conclusion: Node.js Production Deployment Best Practices
 
-Our Node.js production infrastructure demonstrates that Node.js applications can achieve enterprise-grade reliability through:
+Our Node.js production infrastructure reaches enterprise-grade reliability through:
 
 * **Proven hardware choices** (AMD Ryzen for 573% single core performance optimization)
-* **Battle-tested Node.js production monitoring** with specific thresholds and automated responses
+* **Node.js production monitoring** with specific thresholds and automated responses
 * **Smart error classification** to improve incident response in production environments
-* **Advanced performance debugging** with v8-profiler-next and cpupro for OOM prevention
-* **Comprehensive security hardening** through Ansible automation
+* **Performance debugging** with v8-profiler-next and cpupro for OOM prevention
+* **Security hardening** through Ansible automation
 * **Hybrid database architecture** optimized for application needs
 * **Automated maintenance** to prevent common Node.js production issues
 
-**Key takeaway:** Study our actual implementation files and blog posts rather than following generic best practices. Our codebase provides real-world patterns for Node.js production deployment that can be adapted for any Node.js application - web apps, APIs, microservices, or background services.
+**Key takeaway:** Study our actual implementation files and blog posts rather than following generic best practices. Our codebase provides real-world patterns for Node.js production deployment that you can adapt for any Node.js application: web apps, APIs, microservices, or background services.
 
 
 ## Complete Resource List for Node.js Production

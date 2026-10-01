@@ -124,7 +124,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=Test email"
 ```
 
-当您从已经使用 SMTP 凭据的应用程序发送邮件时，此方法非常有用，并且使从 SMTP 迁移到我们的 API 变得无缝。
+当您从已经使用 SMTP 凭据的应用程序发送邮件时，此方法非常有用，并且使从 SMTP 迁移到我们的 API 变得简单。
 
 ### Alias-Only Endpoints {#alias-only-endpoints}
 
@@ -167,7 +167,7 @@ curl -X POST BASE_URI/v1/emails \
 
 所有列出结果的 API 端点均支持分页。
 
-只需提供查询字符串属性 `page`（可选 `limit`）。
+提供查询字符串属性 `page`（可选 `limit`）。
 
 属性 `page` 应为大于或等于 `1` 的数字。如果提供了 `limit`（也是数字），则最小值为 `10`，最大值为 `50`（除非另有说明）。
 
@@ -389,7 +389,7 @@ curl -X PUT BASE_URI/v1/account \
 ### 创建邮件 {#create-message}
 
 > \[!NOTE]
-> 这**不会**发送电子邮件——它仅仅是将邮件添加到您的邮箱文件夹（例如，这类似于IMAP的`APPEND`命令）。如果您想发送电子邮件，请参见下方的[创建外发SMTP邮件](#create-outbound-smtp-email)。创建外发SMTP邮件后，您可以使用此端点将其副本追加到您的别名邮箱以便存储。
+> 这**不会**发送电子邮件——它仅将邮件添加到您的邮箱文件夹（例如，这类似于IMAP的`APPEND`命令）。如果您想发送电子邮件，请参见下方的[创建外发SMTP邮件](#create-outbound-smtp-email)。创建外发SMTP邮件后，您可以使用此端点将其副本追加到您的别名邮箱以便存储。
 
 > `POST /v1/messages`
 
@@ -502,13 +502,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### 创建出站 SMTP 邮件 {#create-outbound-smtp-email}
 
-我们的创建邮件 API 灵感来源于并利用了 Nodemailer 的消息选项配置。请参考下面所有正文参数的 [Nodemailer 消息配置](https://nodemailer.com/message/)。
+我们的创建邮件 API 灵感来源于并使用了 Nodemailer 的消息选项配置。请参考下面所有正文参数的 [Nodemailer 消息配置](https://nodemailer.com/message/)。
 
 请注意，除了 `envelope` 和 `dkim`（因为我们会自动为您设置），我们支持所有 Nodemailer 选项。出于安全考虑，我们会自动将 `disableFileAccess` 和 `disableUrlAccess` 选项设置为 `true`。
 
 您应当传递单个 `raw` 选项，包含带有头部的完整原始邮件 **或者** 传递下面的单独正文参数选项。
 
-如果在头部发现表情符号（例如主题行 `Subject: 🤓 Hello`），此 API 端点会自动为您编码表情符号，转换为 `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`。我们的目标是打造一个极其友好且防呆的开发者邮件 API。
+如果在头部发现表情符号（例如主题行 `Subject: 🤓 Hello`），此 API 端点会自动为您编码表情符号，转换为 `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`。我们的目标是打造一个友好且防呆的开发者邮件 API。
 
 **认证：** 此端点支持 [API 令牌认证](#api-token-authentication-recommended-for-most-endpoints) 和 [别名凭据认证](#alias-credentials-authentication-for-outbound-email)。详情请参见上方的 [认证](#authentication) 部分。
 
@@ -974,7 +974,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## 加密 {#encrypt}
 
-我们允许您即使在免费计划中也能免费加密记录。隐私不应该是一项功能，它应该内置于产品的所有方面。正如在[Privacy Guides 讨论](https://discuss.privacyguides.net/t/forward-email-email-provider/13370)和[我们的 GitHub 问题](https://github.com/forwardemail/forwardemail.net/issues/254)中强烈要求的那样，我们已经添加了此功能。
+我们允许您即使在免费计划中也能免费加密记录。隐私应该内置于产品的所有方面。正如在[Privacy Guides 讨论](https://discuss.privacyguides.net/t/forward-email-email-provider/13370)和[我们的 GitHub 问题](https://github.com/forwardemail/forwardemail.net/issues/254)中强烈要求的那样，我们已经添加了此功能。
 
 ### 加密 TXT 记录 {#encrypt-txt-record}
 

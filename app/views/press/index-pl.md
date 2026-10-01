@@ -19,11 +19,11 @@
 
 Forward Email to jedyna w 100% otwartoźródłowa usługa hostingu e-mail skoncentrowana na bezpieczeństwie i prywatności. Dowiedz się więcej o naszej historii na [naszej stronie O nas](/about).
 
-Nasza usługa została założona w 2017 roku i obsługuje e-maile dla ponad 500 000 domen – w tym znanych użytkowników, takich jak [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [kilka uniwersytetów](/blog/docs/alumni-email-forwarding-university-case-study) oraz rządy i inne.
+Nasza usługa została założona w 2017 roku i obsługuje e-maile dla ponad 500 000 domen, w tym znanych użytkowników, takich jak [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [kilka uniwersytetów](/blog/docs/alumni-email-forwarding-university-case-study) oraz rządy i inne.
 
-Naszym celem jest bycie platformą infrastruktury e-mail i bezpieczeństwa na poziomie korporacyjnym – i przestrzegamy [wielu zasad](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Naszym celem jest bycie platformą infrastruktury e-mail i bezpieczeństwa na poziomie korporacyjnym, i przestrzegamy [wielu zasad](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Jeśli jesteś członkiem prasy, dziennikarzem lub przedstawicielem mediów i chciałbyś z nami porozmawiać, zadać pytania lub dowiedzieć się więcej – prosimy o kontakt pod adresem `press@forwardemail.net`.
+Jeśli jesteś członkiem prasy, dziennikarzem lub przedstawicielem mediów i chciałbyś z nami porozmawiać, zadać pytania lub dowiedzieć się więcej, prosimy o kontakt pod adresem `press@forwardemail.net`.
 
 
 ## Key Facts & Statistics {#key-facts--statistics}

@@ -19,11 +19,11 @@
 
 Forward Email היא שירות אירוח דואר אלקטרוני בקוד פתוח 100% המתמקד באבטחה ופרטיות. למידע נוסף על ההיסטוריה שלנו עיינו ב[דף האודות שלנו](/about).
 
-השירות שלנו נוסד בשנת 2017 ומספק דואר אלקטרוני ליותר מ-500,000 דומיינים – כולל משתמשים בולטים כגון [האקדמיה הימית של ארה"ב](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [קרן הלינוקס](/blog/docs/linux-foundation-email-enterprise-case-study), [מספר אוניברסיטאות](/blog/docs/alumni-email-forwarding-university-case-study) וממשלות, ועוד.
+השירות שלנו נוסד בשנת 2017 ומספק דואר אלקטרוני ליותר מ-500,000 דומיינים, כולל משתמשים בולטים כגון [האקדמיה הימית של ארה"ב](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [קרן הלינוקס](/blog/docs/linux-foundation-email-enterprise-case-study), [מספר אוניברסיטאות](/blog/docs/alumni-email-forwarding-university-case-study) וממשלות, ועוד.
 
-המטרה שלנו היא להיות פלטפורמת תשתית דואר אלקטרוני ואבטחה ברמת ארגונים – ואנו עומדים ב[מספר עקרונות](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+המטרה שלנו היא להיות פלטפורמת תשתית דואר אלקטרוני ואבטחה ברמת ארגונים, ואנו עומדים ב[מספר עקרונות](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-אם אתם אנשי תקשורת, עיתונאים או נציגי מדיה ורוצים לדבר איתנו, לשאול שאלות או ללמוד עוד – אנא צרו קשר בכתובת `press@forwardemail.net`.
+אם אתם אנשי תקשורת, עיתונאים או נציגי מדיה ורוצים לדבר איתנו, לשאול שאלות או ללמוד עוד, אנא צרו קשר בכתובת `press@forwardemail.net`.
 
 
 ## עובדות ומדדים מרכזיים {#key-facts--statistics}

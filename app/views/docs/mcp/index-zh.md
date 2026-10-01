@@ -3,7 +3,7 @@
 <!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="转发邮件 MCP 服务器" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
-  <strong>简要说明：</strong>我们的<a href="https://github.com/forwardemail/mcp-server">开源 MCP 服务器</a>让 Claude、ChatGPT、Cursor 和 Windsurf 等 AI 助手通过自然语言管理您的电子邮件、域名、别名、联系人和日历。所有 68 个 API 端点都作为 MCP 工具公开。它通过 <code>npx @forwardemail/mcp-server</code> 本地运行——您的凭据永远不会离开您的机器。
+  <strong>简要说明：</strong>我们的<a href="https://github.com/forwardemail/mcp-server">开源 MCP 服务器</a>让 Claude、ChatGPT、Cursor 和 Windsurf 等 AI 助手通过自然语言管理您的电子邮件、域名、别名、联系人和日历。所有 68 个 API 端点都作为 MCP 工具公开。它通过 <code>npx @forwardemail/mcp-server</code> 本地运行，因此您的凭据永远不会离开您的机器。
 </p>
 
 
@@ -68,7 +68,7 @@
 
 [模型上下文协议](https://modelcontextprotocol.io)（MCP）是 Anthropic 创建的一个开放标准，允许 AI 模型安全调用外部工具。MCP 让模型无需复制粘贴 API 响应到聊天窗口，而是直接以结构化方式访问您的服务。
 
-我们的 MCP 服务器封装了整个[转发邮件 API](/email-api)——每个端点、每个参数——并将它们作为任何兼容 MCP 的客户端都能使用的工具公开。服务器在您的机器本地运行，使用 stdio 传输。您的凭据保存在环境变量中，绝不会发送给 AI 模型。
+我们的 MCP 服务器封装了[转发邮件 API](/email-api)的每个端点和参数，并将它们作为任何兼容 MCP 的客户端都能使用的工具公开。服务器在您的机器本地运行，使用 stdio 传输。您的凭据保存在环境变量中，绝不会发送给 AI 模型。
 
 
 ## 快速开始 {#quick-start}
@@ -142,7 +142,7 @@ FORWARD_EMAIL_API_KEY=your-api-key \
 
 ## 认证 {#authentication}
 
-Forward Email API 使用 **HTTP 基本认证**，根据不同的端点使用两种不同的凭据类型。MCP 服务器会自动处理认证 —— 您只需提供正确的凭据。
+Forward Email API 使用 **HTTP 基本认证**，根据不同的端点使用两种不同的凭据类型。MCP 服务器会自动处理认证；您提供正确的凭据即可。
 
 ### API 密钥认证 {#api-key-auth}
 
@@ -152,7 +152,7 @@ Forward Email API 使用 **HTTP 基本认证**，根据不同的端点使用两�
 
 ### 别名认证 {#alias-auth}
 
-邮箱端点（消息、文件夹、联系人、日历、别名作用域的 Sieve 脚本）使用 **别名凭据** —— 以别名邮箱地址作为用户名，生成的密码作为密码。
+邮箱端点（消息、文件夹、联系人、日历、别名作用域的 Sieve 脚本）使用 **别名凭据**：以别名邮箱地址作为用户名，生成的密码作为密码。
 
 这些端点通过 IMAP、CalDAV 和 CardDAV 协议访问每个别名的数据。它们需要别名邮箱和生成的密码，而非 API 密钥。
 
@@ -173,7 +173,7 @@ curl -u "YOUR_API_KEY:" \
 
 响应中包含 `username`（别名邮箱）和 `password` 字段。使用它们作为别名凭据。
 
-> **提示：** 您也可以询问您的 AI 助手：“为域 example.com 上的别名 <user@example.com> 生成密码” —— 它会调用 `generateAliasPassword` 工具并返回凭据。
+> **提示：** 您也可以询问您的 AI 助手：“为域 example.com 上的别名 <user@example.com> 生成密码”，它会调用 `generateAliasPassword` 工具并返回凭据。
 
 下表总结了各工具组所需的认证方式：
 
@@ -363,15 +363,15 @@ curl -u "YOUR_API_KEY:" \
 
 ## 20 个真实世界用例 {#20-real-world-use-cases}
 
-以下是将 MCP 服务器与您的 AI 助手结合使用的实用方法：
+将 MCP 服务器与您的 AI 助手结合使用的实用方法：
 
 ### 1. 邮件分类处理 {#1-email-triage}
 
-让您的 AI 扫描收件箱并总结未读邮件。它可以标记紧急邮件、按发件人分类，并起草回复——全部通过自然语言完成。*（访问收件箱需要别名凭据。）*
+让您的 AI 扫描收件箱并总结未读邮件。它可以标记紧急邮件、按发件人分类，并通过自然语言起草回复。*（访问收件箱需要别名凭据。）*
 
 ### 2. 域名设置自动化 {#2-domain-setup-automation}
 
-正在设置新域名？让 AI 创建域名、添加别名、验证 DNS 记录并测试 SMTP 配置。通常需要 10 分钟点击操作的流程，变成一次对话。
+正在设置新域名？让 AI 创建域名、添加别名、验证 DNS 记录并测试 SMTP 配置。这用一次对话取代了 10 分钟的点击操作。
 
 ### 3. 批量别名管理 {#3-bulk-alias-management}
 
@@ -386,7 +386,7 @@ curl -u "YOUR_API_KEY:" \
 
 ### 6. 日历管理 {#6-calendar-management}
 
-创建日历、添加事件、更新会议时间、删除已取消事件——全部通过对话完成。CalDAV 工具支持对日历和事件的完整增删改查。*（需要别名凭证。）*
+创建日历、添加事件、更新会议时间、通过对话删除已取消事件。CalDAV 工具支持对日历和事件的完整增删改查。*（需要别名凭证。）*
 
 ### 7. Sieve 脚本自动化 {#7-sieve-script-automation}
 
@@ -394,11 +394,11 @@ Sieve 脚本功能强大但语法晦涩。让你的 AI 为你编写 Sieve 脚本
 
 ### 8. 团队入职 {#8-team-onboarding}
 
-当新成员加入时，让 AI 创建他们的别名，生成密码，发送包含凭证的欢迎邮件，并将其添加为域成员。一个提示，四个 API 调用。
+当新成员加入时，让 AI 创建他们的别名，生成密码，发送包含凭证的欢迎邮件，并将其添加为域成员。AI 通过一个提示完成四个 API 调用。
 
 ### 9. 安全审计 {#9-security-auditing}
 
-让你的 AI 列出所有域，检查 DNS 验证状态，审查别名配置，并识别任何未验证记录的域。用自然语言快速完成安全检查。
+让你的 AI 列出所有域，检查 DNS 验证状态，审查别名配置，并识别任何未验证记录的域。这样即可用自然语言快速完成安全检查。
 
 ### 10. 邮件转发设置 {#10-email-forwarding-setup}
 
@@ -418,7 +418,7 @@ Sieve 脚本功能强大但语法晦涩。让你的 AI 为你编写 Sieve 脚本
 
 ### 14. DNS 记录加密 {#14-dns-record-encryption}
 
-在添加到 DNS 之前加密你的转发记录。`encryptRecord` 工具无需认证即可处理此操作——适合快速一次性加密。
+在添加到 DNS 之前加密你的转发记录。`encryptRecord` 工具无需认证即可处理此操作，适合快速一次性加密。
 
 ### 15. 投递日志分析 {#15-delivery-log-analysis}
 
@@ -447,7 +447,7 @@ Sieve 脚本功能强大但语法晦涩。让你的 AI 为你编写 Sieve 脚本
 
 ## 示例提示 {#example-prompts}
 
-以下是你可以直接与 AI 助手使用的提示：
+你可以与 AI 助手使用的提示：
 
 **发送邮件：**
 
@@ -497,7 +497,7 @@ Sieve 脚本功能强大但语法晦涩。让你的 AI 为你编写 Sieve 脚本
 
 ## 安全 {#security}
 
-MCP 服务器在您的本地机器上运行。安全机制如下：
+MCP 服务器在您的本地机器上运行。安全细节：
 
 * **您的凭据保持本地。** 您的 API 密钥和别名凭据均从环境变量读取，并通过 HTTP Basic 认证用于 API 请求身份验证。它们绝不会发送给 AI 模型。
 * **stdio 传输。** 服务器通过 stdin/stdout 与 AI 客户端通信。不打开任何网络端口。
@@ -524,4 +524,4 @@ server.listen();
 
 ## 开源 {#open-source}
 
-Forward Email MCP 服务器是 [GitHub 上的开源项目](https://github.com/forwardemail/mcp-server)，采用 BUSL-1.1 许可证。我们相信透明。如果您发现漏洞或想要新功能，[请提交 issue](https://github.com/forwardemail/mcp-server/issues)。
+Forward Email MCP 服务器是 [GitHub 上的开源项目](https://github.com/forwardemail/mcp-server)，采用 BUSL-1.1 许可证。如果您发现漏洞或想要新功能，[请提交 issue](https://github.com/forwardemail/mcp-server/issues)。

@@ -28,7 +28,7 @@
 
 ## Erste Schritte {#getting-started}
 
-Unsere selbst gehostete E-Mail-Lösung ist wie alle unsere Produkte zu 100 % Open Source – sowohl Frontend als auch Backend. Das bedeutet:
+Unsere selbst gehostete E-Mail-Lösung ist wie alle unsere Produkte zu 100 % Open Source, Frontend und Backend. Das bedeutet:
 
 1. **Volle Transparenz**: Jede Codezeile, die Ihre E-Mails verarbeitet, ist öffentlich einsehbar
 2. **Community-Beiträge**: Jeder kann Verbesserungen beitragen oder Fehler beheben
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Wählen Sie Option `1. Initiale Einrichtung`, um zu beginnen.
 
-Nach Abschluss sollten Sie eine Erfolgsmeldung sehen. Sie können sogar `docker ps` ausführen, um **die** gestarteten Komponenten zu sehen. Weitere Informationen zu den Komponenten unten.
+Nach Abschluss sollten Sie eine Erfolgsmeldung sehen. Sie können `docker ps` ausführen, um **die** gestarteten Komponenten zu sehen. Weitere Informationen zu den Komponenten unten.
 
 
 ## Dienste {#services}

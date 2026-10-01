@@ -3,7 +3,7 @@
 <!-- <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
-  <strong>Tóm tắt:</strong> <a href="https://github.com/forwardemail/mcp-server">Máy chủ MCP mã nguồn mở</a> của chúng tôi cho phép các trợ lý AI như Claude, ChatGPT, Cursor và Windsurf quản lý email, tên miền, bí danh, danh bạ và lịch của bạn thông qua ngôn ngữ tự nhiên. Tất cả 68 điểm cuối API đều được cung cấp dưới dạng công cụ MCP. Nó chạy cục bộ qua <code>npx @forwardemail/mcp-server</code> — thông tin đăng nhập của bạn không bao giờ rời khỏi máy của bạn.
+  <strong>Tóm tắt:</strong> <a href="https://github.com/forwardemail/mcp-server">Máy chủ MCP mã nguồn mở</a> của chúng tôi cho phép các trợ lý AI như Claude, ChatGPT, Cursor và Windsurf quản lý email, tên miền, bí danh, danh bạ và lịch của bạn thông qua ngôn ngữ tự nhiên. Tất cả 68 điểm cuối API đều được cung cấp dưới dạng công cụ MCP. Nó chạy cục bộ qua <code>npx @forwardemail/mcp-server</code>, nên thông tin đăng nhập của bạn không bao giờ rời khỏi máy của bạn.
 </p>
 
 
@@ -68,7 +68,7 @@
 
 [Model Context Protocol](https://modelcontextprotocol.io) (MCP) là một tiêu chuẩn mở được tạo ra bởi Anthropic cho phép các mô hình AI gọi các công cụ bên ngoài một cách an toàn. Thay vì sao chép-dán phản hồi API vào cửa sổ trò chuyện, MCP cung cấp cho mô hình quyền truy cập trực tiếp, có cấu trúc vào các dịch vụ của bạn.
 
-Máy chủ MCP của chúng tôi bao bọc toàn bộ [Forward Email API](/email-api) — mọi điểm cuối, mọi tham số — và cung cấp chúng dưới dạng các công cụ mà bất kỳ khách hàng tương thích MCP nào cũng có thể sử dụng. Máy chủ chạy cục bộ trên máy của bạn sử dụng giao thức stdio. Thông tin đăng nhập của bạn được giữ trong biến môi trường và không bao giờ được gửi đến mô hình AI.
+Máy chủ MCP của chúng tôi bao bọc mọi điểm cuối và tham số của [Forward Email API](/email-api) và cung cấp chúng dưới dạng các công cụ mà bất kỳ khách hàng tương thích MCP nào cũng có thể sử dụng. Máy chủ chạy cục bộ trên máy của bạn sử dụng giao thức stdio. Thông tin đăng nhập của bạn được giữ trong biến môi trường và không bao giờ được gửi đến mô hình AI.
 
 
 ## Bắt đầu nhanh {#quick-start}
@@ -143,7 +143,7 @@ FORWARD_EMAIL_API_KEY=your-api-key \
 
 ## Xác thực {#authentication}
 
-API Forward Email sử dụng **xác thực HTTP Basic** với hai loại thông tin đăng nhập khác nhau tùy theo điểm cuối. Máy chủ MCP xử lý việc này tự động — bạn chỉ cần cung cấp thông tin đăng nhập đúng.
+API Forward Email sử dụng **xác thực HTTP Basic** với hai loại thông tin đăng nhập khác nhau tùy theo điểm cuối. Máy chủ MCP xử lý việc này tự động; bạn cung cấp thông tin đăng nhập đúng.
 
 ### Xác thực Khóa API {#api-key-auth}
 
@@ -153,7 +153,7 @@ Hầu hết các điểm cuối quản lý (tên miền, bí danh, email gửi �
 
 ### Xác thực Bí danh {#alias-auth}
 
-Các điểm cuối hộp thư (tin nhắn, thư mục, danh bạ, lịch, kịch bản sieve theo bí danh) sử dụng **thông tin đăng nhập bí danh** — địa chỉ email bí danh làm tên đăng nhập và mật khẩu được tạo làm mật khẩu.
+Các điểm cuối hộp thư (tin nhắn, thư mục, danh bạ, lịch, kịch bản sieve theo bí danh) sử dụng **thông tin đăng nhập bí danh**: địa chỉ email bí danh làm tên đăng nhập và mật khẩu được tạo làm mật khẩu.
 
 Các điểm cuối này truy cập dữ liệu theo từng bí danh qua các giao thức IMAP, CalDAV và CardDAV. Chúng yêu cầu email bí danh và mật khẩu được tạo, không phải khóa API.
 
@@ -174,7 +174,7 @@ curl -u "YOUR_API_KEY:" \
 
 Phản hồi bao gồm các trường `username` (email bí danh) và `password`. Sử dụng chúng làm thông tin đăng nhập bí danh của bạn.
 
-> **Mẹo:** Bạn cũng có thể hỏi trợ lý AI của mình: *"Tạo mật khẩu cho bí danh <user@example.com> trên tên miền example.com"* — nó sẽ gọi công cụ `generateAliasPassword` và trả về thông tin đăng nhập.
+> **Mẹo:** Bạn cũng có thể hỏi trợ lý AI của mình: *"Tạo mật khẩu cho bí danh <user@example.com> trên tên miền example.com"*, và nó sẽ gọi công cụ `generateAliasPassword` và trả về thông tin đăng nhập.
 
 Bảng dưới đây tóm tắt phương thức xác thực mà mỗi nhóm công cụ yêu cầu:
 
@@ -365,15 +365,15 @@ Công cụ này không yêu cầu xác thực. Nó mã hóa các bản ghi chuy�
 
 ## 20 Trường hợp Sử dụng Thực tế {#20-real-world-use-cases}
 
-Dưới đây là các cách thực tế để sử dụng máy chủ MCP với trợ lý AI của bạn:
+Các cách thực tế để sử dụng máy chủ MCP với trợ lý AI của bạn:
 
 ### 1. Phân loại Email {#1-email-triage}
 
-Yêu cầu AI quét hộp thư đến của bạn và tóm tắt các tin nhắn chưa đọc. Nó có thể đánh dấu email khẩn cấp, phân loại theo người gửi và soạn thảo trả lời — tất cả bằng ngôn ngữ tự nhiên. *(Yêu cầu thông tin đăng nhập bí danh để truy cập hộp thư.)*
+Yêu cầu AI quét hộp thư đến của bạn và tóm tắt các tin nhắn chưa đọc. Nó có thể đánh dấu email khẩn cấp, phân loại theo người gửi và soạn thảo trả lời bằng ngôn ngữ tự nhiên. *(Yêu cầu thông tin đăng nhập bí danh để truy cập hộp thư.)*
 
 ### 2. Tự động Thiết lập Miền {#2-domain-setup-automation}
 
-Đang thiết lập một miền mới? Yêu cầu AI tạo miền, thêm các bí danh của bạn, xác minh bản ghi DNS và kiểm tra cấu hình SMTP. Những việc thường mất 10 phút nhấp chuột qua các bảng điều khiển giờ chỉ còn một cuộc trò chuyện.
+Đang thiết lập một miền mới? Yêu cầu AI tạo miền, thêm các bí danh của bạn, xác minh bản ghi DNS và kiểm tra cấu hình SMTP. Điều này thay thế 10 phút nhấp chuột qua các bảng điều khiển bằng một cuộc trò chuyện.
 
 ### 3. Quản lý Bí danh Số lượng lớn {#3-bulk-alias-management}
 
@@ -388,7 +388,7 @@ Sử dụng công cụ CardDAV để liệt kê tất cả danh bạ, tìm các 
 
 ### 6. Quản lý Lịch {#6-calendar-management}
 
-Tạo lịch, thêm sự kiện, cập nhật thời gian họp và xóa các sự kiện đã hủy — tất cả qua cuộc trò chuyện. Công cụ CalDAV hỗ trợ CRUD đầy đủ trên cả lịch và sự kiện. *(Yêu cầu thông tin đăng nhập alias.)*
+Tạo lịch, thêm sự kiện, cập nhật thời gian họp và xóa các sự kiện đã hủy qua cuộc trò chuyện. Công cụ CalDAV hỗ trợ CRUD đầy đủ trên cả lịch và sự kiện. *(Yêu cầu thông tin đăng nhập alias.)*
 
 ### 7. Tự động hóa Kịch bản Sieve {#7-sieve-script-automation}
 
@@ -396,11 +396,11 @@ Kịch bản Sieve rất mạnh mẽ nhưng cú pháp khó hiểu. Hãy yêu c�
 
 ### 8. Đưa Thành viên Vào Nhóm {#8-team-onboarding}
 
-Khi một thành viên mới gia nhập, yêu cầu AI tạo alias cho họ, tạo mật khẩu, gửi email chào mừng kèm thông tin đăng nhập và thêm họ làm thành viên miền. Một lệnh, bốn cuộc gọi API.
+Khi một thành viên mới gia nhập, yêu cầu AI tạo alias cho họ, tạo mật khẩu, gửi email chào mừng kèm thông tin đăng nhập và thêm họ làm thành viên miền. AI thực hiện bốn cuộc gọi API từ một lệnh.
 
 ### 9. Kiểm tra Bảo mật {#9-security-auditing}
 
-Yêu cầu AI liệt kê tất cả các miền, kiểm tra trạng thái xác minh DNS, xem lại cấu hình alias và xác định các miền có bản ghi chưa được xác minh. Một cuộc quét bảo mật nhanh bằng ngôn ngữ tự nhiên.
+Yêu cầu AI liệt kê tất cả các miền, kiểm tra trạng thái xác minh DNS, xem lại cấu hình alias và xác định các miền có bản ghi chưa được xác minh. Điều này giúp bạn quét bảo mật nhanh bằng ngôn ngữ tự nhiên.
 
 ### 10. Cài đặt Chuyển tiếp Email {#10-email-forwarding-setup}
 
@@ -420,7 +420,7 @@ Tạo mật khẩu alias mới theo lịch trình. Yêu cầu AI tạo mật kh�
 
 ### 14. Mã hóa Bản ghi DNS {#14-dns-record-encryption}
 
-Mã hóa các bản ghi chuyển tiếp trước khi thêm vào DNS. Công cụ `encryptRecord` xử lý việc này mà không cần xác thực — hữu ích cho việc mã hóa nhanh một lần.
+Mã hóa các bản ghi chuyển tiếp trước khi thêm vào DNS. Công cụ `encryptRecord` xử lý việc này mà không cần xác thực, giúp ích cho việc mã hóa nhanh một lần.
 
 ### 15. Phân tích Nhật ký Giao hàng {#15-delivery-log-analysis}
 
@@ -449,7 +449,7 @@ Tạo bản nháp email trong hộp thư của bạn mà không gửi đi. Hữu
 
 ## Ví dụ Lệnh {#example-prompts}
 
-Dưới đây là các lệnh bạn có thể sử dụng trực tiếp với trợ lý AI của mình:
+Các lệnh bạn có thể sử dụng với trợ lý AI của mình:
 
 **Gửi email:**
 
@@ -499,7 +499,7 @@ Dưới đây là các lệnh bạn có thể sử dụng trực tiếp với tr
 
 ## Bảo mật {#security}
 
-Máy chủ MCP chạy cục bộ trên máy của bạn. Đây là cách bảo mật hoạt động:
+Máy chủ MCP chạy cục bộ trên máy của bạn. Chi tiết bảo mật:
 
 * **Thông tin đăng nhập của bạn được giữ cục bộ.** Cả khóa API và thông tin đăng nhập bí danh của bạn được đọc từ biến môi trường và dùng để xác thực các yêu cầu API qua HTTP Basic auth. Chúng không bao giờ được gửi đến mô hình AI.
 * **Giao tiếp stdio.** Máy chủ giao tiếp với client AI qua stdin/stdout. Không mở bất kỳ cổng mạng nào.
@@ -526,4 +526,4 @@ server.listen();
 
 ## Mã nguồn mở {#open-source}
 
-Forward Email MCP Server là [mã nguồn mở trên GitHub](https://github.com/forwardemail/mcp-server) theo giấy phép BUSL-1.1. Chúng tôi tin vào sự minh bạch. Nếu bạn phát hiện lỗi hoặc muốn một tính năng, [mở một issue](https://github.com/forwardemail/mcp-server/issues).
+Forward Email MCP Server là [mã nguồn mở trên GitHub](https://github.com/forwardemail/mcp-server) theo giấy phép BUSL-1.1. Nếu bạn phát hiện lỗi hoặc muốn một tính năng, [mở một issue](https://github.com/forwardemail/mcp-server/issues).

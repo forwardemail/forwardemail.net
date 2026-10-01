@@ -28,20 +28,20 @@
 
 ## Foreword
 
-In today's digital landscape, email remains the backbone of our online identity and communication. Yet, as privacy concerns grow, many users face a difficult choice: convenience at the cost of privacy, or privacy at the cost of convenience. At Forward Email, we've always believed you shouldn't have to choose between the two.
+Email remains the backbone of our online identity and communication. Many users have to trade privacy for convenience, or convenience for privacy. At Forward Email, we've always believed you shouldn't have to choose between the two.
 
-Today, we're excited to announce a significant milestone in our journey: the launch of our self-hosted email solution. This feature represents our deepest commitment to open-source principles, privacy-focused design, and user empowerment. With our self-hosted option, we're putting the full power and control of your email communication directly in your hands.
+We've launched our self-hosted email solution. It follows our open-source principles and privacy-focused design, and it puts full control of your email communication in your hands.
 
-This blog post explores the philosophy behind our self-hosted solution, its technical implementation, and why it matters for users who prioritize both privacy and ownership in their digital communications.
+This post covers the philosophy behind our self-hosted solution, its technical implementation, and what it offers users who want both privacy and ownership of their digital communications.
 
 
 ## Why Self-Hosted Email Matters
 
-Our self-hosted email solution is clearest expression of our belief that true privacy means control, and control starts with open source. For users who demand full ownership over their digital communications, self-hosting is no longer a fringe idea — it's an essential right. We're proud to stand behind that belief with a fully open, verifiable platform you can run on your own terms.
+We believe privacy means control, and control starts with open source. Our self-hosted email solution gives users who want full ownership of their digital communications a fully open, verifiable platform they can run on their own terms.
 
 ### The Problem with Traditional Email Services
 
-Traditional email services present several fundamental challenges for privacy-conscious users:
+Traditional email services pose these problems for privacy-conscious users:
 
 1. **Trust Requirements**: You must trust the provider not to access, analyze, or share your data
 2. **Centralized Control**: Your access can be revoked at any time for any reason
@@ -49,11 +49,11 @@ Traditional email services present several fundamental challenges for privacy-co
 4. **Limited Transparency**: Most services use proprietary, closed-source software
 5. **Vendor Lock-in**: Migrating away from these services can be difficult or impossible
 
-Even "privacy-focused" email providers often fall short by only open-sourcing their frontend applications while keeping their backend systems proprietary and closed. This creates a significant trust gap—you're asked to believe their privacy promises without the ability to verify them.
+Even "privacy-focused" email providers often fall short by only open-sourcing their frontend applications while keeping their backend systems proprietary and closed. You're asked to believe their privacy promises without the ability to verify them.
 
 ### The Self-Hosted Alternative
 
-Self-hosting your email provides a fundamentally different approach:
+Self-hosting your email gives you:
 
 1. **Complete Control**: You own and control the entire email infrastructure
 2. **Verifiable Privacy**: The entire system is transparent and auditable
@@ -66,11 +66,11 @@ As one user put it: "Self-hosting my email is the digital equivalent of growing 
 
 ## Our Self-Hosted Implementation: Technical Overview
 
-Our self-hosted email solution is built on the same privacy-first principles that guide all our products. Let's explore the technical implementation that makes this possible.
+Our self-hosted email solution is built on the same privacy-first principles that guide all our products. Here is how we implemented it.
 
 ### Docker-Based Architecture for Simplicity and Portability
 
-We've packaged our entire email infrastructure using Docker, making it easy to deploy on virtually any Linux-based system. This containerized approach provides several key benefits:
+We've packaged our entire email infrastructure using Docker, making it easy to deploy on most Linux-based systems. This containerized approach provides these benefits:
 
 1. **Simplified Deployment**: A single command sets up the entire infrastructure
 2. **Consistent Environment**: Eliminates "works on my machine" problems
@@ -115,13 +115,13 @@ For those concerned about piping scripts to bash (as you should be!), we encoura
 
 ### Quantum-Safe Encryption for Future-Proof Privacy
 
-Like our hosted service, our self-hosted solution implements quantum-resistant encryption using ChaCha20-Poly1305 as the cipher for SQLite databases. This approach protects your email data not just against current threats, but also against future quantum computing attacks.
+Like our hosted service, our self-hosted solution implements quantum-resistant encryption using ChaCha20-Poly1305 as the cipher for SQLite databases. This approach protects your email data against current threats and future quantum computing attacks.
 
-Each mailbox is stored in its own encrypted SQLite database file, providing complete isolation between users—a significant security advantage over traditional shared database approaches.
+Each mailbox is stored in its own encrypted SQLite database file, providing complete isolation between users, which is more secure than traditional shared database approaches.
 
 ### Automated Maintenance and Updates
 
-We've built comprehensive maintenance utilities directly into the self-hosted solution:
+We've built maintenance utilities into the self-hosted solution:
 
 1. **Automatic Backups**: Scheduled backups of all critical data
 2. **Certificate Renewal**: Automated Let's Encrypt certificate management
@@ -145,7 +145,7 @@ These utilities are accessible through a simple interactive menu:
 
 ## The Open-Source Commitment
 
-Our self-hosted email solution, like all our products, is 100% open-source—both frontend and backend. This means:
+Our self-hosted email solution, like all our products, is 100% open-source, frontend and backend. This means:
 
 1. **Complete Transparency**: Every line of code that processes your emails is available for public scrutiny
 2. **Community Contributions**: Anyone can contribute improvements or fix issues
@@ -157,7 +157,7 @@ The entire codebase is available on GitHub at <https://github.com/forwardemail/f
 
 ## Self-Hosted vs. Managed: Making the Right Choice
 
-While we're proud to offer a self-hosted option, we recognize it's not the right choice for everyone. Self-hosting email comes with real responsibilities and challenges:
+Self-hosting is not the right choice for everyone. Self-hosting email comes with real responsibilities and challenges:
 
 ### The Reality of Self-Hosting Email
 
@@ -188,15 +188,15 @@ For many users, our managed service remains the best option:
 1. **Convenience**: We handle all maintenance, updates, and monitoring
 2. **Reliability**: Benefit from our established infrastructure and expertise
 3. **Support**: Get help when issues arise
-4. **Deliverability**: Leverage our established IP reputation
-5. **Cost-Effectiveness**: When you factor in time costs, our service is often more economical
+4. **Deliverability**: Use our established IP reputation
+5. **Cost-Effectiveness**: When you factor in time costs, our service often costs less
 
-Both options provide the same privacy benefits and open-source transparency—the difference is simply who manages the infrastructure.
+Both options provide the same privacy benefits and open-source transparency. The difference is who manages the infrastructure.
 
 
 ## Getting Started with Self-Hosted Forward Email
 
-Ready to take control of your email infrastructure? Here's how to get started:
+To get started:
 
 ### System Requirements
 
@@ -233,7 +233,7 @@ Ready to take control of your email infrastructure? Here's how to get started:
 
 ## The Future of Self-Hosted Email
 
-Our self-hosted solution is just the beginning. We're committed to continually improving this offering with:
+We plan to improve the self-hosted solution with:
 
 1. **Enhanced Administration Tools**: More powerful web-based management
 2. **Additional Authentication Options**: Including hardware security key support
@@ -244,13 +244,13 @@ Our self-hosted solution is just the beginning. We're committed to continually i
 
 ## Conclusion: Email Freedom for Everyone
 
-The launch of our self-hosted email solution represents a significant milestone in our mission to provide privacy-focused, transparent email services. Whether you choose our managed service or self-hosted option, you benefit from our unwavering commitment to open-source principles and privacy-first design.
+Our self-hosted email solution extends our privacy-focused, transparent email services. Our managed service and self-hosted option share the same open-source code and privacy-first design.
 
-Email is too important to be controlled by closed, proprietary systems that prioritize data collection over user privacy. With Forward Email's self-hosted solution, we're proud to offer a genuine alternative—one that puts you in complete control of your digital communications.
+Email is too important to be controlled by closed, proprietary systems that prioritize data collection over user privacy. Forward Email's self-hosted solution is an alternative that puts you in complete control of your digital communications.
 
-We believe that privacy isn't just a feature; it's a fundamental right. And with our self-hosted email option, we're making that right more accessible than ever before.
+We believe privacy is a fundamental right, and our self-hosted email option makes it more accessible.
 
-Ready to take control of your email? [Get started today](https://forwardemail.net/self-hosted) or explore our [GitHub repository](https://github.com/forwardemail/forwardemail.net) to learn more.
+[Get started today](https://forwardemail.net/self-hosted) or explore our [GitHub repository](https://github.com/forwardemail/forwardemail.net) to learn more.
 
 
 ## References

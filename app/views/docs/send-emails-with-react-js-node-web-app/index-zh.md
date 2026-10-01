@@ -39,7 +39,7 @@ export function Email(props) {
 
 在此示例中，我们使用 **[Nodemailer](https://github.com/nodemailer/nodemailer)** 库及其官方赞助商 **[Forward Email](https://forwardemail.net)** 来发送和预览外发邮件。
 
-您需要 <strong class="text-success"><i class="fa fa-key"></i> 生成密码</strong> 来发送外发邮件 – 请遵循我们的 **[使用自定义域 SMTP 发送邮件指南](/guides/send-email-with-custom-domain-smtp)**。
+您需要 <strong class="text-success"><i class="fa fa-key"></i> 生成密码</strong> 来发送外发邮件。请遵循我们的 **[使用自定义域 SMTP 发送邮件指南](/guides/send-email-with-custom-domain-smtp)**。
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

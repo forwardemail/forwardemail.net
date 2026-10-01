@@ -33,20 +33,20 @@
 
 ## Lời nói đầu {#foreword}
 
-Hướng dẫn này cung cấp các ví dụ chi tiết về cách tích hợp với dịch vụ SMTP của Forward Email sử dụng nhiều ngôn ngữ lập trình, framework và email client khác nhau. Dịch vụ SMTP của chúng tôi được thiết kế để đáng tin cậy, bảo mật và dễ dàng tích hợp với các ứng dụng hiện có của bạn.
+Hướng dẫn này trình bày cách tích hợp với dịch vụ SMTP của Forward Email từ nhiều ngôn ngữ lập trình, framework và email client khác nhau.
 
 
 ## Cách Forward Email xử lý SMTP {#how-forward-emails-smtp-processing-works}
 
-Trước khi đi vào các ví dụ tích hợp, điều quan trọng là hiểu cách dịch vụ SMTP của chúng tôi xử lý email:
+Dịch vụ SMTP của chúng tôi xử lý email như sau:
 
 ### Hệ thống hàng đợi và thử lại email {#email-queue-and-retry-system}
 
 Khi bạn gửi một email qua SMTP đến máy chủ của chúng tôi:
 
 1. **Xử lý ban đầu**: Email được xác thực, quét phần mềm độc hại và kiểm tra qua bộ lọc spam
-2. **Hàng đợi thông minh**: Email được đặt vào hệ thống hàng đợi tinh vi để gửi đi
-3. **Cơ chế thử lại thông minh**: Nếu việc gửi thất bại tạm thời, hệ thống của chúng tôi sẽ:
+2. **Hàng đợi**: Hệ thống của chúng tôi đặt email vào hàng đợi gửi
+3. **Cơ chế thử lại**: Nếu việc gửi thất bại tạm thời, hệ thống của chúng tôi sẽ:
    * Phân tích phản hồi lỗi bằng hàm `getBounceInfo`
    * Xác định xem vấn đề là tạm thời (ví dụ: "thử lại sau", "tạm thời hoãn") hay vĩnh viễn (ví dụ: "người dùng không tồn tại")
    * Với các vấn đề tạm thời, đánh dấu email để thử lại
@@ -59,14 +59,14 @@ Khi bạn gửi một email qua SMTP đến máy chủ của chúng tôi:
 
 ### Được thiết kế dễ dùng để đảm bảo độ tin cậy {#dummy-proofed-for-reliability}
 
-Hệ thống của chúng tôi được thiết kế để xử lý nhiều trường hợp đặc biệt:
+Hệ thống của chúng tôi xử lý các trường hợp đặc biệt sau:
 
 * Nếu phát hiện danh sách chặn, email sẽ tự động được thử lại
 * Nếu xảy ra sự cố mạng, việc gửi sẽ được thử lại
 * Nếu hộp thư người nhận đầy, hệ thống sẽ thử lại sau
 * Nếu máy chủ nhận tạm thời không khả dụng, chúng tôi sẽ tiếp tục thử gửi
 
-Cách tiếp cận này cải thiện đáng kể tỷ lệ gửi thành công đồng thời duy trì bảo mật và riêng tư.
+Cách tiếp cận này cải thiện tỷ lệ gửi thành công đồng thời duy trì bảo mật và riêng tư.
 
 
 ## Tích hợp Node.js {#nodejs-integration}
@@ -525,6 +525,6 @@ Nếu bạn gặp các vấn đề không được đề cập ở đây, vui l�
 
 ## Kết Luận {#conclusion}
 
-Dịch vụ SMTP của Forward Email cung cấp một phương thức gửi email đáng tin cậy, an toàn và tập trung vào quyền riêng tư từ các ứng dụng và trình khách email của bạn. Với hệ thống hàng đợi thông minh, cơ chế thử lại trong 5 ngày và thông báo trạng thái giao hàng toàn diện, bạn có thể yên tâm rằng email của mình sẽ đến nơi.  
+Dịch vụ SMTP của Forward Email cung cấp một phương thức gửi email đáng tin cậy, an toàn và tập trung vào quyền riêng tư từ các ứng dụng và trình khách email của bạn. Dịch vụ bao gồm hệ thống hàng đợi, cơ chế thử lại trong 5 ngày và thông báo trạng thái giao hàng.  
 
 Đối với các trường hợp sử dụng nâng cao hoặc tích hợp tùy chỉnh, vui lòng liên hệ đội ngũ hỗ trợ của chúng tôi.

@@ -1,6 +1,6 @@
 # 将您的树莓派变成带邮件中继的安全FTP服务器 {#turn-your-raspberry-pi-into-a-secure-ftp-server-with-email-relay}
 
-有一台闲置的树莓派吗？无论是最新的Pi 5、Pi 4、Pi Zero，还是更旧的型号，本指南将教您如何将其变成一个强大且自动化的文件服务器，并具备邮件中继功能。非常适合安全摄像头、物联网设备等。
+有一台闲置的树莓派吗？无论是最新的Pi 5、Pi 4、Pi Zero，还是更旧的型号，本指南将教您如何将其变成一个具备邮件中继功能的自动化文件服务器，适用于安全摄像头、物联网设备等。
 
 **兼容型号：** Raspberry Pi 5、Raspberry Pi 4 Model B、Raspberry Pi 3 Model B+、Raspberry Pi 3 Model B、Raspberry Pi 2 Model B、Raspberry Pi Zero 2 W、Raspberry Pi Zero W 和 Raspberry Pi Zero。
 
@@ -44,12 +44,10 @@
   * 使用 Forward Email 的旧版 TLS 1.0 端口（最简单）
   * 设置 Postfix SMTP 中继（适用于任何邮件服务提供商）
 
-准备好了吗？我们开始吧。
-
 
 ## 第1部分：在您的Pi上安装Ubuntu Server {#part-1-getting-ubuntu-server-on-your-pi}
 
-首先，让树莓派运行Ubuntu Server。借助树莓派官方Imager，这一步非常简单。
+首先让树莓派运行Ubuntu Server。树莓派官方Imager让这一步变得简单。
 
 ### 您需要准备的东西 {#what-youll-need}
 
@@ -90,7 +88,7 @@
 ssh your_username@your_pi_ip_address
 ```
 
-你已进入系统！树莓派现在可以进行配置了。
+树莓派现在可以进行配置了。
 
 
 ## 第二部分：设置安全的 FTP 服务器 {#part-2-setting-up-a-secure-ftp-server}
@@ -172,8 +170,8 @@ ssh your_username@your_pi_ip_address
    sudo mkdir -p /home/ftpuser/ftp/uploads
    ```
 
-   * `/home/ftpuser/ftp` - 主要 FTP 目录
-   * `/home/ftpuser/ftp/uploads` - 文件上传目录
+   * `/home/ftpuser/ftp`：主要 FTP 目录
+   * `/home/ftpuser/ftp/uploads`：文件上传目录
 
 3. **设置权限：**
 
@@ -270,7 +268,7 @@ Fail2ban 会在多次登录失败后自动封锁 IP 地址。
 
 ## Part 4: Automated File Processing with Email Notifications {#part-4-automated-file-processing-with-email-notifications}
 
-Now for the magic: a script that monitors the FTP folder, emails new files as attachments, and deletes them. There are two approaches depending on your email provider:
+Next, add a script that monitors the FTP folder, emails new files as attachments, and deletes them. There are two approaches depending on your email provider:
 
 ### Option 1: Using Forward Email API (Recommended) {#option-1-using-forward-email-api-recommended}
 
@@ -512,7 +510,7 @@ sudo systemctl status ftp-monitor.service
 
 ### 选项1：使用 Forward Email 的旧版 TLS 1.0 端口（推荐） {#option-1-use-forward-emails-legacy-tls-10-ports-recommended}
 
-如果您使用 Forward Email，这是最简单的解决方案。Forward Email 提供专门针对旧设备（如摄像头、打印机、扫描仪和传真机）的旧版 TLS 1.0 端口。
+如果您使用 Forward Email，这是最简单的解决方案。Forward Email 提供针对旧设备（如摄像头、打印机、扫描仪和传真机）的旧版 TLS 1.0 端口。
 
 #### 价格 {#pricing}
 
@@ -538,7 +536,7 @@ Forward Email 提供多个套餐：
 2. 进入 **我的账户 → 域名 → \[您的域名] → 别名**
 3. 创建或选择一个别名（例如 `camera@yourdomain.com`）
 4. 点击别名旁的 **“生成密码”**
-5. 复制生成的密码 — 您将在 SMTP 认证时使用它
+5. 复制生成的密码；您将在 SMTP 认证时使用它
 
 > \[!TIP]
 > 每个别名可以有自己的密码。这有助于跟踪哪个设备发送了邮件。
@@ -560,7 +558,7 @@ Forward Email 提供多个套餐：
 > \[!WARNING]
 > 这些端口使用已废弃的 TLS 1.0 协议，存在已知安全漏洞（BEAST、POODLE）。仅当您的设备无法支持现代 TLS 1.2+ 时使用。
 
-只需用这些设置配置设备，它就会直接通过 Forward Email 发送邮件，无需本地中继服务器。
+用这些设置配置设备，它就会直接通过 Forward Email 发送邮件，无需本地中继服务器。
 
 更多详情请参见 [Forward Email 关于旧版 TLS 支持的常见问题](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings)。
 
@@ -694,7 +692,7 @@ mynetworks = 127.0.0.0/8 [::1]/128 192.168.1.0/24
 > 对于 Gmail（端口 587），将 `smtp_tls_wrappermode` 设置为 `no`，而不是 `yes`。
 
 > \[!WARNING]
-> 请根据您的实际网络范围更新 `mynetworks`。仅添加受信任的网络——这些网络上的任何设备都可以无需认证中继邮件。
+> 请根据您的实际网络范围更新 `mynetworks`。仅添加受信任的网络，因为这些网络上的任何设备都可以无需认证中继邮件。
 
 **常见网络范围：**
 

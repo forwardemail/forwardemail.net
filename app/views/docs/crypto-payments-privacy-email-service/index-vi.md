@@ -21,12 +21,12 @@
 
 ## Lời nói đầu {#foreword}
 
-Tại [Forward Email](https://forwardemail.net), chúng tôi luôn tìm cách cải thiện [quyền riêng tư](https://en.wikipedia.org/wiki/Privacy) và bảo mật của bạn đồng thời làm cho dịch vụ của chúng tôi dễ tiếp cận hơn. Hôm nay, chúng tôi rất vui mừng thông báo rằng chúng tôi hiện chấp nhận thanh toán bằng [tiền điện tử](https://en.wikipedia.org/wiki/Cryptocurrency) thông qua tích hợp thanh toán crypto của [Stripe](https://stripe.com).
+Tại [Forward Email](https://forwardemail.net), chúng tôi tìm cách cải thiện [quyền riêng tư](https://en.wikipedia.org/wiki/Privacy) và bảo mật của bạn và làm cho dịch vụ của chúng tôi dễ tiếp cận hơn. Chúng tôi hiện chấp nhận thanh toán bằng [tiền điện tử](https://en.wikipedia.org/wiki/Cryptocurrency) thông qua tích hợp thanh toán crypto của [Stripe](https://stripe.com).
 
 
 ## Tại sao Thanh toán Crypto Quan trọng {#why-crypto-payments-matter}
 
-[Quyền riêng tư](https://en.wikipedia.org/wiki/Internet_privacy) luôn là cốt lõi của dịch vụ chúng tôi. Trong khi trước đây chúng tôi đã cung cấp nhiều phương thức thanh toán khác nhau, thanh toán bằng tiền điện tử mang lại một lớp quyền riêng tư bổ sung phù hợp hoàn hảo với sứ mệnh của chúng tôi. Bằng cách thanh toán bằng crypto, bạn có thể:
+[Quyền riêng tư](https://en.wikipedia.org/wiki/Internet_privacy) luôn là trọng tâm của dịch vụ chúng tôi. Bên cạnh các phương thức thanh toán khác của chúng tôi, thanh toán bằng tiền điện tử mang lại một lớp quyền riêng tư bổ sung. Bằng cách thanh toán bằng crypto, bạn có thể:
 
 * Duy trì sự ẩn danh cao hơn khi mua dịch vụ email của chúng tôi
 * Giảm thiểu thông tin cá nhân liên kết với tài khoản email của bạn
@@ -36,7 +36,7 @@ Tại [Forward Email](https://forwardemail.net), chúng tôi luôn tìm cách c�
 
 ## Cách Thức Hoạt Động {#how-it-works}
 
-Chúng tôi đã tích hợp hệ thống thanh toán crypto của [Stripe](https://docs.stripe.com/crypto) để làm cho quá trình trở nên liền mạch nhất có thể. Dưới đây là cách bạn có thể thanh toán dịch vụ Forward Email bằng tiền điện tử:
+Chúng tôi đã tích hợp hệ thống thanh toán crypto của [Stripe](https://docs.stripe.com/crypto). Để thanh toán dịch vụ Forward Email bằng tiền điện tử:
 
 ```mermaid
 flowchart LR
@@ -58,12 +58,12 @@ flowchart LR
    * [Coinbase Wallet](https://www.coinbase.com/wallet)
    * [WalletConnect](https://walletconnect.com) (tương thích với nhiều ví khác)
 
-4. **Hoàn tất Thanh toán**: Xác nhận giao dịch trong ví của bạn, và bạn đã sẵn sàng! Thanh toán sẽ được xử lý và dịch vụ Forward Email của bạn sẽ được kích hoạt ngay lập tức.
+4. **Hoàn tất Thanh toán**: Xác nhận giao dịch trong ví của bạn. Chúng tôi xử lý thanh toán và kích hoạt dịch vụ Forward Email của bạn ngay lập tức.
 
 
 ## Lợi ích về Quyền riêng tư {#privacy-benefits}
 
-Sử dụng tiền điện tử cho đăng ký Forward Email của bạn tăng cường quyền riêng tư theo nhiều cách:
+Thanh toán đăng ký Forward Email bằng tiền điện tử cải thiện quyền riêng tư của bạn theo nhiều cách:
 
 ```mermaid
 graph TD
@@ -150,7 +150,7 @@ flowchart LR
 
 ## Bắt Đầu {#getting-started}
 
-Sẵn sàng nâng cao quyền riêng tư với thanh toán tiền điện tử? Chỉ cần chọn tùy chọn "Crypto" khi thanh toán lần tiếp theo khi bạn gia hạn đăng ký hoặc nâng cấp gói.
+Để thanh toán bằng tiền điện tử, hãy chọn tùy chọn "Crypto" khi thanh toán lần tiếp theo khi bạn gia hạn đăng ký hoặc nâng cấp gói.
 
 Để biết thêm thông tin về tiền điện tử và công nghệ blockchain, hãy xem các tài nguyên sau:
 
@@ -161,7 +161,7 @@ Sẵn sàng nâng cao quyền riêng tư với thanh toán tiền điện tử? 
 
 ## Hướng Tới Tương Lai {#looking-forward}
 
-Việc thêm thanh toán bằng tiền điện tử chỉ là một bước nữa trong cam kết liên tục của chúng tôi về [quyền riêng tư](https://en.wikipedia.org/wiki/Privacy), [bảo mật](https://en.wikipedia.org/wiki/Computer_security), và sự lựa chọn của người dùng. Chúng tôi tin rằng dịch vụ email của bạn nên tôn trọng quyền riêng tư ở mọi cấp độ—từ các tin nhắn bạn gửi đến cách bạn thanh toán cho dịch vụ.
+Thanh toán bằng tiền điện tử bổ sung cho công việc của chúng tôi về [quyền riêng tư](https://en.wikipedia.org/wiki/Privacy), [bảo mật](https://en.wikipedia.org/wiki/Computer_security), và sự lựa chọn của người dùng. Chúng tôi tin rằng dịch vụ email của bạn nên tôn trọng quyền riêng tư ở mọi cấp độ, từ các tin nhắn bạn gửi đến cách bạn thanh toán cho dịch vụ.
 
 Như thường lệ, chúng tôi hoan nghênh phản hồi của bạn về tùy chọn thanh toán mới này. Nếu bạn có câu hỏi về việc sử dụng tiền điện tử với Forward Email, vui lòng liên hệ với [đội ngũ hỗ trợ](/help) của chúng tôi.
 

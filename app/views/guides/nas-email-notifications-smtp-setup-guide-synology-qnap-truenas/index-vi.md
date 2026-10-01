@@ -1,10 +1,10 @@
 # Hướng Dẫn Toàn Diện Cài Đặt Email NAS với Forward Email {#complete-guide-to-nas-email-setup-with-forward-email}
 
-Việc thiết lập thông báo email trên NAS của bạn không nên là một điều phiền toái. Dù bạn đang sử dụng Synology, QNAP, hay thậm chí là một thiết lập Raspberry Pi, hướng dẫn này sẽ giúp thiết bị của bạn kết nối với Forward Email để bạn thực sự biết khi có sự cố xảy ra.
+Việc thiết lập thông báo email trên NAS của bạn không nên là một điều phiền toái. Dù bạn đang sử dụng Synology, QNAP, hay thậm chí là một thiết lập Raspberry Pi, hướng dẫn này sẽ giúp thiết bị của bạn kết nối với Forward Email để bạn biết khi có sự cố xảy ra.
 
-Hầu hết các thiết bị NAS có thể gửi cảnh báo email về lỗi ổ đĩa, cảnh báo nhiệt độ, hoàn thành sao lưu và các sự kiện bảo mật. Vấn đề? Nhiều nhà cung cấp email đã trở nên khắt khe về bảo mật, và các thiết bị cũ thường không theo kịp. Đó là lý do Forward Email ra đời - chúng tôi hỗ trợ cả thiết bị hiện đại và thiết bị cũ.
+Hầu hết các thiết bị NAS có thể gửi cảnh báo email về lỗi ổ đĩa, cảnh báo nhiệt độ, hoàn thành sao lưu và các sự kiện bảo mật. Nhiều nhà cung cấp email đã trở nên khắt khe về bảo mật, và các thiết bị cũ thường không theo kịp. Forward Email hỗ trợ cả thiết bị hiện đại và thiết bị cũ.
 
-Hướng dẫn này bao gồm cài đặt email cho hơn 75 nhà cung cấp NAS với các hướng dẫn từng bước, thông tin tương thích và mẹo khắc phục sự cố. Dù bạn đang dùng thiết bị nào, chúng tôi sẽ giúp thông báo của bạn hoạt động.
+Hướng dẫn này bao gồm cài đặt email cho hơn 75 nhà cung cấp NAS với các hướng dẫn từng bước, thông tin tương thích và mẹo khắc phục sự cố. Hướng dẫn bao gồm cả thiết bị hiện đại và thiết bị cũ.
 
 
 ## Mục Lục {#table-of-contents}
@@ -40,14 +40,14 @@ Hướng dẫn này bao gồm cài đặt email cho hơn 75 nhà cung cấp NAS 
 
 ## Tại Sao Bạn Cần Thông Báo Email NAS {#why-you-need-nas-email-notifications}
 
-NAS của bạn giám sát rất nhiều thứ - sức khỏe ổ đĩa, nhiệt độ, sự cố mạng, các sự kiện bảo mật. Nếu không có cảnh báo email, các vấn đề có thể bị bỏ qua trong nhiều tuần, có thể gây mất dữ liệu hoặc vi phạm bảo mật.
+NAS của bạn giám sát sức khỏe ổ đĩa, nhiệt độ, sự cố mạng và các sự kiện bảo mật. Nếu không có cảnh báo email, các vấn đề có thể bị bỏ qua trong nhiều tuần, có thể gây mất dữ liệu hoặc vi phạm bảo mật.
 
-Thông báo email giúp bạn nhận cảnh báo ngay lập tức khi ổ đĩa bắt đầu hỏng, cảnh báo về các cố gắng truy cập trái phép, xác nhận sao lưu thành công và giữ bạn luôn được cập nhật về tình trạng hệ thống. Forward Email đảm bảo những thông báo quan trọng này thực sự đến được với bạn.
+Thông báo email giúp bạn nhận cảnh báo ngay lập tức khi ổ đĩa bắt đầu hỏng, cảnh báo về các cố gắng truy cập trái phép, xác nhận sao lưu thành công và giữ bạn luôn được cập nhật về tình trạng hệ thống. Forward Email gửi những thông báo này đến hộp thư của bạn.
 
 
 ## Vấn Đề TLS (Và Cách Chúng Tôi Khắc Phục) {#the-tls-problem-and-how-we-fix-it}
 
-Vấn đề là: nếu NAS của bạn được sản xuất trước năm 2020, nó có thể chỉ hỗ trợ TLS 1.0. Gmail, Outlook và hầu hết các nhà cung cấp đã ngừng hỗ trợ TLS 1.0 từ nhiều năm trước. Thiết bị của bạn cố gắng gửi email, bị từ chối, và bạn không biết gì cả.
+Nếu NAS của bạn được sản xuất trước năm 2020, nó có thể chỉ hỗ trợ TLS 1.0. Gmail, Outlook và hầu hết các nhà cung cấp đã ngừng hỗ trợ TLS 1.0 từ nhiều năm trước. Thiết bị của bạn cố gắng gửi email, bị từ chối, và bạn không biết gì cả.
 
 Forward Email khắc phục điều này với hỗ trợ cổng kép. Các thiết bị hiện đại sử dụng các cổng tiêu chuẩn của chúng tôi (`465` và `587`), trong khi các thiết bị cũ có thể dùng các cổng legacy (`2455` và `2555`) vẫn hỗ trợ TLS 1.0.
 
@@ -56,7 +56,7 @@ Forward Email khắc phục điều này với hỗ trợ cổng kép. Các thi�
 
 
 ## Cài Đặt SMTP Forward Email {#forward-email-smtp-settings}
-Đây là những gì bạn cần biết về thiết lập SMTP của chúng tôi:
+Cài đặt SMTP của chúng tôi:
 
 **Đối với các thiết bị NAS hiện đại (2020+):** Sử dụng `smtp.forwardemail.net` với cổng `465` (SSL/TLS) hoặc cổng `587` (STARTTLS). Những cổng này hoạt động với firmware hiện tại hỗ trợ TLS 1.2+.
 
@@ -88,15 +88,15 @@ Ma trận sau cung cấp thông tin chi tiết về tương thích cho các nhà
 | OpenMediaVault   | OMV 7.x       | TLS 1.2+    | Hoạt động           | `465`, `587`          | [Phụ thuộc plugin](https://forum.openmediavault.org/index.php?thread/42156-email-notifications-not-working/)                                         | [Cài đặt Thông báo OMV](https://docs.openmediavault.org/en/latest/administration/general/notifications.html)                                    |
 | Netgear ReadyNAS | OS 6.x        | Chỉ TLS 1.0 | Ngừng hỗ trợ        | `2455`, `2555`        | [Hỗ trợ TLS kế thừa](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)                         | [Cài đặt Cảnh báo Email ReadyNAS](https://kb.netgear.com/23066/How-do-I-manage-my-email-alert-contacts-on-my-ReadyNAS-OS-6-storage-system)        |
 | Drobo            | Dashboard     | TLS 1.2     | Ngừng hỗ trợ        | `465`, `587`          | [Hỗ trợ giới hạn](https://myprojects.drobo.com/support/)                                                                                            | [Thông báo Email Drobo](https://www.drobo.com/support/)                                                                                          |
-Ma trận này cho thấy sự phân chia rõ ràng giữa các hệ thống NAS hiện đại, được duy trì tích cực và các thiết bị cũ cần xem xét đặc biệt về khả năng tương thích. Phần lớn các thiết bị NAS hiện nay hỗ trợ các tiêu chuẩn TLS hiện đại và có thể sử dụng các cổng SMTP chính của Forward Email mà không cần cấu hình đặc biệt.
+Phần lớn các thiết bị NAS hiện nay, được duy trì tích cực, hỗ trợ TLS hiện đại và có thể sử dụng các cổng SMTP chính của Forward Email mà không cần cấu hình đặc biệt. Các thiết bị cũ cần các cổng tương thích.
 
 
 ## Cấu hình Email cho Synology NAS {#synology-nas-email-configuration}
 
-Các thiết bị Synology với DSM khá dễ dàng để thiết lập. Chúng hỗ trợ TLS hiện đại, vì vậy bạn có thể sử dụng các cổng tiêu chuẩn của chúng tôi mà không gặp vấn đề gì.
+Các thiết bị Synology với DSM dễ thiết lập. Chúng hỗ trợ TLS hiện đại, vì vậy bạn có thể sử dụng các cổng tiêu chuẩn của chúng tôi mà không gặp vấn đề gì.
 
 > \[!NOTE]
-> Synology DSM 7.x cung cấp các tính năng thông báo email toàn diện nhất. Các phiên bản DSM cũ hơn có thể có các tùy chọn cấu hình hạn chế.
+> Synology DSM 7.x cung cấp các tính năng thông báo email đầy đủ nhất. Các phiên bản DSM cũ hơn có thể có các tùy chọn cấu hình hạn chế.
 
 ### Các bước cấu hình {#configuration-steps}
 
@@ -141,9 +141,9 @@ Các thiết bị QNAP với QTS hoạt động rất tốt với Forward Email.
 
 4. **Cấu hình máy chủ SMTP** bằng cách nhập `smtp.forwardemail.net` làm địa chỉ máy chủ SMTP.
 
-5. **Chọn giao thức bảo mật phù hợp** - chọn "SSL/TLS" với cổng `465` (khuyến nghị). Cổng `587` với STARTTLS cũng được hỗ trợ.
+5. **Chọn giao thức bảo mật phù hợp**: chọn "SSL/TLS" với cổng `465` (khuyến nghị). Cổng `587` với STARTTLS cũng được hỗ trợ.
 
-6. **Cấu hình số cổng** - cổng `465` với SSL/TLS được khuyến nghị. Cổng `587` với STARTTLS cũng có sẵn nếu cần.
+6. **Cấu hình số cổng**: cổng `465` với SSL/TLS được khuyến nghị. Cổng `587` với STARTTLS cũng có sẵn nếu cần.
 
 7. **Nhập thông tin xác thực** sử dụng bí danh Forward Email của bạn làm tên người dùng và mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
@@ -156,7 +156,7 @@ Các thiết bị QNAP với QTS hoạt động rất tốt với Forward Email.
 > \[!TIP]
 > Nếu bạn gặp phải [vấn đề cấu hình SMTP Gmail](https://forum.qnap.com/viewtopic.php?t=152466), các bước khắc phục tương tự cũng áp dụng cho Forward Email. Hãy đảm bảo xác thực được bật đúng cách và thông tin đăng nhập chính xác.
 > \[!NOTE]
-> Thiết bị QNAP hỗ trợ lập lịch thông báo nâng cao, cho phép bạn cấu hình giờ yên tĩnh khi các thông báo không quan trọng bị tắt. Điều này đặc biệt hữu ích trong môi trường doanh nghiệp.
+> Thiết bị QNAP hỗ trợ lập lịch thông báo nâng cao, cho phép bạn cấu hình giờ yên tĩnh khi các thông báo không quan trọng bị tắt. Điều này hữu ích trong môi trường doanh nghiệp.
 
 ### Các Vấn Đề Thường Gặp Khi Khắc Phục Sự Cố QNAP {#common-qnap-troubleshooting-issues}
 
@@ -170,7 +170,7 @@ Nếu thiết bị QNAP của bạn [không gửi được email thông báo](ht
 
 ## Cấu Hình ReadyNAS Cũ {#readynas-legacy-configuration}
 
-Thiết bị Netgear ReadyNAS gặp những thách thức riêng do việc ngừng hỗ trợ firmware và phụ thuộc vào giao thức TLS 1.0 cũ. Tuy nhiên, hỗ trợ cổng cũ của Forward Email đảm bảo các thiết bị này vẫn có thể gửi thông báo email một cách đáng tin cậy.
+Thiết bị Netgear ReadyNAS gặp những thách thức riêng do việc ngừng hỗ trợ firmware và phụ thuộc vào giao thức TLS 1.0 cũ. Các cổng cũ của Forward Email cho phép các thiết bị này tiếp tục gửi thông báo email.
 
 > \[!CAUTION]
 > ReadyNAS OS 6.x chỉ hỗ trợ TLS 1.0, yêu cầu sử dụng các cổng tương thích cũ của Forward Email là `2455` và `2555`. Các cổng hiện đại `465` và `587` sẽ không hoạt động với các thiết bị này.
@@ -183,7 +183,7 @@ Thiết bị Netgear ReadyNAS gặp những thách thức riêng do việc ngừ
 
 3. **Cấu hình máy chủ SMTP** bằng cách nhập `smtp.forwardemail.net` làm địa chỉ máy chủ.
 
-4. **Đặt cấu hình cổng** thành `2455` cho kết nối SSL/TLS hoặc `2555` cho kết nối STARTTLS - đây là các cổng tương thích cũ của Forward Email.
+4. **Đặt cấu hình cổng** thành `2455` cho kết nối SSL/TLS hoặc `2555` cho kết nối STARTTLS. Đây là các cổng tương thích cũ của Forward Email.
 
 5. **Bật xác thực** và nhập bí danh Forward Email của bạn làm tên đăng nhập cùng với mật khẩu được tạo từ [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
@@ -205,11 +205,11 @@ Các vấn đề phổ biến với cấu hình email ReadyNAS bao gồm:
 * **Kết nối mạng**: Kiểm tra ReadyNAS có thể kết nối tới `smtp.forwardemail.net`
 * **Hạn chế firmware**: Một số mẫu ReadyNAS cũ có thể yêu cầu thêm [cấu hình HTTPS](https://kb.netgear.com/23100/How-do-I-configure-HTTPS-HTTP-with-SSL-encryption-settings-on-my-ReadyNAS-OS-6-storage-system)
 
-Thiết bị ReadyNAS chạy OS 6.x và các phiên bản cũ hơn chỉ hỗ trợ kết nối TLS 1.0, mà hầu hết nhà cung cấp email hiện đại không còn chấp nhận. Các cổng dành riêng cho legacy của Forward Email (2455 và 2555) hỗ trợ các giao thức cũ này, đảm bảo chức năng liên tục cho người dùng ReadyNAS.
+Thiết bị ReadyNAS chạy OS 6.x và các phiên bản cũ hơn chỉ hỗ trợ kết nối TLS 1.0, mà hầu hết nhà cung cấp email hiện đại không còn chấp nhận. Các cổng dành riêng cho legacy của Forward Email (2455 và 2555) hỗ trợ các giao thức cũ này, nhờ đó thiết bị ReadyNAS tiếp tục hoạt động.
 
 Để cấu hình email trên thiết bị ReadyNAS, truy cập giao diện web của thiết bị qua địa chỉ IP. Điều hướng đến phần System và chọn "Notifications" để truy cập các tùy chọn cấu hình email.
 
-Trong phần cấu hình email, bật thông báo email và nhập smtp.forwardemail.net làm máy chủ SMTP. Điều này rất quan trọng - sử dụng các cổng tương thích legacy của Forward Email thay vì các cổng SMTP tiêu chuẩn.
+Trong phần cấu hình email, bật thông báo email và nhập smtp.forwardemail.net làm máy chủ SMTP. Sử dụng các cổng tương thích legacy của Forward Email thay vì các cổng SMTP tiêu chuẩn.
 
 Đối với kết nối SSL/TLS, cấu hình cổng 2455 thay vì cổng tiêu chuẩn 465 (được khuyến nghị). Đối với kết nối STARTTLS, sử dụng cổng 2555 thay vì cổng 587. Các cổng đặc biệt này duy trì khả năng tương thích TLS 1.0 đồng thời cung cấp bảo mật tốt nhất có thể cho các thiết bị legacy.
 Nhập bí danh Forward Email của bạn làm tên đăng nhập và mật khẩu đã tạo để xác thực. Thiết bị ReadyNAS hỗ trợ xác thực SMTP, điều này là bắt buộc cho các kết nối Forward Email.
@@ -226,7 +226,7 @@ Hãy cân nhắc các tác động về bảo mật khi sử dụng các giao th
 Thiết bị TerraMaster chạy TOS 6.x hỗ trợ TLS hiện đại và hoạt động tốt với các cổng tiêu chuẩn của Forward Email.
 
 > \[!NOTE]
-> TerraMaster TOS 6.x cung cấp các tính năng thông báo email toàn diện. Hãy đảm bảo firmware của bạn được cập nhật để có khả năng tương thích tốt nhất.
+> TerraMaster TOS 6.x cung cấp các tính năng thông báo email đầy đủ. Hãy đảm bảo firmware của bạn được cập nhật để có khả năng tương thích tốt nhất.
 
 1. **Truy cập Cài đặt Hệ thống**
    * Đăng nhập vào giao diện web TerraMaster của bạn
@@ -248,7 +248,7 @@ Thiết bị TerraMaster chạy TOS 6.x hỗ trợ TLS hiện đại và hoạt 
 
 ## Cấu hình ASUSTOR NAS {#asustor-nas-configuration}
 
-Thiết bị ASUSTOR với ADM 4.x có hỗ trợ thông báo email vững chắc và hoạt động liền mạch với Forward Email.
+Thiết bị ASUSTOR với ADM 4.x có hỗ trợ thông báo email vững chắc và hoạt động với Forward Email.
 
 > \[!NOTE]
 > ASUSTOR ADM 4.x bao gồm các tùy chọn lọc thông báo nâng cao. Bạn có thể tùy chỉnh các sự kiện kích hoạt cảnh báo email.
@@ -330,7 +330,7 @@ Các thiết bị Western Digital My Cloud chạy OS 5 hỗ trợ thông báo qu
 TrueNAS (cả SCALE và CORE) có hỗ trợ thông báo email xuất sắc với các tùy chọn cấu hình chi tiết.
 
 > \[!NOTE]
-> TrueNAS cung cấp một trong những tính năng thông báo email toàn diện nhất trong các hệ thống NAS. Bạn có thể cấu hình các quy tắc cảnh báo chi tiết và nhiều người nhận.
+> TrueNAS cung cấp một trong những tính năng thông báo email chi tiết nhất trong các hệ thống NAS. Bạn có thể cấu hình các quy tắc cảnh báo chi tiết và nhiều người nhận.
 
 1. **Truy Cập Cài Đặt Hệ Thống**
    * Đăng nhập vào giao diện web TrueNAS
@@ -355,7 +355,7 @@ TrueNAS (cả SCALE và CORE) có hỗ trợ thông báo email xuất sắc vớ
 
 ## Cấu Hình OpenMediaVault {#openmediavault-configuration}
 
-OpenMediaVault cung cấp khả năng thông báo email vững chắc qua giao diện web của nó. Quá trình thiết lập rõ ràng và đơn giản.
+OpenMediaVault cung cấp khả năng thông báo email vững chắc qua giao diện web của nó. Việc thiết lập chỉ mất vài bước.
 
 > \[!NOTE]
 > Hệ thống thông báo của OpenMediaVault dựa trên plugin. Hãy đảm bảo bạn đã cài đặt và kích hoạt plugin thông báo email.
@@ -383,10 +383,10 @@ OpenMediaVault cung cấp khả năng thông báo email vững chắc qua giao d
 
 ## Cấu Hình Raspberry Pi NAS {#raspberry-pi-nas-configuration}
 
-Raspberry Pi là một điểm khởi đầu tuyệt vời cho chức năng NAS, cung cấp giải pháp tiết kiệm chi phí cho môi trường gia đình và văn phòng nhỏ. Việc thiết lập Raspberry Pi làm thiết bị NAS bao gồm cấu hình các giao thức chia sẻ tệp, thông báo email và các dịch vụ mạng thiết yếu.
+Raspberry Pi là một điểm khởi đầu chi phí thấp cho chức năng NAS trong môi trường gia đình và văn phòng nhỏ. Việc thiết lập Raspberry Pi làm thiết bị NAS bao gồm cấu hình các giao thức chia sẻ tệp, thông báo email và các dịch vụ mạng thiết yếu.
 
 > \[!TIP]
-> Đối với những người yêu thích Raspberry Pi, chúng tôi rất khuyến khích bổ sung thiết lập NAS của bạn với [PiKVM](https://pikvm.org/) để quản lý máy chủ từ xa và [Pi-hole](https://pi-hole.net/) để chặn quảng cáo toàn mạng và quản lý DNS. Những công cụ này tạo nên một môi trường phòng thí nghiệm tại nhà toàn diện.
+> Đối với những người yêu thích Raspberry Pi, chúng tôi khuyến khích bổ sung thiết lập NAS của bạn với [PiKVM](https://pikvm.org/) để quản lý máy chủ từ xa và [Pi-hole](https://pi-hole.net/) để chặn quảng cáo toàn mạng và quản lý DNS. Cùng nhau, chúng tạo nên một phòng thí nghiệm tại nhà hoàn chỉnh.
 ### Thiết Lập Ban Đầu Raspberry Pi {#initial-raspberry-pi-setup}
 
 Trước khi cấu hình các dịch vụ NAS, hãy đảm bảo Raspberry Pi của bạn đang chạy phiên bản Raspberry Pi OS mới nhất và có dung lượng lưu trữ đủ. Một thẻ microSD chất lượng cao (Class 10 hoặc tốt hơn) hoặc ổ SSD USB 3.0 sẽ cung cấp hiệu suất và độ tin cậy tốt hơn cho các hoạt động NAS.
@@ -412,7 +412,7 @@ Cấu hình các chia sẻ Samba bằng cách thêm các phần vào tệp cấu
 
 ### Thiết Lập Máy Chủ FTP {#ftp-server-setup}
 
-FTP cung cấp một phương thức truy cập tệp khác, đặc biệt hữu ích cho sao lưu tự động và quản lý tệp từ xa. Cài đặt và cấu hình vsftpd (Very Secure FTP Daemon) để có dịch vụ FTP đáng tin cậy.
+FTP cung cấp một phương thức truy cập tệp khác, hữu ích cho sao lưu tự động và quản lý tệp từ xa. Cài đặt và cấu hình vsftpd (Very Secure FTP Daemon) để có dịch vụ FTP đáng tin cậy.
 
 Cài đặt vsftpd bằng lệnh `sudo apt install vsftpd` và cấu hình dịch vụ bằng cách chỉnh sửa `/etc/vsftpd.conf`. Kích hoạt truy cập người dùng cục bộ, cấu hình chế độ thụ động và thiết lập các hạn chế bảo mật phù hợp.
 
@@ -447,7 +447,7 @@ Cấu hình thông báo hệ thống bằng cách thiết lập các công việ
 
 ### Các Tính Năng Nâng Cao Cho Raspberry Pi NAS {#advanced-raspberry-pi-nas-features}
 
-Nâng cao NAS Raspberry Pi của bạn với các dịch vụ bổ sung và khả năng giám sát. Cài đặt và cấu hình các công cụ giám sát mạng, giải pháp sao lưu tự động và dịch vụ truy cập từ xa.
+Bổ sung dịch vụ và giám sát cho NAS Raspberry Pi của bạn. Cài đặt và cấu hình các công cụ giám sát mạng, giải pháp sao lưu tự động và dịch vụ truy cập từ xa.
 
 Thiết lập [Nextcloud](https://nextcloud.com/) để có chức năng giống đám mây với truy cập tệp qua web, đồng bộ lịch và các tính năng cộng tác. Cài đặt bằng Docker hoặc theo hướng dẫn cài đặt chính thức của Nextcloud cho Raspberry Pi.
 Cấu hình sao lưu tự động sử dụng `rsync` và `cron` để tạo các bản sao lưu theo lịch cho dữ liệu quan trọng. Thiết lập thông báo qua email khi hoàn thành sao lưu và cảnh báo lỗi sử dụng cấu hình Forward Email của bạn.
@@ -487,4 +487,4 @@ Cấu hình phân đoạn mạng để cô lập NAS của bạn khỏi các thi
 
 Sao lưu định kỳ cấu hình và dữ liệu Raspberry Pi để tránh mất dữ liệu do lỗi phần cứng hoặc sự cố bảo mật. Thử nghiệm quy trình phục hồi sao lưu để đảm bảo khả năng khôi phục dữ liệu.
 
-Cấu hình NAS Raspberry Pi cung cấp nền tảng tuyệt vời để học các khái niệm lưu trữ mạng đồng thời mang lại chức năng thực tiễn cho môi trường gia đình và văn phòng nhỏ. Sự kết hợp với Forward Email đảm bảo việc gửi thông báo đáng tin cậy cho việc giám sát hệ thống và cảnh báo bảo trì.
+NAS Raspberry Pi là một cách thiết thực để học về lưu trữ mạng cho gia đình và văn phòng nhỏ. Với Forward Email, các cảnh báo giám sát và bảo trì của nó sẽ đến hộp thư của bạn.

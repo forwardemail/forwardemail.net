@@ -5,9 +5,9 @@
 > \[!NOTE]
 > This doc covers our journey building a self-hosted AI support agent. We wrote about similar challenges in our [Email Startup Graveyard](https://forwardemail.net/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail) blog post. We honestly thought about writing a follow-up called "AI Startup Graveyard" but maybe we'll have to wait another year or so until the AI bubble potentially bursts(?). For now, this is our brain dump of what worked, what didn't, and why we did it this way.
 
-This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. Why? Because we don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
+This is how we built our own AI customer support agent. We did it the hard way: self-hosted, privacy-first, and completely under our control. We don't trust third-party services with our customers' data. It's a GDPR and DPA requirement, and it's the right thing to do.
 
-This wasn't a fun weekend project. It was a month-long journey navigating broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
+This took a month of working through broken dependencies, misleading documentation, and the general chaos of the open-source AI ecosystem in 2025. This doc is a record of what we built, why we built it, and the roadblocks we hit along the way.
 
 
 ## Table of Contents
@@ -73,7 +73,7 @@ This wasn't a fun weekend project. It was a month-long journey navigating broken
 
 ## Customer Benefits: AI-Augmented Human Support
 
-Our AI system doesn't replace our support team—it makes them better. Here's what this means for you:
+Our AI system helps our support team instead of replacing it. For you, this means:
 
 ### Faster, More Accurate Responses
 
@@ -86,7 +86,7 @@ Our AI system doesn't replace our support team—it makes them better. Here's wh
 * Our comprehensive FAQ (written by humans)
 * Past customer conversations (all handled by real humans)
 
-You're getting responses informed by years of human expertise, just delivered faster.
+You're getting responses informed by years of human expertise, delivered faster.
 
 ### Consistency Without Burnout
 
@@ -124,18 +124,18 @@ Without AI assistance, this constant context-switching leads to:
 ✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
 
 > \[!NOTE]
-> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book—but a human still reads it and explains it to you.
+> **You're always talking to humans**. The AI is a research assistant that helps our team find the right answer faster. Think of it like a librarian who instantly finds the relevant book, but a human still reads it and explains it to you.
 
 
 ## A Personal Reflection: The Two-Decade Grind
 
 Before we dive into the technical weeds, a personal note. I've been at this for nearly two decades. The endless hours at the keyboard, the relentless pursuit of a solution, the deep, focused grind – this is the reality of building anything meaningful. It's a reality that's often glossed over in the hype cycles of new technology.
 
-The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. The reality? The output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
+The recent explosion of AI has been particularly frustrating. We're sold a dream of automation, of AI assistants that will write our code and solve our problems. In practice, the output is often dumpster-garbage code that requires more time to fix than it would have taken to write from scratch. The promise of making our lives easier is a false one. It's a distraction from the hard, necessary work of building.
 
-And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. And what happens? You get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are just trying to help.
+And then there's the catch-22 of contributing to open-source. You're already spread thin, exhausted from the grind. You use an AI to help you write a detailed, well-structured bug report, hoping to make it easier for maintainers to understand and fix the issue. Then you get scolded. Your contribution is dismissed as "off-topic" or low-effort, as we saw in a recent [Node.js GitHub issue](https://github.com/nodejs/node/issues/60719#issuecomment-3534304321). It's a slap in the face to senior developers who are trying to help.
 
-This is the reality of the ecosystem we're working in. It's not just about broken tools; it's about a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post is a chronicle of that reality. It's a story about the tools, yes, but it's also about the human cost of building in a broken ecosystem that is, for all its promise, fundamentally broken.
+This is the ecosystem we're working in: broken tools and a culture that often fails to respect the time and [effort of its contributors](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem). This post covers the tools and the human cost of building in an ecosystem that is, for all its promise, broken.
 
 
 ## Why Privacy Matters
@@ -145,7 +145,7 @@ Our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) co
 
 ## Cost Analysis: Cloud AI vs Self-Hosted
 
-Before diving into the technical implementation, let's talk about why self-hosting matters from a cost perspective. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
+Self-hosting also matters for cost. The pricing models of cloud AI services make them prohibitively expensive for high-volume use cases like customer support.
 
 ### Cloud AI Service Comparison
 
@@ -163,7 +163,7 @@ Before diving into the technical implementation, let's talk about why self-hosti
 
 ### Cost Breakdown: 5GB Knowledge Base
 
-Let's calculate the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
+Consider the cost of processing a 5GB knowledge base (typical for a mid-sized company with docs, emails, and support history).
 
 **Assumptions:**
 
@@ -197,12 +197,12 @@ Our setup runs on existing hardware we already own:
 * **First year total**: \~$60
 * **Ongoing**: $60/year
 
-**ROI**: Self-hosting has essentially zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
+**ROI**: Self-hosting has near-zero marginal cost since we're using existing development hardware. The system runs via cron jobs during off-peak hours.
 
 
 ## Dogfooding Our Own API
 
-One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. This isn't just good practice—it's a forcing function for performance optimization.
+One of the most important architectural decisions we made was to have all AI jobs use the [Forward Email API](https://forwardemail.net/email-api) directly. It also acts as a forcing function for performance optimization.
 
 ### Why Dogfooding Matters
 
@@ -293,7 +293,7 @@ Because our AI jobs run on the same API infrastructure:
 * **Database queries** are optimized for both use cases
 * **Bandwidth optimization** - Excluding `eml`, `raw`, `nodemailer` when listing reduces response size by \~90%
 
-When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization—improvements that directly benefit our customers.
+When `train-from-history.js` processes 1,000 emails, it's making 1,000+ API calls. Any inefficiency in the API becomes immediately apparent. This forces us to optimize IMAP access, database queries, and response serialization, and those improvements directly benefit our customers.
 
 **Example optimization**: Listing 100 messages with full content = \~10MB response. Listing with `eml: false, raw: false, nodemailer: false` = \~100KB response (100x smaller).
 
@@ -427,7 +427,7 @@ If it's acceptable for our team to use Thunderbird or webmail on encrypted works
 
 ## The Architecture
 
-Here's the basic flow. It looks simple. It wasn't.
+The basic flow looks simple, but building it was not.
 
 > \[!NOTE]
 > All jobs use the Forward Email API directly, ensuring that performance optimizations benefit both our AI system and our customers.
@@ -594,7 +594,7 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 
 1. **Inbox Zero Automation**: After successfully creating a draft, the original message is automatically moved to the Archive folder. This keeps your inbox clean and helps achieve inbox zero without manual intervention.
 
-2. **Skip AI Processing**: Simply add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
+2. **Skip AI Processing**: Add a `skip-ai` label (case-insensitive) to any message to prevent AI processing. The message will remain in your inbox untouched, allowing you to handle it manually. This is useful for sensitive messages or complex cases that require human judgment.
 
 3. **Proper Email Threading**: All draft responses include the original message quoted below (using standard ` >  ` prefix), following email reply conventions with "On \[date], \[sender] wrote:" format. This ensures proper conversation context and threading in email clients.
 
@@ -645,7 +645,7 @@ The `LANCEDB_PATH` environment variable points to the local embedded database di
 
 ## The Vector Database Graveyard
 
-This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. Here's what went wrong with each one.
+This was the first major roadblock. We tried multiple vector databases before settling on LanceDB. The table below shows what went wrong with each one.
 
 | Database     | GitHub                                                      | What Went Wrong                                                                                                                                                                                                      | Specific Issues                                                                                                                                                                                                                                                                                                                                                           | Security Concerns                                                                                                                                                                                                |
 | ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -676,7 +676,7 @@ This was the first major roadblock. We tried multiple vector databases before se
 
 ## Cron Job Configuration
 
-All AI jobs run via cron on a MacBook M5. Here's how to set up the cron jobs to run at midnight across multiple inboxes.
+All AI jobs run via cron on a MacBook M5. The steps below set up the cron jobs to run at midnight across multiple inboxes.
 
 ### Environment Variables
 
@@ -788,7 +788,7 @@ node jobs/customer-support-ai/train-from-sitemap.js
 2. Filters to only non-localized URLs or /en/ URLs (avoids duplicate content)
 3. Strips locale prefixes (/en/faq → /faq)
 4. Saves a simple JSON file with the URL list to `$LANCEDB_PATH/valid-urls.json`
-5. No crawling, no metadata scraping - just a flat list of valid URLs
+5. No crawling or metadata scraping, only a flat list of valid URLs
 
 **Why this matters:**
 
@@ -965,7 +965,7 @@ const response = await responseGenerator.generate(email, rankedContext);
 
 ## The Future: Spam Scanner R\&D
 
-This whole project wasn't just for customer support. It was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
+Beyond customer support, this project was R\&D. We can now take everything we learned about local embeddings, vector stores, and context retrieval and apply it to our next big project: the LLM layer for [Spam Scanner](https://spamscanner.net). The same principles of privacy, self-hosting, and semantic understanding will be key.
 
 
 ## Troubleshooting
@@ -1074,7 +1074,7 @@ The system is designed to help you achieve inbox zero automatically:
 
 2. **Review Drafts**: Check the Drafts folder regularly to review AI-generated responses. Edit as needed before sending.
 
-3. **Manual Override**: For messages that need special attention, simply add the `skip-ai` label before the job runs.
+3. **Manual Override**: For messages that need special attention, add the `skip-ai` label before the job runs.
 
 ### Using the skip-ai Label
 

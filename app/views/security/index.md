@@ -32,7 +32,7 @@
 
 ## Foreword
 
-At Forward Email, security is our top priority. We've implemented comprehensive security measures to protect your email communications and personal data. This document outlines our security practices and the steps we take to ensure the confidentiality, integrity, and availability of your email.
+At Forward Email, security is our top priority. This document outlines the practices we use to protect your email communications and personal data, and to keep your email confidential, intact, and available.
 
 
 ## Infrastructure Security
@@ -111,7 +111,7 @@ We follow the principle of data minimization:
 
 ## Service Providers
 
-We carefully select our service providers to ensure they meet our high security standards. Below are the providers we use for international data transfer and their GDPR compliance status:
+We select service providers that meet our security standards. Below are the providers we use for international data transfer and their GDPR compliance status:
 
 | Provider                                      | Purpose                    | DPF Certified | GDPR Compliance Page                                                                                    |
 | --------------------------------------------- | -------------------------- | ------------- | ------------------------------------------------------------------------------------------------------- |
@@ -130,7 +130,7 @@ We use these providers to ensure reliable, secure service delivery while maintai
 
 ### Regular Security Assessments
 
-Our team regularly monitors, reviews, and assesses the codebase, servers, infrastructure, and practices. We implement a comprehensive security program that includes:
+Our team regularly monitors, reviews, and assesses the codebase, servers, infrastructure, and practices. Our security program includes:
 
 * Regular rotation of SSH keys
 * Continuous monitoring of access logs
@@ -211,7 +211,7 @@ Our [Ansible configuration](https://github.com/forwardemail/forwardemail.net/tre
 
 ## Service Level Agreement
 
-We maintain a high level of service availability and reliability. Our infrastructure is designed for redundancy and fault tolerance to ensure your email service remains operational. While we don't publish a formal SLA document, we're committed to:
+We design our infrastructure for redundancy and fault tolerance to keep your email service available. While we don't publish a formal SLA document, we're committed to:
 
 * 99.9%+ uptime for all services
 * Rapid response to service disruptions
@@ -239,7 +239,7 @@ As an [open-source service](https://github.com/forwardemail/forwardemail.net), o
 
 ## Continuous Improvement
 
-We continuously improve our security posture through:
+We improve our security through:
 
 * Monitoring of security trends and emerging threats
 * Regular review and updates to security policies

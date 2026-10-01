@@ -49,7 +49,7 @@
 
 ## Áttekintés {#overview}
 
-Ez az útmutató lépésről lépésre ismerteti a Forward Email önálló hosztolásának telepítését Debian rendszereken. Kifejezetten a Debian 11 (Bullseye) és Debian 12 (Bookworm) verziókra szabott.
+Ez az útmutató lépésről lépésre ismerteti a Forward Email önálló hosztolásának telepítését Debian rendszereken. A Debian 11 (Bullseye) és Debian 12 (Bookworm) verziókat célozza.
 
 
 ## Előfeltételek {#prerequisites}
@@ -383,7 +383,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Fontos**: Amikor kéri, létre kell hoznod TXT rekordokat a DNS-ben. Több kihívást is láthatsz ugyanarra a domainre – **mindet hozd létre**. Ne töröld az első TXT rekordot, amikor a másodikat adod hozzá.
+**Fontos**: Amikor kéri, létre kell hoznod TXT rekordokat a DNS-ben. Több kihívást is láthatsz ugyanarra a domainre; **mindet hozd létre**. Ne töröld az első TXT rekordot, amikor a másodikat adod hozzá.
 
 #### B lehetőség: Cloudflare DNS (Ha Cloudflare-t használsz) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -858,6 +858,6 @@ A Forward Email önálló telepítése most már befejeződött és fut Debian a
 5. Tartsa naprakészen a telepítést
 6. Figyelje a snapd-t és a snap csomagokat
 
-Az Ubuntu-hoz képest a fő különbségek a snapd telepítése és a Docker tároló konfigurációja. Ha ezek megfelelően be vannak állítva, a Forward Email alkalmazás mindkét rendszeren azonos módon működik.
+Az Ubuntu-hoz képest a fő különbségek a snapd telepítése és a Docker tároló konfigurációja. Ha ezeket beállítod, a Forward Email alkalmazás mindkét rendszeren azonos módon működik.
 
 További konfigurációs lehetőségekért és haladó funkciókért tekintse meg a hivatalos Forward Email dokumentációt a <https://forwardemail.net/self-hosted#configuration> címen.

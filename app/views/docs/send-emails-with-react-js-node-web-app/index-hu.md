@@ -39,7 +39,7 @@ export function Email(props) {
 
 Ebben a példában a **[Nodemailer](https://github.com/nodemailer/nodemailer)** könyvtárat és annak hivatalos támogatóját, a **[Forward Email](https://forwardemail.net)** szolgáltatást használjuk a kimenő levelek küldésére és előnézetére.
 
-A kimenő levelek küldéséhez <strong class="text-success"><i class="fa fa-key"></i> jelszót kell generálnod</strong> – kérjük, kövesd a **[E-mail küldése egyedi domain SMTP-vel útmutatónkat](/guides/send-email-with-custom-domain-smtp)**.
+A kimenő levelek küldéséhez <strong class="text-success"><i class="fa fa-key"></i> jelszót kell generálnod</strong>. Kérjük, kövesd a **[E-mail küldése egyedi domain SMTP-vel útmutatónkat](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

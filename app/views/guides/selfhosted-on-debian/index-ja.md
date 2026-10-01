@@ -49,7 +49,7 @@
 
 ## 概要 {#overview}
 
-本ガイドは、Debianシステム上でForward Emailのセルフホスティングソリューションをインストールするためのステップバイステップの手順を提供します。本ガイドは特にDebian 11（Bullseye）およびDebian 12（Bookworm）向けに調整されています。
+本ガイドは、Debianシステム上でForward Emailのセルフホスティングソリューションをインストールするためのステップバイステップの手順を提供します。対象はDebian 11（Bullseye）およびDebian 12（Bookworm）です。
 
 
 ## 前提条件 {#prerequisites}
@@ -858,6 +858,6 @@ Forward EmailのセルフホストインストールはDebian上で完了し、�
 5. インストールを最新の状態に保つ
 6. snapdとsnapパッケージを監視する
 
-Ubuntuとの主な違いはsnapdのインストールとDockerリポジトリの設定です。これらが正しく設定されれば、Forward Emailアプリケーションは両システムで同様に動作します。
+Ubuntuとの主な違いはsnapdのインストールとDockerリポジトリの設定です。これらを設定すれば、Forward Emailアプリケーションは両システムで同様に動作します。
 
 追加の設定オプションや高度な機能については、公式Forward Emailドキュメント <https://forwardemail.net/self-hosted#configuration> を参照してください。

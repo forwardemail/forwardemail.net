@@ -32,7 +32,7 @@
 
 ## Esipuhe {#foreword}
 
-Forward Emaililla turvallisuus on meille ensisijainen prioriteetti. Olemme ottaneet käyttöön kattavat turvatoimet suojataksemme sähköpostiviestintäsi ja henkilökohtaiset tietosi. Tämä dokumentti kuvaa turvakäytäntömme ja toimenpiteet, joilla varmistamme sähköpostisi luottamuksellisuuden, eheyden ja saatavuuden.
+Forward Emaililla turvallisuus on meille ensisijainen prioriteetti. Tämä dokumentti kuvaa käytännöt, joilla suojaamme sähköpostiviestintäsi ja henkilökohtaiset tietosi sekä pidämme sähköpostisi luottamuksellisena, muuttumattomana ja saatavilla.
 
 
 ## Infrastruktuurin turvallisuus {#infrastructure-security}
@@ -110,7 +110,7 @@ Noudatamme tietojen minimoinnin periaatetta:
 
 ## Palveluntarjoajat {#service-providers}
 
-Valitsemme palveluntarjoajamme huolellisesti varmistaaksemme, että ne täyttävät korkeat turvallisuusvaatimuksemme. Alla ovat kansainväliseen tietojen siirtoon käyttämämme palveluntarjoajat ja heidän GDPR-yhteensopivuustilanteensa:
+Valitsemme palveluntarjoajia, jotka täyttävät turvallisuusvaatimuksemme. Alla ovat kansainväliseen tietojen siirtoon käyttämämme palveluntarjoajat ja heidän GDPR-yhteensopivuustilanteensa:
 
 | Palveluntarjoaja                              | Tarkoitus                  | DPF Sertifioitu | GDPR-yhteensopivuussivu                                                                              |
 | --------------------------------------------- | -------------------------- | --------------- | --------------------------------------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ Käytämme näitä palveluntarjoajia varmistaaksemme luotettavan ja turvallisen 
 
 ### Säännölliset turvallisuusarvioinnit {#regular-security-assessments}
 
-Tiimimme valvoo, tarkistaa ja arvioi säännöllisesti koodipohjaa, palvelimia, infrastruktuuria ja käytäntöjä. Toteutamme kattavan turvallisuusohjelman, joka sisältää:
+Tiimimme valvoo, tarkistaa ja arvioi säännöllisesti koodipohjaa, palvelimia, infrastruktuuria ja käytäntöjä. Turvallisuusohjelmaamme kuuluu:
 
 * SSH-avainten säännöllisen kierrätyksen
 * Pääsylokien jatkuvan valvonnan
@@ -209,7 +209,7 @@ Meidän [Ansible-konfiguraatiomme](https://github.com/forwardemail/forwardemail.
 
 ## Palvelutasosopimus {#service-level-agreement}
 
-Pidämme yllä korkeaa palvelun saatavuutta ja luotettavuutta. Infrastruktuurimme on suunniteltu redundanssia ja vikasietoisuutta varten varmistaaksemme, että sähköpostipalvelusi pysyy toiminnassa. Vaikka emme julkaise virallista SLA-asiakirjaa, sitoudumme:
+Suunnittelemme infrastruktuurimme redundantiksi ja vikasietoiseksi, jotta sähköpostipalvelusi pysyy saatavilla. Vaikka emme julkaise virallista SLA-asiakirjaa, sitoudumme:
 
 * Yli 99,9 % käyttöaikaan kaikille palveluille
 * Nopeaan reagointiin palvelukatkojen aikana
@@ -237,7 +237,7 @@ Avoimen lähdekoodin palveluna [open-source service](https://github.com/forwarde
 
 ## Jatkuva parantaminen {#continuous-improvement}
 
-Parannamme jatkuvasti turvallisuusasemiamme seuraavasti:
+Parannamme turvallisuuttamme seuraavasti:
 
 * Turvallisuustrendien ja uusien uhkien seuranta
 * Turvallisuuspolitiikkojen säännöllinen tarkastelu ja päivitys

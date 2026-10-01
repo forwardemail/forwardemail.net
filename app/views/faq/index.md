@@ -193,7 +193,7 @@ To get started with Forward Email:
 ### What is Forward Email
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email suits individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
 
 Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
 
@@ -274,7 +274,7 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
 ## Email Clients
 
 > \[!TIP]
-> The easiest way to use Forward Email is with our official apps for macOS, Windows, Linux, Android, and iOS. They come pre-configured for your encrypted mailboxes, calendars (CalDAV), and contacts (CardDAV) — no manual IMAP or SMTP setup — and desktop builds keep themselves current with signed automatic updates. [Download Forward Email](/download) or use any standard client below.
+> The easiest way to use Forward Email is with our official apps for macOS, Windows, Linux, Android, and iOS. They come pre-configured for your encrypted mailboxes, calendars (CalDAV), and contacts (CardDAV) with no manual IMAP or SMTP setup, and desktop builds keep themselves current with signed automatic updates. [Download Forward Email](/download) or use any standard client below.
 
 ### Thunderbird
 
@@ -328,7 +328,7 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
 
 ### Do you offer a webmail client
 
-Yes.  Our official, open-source webmail client is available at <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a> — no installation required, just log in from any browser using an alias address and its generated password (the same credentials used for IMAP, SMTP, and POP3).
+Yes.  Our official, open-source webmail client is available at <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  No installation is required: log in from any browser using an alias address and its generated password (the same credentials used for IMAP, SMTP, and POP3).
 
 It launched in February 2026 and also supports [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities), and [Domain Connect](https://domainconnect.org) for 1-click DNS setup, with real-time push notifications for IMAP, CalDAV, and CardDAV delivered over WebSockets.
 
@@ -338,7 +338,7 @@ The source code is fully open-source and available on GitHub at <a href="https:/
 
 Yes.  Native apps are available for desktop and mobile, built from the same open-source project as our webmail client, and can all be downloaded from our <a href="/download" target="_blank" rel="noopener noreferrer">download page</a>:
 
-* **Desktop**: macOS (Apple Silicon and Intel), Windows (x64 and ARM64, as either an `.exe` or `.msi` installer), and Linux (AppImage, `.deb`, `.rpm`, and Snap — each for x64 and ARM64).
+* **Desktop**: macOS (Apple Silicon and Intel), Windows (x64 and ARM64, as either an `.exe` or `.msi` installer), and Linux (AppImage, `.deb`, `.rpm`, and Snap, each for x64 and ARM64).
 * **Mobile**: Android (APK, with an alternate F-Droid build) and iOS.
 
 All release builds are published on GitHub at <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, and the download page lets you verify release checksums against `SHA256SUMS.txt`.
@@ -812,7 +812,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
 
-11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. "user" if your email is <span><user@gmail.com></span>)
     <div class="alert my-3 alert-primary">
       <i class="fa fa-info-circle font-weight-bold"></i>
       <strong class="font-weight-bold">
@@ -1069,9 +1069,9 @@ Please do not report the message as spam, but instead forward it to our manually
 
 If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
 
-You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
+You can click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
 
-However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
+However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (as an example).  Gmail shows this alert as a precaution, and there is no workaround.
 
 ### Can I remove the via forwardemail dot net in Gmail
 
@@ -1143,7 +1143,7 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
    | Tutanota       | EML                                            | <https://github.com/crepererum-oss/tatutanatata>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
    | Gandi          | EML                                            | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
    | Zoho           | EML                                            | <https://www.zoho.com/mail/help/import-export-emails.html#alink2>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-   | Other          | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+   | Other          | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to copy/paste or drag/drop emails between one account to another.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
 
@@ -1256,15 +1256,15 @@ When using the **default (system) storage**, the key is flat (e.g. `65a31c53c36b
 
 #### Data Ownership and Deletion Policy
 
-Your custom S3 bucket is entirely under your control.  We **never delete or modify** files in your custom S3 bucket — not when an alias is deleted, not when a domain is removed, and not during any cleanup operations.  We only write new backup files to your bucket.
+Your custom S3 bucket is entirely under your control.  We **never delete or modify** files in your custom S3 bucket, including when you delete an alias, remove a domain, or when we run cleanup operations.  We only write new backup files to your bucket.
 
 This means:
 
-* **Alias deletion** — When you delete an alias, we remove the backup from our default system storage only.  Any backups previously written to your custom S3 bucket remain untouched.
-* **Domain removal** — Removing a domain does not affect files in your custom bucket.
-* **Retention management** — You are responsible for managing storage in your own bucket, including configuring lifecycle rules to expire old backups.
+* **Alias deletion**: When you delete an alias, we remove the backup from our default system storage only.  Any backups previously written to your custom S3 bucket remain untouched.
+* **Domain removal**: Removing a domain does not affect files in your custom bucket.
+* **Retention management**: You are responsible for managing storage in your own bucket, including configuring lifecycle rules to expire old backups.
 
-If you disable custom S3 storage or switch back to our default storage, existing files in your bucket are preserved.  Future backups will simply be written to our default storage instead.
+If you disable custom S3 storage or switch back to our default storage, existing files in your bucket are preserved.  Future backups will be written to our default storage instead.
 
 #### Security
 
@@ -1307,7 +1307,7 @@ If you download or store SQLite backups (either from our default storage or your
 
 You can either download a pre-built binary (no [Node.js](https://github.com/nodejs/node) required) or run it directly with [Node.js](https://github.com/nodejs/node):
 
-**Pre-built binaries** — Download the latest release for your platform from [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
+**Pre-built binaries**: Download the latest release for your platform from [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
 
 | Platform | Architecture  | File                                 |
 | -------- | ------------- | ------------------------------------ |
@@ -1344,7 +1344,7 @@ node index.js
 
 The tool supports both interactive and non-interactive modes.
 
-**Interactive mode** — run without arguments and you will be prompted for all inputs:
+**Interactive mode**: run without arguments and you will be prompted for all inputs:
 
 ```bash
 ./convert-sqlite-to-eml
@@ -1359,7 +1359,7 @@ The tool supports both interactive and non-interactive modes.
   Output ZIP path [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
 ```
 
-**Non-interactive mode** — pass arguments via command-line flags for scripting and automation:
+**Non-interactive mode**: pass arguments via command-line flags for scripting and automation:
 
 ```bash
 ./convert-sqlite-to-eml \
@@ -1572,7 +1572,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <tr>
       <td>Other</td>
       <td>
-        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> If your registrar is not listed here, search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
       </td>
     </tr>
   </tbody>
@@ -1682,7 +1682,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Option B:
   </strong>
   <span>
-    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+    If you need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
   </span>
 </div>
 
@@ -1748,7 +1748,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Option D:
   </strong>
   <span>
-    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+    You can have an infinite amount of forwarding emails setup.  Make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
   </span>
 </div>
 
@@ -2019,7 +2019,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Tip:
   </strong>
   <span>
-    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+    Optional add-ons are listed below.  Note that these add-ons are optional and may not be necessary.
   </span>
 </div>
 
@@ -2164,7 +2164,7 @@ Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noop
 
 ### How do I view DMARC Reports
 
-Forward Email provides a comprehensive DMARC Reports dashboard that allows you to monitor your email authentication performance across all your domains from a single interface.
+Forward Email provides a DMARC Reports dashboard that allows you to monitor your email authentication performance across all your domains from a single interface.
 
 **What are DMARC Reports?**
 
@@ -2222,15 +2222,15 @@ Weekly reports are sent automatically and cannot be disabled separately from oth
 
 ### Why do my DMARC reports show failures from unknown IP addresses
 
-If your DMARC reports contain unfamiliar IP addresses failing SPF and DKIM, **please do not worry** – this is normal and actually means your setup is working correctly.
+If your DMARC reports contain unfamiliar IP addresses failing SPF and DKIM, **please do not worry** – this is normal and means your setup is working correctly.
 
-DMARC reports list **every** server that attempted to send mail claiming to be from your domain, including unauthorized ones.  In nearly all cases these unknown IPs are simply spammers or bots trying to impersonate your domain.  Here is what happens when they try:
+DMARC reports list **every** server that attempted to send mail claiming to be from your domain, including unauthorized ones.  In nearly all cases these unknown IPs are spammers or bots trying to impersonate your domain.  When they try:
 
 * **SPF fails** because the sending IP is not listed in your SPF record.
 * **DKIM fails** because they cannot produce a valid signature for your domain.
 * With a DMARC policy of `p=reject`, the message is **rejected outright** and never reaches anyone's inbox.
 
-In other words, these failures are proof that DMARC is doing its job – blocking impersonation attempts before they cause harm.  No action is required on your part.
+These failures show that DMARC is blocking impersonation attempts before they cause harm.  No action is required on your part.
 
 **How to tell legitimate senders from impersonators**
 
@@ -2245,23 +2245,23 @@ If you also use other services to send mail on your domain's behalf (marketing t
 
 ### How do I connect and configure my contacts
 
-**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
+**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or `carddav.forwardemail.net` if your client allows it)
 
 ### How do I connect and configure my calendars
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or `caldav.forwardemail.net` if your client allows it)
 
 <!-- <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" /> -->
 
 ### How do I add more calendars and manage existing calendars
 
-If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+If you'd like to add additional calendars, then add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+You can change a calendar's name and color after creation in your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
 
 ### How do I connect and configure tasks and reminders
 
-**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or `caldav.forwardemail.net` if your client allows it)
 
 Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
 
@@ -2419,7 +2419,7 @@ If you no longer need API access, you can disable your token with `DELETE /v1/ac
 
 ### Do you support receiving email with IMAP
 
-Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our detailed article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
@@ -2443,7 +2443,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, and iOS &mdash; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, and iOS; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 4. When prompted for IMAP server name, enter `imap.forwardemail.net`
@@ -2477,7 +2477,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
 
 ### Do you support POP3
 
-Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our detailed article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
@@ -2501,7 +2501,7 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, and iOS &mdash; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, and iOS; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
@@ -2550,14 +2550,14 @@ In order to use calendar support, the **user** must be the email address of an a
 
 Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
 
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
+Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks.
 
 **How calendars and lists work:**
 
 * **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
 * **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
 * **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
-* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+* **Cross-client sync** - Tasks and events sync between all compatible clients
 
 **Supported task clients:**
 
@@ -2644,7 +2644,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, and iOS &mdash; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend <a class="alert-link" href="/download">our official Forward Email apps</a> for macOS, Windows, Linux, Android, and iOS; they come pre-configured for your encrypted mailboxes, calendars, and contacts. You can also use <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
@@ -2998,13 +2998,13 @@ Learn more about passkeys at the following links:
 
 ### Is two-factor authentication (2FA) supported
 
-Yes, for logging into your account — including <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a> — via one-time passcodes, backed by recovery keys.
+Yes, for logging into your account (including <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a>) via one-time passcodes, backed by recovery keys.
 
-2FA applies to your account login itself, not to IMAP, SMTP, POP3, CalDAV, or CardDAV connections from third-party clients (Thunderbird, Apple Mail, etc.) — those authenticate with an alias-specific generated password instead, so there isn't currently a 2FA-equivalent standard for that class of client. If you'd like to see that change, a GitHub feature request is the best way to make the case for it.
+2FA applies to your account login itself, not to IMAP, SMTP, POP3, CalDAV, or CardDAV connections from third-party clients (Thunderbird, Apple Mail, etc.).  Those clients authenticate with an alias-specific generated password instead, so there isn't currently a 2FA-equivalent standard for that class of client. If you'd like to see that change, open a feature request on GitHub.
 
 ### Do you support email best practices
 
-Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
+Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure high deliverability.
 
 ### Do you support bounce webhooks
 
@@ -3013,7 +3013,7 @@ Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plan
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+    For documentation on email webhooks, see <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
   <span>
   </span>
 </div>
@@ -3086,12 +3086,12 @@ Here are a few additional notes regarding bounce webhooks:
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+    For documentation on bounce webhooks, see <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
   <span>
   </span>
 </div>
 
-Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
+Yes, as of May 15, 2020 we have added this feature.  You can add webhook(s) exactly like you would with any recipient.  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
 
 <div class="alert my-3 alert-danger">
   <i class="fa fa-stop-circle font-weight-bold"></i>
@@ -3103,9 +3103,9 @@ Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
+If you are on the free plan, then add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
 
-For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
+For example, if you want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -3156,7 +3156,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
     * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
   * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
 * If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
-* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
+* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
 * We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
 * We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
 * Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
@@ -3166,7 +3166,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 * The grouped recipients for this webhook are grouped together and given as the property "recipients".
 * The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
 * If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
-* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
+* If you need to remove `attachments` and/or `raw` properties from the payload body, add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
 * If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
 
   ```js
@@ -3197,7 +3197,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Curious what the webhook request looks like from forwarded emails?  We've included an example below for you!
+    An example webhook request from a forwarded email is shown below.
   <span>
   </span>
 </div>
@@ -3384,7 +3384,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 
 ### Do you support regular expressions or regex
 
-Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
+Yes, as of September 27, 2021 we have added this feature.  You can write regular expressions ("regex") for matching aliases and performing substitions.
 
 Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
 
@@ -3440,7 +3440,7 @@ Regular expressions are not supported on <a href="/disposable-addresses" target=
 
 #### Examples for the free plan
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
+If you are on the free plan, then add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3540,7 +3540,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -3564,7 +3564,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -3588,7 +3588,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
 
 <div class="alert my-3 alert-secondary">
   <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -3615,7 +3615,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+    To write a regular expression or test your replacement, go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
   <span>
   </span>
 </div>
@@ -3700,7 +3700,7 @@ Some DNS providers also support a wildcard <strong class="notranslate">CNAME</st
 
 <div class="alert my-3 alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong>Important:</strong> Do not add a <strong class="notranslate">CNAME</strong> record on the root/apex (`@`) itself, as it conflicts with your <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong>, and other records.  Keep the `forward-email-site-verification=` <strong class="notranslate">TXT</strong> record published at your root domain &mdash; subdomains inherit it automatically.
+  <strong>Important:</strong> Do not add a <strong class="notranslate">CNAME</strong> record on the root/apex (`@`) itself, as it conflicts with your <strong class="notranslate">MX</strong>, <strong class="notranslate">TXT</strong>, and other records.  Keep the `forward-email-site-verification=` <strong class="notranslate">TXT</strong> record published at your root domain; subdomains inherit it automatically.
 </div>
 
 #### Subdomain substitution tokens {#subdomain-substitution-tokens}
@@ -3752,7 +3752,7 @@ When you use <a href="#do-you-support-regular-expressions-or-regex" class="alert
 
 ### What are your outbound SMTP limits
 
-We enforce outbound SMTP rate limits at multiple levels to prevent abuse while keeping things flexible for legitimate use. Each level is checked in order — whichever limit is reached first will temporarily reject the message with a `421` error (meaning "try again later").
+We enforce outbound SMTP rate limits at multiple levels to prevent abuse while keeping things flexible for legitimate use. Each level is checked in order, and whichever limit is reached first will temporarily reject the message with a `421` error (meaning "try again later").
 
 **Rate limit hierarchy:**
 
@@ -3764,10 +3764,10 @@ We enforce outbound SMTP rate limits at multiple levels to prevent abuse while k
 
 **How the effective limit is determined:**
 
-* **Team plan domains** — the effective daily limit is the highest `smtp_limit` among all admin members of the domain. For example, if one admin has a limit of 300 and another has 500, the domain's effective limit is 500.
-* **Enhanced Protection and other plans** — the effective daily limit is the sending user's own `smtp_limit` (which defaults to 300 messages per day).
-* **Per-alias override** — domain administrators can optionally set a custom `smtp_limit` on individual aliases. When set, this is checked first (before the domain and user limits). This is useful for restricting specific aliases to a lower sending volume.
-* **Domain default for new aliases** — domain administrators can set an `alias_default_smtp_limit` on the domain (via the API or Advanced Settings in the dashboard). When set, all newly created aliases on that domain will automatically inherit this value as their `smtp_limit`. This cannot exceed the domain’s effective SMTP limit. Existing aliases are not affected. Set to `0` to disable.
+* **Team plan domains**: the effective daily limit is the highest `smtp_limit` among all admin members of the domain. For example, if one admin has a limit of 300 and another has 500, the domain's effective limit is 500.
+* **Enhanced Protection and other plans**: the effective daily limit is the sending user's own `smtp_limit` (which defaults to 300 messages per day).
+* **Per-alias override**: domain administrators can optionally set a custom `smtp_limit` on individual aliases. When set, this is checked first (before the domain and user limits). This is useful for restricting specific aliases to a lower sending volume.
+* **Domain default for new aliases**: domain administrators can set an `alias_default_smtp_limit` on the domain (via the API or Advanced Settings in the dashboard). When set, all newly created aliases on that domain will automatically inherit this value as their `smtp_limit`. This cannot exceed the domain’s effective SMTP limit. Existing aliases are not affected. Set to `0` to disable.
 
 **System administrators** (Forward Email staff) are exempt from all rate limits.
 
@@ -3785,29 +3785,29 @@ When you request outbound SMTP approval (or ask us to reinstate it after a [susp
 
 * Confirmation that you've read and agree to our [terms](/terms), which specifically prohibit using the service for anything on [Stripe's Prohibited Businesses](https://stripe.com/legal/restricted-businesses) or [PayPal's Prohibited Activities](https://www.paypal.com/us/legalhub/acceptableuse-full) lists.
 * What you intend to use outbound SMTP for.
-* A link to your website, business information, or a profile (e.g. LinkedIn, GitHub) that lets us verify you're a real, legitimate sender — a domain pointing to a blank or empty website is a common reason approval is delayed.
+* A link to your website, business information, or a profile (e.g. LinkedIn, GitHub) that lets us verify you're a real, legitimate sender.  A domain pointing to a blank or empty website is a common reason approval is delayed.
 * Confirmation that you won't use the service for spam or bulk/unsolicited marketing.
 
 This is the same information we ask for either way, whether it's a first-time approval or reinstating a domain after suspension.
 
 ### Why was my outbound SMTP suspended
 
-Outbound SMTP that has already been approved can still be paused if we detect a pattern of abuse. This is separate from the [approval process](#do-i-need-approval-to-enable-smtp) above and from our [outbound rate limits](#what-are-your-outbound-smtp-limits) — it triggers when a trusted source (e.g. a major mailbox provider) reports your outgoing mail as a virus or spam.
+Outbound SMTP that has already been approved can still be paused if we detect a pattern of abuse. This is separate from the [approval process](#do-i-need-approval-to-enable-smtp) above and from our [outbound rate limits](#what-are-your-outbound-smtp-limits).  It triggers when a trusted source (e.g. a major mailbox provider) reports your outgoing mail as a virus or spam.
 
 There are two stages:
 
-1. **A single detection** sends you a "Message prevented" notice for that one message — informational, and your outbound queue keeps running.
-2. **Multiple detections within a short rolling window** cross our abuse-detection threshold and trigger a full "Outbound SMTP is suspended" notice. At that point your entire outbound SMTP queue is paused — no further outbound messages are attempted for that domain until the issue is resolved.
+1. **A single detection** sends you a "Message prevented" notice for that one message.  This notice is informational, and your outbound queue keeps running.
+2. **Multiple detections within a short rolling window** cross our abuse-detection threshold and trigger a full "Outbound SMTP is suspended" notice. At that point your entire outbound SMTP queue is paused, and no further outbound messages are attempted for that domain until the issue is resolved.
 
 Either notice includes the specific message that was flagged (`MAIL FROM`, `RCPT TO`, `Message-ID`, subject, and date), which trusted source and content category flagged it, how many detections you've had against the threshold, how many unique recipients and trusted sources were involved, and the SMTP status code and response.
 
-If you receive one of these notices, please contact us at <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) — suspension is not lifted automatically, so you'll need to reach out to resolve it.
+If you receive one of these notices, please contact us at <support@forwardemail.net> or open a [help request](https://forwardemail.net/help).  Suspension is not lifted automatically, so you'll need to reach out to resolve it.
 
 ### Why do newly registered or recently expired domains require a paid plan
 
 When you add a domain (and on an ongoing basis for domains on the free plan), we run a WHOIS/RDAP lookup against it. If the domain was **created within the past 90 days**, **expired within the past 90 days**, or is currently in a **pending transfer, update, or delete** state with its registrar, we require it to be on a paid plan before you can send or receive mail with it.
 
-This is an abuse-prevention measure, not a reflection on you personally — major registrars including GoDaddy, Namecheap, and Hostgator have previously blocked our infrastructure entirely because of abuse patterns involving recently expired domain takeovers and fraudulently registered new domains. Requiring a paid plan for these domains is what lets us keep offering a free plan at all without losing registrar trust.
+This is an abuse-prevention measure.  Major registrars including GoDaddy, Namecheap, and Hostgator have previously blocked our infrastructure entirely because of abuse patterns involving recently expired domain takeovers and fraudulently registered new domains. Requiring a paid plan for these domains is what lets us keep offering a free plan at all without losing registrar trust.
 
 WHOIS/RDAP results are cached for 24 hours, so a domain that just crossed the 90-day mark may take up to a day to reflect that. To use the domain immediately, upgrade to a paid plan (starting at $3/mo for unlimited domains and aliases).
 
@@ -4025,7 +4025,7 @@ Third-party validation: <https://www.hardenize.com/report/forwardemail.net/17503
 
 ### Do you preserve email authentication headers
 
-Yes. Forward Email comprehensively implements and preserves email authentication headers:
+Yes. Forward Email implements and preserves email authentication headers:
 
 * **SPF (Sender Policy Framework)**: Properly implemented and preserved
 * **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
@@ -4040,9 +4040,9 @@ Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKI
 ### Do you preserve original email headers and prevent spoofing
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Email implements anti-spoofing protection to prevent email abuse.
 
-Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+Forward Email preserves original email headers while implementing anti-spoofing protection through the MX codebase:
 
 * **Header Preservation**: Original authentication headers are maintained during forwarding
 * **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
@@ -4060,7 +4060,7 @@ Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
 ### How do you protect against spam and abuse
 
-Forward Email implements comprehensive multi-layer protection:
+Forward Email implements multi-layer protection:
 
 * **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
 * **Resource Isolation**: Between users to prevent impact from high-volume users
@@ -4080,12 +4080,12 @@ Sources:
 
 Yes. Every domain scans incoming links and attachments using <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>, the open-source anti-spam, phishing, and virus protection we built ourselves (and which follows the same privacy-first, zero-logging policies as the rest of Forward Email). Four categories can each be toggled independently at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Advanced Settings:
 
-* **Adult-related content protection** — if disabled, links are not scanned for adult-related content.
-* **Phishing protection** — if disabled, links are not scanned for malware, domain swapping, IDN homograph attacks, or phishing in general.
-* **Executable protection** — if disabled, links and attachments are not scanned for potentially-malicious executable file types, extensions, names, headers, or IDN homograph attacks.
-* **Virus protection** — if disabled, attachments are not scanned for trojans, viruses, malware, or other malicious threats (via ClamAV).
+* **Adult-related content protection**: if disabled, links are not scanned for adult-related content.
+* **Phishing protection**: if disabled, links are not scanned for malware, domain swapping, IDN homograph attacks, or phishing in general.
+* **Executable protection**: if disabled, links and attachments are not scanned for potentially-malicious executable file types, extensions, names, headers, or IDN homograph attacks.
+* **Virus protection**: if disabled, attachments are not scanned for trojans, viruses, malware, or other malicious threats (via ClamAV).
 
-All four default to enabled. Disabling one only turns off scanning for that specific category — it does not disable spam filtering as a whole, and it's separate from [disabling a specific alias](#can-i-disable-specific-aliases). The most common reason to disable a category is a false-positive pattern specific to your traffic (e.g. adult-content scanning flagging legitimate mailing lists for an adult-themed venue or business).
+All four default to enabled. Disabling one only turns off scanning for that specific category.  It does not disable spam filtering as a whole, and it's separate from [disabling a specific alias](#can-i-disable-specific-aliases). The most common reason to disable a category is a false-positive pattern specific to your traffic (e.g. adult-content scanning flagging legitimate mailing lists for an adult-themed venue or business).
 
 ### Do you store email content on disk
 
@@ -4107,7 +4107,7 @@ Sources:
 
 ### Can email content be exposed during system crashes
 
-No. Forward Email implements comprehensive safeguards against crash-related data exposure:
+No. Forward Email implements safeguards against crash-related data exposure:
 
 * **Core Dumps Disabled**: Prevents memory exposure during crashes
 * **Controlled Swap Usage**: Application and other non-database hosts remain swap-free and are sized and monitored so normal workloads stay in RAM. MongoDB and Redis hosts use a root-only swap file with `vm.swappiness=1` strictly as an out-of-memory safety net, not normal capacity. Disabling swap everywhere can turn transient database memory pressure into an immediate OOM kill. Database swap activity is monitored and investigated.
@@ -4127,7 +4127,7 @@ Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
 ### Who has access to your email infrastructure
 
-Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
+Forward Email implements access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
 
 * **Role-Based Access Control**: For team accounts with resource-based permissions
 * **Least Privilege Principle**: Applied throughout all systems
@@ -4149,7 +4149,7 @@ Sources:
 ### What infrastructure providers do you use
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email uses multiple infrastructure subprocessors with compliance certifications.
 
 Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
 
@@ -4205,7 +4205,7 @@ Complete details are available on our GDPR compliance page: <https://forwardemai
 
 ### Do you offer a Data Processing Agreement (DPA)
 
-Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+Yes, Forward Email offers a Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
 
 **DPA Details:**
 
@@ -4227,7 +4227,7 @@ For enterprise customers requiring custom DPA terms or specific contractual arra
 
 **Where processing happens today:** our servers are located primarily in Denver, Colorado, United States (see [Where are your servers located](#where-are-your-servers-located) and <https://forwardemail.net/ips>).  This applies to every feature: inbound forwarding, error logs, mailbox storage (IMAP/POP3/CalDAV/CardDAV), and outbound SMTP.
 
-**What is planned:** an EU datacenter in Amsterdam, hosted under [forwardemail.eu](https://forwardemail.eu).  To keep EU data genuinely isolated – legally as well as technically – it needs to operate through a separate EU-based company, not only through servers in an EU location.  We do not have a launch date yet, and joining a waitlist does not change where your mail is processed today.  Subscribe to <https://github.com/orgs/forwardemail/discussions/336> for announcements; we will describe there how existing customers can opt in once it is available.
+**What is planned:** an EU datacenter in Amsterdam, hosted under [forwardemail.eu](https://forwardemail.eu).  To keep EU data isolated – legally as well as technically – it needs to operate through a separate EU-based company, not only through servers in an EU location.  We do not have a launch date yet, and joining a waitlist does not change where your mail is processed today.  Subscribe to <https://github.com/orgs/forwardemail/discussions/336> for announcements; we will describe there how existing customers can opt in once it is available.
 
 **What you can accurately state today:**
 
@@ -4282,7 +4282,7 @@ If you are a controller (or a processor yourself) under GDPR Article 28 and you 
 ### How do you handle data breach notifications
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Forward Email's zero-knowledge architecture limits breach impact.
 
 * **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
 * **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
@@ -4312,7 +4312,7 @@ Sources:
 
 ### How do I report a security vulnerability
 
-If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>. This is a dedicated address for vulnerability and bug reports, separate from general support — emailing it directly gets your report to the team responsible for handling it.
+If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>. This is a dedicated address for vulnerability and bug reports, separate from general support.  Emailing it directly gets your report to the team responsible for handling it.
 
 ### Do you offer a test environment
 
@@ -4352,7 +4352,7 @@ Sources:
 ### How do you ensure high availability
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email implements redundancy across multiple infrastructure providers.
 
 * **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
 * **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
@@ -4388,7 +4388,7 @@ Forward Email relies exclusively on two key infrastructure providers, neither of
 
 **Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
 
-For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+For complete details about our government compliance framework, including broader federal regulations, read our case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
 
 ## System and Technical Details
@@ -5263,7 +5263,7 @@ If this criteria is satisfied, then the sender root domain will be cached for 7 
 
 Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
 
-Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
+Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are included.
 
 If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
 
@@ -5450,7 +5450,7 @@ Senders that are detected to be sending spam or virus content will be added to t
 
 ### Do you have rate limiting
 
-Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
+Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it uses the sender's IP address.  Note that we refer to this as `Sender` below.
 
 Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
 
@@ -5459,10 +5459,10 @@ Our MX servers have daily limits for inbound mail received for [encrypted IMAP s
   * **Tier 1 – Truth sources** (e.g. `gmail.com`, `microsoft.com`, `apple.com`): limited to 100 GB per day globally.  Exempt from per-domain and burst limits.
   * **Tier 2 – [Allowlisted](#do-you-have-an-allowlist) senders**: limited to 10 GB per day globally.  Exempt from per-domain and burst limits.
   * **Tier 3 – All other senders**: limited to 1 GB and/or 1000 messages per day globally, 1 GB and/or 1000 messages per `Sender`+domain daily, and a burst limit of 50 messages per `Sender`+domain per minute.
-* The burst limit uses a fixed-window counter (60 seconds).  The window starts when the first message arrives and expires after 60 seconds regardless of subsequent messages — it does not slide or reset on each message.
+* The burst limit uses a fixed-window counter (60 seconds).  The window starts when the first message arrives and expires after 60 seconds regardless of subsequent messages.  It does not slide or reset on each message.
 * We have a per-recipient mailbox daily cap of 100,000 messages.  This applies to all tiers and prevents any single mailbox from being flooded regardless of sender trust level.
 
-All rate limits are enforced atomically — counters are incremented before the message is stored, eliminating race conditions where concurrent requests could bypass limits.  Decrement operations (used when storage fails after increment) use safe Lua scripts that prevent counters from going negative.
+All rate limits are enforced atomically: counters are incremented before the message is stored, eliminating race conditions where concurrent requests could bypass limits.  Decrement operations (used when storage fails after increment) use safe Lua scripts that prevent counters from going negative.
 
 The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
 
@@ -5482,14 +5482,14 @@ Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from e
 
 ### What are your bandwidth limits
 
-We enforce per-user bandwidth limits across all services to prevent flooding attacks while remaining generous enough for legitimate usage.  These limits are intentionally well above Gmail's — you can import large backups, sync your entire mailbox to a new device, or use multiple clients simultaneously without hitting any walls.
+We enforce per-user bandwidth limits across all services to prevent flooding attacks while remaining generous enough for legitimate usage.  These limits are intentionally well above Gmail's, so you can import large backups, sync your entire mailbox to a new device, or use multiple clients simultaneously without hitting any walls.
 
 | Limit              | Scope                                                     |   Amount  |
 | :----------------- | :-------------------------------------------------------- | :-------: |
 | Daily total        | All services combined (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Hourly per service | Per individual service (e.g. IMAP download, SMTP upload)  | **10 GB** |
 
-The daily limit is a single shared budget across all protocols — whether you download via IMAP, upload via SMTP, or sync calendars via CalDAV, it all counts toward the same 50 GB/day.  The per-service hourly limit is a safety net against runaway scripts or compromised accounts on a single protocol — not something a legitimate user should ever hit.
+The daily limit is a single shared budget across all protocols.  Whether you download via IMAP, upload via SMTP, or sync calendars via CalDAV, it all counts toward the same 50 GB/day.  The per-service hourly limit is a safety net against runaway scripts or compromised accounts on a single protocol, and a legitimate user should not hit it.
 
 These limits are per user account (not per alias or domain) and reset daily.  This means creating additional aliases does not increase your bandwidth allowance.  If Redis is unavailable, rate limiting is skipped entirely (fail-open) so your service is never interrupted.
 
@@ -5569,9 +5569,9 @@ Yes, as of May 5, 2020 we have added this feature.  Right now the feature is dom
   </span>
 </div>
 
-If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
+If you are on the free plan, then add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
 
-For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
+For example, if you want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5597,7 +5597,7 @@ For example, if I want all emails that go to `example.com` to forward to alias r
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, add the following <strong class="notranslate">TXT</strong> catch-all record.
   <span>
   </span>
 </div>
@@ -5627,7 +5627,7 @@ Yes, absolutely.
 
 ### Does it support sub-domains
 
-Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
+Yes.  Instead of using "@", ".", or blank as the name/host/alias, use the sub-domain name as the value.
 
 If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
 
@@ -5733,7 +5733,7 @@ No, it is not recommended, as you can only use one mail exchange server at a tim
   </span>
 </div>
 
-Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
+Yes, edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
 
 Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
 
@@ -5743,7 +5743,7 @@ Note that you *should* preserve the ":" mapping, as this is required if you ever
 
 **For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
 
-For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+For example, if you want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5770,7 +5770,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     Tip:
   </strong>
   <span>
-    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+    You can also rewrite the forwarded recipient's address to "nobody@forwardemail.net", which will route it to nobody as in the example below.
   </span>
 </div>
 
@@ -5824,9 +5824,9 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
 
 ### Can I forward emails to multiple recipients
 
-Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+Yes.  Specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
 
-For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+For example, if you want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then your <strong class="notranslate">TXT</strong> record would look like this:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5878,9 +5878,9 @@ It's up to you!
 
 ### Can I have multiple global catch-all recipients
 
-Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+Yes, you can. Specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
 
-For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+For example, if you want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then your <strong class="notranslate">TXT</strong> record would look like this:
 
 <table class="table table-striped table-hover my-3">
   <thead class="thead-dark">
@@ -5940,7 +5940,7 @@ Yes, the default limit is 10.  This does NOT mean that you can only have 10 alia
     Tip:
   </strong>
   <span>
-    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+    If you need more than 10 recipients per alias, send us an email and we can increase your account's limit.
   </span>
 </div>
 
@@ -5956,10 +5956,10 @@ We use MX and <strong class="notranslate">TXT</strong> record verification, ther
 
 Go to <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">My Account → Billing</a> and scroll to the **Add-ons** section, which has two request forms:
 
-* **Storage Upgrade** — choose an amount to add (+10, +20, +30, +40, or +50 GB), or select "Other" to request a custom amount.
-* **Outbound SMTP Limit Upgrade** — choose an amount to add (+1000, +2000, or +3000 emails daily), or select "Other" to request a custom amount.
+* **Storage Upgrade**: choose an amount to add (+10, +20, +30, +40, or +50 GB), or select "Other" to request a custom amount.
+* **Outbound SMTP Limit Upgrade**: choose an amount to add (+1000, +2000, or +3000 emails daily), or select "Other" to request a custom amount.
 
-Submitting either form sends your request to our team for review — it does not charge you immediately. Once approved, we'll email you a secure payment link to complete the upgrade. You can have one pending request per type (storage or SMTP) at a time; submitting again within 3 days of a prior request for the same type isn't allowed until that window passes.
+Submitting either form sends your request to our team for review and does not charge you immediately. Once approved, we'll email you a secure payment link to complete the upgrade. You can have one pending request per type (storage or SMTP) at a time; submitting again within 3 days of a prior request for the same type isn't allowed until that window passes.
 
 ### What is included in the Enterprise License
 
@@ -6050,7 +6050,7 @@ You should also set the SPF record for Gmail in your DNS configuration <strong c
 
 ### Can I "send mail as" in Outlook with this
 
-Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
+Yes! As of October 2, 2018 we have added this feature.  See these two links from Microsoft below:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>

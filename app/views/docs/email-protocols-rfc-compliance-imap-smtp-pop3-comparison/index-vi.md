@@ -252,7 +252,7 @@ sequenceDiagram
 > \[!NOTE]
 > Forward Email hỗ trợ IMAP4rev1 (RFC 3501) với hỗ trợ một phần cho các tính năng IMAP4rev2 (RFC 9051).
 
-Forward Email cung cấp hỗ trợ IMAP4 mạnh mẽ thông qua việc triển khai máy chủ thư WildDuck. Máy chủ này thực thi IMAP4rev1 (RFC 3501) với hỗ trợ một phần cho các mở rộng IMAP4rev2 (RFC 9051).
+Forward Email cung cấp hỗ trợ IMAP4 thông qua việc triển khai máy chủ thư WildDuck. Máy chủ này thực thi IMAP4rev1 (RFC 3501) với hỗ trợ một phần cho các mở rộng IMAP4rev2 (RFC 9051).
 
 Chức năng IMAP của Forward Email được cung cấp bởi phụ thuộc [WildDuck](https://github.com/nodemailer/wildduck). Các RFC email sau được hỗ trợ:
 
@@ -604,7 +604,7 @@ Forward Email sử dụng thư viện [mailauth](https://github.com/postalsys/ma
 | [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Xác Thực Tin Nhắn Dựa Trên Domain, Báo Cáo và Tuân Thủ (DMARC)       | Thực thi chính sách DMARC                                    |
 | [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Chuỗi Nhận Xác Thực (ARC)                                           | Niêm phong và xác minh ARC                                   |
 
-Các giao thức xác thực email xác minh rằng tin nhắn thực sự đến từ người gửi được khai báo và không bị thay đổi trong quá trình truyền.
+Các giao thức xác thực email xác minh rằng tin nhắn đến từ người gửi được khai báo và không bị thay đổi trong quá trình truyền.
 
 ### Hỗ Trợ Giao Thức Xác Thực {#authentication-protocol-support}
 
@@ -839,7 +839,7 @@ Giao thức mã hóa tin nhắn bảo vệ nội dung email khỏi bị đọc b
 1. Tạo cặp khóa PGP trong trình khách email của bạn
 2. Tải khóa công khai lên WKD của Forward Email
 3. Khóa của bạn được người dùng khác tự động phát hiện
-4. Gửi và nhận email mã hóa một cách liền mạch
+4. Gửi và nhận email mã hóa
 
 ### S/MIME (Secure/Multipurpose Internet Mail Extensions) {#smime-securemultipurpose-internet-mail-extensions}
 
@@ -2457,7 +2457,7 @@ Kết nối không trả về phản hồi CAPA nếu không xác thực.
 > \[!NOTE]
 > Những quan sát và giới hạn quan trọng từ kết quả kiểm tra.
 
-1. **Fastmail Hết Thời Gian Chờ**: Kết nối Fastmail bị hết thời gian chờ trong quá trình kiểm tra, có thể do giới hạn tần suất hoặc hạn chế tường lửa từ IP máy chủ kiểm tra. Fastmail được biết đến với hỗ trợ IMAP/POP3/SMTP mạnh mẽ dựa trên tài liệu của họ.
+1. **Fastmail Hết Thời Gian Chờ**: Kết nối Fastmail bị hết thời gian chờ trong quá trình kiểm tra, có thể do giới hạn tần suất hoặc hạn chế tường lửa từ IP máy chủ kiểm tra. Fastmail ghi nhận hỗ trợ đầy đủ IMAP/POP3/SMTP trong tài liệu của họ.
 
 2. **Phản Hồi CAPA POP3**: Một số nhà cung cấp (Gmail, Outlook.com, Forward Email) không trả về phản hồi CAPA nếu không xác thực. Đây là thực hành bảo mật phổ biến cho máy chủ POP3.
 

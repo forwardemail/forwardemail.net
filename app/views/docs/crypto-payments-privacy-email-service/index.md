@@ -21,12 +21,12 @@
 
 ## Foreword
 
-At [Forward Email](https://forwardemail.net), we're constantly looking for ways to improve your [privacy](https://en.wikipedia.org/wiki/Privacy) and security while making our service more accessible. Today, we're excited to announce that we now accept [cryptocurrency](https://en.wikipedia.org/wiki/Cryptocurrency) payments through [Stripe's](https://stripe.com) crypto payment integration.
+At [Forward Email](https://forwardemail.net), we look for ways to improve your [privacy](https://en.wikipedia.org/wiki/Privacy) and security and to make our service more accessible. We now accept [cryptocurrency](https://en.wikipedia.org/wiki/Cryptocurrency) payments through [Stripe's](https://stripe.com) crypto payment integration.
 
 
 ## Why Crypto Payments Matter
 
-[Privacy](https://en.wikipedia.org/wiki/Internet_privacy) has always been at the core of our service. While we've offered various payment methods in the past, cryptocurrency payments provide an additional layer of privacy that aligns perfectly with our mission. By paying with crypto, you can:
+[Privacy](https://en.wikipedia.org/wiki/Internet_privacy) has always been central to our service. In addition to our other payment methods, cryptocurrency payments provide an additional layer of privacy. By paying with crypto, you can:
 
 * Maintain greater anonymity when purchasing our email services
 * Reduce the personal information tied to your email account
@@ -36,7 +36,7 @@ At [Forward Email](https://forwardemail.net), we're constantly looking for ways 
 
 ## How It Works
 
-We've integrated [Stripe's](https://docs.stripe.com/crypto) crypto payment system to make the process as seamless as possible. Here's how you can pay for Forward Email services using cryptocurrency:
+We've integrated [Stripe's](https://docs.stripe.com/crypto) crypto payment system. To pay for Forward Email services using cryptocurrency:
 
 ```mermaid
 flowchart LR
@@ -58,12 +58,12 @@ flowchart LR
    * [Coinbase Wallet](https://www.coinbase.com/wallet)
    * [WalletConnect](https://walletconnect.com) (compatible with many other wallets)
 
-4. **Complete Your Payment**: Confirm the transaction in your wallet, and you're all set! The payment will be processed, and your Forward Email service will be activated immediately.
+4. **Complete Your Payment**: Confirm the transaction in your wallet. We process the payment and activate your Forward Email service immediately.
 
 
 ## Privacy Benefits
 
-Using cryptocurrency for your Forward Email subscription enhances your privacy in several ways:
+Paying for your Forward Email subscription with cryptocurrency improves your privacy in several ways:
 
 ```mermaid
 graph TD
@@ -152,7 +152,7 @@ flowchart LR
 
 ## Getting Started
 
-Ready to enhance your privacy with crypto payments? Simply select the "Crypto" option during checkout the next time you renew your subscription or upgrade your plan.
+To pay with crypto, select the "Crypto" option during checkout the next time you renew your subscription or upgrade your plan.
 
 For more information about cryptocurrencies and blockchain technology, check out these resources:
 
@@ -163,7 +163,7 @@ For more information about cryptocurrencies and blockchain technology, check out
 
 ## Looking Forward
 
-Adding cryptocurrency payments is just one more step in our ongoing commitment to [privacy](https://en.wikipedia.org/wiki/Privacy), [security](https://en.wikipedia.org/wiki/Computer_security), and user choice. We believe that your email service should respect your privacy at every level—from the messages you send to how you pay for the service.
+Cryptocurrency payments add to our work on [privacy](https://en.wikipedia.org/wiki/Privacy), [security](https://en.wikipedia.org/wiki/Computer_security), and user choice. We believe your email service should respect your privacy at every level, from the messages you send to how you pay for the service.
 
 As always, we welcome your feedback on this new payment option. If you have questions about using cryptocurrency with Forward Email, please reach out to our [support team](/help).
 

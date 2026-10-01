@@ -49,7 +49,7 @@
 
 ## סקירה כללית {#overview}
 
-מדריך זה מספק הוראות שלב אחר שלב להתקנת פתרון ה-self-hosted של Forward Email על מערכות Debian. מדריך זה מותאם במיוחד עבור Debian 11 (Bullseye) ו-Debian 12 (Bookworm).
+מדריך זה מספק הוראות שלב אחר שלב להתקנת פתרון ה-self-hosted של Forward Email על מערכות Debian. הוא מיועד ל-Debian 11 (Bullseye) ו-Debian 12 (Bookworm).
 
 
 ## דרישות מוקדמות {#prerequisites}
@@ -382,7 +382,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**חשוב**: כאשר תתבקש, תצטרך ליצור רשומות TXT ב-DNS שלך. ייתכן שתראה מספר אתגרים עבור אותו דומיין - **צור את כולם**. אל תסיר את רשומת ה-TXT הראשונה כשאתה מוסיף את השנייה.
+**חשוב**: כאשר תתבקש, תצטרך ליצור רשומות TXT ב-DNS שלך. ייתכן שתראה מספר אתגרים עבור אותו דומיין; **צור את כולם**. אל תסיר את רשומת ה-TXT הראשונה כשאתה מוסיף את השנייה.
 
 #### אפשרות ב: DNS של Cloudflare (אם אתה משתמש ב-Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -857,6 +857,6 @@ nohup dockerd >/dev/null 2>/dev/null &
 5. שמור על ההתקנה מעודכנת
 6. נטר את snapd וחבילות ה-snap
 
-ההבדלים העיקריים מאובונטו הם התקנת snapd והגדרת מאגר Docker. לאחר שהדברים הללו מוגדרים כראוי, אפליקציית Forward Email מתנהגת זהה בשתי המערכות.
+ההבדלים העיקריים מאובונטו הם התקנת snapd והגדרת מאגר Docker. לאחר שתגדירו את הדברים הללו, אפליקציית Forward Email מתנהגת זהה בשתי המערכות.
 
 לאפשרויות תצורה נוספות ותכונות מתקדמות, עיין בתיעוד הרשמי של Forward Email בכתובת <https://forwardemail.net/self-hosted#configuration>.

@@ -62,14 +62,14 @@
   * [Các Nghiên Cứu Trường Hợp Doanh Nghiệp Của Chúng Tôi](#our-enterprise-case-studies)
 ## Lời nói đầu {#foreword}
 
-Tại Forward Email, chúng tôi đã dành nhiều năm để hoàn thiện thiết lập môi trường sản xuất Node.js của mình. Hướng dẫn toàn diện này chia sẻ các thực tiễn tốt nhất đã được kiểm chứng trong triển khai sản xuất Node.js, tập trung vào tối ưu hóa hiệu suất, giám sát và những bài học chúng tôi đã học được khi mở rộng các ứng dụng Node.js để xử lý hàng triệu giao dịch hàng ngày.
+Tại Forward Email, chúng tôi đã dành nhiều năm để tinh chỉnh thiết lập môi trường sản xuất Node.js của mình. Hướng dẫn này chia sẻ các thực tiễn tốt nhất trong triển khai sản xuất Node.js, tập trung vào tối ưu hóa hiệu suất, giám sát và những gì chúng tôi đã học được khi mở rộng các ứng dụng Node.js để xử lý hàng triệu giao dịch hàng ngày.
 
 ## Cuộc cách mạng tối ưu hóa hiệu suất đơn nhân 573% của chúng tôi {#our-573-single-core-performance-optimization-revolution}
 
-Khi chúng tôi chuyển từ bộ xử lý Intel sang AMD Ryzen, chúng tôi đã đạt được **cải thiện hiệu suất 573%** trong các ứng dụng Node.js của mình. Đây không chỉ là một tối ưu nhỏ—nó đã thay đổi căn bản cách các ứng dụng Node.js của chúng tôi hoạt động trong môi trường sản xuất và chứng minh tầm quan trọng của tối ưu hóa hiệu suất đơn nhân đối với bất kỳ ứng dụng Node.js nào.
+Khi chúng tôi chuyển từ bộ xử lý Intel sang AMD Ryzen, chúng tôi đã đạt được **cải thiện hiệu suất 573%** trong các ứng dụng Node.js của mình. Thay đổi này cho thấy hiệu suất đơn nhân quan trọng như thế nào đối với bất kỳ ứng dụng Node.js nào trong môi trường sản xuất.
 
 > \[!TIP]
-> Đối với các thực tiễn tốt nhất triển khai sản xuất Node.js, lựa chọn phần cứng là rất quan trọng. Chúng tôi đã chọn dịch vụ lưu trữ DataPacket vì họ có sẵn AMD Ryzen bởi hiệu suất đơn nhân rất quan trọng đối với các ứng dụng Node.js do JavaScript thực thi đơn luồng.
+> Đối với các thực tiễn tốt nhất triển khai sản xuất Node.js, lựa chọn phần cứng có ý nghĩa. Chúng tôi đã chọn dịch vụ lưu trữ DataPacket vì họ có sẵn AMD Ryzen, bởi JavaScript thực thi đơn luồng nên hiệu suất đơn nhân quyết định tốc độ của ứng dụng Node.js.
 
 ### Tại sao tối ưu hóa hiệu suất đơn nhân lại quan trọng đối với Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
 
@@ -80,18 +80,18 @@ Việc chuyển đổi từ Intel sang AMD Ryzen của chúng tôi đã mang l�
 * **Tỷ lệ giá trên hiệu suất tốt hơn** cho môi trường sản xuất Node.js
 * **Cải thiện thời gian phản hồi** trên tất cả các điểm cuối ứng dụng của chúng tôi
 
-Sự tăng cường hiệu suất lớn đến mức chúng tôi hiện coi bộ xử lý AMD Ryzen là thiết yếu cho bất kỳ triển khai sản xuất Node.js nghiêm túc nào, dù bạn đang chạy ứng dụng web, API, microservices hay bất kỳ khối lượng công việc Node.js nào khác.
+Dựa trên những kết quả này, chúng tôi hiện coi bộ xử lý AMD Ryzen là thiết yếu cho bất kỳ triển khai sản xuất Node.js nghiêm túc nào, dù bạn đang chạy ứng dụng web, API, microservices hay bất kỳ khối lượng công việc Node.js nào khác.
 
 ### Nội dung liên quan {#related-content}
 
 Để biết thêm chi tiết về lựa chọn hạ tầng của chúng tôi, hãy xem:
 
-* [Dịch vụ chuyển tiếp email tốt nhất](https://forwardemail.net/blog/docs/best-email-forwarding-service) - So sánh hiệu suất
-* [Giải pháp tự lưu trữ](https://forwardemail.net/blog/docs/self-hosted-solution) - Khuyến nghị phần cứng
+* [Dịch vụ chuyển tiếp email tốt nhất](https://forwardemail.net/blog/docs/best-email-forwarding-service): So sánh hiệu suất
+* [Giải pháp tự lưu trữ](https://forwardemail.net/blog/docs/self-hosted-solution): Khuyến nghị phần cứng
 
 ## Thiết lập môi trường sản xuất Node.js: Ngăn xếp công nghệ của chúng tôi {#nodejs-production-environment-setup-our-technology-stack}
 
-Các thực tiễn tốt nhất triển khai sản xuất Node.js của chúng tôi bao gồm các lựa chọn công nghệ có chủ đích dựa trên nhiều năm kinh nghiệm sản xuất. Dưới đây là những gì chúng tôi sử dụng và lý do các lựa chọn này áp dụng cho bất kỳ ứng dụng Node.js nào:
+Các thực tiễn tốt nhất triển khai sản xuất Node.js của chúng tôi bao gồm các lựa chọn công nghệ có chủ đích dựa trên nhiều năm kinh nghiệm sản xuất. Những gì chúng tôi sử dụng và lý do các lựa chọn này áp dụng cho bất kỳ ứng dụng Node.js nào:
 
 ### Trình quản lý gói: pnpm cho hiệu quả sản xuất {#package-manager-pnpm-for-production-efficiency}
 
@@ -184,10 +184,10 @@ Trợ giúp này phân biệt giữa:
 * **Lỗi người dùng** là hành vi mong đợi
 * **Lỗi dịch vụ bên ngoài** mà chúng ta không thể kiểm soát
 
-Mẫu này áp dụng cho bất kỳ ứng dụng Node.js nào - ứng dụng web, API, microservices hoặc dịch vụ nền.
+Mẫu này áp dụng cho bất kỳ ứng dụng Node.js nào: ứng dụng web, API, microservices hoặc dịch vụ nền.
 **Triển khai ghi nhật ký của chúng tôi:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Chúng tôi thực hiện việc che giấu trường dữ liệu toàn diện để bảo vệ thông tin nhạy cảm đồng thời duy trì khả năng gỡ lỗi hữu ích trong môi trường sản xuất Node.js của mình.
+Chúng tôi che giấu các trường dữ liệu để bảo vệ thông tin nhạy cảm đồng thời duy trì khả năng gỡ lỗi hữu ích trong môi trường sản xuất Node.js của mình.
 
 ### Giám sát theo ứng dụng {#application-specific-monitoring}
 
@@ -201,7 +201,7 @@ Chúng tôi thực hiện việc che giấu trường dữ liệu toàn diện �
 
 ## Giám sát sản xuất Node.js với kiểm tra sức khỏe PM2 {#nodejs-production-monitoring-with-pm2-health-checks}
 
-Chúng tôi đã tinh chỉnh thiết lập môi trường sản xuất Node.js với PM2 qua nhiều năm kinh nghiệm sản xuất. Các kiểm tra sức khỏe PM2 của chúng tôi rất quan trọng để duy trì độ tin cậy trong bất kỳ ứng dụng Node.js nào.
+Chúng tôi đã tinh chỉnh thiết lập môi trường sản xuất Node.js với PM2 qua nhiều năm kinh nghiệm sản xuất. Các kiểm tra sức khỏe PM2 của chúng tôi giữ cho các tiến trình đáng tin cậy, và cách tiếp cận tương tự áp dụng cho bất kỳ ứng dụng Node.js nào.
 
 ### Hệ thống kiểm tra sức khỏe PM2 của chúng tôi {#our-pm2-health-check-system}
 
@@ -213,7 +213,7 @@ Giám sát sản xuất Node.js với kiểm tra sức khỏe PM2 của chúng t
 * **Yêu cầu thời gian hoạt động tối thiểu 15 phút** trước khi xem một tiến trình là khỏe mạnh
 * **Xác thực trạng thái tiến trình và mức sử dụng bộ nhớ**
 * **Tự động khởi động lại các tiến trình bị lỗi**
-* **Ngăn ngừa vòng lặp khởi động lại** thông qua kiểm tra sức khỏe thông minh
+* **Ngăn ngừa vòng lặp khởi động lại** thông qua kiểm tra sức khỏe có xét đến thời gian hoạt động
 
 > \[!CAUTION]
 > Đối với các thực hành tốt nhất triển khai sản xuất Node.js, chúng tôi yêu cầu thời gian hoạt động trên 15 phút trước khi xem một tiến trình là khỏe mạnh để tránh vòng lặp khởi động lại. Điều này ngăn ngừa sự cố lan truyền khi các tiến trình gặp khó khăn về bộ nhớ hoặc các vấn đề khác.
@@ -237,20 +237,20 @@ Chúng tôi tự động hóa toàn bộ thiết lập PM2 thông qua Ansible đ
 
 ## Hệ thống xử lý và phân loại lỗi sản xuất {#production-error-handling-and-classification-system}
 
-Một trong những thực hành tốt nhất triển khai sản xuất Node.js có giá trị nhất của chúng tôi là phân loại lỗi thông minh áp dụng cho bất kỳ ứng dụng Node.js nào:
+Một trong những thực hành tốt nhất triển khai sản xuất Node.js có giá trị nhất của chúng tôi là phân loại lỗi, áp dụng cho bất kỳ ứng dụng Node.js nào:
 
 ### Triển khai isCodeBug của chúng tôi cho sản xuất {#our-iscodebug-implementation-for-production}
 
 **Nguồn:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
-Trợ giúp này cung cấp phân loại lỗi thông minh cho các ứng dụng Node.js trong sản xuất để:
+Trợ giúp này phân loại lỗi cho các ứng dụng Node.js trong sản xuất để:
 
 * **Ưu tiên các lỗi thực sự** hơn lỗi do người dùng
 * **Cải thiện phản ứng sự cố** bằng cách tập trung vào các vấn đề thực sự
 * **Giảm mệt mỏi cảnh báo** từ các lỗi người dùng dự kiến
 * **Hiểu rõ hơn** các vấn đề do ứng dụng so với do người dùng tạo ra
 
-Mẫu này hoạt động cho bất kỳ ứng dụng Node.js nào - dù bạn đang xây dựng các trang thương mại điện tử, nền tảng SaaS, API hay microservices.
+Mẫu này hoạt động cho bất kỳ ứng dụng Node.js nào, dù bạn đang xây dựng các trang thương mại điện tử, nền tảng SaaS, API hay microservices.
 
 ### Tích hợp với ghi nhật ký sản xuất của chúng tôi {#integration-with-our-production-logging}
 
@@ -267,14 +267,14 @@ Tìm hiểu thêm về các mẫu xử lý lỗi của chúng tôi:
 
 ## Gỡ lỗi Hiệu suất Nâng cao với v8-profiler-next và cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
-Chúng tôi sử dụng các công cụ phân tích nâng cao để phân tích ảnh chụp heap và gỡ lỗi các vấn đề OOM (Hết bộ nhớ), tắc nghẽn hiệu suất và các vấn đề bộ nhớ Node.js trong môi trường sản xuất của mình. Những công cụ này rất cần thiết cho bất kỳ ứng dụng Node.js nào gặp phải rò rỉ bộ nhớ hoặc sự cố hiệu suất.
+Chúng tôi sử dụng các công cụ phân tích để phân tích ảnh chụp heap và gỡ lỗi các vấn đề OOM (Hết bộ nhớ), tắc nghẽn hiệu suất và các vấn đề bộ nhớ Node.js trong môi trường sản xuất của mình. Những công cụ này rất cần thiết cho bất kỳ ứng dụng Node.js nào gặp phải rò rỉ bộ nhớ hoặc sự cố hiệu suất.
 
 ### Phương pháp Phân tích của Chúng tôi cho Node.js Production {#our-profiling-approach-for-nodejs-production}
 
 **Các công cụ chúng tôi khuyên dùng:**
 
-* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Để tạo ảnh chụp heap và hồ sơ CPU
-* [`cpupro`](https://github.com/discoveryjs/cpupro) - Để phân tích hồ sơ CPU và ảnh chụp heap
+* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next): Để tạo ảnh chụp heap và hồ sơ CPU
+* [`cpupro`](https://github.com/discoveryjs/cpupro): Để phân tích hồ sơ CPU và ảnh chụp heap
 
 > \[!TIP]
 > Chúng tôi sử dụng v8-profiler-next và cpupro cùng nhau để tạo ra một quy trình gỡ lỗi hiệu suất hoàn chỉnh cho các ứng dụng Node.js của mình. Sự kết hợp này giúp chúng tôi xác định rò rỉ bộ nhớ, tắc nghẽn hiệu suất và tối ưu hóa mã sản xuất.
@@ -296,9 +296,9 @@ Giám sát sản xuất của chúng tôi bao gồm việc tự động tạo �
 
 **Nghiên cứu triển khai thực tế của chúng tôi:**
 
-* [Triển khai máy chủ giám sát](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Giám sát heap và tạo ảnh chụp
-* [Công việc dọn dẹp](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Lưu giữ và dọn dẹp ảnh chụp
-* [Tích hợp trình ghi nhật ký](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Ghi nhật ký hiệu suất
+* [Triển khai máy chủ giám sát](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js): Giám sát heap và tạo ảnh chụp
+* [Công việc dọn dẹp](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js): Lưu giữ và dọn dẹp ảnh chụp
+* [Tích hợp trình ghi nhật ký](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js): Ghi nhật ký hiệu suất
 
 ### Triển khai Được Khuyến nghị cho Ứng dụng Node.js của Bạn {#recommended-implementation-for-your-nodejs-application}
 
@@ -327,13 +327,13 @@ Các công cụ phân tích của chúng tôi tích hợp với chiến lược 
 * **Kích hoạt tự động** dựa trên ngưỡng bộ nhớ/CPU
 * **Tích hợp cảnh báo** khi phát hiện sự cố hiệu suất
 * **Phân tích lịch sử** để theo dõi xu hướng hiệu suất theo thời gian
-* **Tương quan với các chỉ số ứng dụng** để gỡ lỗi toàn diện
+* **Tương quan với các chỉ số ứng dụng** để gỡ lỗi đầy đủ hơn
 Cách tiếp cận này đã giúp chúng tôi xác định và giải quyết các rò rỉ bộ nhớ, tối ưu hóa các đường dẫn mã nóng, và duy trì hiệu suất ổn định trong môi trường sản xuất Node.js của chúng tôi.
 
 
 ## Bảo mật Hạ tầng Sản xuất Node.js {#nodejs-production-infrastructure-security}
 
-Chúng tôi triển khai bảo mật toàn diện cho hạ tầng sản xuất Node.js thông qua tự động hóa Ansible. Những thực hành này áp dụng cho bất kỳ ứng dụng Node.js nào:
+Chúng tôi tự động hóa bảo mật cho hạ tầng sản xuất Node.js thông qua Ansible. Những thực hành này áp dụng cho bất kỳ ứng dụng Node.js nào:
 
 ### Bảo mật Cấp Hệ thống cho Sản xuất Node.js {#system-level-security-for-nodejs-production}
 
@@ -525,17 +525,17 @@ Các mẫu này áp dụng cho bất kỳ ứng dụng Node.js nào tạo ra t�
 
 ## Kết luận: Thực hành Tốt nhất cho Triển khai Sản xuất Node.js {#conclusion-nodejs-production-deployment-best-practices}
 
-Hạ tầng sản xuất Node.js của chúng tôi chứng minh rằng các ứng dụng Node.js có thể đạt được độ tin cậy cấp doanh nghiệp thông qua:
+Hạ tầng sản xuất Node.js của chúng tôi đạt được độ tin cậy cấp doanh nghiệp thông qua:
 
 * **Lựa chọn phần cứng đã được chứng minh** (AMD Ryzen tối ưu hóa hiệu suất đơn nhân lên đến 573%)
-* **Giám sát sản xuất Node.js đã được kiểm chứng** với các ngưỡng cụ thể và phản hồi tự động
+* **Giám sát sản xuất Node.js** với các ngưỡng cụ thể và phản hồi tự động
 * **Phân loại lỗi thông minh** để cải thiện phản ứng sự cố trong môi trường sản xuất
-* **Gỡ lỗi hiệu suất nâng cao** với v8-profiler-next và cpupro để ngăn ngừa OOM
-* **Tăng cường bảo mật toàn diện** thông qua tự động hóa Ansible
+* **Gỡ lỗi hiệu suất** với v8-profiler-next và cpupro để ngăn ngừa OOM
+* **Tăng cường bảo mật** thông qua tự động hóa Ansible
 * **Kiến trúc cơ sở dữ liệu lai** tối ưu cho nhu cầu ứng dụng
 * **Bảo trì tự động** để ngăn ngừa các sự cố phổ biến trong sản xuất Node.js
 
-**Điều quan trọng cần nhớ:** Nghiên cứu các tệp triển khai thực tế và bài viết blog của chúng tôi thay vì theo các thực hành chung chung. Mã nguồn của chúng tôi cung cấp các mẫu thực tế cho triển khai sản xuất Node.js có thể được điều chỉnh cho bất kỳ ứng dụng Node.js nào - ứng dụng web, API, microservices hoặc dịch vụ nền.
+**Điều quan trọng cần nhớ:** Nghiên cứu các tệp triển khai thực tế và bài viết blog của chúng tôi thay vì theo các thực hành chung chung. Mã nguồn của chúng tôi cung cấp các mẫu thực tế cho triển khai sản xuất Node.js mà bạn có thể điều chỉnh cho bất kỳ ứng dụng Node.js nào: ứng dụng web, API, microservices hoặc dịch vụ nền.
 
 
 ## Danh sách Tài nguyên Hoàn chỉnh cho Sản xuất Node.js {#complete-resource-list-for-nodejs-production}

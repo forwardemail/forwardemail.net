@@ -19,11 +19,11 @@
 
 Forward Email, güvenlik ve gizliliğe odaklanan tek %100 açık kaynaklı e-posta barındırma hizmetidir. Tarihimiz hakkında daha fazla bilgi için [Hakkımızda sayfamızı](/about) ziyaret edin.
 
-Hizmetimiz 2017 yılında kuruldu ve 500.000’den fazla alan adı için e-posta hizmeti sağlıyor – bunlar arasında [ABD Deniz Harp Okulu](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Linux Vakfı](/blog/docs/linux-foundation-email-enterprise-case-study), [birçok üniversite](/blog/docs/alumni-email-forwarding-university-case-study) ve hükümetler gibi önemli kullanıcılar bulunmaktadır.
+Hizmetimiz 2017 yılında kuruldu ve 500.000’den fazla alan adı için e-posta hizmeti sağlıyor; bunlar arasında [ABD Deniz Harp Okulu](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Linux Vakfı](/blog/docs/linux-foundation-email-enterprise-case-study), [birçok üniversite](/blog/docs/alumni-email-forwarding-university-case-study) ve hükümetler gibi önemli kullanıcılar bulunmaktadır.
 
-Amacımız, kurumsal düzeyde e-posta ve güvenlik altyapısı platformu olmaktır – ve [birçok ilkeye](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles) bağlı kalıyoruz.
+Amacımız, kurumsal düzeyde e-posta ve güvenlik altyapısı platformu olmaktır ve [birçok ilkeye](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles) bağlı kalıyoruz.
 
-Basın mensubu, gazeteci veya medya temsilcisiyseniz ve bizimle konuşmak, sorular sormak ya da daha fazla bilgi almak isterseniz – lütfen `press@forwardemail.net` adresinden bizimle iletişime geçin.
+Basın mensubu, gazeteci veya medya temsilcisiyseniz ve bizimle konuşmak, sorular sormak ya da daha fazla bilgi almak isterseniz lütfen `press@forwardemail.net` adresinden bizimle iletişime geçin.
 
 
 ## Temel Bilgiler & İstatistikler {#key-facts--statistics}

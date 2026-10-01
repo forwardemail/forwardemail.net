@@ -39,7 +39,7 @@ export function Email(props) {
 
 Bu örnekte, giden postaları göndermek ve önizlemek için **[Nodemailer](https://github.com/nodemailer/nodemailer)** kütüphanesini ve resmi sponsoru **[Forward Email](https://forwardemail.net)** kullanıyoruz.
 
-Giden posta göndermek için <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluşturmanız</strong> gerekecek – lütfen **[Özel Alan Adı SMTP ile E-posta Gönderme Rehberi](/guides/send-email-with-custom-domain-smtp)**'mizi takip edin.
+Giden posta göndermek için <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluşturmanız</strong> gerekecek. Lütfen **[Özel Alan Adı SMTP ile E-posta Gönderme Rehberi](/guides/send-email-with-custom-domain-smtp)**'mizi takip edin.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

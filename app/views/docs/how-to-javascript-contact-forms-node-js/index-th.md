@@ -20,7 +20,7 @@ npm install nodemailer
 
 ตัวอย่างนี้ใช้ไลบรารี **[Nodemailer](https://github.com/nodemailer/nodemailer)** และผู้สนับสนุนอย่างเป็นทางการ **[Forward Email](https://forwardemail.net)** เพื่อส่งและดูตัวอย่างอีเมลขาออก
 
-คุณจะต้อง <strong class="text-success"><i class="fa fa-key"></i> สร้างรหัสผ่าน</strong> เพื่อส่งอีเมลขาออก – กรุณาทำตามคำแนะนำใน **[คู่มือส่งอีเมลด้วย SMTP โดเมนที่กำหนดเอง](/guides/send-email-with-custom-domain-smtp)**
+คุณจะต้อง <strong class="text-success"><i class="fa fa-key"></i> สร้างรหัสผ่าน</strong> เพื่อส่งอีเมลขาออก กรุณาทำตามคำแนะนำใน **[คู่มือส่งอีเมลด้วย SMTP โดเมนที่กำหนดเอง](/guides/send-email-with-custom-domain-smtp)**
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

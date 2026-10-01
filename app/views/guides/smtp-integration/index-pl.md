@@ -33,20 +33,20 @@
 
 ## Przedmowa {#foreword}
 
-Ten przewodnik zawiera szczegółowe przykłady integracji z usługą SMTP Forward Email przy użyciu różnych języków programowania, frameworków i klientów poczty. Nasza usługa SMTP została zaprojektowana tak, aby była niezawodna, bezpieczna i łatwa do integracji z istniejącymi aplikacjami.
+Ten przewodnik pokazuje, jak zintegrować się z usługą SMTP Forward Email przy użyciu różnych języków programowania, frameworków i klientów poczty.
 
 
 ## Jak działa przetwarzanie SMTP w Forward Email {#how-forward-emails-smtp-processing-works}
 
-Zanim przejdziemy do przykładów integracji, ważne jest, aby zrozumieć, jak nasza usługa SMTP przetwarza wiadomości e-mail:
+Nasza usługa SMTP przetwarza wiadomości e-mail w następujący sposób:
 
 ### Kolejka wiadomości i system ponawiania {#email-queue-and-retry-system}
 
 Gdy wyślesz wiadomość e-mail przez SMTP do naszych serwerów:
 
 1. **Wstępne przetwarzanie**: Wiadomość jest weryfikowana, skanowana pod kątem złośliwego oprogramowania i sprawdzana pod kątem filtrów antyspamowych
-2. **Inteligentna kolejka**: Wiadomości są umieszczane w zaawansowanym systemie kolejkowania do dostarczenia
-3. **Inteligentny mechanizm ponawiania**: Jeśli dostarczenie tymczasowo się nie powiedzie, nasz system:
+2. **Kolejkowanie**: Nasz system umieszcza wiadomości w kolejce do dostarczenia
+3. **Mechanizm ponawiania**: Jeśli dostarczenie tymczasowo się nie powiedzie, nasz system:
    * Analizuje odpowiedź błędu za pomocą funkcji `getBounceInfo`
    * Określa, czy problem jest tymczasowy (np. „spróbuj ponownie później”, „tymczasowo odroczone”) czy trwały (np. „użytkownik nieznany”)
    * W przypadku problemów tymczasowych oznacza wiadomość do ponowienia
@@ -59,14 +59,14 @@ Gdy wyślesz wiadomość e-mail przez SMTP do naszych serwerów:
 
 ### Odporność na błędy dla niezawodności {#dummy-proofed-for-reliability}
 
-Nasz system jest zaprojektowany tak, aby radzić sobie z różnymi przypadkami brzegowymi:
+Nasz system obsługuje następujące przypadki brzegowe:
 
 * Jeśli wykryta zostanie lista blokująca, wiadomość zostanie automatycznie ponowiona
 * W przypadku problemów sieciowych dostarczenie zostanie ponowione
 * Jeśli skrzynka odbiorcza odbiorcy jest pełna, system spróbuje ponownie później
 * Jeśli serwer odbierający jest tymczasowo niedostępny, będziemy próbować dalej
 
-Takie podejście znacząco poprawia wskaźniki dostarczenia, zachowując prywatność i bezpieczeństwo.
+Takie podejście poprawia wskaźniki dostarczenia, zachowując prywatność i bezpieczeństwo.
 
 
 ## Integracja Node.js {#nodejs-integration}
@@ -525,6 +525,6 @@ Jeśli napotkasz problemy nieopisane tutaj, prosimy:
 
 ## Podsumowanie {#conclusion}
 
-Usługa SMTP Forward Email zapewnia niezawodny, bezpieczny i skoncentrowany na prywatności sposób wysyłania e-maili z Twoich aplikacji i klientów poczty. Dzięki inteligentnemu systemowi kolejkowania, mechanizmowi ponawiania prób przez 5 dni oraz kompleksowym powiadomieniom o statusie dostarczenia, możesz mieć pewność, że Twoje wiadomości dotrą do odbiorcy.  
+Usługa SMTP Forward Email zapewnia niezawodny, bezpieczny i skoncentrowany na prywatności sposób wysyłania e-maili z Twoich aplikacji i klientów poczty. Obejmuje system kolejkowania, mechanizm ponawiania prób przez 5 dni oraz powiadomienia o statusie dostarczenia.  
 
 W przypadku bardziej zaawansowanych zastosowań lub niestandardowych integracji prosimy o kontakt z naszym zespołem wsparcia.

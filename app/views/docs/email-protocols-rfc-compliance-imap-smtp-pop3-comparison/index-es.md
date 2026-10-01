@@ -252,7 +252,7 @@ sequenceDiagram
 > \[!NOTE]
 > Forward Email soporta IMAP4rev1 (RFC 3501) con soporte parcial para características de IMAP4rev2 (RFC 9051).
 
-Forward Email proporciona un soporte robusto para IMAP4 a través de la implementación del servidor de correo WildDuck. El servidor implementa IMAP4rev1 (RFC 3501) con soporte parcial para extensiones de IMAP4rev2 (RFC 9051).
+Forward Email proporciona soporte para IMAP4 a través de la implementación del servidor de correo WildDuck. El servidor implementa IMAP4rev1 (RFC 3501) con soporte parcial para extensiones de IMAP4rev2 (RFC 9051).
 
 La funcionalidad IMAP de Forward Email es proporcionada por la dependencia [WildDuck](https://github.com/nodemailer/wildduck). Se soportan los siguientes RFCs de email:
 
@@ -604,7 +604,7 @@ Forward Email utiliza la biblioteca [mailauth](https://github.com/postalsys/mail
 | [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489) | Autenticación, Reporte y Conformidad de Mensajes Basados en Dominio (DMARC) | Aplicación de políticas DMARC                                 |
 | [RFC 8617](https://datatracker.ietf.org/doc/html/rfc8617) | Cadena de Recepción Autenticada (ARC)                                | Sellado y validación ARC                                      |
 
-Los protocolos de autenticación de correo electrónico verifican que los mensajes provienen genuinamente del remitente declarado y que no han sido alterados durante el tránsito.
+Los protocolos de autenticación de correo electrónico verifican que los mensajes provienen del remitente declarado y que no han sido alterados durante el tránsito.
 
 ### Soporte de Protocolos de Autenticación {#authentication-protocol-support}
 
@@ -839,7 +839,7 @@ Los protocolos de cifrado de mensajes protegen el contenido del correo electrón
 1. Genera un par de claves PGP en tu cliente de correo
 2. Sube tu clave pública al WKD de Forward Email
 3. Tu clave es automáticamente descubrible por otros usuarios
-4. Envía y recibe correos cifrados sin problemas
+4. Envía y recibe correos cifrados
 
 ### S/MIME (Secure/Multipurpose Internet Mail Extensions) {#smime-securemultipurpose-internet-mail-extensions}
 

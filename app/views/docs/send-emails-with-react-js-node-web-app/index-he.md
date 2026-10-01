@@ -39,7 +39,7 @@ export function Email(props) {
 
 בדוגמה זו, אנו משתמשים בספריית **[Nodemailer](https://github.com/nodemailer/nodemailer)** ובספונסר הרשמי שלה **[Forward Email](https://forwardemail.net)** כדי לשלוח ולתצוגה מקדימה של מיילים יוצאים.
 
-תצטרכו <strong class="text-success"><i class="fa fa-key"></i> ליצור סיסמה</strong> כדי לשלוח מייל יוצא – אנא עקבו אחר **[המדריך לשליחת מייל עם SMTP בדומיין מותאם אישית](/guides/send-email-with-custom-domain-smtp)** שלנו.
+תצטרכו <strong class="text-success"><i class="fa fa-key"></i> ליצור סיסמה</strong> כדי לשלוח מייל יוצא. אנא עקבו אחר **[המדריך לשליחת מייל עם SMTP בדומיין מותאם אישית](/guides/send-email-with-custom-domain-smtp)** שלנו.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

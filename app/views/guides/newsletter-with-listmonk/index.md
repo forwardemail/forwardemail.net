@@ -26,21 +26,21 @@
 
 ## Overview
 
-This guide provides developers with step-by-step instructions for setting up [Listmonk](https://listmonk.app/), a powerful open-source newsletter and mailing list manager, to use [Forward Email](https://forwardemail.net/) as its SMTP provider. This combination allows you to manage your campaigns effectively while ensuring secure, private, and reliable email delivery.
+This guide provides developers with step-by-step instructions for setting up [Listmonk](https://listmonk.app/), an open-source newsletter and mailing list manager, to use [Forward Email](https://forwardemail.net/) as its SMTP provider. Listmonk manages your campaigns and Forward Email delivers them securely, privately, and reliably.
 
 * **Listmonk**: Handles subscriber management, list organization, campaign creation, and performance tracking.
-* **Forward Email**: Acts as the secure SMTP server, handling the actual sending of emails with built-in security features like SPF, DKIM, DMARC, and TLS encryption.
+* **Forward Email**: Acts as the secure SMTP server, handling the sending of emails with built-in security features like SPF, DKIM, DMARC, and TLS encryption.
 
-By integrating these two, you retain full control over your data and infrastructure while leveraging Forward Email's robust delivery system.
+With this setup, you keep full control over your data and infrastructure while Forward Email handles delivery.
 
 
 ## Why Listmonk and Forward Email
 
 * **Open Source**: Both Listmonk and the principles behind Forward Email emphasize transparency and control. You host Listmonk yourself, owning your data.
-* **Privacy-Focused**: Forward Email is built with privacy at its core, minimizing data retention and focusing on secure transmission.
+* **Privacy-Focused**: Forward Email is built for privacy, minimizing data retention and focusing on secure transmission.
 * **Cost-Effective**: Listmonk is free, and Forward Email offers generous free tiers and affordable paid plans, making this a budget-friendly solution.
 * **Scalability**: Listmonk is highly performant, and Forward Email's infrastructure is designed for reliable delivery at scale.
-* **Developer-Friendly**: Listmonk offers a robust API, and Forward Email provides straightforward SMTP integration and webhooks.
+* **Developer-Friendly**: Listmonk offers a full API, and Forward Email provides straightforward SMTP integration and webhooks.
 
 
 ## Prerequisites
@@ -101,11 +101,11 @@ Confirm enabling the firewall when prompted.
 
 ### 5. Configure HTTPS Access
 
-Running Listmonk over HTTPS is crucial for security. You have two primary options:
+Run Listmonk over HTTPS for security. You have two primary options:
 
 #### Option A: Using Cloudflare Proxy (Recommended for Simplicity)
 
-If your domain's DNS is managed by Cloudflare, you can leverage their proxy feature for easy HTTPS.
+If your domain's DNS is managed by Cloudflare, you can use their proxy feature for easy HTTPS.
 
 1. **Point DNS**: Create an `A` record in Cloudflare for your Listmonk subdomain (e.g., `listmonk.yourdomain.com`) pointing to your VPS IP address. Ensure the **Proxy status** is set to **Proxied** (orange cloud).
 2. **Modify Docker Compose**: Edit the `docker-compose.yml` file you downloaded:
@@ -187,7 +187,7 @@ Bounce processing allows Listmonk to automatically handle emails that couldn't b
 5. Enable **Forward Email**.
 6. Paste the **Webhook Signature Payload Verification Key** you copied from the Forward Email dashboard into the **Forward Email Key** field.
 7. Click **Save** at the bottom of the page.
-8. Bounce processing is now configured! When Forward Email detects a bounce for an email sent by Listmonk, it will notify your Listmonk instance via the webhook, and Listmonk will mark the subscriber accordingly.
+8. Bounce processing is now configured. When Forward Email detects a bounce for an email sent by Listmonk, it will notify your Listmonk instance via the webhook, and Listmonk will mark the subscriber accordingly.
 9. Complete the steps below in [Testing](#testing) to ensure everything is working.
 
 
@@ -232,15 +232,13 @@ Here's a quick overview of core Listmonk functions:
 ## Developer Notes
 
 * **Templating**: Listmonk uses Go's templating engine. Explore its documentation for advanced personalization: `{{ .Subscriber.Attribs.your_custom_field }}`.
-* **API**: Listmonk provides a comprehensive REST API for managing lists, subscribers, campaigns, templates, and more. Find the API documentation link in your Listmonk instance's footer.
+* **API**: Listmonk provides a REST API for managing lists, subscribers, campaigns, templates, and more. Find the API documentation link in your Listmonk instance's footer.
 * **Custom Fields**: Define custom subscriber fields under **Settings -> Subscriber Fields** to store additional data.
 * **Webhooks**: Besides bounces, Listmonk can send webhooks for other events (e.g., subscriptions), allowing integration with other systems.
 
 
 ## Conclusion
 
-By integrating the self-hosted power of Listmonk with the secure, privacy-respecting delivery of Forward Email, you create a robust and ethical email marketing platform. You maintain full ownership of your audience data while benefiting from high deliverability and automated security features.
+Self-hosted Listmonk with Forward Email's secure, privacy-respecting delivery gives you an ethical email marketing platform. You keep full ownership of your audience data and get high deliverability and automated security features.
 
-This setup provides a scalable, cost-effective, and developer-friendly alternative to proprietary email services, aligning perfectly with the ethos of open-source software and user privacy.
-
-Happy Sending! 🚀
+This setup is a scalable, cost-effective, and developer-friendly alternative to proprietary email services, built on open-source software and user privacy.

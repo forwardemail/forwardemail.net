@@ -3,7 +3,7 @@
 <!-- <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" /> -->
 
 <p class="lead mt-3">
-  <strong>简要说明：</strong> 我们构建了全球首个具备高级搜索功能的完整电子邮件管理 REST API，这是其他服务无法提供的。虽然 Gmail、Outlook 和 Apple 迫使开发者陷入 IMAP 地狱或受限的 API，Forward Email 通过统一的 REST 接口，提供针对邮件、文件夹、联系人和日历的极速 CRUD 操作，支持 15+ 搜索参数。这正是开发者一直期待的电子邮件 API。
+  <strong>简要说明：</strong> 我们构建了全球首个具备高级搜索功能的完整电子邮件管理 REST API，这是其他服务无法提供的。虽然 Gmail、Outlook 和 Apple 迫使开发者陷入 IMAP 地狱或受限的 API，Forward Email 通过统一的 REST 接口，提供针对邮件、文件夹、联系人和日历的快速 CRUD 操作，支持 15+ 搜索参数。
 </p>
 
 
@@ -73,22 +73,22 @@
 * [技术资源](#technical-resources)
 ## 邮件 API 问题 {#the-email-api-problem}
 
-邮件 API 从根本上来说是有缺陷的。就是这样。
+大多数邮件 API 都有缺陷。
 
 每个主要的邮件提供商都迫使开发者在两个糟糕的选择中做出选择：
 
 1. **IMAP 地狱**：与一个为桌面客户端设计的、已有 30 年历史的协议搏斗，而非现代应用
 2. **受限的 API**：受限速、只读、OAuth 复杂的 API，无法管理你的实际邮件数据
 
-结果？开发者要么完全放弃邮件集成，要么浪费数周时间构建脆弱的 IMAP 封装层，这些封装层经常出错。
+结果，开发者要么放弃邮件集成，要么花费数周时间构建脆弱的 IMAP 封装层，这些封装层经常出错。
 
 > \[!WARNING]
-> **肮脏的秘密**：大多数“邮件 API”只是发送 API。你无法通过简单的 REST 接口以编程方式组织文件夹、同步联系人或管理日历。直到现在。
+> **肮脏的秘密**：大多数“邮件 API”是发送 API。其他提供商不允许你通过简单的 REST 接口组织文件夹、同步联系人或管理日历。
 
 
 ## 开发者们真正的声音 {#what-developers-are-actually-saying}
 
-挫败感是真实存在且随处可见：
+开发者在很多地方记录了这种挫败感：
 
 > “我最近尝试在我的应用中集成 Gmail，花了太多时间。我决定不值得支持 Gmail。”
 >
@@ -106,7 +106,7 @@
 >
 > *- [Stack Overflow 问题](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap)，47 个赞*
 
-证据无处不在：
+更多证据：
 
 * **WordPress SMTP 问题**：[631 个 GitHub 问题](https://github.com/awesomemotive/WP-Mail-SMTP/issues) 关于邮件发送失败
 * **Zapier 限制**：[社区投诉](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) 每小时 10 封邮件限制和 IMAP 检测失败
@@ -118,7 +118,7 @@
 
 **我们是首个通过统一 REST API 提供所有邮件数据完整 CRUD 操作的邮件服务。**
 
-这不仅仅是另一个发送 API。这是对以下内容的完整编程控制：
+该 API 让你可以完整地以编程方式控制：
 
 * **邮件**：创建、读取、更新、删除、搜索、移动、标记
 * **文件夹**：通过 REST 端点实现完整的 IMAP 文件夹管理
@@ -127,15 +127,15 @@
 
 ### 我们为什么要构建这个 {#why-we-built-this}
 
-**问题**：每个邮件提供商都把邮件当作黑盒。你可以发送邮件，也许可以通过复杂的 OAuth 读取邮件，但你无法真正以编程方式*管理*你的邮件数据。
+**问题**：每个邮件提供商都把邮件当作黑盒。你可以发送邮件，也许可以通过复杂的 OAuth 读取邮件，但你无法以编程方式*管理*你的邮件数据。
 
-**我们的愿景**：邮件集成应该像任何现代 API 一样简单。无需 IMAP 库。无需 OAuth 复杂性。无需速率限制噩梦。只需简单的 REST 端点即可。
+**我们的愿景**：邮件集成应该像任何现代 API 一样简单，使用简单的 REST 端点，而不是 IMAP 库、OAuth 复杂性和速率限制噩梦。
 
 **结果**：首个邮件服务，你可以仅用 HTTP 请求构建完整的邮件客户端、CRM 集成或自动化系统。
 
 ### 简单认证 {#simple-authentication}
 
-无需 [OAuth 复杂性](https://oauth.net/2/)。无需 [应用专用密码](https://support.google.com/accounts/answer/185833)。只需你的别名凭据：
+使用你的别名凭据进行认证，无需 [OAuth 复杂性](https://oauth.net/2/) 或 [应用专用密码](https://support.google.com/accounts/answer/185833)：
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
@@ -178,9 +178,9 @@ curl -u "alias@yourdomain.com:password" \
 
 ## 高级搜索：无可匹敌的服务 {#advanced-search-no-other-service-compares}
 
-**Forward Email 是唯一通过 REST API 提供跨所有消息字段的全面、程序化搜索的邮件服务。**
+**Forward Email 是唯一通过 REST API 提供跨所有消息字段的程序化搜索的邮件服务。**
 
-虽然其他提供商最多只提供基础过滤，我们打造了史上最先进的邮件搜索 API。没有 Gmail API、Outlook API 或任何其他服务能比拟我们的搜索能力。
+其他提供商最多只提供基础过滤。Gmail API、Outlook API 和其他服务都比不上我们的搜索能力。
 
 ### 搜索 API 现状混乱 {#the-search-api-landscape-is-broken}
 
@@ -335,7 +335,7 @@ GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 * **正则表达式优化**配合合理索引策略
 * **并行执行**提升性能
 * **输入验证**保障安全
-* **全面错误处理**确保可靠性
+* **错误处理**确保可靠性
 
 ```javascript
 // 示例：复杂搜索实现
@@ -398,7 +398,7 @@ graph LR
 
 ### 隐私优先架构 {#privacy-first-architecture}
 
-**零知识设计**：只有您凭 IMAP 密码拥有访问权限——我们无法读取您的邮件。我们的[零知识架构](https://forwardemail.net/en/security)确保在提供极速性能的同时实现完全隐私保护。
+**零知识设计**：只有您凭 IMAP 密码拥有访问权限，因此我们无法读取您的邮件。我们的[零知识架构](https://forwardemail.net/en/security)在不降低速度的情况下保护您的数据隐私。
 
 
 ## 我们的不同之处：完整对比 {#why-were-different-the-complete-comparison}
@@ -435,14 +435,14 @@ graph LR
 **ProtonMail 的欺骗：**
 
 * **声明**：在营销中突出显示 ["我们是开源"](https://proton.me/blog/open-source)
-* **现实**：[服务器代码完全专有](https://github.com/ProtonMail) — 只有客户端应用是开源的
+* **现实**：[服务器代码完全专有](https://github.com/ProtonMail)；只有客户端应用是开源的
 * **影响**：用户无法验证服务器端的加密、数据处理或隐私声明
 * **透明度违规**：无法审计实际的邮件处理和存储系统
 
 **Tuta 的误导性营销：**
 
 * **声明**：将 ["开源邮件"](https://tuta.com/blog/posts/open-source-email) 作为核心卖点
-* **现实**：[后端基础设施是闭源的](https://github.com/tutao/tutanota) — 只有前端可用
+* **现实**：[后端基础设施是闭源的](https://github.com/tutao/tutanota)；只有前端可用
 * **影响**：专有加密阻止标准邮件协议（IMAP/SMTP）
 * **锁定策略**：自定义加密强制依赖供应商
 
@@ -450,21 +450,21 @@ graph LR
 
 在 2025 年，真正的隐私需要 **完全透明**。当邮件提供商声称“开源”却隐藏服务器代码时：
 
-1. **无法验证的加密**：你无法审计数据的实际加密方式
+1. **无法验证的加密**：你无法审计数据的加密方式
 2. **隐藏的数据处理**：服务器端数据处理成了黑盒
 3. **基于信任的安全**：你必须无验证地信任他们的声明
 4. **供应商锁定**：专有系统阻止数据可移植性
 
 **Forward Email 的真正透明：**
 
-* ✅ **[完全开源](https://github.com/forwardemail/forwardemail.net)** — 服务器和客户端代码
-* ✅ **[支持自托管](https://forwardemail.net/en/blog/docs/self-hosted-solution)** — 运行你自己的实例
-* ✅ **标准协议** — 兼容 IMAP、SMTP、CardDAV、CalDAV
-* ✅ **可审计的安全** — 每一行代码都可检查
-* ✅ **无供应商锁定** — 你的数据，你的控制
+* ✅ **[完全开源](https://github.com/forwardemail/forwardemail.net)**：服务器和客户端代码
+* ✅ **[支持自托管](https://forwardemail.net/en/blog/docs/self-hosted-solution)**：运行你自己的实例
+* ✅ **标准协议**：兼容 IMAP、SMTP、CardDAV、CalDAV
+* ✅ **可审计的安全**：你可以检查每一行代码
+* ✅ **无供应商锁定**：你掌控自己的数据
 
 > \[!TIP]
-> **真正的开源意味着你可以验证每一项声明。** 使用 Forward Email，你可以审计我们的加密，审查我们的数据处理，甚至运行你自己的实例。这才是真正的透明。
+> **真正的开源意味着你可以验证每一项声明。** 使用 Forward Email，你可以审计我们的加密，审查我们的数据处理，并运行你自己的实例。
 
 
 ## 30+ 真实世界集成示例 {#30-real-world-integration-examples}
@@ -1261,7 +1261,7 @@ for (const alert of socialAlerts) {
 
 ### 2. 生成API凭证 {#2-generate-api-credentials}
 
-您的别名邮箱和密码即为API凭证 - 无需额外设置。
+您的别名邮箱和密码即为API凭证，无需额外设置。
 ### 3. 进行您的第一次 API 调用 {#3-make-your-first-api-call}
 
 ```bash
@@ -1283,14 +1283,14 @@ curl -u "your-alias@domain.com:password" \
 
 ## 技术资源 {#technical-resources}
 
-* **[完整 API 文档](https://forwardemail.net/en/email-api)** - 交互式 OpenAPI 3.0 规范
-* **[自托管指南](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - 在您的基础设施上部署 Forward Email
-* **[安全白皮书](https://forwardemail.net/technical-whitepaper.pdf)** - 技术架构和安全细节
-* **[GitHub 仓库](https://github.com/forwardemail/forwardemail.net)** - 开源代码库
-* **[开发者支持](mailto:api@forwardemail.net)** - 直接联系工程团队
+* **[完整 API 文档](https://forwardemail.net/en/email-api)**：交互式 OpenAPI 3.0 规范
+* **[自托管指南](https://forwardemail.net/en/blog/docs/self-hosted-solution)**：在您的基础设施上部署 Forward Email
+* **[安全白皮书](https://forwardemail.net/technical-whitepaper.pdf)**：技术架构和安全细节
+* **[GitHub 仓库](https://github.com/forwardemail/forwardemail.net)**：开源代码库
+* **[开发者支持](mailto:api@forwardemail.net)**：直接联系工程团队
 
 ---
 
-**准备好彻底改变您的邮件集成了吗？** [立即开始使用 Forward Email 的 API 构建](https://forwardemail.net/en/email-api)，体验首个为开发者设计的完整邮件管理平台。
+[立即开始使用 Forward Email 的 API 构建](https://forwardemail.net/en/email-api)，这是首个为开发者设计的完整邮件管理平台。
 
-*Forward Email：终于把 API 做对的邮件服务。*
+*Forward Email：拥有完整 REST API 的邮件服务。*

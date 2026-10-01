@@ -87,7 +87,7 @@
 
 ## The Missing Piece: No Way to List Subscriptions
 
-Here's the thing that blows our minds: PayPal has had subscription billing since 2014, but they've never provided a way for merchants to list their own subscriptions.
+PayPal has had subscription billing since 2014, but they've never provided a way for merchants to list their own subscriptions.
 
 Think about that for a second. You can create subscriptions, you can cancel them if you have the ID, but you can't get a list of all active subscriptions for your account. It's like having a database with no SELECT statement.
 
@@ -98,7 +98,7 @@ We need this for basic business operations:
 * Automated billing management
 * Compliance and auditing
 
-But PayPal? They just... never built it.
+PayPal never built it.
 
 
 ## 2014-2017: The Problem Emerges
@@ -165,7 +165,7 @@ issues, absolutely nothing got fixed.
 
 ## The Executive Exodus: How PayPal Lost All Institutional Memory
 
-Here's where it gets really interesting. Every single person who received our 2020 feedback has left PayPal:
+Every person who received our 2020 feedback has left PayPal:
 
 **Leadership Changes:**
 
@@ -181,7 +181,7 @@ Here's where it gets really interesting. Every single person who received our 20
 
 PayPal has become a revolving door where executives collect developer feedback, make promises, then leave for better companies like JPMorgan, Ripple, and other fintech firms.
 
-This explains why the 2025 GitHub issue response seemed completely disconnected from our 2020 feedback - literally everyone who received that feedback has left PayPal.
+This explains why the 2025 GitHub issue response seemed completely disconnected from our 2020 feedback - everyone who received that feedback has left PayPal.
 
 
 ## 2025: New Leadership, Same Problems
@@ -229,7 +229,7 @@ When we pointed out this was basic CRUD functionality that should have existed s
 
 > Simple Crud operations are part of the core API my friend, so it won't take months of development
 
-The PayPal TypeScript SDK, which currently supports only three endpoints after months of development, along with its historical timeline, clearly demonstrates that such projects require more than a few months to complete.
+The PayPal TypeScript SDK, which currently supports only three endpoints after months of development, along with its historical timeline, demonstrates that such projects require more than a few months to complete.
 
 This response shows he doesn't understand his own API. If "simple CRUD operations are part of the core API," then where is the subscription listing endpoint? We responded:
 
@@ -242,14 +242,14 @@ The 2025 exchanges with Alex Chriss, Michelle Gill, and Marty Brodbeck show the 
 1. **New leadership has no knowledge of previous feedback sessions**
 2. **They propose the same overengineered solutions**
 3. **They don't understand their own API limitations**
-4. **They want more meetings instead of just fixing the issue**
+4. **They want more meetings instead of fixing the issue**
 
 This pattern explains why PayPal teams in 2025 seem completely disconnected from the extensive feedback provided in 2020 - the people who received that feedback are gone, and the new leadership is repeating the same mistakes.
 
 
 ## Years of Bug Reports They Ignored
 
-We didn't just complain about missing features. We actively reported bugs and tried to help them improve. Here's a comprehensive timeline of the issues we documented:
+We also reported bugs and tried to help them improve. This timeline lists the issues we documented:
 
 ### 2016: Early UI/UX Complaints
 
@@ -263,11 +263,11 @@ Mark Stuart acknowledged the issue:
 
 > Thanks Nick! Moving to BCC. @Prasy, is your team responsible for this e-mail or know who is? The "Niftylettuce, LLC, we'll no longer bill you" leads me to believe there's a mix-up in who it's addressed to and the contents of the e-mail.
 
-**Result**: They actually fixed this one! Mark Stuart confirmed:
+**Result**: They fixed this one. Mark Stuart confirmed:
 
 > Just heard from the notifications team that the e-mail template has been fixed and rolled out. Appreciate you reaching out to report it. Thank you!
 
-This shows they CAN fix things when they want to - they just choose not to for most issues.
+This shows they CAN fix things when they want to; they choose not to for most issues.
 
 ### 2021: UI Improvement Suggestions
 
@@ -341,7 +341,7 @@ Working with PayPal's APIs is like stepping back in time 10 years. Here are the 
 
 ### Broken User Interface
 
-The PayPal developer dashboard is a disaster. Here's what we deal with daily:
+The PayPal developer dashboard is a disaster. We deal with these problems daily:
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
@@ -355,7 +355,7 @@ The PayPal developer dashboard is a disaster. Here's what we deal with daily:
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
-  The developer dashboard literally makes you drag a slider then logs you out after 60 seconds
+  The developer dashboard makes you drag a slider then logs you out after 60 seconds
   </div></figcaption>
   <video class="lazyframe-bordered" loading="lazy" controls>
     <source src="/img/articles/pypl-kapture-1.mp4" type="video/mp4">
@@ -485,7 +485,7 @@ Despite all these issues, we can't completely abandon PayPal because some custom
 
 Since PayPal won't provide basic subscription listing functionality, the developer community has built workarounds. We created a script that helps manage PayPal subscriptions: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-This script references a [community gist](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) where developers share solutions. Users are actually [thanking us](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) for providing what PayPal should have built years ago.
+This script references a [community gist](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) where developers share solutions. Users are [thanking us](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) for providing what PayPal should have built years ago.
 
 
 ## Blocking PayPal Templates Due to Phishing
@@ -498,7 +498,7 @@ We regularly receive reports of PayPal emails that look exactly like phishing at
 
 **Subject:** `[Sandbox] TEST - New invoice from PaypalBilling434567 sandbox #A4D369E8-0001`
 
-This email was forwarded to `abuse@microsoft.com` because it appeared to be a phishing attempt. The problem? It was actually from PayPal's sandbox environment, but their template design is so poor that it triggers phishing detection systems.
+This email was forwarded to `abuse@microsoft.com` because it appeared to be a phishing attempt. It came from PayPal's sandbox environment, but their template design is so poor that it triggers phishing detection systems.
 
 ### Our Implementation
 
@@ -564,13 +564,13 @@ This is documented in security research: [Beware PayPal new address fraud](https
 
 ### Real-World Impact: Novel PayPal Scams
 
-The problem extends beyond just poor template design. PayPal's invoice system is so easily exploited that scammers regularly abuse it to send legitimate-looking fraudulent invoices. Security researcher Gavin Anderegg documented [A Novel PayPal Scam](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) where scammers send real PayPal invoices that pass all authentication checks:
+The problem extends beyond poor template design. PayPal's invoice system is so easily exploited that scammers regularly abuse it to send legitimate-looking fraudulent invoices. Security researcher Gavin Anderegg documented [A Novel PayPal Scam](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) where scammers send real PayPal invoices that pass all authentication checks:
 
 > "Inspecting the source, the email looked like it actually came from PayPal (SPF, DKIM, and DMARC all passed). The button also linked to what looked like a legitimate PayPal URL... It took a second to dawn on me that it was a legit email. I had just been sent a random 'invoice' from a scammer."
 
 <figure>
   <figcaption><div class="alert alert-danger small text-center">
-  Screenshot showing multiple fraudulent PayPal invoices flooding an inbox, all appearing legitimate because they actually come from PayPal's systems
+  Screenshot showing multiple fraudulent PayPal invoices flooding an inbox, all appearing legitimate because they come from PayPal's systems
   </div></figcaption>
   <!-- <img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" /> -->
 </figure>
@@ -636,11 +636,11 @@ This backwards process is symptomatic of PayPal's broader organizational problem
 
 ## How Every Other Payment Processor Does It Right
 
-The subscription listing functionality that PayPal refuses to implement has been standard in the industry for over a decade. Here's how other payment processors handle this basic requirement:
+The subscription listing functionality that PayPal refuses to implement has been standard in the industry for over a decade. Other payment processors handle this basic requirement:
 
 ### Stripe
 
-Stripe has had subscription listing since their API launched. Their documentation clearly shows how to retrieve all subscriptions for a customer or merchant account. This is considered basic CRUD functionality.
+Stripe has had subscription listing since their API launched. Their documentation shows how to retrieve all subscriptions for a customer or merchant account. This is considered basic CRUD functionality.
 
 ### Paddle
 
@@ -757,7 +757,7 @@ The forum takedown represents the most brazen attempt yet to hide their systemat
 
 ## The 11-Year Capture Bug Disaster: $1,899 and Counting
 
-While PayPal was busy organizing feedback sessions and making promises, their core payment processing system has been fundamentally broken for over 11 years. The evidence is devastating.
+While PayPal was busy organizing feedback sessions and making promises, their core payment processing system has been broken for over 11 years.
 
 ### Forward Email's $1,899 Loss
 
@@ -769,11 +769,11 @@ In our production systems, we discovered 108 PayPal payments totaling **$1,899**
 
 It is impossible to determine if customers were charged since PayPal completely hides debug logs after 14 days and erases all data from the dashboard for order ID's that were not captured.
 
-This represents just one business. **The collective losses across thousands of merchants over 11+ years likely total millions of dollars.**
+This is one business. **The collective losses across thousands of merchants over 11+ years likely total millions of dollars.**
 
 **We're going to state it again: the collective losses across thousands of merchants over 11+ years likely total millions of dollars.**
 
-The only reason we discovered this is because we are incredibly meticulous and data driven.
+The only reason we discovered this is because we are meticulous and data driven.
 
 ### The 2013 Original Report: 11+ Years of Negligence
 
@@ -825,7 +825,7 @@ Even after "fixing" the issue, merchants reported:
 
 ### The 2024 Escalation: Still Broken
 
-Recent reports from the preserved PayPal Community show the problem has actually gotten worse. A [September 2024 discussion](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([archived](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) documents the exact same issues:
+Recent reports from the preserved PayPal Community show the problem has gotten worse. A [September 2024 discussion](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([archived](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) documents the exact same issues:
 
 > "The issue has only started to appear around 2 weeks ago and does not affect all orders. **The much more common one seems to be 404s on capture.**"
 
@@ -835,7 +835,7 @@ The merchant describes the same pattern Forward Email experienced:
 
 ### The Webhook Reliability Disaster
 
-Another [preserved community discussion](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) reveals PayPal's webhook system is fundamentally unreliable:
+Another [preserved community discussion](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) reveals PayPal's webhook system is unreliable:
 
 > "Theoretically,It should have two event(CHECKOUT.ORDER.APPROVED and PAYMENT.CAPTURE.COMPLETED) from Webhook event.Actually,**those two events rarely is received immediately,PAYMENT.CAPTURE.COMPLETED cannot be received most of the time or would be received in a few hours.**"
 
@@ -845,7 +845,7 @@ For subscription payments:
 
 The merchant's questions reveal the depth of PayPal's reliability problems:
 
-1. **"Why does this happen?"** - PayPal's webhook system is fundamentally broken
+1. **"Why does this happen?"** - PayPal's webhook system is broken
 2. **"If order status is 'COMPLETED', may I take it that I have received the money?"** - Merchants can't trust PayPal's API responses
 3. **"Why 'Event Logs->Webhook Events' cannot find any logs?"** - Even PayPal's own logging system doesn't work
 
@@ -881,13 +881,13 @@ This forces every merchant to:
 
 ## PayPal's Broader Pattern of Deception
 
-The capture bug disaster is just one example of PayPal's systematic approach to deceiving customers and hiding their failures.
+The capture bug disaster is one example of PayPal's systematic approach to deceiving customers and hiding their failures.
 
 ### The New York Department of Financial Services Action
 
 In January 2025, the New York Department of Financial Services issued an [enforcement action against PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) for deceptive practices, demonstrating that PayPal's pattern of deception extends far beyond their APIs.
 
-This regulatory action shows PayPal's willingness to engage in deceptive practices across their entire business, not just their developer tools.
+This regulatory action shows PayPal's willingness to engage in deceptive practices across their entire business, beyond their developer tools.
 
 ### The Honey Lawsuit: Rewriting Affiliate Links
 
@@ -902,7 +902,7 @@ The pattern is clear:
 
 ### The Cost of PayPal's Negligence
 
-Forward Email's $1,899 loss represents just the tip of the iceberg. Consider the broader impact:
+Forward Email's $1,899 loss is a small part of the total. Consider the broader impact:
 
 * **Individual merchants**: Thousands losing hundreds to thousands of dollars each
 * **Enterprise customers**: Potentially millions in lost revenue
@@ -925,7 +925,7 @@ This systematic omission of critical information forces merchants to discover Pa
 
 ## What This Means for Developers
 
-PayPal's systematic failure to address basic developer needs while collecting extensive feedback shows a fundamental organizational problem. They treat feedback collection as a substitute for actually fixing issues.
+PayPal's systematic failure to address basic developer needs while collecting extensive feedback shows an organizational problem: they treat feedback collection as a substitute for fixing issues.
 
 The pattern is clear:
 
@@ -938,7 +938,7 @@ The pattern is clear:
 7. New teams ask for the same feedback
 8. Cycle repeats
 
-Meanwhile, developers are forced to build workarounds, compromise security, and deal with broken UIs just to accept payments.
+Meanwhile, developers are forced to build workarounds, compromise security, and deal with broken UIs to accept payments.
 
 If you're building a payment system, learn from our experience: build your [trifecta approach](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) with multiple processors, but don't expect PayPal to provide the basic functionality you need. Plan to build workarounds from day one.
 

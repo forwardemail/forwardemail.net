@@ -30,7 +30,7 @@
 
 ## 前言 {#foreword}
 
-在 Forward Email，我们始终优先打造可靠、准确且用户友好的系统。在实现我们的支付处理系统时，我们知道需要一个能够处理多支付处理器且保持数据完美一致性的解决方案。本文详细介绍了我们的开发团队如何采用三重奏方法集成 Stripe 和 PayPal，确保整个系统中 1:1 的实时准确性。
+在 Forward Email，我们优先打造可靠、准确且用户友好的系统。我们的支付处理系统需要处理多个支付处理器，同时保持数据一致。我们的开发团队采用三重奏方法集成了 Stripe 和 PayPal，确保整个系统中 1:1 的实时准确性。
 
 
 ## 挑战：多支付处理器，一个真实数据源 {#the-challenge-multiple-payment-processors-one-source-of-truth}
@@ -41,18 +41,16 @@
 2. 如何处理争议、退款或支付失败等边缘情况？
 3. 如何在数据库中维护单一真实数据源？
 
-我们的解决方案是实施所谓的“三重奏方法”——一个三层系统，提供冗余并确保无论发生什么都能保持数据一致性。
+我们的解决方案是实施所谓的“三重奏方法”：一个提供冗余并保持数据一致的三层系统。
 
 
 ## 三重奏方法：三层可靠性 {#the-trifecta-approach-three-layers-of-reliability}
 
-我们的支付系统由三个关键组件组成，协同工作以确保完美的数据同步：
+我们的支付系统由三个组件组成，协同工作以保持数据同步：
 
-1. **结账后重定向** - 在结账后立即捕获支付信息
-2. **Webhook 处理器** - 处理支付处理器的实时事件
-3. **自动化任务** - 定期验证和对账支付数据
-
-让我们深入了解每个组件及其协作方式。
+1. **结账后重定向**：在结账后立即捕获支付信息
+2. **Webhook 处理器**：处理支付处理器的实时事件
+3. **自动化任务**：定期验证和对账支付数据
 
 ```mermaid
 flowchart TD
@@ -119,7 +117,7 @@ flowchart TD
 
 ### Stripe 结账实现 {#stripe-checkout-implementation}
 
-对于 Stripe，我们使用他们的 Checkout Sessions API 来创建无缝的支付体验。当用户选择一个套餐并选择用信用卡支付时，我们创建一个带有特定成功和取消 URL 的 Checkout Session：
+对于 Stripe，我们使用他们的 Checkout Sessions API 来实现支付流程。当用户选择一个套餐并选择用信用卡支付时，我们创建一个带有特定成功和取消 URL 的 Checkout Session：
 
 ```javascript
 const options = {
@@ -157,7 +155,7 @@ if (ctx.accepts('html')) {
 }
 ```
 
-这里关键部分是 `success_url` 参数，其中包含了作为查询参数的 `session_id`。当 Stripe 在支付成功后将用户重定向回我们的网站时，我们可以使用此会话 ID 来验证交易并相应地更新数据库。
+关键部分是 `success_url` 参数，其中包含了作为查询参数的 `session_id`。当 Stripe 在支付成功后将用户重定向回我们的网站时，我们可以使用此会话 ID 来验证交易并相应地更新数据库。
 
 ### PayPal 支付流程 {#paypal-payment-flow}
 
@@ -285,9 +283,9 @@ sequenceDiagram
 ```
 ## Layer 2: 带签名验证的 Webhook 处理程序 {#layer-2-webhook-handlers-with-signature-verification}
 
-虽然结账后重定向适用于大多数场景，但它们并非万无一失。用户可能在重定向之前关闭浏览器，或者网络问题可能导致重定向未完成。这时就需要使用 webhook。
+结账后重定向适用于大多数场景，但用户可能在重定向之前关闭浏览器，或者网络问题可能导致重定向未完成。Webhook 可以覆盖这些情况。
 
-Stripe 和 PayPal 都提供 webhook 系统，实时发送有关支付事件的通知。我们实现了强大的 webhook 处理程序，验证这些通知的真实性并相应地处理它们。
+Stripe 和 PayPal 都提供 webhook 系统，实时发送有关支付事件的通知。我们的 webhook 处理程序验证这些通知的真实性并相应地处理它们。
 
 ### Stripe Webhook 实现 {#stripe-webhook-implementation}
 
@@ -379,7 +377,7 @@ async function webhook(ctx) {
 }
 ```
 
-两个 webhook 处理程序遵循相同的模式：验证签名、确认接收并异步处理事件。这确保即使结账后重定向失败，我们也不会错过任何支付事件。
+两个 webhook 处理程序遵循相同的模式：验证签名、确认接收并异步处理事件。这样即使结账后重定向失败，我们仍能收到支付事件。
 
 ## Layer 3: 使用 Bree 的自动化任务 {#layer-3-automated-jobs-with-bree}
 
@@ -488,16 +486,16 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-These automated jobs serve as our final safety net, ensuring that our database always reflects the true state of subscriptions and payments in both Stripe and PayPal.
+These automated jobs serve as our final safety net, keeping our database in line with the true state of subscriptions and payments in both Stripe and PayPal.
 
 
 ## Handling Edge Cases {#handling-edge-cases}
 
-A robust payment system must handle edge cases gracefully. Let's look at how we handle some common scenarios.
+A payment system must handle edge cases. Below is how we handle some common scenarios.
 
 ### Fraud Detection and Prevention {#fraud-detection-and-prevention}
 
-We've implemented sophisticated fraud detection mechanisms that automatically identify and handle suspicious payment activities:
+Our fraud detection automatically identifies and handles suspicious payment activities:
 
 ```javascript
 case 'charge.failed': {
@@ -586,7 +584,7 @@ case 'CUSTOMER.DISPUTE.CREATED': {
 
 ## 代码复用：KISS 和 DRY 原则 {#code-reuse-kiss-and-dry-principles}
 
-在我们的支付系统中，我们始终遵循 KISS（保持简单，笨蛋）和 DRY（不要重复自己）原则。以下是一些示例：
+在我们的支付系统中，我们始终遵循 KISS（保持简单，笨蛋）和 DRY（不要重复自己）原则。示例：
 
 1. **共享辅助函数**：我们为常见任务创建了可重用的辅助函数，如同步支付和发送邮件。
 
@@ -695,9 +693,9 @@ graph TD
 
 ### 自动预续订邮件通知 {#automated-pre-renewal-email-notifications}
 
-我们构建了一个自动化系统，识别拥有有效试用订阅的用户，并在首次收费前向他们发送通知邮件。这不仅使我们符合 VISA 要求，还减少了拒付率并提升了客户满意度。
+我们构建了一个自动化系统，识别拥有有效试用订阅的用户，并在首次收费前向他们发送通知邮件。这使我们符合 VISA 要求，减少了拒付率并提升了客户满意度。
 
-以下是我们实现该功能的方式：
+我们的实现：
 
 ```javascript
 // 查找拥有试用订阅且尚未收到通知的用户
@@ -778,17 +776,17 @@ for (const user of users) {
 }
 ```
 
-此实现确保用户始终被告知即将发生的收费，且清晰说明：
+用户会收到即将发生的收费通知，其中说明：
 
 1. 首次收费的时间
 2. 未来收费的频率（月度、年度等）
 3. 他们将被收取的确切金额
 4. 订阅涵盖的域名
 
-通过自动化此流程，我们完美遵守了 VISA 的要求（规定至少在收费前 7 天通知），同时减少了支持咨询并提升了整体用户体验。
+通过自动化此流程，我们遵守了 VISA 的要求（规定至少在收费前 7 天通知），同时减少了支持咨询并提升了整体用户体验。
 ### 处理边缘情况 {#handling-edge-cases-1}
 
-我们的实现还包括强大的错误处理功能。如果通知过程中出现任何问题，我们的系统会自动提醒团队：
+我们的实现还包括错误处理功能。如果通知过程中出现任何问题，我们的系统会自动提醒团队：
 
 ```javascript
 try {
@@ -851,7 +849,7 @@ if (
 
 4. **稳健性**：我们的系统能够优雅地处理各种边缘情况，从网络故障到欺诈行为。
 
-如果您正在实现支持多支付处理器的支付系统，我们强烈推荐这种三重保障方法。虽然前期开发工作更多，但从长期来看，其在可靠性和准确性方面的优势非常值得。
+如果您正在实现支持多支付处理器的支付系统，我们推荐这种三重保障方法。它需要更多的前期开发工作，并会在可靠性和准确性方面带来回报。
 
 欲了解有关 Forward Email 及我们注重隐私的电子邮件服务的更多信息，请访问我们的[网站](https://forwardemail.net)。
 

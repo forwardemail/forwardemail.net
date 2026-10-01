@@ -28,7 +28,7 @@
 
 ## Kom i gang {#getting-started}
 
-Vår selvhostede e-postløsning, som alle våre produkter, er 100 % åpen kildekode—både frontend og backend. Dette betyr:
+Vår selvhostede e-postløsning, som alle våre produkter, er 100 % åpen kildekode, frontend og backend. Dette betyr:
 
 1. **Fullstendig åpenhet**: Hver linje med kode som behandler e-postene dine er tilgjengelig for offentlig gjennomgang
 2. **Bidrag fra fellesskapet**: Alle kan bidra med forbedringer eller fikse problemer
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Velg alternativ `1. Initial oppsett` for å starte.
 
-Når det er fullført, bør du se en suksessmelding. Du kan til og med kjøre `docker ps` for å se **de** komponentene som er startet. Mer informasjon om komponenter nedenfor.
+Når det er fullført, bør du se en suksessmelding. Du kan kjøre `docker ps` for å se **de** komponentene som er startet. Mer informasjon om komponenter nedenfor.
 
 
 ## Tjenester {#services}

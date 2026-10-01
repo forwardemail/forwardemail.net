@@ -28,7 +28,7 @@
 
 ## Getting started {#getting-started}
 
-La nostra soluzione email self-hosted, come tutti i nostri prodotti, è 100% open-source—sia frontend che backend. Questo significa:
+La nostra soluzione email self-hosted, come tutti i nostri prodotti, è 100% open-source, sia frontend che backend. Questo significa:
 
 1. **Trasparenza Completa**: Ogni riga di codice che elabora le tue email è disponibile per la revisione pubblica
 2. **Contributi dalla Comunità**: Chiunque può contribuire con miglioramenti o correggere problemi
@@ -137,7 +137,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 Scegli l'opzione `1. Configurazione iniziale` per iniziare.
 
-Una volta completato, dovresti vedere un messaggio di successo. Puoi anche eseguire `docker ps` per vedere **i** componenti avviati. Maggiori informazioni sui componenti di seguito.
+Una volta completato, dovresti vedere un messaggio di successo. Puoi eseguire `docker ps` per vedere **i** componenti avviati. Maggiori informazioni sui componenti di seguito.
 
 
 ## Servizi {#services}

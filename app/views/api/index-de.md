@@ -124,7 +124,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=Test email"
 ```
 
-Diese Methode ist nützlich, wenn E-Mails von Anwendungen gesendet werden, die bereits SMTP-Anmeldeinformationen verwenden, und macht die Migration von SMTP zu unserer API nahtlos.
+Diese Methode ist nützlich, wenn E-Mails von Anwendungen gesendet werden, die bereits SMTP-Anmeldeinformationen verwenden, und macht die Migration von SMTP zu unserer API unkompliziert.
 
 ### Nur Alias-Endpunkte {#alias-only-endpoints}
 
@@ -167,7 +167,7 @@ Unser Dienst ist in über 25 verschiedene Sprachen übersetzt. Alle API-Antwortn
 
 Paginierung wird von allen API-Endpunkten unterstützt, die Ergebnisse auflisten.
 
-Geben Sie einfach die Querystring-Eigenschaften `page` (und optional `limit`) an.
+Geben Sie die Querystring-Eigenschaften `page` (und optional `limit`) an.
 
 Die Eigenschaft `page` sollte eine Zahl größer oder gleich `1` sein. Wenn Sie `limit` angeben (ebenfalls eine Zahl), liegt der Mindestwert bei `10` und der Höchstwert bei `50` (sofern nicht anders angegeben).
 
@@ -502,13 +502,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Erstellen einer ausgehenden SMTP-E-Mail {#create-outbound-smtp-email}
 
-Unsere API zum Erstellen einer E-Mail ist inspiriert von und nutzt die Nachrichtenoptionen-Konfiguration von Nodemailer. Bitte beachten Sie die [Nodemailer Nachrichtenkonfiguration](https://nodemailer.com/message/) für alle untenstehenden Body-Parameter.
+Unsere API zum Erstellen einer E-Mail ist inspiriert von und verwendet die Nachrichtenoptionen-Konfiguration von Nodemailer. Bitte beachten Sie die [Nodemailer Nachrichtenkonfiguration](https://nodemailer.com/message/) für alle untenstehenden Body-Parameter.
 
 Beachten Sie, dass wir mit Ausnahme von `envelope` und `dkim` (da wir diese automatisch für Sie setzen) alle Nodemailer-Optionen unterstützen. Aus Sicherheitsgründen setzen wir automatisch die Optionen `disableFileAccess` und `disableUrlAccess` auf `true`.
 
 Sie sollten entweder die einzelne Option `raw` mit Ihrer rohen vollständigen E-Mail inklusive Header übergeben **oder** die einzelnen Body-Parameter-Optionen unten angeben.
 
-Dieser API-Endpunkt kodiert Emojis automatisch für Sie, wenn sie in den Headern gefunden werden (z. B. wird eine Betreffzeile `Subject: 🤓 Hello` automatisch in `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` umgewandelt). Unser Ziel war es, eine extrem entwicklerfreundliche und narrensichere E-Mail-API zu schaffen.
+Dieser API-Endpunkt kodiert Emojis automatisch für Sie, wenn sie in den Headern gefunden werden (z. B. wird eine Betreffzeile `Subject: 🤓 Hello` automatisch in `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` umgewandelt). Unser Ziel war es, eine entwicklerfreundliche und narrensichere E-Mail-API zu schaffen.
 
 **Authentifizierung:** Dieser Endpunkt unterstützt sowohl die [API-Token-Authentifizierung](#api-token-authentication-recommended-for-most-endpoints) als auch die [Alias-Anmeldeinformationen-Authentifizierung](#alias-credentials-authentication-for-outbound-email). Details finden Sie im Abschnitt [Authentifizierung](#authentication) oben.
 
@@ -974,7 +974,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Verschlüsseln {#encrypt}
 
-Wir erlauben es Ihnen, Datensätze auch im kostenlosen Tarif ohne Kosten zu verschlüsseln. Datenschutz sollte kein Feature sein, sondern von Natur aus in allen Aspekten eines Produkts eingebaut sein. Wie in einer viel diskutierten [Privacy Guides Diskussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) und auf [unseren GitHub-Issues](https://github.com/forwardemail/forwardemail.net/issues/254) stark gewünscht, haben wir dies hinzugefügt.
+Wir erlauben es Ihnen, Datensätze auch im kostenlosen Tarif ohne Kosten zu verschlüsseln. Datenschutz sollte in allen Aspekten eines Produkts eingebaut sein. Wie in einer viel diskutierten [Privacy Guides Diskussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) und auf [unseren GitHub-Issues](https://github.com/forwardemail/forwardemail.net/issues/254) stark gewünscht, haben wir dies hinzugefügt.
 
 ### TXT-Datensatz verschlüsseln {#encrypt-txt-record}
 

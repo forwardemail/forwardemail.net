@@ -25,7 +25,7 @@
 
 ## Вступ {#introduction}
 
-[Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) керує понад 900 відкритими проєктами на більш ніж 250 доменах, включно з [linux.com](https://www.linux.com/) та [jQuery.com](https://jquery.com/). Цей кейс досліджує, як вони співпрацювали з [Forward Email](https://forwardemail.net) для оптимізації управління електронною поштою, зберігаючи при цьому відповідність принципам відкритого коду.
+[Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) керує понад 900 відкритими проєктами на більш ніж 250 доменах, включно з [linux.com](https://www.linux.com/) та [jQuery.com](https://jquery.com/). Цей кейс описує, як вони співпрацювали з [Forward Email](https://forwardemail.net) для спрощення управління електронною поштою, залишаючись вірними принципам відкритого коду.
 
 
 ## Виклик {#the-challenge}
@@ -43,7 +43,7 @@ Linux Foundation зіткнулася з кількома викликами в 
 
 ## Рішення {#the-solution}
 
-Forward Email запропонував комплексне рішення з ключовими функціями:
+Forward Email запропонував рішення з такими функціями:
 
 ```mermaid
 graph TD
@@ -57,26 +57,26 @@ graph TD
 
 ### 100% Відкрита архітектура {#100-open-source-architecture}
 
-Як єдиний сервіс електронної пошти з повністю відкритою платформою (як фронтенд, так і бекенд), Forward Email ідеально відповідав відданості Linux Foundation принципам відкритого коду. Подібно до нашої реалізації з [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), ця прозорість дозволила їхній технічній команді перевіряти реалізації безпеки та навіть вносити покращення.
+Як єдиний сервіс електронної пошти з повністю відкритою платформою (як фронтенд, так і бекенд), Forward Email відповідав відданості Linux Foundation принципам відкритого коду. Подібно до нашої реалізації з [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), ця прозорість дозволила їхній технічній команді перевіряти реалізації безпеки та навіть вносити покращення.
 
 ### Конструкція з орієнтацією на конфіденційність {#privacy-focused-design}
 
-Жорсткі [політики конфіденційності](https://forwardemail.net/privacy) Forward Email забезпечили безпеку, необхідну Linux Foundation. Наша [технічна реалізація захисту конфіденційності електронної пошти](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) гарантує, що всі комунікації залишаються безпечними за замовчуванням, без логування чи сканування вмісту листів.
+Жорсткі [політики конфіденційності](https://forwardemail.net/privacy) Forward Email забезпечили безпеку, необхідну Linux Foundation. Наша [технічна реалізація захисту конфіденційності електронної пошти](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) забезпечує безпеку всіх комунікацій за замовчуванням, без логування чи сканування вмісту листів.
 
 Як детально описано в нашій технічній документації:
 
 > "Ми побудували всю нашу систему на принципі, що ваші електронні листи належать вам і тільки вам. На відміну від інших провайдерів, які сканують вміст листів для реклами або навчання ШІ, ми дотримуємося суворої політики без логування та без сканування, що зберігає конфіденційність усіх комунікацій."
 ### Безпека корпоративного рівня {#enterprise-grade-security}
 
-Впровадження [квантово-стійкого шифрування](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) з використанням ChaCha20-Poly1305 забезпечило передові засоби безпеки, при цьому кожна поштова скринька була окремим зашифрованим файлом. Такий підхід гарантує, що навіть якщо квантові комп’ютери стануть здатними зламувати сучасні стандарти шифрування, комунікації Linux Foundation залишаться захищеними.
+Впровадження [квантово-стійкого шифрування](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) використовує ChaCha20-Poly1305, а кожна поштова скринька зберігається як окремий зашифрований файл. Такий підхід розроблений, щоб комунікації Linux Foundation залишалися захищеними, навіть якщо квантові комп’ютери стануть здатними зламувати сучасні стандарти шифрування.
 
 ### Фіксована ціна для корпоративної моделі {#fixed-price-enterprise-model}
 
-[Корпоративне ціноутворення](https://forwardemail.net/pricing) Forward Email передбачає фіксовану місячну вартість незалежно від кількості доменів чи користувачів. Цей підхід забезпечив значну економію для інших великих організацій, як показано у нашому [кейсі з електронною поштою для випускників університету](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), де установи заощадили до 99% у порівнянні з традиційними рішеннями з оплатою за користувача.
+[Корпоративне ціноутворення](https://forwardemail.net/pricing) Forward Email передбачає фіксовану місячну вартість незалежно від кількості доменів чи користувачів. Цей підхід заощадив кошти іншим великим організаціям, як показано у нашому [кейсі з електронною поштою для випускників університету](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), де установи заощадили до 99% у порівнянні з традиційними рішеннями з оплатою за користувача.
 
 ### API, дружній до розробників {#developer-friendly-api}
 
-Дотримуючись [підходу README-перш за все](https://tom.preston-werner.com/2010/08/23/readme-driven-development) та надихаючись [RESTful API дизайном Stripe](https://amberonrails.com/building-stripes-api), [API](https://forwardemail.net/api) Forward Email дозволив глибоку інтеграцію з Project Control Center Linux Foundation. Ця інтеграція була ключовою для автоматизації управління електронною поштою в їхньому різноманітному портфелі проектів.
+Дотримуючись [підходу README-перш за все](https://tom.preston-werner.com/2010/08/23/readme-driven-development) та надихаючись [RESTful API дизайном Stripe](https://amberonrails.com/building-stripes-api), [API](https://forwardemail.net/api) Forward Email інтегрувався з Project Control Center Linux Foundation, який був потрібен їм для автоматизації управління електронною поштою в їхньому портфелі проектів.
 
 
 ## Процес впровадження {#implementation-process}
@@ -108,7 +108,7 @@ flowchart LR
 
 ## Результати та переваги {#results-and-benefits}
 
-Впровадження принесло значні переваги:
+Впровадження принесло такі переваги:
 
 ### Покращення ефективності {#efficiency-improvements}
 
@@ -138,8 +138,8 @@ flowchart LR
 
 ## Висновок {#conclusion}
 
-Партнерство Linux Foundation з Forward Email демонструє, як організації можуть вирішувати складні завдання управління електронною поштою, зберігаючи відповідність своїм основним цінностям. Обравши рішення, яке ставить на перше місце принципи відкритого коду, приватність і безпеку, Linux Foundation перетворила управління електронною поштою з адміністративного тягаря на стратегічну перевагу.
-Як показано на нашій роботі з [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) та [провідними університетами](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), організації з комплексними портфелями доменів можуть досягти значних покращень у ефективності, безпеці та управлінні витратами завдяки корпоративному рішенню Forward Email.
+Обравши рішення, яке ставить на перше місце принципи відкритого коду, приватність і безпеку, Linux Foundation зменшила адміністративне навантаження з управління електронною поштою на 250+ доменах без компромісів щодо своїх цінностей.
+Як показано на нашій роботі з [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) та [провідними університетами](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), організації з комплексними портфелями доменів можуть покращити ефективність, безпеку та управління витратами завдяки корпоративному рішенню Forward Email.
 
 Для отримання додаткової інформації про те, як Forward Email може допомогти вашій організації керувати електронною поштою на кількох доменах, відвідайте [forwardemail.net](https://forwardemail.net) або ознайомтеся з нашою детальною [документацією](https://forwardemail.net/email-api) та [посібниками](https://forwardemail.net/guides).
 

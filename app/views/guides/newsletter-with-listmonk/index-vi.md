@@ -26,21 +26,21 @@
 
 ## Tổng Quan {#overview}
 
-Hướng dẫn này cung cấp cho các nhà phát triển các bước chi tiết để thiết lập [Listmonk](https://listmonk.app/), một công cụ quản lý bản tin và danh sách gửi thư mã nguồn mở mạnh mẽ, sử dụng [Forward Email](https://forwardemail.net/) làm nhà cung cấp SMTP. Sự kết hợp này cho phép bạn quản lý chiến dịch hiệu quả đồng thời đảm bảo việc gửi email an toàn, riêng tư và đáng tin cậy.
+Hướng dẫn này cung cấp cho các nhà phát triển các bước chi tiết để thiết lập [Listmonk](https://listmonk.app/), một công cụ quản lý bản tin và danh sách gửi thư mã nguồn mở, sử dụng [Forward Email](https://forwardemail.net/) làm nhà cung cấp SMTP. Listmonk quản lý các chiến dịch của bạn và Forward Email gửi chúng một cách an toàn, riêng tư và đáng tin cậy.
 
 * **Listmonk**: Quản lý người đăng ký, tổ chức danh sách, tạo chiến dịch và theo dõi hiệu suất.
-* **Forward Email**: Đóng vai trò là máy chủ SMTP an toàn, xử lý việc gửi email thực tế với các tính năng bảo mật tích hợp như SPF, DKIM, DMARC và mã hóa TLS.
+* **Forward Email**: Đóng vai trò là máy chủ SMTP an toàn, xử lý việc gửi email với các tính năng bảo mật tích hợp như SPF, DKIM, DMARC và mã hóa TLS.
 
-Bằng cách tích hợp hai công cụ này, bạn giữ quyền kiểm soát hoàn toàn dữ liệu và hạ tầng của mình trong khi tận dụng hệ thống gửi thư mạnh mẽ của Forward Email.
+Với thiết lập này, bạn giữ quyền kiểm soát hoàn toàn dữ liệu và hạ tầng của mình trong khi Forward Email xử lý việc gửi thư.
 
 
 ## Tại Sao Chọn Listmonk và Forward Email {#why-listmonk-and-forward-email}
 
 * **Mã Nguồn Mở**: Cả Listmonk và nguyên tắc của Forward Email đều nhấn mạnh tính minh bạch và kiểm soát. Bạn tự lưu trữ Listmonk, sở hữu dữ liệu của mình.
-* **Tập Trung Vào Quyền Riêng Tư**: Forward Email được xây dựng với trọng tâm là quyền riêng tư, giảm thiểu lưu trữ dữ liệu và tập trung vào truyền tải an toàn.
+* **Tập Trung Vào Quyền Riêng Tư**: Forward Email được xây dựng cho quyền riêng tư, giảm thiểu lưu trữ dữ liệu và tập trung vào truyền tải an toàn.
 * **Tiết Kiệm Chi Phí**: Listmonk miễn phí, Forward Email cung cấp các gói miễn phí hào phóng và các gói trả phí hợp lý, tạo thành giải pháp tiết kiệm ngân sách.
 * **Khả Năng Mở Rộng**: Listmonk có hiệu suất cao, hạ tầng của Forward Email được thiết kế để gửi thư đáng tin cậy ở quy mô lớn.
-* **Thân Thiện Với Nhà Phát Triển**: Listmonk cung cấp API mạnh mẽ, Forward Email hỗ trợ tích hợp SMTP đơn giản và webhook.
+* **Thân Thiện Với Nhà Phát Triển**: Listmonk cung cấp API đầy đủ, Forward Email hỗ trợ tích hợp SMTP đơn giản và webhook.
 
 
 ## Yêu Cầu Trước {#prerequisites}
@@ -100,11 +100,11 @@ Xác nhận bật tường lửa khi được yêu cầu.
 
 ### 5. Cấu hình Truy cập HTTPS {#5-configure-https-access}
 
-Chạy Listmonk qua HTTPS rất quan trọng để đảm bảo bảo mật. Bạn có hai lựa chọn chính:
+Hãy chạy Listmonk qua HTTPS để bảo mật. Bạn có hai lựa chọn chính:
 
 #### Lựa chọn A: Sử dụng Proxy Cloudflare (Khuyến nghị để đơn giản) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
-Nếu DNS của tên miền bạn được quản lý bởi Cloudflare, bạn có thể tận dụng tính năng proxy của họ để dễ dàng có HTTPS.
+Nếu DNS của tên miền bạn được quản lý bởi Cloudflare, bạn có thể sử dụng tính năng proxy của họ để dễ dàng có HTTPS.
 
 1. **Trỏ DNS**: Tạo một bản ghi `A` trong Cloudflare cho tên miền phụ Listmonk của bạn (ví dụ: `listmonk.yourdomain.com`) trỏ đến địa chỉ IP VPS của bạn. Đảm bảo **Trạng thái Proxy** được đặt thành **Proxied** (đám mây màu cam).
 2. **Sửa Docker Compose**: Chỉnh sửa file `docker-compose.yml` bạn đã tải về:
@@ -185,7 +185,7 @@ Xử lý bounce cho phép Listmonk tự động xử lý các email không thể
 5. Bật **Forward Email**.
 6. Dán **Webhook Signature Payload Verification Key** bạn đã sao chép từ bảng điều khiển Forward Email vào trường **Forward Email Key**.
 7. Nhấn **Lưu** ở cuối trang.
-8. Xử lý bounce đã được cấu hình! Khi Forward Email phát hiện một bounce cho email được gửi bởi Listmonk, nó sẽ thông báo cho instance Listmonk của bạn qua webhook, và Listmonk sẽ đánh dấu người đăng ký tương ứng.
+8. Xử lý bounce đã được cấu hình. Khi Forward Email phát hiện một bounce cho email được gửi bởi Listmonk, nó sẽ thông báo cho instance Listmonk của bạn qua webhook, và Listmonk sẽ đánh dấu người đăng ký tương ứng.
 9. Hoàn thành các bước dưới đây trong [Testing](#testing) để đảm bảo mọi thứ hoạt động.
 
 ## Kiểm tra {#testing}
@@ -226,15 +226,13 @@ Dưới đây là tổng quan nhanh về các chức năng cốt lõi của List
 ## Developer Notes {#developer-notes}
 
 * **Templating**: Listmonk sử dụng engine templating của Go. Khám phá tài liệu của nó để cá nhân hóa nâng cao: `{{ .Subscriber.Attribs.your_custom_field }}`.
-* **API**: Listmonk cung cấp một REST API toàn diện để quản lý danh sách, người đăng ký, chiến dịch, mẫu và nhiều hơn nữa. Tìm liên kết tài liệu API trong phần chân trang của phiên bản Listmonk của bạn.
+* **API**: Listmonk cung cấp một REST API để quản lý danh sách, người đăng ký, chiến dịch, mẫu và nhiều hơn nữa. Tìm liên kết tài liệu API trong phần chân trang của phiên bản Listmonk của bạn.
 * **Custom Fields**: Định nghĩa các trường người đăng ký tùy chỉnh dưới **Settings -> Subscriber Fields** để lưu trữ dữ liệu bổ sung.
 * **Webhooks**: Ngoài các bounce, Listmonk có thể gửi webhook cho các sự kiện khác (ví dụ: đăng ký), cho phép tích hợp với các hệ thống khác.
 
 
 ## Conclusion {#conclusion}
 
-Bằng cách tích hợp sức mạnh tự lưu trữ của Listmonk với việc gửi email an toàn, tôn trọng quyền riêng tư của Forward Email, bạn tạo ra một nền tảng tiếp thị email mạnh mẽ và có đạo đức. Bạn duy trì quyền sở hữu hoàn toàn dữ liệu khán giả của mình trong khi hưởng lợi từ khả năng gửi email cao và các tính năng bảo mật tự động.
+Listmonk tự lưu trữ kết hợp với việc gửi email an toàn, tôn trọng quyền riêng tư của Forward Email mang lại cho bạn một nền tảng tiếp thị email có đạo đức. Bạn giữ quyền sở hữu hoàn toàn dữ liệu khán giả của mình và có khả năng gửi email cao cùng các tính năng bảo mật tự động.
 
-Cài đặt này cung cấp một giải pháp thay thế có thể mở rộng, tiết kiệm chi phí và thân thiện với nhà phát triển so với các dịch vụ email độc quyền, phù hợp hoàn hảo với tinh thần phần mềm mã nguồn mở và quyền riêng tư của người dùng.
-
-Chúc bạn gửi email thành công! 🚀
+Cài đặt này là một giải pháp thay thế có thể mở rộng, tiết kiệm chi phí và thân thiện với nhà phát triển cho các dịch vụ email độc quyền, được xây dựng trên phần mềm mã nguồn mở và quyền riêng tư của người dùng.
