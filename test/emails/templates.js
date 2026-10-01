@@ -230,3 +230,16 @@ test('the wordmark uses the site font and weight', async (t) => {
   t.regex(brand[1], /font-size: 17px/);
   t.regex(brand[1], /font-weight: 700/);
 });
+
+test('long code lines wrap between words, not inside them', async (t) => {
+  // system alerts list IDs in <code>; break-all split every word ("Missing
+  // Domain I" / "D") instead of only a word too long for the line
+  const html = await render('alert', {
+    message:
+      '<ul><li><code class="small">Alias ID: 6abd5e46f6134a99671bddca, Domain ID: 6abd5e46f6134a99671bddcc</code></li></ul>'
+  });
+  const code = html.match(/<code class="small"[^>]*style="([^"]*)"/);
+  t.truthy(code);
+  t.notRegex(code[1], /break-all/);
+  t.regex(code[1], /overflow-wrap: anywhere/);
+});

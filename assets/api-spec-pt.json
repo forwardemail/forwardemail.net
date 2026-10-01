@@ -1400,6 +1400,26 @@
             },
             "description": "Sinalizadores IMAP a serem definidos na mensagem"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Sinalizadores IMAP a serem adicionados à mensagem. Os demais sinalizadores da mensagem são mantidos, de modo que as alterações feitas por outro cliente nesse meio-tempo não são desfeitas. Tem precedência sobre flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Sinalizadores IMAP a serem removidos da mensagem. Uma palavra-chave removida aqui também é removida dos rótulos da mensagem. Os demais sinalizadores da mensagem são mantidos. Tem precedência sobre flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Rótulos definidos pelo usuário para serem aplicados à mensagem. Podem ser uma única string de rótulo ou uma matriz de rótulos. Os rótulos devem começar com uma letra, dígito, barra invertida ou cifrão e podem conter caracteres alfanuméricos, pontos e hífens. Máximo de 10 rótulos por mensagem. Os rótulos não diferenciam maiúsculas de minúsculas e serão armazenados em letras minúsculas.",
+            "description": "Rótulos definidos pelo usuário para serem aplicados à mensagem. Podem ser uma única string de rótulo ou uma matriz de rótulos. Os rótulos devem começar com uma letra, dígito, barra invertida ou cifrão e podem conter caracteres alfanuméricos, pontos e hífens. Máximo de 10 rótulos por mensagem. Os rótulos não diferenciam maiúsculas de minúsculas e serão armazenados em letras minúsculas. As palavras-chave que os clientes de e-mail usam para acompanhar o estado de uma mensagem, como $Forwarded ou $Junk, são mantidas, a menos que sejam removidas com labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Rótulos a serem adicionados à mensagem. Os demais rótulos da mensagem são mantidos. Tem precedência sobre labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Rótulos a serem removidos da mensagem, inclusive para clientes IMAP (que veem os rótulos como palavras-chave). Os demais rótulos da mensagem são mantidos. Tem precedência sobre labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Pastas"
         ],
         "summary": "Pasta de atualização",
-        "description": "Atualizar/renomear uma pasta existente. Esta operação renomeia a pasta para o novo caminho especificado no corpo da solicitação. Você pode usar o ObjectID da pasta ou seu caminho atual como identificador.",
+        "description": "Atualizar/renomear uma pasta existente. Esta operação renomeia a pasta para o novo caminho especificado no corpo da solicitação. Você pode usar o ObjectID da pasta ou seu caminho atual como identificador. As subpastas também são renomeadas (por exemplo, 'Work/Clients' passa a ser 'Jobs/Clients' quando 'Work' é renomeada para 'Jobs'). INBOX não pode ser renomeada.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Pastas"
         ],
         "summary": "Excluir pasta",
-        "description": "Exclui permanentemente uma pasta específica. Esta ação não pode ser desfeita e também excluirá todas as mensagens contidas na pasta. Você pode usar o ObjectID da pasta ou o seu caminho como identificador.",
+        "description": "Exclui uma pasta específica. As mensagens contidas nela são movidas para a pasta Trash (mensagens em Trash ou Junk são excluídas permanentemente) e as subpastas são mantidas. INBOX não pode ser excluída. Você pode usar o ObjectID da pasta ou o seu caminho como identificador.",
         "operationId": "deleteFolder",
         "security": [
           {

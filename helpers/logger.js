@@ -129,6 +129,11 @@ const REDACTED_FIELDS = new Set([
   //       `cookie` header (and the `cookies` object parsed from it) carry the
   //       session cookie and its signature, which would otherwise be stored
   //       in plain text with every error/fatal log of a signed-in request
+  //
+  // NOTE: a logged API session also carries the Koa request, whose
+  //       `authorization` header holds the alias password (Basic auth)
+  'authorization',
+  'proxy-authorization',
   'cookie',
   'cookies',
   'set-cookie',

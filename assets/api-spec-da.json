@@ -1400,6 +1400,26 @@
             },
             "description": "IMAP-flag, der skal sættes på beskeden"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-flag, der skal tilføjes til beskeden. Beskedens øvrige flag bevares, så ændringer, som en anden klient har foretaget i mellemtiden, ikke fortrydes. Har forrang for flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-flag, der skal fjernes fra beskeden. Et nøgleord, der fjernes her, fjernes også fra beskedens etiketter. Beskedens øvrige flag bevares. Har forrang for flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Brugerdefinerede etiketter, der skal indstilles på beskeden. Kan være en enkelt etiketstreng eller en række etiketter. Etiketter skal starte med et bogstav, ciffer, omvendt skråstreg eller dollartegn og kan indeholde ord, tegn, punktummer og bindestreger. Maksimalt 10 etiketter pr. besked. Etiketter skelner ikke mellem store og små bogstaver og gemmes med små bogstaver.",
+            "description": "Brugerdefinerede etiketter, der skal indstilles på beskeden. Kan være en enkelt etiketstreng eller en række etiketter. Etiketter skal starte med et bogstav, ciffer, omvendt skråstreg eller dollartegn og kan indeholde ord, tegn, punktummer og bindestreger. Maksimalt 10 etiketter pr. besked. Etiketter skelner ikke mellem store og små bogstaver og gemmes med små bogstaver. Nøgleord, som mailklienter bruger til at holde styr på en beskeds status, f.eks. $Forwarded eller $Junk, bevares, medmindre de fjernes med labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Etiketter, der skal tilføjes til beskeden. Beskedens øvrige etiketter bevares. Har forrang for labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Etiketter, der skal fjernes fra beskeden, også for IMAP-klienter (de ser etiketter som nøgleord). Beskedens øvrige etiketter bevares. Har forrang for labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Mapper"
         ],
         "summary": "Opdater mappe",
-        "description": "Opdater/omdøb en eksisterende mappe. Denne handling omdøber mappen til den nye sti, der er angivet i anmodningsteksten. Du kan bruge enten mappens objekt-ID eller dens aktuelle sti som identifikator.",
+        "description": "Opdater/omdøb en eksisterende mappe. Denne handling omdøber mappen til den nye sti, der er angivet i anmodningsteksten. Du kan bruge enten mappens objekt-ID eller dens aktuelle sti som identifikator. Undermapper omdøbes også (f.eks. bliver 'Work/Clients' til 'Jobs/Clients', når 'Work' omdøbes til 'Jobs'). INBOX kan ikke omdøbes.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Mapper"
         ],
         "summary": "Slet mappe",
-        "description": "Slet en bestemt mappe permanent. Denne handling kan ikke fortrydes og vil også slette alle beskeder i mappen. Du kan bruge enten mappens objekt-ID eller dens sti som identifikator.",
+        "description": "Slet en bestemt mappe. Dens beskeder flyttes til mappen Trash (beskeder i Trash eller Junk slettes permanent), og undermapper bevares. INBOX kan ikke slettes. Du kan bruge enten mappens objekt-ID eller dens sti som identifikator.",
         "operationId": "deleteFolder",
         "security": [
           {

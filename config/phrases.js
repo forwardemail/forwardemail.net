@@ -627,6 +627,8 @@ module.exports = {
   IMAP_MAILBOX_DOES_NOT_EXIST: 'Mailbox does not exist',
   IMAP_MAILBOX_OVER_QUOTA: 'Mailbox is over quota',
   IMAP_MAILBOX_RESERVED: 'Mailbox is reserved and cannot be removed',
+  IMAP_MAILBOX_RENAME_INBOX: 'INBOX cannot be renamed',
+  IMAP_MAILBOX_RENAME_INTO_ITSELF: 'Mailbox cannot be moved into itself',
   IMAP_INVALID_SEARCH: 'Invalid search query',
   // IMAP ALERT response code messages (RFC 3501 Section 7.1)
   // These are displayed as popup dialogs in mail clients (Thunderbird, Apple Mail, Outlook)

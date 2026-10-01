@@ -83,3 +83,43 @@ for (const level of ['error', 'fatal']) {
     }
   );
 }
+
+test.serial(
+  'a logged API session does not carry credentials from request headers',
+  async (t) => {
+    // an API session keeps the Koa request, and a failure in a handler that
+    // runs from the API logs the whole session
+    const { meta } = await logAndCapture(
+      'fatal',
+      new Error('journal write failed'),
+      {
+        // do not persist this test log to Mongo
+        ignore_hook: true,
+        session: {
+          id: 'request-id',
+          request: {
+            method: 'PUT',
+            url: '/v1/messages/1',
+            header: {
+              authorization: 'Basic aGVsbG9AZXhhbXBsZS5jb206c2VjcmV0',
+              'proxy-authorization': 'Basic c2VjcmV0',
+              cookie: 'forward_email.sid=abc',
+              'user-agent': 'Thunderbird'
+            }
+          },
+          user: { alias_id: 'alias-id', password: 'encrypted' }
+        }
+      }
+    );
+
+    const { header } = meta.session.request;
+    t.is(header.authorization, 'REDACTED');
+    t.is(header['proxy-authorization'], 'REDACTED');
+    t.is(header.cookie, 'REDACTED');
+    t.is(meta.session.user.password, 'REDACTED');
+    // what helps debugging stays
+    t.is(header['user-agent'], 'Thunderbird');
+    t.is(meta.session.request.url, '/v1/messages/1');
+    t.is(meta.session.user.alias_id, 'alias-id');
+  }
+);

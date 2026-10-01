@@ -18,6 +18,7 @@ const pify = require('pify');
 
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
+const getImapFlags = require('#helpers/get-imap-flags');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const onExpunge = require('#helpers/imap/on-expunge');
@@ -134,7 +135,11 @@ async function onUpdate(update, session, fn) {
             .map((message) => ({
               command: 'FETCH',
               uid: message.uid,
-              flags: [...message.flags, '\\Seen'],
+              // with the labels, as every FETCH shows them
+              flags: getImapFlags({
+                flags: [...message.flags, '\\Seen'],
+                labels: message.labels
+              }),
               message: new mongoose.Types.ObjectId(message.id),
               modseq: updatedMailbox.modifyIndex,
               unseenChange: true

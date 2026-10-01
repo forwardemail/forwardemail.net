@@ -1400,6 +1400,26 @@
             },
             "description": "IMAP-flaggor att ställa in på meddelandet"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-flaggor att lägga till på meddelandet. Meddelandets övriga flaggor behålls, så ändringar som en annan klient har gjort under tiden ångras inte. Har företräde framför flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-flaggor att ta bort från meddelandet. Ett nyckelord som tas bort här tas även bort från meddelandets etiketter. Meddelandets övriga flaggor behålls. Har företräde framför flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Användardefinierade etiketter att ange för meddelandet. Kan vara en enskild etikettsträng eller en matris med etiketter. Etiketter måste börja med en bokstav, siffra, omvänt snedstreck eller dollartecken och kan innehålla ord, tecken, punkter och bindestreck. Maximalt 10 etiketter per meddelande. Etiketter är skiftlägeskänsliga och lagras med gemener.",
+            "description": "Användardefinierade etiketter att ange för meddelandet. Kan vara en enskild etikettsträng eller en matris med etiketter. Etiketter måste börja med en bokstav, siffra, omvänt snedstreck eller dollartecken och kan innehålla ord, tecken, punkter och bindestreck. Maximalt 10 etiketter per meddelande. Etiketter är skiftlägeskänsliga och lagras med gemener. Nyckelord som e-postklienter använder för att hålla reda på ett meddelandes status, till exempel $Forwarded eller $Junk, behålls om de inte tas bort med labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Etiketter att lägga till på meddelandet. Meddelandets övriga etiketter behålls. Har företräde framför labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Etiketter att ta bort från meddelandet, även för IMAP-klienter (de ser etiketter som nyckelord). Meddelandets övriga etiketter behålls. Har företräde framför labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Mappar"
         ],
         "summary": "Uppdatera mapp",
-        "description": "Uppdatera/byt namn på en befintlig mapp. Den här åtgärden byter namn på mappen till den nya sökvägen som anges i begäran. Du kan använda antingen mappens objekt-ID eller dess aktuella sökväg som identifierare.",
+        "description": "Uppdatera/byt namn på en befintlig mapp. Den här åtgärden byter namn på mappen till den nya sökvägen som anges i begäran. Du kan använda antingen mappens objekt-ID eller dess aktuella sökväg som identifierare. Undermappar får också nya namn (t.ex. ändras 'Work/Clients' till 'Jobs/Clients' när 'Work' byter namn till 'Jobs'). Det går inte att byta namn på INBOX.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Mappar"
         ],
         "summary": "Ta bort mapp",
-        "description": "Ta bort en specifik mapp permanent. Den här åtgärden kan inte ångras och kommer även att ta bort alla meddelanden i mappen. Du kan använda antingen mappens objekt-ID eller dess sökväg som identifierare.",
+        "description": "Ta bort en specifik mapp. Dess meddelanden flyttas till mappen Trash (meddelanden i Trash eller Junk tas bort permanent) och undermappar behålls. Det går inte att ta bort INBOX. Du kan använda antingen mappens objekt-ID eller dess sökväg som identifierare.",
         "operationId": "deleteFolder",
         "security": [
           {

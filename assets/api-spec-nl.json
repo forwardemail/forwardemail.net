@@ -1400,6 +1400,26 @@
             },
             "description": "IMAP-vlaggen die op het bericht moeten worden ingesteld"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-vlaggen die aan het bericht moeten worden toegevoegd. De overige vlaggen van het bericht blijven behouden, zodat wijzigingen die een andere client intussen heeft aangebracht niet ongedaan worden gemaakt. Heeft voorrang op flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-vlaggen die van het bericht moeten worden verwijderd. Een trefwoord dat hier wordt verwijderd, wordt ook uit de labels van het bericht verwijderd. De overige vlaggen blijven behouden. Heeft voorrang op flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Door de gebruiker gedefinieerde labels die aan het bericht moeten worden toegevoegd. Dit kan een enkele labeltekenreeks zijn of een array van labels. Labels moeten beginnen met een letter, cijfer, backslash of dollarteken en mogen woordtekens, punten en koppeltekens bevatten. Maximaal 10 labels per bericht. Labels zijn niet hoofdlettergevoelig en worden in kleine letters opgeslagen.",
+            "description": "Door de gebruiker gedefinieerde labels die aan het bericht moeten worden toegevoegd. Dit kan een enkele labeltekenreeks zijn of een array van labels. Labels moeten beginnen met een letter, cijfer, backslash of dollarteken en mogen woordtekens, punten en koppeltekens bevatten. Maximaal 10 labels per bericht. Labels zijn niet hoofdlettergevoelig en worden in kleine letters opgeslagen. Trefwoorden die e-mailclients gebruiken om de status van een bericht bij te houden, zoals $Forwarded of $Junk, blijven behouden tenzij ze met labels_remove worden verwijderd.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Labels die aan het bericht moeten worden toegevoegd. De overige labels van het bericht blijven behouden. Heeft voorrang op labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Labels die van het bericht moeten worden verwijderd, ook voor IMAP-clients (die labels als trefwoorden zien). De overige labels van het bericht blijven behouden. Heeft voorrang op labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Mappen"
         ],
         "summary": "Map bijwerken",
-        "description": "Een bestaande map bijwerken/hernoemen. Met deze bewerking wordt de map hernoemd naar het nieuwe pad dat is opgegeven in de aanvraagbody. U kunt de ObjectID van de map of het huidige pad als identificatie gebruiken.",
+        "description": "Een bestaande map bijwerken/hernoemen. Met deze bewerking wordt de map hernoemd naar het nieuwe pad dat is opgegeven in de aanvraagbody. U kunt de ObjectID van de map of het huidige pad als identificatie gebruiken. Submappen worden ook hernoemd (bijv. 'Work/Clients' wordt 'Jobs/Clients' wanneer 'Work' wordt hernoemd naar 'Jobs'). INBOX kan niet worden hernoemd.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Mappen"
         ],
         "summary": "Map verwijderen",
-        "description": "Verwijder een specifieke map permanent. Deze actie kan niet ongedaan worden gemaakt en verwijdert ook alle berichten in de map. U kunt de ObjectID of het pad van de map als identificatie gebruiken.",
+        "description": "Verwijder een specifieke map. De berichten erin worden naar de map Trash verplaatst (berichten in Trash of Junk worden permanent verwijderd) en submappen blijven behouden. INBOX kan niet worden verwijderd. U kunt de ObjectID of het pad van de map als identificatie gebruiken.",
         "operationId": "deleteFolder",
         "security": [
           {

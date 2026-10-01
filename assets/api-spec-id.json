@@ -1400,6 +1400,26 @@
             },
             "description": "Bendera IMAP untuk ditetapkan pada pesan"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bendera IMAP untuk ditambahkan ke pesan. Bendera lain pada pesan tetap dipertahankan, sehingga perubahan yang dibuat klien lain sementara itu tidak dibatalkan. Lebih diutamakan daripada flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bendera IMAP untuk dihapus dari pesan. Kata kunci yang dihapus di sini juga dihapus dari label pesan. Bendera lain pada pesan tetap dipertahankan. Lebih diutamakan daripada flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Label yang ditentukan pengguna untuk disematkan pada pesan. Dapat berupa string label tunggal atau larik label. Label harus diawali dengan huruf, angka, garis miring terbalik, atau tanda dolar, dan dapat berisi karakter kata, titik, dan tanda hubung. Maksimum 10 label per pesan. Label tidak peka huruf besar/kecil dan akan disimpan dalam huruf kecil.",
+            "description": "Label yang ditentukan pengguna untuk disematkan pada pesan. Dapat berupa string label tunggal atau larik label. Label harus diawali dengan huruf, angka, garis miring terbalik, atau tanda dolar, dan dapat berisi karakter kata, titik, dan tanda hubung. Maksimum 10 label per pesan. Label tidak peka huruf besar/kecil dan akan disimpan dalam huruf kecil. Kata kunci yang digunakan klien email untuk melacak status pesan, seperti $Forwarded atau $Junk, tetap dipertahankan kecuali dihapus dengan labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Label untuk ditambahkan ke pesan. Label lain pada pesan tetap dipertahankan. Lebih diutamakan daripada labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Label untuk dihapus dari pesan, juga bagi klien IMAP (yang melihat label sebagai kata kunci). Label lain pada pesan tetap dipertahankan. Lebih diutamakan daripada labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Folder"
         ],
         "summary": "Perbarui folder",
-        "description": "Perbarui/ganti nama folder yang sudah ada. Operasi ini mengganti nama folder ke jalur baru yang ditentukan dalam badan permintaan. Anda dapat menggunakan ObjectID folder atau jalurnya saat ini sebagai pengenal.",
+        "description": "Perbarui/ganti nama folder yang sudah ada. Operasi ini mengganti nama folder ke jalur baru yang ditentukan dalam badan permintaan. Anda dapat menggunakan ObjectID folder atau jalurnya saat ini sebagai pengenal. Folder di dalamnya ikut diganti namanya (misalnya, 'Work/Clients' menjadi 'Jobs/Clients' saat 'Work' diganti namanya menjadi 'Jobs'). INBOX tidak dapat diganti namanya.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Folder"
         ],
         "summary": "Hapus folder",
-        "description": "Hapus folder tertentu secara permanen. Tindakan ini tidak dapat dibatalkan dan juga akan menghapus semua pesan di dalam folder. Anda dapat menggunakan ObjectID folder atau jalurnya sebagai pengenal.",
+        "description": "Hapus folder tertentu. Pesan-pesannya dipindahkan ke folder Trash (pesan di Trash atau Junk dihapus secara permanen), sedangkan folder di dalamnya tetap dipertahankan. INBOX tidak dapat dihapus. Anda dapat menggunakan ObjectID folder atau jalurnya sebagai pengenal.",
         "operationId": "deleteFolder",
         "security": [
           {

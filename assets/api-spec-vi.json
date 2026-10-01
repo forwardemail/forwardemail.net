@@ -1400,6 +1400,26 @@
             },
             "description": "Cờ IMAP để thiết lập trên tin nhắn"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Cờ IMAP để thêm vào tin nhắn. Các cờ khác của tin nhắn được giữ nguyên, nên các thay đổi mà máy khách khác thực hiện trong lúc đó sẽ không bị hoàn tác. Được ưu tiên hơn flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Cờ IMAP để xóa khỏi tin nhắn. Từ khóa bị xóa ở đây cũng bị xóa khỏi nhãn của tin nhắn. Các cờ khác của tin nhắn được giữ nguyên. Được ưu tiên hơn flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Các nhãn do người dùng định nghĩa để thiết lập cho thông báo. Có thể là một chuỗi nhãn đơn hoặc một mảng các nhãn. Nhãn phải bắt đầu bằng một chữ cái, chữ số, dấu gạch chéo ngược hoặc dấu đô la, và có thể chứa các ký tự chữ, dấu chấm và dấu gạch ngang. Tối đa 10 nhãn cho mỗi thông báo. Nhãn không phân biệt chữ hoa chữ thường và sẽ được lưu trữ ở dạng chữ thường.",
+            "description": "Các nhãn do người dùng định nghĩa để thiết lập cho thông báo. Có thể là một chuỗi nhãn đơn hoặc một mảng các nhãn. Nhãn phải bắt đầu bằng một chữ cái, chữ số, dấu gạch chéo ngược hoặc dấu đô la, và có thể chứa các ký tự chữ, dấu chấm và dấu gạch ngang. Tối đa 10 nhãn cho mỗi thông báo. Nhãn không phân biệt chữ hoa chữ thường và sẽ được lưu trữ ở dạng chữ thường. Các từ khóa mà máy khách email dùng để theo dõi trạng thái của tin nhắn, chẳng hạn như $Forwarded hoặc $Junk, sẽ được giữ nguyên trừ khi bị xóa bằng labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Nhãn để thêm vào tin nhắn. Các nhãn khác của tin nhắn được giữ nguyên. Được ưu tiên hơn labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Nhãn để xóa khỏi tin nhắn, áp dụng cả cho máy khách IMAP (các máy khách này xem nhãn là từ khóa). Các nhãn khác của tin nhắn được giữ nguyên. Được ưu tiên hơn labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Thư mục"
         ],
         "summary": "Cập nhật thư mục",
-        "description": "Cập nhật/đổi tên thư mục hiện có. Thao tác này đổi tên thư mục thành đường dẫn mới được chỉ định trong nội dung yêu cầu. Bạn có thể sử dụng ObjectID của thư mục hoặc đường dẫn hiện tại làm định danh.",
+        "description": "Cập nhật/đổi tên thư mục hiện có. Thao tác này đổi tên thư mục thành đường dẫn mới được chỉ định trong nội dung yêu cầu. Bạn có thể sử dụng ObjectID của thư mục hoặc đường dẫn hiện tại làm định danh. Các thư mục con cũng được đổi tên theo (ví dụ: 'Work/Clients' trở thành 'Jobs/Clients' khi 'Work' được đổi tên thành 'Jobs'). Không thể đổi tên INBOX.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Thư mục"
         ],
         "summary": "Xóa thư mục",
-        "description": "Xóa vĩnh viễn một thư mục cụ thể. Thao tác này không thể hoàn tác và cũng sẽ xóa tất cả thư trong thư mục. Bạn có thể sử dụng ObjectID của thư mục hoặc đường dẫn của thư mục làm định danh.",
+        "description": "Xóa một thư mục cụ thể. Các tin nhắn trong thư mục được chuyển vào thư mục Trash (tin nhắn trong Trash hoặc Junk sẽ bị xóa vĩnh viễn), còn các thư mục con được giữ nguyên. Không thể xóa INBOX. Bạn có thể sử dụng ObjectID của thư mục hoặc đường dẫn của thư mục làm định danh.",
         "operationId": "deleteFolder",
         "security": [
           {

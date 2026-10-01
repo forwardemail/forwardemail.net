@@ -1400,6 +1400,26 @@
             },
             "description": "IMAP-Flags, die für die Nachricht festgelegt werden sollen"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-Flags, die der Nachricht hinzugefügt werden sollen. Die übrigen Flags der Nachricht bleiben erhalten, sodass zwischenzeitliche Änderungen eines anderen Clients nicht rückgängig gemacht werden. Hat Vorrang vor flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-Flags, die von der Nachricht entfernt werden sollen. Ein hier entferntes Schlüsselwort wird auch aus den Bezeichnungen der Nachricht entfernt. Die übrigen Flags bleiben erhalten. Hat Vorrang vor flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Benutzerdefinierte Bezeichnungen für die Nachricht. Dies kann eine einzelne Zeichenkette oder ein Array von Bezeichnungen sein. Bezeichnungen müssen mit einem Buchstaben, einer Ziffer, einem Backslash oder einem Dollarzeichen beginnen und dürfen Wörter, Punkte und Bindestriche enthalten. Maximal 10 Bezeichnungen pro Nachricht. Die Groß-/Kleinschreibung wird nicht beachtet; Bezeichnungen werden in Kleinbuchstaben gespeichert.",
+            "description": "Benutzerdefinierte Bezeichnungen für die Nachricht. Dies kann eine einzelne Zeichenkette oder ein Array von Bezeichnungen sein. Bezeichnungen müssen mit einem Buchstaben, einer Ziffer, einem Backslash oder einem Dollarzeichen beginnen und dürfen Wörter, Punkte und Bindestriche enthalten. Maximal 10 Bezeichnungen pro Nachricht. Die Groß-/Kleinschreibung wird nicht beachtet; Bezeichnungen werden in Kleinbuchstaben gespeichert. Schlüsselwörter, mit denen E-Mail-Clients den Status einer Nachricht verfolgen, etwa $Forwarded oder $Junk, bleiben erhalten, sofern sie nicht mit labels_remove entfernt werden.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bezeichnungen, die der Nachricht hinzugefügt werden sollen. Die übrigen Bezeichnungen der Nachricht bleiben erhalten. Hat Vorrang vor labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bezeichnungen, die von der Nachricht entfernt werden sollen, auch für IMAP-Clients (diese sehen Bezeichnungen als Schlüsselwörter). Die übrigen Bezeichnungen der Nachricht bleiben erhalten. Hat Vorrang vor labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Ordner"
         ],
         "summary": "Ordner aktualisieren",
-        "description": "Einen vorhandenen Ordner aktualisieren/umbenennen. Dieser Vorgang benennt den Ordner in den neuen Pfad um, der im Anfragetext angegeben ist. Sie können entweder die Objekt-ID des Ordners oder seinen aktuellen Pfad als Kennung verwenden.",
+        "description": "Einen vorhandenen Ordner aktualisieren/umbenennen. Dieser Vorgang benennt den Ordner in den neuen Pfad um, der im Anfragetext angegeben ist. Sie können entweder die Objekt-ID des Ordners oder seinen aktuellen Pfad als Kennung verwenden. Unterordner werden ebenfalls umbenannt (z. B. wird 'Work/Clients' zu 'Jobs/Clients', wenn 'Work' in 'Jobs' umbenannt wird). INBOX kann nicht umbenannt werden.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Ordner"
         ],
         "summary": "Ordner löschen",
-        "description": "Einen bestimmten Ordner endgültig löschen. Dieser Vorgang kann nicht rückgängig gemacht werden und löscht auch alle darin enthaltenen Nachrichten. Sie können entweder die Objekt-ID oder den Pfad des Ordners als Kennung verwenden.",
+        "description": "Einen bestimmten Ordner löschen. Seine Nachrichten werden in den Ordner Trash verschoben (Nachrichten in Trash oder Junk werden endgültig gelöscht) und Unterordner bleiben erhalten. INBOX kann nicht gelöscht werden. Sie können entweder die Objekt-ID oder den Pfad des Ordners als Kennung verwenden.",
         "operationId": "deleteFolder",
         "security": [
           {

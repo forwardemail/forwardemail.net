@@ -806,42 +806,53 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
     // Send orphaned aliases notification if any were found
     if (orphanedAliases.length > 0) {
       try {
-        const actionText = dryRun
-          ? 'would be automatically deleted from the database (dry run)'
-          : 'have been automatically deleted from the database';
+        //
+        // two different cases end up here, and the alert says which one:
+        // - alias_not_found: the alias is already gone and only its files
+        //   were left on this server (name and domain are not known)
+        // - domain_not_found: the alias remained after its domain was deleted
+        //
+        const deleted = dryRun ? 'would be deleted (dry run)' : 'were deleted';
+        const leftoverFiles = orphanedAliases.filter(
+          (a) => a.reason === 'alias_not_found'
+        );
+        const missingDomain = orphanedAliases.filter(
+          (a) => a.reason !== 'alias_not_found'
+        );
+        const list = (items) =>
+          `<ul>${items
+            .map((item) => `<li><code class="small">${item}</code></li>`)
+            .join('')}</ul>`;
+
+        let message = '';
+        if (leftoverFiles.length > 0)
+          message += `<p><strong>${leftoverFiles.length} deleted ${
+            leftoverFiles.length === 1 ? 'alias' : 'aliases'
+          } still had mailbox files on this server.</strong> The files ${deleted}.</p>${list(
+            leftoverFiles.map((a) => `Alias ID: ${a.aliasId}`)
+          )}`;
+
+        if (missingDomain.length > 0)
+          message += `<p><strong>${missingDomain.length} ${
+            missingDomain.length === 1 ? 'alias belongs' : 'aliases belong'
+          } to a domain that no longer exists.</strong> The ${
+            missingDomain.length === 1 ? 'alias, its' : 'aliases, their'
+          } mailbox files and backups ${deleted}.</p>${list(
+            missingDomain.map(
+              (a) =>
+                `${a.aliasName} (Alias ID: ${a.aliasId}, Domain ID: ${a.domainId})`
+            )
+          )}`;
 
         await emailHelper({
           template: 'alert',
           message: {
             to: config.supportEmail,
             subject: `Found ${orphanedAliases.length} orphaned aliases ${
-              dryRun ? '(DRY RUN)' : '- automatically cleaned up'
+              dryRun ? '(DRY RUN)' : '(cleaned up)'
             }`
           },
-          locals: {
-            message: `<p><strong>${
-              dryRun ? 'DRY RUN - ' : ''
-            }ORPHANED ALIASES ${
-              dryRun ? 'ANALYSIS' : 'CLEANUP'
-            }:</strong> Found aliases that reference domains that no longer exist.</p>
-                    <p>These aliases ${actionText}:</p>
-                    <ul><li><code class="small">${orphanedAliases
-                      .map(
-                        (a) =>
-                          `Alias ID: ${a.aliasId}, Name: ${a.aliasName}, Missing Domain ID: ${a.domainId}, Reason: ${a.reason}`
-                      )
-                      .join(
-                        '</code></li><li><code class="small">'
-                      )}</code></li></ul>
-                    <p><strong>Total orphaned aliases:</strong> ${
-                      orphanedAliases.length
-                    }</p>
-                    <p>${
-                      dryRun
-                        ? 'In normal mode, these aliases would be automatically deleted from the database to maintain data integrity.'
-                        : 'These aliases have been automatically removed from the database to maintain data integrity.'
-                    }</p>`
-          }
+          locals: { message }
         });
 
         logger.info('Sent orphaned aliases notification email', {

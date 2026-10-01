@@ -1400,6 +1400,26 @@
             },
             "description": "Příznaky IMAP, které se mají nastavit pro zprávu"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Příznaky IMAP, které se mají přidat ke zprávě. Ostatní příznaky zprávy zůstanou zachovány, takže změny, které mezitím provedl jiný klient, nebudou vráceny zpět. Má přednost před polem flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Příznaky IMAP, které se mají odebrat ze zprávy. Klíčové slovo odebrané zde bude odebráno také z popisků zprávy. Ostatní příznaky zprávy zůstanou zachovány. Má přednost před polem flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Uživatelsky definované popisky, které se mají nastavit ve zprávě. Může se jednat o jeden řetězec popisků nebo pole popisků. Popisky musí začínat písmenem, číslicí, zpětným lomítkem nebo znakem dolaru a mohou obsahovat znaky slov, tečky a pomlčky. Maximálně 10 popisků na zprávu. Popisky nerozlišují velká a malá písmena a budou uloženy malými písmeny.",
+            "description": "Uživatelsky definované popisky, které se mají nastavit ve zprávě. Může se jednat o jeden řetězec popisků nebo pole popisků. Popisky musí začínat písmenem, číslicí, zpětným lomítkem nebo znakem dolaru a mohou obsahovat znaky slov, tečky a pomlčky. Maximálně 10 popisků na zprávu. Popisky nerozlišují velká a malá písmena a budou uloženy malými písmeny. Klíčová slova, kterými poštovní klienti sledují stav zprávy, například $Forwarded nebo $Junk, zůstanou zachována, pokud nejsou odebrána pomocí labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Popisky, které se mají přidat ke zprávě. Ostatní popisky zprávy zůstanou zachovány. Má přednost před polem labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Popisky, které se mají odebrat ze zprávy, a to i pro klienty IMAP (ti popisky vidí jako klíčová slova). Ostatní popisky zprávy zůstanou zachovány. Má přednost před polem labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Složky"
         ],
         "summary": "Aktualizovat složku",
-        "description": "Aktualizace/přejmenování existující složky. Tato operace přejmenuje složku na novou cestu uvedenou v těle požadavku. Jako identifikátor můžete použít buď ID objektu složky, nebo její aktuální cestu.",
+        "description": "Aktualizace/přejmenování existující složky. Tato operace přejmenuje složku na novou cestu uvedenou v těle požadavku. Jako identifikátor můžete použít buď ID objektu složky, nebo její aktuální cestu. Podsložky se přejmenují také (např. 'Work/Clients' se změní na 'Jobs/Clients', když se 'Work' přejmenuje na 'Jobs'). INBOX nelze přejmenovat.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Složky"
         ],
         "summary": "Smazat složku",
-        "description": "Trvale smazat konkrétní složku. Tuto akci nelze vrátit zpět a smaže také všechny zprávy ve složce. Jako identifikátor můžete použít buď ID objektu složky, nebo její cestu.",
+        "description": "Smazat konkrétní složku. Její zprávy se přesunou do složky Trash (zprávy ve složce Trash nebo Junk se smažou trvale) a podsložky zůstanou zachovány. INBOX nelze smazat. Jako identifikátor můžete použít buď ID objektu složky, nebo její cestu.",
         "operationId": "deleteFolder",
         "security": [
           {

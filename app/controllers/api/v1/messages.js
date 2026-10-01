@@ -13,6 +13,8 @@ const pify = require('pify');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 const { simpleParser } = require('mailparser');
+const imapFormalSyntax = require('@zone-eu/wildduck/imap-core/lib/handler/imap-formal-syntax');
+const imapTools = require('@zone-eu/wildduck/imap-core/lib/imap-tools');
 const { Builder } = require('#helpers/json-sql');
 
 const Aliases = require('#models/aliases');
@@ -23,6 +25,7 @@ const Messages = require('#models/messages');
 const _ = require('#helpers/lodash');
 const env = require('#config/env');
 const escapeSqliteLike = require('#helpers/escape-sqlite-like');
+const getImapFlags = require('#helpers/get-imap-flags');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
 const i18n = require('#helpers/i18n');
 const recursivelyParse = require('#helpers/recursively-parse');
@@ -236,6 +239,19 @@ function convertToPureObject(data) {
   return data;
 }
 
+const BOOLEAN_FIELDS = [
+  'exp',
+  'unseen',
+  'flagged',
+  'undeleted',
+  'draft',
+  'copied',
+  'ha',
+  'searchable',
+  'junk',
+  'is_encrypted'
+];
+
 /**
  * Decode compressed fields from raw SQL message results.
  * Raw SQL queries bypass mongoose getters, so we need to manually decode
@@ -252,18 +268,29 @@ function decodeRawMessage(message) {
 
   // Decode brotli-compressed BLOB fields (Mixed/Array types without sqliteQueryable)
   // These are stored as compressed BLOBs and need decodeMetadata
+  //
+  // NOTE: labels were missing here, so listed messages had them as the
+  //       stored bytes ({ "type": "Buffer", ... }) instead of a list
+  //
   const compressedFields = [
     'mimeTree',
     'envelope',
     'bodystructure',
     'attachments',
-    'flags'
+    'flags',
+    'labels'
   ];
 
   for (const field of compressedFields) {
     if (message[field] !== undefined && message[field] !== null) {
       message[field] = decodeMetadata(message[field], recursivelyParse);
     }
+  }
+
+  // Booleans are stored as 0 and 1, and are true or false everywhere else
+  for (const field of BOOLEAN_FIELDS) {
+    if (message[field] === 0 || message[field] === 1)
+      message[field] = message[field] === 1;
   }
 
   // Decode JSON text fields (Mixed type with sqliteQueryable: true)
@@ -277,6 +304,212 @@ function decodeRawMessage(message) {
   }
 
   return message;
+}
+
+//
+// Flags stored through the API are what IMAP clients read back in FETCH
+// FLAGS, so they follow the rules IMAP STORE and APPEND apply: a system flag
+// IMAP knows (any case, stored the way IMAP writes it) or a keyword of IMAP
+// atom characters, at most 255 characters long. A keyword with a space,
+// parenthesis or quote cannot be written as an IMAP atom, and clients fail
+// to read the flags of that message.
+//
+const MAX_FLAGS = 100;
+const SYSTEM_FLAGS = new Map(
+  imapTools.systemFlags.map((flag) => [
+    flag,
+    flag.replace(/^\\./, (c) => c.toUpperCase())
+  ])
+);
+// eslint-disable-next-line new-cap
+const ATOM_CHARS = imapFormalSyntax['ATOM-CHAR']();
+
+function getValidFlag(flag) {
+  if (typeof flag !== 'string' || flag.length === 0 || flag.length > 255)
+    return;
+  if (flag.startsWith('\\')) return SYSTEM_FLAGS.get(flag.toLowerCase());
+  if (imapFormalSyntax.verify(flag, ATOM_CHARS) === -1) return flag;
+}
+
+//
+// `stored` are the flags the message has now. Clients send those back with
+// their change, and one stored before flags were checked (or set by an IMAP
+// client in a form this check refuses) is kept as it is rather than failing
+// every later change to the message.
+//
+function getValidFlags(ctx, value, { stored = [] } = {}) {
+  if (!Array.isArray(value) || value.length > MAX_FLAGS)
+    throw Boom.badRequest(ctx.translateError('MESSAGE_FLAGS_INVALID'));
+
+  const flags = [];
+  const seen = new Set();
+  for (const flag of value) {
+    let normalized = getValidFlag(flag);
+    if (!normalized) {
+      if (!stored.includes(flag))
+        throw Boom.badRequest(ctx.translateError('MESSAGE_FLAGS_INVALID'));
+      normalized = flag;
+    }
+
+    const key = normalized.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    flags.push(normalized);
+  }
+
+  return flags;
+}
+
+// keywords compare case-insensitively, as in IMAP
+function normalizeKeyword(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase();
+}
+
+// a list of labels, or a single label as a string
+function getLabelsInput(ctx, value) {
+  if (value === undefined) return;
+  const labels = isSANB(value) ? [value] : value;
+  // must be [] or [ label, label, label ]
+  if (
+    !Array.isArray(labels) ||
+    (labels.length > 0 && labels.every((l) => !isSANB(l)))
+  )
+    throw Boom.badRequest(ctx.translateError('MESSAGE_LABELS_INVALID'));
+  return labels;
+}
+
+// an empty list of changes is no change
+function nonEmpty(list) {
+  return Array.isArray(list) && list.length > 0 ? list : undefined;
+}
+
+// a list of flags, or a single flag as a string
+function getFlagsInput(ctx, value, options) {
+  if (value === undefined || value === null) return;
+  return getValidFlags(ctx, isSANB(value) ? [value] : value, options);
+}
+
+//
+// INBOX is matched in any case and slashes around a path are dropped, as
+// IMAP does (a lowercase "inbox" failed to be found and was then created)
+//
+function normalizeFolderPath(path) {
+  return imapTools.normalizeMailbox(path);
+}
+
+//
+// A folder by the path a client gave: as stored, or else matched as IMAP
+// matches it. Folders created through the API before paths were normalized
+// can have a path such as "Inbox/Receipts", which only matches as stored.
+//
+async function findFolderByPath(ctx, path) {
+  const mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
+    path
+  });
+  if (mailbox) return mailbox;
+  const normalized = normalizeFolderPath(path);
+  if (normalized === path) return null;
+  return Mailboxes.findOne(ctx.instance, ctx.state.session, {
+    path: normalized
+  });
+}
+
+// a folder to put a message in, as IMAP CREATE accepts it
+function getFolderPath(ctx, value) {
+  const path = isSANB(value) ? normalizeFolderPath(value) : '';
+  if (
+    !path ||
+    path.startsWith('/') ||
+    path.endsWith('/') ||
+    path.includes('//')
+  )
+    throw Boom.badRequest(ctx.translateError('FOLDER_NAME_OR_PATH_REQUIRED'));
+  return path;
+}
+
+//
+// Create the folder a message goes into. When another request creates it at
+// the same moment, that folder is used (the id was missing and the message
+// failed with a server error).
+//
+async function createFolder(ctx, path) {
+  let response;
+  let mailboxId;
+  try {
+    [response, mailboxId] = await onCreatePromise.call(
+      ctx.instance,
+      path,
+      ctx.state.session
+    );
+  } catch (_err) {
+    // since we use multiArgs from pify
+    // if a promise that was wrapped with multiArgs: true
+    // throws, then the error will be an array so we need to get first key
+    let err = _err;
+    if (Array.isArray(err)) err = _err[0];
+    throw err;
+  }
+
+  if (response === 'OVERQUOTA')
+    throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
+
+  const mailbox = mailboxId
+    ? await Mailboxes.findById(ctx.instance, ctx.state.session, mailboxId)
+    : await Mailboxes.findOne(ctx.instance, ctx.state.session, { path });
+
+  if (!mailbox)
+    throw Boom.badRequest(ctx.translateError('MAILBOX_CREATION_FAILED'));
+
+  return mailbox;
+}
+
+function hasSameFlags(a, b) {
+  const set = new Set(a.map((f) => f.toLowerCase()));
+  return a.length === b.length && b.every((f) => set.has(f.toLowerCase()));
+}
+
+function hasSeenFlag(flags) {
+  return flags.some((f) => f.toLowerCase() === '\\seen');
+}
+
+//
+// IMAP clients (Thunderbird, Apple Mail, ...) learn about changed flags and
+// labels from the journal, as after a STORE over IMAP: adding the entry
+// raises the message's MODSEQ, so CONDSTORE clients find the change when
+// they resync, and wakes clients in IDLE right away. Without it a message
+// read, flagged or labeled in webmail kept its old state in those clients
+// until they repaired the folder.
+//
+// It runs after the response, as for a STORE, so a slow journal never holds
+// up "mark as read" (the change itself is already saved).
+//
+function journalFlagChange(ctx, message, previousImapFlags) {
+  const imapFlags = getImapFlags(message);
+  if (hasSameFlags(previousImapFlags, imapFlags)) return;
+
+  const aliasId = ctx.state.session.user.alias_id;
+  const messageId = message._id;
+  ctx.instance.server.notifier
+    .addEntries(
+      ctx.instance,
+      ctx.state.session,
+      message.mailbox?._id || message.mailbox,
+      {
+        command: 'FETCH',
+        ignore: ctx.state.session.id,
+        uid: message.uid,
+        flags: imapFlags,
+        message: messageId,
+        thread: message.thread,
+        unseenChange: hasSeenFlag(previousImapFlags) !== hasSeenFlag(imapFlags)
+      }
+    )
+    .then(() => ctx.instance.server.notifier.fire(aliasId))
+    .catch((err) =>
+      ctx.logger.fatal(err, { message: messageId, alias_id: aliasId })
+    );
 }
 
 async function json(ctx, message, { lightweight = false } = {}) {
@@ -453,9 +686,7 @@ async function list(ctx) {
 
   // Filter by folder/mailbox if specified
   if (isSANB(ctx.query.folder)) {
-    const mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-      path: ctx.query.folder
-    });
+    const mailbox = await findFolderByPath(ctx, ctx.query.folder);
 
     // don't show any results if folder does not exist
     query.mailbox = mailbox ? mailbox._id.toString() : null;
@@ -922,6 +1153,12 @@ async function create(ctx) {
   if (!_.isPlainObject(ctx.request.body))
     throw Boom.badRequest(ctx.translateError('INVALID_REQUEST_BODY'));
 
+  // validate everything before a folder is created for the message
+  const requestedPath = body.folder === undefined ? 'INBOX' : body.folder;
+  const folderPath = getFolderPath(ctx, requestedPath);
+  const flags = getFlagsInput(ctx, body.flags) || [];
+  const labels = getLabelsInput(ctx, body.labels) || [];
+
   // this will throw any errors if necessary
   const message = getNodemailerMessageFromRequest(ctx);
   const mail = new MailComposer(message);
@@ -929,19 +1166,7 @@ async function create(ctx) {
   const raw = await getStream.buffer(stream);
 
   // Find or create the target mailbox
-  let mailbox;
-  let folderPath = 'INBOX';
-
-  if (body.folder !== undefined) {
-    // Validate required fields
-    if (!isSANB(body.folder))
-      throw Boom.badRequest(ctx.translateError('FOLDER_NAME_OR_PATH_REQUIRED'));
-    folderPath = body.folder;
-  }
-
-  mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-    path: folderPath
-  });
+  let mailbox = await findFolderByPath(ctx, requestedPath);
 
   // create mailbox if it does not exist
   if (mailbox) {
@@ -965,44 +1190,7 @@ async function create(ctx) {
         i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale)
       );
   } else {
-    try {
-      const [, mailboxId] = await onCreatePromise.call(
-        ctx.instance,
-        folderPath,
-        ctx.state.session
-      );
-      mailbox = await Mailboxes.findById(
-        ctx.instance,
-        ctx.state.session,
-        mailboxId
-      );
-    } catch (_err) {
-      // since we use multiArgs from pify
-      // if a promise that was wrapped with multiArgs: true
-      // throws, then the error will be an array so we need to get first key
-      let err = _err;
-      if (Array.isArray(err)) err = _err[0];
-      throw err;
-    }
-  }
-
-  const flags = [];
-  if (typeof body.flags === 'string') flags.push(body.flags);
-  else if (Array.isArray(body.flags)) flags.push(...body.flags);
-
-  // Parse labels from request body (similar to flags handling)
-  let labels = [];
-  if (body.labels !== undefined) {
-    if (isSANB(body.labels)) {
-      labels = [body.labels];
-    } else if (Array.isArray(body.labels)) {
-      // must be [] or [ label, label, label ]
-      if (!_.isEmpty(body.labels) && body.labels.every((l) => !isSANB(l)))
-        throw Boom.badRequest(ctx.translateError('MESSAGE_LABELS_INVALID'));
-      labels = body.labels;
-    } else {
-      throw Boom.badRequest(ctx.translateError('MESSAGE_LABELS_INVALID'));
-    }
+    mailbox = await createFolder(ctx, folderPath);
   }
 
   try {
@@ -1032,6 +1220,7 @@ async function create(ctx) {
     // Apply labels if provided
     // (validation, normalization, and max limit enforcement happens in model's pre-validate hook)
     if (labels.length > 0) {
+      const previousImapFlags = getImapFlags(message);
       message.labels = labels;
       message.remoteAddress = ctx.ip;
       message.transaction = 'API';
@@ -1039,6 +1228,8 @@ async function create(ctx) {
       message.session = ctx.state.session;
       message.isNew = false;
       await message.save();
+      // IMAP clients may have fetched the new message before the labels
+      journalFlagChange(ctx, message, previousImapFlags);
     }
 
     ctx.body = await json(ctx, message);
@@ -1086,8 +1277,10 @@ async function retrieve(ctx) {
 
 //
 // NOTE: this supports modifying the message through the following fields:
-//       - flags
-//       - labels
+//       - flags (replaces the flags)
+//       - flags_add and flags_remove (change only those flags)
+//       - labels (replaces the labels)
+//       - labels_add and labels_remove (change only those labels)
 //       - folder
 //
 async function update(ctx) {
@@ -1105,15 +1298,36 @@ async function update(ctx) {
   if (!message)
     throw Boom.notFound(ctx.translateError('MESSAGE_DOES_NOT_EXIST'));
 
+  //
+  // Validate everything before anything changes (a move happens first).
+  // Named changes take precedence over a whole list, which is then ignored
+  // and not checked: it may be out of date (a flag the server no longer has).
+  //
+  const stored = Array.isArray(message.flags) ? message.flags : [];
+  const flagsAdd = nonEmpty(getFlagsInput(ctx, body.flags_add));
+  const flagsRemove = nonEmpty(
+    getFlagsInput(ctx, body.flags_remove, { stored })
+  );
+  const flags =
+    flagsAdd || flagsRemove
+      ? undefined
+      : getFlagsInput(ctx, body.flags, { stored });
+  const labelsAdd = nonEmpty(
+    body.labels_add === null ? undefined : getLabelsInput(ctx, body.labels_add)
+  );
+  const labelsRemove = nonEmpty(
+    body.labels_remove === null
+      ? undefined
+      : getLabelsInput(ctx, body.labels_remove)
+  );
+  const labels =
+    labelsAdd || labelsRemove ? undefined : getLabelsInput(ctx, body.labels);
+
   if (body.folder !== undefined) {
-    // Validate required fields
-    if (!isSANB(body.folder))
-      throw Boom.badRequest(ctx.translateError('FOLDER_NAME_OR_PATH_REQUIRED'));
+    const folderPath = getFolderPath(ctx, body.folder);
 
     // Find target mailbox
-    let mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-      path: body.folder
-    });
+    let mailbox = await findFolderByPath(ctx, body.folder);
 
     // The folder the message is already in is not a move. Clients send the
     // current folder along with flag and label changes; treating that as a
@@ -1147,25 +1361,7 @@ async function update(ctx) {
             i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale)
           );
       } else {
-        try {
-          const [, mailboxId] = await onCreatePromise.call(
-            ctx.instance,
-            body.folder,
-            ctx.state.session
-          );
-          mailbox = await Mailboxes.findById(
-            ctx.instance,
-            ctx.state.session,
-            mailboxId
-          );
-        } catch (_err) {
-          // since we use multiArgs from pify
-          // if a promise that was wrapped with multiArgs: true
-          // throws, then the error will be an array so we need to get first key
-          let err = _err;
-          if (Array.isArray(err)) err = _err[0];
-          throw err;
-        }
+        mailbox = await createFolder(ctx, folderPath);
       }
 
       try {
@@ -1197,12 +1393,41 @@ async function update(ctx) {
     }
   }
 
-  if (_.isArray(body.flags)) {
-    // must be [] or [ Flag, Flag, Flag ]
-    if (!_.isEmpty(body.flags) && body.flags.every((f) => !isSANB(f)))
-      throw Boom.badRequest(ctx.translateError('MESSAGE_FLAGS_INVALID'));
+  // flags as IMAP clients saw them before this change
+  const previousImapFlags = getImapFlags(message);
 
-    message.flags = body.flags;
+  if (flagsAdd || flagsRemove) {
+    //
+    // Change only the named flags, on top of what is stored now. A client
+    // that sends its whole list in `flags` overwrites whatever another
+    // client changed since it last looked (Thunderbird marking the message
+    // read, say), so these take precedence over `flags`.
+    //
+    const removed = new Set((flagsRemove || []).map((f) => f.toLowerCase()));
+    const seen = new Set();
+    const next = [];
+    for (const flag of [...(message.flags || []), ...(flagsAdd || [])]) {
+      if (typeof flag !== 'string') continue;
+      const key = flag.toLowerCase();
+      if (removed.has(key) || seen.has(key)) continue;
+      seen.add(key);
+      // a system flag stored in another case ("\\seen") as IMAP writes it
+      next.push((flag.startsWith('\\') && SYSTEM_FLAGS.get(key)) || flag);
+    }
+
+    message.flags = next;
+
+    // IMAP clients see a label as a keyword, so removing that keyword
+    // removes the label as well
+    if (removed.size > 0 && Array.isArray(message.labels))
+      message.labels = message.labels.filter(
+        (label) => !removed.has(normalizeKeyword(label))
+      );
+  } else if (flags) {
+    message.flags = flags;
+  }
+
+  if (flagsAdd || flagsRemove || flags) {
     message.unseen = !message.flags.includes('\\Seen');
     message.flagged = message.flags.includes('\\Flagged');
     message.undeleted = !message.flags.includes('\\Deleted');
@@ -1210,22 +1435,39 @@ async function update(ctx) {
     message.searchable = !message.flags.includes('\\Deleted');
   }
 
-  if (body.labels !== undefined) {
-    // convert string to array for single label support
-    let { labels } = body;
-    if (isSANB(labels)) {
-      labels = [labels];
-    } else if (!_.isArray(labels)) {
-      throw Boom.badRequest(ctx.translateError('MESSAGE_LABELS_INVALID'));
-    }
+  const labelsChanged = Boolean(labels || labelsAdd || labelsRemove);
 
-    // must be [] or [ label, label, label ]
-    if (!_.isEmpty(labels) && labels.every((l) => !isSANB(l)))
-      throw Boom.badRequest(ctx.translateError('MESSAGE_LABELS_INVALID'));
+  if (labelsChanged) {
+    let next = labels;
+    if (labelsAdd || labelsRemove) {
+      const removed = new Set(
+        (labelsRemove || []).map((label) => normalizeKeyword(label))
+      );
+      next = [
+        ...(Array.isArray(message.labels) ? message.labels : []),
+        ...(labelsAdd || [])
+      ].filter((label) => !removed.has(normalizeKeyword(label)));
+
+      //
+      // A keyword an IMAP client sets is kept in the flags as well as in the
+      // labels (see on-store.js), and IMAP clients see both. A label removed
+      // here comes out of the flags too, or it would stay visible over IMAP
+      // and come back as a label. A whole list of labels leaves the flags
+      // alone: clients send it from the labels they show, which leave out
+      // keywords such as $Forwarded or Junk.
+      //
+      if (removed.size > 0 && Array.isArray(message.flags))
+        message.flags = message.flags.filter(
+          (flag) =>
+            typeof flag !== 'string' ||
+            flag.startsWith('\\') ||
+            !removed.has(normalizeKeyword(flag))
+        );
+    }
 
     // validation, normalization, and max limit enforcement
     // happens in the model's pre-validate hook
-    message.labels = labels;
+    message.labels = next;
   }
 
   message.remoteAddress = ctx.ip;
@@ -1236,10 +1478,11 @@ async function update(ctx) {
   message.session = ctx.state.session;
   message.isNew = false;
 
-  const flagsChanged = _.isArray(body.flags);
-  const labelsChanged = body.labels !== undefined;
+  const flagsChanged = Boolean(flags || flagsAdd || flagsRemove);
 
   await message.save();
+
+  journalFlagChange(ctx, message, previousImapFlags);
 
   //
   // TODO: we should update `mailbox.flags` similar to onStore function in the future

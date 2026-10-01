@@ -25,6 +25,13 @@ class API extends APIServer {
       publisher: this.client
       // NOTE: we do not supply `subscriber` option since it's not IMAP
     });
+    // The IMAP handlers the API reuses (move, expunge, folder create and
+    // delete) journal their changes and wake IMAP clients through
+    // `this.server.notifier`, as on the IMAP server. Without it those
+    // changes were missing from the journal, so IMAP clients in IDLE (e.g.
+    // Thunderbird) never saw webmail deletes and moves until they resynced
+    // the whole folder.
+    this.server.notifier = this.notifier;
     // this allows you to do `ctx.notifier` inside routers
     this.app.context.notifier = this.notifier;
     // this allows you to do `ctx.attachmentStorage` inside routers

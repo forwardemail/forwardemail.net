@@ -83,13 +83,28 @@ async function onCreate(path, session, fn) {
       );
 
     //
+    // RFC 3501: the folders above it are created when missing ("Projects"
+    // for "Projects/2026"), so it is not left under a parent that does not
+    // exist, which webmail and some clients do not show
+    //
+    const parents = [];
+    const parts = path.split('/');
+    for (let i = 1; i < parts.length; i++) {
+      const parentPath = parts.slice(0, i).join('/');
+      const parent = await Mailboxes.findOne(this, session, {
+        path: parentPath
+      });
+      if (!parent) parents.push(parentPath);
+    }
+
+    //
     // limit the number of mailboxes a user can create
     // (Gmail defaults to 10,000 labels)
     // <https://github.com/nodemailer/wildduck/issues/512>
     //
     const count = await Mailboxes.countDocuments(this, session, {});
 
-    if (count > config.maxMailboxes)
+    if (count + parents.length > config.maxMailboxes)
       throw new IMAPError(
         i18n.translate('IMAP_MAILBOX_MAX_EXCEEDED', session.user.locale),
         {
@@ -111,13 +126,29 @@ async function onCreate(path, session, fn) {
 
     // Use alias retention from session for Trash/Junk mailboxes
     const aliasRetention = session.user.alias_retention || 0;
-    const isRetentionPath =
-      path === 'Trash' || path === 'Junk' || path === 'Spam';
+    const getRetention = (p) =>
+      ['Trash', 'Junk', 'Spam'].includes(p) && aliasRetention > 0
+        ? aliasRetention
+        : 0;
+
+    for (const parentPath of parents) {
+      const parent = await Mailboxes.create({
+        instance: this,
+        session,
+        path: parentPath,
+        retention: getRetention(parentPath)
+      });
+      sendNotification(this.client, session.user.alias_id, 'mailboxCreated', {
+        path: parentPath,
+        mailbox: parent._id.toString()
+      });
+    }
+
     mailbox = await Mailboxes.create({
       instance: this,
       session,
       path,
-      retention: isRetentionPath && aliasRetention > 0 ? aliasRetention : 0
+      retention: getRetention(path)
     });
 
     const entry = {

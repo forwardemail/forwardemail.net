@@ -1400,6 +1400,26 @@
             },
             "description": "Viestille asetettavat IMAP-liput"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Viestiin lisättävät IMAP-liput. Viestin muut liput säilyvät, joten toisen asiakasohjelman sillä välin tekemiä muutoksia ei kumota. Menee flags-kentän edelle.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Viestistä poistettavat IMAP-liput. Tässä poistettu avainsana poistetaan myös viestin otsikoista. Viestin muut liput säilyvät. Menee flags-kentän edelle.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Käyttäjän määrittämät viestille asetettavat otsikot. Voi olla yksittäinen otsikkomerkkijono tai otsikoiden taulukko. Otsikoiden on alettava kirjaimella, numerolla, kenoviivalla tai dollarimerkillä, ja ne voivat sisältää sanamerkkejä, pisteitä ja yhdysviivoja. Enintään 10 otsikkoa viestiä kohden. Otsikot eivät ole kirjainkokoerottelijoita ja ne tallennetaan pienillä kirjaimilla.",
+            "description": "Käyttäjän määrittämät viestille asetettavat otsikot. Voi olla yksittäinen otsikkomerkkijono tai otsikoiden taulukko. Otsikoiden on alettava kirjaimella, numerolla, kenoviivalla tai dollarimerkillä, ja ne voivat sisältää sanamerkkejä, pisteitä ja yhdysviivoja. Enintään 10 otsikkoa viestiä kohden. Otsikot eivät ole kirjainkokoerottelijoita ja ne tallennetaan pienillä kirjaimilla. Avainsanat, joilla sähköpostiohjelmat seuraavat viestin tilaa, kuten $Forwarded tai $Junk, säilyvät, ellei niitä poisteta labels_remove-kentällä.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Viestiin lisättävät otsikot. Viestin muut otsikot säilyvät. Menee labels-kentän edelle.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Viestistä poistettavat otsikot. Poisto näkyy myös IMAP-asiakasohjelmissa (ne näkevät otsikot avainsanoina). Viestin muut otsikot säilyvät. Menee labels-kentän edelle.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Kansiot"
         ],
         "summary": "Päivitä kansio",
-        "description": "Päivitä/nimeä uudelleen olemassa oleva kansio. Tämä toiminto nimeää kansion uudelleen pyynnön rungossa määritetyn uuden polun mukaisesti. Voit käyttää tunnisteena joko kansion ObjectID:tä tai sen nykyistä polkua.",
+        "description": "Päivitä/nimeä uudelleen olemassa oleva kansio. Tämä toiminto nimeää kansion uudelleen pyynnön rungossa määritetyn uuden polun mukaisesti. Voit käyttää tunnisteena joko kansion ObjectID:tä tai sen nykyistä polkua. Alikansiot nimetään uudelleen kansion mukana (esim. 'Work/Clients' muuttuu muotoon 'Jobs/Clients', kun 'Work' nimetään uudelleen nimeksi 'Jobs'). INBOX-kansiota ei voi nimetä uudelleen.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Kansiot"
         ],
         "summary": "Poista kansio",
-        "description": "Poista tietty kansio pysyvästi. Tätä toimintoa ei voi perua, ja se poistaa myös kaikki kansiossa olevat viestit. Voit käyttää tunnisteena joko kansion ObjectID:tä tai sen polkua.",
+        "description": "Poista tietty kansio. Sen viestit siirretään Trash-kansioon (Trash- tai Junk-kansiossa olevat viestit poistetaan pysyvästi) ja alikansiot säilyvät. INBOX-kansiota ei voi poistaa. Voit käyttää tunnisteena joko kansion ObjectID:tä tai sen polkua.",
         "operationId": "deleteFolder",
         "security": [
           {

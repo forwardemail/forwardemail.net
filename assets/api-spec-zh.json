@@ -1400,6 +1400,26 @@
             },
             "description": "要设置在邮件上的 IMAP 标志"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "要添加到邮件的 IMAP 标志。邮件的其他标志会保留，因此不会撤销其他客户端在此期间所做的更改。优先于 flags。",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "要从邮件中移除的 IMAP 标志。在此移除的关键字也会从邮件的标签中移除。邮件的其他标志会保留。优先于 flags。",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "用户可自定义消息标签。标签可以是单个字符串，也可以是标签数组。标签必须以字母、数字、反斜杠或美元符号开头，并且可以包含单词字符、句点和连字符。每条消息最多可添加 10 个标签。标签不区分大小写，并将以小写形式存储。",
+            "description": "用户可自定义消息标签。标签可以是单个字符串，也可以是标签数组。标签必须以字母、数字、反斜杠或美元符号开头，并且可以包含单词字符、句点和连字符。每条消息最多可添加 10 个标签。标签不区分大小写，并将以小写形式存储。邮件客户端用于跟踪邮件状态的关键字（例如 $Forwarded 或 $Junk）会被保留，除非使用 labels_remove 将其移除。",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "要添加到邮件的标签。邮件的其他标签会保留。优先于 labels。",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "要从邮件中移除的标签，对 IMAP 客户端同样生效（IMAP 客户端将标签视为关键字）。邮件的其他标签会保留。优先于 labels。",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "文件夹"
         ],
         "summary": "更新文件夹",
-        "description": "更新/重命名现有文件夹。此操作会将文件夹重命名为请求正文中指定的新路径。您可以使用文件夹的 ObjectID 或其当前路径作为标识符。",
+        "description": "更新/重命名现有文件夹。此操作会将文件夹重命名为请求正文中指定的新路径。您可以使用文件夹的 ObjectID 或其当前路径作为标识符。子文件夹也会随之重命名（例如，将 'Work' 重命名为 'Jobs' 时，'Work/Clients' 会变为 'Jobs/Clients'）。INBOX 无法重命名。",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "文件夹"
         ],
         "summary": "删除文件夹",
-        "description": "永久删除指定文件夹。此操作无法撤销，并且会删除文件夹内的所有邮件。您可以使用文件夹的 ObjectID 或路径作为标识符。",
+        "description": "删除指定文件夹。其中的邮件会移至 Trash 文件夹（Trash 或 Junk 中的邮件会被永久删除），子文件夹会保留。INBOX 无法删除。您可以使用文件夹的 ObjectID 或路径作为标识符。",
         "operationId": "deleteFolder",
         "security": [
           {

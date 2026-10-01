@@ -1400,6 +1400,26 @@
             },
             "description": "Indicateurs IMAP à définir sur le message"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Indicateurs IMAP à ajouter au message. Ses autres indicateurs sont conservés, de sorte que les modifications apportées entre-temps par un autre client ne sont pas annulées. Prioritaire sur flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Indicateurs IMAP à retirer du message. Un mot-clé retiré ici est également retiré des étiquettes du message. Ses autres indicateurs sont conservés. Prioritaire sur flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Étiquettes personnalisées à ajouter au message. Il peut s'agir d'une seule chaîne de caractères ou d'un tableau d'étiquettes. Les étiquettes doivent commencer par une lettre, un chiffre, une barre oblique inverse ou un signe dollar, et peuvent contenir des caractères alphanumériques, des points et des tirets. Dix étiquettes maximum par message. Les étiquettes ne sont pas sensibles à la casse et seront stockées en minuscules.",
+            "description": "Étiquettes personnalisées à ajouter au message. Il peut s'agir d'une seule chaîne de caractères ou d'un tableau d'étiquettes. Les étiquettes doivent commencer par une lettre, un chiffre, une barre oblique inverse ou un signe dollar, et peuvent contenir des caractères alphanumériques, des points et des tirets. Dix étiquettes maximum par message. Les étiquettes ne sont pas sensibles à la casse et seront stockées en minuscules. Les mots-clés utilisés par les clients de messagerie pour suivre l'état d'un message, comme $Forwarded ou $Junk, sont conservés, sauf s'ils sont retirés avec labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Étiquettes à ajouter au message. Ses autres étiquettes sont conservées. Prioritaire sur labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Étiquettes à retirer du message, y compris pour les clients IMAP (qui voient les étiquettes comme des mots-clés). Ses autres étiquettes sont conservées. Prioritaire sur labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Dossiers"
         ],
         "summary": "Dossier de mise à jour",
-        "description": "Mettre à jour/renommer un dossier existant. Cette opération renomme le dossier en utilisant le nouveau chemin spécifié dans le corps de la requête. Vous pouvez utiliser soit l'ObjectID du dossier, soit son chemin actuel comme identifiant.",
+        "description": "Mettre à jour/renommer un dossier existant. Cette opération renomme le dossier en utilisant le nouveau chemin spécifié dans le corps de la requête. Vous pouvez utiliser soit l'ObjectID du dossier, soit son chemin actuel comme identifiant. Ses sous-dossiers sont également renommés (par exemple, 'Work/Clients' devient 'Jobs/Clients' lorsque 'Work' est renommé en 'Jobs'). INBOX ne peut pas être renommé.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Dossiers"
         ],
         "summary": "Supprimer le dossier",
-        "description": "Supprimer définitivement un dossier. Cette action est irréversible et supprimera tous les messages contenus dans le dossier. Vous pouvez utiliser l'ObjectID du dossier ou son chemin d'accès comme identifiant.",
+        "description": "Supprimer un dossier spécifique. Ses messages sont déplacés vers le dossier Trash (les messages de Trash ou de Junk sont supprimés définitivement) et ses sous-dossiers sont conservés. INBOX ne peut pas être supprimé. Vous pouvez utiliser l'ObjectID du dossier ou son chemin d'accès comme identifiant.",
         "operationId": "deleteFolder",
         "security": [
           {

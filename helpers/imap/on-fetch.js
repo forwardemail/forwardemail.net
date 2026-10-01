@@ -22,6 +22,7 @@ const { imapHandler } = require('@zone-eu/wildduck/imap-core');
 const { Builder } = require('#helpers/json-sql');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
+const getImapFlags = require('#helpers/get-imap-flags');
 const Messages = require('#models/messages');
 const { checkBandwidth } = require('#helpers/bandwidth-limiter');
 const getQueryResponse = require('#helpers/get-query-response');
@@ -383,7 +384,8 @@ async function onFetch(mailboxId, options, session, fn) {
           ignore: session.id,
           command: 'FETCH',
           uid: message.uid,
-          flags: message.flags,
+          // with the labels, as every FETCH shows them
+          flags: getImapFlags(message),
           message: message._id,
           thread: message.thread,
           modseq: newModseq,

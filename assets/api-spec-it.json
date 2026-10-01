@@ -1400,6 +1400,26 @@
             },
             "description": "Flag IMAP da impostare sul messaggio"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Flag IMAP da aggiungere al messaggio. Gli altri flag del messaggio vengono mantenuti, quindi le modifiche apportate nel frattempo da un altro client non vengono annullate. Ha la precedenza su flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Flag IMAP da rimuovere dal messaggio. Una parola chiave rimossa qui viene rimossa anche dalle etichette del messaggio. Gli altri flag vengono mantenuti. Ha la precedenza su flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Etichette definite dall'utente da impostare sul messaggio. Possono essere una singola stringa di etichette o un array di etichette. Le etichette devono iniziare con una lettera, un numero, una barra rovesciata o un simbolo di dollaro e possono contenere caratteri alfanumerici, punti e trattini. Massimo 10 etichette per messaggio. Le etichette non fanno distinzione tra maiuscole e minuscole e verranno memorizzate in minuscolo.",
+            "description": "Etichette definite dall'utente da impostare sul messaggio. Possono essere una singola stringa di etichette o un array di etichette. Le etichette devono iniziare con una lettera, un numero, una barra rovesciata o un simbolo di dollaro e possono contenere caratteri alfanumerici, punti e trattini. Massimo 10 etichette per messaggio. Le etichette non fanno distinzione tra maiuscole e minuscole e verranno memorizzate in minuscolo. Le parole chiave che i client di posta usano per tenere traccia dello stato di un messaggio, come $Forwarded o $Junk, vengono mantenute a meno che non vengano rimosse con labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Etichette da aggiungere al messaggio. Le altre etichette del messaggio vengono mantenute. Ha la precedenza su labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Etichette da rimuovere dal messaggio, anche per i client IMAP (che vedono le etichette come parole chiave). Le altre etichette del messaggio vengono mantenute. Ha la precedenza su labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Cartelle"
         ],
         "summary": "Aggiorna cartella",
-        "description": "Aggiorna/rinomina una cartella esistente. Questa operazione rinomina la cartella con il nuovo percorso specificato nel corpo della richiesta. È possibile utilizzare come identificatore l'ObjectID della cartella o il suo percorso corrente.",
+        "description": "Aggiorna/rinomina una cartella esistente. Questa operazione rinomina la cartella con il nuovo percorso specificato nel corpo della richiesta. È possibile utilizzare come identificatore l'ObjectID della cartella o il suo percorso corrente. Anche le sottocartelle vengono rinominate (ad esempio, 'Work/Clients' diventa 'Jobs/Clients' quando 'Work' viene rinominata in 'Jobs'). INBOX non può essere rinominata.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Cartelle"
         ],
         "summary": "Elimina cartella",
-        "description": "Elimina definitivamente una cartella specifica. Questa azione non può essere annullata e eliminerà anche tutti i messaggi presenti nella cartella. Puoi utilizzare l'ObjectID della cartella o il suo percorso come identificatore.",
+        "description": "Elimina una cartella specifica. I suoi messaggi vengono spostati nella cartella Trash (i messaggi in Trash o Junk vengono eliminati definitivamente) e le sue sottocartelle vengono mantenute. INBOX non può essere eliminata. Puoi utilizzare l'ObjectID della cartella o il suo percorso come identificatore.",
         "operationId": "deleteFolder",
         "security": [
           {

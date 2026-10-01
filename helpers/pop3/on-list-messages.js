@@ -56,6 +56,7 @@ async function onListMessages(session, fn) {
         size: true,
         mailbox: true,
         flags: true,
+        labels: true,
         unseen: true
       },
       {
@@ -71,6 +72,7 @@ async function onListMessages(session, fn) {
         mailbox: message.mailbox.toString(),
         size: message.size,
         flags: message.flags,
+        labels: message.labels,
         seen: !message.unseen
       })),
       count: messages.length,

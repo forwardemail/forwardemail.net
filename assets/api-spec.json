@@ -1400,6 +1400,26 @@
             },
             "description": "IMAP flags to set on the message"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP flags to add to the message. Its other flags are kept, so changes another client made in the meantime are not undone. Takes precedence over flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP flags to remove from the message. A keyword removed here is removed from its labels as well. Its other flags are kept. Takes precedence over flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "User-defined labels to set on the message. Can be a single label string or an array of labels. Labels must start with a letter, digit, backslash, or dollar sign, and can contain word characters, dots, and hyphens. Maximum of 10 labels per message. Labels are case-insensitive and will be stored in lowercase.",
+            "description": "User-defined labels to set on the message. Can be a single label string or an array of labels. Labels must start with a letter, digit, backslash, or dollar sign, and can contain word characters, dots, and hyphens. Maximum of 10 labels per message. Labels are case-insensitive and will be stored in lowercase. Keywords mail clients use to track the state of a message, such as $Forwarded or $Junk, are kept unless removed with labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Labels to add to the message. Its other labels are kept. Takes precedence over labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Labels to remove from the message, for IMAP clients as well (they see labels as keywords). Its other labels are kept. Takes precedence over labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Folders"
         ],
         "summary": "Update folder",
-        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier. Folders inside it are renamed with it (e.g., 'Work/Clients' becomes 'Jobs/Clients' when 'Work' is renamed to 'Jobs'). INBOX cannot be renamed.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Folders"
         ],
         "summary": "Delete folder",
-        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "description": "Delete a specific folder. Its messages are moved to Trash (messages in Trash or Junk are deleted permanently), and folders inside it are kept. INBOX cannot be deleted. You can use either the folder's ObjectID or its path as the identifier.",
         "operationId": "deleteFolder",
         "security": [
           {

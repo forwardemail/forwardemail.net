@@ -1400,6 +1400,26 @@
             },
             "description": "Flagi IMAP do ustawienia w wiadomości"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Flagi IMAP do dodania do wiadomości. Pozostałe flagi wiadomości są zachowywane, więc zmiany wprowadzone w międzyczasie przez innego klienta nie są cofane. Ma pierwszeństwo przed polem flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Flagi IMAP do usunięcia z wiadomości. Słowo kluczowe usunięte tutaj zostaje usunięte także z etykiet wiadomości. Pozostałe flagi wiadomości są zachowywane. Ma pierwszeństwo przed polem flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Zdefiniowane przez użytkownika etykiety do ustawienia w wiadomości. Może to być pojedynczy ciąg etykiet lub tablica etykiet. Etykiety muszą zaczynać się od litery, cyfry, ukośnika odwrotnego lub znaku dolara i mogą zawierać znaki słowne, kropki i łączniki. Maksymalnie 10 etykiet na wiadomość. Etykiety nie uwzględniają wielkości liter i będą zapisywane małymi literami.",
+            "description": "Zdefiniowane przez użytkownika etykiety do ustawienia w wiadomości. Może to być pojedynczy ciąg etykiet lub tablica etykiet. Etykiety muszą zaczynać się od litery, cyfry, ukośnika odwrotnego lub znaku dolara i mogą zawierać znaki słowne, kropki i łączniki. Maksymalnie 10 etykiet na wiadomość. Etykiety nie uwzględniają wielkości liter i będą zapisywane małymi literami. Słowa kluczowe, za pomocą których programy pocztowe śledzą stan wiadomości, takie jak $Forwarded lub $Junk, są zachowywane, chyba że zostaną usunięte za pomocą labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Etykiety do dodania do wiadomości. Pozostałe etykiety wiadomości są zachowywane. Ma pierwszeństwo przed polem labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Etykiety do usunięcia z wiadomości, również dla klientów IMAP (widzą oni etykiety jako słowa kluczowe). Pozostałe etykiety wiadomości są zachowywane. Ma pierwszeństwo przed polem labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Lornetka składana"
         ],
         "summary": "Aktualizuj folder",
-        "description": "Zaktualizuj/zmień nazwę istniejącego folderu. Ta operacja zmienia nazwę folderu na nową ścieżkę określoną w treści żądania. Jako identyfikatora możesz użyć identyfikatora obiektu folderu lub jego bieżącej ścieżki.",
+        "description": "Zaktualizuj/zmień nazwę istniejącego folderu. Ta operacja zmienia nazwę folderu na nową ścieżkę określoną w treści żądania. Jako identyfikatora możesz użyć identyfikatora obiektu folderu lub jego bieżącej ścieżki. Nazwy podfolderów również są zmieniane (np. 'Work/Clients' staje się 'Jobs/Clients', gdy nazwa 'Work' zostanie zmieniona na 'Jobs'). Nie można zmienić nazwy folderu INBOX.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Lornetka składana"
         ],
         "summary": "Usuń folder",
-        "description": "Trwale usuń określony folder. Tej czynności nie można cofnąć, a wszystkie wiadomości w folderze zostaną usunięte. Jako identyfikatora możesz użyć identyfikatora obiektu folderu lub jego ścieżki.",
+        "description": "Usuń określony folder. Jego wiadomości są przenoszone do folderu Trash (wiadomości w folderze Trash lub Junk są usuwane trwale), a podfoldery są zachowywane. Nie można usunąć folderu INBOX. Jako identyfikatora możesz użyć identyfikatora obiektu folderu lub jego ścieżki.",
         "operationId": "deleteFolder",
         "security": [
           {

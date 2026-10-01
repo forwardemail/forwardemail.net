@@ -23,6 +23,7 @@ const {
 const { Builder } = require('#helpers/json-sql');
 
 const IMAPError = require('#helpers/imap-error');
+const getImapFlags = require('#helpers/get-imap-flags');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
@@ -491,18 +492,49 @@ async function onStore(mailboxId, update, session, fn) {
                 }
               }
 
-              // Mirror custom keywords from message.flags into message.labels
-              // so the REST API and webmail see the same set. The Messages
-              // model normally enforces this via a pre-validate hook, but
-              // STORE writes directly to SQLite, so we apply the same
-              // normalization here.
-              if (updated) {
-                const nextLabels = deriveLabelsFromFlags(message.flags);
-                if (!arraysEqualUnordered(message.labels || [], nextLabels)) {
-                  message.labels = nextLabels;
-                  $set.labels = nextLabels;
-                  labelsTouched = true;
+              // Mirror custom keywords into message.labels so the REST API
+              // and webmail see the same set. The Messages model normally
+              // enforces this via a pre-validate hook, but STORE writes
+              // directly to SQLite, so we apply the same normalization here.
+              //
+              // IMAP clients see the labels next to the flags (labels set
+              // through the API live only in message.labels), so the STORE
+              // applies to them the way it applies to flags: FLAGS replaces
+              // them, while +FLAGS and -FLAGS only add or remove the
+              // keywords they name. Deriving the labels from message.flags
+              // on every STORE wiped each label set in webmail as soon as an
+              // IMAP client marked the message read.
+              const currentLabels = Array.isArray(message.labels)
+                ? message.labels
+                : [];
+              let nextLabels;
+              switch (update.action) {
+                case 'set': {
+                  nextLabels = deriveLabelsFromFlags(message.flags);
+                  break;
                 }
+
+                case 'add': {
+                  nextLabels = deriveLabelsFromFlags([
+                    ...currentLabels,
+                    ...update.value
+                  ]);
+                  break;
+                }
+
+                default: {
+                  const removed = new Set(update.value.map((f) => getFlag(f)));
+                  nextLabels = currentLabels.filter(
+                    (label) => !removed.has(getFlag(label))
+                  );
+                }
+              }
+
+              if (!arraysEqualUnordered(currentLabels, nextLabels)) {
+                message.labels = nextLabels;
+                $set.labels = nextLabels;
+                labelsTouched = true;
+                updated = true;
               }
 
               // return early if not updated
@@ -516,7 +548,8 @@ async function onStore(mailboxId, update, session, fn) {
                 payloads.push(
                   formatResponse.call(session, 'FETCH', message.uid, {
                     uid: update.isUid ? message.uid : false,
-                    flags: message.flags,
+                    // with the labels, as every FETCH shows them
+                    flags: getImapFlags(message),
                     modseq: condstoreEnabled ? newModseq : false
                   })
                 );
@@ -623,7 +656,7 @@ async function onStore(mailboxId, update, session, fn) {
                 command: 'FETCH',
                 ignore: session.id,
                 uid: message.uid,
-                flags: message.flags,
+                flags: getImapFlags(message),
                 thread: message.thread,
                 message: message._id,
                 modseq: newModseq,

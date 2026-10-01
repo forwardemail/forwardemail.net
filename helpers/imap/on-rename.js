@@ -40,6 +40,9 @@ async function onRename(path, newPath, session, fn) {
 
       fn(null, bool, mailboxId);
 
+      // a folder that was not renamed (e.g. ALREADYEXISTS) has no id
+      if (bool !== true || !mailboxId) return;
+
       // send websocket push notification
       sendNotification(this.client, session.user.alias_id, 'mailboxRenamed', {
         oldPath: path,
@@ -79,12 +82,32 @@ async function onRename(path, newPath, session, fn) {
     //   throw new IMAPError(...)
     //
 
+    // INBOX cannot be renamed, as IMAP RENAME already refuses
+    if (mailbox.path === 'INBOX')
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_RENAME_INBOX', session.user.locale),
+        {
+          imapResponse: 'CANNOT'
+        }
+      );
+
     // Prevent renaming to the same path (no-op)
     if (mailbox.path === newPath)
       throw new IMAPError(
         i18n.translate('IMAP_MAILBOX_ALREADY_EXISTS', session.user.locale),
         {
           imapResponse: 'ALREADYEXISTS'
+        }
+      );
+
+    // a folder cannot go inside itself ("Work" to "Work/Old")
+    const oldPath = mailbox.path;
+    const prefix = `${oldPath}/`;
+    if (newPath.startsWith(prefix))
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_RENAME_INTO_ITSELF', session.user.locale),
+        {
+          imapResponse: 'CANNOT'
         }
       );
 
@@ -101,27 +124,70 @@ async function onRename(path, newPath, session, fn) {
       );
 
     //
+    // RFC 3501: the folders below are renamed with it ("Work/Clients" to
+    // "Jobs/Clients" when "Work" becomes "Jobs"). They were left behind,
+    // under a parent that no longer existed.
+    //
+    const mailboxes = await Mailboxes.find(this, session, {});
+    const paths = new Set(mailboxes.map((m) => m.path));
+    const children = mailboxes.filter((m) => m.path.startsWith(prefix));
+    for (const child of children) {
+      if (paths.has(newPath + child.path.slice(oldPath.length)))
+        throw new IMAPError(
+          i18n.translate('IMAP_MAILBOX_ALREADY_EXISTS', session.user.locale),
+          {
+            imapResponse: 'ALREADYEXISTS'
+          }
+        );
+    }
+
+    //
     // call save() to ensure that pre-validate hooks get run
     // (which update specialUse flags on the mailboxes)
     //
-    mailbox.path = newPath;
+    const renamed = [];
+    const move = async (m, to) => {
+      m.path = to;
 
-    // Set db virtual helpers
-    mailbox.instance = this;
-    mailbox.session = session;
-    mailbox.isNew = false;
+      // Set db virtual helpers
+      m.instance = this;
+      m.session = session;
+      m.isNew = false;
 
-    await mailbox.save();
+      await m.save();
+    };
+
+    try {
+      for (const m of [mailbox, ...children]) {
+        const from = m.path;
+        await move(m, newPath + from.slice(oldPath.length));
+        renamed.push({ mailbox: m, from });
+      }
+    } catch (err) {
+      // put back what was renamed, so the folders are not left split
+      // between the old path and the new one
+      for (const { mailbox: m, from } of [...renamed].reverse()) {
+        try {
+          await move(m, from);
+        } catch (err_) {
+          this.logger.fatal(err_, { path, session, resolver: this.resolver });
+        }
+      }
+
+      throw err;
+    }
 
     // send response
     fn(null, true, mailbox._id);
 
     // send websocket push notification
-    sendNotification(this.client, session.user.alias_id, 'mailboxRenamed', {
-      oldPath: path,
-      newPath,
-      mailbox: mailbox._id.toString()
-    });
+    for (const { mailbox: m, from } of renamed) {
+      sendNotification(this.client, session.user.alias_id, 'mailboxRenamed', {
+        oldPath: from,
+        newPath: m.path,
+        mailbox: m._id.toString()
+      });
+    }
 
     // send apple push notification (folder list changed; signal both old + new path)
     sendApn(this.client, session.user.alias_id, path)
@@ -142,12 +208,15 @@ async function onRename(path, newPath, session, fn) {
         this.logger.fatal(err, { session, resolver: this.resolver })
       );
 
-    this.server.notifier
-      .addEntries(this, session, mailbox, {
-        command: 'RENAME',
-        mailbox: mailbox._id,
-        path: mailbox.path
-      })
+    Promise.all(
+      renamed.map(({ mailbox: m }) =>
+        this.server.notifier.addEntries(this, session, m, {
+          command: 'RENAME',
+          mailbox: m._id,
+          path: m.path
+        })
+      )
+    )
       .then(() => this.server.notifier.fire(session.user.alias_id))
       .catch((err) =>
         this.logger.fatal(err, { path, session, resolver: this.resolver })

@@ -215,16 +215,20 @@ body.email {
   }
 
   // code and tables
-  // wrap long lines (a long address in a dig example) instead of scrolling
+  // wrap long lines (a long address in a dig example) instead of scrolling:
+  // lines break between words, and only a word too long for the line (an
+  // address, a hash) is split; break-all split every word ("Domain I" / "D")
   pre {
     max-width: 100%;
     white-space: pre-wrap !important;
-    word-break: break-all;
+    overflow-wrap: anywhere;
+    word-break: break-word;
     background-color: $fe-ink !important;
     border-radius: $fe-radius-md !important;
   }
   code {
-    word-break: break-all;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   .table {
     color: $fe-l-600;

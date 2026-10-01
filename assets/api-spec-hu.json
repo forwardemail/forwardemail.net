@@ -1400,6 +1400,26 @@
             },
             "description": "IMAP-jelzők beállítása az üzenethez"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Az üzenethez hozzáadandó IMAP-jelzők. Az üzenet többi jelzője megmarad, így egy másik kliens által időközben végzett módosítások nem íródnak felül. Elsőbbséget élvez a flags mezővel szemben.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Az üzenetből eltávolítandó IMAP-jelzők. Az itt eltávolított kulcsszó az üzenet címkéi közül is törlődik. Az üzenet többi jelzője megmarad. Elsőbbséget élvez a flags mezővel szemben.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Felhasználó által definiált címkék az üzenethez. Lehet egyetlen címke karakterlánc vagy címkék tömbje. A címkéknek betűvel, számjeggyel, fordított perjellel vagy dollárjellel kell kezdődniük, és tartalmazhatnak szókaraktereket, pontokat és kötőjeleket. Üzenetenként legfeljebb 10 címke adható meg. A címkék nem megkülönböztetik a kis- és nagybetűket, és kisbetűvel lesznek tárolva.",
+            "description": "Felhasználó által definiált címkék az üzenethez. Lehet egyetlen címke karakterlánc vagy címkék tömbje. A címkéknek betűvel, számjeggyel, fordított perjellel vagy dollárjellel kell kezdődniük, és tartalmazhatnak szókaraktereket, pontokat és kötőjeleket. Üzenetenként legfeljebb 10 címke adható meg. A címkék nem megkülönböztetik a kis- és nagybetűket, és kisbetűvel lesznek tárolva. A levelezőprogramok által az üzenetek állapotának követésére használt kulcsszavak, például a $Forwarded vagy a $Junk, megmaradnak, hacsak nem távolítják el őket a labels_remove mezővel.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Az üzenethez hozzáadandó címkék. Az üzenet többi címkéje megmarad. Elsőbbséget élvez a labels mezővel szemben.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Az üzenetből eltávolítandó címkék, az IMAP-kliensek számára is (ezek a címkéket kulcsszavakként látják). Az üzenet többi címkéje megmarad. Elsőbbséget élvez a labels mezővel szemben.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Mappák"
         ],
         "summary": "Mappa frissítése",
-        "description": "Meglévő mappa frissítése/átnevezése. Ez a művelet átnevezi a mappát a kérés törzsében megadott új elérési útra. Azonosítóként használhatja a mappa objektumazonosítóját vagy az aktuális elérési útját.",
+        "description": "Meglévő mappa frissítése/átnevezése. Ez a művelet átnevezi a mappát a kérés törzsében megadott új elérési útra. Azonosítóként használhatja a mappa objektumazonosítóját vagy az aktuális elérési útját. Az almappák neve is ennek megfelelően módosul (pl. a 'Work/Clients' mappából 'Jobs/Clients' lesz, ha a 'Work' mappát 'Jobs' névre nevezik át). Az INBOX nem nevezhető át.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Mappák"
         ],
         "summary": "Mappa törlése",
-        "description": "Egy adott mappa végleges törlése. Ez a művelet nem vonható vissza, és a mappában található összes üzenetet is törli. Azonosítóként használhatja a mappa objektumazonosítóját vagy az elérési útját.",
+        "description": "Egy adott mappa törlése. A benne lévő üzenetek a Trash mappába kerülnek (a Trash vagy a Junk mappában lévő üzenetek véglegesen törlődnek), az almappák pedig megmaradnak. Az INBOX nem törölhető. Azonosítóként használhatja a mappa objektumazonosítóját vagy az elérési útját.",
         "operationId": "deleteFolder",
         "security": [
           {

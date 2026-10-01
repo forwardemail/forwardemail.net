@@ -1400,6 +1400,26 @@
             },
             "description": "Mesajda ayarlanacak IMAP bayrakları"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Mesaja eklenecek IMAP bayrakları. Mesajın diğer bayrakları korunur, böylece başka bir istemcinin bu arada yaptığı değişiklikler geri alınmaz. flags alanına göre önceliklidir.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Mesajdan kaldırılacak IMAP bayrakları. Burada kaldırılan bir anahtar kelime, mesajın etiketlerinden de kaldırılır. Mesajın diğer bayrakları korunur. flags alanına göre önceliklidir.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Mesaja eklenecek kullanıcı tanımlı etiketler. Tek bir etiket dizesi veya etiket dizisi olabilir. Etiketler bir harf, rakam, ters eğik çizgi veya dolar işaretiyle başlamalı ve kelime karakterleri, noktalar ve tireler içerebilir. Mesaj başına en fazla 10 etiket. Etiketler büyük/küçük harf duyarlı değildir ve küçük harfle saklanacaktır.",
+            "description": "Mesaja eklenecek kullanıcı tanımlı etiketler. Tek bir etiket dizesi veya etiket dizisi olabilir. Etiketler bir harf, rakam, ters eğik çizgi veya dolar işaretiyle başlamalı ve kelime karakterleri, noktalar ve tireler içerebilir. Mesaj başına en fazla 10 etiket. Etiketler büyük/küçük harf duyarlı değildir ve küçük harfle saklanacaktır. E-posta istemcilerinin bir mesajın durumunu izlemek için kullandığı $Forwarded veya $Junk gibi anahtar kelimeler, labels_remove ile kaldırılmadıkça korunur.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Mesaja eklenecek etiketler. Mesajın diğer etiketleri korunur. labels alanına göre önceliklidir.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Mesajdan kaldırılacak etiketler; kaldırma işlemi IMAP istemcileri için de geçerlidir (bu istemciler etiketleri anahtar kelime olarak görür). Mesajın diğer etiketleri korunur. labels alanına göre önceliklidir.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Klasörler"
         ],
         "summary": "Güncelleme klasörü",
-        "description": "Mevcut bir klasörü güncelleyin/yeniden adlandırın. Bu işlem, klasörü istek gövdesinde belirtilen yeni yola yeniden adlandırır. Tanımlayıcı olarak klasörün ObjectID'sini veya geçerli yolunu kullanabilirsiniz.",
+        "description": "Mevcut bir klasörü güncelleyin/yeniden adlandırın. Bu işlem, klasörü istek gövdesinde belirtilen yeni yola yeniden adlandırır. Tanımlayıcı olarak klasörün ObjectID'sini veya geçerli yolunu kullanabilirsiniz. Alt klasörler de yeniden adlandırılır (örneğin, 'Work' klasörü 'Jobs' olarak yeniden adlandırıldığında 'Work/Clients' klasörü 'Jobs/Clients' olur). INBOX yeniden adlandırılamaz.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Klasörler"
         ],
         "summary": "Klasörü sil",
-        "description": "Belirli bir klasörü kalıcı olarak silin. Bu işlem geri alınamaz ve klasördeki tüm iletileri de siler. Tanımlayıcı olarak klasörün ObjectID'sini veya yolunu kullanabilirsiniz.",
+        "description": "Belirli bir klasörü silin. Klasördeki mesajlar Trash klasörüne taşınır (Trash veya Junk klasöründeki mesajlar kalıcı olarak silinir) ve alt klasörler korunur. INBOX silinemez. Tanımlayıcı olarak klasörün ObjectID'sini veya yolunu kullanabilirsiniz.",
         "operationId": "deleteFolder",
         "security": [
           {

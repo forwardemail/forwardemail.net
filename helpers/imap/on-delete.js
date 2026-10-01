@@ -52,9 +52,13 @@ async function onDelete(path, session, fn) {
       fn(null, bool, mailbox._id);
 
       // https://github.com/zone-eu/wildduck/blob/76f79fd274e62da3dffe8a2aac170ba41aecaa2b/lib/mailbox-handler.js#L339-L350
+      //
+      // IMAP connections compare this to the id of their selected mailbox
+      // as strings: the whole mailbox object never matched, so a client
+      // with the deleted folder open was left in a folder that was gone
       this.server.notifier.fire(session.user.alias_id, {
         command: 'DROP',
-        mailbox
+        mailbox: mailbox._id.toString()
       });
 
       this.server.notifier
@@ -92,6 +96,16 @@ async function onDelete(path, session, fn) {
         i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
         {
           imapResponse: 'NONEXISTENT'
+        }
+      );
+
+    // INBOX cannot be deleted, as IMAP DELETE already refuses (everything
+    // in it would go to Trash, which is emptied after 30 days)
+    if (mailbox.path === 'INBOX')
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_RESERVED', session.user.locale),
+        {
+          imapResponse: 'CANNOT'
         }
       );
 

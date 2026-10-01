@@ -5,6 +5,7 @@
 
 const Boom = require('@hapi/boom');
 const ObjectID = require('bson-objectid');
+const imapTools = require('@zone-eu/wildduck/imap-core/lib/imap-tools');
 const isSANB = require('is-string-and-not-blank');
 const pify = require('pify');
 const { boolean } = require('boolean');
@@ -24,6 +25,81 @@ const onRename = require('#helpers/imap/on-rename');
 const onDeletePromise = pify(onDelete, { multiArgs: true });
 const onCreatePromise = pify(onCreate, { multiArgs: true });
 const onRenamePromise = pify(onRename, { multiArgs: true });
+
+//
+// Paths follow IMAP: INBOX is matched in any case and slashes around a path
+// are dropped (a lowercase "inbox" became a second INBOX that IMAP clients
+// could not tell apart from the first), and an empty name is refused.
+//
+function normalizeFolderPath(path) {
+  return imapTools.normalizeMailbox(path);
+}
+
+function getFolderPath(ctx, value) {
+  const path = isSANB(value) ? normalizeFolderPath(value) : '';
+  if (
+    !path ||
+    path.startsWith('/') ||
+    path.endsWith('/') ||
+    path.includes('//')
+  )
+    throw Boom.badRequest(ctx.translateError('FOLDER_NAME_OR_PATH_REQUIRED'));
+  return path;
+}
+
+//
+// By id, or else by path: as stored, then matched as IMAP matches it (a
+// folder created before paths were normalized, such as "Inbox/Receipts",
+// only matches as stored)
+//
+async function findFolder(ctx) {
+  let mailbox;
+  if (ObjectID.isValid(ctx.params.id))
+    mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
+      _id: ctx.params.id
+    });
+
+  for (const path of new Set([
+    ctx.params.id,
+    normalizeFolderPath(ctx.params.id)
+  ])) {
+    if (mailbox) break;
+
+    mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
+      path
+    });
+  }
+
+  if (!mailbox)
+    throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
+
+  return mailbox;
+}
+
+// what IMAP answered when a folder was not created, renamed or deleted
+function getFolderError(ctx, response, phrase) {
+  switch (response) {
+    case 'ALREADYEXISTS': {
+      return Boom.badRequest(
+        i18n.translate('IMAP_MAILBOX_ALREADY_EXISTS', ctx.locale)
+      );
+    }
+
+    case 'NONEXISTENT': {
+      return Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
+    }
+
+    case 'OVERQUOTA': {
+      return Boom.forbidden(
+        i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale)
+      );
+    }
+
+    default: {
+      return Boom.badRequest(i18n.translate(phrase, ctx.locale));
+    }
+  }
+}
 
 function json(mailbox, { messages, unseen } = {}) {
   // Transform mailbox data for API response
@@ -116,8 +192,7 @@ async function create(ctx) {
   const { body } = ctx.request;
 
   // Validate required fields
-  if (!isSANB(body.path))
-    throw Boom.badRequest(ctx.translateError('FOLDER_NAME_OR_PATH_REQUIRED'));
+  const path = getFolderPath(ctx, body.path);
 
   // check if over quota
   const { isOverQuota } = await Aliases.isOverQuota(
@@ -132,26 +207,14 @@ async function create(ctx) {
   if (isOverQuota)
     throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
 
+  let response;
+  let mailboxId;
   try {
-    const [, mailboxId] = await onCreatePromise.call(
+    [response, mailboxId] = await onCreatePromise.call(
       ctx.instance,
-      body.path,
+      path,
       ctx.state.session
     );
-
-    const mailbox = await Mailboxes.findById(
-      ctx.instance,
-      ctx.state.session,
-      mailboxId
-    );
-
-    // Handle race condition where findById returns null
-    if (!mailbox)
-      throw Boom.badRequest(
-        i18n.translate('MAILBOX_CREATION_FAILED', ctx.locale)
-      );
-
-    ctx.body = json(mailbox);
   } catch (_err) {
     // since we use multiArgs from pify
     // if a promise that was wrapped with multiArgs: true
@@ -160,54 +223,42 @@ async function create(ctx) {
     if (Array.isArray(err)) err = _err[0];
     throw err;
   }
+
+  if (response !== true || !mailboxId)
+    throw getFolderError(ctx, response, 'MAILBOX_CREATION_FAILED');
+
+  const mailbox = await Mailboxes.findById(
+    ctx.instance,
+    ctx.state.session,
+    mailboxId
+  );
+
+  // Handle race condition where findById returns null
+  if (!mailbox)
+    throw Boom.badRequest(
+      i18n.translate('MAILBOX_CREATION_FAILED', ctx.locale)
+    );
+
+  ctx.body = json(mailbox);
 }
 
 async function retrieve(ctx) {
-  // Validate folder ID if it looks like an ObjectID
-  if (ObjectID.isValid(ctx.params.id)) {
-    const mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-      _id: ctx.params.id
-    });
-
-    if (mailbox) {
-      ctx.body = json(mailbox);
-      return;
-    }
-  }
-
-  // Try finding by path
-  const mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-    path: ctx.params.id
-  });
-
-  if (!mailbox) {
-    throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
-  }
-
-  ctx.body = json(mailbox);
+  ctx.body = json(await findFolder(ctx));
 }
 
 async function update(ctx) {
   const { body } = ctx.request;
 
-  // Try to find by ID first, then by path
-  let mailbox;
+  let mailbox = await findFolder(ctx);
 
-  if (ObjectID.isValid(ctx.params.id)) {
-    mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-      _id: ctx.params.id
-    });
-  }
+  // renaming is the only change, so the new path is required
+  const path = getFolderPath(ctx, body.path);
 
-  if (!mailbox) {
-    // Try finding by path
-    mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-      path: ctx.params.id
-    });
-  }
-
-  if (!mailbox)
-    throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
+  // as IMAP RENAME refuses (see on-rename.js)
+  if (mailbox.path === 'INBOX')
+    throw Boom.badRequest(
+      i18n.translate('IMAP_MAILBOX_RENAME_INBOX', ctx.locale)
+    );
 
   // check if over quota
   const { isOverQuota } = await Aliases.isOverQuota(
@@ -222,27 +273,15 @@ async function update(ctx) {
   if (isOverQuota)
     throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
 
+  let response;
+  let mailboxId;
   try {
-    const [, mailboxId] = await onRenamePromise.call(
+    [response, mailboxId] = await onRenamePromise.call(
       ctx.instance,
       mailbox.path,
-      body.path,
+      path,
       ctx.state.session
     );
-
-    mailbox = await Mailboxes.findById(
-      ctx.instance,
-      ctx.state.session,
-      mailboxId
-    );
-
-    if (!mailbox) {
-      throw Boom.notFound(
-        i18n.translateError('IMAP_MAILBOX_DOES_NOT_EXIST', ctx.locale)
-      );
-    }
-
-    ctx.body = json(mailbox);
   } catch (_err) {
     // since we use multiArgs from pify
     // if a promise that was wrapped with multiArgs: true
@@ -251,35 +290,41 @@ async function update(ctx) {
     if (Array.isArray(err)) err = _err[0];
     throw err;
   }
+
+  //
+  // IMAP answers ALREADYEXISTS when the new path is taken, and the folder
+  // was then looked up without an id and reported as not found
+  //
+  if (response !== true || !mailboxId)
+    throw getFolderError(ctx, response, 'IMAP_MAILBOX_RENAME_INTO_ITSELF');
+
+  mailbox = await Mailboxes.findById(
+    ctx.instance,
+    ctx.state.session,
+    mailboxId
+  );
+
+  if (!mailbox)
+    throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
+
+  ctx.body = json(mailbox);
 }
 
 async function remove(ctx) {
-  // Try to find by ID first, then by path
-  let mailbox;
+  const mailbox = await findFolder(ctx);
 
-  if (ObjectID.isValid(ctx.params.id)) {
-    mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-      _id: ctx.params.id
-    });
-  }
-
-  if (!mailbox) {
-    // Try finding by path
-    mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-      path: ctx.params.id
-    });
-  }
-
-  if (!mailbox) {
-    throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
-  }
+  // as IMAP DELETE refuses (see on-delete.js)
+  if (mailbox.path === 'INBOX')
+    throw Boom.badRequest(i18n.translate('IMAP_MAILBOX_RESERVED', ctx.locale));
 
   // re-use the existing IMAP helper function
+  let response;
   try {
-    // const [bool, mailboxId ] = await onDeletePromise.call(
-    await onDeletePromise.call(ctx.instance, mailbox.path, ctx.state.session);
-
-    ctx.body = json(mailbox);
+    [response] = await onDeletePromise.call(
+      ctx.instance,
+      mailbox.path,
+      ctx.state.session
+    );
   } catch (_err) {
     // since we use multiArgs from pify
     // if a promise that was wrapped with multiArgs: true
@@ -288,6 +333,12 @@ async function remove(ctx) {
     if (Array.isArray(err)) err = _err[0];
     throw err;
   }
+
+  // a folder that was not deleted was reported as deleted
+  if (response !== true)
+    throw getFolderError(ctx, response, 'IMAP_MAILBOX_RESERVED');
+
+  ctx.body = json(mailbox);
 }
 
 module.exports = {

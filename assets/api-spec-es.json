@@ -1400,6 +1400,26 @@
             },
             "description": "Banderas IMAP para configurar en el mensaje"
           },
+          "flags_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Banderas IMAP para agregar al mensaje. Las demás banderas del mensaje se conservan, por lo que no se deshacen los cambios que otro cliente haya hecho mientras tanto. Tiene prioridad sobre flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
+          "flags_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Banderas IMAP para quitar del mensaje. Una palabra clave que se quite aquí también se quita de las etiquetas del mensaje. Las demás banderas del mensaje se conservan. Tiene prioridad sobre flags.",
+            "example": [
+              "\\Seen"
+            ]
+          },
           "labels": {
             "oneOf": [
               {
@@ -1412,10 +1432,30 @@
                 }
               }
             ],
-            "description": "Etiquetas definidas por el usuario para el mensaje. Pueden ser una sola cadena de etiquetas o una matriz de etiquetas. Las etiquetas deben comenzar con una letra, un dígito, una barra invertida o un signo de dólar, y pueden contener caracteres de palabra, puntos y guiones. Máximo de 10 etiquetas por mensaje. Las etiquetas no distinguen entre mayúsculas y minúsculas y se almacenan en minúsculas.",
+            "description": "Etiquetas definidas por el usuario para el mensaje. Pueden ser una sola cadena de etiquetas o una matriz de etiquetas. Las etiquetas deben comenzar con una letra, un dígito, una barra invertida o un signo de dólar, y pueden contener caracteres de palabra, puntos y guiones. Máximo de 10 etiquetas por mensaje. Las etiquetas no distinguen entre mayúsculas y minúsculas y se almacenan en minúsculas. Las palabras clave que usan los clientes de correo para registrar el estado de un mensaje, como $Forwarded o $Junk, se conservan a menos que se quiten con labels_remove.",
             "example": [
               "work",
               "important"
+            ]
+          },
+          "labels_add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Etiquetas para agregar al mensaje. Las demás etiquetas del mensaje se conservan. Tiene prioridad sobre labels.",
+            "example": [
+              "work"
+            ]
+          },
+          "labels_remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Etiquetas para quitar del mensaje, también para los clientes IMAP (que ven las etiquetas como palabras clave). Las demás etiquetas del mensaje se conservan. Tiene prioridad sobre labels.",
+            "example": [
+              "work"
             ]
           },
           "folder": {
@@ -4423,7 +4463,7 @@
           "Carpetas"
         ],
         "summary": "Actualizar carpeta",
-        "description": "Actualizar o renombrar una carpeta existente. Esta operación renombra la carpeta a la nueva ruta especificada en el cuerpo de la solicitud. Puede usar el ObjectID de la carpeta o su ruta actual como identificador.",
+        "description": "Actualizar o renombrar una carpeta existente. Esta operación renombra la carpeta a la nueva ruta especificada en el cuerpo de la solicitud. Puede usar el ObjectID de la carpeta o su ruta actual como identificador. Las subcarpetas también se renombran (p. ej., 'Work/Clients' pasa a ser 'Jobs/Clients' cuando 'Work' se renombra a 'Jobs'). INBOX no se puede renombrar.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -4478,7 +4518,7 @@
           "Carpetas"
         ],
         "summary": "Eliminar carpeta",
-        "description": "Eliminar una carpeta específica de forma permanente. Esta acción no se puede deshacer y también eliminará todos los mensajes dentro de la carpeta. Puede usar el ObjectID de la carpeta o su ruta como identificador.",
+        "description": "Eliminar una carpeta específica. Los mensajes que contiene se mueven a la carpeta Trash (los mensajes de Trash o Junk se eliminan de forma permanente) y sus subcarpetas se conservan. INBOX no se puede eliminar. Puede usar el ObjectID de la carpeta o su ruta como identificador.",
         "operationId": "deleteFolder",
         "security": [
           {
