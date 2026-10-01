@@ -223,12 +223,19 @@ body.email {
     white-space: pre-wrap !important;
     overflow-wrap: anywhere;
     word-break: break-word;
+    padding: 12px 16px;
+    text-align: left;
+    color: $fe-l-200 !important;
     background-color: $fe-ink !important;
     border-radius: $fe-radius-md !important;
   }
   code {
     overflow-wrap: anywhere;
     word-break: break-word;
+  }
+  // light text on the dark block; code outside a block keeps its color
+  pre code {
+    color: $fe-l-200 !important;
   }
   .table {
     color: $fe-l-600;

@@ -243,3 +243,76 @@ test('long code lines wrap between words, not inside them', async (t) => {
   t.notRegex(code[1], /break-all/);
   t.regex(code[1], /overflow-wrap: anywhere/);
 });
+
+// WCAG contrast ratio of two #rrggbb colors
+function contrast(a, b) {
+  const luminance = (hex) => {
+    const [r, g, b] = [1, 3, 5].map((i) => {
+      const c = Number.parseInt(hex.slice(i, i + 2), 16) / 255;
+      return c <= 0.039_28 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+
+  const [light, dark] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (light + 0.05) / (dark + 0.05);
+}
+
+const outboundEmail = {
+  envelope: { from: 'jane@example.com', to: ['bob@example.org'] },
+  messageId: '<123@example.com>',
+  subject: 'Hello',
+  date: now
+};
+const smtpResponse =
+  "Link hostname of example.org was detected by Cloudflare's Family DNS to contain adult-related content, phishing, and/or malware.";
+
+for (const [template, extra] of [
+  [
+    'smtp-prevented',
+    {
+      email: outboundEmail,
+      truthSource: 'cloudflare.com',
+      category: 'Spam',
+      responseCode: 554,
+      response: smtpResponse
+    }
+  ],
+  [
+    'smtp-suspended',
+    {
+      email: outboundEmail,
+      truthSource: 'cloudflare.com',
+      category: 'Spam',
+      responseCode: 554,
+      response: smtpResponse,
+      detectionCount: 3,
+      threshold: 3,
+      uniqueRecipients: 3
+    }
+  ],
+  ['dmarc-issue', { response: smtpResponse, dmarc: { result: 'fail' } }]
+]) {
+  test(`${template} code blocks have readable text on the dark background`, async (t) => {
+    const html = await render(template, extra);
+    const blocks = [
+      ...html.matchAll(
+        /<pre[^>]*style="([^"]*)"[^>]*>\s*<code[^>]*style="([^"]*)"/g
+      )
+    ];
+    t.true(blocks.length > 0);
+    for (const [, pre, code] of blocks) {
+      const background = pre.match(/background-color: (#[\da-f]{6})/i)[1];
+      // the text color is the code color, or the pre color it inherits
+      const textColor = (style) =>
+        style.match(/(?:^|;)\s*color: (#[\da-f]{6})/i)?.[1];
+      const color = textColor(code) || textColor(pre);
+      t.true(
+        contrast(color, background) >= 7,
+        `${color} on ${background} is ${contrast(color, background).toFixed(
+          2
+        )}:1`
+      );
+    }
+  });
+}
