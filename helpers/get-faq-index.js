@@ -183,14 +183,13 @@ function splitHeading(heading) {
   return { text, id: id || slugify(text) };
 }
 
-// How much of each answer suggestFaq gets to match against. The opening of an
-// answer names the thing it is about ("Our servers are located primarily in
-// Denver"); the rest is procedure and tables that would only add noise, and
-// this is carried in the cached index for every question, so it stays short.
+// The opening of an answer names the thing it is about ("Our servers are
+// located primarily in Denver"), so suggestFaq weighs a hit there above one
+// further down, where the procedure, tables and asides live.
 const EXCERPT_LENGTH = 400;
 
 /**
- * The opening of an answer as plain lowercased text, for matching.
+ * An answer as plain lowercased text, for matching.
  *
  * Works from the sanitized HTML rather than the markdown so that link targets,
  * `{#anchors}`, emoji shortcodes and table pipes do not count as words.
@@ -198,13 +197,12 @@ const EXCERPT_LENGTH = 400;
  * @param {string} html
  * @returns {string}
  */
-function excerptFromHtml(html) {
+function textFromHtml(html) {
   return sanitizeHtml(html, { allowedTags: [], allowedAttributes: {} })
     .replace(/&[a-z#\d]+;/gi, ' ')
     .replace(/\s+/g, ' ')
     .trim()
-    .toLowerCase()
-    .slice(0, EXCERPT_LENGTH);
+    .toLowerCase();
 }
 
 /**
@@ -262,6 +260,7 @@ function parseFaqIndex(faqFilePath, locale = 'en') {
     // punctuation, and Spanish would want an opening mark this could not add.
     const text = isEnglish ? ensureQuestionMark(heading) : heading;
     const answerHtml = renderMd(answerMd);
+    const body = textFromHtml(answerHtml);
     category.questions.push({
       // The bare anchor, not a prefixed one: the translated files cross-link
       // each other with /faq#<id> and the rest of the site links in the same
@@ -271,7 +270,11 @@ function parseFaqIndex(faqFilePath, locale = 'en') {
       // Lowercased once here so the client side filter does not have to
       // lowercase 137 strings on every keystroke.
       search: text.toLowerCase(),
-      excerpt: excerptFromHtml(answerHtml),
+      excerpt: body.slice(0, EXCERPT_LENGTH),
+      // The whole answer, so the help form can suggest a question whose
+      // heading never names what was typed ("DKIM selector" lives several
+      // paragraphs into the DKIM setup answer).
+      body,
       answerHtml
     });
   }
@@ -459,10 +462,12 @@ const MIN_TOKEN_LENGTH = 2;
 const MIN_SINGULARIZE_LENGTH = 5;
 const DEFAULT_LIMIT = 5;
 
-// A hit in the question itself is worth more than one in the answer's opening:
-// the question is a title someone wrote to be found by, the excerpt is prose.
+// A hit in the question itself is worth the most: it is a title someone wrote
+// to be found by. The answer's opening says what the answer is about, and the
+// rest of it is worth the least, since a long answer mentions a lot in passing.
 const QUESTION_HIT = 3;
-const EXCERPT_HIT = 1;
+const EXCERPT_HIT = 2;
+const BODY_HIT = 1;
 
 /**
  * Break a support message into the words worth matching on.
@@ -528,7 +533,8 @@ function matcherFor(token) {
  * filterFaqIndex, which needs every word to appear in the question, a whole
  * sentence about a problem will rarely contain a heading verbatim. So each
  * question is scored by how many of the message's meaningful words appear in
- * it (weighted) or in the opening of its answer, and the best few come back.
+ * it, in the opening of its answer, or anywhere else in the answer (weighted
+ * in that order), and the best few come back.
  *
  * @param {Object} index - the result of getFaqIndex
  * @param {string} query - what has been typed so far
@@ -551,10 +557,12 @@ function suggestFaq(index, query, options = {}) {
     for (const q of category.questions) {
       const search = q.search || '';
       const excerpt = q.excerpt || '';
+      const body = q.body || '';
       let score = 0;
       for (const matcher of matchers) {
         if (matcher.test(search)) score += QUESTION_HIT;
         else if (matcher.test(excerpt)) score += EXCERPT_HIT;
+        else if (matcher.test(body)) score += BODY_HIT;
       }
 
       if (score === 0) continue;

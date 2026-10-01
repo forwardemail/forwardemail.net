@@ -171,6 +171,20 @@ test('suggestFaq ranks a heading match above an answer-only match and honours li
   t.is(suggestFaq(index, 'error logs', { limit: 0 }).length, 5);
 });
 
+test('suggestFaq matches a word found only deep in an answer body', (t) => {
+  // "bimi" is in neither the heading nor the opening of the webhooks answer,
+  // only in its description of the authentication results it posts.
+  const webhooks = findQuestion('do-you-support-webhooks');
+  t.false(webhooks.search.includes('bimi'));
+  t.false(webhooks.excerpt.includes('bimi'));
+  t.true(webhooks.body.includes('bimi'));
+  t.true(
+    suggestFaq(index, 'bimi')
+      .map((r) => r.id)
+      .includes('do-you-support-webhooks')
+  );
+});
+
 test('suggestFaq matches a single meaningful word against headings', (t) => {
   const ids = suggestFaq(index, 'imap').map((r) => r.id);
   t.true(ids.includes('do-you-support-receiving-email-with-imap'));

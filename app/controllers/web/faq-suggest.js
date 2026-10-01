@@ -38,7 +38,8 @@ async function getSuggestIndex(client, locale) {
         id: q.id,
         question: q.question,
         search: q.search,
-        excerpt: q.excerpt
+        excerpt: q.excerpt,
+        body: q.body
       }))
     }))
   };
