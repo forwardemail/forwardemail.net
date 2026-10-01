@@ -48,11 +48,7 @@ async function onCreate(path, session, fn) {
           this.logger.fatal(err, { path, session, resolver: this.resolver })
         );
 
-      // send websocket push notification
-      sendNotification(this.client, session.user.alias_id, 'mailboxCreated', {
-        path,
-        mailbox: mailboxId.toString()
-      });
+      // the SQLite server sends the realtime notification (WebSocket and push)
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);

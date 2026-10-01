@@ -29,6 +29,7 @@ const getImapFlags = require('#helpers/get-imap-flags');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
 const i18n = require('#helpers/i18n');
 const recursivelyParse = require('#helpers/recursively-parse');
+const sendApn = require('#helpers/send-apn');
 const sendNotification = require('#helpers/send-notification');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
@@ -487,7 +488,7 @@ function hasSeenFlag(flags) {
 //
 function journalFlagChange(ctx, message, previousImapFlags) {
   const imapFlags = getImapFlags(message);
-  if (hasSameFlags(previousImapFlags, imapFlags)) return;
+  if (hasSameFlags(previousImapFlags, imapFlags)) return false;
 
   const aliasId = ctx.state.session.user.alias_id;
   const messageId = message._id;
@@ -510,6 +511,71 @@ function journalFlagChange(ctx, message, previousImapFlags) {
     .catch((err) =>
       ctx.logger.fatal(err, { message: messageId, alias_id: aliasId })
     );
+
+  return true;
+}
+
+//
+// Tell every other client about a flag or label change made here: IMAP
+// clients through the journal, WebSocket and push clients through
+// `flagsUpdated` and `labelsUpdated` (as after an IMAP STORE, see
+// helpers/imap/on-store.js) and Apple Mail through APN.  Nothing is sent
+// when the stored flags and labels are the same as before.
+//
+// The events are published right away, in the order the changes were saved:
+// they carry the whole list (`set`), so a "read" overtaken by the "unread"
+// after it would leave other clients on the wrong state.  The mailbox path
+// is included when the request named the folder (webmail always does).
+//
+// eslint-disable-next-line max-params
+function notifyFlagChange(
+  ctx,
+  message,
+  previousImapFlags,
+  previousLabels,
+  folder
+) {
+  const flagsChanged = journalFlagChange(ctx, message, previousImapFlags);
+  const labels = Array.isArray(message.labels) ? message.labels : [];
+  const labelsChanged = !hasSameFlags(previousLabels, labels);
+  if (!flagsChanged && !labelsChanged) return;
+
+  const aliasId = ctx.state.session.user.alias_id;
+  const mailboxId = (message.mailbox?._id || message.mailbox).toString();
+  const mailbox =
+    folder && folder._id.toString() === mailboxId ? folder : undefined;
+  const path = mailbox ? { path: mailbox.path } : {};
+
+  if (flagsChanged)
+    sendNotification(ctx.client, aliasId, 'flagsUpdated', {
+      mailbox: mailboxId,
+      ...path,
+      action: 'set',
+      flags: getImapFlags(message),
+      uids: [message.uid]
+    });
+
+  if (labelsChanged)
+    sendNotification(ctx.client, aliasId, 'labelsUpdated', {
+      mailbox: mailboxId,
+      ...path,
+      action: 'set',
+      labels,
+      uids: [message.uid]
+    });
+
+  // badge counts and unread sync
+  if (flagsChanged)
+    (mailbox
+      ? Promise.resolve(mailbox)
+      : Mailboxes.findOne(ctx.instance, ctx.state.session, {
+          _id: mailboxId
+        })
+    )
+      .then((mailbox) => {
+        if (mailbox) return sendApn(ctx.client, aliasId, mailbox.path);
+      })
+      .catch((err) => ctx.logger.fatal(err, { alias_id: aliasId }));
 }
 
 async function json(ctx, message, { lightweight = false } = {}) {
@@ -1221,15 +1287,25 @@ async function create(ctx) {
     // (validation, normalization, and max limit enforcement happens in model's pre-validate hook)
     if (labels.length > 0) {
       const previousImapFlags = getImapFlags(message);
-      message.labels = labels;
+      const previousLabels = Array.isArray(message.labels)
+        ? [...message.labels]
+        : [];
+      // with the labels the keywords in `flags` already gave it
+      message.labels = [...previousLabels, ...labels];
       message.remoteAddress = ctx.ip;
       message.transaction = 'API';
       message.instance = ctx.instance;
       message.session = ctx.state.session;
       message.isNew = false;
       await message.save();
-      // IMAP clients may have fetched the new message before the labels
-      journalFlagChange(ctx, message, previousImapFlags);
+      // clients may have fetched the new message before the labels
+      notifyFlagChange(
+        ctx,
+        message,
+        previousImapFlags,
+        previousLabels,
+        mailbox
+      );
     }
 
     ctx.body = await json(ctx, message);
@@ -1323,6 +1399,9 @@ async function update(ctx) {
   const labels =
     labelsAdd || labelsRemove ? undefined : getLabelsInput(ctx, body.labels);
 
+  // the folder the request named, once found or created
+  let folder;
+
   if (body.folder !== undefined) {
     const folderPath = getFolderPath(ctx, body.folder);
 
@@ -1391,10 +1470,15 @@ async function update(ctx) {
         throw err;
       }
     }
+
+    folder = mailbox;
   }
 
-  // flags as IMAP clients saw them before this change
+  // flags and labels as other clients saw them before this change
   const previousImapFlags = getImapFlags(message);
+  const previousLabels = Array.isArray(message.labels)
+    ? [...message.labels]
+    : [];
 
   if (flagsAdd || flagsRemove) {
     //
@@ -1435,9 +1519,9 @@ async function update(ctx) {
     message.searchable = !message.flags.includes('\\Deleted');
   }
 
-  const labelsChanged = Boolean(labels || labelsAdd || labelsRemove);
+  const hasLabelsInput = Boolean(labels || labelsAdd || labelsRemove);
 
-  if (labelsChanged) {
+  if (hasLabelsInput) {
     let next = labels;
     if (labelsAdd || labelsRemove) {
       const removed = new Set(
@@ -1478,11 +1562,9 @@ async function update(ctx) {
   message.session = ctx.state.session;
   message.isNew = false;
 
-  const flagsChanged = Boolean(flags || flagsAdd || flagsRemove);
-
   await message.save();
 
-  journalFlagChange(ctx, message, previousImapFlags);
+  notifyFlagChange(ctx, message, previousImapFlags, previousLabels, folder);
 
   //
   // TODO: we should update `mailbox.flags` similar to onStore function in the future
@@ -1496,37 +1578,6 @@ async function update(ctx) {
 
   if (!message)
     throw Boom.notFound(ctx.translateError('MESSAGE_DOES_NOT_EXIST'));
-
-  // Notify other connected clients (other devices) that flags/labels changed
-  // so they can refresh their local cache. Mirrors the IMAP STORE emit in
-  // helpers/imap/on-store.js.
-  if (flagsChanged) {
-    sendNotification(
-      ctx.client,
-      ctx.state.session.user.alias_id,
-      'flagsUpdated',
-      {
-        mailbox: message.mailbox.toString(),
-        action: 'set',
-        flags: message.flags,
-        uids: [message.uid]
-      }
-    );
-  }
-
-  if (labelsChanged) {
-    sendNotification(
-      ctx.client,
-      ctx.state.session.user.alias_id,
-      'labelsUpdated',
-      {
-        mailbox: message.mailbox.toString(),
-        action: 'set',
-        labels: message.labels,
-        uids: [message.uid]
-      }
-    );
-  }
 
   if (boolean(ctx.query.eml)) {
     // similar to 'rfc822' case in `helpers/get-query-response.js`

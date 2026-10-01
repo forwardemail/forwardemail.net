@@ -133,16 +133,7 @@ async function onExpunge(mailboxId, update, session, fn) {
             })
           );
 
-        // send websocket push notification
-        sendNotification(
-          this.client,
-          session.user.alias_id,
-          'messagesExpunged',
-          {
-            mailbox: mailboxId.toString(),
-            uids: messages.map((m) => m.uid)
-          }
-        );
+        // the SQLite server sends the realtime notification (WebSocket and push)
       }
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
@@ -277,10 +268,18 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     // send websocket push notification
     if (messages.length > 0) {
-      sendNotification(this.client, session.user.alias_id, 'messagesExpunged', {
-        mailbox: mailboxId.toString(),
-        uids: messages.map((m) => m.uid)
-      });
+      sendNotification.inChunks(
+        this.client,
+        session.user.alias_id,
+        'messagesExpunged',
+        {
+          mailbox: mailboxId.toString(),
+          path: mailbox.path,
+          uids: messages.map((m) => m.uid),
+          ids: messages.map((m) => m._id.toString())
+        },
+        ['uids', 'ids']
+      );
 
       // send apple push notification (deletion changes folder counts)
       sendApn(this.client, session.user.alias_id, mailbox.path)

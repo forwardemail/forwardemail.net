@@ -1078,6 +1078,10 @@ test('PROPPATCH should update address book properties', async (t) => {
   </d:set>
 </d:propertyupdate>`;
 
+  const capture = utils.captureNotifications(
+    t.context.client,
+    t.context.alias.id
+  );
   const response = await axios({
     method: 'PROPPATCH',
     url: addressBook.url,
@@ -1090,6 +1094,21 @@ test('PROPPATCH should update address book properties', async (t) => {
 
   t.is(response.status, 207); // Multi-Status
   t.true(response.data.includes('200 OK'));
+
+  // WebSocket and push clients (webmail, the apps) are told once
+  await pWaitFor(() => capture.events.length > 0, {
+    timeout: ms('10s')
+  }).catch(() => {});
+  capture.stop();
+  t.deepEqual(
+    capture.events.map((e) => e.event),
+    ['addressBookUpdated']
+  );
+  t.like(capture.events[0].addressBook, {
+    name: 'Updated Test Name',
+    description: 'Updated description via PROPPATCH',
+    object: 'address_book'
+  });
 
   // Verify the changes
   const updatedAddressBooks = await fetchAddressBooks({

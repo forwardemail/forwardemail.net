@@ -2429,6 +2429,7 @@ test('VALID_EVENTS contains all expected event types', (t) => {
     'contactUpdated',
     'contactDeleted',
     'addressBookCreated',
+    'addressBookUpdated',
     'addressBookDeleted',
     // Broadcast
     'newRelease'

@@ -44,6 +44,7 @@ const LARGE_FIELDS = ['eml', 'content', 'ical'];
  *   - contactUpdated      Contact updated (PUT)
  *   - contactDeleted      Contact deleted (DELETE)
  *   - addressBookCreated  New address book created (MKCOL)
+ *   - addressBookUpdated  Address book properties updated (PROPPATCH)
  *   - addressBookDeleted  Address book deleted (DELETE)
  *
  * App release events:
@@ -73,6 +74,7 @@ const VALID_EVENTS = new Set([
   'contactUpdated',
   'contactDeleted',
   'addressBookCreated',
+  'addressBookUpdated',
   'addressBookDeleted',
   // App releases
   'newRelease'
@@ -250,6 +252,37 @@ function sendNotificationWithDependencies({
   }
 }
 
+//
+// A change to many messages (an EXPUNGE of a large folder, a STORE on 1:*)
+// is sent as several events of at most this many UIDs, so that no event
+// comes near MAX_NOTIFICATION_PAYLOAD.  The lists named in `keys` are cut
+// in step (e.g. `sourceUid` and `destinationUid`); each event has its own
+// notificationId.
+//
+const MAX_UIDS_PER_NOTIFICATION = 1000;
+
+// eslint-disable-next-line max-params
+function sendNotificationInChunks(client, aliasId, event, data, keys) {
+  const length = Math.max(
+    0,
+    ...keys.map((key) => (Array.isArray(data[key]) ? data[key].length : 0))
+  );
+  if (length <= MAX_UIDS_PER_NOTIFICATION)
+    return sendNotification(client, aliasId, event, data);
+
+  for (let i = 0; i < length; i += MAX_UIDS_PER_NOTIFICATION) {
+    const chunk = { ...data };
+    for (const key of keys) {
+      if (Array.isArray(data[key]))
+        chunk[key] = data[key].slice(i, i + MAX_UIDS_PER_NOTIFICATION);
+    }
+
+    sendNotification(client, aliasId, event, chunk);
+  }
+}
+
 module.exports = sendNotification;
 module.exports.VALID_EVENTS = VALID_EVENTS;
+module.exports.MAX_UIDS_PER_NOTIFICATION = MAX_UIDS_PER_NOTIFICATION;
+module.exports.inChunks = sendNotificationInChunks;
 module.exports._test = { sendNotificationWithDependencies };

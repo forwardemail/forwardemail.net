@@ -46,6 +46,8 @@ const openDatabaseHandle = require('#helpers/open-database-handle');
 const quarantineReport = require('#helpers/quarantine-report');
 const recursivelyParse = require('#helpers/recursively-parse');
 const safeVacuum = require('#helpers/safe-vacuum');
+const sendApn = require('#helpers/send-apn');
+const sendNotification = require('#helpers/send-notification');
 const setupPragma = require('#helpers/setup-pragma');
 const { withDbFileLock } = require('#helpers/db-file-lock');
 const { leftoverCompanionFiles } = require('#helpers/sqlite-file-utils');
@@ -138,6 +140,59 @@ const _dbOpenInflight = new Map();
 // }
 // syncRcloneConfig();
 // setInterval(syncRcloneConfig, 30000);
+
+//
+// Tell IMAP, WebSocket, push and Apple Mail clients about messages the
+// Trash, Spam and Junk retention purge removed, the same way EXPUNGE does
+// (see helpers/imap/on-expunge.js)
+//
+function notifyPurgedMessages(instance, session, mailboxes, purged) {
+  if (purged.length === 0) return;
+  const aliasId = session.user.alias_id;
+  for (const mailbox of mailboxes) {
+    const mailboxId = mailbox._id.toString();
+    const messages = purged
+      .filter((m) => m.mailbox === mailboxId)
+      .sort((a, b) => a.uid - b.uid);
+    if (messages.length === 0) continue;
+
+    if (instance?.server?.notifier) {
+      instance.server.notifier
+        .addEntries(
+          instance,
+          session,
+          mailbox._id,
+          messages.map((m) => ({
+            command: 'EXPUNGE',
+            uid: m.uid,
+            mailbox: mailbox._id,
+            message: m._id,
+            thread: m.thread,
+            unseen: m.unseen
+          }))
+        )
+        .then(() => instance.server.notifier.fire(aliasId))
+        .catch((err) => logger.fatal(err, { session }));
+    }
+
+    sendNotification.inChunks(
+      instance.client,
+      aliasId,
+      'messagesExpunged',
+      {
+        mailbox: mailboxId,
+        path: mailbox.path,
+        uids: messages.map((m) => m.uid),
+        ids: messages.map((m) => m._id.toString())
+      },
+      ['uids', 'ids']
+    );
+
+    sendApn(instance.client, aliasId, mailbox.path)
+      .then()
+      .catch((err) => logger.fatal(err, { session }));
+  }
+}
 
 // eslint-disable-next-line max-params
 async function getDatabase(
@@ -1345,6 +1400,7 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
             },
             limit: TRASH_PURGE_BATCH_SIZE
           });
+          const purged = [];
           // eslint-disable-next-line no-constant-condition
           while (true) {
             // Wrap SELECT+DELETE in a transaction so the FTS5 trigger
@@ -1363,7 +1419,7 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
               const placeholders = ids.map(() => '?').join(',');
               const deleted = db
                 .prepare(
-                  `DELETE FROM "Messages" WHERE "_id" IN (${placeholders}) RETURNING "_id", "magic", "mimeTree"`
+                  `DELETE FROM "Messages" WHERE "_id" IN (${placeholders}) RETURNING "_id", "mailbox", "uid", "thread", "unseen", "magic", "mimeTree"`
                 )
                 .all(...ids);
 
@@ -1377,11 +1433,23 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
               releasePurgedAttachments(db, deleted, session);
 
               db.exec('COMMIT');
+
+              for (const m of deleted) {
+                purged.push({
+                  _id: m._id,
+                  mailbox: m.mailbox,
+                  uid: m.uid,
+                  thread: m.thread,
+                  unseen: m.unseen
+                });
+              }
             } catch (batchErr) {
               try {
                 db.exec('ROLLBACK');
               } catch {}
 
+              // earlier batches were committed
+              notifyPurgedMessages(instance, session, mailboxes, purged);
               throw batchErr;
             }
 
@@ -1390,14 +1458,18 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
               await new Promise((resolve) => {
                 setImmediate(resolve);
               });
-              if (!db.open) return;
+              if (!db.open) {
+                notifyPurgedMessages(instance, session, mailboxes, purged);
+                return;
+              }
             } else {
               break;
             }
           }
+
+          notifyPurgedMessages(instance, session, mailboxes, purged);
         }
 
-        // TODO: wss broadcast changes here to connected clients
         //
         // ─── Attachment orphan cleanup (SQL-only) ─────────────────────────
         // Instead of decompressing every message's mimeTree (O(all_messages)

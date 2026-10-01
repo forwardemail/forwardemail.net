@@ -174,6 +174,31 @@ async function onAppend(path, flags, date, raw, session, fn) {
           path,
           mailboxId: mailbox._id
         });
+
+        // tell clients about the new folder, as after an IMAP CREATE
+        if (this.server?.notifier)
+          this.server.notifier
+            .addEntries(this, session, mailbox, {
+              command: 'CREATE',
+              mailbox: mailbox._id,
+              path
+            })
+            .then(() => this.server.notifier.fire(session.user.alias_id))
+            .catch((err) =>
+              this.logger.fatal(err, { path, session, resolver: this.resolver })
+            );
+
+        sendNotification(this.client, session.user.alias_id, 'mailboxCreated', {
+          path,
+          mailbox: mailbox._id.toString()
+        });
+
+        // send apple push notification (folder list changed)
+        sendApn(this.client, session.user.alias_id, path)
+          .then()
+          .catch((err) =>
+            this.logger.fatal(err, { session, resolver: this.resolver })
+          );
       } else {
         throw new IMAPError(
           i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),

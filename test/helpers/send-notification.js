@@ -97,3 +97,66 @@ test('push fan-out attempts every active token with bounded parallelism', async 
   t.is(succeeded.length, tokenCount);
   t.is(maxActive, PUSH_CONCURRENCY);
 });
+
+//
+// A change to many messages is split into events of at most 1,000 UIDs, so
+// an EXPUNGE of a large folder never makes one huge WebSocket frame.  Lists
+// that belong together (sourceUid and destinationUid, uids and ids) are cut
+// in step.
+//
+test('sendNotification.inChunks splits large changes and keeps lists in step', async (t) => {
+  const Redis = require('ioredis-mock');
+  const utils = require('../utils');
+  const client = new Redis();
+  const aliasId = '60d5f484f1a2c8b1f8e4e1f0';
+  const capture = utils.captureNotifications(client, aliasId);
+
+  const sourceUid = Array.from({ length: 2500 }, (_, i) => i + 1);
+  const destinationUid = sourceUid.map((uid) => uid + 10_000);
+  sendNotification.inChunks(
+    client,
+    aliasId,
+    'messagesMoved',
+    {
+      sourceMailbox: '60d5f484f1a2c8b1f8e4e1a0',
+      destinationMailbox: '60d5f484f1a2c8b1f8e4e1a2',
+      sourceUid,
+      destinationUid
+    },
+    ['sourceUid', 'destinationUid']
+  );
+  // published on the next tick
+  await setImmediatePromise();
+
+  t.is(capture.events.length, 3);
+  t.deepEqual(
+    capture.events.map((e) => e.sourceUid.length),
+    [1000, 1000, 500]
+  );
+  t.deepEqual(
+    capture.events.flatMap((e) => e.sourceUid),
+    sourceUid
+  );
+  for (const event of capture.events) {
+    t.is(event.sourceMailbox, '60d5f484f1a2c8b1f8e4e1a0');
+    t.deepEqual(
+      event.destinationUid,
+      event.sourceUid.map((uid) => uid + 10_000)
+    );
+  }
+
+  t.is(new Set(capture.events.map((e) => e.notificationId)).size, 3);
+
+  // a small change is one event
+  sendNotification.inChunks(
+    client,
+    aliasId,
+    'messagesExpunged',
+    { mailbox: '60d5f484f1a2c8b1f8e4e1a0', uids: [1, 2], ids: ['a', 'b'] },
+    ['uids', 'ids']
+  );
+  await setImmediatePromise();
+  t.is(capture.of('messagesExpunged').length, 1);
+  capture.stop();
+  client.disconnect();
+});

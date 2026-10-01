@@ -498,6 +498,49 @@ function extractSenderName(from) {
   return from.trim();
 }
 
+//
+// A push names the messages that changed (mailbox ids, UIDs and message
+// ids), so a client woken by it can apply the change without refetching the
+// folder, as from the WebSocket copy.  APNs and FCM carry the data in
+// plaintext, so folder paths and flags (labels) are left out; a client
+// resolves the mailbox by its id.
+//
+// Lists are sent as JSON strings (FCM data values must be strings, cut at
+// 255 characters).  A list that does not fit, or has an item that is not
+// valid, is left out whole rather than sent in part: the client then
+// refreshes the folder instead of applying half of the change.
+//
+const MAX_PUSH_LIST_LENGTH = 255;
+const OBJECT_ID_REGEX = /^[\da-f]{24}$/i;
+
+function toPushList(value, isValid) {
+  if (!Array.isArray(value) || value.length === 0) return '';
+  if (!value.every((item) => isValid(item))) return '';
+  const json = JSON.stringify(value);
+  return json.length <= MAX_PUSH_LIST_LENGTH ? json : '';
+}
+
+const isUid = (value) => Number.isSafeInteger(value) && value > 0;
+const isObjectId = (value) =>
+  typeof value === 'string' && OBJECT_ID_REGEX.test(value);
+
+function getChangeFields(data) {
+  const fields = {
+    source_mailbox: isObjectId(data.sourceMailbox) ? data.sourceMailbox : '',
+    destination_mailbox: isObjectId(data.destinationMailbox)
+      ? data.destinationMailbox
+      : '',
+    uids: toPushList(data.uids, isUid),
+    source_uid: toPushList(data.sourceUid, isUid),
+    destination_uid: toPushList(data.destinationUid, isUid),
+    ids: toPushList(data.ids, isObjectId)
+  };
+
+  // only the fields the event has
+  for (const key of Object.keys(fields)) if (!fields[key]) delete fields[key];
+  return fields;
+}
+
 /**
  * Build a platform-agnostic notification payload from the WS event.
  * Sanitizes all string fields to prevent injection.
@@ -522,6 +565,7 @@ function buildPayload(event, data) {
     messagesMoved: 'Messages Moved',
     messagesCopied: 'Messages Copied',
     flagsUpdated: 'Flags Updated',
+    labelsUpdated: 'Labels Updated',
     messagesExpunged: 'Messages Deleted',
     mailboxCreated: 'Mailbox Created',
     mailboxDeleted: 'Mailbox Deleted',
@@ -536,6 +580,7 @@ function buildPayload(event, data) {
     contactUpdated: 'Contact Updated',
     contactDeleted: 'Contact Deleted',
     addressBookCreated: 'Address Book Created',
+    addressBookUpdated: 'Address Book Updated',
     addressBookDeleted: 'Address Book Deleted',
     newRelease: 'App Update Available'
   };
@@ -647,6 +692,7 @@ function buildPayload(event, data) {
       sender: safeFrom,
       subject: safeSubject,
       snippet: safeSnippet,
+      ...getChangeFields(data),
       // Forwarded so clients that draw their own notification from the data
       // payload (Android foreground, web) also skip re-alerting. Kept as a
       // distinct key rather than reusing `silent` because the UnifiedPush

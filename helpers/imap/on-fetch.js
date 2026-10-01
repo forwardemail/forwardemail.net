@@ -28,6 +28,7 @@ const { checkBandwidth } = require('#helpers/bandwidth-limiter');
 const getQueryResponse = require('#helpers/get-query-response');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendApn = require('#helpers/send-apn');
 const sendNotification = require('#helpers/send-notification');
 const config = require('#config');
 const {
@@ -105,13 +106,7 @@ async function onFetch(mailboxId, options, session, fn) {
             this.logger.fatal(err, { session, resolver: this.resolver })
           );
 
-        // send websocket push notification (implicit \Seen flag change)
-        sendNotification(this.client, session.user.alias_id, 'flagsUpdated', {
-          mailbox: mailboxId.toString(),
-          action: 'add',
-          flags: ['\\Seen'],
-          uids: entries.map((e) => e.uid)
-        });
+        // the SQLite server sends the realtime notification (WebSocket and push)
       }
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
@@ -454,12 +449,26 @@ async function onFetch(mailboxId, options, session, fn) {
 
     // send websocket push notification (implicit \Seen flag change)
     if (entries.length > 0) {
-      sendNotification(this.client, session.user.alias_id, 'flagsUpdated', {
-        mailbox: mailboxId.toString(),
-        action: 'add',
-        flags: ['\\Seen'],
-        uids: entries.map((e) => e.uid)
-      });
+      sendNotification.inChunks(
+        this.client,
+        session.user.alias_id,
+        'flagsUpdated',
+        {
+          mailbox: mailboxId.toString(),
+          path: mailbox.path,
+          action: 'add',
+          flags: ['\\Seen'],
+          uids: entries.map((e) => e.uid)
+        },
+        ['uids']
+      );
+
+      // send apple push notification (unread count changed)
+      sendApn(this.client, session.user.alias_id, mailbox.path)
+        .then()
+        .catch((err) =>
+          this.logger.fatal(err, { session, resolver: this.resolver })
+        );
     }
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));

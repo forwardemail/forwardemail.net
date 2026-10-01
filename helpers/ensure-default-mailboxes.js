@@ -7,6 +7,7 @@ const ms = require('ms');
 
 const Mailboxes = require('#models/mailboxes');
 const logger = require('#helpers/logger');
+const sendNotification = require('#helpers/send-notification');
 
 //
 // RFC 6154 Compliance: Only essential mailboxes are required to persist
@@ -109,6 +110,19 @@ async function ensureDefaultMailboxes(instance, session, purgeCache = false) {
             })
             .catch((err) =>
               logger.fatal(err, { session, resolver: instance.resolver })
+            );
+
+          // a required folder created again (e.g. Trash after a DELETE or
+          // RENAME of it), and not the folders of a new mailbox
+          if (!isInitialSetup)
+            sendNotification(
+              instance.client,
+              session.user.alias_id,
+              'mailboxCreated',
+              {
+                path,
+                mailbox: mailbox._id.toString()
+              }
             );
         } catch (err) {
           logger.fatal(err, { session, resolver: instance.resolver });

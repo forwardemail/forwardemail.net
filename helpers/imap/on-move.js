@@ -145,14 +145,7 @@ async function onMove(mailboxId, update, session, fn) {
             })
           );
 
-        // send websocket push notification
-        sendNotification(this.client, session.user.alias_id, 'messagesMoved', {
-          sourceMailbox: mailboxId.toString(),
-          destinationMailbox: targetMailbox._id.toString(),
-          destinationPath: update.destination,
-          sourceUid: response.sourceUid,
-          destinationUid: response.destinationUid
-        });
+        // the SQLite server sends the realtime notification (WebSocket and push)
       }
     } catch (err) {
       // NOTE: if POP3 then throw err (since POP3 re-uses this)
@@ -437,13 +430,20 @@ async function onMove(mailboxId, update, session, fn) {
 
     // send websocket push notification
     if (sourceUid.length > 0) {
-      sendNotification(this.client, session.user.alias_id, 'messagesMoved', {
-        sourceMailbox: mailboxId.toString(),
-        destinationMailbox: targetMailbox._id.toString(),
-        destinationPath: update.destination,
-        sourceUid,
-        destinationUid
-      });
+      sendNotification.inChunks(
+        this.client,
+        session.user.alias_id,
+        'messagesMoved',
+        {
+          sourceMailbox: mailboxId.toString(),
+          sourcePath: mailbox.path,
+          destinationMailbox: targetMailbox._id.toString(),
+          destinationPath: targetMailbox.path,
+          sourceUid,
+          destinationUid
+        },
+        ['sourceUid', 'destinationUid']
+      );
 
       // send apple push notification
       // both source and destination views must refresh on iOS Mail

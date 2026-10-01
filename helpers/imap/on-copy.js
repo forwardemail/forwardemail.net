@@ -79,14 +79,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
             })
           );
 
-        // send websocket push notification
-        sendNotification(this.client, session.user.alias_id, 'messagesCopied', {
-          sourceMailbox: mailboxId.toString(),
-          destinationMailbox: targetMailbox._id.toString(),
-          destinationPath: update.destination,
-          sourceUid: response.sourceUid,
-          destinationUid: response.destinationUid
-        });
+        // the SQLite server sends the realtime notification (WebSocket and push)
       }
     } catch (err) {
       clearTimeout(timeout);
@@ -405,13 +398,20 @@ async function onCopy(connection, mailboxId, update, session, fn) {
 
     // send websocket push notification
     if (copiedMessages > 0) {
-      sendNotification(this.client, session.user.alias_id, 'messagesCopied', {
-        sourceMailbox: mailboxId.toString(),
-        destinationMailbox: targetMailbox._id.toString(),
-        destinationPath: update.destination,
-        sourceUid,
-        destinationUid
-      });
+      sendNotification.inChunks(
+        this.client,
+        session.user.alias_id,
+        'messagesCopied',
+        {
+          sourceMailbox: mailboxId.toString(),
+          sourcePath: mailbox.path,
+          destinationMailbox: targetMailbox._id.toString(),
+          destinationPath: targetMailbox.path,
+          sourceUid,
+          destinationUid
+        },
+        ['sourceUid', 'destinationUid']
+      );
 
       // send apple push notification (destination mailbox got new messages)
       sendApn(this.client, session.user.alias_id, update.destination)

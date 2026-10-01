@@ -10,6 +10,7 @@
 //
 
 const { Buffer } = require('node:buffer');
+const { setTimeout } = require('node:timers/promises');
 
 const Axe = require('axe');
 const dayjs = require('dayjs-with-plugins');
@@ -935,4 +936,133 @@ test('a folder stored with another case of INBOX is still found by its path', as
     .set('Authorization', t.context.auth);
   t.is(res.status, 200);
   t.true(res.body.some((m) => m.id === id));
+});
+
+//
+// WebSocket and push clients (webmail, the apps) learn about a change made
+// through the API from one event per real change: nothing when the flags and
+// labels stay the same, the full IMAP flags (keywords included) when they do
+// change, and the labels of a new message once they are saved.
+//
+test('flag and label changes through the API are published once, and only when something changed', async (t) => {
+  const { alias } = t.context;
+  const { uid, id } = await appendMessage(t, 'INBOX', 'mark as read');
+  const inbox = await t.context.api
+    .get('/v1/folders/INBOX')
+    .set('Authorization', t.context.auth);
+
+  // mark as read
+  let capture = utils.captureNotifications(t.context.client, alias.id);
+  let res = await updateMessage(t, id, {
+    flags: ['\\Seen'],
+    folder: 'INBOX'
+  });
+  t.is(res.status, 200);
+  await pWaitFor(() => capture.events.length > 0, {
+    timeout: ms('10s')
+  }).catch(() => {});
+  await setTimeout(500);
+  capture.stop();
+  t.deepEqual(
+    capture.events.map((e) => e.event),
+    ['flagsUpdated']
+  );
+  t.like(capture.events[0], {
+    mailbox: inbox.body.id,
+    path: 'INBOX',
+    action: 'set',
+    flags: ['\\Seen'],
+    uids: [uid]
+  });
+
+  // the same again (another device, or a retry) changes nothing
+  capture = utils.captureNotifications(t.context.client, alias.id);
+  res = await updateMessage(t, id, { flags: ['\\Seen'], folder: 'INBOX' });
+  t.is(res.status, 200);
+  res = await updateMessage(t, id, { flags_add: ['\\Seen'] });
+  t.is(res.status, 200);
+  await setTimeout(1000);
+  capture.stop();
+  t.deepEqual(capture.events, []);
+
+  // a label is a keyword for IMAP clients, so the flags change as well
+  capture = utils.captureNotifications(t.context.client, alias.id);
+  res = await updateMessage(t, id, { labels_add: ['work'], folder: 'INBOX' });
+  t.is(res.status, 200);
+  await pWaitFor(() => capture.events.length >= 2, {
+    timeout: ms('10s')
+  }).catch(() => {});
+  await setTimeout(500);
+  capture.stop();
+  t.deepEqual(capture.events.map((e) => e.event).sort(), [
+    'flagsUpdated',
+    'labelsUpdated'
+  ]);
+  t.deepEqual(capture.of('flagsUpdated')[0].flags.sort(), ['\\Seen', 'work']);
+  t.like(capture.of('labelsUpdated')[0], {
+    path: 'INBOX',
+    action: 'set',
+    labels: ['work'],
+    uids: [uid]
+  });
+
+  // without the folder in the request the event names the mailbox by id only
+  capture = utils.captureNotifications(t.context.client, alias.id);
+  res = await updateMessage(t, id, { labels_remove: ['work'] });
+  t.is(res.status, 200);
+  await pWaitFor(() => capture.of('labelsUpdated').length > 0, {
+    timeout: ms('10s')
+  }).catch(() => {});
+  capture.stop();
+  const removed = capture.of('labelsUpdated');
+  t.is(removed.length, 1);
+  t.like(removed[0], { mailbox: inbox.body.id, labels: [], uids: [uid] });
+  t.false('path' in removed[0]);
+});
+
+test('labels of a message created through the API are published', async (t) => {
+  const { alias } = t.context;
+  const capture = utils.captureNotifications(t.context.client, alias.id);
+  const res = await t.context.api
+    .post('/v1/messages')
+    .set('Authorization', t.context.auth)
+    .send({
+      to: [{ address: 'recipient@example.com' }],
+      subject: 'labeled draft',
+      text: 'body',
+      folder: 'INBOX',
+      labels: ['work']
+    });
+  t.is(res.status, 200);
+  await pWaitFor(() => capture.of('labelsUpdated').length > 0, {
+    timeout: ms('10s')
+  }).catch(() => {});
+  await setTimeout(500);
+  capture.stop();
+
+  t.is(capture.of('newMessage').length, 1);
+  const labels = capture.of('labelsUpdated');
+  t.is(labels.length, 1);
+  t.like(labels[0], {
+    path: 'INBOX',
+    action: 'set',
+    labels: ['work'],
+    uids: [res.body.uid]
+  });
+});
+
+test('labels given to a new message keep the labels its keywords give it', async (t) => {
+  const res = await t.context.api
+    .post('/v1/messages')
+    .set('Authorization', t.context.auth)
+    .send({
+      to: [{ address: 'recipient@example.com' }],
+      subject: 'keyword and label',
+      text: 'body',
+      folder: 'INBOX',
+      flags: ['receipts'],
+      labels: ['work']
+    });
+  t.is(res.status, 200);
+  t.deepEqual([...res.body.labels].sort(), ['receipts', 'work']);
 });

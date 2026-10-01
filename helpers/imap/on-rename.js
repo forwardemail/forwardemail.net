@@ -38,17 +38,8 @@ async function onRename(path, newPath, session, fn) {
         newPath
       });
 
+      // the SQLite server sends the realtime notification
       fn(null, bool, mailboxId);
-
-      // a folder that was not renamed (e.g. ALREADYEXISTS) has no id
-      if (bool !== true || !mailboxId) return;
-
-      // send websocket push notification
-      sendNotification(this.client, session.user.alias_id, 'mailboxRenamed', {
-        oldPath: path,
-        newPath,
-        mailbox: mailboxId.toString()
-      });
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);

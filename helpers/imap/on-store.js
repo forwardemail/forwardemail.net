@@ -113,35 +113,7 @@ async function onStore(mailboxId, update, session, fn) {
             })
           );
 
-        // send websocket push notification
-        sendNotification(this.client, session.user.alias_id, 'flagsUpdated', {
-          mailbox: mailboxId.toString(),
-          action: update.action,
-          flags: update.value,
-          uids: entries.map((e) => e.uid)
-        });
-
-        // If the STORE touched any custom (non-system) keywords, also notify
-        // listeners that labels may have changed. Skip when the update only
-        // toggles system flags (e.g. \Seen on read) to avoid noisy refreshes.
-        const touchedCustomKeyword =
-          Array.isArray(update.value) &&
-          update.value.some(
-            (f) =>
-              typeof f === 'string' && f.trim() && !f.trim().startsWith('\\')
-          );
-        if (touchedCustomKeyword) {
-          sendNotification(
-            this.client,
-            session.user.alias_id,
-            'labelsUpdated',
-            {
-              mailbox: mailboxId.toString(),
-              action: update.action,
-              uids: entries.map((e) => e.uid)
-            }
-          );
-        }
+        // the SQLite server sends the realtime notification (WebSocket and push)
       }
 
       fn(null, bool, modified);
@@ -264,6 +236,8 @@ async function onStore(mailboxId, update, session, fn) {
     // Track whether any custom labels changed across the batch so we can
     // emit a single `labelsUpdated` websocket notification at the end.
     let labelsTouched = false;
+    // UIDs of the messages whose labels changed
+    const labelUids = [];
 
     const fields = Object.keys(projection);
 
@@ -513,6 +487,7 @@ async function onStore(mailboxId, update, session, fn) {
                 message.labels = nextLabels;
                 $set.labels = nextLabels;
                 labelsTouched = true;
+                labelUids.push(message.uid);
                 updated = true;
               }
 
@@ -717,12 +692,19 @@ async function onStore(mailboxId, update, session, fn) {
 
     // send websocket push notification
     if (entries.length > 0) {
-      sendNotification(this.client, session.user.alias_id, 'flagsUpdated', {
-        mailbox: mailboxId.toString(),
-        action: update.action,
-        flags: update.value,
-        uids: entries.map((e) => e.uid)
-      });
+      sendNotification.inChunks(
+        this.client,
+        session.user.alias_id,
+        'flagsUpdated',
+        {
+          mailbox: mailboxId.toString(),
+          path: mailbox.path,
+          action: update.action,
+          flags: update.value,
+          uids: entries.map((e) => e.uid)
+        },
+        ['uids']
+      );
 
       // send apple push notification (badge counts / unread sync)
       sendApn(this.client, session.user.alias_id, mailbox.path)
@@ -732,11 +714,20 @@ async function onStore(mailboxId, update, session, fn) {
         );
 
       if (labelsTouched) {
-        sendNotification(this.client, session.user.alias_id, 'labelsUpdated', {
-          mailbox: mailboxId.toString(),
-          action: update.action,
-          uids: entries.map((e) => e.uid)
-        });
+        sendNotification.inChunks(
+          this.client,
+          session.user.alias_id,
+          'labelsUpdated',
+          {
+            mailbox: mailboxId.toString(),
+            path: mailbox.path,
+            action: update.action,
+            // the labels added or removed, or every label after a `set`
+            labels: deriveLabelsFromFlags(update.value),
+            uids: labelUids
+          },
+          ['uids']
+        );
       }
     }
 

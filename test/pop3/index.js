@@ -523,3 +523,82 @@ test('POP3 RSET undeletes message', async (t) => {
   const stat = await t.context.pop3Command.STAT();
   t.regex(stat, /^1 /, 'Message should still exist after RSET');
 });
+
+//
+// A message a POP3 client downloads is marked read, and one it deletes is
+// removed: WebSocket and push clients (webmail, the apps) are told once.
+//
+test('POP3 RETR and DELE are published to WebSocket and push clients', async (t) => {
+  const { pop3Command, session, pop3, alias } = t.context;
+  await pop3.refreshSession(session, 'POP3');
+  for (const subject of ['read me', 'delete me'])
+    await onAppendPromise.call(
+      pop3,
+      'INBOX',
+      [],
+      new Date(),
+      `Subject: ${subject}\r\n\r\nBody`,
+      session
+    );
+
+  const inbox = await Mailboxes.findOne(pop3, session, { path: 'INBOX' });
+
+  // reconnect to see the messages
+  await pop3Command.command('QUIT');
+  t.context.pop3Command = new Pop3Command({
+    user: `${alias.name}@${t.context.domain.name}`,
+    password: t.context.pass,
+    host: 'localhost',
+    port: t.context.port,
+    tlsOptions
+  });
+  await t.context.pop3Command.connect();
+  await t.context.pop3Command.command(
+    'USER',
+    `${alias.name}@${t.context.domain.name}`
+  );
+  await t.context.pop3Command.command('PASS', t.context.pass);
+
+  const capture = utils.captureNotifications(t.context.client, alias.id);
+  // eslint-disable-next-line new-cap
+  await t.context.pop3Command.RETR(1);
+  // eslint-disable-next-line new-cap
+  await t.context.pop3Command.DELE(2);
+  await t.context.pop3Command.command('QUIT');
+
+  await pWaitFor(
+    () =>
+      capture.of('flagsUpdated').some((e) => e.flags.includes('\\Seen')) &&
+      capture.of('messagesExpunged').length > 0,
+    { timeout: ms('10s') }
+  ).catch(() => {});
+  await new Promise((resolve) => {
+    setTimeout(resolve, 500);
+  });
+  capture.stop();
+
+  const seen = capture
+    .of('flagsUpdated')
+    .filter((e) => e.flags.includes('\\Seen'));
+  t.is(seen.length, 1);
+  t.like(seen[0], {
+    mailbox: inbox._id.toString(),
+    path: 'INBOX',
+    action: 'add',
+    uids: [1]
+  });
+
+  const expunged = capture.of('messagesExpunged');
+  t.is(expunged.length, 1);
+  t.like(expunged[0], { path: 'INBOX', uids: [2] });
+
+  // reconnect for afterEach
+  t.context.pop3Command = new Pop3Command({
+    user: `${alias.name}@${t.context.domain.name}`,
+    password: t.context.pass,
+    host: 'localhost',
+    port: t.context.port,
+    tlsOptions
+  });
+  await t.context.pop3Command.connect();
+});

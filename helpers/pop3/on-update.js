@@ -21,6 +21,8 @@ const Messages = require('#models/messages');
 const getImapFlags = require('#helpers/get-imap-flags');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendApn = require('#helpers/send-apn');
+const sendNotification = require('#helpers/send-notification');
 const onExpunge = require('#helpers/imap/on-expunge');
 const onStore = require('#helpers/imap/on-store');
 
@@ -98,9 +100,10 @@ async function onUpdate(update, session, fn) {
       // );
 
       // TODO: rewrite this
+      const seenIds = new Set();
       for (const _id of _ids) {
         try {
-          await Messages.findOneAndUpdate(
+          const updated = await Messages.findOneAndUpdate(
             this,
             session,
             {
@@ -120,6 +123,7 @@ async function onUpdate(update, session, fn) {
               }
             }
           );
+          if (updated) seenIds.add(_id.toString());
         } catch (err) {
           this.logger.fatal(err, { update, session, resolver: this.resolver });
         }
@@ -149,6 +153,32 @@ async function onUpdate(update, session, fn) {
         .catch((err) =>
           this.logger.fatal(err, { update, session, resolver: this.resolver })
         );
+
+      // tell WebSocket, push and Apple Mail clients, as after an IMAP STORE
+      const uids = update.seen
+        .filter((message) => seenIds.has(String(message.id)))
+        .map((message) => message.uid);
+      if (uids.length > 0) {
+        sendNotification.inChunks(
+          this.client,
+          session.user.alias_id,
+          'flagsUpdated',
+          {
+            mailbox: updatedMailbox._id.toString(),
+            path: updatedMailbox.path,
+            action: 'add',
+            flags: ['\\Seen'],
+            uids
+          },
+          ['uids']
+        );
+
+        sendApn(this.client, session.user.alias_id, updatedMailbox.path)
+          .then()
+          .catch((err) =>
+            this.logger.fatal(err, { session, resolver: this.resolver })
+          );
+      }
     }
 
     // handle deleted

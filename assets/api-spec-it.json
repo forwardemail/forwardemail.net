@@ -2814,6 +2814,26 @@
             "enum": [
               "connected",
               "newMessage",
+              "messagesMoved",
+              "messagesCopied",
+              "flagsUpdated",
+              "labelsUpdated",
+              "messagesExpunged",
+              "mailboxCreated",
+              "mailboxDeleted",
+              "mailboxRenamed",
+              "calendarCreated",
+              "calendarUpdated",
+              "calendarDeleted",
+              "calendarEventCreated",
+              "calendarEventUpdated",
+              "calendarEventDeleted",
+              "contactCreated",
+              "contactUpdated",
+              "contactDeleted",
+              "addressBookCreated",
+              "addressBookUpdated",
+              "addressBookDeleted",
               "newRelease"
             ]
           },
@@ -2825,11 +2845,6 @@
             "type": "string",
             "description": "Il percorso della casella di posta (presente nell'evento newMessage)",
             "example": "INBOX"
-          },
-          "uid": {
-            "type": "integer",
-            "description": "L'UID del messaggio (presente nell'evento newMessage)",
-            "example": 123
           },
           "release": {
             "type": "object",
@@ -7451,7 +7466,7 @@
           "WebSockets"
         ],
         "summary": "Notifiche WebSocket",
-        "description": "Connettiti all'endpoint WebSocket per ricevere notifiche push in tempo reale.\n\n**URL di connessione:** `wss://api.forwardemail.net/v1/ws`\n\n**Autenticazione (facoltativa):**\n- **Client autenticati:** Fornisci le credenziali tramite l'intestazione `Authorization` per ricevere sia gli eventi per alias (IMAP, CalDAV, CardDAV) sia gli eventi broadcast globali (`newRelease`).\n\n- **Client non autenticati:** Connettiti senza credenziali per ricevere solo gli eventi broadcast globali (`newRelease`). Questa opzione è utile per i client che devono essere informati solo degli aggiornamenti dell'app.\n\n**Metodi di autenticazione:**\n\nL'autenticazione **deve** avvenire tramite l'intestazione `Authorization` con l'autenticazione HTTP Basic, oppure da un browser nel primo messaggio dopo la connessione (opzione 3). I parametri di query contenenti credenziali **NON sono supportati**.\n\n**Opzione 1: Autenticazione con password alias (consigliata)**\n\nUtilizza il tuo indirizzo email alias e la password generata:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\", {\nheaders: {\nAuthorization: `Basic ${btoa(\"user@domain.com:alias-password\")}`\n}\n});\n\n```\n\n**Opzione 2: Autenticazione tramite token API**\n\nUtilizza il tuo token API (richiede il parametro di query `?alias_id=`):\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID\", {\nheaders: {\nAuthorization: `Basic ${btoa(\"YOUR_API_TOKEN:\")}` // Nota: la password è vuota\n}\n});\n\n``\n\n**Opzione 3: Primo messaggio (browser)**\n\nI browser non possono impostare intestazioni nell’handshake WebSocket. Connettiti con `?auth=message` e invia le credenziali come primo messaggio entro 5 secondi. Nulla viene inviato finché non sono accettate; altrimenti la connessione viene chiusa con `4400` (messaggio non valido), `4401` (credenziali errate) o `4403` (non consentito). Per un token API, invialo come `username` con una `password` vuota e un `alias_id`:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?auth=message\");\nws.onopen = () => ws.send(JSON.stringify({\n  event: \"auth\",\n  username: \"user@domain.com\",\n  password: \"alias-password\"\n}));\n```\n\n**Opzione 4: Senza autenticazione (solo broadcast)**\n\nConnettiti senza autenticazione per ricevere solo eventi broadcast globali:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\");\n\n```\n\n**Risposte di connessione:**\n\nIn caso di connessione riuscita, il server invia un evento `connected`:\n\n- **Autenticato:** `{\"event\":\"connected\",\"aliasId\":\"<your-alias-id>\"}`\n- **Non autenticato:** `{\"event\":\"connected\",\"broadcastOnly\":true}`\n\nSe ricevi `broadcastOnly: true`, non sono state fornite credenziali e riceverai solo gli eventi di broadcast globali.\n\n**Codifica msgpackr:** Per impostazione predefinita, i messaggi vengono inviati come frame di testo JSON. Passa `?msgpackr=true` per ricevere frame codificati in formato binario msgpackr per ridurre il consumo di banda.\n\n**Comportamento:**\n- Canale di sola lettura: i messaggi del client vengono scartati silenziosamente\n- Il server invia un evento `connected` in caso di connessione riuscita\n- Il server invia periodicamente frame `ping`; Il client deve rispondere con `pong`\n- Limite di connessioni per IP: 30 connessioni/minuto\n- Limite di connessioni per alias (autenticate): 10 connessioni simultanee\n- Limite di connessioni per IP (non autenticate): 3 connessioni simultanee\n- Limite di connessioni globale: 10.000\n\n**Payload degli eventi:** Ogni evento include un campo `event` che indica il tipo, oltre a un oggetto risorsa (`message`, `contact`, `calendarEvent`, `calendar`, `addressBook` o `release`) contenente tutti i dati della risorsa che rispecchiano la corrispondente risposta dell'API REST.\n\n**Eventi per alias (solo autenticati):**\n- **IMAP:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n- **CalDAV:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n- **CardDAV:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookDeleted`\n\n**Eventi broadcast (tutti i client):**\n- `newRelease` — Broadcast quando viene rilasciata una nuova versione dell'app di posta Forward Email (https://github.com/forwardemail/mail.forwardemail.net) Il codice sorgente è pubblicato su GitHub. Il server interroga GitHub ogni 15 minuti e utilizza un'impronta digitale basata sul contenuto per rilevare le modifiche. **Gestione degli asset**: quando viene rilevata una nuova release ma non sono ancora presenti gli asset, la pubblicazione viene posticipata fino alla loro comparsa.\n\n**Note importanti:**\n- I parametri di query `?token=`, `?username=`, `?password=` **NON sono supportati** per l'autenticazione\n- L'autenticazione **deve** avvenire tramite l'intestazione `Authorization` con l'autenticazione HTTP Basic, oppure nel primo messaggio di una connessione `?auth=message`\n- Se vengono fornite credenziali e l’autenticazione non riesce, l’handshake viene rifiutato con `401 Unauthorized` (una connessione `?auth=message` viene chiusa con `4401`); solo le connessioni senza credenziali ricevono `broadcastOnly: true`\n- Se la password dell’alias o il token API cambiano (o l’account viene bannato), le connessioni aperte vengono chiuse con il codice `4001`; riconnettiti con le nuove credenziali\n- Per l'autenticazione tramite token API, il parametro di query `?alias_id=` è **obbligatorio**",
+        "description": "Connettiti all'endpoint WebSocket per ricevere notifiche push in tempo reale.\n\n**URL di connessione:** `wss://api.forwardemail.net/v1/ws`\n\n**Autenticazione (facoltativa):**\n- **Client autenticati:** Fornisci le credenziali tramite l'intestazione `Authorization` per ricevere sia gli eventi per alias (IMAP, CalDAV, CardDAV) sia gli eventi broadcast globali (`newRelease`).\n\n- **Client non autenticati:** Connettiti senza credenziali per ricevere solo gli eventi broadcast globali (`newRelease`). Questa opzione è utile per i client che devono essere informati solo degli aggiornamenti dell'app.\n\n**Metodi di autenticazione:**\n\nL'autenticazione **deve** avvenire tramite l'intestazione `Authorization` con l'autenticazione HTTP Basic, oppure da un browser nel primo messaggio dopo la connessione (opzione 3). I parametri di query contenenti credenziali **NON sono supportati**.\n\n**Opzione 1: Autenticazione con password alias (consigliata)**\n\nUtilizza il tuo indirizzo email alias e la password generata:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\", {\nheaders: {\nAuthorization: `Basic ${btoa(\"user@domain.com:alias-password\")}`\n}\n});\n\n```\n\n**Opzione 2: Autenticazione tramite token API**\n\nUtilizza il tuo token API (richiede il parametro di query `?alias_id=`):\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID\", {\nheaders: {\nAuthorization: `Basic ${btoa(\"YOUR_API_TOKEN:\")}` // Nota: la password è vuota\n}\n});\n\n``\n\n**Opzione 3: Primo messaggio (browser)**\n\nI browser non possono impostare intestazioni nell’handshake WebSocket. Connettiti con `?auth=message` e invia le credenziali come primo messaggio entro 5 secondi. Nulla viene inviato finché non sono accettate; altrimenti la connessione viene chiusa con `4400` (messaggio non valido), `4401` (credenziali errate) o `4403` (non consentito). Per un token API, invialo come `username` con una `password` vuota e un `alias_id`:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?auth=message\");\nws.onopen = () => ws.send(JSON.stringify({\n  event: \"auth\",\n  username: \"user@domain.com\",\n  password: \"alias-password\"\n}));\n```\n\n**Opzione 4: Senza autenticazione (solo broadcast)**\n\nConnettiti senza autenticazione per ricevere solo eventi broadcast globali:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\");\n\n```\n\n**Risposte di connessione:**\n\nIn caso di connessione riuscita, il server invia un evento `connected`:\n\n- **Autenticato:** `{\"event\":\"connected\",\"aliasId\":\"<your-alias-id>\"}`\n- **Non autenticato:** `{\"event\":\"connected\",\"broadcastOnly\":true}`\n\nSe ricevi `broadcastOnly: true`, non sono state fornite credenziali e riceverai solo gli eventi di broadcast globali.\n\n**Codifica msgpackr:** Per impostazione predefinita, i messaggi vengono inviati come frame di testo JSON. Passa `?msgpackr=true` per ricevere frame codificati in formato binario msgpackr per ridurre il consumo di banda.\n\n**Comportamento:**\n- Canale di sola lettura: i messaggi del client vengono scartati silenziosamente\n- Il server invia un evento `connected` in caso di connessione riuscita\n- Il server invia periodicamente frame `ping`; Il client deve rispondere con `pong`\n- Limite di connessioni per IP: 30 connessioni/minuto\n- Limite di connessioni per alias (autenticate): 10 connessioni simultanee\n- Limite di connessioni per IP (non autenticate): 3 connessioni simultanee\n- Limite di connessioni globale: 10.000\n\n**Payload degli eventi:** Ogni evento è un singolo oggetto piatto con `event` (il tipo), `timestamp`, `notificationId` e i campi specifici dell'evento. `newMessage`, `newRelease` e gli eventi CalDAV e CardDAV includono un oggetto risorsa (`message`, `release`, `calendar`, `calendarEvent`, `contact` o `addressBook`) che rispecchia la risposta dell'API REST. Gli altri eventi IMAP indicano la casella di posta e gli UID modificati.\n\n**Eventi per alias (solo autenticati):**\n- **IMAP:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `labelsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n- **CalDAV:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n- **CardDAV:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookUpdated`, `addressBookDeleted`\n\n**Eventi broadcast (tutti i client):**\n- `newRelease` — Broadcast quando viene rilasciata una nuova versione dell'app di posta Forward Email (https://github.com/forwardemail/mail.forwardemail.net) Il codice sorgente è pubblicato su GitHub. Il server interroga GitHub ogni 15 minuti e utilizza un'impronta digitale basata sul contenuto per rilevare le modifiche. **Gestione degli asset**: quando viene rilevata una nuova release ma non sono ancora presenti gli asset, la pubblicazione viene posticipata fino alla loro comparsa.\n\n**Note importanti:**\n- I parametri di query `?token=`, `?username=`, `?password=` **NON sono supportati** per l'autenticazione\n- L'autenticazione **deve** avvenire tramite l'intestazione `Authorization` con l'autenticazione HTTP Basic, oppure nel primo messaggio di una connessione `?auth=message`\n- Se vengono fornite credenziali e l’autenticazione non riesce, l’handshake viene rifiutato con `401 Unauthorized` (una connessione `?auth=message` viene chiusa con `4401`); solo le connessioni senza credenziali ricevono `broadcastOnly: true`\n- Se la password dell’alias o il token API cambiano (o l’account viene bannato), le connessioni aperte vengono chiuse con il codice `4001`; riconnettiti con le nuove credenziali\n- Per l'autenticazione tramite token API, il parametro di query `?alias_id=` è **obbligatorio**",
         "operationId": "websocketNotifications",
         "parameters": [
           {
@@ -7511,17 +7526,13 @@
                             "connected"
                           ]
                         },
-                        "alias_id": {
+                        "aliasId": {
                           "type": "string",
                           "description": "The authenticated alias ID (present only for authenticated clients)"
                         },
                         "broadcastOnly": {
                           "type": "boolean",
                           "description": "True if the client is unauthenticated and will only receive broadcast events (present only for unauthenticated clients)"
-                        },
-                        "msgpackr": {
-                          "type": "boolean",
-                          "description": "Whether msgpackr encoding is enabled"
                         }
                       },
                       "oneOf": [
@@ -7529,16 +7540,14 @@
                           "title": "Authenticated Example",
                           "example": {
                             "event": "connected",
-                            "alias_id": "507f1f77bcf86cd799439011",
-                            "msgpackr": false
+                            "aliasId": "507f1f77bcf86cd799439011"
                           }
                         },
                         {
                           "title": "Unauthenticated Example",
                           "example": {
                             "event": "connected",
-                            "broadcastOnly": true,
-                            "msgpackr": false
+                            "broadcastOnly": true
                           }
                         }
                       ]
@@ -7549,8 +7558,10 @@
                       "description": "A new message was appended to a mailbox (IMAP APPEND or delivery).",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "mailbox",
+                        "message"
                       ],
                       "properties": {
                         "event": {
@@ -7559,179 +7570,174 @@
                             "newMessage"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "mailbox": {
+                          "type": "string",
+                          "description": "Mailbox path (e.g. \"INBOX\")"
+                        },
+                        "message": {
                           "type": "object",
-                          "required": [
-                            "mailbox",
-                            "message"
-                          ],
+                          "description": "Full message object mirroring GET /v1/messages/:id response",
                           "properties": {
-                            "mailbox": {
-                              "type": "string",
-                              "description": "Mailbox path (e.g. \"INBOX\")"
+                            "id": {
+                              "type": "string"
                             },
-                            "message": {
-                              "type": "object",
-                              "description": "Full message object mirroring GET /v1/messages/:id response",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "folder_id": {
-                                  "type": "string"
-                                },
-                                "folder_path": {
-                                  "type": "string"
-                                },
-                                "thread_id": {
-                                  "type": "string"
-                                },
-                                "header_message_id": {
-                                  "type": "string"
-                                },
-                                "uid": {
-                                  "type": "integer"
-                                },
-                                "modseq": {
-                                  "type": "integer"
-                                },
-                                "flags": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                },
-                                "labels": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                },
-                                "from": {
-                                  "type": "string",
-                                  "description": "Sender address (e.g. 'Alice <alice@example.com>')"
-                                },
-                                "subject": {
-                                  "type": "string"
-                                },
-                                "size": {
-                                  "type": "integer"
-                                },
-                                "is_unread": {
-                                  "type": "boolean"
-                                },
-                                "is_flagged": {
-                                  "type": "boolean"
-                                },
-                                "is_draft": {
-                                  "type": "boolean"
-                                },
-                                "is_junk": {
-                                  "type": "boolean"
-                                },
-                                "is_encrypted": {
-                                  "type": "boolean",
-                                  "description": "Whether the message is encrypted (PGP/MIME or S/MIME)"
-                                },
-                                "is_deleted": {
-                                  "type": "boolean"
-                                },
-                                "is_copied": {
-                                  "type": "boolean"
-                                },
-                                "is_searchable": {
-                                  "type": "boolean"
-                                },
-                                "is_expired": {
-                                  "type": "boolean"
-                                },
-                                "has_attachment": {
-                                  "type": "boolean"
-                                },
-                                "retention_date": {
-                                  "type": "string",
-                                  "format": "date-time"
-                                },
-                                "remote_address": {
-                                  "type": "string"
-                                },
-                                "transaction": {
-                                  "type": "string"
-                                },
-                                "root_id": {
-                                  "type": "string"
-                                },
-                                "created_at": {
-                                  "type": "string",
-                                  "format": "date-time"
-                                },
-                                "updated_at": {
-                                  "type": "string",
-                                  "format": "date-time"
-                                },
-                                "internal_date": {
-                                  "type": "string",
-                                  "format": "date-time"
-                                },
-                                "header_date": {
-                                  "type": "string",
-                                  "format": "date-time"
-                                },
-                                "object": {
-                                  "type": "string",
-                                  "enum": [
-                                    "message"
-                                  ]
-                                }
+                            "folder_id": {
+                              "type": "string"
+                            },
+                            "folder_path": {
+                              "type": "string"
+                            },
+                            "thread_id": {
+                              "type": "string"
+                            },
+                            "header_message_id": {
+                              "type": "string"
+                            },
+                            "uid": {
+                              "type": "integer"
+                            },
+                            "modseq": {
+                              "type": "integer"
+                            },
+                            "flags": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
                               }
+                            },
+                            "labels": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "from": {
+                              "type": "string",
+                              "description": "Sender address (e.g. 'Alice <alice@example.com>')"
+                            },
+                            "subject": {
+                              "type": "string"
+                            },
+                            "size": {
+                              "type": "integer"
+                            },
+                            "is_unread": {
+                              "type": "boolean"
+                            },
+                            "is_flagged": {
+                              "type": "boolean"
+                            },
+                            "is_draft": {
+                              "type": "boolean"
+                            },
+                            "is_junk": {
+                              "type": "boolean"
+                            },
+                            "is_encrypted": {
+                              "type": "boolean",
+                              "description": "Whether the message is encrypted (PGP/MIME or S/MIME)"
+                            },
+                            "is_deleted": {
+                              "type": "boolean"
+                            },
+                            "is_copied": {
+                              "type": "boolean"
+                            },
+                            "is_searchable": {
+                              "type": "boolean"
+                            },
+                            "is_expired": {
+                              "type": "boolean"
+                            },
+                            "has_attachment": {
+                              "type": "boolean"
+                            },
+                            "retention_date": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "remote_address": {
+                              "type": "string"
+                            },
+                            "transaction": {
+                              "type": "string"
+                            },
+                            "root_id": {
+                              "type": "string"
+                            },
+                            "created_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "internal_date": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "header_date": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "object": {
+                              "type": "string",
+                              "enum": [
+                                "message"
+                              ]
                             }
                           }
                         }
                       },
                       "example": {
                         "event": "newMessage",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "mailbox": "INBOX",
-                          "message": {
-                            "id": "60d5f484f1a2c8b1f8e4e1a1",
-                            "folder_id": "60d5f484f1a2c8b1f8e4e1a0",
-                            "folder_path": "INBOX",
-                            "uid": 42,
-                            "modseq": 100,
-                            "flags": [],
-                            "labels": [],
-                            "subject": "Hello World",
-                            "size": 1234,
-                            "is_unread": true,
-                            "is_flagged": false,
-                            "is_draft": false,
-                            "is_junk": false,
-                            "has_attachment": false,
-                            "from": "sender@example.com",
-                            "object": "message",
-                            "is_encrypted": false,
-                            "is_deleted": false,
-                            "is_copied": false,
-                            "is_searchable": true,
-                            "is_expired": false,
-                            "remote_address": "127.0.0.1",
-                            "transaction": "APPEND"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "mailbox": "INBOX",
+                        "message": {
+                          "id": "60d5f484f1a2c8b1f8e4e1a1",
+                          "folder_id": "60d5f484f1a2c8b1f8e4e1a0",
+                          "folder_path": "INBOX",
+                          "uid": 42,
+                          "modseq": 100,
+                          "flags": [],
+                          "labels": [],
+                          "subject": "Hello World",
+                          "size": 1234,
+                          "is_unread": true,
+                          "is_flagged": false,
+                          "is_draft": false,
+                          "is_junk": false,
+                          "has_attachment": false,
+                          "from": "sender@example.com",
+                          "object": "message",
+                          "is_encrypted": false,
+                          "is_deleted": false,
+                          "is_copied": false,
+                          "is_searchable": true,
+                          "is_expired": false,
+                          "remote_address": "127.0.0.1",
+                          "transaction": "APPEND"
                         }
                       }
                     },
                     {
                       "title": "messagesMoved",
                       "type": "object",
-                      "description": "Messages were moved between mailboxes.",
+                      "description": "Messages were moved between mailboxes. A change to more than 1,000 messages is sent as several events of up to 1,000 UIDs each.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId"
                       ],
                       "properties": {
                         "event": {
@@ -7740,69 +7746,73 @@
                             "messagesMoved"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "sourceMailbox": {
-                              "type": "string",
-                              "description": "Source mailbox ID"
-                            },
-                            "destinationMailbox": {
-                              "type": "string",
-                              "description": "Destination mailbox ID"
-                            },
-                            "destinationPath": {
-                              "type": "string",
-                              "description": "Destination mailbox path"
-                            },
-                            "sourceUid": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer"
-                              },
-                              "description": "UIDs in source mailbox"
-                            },
-                            "destinationUid": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer"
-                              },
-                              "description": "New UIDs in destination mailbox"
-                            }
-                          }
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "sourceMailbox": {
+                          "type": "string",
+                          "description": "Source mailbox ID"
+                        },
+                        "sourcePath": {
+                          "type": "string",
+                          "description": "Source mailbox path"
+                        },
+                        "destinationMailbox": {
+                          "type": "string",
+                          "description": "Destination mailbox ID"
+                        },
+                        "destinationPath": {
+                          "type": "string",
+                          "description": "Destination mailbox path"
+                        },
+                        "sourceUid": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          },
+                          "description": "UIDs in source mailbox"
+                        },
+                        "destinationUid": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          },
+                          "description": "New UIDs in destination mailbox"
                         }
                       },
                       "example": {
                         "event": "messagesMoved",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "sourceMailbox": "60d5f484f1a2c8b1f8e4e1a0",
-                          "destinationMailbox": "60d5f484f1a2c8b1f8e4e1a2",
-                          "destinationPath": "Trash",
-                          "sourceUid": [
-                            1,
-                            2,
-                            3
-                          ],
-                          "destinationUid": [
-                            10,
-                            11,
-                            12
-                          ]
-                        }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "sourceMailbox": "60d5f484f1a2c8b1f8e4e1a0",
+                        "destinationMailbox": "60d5f484f1a2c8b1f8e4e1a2",
+                        "destinationPath": "Trash",
+                        "sourceUid": [
+                          1,
+                          2,
+                          3
+                        ],
+                        "destinationUid": [
+                          10,
+                          11,
+                          12
+                        ],
+                        "sourcePath": "INBOX"
                       }
                     },
                     {
                       "title": "messagesCopied",
                       "type": "object",
-                      "description": "Messages were copied to another mailbox.",
+                      "description": "Messages were copied to another mailbox. A change to more than 1,000 messages is sent as several events of up to 1,000 UIDs each.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId"
                       ],
                       "properties": {
                         "event": {
@@ -7811,60 +7821,69 @@
                             "messagesCopied"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "sourceMailbox": {
-                              "type": "string"
-                            },
-                            "destinationMailbox": {
-                              "type": "string"
-                            },
-                            "destinationPath": {
-                              "type": "string"
-                            },
-                            "sourceUid": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer"
-                              }
-                            },
-                            "destinationUid": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer"
-                              }
-                            }
-                          }
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "sourceMailbox": {
+                          "type": "string",
+                          "description": "Source mailbox ID"
+                        },
+                        "sourcePath": {
+                          "type": "string",
+                          "description": "Source mailbox path"
+                        },
+                        "destinationMailbox": {
+                          "type": "string",
+                          "description": "Destination mailbox ID"
+                        },
+                        "destinationPath": {
+                          "type": "string",
+                          "description": "Destination mailbox path"
+                        },
+                        "sourceUid": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          },
+                          "description": "UIDs in source mailbox"
+                        },
+                        "destinationUid": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          },
+                          "description": "New UIDs in destination mailbox"
                         }
                       },
                       "example": {
                         "event": "messagesCopied",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "sourceMailbox": "60d5f484f1a2c8b1f8e4e1a0",
-                          "destinationMailbox": "60d5f484f1a2c8b1f8e4e1a3",
-                          "destinationPath": "Archive",
-                          "sourceUid": [
-                            5
-                          ],
-                          "destinationUid": [
-                            1
-                          ]
-                        }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "sourceMailbox": "60d5f484f1a2c8b1f8e4e1a0",
+                        "destinationMailbox": "60d5f484f1a2c8b1f8e4e1a3",
+                        "destinationPath": "Archive",
+                        "sourceUid": [
+                          5
+                        ],
+                        "destinationUid": [
+                          1
+                        ],
+                        "sourcePath": "INBOX"
                       }
                     },
                     {
                       "title": "flagsUpdated",
                       "type": "object",
-                      "description": "Message flags were changed (e.g. \\\\Seen, \\\\Flagged, \\\\Deleted).",
+                      "description": "Message flags were changed (e.g. \\\\Seen, \\\\Flagged, \\\\Deleted). A change to more than 1,000 messages is sent as several events of up to 1,000 UIDs each.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId"
                       ],
                       "properties": {
                         "event": {
@@ -7873,76 +7892,141 @@
                             "flagsUpdated"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "mailbox": {
-                              "type": "string",
-                              "description": "Mailbox ID"
-                            },
-                            "uids": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer"
-                              },
-                              "description": "UIDs of affected messages"
-                            },
-                            "flags": {
-                              "type": "object",
-                              "description": "Flag changes applied",
-                              "properties": {
-                                "set": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                },
-                                "add": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                },
-                                "remove": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                }
-                              }
-                            }
-                          }
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "mailbox": {
+                          "type": "string",
+                          "description": "Mailbox ID"
+                        },
+                        "path": {
+                          "type": "string",
+                          "description": "Mailbox path (left out when a REST API request did not name the folder)"
+                        },
+                        "action": {
+                          "type": "string",
+                          "enum": [
+                            "add",
+                            "remove",
+                            "set"
+                          ],
+                          "description": "How `flags` applies: added, removed, or the full list after the change (`set`)"
+                        },
+                        "flags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Flags, including keywords (labels)"
+                        },
+                        "uids": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          },
+                          "description": "UIDs of affected messages"
                         }
                       },
                       "example": {
                         "event": "flagsUpdated",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "mailbox": "60d5f484f1a2c8b1f8e4e1a0",
-                          "uids": [
-                            1,
-                            2
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "mailbox": "60d5f484f1a2c8b1f8e4e1a0",
+                        "path": "INBOX",
+                        "action": "add",
+                        "flags": [
+                          "\\Seen"
+                        ],
+                        "uids": [
+                          1,
+                          2
+                        ]
+                      }
+                    },
+                    {
+                      "title": "labelsUpdated",
+                      "type": "object",
+                      "description": "Message labels (keywords) were changed. A `flagsUpdated` event is sent as well. A change to more than 1,000 messages is sent as several events of up to 1,000 UIDs each.",
+                      "required": [
+                        "event",
+                        "timestamp",
+                        "notificationId"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "labelsUpdated"
+                          ]
+                        },
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
+                        },
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "mailbox": {
+                          "type": "string",
+                          "description": "Mailbox ID"
+                        },
+                        "path": {
+                          "type": "string",
+                          "description": "Mailbox path (left out when a REST API request did not name the folder)"
+                        },
+                        "action": {
+                          "type": "string",
+                          "enum": [
+                            "add",
+                            "remove",
+                            "set"
                           ],
-                          "flags": {
-                            "set": [
-                              "\\\\Seen",
-                              "\\\\Flagged"
-                            ]
-                          }
+                          "description": "Whether labels were added, removed, or replaced (`set`)"
+                        },
+                        "labels": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "The labels added or removed, or every label after the change (`set`)"
+                        },
+                        "uids": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          },
+                          "description": "UIDs of the messages whose labels changed"
                         }
+                      },
+                      "example": {
+                        "event": "labelsUpdated",
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "mailbox": "60d5f484f1a2c8b1f8e4e1a0",
+                        "path": "INBOX",
+                        "action": "set",
+                        "labels": [
+                          "work"
+                        ],
+                        "uids": [
+                          3
+                        ]
                       }
                     },
                     {
                       "title": "messagesExpunged",
                       "type": "object",
-                      "description": "Messages were permanently expunged from a mailbox.",
+                      "description": "Messages were permanently removed from a mailbox (EXPUNGE, CLOSE, the REST API, POP3, or the automatic cleanup of Trash, Spam, and Junk). A change to more than 1,000 messages is sent as several events of up to 1,000 UIDs each.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId"
                       ],
                       "properties": {
                         "event": {
@@ -7951,25 +8035,51 @@
                             "messagesExpunged"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "mailbox": {
-                              "type": "string",
-                              "description": "Mailbox ID"
-                            }
-                          }
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "mailbox": {
+                          "type": "string",
+                          "description": "Mailbox ID"
+                        },
+                        "path": {
+                          "type": "string",
+                          "description": "Mailbox path"
+                        },
+                        "uids": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          },
+                          "description": "UIDs of the removed messages"
+                        },
+                        "ids": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "IDs of the removed messages"
                         }
                       },
                       "example": {
                         "event": "messagesExpunged",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "mailbox": "60d5f484f1a2c8b1f8e4e1a0"
-                        }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "mailbox": "60d5f484f1a2c8b1f8e4e1a0",
+                        "path": "Trash",
+                        "uids": [
+                          7,
+                          8
+                        ],
+                        "ids": [
+                          "60d5f484f1a2c8b1f8e4e1a7",
+                          "60d5f484f1a2c8b1f8e4e1a8"
+                        ]
                       }
                     },
                     {
@@ -7978,8 +8088,8 @@
                       "description": "A new mailbox/folder was created.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId"
                       ],
                       "properties": {
                         "event": {
@@ -7988,30 +8098,29 @@
                             "mailboxCreated"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "path": {
-                              "type": "string",
-                              "description": "Mailbox path"
-                            },
-                            "mailbox": {
-                              "type": "string",
-                              "description": "Mailbox ID"
-                            }
-                          }
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "path": {
+                          "type": "string",
+                          "description": "Mailbox path"
+                        },
+                        "mailbox": {
+                          "type": "string",
+                          "description": "Mailbox ID"
                         }
                       },
                       "example": {
                         "event": "mailboxCreated",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "path": "Projects/Work",
-                          "mailbox": "60d5f484f1a2c8b1f8e4e1a5"
-                        }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "path": "Projects/Work",
+                        "mailbox": "60d5f484f1a2c8b1f8e4e1a5"
                       }
                     },
                     {
@@ -8020,8 +8129,8 @@
                       "description": "A mailbox/folder was deleted.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId"
                       ],
                       "properties": {
                         "event": {
@@ -8030,38 +8139,37 @@
                             "mailboxDeleted"
                           ]
                         },
-                        "alias_id": {
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
+                        },
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "path": {
                           "type": "string"
                         },
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "path": {
-                              "type": "string"
-                            },
-                            "mailbox": {
-                              "type": "string"
-                            }
-                          }
+                        "mailbox": {
+                          "type": "string"
                         }
                       },
                       "example": {
                         "event": "mailboxDeleted",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "path": "Old Folder",
-                          "mailbox": "60d5f484f1a2c8b1f8e4e1a5"
-                        }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "path": "Old Folder",
+                        "mailbox": "60d5f484f1a2c8b1f8e4e1a5"
                       }
                     },
                     {
                       "title": "mailboxRenamed",
                       "type": "object",
-                      "description": "A mailbox/folder was renamed.",
+                      "description": "A mailbox/folder was renamed. Each renamed child mailbox gets its own event.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId"
                       ],
                       "properties": {
                         "event": {
@@ -8070,32 +8178,31 @@
                             "mailboxRenamed"
                           ]
                         },
-                        "alias_id": {
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
+                        },
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "oldPath": {
                           "type": "string"
                         },
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "oldPath": {
-                              "type": "string"
-                            },
-                            "newPath": {
-                              "type": "string"
-                            },
-                            "mailbox": {
-                              "type": "string"
-                            }
-                          }
+                        "newPath": {
+                          "type": "string"
+                        },
+                        "mailbox": {
+                          "type": "string"
                         }
                       },
                       "example": {
                         "event": "mailboxRenamed",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "oldPath": "Old Name",
-                          "newPath": "New Name",
-                          "mailbox": "60d5f484f1a2c8b1f8e4e1a5"
-                        }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "oldPath": "Old Name",
+                        "newPath": "New Name",
+                        "mailbox": "60d5f484f1a2c8b1f8e4e1a5"
                       }
                     },
                     {
@@ -8104,8 +8211,9 @@
                       "description": "A new calendar was created.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "calendar"
                       ],
                       "properties": {
                         "event": {
@@ -8114,72 +8222,68 @@
                             "calendarCreated"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "calendar": {
                           "type": "object",
-                          "required": [
-                            "calendar"
-                          ],
+                          "description": "Full calendar object mirroring GET /v1/calendars/:id response",
                           "properties": {
-                            "calendar": {
-                              "type": "object",
-                              "description": "Full calendar object mirroring GET /v1/calendars/:id response",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "calendarId": {
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "type": "string"
-                                },
-                                "description": {
-                                  "type": "string"
-                                },
-                                "color": {
-                                  "type": "string"
-                                },
-                                "order": {
-                                  "type": "integer"
-                                },
-                                "timezone": {
-                                  "type": "string"
-                                },
-                                "readonly": {
-                                  "type": "boolean"
-                                },
-                                "synctoken": {
-                                  "type": "string"
-                                },
-                                "object": {
-                                  "type": "string",
-                                  "enum": [
-                                    "calendar"
-                                  ]
-                                }
-                              }
+                            "id": {
+                              "type": "string"
+                            },
+                            "calendarId": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "color": {
+                              "type": "string"
+                            },
+                            "order": {
+                              "type": "integer"
+                            },
+                            "timezone": {
+                              "type": "string"
+                            },
+                            "readonly": {
+                              "type": "boolean"
+                            },
+                            "synctoken": {
+                              "type": "string"
+                            },
+                            "object": {
+                              "type": "string",
+                              "enum": [
+                                "calendar"
+                              ]
                             }
                           }
                         }
                       },
                       "example": {
                         "event": "calendarCreated",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "calendar": {
-                            "id": "60d5f484f1a2c8b1f8e4e1b0",
-                            "calendarId": "work-calendar",
-                            "name": "Work",
-                            "description": "Work events",
-                            "color": "#FF5733",
-                            "order": 0,
-                            "timezone": "America/New_York",
-                            "readonly": false,
-                            "object": "calendar"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "calendar": {
+                          "id": "60d5f484f1a2c8b1f8e4e1b0",
+                          "calendarId": "work-calendar",
+                          "name": "Work",
+                          "description": "Work events",
+                          "color": "#FF5733",
+                          "order": 0,
+                          "timezone": "America/New_York",
+                          "readonly": false,
+                          "object": "calendar"
                         }
                       }
                     },
@@ -8189,8 +8293,9 @@
                       "description": "A calendar was updated.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "calendar"
                       ],
                       "properties": {
                         "event": {
@@ -8199,32 +8304,28 @@
                             "calendarUpdated"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
-                          "type": "object",
-                          "required": [
-                            "calendar"
-                          ],
-                          "properties": {
-                            "calendar": {
-                              "$ref": "#/paths/~1v1~1ws/get/responses/101/content/application~1json/schema/oneOf/10/properties/data/properties/calendar"
-                            }
-                          }
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "calendar": {
+                          "$ref": "#/paths/~1v1~1ws/get/responses/101/content/application~1json/schema/oneOf/10/properties/calendar"
                         }
                       },
                       "example": {
                         "event": "calendarUpdated",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "calendar": {
-                            "id": "60d5f484f1a2c8b1f8e4e1b0",
-                            "calendarId": "work-calendar",
-                            "name": "Work (Updated)",
-                            "color": "#00FF00",
-                            "object": "calendar"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "calendar": {
+                          "id": "60d5f484f1a2c8b1f8e4e1b0",
+                          "calendarId": "work-calendar",
+                          "name": "Work (Updated)",
+                          "color": "#00FF00",
+                          "object": "calendar"
                         }
                       }
                     },
@@ -8234,8 +8335,9 @@
                       "description": "A calendar was deleted.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "calendar"
                       ],
                       "properties": {
                         "event": {
@@ -8244,48 +8346,44 @@
                             "calendarDeleted"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "calendar": {
                           "type": "object",
-                          "required": [
-                            "calendar"
-                          ],
                           "properties": {
-                            "calendar": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "calendarId": {
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "type": "string"
-                                },
-                                "object": {
-                                  "type": "string",
-                                  "enum": [
-                                    "calendar"
-                                  ]
-                                }
-                              }
+                            "id": {
+                              "type": "string"
+                            },
+                            "calendarId": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "object": {
+                              "type": "string",
+                              "enum": [
+                                "calendar"
+                              ]
                             }
                           }
                         }
                       },
                       "example": {
                         "event": "calendarDeleted",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "calendar": {
-                            "id": "60d5f484f1a2c8b1f8e4e1b0",
-                            "calendarId": "work-calendar",
-                            "name": "Work",
-                            "object": "calendar"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "calendar": {
+                          "id": "60d5f484f1a2c8b1f8e4e1b0",
+                          "calendarId": "work-calendar",
+                          "name": "Work",
+                          "object": "calendar"
                         }
                       }
                     },
@@ -8295,8 +8393,9 @@
                       "description": "A calendar event was created.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "calendarEvent"
                       ],
                       "properties": {
                         "event": {
@@ -8305,58 +8404,54 @@
                             "calendarEventCreated"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "calendarEvent": {
                           "type": "object",
-                          "required": [
-                            "calendarEvent"
-                          ],
+                          "description": "Full calendar event object with iCal data",
                           "properties": {
-                            "calendarEvent": {
-                              "type": "object",
-                              "description": "Full calendar event object with iCal data",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "eventId": {
-                                  "type": "string"
-                                },
-                                "calendarId": {
-                                  "type": "string"
-                                },
-                                "ical": {
-                                  "type": "string",
-                                  "description": "Full iCalendar (RFC 5545) data string"
-                                },
-                                "href": {
-                                  "type": "string"
-                                },
-                                "object": {
-                                  "type": "string",
-                                  "enum": [
-                                    "calendar_event"
-                                  ]
-                                }
-                              }
+                            "id": {
+                              "type": "string"
+                            },
+                            "eventId": {
+                              "type": "string"
+                            },
+                            "calendarId": {
+                              "type": "string"
+                            },
+                            "ical": {
+                              "type": "string",
+                              "description": "Full iCalendar (RFC 5545) data string"
+                            },
+                            "href": {
+                              "type": "string"
+                            },
+                            "object": {
+                              "type": "string",
+                              "enum": [
+                                "calendar_event"
+                              ]
                             }
                           }
                         }
                       },
                       "example": {
                         "event": "calendarEventCreated",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "calendarEvent": {
-                            "id": "60d5f484f1a2c8b1f8e4e1c0",
-                            "eventId": "meeting-123.ics",
-                            "calendarId": "work-calendar",
-                            "ical": "BEGIN:VCALENDAR\\nVERSION:2.0\\nBEGIN:VEVENT\\nSUMMARY:Team Meeting\\nEND:VEVENT\\nEND:VCALENDAR",
-                            "href": "/dav/user@example.com/work-calendar/meeting-123.ics",
-                            "object": "calendar_event"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "calendarEvent": {
+                          "id": "60d5f484f1a2c8b1f8e4e1c0",
+                          "eventId": "meeting-123.ics",
+                          "calendarId": "work-calendar",
+                          "ical": "BEGIN:VCALENDAR\\nVERSION:2.0\\nBEGIN:VEVENT\\nSUMMARY:Team Meeting\\nEND:VEVENT\\nEND:VCALENDAR",
+                          "href": "/dav/user@example.com/work-calendar/meeting-123.ics",
+                          "object": "calendar_event"
                         }
                       }
                     },
@@ -8366,8 +8461,9 @@
                       "description": "A calendar event was updated.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "calendarEvent"
                       ],
                       "properties": {
                         "event": {
@@ -8376,32 +8472,28 @@
                             "calendarEventUpdated"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
-                          "type": "object",
-                          "required": [
-                            "calendarEvent"
-                          ],
-                          "properties": {
-                            "calendarEvent": {
-                              "$ref": "#/paths/~1v1~1ws/get/responses/101/content/application~1json/schema/oneOf/13/properties/data/properties/calendarEvent"
-                            }
-                          }
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "calendarEvent": {
+                          "$ref": "#/paths/~1v1~1ws/get/responses/101/content/application~1json/schema/oneOf/13/properties/calendarEvent"
                         }
                       },
                       "example": {
                         "event": "calendarEventUpdated",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "calendarEvent": {
-                            "id": "60d5f484f1a2c8b1f8e4e1c0",
-                            "eventId": "meeting-123.ics",
-                            "calendarId": "work-calendar",
-                            "ical": "BEGIN:VCALENDAR\\nVERSION:2.0\\nBEGIN:VEVENT\\nSUMMARY:Team Meeting (Updated)\\nEND:VEVENT\\nEND:VCALENDAR",
-                            "object": "calendar_event"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "calendarEvent": {
+                          "id": "60d5f484f1a2c8b1f8e4e1c0",
+                          "eventId": "meeting-123.ics",
+                          "calendarId": "work-calendar",
+                          "ical": "BEGIN:VCALENDAR\\nVERSION:2.0\\nBEGIN:VEVENT\\nSUMMARY:Team Meeting (Updated)\\nEND:VEVENT\\nEND:VCALENDAR",
+                          "object": "calendar_event"
                         }
                       }
                     },
@@ -8411,8 +8503,9 @@
                       "description": "A calendar event was deleted.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "calendarEvent"
                       ],
                       "properties": {
                         "event": {
@@ -8421,52 +8514,48 @@
                             "calendarEventDeleted"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "calendarEvent": {
                           "type": "object",
-                          "required": [
-                            "calendarEvent"
-                          ],
                           "properties": {
-                            "calendarEvent": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "eventId": {
-                                  "type": "string"
-                                },
-                                "calendarId": {
-                                  "type": "string"
-                                },
-                                "ical": {
-                                  "type": "string",
-                                  "description": "Last known iCal data before deletion"
-                                },
-                                "object": {
-                                  "type": "string",
-                                  "enum": [
-                                    "calendar_event"
-                                  ]
-                                }
-                              }
+                            "id": {
+                              "type": "string"
+                            },
+                            "eventId": {
+                              "type": "string"
+                            },
+                            "calendarId": {
+                              "type": "string"
+                            },
+                            "ical": {
+                              "type": "string",
+                              "description": "Last known iCal data before deletion"
+                            },
+                            "object": {
+                              "type": "string",
+                              "enum": [
+                                "calendar_event"
+                              ]
                             }
                           }
                         }
                       },
                       "example": {
                         "event": "calendarEventDeleted",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "calendarEvent": {
-                            "id": "60d5f484f1a2c8b1f8e4e1c0",
-                            "eventId": "meeting-123.ics",
-                            "calendarId": "work-calendar",
-                            "object": "calendar_event"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "calendarEvent": {
+                          "id": "60d5f484f1a2c8b1f8e4e1c0",
+                          "eventId": "meeting-123.ics",
+                          "calendarId": "work-calendar",
+                          "object": "calendar_event"
                         }
                       }
                     },
@@ -8476,8 +8565,9 @@
                       "description": "A contact was created.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "contact"
                       ],
                       "properties": {
                         "event": {
@@ -8486,61 +8576,57 @@
                             "contactCreated"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "contact": {
                           "type": "object",
-                          "required": [
-                            "contact"
-                          ],
+                          "description": "Full contact object with vCard data",
                           "properties": {
-                            "contact": {
-                              "type": "object",
-                              "description": "Full contact object with vCard data",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "contactId": {
-                                  "type": "string"
-                                },
-                                "addressBookId": {
-                                  "type": "string"
-                                },
-                                "fullName": {
-                                  "type": "string"
-                                },
-                                "content": {
-                                  "type": "string",
-                                  "description": "Full vCard (RFC 6350) data string"
-                                },
-                                "etag": {
-                                  "type": "string"
-                                },
-                                "object": {
-                                  "type": "string",
-                                  "enum": [
-                                    "contact"
-                                  ]
-                                }
-                              }
+                            "id": {
+                              "type": "string"
+                            },
+                            "contactId": {
+                              "type": "string"
+                            },
+                            "addressBookId": {
+                              "type": "string"
+                            },
+                            "fullName": {
+                              "type": "string"
+                            },
+                            "content": {
+                              "type": "string",
+                              "description": "Full vCard (RFC 6350) data string"
+                            },
+                            "etag": {
+                              "type": "string"
+                            },
+                            "object": {
+                              "type": "string",
+                              "enum": [
+                                "contact"
+                              ]
                             }
                           }
                         }
                       },
                       "example": {
                         "event": "contactCreated",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "contact": {
-                            "contactId": "john-doe.vcf",
-                            "addressBookId": "60d5f484f1a2c8b1f8e4e1d0",
-                            "fullName": "John Doe",
-                            "content": "BEGIN:VCARD\\nVERSION:3.0\\nFN:John Doe\\nEMAIL:john@example.com\\nEND:VCARD",
-                            "etag": "\"abc123\"",
-                            "object": "contact"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "contact": {
+                          "contactId": "john-doe.vcf",
+                          "addressBookId": "60d5f484f1a2c8b1f8e4e1d0",
+                          "fullName": "John Doe",
+                          "content": "BEGIN:VCARD\\nVERSION:3.0\\nFN:John Doe\\nEMAIL:john@example.com\\nEND:VCARD",
+                          "etag": "\"abc123\"",
+                          "object": "contact"
                         }
                       }
                     },
@@ -8550,8 +8636,9 @@
                       "description": "A contact was updated.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "contact"
                       ],
                       "properties": {
                         "event": {
@@ -8560,34 +8647,30 @@
                             "contactUpdated"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
-                          "type": "object",
-                          "required": [
-                            "contact"
-                          ],
-                          "properties": {
-                            "contact": {
-                              "$ref": "#/paths/~1v1~1ws/get/responses/101/content/application~1json/schema/oneOf/16/properties/data/properties/contact"
-                            }
-                          }
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "contact": {
+                          "$ref": "#/paths/~1v1~1ws/get/responses/101/content/application~1json/schema/oneOf/16/properties/contact"
                         }
                       },
                       "example": {
                         "event": "contactUpdated",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "contact": {
-                            "id": "60d5f484f1a2c8b1f8e4e1e0",
-                            "contactId": "john-doe.vcf",
-                            "addressBookId": "60d5f484f1a2c8b1f8e4e1d0",
-                            "fullName": "John Doe (Updated)",
-                            "content": "BEGIN:VCARD\\nVERSION:3.0\\nFN:John Doe (Updated)\\nEMAIL:john@example.com\\nEND:VCARD",
-                            "etag": "\"def456\"",
-                            "object": "contact"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "contact": {
+                          "id": "60d5f484f1a2c8b1f8e4e1e0",
+                          "contactId": "john-doe.vcf",
+                          "addressBookId": "60d5f484f1a2c8b1f8e4e1d0",
+                          "fullName": "John Doe (Updated)",
+                          "content": "BEGIN:VCARD\\nVERSION:3.0\\nFN:John Doe (Updated)\\nEMAIL:john@example.com\\nEND:VCARD",
+                          "etag": "\"def456\"",
+                          "object": "contact"
                         }
                       }
                     },
@@ -8597,8 +8680,9 @@
                       "description": "A contact was deleted.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "contact"
                       ],
                       "properties": {
                         "event": {
@@ -8607,56 +8691,52 @@
                             "contactDeleted"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "contact": {
                           "type": "object",
-                          "required": [
-                            "contact"
-                          ],
                           "properties": {
-                            "contact": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "contactId": {
-                                  "type": "string"
-                                },
-                                "addressBookId": {
-                                  "type": "string"
-                                },
-                                "fullName": {
-                                  "type": "string"
-                                },
-                                "content": {
-                                  "type": "string",
-                                  "description": "Last known vCard data before deletion"
-                                },
-                                "object": {
-                                  "type": "string",
-                                  "enum": [
-                                    "contact"
-                                  ]
-                                }
-                              }
+                            "id": {
+                              "type": "string"
+                            },
+                            "contactId": {
+                              "type": "string"
+                            },
+                            "addressBookId": {
+                              "type": "string"
+                            },
+                            "fullName": {
+                              "type": "string"
+                            },
+                            "content": {
+                              "type": "string",
+                              "description": "Last known vCard data before deletion"
+                            },
+                            "object": {
+                              "type": "string",
+                              "enum": [
+                                "contact"
+                              ]
                             }
                           }
                         }
                       },
                       "example": {
                         "event": "contactDeleted",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "contact": {
-                            "id": "60d5f484f1a2c8b1f8e4e1e0",
-                            "contactId": "john-doe.vcf",
-                            "addressBookId": "60d5f484f1a2c8b1f8e4e1d0",
-                            "fullName": "John Doe",
-                            "object": "contact"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "contact": {
+                          "id": "60d5f484f1a2c8b1f8e4e1e0",
+                          "contactId": "john-doe.vcf",
+                          "addressBookId": "60d5f484f1a2c8b1f8e4e1d0",
+                          "fullName": "John Doe",
+                          "object": "contact"
                         }
                       }
                     },
@@ -8666,8 +8746,9 @@
                       "description": "An address book was created.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "addressBook"
                       ],
                       "properties": {
                         "event": {
@@ -8676,44 +8757,106 @@
                             "addressBookCreated"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "addressBook": {
                           "type": "object",
-                          "required": [
-                            "addressBook"
-                          ],
                           "properties": {
-                            "addressBook": {
-                              "type": "object",
-                              "properties": {
-                                "addressBookId": {
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "type": "string"
-                                },
-                                "object": {
-                                  "type": "string",
-                                  "enum": [
-                                    "address_book"
-                                  ]
-                                }
-                              }
+                            "addressBookId": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "object": {
+                              "type": "string",
+                              "enum": [
+                                "address_book"
+                              ]
                             }
                           }
                         }
                       },
                       "example": {
                         "event": "addressBookCreated",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "addressBook": {
-                            "addressBookId": "personal",
-                            "name": "Personal Contacts",
-                            "object": "address_book"
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "addressBook": {
+                          "addressBookId": "personal",
+                          "name": "Personal Contacts",
+                          "object": "address_book"
+                        }
+                      }
+                    },
+                    {
+                      "title": "addressBookUpdated",
+                      "type": "object",
+                      "description": "Address book properties (name, description, or color) were changed.",
+                      "required": [
+                        "event",
+                        "timestamp",
+                        "notificationId",
+                        "addressBook"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "addressBookUpdated"
+                          ]
+                        },
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
+                        },
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "addressBook": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "addressBookId": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "color": {
+                              "type": "string"
+                            },
+                            "object": {
+                              "type": "string",
+                              "enum": [
+                                "address_book"
+                              ]
+                            }
                           }
+                        }
+                      },
+                      "example": {
+                        "event": "addressBookUpdated",
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "addressBook": {
+                          "id": "60d5f484f1a2c8b1f8e4e1f0",
+                          "addressBookId": "personal",
+                          "name": "Personal Contacts",
+                          "description": "Friends and family",
+                          "color": "#0000FF",
+                          "object": "address_book"
                         }
                       }
                     },
@@ -8723,8 +8866,9 @@
                       "description": "An address book was deleted.",
                       "required": [
                         "event",
-                        "alias_id",
-                        "data"
+                        "timestamp",
+                        "notificationId",
+                        "addressBook"
                       ],
                       "properties": {
                         "event": {
@@ -8733,48 +8877,44 @@
                             "addressBookDeleted"
                           ]
                         },
-                        "alias_id": {
-                          "type": "string"
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "When the server sent the event, in milliseconds since the Unix epoch"
                         },
-                        "data": {
+                        "notificationId": {
+                          "type": "string",
+                          "description": "Unique ID of this event. The push notification for the event has the same ID, so a client that gets both can ignore the second"
+                        },
+                        "addressBook": {
                           "type": "object",
-                          "required": [
-                            "addressBook"
-                          ],
                           "properties": {
-                            "addressBook": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "addressBookId": {
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "type": "string"
-                                },
-                                "object": {
-                                  "type": "string",
-                                  "enum": [
-                                    "address_book"
-                                  ]
-                                }
-                              }
+                            "id": {
+                              "type": "string"
+                            },
+                            "addressBookId": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "object": {
+                              "type": "string",
+                              "enum": [
+                                "address_book"
+                              ]
                             }
                           }
                         }
                       },
                       "example": {
                         "event": "addressBookDeleted",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "data": {
-                          "addressBook": {
-                            "id": "60d5f484f1a2c8b1f8e4e1f0",
-                            "addressBookId": "old-contacts",
-                            "name": "Old Contacts",
-                            "object": "address_book"
-                          }
+                        "timestamp": 1739348200000,
+                        "notificationId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                        "addressBook": {
+                          "id": "60d5f484f1a2c8b1f8e4e1f0",
+                          "addressBookId": "old-contacts",
+                          "name": "Old Contacts",
+                          "object": "address_book"
                         }
                       }
                     },

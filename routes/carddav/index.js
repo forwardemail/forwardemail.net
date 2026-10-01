@@ -1150,6 +1150,23 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
         }`;
         await addressBook.save();
 
+        // send websocket push notification
+        sendNotification(
+          ctx.instance.client,
+          ctx.state.user.alias_id,
+          'addressBookUpdated',
+          {
+            addressBook: {
+              id: addressBook._id.toString(),
+              addressBookId: addressbook,
+              name: addressBook.name || '',
+              description: addressBook.description || '',
+              color: addressBook.color || '',
+              object: 'address_book'
+            }
+          }
+        );
+
         // send apple push notification so iOS Contacts picks up the
         // PROPPATCH (display-name, description, color).
         sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)

@@ -29,7 +29,9 @@ require('#config/mongoose');
 const _ = require('#helpers/lodash');
 const ApiWebSocketHandler = require('#helpers/api-websocket-handler');
 const apiConfig = require('#config/api');
+const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
+const { decoder } = require('#helpers/encoder-decoder');
 const logger = require('#helpers/logger');
 const setupMongooseHelper = require('#helpers/setup-mongoose');
 const { useRevocationClient } = require('#helpers/credential-revocation');
@@ -154,6 +156,31 @@ exports.setupApiServer = async (t) => {
     resolver: sqlite.resolver
   });
   t.context.wsHandler = wsHandler;
+};
+
+//
+// Record the realtime notifications (WebSocket and push) published for an
+// alias through this Redis client, in the order they were sent
+//
+exports.captureNotifications = (client, aliasId) => {
+  const events = [];
+  const { publishBuffer } = client;
+  client.publishBuffer = function (channel, message, ...args) {
+    if (channel === config.WS_REDIS_CHANNEL_NAME) {
+      const decoded = decoder.unpack(message);
+      if (decoded?.aliasId === String(aliasId)) events.push(decoded.payload);
+    }
+
+    return publishBuffer.call(this, channel, message, ...args);
+  };
+
+  return {
+    events,
+    of: (event) => events.filter((e) => e.event === event),
+    stop() {
+      client.publishBuffer = publishBuffer;
+    }
+  };
 };
 
 exports.setupRedisClient = async (t) => {

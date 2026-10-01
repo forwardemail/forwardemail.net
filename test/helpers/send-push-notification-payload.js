@@ -269,3 +269,84 @@ test('buildPayload > an explicit message_id still wins, and none is fine', (t) =
     ''
   );
 });
+
+//
+// A push names the messages that changed, so a client woken by it can apply
+// the change as from the WebSocket copy: before, a move carried no mailbox at
+// all and no event carried its UIDs.  APNs and FCM carry the data in
+// plaintext, so folder paths and flags stay out of it.
+//
+test('buildPayload > change events carry their mailbox ids and UIDs', (t) => {
+  const moved = buildPayload('messagesMoved', {
+    sourceMailbox: '60d5f484f1a2c8b1f8e4e1a0',
+    sourcePath: 'INBOX',
+    destinationMailbox: '60d5f484f1a2c8b1f8e4e1a2',
+    destinationPath: 'Trash',
+    sourceUid: [3, 4],
+    destinationUid: [10, 11]
+  });
+  t.true(moved.silent);
+  t.like(moved.data, {
+    event: 'messagesMoved',
+    source_mailbox: '60d5f484f1a2c8b1f8e4e1a0',
+    destination_mailbox: '60d5f484f1a2c8b1f8e4e1a2',
+    source_uid: '[3,4]',
+    destination_uid: '[10,11]'
+  });
+
+  const flags = buildPayload('flagsUpdated', {
+    mailbox: '60d5f484f1a2c8b1f8e4e1a0',
+    path: 'Clients/Acme',
+    action: 'set',
+    flags: ['\\Seen', 'confidential'],
+    uids: [1, 2]
+  });
+  t.like(flags.data, {
+    mailbox: '60d5f484f1a2c8b1f8e4e1a0',
+    uids: '[1,2]'
+  });
+
+  const expunged = buildPayload('messagesExpunged', {
+    mailbox: '60d5f484f1a2c8b1f8e4e1a0',
+    path: 'Trash',
+    uids: [7],
+    ids: ['60d5f484f1a2c8b1f8e4e1a7']
+  });
+  t.like(expunged.data, { uids: '[7]', ids: '["60d5f484f1a2c8b1f8e4e1a7"]' });
+
+  // no folder names or labels, and nothing an event does not have
+  for (const { data } of [moved, flags, expunged]) {
+    t.false(JSON.stringify(data).includes('Acme'));
+    t.false(JSON.stringify(data).includes('confidential'));
+    t.false('path' in data);
+    t.false('flags' in data);
+  }
+
+  t.false('uids' in moved.data);
+});
+
+test('buildPayload > a list is sent whole or not at all', (t) => {
+  // too long for one FCM data value (255 characters)
+  let { data } = buildPayload('messagesExpunged', {
+    mailbox: '60d5f484f1a2c8b1f8e4e1a0',
+    uids: Array.from({ length: 1000 }, (_, i) => i + 1),
+    ids: ['60d5f484f1a2c8b1f8e4e1a7']
+  });
+  t.false('uids' in data);
+  t.is(data.ids, '["60d5f484f1a2c8b1f8e4e1a7"]');
+
+  // one item that is not valid leaves the whole list out
+  ({ data } = buildPayload('messagesExpunged', {
+    mailbox: '60d5f484f1a2c8b1f8e4e1a0',
+    uids: [1, 2],
+    ids: ['60d5f484f1a2c8b1f8e4e1a7', 'not an id']
+  }));
+  t.is(data.uids, '[1,2]');
+  t.false('ids' in data);
+
+  // the most that fits is sent
+  const uids = Array.from({ length: 40 }, (_, i) => i + 1);
+  ({ data } = buildPayload('messagesExpunged', { uids }));
+  t.true(data.uids.length <= 255);
+  t.deepEqual(JSON.parse(data.uids), uids);
+});
