@@ -32,6 +32,8 @@
  * @see https://tools.ietf.org/html/rfc6638 - CalDAV Scheduling
  */
 
+const punycode = require('node:punycode');
+
 const ICAL = require('ical.js');
 
 const CalendarInvites = require('#models/calendar-invites');
@@ -72,6 +74,8 @@ const MAX_ICS_SIZE = 100_000;
 const SECURITY_CODES = {
   VALID: 'valid',
   SENDER_MISMATCH: 'sender_attendee_mismatch',
+  SENDER_UNAUTHENTICATED: 'sender_not_authenticated',
+  ORGANIZER_MISMATCH: 'organizer_recipient_mismatch',
   RATE_LIMITED: 'rate_limit_exceeded',
   INVALID_DATA: 'invalid_imip_data',
   STALE_SEQUENCE: 'stale_sequence'
@@ -96,6 +100,26 @@ function extractDomain(email) {
 function normalizeEmail(email) {
   if (!email || typeof email !== 'string') return '';
   return email.toLowerCase().trim();
+}
+
+/**
+ * Normalize an address with its domain in ASCII (alias domains are stored in
+ * Unicode, while an ORGANIZER may use the "xn--" form)
+ * @param {string} email - Email address
+ * @returns {string} Normalized lowercase email with an ASCII domain
+ */
+function normalizeAsciiEmail(email) {
+  const normalized = normalizeEmail(email);
+  const index = normalized.lastIndexOf('@');
+  if (index === -1) return normalized;
+  try {
+    return (
+      normalized.slice(0, index + 1) +
+      punycode.toASCII(normalized.slice(index + 1))
+    );
+  } catch {
+    return normalized;
+  }
 }
 
 /**
@@ -148,28 +172,24 @@ function validateSenderAttendeeMatch(senderEmail, attendeeEmail) {
   const senderDomain = extractDomain(normalizedSender);
   const attendeeDomain = extractDomain(normalizedAttendee);
 
-  if (senderDomain && attendeeDomain) {
-    // Check if same root domain (simplified check)
-    const senderParts = senderDomain.split('.');
-    const attendeeParts = attendeeDomain.split('.');
+  if (
+    senderDomain &&
+    attendeeDomain && // One domain must be a subdomain of the other. Sharing a parent is not
+    // enough: "evil.co.uk" and "victim.co.uk", or "evil.eu.org" and
+    // "victim.eu.org", belong to different owners.
+    (senderDomain.endsWith(`.${attendeeDomain}`) ||
+      attendeeDomain.endsWith(`.${senderDomain}`))
+  ) {
+    // Same organization, check username
+    const senderUser = normalizedSender.split('@')[0];
+    const attendeeUser = normalizedAttendee.split('@')[0];
 
-    if (senderParts.length >= 2 && attendeeParts.length >= 2) {
-      const senderRoot = senderParts.slice(-2).join('.');
-      const attendeeRoot = attendeeParts.slice(-2).join('.');
-
-      if (senderRoot === attendeeRoot) {
-        // Same organization, check username
-        const senderUser = normalizedSender.split('@')[0];
-        const attendeeUser = normalizedAttendee.split('@')[0];
-
-        if (senderUser === attendeeUser) {
-          return {
-            valid: true,
-            code: SECURITY_CODES.VALID,
-            reason: 'Same user, related domain'
-          };
-        }
-      }
+    if (senderUser === attendeeUser) {
+      return {
+        valid: true,
+        code: SECURITY_CODES.VALID,
+        reason: 'Same user, related domain'
+      };
     }
   }
 
@@ -576,8 +596,9 @@ async function processImipMessage(imipData, options = {}) {
     case 'REPLY':
     case 'REFRESH':
     case 'COUNTER': {
-      // Organizer processes these
-      targetEmail = imipData.organizerEmail || options.toEmail;
+      // Organizer processes these: the mailbox the message was delivered to
+      // (checked to be the ORGANIZER in checkAndProcessImipMessage)
+      targetEmail = options.toEmail || imipData.organizerEmail;
       attendeeEmail = imipData.attendeeEmail || imipData.attendees?.[0]?.email;
       break;
     }
@@ -639,9 +660,11 @@ async function processImipMessage(imipData, options = {}) {
   };
 
   if (method === 'REPLY') {
-    // For REPLY, match on attendee email
+    // For REPLY, match on attendee email (and the organizer, so a reply for
+    // one organizer never updates a pending reply queued for another)
     query.attendeeEmail = (attendeeEmail || '').toLowerCase();
     query.method = 'REPLY';
+    query.organizerEmail = (targetEmail || '').toLowerCase();
   } else {
     // For other methods, match on method and target
     query.method = method;
@@ -710,10 +733,7 @@ async function processImipMessage(imipData, options = {}) {
   // Create new CalendarInvites record
   const inviteData = {
     eventUid: uid,
-    organizerEmail:
-      method === 'REPLY' || method === 'REFRESH' || method === 'COUNTER'
-        ? (imipData.organizerEmail || targetEmail || '').toLowerCase()
-        : (targetEmail || '').toLowerCase(),
+    organizerEmail: (targetEmail || '').toLowerCase(),
     attendeeEmail: (attendeeEmail || '').toLowerCase(),
     response,
     method,
@@ -893,26 +913,56 @@ async function checkAndProcessImipMessage(parsedEmail, options = {}) {
 
   //
   // SECURITY CHECK 1: Sender Match
-  // For REPLY/REFRESH/COUNTER: sender must match the attendee (prevents spoofing)
+  // For REPLY/REFRESH/COUNTER: the message must be addressed to the organizer
+  //   (the mailbox that received it), and its authenticated From address must
+  //   be the attendee (prevents spoofing).
   // For REQUEST/CANCEL/ADD/DECLINECOUNTER: NO sender validation needed
   //   RFC 6047 Section 2.4: transport security (DKIM/DMARC) is sufficient.
   //   Calendar providers (Google, Microsoft, Apple) send from infrastructure
   //   addresses (e.g. calendar-notification@google.com) that don't match
   //   the organizer's email address.
   //
-  if (options.fromEmail) {
+  if (['REPLY', 'REFRESH', 'COUNTER'].includes(imipData.method)) {
     let senderValidation;
 
-    if (['REPLY', 'REFRESH', 'COUNTER'].includes(imipData.method)) {
-      // Sender should be the attendee
+    //
+    // The organizer's calendar session applies every queued reply whose
+    // organizer is its own address (see process-calendar-invites.js). The
+    // ORGANIZER of the message is chosen by its sender, so a reply delivered
+    // to any mailbox (the sender's own included) could otherwise change the
+    // event of another user. A reply only counts for the mailbox it was
+    // delivered to.
+    //
+    const recipient = normalizeAsciiEmail(options.toEmail);
+    if (
+      !recipient ||
+      (imipData.organizerEmail &&
+        normalizeAsciiEmail(imipData.organizerEmail) !== recipient)
+    ) {
+      senderValidation = {
+        valid: false,
+        code: SECURITY_CODES.ORGANIZER_MISMATCH,
+        reason: 'Message is not addressed to the organizer'
+      };
+    } else {
+      //
+      // The attendee is matched against the authenticated From address
+      // (DMARC passed or DKIM aligned with it), like the organizer check
+      // above. The envelope sender is anyone's to set, and it is empty for
+      // a message sent with a null reverse-path ("MAIL FROM:<>").
+      //
       const attendeeEmail =
         imipData.attendeeEmail || imipData.attendees?.[0]?.email;
-      if (attendeeEmail) {
-        senderValidation = validateSenderAttendeeMatch(
-          options.fromEmail,
-          attendeeEmail
-        );
-      }
+      senderValidation = options.authenticatedFromEmail
+        ? validateSenderAttendeeMatch(
+            options.authenticatedFromEmail,
+            attendeeEmail
+          )
+        : {
+            valid: false,
+            code: SECURITY_CODES.SENDER_UNAUTHENTICATED,
+            reason: 'Sender is not authenticated'
+          };
     }
 
     // NOTE: No sender validation for REQUEST/CANCEL/ADD/DECLINECOUNTER
@@ -921,7 +971,7 @@ async function checkAndProcessImipMessage(parsedEmail, options = {}) {
     // Apple sends from infrastructure addresses
     // DKIM/DMARC already validates authenticity at the transport layer
 
-    if (senderValidation && !senderValidation.valid) {
+    if (!senderValidation.valid) {
       logger.warn('iMIP message rejected - sender mismatch', {
         ...securityContext,
         code: senderValidation.code,

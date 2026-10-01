@@ -147,6 +147,7 @@ test('REPLY ACCEPTED - creates CalendarInvites record with correct data', async 
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     fromEmail: 'attendee@external.com',
+    authenticatedFromEmail: 'attendee@external.com',
     toEmail: 'organizer@forwardemail.net',
     messageId: parsedEmail.messageId,
     remoteAddress: '192.168.1.1'
@@ -177,6 +178,7 @@ test('REPLY DECLINED - processes correctly', async (t) => {
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     fromEmail: 'attendee@gmail.com',
+    authenticatedFromEmail: 'attendee@gmail.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -194,6 +196,7 @@ test('REPLY TENTATIVE - processes correctly', async (t) => {
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     fromEmail: 'attendee@icloud.com',
+    authenticatedFromEmail: 'attendee@icloud.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -211,6 +214,7 @@ test('REPLY with urn:uuid format (iOS) - extracts EMAIL param correctly', async 
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     fromEmail: 'iosuser@icloud.com',
+    authenticatedFromEmail: 'iosuser@icloud.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -353,6 +357,7 @@ test('REPLY embedded in text body - processes correctly', async (t) => {
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     fromEmail: 'attendee@external.com',
+    authenticatedFromEmail: 'attendee@external.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -372,6 +377,7 @@ test('REPLY from spoofed sender - rejected', async (t) => {
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     fromEmail: 'attacker@evil.com', // Does NOT match attendee@external.com
+    authenticatedFromEmail: 'attacker@evil.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -404,6 +410,7 @@ test('REPLY sender case-insensitive match - accepted', async (t) => {
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     fromEmail: 'Attendee@External.COM', // Case differs but same email
+    authenticatedFromEmail: 'Attendee@External.COM',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -432,6 +439,7 @@ END:VCALENDAR`;
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     fromEmail: 'user@mail.company.com', // Subdomain of company.com
+    authenticatedFromEmail: 'user@mail.company.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -459,6 +467,7 @@ END:VCALENDAR`;
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     fromEmail: 'alice@company.com', // Different user, same domain
+    authenticatedFromEmail: 'alice@company.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -572,6 +581,7 @@ test('application/ics content type - processes correctly', async (t) => {
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     fromEmail: 'attendee@external.com',
+    authenticatedFromEmail: 'attendee@external.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -581,4 +591,156 @@ test('application/ics content type - processes correctly', async (t) => {
   if (result.invite?._id) {
     await CalendarInvites.deleteOne({ _id: result.invite._id });
   }
+});
+
+// ─── Security: REPLY must be authenticated and addressed to the organizer ──
+
+test('REPLY with a null envelope sender and no authenticated From - rejected', async (t) => {
+  // "MAIL FROM:<>" leaves no envelope sender; this used to skip the
+  // sender/attendee check entirely
+  const parsedEmail = buildParsedEmail(SAMPLE_REPLY_ACCEPTED);
+
+  const result = await checkAndProcessImipMessage(parsedEmail, {
+    toEmail: 'organizer@forwardemail.net'
+  });
+
+  t.truthy(result);
+  t.false(result.processed);
+  t.true(result.rejected);
+  t.is(result.code, 'sender_not_authenticated');
+  t.is(
+    await CalendarInvites.countDocuments({
+      eventUid: 'test-event-12345@example.com',
+      processed: false
+    }),
+    0
+  );
+});
+
+test('REPLY whose envelope sender matches but From is not authenticated - rejected', async (t) => {
+  const parsedEmail = buildParsedEmail(SAMPLE_REPLY_ACCEPTED);
+
+  const result = await checkAndProcessImipMessage(parsedEmail, {
+    fromEmail: 'attendee@external.com', // anyone can set the envelope sender
+    toEmail: 'organizer@forwardemail.net'
+  });
+
+  t.truthy(result);
+  t.false(result.processed);
+  t.true(result.rejected);
+  t.is(result.code, 'sender_not_authenticated');
+});
+
+test('REPLY delivered to a mailbox other than its ORGANIZER - rejected', async (t) => {
+  // Mallory's message names another user as ORGANIZER and is delivered to
+  // Mallory's own mailbox; the reply was queued for that other user before
+  const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:REPLY
+BEGIN:VEVENT
+UID:cross-mailbox-reply@example.com
+DTSTAMP:20260203T120000Z
+ORGANIZER:mailto:victim@forwardemail.net
+ATTENDEE;PARTSTAT=DECLINED:mailto:mallory@attacker.example
+END:VEVENT
+END:VCALENDAR`;
+
+  const result = await checkAndProcessImipMessage(buildParsedEmail(ics), {
+    fromEmail: 'mallory@attacker.example',
+    authenticatedFromEmail: 'mallory@attacker.example',
+    toEmail: 'mallory@forwardemail.net'
+  });
+
+  t.truthy(result);
+  t.false(result.processed);
+  t.true(result.rejected);
+  t.is(result.code, 'organizer_recipient_mismatch');
+  t.is(
+    await CalendarInvites.countDocuments({
+      eventUid: 'cross-mailbox-reply@example.com'
+    }),
+    0
+  );
+});
+
+test('REPLY from the same local part on a sibling domain - rejected', async (t) => {
+  // each pair shares a parent (a public suffix, or a domain that hands out
+  // subdomains to different owners)
+  for (const [sender, attendee] of [
+    ['alice@evil.co.uk', 'alice@victim.co.uk'],
+    ['alice@evil.eu.org', 'alice@victim.eu.org'],
+    ['alice@mail.evil.com', 'alice@calendar.evil.com']
+  ]) {
+    const uid = `sibling-${sender}@example.com`;
+    const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:REPLY
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:20260203T120000Z
+ORGANIZER:mailto:organizer@forwardemail.net
+ATTENDEE;PARTSTAT=DECLINED:mailto:${attendee}
+END:VEVENT
+END:VCALENDAR`;
+
+    const result = await checkAndProcessImipMessage(buildParsedEmail(ics), {
+      fromEmail: sender,
+      authenticatedFromEmail: sender,
+      toEmail: 'organizer@forwardemail.net'
+    });
+
+    t.false(result.processed, `${sender} -> ${attendee}`);
+    t.true(result.rejected, `${sender} -> ${attendee}`);
+    t.is(result.code, 'sender_attendee_mismatch', `${sender} -> ${attendee}`);
+
+    t.is(await CalendarInvites.countDocuments({ eventUid: uid }), 0);
+  }
+});
+
+test('REPLY from the same local part on a subdomain of the attendee domain - processed', async (t) => {
+  const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:REPLY
+BEGIN:VEVENT
+UID:subdomain-reply@example.com
+DTSTAMP:20260203T120000Z
+ORGANIZER:mailto:organizer@forwardemail.net
+ATTENDEE;PARTSTAT=ACCEPTED:mailto:alice@company.com
+END:VEVENT
+END:VCALENDAR`;
+
+  const result = await checkAndProcessImipMessage(buildParsedEmail(ics), {
+    fromEmail: 'alice@mail.company.com',
+    authenticatedFromEmail: 'alice@mail.company.com',
+    toEmail: 'organizer@forwardemail.net'
+  });
+
+  t.true(result.processed);
+  t.is(result.imipData.partstat, 'ACCEPTED');
+  await CalendarInvites.deleteOne({ _id: result.invite._id });
+});
+
+test('REPLY to an alias on an IDN domain matches an ASCII ORGANIZER', async (t) => {
+  const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:REPLY
+BEGIN:VEVENT
+UID:idn-reply@example.com
+DTSTAMP:20260203T120000Z
+ORGANIZER:mailto:organizer@xn--mnchen-3ya.de
+ATTENDEE;PARTSTAT=ACCEPTED:mailto:attendee@example.com
+END:VEVENT
+END:VCALENDAR`;
+
+  const result = await checkAndProcessImipMessage(buildParsedEmail(ics), {
+    fromEmail: 'attendee@example.com',
+    authenticatedFromEmail: 'attendee@example.com',
+    // aliases keep the Unicode form of the domain
+    toEmail: 'organizer@münchen.de'
+  });
+
+  t.true(result.processed);
+  // (stored for the mailbox, which is how the organizer's session finds it)
+  t.is(result.invite.organizerEmail, 'organizer@münchen.de');
+  await CalendarInvites.deleteOne({ _id: result.invite._id });
 });

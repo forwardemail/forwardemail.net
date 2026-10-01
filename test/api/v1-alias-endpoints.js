@@ -3314,3 +3314,82 @@ test('fails to retrieve account without auth', async (t) => {
   const res = await api.get('/v1/account');
   t.is(res.status, 401);
 });
+
+//
+// Security: query fields that reach the SQLite query builder must be strings.
+// A JSON object such as `{ "$eq": { "expression": "1 OR 1" } }` as a value in
+// a condition was written into the SQL text verbatim by json-sql-enhanced, so
+// these endpoints now reject a non-string where they build a query from one.
+//
+test('calendars create rejects an object calendar_id', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  // a calendar already exists, so a vulnerable build would answer 409
+  await api.post('/v1/calendars').set('Authorization', auth).send({
+    name: 'Probe'
+  });
+
+  const res = await api
+    .post('/v1/calendars')
+    .set('Authorization', auth)
+    .send({ name: 'Other', calendar_id: { $eq: { expression: '1 OR 1' } } });
+
+  t.is(res.status, 400);
+});
+
+test('calendars create rejects an object name', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  await api.post('/v1/calendars').set('Authorization', auth).send({
+    name: 'Probe'
+  });
+
+  const res = await api
+    .post('/v1/calendars')
+    .set('Authorization', auth)
+    .send({ name: { $eq: { expression: '1 OR 1' } } });
+
+  t.is(res.status, 400);
+});
+
+test('calendar events create rejects an object calendar_id', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  const res = await api
+    .post('/v1/calendar-events')
+    .set('Authorization', auth)
+    .send({
+      calendar_id: { $eq: { expression: '1 OR 1' } },
+      ical: 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nUID:x\r\nDTSTART:20260101T000000Z\r\nEND:VEVENT\r\nEND:VCALENDAR'
+    });
+
+  t.is(res.status, 400);
+});
+
+test('calendar events create rejects an object event_id', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', auth)
+    .send({ name: 'Test Calendar' });
+
+  const res = await api
+    .post('/v1/calendar-events')
+    .set('Authorization', auth)
+    .send({
+      calendar_id: calendarRes.body.id,
+      event_id: { $eq: { expression: '1 OR 1' } },
+      ical: 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nUID:x\r\nDTSTART:20260101T000000Z\r\nEND:VEVENT\r\nEND:VCALENDAR'
+    });
+
+  t.is(res.status, 400);
+});

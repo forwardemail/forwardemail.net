@@ -31,6 +31,7 @@ const koaCashConfig = require('./koa-cash');
 const config = require('.');
 const getSessionKeys = require('#helpers/get-session-keys');
 const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
+const sanitizeQueryLimit = require('#helpers/sanitize-query-limit');
 const validateHostHeader = require('#helpers/validate-host-header');
 const blockSourceMaps = require('#helpers/block-source-maps');
 const staticByteRanges = require('#helpers/static-byte-ranges');
@@ -353,6 +354,8 @@ module.exports = (redis) => ({
   hookBeforeSetup(app) {
     // before anything reads ctx.hostname / ctx.origin
     app.use(validateHostHeader());
+    // `?limit=0` must not mean "no limit" (see helpers/sanitize-query-limit.js)
+    app.use(sanitizeQueryLimit);
     // source maps are only served in development
     if (config.env !== 'development') app.use(blockSourceMaps());
     // 206 Partial Content for static audio and video (Safari plays no video

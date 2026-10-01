@@ -79,8 +79,13 @@ async function create(ctx) {
   const { body } = ctx.request;
 
   // Validate required fields
-  if (!body.name) {
+  // (both are query values; a JSON object here would reach the SQL builder)
+  if (!isSANB(body.name)) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_NAME_REQUIRED'));
+  }
+
+  if (body.calendar_id !== undefined && !isSANB(body.calendar_id)) {
+    throw Boom.badRequest(ctx.translateError('CALENDAR_ID_REQUIRED'));
   }
 
   const calendarId = body.calendar_id || randomUUID();
@@ -238,6 +243,9 @@ async function update(ctx) {
 
   // Update calendar fields
   if (body.name !== undefined) {
+    if (!isSANB(body.name))
+      throw Boom.badRequest(ctx.translateError('CALENDAR_NAME_REQUIRED'));
+
     // Check if new name conflicts with existing calendar
     if (body.name !== calendar.name) {
       const existingCalendar = await Calendars.findOne(

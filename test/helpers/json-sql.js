@@ -128,3 +128,100 @@ test('limit, offset and sort directions must be what they say', (t) => {
     })
   );
 });
+
+test('condition values must be bound, never built into the query', (t) => {
+  const { db, builder } = setup();
+
+  // a plain object as a value (what a JSON body gives a controller that
+  // does not check the type) is refused before any SQL is built
+  for (const value of [
+    { expression: 'uid = 1' },
+    { pattern: '{x}', values: { x: 1 } },
+    { nested: { expression: 'uid = 1' } }
+  ]) {
+    t.throws(
+      () =>
+        builder.build({
+          type: 'select',
+          table: 'Messages',
+          condition: { _id: { $eq: value } }
+        }),
+      { message: 'Invalid SQL value' }
+    );
+    t.throws(
+      () =>
+        builder.build({
+          type: 'select',
+          table: 'Messages',
+          condition: { _id: { $in: ['a', value] } }
+        }),
+      { message: 'Invalid SQL value' }
+    );
+    t.throws(
+      () =>
+        builder.build({
+          type: 'update',
+          table: 'Messages',
+          modifier: { secret: value },
+          condition: { _id: 'a' }
+        }),
+      { message: 'Invalid SQL value' }
+    );
+  }
+
+  // every value type our models bind still works
+  const rows = run(
+    db,
+    builder.build({
+      type: 'select',
+      table: 'Messages',
+      fields: ['_id'],
+      condition: {
+        _id: { $in: ['a', 'b'] },
+        uid: { $gte: 1, $lt: 3 },
+        secret: { $ne: 'three' }
+      },
+      sort: { uid: 1 }
+    })
+  );
+  t.deepEqual(rows, [{ _id: 'a' }, { _id: 'b' }]);
+
+  // `{}` keeps its meaning of null
+  t.deepEqual(
+    run(
+      db,
+      builder.build({
+        type: 'select',
+        table: 'Messages',
+        fields: ['_id'],
+        condition: { secret: {} }
+      })
+    ),
+    []
+  );
+
+  // the same for the values of an insert
+  t.throws(
+    () =>
+      builder.build({
+        type: 'insert',
+        table: 'Messages',
+        values: { _id: 'c', uid: 3, secret: { expression: 'uid' } }
+      }),
+    { message: 'Invalid SQL value' }
+  );
+
+  // raw SQL stays available where our code uses it: fields
+  t.deepEqual(
+    run(
+      db,
+      builder.build({
+        type: 'select',
+        table: 'Messages',
+        fields: [{ expression: 'COUNT(*)' }],
+        condition: { uid: { $gte: 1 } }
+      })
+    ),
+    [{ 'COUNT(*)': 2 }]
+  );
+});

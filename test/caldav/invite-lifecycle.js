@@ -669,6 +669,7 @@ test.serial(
     const result = await checkAndProcessImipMessage(parsedEmail, {
       messageId: '<reply-1@example.com>',
       fromEmail: attendee,
+      authenticatedFromEmail: attendee,
       toEmail: organizer
     });
     t.true(result.processed, 'REPLY should be processed');
@@ -952,7 +953,7 @@ test.serial(
           }
         ]
       },
-      { fromEmail: alice, toEmail: organizer }
+      { fromEmail: alice, authenticatedFromEmail: alice, toEmail: organizer }
     );
 
     // ── Bob declines via web link ──
@@ -996,7 +997,11 @@ test.serial(
           }
         ]
       },
-      { fromEmail: charlie, toEmail: organizer }
+      {
+        fromEmail: charlie,
+        authenticatedFromEmail: charlie,
+        toEmail: organizer
+      }
     );
 
     // ── Organizer authenticates → all 3 processed ──
@@ -1097,7 +1102,11 @@ test.serial(
           }
         ]
       },
-      { fromEmail: attendee, toEmail: organizer }
+      {
+        fromEmail: attendee,
+        authenticatedFromEmail: attendee,
+        toEmail: organizer
+      }
     );
 
     // Process the decline
@@ -1148,6 +1157,7 @@ test.serial(
     const result = await checkAndProcessImipMessage(parsedEmail, {
       messageId: '<spoofed@evil.com>',
       fromEmail: spoofedSender,
+      authenticatedFromEmail: spoofedSender,
       toEmail: organizer
     });
 

@@ -1223,6 +1223,14 @@ Logs.pre('save', function (next) {
 Logs.post('save', async (doc, next) => {
   if (!doc._isNew) return next();
 
+  //
+  // only logs written by our own servers can page admins: `POST /v1/log`
+  // accepts a log from anyone (the API token is optional there), and that
+  // body carries `err.isCodeBug` and `err.output.statusCode` as given, so
+  // without this check each such request sent one alert email
+  //
+  if (doc.is_restricted === false) return next();
+
   const isRateLimiting = doc?.err?.output?.statusCode === 429;
   if (doc?.err?.isCodeBug !== true && !isRateLimiting) return next();
 

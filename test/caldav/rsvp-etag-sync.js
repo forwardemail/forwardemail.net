@@ -514,7 +514,11 @@ test.serial(
           }
         ]
       },
-      { fromEmail: attendee, toEmail: organizer }
+      {
+        fromEmail: attendee,
+        authenticatedFromEmail: attendee,
+        toEmail: organizer
+      }
     );
 
     // Process invites (triggers real SQLite update)
@@ -659,7 +663,7 @@ test.serial(
           }
         ]
       },
-      { fromEmail: alice, toEmail: organizer }
+      { fromEmail: alice, authenticatedFromEmail: alice, toEmail: organizer }
     );
 
     // Process
@@ -722,7 +726,7 @@ test.serial('Sequential RSVPs - both attendees update correctly', async (t) => {
         }
       ]
     },
-    { fromEmail: alice, toEmail: organizer }
+    { fromEmail: alice, authenticatedFromEmail: alice, toEmail: organizer }
   );
 
   await runProcessInvites(t);
@@ -748,7 +752,7 @@ test.serial('Sequential RSVPs - both attendees update correctly', async (t) => {
         }
       ]
     },
-    { fromEmail: bob, toEmail: organizer }
+    { fromEmail: bob, authenticatedFromEmail: bob, toEmail: organizer }
   );
 
   await runProcessInvites(t);
@@ -796,7 +800,11 @@ test.serial('REPLY TENTATIVE - sets PARTSTAT to TENTATIVE', async (t) => {
         }
       ]
     },
-    { fromEmail: attendee, toEmail: organizer }
+    {
+      fromEmail: attendee,
+      authenticatedFromEmail: attendee,
+      toEmail: organizer
+    }
   );
 
   await runProcessInvites(t);
@@ -856,7 +864,11 @@ test.serial('bumpSyncToken produces valid URL-based synctoken', async (t) => {
         }
       ]
     },
-    { fromEmail: attendee, toEmail: organizer }
+    {
+      fromEmail: attendee,
+      authenticatedFromEmail: attendee,
+      toEmail: organizer
+    }
   );
 
   await runProcessInvites(t);
@@ -906,7 +918,11 @@ test.serial(
           }
         ]
       },
-      { fromEmail: attendee, toEmail: organizer }
+      {
+        fromEmail: attendee,
+        authenticatedFromEmail: attendee,
+        toEmail: organizer
+      }
     );
 
     // Process
@@ -964,7 +980,11 @@ test.serial(
           }
         ]
       },
-      { fromEmail: unknownAttendee, toEmail: organizer }
+      {
+        fromEmail: unknownAttendee,
+        authenticatedFromEmail: unknownAttendee,
+        toEmail: organizer
+      }
     );
 
     // Process

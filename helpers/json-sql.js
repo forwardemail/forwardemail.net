@@ -19,12 +19,25 @@
 // from a request would have been SQL injection.  Here identifiers must be
 // plain names (or `*`), limit/offset non-negative integers and directions
 // asc/desc; anything else throws before any SQL is built.  Raw SQL still has
-// explicit forms (`{ expression }`, `{ query }`), which are never built from
-// request data.
+// explicit forms (`{ expression }`, `{ query }`) for fields and terms.
+//
+// Values are the fourth sink: a condition value that is a plain object with
+// an `expression` key is written into the SQL text verbatim by the builder
+// (`_pushValue` → `_handleObjectValue` → `buildExpression`), so a JSON body
+// such as `{ "calendar_id": { "$eq": { "expression": "1 OR 1" } } }` that a
+// controller passed through to `findOne()` ran as raw SQL.  Our own code only
+// ever binds strings, numbers, booleans, dates, buffers, ObjectIds and arrays
+// as values, never a plain object, so a plain object value throws here.
 //
 
 const { Builder } = require('json-sql-enhanced');
 const BaseDialect = require('json-sql-enhanced/lib/dialects/base/index.js');
+
+function isPlainObject(value) {
+  if (value === null || typeof value !== 'object') return false;
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
+}
 
 const RE_IDENTIFIER = /^[A-Za-z_]\w*$/;
 const SORT_DIRECTIONS = new Set([1, -1, '1', '-1', 'asc', 'desc']);
@@ -58,11 +71,46 @@ function assertSort(sort) {
   }
 }
 
+function assertValue(value) {
+  // `{}` keeps its meaning of `null`; anything with keys (`{ expression }`,
+  // `{ pattern, values }`, `{ field }`, `{ select }`) would be built into the
+  // SQL text instead of bound
+  if (isPlainObject(value) && Object.keys(value).length > 0) {
+    const err = new TypeError('Invalid SQL value');
+    err.keys = Object.keys(value).slice(0, 10);
+    throw err;
+  }
+}
+
+// update modifiers (`{ $set: { name } }` or `{ name }`) and insert values
+// are written through the "term" block, which takes `{ expression }` as is
+function assertModifier(modifier) {
+  if (!modifier || typeof modifier !== 'object') return;
+  for (const [key, value] of Object.entries(modifier)) {
+    if (key.startsWith('$')) {
+      if (value && typeof value === 'object')
+        for (const nested of Object.values(value)) assertValue(nested);
+    } else {
+      assertValue(value);
+    }
+  }
+}
+
+function assertValues(values) {
+  if (!values || typeof values !== 'object') return;
+  for (const row of Array.isArray(values) ? values : [values]) {
+    if (row && typeof row === 'object')
+      for (const value of Object.values(row)) assertValue(value);
+  }
+}
+
 function assertQuery(query) {
   if (!query || typeof query !== 'object') return;
   assertCount('limit', query.limit);
   assertCount('offset', query.offset);
   assertSort(query.sort);
+  assertModifier(query.modifier);
+  assertValues(query.values);
   // nested queries (`{ query }` terms, unions) are built through build() too
 }
 
@@ -81,6 +129,17 @@ if (!BaseDialect.prototype.wrapIdentifier.isHardened) {
     assertQuery(query);
     return buildQuery.call(this, query);
   };
+}
+
+if (!Builder.prototype._pushValue.isHardened) {
+  const { _pushValue } = Builder.prototype;
+  const hardenedPushValue = function (value) {
+    assertValue(value);
+    return _pushValue.call(this, value);
+  };
+
+  hardenedPushValue.isHardened = true;
+  Builder.prototype._pushValue = hardenedPushValue;
 }
 
 module.exports = { Builder };

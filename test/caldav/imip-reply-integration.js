@@ -146,6 +146,7 @@ test('O365 REPLY ACCEPTED - full E2E creates CalendarInvites record', async (t) 
   const result = await checkAndProcessImipMessage(parsedEmail, {
     messageId: parsedEmail.messageId,
     fromEmail: 'attendee1@external.com',
+    authenticatedFromEmail: 'attendee1@external.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -185,6 +186,7 @@ test('Gmail REPLY DECLINED - full E2E with Gmail-style formatting', async (t) =>
   const result = await checkAndProcessImipMessage(parsedEmail, {
     messageId: parsedEmail.messageId,
     fromEmail: 'attendee2@gmail.com',
+    authenticatedFromEmail: 'attendee2@gmail.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -208,6 +210,7 @@ test('Apple Mail REPLY TENTATIVE - full E2E', async (t) => {
   const result = await checkAndProcessImipMessage(parsedEmail, {
     messageId: parsedEmail.messageId,
     fromEmail: 'appleuser@icloud.com',
+    authenticatedFromEmail: 'appleuser@icloud.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -318,6 +321,7 @@ test('duplicate REPLY - updates existing CalendarInvites record', async (t) => {
   const result1 = await checkAndProcessImipMessage(parsedEmail1, {
     messageId: '<first@example.com>',
     fromEmail: 'attendee1@external.com',
+    authenticatedFromEmail: 'attendee1@external.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -328,6 +332,7 @@ test('duplicate REPLY - updates existing CalendarInvites record', async (t) => {
   const result2 = await checkAndProcessImipMessage(parsedEmail2, {
     messageId: '<second@example.com>',
     fromEmail: 'attendee1@external.com',
+    authenticatedFromEmail: 'attendee1@external.com',
     toEmail: 'organizer@forwardemail.net'
   });
 
@@ -365,6 +370,7 @@ END:VCALENDAR`;
     buildParsedEmail(tentativeIcs),
     {
       fromEmail: 'changeable@example.com',
+      authenticatedFromEmail: 'changeable@example.com',
       toEmail: 'organizer@forwardemail.net'
     }
   );
@@ -376,6 +382,7 @@ END:VCALENDAR`;
     buildParsedEmail(acceptedIcs),
     {
       fromEmail: 'changeable@example.com',
+      authenticatedFromEmail: 'changeable@example.com',
       toEmail: 'organizer@forwardemail.net'
     }
   );
@@ -451,11 +458,13 @@ END:VCALENDAR`;
 
   const r1 = await checkAndProcessImipMessage(buildParsedEmail(ics1), {
     fromEmail: 'att1@external.com',
+    authenticatedFromEmail: 'att1@external.com',
     toEmail: 'query-organizer@forwardemail.net'
   });
 
   const r2 = await checkAndProcessImipMessage(buildParsedEmail(ics2), {
     fromEmail: 'att2@external.com',
+    authenticatedFromEmail: 'att2@external.com',
     toEmail: 'query-organizer@forwardemail.net'
   });
 

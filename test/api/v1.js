@@ -1189,6 +1189,47 @@ test('user member API token cannot send email as another alias or a non-existent
   t.is(await Emails.countDocuments({ domain: domain._id }), 4);
 });
 
+test('a raw message with a second From header is rejected', async (t) => {
+  const { member, domain, adminAlias, memberAlias } =
+    await createDomainWithMember(t);
+
+  const own = `${memberAlias.name}@${domain.name}`;
+  const sendRaw = (raw) =>
+    t.context.api
+      .post('/v1/emails')
+      .auth(member[config.userFields.apiToken])
+      .set('Accept', 'application/json')
+      .send({ raw });
+
+  // the last From header is the member's own alias, the first is not
+  // (a differently cased or spaced field name, a field on the first line
+  // after whitespace, or one after a bare CR is still a From field)
+  for (const other of [`${adminAlias.name}@${domain.name}`, 'ceo@example.org'])
+    for (const first of [
+      `FROM: ${other}\r\n`,
+      `from: ${other}\r\n`,
+      `From : ${other}\r\n`,
+      ` From: ${other}\r\n`,
+      `X-Test: 1\rFrom: ${other}\r\n`
+    ]) {
+      const res = await sendRaw(
+        `${first}From: ${own}\r\nTo: foo@bar.com\r\nSubject: test\r\n\r\ntest`
+      );
+      t.is(res.status, 403, `${JSON.stringify(first)}`);
+      t.regex(res.body.message, /multiple From headers/);
+    }
+
+  t.is(await Emails.countDocuments({ domain: domain._id }), 0);
+
+  // a single From header still works (a folded line starting with "from:"
+  // is part of the field above it)
+  const res = await sendRaw(
+    `From: ${own}\r\nTo: foo@bar.com\r\nSubject: Re: your question\r\n from: the team\r\n\r\ntest`
+  );
+  t.is(res.status, 200);
+  t.is(await Emails.countDocuments({ domain: domain._id }), 1);
+});
+
 // multipart/form-data
 test('creates email with binary attachment', async (t) => {
   const user = await t.context.userFactory

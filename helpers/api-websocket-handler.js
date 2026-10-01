@@ -745,8 +745,13 @@ class ApiWebSocketHandler {
   async _onUpgrade(request, socket, head) {
     const { pathname, query } = url.parse(request.url, true);
 
-    // Only handle upgrades for our WebSocket endpoint
+    // Only handle upgrades for our WebSocket endpoint. Node detaches the
+    // socket of every `Connection: Upgrade` request before this runs, so one
+    // for another path has to be answered and closed here or it stays open
+    // (without counting against any connection limit) until the client goes.
     if (pathname !== WS_PATH) {
+      socket.on('error', () => socket.destroy());
+      socket.end('HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n');
       return;
     }
 

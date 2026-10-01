@@ -34,6 +34,16 @@ const store = new SessionChallengeStore();
 async function logout(ctx) {
   if (!ctx.isAuthenticated()) return ctx.redirect(ctx.state.l());
 
+  //
+  // this is a GET (the logout links in the navigation), and the session
+  // cookie is sent with a top-level navigation from any site, so another
+  // site could sign the user out; browsers that send Sec-Fetch-Site mark
+  // such a navigation "cross-site" (our own links are "same-origin", and a
+  // typed address or bookmark is "none")
+  //
+  if (ctx.get('Sec-Fetch-Site') === 'cross-site')
+    return ctx.redirect(ctx.state.l());
+
   // store a reference to the session ID so we can clean it up on user model
   const { sessionId } = ctx;
   const userId = ctx.state.user._id;

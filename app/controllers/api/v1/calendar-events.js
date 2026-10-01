@@ -587,8 +587,14 @@ async function create(ctx) {
   const { body } = ctx.request;
 
   // Validate required fields
-  if (!body.calendar_id) {
+  // (`calendar_id` and `event_id` are query values; a JSON object here
+  // would reach the SQL builder)
+  if (!isSANB(body.calendar_id)) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_ID_REQUIRED'));
+  }
+
+  if (body.event_id !== undefined && !isSANB(body.event_id)) {
+    throw Boom.badRequest(ctx.translateError('CALENDAR_EVENT_INVALID_ID'));
   }
 
   if (!body.ical) {
@@ -866,6 +872,9 @@ async function update(ctx) {
 
   // Update calendar if specified
   if (body.calendar_id !== undefined) {
+    if (!isSANB(body.calendar_id))
+      throw Boom.badRequest(ctx.translateError('CALENDAR_ID_REQUIRED'));
+
     const calendar = await Calendars.findOne(ctx.instance, ctx.state.session, {
       calendarId: body.calendar_id
     });

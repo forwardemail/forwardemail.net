@@ -96,14 +96,16 @@ const multer = require('multer');
 //
 // Limits for forms without files (the global `/v1` parser). The field size
 // matches busboy's own default of 1 MB; the counts are far above what any
-// API endpoint takes.
+// API endpoint takes (a few dozen fields at most). This parser runs before
+// authentication and buffers every field in memory, so the counts also bound
+// what one anonymous request can hold (200 fields x 1 MB).
 //
 const DEFAULT_LIMITS = {
   fieldNameSize: 256,
   fieldSize: 1024 * 1024,
-  fields: 1000,
+  fields: 200,
   files: 0,
-  parts: 1000
+  parts: 200
 };
 
 //

@@ -579,6 +579,8 @@ router
   )
   .post(
     '/domains/:domain_id/aliases/:alias_id/generate-password',
+    // (same checks as the website form: no global or suspended domains)
+    web.myAccount.ensureSMTPAccess,
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
     rateLimit(300, 'generate alias password'),

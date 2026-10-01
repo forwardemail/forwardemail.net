@@ -592,6 +592,27 @@ Test`.trim()
     );
     t.is(err.responseCode, 550);
     t.regex(err.message, /From header must be equal to/);
+
+    // a second From field with the alias does not get the first one through
+    const err2 = await t.throwsAsync(
+      transporter.sendMail({
+        envelope: {
+          from: `${noReplyAlias.name}@${domain.name}`,
+          to: 'test@test.com'
+        },
+        raw: `
+To: test@test.com
+FROM: test@test.com
+From: ${noReplyAlias.name}@${domain.name}
+Subject: test
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+      })
+    );
+    t.is(err2.responseCode, 550);
+    t.regex(err2.message, /multiple From headers/);
   }
 
   await smtp.close();

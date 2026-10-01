@@ -553,3 +553,33 @@ test('passkeys and two-factor cannot be added before the email is verified', asy
   t.deepEqual(fresh.passkeys, []);
   t.false(fresh[config.passport.fields.otpEnabled]);
 });
+
+test('GET /logout ignores a cross-site navigation (CSRF)', async (t) => {
+  const password = falso.randPassword();
+  let user = await t.context.userFactory.make();
+  user = await Users.register(user, password);
+  user[config.userFields.hasSetPassword] = true;
+  user[config.userFields.hasVerifiedEmail] = true;
+  await user.save();
+
+  const web = request.agent(t.context._web.server);
+  await web.post('/en/login').send({ email: user.email, password });
+
+  // a cross-site top-level navigation to the logout link does not sign out
+  const crossSite = await web
+    .get('/en/logout')
+    .set('Sec-Fetch-Site', 'cross-site');
+  t.is(crossSite.status, 302);
+  // still authenticated: my-account renders (not bounced to login)
+  const stillIn = await web.get('/en/my-account/security');
+  t.is(stillIn.status, 200);
+
+  // a same-site click still signs out
+  const sameSite = await web
+    .get('/en/logout')
+    .set('Sec-Fetch-Site', 'same-origin');
+  t.is(sameSite.status, 302);
+  const loggedOut = await web.get('/en/my-account/security');
+  t.is(loggedOut.status, 302);
+  t.true(loggedOut.header.location.includes('/login'));
+});

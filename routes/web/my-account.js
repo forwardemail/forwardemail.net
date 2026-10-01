@@ -262,6 +262,7 @@ router
     '/domains/:domain_id/advanced-settings',
     web.myAccount.checkVerifiedEmail,
     web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
     render('my-account/domains/advanced-settings')
   )
   .put(

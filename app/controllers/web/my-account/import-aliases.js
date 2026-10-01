@@ -67,15 +67,18 @@ async function importAliases(ctx) {
       errors.push(
         ctx.translateError(
           'IMPORT_ALIAS_ALREADY_EXISTS',
-          element.name,
-          element.recipient
+          _.escape(element.name),
+          _.escape(element.recipient)
         )
       );
     else if (match) {
       if (element.recipient) match.recipients.push(element.recipient);
       else
         errors.push(
-          ctx.translateError('IMPORT_ALIAS_DISABLED_NOBODY', element.name)
+          ctx.translateError(
+            'IMPORT_ALIAS_DISABLED_NOBODY',
+            _.escape(element.name)
+          )
         );
     } else {
       aliases.push({
@@ -102,8 +105,8 @@ async function importAliases(ctx) {
       errors.push(
         ctx.translateError(
           'IMPORT_ALIAS_ALREADY_EXISTS',
-          element.name,
-          element.recipient
+          _.escape(element.name),
+          _.escape(element.recipient)
         )
       );
     else if (match) match.recipients.push(element.recipient);
@@ -131,7 +134,10 @@ async function importAliases(ctx) {
       if (existing) {
         if (existing.recipients.includes(element))
           errors.push(
-            ctx.translateError('IMPORT_CATCHALL_ALREADY_INCLUDES', element)
+            ctx.translateError(
+              'IMPORT_CATCHALL_ALREADY_INCLUDES',
+              _.escape(element)
+            )
           );
         else catchAll.push(element);
       } else if (match) match.recipients.push(element);

@@ -13,6 +13,7 @@ const env = require('./env');
 
 const config = require('.');
 const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
+const sanitizeQueryLimit = require('#helpers/sanitize-query-limit');
 const validateHostHeader = require('#helpers/validate-host-header');
 
 const createTangerine = require('#helpers/create-tangerine');
@@ -57,6 +58,8 @@ module.exports = {
   hookBeforeSetup(app) {
     // before anything reads ctx.hostname / ctx.origin
     app.use(validateHostHeader());
+    // `?limit=0` must not mean "no limit" (see helpers/sanitize-query-limit.js)
+    app.use(sanitizeQueryLimit);
     // Koa v3 polyfill for ctx.redirect('back')
     // @see https://github.com/koajs/koa/releases/tag/v3.0.0
     app.use(

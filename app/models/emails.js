@@ -1509,6 +1509,26 @@ Emails.statics.queue = async function (
 
   const { headers } = messageSplitter;
 
+  //
+  // RFC 5322 permits exactly one From field, and the check below reads a
+  // single one: with a second field (e.g. "FROM:", "From :", one on the
+  // first line after whitespace, or one after a bare CR, which some
+  // receivers end a line on) it could see the sender's own alias while
+  // recipients are shown the other address
+  //
+  // (the lines are counted here, since the header parser drops a first
+  // line starting with "From " as an mbox separator, but it is still sent)
+  //
+  if (
+    headers.headers
+      .toString()
+      .split(/\r\n|\r|\n/)
+      .filter((line, i) =>
+        (i === 0 ? /^\s*from\s*:/i : /^from\s*:/i).test(line)
+      ).length > 1
+  )
+    throw Boom.forbidden('The email sent contains multiple From headers');
+
   const isEnvelopeToEmpty = info.envelope.to.length === 0;
   const isEnvelopeFromEmpty = !info.envelope.from;
 
